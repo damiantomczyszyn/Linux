@@ -1,53 +1,68 @@
-\
-    $(wildcard include/config/PCI_MMCONFIG) \
-    $(wildcard include/config/ACPI_APEI_GHES) \
-    $(wildcard include/config/INTEL_TXT) \
-  arch/x86/include/generated/asm/kmap_size.h \
-  include/asm-generic/kmap_size.h \
-    $(wildcard include/config/DEBUG_KMAP_LOCAL) \
-  include/asm-generic/fixmap.h \
-  arch/x86/include/asm/irq_vectors.h \
-    $(wildcard include/config/HAVE_KVM) \
-    $(wildcard include/config/HYPERV) \
-    $(wildcard include/config/PCI_MSI) \
-  arch/x86/include/asm/cpu_entry_area.h \
-  arch/x86/include/asm/intel_ds.h \
-  arch/x86/include/asm/pgtable_areas.h \
-  arch/x86/include/asm/pgtable_32_areas.h \
-  include/uapi/linux/elf.h \
-  include/uapi/linux/elf-em.h \
-  include/linux/kobject.h \
-    $(wildcard include/config/UEVENT_HELPER) \
-    $(wildcard include/config/DEBUG_KOBJECT_RELEASE) \
-  include/linux/sysfs.h \
-  include/linux/kernfs.h \
-    $(wildcard include/config/KERNFS) \
-  include/linux/idr.h \
-  include/linux/radix-tree.h \
-  include/linux/xarray.h \
-    $(wildcard include/config/XARRAY_MULTI) \
-  include/linux/kconfig.h \
-  include/linux/kobject_ns.h \
-  include/linux/moduleparam.h \
-    $(wildcard include/config/ALPHA) \
-    $(wildcard include/config/IA64) \
-    $(wildcard include/config/PPC64) \
-  include/linux/rbtree_latch.h \
-  include/linux/error-injection.h \
-  include/asm-generic/error-injection.h \
-  include/linux/cfi.h \
-    $(wildcard include/config/CFI_CLANG_SHADOW) \
-  arch/x86/include/asm/module.h \
-    $(wildcard include/config/UNWINDER_ORC) \
-  include/asm-generic/module.h \
-    $(wildcard include/config/HAVE_MOD_ARCH_SPECIFIC) \
-    $(wildcard include/config/MODULES_USE_ELF_REL) \
-    $(wildcard include/config/MODULES_USE_ELF_RELA) \
-  arch/x86/include/asm/orc_types.h \
-  include/linux/i2c.h \
-    $(wildcard include/config/I2C) \
-    $(wildcard include/config/I2C_SLAVE) \
-    $(wildcard include/config/I2C_BOARDINFO) \
-    $(wildcard include/config/I2C_MUX) \
-    $(wildcard include/config/OF) \
-    $(wildcard include/config/ACPI) \
+// SPDX-License-Identifier: GPL-2.0-or-later
+/*
+ *  Driver for the Conexant CX23885/7/8 PCIe bridge
+ *
+ *  Infrared device support routines - non-input, non-vl42_subdev routines
+ *
+ *  Copyright (C) 2009  Andy Walls <awalls@md.metrocast.net>
+ */
+
+#include "cx23885.h"
+#include "cx23885-ir.h"
+#include "cx23885-input.h"
+
+#include <media/v4l2-device.h>
+
+#define CX23885_IR_RX_FIFO_SERVICE_REQ		0
+#define CX23885_IR_RX_END_OF_RX_DETECTED	1
+#define CX23885_IR_RX_HW_FIFO_OVERRUN		2
+#define CX23885_IR_RX_SW_FIFO_OVERRUN		3
+
+#define CX23885_IR_TX_FIFO_SERVICE_REQ		0
+
+
+void cx23885_ir_rx_work_handler(struct work_struct *work)
+{
+	struct cx23885_dev *dev =
+			     container_of(work, struct cx23885_dev, ir_rx_work);
+	u32 events = 0;
+	unsigned long *notifications = &dev->ir_rx_notifications;
+
+	if (test_and_clear_bit(CX23885_IR_RX_SW_FIFO_OVERRUN, notifications))
+		events |= V4L2_SUBDEV_IR_RX_SW_FIFO_OVERRUN;
+	if (test_and_clear_bit(CX23885_IR_RX_HW_FIFO_OVERRUN, notifications))
+		events |= V4L2_SUBDEV_IR_RX_HW_FIFO_OVERRUN;
+	if (test_and_clear_bit(CX23885_IR_RX_END_OF_RX_DETECTED, notifications))
+		events |= V4L2_SUBDEV_IR_RX_END_OF_RX_DETECTED;
+	if (test_and_clear_bit(CX23885_IR_RX_FIFO_SERVICE_REQ, notifications))
+		events |= V4L2_SUBDEV_IR_RX_FIFO_SERVICE_REQ;
+
+	if (events == 0)
+		return;
+
+	if (dev->kernel_ir)
+		cx23885_input_rx_work_handler(dev, events);
+}
+
+void cx23885_ir_tx_work_handler(struct work_struct *work)
+{
+	struct cx23885_dev *dev =
+			     container_of(work, struct cx23885_dev, ir_tx_work);
+	u32 events = 0;
+	unsigned long *notifications = &dev->ir_tx_notifications;
+
+	if (test_and_clear_bit(CX23885_IR_TX_FIFO_SERVICE_REQ, notifications))
+		events |= V4L2_SUBDEV_IR_TX_FIFO_SERVICE_REQ;
+
+	if (events == 0)
+		return;
+
+}
+
+/* Possibly called in an IRQ context */
+void cx23885_ir_rx_v4l2_dev_notify(struct v4l2_subdev *sd, u32 events)
+{
+	struct cx23885_dev *dev = to_cx23885(sd->v4l2_dev);
+	unsigned long *notifications = &dev->ir_rx_notifications;
+
+	if (events & V4L2_SUBDEV_IR_RX_FIFO_SERV

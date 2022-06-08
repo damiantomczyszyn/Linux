@@ -1,1 +1,2 @@
- include/config/TRACE_BRANC
+,
+				&dvbsky_s950c_m88ds31

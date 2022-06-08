@@ -1,1 +1,1 @@
-lude/config/SHMEM) 
+h->cmds_start + i, 

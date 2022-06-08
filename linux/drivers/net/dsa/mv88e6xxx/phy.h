@@ -1,35 +1,39 @@
-clude/linux/build_bug.h \
-  include/linux/compiler.h \
-    $(wildcard include/config/TRACE_BRANCH_PROFILING) \
-    $(wildcard include/config/PROFILE_ALL_BRANCHES) \
-    $(wildcard include/config/STACK_VALIDATION) \
-  include/linux/compiler_types.h \
-  arch/x86/include/generated/asm/rwonce.h \
-  include/asm-generic/rwonce.h \
-  include/linux/kasan-checks.h \
-    $(wildcard include/config/KASAN_GENERIC) \
-    $(wildcard include/config/KASAN_SW_TAGS) \
-  include/linux/types.h \
-    $(wildcard include/config/HAVE_UID16) \
-    $(wildcard include/config/UID16) \
-    $(wildcard include/config/ARCH_DMA_ADDR_T_64BIT) \
-    $(wildcard include/config/PHYS_ADDR_T_64BIT) \
-    $(wildcard include/config/64BIT) \
-    $(wildcard include/config/ARCH_32BIT_USTAT_F_TINODE) \
-  include/uapi/linux/types.h \
-  arch/x86/include/generated/uapi/asm/types.h \
-  include/uapi/asm-generic/types.h \
-  include/asm-generic/int-ll64.h \
-  include/uapi/asm-generic/int-ll64.h \
-  arch/x86/include/uapi/asm/bitsperlong.h \
-  include/asm-generic/bitsperlong.h \
-  include/uapi/asm-generic/bitsperlong.h \
-  include/uapi/linux/posix_types.h \
-  include/linux/stddef.h \
-  include/uapi/linux/stddef.h \
-  arch/x86/include/asm/posix_types.h \
-    $(wildcard include/config/X86_32) \
-  arch/x86/include/uapi/asm/posix_types_32.h \
-  include/uapi/asm-generic/posix_types.h \
-  include/linux/kcsan-checks.h \
-    $(wildcard include/c
+/* SPDX-License-Identifier: GPL-2.0-or-later */
+/*
+ * Marvell 88E6xxx PHY access
+ *
+ * Copyright (c) 2008 Marvell Semiconductor
+ *
+ * Copyright (c) 2017 Andrew Lunn <andrew@lunn.ch>
+ */
+
+#ifndef _MV88E6XXX_PHY_H
+#define _MV88E6XXX_PHY_H
+
+#define MV88E6XXX_PHY_PAGE		0x16
+#define MV88E6XXX_PHY_PAGE_COPPER	0x00
+
+/* PHY Registers accesses implementations */
+int mv88e6165_phy_read(struct mv88e6xxx_chip *chip, struct mii_bus *bus,
+		       int addr, int reg, u16 *val);
+int mv88e6165_phy_write(struct mv88e6xxx_chip *chip, struct mii_bus *bus,
+			int addr, int reg, u16 val);
+int mv88e6185_phy_ppu_read(struct mv88e6xxx_chip *chip, struct mii_bus *bus,
+			   int addr, int reg, u16 *val);
+int mv88e6185_phy_ppu_write(struct mv88e6xxx_chip *chip, struct mii_bus *bus,
+			    int addr, int reg, u16 val);
+
+/* Generic PHY operations */
+int mv88e6xxx_phy_read(struct mv88e6xxx_chip *chip, int phy,
+		       int reg, u16 *val);
+int mv88e6xxx_phy_write(struct mv88e6xxx_chip *chip, int phy,
+			int reg, u16 val);
+int mv88e6xxx_phy_page_read(struct mv88e6xxx_chip *chip, int phy,
+			    u8 page, int reg, u16 *val);
+int mv88e6xxx_phy_page_write(struct mv88e6xxx_chip *chip, int phy,
+			     u8 page, int reg, u16 val);
+void mv88e6xxx_phy_init(struct mv88e6xxx_chip *chip);
+void mv88e6xxx_phy_destroy(struct mv88e6xxx_chip *chip);
+int mv88e6xxx_phy_setup(struct mv88e6xxx_chip *chip);
+
+#endif /*_MV88E6XXX_PHY_H */

@@ -1,16 +1,26 @@
-EAF) \
-  include/linux/page-flags-layout.h \
-    $(wildcard include/config/KASAN_HW_TAGS) \
-  include/linux/numa.h \
-    $(wildcard include/config/NODES_SHIFT) \
-    $(wildcard include/config/NUMA_KEEP_MEMINFO) \
-    $(wildcard include/config/HAVE_ARCH_NODE_DEV_GROUP) \
-  arch/x86/include/asm/sparsemem.h \
-  include/generated/bounds.h \
-  include/linux/seqlock.h \
-  include/linux/ww_mutex.h \
-    $(wildcard include/config/DEBUG_RT_MUTEXES) \
-    $(wildcard include/config/DEBUG_WW_MUTEX_SLOWPATH) \
-  include/linux/rtmutex.h \
-  arch/x86/include/asm/mmu.h \
-    $(wildcard include/config/MODIFY_LDT_SYSCA
+he real set_frontend */
+	if (port->set_frontend)
+		return port->set_frontend(fe);
+
+	return 0;
+}
+
+static void cx23885_set_frontend_hook(struct cx23885_tsport *port,
+				     struct dvb_frontend *fe)
+{
+	port->set_frontend = fe->ops.set_frontend;
+	fe->ops.set_frontend = cx23885_dvb_set_frontend;
+}
+
+static struct lgs8gxx_config magicpro_prohdtve2_lgs8g75_config = {
+	.prod = LGS8GXX_PROD_LGS8G75,
+	.demod_address = 0x19,
+	.serial_ts = 0,
+	.ts_clk_pol = 1,
+	.ts_clk_gated = 1,
+	.if_clk_freq = 30400, /* 30.4 MHz */
+	.if_freq = 6500, /* 6.50 MHz */
+	.if_neg_center = 1,
+	.ext_adc = 0,
+	.adc_signed = 1,
+	.adc_vpp

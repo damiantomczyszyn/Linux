@@ -1,22 +1,34 @@
-    $(wildcard include/config/HIGH_RES_TIMERS) \
-    $(wildcard include/config/TIME_LOW_RES) \
-    $(wildcard include/config/TIMERFD) \
-  include/linux/hrtimer_defs.h \
-  include/linux/timerqueue.h \
-  include/linux/seccomp.h \
-    $(wildcard include/config/SECCOMP) \
-    $(wildcard include/config/HAVE_ARCH_SECCOMP_FILTER) \
-    $(wildcard include/config/SECCOMP_FILTER) \
-    $(wildcard include/config/CHECKPOINT_RESTORE) \
-    $(wildcard include/config/SECCOMP_CACHE_DEBUG) \
-  include/uapi/linux/seccomp.h \
-  arch/x86/include/asm/seccomp.h \
-  arch/x86/include/asm/unistd.h \
-  arch/x86/include/uapi/asm/unistd.h \
-  arch/x86/include/generated/uapi/asm/unistd_32.h \
-  include/asm-generic/seccomp.h \
-  include/uapi/linux/unistd.h \
-  include/linux/resource.h \
-  include/uapi/linux/resource.h \
-  arch/x86/include/generated/uapi/asm/resource.h \
-  in
+// SPDX-License-Identifier: GPL-2.0-or-later
+/*
+ *  Driver for the Conexant CX23885 PCIe bridge
+ *
+ *  Copyright (c) 2006 Steven Toth <stoth@linuxtv.org>
+ */
+
+#include "cx23885.h"
+
+#include <linux/init.h>
+#include <linux/module.h>
+#include <linux/pci.h>
+#include <linux/delay.h>
+#include <media/drv-intf/cx25840.h>
+#include <linux/firmware.h>
+#include <misc/altera.h>
+
+#include "xc2028.h"
+#include "netup-eeprom.h"
+#include "netup-init.h"
+#include "altera-ci.h"
+#include "xc4000.h"
+#include "xc5000.h"
+#include "cx23888-ir.h"
+
+static unsigned int netup_card_rev = 4;
+module_param(netup_card_rev, int, 0644);
+MODULE_PARM_DESC(netup_card_rev,
+		"NetUP Dual DVB-T/C CI card revision");
+static unsigned int enable_885_ir;
+module_param(enable_885_ir, int, 0644);
+MODULE_PARM_DESC(enable_885_ir,
+		 "Enable integrated IR controller for supported\n"
+		 "\t\t    CX

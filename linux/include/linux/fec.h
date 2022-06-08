@@ -1,10 +1,20 @@
-lude/config/SHMEM) \
-    $(wildcard include/config/ARCH_HAS_PTE_SPECIAL) \
-    $(wildcard include/config/ARCH_HAS_PTE_DEVMAP) \
-    $(wildcard include/config/DEBUG_VM_RB) \
-    $(wildcard include/config/PAGE_POISONING) \
-    $(wildcard include/config/INIT_ON_ALLOC_DEFAULT_ON) \
-    $(wildcard include/config/INIT_ON_FREE_DEFAULT_ON) \
-    $(wildcard include/config/DEBUG_PAGEALLOC) \
-    $(wildcard include/config/HUGETLBFS) \
-    $(wildcard include/config/MAPPI
+DING,
+};
+enum cx23885_copyright {
+	CX23885_COPYRIGHT_OFF,
+	CX23885_COPYRIGHT_ON,
+};
+enum cx23885_notification_type {
+	CX23885_NOTIFICATION_REFRESH,
+};
+enum cx23885_notification_status {
+	CX23885_NOTIFICATION_OFF,
+	CX23885_NOTIFICATION_ON,
+};
+enum cx23885_notification_mailbox {
+	CX23885_NOTIFICATION_NO_MAILBOX = -1,
+};
+enum cx23885_field1_lines {
+	CX23885_FIELD1_SAA7114 = 0x00EF, /* 239 */
+	CX23885_FIELD1_SAA7115 = 0x00F0, /* 240 */
+	CX23885_FIELD1_MICRONAS = 

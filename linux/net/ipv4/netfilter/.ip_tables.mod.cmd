@@ -1,4 +1,4 @@
-lude/linux/percpu-refcount.h \
-  include/linux/kasan.h \
-    $(wildcard include/config/KASAN_STACK) \
-    $(wildcard include
+3885_BOARD_DVBSKY_T980C:
+	case CX23885_BOARD_DVBSKY_S950C:
+	case CX23885_BOARD_TT_CT2_4500_CI:
+	case CX23885_BOARD_DVBSKY_S9

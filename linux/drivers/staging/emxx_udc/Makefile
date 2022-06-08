@@ -1,3 +1,3 @@
-x/scatterlist.h \
-    $(wildcard include/config/NEED_SG_DMA_LENGTH) \
-  
+// SPDX-License-Identifier: GPL-2.0-or-later
+/*
+ *  Driver for the Conex

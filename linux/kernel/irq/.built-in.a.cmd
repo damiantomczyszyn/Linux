@@ -1,12 +1,20 @@
-nfig/CFI_CLANG_SHADOW) \
-  arch/x86/include/asm/module.h \
-    $(wildcard include/config/UNWINDER_ORC) \
-  include/asm-generic/module.h \
-    $(wildcard include/config/HAVE_MOD_ARCH_SPECIFIC) \
-    $(wildcard include/config/MODULES_USE_ELF_REL) \
-    $(wildcard include/config/MODULES_USE_ELF_RELA) \
-  arch/x86/include/asm/orc_types.h \
-  arch/x86/include/asm/device.h \
-  include/linux/pm_wakeup.h \
-  include/linux/irq.h \
-    $(wildcard include/config/GENERIC_IRQ_EFFECTIVE_AFF_M
+// SPDX-License-Identifier: GPL-2.0-or-later
+/*
+ *  Driver for the Conexant CX23885 PCIe bridge
+ *
+ *  Copyright (c) 2007 Steven Toth <stoth@linuxtv.org>
+ */
+
+#include "cx23885.h"
+
+#include <linux/kernel.h>
+#include <linux/module.h>
+#include <linux/moduleparam.h>
+#include <linux/init.h>
+
+static unsigned int vbibufs = 4;
+module_param(vbibufs, int, 0644);
+MODULE_PARM_DESC(vbibufs, "number of vbi buffers, range 2-32");
+
+static unsigned int vbi_debug;
+modul

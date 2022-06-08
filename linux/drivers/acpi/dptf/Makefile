@@ -1,7 +1,6 @@
-\
-  arch/x86/include/asm/qrwlock.h \
-  include/asm-generic/qrwlock.h \
-  include/linux/rwlock.h \
-    $(wildcard include/config/PREEMPT) \
-  include/linux/spinlock_api_smp.h \
-    
+] IR controller */
+		allowed_protos = RC_PROTO_BIT_ALL_IR_DECODER;
+		/* The grey Hauppauge RC-5 remote */
+		rc_map = RC_MAP_HAUPPAUGE;
+		break;
+	case CX23885_BOARD_TERRATEC_CINERGY

@@ -1,102 +1,139 @@
-clude/linux/build_bug.h \
-  include/linux/compiler.h \
-    $(wildcard include/config/TRACE_BRANCH_PROFILING) \
-    $(wildcard include/config/PROFILE_ALL_BRANCHES) \
-    $(wildcard include/config/STACK_VALIDATION) \
-  include/linux/compiler_types.h \
-  arch/x86/include/generated/asm/rwonce.h \
-  include/asm-generic/rwonce.h \
-  include/linux/kasan-checks.h \
-    $(wildcard include/config/KASAN_GENERIC) \
-    $(wildcard include/config/KASAN_SW_TAGS) \
-  include/linux/types.h \
-    $(wildcard include/config/HAVE_UID16) \
-    $(wildcard include/config/UID16) \
-    $(wildcard include/config/ARCH_DMA_ADDR_T_64BIT) \
-    $(wildcard include/config/PHYS_ADDR_T_64BIT) \
-    $(wildcard include/config/64BIT) \
-    $(wildcard include/config/ARCH_32BIT_USTAT_F_TINODE) \
-  include/uapi/linux/types.h \
-  arch/x86/include/generated/uapi/asm/types.h \
-  include/uapi/asm-generic/types.h \
-  include/asm-generic/int-ll64.h \
-  include/uapi/asm-generic/int-ll64.h \
-  arch/x86/include/uapi/asm/bitsperlong.h \
-  include/asm-generic/bitsperlong.h \
-  include/uapi/asm-generic/bitsperlong.h \
-  include/uapi/linux/posix_types.h \
-  include/linux/stddef.h \
-  include/uapi/linux/stddef.h \
-  arch/x86/include/asm/posix_types.h \
-    $(wildcard include/config/X86_32) \
-  arch/x86/include/uapi/asm/posix_types_32.h \
-  include/uapi/asm-generic/posix_types.h \
-  include/linux/kcsan-checks.h \
-    $(wildcard include/config/KCSAN) \
-    $(wildcard include/config/KCSAN_WEAK_MEMORY) \
-    $(wildcard include/config/KCSAN_IGNORE_ATOMICS) \
-  include/linux/err.h \
-  arch/x86/include/generated/uapi/asm/errno.h \
-  include/uapi/asm-generic/errno.h \
-  include/uapi/asm-generic/errno-base.h \
-  include/linux/poison.h \
-    $(wildcard include/config/ILLEGAL_POINTER_VALUE) \
-  include/linux/const.h \
-  include/vdso/const.h \
-  include/uapi/linux/const.h \
-  arch/x86/include/asm/barrier.h \
-  arch/x86/include/asm/alternative.h \
-  include/linux/stringify.h \
-  arch/x86/include/asm/asm.h \
-  arch/x86/include/asm/extable_fixup_types.h \
-  arch/x86/include/asm/nops.h \
-  include/asm-generic/barrier.h \
-  include/linux/stat.h \
-  arch/x86/include/uapi/asm/stat.h \
-  include/uapi/linux/stat.h \
-  include/linux/time.h \
-    $(wildcard include/config/POSIX_TIMERS) \
-  include/linux/cache.h \
-    $(wildcard include/config/ARCH_HAS_CACHE_LINE_SIZE) \
-  include/uapi/linux/kernel.h \
-  include/uapi/linux/sysinfo.h \
-  arch/x86/include/asm/cache.h \
-    $(wildcard include/config/X86_L1_CACHE_SHIFT) \
-    $(wildcard include/config/X86_INTERNODE_CACHE_SHIFT) \
-    $(wildcard include/config/X86_VSMP) \
-  include/linux/linkage.h \
-    $(wildcard include/config/ARCH_USE_SYM_ANNOTATIONS) \
-  include/linux/export.h \
-    $(wildcard include/config/MODVERSIONS) \
-    $(wildcard include/config/MODULE_REL_CRCS) \
-    $(wildcard include/config/HAVE_ARCH_PREL32_RELOCATIONS) \
-    $(wildcard include/config/TRIM_UNUSED_KSYMS) \
-  arch/x86/include/asm/linkage.h \
-    $(wildcard include/config/X86_64) \
-    $(wildcard include/config/X86_ALIGNMENT_16) \
-    $(wildcard include/config/SLS) \
-  arch/x86/include/asm/ibt.h \
-    $(wildcard include/config/X86_KERNEL_IBT) \
-  include/linux/math64.h \
-    $(wildcard include/config/ARCH_SUPPORTS_INT128) \
-  include/linux/math.h \
-  arch/x86/include/asm/div64.h \
-  include/linux/log2.h \
-    $(wildcard include/config/ARCH_HAS_ILOG2_U32) \
-    $(wildcard include/config/ARCH_HAS_ILOG2_U64) \
-  include/linux/bitops.h \
-  include/linux/bits.h \
-  include/vdso/bits.h \
-  include/linux/typecheck.h \
-  arch/x86/include/asm/bitops.h \
-    $(wildcard include/config/X86_CMOV) \
-  arch/x86/include/asm/rmwcc.h \
-    $(wildcard include/config/CC_HAS_ASM_GOTO) \
-  include/asm-generic/bitops/fls64.h \
-  include/asm-generic/bitops/sched.h \
-  arch/x86/include/asm/arch_hweight.h \
-  arch/x86/include/asm/cpufeatures.h \
-  arch/x86/include/asm/required-features.h \
-    $(wildcard include/config/X86_MINIMUM_CPU_FAMILY) \
-    $(wildcard include/config/MATH_EMULATION) \
-    $(wildcard include/config/X86_P
+ in both TC_REQ and TC_REQ_SET
+ * indicate a stall in the RISC engine for a
+ * particular rider traffic class. This causes
+ * the 885 and 888 bridges (unknown about 887)
+ * to become inoperable. Setting bits in
+ * TC_REQ_SET resets the corresponding bits
+ * in TC_REQ (and TC_REQ_SET) allowing
+ * operation to continue.
+ */
+#define TC_REQ		0x00040090
+#define TC_REQ_SET	0x00040094
+
+#define RDR_CFG0	0x00050000
+#define RDR_CFG1	0x00050004
+#define RDR_CFG2	0x00050008
+#define RDR_RDRCTL1	0x0005030c
+#define RDR_TLCTL0	0x00050318
+
+/* APB DMAC Current Buffer Pointer */
+#define DMA1_PTR1	0x00100000
+#define DMA2_PTR1	0x00100004
+#define DMA3_PTR1	0x00100008
+#define DMA4_PTR1	0x0010000C
+#define DMA5_PTR1	0x00100010
+#define DMA6_PTR1	0x00100014
+#define DMA7_PTR1	0x00100018
+#define DMA8_PTR1	0x0010001C
+
+/* APB DMAC Current Table Pointer */
+#define DMA1_PTR2	0x00100040
+#define DMA2_PTR2	0x00100044
+#define DMA3_PTR2	0x00100048
+#define DMA4_PTR2	0x0010004C
+#define DMA5_PTR2	0x00100050
+#define DMA6_PTR2	0x00100054
+#define DMA7_PTR2	0x00100058
+#define DMA8_PTR2	0x0010005C
+
+/* APB DMAC Buffer Limit */
+#define DMA1_CNT1	0x00100080
+#define DMA2_CNT1	0x00100084
+#define DMA3_CNT1	0x00100088
+#define DMA4_CNT1	0x0010008C
+#define DMA5_CNT1	0x00100090
+#define DMA6_CNT1	0x00100094
+#define DMA7_CNT1	0x00100098
+#define DMA8_CNT1	0x0010009C
+
+/* APB DMAC Table Size */
+#define DMA1_CNT2	0x001000C0
+#define DMA2_CNT2	0x001000C4
+#define DMA3_CNT2	0x001000C8
+#define DMA4_CNT2	0x001000CC
+#define DMA5_CNT2	0x001000D0
+#define DMA6_CNT2	0x001000D4
+#define DMA7_CNT2	0x001000D8
+#define DMA8_CNT2	0x001000DC
+
+/* Timer Counters */
+#define TM_CNT_LDW	0x00110000
+#define TM_CNT_UW	0x00110004
+#define TM_LMT_LDW	0x00110008
+#define TM_LMT_UW	0x0011000C
+
+/* GPIO */
+#define GP0_IO		0x00110010
+#define GPIO_ISM	0x00110014
+#define SOFT_RESET	0x0011001C
+
+/* GPIO (417 Microsoftcontroller) RW Data */
+#define MC417_RWD	0x00110020
+
+/* GPIO (417 Microsoftcontroller) Output Enable, Low Active */
+#define MC417_OEN	0x00110024
+#define MC417_CTL	0x00110028
+#define ALT_PIN_OUT_SEL 0x0011002C
+#define CLK_DELAY	0x00110048
+#define PAD_CTRL	0x0011004C
+
+/* Video A Interface */
+#define VID_A_GPCNT		0x00130020
+#define VBI_A_GPCNT		0x00130024
+#define VID_A_GPCNT_CTL		0x00130030
+#define VBI_A_GPCNT_CTL		0x00130034
+#define VID_A_DMA_CTL		0x00130040
+#define VID_A_VIP_CTRL		0x00130080
+#define VID_A_PIXEL_FRMT	0x00130084
+#define VID_A_VBI_CTRL		0x00130088
+
+/* Video B Interface */
+#define VID_B_DMA		0x00130100
+#define VBI_B_DMA		0x00130108
+#define VID_B_GPCNT		0x00130120
+#define VBI_B_GPCNT		0x00130124
+#define VID_B_GPCNT_CTL		0x00130134
+#define VBI_B_GPCNT_CTL		0x00130138
+#define VID_B_DMA_CTL		0x00130140
+#define VID_B_SRC_SEL		0x00130144
+#define VID_B_LNGTH		0x00130150
+#define VID_B_HW_SOP_CTL	0x00130154
+#define VID_B_GEN_CTL		0x00130158
+#define VID_B_BD_PKT_STATUS	0x0013015C
+#define VID_B_SOP_STATUS	0x00130160
+#define VID_B_FIFO_OVFL_STAT	0x00130164
+#define VID_B_VLD_MISC		0x00130168
+#define VID_B_TS_CLK_EN		0x0013016C
+#define VID_B_VIP_CTRL		0x00130180
+#define VID_B_PIXEL_FRMT	0x00130184
+
+/* Video C Interface */
+#define VID_C_DMA		0x00130200
+#define VBI_C_DMA		0x00130208
+#define VID_C_GPCNT		0x00130220
+#define VID_C_GPCNT_CTL		0x00130230
+#define VBI_C_GPCNT_CTL		0x00130234
+#define VID_C_DMA_CTL		0x00130240
+#define VID_C_LNGTH		0x00130250
+#define VID_C_HW_SOP_CTL	0x00130254
+#define VID_C_GEN_CTL		0x00130258
+#define VID_C_BD_PKT_STATUS	0x0013025C
+#define VID_C_SOP_STATUS	0x00130260
+#define VID_C_FIFO_OVFL_STAT	0x00130264
+#define VID_C_VLD_MISC		0x00130268
+#define VID_C_TS_CLK_EN		0x0013026C
+
+/* Internal Audio Interface */
+#define AUD_INT_A_GPCNT		0x00140020
+#define AUD_INT_B_GPCNT		0x00140024
+#define AUD_INT_A_GPCNT_CTL	0x00140030
+#define AUD_INT_B_GPCNT_CTL	0x00140034
+#define AUD_INT_DMA_CTL		0x00140040
+#define AUD_INT_A_LNGTH		0x00140050
+#define AUD_INT_B_LNGTH		0x00140054
+#define AUD_INT_A_MODE		0x00140058
+#define AUD_INT_B_MODE		0x0014005C
+
+/* External Audio Interface */
+#define AUD_EXT_DMA		0x00140100
+#define AUD_EXT_GPCNT	

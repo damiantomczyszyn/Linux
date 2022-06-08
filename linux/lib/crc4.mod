@@ -1,1 +1,1 @@
-nclude/confi
+cx23885-card

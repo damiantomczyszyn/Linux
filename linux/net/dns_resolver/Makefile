@@ -1,5 +1,7 @@
-e/config/ACPI_APEI_GHES) \
-    $(wildcard include/config/INTEL_TXT) \
-  arch/x86/include/generated/asm/kmap_size.h \
-  include/asm-generic/kmap_size.h \
-    $(wildcard inc
+= 1,
+	.agc = &xc3028_agc_config,
+	.bw  = &xc3028_bw_config,
+
+	.gpio_dir = DIB7000P_GPIO_DEFAULT_DIRECTIONS,
+	.gpio_val = DIB7000P_GPIO_DEFAULT_VALUES,
+	.gpio_pwm_pos = DIB

@@ -1,105 +1,148 @@
-card include/config/HAVE_ARCH_USERFAULTFD_MINOR) \
-    $(wildcard include/config/SHMEM) \
-    $(wildcard include/config/ARCH_HAS_PTE_SPECIAL) \
-    $(wildcard include/config/ARCH_HAS_PTE_DEVMAP) \
-    $(wildcard include/config/DEBUG_VM_RB) \
-    $(wildcard include/config/PAGE_POISONING) \
-    $(wildcard include/config/INIT_ON_ALLOC_DEFAULT_ON) \
-    $(wildcard include/config/INIT_ON_FREE_DEFAULT_ON) \
-    $(wildcard include/config/DEBUG_PAGEALLOC) \
-    $(wildcard include/config/HUGETLBFS) \
-    $(wildcard include/config/MAPPING_DIRTY_HELPERS) \
-    $(wildcard include/config/ANON_VMA_NAME) \
-  include/linux/mmap_lock.h \
-  include/linux/page_ext.h \
-  include/linux/stacktrace.h \
-    $(wildcard include/config/ARCH_STACKWALK) \
-    $(wildcard include/config/STACKTRACE) \
-    $(wildcard include/config/HAVE_RELIABLE_STACKTRACE) \
-  include/linux/stackdepot.h \
-    $(wildcard include/config/STACKDEPOT_ALWAYS_INIT) \
-  include/linux/page_ref.h \
-    $(wildcard include/config/DEBUG_PAGE_REF) \
-  include/linux/sizes.h \
-  include/linux/pgtable.h \
-    $(wildcard include/config/HIGHPTE) \
-    $(wildcard include/config/GUP_GET_PTE_LOW_HIGH) \
-    $(wildcard include/config/HAVE_ARCH_SOFT_DIRTY) \
-    $(wildcard include/config/ARCH_ENABLE_THP_MIGRATION) \
-    $(wildcard include/config/X86_ESPFIX64) \
-  arch/x86/include/asm/pgtable.h \
-    $(wildcard include/config/DEBUG_WX) \
-    $(wildcard include/config/PAGE_TABLE_CHECK) \
-  arch/x86/include/asm/pkru.h \
-  arch/x86/include/asm/fpu/api.h \
-    $(wildcard include/config/X86_DEBUG_FPU) \
-  arch/x86/include/asm/coco.h \
-  include/asm-generic/pgtable_uffd.h \
-  include/linux/page_table_check.h \
-  arch/x86/include/asm/pgtable_32.h \
-  arch/x86/include/asm/pgtable-3level.h \
-  arch/x86/include/asm/pgtable-invert.h \
-  include/linux/huge_mm.h \
-  include/linux/sched/coredump.h \
-    $(wildcard include/config/CORE_DUMP_DEFAULT_ELF_HEADERS) \
-  include/linux/vmstat.h \
-    $(wildcard include/config/VM_EVENT_COUNTERS) \
-  include/linux/writeback.h \
-  include/linux/flex_proportions.h \
-  include/linux/backing-dev-defs.h \
-    $(wildcard include/config/DEBUG_FS) \
-  include/linux/blk_types.h \
-    $(wildcard include/config/FAIL_MAKE_REQUEST) \
-    $(wildcard include/config/BLK_CGROUP_IOCOST) \
-    $(wildcard include/config/BLK_INLINE_ENCRYPTION) \
-    $(wildcard include/config/BLK_DEV_INTEGRITY) \
-  include/linux/bvec.h \
-  include/linux/highmem.h \
-  include/linux/cacheflush.h \
-  arch/x86/include/asm/cacheflush.h \
-  include/asm-generic/cacheflush.h \
-  include/linux/highmem-internal.h \
-  arch/x86/include/asm/highmem.h \
-  arch/x86/include/asm/tlbflush.h \
-  arch/x86/include/asm/invpcid.h \
-  arch/x86/include/asm/pti.h \
-  include/linux/bio.h \
-  include/linux/mempool.h \
-  include/linux/uio.h \
-    $(wildcard include/config/ARCH_HAS_UACCESS_FLUSHCACHE) \
-  include/uapi/linux/uio.h \
-  include/linux/node.h \
-    $(wildcard include/config/HMEM_REPORTING) \
-  include/linux/pagemap.h \
-  include/linux/hugetlb_inline.h \
-  include/uapi/linux/mempolicy.h \
-  include/linux/freezer.h \
-  include/uapi/linux/i2c.h \
-  include/linux/videodev2.h \
-  include/uapi/linux/videodev2.h \
-  include/uapi/linux/v4l2-common.h \
-  include/uapi/linux/v4l2-controls.h \
-  include/media/v4l2-device.h \
-    $(wildcard include/config/VIDEO_V4L2_SUBDEV_API) \
-  include/media/media-device.h \
-    $(wildcard include/config/MEDIA_CONTROLLER) \
-  include/media/media-devnode.h \
-  include/linux/poll.h \
-  include/uapi/linux/poll.h \
-  arch/x86/include/generated/uapi/asm/poll.h \
-  include/uapi/asm-generic/poll.h \
-  include/uapi/linux/eventpoll.h \
-  include/linux/cdev.h \
-  include/media/media-entity.h \
-  include/uapi/linux/media.h \
-  include/media/v4l2-subdev.h \
-  include/uapi/linux/v4l2-subdev.h \
-  include/uapi/linux/v4l2-mediabus.h \
-  include/uapi/linux/media-bus-format.h \
-  include/media/v4l2-async.h \
-  include/media/v4l2-common.h \
-    $(wildcard include/config/VIDEO_V4L2_I2C) \
-    $(wildcard include/config/SPI) \
-  include/media/v4l2-dev.h \
-  include/linux/spi/spi.h \
-    $(wildcard include/config/SPI_SLAVE) 
+TV-HVR1700 (PCIe, OEM, No IR, full height)
+		 * DVB-T and MPEG2 HW Encoder */
+		break;
+	case 85021:
+		/* WinTV-HVR1850 (PCIe, Retail, 3.5mm in, IR, FM,
+			Dual channel ATSC and MPEG2 HW Encoder */
+		break;
+	case 85721:
+		/* WinTV-HVR1290 (PCIe, OEM, RCA in, IR,
+			Dual channel ATSC and Basic analog */
+	case 121019:
+		/* WinTV-HVR4400 (PCIe, DVB-S2, DVB-C/T) */
+		break;
+	case 121029:
+		/* WinTV-HVR5500 (PCIe, DVB-S2, DVB-C/T) */
+		break;
+	case 150329:
+		/* WinTV-HVR5525 (PCIe, DVB-S/S2, DVB-T/T2/C) */
+		break;
+	case 161111:
+		/* WinTV-HVR-1265 K4 (PCIe, Analog/ATSC/QAM-B) */
+		break;
+	case 166100: /* 888 version, hybrid */
+	case 166200: /* 885 version, DVB only */
+		/* WinTV-QuadHD (DVB) Tuner Pair 1 (PCIe, IR, half height,
+		   DVB-T/T2/C, DVB-T/T2/C */
+		break;
+	case 166101: /* 888 version, hybrid */
+	case 166201: /* 885 version, DVB only */
+		/* WinTV-QuadHD (DVB) Tuner Pair 2 (PCIe, IR, half height,
+		   DVB-T/T2/C, DVB-T/T2/C */
+		break;
+	case 165100: /* 888 version, hybrid */
+	case 165200: /* 885 version, digital only */
+		/* WinTV-QuadHD (ATSC) Tuner Pair 1 (PCIe, IR, half height,
+		 * ATSC/QAM-B, ATSC/QAM-B */
+		break;
+	case 165101: /* 888 version, hybrid */
+	case 165201: /* 885 version, digital only */
+		/* WinTV-QuadHD (ATSC) Tuner Pair 2 (PCIe, IR, half height,
+		 * ATSC/QAM-B, ATSC/QAM-B */
+		break;
+	default:
+		pr_warn("%s: warning: unknown hauppauge model #%d\n",
+			dev->name, tv.model);
+		break;
+	}
+
+	pr_info("%s: hauppauge eeprom: model=%d\n",
+		dev->name, tv.model);
+}
+
+/* Some TBS cards require initing a chip using a bitbanged SPI attached
+   to the cx23885 gpio's. If this chip doesn't get init'ed the demod
+   doesn't respond to any command. */
+static void tbs_card_init(struct cx23885_dev *dev)
+{
+	int i;
+	static const u8 buf[] = {
+		0xe0, 0x06, 0x66, 0x33, 0x65,
+		0x01, 0x17, 0x06, 0xde};
+
+	switch (dev->board) {
+	case CX23885_BOARD_TBS_6980:
+	case CX23885_BOARD_TBS_6981:
+		cx_set(GP0_IO, 0x00070007);
+		usleep_range(1000, 10000);
+		cx_clear(GP0_IO, 2);
+		usleep_range(1000, 10000);
+		for (i = 0; i < 9 * 8; i++) {
+			cx_clear(GP0_IO, 7);
+			usleep_range(1000, 10000);
+			cx_set(GP0_IO,
+				((buf[i >> 3] >> (7 - (i & 7))) & 1) | 4);
+			usleep_range(1000, 10000);
+		}
+		cx_set(GP0_IO, 7);
+		break;
+	}
+}
+
+int cx23885_tuner_callback(void *priv, int component, int command, int arg)
+{
+	struct cx23885_tsport *port = priv;
+	struct cx23885_dev *dev = port->dev;
+	u32 bitmask = 0;
+
+	if ((command == XC2028_RESET_CLK) || (command == XC2028_I2C_FLUSH))
+		return 0;
+
+	if (command != 0) {
+		pr_err("%s(): Unknown command 0x%x.\n",
+		       __func__, command);
+		return -EINVAL;
+	}
+
+	switch (dev->board) {
+	case CX23885_BOARD_HAUPPAUGE_HVR1400:
+	case CX23885_BOARD_HAUPPAUGE_HVR1500:
+	case CX23885_BOARD_HAUPPAUGE_HVR1500Q:
+	case CX23885_BOARD_LEADTEK_WINFAST_PXDVR3200_H:
+	case CX23885_BOARD_LEADTEK_WINFAST_PXPVR2200:
+	case CX23885_BOARD_LEADTEK_WINFAST_PXDVR3200_H_XC4000:
+	case CX23885_BOARD_COMPRO_VIDEOMATE_E650F:
+	case CX23885_BOARD_COMPRO_VIDEOMATE_E800:
+	case CX23885_BOARD_LEADTEK_WINFAST_PXTV1200:
+		/* Tuner Reset Command */
+		bitmask = 0x04;
+		break;
+	case CX23885_BOARD_DVICO_FUSIONHDTV_7_DUAL_EXP:
+	case CX23885_BOARD_DVICO_FUSIONHDTV_DVB_T_DUAL_EXP:
+	case CX23885_BOARD_DVICO_FUSIONHDTV_DVB_T_DUAL_EXP2:
+		/* Two identical tuners on two different i2c buses,
+		 * we need to reset the correct gpio. */
+		if (port->nr == 1)
+			bitmask = 0x01;
+		else if (port->nr == 2)
+			bitmask = 0x04;
+		break;
+	case CX23885_BOARD_GOTVIEW_X5_3D_HYBRID:
+		/* Tuner Reset Command */
+		bitmask = 0x02;
+		break;
+	case CX23885_BOARD_NETUP_DUAL_DVB_T_C_CI_RF:
+		altera_ci_tuner_reset(dev, port->nr);
+		break;
+	case CX23885_BOARD_AVERMEDIA_HC81R:
+		/* XC3028L Reset Command */
+		bitmask = 1 << 2;
+		break;
+	}
+
+	if (bitmask) {
+		/* Drive the tuner into reset and back out */
+		cx_clear(GP0_IO, bitmask);
+		mdelay(200);
+		cx_set(GP0_IO, bitmask);
+	}
+
+	return 0;
+}
+
+void cx23885_gpio_setup(struct cx23885_dev *dev)
+{
+	switch (dev->board) {
+	case CX23885_BOARD_HAUPPAUGE_HVR1250:
+		/* GPIO-0 cx24227 demodulator reset */
+		cx_set(GP0_IO, 0x00010001); /* Bring the part out of 

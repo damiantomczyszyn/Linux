@@ -1,5 +1,7 @@
-ude/config/PARAVIRT_XXL) \
-  arch/x86/include/asm/disabled-features.h \
-    $(wildcard include/config/X86_SMAP) \
-    $(wildcard include/config/X86_UMIP) \
-    $(wildcard include/config/X86_INTEL_MEMORY_PROTECTION_KE
+// SPDX-License-Identifier: GPL-2.0-or-later
+/*
+ *  Driver for the Conexant CX23885/7/8 PCIe bridge
+ *
+ *  AV device support routines - non-input, non-vl42_subdev routines
+ *
+ *  Copyright (C) 2010  Andy Walls <awall

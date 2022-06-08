@@ -1,28 +1,20 @@
-atic inline int check_wait_context(struct task_struct *curr,
-				     struct held_lock *next)
-{
-	return 0;
-}
-
-#endif /* CONFIG_PROVE_LOCKING */
-
-/*
- * Initialize a lock instance's lock-class mapping info:
+task that is being switched out
+ * @next: the task we are going to switch to.
+ *
+ * This is called with the rq lock held and interrupts off. It must
+ * be paired with a subsequent finish_task_switch after the context
+ * switch.
+ *
+ * prepare_task_switch sets up locking and calls architecture specific
+ * hooks.
  */
-void lockdep_init_map_type(struct lockdep_map *lock, const char *name,
-			    struct lock_class_key *key, int subclass,
-			    u8 inner, u8 outer, u8 lock_type)
+static inline void
+prepare_task_switch(struct rq *rq, struct task_struct *prev,
+		    struct task_struct *next)
 {
-	int i;
-
-	for (i = 0; i < NR_LOCKDEP_CACHING_CLASSES; i++)
-		lock->class_cache[i] = NULL;
-
-#ifdef CONFIG_LOCK_STAT
-	lock->cpu = raw_smp_processor_id();
-#endif
-
-	/*
-	 * Can't be having no nameless bastards around this place!
-	 */
-	if (DEBUG_LOC
+	kcov_prepare_switch(prev);
+	sched_info_switch(rq, prev, next);
+	perf_event_task_sched_out(prev, next);
+	rseq_preempt(prev);
+	fire_sched_out_preempt_notifiers(prev, next);
+	kmap_local_s

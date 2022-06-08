@@ -1,2 +1,3 @@
-IC_IOREMAP) \
-    $(wildcard include/config/VIRT
+] = {
+		.name		= "Hauppauge WinTV-HVR1500Q",
+		.

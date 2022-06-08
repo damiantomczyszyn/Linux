@@ -1,5 +1,3 @@
-\
-  include/linux/rwlock.h \
-    $(wildcard include/config/PREEMPT) \
-  include/linux/spinlock_api_smp.h \
-    $(wi
+/* SPDX-License-Identifier: GPL-2.0 */
+extern int f300_set_voltage(struct dvb_frontend *fe,
+			    enum fe_sec_volt

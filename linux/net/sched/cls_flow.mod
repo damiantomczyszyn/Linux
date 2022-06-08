@@ -1,1 +1,1 @@
-_BITMAP(list_entries_i
+_read(ALT_PIN_OUT_SEL)

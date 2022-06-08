@@ -1,715 +1,897 @@
-dcard include/config/PARAVIRT_XXL) \
-  arch/x86/include/asm/disabled-features.h \
-    $(wildcard include/config/X86_SMAP) \
-    $(wildcard include/config/X86_UMIP) \
-    $(wildcard include/config/X86_INTEL_MEMORY_PROTECTION_KEYS) \
-    $(wildcard include/config/X86_5LEVEL) \
-    $(wildcard include/config/PAGE_TABLE_ISOLATION) \
-    $(wildcard include/config/INTEL_IOMMU_SVM) \
-    $(wildcard include/config/X86_SGX) \
-  include/asm-generic/bitops/const_hweight.h \
-  include/asm-generic/bitops/instrumented-atomic.h \
-  include/linux/instrumented.h \
-  include/asm-generic/bitops/instrumented-non-atomic.h \
-    $(wildcard include/config/KCSAN_ASSUME_PLAIN_WRITES_ATOMIC) \
-  include/asm-generic/bitops/instrumented-lock.h \
-  include/asm-generic/bitops/le.h \
-  arch/x86/include/uapi/asm/byteorder.h \
-  include/linux/byteorder/little_endian.h \
-  include/uapi/linux/byteorder/little_endian.h \
-  include/linux/swab.h \
-  include/uapi/linux/swab.h \
-  arch/x86/include/uapi/asm/swab.h \
-  include/linux/byteorder/generic.h \
-  include/asm-generic/bitops/ext2-atomic-setbit.h \
-  include/vdso/math64.h \
-  include/linux/time64.h \
-  include/vdso/time64.h \
-  include/uapi/linux/time.h \
-  include/uapi/linux/time_types.h \
-  include/linux/time32.h \
-  include/linux/timex.h \
-  include/uapi/linux/timex.h \
-  include/uapi/linux/param.h \
-  arch/x86/include/generated/uapi/asm/param.h \
-  include/asm-generic/param.h \
-    $(wildcard include/config/HZ) \
-  include/uapi/asm-generic/param.h \
-  arch/x86/include/asm/timex.h \
-    $(wildcard include/config/X86_TSC) \
-  arch/x86/include/asm/processor.h \
-    $(wildcard include/config/X86_VMX_FEATURE_NAMES) \
-    $(wildcard include/config/X86_IOPL_IOPERM) \
-    $(wildcard include/config/STACKPROTECTOR) \
-    $(wildcard include/config/VM86) \
-    $(wildcard include/config/X86_DEBUGCTLMSR) \
-    $(wildcard include/config/CPU_SUP_AMD) \
-    $(wildcard include/config/XEN) \
-  arch/x86/include/asm/processor-flags.h \
-  arch/x86/include/uapi/asm/processor-flags.h \
-  include/linux/mem_encrypt.h \
-    $(wildcard include/config/ARCH_HAS_MEM_ENCRYPT) \
-    $(wildcard include/config/AMD_MEM_ENCRYPT) \
-  arch/x86/include/asm/mem_encrypt.h \
-  include/linux/init.h \
-    $(wildcard include/config/STRICT_KERNEL_RWX) \
-    $(wildcard include/config/STRICT_MODULE_RWX) \
-    $(wildcard include/config/LTO_CLANG) \
-  include/linux/cc_platform.h \
-    $(wildcard include/config/ARCH_HAS_CC_PLATFORM) \
-  arch/x86/include/uapi/asm/bootparam.h \
-  include/linux/screen_info.h \
-  include/uapi/linux/screen_info.h \
-  include/linux/apm_bios.h \
-  include/uapi/linux/apm_bios.h \
-  include/uapi/linux/ioctl.h \
-  arch/x86/include/generated/uapi/asm/ioctl.h \
-  include/asm-generic/ioctl.h \
-  include/uapi/asm-generic/ioctl.h \
-  include/linux/edd.h \
-  include/uapi/linux/edd.h \
-  arch/x86/include/asm/ist.h \
-  arch/x86/include/uapi/asm/ist.h \
-  include/video/edid.h \
-    $(wildcard include/config/X86) \
-  include/uapi/video/edid.h \
-  arch/x86/include/asm/math_emu.h \
-  arch/x86/include/asm/ptrace.h \
-    $(wildcard include/config/PARAVIRT) \
-    $(wildcard include/config/IA32_EMULATION) \
-  arch/x86/include/asm/segment.h \
-    $(wildcard include/config/XEN_PV) \
-  arch/x86/include/asm/page_types.h \
-    $(wildcard include/config/PHYSICAL_START) \
-    $(wildcard include/config/PHYSICAL_ALIGN) \
-    $(wildcard include/config/DYNAMIC_PHYSICAL_MASK) \
-  arch/x86/include/asm/page_32_types.h \
-    $(wildcard include/config/HIGHMEM4G) \
-    $(wildcard include/config/HIGHMEM64G) \
-    $(wildcard include/config/PAGE_OFFSET) \
-  arch/x86/include/uapi/asm/ptrace.h \
-  arch/x86/include/uapi/asm/ptrace-abi.h \
-  arch/x86/include/asm/paravirt_types.h \
-    $(wildcard include/config/PGTABLE_LEVELS) \
-    $(wildcard include/config/PARAVIRT_DEBUG) \
-  arch/x86/include/asm/desc_defs.h \
-  arch/x86/include/asm/pgtable_types.h \
-    $(wildcard include/config/MEM_SOFT_DIRTY) \
-    $(wildcard include/config/HAVE_ARCH_USERFAULTFD_WP) \
-    $(wildcard include/config/PROC_FS) \
-  arch/x86/include/asm/pgtable_32_types.h \
-  arch/x86/include/asm/pgtable-3level_types.h \
-  include/asm-generic/pgtable-nop4d.h \
-  include/asm-generic/pgtable-nopud.h \
-  arch/x86/include/asm/nospec-branch.h \
-  include/linux/static_key.h \
-  include/linux/jump_label.h \
-    $(wildcard include/config/HAVE_ARCH_JUMP_LABEL_RELATIVE) \
-  arch/x86/include/asm/jump_label.h \
-  include/linux/objtool.h \
-    $(wildcard include/config/FRAME_POINTER) \
-  arch/x86/include/asm/msr-index.h \
-  arch/x86/include/asm/unwind_hints.h \
-  arch/x86/include/asm/orc_types.h \
-  arch/x86/include/asm/GEN-for-each-reg.h \
-  arch/x86/include/asm/spinlock_types.h \
-  include/asm-generic/qspinlock_types.h \
-    $(wildcard include/config/NR_CPUS) \
-  include/asm-generic/qrwlock_types.h \
-  arch/x86/include/asm/proto.h \
-  arch/x86/include/uapi/asm/ldt.h \
-  arch/x86/include/uapi/asm/sigcontext.h \
-  arch/x86/include/asm/current.h \
-  arch/x86/include/asm/percpu.h \
-    $(wildcard include/config/X86_64_SMP) \
-  include/linux/kernel.h \
-    $(wildcard include/config/PREEMPT_VOLUNTARY_BUILD) \
-    $(wildcard include/config/PREEMPT_DYNAMIC) \
-    $(wildcard include/config/HAVE_PREEMPT_DYNAMIC_CALL) \
-    $(wildcard include/config/HAVE_PREEMPT_DYNAMIC_KEY) \
-    $(wildcard include/config/PREEMPT_) \
-    $(wildcard include/config/DEBUG_ATOMIC_SLEEP) \
-    $(wildcard include/config/MMU) \
-    $(wildcard include/config/PROVE_LOCKING) \
-  include/linux/stdarg.h \
-  include/linux/align.h \
-  include/linux/limits.h \
-  include/uapi/linux/limits.h \
-  include/vdso/limits.h \
-  include/linux/kstrtox.h \
-  include/linux/minmax.h \
-  include/linux/panic.h \
-    $(wildcard include/config/PANIC_TIMEOUT) \
-  include/linux/printk.h \
-    $(wildcard include/config/MESSAGE_LOGLEVEL_DEFAULT) \
-    $(wildcard include/config/CONSOLE_LOGLEVEL_DEFAULT) \
-    $(wildcard include/config/CONSOLE_LOGLEVEL_QUIET) \
-    $(wildcard include/config/EARLY_PRINTK) \
-    $(wildcard include/config/PRINTK) \
-    $(wildcard include/config/DYNAMIC_DEBUG) \
-    $(wildcard include/config/DYNAMIC_DEBUG_CORE) \
-  include/linux/kern_levels.h \
-  include/linux/ratelimit_types.h \
-  include/linux/spinlock_types_raw.h \
-    $(wildcard include/config/DEBUG_SPINLOCK) \
-    $(wildcard include/config/DEBUG_LOCK_ALLOC) \
-  include/linux/lockdep_types.h \
-    $(wildcard include/config/PROVE_RAW_LOCK_NESTING) \
-    $(wildcard include/config/LOCKDEP) \
-    $(wildcard include/config/LOCK_STAT) \
-  include/linux/once_lite.h \
-  include/linux/static_call_types.h \
-    $(wildcard include/config/HAVE_STATIC_CALL) \
-  include/linux/instruction_pointer.h \
-  include/asm-generic/percpu.h \
-    $(wildcard include/config/DEBUG_PREEMPT) \
-    $(wildcard include/config/HAVE_SETUP_PER_CPU_AREA) \
-  include/linux/threads.h \
-    $(wildcard include/config/BASE_SMALL) \
-  include/linux/percpu-defs.h \
-    $(wildcard include/config/DEBUG_FORCE_WEAK_PER_CPU) \
-  arch/x86/include/asm/page.h \
-  arch/x86/include/asm/page_32.h \
-    $(wildcard include/config/DEBUG_VIRTUAL) \
-    $(wildcard include/config/FLATMEM) \
-  include/linux/string.h \
-    $(wildcard include/config/BINARY_PRINTF) \
-    $(wildcard include/config/FORTIFY_SOURCE) \
-  include/linux/errno.h \
-  include/uapi/linux/errno.h \
-  include/uapi/linux/string.h \
-  arch/x86/include/asm/string.h \
-  arch/x86/include/asm/string_32.h \
-  include/linux/fortify-string.h \
-  include/linux/range.h \
-  include/asm-generic/memory_model.h \
-    $(wildcard include/config/SPARSEMEM_VMEMMAP) \
-    $(wildcard include/config/SPARSEMEM) \
-  include/linux/pfn.h \
-  include/asm-generic/getorder.h \
-  arch/x86/include/asm/msr.h \
-  arch/x86/include/asm/msr-index.h \
-  arch/x86/include/asm/cpumask.h \
-  include/linux/cpumask.h \
-    $(wildcard include/config/CPUMASK_OFFSTACK) \
-    $(wildcard include/config/HOTPLUG_CPU) \
-    $(wildcard include/config/DEBUG_PER_CPU_MAPS) \
-  include/linux/bitmap.h \
-  include/linux/find.h \
-  include/linux/atomic.h \
-  arch/x86/include/asm/atomic.h \
-  arch/x86/include/asm/cmpxchg.h \
-  arch/x86/include/asm/cmpxchg_32.h \
-  arch/x86/include/asm/atomic64_32.h \
-  include/linux/atomic/atomic-arch-fallback.h \
-    $(wildcard include/config/GENERIC_ATOMIC64) \
-  include/linux/atomic/atomic-long.h \
-  include/linux/atomic/atomic-instrumented.h \
-  include/linux/bug.h \
-    $(wildcard include/config/BUG_ON_DATA_CORRUPTION) \
-  arch/x86/include/asm/bug.h \
-    $(wildcard include/config/DEBUG_BUGVERBOSE) \
-  include/linux/instrumentation.h \
-    $(wildcard include/config/DEBUG_ENTRY) \
-  include/asm-generic/bug.h \
-    $(wildcard include/config/BUG) \
-    $(wildcard include/config/GENERIC_BUG_RELATIVE_POINTERS) \
-  arch/x86/include/uapi/asm/msr.h \
-  include/linux/tracepoint-defs.h \
-  arch/x86/include/asm/special_insns.h \
-  include/linux/irqflags.h \
-    $(wildcard include/config/TRACE_IRQFLAGS) \
-    $(wildcard include/config/PREEMPT_RT) \
-    $(wildcard include/config/IRQSOFF_TRACER) \
-    $(wildcard include/config/PREEMPT_TRACER) \
-    $(wildcard include/config/DEBUG_IRQFLAGS) \
-    $(wildcard include/config/TRACE_IRQFLAGS_SUPPORT) \
-  arch/x86/include/asm/irqflags.h \
-  arch/x86/include/asm/fpu/types.h \
-  arch/x86/include/asm/vmxfeatures.h \
-  arch/x86/include/asm/vdso/processor.h \
-  include/linux/personality.h \
-  include/uapi/linux/personality.h \
-  arch/x86/include/asm/tsc.h \
-  arch/x86/include/asm/cpufeature.h \
-    $(wildcard include/config/X86_FEATURE_NAMES) \
-  include/vdso/time32.h \
-  include/vdso/time.h \
-  include/linux/uidgid.h \
-    $(wildcard include/config/MULTIUSER) \
-    $(wildcard include/config/USER_NS) \
-  include/linux/highuid.h \
-  include/linux/buildid.h \
-    $(wildcard include/config/CRASH_CORE) \
-  include/linux/mm_types.h \
-    $(wildcard include/config/HAVE_ALIGNED_STRUCT_PAGE) \
-    $(wildcard include/config/MEMCG) \
-    $(wildcard include/config/USERFAULTFD) \
-    $(wildcard include/config/SWAP) \
-    $(wildcard include/config/NUMA) \
-    $(wildcard include/config/HAVE_ARCH_COMPAT_MMAP_BASES) \
-    $(wildcard include/config/MEMBARRIER) \
-    $(wildcard include/config/AIO) \
-    $(wildcard include/config/MMU_NOTIFIER) \
-    $(wildcard include/config/TRANSPARENT_HUGEPAGE) \
-    $(wildcard include/config/NUMA_BALANCING) \
-    $(wildcard include/config/ARCH_WANT_BATCHED_UNMAP_TLB_FLUSH) \
-    $(wildcard include/config/HUGETLB_PAGE) \
-    $(wildcard include/config/IOMMU_SVA) \
-  include/linux/mm_types_task.h \
-    $(wildcard include/config/SPLIT_PTLOCK_CPUS) \
-    $(wildcard include/config/ARCH_ENABLE_SPLIT_PMD_PTLOCK) \
-  arch/x86/include/asm/tlbbatch.h \
-  include/linux/auxvec.h \
-  include/uapi/linux/auxvec.h \
-  arch/x86/include/uapi/asm/auxvec.h \
-  include/linux/kref.h \
-  include/linux/spinlock.h \
-    $(wildcard include/config/PREEMPTION) \
-  include/linux/preempt.h \
-    $(wildcard include/config/PREEMPT_COUNT) \
-    $(wildcard include/config/TRACE_PREEMPT_TOGGLE) \
-    $(wildcard include/config/PREEMPT_NOTIFIERS) \
-  arch/x86/include/asm/preempt.h \
-  include/linux/thread_info.h \
-    $(wildcard include/config/THREAD_INFO_IN_TASK) \
-    $(wildcard include/config/GENERIC_ENTRY) \
-    $(wildcard include/config/HAVE_ARCH_WITHIN_STACK_FRAMES) \
-    $(wildcard include/config/HARDENED_USERCOPY) \
-  include/linux/restart_block.h \
-  arch/x86/include/asm/thread_info.h \
-    $(wildcard include/config/COMPAT) \
-  include/linux/bottom_half.h \
-  include/linux/lockdep.h \
-    $(wildcard include/config/DEBUG_LOCKING_API_SELFTESTS) \
-  include/linux/smp.h \
-    $(wildcard include/config/UP_LATE_INIT) \
-  include/linux/smp_types.h \
-  include/linux/llist.h \
-    $(wildcard include/config/ARCH_HAVE_NMI_SAFE_CMPXCHG) \
-  arch/x86/include/asm/smp.h \
-    $(wildcard include/config/X86_LOCAL_APIC) \
-    $(wildcard include/config/DEBUG_NMI_SELFTEST) \
-  arch/x86/include/generated/asm/mmiowb.h \
-  include/asm-generic/mmiowb.h \
-    $(wildcard include/config/MMIOWB) \
-  include/linux/spinlock_types.h \
-  include/linux/rwlock_types.h \
-  arch/x86/include/asm/spinlock.h \
-  arch/x86/include/asm/paravirt.h \
-    $(wildcard include/config/PARAVIRT_SPINLOCKS) \
-  arch/x86/include/asm/frame.h \
-  arch/x86/include/asm/qspinlock.h \
-  include/asm-generic/qspinlock.h \
-  arch/x86/include/asm/qrwlock.h \
-  include/asm-generic/qrwlock.h \
-  include/linux/rwlock.h \
-    $(wildcard include/config/PREEMPT) \
-  include/linux/spinlock_api_smp.h \
-    $(wildcard include/config/INLINE_SPIN_LOCK) \
-    $(wildcard include/config/INLINE_SPIN_LOCK_BH) \
-    $(wildcard include/config/INLINE_SPIN_LOCK_IRQ) \
-    $(wildcard include/config/INLINE_SPIN_LOCK_IRQSAVE) \
-    $(wildcard include/config/INLINE_SPIN_TRYLOCK) \
-    $(wildcard include/config/INLINE_SPIN_TRYLOCK_BH) \
-    $(wildcard include/config/UNINLINE_SPIN_UNLOCK) \
-    $(wildcard include/config/INLINE_SPIN_UNLOCK_BH) \
-    $(wildcard include/config/INLINE_SPIN_UNLOCK_IRQ) \
-    $(wildcard include/config/INLINE_SPIN_UNLOCK_IRQRESTORE) \
-    $(wildcard include/config/GENERIC_LOCKBREAK) \
-  include/linux/rwlock_api_smp.h \
-    $(wildcard include/config/INLINE_READ_LOCK) \
-    $(wildcard include/config/INLINE_WRITE_LOCK) \
-    $(wildcard include/config/INLINE_READ_LOCK_BH) \
-    $(wildcard include/config/INLINE_WRITE_LOCK_BH) \
-    $(wildcard include/config/INLINE_READ_LOCK_IRQ) \
-    $(wildcard include/config/INLINE_WRITE_LOCK_IRQ) \
-    $(wildcard include/config/INLINE_READ_LOCK_IRQSAVE) \
-    $(wildcard include/config/INLINE_WRITE_LOCK_IRQSAVE) \
-    $(wildcard include/config/INLINE_READ_TRYLOCK) \
-    $(wildcard include/config/INLINE_WRITE_TRYLOCK) \
-    $(wildcard include/config/INLINE_READ_UNLOCK) \
-    $(wildcard include/config/INLINE_WRITE_UNLOCK) \
-    $(wildcard include/config/INLINE_READ_UNLOCK_BH) \
-    $(wildcard include/config/INLINE_WRITE_UNLOCK_BH) \
-    $(wildcard include/config/INLINE_READ_UNLOCK_IRQ) \
-    $(wildcard include/config/INLINE_WRITE_UNLOCK_IRQ) \
-    $(wildcard include/config/INLINE_READ_UNLOCK_IRQRESTORE) \
-    $(wildcard include/config/INLINE_WRITE_UNLOCK_IRQRESTORE) \
-  include/linux/refcount.h \
-  include/linux/rbtree.h \
-  include/linux/rbtree_types.h \
-  include/linux/rcupdate.h \
-    $(wildcard include/config/PREEMPT_RCU) \
-    $(wildcard include/config/TINY_RCU) \
-    $(wildcard include/config/RCU_STRICT_GRACE_PERIOD) \
-    $(wildcard include/config/TASKS_RCU_GENERIC) \
-    $(wildcard include/config/RCU_STALL_COMMON) \
-    $(wildcard include/config/NO_HZ_FULL) \
-    $(wildcard include/config/RCU_NOCB_CPU) \
-    $(wildcard include/config/TASKS_RCU) \
-    $(wildcard include/config/TASKS_TRACE_RCU) \
-    $(wildcard include/config/TASKS_RUDE_RCU) \
-    $(wildcard include/config/TREE_RCU) \
-    $(wildcard include/config/DEBUG_OBJECTS_RCU_HEAD) \
-    $(wildcard include/config/PROVE_RCU) \
-    $(wildcard include/config/ARCH_WEAK_RELEASE_ACQUIRE) \
-  include/linux/rcutree.h \
-  include/linux/rwsem.h \
-    $(wildcard include/config/RWSEM_SPIN_ON_OWNER) \
-    $(wildcard include/config/DEBUG_RWSEMS) \
-  include/linux/osq_lock.h \
-  include/linux/completion.h \
-  include/linux/swait.h \
-  include/linux/wait.h \
-  include/uapi/linux/wait.h \
-  include/linux/uprobes.h \
-    $(wildcard include/config/UPROBES) \
-  arch/x86/include/asm/uprobes.h \
-  include/linux/notifier.h \
-  include/linux/mutex.h \
-    $(wildcard include/config/MUTEX_SPIN_ON_OWNER) \
-    $(wildcard include/config/DEBUG_MUTEXES) \
-  include/linux/debug_locks.h \
-  include/linux/srcu.h \
-    $(wildcard include/config/TINY_SRCU) \
-    $(wildcard include/config/SRCU) \
-  include/linux/workqueue.h \
-    $(wildcard include/config/DEBUG_OBJECTS_WORK) \
-    $(wildcard include/config/FREEZER) \
-    $(wildcard include/config/WQ_WATCHDOG) \
-  include/linux/timer.h \
-    $(wildcard include/config/DEBUG_OBJECTS_TIMERS) \
-    $(wildcard include/config/NO_HZ_COMMON) \
-  include/linux/ktime.h \
-  include/linux/jiffies.h \
-  include/vdso/jiffies.h \
-  include/generated/timeconst.h \
-  include/vdso/ktime.h \
-  include/linux/timekeeping.h \
-    $(wildcard include/config/GENERIC_CMOS_UPDATE) \
-  include/linux/clocksource_ids.h \
-  include/linux/debugobjects.h \
-    $(wildcard include/config/DEBUG_OBJECTS) \
-    $(wildcard include/config/DEBUG_OBJECTS_FREE) \
-  include/linux/rcu_segcblist.h \
-  include/linux/srcutree.h \
-  include/linux/rcu_node_tree.h \
-    $(wildcard include/config/RCU_FANOUT) \
-    $(wildcard include/config/RCU_FANOUT_LEAF) \
-  include/linux/page-flags-layout.h \
-    $(wildcard include/config/KASAN_HW_TAGS) \
-  include/linux/numa.h \
-    $(wildcard include/config/NODES_SHIFT) \
-    $(wildcard include/config/NUMA_KEEP_MEMINFO) \
-    $(wildcard include/config/HAVE_ARCH_NODE_DEV_GROUP) \
-  arch/x86/include/asm/sparsemem.h \
-  include/generated/bounds.h \
-  include/linux/seqlock.h \
-  include/linux/ww_mutex.h \
-    $(wildcard include/config/DEBUG_RT_MUTEXES) \
-    $(wildcard include/config/DEBUG_WW_MUTEX_SLOWPATH) \
-  include/linux/rtmutex.h \
-  arch/x86/include/asm/mmu.h \
-    $(wildcard include/config/MODIFY_LDT_SYSCALL) \
-  include/linux/kmod.h \
-  include/linux/umh.h \
-  include/linux/gfp.h \
-    $(wildcard include/config/HIGHMEM) \
-    $(wildcard include/config/ZONE_DMA) \
-    $(wildcard include/config/ZONE_DMA32) \
-    $(wildcard include/config/ZONE_DEVICE) \
-    $(wildcard include/config/PM_SLEEP) \
-    $(wildcard include/config/CONTIG_ALLOC) \
-    $(wildcard include/config/CMA) \
-  include/linux/mmdebug.h \
-    $(wildcard include/config/DEBUG_VM) \
-    $(wildcard include/config/DEBUG_VM_PGFLAGS) \
-  include/linux/mmzone.h \
-    $(wildcard include/config/FORCE_MAX_ZONEORDER) \
-    $(wildcard include/config/MEMORY_ISOLATION) \
-    $(wildcard include/config/ZSMALLOC) \
-    $(wildcard include/config/MEMORY_HOTPLUG) \
-    $(wildcard include/config/COMPACTION) \
-    $(wildcard include/config/PAGE_EXTENSION) \
-    $(wildcard include/config/DEFERRED_STRUCT_PAGE_INIT) \
-    $(wildcard include/config/HAVE_MEMORYLESS_NODES) \
-    $(wildcard include/config/SPARSEMEM_EXTREME) \
-    $(wildcard include/config/HAVE_ARCH_PFN_VALID) \
-  include/linux/nodemask.h \
-  include/linux/pageblock-flags.h \
-    $(wildcard include/config/HUGETLB_PAGE_SIZE_VARIABLE) \
-  include/linux/page-flags.h \
-    $(wildcard include/config/ARCH_USES_PG_UNCACHED) \
-    $(wildcard include/config/MEMORY_FAILURE) \
-    $(wildcard include/config/PAGE_IDLE_FLAG) \
-    $(wildcard include/config/HUGETLB_PAGE_FREE_VMEMMAP) \
-    $(wildcard include/config/HUGETLB_PAGE_FREE_VMEMMAP_DEFAULT_ON) \
-    $(wildcard include/config/KSM) \
-  include/linux/local_lock.h \
-  include/linux/local_lock_internal.h \
-  include/linux/memory_hotplug.h \
-    $(wildcard include/config/HAVE_ARCH_NODEDATA_EXTENSION) \
-    $(wildcard include/config/ARCH_HAS_ADD_PAGES) \
-    $(wildcard include/config/MEMORY_HOTREMOVE) \
-  arch/x86/include/asm/mmzone.h \
-  arch/x86/include/asm/mmzone_32.h \
-  include/linux/topology.h \
-    $(wildcard include/config/USE_PERCPU_NUMA_NODE_ID) \
-    $(wildcard include/config/SCHED_SMT) \
-    $(wildcard include/config/SCHED_CLUSTER) \
-  include/linux/arch_topology.h \
-    $(wildcard include/config/ACPI_CPPC_LIB) \
-    $(wildcard include/config/GENERIC_ARCH_TOPOLOGY) \
-  include/linux/percpu.h \
-    $(wildcard include/config/NEED_PER_CPU_EMBED_FIRST_CHUNK) \
-    $(wildcard include/config/NEED_PER_CPU_PAGE_FIRST_CHUNK) \
-  arch/x86/include/asm/topology.h \
-    $(wildcard include/config/SCHED_MC_PRIO) \
-  arch/x86/include/asm/mpspec.h \
-    $(wildcard include/config/EISA) \
-    $(wildcard include/config/X86_MPPARSE) \
-  arch/x86/include/asm/mpspec_def.h \
-  arch/x86/include/asm/x86_init.h \
-  arch/x86/include/asm/apicdef.h \
-  include/asm-generic/topology.h \
-  include/linux/sysctl.h \
-    $(wildcard include/config/SYSCTL) \
-  include/uapi/linux/sysctl.h \
-  include/linux/elf.h \
-    $(wildcard include/config/ARCH_USE_GNU_PROPERTY) \
-    $(wildcard include/config/ARCH_HAVE_ELF_PROT) \
-  arch/x86/include/asm/elf.h \
-    $(wildcard include/config/X86_X32_ABI) \
-  arch/x86/include/asm/user.h \
-  arch/x86/include/asm/user_32.h \
-  arch/x86/include/asm/fsgsbase.h \
-  arch/x86/include/asm/vdso.h \
-  arch/x86/include/asm/desc.h \
-  arch/x86/include/asm/fixmap.h \
-    $(wildcard include/config/DEBUG_KMAP_LOCAL_FORCE_MAP) \
-    $(wildcard include/config/X86_VSYSCALL_EMULATION) \
-    $(wildcard include/config/PROVIDE_OHCI1394_DMA_INIT) \
-    $(wildcard include/config/X86_IO_APIC) \
-    $(wildcard include/config/KMAP_LOCAL) \
-    $(wildcard include/config/PCI_MMCONFIG) \
-    $(wildcard include/config/ACPI_APEI_GHES) \
-    $(wildcard include/config/INTEL_TXT) \
-  arch/x86/include/generated/asm/kmap_size.h \
-  include/asm-generic/kmap_size.h \
-    $(wildcard include/config/DEBUG_KMAP_LOCAL) \
-  include/asm-generic/fixmap.h \
-  arch/x86/include/asm/irq_vectors.h \
-    $(wildcard include/config/HAVE_KVM) \
-    $(wildcard include/config/HYPERV) \
-    $(wildcard include/config/PCI_MSI) \
-  arch/x86/include/asm/cpu_entry_area.h \
-  arch/x86/include/asm/intel_ds.h \
-  arch/x86/include/asm/pgtable_areas.h \
-  arch/x86/include/asm/pgtable_32_areas.h \
-  include/uapi/linux/elf.h \
-  include/uapi/linux/elf-em.h \
-  include/linux/kobject.h \
-    $(wildcard include/config/UEVENT_HELPER) \
-    $(wildcard include/config/DEBUG_KOBJECT_RELEASE) \
-  include/linux/sysfs.h \
-  include/linux/kernfs.h \
-    $(wildcard include/config/KERNFS) \
-  include/linux/idr.h \
-  include/linux/radix-tree.h \
-  include/linux/xarray.h \
-    $(wildcard include/config/XARRAY_MULTI) \
-  include/linux/kconfig.h \
-  include/linux/kobject_ns.h \
-  include/linux/moduleparam.h \
-    $(wildcard include/config/ALPHA) \
-    $(wildcard include/config/IA64) \
-    $(wildcard include/config/PPC64) \
-  include/linux/rbtree_latch.h \
-  include/linux/error-injection.h \
-  include/asm-generic/error-injection.h \
-  include/linux/cfi.h \
-    $(wildcard include/config/CFI_CLANG_SHADOW) \
-  arch/x86/include/asm/module.h \
-    $(wildcard include/config/UNWINDER_ORC) \
-  include/asm-generic/module.h \
-    $(wildcard include/config/HAVE_MOD_ARCH_SPECIFIC) \
-    $(wildcard include/config/MODULES_USE_ELF_REL) \
-    $(wildcard include/config/MODULES_USE_ELF_RELA) \
-  arch/x86/include/asm/orc_types.h \
-  include/linux/sched.h \
-    $(wildcard include/config/VIRT_CPU_ACCOUNTING_NATIVE) \
-    $(wildcard include/config/SCHED_INFO) \
-    $(wildcard include/config/SCHEDSTATS) \
-    $(wildcard include/config/SCHED_CORE) \
-    $(wildcard include/config/FAIR_GROUP_SCHED) \
-    $(wildcard include/config/RT_GROUP_SCHED) \
-    $(wildcard include/config/RT_MUTEXES) \
-    $(wildcard include/config/UCLAMP_TASK) \
-    $(wildcard include/config/UCLAMP_BUCKETS_COUNT) \
-    $(wildcard include/config/CGROUP_SCHED) \
-    $(wildcard include/config/BLK_DEV_IO_TRACE) \
-    $(wildcard include/config/PSI) \
-    $(wildcard include/config/COMPAT_BRK) \
-    $(wildcard include/config/CGROUPS) \
-    $(wildcard include/config/BLK_CGROUP) \
-    $(wildcard include/config/PAGE_OWNER) \
-    $(wildcard include/config/EVENTFD) \
-    $(wildcard include/config/ARCH_HAS_SCALED_CPUTIME) \
-    $(wildcard include/config/VIRT_CPU_ACCOUNTING_GEN) \
-    $(wildcard include/config/POSIX_CPUTIMERS) \
-    $(wildcard include/config/POSIX_CPU_TIMERS_TASK_WORK) \
-    $(wildcard include/config/KEYS) \
-    $(wildcard include/config/SYSVIPC) \
-    $(wildcard include/config/DETECT_HUNG_TASK) \
-    $(wildcard include/config/IO_URING) \
-    $(wildcard include/config/AUDIT) \
-    $(wildcard include/config/AUDITSYSCALL) \
-    $(wildcard include/config/UBSAN) \
-    $(wildcard include/config/UBSAN_TRAP) \
-    $(wildcard include/config/TASK_XACCT) \
-    $(wildcard include/config/CPUSETS) \
-    $(wildcard include/config/X86_CPU_RESCTRL) \
-    $(wildcard include/config/FUTEX) \
-    $(wildcard include/config/PERF_EVENTS) \
-    $(wildcard include/config/RSEQ) \
-    $(wildcard include/config/TASK_DELAY_ACCT) \
-    $(wildcard include/config/FAULT_INJECTION) \
-    $(wildcard include/config/LATENCYTOP) \
-    $(wildcard include/config/KUNIT) \
-    $(wildcard include/config/FUNCTION_GRAPH_TRACER) \
-    $(wildcard include/config/BCACHE) \
-    $(wildcard include/config/VMAP_STACK) \
-    $(wildcard include/config/SECURITY) \
-    $(wildcard include/config/BPF_SYSCALL) \
-    $(wildcard include/config/GCC_PLUGIN_STACKLEAK) \
-    $(wildcard include/config/X86_MCE) \
-    $(wildcard include/config/KRETPROBES) \
-    $(wildcard include/config/RETHOOK) \
-    $(wildcard include/config/ARCH_HAS_PARANOID_L1D_FLUSH) \
-    $(wildcard include/config/ARCH_TASK_STRUCT_ON_STACK) \
-    $(wildcard include/config/DEBUG_RSEQ) \
-  include/uapi/linux/sched.h \
-  include/linux/pid.h \
-  include/linux/rculist.h \
-    $(wildcard include/config/PROVE_RCU_LIST) \
-  include/linux/sem.h \
-  include/uapi/linux/sem.h \
-  include/linux/ipc.h \
-  include/linux/rhashtable-types.h \
-  include/uapi/linux/ipc.h \
-  arch/x86/include/generated/uapi/asm/ipcbuf.h \
-  include/uapi/asm-generic/ipcbuf.h \
-  arch/x86/include/uapi/asm/sembuf.h \
-  include/linux/shm.h \
-  include/uapi/linux/shm.h \
-  include/uapi/asm-generic/hugetlb_encode.h \
-  arch/x86/include/uapi/asm/shmbuf.h \
-  include/uapi/asm-generic/shmbuf.h \
-  arch/x86/include/asm/shmparam.h \
-  include/linux/plist.h \
-    $(wildcard include/config/DEBUG_PLIST) \
-  include/linux/hrtimer.h \
-    $(wildcard include/config/HIGH_RES_TIMERS) \
-    $(wildcard include/config/TIME_LOW_RES) \
-    $(wildcard include/config/TIMERFD) \
-  include/linux/hrtimer_defs.h \
-  include/linux/timerqueue.h \
-  include/linux/seccomp.h \
-    $(wildcard include/config/SECCOMP) \
-    $(wildcard include/config/HAVE_ARCH_SECCOMP_FILTER) \
-    $(wildcard include/config/SECCOMP_FILTER) \
-    $(wildcard include/config/CHECKPOINT_RESTORE) \
-    $(wildcard include/config/SECCOMP_CACHE_DEBUG) \
-  include/uapi/linux/seccomp.h \
-  arch/x86/include/asm/seccomp.h \
-  arch/x86/include/asm/unistd.h \
-  arch/x86/include/uapi/asm/unistd.h \
-  arch/x86/include/generated/uapi/asm/unistd_32.h \
-  include/asm-generic/seccomp.h \
-  include/uapi/linux/unistd.h \
-  include/linux/resource.h \
-  include/uapi/linux/resource.h \
-  arch/x86/include/generated/uapi/asm/resource.h \
-  include/asm-generic/resource.h \
-  include/uapi/asm-generic/resource.h \
-  include/linux/latencytop.h \
-  include/linux/sched/prio.h \
-  include/linux/sched/types.h \
-  include/linux/signal_types.h \
-    $(wildcard include/config/OLD_SIGACTION) \
-  include/uapi/linux/signal.h \
-  arch/x86/include/asm/signal.h \
-  arch/x86/include/uapi/asm/signal.h \
-  include/uapi/asm-generic/signal-defs.h \
-  arch/x86/include/uapi/asm/siginfo.h \
-  include/uapi/asm-generic/siginfo.h \
-  include/linux/syscall_user_dispatch.h \
-  include/linux/task_io_accounting.h \
-    $(wildcard include/config/TASK_IO_ACCOUNTING) \
-  include/linux/posix-timers.h \
-  include/linux/alarmtimer.h \
-    $(wildcard include/config/RTC_CLASS) \
-  include/uapi/linux/rseq.h \
-  include/linux/kcsan.h \
-  include/linux/delay.h \
-  arch/x86/include/asm/delay.h \
-  include/asm-generic/delay.h \
-  include/linux/slab.h \
-    $(wildcard include/config/DEBUG_SLAB) \
-    $(wildcard include/config/FAILSLAB) \
-    $(wildcard include/config/MEMCG_KMEM) \
-    $(wildcard include/config/KASAN) \
-    $(wildcard include/config/SLAB) \
-    $(wildcard include/config/SLUB) \
-    $(wildcard include/config/SLOB) \
-  include/linux/overflow.h \
-  include/linux/percpu-refcount.h \
-  include/linux/kasan.h \
-    $(wildcard include/config/KASAN_STACK) \
-    $(wildcard include/config/KASAN_VMALLOC) \
-    $(wildcard include/config/KASAN_INLINE) \
-  include/linux/kasan-enabled.h \
-  include/linux/videodev2.h \
-  include/uapi/linux/videodev2.h \
-    $(wildcard include/config/VIDEO_ADV_DEBUG) \
-  include/uapi/linux/v4l2-common.h \
-  include/uapi/linux/v4l2-controls.h \
-  include/linux/i2c.h \
-    $(wildcard include/config/I2C) \
-    $(wildcard include/config/I2C_SLAVE) \
-    $(wildcard include/config/I2C_BOARDINFO) \
-    $(wildcard include/config/I2C_MUX) \
-    $(wildcard include/config/OF) \
-    $(wildcard include/config/ACPI) \
-  include/linux/acpi.h \
-    $(wildcard include/config/ACPI_DEBUGGER) \
-    $(wildcard include/config/ACPI_TABLE_LIB) \
-    $(wildcard include/config/LOONGARCH) \
-    $(wildcard include/config/ARM64) \
-    $(wildcard include/config/ACPI_PROCESSOR_CSTATE) \
-    $(wildcard include/config/ACPI_HOTPLUG_CPU) \
-    $(wildcard include/config/ACPI_HOTPLUG_IOAPIC) \
-    $(wildcard include/config/PCI) \
-    $(wildcard include/config/ACPI_WMI) \
-    $(wildcard include/config/ACPI_NUMA) \
-    $(wildcard include/config/HIBERNATION) \
-    $(wildcard include/config/ACPI_HOTPLUG_MEMORY) \
-    $(wildcard include/config/ACPI_CONTAINER) \
-    $(wildcard include/config/ACPI_GTDT) \
-    $(wildcard include/config/PM) \
-    $(wildcard include/config/GPIOLIB) \
-    $(wildcard include/config/ACPI_TABLE_UPGRADE) \
-    $(wildcard include/config/ACPI_WATCHDOG) \
-    $(wildcard include/config/ACPI_SPCR_TABLE) \
-    $(wildcard include/config/ACPI_GENERIC_GSI) \
-    $(wildcard include/config/ACPI_LPIT) \
-    $(wildcard include/config/ACPI_PPTT) \
-    $(wildcard include/config/ACPI_PCC) \
-  include/linux/ioport.h \
-  include/linux/irqdomain.h \
-    $(wildcard include/config/IRQ_DOMAIN_HIERARCHY) \
-    $(wildcard include/config/GENERIC_IRQ_DEBUGFS) \
-    $(wildcard include/config/IRQ_DOMAIN) \
-    $(wildcard include/config/IRQ_DOMAIN_NOMAP) \
-  include/linux/irqhandler.h \
+// SPDX-License-Identifier: GPL-2.0
+/* Copyright (c) 2019, Vladimir Oltean <olteanv@gmail.com>
+ */
+#include "sja1105.h"
+
+#define SJA1105_TAS_CLKSRC_DISABLED	0
+#define SJA1105_TAS_CLKSRC_STANDALONE	1
+#define SJA1105_TAS_CLKSRC_AS6802	2
+#define SJA1105_TAS_CLKSRC_PTP		3
+#define SJA1105_GATE_MASK		GENMASK_ULL(SJA1105_NUM_TC - 1, 0)
+
+#define work_to_sja1105_tas(d) \
+	container_of((d), struct sja1105_tas_data, tas_work)
+#define tas_to_sja1105(d) \
+	container_of((d), struct sja1105_private, tas_data)
+
+static int sja1105_tas_set_runtime_params(struct sja1105_private *priv)
+{
+	struct sja1105_tas_data *tas_data = &priv->tas_data;
+	struct sja1105_gating_config *gating_cfg = &tas_data->gating_cfg;
+	struct dsa_switch *ds = priv->ds;
+	s64 earliest_base_time = S64_MAX;
+	s64 latest_base_time = 0;
+	s64 its_cycle_time = 0;
+	s64 max_cycle_time = 0;
+	int port;
+
+	tas_data->enabled = false;
+
+	for (port = 0; port < ds->num_ports; port++) {
+		const struct tc_taprio_qopt_offload *offload;
+
+		offload = tas_data->offload[port];
+		if (!offload)
+			continue;
+
+		tas_data->enabled = true;
+
+		if (max_cycle_time < offload->cycle_time)
+			max_cycle_time = offload->cycle_time;
+		if (latest_base_time < offload->base_time)
+			latest_base_time = offload->base_time;
+		if (earliest_base_time > offload->base_time) {
+			earliest_base_time = offload->base_time;
+			its_cycle_time = offload->cycle_time;
+		}
+	}
+
+	if (!list_empty(&gating_cfg->entries)) {
+		tas_data->enabled = true;
+
+		if (max_cycle_time < gating_cfg->cycle_time)
+			max_cycle_time = gating_cfg->cycle_time;
+		if (latest_base_time < gating_cfg->base_time)
+			latest_base_time = gating_cfg->base_time;
+		if (earliest_base_time > gating_cfg->base_time) {
+			earliest_base_time = gating_cfg->base_time;
+			its_cycle_time = gating_cfg->cycle_time;
+		}
+	}
+
+	if (!tas_data->enabled)
+		return 0;
+
+	/* Roll the earliest base time over until it is in a comparable
+	 * time base with the latest, then compare their deltas.
+	 * We want to enforce that all ports' base times are within
+	 * SJA1105_TAS_MAX_DELTA 200ns cycles of one another.
+	 */
+	earliest_base_time = future_base_time(earliest_base_time,
+					      its_cycle_time,
+					      latest_base_time);
+	while (earliest_base_time > latest_base_time)
+		earliest_base_time -= its_cycle_time;
+	if (latest_base_time - earliest_base_time >
+	    sja1105_delta_to_ns(SJA1105_TAS_MAX_DELTA)) {
+		dev_err(ds->dev,
+			"Base times too far apart: min %llu max %llu\n",
+			earliest_base_time, latest_base_time);
+		return -ERANGE;
+	}
+
+	tas_data->earliest_base_time = earliest_base_time;
+	tas_data->max_cycle_time = max_cycle_time;
+
+	dev_dbg(ds->dev, "earliest base time %lld ns\n", earliest_base_time);
+	dev_dbg(ds->dev, "latest base time %lld ns\n", latest_base_time);
+	dev_dbg(ds->dev, "longest cycle time %lld ns\n", max_cycle_time);
+
+	return 0;
+}
+
+/* Lo and behold: the egress scheduler from hell.
+ *
+ * At the hardware level, the Time-Aware Shaper holds a global linear arrray of
+ * all schedule entries for all ports. These are the Gate Control List (GCL)
+ * entries, let's call them "timeslots" for short. This linear array of
+ * timeslots is held in BLK_IDX_SCHEDULE.
+ *
+ * Then there are a maximum of 8 "execution threads" inside the switch, which
+ * iterate cyclically through the "schedule". Each "cycle" has an entry point
+ * and an exit point, both being timeslot indices in the schedule table. The
+ * hardware calls each cycle a "subschedule".
+ *
+ * Subschedule (cycle) i starts when
+ *   ptpclkval >= ptpschtm + BLK_IDX_SCHEDULE_ENTRY_POINTS[i].delta.
+ *
+ * The hardware scheduler iterates BLK_IDX_SCHEDULE with a k ranging from
+ *   k = BLK_IDX_SCHEDULE_ENTRY_POINTS[i].address to
+ *   k = BLK_IDX_SCHEDULE_PARAMS.subscheind[i]
+ *
+ * For each schedule entry (timeslot) k, the engine executes the gate control
+ * list entry for the duration of BLK_IDX_SCHEDULE[k].delta.
+ *
+ *         +---------+
+ *         |         | BLK_IDX_SCHEDULE_ENTRY_POINTS_PARAMS
+ *         +---------+
+ *              |
+ *              +-----------------+
+ *                                | .actsubsch
+ *  BLK_IDX_SCHEDULE_ENTRY_POINTS v
+ *                 +-------+-------+
+ *                 |cycle 0|cycle 1|
+ *                 +-------+-------+
+ *                   |  |      |  |
+ *  +----------------+  |      |  +-------------------------------------+
+ *  |   .subschindx     |      |             .subschindx                |
+ *  |                   |      +---------------+                        |
+ *  |          .address |        .address      |                        |
+ *  |                   |                      |                        |
+ *  |                   |                      |                        |
+ *  |  BLK_IDX_SCHEDULE v                      v                        |
+ *  |              +-------+-------+-------+-------+-------+------+     |
+ *  |              |entry 0|entry 1|entry 2|entry 3|entry 4|entry5|     |
+ *  |              +-------+-------+-------+-------+-------+------+     |
+ *  |                                  ^                    ^  ^  ^     |
+ *  |                                  |                    |  |  |     |
+ *  |        +-------------------------+                    |  |  |     |
+ *  |        |              +-------------------------------+  |  |     |
+ *  |        |              |              +-------------------+  |     |
+ *  |        |              |              |                      |     |
+ *  | +---------------------------------------------------------------+ |
+ *  | |subscheind[0]<=subscheind[1]<=subscheind[2]<=...<=subscheind[7]| |
+ *  | +---------------------------------------------------------------+ |
+ *  |        ^              ^                BLK_IDX_SCHEDULE_PARAMS    |
+ *  |        |              |                                           |
+ *  +--------+              +-------------------------------------------+
+ *
+ *  In the above picture there are two subschedules (cycles):
+ *
+ *  - cycle 0: iterates the schedule table from 0 to 2 (and back)
+ *  - cycle 1: iterates the schedule table from 3 to 5 (and back)
+ *
+ *  All other possible execution threads must be marked as unused by making
+ *  their "subschedule end index" (subscheind) equal to the last valid
+ *  subschedule's end index (in this case 5).
+ */
+int sja1105_init_scheduling(struct sja1105_private *priv)
+{
+	struct sja1105_schedule_entry_points_entry *schedule_entry_points;
+	struct sja1105_schedule_entry_points_params_entry
+					*schedule_entry_points_params;
+	struct sja1105_schedule_params_entry *schedule_params;
+	struct sja1105_tas_data *tas_data = &priv->tas_data;
+	struct sja1105_gating_config *gating_cfg = &tas_data->gating_cfg;
+	struct sja1105_schedule_entry *schedule;
+	struct dsa_switch *ds = priv->ds;
+	struct sja1105_table *table;
+	int schedule_start_idx;
+	s64 entry_point_delta;
+	int schedule_end_idx;
+	int num_entries = 0;
+	int num_cycles = 0;
+	int cycle = 0;
+	int i, k = 0;
+	int port, rc;
+
+	rc = sja1105_tas_set_runtime_params(priv);
+	if (rc < 0)
+		return rc;
+
+	/* Discard previous Schedule Table */
+	table = &priv->static_config.tables[BLK_IDX_SCHEDULE];
+	if (table->entry_count) {
+		kfree(table->entries);
+		table->entry_count = 0;
+	}
+
+	/* Discard previous Schedule Entry Points Parameters Table */
+	table = &priv->static_config.tables[BLK_IDX_SCHEDULE_ENTRY_POINTS_PARAMS];
+	if (table->entry_count) {
+		kfree(table->entries);
+		table->entry_count = 0;
+	}
+
+	/* Discard previous Schedule Parameters Table */
+	table = &priv->static_config.tables[BLK_IDX_SCHEDULE_PARAMS];
+	if (table->entry_count) {
+		kfree(table->entries);
+		table->entry_count = 0;
+	}
+
+	/* Discard previous Schedule Entry Points Table */
+	table = &priv->static_config.tables[BLK_IDX_SCHEDULE_ENTRY_POINTS];
+	if (table->entry_count) {
+		kfree(table->entries);
+		table->entry_count = 0;
+	}
+
+	/* Figure out the dimensioning of the problem */
+	for (port = 0; port < ds->num_ports; port++) {
+		if (tas_data->offload[port]) {
+			num_entries += tas_data->offload[port]->num_entries;
+			num_cycles++;
+		}
+	}
+
+	if (!list_empty(&gating_cfg->entries)) {
+		num_entries += gating_cfg->num_entries;
+		num_cycles++;
+	}
+
+	/* Nothing to do */
+	if (!num_cycles)
+		return 0;
+
+	/* Pre-allocate space in the static config tables */
+
+	/* Schedule Table */
+	table = &priv->static_config.tables[BLK_IDX_SCHEDULE];
+	table->entries = kcalloc(num_entries, table->ops->unpacked_entry_size,
+				 GFP_KERNEL);
+	if (!table->entries)
+		return -ENOMEM;
+	table->entry_count = num_entries;
+	schedule = table->entries;
+
+	/* Schedule Points Parameters Table */
+	table = &priv->static_config.tables[BLK_IDX_SCHEDULE_ENTRY_POINTS_PARAMS];
+	table->entries = kcalloc(SJA1105_MAX_SCHEDULE_ENTRY_POINTS_PARAMS_COUNT,
+				 table->ops->unpacked_entry_size, GFP_KERNEL);
+	if (!table->entries)
+		/* Previously allocated memory will be freed automatically in
+		 * sja1105_static_config_free. This is true for all early
+		 * returns below.
+		 */
+		return -ENOMEM;
+	table->entry_count = SJA1105_MAX_SCHEDULE_ENTRY_POINTS_PARAMS_COUNT;
+	schedule_entry_points_params = table->entries;
+
+	/* Schedule Parameters Table */
+	table = &priv->static_config.tables[BLK_IDX_SCHEDULE_PARAMS];
+	table->entries = kcalloc(SJA1105_MAX_SCHEDULE_PARAMS_COUNT,
+				 table->ops->unpacked_entry_size, GFP_KERNEL);
+	if (!table->entries)
+		return -ENOMEM;
+	table->entry_count = SJA1105_MAX_SCHEDULE_PARAMS_COUNT;
+	schedule_params = table->entries;
+
+	/* Schedule Entry Points Table */
+	table = &priv->static_config.tables[BLK_IDX_SCHEDULE_ENTRY_POINTS];
+	table->entries = kcalloc(num_cycles, table->ops->unpacked_entry_size,
+				 GFP_KERNEL);
+	if (!table->entries)
+		return -ENOMEM;
+	table->entry_count = num_cycles;
+	schedule_entry_points = table->entries;
+
+	/* Finally start populating the static config tables */
+	schedule_entry_points_params->clksrc = SJA1105_TAS_CLKSRC_PTP;
+	schedule_entry_points_params->actsubsch = num_cycles - 1;
+
+	for (port = 0; port < ds->num_ports; port++) {
+		const struct tc_taprio_qopt_offload *offload;
+		/* Relative base time */
+		s64 rbt;
+
+		offload = tas_data->offload[port];
+		if (!offload)
+			continue;
+
+		schedule_start_idx = k;
+		schedule_end_idx = k + offload->num_entries - 1;
+		/* This is the base time expressed as a number of TAS ticks
+		 * relative to PTPSCHTM, which we'll (perhaps improperly) call
+		 * the operational base time.
+		 */
+		rbt = future_base_time(offload->base_time,
+				       offload->cycle_time,
+				       tas_data->earliest_base_time);
+		rbt -= tas_data->earliest_base_time;
+		/* UM10944.pdf 4.2.2. Schedule Entry Points table says that
+		 * delta cannot be zero, which is shitty. Advance all relative
+		 * base times by 1 TAS delta, so that even the earliest base
+		 * time becomes 1 in relative terms. Then start the operational
+		 * base time (PTPSCHTM) one TAS delta earlier than planned.
+		 */
+		entry_point_delta = ns_to_sja1105_delta(rbt) + 1;
+
+		schedule_entry_points[cycle].subschindx = cycle;
+		schedule_entry_points[cycle].delta = entry_point_delta;
+		schedule_entry_points[cycle].address = schedule_start_idx;
+
+		/* The subschedule end indices need to be
+		 * monotonically increasing.
+		 */
+		for (i = cycle; i < 8; i++)
+			schedule_params->subscheind[i] = schedule_end_idx;
+
+		for (i = 0; i < offload->num_entries; i++, k++) {
+			s64 delta_ns = offload->entries[i].interval;
+
+			schedule[k].delta = ns_to_sja1105_delta(delta_ns);
+			schedule[k].destports = BIT(port);
+			schedule[k].resmedia_en = true;
+			schedule[k].resmedia = SJA1105_GATE_MASK &
+					~offload->entries[i].gate_mask;
+		}
+		cycle++;
+	}
+
+	if (!list_empty(&gating_cfg->entries)) {
+		struct sja1105_gate_entry *e;
+
+		/* Relative base time */
+		s64 rbt;
+
+		schedule_start_idx = k;
+		schedule_end_idx = k + gating_cfg->num_entries - 1;
+		rbt = future_base_time(gating_cfg->base_time,
+				       gating_cfg->cycle_time,
+				       tas_data->earliest_base_time);
+		rbt -= tas_data->earliest_base_time;
+		entry_point_delta = ns_to_sja1105_delta(rbt) + 1;
+
+		schedule_entry_points[cycle].subschindx = cycle;
+		schedule_entry_points[cycle].delta = entry_point_delta;
+		schedule_entry_points[cycle].address = schedule_start_idx;
+
+		for (i = cycle; i < 8; i++)
+			schedule_params->subscheind[i] = schedule_end_idx;
+
+		list_for_each_entry(e, &gating_cfg->entries, list) {
+			schedule[k].delta = ns_to_sja1105_delta(e->interval);
+			schedule[k].destports = e->rule->vl.destports;
+			schedule[k].setvalid = true;
+			schedule[k].txen = true;
+			schedule[k].vlindex = e->rule->vl.sharindx;
+			schedule[k].winstindex = e->rule->vl.sharindx;
+			if (e->gate_state) /* Gate open */
+				schedule[k].winst = true;
+			else /* Gate closed */
+				schedule[k].winend = true;
+			k++;
+		}
+	}
+
+	return 0;
+}
+
+/* Be there 2 port subschedules, each executing an arbitrary number of gate
+ * open/close events cyclically.
+ * None of those gate events must ever occur at the exact same time, otherwise
+ * the switch is known to act in exotically strange ways.
+ * However the hardware doesn't bother performing these integrity checks.
+ * So here we are with the task of validating whether the new @admin offload
+ * has any conflict with the already established TAS configuration in
+ * tas_data->offload.  We already know the other ports are in harmony with one
+ * another, otherwise we wouldn't have saved them.
+ * Each gate event executes periodically, with a period of @cycle_time and a
+ * phase given by its cycle's @base_time plus its offset within the cycle
+ * (which in turn is given by the length of the events prior to it).
+ * There are two aspects to possible collisions:
+ * - Collisions within one cycle's (actually the longest cycle's) time frame.
+ *   For that, we need to compare the cartesian product of each possible
+ *   occurrence of each event within one cycle time.
+ * - Collisions in the future. Events may not collide within one cycle time,
+ *   but if two port schedules don't have the same periodicity (aka the cycle
+ *   times aren't multiples of one another), they surely will some time in the
+ *   future (actually they will collide an infinite amount of times).
+ */
+static bool
+sja1105_tas_check_conflicts(struct sja1105_private *priv, int port,
+			    const struct tc_taprio_qopt_offload *admin)
+{
+	struct sja1105_tas_data *tas_data = &priv->tas_data;
+	const struct tc_taprio_qopt_offload *offload;
+	s64 max_cycle_time, min_cycle_time;
+	s64 delta1, delta2;
+	s64 rbt1, rbt2;
+	s64 stop_time;
+	s64 t1, t2;
+	int i, j;
+	s32 rem;
+
+	offload = tas_data->offload[port];
+	if (!offload)
+		return false;
+
+	/* Check if the two cycle times are multiples of one another.
+	 * If they aren't, then they will surely collide.
+	 */
+	max_cycle_time = max(offload->cycle_time, admin->cycle_time);
+	min_cycle_time = min(offload->cycle_time, admin->cycle_time);
+	div_s64_rem(max_cycle_time, min_cycle_time, &rem);
+	if (rem)
+		return true;
+
+	/* Calculate the "reduced" base time of each of the two cycles
+	 * (transposed back as close to 0 as possible) by dividing to
+	 * the cycle time.
+	 */
+	div_s64_rem(offload->base_time, offload->cycle_time, &rem);
+	rbt1 = rem;
+
+	div_s64_rem(admin->base_time, admin->cycle_time, &rem);
+	rbt2 = rem;
+
+	stop_time = max_cycle_time + max(rbt1, rbt2);
+
+	/* delta1 is the relative base time of each GCL entry within
+	 * the established ports' TAS config.
+	 */
+	for (i = 0, delta1 = 0;
+	     i < offload->num_entries;
+	     delta1 += offload->entries[i].interval, i++) {
+		/* delta2 is the relative base time of each GCL entry
+		 * within the newly added TAS config.
+		 */
+		for (j = 0, delta2 = 0;
+		     j < admin->num_entries;
+		     delta2 += admin->entries[j].interval, j++) {
+			/* t1 follows all possible occurrences of the
+			 * established ports' GCL entry i within the
+			 * first cycle time.
+			 */
+			for (t1 = rbt1 + delta1;
+			     t1 <= stop_time;
+			     t1 += offload->cycle_time) {
+				/* t2 follows all possible occurrences
+				 * of the newly added GCL entry j
+				 * within the first cycle time.
+				 */
+				for (t2 = rbt2 + delta2;
+				     t2 <= stop_time;
+				     t2 += admin->cycle_time) {
+					if (t1 == t2) {
+						dev_warn(priv->ds->dev,
+							 "GCL entry %d collides with entry %d of port %d\n",
+							 j, i, port);
+						return true;
+					}
+				}
+			}
+		}
+	}
+
+	return false;
+}
+
+/* Check the tc-taprio configuration on @port for conflicts with the tc-gate
+ * global subschedule. If @port is -1, check it against all ports.
+ * To reuse the sja1105_tas_check_conflicts logic without refactoring it,
+ * convert the gating configuration to a dummy tc-taprio offload structure.
+ */
+bool sja1105_gating_check_conflicts(struct sja1105_private *priv, int port,
+				    struct netlink_ext_ack *extack)
+{
+	struct sja1105_gating_config *gating_cfg = &priv->tas_data.gating_cfg;
+	size_t num_entries = gating_cfg->num_entries;
+	struct tc_taprio_qopt_offload *dummy;
+	struct dsa_switch *ds = priv->ds;
+	struct sja1105_gate_entry *e;
+	bool conflict;
+	int i = 0;
+
+	if (list_empty(&gating_cfg->entries))
+		return false;
+
+	dummy = kzalloc(struct_size(dummy, entries, num_entries), GFP_KERNEL);
+	if (!dummy) {
+		NL_SET_ERR_MSG_MOD(extack, "Failed to allocate memory");
+		return true;
+	}
+
+	dummy->num_entries = num_entries;
+	dummy->base_time = gating_cfg->base_time;
+	dummy->cycle_time = gating_cfg->cycle_time;
+
+	list_for_each_entry(e, &gating_cfg->entries, list)
+		dummy->entries[i++].interval = e->interval;
+
+	if (port != -1) {
+		conflict = sja1105_tas_check_conflicts(priv, port, dummy);
+	} else {
+		for (port = 0; port < ds->num_ports; port++) {
+			conflict = sja1105_tas_check_conflicts(priv, port,
+							       dummy);
+			if (conflict)
+				break;
+		}
+	}
+
+	kfree(dummy);
+
+	return conflict;
+}
+
+int sja1105_setup_tc_taprio(struct dsa_switch *ds, int port,
+			    struct tc_taprio_qopt_offload *admin)
+{
+	struct sja1105_private *priv = ds->priv;
+	struct sja1105_tas_data *tas_data = &priv->tas_data;
+	int other_port, rc, i;
+
+	/* Can't change an already configured port (must delete qdisc first).
+	 * Can't delete the qdisc from an unconfigured port.
+	 */
+	if (!!tas_data->offload[port] == admin->enable)
+		return -EINVAL;
+
+	if (!admin->enable) {
+		taprio_offload_free(tas_data->offload[port]);
+		tas_data->offload[port] = NULL;
+
+		rc = sja1105_init_scheduling(priv);
+		if (rc < 0)
+			return rc;
+
+		return sja1105_static_config_reload(priv, SJA1105_SCHEDULING);
+	}
+
+	/* The cycle time extension is the amount of time the last cycle from
+	 * the old OPER needs to be extended in order to phase-align with the
+	 * base time of the ADMIN when that becomes the new OPER.
+	 * But of course our switch needs to be reset to switch-over between
+	 * the ADMIN and the OPER configs - so much for a seamless transition.
+	 * So don't add insult over injury and just say we don't support cycle
+	 * time extension.
+	 */
+	if (admin->cycle_time_extension)
+		return -ENOTSUPP;
+
+	for (i = 0; i < admin->num_entries; i++) {
+		s64 delta_ns = admin->entries[i].interval;
+		s64 delta_cycles = ns_to_sja1105_delta(delta_ns);
+		bool too_long, too_short;
+
+		too_long = (delta_cycles >= SJA1105_TAS_MAX_DELTA);
+		too_short = (delta_cycles == 0);
+		if (too_long || too_short) {
+			dev_err(priv->ds->dev,
+				"Interval %llu too %s for GCL entry %d\n",
+				delta_ns, too_long ? "long" : "short", i);
+			return -ERANGE;
+		}
+	}
+
+	for (other_port = 0; other_port < ds->num_ports; other_port++) {
+		if (other_port == port)
+			continue;
+
+		if (sja1105_tas_check_conflicts(priv, other_port, admin))
+			return -ERANGE;
+	}
+
+	if (sja1105_gating_check_conflicts(priv, port, NULL)) {
+		dev_err(ds->dev, "Conflict with tc-gate schedule\n");
+		return -ERANGE;
+	}
+
+	tas_data->offload[port] = taprio_offload_get(admin);
+
+	rc = sja1105_init_scheduling(priv);
+	if (rc < 0)
+		return rc;
+
+	return sja1105_static_config_reload(priv, SJA1105_SCHEDULING);
+}
+
+static int sja1105_tas_check_running(struct sja1105_private *priv)
+{
+	struct sja1105_tas_data *tas_data = &priv->tas_data;
+	struct dsa_switch *ds = priv->ds;
+	struct sja1105_ptp_cmd cmd = {0};
+	int rc;
+
+	rc = sja1105_ptp_commit(ds, &cmd, SPI_READ);
+	if (rc < 0)
+		return rc;
+
+	if (cmd.ptpstrtsch == 1)
+		/* Schedule successfully started */
+		tas_data->state = SJA1105_TAS_STATE_RUNNING;
+	else if (cmd.ptpstopsch == 1)
+		/* Schedule is stopped */
+		tas_data->state = SJA1105_TAS_STATE_DISABLED;
+	else
+		/* Schedule is probably not configured with PTP clock source */
+		rc = -EINVAL;
+
+	return rc;
+}
+
+/* Write to PTPCLKCORP */
+static int sja1105_tas_adjust_drift(struct sja1105_private *priv,
+				    u64 correction)
+{
+	const struct sja1105_regs *regs = priv->info->regs;
+	u32 ptpclkcorp = ns_to_sja1105_ticks(correction);
+
+	return sja1105_xfer_u32(priv, SPI_WRITE, regs->ptpclkcorp,
+				&ptpclkcorp, NULL);
+}
+
+/* Write to PTPSCHTM */
+static int sja1105_tas_set_base_time(struct sja1105_private *priv,
+				     u64 base_time)
+{
+	const struct sja1105_regs *regs = priv->info->regs;
+	u64 ptpschtm = ns_to_sja1105_ticks(base_time);
+
+	return sja1105_xfer_u64(priv, SPI_WRITE, regs->ptpschtm,
+				&ptpschtm, NULL);
+}
+
+static int sja1105_tas_start(struct sja1105_private *priv)
+{
+	struct sja1105_tas_data *tas_data = &priv->tas_data;
+	struct sja1105_ptp_cmd *cmd = &priv->ptp_data.cmd;
+	struct dsa_switch *ds = priv->ds;
+	int rc;
+
+	dev_dbg(ds->dev, "Starting the TAS\n");
+
+	if (tas_data->state == SJA1105_TAS_STATE_ENABLED_NOT_RUNNING ||
+	    tas_data->state == SJA1105_TAS_STATE_RUNNING) {
+		dev_err(ds->dev, "TAS already started\n");
+		return -EINVAL;
+	}
+
+	cmd->ptpstrtsch = 1;
+	cmd->ptpstopsch = 0;
+
+	rc = sja1105_ptp_commit(ds, cmd, SPI_WRITE);
+	if (rc < 0)
+		return rc;
+
+	tas_data->state = SJA1105_TAS_STATE_ENABLED_NOT_RUNNING;
+
+	return 0;
+}
+
+static int sja1105_tas_stop(struct sja1105_private *priv)
+{
+	struct sja1105_tas_data *tas_data = &priv->tas_data;
+	struct sja1105_ptp_cmd *cmd = &priv->ptp_data.cmd;
+	struct dsa_switch *ds = priv->ds;
+	int rc;
+
+	dev_dbg(ds->dev, "Stopping the TAS\n");
+
+	if (tas_data->state == SJA1105_TAS_STATE_DISABLED) {
+		dev_err(ds->dev, "TAS already disabled\n");
+		return -EINVAL;
+	}
+
+	cmd->ptpstopsch = 1;
+	cmd->ptpstrtsch = 0;
+
+	rc = sja1105_ptp_commit(ds, cmd, SPI_WRITE);
+	if (rc < 0)
+		return rc;
+
+	tas_data->state = SJA1105_TAS_STATE_DISABLED;
+
+	return 0;
+}
+
+/* The schedule engine and the PTP clock are driven by the same oscillator, and
+ * they run in parallel. But whilst the PTP clock can keep an absolute
+ * time-of-day, the schedule engine is only running in 'ticks' (25 ticks make
+ * up a delta, which is 200ns), and wrapping around at the end of each cycle.
+ * The schedule engine is started when the PTP clock reaches the PTPSCHTM time
+ * (in PTP domain).
+ * Because the PTP clock can be rate-corrected (accelerated or slowed down) by
+ * a software servo, and the schedule engine clock runs in parallel to the PTP
+ * clock, there is logic internal to the switch that periodically keeps the
+ * schedule engine from drifting away. The frequency with which this internal
+ * syntonization happens is the PTP clock correction period (PTPCLKCORP). It is
+ * a value also in the PTP clock domain, and is also rate-corrected.
+ * To be precise, during a correction period, there is logic to determine by
+ * how many scheduler clock ticks has the PTP clock drifted. At the end of each
+ * correction period/beginning of new one, the length of a delta is shrunk or
+ * expanded with an integer number of ticks, compared with the typical 25.
+ * So a delta lasts for 200ns (or 25 ticks) only on average.
+ * Sometimes it is longer, sometimes it is shorter. The internal syntonization
+ * logic can adjust for at most 5 ticks each 20 ticks.
+ *
+ * The first implication is that you should choose your schedule correction
+ * period to be an integer multiple of the schedule length. Preferably one.
+ * In case there are schedules of multiple ports active, then the correction
+ * period needs to be a multiple of them all. Given the restriction that the
+ * cycle times have to be multiples of one another anyway, this means the
+ * correction period can simply be the largest cycle time, hence the current
+ * choice. This way, the updates are always synchronous to the transmission
+ * cycle, and therefore predictable.
+ *
+ * The second implication is that at the beginning of a correction period, the
+ * first few deltas will be modulated in time, until the schedule engine is
+ * properly phase-aligned with the PTP clock. For this reason, you should place
+ * your best-effort traffic at the beginning of a cycle, and your
+ * time-triggered traffic afterwards.
+ *
+ * The third implication is that once the schedule engine is started, it can
+ * only adjust for so much drift within a correction period. In the servo you
+ * can only change the PTPCLKRATE, but not step the clock (PTPCLKADD). If you
+ * want to do the latter, you need to stop and restart the schedule engine,
+ * which is what the state machine handles.
+ */
+static void sja1105_tas_state_machine(struct work_struct *work)
+{
+	struct sja1105_tas_data *tas_data = work_to_sja1105_tas(work);
+	struct sja1105_private *priv = tas_to_sja1105(tas_data);
+	struct sja1105_ptp_data *ptp_data = &priv->ptp_data;
+	struct timespec64 base_time_ts, now_ts;
+	struct dsa_switch *ds = priv->ds;
+	struct timespec64 diff;
+	s64 base_time, now;
+	int rc = 0;
+
+	mutex_lock(&ptp_data->lock);
+
+	switch (tas_data->state) {
+	case SJA1105_TAS_STATE_DISABLED:
+		/* Can't do anything at all if clock is still being stepped */
+		if (tas_data->last_op != SJA1105_PTP_ADJUSTFREQ)
+			break;
+
+		rc = sja1105_tas_adjust_drift(priv, tas_data->max_cycle_time);
+		if (rc < 0)
+			break;
+
+		rc = __sja1105_ptp_gettimex(ds, &now, NULL);
+		if (rc < 0)
+			break;
+
+		/* Plan to start the earliest schedule first. The others
+		 * will be started in hardware, by way of their respective
+		 * entry points delta.
+		 * Try our best to avoid fringe cases (race condition between
+		 * ptpschtm and ptpstrtsch) by pushing the oper_base_time at
+		 * least one second in the future from now. This is not ideal,
+		 * but this only needs to buy us time until the
+		 * sja1105_tas_start command below gets executed.
+		 */
+		base_time = future_base_time(tas_data->earliest_base_time,
+					     tas_data->max_cycle_time,
+					     now + 1ull * NSEC_PER_SEC);
+		base_time -= sja1105_delta_to_ns(1);
+
+		rc = sja1105_tas_set_base_time(priv, base_time);
+		if (rc < 0)
+			break;
+
+		tas_data->oper_base_time = base_time;
+
+		rc = sja1105_tas_start(priv);
+		if (rc < 0)
+			break;
+
+		base_time_ts = ns_to_timespec64(base_time);
+		now_ts = ns_to_timespec64(now);
+
+		dev_dbg(ds->dev, "OPER base time %lld.%09ld (now %lld.%09ld)\n",
+			base_time_ts.tv_sec, base_time_ts.tv_nsec,
+			now_ts.tv_sec, now_ts.tv_nsec);
+
+		break;
+
+	case SJA1105_TAS_STATE_ENABLED_NOT_RUNNING:
+		if (tas_data->last_op != SJA1105_PTP_ADJUSTFREQ) {
+			/* Clock was stepped.. bad news for TAS */
+			sja1105_tas_stop(priv);
+			break;
+		}
+
+		/* Check if TAS has actually started, by comparing the
+		 * scheduled start time with the SJA1105 PTP clock
+		 */
+		rc = __sja1105_ptp_gettimex(ds, &now, NULL);
+		if (rc < 0)
+			break;
+
+		if (now < tas_data->oper_base_time) {
+			/* TAS has not started yet */
+			diff = ns_to_timespec64(tas_data->oper_base_time - now);
+			dev_dbg(ds->dev, "time to start: [%lld.%09ld]",
+				diff.tv_sec, diff.tv_nsec);
+			break;
+		}
+
+		/* Time elapsed, what happened? */
+		rc = sja1105_tas_check_running(priv);
+		if (rc < 0)
+			break;
+
+		if (tas_data->state != SJA1105_TAS_STATE_RUNNING)
+			/* TAS has started */
+			dev_err(ds->dev,
+				"TAS not started despite time elapsed\n");
+
+		break;
+
+	case SJA1105_TAS_STATE_RUNNING:
+		/* Clock was stepped.. bad news for TAS */
+		if (tas_data->last_op != SJA1105_PTP_ADJUSTFREQ) {
+			sja1105_tas_stop(priv);
+			break;
+		}
+
+		rc = sja1105_tas_check_running(priv);
+		if (rc < 0)
+			break;
+
+		if (tas_data->state != SJA1105_TAS_STATE_RUNNING)
+			dev_err(ds->dev, "TAS surprisingly stopped\n");
+
+		break;
+
+	default:
+		if (net_ratelimit())
+			dev_err(ds->dev, "TAS in an invalid state (incorrect use of API)!\n");
+	}
+
+	if (rc && net_ratelimit())
+		dev_err(ds->dev, "An operation returned %d\n", rc);
+
+	mutex_unlock(&ptp_data->lock);
+}
+
+void sja1105_tas_clockstep(struct dsa_switch *ds)
+{
+	struct sja1105_private *priv = ds->priv;
+	struct sja1105_tas_data *tas_data = &priv->tas_data;
+
+	if (!tas_data->enabled)
+		return;
+
+	tas_data->last_op = SJA1105_PTP_CLOCKSTEP;
+	schedule_work(&tas_data->tas_work);
+}
+
+void sja1105_tas_adjfreq(struct dsa_switch *ds)
+{
+	struct sja1105_private *priv = ds->priv;
+	struct sja1105_tas_data *tas_data = &priv->tas_data;
+
+	if (!tas_data->enabled)
+		return;
+
+	/* No reason to schedule the workqueue, nothing changed */
+	if (tas_data->state == SJA1105_TAS_STATE_RUNNING)
+		return;
+
+	tas_data->last_op = SJA1105_PTP_ADJUSTFREQ;
+	schedule_work(&tas_data->tas_work);
+}
+
+void sja1105_tas_setup(struct dsa_switch *ds)
+{
+	struct sja1105_private *priv = ds->priv;
+	struct sja1105_tas_data *tas_data = &priv->tas_data;
+
+	INIT_WORK(&tas_data->tas_work, sja1105_tas_state_machine);
+	tas_data->state = SJA1105_TAS_STATE_DISABLED;
+	tas_data->last_op = SJA1105_PTP_NONE;
+
+	INIT_LIST_HEAD(&tas_data->gating_cfg.entries);
+}
+
+void sja1105_tas_teardown(struct dsa_switch *ds)
+{
+	struct sja1105_private *priv = ds->priv;
+	struct tc_taprio_qopt_offload *offload;
+	int port;
+
+	cancel_work_sync(&priv->tas_data.tas_work);
+
+	for (port = 0; port < ds->num_ports; port++) {
+		offload = priv->tas_data.offload[port];
+		if (!offload)
+			continue;
+
+		taprio_offload_free(offload);
+	}
+}

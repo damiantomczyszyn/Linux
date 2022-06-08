@@ -1,1 +1,13 @@
-cmd_drivers/media/i2c/uda1342.o := gcc -Wp,-MMD,drivers/media/i2c/.uda1342.o.d -nostdinc -I./arch/x86/include -I./arch/x86/include/generated  -I./include -I./arch/x86/include/uapi -I./arch/x86/include/generated/uapi -I./include/uapi -I./include/generated/uapi -include ./include/linux/compil
+_MSK_GPIO0)
+			dprintk(7, " (PCI_MSK_GPIO0     0x%08x)\n",
+				PCI_MSK_GPIO0);
+
+		if (pci_status & PCI_MSK_GPIO1)
+			dprintk(7, " (PCI_MSK_GPIO1     0x%08x)\n",
+				PCI_MSK_GPIO1);
+
+		if (pci_status & PCI_MSK_AV_CORE)
+			dprintk(7, " (PCI_MSK_AV_CORE   0x%08x)\n",
+				PCI_MSK_AV_CORE);
+
+		i

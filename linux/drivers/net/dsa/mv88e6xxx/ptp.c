@@ -1,350 +1,514 @@
-_P6_NOP) \
-    $(wildcard include/config/MATOM) \
-    $(wildcard include/config/PARAVIRT_XXL) \
-  arch/x86/include/asm/disabled-features.h \
-    $(wildcard include/config/X86_SMAP) \
-    $(wildcard include/config/X86_UMIP) \
-    $(wildcard include/config/X86_INTEL_MEMORY_PROTECTION_KEYS) \
-    $(wildcard include/config/X86_5LEVEL) \
-    $(wildcard include/config/PAGE_TABLE_ISOLATION) \
-    $(wildcard include/config/INTEL_IOMMU_SVM) \
-    $(wildcard include/config/X86_SGX) \
-  include/asm-generic/bitops/const_hweight.h \
-  include/asm-generic/bitops/instrumented-atomic.h \
-  include/linux/instrumented.h \
-  include/asm-generic/bitops/instrumented-non-atomic.h \
-    $(wildcard include/config/KCSAN_ASSUME_PLAIN_WRITES_ATOMIC) \
-  include/asm-generic/bitops/instrumented-lock.h \
-  include/asm-generic/bitops/le.h \
-  arch/x86/include/uapi/asm/byteorder.h \
-  include/linux/byteorder/little_endian.h \
-  include/uapi/linux/byteorder/little_endian.h \
-  include/linux/swab.h \
-  include/uapi/linux/swab.h \
-  arch/x86/include/uapi/asm/swab.h \
-  include/linux/byteorder/generic.h \
-  include/asm-generic/bitops/ext2-atomic-setbit.h \
-  include/vdso/math64.h \
-  include/linux/time64.h \
-  include/vdso/time64.h \
-  include/uapi/linux/time.h \
-  include/uapi/linux/time_types.h \
-  include/linux/time32.h \
-  include/linux/timex.h \
-  include/uapi/linux/timex.h \
-  include/uapi/linux/param.h \
-  arch/x86/include/generated/uapi/asm/param.h \
-  include/asm-generic/param.h \
-    $(wildcard include/config/HZ) \
-  include/uapi/asm-generic/param.h \
-  arch/x86/include/asm/timex.h \
-    $(wildcard include/config/X86_TSC) \
-  arch/x86/include/asm/processor.h \
-    $(wildcard include/config/X86_VMX_FEATURE_NAMES) \
-    $(wildcard include/config/X86_IOPL_IOPERM) \
-    $(wildcard include/config/STACKPROTECTOR) \
-    $(wildcard include/config/VM86) \
-    $(wildcard include/config/X86_DEBUGCTLMSR) \
-    $(wildcard include/config/CPU_SUP_AMD) \
-    $(wildcard include/config/XEN) \
-  arch/x86/include/asm/processor-flags.h \
-  arch/x86/include/uapi/asm/processor-flags.h \
-  include/linux/mem_encrypt.h \
-    $(wildcard include/config/ARCH_HAS_MEM_ENCRYPT) \
-    $(wildcard include/config/AMD_MEM_ENCRYPT) \
-  arch/x86/include/asm/mem_encrypt.h \
-  include/linux/init.h \
-    $(wildcard include/config/STRICT_KERNEL_RWX) \
-    $(wildcard include/config/STRICT_MODULE_RWX) \
-    $(wildcard include/config/LTO_CLANG) \
-  include/linux/cc_platform.h \
-    $(wildcard include/config/ARCH_HAS_CC_PLATFORM) \
-  arch/x86/include/uapi/asm/bootparam.h \
-  include/linux/screen_info.h \
-  include/uapi/linux/screen_info.h \
-  include/linux/apm_bios.h \
-  include/uapi/linux/apm_bios.h \
-  include/uapi/linux/ioctl.h \
-  arch/x86/include/generated/uapi/asm/ioctl.h \
-  include/asm-generic/ioctl.h \
-  include/uapi/asm-generic/ioctl.h \
-  include/linux/edd.h \
-  include/uapi/linux/edd.h \
-  arch/x86/include/asm/ist.h \
-  arch/x86/include/uapi/asm/ist.h \
-  include/video/edid.h \
-    $(wildcard include/config/X86) \
-  include/uapi/video/edid.h \
-  arch/x86/include/asm/math_emu.h \
-  arch/x86/include/asm/ptrace.h \
-    $(wildcard include/config/PARAVIRT) \
-    $(wildcard include/config/IA32_EMULATION) \
-  arch/x86/include/asm/segment.h \
-    $(wildcard include/config/XEN_PV) \
-  arch/x86/include/asm/page_types.h \
-    $(wildcard include/config/PHYSICAL_START) \
-    $(wildcard include/config/PHYSICAL_ALIGN) \
-    $(wildcard include/config/DYNAMIC_PHYSICAL_MASK) \
-  arch/x86/include/asm/page_32_types.h \
-    $(wildcard include/config/HIGHMEM4G) \
-    $(wildcard include/config/HIGHMEM64G) \
-    $(wildcard include/config/PAGE_OFFSET) \
-  arch/x86/include/uapi/asm/ptrace.h \
-  arch/x86/include/uapi/asm/ptrace-abi.h \
-  arch/x86/include/asm/paravirt_types.h \
-    $(wildcard include/config/PGTABLE_LEVELS) \
-    $(wildcard include/config/PARAVIRT_DEBUG) \
-  arch/x86/include/asm/desc_defs.h \
-  arch/x86/include/asm/pgtable_types.h \
-    $(wildcard include/config/MEM_SOFT_DIRTY) \
-    $(wildcard include/config/HAVE_ARCH_USERFAULTFD_WP) \
-    $(wildcard include/config/PROC_FS) \
-  arch/x86/include/asm/pgtable_32_types.h \
-  arch/x86/include/asm/pgtable-3level_types.h \
-  include/asm-generic/pgtable-nop4d.h \
-  include/asm-generic/pgtable-nopud.h \
-  arch/x86/include/asm/nospec-branch.h \
-  include/linux/static_key.h \
-  include/linux/jump_label.h \
-    $(wildcard include/config/HAVE_ARCH_JUMP_LABEL_RELATIVE) \
-  arch/x86/include/asm/jump_label.h \
-  include/linux/objtool.h \
-    $(wildcard include/config/FRAME_POINTER) \
-  arch/x86/include/asm/msr-index.h \
-  arch/x86/include/asm/unwind_hints.h \
-  arch/x86/include/asm/orc_types.h \
-  arch/x86/include/asm/GEN-for-each-reg.h \
-  arch/x86/include/asm/spinlock_types.h \
-  include/asm-generic/qspinlock_types.h \
-    $(wildcard include/config/NR_CPUS) \
-  include/asm-generic/qrwlock_types.h \
-  arch/x86/include/asm/proto.h \
-  arch/x86/include/uapi/asm/ldt.h \
-  arch/x86/include/uapi/asm/sigcontext.h \
-  arch/x86/include/asm/current.h \
-  arch/x86/include/asm/percpu.h \
-    $(wildcard include/config/X86_64_SMP) \
-  include/linux/kernel.h \
-    $(wildcard include/config/PREEMPT_VOLUNTARY_BUILD) \
-    $(wildcard include/config/PREEMPT_DYNAMIC) \
-    $(wildcard include/config/HAVE_PREEMPT_DYNAMIC_CALL) \
-    $(wildcard include/config/HAVE_PREEMPT_DYNAMIC_KEY) \
-    $(wildcard include/config/PREEMPT_) \
-    $(wildcard include/config/DEBUG_ATOMIC_SLEEP) \
-    $(wildcard include/config/MMU) \
-    $(wildcard include/config/PROVE_LOCKING) \
-  include/linux/stdarg.h \
-  include/linux/align.h \
-  include/linux/limits.h \
-  include/uapi/linux/limits.h \
-  include/vdso/limits.h \
-  include/linux/kstrtox.h \
-  include/linux/minmax.h \
-  include/linux/panic.h \
-    $(wildcard include/config/PANIC_TIMEOUT) \
-  include/linux/printk.h \
-    $(wildcard include/config/MESSAGE_LOGLEVEL_DEFAULT) \
-    $(wildcard include/config/CONSOLE_LOGLEVEL_DEFAULT) \
-    $(wildcard include/config/CONSOLE_LOGLEVEL_QUIET) \
-    $(wildcard include/config/EARLY_PRINTK) \
-    $(wildcard include/config/PRINTK) \
-    $(wildcard include/config/DYNAMIC_DEBUG) \
-    $(wildcard include/config/DYNAMIC_DEBUG_CORE) \
-  include/linux/kern_levels.h \
-  include/linux/ratelimit_types.h \
-  include/linux/spinlock_types_raw.h \
-    $(wildcard include/config/DEBUG_SPINLOCK) \
-    $(wildcard include/config/DEBUG_LOCK_ALLOC) \
-  include/linux/lockdep_types.h \
-    $(wildcard include/config/PROVE_RAW_LOCK_NESTING) \
-    $(wildcard include/config/LOCKDEP) \
-    $(wildcard include/config/LOCK_STAT) \
-  include/linux/once_lite.h \
-  include/linux/static_call_types.h \
-    $(wildcard include/config/HAVE_STATIC_CALL) \
-  include/linux/instruction_pointer.h \
-  include/asm-generic/percpu.h \
-    $(wildcard include/config/DEBUG_PREEMPT) \
-    $(wildcard include/config/HAVE_SETUP_PER_CPU_AREA) \
-  include/linux/threads.h \
-    $(wildcard include/config/BASE_SMALL) \
-  include/linux/percpu-defs.h \
-    $(wildcard include/config/DEBUG_FORCE_WEAK_PER_CPU) \
-  arch/x86/include/asm/page.h \
-  arch/x86/include/asm/page_32.h \
-    $(wildcard include/config/DEBUG_VIRTUAL) \
-    $(wildcard include/config/FLATMEM) \
-  include/linux/string.h \
-    $(wildcard include/config/BINARY_PRINTF) \
-    $(wildcard include/config/FORTIFY_SOURCE) \
-  include/linux/errno.h \
-  include/uapi/linux/errno.h \
-  include/uapi/linux/string.h \
-  arch/x86/include/asm/string.h \
-  arch/x86/include/asm/string_32.h \
-  include/linux/fortify-string.h \
-  include/linux/range.h \
-  include/asm-generic/memory_model.h \
-    $(wildcard include/config/SPARSEMEM_VMEMMAP) \
-    $(wildcard include/config/SPARSEMEM) \
-  include/linux/pfn.h \
-  include/asm-generic/getorder.h \
-  arch/x86/include/asm/msr.h \
-  arch/x86/include/asm/msr-index.h \
-  arch/x86/include/asm/cpumask.h \
-  include/linux/cpumask.h \
-    $(wildcard include/config/CPUMASK_OFFSTACK) \
-    $(wildcard include/config/HOTPLUG_CPU) \
-    $(wildcard include/config/DEBUG_PER_CPU_MAPS) \
-  include/linux/bitmap.h \
-  include/linux/find.h \
-  include/linux/atomic.h \
-  arch/x86/include/asm/atomic.h \
-  arch/x86/include/asm/cmpxchg.h \
-  arch/x86/include/asm/cmpxchg_32.h \
-  arch/x86/include/asm/atomic64_32.h \
-  include/linux/atomic/atomic-arch-fallback.h \
-    $(wildcard include/config/GENERIC_ATOMIC64) \
-  include/linux/atomic/atomic-long.h \
-  include/linux/atomic/atomic-instrumented.h \
-  include/linux/bug.h \
-    $(wildcard include/config/BUG_ON_DATA_CORRUPTION) \
-  arch/x86/include/asm/bug.h \
-    $(wildcard include/config/DEBUG_BUGVERBOSE) \
-  include/linux/instrumentation.h \
-    $(wildcard include/config/DEBUG_ENTRY) \
-  include/asm-generic/bug.h \
-    $(wildcard include/config/BUG) \
-    $(wildcard include/config/GENERIC_BUG_RELATIVE_POINTERS) \
-  arch/x86/include/uapi/asm/msr.h \
-  include/linux/tracepoint-defs.h \
-  arch/x86/include/asm/special_insns.h \
-  include/linux/irqflags.h \
-    $(wildcard include/config/TRACE_IRQFLAGS) \
-    $(wildcard include/config/PREEMPT_RT) \
-    $(wildcard include/config/IRQSOFF_TRACER) \
-    $(wildcard include/config/PREEMPT_TRACER) \
-    $(wildcard include/config/DEBUG_IRQFLAGS) \
-    $(wildcard include/config/TRACE_IRQFLAGS_SUPPORT) \
-  arch/x86/include/asm/irqflags.h \
-  arch/x86/include/asm/fpu/types.h \
-  arch/x86/include/asm/vmxfeatures.h \
-  arch/x86/include/asm/vdso/processor.h \
-  include/linux/personality.h \
-  include/uapi/linux/personality.h \
-  arch/x86/include/asm/tsc.h \
-  arch/x86/include/asm/cpufeature.h \
-    $(wildcard include/config/X86_FEATURE_NAMES) \
-  include/vdso/time32.h \
-  include/vdso/time.h \
-  include/linux/uidgid.h \
-    $(wildcard include/config/MULTIUSER) \
-    $(wildcard include/config/USER_NS) \
-  include/linux/highuid.h \
-  include/linux/buildid.h \
-    $(wildcard include/config/CRASH_CORE) \
-  include/linux/mm_types.h \
-    $(wildcard include/config/HAVE_ALIGNED_STRUCT_PAGE) \
-    $(wildcard include/config/MEMCG) \
-    $(wildcard include/config/USERFAULTFD) \
-    $(wildcard include/config/SWAP) \
-    $(wildcard include/config/NUMA) \
-    $(wildcard include/config/HAVE_ARCH_COMPAT_MMAP_BASES) \
-    $(wildcard include/config/MEMBARRIER) \
-    $(wildcard include/config/AIO) \
-    $(wildcard include/config/MMU_NOTIFIER) \
-    $(wildcard include/config/TRANSPARENT_HUGEPAGE) \
-    $(wildcard include/config/NUMA_BALANCING) \
-    $(wildcard include/config/ARCH_WANT_BATCHED_UNMAP_TLB_FLUSH) \
-    $(wildcard include/config/HUGETLB_PAGE) \
-    $(wildcard include/config/IOMMU_SVA) \
-  include/linux/mm_types_task.h \
-    $(wildcard include/config/SPLIT_PTLOCK_CPUS) \
-    $(wildcard include/config/ARCH_ENABLE_SPLIT_PMD_PTLOCK) \
-  arch/x86/include/asm/tlbbatch.h \
-  include/linux/auxvec.h \
-  include/uapi/linux/auxvec.h \
-  arch/x86/include/uapi/asm/auxvec.h \
-  include/linux/kref.h \
-  include/linux/spinlock.h \
-    $(wildcard include/config/PREEMPTION) \
-  include/linux/preempt.h \
-    $(wildcard include/config/PREEMPT_COUNT) \
-    $(wildcard include/config/TRACE_PREEMPT_TOGGLE) \
-    $(wildcard include/config/PREEMPT_NOTIFIERS) \
-  arch/x86/include/asm/preempt.h \
-  include/linux/thread_info.h \
-    $(wildcard include/config/THREAD_INFO_IN_TASK) \
-    $(wildcard include/config/GENERIC_ENTRY) \
-    $(wildcard include/config/HAVE_ARCH_WITHIN_STACK_FRAMES) \
-    $(wildcard include/config/HARDENED_USERCOPY) \
-  include/linux/restart_block.h \
-  arch/x86/include/asm/thread_info.h \
-    $(wildcard include/config/COMPAT) \
-  include/linux/bottom_half.h \
-  include/linux/lockdep.h \
-    $(wildcard include/config/DEBUG_LOCKING_API_SELFTESTS) \
-  include/linux/smp.h \
-    $(wildcard include/config/UP_LATE_INIT) \
-  include/linux/smp_types.h \
-  include/linux/llist.h \
-    $(wildcard include/config/ARCH_HAVE_NMI_SAFE_CMPXCHG) \
-  arch/x86/include/asm/smp.h \
-    $(wildcard include/config/X86_LOCAL_APIC) \
-    $(wildcard include/config/DEBUG_NMI_SELFTEST) \
-  arch/x86/include/generated/asm/mmiowb.h \
-  include/asm-generic/mmiowb.h \
-    $(wildcard include/config/MMIOWB) \
-  include/linux/spinlock_types.h \
-  include/linux/rwlock_types.h \
-  arch/x86/include/asm/spinlock.h \
-  arch/x86/include/asm/paravirt.h \
-    $(wildcard include/config/PARAVIRT_SPINLOCKS) \
-  arch/x86/include/asm/frame.h \
-  arch/x86/include/asm/qspinlock.h \
-  include/asm-generic/qspinlock.h \
-  arch/x86/include/asm/qrwlock.h \
-  include/asm-generic/qrwlock.h \
-  include/linux/rwlock.h \
-    $(wildcard include/config/PREEMPT) \
-  include/linux/spinlock_api_smp.h \
-    $(wildcard include/config/INLINE_SPIN_LOCK) \
-    $(wildcard include/config/INLINE_SPIN_LOCK_BH) \
-    $(wildcard include/config/INLINE_SPIN_LOCK_IRQ) \
-    $(wildcard include/config/INLINE_SPIN_LOCK_IRQSAVE) \
-    $(wildcard include/config/INLINE_SPIN_TRYLOCK) \
-    $(wildcard include/config/INLINE_SPIN_TRYLOCK_BH) \
-    $(wildcard include/config/UNINLINE_SPIN_UNLOCK) \
-    $(wildcard include/config/INLINE_SPIN_UNLOCK_BH) \
-    $(wildcard include/config/INLINE_SPIN_UNLOCK_IRQ) \
-    $(wildcard include/config/INLINE_SPIN_UNLOCK_IRQRESTORE) \
-    $(wildcard include/config/GENERIC_LOCKBREAK) \
-  include/linux/rwlock_api_smp.h \
-    $(wildcard include/config/INLINE_READ_LOCK) \
-    $(wildcard include/config/INLINE_WRITE_LOCK) \
-    $(wildcard include/config/INLINE_READ_LOCK_BH) \
-    $(wildcard include/config/INLINE_WRITE_LOCK_BH) \
-    $(wildcard include/config/INLINE_READ_LOCK_IRQ) \
-    $(wildcard include/config/INLINE_WRITE_LOCK_IRQ) \
-    $(wildcard include/config/INLINE_READ_LOCK_IRQSAVE) \
-    $(wildcard include/config/INLINE_WRITE_LOCK_IRQSAVE) \
-    $(wildcard include/config/INLINE_READ_TRYLOCK) \
-    $(wildcard include/config/INLINE_WRITE_TRYLOCK) \
-    $(wildcard include/config/INLINE_READ_UNLOCK) \
-    $(wildcard include/config/INLINE_WRITE_UNLOCK) \
-    $(wildcard include/config/INLINE_READ_UNLOCK_BH) \
-    $(wildcard include/config/INLINE_WRITE_UNLOCK_BH) \
-    $(wildcard include/config/INLINE_READ_UNLOCK_IRQ) \
-    $(wildcard include/config/INLINE_WRITE_UNLOCK_IRQ) \
-    $(wildcard include/config/INLINE_READ_UNLOCK_IRQRESTORE) \
-    $(wildcard include/config/INLINE_WRITE_UNLOCK_IRQRESTORE) \
-  include/linux/refcount.h \
-  include/linux/rbtree.h \
-  include/linux/rbtree_types.h \
-  include/linux/rcupdate.h \
-    $(wildcard include/config/PREEMPT_RCU) \
-    $(wildcard include/config/TINY_RCU) \
-    $(wildcard include/config/RCU_STRICT_GRACE_PERIOD) \
-    $(wildcard include/config/TASKS_RCU_GENERIC) \
-    $(wildcard include/config/RCU_STALL_COMMON) \
-    $(wildcard include/config/NO_HZ_FU
+// SPDX-License-Identifier: GPL-2.0-or-later
+/*
+ * Marvell 88E6xxx Switch PTP support
+ *
+ * Copyright (c) 2008 Marvell Semiconductor
+ *
+ * Copyright (c) 2017 National Instruments
+ *      Erik Hons <erik.hons@ni.com>
+ *      Brandon Streiff <brandon.streiff@ni.com>
+ *      Dane Wagner <dane.wagner@ni.com>
+ */
+
+#include "chip.h"
+#include "global2.h"
+#include "hwtstamp.h"
+#include "ptp.h"
+
+#define MV88E6XXX_MAX_ADJ_PPB	1000000
+
+/* Family MV88E6250:
+ * Raw timestamps are in units of 10-ns clock periods.
+ *
+ * clkadj = scaled_ppm * 10*2^28 / (10^6 * 2^16)
+ * simplifies to
+ * clkadj = scaled_ppm * 2^7 / 5^5
+ */
+#define MV88E6250_CC_SHIFT	28
+#define MV88E6250_CC_MULT	(10 << MV88E6250_CC_SHIFT)
+#define MV88E6250_CC_MULT_NUM	(1 << 7)
+#define MV88E6250_CC_MULT_DEM	3125ULL
+
+/* Other families:
+ * Raw timestamps are in units of 8-ns clock periods.
+ *
+ * clkadj = scaled_ppm * 8*2^28 / (10^6 * 2^16)
+ * simplifies to
+ * clkadj = scaled_ppm * 2^9 / 5^6
+ */
+#define MV88E6XXX_CC_SHIFT	28
+#define MV88E6XXX_CC_MULT	(8 << MV88E6XXX_CC_SHIFT)
+#define MV88E6XXX_CC_MULT_NUM	(1 << 9)
+#define MV88E6XXX_CC_MULT_DEM	15625ULL
+
+#define TAI_EVENT_WORK_INTERVAL msecs_to_jiffies(100)
+
+#define cc_to_chip(cc) container_of(cc, struct mv88e6xxx_chip, tstamp_cc)
+#define dw_overflow_to_chip(dw) container_of(dw, struct mv88e6xxx_chip, \
+					     overflow_work)
+#define dw_tai_event_to_chip(dw) container_of(dw, struct mv88e6xxx_chip, \
+					      tai_event_work)
+
+static int mv88e6xxx_tai_read(struct mv88e6xxx_chip *chip, int addr,
+			      u16 *data, int len)
+{
+	if (!chip->info->ops->avb_ops->tai_read)
+		return -EOPNOTSUPP;
+
+	return chip->info->ops->avb_ops->tai_read(chip, addr, data, len);
+}
+
+static int mv88e6xxx_tai_write(struct mv88e6xxx_chip *chip, int addr, u16 data)
+{
+	if (!chip->info->ops->avb_ops->tai_write)
+		return -EOPNOTSUPP;
+
+	return chip->info->ops->avb_ops->tai_write(chip, addr, data);
+}
+
+/* TODO: places where this are called should be using pinctrl */
+static int mv88e6352_set_gpio_func(struct mv88e6xxx_chip *chip, int pin,
+				   int func, int input)
+{
+	int err;
+
+	if (!chip->info->ops->gpio_ops)
+		return -EOPNOTSUPP;
+
+	err = chip->info->ops->gpio_ops->set_dir(chip, pin, input);
+	if (err)
+		return err;
+
+	return chip->info->ops->gpio_ops->set_pctl(chip, pin, func);
+}
+
+static u64 mv88e6352_ptp_clock_read(const struct cyclecounter *cc)
+{
+	struct mv88e6xxx_chip *chip = cc_to_chip(cc);
+	u16 phc_time[2];
+	int err;
+
+	err = mv88e6xxx_tai_read(chip, MV88E6XXX_TAI_TIME_LO, phc_time,
+				 ARRAY_SIZE(phc_time));
+	if (err)
+		return 0;
+	else
+		return ((u32)phc_time[1] << 16) | phc_time[0];
+}
+
+static u64 mv88e6165_ptp_clock_read(const struct cyclecounter *cc)
+{
+	struct mv88e6xxx_chip *chip = cc_to_chip(cc);
+	u16 phc_time[2];
+	int err;
+
+	err = mv88e6xxx_tai_read(chip, MV88E6XXX_PTP_GC_TIME_LO, phc_time,
+				 ARRAY_SIZE(phc_time));
+	if (err)
+		return 0;
+	else
+		return ((u32)phc_time[1] << 16) | phc_time[0];
+}
+
+/* mv88e6352_config_eventcap - configure TAI event capture
+ * @event: PTP_CLOCK_PPS (internal) or PTP_CLOCK_EXTTS (external)
+ * @rising: zero for falling-edge trigger, else rising-edge trigger
+ *
+ * This will also reset the capture sequence counter.
+ */
+static int mv88e6352_config_eventcap(struct mv88e6xxx_chip *chip, int event,
+				     int rising)
+{
+	u16 global_config;
+	u16 cap_config;
+	int err;
+
+	chip->evcap_config = MV88E6XXX_TAI_CFG_CAP_OVERWRITE |
+			     MV88E6XXX_TAI_CFG_CAP_CTR_START;
+	if (!rising)
+		chip->evcap_config |= MV88E6XXX_TAI_CFG_EVREQ_FALLING;
+
+	global_config = (chip->evcap_config | chip->trig_config);
+	err = mv88e6xxx_tai_write(chip, MV88E6XXX_TAI_CFG, global_config);
+	if (err)
+		return err;
+
+	if (event == PTP_CLOCK_PPS) {
+		cap_config = MV88E6XXX_TAI_EVENT_STATUS_CAP_TRIG;
+	} else if (event == PTP_CLOCK_EXTTS) {
+		/* if STATUS_CAP_TRIG is unset we capture PTP_EVREQ events */
+		cap_config = 0;
+	} else {
+		return -EINVAL;
+	}
+
+	/* Write the capture config; this also clears the capture counter */
+	err = mv88e6xxx_tai_write(chip, MV88E6XXX_TAI_EVENT_STATUS,
+				  cap_config);
+
+	return err;
+}
+
+static void mv88e6352_tai_event_work(struct work_struct *ugly)
+{
+	struct delayed_work *dw = to_delayed_work(ugly);
+	struct mv88e6xxx_chip *chip = dw_tai_event_to_chip(dw);
+	struct ptp_clock_event ev;
+	u16 status[4];
+	u32 raw_ts;
+	int err;
+
+	mv88e6xxx_reg_lock(chip);
+	err = mv88e6xxx_tai_read(chip, MV88E6XXX_TAI_EVENT_STATUS,
+				 status, ARRAY_SIZE(status));
+	mv88e6xxx_reg_unlock(chip);
+
+	if (err) {
+		dev_err(chip->dev, "failed to read TAI status register\n");
+		return;
+	}
+	if (status[0] & MV88E6XXX_TAI_EVENT_STATUS_ERROR) {
+		dev_warn(chip->dev, "missed event capture\n");
+		return;
+	}
+	if (!(status[0] & MV88E6XXX_TAI_EVENT_STATUS_VALID))
+		goto out;
+
+	raw_ts = ((u32)status[2] << 16) | status[1];
+
+	/* Clear the valid bit so the next timestamp can come in */
+	status[0] &= ~MV88E6XXX_TAI_EVENT_STATUS_VALID;
+	mv88e6xxx_reg_lock(chip);
+	err = mv88e6xxx_tai_write(chip, MV88E6XXX_TAI_EVENT_STATUS, status[0]);
+	mv88e6xxx_reg_unlock(chip);
+
+	/* This is an external timestamp */
+	ev.type = PTP_CLOCK_EXTTS;
+
+	/* We only have one timestamping channel. */
+	ev.index = 0;
+	mv88e6xxx_reg_lock(chip);
+	ev.timestamp = timecounter_cyc2time(&chip->tstamp_tc, raw_ts);
+	mv88e6xxx_reg_unlock(chip);
+
+	ptp_clock_event(chip->ptp_clock, &ev);
+out:
+	schedule_delayed_work(&chip->tai_event_work, TAI_EVENT_WORK_INTERVAL);
+}
+
+static int mv88e6xxx_ptp_adjfine(struct ptp_clock_info *ptp, long scaled_ppm)
+{
+	struct mv88e6xxx_chip *chip = ptp_to_chip(ptp);
+	const struct mv88e6xxx_ptp_ops *ptp_ops = chip->info->ops->ptp_ops;
+	int neg_adj = 0;
+	u32 diff, mult;
+	u64 adj;
+
+	if (scaled_ppm < 0) {
+		neg_adj = 1;
+		scaled_ppm = -scaled_ppm;
+	}
+
+	mult = ptp_ops->cc_mult;
+	adj = ptp_ops->cc_mult_num;
+	adj *= scaled_ppm;
+	diff = div_u64(adj, ptp_ops->cc_mult_dem);
+
+	mv88e6xxx_reg_lock(chip);
+
+	timecounter_read(&chip->tstamp_tc);
+	chip->tstamp_cc.mult = neg_adj ? mult - diff : mult + diff;
+
+	mv88e6xxx_reg_unlock(chip);
+
+	return 0;
+}
+
+static int mv88e6xxx_ptp_adjtime(struct ptp_clock_info *ptp, s64 delta)
+{
+	struct mv88e6xxx_chip *chip = ptp_to_chip(ptp);
+
+	mv88e6xxx_reg_lock(chip);
+	timecounter_adjtime(&chip->tstamp_tc, delta);
+	mv88e6xxx_reg_unlock(chip);
+
+	return 0;
+}
+
+static int mv88e6xxx_ptp_gettime(struct ptp_clock_info *ptp,
+				 struct timespec64 *ts)
+{
+	struct mv88e6xxx_chip *chip = ptp_to_chip(ptp);
+	u64 ns;
+
+	mv88e6xxx_reg_lock(chip);
+	ns = timecounter_read(&chip->tstamp_tc);
+	mv88e6xxx_reg_unlock(chip);
+
+	*ts = ns_to_timespec64(ns);
+
+	return 0;
+}
+
+static int mv88e6xxx_ptp_settime(struct ptp_clock_info *ptp,
+				 const struct timespec64 *ts)
+{
+	struct mv88e6xxx_chip *chip = ptp_to_chip(ptp);
+	u64 ns;
+
+	ns = timespec64_to_ns(ts);
+
+	mv88e6xxx_reg_lock(chip);
+	timecounter_init(&chip->tstamp_tc, &chip->tstamp_cc, ns);
+	mv88e6xxx_reg_unlock(chip);
+
+	return 0;
+}
+
+static int mv88e6352_ptp_enable_extts(struct mv88e6xxx_chip *chip,
+				      struct ptp_clock_request *rq, int on)
+{
+	int rising = (rq->extts.flags & PTP_RISING_EDGE);
+	int func;
+	int pin;
+	int err;
+
+	/* Reject requests with unsupported flags */
+	if (rq->extts.flags & ~(PTP_ENABLE_FEATURE |
+				PTP_RISING_EDGE |
+				PTP_FALLING_EDGE |
+				PTP_STRICT_FLAGS))
+		return -EOPNOTSUPP;
+
+	/* Reject requests to enable time stamping on both edges. */
+	if ((rq->extts.flags & PTP_STRICT_FLAGS) &&
+	    (rq->extts.flags & PTP_ENABLE_FEATURE) &&
+	    (rq->extts.flags & PTP_EXTTS_EDGES) == PTP_EXTTS_EDGES)
+		return -EOPNOTSUPP;
+
+	pin = ptp_find_pin(chip->ptp_clock, PTP_PF_EXTTS, rq->extts.index);
+
+	if (pin < 0)
+		return -EBUSY;
+
+	mv88e6xxx_reg_lock(chip);
+
+	if (on) {
+		func = MV88E6352_G2_SCRATCH_GPIO_PCTL_EVREQ;
+
+		err = mv88e6352_set_gpio_func(chip, pin, func, true);
+		if (err)
+			goto out;
+
+		schedule_delayed_work(&chip->tai_event_work,
+				      TAI_EVENT_WORK_INTERVAL);
+
+		err = mv88e6352_config_eventcap(chip, PTP_CLOCK_EXTTS, rising);
+	} else {
+		func = MV88E6352_G2_SCRATCH_GPIO_PCTL_GPIO;
+
+		err = mv88e6352_set_gpio_func(chip, pin, func, true);
+
+		cancel_delayed_work_sync(&chip->tai_event_work);
+	}
+
+out:
+	mv88e6xxx_reg_unlock(chip);
+
+	return err;
+}
+
+static int mv88e6352_ptp_enable(struct ptp_clock_info *ptp,
+				struct ptp_clock_request *rq, int on)
+{
+	struct mv88e6xxx_chip *chip = ptp_to_chip(ptp);
+
+	switch (rq->type) {
+	case PTP_CLK_REQ_EXTTS:
+		return mv88e6352_ptp_enable_extts(chip, rq, on);
+	default:
+		return -EOPNOTSUPP;
+	}
+}
+
+static int mv88e6352_ptp_verify(struct ptp_clock_info *ptp, unsigned int pin,
+				enum ptp_pin_function func, unsigned int chan)
+{
+	switch (func) {
+	case PTP_PF_NONE:
+	case PTP_PF_EXTTS:
+		break;
+	case PTP_PF_PEROUT:
+	case PTP_PF_PHYSYNC:
+		return -EOPNOTSUPP;
+	}
+	return 0;
+}
+
+const struct mv88e6xxx_ptp_ops mv88e6165_ptp_ops = {
+	.clock_read = mv88e6165_ptp_clock_read,
+	.global_enable = mv88e6165_global_enable,
+	.global_disable = mv88e6165_global_disable,
+	.arr0_sts_reg = MV88E6165_PORT_PTP_ARR0_STS,
+	.arr1_sts_reg = MV88E6165_PORT_PTP_ARR1_STS,
+	.dep_sts_reg = MV88E6165_PORT_PTP_DEP_STS,
+	.rx_filters = (1 << HWTSTAMP_FILTER_NONE) |
+		(1 << HWTSTAMP_FILTER_PTP_V2_L2_EVENT) |
+		(1 << HWTSTAMP_FILTER_PTP_V2_L2_SYNC) |
+		(1 << HWTSTAMP_FILTER_PTP_V2_L2_DELAY_REQ) |
+		(1 << HWTSTAMP_FILTER_PTP_V2_EVENT) |
+		(1 << HWTSTAMP_FILTER_PTP_V2_SYNC) |
+		(1 << HWTSTAMP_FILTER_PTP_V2_DELAY_REQ),
+	.cc_shift = MV88E6XXX_CC_SHIFT,
+	.cc_mult = MV88E6XXX_CC_MULT,
+	.cc_mult_num = MV88E6XXX_CC_MULT_NUM,
+	.cc_mult_dem = MV88E6XXX_CC_MULT_DEM,
+};
+
+const struct mv88e6xxx_ptp_ops mv88e6250_ptp_ops = {
+	.clock_read = mv88e6352_ptp_clock_read,
+	.ptp_enable = mv88e6352_ptp_enable,
+	.ptp_verify = mv88e6352_ptp_verify,
+	.event_work = mv88e6352_tai_event_work,
+	.port_enable = mv88e6352_hwtstamp_port_enable,
+	.port_disable = mv88e6352_hwtstamp_port_disable,
+	.n_ext_ts = 1,
+	.arr0_sts_reg = MV88E6XXX_PORT_PTP_ARR0_STS,
+	.arr1_sts_reg = MV88E6XXX_PORT_PTP_ARR1_STS,
+	.dep_sts_reg = MV88E6XXX_PORT_PTP_DEP_STS,
+	.rx_filters = (1 << HWTSTAMP_FILTER_NONE) |
+		(1 << HWTSTAMP_FILTER_PTP_V2_L4_EVENT) |
+		(1 << HWTSTAMP_FILTER_PTP_V2_L4_SYNC) |
+		(1 << HWTSTAMP_FILTER_PTP_V2_L4_DELAY_REQ) |
+		(1 << HWTSTAMP_FILTER_PTP_V2_L2_EVENT) |
+		(1 << HWTSTAMP_FILTER_PTP_V2_L2_SYNC) |
+		(1 << HWTSTAMP_FILTER_PTP_V2_L2_DELAY_REQ) |
+		(1 << HWTSTAMP_FILTER_PTP_V2_EVENT) |
+		(1 << HWTSTAMP_FILTER_PTP_V2_SYNC) |
+		(1 << HWTSTAMP_FILTER_PTP_V2_DELAY_REQ),
+	.cc_shift = MV88E6250_CC_SHIFT,
+	.cc_mult = MV88E6250_CC_MULT,
+	.cc_mult_num = MV88E6250_CC_MULT_NUM,
+	.cc_mult_dem = MV88E6250_CC_MULT_DEM,
+};
+
+const struct mv88e6xxx_ptp_ops mv88e6352_ptp_ops = {
+	.clock_read = mv88e6352_ptp_clock_read,
+	.ptp_enable = mv88e6352_ptp_enable,
+	.ptp_verify = mv88e6352_ptp_verify,
+	.event_work = mv88e6352_tai_event_work,
+	.port_enable = mv88e6352_hwtstamp_port_enable,
+	.port_disable = mv88e6352_hwtstamp_port_disable,
+	.n_ext_ts = 1,
+	.arr0_sts_reg = MV88E6XXX_PORT_PTP_ARR0_STS,
+	.arr1_sts_reg = MV88E6XXX_PORT_PTP_ARR1_STS,
+	.dep_sts_reg = MV88E6XXX_PORT_PTP_DEP_STS,
+	.rx_filters = (1 << HWTSTAMP_FILTER_NONE) |
+		(1 << HWTSTAMP_FILTER_PTP_V2_L4_EVENT) |
+		(1 << HWTSTAMP_FILTER_PTP_V2_L4_SYNC) |
+		(1 << HWTSTAMP_FILTER_PTP_V2_L4_DELAY_REQ) |
+		(1 << HWTSTAMP_FILTER_PTP_V2_L2_EVENT) |
+		(1 << HWTSTAMP_FILTER_PTP_V2_L2_SYNC) |
+		(1 << HWTSTAMP_FILTER_PTP_V2_L2_DELAY_REQ) |
+		(1 << HWTSTAMP_FILTER_PTP_V2_EVENT) |
+		(1 << HWTSTAMP_FILTER_PTP_V2_SYNC) |
+		(1 << HWTSTAMP_FILTER_PTP_V2_DELAY_REQ),
+	.cc_shift = MV88E6XXX_CC_SHIFT,
+	.cc_mult = MV88E6XXX_CC_MULT,
+	.cc_mult_num = MV88E6XXX_CC_MULT_NUM,
+	.cc_mult_dem = MV88E6XXX_CC_MULT_DEM,
+};
+
+static u64 mv88e6xxx_ptp_clock_read(const struct cyclecounter *cc)
+{
+	struct mv88e6xxx_chip *chip = cc_to_chip(cc);
+
+	if (chip->info->ops->ptp_ops->clock_read)
+		return chip->info->ops->ptp_ops->clock_read(cc);
+
+	return 0;
+}
+
+/* With a 125MHz input clock, the 32-bit timestamp counter overflows in ~34.3
+ * seconds; this task forces periodic reads so that we don't miss any.
+ */
+#define MV88E6XXX_TAI_OVERFLOW_PERIOD (HZ * 16)
+static void mv88e6xxx_ptp_overflow_check(struct work_struct *work)
+{
+	struct delayed_work *dw = to_delayed_work(work);
+	struct mv88e6xxx_chip *chip = dw_overflow_to_chip(dw);
+	struct timespec64 ts;
+
+	mv88e6xxx_ptp_gettime(&chip->ptp_clock_info, &ts);
+
+	schedule_delayed_work(&chip->overflow_work,
+			      MV88E6XXX_TAI_OVERFLOW_PERIOD);
+}
+
+int mv88e6xxx_ptp_setup(struct mv88e6xxx_chip *chip)
+{
+	const struct mv88e6xxx_ptp_ops *ptp_ops = chip->info->ops->ptp_ops;
+	int i;
+
+	/* Set up the cycle counter */
+	memset(&chip->tstamp_cc, 0, sizeof(chip->tstamp_cc));
+	chip->tstamp_cc.read	= mv88e6xxx_ptp_clock_read;
+	chip->tstamp_cc.mask	= CYCLECOUNTER_MASK(32);
+	chip->tstamp_cc.mult	= ptp_ops->cc_mult;
+	chip->tstamp_cc.shift	= ptp_ops->cc_shift;
+
+	timecounter_init(&chip->tstamp_tc, &chip->tstamp_cc,
+			 ktime_to_ns(ktime_get_real()));
+
+	INIT_DELAYED_WORK(&chip->overflow_work, mv88e6xxx_ptp_overflow_check);
+	if (ptp_ops->event_work)
+		INIT_DELAYED_WORK(&chip->tai_event_work, ptp_ops->event_work);
+
+	chip->ptp_clock_info.owner = THIS_MODULE;
+	snprintf(chip->ptp_clock_info.name, sizeof(chip->ptp_clock_info.name),
+		 "%s", dev_name(chip->dev));
+
+	chip->ptp_clock_info.n_ext_ts	= ptp_ops->n_ext_ts;
+	chip->ptp_clock_info.n_per_out	= 0;
+	chip->ptp_clock_info.n_pins	= mv88e6xxx_num_gpio(chip);
+	chip->ptp_clock_info.pps	= 0;
+
+	for (i = 0; i < chip->ptp_clock_info.n_pins; ++i) {
+		struct ptp_pin_desc *ppd = &chip->pin_config[i];
+
+		snprintf(ppd->name, sizeof(ppd->name), "mv88e6xxx_gpio%d", i);
+		ppd->index = i;
+		ppd->func = PTP_PF_NONE;
+	}
+	chip->ptp_clock_info.pin_config = chip->pin_config;
+
+	chip->ptp_clock_info.max_adj    = MV88E6XXX_MAX_ADJ_PPB;
+	chip->ptp_clock_info.adjfine	= mv88e6xxx_ptp_adjfine;
+	chip->ptp_clock_info.adjtime	= mv88e6xxx_ptp_adjtime;
+	chip->ptp_clock_info.gettime64	= mv88e6xxx_ptp_gettime;
+	chip->ptp_clock_info.settime64	= mv88e6xxx_ptp_settime;
+	chip->ptp_clock_info.enable	= ptp_ops->ptp_enable;
+	chip->ptp_clock_info.verify	= ptp_ops->ptp_verify;
+	chip->ptp_clock_info.do_aux_work = mv88e6xxx_hwtstamp_work;
+
+	chip->ptp_clock = ptp_clock_register(&chip->ptp_clock_info, chip->dev);
+	if (IS_ERR(chip->ptp_clock))
+		return PTR_ERR(chip->ptp_clock);
+
+	schedule_delayed_work(&chip->overflow_work,
+			      MV88E6XXX_TAI_OVERFLOW_PERIOD);
+
+	return 0;
+}
+
+void mv88e6xxx_ptp_free(struct mv88e6xxx_chip *chip)
+{
+	if (chip->ptp_clock) {
+		cancel_delayed_work_sync(&chip->overflow_work);
+		if (chip->info->ops->ptp_ops->event_work)
+			cancel_delayed_work_sync(&chip->tai_event_work);
+
+		ptp_clock_unregister(chip->ptp_clock);
+		chip->ptp_clock = NULL;
+	}
+}

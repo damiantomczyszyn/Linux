@@ -1,93 +1,112 @@
-g nr_stack_trace_entries;
+{
+		if (dl_prio(oldprio))
+			p->dl.pi_se = &p->dl;
+		if (oldprio < prio)
+			queue_flag |= ENQUEUE_HEAD;
+	} else {
+		if (dl_prio(oldprio))
+			p->dl.pi_se = &p->dl;
+		if (rt_prio(oldprio))
+			p->rt.timeout = 0;
+	}
 
-#ifdef CONFIG_PROVE_LOCKING
-/**
- * struct lock_trace - single stack backtrace
- * @hash_entry:	Entry in a stack_trace_hash[] list.
- * @hash:	jhash() of @entries.
- * @nr_entries:	Number of entries in @entries.
- * @entries:	Actual stack backtrace.
- */
-struct lock_trace {
-	struct hlist_node	hash_entry;
-	u32			hash;
-	u32			nr_entries;
-	unsigned long		entries[] __aligned(sizeof(unsigned long));
-};
-#define LOCK_TRACE_SIZE_IN_LONGS				\
-	(sizeof(struct lock_trace) / sizeof(unsigned long))
+	__setscheduler_prio(p, prio);
+
+	if (queued)
+		enqueue_task(rq, p, queue_flag);
+	if (running)
+		set_next_task(rq, p);
+
+	check_class_changed(rq, p, prev_class, oldprio);
+out_unlock:
+	/* Avoid rq from going away on us: */
+	preempt_disable();
+
+	rq_unpin_lock(rq, &rf);
+	__balance_callbacks(rq);
+	raw_spin_rq_unlock(rq);
+
+	preempt_enable();
+}
+#else
+static inline int rt_effective_prio(struct task_struct *p, int prio)
+{
+	return prio;
+}
+#endif
+
+void set_user_nice(struct task_struct *p, long nice)
+{
+	bool queued, running;
+	int old_prio;
+	struct rq_flags rf;
+	struct rq *rq;
+
+	if (task_nice(p) == nice || nice < MIN_NICE || nice > MAX_NICE)
+		return;
+	/*
+	 * We have to be careful, if called from sys_setpriority(),
+	 * the task might be in the middle of scheduling on another CPU.
+	 */
+	rq = task_rq_lock(p, &rf);
+	update_rq_clock(rq);
+
+	/*
+	 * The RT priorities are set via sched_setscheduler(), but we still
+	 * allow the 'normal' nice value to be set - but as expected
+	 * it won't have any effect on scheduling until the task is
+	 * SCHED_DEADLINE, SCHED_FIFO or SCHED_RR:
+	 */
+	if (task_has_dl_policy(p) || task_has_rt_policy(p)) {
+		p->static_prio = NICE_TO_PRIO(nice);
+		goto out_unlock;
+	}
+	queued = task_on_rq_queued(p);
+	running = task_current(rq, p);
+	if (queued)
+		dequeue_task(rq, p, DEQUEUE_SAVE | DEQUEUE_NOCLOCK);
+	if (running)
+		put_prev_task(rq, p);
+
+	p->static_prio = NICE_TO_PRIO(nice);
+	set_load_weight(p, true);
+	old_prio = p->prio;
+	p->prio = effective_prio(p);
+
+	if (queued)
+		enqueue_task(rq, p, ENQUEUE_RESTORE | ENQUEUE_NOCLOCK);
+	if (running)
+		set_next_task(rq, p);
+
+	/*
+	 * If the task increased its priority or is running and
+	 * lowered its priority, then reschedule its CPU:
+	 */
+	p->sched_class->prio_changed(rq, p, old_prio);
+
+out_unlock:
+	task_rq_unlock(rq, p, &rf);
+}
+EXPORT_SYMBOL(set_user_nice);
+
 /*
- * Stack-trace: sequence of lock_trace structures. Protected by the graph_lock.
+ * can_nice - check if a task can reduce its nice value
+ * @p: task
+ * @nice: nice value
  */
-static unsigned long stack_trace[MAX_STACK_TRACE_ENTRIES];
-static struct hlist_head stack_trace_hash[STACK_TRACE_HASH_SIZE];
-
-static bool traces_identical(struct lock_trace *t1, struct lock_trace *t2)
+int can_nice(const struct task_struct *p, const int nice)
 {
-	return t1->hash == t2->hash && t1->nr_entries == t2->nr_entries &&
-		memcmp(t1->entries, t2->entries,
-		       t1->nr_entries * sizeof(t1->entries[0])) == 0;
+	/* Convert nice value [19,-20] to rlimit style value [1,40]: */
+	int nice_rlim = nice_to_rlimit(nice);
+
+	return (nice_rlim <= task_rlimit(p, RLIMIT_NICE) ||
+		capable(CAP_SYS_NICE));
 }
 
-static struct lock_trace *save_trace(void)
-{
-	struct lock_trace *trace, *t2;
-	struct hlist_head *hash_head;
-	u32 hash;
-	int max_entries;
+#ifdef __ARCH_WANT_SYS_NICE
 
-	BUILD_BUG_ON_NOT_POWER_OF_2(STACK_TRACE_HASH_SIZE);
-	BUILD_BUG_ON(LOCK_TRACE_SIZE_IN_LONGS >= MAX_STACK_TRACE_ENTRIES);
-
-	trace = (struct lock_trace *)(stack_trace + nr_stack_trace_entries);
-	max_entries = MAX_STACK_TRACE_ENTRIES - nr_stack_trace_entries -
-		LOCK_TRACE_SIZE_IN_LONGS;
-
-	if (max_entries <= 0) {
-		if (!debug_locks_off_graph_unlock())
-			return NULL;
-
-		print_lockdep_off("BUG: MAX_STACK_TRACE_ENTRIES too low!");
-		dump_stack();
-
-		return NULL;
-	}
-	trace->nr_entries = stack_trace_save(trace->entries, max_entries, 3);
-
-	hash = jhash(trace->entries, trace->nr_entries *
-		     sizeof(trace->entries[0]), 0);
-	trace->hash = hash;
-	hash_head = stack_trace_hash + (hash & (STACK_TRACE_HASH_SIZE - 1));
-	hlist_for_each_entry(t2, hash_head, hash_entry) {
-		if (traces_identical(trace, t2))
-			return t2;
-	}
-	nr_stack_trace_entries += LOCK_TRACE_SIZE_IN_LONGS + trace->nr_entries;
-	hlist_add_head(&trace->hash_entry, hash_head);
-
-	return trace;
-}
-
-/* Return the number of stack traces in the stack_trace[] array. */
-u64 lockdep_stack_trace_count(void)
-{
-	struct lock_trace *trace;
-	u64 c = 0;
-	int i;
-
-	for (i = 0; i < ARRAY_SIZE(stack_trace_hash); i++) {
-		hlist_for_each_entry(trace, &stack_trace_hash[i], hash_entry) {
-			c++;
-		}
-	}
-
-	return c;
-}
-
-/* Return the number of stack hash chains that have at least one stack trace. */
-u64 lockdep_stack_hash_count(void)
-{
-	u64 c = 0;
-	int i;
-
-	for (i = 0; i < ARRAY_SIZE(stack_trace_hash); i
+/*
+ * sys_nice - change the priority of the current process.
+ * @increment: priority increment
+ *
+ * sys_setpriority is a more generic, 

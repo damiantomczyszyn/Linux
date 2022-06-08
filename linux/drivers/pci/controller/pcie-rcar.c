@@ -1,72 +1,100 @@
-lude/config/SHMEM) \
-    $(wildcard include/config/ARCH_HAS_PTE_SPECIAL) \
-    $(wildcard include/config/ARCH_HAS_PTE_DEVMAP) \
-    $(wildcard include/config/DEBUG_VM_RB) \
-    $(wildcard include/config/PAGE_POISONING) \
-    $(wildcard include/config/INIT_ON_ALLOC_DEFAULT_ON) \
-    $(wildcard include/config/INIT_ON_FREE_DEFAULT_ON) \
-    $(wildcard include/config/DEBUG_PAGEALLOC) \
-    $(wildcard include/config/HUGETLBFS) \
-    $(wildcard include/config/MAPPING_DIRTY_HELPERS) \
-    $(wildcard include/config/ANON_VMA_NAME) \
-  include/linux/mmap_lock.h \
-  include/linux/page_ext.h \
-  include/linux/stacktrace.h \
-    $(wildcard include/config/ARCH_STACKWALK) \
-    $(wildcard include/config/STACKTRACE) \
-    $(wildcard include/config/HAVE_RELIABLE_STACKTRACE) \
-  include/linux/stackdepot.h \
-    $(wildcard include/config/STACKDEPOT_ALWAYS_INIT) \
-  include/linux/page_ref.h \
-    $(wildcard include/config/DEBUG_PAGE_REF) \
-  include/linux/sizes.h \
-  include/linux/pgtable.h \
-    $(wildcard include/config/HIGHPTE) \
-    $(wildcard include/config/GUP_GET_PTE_LOW_HIGH) \
-    $(wildcard include/config/HAVE_ARCH_SOFT_DIRTY) \
-    $(wildcard include/config/ARCH_ENABLE_THP_MIGRATION) \
-    $(wildcard include/config/X86_ESPFIX64) \
-  arch/x86/include/asm/pgtable.h \
-    $(wildcard include/config/DEBUG_WX) \
-    $(wildcard include/config/PAGE_TABLE_CHECK) \
-  arch/x86/include/asm/pkru.h \
-  arch/x86/include/asm/fpu/api.h \
-    $(wildcard include/config/X86_DEBUG_FPU) \
-  arch/x86/include/asm/coco.h \
-  include/asm-generic/pgtable_uffd.h \
-  include/linux/page_table_check.h \
-  arch/x86/include/asm/pgtable_32.h \
-  arch/x86/include/asm/pgtable-3level.h \
-  arch/x86/include/asm/pgtable-invert.h \
-  include/linux/huge_mm.h \
-  include/linux/sched/coredump.h \
-    $(wildcard include/config/CORE_DUMP_DEFAULT_ELF_HEADERS) \
-  include/linux/vmstat.h \
-    $(wildcard include/config/VM_EVENT_COUNTERS) \
-  include/linux/writeback.h \
-  include/linux/flex_proportions.h \
-  include/linux/backing-dev-defs.h \
-    $(wildcard include/config/DEBUG_FS) \
-  include/linux/blk_types.h \
-    $(wildcard include/config/FAIL_MAKE_REQUEST) \
-    $(wildcard include/config/BLK_CGROUP_IOCOST) \
-    $(wildcard include/config/BLK_INLINE_ENCRYPTION) \
-    $(wildcard include/config/BLK_DEV_INTEGRITY) \
-  include/linux/bvec.h \
-  include/linux/highmem.h \
-  include/linux/cacheflush.h \
-  arch/x86/include/asm/cacheflush.h \
-  include/asm-generic/cacheflush.h \
-  include/linux/highmem-internal.h \
-  arch/x86/include/asm/highmem.h \
-  arch/x86/include/asm/tlbflush.h \
-  arch/x86/include/asm/invpcid.h \
-  arch/x86/include/asm/pti.h \
-  include/linux/bio.h \
-  include/linux/mempool.h \
-  include/linux/uio.h \
-    $(wildcard include/config/ARCH_HAS_UACCESS_FLUSHCACHE) \
-  include/uapi/linux/uio.h \
-  include/linux/node.h \
-    $(wildcard include/config/HMEM_REPORTING) \
-  include/linux/p
+// SPDX-License-Identifier: GPL-2.0-or-later
+/*
+ *  Driver for the Conexant CX23885 PCIe bridge
+ *
+ *  Copyright (c) 2006 Steven Toth <stoth@linuxtv.org>
+ */
+
+#include "cx23885.h"
+
+#include <linux/init.h>
+#include <linux/list.h>
+#include <linux/module.h>
+#include <linux/moduleparam.h>
+#include <linux/kmod.h>
+#include <linux/kernel.h>
+#include <linux/pci.h>
+#include <linux/slab.h>
+#include <linux/interrupt.h>
+#include <linux/delay.h>
+#include <asm/div64.h>
+#include <linux/firmware.h>
+
+#include "cimax2.h"
+#include "altera-ci.h"
+#include "cx23888-ir.h"
+#include "cx23885-ir.h"
+#include "cx23885-av.h"
+#include "cx23885-input.h"
+
+MODULE_DESCRIPTION("Driver for cx23885 based TV cards");
+MODULE_AUTHOR("Steven Toth <stoth@linuxtv.org>");
+MODULE_LICENSE("GPL");
+MODULE_VERSION(CX23885_VERSION);
+
+/*
+ * Some platforms have been found to require periodic resetting of the DMA
+ * engine. Ryzen and XEON platforms are known to be affected. The symptom
+ * encountered is "mpeg risc op code error". Only Ryzen platforms employ
+ * this workaround if the option equals 1. The workaround can be explicitly
+ * disabled for all platforms by setting to 0, the workaround can be forced
+ * on for any platform by setting to 2.
+ */
+static unsigned int dma_reset_workaround = 1;
+module_param(dma_reset_workaround, int, 0644);
+MODULE_PARM_DESC(dma_reset_workaround, "periodic RiSC dma engine reset; 0-force disable, 1-driver detect (default), 2-force enable");
+
+static unsigned int debug;
+module_param(debug, int, 0644);
+MODULE_PARM_DESC(debug, "enable debug messages");
+
+static unsigned int card[]  = {[0 ... (CX23885_MAXBOARDS - 1)] = UNSET };
+module_param_array(card,  int, NULL, 0444);
+MODULE_PARM_DESC(card, "card type");
+
+#define dprintk(level, fmt, arg...)\
+	do { if (debug >= level)\
+		printk(KERN_DEBUG pr_fmt("%s: " fmt), \
+		       __func__, ##arg); \
+	} while (0)
+
+static unsigned int cx23885_devcount;
+
+#define NO_SYNC_LINE (-1U)
+
+/* FIXME, these allocations will change when
+ * analog arrives. The be reviewed.
+ * CX23887 Assumptions
+ * 1 line = 16 bytes of CDT
+ * cmds size = 80
+ * cdt size = 16 * linesize
+ * iqsize = 64
+ * maxlines = 6
+ *
+ * Address Space:
+ * 0x00000000 0x00008fff FIFO clusters
+ * 0x00010000 0x000104af Channel Management Data Structures
+ * 0x000104b0 0x000104ff Free
+ * 0x00010500 0x000108bf 15 channels * iqsize
+ * 0x000108c0 0x000108ff Free
+ * 0x00010900 0x00010e9f IQ's + Cluster Descriptor Tables
+ *                       15 channels * (iqsize + (maxlines * linesize))
+ * 0x00010ea0 0x00010xxx Free
+ */
+
+static struct sram_channel cx23885_sram_channels[] = {
+	[SRAM_CH01] = {
+		.name		= "VID A",
+		.cmds_start	= 0x10000,
+		.ctrl_start	= 0x10380,
+		.cdt		= 0x104c0,
+		.fifo_start	= 0x40,
+		.fifo_size	= 0x2800,
+		.ptr1_reg	= DMA1_PTR1,
+		.ptr2_reg	= DMA1_PTR2,
+		.cnt1_reg	= DMA1_CNT1,
+		.cnt2_reg	= DMA1_CNT2,
+	},
+	[SRAM_CH02] = {
+		.name		= "ch2",
+		.cmds_start	= 0x

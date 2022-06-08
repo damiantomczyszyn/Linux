@@ -1,107 +1,100 @@
-LE_UPGRADE) \
-    $(wildcard include/config/ACPI_WATCHDOG) \
-    $(wildcard include/config/ACPI_SPCR_TABLE) \
-    $(wildcard include/config/ACPI_GENERIC_GSI) \
-    $(wildcard include/config/ACPI_LPIT) \
-    $(wildcard include/config/ACPI_PPTT) \
-    $(wildcard include/config/ACPI_PCC) \
-  include/linux/errno.h \
-  include/uapi/linux/errno.h \
-  arch/x86/include/generated/uapi/asm/errno.h \
-  include/uapi/asm-generic/errno.h \
-  include/uapi/asm-generic/errno-base.h \
-  include/linux/ioport.h \
-    $(wildcard include/config/MEMORY_HOTREMOVE) \
+dcard include/config/RCU_FANOUT_LEAF) \
+  include/linux/page-flags-layout.h \
+    $(wildcard include/config/KASAN_HW_TAGS) \
+  include/linux/numa.h \
+    $(wildcard include/config/NODES_SHIFT) \
+    $(wildcard include/config/NUMA_KEEP_MEMINFO) \
+    $(wildcard include/config/HAVE_ARCH_NODE_DEV_GROUP) \
+  arch/x86/include/asm/sparsemem.h \
+  include/generated/bounds.h \
+  include/linux/seqlock.h \
+  include/linux/ww_mutex.h \
+    $(wildcard include/config/DEBUG_RT_MUTEXES) \
+    $(wildcard include/config/DEBUG_WW_MUTEX_SLOWPATH) \
+  include/linux/rtmutex.h \
+  arch/x86/include/asm/mmu.h \
+    $(wildcard include/config/MODIFY_LDT_SYSCALL) \
+  include/linux/kmod.h \
+  include/linux/umh.h \
+  include/linux/gfp.h \
+    $(wildcard include/config/HIGHMEM) \
+    $(wildcard include/config/ZONE_DMA) \
+    $(wildcard include/config/ZONE_DMA32) \
+    $(wildcard include/config/ZONE_DEVICE) \
+    $(wildcard include/config/PM_SLEEP) \
+    $(wildcard include/config/CONTIG_ALLOC) \
+    $(wildcard include/config/CMA) \
+  include/linux/mmdebug.h \
+    $(wildcard include/config/DEBUG_VM) \
+    $(wildcard include/config/DEBUG_VM_PGFLAGS) \
+  include/linux/mmzone.h \
+    $(wildcard include/config/FORCE_MAX_ZONEORDER) \
+    $(wildcard include/config/MEMORY_ISOLATION) \
+    $(wildcard include/config/ZSMALLOC) \
     $(wildcard include/config/MEMORY_HOTPLUG) \
-  include/linux/bits.h \
-  include/linux/const.h \
-  include/vdso/const.h \
-  include/uapi/linux/const.h \
-  include/vdso/bits.h \
-  arch/x86/include/uapi/asm/bitsperlong.h \
-  include/asm-generic/bitsperlong.h \
-    $(wildcard include/config/64BIT) \
-  include/uapi/asm-generic/bitsperlong.h \
-  include/linux/build_bug.h \
-  include/linux/compiler.h \
-    $(wildcard include/config/TRACE_BRANCH_PROFILING) \
-    $(wildcard include/config/PROFILE_ALL_BRANCHES) \
-    $(wildcard include/config/STACK_VALIDATION) \
-    $(wildcard include/config/CFI_CLANG) \
-  include/linux/compiler_types.h \
-  arch/x86/include/generated/asm/rwonce.h \
-  include/asm-generic/rwonce.h \
-  include/linux/kasan-checks.h \
-    $(wildcard include/config/KASAN_GENERIC) \
-    $(wildcard include/config/KASAN_SW_TAGS) \
-  include/linux/types.h \
-    $(wildcard include/config/HAVE_UID16) \
-    $(wildcard include/config/UID16) \
-    $(wildcard include/config/ARCH_DMA_ADDR_T_64BIT) \
-    $(wildcard include/config/PHYS_ADDR_T_64BIT) \
-    $(wildcard include/config/ARCH_32BIT_USTAT_F_TINODE) \
-  include/uapi/linux/types.h \
-  arch/x86/include/generated/uapi/asm/types.h \
-  include/uapi/asm-generic/types.h \
-  include/asm-generic/int-ll64.h \
-  include/uapi/asm-generic/int-ll64.h \
-  include/uapi/linux/posix_types.h \
-  include/linux/stddef.h \
-  include/uapi/linux/stddef.h \
-  arch/x86/include/asm/posix_types.h \
-    $(wildcard include/config/X86_32) \
-  arch/x86/include/uapi/asm/posix_types_32.h \
-  include/uapi/asm-generic/posix_types.h \
-  include/linux/kcsan-checks.h \
-    $(wildcard include/config/KCSAN) \
-    $(wildcard include/config/KCSAN_WEAK_MEMORY) \
-    $(wildcard include/config/KCSAN_IGNORE_ATOMICS) \
-  include/linux/minmax.h \
-  include/linux/irqdomain.h \
-    $(wildcard include/config/IRQ_DOMAIN_HIERARCHY) \
-    $(wildcard include/config/GENERIC_IRQ_DEBUGFS) \
-    $(wildcard include/config/IRQ_DOMAIN) \
-    $(wildcard include/config/IRQ_DOMAIN_NOMAP) \
-  include/linux/irqhandler.h \
-  include/linux/of.h \
-    $(wildcard include/config/OF_DYNAMIC) \
-    $(wildcard include/config/SPARC) \
-    $(wildcard include/config/OF_PROMTREE) \
-    $(wildcard include/config/OF_KOBJ) \
-    $(wildcard include/config/NUMA) \
-    $(wildcard include/config/OF_NUMA) \
-    $(wildcard include/config/OF_OVERLAY) \
-  include/linux/bitops.h \
-  include/linux/typecheck.h \
-  include/uapi/linux/kernel.h \
-  include/uapi/linux/sysinfo.h \
-  arch/x86/include/asm/bitops.h \
-    $(wildcard include/config/X86_64) \
-    $(wildcard include/config/X86_CMOV) \
-  arch/x86/include/asm/alternative.h \
-    $(wildcard include/config/SMP) \
-  include/linux/stringify.h \
-  arch/x86/include/asm/asm.h \
-    $(wildcard include/config/KPROBES) \
-  arch/x86/include/asm/extable_fixup_types.h \
-  arch/x86/include/asm/rmwcc.h \
-    $(wildcard include/config/CC_HAS_ASM_GOTO) \
-  arch/x86/include/asm/barrier.h \
-  arch/x86/include/asm/nops.h \
-  include/asm-generic/barrier.h \
-  include/asm-generic/bitops/fls64.h \
-  include/asm-generic/bitops/sched.h \
-  arch/x86/include/asm/arch_hweight.h \
-  arch/x86/include/asm/cpufeatures.h \
-  arch/x86/include/asm/required-features.h \
-    $(wildcard include/config/X86_MINIMUM_CPU_FAMILY) \
-    $(wildcard include/config/MATH_EMULATION) \
-    $(wildcard include/config/X86_PAE) \
-    $(wildcard include/config/X86_CMPXCHG64) \
-    $(wildcard include/config/X86_P6_NOP) \
-    $(wildcard include/config/MATOM) \
-    $(wildcard include/config/PARAVIRT_XXL) \
-  arch/x86/include/asm/disabled-features.h \
-    $(wildcard include/config/X86_SMAP) \
-    $(wildcard include/config/X86_UMIP) \
-    $(wildcard include/co
+    $(wildcard include/config/COMPACTION) \
+    $(wildcard include/config/PAGE_EXTENSION) \
+    $(wildcard include/config/DEFERRED_STRUCT_PAGE_INIT) \
+    $(wildcard include/config/HAVE_MEMORYLESS_NODES) \
+    $(wildcard include/config/SPARSEMEM_EXTREME) \
+    $(wildcard include/config/HAVE_ARCH_PFN_VALID) \
+  include/linux/nodemask.h \
+  include/linux/pageblock-flags.h \
+    $(wildcard include/config/HUGETLB_PAGE_SIZE_VARIABLE) \
+  include/linux/page-flags.h \
+    $(wildcard include/config/ARCH_USES_PG_UNCACHED) \
+    $(wildcard include/config/MEMORY_FAILURE) \
+    $(wildcard include/config/PAGE_IDLE_FLAG) \
+    $(wildcard include/config/HUGETLB_PAGE_FREE_VMEMMAP) \
+    $(wildcard include/config/HUGETLB_PAGE_FREE_VMEMMAP_DEFAULT_ON) \
+    $(wildcard include/config/KSM) \
+  include/linux/local_lock.h \
+  include/linux/local_lock_internal.h \
+  include/linux/memory_hotplug.h \
+    $(wildcard include/config/HAVE_ARCH_NODEDATA_EXTENSION) \
+    $(wildcard include/config/ARCH_HAS_ADD_PAGES) \
+    $(wildcard include/config/MEMORY_HOTREMOVE) \
+  arch/x86/include/asm/mmzone.h \
+  arch/x86/include/asm/mmzone_32.h \
+  include/linux/topology.h \
+    $(wildcard include/config/USE_PERCPU_NUMA_NODE_ID) \
+    $(wildcard include/config/SCHED_SMT) \
+    $(wildcard include/config/SCHED_CLUSTER) \
+  include/linux/arch_topology.h \
+    $(wildcard include/config/ACPI_CPPC_LIB) \
+    $(wildcard include/config/GENERIC_ARCH_TOPOLOGY) \
+  include/linux/percpu.h \
+    $(wildcard include/config/NEED_PER_CPU_EMBED_FIRST_CHUNK) \
+    $(wildcard include/config/NEED_PER_CPU_PAGE_FIRST_CHUNK) \
+  arch/x86/include/asm/topology.h \
+    $(wildcard include/config/SCHED_MC_PRIO) \
+  arch/x86/include/asm/mpspec.h \
+    $(wildcard include/config/EISA) \
+    $(wildcard include/config/X86_MPPARSE) \
+  arch/x86/include/asm/mpspec_def.h \
+  arch/x86/include/asm/x86_init.h \
+  arch/x86/include/asm/apicdef.h \
+  include/asm-generic/topology.h \
+  include/linux/sysctl.h \
+    $(wildcard include/config/SYSCTL) \
+  include/uapi/linux/sysctl.h \
+  include/linux/elf.h \
+    $(wildcard include/config/ARCH_USE_GNU_PROPERTY) \
+    $(wildcard include/config/ARCH_HAVE_ELF_PROT) \
+  arch/x86/include/asm/elf.h \
+    $(wildcard include/config/X86_X32_ABI) \
+  arch/x86/include/asm/user.h \
+  arch/x86/include/asm/user_32.h \
+  arch/x86/include/asm/fsgsbase.h \
+  arch/x86/include/asm/vdso.h \
+  arch/x86/include/asm/desc.h \
+  arch/x86/include/asm/fixmap.h \
+    $(wildcard include/config/DEBUG_KMAP_LOCAL_FORCE_MAP) \
+    $(wildcard include/config/X86_VSYSCALL_EMULATION) \
+    $(wildcard include/config/PROVIDE_OHCI1394_DMA_INIT) \
+    $(wildcard include/config/X86_IO_APIC) \
+    $(wildcard include/config/KMAP_LOCAL) \
+    $(wildcard include/config/PCI_MMCONFIG) \
+    $(wildcard include/config/ACPI_APEI_GHES) \
+    $(wildcard include/config/INTEL_TXT) \
+  arch/x86/include/generated

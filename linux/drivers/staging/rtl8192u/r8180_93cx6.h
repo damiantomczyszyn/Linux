@@ -1,18 +1,36 @@
-card include/config/HAVE_ARCH_USERFAULTFD_MINOR) \
-    $(wildcard include/config/SHMEM) \
-    $(wildcard include/config/ARCH_HAS_PTE_SPECIAL) \
-    $(wildcard include/config/ARCH_HAS_PTE_DEVMAP) \
-    $(wildcard include/config/DEBUG_VM_RB) \
-    $(wildcard include/config/PAGE_POISONING) \
-    $(wildcard include/config/INIT_ON_ALLOC_DEFAULT_ON) \
-    $(wildcard include/config/INIT_ON_FREE_DEFAULT_ON) \
-    $(wildcard include/config/DEBUG_PAGEALLOC) \
-    $(wildcard include/config/HUGETLBFS) \
-    $(wildcard include/config/MAPPING_DIRTY_HELPERS) \
-    $(wildcard include/config/ANON_VMA_NAME) \
-  include/linux/mmap_lock.h \
-  include/linux/page_ext.h \
-  include/linux/stacktrace.h \
-    $(wildcard include/config/ARCH_STACKWALK) \
-    $(wildcard include/config/STACKTRACE) \
-    $(wildcard include/config/HAVE_RELIABLE_STACKTRACE
+onst struct v4l2_frequency *f)
+{
+	struct cx23885_dev *dev = video_drvdata(file);
+	int ret;
+
+	switch (dev->board) {
+	case CX23885_BOARD_HAUPPAUGE_HVR1255:
+	case CX23885_BOARD_HAUPPAUGE_HVR1255_22111:
+	case CX23885_BOARD_HAUPPAUGE_HVR1265_K4:
+	case CX23885_BOARD_HAUPPAUGE_HVR1850:
+	case CX23885_BOARD_HAUPPAUGE_HVR5525:
+	case CX23885_BOARD_HAUPPAUGE_QUADHD_DVB:
+	case CX23885_BOARD_HAUPPAUGE_QUADHD_ATSC:
+		ret = cx23885_set_freq_via_ops(dev, f);
+		break;
+	default:
+		ret = cx23885_set_freq(dev, f);
+	}
+
+	return ret;
+}
+
+static int vidioc_s_frequency(struct file *file, void *priv,
+	const struct v4l2_frequency *f)
+{
+	return cx23885_set_frequency(file, priv, f);
+}
+
+/* ----------------------------------------------------------- */
+
+int cx23885_video_irq(struct cx23885_dev *dev, u32 status)
+{
+	u32 mask, count;
+	int handled = 0;
+
+	mask 

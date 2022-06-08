@@ -1,95 +1,137 @@
-CPI_APEI_GHES) \
-    $(wildcard include/config/INTEL_TXT) \
-  arch/x86/include/generated/asm/kmap_size.h \
-  include/asm-generic/kmap_size.h \
-    $(wildcard include/config/DEBUG_KMAP_LOCAL) \
-  include/asm-generic/fixmap.h \
-  arch/x86/include/asm/irq_vectors.h \
-    $(wildcard include/config/HAVE_KVM) \
-    $(wildcard include/config/HYPERV) \
-    $(wildcard include/config/PCI_MSI) \
-  arch/x86/include/asm/cpu_entry_area.h \
-  arch/x86/include/asm/intel_ds.h \
-  arch/x86/include/asm/pgtable_areas.h \
-  arch/x86/include/asm/pgtable_32_areas.h \
-  include/uapi/linux/elf.h \
-  include/uapi/linux/elf-em.h \
-  include/linux/kobject.h \
-    $(wildcard include/config/UEVENT_HELPER) \
-    $(wildcard include/config/DEBUG_KOBJECT_RELEASE) \
-  include/linux/sysfs.h \
-  include/linux/kernfs.h \
-    $(wildcard include/config/KERNFS) \
-  include/linux/idr.h \
-  include/linux/radix-tree.h \
-  include/linux/xarray.h \
-    $(wildcard include/config/XARRAY_MULTI) \
-  include/linux/kconfig.h \
-  include/linux/kobject_ns.h \
-  include/linux/moduleparam.h \
-    $(wildcard include/config/ALPHA) \
-    $(wildcard include/config/IA64) \
-    $(wildcard include/config/PPC64) \
-  include/linux/rbtree_latch.h \
-  include/linux/error-injection.h \
-  include/asm-generic/error-injection.h \
-  include/linux/cfi.h \
-    $(wildcard include/config/CFI_CLANG_SHADOW) \
-  arch/x86/include/asm/module.h \
-    $(wildcard include/config/UNWINDER_ORC) \
-  include/asm-generic/module.h \
-    $(wildcard include/config/HAVE_MOD_ARCH_SPECIFIC) \
-    $(wildcard include/config/MODULES_USE_ELF_REL) \
-    $(wildcard include/config/MODULES_USE_ELF_RELA) \
-  arch/x86/include/asm/orc_types.h \
-  include/linux/i2c.h \
-    $(wildcard include/config/I2C) \
-    $(wildcard include/config/I2C_SLAVE) \
-    $(wildcard include/config/I2C_BOARDINFO) \
-    $(wildcard include/config/I2C_MUX) \
-    $(wildcard include/config/OF) \
-    $(wildcard include/config/ACPI) \
-  include/linux/acpi.h \
-    $(wildcard include/config/ACPI_DEBUGGER) \
-    $(wildcard include/config/ACPI_TABLE_LIB) \
-    $(wildcard include/config/LOONGARCH) \
-    $(wildcard include/config/ARM64) \
-    $(wildcard include/config/ACPI_PROCESSOR_CSTATE) \
-    $(wildcard include/config/ACPI_HOTPLUG_CPU) \
-    $(wildcard include/config/ACPI_HOTPLUG_IOAPIC) \
-    $(wildcard include/config/PCI) \
-    $(wildcard include/config/ACPI_WMI) \
-    $(wildcard include/config/ACPI_NUMA) \
-    $(wildcard include/config/HIBERNATION) \
-    $(wildcard include/config/ACPI_HOTPLUG_MEMORY) \
-    $(wildcard include/config/ACPI_CONTAINER) \
-    $(wildcard include/config/ACPI_GTDT) \
-    $(wildcard include/config/PM) \
-    $(wildcard include/config/GPIOLIB) \
-    $(wildcard include/config/ACPI_TABLE_UPGRADE) \
-    $(wildcard include/config/ACPI_WATCHDOG) \
-    $(wildcard include/config/ACPI_SPCR_TABLE) \
-    $(wildcard include/config/ACPI_GENERIC_GSI) \
-    $(wildcard include/config/ACPI_LPIT) \
-    $(wildcard include/config/ACPI_PPTT) \
-    $(wildcard include/config/ACPI_PCC) \
-  include/linux/ioport.h \
-  include/linux/irqdomain.h \
-    $(wildcard include/config/IRQ_DOMAIN_HIERARCHY) \
-    $(wildcard include/config/GENERIC_IRQ_DEBUGFS) \
-    $(wildcard include/config/IRQ_DOMAIN) \
-    $(wildcard include/config/IRQ_DOMAIN_NOMAP) \
-  include/linux/irqhandler.h \
-  include/linux/of.h \
-    $(wildcard include/config/OF_DYNAMIC) \
-    $(wildcard include/config/SPARC) \
-    $(wildcard include/config/OF_PROMTREE) \
-    $(wildcard include/config/OF_KOBJ) \
-    $(wildcard include/config/OF_NUMA) \
-    $(wildcard include/config/OF_OVERLAY) \
-  include/linux/mod_devicetable.h \
-  include/linux/uuid.h \
-  include/uapi/linux/uuid.h \
-  include/linux/property.h \
-  include/linux/fwnode.h \
-  include/linux/resource_ext
+
+	dprintk(1, "%s() status = %d, seq = %d\n", __func__, status, seq);
+}
+
+static void cx23885_codec_settings(struct cx23885_dev *dev)
+{
+	dprintk(1, "%s()\n", __func__);
+
+	/* Dynamically change the height based on video standard */
+	if (dev->encodernorm.id & V4L2_STD_525_60)
+		dev->ts1.height = 480;
+	else
+		dev->ts1.height = 576;
+
+	/* assign frame size */
+	cx23885_api_cmd(dev, CX2341X_ENC_SET_FRAME_SIZE, 2, 0,
+				dev->ts1.height, dev->ts1.width);
+
+	dev->cxhdl.width = dev->ts1.width;
+	dev->cxhdl.height = dev->ts1.height;
+	dev->cxhdl.is_50hz =
+		(dev->encodernorm.id & V4L2_STD_625_50) != 0;
+
+	cx2341x_handler_setup(&dev->cxhdl);
+
+	cx23885_api_cmd(dev, CX2341X_ENC_MISC, 2, 0, 3, 1);
+	cx23885_api_cmd(dev, CX2341X_ENC_MISC, 2, 0, 4, 1);
+}
+
+static int cx23885_initialize_codec(struct cx23885_dev *dev, int startencoder)
+{
+	int version;
+	int retval;
+	u32 i, data[7];
+
+	dprintk(1, "%s()\n", __func__);
+
+	retval = cx23885_api_cmd(dev, CX2341X_ENC_PING_FW, 0, 0); /* ping */
+	if (retval < 0) {
+		dprintk(2, "%s() PING OK\n", __func__);
+		retval = cx23885_load_firmware(dev);
+		if (retval < 0) {
+			pr_err("%s() f/w load failed\n", __func__);
+			return retval;
+		}
+		retval = cx23885_find_mailbox(dev);
+		if (retval < 0) {
+			pr_err("%s() mailbox < 0, error\n",
+				__func__);
+			return -1;
+		}
+		dev->cx23417_mailbox = retval;
+		retval = cx23885_api_cmd(dev, CX2341X_ENC_PING_FW, 0, 0);
+		if (retval < 0) {
+			pr_err("ERROR: cx23417 firmware ping failed!\n");
+			return -1;
+		}
+		retval = cx23885_api_cmd(dev, CX2341X_ENC_GET_VERSION, 0, 1,
+			&version);
+		if (retval < 0) {
+			pr_err("ERROR: cx23417 firmware get encoder :version failed!\n");
+			return -1;
+		}
+		dprintk(1, "cx23417 firmware version is 0x%08x\n", version);
+		msleep(200);
+	}
+
+	cx23885_codec_settings(dev);
+	msleep(60);
+
+	cx23885_api_cmd(dev, CX2341X_ENC_SET_NUM_VSYNC_LINES, 2, 0,
+		CX23885_FIELD1_SAA7115, CX23885_FIELD2_SAA7115);
+	cx23885_api_cmd(dev, CX2341X_ENC_SET_PLACEHOLDER, 12, 0,
+		CX23885_CUSTOM_EXTENSION_USR_DATA, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+		0, 0);
+
+	/* Setup to capture VBI */
+	data[0] = 0x0001BD00;
+	data[1] = 1;          /* frames per interrupt */
+	data[2] = 4;          /* total bufs */
+	data[3] = 0x91559155; /* start codes */
+	data[4] = 0x206080C0; /* stop codes */
+	data[5] = 6;          /* lines */
+	data[6] = 64;         /* BPL */
+
+	cx23885_api_cmd(dev, CX2341X_ENC_SET_VBI_CONFIG, 7, 0, data[0], data[1],
+		data[2], data[3], data[4], data[5], data[6]);
+
+	for (i = 2; i <= 24; i++) {
+		int valid;
+
+		valid = ((i >= 19) && (i <= 21));
+		cx23885_api_cmd(dev, CX2341X_ENC_SET_VBI_LINE, 5, 0, i,
+				valid, 0 , 0, 0);
+		cx23885_api_cmd(dev, CX2341X_ENC_SET_VBI_LINE, 5, 0,
+				i | 0x80000000, valid, 0, 0, 0);
+	}
+
+	cx23885_api_cmd(dev, CX2341X_ENC_MUTE_AUDIO, 1, 0, CX23885_UNMUTE);
+	msleep(60);
+
+	/* initialize the video input */
+	cx23885_api_cmd(dev, CX2341X_ENC_INITIALIZE_INPUT, 0, 0);
+	msleep(60);
+
+	/* Enable VIP style pixel invalidation so we work with scaled mode */
+	mc417_memory_write(dev, 2120, 0x00000080);
+
+	/* start capturing to the host interface */
+	if (startencoder) {
+		cx23885_api_cmd(dev, CX2341X_ENC_START_CAPTURE, 2, 0,
+			CX23885_MPEG_CAPTURE, CX23885_RAW_BITS_NONE);
+		msleep(10);
+	}
+
+	return 0;
+}
+
+/* ------------------------------------------------------------------ */
+
+static int queue_setup(struct vb2_queue *q,
+			   unsigned int *num_buffers, unsigned int *num_planes,
+			   unsigned int sizes[], struct device *alloc_devs[])
+{
+	struct cx23885_dev *dev = q->drv_priv;
+
+	dev->ts1.ts_packet_size  = mpeglinesize;
+	dev->ts1.ts_packet_count = mpeglines;
+	*num_planes = 1;
+	sizes[0] = mpeglinesize * mpeglines;
+	*num_buffers = mpegbufs;
+	return 0;
+}
+
+static int buffer_prepare(struct vb2_buffer *vb)
+{
+	struct vb2_v4l2_buffer *vbuf = to_vb

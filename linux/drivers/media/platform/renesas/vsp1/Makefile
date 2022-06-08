@@ -1,11 +1,16 @@
-nclude/config/GENERIC_ATOMIC64) \
-  include/linux/atomic/atomic-long.h \
-  include/linux/atomic/atomic-instrumented.h \
-  include/linux/bug.h \
-    $(wildcard include/config/BUG_ON_DATA_CORRUPTION) \
-  arch/x86/include/asm/bug.h \
-    $(wildcard include/config/DEBUG_BUGVERBOSE) \
-  include/linux/instrumentation.h \
-    $(wildcard include/config/DEBUG_ENTRY) \
-  include/asm-generic/bug.h \
-    $(wildcard
+nnel *audio_ch =
+		&dev->sram_channels[AUDIO_SRAM_CHANNEL];
+
+	dprintk(1, "%s()\n", __func__);
+
+	/* Make sure RISC/FIFO are off before changing FIFO/RISC settings */
+	cx_clear(AUD_INT_DMA_CTL, 0x11);
+
+	/* setup fifo + format - out channel */
+	cx23885_sram_channel_setup(chip->dev, audio_ch, buf->bpl,
+		buf->risc.dma);
+
+	/* sets bpl size */
+	cx_write(AUD_INT_A_LNGTH, buf->bpl);
+
+	/* This is required to get

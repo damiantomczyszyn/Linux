@@ -1,1 +1,7 @@
-×wõu¸²0P ¼WÛ%S°1âˆ@˜ tg—#´Êæ‰hÛAîÞ2vojrÎ6®=îXí…ýè÷t8ýÓMöƒ&@ìs)tEO,»5troÇeáCaÿ]|ÊÃ¡œÝË_ÆÝN‚Dy‡DgaŒ¯ó$8pÌ$D2Ö*ì¼žIHÕÍÇ¡ :Påè€¦¯ªÇ®…{Ý“ÂíÝ8].´¢«2äQæF­lô¾m3LB™Ú,1=³È
+00d00);
+		/* enable irq */
+		cx_write(GPIO_ISM, 0x00000000);/* INTERRUPTS active low*/
+		break;
+	case CX23885_BOARD_HAUPPAUGE_HVR4400:
+	case CX23885_BOARD_HAUPPAUGE_STARBURST:
+		/* GPI

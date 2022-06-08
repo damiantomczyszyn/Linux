@@ -1,1 +1,1 @@
-onfig/TRACE_BRANCH_PROFILING) \
+.prepare = snd_cx23885_prepare,

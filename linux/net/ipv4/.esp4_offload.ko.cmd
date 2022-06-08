@@ -1,5 +1,7 @@
-lude/linux/percpu-refcount.h \
-  include/linux/kasan.h \
-    $(wildcard include/config/KASAN_STACK) \
-    $(wildcard include/config/KASAN_VMALLOC) \
-    $(wildcard include/conf
+// SPDX-License-Identifier: GPL-2.0-or-later
+/*
+ *
+ *  Support for CX23885 analog audio capture
+ *
+ *    (c) 2008 Mijhail Moreyra <mijhail.moreyra@gmail.com>
+ *    Adapted from

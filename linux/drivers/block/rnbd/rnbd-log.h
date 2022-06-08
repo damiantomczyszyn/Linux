@@ -1,30 +1,52 @@
-\
-  arch/x86/include/asm/qrwlock.h \
-  include/asm-generic/qrwlock.h \
-  include/linux/rwlock.h \
-    $(wildcard include/config/PREEMPT) \
-  include/linux/spinlock_api_smp.h \
-    $(wildcard include/config/INLINE_SPIN_LOCK) \
-    $(wildcard include/config/INLINE_SPIN_LOCK_BH) \
-    $(wildcard include/config/INLINE_SPIN_LOCK_IRQ) \
-    $(wildcard include/config/INLINE_SPIN_LOCK_IRQSAVE) \
-    $(wildcard include/config/INLINE_SPIN_TRYLOCK) \
-    $(wildcard include/config/INLINE_SPIN_TRYLOCK_BH) \
-    $(wildcard include/config/UNINLINE_SPIN_UNLOCK) \
-    $(wildcard include/config/INLINE_SPIN_UNLOCK_BH) \
-    $(wildcard include/config/INLINE_SPIN_UNLOCK_IRQ) \
-    $(wildcard include/config/INLINE_SPIN_UNLOCK_IRQRESTORE) \
-    $(wildcard include/config/GENERIC_LOCKBREAK) \
-  include/linux/rwlock_api_smp.h \
-    $(wildcard include/config/INLINE_READ_LOCK) \
-    $(wildcard include/config/INLINE_WRITE_LOCK) \
-    $(wildcard include/config/INLINE_READ_LOCK_BH) \
-    $(wildcard include/config/INLINE_WRITE_LOCK_BH) \
-    $(wildcard include/config/INLINE_READ_LOCK_IRQ) \
-    $(wildcard include/config/INLINE_WRITE_LOCK_IRQ) \
-    $(wildcard include/config/INLINE_READ_LOCK_IRQSAVE) \
-    $(wildcard include/config/INLINE_WRITE_LOCK_IRQSAVE) \
-    $(wildcard include/config/INLINE_READ_TRYLOCK) \
-    $(wildcard include/config/INLINE_WRITE_TRYLOCK) \
-    $(wildcard include/config/INLINE_READ_UNLOCK) \
-    $(wildcard inclu
+ in both TC_REQ and TC_REQ_SET
+ * indicate a stall in the RISC engine for a
+ * particular rider traffic class. This causes
+ * the 885 and 888 bridges (unknown about 887)
+ * to become inoperable. Setting bits in
+ * TC_REQ_SET resets the corresponding bits
+ * in TC_REQ (and TC_REQ_SET) allowing
+ * operation to continue.
+ */
+#define TC_REQ		0x00040090
+#define TC_REQ_SET	0x00040094
+
+#define RDR_CFG0	0x00050000
+#define RDR_CFG1	0x00050004
+#define RDR_CFG2	0x00050008
+#define RDR_RDRCTL1	0x0005030c
+#define RDR_TLCTL0	0x00050318
+
+/* APB DMAC Current Buffer Pointer */
+#define DMA1_PTR1	0x00100000
+#define DMA2_PTR1	0x00100004
+#define DMA3_PTR1	0x00100008
+#define DMA4_PTR1	0x0010000C
+#define DMA5_PTR1	0x00100010
+#define DMA6_PTR1	0x00100014
+#define DMA7_PTR1	0x00100018
+#define DMA8_PTR1	0x0010001C
+
+/* APB DMAC Current Table Pointer */
+#define DMA1_PTR2	0x00100040
+#define DMA2_PTR2	0x00100044
+#define DMA3_PTR2	0x00100048
+#define DMA4_PTR2	0x0010004C
+#define DMA5_PTR2	0x00100050
+#define DMA6_PTR2	0x00100054
+#define DMA7_PTR2	0x00100058
+#define DMA8_PTR2	0x0010005C
+
+/* APB DMAC Buffer Limit */
+#define DMA1_CNT1	0x00100080
+#define DMA2_CNT1	0x00100084
+#define DMA3_CNT1	0x00100088
+#define DMA4_CNT1	0x0010008C
+#define DMA5_CNT1	0x00100090
+#define DMA6_CNT1	0x00100094
+#define DMA7_CNT1	0x00100098
+#define DMA8_CNT1	0x0010009C
+
+/* APB DMAC Table Size */
+#define DMA1_CNT2	0x001000C0
+#define DMA2_CNT2	0x001000C4
+#define DMA3_

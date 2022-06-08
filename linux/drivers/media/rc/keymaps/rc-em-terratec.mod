@@ -1,2 +1,4 @@
-drivers/media/rc/keymaps/rc-em-terratec.o
-
+DING,
+};
+enum cx23885_copyright {
+	CX23885_

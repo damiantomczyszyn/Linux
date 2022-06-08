@@ -1,14 +1,28 @@
-lude/config/SHMEM) \
-    $(wildcard include/config/ARCH_HAS_PTE_SPECIAL) \
-    $(wildcard include/config/ARCH_HAS_PTE_DEVMAP) \
-    $(wildcard include/config/DEBUG_VM_RB) \
-    $(wildcard include/config/PAGE_POISONING) \
-    $(wildcard include/config/INIT_ON_ALLOC_DEFAULT_ON) \
-    $(wildcard include/config/INIT_ON_FREE_DEFAULT_ON) \
-    $(wildcard include/config/DEBUG_PAGEALLOC) \
-    $(wildcard include/config/HUGETLBFS) \
-    $(wildcard include/config/MAPPING_DIRTY_HELPERS) \
-    $(wildcard include/config/ANON_VMA_NAME) \
-  include/linux/mmap_lock.h \
-  include/linux/page_ext.h \
-  include/linux/stacktrace.
+FIG_SMP */
+
+/**
+ * find_process_by_pid - find a process with a matching PID value.
+ * @pid: the pid in question.
+ *
+ * The task of @pid, if found. %NULL otherwise.
+ */
+static struct task_struct *find_process_by_pid(pid_t pid)
+{
+	return pid ? find_task_by_vpid(pid) : current;
+}
+
+/*
+ * sched_setparam() passes in -1 for its policy, to let the functions
+ * it calls know not to change it.
+ */
+#define SETPARAM_POLICY	-1
+
+static void __setscheduler_params(struct task_struct *p,
+		const struct sched_attr *attr)
+{
+	int policy = attr->sched_policy;
+
+	if (policy == SETPARAM_POLICY)
+		policy = p->policy;
+
+	p->policy = po

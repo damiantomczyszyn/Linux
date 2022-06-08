@@ -1,23 +1,36 @@
-/config/MTRR) \
-    $(wildcard include/config/X86_PAT) \
-  arch/x86/include/generated/asm/early_ioremap.h \
-  include/asm-generic/early_ioremap.h \
-    $(wildcard include/config/GENERIC_EARLY_IOREMAP) \
-  include/asm-generic/iomap.h \
-    $(wildcard include/config/HAS_IOPORT_MAP) \
-  include/asm-generic/pci_iomap.h \
-    $(wildcard include/config/PCI) \
-    $(wildcard include/config/NO_GENERIC_PCI_IOPORT_MAP) \
-    $(wildcard include/config/GENERIC_PCI_IOMAP) \
-  include/asm-generic/io.h \
-    $(wildcard include/config/GENERIC_IOMAP) \
-    $(wildcard include/config/GENERIC_IOREMAP) \
-    $(wildcard include/config/VIRT_TO_BUS) \
-    $(wildcard include/config/GENERIC_DEVMEM_IS_ALLOWED) \
-  include/linux/logic_pio.h \
-    $(wildcard include/config/INDIRECT_PIO) \
-  include/linux/fwnode.h \
-  include/linux/vmalloc.h \
-    $(wildcard include/config/HAVE_ARCH_HUGE_VMALLOC) \
-  arch/x86/include/asm/vmalloc.h \
-  include/linux/netde
+e        *video_dev;
+	struct video_device        *vbi_dev;
+
+	/* video capture */
+	struct cx23885_fmt         *fmt;
+	unsigned int               width, height;
+	unsigned		   field;
+
+	struct cx23885_dmaqueue    vidq;
+	struct vb2_queue           vb2_vidq;
+	struct cx23885_dmaqueue    vbiq;
+	struct vb2_queue           vb2_vbiq;
+
+	spinlock_t                 slock;
+
+	/* MPEG Encoder ONLY settings */
+	u32                        cx23417_mailbox;
+	struct cx2341x_handler     cxhdl;
+	struct video_device        *v4l_device;
+	struct vb2_queue           vb2_mpegq;
+	struct cx23885_tvnorm      encodernorm;
+
+	/* Analog raw audio */
+	struct cx23885_audio_dev   *audio_dev;
+
+	/* Does the system require periodic DMA resets? */
+	unsigned int		need_dma_reset:1;
+};
+
+static inline struct cx23885_dev *to_cx23885(struct v4l2_device *v4l2_dev)
+{
+	return container_of(v4l2_dev, struct cx23885_dev, v4l2_dev);
+}
+
+#define call_all(dev, o, f, args...) \
+	v4l2_

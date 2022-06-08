@@ -1,2 +1,1 @@
-fig/GENERIC_ATOMIC64) \
-  include/lin
+egval = MC417_SPD_CTL(MC417_SPD_CTL_F

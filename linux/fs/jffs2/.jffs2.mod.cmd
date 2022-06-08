@@ -1,13 +1,26 @@
-I2C) \
-    $(wildcard include/config/I2C_SLAVE) \
-    $(wildcard include/config/I2C_BOARDINFO) \
-    $(wildcard include/config/I2C_MUX) \
-    $(wildcard include/config/ACPI) \
-  include/linux/acpi.h \
-    $(wildcard include/config/ACPI_DEBUGGER) \
-    $(wildcard include/config/ACPI_TABLE_LIB) \
-    $(wildcard include/config/IA64) \
-    $(wildcard include/config/LOONGARCH) \
-    $(wildcard include/config/ARM64) \
-    $(wildcard include/config/ACPI_PROCESSOR_CSTATE) \
-   
+t_nr)
+{
+	if (temp_int == NULL)
+		return NULL;
+
+	if ((temp_int->pid_filt[filt_nr]) == NULL)
+		return NULL;
+
+	if (temp_int->pid_filt[filt_nr]->demux == demux_dev)
+		return temp_int;
+
+	return NULL;
+}
+
+/* find chip by demux */
+static struct fpga_inode *find_dinode(void *demux_dev)
+{
+	struct fpga_inode *temp_chip = fpga_first_inode;
+	struct fpga_internal *temp_int;
+
+	/*
+	 * Search of the last fpga CI chip or
+	 * find it by demux
+	 */
+	while (temp_chip != NULL) {
+		if (temp_c

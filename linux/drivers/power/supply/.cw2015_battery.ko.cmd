@@ -1,1 +1,9 @@
-cmd_drivers/media/i2c/tw9906.o := gcc -Wp,-MMD,drivers/media/i2c/.tw9906.o.d -nostdinc -I./arch/x86/include -I./arch/x86/include/generated  -I./include -I./arch/x86/include/uapi -I./arch/x86/include/generated/uapi -I./include/uapi -
+-T/C/S2, IR) */
+	}, {
+		.subvendor = 0x0070,
+		.subdevice = 0xc12a,
+		.card      = CX23885_BOARD_HAUPPAUGE_STARBURST, /* Hauppauge WinTV Starburst (Model 121x00, DVB-S2, IR) */
+	}, {
+		.subvendor = 0x0070,
+		.subdevice = 0xc1f8,
+		.

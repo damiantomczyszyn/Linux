@@ -1,106 +1,162 @@
-EAF) \
-  include/linux/page-flags-layout.h \
-    $(wildcard include/config/KASAN_HW_TAGS) \
-  include/linux/numa.h \
-    $(wildcard include/config/NODES_SHIFT) \
-    $(wildcard include/config/NUMA_KEEP_MEMINFO) \
-    $(wildcard include/config/HAVE_ARCH_NODE_DEV_GROUP) \
-  arch/x86/include/asm/sparsemem.h \
-  include/generated/bounds.h \
-  include/linux/seqlock.h \
-  include/linux/ww_mutex.h \
-    $(wildcard include/config/DEBUG_RT_MUTEXES) \
-    $(wildcard include/config/DEBUG_WW_MUTEX_SLOWPATH) \
-  include/linux/rtmutex.h \
-  arch/x86/include/asm/mmu.h \
-    $(wildcard include/config/MODIFY_LDT_SYSCALL) \
-  include/linux/kmod.h \
-  include/linux/umh.h \
-  include/linux/gfp.h \
-    $(wildcard include/config/HIGHMEM) \
-    $(wildcard include/config/ZONE_DMA) \
-    $(wildcard include/config/ZONE_DMA32) \
-    $(wildcard include/config/ZONE_DEVICE) \
-    $(wildcard include/config/PM_SLEEP) \
-    $(wildcard include/config/CONTIG_ALLOC) \
-    $(wildcard include/config/CMA) \
-  include/linux/mmdebug.h \
-    $(wildcard include/config/DEBUG_VM) \
-    $(wildcard include/config/DEBUG_VM_PGFLAGS) \
-  include/linux/mmzone.h \
-    $(wildcard include/config/FORCE_MAX_ZONEORDER) \
-    $(wildcard include/config/MEMORY_ISOLATION) \
-    $(wildcard include/config/ZSMALLOC) \
-    $(wildcard include/config/MEMORY_HOTPLUG) \
-    $(wildcard include/config/COMPACTION) \
-    $(wildcard include/config/PAGE_EXTENSION) \
-    $(wildcard include/config/DEFERRED_STRUCT_PAGE_INIT) \
-    $(wildcard include/config/HAVE_MEMORYLESS_NODES) \
-    $(wildcard include/config/SPARSEMEM_EXTREME) \
-    $(wildcard include/config/HAVE_ARCH_PFN_VALID) \
-  include/linux/nodemask.h \
-  include/linux/pageblock-flags.h \
-    $(wildcard include/config/HUGETLB_PAGE_SIZE_VARIABLE) \
-  include/linux/page-flags.h \
-    $(wildcard include/config/ARCH_USES_PG_UNCACHED) \
-    $(wildcard include/config/MEMORY_FAILURE) \
-    $(wildcard include/config/PAGE_IDLE_FLAG) \
-    $(wildcard include/config/HUGETLB_PAGE_FREE_VMEMMAP) \
-    $(wildcard include/config/HUGETLB_PAGE_FREE_VMEMMAP_DEFAULT_ON) \
-    $(wildcard include/config/KSM) \
-  include/linux/local_lock.h \
-  include/linux/local_lock_internal.h \
-  include/linux/memory_hotplug.h \
-    $(wildcard include/config/HAVE_ARCH_NODEDATA_EXTENSION) \
-    $(wildcard include/config/ARCH_HAS_ADD_PAGES) \
-    $(wildcard include/config/MEMORY_HOTREMOVE) \
-  arch/x86/include/asm/mmzone.h \
-  arch/x86/include/asm/mmzone_32.h \
-  include/linux/topology.h \
-    $(wildcard include/config/USE_PERCPU_NUMA_NODE_ID) \
-    $(wildcard include/config/SCHED_SMT) \
-    $(wildcard include/config/SCHED_CLUSTER) \
-  include/linux/arch_topology.h \
-    $(wildcard include/config/ACPI_CPPC_LIB) \
-    $(wildcard include/config/GENERIC_ARCH_TOPOLOGY) \
-  include/linux/percpu.h \
-    $(wildcard include/config/NEED_PER_CPU_EMBED_FIRST_CHUNK) \
-    $(wildcard include/config/NEED_PER_CPU_PAGE_FIRST_CHUNK) \
-  arch/x86/include/asm/topology.h \
-    $(wildcard include/config/SCHED_MC_PRIO) \
-  arch/x86/include/asm/mpspec.h \
-    $(wildcard include/config/EISA) \
-    $(wildcard include/config/X86_MPPARSE) \
-  arch/x86/include/asm/mpspec_def.h \
-  arch/x86/include/asm/x86_init.h \
-  arch/x86/include/asm/apicdef.h \
-  include/asm-generic/topology.h \
-  include/linux/sysctl.h \
-    $(wildcard include/config/SYSCTL) \
-  include/uapi/linux/sysctl.h \
-  include/linux/elf.h \
-    $(wildcard include/config/ARCH_USE_GNU_PROPERTY) \
-    $(wildcard include/config/ARCH_HAVE_ELF_PROT) \
-  arch/x86/include/asm/elf.h \
-    $(wildcard include/config/X86_X32_ABI) \
-  arch/x86/include/asm/user.h \
-  arch/x86/include/asm/user_32.h \
-  arch/x86/include/asm/fsgsbase.h \
-  arch/x86/include/asm/vdso.h \
-  arch/x86/include/asm/desc.h \
-  arch/x86/include/asm/fixmap.h \
-    $(wildcard include/config/DEBUG_KMAP_LOCAL_FORCE_MAP) \
-    $(wildcard include/config/X86_VSYSCALL_EMULATION) \
-    $(wildcard include/config/PROVIDE_OHCI1394_DMA_INIT) \
-    $(wildcard include/config/X86_IO_APIC) \
-    $(wildcard include/config/KMAP_LOCAL) \
-    $(wildcard include/config/PCI_MMCONFIG) \
-    $(wildcard include/config/ACPI_APEI_GHES) \
-    $(wildcard include/config/INTEL_TXT) \
-  arch/x86/include/generated/asm/kmap_size.h \
-  include/asm-generic/kmap_size.h \
-    $(wildcard include/config/DEBUG_KMAP_LOCAL) \
-  include/asm-generic/fixmap.h \
-  arch/x86/include/asm/irq_vectors.h \
-    $(wildcard include/config/HAVE_KVM) \
-    $(wildcard include/config/HYPER
+evision(struct cx23885_dev *dev)
+{
+	switch (cx_read(RDR_CFG2) & 0xff) {
+	case 0x00:
+		/* cx23885 */
+		dev->hwrevision = 0xa0;
+		break;
+	case 0x01:
+		/* CX23885-12Z */
+		dev->hwrevision = 0xa1;
+		break;
+	case 0x02:
+		/* CX23885-13Z/14Z */
+		dev->hwrevision = 0xb0;
+		break;
+	case 0x03:
+		if (dev->pci->device == 0x8880) {
+			/* CX23888-21Z/22Z */
+			dev->hwrevision = 0xc0;
+		} else {
+			/* CX23885-14Z */
+			dev->hwrevision = 0xa4;
+		}
+		break;
+	case 0x04:
+		if (dev->pci->device == 0x8880) {
+			/* CX23888-31Z */
+			dev->hwrevision = 0xd0;
+		} else {
+			/* CX23885-15Z, CX23888-31Z */
+			dev->hwrevision = 0xa5;
+		}
+		break;
+	case 0x0e:
+		/* CX23887-15Z */
+		dev->hwrevision = 0xc0;
+		break;
+	case 0x0f:
+		/* CX23887-14Z */
+		dev->hwrevision = 0xb1;
+		break;
+	default:
+		pr_err("%s() New hardware revision found 0x%x\n",
+		       __func__, dev->hwrevision);
+	}
+	if (dev->hwrevision)
+		pr_info("%s() Hardware revision = 0x%02x\n",
+			__func__, dev->hwrevision);
+	else
+		pr_err("%s() Hardware revision unknown 0x%x\n",
+		       __func__, dev->hwrevision);
+}
+
+/* Find the first v4l2_subdev member of the group id in hw */
+struct v4l2_subdev *cx23885_find_hw(struct cx23885_dev *dev, u32 hw)
+{
+	struct v4l2_subdev *result = NULL;
+	struct v4l2_subdev *sd;
+
+	spin_lock(&dev->v4l2_dev.lock);
+	v4l2_device_for_each_subdev(sd, &dev->v4l2_dev) {
+		if (sd->grp_id == hw) {
+			result = sd;
+			break;
+		}
+	}
+	spin_unlock(&dev->v4l2_dev.lock);
+	return result;
+}
+
+static int cx23885_dev_setup(struct cx23885_dev *dev)
+{
+	int i;
+
+	spin_lock_init(&dev->pci_irqmask_lock);
+	spin_lock_init(&dev->slock);
+
+	mutex_init(&dev->lock);
+	mutex_init(&dev->gpio_lock);
+
+	atomic_inc(&dev->refcount);
+
+	dev->nr = cx23885_devcount++;
+	sprintf(dev->name, "cx23885[%d]", dev->nr);
+
+	/* Configure the internal memory */
+	if (dev->pci->device == 0x8880) {
+		/* Could be 887 or 888, assume an 888 default */
+		dev->bridge = CX23885_BRIDGE_888;
+		/* Apply a sensible clock frequency for the PCIe bridge */
+		dev->clk_freq = 50000000;
+		dev->sram_channels = cx23887_sram_channels;
+	} else
+	if (dev->pci->device == 0x8852) {
+		dev->bridge = CX23885_BRIDGE_885;
+		/* Apply a sensible clock frequency for the PCIe bridge */
+		dev->clk_freq = 28000000;
+		dev->sram_channels = cx23885_sram_channels;
+	} else
+		BUG();
+
+	dprintk(1, "%s() Memory configured for PCIe bridge type %d\n",
+		__func__, dev->bridge);
+
+	/* board config */
+	dev->board = UNSET;
+	if (card[dev->nr] < cx23885_bcount)
+		dev->board = card[dev->nr];
+	for (i = 0; UNSET == dev->board  &&  i < cx23885_idcount; i++)
+		if (dev->pci->subsystem_vendor == cx23885_subids[i].subvendor &&
+		    dev->pci->subsystem_device == cx23885_subids[i].subdevice)
+			dev->board = cx23885_subids[i].card;
+	if (UNSET == dev->board) {
+		dev->board = CX23885_BOARD_UNKNOWN;
+		cx23885_card_list(dev);
+	}
+
+	if (dev->pci->device == 0x8852) {
+		/* no DIF on cx23885, so no analog tuner support possible */
+		if (dev->board == CX23885_BOARD_HAUPPAUGE_QUADHD_ATSC)
+			dev->board = CX23885_BOARD_HAUPPAUGE_QUADHD_ATSC_885;
+		else if (dev->board == CX23885_BOARD_HAUPPAUGE_QUADHD_DVB)
+			dev->board = CX23885_BOARD_HAUPPAUGE_QUADHD_DVB_885;
+	}
+
+	/* If the user specific a clk freq override, apply it */
+	if (cx23885_boards[dev->board].clk_freq > 0)
+		dev->clk_freq = cx23885_boards[dev->board].clk_freq;
+
+	if (dev->board == CX23885_BOARD_HAUPPAUGE_IMPACTVCBE &&
+		dev->pci->subsystem_device == 0x7137) {
+		/* Hauppauge ImpactVCBe device ID 0x7137 is populated
+		 * with an 888, and a 25Mhz crystal, instead of the
+		 * usual third overtone 50Mhz. The default clock rate must
+		 * be overridden so the cx25840 is properly configured
+		 */
+		dev->clk_freq = 25000000;
+	}
+
+	dev->pci_bus  = dev->pci->bus->number;
+	dev->pci_slot = PCI_SLOT(dev->pci->devfn);
+	cx23885_irq_add(dev, 0x001f00);
+
+	/* External Master 1 Bus */
+	dev->i2c_bus[0].nr = 0;
+	dev->i2c_bus[0].dev = dev;
+	dev->i2c_bus[0].reg_stat  = I2C1_STAT;
+	dev->i2c_bus[0].reg_ctrl  = I2C1_CTRL;
+	dev->i2c_bus[0].reg_addr  = I2C1_ADDR;
+	dev->i2c_bus[0].reg_rdata = I2C1_RDATA;
+	dev->i2c_bus[0].reg_wdata = I2C1_WDATA;
+	dev->i2c_bus[0].i2c_period = (0x9d << 24); /* 100kHz */
+
+	/* External Master 2 Bus */
+	dev->i2c_bus[1].nr = 1;
+	dev->i2c_bus[1].dev = dev;
+	dev->i2c_bus[1].reg_stat  = I2C2_STAT;
+	dev->i2c_bus[1].reg_ctrl  = I2C2_CTRL;
+	dev->i2c_bus[1].reg_addr  = I2C2_ADDR;
+	dev->i2c_bus[1].reg_rdata = I2C2_RDATA;
+	dev->i2c_bus[1].reg_wdata = I2C2_WDATA;
+	dev->i2c_bus[1].i2c_period = (0x9d << 

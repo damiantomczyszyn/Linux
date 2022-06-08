@@ -1,85 +1,70 @@
-_lock_class(lock, 0);
-
-		/*
-		 * If look_up_lock_class() failed to find a class, we're trying
-		 * to test if we hold a lock that has never yet been acquired.
-		 * Clearly if the lock hasn't been acquired _ever_, we're not
-		 * holding it either, so report failure.
-		 */
-		if (!class)
-			return 0;
-
-		/*
-		 * References, but not a lock we're actually ref-counting?
-		 * State got messed up, follow the sites that change ->references
-		 * and try to make sense of it.
-		 */
-		if (DEBUG_LOCKS_WARN_ON(!hlock->nest_lock))
-			return 0;
-
-		if (hlock->class_idx == class - lock_classes)
-			return 1;
+If a worker goes to sleep, notify and ask workqueue whether it
+	 * wants to wake up a task to maintain concurrency.
+	 */
+	if (task_flags & (PF_WQ_WORKER | PF_IO_WORKER)) {
+		if (task_flags & PF_WQ_WORKER)
+			wq_worker_sleeping(tsk);
+		else
+			io_wq_worker_sleeping(tsk);
 	}
 
-	return 0;
+	if (tsk_is_pi_blocked(tsk))
+		return;
+
+	/*
+	 * If we are going to sleep and we have plugged IO queued,
+	 * make sure to submit it to avoid deadlocks.
+	 */
+	blk_flush_plug(tsk->plug, true);
 }
 
-/* @depth must not be zero */
-static struct held_lock *find_held_lock(struct task_struct *curr,
-					struct lockdep_map *lock,
-					unsigned int depth, int *idx)
+static void sched_update_worker(struct task_struct *tsk)
 {
-	struct held_lock *ret, *hlock, *prev_hlock;
-	int i;
-
-	i = depth - 1;
-	hlock = curr->held_locks + i;
-	ret = hlock;
-	if (match_held_lock(hlock, lock))
-		goto out;
-
-	ret = NULL;
-	for (i--, prev_hlock = hlock--;
-	     i >= 0;
-	     i--, prev_hlock = hlock--) {
-		/*
-		 * We must not cross into another context:
-		 */
-		if (prev_hlock->irq_context != hlock->irq_context) {
-			ret = NULL;
-			break;
-		}
-		if (match_held_lock(hlock, lock)) {
-			ret = hlock;
-			break;
-		}
+	if (tsk->flags & (PF_WQ_WORKER | PF_IO_WORKER)) {
+		if (tsk->flags & PF_WQ_WORKER)
+			wq_worker_running(tsk);
+		else
+			io_wq_worker_running(tsk);
 	}
-
-out:
-	*idx = i;
-	return ret;
 }
 
-static int reacquire_held_locks(struct task_struct *curr, unsigned int depth,
-				int idx, unsigned int *merged)
+asmlinkage __visible void __sched schedule(void)
 {
-	struct held_lock *hlock;
-	int first_idx = idx;
+	struct task_struct *tsk = current;
 
-	if (DEBUG_LOCKS_WARN_ON(!irqs_disabled()))
-		return 0;
+	sched_submit_work(tsk);
+	do {
+		preempt_disable();
+		__schedule(SM_NONE);
+		sched_preempt_enable_no_resched();
+	} while (need_resched());
+	sched_update_worker(tsk);
+}
+EXPORT_SYMBOL(schedule);
 
-	for (hlock = curr->held_locks + idx; idx < depth; idx++, hlock++) {
-		switch (__lock_acquire(hlock->instance,
-				    hlock_class(hlock)->subclass,
-				    hlock->trylock,
-				    hlock->read, hlock->check,
-				    hlock->hardirqs_off,
-				    hlock->nest_lock, hlock->acquire_ip,
-				    hlock->references, hlock->pin_count)) {
-		case 0:
-			return 1;
-		case 1:
-			break;
-		case 2:
-			*merged += (idx ==
+/*
+ * synchronize_rcu_tasks() makes sure that no task is stuck in preempted
+ * state (have scheduled out non-voluntarily) by making sure that all
+ * tasks have either left the run queue or have gone into user space.
+ * As idle tasks do not do either, they must not ever be preempted
+ * (schedule out non-voluntarily).
+ *
+ * schedule_idle() is similar to schedule_preempt_disable() except that it
+ * never enables preemption because it does not call sched_submit_work().
+ */
+void __sched schedule_idle(void)
+{
+	/*
+	 * As this skips calling sched_submit_work(), which the idle task does
+	 * regardless because that function is a nop when the task is in a
+	 * TASK_RUNNING state, make sure this isn't used someplace that the
+	 * current task can be in any other state. Note, idle is always in the
+	 * TASK_RUNNING state.
+	 */
+	WARN_ON_ONCE(current->__state);
+	do {
+		__schedule(SM_NONE);
+	} while (need_resched());
+}
+
+#if defined(CONFIG_CONTEXT

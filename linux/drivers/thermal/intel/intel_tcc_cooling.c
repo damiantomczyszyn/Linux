@@ -1,25 +1,97 @@
-cmd_drivers/media/i2c/vp27smpx.o := gcc -Wp,-MMD,drivers/media/i2c/.vp27smpx.o.d -nostdinc -I./arch/x86/include -I./arch/x86/include/generated  -I./include -I./arch/x86/include/uapi -I./arch/x86/include/generated/uapi -I./include/uapi -I./include/generated/uapi -include ./include/linux/compiler-version.h -include ./include/linux/kconfig.h -include ./include/linux/compiler_types.h -D__KERNEL__ -fmacro-prefix-map=./= -Wall -Wundef -Werror=strict-prototypes -Wno-trigraphs -fno-strict-aliasing -fno-common -fshort-wchar -fno-PIE -Werror=implicit-function-declaration -Werror=implicit-int -Werror=return-type -Wno-format-security -std=gnu11 -mno-sse -mno-mmx -mno-sse2 -mno-3dnow -mno-avx -fcf-protection=none -m32 -msoft-float -mregparm=3 -freg-struct-return -fno-pic -mpreferred-stack-boundary=2 -march=i686 -mtune=pentium3 -mtune=generic -Wa,-mtune=generic32 -ffreestanding -mstack-protector-guard-reg=fs -mstack-protector-guard-symbol=__stack_chk_guard -Wno-sign-compare -fno-asynchronous-unwind-tables -mindirect-branch=thunk-extern -mindirect-branch-register -fno-jump-tables -fno-delete-null-pointer-checks -Wno-frame-address -Wno-format-truncation -Wno-format-overflow -Wno-address-of-packed-member -O2 -fno-allow-store-data-races -fstack-protector-strong -Wimplicit-fallthrough=5 -Wno-main -Wno-unused-but-set-variable -Wno-unused-const-variable -fno-stack-clash-protection -pg -mrecord-mcount -mfentry -DCC_USING_FENTRY -Wdeclaration-after-statement -Wvla -Wno-pointer-sign -Wcast-function-type -Wno-stringop-truncation -Wno-stringop-overflow -Wno-restrict -Wno-maybe-uninitialized -Wno-alloc-size-larger-than -fno-strict-overflow -fno-stack-check -fconserve-stack -Werror=date-time -Werror=incompatible-pointer-types -Werror=designated-init -Wno-packed-not-aligned  -DMODULE  -DKBUILD_BASENAME='"vp27smpx"' -DKBUILD_MODNAME='"vp27smpx"' -D__KBUILD_MODNAME=kmod_vp27smpx -c -o drivers/media/i2c/vp27smpx.o drivers/media/i2c/vp27smpx.c 
+dth_count_to_ns(FIFO_RXTX, *divider);
+}
 
-source_drivers/media/i2c/vp27smpx.o := drivers/media/i2c/vp27smpx.c
+/*
+ * IR Tx Carrier Duty Cycle register helpers
+ */
+static unsigned int cduty_tx_s_duty_cycle(struct cx23885_dev *dev,
+					  unsigned int duty_cycle)
+{
+	u32 n;
+	n = DIV_ROUND_CLOSEST(duty_cycle * 100, 625); /* 16ths of 100% */
+	if (n != 0)
+		n--;
+	if (n > 15)
+		n = 15;
+	cx23888_ir_write4(dev, CX23888_IR_CDUTY_REG, n);
+	return DIV_ROUND_CLOSEST((n + 1) * 100, 16);
+}
 
-deps_drivers/media/i2c/vp27smpx.o := \
-  include/linux/compiler-version.h \
-    $(wildcard include/config/CC_VERSION_TEXT) \
-  include/linux/kconfig.h \
-    $(wildcard include/config/CPU_BIG_ENDIAN) \
-    $(wildcard include/config/BOOGER) \
-    $(wildcard include/config/FOO) \
-  include/linux/compiler_types.h \
-    $(wildcard include/config/DEBUG_INFO_BTF) \
-    $(wildcard include/config/PAHOLE_HAS_BTF_TAG) \
-    $(wildcard include/config/HAVE_ARCH_COMPILER_H) \
-    $(wildcard include/config/CC_HAS_ASM_INLINE) \
-  include/linux/compiler_attributes.h \
-  include/linux/compiler-gcc.h \
-    $(wildcard include/config/RETPOLINE) \
-    $(wildcard include/config/ARCH_USE_BUILTIN_BSWAP) \
-    $(wildcard include/config/SHADOW_CALL_STACK) \
-    $(wildcard include/config/KCOV) \
-  include/linux/module.h \
-    $(wildcard include/config/MODULES) \
-    $(wildcard include/config/SY
+/*
+ * IR Filter Register helpers
+ */
+static u32 filter_rx_s_min_width(struct cx23885_dev *dev, u32 min_width_ns)
+{
+	u32 count = ns_to_lpf_count(min_width_ns);
+	cx23888_ir_write4(dev, CX23888_IR_FILTR_REG, count);
+	return lpf_count_to_ns(count);
+}
+
+/*
+ * IR IRQ Enable Register helpers
+ */
+static inline void irqenable_rx(struct cx23885_dev *dev, u32 mask)
+{
+	mask &= (IRQEN_RTE | IRQEN_ROE | IRQEN_RSE);
+	cx23888_ir_and_or4(dev, CX23888_IR_IRQEN_REG,
+			   ~(IRQEN_RTE | IRQEN_ROE | IRQEN_RSE), mask);
+}
+
+static inline void irqenable_tx(struct cx23885_dev *dev, u32 mask)
+{
+	mask &= IRQEN_TSE;
+	cx23888_ir_and_or4(dev, CX23888_IR_IRQEN_REG, ~IRQEN_TSE, mask);
+}
+
+/*
+ * V4L2 Subdevice IR Ops
+ */
+static int cx23888_ir_irq_handler(struct v4l2_subdev *sd, u32 status,
+				  bool *handled)
+{
+	struct cx23888_ir_state *state = to_state(sd);
+	struct cx23885_dev *dev = state->dev;
+	unsigned long flags;
+
+	u32 cntrl = cx23888_ir_read4(dev, CX23888_IR_CNTRL_REG);
+	u32 irqen = cx23888_ir_read4(dev, CX23888_IR_IRQEN_REG);
+	u32 stats = cx23888_ir_read4(dev, CX23888_IR_STATS_REG);
+
+	union cx23888_ir_fifo_rec rx_data[FIFO_RX_DEPTH];
+	unsigned int i, j, k;
+	u32 events, v;
+	int tsr, rsr, rto, ror, tse, rse, rte, roe, kror;
+
+	tsr = stats & STATS_TSR; /* Tx FIFO Service Request */
+	rsr = stats & STATS_RSR; /* Rx FIFO Service Request */
+	rto = stats & STATS_RTO; /* Rx Pulse Width Timer Time Out */
+	ror = stats & STATS_ROR; /* Rx FIFO Over Run */
+
+	tse = irqen & IRQEN_TSE; /* Tx FIFO Service Request IRQ Enable */
+	rse = irqen & IRQEN_RSE; /* Rx FIFO Service Request IRQ Enable */
+	rte = irqen & IRQEN_RTE; /* Rx Pulse Width Timer Time Out IRQ Enable */
+	roe = irqen & IRQEN_ROE; /* Rx FIFO Over Run IRQ Enable */
+
+	*handled = false;
+	v4l2_dbg(2, ir_888_debug, sd, "IRQ Status:  %s %s %s %s %s %s\n",
+		 tsr ? "tsr" : "   ", rsr ? "rsr" : "   ",
+		 rto ? "rto" : "   ", ror ? "ror" : "   ",
+		 stats & STATS_TBY ? "tby" : "   ",
+		 stats & STATS_RBY ? "rby" : "   ");
+
+	v4l2_dbg(2, ir_888_debug, sd, "IRQ Enables: %s %s %s %s\n",
+		 tse ? "tse" : "   ", rse ? "rse" : "   ",
+		 rte ? "rte" : "   ", roe ? "roe" : "   ");
+
+	/*
+	 * Transmitter interrupt service
+	 */
+	if (tse && tsr) {
+		/*
+		 * TODO:
+		 * Check the watermark threshold setting
+		 * Pull FIFO_TX_DEPTH or FIFO_TX_DEPTH/2 entries from tx_kfifo
+		 * Push the data to the hardware FIFO.
+		 * If there was nothing more to send in the tx_kfifo, disable
+		 *	the TSR IRQ and notify the v4l2_device.
+		 * If there was something in the

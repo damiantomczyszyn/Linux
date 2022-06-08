@@ -1,2 +1,1 @@
-LE_SLEEP) \
-    $(wildcar
+        = LGDT3306A_TPCLK

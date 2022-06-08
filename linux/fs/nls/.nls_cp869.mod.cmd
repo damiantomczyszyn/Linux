@@ -1,3 +1,6 @@
-RCOPY) \
-  arch/x86/include/asm/uaccess.h \
-    $(wildcard include/config/CC_HAS_ASM_GOT
+cx23885_irq_add_enable(dev, PCI_MSK_GPIO0);
+		break;
+	}
+
+	/*
+	 * The CX2388[58] IR contr

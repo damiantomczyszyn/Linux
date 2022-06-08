@@ -1,4 +1,6 @@
-ude/config/PARAVIRT_XXL) \
-  arch/x86/include/asm/disabled-features.h \
-    $(wildcard include/config/X86_SMAP) \
-    $(wildcard include/co
+_LEADTEK_WINFAST_PXDVR3200_H,
+	}, {
+		.subvendor = 0x107d,
+		.subdevice = 0x6f21,
+		.card      = CX23885_BOARD_LEADTEK_WINFAST_PXPVR2200,
+	

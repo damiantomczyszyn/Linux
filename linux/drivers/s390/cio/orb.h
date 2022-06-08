@@ -1,46 +1,71 @@
-ude/config/PARAVIRT_XXL) \
-  arch/x86/include/asm/disabled-features.h \
-    $(wildcard include/config/X86_SMAP) \
-    $(wildcard include/config/X86_UMIP) \
-    $(wildcard include/config/X86_INTEL_MEMORY_PROTECTION_KEYS) \
-    $(wildcard include/config/X86_5LEVEL) \
-    $(wildcard include/config/PAGE_TABLE_ISOLATION) \
-    $(wildcard include/config/INTEL_IOMMU_SVM) \
-    $(wildcard include/config/X86_SGX) \
-  include/asm-generic/bitops/const_hweight.h \
-  include/asm-generic/bitops/instrumented-atomic.h \
-  include/linux/instrumented.h \
-  include/asm-generic/bitops/instrumented-non-atomic.h \
-    $(wildcard include/config/KCSAN_ASSUME_PLAIN_WRITES_ATOMIC) \
-  include/asm-generic/bitops/instrumented-lock.h \
-  include/asm-generic/bitops/le.h \
-  arch/x86/include/uapi/asm/byteorder.h \
-  include/linux/byteorder/little_endian.h \
-  include/uapi/linux/byteorder/little_endian.h \
-  include/linux/swab.h \
-  include/uapi/linux/swab.h \
-  arch/x86/include/uapi/asm/swab.h \
-  include/linux/byteorder/generic.h \
-  include/asm-generic/bitops/ext2-atomic-setbit.h \
-  include/vdso/math64.h \
-  include/linux/time64.h \
-  include/vdso/time64.h \
-  include/uapi/linux/time.h \
-  include/uapi/linux/time_types.h \
-  include/linux/time32.h \
-  include/linux/timex.h \
-  include/uapi/linux/timex.h \
-  include/uapi/linux/param.h \
-  arch/x86/include/generated/uapi/asm/param.h \
-  include/asm-generic/param.h \
-    $(wildcard include/config/HZ) \
-  include/uapi/asm-generic/param.h \
-  arch/x86/include/asm/timex.h \
-    $(wildcard include/config/X86_TSC) \
-  arch/x86/include/asm/processor.h \
-    $(wildcard include/config/X86_VMX_FEATURE_NAMES) \
-    $(wildcard include/config/X86_IOPL_IOPERM) \
-    $(wildcard include/config/STACKPROTECTOR) \
-    $(wildcard include/config/VM86) \
-    $(wildcard include/config/X86_DEBUGCTLMSR) \
-    $(wildcard include/con
+-T/C/S2, IR) */
+	}, {
+		.subvendor = 0x0070,
+		.subdevice = 0xc12a,
+		.card      = CX23885_BOARD_HAUPPAUGE_STARBURST, /* Hauppauge WinTV Starburst (Model 121x00, DVB-S2, IR) */
+	}, {
+		.subvendor = 0x0070,
+		.subdevice = 0xc1f8,
+		.card      = CX23885_BOARD_HAUPPAUGE_HVR4400, /* Hauppauge WinTV HVR-5500 (Model 121xxx, Hybrid DVB-T/C/S2, IR) */
+	}, {
+		.subvendor = 0x1461,
+		.subdevice = 0xd939,
+		.card      = CX23885_BOARD_AVERMEDIA_HC81R,
+	}, {
+		.subvendor = 0x0070,
+		.subdevice = 0x7133,
+		.card      = CX23885_BOARD_HAUPPAUGE_IMPACTVCBE,
+	}, {
+		.subvendor = 0x0070,
+		.subdevice = 0x7137,
+		.card      = CX23885_BOARD_HAUPPAUGE_IMPACTVCBE,
+	}, {
+		.subvendor = 0x18ac,
+		.subdevice = 0xdb98,
+		.card      = CX23885_BOARD_DVICO_FUSIONHDTV_DVB_T_DUAL_EXP2,
+	}, {
+		.subvendor = 0x4254,
+		.subdevice = 0x9580,
+		.card      = CX23885_BOARD_DVBSKY_T9580,
+	}, {
+		.subvendor = 0x4254,
+		.subdevice = 0x980c,
+		.card      = CX23885_BOARD_DVBSKY_T980C,
+	}, {
+		.subvendor = 0x4254,
+		.subdevice = 0x950c,
+		.card      = CX23885_BOARD_DVBSKY_S950C,
+	}, {
+		.subvendor = 0x13c2,
+		.subdevice = 0x3013,
+		.card      = CX23885_BOARD_TT_CT2_4500_CI,
+	}, {
+		.subvendor = 0x4254,
+		.subdevice = 0x0950,
+		.card      = CX23885_BOARD_DVBSKY_S950,
+	}, {
+		.subvendor = 0x4254,
+		.subdevice = 0x0952,
+		.card      = CX23885_BOARD_DVBSKY_S952,
+	}, {
+		.subvendor = 0x4254,
+		.subdevice = 0x0982,
+		.card      = CX23885_BOARD_DVBSKY_T982,
+	}, {
+		.subvendor = 0x0070,
+		.subdevice = 0xf038,
+		.card      = CX23885_BOARD_HAUPPAUGE_HVR5525,
+	}, {
+		.subvendor = 0x1576,
+		.subdevice = 0x0260,
+		.card      = CX23885_BOARD_VIEWCAST_260E,
+	}, {
+		.subvendor = 0x1576,
+		.subdevice = 0x0460,
+		.card      = CX23885_BOARD_VIEWCAST_460E,
+	}, {
+		.subvendor = 0x0070,
+		.subdevice = 0x6a28,
+		.card      = CX23885_BOARD_HAUPPAUGE_QUADHD_DVB, /* Tuner Pair 1 */
+	}, {
+		.subvend

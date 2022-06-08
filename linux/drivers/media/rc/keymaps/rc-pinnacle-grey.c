@@ -1,85 +1,45 @@
-// SPDX-License-Identifier: GPL-2.0+
-// pinnacle-grey.h - Keytable for pinnacle_grey Remote Controller
-//
-// keymap imported from ir-keymaps.c
-//
-// Copyright (c) 2010 by Mauro Carvalho Chehab
-
-#include <media/rc-map.h>
-#include <linux/module.h>
-
-static struct rc_map_table pinnacle_grey[] = {
-	{ 0x3a, KEY_NUMERIC_0 },
-	{ 0x31, KEY_NUMERIC_1 },
-	{ 0x32, KEY_NUMERIC_2 },
-	{ 0x33, KEY_NUMERIC_3 },
-	{ 0x34, KEY_NUMERIC_4 },
-	{ 0x35, KEY_NUMERIC_5 },
-	{ 0x36, KEY_NUMERIC_6 },
-	{ 0x37, KEY_NUMERIC_7 },
-	{ 0x38, KEY_NUMERIC_8 },
-	{ 0x39, KEY_NUMERIC_9 },
-
-	{ 0x2f, KEY_POWER },
-
-	{ 0x2e, KEY_P },
-	{ 0x1f, KEY_L },
-	{ 0x2b, KEY_I },
-
-	{ 0x2d, KEY_SCREEN },
-	{ 0x1e, KEY_ZOOM },
-	{ 0x1b, KEY_VOLUMEUP },
-	{ 0x0f, KEY_VOLUMEDOWN },
-	{ 0x17, KEY_CHANNELUP },
-	{ 0x1c, KEY_CHANNELDOWN },
-	{ 0x25, KEY_INFO },
-
-	{ 0x3c, KEY_MUTE },
-
-	{ 0x3d, KEY_LEFT },
-	{ 0x3b, KEY_RIGHT },
-
-	{ 0x3f, KEY_UP },
-	{ 0x3e, KEY_DOWN },
-	{ 0x1a, KEY_ENTER },
-
-	{ 0x1d, KEY_MENU },
-	{ 0x19, KEY_AGAIN },
-	{ 0x16, KEY_PREVIOUSSONG },
-	{ 0x13, KEY_NEXTSONG },
-	{ 0x15, KEY_PAUSE },
-	{ 0x0e, KEY_REWIND },
-	{ 0x0d, KEY_PLAY },
-	{ 0x0b, KEY_STOP },
-	{ 0x07, KEY_FORWARD },
-	{ 0x27, KEY_RECORD },
-	{ 0x26, KEY_TUNER },
-	{ 0x29, KEY_TEXT },
-	{ 0x2a, KEY_MEDIA },
-	{ 0x18, KEY_EPG },
-};
-
-static struct rc_map_list pinnacle_grey_map = {
-	.map = {
-		.scan     = pinnacle_grey,
-		.size     = ARRAY_SIZE(pinnacle_grey),
-		.rc_proto = RC_PROTO_UNKNOWN,	/* Legacy IR type */
-		.name     = RC_MAP_PINNACLE_GREY,
-	}
-};
-
-static int __init init_rc_map_pinnacle_grey(void)
-{
-	return rc_map_register(&pinnacle_grey_map);
-}
-
-static void __exit exit_rc_map_pinnacle_grey(void)
-{
-	rc_map_unregister(&pinnacle_grey_map);
-}
-
-module_init(init_rc_map_pinnacle_grey)
-module_exit(exit_rc_map_pinnacle_grey)
-
-MODULE_LICENSE("GPL");
-MODULE_AUTHOR("Mauro Carvalho Chehab");
+   $(wildcard include/config/ACPI_SLEEP) \
+  include/acpi/acpi_drivers.h \
+    $(wildcard include/config/ACPI_DOCK) \
+  include/acpi/acpi_numa.h \
+    $(wildcard include/config/ACPI_HMAT) \
+  include/acpi/acpi_io.h \
+  include/linux/io.h \
+    $(wildcard include/config/HAS_IOPORT_MAP) \
+  arch/x86/include/asm/io.h \
+    $(wildcard include/config/MTRR) \
+    $(wildcard include/config/X86_PAT) \
+  arch/x86/include/generated/asm/early_ioremap.h \
+  include/asm-generic/early_ioremap.h \
+    $(wildcard include/config/GENERIC_EARLY_IOREMAP) \
+  include/asm-generic/iomap.h \
+  include/asm-generic/pci_iomap.h \
+    $(wildcard include/config/NO_GENERIC_PCI_IOPORT_MAP) \
+    $(wildcard include/config/GENERIC_PCI_IOMAP) \
+  include/asm-generic/io.h \
+    $(wildcard include/config/GENERIC_IOMAP) \
+    $(wildcard include/config/GENERIC_IOREMAP) \
+    $(wildcard include/config/VIRT_TO_BUS) \
+    $(wildcard include/config/GENERIC_DEVMEM_IS_ALLOWED) \
+  include/linux/logic_pio.h \
+    $(wildcard include/config/INDIRECT_PIO) \
+  include/linux/vmalloc.h \
+    $(wildcard include/config/HAVE_ARCH_HUGE_VMALLOC) \
+  arch/x86/include/asm/vmalloc.h \
+    $(wildcard include/config/HAVE_ARCH_HUGE_VMAP) \
+  arch/x86/include/asm/acpi.h \
+    $(wildcard include/config/ACPI_APEI) \
+  include/acpi/pdc_intel.h \
+  arch/x86/include/asm/numa.h \
+    $(wildcard include/config/NUMA_EMU) \
+  arch/x86/include/asm/numa_32.h \
+  include/linux/regulator/consumer.h \
+    $(wildcard include/config/REGULATOR) \
+  include/linux/suspend.h \
+    $(wildcard include/config/VT) \
+    $(wildcard include/config/SUSPEND) \
+    $(wildcard include/config/HIBERNATION_SNAPSHOT_DEV) \
+    $(wildcard include/config/PM_SLEEP_DEBUG) \
+    $(wildcard include/config/PM_AUTOSLEEP) \
+  include/linux/swap.h \
+    $(wildcard include/config/DEVICE_PRIV

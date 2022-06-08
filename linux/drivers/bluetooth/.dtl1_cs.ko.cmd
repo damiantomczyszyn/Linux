@@ -1,5 +1,8 @@
-CPI_APEI_GHES) \
-    $(wildcard include/config/INTEL_TXT) \
-  arch/x86/include/generated/asm/kmap_size.h \
-  include/asm-generic/kmap_size.h \
-    $(wildcard include/config/DEBUG_KMAP_LOCAL) \
+ (0x9d << 24); /* 100kHz */
+
+	/* External Master 2 Bus */
+	dev->i2c_bus[1].nr = 1;
+	dev->i2c_bus[1].dev = dev;
+	dev->i2c_bus[1].reg_stat  = I2C2_STAT;
+	dev->i2c_bus[1].reg_ctrl  = I2C2_CTRL;
+	

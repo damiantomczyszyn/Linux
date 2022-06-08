@@ -1,73 +1,75 @@
-pes.h \
-  include/asm-generic/pgtable-nop4d.h \
-  include/asm-generic/pgtable-nopud.h \
-  arch/x86/include/asm/nospec-branch.h \
-  include/linux/static_key.h \
-  include/linux/jump_label.h \
-    $(wildcard include/config/HAVE_ARCH_JUMP_LABEL_RELATIVE) \
-  arch/x86/include/asm/jump_label.h \
-  include/linux/objtool.h \
-    $(wildcard include/config/FRAME_POINTER) \
-  arch/x86/include/asm/msr-index.h \
-  arch/x86/include/asm/unwind_hints.h \
-  arch/x86/include/asm/orc_types.h \
-  arch/x86/include/asm/GEN-for-each-reg.h \
-  arch/x86/include/asm/spinlock_types.h \
-  include/asm-generic/qspinlock_types.h \
-    $(wildcard include/config/NR_CPUS) \
-  include/asm-generic/qrwlock_types.h \
-  arch/x86/include/asm/proto.h \
-  arch/x86/include/uapi/asm/ldt.h \
-  arch/x86/include/uapi/asm/sigcontext.h \
-  arch/x86/include/asm/current.h \
-  arch/x86/include/asm/percpu.h \
-    $(wildcard include/config/X86_64_SMP) \
-  include/linux/kernel.h \
-    $(wildcard include/config/PREEMPT_VOLUNTARY_BUILD) \
-    $(wildcard include/config/PREEMPT_DYNAMIC) \
-    $(wildcard include/config/HAVE_PREEMPT_DYNAMIC_CALL) \
-    $(wildcard include/config/HAVE_PREEMPT_DYNAMIC_KEY) \
-    $(wildcard include/config/PREEMPT_) \
-    $(wildcard include/config/DEBUG_ATOMIC_SLEEP) \
-    $(wildcard include/config/MMU) \
-    $(wildcard include/config/PROVE_LOCKING) \
-  include/linux/stdarg.h \
-  include/linux/align.h \
-  include/linux/limits.h \
-  include/uapi/linux/limits.h \
-  include/vdso/limits.h \
-  include/linux/kstrtox.h \
-  include/linux/minmax.h \
-  include/linux/panic.h \
-    $(wildcard include/config/PANIC_TIMEOUT) \
-  include/linux/printk.h \
-    $(wildcard include/config/MESSAGE_LOGLEVEL_DEFAULT) \
-    $(wildcard include/config/CONSOLE_LOGLEVEL_DEFAULT) \
-    $(wildcard include/config/CONSOLE_LOGLEVEL_QUIET) \
-    $(wildcard include/config/EARLY_PRINTK) \
-    $(wildcard include/config/PRINTK) \
-    $(wildcard include/config/DYNAMIC_DEBUG) \
-    $(wildcard include/config/DYNAMIC_DEBUG_CORE) \
-  include/linux/kern_levels.h \
-  include/linux/ratelimit_types.h \
-  include/linux/spinlock_types_raw.h \
-    $(wildcard include/config/DEBUG_SPINLOCK) \
-    $(wildcard include/config/DEBUG_LOCK_ALLOC) \
-  include/linux/lockdep_types.h \
-    $(wildcard include/config/PROVE_RAW_LOCK_NESTING) \
-    $(wildcard include/config/LOCKDEP) \
-    $(wildcard include/config/LOCK_STAT) \
-  include/linux/once_lite.h \
-  include/linux/static_call_types.h \
-    $(wildcard include/config/HAVE_STATIC_CALL) \
-  include/linux/instruction_pointer.h \
-  include/asm-generic/percpu.h \
-    $(wildcard include/config/DEBUG_PREEMPT) \
-    $(wildcard include/config/HAVE_SETUP_PER_CPU_AREA) \
-  include/linux/threads.h \
-    $(wildcard include/config/BASE_SMALL) \
-  include/linux/percpu-defs.h \
-    $(wildcard include/config/DEBUG_FORCE_WEAK_PER_CPU) \
-  arch/x86/include/asm/page.h \
-  arch/x86/include/asm/page_32.h \
- 
+mempolicy.h \
+  include/linux/freezer.h \
+  include/uapi/linux/i2c.h \
+  include/linux/spi/spi.h \
+    $(wildcard include/config/SPI_SLAVE) \
+  include/linux/scatterlist.h \
+    $(wildcard include/config/NEED_SG_DMA_LENGTH) \
+    $(wildcard include/config/DEBUG_SG) \
+    $(wildcard include/config/SGL_ALLOC) \
+    $(wildcard include/config/ARCH_NO_SG_CHAIN) \
+    $(wildcard include/config/SG_POOL) \
+  include/linux/gpio/consumer.h \
+    $(wildcard include/config/OF_GPIO) \
+    $(wildcard include/config/GPIO_SYSFS) \
+  include/uapi/linux/spi/spi.h \
+  include/media/v4l2-fh.h \
+  include/media/v4l2-mediabus.h \
+  include/sound/core.h \
+    $(wildcard include/config/SND_DYNAMIC_MINORS) \
+    $(wildcard include/config/SND_MAX_CARDS) \
+    $(wildcard include/config/SND_MAJOR) \
+    $(wildcard include/config/SND_DEBUG) \
+    $(wildcard include/config/SND_MIXER_OSS) \
+    $(wildcard include/config/SND_OSSEMUL) \
+    $(wildcard include/config/ISA_DMA_API) \
+    $(wildcard include/config/SND_VERBOSE_PRINTK) \
+    $(wildcard include/config/SND_DEBUG_VERBOSE) \
+    $(wildcard include/config/GAMEPORT) \
+  include/sound/pcm.h \
+    $(wildcard include/config/SND_PCM_OSS) \
+    $(wildcard include/config/SND_VERBOSE_PROCFS) \
+    $(wildcard include/config/SND_PCM_XRUN_DEBUG) \
+  include/sound/asound.h \
+  include/uapi/sound/asound.h \
+  include/sound/memalloc.h \
+    $(wildcard include/config/GENERIC_ALLOCATOR) \
+    $(wildcard include/config/SND_DMA_SGBUF) \
+    $(wildcard include/config/HAS_DMA) \
+  include/linux/dma-direction.h \
+  include/sound/minors.h \
+  include/linux/pm_qos.h \
+    $(wildcard include/config/CPU_IDLE) \
+  include/sound/pcm_oss.h \
+    $(wildcard include/config/SND_PCM_OSS_PLUGINS) \
+  drivers/media/pci/cx18/cx18-driver.h \
+  include/linux/delay.h \
+  arch/x86/include/asm/delay.h \
+  include/asm-generic/delay.h \
+  include/linux/pci.h \
+    $(wildcard include/config/PCI_IOV) \
+    $(wildcard include/config/PCIEAER) \
+    $(wildcard include/config/PCIEPORTBUS) \
+    $(wildcard include/config/PCIEASPM) \
+    $(wildcard include/config/HOTPLUG_PCI_PCIE) \
+    $(wildcard include/config/PCIE_PTM) \
+    $(wildcard include/config/PCIE_DPC) \
+    $(wildcard include/config/PCI_ATS) \
+    $(wildcard include/config/PCI_PRI) \
+    $(wildcard include/config/PCI_PASID) \
+    $(wildcard include/config/PCI_P2PDMA) \
+    $(wildcard include/config/PCI_DOMAINS_GENERIC) \
+    $(wildcard include/config/PCI_DOMAINS) \
+    $(wildcard include/config/PCI_QUIRKS) \
+    $(wildcard include/config/ACPI_MCFG) \
+    $(wildcard include/config/HOTPLUG_PCI) \
+    $(wildcard include/config/EEH) \
+  include/uapi/linux/pci.h \
+  include/uapi/linux/pci_regs.h \
+  include/linux/pci_ids.h \
+  include/linux/dmapool.h \
+  arch/x86/include/asm/pci.h \
+    $(wildcard include/config/PCI_MSI_IRQ_DOMAIN) \
+    $(wildcard include/config/VMD) \
+  arch/x86/include/asm/memtype.h \
+  include

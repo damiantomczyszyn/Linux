@@ -1,62 +1,96 @@
-nclude/linux/page-flags-layout.h \
-    $(wildcard include/config/KASAN_HW_TAGS) \
-  include/linux/numa.h \
-    $(wildcard include/config/NODES_SHIFT) \
-    $(wildcard include/config/NUMA_KEEP_MEMINFO) \
-    $(wildcard include/config/HAVE_ARCH_NODE_DEV_GROUP) \
-  arch/x86/include/asm/sparsemem.h \
-  include/generated/bounds.h \
-  include/linux/seqlock.h \
-  include/linux/ww_mutex.h \
-    $(wildcard include/config/DEBUG_RT_MUTEXES) \
-    $(wildcard include/config/DEBUG_WW_MUTEX_SLOWPATH) \
-  include/linux/rtmutex.h \
-  arch/x86/include/asm/mmu.h \
-    $(wildcard include/config/MODIFY_LDT_SYSCALL) \
-  include/linux/kmod.h \
-  include/linux/umh.h \
-  include/linux/gfp.h \
-    $(wildcard include/config/HIGHMEM) \
-    $(wildcard include/config/ZONE_DMA) \
-    $(wildcard include/config/ZONE_DMA32) \
-    $(wildcard include/config/ZONE_DEVICE) \
-    $(wildcard include/config/PM_SLEEP) \
-    $(wildcard include/config/CONTIG_ALLOC) \
-    $(wildcard include/config/CMA) \
-  include/linux/mmdebug.h \
-    $(wildcard include/config/DEBUG_VM) \
-    $(wildcard include/config/DEBUG_VM_PGFLAGS) \
-  include/linux/mmzone.h \
-    $(wildcard include/config/FORCE_MAX_ZONEORDER) \
-    $(wildcard include/config/MEMORY_ISOLATION) \
-    $(wildcard include/config/ZSMALLOC) \
-    $(wildcard include/config/MEMORY_HOTPLUG) \
-    $(wildcard include/config/COMPACTION) \
-    $(wildcard include/config/PAGE_EXTENSION) \
-    $(wildcard include/config/DEFERRED_STRUCT_PAGE_INIT) \
-    $(wildcard include/config/HAVE_MEMORYLESS_NODES) \
-    $(wildcard include/config/SPARSEMEM_EXTREME) \
-    $(wildcard include/config/HAVE_ARCH_PFN_VALID) \
-  include/linux/nodemask.h \
-  include/linux/pageblock-flags.h \
-    $(wildcard include/config/HUGETLB_PAGE_SIZE_VARIABLE) \
-  include/linux/page-flags.h \
-    $(wildcard include/config/ARCH_USES_PG_UNCACHED) \
-    $(wildcard include/config/MEMORY_FAILURE) \
-    $(wildcard include/config/PAGE_IDLE_FLAG) \
-    $(wildcard include/config/HUGETLB_PAGE_FREE_VMEMMAP) \
-    $(wildcard include/config/HUGETLB_PAGE_FREE_VMEMMAP_DEFAULT_ON) \
-    $(wildcard include/config/KSM) \
-  include/linux/local_lock.h \
-  include/linux/local_lock_internal.h \
-  include/linux/memory_hotplug.h \
-    $(wildcard include/config/HAVE_ARCH_NODEDATA_EXTENSION) \
-    $(wildcard include/config/ARCH_HAS_ADD_PAGES) \
-    $(wildcard include/config/MEMORY_HOTREMOVE) \
-  arch/x86/include/asm/mmzone.h \
-  arch/x86/include/asm/mmzone_32.h \
-  include/linux/topology.h \
-    $(wildcard include/config/USE_PERCPU_NUMA_NODE_ID) \
-    $(wildcard include/config/SCHED_SMT) \
-    $(wildcard include/config/SCHED_CLUSTER) \
-  include/linux/arc
+-T/C/S2, IR) */
+	}, {
+		.subvendor = 0x0070,
+		.subdevice = 0xc12a,
+		.card      = CX23885_BOARD_HAUPPAUGE_STARBURST, /* Hauppauge WinTV Starburst (Model 121x00, DVB-S2, IR) */
+	}, {
+		.subvendor = 0x0070,
+		.subdevice = 0xc1f8,
+		.card      = CX23885_BOARD_HAUPPAUGE_HVR4400, /* Hauppauge WinTV HVR-5500 (Model 121xxx, Hybrid DVB-T/C/S2, IR) */
+	}, {
+		.subvendor = 0x1461,
+		.subdevice = 0xd939,
+		.card      = CX23885_BOARD_AVERMEDIA_HC81R,
+	}, {
+		.subvendor = 0x0070,
+		.subdevice = 0x7133,
+		.card      = CX23885_BOARD_HAUPPAUGE_IMPACTVCBE,
+	}, {
+		.subvendor = 0x0070,
+		.subdevice = 0x7137,
+		.card      = CX23885_BOARD_HAUPPAUGE_IMPACTVCBE,
+	}, {
+		.subvendor = 0x18ac,
+		.subdevice = 0xdb98,
+		.card      = CX23885_BOARD_DVICO_FUSIONHDTV_DVB_T_DUAL_EXP2,
+	}, {
+		.subvendor = 0x4254,
+		.subdevice = 0x9580,
+		.card      = CX23885_BOARD_DVBSKY_T9580,
+	}, {
+		.subvendor = 0x4254,
+		.subdevice = 0x980c,
+		.card      = CX23885_BOARD_DVBSKY_T980C,
+	}, {
+		.subvendor = 0x4254,
+		.subdevice = 0x950c,
+		.card      = CX23885_BOARD_DVBSKY_S950C,
+	}, {
+		.subvendor = 0x13c2,
+		.subdevice = 0x3013,
+		.card      = CX23885_BOARD_TT_CT2_4500_CI,
+	}, {
+		.subvendor = 0x4254,
+		.subdevice = 0x0950,
+		.card      = CX23885_BOARD_DVBSKY_S950,
+	}, {
+		.subvendor = 0x4254,
+		.subdevice = 0x0952,
+		.card      = CX23885_BOARD_DVBSKY_S952,
+	}, {
+		.subvendor = 0x4254,
+		.subdevice = 0x0982,
+		.card      = CX23885_BOARD_DVBSKY_T982,
+	}, {
+		.subvendor = 0x0070,
+		.subdevice = 0xf038,
+		.card      = CX23885_BOARD_HAUPPAUGE_HVR5525,
+	}, {
+		.subvendor = 0x1576,
+		.subdevice = 0x0260,
+		.card      = CX23885_BOARD_VIEWCAST_260E,
+	}, {
+		.subvendor = 0x1576,
+		.subdevice = 0x0460,
+		.card      = CX23885_BOARD_VIEWCAST_460E,
+	}, {
+		.subvendor = 0x0070,
+		.subdevice = 0x6a28,
+		.card      = CX23885_BOARD_HAUPPAUGE_QUADHD_DVB, /* Tuner Pair 1 */
+	}, {
+		.subvendor = 0x0070,
+		.subdevice = 0x6b28,
+		.card      = CX23885_BOARD_HAUPPAUGE_QUADHD_DVB, /* Tuner Pair 2 */
+	}, {
+		.subvendor = 0x0070,
+		.subdevice = 0x6a18,
+		.card      = CX23885_BOARD_HAUPPAUGE_QUADHD_ATSC, /* Tuner Pair 1 */
+	}, {
+		.subvendor = 0x0070,
+		.subdevice = 0x6b18,
+		.card      = CX23885_BOARD_HAUPPAUGE_QUADHD_ATSC, /* Tuner Pair 2 */
+	}, {
+		.subvendor = 0x0070,
+		.subdevice = 0x2a18,
+		.card      = CX23885_BOARD_HAUPPAUGE_HVR1265_K4, /* Hauppauge WinTV HVR-1265 (Model 161xx1, Hybrid ATSC/QAM-B) */
+	}, {
+		.subvendor = 0x0070,
+		.subdevice = 0xf02a,
+		.card      = CX23885_BOARD_HAUPPAUGE_STARBURST2,
+	}, {
+		.subvendor = 0x1461,
+		.subdevice = 0x3100,
+		.card      = CX23885_BOARD_AVERMEDIA_CE310B,
+	},
+};
+const unsigned int cx23885_idcount = ARRAY_SI

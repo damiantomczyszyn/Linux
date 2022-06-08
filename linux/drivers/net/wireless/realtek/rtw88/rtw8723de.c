@@ -1,18 +1,42 @@
-lude/config/SHMEM) \
-    $(wildcard include/config/ARCH_HAS_PTE_SPECIAL) \
-    $(wildcard include/config/ARCH_HAS_PTE_DEVMAP) \
-    $(wildcard include/config/DEBUG_VM_RB) \
-    $(wildcard include/config/PAGE_POISONING) \
-    $(wildcard include/config/INIT_ON_ALLOC_DEFAULT_ON) \
-    $(wildcard include/config/INIT_ON_FREE_DEFAULT_ON) \
-    $(wildcard include/config/DEBUG_PAGEALLOC) \
-    $(wildcard include/config/HUGETLBFS) \
-    $(wildcard include/config/MAPPING_DIRTY_HELPERS) \
-    $(wildcard include/config/ANON_VMA_NAME) \
-  include/linux/mmap_lock.h \
-  include/linux/page_ext.h \
-  include/linux/stacktrace.h \
-    $(wildcard include/config/ARCH_STACKWALK) \
-    $(wildcard include/config/STACKTRACE) \
-    $(wildcard include/config/HAVE_RELIABLE_STACKTRACE) \
-  include/linux/stackdepot.h \
+h->cmds_start + i, 0);
+
+	/* fill registers */
+	cx_write(ch->ptr1_reg, ch->fifo_start);
+	cx_write(ch->ptr2_reg, cdt);
+	cx_write(ch->cnt2_reg, (lines*16) >> 3);
+	cx_write(ch->cnt1_reg, (bpl >> 3) - 1);
+
+	dprintk(2, "[bridge %d] sram setup %s: bpl=%d lines=%d\n",
+		dev->bridge,
+		ch->name,
+		bpl,
+		lines);
+
+	return 0;
+}
+
+void cx23885_sram_channel_dump(struct cx23885_dev *dev,
+				      struct sram_channel *ch)
+{
+	static char *name[] = {
+		"init risc lo",
+		"init risc hi",
+		"cdt base",
+		"cdt size",
+		"iq base",
+		"iq size",
+		"risc pc lo",
+		"risc pc hi",
+		"iq wr ptr",
+		"iq rd ptr",
+		"cdt current",
+		"pci target lo",
+		"pci target hi",
+		"line / byte",
+	};
+	u32 risc;
+	unsigned int i, j, n;
+
+	pr_warn("%s: %s - dma channel status dump\n",
+		dev->name, ch->name);
+	for (i = 0; i < ARRAY_SIZE(

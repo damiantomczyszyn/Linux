@@ -1,41 +1,50 @@
-card include/config/BPF_JIT) \
-  include/asm-generic/access_ok.h \
-    $(wildcard include/config/ALTERNATE_USER_ADDRESS_SPACE) \
-  arch/x86/include/asm/uaccess_32.h \
-  include/linux/cred.h \
-    $(wildcard include/config/DEBUG_CREDENTIALS) \
-  include/linux/key.h \
-    $(wildcard include/config/KEY_NOTIFICATIONS) \
-    $(wildcard include/config/NET) \
-  include/linux/assoc_array.h \
-    $(wildcard include/config/ASSOCIATIVE_ARRAY) \
-  include/linux/sched/user.h \
-    $(wildcard include/config/WATCH_QUEUE) \
-  include/linux/percpu_counter.h \
-  include/linux/rcu_sync.h \
-  include/linux/delayed_call.h \
-  include/linux/errseq.h \
-  include/linux/ioprio.h \
-  include/linux/sched/rt.h \
-  include/linux/iocontext.h \
-    $(wildcard include/config/BLK_ICQ) \
-  include/uapi/linux/ioprio.h \
-  include/linux/fs_types.h \
-  include/linux/mount.h \
-  include/linux/mnt_idmapping.h \
-  include/uapi/linux/fs.h \
-  include/linux/quota.h \
-    $(wildcard include/config/QUOTA_NETLINK_INTERFACE) \
-  include/uapi/linux/dqblk_xfs.h \
-  include/linux/dqblk_v1.h \
-  include/linux/dqblk_v2.h \
-  include/linux/dqblk_qtree.h \
-  include/linux/projid.h \
-  include/uapi/linux/quota.h \
-  include/linux/nfs_fs_i.h \
-  include/linux/seq_file.h \
-  include/linux/string_helpers.h \
-  include/linux/ns_common.h \
-  include/linux/nsproxy.h \
-  include/linux/user_namespace.h \
-    
+// SPDX-License-Identifier: GPL-2.0-or-later
+/*
+ *  Driver for the Conexant CX23885 PCIe bridge
+ *
+ *  Copyright (c) 2007 Steven Toth <stoth@linuxtv.org>
+ */
+
+#include "cx23885.h"
+
+#include <linux/kernel.h>
+#include <linux/module.h>
+#include <linux/moduleparam.h>
+#include <linux/init.h>
+
+static unsigned int vbibufs = 4;
+module_param(vbibufs, int, 0644);
+MODULE_PARM_DESC(vbibufs, "number of vbi buffers, range 2-32");
+
+static unsigned int vbi_debug;
+module_param(vbi_debug, int, 0644);
+MODULE_PARM_DESC(vbi_debug, "enable debug messages [vbi]");
+
+#define dprintk(level, fmt, arg...)\
+	do { if (vbi_debug >= level)\
+		printk(KERN_DEBUG pr_fmt("%s: vbi:" fmt), \
+			__func__, ##arg); \
+	} while (0)
+
+/* ------------------------------------------------------------------ */
+
+#define VBI_LINE_LENGTH 1440
+#define VBI_NTSC_LINE_COUNT 12
+#define VBI_PAL_LINE_COUNT 18
+
+
+int cx23885_vbi_fmt(struct file *file, void *priv,
+	struct v4l2_format *f)
+{
+	struct cx23885_dev *dev = video_drvdata(file);
+
+	f->fmt.vbi.sampling_rate = 27000000;
+	f->fmt.vbi.samples_per_line = VBI_LINE_LENGTH;
+	f->fmt.vbi.sample_format = V4L2_PIX_FMT_GREY;
+	f->fmt.vbi.offset = 0;
+	f->fmt.vbi.flags = 0;
+	if (dev->tvnorm & V4L2_STD_525_60) {
+		/* ntsc */
+		f->fmt.vbi.start[0] = V4L2_VBI_ITU_525_F1_START + 9;
+		f->fmt.vbi.start[1] = V4L2_VBI_ITU_525_F2_START + 9;
+		f->fmt.vbi.count[0] = VBI_NTSC_LINE

@@ -1,22 +1,32 @@
-nclude/linux/page-flags-layout.h \
-    $(wildcard include/config/KASAN_HW_TAGS) \
-  include/linux/numa.h \
-    $(wildcard include/config/NODES_SHIFT) \
-    $(wildcard include/config/NUMA_KEEP_MEMINFO) \
-    $(wildcard include/config/HAVE_ARCH_NODE_DEV_GROUP) \
-  arch/x86/include/asm/sparsemem.h \
-  include/generated/bounds.h \
-  include/linux/seqlock.h \
-  include/linux/ww_mutex.h \
-    $(wildcard include/config/DEBUG_RT_MUTEXES) \
-    $(wildcard include/config/DEBUG_WW_MUTEX_SLOWPATH) \
-  include/linux/rtmutex.h \
-  arch/x86/include/asm/mmu.h \
-    $(wildcard include/config/MODIFY_LDT_SYSCALL) \
-  include/linux/kmod.h \
-  include/linux/umh.h \
-  include/linux/gfp.h \
-    $(wildcard include/config/HIGHMEM) \
-    $(wildcard include/config/ZONE_DMA) \
-    $(wildcard include/config/ZONE_DMA32) \
-    $(wildcard include/config/ZONE_
+// SPDX-License-Identifier: GPL-2.0-or-later
+/*
+ *
+ *  Support for a cx23417 mpeg encoder via cx23885 host port.
+ *
+ *    (c) 2004 Jelle Foks <jelle@foks.us>
+ *    (c) 2004 Gerd Knorr <kraxel@bytesex.org>
+ *    (c) 2008 Steven Toth <stoth@linuxtv.org>
+ *      - CX23885/7/8 support
+ *
+ *  Includes parts from the ivtv driver <http://sourceforge.net/projects/ivtv/>
+ */
+
+#include "cx23885.h"
+#include "cx23885-ioctl.h"
+
+#include <linux/module.h>
+#include <linux/moduleparam.h>
+#include <linux/init.h>
+#include <linux/fs.h>
+#include <linux/delay.h>
+#include <linux/device.h>
+#include <linux/firmware.h>
+#include <linux/slab.h>
+#include <media/v4l2-common.h>
+#include <media/v4l2-ioctl.h>
+#include <media/drv-intf/cx2341x.h>
+
+#define CX23885_FIRM_IMAGE_SIZE 376836
+#define CX23885_FIRM_IMAGE_NAME "v4l-cx23885-enc.fw"
+
+static unsigned int mpe

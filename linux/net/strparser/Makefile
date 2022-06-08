@@ -1,3 +1,3 @@
-p_next_lockchain(long i);
-unsigned long lock_chain_count(void);
-extern unsigned lon
+ \
+  arch/x86/include/asm/pgtable-3level_types.h \
+  include/asm-generic/pgtable-no

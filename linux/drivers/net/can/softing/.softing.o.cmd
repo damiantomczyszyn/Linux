@@ -1,4 +1,1 @@
- $(wildcard include/config/PARISC) \
-    $(wildcard include/config/SPARC64) \
-    $(wildcard include/config/ARM64_MTE) \
-    $(wildcard include/config/HAVE_ARCH_USERFAULTFD_M
+cmd_drivers/net/can/softing/softing.o := ld -m elf_i386   -r -o drivers/net/can/softing/softing.o drivers/net/can/softing/softing_main.o drivers/net/can/softing/softing_fw.o

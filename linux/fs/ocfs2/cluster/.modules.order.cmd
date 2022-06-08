@@ -1,4 +1,5 @@
-e/linux/rwlock.h \
-    $(wildcard include/config/PREEMPT) \
-  include/linux/spinlock_api_smp.h \
-  
+ of reset */
+		break;
+	case CX23885_BOARD_HAUPPAUGE_HVR1500:
+		/* GPIO-0 cx24227 demodulator */
+		/

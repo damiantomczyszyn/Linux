@@ -1,7 +1,1 @@
-cpi_io.h \
-  include/linux/io.h \
-    $(wildcard include/config/HAS_IOPORT_MAP) \
-  arch/x86/include/asm/io.h \
-    $(wildcard include/config/MTRR) \
-    $(wildcard include/config/X86_PAT) \
-  arch/x86/include/genera
+cmd_drivers/net/arcnet/com20020-pci.ko := ld -r -m elf_i386 --build-id=sha1  -T scripts/module.lds -o drivers/net/arcnet/com20020-pci.ko drivers/net/arcnet/com20020-pci.o drivers/net/arcnet/com20020-pci.mod.o;  true

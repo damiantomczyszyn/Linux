@@ -1,3 +1,3 @@
-/* SPDX-License-Identifier: GPL-2.0 */
-/*
- * This program is free software; you 
+include/config/MATOM) \
+    $(wildcard include/config/PARAVIRT_XXL) \
+  arch/x86

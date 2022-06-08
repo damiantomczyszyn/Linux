@@ -1,8 +1,8 @@
-# SPDX-License-Identifier: GPL-2.0
-# Any varying coverage in these files is non-deterministic
-# and is generally not a function of system call inputs.
-KCOV_INSTRUMENT		:= n
+ass change for a non user-defined clamp value. */
+	if (likely(!(attr->sched_flags & SCHED_FLAG_UTIL_CLAMP)) &&
+	    !uc_se->user_defined)
+		return true;
 
-obj-y += mutex.o semaphore.o rwsem.o percpu-rwsem.o
-
-# Avoid recursion lockdep -> 
+	/* Reset on sched_util_{min,max} == -1. */
+	if (clamp_id == UCLAMP_MIN &&
+	    attr->sched_flags & SC

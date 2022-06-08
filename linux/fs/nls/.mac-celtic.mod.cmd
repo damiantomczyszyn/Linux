@@ -1,3 +1,4 @@
-card include/config/BPF_JIT) \
-  include/asm-generic/access_ok.h \
-    $(wildcard include/c
+
+			break;
+		dvb_attach(tda18271_attach, fe0->dvb.frontend,
+			   0x60, &dev->i2c_bus[0].i2

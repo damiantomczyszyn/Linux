@@ -1,2 +1,1 @@
-ude/config/PARAVIRT_XXL) \
-  arch/x86
+tialize CI: Error %d.\n", __func__, r

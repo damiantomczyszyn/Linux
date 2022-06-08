@@ -1,3 +1,4 @@
-linux/log2.h \
-    $(wildcard include/config/ARCH_HAS_ILOG2_U32) \
-    $(wildcard includ
+_struct *p, int policy,
+			       const struct sched_param *param, bool check)
+{
+	struct

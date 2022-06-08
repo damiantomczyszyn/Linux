@@ -1,15 +1,22 @@
-d include/config/NO_HZ_FULL) \
-    $(wildcard include/config/POSIX_CPUTIMERS) \
-    $(wildcard include/config/POSIX_CPU_TIMERS_TASK_WORK) \
-    $(wildcard include/config/KEYS) \
-    $(wildcard include/config/SYSVIPC) \
-    $(wildcard include/config/DETECT_HUNG_TASK) \
-    $(wildcard include/config/IO_URING) \
-    $(wildcard include/config/AUDIT) \
-    $(wildcard include/config/AUDITSYSCALL) \
-    $(wildcard include/config/DEBUG_MUTEXES) \
-    $(wildcard include/config/TRACE_IRQFLAGS) \
-    $(wildcard include/config/UBSAN) \
-    $(wildcard include/config/UBSAN_TRAP) \
-    $(wildcard include/config/COMPACTION) \
-    $(wildcard include
+C417_RWD, regval);
+
+	/* Wait for the trans to complete (MC417_MIRDY asserted). */
+	retval = mc417_wait_ready(dev);
+
+	/* switch the DAT0-7 GPIO[10:3] to input mode */
+	cx_write(MC417_OEN, MC417_MIRDY | MC417_MIDATA);
+
+	/* Read data byte 3 */
+	regval = MC417_MIRD | MC417_MIRDY | MCI_MEMORY_DATA_BYTE3;
+	cx_write(MC417_RWD, regval);
+
+	/* Transition RD to effect read transaction across bus. */
+	regval = MC417_MIWR | MC417_MIRDY | MCI_MEMORY_DATA_BYTE3;
+	cx_write(MC417_RWD, regval);
+
+	/* Collect byte */
+	tempval = cx_read(MC417_RWD);
+	dataval = ((tempval & 0x000000FF) << 24);
+
+	/* Bring CS and RD high. */
+	regval = MC417_MIWR | MC417_MIRD

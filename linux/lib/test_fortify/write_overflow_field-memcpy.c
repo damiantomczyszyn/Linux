@@ -1,4 +1,5 @@
-/uapi/asm/sigcontext.h \
-  arch/x86/include/asm/msr.h \
-    $(wildcard include/config/TRACEPOINTS) \
-  arch/x86/include/asm/msr-index.h \
+.h \
+  include/uapi/linux/shm.h \
+  include/uapi/asm-generic/hugetlb_encode.h \
+  arch/x86/include/uapi/asm/shmbuf.h \
+  include/uapi/asm-

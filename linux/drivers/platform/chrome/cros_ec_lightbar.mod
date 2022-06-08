@@ -1,2 +1,1 @@
- include/config/PM) \
-    $(wildcard include
+drivers/media/pci/cx18/cx18-alsa-main.o driv

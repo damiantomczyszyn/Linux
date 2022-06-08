@@ -1,26 +1,74 @@
-cmd_drivers/media/i2c/wm8739.o := gcc -Wp,-MMD,drivers/media/i2c/.wm8739.o.d -nostdinc -I./arch/x86/include -I./arch/x86/include/generated  -I./include -I./arch/x86/include/uapi -I./arch/x86/include/generated/uapi -I./include/uapi -I./include/generated/uapi -include ./include/linux/compiler-version.h -include ./include/linux/kconfig.h -include ./include/linux/compiler_types.h -D__KERNEL__ -fmacro-prefix-map=./= -Wall -Wundef -Werror=strict-prototypes -Wno-trigraphs -fno-strict-aliasing -fno-common -fshort-wchar -fno-PIE -Werror=implicit-function-declaration -Werror=implicit-int -Werror=return-type -Wno-format-security -std=gnu11 -mno-sse -mno-mmx -mno-sse2 -mno-3dnow -mno-avx -fcf-protection=none -m32 -msoft-float -mregparm=3 -freg-struct-return -fno-pic -mpreferred-stack-boundary=2 -march=i686 -mtune=pentium3 -mtune=generic -Wa,-mtune=generic32 -ffreestanding -mstack-protector-guard-reg=fs -mstack-protector-guard-symbol=__stack_chk_guard -Wno-sign-compare -fno-asynchronous-unwind-tables -mindirect-branch=thunk-extern -mindirect-branch-register -fno-jump-tables -fno-delete-null-pointer-checks -Wno-frame-address -Wno-format-truncation -Wno-format-overflow -Wno-address-of-packed-member -O2 -fno-allow-store-data-races -fstack-protector-strong -Wimplicit-fallthrough=5 -Wno-main -Wno-unused-but-set-variable -Wno-unused-const-variable -fno-stack-clash-protection -pg -mrecord-mcount -mfentry -DCC_USING_FENTRY -Wdeclaration-after-statement -Wvla -Wno-pointer-sign -Wcast-function-type -Wno-stringop-truncation -Wno-stringop-overflow -Wno-restrict -Wno-maybe-uninitialized -Wno-alloc-size-larger-than -fno-strict-overflow -fno-stack-check -fconserve-stack -Werror=date-time -Werror=incompatible-pointer-types -Werror=designated-init -Wno-packed-not-aligned  -DMODULE  -DKBUILD_BASENAME='"wm8739"' -DKBUILD_MODNAME='"wm8739"' -D__KBUILD_MODNAME=kmod_wm8739 -c -o drivers/media/i2c/wm8739.o drivers/media/i2c/wm8739.c 
-
-source_drivers/media/i2c/wm8739.o := drivers/media/i2c/wm8739.c
-
-deps_drivers/media/i2c/wm8739.o := \
-  include/linux/compiler-version.h \
-    $(wildcard include/config/CC_VERSION_TEXT) \
-  include/linux/kconfig.h \
-    $(wildcard include/config/CPU_BIG_ENDIAN) \
-    $(wildcard include/config/BOOGER) \
-    $(wildcard include/config/FOO) \
-  include/linux/compiler_types.h \
-    $(wildcard include/config/DEBUG_INFO_BTF) \
-    $(wildcard include/config/PAHOLE_HAS_BTF_TAG) \
-    $(wildcard include/config/HAVE_ARCH_COMPILER_H) \
-    $(wildcard include/config/CC_HAS_ASM_INLINE) \
-  include/linux/compiler_attributes.h \
-  include/linux/compiler-gcc.h \
-    $(wildcard include/config/RETPOLINE) \
-    $(wildcard include/config/ARCH_USE_BUILTIN_BSWAP) \
-    $(wildcard include/config/SHADOW_CALL_STACK) \
-    $(wildcard include/config/KCOV) \
-  include/linux/module.h \
-    $(wildcard include/config/MODULES) \
-    $(wildcard include/config/SYSFS) \
-   
+mempolicy.h \
+  include/linux/freezer.h \
+  include/uapi/linux/i2c.h \
+  include/linux/spi/spi.h \
+    $(wildcard include/config/SPI_SLAVE) \
+  include/linux/scatterlist.h \
+    $(wildcard include/config/NEED_SG_DMA_LENGTH) \
+    $(wildcard include/config/DEBUG_SG) \
+    $(wildcard include/config/SGL_ALLOC) \
+    $(wildcard include/config/ARCH_NO_SG_CHAIN) \
+    $(wildcard include/config/SG_POOL) \
+  include/linux/gpio/consumer.h \
+    $(wildcard include/config/OF_GPIO) \
+    $(wildcard include/config/GPIO_SYSFS) \
+  include/uapi/linux/spi/spi.h \
+  include/media/v4l2-fh.h \
+  include/media/v4l2-mediabus.h \
+  include/sound/core.h \
+    $(wildcard include/config/SND_DYNAMIC_MINORS) \
+    $(wildcard include/config/SND_MAX_CARDS) \
+    $(wildcard include/config/SND_MAJOR) \
+    $(wildcard include/config/SND_DEBUG) \
+    $(wildcard include/config/SND_MIXER_OSS) \
+    $(wildcard include/config/SND_OSSEMUL) \
+    $(wildcard include/config/ISA_DMA_API) \
+    $(wildcard include/config/SND_VERBOSE_PRINTK) \
+    $(wildcard include/config/SND_DEBUG_VERBOSE) \
+    $(wildcard include/config/GAMEPORT) \
+  include/sound/pcm.h \
+    $(wildcard include/config/SND_PCM_OSS) \
+    $(wildcard include/config/SND_VERBOSE_PROCFS) \
+    $(wildcard include/config/SND_PCM_XRUN_DEBUG) \
+  include/sound/asound.h \
+  include/uapi/sound/asound.h \
+  include/sound/memalloc.h \
+    $(wildcard include/config/GENERIC_ALLOCATOR) \
+    $(wildcard include/config/SND_DMA_SGBUF) \
+    $(wildcard include/config/HAS_DMA) \
+  include/linux/dma-direction.h \
+  include/sound/minors.h \
+  include/linux/pm_qos.h \
+    $(wildcard include/config/CPU_IDLE) \
+  include/sound/pcm_oss.h \
+    $(wildcard include/config/SND_PCM_OSS_PLUGINS) \
+  drivers/media/pci/cx18/cx18-driver.h \
+  include/linux/delay.h \
+  arch/x86/include/asm/delay.h \
+  include/asm-generic/delay.h \
+  include/linux/pci.h \
+    $(wildcard include/config/PCI_IOV) \
+    $(wildcard include/config/PCIEAER) \
+    $(wildcard include/config/PCIEPORTBUS) \
+    $(wildcard include/config/PCIEASPM) \
+    $(wildcard include/config/HOTPLUG_PCI_PCIE) \
+    $(wildcard include/config/PCIE_PTM) \
+    $(wildcard include/config/PCIE_DPC) \
+    $(wildcard include/config/PCI_ATS) \
+    $(wildcard include/config/PCI_PRI) \
+    $(wildcard include/config/PCI_PASID) \
+    $(wildcard include/config/PCI_P2PDMA) \
+    $(wildcard include/config/PCI_DOMAINS_GENERIC) \
+    $(wildcard include/config/PCI_DOMAINS) \
+    $(wildcard include/config/PCI_QUIRKS) \
+    $(wildcard include/config/ACPI_MCFG) \
+    $(wildcard include/config/HOTPLUG_PCI) \
+    $(wildcard include/config/EEH) \
+  include/uapi/linux/pci.h \
+  include/uapi/linux/pci_regs.h \
+  include/linux/pci_ids.h \
+  include/linux/dmapool.h \
+  arch/x86/include/asm/pci.h \
+    $(wildcard include/config/PCI_MSI_IRQ_DOMAIN) \
+    $(wildcard include/config/VMD) \
+  arch/x86/include/asm/memtype.h

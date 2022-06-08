@@ -1,199 +1,125 @@
-*pf;
-	unsigned long flags;
-	bool found = false;
-
-	might_sleep();
-
-	if (WARN_ON_ONCE(static_obj(key)))
-		return;
-
-	raw_local_irq_save(flags);
-	lockdep_lock();
-
-	hlist_for_each_entry_rcu(k, hash_head, hash_entry) {
-		if (k == key) {
-			hlist_del_rcu(&k->hash_entry);
-			found = true;
-			break;
-		}
-	}
-	WARN_ON_ONCE(!found && debug_locks);
-	if (found) {
-		pf = get_pending_free();
-		__lockdep_free_key_range(pf, key, 1);
-		call_rcu_zapped(pf);
-	}
-	lockdep_unlock();
-	raw_local_irq_restore(flags);
-
-	/* Wait until is_dynamic_key() has finished accessing k->hash_entry. */
-	synchronize_rcu();
-}
-EXPORT_SYMBOL_GPL(lockdep_unregister_key);
-
-void __init lockdep_init(void)
-{
-	printk("Lock dependency validator: Copyright (c) 2006 Red Hat, Inc., Ingo Molnar\n");
-
-	printk("... MAX_LOCKDEP_SUBCLASSES:  %lu\n", MAX_LOCKDEP_SUBCLASSES);
-	printk("... MAX_LOCK_DEPTH:          %lu\n", MAX_LOCK_DEPTH);
-	printk("... MAX_LOCKDEP_KEYS:        %lu\n", MAX_LOCKDEP_KEYS);
-	printk("... CLASSHASH_SIZE:          %lu\n", CLASSHASH_SIZE);
-	printk("... MAX_LOCKDEP_ENTRIES:     %lu\n", MAX_LOCKDEP_ENTRIES);
-	printk("... MAX_LOCKDEP_CHAINS:      %lu\n", MAX_LOCKDEP_CHAINS);
-	printk("... CHAINHASH_SIZE:          %lu\n", CHAINHASH_SIZE);
-
-	printk(" memory used by lock dependency info: %zu kB\n",
-	       (sizeof(lock_classes) +
-		sizeof(lock_classes_in_use) +
-		sizeof(classhash_table) +
-		sizeof(list_entries) +
-		sizeof(list_entries_in_use) +
-		sizeof(chainhash_table) +
-		sizeof(delayed_free)
-#ifdef CONFIG_PROVE_LOCKING
-		+ sizeof(lock_cq)
-		+ sizeof(lock_chains)
-		+ sizeof(lock_chains_in_use)
-		+ sizeof(chain_hlocks)
-#endif
-		) / 1024
-		);
-
-#if defined(CONFIG_TRACE_IRQFLAGS) && defined(CONFIG_PROVE_LOCKING)
-	printk(" memory used for stack traces: %zu kB\n",
-	       (sizeof(stack_trace) + sizeof(stack_trace_hash)) / 1024
-	       );
-#endif
-
-	printk(" per task-struct memory footprint: %zu bytes\n",
-	       sizeof(((struct task_struct *)NULL)->held_locks));
-}
-
-static void
-print_freed_lock_bug(struct task_struct *curr, const void *mem_from,
-		     const void *mem_to, struct held_lock *hlock)
-{
-	if (!debug_locks_off())
-		return;
-	if (debug_locks_silent)
-		return;
-
-	pr_warn("\n");
-	pr_warn("=========================\n");
-	pr_warn("WARNING: held lock freed!\n");
-	print_kernel_ident();
-	pr_warn("-------------------------\n");
-	pr_warn("%s/%d is freeing memory %px-%px, with a lock still held there!\n",
-		curr->comm, task_pid_nr(curr), mem_from, mem_to-1);
-	print_lock(hlock);
-	lockdep_print_held_locks(curr);
-
-	pr_warn("\nstack backtrace:\n");
-	dump_stack();
-}
-
-static inline int not_in_range(const void* mem_from, unsigned long mem_len,
-				const void* lock_from, unsigned long lock_len)
-{
-	return lock_from + lock_len <= mem_from ||
-		mem_from + mem_len <= lock_from;
-}
-
-/*
- * Called when kernel memory is freed (or unmapped), or if a lock
- * is destroyed or reinitialized - this code checks whether there is
- * any held lock in the memory range of <from> to <to>:
- */
-void debug_check_no_locks_freed(const void *mem_from, unsigned long mem_len)
-{
-	struct task_struct *curr = current;
-	struct held_lock *hlock;
-	unsigned long flags;
-	int i;
-
-	if (unlikely(!debug_locks))
-		return;
-
-	raw_local_irq_save(flags);
-	for (i = 0; i < curr->lockdep_depth; i++) {
-		hlock = curr->held_locks + i;
-
-		if (not_in_range(mem_from, mem_len, hlock->instance,
-					sizeof(*hlock->instance)))
-			continue;
-
-		print_freed_lock_bug(curr, mem_from, mem_from + mem_len, hlock);
-		break;
-	}
-	raw_local_irq_restore(flags);
-}
-EXPORT_SYMBOL_GPL(debug_check_no_locks_freed);
-
-static void print_held_locks_bug(void)
-{
-	if (!debug_locks_off())
-		return;
-	if (debug_locks_silent)
-		return;
-
-	pr_warn("\n");
-	pr_warn("====================================\n");
-	pr_warn("WARNING: %s/%d still has locks held!\n",
-	       current->comm, task_pid_nr(current));
-	print_kernel_ident();
-	pr_warn("------------------------------------\n");
-	lockdep_print_held_locks(current);
-	pr_warn("\nstack backtrace:\n");
-	dump_stack();
-}
-
-void debug_check_no_locks_held(void)
-{
-	if (unlikely(current->lockdep_depth > 0))
-		print_held_locks_bug();
-}
-EXPORT_SYMBOL_GPL(debug_check_no_locks_held);
-
-#ifdef __KERNEL__
-void debug_show_all_locks(void)
-{
-	struct task_struct *g, *p;
-
-	if (unlikely(!debug_locks)) {
-		pr_warn("INFO: lockdep is turned off.\n");
-		return;
-	}
-	pr_warn("\nShowing all locks held in the system:\n");
-
-	rcu_read_lock();
-	for_each_process_thread(g, p) {
-		if (!p->lockdep_depth)
-			continue;
-		lockdep_print_held_locks(p);
-		touch_nmi_watchdog();
-		touch_all_softlockup_watchdogs();
-	}
-	rcu_read_unlock();
-
-	pr_warn("\n");
-	pr_warn("=============================================\n\n");
-}
-EXPORT_SYMBOL_GPL(debug_show_all_locks);
-#endif
-
-/*
- * Careful: only use this function if you are sure that
- * the task cannot run in parallel!
- */
-void debug_show_held_locks(struct task_struct *task)
-{
-	if (unlikely(!debug_locks)) {
-		printk("INFO: lockdep is turned off.\n");
-		return;
-	}
-	lockdep_print_held_locks(task);
-}
-EXPORT_SYMBOL_GPL(debug_show_held_locks);
-
-asmlinkage __
+include/config/MATOM) \
+    $(wildcard include/config/PARAVIRT_XXL) \
+  arch/x86/include/asm/disabled-features.h \
+    $(wildcard include/config/X86_SMAP) \
+    $(wildcard include/config/X86_UMIP) \
+    $(wildcard include/config/X86_INTEL_MEMORY_PROTECTION_KEYS) \
+    $(wildcard include/config/X86_5LEVEL) \
+    $(wildcard include/config/PAGE_TABLE_ISOLATION) \
+    $(wildcard include/config/INTEL_IOMMU_SVM) \
+    $(wildcard include/config/X86_SGX) \
+  include/asm-generic/bitops/const_hweight.h \
+  include/asm-generic/bitops/instrumented-atomic.h \
+  include/linux/instrumented.h \
+  include/asm-generic/bitops/instrumented-non-atomic.h \
+    $(wildcard include/config/KCSAN_ASSUME_PLAIN_WRITES_ATOMIC) \
+  include/asm-generic/bitops/instrumented-lock.h \
+  include/asm-generic/bitops/le.h \
+  arch/x86/include/uapi/asm/byteorder.h \
+  include/linux/byteorder/little_endian.h \
+  include/uapi/linux/byteorder/little_endian.h \
+  include/linux/swab.h \
+  include/uapi/linux/swab.h \
+  arch/x86/include/uapi/asm/swab.h \
+  include/linux/byteorder/generic.h \
+  include/asm-generic/bitops/ext2-atomic-setbit.h \
+  include/vdso/math64.h \
+  include/linux/time64.h \
+  include/vdso/time64.h \
+  include/uapi/linux/time.h \
+  include/uapi/linux/time_types.h \
+  include/linux/time32.h \
+  include/linux/timex.h \
+  include/uapi/linux/timex.h \
+  include/uapi/linux/param.h \
+  arch/x86/include/generated/uapi/asm/param.h \
+  include/asm-generic/param.h \
+    $(wildcard include/config/HZ) \
+  include/uapi/asm-generic/param.h \
+  arch/x86/include/asm/timex.h \
+    $(wildcard include/config/X86_TSC) \
+  arch/x86/include/asm/processor.h \
+    $(wildcard include/config/X86_VMX_FEATURE_NAMES) \
+    $(wildcard include/config/X86_IOPL_IOPERM) \
+    $(wildcard include/config/STACKPROTECTOR) \
+    $(wildcard include/config/VM86) \
+    $(wildcard include/config/X86_DEBUGCTLMSR) \
+    $(wildcard include/config/CPU_SUP_AMD) \
+    $(wildcard include/config/XEN) \
+  arch/x86/include/asm/processor-flags.h \
+  arch/x86/include/uapi/asm/processor-flags.h \
+  include/linux/mem_encrypt.h \
+    $(wildcard include/config/ARCH_HAS_MEM_ENCRYPT) \
+    $(wildcard include/config/AMD_MEM_ENCRYPT) \
+  arch/x86/include/asm/mem_encrypt.h \
+  include/linux/init.h \
+    $(wildcard include/config/STRICT_KERNEL_RWX) \
+    $(wildcard include/config/STRICT_MODULE_RWX) \
+    $(wildcard include/config/LTO_CLANG) \
+  include/linux/cc_platform.h \
+    $(wildcard include/config/ARCH_HAS_CC_PLATFORM) \
+  arch/x86/include/uapi/asm/bootparam.h \
+  include/linux/screen_info.h \
+  include/uapi/linux/screen_info.h \
+  include/linux/apm_bios.h \
+  include/uapi/linux/apm_bios.h \
+  include/uapi/linux/ioctl.h \
+  arch/x86/include/generated/uapi/asm/ioctl.h \
+  include/asm-generic/ioctl.h \
+  include/uapi/asm-generic/ioctl.h \
+  include/linux/edd.h \
+  include/uapi/linux/edd.h \
+  arch/x86/include/asm/ist.h \
+  arch/x86/include/uapi/asm/ist.h \
+  include/video/edid.h \
+    $(wildcard include/config/X86) \
+  include/uapi/video/edid.h \
+  arch/x86/include/asm/math_emu.h \
+  arch/x86/include/asm/ptrace.h \
+    $(wildcard include/config/PARAVIRT) \
+    $(wildcard include/config/IA32_EMULATION) \
+  arch/x86/include/asm/segment.h \
+    $(wildcard include/config/XEN_PV) \
+  arch/x86/include/asm/page_types.h \
+    $(wildcard include/config/PHYSICAL_START) \
+    $(wildcard include/config/PHYSICAL_ALIGN) \
+    $(wildcard include/config/DYNAMIC_PHYSICAL_MASK) \
+  arch/x86/include/asm/page_32_types.h \
+    $(wildcard include/config/HIGHMEM4G) \
+    $(wildcard include/config/HIGHMEM64G) \
+    $(wildcard include/config/PAGE_OFFSET) \
+  arch/x86/include/uapi/asm/ptrace.h \
+  arch/x86/include/uapi/asm/ptrace-abi.h \
+  arch/x86/include/asm/paravirt_types.h \
+    $(wildcard include/config/PGTABLE_LEVELS) \
+    $(wildcard include/config/PARAVIRT_DEBUG) \
+  arch/x86/include/asm/desc_defs.h \
+  arch/x86/include/asm/pgtable_types.h \
+    $(wildcard include/config/MEM_SOFT_DIRTY) \
+    $(wildcard include/config/HAVE_ARCH_USERFAULTFD_WP) \
+    $(wildcard include/config/PROC_FS) \
+  arch/x86/include/asm/pgtable_32_types.h \
+  arch/x86/include/asm/pgtable-3level_types.h \
+  include/asm-generic/pgtable-nop4d.h \
+  include/asm-generic/pgtable-nopud.h \
+  arch/x86/include/asm/nospec-branch.h \
+  include/linux/static_key.h \
+  include/linux/jump_label.h \
+    $(wildcard include/config/HAVE_ARCH_JUMP_LABEL_RELATIVE) \
+  arch/x86/include/asm/jump_label.h \
+  include/linux/objtool.h \
+    $(wildcard include/config/FRAME_POINTER) \
+  arch/x86/include/asm/msr-index.h \
+  arch/x86/include/asm/unwind_hints.h \
+  arch/x86/include/asm/orc_types.h \
+  arch/x86/include/asm/GEN-for-each-reg.h \
+  arch/x86/include/asm/spinlock_types.h \
+  include/asm-generic/qspinlock_types.h \
+    $(wildcard include/config/NR_CPUS) \
+  include/asm-generic/qrwlock_types.h \
+  arch/x86/include/asm/proto.h \
+  arch/x86/include/uapi/asm/ldt.h \
+  arch/x86/include/uapi/asm/sigcontext.h \
+  arch/x86/include/asm/current.h \
+  arch/x86/include/asm/percpu.h \
+    $(wildcard include

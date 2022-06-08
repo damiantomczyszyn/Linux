@@ -1,430 +1,565 @@
-\
-  arch/x86/include/asm/qrwlock.h \
-  include/asm-generic/qrwlock.h \
-  include/linux/rwlock.h \
-    $(wildcard include/config/PREEMPT) \
-  include/linux/spinlock_api_smp.h \
-    $(wildcard include/config/INLINE_SPIN_LOCK) \
-    $(wildcard include/config/INLINE_SPIN_LOCK_BH) \
-    $(wildcard include/config/INLINE_SPIN_LOCK_IRQ) \
-    $(wildcard include/config/INLINE_SPIN_LOCK_IRQSAVE) \
-    $(wildcard include/config/INLINE_SPIN_TRYLOCK) \
-    $(wildcard include/config/INLINE_SPIN_TRYLOCK_BH) \
-    $(wildcard include/config/UNINLINE_SPIN_UNLOCK) \
-    $(wildcard include/config/INLINE_SPIN_UNLOCK_BH) \
-    $(wildcard include/config/INLINE_SPIN_UNLOCK_IRQ) \
-    $(wildcard include/config/INLINE_SPIN_UNLOCK_IRQRESTORE) \
-    $(wildcard include/config/GENERIC_LOCKBREAK) \
-  include/linux/rwlock_api_smp.h \
-    $(wildcard include/config/INLINE_READ_LOCK) \
-    $(wildcard include/config/INLINE_WRITE_LOCK) \
-    $(wildcard include/config/INLINE_READ_LOCK_BH) \
-    $(wildcard include/config/INLINE_WRITE_LOCK_BH) \
-    $(wildcard include/config/INLINE_READ_LOCK_IRQ) \
-    $(wildcard include/config/INLINE_WRITE_LOCK_IRQ) \
-    $(wildcard include/config/INLINE_READ_LOCK_IRQSAVE) \
-    $(wildcard include/config/INLINE_WRITE_LOCK_IRQSAVE) \
-    $(wildcard include/config/INLINE_READ_TRYLOCK) \
-    $(wildcard include/config/INLINE_WRITE_TRYLOCK) \
-    $(wildcard include/config/INLINE_READ_UNLOCK) \
-    $(wildcard include/config/INLINE_WRITE_UNLOCK) \
-    $(wildcard include/config/INLINE_READ_UNLOCK_BH) \
-    $(wildcard include/config/INLINE_WRITE_UNLOCK_BH) \
-    $(wildcard include/config/INLINE_READ_UNLOCK_IRQ) \
-    $(wildcard include/config/INLINE_WRITE_UNLOCK_IRQ) \
-    $(wildcard include/config/INLINE_READ_UNLOCK_IRQRESTORE) \
-    $(wildcard include/config/INLINE_WRITE_UNLOCK_IRQRESTORE) \
-  include/linux/refcount.h \
-  include/linux/rbtree.h \
-  include/linux/rbtree_types.h \
-  include/linux/rcupdate.h \
-    $(wildcard include/config/PREEMPT_RCU) \
-    $(wildcard include/config/TINY_RCU) \
-    $(wildcard include/config/RCU_STRICT_GRACE_PERIOD) \
-    $(wildcard include/config/TASKS_RCU_GENERIC) \
-    $(wildcard include/config/RCU_STALL_COMMON) \
-    $(wildcard include/config/NO_HZ_FULL) \
-    $(wildcard include/config/RCU_NOCB_CPU) \
-    $(wildcard include/config/TASKS_RCU) \
-    $(wildcard include/config/TASKS_TRACE_RCU) \
-    $(wildcard include/config/TASKS_RUDE_RCU) \
-    $(wildcard include/config/TREE_RCU) \
-    $(wildcard include/config/DEBUG_OBJECTS_RCU_HEAD) \
-    $(wildcard include/config/PROVE_RCU) \
-    $(wildcard include/config/ARCH_WEAK_RELEASE_ACQUIRE) \
-  include/linux/rcutree.h \
-  include/linux/rwsem.h \
-    $(wildcard include/config/RWSEM_SPIN_ON_OWNER) \
-    $(wildcard include/config/DEBUG_RWSEMS) \
-  include/linux/osq_lock.h \
-  include/linux/completion.h \
-  include/linux/swait.h \
-  include/linux/wait.h \
-  include/uapi/linux/wait.h \
-  include/linux/uprobes.h \
-    $(wildcard include/config/UPROBES) \
-  arch/x86/include/asm/uprobes.h \
-  include/linux/notifier.h \
-  include/linux/mutex.h \
-    $(wildcard include/config/MUTEX_SPIN_ON_OWNER) \
-    $(wildcard include/config/DEBUG_MUTEXES) \
-  include/linux/debug_locks.h \
-  include/linux/srcu.h \
-    $(wildcard include/config/TINY_SRCU) \
-    $(wildcard include/config/SRCU) \
-  include/linux/workqueue.h \
-    $(wildcard include/config/DEBUG_OBJECTS_WORK) \
-    $(wildcard include/config/FREEZER) \
-    $(wildcard include/config/WQ_WATCHDOG) \
-  include/linux/timer.h \
-    $(wildcard include/config/DEBUG_OBJECTS_TIMERS) \
-    $(wildcard include/config/NO_HZ_COMMON) \
-  include/linux/ktime.h \
-  include/linux/jiffies.h \
-  include/vdso/jiffies.h \
-  include/generated/timeconst.h \
-  include/vdso/ktime.h \
-  include/linux/timekeeping.h \
-    $(wildcard include/config/GENERIC_CMOS_UPDATE) \
-  include/linux/clocksource_ids.h \
-  include/linux/debugobjects.h \
-    $(wildcard include/config/DEBUG_OBJECTS) \
-    $(wildcard include/config/DEBUG_OBJECTS_FREE) \
-  include/linux/rcu_segcblist.h \
-  include/linux/srcutree.h \
-  include/linux/rcu_node_tree.h \
-    $(wildcard include/config/RCU_FANOUT) \
-    $(wildcard include/config/RCU_FANOUT_LEAF) \
-  include/linux/page-flags-layout.h \
-    $(wildcard include/config/KASAN_HW_TAGS) \
-  include/linux/numa.h \
-    $(wildcard include/config/NODES_SHIFT) \
-    $(wildcard include/config/NUMA_KEEP_MEMINFO) \
-    $(wildcard include/config/HAVE_ARCH_NODE_DEV_GROUP) \
-  arch/x86/include/asm/sparsemem.h \
-  include/generated/bounds.h \
-  include/linux/seqlock.h \
-  include/linux/ww_mutex.h \
-    $(wildcard include/config/DEBUG_RT_MUTEXES) \
-    $(wildcard include/config/DEBUG_WW_MUTEX_SLOWPATH) \
-  include/linux/rtmutex.h \
-  arch/x86/include/asm/mmu.h \
-    $(wildcard include/config/MODIFY_LDT_SYSCALL) \
-  include/linux/kmod.h \
-  include/linux/umh.h \
-  include/linux/gfp.h \
-    $(wildcard include/config/HIGHMEM) \
-    $(wildcard include/config/ZONE_DMA) \
-    $(wildcard include/config/ZONE_DMA32) \
-    $(wildcard include/config/ZONE_DEVICE) \
-    $(wildcard include/config/PM_SLEEP) \
-    $(wildcard include/config/CONTIG_ALLOC) \
-    $(wildcard include/config/CMA) \
-  include/linux/mmdebug.h \
-    $(wildcard include/config/DEBUG_VM) \
-    $(wildcard include/config/DEBUG_VM_PGFLAGS) \
-  include/linux/mmzone.h \
-    $(wildcard include/config/FORCE_MAX_ZONEORDER) \
-    $(wildcard include/config/MEMORY_ISOLATION) \
-    $(wildcard include/config/ZSMALLOC) \
-    $(wildcard include/config/MEMORY_HOTPLUG) \
-    $(wildcard include/config/COMPACTION) \
-    $(wildcard include/config/PAGE_EXTENSION) \
-    $(wildcard include/config/DEFERRED_STRUCT_PAGE_INIT) \
-    $(wildcard include/config/HAVE_MEMORYLESS_NODES) \
-    $(wildcard include/config/SPARSEMEM_EXTREME) \
-    $(wildcard include/config/HAVE_ARCH_PFN_VALID) \
-  include/linux/nodemask.h \
-  include/linux/pageblock-flags.h \
-    $(wildcard include/config/HUGETLB_PAGE_SIZE_VARIABLE) \
-  include/linux/page-flags.h \
-    $(wildcard include/config/ARCH_USES_PG_UNCACHED) \
-    $(wildcard include/config/MEMORY_FAILURE) \
-    $(wildcard include/config/PAGE_IDLE_FLAG) \
-    $(wildcard include/config/HUGETLB_PAGE_FREE_VMEMMAP) \
-    $(wildcard include/config/HUGETLB_PAGE_FREE_VMEMMAP_DEFAULT_ON) \
-    $(wildcard include/config/KSM) \
-  include/linux/local_lock.h \
-  include/linux/local_lock_internal.h \
-  include/linux/memory_hotplug.h \
-    $(wildcard include/config/HAVE_ARCH_NODEDATA_EXTENSION) \
-    $(wildcard include/config/ARCH_HAS_ADD_PAGES) \
-    $(wildcard include/config/MEMORY_HOTREMOVE) \
-  arch/x86/include/asm/mmzone.h \
-  arch/x86/include/asm/mmzone_32.h \
-  include/linux/topology.h \
-    $(wildcard include/config/USE_PERCPU_NUMA_NODE_ID) \
-    $(wildcard include/config/SCHED_SMT) \
-    $(wildcard include/config/SCHED_CLUSTER) \
-  include/linux/arch_topology.h \
-    $(wildcard include/config/ACPI_CPPC_LIB) \
-    $(wildcard include/config/GENERIC_ARCH_TOPOLOGY) \
-  include/linux/percpu.h \
-    $(wildcard include/config/NEED_PER_CPU_EMBED_FIRST_CHUNK) \
-    $(wildcard include/config/NEED_PER_CPU_PAGE_FIRST_CHUNK) \
-  arch/x86/include/asm/topology.h \
-    $(wildcard include/config/SCHED_MC_PRIO) \
-  arch/x86/include/asm/mpspec.h \
-    $(wildcard include/config/EISA) \
-    $(wildcard include/config/X86_MPPARSE) \
-  arch/x86/include/asm/mpspec_def.h \
-  arch/x86/include/asm/x86_init.h \
-  arch/x86/include/asm/apicdef.h \
-  include/asm-generic/topology.h \
-  include/linux/sysctl.h \
-    $(wildcard include/config/SYSCTL) \
-  include/uapi/linux/sysctl.h \
-  include/linux/elf.h \
-    $(wildcard include/config/ARCH_USE_GNU_PROPERTY) \
-    $(wildcard include/config/ARCH_HAVE_ELF_PROT) \
-  arch/x86/include/asm/elf.h \
-    $(wildcard include/config/X86_X32_ABI) \
-  arch/x86/include/asm/user.h \
-  arch/x86/include/asm/user_32.h \
-  arch/x86/include/asm/fsgsbase.h \
-  arch/x86/include/asm/vdso.h \
-  arch/x86/include/asm/desc.h \
-  arch/x86/include/asm/fixmap.h \
-    $(wildcard include/config/DEBUG_KMAP_LOCAL_FORCE_MAP) \
-    $(wildcard include/config/X86_VSYSCALL_EMULATION) \
-    $(wildcard include/config/PROVIDE_OHCI1394_DMA_INIT) \
-    $(wildcard include/config/X86_IO_APIC) \
-    $(wildcard include/config/KMAP_LOCAL) \
-    $(wildcard include/config/PCI_MMCONFIG) \
-    $(wildcard include/config/ACPI_APEI_GHES) \
-    $(wildcard include/config/INTEL_TXT) \
-  arch/x86/include/generated/asm/kmap_size.h \
-  include/asm-generic/kmap_size.h \
-    $(wildcard include/config/DEBUG_KMAP_LOCAL) \
-  include/asm-generic/fixmap.h \
-  arch/x86/include/asm/irq_vectors.h \
-    $(wildcard include/config/HAVE_KVM) \
-    $(wildcard include/config/HYPERV) \
-    $(wildcard include/config/PCI_MSI) \
-  arch/x86/include/asm/cpu_entry_area.h \
-  arch/x86/include/asm/intel_ds.h \
-  arch/x86/include/asm/pgtable_areas.h \
-  arch/x86/include/asm/pgtable_32_areas.h \
-  include/uapi/linux/elf.h \
-  include/uapi/linux/elf-em.h \
-  include/linux/kobject.h \
-    $(wildcard include/config/UEVENT_HELPER) \
-    $(wildcard include/config/DEBUG_KOBJECT_RELEASE) \
-  include/linux/sysfs.h \
-  include/linux/kernfs.h \
-    $(wildcard include/config/KERNFS) \
-  include/linux/idr.h \
-  include/linux/radix-tree.h \
-  include/linux/xarray.h \
-    $(wildcard include/config/XARRAY_MULTI) \
-  include/linux/kconfig.h \
-  include/linux/kobject_ns.h \
-  include/linux/moduleparam.h \
-    $(wildcard include/config/ALPHA) \
-    $(wildcard include/config/IA64) \
-    $(wildcard include/config/PPC64) \
-  include/linux/rbtree_latch.h \
-  include/linux/error-injection.h \
-  include/asm-generic/error-injection.h \
-  include/linux/cfi.h \
-    $(wildcard include/config/CFI_CLANG_SHADOW) \
-  arch/x86/include/asm/module.h \
-    $(wildcard include/config/UNWINDER_ORC) \
-  include/asm-generic/module.h \
-    $(wildcard include/config/HAVE_MOD_ARCH_SPECIFIC) \
-    $(wildcard include/config/MODULES_USE_ELF_REL) \
-    $(wildcard include/config/MODULES_USE_ELF_RELA) \
-  arch/x86/include/asm/orc_types.h \
-  include/linux/i2c.h \
-    $(wildcard include/config/I2C) \
-    $(wildcard include/config/I2C_SLAVE) \
-    $(wildcard include/config/I2C_BOARDINFO) \
-    $(wildcard include/config/I2C_MUX) \
-    $(wildcard include/config/OF) \
-    $(wildcard include/config/ACPI) \
-  include/linux/acpi.h \
-    $(wildcard include/config/ACPI_DEBUGGER) \
-    $(wildcard include/config/ACPI_TABLE_LIB) \
-    $(wildcard include/config/LOONGARCH) \
-    $(wildcard include/config/ARM64) \
-    $(wildcard include/config/ACPI_PROCESSOR_CSTATE) \
-    $(wildcard include/config/ACPI_HOTPLUG_CPU) \
-    $(wildcard include/config/ACPI_HOTPLUG_IOAPIC) \
-    $(wildcard include/config/PCI) \
-    $(wildcard include/config/ACPI_WMI) \
-    $(wildcard include/config/ACPI_NUMA) \
-    $(wildcard include/config/HIBERNATION) \
-    $(wildcard include/config/ACPI_HOTPLUG_MEMORY) \
-    $(wildcard include/config/ACPI_CONTAINER) \
-    $(wildcard include/config/ACPI_GTDT) \
-    $(wildcard include/config/PM) \
-    $(wildcard include/config/GPIOLIB) \
-    $(wildcard include/config/ACPI_TABLE_UPGRADE) \
-    $(wildcard include/config/ACPI_WATCHDOG) \
-    $(wildcard include/config/ACPI_SPCR_TABLE) \
-    $(wildcard include/config/ACPI_GENERIC_GSI) \
-    $(wildcard include/config/ACPI_LPIT) \
-    $(wildcard include/config/ACPI_PPTT) \
-    $(wildcard include/config/ACPI_PCC) \
-  include/linux/ioport.h \
-  include/linux/irqdomain.h \
-    $(wildcard include/config/IRQ_DOMAIN_HIERARCHY) \
-    $(wildcard include/config/GENERIC_IRQ_DEBUGFS) \
-    $(wildcard include/config/IRQ_DOMAIN) \
-    $(wildcard include/config/IRQ_DOMAIN_NOMAP) \
-  include/linux/irqhandler.h \
-  include/linux/of.h \
-    $(wildcard include/config/OF_DYNAMIC) \
-    $(wildcard include/config/SPARC) \
-    $(wildcard include/config/OF_PROMTREE) \
-    $(wildcard include/config/OF_KOBJ) \
-    $(wildcard include/config/OF_NUMA) \
-    $(wildcard include/config/OF_OVERLAY) \
-  include/linux/mod_devicetable.h \
-  include/linux/uuid.h \
-  include/uapi/linux/uuid.h \
-  include/linux/property.h \
-  include/linux/fwnode.h \
-  include/linux/resource_ext.h \
-  include/linux/slab.h \
-    $(wildcard include/config/DEBUG_SLAB) \
-    $(wildcard include/config/FAILSLAB) \
-    $(wildcard include/config/MEMCG_KMEM) \
-    $(wildcard include/config/KASAN) \
-    $(wildcard include/config/SLAB) \
-    $(wildcard include/config/SLUB) \
-    $(wildcard include/config/SLOB) \
-  include/linux/overflow.h \
-  include/linux/percpu-refcount.h \
-  include/linux/kasan.h \
-    $(wildcard include/config/KASAN_STACK) \
-    $(wildcard include/config/KASAN_VMALLOC) \
-    $(wildcard include/config/KASAN_INLINE) \
-  include/linux/kasan-enabled.h \
-  include/linux/device.h \
-    $(wildcard include/config/GENERIC_MSI_IRQ_DOMAIN) \
-    $(wildcard include/config/GENERIC_MSI_IRQ) \
-    $(wildcard include/config/ENERGY_MODEL) \
-    $(wildcard include/config/PINCTRL) \
-    $(wildcard include/config/DMA_OPS) \
-    $(wildcard include/config/DMA_DECLARE_COHERENT) \
-    $(wildcard include/config/DMA_CMA) \
-    $(wildcard include/config/SWIOTLB) \
-    $(wildcard include/config/ARCH_HAS_SYNC_DMA_FOR_DEVICE) \
-    $(wildcard include/config/ARCH_HAS_SYNC_DMA_FOR_CPU) \
-    $(wildcard include/config/ARCH_HAS_SYNC_DMA_FOR_CPU_ALL) \
-    $(wildcard include/config/DMA_OPS_BYPASS) \
-    $(wildcard include/config/DEVTMPFS) \
-    $(wildcard include/config/SYSFS_DEPRECATED) \
-  include/linux/dev_printk.h \
-  include/linux/ratelimit.h \
-  include/linux/sched.h \
-    $(wildcard include/config/VIRT_CPU_ACCOUNTING_NATIVE) \
-    $(wildcard include/config/SCHED_INFO) \
-    $(wildcard include/config/SCHEDSTATS) \
-    $(wildcard include/config/SCHED_CORE) \
-    $(wildcard include/config/FAIR_GROUP_SCHED) \
-    $(wildcard include/config/RT_GROUP_SCHED) \
-    $(wildcard include/config/RT_MUTEXES) \
-    $(wildcard include/config/UCLAMP_TASK) \
-    $(wildcard include/config/UCLAMP_BUCKETS_COUNT) \
-    $(wildcard include/config/CGROUP_SCHED) \
-    $(wildcard include/config/BLK_DEV_IO_TRACE) \
-    $(wildcard include/config/PSI) \
-    $(wildcard include/config/COMPAT_BRK) \
-    $(wildcard include/config/CGROUPS) \
-    $(wildcard include/config/BLK_CGROUP) \
-    $(wildcard include/config/PAGE_OWNER) \
-    $(wildcard include/config/EVENTFD) \
-    $(wildcard include/config/ARCH_HAS_SCALED_CPUTIME) \
-    $(wildcard include/config/VIRT_CPU_ACCOUNTING_GEN) \
-    $(wildcard include/config/POSIX_CPUTIMERS) \
-    $(wildcard include/config/POSIX_CPU_TIMERS_TASK_WORK) \
-    $(wildcard include/config/KEYS) \
-    $(wildcard include/config/SYSVIPC) \
-    $(wildcard include/config/DETECT_HUNG_TASK) \
-    $(wildcard include/config/IO_URING) \
-    $(wildcard include/config/AUDIT) \
-    $(wildcard include/config/AUDITSYSCALL) \
-    $(wildcard include/config/UBSAN) \
-    $(wildcard include/config/UBSAN_TRAP) \
-    $(wildcard include/config/TASK_XACCT) \
-    $(wildcard include/config/CPUSETS) \
-    $(wildcard include/config/X86_CPU_RESCTRL) \
-    $(wildcard include/config/FUTEX) \
-    $(wildcard include/config/PERF_EVENTS) \
-    $(wildcard include/config/RSEQ) \
-    $(wildcard include/config/TASK_DELAY_ACCT) \
-    $(wildcard include/config/FAULT_INJECTION) \
-    $(wildcard include/config/LATENCYTOP) \
-    $(wildcard include/config/KUNIT) \
-    $(wildcard include/config/FUNCTION_GRAPH_TRACER) \
-    $(wildcard include/config/BCACHE) \
-    $(wildcard include/config/VMAP_STACK) \
-    $(wildcard include/config/SECURITY) \
-    $(wildcard include/config/BPF_SYSCALL) \
-    $(wildcard include/config/GCC_PLUGIN_STACKLEAK) \
-    $(wildcard include/config/X86_MCE) \
-    $(wildcard include/config/KRETPROBES) \
-    $(wildcard include/config/RETHOOK) \
-    $(wildcard include/config/ARCH_HAS_PARANOID_L1D_FLUSH) \
-    $(wildcard include/config/ARCH_TASK_STRUCT_ON_STACK) \
-    $(wildcard include/config/DEBUG_RSEQ) \
-  include/uapi/linux/sched.h \
-  include/linux/pid.h \
-  include/linux/rculist.h \
-    $(wildcard include/config/PROVE_RCU_LIST) \
-  include/linux/sem.h \
-  include/uapi/linux/sem.h \
-  include/linux/ipc.h \
-  include/linux/rhashtable-types.h \
-  include/uapi/linux/ipc.h \
-  arch/x86/include/generated/uapi/asm/ipcbuf.h \
-  include/uapi/asm-generic/ipcbuf.h \
-  arch/x86/include/uapi/asm/sembuf.h \
-  include/linux/shm.h \
-  include/uapi/linux/shm.h \
-  include/uapi/asm-generic/hugetlb_encode.h \
-  arch/x86/include/uapi/asm/shmbuf.h \
-  include/uapi/asm-generic/shmbuf.h \
-  arch/x86/include/asm/shmparam.h \
-  include/linux/plist.h \
-    $(wildcard include/config/DEBUG_PLIST) \
-  include/linux/hrtimer.h \
-    $(wildcard include/config/HIGH_RES_TIMERS) \
-    $(wildcard include/config/TIME_LOW_RES) \
-    $(wildcard include/config/TIMERFD) \
-  include/linux/hrtimer_defs.h \
-  include/linux/timerqueue.h \
-  include/linux/seccomp.h \
-    $(wildcard include/config/SECCOMP) \
-    $(wildcard include/config/HAVE_ARCH_SECCOMP_FILTER) \
-    $(wildcard include/config/SECCOMP_FILTER) \
-    $(wildcard include/config/CHECKPOINT_RESTORE) \
-    $(wildcard include/config/SECCOMP_CACHE_DEBUG) \
-  include/uapi/linux/seccomp.h \
-  arch/x86/include/asm/seccomp.h \
-  arch/x86/include/asm/unistd.h \
-  arch/x86/include/uapi/asm/unistd.h \
-  arch/x86/include/generated/uapi/asm/unistd_32.h \
-  include/asm-generic/seccomp.h \
-  include/uapi/linux/unistd.h \
-  include/linux/resource.h \
-  include/uapi/linux/resource.h \
-  arch/x86/include/generated/uapi/asm/resource.h \
-  include/asm-generic/resource.h \
-  include/uapi/asm-generic/resource.h \
-  include/linux/latencytop.h \
-  include/linux/sched/prio.h \
-  include/linux/sched/types.h \
-  include/linux/signal_types.h \
-    $(wildcard include/config/OLD_SIGACTION) \
-  include/uapi/linux/signal.h \
-  arch/x86/include/asm/signal.h \
-  arch/x86/include/uapi/asm/signal.h \
-  include/uapi/asm-generic/signal-defs.h \
-  arch/x86/include/uapi/asm/siginfo.h \
-  include/uapi/asm-generic/siginfo.h \
-  include/linux/syscall_user_dispatch.h \
-  include/linux/task_io_accounting.h \
-    $(wildcard in
+// SPDX-License-Identifier: GPL-2.0
+
+/* Driver for ETAS GmbH ES58X USB CAN(-FD) Bus Interfaces.
+ *
+ * File es58x_fd.c: Adds support to ETAS ES582.1 and ES584.1 (naming
+ * convention: we use the term "ES58X FD" when referring to those two
+ * variants together).
+ *
+ * Copyright (c) 2019 Robert Bosch Engineering and Business Solutions. All rights reserved.
+ * Copyright (c) 2020 ETAS K.K.. All rights reserved.
+ * Copyright (c) 2020, 2021 Vincent Mailhol <mailhol.vincent@wanadoo.fr>
+ */
+
+#include <linux/kernel.h>
+#include <linux/units.h>
+#include <asm/unaligned.h>
+
+#include "es58x_core.h"
+#include "es58x_fd.h"
+
+/**
+ * es58x_fd_sizeof_rx_tx_msg() - Calculate the actual length of the
+ *	structure of a rx or tx message.
+ * @msg: message of variable length, must have a dlc and a len fields.
+ *
+ * Even if RTR frames have actually no payload, the ES58X devices
+ * still expect it. Must be a macro in order to accept several types
+ * (struct es58x_fd_tx_can_msg and struct es58x_fd_rx_can_msg) as an
+ * input.
+ *
+ * Return: length of the message.
+ */
+#define es58x_fd_sizeof_rx_tx_msg(msg)					\
+({									\
+	typeof(msg) __msg = (msg);					\
+	size_t __msg_len;						\
+									\
+	if (__msg.flags & ES58X_FLAG_FD_DATA)				\
+		__msg_len = canfd_sanitize_len(__msg.len);		\
+	else								\
+		__msg_len = can_cc_dlc2len(__msg.dlc);			\
+									\
+	offsetof(typeof(__msg), data[__msg_len]);			\
+})
+
+static enum es58x_fd_cmd_type es58x_fd_cmd_type(struct net_device *netdev)
+{
+	u32 ctrlmode = es58x_priv(netdev)->can.ctrlmode;
+
+	if (ctrlmode & (CAN_CTRLMODE_FD | CAN_CTRLMODE_FD_NON_ISO))
+		return ES58X_FD_CMD_TYPE_CANFD;
+	else
+		return ES58X_FD_CMD_TYPE_CAN;
+}
+
+static u16 es58x_fd_get_msg_len(const union es58x_urb_cmd *urb_cmd)
+{
+	return get_unaligned_le16(&urb_cmd->es58x_fd_urb_cmd.msg_len);
+}
+
+static int es58x_fd_echo_msg(struct net_device *netdev,
+			     const struct es58x_fd_urb_cmd *es58x_fd_urb_cmd)
+{
+	struct es58x_priv *priv = es58x_priv(netdev);
+	const struct es58x_fd_echo_msg *echo_msg;
+	struct es58x_device *es58x_dev = priv->es58x_dev;
+	u64 *tstamps = es58x_dev->timestamps;
+	u16 msg_len = get_unaligned_le16(&es58x_fd_urb_cmd->msg_len);
+	int i, num_element;
+	u32 rcv_packet_idx;
+
+	const u32 mask = GENMASK(BITS_PER_TYPE(mask) - 1,
+				 BITS_PER_TYPE(echo_msg->packet_idx));
+
+	num_element = es58x_msg_num_element(es58x_dev->dev,
+					    es58x_fd_urb_cmd->echo_msg,
+					    msg_len);
+	if (num_element < 0)
+		return num_element;
+	echo_msg = es58x_fd_urb_cmd->echo_msg;
+
+	rcv_packet_idx = (priv->tx_tail & mask) | echo_msg[0].packet_idx;
+	for (i = 0; i < num_element; i++) {
+		if ((u8)rcv_packet_idx != echo_msg[i].packet_idx) {
+			netdev_err(netdev, "Packet idx jumped from %u to %u\n",
+				   (u8)rcv_packet_idx - 1,
+				   echo_msg[i].packet_idx);
+			return -EBADMSG;
+		}
+
+		tstamps[i] = get_unaligned_le64(&echo_msg[i].timestamp);
+		rcv_packet_idx++;
+	}
+
+	return es58x_can_get_echo_skb(netdev, priv->tx_tail, tstamps, num_element);
+}
+
+static int es58x_fd_rx_can_msg(struct net_device *netdev,
+			       const struct es58x_fd_urb_cmd *es58x_fd_urb_cmd)
+{
+	struct es58x_device *es58x_dev = es58x_priv(netdev)->es58x_dev;
+	const u8 *rx_can_msg_buf = es58x_fd_urb_cmd->rx_can_msg_buf;
+	u16 rx_can_msg_buf_len = get_unaligned_le16(&es58x_fd_urb_cmd->msg_len);
+	int pkts, ret;
+
+	ret = es58x_check_msg_max_len(es58x_dev->dev,
+				      es58x_fd_urb_cmd->rx_can_msg_buf,
+				      rx_can_msg_buf_len);
+	if (ret)
+		return ret;
+
+	for (pkts = 0; rx_can_msg_buf_len > 0; pkts++) {
+		const struct es58x_fd_rx_can_msg *rx_can_msg =
+		    (const struct es58x_fd_rx_can_msg *)rx_can_msg_buf;
+		bool is_can_fd = !!(rx_can_msg->flags & ES58X_FLAG_FD_DATA);
+		/* rx_can_msg_len is the length of the rx_can_msg
+		 * buffer. Not to be confused with rx_can_msg->len
+		 * which is the length of the CAN payload
+		 * rx_can_msg->data.
+		 */
+		u16 rx_can_msg_len = es58x_fd_sizeof_rx_tx_msg(*rx_can_msg);
+
+		if (rx_can_msg_len > rx_can_msg_buf_len) {
+			netdev_err(netdev,
+				   "%s: Expected a rx_can_msg of size %d but only %d bytes are left in rx_can_msg_buf\n",
+				   __func__,
+				   rx_can_msg_len, rx_can_msg_buf_len);
+			return -EMSGSIZE;
+		}
+		if (rx_can_msg->len > CANFD_MAX_DLEN) {
+			netdev_err(netdev,
+				   "%s: Data length is %d but maximum should be %d\n",
+				   __func__, rx_can_msg->len, CANFD_MAX_DLEN);
+			return -EMSGSIZE;
+		}
+
+		if (netif_running(netdev)) {
+			u64 tstamp = get_unaligned_le64(&rx_can_msg->timestamp);
+			canid_t can_id = get_unaligned_le32(&rx_can_msg->can_id);
+			u8 dlc;
+
+			if (is_can_fd)
+				dlc = can_fd_len2dlc(rx_can_msg->len);
+			else
+				dlc = rx_can_msg->dlc;
+
+			ret = es58x_rx_can_msg(netdev, tstamp, rx_can_msg->data,
+					       can_id, rx_can_msg->flags, dlc);
+			if (ret)
+				break;
+		}
+
+		rx_can_msg_buf_len -= rx_can_msg_len;
+		rx_can_msg_buf += rx_can_msg_len;
+	}
+
+	if (!netif_running(netdev)) {
+		if (net_ratelimit())
+			netdev_info(netdev,
+				    "%s: %s is down, dropping %d rx packets\n",
+				    __func__, netdev->name, pkts);
+		netdev->stats.rx_dropped += pkts;
+	}
+
+	return ret;
+}
+
+static int es58x_fd_rx_event_msg(struct net_device *netdev,
+				 const struct es58x_fd_urb_cmd *es58x_fd_urb_cmd)
+{
+	struct es58x_device *es58x_dev = es58x_priv(netdev)->es58x_dev;
+	u16 msg_len = get_unaligned_le16(&es58x_fd_urb_cmd->msg_len);
+	const struct es58x_fd_rx_event_msg *rx_event_msg;
+	int ret;
+
+	rx_event_msg = &es58x_fd_urb_cmd->rx_event_msg;
+	ret = es58x_check_msg_len(es58x_dev->dev, *rx_event_msg, msg_len);
+	if (ret)
+		return ret;
+
+	return es58x_rx_err_msg(netdev, rx_event_msg->error_code,
+				rx_event_msg->event_code,
+				get_unaligned_le64(&rx_event_msg->timestamp));
+}
+
+static int es58x_fd_rx_cmd_ret_u32(struct net_device *netdev,
+				   const struct es58x_fd_urb_cmd *es58x_fd_urb_cmd,
+				   enum es58x_ret_type cmd_ret_type)
+{
+	struct es58x_device *es58x_dev = es58x_priv(netdev)->es58x_dev;
+	u16 msg_len = get_unaligned_le16(&es58x_fd_urb_cmd->msg_len);
+	int ret;
+
+	ret = es58x_check_msg_len(es58x_dev->dev,
+				  es58x_fd_urb_cmd->rx_cmd_ret_le32, msg_len);
+	if (ret)
+		return ret;
+
+	return es58x_rx_cmd_ret_u32(netdev, cmd_ret_type,
+				    get_unaligned_le32(&es58x_fd_urb_cmd->rx_cmd_ret_le32));
+}
+
+static int es58x_fd_tx_ack_msg(struct net_device *netdev,
+			       const struct es58x_fd_urb_cmd *es58x_fd_urb_cmd)
+{
+	struct es58x_device *es58x_dev = es58x_priv(netdev)->es58x_dev;
+	const struct es58x_fd_tx_ack_msg *tx_ack_msg;
+	u16 msg_len = get_unaligned_le16(&es58x_fd_urb_cmd->msg_len);
+	int ret;
+
+	tx_ack_msg = &es58x_fd_urb_cmd->tx_ack_msg;
+	ret = es58x_check_msg_len(es58x_dev->dev, *tx_ack_msg, msg_len);
+	if (ret)
+		return ret;
+
+	return es58x_tx_ack_msg(netdev,
+				get_unaligned_le16(&tx_ack_msg->tx_free_entries),
+				get_unaligned_le32(&tx_ack_msg->rx_cmd_ret_le32));
+}
+
+static int es58x_fd_can_cmd_id(struct es58x_device *es58x_dev,
+			       const struct es58x_fd_urb_cmd *es58x_fd_urb_cmd)
+{
+	struct net_device *netdev;
+	int ret;
+
+	ret = es58x_get_netdev(es58x_dev, es58x_fd_urb_cmd->channel_idx,
+			       ES58X_FD_CHANNEL_IDX_OFFSET, &netdev);
+	if (ret)
+		return ret;
+
+	switch ((enum es58x_fd_can_cmd_id)es58x_fd_urb_cmd->cmd_id) {
+	case ES58X_FD_CAN_CMD_ID_ENABLE_CHANNEL:
+		return es58x_fd_rx_cmd_ret_u32(netdev, es58x_fd_urb_cmd,
+					       ES58X_RET_TYPE_ENABLE_CHANNEL);
+
+	case ES58X_FD_CAN_CMD_ID_DISABLE_CHANNEL:
+		return es58x_fd_rx_cmd_ret_u32(netdev, es58x_fd_urb_cmd,
+					       ES58X_RET_TYPE_DISABLE_CHANNEL);
+
+	case ES58X_FD_CAN_CMD_ID_TX_MSG:
+		return es58x_fd_tx_ack_msg(netdev, es58x_fd_urb_cmd);
+
+	case ES58X_FD_CAN_CMD_ID_ECHO_MSG:
+		return es58x_fd_echo_msg(netdev, es58x_fd_urb_cmd);
+
+	case ES58X_FD_CAN_CMD_ID_RX_MSG:
+		return es58x_fd_rx_can_msg(netdev, es58x_fd_urb_cmd);
+
+	case ES58X_FD_CAN_CMD_ID_RESET_RX:
+		return es58x_fd_rx_cmd_ret_u32(netdev, es58x_fd_urb_cmd,
+					       ES58X_RET_TYPE_RESET_RX);
+
+	case ES58X_FD_CAN_CMD_ID_RESET_TX:
+		return es58x_fd_rx_cmd_ret_u32(netdev, es58x_fd_urb_cmd,
+					       ES58X_RET_TYPE_RESET_TX);
+
+	case ES58X_FD_CAN_CMD_ID_ERROR_OR_EVENT_MSG:
+		return es58x_fd_rx_event_msg(netdev, es58x_fd_urb_cmd);
+
+	default:
+		return -EBADRQC;
+	}
+}
+
+static int es58x_fd_device_cmd_id(struct es58x_device *es58x_dev,
+				  const struct es58x_fd_urb_cmd *es58x_fd_urb_cmd)
+{
+	u16 msg_len = get_unaligned_le16(&es58x_fd_urb_cmd->msg_len);
+	int ret;
+
+	switch ((enum es58x_fd_dev_cmd_id)es58x_fd_urb_cmd->cmd_id) {
+	case ES58X_FD_DEV_CMD_ID_TIMESTAMP:
+		ret = es58x_check_msg_len(es58x_dev->dev,
+					  es58x_fd_urb_cmd->timestamp, msg_len);
+		if (ret)
+			return ret;
+		es58x_rx_timestamp(es58x_dev,
+				   get_unaligned_le64(&es58x_fd_urb_cmd->timestamp));
+		return 0;
+
+	default:
+		return -EBADRQC;
+	}
+}
+
+static int es58x_fd_handle_urb_cmd(struct es58x_device *es58x_dev,
+				   const union es58x_urb_cmd *urb_cmd)
+{
+	const struct es58x_fd_urb_cmd *es58x_fd_urb_cmd;
+	int ret;
+
+	es58x_fd_urb_cmd = &urb_cmd->es58x_fd_urb_cmd;
+
+	switch ((enum es58x_fd_cmd_type)es58x_fd_urb_cmd->cmd_type) {
+	case ES58X_FD_CMD_TYPE_CAN:
+	case ES58X_FD_CMD_TYPE_CANFD:
+		ret = es58x_fd_can_cmd_id(es58x_dev, es58x_fd_urb_cmd);
+		break;
+
+	case ES58X_FD_CMD_TYPE_DEVICE:
+		ret = es58x_fd_device_cmd_id(es58x_dev, es58x_fd_urb_cmd);
+		break;
+
+	default:
+		ret = -EBADRQC;
+		break;
+	}
+
+	if (ret == -EBADRQC)
+		dev_err(es58x_dev->dev,
+			"%s: Unknown command type (0x%02X) and command ID (0x%02X) combination\n",
+			__func__, es58x_fd_urb_cmd->cmd_type,
+			es58x_fd_urb_cmd->cmd_id);
+
+	return ret;
+}
+
+static void es58x_fd_fill_urb_header(union es58x_urb_cmd *urb_cmd, u8 cmd_type,
+				     u8 cmd_id, u8 channel_idx, u16 msg_len)
+{
+	struct es58x_fd_urb_cmd *es58x_fd_urb_cmd = &urb_cmd->es58x_fd_urb_cmd;
+
+	es58x_fd_urb_cmd->SOF = cpu_to_le16(es58x_fd_param.tx_start_of_frame);
+	es58x_fd_urb_cmd->cmd_type = cmd_type;
+	es58x_fd_urb_cmd->cmd_id = cmd_id;
+	es58x_fd_urb_cmd->channel_idx = channel_idx;
+	es58x_fd_urb_cmd->msg_len = cpu_to_le16(msg_len);
+}
+
+static int es58x_fd_tx_can_msg(struct es58x_priv *priv,
+			       const struct sk_buff *skb)
+{
+	struct es58x_device *es58x_dev = priv->es58x_dev;
+	union es58x_urb_cmd *urb_cmd = priv->tx_urb->transfer_buffer;
+	struct es58x_fd_urb_cmd *es58x_fd_urb_cmd = &urb_cmd->es58x_fd_urb_cmd;
+	struct can_frame *cf = (struct can_frame *)skb->data;
+	struct es58x_fd_tx_can_msg *tx_can_msg;
+	bool is_fd = can_is_canfd_skb(skb);
+	u16 msg_len;
+	int ret;
+
+	if (priv->tx_can_msg_cnt == 0) {
+		msg_len = 0;
+		es58x_fd_fill_urb_header(urb_cmd,
+					 is_fd ? ES58X_FD_CMD_TYPE_CANFD
+					       : ES58X_FD_CMD_TYPE_CAN,
+					 ES58X_FD_CAN_CMD_ID_TX_MSG_NO_ACK,
+					 priv->channel_idx, msg_len);
+	} else {
+		msg_len = es58x_fd_get_msg_len(urb_cmd);
+	}
+
+	ret = es58x_check_msg_max_len(es58x_dev->dev,
+				      es58x_fd_urb_cmd->tx_can_msg_buf,
+				      msg_len + sizeof(*tx_can_msg));
+	if (ret)
+		return ret;
+
+	/* Fill message contents. */
+	tx_can_msg = (typeof(tx_can_msg))&es58x_fd_urb_cmd->raw_msg[msg_len];
+	tx_can_msg->packet_idx = (u8)priv->tx_head;
+	put_unaligned_le32(es58x_get_raw_can_id(cf), &tx_can_msg->can_id);
+	tx_can_msg->flags = (u8)es58x_get_flags(skb);
+	if (is_fd)
+		tx_can_msg->len = cf->len;
+	else
+		tx_can_msg->dlc = can_get_cc_dlc(cf, priv->can.ctrlmode);
+	memcpy(tx_can_msg->data, cf->data, cf->len);
+
+	/* Calculate new sizes */
+	msg_len += es58x_fd_sizeof_rx_tx_msg(*tx_can_msg);
+	priv->tx_urb->transfer_buffer_length = es58x_get_urb_cmd_len(es58x_dev,
+								     msg_len);
+	put_unaligned_le16(msg_len, &es58x_fd_urb_cmd->msg_len);
+
+	return 0;
+}
+
+static void es58x_fd_convert_bittiming(struct es58x_fd_bittiming *es58x_fd_bt,
+				       struct can_bittiming *bt)
+{
+	/* The actual value set in the hardware registers is one less
+	 * than the functional value.
+	 */
+	const int offset = 1;
+
+	es58x_fd_bt->bitrate = cpu_to_le32(bt->bitrate);
+	es58x_fd_bt->tseg1 =
+	    cpu_to_le16(bt->prop_seg + bt->phase_seg1 - offset);
+	es58x_fd_bt->tseg2 = cpu_to_le16(bt->phase_seg2 - offset);
+	es58x_fd_bt->brp = cpu_to_le16(bt->brp - offset);
+	es58x_fd_bt->sjw = cpu_to_le16(bt->sjw - offset);
+}
+
+static int es58x_fd_enable_channel(struct es58x_priv *priv)
+{
+	struct es58x_device *es58x_dev = priv->es58x_dev;
+	struct net_device *netdev = es58x_dev->netdev[priv->channel_idx];
+	struct es58x_fd_tx_conf_msg tx_conf_msg = { 0 };
+	u32 ctrlmode;
+	size_t conf_len = 0;
+
+	es58x_fd_convert_bittiming(&tx_conf_msg.nominal_bittiming,
+				   &priv->can.bittiming);
+	ctrlmode = priv->can.ctrlmode;
+
+	if (ctrlmode & CAN_CTRLMODE_3_SAMPLES)
+		tx_conf_msg.samples_per_bit = ES58X_SAMPLES_PER_BIT_THREE;
+	else
+		tx_conf_msg.samples_per_bit = ES58X_SAMPLES_PER_BIT_ONE;
+	tx_conf_msg.sync_edge = ES58X_SYNC_EDGE_SINGLE;
+	tx_conf_msg.physical_layer = ES58X_PHYSICAL_LAYER_HIGH_SPEED;
+	tx_conf_msg.echo_mode = ES58X_ECHO_ON;
+	if (ctrlmode & CAN_CTRLMODE_LISTENONLY)
+		tx_conf_msg.ctrlmode |= ES58X_FD_CTRLMODE_PASSIVE;
+	else
+		tx_conf_msg.ctrlmode |=  ES58X_FD_CTRLMODE_ACTIVE;
+
+	if (ctrlmode & CAN_CTRLMODE_FD_NON_ISO) {
+		tx_conf_msg.ctrlmode |= ES58X_FD_CTRLMODE_FD_NON_ISO;
+		tx_conf_msg.canfd_enabled = 1;
+	} else if (ctrlmode & CAN_CTRLMODE_FD) {
+		tx_conf_msg.ctrlmode |= ES58X_FD_CTRLMODE_FD;
+		tx_conf_msg.canfd_enabled = 1;
+	}
+
+	if (tx_conf_msg.canfd_enabled) {
+		es58x_fd_convert_bittiming(&tx_conf_msg.data_bittiming,
+					   &priv->can.data_bittiming);
+
+		if (can_tdc_is_enabled(&priv->can)) {
+			tx_conf_msg.tdc_enabled = 1;
+			tx_conf_msg.tdco = cpu_to_le16(priv->can.tdc.tdco);
+			tx_conf_msg.tdcf = cpu_to_le16(priv->can.tdc.tdcf);
+		}
+
+		conf_len = ES58X_FD_CANFD_CONF_LEN;
+	} else {
+		conf_len = ES58X_FD_CAN_CONF_LEN;
+	}
+
+	return es58x_send_msg(es58x_dev, es58x_fd_cmd_type(netdev),
+			      ES58X_FD_CAN_CMD_ID_ENABLE_CHANNEL,
+			      &tx_conf_msg, conf_len, priv->channel_idx);
+}
+
+static int es58x_fd_disable_channel(struct es58x_priv *priv)
+{
+	/* The type (ES58X_FD_CMD_TYPE_CAN or ES58X_FD_CMD_TYPE_CANFD) does
+	 * not matter here.
+	 */
+	return es58x_send_msg(priv->es58x_dev, ES58X_FD_CMD_TYPE_CAN,
+			      ES58X_FD_CAN_CMD_ID_DISABLE_CHANNEL,
+			      ES58X_EMPTY_MSG, 0, priv->channel_idx);
+}
+
+static int es58x_fd_get_timestamp(struct es58x_device *es58x_dev)
+{
+	return es58x_send_msg(es58x_dev, ES58X_FD_CMD_TYPE_DEVICE,
+			      ES58X_FD_DEV_CMD_ID_TIMESTAMP, ES58X_EMPTY_MSG,
+			      0, ES58X_CHANNEL_IDX_NA);
+}
+
+/* Nominal bittiming constants for ES582.1 and ES584.1 as specified in
+ * the microcontroller datasheet: "SAM E70/S70/V70/V71 Family" section
+ * 49.6.8 "MCAN Nominal Bit Timing and Prescaler Register" from
+ * Microchip.
+ *
+ * The values from the specification are the hardware register
+ * values. To convert them to the functional values, all ranges were
+ * incremented by 1 (e.g. range [0..n-1] changed to [1..n]).
+ */
+static const struct can_bittiming_const es58x_fd_nom_bittiming_const = {
+	.name = "ES582.1/ES584.1",
+	.tseg1_min = 2,
+	.tseg1_max = 256,
+	.tseg2_min = 2,
+	.tseg2_max = 128,
+	.sjw_max = 128,
+	.brp_min = 1,
+	.brp_max = 512,
+	.brp_inc = 1
+};
+
+/* Data bittiming constants for ES582.1 and ES584.1 as specified in
+ * the microcontroller datasheet: "SAM E70/S70/V70/V71 Family" section
+ * 49.6.4 "MCAN Data Bit Timing and Prescaler Register" from
+ * Microchip.
+ */
+static const struct can_bittiming_const es58x_fd_data_bittiming_const = {
+	.name = "ES582.1/ES584.1",
+	.tseg1_min = 2,
+	.tseg1_max = 32,
+	.tseg2_min = 1,
+	.tseg2_max = 16,
+	.sjw_max = 8,
+	.brp_min = 1,
+	.brp_max = 32,
+	.brp_inc = 1
+};
+
+/* Transmission Delay Compensation constants for ES582.1 and ES584.1
+ * as specified in the microcontroller datasheet: "SAM E70/S70/V70/V71
+ * Family" section 49.6.15 "MCAN Transmitter Delay Compensation
+ * Register" from Microchip.
+ */
+static const struct can_tdc_const es58x_tdc_const = {
+	.tdcv_min = 0,
+	.tdcv_max = 0, /* Manual mode not supported. */
+	.tdco_min = 0,
+	.tdco_max = 127,
+	.tdcf_min = 0,
+	.tdcf_max = 127
+};
+
+const struct es58x_parameters es58x_fd_param = {
+	.bittiming_const = &es58x_fd_nom_bittiming_const,
+	.data_bittiming_const = &es58x_fd_data_bittiming_const,
+	.tdc_const = &es58x_tdc_const,
+	/* The devices use NXP TJA1044G transievers which guarantee
+	 * the timing for data rates up to 5 Mbps. Bitrates up to 8
+	 * Mbps work in an optimal environment but are not recommended
+	 * for production environment.
+	 */
+	.bitrate_max = 8 * MEGA /* BPS */,
+	.clock = {.freq = 80 * MEGA /* Hz */},
+	.ctrlmode_supported = CAN_CTRLMODE_LOOPBACK | CAN_CTRLMODE_LISTENONLY |
+	    CAN_CTRLMODE_3_SAMPLES | CAN_CTRLMODE_FD | CAN_CTRLMODE_FD_NON_ISO |
+	    CAN_CTRLMODE_CC_LEN8_DLC | CAN_CTRLMODE_TDC_AUTO,
+	.tx_start_of_frame = 0xCEFA,	/* FACE in little endian */
+	.rx_start_of_frame = 0xFECA,	/* CAFE in little endian */
+	.tx_urb_cmd_max_len = ES58X_FD_TX_URB_CMD_MAX_LEN,
+	.rx_urb_cmd_max_len = ES58X_FD_RX_URB_CMD_MAX_LEN,
+	/* Size of internal device TX queue is 500.
+	 *
+	 * However, when reaching value around 278, the device's busy
+	 * LED turns on and thus maximum value of 500 is never reached
+	 * in practice. Also, when this value is too high, some error
+	 * on the echo_msg were witnessed when the device is
+	 * recovering from bus off.
+	 *
+	 * For above reasons, a value that would prevent the device
+	 * from becoming busy was chosen. In practice, BQL would
+	 * prevent the value from even getting closer to below
+	 * maximum, so no impact on performance was measured.
+	 */
+	.fifo_mask = 255, /* echo_skb_max = 256 */
+	.dql_min_limit = CAN_FRAME_LEN_MAX * 15, /* Empirical value. */
+	.tx_bulk_max = ES58X_FD_TX_BULK_MAX,
+	.urb_cmd_header_len = ES58X_FD_URB_CMD_HEADER_LEN,
+	.rx_urb_max = ES58X_RX_URBS_MAX,
+	.tx_urb_max = ES58X_TX_URBS_MAX
+};
+
+const struct es58x_operators es58x_fd_ops = {
+	.get_msg_len = es58x_fd_get_msg_len,
+	.handle_urb_cmd = es58x_fd_handle_urb_cmd,
+	.fill_urb_header = es58x_fd_fill_urb_header,
+	.tx_can_msg = es58x_fd_tx_can_msg,
+	.enable_channel = es58x_fd_enable_channel,
+	.disable_channel = es58x_fd_disable_channel,
+	.reset_device = NULL, /* Not implemented in the device firmware. */
+	.get_timestamp = es58x_fd_get_timestamp
+};

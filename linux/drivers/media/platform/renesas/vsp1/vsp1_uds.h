@@ -1,21 +1,27 @@
-INJECTION) \
-    $(wildcard include/config/LATENCYTOP) \
-    $(wildcard include/config/KUNIT) \
-    $(wildcard include/config/FUNCTION_GRAPH_TRACER) \
-    $(wildcard include/config/BCACHE) \
-    $(wildcard include/config/VMAP_STACK) \
-    $(wildcard include/config/SECURITY) \
-    $(wildcard include/config/BPF_SYSCALL) \
-    $(wildcard include/config/GCC_PLUGIN_STACKLEAK) \
-    $(wildcard include/config/X86_MCE) \
-    $(wildcard include/config/KRETPROBES) \
-    $(wildcard include/config/RETHOOK) \
-    $(wildcard include/config/ARCH_HAS_PARANOID_L1D_FLUSH) \
-    $(wildcard include/config/ARCH_TASK_STRUCT_ON_STACK) \
-    $(wildcard include/config/DEBUG_RSEQ) \
-  include/uapi/linux/sched.h \
-  include/linux/pid.h \
-  include/linux/rculist.h \
-    $(wildcard include/config/PROVE_RCU_LIST) \
-  include/linux/sem.h \
-  include/uapi/linux/sem.h \
+lient.addr = 0xa0 >> 1;
+		tveeprom_read(&dev->i2c_bus[0].i2c_client, eeprom, sizeof(eeprom));
+		pr_info("TeVii S470 MAC= %pM\n", eeprom + 0xa0);
+		memcpy(port->frontends.adapter.proposed_mac, eeprom + 0xa0, 6);
+		return 0;
+		}
+	case CX23885_BOARD_DVBSKY_T9580:
+	case CX23885_BOARD_DVBSKY_S950:
+	case CX23885_BOARD_DVBSKY_S952:
+	case CX23885_BOARD_DVBSKY_T982: {
+		u8 eeprom[256]; /* 24C02 i2c eeprom */
+
+		if (port->nr > 2)
+			return 0;
+
+		/* Read entire EEPROM */
+		dev->i2c_bus[0].i2c_client.addr = 0xa0 >> 1;
+		tveeprom_read(&dev->i2c_bus[0].i2c_client, eeprom,
+				sizeof(eeprom));
+		pr_info("%s port %d MAC address: %pM\n",
+			cx23885_boards[dev->board].name, port->nr,
+			eeprom + 0xc0 + (port->nr-1) * 8);
+		memcpy(port->frontends.adapter.proposed_mac, eeprom + 0xc0 +
+			(port->nr-1) * 8, 6);
+		return 0;
+		}
+	case CX23885_BOARD_DVBSKY_S950C:

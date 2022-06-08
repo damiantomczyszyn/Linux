@@ -1,6 +1,4 @@
-nux/sched.h \
-  include/linux/pid.h \
-  include/linux/rculist.h \
-    $(wildcard include/config/PROVE_RCU_LIST) \
-  include/linux/sem.h \
-  
+dcard include/config/X86_P6_NOP) \
+    $(wildcard include/config/MATOM) \
+    $(wildcard include/config/PARAVIRT_XXL) \
+  arch/x86/include/a

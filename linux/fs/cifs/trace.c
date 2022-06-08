@@ -1,6 +1,1 @@
-CPI_APEI_GHES) \
-    $(wildcard include/config/INTEL_TXT) \
-  arch/x86/include/generated/asm/kmap_size.h \
-  include/asm-generic/kmap_size.h \
-    $(wildcard include/config/DEBUG_KMAP_LOCAL) \
-  
+cmd_drivers/media/pci/cx18/cx18-alsa-pcm.o := gcc -Wp,-MMD,drivers/media/pci/cx18/.cx18-alsa-pcm.o.d -nostdinc -I./arch/x86/include -I./arch/x86/include/generated  -I./include -I./arch/x86/includ

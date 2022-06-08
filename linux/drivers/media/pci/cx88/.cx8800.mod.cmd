@@ -1,5 +1,8 @@
-CPI_APEI_GHES) \
-    $(wildcard include/config/INTEL_TXT) \
-  arch/x86/include/generated/asm/kmap_size.h \
-  include/asm-generic/kmap_size.h \
-    $(wildcard include
+.duty_cycle = 25,      /* 25 %   - RC-5 carrier */
+	.invert_level = false,
+	.invert_carrier_sense = false,
+};
+
+int cx23888_ir_probe(struct cx23885_dev *dev)
+{
+	struc

@@ -1,28 +1,41 @@
-config/ARCH_WANTS_DYNAMIC_TASK_STRUCT) \
-    $(wildcard include/config/HAVE_ARCH_THREAD_STRUCT_WHITELIST) \
-  include/linux/cred.h \
-    $(wildcard include/config/DEBUG_CREDENTIALS) \
-  include/linux/key.h \
-    $(wildcard include/config/KEY_NOTIFICATIONS) \
-    $(wildcard include/config/NET) \
-  include/linux/assoc_array.h \
-    $(wildcard include/config/ASSOCIATIVE_ARRAY) \
-  include/linux/sched/user.h \
-    $(wildcard include/config/WATCH_QUEUE) \
-  include/linux/percpu_counter.h \
-  include/linux/rcu_sync.h \
-  include/linux/delayed_call.h \
-  include/linux/errseq.h \
-  include/linux/ioprio.h \
-  include/linux/sched/rt.h \
-  include/linux/iocontext.h \
-    $(wildcard include/config/BLK_ICQ) \
-  include/uapi/linux/ioprio.h \
-  include/linux/fs_types.h \
-  include/linux/mount.h \
-  include/linux/mnt_idmapping.h \
-  include/uapi/linux/fs.h \
-  include/linux/quota.h \
-    $(wildcard include/config/QUOTA_NETLINK_INTERFACE) \
-  include/uapi/linux/dqblk_xfs.h \
-  include/linux/dqb
+nput)->amux == CX25840_AUDIO6)
+		cx23885_flatiron_mux(dev, 2);
+	else {
+		/* Not specifically defined, assume the default. */
+		cx23885_flatiron_mux(dev, 1);
+	}
+
+	return 0;
+}
+
+/* ------------------------------------------------------------------ */
+static int cx23885_start_video_dma(struct cx23885_dev *dev,
+			   struct cx23885_dmaqueue *q,
+			   struct cx23885_buffer *buf)
+{
+	dprintk(1, "%s()\n", __func__);
+
+	/* Stop the dma/fifo before we tamper with it's risc programs */
+	cx_clear(VID_A_DMA_CTL, 0x11);
+
+	/* setup fifo + format */
+	cx23885_sram_channel_setup(dev, &dev->sram_channels[SRAM_CH01],
+				buf->bpl, buf->risc.dma);
+
+	/* reset counter */
+	cx_write(VID_A_GPCNT_CTL, 3);
+	q->count = 0;
+
+	/* enable irq */
+	cx23885_irq_add_enable(dev, 0x01);
+	cx_set(VID_A_INT_MSK, 0x000011);
+
+	/* start dma */
+	cx_set(DEV_CNTRL2, (1<<5));
+	cx_set(VID_A_DMA_CTL, 0x11); /* FIFO and RISC enable */
+
+	return 0;
+}
+
+static int queue_setup(struct vb2_queue *q,
+			   unsigned int *num_buffers, unsign

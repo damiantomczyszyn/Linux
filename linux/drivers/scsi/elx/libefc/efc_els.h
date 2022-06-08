@@ -1,71 +1,89 @@
-UMA) \
-    $(wildcard include/config/NUMA_BALANCING) \
-    $(wildcard include/config/RSEQ) \
-    $(wildcard include/config/TASK_DELAY_ACCT) \
-    $(wildcard include/config/FAULT_INJECTION) \
-    $(wildcard include/config/LATENCYTOP) \
-    $(wildcard include/config/KUNIT) \
-    $(wildcard include/config/FUNCTION_GRAPH_TRACER) \
-    $(wildcard include/config/UPROBES) \
-    $(wildcard include/config/BCACHE) \
-    $(wildcard include/config/VMAP_STACK) \
-    $(wildcard include/config/LIVEPATCH) \
-    $(wildcard include/config/SECURITY) \
-    $(wildcard include/config/BPF_SYSCALL) \
-    $(wildcard include/config/GCC_PLUGIN_STACKLEAK) \
-    $(wildcard include/config/X86_MCE) \
-    $(wildcard include/config/KRETPROBES) \
-    $(wildcard include/config/RETHOOK) \
-    $(wildcard include/config/ARCH_HAS_PARANOID_L1D_FLUSH) \
-    $(wildcard include/config/ARCH_TASK_STRUCT_ON_STACK) \
-    $(wildcard include/config/DEBUG_RSEQ) \
-  include/uapi/linux/sched.h \
-  include/linux/pid.h \
-  include/linux/rculist.h \
-    $(wildcard include/config/PROVE_RCU_LIST) \
-  include/linux/refcount.h \
-  include/linux/sem.h \
-  include/uapi/linux/sem.h \
-  include/linux/ipc.h \
-  include/linux/uidgid.h \
-    $(wildcard include/config/MULTIUSER) \
-    $(wildcard include/config/USER_NS) \
-  include/linux/highuid.h \
-  include/linux/rhashtable-types.h \
-  include/uapi/linux/ipc.h \
-  arch/x86/include/generated/uapi/asm/ipcbuf.h \
-  include/uapi/asm-generic/ipcbuf.h \
-  arch/x86/include/uapi/asm/sembuf.h \
-  include/linux/shm.h \
-  include/uapi/linux/shm.h \
-  include/uapi/asm-generic/hugetlb_encode.h \
-  arch/x86/include/uapi/asm/shmbuf.h \
-  include/uapi/asm-generic/shmbuf.h \
-  arch/x86/include/asm/shmparam.h \
-  include/linux/plist.h \
-    $(wildcard include/config/DEBUG_PLIST) \
-  include/linux/hrtimer.h \
-    $(wildcard include/config/HIGH_RES_TIMERS) \
-    $(wildcard include/config/TIME_LOW_RES) \
-    $(wildcard include/config/TIMERFD) \
-  include/linux/hrtimer_defs.h \
-  include/linux/rbtree.h \
-  include/linux/rbtree_types.h \
-  include/linux/percpu.h \
-    $(wildcard include/config/NEED_PER_CPU_EMBED_FIRST_CHUNK) \
-    $(wildcard include/config/NEED_PER_CPU_PAGE_FIRST_CHUNK) \
-  include/linux/mmdebug.h \
-    $(wildcard include/config/DEBUG_VM) \
-    $(wildcard include/config/DEBUG_VM_PGFLAGS) \
-  include/linux/seqlock.h \
-  include/linux/ww_mutex.h \
-    $(wildcard include/config/DEBUG_RT_MUTEXES) \
-    $(wildcard include/config/DEBUG_WW_MUTEX_SLOWPATH) \
-  include/linux/rtmutex.h \
-  include/linux/timerqueue.h \
-  include/linux/seccomp.h \
-    $(wildcard include/config/SECCOMP) \
-    $(wildcard include/config/HAVE_ARCH_SECCOMP_FILTER) \
-    $(wildcard include/config/SECCOMP_FILTER) \
-    $(wildcard include/config/CHECKPOINT_RESTORE) \
-    $(wildcard include/config/SECCOMP_CACHE_DEBUG)
+:
+		i2c_bus = &dev->i2c_bus[0];
+
+		if (!dvb_attach(dib7000p_attach, &dib7000p_ops))
+			return -ENODEV;
+
+		fe0->dvb.frontend = dib7000p_ops.init(&i2c_bus->i2c_adap,
+			0x12, &hauppauge_hvr1400_dib7000_config);
+		if (fe0->dvb.frontend != NULL) {
+			struct dvb_frontend *fe;
+			struct xc2028_config cfg = {
+				.i2c_adap  = &dev->i2c_bus[1].i2c_adap,
+				.i2c_addr  = 0x64,
+			};
+			static struct xc2028_ctrl ctl = {
+				.fname   = XC3028L_DEFAULT_FIRMWARE,
+				.max_len = 64,
+				.demod   = XC3028_FE_DIBCOM52,
+				/* This is true for all demods with
+					v36 firmware? */
+				.type    = XC2028_D2633,
+			};
+
+			fe = dvb_attach(xc2028_attach,
+					fe0->dvb.frontend, &cfg);
+			if (fe != NULL && fe->ops.tuner_ops.set_config != NULL)
+				fe->ops.tuner_ops.set_config(fe, &ctl);
+		}
+		break;
+	case CX23885_BOARD_DVICO_FUSIONHDTV_7_DUAL_EXP:
+		i2c_bus = &dev->i2c_bus[port->nr - 1];
+
+		fe0->dvb.frontend = dvb_attach(s5h1409_attach,
+						&dvico_s5h1409_config,
+						&i2c_bus->i2c_adap);
+		if (fe0->dvb.frontend == NULL)
+			fe0->dvb.frontend = dvb_attach(s5h1411_attach,
+							&dvico_s5h1411_config,
+							&i2c_bus->i2c_adap);
+		if (fe0->dvb.frontend != NULL)
+			dvb_attach(xc5000_attach, fe0->dvb.frontend,
+				   &i2c_bus->i2c_adap,
+				   &dvico_xc5000_tunerconfig);
+		break;
+	case CX23885_BOARD_DVICO_FUSIONHDTV_DVB_T_DUAL_EXP: {
+		i2c_bus = &dev->i2c_bus[port->nr - 1];
+
+		fe0->dvb.frontend = dvb_attach(zl10353_attach,
+					       &dvico_fusionhdtv_xc3028,
+					       &i2c_bus->i2c_adap);
+		if (fe0->dvb.frontend != NULL) {
+			struct dvb_frontend      *fe;
+			struct xc2028_config	  cfg = {
+				.i2c_adap  = &i2c_bus->i2c_adap,
+				.i2c_addr  = 0x61,
+			};
+			static struct xc2028_ctrl ctl = {
+				.fname       = XC2028_DEFAULT_FIRMWARE,
+				.max_len     = 64,
+				.demod       = XC3028_FE_ZARLINK456,
+			};
+
+			fe = dvb_attach(xc2028_attach, fe0->dvb.frontend,
+					&cfg);
+			if (fe != NULL && fe->ops.tuner_ops.set_config != NULL)
+				fe->ops.tuner_ops.set_config(fe, &ctl);
+		}
+		break;
+	}
+	case CX23885_BOARD_DVICO_FUSIONHDTV_DVB_T_DUAL_EXP2: {
+		i2c_bus = &dev->i2c_bus[port->nr - 1];
+		/* cxusb_ctrl_msg(adap->dev, CMD_DIGITAL, NULL, 0, NULL, 0); */
+		/* cxusb_bluebird_gpio_pulse(adap->dev, 0x02, 1); */
+
+		if (!dvb_attach(dib7000p_attach, &dib7000p_ops))
+			return -ENODEV;
+
+		if (dib7000p_ops.i2c_enumeration(&i2c_bus->i2c_adap, 1, 0x12, &dib7070p_dib7000p_config) < 0) {
+			pr_warn("Unable to enumerate dib7000p\n");
+			return -ENODEV;
+		}
+		fe0->dvb.frontend = dib7000p_ops.init(&i2c_bus->i2c_adap, 0x80, &dib7070p_dib7000p_config);
+		if (fe0->dvb.frontend != NULL) {
+			struct i2c_adapter *tun_i2c;
+
+			fe0->dvb.frontend->sec_priv = kmemdup(&dib7000p_ops, sizeof(dib7000p_ops), GFP_KERNEL);
+			if (!fe0->dvb.frontend->sec_priv)
+				return -ENOMEM;
+			tun_i2c = dib7000p_ops.get_i2c_master(fe0-

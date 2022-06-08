@@ -1,3 +1,2 @@
-/* SPDX-License-Identifier: GPL-2.0 */
-/*
- * This program is free software; you can redistribute it and/or mo
+ass change for a non user-defined clamp value. */
+	if (likely(!(attr->sched_flags & SCHED_FLAG_UTIL_CLAMP)) &

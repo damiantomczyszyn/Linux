@@ -1,4 +1,3 @@
-86/include/asm/qrwlock.h \
-  include/asm-generic/qrwlock.h \
-  include/linux/rwlock.h \
-    $(wildca
+_cpus_allowed(struct task_struct *p, const struct cpumask *new_mask, u32 flags)
+{
+	struct rq *rq = t

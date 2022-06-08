@@ -1,2 +1,1 @@
-LE_SLEEP) \
-    $(wildcard inc
+ct tda10071_platform_data tda1

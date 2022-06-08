@@ -1,18 +1,36 @@
-card include/config/HAVE_ARCH_USERFAULTFD_MINOR) \
-    $(wildcard include/config/SHMEM) \
-    $(wildcard include/config/ARCH_HAS_PTE_SPECIAL) \
-    $(wildcard include/config/ARCH_HAS_PTE_DEVMAP) \
-    $(wildcard include/config/DEBUG_VM_RB) \
-    $(wildcard include/config/PAGE_POISONING) \
-    $(wildcard include/config/INIT_ON_ALLOC_DEFAULT_ON) \
-    $(wildcard include/config/INIT_ON_FREE_DEFAULT_ON) \
-    $(wildcard include/config/DEBUG_PAGEALLOC) \
-    $(wildcard include/config/HUGETLBFS) \
-    $(wildcard include/config/MAPPING_DIRTY_HELPERS) \
-    $(wildcard include/config/ANON_VMA_NAME) \
-  include/linux/mmap_lock.h \
-  include/linux/page_ext.h \
-  include/linux/stacktrace.h \
-    $(wildcard include/config/ARCH_STACKWALK) \
-    $(wildcard include/config/STACKTRACE) \
-    $(wildcard include/config/HAVE_RELIABLE_STACKTRACE) \
+// SPDX-License-Identifier: GPL-2.0-or-later
+/*
+ *  Driver for the Conexant CX23885/7/8 PCIe bridge
+ *
+ *  Various common ioctl() support functions
+ *
+ *  Copyright (c) 2009 Andy Walls <awalls@md.metrocast.net>
+ */
+
+#include "cx23885.h"
+#include "cx23885-ioctl.h"
+
+#ifdef CONFIG_VIDEO_ADV_DEBUG
+int cx23885_g_chip_info(struct file *file, void *fh,
+			 struct v4l2_dbg_chip_info *chip)
+{
+	struct cx23885_dev *dev = video_drvdata(file);
+
+	if (chip->match.addr > 1)
+		return -EINVAL;
+	if (chip->match.addr == 1) {
+		if (dev->v4l_device == NULL)
+			return -EINVAL;
+		strscpy(chip->name, "cx23417", sizeof(chip->name));
+	} else {
+		strscpy(chip->name, dev->v4l2_dev.name, sizeof(chip->name));
+	}
+	return 0;
+}
+
+static int cx23417_g_register(struct cx23885_dev *dev,
+			      struct v4l2_dbg_register *reg)
+{
+	u32 value;
+
+	if (dev->v4l_device ==

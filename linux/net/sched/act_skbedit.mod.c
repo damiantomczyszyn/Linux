@@ -1,4 +1,21 @@
-µdNÝ7Ò=Œh#9ÃsýŠ½ÊéyOT±,[9!µ&{¬S_1$´Ô >¾¦Ïwú‘*-'HŒÐ(Š¥âNÄÐlVÁa!JÐ{zí÷çh–X¾Cãm'M’â‚Zìˆ©õšÞØÅInpL27ä&87^Vc%ù@Ë¤÷BZÑ–“8.nÆw5!}‡GÝ	sÊ×õ¥R!‹y3‡"¶@Æ²Ñé@£*V”Er”éTÜZOÐS·G®ÅìŒ»àµ»ý‘SõjìYqÏÈ…§ÀÂú&ìe6MËEÄ¤®hû!íQkÕ¤\KÈzoO<ñÉý@Uâ•x¸aT¢¼Þ"›”Es=™®@Üþ«nö$_¶<)¹	ªh”ßj(ÌŽ®¦"9²|“ª¹ÇÞ¢x'ícŸ=âüÛE•Y­rBàÔl3*`Ÿ2ZŒ&DÝ<H¸Ôý £5ó2H[ó&VaâVÿT~®kýsêx¢5Ú—^2ÚrŸ§‡';DÙ1ÿÇFíâŸ§;Ë*?>±ÅEÆG.¥$_åiXÖ›ÀÑ%Eñîü@ôîWF–ê+O`C˜ä<K{B™gžïsÄ	*
-J&¹iûgÒ‚ê…N:ºdÝ²Âx°¸SàPá\9
-°-µ‡jp…È…Ç±òÚ€Ql¡^Ä|@ŒA"[ŠèˆvFŸhnpà$±2ß7 RµÛíÙŒrÛ1POÈ	Ëø©Ä<Øœa)0Æ;»WæB‰[‚t$	™¶Ý›
-KØ³¥Y™Dg(‘Øøoµ2
+ in both TC_REQ and TC_REQ_SET
+ * indicate a stall in the RISC engine for a
+ * particular rider traffic class. This causes
+ * the 885 and 888 bridges (unknown about 887)
+ * to become inoperable. Setting bits in
+ * TC_REQ_SET resets the corresponding bits
+ * in TC_REQ (and TC_REQ_SET) allowing
+ * operation to continue.
+ */
+#define TC_REQ		0x00040090
+#define TC_REQ_SET	0x00040094
+
+#define RDR_CFG0	0x00050000
+#define RDR_CFG1	0x00050004
+#define RDR_CFG2	0x00050008
+#define RDR_RDRCTL1	0x0005030c
+#define RDR_TLCTL0	0x00050318
+
+/* APB DMAC Current Buffer Pointer */
+#define DMA1_PTR1	0x00100000
+#define DMA2_

@@ -1,1260 +1,2174 @@
-e/linux/rwlock.h \
-    $(wildcard include/config/PREEMPT) \
-  include/linux/spinlock_api_smp.h \
-    $(wildcard include/config/INLINE_SPIN_LOCK) \
-    $(wildcard include/config/INLINE_SPIN_LOCK_BH) \
-    $(wildcard include/config/INLINE_SPIN_LOCK_IRQ) \
-    $(wildcard include/config/INLINE_SPIN_LOCK_IRQSAVE) \
-    $(wildcard include/config/INLINE_SPIN_TRYLOCK) \
-    $(wildcard include/config/INLINE_SPIN_TRYLOCK_BH) \
-    $(wildcard include/config/UNINLINE_SPIN_UNLOCK) \
-    $(wildcard include/config/INLINE_SPIN_UNLOCK_BH) \
-    $(wildcard include/config/INLINE_SPIN_UNLOCK_IRQ) \
-    $(wildcard include/config/INLINE_SPIN_UNLOCK_IRQRESTORE) \
-    $(wildcard include/config/GENERIC_LOCKBREAK) \
-  include/linux/rwlock_api_smp.h \
-    $(wildcard include/config/INLINE_READ_LOCK) \
-    $(wildcard include/config/INLINE_WRITE_LOCK) \
-    $(wildcard include/config/INLINE_READ_LOCK_BH) \
-    $(wildcard include/config/INLINE_WRITE_LOCK_BH) \
-    $(wildcard include/config/INLINE_READ_LOCK_IRQ) \
-    $(wildcard include/config/INLINE_WRITE_LOCK_IRQ) \
-    $(wildcard include/config/INLINE_READ_LOCK_IRQSAVE) \
-    $(wildcard include/config/INLINE_WRITE_LOCK_IRQSAVE) \
-    $(wildcard include/config/INLINE_READ_TRYLOCK) \
-    $(wildcard include/config/INLINE_WRITE_TRYLOCK) \
-    $(wildcard include/config/INLINE_READ_UNLOCK) \
-    $(wildcard include/config/INLINE_WRITE_UNLOCK) \
-    $(wildcard include/config/INLINE_READ_UNLOCK_BH) \
-    $(wildcard include/config/INLINE_WRITE_UNLOCK_BH) \
-    $(wildcard include/config/INLINE_READ_UNLOCK_IRQ) \
-    $(wildcard include/config/INLINE_WRITE_UNLOCK_IRQ) \
-    $(wildcard include/config/INLINE_READ_UNLOCK_IRQRESTORE) \
-    $(wildcard include/config/INLINE_WRITE_UNLOCK_IRQRESTORE) \
-  include/linux/refcount.h \
-  include/linux/rbtree.h \
-  include/linux/rbtree_types.h \
-  include/linux/rcupdate.h \
-    $(wildcard include/config/PREEMPT_RCU) \
-    $(wildcard include/config/TINY_RCU) \
-    $(wildcard include/config/RCU_STRICT_GRACE_PERIOD) \
-    $(wildcard include/config/TASKS_RCU_GENERIC) \
-    $(wildcard include/config/RCU_STALL_COMMON) \
-    $(wildcard include/config/NO_HZ_FULL) \
-    $(wildcard include/config/RCU_NOCB_CPU) \
-    $(wildcard include/config/TASKS_RCU) \
-    $(wildcard include/config/TASKS_TRACE_RCU) \
-    $(wildcard include/config/TASKS_RUDE_RCU) \
-    $(wildcard include/config/TREE_RCU) \
-    $(wildcard include/config/DEBUG_OBJECTS_RCU_HEAD) \
-    $(wildcard include/config/PROVE_RCU) \
-    $(wildcard include/config/ARCH_WEAK_RELEASE_ACQUIRE) \
-  include/linux/rcutree.h \
-  include/linux/rwsem.h \
-    $(wildcard include/config/RWSEM_SPIN_ON_OWNER) \
-    $(wildcard include/config/DEBUG_RWSEMS) \
-  include/linux/osq_lock.h \
-  include/linux/completion.h \
-  include/linux/swait.h \
-  include/linux/wait.h \
-  include/uapi/linux/wait.h \
-  include/linux/uprobes.h \
-    $(wildcard include/config/UPROBES) \
-  arch/x86/include/asm/uprobes.h \
-  include/linux/notifier.h \
-  include/linux/mutex.h \
-    $(wildcard include/config/MUTEX_SPIN_ON_OWNER) \
-    $(wildcard include/config/DEBUG_MUTEXES) \
-  include/linux/debug_locks.h \
-  include/linux/srcu.h \
-    $(wildcard include/config/TINY_SRCU) \
-    $(wildcard include/config/SRCU) \
-  include/linux/workqueue.h \
-    $(wildcard include/config/DEBUG_OBJECTS_WORK) \
-    $(wildcard include/config/FREEZER) \
-    $(wildcard include/config/WQ_WATCHDOG) \
-  include/linux/timer.h \
-    $(wildcard include/config/DEBUG_OBJECTS_TIMERS) \
-    $(wildcard include/config/NO_HZ_COMMON) \
-  include/linux/ktime.h \
-  include/linux/jiffies.h \
-  include/vdso/jiffies.h \
-  include/generated/timeconst.h \
-  include/vdso/ktime.h \
-  include/linux/timekeeping.h \
-    $(wildcard include/config/GENERIC_CMOS_UPDATE) \
-  include/linux/clocksource_ids.h \
-  include/linux/debugobjects.h \
-    $(wildcard include/config/DEBUG_OBJECTS) \
-    $(wildcard include/config/DEBUG_OBJECTS_FREE) \
-  include/linux/rcu_segcblist.h \
-  include/linux/srcutree.h \
-  include/linux/rcu_node_tree.h \
-    $(wildcard include/config/RCU_FANOUT) \
-    $(wildcard include/config/RCU_FANOUT_LEAF) \
-  include/linux/page-flags-layout.h \
-    $(wildcard include/config/KASAN_HW_TAGS) \
-  include/linux/numa.h \
-    $(wildcard include/config/NODES_SHIFT) \
-    $(wildcard include/config/NUMA_KEEP_MEMINFO) \
-    $(wildcard include/config/HAVE_ARCH_NODE_DEV_GROUP) \
-  arch/x86/include/asm/sparsemem.h \
-  include/generated/bounds.h \
-  include/linux/seqlock.h \
-  include/linux/ww_mutex.h \
-    $(wildcard include/config/DEBUG_RT_MUTEXES) \
-    $(wildcard include/config/DEBUG_WW_MUTEX_SLOWPATH) \
-  include/linux/rtmutex.h \
-  arch/x86/include/asm/mmu.h \
-    $(wildcard include/config/MODIFY_LDT_SYSCALL) \
-  include/linux/kmod.h \
-  include/linux/umh.h \
-  include/linux/gfp.h \
-    $(wildcard include/config/HIGHMEM) \
-    $(wildcard include/config/ZONE_DMA) \
-    $(wildcard include/config/ZONE_DMA32) \
-    $(wildcard include/config/ZONE_DEVICE) \
-    $(wildcard include/config/PM_SLEEP) \
-    $(wildcard include/config/CONTIG_ALLOC) \
-    $(wildcard include/config/CMA) \
-  include/linux/mmdebug.h \
-    $(wildcard include/config/DEBUG_VM) \
-    $(wildcard include/config/DEBUG_VM_PGFLAGS) \
-  include/linux/mmzone.h \
-    $(wildcard include/config/FORCE_MAX_ZONEORDER) \
-    $(wildcard include/config/MEMORY_ISOLATION) \
-    $(wildcard include/config/ZSMALLOC) \
-    $(wildcard include/config/MEMORY_HOTPLUG) \
-    $(wildcard include/config/COMPACTION) \
-    $(wildcard include/config/PAGE_EXTENSION) \
-    $(wildcard include/config/DEFERRED_STRUCT_PAGE_INIT) \
-    $(wildcard include/config/HAVE_MEMORYLESS_NODES) \
-    $(wildcard include/config/SPARSEMEM_EXTREME) \
-    $(wildcard include/config/HAVE_ARCH_PFN_VALID) \
-  include/linux/nodemask.h \
-  include/linux/pageblock-flags.h \
-    $(wildcard include/config/HUGETLB_PAGE_SIZE_VARIABLE) \
-  include/linux/page-flags.h \
-    $(wildcard include/config/ARCH_USES_PG_UNCACHED) \
-    $(wildcard include/config/MEMORY_FAILURE) \
-    $(wildcard include/config/PAGE_IDLE_FLAG) \
-    $(wildcard include/config/HUGETLB_PAGE_FREE_VMEMMAP) \
-    $(wildcard include/config/HUGETLB_PAGE_FREE_VMEMMAP_DEFAULT_ON) \
-    $(wildcard include/config/KSM) \
-  include/linux/local_lock.h \
-  include/linux/local_lock_internal.h \
-  include/linux/memory_hotplug.h \
-    $(wildcard include/config/HAVE_ARCH_NODEDATA_EXTENSION) \
-    $(wildcard include/config/ARCH_HAS_ADD_PAGES) \
-    $(wildcard include/config/MEMORY_HOTREMOVE) \
-  arch/x86/include/asm/mmzone.h \
-  arch/x86/include/asm/mmzone_32.h \
-  include/linux/topology.h \
-    $(wildcard include/config/USE_PERCPU_NUMA_NODE_ID) \
-    $(wildcard include/config/SCHED_SMT) \
-    $(wildcard include/config/SCHED_CLUSTER) \
-  include/linux/arch_topology.h \
-    $(wildcard include/config/ACPI_CPPC_LIB) \
-    $(wildcard include/config/GENERIC_ARCH_TOPOLOGY) \
-  include/linux/percpu.h \
-    $(wildcard include/config/NEED_PER_CPU_EMBED_FIRST_CHUNK) \
-    $(wildcard include/config/NEED_PER_CPU_PAGE_FIRST_CHUNK) \
-  arch/x86/include/asm/topology.h \
-    $(wildcard include/config/SCHED_MC_PRIO) \
-  arch/x86/include/asm/mpspec.h \
-    $(wildcard include/config/EISA) \
-    $(wildcard include/config/X86_MPPARSE) \
-  arch/x86/include/asm/mpspec_def.h \
-  arch/x86/include/asm/x86_init.h \
-  arch/x86/include/asm/apicdef.h \
-  include/asm-generic/topology.h \
-  include/linux/sysctl.h \
-    $(wildcard include/config/SYSCTL) \
-  include/uapi/linux/sysctl.h \
-  include/linux/elf.h \
-    $(wildcard include/config/ARCH_USE_GNU_PROPERTY) \
-    $(wildcard include/config/ARCH_HAVE_ELF_PROT) \
-  arch/x86/include/asm/elf.h \
-    $(wildcard include/config/X86_X32_ABI) \
-  arch/x86/include/asm/user.h \
-  arch/x86/include/asm/user_32.h \
-  arch/x86/include/asm/fsgsbase.h \
-  arch/x86/include/asm/vdso.h \
-  arch/x86/include/asm/desc.h \
-  arch/x86/include/asm/fixmap.h \
-    $(wildcard include/config/DEBUG_KMAP_LOCAL_FORCE_MAP) \
-    $(wildcard include/config/X86_VSYSCALL_EMULATION) \
-    $(wildcard include/config/PROVIDE_OHCI1394_DMA_INIT) \
-    $(wildcard include/config/X86_IO_APIC) \
-    $(wildcard include/config/KMAP_LOCAL) \
-    $(wildcard include/config/PCI_MMCONFIG) \
-    $(wildcard include/config/ACPI_APEI_GHES) \
-    $(wildcard include/config/INTEL_TXT) \
-  arch/x86/include/generated/asm/kmap_size.h \
-  include/asm-generic/kmap_size.h \
-    $(wildcard include/config/DEBUG_KMAP_LOCAL) \
-  include/asm-generic/fixmap.h \
-  arch/x86/include/asm/irq_vectors.h \
-    $(wildcard include/config/HAVE_KVM) \
-    $(wildcard include/config/HYPERV) \
-    $(wildcard include/config/PCI_MSI) \
-  arch/x86/include/asm/cpu_entry_area.h \
-  arch/x86/include/asm/intel_ds.h \
-  arch/x86/include/asm/pgtable_areas.h \
-  arch/x86/include/asm/pgtable_32_areas.h \
-  include/uapi/linux/elf.h \
-  include/uapi/linux/elf-em.h \
-  include/linux/kobject.h \
-    $(wildcard include/config/UEVENT_HELPER) \
-    $(wildcard include/config/DEBUG_KOBJECT_RELEASE) \
-  include/linux/sysfs.h \
-  include/linux/kernfs.h \
-    $(wildcard include/config/KERNFS) \
-  include/linux/idr.h \
-  include/linux/radix-tree.h \
-  include/linux/xarray.h \
-    $(wildcard include/config/XARRAY_MULTI) \
-  include/linux/kconfig.h \
-  include/linux/kobject_ns.h \
-  include/linux/moduleparam.h \
-    $(wildcard include/config/ALPHA) \
-    $(wildcard include/config/IA64) \
-    $(wildcard include/config/PPC64) \
-  include/linux/rbtree_latch.h \
-  include/linux/error-injection.h \
-  include/asm-generic/error-injection.h \
-  include/linux/cfi.h \
-    $(wildcard include/config/CFI_CLANG_SHADOW) \
-  arch/x86/include/asm/module.h \
-    $(wildcard include/config/UNWINDER_ORC) \
-  include/asm-generic/module.h \
-    $(wildcard include/config/HAVE_MOD_ARCH_SPECIFIC) \
-    $(wildcard include/config/MODULES_USE_ELF_REL) \
-    $(wildcard include/config/MODULES_USE_ELF_RELA) \
-  arch/x86/include/asm/orc_types.h \
-  include/linux/i2c.h \
-    $(wildcard include/config/I2C) \
-    $(wildcard include/config/I2C_SLAVE) \
-    $(wildcard include/config/I2C_BOARDINFO) \
-    $(wildcard include/config/I2C_MUX) \
-    $(wildcard include/config/OF) \
-    $(wildcard include/config/ACPI) \
-  include/linux/acpi.h \
-    $(wildcard include/config/ACPI_DEBUGGER) \
-    $(wildcard include/config/ACPI_TABLE_LIB) \
-    $(wildcard include/config/LOONGARCH) \
-    $(wildcard include/config/ARM64) \
-    $(wildcard include/config/ACPI_PROCESSOR_CSTATE) \
-    $(wildcard include/config/ACPI_HOTPLUG_CPU) \
-    $(wildcard include/config/ACPI_HOTPLUG_IOAPIC) \
-    $(wildcard include/config/PCI) \
-    $(wildcard include/config/ACPI_WMI) \
-    $(wildcard include/config/ACPI_NUMA) \
-    $(wildcard include/config/HIBERNATION) \
-    $(wildcard include/config/ACPI_HOTPLUG_MEMORY) \
-    $(wildcard include/config/ACPI_CONTAINER) \
-    $(wildcard include/config/ACPI_GTDT) \
-    $(wildcard include/config/PM) \
-    $(wildcard include/config/GPIOLIB) \
-    $(wildcard include/config/ACPI_TABLE_UPGRADE) \
-    $(wildcard include/config/ACPI_WATCHDOG) \
-    $(wildcard include/config/ACPI_SPCR_TABLE) \
-    $(wildcard include/config/ACPI_GENERIC_GSI) \
-    $(wildcard include/config/ACPI_LPIT) \
-    $(wildcard include/config/ACPI_PPTT) \
-    $(wildcard include/config/ACPI_PCC) \
-  include/linux/ioport.h \
-  include/linux/irqdomain.h \
-    $(wildcard include/config/IRQ_DOMAIN_HIERARCHY) \
-    $(wildcard include/config/GENERIC_IRQ_DEBUGFS) \
-    $(wildcard include/config/IRQ_DOMAIN) \
-    $(wildcard include/config/IRQ_DOMAIN_NOMAP) \
-  include/linux/irqhandler.h \
-  include/linux/of.h \
-    $(wildcard include/config/OF_DYNAMIC) \
-    $(wildcard include/config/SPARC) \
-    $(wildcard include/config/OF_PROMTREE) \
-    $(wildcard include/config/OF_KOBJ) \
-    $(wildcard include/config/OF_NUMA) \
-    $(wildcard include/config/OF_OVERLAY) \
-  include/linux/mod_devicetable.h \
-  include/linux/uuid.h \
-  include/uapi/linux/uuid.h \
-  include/linux/property.h \
-  include/linux/fwnode.h \
-  include/linux/resource_ext.h \
-  include/linux/slab.h \
-    $(wildcard include/config/DEBUG_SLAB) \
-    $(wildcard include/config/FAILSLAB) \
-    $(wildcard include/config/MEMCG_KMEM) \
-    $(wildcard include/config/KASAN) \
-    $(wildcard include/config/SLAB) \
-    $(wildcard include/config/SLUB) \
-    $(wildcard include/config/SLOB) \
-  include/linux/overflow.h \
-  include/linux/percpu-refcount.h \
-  include/linux/kasan.h \
-    $(wildcard include/config/KASAN_STACK) \
-    $(wildcard include/config/KASAN_VMALLOC) \
-    $(wildcard include/config/KASAN_INLINE) \
-  include/linux/kasan-enabled.h \
-  include/linux/device.h \
-    $(wildcard include/config/GENERIC_MSI_IRQ_DOMAIN) \
-    $(wildcard include/config/GENERIC_MSI_IRQ) \
-    $(wildcard include/config/ENERGY_MODEL) \
-    $(wildcard include/config/PINCTRL) \
-    $(wildcard include/config/DMA_OPS) \
-    $(wildcard include/config/DMA_DECLARE_COHERENT) \
-    $(wildcard include/config/DMA_CMA) \
-    $(wildcard include/config/SWIOTLB) \
-    $(wildcard include/config/ARCH_HAS_SYNC_DMA_FOR_DEVICE) \
-    $(wildcard include/config/ARCH_HAS_SYNC_DMA_FOR_CPU) \
-    $(wildcard include/config/ARCH_HAS_SYNC_DMA_FOR_CPU_ALL) \
-    $(wildcard include/config/DMA_OPS_BYPASS) \
-    $(wildcard include/config/DEVTMPFS) \
-    $(wildcard include/config/SYSFS_DEPRECATED) \
-  include/linux/dev_printk.h \
-  include/linux/ratelimit.h \
-  include/linux/sched.h \
-    $(wildcard include/config/VIRT_CPU_ACCOUNTING_NATIVE) \
-    $(wildcard include/config/SCHED_INFO) \
-    $(wildcard include/config/SCHEDSTATS) \
-    $(wildcard include/config/SCHED_CORE) \
-    $(wildcard include/config/FAIR_GROUP_SCHED) \
-    $(wildcard include/config/RT_GROUP_SCHED) \
-    $(wildcard include/config/RT_MUTEXES) \
-    $(wildcard include/config/UCLAMP_TASK) \
-    $(wildcard include/config/UCLAMP_BUCKETS_COUNT) \
-    $(wildcard include/config/CGROUP_SCHED) \
-    $(wildcard include/config/BLK_DEV_IO_TRACE) \
-    $(wildcard include/config/PSI) \
-    $(wildcard include/config/COMPAT_BRK) \
-    $(wildcard include/config/CGROUPS) \
-    $(wildcard include/config/BLK_CGROUP) \
-    $(wildcard include/config/PAGE_OWNER) \
-    $(wildcard include/config/EVENTFD) \
-    $(wildcard include/config/ARCH_HAS_SCALED_CPUTIME) \
-    $(wildcard include/config/VIRT_CPU_ACCOUNTING_GEN) \
-    $(wildcard include/config/POSIX_CPUTIMERS) \
-    $(wildcard include/config/POSIX_CPU_TIMERS_TASK_WORK) \
-    $(wildcard include/config/KEYS) \
-    $(wildcard include/config/SYSVIPC) \
-    $(wildcard include/config/DETECT_HUNG_TASK) \
-    $(wildcard include/config/IO_URING) \
-    $(wildcard include/config/AUDIT) \
-    $(wildcard include/config/AUDITSYSCALL) \
-    $(wildcard include/config/UBSAN) \
-    $(wildcard include/config/UBSAN_TRAP) \
-    $(wildcard include/config/TASK_XACCT) \
-    $(wildcard include/config/CPUSETS) \
-    $(wildcard include/config/X86_CPU_RESCTRL) \
-    $(wildcard include/config/FUTEX) \
-    $(wildcard include/config/PERF_EVENTS) \
-    $(wildcard include/config/RSEQ) \
-    $(wildcard include/config/TASK_DELAY_ACCT) \
-    $(wildcard include/config/FAULT_INJECTION) \
-    $(wildcard include/config/LATENCYTOP) \
-    $(wildcard include/config/KUNIT) \
-    $(wildcard include/config/FUNCTION_GRAPH_TRACER) \
-    $(wildcard include/config/BCACHE) \
-    $(wildcard include/config/VMAP_STACK) \
-    $(wildcard include/config/SECURITY) \
-    $(wildcard include/config/BPF_SYSCALL) \
-    $(wildcard include/config/GCC_PLUGIN_STACKLEAK) \
-    $(wildcard include/config/X86_MCE) \
-    $(wildcard include/config/KRETPROBES) \
-    $(wildcard include/config/RETHOOK) \
-    $(wildcard include/config/ARCH_HAS_PARANOID_L1D_FLUSH) \
-    $(wildcard include/config/ARCH_TASK_STRUCT_ON_STACK) \
-    $(wildcard include/config/DEBUG_RSEQ) \
-  include/uapi/linux/sched.h \
-  include/linux/pid.h \
-  include/linux/rculist.h \
-    $(wildcard include/config/PROVE_RCU_LIST) \
-  include/linux/sem.h \
-  include/uapi/linux/sem.h \
-  include/linux/ipc.h \
-  include/linux/rhashtable-types.h \
-  include/uapi/linux/ipc.h \
-  arch/x86/include/generated/uapi/asm/ipcbuf.h \
-  include/uapi/asm-generic/ipcbuf.h \
-  arch/x86/include/uapi/asm/sembuf.h \
-  include/linux/shm.h \
-  include/uapi/linux/shm.h \
-  include/uapi/asm-generic/hugetlb_encode.h \
-  arch/x86/include/uapi/asm/shmbuf.h \
-  include/uapi/asm-generic/shmbuf.h \
-  arch/x86/include/asm/shmparam.h \
-  include/linux/plist.h \
-    $(wildcard include/config/DEBUG_PLIST) \
-  include/linux/hrtimer.h \
-    $(wildcard include/config/HIGH_RES_TIMERS) \
-    $(wildcard include/config/TIME_LOW_RES) \
-    $(wildcard include/config/TIMERFD) \
-  include/linux/hrtimer_defs.h \
-  include/linux/timerqueue.h \
-  include/linux/seccomp.h \
-    $(wildcard include/config/SECCOMP) \
-    $(wildcard include/config/HAVE_ARCH_SECCOMP_FILTER) \
-    $(wildcard include/config/SECCOMP_FILTER) \
-    $(wildcard include/config/CHECKPOINT_RESTORE) \
-    $(wildcard include/config/SECCOMP_CACHE_DEBUG) \
-  include/uapi/linux/seccomp.h \
-  arch/x86/include/asm/seccomp.h \
-  arch/x86/include/asm/unistd.h \
-  arch/x86/include/uapi/asm/unistd.h \
-  arch/x86/include/generated/uapi/asm/unistd_32.h \
-  include/asm-generic/seccomp.h \
-  include/uapi/linux/unistd.h \
-  include/linux/resource.h \
-  include/uapi/linux/resource.h \
-  arch/x86/include/generated/uapi/asm/resource.h \
-  include/asm-generic/resource.h \
-  include/uapi/asm-generic/resource.h \
-  include/linux/latencytop.h \
-  include/linux/sched/prio.h \
-  include/linux/sched/types.h \
-  include/linux/signal_types.h \
-    $(wildcard include/config/OLD_SIGACTION) \
-  include/uapi/linux/signal.h \
-  arch/x86/include/asm/signal.h \
-  arch/x86/include/uapi/asm/signal.h \
-  include/uapi/asm-generic/signal-defs.h \
-  arch/x86/include/uapi/asm/siginfo.h \
-  include/uapi/asm-generic/siginfo.h \
-  include/linux/syscall_user_dispatch.h \
-  include/linux/task_io_accounting.h \
-    $(wildcard include/config/TASK_IO_ACCOUNTING) \
-  include/linux/posix-timers.h \
-  include/linux/alarmtimer.h \
-    $(wildcard include/config/RTC_CLASS) \
-  include/uapi/linux/rseq.h \
-  include/linux/kcsan.h \
-  include/linux/energy_model.h \
-  include/linux/sched/cpufreq.h \
-    $(wildcard include/config/CPU_FREQ) \
-  include/linux/sched/topology.h \
-    $(wildcard include/config/SCHED_DEBUG) \
-    $(wildcard include/config/SCHED_MC) \
-    $(wildcard include/config/CPU_FREQ_GOV_SCHEDUTIL) \
-  include/linux/sched/idle.h \
-  include/linux/sched/sd_flags.h \
-  include/linux/klist.h \
-  include/linux/pm.h \
-    $(wildcard include/config/VT_CONSOLE_SLEEP) \
-    $(wildcard include/config/PM_CLK) \
-    $(wildcard include/config/PM_GENERIC_DOMAINS) \
-  include/linux/device/bus.h \
-  include/linux/device/class.h \
-  include/linux/device/driver.h \
-  arch/x86/include/asm/device.h \
-  include/linux/pm_wakeup.h \
-  include/acpi/acpi.h \
-  include/acpi/platform/acenv.h \
-  include/acpi/platform/acgcc.h \
-  include/acpi/platform/aclinux.h \
-    $(wildcard include/config/ACPI_REDUCED_HARDWARE_ONLY) \
-    $(wildcard include/config/ACPI_DEBUG) \
-  include/linux/ctype.h \
-  arch/x86/include/asm/acenv.h \
-  include/acpi/acnames.h \
-  include/acpi/actypes.h \
-  include/acpi/acexcep.h \
-  include/acpi/actbl.h \
-  include/acpi/actbl1.h \
-  include/acpi/actbl2.h \
-  include/acpi/actbl3.h \
-  include/acpi/acrestyp.h \
-  include/acpi/platform/acenvex.h \
-  include/acpi/platform/aclinuxex.h \
-  include/acpi/platform/acgccex.h \
-  include/acpi/acoutput.h \
-  include/acpi/acpiosxf.h \
-  include/acpi/acpixf.h \
-  include/acpi/acconfig.h \
-  include/acpi/acbuffer.h \
-  include/linux/dynamic_debug.h \
-  include/acpi/acpi_bus.h \
-    $(wildcard include/config/X86_ANDROID_TABLETS) \
-    $(wildcard include/config/ACPI_SYSTEM_POWER_STATES_SUPPORT) \
-    $(wildcard include/config/ACPI_SLEEP) \
-  include/acpi/acpi_drivers.h \
-    $(wildcard include/config/ACPI_DOCK) \
-  include/acpi/acpi_numa.h \
-    $(wildcard include/config/ACPI_HMAT) \
-  include/acpi/acpi_io.h \
-  include/linux/io.h \
-    $(wildcard include/config/HAS_IOPORT_MAP) \
-  arch/x86/include/asm/io.h \
-    $(wildcard include/config/MTRR) \
-    $(wildcard include/config/X86_PAT) \
-  arch/x86/include/generated/asm/early_ioremap.h \
-  include/asm-generic/early_ioremap.h \
-    $(wildcard include/config/GENERIC_EARLY_IOREMAP) \
-  include/asm-generic/iomap.h \
-  include/asm-generic/pci_iomap.h \
-    $(wildcard include/config/NO_GENERIC_PCI_IOPORT_MAP) \
-    $(wildcard include/config/GENERIC_PCI_IOMAP) \
-  include/asm-generic/io.h \
-    $(wildcard include/config/GENERIC_IOMAP) \
-    $(wildcard include/config/GENERIC_IOREMAP) \
-    $(wildcard include/config/VIRT_TO_BUS) \
-    $(wildcard include/config/GENERIC_DEVMEM_IS_ALLOWED) \
-  include/linux/logic_pio.h \
-    $(wildcard include/config/INDIRECT_PIO) \
-  include/linux/vmalloc.h \
-    $(wildcard include/config/HAVE_ARCH_HUGE_VMALLOC) \
-  arch/x86/include/asm/vmalloc.h \
-    $(wildcard include/config/HAVE_ARCH_HUGE_VMAP) \
-  arch/x86/include/asm/acpi.h \
-    $(wildcard include/config/ACPI_APEI) \
-  include/acpi/pdc_intel.h \
-  arch/x86/include/asm/numa.h \
-    $(wildcard include/config/NUMA_EMU) \
-  arch/x86/include/asm/numa_32.h \
-  include/linux/regulator/consumer.h \
-    $(wildcard include/config/REGULATOR) \
-  include/linux/suspend.h \
-    $(wildcard include/config/VT) \
-    $(wildcard include/config/SUSPEND) \
-    $(wildcard include/config/HIBERNATION_SNAPSHOT_DEV) \
-    $(wildcard include/config/PM_SLEEP_DEBUG) \
-    $(wildcard include/config/PM_AUTOSLEEP) \
-  include/linux/swap.h \
-    $(wildcard include/config/DEVICE_PRIVATE) \
-    $(wildcard include/config/MIGRATION) \
-    $(wildcard include/config/FRONTSWAP) \
-    $(wildcard include/config/THP_SWAP) \
-    $(wildcard include/config/MEMCG_SWAP) \
-  include/linux/memcontrol.h \
-    $(wildcard include/config/CGROUP_WRITEBACK) \
-  include/linux/cgroup.h \
-    $(wildcard include/config/CGROUP_CPUACCT) \
-    $(wildcard include/config/SOCK_CGROUP_DATA) \
-    $(wildcard include/config/CGROUP_DATA) \
-    $(wildcard include/config/CGROUP_BPF) \
-  include/uapi/linux/cgroupstats.h \
-  include/uapi/linux/taskstats.h \
-  include/linux/fs.h \
-    $(wildcard include/config/READ_ONLY_THP_FOR_FS) \
-    $(wildcard include/config/FS_POSIX_ACL) \
-    $(wildcard include/config/IMA) \
-    $(wildcard include/config/FILE_LOCKING) \
-    $(wildcard include/config/FSNOTIFY) \
-    $(wildcard include/config/FS_ENCRYPTION) \
-    $(wildcard include/config/FS_VERITY) \
-    $(wildcard include/config/EPOLL) \
-    $(wildcard include/config/UNICODE) \
-    $(wildcard include/config/QUOTA) \
-    $(wildcard include/config/FS_DAX) \
-    $(wildcard include/config/BLOCK) \
-  include/linux/wait_bit.h \
-  include/linux/kdev_t.h \
-  include/uapi/linux/kdev_t.h \
-  include/linux/dcache.h \
-  include/linux/rculist_bl.h \
-  include/linux/list_bl.h \
-  include/linux/bit_spinlock.h \
-  include/linux/lockref.h \
-    $(wildcard include/config/ARCH_USE_CMPXCHG_LOCKREF) \
-  include/linux/stringhash.h \
-    $(wildcard include/config/DCACHE_WORD_ACCESS) \
-  include/linux/hash.h \
-    $(wildcard include/config/HAVE_ARCH_HASH) \
-  include/linux/path.h \
-  include/linux/list_lru.h \
-  include/linux/shrinker.h \
-  include/linux/capability.h \
-  include/uapi/linux/capability.h \
-  include/linux/semaphore.h \
-  include/linux/fcntl.h \
-    $(wildcard include/config/ARCH_32BIT_OFF_T) \
-  include/uapi/linux/fcntl.h \
-  arch/x86/include/generated/uapi/asm/fcntl.h \
-  include/uapi/asm-generic/fcntl.h \
-  include/uapi/linux/openat2.h \
-  include/linux/migrate_mode.h \
-  include/linux/percpu-rwsem.h \
-  include/linux/rcuwait.h \
-  include/linux/sched/signal.h \
-    $(wildcard include/config/SCHED_AUTOGROUP) \
-    $(wildcard include/config/BSD_PROCESS_ACCT) \
-    $(wildcard include/config/TASKSTATS) \
-    $(wildcard include/config/STACK_GROWSUP) \
-  include/linux/signal.h \
-    $(wildcard include/config/DYNAMIC_SIGFRAME) \
-  include/linux/sched/jobctl.h \
-  include/linux/sched/task.h \
-    $(wildcard include/config/HAVE_EXIT_THREAD) \
-    $(wildcard include/config/ARCH_WANTS_DYNAMIC_TASK_STRUCT) \
-    $(wildcard include/config/HAVE_ARCH_THREAD_STRUCT_WHITELIST) \
-  include/linux/uaccess.h \
-  include/linux/fault-inject-usercopy.h \
-    $(wildcard include/config/FAULT_INJECTION_USERCOPY) \
-  arch/x86/include/asm/uaccess.h \
-    $(wildcard include/config/CC_HAS_ASM_GOTO_OUTPUT) \
-    $(wildcard include/config/CC_HAS_ASM_GOTO_TIED_OUTPUT) \
-    $(wildcard include/config/ARCH_HAS_COPY_MC) \
-    $(wildcard include/config/X86_INTEL_USERCOPY) \
-  arch/x86/include/asm/smap.h \
-  arch/x86/include/asm/extable.h \
-    $(wildcard include/config/BPF_JIT) \
-  include/asm-generic/access_ok.h \
-    $(wildcard include/config/ALTERNATE_USER_ADDRESS_SPACE) \
-  arch/x86/include/asm/uaccess_32.h \
-  include/linux/cred.h \
-    $(wildcard include/config/DEBUG_CREDENTIALS) \
-  include/linux/key.h \
-    $(wildcard include/config/KEY_NOTIFICATIONS) \
-    $(wildcard include/config/NET) \
-  include/linux/assoc_array.h \
-    $(wildcard include/config/ASSOCIATIVE_ARRAY) \
-  include/linux/sched/user.h \
-    $(wildcard include/config/WATCH_QUEUE) \
-  include/linux/percpu_counter.h \
-  include/linux/rcu_sync.h \
-  include/linux/delayed_call.h \
-  include/linux/errseq.h \
-  include/linux/ioprio.h \
-  include/linux/sched/rt.h \
-  include/linux/iocontext.h \
-    $(wildcard include/config/BLK_ICQ) \
-  include/uapi/linux/ioprio.h \
-  include/linux/fs_types.h \
-  include/linux/mount.h \
-  include/linux/mnt_idmapping.h \
-  include/uapi/linux/fs.h \
-  include/linux/quota.h \
-    $(wildcard include/config/QUOTA_NETLINK_INTERFACE) \
-  include/uapi/linux/dqblk_xfs.h \
-  include/linux/dqblk_v1.h \
-  include/linux/dqblk_v2.h \
-  include/linux/dqblk_qtree.h \
-  include/linux/projid.h \
-  include/uapi/linux/quota.h \
-  include/linux/nfs_fs_i.h \
-  include/linux/seq_file.h \
-  include/linux/string_helpers.h \
-  include/linux/ns_common.h \
-  include/linux/nsproxy.h \
-  include/linux/user_namespace.h \
-    $(wildcard include/config/INOTIFY_USER) \
-    $(wildcard include/config/FANOTIFY) \
-    $(wildcard include/config/PERSISTENT_KEYRINGS) \
-  include/linux/kernel_stat.h \
-  include/linux/interrupt.h \
-    $(wildcard include/config/IRQ_FORCED_THREADING) \
-    $(wildcard include/config/GENERIC_IRQ_PROBE) \
-    $(wildcard include/config/IRQ_TIMINGS) \
-  include/linux/irqreturn.h \
-  include/linux/irqnr.h \
-  include/uapi/linux/irqnr.h \
-  include/linux/hardirq.h \
-  include/linux/context_tracking_state.h \
-    $(wildcard include/config/CONTEXT_TRACKING) \
-  include/linux/ftrace_irq.h \
-    $(wildcard include/config/HWLAT_TRACER) \
-    $(wildcard include/config/OSNOISE_TRACER) \
-  include/linux/vtime.h \
-    $(wildcard include/config/VIRT_CPU_ACCOUNTING) \
-    $(wildcard include/config/IRQ_TIME_ACCOUNTING) \
-  arch/x86/include/asm/hardirq.h \
-    $(wildcard include/config/KVM_INTEL) \
-    $(wildcard include/config/X86_THERMAL_VECTOR) \
-    $(wildcard include/config/X86_MCE_THRESHOLD) \
-    $(wildcard include/config/X86_MCE_AMD) \
-    $(wildcard include/config/X86_HV_CALLBACK_VECTOR) \
-  arch/x86/include/asm/irq.h \
-  arch/x86/include/asm/sections.h \
-  include/asm-generic/sections.h \
-    $(wildcard include/config/HAVE_FUNCTION_DESCRIPTORS) \
-  include/linux/cgroup-defs.h \
-    $(wildcard include/config/CGROUP_NET_CLASSID) \
-    $(wildcard include/config/CGROUP_NET_PRIO) \
-  include/linux/u64_stats_sync.h \
-  include/linux/bpf-cgroup-defs.h \
-  include/linux/psi_types.h \
-  include/linux/kthread.h \
-  include/linux/cgroup_subsys.h \
-    $(wildcard include/config/CGROUP_DEVICE) \
-    $(wildcard include/config/CGROUP_FREEZER) \
-    $(wildcard include/config/CGROUP_PERF) \
-    $(wildcard include/config/CGROUP_HUGETLB) \
-    $(wildcard include/config/CGROUP_PIDS) \
-    $(wildcard include/config/CGROUP_RDMA) \
-    $(wildcard include/config/CGROUP_MISC) \
-    $(wildcard include/config/CGROUP_DEBUG) \
-  include/linux/vm_event_item.h \
-    $(wildcard include/config/HAVE_ARCH_TRANSPARENT_HUGEPAGE_PUD) \
-    $(wildcard include/config/MEMORY_BALLOON) \
-    $(wildcard include/config/BALLOON_COMPACTION) \
-    $(wildcard include/config/DEBUG_TLBFLUSH) \
-    $(wildcard include/config/DEBUG_VM_VMACACHE) \
-  include/linux/page_counter.h \
-  include/linux/vmpressure.h \
-  include/linux/eventfd.h \
-  include/linux/mm.h \
-    $(wildcard include/config/HAVE_ARCH_MMAP_RND_BITS) \
-    $(wildcard include/config/HAVE_ARCH_MMAP_RND_COMPAT_BITS) \
-    $(wildcard include/config/ARCH_USES_HIGH_VMA_FLAGS) \
-    $(wildcard include/config/ARCH_HAS_PKEYS) \
-    $(wildcard include/config/PPC) \
-    $(wildcard include/config/PARISC) \
-    $(wildcard include/config/SPARC64) \
-    $(wildcard include/config/ARM64_MTE) \
-    $(wildcard include/config/HAVE_ARCH_USERFAULTFD_MINOR) \
-    $(wildcard include/config/SHMEM) \
-    $(wildcard include/config/ARCH_HAS_PTE_SPECIAL) \
-    $(wildcard include/config/ARCH_HAS_PTE_DEVMAP) \
-    $(wildcard include/config/DEBUG_VM_RB) \
-    $(wildcard include/config/PAGE_POISONING) \
-    $(wildcard include/config/INIT_ON_ALLOC_DEFAULT_ON) \
-    $(wildcard include/config/INIT_ON_FREE_DEFAULT_ON) \
-    $(wildcard include/config/DEBUG_PAGEALLOC) \
-    $(wildcard include/config/HUGETLBFS) \
-    $(wildcard include/config/MAPPING_DIRTY_HELPERS) \
-    $(wildcard include/config/ANON_VMA_NAME) \
-  include/linux/mmap_lock.h \
-  include/linux/page_ext.h \
-  include/linux/stacktrace.h \
-    $(wildcard include/config/ARCH_STACKWALK) \
-    $(wildcard include/config/STACKTRACE) \
-    $(wildcard include/config/HAVE_RELIABLE_STACKTRACE) \
-  include/linux/stackdepot.h \
-    $(wildcard include/config/STACKDEPOT_ALWAYS_INIT) \
-  include/linux/page_ref.h \
-    $(wildcard include/config/DEBUG_PAGE_REF) \
-  include/linux/sizes.h \
-  include/linux/pgtable.h \
-    $(wildcard include/config/HIGHPTE) \
-    $(wildcard include/config/GUP_GET_PTE_LOW_HIGH) \
-    $(wildcard include/config/HAVE_ARCH_SOFT_DIRTY) \
-    $(wildcard include/config/ARCH_ENABLE_THP_MIGRATION) \
-    $(wildcard include/config/X86_ESPFIX64) \
-  arch/x86/include/asm/pgtable.h \
-    $(wildcard include/config/DEBUG_WX) \
-    $(wildcard include/config/PAGE_TABLE_CHECK) \
-  arch/x86/include/asm/pkru.h \
-  arch/x86/include/asm/fpu/api.h \
-    $(wildcard include/config/X86_DEBUG_FPU) \
-  arch/x86/include/asm/coco.h \
-  include/asm-generic/pgtable_uffd.h \
-  include/linux/page_table_check.h \
-  arch/x86/include/asm/pgtable_32.h \
-  arch/x86/include/asm/pgtable-3level.h \
-  arch/x86/include/asm/pgtable-invert.h \
-  include/linux/huge_mm.h \
-  include/linux/sched/coredump.h \
-    $(wildcard include/config/CORE_DUMP_DEFAULT_ELF_HEADERS) \
-  include/linux/vmstat.h \
-    $(wildcard include/config/VM_EVENT_COUNTERS) \
-  include/linux/writeback.h \
-  include/linux/flex_proportions.h \
-  include/linux/backing-dev-defs.h \
-    $(wildcard include/config/DEBUG_FS) \
-  include/linux/blk_types.h \
-    $(wildcard include/config/FAIL_MAKE_REQUEST) \
-    $(wildcard include/config/BLK_CGROUP_IOCOST) \
-    $(wildcard include/config/BLK_INLINE_ENCRYPTION) \
-    $(wildcard include/config/BLK_DEV_INTEGRITY) \
-  include/linux/bvec.h \
-  include/linux/highmem.h \
-  include/linux/cacheflush.h \
-  arch/x86/include/asm/cacheflush.h \
-  include/asm-generic/cacheflush.h \
-  include/linux/highmem-internal.h \
-  arch/x86/include/asm/highmem.h \
-  arch/x86/include/asm/tlbflush.h \
-  arch/x86/include/asm/invpcid.h \
-  arch/x86/include/asm/pti.h \
-  include/linux/bio.h \
-  include/linux/mempool.h \
-  include/linux/uio.h \
-    $(wildcard include/config/ARCH_HAS_UACCESS_FLUSHCACHE) \
-  include/uapi/linux/uio.h \
-  include/linux/node.h \
-    $(wildcard include/config/HMEM_REPORTING) \
-  include/linux/pagemap.h \
-  include/linux/hugetlb_inline.h \
-  include/uapi/linux/mempolicy.h \
-  include/linux/freezer.h \
-  include/uapi/linux/i2c.h \
-  include/linux/videodev2.h \
-  include/uapi/linux/videodev2.h \
-    $(wildcard include/config/VIDEO_ADV_DEBUG) \
-  include/uapi/linux/v4l2-common.h \
-  include/uapi/linux/v4l2-controls.h \
-  include/media/v4l2-device.h \
-    $(wildcard include/config/VIDEO_V4L2_SUBDEV_API) \
-  include/media/media-device.h \
-    $(wildcard include/config/MEDIA_CONTROLLER) \
-  include/media/media-devnode.h \
-  include/linux/poll.h \
-  include/uapi/linux/poll.h \
-  arch/x86/include/generated/uapi/asm/poll.h \
-  include/uapi/asm-generic/poll.h \
-  include/uapi/linux/eventpoll.h \
-  include/linux/cdev.h \
-  include/media/media-entity.h \
-  include/uapi/linux/media.h \
-  include/media/v4l2-subdev.h \
-  include/uapi/linux/v4l2-subdev.h \
-  include/uapi/linux/v4l2-mediabus.h \
-  include/uapi/linux/media-bus-format.h \
-  include/media/v4l2-async.h \
-  include/media/v4l2-common.h \
-    $(wildcard include/config/VIDEO_V4L2_I2C) \
-    $(wildcard include/config/SPI) \
-  include/media/v4l2-dev.h \
-  include/linux/spi/spi.h \
-    $(wildcard include/config/SPI_SLAVE) \
-  include/linux/scatterlist.h \
-    $(wildcard include/config/NEED_SG_DMA_LENGTH) \
-    $(wildcard include/config/DEBUG_SG) \
-    $(wildcard include/config/SGL_ALLOC) \
-    $(wildcard include/config/ARCH_NO_SG_CHAIN) \
-    $(wildcard include/config/SG_POOL) \
-  include/linux/gpio/consumer.h \
-    $(wildcard include/config/OF_GPIO) \
-    $(wildcard include/config/GPIO_SYSFS) \
-  include/uapi/linux/spi/spi.h \
-  include/media/v4l2-fh.h \
-  include/media/v4l2-mediabus.h \
-  include/media/v4l2-ctrls.h \
-  include/media/media-request.h \
-  include/media/hevc-ctrls.h \
+// SPDX-License-Identifier: GPL-2.0
+//
+// mcp251xfd - Microchip MCP251xFD Family CAN controller driver
+//
+// Copyright (c) 2019, 2020, 2021 Pengutronix,
+//               Marc Kleine-Budde <kernel@pengutronix.de>
+//
+// Based on:
+//
+// CAN bus driver for Microchip 25XXFD CAN Controller with SPI Interface
+//
+// Copyright (c) 2019 Martin Sperl <kernel@martin.sperl.org>
+//
 
-drivers/media/i2c/tw9906.o: $(deps_drivers/media/i2c/tw9906.o)
+#include <linux/bitfield.h>
+#include <linux/clk.h>
+#include <linux/device.h>
+#include <linux/mod_devicetable.h>
+#include <linux/module.h>
+#include <linux/pm_runtime.h>
+#include <linux/property.h>
 
-$(deps_drivers/media/i2c/tw9906.o):
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               cmd_drivers/media/i2c/tw9906.o := gcc -Wp,-MMD,drivers/media/i2c/.tw9906.o.d -nostdinc -I./arch/x86/include -I./arch/x86/include/generated  -I./include -I./arch/x86/include/uapi -I./arch/x86/include/generated/uapi -I./include/uapi -I./include/generated/uapi -include ./include/linux/compiler-version.h -include ./include/linux/kconfig.h -include ./include/linux/compiler_types.h -D__KERNEL__ -fmacro-prefix-map=./= -Wall -Wundef -Werror=strict-prototypes -Wno-trigraphs -fno-strict-aliasing -fno-common -fshort-wchar -fno-PIE -Werror=implicit-function-declaration -Werror=implicit-int -Werror=return-type -Wno-format-security -std=gnu11 -mno-sse -mno-mmx -mno-sse2 -mno-3dnow -mno-avx -fcf-protection=none -m32 -msoft-float -mregparm=3 -freg-struct-return -fno-pic -mpreferred-stack-boundary=2 -march=i686 -mtune=pentium3 -mtune=generic -Wa,-mtune=generic32 -ffreestanding -mstack-protector-guard-reg=fs -mstack-protector-guard-symbol=__stack_chk_guard -Wno-sign-compare -fno-asynchronous-unwind-tables -mindirect-branch=thunk-extern -mindirect-branch-register -fno-jump-tables -fno-delete-null-pointer-checks -Wno-frame-address -Wno-format-truncation -Wno-format-overflow -Wno-address-of-packed-member -O2 -fno-allow-store-data-races -fstack-protector-strong -Wimplicit-fallthrough=5 -Wno-main -Wno-unused-but-set-variable -Wno-unused-const-variable -fno-stack-clash-protection -pg -mrecord-mcount -mfentry -DCC_USING_FENTRY -Wdeclaration-after-statement -Wvla -Wno-pointer-sign -Wcast-function-type -Wno-stringop-truncation -Wno-stringop-overflow -Wno-restrict -Wno-maybe-uninitialized -Wno-alloc-size-larger-than -fno-strict-overflow -fno-stack-check -fconserve-stack -Werror=date-time -Werror=incompatible-pointer-types -Werror=designated-init -Wno-packed-not-aligned  -DMODULE  -DKBUILD_BASENAME='"tw9906"' -DKBUILD_MODNAME='"tw9906"' -D__KBUILD_MODNAME=kmod_tw9906 -c -o drivers/media/i2c/tw9906.o drivers/media/i2c/tw9906.c 
+#include "mcp251xfd.h"
 
-source_drivers/media/i2c/tw9906.o := drivers/media/i2c/tw9906.c
+#define DEVICE_NAME "mcp251xfd"
 
-deps_drivers/media/i2c/tw9906.o := \
-  include/linux/compiler-version.h \
-    $(wildcard include/config/CC_VERSION_TEXT) \
-  include/linux/kconfig.h \
-    $(wildcard include/config/CPU_BIG_ENDIAN) \
-    $(wildcard include/config/BOOGER) \
-    $(wildcard include/config/FOO) \
-  include/linux/compiler_types.h \
-    $(wildcard include/config/DEBUG_INFO_BTF) \
-    $(wildcard include/config/PAHOLE_HAS_BTF_TAG) \
-    $(wildcard include/config/HAVE_ARCH_COMPILER_H) \
-    $(wildcard include/config/CC_HAS_ASM_INLINE) \
-  include/linux/compiler_attributes.h \
-  include/linux/compiler-gcc.h \
-    $(wildcard include/config/RETPOLINE) \
-    $(wildcard include/config/ARCH_USE_BUILTIN_BSWAP) \
-    $(wildcard include/config/SHADOW_CALL_STACK) \
-    $(wildcard include/config/KCOV) \
-  include/linux/module.h \
-    $(wildcard include/config/MODULES) \
-    $(wildcard include/config/SYSFS) \
-    $(wildcard include/config/MODULES_TREE_LOOKUP) \
-    $(wildcard include/config/LIVEPATCH) \
-    $(wildcard include/config/STACKTRACE_BUILD_ID) \
-    $(wildcard include/config/CFI_CLANG) \
-    $(wildcard include/config/MODULE_SIG) \
-    $(wildcard include/config/GENERIC_BUG) \
-    $(wildcard include/config/KALLSYMS) \
-    $(wildcard include/config/SMP) \
-    $(wildcard include/config/TRACEPOINTS) \
-    $(wildcard include/config/TREE_SRCU) \
-    $(wildcard include/config/BPF_EVENTS) \
-    $(wildcard include/config/DEBUG_INFO_BTF_MODULES) \
-    $(wildcard include/config/JUMP_LABEL) \
-    $(wildcard include/config/TRACING) \
-    $(wildcard include/config/EVENT_TRACING) \
-    $(wildcard include/config/FTRACE_MCOUNT_RECORD) \
-    $(wildcard include/config/KPROBES) \
-    $(wildcard include/config/HAVE_STATIC_CALL_INLINE) \
-    $(wildcard include/config/PRINTK_INDEX) \
-    $(wildcard include/config/MODULE_UNLOAD) \
-    $(wildcard include/config/CONSTRUCTORS) \
-    $(wildcard include/config/FUNCTION_ERROR_INJECTION) \
-  include/linux/list.h \
-    $(wildcard include/config/DEBUG_LIST) \
-  include/linux/container_of.h \
-  include/linux/build_bug.h \
-  include/linux/compiler.h \
-    $(wildcard include/config/TRACE_BRANCH_PROFILING) \
-    $(wildcard include/config/PROFILE_ALL_BRANCHES) \
-    $(wildcard include/config/STACK_VALIDATION) \
-  include/linux/compiler_types.h \
-  arch/x86/include/generated/asm/rwonce.h \
-  include/asm-generic/rwonce.h \
-  include/linux/kasan-checks.h \
-    $(wildcard include/config/KASAN_GENERIC) \
-    $(wildcard include/config/KASAN_SW_TAGS) \
-  include/linux/types.h \
-    $(wildcard include/config/HAVE_UID16) \
-    $(wildcard include/config/UID16) \
-    $(wildcard include/config/ARCH_DMA_ADDR_T_64BIT) \
-    $(wildcard include/config/PHYS_ADDR_T_64BIT) \
-    $(wildcard include/config/64BIT) \
-    $(wildcard include/config/ARCH_32BIT_USTAT_F_TINODE) \
-  include/uapi/linux/types.h \
-  arch/x86/include/generated/uapi/asm/types.h \
-  include/uapi/asm-generic/types.h \
-  include/asm-generic/int-ll64.h \
-  include/uapi/asm-generic/int-ll64.h \
-  arch/x86/include/uapi/asm/bitsperlong.h \
-  include/asm-generic/bitsperlong.h \
-  include/uapi/asm-generic/bitsperlong.h \
-  include/uapi/linux/posix_types.h \
-  include/linux/stddef.h \
-  include/uapi/linux/stddef.h \
-  arch/x86/include/asm/posix_types.h \
-    $(wildcard include/config/X86_32) \
-  arch/x86/include/uapi/asm/posix_types_32.h \
-  include/uapi/asm-generic/posix_types.h \
-  include/linux/kcsan-checks.h \
-    $(wildcard include/config/KCSAN) \
-    $(wildcard include/config/KCSAN_WEAK_MEMORY) \
-    $(wildcard include/config/KCSAN_IGNORE_ATOMICS) \
-  include/linux/err.h \
-  arch/x86/include/generated/uapi/asm/errno.h \
-  include/uapi/asm-generic/errno.h \
-  include/uapi/asm-generic/errno-base.h \
-  include/linux/poison.h \
-    $(wildcard include/config/ILLEGAL_POINTER_VALUE) \
-  include/linux/const.h \
-  include/vdso/const.h \
-  include/uapi/linux/const.h \
-  arch/x86/include/asm/barrier.h \
-  arch/x86/include/asm/alternative.h \
-  include/linux/stringify.h \
-  arch/x86/include/asm/asm.h \
-  arch/x86/include/asm/extable_fixup_types.h \
-  arch/x86/include/asm/nops.h \
-  include/asm-generic/barrier.h \
-  include/linux/stat.h \
-  arch/x86/include/uapi/asm/stat.h \
-  include/uapi/linux/stat.h \
-  include/linux/time.h \
-    $(wildcard include/config/POSIX_TIMERS) \
-  include/linux/cache.h \
-    $(wildcard include/config/ARCH_HAS_CACHE_LINE_SIZE) \
-  include/uapi/linux/kernel.h \
-  include/uapi/linux/sysinfo.h \
-  arch/x86/include/asm/cache.h \
-    $(wildcard include/config/X86_L1_CACHE_SHIFT) \
-    $(wildcard include/config/X86_INTERNODE_CACHE_SHIFT) \
-    $(wildcard include/config/X86_VSMP) \
-  include/linux/linkage.h \
-    $(wildcard include/config/ARCH_USE_SYM_ANNOTATIONS) \
-  include/linux/export.h \
-    $(wildcard include/config/MODVERSIONS) \
-    $(wildcard include/config/MODULE_REL_CRCS) \
-    $(wildcard include/config/HAVE_ARCH_PREL32_RELOCATIONS) \
-    $(wildcard include/config/TRIM_UNUSED_KSYMS) \
-  arch/x86/include/asm/linkage.h \
-    $(wildcard include/config/X86_64) \
-    $(wildcard include/config/X86_ALIGNMENT_16) \
-    $(wildcard include/config/SLS) \
-  arch/x86/include/asm/ibt.h \
-    $(wildcard include/config/X86_KERNEL_IBT) \
-  include/linux/math64.h \
-    $(wildcard include/config/ARCH_SUPPORTS_INT128) \
-  include/linux/math.h \
-  arch/x86/include/asm/div64.h \
-  include/linux/log2.h \
-    $(wildcard include/config/ARCH_HAS_ILOG2_U32) \
-    $(wildcard include/config/ARCH_HAS_ILOG2_U64) \
-  include/linux/bitops.h \
-  include/linux/bits.h \
-  include/vdso/bits.h \
-  include/linux/typecheck.h \
-  arch/x86/include/asm/bitops.h \
-    $(wildcard include/config/X86_CMOV) \
-  arch/x86/include/asm/rmwcc.h \
-    $(wildcard include/config/CC_HAS_ASM_GOTO) \
-  include/asm-generic/bitops/fls64.h \
-  include/asm-generic/bitops/sched.h \
-  arch/x86/include/asm/arch_hweight.h \
-  arch/x86/include/asm/cpufeatures.h \
-  arch/x86/include/asm/required-features.h \
-    $(wildcard include/config/X86_MINIMUM_CPU_FAMILY) \
-    $(wildcard include/config/MATH_EMULATION) \
-    $(wildcard include/config/X86_PAE) \
-    $(wildcard include/config/X86_CMPXCHG64) \
-    $(wildcard include/config/X86_P6_NOP) \
-    $(wildcard include/config/MATOM) \
-    $(wildcard include/config/PARAVIRT_XXL) \
-  arch/x86/include/asm/disabled-features.h \
-    $(wildcard include/config/X86_SMAP) \
-    $(wildcard include/config/X86_UMIP) \
-    $(wildcard include/config/X86_INTEL_MEMORY_PROTECTION_KEYS) \
-    $(wildcard include/config/X86_5LEVEL) \
-    $(wildcard include/config/PAGE_TABLE_ISOLATION) \
-    $(wildcard include/config/INTEL_IOMMU_SVM) \
-    $(wildcard include/config/X86_SGX) \
-  include/asm-generic/bitops/const_hweight.h \
-  include/asm-generic/bitops/instrumented-atomic.h \
-  include/linux/instrumented.h \
-  include/asm-generic/bitops/instrumented-non-atomic.h \
-    $(wildcard include/config/KCSAN_ASSUME_PLAIN_WRITES_ATOMIC) \
-  include/asm-generic/bitops/instrumented-lock.h \
-  include/asm-generic/bitops/le.h \
-  arch/x86/include/uapi/asm/byteorder.h \
-  include/linux/byteorder/little_endian.h \
-  include/uapi/linux/byteorder/little_endian.h \
-  include/linux/swab.h \
-  include/uapi/linux/swab.h \
-  arch/x86/include/uapi/asm/swab.h \
-  include/linux/byteorder/generic.h \
-  include/asm-generic/bitops/ext2-atomic-setbit.h \
-  include/vdso/math64.h \
-  include/linux/time64.h \
-  include/vdso/time64.h \
-  include/uapi/linux/time.h \
-  include/uapi/linux/time_types.h \
-  include/linux/time32.h \
-  include/linux/timex.h \
-  include/uapi/linux/timex.h \
-  include/uapi/linux/param.h \
-  arch/x86/include/generated/uapi/asm/param.h \
-  include/asm-generic/param.h \
-    $(wildcard include/config/HZ) \
-  include/uapi/asm-generic/param.h \
-  arch/x86/include/asm/timex.h \
-    $(wildcard include/config/X86_TSC) \
-  arch/x86/include/asm/processor.h \
-    $(wildcard include/config/X86_VMX_FEATURE_NAMES) \
-    $(wildcard include/config/X86_IOPL_IOPERM) \
-    $(wildcard include/config/STACKPROTECTOR) \
-    $(wildcard include/config/VM86) \
-    $(wildcard include/config/X86_DEBUGCTLMSR) \
-    $(wildcard include/config/CPU_SUP_AMD) \
-    $(wildcard include/config/XEN) \
-  arch/x86/include/asm/processor-flags.h \
-  arch/x86/include/uapi/asm/processor-flags.h \
-  include/linux/mem_encrypt.h \
-    $(wildcard include/config/ARCH_HAS_MEM_ENCRYPT) \
-    $(wildcard include/config/AMD_MEM_ENCRYPT) \
-  arch/x86/include/asm/mem_encrypt.h \
-  include/linux/init.h \
-    $(wildcard include/config/STRICT_KERNEL_RWX) \
-    $(wildcard include/config/STRICT_MODULE_RWX) \
-    $(wildcard include/config/LTO_CLANG) \
-  include/linux/cc_platform.h \
-    $(wildcard include/config/ARCH_HAS_CC_PLATFORM) \
-  arch/x86/include/uapi/asm/bootparam.h \
-  include/linux/screen_info.h \
-  include/uapi/linux/screen_info.h \
-  include/linux/apm_bios.h \
-  include/uapi/linux/apm_bios.h \
-  include/uapi/linux/ioctl.h \
-  arch/x86/include/generated/uapi/asm/ioctl.h \
-  include/asm-generic/ioctl.h \
-  include/uapi/asm-generic/ioctl.h \
-  include/linux/edd.h \
-  include/uapi/linux/edd.h \
-  arch/x86/include/asm/ist.h \
-  arch/x86/include/uapi/asm/ist.h \
-  include/video/edid.h \
-    $(wildcard include/config/X86) \
-  include/uapi/video/edid.h \
-  arch/x86/include/asm/math_emu.h \
-  arch/x86/include/asm/ptrace.h \
-    $(wildcard include/config/PARAVIRT) \
-    $(wildcard include/config/IA32_EMULATION) \
-  arch/x86/include/asm/segment.h \
-    $(wildcard include/config/XEN_PV) \
-  arch/x86/include/asm/page_types.h \
-    $(wildcard include/config/PHYSICAL_START) \
-    $(wildcard include/config/PHYSICAL_ALIGN) \
-    $(wildcard include/config/DYNAMIC_PHYSICAL_MASK) \
-  arch/x86/include/asm/page_32_types.h \
-    $(wildcard include/config/HIGHMEM4G) \
-    $(wildcard include/config/HIGHMEM64G) \
-    $(wildcard include/config/PAGE_OFFSET) \
-  arch/x86/include/uapi/asm/ptrace.h \
-  arch/x86/include/uapi/asm/ptrace-abi.h \
-  arch/x86/include/asm/paravirt_types.h \
-    $(wildcard include/config/PGTABLE_LEVELS) \
-    $(wildcard include/config/PARAVIRT_DEBUG) \
-  arch/x86/include/asm/desc_defs.h \
-  arch/x86/include/asm/pgtable_types.h \
-    $(wildcard include/config/MEM_SOFT_DIRTY) \
-    $(wildcard include/config/HAVE_ARCH_USERFAULTFD_WP) \
-    $(wildcard include/config/PROC_FS) \
-  arch/x86/include/asm/pgtable_32_types.h \
-  arch/x86/include/asm/pgtable-3level_types.h \
-  include/asm-generic/pgtable-nop4d.h \
-  include/asm-generic/pgtable-nopud.h \
-  arch/x86/include/asm/nospec-branch.h \
-  include/linux/static_key.h \
-  include/linux/jump_label.h \
-    $(wildcard include/config/HAVE_ARCH_JUMP_LABEL_RELATIVE) \
-  arch/x86/include/asm/jump_label.h \
-  include/linux/objtool.h \
-    $(wildcard include/config/FRAME_POINTER) \
-  arch/x86/include/asm/msr-index.h \
-  arch/x86/include/asm/unwind_hints.h \
-  arch/x86/include/asm/orc_types.h \
-  arch/x86/include/asm/GEN-for-each-reg.h \
-  arch/x86/include/asm/spinlock_types.h \
-  include/asm-generic/qspinlock_types.h \
-    $(wildcard include/config/NR_CPUS) \
-  include/asm-generic/qrwlock_types.h \
-  arch/x86/include/asm/proto.h \
-  arch/x86/include/uapi/asm/ldt.h \
-  arch/x86/include/uapi/asm/sigcontext.h \
-  arch/x86/include/asm/current.h \
-  arch/x86/include/asm/percpu.h \
-    $(wildcard include/config/X86_64_SMP) \
-  include/linux/kernel.h \
-    $(wildcard include/config/PREEMPT_VOLUNTARY_BUILD) \
-    $(wildcard include/config/PREEMPT_DYNAMIC) \
-    $(wildcard include/config/HAVE_PREEMPT_DYNAMIC_CALL) \
-    $(wildcard include/config/HAVE_PREEMPT_DYNAMIC_KEY) \
-    $(wildcard include/config/PREEMPT_) \
-    $(wildcard include/config/DEBUG_ATOMIC_SLEEP) \
-    $(wildcard include/config/MMU) \
-    $(wildcard include/config/PROVE_LOCKING) \
-  include/linux/stdarg.h \
-  include/linux/align.h \
-  include/linux/limits.h \
-  include/uapi/linux/limits.h \
-  include/vdso/limits.h \
-  include/linux/kstrtox.h \
-  include/linux/minmax.h \
-  include/linux/panic.h \
-    $(wildcard include/config/PANIC_TIMEOUT) \
-  include/linux/printk.h \
-    $(wildcard include/config/MESSAGE_LOGLEVEL_DEFAULT) \
-    $(wildcard include/config/CONSOLE_LOGLEVEL_DEFAULT) \
-    $(wildcard include/config/CONSOLE_LOGLEVEL_QUIET) \
-    $(wildcard include/config/EARLY_PRINTK) \
-    $(wildcard include/config/PRINTK) \
-    $(wildcard include/config/DYNAMIC_DEBUG) \
-    $(wildcard include/config/DYNAMIC_DEBUG_CORE) \
-  include/linux/kern_levels.h \
-  include/linux/ratelimit_types.h \
-  include/linux/spinlock_types_raw.h \
-    $(wildcard include/config/DEBUG_SPINLOCK) \
-    $(wildcard include/config/DEBUG_LOCK_ALLOC) \
-  include/linux/lockdep_types.h \
-    $(wildcard include/config/PROVE_RAW_LOCK_NESTING) \
-    $(wildcard include/config/LOCKDEP) \
-    $(wildcard include/config/LOCK_STAT) \
-  include/linux/once_lite.h \
-  include/linux/static_call_types.h \
-    $(wildcard include/config/HAVE_STATIC_CALL) \
-  include/linux/instruction_pointer.h \
-  include/asm-generic/percpu.h \
-    $(wildcard include/config/DEBUG_PREEMPT) \
-    $(wildcard include/config/HAVE_SETUP_PER_CPU_AREA) \
-  include/linux/threads.h \
-    $(wildcard include/config/BASE_SMALL) \
-  include/linux/percpu-defs.h \
-    $(wildcard include/config/DEBUG_FORCE_WEAK_PER_CPU) \
-  arch/x86/include/asm/page.h \
-  arch/x86/include/asm/page_32.h \
-    $(wildcard include/config/DEBUG_VIRTUAL) \
-    $(wildcard include/config/FLATMEM) \
-  include/linux/string.h \
-    $(wildcard include/config/BINARY_PRINTF) \
-    $(wildcard include/config/FORTIFY_SOURCE) \
-  include/linux/errno.h \
-  include/uapi/linux/errno.h \
-  include/uapi/linux/string.h \
-  arch/x86/include/asm/string.h \
-  arch/x86/include/asm/string_32.h \
-  include/linux/fortify-string.h \
-  include/linux/range.h \
-  include/asm-generic/memory_model.h \
-    $(wildcard include/config/SPARSEMEM_VMEMMAP) \
-    $(wildcard include/config/SPARSEMEM) \
-  include/linux/pfn.h \
-  include/asm-generic/getorder.h \
-  arch/x86/include/asm/msr.h \
-  arch/x86/include/asm/msr-index.h \
-  arch/x86/include/asm/cpumask.h \
-  include/linux/cpumask.h \
-    $(wildcard include/config/CPUMASK_OFFSTACK) \
-    $(wildcard include/config/HOTPLUG_CPU) \
-    $(wildcard include/config/DEBUG_PER_CPU_MAPS) \
-  include/linux/bitmap.h \
-  include/linux/find.h \
-  include/linux/atomic.h \
-  arch/x86/include/asm/atomic.h \
-  arch/x86/include/asm/cmpxchg.h \
-  arch/x86/include/asm/cmpxchg_32.h \
-  arch/x86/include/asm/atomic64_32.h \
-  include/linux/atomic/atomic-arch-fallback.h \
-    $(wildcard include/config/GENERIC_ATOMIC64) \
-  include/linux/atomic/atomic-long.h \
-  include/linux/atomic/atomic-instrumented.h \
-  include/linux/bug.h \
-    $(wildcard include/config/BUG_ON_DATA_CORRUPTION) \
-  arch/x86/include/asm/bug.h \
-    $(wildcard include/config/DEBUG_BUGVERBOSE) \
-  include/linux/instrumentation.h \
-    $(wildcard include/config/DEBUG_ENTRY) \
-  include/asm-generic/bug.h \
-    $(wildcard include/config/BUG) \
-    $(wildcard include/config/GENERIC_BUG_RELATIVE_POINTERS) \
-  arch/x86/include/uapi/asm/msr.h \
-  include/linux/tracepoint-defs.h \
-  arch/x86/include/asm/special_insns.h \
-  include/linux/irqflags.h \
-    $(wildcard include/config/TRACE_IRQFLAGS) \
-    $(wildcard include/config/PREEMPT_RT) \
-    $(wildcard include/config/IRQSOFF_TRACER) \
-    $(wildcard include/config/PREEMPT_TRACER) \
-    $(wildcard include/config/DEBUG_IRQFLAGS) \
-    $(wildcard include/config/TRACE_IRQFLAGS_SUPPORT) \
-  arch/x86/include/asm/irqflags.h \
-  arch/x86/include/asm/fpu/types.h \
-  arch/x86/include/asm/vmxfeatures.h \
-  arch/x86/include/asm/vdso/processor.h \
-  include/linux/personality.h \
-  include/uapi/linux/personality.h \
-  arch/x86/include/asm/tsc.h \
-  arch/x86/include/asm/cpufeature.h \
-    $(wildcard include/config/X86_FEATURE_NAMES) \
-  include/vdso/time32.h \
-  include/vdso/time.h \
-  include/linux/uidgid.h \
-    $(wildcard include/config/MULTIUSER) \
-    $(wildcard include/config/USER_NS) \
-  include/linux/highuid.h \
-  include/linux/buildid.h \
-    $(wildcard include/config/CRASH_CORE) \
-  include/linux/mm_types.h \
-    $(wildcard include/config/HAVE_ALIGNED_STRUCT_PAGE) \
-    $(wildcard include/config/MEMCG) \
-    $(wildcard include/config/USERFAULTFD) \
-    $(wildcard include/config/SWAP) \
-    $(wildcard include/config/NUMA) \
-    $(wildcard include/config/HAVE_ARCH_COMPAT_MMAP_BASES) \
-    $(wildcard include/config/MEMBARRIER) \
-    $(wildcard include/config/AIO) \
-    $(wildcard include/config/MMU_NOTIFIER) \
-    $(wildcard include/config/TRANSPARENT_HUGEPAGE) \
-    $(wildcard include/config/NUMA_BALANCING) \
-    $(wildcard include/config/ARCH_WANT_BATCHED_UNMAP_TLB_FLUSH) \
-    $(wildcard include/config/HUGETLB_PAGE) \
-    $(wildcard include/config/IOMMU_SVA) \
-  include/linux/mm_types_task.h \
-    $(wildcard include/config/SPLIT_PTLOCK_CPUS) \
-    $(wildcard include/config/ARCH_ENABLE_SPLIT_PMD_PTLOCK) \
-  arch/x86/include/asm/tlbbatch.h \
-  include/linux/auxvec.h \
-  include/uapi/linux/auxvec.h \
-  arch/x86/include/uapi/asm/auxvec.h \
-  include/linux/kref.h \
-  include/linux/spinlock.h \
-    $(wildcard include/config/PREEMPTION) \
-  include/linux/preempt.h \
-    $(wildcard include/config/PREEMPT_COUNT) \
-    $(wildcard include/config/TRACE_PREEMPT_TOGGLE) \
-    $(wildcard include/config/PREEMPT_NOTIFIERS) \
-  arch/x86/include/asm/preempt.h \
-  include/linux/thread_info.h \
-    $(wildcard include/config/THREAD_INFO_IN_TASK) \
-    $(wildcard include/confi
+static const struct mcp251xfd_devtype_data mcp251xfd_devtype_data_mcp2517fd = {
+	.quirks = MCP251XFD_QUIRK_MAB_NO_WARN | MCP251XFD_QUIRK_CRC_REG |
+		MCP251XFD_QUIRK_CRC_RX | MCP251XFD_QUIRK_CRC_TX |
+		MCP251XFD_QUIRK_ECC,
+	.model = MCP251XFD_MODEL_MCP2517FD,
+};
+
+static const struct mcp251xfd_devtype_data mcp251xfd_devtype_data_mcp2518fd = {
+	.quirks = MCP251XFD_QUIRK_CRC_REG | MCP251XFD_QUIRK_CRC_RX |
+		MCP251XFD_QUIRK_CRC_TX | MCP251XFD_QUIRK_ECC,
+	.model = MCP251XFD_MODEL_MCP2518FD,
+};
+
+/* Autodetect model, start with CRC enabled. */
+static const struct mcp251xfd_devtype_data mcp251xfd_devtype_data_mcp251xfd = {
+	.quirks = MCP251XFD_QUIRK_CRC_REG | MCP251XFD_QUIRK_CRC_RX |
+		MCP251XFD_QUIRK_CRC_TX | MCP251XFD_QUIRK_ECC,
+	.model = MCP251XFD_MODEL_MCP251XFD,
+};
+
+static const struct can_bittiming_const mcp251xfd_bittiming_const = {
+	.name = DEVICE_NAME,
+	.tseg1_min = 2,
+	.tseg1_max = 256,
+	.tseg2_min = 1,
+	.tseg2_max = 128,
+	.sjw_max = 128,
+	.brp_min = 1,
+	.brp_max = 256,
+	.brp_inc = 1,
+};
+
+static const struct can_bittiming_const mcp251xfd_data_bittiming_const = {
+	.name = DEVICE_NAME,
+	.tseg1_min = 1,
+	.tseg1_max = 32,
+	.tseg2_min = 1,
+	.tseg2_max = 16,
+	.sjw_max = 16,
+	.brp_min = 1,
+	.brp_max = 256,
+	.brp_inc = 1,
+};
+
+static const char *__mcp251xfd_get_model_str(enum mcp251xfd_model model)
+{
+	switch (model) {
+	case MCP251XFD_MODEL_MCP2517FD:
+		return "MCP2517FD";
+	case MCP251XFD_MODEL_MCP2518FD:
+		return "MCP2518FD";
+	case MCP251XFD_MODEL_MCP251XFD:
+		return "MCP251xFD";
+	}
+
+	return "<unknown>";
+}
+
+static inline const char *
+mcp251xfd_get_model_str(const struct mcp251xfd_priv *priv)
+{
+	return __mcp251xfd_get_model_str(priv->devtype_data.model);
+}
+
+static const char *mcp251xfd_get_mode_str(const u8 mode)
+{
+	switch (mode) {
+	case MCP251XFD_REG_CON_MODE_MIXED:
+		return "Mixed (CAN FD/CAN 2.0)";
+	case MCP251XFD_REG_CON_MODE_SLEEP:
+		return "Sleep";
+	case MCP251XFD_REG_CON_MODE_INT_LOOPBACK:
+		return "Internal Loopback";
+	case MCP251XFD_REG_CON_MODE_LISTENONLY:
+		return "Listen Only";
+	case MCP251XFD_REG_CON_MODE_CONFIG:
+		return "Configuration";
+	case MCP251XFD_REG_CON_MODE_EXT_LOOPBACK:
+		return "External Loopback";
+	case MCP251XFD_REG_CON_MODE_CAN2_0:
+		return "CAN 2.0";
+	case MCP251XFD_REG_CON_MODE_RESTRICTED:
+		return "Restricted Operation";
+	}
+
+	return "<unknown>";
+}
+
+static const char *
+mcp251xfd_get_osc_str(const u32 osc, const u32 osc_reference)
+{
+	switch (~osc & osc_reference &
+		(MCP251XFD_REG_OSC_OSCRDY | MCP251XFD_REG_OSC_PLLRDY)) {
+	case MCP251XFD_REG_OSC_PLLRDY:
+		return "PLL";
+	case MCP251XFD_REG_OSC_OSCRDY:
+		return "Oscillator";
+	case MCP251XFD_REG_OSC_PLLRDY | MCP251XFD_REG_OSC_OSCRDY:
+		return "Oscillator/PLL";
+	}
+
+	return "<unknown>";
+}
+
+static inline int mcp251xfd_vdd_enable(const struct mcp251xfd_priv *priv)
+{
+	if (!priv->reg_vdd)
+		return 0;
+
+	return regulator_enable(priv->reg_vdd);
+}
+
+static inline int mcp251xfd_vdd_disable(const struct mcp251xfd_priv *priv)
+{
+	if (!priv->reg_vdd)
+		return 0;
+
+	return regulator_disable(priv->reg_vdd);
+}
+
+static inline int
+mcp251xfd_transceiver_enable(const struct mcp251xfd_priv *priv)
+{
+	if (!priv->reg_xceiver)
+		return 0;
+
+	return regulator_enable(priv->reg_xceiver);
+}
+
+static inline int
+mcp251xfd_transceiver_disable(const struct mcp251xfd_priv *priv)
+{
+	if (!priv->reg_xceiver)
+		return 0;
+
+	return regulator_disable(priv->reg_xceiver);
+}
+
+static int mcp251xfd_clks_and_vdd_enable(const struct mcp251xfd_priv *priv)
+{
+	int err;
+
+	err = clk_prepare_enable(priv->clk);
+	if (err)
+		return err;
+
+	err = mcp251xfd_vdd_enable(priv);
+	if (err)
+		clk_disable_unprepare(priv->clk);
+
+	/* Wait for oscillator stabilisation time after power up */
+	usleep_range(MCP251XFD_OSC_STAB_SLEEP_US,
+		     2 * MCP251XFD_OSC_STAB_SLEEP_US);
+
+	return err;
+}
+
+static int mcp251xfd_clks_and_vdd_disable(const struct mcp251xfd_priv *priv)
+{
+	int err;
+
+	err = mcp251xfd_vdd_disable(priv);
+	if (err)
+		return err;
+
+	clk_disable_unprepare(priv->clk);
+
+	return 0;
+}
+
+static inline bool mcp251xfd_reg_invalid(u32 reg)
+{
+	return reg == 0x0 || reg == 0xffffffff;
+}
+
+static inline int
+mcp251xfd_chip_get_mode(const struct mcp251xfd_priv *priv, u8 *mode)
+{
+	u32 val;
+	int err;
+
+	err = regmap_read(priv->map_reg, MCP251XFD_REG_CON, &val);
+	if (err)
+		return err;
+
+	*mode = FIELD_GET(MCP251XFD_REG_CON_OPMOD_MASK, val);
+
+	return 0;
+}
+
+static int
+__mcp251xfd_chip_set_mode(const struct mcp251xfd_priv *priv,
+			  const u8 mode_req, bool nowait)
+{
+	u32 con = 0, con_reqop, osc = 0;
+	u8 mode;
+	int err;
+
+	con_reqop = FIELD_PREP(MCP251XFD_REG_CON_REQOP_MASK, mode_req);
+	err = regmap_update_bits(priv->map_reg, MCP251XFD_REG_CON,
+				 MCP251XFD_REG_CON_REQOP_MASK, con_reqop);
+	if (err == -EBADMSG) {
+		netdev_err(priv->ndev,
+			   "Failed to set Requested Operation Mode.\n");
+
+		return -ENODEV;
+	} else if (err) {
+		return err;
+	}
+
+	if (mode_req == MCP251XFD_REG_CON_MODE_SLEEP || nowait)
+		return 0;
+
+	err = regmap_read_poll_timeout(priv->map_reg, MCP251XFD_REG_CON, con,
+				       !mcp251xfd_reg_invalid(con) &&
+				       FIELD_GET(MCP251XFD_REG_CON_OPMOD_MASK,
+						 con) == mode_req,
+				       MCP251XFD_POLL_SLEEP_US,
+				       MCP251XFD_POLL_TIMEOUT_US);
+	if (err != -ETIMEDOUT && err != -EBADMSG)
+		return err;
+
+	/* Ignore return value.
+	 * Print below error messages, even if this fails.
+	 */
+	regmap_read(priv->map_reg, MCP251XFD_REG_OSC, &osc);
+
+	if (mcp251xfd_reg_invalid(con)) {
+		netdev_err(priv->ndev,
+			   "Failed to read CAN Control Register (con=0x%08x, osc=0x%08x).\n",
+			   con, osc);
+
+		return -ENODEV;
+	}
+
+	mode = FIELD_GET(MCP251XFD_REG_CON_OPMOD_MASK, con);
+	netdev_err(priv->ndev,
+		   "Controller failed to enter mode %s Mode (%u) and stays in %s Mode (%u) (con=0x%08x, osc=0x%08x).\n",
+		   mcp251xfd_get_mode_str(mode_req), mode_req,
+		   mcp251xfd_get_mode_str(mode), mode,
+		   con, osc);
+
+	return -ETIMEDOUT;
+}
+
+static inline int
+mcp251xfd_chip_set_mode(const struct mcp251xfd_priv *priv,
+			const u8 mode_req)
+{
+	return __mcp251xfd_chip_set_mode(priv, mode_req, false);
+}
+
+static inline int __maybe_unused
+mcp251xfd_chip_set_mode_nowait(const struct mcp251xfd_priv *priv,
+			       const u8 mode_req)
+{
+	return __mcp251xfd_chip_set_mode(priv, mode_req, true);
+}
+
+static int
+mcp251xfd_chip_wait_for_osc_ready(const struct mcp251xfd_priv *priv,
+				  u32 osc_reference, u32 osc_mask)
+{
+	u32 osc;
+	int err;
+
+	err = regmap_read_poll_timeout(priv->map_reg, MCP251XFD_REG_OSC, osc,
+				       !mcp251xfd_reg_invalid(osc) &&
+				       (osc & osc_mask) == osc_reference,
+				       MCP251XFD_OSC_STAB_SLEEP_US,
+				       MCP251XFD_OSC_STAB_TIMEOUT_US);
+	if (err != -ETIMEDOUT)
+		return err;
+
+	if (mcp251xfd_reg_invalid(osc)) {
+		netdev_err(priv->ndev,
+			   "Failed to read Oscillator Configuration Register (osc=0x%08x).\n",
+			   osc);
+		return -ENODEV;
+	}
+
+	netdev_err(priv->ndev,
+		   "Timeout waiting for %s ready (osc=0x%08x, osc_reference=0x%08x, osc_mask=0x%08x).\n",
+		   mcp251xfd_get_osc_str(osc, osc_reference),
+		   osc, osc_reference, osc_mask);
+
+	return -ETIMEDOUT;
+}
+
+static int mcp251xfd_chip_wake(const struct mcp251xfd_priv *priv)
+{
+	u32 osc, osc_reference, osc_mask;
+	int err;
+
+	/* For normal sleep on MCP2517FD and MCP2518FD, clearing
+	 * "Oscillator Disable" will wake the chip. For low power mode
+	 * on MCP2518FD, asserting the chip select will wake the
+	 * chip. Writing to the Oscillator register will wake it in
+	 * both cases.
+	 */
+	osc = FIELD_PREP(MCP251XFD_REG_OSC_CLKODIV_MASK,
+			 MCP251XFD_REG_OSC_CLKODIV_10);
+
+	/* We cannot check for the PLL ready bit (either set or
+	 * unset), as the PLL might be enabled. This can happen if the
+	 * system reboots, while the mcp251xfd stays powered.
+	 */
+	osc_reference = MCP251XFD_REG_OSC_OSCRDY;
+	osc_mask = MCP251XFD_REG_OSC_OSCRDY;
+
+	/* If the controller is in Sleep Mode the following write only
+	 * removes the "Oscillator Disable" bit and powers it up. All
+	 * other bits are unaffected.
+	 */
+	err = regmap_write(priv->map_reg, MCP251XFD_REG_OSC, osc);
+	if (err)
+		return err;
+
+	/* Sometimes the PLL is stuck enabled, the controller never
+	 * sets the OSC Ready bit, and we get an -ETIMEDOUT. Our
+	 * caller takes care of retry.
+	 */
+	return mcp251xfd_chip_wait_for_osc_ready(priv, osc_reference, osc_mask);
+}
+
+static inline int mcp251xfd_chip_sleep(const struct mcp251xfd_priv *priv)
+{
+	if (priv->pll_enable) {
+		u32 osc;
+		int err;
+
+		/* Turn off PLL */
+		osc = FIELD_PREP(MCP251XFD_REG_OSC_CLKODIV_MASK,
+				 MCP251XFD_REG_OSC_CLKODIV_10);
+		err = regmap_write(priv->map_reg, MCP251XFD_REG_OSC, osc);
+		if (err)
+			netdev_err(priv->ndev,
+				   "Failed to disable PLL.\n");
+
+		priv->spi->max_speed_hz = priv->spi_max_speed_hz_slow;
+	}
+
+	return mcp251xfd_chip_set_mode(priv, MCP251XFD_REG_CON_MODE_SLEEP);
+}
+
+static int mcp251xfd_chip_softreset_do(const struct mcp251xfd_priv *priv)
+{
+	const __be16 cmd = mcp251xfd_cmd_reset();
+	int err;
+
+	/* The Set Mode and SPI Reset command only works if the
+	 * controller is not in Sleep Mode.
+	 */
+	err = mcp251xfd_chip_wake(priv);
+	if (err)
+		return err;
+
+	err = mcp251xfd_chip_set_mode(priv, MCP251XFD_REG_CON_MODE_CONFIG);
+	if (err)
+		return err;
+
+	/* spi_write_then_read() works with non DMA-safe buffers */
+	return spi_write_then_read(priv->spi, &cmd, sizeof(cmd), NULL, 0);
+}
+
+static int mcp251xfd_chip_softreset_check(const struct mcp251xfd_priv *priv)
+{
+	u32 osc_reference, osc_mask;
+	u8 mode;
+	int err;
+
+	/* Check for reset defaults of OSC reg.
+	 * This will take care of stabilization period.
+	 */
+	osc_reference = MCP251XFD_REG_OSC_OSCRDY |
+		FIELD_PREP(MCP251XFD_REG_OSC_CLKODIV_MASK,
+			   MCP251XFD_REG_OSC_CLKODIV_10);
+	osc_mask = osc_reference | MCP251XFD_REG_OSC_PLLRDY;
+	err = mcp251xfd_chip_wait_for_osc_ready(priv, osc_reference, osc_mask);
+	if (err)
+		return err;
+
+	err = mcp251xfd_chip_get_mode(priv, &mode);
+	if (err)
+		return err;
+
+	if (mode != MCP251XFD_REG_CON_MODE_CONFIG) {
+		netdev_info(priv->ndev,
+			    "Controller not in Config Mode after reset, but in %s Mode (%u).\n",
+			    mcp251xfd_get_mode_str(mode), mode);
+		return -ETIMEDOUT;
+	}
+
+	return 0;
+}
+
+static int mcp251xfd_chip_softreset(const struct mcp251xfd_priv *priv)
+{
+	int err, i;
+
+	for (i = 0; i < MCP251XFD_SOFTRESET_RETRIES_MAX; i++) {
+		if (i)
+			netdev_info(priv->ndev,
+				    "Retrying to reset controller.\n");
+
+		err = mcp251xfd_chip_softreset_do(priv);
+		if (err == -ETIMEDOUT)
+			continue;
+		if (err)
+			return err;
+
+		err = mcp251xfd_chip_softreset_check(priv);
+		if (err == -ETIMEDOUT)
+			continue;
+		if (err)
+			return err;
+
+		return 0;
+	}
+
+	return err;
+}
+
+static int mcp251xfd_chip_clock_init(const struct mcp251xfd_priv *priv)
+{
+	u32 osc, osc_reference, osc_mask;
+	int err;
+
+	/* Activate Low Power Mode on Oscillator Disable. This only
+	 * works on the MCP2518FD. The MCP2517FD will go into normal
+	 * Sleep Mode instead.
+	 */
+	osc = MCP251XFD_REG_OSC_LPMEN |
+		FIELD_PREP(MCP251XFD_REG_OSC_CLKODIV_MASK,
+			   MCP251XFD_REG_OSC_CLKODIV_10);
+	osc_reference = MCP251XFD_REG_OSC_OSCRDY;
+	osc_mask = MCP251XFD_REG_OSC_OSCRDY | MCP251XFD_REG_OSC_PLLRDY;
+
+	if (priv->pll_enable) {
+		osc |= MCP251XFD_REG_OSC_PLLEN;
+		osc_reference |= MCP251XFD_REG_OSC_PLLRDY;
+	}
+
+	err = regmap_write(priv->map_reg, MCP251XFD_REG_OSC, osc);
+	if (err)
+		return err;
+
+	err = mcp251xfd_chip_wait_for_osc_ready(priv, osc_reference, osc_mask);
+	if (err)
+		return err;
+
+	priv->spi->max_speed_hz = priv->spi_max_speed_hz_fast;
+
+	return 0;
+}
+
+static int mcp251xfd_chip_timestamp_init(const struct mcp251xfd_priv *priv)
+{
+	/* Set Time Base Counter Prescaler to 1.
+	 *
+	 * This means an overflow of the 32 bit Time Base Counter
+	 * register at 40 MHz every 107 seconds.
+	 */
+	return regmap_write(priv->map_reg, MCP251XFD_REG_TSCON,
+			    MCP251XFD_REG_TSCON_TBCEN);
+}
+
+static int mcp251xfd_set_bittiming(const struct mcp251xfd_priv *priv)
+{
+	const struct can_bittiming *bt = &priv->can.bittiming;
+	const struct can_bittiming *dbt = &priv->can.data_bittiming;
+	u32 val = 0;
+	s8 tdco;
+	int err;
+
+	/* CAN Control Register
+	 *
+	 * - no transmit bandwidth sharing
+	 * - config mode
+	 * - disable transmit queue
+	 * - store in transmit FIFO event
+	 * - transition to restricted operation mode on system error
+	 * - ESI is transmitted recessive when ESI of message is high or
+	 *   CAN controller error passive
+	 * - restricted retransmission attempts,
+	 *   use TQXCON_TXAT and FIFOCON_TXAT
+	 * - wake-up filter bits T11FILTER
+	 * - use CAN bus line filter for wakeup
+	 * - protocol exception is treated as a form error
+	 * - Do not compare data bytes
+	 */
+	val = FIELD_PREP(MCP251XFD_REG_CON_REQOP_MASK,
+			 MCP251XFD_REG_CON_MODE_CONFIG) |
+		MCP251XFD_REG_CON_STEF |
+		MCP251XFD_REG_CON_ESIGM |
+		MCP251XFD_REG_CON_RTXAT |
+		FIELD_PREP(MCP251XFD_REG_CON_WFT_MASK,
+			   MCP251XFD_REG_CON_WFT_T11FILTER) |
+		MCP251XFD_REG_CON_WAKFIL |
+		MCP251XFD_REG_CON_PXEDIS;
+
+	if (!(priv->can.ctrlmode & CAN_CTRLMODE_FD_NON_ISO))
+		val |= MCP251XFD_REG_CON_ISOCRCEN;
+
+	err = regmap_write(priv->map_reg, MCP251XFD_REG_CON, val);
+	if (err)
+		return err;
+
+	/* Nominal Bit Time */
+	val = FIELD_PREP(MCP251XFD_REG_NBTCFG_BRP_MASK, bt->brp - 1) |
+		FIELD_PREP(MCP251XFD_REG_NBTCFG_TSEG1_MASK,
+			   bt->prop_seg + bt->phase_seg1 - 1) |
+		FIELD_PREP(MCP251XFD_REG_NBTCFG_TSEG2_MASK,
+			   bt->phase_seg2 - 1) |
+		FIELD_PREP(MCP251XFD_REG_NBTCFG_SJW_MASK, bt->sjw - 1);
+
+	err = regmap_write(priv->map_reg, MCP251XFD_REG_NBTCFG, val);
+	if (err)
+		return err;
+
+	if (!(priv->can.ctrlmode & CAN_CTRLMODE_FD))
+		return 0;
+
+	/* Data Bit Time */
+	val = FIELD_PREP(MCP251XFD_REG_DBTCFG_BRP_MASK, dbt->brp - 1) |
+		FIELD_PREP(MCP251XFD_REG_DBTCFG_TSEG1_MASK,
+			   dbt->prop_seg + dbt->phase_seg1 - 1) |
+		FIELD_PREP(MCP251XFD_REG_DBTCFG_TSEG2_MASK,
+			   dbt->phase_seg2 - 1) |
+		FIELD_PREP(MCP251XFD_REG_DBTCFG_SJW_MASK, dbt->sjw - 1);
+
+	err = regmap_write(priv->map_reg, MCP251XFD_REG_DBTCFG, val);
+	if (err)
+		return err;
+
+	/* Transmitter Delay Compensation */
+	tdco = clamp_t(int, dbt->brp * (dbt->prop_seg + dbt->phase_seg1),
+		       -64, 63);
+	val = FIELD_PREP(MCP251XFD_REG_TDC_TDCMOD_MASK,
+			 MCP251XFD_REG_TDC_TDCMOD_AUTO) |
+		FIELD_PREP(MCP251XFD_REG_TDC_TDCO_MASK, tdco);
+
+	return regmap_write(priv->map_reg, MCP251XFD_REG_TDC, val);
+}
+
+static int mcp251xfd_chip_rx_int_enable(const struct mcp251xfd_priv *priv)
+{
+	u32 val;
+
+	if (!priv->rx_int)
+		return 0;
+
+	/* Configure GPIOs:
+	 * - PIN0: GPIO Input
+	 * - PIN1: GPIO Input/RX Interrupt
+	 *
+	 * PIN1 must be Input, otherwise there is a glitch on the
+	 * rx-INT line. It happens between setting the PIN as output
+	 * (in the first byte of the SPI transfer) and configuring the
+	 * PIN as interrupt (in the last byte of the SPI transfer).
+	 */
+	val = MCP251XFD_REG_IOCON_PM0 | MCP251XFD_REG_IOCON_TRIS1 |
+		MCP251XFD_REG_IOCON_TRIS0;
+	return regmap_write(priv->map_reg, MCP251XFD_REG_IOCON, val);
+}
+
+static int mcp251xfd_chip_rx_int_disable(const struct mcp251xfd_priv *priv)
+{
+	u32 val;
+
+	if (!priv->rx_int)
+		return 0;
+
+	/* Configure GPIOs:
+	 * - PIN0: GPIO Input
+	 * - PIN1: GPIO Input
+	 */
+	val = MCP251XFD_REG_IOCON_PM1 | MCP251XFD_REG_IOCON_PM0 |
+		MCP251XFD_REG_IOCON_TRIS1 | MCP251XFD_REG_IOCON_TRIS0;
+	return regmap_write(priv->map_reg, MCP251XFD_REG_IOCON, val);
+}
+
+static int mcp251xfd_chip_ecc_init(struct mcp251xfd_priv *priv)
+{
+	struct mcp251xfd_ecc *ecc = &priv->ecc;
+	void *ram;
+	u32 val = 0;
+	int err;
+
+	ecc->ecc_stat = 0;
+
+	if (priv->devtype_data.quirks & MCP251XFD_QUIRK_ECC)
+		val = MCP251XFD_REG_ECCCON_ECCEN;
+
+	err = regmap_update_bits(priv->map_reg, MCP251XFD_REG_ECCCON,
+				 MCP251XFD_REG_ECCCON_ECCEN, val);
+	if (err)
+		return err;
+
+	ram = kzalloc(MCP251XFD_RAM_SIZE, GFP_KERNEL);
+	if (!ram)
+		return -ENOMEM;
+
+	err = regmap_raw_write(priv->map_reg, MCP251XFD_RAM_START, ram,
+			       MCP251XFD_RAM_SIZE);
+	kfree(ram);
+
+	return err;
+}
+
+static u8 mcp251xfd_get_normal_mode(const struct mcp251xfd_priv *priv)
+{
+	u8 mode;
+
+	if (priv->can.ctrlmode & CAN_CTRLMODE_LOOPBACK)
+		mode = MCP251XFD_REG_CON_MODE_INT_LOOPBACK;
+	else if (priv->can.ctrlmode & CAN_CTRLMODE_LISTENONLY)
+		mode = MCP251XFD_REG_CON_MODE_LISTENONLY;
+	else if (priv->can.ctrlmode & CAN_CTRLMODE_FD)
+		mode = MCP251XFD_REG_CON_MODE_MIXED;
+	else
+		mode = MCP251XFD_REG_CON_MODE_CAN2_0;
+
+	return mode;
+}
+
+static int
+__mcp251xfd_chip_set_normal_mode(const struct mcp251xfd_priv *priv,
+				 bool nowait)
+{
+	u8 mode;
+
+	mode = mcp251xfd_get_normal_mode(priv);
+
+	return __mcp251xfd_chip_set_mode(priv, mode, nowait);
+}
+
+static inline int
+mcp251xfd_chip_set_normal_mode(const struct mcp251xfd_priv *priv)
+{
+	return __mcp251xfd_chip_set_normal_mode(priv, false);
+}
+
+static inline int
+mcp251xfd_chip_set_normal_mode_nowait(const struct mcp251xfd_priv *priv)
+{
+	return __mcp251xfd_chip_set_normal_mode(priv, true);
+}
+
+static int mcp251xfd_chip_interrupts_enable(const struct mcp251xfd_priv *priv)
+{
+	u32 val;
+	int err;
+
+	val = MCP251XFD_REG_CRC_FERRIE | MCP251XFD_REG_CRC_CRCERRIE;
+	err = regmap_write(priv->map_reg, MCP251XFD_REG_CRC, val);
+	if (err)
+		return err;
+
+	val = MCP251XFD_REG_ECCCON_DEDIE | MCP251XFD_REG_ECCCON_SECIE;
+	err = regmap_update_bits(priv->map_reg, MCP251XFD_REG_ECCCON, val, val);
+	if (err)
+		return err;
+
+	val = MCP251XFD_REG_INT_CERRIE |
+		MCP251XFD_REG_INT_SERRIE |
+		MCP251XFD_REG_INT_RXOVIE |
+		MCP251XFD_REG_INT_TXATIE |
+		MCP251XFD_REG_INT_SPICRCIE |
+		MCP251XFD_REG_INT_ECCIE |
+		MCP251XFD_REG_INT_TEFIE |
+		MCP251XFD_REG_INT_MODIE |
+		MCP251XFD_REG_INT_RXIE;
+
+	if (priv->can.ctrlmode & CAN_CTRLMODE_BERR_REPORTING)
+		val |= MCP251XFD_REG_INT_IVMIE;
+
+	return regmap_write(priv->map_reg, MCP251XFD_REG_INT, val);
+}
+
+static int mcp251xfd_chip_interrupts_disable(const struct mcp251xfd_priv *priv)
+{
+	int err;
+	u32 mask;
+
+	err = regmap_write(priv->map_reg, MCP251XFD_REG_INT, 0);
+	if (err)
+		return err;
+
+	mask = MCP251XFD_REG_ECCCON_DEDIE | MCP251XFD_REG_ECCCON_SECIE;
+	err = regmap_update_bits(priv->map_reg, MCP251XFD_REG_ECCCON,
+				 mask, 0x0);
+	if (err)
+		return err;
+
+	return regmap_write(priv->map_reg, MCP251XFD_REG_CRC, 0);
+}
+
+static void mcp251xfd_chip_stop(struct mcp251xfd_priv *priv,
+				const enum can_state state)
+{
+	priv->can.state = state;
+
+	mcp251xfd_chip_interrupts_disable(priv);
+	mcp251xfd_chip_rx_int_disable(priv);
+	mcp251xfd_chip_sleep(priv);
+}
+
+static int mcp251xfd_chip_start(struct mcp251xfd_priv *priv)
+{
+	int err;
+
+	err = mcp251xfd_chip_softreset(priv);
+	if (err)
+		goto out_chip_stop;
+
+	err = mcp251xfd_chip_clock_init(priv);
+	if (err)
+		goto out_chip_stop;
+
+	err = mcp251xfd_chip_timestamp_init(priv);
+	if (err)
+		goto out_chip_stop;
+
+	err = mcp251xfd_set_bittiming(priv);
+	if (err)
+		goto out_chip_stop;
+
+	err = mcp251xfd_chip_rx_int_enable(priv);
+	if (err)
+		goto out_chip_stop;
+
+	err = mcp251xfd_chip_ecc_init(priv);
+	if (err)
+		goto out_chip_stop;
+
+	err = mcp251xfd_ring_init(priv);
+	if (err)
+		goto out_chip_stop;
+
+	err = mcp251xfd_chip_fifo_init(priv);
+	if (err)
+		goto out_chip_stop;
+
+	priv->can.state = CAN_STATE_ERROR_ACTIVE;
+
+	err = mcp251xfd_chip_set_normal_mode(priv);
+	if (err)
+		goto out_chip_stop;
+
+	return 0;
+
+ out_chip_stop:
+	mcp251xfd_dump(priv);
+	mcp251xfd_chip_stop(priv, CAN_STATE_STOPPED);
+
+	return err;
+}
+
+static int mcp251xfd_set_mode(struct net_device *ndev, enum can_mode mode)
+{
+	struct mcp251xfd_priv *priv = netdev_priv(ndev);
+	int err;
+
+	switch (mode) {
+	case CAN_MODE_START:
+		err = mcp251xfd_chip_start(priv);
+		if (err)
+			return err;
+
+		err = mcp251xfd_chip_interrupts_enable(priv);
+		if (err) {
+			mcp251xfd_chip_stop(priv, CAN_STATE_STOPPED);
+			return err;
+		}
+
+		netif_wake_queue(ndev);
+		break;
+
+	default:
+		return -EOPNOTSUPP;
+	}
+
+	return 0;
+}
+
+static int __mcp251xfd_get_berr_counter(const struct net_device *ndev,
+					struct can_berr_counter *bec)
+{
+	const struct mcp251xfd_priv *priv = netdev_priv(ndev);
+	u32 trec;
+	int err;
+
+	err = regmap_read(priv->map_reg, MCP251XFD_REG_TREC, &trec);
+	if (err)
+		return err;
+
+	if (trec & MCP251XFD_REG_TREC_TXBO)
+		bec->txerr = 256;
+	else
+		bec->txerr = FIELD_GET(MCP251XFD_REG_TREC_TEC_MASK, trec);
+	bec->rxerr = FIELD_GET(MCP251XFD_REG_TREC_REC_MASK, trec);
+
+	return 0;
+}
+
+static int mcp251xfd_get_berr_counter(const struct net_device *ndev,
+				      struct can_berr_counter *bec)
+{
+	const struct mcp251xfd_priv *priv = netdev_priv(ndev);
+
+	/* Avoid waking up the controller if the interface is down */
+	if (!(ndev->flags & IFF_UP))
+		return 0;
+
+	/* The controller is powered down during Bus Off, use saved
+	 * bec values.
+	 */
+	if (priv->can.state == CAN_STATE_BUS_OFF) {
+		*bec = priv->bec;
+		return 0;
+	}
+
+	return __mcp251xfd_get_berr_counter(ndev, bec);
+}
+
+static struct sk_buff *
+mcp251xfd_alloc_can_err_skb(struct mcp251xfd_priv *priv,
+			    struct can_frame **cf, u32 *timestamp)
+{
+	struct sk_buff *skb;
+	int err;
+
+	err = mcp251xfd_get_timestamp(priv, timestamp);
+	if (err)
+		return NULL;
+
+	skb = alloc_can_err_skb(priv->ndev, cf);
+	if (skb)
+		mcp251xfd_skb_set_timestamp(priv, skb, *timestamp);
+
+	return skb;
+}
+
+static int mcp251xfd_handle_rxovif(struct mcp251xfd_priv *priv)
+{
+	struct net_device_stats *stats = &priv->ndev->stats;
+	struct mcp251xfd_rx_ring *ring;
+	struct sk_buff *skb;
+	struct can_frame *cf;
+	u32 timestamp, rxovif;
+	int err, i;
+
+	stats->rx_over_errors++;
+	stats->rx_errors++;
+
+	err = regmap_read(priv->map_reg, MCP251XFD_REG_RXOVIF, &rxovif);
+	if (err)
+		return err;
+
+	mcp251xfd_for_each_rx_ring(priv, ring, i) {
+		if (!(rxovif & BIT(ring->fifo_nr)))
+			continue;
+
+		/* If SERRIF is active, there was a RX MAB overflow. */
+		if (priv->regs_status.intf & MCP251XFD_REG_INT_SERRIF) {
+			if (net_ratelimit())
+				netdev_dbg(priv->ndev,
+					   "RX-%d: MAB overflow detected.\n",
+					   ring->nr);
+		} else {
+			if (net_ratelimit())
+				netdev_dbg(priv->ndev,
+					   "RX-%d: FIFO overflow.\n",
+					   ring->nr);
+		}
+
+		err = regmap_update_bits(priv->map_reg,
+					 MCP251XFD_REG_FIFOSTA(ring->fifo_nr),
+					 MCP251XFD_REG_FIFOSTA_RXOVIF,
+					 0x0);
+		if (err)
+			return err;
+	}
+
+	skb = mcp251xfd_alloc_can_err_skb(priv, &cf, &timestamp);
+	if (!skb)
+		return 0;
+
+	cf->can_id |= CAN_ERR_CRTL;
+	cf->data[1] = CAN_ERR_CRTL_RX_OVERFLOW;
+
+	err = can_rx_offload_queue_sorted(&priv->offload, skb, timestamp);
+	if (err)
+		stats->rx_fifo_errors++;
+
+	return 0;
+}
+
+static int mcp251xfd_handle_txatif(struct mcp251xfd_priv *priv)
+{
+	netdev_info(priv->ndev, "%s\n", __func__);
+
+	return 0;
+}
+
+static int mcp251xfd_handle_ivmif(struct mcp251xfd_priv *priv)
+{
+	struct net_device_stats *stats = &priv->ndev->stats;
+	u32 bdiag1, timestamp;
+	struct sk_buff *skb;
+	struct can_frame *cf = NULL;
+	int err;
+
+	err = mcp251xfd_get_timestamp(priv, &timestamp);
+	if (err)
+		return err;
+
+	err = regmap_read(priv->map_reg, MCP251XFD_REG_BDIAG1, &bdiag1);
+	if (err)
+		return err;
+
+	/* Write 0s to clear error bits, don't write 1s to non active
+	 * bits, as they will be set.
+	 */
+	err = regmap_write(priv->map_reg, MCP251XFD_REG_BDIAG1, 0x0);
+	if (err)
+		return err;
+
+	priv->can.can_stats.bus_error++;
+
+	skb = alloc_can_err_skb(priv->ndev, &cf);
+	if (cf)
+		cf->can_id |= CAN_ERR_PROT | CAN_ERR_BUSERROR;
+
+	/* Controller misconfiguration */
+	if (WARN_ON(bdiag1 & MCP251XFD_REG_BDIAG1_DLCMM))
+		netdev_err(priv->ndev,
+			   "recv'd DLC is larger than PLSIZE of FIFO element.");
+
+	/* RX errors */
+	if (bdiag1 & (MCP251XFD_REG_BDIAG1_DCRCERR |
+		      MCP251XFD_REG_BDIAG1_NCRCERR)) {
+		netdev_dbg(priv->ndev, "CRC error\n");
+
+		stats->rx_errors++;
+		if (cf)
+			cf->data[3] |= CAN_ERR_PROT_LOC_CRC_SEQ;
+	}
+	if (bdiag1 & (MCP251XFD_REG_BDIAG1_DSTUFERR |
+		      MCP251XFD_REG_BDIAG1_NSTUFERR)) {
+		netdev_dbg(priv->ndev, "Stuff error\n");
+
+		stats->rx_errors++;
+		if (cf)
+			cf->data[2] |= CAN_ERR_PROT_STUFF;
+	}
+	if (bdiag1 & (MCP251XFD_REG_BDIAG1_DFORMERR |
+		      MCP251XFD_REG_BDIAG1_NFORMERR)) {
+		netdev_dbg(priv->ndev, "Format error\n");
+
+		stats->rx_errors++;
+		if (cf)
+			cf->data[2] |= CAN_ERR_PROT_FORM;
+	}
+
+	/* TX errors */
+	if (bdiag1 & MCP251XFD_REG_BDIAG1_NACKERR) {
+		netdev_dbg(priv->ndev, "NACK error\n");
+
+		stats->tx_errors++;
+		if (cf) {
+			cf->can_id |= CAN_ERR_ACK;
+			cf->data[2] |= CAN_ERR_PROT_TX;
+		}
+	}
+	if (bdiag1 & (MCP251XFD_REG_BDIAG1_DBIT1ERR |
+		      MCP251XFD_REG_BDIAG1_NBIT1ERR)) {
+		netdev_dbg(priv->ndev, "Bit1 error\n");
+
+		stats->tx_errors++;
+		if (cf)
+			cf->data[2] |= CAN_ERR_PROT_TX | CAN_ERR_PROT_BIT1;
+	}
+	if (bdiag1 & (MCP251XFD_REG_BDIAG1_DBIT0ERR |
+		      MCP251XFD_REG_BDIAG1_NBIT0ERR)) {
+		netdev_dbg(priv->ndev, "Bit0 error\n");
+
+		stats->tx_errors++;
+		if (cf)
+			cf->data[2] |= CAN_ERR_PROT_TX | CAN_ERR_PROT_BIT0;
+	}
+
+	if (!cf)
+		return 0;
+
+	mcp251xfd_skb_set_timestamp(priv, skb, timestamp);
+	err = can_rx_offload_queue_sorted(&priv->offload, skb, timestamp);
+	if (err)
+		stats->rx_fifo_errors++;
+
+	return 0;
+}
+
+static int mcp251xfd_handle_cerrif(struct mcp251xfd_priv *priv)
+{
+	struct net_device_stats *stats = &priv->ndev->stats;
+	struct sk_buff *skb;
+	struct can_frame *cf = NULL;
+	enum can_state new_state, rx_state, tx_state;
+	u32 trec, timestamp;
+	int err;
+
+	err = regmap_read(priv->map_reg, MCP251XFD_REG_TREC, &trec);
+	if (err)
+		return err;
+
+	if (trec & MCP251XFD_REG_TREC_TXBO)
+		tx_state = CAN_STATE_BUS_OFF;
+	else if (trec & MCP251XFD_REG_TREC_TXBP)
+		tx_state = CAN_STATE_ERROR_PASSIVE;
+	else if (trec & MCP251XFD_REG_TREC_TXWARN)
+		tx_state = CAN_STATE_ERROR_WARNING;
+	else
+		tx_state = CAN_STATE_ERROR_ACTIVE;
+
+	if (trec & MCP251XFD_REG_TREC_RXBP)
+		rx_state = CAN_STATE_ERROR_PASSIVE;
+	else if (trec & MCP251XFD_REG_TREC_RXWARN)
+		rx_state = CAN_STATE_ERROR_WARNING;
+	else
+		rx_state = CAN_STATE_ERROR_ACTIVE;
+
+	new_state = max(tx_state, rx_state);
+	if (new_state == priv->can.state)
+		return 0;
+
+	/* The skb allocation might fail, but can_change_state()
+	 * handles cf == NULL.
+	 */
+	skb = mcp251xfd_alloc_can_err_skb(priv, &cf, &timestamp);
+	can_change_state(priv->ndev, cf, tx_state, rx_state);
+
+	if (new_state == CAN_STATE_BUS_OFF) {
+		/* As we're going to switch off the chip now, let's
+		 * save the error counters and return them to
+		 * userspace, if do_get_berr_counter() is called while
+		 * the chip is in Bus Off.
+		 */
+		err = __mcp251xfd_get_berr_counter(priv->ndev, &priv->bec);
+		if (err)
+			return err;
+
+		mcp251xfd_chip_stop(priv, CAN_STATE_BUS_OFF);
+		can_bus_off(priv->ndev);
+	}
+
+	if (!skb)
+		return 0;
+
+	if (new_state != CAN_STATE_BUS_OFF) {
+		struct can_berr_counter bec;
+
+		err = mcp251xfd_get_berr_counter(priv->ndev, &bec);
+		if (err)
+			return err;
+		cf->data[6] = bec.txerr;
+		cf->data[7] = bec.rxerr;
+	}
+
+	err = can_rx_offload_queue_sorted(&priv->offload, skb, timestamp);
+	if (err)
+		stats->rx_fifo_errors++;
+
+	return 0;
+}
+
+static int
+mcp251xfd_handle_modif(const struct mcp251xfd_priv *priv, bool *set_normal_mode)
+{
+	const u8 mode_reference = mcp251xfd_get_normal_mode(priv);
+	u8 mode;
+	int err;
+
+	err = mcp251xfd_chip_get_mode(priv, &mode);
+	if (err)
+		return err;
+
+	if (mode == mode_reference) {
+		netdev_dbg(priv->ndev,
+			   "Controller changed into %s Mode (%u).\n",
+			   mcp251xfd_get_mode_str(mode), mode);
+		return 0;
+	}
+
+	/* According to MCP2517FD errata DS80000792B 1., during a TX
+	 * MAB underflow, the controller will transition to Restricted
+	 * Operation Mode or Listen Only Mode (depending on SERR2LOM).
+	 *
+	 * However this is not always the case. If SERR2LOM is
+	 * configured for Restricted Operation Mode (SERR2LOM not set)
+	 * the MCP2517FD will sometimes transition to Listen Only Mode
+	 * first. When polling this bit we see that it will transition
+	 * to Restricted Operation Mode shortly after.
+	 */
+	if ((priv->devtype_data.quirks & MCP251XFD_QUIRK_MAB_NO_WARN) &&
+	    (mode == MCP251XFD_REG_CON_MODE_RESTRICTED ||
+	     mode == MCP251XFD_REG_CON_MODE_LISTENONLY))
+		netdev_dbg(priv->ndev,
+			   "Controller changed into %s Mode (%u).\n",
+			   mcp251xfd_get_mode_str(mode), mode);
+	else
+		netdev_err(priv->ndev,
+			   "Controller changed into %s Mode (%u).\n",
+			   mcp251xfd_get_mode_str(mode), mode);
+
+	/* After the application requests Normal mode, the controller
+	 * will automatically attempt to retransmit the message that
+	 * caused the TX MAB underflow.
+	 *
+	 * However, if there is an ECC error in the TX-RAM, we first
+	 * have to reload the tx-object before requesting Normal
+	 * mode. This is done later in mcp251xfd_handle_eccif().
+	 */
+	if (priv->regs_status.intf & MCP251XFD_REG_INT_ECCIF) {
+		*set_normal_mode = true;
+		return 0;
+	}
+
+	return mcp251xfd_chip_set_normal_mode_nowait(priv);
+}
+
+static int mcp251xfd_handle_serrif(struct mcp251xfd_priv *priv)
+{
+	struct mcp251xfd_ecc *ecc = &priv->ecc;
+	struct net_device_stats *stats = &priv->ndev->stats;
+	bool handled = false;
+
+	/* TX MAB underflow
+	 *
+	 * According to MCP2517FD Errata DS80000792B 1. a TX MAB
+	 * underflow is indicated by SERRIF and MODIF.
+	 *
+	 * In addition to the effects mentioned in the Errata, there
+	 * are Bus Errors due to the aborted CAN frame, so a IVMIF
+	 * will be seen as well.
+	 *
+	 * Sometimes there is an ECC error in the TX-RAM, which leads
+	 * to a TX MAB underflow.
+	 *
+	 * However, probably due to a race condition, there is no
+	 * associated MODIF pending.
+	 *
+	 * Further, there are situations, where the SERRIF is caused
+	 * by an ECC error in the TX-RAM, but not even the ECCIF is
+	 * set. This only seems to happen _after_ the first occurrence
+	 * of a ECCIF (which is tracked in ecc->cnt).
+	 *
+	 * Treat all as a known system errors..
+	 */
+	if ((priv->regs_status.intf & MCP251XFD_REG_INT_MODIF &&
+	     priv->regs_status.intf & MCP251XFD_REG_INT_IVMIF) ||
+	    priv->regs_status.intf & MCP251XFD_REG_INT_ECCIF ||
+	    ecc->cnt) {
+		const char *msg;
+
+		if (priv->regs_status.intf & MCP251XFD_REG_INT_ECCIF ||
+		    ecc->cnt)
+			msg = "TX MAB underflow due to ECC error detected.";
+		else
+			msg = "TX MAB underflow detected.";
+
+		if (priv->devtype_data.quirks & MCP251XFD_QUIRK_MAB_NO_WARN)
+			netdev_dbg(priv->ndev, "%s\n", msg);
+		else
+			netdev_info(priv->ndev, "%s\n", msg);
+
+		stats->tx_aborted_errors++;
+		stats->tx_errors++;
+		handled = true;
+	}
+
+	/* RX MAB overflow
+	 *
+	 * According to MCP2517FD Errata DS80000792B 1. a RX MAB
+	 * overflow is indicated by SERRIF.
+	 *
+	 * In addition to the effects mentioned in the Errata, (most
+	 * of the times) a RXOVIF is raised, if the FIFO that is being
+	 * received into has the RXOVIE activated (and we have enabled
+	 * RXOVIE on all FIFOs).
+	 *
+	 * Sometimes there is no RXOVIF just a RXIF is pending.
+	 *
+	 * Treat all as a known system errors..
+	 */
+	if (priv->regs_status.intf & MCP251XFD_REG_INT_RXOVIF ||
+	    priv->regs_status.intf & MCP251XFD_REG_INT_RXIF) {
+		stats->rx_dropped++;
+		handled = true;
+	}
+
+	if (!handled)
+		netdev_err(priv->ndev,
+			   "Unhandled System Error Interrupt (intf=0x%08x)!\n",
+			   priv->regs_status.intf);
+
+	return 0;
+}
+
+static int
+mcp251xfd_handle_eccif_recover(struct mcp251xfd_priv *priv, u8 nr)
+{
+	struct mcp251xfd_tx_ring *tx_ring = priv->tx;
+	struct mcp251xfd_ecc *ecc = &priv->ecc;
+	struct mcp251xfd_tx_obj *tx_obj;
+	u8 chip_tx_tail, tx_tail, offset;
+	u16 addr;
+	int err;
+
+	addr = FIELD_GET(MCP251XFD_REG_ECCSTAT_ERRADDR_MASK, ecc->ecc_stat);
+
+	err = mcp251xfd_tx_tail_get_from_chip(priv, &chip_tx_tail);
+	if (err)
+		return err;
+
+	tx_tail = mcp251xfd_get_tx_tail(tx_ring);
+	offset = (nr - chip_tx_tail) & (tx_ring->obj_num - 1);
+
+	/* Bail out if one of the following is met:
+	 * - tx_tail information is inconsistent
+	 * - for mcp2517fd: offset not 0
+	 * - for mcp2518fd: offset not 0 or 1
+	 */
+	if (chip_tx_tail != tx_tail ||
+	    !(offset == 0 || (offset == 1 && mcp251xfd_is_2518(priv)))) {
+		netdev_err(priv->ndev,
+			   "ECC Error information inconsistent (addr=0x%04x, nr=%d, tx_tail=0x%08x(%d), chip_tx_tail=%d, offset=%d).\n",
+			   addr, nr, tx_ring->tail, tx_tail, chip_tx_tail,
+			   offset);
+		return -EINVAL;
+	}
+
+	netdev_info(priv->ndev,
+		    "Recovering %s ECC Error at address 0x%04x (in TX-RAM, tx_obj=%d, tx_tail=0x%08x(%d), offset=%d).\n",
+		    ecc->ecc_stat & MCP251XFD_REG_ECCSTAT_SECIF ?
+		    "Single" : "Double",
+		    addr, nr, tx_ring->tail, tx_tail, offset);
+
+	/* reload tx_obj into controller RAM ... */
+	tx_obj = &tx_ring->obj[nr];
+	err = spi_sync_transfer(priv->spi, tx_obj->xfer, 1);
+	if (err)
+		return err;
+
+	/* ... and trigger retransmit */
+	return mcp251xfd_chip_set_normal_mode(priv);
+}
+
+static int
+mcp251xfd_handle_eccif(struct mcp251xfd_priv *priv, bool set_normal_mode)
+{
+	struct mcp251xfd_ecc *ecc = &priv->ecc;
+	const char *msg;
+	bool in_tx_ram;
+	u32 ecc_stat;
+	u16 addr;
+	u8 nr;
+	int err;
+
+	err = regmap_read(priv->map_reg, MCP251XFD_REG_ECCSTAT, &ecc_stat);
+	if (err)
+		return err;
+
+	err = regmap_update_bits(priv->map_reg, MCP251XFD_REG_ECCSTAT,
+				 MCP251XFD_REG_ECCSTAT_IF_MASK, ~ecc_stat);
+	if (err)
+		return err;
+
+	/* Check if ECC error occurred in TX-RAM */
+	addr = FIELD_GET(MCP251XFD_REG_ECCSTAT_ERRADDR_MASK, ecc_stat);
+	err = mcp251xfd_get_tx_nr_by_addr(priv->tx, &nr, addr);
+	if (!err)
+		in_tx_ram = true;
+	else if (err == -ENOENT)
+		in_tx_ram = false;
+	else
+		return err;
+
+	/* Errata Reference:
+	 * mcp2517fd: DS80000789B, mcp2518fd: DS80000792C 2.
+	 *
+	 * ECC single error correction does not work in all cases:
+	 *
+	 * Fix/Work Around:
+	 * Enable single error correction and double error detection
+	 * interrupts by setting SECIE and DEDIE. Handle SECIF as a
+	 * detection interrupt and do not rely on the error
+	 * correction. Instead, handle both interrupts as a
+	 * notification that the RAM word at ERRADDR was corrupted.
+	 */
+	if (ecc_stat & MCP251XFD_REG_ECCSTAT_SECIF)
+		msg = "Single ECC Error detected at address";
+	else if (ecc_stat & MCP251XFD_REG_ECCSTAT_DEDIF)
+		msg = "Double ECC Error detected at address";
+	else
+		return -EINVAL;
+
+	if (!in_tx_ram) {
+		ecc->ecc_stat = 0;
+
+		netdev_notice(priv->ndev, "%s 0x%04x.\n", msg, addr);
+	} else {
+		/* Re-occurring error? */
+		if (ecc->ecc_stat == ecc_stat) {
+			ecc->cnt++;
+		} else {
+			ecc->ecc_stat = ecc_stat;
+			ecc->cnt = 1;
+		}
+
+		netdev_info(priv->ndev,
+			    "%s 0x%04x (in TX-RAM, tx_obj=%d), occurred %d time%s.\n",
+			    msg, addr, nr, ecc->cnt, ecc->cnt > 1 ? "s" : "");
+
+		if (ecc->cnt >= MCP251XFD_ECC_CNT_MAX)
+			return mcp251xfd_handle_eccif_recover(priv, nr);
+	}
+
+	if (set_normal_mode)
+		return mcp251xfd_chip_set_normal_mode_nowait(priv);
+
+	return 0;
+}
+
+static int mcp251xfd_handle_spicrcif(struct mcp251xfd_priv *priv)
+{
+	int err;
+	u32 crc;
+
+	err = regmap_read(priv->map_reg, MCP251XFD_REG_CRC, &crc);
+	if (err)
+		return err;
+
+	err = regmap_update_bits(priv->map_reg, MCP251XFD_REG_CRC,
+				 MCP251XFD_REG_CRC_IF_MASK,
+				 ~crc);
+	if (err)
+		return err;
+
+	if (crc & MCP251XFD_REG_CRC_FERRIF)
+		netdev_notice(priv->ndev, "CRC write command format error.\n");
+	else if (crc & MCP251XFD_REG_CRC_CRCERRIF)
+		netdev_notice(priv->ndev,
+			      "CRC write error detected. CRC=0x%04lx.\n",
+			      FIELD_GET(MCP251XFD_REG_CRC_MASK, crc));
+
+	return 0;
+}
+
+static int mcp251xfd_read_regs_status(struct mcp251xfd_priv *priv)
+{
+	const int val_bytes = regmap_get_val_bytes(priv->map_reg);
+	size_t len;
+
+	if (priv->rx_ring_num == 1)
+		len = sizeof(priv->regs_status.intf);
+	else
+		len = sizeof(priv->regs_status);
+
+	return regmap_bulk_read(priv->map_reg, MCP251XFD_REG_INT,
+				&priv->regs_status, len / val_bytes);
+}
+
+#define mcp251xfd_handle(priv, irq, ...) \
+({ \
+	struct mcp251xfd_priv *_priv = (priv); \
+	int err; \
+\
+	err = mcp251xfd_handle_##irq(_priv, ## __VA_ARGS__); \
+	if (err) \
+		netdev_err(_priv->ndev, \
+			"IRQ handler mcp251xfd_handle_%s() returned %d.\n", \
+			__stringify(irq), err); \
+	err; \
+})
+
+static irqreturn_t mcp251xfd_irq(int irq, void *dev_id)
+{
+	struct mcp251xfd_priv *priv = dev_id;
+	irqreturn_t handled = IRQ_NONE;
+	int err;
+
+	if (priv->rx_int)
+		do {
+			int rx_pending;
+
+			rx_pending = gpiod_get_value_cansleep(priv->rx_int);
+			if (!rx_pending)
+				break;
+
+			/* Assume 1st RX-FIFO pending, if other FIFOs
+			 * are pending the main IRQ handler will take
+			 * care.
+			 */
+			priv->regs_status.rxif = BIT(priv->rx[0]->fifo_nr);
+			err = mcp251xfd_handle(priv, rxif);
+			if (err)
+				goto out_fail;
+
+			handled = IRQ_HANDLED;
+
+			/* We don't know which RX-FIFO is pending, but only
+			 * handle the 1st RX-FIFO. Leave loop here if we have
+			 * more than 1 RX-FIFO to avoid starvation.
+			 */
+		} while (priv->rx_ring_num == 1);
+
+	do {
+		u32 intf_pending, intf_pending_clearable;
+		bool set_normal_mode = false;
+
+		err = mcp251xfd_read_regs_status(priv);
+		if (err)
+			goto out_fail;
+
+		intf_pending = FIELD_GET(MCP251XFD_REG_INT_IF_MASK,
+					 priv->regs_status.intf) &
+			FIELD_GET(MCP251XFD_REG_INT_IE_MASK,
+				  priv->regs_status.intf);
+
+		if (!(intf_pending)) {
+			can_rx_offload_threaded_irq_finish(&priv->offload);
+			return handled;
+		}
+
+		/* Some interrupts must be ACKed in the
+		 * MCP251XFD_REG_INT register.
+		 * - First ACK then handle, to avoid lost-IRQ race
+		 *   condition on fast re-occurring interrupts.
+		 * - Write "0" to clear active IRQs, "1" to all other,
+		 *   to avoid r/m/w race condition on the
+		 *   MCP251XFD_REG_INT register.
+		 */
+		intf_pending_clearable = intf_pending &
+			MCP251XFD_REG_INT_IF_CLEARABLE_MASK;
+		if (intf_pending_clearable) {
+			err = regmap_update_bits(priv->map_reg,
+						 MCP251XFD_REG_INT,
+						 MCP251XFD_REG_INT_IF_MASK,
+						 ~intf_pending_clearable);
+			if (err)
+				goto out_fail;
+		}
+
+		if (intf_pending & MCP251XFD_REG_INT_MODIF) {
+			err = mcp251xfd_handle(priv, modif, &set_normal_mode);
+			if (err)
+				goto out_fail;
+		}
+
+		if (intf_pending & MCP251XFD_REG_INT_RXIF) {
+			err = mcp251xfd_handle(priv, rxif);
+			if (err)
+				goto out_fail;
+		}
+
+		if (intf_pending & MCP251XFD_REG_INT_TEFIF) {
+			err = mcp251xfd_handle(priv, tefif);
+			if (err)
+				goto out_fail;
+		}
+
+		if (intf_pending & MCP251XFD_REG_INT_RXOVIF) {
+			err = mcp251xfd_handle(priv, rxovif);
+			if (err)
+				goto out_fail;
+		}
+
+		if (intf_pending & MCP251XFD_REG_INT_TXATIF) {
+			err = mcp251xfd_handle(priv, txatif);
+			if (err)
+				goto out_fail;
+		}
+
+		if (intf_pending & MCP251XFD_REG_INT_IVMIF) {
+			err = mcp251xfd_handle(priv, ivmif);
+			if (err)
+				goto out_fail;
+		}
+
+		if (intf_pending & MCP251XFD_REG_INT_SERRIF) {
+			err = mcp251xfd_handle(priv, serrif);
+			if (err)
+				goto out_fail;
+		}
+
+		if (intf_pending & MCP251XFD_REG_INT_ECCIF) {
+			err = mcp251xfd_handle(priv, eccif, set_normal_mode);
+			if (err)
+				goto out_fail;
+		}
+
+		if (intf_pending & MCP251XFD_REG_INT_SPICRCIF) {
+			err = mcp251xfd_handle(priv, spicrcif);
+			if (err)
+				goto out_fail;
+		}
+
+		/* On the MCP2527FD and MCP2518FD, we don't get a
+		 * CERRIF IRQ on the transition TX ERROR_WARNING -> TX
+		 * ERROR_ACTIVE.
+		 */
+		if (intf_pending & MCP251XFD_REG_INT_CERRIF ||
+		    priv->can.state > CAN_STATE_ERROR_ACTIVE) {
+			err = mcp251xfd_handle(priv, cerrif);
+			if (err)
+				goto out_fail;
+
+			/* In Bus Off we completely shut down the
+			 * controller. Every subsequent register read
+			 * will read bogus data, and if
+			 * MCP251XFD_QUIRK_CRC_REG is enabled the CRC
+			 * check will fail, too. So leave IRQ handler
+			 * directly.
+			 */
+			if (priv->can.state == CAN_STATE_BUS_OFF) {
+				can_rx_offload_threaded_irq_finish(&priv->offload);
+				return IRQ_HANDLED;
+			}
+		}
+
+		handled = IRQ_HANDLED;
+	} while (1);
+
+ out_fail:
+	can_rx_offload_threaded_irq_finish(&priv->offload);
+
+	netdev_err(priv->ndev, "IRQ handler returned %d (intf=0x%08x).\n",
+		   err, priv->regs_status.intf);
+	mcp251xfd_dump(priv);
+	mcp251xfd_chip_interrupts_disable(priv);
+	mcp251xfd_timestamp_stop(priv);
+
+	return handled;
+}
+
+static int mcp251xfd_open(struct net_device *ndev)
+{
+	struct mcp251xfd_priv *priv = netdev_priv(ndev);
+	const struct spi_device *spi = priv->spi;
+	int err;
+
+	err = open_candev(ndev);
+	if (err)
+		return err;
+
+	err = pm_runtime_resume_and_get(ndev->dev.parent);
+	if (err)
+		goto out_close_candev;
+
+	err = mcp251xfd_ring_alloc(priv);
+	if (err)
+		goto out_pm_runtime_put;
+
+	err = mcp251xfd_transceiver_enable(priv);
+	if (err)
+		goto out_mcp251xfd_ring_free;
+
+	err = mcp251xfd_chip_start(priv);
+	if (err)
+		goto out_transceiver_disable;
+
+	mcp251xfd_timestamp_init(priv);
+	clear_bit(MCP251XFD_FLAGS_DOWN, priv->flags);
+	can_rx_offload_enable(&priv->offload);
+
+	err = request_threaded_irq(spi->irq, NULL, mcp251xfd_irq,
+				   IRQF_SHARED | IRQF_ONESHOT,
+				   dev_name(&spi->dev), priv);
+	if (err)
+		goto out_can_rx_offload_disable;
+
+	err = mcp251xfd_chip_interrupts_enable(priv);
+	if (err)
+		goto out_free_irq;
+
+	netif_start_queue(ndev);
+
+	return 0;
+
+ out_free_irq:
+	free_irq(spi->irq, priv);
+ out_can_rx_offload_disable:
+	can_rx_offload_disable(&priv->offload);
+	set_bit(MCP251XFD_FLAGS_DOWN, priv->flags);
+	mcp251xfd_timestamp_stop(priv);
+ out_transceiver_disable:
+	mcp251xfd_transceiver_disable(priv);
+ out_mcp251xfd_ring_free:
+	mcp251xfd_ring_free(priv);
+ out_pm_runtime_put:
+	mcp251xfd_chip_stop(priv, CAN_STATE_STOPPED);
+	pm_runtime_put(ndev->dev.parent);
+ out_close_candev:
+	close_candev(ndev);
+
+	return err;
+}
+
+static int mcp251xfd_stop(struct net_device *ndev)
+{
+	struct mcp251xfd_priv *priv = netdev_priv(ndev);
+
+	netif_stop_queue(ndev);
+	set_bit(MCP251XFD_FLAGS_DOWN, priv->flags);
+	hrtimer_cancel(&priv->rx_irq_timer);
+	mcp251xfd_chip_interrupts_disable(priv);
+	free_irq(ndev->irq, priv);
+	can_rx_offload_disable(&priv->offload);
+	mcp251xfd_timestamp_stop(priv);
+	mcp251xfd_chip_stop(priv, CAN_STATE_STOPPED);
+	mcp251xfd_transceiver_disable(priv);
+	mcp251xfd_ring_free(priv);
+	close_candev(ndev);
+
+	pm_runtime_put(ndev->dev.parent);
+
+	return 0;
+}
+
+static const struct net_device_ops mcp251xfd_netdev_ops = {
+	.ndo_open = mcp251xfd_open,
+	.ndo_stop = mcp251xfd_stop,
+	.ndo_start_xmit	= mcp251xfd_start_xmit,
+	.ndo_change_mtu = can_change_mtu,
+};
+
+static void
+mcp251xfd_register_quirks(struct mcp251xfd_priv *priv)
+{
+	const struct spi_device *spi = priv->spi;
+	const struct spi_controller *ctlr = spi->controller;
+
+	if (ctlr->flags & SPI_CONTROLLER_HALF_DUPLEX)
+		priv->devtype_data.quirks |= MCP251XFD_QUIRK_HALF_DUPLEX;
+}
+
+static int mcp251xfd_register_chip_detect(struct mcp251xfd_priv *priv)
+{
+	const struct net_device *ndev = priv->ndev;
+	const struct mcp251xfd_devtype_data *devtype_data;
+	u32 osc;
+	int err;
+
+	/* The OSC_LPMEN is only supported on MCP2518FD, so use it to
+	 * autodetect the model.
+	 */
+	err = regmap_update_bits(priv->map_reg, MCP251XFD_REG_OSC,
+				 MCP251XFD_REG_OSC_LPMEN,
+				 MCP251XFD_REG_OSC_LPMEN);
+	if (err)
+		return err;
+
+	err = regmap_read(priv->map_reg, MCP251XFD_REG_OSC, &osc);
+	if (err)
+		return err;
+
+	if (osc & MCP251XFD_REG_OSC_LPMEN)
+		devtype_data = &mcp251xfd_devtype_data_mcp2518fd;
+	else
+		devtype_data = &mcp251xfd_devtype_data_mcp2517fd;
+
+	if (!mcp251xfd_is_251X(priv) &&
+	    priv->devtype_data.model != devtype_data->model) {
+		netdev_info(ndev,
+			    "Detected %s, but firmware specifies a %s. Fixing up.\n",
+			    __mcp251xfd_get_model_str(devtype_data->model),
+			    mcp251xfd_get_model_str(priv));
+	}
+	priv->devtype_data = *devtype_data;
+
+	/* We need to preserve the Half Duplex Quirk. */
+	mcp251xfd_register_quirks(priv);
+
+	/* Re-init regmap with quirks of detected model. */
+	return mcp251xfd_regmap_init(priv);
+}
+
+static int mcp251xfd_register_check_rx_int(struct mcp251xfd_priv *priv)
+{
+	int err, rx_pending;
+
+	if (!priv->rx_int)
+		return 0;
+
+	err = mcp251xfd_chip_rx_int_enable(priv);
+	if (err)
+		return err;
+
+	/* Check if RX_INT is properly working. The RX_INT should not
+	 * be active after a softreset.
+	 */
+	rx_pending = gpiod_get_value_cansleep(priv->rx_int);
+
+	err = mcp251xfd_chip_rx_int_disable(priv);
+	if (err)
+		return err;
+
+	if (!rx_pending)
+		return 0;
+
+	netdev_info(priv->ndev,
+		    "RX_INT active after softreset, disabling RX_INT support.\n");
+	devm_gpiod_put(&priv->spi->dev, priv->rx_int);
+	priv->rx_int = NULL;
+
+	return 0;
+}
+
+static int
+mcp251xfd_register_get_dev_id(const struct mcp251xfd_priv *priv, u32 *dev_id,
+			      u32 *effective_speed_hz_slow,
+			      u32 *effective_speed_hz_fast)
+{
+	struct mcp251xfd_map_buf_nocrc *buf_rx;
+	struct mcp251xfd_map_buf_nocrc *buf_tx;
+	struct spi_transfer xfer[2] = { };
+	int err;
+
+	buf_rx = kzalloc(sizeof(*buf_rx), GFP_KERNEL);
+	if (!buf_rx)
+		return -ENOMEM;
+
+	buf_tx = kzalloc(sizeof(*buf_tx), GFP_KERNEL);
+	if (!buf_tx) {
+		err = -ENOMEM;
+		goto out_kfree_buf_rx;
+	}
+
+	xfer[0].tx_buf = buf_tx;
+	xfer[0].len = sizeof(buf_tx->cmd);
+	xfer[0].speed_hz = priv->spi_max_speed_hz_slow;
+	xfer[1].rx_buf = buf_rx->data;
+	xfer[1].len = sizeof(dev_id);
+	xfer[1].speed_hz = priv->spi_max_speed_hz_fast;
+
+	mcp251xfd_spi_cmd_read_nocrc(&buf_tx->cmd, MCP251XFD_REG_DEVID);
+
+	err = spi_sync_transfer(priv->spi, xfer, ARRAY_SIZE(xfer));
+	if (err)
+		goto out_kfree_buf_tx;
+
+	*dev_id = be32_to_cpup((__be32 *)buf_rx->data);
+	*effective_speed_hz_slow = xfer[0].effective_speed_hz;
+	*effective_speed_hz_fast = xfer[1].effective_speed_hz;
+
+ out_kfree_buf_tx:
+	kfree(buf_tx);
+ out_kfree_buf_rx:
+	kfree(buf_rx);
+
+	return err;
+}
+
+#define MCP251XFD_QUIRK_ACTIVE(quirk) \
+	(priv->devtype_data.quirks & MCP251XFD_QUIRK_##quirk ? '+' : '-')
+
+static int
+mcp251xfd_register_done(const struct mcp251xfd_priv *priv)
+{
+	u32 dev_id, effective_speed_hz_slow, effective_speed_hz_fast;
+	unsigned long clk_rate;
+	int err;
+
+	err = mcp251xfd_register_get_dev_id(priv, &dev_id,
+					    &effective_speed_hz_slow,
+					    &effective_speed_hz_fast);
+	if (err)
+		return err;
+
+	clk_rate = clk_get_rate(priv->clk);
+
+	netdev_info(priv->ndev,
+		    "%s rev%lu.%lu (%cRX_INT %cPLL %cMAB_NO_WARN %cCRC_REG %cCRC_RX %cCRC_TX %cECC %cHD o:%lu.%02luMHz c:%u.%02uMHz m:%u.%02uMHz rs:%u.%02uMHz es:%u.%02uMHz rf:%u.%02uMHz ef:%u.%02uMHz) successfully initialized.\n",
+		    mcp251xfd_get_model_str(priv),
+		    FIELD_GET(MCP251XFD_REG_DEVID_ID_MASK, dev_id),
+		    FIELD_GET(MCP251XFD_REG_DEVID_REV_MASK, dev_id),
+		    priv->rx_int ? '+' : '-',
+		    priv->pll_enable ? '+' : '-',
+		    MCP251XFD_QUIRK_ACTIVE(MAB_NO_WARN),
+		    MCP251XFD_QUIRK_ACTIVE(CRC_REG),
+		    MCP251XFD_QUIRK_ACTIVE(CRC_RX),
+		    MCP251XFD_QUIRK_ACTIVE(CRC_TX),
+		    MCP251XFD_QUIRK_ACTIVE(ECC),
+		    MCP251XFD_QUIRK_ACTIVE(HALF_DUPLEX),
+		    clk_rate / 1000000,
+		    clk_rate % 1000000 / 1000 / 10,
+		    priv->can.clock.freq / 1000000,
+		    priv->can.clock.freq % 1000000 / 1000 / 10,
+		    priv->spi_max_speed_hz_orig / 1000000,
+		    priv->spi_max_speed_hz_orig % 1000000 / 1000 / 10,
+		    priv->spi_max_speed_hz_slow / 1000000,
+		    priv->spi_max_speed_hz_slow % 1000000 / 1000 / 10,
+		    effective_speed_hz_slow / 1000000,
+		    effective_speed_hz_slow % 1000000 / 1000 / 10,
+		    priv->spi_max_speed_hz_fast / 1000000,
+		    priv->spi_max_speed_hz_fast % 1000000 / 1000 / 10,
+		    effective_speed_hz_fast / 1000000,
+		    effective_speed_hz_fast % 1000000 / 1000 / 10);
+
+	return 0;
+}
+
+static int mcp251xfd_register(struct mcp251xfd_priv *priv)
+{
+	struct net_device *ndev = priv->ndev;
+	int err;
+
+	err = mcp251xfd_clks_and_vdd_enable(priv);
+	if (err)
+		return err;
+
+	pm_runtime_get_noresume(ndev->dev.parent);
+	err = pm_runtime_set_active(ndev->dev.parent);
+	if (err)
+		goto out_runtime_put_noidle;
+	pm_runtime_enable(ndev->dev.parent);
+
+	mcp251xfd_register_quirks(priv);
+
+	err = mcp251xfd_chip_softreset(priv);
+	if (err == -ENODEV)
+		goto out_runtime_disable;
+	if (err)
+		goto out_chip_sleep;
+
+	err = mcp251xfd_chip_clock_init(priv);
+	if (err == -ENODEV)
+		goto out_runtime_disable;
+	if (err)
+		goto out_chip_sleep;
+
+	err = mcp251xfd_register_chip_detect(priv);
+	if (err)
+		goto out_chip_sleep;
+
+	err = mcp251xfd_register_check_rx_int(priv);
+	if (err)
+		goto out_chip_sleep;
+
+	mcp251xfd_ethtool_init(priv);
+
+	err = register_candev(ndev);
+	if (err)
+		goto out_chip_sleep;
+
+	err = mcp251xfd_register_done(priv);
+	if (err)
+		goto out_unregister_candev;
+
+	/* Put controller into sleep mode and let pm_runtime_put()
+	 * disable the clocks and vdd. If CONFIG_PM is not enabled,
+	 * the clocks and vdd will stay powered.
+	 */
+	err = mcp251xfd_chip_sleep(priv);
+	if (err)
+		goto out_unregister_candev;
+
+	pm_runtime_put(ndev->dev.parent);
+
+	return 0;
+
+ out_unregister_candev:
+	unregister_candev(ndev);
+ out_chip_sleep:
+	mcp251xfd_chip_sleep(priv);
+ out_runtime_disable:
+	pm_runtime_disable(ndev->dev.parent);
+ out_runtime_put_noidle:
+	pm_runtime_put_noidle(ndev->dev.parent);
+	mcp251xfd_clks_and_vdd_disable(priv);
+
+	return err;
+}
+
+static inline void mcp251xfd_unregister(struct mcp251xfd_priv *priv)
+{
+	struct net_device *ndev	= priv->ndev;
+
+	unregister_candev(ndev);
+
+	if (pm_runtime_enabled(ndev->dev.parent))
+		pm_runtime_disable(ndev->dev.parent);
+	else
+		mcp251xfd_clks_and_vdd_disable(priv);
+}
+
+static const struct of_device_id mcp251xfd_of_match[] = {
+	{
+		.compatible = "microchip,mcp2517fd",
+		.data = &mcp251xfd_devtype_data_mcp2517fd,
+	}, {
+		.compatible = "microchip,mcp2518fd",
+		.data = &mcp251xfd_devtype_data_mcp2518fd,
+	}, {
+		.compatible = "microchip,mcp251xfd",
+		.data = &mcp251xfd_devtype_data_mcp251xfd,
+	}, {
+		/* sentinel */
+	},
+};
+MODULE_DEVICE_TABLE(of, mcp251xfd_of_match);
+
+static const struct spi_device_id mcp251xfd_id_table[] = {
+	{
+		.name = "mcp2517fd",
+		.driver_data = (kernel_ulong_t)&mcp251xfd_devtype_data_mcp2517fd,
+	}, {
+		.name = "mcp2518fd",
+		.driver_data = (kernel_ulong_t)&mcp251xfd_devtype_data_mcp2518fd,
+	}, {
+		.name = "mcp251xfd",
+		.driver_data = (kernel_ulong_t)&mcp251xfd_devtype_data_mcp251xfd,
+	}, {
+		/* sentinel */
+	},
+};
+MODULE_DEVICE_TABLE(spi, mcp251xfd_id_table);
+
+static int mcp251xfd_probe(struct spi_device *spi)
+{
+	const void *match;
+	struct net_device *ndev;
+	struct mcp251xfd_priv *priv;
+	struct gpio_desc *rx_int;
+	struct regulator *reg_vdd, *reg_xceiver;
+	struct clk *clk;
+	bool pll_enable = false;
+	u32 freq = 0;
+	int err;
+
+	if (!spi->irq)
+		return dev_err_probe(&spi->dev, -ENXIO,
+				     "No IRQ specified (maybe node \"interrupts-extended\" in DT missing)!\n");
+
+	rx_int = devm_gpiod_get_optional(&spi->dev, "microchip,rx-int",
+					 GPIOD_IN);
+	if (IS_ERR(rx_int))
+		return dev_err_probe(&spi->dev, PTR_ERR(rx_int),
+				     "Failed to get RX-INT!\n");
+
+	reg_vdd = devm_regulator_get_optional(&spi->dev, "vdd");
+	if (PTR_ERR(reg_vdd) == -ENODEV)
+		reg_vdd = NULL;
+	else if (IS_ERR(reg_vdd))
+		return dev_err_probe(&spi->dev, PTR_ERR(reg_vdd),
+				     "Failed to get VDD regulator!\n");
+
+	reg_xceiver = devm_regulator_get_optional(&spi->dev, "xceiver");
+	if (PTR_ERR(reg_xceiver) == -ENODEV)
+		reg_xceiver = NULL;
+	else if (IS_ERR(reg_xceiver))
+		return dev_err_probe(&spi->dev, PTR_ERR(reg_xceiver),
+				     "Failed to get Transceiver regulator!\n");
+
+	clk = devm_clk_get_optional(&spi->dev, NULL);
+	if (IS_ERR(clk))
+		return dev_err_probe(&spi->dev, PTR_ERR(clk),
+				     "Failed to get Oscillator (clock)!\n");
+	if (clk) {
+		freq = clk_get_rate(clk);
+	} else {
+		err = device_property_read_u32(&spi->dev, "clock-frequency",
+					       &freq);
+		if (err)
+			return dev_err_probe(&spi->dev, err,
+					     "Failed to get clock-frequency!\n");
+	}
+
+	/* Sanity check */
+	if (freq < MCP251XFD_SYSCLOCK_HZ_MIN ||
+	    freq > MCP251XFD_SYSCLOCK_HZ_MAX) {
+		dev_err(&spi->dev,
+			"Oscillator frequency (%u Hz) is too low or high.\n",
+			freq);
+		return -ERANGE;
+	}
+
+	if (freq <= MCP251XFD_SYSCLOCK_HZ_MAX / MCP251XFD_OSC_PLL_MULTIPLIER)
+		pll_enable = true;
+
+	ndev = alloc_candev(sizeof(struct mcp251xfd_priv),
+			    MCP251XFD_TX_OBJ_NUM_MAX);
+	if (!ndev)
+		return -ENOMEM;
+
+	SET_NETDEV_DEV(ndev, &spi->dev);
+
+	ndev->netdev_ops = &mcp251xfd_netdev_ops;
+	ndev->irq = spi->irq;
+	ndev->flags |= IFF_ECHO;
+
+	priv = netdev_priv(ndev);
+	spi_set_drvdata(spi, priv);
+	priv->can.clock.freq = freq;
+	if (pll_enable)
+		priv->can.clock.freq *= MCP251XFD_OSC_PLL_MULTIPLIER;
+	priv->can.do_set_mode = mcp251xfd_set_mode;
+	priv->can.do_get_berr_counter = mcp251xfd_get_berr_counter;
+	priv->can.bittiming_const = &mcp251xfd_bittiming_const;
+	priv->can.data_bittiming_const = &mcp251xfd_data_bittiming_const;
+	priv->can.ctrlmode_supported = CAN_CTRLMODE_LOOPBACK |
+		CAN_CTRLMODE_LISTENONLY | CAN_CTRLMODE_BERR_REPORTING |
+		CAN_CTRLMODE_FD | CAN_CTRLMODE_FD_NON_ISO |
+		CAN_CTRLMODE_CC_LEN8_DLC;
+	set_bit(MCP251XFD_FLAGS_DOWN, priv->flags);
+	priv->ndev = ndev;
+	priv->spi = spi;
+	priv->rx_int = rx_int;
+	priv->clk = clk;
+	priv->pll_enable = pll_enable;
+	priv->reg_vdd = reg_vdd;
+	priv->reg_xceiver = reg_xceiver;
+
+	match = device_get_match_data(&spi->dev);
+	if (match)
+		priv->devtype_data = *(struct mcp251xfd_devtype_data *)match;
+	else
+		priv->devtype_data = *(struct mcp251xfd_devtype_data *)
+			spi_get_device_id(spi)->driver_data;
+
+	/* Errata Reference:
+	 * mcp2517fd: DS80000792C 5., mcp2518fd: DS80000789C 4.
+	 *
+	 * The SPI can write corrupted data to the RAM at fast SPI
+	 * speeds:
+	 *
+	 * Simultaneous activity on the CAN bus while writing data to
+	 * RAM via the SPI interface, with high SCK frequency, can
+	 * lead to corrupted data being written to RAM.
+	 *
+	 * Fix/Work Around:
+	 * Ensure that FSCK is less than or equal to 0.85 *
+	 * (FSYSCLK/2).
+	 *
+	 * Known good combinations are:
+	 *
+	 * MCP	ext-clk	SoC			SPI			SPI-clk		max-clk	parent-clk	config
+	 *
+	 * 2518	20 MHz	allwinner,sun8i-h3	allwinner,sun8i-h3-spi	 8333333 Hz	 83.33%	600000000 Hz	assigned-clocks = <&ccu CLK_SPIx>
+	 * 2518	40 MHz	allwinner,sun8i-h3	allwinner,sun8i-h3-spi	16666667 Hz	 83.33%	600000000 Hz	assigned-clocks = <&ccu CLK_SPIx>
+	 * 2517	40 MHz	atmel,sama5d27		atmel,at91rm9200-spi	16400000 Hz	 82.00%	 82000000 Hz	default
+	 * 2518	40 MHz	atmel,sama5d27		atmel,at91rm9200-spi	16400000 Hz	 82.00%	 82000000 Hz	default
+	 * 2518	40 MHz	fsl,imx6dl		fsl,imx51-ecspi		15000000 Hz	 75.00%	 30000000 Hz	default
+	 * 2517	20 MHz	fsl,imx8mm		fsl,imx51-ecspi		 8333333 Hz	 83.33%	 16666667 Hz	assigned-clocks = <&clk IMX8MM_CLK_ECSPIx_ROOT>
+	 *
+	 */
+	priv->spi_max_speed_hz_orig = spi->max_speed_hz;
+	priv->spi_max_speed_hz_slow = min(spi->max_speed_hz,
+					  freq / 2 / 1000 * 850);
+	if (priv->pll_enable)
+		priv->spi_max_speed_hz_fast = min(spi->max_speed_hz,
+						  freq *
+						  MCP251XFD_OSC_PLL_MULTIPLIER /
+						  2 / 1000 * 850);
+	else
+		priv->spi_max_speed_hz_fast = priv->spi_max_speed_hz_slow;
+	spi->max_speed_hz = priv->spi_max_speed_hz_slow;
+	spi->bits_per_word = 8;
+	spi->rt = true;
+	err = spi_setup(spi);
+	if (err)
+		goto out_free_candev;
+
+	err = mcp251xfd_regmap_init(priv);
+	if (err)
+		goto out_free_candev;
+
+	err = can_rx_offload_add_manual(ndev, &priv->offload,
+					MCP251XFD_NAPI_WEIGHT);
+	if (err)
+		goto out_free_candev;
+
+	err = mcp251xfd_register(priv);
+	if (err) {
+		dev_err_probe(&spi->dev, err, "Failed to detect %s.\n",
+			      mcp251xfd_get_model_str(priv));
+		goto out_can_rx_offload_del;
+	}
+
+	return 0;
+
+ out_can_rx_offload_del:
+	can_rx_offload_del(&priv->offload);
+ out_free_candev:
+	spi->max_speed_hz = priv->spi_max_speed_hz_orig;
+
+	free_candev(ndev);
+
+	return err;
+}
+
+static void mcp251xfd_remove(struct spi_device *spi)
+{
+	struct mcp251xfd_priv *priv = spi_get_drvdata(spi);
+	struct net_device *ndev = priv->ndev;
+
+	can_rx_offload_del(&priv->offload);
+	mcp251xfd_unregister(priv);
+	spi->max_speed_hz = priv->spi_max_speed_hz_orig;
+	free_candev(ndev);
+}
+
+static int __maybe_unused mcp251xfd_runtime_suspend(struct device *device)
+{
+	const struct mcp251xfd_priv *priv = dev_get_drvdata(device);
+
+	return mcp251xfd_clks_and_vdd_disable(priv);
+}
+
+static int __maybe_unused mcp251xfd_runtime_resume(struct device *device)
+{
+	const struct mcp251xfd_priv *priv = dev_get_drvdata(device);
+
+	return mcp251xfd_clks_and_vdd_enable(priv);
+}
+
+static const struct dev_pm_ops mcp251xfd_pm_ops = {
+	SET_RUNTIME_PM_OPS(mcp251xfd_runtime_suspend,
+			   mcp251xfd_runtime_resume, NULL)
+};
+
+static struct spi_driver mcp251xfd_driver = {
+	.driver = {
+		.name = DEVICE_NAME,
+		.pm = &mcp251xfd_pm_ops,
+		.of_match_table = mcp251xfd_of_match,
+	},
+	.probe = mcp251xfd_probe,
+	.remove = mcp251xfd_remove,
+	.id_table = mcp251xfd_id_table,
+};
+module_spi_driver(mcp251xfd_driver);
+
+MODULE_AUTHOR("Marc Kleine-Budde <mkl@pengutronix.de>");
+MODULE_DESCRIPTION("Microchip MCP251xFD Family CAN controller driver");
+MODULE_LICENSE("GPL v2");

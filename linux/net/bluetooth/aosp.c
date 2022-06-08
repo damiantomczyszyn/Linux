@@ -1,192 +1,191 @@
-silent)
-		return;
-
-	pr_warn("\n");
-	pr_warn("======================================================\n");
-	pr_warn("WARNING: possible circular locking dependency detected\n");
-	print_kernel_ident();
-	pr_warn("------------------------------------------------------\n");
-	pr_warn("%s/%d is trying to acquire lock:\n",
-		curr->comm, task_pid_nr(curr));
-	print_lock(check_src);
-
-	pr_warn("\nbut task is already holding lock:\n");
-
-	print_lock(check_tgt);
-	pr_warn("\nwhich lock already depends on the new lock.\n\n");
-	pr_warn("\nthe existing dependency chain (in reverse order) is:\n");
-
-	print_circular_bug_entry(entry, depth);
-}
-
-/*
- * We are about to add A -> B into the dependency graph, and in __bfs() a
- * strong dependency path A -> .. -> B is found: hlock_class equals
- * entry->class.
- *
- * If A -> .. -> B can replace A -> B in any __bfs() search (means the former
- * is _stronger_ than or equal to the latter), we consider A -> B as redundant.
- * For example if A -> .. -> B is -(EN)-> (i.e. A -(E*)-> .. -(*N)-> B), and A
- * -> B is -(ER)-> or -(EN)->, then we don't need to add A -> B into the
- * dependency graph, as any strong path ..-> A -> B ->.. we can get with
- * having dependency A -> B, we could already get a equivalent path ..-> A ->
- * .. -> B -> .. with A -> .. -> B. Therefore A -> B is redundant.
- *
- * We need to make sure both the start and the end of A -> .. -> B is not
- * weaker than A -> B. For the start part, please see the comment in
- * check_redundant(). For the end part, we need:
- *
- * Either
- *
- *     a) A -> B is -(*R)-> (everything is not weaker than that)
- *
- * or
- *
- *     b) A -> .. -> B is -(*N)-> (nothing is stronger than this)
- *
- */
-static inline bool hlock_equal(struct lock_list *entry, void *data)
-{
-	struct held_lock *hlock = (struct held_lock *)data;
-
-	return hlock_class(hlock) == entry->class && /* Found A -> .. -> B */
-	       (hlock->read == 2 ||  /* A -> B is -(*R)-> */
-		!entry->only_xr); /* A -> .. -> B is -(*N)-> */
-}
-
-/*
- * We are about to add B -> A into the dependency graph, and in __bfs() a
- * strong dependency path A -> .. -> B is found: hlock_class equals
- * entry->class.
- *
- * We will have a deadlock case (conflict) if A -> .. -> B -> A is a strong
- * dependency cycle, that means:
- *
- * Either
- *
- *     a) B -> A is -(E*)->
- *
- * or
- *
- *     b) A -> .. -> B is -(*N)-> (i.e. A -> .. -(*N)-> B)
- *
- * as then we don't have -(*R)-> -(S*)-> in the cycle.
- */
-static inline bool hlock_conflict(struct lock_list *entry, void *data)
-{
-	struct held_lock *hlock = (struct held_lock *)data;
-
-	return hlock_class(hlock) == entry->class && /* Found A -> .. -> B */
-	       (hlock->read == 0 || /* B -> A is -(E*)-> */
-		!entry->only_xr); /* A -> .. -> B is -(*N)-> */
-}
-
-static noinline void print_circular_bug(struct lock_list *this,
-				struct lock_list *target,
-				struct held_lock *check_src,
-				struct held_lock *check_tgt)
-{
-	struct task_struct *curr = current;
-	struct lock_list *parent;
-	struct lock_list *first_parent;
-	int depth;
-
-	if (!debug_locks_off_graph_unlock() || debug_locks_silent)
-		return;
-
-	this->trace = save_trace();
-	if (!this->trace)
-		return;
-
-	depth = get_lock_depth(target);
-
-	print_circular_bug_header(target, depth, check_src, check_tgt);
-
-	parent = get_lock_parent(target);
-	first_parent = parent;
-
-	while (parent) {
-		print_circular_bug_entry(parent, --depth);
-		parent = get_lock_parent(parent);
+nt_modules();
+	if (irqs_disabled())
+		print_irqtrace_events(prev);
+	if (IS_ENABLED(CONFIG_DEBUG_PREEMPT)
+	    && in_atomic_preempt_off()) {
+		pr_err("Preemption disabled at:");
+		print_ip_sym(KERN_ERR, preempt_disable_ip);
 	}
+	if (panic_on_warn)
+		panic("scheduling while atomic\n");
 
-	printk("\nother info that might help us debug this:\n\n");
-	print_circular_lock_scenario(check_src, check_tgt,
-				     first_parent);
-
-	lockdep_print_held_locks(curr);
-
-	printk("\nstack backtrace:\n");
 	dump_stack();
+	add_taint(TAINT_WARN, LOCKDEP_STILL_OK);
 }
 
-static noinline void print_bfs_bug(int ret)
+/*
+ * Various schedule()-time debugging checks and statistics:
+ */
+static inline void schedule_debug(struct task_struct *prev, bool preempt)
 {
-	if (!debug_locks_off_graph_unlock())
-		return;
+#ifdef CONFIG_SCHED_STACK_END_CHECK
+	if (task_stack_end_corrupted(prev))
+		panic("corrupted stack end detected inside scheduler\n");
+
+	if (task_scs_end_corrupted(prev))
+		panic("corrupted shadow stack detected inside scheduler\n");
+#endif
+
+#ifdef CONFIG_DEBUG_ATOMIC_SLEEP
+	if (!preempt && READ_ONCE(prev->__state) && prev->non_block_count) {
+		printk(KERN_ERR "BUG: scheduling in a non-blocking section: %s/%d/%i\n",
+			prev->comm, prev->pid, prev->non_block_count);
+		dump_stack();
+		add_taint(TAINT_WARN, LOCKDEP_STILL_OK);
+	}
+#endif
+
+	if (unlikely(in_atomic_preempt_off())) {
+		__schedule_bug(prev);
+		preempt_count_set(PREEMPT_DISABLED);
+	}
+	rcu_sleep_check();
+	SCHED_WARN_ON(ct_state() == CONTEXT_USER);
+
+	profile_hit(SCHED_PROFILING, __builtin_return_address(0));
+
+	schedstat_inc(this_rq()->sched_count);
+}
+
+static void put_prev_task_balance(struct rq *rq, struct task_struct *prev,
+				  struct rq_flags *rf)
+{
+#ifdef CONFIG_SMP
+	const struct sched_class *class;
+	/*
+	 * We must do the balancing pass before put_prev_task(), such
+	 * that when we release the rq->lock the task is in the same
+	 * state as before we took rq->lock.
+	 *
+	 * We can terminate the balance pass as soon as we know there is
+	 * a runnable task of @class priority or higher.
+	 */
+	for_class_range(class, prev->sched_class, &idle_sched_class) {
+		if (class->balance(rq, prev, rf))
+			break;
+	}
+#endif
+
+	put_prev_task(rq, prev);
+}
+
+/*
+ * Pick up the highest-prio task:
+ */
+static inline struct task_struct *
+__pick_next_task(struct rq *rq, struct task_struct *prev, struct rq_flags *rf)
+{
+	const struct sched_class *class;
+	struct task_struct *p;
 
 	/*
-	 * Breadth-first-search failed, graph got corrupted?
+	 * Optimization: we know that if all tasks are in the fair class we can
+	 * call that function directly, but only if the @prev task wasn't of a
+	 * higher scheduling class, because otherwise those lose the
+	 * opportunity to pull in more work from other CPUs.
 	 */
-	WARN(1, "lockdep bfs error:%d\n", ret);
+	if (likely(prev->sched_class <= &fair_sched_class &&
+		   rq->nr_running == rq->cfs.h_nr_running)) {
+
+		p = pick_next_task_fair(rq, prev, rf);
+		if (unlikely(p == RETRY_TASK))
+			goto restart;
+
+		/* Assume the next prioritized class is idle_sched_class */
+		if (!p) {
+			put_prev_task(rq, prev);
+			p = pick_next_task_idle(rq);
+		}
+
+		return p;
+	}
+
+restart:
+	put_prev_task_balance(rq, prev, rf);
+
+	for_each_class(class) {
+		p = class->pick_next_task(rq);
+		if (p)
+			return p;
+	}
+
+	BUG(); /* The idle class should always have a runnable task. */
 }
 
-static bool noop_count(struct lock_list *entry, void *data)
+#ifdef CONFIG_SCHED_CORE
+static inline bool is_task_rq_idle(struct task_struct *t)
 {
-	(*(unsigned long *)data)++;
-	return false;
+	return (task_rq(t)->idle == t);
 }
 
-static unsigned long __lockdep_count_forward_deps(struct lock_list *this)
+static inline bool cookie_equals(struct task_struct *a, unsigned long cookie)
 {
-	unsigned long  count = 0;
-	struct lock_list *target_entry;
-
-	__bfs_forwards(this, (void *)&count, noop_count, NULL, &target_entry);
-
-	return count;
+	return is_task_rq_idle(a) || (a->core_cookie == cookie);
 }
-unsigned long lockdep_count_forward_deps(struct lock_class *class)
+
+static inline bool cookie_match(struct task_struct *a, struct task_struct *b)
 {
-	unsigned long ret, flags;
-	struct lock_list this;
+	if (is_task_rq_idle(a) || is_task_rq_idle(b))
+		return true;
 
-	__bfs_init_root(&this, class);
-
-	raw_local_irq_save(flags);
-	lockdep_lock();
-	ret = __lockdep_count_forward_deps(&this);
-	lockdep_unlock();
-	raw_local_irq_restore(flags);
-
-	return ret;
+	return a->core_cookie == b->core_cookie;
 }
 
-static unsigned long __lockdep_count_backward_deps(struct lock_list *this)
+static inline struct task_struct *pick_task(struct rq *rq)
 {
-	unsigned long  count = 0;
-	struct lock_list *target_entry;
+	const struct sched_class *class;
+	struct task_struct *p;
 
-	__bfs_backwards(this, (void *)&count, noop_count, NULL, &target_entry);
+	for_each_class(class) {
+		p = class->pick_task(rq);
+		if (p)
+			return p;
+	}
 
-	return count;
+	BUG(); /* The idle class should always have a runnable task. */
 }
 
-unsigned long lockdep_count_backward_deps(struct lock_class *class)
+extern void task_vruntime_update(struct rq *rq, struct task_struct *p, bool in_fi);
+
+static void queue_core_balance(struct rq *rq);
+
+static struct task_struct *
+pick_next_task(struct rq *rq, struct task_struct *prev, struct rq_flags *rf)
 {
-	unsigned long ret, flags;
-	struct lock_list this;
+	struct task_struct *next, *p, *max = NULL;
+	const struct cpumask *smt_mask;
+	bool fi_before = false;
+	bool core_clock_updated = (rq == rq->core);
+	unsigned long cookie;
+	int i, cpu, occ = 0;
+	struct rq *rq_i;
+	bool need_sync;
 
-	__bfs_init_root(&this, class);
+	if (!sched_core_enabled(rq))
+		return __pick_next_task(rq, prev, rf);
 
-	raw_local_irq_save(flags);
-	lockdep_lock();
-	ret = __lockdep_count_backward_deps(&this);
-	lockdep_unlock();
-	raw_local_irq_restore(flags);
+	cpu = cpu_of(rq);
 
-	return ret;
-}
+	/* Stopper task is switching into idle, no need core-wide selection. */
+	if (cpu_is_offline(cpu)) {
+		/*
+		 * Reset core_pick so that we don't enter the fastpath when
+		 * coming online. core_pick would already be migrated to
+		 * another cpu during offline.
+		 */
+		rq->core_pick = NULL;
+		return __pick_next_task(rq, prev, rf);
+	}
 
-/*
- * Check that the dependency g
+	/*
+	 * If there were no {en,de}queues since we picked (IOW, the task
+	 * pointers are all still valid), and we haven't scheduled the last
+	 * pick yet, do so now.
+	 *
+	 * rq->core_pick can be NULL if no selection was made for a CPU because
+	 * it was either offline or went offline during a sibling's core-wide
+	 * selection. In this case, do a core-wide selection.
+	 */
+	if (rq->core->core_pick_seq == rq->core->core_task_seq &&
+	    rq->core->core_pick_seq != rq->core_sched_seq &&
+	    rq->core_p

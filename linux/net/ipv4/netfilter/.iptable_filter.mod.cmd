@@ -1,4 +1,6 @@
-IC_IOREMAP) \
-    $(wildcard include/config/VIRT_TO_BUS) \
-    $(wildcard include/config/GENERIC_DEVMEM_IS_ALLOWED) \
-  include/linux/logic
+IDEO;
+		break;
+	case CX23885_BOARD_DVBSKY_T9580:
+	case CX23885_BOARD_DVBSKY_T982:
+		ts1->gen_ctrl_val  = 0x5; /* Parallel */
+		ts1->ts_clk_

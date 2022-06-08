@@ -1,3 +1,5 @@
-e/linux/rwlock.h \
-    $(wildcard include/config/PREEMPT) \
-  include/linux/spinlock_api_smp.h \
+TRL, reg);
+	}
+
+	/* Set VIDC pins to input */
+	if (cx23885_boards[dev->board].portc == CX23885_MPE

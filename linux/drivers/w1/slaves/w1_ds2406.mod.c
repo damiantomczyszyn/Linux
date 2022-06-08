@@ -1,14 +1,25 @@
-ude/config/PARAVIRT_XXL) \
-  arch/x86/include/asm/disabled-features.h \
-    $(wildcard include/config/X86_SMAP) \
-    $(wildcard include/config/X86_UMIP) \
-    $(wildcard include/config/X86_INTEL_MEMORY_PROTECTION_KEYS) \
-    $(wildcard include/config/X86_5LEVEL) \
-    $(wildcard include/config/PAGE_TABLE_ISOLATION) \
-    $(wildcard include/config/INTEL_IOMMU_SVM) \
-    $(wildcard include/config/X86_SGX) \
-  include/asm-generic/bitops/const_hweight.h \
-  include/asm-generic/bitops/instrumented-atomic.h \
-  include/linux/instrumented.h \
-  include/asm-generic/bitops/instrumented-non-atomic.h \
-    $(wildca
+_LEADTEK_WINFAST_PXDVR3200_H,
+	}, {
+		.subvendor = 0x107d,
+		.subdevice = 0x6f21,
+		.card      = CX23885_BOARD_LEADTEK_WINFAST_PXPVR2200,
+	}, {
+		.subvendor = 0x107d,
+		.subdevice = 0x6f39,
+		.card	   = CX23885_BOARD_LEADTEK_WINFAST_PXDVR3200_H_XC4000,
+	}, {
+		.subvendor = 0x185b,
+		.subdevice = 0xe800,
+		.card      = CX23885_BOARD_COMPRO_VIDEOMATE_E650F,
+	}, {
+		.subvendor = 0x6920,
+		.subdevice = 0x8888,
+		.card      = CX23885_BOARD_TBS_6920,
+	}, {
+		.subvendor = 0x6980,
+		.subdevice = 0x8888,
+		.card      = CX23885_BOARD_TBS_6980,
+	}, {
+		.subvendor = 0x6981,
+		.subdevice = 0x8888,
+		.card      = CX238

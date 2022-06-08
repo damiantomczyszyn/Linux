@@ -1,6 +1,1 @@
-ldcard include/config/X86_INTERNODE_CACHE_SHIFT) \
-    $(wildcard include/config/X86_VSMP) \
-  include/linux/ratelimit_types.h \
-  include/uapi/linux/param.h \
-  arch/x86/include/generated/uapi/asm/param.h \
-  include/asm-generic/param.
+cmd_drivers/net/can/m_can/m_can_platform.ko := ld -r -m elf_i386 --build-id=sha1  -T scripts/module.lds -o drivers/net/can/m_can/m_can_platform.ko drivers/net/can/m_can/m_can_platform.o drivers/net/can/m_can/m_can_platform.mod.o;  true

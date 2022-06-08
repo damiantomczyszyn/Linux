@@ -1,44 +1,37 @@
-lude/linux/percpu-refcount.h \
-  include/linux/kasan.h \
-    $(wildcard include/config/KASAN_STACK) \
-    $(wildcard include/config/KASAN_VMALLOC) \
-    $(wildcard include/config/KASAN_INLINE) \
-  include/linux/kasan-enabled.h \
-  include/linux/device.h \
-    $(wildcard include/config/GENERIC_MSI_IRQ_DOMAIN) \
-    $(wildcard include/config/GENERIC_MSI_IRQ) \
-    $(wildcard include/config/ENERGY_MODEL) \
-    $(wildcard include/config/PINCTRL) \
-    $(wildcard include/config/DMA_OPS) \
-    $(wildcard include/config/DMA_DECLARE_COHERENT) \
-    $(wildcard include/config/DMA_CMA) \
-    $(wildcard include/config/SWIOTLB) \
-    $(wildcard include/config/ARCH_HAS_SYNC_DMA_FOR_DEVICE) \
-    $(wildcard include/config/ARCH_HAS_SYNC_DMA_FOR_CPU) \
-    $(wildcard include/config/ARCH_HAS_SYNC_DMA_FOR_CPU_ALL) \
-    $(wildcard include/config/DMA_OPS_BYPASS) \
-    $(wildcard include/config/DEVTMPFS) \
-    $(wildcard include/config/SYSFS_DEPRECATED) \
-  include/linux/dev_printk.h \
-  include/linux/ratelimit.h \
-  include/linux/sched.h \
-    $(wildcard include/config/VIRT_CPU_ACCOUNTING_NATIVE) \
-    $(wildcard include/config/SCHED_INFO) \
-    $(wildcard include/config/SCHEDSTATS) \
-    $(wildcard include/config/SCHED_CORE) \
-    $(wildcard include/config/FAIR_GROUP_SCHED) \
-    $(wildcard include/config/RT_GROUP_SCHED) \
-    $(wildcard include/config/RT_MUTEXES) \
-    $(wildcard include/config/UCLAMP_TASK) \
-    $(wildcard include/config/UCLAMP_BUCKETS_COUNT) \
-    $(wildcard include/config/CGROUP_SCHED) \
-    $(wildcard include/config/BLK_DEV_IO_TRACE) \
-    $(wildcard include/config/PSI) \
-    $(wildcard include/config/COMPAT_BRK) \
-    $(wildcard include/config/CGROUPS) \
-    $(wildcard include/config/BLK_CGROUP) \
-    $(wildcard include/config/PAGE_OWNER) \
-    $(wildcard include/config/EVENTFD) \
-    $(wildcard include/config/ARCH_HAS_SCALED_CPUTIME) \
-    $(wildcard include/config/VIRT_CPU_ACCOUNTING_GEN) \
-    $(wildcard include/config/POSIX_CPUTIMER
+_read(ALT_PIN_OUT_SEL));
+	dprintk(1, "%s() GPIO2                    0x%08X\n", __func__,
+		cx_read(GPIO2));
+	dprintk(1, "%s() gpcnt(0x%08X)          0x%08X\n", __func__,
+		port->reg_gpcnt, cx_read(port->reg_gpcnt));
+	dprintk(1, "%s() gpcnt_ctl(0x%08X)      0x%08x\n", __func__,
+		port->reg_gpcnt_ctl, cx_read(port->reg_gpcnt_ctl));
+	dprintk(1, "%s() dma_ctl(0x%08X)        0x%08x\n", __func__,
+		port->reg_dma_ctl, cx_read(port->reg_dma_ctl));
+	if (port->reg_src_sel)
+		dprintk(1, "%s() src_sel(0x%08X)        0x%08x\n", __func__,
+			port->reg_src_sel, cx_read(port->reg_src_sel));
+	dprintk(1, "%s() lngth(0x%08X)          0x%08x\n", __func__,
+		port->reg_lngth, cx_read(port->reg_lngth));
+	dprintk(1, "%s() hw_sop_ctrl(0x%08X)    0x%08x\n", __func__,
+		port->reg_hw_sop_ctrl, cx_read(port->reg_hw_sop_ctrl));
+	dprintk(1, "%s() gen_ctrl(0x%08X)       0x%08x\n", __func__,
+		port->reg_gen_ctrl, cx_read(port->reg_gen_ctrl));
+	dprintk(1, "%s() bd_pkt_status(0x%08X)  0x%08x\n", __func__,
+		port->reg_bd_pkt_status, cx_read(port->reg_bd_pkt_status));
+	dprintk(1, "%s() sop_status(0x%08X)     0x%08x\n", __func__,
+		port->reg_sop_status, cx_read(port->reg_sop_status));
+	dprintk(1, "%s() fifo_ovfl_stat(0x%08X) 0x%08x\n", __func__,
+		port->reg_fifo_ovfl_stat, cx_read(port->reg_fifo_ovfl_stat));
+	dprintk(1, "%s() vld_misc(0x%08X)       0x%08x\n", __func__,
+		port->reg_vld_misc, cx_read(port->reg_vld_misc));
+	dprintk(1, "%s() ts_clk_en(0x%08X)      0x%08x\n", __func__,
+		port->reg_ts_clk_en, cx_read(port->reg_ts_clk_en));
+	dprintk(1, "%s() ts_int_msk(0x%08X)     0x%08x\n", __func__,
+		port->reg_ts_int_msk, cx_read(port->reg_ts_int_msk));
+	dprintk(1, "%s() ts_int_status(0x%08X)  0x%08x\n", __func__,
+		port->reg_ts_int_stat, cx_read(port->reg_ts_int_stat));
+	dprintk(1, "%s() PCI_INT_STAT           0x%08X\n", __func__,
+		cx_read(PCI_INT_STAT));
+	dprintk(1, "%s() VID_B_INT_MSTAT        0x%08X\n", __func__,
+		cx_read(VID_B_INT_MSTAT));
+	dprintk(1, "%s() VID_B_INT_SSTAT  

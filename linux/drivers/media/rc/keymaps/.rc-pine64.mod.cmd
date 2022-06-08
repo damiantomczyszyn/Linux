@@ -1,1 +1,8 @@
-cmd_drivers/media/rc/keymaps/rc-pine64.mod := { echo  drivers/media/rc/keymaps/rc-pine64.o;  echo; } > drivers/media/rc/keymaps/rc-pine64.mod
+he real set_frontend */
+	if (port->set_frontend)
+		return port->set_frontend(fe);
+
+	return 0;
+}
+
+static void cx23885_set_frontend_hook(struct 

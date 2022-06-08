@@ -1,91 +1,82 @@
-_lock_class(lock, 0);
-
-		/*
-		 * If look_up_lock_class() failed to find a class, we're trying
-		 * to test if we hold a lock that has never yet been acquired.
-		 * Clearly if the lock hasn't been acquired _ever_, we're not
-		 * holding it either, so report failure.
-		 */
-		if (!class)
-			return 0;
-
-		/*
-		 * References, but not a lock we're actually ref-counting?
-		 * State got messed up, follow the sites that change ->references
-		 * and try to make sense of it.
-		 */
-		if (DEBUG_LOCKS_WARN_ON(!hlock->nest_lock))
-			return 0;
-
-		if (hlock->class_idx == class - lock_classes)
-			return 1;
-	}
-
-	return 0;
+_do_set_cpus_allowed(p, cpumask_of(rq->cpu), SCA_MIGRATE_DISABLE);
 }
 
-/* @depth must not be zero */
-static struct held_lock *find_held_lock(struct task_struct *curr,
-					struct lockdep_map *lock,
-					unsigned int depth, int *idx)
+void migrate_disable(void)
 {
-	struct held_lock *ret, *hlock, *prev_hlock;
-	int i;
+	struct task_struct *p = current;
 
-	i = depth - 1;
-	hlock = curr->held_locks + i;
-	ret = hlock;
-	if (match_held_lock(hlock, lock))
-		goto out;
-
-	ret = NULL;
-	for (i--, prev_hlock = hlock--;
-	     i >= 0;
-	     i--, prev_hlock = hlock--) {
-		/*
-		 * We must not cross into another context:
-		 */
-		if (prev_hlock->irq_context != hlock->irq_context) {
-			ret = NULL;
-			break;
-		}
-		if (match_held_lock(hlock, lock)) {
-			ret = hlock;
-			break;
-		}
+	if (p->migration_disabled) {
+		p->migration_disabled++;
+		return;
 	}
 
-out:
-	*idx = i;
-	return ret;
+	preempt_disable();
+	this_rq()->nr_pinned++;
+	p->migration_disabled = 1;
+	preempt_enable();
+}
+EXPORT_SYMBOL_GPL(migrate_disable);
+
+void migrate_enable(void)
+{
+	struct task_struct *p = current;
+
+	if (p->migration_disabled > 1) {
+		p->migration_disabled--;
+		return;
+	}
+
+	if (WARN_ON_ONCE(!p->migration_disabled))
+		return;
+
+	/*
+	 * Ensure stop_task runs either before or after this, and that
+	 * __set_cpus_allowed_ptr(SCA_MIGRATE_ENABLE) doesn't schedule().
+	 */
+	preempt_disable();
+	if (p->cpus_ptr != &p->cpus_mask)
+		__set_cpus_allowed_ptr(p, &p->cpus_mask, SCA_MIGRATE_ENABLE);
+	/*
+	 * Mustn't clear migration_disabled() until cpus_ptr points back at the
+	 * regular cpus_mask, otherwise things that race (eg.
+	 * select_fallback_rq) get confused.
+	 */
+	barrier();
+	p->migration_disabled = 0;
+	this_rq()->nr_pinned--;
+	preempt_enable();
+}
+EXPORT_SYMBOL_GPL(migrate_enable);
+
+static inline bool rq_has_pinned_tasks(struct rq *rq)
+{
+	return rq->nr_pinned;
 }
 
-static int reacquire_held_locks(struct task_struct *curr, unsigned int depth,
-				int idx, unsigned int *merged)
+/*
+ * Per-CPU kthreads are allowed to run on !active && online CPUs, see
+ * __set_cpus_allowed_ptr() and select_fallback_rq().
+ */
+static inline bool is_cpu_allowed(struct task_struct *p, int cpu)
 {
-	struct held_lock *hlock;
-	int first_idx = idx;
+	/* When not in the task's cpumask, no point in looking further. */
+	if (!cpumask_test_cpu(cpu, p->cpus_ptr))
+		return false;
 
-	if (DEBUG_LOCKS_WARN_ON(!irqs_disabled()))
-		return 0;
+	/* migrate_disabled() must be allowed to finish. */
+	if (is_migration_disabled(p))
+		return cpu_online(cpu);
 
-	for (hlock = curr->held_locks + idx; idx < depth; idx++, hlock++) {
-		switch (__lock_acquire(hlock->instance,
-				    hlock_class(hlock)->subclass,
-				    hlock->trylock,
-				    hlock->read, hlock->check,
-				    hlock->hardirqs_off,
-				    hlock->nest_lock, hlock->acquire_ip,
-				    hlock->references, hlock->pin_count)) {
-		case 0:
-			return 1;
-		case 1:
-			break;
-		case 2:
-			*merged += (idx == first_idx);
-			break;
-		default:
-			WARN_ON(1);
-			return 0;
-		}
-	}
+	/* Non kernel threads are not allowed during either online or offline. */
+	if (!(p->flags & PF_KTHREAD))
+		return cpu_active(cpu) && task_cpu_possible(cpu, p);
+
+	/* KTHREAD_IS_PER_CPU is always allowed. */
+	if (kthread_is_per_cpu(p))
+		return cpu_online(cpu);
+
+	/* Regular kernel threads don't get to stay during offline. */
+	if (cpu_dying(cpu))
+		return false;
+
+	/* B

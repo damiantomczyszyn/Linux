@@ -1,25 +1,42 @@
-\
-    $(wildcard include/config/SHMEM) \
-    $(wildcard include/config/ARCH_HAS_PTE_SPECIAL) \
-    $(wildcard include/config/ARCH_HAS_PTE_DEVMAP) \
-    $(wildcard include/config/DEBUG_VM_RB) \
-    $(wildcard include/config/PAGE_POISONING) \
-    $(wildcard include/config/INIT_ON_ALLOC_DEFAULT_ON) \
-    $(wildcard include/config/INIT_ON_FREE_DEFAULT_ON) \
-    $(wildcard include/config/DEBUG_PAGEALLOC) \
-    $(wildcard include/config/HUGETLBFS) \
-    $(wildcard include/config/MAPPING_DIRTY_HELPERS) \
-    $(wildcard include/config/ANON_VMA_NAME) \
-  include/linux/mmap_lock.h \
-  include/linux/page_ext.h \
-  include/linux/stacktrace.h \
-    $(wildcard include/config/ARCH_STACKWALK) \
-    $(wildcard include/config/STACKTRACE) \
-    $(wildcard include/config/HAVE_RELIABLE_STACKTRACE) \
-  include/linux/stackdepot.h \
-    $(wildcard include/config/STACKDEPOT_ALWAYS_INIT) \
-  include/linux/page_ref.h \
-    $(wildcard include/config/DEBUG_PAGE_REF) \
-  include/linux/sizes.h \
-  include/linux/pgtable.h \
-    $(
+2_FIELD_SEQ_BT:
+		break;
+	default:
+		field = V4L2_FIELD_INTERLACED;
+		break;
+	}
+
+	f->fmt.pix.field = field;
+	v4l_bound_align_image(&f->fmt.pix.width, 48, maxw, 2,
+			      &f->fmt.pix.height, 32, maxh, 0, 0);
+	f->fmt.pix.bytesperline =
+		(f->fmt.pix.width * fmt->depth) >> 3;
+	f->fmt.pix.sizeimage =
+		f->fmt.pix.height * f->fmt.pix.bytesperline;
+	f->fmt.pix.colorspace = V4L2_COLORSPACE_SMPTE170M;
+
+	return 0;
+}
+
+static int vidioc_s_fmt_vid_cap(struct file *file, void *priv,
+	struct v4l2_format *f)
+{
+	struct cx23885_dev *dev = video_drvdata(file);
+	struct v4l2_subdev_format format = {
+		.which = V4L2_SUBDEV_FORMAT_ACTIVE,
+	};
+	int err;
+
+	dprintk(2, "%s()\n", __func__);
+	err = vidioc_try_fmt_vid_cap(file, priv, f);
+
+	if (0 != err)
+		return err;
+
+	if (vb2_is_busy(&dev->vb2_vidq) || vb2_is_busy(&dev->vb2_vbiq) ||
+	    vb2_is_busy(&dev->vb2_mpegq))
+		return -EBUSY;
+
+	dev->fmt        = format_by_fourcc(f->fmt.pix.pixelformat);
+	dev->width      = f->fmt.pix.width;
+	dev->height     = f->fmt.pix.height;
+	dev->

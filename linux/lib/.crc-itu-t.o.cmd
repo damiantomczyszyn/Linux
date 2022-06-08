@@ -1,561 +1,1246 @@
-timer.h \
-    $(wildcard include/config/HIGH_RES_TIMERS) \
-    $(wildcard include/config/TIME_LOW_RES) \
-    $(wildcard include/config/TIMERFD) \
-  include/linux/hrtimer_defs.h \
-  include/linux/timerqueue.h \
-  include/linux/seccomp.h \
-    $(wildcard include/config/SECCOMP) \
-    $(wildcard include/config/HAVE_ARCH_SECCOMP_FILTER) \
-    $(wildcard include/config/SECCOMP_FILTER) \
-    $(wildcard include/config/CHECKPOINT_RESTORE) \
-    $(wildcard include/config/SECCOMP_CACHE_DEBUG) \
-  include/uapi/linux/seccomp.h \
-  arch/x86/include/asm/seccomp.h \
-  arch/x86/include/asm/unistd.h \
-  arch/x86/include/uapi/asm/unistd.h \
-  arch/x86/include/generated/uapi/asm/unistd_32.h \
-  include/asm-generic/seccomp.h \
-  include/uapi/linux/unistd.h \
-  include/linux/resource.h \
-  include/uapi/linux/resource.h \
-  arch/x86/include/generated/uapi/asm/resource.h \
-  include/asm-generic/resource.h \
-  include/uapi/asm-generic/resource.h \
-  include/linux/latencytop.h \
-  include/linux/sched/prio.h \
-  include/linux/sched/types.h \
-  include/linux/signal_types.h \
-    $(wildcard include/config/OLD_SIGACTION) \
-  include/uapi/linux/signal.h \
-  arch/x86/include/asm/signal.h \
-  arch/x86/include/uapi/asm/signal.h \
-  include/uapi/asm-generic/signal-defs.h \
-  arch/x86/include/uapi/asm/siginfo.h \
-  include/uapi/asm-generic/siginfo.h \
-  include/linux/syscall_user_dispatch.h \
-  include/linux/task_io_accounting.h \
-    $(wildcard include/config/TASK_IO_ACCOUNTING) \
-  include/linux/posix-timers.h \
-  include/linux/alarmtimer.h \
-    $(wildcard include/config/RTC_CLASS) \
-  include/uapi/linux/rseq.h \
-  include/linux/kcsan.h \
-  include/linux/energy_model.h \
-  include/linux/sched/cpufreq.h \
-    $(wildcard include/config/CPU_FREQ) \
-  include/linux/sched/topology.h \
-    $(wildcard include/config/SCHED_DEBUG) \
-    $(wildcard include/config/SCHED_MC) \
-    $(wildcard include/config/CPU_FREQ_GOV_SCHEDUTIL) \
-  include/linux/sched/idle.h \
-  include/linux/sched/sd_flags.h \
-  include/linux/klist.h \
-  include/linux/pm.h \
-    $(wildcard include/config/VT_CONSOLE_SLEEP) \
-    $(wildcard include/config/PM_CLK) \
-    $(wildcard include/config/PM_GENERIC_DOMAINS) \
-  include/linux/device/bus.h \
-  include/linux/device/class.h \
-  include/linux/device/driver.h \
-  arch/x86/include/asm/device.h \
-  include/linux/pm_wakeup.h \
-  include/acpi/acpi.h \
-  include/acpi/platform/acenv.h \
-  include/acpi/platform/acgcc.h \
-  include/acpi/platform/aclinux.h \
-    $(wildcard include/config/ACPI_REDUCED_HARDWARE_ONLY) \
-    $(wildcard include/config/ACPI_DEBUG) \
-  include/linux/ctype.h \
-  arch/x86/include/asm/acenv.h \
-  include/acpi/acnames.h \
-  include/acpi/actypes.h \
-  include/acpi/acexcep.h \
-  include/acpi/actbl.h \
-  include/acpi/actbl1.h \
-  include/acpi/actbl2.h \
-  include/acpi/actbl3.h \
-  include/acpi/acrestyp.h \
-  include/acpi/platform/acenvex.h \
-  include/acpi/platform/aclinuxex.h \
-  include/acpi/platform/acgccex.h \
-  include/acpi/acoutput.h \
-  include/acpi/acpiosxf.h \
-  include/acpi/acpixf.h \
-  include/acpi/acconfig.h \
-  include/acpi/acbuffer.h \
-  include/linux/dynamic_debug.h \
-  include/acpi/acpi_bus.h \
-    $(wildcard include/config/X86_ANDROID_TABLETS) \
-    $(wildcard include/config/ACPI_SYSTEM_POWER_STATES_SUPPORT) \
-    $(wildcard include/config/ACPI_SLEEP) \
-  include/acpi/acpi_drivers.h \
-    $(wildcard include/config/ACPI_DOCK) \
-  include/acpi/acpi_numa.h \
-    $(wildcard include/config/ACPI_HMAT) \
-  include/acpi/acpi_io.h \
-  include/linux/io.h \
-    $(wildcard include/config/HAS_IOPORT_MAP) \
-  arch/x86/include/asm/io.h \
-    $(wildcard include/config/MTRR) \
-    $(wildcard include/config/X86_PAT) \
-  arch/x86/include/generated/asm/early_ioremap.h \
-  include/asm-generic/early_ioremap.h \
-    $(wildcard include/config/GENERIC_EARLY_IOREMAP) \
-  include/asm-generic/iomap.h \
-  include/asm-generic/pci_iomap.h \
-    $(wildcard include/config/NO_GENERIC_PCI_IOPORT_MAP) \
-    $(wildcard include/config/GENERIC_PCI_IOMAP) \
-  include/asm-generic/io.h \
-    $(wildcard include/config/GENERIC_IOMAP) \
-    $(wildcard include/config/GENERIC_IOREMAP) \
-    $(wildcard include/config/VIRT_TO_BUS) \
-    $(wildcard include/config/GENERIC_DEVMEM_IS_ALLOWED) \
-  include/linux/logic_pio.h \
-    $(wildcard include/config/INDIRECT_PIO) \
-  include/linux/vmalloc.h \
-    $(wildcard include/config/HAVE_ARCH_HUGE_VMALLOC) \
-  arch/x86/include/asm/vmalloc.h \
-    $(wildcard include/config/HAVE_ARCH_HUGE_VMAP) \
-  arch/x86/include/asm/acpi.h \
-    $(wildcard include/config/ACPI_APEI) \
-  include/acpi/pdc_intel.h \
-  arch/x86/include/asm/numa.h \
-    $(wildcard include/config/NUMA_EMU) \
-  arch/x86/include/asm/numa_32.h \
-  include/linux/regulator/consumer.h \
-    $(wildcard include/config/REGULATOR) \
-  include/linux/suspend.h \
-    $(wildcard include/config/VT) \
-    $(wildcard include/config/SUSPEND) \
-    $(wildcard include/config/HIBERNATION_SNAPSHOT_DEV) \
-    $(wildcard include/config/PM_SLEEP_DEBUG) \
-    $(wildcard include/config/PM_AUTOSLEEP) \
-  include/linux/swap.h \
-    $(wildcard include/config/DEVICE_PRIVATE) \
-    $(wildcard include/config/MIGRATION) \
-    $(wildcard include/config/FRONTSWAP) \
-    $(wildcard include/config/THP_SWAP) \
-    $(wildcard include/config/MEMCG_SWAP) \
-  include/linux/memcontrol.h \
-    $(wildcard include/config/CGROUP_WRITEBACK) \
-  include/linux/cgroup.h \
-    $(wildcard include/config/CGROUP_CPUACCT) \
-    $(wildcard include/config/SOCK_CGROUP_DATA) \
-    $(wildcard include/config/CGROUP_DATA) \
-    $(wildcard include/config/CGROUP_BPF) \
-  include/uapi/linux/cgroupstats.h \
-  include/uapi/linux/taskstats.h \
-  include/linux/fs.h \
-    $(wildcard include/config/READ_ONLY_THP_FOR_FS) \
-    $(wildcard include/config/FS_POSIX_ACL) \
-    $(wildcard include/config/IMA) \
-    $(wildcard include/config/FILE_LOCKING) \
-    $(wildcard include/config/FSNOTIFY) \
-    $(wildcard include/config/FS_ENCRYPTION) \
-    $(wildcard include/config/FS_VERITY) \
-    $(wildcard include/config/EPOLL) \
-    $(wildcard include/config/UNICODE) \
-    $(wildcard include/config/QUOTA) \
-    $(wildcard include/config/FS_DAX) \
-    $(wildcard include/config/BLOCK) \
-  include/linux/wait_bit.h \
-  include/linux/kdev_t.h \
-  include/uapi/linux/kdev_t.h \
-  include/linux/dcache.h \
-  include/linux/rculist_bl.h \
-  include/linux/list_bl.h \
-  include/linux/bit_spinlock.h \
-  include/linux/lockref.h \
-    $(wildcard include/config/ARCH_USE_CMPXCHG_LOCKREF) \
-  include/linux/stringhash.h \
-    $(wildcard include/config/DCACHE_WORD_ACCESS) \
-  include/linux/hash.h \
-    $(wildcard include/config/HAVE_ARCH_HASH) \
-  include/linux/path.h \
-  include/linux/list_lru.h \
-  include/linux/shrinker.h \
-  include/linux/capability.h \
-  include/uapi/linux/capability.h \
-  include/linux/semaphore.h \
-  include/linux/fcntl.h \
-    $(wildcard include/config/ARCH_32BIT_OFF_T) \
-  include/uapi/linux/fcntl.h \
-  arch/x86/include/generated/uapi/asm/fcntl.h \
-  include/uapi/asm-generic/fcntl.h \
-  include/uapi/linux/openat2.h \
-  include/linux/migrate_mode.h \
-  include/linux/percpu-rwsem.h \
-  include/linux/rcuwait.h \
-  include/linux/sched/signal.h \
-    $(wildcard include/config/SCHED_AUTOGROUP) \
-    $(wildcard include/config/BSD_PROCESS_ACCT) \
-    $(wildcard include/config/TASKSTATS) \
-    $(wildcard include/config/STACK_GROWSUP) \
-  include/linux/signal.h \
-    $(wildcard include/config/DYNAMIC_SIGFRAME) \
-  include/linux/sched/jobctl.h \
-  include/linux/sched/task.h \
-    $(wildcard include/config/HAVE_EXIT_THREAD) \
-    $(wildcard include/config/ARCH_WANTS_DYNAMIC_TASK_STRUCT) \
-    $(wildcard include/config/HAVE_ARCH_THREAD_STRUCT_WHITELIST) \
-  include/linux/uaccess.h \
-  include/linux/fault-inject-usercopy.h \
-    $(wildcard include/config/FAULT_INJECTION_USERCOPY) \
-  arch/x86/include/asm/uaccess.h \
-    $(wildcard include/config/CC_HAS_ASM_GOTO_OUTPUT) \
-    $(wildcard include/config/CC_HAS_ASM_GOTO_TIED_OUTPUT) \
-    $(wildcard include/config/ARCH_HAS_COPY_MC) \
-    $(wildcard include/config/X86_INTEL_USERCOPY) \
-  arch/x86/include/asm/smap.h \
-  arch/x86/include/asm/extable.h \
-    $(wildcard include/config/BPF_JIT) \
-  include/asm-generic/access_ok.h \
-    $(wildcard include/config/ALTERNATE_USER_ADDRESS_SPACE) \
-  arch/x86/include/asm/uaccess_32.h \
-  include/linux/cred.h \
-    $(wildcard include/config/DEBUG_CREDENTIALS) \
-  include/linux/key.h \
-    $(wildcard include/config/KEY_NOTIFICATIONS) \
-    $(wildcard include/config/NET) \
-  include/linux/assoc_array.h \
-    $(wildcard include/config/ASSOCIATIVE_ARRAY) \
-  include/linux/sched/user.h \
-    $(wildcard include/config/WATCH_QUEUE) \
-  include/linux/percpu_counter.h \
-  include/linux/rcu_sync.h \
-  include/linux/delayed_call.h \
-  include/linux/errseq.h \
-  include/linux/ioprio.h \
-  include/linux/sched/rt.h \
-  include/linux/iocontext.h \
-    $(wildcard include/config/BLK_ICQ) \
-  include/uapi/linux/ioprio.h \
-  include/linux/fs_types.h \
-  include/linux/mount.h \
-  include/linux/mnt_idmapping.h \
-  include/uapi/linux/fs.h \
-  include/linux/quota.h \
-    $(wildcard include/config/QUOTA_NETLINK_INTERFACE) \
-  include/uapi/linux/dqblk_xfs.h \
-  include/linux/dqblk_v1.h \
-  include/linux/dqblk_v2.h \
-  include/linux/dqblk_qtree.h \
-  include/linux/projid.h \
-  include/uapi/linux/quota.h \
-  include/linux/nfs_fs_i.h \
-  include/linux/seq_file.h \
-  include/linux/string_helpers.h \
-  include/linux/ns_common.h \
-  include/linux/nsproxy.h \
-  include/linux/user_namespace.h \
-    $(wildcard include/config/INOTIFY_USER) \
-    $(wildcard include/config/FANOTIFY) \
-    $(wildcard include/config/PERSISTENT_KEYRINGS) \
-  include/linux/kernel_stat.h \
-  include/linux/interrupt.h \
-    $(wildcard include/config/IRQ_FORCED_THREADING) \
-    $(wildcard include/config/GENERIC_IRQ_PROBE) \
-    $(wildcard include/config/IRQ_TIMINGS) \
-  include/linux/irqreturn.h \
-  include/linux/irqnr.h \
-  include/uapi/linux/irqnr.h \
-  include/linux/hardirq.h \
-  include/linux/context_tracking_state.h \
-    $(wildcard include/config/CONTEXT_TRACKING) \
-  include/linux/ftrace_irq.h \
-    $(wildcard include/config/HWLAT_TRACER) \
-    $(wildcard include/config/OSNOISE_TRACER) \
-  include/linux/vtime.h \
-    $(wildcard include/config/VIRT_CPU_ACCOUNTING) \
-    $(wildcard include/config/IRQ_TIME_ACCOUNTING) \
-  arch/x86/include/asm/hardirq.h \
-    $(wildcard include/config/KVM_INTEL) \
-    $(wildcard include/config/X86_THERMAL_VECTOR) \
-    $(wildcard include/config/X86_MCE_THRESHOLD) \
-    $(wildcard include/config/X86_MCE_AMD) \
-    $(wildcard include/config/X86_HV_CALLBACK_VECTOR) \
-  arch/x86/include/asm/irq.h \
-  arch/x86/include/asm/sections.h \
-  include/asm-generic/sections.h \
-    $(wildcard include/config/HAVE_FUNCTION_DESCRIPTORS) \
-  include/linux/cgroup-defs.h \
-    $(wildcard include/config/CGROUP_NET_CLASSID) \
-    $(wildcard include/config/CGROUP_NET_PRIO) \
-  include/linux/u64_stats_sync.h \
-  include/linux/bpf-cgroup-defs.h \
-  include/linux/psi_types.h \
-  include/linux/kthread.h \
-  include/linux/cgroup_subsys.h \
-    $(wildcard include/config/CGROUP_DEVICE) \
-    $(wildcard include/config/CGROUP_FREEZER) \
-    $(wildcard include/config/CGROUP_PERF) \
-    $(wildcard include/config/CGROUP_HUGETLB) \
-    $(wildcard include/config/CGROUP_PIDS) \
-    $(wildcard include/config/CGROUP_RDMA) \
-    $(wildcard include/config/CGROUP_MISC) \
-    $(wildcard include/config/CGROUP_DEBUG) \
-  include/linux/vm_event_item.h \
-    $(wildcard include/config/HAVE_ARCH_TRANSPARENT_HUGEPAGE_PUD) \
-    $(wildcard include/config/MEMORY_BALLOON) \
-    $(wildcard include/config/BALLOON_COMPACTION) \
-    $(wildcard include/config/DEBUG_TLBFLUSH) \
-    $(wildcard include/config/DEBUG_VM_VMACACHE) \
-  include/linux/page_counter.h \
-  include/linux/vmpressure.h \
-  include/linux/eventfd.h \
-  include/linux/mm.h \
-    $(wildcard include/config/HAVE_ARCH_MMAP_RND_BITS) \
-    $(wildcard include/config/HAVE_ARCH_MMAP_RND_COMPAT_BITS) \
-    $(wildcard include/config/ARCH_USES_HIGH_VMA_FLAGS) \
-    $(wildcard include/config/ARCH_HAS_PKEYS) \
-    $(wildcard include/config/PPC) \
-    $(wildcard include/config/PARISC) \
-    $(wildcard include/config/SPARC64) \
-    $(wildcard include/config/ARM64_MTE) \
-    $(wildcard include/config/HAVE_ARCH_USERFAULTFD_MINOR) \
-    $(wildcard include/config/SHMEM) \
-    $(wildcard include/config/ARCH_HAS_PTE_SPECIAL) \
-    $(wildcard include/config/ARCH_HAS_PTE_DEVMAP) \
-    $(wildcard include/config/DEBUG_VM_RB) \
-    $(wildcard include/config/PAGE_POISONING) \
-    $(wildcard include/config/INIT_ON_ALLOC_DEFAULT_ON) \
-    $(wildcard include/config/INIT_ON_FREE_DEFAULT_ON) \
-    $(wildcard include/config/DEBUG_PAGEALLOC) \
-    $(wildcard include/config/HUGETLBFS) \
-    $(wildcard include/config/MAPPING_DIRTY_HELPERS) \
-    $(wildcard include/config/ANON_VMA_NAME) \
-  include/linux/mmap_lock.h \
-  include/linux/page_ext.h \
-  include/linux/stacktrace.h \
-    $(wildcard include/config/ARCH_STACKWALK) \
-    $(wildcard include/config/STACKTRACE) \
-    $(wildcard include/config/HAVE_RELIABLE_STACKTRACE) \
-  include/linux/stackdepot.h \
-    $(wildcard include/config/STACKDEPOT_ALWAYS_INIT) \
-  include/linux/page_ref.h \
-    $(wildcard include/config/DEBUG_PAGE_REF) \
-  include/linux/sizes.h \
-  include/linux/pgtable.h \
-    $(wildcard include/config/HIGHPTE) \
-    $(wildcard include/config/GUP_GET_PTE_LOW_HIGH) \
-    $(wildcard include/config/HAVE_ARCH_SOFT_DIRTY) \
-    $(wildcard include/config/ARCH_ENABLE_THP_MIGRATION) \
-    $(wildcard include/config/X86_ESPFIX64) \
-  arch/x86/include/asm/pgtable.h \
-    $(wildcard include/config/DEBUG_WX) \
-    $(wildcard include/config/PAGE_TABLE_CHECK) \
-  arch/x86/include/asm/pkru.h \
-  arch/x86/include/asm/fpu/api.h \
-    $(wildcard include/config/X86_DEBUG_FPU) \
-  arch/x86/include/asm/coco.h \
-  include/asm-generic/pgtable_uffd.h \
-  include/linux/page_table_check.h \
-  arch/x86/include/asm/pgtable_32.h \
-  arch/x86/include/asm/pgtable-3level.h \
-  arch/x86/include/asm/pgtable-invert.h \
-  include/linux/huge_mm.h \
-  include/linux/sched/coredump.h \
-    $(wildcard include/config/CORE_DUMP_DEFAULT_ELF_HEADERS) \
-  include/linux/vmstat.h \
-    $(wildcard include/config/VM_EVENT_COUNTERS) \
-  include/linux/writeback.h \
-  include/linux/flex_proportions.h \
-  include/linux/backing-dev-defs.h \
-    $(wildcard include/config/DEBUG_FS) \
-  include/linux/blk_types.h \
-    $(wildcard include/config/FAIL_MAKE_REQUEST) \
-    $(wildcard include/config/BLK_CGROUP_IOCOST) \
-    $(wildcard include/config/BLK_INLINE_ENCRYPTION) \
-    $(wildcard include/config/BLK_DEV_INTEGRITY) \
-  include/linux/bvec.h \
-  include/linux/highmem.h \
-  include/linux/cacheflush.h \
-  arch/x86/include/asm/cacheflush.h \
-  include/asm-generic/cacheflush.h \
-  include/linux/highmem-internal.h \
-  arch/x86/include/asm/highmem.h \
-  arch/x86/include/asm/tlbflush.h \
-  arch/x86/include/asm/invpcid.h \
-  arch/x86/include/asm/pti.h \
-  include/linux/bio.h \
-  include/linux/mempool.h \
-  include/linux/uio.h \
-    $(wildcard include/config/ARCH_HAS_UACCESS_FLUSHCACHE) \
-  include/uapi/linux/uio.h \
-  include/linux/node.h \
-    $(wildcard include/config/HMEM_REPORTING) \
-  include/linux/pagemap.h \
-  include/linux/hugetlb_inline.h \
-  include/uapi/linux/mempolicy.h \
-  include/linux/freezer.h \
-  include/uapi/linux/i2c.h \
-  include/linux/videodev2.h \
-  include/uapi/linux/videodev2.h \
-    $(wildcard include/config/VIDEO_ADV_DEBUG) \
-  include/uapi/linux/v4l2-common.h \
-  include/uapi/linux/v4l2-controls.h \
-  include/media/v4l2-device.h \
-    $(wildcard include/config/VIDEO_V4L2_SUBDEV_API) \
-  include/media/media-device.h \
-    $(wildcard include/config/MEDIA_CONTROLLER) \
-  include/media/media-devnode.h \
-  include/linux/poll.h \
-  include/uapi/linux/poll.h \
-  arch/x86/include/generated/uapi/asm/poll.h \
-  include/uapi/asm-generic/poll.h \
-  include/uapi/linux/eventpoll.h \
-  include/linux/cdev.h \
-  include/media/media-entity.h \
-  include/uapi/linux/media.h \
-  include/media/v4l2-subdev.h \
-  include/uapi/linux/v4l2-subdev.h \
-  include/uapi/linux/v4l2-mediabus.h \
-  include/uapi/linux/media-bus-format.h \
-  include/media/v4l2-async.h \
-  include/media/v4l2-common.h \
-    $(wildcard include/config/VIDEO_V4L2_I2C) \
-    $(wildcard include/config/SPI) \
-  include/media/v4l2-dev.h \
-  include/linux/spi/spi.h \
-    $(wildcard include/config/SPI_SLAVE) \
-  include/linux/scatterlist.h \
-    $(wildcard include/config/NEED_SG_DMA_LENGTH) \
-    $(wildcard include/config/DEBUG_SG) \
-    $(wildcard include/config/SGL_ALLOC) \
-    $(wildcard include/config/ARCH_NO_SG_CHAIN) \
-    $(wildcard include/config/SG_POOL) \
-  include/linux/gpio/consumer.h \
-    $(wildcard include/config/OF_GPIO) \
-    $(wildcard include/config/GPIO_SYSFS) \
-  include/uapi/linux/spi/spi.h \
-  include/media/v4l2-fh.h \
-  include/media/v4l2-mediabus.h \
-  include/media/i2c/uda1342.h \
+f (should_resched(0)) {
+		preempt_schedule_common();
+		return 1;
+	}
+	/*
+	 * In preemptible kernels, ->rcu_read_lock_nesting tells the tick
+	 * whether the current CPU is in an RCU read-side critical section,
+	 * so the tick can report quiescent states even for CPUs looping
+	 * in kernel context.  In contrast, in non-preemptible kernels,
+	 * RCU readers leave no in-memory hints, which means that CPU-bound
+	 * processes executing in kernel context might never report an
+	 * RCU quiescent state.  Therefore, the following code causes
+	 * cond_resched() to report a quiescent state, but only when RCU
+	 * is in urgent need of one.
+	 */
+#ifndef CONFIG_PREEMPT_RCU
+	rcu_all_qs();
+#endif
+	return 0;
+}
+EXPORT_SYMBOL(__cond_resched);
+#endif
 
-drivers/media/i2c/uda1342.o: $(deps_drivers/media/i2c/uda1342.o)
+#ifdef CONFIG_PREEMPT_DYNAMIC
+#if defined(CONFIG_HAVE_PREEMPT_DYNAMIC_CALL)
+#define cond_resched_dynamic_enabled	__cond_resched
+#define cond_resched_dynamic_disabled	((void *)&__static_call_return0)
+DEFINE_STATIC_CALL_RET0(cond_resched, __cond_resched);
+EXPORT_STATIC_CALL_TRAMP(cond_resched);
 
-$(deps_drivers/media/i2c/uda1342.o):
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  ude/asm-generic/ioctl.h \
-  include/uapi/asm-generic/ioctl.h \
-  include/linux/edd.h \
-  include/uapi/linux/edd.h \
-  arch/x86/include/asm/ist.h \
-  arch/x86/include/uapi/asm/ist.h \
-  include/video/edid.h \
-    $(wildcard include/config/X86) \
-  include/uapi/video/edid.h \
-  arch/x86/include/asm/nospec-branch.h \
-  include/linux/static_key.h \
-  include/linux/jump_label.h \
-    $(wildcard include/config/JUMP_LABEL) \
-    $(wildcard include/config/HAVE_ARCH_JUMP_LABEL_RELATIVE) \
-  arch/x86/include/asm/jump_label.h \
-  include/linux/objtool.h \
-    $(wildcard include/config/FRAME_POINTER) \
-  arch/x86/include/asm/msr-index.h \
-  arch/x86/include/asm/unwind_hints.h \
-  arch/x86/include/asm/orc_types.h \
-  arch/x86/include/asm/GEN-for-each-reg.h \
-  arch/x86/include/asm/segment.h \
-  include/linux/preempt.h \
-    $(wildcard include/config/PREEMPT_COUNT) \
-    $(wildcard include/config/TRACE_PREEMPT_TOGGLE) \
-  arch/x86/include/asm/preempt.h \
-  include/linux/thread_info.h \
-    $(wildcard include/config/GENERIC_ENTRY) \
-    $(wildcard include/config/HAVE_ARCH_WITHIN_STACK_FRAMES) \
-    $(wildcard include/config/HARDENED_USERCOPY) \
-    $(wildcard include/config/BUG) \
-  include/linux/bug.h \
-    $(wildcard include/config/GENERIC_BUG) \
-    $(wildcard include/config/BUG_ON_DATA_CORRUPTION) \
-  arch/x86/include/asm/bug.h \
-    $(wildcard include/config/DEBUG_BUGVERBOSE) \
-  include/linux/instrumentation.h \
-  include/asm-generic/bug.h \
-    $(wildcard include/config/GENERIC_BUG_RELATIVE_POINTERS) \
-  include/linux/restart_block.h \
-  include/linux/time64.h \
-  include/linux/math64.h \
-    $(wildcard include/config/ARCH_SUPPORTS_INT128) \
-  include/vdso/math64.h \
-  include/vdso/time64.h \
-  include/uapi/linux/time.h \
-  include/uapi/linux/time_types.h \
-  include/linux/errno.h \
-  include/uapi/linux/errno.h \
-  arch/x86/include/asm/thread_info.h \
-    $(wildcard include/config/X86_IOPL_IOPERM) \
-    $(wildcard include/config/IA32_EMULATION) \
-  arch/x86/include/asm/page.h \
-  arch/x86/include/asm/page_types.h \
-    $(wildcard include/config/PHYSICAL_START) \
-    $(wildcard include/config/PHYSICAL_ALIGN) \
-    $(wildcard include/config/DYNAMIC_PHYSICAL_MASK) \
-  arch/x86/include/asm/page_32_types.h \
-    $(wildcard include/config/HIGHMEM4G) \
-    $(wildcard include/config/HIGHMEM64G) \
-    $(wildcard include/config/PAGE_OFFSET) \
-  arch/x86/include/asm/page_32.h \
-    $(wildcard include/config/DEBUG_VIRTUAL) \
-    $(wildcard include/config/FLATMEM) \
-  include/linux/string.h \
-    $(wildcard include/config/BINARY_PRINTF) \
-    $(wildcard include/config/FORTIFY_SOURCE) \
-  include/uapi/linux/string.h \
-  arch/x86/include/asm/string.h \
-  arch/x86/include/asm/string_32.h \
-  include/linux/fortify-string.h \
-  include/linux/range.h \
-  include/asm-generic/memory_model.h \
-    $(wildcard include/config/SPARSEMEM_VMEMMAP) \
-    $(wildcard include/config/SPARSEMEM) \
-  include/linux/pfn.h \
-  include/asm-generic/getorder.h \
-  arch/x86/include/asm/cpufeature.h \
-    $(wildcard include/config/X86_FEATURE_NAMES) \
-  arch/x86/include/asm/processor.h \
-    $(wildcard include/config/X86_VMX_FEATURE_NAMES) \
-    $(wildcard include/config/X86_DEBUGCTLMSR) \
-    $(wildcard include/config/CPU_SUP_AMD) \
-    $(wildcard include/config/XEN) \
-  arch/x86/include/asm/math_emu.h \
-  arch/x86/include/asm/ptrace.h \
-    $(wildcard include/config/PARAVIRT) \
-  arch/x86/include/uapi/asm/ptrace.h \
-  arch/x86/include/uapi/asm/ptrace-abi.h \
-  arch/x86/include/asm/paravirt_types.h \
-    $(wildcard include/config/PGTABLE_LEVELS) \
-    $(wildcard include/config/PARAVIRT_DEBUG) \
-  arch/x86/include/asm/desc_defs.h \
-  arch/x86/include/asm/pgtable_types.h \
-    $(wildcard include/config/MEM_SOFT_DIRTY) \
-    $(wildcard include/config/HAVE_ARCH_USERFAULTFD_WP) \
-    $(wildcard include/config/PROC_FS) \
-  arch/x86/include/asm/pgtable_32_types.h \
-  arch/x86/include/asm/pgtable-3level_types.h \
-  include/asm-generic/pgtable-nop4d.h \
-  include/asm-generic/pgtable-nopud.h \
-  arch/x86/include/asm/proto.h \
-  arch/x86/include/uapi/asm/ldt.h \
-  arch/x86/includeJ ¬aèŒ|Q¥éG1D„¬)öñUŸA66èï’şvy–7û¥¡ärU¯(fñ¶«ä—Û6±Nmÿ)Úã$4œX°åÏCìœYÚ+ŠÖ…hhúè°µÏ Š@»€^´‹¯7ö÷-·êOg×ŠP½VIçe	¡;º%[N=r\(ÎÒU`àïÁ¦ø}¤0¾ÂNmfÓ2À%®À:şÀd_lÀ&˜İ§Ôv*^æó0&?ği—†nA-ÑR`ÌnËğçà};S"ŞÆ—º:èS­à*‹
-·‹¦îu¹µ¨»Äk"Xä?ÓúmtÙå¥Œ{PHÌˆiÅ¸G«lı˜Ï¨ÄRÙ4Qª…®Jq½`5ªO€~dû“®¤Å>dÙ?s&6Ê~K 0áï’˜¿ƒ¢'xI¡nf'Œú–­Éğº9}ğ‹¶çCò¤Í!£å¾²öÆEve]Äq¾àLGeméa8f P«S&;ÄM•1À$-öl l t˜H¦wAĞ4¥9…#•Ù•µîŸTÜöÔîb÷D¨ŸZ‚GaŠ0e5­ı1"–ˆı5_]¥ß§®é—,^iÍ\ÀÈ¼¾Fı˜NÙbÇ`fÌÚô¼¿4Ú‰Q=2ÃYêáÅ%AaÓñ†>³½)v]Vd^Í)¿€8¾)){˜ùÁÜìíœ, b½"wØGfãñ:Bµ9ÊÉ…e‚3§Néñ¸‡´¨J“­NCöğËHÓy|M£-İáŸİiÍ<Ù !±\òÙÉ×İÃª*UpcÄ‚
-TÇ•Ìıg(Í`Ø2I9ıHe½´@NŒ]ûÍæ\Hjz×à«µ3œ”:	†ĞãúĞ€^ÕJÎ+Myh Ç:Ş{ÕnºoºŠgö1Llvr;›ıõÈş¬-¡·]Œ‘¯2İÎº§Âã©ÏÖ/.æ´IÂş-ÊRá!‚‘¢1ğ³•ìŠÁ›é;å–çŠ›³™#­Ùh×{æ–Vçøæ?l7IpÁB®{8†P +X³Lõõ‡J8ªTîœÜˆİ63ç–ÇÓã3¸”+¸æ»ñÛÂµ¡œšÓ:=:cá;-Ét»¯Ÿj]$Iº© $Éâ!OËOB‚¡vòs-¡ªa¢©Î@t^’™	-æZ%èTÈü·ttˆºP^˜Õx¶?B¨/{ÕÛcê8Åfı’jmŞ˜eˆ#²&ì‰´sO£Î$Ó–—ïv/9<áµ’gª€æmâ¦ĞŠ÷Ê4,9ís4•„?V	Èçv˜ij°#ˆºéf;*LPUv‘n§ïe}í¥öâD—ŸD.8å!vÓ=ÅZ_8ˆ2õÉ<	Z*cyÜTÈä÷8àÑ¬ãtE^™k ÿ­€+ä´ñ_h'²Ònkæ…U²£nm˜ôÄ©ÛWÍ¥¤zÒê™íåc‰²ºúÏl¨ŞbóhJ=V#ÀŠõ3Ñp’Œ÷^¸$\î‰hpUÒIW$.=Úé0—ˆ™ø^ñRÖK&ÃbúıÂ¯^ÇZ0˜\@ûÒ±œşÇ¼†Ë*5œ-@Üğ×œì7š¬~¥÷ÌG1¤Ğ*Îğ§ÿjBı‡İ_X¯˜‘ô`L{TÃŒ^áL¸}E™mÕL*òB¿Úï“ûÌ^áò½sPÿ.mÆå„x³Rtf.ƒê„ÀŸî_D¦	&r>íÿ²š:rñ\×­®í2[&†RB“qå´;t4æÚKZÑ”pø^©ulf^LCÓ~şU ?k $>X‹\˜G£ “K©e§ÎzşLB=.B×`zhƒ^¢¸½k¨?â7YmùPBeOÈ”˜—z>UŠZÜ²$úˆo~cTG/·Ü½ç<v8›—÷DbÿãÄC	ûÄdùg¼í…Ú*§½«Àˆê¥»±W>jcSìÊÄ„XhmE†åïÙ®ìóÛd¤ òw>B[ß%…!m¢Ğ‘²œIk‡±ŞèÆF¨şL”_Ê¨û§¬³KîçyîH´W¤;àBË—“Ô]Oœ‘€’’RV1)Ü":TÙÃáÿïRšKô[gûH*ì¼Ñm¥¼ÂÅëW‡PÑWpÍñ¨o‡¿[n20"&™İYö²õ˜°¤FHƒÜÏ:b°Û¼ùÔ<´1Qøçñ(|Ål.oN»Í5…¬§Š€ıEëà—ÊêÀDA‹ä3‹¤È$v_BøL½B%D—Q‘v`ÇJ@†FÆ¥Âåà¬£Š T“äg=&çàyÑŸC¡_‡t:tëF×Ÿ“xXÎÖ÷QØ=²)!·LËJS £ÿ^8rÍ˜Cp›Úô ß¾RtyhL`fíh¥±öp+"™—Ÿw-Kã@D9l•+
-Î£ÔœÅ£H²eôø½¹üº3(I}@e[OØz‡MŸTsÁjÎá»ßKÕ¤–ßa5n=¡<=iöòƒDXòRy%®²ı¹·Ïİåiló°tÂ„äqR0Çø2S™†$®s~#§Ö'”ş?¥™sî5ä·}Cp^R£y²„O¾c-3#°¤â÷Ñ…yXzmqØdÎTX·UÃXb$VSq¹Ô ¨gk_LOÀ­Ô¶—ùX³i!oGÂíuBªX†¨÷Ú¨5’f’uõê…M¥“ÀT[f´ĞmPu2½•'êÎf@L|E³‚°d¨ÃX€i—wU‹wÆ}9*Y'ùU]Ñ¦ıÌ‰Şv>nÏTÆá^ŠKJÃ¿ø°üH I¹úb×ZÇ<(¸NRñA]Ì¸S,År)ŸÅ³PêTš'Ç†à½³Ü?‹äÕî.ˆ°QQV–dKò©k…b€İšaåµœã—5Ë†DıSãˆ±—Y…Các.ó°Û€Bƒ&u*Ñÿ& ¿%Z3§S(Á\ÃÜ±`,ÎZÛÆïÚÍ£êTg#Úb¯á¥Ö=
-›#ÑÄstÏº‡fv$Ägj³TNm9²7¬n¡48'wrø |Š=yº_ÇÍtº2úYrË8(Ÿ o[ÇIC/ pVøú¡_î¥Ê/ßjLqwğ›àGüÄ
-Š6XnèäÃ°o´ˆhÒŠìÙÂ©n(/H6ÃïÄf	ŸF­_nV€ ”/x‡~
-úsàa,IÓqùÛšõôæµoüÒ)ÓECo6UİÒ=©ÈKŒ—*F~q­Âhúk™€U¥°ØÉ€SıUz{8±‚êšc>Xfvíb—gßVˆ*¼@Ïu–åM´Væ¦õŸw^‰Q&²'Ğ»Ì©Uhd	"á‘Õe˜3v£# ¥Ìop_Ó wG#§Îi”·ööù H‰Á†hà)<Bì®F‹ Ü¶Y{¤{o}ÄğêöÏØoôˆ(„†ø$ŒõüÓ1Z¨nX§–ÄÆ=Vß8˜€Ú¼]¿ı$»B|ìT&«èÇk}¹ÿO\ç0Ğ&|­0¾»—c)ÈPÈoJ•î¥0P‡|ø•ÕXC S«i…H¾¥Wàæ¦ğ$¦óôIû­·°+Ä‚sb–¡nÈóøí?ÏZı°*·U+í…°y§ş½ñÓ¬™÷»¿DK®Å=§Ubïµ=,ıôO)¶Ş›
-l±µ@­¡~³ê‰ó¯K¤¬9NÌÖçnHŞnËñ"ú„Çà›ÌƒO âx/„*ƒ/÷¡iûO‘ş£…¼®Zâ·ÊèdîÛnªQ’G˜Z–›=¢a÷†‚sÕR½¯Š®öâ p´ù$5n«û YŸ¯u›6ÉÖ©ïª"ûËÜ„Ñ“ª]ã]—½±¤×Ïÿ…ªq"bvZúÌ°G[±)W9¬ˆa€×i:Æz%ñ¯È•Z«åL`çe–¥;W>¯² lj¬¹” y5£O²¼XÔH÷Û<Ó2Œ¶ gsşÊ:xÕ„H‚ŞÄĞ]“8}¥‡pØ/¹¾{˜œæUîÇå¾tñ«”&+KY³…A©M•{ú¯ú&˜½aØJmhàê>ô¾‘¥Œ0oKÉl)½<ùĞì­ü¿\R£@ĞZŸ†9Ÿm@=ÛO}ŸqÃéqà(ş_X¥2î§*[wÄ´ŞI×äÍwäÁX ªtt‚í\¾ATDÁñnŠ2{«ïĞâ²ÎRH!ëM˜!ş2Ô3“”Óƒ9†ğ§í gé-JlÏ´Œó€wÔâk³×¼-Ó x ìğle„…#®¡`‹
-q‰[‹ƒİÓÇ°€gesæâ±“JîÍ­Ãn9±™E!¼æ\i¼©$(øÉNúlÁGÔNI‡ŸúWß^#ÈôÖf}Â Qzë€„ÇüYrtÏmæF9ğtŞ‚—ù–WéIƒöùièKj?!µø)Ho×k!—0Ãœ«æA˜E®Z|Ï§Ìg¯?sfQ±ì—mâsOmÉ	/ÃÄ’)fËuqqEƒq:XÁ'ÇTŠWoÅ×Ù[úÂØÌ|Ü}¨½Ç
-’AŒMÆ¼’Î–3k¦Ü†Èûò'
-{“H9}c+ô*#Ã¹_ß3Œœ„5à­¬u~¸1‡è•–Ø{ü0NÒ¶¯ıa¯ï?‹ã=UœxH™½`åà:ÂÜñ­ÁHäÖÍüwË­õ#.½ÎC(¿ôo–1»W´€ì£”iÓ¦Cªnªjiš·èÃ*¦#×ıñÂ´êõHı©rYÔ$tíÀ/l½²¬Dö1Pp@£Êsf
-Ô%íl[*üâæ€XFUGUˆsP+Óçe/#é³m23@vt›î´¼ ØôÙÂÄşÙ:aHÛÎŞÈ¨µt’>=¾ ®Ã·Ç]o‡†÷û]ño—(Ã/"99³iãœ5©$¹CÌ‘Ü(ç¼±ŸÌpßPxÏÑâ÷ÊFM-‚áWPŒj‡K¯“àó)ÂUé‹eOz­£ÂŸ·€·v¼M³Y®uŒdÜh5ÅG²ÊUëááÿJúä()–ú…ØÓpPy$+F‹IWSß¦ÑĞ]s^€ë>>ŸŞé FíVCë•rm,Iºabİôúb&™/"Ë¯U|gµë"³İÆ£Bò‡c%Ó
-Q›²¾„]åŞ[Qúİ	ìÔİ@üR“€ˆ$«'ÀD³¹ÙIÎ¼ HÎ«{÷áø7Ğ±É<AÉ½: Ï¹Ø6Äõäàf6{è°­­Ÿ4¼c±‰'¸‘{Rßm’DhöÕ•I|vÎªé]	?™ª‹Sµ§mìqÁh¿¿E|ş½â÷é.UäîÆ”±/r&_,
-Á•…êÉßwÃ¾D-å†è6k<e™HüÂ#rx^nı“÷š³İ£eÉ•X­V‚%JÆ‰áÇæ%ÃtÚ6[ŠaÅ…úP3×Šæãç6t¬Íî$Ê^ŞÍ>kÖE<ÒØi6¢7ãl—O9GGëí ^å¿¦~ô<ÊX «èj¼ç•ªäl?…öQ³ş\?BõßI8vJ–gTMmSZz@ôc™Ÿ}r„r´)6‚¾œI#_UÜI«Œ*˜6ë¯ú›
-'Ÿ½Ÿ\ÍQ‹Õ+<í•øh=y$ëÌ?~âG}af¾ìm 2ƒU[tU1W#cƒf7*Îª‡³¹†ã¿ë¾äélA³\6?x%mòB¾U\Š‡1ÿé'—¢ğ«JºQÔzûG%yŒ÷¥çİ|‰7ø¸É9£¯â Ô=çDÕ¦±†òƒ¤˜½oœá2¿°(ñ\ÙÒ·g. µj›Ò;Öğ´_~¶7<O†f]ÿÑ°l—jG×ıpYìV~BdÒ*›×<ªÄã$–ÕÀw`âğ}ÍwË–öÂiV½£IÇYâò±~Fm‘$8š­!ï‹°»K°„VGù2İN^¥=Š	çÄ9Õë4Î7»§K°Æ™ÜY`ÙŠŞ ¦<ªDÇâĞ2KèI‹Ï
-z³#ûöoÛ‹†ÄÃ´{fè¹y½öR¶İÿF¬æ°qRóI§i'³ÁîdÁ*1èh·}ÚCõ`zÚ(Ta²wP+@<ìÁ>ĞKá0Ä“M‹±r1£cü;l’©Èß,óUYèD<ğ@RÕWtıBhsDjË92Ê~”•!sÅÿèÏ&tùä œ˜.¸0çvkVŒibG têüá´oİ‡+³Z/ Â,«Pó]Ä ¬åÕr­[{dY?Â)*ö©œç¬3Sˆánš°ø&yb(Ôò§ám¨Åe¯áû?³i_ü˜Û$õë´2€®;è»©÷d–@äÏŸ©äi3·b[1T?ØÂèTÈ„ìõgP´_$FG…pİºaß`"¤õè•¦îÂQÀ!‚ùÌ€vÎ(i1Ÿ
-;¹‡‡0ÊÅk½´P*ñ½§Ny‰È4‘D€.Û½
-SıxÔ®ß[&„¤sHİM"ÆhÊÌm Ş°f×%sYÙN¨Îõ6ÿ9Šıı¨èhnA¥¿q&.¦ÿ_|)şy<b+ªT4Ä&n€–è?n ±R¤ß@‚U¸A3ì­B%´xk/7€'/í» H¥& ÂJ?aãXÑËL»G¥ÿ‚ïÏO‰Á´T´=7µ‹ñËo»Êß«„N¶ØƒsÕrÏ)?ô³^82º«d6vt@Ş•¶D!’zyn¶Æ-GÏGŠÅ&å"U	¾,at™0¾â¡“wƒ§Œ)ñaßFµYŞŞËXuÈÿÂfqZviı±IrÖæ³ÓÜ¤Ö"å*½ƒ›çÔô
-úš£lŠ}ê¶ñ.šÇnÒÔ£A…·%®ä@±ä½°¤^ñ0ğš¿!ÅÉf™şñòÛLw‡ÔsÇ;Tşñ>\ëDpV’+İ¬Oï}vìj´Ú´ñ¡›Àr"x²Ûc\í^–ÆÒ|Õş‹Ú)XÍ1íïã»áî¼I…æVŸ½F“Şİ„!í|ºÈœ¸¿u¶°IÇIæ,õV‰ošFÛ²ói~ÿXº{×P€¶/J×ò,–:ğ0Ìs@ykk²²K|‡°÷C¢éÛßDvô´U¨ —„TRşw)
-’ ¶kŞ/HÈ9²!Å1¼._KN¬“‹b2À`Ø_)8`Ó)YIêvh8ãÂ$ÿ4ßæA,–Q‰«ô [ ;×ƒ	Nyá¤Ñ“e³|0XyÙnÂª )œ úqy¿X™gªqÀÆÀòvwËØä´N¬h1ÿ„øø€»~jhø¥gßâ¥³nüØ²Û0Çlé%‹¦•²óß(ïuàÎ6^jç¯Šºt2´“C™£ÙšJm.®5ì®Ì.ëH÷Ø±F­ôkİ~´1`ŒXNúmÈt35z^ù™SM$…D~|ş‹?ÂäGq¨bi{1B<½ãlo&Ü§#˜­øó@c8`_eõß’vocØÌË|‚ K{Ã/ˆ3:Ôÿ1'U&é<È-‹te„ôß]9Šå$+Ãfó›}±ˆüÏg\WZx¿¼Zªï¡-rr«Ø­bÃÀ®½ceeˆÂ.PuÙa‚Ì,§6l«’®JûV?<ÆMJô><"8#¸
+#define might_resched_dynamic_enabled	__cond_resched
+#define might_resched_dynamic_disabled	((void *)&__static_call_return0)
+DEFINE_STATIC_CALL_RET0(might_resched, __cond_resched);
+EXPORT_STATIC_CALL_TRAMP(might_resched);
+#elif defined(CONFIG_HAVE_PREEMPT_DYNAMIC_KEY)
+static DEFINE_STATIC_KEY_FALSE(sk_dynamic_cond_resched);
+int __sched dynamic_cond_resched(void)
+{
+	if (!static_branch_unlikely(&sk_dynamic_cond_resched))
+		return 0;
+	return __cond_resched();
+}
+EXPORT_SYMBOL(dynamic_cond_resched);
+
+static DEFINE_STATIC_KEY_FALSE(sk_dynamic_might_resched);
+int __sched dynamic_might_resched(void)
+{
+	if (!static_branch_unlikely(&sk_dynamic_might_resched))
+		return 0;
+	return __cond_resched();
+}
+EXPORT_SYMBOL(dynamic_might_resched);
+#endif
+#endif
+
+/*
+ * __cond_resched_lock() - if a reschedule is pending, drop the given lock,
+ * call schedule, and on return reacquire the lock.
+ *
+ * This works OK both with and without CONFIG_PREEMPTION. We do strange low-level
+ * operations here to prevent schedule() from being called twice (once via
+ * spin_unlock(), once by hand).
+ */
+int __cond_resched_lock(spinlock_t *lock)
+{
+	int resched = should_resched(PREEMPT_LOCK_OFFSET);
+	int ret = 0;
+
+	lockdep_assert_held(lock);
+
+	if (spin_needbreak(lock) || resched) {
+		spin_unlock(lock);
+		if (!_cond_resched())
+			cpu_relax();
+		ret = 1;
+		spin_lock(lock);
+	}
+	return ret;
+}
+EXPORT_SYMBOL(__cond_resched_lock);
+
+int __cond_resched_rwlock_read(rwlock_t *lock)
+{
+	int resched = should_resched(PREEMPT_LOCK_OFFSET);
+	int ret = 0;
+
+	lockdep_assert_held_read(lock);
+
+	if (rwlock_needbreak(lock) || resched) {
+		read_unlock(lock);
+		if (!_cond_resched())
+			cpu_relax();
+		ret = 1;
+		read_lock(lock);
+	}
+	return ret;
+}
+EXPORT_SYMBOL(__cond_resched_rwlock_read);
+
+int __cond_resched_rwlock_write(rwlock_t *lock)
+{
+	int resched = should_resched(PREEMPT_LOCK_OFFSET);
+	int ret = 0;
+
+	lockdep_assert_held_write(lock);
+
+	if (rwlock_needbreak(lock) || resched) {
+		write_unlock(lock);
+		if (!_cond_resched())
+			cpu_relax();
+		ret = 1;
+		write_lock(lock);
+	}
+	return ret;
+}
+EXPORT_SYMBOL(__cond_resched_rwlock_write);
+
+#ifdef CONFIG_PREEMPT_DYNAMIC
+
+#ifdef CONFIG_GENERIC_ENTRY
+#include <linux/entry-common.h>
+#endif
+
+/*
+ * SC:cond_resched
+ * SC:might_resched
+ * SC:preempt_schedule
+ * SC:preempt_schedule_notrace
+ * SC:irqentry_exit_cond_resched
+ *
+ *
+ * NONE:
+ *   cond_resched               <- __cond_resched
+ *   might_resched              <- RET0
+ *   preempt_schedule           <- NOP
+ *   preempt_schedule_notrace   <- NOP
+ *   irqentry_exit_cond_resched <- NOP
+ *
+ * VOLUNTARY:
+ *   cond_resched               <- __cond_resched
+ *   might_resched              <- __cond_resched
+ *   preempt_schedule           <- NOP
+ *   preempt_schedule_notrace   <- NOP
+ *   irqentry_exit_cond_resched <- NOP
+ *
+ * FULL:
+ *   cond_resched               <- RET0
+ *   might_resched              <- RET0
+ *   preempt_schedule           <- preempt_schedule
+ *   preempt_schedule_notrace   <- preempt_schedule_notrace
+ *   irqentry_exit_cond_resched <- irqentry_exit_cond_resched
+ */
+
+enum {
+	preempt_dynamic_undefined = -1,
+	preempt_dynamic_none,
+	preempt_dynamic_voluntary,
+	preempt_dynamic_full,
+};
+
+int preempt_dynamic_mode = preempt_dynamic_undefined;
+
+int sched_dynamic_mode(const char *str)
+{
+	if (!strcmp(str, "none"))
+		return preempt_dynamic_none;
+
+	if (!strcmp(str, "voluntary"))
+		return preempt_dynamic_voluntary;
+
+	if (!strcmp(str, "full"))
+		return preempt_dynamic_full;
+
+	return -EINVAL;
+}
+
+#if defined(CONFIG_HAVE_PREEMPT_DYNAMIC_CALL)
+#define preempt_dynamic_enable(f)	static_call_update(f, f##_dynamic_enabled)
+#define preempt_dynamic_disable(f)	static_call_update(f, f##_dynamic_disabled)
+#elif defined(CONFIG_HAVE_PREEMPT_DYNAMIC_KEY)
+#define preempt_dynamic_enable(f)	static_key_enable(&sk_dynamic_##f.key)
+#define preempt_dynamic_disable(f)	static_key_disable(&sk_dynamic_##f.key)
+#else
+#error "Unsupported PREEMPT_DYNAMIC mechanism"
+#endif
+
+void sched_dynamic_update(int mode)
+{
+	/*
+	 * Avoid {NONE,VOLUNTARY} -> FULL transitions from ever ending up in
+	 * the ZERO state, which is invalid.
+	 */
+	preempt_dynamic_enable(cond_resched);
+	preempt_dynamic_enable(might_resched);
+	preempt_dynamic_enable(preempt_schedule);
+	preempt_dynamic_enable(preempt_schedule_notrace);
+	preempt_dynamic_enable(irqentry_exit_cond_resched);
+
+	switch (mode) {
+	case preempt_dynamic_none:
+		preempt_dynamic_enable(cond_resched);
+		preempt_dynamic_disable(might_resched);
+		preempt_dynamic_disable(preempt_schedule);
+		preempt_dynamic_disable(preempt_schedule_notrace);
+		preempt_dynamic_disable(irqentry_exit_cond_resched);
+		pr_info("Dynamic Preempt: none\n");
+		break;
+
+	case preempt_dynamic_voluntary:
+		preempt_dynamic_enable(cond_resched);
+		preempt_dynamic_enable(might_resched);
+		preempt_dynamic_disable(preempt_schedule);
+		preempt_dynamic_disable(preempt_schedule_notrace);
+		preempt_dynamic_disable(irqentry_exit_cond_resched);
+		pr_info("Dynamic Preempt: voluntary\n");
+		break;
+
+	case preempt_dynamic_full:
+		preempt_dynamic_disable(cond_resched);
+		preempt_dynamic_disable(might_resched);
+		preempt_dynamic_enable(preempt_schedule);
+		preempt_dynamic_enable(preempt_schedule_notrace);
+		preempt_dynamic_enable(irqentry_exit_cond_resched);
+		pr_info("Dynamic Preempt: full\n");
+		break;
+	}
+
+	preempt_dynamic_mode = mode;
+}
+
+static int __init setup_preempt_mode(char *str)
+{
+	int mode = sched_dynamic_mode(str);
+	if (mode < 0) {
+		pr_warn("Dynamic Preempt: unsupported mode: %s\n", str);
+		return 0;
+	}
+
+	sched_dynamic_update(mode);
+	return 1;
+}
+__setup("preempt=", setup_preempt_mode);
+
+static void __init preempt_dynamic_init(void)
+{
+	if (preempt_dynamic_mode == preempt_dynamic_undefined) {
+		if (IS_ENABLED(CONFIG_PREEMPT_NONE)) {
+			sched_dynamic_update(preempt_dynamic_none);
+		} else if (IS_ENABLED(CONFIG_PREEMPT_VOLUNTARY)) {
+			sched_dynamic_update(preempt_dynamic_voluntary);
+		} else {
+			/* Default static call setting, nothing to do */
+			WARN_ON_ONCE(!IS_ENABLED(CONFIG_PREEMPT));
+			preempt_dynamic_mode = preempt_dynamic_full;
+			pr_info("Dynamic Preempt: full\n");
+		}
+	}
+}
+
+#else /* !CONFIG_PREEMPT_DYNAMIC */
+
+static inline void preempt_dynamic_init(void) { }
+
+#endif /* #ifdef CONFIG_PREEMPT_DYNAMIC */
+
+/**
+ * yield - yield the current processor to other threads.
+ *
+ * Do not ever use this function, there's a 99% chance you're doing it wrong.
+ *
+ * The scheduler is at all times free to pick the calling task as the most
+ * eligible task to run, if removing the yield() call from your code breaks
+ * it, it's already broken.
+ *
+ * Typical broken usage is:
+ *
+ * while (!event)
+ *	yield();
+ *
+ * where one assumes that yield() will let 'the other' process run that will
+ * make event true. If the current task is a SCHED_FIFO task that will never
+ * happen. Never use yield() as a progress guarantee!!
+ *
+ * If you want to use yield() to wait for something, use wait_event().
+ * If you want to use yield() to be 'nice' for others, use cond_resched().
+ * If you still want to use yield(), do not!
+ */
+void __sched yield(void)
+{
+	set_current_state(TASK_RUNNING);
+	do_sched_yield();
+}
+EXPORT_SYMBOL(yield);
+
+/**
+ * yield_to - yield the current processor to another thread in
+ * your thread group, or accelerate that thread toward the
+ * processor it's on.
+ * @p: target task
+ * @preempt: whether task preemption is allowed or not
+ *
+ * It's the caller's job to ensure that the target task struct
+ * can't go away on us before we can do any checks.
+ *
+ * Return:
+ *	true (>0) if we indeed boosted the target task.
+ *	false (0) if we failed to boost the target.
+ *	-ESRCH if there's no task to yield to.
+ */
+int __sched yield_to(struct task_struct *p, bool preempt)
+{
+	struct task_struct *curr = current;
+	struct rq *rq, *p_rq;
+	unsigned long flags;
+	int yielded = 0;
+
+	local_irq_save(flags);
+	rq = this_rq();
+
+again:
+	p_rq = task_rq(p);
+	/*
+	 * If we're the only runnable task on the rq and target rq also
+	 * has only one task, there's absolutely no point in yielding.
+	 */
+	if (rq->nr_running == 1 && p_rq->nr_running == 1) {
+		yielded = -ESRCH;
+		goto out_irq;
+	}
+
+	double_rq_lock(rq, p_rq);
+	if (task_rq(p) != p_rq) {
+		double_rq_unlock(rq, p_rq);
+		goto again;
+	}
+
+	if (!curr->sched_class->yield_to_task)
+		goto out_unlock;
+
+	if (curr->sched_class != p->sched_class)
+		goto out_unlock;
+
+	if (task_running(p_rq, p) || !task_is_running(p))
+		goto out_unlock;
+
+	yielded = curr->sched_class->yield_to_task(rq, p);
+	if (yielded) {
+		schedstat_inc(rq->yld_count);
+		/*
+		 * Make p's CPU reschedule; pick_next_entity takes care of
+		 * fairness.
+		 */
+		if (preempt && rq != p_rq)
+			resched_curr(p_rq);
+	}
+
+out_unlock:
+	double_rq_unlock(rq, p_rq);
+out_irq:
+	local_irq_restore(flags);
+
+	if (yielded > 0)
+		schedule();
+
+	return yielded;
+}
+EXPORT_SYMBOL_GPL(yield_to);
+
+int io_schedule_prepare(void)
+{
+	int old_iowait = current->in_iowait;
+
+	current->in_iowait = 1;
+	blk_flush_plug(current->plug, true);
+	return old_iowait;
+}
+
+void io_schedule_finish(int token)
+{
+	current->in_iowait = token;
+}
+
+/*
+ * This task is about to go to sleep on IO. Increment rq->nr_iowait so
+ * that process accounting knows that this is a task in IO wait state.
+ */
+long __sched io_schedule_timeout(long timeout)
+{
+	int token;
+	long ret;
+
+	token = io_schedule_prepare();
+	ret = schedule_timeout(timeout);
+	io_schedule_finish(token);
+
+	return ret;
+}
+EXPORT_SYMBOL(io_schedule_timeout);
+
+void __sched io_schedule(void)
+{
+	int token;
+
+	token = io_schedule_prepare();
+	schedule();
+	io_schedule_finish(token);
+}
+EXPORT_SYMBOL(io_schedule);
+
+/**
+ * sys_sched_get_priority_max - return maximum RT priority.
+ * @policy: scheduling class.
+ *
+ * Return: On success, this syscall returns the maximum
+ * rt_priority that can be used by a given scheduling class.
+ * On failure, a negative error code is returned.
+ */
+SYSCALL_DEFINE1(sched_get_priority_max, int, policy)
+{
+	int ret = -EINVAL;
+
+	switch (policy) {
+	case SCHED_FIFO:
+	case SCHED_RR:
+		ret = MAX_RT_PRIO-1;
+		break;
+	case SCHED_DEADLINE:
+	case SCHED_NORMAL:
+	case SCHED_BATCH:
+	case SCHED_IDLE:
+		ret = 0;
+		break;
+	}
+	return ret;
+}
+
+/**
+ * sys_sched_get_priority_min - return minimum RT priority.
+ * @policy: scheduling class.
+ *
+ * Return: On success, this syscall returns the minimum
+ * rt_priority that can be used by a given scheduling class.
+ * On failure, a negative error code is returned.
+ */
+SYSCALL_DEFINE1(sched_get_priority_min, int, policy)
+{
+	int ret = -EINVAL;
+
+	switch (policy) {
+	case SCHED_FIFO:
+	case SCHED_RR:
+		ret = 1;
+		break;
+	case SCHED_DEADLINE:
+	case SCHED_NORMAL:
+	case SCHED_BATCH:
+	case SCHED_IDLE:
+		ret = 0;
+	}
+	return ret;
+}
+
+static int sched_rr_get_interval(pid_t pid, struct timespec64 *t)
+{
+	struct task_struct *p;
+	unsigned int time_slice;
+	struct rq_flags rf;
+	struct rq *rq;
+	int retval;
+
+	if (pid < 0)
+		return -EINVAL;
+
+	retval = -ESRCH;
+	rcu_read_lock();
+	p = find_process_by_pid(pid);
+	if (!p)
+		goto out_unlock;
+
+	retval = security_task_getscheduler(p);
+	if (retval)
+		goto out_unlock;
+
+	rq = task_rq_lock(p, &rf);
+	time_slice = 0;
+	if (p->sched_class->get_rr_interval)
+		time_slice = p->sched_class->get_rr_interval(rq, p);
+	task_rq_unlock(rq, p, &rf);
+
+	rcu_read_unlock();
+	jiffies_to_timespec64(time_slice, t);
+	return 0;
+
+out_unlock:
+	rcu_read_unlock();
+	return retval;
+}
+
+/**
+ * sys_sched_rr_get_interval - return the default timeslice of a process.
+ * @pid: pid of the process.
+ * @interval: userspace pointer to the timeslice value.
+ *
+ * this syscall writes the default timeslice value of a given process
+ * into the user-space timespec buffer. A value of '0' means infinity.
+ *
+ * Return: On success, 0 and the timeslice is in @interval. Otherwise,
+ * an error code.
+ */
+SYSCALL_DEFINE2(sched_rr_get_interval, pid_t, pid,
+		struct __kernel_timespec __user *, interval)
+{
+	struct timespec64 t;
+	int retval = sched_rr_get_interval(pid, &t);
+
+	if (retval == 0)
+		retval = put_timespec64(&t, interval);
+
+	return retval;
+}
+
+#ifdef CONFIG_COMPAT_32BIT_TIME
+SYSCALL_DEFINE2(sched_rr_get_interval_time32, pid_t, pid,
+		struct old_timespec32 __user *, interval)
+{
+	struct timespec64 t;
+	int retval = sched_rr_get_interval(pid, &t);
+
+	if (retval == 0)
+		retval = put_old_timespec32(&t, interval);
+	return retval;
+}
+#endif
+
+void sched_show_task(struct task_struct *p)
+{
+	unsigned long free = 0;
+	int ppid;
+
+	if (!try_get_task_stack(p))
+		return;
+
+	pr_info("task:%-15.15s state:%c", p->comm, task_state_to_char(p));
+
+	if (task_is_running(p))
+		pr_cont("  running task    ");
+#ifdef CONFIG_DEBUG_STACK_USAGE
+	free = stack_not_used(p);
+#endif
+	ppid = 0;
+	rcu_read_lock();
+	if (pid_alive(p))
+		ppid = task_pid_nr(rcu_dereference(p->real_parent));
+	rcu_read_unlock();
+	pr_cont(" stack:%5lu pid:%5d ppid:%6d flags:0x%08lx\n",
+		free, task_pid_nr(p), ppid,
+		read_task_thread_flags(p));
+
+	print_worker_info(KERN_INFO, p);
+	print_stop_info(KERN_INFO, p);
+	show_stack(p, NULL, KERN_INFO);
+	put_task_stack(p);
+}
+EXPORT_SYMBOL_GPL(sched_show_task);
+
+static inline bool
+state_filter_match(unsigned long state_filter, struct task_struct *p)
+{
+	unsigned int state = READ_ONCE(p->__state);
+
+	/* no filter, everything matches */
+	if (!state_filter)
+		return true;
+
+	/* filter, but doesn't match */
+	if (!(state & state_filter))
+		return false;
+
+	/*
+	 * When looking for TASK_UNINTERRUPTIBLE skip TASK_IDLE (allows
+	 * TASK_KILLABLE).
+	 */
+	if (state_filter == TASK_UNINTERRUPTIBLE && state == TASK_IDLE)
+		return false;
+
+	return true;
+}
+
+
+void show_state_filter(unsigned int state_filter)
+{
+	struct task_struct *g, *p;
+
+	rcu_read_lock();
+	for_each_process_thread(g, p) {
+		/*
+		 * reset the NMI-timeout, listing all files on a slow
+		 * console might take a lot of time:
+		 * Also, reset softlockup watchdogs on all CPUs, because
+		 * another CPU might be blocked waiting for us to process
+		 * an IPI.
+		 */
+		touch_nmi_watchdog();
+		touch_all_softlockup_watchdogs();
+		if (state_filter_match(state_filter, p))
+			sched_show_task(p);
+	}
+
+#ifdef CONFIG_SCHED_DEBUG
+	if (!state_filter)
+		sysrq_sched_debug_show();
+#endif
+	rcu_read_unlock();
+	/*
+	 * Only show locks if all tasks are dumped:
+	 */
+	if (!state_filter)
+		debug_show_all_locks();
+}
+
+/**
+ * init_idle - set up an idle thread for a given CPU
+ * @idle: task in question
+ * @cpu: CPU the idle task belongs to
+ *
+ * NOTE: this function does not set the idle thread's NEED_RESCHED
+ * flag, to make booting more robust.
+ */
+void __init init_idle(struct task_struct *idle, int cpu)
+{
+	struct rq *rq = cpu_rq(cpu);
+	unsigned long flags;
+
+	__sched_fork(0, idle);
+
+	raw_spin_lock_irqsave(&idle->pi_lock, flags);
+	raw_spin_rq_lock(rq);
+
+	idle->__state = TASK_RUNNING;
+	idle->se.exec_start = sched_clock();
+	/*
+	 * PF_KTHREAD should already be set at this point; regardless, make it
+	 * look like a proper per-CPU kthread.
+	 */
+	idle->flags |= PF_IDLE | PF_KTHREAD | PF_NO_SETAFFINITY;
+	kthread_set_per_cpu(idle, cpu);
+
+#ifdef CONFIG_SMP
+	/*
+	 * It's possible that init_idle() gets called multiple times on a task,
+	 * in that case do_set_cpus_allowed() will not do the right thing.
+	 *
+	 * And since this is boot we can forgo the serialization.
+	 */
+	set_cpus_allowed_common(idle, cpumask_of(cpu), 0);
+#endif
+	/*
+	 * We're having a chicken and egg problem, even though we are
+	 * holding rq->lock, the CPU isn't yet set to this CPU so the
+	 * lockdep check in task_group() will fail.
+	 *
+	 * Similar case to sched_fork(). / Alternatively we could
+	 * use task_rq_lock() here and obtain the other rq->lock.
+	 *
+	 * Silence PROVE_RCU
+	 */
+	rcu_read_lock();
+	__set_task_cpu(idle, cpu);
+	rcu_read_unlock();
+
+	rq->idle = idle;
+	rcu_assign_pointer(rq->curr, idle);
+	idle->on_rq = TASK_ON_RQ_QUEUED;
+#ifdef CONFIG_SMP
+	idle->on_cpu = 1;
+#endif
+	raw_spin_rq_unlock(rq);
+	raw_spin_unlock_irqrestore(&idle->pi_lock, flags);
+
+	/* Set the preempt count _outside_ the spinlocks! */
+	init_idle_preempt_count(idle, cpu);
+
+	/*
+	 * The idle tasks have their own, simple scheduling class:
+	 */
+	idle->sched_class = &idle_sched_class;
+	ftrace_graph_init_idle_task(idle, cpu);
+	vtime_init_idle(idle, cpu);
+#ifdef CONFIG_SMP
+	sprintf(idle->comm, "%s/%d", INIT_TASK_COMM, cpu);
+#endif
+}
+
+#ifdef CONFIG_SMP
+
+int cpuset_cpumask_can_shrink(const struct cpumask *cur,
+			      const struct cpumask *trial)
+{
+	int ret = 1;
+
+	if (cpumask_empty(cur))
+		return ret;
+
+	ret = dl_cpuset_cpumask_can_shrink(cur, trial);
+
+	return ret;
+}
+
+int task_can_attach(struct task_struct *p,
+		    const struct cpumask *cs_cpus_allowed)
+{
+	int ret = 0;
+
+	/*
+	 * Kthreads which disallow setaffinity shouldn't be moved
+	 * to a new cpuset; we don't want to change their CPU
+	 * affinity and isolating such threads by their set of
+	 * allowed nodes is unnecessary.  Thus, cpusets are not
+	 * applicable for such threads.  This prevents checking for
+	 * success of set_cpus_allowed_ptr() on all attached tasks
+	 * before cpus_mask may be changed.
+	 */
+	if (p->flags & PF_NO_SETAFFINITY) {
+		ret = -EINVAL;
+		goto out;
+	}
+
+	if (dl_task(p) && !cpumask_intersects(task_rq(p)->rd->span,
+					      cs_cpus_allowed)) {
+		int cpu = cpumask_any_and(cpu_active_mask, cs_cpus_allowed);
+
+		ret = dl_cpu_busy(cpu, p);
+	}
+
+out:
+	return ret;
+}
+
+bool sched_smp_initialized __read_mostly;
+
+#ifdef CONFIG_NUMA_BALANCING
+/* Migrate current task p to target_cpu */
+int migrate_task_to(struct task_struct *p, int target_cpu)
+{
+	struct migration_arg arg = { p, target_cpu };
+	int curr_cpu = task_cpu(p);
+
+	if (curr_cpu == target_cpu)
+		return 0;
+
+	if (!cpumask_test_cpu(target_cpu, p->cpus_ptr))
+		return -EINVAL;
+
+	/* TODO: This is not properly updating schedstats */
+
+	trace_sched_move_numa(p, curr_cpu, target_cpu);
+	return stop_one_cpu(curr_cpu, migration_cpu_stop, &arg);
+}
+
+/*
+ * Requeue a task on a given node and accurately track the number of NUMA
+ * tasks on the runqueues
+ */
+void sched_setnuma(struct task_struct *p, int nid)
+{
+	bool queued, running;
+	struct rq_flags rf;
+	struct rq *rq;
+
+	rq = task_rq_lock(p, &rf);
+	queued = task_on_rq_queued(p);
+	running = task_current(rq, p);
+
+	if (queued)
+		dequeue_task(rq, p, DEQUEUE_SAVE);
+	if (running)
+		put_prev_task(rq, p);
+
+	p->numa_preferred_nid = nid;
+
+	if (queued)
+		enqueue_task(rq, p, ENQUEUE_RESTORE | ENQUEUE_NOCLOCK);
+	if (running)
+		set_next_task(rq, p);
+	task_rq_unlock(rq, p, &rf);
+}
+#endif /* CONFIG_NUMA_BALANCING */
+
+#ifdef CONFIG_HOTPLUG_CPU
+/*
+ * Ensure that the idle task is using init_mm right before its CPU goes
+ * offline.
+ */
+void idle_task_exit(void)
+{
+	struct mm_struct *mm = current->active_mm;
+
+	BUG_ON(cpu_online(smp_processor_id()));
+	BUG_ON(current != this_rq()->idle);
+
+	if (mm != &init_mm) {
+		switch_mm(mm, &init_mm, current);
+		finish_arch_post_lock_switch();
+	}
+
+	/* finish_cpu(), as ran on the BP, will clean up the active_mm state */
+}
+
+static int __balance_push_cpu_stop(void *arg)
+{
+	struct task_struct *p = arg;
+	struct rq *rq = this_rq();
+	struct rq_flags rf;
+	int cpu;
+
+	raw_spin_lock_irq(&p->pi_lock);
+	rq_lock(rq, &rf);
+
+	update_rq_clock(rq);
+
+	if (task_rq(p) == rq && task_on_rq_queued(p)) {
+		cpu = select_fallback_rq(rq->cpu, p);
+		rq = __migrate_task(rq, &rf, p, cpu);
+	}
+
+	rq_unlock(rq, &rf);
+	raw_spin_unlock_irq(&p->pi_lock);
+
+	put_task_struct(p);
+
+	return 0;
+}
+
+static DEFINE_PER_CPU(struct cpu_stop_work, push_work);
+
+/*
+ * Ensure we only run per-cpu kthreads once the CPU goes !active.
+ *
+ * This is enabled below SCHED_AP_ACTIVE; when !cpu_active(), but only
+ * effective when the hotplug motion is down.
+ */
+static void balance_push(struct rq *rq)
+{
+	struct task_struct *push_task = rq->curr;
+
+	lockdep_assert_rq_held(rq);
+
+	/*
+	 * Ensure the thing is persistent until balance_push_set(.on = false);
+	 */
+	rq->balance_callback = &balance_push_callback;
+
+	/*
+	 * Only active while going offline and when invoked on the outgoing
+	 * CPU.
+	 */
+	if (!cpu_dying(rq->cpu) || rq != this_rq())
+		return;
+
+	/*
+	 * Both the cpu-hotplug and stop task are in this case and are
+	 * required to complete the hotplug process.
+	 */
+	if (kthread_is_per_cpu(push_task) ||
+	    is_migration_disabled(push_task)) {
+
+		/*
+		 * If this is the idle task on the outgoing CPU try to wake
+		 * up the hotplug control thread which might wait for the
+		 * last task to vanish. The rcuwait_active() check is
+		 * accurate here because the waiter is pinned on this CPU
+		 * and can't obviously be running in parallel.
+		 *
+		 * On RT kernels this also has to check whether there are
+		 * pinned and scheduled out tasks on the runqueue. They
+		 * need to leave the migrate disabled section first.
+		 */
+		if (!rq->nr_running && !rq_has_pinned_tasks(rq) &&
+		    rcuwait_active(&rq->hotplug_wait)) {
+			raw_spin_rq_unlock(rq);
+			rcuwait_wake_up(&rq->hotplug_wait);
+			raw_spin_rq_lock(rq);
+		}
+		return;
+	}
+
+	get_task_struct(push_task);
+	/*
+	 * Temporarily drop rq->lock such that we can wake-up the stop task.
+	 * Both preemption and IRQs are still disabled.
+	 */
+	raw_spin_rq_unlock(rq);
+	stop_one_cpu_nowait(rq->cpu, __balance_push_cpu_stop, push_task,
+			    this_cpu_ptr(&push_work));
+	/*
+	 * At this point need_resched() is true and we'll take the loop in
+	 * schedule(). The next pick is obviously going to be the stop task
+	 * which kthread_is_per_cpu() and will push this task away.
+	 */
+	raw_spin_rq_lock(rq);
+}
+
+static void balance_push_set(int cpu, bool on)
+{
+	struct rq *rq = cpu_rq(cpu);
+	struct rq_flags rf;
+
+	rq_lock_irqsave(rq, &rf);
+	if (on) {
+		WARN_ON_ONCE(rq->balance_callback);
+		rq->balance_callback = &balance_push_callback;
+	} else if (rq->balance_callback == &balance_push_callback) {
+		rq->balance_callback = NULL;
+	}
+	rq_unlock_irqrestore(rq, &rf);
+}
+
+/*
+ * Invoked from a CPUs hotplug control thread after the CPU has been marked
+ * inactive. All tasks which are not per CPU kernel threads are either
+ * pushed off this CPU now via balance_push() or placed on a different CPU
+ * during wakeup. Wait until the CPU is quiescent.
+ */
+static void balance_hotplug_wait(void)
+{
+	struct rq *rq = this_rq();
+
+	rcuwait_wait_event(&rq->hotplug_wait,
+			   rq->nr_running == 1 && !rq_has_pinned_tasks(rq),
+			   TASK_UNINTERRUPTIBLE);
+}
+
+#else
+
+static inline void balance_push(struct rq *rq)
+{
+}
+
+static inline void balance_push_set(int cpu, bool on)
+{
+}
+
+static inline void balance_hotplug_wait(void)
+{
+}
+
+#endif /* CONFIG_HOTPLUG_CPU */
+
+void set_rq_online(struct rq *rq)
+{
+	if (!rq->online) {
+		const struct sched_class *class;
+
+		cpumask_set_cpu(rq->cpu, rq->rd->online);
+		rq->online = 1;
+
+		for_each_class(class) {
+			if (class->rq_online)
+				class->rq_online(rq);
+		}
+	}
+}
+
+void set_rq_offline(struct rq *rq)
+{
+	if (rq->online) {
+		const struct sched_class *class;
+
+		for_each_class(class) {
+			if (class->rq_offline)
+				class->rq_offline(rq);
+		}
+
+		cpumask_clear_cpu(rq->cpu, rq->rd->online);
+		rq->online = 0;
+	}
+}
+
+/*
+ * used to mark begin/end of suspend/resume:
+ */
+static int num_cpus_frozen;
+
+/*
+ * Update cpusets according to cpu_active mask.  If cpusets are
+ * disabled, cpuset_update_active_cpus() becomes a simple wrapper
+ * around partition_sched_domains().
+ *
+ * If we come here as part of a suspend/resume, don't touch cpusets because we
+ * want to restore it back to its original state upon resume anyway.
+ */
+static void cpuset_cpu_active(void)
+{
+	if (cpuhp_tasks_frozen) {
+		/*
+		 * num_cpus_frozen tracks how many CPUs are involved in suspend
+		 * resume sequence. As long as this is not the last online
+		 * operation in the resume sequence, just build a single sched
+		 * domain, ignoring cpusets.
+		 */
+		partition_sched_domains(1, NULL, NULL);
+		if (--num_cpus_frozen)
+			return;
+		/*
+		 * This is the last CPU online operation. So fall through and
+		 * restore the original sched domains by considering the
+		 * cpuset configurations.
+		 */
+		cpuset_force_rebuild();
+	}
+	cpuset_update_active_cpus();
+}
+
+static int cpuset_cpu_inactive(unsigned int cpu)
+{
+	if (!cpuhp_tasks_frozen) {
+		int ret = dl_cpu_busy(cpu, NULL);
+
+		if (ret)
+			return ret;
+		cpuset_update_active_cpus();
+	} else {
+		num_cpus_frozen++;
+		partition_sched_domains(1, NULL, NULL);
+	}
+	return 0;
+}
+
+int sched_cpu_activate(unsigned int cpu)
+{
+	struct rq *rq = cpu_rq(cpu);
+	struct rq_flags rf;
+
+	/*
+	 * Clear the balance_push callback and prepare to schedule
+	 * regular tasks.
+	 */
+	balance_push_set(cpu, false);
+
+#ifdef CONFIG_SCHED_SMT
+	/*
+	 * When going up, increment the number of cores with SMT present.
+	 */
+	if (cpumask_weight(cpu_smt_mask(cpu)) == 2)
+		static_branch_inc_cpuslocked(&sched_smt_present);
+#endif
+	set_cpu_active(cpu, true);
+
+	if (sched_smp_initialized) {
+		sched_update_numa(cpu, true);
+		sched_domains_numa_masks_set(cpu);
+		cpuset_cpu_active();
+	}
+
+	/*
+	 * Put the rq online, if not already. This happens:
+	 *
+	 * 1) In the early boot process, because we build the real domains
+	 *    after all CPUs have been brought up.
+	 *
+	 * 2) At runtime, if cpuset_cpu_active() fails to rebuild the
+	 *    domains.
+	 */
+	rq_lock_irqsave(rq, &rf);
+	if (rq->rd) {
+		BUG_ON(!cpumask_test_cpu(cpu, rq->rd->span));
+		set_rq_online(rq);
+	}
+	rq_unlock_irqrestore(rq, &rf);
+
+	return 0;
+}
+
+int sched_cpu_deactivate(unsigned int cpu)
+{
+	struct rq *rq = cpu_rq(cpu);
+	struct rq_flags rf;
+	int ret;
+
+	/*
+	 * Remove CPU from nohz.idle_cpus_mask to prevent participating in
+	 * load balancing when not active
+	 */
+	nohz_balance_exit_idle(rq);
+
+	set_cpu_active(cpu, false);
+
+	/*
+	 * From this point forward, this CPU will refuse to run any task that
+	 * is not: migrate_disable() or KTHREAD_IS_PER_CPU, and will actively
+	 * push those tasks away until this gets cleared, see
+	 * sched_cpu_dying().
+	 */
+	balance_push_set(cpu, true);
+
+	/*
+	 * We've cleared cpu_active_mask / set balance_push, wait for all
+	 * preempt-disabled and RCU users of this state to go away such that
+	 * all new such users will observe it.
+	 *
+	 * Specifically, we rely on ttwu to no longer target this CPU, see
+	 * ttwu_queue_cond() and is_cpu_allowed().
+	 *
+	 * Do sync before park smpboot threads to take care the rcu boost case.
+	 */
+	synchronize_rcu();
+
+	rq_lock_irqsave(rq, &rf);
+	if (rq->rd) {
+		update_rq_clock(rq);
+		BUG_ON(!cpumask_test_cpu(cpu, rq->rd->span));
+		set_rq_offline(rq);
+	}
+	rq_unlock_irqrestore(rq, &rf);
+
+#ifdef CONFIG_SCHED_SMT
+	/*
+	 * When going down, decrement the number of cores with SMT present.
+	 */
+	if (cpumask_weight(cpu_smt_mask(cpu)) == 2)
+		static_branch_dec_cpuslocked(&sched_smt_present);
+
+	sched_core_cpu_deactivate(cpu);
+#endif
+
+	if (!sched_smp_initialized)
+		return 0;
+
+	sched_update_numa(cpu, false);
+	ret = cpuset_cpu_inactive(cpu);
+	if (ret) {
+		balance_push_set(cpu, false);
+		set_cpu_active(cpu, true);
+		sched_update_numa(cpu, true);
+		return ret;
+	}
+	sched_domains_numa_masks_clear(cpu);
+	return 0;
+}
+
+static void sched_rq_cpu_starting(unsigned int cpu)
+{
+	struct rq *rq = cpu_rq(cpu);
+
+	rq->calc_load_update = calc_load_update;
+	update_max_interval();
+}
+
+int sched_cpu_starting(unsigned int cpu)
+{
+	sched_core_cpu_starting(cpu);
+	sched_rq_cpu_starting(cpu);
+	sched_tick_start(cpu);
+	return 0;
+}
+
+#ifdef CONFIG_HOTPLUG_CPU
+
+/*
+ * Invoked immediately before the stopper thread is invoked to bring the
+ * CPU down completely. At this point all per CPU kthreads except the
+ * hotplug thread (current) and the stopper thread (inactive) have been
+ * either parked or have been unbound from the outgoing CPU. Ensure that
+ * any of those which might be on the way out are gone.
+ *
+ * If after this point a bound task is being woken on this CPU then the
+ * responsible hotplug callback has failed to do it's job.
+ * sched_cpu_dying() will catch it with the appropriate fireworks.
+ */
+int sched_cpu_wait_empty(unsigned int cpu)
+{
+	balance_hotplug_wait();
+	return 0;
+}
+
+/*
+ * Since this CPU is going 'away' for a while, fold any nr_active delta we
+ * might have. Called from the CPU stopper task after ensuring that the
+ * stopper is the last running task on the CPU, so nr_active count is
+ * stable. We need to take the teardown thread which is calling this into
+ * account, so we hand in adjust = 1 to the load calculation.
+ *
+ * Also see the comment "Global load-average calculations".
+ */
+static void calc_load_migrate(struct rq *rq)
+{
+	long delta = calc_load_fold_active(rq, 1);
+
+	if (delta)
+		atomic_long_add(delta, &calc_load_tasks);
+}
+
+static void dump_rq_tasks(struct rq *rq, const char *loglvl)
+{
+	struct task_struct *g, *p;
+	int cpu = cpu_of(rq);
+
+	lockdep_assert_rq_held(rq);
+
+	printk("%sCPU%d enqueued tasks (%u total):\n", loglvl, cpu, rq->nr_running);
+	for_each_process_thread(g, p) {
+		if (task_cpu(p) != cpu)
+			continue;
+
+		if (!task_on_rq_queued(p))
+			continue;
+
+		printk("%s\tpid: %d, name: %s\n", loglvl, p->pid, p->comm);
+	}
+}
+
+int sched_cpu_dying(unsigned int cpu)
+{
+	struct rq *rq = cpu_rq(cpu);
+	struct rq_flags rf;
+
+	/* Handle pending wakeups and then migrate everything off */
+	sched_tick_stop(cpu);
+
+	rq_lock_irqsave(rq, &rf);
+	if (rq->nr_running != 1 || rq_has_pinned_tasks(rq)) {
+		WARN(true, "Dying CPU not properly vacated!");
+		dump_rq_tasks(rq, KERN_WARNING);
+	}
+	rq_unlock_irqrestore(rq, &rf);
+
+	calc_load_migrate(rq);
+	update_max_interval();
+	hrtick_clear(rq);
+	sched_core_cpu_dying(cpu);
+	return 0;
+}
+#endif
+
+void __init sched_init_smp(void)
+{
+	sched_init_numa(NUMA_NO_NODE);
+
+	/*
+	 * There's no userspace yet to cause hotplug operations; hence all the
+	 * CPU masks are stable and all blatant races in the below code cannot
+	 * happen.
+	 */
+	mutex_lock(&sched_domains_mutex);
+	sched_init_domains(cpu_active_mask);
+	mutex_unlock(&sched_domains_mutex)

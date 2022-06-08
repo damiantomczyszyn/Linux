@@ -1,2 +1,1 @@
-RCOPY) \
-  arch/x86/include/asm/uaccess.h
+!try_module_get(client_tuner->dev.driver-

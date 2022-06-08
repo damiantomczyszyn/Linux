@@ -1,1 +1,2 @@
-cmd_drivers/media/i2c/upd64031a.o := gcc -Wp,-MMD,drivers/media/i2c/.upd64031a.o.d -nostdinc -I./arch/x86/include -I./arch
+«θζ¬άξ>Π΄_ÒΦ4–ΟΕgl¦T²Ψh\
+wωεύ%&|²ην°ZΡYEέ,ςνΥQιmκΈ'%-KhΠª¥zPκªν7σ‡L[γlQε^{rΠΉP^λύι—,Τιή―{Κ±΄―Ψ«΅

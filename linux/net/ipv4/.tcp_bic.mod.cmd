@@ -1,4 +1,3 @@
-_lock_class(lock, 0);
-
-		/*
-		 * If look_up_lock_class() failed to find a class, we're t
+/* SPDX-License-Identifier: GPL-2.0-or-later */
+/*
+ *  Driver for the Conexant CX23885 P

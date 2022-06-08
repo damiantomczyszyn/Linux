@@ -1,78 +1,68 @@
-urrent chain
- */
-static inline int get_first_held_lock(struct task_struct *curr,
-					struct held_lock *hlock)
-{
-	int i;
-	struct held_lock *hlock_curr;
-
-	for (i = curr->lockdep_depth - 1; i >= 0; i--) {
-		hlock_curr = curr->held_locks + i;
-		if (hlock_curr->irq_context != hlock->irq_context)
-			break;
-
+ware FIFO overrun\n");
+	}
+	if (roe && ror) {
+		/*
+		 * The RX FIFO Enable (CNTRL_RFE) must be toggled to clear
+		 * the Rx FIFO Over Run status (STATS_ROR)
+		 */
+		v |= CNTRL_RFE;
+		events |= V4L2_SUBDEV_IR_RX_HW_FIFO_OVERRUN;
+		v4l2_err(sd, "IR receiver hardware FIFO overrun\n");
+	}
+	if (rte && rto) {
+		/*
+		 * The IR Receiver Enable (CNTRL_RXE) must be toggled to clear
+		 * the Rx Pulse Width Timer Time Out (STATS_RTO)
+		 */
+		v |= CNTRL_RXE;
+		events |= V4L2_SUBDEV_IR_RX_END_OF_RX_DETECTED;
+	}
+	if (v) {
+		/* Clear STATS_ROR & STATS_RTO as needed by resetting hardware */
+		cx23888_ir_write4(dev, CX23888_IR_CNTRL_REG, cntrl & ~v);
+		cx23888_ir_write4(dev, CX23888_IR_CNTRL_REG, cntrl);
+		*handled = true;
 	}
 
-	return ++i;
+	spin_lock_irqsave(&state->rx_kfifo_lock, flags);
+	if (kfifo_len(&state->rx_kfifo) >= CX23888_IR_RX_KFIFO_SIZE / 2)
+		events |= V4L2_SUBDEV_IR_RX_FIFO_SERVICE_REQ;
+	spin_unlock_irqrestore(&state->rx_kfifo_lock, flags);
+
+	if (events)
+		v4l2_subdev_notify(sd, V4L2_SUBDEV_IR_RX_NOTIFY, &events);
+	return 0;
 }
 
-#ifdef CONFIG_DEBUG_LOCKDEP
-/*
- * Returns the next chain_key iteration
- */
-static u64 print_chain_key_iteration(u16 hlock_id, u64 chain_key)
+/* Receiver */
+static int cx23888_ir_rx_read(struct v4l2_subdev *sd, u8 *buf, size_t count,
+			      ssize_t *num)
 {
-	u64 new_chain_key = iterate_chain_key(chain_key, hlock_id);
+	struct cx23888_ir_state *state = to_state(sd);
+	bool invert = (bool) atomic_read(&state->rx_invert);
+	u16 divider = (u16) atomic_read(&state->rxclk_divider);
 
-	printk(" hlock_id:%d -> chain_key:%016Lx",
-		(unsigned int)hlock_id,
-		(unsigned long long)new_chain_key);
-	return new_chain_key;
-}
+	unsigned int i, n;
+	union cx23888_ir_fifo_rec *p;
+	unsigned u, v, w;
 
-static void
-print_chain_keys_held_locks(struct task_struct *curr, struct held_lock *hlock_next)
-{
-	struct held_lock *hlock;
-	u64 chain_key = INITIAL_CHAIN_KEY;
-	int depth = curr->lockdep_depth;
-	int i = get_first_held_lock(curr, hlock_next);
-
-	printk("depth: %u (irq_context %u)\n", depth - i + 1,
-		hlock_next->irq_context);
-	for (; i < depth; i++) {
-		hlock = curr->held_locks + i;
-		chain_key = print_chain_key_iteration(hlock_id(hlock), chain_key);
-
-		print_lock(hlock);
+	n = count / sizeof(union cx23888_ir_fifo_rec)
+		* sizeof(union cx23888_ir_fifo_rec);
+	if (n == 0) {
+		*num = 0;
+		return 0;
 	}
 
-	print_chain_key_iteration(hlock_id(hlock_next), chain_key);
-	print_lock(hlock_next);
-}
+	n = kfifo_out_locked(&state->rx_kfifo, buf, n, &state->rx_kfifo_lock);
 
-static void print_chain_keys_chain(struct lock_chain *chain)
-{
-	int i;
-	u64 chain_key = INITIAL_CHAIN_KEY;
-	u16 hlock_id;
+	n /= sizeof(union cx23888_ir_fifo_rec);
+	*num = n * sizeof(union cx23888_ir_fifo_rec);
 
-	printk("depth: %u\n", chain->depth);
-	for (i = 0; i < chain->depth; i++) {
-		hlock_id = chain_hlocks[chain->base + i];
-		chain_key = print_chain_key_iteration(hlock_id, chain_key);
+	for (p = (union cx23888_ir_fifo_rec *) buf, i = 0; i < n; p++, i++) {
 
-		print_lock_name(lock_classes + chain_hlock_class_idx(hlock_id));
-		printk("\n");
-	}
-}
-
-static void print_collision(struct task_struct *curr,
-			struct held_lock *hlock_next,
-			struct lock_chain *chain)
-{
-	pr_warn("\n");
-	pr_warn("============================\n");
-	pr_warn("WARNING: chain_key collision\n");
-	print_kernel_ident();
-	pr_warn("-----------------------
+		if ((p->hw_fifo_data & FIFO_RXTX_RTO) == FIFO_RXTX_RTO) {
+			/* Assume RTO was because of no IR light input */
+			u = 0;
+			w = 1;
+		} else {
+			u = (p->hw_fifo_data

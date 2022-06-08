@@ -1,201 +1,313 @@
-odule.h \
-    $(wildcard include/config/MODULES_TREE_LOOKUP) \
-    $(wildcard include/config/STACKTRACE_BUILD_ID) \
-    $(wildcard include/config/MODULE_SIG) \
-    $(wildcard include/config/KALLSYMS) \
-    $(wildcard include/config/BPF_EVENTS) \
-    $(wildcard include/config/DEBUG_INFO_BTF_MODULES) \
-    $(wildcard include/config/EVENT_TRACING) \
-    $(wildcard include/config/MODULE_UNLOAD) \
-    $(wildcard include/config/CONSTRUCTORS) \
-    $(wildcard include/config/FUNCTION_ERROR_INJECTION) \
-  include/linux/buildid.h \
-    $(wildcard include/config/CRASH_CORE) \
-  include/linux/kmod.h \
-  include/linux/umh.h \
-  include/linux/sysctl.h \
-    $(wildcard include/config/SYSCTL) \
-  include/uapi/linux/sysctl.h \
-  include/linux/elf.h \
-    $(wildcard include/config/ARCH_USE_GNU_PROPERTY) \
-    $(wildcard include/config/ARCH_HAVE_ELF_PROT) \
-  arch/x86/include/asm/elf.h \
-    $(wildcard include/config/X86_X32_ABI) \
-  arch/x86/include/asm/user.h \
-  arch/x86/include/asm/user_32.h \
-  arch/x86/include/asm/fsgsbase.h \
-  arch/x86/include/asm/vdso.h \
-  arch/x86/include/asm/desc.h \
-  arch/x86/include/asm/fixmap.h \
-    $(wildcard include/config/DEBUG_KMAP_LOCAL_FORCE_MAP) \
-    $(wildcard include/config/X86_VSYSCALL_EMULATION) \
-    $(wildcard include/config/PROVIDE_OHCI1394_DMA_INIT) \
-    $(wildcard include/config/PCI_MMCONFIG) \
-    $(wildcard include/config/ACPI_APEI_GHES) \
-    $(wildcard include/config/INTEL_TXT) \
-  include/asm-generic/fixmap.h \
-  arch/x86/include/asm/irq_vectors.h \
-    $(wildcard include/config/HAVE_KVM) \
-    $(wildcard include/config/HYPERV) \
-    $(wildcard include/config/PCI_MSI) \
-  arch/x86/include/asm/cpu_entry_area.h \
-  arch/x86/include/asm/intel_ds.h \
-  arch/x86/include/asm/pgtable_areas.h \
-  arch/x86/include/asm/pgtable_32_areas.h \
-  include/uapi/linux/elf.h \
-  include/uapi/linux/elf-em.h \
-  include/linux/moduleparam.h \
-    $(wildcard include/config/ALPHA) \
-    $(wildcard include/config/PPC64) \
-  include/linux/rbtree_latch.h \
-  include/linux/error-injection.h \
-  include/asm-generic/error-injection.h \
-  include/linux/cfi.h \
-    $(wildcard include/config/CFI_CLANG_SHADOW) \
-  arch/x86/include/asm/module.h \
-    $(wildcard include/config/UNWINDER_ORC) \
-  include/asm-generic/module.h \
-    $(wildcard include/config/HAVE_MOD_ARCH_SPECIFIC) \
-    $(wildcard include/config/MODULES_USE_ELF_REL) \
-    $(wildcard include/config/MODULES_USE_ELF_RELA) \
-  arch/x86/include/asm/orc_types.h \
-  arch/x86/include/asm/device.h \
-  include/linux/pm_wakeup.h \
-  include/acpi/acpi.h \
-  include/acpi/platform/acenv.h \
-  include/acpi/platform/acgcc.h \
-  include/acpi/platform/aclinux.h \
-    $(wildcard include/config/ACPI_REDUCED_HARDWARE_ONLY) \
-    $(wildcard include/config/ACPI_DEBUG) \
-  include/linux/ctype.h \
-  arch/x86/include/asm/acenv.h \
-  include/acpi/acnames.h \
-  include/acpi/actypes.h \
-  include/acpi/acexcep.h \
-  include/acpi/actbl.h \
-  include/acpi/actbl1.h \
-  include/acpi/actbl2.h \
-  include/acpi/actbl3.h \
-  include/acpi/acrestyp.h \
-  include/acpi/platform/acenvex.h \
-  include/acpi/platform/aclinuxex.h \
-  include/acpi/platform/acgccex.h \
-  include/acpi/acoutput.h \
-  include/acpi/acpiosxf.h \
-  include/acpi/acpixf.h \
-  include/acpi/acconfig.h \
-  include/acpi/acbuffer.h \
-  include/linux/dynamic_debug.h \
-  include/acpi/acpi_bus.h \
-    $(wildcard include/config/X86_ANDROID_TABLETS) \
-    $(wildcard include/config/ACPI_SYSTEM_POWER_STATES_SUPPORT) \
-    $(wildcard include/config/ACPI_SLEEP) \
-  include/acpi/acpi_drivers.h \
-    $(wildcard include/config/ACPI_DOCK) \
-  include/acpi/acpi_numa.h \
-    $(wildcard include/config/ACPI_HMAT) \
-  include/acpi/acpi_io.h \
-  include/linux/io.h \
-    $(wildcard include/config/HAS_IOPORT_MAP) \
-  arch/x86/include/asm/io.h \
-    $(wildcard include/config/MTRR) \
-    $(wildcard include/config/X86_PAT) \
-  arch/x86/include/generated/asm/early_ioremap.h \
-  include/asm-generic/early_ioremap.h \
-    $(wildcard include/config/GENERIC_EARLY_IOREMAP) \
-  include/asm-generic/iomap.h \
-  include/asm-generic/pci_iomap.h \
-    $(wildcard include/config/NO_GENERIC_PCI_IOPORT_MAP) \
-    $(wildcard include/config/GENERIC_PCI_IOMAP) \
-  include/asm-generic/io.h \
-    $(wildcard include/config/GENERIC_IOMAP) \
-    $(wildcard include/config/GENERIC_IOREMAP) \
-    $(wildcard include/config/VIRT_TO_BUS) \
-    $(wildcard include/config/GENERIC_DEVMEM_IS_ALLOWED) \
-  include/linux/logic_pio.h \
-    $(wildcard include/config/INDIRECT_PIO) \
-  include/linux/vmalloc.h \
-    $(wildcard include/config/HAVE_ARCH_HUGE_VMALLOC) \
-  arch/x86/include/asm/vmalloc.h \
-    $(wildcard include/config/HAVE_ARCH_HUGE_VMAP) \
-  arch/x86/include/asm/acpi.h \
-    $(wildcard include/config/ACPI_APEI) \
-  include/acpi/pdc_intel.h \
-  arch/x86/include/asm/numa.h \
-    $(wildcard include/config/NUMA_EMU) \
-  arch/x86/include/asm/numa_32.h \
-  include/linux/regulator/consumer.h \
-    $(wildcard include/config/REGULATOR) \
-  include/linux/suspend.h \
-    $(wildcard include/config/VT) \
-    $(wildcard include/config/SUSPEND) \
-    $(wildcard include/config/HIBERNATION_SNAPSHOT_DEV) \
-    $(wildcard include/config/PM_SLEEP_DEBUG) \
-    $(wildcard include/config/PM_AUTOSLEEP) \
-  include/linux/swap.h \
-    $(wildcard include/config/DEVICE_PRIVATE) \
-    $(wildcard include/config/MIGRATION) \
-    $(wildcard include/config/FRONTSWAP) \
-    $(wildcard include/config/THP_SWAP) \
-    $(wildcard include/config/MEMCG_SWAP) \
-  include/linux/memcontrol.h \
-    $(wildcard include/config/CGROUP_WRITEBACK) \
-  include/linux/cgroup.h \
-    $(wildcard include/config/CGROUP_CPUACCT) \
-    $(wildcard include/config/SOCK_CGROUP_DATA) \
-    $(wildcard include/config/CGROUP_DATA) \
-    $(wildcard include/config/CGROUP_BPF) \
-  include/uapi/linux/cgroupstats.h \
-  include/uapi/linux/taskstats.h \
-  include/linux/fs.h \
-    $(wildcard include/config/READ_ONLY_THP_FOR_FS) \
-    $(wildcard include/config/FS_POSIX_ACL) \
-    $(wildcard include/config/IMA) \
-    $(wildcard include/config/FILE_LOCKING) \
-    $(wildcard include/config/FSNOTIFY) \
-    $(wildcard include/config/FS_ENCRYPTION) \
-    $(wildcard include/config/FS_VERITY) \
-    $(wildcard include/config/EPOLL) \
-    $(wildcard include/config/UNICODE) \
-    $(wildcard include/config/QUOTA) \
-    $(wildcard include/config/FS_DAX) \
-    $(wildcard include/config/BLOCK) \
-  include/linux/wait_bit.h \
-  include/linux/kdev_t.h \
-  include/uapi/linux/kdev_t.h \
-  include/linux/dcache.h \
-  include/linux/rculist_bl.h \
-  include/linux/list_bl.h \
-  include/linux/bit_spinlock.h \
-  include/linux/lockref.h \
-    $(wildcard include/config/ARCH_USE_CMPXCHG_LOCKREF) \
-  include/linux/stringhash.h \
-    $(wildcard include/config/DCACHE_WORD_ACCESS) \
-  include/linux/hash.h \
-    $(wildcard include/config/HAVE_ARCH_HASH) \
-  include/linux/path.h \
-  include/linux/list_lru.h \
-  include/linux/shrinker.h \
-  include/linux/capability.h \
-  include/uapi/linux/capability.h \
-  include/linux/semaphore.h \
-  include/linux/fcntl.h \
-    $(wildcard include/config/ARCH_32BIT_OFF_T) \
-  include/uapi/linux/fcntl.h \
-  arch/x86/include/generated/uapi/asm/fcntl.h \
-  include/uapi/asm-generic/fcntl.h \
-  include/uapi/linux/openat2.h \
-  include/linux/migrate_mode.h \
-  include/linux/percpu-rwsem.h \
-  include/linux/rcuwait.h \
-  include/linux/sched/signal.h \
-    $(wildcard include/config/SCHED_AUTOGROUP) \
-    $(wildcard include/config/BSD_PROCESS_ACCT) \
-    $(wildcard include/config/TASKSTATS) \
-    $(wildcard include/config/STACK_GROWSUP) \
-  include/linux/signal.h \
-    $(wildcard include/config/DYNAMIC_SIGFRAME) \
-  include/linux/sched/jobctl.h \
-  include/linux/sched/task.h \
-    $(wildcard include/config/HAVE_EXIT_THREAD) \
-    $
+tate);
+		}
+	}
+
+}
+EXPORT_SYMBOL(altera_ci_release);
+
+static void altera_pid_control(struct netup_hw_pid_filter *pid_filt,
+		u16 pid, int onoff)
+{
+	struct fpga_internal *inter = pid_filt->internal;
+	u8 store = 0;
+
+	/* pid 0-0x1f always enabled, don't touch them */
+	if ((pid == 0x2000) || (pid < 0x20))
+		return;
+
+	mutex_lock(&inter->fpga_mutex);
+
+	netup_fpga_op_rw(inter, NETUP_CI_PID_ADDR0, (pid >> 3) & 0xff, 0);
+	netup_fpga_op_rw(inter, NETUP_CI_PID_ADDR1,
+			((pid >> 11) & 0x03) | (pid_filt->nr << 2), 0);
+
+	store = netup_fpga_op_rw(inter, NETUP_CI_PID_DATA, 0, NETUP_CI_FLG_RD);
+
+	if (onoff)/* 0 - on, 1 - off */
+		store |= (1 << (pid & 7));
+	else
+		store &= ~(1 << (pid & 7));
+
+	netup_fpga_op_rw(inter, NETUP_CI_PID_DATA, store, 0);
+
+	mutex_unlock(&inter->fpga_mutex);
+
+	pid_dbg_print("%s: (%d) set pid: %5d 0x%04x '%s'\n", __func__,
+		pid_filt->nr, pid, pid, onoff ? "off" : "on");
+}
+
+static void altera_toggle_fullts_streaming(struct netup_hw_pid_filter *pid_filt,
+					int filt_nr, int onoff)
+{
+	struct fpga_internal *inter = pid_filt->internal;
+	u8 store = 0;
+	int i;
+
+	pid_dbg_print("%s: pid_filt->nr[%d]  now %s\n", __func__, pid_filt->nr,
+			onoff ? "off" : "on");
+
+	if (onoff)/* 0 - on, 1 - off */
+		store = 0xff;/* ignore pid */
+	else
+		store = 0;/* enable pid */
+
+	mutex_lock(&inter->fpga_mutex);
+
+	for (i = 0; i < 1024; i++) {
+		netup_fpga_op_rw(inter, NETUP_CI_PID_ADDR0, i & 0xff, 0);
+
+		netup_fpga_op_rw(inter, NETUP_CI_PID_ADDR1,
+				((i >> 8) & 0x03) | (pid_filt->nr << 2), 0);
+		/* pid 0-0x1f always enabled */
+		netup_fpga_op_rw(inter, NETUP_CI_PID_DATA,
+				(i > 3 ? store : 0), 0);
+	}
+
+	mutex_unlock(&inter->fpga_mutex);
+}
+
+static int altera_pid_feed_control(void *demux_dev, int filt_nr,
+		struct dvb_demux_feed *feed, int onoff)
+{
+	struct fpga_inode *temp_int = find_dinode(demux_dev);
+	struct fpga_internal *inter = temp_int->internal;
+	struct netup_hw_pid_filter *pid_filt = inter->pid_filt[filt_nr - 1];
+
+	altera_pid_control(pid_filt, feed->pid, onoff ? 0 : 1);
+	/* call old feed proc's */
+	if (onoff)
+		pid_filt->start_feed(feed);
+	else
+		pid_filt->stop_feed(feed);
+
+	if (feed->pid == 0x2000)
+		altera_toggle_fullts_streaming(pid_filt, filt_nr,
+						onoff ? 0 : 1);
+
+	return 0;
+}
+
+static int altera_ci_start_feed(struct dvb_demux_feed *feed, int num)
+{
+	altera_pid_feed_control(feed->demux, num, feed, 1);
+
+	return 0;
+}
+
+static int altera_ci_stop_feed(struct dvb_demux_feed *feed, int num)
+{
+	altera_pid_feed_control(feed->demux, num, feed, 0);
+
+	return 0;
+}
+
+static int altera_ci_start_feed_1(struct dvb_demux_feed *feed)
+{
+	return altera_ci_start_feed(feed, 1);
+}
+
+static int altera_ci_stop_feed_1(struct dvb_demux_feed *feed)
+{
+	return altera_ci_stop_feed(feed, 1);
+}
+
+static int altera_ci_start_feed_2(struct dvb_demux_feed *feed)
+{
+	return altera_ci_start_feed(feed, 2);
+}
+
+static int altera_ci_stop_feed_2(struct dvb_demux_feed *feed)
+{
+	return altera_ci_stop_feed(feed, 2);
+}
+
+static int altera_hw_filt_init(struct altera_ci_config *config, int hw_filt_nr)
+{
+	struct netup_hw_pid_filter *pid_filt = NULL;
+	struct fpga_inode *temp_int = find_inode(config->dev);
+	struct fpga_internal *inter = NULL;
+	int ret = 0;
+
+	pid_filt = kzalloc(sizeof(struct netup_hw_pid_filter), GFP_KERNEL);
+
+	ci_dbg_print("%s\n", __func__);
+
+	if (!pid_filt) {
+		ret = -ENOMEM;
+		goto err;
+	}
+
+	if (temp_int != NULL) {
+		inter = temp_int->internal;
+		(inter->filts_used)++;
+		ci_dbg_print("%s: Find Internal Structure!\n", __func__);
+	} else {
+		inter = kzalloc(sizeof(struct fpga_internal), GFP_KERNEL);
+		if (!inter) {
+			ret = -ENOMEM;
+			goto err;
+		}
+
+		temp_int = append_internal(inter);
+		if (!temp_int) {
+			ret = -ENOMEM;
+			goto err;
+		}
+		inter->filts_used = 1;
+		inter->dev = config->dev;
+		inter->fpga_rw = config->fpga_rw;
+		mutex_init(&inter->fpga_mutex);
+		inter->strt_wrk = 1;
+		ci_dbg_print("%s: Create New Internal Structure!\n", __func__);
+	}
+
+	ci_dbg_print("%s: setting hw pid filter = %p for ci = %d\n", __func__,
+						pid_filt, hw_filt_nr - 1);
+	inter->pid_filt[hw_filt_nr - 1] = pid_filt;
+	pid_filt->demux = config->demux;
+	pid_filt->internal = inter;
+	pid_filt->nr = hw_filt_nr - 1;
+	/* store old feed controls */
+	pid_filt->start_feed = config->demux->start_feed;
+	pid_filt->stop_feed = config->demux->stop_feed;
+	/* replace with new feed controls */
+	if (hw_filt_nr == 1) {
+		pid_filt->demux->start_feed = altera_ci_start_feed_1;
+		pid_filt->demux->stop_feed = altera_ci_stop_feed_1;
+	} else if (hw_filt_nr == 2) {
+		pid_filt->demux->start_feed = altera_ci_start_feed_2;
+		pid_filt->demux->stop_feed = altera_ci_stop_feed_2;
+	}
+
+	altera_toggle_fullts_streaming(pid_filt, 0, 1);
+
+	return 0;
+err:
+	ci_dbg_print("%s: Can't init hardware filter: Error %d\n",
+		     __func__, ret);
+
+	kfree(pid_filt);
+	kfree(inter);
+
+	return ret;
+}
+
+int altera_ci_init(struct altera_ci_config *config, int ci_nr)
+{
+	struct altera_ci_state *state;
+	struct fpga_inode *temp_int = find_inode(config->dev);
+	struct fpga_internal *inter = NULL;
+	int ret = 0;
+	u8 store = 0;
+
+	state = kzalloc(sizeof(struct altera_ci_state), GFP_KERNEL);
+
+	ci_dbg_print("%s\n", __func__);
+
+	if (!state) {
+		ret = -ENOMEM;
+		goto err;
+	}
+
+	if (temp_int != NULL) {
+		inter = temp_int->internal;
+		(inter->cis_used)++;
+		inter->fpga_rw = config->fpga_rw;
+		ci_dbg_print("%s: Find Internal Structure!\n", __func__);
+	} else {
+		inter = kzalloc(sizeof(struct fpga_internal), GFP_KERNEL);
+		if (!inter) {
+			ret = -ENOMEM;
+			goto err;
+		}
+
+		temp_int = append_internal(inter);
+		if (!temp_int) {
+			ret = -ENOMEM;
+			goto err;
+		}
+		inter->cis_used = 1;
+		inter->dev = config->dev;
+		inter->fpga_rw = config->fpga_rw;
+		mutex_init(&inter->fpga_mutex);
+		inter->strt_wrk = 1;
+		ci_dbg_print("%s: Create New Internal Structure!\n", __func__);
+	}
+
+	ci_dbg_print("%s: setting state = %p for ci = %d\n", __func__,
+						state, ci_nr - 1);
+	state->internal = inter;
+	state->nr = ci_nr - 1;
+
+	state->ca.owner = THIS_MODULE;
+	state->ca.read_attribute_mem = altera_ci_read_attribute_mem;
+	state->ca.write_attribute_mem = altera_ci_write_attribute_mem;
+	state->ca.read_cam_control = altera_ci_read_cam_ctl;
+	state->ca.write_cam_control = altera_ci_write_cam_ctl;
+	state->ca.slot_reset = altera_ci_slot_reset;
+	state->ca.slot_shutdown = altera_ci_slot_shutdown;
+	state->ca.slot_ts_enable = altera_ci_slot_ts_ctl;
+	state->ca.poll_slot_status = altera_poll_ci_slot_status;
+	state->ca.data = state;
+
+	ret = dvb_ca_en50221_init(config->adapter,
+				   &state->ca,
+				   /* flags */ 0,
+				   /* n_slots */ 1);
+	if (0 != ret)
+		goto err;
+
+	inter->state[ci_nr - 1] = state;
+
+	altera_hw_filt_init(config, ci_nr);
+
+	if (inter->strt_wrk) {
+		INIT_WORK(&inter->work, netup_read_ci_status);
+		inter->strt_wrk = 0;
+	}
+
+	ci_dbg_print("%s: CI initialized!\n", __func__);
+
+	mutex_lock(&inter->fpga_mutex);
+
+	/* Enable div */
+	netup_fpga_op_rw(inter, NETUP_CI_TSA_DIV, 0x0, 0);
+	netup_fpga_op_rw(inter, NETUP_CI_TSB_DIV, 0x0, 0);
+
+	/* enable TS out */
+	store = netup_fpga_op_rw(inter, NETUP_CI_BUSCTRL2, 0, NETUP_CI_FLG_RD);
+	store |= (3 << 4);
+	netup_fpga_op_rw(inter, NETUP_CI_BUSCTRL2, store, 0);
+
+	ret = netup_fpga_op_rw(inter, NETUP_CI_REVISION, 0, NETUP_CI_FLG_RD);
+	/* enable irq */
+	netup_fpga_op_rw(inter, NETUP_CI_INT_CTRL, 0x44, 0);
+
+	mutex_unlock(&inter->fpga_mutex);
+
+	ci_dbg_print("%s: NetUP CI Revision = 0x%x\n", __func__, ret);
+
+	schedule_work(&inter->work);
+
+	return 0;
+err:
+	ci_dbg_print("%s: Cannot initialize CI: Error %d.\n", __func__, ret);
+
+	kfree(state);
+	kfree(inter);
+
+	return ret;
+}
+EXPORT_SYMBOL(altera_ci_init);
+
+int altera_ci_tuner_reset(void *dev, int ci_nr)
+{
+	struct fpga_inode *temp_int = find_inode(dev);
+	struct fpga_internal *inter = NULL;
+	u8 store;
+
+	ci_dbg_print("%s\n", __func__);
+
+	if (temp_int == NULL)
+		return -1;
+

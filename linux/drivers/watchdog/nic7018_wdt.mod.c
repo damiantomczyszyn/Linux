@@ -1,16 +1,19 @@
-x/build_bug.h \
-  include/linux/compiler.h \
-    $(wildcard include/config/TRACE_BRANCH_PROFILING) \
-    $(wildcard include/config/PROFILE_ALL_BRANCHES) \
-    $(wildcard include/config/STACK_VALIDATION) \
-  include/linux/compiler_types.h \
-  arch/x86/include/generated/asm/rwonce.h \
-  include/asm-generic/rwonce.h \
-  include/linux/kasan-checks.h \
-    $(wildcard include/config/KASAN_GENERIC) \
-    $(wildcard include/config/KASAN_SW_TAGS) \
-  include/linux/types.h \
-    $(wildcard include/config/HAVE_UID16) \
-    $(wildcard include/config/UID16) \
-    $(wildcard include/config/ARCH_DMA_ADDR_T_64BIT) \
-    $(wildcard include/config/PHY
+q;
+	dev->video_dev->device_caps = V4L2_CAP_READWRITE | V4L2_CAP_STREAMING |
+				      V4L2_CAP_AUDIO | V4L2_CAP_VIDEO_CAPTURE;
+	switch (dev->board) { /* i2c device tuners */
+	case CX23885_BOARD_HAUPPAUGE_HVR1265_K4:
+	case CX23885_BOARD_HAUPPAUGE_HVR5525:
+	case CX23885_BOARD_HAUPPAUGE_QUADHD_DVB:
+	case CX23885_BOARD_HAUPPAUGE_QUADHD_ATSC:
+		dev->video_dev->device_caps |= V4L2_CAP_TUNER;
+		break;
+	default:
+		if (dev->tuner_type != TUNER_ABSENT)
+			dev->video_dev->device_caps |= V4L2_CAP_TUNER;
+	}
+
+	err = video_register_device(dev->video_dev, VFL_TYPE_VIDEO,
+				    video_nr[dev->nr]);
+	if (err < 0) {
+		pr_info("%s: can't register video

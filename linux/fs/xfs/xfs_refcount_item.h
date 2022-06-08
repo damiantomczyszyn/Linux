@@ -1,62 +1,74 @@
-card include/config/BPF_JIT) \
-  include/asm-generic/access_ok.h \
-    $(wildcard include/config/ALTERNATE_USER_ADDRESS_SPACE) \
-  arch/x86/include/asm/uaccess_32.h \
-  include/linux/cred.h \
-    $(wildcard include/config/DEBUG_CREDENTIALS) \
-  include/linux/key.h \
-    $(wildcard include/config/KEY_NOTIFICATIONS) \
-    $(wildcard include/config/NET) \
-  include/linux/assoc_array.h \
-    $(wildcard include/config/ASSOCIATIVE_ARRAY) \
-  include/linux/sched/user.h \
-    $(wildcard include/config/WATCH_QUEUE) \
-  include/linux/percpu_counter.h \
-  include/linux/rcu_sync.h \
-  include/linux/delayed_call.h \
-  include/linux/errseq.h \
-  include/linux/ioprio.h \
-  include/linux/sched/rt.h \
-  include/linux/iocontext.h \
-    $(wildcard include/config/BLK_ICQ) \
-  include/uapi/linux/ioprio.h \
-  include/linux/fs_types.h \
-  include/linux/mount.h \
-  include/linux/mnt_idmapping.h \
-  include/uapi/linux/fs.h \
-  include/linux/quota.h \
-    $(wildcard include/config/QUOTA_NETLINK_INTERFACE) \
-  include/uapi/linux/dqblk_xfs.h \
-  include/linux/dqblk_v1.h \
-  include/linux/dqblk_v2.h \
-  include/linux/dqblk_qtree.h \
-  include/linux/projid.h \
-  include/uapi/linux/quota.h \
-  include/linux/nfs_fs_i.h \
-  include/linux/seq_file.h \
-  include/linux/string_helpers.h \
-  include/linux/ns_common.h \
-  include/linux/nsproxy.h \
-  include/linux/user_namespace.h \
-    $(wildcard include/config/INOTIFY_USER) \
-    $(wildcard include/config/FANOTIFY) \
-    $(wildcard include/config/PERSISTENT_KEYRINGS) \
-  include/linux/kernel_stat.h \
-  include/linux/interrupt.h \
-    $(wildcard include/config/IRQ_FORCED_THREADING) \
-    $(wildcard include/config/GENERIC_IRQ_PROBE) \
-    $(wildcard include/config/IRQ_TIMINGS) \
-  include/linux/irqreturn.h \
-  include/linux/irqnr.h \
-  include/uapi/linux/irqnr.h \
-  include/linux/hardirq.h \
-  include/linux/context_tracking_state.h \
-    $(wildcard include/config/CONTEXT_TRACKING) \
-  include/linux/ftrace_irq.h \
-    $(wildcard include/config/HWLAT_TRACER) \
-    $(wildcard include/config/OSNOISE_TRACER) \
-  include/linux/vtime.h \
-    $(wildcard include/config/VIRT_CPU_ACCOUNTING) \
-    $(wildcard include/config/IRQ_TIME_ACCOUNTING) \
-  arch/x86/include/asm/hardirq.h \
-    $(wildcard includ
+lient.addr = 0xa0 >> 1;
+		tveeprom_read(&dev->i2c_bus[0].i2c_client, eeprom, sizeof(eeprom));
+		pr_info("TeVii S470 MAC= %pM\n", eeprom + 0xa0);
+		memcpy(port->frontends.adapter.proposed_mac, eeprom + 0xa0, 6);
+		return 0;
+		}
+	case CX23885_BOARD_DVBSKY_T9580:
+	case CX23885_BOARD_DVBSKY_S950:
+	case CX23885_BOARD_DVBSKY_S952:
+	case CX23885_BOARD_DVBSKY_T982: {
+		u8 eeprom[256]; /* 24C02 i2c eeprom */
+
+		if (port->nr > 2)
+			return 0;
+
+		/* Read entire EEPROM */
+		dev->i2c_bus[0].i2c_client.addr = 0xa0 >> 1;
+		tveeprom_read(&dev->i2c_bus[0].i2c_client, eeprom,
+				sizeof(eeprom));
+		pr_info("%s port %d MAC address: %pM\n",
+			cx23885_boards[dev->board].name, port->nr,
+			eeprom + 0xc0 + (port->nr-1) * 8);
+		memcpy(port->frontends.adapter.proposed_mac, eeprom + 0xc0 +
+			(port->nr-1) * 8, 6);
+		return 0;
+		}
+	case CX23885_BOARD_DVBSKY_S950C:
+	case CX23885_BOARD_DVBSKY_T980C:
+	case CX23885_BOARD_TT_CT2_4500_CI: {
+		u8 eeprom[256]; /* 24C02 i2c eeprom */
+		struct sp2_config sp2_config;
+		struct i2c_board_info info;
+		struct cx23885_i2c *i2c_bus = &dev->i2c_bus[0];
+
+		/* attach CI */
+		memset(&sp2_config, 0, sizeof(sp2_config));
+		sp2_config.dvb_adap = &port->frontends.adapter;
+		sp2_config.priv = port;
+		sp2_config.ci_control = cx23885_sp2_ci_ctrl;
+		memset(&info, 0, sizeof(struct i2c_board_info));
+		strscpy(info.type, "sp2", I2C_NAME_SIZE);
+		info.addr = 0x40;
+		info.platform_data = &sp2_config;
+		request_module(info.type);
+		client_ci = i2c_new_client_device(&i2c_bus->i2c_adap, &info);
+		if (!i2c_client_has_driver(client_ci))
+			return -ENODEV;
+		if (!try_module_get(client_ci->dev.driver->owner)) {
+			i2c_unregister_device(client_ci);
+			return -ENODEV;
+		}
+		port->i2c_client_ci = client_ci;
+
+		if (port->nr != 1)
+			return 0;
+
+		/* Read entire EEPROM */
+		dev->i2c_bus[0].i2c_client.addr = 0xa0 >> 1;
+		tveeprom_read(&dev->i2c_bus[0].i2c_client, eeprom,
+				sizeof(eeprom));
+		pr_info("%s MAC address: %pM\n",
+			cx23885_boards[dev->board].name, eeprom + 0xc0);
+		memcpy(port->frontends.adapter.proposed_mac, eeprom + 0xc0, 6);
+		return 0;
+		}
+	}
+	return 0;
+}
+
+static int dvb_register(struct cx23885_tsport *port)
+{
+	struct dib7000p_ops dib7000p_ops;
+	struct cx23885_dev *dev = port->dev;
+	struct cx23885_i2c *i2c

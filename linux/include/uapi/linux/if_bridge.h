@@ -1,435 +1,711 @@
-cmd_drivers/media/i2c/vp27smpx.o := gcc -Wp,-MMD,drivers/media/i2c/.vp27smpx.o.d -nostdinc -I./arch/x86/include -I./arch/x86/include/generated  -I./include -I./arch/x86/include/uapi -I./arch/x86/include/generated/uapi -I./include/uapi -I./include/generated/uapi -include ./include/linux/compiler-version.h -include ./include/linux/kconfig.h -include ./include/linux/compiler_types.h -D__KERNEL__ -fmacro-prefix-map=./= -Wall -Wundef -Werror=strict-prototypes -Wno-trigraphs -fno-strict-aliasing -fno-common -fshort-wchar -fno-PIE -Werror=implicit-function-declaration -Werror=implicit-int -Werror=return-type -Wno-format-security -std=gnu11 -mno-sse -mno-mmx -mno-sse2 -mno-3dnow -mno-avx -fcf-protection=none -m32 -msoft-float -mregparm=3 -freg-struct-return -fno-pic -mpreferred-stack-boundary=2 -march=i686 -mtune=pentium3 -mtune=generic -Wa,-mtune=generic32 -ffreestanding -mstack-protector-guard-reg=fs -mstack-protector-guard-symbol=__stack_chk_guard -Wno-sign-compare -fno-asynchronous-unwind-tables -mindirect-branch=thunk-extern -mindirect-branch-register -fno-jump-tables -fno-delete-null-pointer-checks -Wno-frame-address -Wno-format-truncation -Wno-format-overflow -Wno-address-of-packed-member -O2 -fno-allow-store-data-races -fstack-protector-strong -Wimplicit-fallthrough=5 -Wno-main -Wno-unused-but-set-variable -Wno-unused-const-variable -fno-stack-clash-protection -pg -mrecord-mcount -mfentry -DCC_USING_FENTRY -Wdeclaration-after-statement -Wvla -Wno-pointer-sign -Wcast-function-type -Wno-stringop-truncation -Wno-stringop-overflow -Wno-restrict -Wno-maybe-uninitialized -Wno-alloc-size-larger-than -fno-strict-overflow -fno-stack-check -fconserve-stack -Werror=date-time -Werror=incompatible-pointer-types -Werror=designated-init -Wno-packed-not-aligned  -DMODULE  -DKBUILD_BASENAME='"vp27smpx"' -DKBUILD_MODNAME='"vp27smpx"' -D__KBUILD_MODNAME=kmod_vp27smpx -c -o drivers/media/i2c/vp27smpx.o drivers/media/i2c/vp27smpx.c 
+ntf(vfd->name, sizeof(vfd->name), "%s (%s)",
+		 cx23885_boards[dev->board].name, type);
+	video_set_drvdata(vfd, dev);
+	return vfd;
+}
 
-source_drivers/media/i2c/vp27smpx.o := drivers/media/i2c/vp27smpx.c
+int cx23885_flatiron_write(struct cx23885_dev *dev, u8 reg, u8 data)
+{
+	/* 8 bit registers, 8 bit values */
+	u8 buf[] = { reg, data };
 
-deps_drivers/media/i2c/vp27smpx.o := \
-  include/linux/compiler-version.h \
-    $(wildcard include/config/CC_VERSION_TEXT) \
-  include/linux/kconfig.h \
-    $(wildcard include/config/CPU_BIG_ENDIAN) \
-    $(wildcard include/config/BOOGER) \
-    $(wildcard include/config/FOO) \
-  include/linux/compiler_types.h \
-    $(wildcard include/config/DEBUG_INFO_BTF) \
-    $(wildcard include/config/PAHOLE_HAS_BTF_TAG) \
-    $(wildcard include/config/HAVE_ARCH_COMPILER_H) \
-    $(wildcard include/config/CC_HAS_ASM_INLINE) \
-  include/linux/compiler_attributes.h \
-  include/linux/compiler-gcc.h \
-    $(wildcard include/config/RETPOLINE) \
-    $(wildcard include/config/ARCH_USE_BUILTIN_BSWAP) \
-    $(wildcard include/config/SHADOW_CALL_STACK) \
-    $(wildcard include/config/KCOV) \
-  include/linux/module.h \
-    $(wildcard include/config/MODULES) \
-    $(wildcard include/config/SYSFS) \
-    $(wildcard include/config/MODULES_TREE_LOOKUP) \
-    $(wildcard include/config/LIVEPATCH) \
-    $(wildcard include/config/STACKTRACE_BUILD_ID) \
-    $(wildcard include/config/CFI_CLANG) \
-    $(wildcard include/config/MODULE_SIG) \
-    $(wildcard include/config/GENERIC_BUG) \
-    $(wildcard include/config/KALLSYMS) \
-    $(wildcard include/config/SMP) \
-    $(wildcard include/config/TRACEPOINTS) \
-    $(wildcard include/config/TREE_SRCU) \
-    $(wildcard include/config/BPF_EVENTS) \
-    $(wildcard include/config/DEBUG_INFO_BTF_MODULES) \
-    $(wildcard include/config/JUMP_LABEL) \
-    $(wildcard include/config/TRACING) \
-    $(wildcard include/config/EVENT_TRACING) \
-    $(wildcard include/config/FTRACE_MCOUNT_RECORD) \
-    $(wildcard include/config/KPROBES) \
-    $(wildcard include/config/HAVE_STATIC_CALL_INLINE) \
-    $(wildcard include/config/PRINTK_INDEX) \
-    $(wildcard include/config/MODULE_UNLOAD) \
-    $(wildcard include/config/CONSTRUCTORS) \
-    $(wildcard include/config/FUNCTION_ERROR_INJECTION) \
-  include/linux/list.h \
-    $(wildcard include/config/DEBUG_LIST) \
-  include/linux/container_of.h \
-  include/linux/build_bug.h \
-  include/linux/compiler.h \
-    $(wildcard include/config/TRACE_BRANCH_PROFILING) \
-    $(wildcard include/config/PROFILE_ALL_BRANCHES) \
-    $(wildcard include/config/STACK_VALIDATION) \
-  include/linux/compiler_types.h \
-  arch/x86/include/generated/asm/rwonce.h \
-  include/asm-generic/rwonce.h \
-  include/linux/kasan-checks.h \
-    $(wildcard include/config/KASAN_GENERIC) \
-    $(wildcard include/config/KASAN_SW_TAGS) \
-  include/linux/types.h \
-    $(wildcard include/config/HAVE_UID16) \
-    $(wildcard include/config/UID16) \
-    $(wildcard include/config/ARCH_DMA_ADDR_T_64BIT) \
-    $(wildcard include/config/PHYS_ADDR_T_64BIT) \
-    $(wildcard include/config/64BIT) \
-    $(wildcard include/config/ARCH_32BIT_USTAT_F_TINODE) \
-  include/uapi/linux/types.h \
-  arch/x86/include/generated/uapi/asm/types.h \
-  include/uapi/asm-generic/types.h \
-  include/asm-generic/int-ll64.h \
-  include/uapi/asm-generic/int-ll64.h \
-  arch/x86/include/uapi/asm/bitsperlong.h \
-  include/asm-generic/bitsperlong.h \
-  include/uapi/asm-generic/bitsperlong.h \
-  include/uapi/linux/posix_types.h \
-  include/linux/stddef.h \
-  include/uapi/linux/stddef.h \
-  arch/x86/include/asm/posix_types.h \
-    $(wildcard include/config/X86_32) \
-  arch/x86/include/uapi/asm/posix_types_32.h \
-  include/uapi/asm-generic/posix_types.h \
-  include/linux/kcsan-checks.h \
-    $(wildcard include/config/KCSAN) \
-    $(wildcard include/config/KCSAN_WEAK_MEMORY) \
-    $(wildcard include/config/KCSAN_IGNORE_ATOMICS) \
-  include/linux/err.h \
-  arch/x86/include/generated/uapi/asm/errno.h \
-  include/uapi/asm-generic/errno.h \
-  include/uapi/asm-generic/errno-base.h \
-  include/linux/poison.h \
-    $(wildcard include/config/ILLEGAL_POINTER_VALUE) \
-  include/linux/const.h \
-  include/vdso/const.h \
-  include/uapi/linux/const.h \
-  arch/x86/include/asm/barrier.h \
-  arch/x86/include/asm/alternative.h \
-  include/linux/stringify.h \
-  arch/x86/include/asm/asm.h \
-  arch/x86/include/asm/extable_fixup_types.h \
-  arch/x86/include/asm/nops.h \
-  include/asm-generic/barrier.h \
-  include/linux/stat.h \
-  arch/x86/include/uapi/asm/stat.h \
-  include/uapi/linux/stat.h \
-  include/linux/time.h \
-    $(wildcard include/config/POSIX_TIMERS) \
-  include/linux/cache.h \
-    $(wildcard include/config/ARCH_HAS_CACHE_LINE_SIZE) \
-  include/uapi/linux/kernel.h \
-  include/uapi/linux/sysinfo.h \
-  arch/x86/include/asm/cache.h \
-    $(wildcard include/config/X86_L1_CACHE_SHIFT) \
-    $(wildcard include/config/X86_INTERNODE_CACHE_SHIFT) \
-    $(wildcard include/config/X86_VSMP) \
-  include/linux/linkage.h \
-    $(wildcard include/config/ARCH_USE_SYM_ANNOTATIONS) \
-  include/linux/export.h \
-    $(wildcard include/config/MODVERSIONS) \
-    $(wildcard include/config/MODULE_REL_CRCS) \
-    $(wildcard include/config/HAVE_ARCH_PREL32_RELOCATIONS) \
-    $(wildcard include/config/TRIM_UNUSED_KSYMS) \
-  arch/x86/include/asm/linkage.h \
-    $(wildcard include/config/X86_64) \
-    $(wildcard include/config/X86_ALIGNMENT_16) \
-    $(wildcard include/config/SLS) \
-  arch/x86/include/asm/ibt.h \
-    $(wildcard include/config/X86_KERNEL_IBT) \
-  include/linux/math64.h \
-    $(wildcard include/config/ARCH_SUPPORTS_INT128) \
-  include/linux/math.h \
-  arch/x86/include/asm/div64.h \
-  include/linux/log2.h \
-    $(wildcard include/config/ARCH_HAS_ILOG2_U32) \
-    $(wildcard include/config/ARCH_HAS_ILOG2_U64) \
-  include/linux/bitops.h \
-  include/linux/bits.h \
-  include/vdso/bits.h \
-  include/linux/typecheck.h \
-  arch/x86/include/asm/bitops.h \
-    $(wildcard include/config/X86_CMOV) \
-  arch/x86/include/asm/rmwcc.h \
-    $(wildcard include/config/CC_HAS_ASM_GOTO) \
-  include/asm-generic/bitops/fls64.h \
-  include/asm-generic/bitops/sched.h \
-  arch/x86/include/asm/arch_hweight.h \
-  arch/x86/include/asm/cpufeatures.h \
-  arch/x86/include/asm/required-features.h \
-    $(wildcard include/config/X86_MINIMUM_CPU_FAMILY) \
-    $(wildcard include/config/MATH_EMULATION) \
-    $(wildcard include/config/X86_PAE) \
-    $(wildcard include/config/X86_CMPXCHG64) \
-    $(wildcard include/config/X86_P6_NOP) \
-    $(wildcard include/config/MATOM) \
-    $(wildcard include/config/PARAVIRT_XXL) \
-  arch/x86/include/asm/disabled-features.h \
-    $(wildcard include/config/X86_SMAP) \
-    $(wildcard include/config/X86_UMIP) \
-    $(wildcard include/config/X86_INTEL_MEMORY_PROTECTION_KEYS) \
-    $(wildcard include/config/X86_5LEVEL) \
-    $(wildcard include/config/PAGE_TABLE_ISOLATION) \
-    $(wildcard include/config/INTEL_IOMMU_SVM) \
-    $(wildcard include/config/X86_SGX) \
-  include/asm-generic/bitops/const_hweight.h \
-  include/asm-generic/bitops/instrumented-atomic.h \
-  include/linux/instrumented.h \
-  include/asm-generic/bitops/instrumented-non-atomic.h \
-    $(wildcard include/config/KCSAN_ASSUME_PLAIN_WRITES_ATOMIC) \
-  include/asm-generic/bitops/instrumented-lock.h \
-  include/asm-generic/bitops/le.h \
-  arch/x86/include/uapi/asm/byteorder.h \
-  include/linux/byteorder/little_endian.h \
-  include/uapi/linux/byteorder/little_endian.h \
-  include/linux/swab.h \
-  include/uapi/linux/swab.h \
-  arch/x86/include/uapi/asm/swab.h \
-  include/linux/byteorder/generic.h \
-  include/asm-generic/bitops/ext2-atomic-setbit.h \
-  include/vdso/math64.h \
-  include/linux/time64.h \
-  include/vdso/time64.h \
-  include/uapi/linux/time.h \
-  include/uapi/linux/time_types.h \
-  include/linux/time32.h \
-  include/linux/timex.h \
-  include/uapi/linux/timex.h \
-  include/uapi/linux/param.h \
-  arch/x86/include/generated/uapi/asm/param.h \
-  include/asm-generic/param.h \
-    $(wildcard include/config/HZ) \
-  include/uapi/asm-generic/param.h \
-  arch/x86/include/asm/timex.h \
-    $(wildcard include/config/X86_TSC) \
-  arch/x86/include/asm/processor.h \
-    $(wildcard include/config/X86_VMX_FEATURE_NAMES) \
-    $(wildcard include/config/X86_IOPL_IOPERM) \
-    $(wildcard include/config/STACKPROTECTOR) \
-    $(wildcard include/config/VM86) \
-    $(wildcard include/config/X86_DEBUGCTLMSR) \
-    $(wildcard include/config/CPU_SUP_AMD) \
-    $(wildcard include/config/XEN) \
-  arch/x86/include/asm/processor-flags.h \
-  arch/x86/include/uapi/asm/processor-flags.h \
-  include/linux/mem_encrypt.h \
-    $(wildcard include/config/ARCH_HAS_MEM_ENCRYPT) \
-    $(wildcard include/config/AMD_MEM_ENCRYPT) \
-  arch/x86/include/asm/mem_encrypt.h \
-  include/linux/init.h \
-    $(wildcard include/config/STRICT_KERNEL_RWX) \
-    $(wildcard include/config/STRICT_MODULE_RWX) \
-    $(wildcard include/config/LTO_CLANG) \
-  include/linux/cc_platform.h \
-    $(wildcard include/config/ARCH_HAS_CC_PLATFORM) \
-  arch/x86/include/uapi/asm/bootparam.h \
-  include/linux/screen_info.h \
-  include/uapi/linux/screen_info.h \
-  include/linux/apm_bios.h \
-  include/uapi/linux/apm_bios.h \
-  include/uapi/linux/ioctl.h \
-  arch/x86/include/generated/uapi/asm/ioctl.h \
-  include/asm-generic/ioctl.h \
-  include/uapi/asm-generic/ioctl.h \
-  include/linux/edd.h \
-  include/uapi/linux/edd.h \
-  arch/x86/include/asm/ist.h \
-  arch/x86/include/uapi/asm/ist.h \
-  include/video/edid.h \
-    $(wildcard include/config/X86) \
-  include/uapi/video/edid.h \
-  arch/x86/include/asm/math_emu.h \
-  arch/x86/include/asm/ptrace.h \
-    $(wildcard include/config/PARAVIRT) \
-    $(wildcard include/config/IA32_EMULATION) \
-  arch/x86/include/asm/segment.h \
-    $(wildcard include/config/XEN_PV) \
-  arch/x86/include/asm/page_types.h \
-    $(wildcard include/config/PHYSICAL_START) \
-    $(wildcard include/config/PHYSICAL_ALIGN) \
-    $(wildcard include/config/DYNAMIC_PHYSICAL_MASK) \
-  arch/x86/include/asm/page_32_types.h \
-    $(wildcard include/config/HIGHMEM4G) \
-    $(wildcard include/config/HIGHMEM64G) \
-    $(wildcard include/config/PAGE_OFFSET) \
-  arch/x86/include/uapi/asm/ptrace.h \
-  arch/x86/include/uapi/asm/ptrace-abi.h \
-  arch/x86/include/asm/paravirt_types.h \
-    $(wildcard include/config/PGTABLE_LEVELS) \
-    $(wildcard include/config/PARAVIRT_DEBUG) \
-  arch/x86/include/asm/desc_defs.h \
-  arch/x86/include/asm/pgtable_types.h \
-    $(wildcard include/config/MEM_SOFT_DIRTY) \
-    $(wildcard include/config/HAVE_ARCH_USERFAULTFD_WP) \
-    $(wildcard include/config/PROC_FS) \
-  arch/x86/include/asm/pgtable_32_types.h \
-  arch/x86/include/asm/pgtable-3level_types.h \
-  include/asm-generic/pgtable-nop4d.h \
-  include/asm-generic/pgtable-nopud.h \
-  arch/x86/include/asm/nospec-branch.h \
-  include/linux/static_key.h \
-  include/linux/jump_label.h \
-    $(wildcard include/config/HAVE_ARCH_JUMP_LABEL_RELATIVE) \
-  arch/x86/include/asm/jump_label.h \
-  include/linux/objtool.h \
-    $(wildcard include/config/FRAME_POINTER) \
-  arch/x86/include/asm/msr-index.h \
-  arch/x86/include/asm/unwind_hints.h \
-  arch/x86/include/asm/orc_types.h \
-  arch/x86/include/asm/GEN-for-each-reg.h \
-  arch/x86/include/asm/spinlock_types.h \
-  include/asm-generic/qspinlock_types.h \
-    $(wildcard include/config/NR_CPUS) \
-  include/asm-generic/qrwlock_types.h \
-  arch/x86/include/asm/proto.h \
-  arch/x86/include/uapi/asm/ldt.h \
-  arch/x86/include/uapi/asm/sigcontext.h \
-  arch/x86/include/asm/current.h \
-  arch/x86/include/asm/percpu.h \
-    $(wildcard include/config/X86_64_SMP) \
-  include/linux/kernel.h \
-    $(wildcard include/config/PREEMPT_VOLUNTARY_BUILD) \
-    $(wildcard include/config/PREEMPT_DYNAMIC) \
-    $(wildcard include/config/HAVE_PREEMPT_DYNAMIC_CALL) \
-    $(wildcard include/config/HAVE_PREEMPT_DYNAMIC_KEY) \
-    $(wildcard include/config/PREEMPT_) \
-    $(wildcard include/config/DEBUG_ATOMIC_SLEEP) \
-    $(wildcard include/config/MMU) \
-    $(wildcard include/config/PROVE_LOCKING) \
-  include/linux/stdarg.h \
-  include/linux/align.h \
-  include/linux/limits.h \
-  include/uapi/linux/limits.h \
-  include/vdso/limits.h \
-  include/linux/kstrtox.h \
-  include/linux/minmax.h \
-  include/linux/panic.h \
-    $(wildcard include/config/PANIC_TIMEOUT) \
-  include/linux/printk.h \
-    $(wildcard include/config/MESSAGE_LOGLEVEL_DEFAULT) \
-    $(wildcard include/config/CONSOLE_LOGLEVEL_DEFAULT) \
-    $(wildcard include/config/CONSOLE_LOGLEVEL_QUIET) \
-    $(wildcard include/config/EARLY_PRINTK) \
-    $(wildcard include/config/PRINTK) \
-    $(wildcard include/config/DYNAMIC_DEBUG) \
-    $(wildcard include/config/DYNAMIC_DEBUG_CORE) \
-  include/linux/kern_levels.h \
-  include/linux/ratelimit_types.h \
-  include/linux/spinlock_types_raw.h \
-    $(wildcard include/config/DEBUG_SPINLOCK) \
-    $(wildcard include/config/DEBUG_LOCK_ALLOC) \
-  include/linux/lockdep_types.h \
-    $(wildcard include/config/PROVE_RAW_LOCK_NESTING) \
-    $(wildcard include/config/LOCKDEP) \
-    $(wildcard include/config/LOCK_STAT) \
-  include/linux/once_lite.h \
-  include/linux/static_call_types.h \
-    $(wildcard include/config/HAVE_STATIC_CALL) \
-  include/linux/instruction_pointer.h \
-  include/asm-generic/percpu.h \
-    $(wildcard include/config/DEBUG_PREEMPT) \
-    $(wildcard include/config/HAVE_SETUP_PER_CPU_AREA) \
-  include/linux/threads.h \
-    $(wildcard include/config/BASE_SMALL) \
-  include/linux/percpu-defs.h \
-    $(wildcard include/config/DEBUG_FORCE_WEAK_PER_CPU) \
-  arch/x86/include/asm/page.h \
-  arch/x86/include/asm/page_32.h \
-    $(wildcard include/config/DEBUG_VIRTUAL) \
-    $(wildcard include/config/FLATMEM) \
-  include/linux/string.h \
-    $(wildcard include/config/BINARY_PRINTF) \
-    $(wildcard include/config/FORTIFY_SOURCE) \
-  include/linux/errno.h \
-  include/uapi/linux/errno.h \
-  include/uapi/linux/string.h \
-  arch/x86/include/asm/string.h \
-  arch/x86/include/asm/string_32.h \
-  include/linux/fortify-string.h \
-  include/linux/range.h \
-  include/asm-generic/memory_model.h \
-    $(wildcard include/config/SPARSEMEM_VMEMMAP) \
-    $(wildcard include/config/SPARSEMEM) \
-  include/linux/pfn.h \
-  include/asm-generic/getorder.h \
-  arch/x86/include/asm/msr.h \
-  arch/x86/include/asm/msr-index.h \
-  arch/x86/include/asm/cpumask.h \
-  include/linux/cpumask.h \
-    $(wildcard include/config/CPUMASK_OFFSTACK) \
-    $(wildcard include/config/HOTPLUG_CPU) \
-    $(wildcard include/config/DEBUG_PER_CPU_MAPS) \
-  include/linux/bitmap.h \
-  include/linux/find.h \
-  include/linux/atomic.h \
-  arch/x86/include/asm/atomic.h \
-  arch/x86/include/asm/cmpxchg.h \
-  arch/x86/include/asm/cmpxchg_32.h \
-  arch/x86/include/asm/atomic64_32.h \
-  include/linux/atomic/atomic-arch-fallback.h \
-    $(wildcard include/config/GENERIC_ATOMIC64) \
-  include/linux/atomic/atomic-long.h \
-  include/linux/atomic/atomic-instrumented.h \
-  include/linux/bug.h \
-    $(wildcard include/config/BUG_ON_DATA_CORRUPTION) \
-  arch/x86/include/asm/bug.h \
-    $(wildcard include/config/DEBUG_BUGVERBOSE) \
-  include/linux/instrumentation.h \
-    $(wildcard include/config/DEBUG_ENTRY) \
-  include/asm-generic/bug.h \
-    $(wildcard include/config/BUG) \
-    $(wildcard include/config/GENERIC_BUG_RELATIVE_POINTERS) \
-  arch/x86/include/uapi/asm/msr.h \
-  include/linux/tracepoint-defs.h \
-  arch/x86/include/asm/special_insns.h \
-  include/linux/irqflags.h \
-    $(wildcard include/config/TRACE_IRQFLAGS) \
-    $(wildcard include/config/PREEMPT_RT) \
-    $(wildcard include/config/IRQSOFF_TRACER) \
-    $(wildcard include/config/PREEMPT_TRACER) \
-    $(wildcard include/config/DEBUG_IRQFLAGS) \
-    $(wildcard include/config/TRACE_IRQFLAGS_SUPPORT) \
-  arch/x86/include/asm/irqflags.h \
-  arch/x86/include/asm/fpu/types.h \
-  arch/x86/include/asm/vmxfeatures.h \
-  arch/x86/include/asm/vdso/processor.h \
-  include/linux/personality.h \
-  include/uapi/linux/personality.h \
-  arch/x86/include/asm/tsc.h \
-  arch/x86/include/asm/cpufeature.h \
-    $(wildcard include/config/X86_FEATURE_NAMES) \
-  include/vdso/time32.h \
-  include/vdso/time.h \
-  include/linux/uidgid.h \
-    $(wildcard include/config/MULTIUSER) \
-    $(wildcard include/config/USER_NS) \
-  include/linux/highuid.h \
-  include/linux/buildid.h \
-    $(wildcard include/config/CRASH_CORE) \
-  include/linux/mm_types.h \
-    $(wildcard include/config/HAVE_ALIGNED_STRUCT_PAGE) \
-    $(wildcard include/config/MEMCG) \
-    $(wildcard include/config/USERFAULTFD) \
-    $(wildcard include/config/SWAP) \
-    $(wildcard include/config/NUMA) \
-    $(wildcard include/config/HAVE_ARCH_COMPAT_MMAP_BASES) \
-    $(wildcard include/config/MEMBARRIER) \
-    $(wildcard include/config/AIO) \
-    $(wildcard include/config/MMU_NOTIFIER) \
-    $(wildcard include/config/TRANSPARENT_HUGEPAGE) \
-    $(wildcard include/config/NUMA_BALANCING) \
-    $(wildcard include/config/ARCH_WANT_BATCHED_UNMAP_TLB_FLUSH) \
-    $(wildcard include/config/HUGETLB_PAGE) \
-    $(wildcard include/config/IOMMU_SVA) \
-  include/linux/mm_types_task.h \
-    $(wildcard include/config/SPLIT_PTLOCK_CPUS) \
-    $(wildcard include/config/ARCH_ENABLE_SPLIT_PMD_PTLOCK) \
-  arch/x86/include/asm/tlbbatch.h \
-  include/linux/auxvec.h \
-  include/uapi/linux/auxvec.h \
-  arch/x86/include/uapi/asm/auxvec.h \
-  include/linux/kref.h \
-  include/linux/spinlock.h \
-    $(wildcard include/config/PREEMPTION) \
-  include/linux/preempt.h \
-    $(wildcard include/config/PREEMPT_COUNT) \
-    $(wildcard include/config/TRACE_PREEMPT_TOGGLE) \
-    $(wildcard include/config/PREEMPT_NOTIFIERS) \
-  arch/x86/include/asm/preempt.h \
-  include/linux/thread_info.h \
-    $(wildcard include/config/THREAD_INFO_IN_TASK) \
-    $(wildcard include/config/GENERIC_ENTRY) \
-    $(wildcard include/config/HAVE_ARCH_WITHIN_STACK_FRAMES) \
-    $(wildcard include/config/HARDENED_USERCOPY) \
-  include/linux/restart_block.h \
-  arch/x86/include/asm/thread_info.h \
+	struct i2c_msg msg = { .addr = 0x98 >> 1,
+		.flags = 0, .buf = buf, .len = 2 };
+
+	return i2c_transfer(&dev->i2c_bus[2].i2c_adap, &msg, 1);
+}
+
+u8 cx23885_flatiron_read(struct cx23885_dev *dev, u8 reg)
+{
+	/* 8 bit registers, 8 bit values */
+	int ret;
+	u8 b0[] = { reg };
+	u8 b1[] = { 0 };
+
+	struct i2c_msg msg[] = {
+		{ .addr = 0x98 >> 1, .flags = 0, .buf = b0, .len = 1 },
+		{ .addr = 0x98 >> 1, .flags = I2C_M_RD, .buf = b1, .len = 1 }
+	};
+
+	ret = i2c_transfer(&dev->i2c_bus[2].i2c_adap, &msg[0], 2);
+	if (ret != 2)
+		pr_err("%s() error\n", __func__);
+
+	return b1[0];
+}
+
+static void cx23885_flatiron_dump(struct cx23885_dev *dev)
+{
+	int i;
+	dprintk(1, "Flatiron dump\n");
+	for (i = 0; i < 0x24; i++) {
+		dprintk(1, "FI[%02x] = %02x\n", i,
+			cx23885_flatiron_read(dev, i));
+	}
+}
+
+static int cx23885_flatiron_mux(struct cx23885_dev *dev, int input)
+{
+	u8 val;
+	dprintk(1, "%s(input = %d)\n", __func__, input);
+
+	if (input == 1)
+		val = cx23885_flatiron_read(dev, CH_PWR_CTRL1) & ~FLD_CH_SEL;
+	else if (input == 2)
+		val = cx23885_flatiron_read(dev, CH_PWR_CTRL1) | FLD_CH_SEL;
+	else
+		return -EINVAL;
+
+	val |= 0x20; /* Enable clock to delta-sigma and dec filter */
+
+	cx23885_flatiron_write(dev, CH_PWR_CTRL1, val);
+
+	/* Wake up */
+	cx23885_flatiron_write(dev, CH_PWR_CTRL2, 0);
+
+	if (video_debug)
+		cx23885_flatiron_dump(dev);
+
+	return 0;
+}
+
+static int cx23885_video_mux(struct cx23885_dev *dev, unsigned int input)
+{
+	dprintk(1, "%s() video_mux: %d [vmux=%d, gpio=0x%x,0x%x,0x%x,0x%x]\n",
+		__func__,
+		input, INPUT(input)->vmux,
+		INPUT(input)->gpio0, INPUT(input)->gpio1,
+		INPUT(input)->gpio2, INPUT(input)->gpio3);
+	dev->input = input;
+
+	if (dev->board == CX23885_BOARD_MYGICA_X8506 ||
+		dev->board == CX23885_BOARD_MAGICPRO_PROHDTVE2 ||
+		dev->board == CX23885_BOARD_MYGICA_X8507) {
+		/* Select Analog TV */
+		if (INPUT(input)->type == CX23885_VMUX_TELEVISION)
+			cx23885_gpio_clear(dev, GPIO_0);
+	}
+
+	/* Tell the internal A/V decoder */
+	v4l2_subdev_call(dev->sd_cx25840, video, s_routing,
+			INPUT(input)->vmux, 0, 0);
+
+	if ((dev->board == CX23885_BOARD_HAUPPAUGE_HVR1800) ||
+		(dev->board == CX23885_BOARD_MPX885) ||
+		(dev->board == CX23885_BOARD_HAUPPAUGE_HVR1250) ||
+		(dev->board == CX23885_BOARD_HAUPPAUGE_IMPACTVCBE) ||
+		(dev->board == CX23885_BOARD_HAUPPAUGE_HVR1255) ||
+		(dev->board == CX23885_BOARD_HAUPPAUGE_HVR1255_22111) ||
+		(dev->board == CX23885_BOARD_HAUPPAUGE_HVR1265_K4) ||
+		(dev->board == CX23885_BOARD_HAUPPAUGE_QUADHD_ATSC) ||
+		(dev->board == CX23885_BOARD_HAUPPAUGE_QUADHD_DVB) ||
+		(dev->board == CX23885_BOARD_HAUPPAUGE_HVR1850) ||
+		(dev->board == CX23885_BOARD_HAUPPAUGE_HVR5525) ||
+		(dev->board == CX23885_BOARD_MYGICA_X8507) ||
+		(dev->board == CX23885_BOARD_AVERMEDIA_HC81R) ||
+		(dev->board == CX23885_BOARD_VIEWCAST_260E) ||
+		(dev->board == CX23885_BOARD_VIEWCAST_460E) ||
+		(dev->board == CX23885_BOARD_AVERMEDIA_CE310B)) {
+		/* Configure audio routing */
+		v4l2_subdev_call(dev->sd_cx25840, audio, s_routing,
+			INPUT(input)->amux, 0, 0);
+
+		if (INPUT(input)->amux == CX25840_AUDIO7)
+			cx23885_flatiron_mux(dev, 1);
+		else if (INPUT(input)->amux == CX25840_AUDIO6)
+			cx23885_flatiron_mux(dev, 2);
+	}
+
+	return 0;
+}
+
+static int cx23885_audio_mux(struct cx23885_dev *dev, unsigned int input)
+{
+	dprintk(1, "%s(input=%d)\n", __func__, input);
+
+	/* The baseband video core of the cx23885 has two audio inputs.
+	 * LR1 and LR2. In almost every single case so far only HVR1xxx
+	 * cards we've only ever supported LR1. Time to support LR2,
+	 * which is available via the optional white breakout header on
+	 * the board.
+	 * We'll use a could of existing enums in the card struct to allow
+	 * devs to specify which baseband input they need, or just default
+	 * to what we've always used.
+	 */
+	if (INPUT(input)->amux == CX25840_AUDIO7)
+		cx23885_flatiron_mux(dev, 1);
+	else if (INPUT(input)->amux == CX25840_AUDIO6)
+		cx23885_flatiron_mux(dev, 2);
+	else {
+		/* Not specifically defined, assume the default. */
+		cx23885_flatiron_mux(dev, 1);
+	}
+
+	return 0;
+}
+
+/* ------------------------------------------------------------------ */
+static int cx23885_start_video_dma(struct cx23885_dev *dev,
+			   struct cx23885_dmaqueue *q,
+			   struct cx23885_buffer *buf)
+{
+	dprintk(1, "%s()\n", __func__);
+
+	/* Stop the dma/fifo before we tamper with it's risc programs */
+	cx_clear(VID_A_DMA_CTL, 0x11);
+
+	/* setup fifo + format */
+	cx23885_sram_channel_setup(dev, &dev->sram_channels[SRAM_CH01],
+				buf->bpl, buf->risc.dma);
+
+	/* reset counter */
+	cx_write(VID_A_GPCNT_CTL, 3);
+	q->count = 0;
+
+	/* enable irq */
+	cx23885_irq_add_enable(dev, 0x01);
+	cx_set(VID_A_INT_MSK, 0x000011);
+
+	/* start dma */
+	cx_set(DEV_CNTRL2, (1<<5));
+	cx_set(VID_A_DMA_CTL, 0x11); /* FIFO and RISC enable */
+
+	return 0;
+}
+
+static int queue_setup(struct vb2_queue *q,
+			   unsigned int *num_buffers, unsigned int *num_planes,
+			   unsigned int sizes[], struct device *alloc_devs[])
+{
+	struct cx23885_dev *dev = q->drv_priv;
+
+	*num_planes = 1;
+	sizes[0] = (dev->fmt->depth * dev->width * dev->height) >> 3;
+	return 0;
+}
+
+static int buffer_prepare(struct vb2_buffer *vb)
+{
+	struct vb2_v4l2_buffer *vbuf = to_vb2_v4l2_buffer(vb);
+	struct cx23885_dev *dev = vb->vb2_queue->drv_priv;
+	struct cx23885_buffer *buf =
+		container_of(vbuf, struct cx23885_buffer, vb);
+	u32 line0_offset, line1_offset;
+	struct sg_table *sgt = vb2_dma_sg_plane_desc(vb, 0);
+	int field_tff;
+
+	buf->bpl = (dev->width * dev->fmt->depth) >> 3;
+
+	if (vb2_plane_size(vb, 0) < dev->height * buf->bpl)
+		return -EINVAL;
+	vb2_set_plane_payload(vb, 0, dev->height * buf->bpl);
+
+	switch (dev->field) {
+	case V4L2_FIELD_TOP:
+		cx23885_risc_buffer(dev->pci, &buf->risc,
+				sgt->sgl, 0, UNSET,
+				buf->bpl, 0, dev->height);
+		break;
+	case V4L2_FIELD_BOTTOM:
+		cx23885_risc_buffer(dev->pci, &buf->risc,
+				sgt->sgl, UNSET, 0,
+				buf->bpl, 0, dev->height);
+		break;
+	case V4L2_FIELD_INTERLACED:
+		if (dev->tvnorm & V4L2_STD_525_60)
+			/* NTSC or  */
+			field_tff = 1;
+		else
+			field_tff = 0;
+
+		if (cx23885_boards[dev->board].force_bff)
+			/* PAL / SECAM OR 888 in NTSC MODE */
+			field_tff = 0;
+
+		if (field_tff) {
+			/* cx25840 transmits NTSC bottom field first */
+			dprintk(1, "%s() Creating TFF/NTSC risc\n",
+					__func__);
+			line0_offset = buf->bpl;
+			line1_offset = 0;
+		} else {
+			/* All other formats are top field first */
+			dprintk(1, "%s() Creating BFF/PAL/SECAM risc\n",
+					__func__);
+			line0_offset = 0;
+			line1_offset = buf->bpl;
+		}
+		cx23885_risc_buffer(dev->pci, &buf->risc,
+				sgt->sgl, line0_offset,
+				line1_offset,
+				buf->bpl, buf->bpl,
+				dev->height >> 1);
+		break;
+	case V4L2_FIELD_SEQ_TB:
+		cx23885_risc_buffer(dev->pci, &buf->risc,
+				sgt->sgl,
+				0, buf->bpl * (dev->height >> 1),
+				buf->bpl, 0,
+				dev->height >> 1);
+		break;
+	case V4L2_FIELD_SEQ_BT:
+		cx23885_risc_buffer(dev->pci, &buf->risc,
+				sgt->sgl,
+				buf->bpl * (dev->height >> 1), 0,
+				buf->bpl, 0,
+				dev->height >> 1);
+		break;
+	default:
+		BUG();
+	}
+	dprintk(2, "[%p/%d] buffer_init - %dx%d %dbpp 0x%08x - dma=0x%08lx\n",
+		buf, buf->vb.vb2_buf.index,
+		dev->width, dev->height, dev->fmt->depth, dev->fmt->fourcc,
+		(unsigned long)buf->risc.dma);
+	return 0;
+}
+
+static void buffer_finish(struct vb2_buffer *vb)
+{
+	struct vb2_v4l2_buffer *vbuf = to_vb2_v4l2_buffer(vb);
+	struct cx23885_buffer *buf = container_of(vbuf,
+		struct cx23885_buffer, vb);
+
+	cx23885_free_buffer(vb->vb2_queue->drv_priv, buf);
+}
+
+/*
+ * The risc program for each buffer works as follows: it starts with a simple
+ * 'JUMP to addr + 12', which is effectively a NOP. Then the code to DMA the
+ * buffer follows and at the end we have a JUMP back to the start + 12 (skipping
+ * the initial JUMP).
+ *
+ * This is the risc program of the first buffer to be queued if the active list
+ * is empty and it just keeps DMAing this buffer without generating any
+ * interrupts.
+ *
+ * If a new buffer is added then the initial JUMP in the code for that buffer
+ * will generate an interrupt which signals that the previous buffer has been
+ * DMAed successfully and that it can be returned to userspace.
+ *
+ * It also sets the final jump of the previous buffer to the start of the new
+ * buffer, thus chaining the new buffer into the DMA chain. This is a single
+ * atomic u32 write, so there is no race condition.
+ *
+ * The end-result of all this that you only get an interrupt when a buffer
+ * is ready, so the control flow is very easy.
+ */
+static void buffer_queue(struct vb2_buffer *vb)
+{
+	struct vb2_v4l2_buffer *vbuf = to_vb2_v4l2_buffer(vb);
+	struct cx23885_dev *dev = vb->vb2_queue->drv_priv;
+	struct cx23885_buffer   *buf = container_of(vbuf,
+		struct cx23885_buffer, vb);
+	struct cx23885_buffer   *prev;
+	struct cx23885_dmaqueue *q    = &dev->vidq;
+	unsigned long flags;
+
+	/* add jump to start */
+	buf->risc.cpu[1] = cpu_to_le32(buf->risc.dma + 12);
+	buf->risc.jmp[0] = cpu_to_le32(RISC_JUMP | RISC_CNT_INC);
+	buf->risc.jmp[1] = cpu_to_le32(buf->risc.dma + 12);
+	buf->risc.jmp[2] = cpu_to_le32(0); /* bits 63-32 */
+
+	spin_lock_irqsave(&dev->slock, flags);
+	if (list_empty(&q->active)) {
+		list_add_tail(&buf->queue, &q->active);
+		dprintk(2, "[%p/%d] buffer_queue - first active\n",
+			buf, buf->vb.vb2_buf.index);
+	} else {
+		buf->risc.cpu[0] |= cpu_to_le32(RISC_IRQ1);
+		prev = list_entry(q->active.prev, struct cx23885_buffer,
+			queue);
+		list_add_tail(&buf->queue, &q->active);
+		prev->risc.jmp[1] = cpu_to_le32(buf->risc.dma);
+		dprintk(2, "[%p/%d] buffer_queue - append to active\n",
+				buf, buf->vb.vb2_buf.index);
+	}
+	spin_unlock_irqrestore(&dev->slock, flags);
+}
+
+static int cx23885_start_streaming(struct vb2_queue *q, unsigned int count)
+{
+	struct cx23885_dev *dev = q->drv_priv;
+	struct cx23885_dmaqueue *dmaq = &dev->vidq;
+	struct cx23885_buffer *buf = list_entry(dmaq->active.next,
+			struct cx23885_buffer, queue);
+
+	cx23885_start_video_dma(dev, dmaq, buf);
+	return 0;
+}
+
+static void cx23885_stop_streaming(struct vb2_queue *q)
+{
+	struct cx23885_dev *dev = q->drv_priv;
+	struct cx23885_dmaqueue *dmaq = &dev->vidq;
+	unsigned long flags;
+
+	cx_clear(VID_A_DMA_CTL, 0x11);
+	spin_lock_irqsave(&dev->slock, flags);
+	while (!list_empty(&dmaq->active)) {
+		struct cx23885_buffer *buf = list_entry(dmaq->active.next,
+			struct cx23885_buffer, queue);
+
+		list_del(&buf->queue);
+		vb2_buffer_done(&buf->vb.vb2_buf, VB2_BUF_STATE_ERROR);
+	}
+	spin_unlock_irqrestore(&dev->slock, flags);
+}
+
+static const struct vb2_ops cx23885_video_qops = {
+	.queue_setup    = queue_setup,
+	.buf_prepare  = buffer_prepare,
+	.buf_finish = buffer_finish,
+	.buf_queue    = buffer_queue,
+	.wait_prepare = vb2_ops_wait_prepare,
+	.wait_finish = vb2_ops_wait_finish,
+	.start_streaming = cx23885_start_streaming,
+	.stop_streaming = cx23885_stop_streaming,
+};
+
+/* ------------------------------------------------------------------ */
+/* VIDEO IOCTLS                                                       */
+
+static int vidioc_g_fmt_vid_cap(struct file *file, void *priv,
+	struct v4l2_format *f)
+{
+	struct cx23885_dev *dev = video_drvdata(file);
+
+	f->fmt.pix.width        = dev->width;
+	f->fmt.pix.height       = dev->height;
+	f->fmt.pix.field        = dev->field;
+	f->fmt.pix.pixelformat  = dev->fmt->fourcc;
+	f->fmt.pix.bytesperline =
+		(f->fmt.pix.width * dev->fmt->depth) >> 3;
+	f->fmt.pix.sizeimage =
+		f->fmt.pix.height * f->fmt.pix.bytesperline;
+	f->fmt.pix.colorspace   = V4L2_COLORSPACE_SMPTE170M;
+
+	return 0;
+}
+
+static int vidioc_try_fmt_vid_cap(struct file *file, void *priv,
+	struct v4l2_format *f)
+{
+	struct cx23885_dev *dev = video_drvdata(file);
+	struct cx23885_fmt *fmt;
+	enum v4l2_field   field;
+	unsigned int      maxw, maxh;
+
+	fmt = format_by_fourcc(f->fmt.pix.pixelformat);
+	if (NULL == fmt)
+		return -EINVAL;
+
+	field = f->fmt.pix.field;
+	maxw  = 720;
+	maxh  = norm_maxh(dev->tvnorm);
+
+	if (V4L2_FIELD_ANY == field) {
+		field = (f->fmt.pix.height > maxh/2)
+			? V4L2_FIELD_INTERLACED
+			: V4L2_FIELD_BOTTOM;
+	}
+
+	switch (field) {
+	case V4L2_FIELD_TOP:
+	case V4L2_FIELD_BOTTOM:
+		maxh = maxh / 2;
+		break;
+	case V4L2_FIELD_INTERLACED:
+	case V4L2_FIELD_SEQ_TB:
+	case V4L2_FIELD_SEQ_BT:
+		break;
+	default:
+		field = V4L2_FIELD_INTERLACED;
+		break;
+	}
+
+	f->fmt.pix.field = field;
+	v4l_bound_align_image(&f->fmt.pix.width, 48, maxw, 2,
+			      &f->fmt.pix.height, 32, maxh, 0, 0);
+	f->fmt.pix.bytesperline =
+		(f->fmt.pix.width * fmt->depth) >> 3;
+	f->fmt.pix.sizeimage =
+		f->fmt.pix.height * f->fmt.pix.bytesperline;
+	f->fmt.pix.colorspace = V4L2_COLORSPACE_SMPTE170M;
+
+	return 0;
+}
+
+static int vidioc_s_fmt_vid_cap(struct file *file, void *priv,
+	struct v4l2_format *f)
+{
+	struct cx23885_dev *dev = video_drvdata(file);
+	struct v4l2_subdev_format format = {
+		.which = V4L2_SUBDEV_FORMAT_ACTIVE,
+	};
+	int err;
+
+	dprintk(2, "%s()\n", __func__);
+	err = vidioc_try_fmt_vid_cap(file, priv, f);
+
+	if (0 != err)
+		return err;
+
+	if (vb2_is_busy(&dev->vb2_vidq) || vb2_is_busy(&dev->vb2_vbiq) ||
+	    vb2_is_busy(&dev->vb2_mpegq))
+		return -EBUSY;
+
+	dev->fmt        = format_by_fourcc(f->fmt.pix.pixelformat);
+	dev->width      = f->fmt.pix.width;
+	dev->height     = f->fmt.pix.height;
+	dev->field	= f->fmt.pix.field;
+	dprintk(2, "%s() width=%d height=%d field=%d\n", __func__,
+		dev->width, dev->height, dev->field);
+	v4l2_fill_mbus_format(&format.format, &f->fmt.pix, MEDIA_BUS_FMT_FIXED);
+	call_all(dev, pad, set_fmt, NULL, &format);
+	v4l2_fill_pix_format(&f->fmt.pix, &format.format);
+	/* set_fmt overwrites f->fmt.pix.field, restore it */
+	f->fmt.pix.field = dev->field;
+	return 0;
+}
+
+static int vidioc_querycap(struct file *file, void  *priv,
+	struct v4l2_capability *cap)
+{
+	struct cx23885_dev *dev = video_drvdata(file);
+
+	strscpy(cap->driver, "cx23885", sizeof(cap->driver));
+	strscpy(cap->card, cx23885_boards[dev->board].name,
+		sizeof(cap->card));
+	sprintf(cap->bus_info, "PCIe:%s", pci_name(dev->pci));
+	cap->capabilities = V4L2_CAP_READWRITE | V4L2_CAP_STREAMING |
+			    V4L2_CAP_AUDIO | V4L2_CAP_VBI_CAPTURE |
+			    V4L2_CAP_VIDEO_CAPTURE |
+			    V4L2_CAP_DEVICE_CAPS;
+	switch (dev->board) { /* i2c device tuners */
+	case CX23885_BOARD_HAUPPAUGE_HVR1265_K4:
+	case CX23885_BOARD_HAUPPAUGE_HVR5525:
+	case CX23885_BOARD_HAUPPAUGE_QUADHD_DVB:
+	case CX23885_BOARD_HAUPPAUGE_QUADHD_ATSC:
+		cap->capabilities |= V4L2_CAP_TUNER;
+		break;
+	default:
+		if (dev->tuner_type != TUNER_ABSENT)
+			cap->capabilities |= V4L2_CAP_TUNER;
+		break;
+	}
+	return 0;
+}
+
+static int vidioc_enum_fmt_vid_cap(struct file *file, void  *priv,
+	struct v4l2_fmtdesc *f)
+{
+	if (unlikely(f->index >= ARRAY_SIZE(formats)))
+		return -EINVAL;
+
+	f->pixelformat = formats[f->index].fourcc;
+
+	return 0;
+}
+
+static int vidioc_g_pixelaspect(struct file *file, void *priv,
+				int type, struct v4l2_fract *f)
+{
+	struct cx23885_dev *dev = video_drvdata(file);
+	bool is_50hz = dev->tvnorm & V4L2_STD_625_50;
+
+	if (type != V4L2_BUF_TYPE_VIDEO_CAPTURE)
+		return -EINVAL;
+
+	f->numerator = is_50hz ? 54 : 11;
+	f->denominator = is_50hz ? 59 : 10;
+
+	return 0;
+}
+
+static int vidioc_g_selection(struct file *file, void *fh,
+			      struct v4l2_selection *sel)
+{
+	struct cx23885_dev *dev = video_drvdata(file);
+
+	if (sel->type != V4L2_BUF_TYPE_VIDEO_CAPTURE)
+		return -EINVAL;
+
+	switch (sel->target) {
+	case V4L2_SEL_TGT_CROP_BOUNDS:
+	case V4L2_SEL_TGT_CROP_DEFAULT:
+		sel->r.top = 0;
+		sel->r.left = 0;
+		sel->r.width = 720;
+		sel->r.height = norm_maxh(dev->tvnorm);
+		break;
+	default:
+		return -EINVAL;
+	}
+	return 0;
+}
+
+static int vidioc_g_std(struct file *file, void *priv, v4l2_std_id *id)
+{
+	struct cx23885_dev *dev = video_drvdata(file);
+	dprintk(1, "%s()\n", __func__);
+
+	*id = dev->tvnorm;
+	return 0;
+}
+
+static int vidioc_s_std(struct file *file, void *priv, v4l2_std_id tvnorms)
+{
+	struct cx23885_dev *dev = video_drvdata(file);
+	dprintk(1, "%s()\n", __func__);
+
+	return cx23885_set_tvnorm(dev, tvnorms);
+}
+
+int cx23885_enum_input(struct cx23885_dev *dev, struct v4l2_input *i)
+{
+	static const char *iname[] = {
+		[CX23885_VMUX_COMPOSITE1] = "Composite1",
+		[CX23885_VMUX_COMPOSITE2] = "Composite2",
+		[CX23885_VMUX_COMPOSITE3] = "Composite3",
+		[CX23885_VMUX_COMPOSITE4] = "Composite4",
+		[CX23885_VMUX_SVIDEO]     = "S-Video",
+		[CX23885_VMUX_COMPONENT]  = "Component",
+		[CX23885_VMUX_TELEVISION] = "Television",
+		[CX23885_VMUX_CABLE]      = "Cable TV",
+		[CX23885_VMUX_DVB]        = "DVB",
+		[CX23885_VMUX_DEBUG]      = "for debug only",
+	};
+	unsigned int n;
+	dprintk(1, "%s()\n", __func__);
+
+	n = i->index;
+	if (n >= MAX_CX23885_INPUT)
+		return -EINVAL;
+
+	if (0 == INPUT(n)->type)
+		return -EINVAL;
+
+	i->index = n;
+	i->type  = V4L2_INPUT_TYPE_CAMERA;
+	strscpy(i->name, iname[INPUT(n)->type], sizeof(i->name));
+	i->std = CX23885_NORMS;
+	if ((CX23885_VMUX_TELEVISION == INPUT(n)->type) ||
+		(CX23885_VMUX_CABLE == INPUT(n)->type)) {
+		i->type = V4L2_INPUT_TYPE_TUNER;
+		i->audioset = 4;
+	} else {
+		/* Two selectable audio inputs for non-tv inputs */
+		i->audioset = 3;
+	}
+
+	if (dev->input == n) {
+		/* enum'd input matches our configured input.
+		 * Ask the video decoder to process the call
+		 * and give it an oppertunity to update the
+		 * status field.
+		 */
+		call_all(dev, video, g_input_status, &i->status);
+	}
+
+	return 0;
+}
+
+static int vidioc_enum_input(struct file *file, void *priv,
+				struct v4l2_input *i)
+{
+	struct cx23885_dev *dev = video_drvdata(file);
+	dprintk(1, "%s()\n", __func__);
+	return cx23885_enum_input(dev, i);
+}
+
+int cx23885_get_input(struct file *file, void *priv, unsigned int *i)
+{
+	struct cx23885_dev *dev = video_drvdata(file);
+
+	*i = dev->input;
+	dprintk(1, "%s() returns %d\n", __func__, *i);
+	return 0;
+}
+
+static int vidioc_g_input(struct file *file, void *priv, unsigned int *i)
+{
+	return cx23885_get_input(file, priv, i);
+}
+
+int cx23885_set_input(struct file *file, void *priv, unsigned int i)
+{
+	struct cx23885_dev *dev = video_drvdata(file);
+
+	dprintk(1, "%s(%d)\n", __func__, i);
+
+	if (i >= MAX_CX23885_INPUT) {
+		dprintk(1, "%s() -EINVAL\n", __func__);
+		return -EINVAL;
+	}
+
+	if (INPUT(i)->type == 0)
+		return -EINVAL;
+
+	cx23885_video_mux(dev, i);
+
+	/* By default establish the default audio input for the card also */
+	/* Caller is free to use VIDIOC_S_AUDIO to override afterwards */
+	cx23885_audio_mux(dev, i);
+	return 0;
+}
+
+static int vidioc_s_input(struct file *file, void *priv, unsigned int i)
+{
+	return cx23885_set_input(file, priv, i);
+}
+
+static int vidioc_log_status(struct file *file, void *priv)
+{
+	struct cx23885_dev *dev = video_drvdata(file);
+
+	call_all(dev, core, log_status);
+	return 0;
+}
+
+static int cx23885_query_audinput(struct file *file, void *priv,
+	struct v4l2_audio *i)
+{
+	static const char *iname[] = {
+		[0] = "Baseband L/R 1",
+		[1] = "Baseband L/R 2",
+		[2] = "TV",
+	};
+	unsigned int n;
+	dprintk(1, "%s()\n", __func__);
+
+	n = i->index;
+	if (n >= 3)
+		return -EINVAL;
+
+	memset(i, 0, sizeof(*i));
+	i->index = n;
+	strscpy(i->name, iname[n], sizeof(i->name));
+	i->capability = V4L2_AUDCAP_STEREO;
+	return 0;
+
+}
+
+static int vidioc_enum_audinput(struct file *file, void *priv,
+				struct v4l2_audio *i)
+{
+	return cx23885_query_audinput(file, priv, i);
+}
+
+static int vidioc_g_audinput(struct file *file, void *priv,
+	struct v4l2_audio *i)
+{
+	struct cx23885_dev *dev = video_drvdata(file);
+
+	if ((CX23885_VMUX_TELEVISION == INPUT(dev->input)->type) ||
+		(CX23885_VMUX_CABLE == INPUT(dev->input)->type))
+		i->index = 2;
+	else
+		i->index = dev->audinput;
+	dprintk(1, "%s(input=%d)\

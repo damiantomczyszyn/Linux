@@ -1,12 +1,21 @@
-x/scatterlist.h \
-    $(wildcard include/config/NEED_SG_DMA_LENGTH) \
-    $(wildcard include/config/DEBUG_SG) \
-    $(wildcard include/config/SGL_ALLOC) \
-    $(wildcard include/config/ARCH_NO_SG_CHAIN) \
-    $(wildcard include/config/SG_POOL) \
-  include/linux/gpio/consumer.h \
-    $(wildcard include/config/OF_GPIO) \
-    $(wildcard include/config/GPIO_SYSFS) \
-  include/uapi/linux/spi/spi.h \
-  include/media/v4l2-fh.h \
-  include/media/v4l
+ine void cx23885_irq_disable_all(struct cx23885_dev *dev)
+{
+	cx23885_irq_disable(dev, 0xffffffff);
+}
+
+void cx23885_irq_remove(struct cx23885_dev *dev, u32 mask)
+{
+	unsigned long flags;
+	spin_lock_irqsave(&dev->pci_irqmask_lock, flags);
+
+	dev->pci_irqmask &= ~mask;
+	cx_clear(PCI_INT_MSK, mask);
+
+	spin_unlock_irqrestore(&dev->pci_irqmask_lock, flags);
+}
+
+static u32 cx23885_irq_get_mask(struct cx23885_dev *dev)
+{
+	u32 v;
+	unsigned long flags;
+	

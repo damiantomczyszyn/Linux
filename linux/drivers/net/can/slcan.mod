@@ -1,1 +1,2 @@
-nclude/config/GENERIC_ATO
+drivers/net/can/slcan.o
+

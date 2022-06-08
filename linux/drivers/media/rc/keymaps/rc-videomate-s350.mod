@@ -1,2 +1,2 @@
-drivers/media/rc/keymaps/rc-videomate-s350.o
-
+nput)->amux == CX25840_AUDIO6)
+		cx23885_flati

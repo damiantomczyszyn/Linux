@@ -1,6 +1,7 @@
- $(wildcard include/config/SLOB) \
-  include/linux/overflow.h \
-  include/linux/percpu-refcount.h \
-  include/linux/kasan.h \
-    $(wildcard include/config/KASAN_STACK) \
-    $
+ntf(vfd->name, sizeof(vfd->name), "%s (%s)",
+		 cx23885_boards[dev->board].name, type);
+	video_set_drvdata(vfd, dev);
+	return vfd;
+}
+
+int cx23885_flatiron_write(struct cx23885_

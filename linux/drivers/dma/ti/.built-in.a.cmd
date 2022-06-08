@@ -1,4 +1,4 @@
-ated/bounds.h \
-  include/linux/mm_types.h \
-    $(wildcard include/config/HAVE_ALIGNED_STRUCT_PAGE) \
-    $(wildcard in
+dev->board == CX23885_BOARD_HAUPPAUGE_HVR1275)
+			cx23885_set_frontend_hook(port, fe0->dvb.frontend);
+		break;
+	case CX2

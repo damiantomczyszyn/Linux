@@ -1,2 +1,1 @@
-drivers/media/radio/dsbr100.o
-
+.prepare = snd_cx23885_prepare,

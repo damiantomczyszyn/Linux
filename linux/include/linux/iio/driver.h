@@ -1,35 +1,59 @@
-pes.h \
-  include/asm-generic/pgtable-nop4d.h \
-  include/asm-generic/pgtable-nopud.h \
-  arch/x86/include/asm/nospec-branch.h \
-  include/linux/static_key.h \
-  include/linux/jump_label.h \
-    $(wildcard include/config/HAVE_ARCH_JUMP_LABEL_RELATIVE) \
-  arch/x86/include/asm/jump_label.h \
-  include/linux/objtool.h \
-    $(wildcard include/config/FRAME_POINTER) \
-  arch/x86/include/asm/msr-index.h \
-  arch/x86/include/asm/unwind_hints.h \
-  arch/x86/include/asm/orc_types.h \
-  arch/x86/include/asm/GEN-for-each-reg.h \
-  arch/x86/include/asm/spinlock_types.h \
-  include/asm-generic/qspinlock_types.h \
-    $(wildcard include/config/NR_CPUS) \
-  include/asm-generic/qrwlock_types.h \
-  arch/x86/include/asm/proto.h \
-  arch/x86/include/uapi/asm/ldt.h \
-  arch/x86/include/uapi/asm/sigcontext.h \
-  arch/x86/include/asm/current.h \
-  arch/x86/include/asm/percpu.h \
-    $(wildcard include/config/X86_64_SMP) \
-  include/linux/kernel.h \
-    $(wildcard include/config/PREEMPT_VOLUNTARY_BUILD) \
-    $(wildcard include/config/PREEMPT_DYNAMIC) \
-    $(wildcard include/config/HAVE_PREEMPT_DYNAMIC_CALL) \
-    $(wildcard include/config/HAVE_PREEMPT_DYNAMIC_KEY) \
-    $(wildcard include/config/PREEMPT_) \
-    $(wildcard include/config/DEBUG_ATOMIC_SLEEP) \
-    $(wildcard include/config/MMU) \
-    $(wildcard include/config/PROVE_LOCKING) \
-  include/linux/stdarg.h \
-  i
+args);
+
+	return err;
+}
+
+static int cx23885_api_func(void *priv, u32 cmd, int in, int out, u32 data[CX2341X_MBOX_MAX_DATA])
+{
+	return cx23885_mbox_func(priv, cmd, in, out, data);
+}
+
+static int cx23885_find_mailbox(struct cx23885_dev *dev)
+{
+	u32 signature[4] = {
+		0x12345678, 0x34567812, 0x56781234, 0x78123456
+	};
+	int signaturecnt = 0;
+	u32 value;
+	int i;
+
+	dprintk(2, "%s()\n", __func__);
+
+	for (i = 0; i < CX23885_FIRM_IMAGE_SIZE; i++) {
+		mc417_memory_read(dev, i, &value);
+		if (value == signature[signaturecnt])
+			signaturecnt++;
+		else
+			signaturecnt = 0;
+		if (4 == signaturecnt) {
+			dprintk(1, "Mailbox signature found at 0x%x\n", i+1);
+			return i+1;
+		}
+	}
+	pr_err("Mailbox signature values not found!\n");
+	return -1;
+}
+
+static int cx23885_load_firmware(struct cx23885_dev *dev)
+{
+	static const unsigned char magic[8] = {
+		0xa7, 0x0d, 0x00, 0x00, 0x66, 0xbb, 0x55, 0xaa
+	};
+	const struct firmware *firmware;
+	int i, retval = 0;
+	u32 value = 0;
+	u32 gpio_output = 0;
+	u32 gpio_value;
+	u32 checksum = 0;
+	u32 *dataptr;
+
+	dprintk(2, "%s()\n", __func__);
+
+	/* Save GPIO settings before reset of APU */
+	retval |= mc417_memory_read(dev, 0x9020, &gpio_output);
+	retval |= mc417_memory_read(dev, 0x900C, &gpio_value);
+
+	retval  = mc417_register_write(dev,
+		IVTV_REG_VPU, 0xFFFFFFED);
+	retval |= mc417_register_write(dev,
+		IVTV_REG_HW_BLOCKS, IVTV_CMD_HW_BLOCKS_

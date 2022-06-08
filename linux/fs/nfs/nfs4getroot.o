@@ -1,50 +1,87 @@
-t.h \
-    $(wildcard include/config/DEBUG_PLIST) \
-  include/linux/hrtimer.h \
-    $(wildcard include/config/HIGH_RES_TIMERS) \
-    $(wildcard include/config/TIME_LOW_RES) \
-    $(wildcard include/config/TIMERFD) \
-  include/linux/hrtimer_defs.h \
-  include/linux/timerqueue.h \
-  include/linux/seccomp.h \
-    $(wildcard include/config/SECCOMP) \
-    $(wildcard include/config/HAVE_ARCH_SECCOMP_FILTER) \
-    $(wildcard include/config/SECCOMP_FILTER) \
-    $(wildcard include/config/CHECKPOINT_RESTORE) \
-    $(wildcard include/config/SECCOMP_CACHE_DEBUG) \
-  include/uapi/linux/seccomp.h \
-  arch/x86/include/asm/seccomp.h \
-  arch/x86/include/asm/unistd.h \
-  arch/x86/include/uapi/asm/unistd.h \
-  arch/x86/include/generated/uapi/asm/unistd_32.h \
-  include/asm-generic/seccomp.h \
-  include/uapi/linux/unistd.h \
-  include/linux/resource.h \
-  include/uapi/linux/resource.h \
-  arch/x86/include/generated/uapi/asm/resource.h \
-  include/asm-generic/resource.h \
-  include/uapi/asm-generic/resource.h \
-  include/linux/latencytop.h \
-  include/linux/sched/prio.h \
-  include/linux/sched/types.h \
-  include/linux/signal_types.h \
-    $(wildcard include/config/OLD_SIGACTION) \
-  include/uapi/linux/signal.h \
-  arch/x86/include/asm/signal.h \
-  arch/x86/include/uapi/asm/signal.h \
-  include/uapi/asm-generic/signal-defs.h \
-  arch/x86/include/uapi/asm/siginfo.h \
-  include/uapi/asm-generic/siginfo.h \
-  include/linux/syscall_user_dispatch.h \
-  include/linux/task_io_accounting.h \
-    $(wildcard include/config/TASK_IO_ACCOUNTING) \
-  include/linux/posix-timers.h \
-  include/linux/alarmtimer.h \
-    $(wildcard include/config/RTC_CLASS) \
-  include/uapi/linux/rseq.h \
-  include/linux/kcsan.h \
-  include/linux/energy_model.h \
-  include/linux/sched/cpufreq.h \
-    $(wildcard include/config/CPU_FREQ) \
-  include/linux/sched/topology.h \
-    $(wi
+// SPDX-License-Identifier: GPL-2.0-or-later
+/*
+ * Driver for Silicon Labs C8051F300 microcontroller.
+ *
+ * It is used for LNB power control in TeVii S470,
+ * TBS 6920 PCIe DVB-S2 cards.
+ *
+ * Microcontroller connected to cx23885 GPIO pins:
+ * GPIO0 - data		- P0.3 F300
+ * GPIO1 - reset	- P0.2 F300
+ * GPIO2 - clk		- P0.1 F300
+ * GPIO3 - busy		- P0.0 F300
+ *
+ * Copyright (C) 2009 Igor M. Liplianin <liplianin@me.by>
+ */
+
+#include "cx23885.h"
+#include "cx23885-f300.h"
+
+#define F300_DATA	GPIO_0
+#define F300_RESET	GPIO_1
+#define F300_CLK	GPIO_2
+#define F300_BUSY	GPIO_3
+
+static void f300_set_line(struct cx23885_dev *dev, u32 line, u8 lvl)
+{
+	cx23885_gpio_enable(dev, line, 1);
+	if (lvl == 1)
+		cx23885_gpio_set(dev, line);
+	else
+		cx23885_gpio_clear(dev, line);
+}
+
+static u8 f300_get_line(struct cx23885_dev *dev, u32 line)
+{
+	cx23885_gpio_enable(dev, line, 0);
+
+	return cx23885_gpio_get(dev, line);
+}
+
+static void f300_send_byte(struct cx23885_dev *dev, u8 dta)
+{
+	u8 i;
+
+	for (i = 0; i < 8; i++) {
+		f300_set_line(dev, F300_CLK, 0);
+		udelay(30);
+		f300_set_line(dev, F300_DATA, (dta & 0x80) >> 7);/* msb first */
+		udelay(30);
+		dta <<= 1;
+		f300_set_line(dev, F300_CLK, 1);
+		udelay(30);
+	}
+}
+
+static u8 f300_get_byte(struct cx23885_dev *dev)
+{
+	u8 i, dta = 0;
+
+	for (i = 0; i < 8; i++) {
+		f300_set_line(dev, F300_CLK, 0);
+		udelay(30);
+		dta <<= 1;
+		f300_set_line(dev, F300_CLK, 1);
+		udelay(30);
+		dta |= f300_get_line(dev, F300_DATA);/* msb first */
+
+	}
+
+	return dta;
+}
+
+static u8 f300_xfer(struct dvb_frontend *fe, u8 *buf)
+{
+	struct cx23885_tsport *port = fe->dvb->priv;
+	struct cx23885_dev *dev = port->dev;
+	u8 i, temp, ret = 0;
+
+	temp = buf[0];
+	for (i = 0; i < buf[0]; i++)
+		temp += buf[i + 1];
+	temp = (~temp + 1);/* get check sum */
+	buf[1 + buf[0]] = temp;
+
+	f300_set_line(dev, F300_RESET, 1);
+	f300_set_line(dev, F300_CLK, 1);
+	udelay(

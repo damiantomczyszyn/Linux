@@ -1,1 +1,1 @@
-cmd_drivers/media/i2c/t
+h->cmds_start + i, 0);

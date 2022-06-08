@@ -1,149 +1,157 @@
-// SPDX-License-Identifier: GPL-2.0+
-/*
- * Module-based torture test facility for locking
- *
- * Copyright (C) IBM Corporation, 2014
- *
- * Authors: Paul E. McKenney <paulmck@linux.ibm.com>
- *          Davidlohr Bueso <dave@stgolabs.net>
- *	Based on kernel/rcu/torture.c.
- */
+reg_dma_ctl;
+	u32                        reg_lngth;
+	u32                        reg_hw_sop_ctrl;
+	u32                        reg_gen_ctrl;
+	u32                        reg_bd_pkt_status;
+	u32                        reg_sop_status;
+	u32                        reg_fifo_ovfl_stat;
+	u32                        reg_vld_misc;
+	u32                        reg_ts_clk_en;
+	u32                        reg_ts_int_msk;
+	u32                        reg_ts_int_stat;
+	u32                        reg_src_sel;
 
-#define pr_fmt(fmt) fmt
+	/* Default register vals */
+	int                        pci_irqmask;
+	u32                        dma_ctl_val;
+	u32                        ts_int_msk_val;
+	u32                        gen_ctrl_val;
+	u32                        ts_clk_en_val;
+	u32                        src_sel_val;
+	u32                        vld_misc_val;
+	u32                        hw_sop_ctrl_val;
 
-#include <linux/kernel.h>
-#include <linux/module.h>
-#include <linux/kthread.h>
-#include <linux/sched/rt.h>
-#include <linux/spinlock.h>
-#include <linux/mutex.h>
-#include <linux/rwsem.h>
-#include <linux/smp.h>
-#include <linux/interrupt.h>
-#include <linux/sched.h>
-#include <uapi/linux/sched/types.h>
-#include <linux/rtmutex.h>
-#include <linux/atomic.h>
-#include <linux/moduleparam.h>
-#include <linux/delay.h>
-#include <linux/slab.h>
-#include <linux/torture.h>
-#include <linux/reboot.h>
+	/* Allow a single tsport to have multiple frontends */
+	u32                        num_frontends;
+	void                (*gate_ctrl)(struct cx23885_tsport *port, int open);
+	void                       *port_priv;
 
-MODULE_LICENSE("GPL");
-MODULE_AUTHOR("Paul E. McKenney <paulmck@linux.ibm.com>");
+	/* Workaround for a temp dvb_frontend that the tuner can attached to */
+	struct dvb_frontend analog_fe;
 
-torture_param(int, nwriters_stress, -1,
-	     "Number of write-locking stress-test threads");
-torture_param(int, nreaders_stress, -1,
-	     "Number of read-locking stress-test threads");
-torture_param(int, onoff_holdoff, 0, "Time after boot before CPU hotplugs (s)");
-torture_param(int, onoff_interval, 0,
-	     "Time between CPU hotplugs (s), 0=disable");
-torture_param(int, shuffle_interval, 3,
-	     "Number of jiffies between shuffles, 0=disable");
-torture_param(int, shutdown_secs, 0, "Shutdown time (j), <= zero to disable.");
-torture_param(int, stat_interval, 60,
-	     "Number of seconds between stats printk()s");
-torture_param(int, stutter, 5, "Number of jiffies to run/halt test, 0=disable");
-torture_param(int, verbose, 1,
-	     "Enable verbose debugging printk()s");
+	struct i2c_client *i2c_client_demod;
+	struct i2c_client *i2c_client_tuner;
+	struct i2c_client *i2c_client_sec;
+	struct i2c_client *i2c_client_ci;
 
-static char *torture_type = "spin_lock";
-module_param(torture_type, charp, 0444);
-MODULE_PARM_DESC(torture_type,
-		 "Type of lock to torture (spin_lock, spin_lock_irq, mutex_lock, ...)");
-
-static struct task_struct *stats_task;
-static struct task_struct **writer_tasks;
-static struct task_struct **reader_tasks;
-
-static bool lock_is_write_held;
-static atomic_t lock_is_read_held;
-static unsigned long last_lock_release;
-
-struct lock_stress_stats {
-	long n_lock_fail;
-	long n_lock_acquired;
+	int (*set_frontend)(struct dvb_frontend *fe);
+	int (*fe_set_voltage)(struct dvb_frontend *fe,
+			      enum fe_sec_voltage voltage);
 };
 
-/* Forward reference. */
-static void lock_torture_cleanup(void);
+struct cx23885_kernel_ir {
+	struct cx23885_dev	*cx;
+	char			*name;
+	char			*phys;
 
-/*
- * Operations vector for selecting different types of tests.
- */
-struct lock_torture_ops {
-	void (*init)(void);
-	void (*exit)(void);
-	int (*writelock)(int tid);
-	void (*write_delay)(struct torture_random_state *trsp);
-	void (*task_boost)(struct torture_random_state *trsp);
-	void (*writeunlock)(int tid);
-	int (*readlock)(int tid);
-	void (*read_delay)(struct torture_random_state *trsp);
-	void (*readunlock)(int tid);
-
-	unsigned long flags; /* for irq spinlocks */
-	const char *name;
+	struct rc_dev		*rc;
 };
 
-struct lock_torture_cxt {
-	int nrealwriters_stress;
-	int nrealreaders_stress;
-	bool debug_lock;
-	bool init_called;
-	atomic_t n_lock_torture_errors;
-	struct lock_torture_ops *cur_ops;
-	struct lock_stress_stats *lwsa; /* writer statistics */
-	struct lock_stress_stats *lrsa; /* reader statistics */
-};
-static struct lock_torture_cxt cxt = { 0, 0, false, false,
-				       ATOMIC_INIT(0),
-				       NULL, NULL};
-/*
- * Definitions for lock torture testing.
- */
-
-static int torture_lock_busted_write_lock(int tid __maybe_unused)
-{
-	return 0;  /* BUGGY, do not use in real life!!! */
-}
-
-static void torture_lock_busted_write_delay(struct torture_random_state *trsp)
-{
-	const unsigned long longdelay_ms = 100;
-
-	/* We want a long delay occasionally to force massive contention.  */
-	if (!(torture_random(trsp) %
-	      (cxt.nrealwriters_stress * 2000 * longdelay_ms)))
-		mdelay(longdelay_ms);
-	if (!(torture_random(trsp) % (cxt.nrealwriters_stress * 20000)))
-		torture_preempt_schedule();  /* Allow test to be preempted. */
-}
-
-static void torture_lock_busted_write_unlock(int tid __maybe_unused)
-{
-	  /* BUGGY, do not use in real life!!! */
-}
-
-static void torture_boost_dummy(struct torture_random_state *trsp)
-{
-	/* Only rtmutexes care about priority */
-}
-
-static struct lock_torture_ops lock_busted_ops = {
-	.writelock	= torture_lock_busted_write_lock,
-	.write_delay	= torture_lock_busted_write_delay,
-	.task_boost     = torture_boost_dummy,
-	.writeunlock	= torture_lock_busted_write_unlock,
-	.readlock       = NULL,
-	.read_delay     = NULL,
-	.readunlock     = NULL,
-	.name		= "lock_busted"
+struct cx23885_audio_buffer {
+	unsigned int		bpl;
+	struct cx23885_riscmem	risc;
+	void			*vaddr;
+	struct scatterlist	*sglist;
+	int			sglen;
+	unsigned long		nr_pages;
 };
 
-static DEFINE_SPINLOCK(torture_spinlock);
+struct cx23885_audio_dev {
+	struct cx23885_dev	*dev;
 
-static int torture_spin_lock_write_lock(int tid __maybe_unused)
-__acqui
+	struct pci_dev		*pci;
+
+	struct snd_card		*card;
+
+	spinlock_t		lock;
+
+	atomic_t		count;
+
+	unsigned int		dma_size;
+	unsigned int		period_size;
+	unsigned int		num_periods;
+
+	struct cx23885_audio_buffer   *buf;
+
+	struct snd_pcm_substream *substream;
+};
+
+struct cx23885_dev {
+	atomic_t                   refcount;
+	struct v4l2_device	   v4l2_dev;
+	struct v4l2_ctrl_handler   ctrl_handler;
+
+	/* pci stuff */
+	struct pci_dev             *pci;
+	unsigned char              pci_rev, pci_lat;
+	int                        pci_bus, pci_slot;
+	u32                        __iomem *lmmio;
+	u8                         __iomem *bmmio;
+	int                        pci_irqmask;
+	spinlock_t		   pci_irqmask_lock; /* protects mask reg too */
+	int                        hwrevision;
+
+	/* This valud is board specific and is used to configure the
+	 * AV core so we see nice clean and stable video and audio. */
+	u32                        clk_freq;
+
+	/* I2C adapters: Master 1 & 2 (External) & Master 3 (Internal only) */
+	struct cx23885_i2c         i2c_bus[3];
+
+	int                        nr;
+	struct mutex               lock;
+	struct mutex               gpio_lock;
+
+	/* board details */
+	unsigned int               board;
+	char                       name[32];
+
+	struct cx23885_tsport      ts1, ts2;
+
+	/* sram configuration */
+	struct sram_channel        *sram_channels;
+
+	enum {
+		CX23885_BRIDGE_UNDEFINED = 0,
+		CX23885_BRIDGE_885 = 885,
+		CX23885_BRIDGE_887 = 887,
+		CX23885_BRIDGE_888 = 888,
+	} bridge;
+
+	/* Analog video */
+	unsigned int               input;
+	unsigned int               audinput; /* Selectable audio input */
+	u32                        tvaudio;
+	v4l2_std_id                tvnorm;
+	unsigned int               tuner_type;
+	unsigned char              tuner_addr;
+	unsigned int               tuner_bus;
+	unsigned int               radio_type;
+	unsigned char              radio_addr;
+	struct v4l2_subdev	   *sd_cx25840;
+	struct work_struct	   cx25840_work;
+
+	/* Infrared */
+	struct v4l2_subdev         *sd_ir;
+	struct work_struct	   ir_rx_work;
+	unsigned long		   ir_rx_notifications;
+	struct work_struct	   ir_tx_work;
+	unsigned long		   ir_tx_notifications;
+
+	struct cx23885_kernel_ir   *kernel_ir;
+	atomic_t		   ir_input_stopping;
+
+	/* V4l */
+	u32                        freq;
+	struct video_device        *video_dev;
+	struct video_device        *vbi_dev;
+
+	/* video capture */
+	struct cx23885_fmt         *fmt;
+	unsigned int               width, height;
+	unsigned		   field;
+
+	struct cx23885_dmaqueue    vidq;
+	struct vb2_queue           vb2_vidq;
+	struct cx23885_dmaqueue    vbiq;
+	struct vb2_queue      

@@ -1,1 +1,7 @@
-d7·Ð±º	_éÝ\šNM	"àÀ3:)÷ýßŒþ´‰b÷CN@ú²ù‡±‚ðAöoÐEê­Ù¥wjðI«„9†õ¢>o!Qþ{ÉYnæÛšÊ¨†]ê­†¼ÆÎKHÉªÉë-Z?ßÙÿ\–`éË)
+:
+		i2c_bus = &dev->i2c_bus[0];
+
+		if (!dvb_attach(dib7000p_attach, &dib7000p_ops))
+			return -ENODEV;
+
+		fe0

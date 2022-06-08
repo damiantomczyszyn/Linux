@@ -1,16 +1,1 @@
-lude/linux/percpu-refcount.h \
-  include/linux/kasan.h \
-    $(wildcard include/config/KASAN_STACK) \
-    $(wildcard include/config/KASAN_VMALLOC) \
-    $(wildcard include/config/KASAN_INLINE) \
-  include/linux/kasan-enabled.h \
-  include/linux/device.h \
-    $(wildcard include/config/GENERIC_MSI_IRQ_DOMAIN) \
-    $(wildcard include/config/GENERIC_MSI_IRQ) \
-    $(wildcard include/config/ENERGY_MODEL) \
-    $(wildcard include/config/PINCTRL) \
-    $(wildcard include/config/DMA_OPS) \
-    $(wildcard include/config/DMA_DECLARE_COHERENT) \
-    $(wildcard include/config/DMA_CMA) \
-    $(wildcard include/config/SWIOTLB) \
-    $(wildcard include/conf
+cmd_drivers/net/dsa/mv88e6xxx/mv88e6xxx.o := ld -m elf_i386   -r -o drivers/net/dsa/mv88e6xxx/mv88e6xxx.o drivers/net/dsa/mv88e6xxx/chip.o drivers/net/dsa/mv88e6xxx/devlink.o drivers/net/dsa/mv88e6xxx/global1.o drivers/net/dsa/mv88e6xxx/global1_atu.o drivers/net/dsa/mv88e6xxx/global1_vtu.o drivers/net/dsa/mv88e6xxx/global2.o drivers/net/dsa/mv88e6xxx/global2_avb.o drivers/net/dsa/mv88e6xxx/global2_scratch.o drivers/net/dsa/mv88e6xxx/phy.o drivers/net/dsa/mv88e6xxx/port.o drivers/net/dsa/mv88e6xxx/port_hidden.o drivers/net/dsa/mv88e6xxx/serdes.o drivers/net/dsa/mv88e6xxx/smi.o drivers/net/dsa/mv88e6xxx/hwtstamp.o drivers/net/dsa/mv88e6xxx/ptp.o

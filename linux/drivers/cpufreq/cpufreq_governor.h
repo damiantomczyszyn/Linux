@@ -1,141 +1,257 @@
-pes.h \
-  include/asm-generic/pgtable-nop4d.h \
-  include/asm-generic/pgtable-nopud.h \
-  arch/x86/include/asm/nospec-branch.h \
-  include/linux/static_key.h \
-  include/linux/jump_label.h \
-    $(wildcard include/config/HAVE_ARCH_JUMP_LABEL_RELATIVE) \
-  arch/x86/include/asm/jump_label.h \
-  include/linux/objtool.h \
-    $(wildcard include/config/FRAME_POINTER) \
-  arch/x86/include/asm/msr-index.h \
-  arch/x86/include/asm/unwind_hints.h \
-  arch/x86/include/asm/orc_types.h \
-  arch/x86/include/asm/GEN-for-each-reg.h \
-  arch/x86/include/asm/spinlock_types.h \
-  include/asm-generic/qspinlock_types.h \
-    $(wildcard include/config/NR_CPUS) \
-  include/asm-generic/qrwlock_types.h \
-  arch/x86/include/asm/proto.h \
-  arch/x86/include/uapi/asm/ldt.h \
-  arch/x86/include/uapi/asm/sigcontext.h \
-  arch/x86/include/asm/current.h \
-  arch/x86/include/asm/percpu.h \
-    $(wildcard include/config/X86_64_SMP) \
-  include/linux/kernel.h \
-    $(wildcard include/config/PREEMPT_VOLUNTARY_BUILD) \
-    $(wildcard include/config/PREEMPT_DYNAMIC) \
-    $(wildcard include/config/HAVE_PREEMPT_DYNAMIC_CALL) \
-    $(wildcard include/config/HAVE_PREEMPT_DYNAMIC_KEY) \
-    $(wildcard include/config/PREEMPT_) \
-    $(wildcard include/config/DEBUG_ATOMIC_SLEEP) \
-    $(wildcard include/config/MMU) \
-    $(wildcard include/config/PROVE_LOCKING) \
-  include/linux/stdarg.h \
-  include/linux/align.h \
-  include/linux/limits.h \
-  include/uapi/linux/limits.h \
-  include/vdso/limits.h \
-  include/linux/kstrtox.h \
-  include/linux/minmax.h \
-  include/linux/panic.h \
-    $(wildcard include/config/PANIC_TIMEOUT) \
-  include/linux/printk.h \
-    $(wildcard include/config/MESSAGE_LOGLEVEL_DEFAULT) \
-    $(wildcard include/config/CONSOLE_LOGLEVEL_DEFAULT) \
-    $(wildcard include/config/CONSOLE_LOGLEVEL_QUIET) \
-    $(wildcard include/config/EARLY_PRINTK) \
-    $(wildcard include/config/PRINTK) \
-    $(wildcard include/config/DYNAMIC_DEBUG) \
-    $(wildcard include/config/DYNAMIC_DEBUG_CORE) \
-  include/linux/kern_levels.h \
-  include/linux/ratelimit_types.h \
-  include/linux/spinlock_types_raw.h \
-    $(wildcard include/config/DEBUG_SPINLOCK) \
-    $(wildcard include/config/DEBUG_LOCK_ALLOC) \
-  include/linux/lockdep_types.h \
-    $(wildcard include/config/PROVE_RAW_LOCK_NESTING) \
-    $(wildcard include/config/LOCKDEP) \
-    $(wildcard include/config/LOCK_STAT) \
-  include/linux/once_lite.h \
-  include/linux/static_call_types.h \
-    $(wildcard include/config/HAVE_STATIC_CALL) \
-  include/linux/instruction_pointer.h \
-  include/asm-generic/percpu.h \
-    $(wildcard include/config/DEBUG_PREEMPT) \
-    $(wildcard include/config/HAVE_SETUP_PER_CPU_AREA) \
-  include/linux/threads.h \
-    $(wildcard include/config/BASE_SMALL) \
-  include/linux/percpu-defs.h \
-    $(wildcard include/config/DEBUG_FORCE_WEAK_PER_CPU) \
-  arch/x86/include/asm/page.h \
-  arch/x86/include/asm/page_32.h \
-    $(wildcard include/config/DEBUG_VIRTUAL) \
-    $(wildcard include/config/FLATMEM) \
-  include/linux/string.h \
-    $(wildcard include/config/BINARY_PRINTF) \
-    $(wildcard include/config/FORTIFY_SOURCE) \
-  include/linux/errno.h \
-  include/uapi/linux/errno.h \
-  include/uapi/linux/string.h \
-  arch/x86/include/asm/string.h \
-  arch/x86/include/asm/string_32.h \
-  include/linux/fortify-string.h \
-  include/linux/range.h \
-  include/asm-generic/memory_model.h \
-    $(wildcard include/config/SPARSEMEM_VMEMMAP) \
-    $(wildcard include/config/SPARSEMEM) \
-  include/linux/pfn.h \
-  include/asm-generic/getorder.h \
-  arch/x86/include/asm/msr.h \
-  arch/x86/include/asm/msr-index.h \
-  arch/x86/include/asm/cpumask.h \
-  include/linux/cpumask.h \
-    $(wildcard include/config/CPUMASK_OFFSTACK) \
-    $(wildcard include/config/HOTPLUG_CPU) \
-    $(wildcard include/config/DEBUG_PER_CPU_MAPS) \
-  include/linux/bitmap.h \
-  include/linux/find.h \
-  include/linux/atomic.h \
-  arch/x86/include/asm/atomic.h \
-  arch/x86/include/asm/cmpxchg.h \
-  arch/x86/include/asm/cmpxchg_32.h \
-  arch/x86/include/asm/atomic64_32.h \
-  include/linux/atomic/atomic-arch-fallback.h \
-    $(wildcard include/config/GENERIC_ATOMIC64) \
-  include/linux/atomic/atomic-long.h \
-  include/linux/atomic/atomic-instrumented.h \
-  include/linux/bug.h \
-    $(wildcard include/config/BUG_ON_DATA_CORRUPTION) \
-  arch/x86/include/asm/bug.h \
-    $(wildcard include/config/DEBUG_BUGVERBOSE) \
-  include/linux/instrumentation.h \
-    $(wildcard include/config/DEBUG_ENTRY) \
-  include/asm-generic/bug.h \
-    $(wildcard include/config/BUG) \
-    $(wildcard include/config/GENERIC_BUG_RELATIVE_POINTERS) \
-  arch/x86/include/uapi/asm/msr.h \
-  include/linux/tracepoint-defs.h \
-  arch/x86/include/asm/special_insns.h \
-  include/linux/irqflags.h \
-    $(wildcard include/config/TRACE_IRQFLAGS) \
-    $(wildcard include/config/PREEMPT_RT) \
-    $(wildcard include/config/IRQSOFF_TRACER) \
-    $(wildcard include/config/PREEMPT_TRACER) \
-    $(wildcard include/config/DEBUG_IRQFLAGS) \
-    $(wildcard include/config/TRACE_IRQFLAGS_SUPPORT) \
-  arch/x86/include/asm/irqflags.h \
-  arch/x86/include/asm/fpu/types.h \
-  arch/x86/include/asm/vmxfeatures.h \
-  arch/x86/include/asm/vdso/processor.h \
-  include/linux/personality.h \
-  include/uapi/linux/personality.h \
-  arch/x86/include/asm/tsc.h \
-  arch/x86/include/asm/cpufeature.h \
-    $(wildcard include/config/X86_FEATURE_NAMES) \
-  include/vdso/time32.h \
-  include/vdso/time.h \
-  include/linux/uidgid.h \
-    $(wildcard include/config/MULTIUSER) \
-    $(wildcard include/config/USER_NS) \
-  inclu
+dio",
+		.cmds_start	= 0x10190,
+		.ctrl_start	= 0x10480,
+		.cdt		= 0x10a00,
+		.fifo_start	= 0x7000,
+		.fifo_size	= 0x1000,
+		.ptr1_reg	= DMA6_PTR1,
+		.ptr2_reg	= DMA6_PTR2,
+		.cnt1_reg	= DMA6_CNT1,
+		.cnt2_reg	= DMA6_CNT2,
+	},
+	[SRAM_CH08] = {
+		.name		= "ch8",
+		.cmds_start	= 0x0,
+		.ctrl_start	= 0x0,
+		.cdt		= 0x0,
+		.fifo_start	= 0x0,
+		.fifo_size	= 0x0,
+		.ptr1_reg	= DMA7_PTR1,
+		.ptr2_reg	= DMA7_PTR2,
+		.cnt1_reg	= DMA7_CNT1,
+		.cnt2_reg	= DMA7_CNT2,
+	},
+	[SRAM_CH09] = {
+		.name		= "ch9",
+		.cmds_start	= 0x0,
+		.ctrl_start	= 0x0,
+		.cdt		= 0x0,
+		.fifo_start	= 0x0,
+		.fifo_size	= 0x0,
+		.ptr1_reg	= DMA8_PTR1,
+		.ptr2_reg	= DMA8_PTR2,
+		.cnt1_reg	= DMA8_CNT1,
+		.cnt2_reg	= DMA8_CNT2,
+	},
+};
+
+static struct sram_channel cx23887_sram_channels[] = {
+	[SRAM_CH01] = {
+		.name		= "VID A",
+		.cmds_start	= 0x10000,
+		.ctrl_start	= 0x105b0,
+		.cdt		= 0x107b0,
+		.fifo_start	= 0x40,
+		.fifo_size	= 0x2800,
+		.ptr1_reg	= DMA1_PTR1,
+		.ptr2_reg	= DMA1_PTR2,
+		.cnt1_reg	= DMA1_CNT1,
+		.cnt2_reg	= DMA1_CNT2,
+	},
+	[SRAM_CH02] = {
+		.name		= "VID A (VBI)",
+		.cmds_start	= 0x10050,
+		.ctrl_start	= 0x105F0,
+		.cdt		= 0x10810,
+		.fifo_start	= 0x3000,
+		.fifo_size	= 0x1000,
+		.ptr1_reg	= DMA2_PTR1,
+		.ptr2_reg	= DMA2_PTR2,
+		.cnt1_reg	= DMA2_CNT1,
+		.cnt2_reg	= DMA2_CNT2,
+	},
+	[SRAM_CH03] = {
+		.name		= "TS1 B",
+		.cmds_start	= 0x100A0,
+		.ctrl_start	= 0x10630,
+		.cdt		= 0x10870,
+		.fifo_start	= 0x5000,
+		.fifo_size	= 0x1000,
+		.ptr1_reg	= DMA3_PTR1,
+		.ptr2_reg	= DMA3_PTR2,
+		.cnt1_reg	= DMA3_CNT1,
+		.cnt2_reg	= DMA3_CNT2,
+	},
+	[SRAM_CH04] = {
+		.name		= "ch4",
+		.cmds_start	= 0x0,
+		.ctrl_start	= 0x0,
+		.cdt		= 0x0,
+		.fifo_start	= 0x0,
+		.fifo_size	= 0x0,
+		.ptr1_reg	= DMA4_PTR1,
+		.ptr2_reg	= DMA4_PTR2,
+		.cnt1_reg	= DMA4_CNT1,
+		.cnt2_reg	= DMA4_CNT2,
+	},
+	[SRAM_CH05] = {
+		.name		= "ch5",
+		.cmds_start	= 0x0,
+		.ctrl_start	= 0x0,
+		.cdt		= 0x0,
+		.fifo_start	= 0x0,
+		.fifo_size	= 0x0,
+		.ptr1_reg	= DMA5_PTR1,
+		.ptr2_reg	= DMA5_PTR2,
+		.cnt1_reg	= DMA5_CNT1,
+		.cnt2_reg	= DMA5_CNT2,
+	},
+	[SRAM_CH06] = {
+		.name		= "TS2 C",
+		.cmds_start	= 0x10140,
+		.ctrl_start	= 0x10670,
+		.cdt		= 0x108d0,
+		.fifo_start	= 0x6000,
+		.fifo_size	= 0x1000,
+		.ptr1_reg	= DMA5_PTR1,
+		.ptr2_reg	= DMA5_PTR2,
+		.cnt1_reg	= DMA5_CNT1,
+		.cnt2_reg	= DMA5_CNT2,
+	},
+	[SRAM_CH07] = {
+		.name		= "TV Audio",
+		.cmds_start	= 0x10190,
+		.ctrl_start	= 0x106B0,
+		.cdt		= 0x10930,
+		.fifo_start	= 0x7000,
+		.fifo_size	= 0x1000,
+		.ptr1_reg	= DMA6_PTR1,
+		.ptr2_reg	= DMA6_PTR2,
+		.cnt1_reg	= DMA6_CNT1,
+		.cnt2_reg	= DMA6_CNT2,
+	},
+	[SRAM_CH08] = {
+		.name		= "ch8",
+		.cmds_start	= 0x0,
+		.ctrl_start	= 0x0,
+		.cdt		= 0x0,
+		.fifo_start	= 0x0,
+		.fifo_size	= 0x0,
+		.ptr1_reg	= DMA7_PTR1,
+		.ptr2_reg	= DMA7_PTR2,
+		.cnt1_reg	= DMA7_CNT1,
+		.cnt2_reg	= DMA7_CNT2,
+	},
+	[SRAM_CH09] = {
+		.name		= "ch9",
+		.cmds_start	= 0x0,
+		.ctrl_start	= 0x0,
+		.cdt		= 0x0,
+		.fifo_start	= 0x0,
+		.fifo_size	= 0x0,
+		.ptr1_reg	= DMA8_PTR1,
+		.ptr2_reg	= DMA8_PTR2,
+		.cnt1_reg	= DMA8_CNT1,
+		.cnt2_reg	= DMA8_CNT2,
+	},
+};
+
+static void cx23885_irq_add(struct cx23885_dev *dev, u32 mask)
+{
+	unsigned long flags;
+	spin_lock_irqsave(&dev->pci_irqmask_lock, flags);
+
+	dev->pci_irqmask |= mask;
+
+	spin_unlock_irqrestore(&dev->pci_irqmask_lock, flags);
+}
+
+void cx23885_irq_add_enable(struct cx23885_dev *dev, u32 mask)
+{
+	unsigned long flags;
+	spin_lock_irqsave(&dev->pci_irqmask_lock, flags);
+
+	dev->pci_irqmask |= mask;
+	cx_set(PCI_INT_MSK, mask);
+
+	spin_unlock_irqrestore(&dev->pci_irqmask_lock, flags);
+}
+
+void cx23885_irq_enable(struct cx23885_dev *dev, u32 mask)
+{
+	u32 v;
+	unsigned long flags;
+	spin_lock_irqsave(&dev->pci_irqmask_lock, flags);
+
+	v = mask & dev->pci_irqmask;
+	if (v)
+		cx_set(PCI_INT_MSK, v);
+
+	spin_unlock_irqrestore(&dev->pci_irqmask_lock, flags);
+}
+
+static inline void cx23885_irq_enable_all(struct cx23885_dev *dev)
+{
+	cx23885_irq_enable(dev, 0xffffffff);
+}
+
+void cx23885_irq_disable(struct cx23885_dev *dev, u32 mask)
+{
+	unsigned long flags;
+	spin_lock_irqsave(&dev->pci_irqmask_lock, flags);
+
+	cx_clear(PCI_INT_MSK, mask);
+
+	spin_unlock_irqrestore(&dev->pci_irqmask_lock, flags);
+}
+
+static inline void cx23885_irq_disable_all(struct cx23885_dev *dev)
+{
+	cx23885_irq_disable(dev, 0xffffffff);
+}
+
+void cx23885_irq_remove(struct cx23885_dev *dev, u32 mask)
+{
+	unsigned long flags;
+	spin_lock_irqsave(&dev->pci_irqmask_lock, flags);
+
+	dev->pci_irqmask &= ~mask;
+	cx_clear(PCI_INT_MSK, mask);
+
+	spin_unlock_irqrestore(&dev->pci_irqmask_lock, flags);
+}
+
+static u32 cx23885_irq_get_mask(struct cx23885_dev *dev)
+{
+	u32 v;
+	unsigned long flags;
+	spin_lock_irqsave(&dev->pci_irqmask_lock, flags);
+
+	v = cx_read(PCI_INT_MSK);
+
+	spin_unlock_irqrestore(&dev->pci_irqmask_lock, flags);
+	return v;
+}
+
+static int cx23885_risc_decode(u32 risc)
+{
+	static char *instr[16] = {
+		[RISC_SYNC    >> 28] = "sync",
+		[RISC_WRITE   >> 28] = "write",
+		[RISC_WRITEC  >> 28] = "writec",
+		[RISC_READ    >> 28] = "read",
+		[RISC_READC   >> 28] = "readc",
+		[RISC_JUMP    >> 28] = "jump",
+		[RISC_SKIP    >> 28] = "skip",
+		[RISC_WRITERM >> 28] = "writerm",
+		[RISC_WRITECM >> 28] = "writecm",
+		[RISC_WRITECR >> 28] = "writecr",
+	};
+	static int incr[16] = {
+		[RISC_WRITE   >> 28] = 3,
+		[RISC_JUMP    >> 28] = 3,
+		[RISC_SKIP    >> 28] = 1,
+		[RISC_SYNC    >> 28] = 1,
+		[RISC_WRITERM >> 28] = 3,
+		[RISC_WRITECM >> 28] = 3,
+		[RISC_WRITECR >> 28] = 4,
+	};
+	static char *bits[] = {
+		"12",   "13",   "14",   "resync",
+		"cnt0", "cnt1", "18",   "19",
+		"20",   "21",   "22",   "23",
+		"irq1", "irq2", "eol",  "sol",
+	};
+	int i;
+
+	printk(KERN_DEBUG 

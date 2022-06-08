@@ -1,15 +1,18 @@
-$(wildcard include/config/DEBUG_PLIST) \
-  include/linux/hrtimer.h \
-    $(wildcard include/config/HIGH_RES_TIMERS) \
-    $(wildcard include/config/TIME_LOW_RES) \
-    $(wildcard include/config/TIMERFD) \
-  include/linux/hrtimer_defs.h \
-  include/linux/timerqueue.h \
-  include/linux/seccomp.h \
-    $(wildcard include/config/SECCOMP) \
-    $(wildcard include/config/HAVE_ARCH_SECCOMP_FILTER) \
-    $(wildcard include/config/SECCOMP_FILTER) \
-    $(wildcard include/config/CHECKPOINT_RESTORE) \
-    $(wildcard include/config/SECCOMP_CACHE_DEBUG) \
-  include/uapi/linux/seccomp.h \
-  arch/x86/include/asm/sec
+ffer *vbuf = to_vb2_v4l2_buffer(vb);
+	struct cx23885_buffer *buf = container_of(vbuf,
+		struct cx23885_buffer, vb);
+
+	cx23885_free_buffer(vb->vb2_queue->drv_priv, buf);
+}
+
+/*
+ * The risc program for each buffer works as follows: it starts with a simple
+ * 'JUMP to addr + 12', which is effectively a NOP. Then the code to DMA the
+ * buffer follows and at the end we have a JUMP back to the start + 12 (skipping
+ * the initial JUMP).
+ *
+ * This is the risc program of the first buffer to be queued if the active list
+ * is empty and it just keeps DMAing this buffer without generating any
+ * interrupts.
+ *
+ *

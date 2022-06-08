@@ -1,37 +1,131 @@
-cmd_drivers/media/i2c/vpx3220.o := gcc -Wp,-MMD,drivers/media/i2c/.vpx3220.o.d -nostdinc -I./arch/x86/include -I./arch/x86/include/generated  -I./include -I./arch/x86/include/uapi -I./arch/x86/include/generated/uapi -I./include/uapi -I./include/generated/uapi -include ./include/linux/compiler-version.h -include ./include/linux/kconfig.h -include ./include/linux/compiler_types.h -D__KERNEL__ -fmacro-prefix-map=./= -Wall -Wundef -Werror=strict-prototypes -Wno-trigraphs -fno-strict-aliasing -fno-common -fshort-wchar -fno-PIE -Werror=implicit-function-declaration -Werror=implicit-int -Werror=return-type -Wno-format-security -std=gnu11 -mno-sse -mno-mmx -mno-sse2 -mno-3dnow -mno-avx -fcf-protection=none -m32 -msoft-float -mregparm=3 -freg-struct-return -fno-pic -mpreferred-stack-boundary=2 -march=i686 -mtune=pentium3 -mtune=generic -Wa,-mtune=generic32 -ffreestanding -mstack-protector-guard-reg=fs -mstack-protector-guard-symbol=__stack_chk_guard -Wno-sign-compare -fno-asynchronous-unwind-tables -mindirect-branch=thunk-extern -mindirect-branch-register -fno-jump-tables -fno-delete-null-pointer-checks -Wno-frame-address -Wno-format-truncation -Wno-format-overflow -Wno-address-of-packed-member -O2 -fno-allow-store-data-races -fstack-protector-strong -Wimplicit-fallthrough=5 -Wno-main -Wno-unused-but-set-variable -Wno-unused-const-variable -fno-stack-clash-protection -pg -mrecord-mcount -mfentry -DCC_USING_FENTRY -Wdeclaration-after-statement -Wvla -Wno-pointer-sign -Wcast-function-type -Wno-stringop-truncation -Wno-stringop-overflow -Wno-restrict -Wno-maybe-uninitialized -Wno-alloc-size-larger-than -fno-strict-overflow -fno-stack-check -fconserve-stack -Werror=date-time -Werror=incompatible-pointer-types -Werror=designated-init -Wno-packed-not-aligned  -DMODULE  -DKBUILD_BASENAME='"vpx3220"' -DKBUILD_MODNAME='"vpx3220"' -D__KBUILD_MODNAME=kmod_vpx3220 -c -o drivers/media/i2c/vpx3220.o drivers/media/i2c/vpx3220.c 
+return cx_read(addr);
+}
 
-source_drivers/media/i2c/vpx3220.o := drivers/media/i2c/vpx3220.c
+static inline int cx23888_ir_and_or4(struct cx23885_dev *dev, u32 addr,
+				     u32 and_mask, u32 or_value)
+{
+	cx_andor(addr, ~and_mask, or_value);
+	return 0;
+}
 
-deps_drivers/media/i2c/vpx3220.o := \
-  include/linux/compiler-version.h \
-    $(wildcard include/config/CC_VERSION_TEXT) \
-  include/linux/kconfig.h \
-    $(wildcard include/config/CPU_BIG_ENDIAN) \
-    $(wildcard include/config/BOOGER) \
-    $(wildcard include/config/FOO) \
-  include/linux/compiler_types.h \
-    $(wildcard include/config/DEBUG_INFO_BTF) \
-    $(wildcard include/config/PAHOLE_HAS_BTF_TAG) \
-    $(wildcard include/config/HAVE_ARCH_COMPILER_H) \
-    $(wildcard include/config/CC_HAS_ASM_INLINE) \
-  include/linux/compiler_attributes.h \
-  include/linux/compiler-gcc.h \
-    $(wildcard include/config/RETPOLINE) \
-    $(wildcard include/config/ARCH_USE_BUILTIN_BSWAP) \
-    $(wildcard include/config/SHADOW_CALL_STACK) \
-    $(wildcard include/config/KCOV) \
-  include/linux/module.h \
-    $(wildcard include/config/MODULES) \
-    $(wildcard include/config/SYSFS) \
-    $(wildcard include/config/MODULES_TREE_LOOKUP) \
-    $(wildcard include/config/LIVEPATCH) \
-    $(wildcard include/config/STACKTRACE_BUILD_ID) \
-    $(wildcard include/config/CFI_CLANG) \
-    $(wildcard include/config/MODULE_SIG) \
-    $(wildcard include/config/GENERIC_BUG) \
-    $(wildcard include/config/KALLSYMS) \
-    $(wildcard include/config/SMP) \
-    $(wildcard include/config/TRACEPOINTS) \
-    $(wildcard include/config/TREE_SRCU) \
-    $(wildcard include/config/BPF_EVENTS) \
-    $(wildcard
+/*
+ * Rx and Tx Clock Divider register computations
+ *
+ * Note the largest clock divider value of 0xffff corresponds to:
+ *	(0xffff + 1) * 1000 / 108/2 MHz = 1,213,629.629... ns
+ * which fits in 21 bits, so we'll use unsigned int for time arguments.
+ */
+static inline u16 count_to_clock_divider(unsigned int d)
+{
+	if (d > RXCLK_RCD + 1)
+		d = RXCLK_RCD;
+	else if (d < 2)
+		d = 1;
+	else
+		d--;
+	return (u16) d;
+}
+
+static inline u16 carrier_freq_to_clock_divider(unsigned int freq)
+{
+	return count_to_clock_divider(
+			  DIV_ROUND_CLOSEST(CX23888_IR_REFCLK_FREQ, freq * 16));
+}
+
+static inline unsigned int clock_divider_to_carrier_freq(unsigned int divider)
+{
+	return DIV_ROUND_CLOSEST(CX23888_IR_REFCLK_FREQ, (divider + 1) * 16);
+}
+
+static inline unsigned int clock_divider_to_freq(unsigned int divider,
+						 unsigned int rollovers)
+{
+	return DIV_ROUND_CLOSEST(CX23888_IR_REFCLK_FREQ,
+				 (divider + 1) * rollovers);
+}
+
+/*
+ * Low Pass Filter register calculations
+ *
+ * Note the largest count value of 0xffff corresponds to:
+ *	0xffff * 1000 / 108/2 MHz = 1,213,611.11... ns
+ * which fits in 21 bits, so we'll use unsigned int for time arguments.
+ */
+static inline u16 count_to_lpf_count(unsigned int d)
+{
+	if (d > FILTR_LPF)
+		d = FILTR_LPF;
+	else if (d < 4)
+		d = 0;
+	return (u16) d;
+}
+
+static inline u16 ns_to_lpf_count(unsigned int ns)
+{
+	return count_to_lpf_count(
+		DIV_ROUND_CLOSEST(CX23888_IR_REFCLK_FREQ / 1000000 * ns, 1000));
+}
+
+static inline unsigned int lpf_count_to_ns(unsigned int count)
+{
+	/* Duration of the Low Pass Filter rejection window in ns */
+	return DIV_ROUND_CLOSEST(count * 1000,
+				 CX23888_IR_REFCLK_FREQ / 1000000);
+}
+
+static inline unsigned int lpf_count_to_us(unsigned int count)
+{
+	/* Duration of the Low Pass Filter rejection window in us */
+	return DIV_ROUND_CLOSEST(count, CX23888_IR_REFCLK_FREQ / 1000000);
+}
+
+/*
+ * FIFO register pulse width count computations
+ */
+static u32 clock_divider_to_resolution(u16 divider)
+{
+	/*
+	 * Resolution is the duration of 1 tick of the readable portion of
+	 * of the pulse width counter as read from the FIFO.  The two lsb's are
+	 * not readable, hence the << 2.  This function returns ns.
+	 */
+	return DIV_ROUND_CLOSEST((1 << 2)  * ((u32) divider + 1) * 1000,
+				 CX23888_IR_REFCLK_FREQ / 1000000);
+}
+
+static u64 pulse_width_count_to_ns(u16 count, u16 divider)
+{
+	u64 n;
+	u32 rem;
+
+	/*
+	 * The 2 lsb's of the pulse width timer count are not readable, hence
+	 * the (count << 2) | 0x3
+	 */
+	n = (((u64) count << 2) | 0x3) * (divider + 1) * 1000; /* millicycles */
+	rem = do_div(n, CX23888_IR_REFCLK_FREQ / 1000000);     /* / MHz => ns */
+	if (rem >= CX23888_IR_REFCLK_FREQ / 1000000 / 2)
+		n++;
+	return n;
+}
+
+static unsigned int pulse_width_count_to_us(u16 count, u16 divider)
+{
+	u64 n;
+	u32 rem;
+
+	/*
+	 * The 2 lsb's of the pulse width timer count are not readable, hence
+	 * the (count << 2) | 0x3
+	 */
+	n = (((u64) count << 2) | 0x3) * (divider + 1);    /* cycles      */
+	rem = do_div(n, CX23888_IR_REFCLK_FREQ / 1000000); /* / MHz => us */
+	if (rem >= CX23888_IR_REFCLK_FREQ / 1000000 / 2)
+		n++;
+	return (unsigned int) n;
+}
+
+/*
+ * Pulse Clocks computations: Combined Pulse Width Count & Rx Clock Counts
+ *
+ * The total pulse clo

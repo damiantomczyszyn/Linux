@@ -1,5 +1,5 @@
-/x86/include/asm/highmem.h \
-  arch/x86/include/asm/tlbflush.h \
-  arch/x86/include/asm/invpcid.h \
-  arch/x86/include/asm/pti.h \
-  include/linux/bio.h 
+nput)->amux == CX25840_AUDIO6)
+		cx23885_flatiron_mux(dev, 2);
+	else {
+		/* Not specifically defined, assume the default. */
+		cx23885_flatiron_mux(dev, 

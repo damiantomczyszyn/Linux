@@ -1,13 +1,22 @@
-d include/config/NO_HZ_FULL) \
-    $(wildcard include/config/POSIX_CPUTIMERS) \
-    $(wildcard include/config/POSIX_CPU_TIMERS_TASK_WORK) \
-    $(wildcard include/config/KEYS) \
-    $(wildcard include/config/SYSVIPC) \
-    $(wildcard include/config/DETECT_HUNG_TASK) \
-    $(wildcard include/config/IO_URING) \
-    $(wildcard include/config/AUDIT) \
-    $(wildcard include/config/AUDITSYSCALL) \
-    $(wildcard include/config/DEBUG_MUTEXES) \
-    $(wildcard include/config/TRACE_IRQFLAGS) \
-    $(wildcard include/config/UBSAN) \
-    $(wildcard include/config/UBSAN_TR
+ of reset */
+		break;
+	case CX23885_BOARD_HAUPPAUGE_HVR1500:
+		/* GPIO-0 cx24227 demodulator */
+		/* GPIO-2 xc3028 tuner */
+
+		/* Put the parts into reset */
+		cx_set(GP0_IO, 0x00050000);
+		cx_clear(GP0_IO, 0x00000005);
+		msleep(5);
+
+		/* Bring the parts out of reset */
+		cx_set(GP0_IO, 0x00050005);
+		break;
+	case CX23885_BOARD_HAUPPAUGE_HVR1500Q:
+		/* GPIO-0 cx24227 demodulator reset */
+		/* GPIO-2 xc5000 tuner reset */
+		cx_set(GP0_IO, 0x00050005); /* Bring the part out of reset */
+		break;
+	case CX23885_BOARD_HAUPPAUGE_HVR1800:
+		/* GPIO-0 656_CLK */
+		/* GPI

@@ -1,10 +1,9 @@
-ude/asm/pgtable_32_types.h \
-  arch/x86/include/asm/pgtable-3level_types.h \
-  include/asm-generic/pgtable-nop4d.h \
-  include/asm-generic/pgtable-nopud.h \
-  arch/x86/include/asm/nospec-branch.h \
-  include/linux/static_key.h \
-  include/linux/jump_label.h \
-    $(wildcard include/config/HAVE_ARCH_JUMP_LABEL_RELATIVE) \
-  arch/x86/include/asm/jump_label.h \
-  
+reg_dma_ctl;
+	u32                        reg_lngth;
+	u32                        reg_hw_sop_ctrl;
+	u32                        reg_gen_ctrl;
+	u32                        reg_bd_pkt_status;
+	u32                        reg_sop_status;
+	u32                        reg_fifo_ovfl_stat;
+	u32                        reg_vld_misc;
+	u32                        reg_ts_clk_en;

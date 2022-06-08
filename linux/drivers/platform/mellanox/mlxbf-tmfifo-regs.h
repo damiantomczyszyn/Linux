@@ -1,59 +1,92 @@
-e/linux/rwlock.h \
-    $(wildcard include/config/PREEMPT) \
-  include/linux/spinlock_api_smp.h \
-    $(wildcard include/config/INLINE_SPIN_LOCK) \
-    $(wildcard include/config/INLINE_SPIN_LOCK_BH) \
-    $(wildcard include/config/INLINE_SPIN_LOCK_IRQ) \
-    $(wildcard include/config/INLINE_SPIN_LOCK_IRQSAVE) \
-    $(wildcard include/config/INLINE_SPIN_TRYLOCK) \
-    $(wildcard include/config/INLINE_SPIN_TRYLOCK_BH) \
-    $(wildcard include/config/UNINLINE_SPIN_UNLOCK) \
-    $(wildcard include/config/INLINE_SPIN_UNLOCK_BH) \
-    $(wildcard include/config/INLINE_SPIN_UNLOCK_IRQ) \
-    $(wildcard include/config/INLINE_SPIN_UNLOCK_IRQRESTORE) \
-    $(wildcard include/config/GENERIC_LOCKBREAK) \
-  include/linux/rwlock_api_smp.h \
-    $(wildcard include/config/INLINE_READ_LOCK) \
-    $(wildcard include/config/INLINE_WRITE_LOCK) \
-    $(wildcard include/config/INLINE_READ_LOCK_BH) \
-    $(wildcard include/config/INLINE_WRITE_LOCK_BH) \
-    $(wildcard include/config/INLINE_READ_LOCK_IRQ) \
-    $(wildcard include/config/INLINE_WRITE_LOCK_IRQ) \
-    $(wildcard include/config/INLINE_READ_LOCK_IRQSAVE) \
-    $(wildcard include/config/INLINE_WRITE_LOCK_IRQSAVE) \
-    $(wildcard include/config/INLINE_READ_TRYLOCK) \
-    $(wildcard include/config/INLINE_WRITE_TRYLOCK) \
-    $(wildcard include/config/INLINE_READ_UNLOCK) \
-    $(wildcard include/config/INLINE_WRITE_UNLOCK) \
-    $(wildcard include/config/INLINE_READ_UNLOCK_BH) \
-    $(wildcard include/config/INLINE_WRITE_UNLOCK_BH) \
-    $(wildcard include/config/INLINE_READ_UNLOCK_IRQ) \
-    $(wildcard include/config/INLINE_WRITE_UNLOCK_IRQ) \
-    $(wildcard include/config/INLINE_READ_UNLOCK_IRQRESTORE) \
-    $(wildcard include/config/INLINE_WRITE_UNLOCK_IRQRESTORE) \
-  include/linux/refcount.h \
-  include/linux/rbtree.h \
-  include/linux/rbtree_types.h \
-  include/linux/rcupdate.h \
-    $(wildcard include/config/PREEMPT_RCU) \
-    $(wildcard include/config/TINY_RCU) \
-    $(wildcard include/config/RCU_STRICT_GRACE_PERIOD) \
-    $(wildcard include/config/TASKS_RCU_GENERIC) \
-    $(wildcard include/config/RCU_STALL_COMMON) \
-    $(wildcard include/config/NO_HZ_FULL) \
-    $(wildcard include/config/RCU_NOCB_CPU) \
-    $(wildcard include/config/TASKS_RCU) \
-    $(wildcard include/config/TASKS_TRACE_RCU) \
-    $(wildcard include/config/TASKS_RUDE_RCU) \
-    $(wildcard include/config/TREE_RCU) \
-    $(wildcard include/config/DEBUG_OBJECTS_RCU_HEAD) \
-    $(wildcard include/config/PROVE_RCU) \
-    $(wildcard include/config/ARCH_WEAK_RELEASE_ACQUIRE) \
-  include/linux/rcutree.h \
-  include/linux/rwsem.h \
-    $(wildcard include/config/RWSEM_SPIN_ON_OWNER) \
-    $(wildcard include/config/DEBUG_RWSEMS) \
-  include/linux/osq_lock.h \
-  include/linux/completion.h \
-  include/linux/swait.h \
-  inclu
+ze, &risc->dma,
+				       GFP_KERNEL);
+	if (risc->cpu == NULL)
+		return -ENOMEM;
+
+	/* write risc instructions */
+	rp = risc->cpu;
+	if (UNSET != top_offset)
+		rp = cx23885_risc_field(rp, sglist, top_offset, 0,
+					bpl, padding, lines, 0, true);
+	if (UNSET != bottom_offset)
+		rp = cx23885_risc_field(rp, sglist, bottom_offset, 0x200,
+					bpl, padding, lines, 0, UNSET == top_offset);
+
+	/* save pointer to jmp instruction address */
+	risc->jmp = rp;
+	BUG_ON((risc->jmp - risc->cpu + 2) * sizeof(*risc->cpu) > risc->size);
+	return 0;
+}
+
+int cx23885_risc_databuffer(struct pci_dev *pci,
+				   struct cx23885_riscmem *risc,
+				   struct scatterlist *sglist,
+				   unsigned int bpl,
+				   unsigned int lines, unsigned int lpi)
+{
+	u32 instructions;
+	__le32 *rp;
+
+	/* estimate risc mem: worst case is one write per page border +
+	   one write per scan line + syncs + jump (all 2 dwords).  Here
+	   there is no padding and no sync.  First DMA region may be smaller
+	   than PAGE_SIZE */
+	/* Jump and write need an extra dword */
+	instructions  = 1 + (bpl * lines) / PAGE_SIZE + lines;
+	instructions += 4;
+
+	risc->size = instructions * 12;
+	risc->cpu = dma_alloc_coherent(&pci->dev, risc->size, &risc->dma,
+				       GFP_KERNEL);
+	if (risc->cpu == NULL)
+		return -ENOMEM;
+
+	/* write risc instructions */
+	rp = risc->cpu;
+	rp = cx23885_risc_field(rp, sglist, 0, NO_SYNC_LINE,
+				bpl, 0, lines, lpi, lpi == 0);
+
+	/* save pointer to jmp instruction address */
+	risc->jmp = rp;
+	BUG_ON((risc->jmp - risc->cpu + 2) * sizeof(*risc->cpu) > risc->size);
+	return 0;
+}
+
+int cx23885_risc_vbibuffer(struct pci_dev *pci, struct cx23885_riscmem *risc,
+			struct scatterlist *sglist, unsigned int top_offset,
+			unsigned int bottom_offset, unsigned int bpl,
+			unsigned int padding, unsigned int lines)
+{
+	u32 instructions, fields;
+	__le32 *rp;
+
+	fields = 0;
+	if (UNSET != top_offset)
+		fields++;
+	if (UNSET != bottom_offset)
+		fields++;
+
+	/* estimate risc mem: worst case is one write per page border +
+	   one write per scan line + syncs + jump (all 2 dwords).  Padding
+	   can cause next bpl to start close to a page border.  First DMA
+	   region may be smaller than PAGE_SIZE */
+	/* write and jump need and extra dword */
+	instructions  = fields * (1 + ((bpl + padding) * lines)
+		/ PAGE_SIZE + lines);
+	instructions += 5;
+	risc->size = instructions * 12;
+	risc->cpu = dma_alloc_coherent(&pci->dev, risc->size, &risc->dma,
+				       GFP_KERNEL);
+	if (risc->cpu == NULL)
+		return -ENOMEM;
+	/* write risc instructions */
+	rp = risc->cpu;
+
+	/* Sync to line 6, so US CC line 21 will appear in line '12'
+	 * in the userland vbi payload */
+	if (UNSET != top_offset)
+		rp = cx23885_risc_field(rp, sglist, top_offset, 0,
+					bpl, padding, lines, 0, true);
+
+	if (UNSET != bottom_offset)
+		r

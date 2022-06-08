@@ -1,22 +1,25 @@
-config/ACPI_HOTPLUG_IOAPIC) \
-    $(wildcard include/config/PCI) \
-    $(wildcard include/config/ACPI_WMI) \
-    $(wildcard include/config/ACPI_NUMA) \
-    $(wildcard include/config/HIBERNATION) \
-    $(wildcard include/config/ACPI_HOTPLUG_MEMORY) \
-    $(wildcard include/config/ACPI_CONTAINER) \
-    $(wildcard include/config/ACPI_GTDT) \
-    $(wildcard include/config/PM) \
-    $(wildcard include/config/GPIOLIB) \
-    $(wildcard include/config/ACPI_TABLE_UPGRADE) \
-    $(wildcard include/config/ACPI_WATCHDOG) \
-    $(wildcard include/config/ACPI_SPCR_TABLE) \
-    $(wildcard include/config/ACPI_GENERIC_GSI) \
-    $(wildcard include/config/ACPI_LPIT) \
-    $(wildcard include/config/ACPI_PPTT) \
-    $(wildcard include/config/ACPI_PCC) \
-  include/linux/ioport.h \
-  include/linux/irqdomain.h \
-    $(wildcard include/config/IRQ_DOMAIN_HIERARCHY) \
-    $(wildcard include/config/GENERIC_IRQ_DEBUGFS) \
-    $(wildcard include/
+reg_dma_ctl;
+	u32                        reg_lngth;
+	u32                        reg_hw_sop_ctrl;
+	u32                        reg_gen_ctrl;
+	u32                        reg_bd_pkt_status;
+	u32                        reg_sop_status;
+	u32                        reg_fifo_ovfl_stat;
+	u32                        reg_vld_misc;
+	u32                        reg_ts_clk_en;
+	u32                        reg_ts_int_msk;
+	u32                        reg_ts_int_stat;
+	u32                        reg_src_sel;
+
+	/* Default register vals */
+	int                        pci_irqmask;
+	u32                        dma_ctl_val;
+	u32                        ts_int_msk_val;
+	u32                        gen_ctrl_val;
+	u32                        ts_clk_en_val;
+	u32                        src_sel_val;
+	u32                        vld_misc_val;
+	u32                        hw_sop_ctrl_val;
+
+	/* Allow a single tsport to have multiple frontends */
+	u32        

@@ -1,1 +1,2 @@
-cmd_drivers/media/i2c/tvp7002.o := gcc -Wp,-M
+# SPDX-License-Identifier: GPL-2.0-only
+confi

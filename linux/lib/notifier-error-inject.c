@@ -1,64 +1,97 @@
--3level_types.h \
-  include/asm-generic/pgtable-nop4d.h \
-  include/asm-generic/pgtable-nopud.h \
-  arch/x86/include/asm/nospec-branch.h \
-  include/linux/static_key.h \
-  include/linux/jump_label.h \
-    $(wildcard include/config/HAVE_ARCH_JUMP_LABEL_RELATIVE) \
-  arch/x86/include/asm/jump_label.h \
-  include/linux/objtool.h \
-    $(wildcard include/config/FRAME_POINTER) \
-  arch/x86/include/asm/msr-index.h \
-  arch/x86/include/asm/unwind_hints.h \
-  arch/x86/include/asm/orc_types.h \
-  arch/x86/include/asm/GEN-for-each-reg.h \
-  arch/x86/include/asm/spinlock_types.h \
-  include/asm-generic/qspinlock_types.h \
-    $(wildcard include/config/NR_CPUS) \
-  include/asm-generic/qrwlock_types.h \
-  arch/x86/include/asm/proto.h \
-  arch/x86/include/uapi/asm/ldt.h \
-  arch/x86/include/uapi/asm/sigcontext.h \
-  arch/x86/include/asm/current.h \
-  arch/x86/include/asm/percpu.h \
-    $(wildcard include/config/X86_64_SMP) \
-  include/linux/kernel.h \
-    $(wildcard include/config/PREEMPT_VOLUNTARY_BUILD) \
-    $(wildcard include/config/PREEMPT_DYNAMIC) \
-    $(wildcard include/config/HAVE_PREEMPT_DYNAMIC_CALL) \
-    $(wildcard include/config/HAVE_PREEMPT_DYNAMIC_KEY) \
-    $(wildcard include/config/PREEMPT_) \
-    $(wildcard include/config/DEBUG_ATOMIC_SLEEP) \
-    $(wildcard include/config/MMU) \
-    $(wildcard include/config/PROVE_LOCKING) \
-  include/linux/stdarg.h \
-  include/linux/align.h \
-  include/linux/limits.h \
-  include/uapi/linux/limits.h \
-  include/vdso/limits.h \
-  include/linux/kstrtox.h \
-  include/linux/minmax.h \
-  include/linux/panic.h \
-    $(wildcard include/config/PANIC_TIMEOUT) \
-  include/linux/printk.h \
-    $(wildcard include/config/MESSAGE_LOGLEVEL_DEFAULT) \
-    $(wildcard include/config/CONSOLE_LOGLEVEL_DEFAULT) \
-    $(wildcard include/config/CONSOLE_LOGLEVEL_QUIET) \
-    $(wildcard include/config/EARLY_PRINTK) \
-    $(wildcard include/config/PRINTK) \
-    $(wildcard include/config/DYNAMIC_DEBUG) \
-    $(wildcard include/config/DYNAMIC_DEBUG_CORE) \
-  include/linux/kern_levels.h \
-  include/linux/ratelimit_types.h \
-  include/linux/spinlock_types_raw.h \
-    $(wildcard include/config/DEBUG_SPINLOCK) \
-    $(wildcard include/config/DEBUG_LOCK_ALLOC) \
-  include/linux/lockdep_types.h \
-    $(wildcard include/config/PROVE_RAW_LOCK_NESTING) \
-    $(wildcard include/config/LOCKDEP) \
-    $(wildcard include/config/LOCK_STAT) \
-  include/linux/once_lite.h \
-  include/linux/static_call_types.h \
-    $(wildcard include/config/HAVE_STATIC_CALL) \
-  include/linux/instruction_pointer.h \
-  include/asm-generic/perc
+3885_BOARD_DVBSKY_T980C:
+	case CX23885_BOARD_DVBSKY_S950C:
+	case CX23885_BOARD_TT_CT2_4500_CI:
+	case CX23885_BOARD_DVBSKY_S950:
+	case CX23885_BOARD_DVBSKY_S952:
+	case CX23885_BOARD_DVBSKY_T982:
+		cx23885_irq_remove(dev, PCI_MSK_AV_CORE);
+		/* sd_ir is a duplicate pointer to the AV Core, just clear it */
+		dev->sd_ir = NULL;
+		break;
+	}
+}
+
+static int netup_jtag_io(void *device, int tms, int tdi, int read_tdo)
+{
+	int data;
+	int tdo = 0;
+	struct cx23885_dev *dev = (struct cx23885_dev *)device;
+	/*TMS*/
+	data = ((cx_read(GP0_IO)) & (~0x00000002));
+	data |= (tms ? 0x00020002 : 0x00020000);
+	cx_write(GP0_IO, data);
+
+	/*TDI*/
+	data = ((cx_read(MC417_RWD)) & (~0x0000a000));
+	data |= (tdi ? 0x00008000 : 0);
+	cx_write(MC417_RWD, data);
+	if (read_tdo)
+		tdo = (data & 0x00004000) ? 1 : 0; /*TDO*/
+
+	cx_write(MC417_RWD, data | 0x00002000);
+	udelay(1);
+	/*TCK*/
+	cx_write(MC417_RWD, data);
+
+	return tdo;
+}
+
+void cx23885_ir_pci_int_enable(struct cx23885_dev *dev)
+{
+	switch (dev->board) {
+	case CX23885_BOARD_HAUPPAUGE_HVR1270:
+	case CX23885_BOARD_HAUPPAUGE_HVR1850:
+	case CX23885_BOARD_HAUPPAUGE_HVR1290:
+		if (dev->sd_ir)
+			cx23885_irq_add_enable(dev, PCI_MSK_IR);
+		break;
+	case CX23885_BOARD_TERRATEC_CINERGY_T_PCIE_DUAL:
+	case CX23885_BOARD_TEVII_S470:
+	case CX23885_BOARD_HAUPPAUGE_HVR1250:
+	case CX23885_BOARD_MYGICA_X8507:
+	case CX23885_BOARD_TBS_6980:
+	case CX23885_BOARD_TBS_6981:
+	case CX23885_BOARD_DVBSKY_T9580:
+	case CX23885_BOARD_DVBSKY_T980C:
+	case CX23885_BOARD_DVBSKY_S950C:
+	case CX23885_BOARD_TT_CT2_4500_CI:
+	case CX23885_BOARD_DVBSKY_S950:
+	case CX23885_BOARD_DVBSKY_S952:
+	case CX23885_BOARD_DVBSKY_T982:
+		if (dev->sd_ir)
+			cx23885_irq_add_enable(dev, PCI_MSK_AV_CORE);
+		break;
+	}
+}
+
+void cx23885_card_setup(struct cx23885_dev *dev)
+{
+	struct cx23885_tsport *ts1 = &dev->ts1;
+	struct cx23885_tsport *ts2 = &dev->ts2;
+
+	static u8 eeprom[256];
+
+	if (dev->i2c_bus[0].i2c_rc == 0) {
+		dev->i2c_bus[0].i2c_client.addr = 0xa0 >> 1;
+		tveeprom_read(&dev->i2c_bus[0].i2c_client,
+			      eeprom, sizeof(eeprom));
+	}
+
+	switch (dev->board) {
+	case CX23885_BOARD_HAUPPAUGE_HVR1250:
+		if (dev->i2c_bus[0].i2c_rc == 0) {
+			if (eeprom[0x80] != 0x84)
+				hauppauge_eeprom(dev, eeprom+0xc0);
+			else
+				hauppauge_eeprom(dev, eeprom+0x80);
+		}
+		break;
+	case CX23885_BOARD_HAUPPAUGE_HVR1500:
+	case CX23885_BOARD_HAUPPAUGE_HVR1500Q:
+	case CX23885_BOARD_HAUPPAUGE_HVR1400:
+		if (dev->i2c_bus[0].i2c_rc == 0)
+			hauppauge_eeprom(dev, eeprom+0x80);
+		break;
+	case CX23885_BOARD_HAUPPAUGE_HVR1800:
+	case CX23885_BOARD_HAUPPAUGE_HVR1800lp:
+	case CX23885_BOARD_HAUP

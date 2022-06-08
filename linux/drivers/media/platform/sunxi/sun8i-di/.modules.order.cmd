@@ -1,5 +1,5 @@
-ETS) \
-    $(wildcard include/config/X86_CPU_RESCTRL) \
-    $(wildcard include/config/FUTEX) \
-    $(wildcard include/config/PERF_EVENTS) \
- 
+include/config/ALPHA) \
+    $(wildcard include/config/IA64) \
+    $(wildcard include/config/PPC64) \
+  include/linux/rbtree_latch.h \
+  inclu

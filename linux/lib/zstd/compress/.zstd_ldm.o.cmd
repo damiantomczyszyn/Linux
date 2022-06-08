@@ -1,239 +1,240 @@
-_LOCK_DEPTH))
-		return 0;
+// SPDX-License-Identifier: GPL-2.0-or-later
+/*
+ *  Driver for the Conexant CX23885 PCIe bridge
+ *
+ *  Copyright (c) 2006 Steven Toth <stoth@linuxtv.org>
+ */
 
-	class_idx = class - lock_classes;
+#include "cx23885.h"
 
-	if (depth) { /* we're holding locks */
-		hlock = curr->held_locks + depth - 1;
-		if (hlock->class_idx == class_idx && nest_lock) {
-			if (!references)
-				references++;
+#include <linux/init.h>
+#include <linux/list.h>
+#include <linux/module.h>
+#include <linux/moduleparam.h>
+#include <linux/kmod.h>
+#include <linux/kernel.h>
+#include <linux/pci.h>
+#include <linux/slab.h>
+#include <linux/interrupt.h>
+#include <linux/delay.h>
+#include <asm/div64.h>
+#include <linux/firmware.h>
 
-			if (!hlock->references)
-				hlock->references++;
+#include "cimax2.h"
+#include "altera-ci.h"
+#include "cx23888-ir.h"
+#include "cx23885-ir.h"
+#include "cx23885-av.h"
+#include "cx23885-input.h"
 
-			hlock->references += references;
+MODULE_DESCRIPTION("Driver for cx23885 based TV cards");
+MODULE_AUTHOR("Steven Toth <stoth@linuxtv.org>");
+MODULE_LICENSE("GPL");
+MODULE_VERSION(CX23885_VERSION);
 
-			/* Overflow */
-			if (DEBUG_LOCKS_WARN_ON(hlock->references < references))
-				return 0;
+/*
+ * Some platforms have been found to require periodic resetting of the DMA
+ * engine. Ryzen and XEON platforms are known to be affected. The symptom
+ * encountered is "mpeg risc op code error". Only Ryzen platforms employ
+ * this workaround if the option equals 1. The workaround can be explicitly
+ * disabled for all platforms by setting to 0, the workaround can be forced
+ * on for any platform by setting to 2.
+ */
+static unsigned int dma_reset_workaround = 1;
+module_param(dma_reset_workaround, int, 0644);
+MODULE_PARM_DESC(dma_reset_workaround, "periodic RiSC dma engine reset; 0-force disable, 1-driver detect (default), 2-force enable");
 
-			return 2;
-		}
-	}
+static unsigned int debug;
+module_param(debug, int, 0644);
+MODULE_PARM_DESC(debug, "enable debug messages");
 
-	hlock = curr->held_locks + depth;
-	/*
-	 * Plain impossible, we just registered it and checked it weren't no
-	 * NULL like.. I bet this mushroom I ate was good!
-	 */
-	if (DEBUG_LOCKS_WARN_ON(!class))
-		return 0;
-	hlock->class_idx = class_idx;
-	hlock->acquire_ip = ip;
-	hlock->instance = lock;
-	hlock->nest_lock = nest_lock;
-	hlock->irq_context = task_irq_context(curr);
-	hlock->trylock = trylock;
-	hlock->read = read;
-	hlock->check = check;
-	hlock->hardirqs_off = !!hardirqs_off;
-	hlock->references = references;
-#ifdef CONFIG_LOCK_STAT
-	hlock->waittime_stamp = 0;
-	hlock->holdtime_stamp = lockstat_clock();
-#endif
-	hlock->pin_count = pin_count;
+static unsigned int card[]  = {[0 ... (CX23885_MAXBOARDS - 1)] = UNSET };
+module_param_array(card,  int, NULL, 0444);
+MODULE_PARM_DESC(card, "card type");
 
-	if (check_wait_context(curr, hlock))
-		return 0;
+#define dprintk(level, fmt, arg...)\
+	do { if (debug >= level)\
+		printk(KERN_DEBUG pr_fmt("%s: " fmt), \
+		       __func__, ##arg); \
+	} while (0)
 
-	/* Initialize the lock usage bit */
-	if (!mark_usage(curr, hlock, check))
-		return 0;
+static unsigned int cx23885_devcount;
 
-	/*
-	 * Calculate the chain hash: it's the combined hash of all the
-	 * lock keys along the dependency chain. We save the hash value
-	 * at every step so that we can get the current hash easily
-	 * after unlock. The chain hash is then used to cache dependency
-	 * results.
-	 *
-	 * The 'key ID' is what is the most compact key value to drive
-	 * the hash, not class->key.
-	 */
-	/*
-	 * Whoops, we did it again.. class_idx is invalid.
-	 */
-	if (DEBUG_LOCKS_WARN_ON(!test_bit(class_idx, lock_classes_in_use)))
-		return 0;
+#define NO_SYNC_LINE (-1U)
 
-	chain_key = curr->curr_chain_key;
-	if (!depth) {
-		/*
-		 * How can we have a chain hash when we ain't got no keys?!
-		 */
-		if (DEBUG_LOCKS_WARN_ON(chain_key != INITIAL_CHAIN_KEY))
-			return 0;
-		chain_head = 1;
-	}
+/* FIXME, these allocations will change when
+ * analog arrives. The be reviewed.
+ * CX23887 Assumptions
+ * 1 line = 16 bytes of CDT
+ * cmds size = 80
+ * cdt size = 16 * linesize
+ * iqsize = 64
+ * maxlines = 6
+ *
+ * Address Space:
+ * 0x00000000 0x00008fff FIFO clusters
+ * 0x00010000 0x000104af Channel Management Data Structures
+ * 0x000104b0 0x000104ff Free
+ * 0x00010500 0x000108bf 15 channels * iqsize
+ * 0x000108c0 0x000108ff Free
+ * 0x00010900 0x00010e9f IQ's + Cluster Descriptor Tables
+ *                       15 channels * (iqsize + (maxlines * linesize))
+ * 0x00010ea0 0x00010xxx Free
+ */
 
-	hlock->prev_chain_key = chain_key;
-	if (separate_irq_context(curr, hlock)) {
-		chain_key = INITIAL_CHAIN_KEY;
-		chain_head = 1;
-	}
-	chain_key = iterate_chain_key(chain_key, hlock_id(hlock));
+static struct sram_channel cx23885_sram_channels[] = {
+	[SRAM_CH01] = {
+		.name		= "VID A",
+		.cmds_start	= 0x10000,
+		.ctrl_start	= 0x10380,
+		.cdt		= 0x104c0,
+		.fifo_start	= 0x40,
+		.fifo_size	= 0x2800,
+		.ptr1_reg	= DMA1_PTR1,
+		.ptr2_reg	= DMA1_PTR2,
+		.cnt1_reg	= DMA1_CNT1,
+		.cnt2_reg	= DMA1_CNT2,
+	},
+	[SRAM_CH02] = {
+		.name		= "ch2",
+		.cmds_start	= 0x0,
+		.ctrl_start	= 0x0,
+		.cdt		= 0x0,
+		.fifo_start	= 0x0,
+		.fifo_size	= 0x0,
+		.ptr1_reg	= DMA2_PTR1,
+		.ptr2_reg	= DMA2_PTR2,
+		.cnt1_reg	= DMA2_CNT1,
+		.cnt2_reg	= DMA2_CNT2,
+	},
+	[SRAM_CH03] = {
+		.name		= "TS1 B",
+		.cmds_start	= 0x100A0,
+		.ctrl_start	= 0x10400,
+		.cdt		= 0x10580,
+		.fifo_start	= 0x5000,
+		.fifo_size	= 0x1000,
+		.ptr1_reg	= DMA3_PTR1,
+		.ptr2_reg	= DMA3_PTR2,
+		.cnt1_reg	= DMA3_CNT1,
+		.cnt2_reg	= DMA3_CNT2,
+	},
+	[SRAM_CH04] = {
+		.name		= "ch4",
+		.cmds_start	= 0x0,
+		.ctrl_start	= 0x0,
+		.cdt		= 0x0,
+		.fifo_start	= 0x0,
+		.fifo_size	= 0x0,
+		.ptr1_reg	= DMA4_PTR1,
+		.ptr2_reg	= DMA4_PTR2,
+		.cnt1_reg	= DMA4_CNT1,
+		.cnt2_reg	= DMA4_CNT2,
+	},
+	[SRAM_CH05] = {
+		.name		= "ch5",
+		.cmds_start	= 0x0,
+		.ctrl_start	= 0x0,
+		.cdt		= 0x0,
+		.fifo_start	= 0x0,
+		.fifo_size	= 0x0,
+		.ptr1_reg	= DMA5_PTR1,
+		.ptr2_reg	= DMA5_PTR2,
+		.cnt1_reg	= DMA5_CNT1,
+		.cnt2_reg	= DMA5_CNT2,
+	},
+	[SRAM_CH06] = {
+		.name		= "TS2 C",
+		.cmds_start	= 0x10140,
+		.ctrl_start	= 0x10440,
+		.cdt		= 0x105e0,
+		.fifo_start	= 0x6000,
+		.fifo_size	= 0x1000,
+		.ptr1_reg	= DMA5_PTR1,
+		.ptr2_reg	= DMA5_PTR2,
+		.cnt1_reg	= DMA5_CNT1,
+		.cnt2_reg	= DMA5_CNT2,
+	},
+	[SRAM_CH07] = {
+		.name		= "TV Audio",
+		.cmds_start	= 0x10190,
+		.ctrl_start	= 0x10480,
+		.cdt		= 0x10a00,
+		.fifo_start	= 0x7000,
+		.fifo_size	= 0x1000,
+		.ptr1_reg	= DMA6_PTR1,
+		.ptr2_reg	= DMA6_PTR2,
+		.cnt1_reg	= DMA6_CNT1,
+		.cnt2_reg	= DMA6_CNT2,
+	},
+	[SRAM_CH08] = {
+		.name		= "ch8",
+		.cmds_start	= 0x0,
+		.ctrl_start	= 0x0,
+		.cdt		= 0x0,
+		.fifo_start	= 0x0,
+		.fifo_size	= 0x0,
+		.ptr1_reg	= DMA7_PTR1,
+		.ptr2_reg	= DMA7_PTR2,
+		.cnt1_reg	= DMA7_CNT1,
+		.cnt2_reg	= DMA7_CNT2,
+	},
+	[SRAM_CH09] = {
+		.name		= "ch9",
+		.cmds_start	= 0x0,
+		.ctrl_start	= 0x0,
+		.cdt		= 0x0,
+		.fifo_start	= 0x0,
+		.fifo_size	= 0x0,
+		.ptr1_reg	= DMA8_PTR1,
+		.ptr2_reg	= DMA8_PTR2,
+		.cnt1_reg	= DMA8_CNT1,
+		.cnt2_reg	= DMA8_CNT2,
+	},
+};
 
-	if (nest_lock && !__lock_is_held(nest_lock, -1)) {
-		print_lock_nested_lock_not_held(curr, hlock, ip);
-		return 0;
-	}
-
-	if (!debug_locks_silent) {
-		WARN_ON_ONCE(depth && !hlock_class(hlock - 1)->key);
-		WARN_ON_ONCE(!hlock_class(hlock)->key);
-	}
-
-	if (!validate_chain(curr, hlock, chain_head, chain_key))
-		return 0;
-
-	curr->curr_chain_key = chain_key;
-	curr->lockdep_depth++;
-	check_chain_key(curr);
-#ifdef CONFIG_DEBUG_LOCKDEP
-	if (unlikely(!debug_locks))
-		return 0;
-#endif
-	if (unlikely(curr->lockdep_depth >= MAX_LOCK_DEPTH)) {
-		debug_locks_off();
-		print_lockdep_off("BUG: MAX_LOCK_DEPTH too low!");
-		printk(KERN_DEBUG "depth: %i  max: %lu!\n",
-		       curr->lockdep_depth, MAX_LOCK_DEPTH);
-
-		lockdep_print_held_locks(current);
-		debug_show_all_locks();
-		dump_stack();
-
-		return 0;
-	}
-
-	if (unlikely(curr->lockdep_depth > max_lockdep_depth))
-		max_lockdep_depth = curr->lockdep_depth;
-
-	return 1;
-}
-
-static void print_unlock_imbalance_bug(struct task_struct *curr,
-				       struct lockdep_map *lock,
-				       unsigned long ip)
-{
-	if (!debug_locks_off())
-		return;
-	if (debug_locks_silent)
-		return;
-
-	pr_warn("\n");
-	pr_warn("=====================================\n");
-	pr_warn("WARNING: bad unlock balance detected!\n");
-	print_kernel_ident();
-	pr_warn("-------------------------------------\n");
-	pr_warn("%s/%d is trying to release lock (",
-		curr->comm, task_pid_nr(curr));
-	print_lockdep_cache(lock);
-	pr_cont(") at:\n");
-	print_ip_sym(KERN_WARNING, ip);
-	pr_warn("but there are no more locks to release!\n");
-	pr_warn("\nother info that might help us debug this:\n");
-	lockdep_print_held_locks(curr);
-
-	pr_warn("\nstack backtrace:\n");
-	dump_stack();
-}
-
-static noinstr int match_held_lock(const struct held_lock *hlock,
-				   const struct lockdep_map *lock)
-{
-	if (hlock->instance == lock)
-		return 1;
-
-	if (hlock->references) {
-		const struct lock_class *class = lock->class_cache[0];
-
-		if (!class)
-			class = look_up_lock_class(lock, 0);
-
-		/*
-		 * If look_up_lock_class() failed to find a class, we're trying
-		 * to test if we hold a lock that has never yet been acquired.
-		 * Clearly if the lock hasn't been acquired _ever_, we're not
-		 * holding it either, so report failure.
-		 */
-		if (!class)
-			return 0;
-
-		/*
-		 * References, but not a lock we're actually ref-counting?
-		 * State got messed up, follow the sites that change ->references
-		 * and try to make sense of it.
-		 */
-		if (DEBUG_LOCKS_WARN_ON(!hlock->nest_lock))
-			return 0;
-
-		if (hlock->class_idx == class - lock_classes)
-			return 1;
-	}
-
-	return 0;
-}
-
-/* @depth must not be zero */
-static struct held_lock *find_held_lock(struct task_struct *curr,
-					struct lockdep_map *lock,
-					unsigned int depth, int *idx)
-{
-	struct held_lock *ret, *hlock, *prev_hlock;
-	int i;
-
-	i = depth - 1;
-	hlock = curr->held_locks + i;
-	ret = hlock;
-	if (match_held_lock(hlock, lock))
-		goto out;
-
-	ret = NULL;
-	for (i--, prev_hlock = hlock--;
-	     i >= 0;
-	     i--, prev_hlock = hlock--) {
-		/*
-		 * We must not cross into another context:
-		 */
-		if (prev_hlock->irq_context != hlock->irq_context) {
-			ret = NULL;
-			break;
-		}
-		if (match_held_lock(hlock, lock)) {
-			ret = hlock;
-			break;
-		}
-	}
-
-out:
-	*idx = i;
-	return ret;
-}
-
-static int reacquire_held_locks(struct task_struct *curr, unsigned int depth,
-				int idx, unsigned int *merged)
-{
-	struct held_lock *hlock;
-	int first_idx = idx;
-
-	if (DEBUG_LOCKS_WARN_ON(!irqs_disabled()))
-		return 0;
-
-	for (hlock = curr->held_locks + idx; idx < depth; idx++, hlock++) {
-		switch (__lock_acquire(hlock->instance,
-				    hlock_class(hlock)->subclass,
-				    hlock->trylock,
-	
+static struct sram_channel cx23887_sram_channels[] = {
+	[SRAM_CH01] = {
+		.name		= "VID A",
+		.cmds_start	= 0x10000,
+		.ctrl_start	= 0x105b0,
+		.cdt		= 0x107b0,
+		.fifo_start	= 0x40,
+		.fifo_size	= 0x2800,
+		.ptr1_reg	= DMA1_PTR1,
+		.ptr2_reg	= DMA1_PTR2,
+		.cnt1_reg	= DMA1_CNT1,
+		.cnt2_reg	= DMA1_CNT2,
+	},
+	[SRAM_CH02] = {
+		.name		= "VID A (VBI)",
+		.cmds_start	= 0x10050,
+		.ctrl_start	= 0x105F0,
+		.cdt		= 0x10810,
+		.fifo_start	= 0x3000,
+		.fifo_size	= 0x1000,
+		.ptr1_reg	= DMA2_PTR1,
+		.ptr2_reg	= DMA2_PTR2,
+		.cnt1_reg	= DMA2_CNT1,
+		.cnt2_reg	= DMA2_CNT2,
+	},
+	[SRAM_CH03] = {
+		.name		= "TS1 B",
+		.cmds_start	= 0x100A0,
+		.ctrl_start	= 0x10630,
+		.cdt		= 0x10870,
+		.fifo_start	= 0x5000,
+		.fifo_size	= 0x1000,
+		.ptr1_reg	= DMA3_PTR1,
+		.ptr2_reg	= DMA3_PTR2,
+		.cnt1_reg	= DMA3_CNT1,
+		.cnt2_reg	= DMA3_CNT2,
+	},
+	[SRAM_CH04] = {
+		.name		= "ch4",
+		.cmds_start	= 0x0,
+		.ctrl_start	= 0x0,
+		.cdt		= 0x0,
+		.fifo_start	= 0x0,
+		.fifo_size	= 0x0,
+		.ptr1

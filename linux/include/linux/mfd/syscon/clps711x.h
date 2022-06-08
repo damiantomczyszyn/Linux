@@ -1,60 +1,128 @@
-.h \
-  include/linux/percpu-refcount.h \
-  include/linux/kasan.h \
-    $(wildcard include/config/KASAN_STACK) \
-    $(wildcard include/config/KASAN_VMALLOC) \
-    $(wildcard include/config/KASAN_INLINE) \
-  include/linux/kasan-enabled.h \
-  include/linux/device.h \
-    $(wildcard include/config/GENERIC_MSI_IRQ_DOMAIN) \
-    $(wildcard include/config/GENERIC_MSI_IRQ) \
-    $(wildcard include/config/ENERGY_MODEL) \
-    $(wildcard include/config/PINCTRL) \
-    $(wildcard include/config/DMA_OPS) \
-    $(wildcard include/config/DMA_DECLARE_COHERENT) \
-    $(wildcard include/config/DMA_CMA) \
-    $(wildcard include/config/SWIOTLB) \
-    $(wildcard include/config/ARCH_HAS_SYNC_DMA_FOR_DEVICE) \
-    $(wildcard include/config/ARCH_HAS_SYNC_DMA_FOR_CPU) \
-    $(wildcard include/config/ARCH_HAS_SYNC_DMA_FOR_CPU_ALL) \
-    $(wildcard include/config/DMA_OPS_BYPASS) \
-    $(wildcard include/config/DEVTMPFS) \
-    $(wildcard include/config/SYSFS_DEPRECATED) \
-  include/linux/dev_printk.h \
-  include/linux/ratelimit.h \
-  include/linux/sched.h \
-    $(wildcard include/config/VIRT_CPU_ACCOUNTING_NATIVE) \
-    $(wildcard include/config/SCHED_INFO) \
-    $(wildcard include/config/SCHEDSTATS) \
-    $(wildcard include/config/SCHED_CORE) \
-    $(wildcard include/config/FAIR_GROUP_SCHED) \
-    $(wildcard include/config/RT_GROUP_SCHED) \
-    $(wildcard include/config/RT_MUTEXES) \
-    $(wildcard include/config/UCLAMP_TASK) \
-    $(wildcard include/config/UCLAMP_BUCKETS_COUNT) \
-    $(wildcard include/config/CGROUP_SCHED) \
-    $(wildcard include/config/BLK_DEV_IO_TRACE) \
-    $(wildcard include/config/PSI) \
-    $(wildcard include/config/COMPAT_BRK) \
-    $(wildcard include/config/CGROUPS) \
-    $(wildcard include/config/BLK_CGROUP) \
-    $(wildcard include/config/PAGE_OWNER) \
-    $(wildcard include/config/EVENTFD) \
-    $(wildcard include/config/ARCH_HAS_SCALED_CPUTIME) \
-    $(wildcard include/config/VIRT_CPU_ACCOUNTING_GEN) \
-    $(wildcard include/config/POSIX_CPUTIMERS) \
-    $(wildcard include/config/POSIX_CPU_TIMERS_TASK_WORK) \
-    $(wildcard include/config/KEYS) \
-    $(wildcard include/config/SYSVIPC) \
-    $(wildcard include/config/DETECT_HUNG_TASK) \
-    $(wildcard include/config/IO_URING) \
-    $(wildcard include/config/AUDIT) \
-    $(wildcard include/config/AUDITSYSCALL) \
-    $(wildcard include/config/UBSAN) \
-    $(wildcard include/config/UBSAN_TRAP) \
-    $(wildcard include/config/TASK_XACCT) \
-    $(wildcard include/config/CPUSETS) \
-    $(wildcard include/config/X86_CPU_RESCTRL) \
-    $(wildcard include/config/FUTEX) \
-    $(wildcard include/config/PERF_EVENTS) \
-    $(wildcard include/config/R
+he real set_frontend */
+	if (port->set_frontend)
+		return port->set_frontend(fe);
+
+	return 0;
+}
+
+static void cx23885_set_frontend_hook(struct cx23885_tsport *port,
+				     struct dvb_frontend *fe)
+{
+	port->set_frontend = fe->ops.set_frontend;
+	fe->ops.set_frontend = cx23885_dvb_set_frontend;
+}
+
+static struct lgs8gxx_config magicpro_prohdtve2_lgs8g75_config = {
+	.prod = LGS8GXX_PROD_LGS8G75,
+	.demod_address = 0x19,
+	.serial_ts = 0,
+	.ts_clk_pol = 1,
+	.ts_clk_gated = 1,
+	.if_clk_freq = 30400, /* 30.4 MHz */
+	.if_freq = 6500, /* 6.50 MHz */
+	.if_neg_center = 1,
+	.ext_adc = 0,
+	.adc_signed = 1,
+	.adc_vpp = 2, /* 1.6 Vpp */
+	.if_neg_edge = 1,
+};
+
+static struct xc5000_config magicpro_prohdtve2_xc5000_config = {
+	.i2c_address = 0x61,
+	.if_khz = 6500,
+};
+
+static struct atbm8830_config mygica_x8558pro_atbm8830_cfg1 = {
+	.prod = ATBM8830_PROD_8830,
+	.demod_address = 0x44,
+	.serial_ts = 0,
+	.ts_sampling_edge = 1,
+	.ts_clk_gated = 0,
+	.osc_clk_freq = 30400, /* in kHz */
+	.if_freq = 0, /* zero IF */
+	.zif_swap_iq = 1,
+	.agc_min = 0x2E,
+	.agc_max = 0xFF,
+	.agc_hold_loop = 0,
+};
+
+static struct max2165_config mygic_x8558pro_max2165_cfg1 = {
+	.i2c_address = 0x60,
+	.osc_clk = 20
+};
+
+static struct atbm8830_config mygica_x8558pro_atbm8830_cfg2 = {
+	.prod = ATBM8830_PROD_8830,
+	.demod_address = 0x44,
+	.serial_ts = 1,
+	.ts_sampling_edge = 1,
+	.ts_clk_gated = 0,
+	.osc_clk_freq = 30400, /* in kHz */
+	.if_freq = 0, /* zero IF */
+	.zif_swap_iq = 1,
+	.agc_min = 0x2E,
+	.agc_max = 0xFF,
+	.agc_hold_loop = 0,
+};
+
+static struct max2165_config mygic_x8558pro_max2165_cfg2 = {
+	.i2c_address = 0x60,
+	.osc_clk = 20
+};
+static struct stv0367_config netup_stv0367_config[] = {
+	{
+		.demod_address = 0x1c,
+		.xtal = 27000000,
+		.if_khz = 4500,
+		.if_iq_mode = 0,
+		.ts_mode = 1,
+		.clk_pol = 0,
+	}, {
+		.demod_address = 0x1d,
+		.xtal = 27000000,
+		.if_khz = 4500,
+		.if_iq_mode = 0,
+		.ts_mode = 1,
+		.clk_pol = 0,
+	},
+};
+
+static struct xc5000_config netup_xc5000_config[] = {
+	{
+		.i2c_address = 0x61,
+		.if_khz = 4500,
+	}, {
+		.i2c_address = 0x64,
+		.if_khz = 4500,
+	},
+};
+
+static struct drxk_config terratec_drxk_config[] = {
+	{
+		.adr = 0x29,
+		.no_i2c_bridge = 1,
+	}, {
+		.adr = 0x2a,
+		.no_i2c_bridge = 1,
+	},
+};
+
+static struct mt2063_config terratec_mt2063_config[] = {
+	{
+		.tuner_address = 0x60,
+	}, {
+		.tuner_address = 0x67,
+	},
+};
+
+static const struct tda10071_platform_data hauppauge_tda10071_pdata = {
+	.clk = 40444000, /* 40.444 MHz */
+	.i2c_wr_max = 64,
+	.ts_mode = TDA10071_TS_SERIAL,
+	.pll_multiplier = 20,
+	.tuner_i2c_addr = 0x54,
+};
+
+static const struct m88ds3103_config dvbsky_t9580_m88ds3103_config = {
+	.i2c_addr = 0x68,
+	.clo

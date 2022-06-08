@@ -1,5 +1,5 @@
-\
-    $(wildcard include/config/SHMEM) \
-    $(wildcard include/config/ARCH_HAS_PTE_SPECIAL) \
-    $(wildcard include/config/ARCH_HAS_PTE_DEVMAP) \
-    $(wi
+885_video_template = {
+	.name                 = "cx23885-video",
+	.fops                 = &video_fops,
+	.ioctl_ops	      = &video_ioctl_ops,
+	.tvnorms      

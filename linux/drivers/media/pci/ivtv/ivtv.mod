@@ -1,12 +1,13 @@
-e/linux/rwlock.h \
-    $(wildcard include/config/PREEMPT) \
-  include/linux/spinlock_api_smp.h \
-    $(wildcard include/config/INLINE_SPIN_LOCK) \
-    $(wildcard include/config/INLINE_SPIN_LOCK_BH) \
-    $(wildcard include/config/INLINE_SPIN_LOCK_IRQ) \
-    $(wildcard include/config/INLINE_SPIN_LOCK_IRQSAVE) \
-    $(wildcard include/config/INLINE_SPIN_TRYLOCK) \
-    $(wildcard include/config/INLINE_SPIN_TRYLOCK_BH) \
-    $(wildcard include/config/UNINLINE_SPIN_UNLOCK) \
-    $(wildcard include/config/INLINE_SPIN_UNLOCK_BH) \
-    $(wildcard include/config/INLINE_SPIN_UNLOCK_IRQ
+include/config/MATOM) \
+    $(wildcard include/config/PARAVIRT_XXL) \
+  arch/x86/include/asm/disabled-features.h \
+    $(wildcard include/config/X86_SMAP) \
+    $(wildcard include/config/X86_UMIP) \
+    $(wildcard include/config/X86_INTEL_MEMORY_PROTECTION_KEYS) \
+    $(wildcard include/config/X86_5LEVEL) \
+    $(wildcard include/config/PAGE_TABLE_ISOLATION) \
+    $(wildcard include/config/INTEL_IOMMU_SVM) \
+    $(wildcard include/config/X86_SGX) \
+  include/asm-generic/bitops/const_hweight.h \
+  include/asm-generic/bitops/instrumented-atomic.h \
+  include/linux/instrumented.

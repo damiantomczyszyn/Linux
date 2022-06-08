@@ -1,79 +1,80 @@
-turns true, we skip this
-		 *         lock (and any path this lock is in).
-		 */
-		if (skip && skip(lock, data))
-			continue;
+        = LGDT3306A_TPCLK_RISING_EDGE,
+	.tpvalid_polarity       = LGDT3306A_TP_VALID_HIGH,
+	.xtalMHz                = 25, /* 24 or 25 */
+};
 
-		if (match(lock, data)) {
-			*target_entry = lock;
-			return BFS_RMATCH;
-		}
+static int p8000_set_voltage(struct dvb_frontend *fe,
+			     enum fe_sec_voltage voltage)
+{
+	struct cx23885_tsport *port = fe->dvb->priv;
+	struct cx23885_dev *dev = port->dev;
 
-		/*
-		 * Step 4: if not match, expand the path by adding the
-		 *         forward or backwards dependencies in the search
-		 *
-		 */
-		first = true;
-		head = get_dep_list(lock, offset);
-		list_for_each_entry_rcu(entry, head, entry) {
-			visit_lock_entry(entry, lock);
+	if (voltage == SEC_VOLTAGE_18)
+		cx_write(MC417_RWD, 0x00001e00);
+	else if (voltage == SEC_VOLTAGE_13)
+		cx_write(MC417_RWD, 0x00001a00);
+	else
+		cx_write(MC417_RWD, 0x00001800);
+	return 0;
+}
 
-			/*
-			 * Note we only enqueue the first of the list into the
-			 * queue, because we can always find a sibling
-			 * dependency from one (see __bfs_next()), as a result
-			 * the space of queue is saved.
-			 */
-			if (!first)
-				continue;
+static int dvbsky_t9580_set_voltage(struct dvb_frontend *fe,
+					enum fe_sec_voltage voltage)
+{
+	struct cx23885_tsport *port = fe->dvb->priv;
+	struct cx23885_dev *dev = port->dev;
 
-			first = false;
+	cx23885_gpio_enable(dev, GPIO_0 | GPIO_1, 1);
 
-			if (__cq_enqueue(cq, entry))
-				return BFS_EQUEUEFULL;
-
-			cq_depth = __cq_get_elem_count(cq);
-			if (max_bfs_queue_depth < cq_depth)
-				max_bfs_queue_depth = cq_depth;
-		}
+	switch (voltage) {
+	case SEC_VOLTAGE_13:
+		cx23885_gpio_set(dev, GPIO_1);
+		cx23885_gpio_clear(dev, GPIO_0);
+		break;
+	case SEC_VOLTAGE_18:
+		cx23885_gpio_set(dev, GPIO_1);
+		cx23885_gpio_set(dev, GPIO_0);
+		break;
+	case SEC_VOLTAGE_OFF:
+		cx23885_gpio_clear(dev, GPIO_1);
+		cx23885_gpio_clear(dev, GPIO_0);
+		break;
 	}
 
-	return BFS_RNOMATCH;
+	/* call the frontend set_voltage function */
+	port->fe_set_voltage(fe, voltage);
+
+	return 0;
 }
 
-static inline enum bfs_result
-__bfs_forwards(struct lock_list *src_entry,
-	       void *data,
-	       bool (*match)(struct lock_list *entry, void *data),
-	       bool (*skip)(struct lock_list *entry, void *data),
-	       struct lock_list **target_entry)
+static int dvbsky_s952_portc_set_voltage(struct dvb_frontend *fe,
+					enum fe_sec_voltage voltage)
 {
-	return __bfs(src_entry, data, match, skip, target_entry,
-		     offsetof(struct lock_class, locks_after));
+	struct cx23885_tsport *port = fe->dvb->priv;
+	struct cx23885_dev *dev = port->dev;
 
+	cx23885_gpio_enable(dev, GPIO_12 | GPIO_13, 1);
+
+	switch (voltage) {
+	case SEC_VOLTAGE_13:
+		cx23885_gpio_set(dev, GPIO_13);
+		cx23885_gpio_clear(dev, GPIO_12);
+		break;
+	case SEC_VOLTAGE_18:
+		cx23885_gpio_set(dev, GPIO_13);
+		cx23885_gpio_set(dev, GPIO_12);
+		break;
+	case SEC_VOLTAGE_OFF:
+		cx23885_gpio_clear(dev, GPIO_13);
+		cx23885_gpio_clear(dev, GPIO_12);
+		break;
+	}
+	/* call the frontend set_voltage function */
+	return port->fe_set_voltage(fe, voltage);
 }
 
-static inline enum bfs_result
-__bfs_backwards(struct lock_list *src_entry,
-		void *data,
-		bool (*match)(struct lock_list *entry, void *data),
-	       bool (*skip)(struct lock_list *entry, void *data),
-		struct lock_list **target_entry)
+static int cx23885_sp2_ci_ctrl(void *priv, u8 read, int addr,
+				u8 data, int *mem)
 {
-	return __bfs(src_entry, data, match, skip, target_entry,
-		     offsetof(struct lock_class, locks_before));
-
-}
-
-static void print_lock_trace(const struct lock_trace *trace,
-			     unsigned int spaces)
-{
-	stack_trace_print(trace->entries, trace->nr_entries, spaces);
-}
-
-/*
- * Print a dependency chain entry (this is only done when a deadlock
- * has been detected):
- */
-static noinli
+	/* MC417 */
+	#define SP2_DATA 

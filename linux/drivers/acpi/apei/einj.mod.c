@@ -1,17 +1,18 @@
-x/scatterlist.h \
-    $(wildcard include/config/NEED_SG_DMA_LENGTH) \
-    $(wildcard include/config/DEBUG_SG) \
-    $(wildcard include/config/SGL_ALLOC) \
-    $(wildcard include/config/ARCH_NO_SG_CHAIN) \
-    $(wildcard include/config/SG_POOL) \
-  include/linux/gpio/consumer.h \
-    $(wildcard include/config/OF_GPIO) \
-    $(wildcard include/config/GPIO_SYSFS) \
-  include/uapi/linux/spi/spi.h \
-  include/media/v4l2-fh.h \
-  include/media/v4l2-mediabus.h \
-  include/media/v4l2-ctrls.h \
-  include/media/media-request.h \
-  include/media/hevc-ctrls.h \
-
-drivers/media/i2c/tw9903.o: $(deps_drivers/media/i2
+UGE_HVR1500:
+	case CX23885_BOARD_MPX885:
+	case CX23885_BOARD_MYGICA_X8507:
+	case CX23885_BOARD_TERRATEC_CINERGY_T_PCIE_DUAL:
+	case CX23885_BOARD_AVERMEDIA_HC81R:
+	case CX23885_BOARD_TBS_6980:
+	case CX23885_BOARD_TBS_6981:
+	case CX23885_BOARD_DVBSKY_T9580:
+	case CX23885_BOARD_DVBSKY_T980C:
+	case CX23885_BOARD_DVBSKY_S950C:
+	case CX23885_BOARD_TT_CT2_4500_CI:
+	case CX23885_BOARD_DVBSKY_S950:
+	case CX23885_BOARD_DVBSKY_S952:
+	case CX23885_BOARD_DVBSKY_T982:
+	case CX23885_BOARD_VIEWCAST_260E:
+	case CX23885_BOARD_VIEWCAST_460E:
+	case CX23885_BOARD_AVERMEDIA_CE310B:
+		dev->sd_cx25840 = v4l2_i2c_new_subdev(&

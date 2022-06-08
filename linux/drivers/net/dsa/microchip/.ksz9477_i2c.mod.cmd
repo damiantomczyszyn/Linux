@@ -1,4 +1,1 @@
-ldcard include/config/X86_INTEL_USERCOPY) \
-  arch/x86/include/asm/smap.h \
-  arch/x86/include/asm/extable.h \
-    $(wildcard include/config/BPF_JIT) \
+cmd_drivers/net/dsa/microchip/ksz9477_i2c.mod := { echo  drivers/net/dsa/microchip/ksz9477_i2c.o;  echo; } > drivers/net/dsa/microchip/ksz9477_i2c.mod

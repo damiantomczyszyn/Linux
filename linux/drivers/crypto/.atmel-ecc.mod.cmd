@@ -1,3 +1,4 @@
-onfig/TRACE_BRANCH_PROFILING) \
-    $(wildcard include/config/PROFILE_ALL_BRANCHES) \
-    $(wildcard include/con
+TEK WinFast PxTV1200",
+		.porta          = CX23885_ANALOG_VIDEO,
+		.tuner_type     = TUNER_XC2028,
+		.tuner_addr

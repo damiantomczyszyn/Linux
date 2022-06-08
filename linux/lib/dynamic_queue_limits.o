@@ -1,69 +1,125 @@
-TATE) \
-    $(wildcard include/config/ACPI_HOTPLUG_CPU) \
-    $(wildcard include/config/ACPI_HOTPLUG_IOAPIC) \
-    $(wildcard include/config/PCI) \
-    $(wildcard include/config/ACPI_WMI) \
-    $(wildcard include/config/ACPI_NUMA) \
-    $(wildcard include/config/HIBERNATION) \
-    $(wildcard include/config/ACPI_HOTPLUG_MEMORY) \
-    $(wildcard include/config/ACPI_CONTAINER) \
-    $(wildcard include/config/ACPI_GTDT) \
-    $(wildcard include/config/PM) \
-    $(wildcard include/config/GPIOLIB) \
-    $(wildcard include/config/ACPI_TABLE_UPGRADE) \
-    $(wildcard include/config/ACPI_WATCHDOG) \
-    $(wildcard include/config/ACPI_SPCR_TABLE) \
-    $(wildcard include/config/ACPI_GENERIC_GSI) \
-    $(wildcard include/config/ACPI_LPIT) \
-    $(wildcard include/config/ACPI_PPTT) \
-    $(wildcard include/config/ACPI_PCC) \
-  include/linux/ioport.h \
-  include/linux/irqdomain.h \
-    $(wildcard include/config/IRQ_DOMAIN_HIERARCHY) \
-    $(wildcard include/config/GENERIC_IRQ_DEBUGFS) \
-    $(wildcard include/config/IRQ_DOMAIN) \
-    $(wildcard include/config/IRQ_DOMAIN_NOMAP) \
-  include/linux/irqhandler.h \
-  include/linux/of.h \
-    $(wildcard include/config/OF_DYNAMIC) \
-    $(wildcard include/config/SPARC) \
-    $(wildcard include/config/OF_PROMTREE) \
-    $(wildcard include/config/OF_KOBJ) \
-    $(wildcard include/config/OF_NUMA) \
-    $(wildcard include/config/OF_OVERLAY) \
-  include/linux/mod_devicetable.h \
-  include/linux/uuid.h \
-  include/uapi/linux/uuid.h \
-  include/linux/property.h \
-  include/linux/fwnode.h \
-  include/linux/resource_ext.h \
-  include/linux/device.h \
-    $(wildcard include/config/GENERIC_MSI_IRQ_DOMAIN) \
-    $(wildcard include/config/GENERIC_MSI_IRQ) \
-    $(wildcard include/config/ENERGY_MODEL) \
-    $(wildcard include/config/PINCTRL) \
-    $(wildcard include/config/DMA_OPS) \
-    $(wildcard include/config/DMA_DECLARE_COHERENT) \
-    $(wildcard include/config/DMA_CMA) \
-    $(wildcard include/config/SWIOTLB) \
-    $(wildcard include/config/ARCH_HAS_SYNC_DMA_FOR_DEVICE) \
-    $(wildcard include/config/ARCH_HAS_SYNC_DMA_FOR_CPU) \
-    $(wildcard include/config/ARCH_HAS_SYNC_DMA_FOR_CPU_ALL) \
-    $(wildcard include/config/DMA_OPS_BYPASS) \
-    $(wildcard include/config/DEVTMPFS) \
-    $(wildcard include/config/SYSFS_DEPRECATED) \
-  include/linux/dev_printk.h \
-  include/linux/ratelimit.h \
-  include/linux/energy_model.h \
-  include/linux/sched/cpufreq.h \
-    $(wildcard include/config/CPU_FREQ) \
-  include/linux/sched/topology.h \
-    $(wildcard include/config/SCHED_DEBUG) \
-    $(wildcard include/config/SCHED_MC) \
-    $(wildcard include/config/CPU_FREQ_GOV_SCHEDUTIL) \
-  include/linux/sched/idle.h \
-  include/linux/sched/sd_flags.h \
-  include/linux/klist.h \
-  include/linux/pm.h \
-    $(wildcard include/config/VT_CONSOLE_SLEEP) \
-    $(wi
+D_DVB:
+	case CX23885_BOARD_HAUPPAUGE_QUADHD_ATSC:
+		break;
+	default:
+		if (dev->tuner_type == TUNER_ABSENT)
+			return -EINVAL;
+		break;
+	}
+	if (0 != t->index)
+		return -EINVAL;
+
+	strscpy(t->name, "Television", sizeof(t->name));
+
+	call_all(dev, tuner, g_tuner, t);
+	return 0;
+}
+
+static int vidioc_s_tuner(struct file *file, void *priv,
+				const struct v4l2_tuner *t)
+{
+	struct cx23885_dev *dev = video_drvdata(file);
+
+	switch (dev->board) { /* i2c device tuners */
+	case CX23885_BOARD_HAUPPAUGE_HVR1265_K4:
+	case CX23885_BOARD_HAUPPAUGE_HVR5525:
+	case CX23885_BOARD_HAUPPAUGE_QUADHD_DVB:
+	case CX23885_BOARD_HAUPPAUGE_QUADHD_ATSC:
+		break;
+	default:
+		if (dev->tuner_type == TUNER_ABSENT)
+			return -EINVAL;
+		break;
+	}
+	if (0 != t->index)
+		return -EINVAL;
+	/* Update the A/V core */
+	call_all(dev, tuner, s_tuner, t);
+
+	return 0;
+}
+
+static int vidioc_g_frequency(struct file *file, void *priv,
+				struct v4l2_frequency *f)
+{
+	struct cx23885_dev *dev = video_drvdata(file);
+
+	switch (dev->board) { /* i2c device tuners */
+	case CX23885_BOARD_HAUPPAUGE_HVR1265_K4:
+	case CX23885_BOARD_HAUPPAUGE_HVR5525:
+	case CX23885_BOARD_HAUPPAUGE_QUADHD_DVB:
+	case CX23885_BOARD_HAUPPAUGE_QUADHD_ATSC:
+		break;
+	default:
+		if (dev->tuner_type == TUNER_ABSENT)
+			return -EINVAL;
+		break;
+	}
+	f->type = V4L2_TUNER_ANALOG_TV;
+	f->frequency = dev->freq;
+
+	call_all(dev, tuner, g_frequency, f);
+
+	return 0;
+}
+
+static int cx23885_set_freq(struct cx23885_dev *dev, const struct v4l2_frequency *f)
+{
+	struct v4l2_ctrl *mute;
+	int old_mute_val = 1;
+
+	switch (dev->board) { /* i2c device tuners */
+	case CX23885_BOARD_HAUPPAUGE_HVR1265_K4:
+	case CX23885_BOARD_HAUPPAUGE_HVR5525:
+	case CX23885_BOARD_HAUPPAUGE_QUADHD_DVB:
+	case CX23885_BOARD_HAUPPAUGE_QUADHD_ATSC:
+		break;
+	default:
+		if (dev->tuner_type == TUNER_ABSENT)
+			return -EINVAL;
+		break;
+	}
+	if (unlikely(f->tuner != 0))
+		return -EINVAL;
+
+	dev->freq = f->frequency;
+
+	/* I need to mute audio here */
+	mute = v4l2_ctrl_find(&dev->ctrl_handler, V4L2_CID_AUDIO_MUTE);
+	if (mute) {
+		old_mute_val = v4l2_ctrl_g_ctrl(mute);
+		if (!old_mute_val)
+			v4l2_ctrl_s_ctrl(mute, 1);
+	}
+
+	call_all(dev, tuner, s_frequency, f);
+
+	/* When changing channels it is required to reset TVAUDIO */
+	msleep(100);
+
+	/* I need to unmute audio here */
+	if (old_mute_val == 0)
+		v4l2_ctrl_s_ctrl(mute, old_mute_val);
+
+	return 0;
+}
+
+static int cx23885_set_freq_via_ops(struct cx23885_dev *dev,
+	const struct v4l2_frequency *f)
+{
+	struct v4l2_ctrl *mute;
+	int old_mute_val = 1;
+	struct vb2_dvb_frontend *vfe;
+	struct dvb_frontend *fe;
+
+	struct analog_parameters params = {
+		.mode      = V4L2_TUNER_ANALOG_TV,
+		.audmode   = V4L2_TUNER_MODE_STEREO,
+		.std       = dev->tvnorm,
+		.frequency = f->frequency
+	};
+
+	dev->freq = f->frequency;
+
+	/* I need to mute audio here */
+	mute = v4l2_ctrl_find(&dev-

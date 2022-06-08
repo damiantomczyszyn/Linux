@@ -1,1588 +1,1673 @@
-\
-  include/asm-generic/iomap.h \
-  include/asm-generic/pci_iomap.h \
-    $(wildcard include/config/NO_GENERIC_PCI_IOPORT_MAP) \
-    $(wildcard include/config/GENERIC_PCI_IOMAP) \
-  include/asm-generic/io.h \
-    $(wildcard include/config/GENERIC_IOMAP) \
-    $(wildcard include/config/GENERIC_IOREMAP) \
-    $(wildcard include/config/VIRT_TO_BUS) \
-    $(wildcard include/config/GENERIC_DEVMEM_IS_ALLOWED) \
-  include/linux/logic_pio.h \
-    $(wildcard include/config/INDIRECT_PIO) \
-  include/linux/vmalloc.h \
-    $(wildcard include/config/HAVE_ARCH_HUGE_VMALLOC) \
-  arch/x86/include/asm/vmalloc.h \
-    $(wildcard include/config/HAVE_ARCH_HUGE_VMAP) \
-  arch/x86/include/asm/acpi.h \
-    $(wildcard include/config/ACPI_APEI) \
-  include/acpi/pdc_intel.h \
-  arch/x86/include/asm/numa.h \
-    $(wildcard include/config/NUMA_EMU) \
-  arch/x86/include/asm/numa_32.h \
-  include/linux/regulator/consumer.h \
-    $(wildcard include/config/REGULATOR) \
-  include/linux/suspend.h \
-    $(wildcard include/config/VT) \
-    $(wildcard include/config/SUSPEND) \
-    $(wildcard include/config/HIBERNATION_SNAPSHOT_DEV) \
-    $(wildcard include/config/PM_SLEEP_DEBUG) \
-    $(wildcard include/config/PM_AUTOSLEEP) \
-  include/linux/swap.h \
-    $(wildcard include/config/DEVICE_PRIVATE) \
-    $(wildcard include/config/MIGRATION) \
-    $(wildcard include/config/FRONTSWAP) \
-    $(wildcard include/config/THP_SWAP) \
-    $(wildcard include/config/MEMCG_SWAP) \
-  include/linux/memcontrol.h \
-    $(wildcard include/config/CGROUP_WRITEBACK) \
-  include/linux/cgroup.h \
-    $(wildcard include/config/CGROUP_CPUACCT) \
-    $(wildcard include/config/SOCK_CGROUP_DATA) \
-    $(wildcard include/config/CGROUP_DATA) \
-    $(wildcard include/config/CGROUP_BPF) \
-  include/uapi/linux/cgroupstats.h \
-  include/uapi/linux/taskstats.h \
-  include/linux/fs.h \
-    $(wildcard include/config/READ_ONLY_THP_FOR_FS) \
-    $(wildcard include/config/FS_POSIX_ACL) \
-    $(wildcard include/config/IMA) \
-    $(wildcard include/config/FILE_LOCKING) \
-    $(wildcard include/config/FSNOTIFY) \
-    $(wildcard include/config/FS_ENCRYPTION) \
-    $(wildcard include/config/FS_VERITY) \
-    $(wildcard include/config/EPOLL) \
-    $(wildcard include/config/UNICODE) \
-    $(wildcard include/config/QUOTA) \
-    $(wildcard include/config/FS_DAX) \
-    $(wildcard include/config/BLOCK) \
-  include/linux/wait_bit.h \
-  include/linux/kdev_t.h \
-  include/uapi/linux/kdev_t.h \
-  include/linux/dcache.h \
-  include/linux/rculist_bl.h \
-  include/linux/list_bl.h \
-  include/linux/bit_spinlock.h \
-  include/linux/lockref.h \
-    $(wildcard include/config/ARCH_USE_CMPXCHG_LOCKREF) \
-  include/linux/stringhash.h \
-    $(wildcard include/config/DCACHE_WORD_ACCESS) \
-  include/linux/hash.h \
-    $(wildcard include/config/HAVE_ARCH_HASH) \
-  include/linux/path.h \
-  include/linux/list_lru.h \
-  include/linux/shrinker.h \
-  include/linux/capability.h \
-  include/uapi/linux/capability.h \
-  include/linux/semaphore.h \
-  include/linux/fcntl.h \
-    $(wildcard include/config/ARCH_32BIT_OFF_T) \
-  include/uapi/linux/fcntl.h \
-  arch/x86/include/generated/uapi/asm/fcntl.h \
-  include/uapi/asm-generic/fcntl.h \
-  include/uapi/linux/openat2.h \
-  include/linux/migrate_mode.h \
-  include/linux/percpu-rwsem.h \
-  include/linux/rcuwait.h \
-  include/linux/sched/signal.h \
-    $(wildcard include/config/SCHED_AUTOGROUP) \
-    $(wildcard include/config/BSD_PROCESS_ACCT) \
-    $(wildcard include/config/TASKSTATS) \
-    $(wildcard include/config/STACK_GROWSUP) \
-  include/linux/signal.h \
-    $(wildcard include/config/DYNAMIC_SIGFRAME) \
-  include/linux/sched/jobctl.h \
-  include/linux/sched/task.h \
-    $(wildcard include/config/HAVE_EXIT_THREAD) \
-    $(wildcard include/config/ARCH_WANTS_DYNAMIC_TASK_STRUCT) \
-    $(wildcard include/config/HAVE_ARCH_THREAD_STRUCT_WHITELIST) \
-  include/linux/uaccess.h \
-  include/linux/fault-inject-usercopy.h \
-    $(wildcard include/config/FAULT_INJECTION_USERCOPY) \
-  arch/x86/include/asm/uaccess.h \
-    $(wildcard include/config/CC_HAS_ASM_GOTO_OUTPUT) \
-    $(wildcard include/config/CC_HAS_ASM_GOTO_TIED_OUTPUT) \
-    $(wildcard include/config/ARCH_HAS_COPY_MC) \
-    $(wildcard include/config/X86_INTEL_USERCOPY) \
-  arch/x86/include/asm/smap.h \
-  arch/x86/include/asm/extable.h \
-    $(wildcard include/config/BPF_JIT) \
-  include/asm-generic/access_ok.h \
-    $(wildcard include/config/ALTERNATE_USER_ADDRESS_SPACE) \
-  arch/x86/include/asm/uaccess_32.h \
-  include/linux/cred.h \
-    $(wildcard include/config/DEBUG_CREDENTIALS) \
-  include/linux/key.h \
-    $(wildcard include/config/KEY_NOTIFICATIONS) \
-    $(wildcard include/config/NET) \
-  include/linux/assoc_array.h \
-    $(wildcard include/config/ASSOCIATIVE_ARRAY) \
-  include/linux/sched/user.h \
-    $(wildcard include/config/WATCH_QUEUE) \
-  include/linux/percpu_counter.h \
-  include/linux/rcu_sync.h \
-  include/linux/delayed_call.h \
-  include/linux/errseq.h \
-  include/linux/ioprio.h \
-  include/linux/sched/rt.h \
-  include/linux/iocontext.h \
-    $(wildcard include/config/BLK_ICQ) \
-  include/uapi/linux/ioprio.h \
-  include/linux/fs_types.h \
-  include/linux/mount.h \
-  include/linux/mnt_idmapping.h \
-  include/uapi/linux/fs.h \
-  include/linux/quota.h \
-    $(wildcard include/config/QUOTA_NETLINK_INTERFACE) \
-  include/uapi/linux/dqblk_xfs.h \
-  include/linux/dqblk_v1.h \
-  include/linux/dqblk_v2.h \
-  include/linux/dqblk_qtree.h \
-  include/linux/projid.h \
-  include/uapi/linux/quota.h \
-  include/linux/nfs_fs_i.h \
-  include/linux/seq_file.h \
-  include/linux/string_helpers.h \
-  include/linux/ns_common.h \
-  include/linux/nsproxy.h \
-  include/linux/user_namespace.h \
-    $(wildcard include/config/INOTIFY_USER) \
-    $(wildcard include/config/FANOTIFY) \
-    $(wildcard include/config/PERSISTENT_KEYRINGS) \
-  include/linux/kernel_stat.h \
-  include/linux/interrupt.h \
-    $(wildcard include/config/IRQ_FORCED_THREADING) \
-    $(wildcard include/config/GENERIC_IRQ_PROBE) \
-    $(wildcard include/config/IRQ_TIMINGS) \
-  include/linux/irqreturn.h \
-  include/linux/irqnr.h \
-  include/uapi/linux/irqnr.h \
-  include/linux/hardirq.h \
-  include/linux/context_tracking_state.h \
-    $(wildcard include/config/CONTEXT_TRACKING) \
-  include/linux/ftrace_irq.h \
-    $(wildcard include/config/HWLAT_TRACER) \
-    $(wildcard include/config/OSNOISE_TRACER) \
-  include/linux/vtime.h \
-    $(wildcard include/config/VIRT_CPU_ACCOUNTING) \
-    $(wildcard include/config/IRQ_TIME_ACCOUNTING) \
-  arch/x86/include/asm/hardirq.h \
-    $(wildcard include/config/KVM_INTEL) \
-    $(wildcard include/config/X86_THERMAL_VECTOR) \
-    $(wildcard include/config/X86_MCE_THRESHOLD) \
-    $(wildcard include/config/X86_MCE_AMD) \
-    $(wildcard include/config/X86_HV_CALLBACK_VECTOR) \
-  arch/x86/include/asm/irq.h \
-  arch/x86/include/asm/sections.h \
-  include/asm-generic/sections.h \
-    $(wildcard include/config/HAVE_FUNCTION_DESCRIPTORS) \
-  include/linux/cgroup-defs.h \
-    $(wildcard include/config/CGROUP_NET_CLASSID) \
-    $(wildcard include/config/CGROUP_NET_PRIO) \
-  include/linux/u64_stats_sync.h \
-  include/linux/bpf-cgroup-defs.h \
-  include/linux/psi_types.h \
-  include/linux/kthread.h \
-  include/linux/cgroup_subsys.h \
-    $(wildcard include/config/CGROUP_DEVICE) \
-    $(wildcard include/config/CGROUP_FREEZER) \
-    $(wildcard include/config/CGROUP_PERF) \
-    $(wildcard include/config/CGROUP_HUGETLB) \
-    $(wildcard include/config/CGROUP_PIDS) \
-    $(wildcard include/config/CGROUP_RDMA) \
-    $(wildcard include/config/CGROUP_MISC) \
-    $(wildcard include/config/CGROUP_DEBUG) \
-  include/linux/vm_event_item.h \
-    $(wildcard include/config/HAVE_ARCH_TRANSPARENT_HUGEPAGE_PUD) \
-    $(wildcard include/config/MEMORY_BALLOON) \
-    $(wildcard include/config/BALLOON_COMPACTION) \
-    $(wildcard include/config/DEBUG_TLBFLUSH) \
-    $(wildcard include/config/DEBUG_VM_VMACACHE) \
-  include/linux/page_counter.h \
-  include/linux/vmpressure.h \
-  include/linux/eventfd.h \
-  include/linux/mm.h \
-    $(wildcard include/config/HAVE_ARCH_MMAP_RND_BITS) \
-    $(wildcard include/config/HAVE_ARCH_MMAP_RND_COMPAT_BITS) \
-    $(wildcard include/config/ARCH_USES_HIGH_VMA_FLAGS) \
-    $(wildcard include/config/ARCH_HAS_PKEYS) \
-    $(wildcard include/config/PPC) \
-    $(wildcard include/config/PARISC) \
-    $(wildcard include/config/SPARC64) \
-    $(wildcard include/config/ARM64_MTE) \
-    $(wildcard include/config/HAVE_ARCH_USERFAULTFD_MINOR) \
-    $(wildcard include/config/SHMEM) \
-    $(wildcard include/config/ARCH_HAS_PTE_SPECIAL) \
-    $(wildcard include/config/ARCH_HAS_PTE_DEVMAP) \
-    $(wildcard include/config/DEBUG_VM_RB) \
-    $(wildcard include/config/PAGE_POISONING) \
-    $(wildcard include/config/INIT_ON_ALLOC_DEFAULT_ON) \
-    $(wildcard include/config/INIT_ON_FREE_DEFAULT_ON) \
-    $(wildcard include/config/DEBUG_PAGEALLOC) \
-    $(wildcard include/config/HUGETLBFS) \
-    $(wildcard include/config/MAPPING_DIRTY_HELPERS) \
-    $(wildcard include/config/ANON_VMA_NAME) \
-  include/linux/mmap_lock.h \
-  include/linux/page_ext.h \
-  include/linux/stacktrace.h \
-    $(wildcard include/config/ARCH_STACKWALK) \
-    $(wildcard include/config/STACKTRACE) \
-    $(wildcard include/config/HAVE_RELIABLE_STACKTRACE) \
-  include/linux/stackdepot.h \
-    $(wildcard include/config/STACKDEPOT_ALWAYS_INIT) \
-  include/linux/page_ref.h \
-    $(wildcard include/config/DEBUG_PAGE_REF) \
-  include/linux/sizes.h \
-  include/linux/pgtable.h \
-    $(wildcard include/config/HIGHPTE) \
-    $(wildcard include/config/GUP_GET_PTE_LOW_HIGH) \
-    $(wildcard include/config/HAVE_ARCH_SOFT_DIRTY) \
-    $(wildcard include/config/ARCH_ENABLE_THP_MIGRATION) \
-    $(wildcard include/config/X86_ESPFIX64) \
-  arch/x86/include/asm/pgtable.h \
-    $(wildcard include/config/DEBUG_WX) \
-    $(wildcard include/config/PAGE_TABLE_CHECK) \
-  arch/x86/include/asm/pkru.h \
-  arch/x86/include/asm/fpu/api.h \
-    $(wildcard include/config/X86_DEBUG_FPU) \
-  arch/x86/include/asm/coco.h \
-  include/asm-generic/pgtable_uffd.h \
-  include/linux/page_table_check.h \
-  arch/x86/include/asm/pgtable_32.h \
-  arch/x86/include/asm/pgtable-3level.h \
-  arch/x86/include/asm/pgtable-invert.h \
-  include/linux/huge_mm.h \
-  include/linux/sched/coredump.h \
-    $(wildcard include/config/CORE_DUMP_DEFAULT_ELF_HEADERS) \
-  include/linux/vmstat.h \
-    $(wildcard include/config/VM_EVENT_COUNTERS) \
-  include/linux/writeback.h \
-  include/linux/flex_proportions.h \
-  include/linux/backing-dev-defs.h \
-    $(wildcard include/config/DEBUG_FS) \
-  include/linux/blk_types.h \
-    $(wildcard include/config/FAIL_MAKE_REQUEST) \
-    $(wildcard include/config/BLK_CGROUP_IOCOST) \
-    $(wildcard include/config/BLK_INLINE_ENCRYPTION) \
-    $(wildcard include/config/BLK_DEV_INTEGRITY) \
-  include/linux/bvec.h \
-  include/linux/highmem.h \
-  include/linux/cacheflush.h \
-  arch/x86/include/asm/cacheflush.h \
-  include/asm-generic/cacheflush.h \
-  include/linux/highmem-internal.h \
-  arch/x86/include/asm/highmem.h \
-  arch/x86/include/asm/tlbflush.h \
-  arch/x86/include/asm/invpcid.h \
-  arch/x86/include/asm/pti.h \
-  include/linux/bio.h \
-  include/linux/mempool.h \
-  include/linux/uio.h \
-    $(wildcard include/config/ARCH_HAS_UACCESS_FLUSHCACHE) \
-  include/uapi/linux/uio.h \
-  include/linux/node.h \
-    $(wildcard include/config/HMEM_REPORTING) \
-  include/linux/pagemap.h \
-  include/linux/hugetlb_inline.h \
-  include/uapi/linux/mempolicy.h \
-  include/linux/freezer.h \
-  include/uapi/linux/i2c.h \
-  include/media/i2c/tvaudio.h \
-  include/media/v4l2-device.h \
-    $(wildcard include/config/VIDEO_V4L2_SUBDEV_API) \
-  include/media/media-device.h \
-    $(wildcard include/config/MEDIA_CONTROLLER) \
-  include/media/media-devnode.h \
-  include/linux/poll.h \
-  include/uapi/linux/poll.h \
-  arch/x86/include/generated/uapi/asm/poll.h \
-  include/uapi/asm-generic/poll.h \
-  include/uapi/linux/eventpoll.h \
-  include/linux/cdev.h \
-  include/media/media-entity.h \
-  include/uapi/linux/media.h \
-  include/media/v4l2-subdev.h \
-  include/uapi/linux/v4l2-subdev.h \
-  include/uapi/linux/v4l2-mediabus.h \
-  include/uapi/linux/media-bus-format.h \
-  include/media/v4l2-async.h \
-  include/media/v4l2-common.h \
-    $(wildcard include/config/VIDEO_V4L2_I2C) \
-    $(wildcard include/config/SPI) \
-  include/media/v4l2-dev.h \
-  include/linux/spi/spi.h \
-    $(wildcard include/config/SPI_SLAVE) \
-  include/linux/scatterlist.h \
-    $(wildcard include/config/NEED_SG_DMA_LENGTH) \
-    $(wildcard include/config/DEBUG_SG) \
-    $(wildcard include/config/SGL_ALLOC) \
-    $(wildcard include/config/ARCH_NO_SG_CHAIN) \
-    $(wildcard include/config/SG_POOL) \
-  include/linux/gpio/consumer.h \
-    $(wildcard include/config/OF_GPIO) \
-    $(wildcard include/config/GPIO_SYSFS) \
-  include/uapi/linux/spi/spi.h \
-  include/media/v4l2-fh.h \
-  include/media/v4l2-mediabus.h \
-  include/media/v4l2-ctrls.h \
-  include/media/media-request.h \
-  include/media/hevc-ctrls.h \
+dcard include/config/X86_P6_NOP) \
+    $(wildcard include/config/MATOM) \
+    $(wildcard include/config/PARAVIRT_XXL) \
+  arch/x86/include/asm/disabled-features.h \
+    $(wildcard include/config/X86_SMAP) \
+    $(wildcard include/config/X86_UMIP) \
+    $(wildcard include/config/X86_INTEL_MEMORY_PROTECTION_KEYS) \
+    $(wildcard include/config/X86_5LEVEL) \
+    $(wildcard include/config/PAGE_TABLE_ISOLATION) \
+    $(wildcard include/config/INTEL_IOMMU_SVM) \
+    $(wildcard include/config/X86_SGX) \
+  include/asm-generic/bitops/const_hweight.h \
+  include/asm-generic/bitops/instrumented-atomic.h \
+  include/linux/instrumented.h \
+  include/asm-generic/bitops/instrumented-non-atomic.h \
+    $(wildcard include/config/KCSAN_ASSUME_PLAIN_WRITES_ATOMIC) \
+  include/asm-generic/bitops/instrumented-lock.h \
+  include/asm-generic/bitops/le.h \
+  arch/x86/include/uapi/asm/byteorder.h \
+  include/linux/byteorder/little_endian.h \
+  include/uapi/linux/byteorder/little_endian.h \
+  include/linux/swab.h \
+  include/uapi/linux/swab.h \
+  arch/x86/include/uapi/asm/swab.h \
+  include/linux/byteorder/generic.h \
+  include/asm-generic/bitops/ext2-atomic-setbit.h \
+  include/vdso/math64.h \
+  include/linux/time64.h \
+  include/vdso/time64.h \
+  include/uapi/linux/time.h \
+  include/uapi/linux/time_types.h \
+  include/linux/time32.h \
+  include/linux/timex.h \
+  include/uapi/linux/timex.h \
+  include/uapi/linux/param.h \
+  arch/x86/include/generated/uapi/asm/param.h \
+  include/asm-generic/param.h \
+    $(wildcard include/config/HZ) \
+  include/uapi/asm-generic/param.h \
+  arch/x86/include/asm/timex.h \
+    $(wildcard include/config/X86_TSC) \
+  arch/x86/include/asm/processor.h \
+    $(wildcard include/config/X86_VMX_FEATURE_NAMES) \
+    $(wildcard include/config/X86_IOPL_IOPERM) \
+    $(wildcard include/config/STACKPROTECTOR) \
+    $(wildcard include/config/VM86) \
+    $(wildcard include/config/X86_DEBUGCTLMSR) \
+    $(wildcard include/config/CPU_SUP_AMD) \
+    $(wildcard include/config/XEN) \
+  arch/x86/include/asm/processor-flags.h \
+  arch/x86/include/uapi/asm/processor-flags.h \
+  include/linux/mem_encrypt.h \
+    $(wildcard include/config/ARCH_HAS_MEM_ENCRYPT) \
+    $(wildcard include/config/AMD_MEM_ENCRYPT) \
+  arch/x86/include/asm/mem_encrypt.h \
+  include/linux/init.h \
+    $(wildcard include/config/STRICT_KERNEL_RWX) \
+    $(wildcard include/config/STRICT_MODULE_RWX) \
+    $(wildcard include/config/LTO_CLANG) \
+  include/linux/cc_platform.h \
+    $(wildcard include/config/ARCH_HAS_CC_PLATFORM) \
+  arch/x86/include/uapi/asm/bootparam.h \
+  include/linux/screen_info.h \
+  include/uapi/linux/screen_info.h \
+  include/linux/apm_bios.h \
+  include/uapi/linux/apm_bios.h \
+  include/uapi/linux/ioctl.h \
+  arch/x86/include/generated/uapi/asm/ioctl.h \
+  include/asm-generic/ioctl.h \
+  include/uapi/asm-generic/ioctl.h \
+  include/linux/edd.h \
+  include/uapi/linux/edd.h \
+  arch/x86/include/asm/ist.h \
+  arch/x86/include/uapi/asm/ist.h \
+  include/video/edid.h \
+    $(wildcard include/config/X86) \
+  include/uapi/video/edid.h \
+  arch/x86/include/asm/math_emu.h \
+  arch/x86/include/asm/ptrace.h \
+    $(wildcard include/config/PARAVIRT) \
+    $(wildcard include/config/IA32_EMULATION) \
+  arch/x86/include/asm/segment.h \
+    $(wildcard include/config/XEN_PV) \
+  arch/x86/include/asm/page_types.h \
+    $(wildcard include/config/PHYSICAL_START) \
+    $(wildcard include/config/PHYSICAL_ALIGN) \
+    $(wildcard include/config/DYNAMIC_PHYSICAL_MASK) \
+  arch/x86/include/asm/page_32_types.h \
+    $(wildcard include/config/HIGHMEM4G) \
+    $(wildcard include/config/HIGHMEM64G) \
+    $(wildcard include/config/PAGE_OFFSET) \
+  arch/x86/include/uapi/asm/ptrace.h \
+  arch/x86/include/uapi/asm/ptrace-abi.h \
+  arch/x86/include/asm/paravirt_types.h \
+    $(wildcard include/config/PGTABLE_LEVELS) \
+    $(wildcard include/config/PARAVIRT_DEBUG) \
+  arch/x86/include/asm/desc_defs.h \
+  arch/x86/include/asm/pgtable_types.h \
+    $(wildcard include/config/MEM_SOFT_DIRTY) \
+    $(wildcard include/config/HAVE_ARCH_USERFAULTFD_WP) \
+    $(wildcard include/config/PROC_FS) \
+  arch/x86/include/asm/pgtable_32_types.h \
+  arch/x86/include/asm/pgtable-3level_types.h \
+  include/asm-generic/pgtable-nop4d.h \
+  include/asm-generic/pgtable-nopud.h \
+  arch/x86/include/asm/nospec-branch.h \
+  include/linux/static_key.h \
+  include/linux/jump_label.h \
+    $(wildcard include/config/HAVE_ARCH_JUMP_LABEL_RELATIVE) \
+  arch/x86/include/asm/jump_label.h \
+  include/linux/objtool.h \
+    $(wildcard include/config/FRAME_POINTER) \
+  arch/x86/include/asm/msr-index.h \
+  arch/x86/include/asm/unwind_hints.h \
+  arch/x86/include/asm/orc_types.h \
+  arch/x86/include/asm/GEN-for-each-reg.h \
+  arch/x86/include/asm/spinlock_types.h \
+  include/asm-generic/qspinlock_types.h \
+    $(wildcard include/config/NR_CPUS) \
+  include/asm-generic/qrwlock_types.h \
+  arch/x86/include/asm/proto.h \
+  arch/x86/include/uapi/asm/ldt.h \
+  arch/x86/include/uapi/asm/sigcontext.h \
+  arch/x86/include/asm/current.h \
+  arch/x86/include/asm/percpu.h \
+    $(wildcard include/config/X86_64_SMP) \
+  include/linux/kernel.h \
+    $(wildcard include/config/PREEMPT_VOLUNTARY_BUILD) \
+    $(wildcard include/config/PREEMPT_DYNAMIC) \
+    $(wildcard include/config/HAVE_PREEMPT_DYNAMIC_CALL) \
+    $(wildcard include/config/HAVE_PREEMPT_DYNAMIC_KEY) \
+    $(wildcard include/config/PREEMPT_) \
+    $(wildcard include/config/DEBUG_ATOMIC_SLEEP) \
+    $(wildcard include/config/MMU) \
+    $(wildcard include/config/PROVE_LOCKING) \
+  include/linux/stdarg.h \
+  include/linux/align.h \
+  include/linux/limits.h \
+  include/uapi/linux/limits.h \
+  include/vdso/limits.h \
+  include/linux/kstrtox.h \
+  include/linux/minmax.h \
+  include/linux/panic.h \
+    $(wildcard include/config/PANIC_TIMEOUT) \
+  include/linux/printk.h \
+    $(wildcard include/config/MESSAGE_LOGLEVEL_DEFAULT) \
+    $(wildcard include/config/CONSOLE_LOGLEVEL_DEFAULT) \
+    $(wildcard include/config/CONSOLE_LOGLEVEL_QUIET) \
+    $(wildcard include/config/EARLY_PRINTK) \
+    $(wildcard include/config/PRINTK) \
+    $(wildcard include/config/DYNAMIC_DEBUG) \
+    $(wildcard include/config/DYNAMIC_DEBUG_CORE) \
+  include/linux/kern_levels.h \
+  include/linux/ratelimit_types.h \
+  include/linux/spinlock_types_raw.h \
+    $(wildcard include/config/DEBUG_SPINLOCK) \
+    $(wildcard include/config/DEBUG_LOCK_ALLOC) \
+  include/linux/lockdep_types.h \
+    $(wildcard include/config/PROVE_RAW_LOCK_NESTING) \
+    $(wildcard include/config/LOCKDEP) \
+    $(wildcard include/config/LOCK_STAT) \
+  include/linux/once_lite.h \
+  include/linux/static_call_types.h \
+    $(wildcard include/config/HAVE_STATIC_CALL) \
+  include/linux/instruction_pointer.h \
+  include/asm-generic/percpu.h \
+    $(wildcard include/config/DEBUG_PREEMPT) \
+    $(wildcard include/config/HAVE_SETUP_PER_CPU_AREA) \
+  include/linux/threads.h \
+    $(wildcard include/config/BASE_SMALL) \
+  include/linux/percpu-defs.h \
+    $(wildcard include/config/DEBUG_FORCE_WEAK_PER_CPU) \
+  arch/x86/include/asm/page.h \
+  arch/x86/include/asm/page_32.h \
+    $(wildcard include/config/DEBUG_VIRTUAL) \
+    $(wildcard include/config/FLATMEM) \
+  include/linux/string.h \
+    $(wildcard include/config/BINARY_PRINTF) \
+    $(wildcard include/config/FORTIFY_SOURCE) \
+  include/linux/errno.h \
+  include/uapi/linux/errno.h \
+  include/uapi/linux/string.h \
+  arch/x86/include/asm/string.h \
+  arch/x86/include/asm/string_32.h \
+  include/linux/fortify-string.h \
+  include/linux/range.h \
+  include/asm-generic/memory_model.h \
+    $(wildcard include/config/SPARSEMEM_VMEMMAP) \
+    $(wildcard include/config/SPARSEMEM) \
+  include/linux/pfn.h \
+  include/asm-generic/getorder.h \
+  arch/x86/include/asm/msr.h \
+  arch/x86/include/asm/msr-index.h \
+  arch/x86/include/asm/cpumask.h \
+  include/linux/cpumask.h \
+    $(wildcard include/config/CPUMASK_OFFSTACK) \
+    $(wildcard include/config/HOTPLUG_CPU) \
+    $(wildcard include/config/DEBUG_PER_CPU_MAPS) \
+  include/linux/bitmap.h \
+  include/linux/find.h \
+  include/linux/atomic.h \
+  arch/x86/include/asm/atomic.h \
+  arch/x86/include/asm/cmpxchg.h \
+  arch/x86/include/asm/cmpxchg_32.h \
+  arch/x86/include/asm/atomic64_32.h \
+  include/linux/atomic/atomic-arch-fallback.h \
+    $(wildcard include/config/GENERIC_ATOMIC64) \
+  include/linux/atomic/atomic-long.h \
+  include/linux/atomic/atomic-instrumented.h \
+  include/linux/bug.h \
+    $(wildcard include/config/BUG_ON_DATA_CORRUPTION) \
+  arch/x86/include/asm/bug.h \
+    $(wildcard include/config/DEBUG_BUGVERBOSE) \
+  include/linux/instrumentation.h \
+    $(wildcard include/config/DEBUG_ENTRY) \
+  include/asm-generic/bug.h \
+    $(wildcard include/config/BUG) \
+    $(wildcard include/config/GENERIC_BUG_RELATIVE_POINTERS) \
+  arch/x86/include/uapi/asm/msr.h \
+  include/linux/tracepoint-defs.h \
+  arch/x86/include/asm/special_insns.h \
+  include/linux/irqflags.h \
+    $(wildcard include/config/TRACE_IRQFLAGS) \
+    $(wildcard include/config/PREEMPT_RT) \
+    $(wildcard include/config/IRQSOFF_TRACER) \
+    $(wildcard include/config/PREEMPT_TRACER) \
+    $(wildcard include/config/DEBUG_IRQFLAGS) \
+    $(wildcard include/config/TRACE_IRQFLAGS_SUPPORT) \
+  arch/x86/include/asm/irqflags.h \
+  arch/x86/include/asm/fpu/types.h \
+  arch/x86/include/asm/vmxfeatures.h \
+  arch/x86/include/asm/vdso/processor.h \
+  include/linux/personality.h \
+  include/uapi/linux/personality.h \
+  arch/x86/include/asm/tsc.h \
+  arch/x86/include/asm/cpufeature.h \
+    $(wildcard include/config/X86_FEATURE_NAMES) \
+  include/vdso/time32.h \
+  include/vdso/time.h \
+  include/linux/uidgid.h \
+    $(wildcard include/config/MULTIUSER) \
+    $(wildcard include/config/USER_NS) \
+  include/linux/highuid.h \
+  include/linux/buildid.h \
+    $(wildcard include/config/CRASH_CORE) \
+  include/linux/mm_types.h \
+    $(wildcard include/config/HAVE_ALIGNED_STRUCT_PAGE) \
+    $(wildcard include/config/MEMCG) \
+    $(wildcard include/config/USERFAULTFD) \
+    $(wildcard include/config/SWAP) \
+    $(wildcard include/config/NUMA) \
+    $(wildcard include/config/HAVE_ARCH_COMPAT_MMAP_BASES) \
+    $(wildcard include/config/MEMBARRIER) \
+    $(wildcard include/config/AIO) \
+    $(wildcard include/config/MMU_NOTIFIER) \
+    $(wildcard include/config/TRANSPARENT_HUGEPAGE) \
+    $(wildcard include/config/NUMA_BALANCING) \
+    $(wildcard include/config/ARCH_WANT_BATCHED_UNMAP_TLB_FLUSH) \
+    $(wildcard include/config/HUGETLB_PAGE) \
+    $(wildcard include/config/IOMMU_SVA) \
+  include/linux/mm_types_task.h \
+    $(wildcard include/config/SPLIT_PTLOCK_CPUS) \
+    $(wildcard include/config/ARCH_ENABLE_SPLIT_PMD_PTLOCK) \
+  arch/x86/include/asm/tlbbatch.h \
+  include/linux/auxvec.h \
+  include/uapi/linux/auxvec.h \
+  arch/x86/include/uapi/asm/auxvec.h \
+  include/linux/kref.h \
+  include/linux/spinlock.h \
+    $(wildcard include/config/PREEMPTION) \
+  include/linux/preempt.h \
+    $(wildcard include/config/PREEMPT_COUNT) \
+    $(wildcard include/config/TRACE_PREEMPT_TOGGLE) \
+    $(wildcard include/config/PREEMPT_NOTIFIERS) \
+  arch/x86/include/asm/preempt.h \
+  include/linux/thread_info.h \
+    $(wildcard include/config/THREAD_INFO_IN_TASK) \
+    $(wildcard include/config/GENERIC_ENTRY) \
+    $(wildcard include/config/HAVE_ARCH_WITHIN_STACK_FRAMES) \
+    $(wildcard include/config/HARDENED_USERCOPY) \
+  include/linux/restart_block.h \
+  arch/x86/include/asm/thread_info.h \
+    $(wildcard include/config/COMPAT) \
+  include/linux/bottom_half.h \
+  include/linux/lockdep.h \
+    $(wildcard include/config/DEBUG_LOCKING_API_SELFTESTS) \
+  include/linux/smp.h \
+    $(wildcard include/config/UP_LATE_INIT) \
+  include/linux/smp_types.h \
+  include/linux/llist.h \
+    $(wildcard include/config/ARCH_HAVE_NMI_SAFE_CMPXCHG) \
+  arch/x86/include/asm/smp.h \
+    $(wildcard include/config/X86_LOCAL_APIC) \
+    $(wildcard include/config/DEBUG_NMI_SELFTEST) \
+  arch/x86/include/generated/asm/mmiowb.h \
+  include/asm-generic/mmiowb.h \
+    $(wildcard include/config/MMIOWB) \
+  include/linux/spinlock_types.h \
+  include/linux/rwlock_types.h \
+  arch/x86/include/asm/spinlock.h \
+  arch/x86/include/asm/paravirt.h \
+    $(wildcard include/config/PARAVIRT_SPINLOCKS) \
+  arch/x86/include/asm/frame.h \
+  arch/x86/include/asm/qspinlock.h \
+  include/asm-generic/qspinlock.h \
+  arch/x86/include/asm/qrwlock.h \
+  include/asm-generic/qrwlock.h \
+  include/linux/rwlock.h \
+    $(wildcard include/config/PREEMPT) \
+  include/linux/spinlock_api_smp.h \
+    $(wildcard include/config/INLINE_SPIN_LOCK) \
+    $(wildcard include/config/INLINE_SPIN_LOCK_BH) \
+    $(wildcard include/config/INLINE_SPIN_LOCK_IRQ) \
+    $(wildcard include/config/INLINE_SPIN_LOCK_IRQSAVE) \
+    $(wildcard include/config/INLINE_SPIN_TRYLOCK) \
+    $(wildcard include/config/INLINE_SPIN_TRYLOCK_BH) \
+    $(wildcard include/config/UNINLINE_SPIN_UNLOCK) \
+    $(wildcard include/config/INLINE_SPIN_UNLOCK_BH) \
+    $(wildcard include/config/INLINE_SPIN_UNLOCK_IRQ) \
+    $(wildcard include/config/INLINE_SPIN_UNLOCK_IRQRESTORE) \
+    $(wildcard include/config/GENERIC_LOCKBREAK) \
+  include/linux/rwlock_api_smp.h \
+    $(wildcard include/config/INLINE_READ_LOCK) \
+    $(wildcard include/config/INLINE_WRITE_LOCK) \
+    $(wildcard include/config/INLINE_READ_LOCK_BH) \
+    $(wildcard include/config/INLINE_WRITE_LOCK_BH) \
+    $(wildcard include/config/INLINE_READ_LOCK_IRQ) \
+    $(wildcard include/config/INLINE_WRITE_LOCK_IRQ) \
+    $(wildcard include/config/INLINE_READ_LOCK_IRQSAVE) \
+    $(wildcard include/config/INLINE_WRITE_LOCK_IRQSAVE) \
+    $(wildcard include/config/INLINE_READ_TRYLOCK) \
+    $(wildcard include/config/INLINE_WRITE_TRYLOCK) \
+    $(wildcard include/config/INLINE_READ_UNLOCK) \
+    $(wildcard include/config/INLINE_WRITE_UNLOCK) \
+    $(wildcard include/config/INLINE_READ_UNLOCK_BH) \
+    $(wildcard include/config/INLINE_WRITE_UNLOCK_BH) \
+    $(wildcard include/config/INLINE_READ_UNLOCK_IRQ) \
+    $(wildcard include/config/INLINE_WRITE_UNLOCK_IRQ) \
+    $(wildcard include/config/INLINE_READ_UNLOCK_IRQRESTORE) \
+    $(wildcard include/config/INLINE_WRITE_UNLOCK_IRQRESTORE) \
+  include/linux/refcount.h \
+  include/linux/rbtree.h \
+  include/linux/rbtree_types.h \
+  include/linux/rcupdate.h \
+    $(wildcard include/config/PREEMPT_RCU) \
+    $(wildcard include/config/TINY_RCU) \
+    $(wildcard include/config/RCU_STRICT_GRACE_PERIOD) \
+    $(wildcard include/config/TASKS_RCU_GENERIC) \
+    $(wildcard include/config/RCU_STALL_COMMON) \
+    $(wildcard include/config/NO_HZ_FULL) \
+    $(wildcard include/config/RCU_NOCB_CPU) \
+    $(wildcard include/config/TASKS_RCU) \
+    $(wildcard include/config/TASKS_TRACE_RCU) \
+    $(wildcard include/config/TASKS_RUDE_RCU) \
+    $(wildcard include/config/TREE_RCU) \
+    $(wildcard include/config/DEBUG_OBJECTS_RCU_HEAD) \
+    $(wildcard include/config/PROVE_RCU) \
+    $(wildcard include/config/ARCH_WEAK_RELEASE_ACQUIRE) \
+  include/linux/rcutree.h \
+  include/linux/rwsem.h \
+    $(wildcard include/config/RWSEM_SPIN_ON_OWNER) \
+    $(wildcard include/config/DEBUG_RWSEMS) \
+  include/linux/osq_lock.h \
+  include/linux/completion.h \
+  include/linux/swait.h \
+  include/linux/wait.h \
+  include/uapi/linux/wait.h \
+  include/linux/uprobes.h \
+    $(wildcard include/config/UPROBES) \
+  arch/x86/include/asm/uprobes.h \
+  include/linux/notifier.h \
+  include/linux/mutex.h \
+    $(wildcard include/config/MUTEX_SPIN_ON_OWNER) \
+    $(wildcard include/config/DEBUG_MUTEXES) \
+  include/linux/debug_locks.h \
+  include/linux/srcu.h \
+    $(wildcard include/config/TINY_SRCU) \
+    $(wildcard include/config/SRCU) \
+  include/linux/workqueue.h \
+    $(wildcard include/config/DEBUG_OBJECTS_WORK) \
+    $(wildcard include/config/FREEZER) \
+    $(wildcard include/config/WQ_WATCHDOG) \
+  include/linux/timer.h \
+    $(wildcard include/config/DEBUG_OBJECTS_TIMERS) \
+    $(wildcard include/config/NO_HZ_COMMON) \
+  include/linux/ktime.h \
+  include/linux/jiffies.h \
+  include/vdso/jiffies.h \
+  include/generated/timeconst.h \
+  include/vdso/ktime.h \
+  include/linux/timekeeping.h \
+    $(wildcard include/config/GENERIC_CMOS_UPDATE) \
+  include/linux/clocksource_ids.h \
+  include/linux/debugobjects.h \
+    $(wildcard include/config/DEBUG_OBJECTS) \
+    $(wildcard include/config/DEBUG_OBJECTS_FREE) \
+  include/linux/rcu_segcblist.h \
+  include/linux/srcutree.h \
+  include/linux/rcu_node_tree.h \
+    $(wildcard include/config/RCU_FANOUT) \
+    $(wildcard include/config/RCU_FANOUT_LEAF) \
+  include/linux/page-flags-layout.h \
+    $(wildcard include/config/KASAN_HW_TAGS) \
+  include/linux/numa.h \
+    $(wildcard include/config/NODES_SHIFT) \
+    $(wildcard include/config/NUMA_KEEP_MEMINFO) \
+    $(wildcard include/config/HAVE_ARCH_NODE_DEV_GROUP) \
+  arch/x86/include/asm/sparsemem.h \
+  include/generated/bounds.h \
+  include/linux/seqlock.h \
+  include/linux/ww_mutex.h \
+    $(wildcard include/config/DEBUG_RT_MUTEXES) \
+    $(wildcard include/config/DEBUG_WW_MUTEX_SLOWPATH) \
+  include/linux/rtmutex.h \
+  arch/x86/include/asm/mmu.h \
+    $(wildcard include/config/MODIFY_LDT_SYSCALL) \
+  include/linux/kmod.h \
+  include/linux/umh.h \
+  include/linux/gfp.h \
+    $(wildcard include/config/HIGHMEM) \
+    $(wildcard include/config/ZONE_DMA) \
+    $(wildcard include/config/ZONE_DMA32) \
+    $(wildcard include/config/ZONE_DEVICE) \
+    $(wildcard include/config/PM_SLEEP) \
+    $(wildcard include/config/CONTIG_ALLOC) \
+    $(wildcard include/config/CMA) \
+  include/linux/mmdebug.h \
+    $(wildcard include/config/DEBUG_VM) \
+    $(wildcard include/config/DEBUG_VM_PGFLAGS) \
+  include/linux/mmzone.h \
+    $(wildcard include/config/FORCE_MAX_ZONEORDER) \
+    $(wildcard include/config/MEMORY_ISOLATION) \
+    $(wildcard include/config/ZSMALLOC) \
+    $(wildcard include/config/MEMORY_HOTPLUG) \
+    $(wildcard include/config/COMPACTION) \
+    $(wildcard include/config/PAGE_EXTENSION) \
+    $(wildcard include/config/DEFERRED_STRUCT_PAGE_INIT) \
+    $(wildcard include/config/HAVE_MEMORYLESS_NODES) \
+    $(wildcard include/config/SPARSEMEM_EXTREME) \
+    $(wildcard include/config/HAVE_ARCH_PFN_VALID) \
+  include/linux/nodemask.h \
+  include/linux/pageblock-flags.h \
+    $(wildcard include/config/HUGETLB_PAGE_SIZE_VARIABLE) \
+  include/linux/page-flags.h \
+    $(wildcard include/config/ARCH_USES_PG_UNCACHED) \
+    $(wildcard include/config/MEMORY_FAILURE) \
+    $(wildcard include/config/PAGE_IDLE_FLAG) \
+    $(wildcard include/config/HUGETLB_PAGE_FREE_VMEMMAP) \
+    $(wildcard include/config/HUGETLB_PAGE_FREE_VMEMMAP_DEFAULT_ON) \
+    $(wildcard include/config/KSM) \
+  include/linux/local_lock.h \
+  include/linux/local_lock_internal.h \
+  include/linux/memory_hotplug.h \
+    $(wildcard include/config/HAVE_ARCH_NODEDATA_EXTENSION) \
+    $(wildcard include/config/ARCH_HAS_ADD_PAGES) \
+    $(wildcard include/config/MEMORY_HOTREMOVE) \
+  arch/x86/include/asm/mmzone.h \
+  arch/x86/include/asm/mmzone_32.h \
+  include/linux/topology.h \
+    $(wildcard include/config/USE_PERCPU_NUMA_NODE_ID) \
+    $(wildcard include/config/SCHED_SMT) \
+    $(wildcard include/config/SCHED_CLUSTER) \
+  include/linux/arch_topology.h \
+    $(wildcard include/config/ACPI_CPPC_LIB) \
+    $(wildcard include/config/GENERIC_ARCH_TOPOLOGY) \
+  include/linux/percpu.h \
+    $(wildcard include/config/NEED_PER_CPU_EMBED_FIRST_CHUNK) \
+    $(wildcard include/config/NEED_PER_CPU_PAGE_FIRST_CHUNK) \
+  arch/x86/include/asm/topology.h \
+    $(wildcard include/config/SCHED_MC_PRIO) \
+  arch/x86/include/asm/mpspec.h \
+    $(wildcard include/config/EISA) \
+    $(wildcard include/config/X86_MPPARSE) \
+  arch/x86/include/asm/mpspec_def.h \
+  arch/x86/include/asm/x86_init.h \
+  arch/x86/include/asm/apicdef.h \
+  include/asm-generic/topology.h \
+  include/linux/sysctl.h \
+    $(wildcard include/config/SYSCTL) \
+  include/uapi/linux/sysctl.h \
+  include/linux/elf.h \
+    $(wildcard include/config/ARCH_USE_GNU_PROPERTY) \
+    $(wildcard include/config/ARCH_HAVE_ELF_PROT) \
+  arch/x86/include/asm/elf.h \
+    $(wildcard include/config/X86_X32_ABI) \
+  arch/x86/include/asm/user.h \
+  arch/x86/include/asm/user_32.h \
+  arch/x86/include/asm/fsgsbase.h \
+  arch/x86/include/asm/vdso.h \
+  arch/x86/include/asm/desc.h \
+  arch/x86/include/asm/fixmap.h \
+    $(wildcard include/config/DEBUG_KMAP_LOCAL_FORCE_MAP) \
+    $(wildcard include/config/X86_VSYSCALL_EMULATION) \
+    $(wildcard include/config/PROVIDE_OHCI1394_DMA_INIT) \
+    $(wildcard include/config/X86_IO_APIC) \
+    $(wildcard include/config/KMAP_LOCAL) \
+    $(wildcard include/config/PCI_MMCONFIG) \
+    $(wildcard include/config/ACPI_APEI_GHES) \
+    $(wildcard include/config/INTEL_TXT) \
+  arch/x86/include/generated/asm/kmap_size.h \
+  include/asm-generic/kmap_size.h \
+    $(wildcard include/config/DEBUG_KMAP_LOCAL) \
+  include/asm-generic/fixmap.h \
+  arch/x86/include/asm/irq_vectors.h \
+    $(wildcard include/config/HAVE_KVM) \
+    $(wildcard include/config/HYPERV) \
+    $(wildcard include/config/PCI_MSI) \
+  arch/x86/include/asm/cpu_entry_area.h \
+  arch/x86/include/asm/intel_ds.h \
+  arch/x86/include/asm/pgtable_areas.h \
+  arch/x86/include/asm/pgtable_32_areas.h \
+  include/uapi/linux/elf.h \
+  include/uapi/linux/elf-em.h \
+  include/linux/kobject.h \
+    $(wildcard include/config/UEVENT_HELPER) \
+    $(wildcard include/config/DEBUG_KOBJECT_RELEASE) \
+  include/linux/sysfs.h \
+  include/linux/kernfs.h \
+    $(wildcard include/config/KERNFS) \
+  include/linux/idr.h \
+  include/linux/radix-tree.h \
+  include/linux/xarray.h \
+    $(wildcard include/config/XARRAY_MULTI) \
+  include/linux/kconfig.h \
+  include/linux/kobject_ns.h \
+  include/linux/moduleparam.h \
+    $(wildcard include/config/ALPHA) \
+    $(wildcard include/config/IA64) \
+    $(wildcard include/config/PPC64) \
+  include/linux/rbtree_latch.h \
+  include/linux/error-injection.h \
+  include/asm-generic/error-injection.h \
+  include/linux/cfi.h \
+    $(wildcard include/config/CFI_CLANG_SHADOW) \
+  arch/x86/include/asm/module.h \
+    $(wildcard include/config/UNWINDER_ORC) \
+  include/asm-generic/module.h \
+    $(wildcard include/config/HAVE_MOD_ARCH_SPECIFIC) \
+    $(wildcard include/config/MODULES_USE_ELF_REL) \
+    $(wildcard include/config/MODULES_USE_ELF_RELA) \
+  arch/x86/include/asm/orc_types.h \
+  include/linux/build-salt.h \
+    $(wildcard include/config/BUILD_SALT) \
+  include/linux/elfnote.h \
+  include/linux/elfnote-lto.h \
+    $(wildcard include/config/LTO) \
+  include/linux/vermagic.h \
+    $(wildcard include/config/PREEMPT_BUILD) \
+  include/generated/utsrelease.h \
+  arch/x86/include/asm/vermagic.h \
+    $(wildcard include/config/M486SX) \
+    $(wildcard include/config/M486) \
+    $(wildcard include/config/M586) \
+    $(wildcard include/config/M586TSC) \
+    $(wildcard include/config/M586MMX) \
+    $(wildcard include/config/MCORE2) \
+    $(wildcard include/config/M686) \
+    $(wildcard include/config/MPENTIUMII) \
+    $(wildcard include/config/MPENTIUMIII) \
+    $(wildcard include/config/MPENTIUMM) \
+    $(wildcard include/config/MPENTIUM4) \
+    $(wildcard include/config/MK6) \
+    $(wildcard include/config/MK7) \
+    $(wildcard include/config/MK8) \
+    $(wildcard include/config/MELAN) \
+    $(wildcard include/config/MCRUSOE) \
+    $(wildcard include/config/MEFFICEON) \
+    $(wildcard include/config/MWINCHIPC6) \
+    $(wildcard include/config/MWINCHIP3D) \
+    $(wildcard include/config/MCYRIXIII) \
+    $(wildcard include/config/MVIAC3_2) \
+    $(wildcard include/config/MVIAC7) \
+    $(wildcard include/config/MGEODEGX1) \
+    $(wildcard include/config/MGEODE_LX) \
 
-drivers/media/i2c/tvaudio.o: $(deps_drivers/media/i2c/tvaudio.o)
+drivers/media/pci/cx18/cx18-alsa.mod.o: $(deps_drivers/media/pci/cx18/cx18-alsa.mod.o)
 
-$(deps_drivers/media/i2c/tvaudio.o):
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       \
-    $(wildcard include/config/DMA_OPS) \
-    $(wildcard include/config/DMA_DECLARE_COHERENT) \
-    $(wildcard include/config/DMA_CMA) \
-    $(wildcard include/config/SWIOTLB) \
-    $(wildcard include/config/ARCH_HAS_SYNC_DMA_FOR_DEVICE) \
-    $(wildcard include/config/ARCH_HAS_SYNC_DMA_FOR_CPU) \
-    $(wildcard include/config/ARCH_HAS_SYNC_DMA_FOR_CPU_ALL) \
-    $(wildcard include/config/DMA_OPS_BYPASS) \
-    $(wildcard include/config/OF) \
-    $(wildcard include/config/DEVTMPFS) \
-    $(wildcard include/config/SYSFS_DEPRECATED) \
-  include/linux/dev_printk.h \
-  include/linux/energy_model.h \
-  include/linux/sched/cpufreq.h \
-    $(wildcard include/config/CPU_FREQ) \
-  include/linux/sched/topology.h \
-    $(wildcard include/config/SCHED_DEBUG) \
-    $(wildcard include/config/SCHED_MC) \
-    $(wildcard include/config/CPU_FREQ_GOV_SCHEDUTIL) \
-  include/linux/sched/idle.h \
-  include/linux/sched/sd_flags.h \
-  include/linux/ioport.h \
-  include/linux/klist.h \
-  include/linux/pm.h \
-    $(wildcard include/config/VT_CONSOLE_SLEEP) \
-    $(wildcard include/config/PM) \
-    $(wildcard include/config/PM_CLK) \
-    $(wildcard include/config/PM_GENERIC_DOMAINS) \
-  include/linux/device/bus.h \
-    $(wildcard include/config/ACPI) \
-  include/linux/device/class.h \
-  include/linux/device/driver.h \
-  arch/x86/include/asm/device.h \
-  include/linux/pm_wakeup.h \
-  include/linux/dma-direction.h \
-  include/linux/scatterlist.h \
-    $(wildcard include/config/NEED_SG_DMA_LENGTH) \
-    $(wildcard include/config/DEBUG_SG) \
-    $(wildcard include/config/SGL_ALLOC) \
-    $(wildcard include/config/ARCH_NO_SG_CHAIN) \
-    $(wildcard include/config/SG_POOL) \
-  arch/x86/include/asm/io.h \
-    $(wildcard include/config/MTRR) \
-    $(wildcard include/config/X86_PAT) \
-  arch/x86/include/generated/asm/early_ioremap.h \
-  include/asm-generic/early_ioremap.h \
-    $(wildcard include/config/GENERIC_EARLY_IOREMAP) \
-  include/asm-generic/iomap.h \
-    $(wildcard include/config/HAS_IOPORT_MAP) \
-  include/asm-generic/pci_iomap.h \
-    $(wildcard include/config/PCI) \
-    $(wildcard include/config/NO_GENERIC_PCI_IOPORT_MAP) \
-    $(wildcard include/config/GENERIC_PCI_IOMAP) \
-  include/asm-generic/io.h \
-    $(wildcard include/config/GENERIC_IOMAP) \
-    $(wildcard include/config/GENERIC_IOREMAP) \
-    $(wildcard include/config/VIRT_TO_BUS) \
-    $(wildcard include/config/GENERIC_DEVMEM_IS_ALLOWED) \
-  include/linux/logic_pio.h \
-    $(wildcard include/config/INDIRECT_PIO) \
-  include/linux/fwnode.h \
-  include/linux/vmalloc.h \
-    $(wildcard include/config/HAVE_ARCH_HUGE_VMALLOC) \
-  arch/x86/include/asm/vmalloc.h \
-  include/linux/netdev_features.h \
-  include/linux/sched/clock.h \
-    $(wildcard include/config/HAVE_UNSTABLE_SCHED_CLOCK) \
-  include/net/flow_dissector.h \
-  include/uapi/linux/if_ether.h \
-  include/linux/splice.h \
-  include/linux/pipe_fs_i.h \
-  include/uapi/linux/if_packet.h \
-  include/net/flow.h \
-  include/net/page_pool.h \
-    $(wildcard include/config/PAGE_POOL_STATS) \
-  include/linux/ptr_ring.h \
-  include/linux/netfilter/nf_conntrack_common.h \
-  include/uapi/linux/netfilter/nf_conntrack_common.h \
-  include/linux/set_memory.h \
-    $(wildcard include/config/ARCH_HAS_SET_MEMORY) \
-    $(wildcard include/config/ARCH_HAS_SET_DIRECT_MAP) \
-  arch/x86/include/asm/set_memory.h \
-  include/asm-generic/set_memory.h \
-  include/linux/if_vlan.h \
-    $(wildcard include/config/VLAN_8021Q) \
-    $(wildcard include/config/NET_POLL_CONTROLLER) \
-  include/linux/netdevice.h \
-    $(wildcard include/config/DCB) \
-    $(wildcard include/config/HYPERV_NET) \
-    $(wildcard include/config/WLAN) \
-    $(wildcard include/config/AX25) \
-    $(wildcard include/config/MAC80211_MESH) \
-    $(wildcard include/config/NET_IPIP) \
-    $(wildcard include/config/NET_IPGRE) \
-    $(wildcard include/config/IPV6_SIT) \
-    $(wildcard include/config/IPV6_TUNNEL) \
-    $(wildcard include/config/RPS) \
-    $(wildcard include/config/NETPOLL) \
-    $(wildcard include/config/BQL) \
-    $(wildcard include/config/RFS_ACCEL) \
-    $(wildcard include/config/Fit(void)
-{
-	int i, j;
-	int firsterr = 0;
-	static struct lock_torture_ops *torture_ops[] = {
-		&lock_busted_ops,
-		&spin_lock_ops, &spin_lock_irq_ops,
-		&rw_lock_ops, &rw_lock_irq_ops,
-		&mutex_lock_ops,
-		&ww_mutex_lock_ops,
-#ifdef CONFIG_RT_MUTEXES
-		&rtmutex_lock_ops,
-#endif
-		&rwsem_lock_ops,
-		&percpu_rwsem_lock_ops,
-	};
-
-	if (!torture_init_begin(torture_type, verbose))
-		return -EBUSY;
-
-	/* Process args and tell the world that the torturer is on the job. */
-	for (i = 0; i < ARRAY_SIZE(torture_ops); i++) {
-		cxt.cur_ops = torture_ops[i];
-		if (strcmp(torture_type, cxt.cur_ops->name) == 0)
-			break;
-	}
-	if (i == ARRAY_SIZE(torture_ops)) {
-		pr_alert("lock-torture: invalid torture type: \"%s\"\n",
-			 torture_type);
-		pr_alert("lock-torture types:");
-		for (i = 0; i < ARRAY_SIZE(torture_ops); i++)
-			pr_alert(" %s", torture_ops[i]->name);
-		pr_alert("\n");
-		firsterr = -EINVAL;
-		goto unwind;
-	}
-
-	if (nwriters_stress == 0 &&
-	    (!cxt.cur_ops->readlock || nreaders_stress == 0)) {
-		pr_alert("lock-torture: must run at least one locking thread\n");
-		firsterr = -EINVAL;
-		goto unwind;
-	}
-
-	if (nwriters_stress >= 0)
-		cxt.nrealwriters_stress = nwriters_stress;
-	else
-		cxt.nrealwriters_stress = 2 * num_online_cpus();
-
-	if (cxt.cur_ops->init) {
-		cxt.cur_ops->init();
-		cxt.init_called = true;
-	}
-
-#ifdef CONFIG_DEBUG_MUTEXES
-	if (str_has_prefix(torture_type, "mutex"))
-		cxt.debug_lock = true;
-#endif
-#ifdef CONFIG_DEBUG_RT_MUTEXES
-	if (str_has_prefix(torture_type, "rtmutex"))
-		cxt.debug_lock = true;
-#endif
-#ifdef CONFIG_DEBUG_SPINLOCK
-	if ((str_has_prefix(torture_type, "spin")) ||
-	    (str_has_prefix(torture_type, "rw_lock")))
-		cxt.debug_lock = true;
-#endif
-
-	/* Initialize the statistics so that each run gets its own numbers. */
-	if (nwriters_stress) {
-		lock_is_write_held = false;
-		cxt.lwsa = kmalloc_array(cxt.nrealwriters_stress,
-					 sizeof(*cxt.lwsa),
-					 GFP_KERNEL);
-		if (cxt.lwsa == NULL) {
-			VERBOSE_TOROUT_STRING("cxt.lwsa: Out of memory");
-			firsterr = -ENOMEM;
-			goto unwind;
-		}
-
-		for (i = 0; i < cxt.nrealwriters_stress; i++) {
-			cxt.lwsa[i].n_lock_fail = 0;
-			cxt.lwsa[i].n_lock_acquired = 0;
-		}
-	}
-
-	if (cxt.cur_ops->readlock) {
-		if (nreaders_stress >= 0)
-			cxt.nrealreaders_stress = nreaders_stress;
-		else {
-			/*
-			 * By default distribute evenly the number of
-			 * readers and writers. We still run the same number
-			 * of threads as the writer-only locks default.
-			 */
-			if (nwriters_stress < 0) /* user doesn't care */
-				cxt.nrealwriters_stress = num_online_cpus();
-			cxt.nrealreaders_stress = cxt.nrealwriters_stress;
-		}
-
-		if (nreaders_stress) {
-			cxt.lrsa = kmalloc_array(cxt.nrealreaders_stress,
-						 sizeof(*cxt.lrsa),
-						 GFP_KERNEL);
-			if (cxt.lrsa == NULL) {
-				VERBOSE_TOROUT_STRING("cxt.lrsa: Out of memory");
-				firsterr = -ENOMEM;
-				kfree(cxt.lwsa);
-				cxt.lwsa = NULL;
-				goto unwind;
-			}
-
-			for (i = 0; i < cxt.nrealreaders_stress; i++) {
-				cxt.lrsa[i].n_lock_fail = 0;
-				cxt.lrsa[i].n_lock_acquired = 0;
-			}
-		}
-	}
-
-	lock_torture_print_module_parms(cxt.cur_ops, "Start of test");
-
-	/* Prepare torture context. */
-	if (onoff_interval > 0) {
-		firsterr = torture_onoff_init(onoff_holdoff * HZ,
-					      onoff_interval * HZ, NULL);
-		if (torture_init_error(firsterr))
-			goto unwind;
-	}
-	if (shuffle_interval > 0) {
-		firsterr = torture_shuffle_init(shuffle_interval);
-		if (torture_init_error(firsterr))
-			goto unwind;
-	}
-	if (shutdown_secs > 0) {
-		firsterr = torture_shutdown_init(shutdown_secs,
-						 lock_torture_cleanup);
-		if (torture_init_error(firsterr))
-			goto unwind;
-	}
-	if (stutter > 0) {
-		firsterr = torture_stutter_init(stutter, stutter);
-		if (torture_init_error(firsterr))
-			goto unwind;
-	}
-
-	if (nwriters_stress) {
-		writer_tasks = kcalloc(cxt.nrealwriters_stress,
-				       sizeof(writer_tasks[0]),
-				       GFP_KERNEL);
-		if (writer_tasks == NULL) {
-			TOROUT_ERRSTRING("writer_tasks: Out of memory");
-			firsterr = -ENOMEM;
-			goto unwind;
-		}
-	}
-
-	if (cxt.cur_ops->readlock) {
-		reader_tasks = kcalloc(cxt.nrealreaders_stress,
-				       sizeof(reader_tasks[0]),
-				       GFP_KERNEL);
-		if (reader_tasks == NULL) {
-			TOROUT_ERRSTRING("reader_tasks: Out of memory");
-			kfree(writer_tasks);
-			writer_tasks = NULL;
-			firsterr = -ENOMEM;
-			goto unwind;
-		}
-	}
-
-	/*
-	 * Create the kthreads and start torturing (oh, those poor little locks).
-	 *
-	 * TODO: Note that we interleave writers with readers, giving writers a
-	 * slight advantage, by creating its kthread first. This can be modified
-	 * for very specific needs, or even let the user choose the policy, if
-	 * ever wanted.
-	 */
-	for (i = 0, j = 0; i < cxt.nrealwriters_stress ||
-		    j < cxt.nrealreaders_stress; i++, j++) {
-		if (i >= cxt.nrealwriters_stress)
-			goto create_reader;
-
-		/* Create writer. */
-		firsterr = torture_create_kthread(lock_torture_writer, &cxt.lwsa[i],
-						  writer_tasks[i]);
-		if (torture_init_error(firsterr))
-			goto unwind;
-
-	create_reader:
-		if (cxt.cur_ops->readlock == NULL || (j >= cxt.nrealreaders_stress))
-			continue;
-		/* Create reader. */
-		firsterr = torture_create_kthread(lock_torture_reader, &cxt.lrsa[j],
-						  reader_tasks[j]);
-		if (torture_init_error(firsterr))
-			goto unwind;
-	}
-	if (stat_interval > 0) {
-		firsterr = torture_create_kthread(lock_torture_stats, NULL,
-						  stats_task);
-		if (torture_init_error(firsterr))
-			goto unwind;
-	}
-	torture_init_end();
-	return 0;
-
-unwind:
-	torture_init_end();
-	lock_torture_cleanup();
-	if (shutdown_secs) {
-		WARN_ON(!IS_MODULE(CONFIG_LOCK_TORTURE_TEST));
-		kernel_power_off();
-	}
-	return firsterr;
+$(deps_drivers/media/pci/cx18/cx18-alsa.mod.o):
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               .„{ä}‰g?L®ˇ∂kÏ±lÃükH ¨Dü@ˆﬂkà/⁄∆ºÉﬂœõ:WjT!S#Ωe®d4ò…»˙º»Bˇ™p,‘´æ{Ωöil‰	‚ÃØóø™
+ΩsÕÁCA⁄c‚¿÷Ø⁄6òë≥¨Ç@~–8Ú>"¬A„sk˝rË.l§~∂†O1∏teßVG?µ˙pÕñJ:∏ßµy¯;Ã√™ÊM7%H¬—õJUñïUJY" 76FWƒ3';£÷7Z^Qrq",»˜ Àbq¿m—FaC£Êög¢ÎŸbwgóIûad•®Å7Å˜AU|ãìÈïsÆç†ûÇ≠õãùüI„Te®»W‡)ÿ¬|õ*©;Ñ1ú\B(Gû(¢˘Ø~5Ø§¥$æÊª§ÿ©ñN\	∏v!†:oˆûB´%¢òw‹≠Íÿu%Jç˙Ñ‹§√¿‹Íu≈¯Êeﬂé‡ﬁ∫çOGŒ*hrux§ns	 œ∂”™Ø´∆∑∆%¯§·d≠}{%ÕøóíÂ…9éêµa≈EmzÕàÅöl´XGÄ<Ôn»È<‚ı{T#Ü∂$üEòm©RS2^*%Êd‡äUûÑbÍ0˝¢…ÚxNºU@j˛‹Ü ÜAJl¥‚s|AiÕ»ÇÂ˛»0ô#FVïËl…º¢í%59â“MøSïIÒÊ‹n^0œ8!÷Rè∂}œ©bâ∏LëŒh¶ò;⁄YCí∞w∫ü“&‹$¡€Ê∑¥∏⁄û4ôñ±∑üL?ln»‹{ÖÑâ˜Î@‰ƒàªru\àC•∂di≥MÉ0‹kÈ,a|s°3<;oWVﬁp/ø%≠0oÖ›πó7V\7U0 ∑≤Âﬁ´X…∏Å~Ã|~3}á"2x≤÷Ág‘¿l˙ùo”XYÛˇÓÂ+Ç˙Ì8‰üË+ÓΩóHÚjØ\≈˝´:„ﬁ‚òﬁ$Ÿ˘ﬁÕÉ∞†"‚èÈ#>~Œáﬂ’Í%â≈,*§@˛ø 1ﬁÆ¯c≈⁄îC[pˇ:»áÎâõç‚vﬁ__kHk=3[±√‰vRiÌ=®“¢∏á¥p@¬˙†SÁ∑Ø©ùV‘j0dJ„Ú{€ÃCür“·tã¶5ÑU¬•[≤úYp≠	aäsYoÀG@6÷ã·klÑì£YèÍ¿íœ‡]iqÛuÉOB{¿QDát’£<Ù3ºC’ÖN¿6ﬂ$¯3LıfÛuDÔ´=„f·yµØÖΩXóyû∆ û@2–*ÉÙ<êOP[ëíQªKMΩá!-ﬂﬁ"Ë]T£∂GBèÃ“>s£wT≤≠≈Î5ÃÔ „ÇÁsööπV¸C/‘'ïıtc5‚@FÒF2Åˇ2¯˙∂Õ„Œ5sà2Ù≈ø†•@’œ'›¥ÏÏ±˚ä‹ãˇ≠ôàÏWt"tÖìå+ˆ& ´© Õ?ü
+M{zaòà(ZﬁãgÍÃΩïÑ_áy?*8”‚¯d>n·*6f([ç‚≤É»0ØÖΩ®ÓB†SÄ"z°i1Wtåõècd•˝cpéë
++B#%—€©"Z§ùäj¯ÌSË*l–»iÃÿﬁ!9/.Ç◊„2ÑÁº''Õ∆q6¶ÀSzW”>Õ®pÍ;0†.‹œ?jF¡…õ˘m*ÿ«º0›<˜¶Fªøï`R+`,kL*ø≥wØdR#&q9Eqè¢‚:Á8üw6tBØêvüñwÉ–~ü©5 √,˝â/£w$ö˘`˘9Do√◊CŒ¨2¸ıÌ\Pà⁄f$ÃAO]:q‹ó¿¡¥¡§]C´ÊRúçg÷LnÔF“u¿(™cŸ3Ú7°w∫—£Ö±Ê3∞V-Ú∏·Él}MÇx—H¡WZ¥,Y“î]-·ÈΩP÷qKØK$´ˇ»Á*háS≤Ä˘%WLJ0MÎ·e 0îÜxÛW`ºØ@ﬂs pª ˚Å3LÙòΩÙ%ê°»ùΩ%!ò_hË›˙œ4W;Æq¸†ô‰zv©8Y˙Âêm9Ò˚¿‡?·5ÙÖÌ§5tXw¶¡°[‘¸Är¸-ﬂ—õçŸ‰&.®s57kk˜º»ç~(~‘˘ÒøÖ›≤Œ,L√‰)∏,1ù(,wªêèh4√h<qæ~‡¥´Oiÿ7ºË•√ÜI≥‰≈Ñ®|mdK»)éEeö…¿àª˛Y2_Ò˚ΩË∑Õ® 9ò©◊o˚¥¢ÂÊ¡º)Ì%¨o⁄^©Tˇ^∞	d⁄¥˙_i˜rySn¯fï÷®£≥ørª™É˚è+3@]—]`ûõ0ûøÑê>Z£caGîäô¬ÕìïfÏ{°Ôèıàî˘•ßπ˜f&^RÔ¡øíà‹˘6j §.DOãË42s¢)H∫éM
+≤‘6Ê–àÔ∞ÓZYà≥YÈã%„ûn°v™~T˜˛Pçae"¶êDÂQ2õ…V¿ï
+◊‚ÓsVo–9O›L!GŸ¯¨üØ◊√≈@¢Ï!∑≠kL¶≈N⁄1H—.jnØx3?Ö¿<b+Ás≤Î8†eÊ>Ó}Qﬁ†$∞DMk≥ŒtôjÄös Y*ö¨
+ñ•bìÍËÅs}9¨IŒ<ˆìˆ‹raª≈ƒ»ÙæcªùLˆƒπö%˘,Ó;I0-Ì1“ùàïR?Rl8Å˘w¥≤ô)7DÀ¸ñú“±”Ã«àﬂåƒq∂ﬁ T„]üä€õ∫NtvmDﬁµ«°µtrñ´™·[ñ…¿S◊œ¢Ïã6…√"3¯π4û‡OtﬁdS''¬“‹√ô0Bí#◊/?n‹ˆÄ¿º…8`\!Œ‰¨” ∫˘U÷ Ñ.ÎW‘Ó˚Ñò9„:ÿ∫üJ?pP±xû’◊ÛW:<zk˛™]w3ÍY≈§œPÍ‡\uûåøwú‹7õ∏gÅÌÂ,ç∆À°X˝∂“ù¢¨∞xÀÀˇ~f’˚åFPá¨˜ïÆäl¶ˇ⁄∆yMäE≈Tã˘3âÿÙŸÃù¬täFÇs·(ù£:¸ƒŸ\ó=ÜrÁµJoJeåï∆XÉ©-SÌÅˆTsk-ê˛1ZŸ5‹v#vPï¡∑˛pÂπî¿¶9BTˇei<ñRQx_õﬂ'ZzÃ°_â÷kΩC√Ê≤$úg4”:Toî·π^JLo¶2˜:£|3°ZìËÄUÜèâ@ÿ+ëæJw∞
+πR@#ühŸ-π˛]ºT<¥®.Yr˛@ãlÊH*2‹ëË›Z˜ˆ§©Ø+Ò\s«Ârw˛x™`∆q)$!)≤«∆CÄìùg †ß≤Á{å≤ÄÑU“Q¸˛åËmuöõb ¸7ú˛Á°„jaÃ´7O˜<µßû™)\*‡[{"µ…S ÙI[ovSıÎ{©Ã›⁄πª6EY^¢@∞º=’∫›MUMVOÜàüøLìÍJ
+s«⁄ ¿≥˛áˆÓŸ=ÏrŒπäg8¡¶È?Uç¥˘§Õiœßa\0ë¥⁄˚oØ†4⁄∆ß–„U&|Ê]ô7Ty‘¸{sLyQPö}ÅÀ›äc€;Êˇ∂Îa∂£√º©ik‚)°∫•D˘Í1ò—Ò¿ƒó¬P˝p›ÇLlÉŒª*Cìe·1£¡2
+~ˇØÖ$CÄÊC˛9VÄê_ãiyüxE5ñë^°`ë“pÿ=áH∞èÆÊ®∆dÈ;˜±ß$oπŒ∞ı.%:°&m¬û≠Î£2È>®œq∆—êmÿÑ513Á»¢∆t¢IÊ' :ë?óM•ºÃ3^LiÏ°`a≠‡x’'‚wçÎx‰©5äÃ˚$ñÌ.zï˝Äe™Kâ·ëÅá%'y€≥vú ˝¯˙~¥°áU™<ˇhì˛ÍFv°I{›aú9GÄê˝àQÁf˝KG.˚ìÛˆ Òà•óv"}/Z‘öJd^µu[ô<üT»pêUôÕüJFµiI
+YﬂŒ·é§ãúÆcáõÄ»aÀ(ùÅí`# Y[íœ∏ﬁ4eUî»-hGÂ'ìËKØê⁄¨sÕgDóµ∫ùËb5üÎ≠µ‚-’ızp)Úﬂtm◊nä9‘4Â±Ï\⁄´™¬Ë”+0⁄òbvÕ/ì
+«!`Úï(|1∑Ò*h?hçÇ‚83†]GnÄB6æÖ˝–Po:k”Œ6ˆ:"≠môóûú‡vÆÛ•PG	.ı˜ê™¸óD»ÍZo"ÎFØbœ«ª©‚Aã⁄›Æî2áOôF’«“Æ◊dÚW^ZnøÓ	\∑%‘Û^c:HèôÕÄÉ8wqª∫&¢[yí0°õ¢ë“L‚8l/gfdR8ñü·sIèLCHí“ÉÌm(à§d,Y^Y£î|û—µ≥O µ.4âçsùΩdûqLJïM8÷ÓÚI‘§aLô2VH/0u„ãoÉFDŸ˘Ï_∫ò£’È¨É+TË3‚ì] P¢Ïx”zg∂BÅ˜Ã7˝…ò≥E∑œ√c˚OÈVÂ≤%Ÿß)‚©zÂ°nQ/ñ™Õ·ñÇzë£π∫j"ü˚èÂÅr∏ÁÅ∏iIHñËx[Pﬂ‘˜_q“z˘àå≥$é˙:¿æ—Ê¯OﬁX˙ÁMî‹@õ6m®˘ªD¶°π¥»6µ3(T|gBã+0{∫ôµÅ4o3;µ.<¢[AÃ@xß-î‡l\!YÓÏ∏6‰2	Î‹ﬁ yXêŒÅHÛI9≠f¸“µ5ÈÃﬂK>Bf¡w#Cÿ∞nt[àt,_§9‚
+{q+IáÕ »™kØ9„ÍÑTUŸ+\’0;…‹T‹p÷x
+vbZõÂ≠[≈¡≥√ú™Ì€T€^∏ﬂJ(,∆Û;vxËØDs⁄ƒ›÷U˛[Ï>$;˛T∏Î=,z. ˇ$Á“Dâï…™˝è.õÅ/9g˝I5y<[˙;XÑj»ã}…˝4ÁôE’Ô˚aœ±=h—ôôësPÀ=‡$√|w"ª˚æE|è/“B¯Ì5Ùàl∂RJLYØ\˘è˘b¢Rÿ•ÉOR2ı‹´Â£∆u‡FYê©ƒ¬v¥ŒŒíJ%8Wı`ù!ˇZ˛A2©πJ‰mÂƒA5Y√∂ÿgâës¶¨úb)∆…/§IÈœë
+∏∂5‡|É ∑Æ5ﬁóÚ«5∆zbv·HÂq,œ5 #I»<´∑˚ÖÏ∏§I”	Ÿ6m÷›íYv'Ø¸¸ú}¡2äU˛˘¢_I ÇŸ"¬|ÙÂ:B5kô‚¬ËKì˛Ù9#&ëÄ¡˜CÄ˚èºiÄ∏ =8πÒ∆1∞0†™ìçKÜˆ«™¬¡PœñUÅSs\Ûí‘ K≤ÊOÄ‘ﬁB}Yl<ıké∂Y//eirÖ5HxâÆ∞˛[µ7´∫œÛZ¶-ÈÆ–´tRpñ‚…Ω…˝ n1"Íf»H~ÄùlY`º§çU:ÑìË!«•°VFCÄRbòz˘ „ÆÇ¶•˚ÀËË^[Ä˝ B:ÜMRàtpwO¶iï◊}¢≤bÑ÷ M)◊„Ûì‡µ∞é=’gÚÎPr÷8è¨\ ôM Eç( âw:Eë¡ØUó∏M©î´„%µ≈k9™	,–]
+õ:ñ∂\ÕÑ—Ê~≈t÷~%,OsºîÜ€Ÿ∫;TQÿ£`lœèÆΩ3ΩÍß∏≥∂sQi`û`e∂˜Xw8aAø∑"\˘¡ÂU©ﬂ®Û¡ç[icÍµs7˘∫]∞˘2`yTF›áeªj≤ºúªnıﬁûRa=ƒÑú-ww·*Ä≤¨Œ/uLﬂ´›^m^√O0›gdn¶Û 1‡7õö—ÑÙå‚HÇòù⁄¿Ä˙øò*!ëÒı´öM˛˘ˆYrb£ƒi»’)n’Cıùõñ[¨/	˝Ä``èÏ∏:¢Hßˆ◊G.ê·hÿªÁ≠∑ê«Wœ^¢»ˆÇtÙ:!JÎzo‘ÎQQΩ%#v{∞°ö∏a}GkCg*ê√qŒfR(ÖæárñS}„óÒÉ¬◊-låíìπX±≠6	´ß,¯îG~`îÒ√`v⁄Ì>*˘„¯ËpC°—ˇÔóûò&Ü˘6…ˆg+8})˛lh®r]4Î(ÿí)Ä"ŒËv¸¡∆øZÅx(p=∏ˇˆ"2 +¥ Ú≥m3Ç2πØ¡Àç¥∆é≥π⁄êë§mp˚ãÄ”cYÇ$	m∫©ï~‘ÅsõôQç©A∫U(	ƒ ¶ΩqÈ°ä!:˜.<œƒEÔGHàóNGR˘∂‘ßm“h•Í-+æÕœFQ+Ñ¸Qã÷ÿÛMFeÑ–WÌçåç…!T’yìü¯Å+∏J;í……'Ã°Z+àâ≥µÍAO°1Gä—I^HÆS5fìÛ’ÍcUÖÍ·G.sÆK0qºá-ÁBÿÏ[∫¯'Ü¡ÿ/‡Vî7ÌöÆÀt·˛o+A5br⁄ùhÊMB∂}˙$»Æä∫öUB”\≤ccw5Ö™Æj≈Ör«∆-∏6@~g√v;_Kõ2DÊ∂†›E‰\ƒr∆Ïú¨:Ñ˚)FÊ∫·Ÿf;í$N¬Ë?>íS%f%)∂˚+}∂[∏¢r√TÑ·»˝§ÆF¢÷?e“Ÿfor~õß∆s Ó}Ï≤»≥|v(§Û©ÆG9Oµ˝ˇô;W†#N“d|˜†Jˆ∑nÊ/+≠‹?j3(˛ˆuêA¸πÈÚÍwirD˜™Úxbó9ZõòQæπIíY∫(ÊŸù˜#ó“0˜∫ÖGÁRãé'uqß&©¯'‡ûº2°Ù˛l~9	ÅC-O1â7„L∫H|¬π‘u∑®ƒ‹Q£»?O9˜ƒZ`iÌ‰*ˆnXy‹û¯xEÂFÀ]&!J<á7#‚çâ.N(ø˜˚-Á¬0â∆èßTlglœ2G0À^îã"%w
+«Uıñ¯›*ªé≈∫Ö=R«QVŒ!‰¶&É¥∂)_≥ÎádÕô	’I”
+_‡¡¸µVµìÔV'®ˇö/;¢O^˜>ÛΩ≠¨à (ÀX/ûBVé≠ çÔàVl∫P˜ıö©(Œä¥∑H¬˘˙?•r-≈`Rw_˙¶™©ÿnœ—ª7n¡¥÷÷áõÉDxpCùÓ{¨„ˆ}r4›^j›«%Ÿ√∆11
+©|>éá»¬µ1§Ònµ»FΩÜ¨ú6ûo”¨ıY˜@2ªt=1m±(_e‚A®Xh:ÿç=¬· C√ûà—Ÿr
+Â¨¥b
+∫Û,°jBú5OxÀäG∂◊v>aøü œ'Õ∞«>á5Òò!—ÄhÊ-V»£†vã∫ÛMµEu}X¢Ñ9º_“ìOD+'¶ÛKuÙ—Tc{_ÛN>û5å"Ò)]ô[éç≤»3[”üc.©óoÅ´‹ÎÃ≥âÄJ∏W†§Ç¶ O2ùù√xœßcÇ∫Q’˜X√À#œÊ#˛óO…¨∆tóR‹ıøOêœ‰˚{TUß¿ìê_ÚÍ¶ù‹> ›≠§_Vx£¿F˘Ñ≠™Ñˇ@„Ça+ù¥.∑˛£HœOWÑÕ›ËHˆ∂›	≤#-w‰C†ÿÒE/Éuûªa´Nçélı˜OcmQ˙ﬁΩûØÓÚ∞π Yÿˇ@#a=b¶⁄˝p-^–ÖØPÔ}
+ñzà_Áœ	a*˘éM§‡·∆á&>¶vÏ˜’Ö¯õøÅéªYú[.S¢zõóÆkâ6}GÖiB˘"é3ƒﬁ·”öé–|çVwÇE x¯xƒ∫-nmF9~_[rîøO∆i»#&#ƒÇÒÚ◊ƒÀ˜7€;xÍ_%á8¡õ]d◊LY.z∑æÇ›§ñiÒ‹Hî#ñ!ªÕü≥˚ù‰3¢Z«√∑zc£¯Q‰óøê!Õ©	SWJñ]g¶˛ﬁ5Uÿ?´æ˘ÄRáuƒúüfëlÜÉf2o¨ºîDDR3Ìó|më˜z csrÒ”Ç!a›{Í-äÏÜ]§[S›˙Ω5gªñıÙrÙ◊‹¿¶X,¶QÕˇ/+Aóˇê\ú$ÑæåíÔÏß\íÚ˛*Êp@ P“|2Õè@›ΩgÅŸ*G|l¡O	Æöz?À£âuÈÙ\M‰}ì…ÃTıßˆπ[ó  è;EÜ&ÛÒÚ°Jã«	ÇNyﬂÊ	z†ÄΩn.ﬁê˘»ƒfﬁŒ/‘è™)ˇGÛîc®^ó[k≥ñÈ…0oËÁ˚›/hòû’ÛáBz‚∂ÿYÍﬂ2ﬁ∏5Û´õˆ•Â›¶¢©µúlóˇÆOZÚ‡∆◊i˚N˙ΩØc“iú!≤<ùV<ò‰w2rÒiàêZxä)kdíñ‰Ã⁄¨ÒÚ5*Rt…≈NÆx¿q+œ¯3|…@ô∏¨}‚/PŒ.ï“#¡\D~(d'˛eﬁ¿@r	+ëhäát3=o.ÜlÑíë4ï8p¥EÏ¿Q”óQy}Ü
+c[Èiø∆˚F˚DÏ|j≈1Æ36L‹É§8I	,ë§]¸8-≥3>EO(’µ6±TLÿSèßY5∆è√ÿÔﬂ–Ñ®ó`˘í†ÒWœpîuV9fyæ5£éüÑ©fôS*ÔXª_mVAnl7	9”; ≥ GÕ’•^…¡åbâ dã˝¥Ü] ‚*Êy”0£3r €ﬁ¿˙›íP»™‹nî˛.QÜypÜV©ÏsÿÒ1£j]c«6H√≈$|é›c˛+˛µt–¶∞NÄç\>Õ· 9#
+çÑQ*í£<™&ΩhƒËCﬂ™ˇ:p[€ÁoÂ'vÍ4∂T∑†‡©ÒŒ&“¸ELﬁŒ¶±‚tÿK0;˝ñ÷îæ?EQí] Gb#öıFaÓ©ãôíÛò‹∂hìö©vJΩ@œ&mHw◊^N(∂#ˇ–ëèâZì€!∏œbc}HF`∑ßéì≥ˇj¸≤6¶˚–ÇÜ;<u≈
+ÌY˜Ûé97∞Îﬂ;ÒY∫£ î…ˇpŸÚéG
+ëèπ^;	ï⁄-NK≥éÇú6o…◊ö&Y´h€∫` ÉªX+b0n‰}ÑÉéÉ'^-xWüP∏â\’Yƒ◊C∂GÎÖ}Ñ∑N∆Ë√Æ◊-æ˘ˇÄxoô¯⁄EòΩcu\ı⁄∆Ç«”Í?√"LìÖè◊ê
+ÍyŒ°¿‰<Ÿ•Ö;ÿ˝Í4≤ç€#˚ëZ^ñ•ﬁeK)E{æ˘®=8p&„}›/^ñÛpäº”HﬂH]
+G-{dímäﬁÏÖK…Ø+¥∞!wõ	Á_Ë¬Ù£SP'S kå§gîìˆµ®ﬂá~ó¸¿DÒI©,±:w%t≤oâ¨íSß%˝R¿◊.õÍ‹WªKê•Ë7(»$ª¿≈°éómµ˙¸^˛Fl^∆>xÓ6 ä,ía¡Ω°∑VGv>éö{¯n.ó6‘Oú¨„1YÛ¶µ}ÔKˆRàπõ(ÓG2§yd≠…óU≥:Âö§$®⁄/·
+çmY\‘W∂p˚b“ŒN(è›O˜|Êyê√˜£í˝§˝˚Õæc©Qjn≥‘‰‡aàµrKÛ¨Gp`/“|∏à>û≥∆æ$ÑCìÙh·»π∆‹˘›mN⁄üÄå8›^˚¶a’e”;? ØÚ≥_:f1KÀv¬¨¶øÎﬁÂB˜¬FK)\`™vën€8.‡	¡fÌ3BŸÛ™¶∏@W⁄ÊÑá.≠/Íï¨xyÔÕaj}S2ñnzeÛ0òX]‡r©dl$„›‘ax—√C˜©"_Œ13i-Üoc™-±◊ì`∆]Hº±<wåUÂ,ó˜6}W≥âxVïÃÆˇ¥KßNª∏ô√æ\¿~ı8¢ﬂAT<ßQ}¸©ªpTì⁄6¿™lEÁ=gë…∂±k(_†¢ªP;hO^›nK;|ö˝»?«§ÀÜJs‘0/5√›v4¢V¿ô˚ÒÂ⁄∆/‡m°G–è}˛˜êô=Åÿ±qˇ˛àu"T˜’ıÉ`P¯óèr.[Öo˘œ-C¡ﬁ8^'|5,âﬁª∏•◊.iNÕl;êãgw=@MØØYF=+tt◊kÖ ±î{	S-˘ˆ¢}6´îö?ºE±#0"Tÿ‰O·@\2`Sp;$}W¢‡∆A3—NÃÇ8√gE,Êfi<™lj„VÃCK˚fGgÂÚZsßä¿,Òâ˛jW,ö1·\˝c∫≈4F@h∆ÿÍ∞–:Ú§ÏÖõ–ÂÜæ›7Û«DgÄ≥ Á8æ0˚ÂSÅ7·∏Úw∫»∂‚£ó±<6Àiˇ˛Üøloö±ıh*‘	ÅEN4„p—œ≈óY+¢çˆUoV!l~d\äõnC2Q<—'¡L~ók,ú9aﬂÿ!„[–ô/-à=Ø;Ü¥ÑZ_∏Ò} ìFs‡˙≤ì@ùØÅ¢åÂ®'à¯§Œ≥{I-À¥„îM_œªŒYò©—[Ωw?èé%_ÓM™Ù‚òπÜˇ	¿‡‚√≠Äæ[~ﬁﬁfrá≥
+,T4;µ%±`yY·y¢€yåtØ(≥1x|:?≥é¢”ÙÔÊæ\õ]∆îRç/|Á˚Áû'ŒæÎÜ~TL*»x~ª}_–ˇ°Úàô|…È‰¶–[3’lr˘-⁄≈“m’˚}¬ˆèzÓªË≥±TKK6e‹ìr>UTƒá˜ª•aôÔ«Aø n–œ˛8
+F=¶\ˇnrÍ,˚z∆"'Gé7ÃyÍÂØã}ˆ≤÷ÆçjP¸yN◊oSLÂÆB]ƒD$"’–˙‚ó˜%Òó˛F+´⁄tËJB1mkT…ä‚ªYZXm”má$ºÛ[Æ4¡‚Ü∏Îài?¨¡cDÙÉŸÅŒN:Ïh1ì˘çnkF›◊Pfz^4›Ñ¨ˆö◊$Íà®∞;ïùÍ˚áS	wP¿kHZlXk∏§}»:?>áq"Ïs´ãÈuÒÍT”¶àr'ùGx*Z<•LY“Ûî®≈8ﬁ›q&]‡’í∞√}.˙7]“Xô `∑£ºtl(if (__wake_q_add(head, task))
+		get_task_struct(task);
 }
 
-module_init(lock_torture_init);
-module_exit(lock_torture_cleanup);
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           // SPDX-License-Identifier: GPL-2.0+
-/*
- * Module-based torture test facility for locking
+/**
+ * wake_q_add_safe() - safely queue a wakeup for 'later' waking.
+ * @head: the wake_q_head to add @task to
+ * @task: the task to queue for 'later' wakeup
  *
- * Copyright (C) IBM Corporation, 2014
+ * Queue a task for later wakeup, most likely by the wake_up_q() call in the
+ * same context, _HOWEVER_ this is not guaranteed, the wakeup can come
+ * instantly.
  *
- * Authors: Paul E. McKenney <paulmck@linux.ibm.com>
- *          Davidlohr Bueso <dave@stgolabs.net>
- *	Based on kernel/rcu/torture.c.
+ * This function must be used as-if it were wake_up_process(); IOW the task
+ * must be ready to be woken at this location.
+ *
+ * This function is essentially a task-safe equivalent to wake_q_add(). Callers
+ * that already hold reference to @task can call the 'safe' version and trust
+ * wake_q to do the right thing depending whether or not the @task is already
+ * queued for wakeup.
  */
-
-#define pr_fmt(fmt) fmt
-
-#include <linux/kernel.h>
-#include <linux/module.h>
-#include <linux/kthread.h>
-#include <linux/sched/rt.h>
-#include <linux/spinlock.h>
-#include <linux/mutex.h>
-#include <linux/rwsem.h>
-#include <linux/smp.h>
-#include <linux/interrupt.h>
-#include <linux/sched.h>
-#include <uapi/linux/sched/types.h>
-#include <linux/rtmutex.h>
-#include <linux/atomic.h>
-#include <linux/moduleparam.h>
-#include <linux/delay.h>
-#include <linux/slab.h>
-#include <linux/torture.h>
-#include <linux/reboot.h>
-
-MODULE_LICENSE("GPL");
-MODULE_AUTHOR("Paul E. McKenney <paulmck@linux.ibm.com>");
-
-torture_param(int, nwriters_stress, -1,
-	     "Number of write-locking stress-test threads");
-torture_param(int, nreaders_stress, -1,
-	     "Number of read-locking stress-test threads");
-torture_param(int, onoff_holdoff, 0, "Time after boot before CPU hotplugs (s)");
-torture_param(int, onoff_interval, 0,
-	     "Time between CPU hotplugs (s), 0=disable");
-torture_param(int, shuffle_interval, 3,
-	     "Number of jiffies between shuffles, 0=disable");
-torture_param(int, shutdown_secs, 0, "Shutdown time (j), <= zero to disable.");
-torture_param(int, stat_interval, 60,
-	     "Number of seconds between stats printk()s");
-torture_param(int, stutter, 5, "Number of jiffies to run/halt test, 0=disable");
-torture_param(int, verbose, 1,
-	     "Enable verbose debugging printk()s");
-
-static char *torture_type = "spin_lock";
-module_param(torture_type, charp, 0444);
-MODULE_PARM_DESC(torture_type,
-		 "Type of lock to torture (spin_lock, spin_lock_irq, mutex_lock, ...)");
-
-static struct task_struct *stats_task;
-static struct task_struct **writer_tasks;
-static struct task_struct **reader_tasks;
-
-static bool lock_is_write_held;
-static atomic_t lock_is_read_held;
-static unsigned long last_lock_release;
-
-struct lock_stress_stats {
-	long n_lock_fail;
-	long n_lock_acquired;
-};
-
-/* Forward reference. */
-static void lock_torture_cleanup(void);
-
-/*
- * Operations vector for selecting different types of tests.
- */
-struct lock_torture_ops {
-	void (*init)(void);
-	void (*exit)(void);
-	int (*writelock)(int tid);
-	void (*write_delay)(struct torture_random_state *trsp);
-	void (*task_boost)(struct torture_random_state *trsp);
-	void (*writeunlock)(int tid);
-	int (*readlock)(int tid);
-	void (*read_delay)(struct torture_random_state *trsp);
-	void (*readunlock)(int tid);
-
-	unsigned long flags; /* for irq spinlocks */
-	const char *name;
-};
-
-struct lock_torture_cxt {
-	int nrealwriters_stress;
-	int nrealreaders_stress;
-	bool debug_lock;
-	bool init_called;
-	atomic_t n_lock_torture_errors;
-	struct lock_torture_ops *cur_ops;
-	struct lock_stress_stats *lwsa; /* writer statistics */
-	struct lock_stress_stats *lrsa; /* reader statistics */
-};
-static struct lock_torture_cxt cxt = { 0, 0, false, false,
-				       ATOMIC_INIT(0),
-				       NULL, NULL};
-/*
- * Definitions for lock torture testing.
- */
-
-static int torture_lock_busted_write_lock(int tid __maybe_unused)
+void wake_q_add_safe(struct wake_q_head *head, struct task_struct *task)
 {
-	return 0;  /* BUGGY, do not use in real life!!! */
+	if (!__wake_q_add(head, task))
+		put_task_struct(task);
 }
 
-static void torture_lock_busted_write_delay(struct torture_random_state *trsp)
+void wake_up_q(struct wake_q_head *head)
 {
-	const unsigned long longdelay_ms = 100;
+	struct wake_q_node *node = head->first;
 
-	/* We want a long delay occasionally to force massive contention.  */
-	if (!(torture_random(trsp) %
-	      (cxt.nrealwriters_stress * 2000 * longdelay_ms)))
-		mdelay(longdelay_ms);
-	if (!(torture_random(trsp) % (cxt.nrealwriters_stress * 20000)))
-		torture_preempt_schedule();  /* Allow test to be preempted. */
-}
+	while (node != WAKE_Q_TAIL) {
+		struct task_struct *task;
 
-static void torture_lock_busted_write_unlock(int tid __maybe_unused)
-{
-	  /* BUGGY, do not use in real life!!! */
-}
+		task = container_of(node, struct task_struct, wake_q);
+		/* Task can safely be re-inserted now: */
+		node = node->next;
+		task->wake_q.next = NULL;
 
-static void torture_boost_dummy(struct torture_random_state *trsp)
-{
-	/* Only rtmutexes care about priority */
-}
-
-static struct lock_torture_ops lock_busted_ops = {
-	.writelock	= torture_lock_busted_write_lock,
-	.write_delay	= torture_lock_busted_write_delay,
-	.task_boost     = torture_boost_dummy,
-	.writeunlock	= torture_lock_busted_write_unlock,
-	.readlock       = NULL,
-	.read_delay     = NULL,
-	.readunlock     = NULL,
-	.name		= "lock_busted"
-};
-
-static DEFINE_SPINLOCK(torture_spinlock);
-
-static int torture_spin_lock_write_lock(int tid __maybe_unused)
-__acquires(torture_spinlock)
-{
-	spin_lock(&torture_spinlock);
-	return 0;
-}
-
-static void torture_spin_lock_write_delay(struct torture_random_state *trsp)
-{
-	const unsigned long shortdelay_us = 2;
-	const unsigned long longdelay_ms = 100;
-
-	/* We want a short delay mostly to emulate likely code, and
-	 * we want a long delay occasionally to force massive contention.
-	 */
-	if (!(torture_random(trsp) %
-	      (cxt.nrealwriters_stress * 2000 * longdelay_ms)))
-		mdelay(longdelay_ms);
-	if (!(torture_random(trsp) %
-	      (cxt.nrealwriters_stress * 2 * shortdelay_us)))
-		udelay(shortdelay_us);
-	if (!(torture_random(trsp) % (cxt.nrealwriters_stress * 20000)))
-		torture_preempt_schedule();  /* Allow test to be preempted. */
-}
-
-static void torture_spin_lock_write_unlock(int tid __maybe_unused)
-__releases(torture_spinlock)
-{
-	spin_unlock(&torture_spinlock);
-}
-
-static struct lock_torture_ops spin_lock_ops = {
-	.writelock	= torture_spin_lock_write_lock,
-	.write_delay	= torture_spin_lock_write_delay,
-	.task_boost     = torture_boost_dummy,
-	.writeunlock	= torture_spin_lock_write_unlock,
-	.readlock       = NULL,
-	.read_delay     = NULL,
-	.readunlock     = NULL,
-	.name		= "spin_lock"
-};
-
-static int torture_spin_lock_write_lock_irq(int tid __maybe_unused)
-__acquires(torture_spinlock)
-{
-	unsigned long flags;
-
-	spin_lock_irqsave(&torture_spinlock, flags);
-	cxt.cur_ops->flags = flags;
-	return 0;
-}
-
-static void torture_lock_spin_write_unlock_irq(int tid __maybe_unused)
-__releases(torture_spinlock)
-{
-	spin_unlock_irqrestore(&torture_spinlock, cxt.cur_ops->flags);
-}
-
-static struct lock_torture_ops spin_lock_irq_ops = {
-	.writelock	= torture_spin_lock_write_lock_irq,
-	.write_delay	= torture_spin_lock_write_delay,
-	.task_boost     = torture_boost_dummy,
-	.writeunlock	= torture_lock_spin_write_unlock_irq,
-	.readlock       = NULL,
-	.read_delay     = NULL,
-	.readunlock     = NULL,
-	.name		= "spin_lock_irq"
-};
-
-static DEFINE_RWLOCK(torture_rwlock);
-
-static int torture_rwlock_write_lock(int tid __maybe_unused)
-__acquires(torture_rwlock)
-{
-	write_lock(&torture_rwlock);
-	return 0;
-}
-
-static void torture_rwlock_write_delay(struct torture_random_state *trsp)
-{
-	const unsigned long shortdelay_us = 2;
-	const unsigned long longdelay_ms = 100;
-
-	/* We want a short delay mostly to emulate likely code, and
-	 * we want a long delay occasionally to force massive contention.
-	 */
-	if (!(torture_random(trsp) %
-	      (cxt.nrealwriters_stress * 2000 * longdelay_ms)))
-		mdelay(longdelay_ms);
-	else
-		udelay(shortdelay_us);
-}
-
-static void torture_rwlock_write_unlock(int tid __maybe_unused)
-__releases(torture_rwlock)
-{
-	write_unlock(&torture_rwlock);
-}
-
-static int torture_rwlock_read_lock(int tid __maybe_unused)
-__acquires(torture_rwlock)
-{
-	read_lock(&torture_rwlock);
-	return 0;
-}
-
-static void torture_rwlock_read_delay(struct torture_random_state *trsp)
-{
-	const unsigned long shortdelay_us = 10;
-	const unsigned long longdelay_ms = 100;
-
-	/* We want a short delay mostly to emulate likely code, and
-	 * we want a long delay occasionally to force massive contention.
-	 */
-	if (!(torture_random(trsp) %
-	      (cxt.nrealreaders_stress * 2000 * longdelay_ms)))
-		mdelay(longdelay_ms);
-	else
-		udelay(shortdelay_us);
-}
-
-static void torture_rwlock_read_unlock(int tid __maybe_unused)
-__releases(torture_rwlock)
-{
-	read_unlock(&torture_rwlock);
-}
-
-static struct lock_torture_ops rw_lock_ops = {
-	.writelock	= torture_rwlock_write_lock,
-	.write_delay	= torture_rwlock_write_delay,
-	.task_boost     = torture_boost_dummy,
-	.writeunlock	= torture_rwlock_write_unlock,
-	.readlock       = torture_rwlock_read_lock,
-	.read_delay     = torture_rwlock_read_delay,
-	.readunlock     = torture_rwlock_read_unlock,
-	.name		= "rw_lock"
-};
-
-static int torture_rwlock_write_lock_irq(int tid __maybe_unused)
-__acquires(torture_rwlock)
-{
-	unsigned long flags;
-
-	write_lock_irqsave(&torture_rwlock, flags);
-	cxt.cur_ops->flags = flags;
-	return 0;
-}
-
-static void torture_rwlock_write_unlock_irq(int tid __maybe_unused)
-__releases(torture_rwlock)
-{
-	write_unlock_irqrestore(&torture_rwlock, cxt.cur_ops->flags);
-}
-
-static int torture_rwlock_read_lock_irq(int tid __maybe_unused)
-__acquires(torture_rwlock)
-{
-	unsigned long flags;
-
-	read_lock_irqsave(&torture_rwlock, flags);
-	cxt.cur_ops->flags = flags;
-	return 0;
-}
-
-static void torture_rwlock_read_unlock_irq(int tid __maybe_unused)
-__releases(torture_rwlock)
-{
-	read_unlock_irqrestore(&torture_rwlock, cxt.cur_ops->flags);
-}
-
-static struct lock_torture_ops rw_lock_irq_ops = {
-	.writelock	= torture_rwlock_write_lock_irq,
-	.write_delay	= torture_rwlock_write_delay,
-	.task_boost     = torture_boost_dummy,
-	.writeunlock	= torture_rwlock_write_unlock_irq,
-	.readlock       = torture_rwlock_read_lock_irq,
-	.read_delay     = torture_rwlock_read_delay,
-	.readunlock     = torture_rwlock_read_unlock_irq,
-	.name		= "rw_lock_irq"
-};
-
-static DEFINE_MUTEX(torture_mutex);
-
-static int torture_mutex_lock(int tid __maybe_unused)
-__acquires(torture_mutex)
-{
-	mutex_lock(&torture_mutex);
-	return 0;
-}
-
-static void torture_mutex_delay(struct torture_random_state *trsp)
-{
-	const unsigned long longdelay_ms = 100;
-
-	/* We want a long delay occasionally to force massive contention.  */
-	if (!(torture_random(trsp) %
-	      (cxt.nrealwriters_stress * 2000 * longdelay_ms)))
-		mdelay(longdelay_ms * 5);
-	else
-		mdelay(longdelay_ms / 5);
-	if (!(torture_random(trsp) % (cxt.nrealwriters_stress * 20000)))
-		torture_preempt_schedule();  /* Allow test to be preempted. */
-}
-
-static void torture_mutex_unlock(int tid __maybe_unused)
-__releases(torture_mutex)
-{
-	mutex_unlock(&torture_mutex);
-}
-
-static struct lock_torture_ops mutex_lock_ops = {
-	.writelock	= torture_mutex_lock,
-	.write_delay	= torture_mutex_delay,
-	.task_boost     = torture_boost_dummy,
-	.writeunlock	= torture_mutex_unlock,
-	.readlock       = NULL,
-	.read_delay     = NULL,
-	.readunlock     = NULL,
-	.name		= "mutex_lock"
-};
-
-#include <linux/ww_mutex.h>
-/*
- * The torture ww_mutexes should belong to the same lock class as
- * torture_ww_class to avoid lockdep problem. The ww_mutex_init()
- * function is called for initialization to ensure that.
- */
-static DEFINE_WD_CLASS(torture_ww_class);
-static struct ww_mutex torture_ww_mutex_0, torture_ww_mutex_1, torture_ww_mutex_2;
-static struct ww_acquire_ctx *ww_acquire_ctxs;
-
-static void torture_ww_mutex_init(void)
-{
-	ww_mutex_init(&torture_ww_mutex_0, &torture_ww_class);
-	ww_mutex_init(&torture_ww_mutex_1, &torture_ww_class);
-	ww_mutex_init(&torture_ww_mutex_2, &torture_ww_class);
-
-	ww_acquire_ctxs = kmalloc_array(cxt.nrealwriters_stress,
-					sizeof(*ww_acquire_ctxs),
-					GFP_KERNEL);
-	if (!ww_acquire_ctxs)
-		VERBOSE_TOROUT_STRING("ww_acquire_ctx: Out of memory");
-}
-
-static void torture_ww_mutex_exit(void)
-{
-	kfree(ww_acquire_ctxs);
-}
-
-static int torture_ww_mutex_lock(int tid)
-__acquires(torture_ww_mutex_0)
-__acquires(torture_ww_mutex_1)
-__acquires(torture_ww_mutex_2)
-{
-	LIST_HEAD(list);
-	struct reorder_lock {
-		struct list_head link;
-		struct ww_mutex *lock;
-	} locks[3], *ll, *ln;
-	struct ww_acquire_ctx *ctx = &ww_acquire_ctxs[tid];
-
-	locks[0].lock = &torture_ww_mutex_0;
-	list_add(&locks[0].link, &list);
-
-	locks[1].lock = &torture_ww_mutex_1;
-	list_add(&locks[1].link, &list);
-
-	locks[2].lock = &torture_ww_mutex_2;
-	list_add(&locks[2].link, &list);
-
-	ww_acquire_init(ctx, &torture_ww_class);
-
-	list_for_each_entry(ll, &list, link) {
-		int err;
-
-		err = ww_mutex_lock(ll->lock, ctx);
-		if (!err)
-			continue;
-
-		ln = ll;
-		list_for_each_entry_continue_reverse(ln, &list, link)
-			ww_mutex_unlock(ln->lock);
-
-		if (err != -EDEADLK)
-			return err;
-
-		ww_mutex_lock_slow(ll->lock, ctx);
-		list_move(&ll->link, &list);
-	}
-
-	return 0;
-}
-
-static void torture_ww_mutex_unlock(int tid)
-__releases(torture_ww_mutex_0)
-__releases(torture_ww_mutex_1)
-__releases(torture_ww_mutex_2)
-{
-	struct ww_acquire_ctx *ctx = &ww_acquire_ctxs[tid];
-
-	ww_mutex_unlock(&torture_ww_mutex_0);
-	ww_mutex_unlock(&torture_ww_mutex_1);
-	ww_mutex_unlock(&torture_ww_mutex_2);
-	ww_acquire_fini(ctx);
-}
-
-static struct lock_torture_ops ww_mutex_lock_ops = {
-	.init		= torture_ww_mutex_init,
-	.exit		= torture_ww_mutex_exit,
-	.writelock	= torture_ww_mutex_lock,
-	.write_delay	= torture_mutex_delay,
-	.task_boost     = torture_boost_dummy,
-	.writeunlock	= torture_ww_mutex_unlock,
-	.readlock       = NULL,
-	.read_delay     = NULL,
-	.readunlock     = NULL,
-	.name		= "ww_mutex_lock"
-};
-
-#ifdef CONFIG_RT_MUTEXES
-static DEFINE_RT_MUTEX(torture_rtmutex);
-
-static int torture_rtmutex_lock(int tid __maybe_unused)
-__acquires(torture_rtmutex)
-{
-	rt_mutex_lock(&torture_rtmutex);
-	return 0;
-}
-
-static void torture_rtmutex_boost(struct torture_random_state *trsp)
-{
-	const unsigned int factor = 50000; /* yes, quite arbitrary */
-
-	if (!rt_task(current)) {
 		/*
-		 * Boost priority once every ~50k operations. When the
-		 * task tries to take the lock, the rtmutex it will account
-		 * for the new priority, and do any corresponding pi-dance.
+		 * wake_up_process() executes a full barrier, which pairs with
+		 * the queueing in wake_q_add() so as not to miss wakeups.
 		 */
-		if (trsp && !(torture_random(trsp) %
-			      (cxt.nrealwriters_stress * factor))) {
-			sched_set_fifo(current);
-		} else /* common case, do nothing */
-			return;
-	} else {
-		/*
-		 * The task will remain boosted for another ~500k operations,
-		 * then restored back to its original prio, and so forth.
-		 *
-		 * When @trsp is nil, we want to force-reset the task for
-		 * stopping the kthread.
-		 */
-		if (!trsp || !(torture_random(trsp) %
-			       (cxt.nrealwriters_stress * factor * 2))) {
-			sched_set_normal(current, 0);
-		} else /* common case, do nothing */
-			return;
+		wake_up_process(task);
+		put_task_struct(task);
 	}
 }
 
-static void torture_rtmutex_delay(struct torture_random_state *trsp)
-{
-	const unsigned long shortdelay_us = 2;
-	const unsigned long longdelay_ms = 100;
-
-	/*
-	 * We want a short delay mostly to emulate likely code, and
-	 * we want a long delay occasionally to force massive contention.
-	 */
-	if (!(torture_random(trsp) %
-	      (cxt.nrealwriters_stress * 2000 * longdelay_ms)))
-		mdelay(longdelay_ms);
-	if (!(torture_random(trsp) %
-	      (cxt.nrealwriters_stress * 2 * shortdelay_us)))
-		udelay(shortdelay_us);
-	if (!(torture_random(trsp) % (cxt.nrealwriters_stress * 20000)))
-		torture_preempt_schedule();  /* Allow test to be preempted. */
-}
-
-static void torture_rtmutex_unlock(int tid __maybe_unused)
-__releases(torture_rtmutex)
-{
-	rt_mutex_unlock(&torture_rtmutex);
-}
-
-static struct lock_torture_ops rtmutex_lock_ops = {
-	.writelock	= torture_rtmutex_lock,
-	.write_delay	= torture_rtmutex_delay,
-	.task_boost     = torture_rtmutex_boost,
-	.writeunlock	= torture_rtmutex_unlock,
-	.readlock       = NULL,
-	.read_delay     = NULL,
-	.readunlock     = NULL,
-	.name		= "rtmutex_lock"
-};
-#endif
-
-static DECLARE_RWSEM(torture_rwsem);
-static int torture_rwsem_down_write(int tid __maybe_unused)
-__acquires(torture_rwsem)
-{
-	down_write(&torture_rwsem);
-	return 0;
-}
-
-static void torture_rwsem_write_delay(struct torture_random_state *trsp)
-{
-	const unsigned long longdelay_ms = 100;
-
-	/* We want a long delay occasionally to force massive contention.  */
-	if (!(torture_random(trsp) %
-	      (cxt.nrealwriters_stress * 2000 * longdelay_ms)))
-		mdelay(longdelay_ms * 10);
-	else
-		mdelay(longdelay_ms / 10);
-	if (!(torture_random(trsp) % (cxt.nrealwriters_stress * 20000)))
-		torture_preempt_schedule();  /* Allow test to be preempted. */
-}
-
-static void torture_rwsem_up_write(int tid __maybe_unused)
-__releases(torture_rwsem)
-{
-	up_write(&torture_rwsem);
-}
-
-static int torture_rwsem_down_read(int tid __maybe_unused)
-__acquires(torture_rwsem)
-{
-	down_read(&torture_rwsem);
-	return 0;
-}
-
-static void torture_rwsem_read_delay(struct torture_random_state *trsp)
-{
-	const unsigned long longdelay_ms = 100;
-
-	/* We want a long delay occasionally to force massive contention.  */
-	if (!(torture_random(trsp) %
-	      (cxt.nrealreaders_stress * 2000 * longdelay_ms)))
-		mdelay(longdelay_ms * 2);
-	else
-		mdelay(longdelay_ms / 2);
-	if (!(torture_random(trsp) % (cxt.nrealreaders_stress * 20000)))
-		torture_preempt_schedule();  /* Allow test to be preempted. */
-}
-
-static void torture_rwsem_up_read(int tid __maybe_unused)
-__releases(torture_rwsem)
-{
-	up_read(&torture_rwsem);
-}
-
-static struct lock_torture_ops rwsem_lock_ops = {
-	.writelock	= torture_rwsem_down_write,
-	.write_delay	= torture_rwsem_write_delay,
-	.task_boost     = torture_boost_dummy,
-	.writeunlock	= torture_rwsem_up_write,
-	.readlock       = torture_rwsem_down_read,
-	.read_delay     = torture_rwsem_read_delay,
-	.readunlock     = torture_rwsem_up_read,
-	.name		= "rwsem_lock"
-};
-
-#include <linux/percpu-rwsem.h>
-static struct percpu_rw_semaphore pcpu_rwsem;
-
-static void torture_percpu_rwsem_init(void)
-{
-	BUG_ON(percpu_init_rwsem(&pcpu_rwsem));
-}
-
-static void torture_percpu_rwsem_exit(void)
-{
-	percpu_free_rwsem(&pcpu_rwsem);
-}
-
-static int torture_percpu_rwsem_down_write(int tid __maybe_unused)
-__acquires(pcpu_rwsem)
-{
-	percpu_down_write(&pcpu_rwsem);
-	return 0;
-}
-
-static void torture_percpu_rwsem_up_write(int tid __maybe_unused)
-__releases(pcpu_rwsem)
-{
-	percpu_up_write(&pcpu_rwsem);
-}
-
-static int torture_percpu_rwsem_down_read(int tid __maybe_unused)
-__acquires(pcpu_rwsem)
-{
-	percpu_down_read(&pcpu_rwsem);
-	return 0;
-}
-
-static void torture_percpu_rwsem_up_read(int tid __maybe_unused)
-__releases(pcpu_rwsem)
-{
-	percpu_up_read(&pcpu_rwsem);
-}
-
-static struct lock_torture_ops percpu_rwsem_lock_ops = {
-	.init		= torture_percpu_rwsem_init,
-	.exit		= torture_percpu_rwsem_exit,
-	.writelock	= torture_percpu_rwsem_down_write,
-	.write_delay	= torture_rwsem_write_delay,
-	.task_boost     = torture_boost_dummy,
-	.writeunlock	= torture_percpu_rwsem_up_write,
-	.readlock       = torture_percpu_rwsem_down_read,
-	.read_delay     = torture_rwsem_read_delay,
-	.readunlock     = torture_percpu_rwsem_up_read,
-	.name		= "percpu_rwsem_lock"
-};
-
 /*
- * Lock torture writer kthread.  Repeatedly acquires and releases
- * the lock, checking for duplicate acquisitions.
+ * resched_curr - mark rq's current task 'to be rescheduled now'.
+ *
+ * On UP this means the setting of the need_resched flag, on SMP it
+ * might also involve a cross-CPU call to trigger the scheduler on
+ * the target CPU.
  */
-static int lock_torture_writer(void *arg)
+void resched_curr(struct rq *rq)
 {
-	struct lock_stress_stats *lwsp = arg;
-	int tid = lwsp - cxt.lwsa;
-	DEFINE_TORTURE_RANDOM(rand);
+	struct task_struct *curr = rq->curr;
+	int cpu;
 
-	VERBOSE_TOROUT_STRING("lock_torture_writer task started");
-	set_user_nice(current, MAX_NICE);
+	lockdep_assert_rq_held(rq);
 
-	do {
-		if ((torture_random(&rand) & 0xfffff) == 0)
-			schedule_timeout_uninterruptible(1);
+	if (test_tsk_need_resched(curr))
+		return;
 
-		cxt.cur_ops->task_boost(&rand);
-		cxt.cur_ops->writelock(tid);
-		if (WARN_ON_ONCE(lock_is_write_held))
-			lwsp->n_lock_fail++;
-		lock_is_write_held = true;
-		if (WARN_ON_ONCE(atomic_read(&lock_is_read_held)))
-			lwsp->n_lock_fail++; /* rare, but... */
+	cpu = cpu_of(rq);
 
-		lwsp->n_lock_acquired++;
-		cxt.cur_ops->write_delay(&rand);
-		lock_is_write_held = false;
-		WRITE_ONCE(last_lock_release, jiffies);
-		cxt.cur_ops->writeunlock(tid);
-
-		stutter_wait("lock_torture_writer");
-	} while (!torture_must_stop());
-
-	cxt.cur_ops->task_boost(NULL); /* reset prio */
-	torture_kthread_stopping("lock_torture_writer");
-	return 0;
-}
-
-/*
- * Lock torture reader kthread.  Repeatedly acquires and releases
- * the reader lock.
- */
-static int lock_torture_reader(void *arg)
-{
-	struct lock_stress_stats *lrsp = arg;
-	int tid = lrsp - cxt.lrsa;
-	DEFINE_TORTURE_RANDOM(rand);
-
-	VERBOSE_TOROUT_STRING("lock_torture_reader task started");
-	set_user_nice(current, MAX_NICE);
-
-	do {
-		if ((torture_random(&rand) & 0xfffff) == 0)
-			schedule_timeout_uninterruptible(1);
-
-		cxt.cur_ops->readlock(tid);
-		atomic_inc(&lock_is_read_held);
-		if (WARN_ON_ONCE(lock_is_write_held))
-			lrsp->n_lock_fail++; /* rare, but... */
-
-		lrsp->n_lock_acquired++;
-		cxt.cur_ops->read_delay(&rand);
-		atomic_dec(&lock_is_read_held);
-		cxt.cur_ops->readunlock(tid);
-
-		stutter_wait("lock_torture_reader");
-	} while (!torture_must_stop());
-	torture_kthread_stopping("lock_torture_reader");
-	return 0;
-}
-
-/*
- * Create an lock-torture-statistics message in the specified buffer.
- */
-static void __torture_print_stats(char *page,
-				  struct lock_stress_stats *statp, bool write)
-{
-	long cur;
-	bool fail = false;
-	int i, n_stress;
-	long max = 0, min = statp ? data_race(statp[0].n_lock_acquired) : 0;
-	long long sum = 0;
-
-	n_stress = write ? cxt.nrealwriters_stress : cxt.nrealreaders_stress;
-	for (i = 0; i < n_stress; i++) {
-		if (data_race(statp[i].n_lock_fail))
-			fail = true;
-		cur = data_race(statp[i].n_lock_acquired);
-		sum += cur;
-		if (max < cur)
-			max = cur;
-		if (min > cur)
-			min = cur;
-	}
-	page += sprintf(page,
-			"%s:  Total: %lld  Max/Min: %ld/%ld %s  Fail: %d %s\n",
-			write ? "Writes" : "Reads ",
-			sum, max, min,
-			!onoff_interval && max / 2 > min ? "???" : "",
-			fail, fail ? "!!!" : "");
-	if (fail)
-		atomic_inc(&cxt.n_lock_torture_errors);
-}
-
-/*
- * Print torture statistics.  Caller must ensure that there is only one
- * call to this function at a given time!!!  This is normally accomplished
- * by relying on the module system to only have one copy of the module
- * loaded, and then by giving the lock_torture_stats kthread full control
- * (or the init/cleanup functions when lock_torture_stats thread is not
- * running).
- */
-static void lock_torture_stats_print(void)
-{
-	int size = cxt.nrealwriters_stress * 200 + 8192;
-	char *buf;
-
-	if (cxt.cur_ops->readlock)
-		size += cxt.nrealreaders_stress * 200 + 8192;
-
-	buf = kmalloc(size, GFP_KERNEL);
-	if (!buf) {
-		pr_err("lock_torture_stats_print: Out of memory, need: %d",
-		       size);
+	if (cpu == smp_processor_id()) {
+		set_tsk_need_resched(curr);
+		set_preempt_need_resched();
 		return;
 	}
 
-	__torture_print_stats(buf, cxt.lwsa, true);
-	pr_alert("%s", buf);
-	kfree(buf);
+	if (set_nr_and_not_polling(curr))
+		smp_send_reschedule(cpu);
+	else
+		trace_sched_wake_idle_without_ipi(cpu);
+}
 
-	if (cxt.cur_ops->readlock) {
-		buf = kmalloc(size, GFP_KERNEL);
-		if (!buf) {
-			pr_err("lock_torture_stats_print: Out of memory, need: %d",
-			       size);
-			return;
-		}
+void resched_cpu(int cpu)
+{
+	struct rq *rq = cpu_rq(cpu);
+	unsigned long flags;
 
-		__torture_print_stats(buf, cxt.lrsa, false);
-		pr_alert("%s", buf);
-		kfree(buf);
+	raw_spin_rq_lock_irqsave(rq, flags);
+	if (cpu_online(cpu) || cpu == smp_processor_id())
+		resched_curr(rq);
+	raw_spin_rq_unlock_irqrestore(rq, flags);
+}
+
+#ifdef CONFIG_SMP
+#ifdef CONFIG_NO_HZ_COMMON
+/*
+ * In the semi idle case, use the nearest busy CPU for migrating timers
+ * from an idle CPU.  This is good for power-savings.
+ *
+ * We don't do similar optimization for completely idle system, as
+ * selecting an idle CPU will add more delays to the timers than intended
+ * (as that CPU's timer base may not be uptodate wrt jiffies etc).
+ */
+int get_nohz_timer_target(void)
+{
+	int i, cpu = smp_processor_id(), default_cpu = -1;
+	struct sched_domain *sd;
+	const struct cpumask *hk_mask;
+
+	if (housekeeping_cpu(cpu, HK_TYPE_TIMER)) {
+		if (!idle_cpu(cpu))
+			return cpu;
+		default_cpu = cpu;
 	}
+
+	hk_mask = housekeeping_cpumask(HK_TYPE_TIMER);
+
+	rcu_read_lock();
+	for_each_domain(cpu, sd) {
+		for_each_cpu_and(i, sched_domain_span(sd), hk_mask) {
+			if (cpu == i)
+				continue;
+
+			if (!idle_cpu(i)) {
+				cpu = i;
+				goto unlock;
+			}
+		}
+	}
+
+	if (default_cpu == -1)
+		default_cpu = housekeeping_any_cpu(HK_TYPE_TIMER);
+	cpu = default_cpu;
+unlock:
+	rcu_read_unlock();
+	return cpu;
 }
 
 /*
- * Periodically prints torture statistics, if periodic statistics printing
- * was specified via the stat_interval module parameter.
- *
- * No need to worry about fullstop here, since this one doesn't reference
- * volatile state or register callbacks.
+ * When add_timer_on() enqueues a timer into the timer wheel of an
+ * idle CPU then this timer might expire before the next timer event
+ * which is scheduled to wake up that CPU. In case of a completely
+ * idle system the next event might even be infinite time into the
+ * future. wake_up_idle_cpu() ensures that the CPU is woken up and
+ * leaves the inner idle loop so the newly added timer is taken into
+ * account when the CPU goes back to idle and evaluates the timer
+ * wheel for the next timer event.
  */
-static int lock_torture_stats(void *arg)
+static void wake_up_idle_cpu(int cpu)
 {
-	VERBOSE_TOROUT_STRING("lock_torture_stats task started");
-	do {
-		schedule_timeout_interruptible(stat_interval * HZ);
-		lock_torture_stats_print();
-		torture_shutdown_absorb("lock_torture_stats");
-	} while (!torture_must_stop());
-	torture_kthread_stopping("lock_torture_stats");
+	struct rq *rq = cpu_rq(cpu);
+
+	if (cpu == smp_processor_id())
+		return;
+
+	if (set_nr_and_not_polling(rq->idle))
+		smp_send_reschedule(cpu);
+	else
+		trace_sched_wake_idle_without_ipi(cpu);
+}
+
+static bool wake_up_full_nohz_cpu(int cpu)
+{
+	/*
+	 * We just need the target to call irq_exit() and re-evaluate
+	 * the next tick. The nohz full kick at least implies that.
+	 * If needed we can still optimize that later with an
+	 * empty IRQ.
+	 */
+	if (cpu_is_offline(cpu))
+		return true;  /* Don't try to wake offline CPUs. */
+	if (tick_nohz_full_cpu(cpu)) {
+		if (cpu != smp_processor_id() ||
+		    tick_nohz_tick_stopped())
+			tick_nohz_full_kick_cpu(cpu);
+		return true;
+	}
+
+	return false;
+}
+
+/*
+ * Wake up the specified CPU.  If the CPU is going offline, it is the
+ * caller's responsibility to deal with the lost wakeup, for example,
+ * by hooking into the CPU_DEAD notifier like timers and hrtimers do.
+ */
+void wake_up_nohz_cpu(int cpu)
+{
+	if (!wake_up_full_nohz_cpu(cpu))
+		wake_up_idle_cpu(cpu);
+}
+
+static void nohz_csd_func(void *info)
+{
+	struct rq *rq = info;
+	int cpu = cpu_of(rq);
+	unsigned int flags;
+
+	/*
+	 * Release the rq::nohz_csd.
+	 */
+	flags = atomic_fetch_andnot(NOHZ_KICK_MASK | NOHZ_NEWILB_KICK, nohz_flags(cpu));
+	WARN_ON(!(flags & NOHZ_KICK_MASK));
+
+	rq->idle_balance = idle_cpu(cpu);
+	if (rq->idle_balance && !need_resched()) {
+		rq->nohz_idle_balance = flags;
+		raise_softirq_irqoff(SCHED_SOFTIRQ);
+	}
+}
+
+#endif /* CONFIG_NO_HZ_COMMON */
+
+#ifdef CONFIG_NO_HZ_FULL
+bool sched_can_stop_tick(struct rq *rq)
+{
+	int fifo_nr_running;
+
+	/* Deadline tasks, even if single, need the tick */
+	if (rq->dl.dl_nr_running)
+		return false;
+
+	/*
+	 * If there are more than one RR tasks, we need the tick to affect the
+	 * actual RR behaviour.
+	 */
+	if (rq->rt.rr_nr_running) {
+		if (rq->rt.rr_nr_running == 1)
+			return true;
+		else
+			return false;
+	}
+
+	/*
+	 * If there's no RR tasks, but FIFO tasks, we can skip the tick, no
+	 * forced preemption between FIFO tasks.
+	 */
+	fifo_nr_running = rq->rt.rt_nr_running - rq->rt.rr_nr_running;
+	if (fifo_nr_running)
+		return true;
+
+	/*
+	 * If there are no DL,RR/FIFO tasks, there must only be CFS tasks left;
+	 * if there's more than one we need the tick for involuntary
+	 * preemption.
+	 */
+	if (rq->nr_running > 1)
+		return false;
+
+	return true;
+}
+#endif /* CONFIG_NO_HZ_FULL */
+#endif /* CONFIG_SMP */
+
+#if defined(CONFIG_RT_GROUP_SCHED) || (defined(CONFIG_FAIR_GROUP_SCHED) && \
+			(defined(CONFIG_SMP) || defined(CONFIG_CFS_BANDWIDTH)))
+/*
+ * Iterate task_group tree rooted at *from, calling @down when first entering a
+ * node and @up when leaving it for the final time.
+ *
+ * Caller must hold rcu_lock or sufficient equivalent.
+ */
+int walk_tg_tree_from(struct task_group *from,
+			     tg_visitor down, tg_visitor up, void *data)
+{
+	struct task_group *parent, *child;
+	int ret;
+
+	parent = from;
+
+down:
+	ret = (*down)(parent, data);
+	if (ret)
+		goto out;
+	list_for_each_entry_rcu(child, &parent->children, siblings) {
+		parent = child;
+		goto down;
+
+up:
+		continue;
+	}
+	ret = (*up)(parent, data);
+	if (ret || parent == from)
+		goto out;
+
+	child = parent;
+	parent = parent->parent;
+	if (parent)
+		goto up;
+out:
+	return ret;
+}
+
+int tg_nop(struct task_group *tg, void *data)
+{
 	return 0;
+}
+#endif
+
+static void set_load_weight(struct task_struct *p, bool update_load)
+{
+	int prio = p->static_prio - MAX_RT_PRIO;
+	struct load_weight *load = &p->se.load;
+
+	/*
+	 * SCHED_IDLE tasks get minimal weight:
+	 */
+	if (task_has_idle_policy(p)) {
+		load->weight = scale_load(WEIGHT_IDLEPRIO);
+		load->inv_weight = WMULT_IDLEPRIO;
+		return;
+	}
+
+	/*
+	 * SCHED_OTHER tasks have to update their load when changing their
+	 * weight
+	 */
+	if (update_load && p->sched_class == &fair_sched_class) {
+		reweight_task(p, prio);
+	} else {
+		load->weight = scale_load(sched_prio_to_weight[prio]);
+		load->inv_weight = sched_prio_to_wmult[prio];
+	}
+}
+
+#ifdef CONFIG_UCLAMP_TASK
+/*
+ * Serializes updates of utilization clamp values
+ *
+ * The (slow-path) user-space triggers utilization clamp value updates which
+ * can require updates on (fast-path) scheduler's data structures used to
+ * support enqueue/dequeue operations.
+ * While the per-CPU rq lock protects fast-path update operations, user-space
+ * requests are serialized using a mutex to reduce the risk of conflicting
+ * updates or API abuses.
+ */
+static DEFINE_MUTEX(uclamp_mutex);
+
+/* Max allowed minimum utilization */
+unsigned int sysctl_sched_uclamp_util_min = SCHED_CAPACITY_SCALE;
+
+/* Max allowed maximum utilization */
+unsigned int sysctl_sched_uclamp_util_max = SCHED_CAPACITY_SCALE;
+
+/*
+ * By default RT tasks run at the maximum performance point/capacity of the
+ * system. Uclamp enforces this by always setting UCLAMP_MIN of RT tasks to
+ * SCHED_CAPACITY_SCALE.
+ *
+ * This knob allows admins to change the default behavior when uclamp is being
+ * used. In battery powered devices, particularly, running at the maximum
+ * capacity and frequency will increase energy consumption and shorten the
+ * battery life.
+ *
+ * This knob only affects RT tasks that their uclamp_se->user_defined == false.
+ *
+ * This knob will not override the system default sched_util_clamp_min defined
+ * above.
+ */
+unsigned int sysctl_sched_uclamp_util_min_rt_default = SCHED_CAPACITY_SCALE;
+
+/* All clamps are required to be less or equal than these values */
+static struct uclamp_se uclamp_default[UCLAMP_CNT];
+
+/*
+ * This static key is used to reduce the uclamp overhead in the fast path. It
+ * primarily disables the call to uclamp_rq_{inc, dec}() in
+ * enqueue/dequeue_task().
+ *
+ * This allows users to continue to enable uclamp in their kernel config with
+ * minimum uclamp overhead in the fast path.
+ *
+ * As soon as userspace modifies any of the uclamp knobs, the static key is
+ * enabled, since we have an actual users that make use of uclamp
+ * functionality.
+ *
+ * The knobs that would enable this static key are:
+ *
+ *   * A task modifying its uclamp value with sched_setattr().
+ *   * An admin modifying the sysctl_sched_uclamp_{min, max} via procfs.
+ *   * An admin modifying the cgroup cpu.uclamp.{min, max}
+ */
+DEFINE_STATIC_KEY_FALSE(sched_uclamp_used);
+
+/* Integer rounded range for each bucket */
+#define UCLAMP_BUCKET_DELTA DIV_ROUND_CLOSEST(SCHED_CAPACITY_SCALE, UCLAMP_BUCKETS)
+
+#define for_each_clamp_id(clamp_id) \
+	for ((clamp_id) = 0; (clamp_id) < UCLAMP_CNT; (clamp_id)++)
+
+static inline unsigned int uclamp_bucket_id(unsigned int clamp_value)
+{
+	return min_t(unsigned int, clamp_value / UCLAMP_BUCKET_DELTA, UCLAMP_BUCKETS - 1);
+}
+
+static inline unsigned int uclamp_none(enum uclamp_id clamp_id)
+{
+	if (clamp_id == UCLAMP_MIN)
+		return 0;
+	return SCHED_CAPACITY_SCALE;
+}
+
+static inline void uclamp_se_set(struct uclamp_se *uc_se,
+				 unsigned int value, bool user_defined)
+{
+	uc_se->value = value;
+	uc_se->bucket_id = uclamp_bucket_id(value);
+	uc_se->user_defined = user_defined;
+}
+
+static inline unsigned int
+uclamp_idle_value(struct rq *rq, enum uclamp_id clamp_id,
+		  unsigned int clamp_value)
+{
+	/*
+	 * Avoid blocked utilization pushing up the frequency when we go
+	 * idle (which drops the max-clamp) by retaining the last known
+	 * max-clamp.
+	 */
+	if (clamp_id == UCLAMP_MAX) {
+		rq->uclamp_flags |= UCLAMP_FLAG_IDLE;
+		return clamp_value;
+	}
+
+	return uclamp_none(UCLAMP_MIN);
+}
+
+static inline void uclamp_idle_reset(struct rq *rq, enum uclamp_id clamp_id,
+				     unsigned int clamp_value)
+{
+	/* Reset max-clamp retention only on idle exit */
+	if (!(rq->uclamp_flags & UCLAMP_FLAG_IDLE))
+		return;
+
+	WRITE_ONCE(rq->uclamp[clamp_id].value, clamp_value);
+}
+
+static inline
+unsigned int uclamp_rq_max_value(struct rq *rq, enum uclamp_id clamp_id,
+				   unsigned int clamp_value)
+{
+	struct uclamp_bucket *bucket = rq->uclamp[clamp_id].bucket;
+	int bucket_id = UCLAMP_BUCKETS - 1;
+
+	/*
+	 * Since both min and max clamps are max aggregated, find the
+	 * top most bucket with tasks in.
+	 */
+	for ( ; bucket_id >= 0; bucket_id--) {
+		if (!bucket[bucket_id].tasks)
+			continue;
+		return bucket[bucket_id].value;
+	}
+
+	/* No tasks -- default clamp values */
+	return uclamp_idle_value(rq, clamp_id, clamp_value);
+}
+
+static void __uclamp_update_util_min_rt_default(struct task_struct *p)
+{
+	unsigned int default_util_min;
+	struct uclamp_se *uc_se;
+
+	lockdep_assert_held(&p->pi_lock);
+
+	uc_se = &p->uclamp_req[UCLAMP_MIN];
+
+	/* Only sync if user didn't override the default */
+	if (uc_se->user_defined)
+		return;
+
+	default_util_min = sysctl_sched_uclamp_util_min_rt_default;
+	uclamp_se_set(uc_se, default_util_min, false);
+}
+
+static void uclamp_update_util_min_rt_default(struct task_struct *p)
+{
+	struct rq_flags rf;
+	struct rq *rq;
+
+	if (!rt_task(p))
+		return;
+
+	/* Protect updates to p->uclamp_* */
+	rq = task_rq_lock(p, &rf);
+	__uclamp_update_util_min_rt_default(p);
+	task_rq_unlock(rq, p, &rf);
+}
+
+static void uclamp_sync_util_min_rt_default(void)
+{
+	struct task_struct *g, *p;
+
+	/*
+	 * copy_process()			sysctl_uclamp
+	 *					  uclamp_min_rt = X;
+	 *   write_lock(&tasklist_lock)		  read_lock(&tasklist_lock)
+	 *   // link thread			  smp_mb__after_spinlock()
+	 *   write_unlock(&tasklist_lock)	  read_unlock(&tasklist_lock);
+	 *   sched_post_fork()			  for_each_process_thread()
+	 *     __uclamp_sync_rt()		    __uclamp_sync_rt()
+	 *
+	 * Ensures that either sched_post_fork() will observe the new
+	 * uclamp_min_rt or for_each_process_thread() will observe the new
+	 * task.
+	 */
+	read_lock(&tasklist_lock);
+	smp_mb__after_spinlock();
+	read_unlock(&tasklist_lock);
+
+	rcu_read_lock();
+	for_each_process_thread(g, p)
+		uclamp_update_util_min_rt_default(p);
+	rcu_read_unlock();
+}
+
+static inline struct uclamp_se
+uclamp_tg_restrict(struct task_struct *p, enum uclamp_id clamp_id)
+{
+	/* Copy by value as we could modify it */
+	struct uclamp_se uc_req = p->uclamp_req[clamp_id];
+#ifdef CONFIG_UCLAMP_TASK_GROUP
+	unsigned int tg_min, tg_max, value;
+
+	/*
+	 * Tasks in autogroups or root task group will be
+	 * restricted by system defaults.
+	 */
+	if (task_group_is_autogroup(task_group(p)))
+		return uc_req;
+	if (task_group(p) == &root_task_group)
+		return uc_req;
+
+	tg_min = task_group(p)->uclamp[UCLAMP_MIN].value;
+	tg_max = task_group(p)->uclamp[UCLAMP_MAX].value;
+	value = uc_req.value;
+	value = clamp(value, tg_min, tg_max);
+	uclamp_se_set(&uc_req, value, false);
+#endif
+
+	return uc_req;
+}
+
+/*
+ * The effective clamp bucket index of a task depends on, by increasing
+ * priority:
+ * - the task specific clamp value, when explicitly requested from userspace
+ * - the task group effective clamp value, for tasks not either in the root
+ *   group or in an autogroup
+ * - the system default clamp value, defined by the sysadmin
+ */
+static inline struct uclamp_se
+uclamp_eff_get(struct task_struct *p, enum uclamp_id clamp_id)
+{
+	struct uclamp_se uc_req = uclamp_tg_restrict(p, clamp_id);
+	struct uclamp_se uc_max = uclamp_default[clamp_id];
+
+	/* System default restrictions always apply */
+	if (unlikely(uc_req.value > uc_max.value))
+		return uc_max;
+
+	return uc_req;
+}
+
+unsigned long uclamp_eff_value(struct task_struct *p, enum uclamp_id clamp_id)
+{
+	struct uclamp_se uc_eff;
+
+	/* Task currently refcounted: use back-annotated (effective) value */
+	if (p->uclamp[clamp_id].active)
+		return (unsigned long)p->uclamp[clamp_id].value;
+
+	uc_eff = uclamp_eff_get(p, clamp_id);
+
+	return (unsigned long)uc_eff.value;
+}
+
+/*
+ * When a task is enqueued on a rq, the clamp bucket currently defined by the
+ * task's uclamp::bucket_id is refcounted on that rq. This also immediately
+ * updates the rq's clamp value if required.
+ *
+ * Tasks can have a task-specific value requested from user-space, track
+ * within each bucket the maximum value for tasks refcounted in it.
+ * This "local max aggregation" allows to track the exact "requested" value
+ * for each bucket when all its RUNNABLE tasks require the same clamp.
+ */
+static inline void uclamp_rq_inc_id(struct rq *rq, struct task_struct *p,
+				    enum uclamp_id clamp_id)
+{
+	struct uclamp_rq *uc_rq = &rq->uclamp[clamp_id];
+	struct uclamp_se *uc_se = &p->uclamp[clamp_id];
+	struct uclamp_bucket *bucket;
+
+	lockdep_assert_rq_held(rq);
+
+	/* Update task effective clamp */
+	p->uclamp[clamp_id] = uclamp_eff_get(p, clamp_id);
+
+	bucket = &uc_rq->bucket[uc_se->bucket_id];
+	bucket->tasks++;
+	uc_se->active = true;
+
+	uclamp_idle_reset(rq, clamp_id, uc_se->value);
+
+	/*
+	 * Local max aggregation: rq buckets always track the max
+	 * "requested" clamp value of its RUNNABLE tasks.
+	 */
+	if (bucket->tasks == 1 || uc_se->value > bucket->value)
+		bucket->value = uc_se->value;
+
+	if (uc_se->value > READ_ONCE(uc_rq->value))
+		WRITE_ONCE(uc_rq->value, uc_se->value);
+}
+
+/*
+ * When a task is dequeued from a rq, the clamp bucket refcounted by the task
+ * is released. If this is the last task reference counting the rq's max
+ * active clamp value, then the rq's clamp value is updated.
+ *
+ * Both refcounted tasks and rq's cached clamp values are expected to be
+ * always valid. If it's detected they are not, as defensive programming,
+ * enforce the expected state and warn.
+ */
+static inline void uclamp_rq_dec_id(struct rq *rq, struct task_struct *p,
+				    enum uclamp_id clamp_id)
+{
+	struct uclamp_rq *uc_rq = &rq->uclamp[clamp_id];
+	struct uclamp_se *uc_se = &p->uclamp[clamp_id];
+	struct uclamp_bucket *bucket;
+	unsigned int bkt_clamp;
+	unsigned int rq_clamp;
+
+	lockdep_assert_rq_held(rq);
+
+	/*
+	 * If sched_uclamp_used was enabled after task @p was enqueued,
+	 * we could end up with unbalanced call to uclamp_rq_dec_id().
+	 *
+	 * In this case the uc_se->active flag should be false since no uclamp
+	 * accounting was performed at enqueue time and we can just return
+	 * here.
+	 *
+	 * Need to be careful of the following enqueue/dequeue ordering
+	 * problem too
+	 *
+	 *	enqueue(taskA)
+	 *	// sched_uclamp_used gets enabled
+	 *	enqueue(taskB)
+	 *	dequeue(taskA)
+	 *	// Must not decrement bucket->tasks here
+	 *	dequeue(taskB)
+	 *
+	 * where we could end up with stale data in uc_se and
+	 * bucket[uc_se->bucket_id].
+	 *
+	 * The following check here eliminates the possibility of such race.
+	 */
+	if (unlikely(!uc_se->active))
+		return;
+
+	bucket = &uc_rq->bucket[uc_se->bucket_id];
+
+	SCHED_WARN_ON(!bucket->tasks);
+	if (likely(bucket->tasks))
+		bucket->tasks--;
+
+	uc_se->active = false;
+
+	/*
+	 * Keep "local max aggregation" simple and accept to (possibly)
+	 * overboost some RUNNABLE tasks in the same bucket.
+	 * The rq clamp bucket value is reset to its base value whenever
+	 * there are no more RUNNABLE tasks refcounting it.
+	 */
+	if (likely(bucket->tasks))
+		return;
+
+	rq_clamp = READ_ONCE(uc_rq->value);
+	/*
+	 * Defensive programming: this should never happen. If it happens,
+	 * e.g. due to future modification, warn and fixup the expected value.
+	 */
+	SCHED_WARN_ON(bucket->value > rq_clamp);
+	if (bucket->value >= rq_clamp) {
+		bkt_clamp = uclamp_rq_max_value(rq, clamp_id, uc_se->value);
+		WRITE_ONCE(uc_rq->value, bkt_clamp);
+	}
+}
+
+static inline void uclamp_rq_inc(struct rq *rq, struct task_struct *p)
+{
+	enum uclamp_id clamp_id;
+
+	/*
+	 * Avoid any overhead until uclamp is actually used by the userspace.
+	 *
+	 * The condition is constructed such that a NOP is generated when
+	 * sched_uclamp_used is disabled.
+	 */
+	if (!static_branch_unlikely(&sched_uclamp_used))
+		return;
+
+	if (unlikely(!p->sched_class->uclamp_enabled))
+		return;
+
+	for_each_clamp_id(clamp_id)
+		uclamp_rq_inc_id(rq, p, clamp_id);
+
+	/* Reset clamp idle holding when there is one RUNNABLE task */
+	if (rq->uclamp_flags & UCLAMP_FLAG_IDLE)
+		rq->uclamp_flags &= ~UCLAMP_FLAG_IDLE;
+}
+
+static inline void uclamp_rq_dec(struct rq *rq, struct task_struct *p)
+{
+	enum uclamp_id clamp_id;
+
+	/*
+	 * Avoid any overhead until uclamp is actually used by the userspace.
+	 *
+	 * The condition is constructed such that a NOP is generated when
+	 * sched_uclamp_used is disabled.
+	 */
+	if (!static_branch_unlikely(&sched_uclamp_used))
+		return;
+
+	if (unlikely(!p->sched_class->uclamp_enabled))
+		return;
+
+	for_each_clamp_id(clamp_id)
+		uclamp_rq_dec_id(rq, p, clamp_id);
+}
+
+static inline void uclamp_rq_reinc_id(struct rq *rq, struct task_struct *p,
+				      enum uclamp_id clamp_id)
+{
+	if (!p->uclamp[clamp_id].active)
+		return;
+
+	uclamp_rq_dec_id(rq, p, clamp_id);
+	uclamp_rq_inc_id(rq, p, clamp_id);
+
+	/*
+	 * Make sure to clear the idle flag if we've transiently reached 0
+	 * active tasks on rq.
+	 */
+	if (clamp_id == UCLAMP_MAX && (rq->uclamp_flags & UCLAMP_FLAG_IDLE))
+		rq->uclamp_flags &= ~UCLAMP_FLAG_IDLE;
 }
 
 static inline void
-lock_torture_print_module_parms(struct lock_torture_ops *cur_ops,
-				const char *tag)
+uclamp_update_active(struct task_struct *p)
 {
-	pr_alert("%s" TORTURE_FLAG
-		 "--- %s%s: nwriters_stress=%d nreaders_stress=%d stat_interval=%d verbose=%d shuffle_interval=%d stutter=%d shutdown_secs=%d onoff_interval=%d onoff_holdoff=%d\n",
-		 torture_type, tag, cxt.debug_lock ? " [debug]": "",
-		 cxt.nrealwriters_stress, cxt.nrealreaders_stress, stat_interval,
-		 verbose, shuffle_interval, stutter, shutdown_secs,
-		 onoff_interval, onoff_holdoff);
-}
-
-static void lock_torture_cleanup(void)
-{
-	int i;
-
-	if (torture_cleanup_begin())
-		return;
+	enum uclamp_id clamp_id;
+	struct rq_flags rf;
+	struct rq *rq;
 
 	/*
-	 * Indicates early cleanup, meaning that the test has not run,
-	 * such as when passing bogus args when loading the module.
-	 * However cxt->cur_ops.init() may have been invoked, so beside
-	 * perform the underlying torture-specific cleanups, cur_ops.exit()
-	 * will be invoked if needed.
+	 * Lock the task and the rq where the task is (or was) queued.
+	 *
+	 * We might lock the (previous) rq of a !RUNNABLE task, but that's the
+	 * price to pay to safely serialize util_{min,max} updates with
+	 * enqueues, dequeues and migration operations.
+	 * This is the same locking schema used by __set_cpus_allowed_ptr().
 	 */
-	if (!cxt.lwsa && !cxt.lrsa)
-		goto end;
+	rq = task_rq_lock(p, &rf);
 
-	if (writer_tasks) {
-		for (i = 0; i < cxt.nrealwriters_stress; i++)
-			torture_stop_kthread(lock_torture_writer,
-					     writer_tasks[i]);
-		kfree(writer_tasks);
-		writer_tasks = NULL;
-	}
+	/*
+	 * Setting the clamp bucket is serialized by task_rq_lock().
+	 * If the task is not yet RUNNABLE and its task_struct is not
+	 * affecting a valid clamp bucket, the next time it's enqueued,
+	 * it will already see the updated clamp bucket value.
+	 */
+	for_each_clamp_id(clamp_id)
+		uclamp_rq_reinc_id(rq, p, clamp_id);
 
-	if (reader_tasks) {
-		for (i = 0; i < cxt.nrealreaders_stress; i++)
-			torture_stop_kthread(lock_torture_reader,
-					     reader_tasks[i]);
-		kfree(reader_tasks);
-		reader_tasks = NULL;
-	}
-
-	torture_stop_kthread(lock_torture_stats, stats_task);
-	lock_torture_stats_print();  /* -After- the stats thread is stopped! */
-
-	if (atomic_read(&cxt.n_lock_torture_errors))
-		lock_torture_print_module_parms(cxt.cur_ops,
-						"End of test: FAILURE");
-	else if (torture_onoff_failures())
-		lock_torture_print_module_parms(cxt.cur_ops,
-						"End of test: LOCK_HOTPLUG");
-	else
-		lock_torture_print_module_parms(cxt.cur_ops,
-						"End of test: SUCCESS");
-
-	kfree(cxt.lwsa);
-	cxt.lwsa = NULL;
-	kfree(cxt.lrsa);
-	cxt.lrsa = NULL;
-
-end:
-	if (cxt.init_called) {
-		if (cxt.cur_ops->exit)
-			cxt.cur_ops->exit();
-		cxt.init_called = false;
-	}
-	torture_cleanup_end();
+	task_rq_unlock(rq, p, &rf);
 }
 
-static int __init lock_torture_in¯œXrd‘‚P›C˛°∏øà%tùQ∆´ŒêS6⁄0%>k∑™¨‹˙ vÂÀˆæu˛IıQL˝Bp≠‹ˆ8òoå(ˇó«HbΩ„—˛ù∫$ã^ßÌ¡©ÖÓÑpÚπ˝++;ÜH%ñ«G#£‹&f¡Û ıÊ™1x}{Ò}ÅJî¢ﬂHœ ﬁ…s}πªúnÃÕLÑëQ0çµﬂáÎ\Ñg£á+	¬∞É¨µ|_ﬁûPfª0‹"˜9Æ°¯Íf‡t•T™ˇ˝ ß¨‘:Ÿù∏≈´+ﬂ¬3m»
-eïR∫«¿AQ∂ªë‚«>˛Ç·≥gÊvgñ%	6\ÔbBˇ8?∂5ëµ†∏>`o$õóáÜYπâÛõ¯6Á	ÙM7î;lºıËmÚ%‘d≥†î^q√†¡à·´˛⁄õﬁÜlë˝Ü%v∂2vıJe&„¸Ö®Nêõ∂πŒ±Wkœx∞Ä‹î%Éß$v6‚$´i≈63∂±ÁåBu@`'Å/)ÎX∆Ïb≠‰~}∫œqø÷Æ¸ò§n5|S¸(ÌÉ}dß'‰£ÁâóÀ:∆~aôçˆıpê|"Ì∆/HB7hA∂…5G⁄0|+qR∏]Íì6†BNóRÆ˛àçÌˇ°ê¸˜s”öû'0≈`^ıäçeËjÇFû∫TãY6(Û∏€Èá	I˙™ùÁ„I†@P`, TöÊ–á√Ç!Bµ¸ˆ*ÀMs:,è2No€{Ù‹oAó˛’szW9∆omˆu?çfΩ— ˙~aWÓéä∏1XÖm<++‘3`?ûøn‚FŒ«≤ì]∫N8öπÉΩ=DÖè<"ÁòpÑ¢™,ä≥;ÒY'«~Õ™ÌÜÍ+˙“†§ DgπÃÖ#U´U‰Ωdí˝˜UÓˆ”tÚMH°jª‚∏Ÿ;•¶áâ3I,LÒ.ÑÔıH¡Y}‘üª⁄dËœæ§ƒI4·h)6XËDE4í∆u´QﬂO–ÒÖ÷÷”„’·E¡ûé]¥ﬁƒäùÆ˙D;«2H ﬂËçì€5yRÈ≈≤Ô3‡¿yµ¥ò#(…ìmhÍîÇì¡;d7k•rtÁ¸•"ﬂJàçˇù ŸÇkOaË“lﬁ´è◊^iiïv¨+·UÀ8P«’Ëù0†ı§U„~ˇûr˚@IÜ…º‚EŒÚ,NÀ!dâ.Ø‚Ô4Ï.X•Çy’kÒ~=ì”»»≤√ÿ÷>ﬂïüâäUák’Kä”ú‹ß∫'À6A€F‚Í™n†NE_‡ê8XŒ≤ﬂ«“û˝U+∆©ôÔ∞C÷'z@ËØâ∂Ø˛í{˜¿Ô:t˘Äp¡j$gT„≈æ∂€¢S§ˇsê)5–j9ˇÎ4¢ÉXWªŸ]5	0÷dJˆ&k⁄ûÑÃ0-¶ûæìÍösŒäi›ø∂›¨ldènÖÖ˛0ﬂgÏ-¥¯Dù´«X≠Ç_ûfh®ŸÈá=dç‚§l#=éYÔVÖÆaÁÈx®Â%d≤f€_Êµ∞Ö=∆B@∂V§™p>fz3ŒÀM§Å1l/eQ—¡é
-\+Uv÷1l“RΩQõ˘@ı)∑.ŒÓ≥£€◊¥ã5P∫jT≈¿UN[à{Uv¥	)ŸèbvîÛq;∫∫€ ñ'û≠KT®]^Ÿd{1;3 ÈHµ‚¢!AƒÂO–„Úìö†Wù—Ä"?Àä'
-π!†˚¸'C˘ï•Áö⁄∫@S}©úødÈ¬¨»E∂Û»µàÏ‹X—µ˚$O√6ö§/–Ç∞*üóÜÚ©ÉÒ'ôÇ¨©ö Í$ÌTjÚ
- ê®C}3|ˆ# ∫-∑¢˚çiäË”g1‰Ÿ»‚Ñ>ŸËz¢1ös\Â1–ŸRc¨Dg∂º;Æ‹U0ÄyÇ’”-ØÍUFo„6Bâé%£)Ë(û"∑≥(gÆÇÛ)øØ«ãºqÄïw€œÍ∆Xn?¡-ä˝ÌÏßïkêﬁTl∂jöºÀ‹Ó ´äöl=Ω«„€Á	“ÜÑ¥∆Ûp–≥ÏYƒÍzì(–SÁßŒ[ë`VÄød±˜wáÁ≠n~&à~\!…"◊0\Æ¿õµ>®Oøù˘Ñ‚˜Ys8ßiEó◊Hd	
-íá8r(ÇcNë,sx√ˇÄîB≠´—É>⁄qW∏L&ÅVÀö√g4"Òl;Âïo·6ùÎ]¸Yg´õ`6ÇËÇ∏‚62·{π2T√V¢%¡ƒPÓÙR†°¨3≠∫l
-ø˜≤2b≤˙GrGMpu1™€·¡~ÃWØÿë≈ÜCô°Iüß%2∂À(TÒŒ˝$u…ÔÙœ‘/ïÙ(u_`¿‡àßE/ùìê&Çv^vÇΩkû	&X¢x«; ÑÃ-<lı^ı2¯Í`§∏pñ˚_Öÿ˝ˇƒ˜±€Wˆ–Q=AzÈC JBBT>⁄…9üZà˝/vÃql	YNÖîÂEπÊiÆ6ñô}	S1mwÂ(ÂüAëÁS˛»~WÅZŒ©¯ÜGÿYÕvIw”q˜,ü˚VBÓ;ùIP»µÂê«¬í≠ %ı0{≥	.íÃ{1;Êﬂ”ò‰©€5ìò*K?A…s
-.yFô∂«`Y€›Ü¥Qs©⁄≠;›•êøLWõ*dÊÓ‰K©∞jåÍ˚cÄgSÌSô∞±íIt
-)Î∏)n\E_;EÎÑí	$Uû©v>RáYïµîJB≠Ì¸ı$5Îz¶Ò±S$Dj3≤„E›1Ø@…»M··?ˇ2√}ÅçÉ⁄¯ÃÉ˙E˚Áˆˆ ˘6'YÚ:Áõâd—ïNV/Ò¢•Êÿ¢g¡sù·d"VÊ•k±yK˙V Vv≈∑fcjé»ŒÏRÆ’˚˘œ.:O)Äæˆç*gpµ’J‡=µ]3C•t˘˝Î>‹.àÉñ›"Çz∏ÑÀ{Zä‹—}˜ªÕ°éöÛûûCpÇ¯”‡F!“Sj√_‹îó^d8uÓÅh è-‘ùNYI]°Gl‡èk[w¢ÜÛ˝pƒwbà i‰}Z?µr_ﬁ&∑Ï)ÅßúêÏ§ôËj'g6l€˛ÆπU—Â?2‘˛ˇ.·˜ÅË∂Hâ_KŒ`´∂í/µêGéÇ”‘nt∏DaÌ>Í˛XçkHCΩ;3ˆq–ÂRµ≈Ì»§¨Fcp∑¶•}¬ñ*Vê‹mî“Qáë[BÜ8±÷s∑E ƒ«ˇïyÖG©rSı@ˇ“%ÂÚ≈
-7ΩπX5©.∞È≤Â-bÓToé/— N+©‡⁄—◊ZâëÆ…E’H9–¡Ãu»πaÒ
-50∫úì†˜‡~„„≤}≤Å7ú+˘K∑µ
-ÎÕO'r\F?S+WS∞WjÙº4ÃêtÖ%¸«LM•Ë∏£`ov€è;ïab‘;^¬a{Zzi~H⁄∫	xÓ›y‹{0®˝ƒËÌºé°âZlaÚÁ( ä¬ôûyååilÆÂ|—”MõÙPr”Íiõ™« UÇ∑çåá]{nxø∫∫Ã©sÔä÷°ßÏﬂ2ôˇ8&ÙÊÍ Ámµ^õ`Õ©:√ü+,ıæ¬∏/„&ëØïA(⁄‚˙¬<©BÎm)ﬁÿÏ∑Ô7≈tj≈∞¨®P?{T;≈Æ§3|fˇE˚∂”ÓSõ√7ÁDó’á_.ôœ;}*∑5>|nõ8°ŒµÂŒˇ—ÿh≥∆ÿE<K¶+ˆTÓ#§4qßA√[ÃòÈHK‡{Äì&Ø{⁄üÓ+ìOìejq⁄&Jis/˛ù◊a$ãwΩ∞+a9åW≤¿‰ƒ“p.»»Bö h¨O˜fà*‘Ô˝IBü[—o#ÙY°–‡◊~Ö~/ËU°ï-Ìë4√Í¯»Q’T:ÎrYï˘êÑ£%©“˝@±e¶%€Âe˚¸˙ãÁY–£ıÒ‚]éöŸ£7ö;£◊K8Ö∫¶ú6KmE Õ#}Z∏Öõçt»Ä≤Ò7òƒ:¿e(§^a;‰kz°≈gçÿáâ/9/ﬂvøF2%C[dåw+„¯3ºA≥?πU_›ñ⁄ëÜsìÓT‡a9cùàë:|d∆)SÔ)O3–ÎM!ÉF0GA®≤Y$ÿì9n‘ÈÌá”~\˝Lf-˘‡’™ê¿€≠ΩSÈ&Ω±¯+Ω√ìV\e@Ñú{"`üÔ≠Ãök√£7;∆åcåÒ,∆`˛µö¸ˆW‡jÈ^xŒ&[shiò»'À£*ÎÃÌºp*ÊÀ∆pˇ™êÂUæô|ˆOx¸1Ì0Åà◊XÇà≥œV_Ã“≤‡ΩNœ/pÓ´ÌÁR∏	¥+
-ﬂóÕÔ®˘‰ˆ≤£æ4-U˘ıFdR"K/è‹D;y„‡>Çœˇ=[VEyƒYM[3`‡x˛>Àê–°î?ﬁ@˜Â¢Vñû∆©7≈ÍÅ€ŸY√å˛ãøûzu „·{=Åå†‰O∫‘D¢ùU°‚keÀ}⁄Û]F‰T,qba•å!@=g-^39Jîºèe0¯˙Vé£d1+£Ì.≤D2L√e1JíQ‹Ù3öˇÉÊpq£áﬁ˘˚F£Ì&¶ì·¬$ËÖ˝¡AØû´¸çH˚´Î∫·Òf t¶∏y´)“√"^h∂dü$Fƒû“}t=ß“MOú;ÁÆ§Ã#¨Zñ6ê˙»Â/ª¶’ÍÅ?âÂùø‹…∆xåtÖOJ»ß«˚=YÆÆ§CÀí^ÒŒƒïüu∆Bï¿—æuÑìÀJ≤[JzÑí]Gùä2Ïi∆ÀÄ|∂h?)Ê¯0.1æoÈ˘¡·´ØGÚøh<óÄ∑}&π$¡µ«¸ü|Éπ
-9=∆˚/Ãü!¸}5ü4oËª™>ﬁs08L¥Ÿµ€ÉQÖGó€tÏ(Ôòuì#¡AÉºqWÛd4Dπÿ‚‚“GK≤br: †∞ÔYª<‹™≈=Ó£ú.b£ˇ§1◊´`wø´'¯$l1Oï¯&z]Yê$M˜˜UU^Æœã‘?˘†2¯UF2¿´t“SVeÜ∏ø”π˘ˇ+ »~≥rUÄhÓ!ä†‹®
-Ú–Üc›'ëF"z«Ä¡ »7˘˙ØDÒW“™∫Z∫…6?J÷»=EÑ’ mSÍs•ñq?tM¥pS?ò“}%À)ØÏoÕÅ¢æ≠Kø,g∏å∆ûJk=3i;f„Eˇ„7Áq‚•¬Îsû[^'äñ8sM®Vÿ8Êl¡æaåG∑7òÑw∑”hQ
-SàZŸ+≤“HLÄ\õïw]'√ƒ—R˜˜Øt+bŒÚÄœ”CÏ¥|O¥∆øgÎ»àR‘FïúbRI∂ºÿ÷◊â‰Ü~ØÙh∫v—øuleŒ·˘…|ø`Xøµ»HuNÅÌzmïêπ¡î¡`@Q¥r≤ﬂ‘¬]‡dCãﬁ…P€R™|úU±ÑUù∆˙Ç;IQÇ'ì“ö≥ß_~j®‘…y£¢t{ÁÄ‹lLHÒ#˚ˇ-¯&›H8íŸ•.àÊ∂_EDÆã„é¥◊”ÕÛ0Èndë{ñﬁ‡|æ‹K-≥Y·>!ÊCCA%p”m9˛œ¯ä?›ıH;Õ¶÷è¸¨™˚v™=ÂqﬂaN=ºP0∑Æ|rÚ† '∏c»∑iGO@öŒzÉò”í˘bÑ3◊
-ú∆OD‘@g8BîRıÅZÜdkõ¢aÉc∆,;+ Œz'‚^&K:Ù«<Ô˝⁄F0ZÂˆ
- s#lˇÄh∫»J‰m‡ºõWsÏÈ+d¥∑d„≤$Zn]7ÿ‘7	‰ˆ£|ÆÁâÍ5BsKNùznä;¸yìˆ∏≥	Âﬂ”*É—IÆ-w2∞ÉÒ#÷g†¿tûk|Ò£FÂ‚˚höº<‚ñÌÜÓÍyŒ≠W4á◊0‘™"s>ÒíF‰Ä‡h∏«ZçŒ√Uàsœà!g,Ò∞“&ö”p§?X3`Cµ•¢ööÜ‡æ{Wﬂj‘tÇ≥¨ãhÙ|c9Pæ«á%Ê«»Yq´øÑW≈8Ô´?≥ÛÀìJb@%+à<πcE‹öΩÆ±≤j?WzÀüŒ}D÷;£Z´˚’ÄñÍQ_ ˇôèÁ6DLd©b¶cf˝ÈÎX|õµ>âÕÍ¨%˙Á‰g%“ÇlïD^´,"V£ÚY¥øZTÙf<ŒæéóÈë%*Óˇm5V›sÒ.ÊÎôí#¢X‹Hä ≤Ô°cI†jÍ!˝µãùÕ¢ÔJÎ"æ,î¬–⁄q∏ˇ$3±†;ÎÉ
-63v$∆Ç¸Úu|ÆÛÎv"h≠ÿÓC±ﬂ}Î+e_KvTqµå∑⁄ıHZ◊Ω¡|úèç™˜ShÛ{LG˘√◊÷˘ÿ`˜ÃJ&ﬁ≈q?Z˜ÑVC•0rŒ%4%ﬁvË≈Õ=k8t>PdÔOí8æYÜVkΩîÃ495 ÄV∂œaìjLmÈ^7√è:Ødó>'#›≠Mö	-ÙP¬PÖö¨	¥⁄èù1ÎÖ¥ØLC£ÒÆi»à‰ﬂ@¸/z£™∂=ª•P©ÁÅÃñ£∏ßx)qDÎ°J:êo∑m>$≈@„£6B-}a¸ÏRﬁ˚˛,û°∂U‘7qñxQü¥Eˆáû±Vˆp»7Wó¬jã¸CΩ≈è˜ïD¯YwAüq62W9ÜQÄ:ÂÆÄÂÎÄÎÏ∏‹åEy(·Y`AH(TBÏvÿ9ñ%£àAkÛb∞é¡ˆyuïOG?∫s◊!ˆ8Êáó	C°~my¯¢Õ5≈±ß@p{-]‰ˇ´˚ù÷®q±˛Œ≠éƒBﬂÒ,3–‚mÃ«cg±®Ë‹T&^ÆÔ )oƒtQ6ñIﬁ´I›õ˝5Yimí¡‹LI#*ŒMÎ	` ™àdÃê4D*º;lª4BD˜·`eåH$ÙI¿‡R∞3ú1ô ∏Ú?=t∫ÖÇ›Î}ıH¢o˙%|Ù‹áî]’∆Ã⁄ÑJÎÉß˘z6%~¥„†Œè¸"œIÌínΩÓ'È€≤!»∞zzc†$∑$€!ywî•ä0ˆûÈ)ü¢Ÿ()‚®»yh˜ˆq+Ü¿E¨·†Jc–éÙC∫¶ñtâtM}≤uc¢;b^§°&úiÓ ©≤LZTÎ	˝ËÛ¿˛@˘JL-3VzÜ¶’Ñ1®4Æé‘4JÀN%∑]≠¢∫twê# ¬Üiä
-iÙ>ÅÕÑ‰É-ïóÎwª‡æÑK◊(˝3µp9¸ÁÃıO»6ò†¿Öã ›2«Qﬂ/
-&”ó%\ÛÕ^‹p†‹‹m8∂“Áj/àR”À‹äûΩ$,ñ©Ç˘àV[Ã0è}R¢ﬂ‘™ﬁk≤÷˜N©ökûÄÊûÍ “x-_®ño-◊®€©ØÆoÃ$Yú–™…Q8T»§DHﬁEÄ]7ÀGò≈Gﬂ45k7ÁïP˝Ωs2!•≤0êüØS≥ëo≤©ô∆°ö2òÍ1K‡ dÈ~˛ùE,—∆OüB»JÉ 5ˇTÊRãzïä‚Õ÷FJ"’5Ø±…¿
-Åpˆ¯8*√Ä&æ,a c%˘vBNqkwÚøÈËÇ%íÑUΩ]¨◊á◊pk1ÕëF„Fππux8>~•œ‹
-˙Ëø/l◊É°Yeø0õ˛⁄Œ√B‰˝‰#änÊ^˜†ÓzƒM†6À˚>ﬂd_∞Ì´ÕﬂŸô;ˇÏÇà1;πÖaË€™öD·\Àô6s§òÖKÅ®ÿ	Ãaë‰ç˜4	U4 QAÿ Di0'M@[1∫ó‚‚∂BƒŸπ∞üŒ`÷?”]%J"‘ ß≥«.‚ÌçTôa‡#"ÚdÔ¿™ç`ï¨≠òVBñÕvû˜è]|Ì:•Cp∆}è£h»>f∫U¥_IæÑÌ=∞Ô∑7∆*lµ!±“VÖ;ßeßÏ[NTÑﬁOtœ?®Üí´∏«î˝.{"Á¿ıŒêØÿ:woòVV∫DbƒÙ»ˆ?ÂôKg:8∂≠1¥˚á?Î~Hw	Ï∑Îèx≈R„ZA`ÜÎ~¥5P'yuWøë˝âÃ2ó’àéL-î~æX‡) Ñ‡àÒƒåΩx!mêy˝!≥ùΩÈŸÙË’±Å»+∏ÎΩkëûÒERäLÍçS€ÿ{ko8=¥–s9hcí’:M
-æ≥@y3:*Ô_Ù=˜ö&	«Bg∞4À§h~ò–+XÆ"Úµ®8€ÿ
-‘!fÀÓÚÒÆFñ´9/≤∞Í œkìı@≈5Y≠Ω( =œ»U¿KgN∞›¿z2jkX¯âì∞_Úh±Tj%6uUrH ∆´fl¶~≤ò.ãD¸ÊIGÔO∆õºÂú_CI!?eí◊˙(Ä˛)òKùxd˘c-˛¸±ßQáÒÿOˇ›≥ﬁ E*˜#≥+;©ÓΩƒ/2ÀyÍo¬@V•óï%…gπå˝NCKM1ƒXr¢‘«N/ŒO’œÂÿM1‘‹+	Èú»‡zûÑ#'à¡[R±—–+Æç#¨∂¶Aﬁ£ıcN»∏Ñ\›+'ﬂi
-ÖH"úÖ«ê#{¨Ip~&=ƒij÷ãñØI”˘¡øfÍñJlmS™XémŸ!£'±„v=.>§“Hjo⁄’s	Ëî∑B¬Ωb‡ˇuAÖsc“˛€ıDŒ:	X≤4YÑp¬–ÉÈCWÓ⁄æÌëçQ,P=)¯ﬁ‡Á/¢Wr@%˘q≈¯≤vtÿ◊;π¡hÜ⁄Xœ?˜';í&ÜÑÙî^Âkπ·XD4BÜ&+Lƒ_îJ:•Û¸Ãì9eß[ZÅœzc˜˘≠D—C¬œˆ{oIm. 7Å8'ôüƒâvˇø3=⁄ ⁄K±xÕ7¶#øπ∞ˇÀ™îáÇ|ßÛ¢ ®@¡Ë≥õnD«®U†Hhå:éZ”åqÍﬂŒxrµ>™1°-ÇàË,oπ4TÄÏÛ£ŒµÄ—Y£cÖB¡ÀÖûvúU∞jìfuuï'Ä‰íø¥‚˙‘o¡—|©jd}›FZâ[r`Û"“~âNÇ}e:ÏΩÑ ≠»êÕØzY\µñ(L¨πçr‡$8ëC0<E1˝≤˝rüπA˝R¬7TQY$ÏÃbı R_i	'åê6 u˘ıÃH\}[Áˇ>¿	!@ØÛ„
-McÄ
-ÃZÄ4é§é“˘É]N≠|¢Ï˜√ME&∞R—1·´¿Dò1°π¨çFµpªûY‘sÀç#∆¸·|®ùâ1≈»\G‡Ã/ãÊ "x=SÓïWù≥HSeÜ¯ÙDÊn‘…ZK„†út£§Q
-Ûÿ"CôÊG$"ﬁ–ÊH^Ôa)ΩÄZ·>(:íâ?ΩÕ··é4¢ ì≥ß@Õ˘„’<›ú˝`ˆuwpüãÔÙûºÙÓîXé˚[kéîËcfÕ
-ÑRÈ€òLÔz¯ØÌ◊PI4'¨2D©æ·Œ`Ä¶‹S'R	¨÷ﬁ#í\=‰˘NØ1‰Ê9áõµ€‡ı±òÿÜñ)ƒ˙8∆"ÌFm‚Thª√V¢wp_Ü_-¨bíÜ‹e_⁄‹«Òú+â^€ü¿£ßB.ùmZ|ı*”˝Z%‘6x4Éﬁ˜¸∆ÎEldè⁄iY
-|‡÷s2Íg8˛?8û˚›1IÌù"\*∑‰>Ûáç#:`Dcv%HÈä¡ÓÕµA9ó‰)L%˜Ωπ|òÏ◊‰ÄH≠⁄1Ùß€ã?K‚31„«YŸ´Ãzå⁄)˘êxÚeñ±V-,Ç‰û‰ıéD1ëD˙§”Ê∂&`t<<.gmÉ¬πãÂ∆∆H9◊æ=MRw*◊«ÍÑ≈iéﬁQ5}¬ªŸ.¢C‡èCÕÏ´:Û,\ÀL˛
-å¶Kp]°£ßˆ= =€‚|êp∂=õ“êaΩR*Êlì≥lòNDø¶Oˆ˜ÿfr($i¥$°ÜáZ8ªRÉl—3°{Ú⁄4•>âÖ´ı‰;úÅ ﬂxì(<DÜ1~”å^\Œw_÷,`iÈ0¯†Òeï•≤_û˛ì2*dÙ∫√û~Ñﬂ!W`8]ºEﬁÖhF<ÊAÅ¥å∂5AdÃv ,ﬁÕÅÖoó∏Sl˝Âî$RÛ◊Ä_ü˘5≥ù$˜ãMÁﬁ`±Å¸3DEú∆b_m¢êYç´kH≈aı‚ñ*s°légâ.µÚK?˘¬ÀÅÄÃ;◊èΩ
-dœk/VÑÿP°…°˜D¨ÔØÖ^QiäﬂûOÂr6%'√ó$∏{<πù+˙} R(∏§î^∏ı9	F(¶AÕeì^ÔÓmü6û˙—Œ;•§“:Ñ≤™π.ò¢‰◊ØèåHd-ûõ=í„Íí∆ìNâπ§ÓH0~ÌÍ?—kx∏/Û≈•ﬂaB¿/+’ç}æZBΩŒÃ¥R>Â SkY#b‘U“)„Xk`D∫
-˘÷éú˜€ú /cìyëB±ZÏô?ND«ﬁEﬂ‹%çq:‰Ä¬ã$fê(HÖEj	Ô⁄Ü9√©±àmØ'¶‚%0%;0Ò:0SÃ∫Z∑úÏ∫≤˚|…]'HiΩ©ô_M€ø€æsKEiàF∫¥iêÕªN“GaúíÆäôdqìoøV´Eö±ûøê‰y*éÓSÓ^9™ë#2ùúÔøì]ØªÌ¶˜ÖÀPÀ3◊b∂˝	#.Ú¡%ﬂU∫4I|õ†NµÂ´ 9i'Yì§$ÂdÒıúPVÓ8ìßÈ¶Øü65’˝[ŸÏì‡"Çòµ±(Õøn÷RY-¶r_∫øí%nùﬂ∆Ô∏©ı)#\DœK2q…–
-¶“G“Æ%ó˙eΩ3ÄLrCvMÌa˙$«ô>¶YUØÖä¢ØÌıJ†ÖlZã±qÉŸñ‹t∞KÖ© ’3yàZ®•˜ò("î§ªi∏D=8 *Käæ ö¬ƒ~.åûn{!&∫—◊∏ª…Á›å£R+	¶¿5Y.‘¢G £ÏxGºl€Û 2h^ÚY
-f$«C≈‹ÿ•‡û3,ôlg˛mØ™x#ápÙ“t•{É>Nƒó!Eë,&˜=ÀˇÆàÛ√P¬ep∂".g?ƒ£∑+W∂ç+EÛ˚Ò˚Q¥≈<nFú{O™3á~∏Œ®(Y∞\Ñ®É»ÛáMc√Œ·'˜za(oÒ∑›9H:€cÖ¬ëÀ¨/D÷H…˚ˆ9Î 8˛π_€Kíû]Ï°c˝.Øºë“BÄ“π°’˚¨—÷”∂PúBsü≤&$CgdSï
-µÓı}H/0T¬:îãzéÖ aGùŒ3¯c|øaÙ&æ∑ß¥G˛TØsiÖŸÍÑ5›sÁe¬xb·fπ»%ŸLÃMππ¸Hd7âI>·L≤ı£%±(ı'QCa.« Ê]¯^/GÂ„›6Ws‡±%Åhˆ5E GKMU–◊ø<äûAø8V,ÏÖ≈ ©r±¸∏I¶V°≈¥v[rÌäÎ¸dMéÌmXdÎΩ'ÃÓ‰"k»•Øä
+#ifdef CONFIG_UCLAMP_TASK_GROUP
+static inline void
+uclamp_update_active_tasks(struct cgroup_subsys_state *css)
+{
+	struct css_task_iter it;
+	struct task_struct *p;
+
+	css_task_iter_start(css, 0, &it);
+	while ((p = css_task_iter_next(&it)))
+		uclamp_update_active(p);
+	css_task_iter_end(&it);
+}
+
+static void cpu_util_update_eff(struct cgroup_subsys_state *css);
+static void uclamp_update_root_tg(void)
+{
+	struct task_group *tg = &root_task_group;
+
+	uclamp_se_set(&tg->uclamp_req[UCLAMP_MIN],
+		      sysctl_sched_uclamp_util_min, false);
+	uclamp_se_set(&tg->uclamp_req[UCLAMP_MAX],
+		      sysctl_sched_uclamp_util_max, false);
+
+	rcu_read_lock();
+	cpu_util_update_eff(&root_task_group.css);
+	rcu_read_unlock();
+}
+#else
+static void uclamp_update_root_tg(void) { }
+#endif
+
+int sysctl_sched_uclamp_handler(struct ctl_table *table, int write,
+				void *buffer, size_t *lenp, loff_t *ppos)
+{
+	bool update_root_tg = false;
+	int old_min, old_max, old_min_rt;
+	int result;
+
+	mutex_lock(&uclamp_mutex);
+	old_min = sysctl_sched_uclamp_util_min;
+	old_max = sysctl_sched_uclamp_util_max;
+	old_min_rt = sysctl_sched_uclamp_util_min_rt_default;
+
+	result = proc_dointvec(table, write, buffer, lenp, ppos);
+	if (result)
+		goto undo;
+	if (!write)
+		goto done;
+
+	if (sysctl_sched_uclamp_util_min > sysctl_sched_uclamp_util_max ||
+	    sysctl_sched_uclamp_util_max > SCHED_CAPACITY_SCALE	||
+	    sysctl_sched_uclamp_util_min_rt_default > SCHED_CAPACITY_SCALE) {
+
+		result = -EINVAL;
+		goto undo;
+	}
+
+	if (old_min != sysctl_sched_uclamp_util_min) {
+		uclamp_se_set(&uclamp_default[UCLAMP_MIN],
+			      sysctl_sched_uclamp_util_min, false);
+		update_root_tg = true;
+	}
+	if (old_max != sysctl_sched_uclamp_util_max) {
+		uclamp_se_set(&uclamp_default[UCLAMP_MAX],
+			      sysctl_sched_uclamp_util_max, false);
+		update_root_tg = true;
+	}
+
+	if (update_root_tg) {
+		static_branch_enable(&sched_uclamp_used);
+		uclamp_update_root_tg();
+	}
+
+	if (old_min_rt != sysctl_sched_uclamp_util_min_rt_default) {
+		static_branch_enable(&sched_uclamp_used);
+		uclamp_sync_util_min_rt_default();
+	}
+
+	/*
+	 * We update all RUNNABLE tasks only when task groups are in use.
+	 * Otherwise, keep it simple and do just a lazy update at each next
+	 * task enqueue time.
+	 */
+
+	goto done;
+
+undo:
+	sysctl_sched_uclamp_util_min = old_min;
+	sysctl_sched_uclamp_util_max = old_max;
+	sysctl_sched_uclamp_util_min_rt_default = old_min_rt;
+done:
+	mutex_unlock(&uclamp_mutex);
+
+	return result;
+}
+
+static int uclamp_validate(struct task_struct *p,
+			   const struct sched_attr *attr)
+{
+	int util_min = p->uclamp_req[UCLAMP_MIN].value;
+	int util_max = p->uclamp_req[UCLAMP_MAX].value;
+
+	if (attr->sched_flags & SCHED_FLAG_UTIL_CLAMP_MIN) {
+		util_min = attr->sched_util_min;
+
+		if (util_min + 1 > SCHED_CAPACITY_SCALE + 1)
+			return -EINVAL;
+	}
+
+	if (attr->sched_flags & SCHED_FLAG_UTIL_CLAMP_MAX) {
+		util_max = attr->sched_util_max;
+
+		if (util_max + 1 > SCHED_CAPACITY_SCALE + 1)
+			return -EINVAL;
+	}
+
+	if (util_min != -1 && util_max != -1 && util_min > util_max)
+		return -EINVAL;
+
+	/*
+	 * We have valid uclamp attributes; make sure uclamp is enabled.
+	 *
+	 * We need to do that here, because enabling static branches is a
+	 * blocking operation which obviously cannot be done while holding
+	 * scheduler locks.
+	 */
+	static_branch_enable(&sched_uclamp_used);
+
+	return 0;
+}
+
+static bool uclamp_reset(const struct sched_attr *attr,
+			 enum uclamp_id clamp_id,
+			 struct uclamp_se *uc_se)
+{
+	/* Reset on sched class change for a non user-defined clamp value. */
+	if (likely(!(attr->sched_flags & SCHED_FLAG_UTIL_CLAMP)) &&
+	    !uc_se->user_defined)
+		return true;
+
+	/* Reset on sched_util_{min,max} == -1. */
+	if (clamp_id == UCLAMP_MIN &&
+	    attr->sched_flags & SCHED_FLAG_UTIL_CLAMP_MIN &&
+	    attr->sched_util_min == -1) {
+		return true;
+	}
+
+	if (clamp_id == UCLAMP_MAX &&
+	    attr->sched_flags & SCHED_FLAG_UTIL_CLAMP_MAX &&
+	    attr->sched_util_max == -1) {
+		return true;
+	}
+
+	return false;
+}
+
+static void __setscheduler_uclamp(struct task_struct *p,
+				  const struct sched_attr *attr)
+{
+	enum uclamp_id clamp_id;
+
+	for_each_clamp_id(clamp_id) {
+		struct uclamp_se *uc_se = &p->uclamp_req[clamp_id];
+		unsigned int value;
+
+		if (!uclamp_reset(attr, clamp_id, uc_se))
+			continue;
+
+		/*
+		 * RT by default have a 100% boost value that could be modified
+		 * at runtime.
+		 */
+		if (unlikely(rt_task(p) && clamp_id == UCLAMP_MIN))
+			value = sysctl_sched_uclamp_util_min_rt_default;
+		else
+			value = uclamp_none(clamp_id);
+
+		uclamp_se_set(uc_se, value, false);
+
+	}
+
+	if (likely(!(attr->sched_flags & SCHED_FLAG_UTIL_CLAMP)))
+		return;
+
+	if (attr->sched_flags & SCHED_FLAG_UTIL_CLAMP_MIN &&
+	    attr->sched_util_min != -1) {
+		uclamp_se_set(&p->uclamp_req[UCLAMP_MIN],
+			      attr->sched_util_min, true);
+	}
+
+	if (attr->sched_flags & SCHED_FLAG_UTIL_CLAMP_MAX &&
+	    attr->sched_util_max != -1) {
+		uclamp_se_set(&p->uclamp_req[UCLAMP_MAX],
+			      attr->sched_util_max, true);
+	}
+}
+
+static void uclamp_fork(struct task_struct *p)
+{
+	enum uclamp_id clamp_id;
+
+	/*
+	 * We don't need to hold task_rq_lock() when updating p->uclamp_* here
+	 * as the task is still at its early fork stages.
+	 */
+	for_each_clamp_id(clamp_id)
+		p->uclamp[clamp_id].active = false;
+
+	if (likely(!p->sched_reset_on_fork))
+		return;
+
+	for_each_clamp_id(clamp_id) {
+		uclamp_se_set(&p->uclamp_req[clamp_id],
+			      uclamp_none(clamp_id), false);
+	}
+}
+
+static void uclamp_post_fork(struct task_struct *p)
+{
+	uclamp_update_util_min_rt_default(p);
+}
+
+static void __init init_uclamp_rq(struct rq *rq)
+{
+	enum uclamp_id clamp_id;
+	struct uclamp_rq *uc_rq = rq->uclamp;
+
+	for_each_clamp_id(clamp_id) {
+		uc_rq[clamp_id] = (struct uclamp_rq) {
+			.value = uclamp_none(clamp_id)
+		};
+	}
+
+	rq->uclamp_flags = UCLAMP_FLAG_IDLE;
+}
+
+static void __init init_uclamp(void)
+{
+	struct uclamp_se uc_max = {};
+	enum uclamp_id clamp_id;
+	int cpu;
+
+	for_each_possible_cpu(cpu)
+		init_uclamp_rq(cpu_rq(cpu));
+
+	for_each_clamp_id(clamp_id) {
+		uclamp_se_set(&init_task.uclamp_req[clamp_id],
+			      uclamp_none(clamp_id), false);
+	}
+
+	/* System defaults allow max clamp values for both indexes */
+	uclamp_se_set(&uc_max, uclamp_none(UCLAMP_MAX), false);
+	for_each_clamp_id(clamp_id) {
+		uclamp_default[clamp_id] = uc_max;
+#ifdef CONFIG_UCLAMP_TASK_GROUP
+		root_task_group.uclamp_req[clamp_id] = uc_max;
+		root_task_group.uclamp[clamp_id] = uc_max;
+#endif
+	}
+}
+
+#else /* CONFIG_UCLAMP_TASK */
+static inline void uclamp_rq_inc(struct rq *rq, struct task_struct *p) { }
+static inline void uclamp_rq_dec(struct rq *rq, struct task_struct *p) { }
+static inline int uclamp_validate(struct task_struct *p,
+				  const struct sched_attr *attr)
+{
+	return -EOPNOTSUPP;
+}
+static void __setscheduler_uclamp(struct task_struct *p,
+				  const struct sched_attr *attr) { }
+static inline void uclamp_fork(struct task_struct *p) { }
+static inline void uclamp_post_fork(struct task_struct *p) { }
+static inline void init_uclamp(void) { }
+#endif /* CONFIG_UCLAMP_TASK */
+
+bool sched_task_on_rq(struct task_struct *p)
+{
+	return task_on_rq_queued(p);
+}
+
+unsigned long get_wchan(struct task_struct *p)
+{
+	unsigned long ip = 0;
+	unsigned int state;
+
+	if 

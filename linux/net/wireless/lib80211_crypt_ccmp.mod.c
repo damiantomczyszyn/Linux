@@ -1,17 +1,27 @@
-TION) \
-  arch/x86/include/asm/page.h \
-  arch/x86/include/asm/page_types.h \
-    $(wildcard include/config/PHYSICAL_START) \
-    $(wildcard include/config/PHYSICAL_ALIGN) \
-    $(wildcard include/config/DYNAMIC_PHYSICAL_MASK) \
-  include/linux/mem_encrypt.h \
-    $(wildcard include/config/ARCH_HAS_MEM_ENCRYPT) \
-  arch/x86/include/asm/mem_encrypt.h \
-  include/linux/cc_platform.h \
-    $(wildcard include/config/ARCH_HAS_CC_PLATFORM) \
-  arch/x86/include/uapi/asm/bootparam.h \
-  include/linux/screen_info.h \
-  include/uapi/linux/screen_info.h \
-  include/linux/apm_bios.h \
-  include/uapi/linux/apm_bios.h \
-  
+q->lock held and irqs disabled
+ */
+void hrtick_start(struct rq *rq, u64 delay)
+{
+	struct hrtimer *timer = &rq->hrtick_timer;
+	s64 delta;
+
+	/*
+	 * Don't schedule slices shorter than 10000ns, that just
+	 * doesn't make sense and can cause timer DoS.
+	 */
+	delta = max_t(s64, delay, 10000LL);
+	rq->hrtick_time = ktime_add_ns(timer->base->get_time(), delta);
+
+	if (rq == this_rq())
+		__hrtick_restart(rq);
+	else
+		smp_call_function_single_async(cpu_of(rq), &rq->hrtick_csd);
+}
+
+#else
+/*
+ * Called to set the hrtick timer state.
+ *
+ * called with rq->lock held and irqs disabled
+ */
+void hrtick_start(struct rq *rq, u64 d

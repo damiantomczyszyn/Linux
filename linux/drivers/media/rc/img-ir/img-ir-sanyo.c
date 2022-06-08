@@ -1,125 +1,123 @@
 // SPDX-License-Identifier: GPL-2.0-or-later
 /*
- * ImgTec IR Decoder setup for Sanyo protocol.
+ *  Driver for the Conexant CX23885 PCIe bridge
  *
- * Copyright 2012-2014 Imagination Technologies Ltd.
- *
- * From ir-sanyo-decoder.c:
- *
- * This protocol uses the NEC protocol timings. However, data is formatted as:
- *	13 bits Custom Code
- *	13 bits NOT(Custom Code)
- *	8 bits Key data
- *	8 bits NOT(Key data)
- *
- * According with LIRC, this protocol is used on Sanyo, Aiwa and Chinon
- * Information for this protocol is available at the Sanyo LC7461 datasheet.
+ *  Copyright (c) 2006 Steven Toth <stoth@linuxtv.org>
  */
 
-#include "img-ir-hw.h"
+#include "cx23885.h"
 
-/* Convert Sanyo data to a scancode */
-static int img_ir_sanyo_scancode(int len, u64 raw, u64 enabled_protocols,
-				 struct img_ir_scancode_req *request)
+#include <linux/module.h>
+#include <linux/init.h>
+#include <linux/delay.h>
+#include <asm/io.h>
+
+#include <media/v4l2-common.h>
+
+static unsigned int i2c_debug;
+module_param(i2c_debug, int, 0644);
+MODULE_PARM_DESC(i2c_debug, "enable debug messages [i2c]");
+
+static unsigned int i2c_scan;
+module_param(i2c_scan, int, 0444);
+MODULE_PARM_DESC(i2c_scan, "scan i2c bus at insmod time");
+
+#define dprintk(level, fmt, arg...)\
+	do { if (i2c_debug >= level)\
+		printk(KERN_DEBUG pr_fmt("%s: i2c:" fmt), \
+			__func__, ##arg); \
+	} while (0)
+
+#define I2C_WAIT_DELAY 32
+#define I2C_WAIT_RETRY 64
+
+#define I2C_EXTEND  (1 << 3)
+#define I2C_NOSTOP  (1 << 4)
+
+static inline int i2c_slave_did_ack(struct i2c_adapter *i2c_adap)
 {
-	unsigned int addr, addr_inv, data, data_inv;
-	/* a repeat code has no data */
-	if (!len)
-		return IMG_IR_REPEATCODE;
-	if (len != 42)
-		return -EINVAL;
-	addr     = (raw >>  0) & 0x1fff;
-	addr_inv = (raw >> 13) & 0x1fff;
-	data     = (raw >> 26) & 0xff;
-	data_inv = (raw >> 34) & 0xff;
-	/* Validate data */
-	if ((data_inv ^ data) != 0xff)
-		return -EINVAL;
-	/* Validate address */
-	if ((addr_inv ^ addr) != 0x1fff)
-		return -EINVAL;
-
-	/* Normal Sanyo */
-	request->protocol = RC_PROTO_SANYO;
-	request->scancode = addr << 8 | data;
-	return IMG_IR_SCANCODE;
+	struct cx23885_i2c *bus = i2c_adap->algo_data;
+	struct cx23885_dev *dev = bus->dev;
+	return cx_read(bus->reg_stat) & 0x01;
 }
 
-/* Convert Sanyo scancode to Sanyo data filter */
-static int img_ir_sanyo_filter(const struct rc_scancode_filter *in,
-			       struct img_ir_filter *out, u64 protocols)
+static inline int i2c_is_busy(struct i2c_adapter *i2c_adap)
 {
-	unsigned int addr, addr_inv, data, data_inv;
-	unsigned int addr_m, data_m;
-
-	data = in->data & 0xff;
-	data_m = in->mask & 0xff;
-	data_inv = data ^ 0xff;
-
-	if (in->data & 0xff700000)
-		return -EINVAL;
-
-	addr       = (in->data >> 8) & 0x1fff;
-	addr_m     = (in->mask >> 8) & 0x1fff;
-	addr_inv   = addr ^ 0x1fff;
-
-	out->data = (u64)data_inv << 34 |
-		    (u64)data     << 26 |
-			 addr_inv << 13 |
-			 addr;
-	out->mask = (u64)data_m << 34 |
-		    (u64)data_m << 26 |
-			 addr_m << 13 |
-			 addr_m;
-	return 0;
+	struct cx23885_i2c *bus = i2c_adap->algo_data;
+	struct cx23885_dev *dev = bus->dev;
+	return cx_read(bus->reg_stat) & 0x02 ? 1 : 0;
 }
 
-/* Sanyo decoder */
-struct img_ir_decoder img_ir_sanyo = {
-	.type = RC_PROTO_BIT_SANYO,
-	.control = {
-		.decoden = 1,
-		.code_type = IMG_IR_CODETYPE_PULSEDIST,
-	},
-	/* main timings */
-	.unit = 562500, /* 562.5 us */
-	.timings = {
-		/* leader symbol */
-		.ldr = {
-			.pulse = { 16	/* 9ms */ },
-			.space = { 8	/* 4.5ms */ },
-		},
-		/* 0 symbol */
-		.s00 = {
-			.pulse = { 1	/* 562.5 us */ },
-			.space = { 1	/* 562.5 us */ },
-		},
-		/* 1 symbol */
-		.s01 = {
-			.pulse = { 1	/* 562.5 us */ },
-			.space = { 3	/* 1687.5 us */ },
-		},
-		/* free time */
-		.ft = {
-			.minlen = 42,
-			.maxlen = 42,
-			.ft_min = 10,	/* 5.625 ms */
-		},
-	},
-	/* repeat codes */
-	.repeat = 108,			/* 108 ms */
-	.rtimings = {
-		/* leader symbol */
-		.ldr = {
-			.space = { 4	/* 2.25 ms */ },
-		},
-		/* free time */
-		.ft = {
-			.minlen = 0,	/* repeat code has no data */
-			.maxlen = 0,
-		},
-	},
-	/* scancode logic */
-	.scancode = img_ir_sanyo_scancode,
-	.filter = img_ir_sanyo_filter,
-};
+static int i2c_wait_done(struct i2c_adapter *i2c_adap)
+{
+	int count;
+
+	for (count = 0; count < I2C_WAIT_RETRY; count++) {
+		if (!i2c_is_busy(i2c_adap))
+			break;
+		udelay(I2C_WAIT_DELAY);
+	}
+
+	if (I2C_WAIT_RETRY == count)
+		return 0;
+
+	return 1;
+}
+
+static int i2c_sendbytes(struct i2c_adapter *i2c_adap,
+			 const struct i2c_msg *msg, int joined_rlen)
+{
+	struct cx23885_i2c *bus = i2c_adap->algo_data;
+	struct cx23885_dev *dev = bus->dev;
+	u32 wdata, addr, ctrl;
+	int retval, cnt;
+
+	if (joined_rlen)
+		dprintk(1, "%s(msg->wlen=%d, nextmsg->rlen=%d)\n", __func__,
+			msg->len, joined_rlen);
+	else
+		dprintk(1, "%s(msg->len=%d)\n", __func__, msg->len);
+
+	/* Deal with i2c probe functions with zero payload */
+	if (msg->len == 0) {
+		cx_write(bus->reg_addr, msg->addr << 25);
+		cx_write(bus->reg_ctrl, bus->i2c_period | (1 << 2));
+		if (!i2c_wait_done(i2c_adap))
+			return -EIO;
+		if (!i2c_slave_did_ack(i2c_adap))
+			return -ENXIO;
+
+		dprintk(1, "%s() returns 0\n", __func__);
+		return 0;
+	}
+
+
+	/* dev, reg + first byte */
+	addr = (msg->addr << 25) | msg->buf[0];
+	wdata = msg->buf[0];
+	ctrl = bus->i2c_period | (1 << 12) | (1 << 2);
+
+	if (msg->len > 1)
+		ctrl |= I2C_NOSTOP | I2C_EXTEND;
+	else if (joined_rlen)
+		ctrl |= I2C_NOSTOP;
+
+	cx_write(bus->reg_addr, addr);
+	cx_write(bus->reg_wdata, wdata);
+	cx_write(bus->reg_ctrl, ctrl);
+
+	if (!i2c_wait_done(i2c_adap))
+		goto eio;
+	if (i2c_debug) {
+		printk(KERN_DEBUG " <W %02x %02x", msg->addr << 1, msg->buf[0]);
+		if (!(ctrl & I2C_NOSTOP))
+			pr_cont(" >\n");
+	}
+
+	for (cnt = 1; cnt < msg->len; cnt++) {
+		/* following bytes */
+		wdata = msg->buf[cnt];
+		ctrl = bus->i2c_period | (1 << 12) | (1 << 2);
+
+		if (cnt < msg->len - 1)
+			c

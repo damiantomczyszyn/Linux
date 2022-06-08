@@ -1,46 +1,48 @@
-cpi_io.h \
-  include/linux/io.h \
-    $(wildcard include/config/HAS_IOPORT_MAP) \
-  arch/x86/include/asm/io.h \
-    $(wildcard include/config/MTRR) \
-    $(wildcard include/config/X86_PAT) \
-  arch/x86/include/generated/asm/early_ioremap.h \
-  include/asm-generic/early_ioremap.h \
-    $(wildcard include/config/GENERIC_EARLY_IOREMAP) \
-  include/asm-generic/iomap.h \
-  include/asm-generic/pci_iomap.h \
-    $(wildcard include/config/NO_GENERIC_PCI_IOPORT_MAP) \
-    $(wildcard include/config/GENERIC_PCI_IOMAP) \
-  include/asm-generic/io.h \
-    $(wildcard include/config/GENERIC_IOMAP) \
-    $(wildcard include/config/GENERIC_IOREMAP) \
-    $(wildcard include/config/VIRT_TO_BUS) \
-    $(wildcard include/config/GENERIC_DEVMEM_IS_ALLOWED) \
-  include/linux/logic_pio.h \
-    $(wildcard include/config/INDIRECT_PIO) \
-  include/linux/vmalloc.h \
-    $(wildcard include/config/HAVE_ARCH_HUGE_VMALLOC) \
-  arch/x86/include/asm/vmalloc.h \
-    $(wildcard include/config/HAVE_ARCH_HUGE_VMAP) \
-  arch/x86/include/asm/acpi.h \
-    $(wildcard include/config/ACPI_APEI) \
-  include/acpi/pdc_intel.h \
-  arch/x86/include/asm/numa.h \
-    $(wildcard include/config/NUMA_EMU) \
-  arch/x86/include/asm/numa_32.h \
-  include/linux/regulator/consumer.h \
-    $(wildcard include/config/REGULATOR) \
-  include/linux/suspend.h \
-    $(wildcard include/config/VT) \
-    $(wildcard include/config/SUSPEND) \
-    $(wildcard include/config/HIBERNATION_SNAPSHOT_DEV) \
-    $(wildcard include/config/PM_SLEEP_DEBUG) \
-    $(wildcard include/config/PM_AUTOSLEEP) \
-  include/linux/swap.h \
-    $(wildcard include/config/DEVICE_PRIVATE) \
-    $(wildcard include/config/MIGRATION) \
-    $(wildcard include/config/FRONTSWAP) \
-    $(wildcard include/config/THP_SWAP) \
-    $(wildcard include/config/MEMCG_SWAP) \
-  include/linux/memcontrol.h \
-    $(wildcard include/con
+include/config/ALPHA) \
+    $(wildcard include/config/IA64) \
+    $(wildcard include/config/PPC64) \
+  include/linux/rbtree_latch.h \
+  include/linux/error-injection.h \
+  include/asm-generic/error-injection.h \
+  include/linux/cfi.h \
+    $(wildcard include/config/CFI_CLANG_SHADOW) \
+  arch/x86/include/asm/module.h \
+    $(wildcard include/config/UNWINDER_ORC) \
+  include/asm-generic/module.h \
+    $(wildcard include/config/HAVE_MOD_ARCH_SPECIFIC) \
+    $(wildcard include/config/MODULES_USE_ELF_REL) \
+    $(wildcard include/config/MODULES_USE_ELF_RELA) \
+  arch/x86/include/asm/orc_types.h \
+  arch/x86/include/asm/device.h \
+  include/linux/pm_wakeup.h \
+  include/linux/cdev.h \
+  include/media/media-entity.h \
+  include/linux/fwnode.h \
+  include/uapi/linux/media.h \
+  include/media/v4l2-subdev.h \
+    $(wildcard include/config/VIDEO_ADV_DEBUG) \
+  include/uapi/linux/v4l2-subdev.h \
+  include/uapi/linux/v4l2-common.h \
+  include/uapi/linux/v4l2-mediabus.h \
+  include/uapi/linux/media-bus-format.h \
+  include/linux/videodev2.h \
+  include/uapi/linux/videodev2.h \
+  include/uapi/linux/v4l2-controls.h \
+  include/media/v4l2-async.h \
+  include/media/v4l2-common.h \
+    $(wildcard include/config/VIDEO_V4L2_I2C) \
+    $(wildcard include/config/SPI) \
+  include/media/v4l2-dev.h \
+  include/linux/i2c.h \
+    $(wildcard include/config/I2C) \
+    $(wildcard include/config/I2C_SLAVE) \
+    $(wildcard include/config/I2C_BOARDINFO) \
+    $(wildcard include/config/I2C_MUX) \
+  include/linux/acpi.h \
+    $(wildcard include/config/ACPI_DEBUGGER) \
+    $(wildcard include/config/ACPI_TABLE_LIB) \
+    $(wildcard include/config/LOONGARCH) \
+    $(wildcard include/config/ARM64) \
+    $(wildcard include/config/ACPI_PROCESSOR_CSTATE) \
+    $(wildcard include/config/ACPI_HOTPLUG_CPU) \
+    $(wildcard include/config/ACPI_HOTPLUG_IOAPIC) 

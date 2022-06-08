@@ -1,484 +1,368 @@
-/*
-	 * I took it apart and put it back together again, except now I have
-	 * these 'spare' parts.. where shall I put them.
-	 */
-	if (DEBUG_LOCKS_WARN_ON(curr->lockdep_depth != depth))
-		return 0;
-
-	return 1;
+ntf(vfd->name, sizeof(vfd->name), "%s (%s)",
+		 cx23885_boards[dev->board].name, type);
+	video_set_drvdata(vfd, dev);
+	return vfd;
 }
 
-/*
- * Remove the lock from the list of currently held locks - this gets
- * called on mutex_unlock()/spin_unlock*() (or on a failed
- * mutex_lock_interruptible()).
- */
-static int
-__lock_release(struct lockdep_map *lock, unsigned long ip)
+int cx23885_flatiron_write(struct cx23885_dev *dev, u8 reg, u8 data)
 {
-	struct task_struct *curr = current;
-	unsigned int depth, merged = 1;
-	struct held_lock *hlock;
+	/* 8 bit registers, 8 bit values */
+	u8 buf[] = { reg, data };
+
+	struct i2c_msg msg = { .addr = 0x98 >> 1,
+		.flags = 0, .buf = buf, .len = 2 };
+
+	return i2c_transfer(&dev->i2c_bus[2].i2c_adap, &msg, 1);
+}
+
+u8 cx23885_flatiron_read(struct cx23885_dev *dev, u8 reg)
+{
+	/* 8 bit registers, 8 bit values */
+	int ret;
+	u8 b0[] = { reg };
+	u8 b1[] = { 0 };
+
+	struct i2c_msg msg[] = {
+		{ .addr = 0x98 >> 1, .flags = 0, .buf = b0, .len = 1 },
+		{ .addr = 0x98 >> 1, .flags = I2C_M_RD, .buf = b1, .len = 1 }
+	};
+
+	ret = i2c_transfer(&dev->i2c_bus[2].i2c_adap, &msg[0], 2);
+	if (ret != 2)
+		pr_err("%s() error\n", __func__);
+
+	return b1[0];
+}
+
+static void cx23885_flatiron_dump(struct cx23885_dev *dev)
+{
 	int i;
-
-	if (unlikely(!debug_locks))
-		return 0;
-
-	depth = curr->lockdep_depth;
-	/*
-	 * So we're all set to release this lock.. wait what lock? We don't
-	 * own any locks, you've been drinking again?
-	 */
-	if (depth <= 0) {
-		print_unlock_imbalance_bug(curr, lock, ip);
-		return 0;
+	dprintk(1, "Flatiron dump\n");
+	for (i = 0; i < 0x24; i++) {
+		dprintk(1, "FI[%02x] = %02x\n", i,
+			cx23885_flatiron_read(dev, i));
 	}
+}
 
-	/*
-	 * Check whether the lock exists in the current stack
-	 * of held locks:
-	 */
-	hlock = find_held_lock(curr, lock, depth, &i);
-	if (!hlock) {
-		print_unlock_imbalance_bug(curr, lock, ip);
-		return 0;
-	}
+static int cx23885_flatiron_mux(struct cx23885_dev *dev, int input)
+{
+	u8 val;
+	dprintk(1, "%s(input = %d)\n", __func__, input);
 
-	if (hlock->instance == lock)
-		lock_release_holdtime(hlock);
+	if (input == 1)
+		val = cx23885_flatiron_read(dev, CH_PWR_CTRL1) & ~FLD_CH_SEL;
+	else if (input == 2)
+		val = cx23885_flatiron_read(dev, CH_PWR_CTRL1) | FLD_CH_SEL;
+	else
+		return -EINVAL;
 
-	WARN(hlock->pin_count, "releasing a pinned lock\n");
+	val |= 0x20; /* Enable clock to delta-sigma and dec filter */
 
-	if (hlock->references) {
-		hlock->references--;
-		if (hlock->references) {
-			/*
-			 * We had, and after removing one, still have
-			 * references, the current lock stack is still
-			 * valid. We're done!
-			 */
-			return 1;
-		}
-	}
+	cx23885_flatiron_write(dev, CH_PWR_CTRL1, val);
 
-	/*
-	 * We have the right lock to unlock, 'hlock' points to it.
-	 * Now we remove it from the stack, and add back the other
-	 * entries (if any), recalculating the hash along the way:
-	 */
+	/* Wake up */
+	cx23885_flatiron_write(dev, CH_PWR_CTRL2, 0);
 
-	curr->lockdep_depth = i;
-	curr->curr_chain_key = hlock->prev_chain_key;
+	if (video_debug)
+		cx23885_flatiron_dump(dev);
 
-	/*
-	 * The most likely case is when the unlock is on the innermost
-	 * lock. In this case, we are done!
-	 */
-	if (i == depth-1)
-		return 1;
-
-	if (reacquire_held_locks(curr, depth, i + 1, &merged))
-		return 0;
-
-	/*
-	 * We had N bottles of beer on the wall, we drank one, but now
-	 * there's not N-1 bottles of beer left on the wall...
-	 * Pouring two of the bottles together is acceptable.
-	 */
-	DEBUG_LOCKS_WARN_ON(curr->lockdep_depth != depth - merged);
-
-	/*
-	 * Since reacquire_held_locks() would have called check_chain_key()
-	 * indirectly via __lock_acquire(), we don't need to do it again
-	 * on return.
-	 */
 	return 0;
 }
 
-static __always_inline
-int __lock_is_held(const struct lockdep_map *lock, int read)
+static int cx23885_video_mux(struct cx23885_dev *dev, unsigned int input)
 {
-	struct task_struct *curr = current;
-	int i;
+	dprintk(1, "%s() video_mux: %d [vmux=%d, gpio=0x%x,0x%x,0x%x,0x%x]\n",
+		__func__,
+		input, INPUT(input)->vmux,
+		INPUT(input)->gpio0, INPUT(input)->gpio1,
+		INPUT(input)->gpio2, INPUT(input)->gpio3);
+	dev->input = input;
 
-	for (i = 0; i < curr->lockdep_depth; i++) {
-		struct held_lock *hlock = curr->held_locks + i;
-
-		if (match_held_lock(hlock, lock)) {
-			if (read == -1 || !!hlock->read == read)
-				return LOCK_STATE_HELD;
-
-			return LOCK_STATE_NOT_HELD;
-		}
+	if (dev->board == CX23885_BOARD_MYGICA_X8506 ||
+		dev->board == CX23885_BOARD_MAGICPRO_PROHDTVE2 ||
+		dev->board == CX23885_BOARD_MYGICA_X8507) {
+		/* Select Analog TV */
+		if (INPUT(input)->type == CX23885_VMUX_TELEVISION)
+			cx23885_gpio_clear(dev, GPIO_0);
 	}
 
-	return LOCK_STATE_NOT_HELD;
+	/* Tell the internal A/V decoder */
+	v4l2_subdev_call(dev->sd_cx25840, video, s_routing,
+			INPUT(input)->vmux, 0, 0);
+
+	if ((dev->board == CX23885_BOARD_HAUPPAUGE_HVR1800) ||
+		(dev->board == CX23885_BOARD_MPX885) ||
+		(dev->board == CX23885_BOARD_HAUPPAUGE_HVR1250) ||
+		(dev->board == CX23885_BOARD_HAUPPAUGE_IMPACTVCBE) ||
+		(dev->board == CX23885_BOARD_HAUPPAUGE_HVR1255) ||
+		(dev->board == CX23885_BOARD_HAUPPAUGE_HVR1255_22111) ||
+		(dev->board == CX23885_BOARD_HAUPPAUGE_HVR1265_K4) ||
+		(dev->board == CX23885_BOARD_HAUPPAUGE_QUADHD_ATSC) ||
+		(dev->board == CX23885_BOARD_HAUPPAUGE_QUADHD_DVB) ||
+		(dev->board == CX23885_BOARD_HAUPPAUGE_HVR1850) ||
+		(dev->board == CX23885_BOARD_HAUPPAUGE_HVR5525) ||
+		(dev->board == CX23885_BOARD_MYGICA_X8507) ||
+		(dev->board == CX23885_BOARD_AVERMEDIA_HC81R) ||
+		(dev->board == CX23885_BOARD_VIEWCAST_260E) ||
+		(dev->board == CX23885_BOARD_VIEWCAST_460E) ||
+		(dev->board == CX23885_BOARD_AVERMEDIA_CE310B)) {
+		/* Configure audio routing */
+		v4l2_subdev_call(dev->sd_cx25840, audio, s_routing,
+			INPUT(input)->amux, 0, 0);
+
+		if (INPUT(input)->amux == CX25840_AUDIO7)
+			cx23885_flatiron_mux(dev, 1);
+		else if (INPUT(input)->amux == CX25840_AUDIO6)
+			cx23885_flatiron_mux(dev, 2);
+	}
+
+	return 0;
 }
 
-static struct pin_cookie __lock_pin_lock(struct lockdep_map *lock)
+static int cx23885_audio_mux(struct cx23885_dev *dev, unsigned int input)
 {
-	struct pin_cookie cookie = NIL_COOKIE;
-	struct task_struct *curr = current;
-	int i;
+	dprintk(1, "%s(input=%d)\n", __func__, input);
 
-	if (unlikely(!debug_locks))
-		return cookie;
-
-	for (i = 0; i < curr->lockdep_depth; i++) {
-		struct held_lock *hlock = curr->held_locks + i;
-
-		if (match_held_lock(hlock, lock)) {
-			/*
-			 * Grab 16bits of randomness; this is sufficient to not
-			 * be guessable and still allows some pin nesting in
-			 * our u32 pin_count.
-			 */
-			cookie.val = 1 + (prandom_u32() >> 16);
-			hlock->pin_count += cookie.val;
-			return cookie;
-		}
-	}
-
-	WARN(1, "pinning an unheld lock\n");
-	return cookie;
-}
-
-static void __lock_repin_lock(struct lockdep_map *lock, struct pin_cookie cookie)
-{
-	struct task_struct *curr = current;
-	int i;
-
-	if (unlikely(!debug_locks))
-		return;
-
-	for (i = 0; i < curr->lockdep_depth; i++) {
-		struct held_lock *hlock = curr->held_locks + i;
-
-		if (match_held_lock(hlock, lock)) {
-			hlock->pin_count += cookie.val;
-			return;
-		}
-	}
-
-	WARN(1, "pinning an unheld lock\n");
-}
-
-static void __lock_unpin_lock(struct lockdep_map *lock, struct pin_cookie cookie)
-{
-	struct task_struct *curr = current;
-	int i;
-
-	if (unlikely(!debug_locks))
-		return;
-
-	for (i = 0; i < curr->lockdep_depth; i++) {
-		struct held_lock *hlock = curr->held_locks + i;
-
-		if (match_held_lock(hlock, lock)) {
-			if (WARN(!hlock->pin_count, "unpinning an unpinned lock\n"))
-				return;
-
-			hlock->pin_count -= cookie.val;
-
-			if (WARN((int)hlock->pin_count < 0, "pin count corrupted\n"))
-				hlock->pin_count = 0;
-
-			return;
-		}
-	}
-
-	WARN(1, "unpinning an unheld lock\n");
-}
-
-/*
- * Check whether we follow the irq-flags state precisely:
- */
-static noinstr void check_flags(unsigned long flags)
-{
-#if defined(CONFIG_PROVE_LOCKING) && defined(CONFIG_DEBUG_LOCKDEP)
-	if (!debug_locks)
-		return;
-
-	/* Get the warning out..  */
-	instrumentation_begin();
-
-	if (irqs_disabled_flags(flags)) {
-		if (DEBUG_LOCKS_WARN_ON(lockdep_hardirqs_enabled())) {
-			printk("possible reason: unannotated irqs-off.\n");
-		}
-	} else {
-		if (DEBUG_LOCKS_WARN_ON(!lockdep_hardirqs_enabled())) {
-			printk("possible reason: unannotated irqs-on.\n");
-		}
-	}
-
-#ifndef CONFIG_PREEMPT_RT
-	/*
-	 * We dont accurately track softirq state in e.g.
-	 * hardirq contexts (such as on 4KSTACKS), so only
-	 * check if not in hardirq contexts:
+	/* The baseband video core of the cx23885 has two audio inputs.
+	 * LR1 and LR2. In almost every single case so far only HVR1xxx
+	 * cards we've only ever supported LR1. Time to support LR2,
+	 * which is available via the optional white breakout header on
+	 * the board.
+	 * We'll use a could of existing enums in the card struct to allow
+	 * devs to specify which baseband input they need, or just default
+	 * to what we've always used.
 	 */
-	if (!hardirq_count()) {
-		if (softirq_count()) {
-			/* like the above, but with softirqs */
-			DEBUG_LOCKS_WARN_ON(current->softirqs_enabled);
+	if (INPUT(input)->amux == CX25840_AUDIO7)
+		cx23885_flatiron_mux(dev, 1);
+	else if (INPUT(input)->amux == CX25840_AUDIO6)
+		cx23885_flatiron_mux(dev, 2);
+	else {
+		/* Not specifically defined, assume the default. */
+		cx23885_flatiron_mux(dev, 1);
+	}
+
+	return 0;
+}
+
+/* ------------------------------------------------------------------ */
+static int cx23885_start_video_dma(struct cx23885_dev *dev,
+			   struct cx23885_dmaqueue *q,
+			   struct cx23885_buffer *buf)
+{
+	dprintk(1, "%s()\n", __func__);
+
+	/* Stop the dma/fifo before we tamper with it's risc programs */
+	cx_clear(VID_A_DMA_CTL, 0x11);
+
+	/* setup fifo + format */
+	cx23885_sram_channel_setup(dev, &dev->sram_channels[SRAM_CH01],
+				buf->bpl, buf->risc.dma);
+
+	/* reset counter */
+	cx_write(VID_A_GPCNT_CTL, 3);
+	q->count = 0;
+
+	/* enable irq */
+	cx23885_irq_add_enable(dev, 0x01);
+	cx_set(VID_A_INT_MSK, 0x000011);
+
+	/* start dma */
+	cx_set(DEV_CNTRL2, (1<<5));
+	cx_set(VID_A_DMA_CTL, 0x11); /* FIFO and RISC enable */
+
+	return 0;
+}
+
+static int queue_setup(struct vb2_queue *q,
+			   unsigned int *num_buffers, unsigned int *num_planes,
+			   unsigned int sizes[], struct device *alloc_devs[])
+{
+	struct cx23885_dev *dev = q->drv_priv;
+
+	*num_planes = 1;
+	sizes[0] = (dev->fmt->depth * dev->width * dev->height) >> 3;
+	return 0;
+}
+
+static int buffer_prepare(struct vb2_buffer *vb)
+{
+	struct vb2_v4l2_buffer *vbuf = to_vb2_v4l2_buffer(vb);
+	struct cx23885_dev *dev = vb->vb2_queue->drv_priv;
+	struct cx23885_buffer *buf =
+		container_of(vbuf, struct cx23885_buffer, vb);
+	u32 line0_offset, line1_offset;
+	struct sg_table *sgt = vb2_dma_sg_plane_desc(vb, 0);
+	int field_tff;
+
+	buf->bpl = (dev->width * dev->fmt->depth) >> 3;
+
+	if (vb2_plane_size(vb, 0) < dev->height * buf->bpl)
+		return -EINVAL;
+	vb2_set_plane_payload(vb, 0, dev->height * buf->bpl);
+
+	switch (dev->field) {
+	case V4L2_FIELD_TOP:
+		cx23885_risc_buffer(dev->pci, &buf->risc,
+				sgt->sgl, 0, UNSET,
+				buf->bpl, 0, dev->height);
+		break;
+	case V4L2_FIELD_BOTTOM:
+		cx23885_risc_buffer(dev->pci, &buf->risc,
+				sgt->sgl, UNSET, 0,
+				buf->bpl, 0, dev->height);
+		break;
+	case V4L2_FIELD_INTERLACED:
+		if (dev->tvnorm & V4L2_STD_525_60)
+			/* NTSC or  */
+			field_tff = 1;
+		else
+			field_tff = 0;
+
+		if (cx23885_boards[dev->board].force_bff)
+			/* PAL / SECAM OR 888 in NTSC MODE */
+			field_tff = 0;
+
+		if (field_tff) {
+			/* cx25840 transmits NTSC bottom field first */
+			dprintk(1, "%s() Creating TFF/NTSC risc\n",
+					__func__);
+			line0_offset = buf->bpl;
+			line1_offset = 0;
 		} else {
-			/* lick the above, does it taste good? */
-			DEBUG_LOCKS_WARN_ON(!current->softirqs_enabled);
+			/* All other formats are top field first */
+			dprintk(1, "%s() Creating BFF/PAL/SECAM risc\n",
+					__func__);
+			line0_offset = 0;
+			line1_offset = buf->bpl;
 		}
+		cx23885_risc_buffer(dev->pci, &buf->risc,
+				sgt->sgl, line0_offset,
+				line1_offset,
+				buf->bpl, buf->bpl,
+				dev->height >> 1);
+		break;
+	case V4L2_FIELD_SEQ_TB:
+		cx23885_risc_buffer(dev->pci, &buf->risc,
+				sgt->sgl,
+				0, buf->bpl * (dev->height >> 1),
+				buf->bpl, 0,
+				dev->height >> 1);
+		break;
+	case V4L2_FIELD_SEQ_BT:
+		cx23885_risc_buffer(dev->pci, &buf->risc,
+				sgt->sgl,
+				buf->bpl * (dev->height >> 1), 0,
+				buf->bpl, 0,
+				dev->height >> 1);
+		break;
+	default:
+		BUG();
 	}
-#endif
-
-	if (!debug_locks)
-		print_irqtrace_events(current);
-
-	instrumentation_end();
-#endif
+	dprintk(2, "[%p/%d] buffer_init - %dx%d %dbpp 0x%08x - dma=0x%08lx\n",
+		buf, buf->vb.vb2_buf.index,
+		dev->width, dev->height, dev->fmt->depth, dev->fmt->fourcc,
+		(unsigned long)buf->risc.dma);
+	return 0;
 }
 
-void lock_set_class(struct lockdep_map *lock, const char *name,
-		    struct lock_class_key *key, unsigned int subclass,
-		    unsigned long ip)
+static void buffer_finish(struct vb2_buffer *vb)
 {
-	unsigned long flags;
+	struct vb2_v4l2_buffer *vbuf = to_vb2_v4l2_buffer(vb);
+	struct cx23885_buffer *buf = container_of(vbuf,
+		struct cx23885_buffer, vb);
 
-	if (unlikely(!lockdep_enabled()))
-		return;
-
-	raw_local_irq_save(flags);
-	lockdep_recursion_inc();
-	check_flags(flags);
-	if (__lock_set_class(lock, name, key, subclass, ip))
-		check_chain_key(current);
-	lockdep_recursion_finish();
-	raw_local_irq_restore(flags);
-}
-EXPORT_SYMBOL_GPL(lock_set_class);
-
-void lock_downgrade(struct lockdep_map *lock, unsigned long ip)
-{
-	unsigned long flags;
-
-	if (unlikely(!lockdep_enabled()))
-		return;
-
-	raw_local_irq_save(flags);
-	lockdep_recursion_inc();
-	check_flags(flags);
-	if (__lock_downgrade(lock, ip))
-		check_chain_key(current);
-	lockdep_recursion_finish();
-	raw_local_irq_restore(flags);
-}
-EXPORT_SYMBOL_GPL(lock_downgrade);
-
-/* NMI context !!! */
-static void verify_lock_unused(struct lockdep_map *lock, struct held_lock *hlock, int subclass)
-{
-#ifdef CONFIG_PROVE_LOCKING
-	struct lock_class *class = look_up_lock_class(lock, subclass);
-	unsigned long mask = LOCKF_USED;
-
-	/* if it doesn't have a class (yet), it certainly hasn't been used yet */
-	if (!class)
-		return;
-
-	/*
-	 * READ locks only conflict with USED, such that if we only ever use
-	 * READ locks, there is no deadlock possible -- RCU.
-	 */
-	if (!hlock->read)
-		mask |= LOCKF_USED_READ;
-
-	if (!(class->usage_mask & mask))
-		return;
-
-	hlock->class_idx = class - lock_classes;
-
-	print_usage_bug(current, hlock, LOCK_USED, LOCK_USAGE_STATES);
-#endif
-}
-
-static bool lockdep_nmi(void)
-{
-	if (raw_cpu_read(lockdep_recursion))
-		return false;
-
-	if (!in_nmi())
-		return false;
-
-	return true;
+	cx23885_free_buffer(vb->vb2_queue->drv_priv, buf);
 }
 
 /*
- * read_lock() is recursive if:
- * 1. We force lockdep think this way in selftests or
- * 2. The implementation is not queued read/write lock or
- * 3. The locker is at an in_interrupt() context.
+ * The risc program for each buffer works as follows: it starts with a simple
+ * 'JUMP to addr + 12', which is effectively a NOP. Then the code to DMA the
+ * buffer follows and at the end we have a JUMP back to the start + 12 (skipping
+ * the initial JUMP).
+ *
+ * This is the risc program of the first buffer to be queued if the active list
+ * is empty and it just keeps DMAing this buffer without generating any
+ * interrupts.
+ *
+ * If a new buffer is added then the initial JUMP in the code for that buffer
+ * will generate an interrupt which signals that the previous buffer has been
+ * DMAed successfully and that it can be returned to userspace.
+ *
+ * It also sets the final jump of the previous buffer to the start of the new
+ * buffer, thus chaining the new buffer into the DMA chain. This is a single
+ * atomic u32 write, so there is no race condition.
+ *
+ * The end-result of all this that you only get an interrupt when a buffer
+ * is ready, so the control flow is very easy.
  */
-bool read_lock_is_recursive(void)
+static void buffer_queue(struct vb2_buffer *vb)
 {
-	return force_read_lock_recursive ||
-	       !IS_ENABLED(CONFIG_QUEUED_RWLOCKS) ||
-	       in_interrupt();
-}
-EXPORT_SYMBOL_GPL(read_lock_is_recursive);
-
-/*
- * We are not always called with irqs disabled - do that here,
- * and also avoid lockdep recursion:
- */
-void lock_acquire(struct lockdep_map *lock, unsigned int subclass,
-			  int trylock, int read, int check,
-			  struct lockdep_map *nest_lock, unsigned long ip)
-{
+	struct vb2_v4l2_buffer *vbuf = to_vb2_v4l2_buffer(vb);
+	struct cx23885_dev *dev = vb->vb2_queue->drv_priv;
+	struct cx23885_buffer   *buf = container_of(vbuf,
+		struct cx23885_buffer, vb);
+	struct cx23885_buffer   *prev;
+	struct cx23885_dmaqueue *q    = &dev->vidq;
 	unsigned long flags;
 
-	trace_lock_acquire(lock, subclass, trylock, read, check, nest_lock, ip);
+	/* add jump to start */
+	buf->risc.cpu[1] = cpu_to_le32(buf->risc.dma + 12);
+	buf->risc.jmp[0] = cpu_to_le32(RISC_JUMP | RISC_CNT_INC);
+	buf->risc.jmp[1] = cpu_to_le32(buf->risc.dma + 12);
+	buf->risc.jmp[2] = cpu_to_le32(0); /* bits 63-32 */
 
-	if (!debug_locks)
-		return;
-
-	if (unlikely(!lockdep_enabled())) {
-		/* XXX allow trylock from NMI ?!? */
-		if (lockdep_nmi() && !trylock) {
-			struct held_lock hlock;
-
-			hlock.acquire_ip = ip;
-			hlock.instance = lock;
-			hlock.nest_lock = nest_lock;
-			hlock.irq_context = 2; // XXX
-			hlock.trylock = trylock;
-			hlock.read = read;
-			hlock.check = check;
-			hlock.hardirqs_off = true;
-			hlock.references = 0;
-
-			verify_lock_unused(lock, &hlock, subclass);
-		}
-		return;
+	spin_lock_irqsave(&dev->slock, flags);
+	if (list_empty(&q->active)) {
+		list_add_tail(&buf->queue, &q->active);
+		dprintk(2, "[%p/%d] buffer_queue - first active\n",
+			buf, buf->vb.vb2_buf.index);
+	} else {
+		buf->risc.cpu[0] |= cpu_to_le32(RISC_IRQ1);
+		prev = list_entry(q->active.prev, struct cx23885_buffer,
+			queue);
+		list_add_tail(&buf->queue, &q->active);
+		prev->risc.jmp[1] = cpu_to_le32(buf->risc.dma);
+		dprintk(2, "[%p/%d] buffer_queue - append to active\n",
+				buf, buf->vb.vb2_buf.index);
 	}
-
-	raw_local_irq_save(flags);
-	check_flags(flags);
-
-	lockdep_recursion_inc();
-	__lock_acquire(lock, subclass, trylock, read, check,
-		       irqs_disabled_flags(flags), nest_lock, ip, 0, 0);
-	lockdep_recursion_finish();
-	raw_local_irq_restore(flags);
+	spin_unlock_irqrestore(&dev->slock, flags);
 }
-EXPORT_SYMBOL_GPL(lock_acquire);
 
-void lock_release(struct lockdep_map *lock, unsigned long ip)
+static int cx23885_start_streaming(struct vb2_queue *q, unsigned int count)
 {
+	struct cx23885_dev *dev = q->drv_priv;
+	struct cx23885_dmaqueue *dmaq = &dev->vidq;
+	struct cx23885_buffer *buf = list_entry(dmaq->active.next,
+			struct cx23885_buffer, queue);
+
+	cx23885_start_video_dma(dev, dmaq, buf);
+	return 0;
+}
+
+static void cx23885_stop_streaming(struct vb2_queue *q)
+{
+	struct cx23885_dev *dev = q->drv_priv;
+	struct cx23885_dmaqueue *dmaq = &dev->vidq;
 	unsigned long flags;
 
-	trace_lock_release(lock, ip);
+	cx_clear(VID_A_DMA_CTL, 0x11);
+	spin_lock_irqsave(&dev->slock, flags);
+	while (!list_empty(&dmaq->active)) {
+		struct cx23885_buffer *buf = list_entry(dmaq->active.next,
+			struct cx23885_buffer, queue);
 
-	if (unlikely(!lockdep_enabled()))
-		return;
-
-	raw_local_irq_save(flags);
-	check_flags(flags);
-
-	lockdep_recursion_inc();
-	if (__lock_release(lock, ip))
-		check_chain_key(current);
-	lockdep_recursion_finish();
-	raw_local_irq_restore(flags);
+		list_del(&buf->queue);
+		vb2_buffer_done(&buf->vb.vb2_buf, VB2_BUF_STATE_ERROR);
+	}
+	spin_unlock_irqrestore(&dev->slock, flags);
 }
-EXPORT_SYMBOL_GPL(lock_release);
 
-noinstr int lock_is_held_type(const struct lockdep_map *lock, int read)
-{
-	unsigned long flags;
-	int ret = LOCK_STATE_NOT_HELD;
-
-	/*
-	 * Avoid false negative lockdep_assert_held() and
-	 * lockdep_assert_not_held().
-	 */
-	if (unlikely(!lockdep_enabled()))
-		return LOCK_STATE_UNKNOWN;
-
-	raw_local_irq_save(flags);
-	check_flags(flags);
-
-	lockdep_recursion_inc();
-	ret = __lock_is_held(lock, read);
-	lockdep_recursion_finish();
-	raw_local_irq_restore(flags);
-
-	return ret;
-}
-EXPORT_SYMBOL_GPL(lock_is_held_type);
-NOKPROBE_SYMBOL(lock_is_held_type);
-
-struct pin_cookie lock_pin_lock(struct lockdep_map *lock)
-{
-	struct pin_cookie cookie = NIL_COOKIE;
-	unsigned long flags;
-
-	if (unlikely(!lockdep_enabled()))
-		return cookie;
-
-	raw_local_irq_save(flags);
-	check_flags(flags);
-
-	lockdep_recursion_inc();
-	cookie = __lock_pin_lock(lock);
-	lockdep_recursion_finish();
-	raw_local_irq_restore(flags);
-
-	return cookie;
-}
-EXPORT_SYMBOL_GPL(lock_pin_lock);
-
-void lock_repin_lock(struct lockdep_map *lock, struct pin_cookie cookie)
-{
-	unsigned long flags;
-
-	if (unlikely(!lockdep_enabled()))
-		return;
-
-	raw_local_irq_save(flags);
-	check_flags(flags);
-
-	lockdep_recursion_inc();
-	__lock_repin_lock(lock, cookie);
-	lockdep_recursion_finish();
-	raw_local_irq_restore(flags);
-}
-EXPORT_SYMBOL_GPL(lock_repin_lock);
-
-void lock_unpin_lock(struct lockdep_map *lock, struct pin_cookie cookie)
-{
-	unsigned long flags;
-
-	if (unlikely(!lockdep_enabled()))
-		return;
-
-	raw_local_irq_save(flags);
-	check_flags(flags);
-
-	lockdep_recursion_inc();
-	__lock_unpin_lock(lock, cookie);
-	lockdep_recursion_finish();
-	raw_local_irq_restore(flags);
-}
-EXPORT_SYMBOL_GPL(lock_unpin_lock);
-
-#ifdef CONFIG_LOCK_STAT
-static void print_lock_contention_bug(struct task_struct *curr,
-				      struct lockdep_map *lock,
-				      unsigned long ip)
-{
-	if (!debug_locks_off())
-		return;
-	if (debug_locks_silent)
-		return;
-
-	pr_warn("\n");
-	pr_warn("=================================\n");
-	pr_
+static const struct vb2_ops cx23885_video_qops = {
+	.queue_setup    = queue_setup,
+	.buf_prepare  = buffer_prepare,
+	.buf_finish = buffer_finish,
+	.buf_queue    = buffer_queue,
+	.wait_prepare = vb2_ops_wait_prepare,
+	.wait_finish = vb2_ops_wait_finish,
+	.start_streaming = cx23885_start_streaming,
+	.stop_streaming =

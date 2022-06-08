@@ -1,97 +1,144 @@
-ldcard include/config/X86_INTEL_USERCOPY) \
-  arch/x86/include/asm/smap.h \
-  arch/x86/include/asm/extable.h \
-    $(wildcard include/config/BPF_JIT) \
-  include/asm-generic/access_ok.h \
-    $(wildcard include/config/ALTERNATE_USER_ADDRESS_SPACE) \
-  arch/x86/include/asm/uaccess_32.h \
-  include/linux/cred.h \
-    $(wildcard include/config/DEBUG_CREDENTIALS) \
-  include/linux/key.h \
-    $(wildcard include/config/KEY_NOTIFICATIONS) \
-    $(wildcard include/config/NET) \
-  include/linux/assoc_array.h \
-    $(wildcard include/config/ASSOCIATIVE_ARRAY) \
-  include/linux/sched/user.h \
-    $(wildcard include/config/WATCH_QUEUE) \
-  include/linux/percpu_counter.h \
-  include/linux/rcu_sync.h \
-  include/linux/delayed_call.h \
-  include/linux/errseq.h \
-  include/linux/ioprio.h \
-  include/linux/sched/rt.h \
-  include/linux/iocontext.h \
-    $(wildcard include/config/BLK_ICQ) \
-  include/uapi/linux/ioprio.h \
-  include/linux/fs_types.h \
-  include/linux/mount.h \
-  include/linux/mnt_idmapping.h \
-  include/uapi/linux/fs.h \
-  include/linux/quota.h \
-    $(wildcard include/config/QUOTA_NETLINK_INTERFACE) \
-  include/uapi/linux/dqblk_xfs.h \
-  include/linux/dqblk_v1.h \
-  include/linux/dqblk_v2.h \
-  include/linux/dqblk_qtree.h \
-  include/linux/projid.h \
-  include/uapi/linux/quota.h \
-  include/linux/nfs_fs_i.h \
-  include/linux/seq_file.h \
-  include/linux/string_helpers.h \
-  include/linux/ns_common.h \
-  include/linux/nsproxy.h \
-  include/linux/user_namespace.h \
-    $(wildcard include/config/INOTIFY_USER) \
-    $(wildcard include/config/FANOTIFY) \
-    $(wildcard include/config/PERSISTENT_KEYRINGS) \
-  include/linux/kernel_stat.h \
-  include/linux/interrupt.h \
-    $(wildcard include/config/IRQ_FORCED_THREADING) \
-    $(wildcard include/config/GENERIC_IRQ_PROBE) \
-    $(wildcard include/config/IRQ_TIMINGS) \
-  include/linux/irqreturn.h \
-  include/linux/irqnr.h \
-  include/uapi/linux/irqnr.h \
-  include/linux/hardirq.h \
-  include/linux/context_tracking_state.h \
-    $(wildcard include/config/CONTEXT_TRACKING) \
-  include/linux/ftrace_irq.h \
-    $(wildcard include/config/HWLAT_TRACER) \
-    $(wildcard include/config/OSNOISE_TRACER) \
-  include/linux/vtime.h \
-    $(wildcard include/config/VIRT_CPU_ACCOUNTING) \
-    $(wildcard include/config/IRQ_TIME_ACCOUNTING) \
-  arch/x86/include/asm/hardirq.h \
-    $(wildcard include/config/KVM_INTEL) \
-    $(wildcard include/config/X86_THERMAL_VECTOR) \
-    $(wildcard include/config/X86_MCE_THRESHOLD) \
-    $(wildcard include/config/X86_MCE_AMD) \
-    $(wildcard include/config/X86_HV_CALLBACK_VECTOR) \
-  arch/x86/include/asm/irq.h \
-  arch/x86/include/asm/sections.h \
-  include/asm-generic/sections.h \
-    $(wildcard include/config/HAVE_FUNCTION_DESCRIPTORS) \
-  include/linux/cgroup-defs.h \
-    $(wildcard include/config/CGROUP_NET_CLASSID) \
-    $(wildcard include/config/CGROUP_NET_PRIO) \
-  include/linux/u64_stats_sync.h \
-  include/linux/bpf-cgroup-defs.h \
-  include/linux/psi_types.h \
-  include/linux/kthread.h \
-  include/linux/cgroup_subsys.h \
-    $(wildcard include/config/CGROUP_DEVICE) \
-    $(wildcard include/config/CGROUP_FREEZER) \
-    $(wildcard include/config/CGROUP_PERF) \
-    $(wildcard include/config/CGROUP_HUGETLB) \
-    $(wildcard include/config/CGROUP_PIDS) \
-    $(wildcard include/config/CGROUP_RDMA) \
-    $(wildcard include/config/CGROUP_MISC) \
-    $(wildcard include/config/CGROUP_DEBUG) \
-  include/linux/vm_event_item.h \
-    $(wildcard include/config/HAVE_ARCH_TRANSPARENT_HUGEPAGE_PUD) \
-    $(wildcard include/config/MEMORY_BALLOON) \
-    $(wildcard include/config/BALLOON_COMPACTION) \
-    $(wildcard include/config/DEBUG_TLBFLUSH) \
-    $(wildcard include/config/DEBUG_VM_VMACACHE) \
-  include/linux/page_counter.h \
- 
+// SPDX-License-Identifier: GPL-2.0-or-later
+/*
+ * altera-ci.c
+ *
+ *  CI driver in conjunction with NetUp Dual DVB-T/C RF CI card
+ *
+ * Copyright (C) 2010,2011 NetUP Inc.
+ * Copyright (C) 2010,2011 Igor M. Liplianin <liplianin@netup.ru>
+ */
+
+/*
+ * currently cx23885 GPIO's used.
+ * GPIO-0 ~INT in
+ * GPIO-1 TMS out
+ * GPIO-2 ~reset chips out
+ * GPIO-3 to GPIO-10 data/addr for CA in/out
+ * GPIO-11 ~CS out
+ * GPIO-12 AD_RG out
+ * GPIO-13 ~WR out
+ * GPIO-14 ~RD out
+ * GPIO-15 ~RDY in
+ * GPIO-16 TCK out
+ * GPIO-17 TDO in
+ * GPIO-18 TDI out
+ */
+/*
+ *  Bit definitions for MC417_RWD and MC417_OEN registers
+ * bits 31-16
+ * +-----------+
+ * | Reserved  |
+ * +-----------+
+ *   bit 15  bit 14  bit 13 bit 12  bit 11  bit 10  bit 9   bit 8
+ * +-------+-------+-------+-------+-------+-------+-------+-------+
+ * |  TDI  |  TDO  |  TCK  |  RDY# |  #RD  |  #WR  | AD_RG |  #CS  |
+ * +-------+-------+-------+-------+-------+-------+-------+-------+
+ *  bit 7   bit 6   bit 5   bit 4   bit 3   bit 2   bit 1   bit 0
+ * +-------+-------+-------+-------+-------+-------+-------+-------+
+ * |  DATA7|  DATA6|  DATA5|  DATA4|  DATA3|  DATA2|  DATA1|  DATA0|
+ * +-------+-------+-------+-------+-------+-------+-------+-------+
+ */
+
+#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
+
+#include <media/dvb_demux.h>
+#include <media/dvb_frontend.h>
+#include "altera-ci.h"
+#include <media/dvb_ca_en50221.h>
+
+/* FPGA regs */
+#define NETUP_CI_INT_CTRL	0x00
+#define NETUP_CI_BUSCTRL2	0x01
+#define NETUP_CI_ADDR0		0x04
+#define NETUP_CI_ADDR1		0x05
+#define NETUP_CI_DATA		0x06
+#define NETUP_CI_BUSCTRL	0x07
+#define NETUP_CI_PID_ADDR0	0x08
+#define NETUP_CI_PID_ADDR1	0x09
+#define NETUP_CI_PID_DATA	0x0a
+#define NETUP_CI_TSA_DIV	0x0c
+#define NETUP_CI_TSB_DIV	0x0d
+#define NETUP_CI_REVISION	0x0f
+
+/* const for ci op */
+#define NETUP_CI_FLG_CTL	1
+#define NETUP_CI_FLG_RD		1
+#define NETUP_CI_FLG_AD		1
+
+static unsigned int ci_dbg;
+module_param(ci_dbg, int, 0644);
+MODULE_PARM_DESC(ci_dbg, "Enable CI debugging");
+
+static unsigned int pid_dbg;
+module_param(pid_dbg, int, 0644);
+MODULE_PARM_DESC(pid_dbg, "Enable PID filtering debugging");
+
+MODULE_DESCRIPTION("altera FPGA CI module");
+MODULE_AUTHOR("Igor M. Liplianin  <liplianin@netup.ru>");
+MODULE_LICENSE("GPL");
+
+#define ci_dbg_print(fmt, args...) \
+	do { \
+		if (ci_dbg) \
+			printk(KERN_DEBUG pr_fmt("%s: " fmt), \
+			       __func__, ##args); \
+	} while (0)
+
+#define pid_dbg_print(fmt, args...) \
+	do { \
+		if (pid_dbg) \
+			printk(KERN_DEBUG pr_fmt("%s: " fmt), \
+			       __func__, ##args); \
+	} while (0)
+
+struct altera_ci_state;
+struct netup_hw_pid_filter;
+
+struct fpga_internal {
+	void *dev;
+	struct mutex fpga_mutex;/* two CI's on the same fpga */
+	struct netup_hw_pid_filter *pid_filt[2];
+	struct altera_ci_state *state[2];
+	struct work_struct work;
+	int (*fpga_rw) (void *dev, int flag, int data, int rw);
+	int cis_used;
+	int filts_used;
+	int strt_wrk;
+};
+
+/* stores all private variables for communication with CI */
+struct altera_ci_state {
+	struct fpga_internal *internal;
+	struct dvb_ca_en50221 ca;
+	int status;
+	int nr;
+};
+
+/* stores all private variables for hardware pid filtering */
+struct netup_hw_pid_filter {
+	struct fpga_internal *internal;
+	struct dvb_demux *demux;
+	/* save old functions */
+	int (*start_feed)(struct dvb_demux_feed *feed);
+	int (*stop_feed)(struct dvb_demux_feed *feed);
+
+	int status;
+	int nr;
+};
+
+/* internal params node */
+struct fpga_inode {
+	/* pointer for internal params, one for each pair of CI's */
+	struct fpga_internal		*internal;
+	struct fpga_inode		*next_inode;
+};
+
+/* first internal params */
+static struct fpga_inode *fpga_first_inode;
+
+/* find chip by dev */
+static struct fpga_inode *find_inode(void *dev)
+{
+	struct fpga_inode *temp_chip = fpga_first_inode;
+
+	if (temp_

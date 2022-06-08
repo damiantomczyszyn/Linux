@@ -1,1 +1,2 @@
-de/generated/asm/early_ioremap.h 
+IO moving on encoder ports\n",
+		

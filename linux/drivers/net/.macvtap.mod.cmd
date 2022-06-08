@@ -1,3 +1,5 @@
-CPI_APEI_GHES) \
-    $(wildcard include/config/INTEL_TXT) \
-  arch/x86/include/generated/asm/kmap
+us & VID_BC_MSK_SYNC) ||
+		(status & VID_BC_MSK_OF)) {
+
+		if (status & VID_BC_MSK_OPC_ERR)
+			dpr

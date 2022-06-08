@@ -1,1 +1,5 @@
-cmd_drivers/media/rc/keymaps/rc-wetek-hub.mod := { echo  drivers/media/rc/keymaps/rc-wetek-hub.o;  echo; } > drivers/media/rc/keymaps/rc-wetek-hub.mod
+// SPDX-License-Identifier: GPL-2.0-or-later
+/*
+ *  Driver for the Conexant CX23885 PCIe bridge
+ *
+ *  Copyright (c) 2007 Steven Toth <stoth@linuxtv.or

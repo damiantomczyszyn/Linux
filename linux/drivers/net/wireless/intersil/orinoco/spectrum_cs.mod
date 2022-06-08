@@ -1,1 +1,2 @@
-cmd_drivers/media/i2c/uda1342.o := gcc -Wp,-MMD,drive
+ient_tuner);
+				module_put(client_demod->dev.driver-

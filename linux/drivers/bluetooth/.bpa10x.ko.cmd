@@ -1,6 +1,9 @@
-/DEBUG_SG) \
-    $(wildcard include/config/SGL_ALLOC) \
-    $(wildcard include/config/ARCH_NO_SG_CHAIN) \
-    $(wildcard include/config/SG_POOL) \
-  include/linux/gpio/consumer.h \
-    $(w
+
+	dprintk(1, "%s() status = %d, seq = %d\n", __func__, status, seq);
+}
+
+static void cx23885_codec_settings(struct cx23885_dev *dev)
+{
+	dprintk(1, "%s()\n", __func__);
+
+	/* Dynamically chan

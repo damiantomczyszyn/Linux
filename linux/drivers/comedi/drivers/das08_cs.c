@@ -1,72 +1,96 @@
+dth_count_to_ns(FIFO_RXTX, *divider);
+}
 
-    $(wildcard include/config/PARAVIRT_XXL) \
-  arch/x86/include/asm/disabled-features.h \
-    $(wildcard include/config/X86_SMAP) \
-    $(wildcard include/config/X86_UMIP) \
-    $(wildcard include/config/X86_INTEL_MEMORY_PROTECTION_KEYS) \
-    $(wildcard include/config/X86_5LEVEL) \
-    $(wildcard include/config/PAGE_TABLE_ISOLATION) \
-    $(wildcard include/config/INTEL_IOMMU_SVM) \
-    $(wildcard include/config/X86_SGX) \
-  include/asm-generic/bitops/const_hweight.h \
-  include/asm-generic/bitops/instrumented-atomic.h \
-  include/linux/instrumented.h \
-  include/asm-generic/bitops/instrumented-non-atomic.h \
-    $(wildcard include/config/KCSAN_ASSUME_PLAIN_WRITES_ATOMIC) \
-  include/asm-generic/bitops/instrumented-lock.h \
-  include/asm-generic/bitops/le.h \
-  arch/x86/include/uapi/asm/byteorder.h \
-  include/linux/byteorder/little_endian.h \
-  include/uapi/linux/byteorder/little_endian.h \
-  include/linux/swab.h \
-  include/uapi/linux/swab.h \
-  arch/x86/include/uapi/asm/swab.h \
-  include/linux/byteorder/generic.h \
-  include/asm-generic/bitops/ext2-atomic-setbit.h \
-  include/vdso/math64.h \
-  include/linux/time64.h \
-  include/vdso/time64.h \
-  include/uapi/linux/time.h \
-  include/uapi/linux/time_types.h \
-  include/linux/time32.h \
-  include/linux/timex.h \
-  include/uapi/linux/timex.h \
-  include/uapi/linux/param.h \
-  arch/x86/include/generated/uapi/asm/param.h \
-  include/asm-generic/param.h \
-    $(wildcard include/config/HZ) \
-  include/uapi/asm-generic/param.h \
-  arch/x86/include/asm/timex.h \
-    $(wildcard include/config/X86_TSC) \
-  arch/x86/include/asm/processor.h \
-    $(wildcard include/config/X86_VMX_FEATURE_NAMES) \
-    $(wildcard include/config/X86_IOPL_IOPERM) \
-    $(wildcard include/config/STACKPROTECTOR) \
-    $(wildcard include/config/VM86) \
-    $(wildcard include/config/X86_DEBUGCTLMSR) \
-    $(wildcard include/config/CPU_SUP_AMD) \
-    $(wildcard include/config/XEN) \
-  arch/x86/include/asm/processor-flags.h \
-  arch/x86/include/uapi/asm/processor-flags.h \
-  include/linux/mem_encrypt.h \
-    $(wildcard include/config/ARCH_HAS_MEM_ENCRYPT) \
-    $(wildcard include/config/AMD_MEM_ENCRYPT) \
-  arch/x86/include/asm/mem_encrypt.h \
-  include/linux/init.h \
-    $(wildcard include/config/STRICT_KERNEL_RWX) \
-    $(wildcard include/config/STRICT_MODULE_RWX) \
-    $(wildcard include/config/LTO_CLANG) \
-  include/linux/cc_platform.h \
-    $(wildcard include/config/ARCH_HAS_CC_PLATFORM) \
-  arch/x86/include/uapi/asm/bootparam.h \
-  include/linux/screen_info.h \
-  include/uapi/linux/screen_info.h \
-  include/linux/apm_bios.h \
-  include/uapi/linux/apm_bios.h \
-  include/uapi/linux/ioctl.h \
-  arch/x86/include/generated/uapi/asm/ioctl.h \
-  include/asm-generic/ioctl.h \
-  include/uapi/asm-generic/ioctl.h \
-  include/linux/edd.h \
-  include/uapi/linux/edd.h \
-  arch/x86/include/asm
+/*
+ * IR Tx Carrier Duty Cycle register helpers
+ */
+static unsigned int cduty_tx_s_duty_cycle(struct cx23885_dev *dev,
+					  unsigned int duty_cycle)
+{
+	u32 n;
+	n = DIV_ROUND_CLOSEST(duty_cycle * 100, 625); /* 16ths of 100% */
+	if (n != 0)
+		n--;
+	if (n > 15)
+		n = 15;
+	cx23888_ir_write4(dev, CX23888_IR_CDUTY_REG, n);
+	return DIV_ROUND_CLOSEST((n + 1) * 100, 16);
+}
+
+/*
+ * IR Filter Register helpers
+ */
+static u32 filter_rx_s_min_width(struct cx23885_dev *dev, u32 min_width_ns)
+{
+	u32 count = ns_to_lpf_count(min_width_ns);
+	cx23888_ir_write4(dev, CX23888_IR_FILTR_REG, count);
+	return lpf_count_to_ns(count);
+}
+
+/*
+ * IR IRQ Enable Register helpers
+ */
+static inline void irqenable_rx(struct cx23885_dev *dev, u32 mask)
+{
+	mask &= (IRQEN_RTE | IRQEN_ROE | IRQEN_RSE);
+	cx23888_ir_and_or4(dev, CX23888_IR_IRQEN_REG,
+			   ~(IRQEN_RTE | IRQEN_ROE | IRQEN_RSE), mask);
+}
+
+static inline void irqenable_tx(struct cx23885_dev *dev, u32 mask)
+{
+	mask &= IRQEN_TSE;
+	cx23888_ir_and_or4(dev, CX23888_IR_IRQEN_REG, ~IRQEN_TSE, mask);
+}
+
+/*
+ * V4L2 Subdevice IR Ops
+ */
+static int cx23888_ir_irq_handler(struct v4l2_subdev *sd, u32 status,
+				  bool *handled)
+{
+	struct cx23888_ir_state *state = to_state(sd);
+	struct cx23885_dev *dev = state->dev;
+	unsigned long flags;
+
+	u32 cntrl = cx23888_ir_read4(dev, CX23888_IR_CNTRL_REG);
+	u32 irqen = cx23888_ir_read4(dev, CX23888_IR_IRQEN_REG);
+	u32 stats = cx23888_ir_read4(dev, CX23888_IR_STATS_REG);
+
+	union cx23888_ir_fifo_rec rx_data[FIFO_RX_DEPTH];
+	unsigned int i, j, k;
+	u32 events, v;
+	int tsr, rsr, rto, ror, tse, rse, rte, roe, kror;
+
+	tsr = stats & STATS_TSR; /* Tx FIFO Service Request */
+	rsr = stats & STATS_RSR; /* Rx FIFO Service Request */
+	rto = stats & STATS_RTO; /* Rx Pulse Width Timer Time Out */
+	ror = stats & STATS_ROR; /* Rx FIFO Over Run */
+
+	tse = irqen & IRQEN_TSE; /* Tx FIFO Service Request IRQ Enable */
+	rse = irqen & IRQEN_RSE; /* Rx FIFO Service Request IRQ Enable */
+	rte = irqen & IRQEN_RTE; /* Rx Pulse Width Timer Time Out IRQ Enable */
+	roe = irqen & IRQEN_ROE; /* Rx FIFO Over Run IRQ Enable */
+
+	*handled = false;
+	v4l2_dbg(2, ir_888_debug, sd, "IRQ Status:  %s %s %s %s %s %s\n",
+		 tsr ? "tsr" : "   ", rsr ? "rsr" : "   ",
+		 rto ? "rto" : "   ", ror ? "ror" : "   ",
+		 stats & STATS_TBY ? "tby" : "   ",
+		 stats & STATS_RBY ? "rby" : "   ");
+
+	v4l2_dbg(2, ir_888_debug, sd, "IRQ Enables: %s %s %s %s\n",
+		 tse ? "tse" : "   ", rse ? "rse" : "   ",
+		 rte ? "rte" : "   ", roe ? "roe" : "   ");
+
+	/*
+	 * Transmitter interrupt service
+	 */
+	if (tse && tsr) {
+		/*
+		 * TODO:
+		 * Check the watermark threshold setting
+		 * Pull FIFO_TX_DEPTH or FIFO_TX_DEPTH/2 entries from tx_kfifo
+		 * Push the data to the hardware FIFO.
+		 * If there was nothing more to send in the tx_kfifo, disable
+		 *	the TSR IRQ and notify the v4l2_

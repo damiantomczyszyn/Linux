@@ -1,53 +1,58 @@
-inline bool usage_accumulate(struct lock_list *entry, void *mask)
-{
-	if (!entry->only_xr)
-		*(unsigned long *)mask |= entry->class->usage_mask;
-	else /* Mask out _READ usage bits */
-		*(unsigned long *)mask |= (entry->class->usage_mask & LOCKF_IRQ);
-
-	return false;
-}
-
-/*
- * There is a strong dependency path in the dependency graph: A -> B, and now
- * we need to decide which usage bit of B conflicts with the usage bits of A,
- * i.e. which usage bit of B may introduce safe->unsafe deadlocks.
+(of runnable tasks) this is provided by the following means:
  *
- * As above, if only_xr is false, which means A -> B has -(*N)-> dependency
- * path, any usage of B should be considered. Otherwise, we should only
- * consider _READ usage.
- */
-static inline bool usage_match(struct lock_list *entry, void *mask)
-{
-	if (!entry->only_xr)
-		return !!(entry->class->usage_mask & *(unsigned long *)mask);
-	else /* Mask out _READ usage bits */
-		return !!((entry->class->usage_mask & LOCKF_IRQ) & *(unsigned long *)mask);
-}
-
-static inline bool usage_skip(struct lock_list *entry, void *mask)
-{
-	/*
-	 * Skip local_lock() for irq inversion detection.
-	 *
-	 * For !RT, local_lock() is not a real lock, so it won't carry any
-	 * dependency.
-	 *
-	 * For RT, an irq inversion happens when we have lock A and B, and on
-	 * some CPU we can have:
-	 *
-	 *	lock(A);
-	 *	<interrupted>
-	 *	  lock(B);
-	 *
-	 * where lock(B) cannot sleep, and we have a dependency B -> ... -> A.
-	 *
-	 * Now we prove local_lock() cannot exist in that dependency. First we
-	 * have the observation for any lock chain L1 -> ... -> Ln, for any
-	 * 1 <= i <= n, Li.inner_wait_type <= L1.inner_wait_type, otherwise
-	 * wait context check will complain. And since B is not a sleep lock,
-	 * therefore B.inner_wait_type >= 2, and since the inner_wait_type of
-	 * local_lock() is 3, which is greater than 2, therefore there is no
-	 * way the local_lock() exists in the dependency B -> ... -> A.
-	 *
-	 * As a result,
+ *  A) UNLOCK of the rq(c0)->lock scheduling out task t
+ *  B) migration for t is required to synchronize *both* rq(c0)->lock and
+ *     rq(c1)->lock (if not at the same time, then in that order).
+ *  C) LOCK of the rq(c1)->lock scheduling in task
+ *
+ * Release/acquire chaining guarantees that B happens after A and C after B.
+ * Note: the CPU doing B need not be c0 or c1
+ *
+ * Example:
+ *
+ *   CPU0            CPU1            CPU2
+ *
+ *   LOCK rq(0)->lock
+ *   sched-out X
+ *   sched-in Y
+ *   UNLOCK rq(0)->lock
+ *
+ *                                   LOCK rq(0)->lock // orders against CPU0
+ *                                   dequeue X
+ *                                   UNLOCK rq(0)->lock
+ *
+ *                                   LOCK rq(1)->lock
+ *                                   enqueue X
+ *                                   UNLOCK rq(1)->lock
+ *
+ *                   LOCK rq(1)->lock // orders against CPU2
+ *                   sched-out Z
+ *                   sched-in X
+ *                   UNLOCK rq(1)->lock
+ *
+ *
+ *  BLOCKING -- aka. SLEEP + WAKEUP
+ *
+ * For blocking we (obviously) need to provide the same guarantee as for
+ * migration. However the means are completely different as there is no lock
+ * chain to provide order. Instead we do:
+ *
+ *   1) smp_store_release(X->on_cpu, 0)   -- finish_task()
+ *   2) smp_cond_load_acquire(!X->on_cpu) -- try_to_wake_up()
+ *
+ * Example:
+ *
+ *   CPU0 (schedule)  CPU1 (try_to_wake_up) CPU2 (schedule)
+ *
+ *   LOCK rq(0)->lock LOCK X->pi_lock
+ *   dequeue X
+ *   sched-out X
+ *   smp_store_release(X->on_cpu, 0);
+ *
+ *                    smp_cond_load_acquire(&X->on_cpu, !VAL);
+ *                    X->state = WAKING
+ *                    set_task_cpu(X,2)
+ *
+ *                    LOCK rq(2)->lock
+ *                    enqueue X
+ *                    X->state = RUNNI

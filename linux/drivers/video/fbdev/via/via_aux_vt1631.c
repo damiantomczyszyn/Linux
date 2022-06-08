@@ -1,18 +1,26 @@
-IC_IOREMAP) \
-    $(wildcard include/config/VIRT_TO_BUS) \
-    $(wildcard include/config/GENERIC_DEVMEM_IS_ALLOWED) \
-  include/linux/logic_pio.h \
-    $(wildcard include/config/INDIRECT_PIO) \
-  include/linux/vmalloc.h \
-    $(wildcard include/config/HAVE_ARCH_HUGE_VMALLOC) \
-  arch/x86/include/asm/vmalloc.h \
-    $(wildcard include/config/HAVE_ARCH_HUGE_VMAP) \
-  arch/x86/include/asm/acpi.h \
-    $(wildcard include/config/ACPI_APEI) \
-  include/acpi/pdc_intel.h \
-  arch/x86/include/asm/numa.h \
-    $(wildcard include/config/NUMA_EMU) \
-  arch/x86/include/asm/numa_32.h \
-  include/linux/regulator/consumer.h \
-    $(wildcard include/config/REGULATOR) \
-  include/linux
+3885_BOARD_DVBSKY_T980C:
+	case CX23885_BOARD_DVBSKY_S950C:
+	case CX23885_BOARD_TT_CT2_4500_CI:
+	case CX23885_BOARD_DVBSKY_S950:
+	case CX23885_BOARD_DVBSKY_S952:
+	case CX23885_BOARD_DVBSKY_T982:
+		cx23885_irq_remove(dev, PCI_MSK_AV_CORE);
+		/* sd_ir is a duplicate pointer to the AV Core, just clear it */
+		dev->sd_ir = NULL;
+		break;
+	}
+}
+
+static int netup_jtag_io(void *device, int tms, int tdi, int read_tdo)
+{
+	int data;
+	int tdo = 0;
+	struct cx23885_dev *dev = (struct cx23885_dev *)device;
+	/*TMS*/
+	data = ((cx_read(GP0_IO)) & (~0x00000002));
+	data |= (tms ? 0x00020002 : 0x00020000);
+	cx_write(GP0_IO, data);
+
+	/*TDI*/
+	data = ((cx_read(MC417_RWD)) & (~0x0000a000));
+	

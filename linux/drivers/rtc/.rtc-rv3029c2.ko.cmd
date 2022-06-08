@@ -1,5 +1,7 @@
-ude/config/PARAVIRT_XXL) \
-  arch/x86/include/asm/disabled-features.h \
-    $(wildcard include/config/X86_SMAP) \
-    $(wildcard include/config/X86_UMIP) \
-    $(wildcard include/config/X8
+ity *cap)
+{
+	struct cx23885_dev *dev = video_drvdata(file);
+	struct cx23885_tsport  *tsport = &dev->ts1;
+
+	strscpy(cap->driver, dev->name, sizeof(cap->driver));
+	strscpy(cap->card, cx23885

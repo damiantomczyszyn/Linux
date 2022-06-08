@@ -1,1924 +1,2870 @@
-nfig/FILE_LOCKING) \
-    $(wildcard include/config/FSNOTIFY) \
-    $(wildcard include/config/FS_ENCRYPTION) \
-    $(wildcard include/config/FS_VERITY) \
-    $(wildcard include/config/EPOLL) \
-    $(wildcard include/config/UNICODE) \
-    $(wildcard include/config/QUOTA) \
-    $(wildcard include/config/FS_DAX) \
-    $(wildcard include/config/BLOCK) \
-    $(wildcard include/config/MIGRATION) \
-  include/linux/wait_bit.h \
-  include/linux/kdev_t.h \
-  include/uapi/linux/kdev_t.h \
-  include/linux/dcache.h \
-  include/linux/rculist_bl.h \
-  include/linux/list_bl.h \
-  include/linux/bit_spinlock.h \
-  include/linux/lockref.h \
-    $(wildcard include/config/ARCH_USE_CMPXCHG_LOCKREF) \
-  include/linux/stringhash.h \
-    $(wildcard include/config/DCACHE_WORD_ACCESS) \
-  include/linux/hash.h \
-    $(wildcard include/config/HAVE_ARCH_HASH) \
-  include/linux/path.h \
-  include/linux/list_lru.h \
-  include/linux/shrinker.h \
-  include/linux/capability.h \
-  include/uapi/linux/capability.h \
-  include/linux/semaphore.h \
-  include/linux/fcntl.h \
-    $(wildcard include/config/ARCH_32BIT_OFF_T) \
-  include/uapi/linux/fcntl.h \
-  arch/x86/include/generated/uapi/asm/fcntl.h \
-  include/uapi/asm-generic/fcntl.h \
-  include/uapi/linux/openat2.h \
-  include/linux/migrate_mode.h \
-  include/linux/percpu-rwsem.h \
-  include/linux/rcuwait.h \
-  include/linux/sched/signal.h \
-    $(wildcard include/config/SCHED_AUTOGROUP) \
-    $(wildcard include/config/BSD_PROCESS_ACCT) \
-    $(wildcard include/config/TASKSTATS) \
-    $(wildcard include/config/STACK_GROWSUP) \
-  include/linux/signal.h \
-    $(wildcard include/config/DYNAMIC_SIGFRAME) \
-  include/linux/sched/jobctl.h \
-  include/linux/sched/task.h \
-    $(wildcard include/config/HAVE_EXIT_THREAD) \
-    $(wildcard include/config/ARCH_WANTS_DYNAMIC_TASK_STRUCT) \
-    $(wildcard include/config/HAVE_ARCH_THREAD_STRUCT_WHITELIST) \
-  include/linux/uaccess.h \
-  include/linux/fault-inject-usercopy.h \
-    $(wildcard include/config/FAULT_INJECTION_USERCOPY) \
-  arch/x86/include/asm/uaccess.h \
-    $(wildcard include/config/CC_HAS_ASM_GOTO_OUTPUT) \
-    $(wildcard include/config/CC_HAS_ASM_GOTO_TIED_OUTPUT) \
-    $(wildcard include/config/ARCH_HAS_COPY_MC) \
-    $(wildcard include/config/X86_INTEL_USERCOPY) \
-  arch/x86/include/asm/smap.h \
-  include/asm-generic/access_ok.h \
-    $(wildcard include/config/ALTERNATE_USER_ADDRESS_SPACE) \
-  arch/x86/include/asm/uaccess_32.h \
-  include/linux/cred.h \
-    $(wildcard include/config/DEBUG_CREDENTIALS) \
-  include/linux/key.h \
-    $(wildcard include/config/KEY_NOTIFICATIONS) \
-    $(wildcard include/config/NET) \
-  include/linux/assoc_array.h \
-    $(wildcard include/config/ASSOCIATIVE_ARRAY) \
-  include/linux/sched/user.h \
-    $(wildcard include/config/WATCH_QUEUE) \
-  include/linux/percpu_counter.h \
-  include/linux/rcu_sync.h \
-  include/linux/delayed_call.h \
-  include/linux/errseq.h \
-  include/linux/ioprio.h \
-  include/linux/sched/rt.h \
-  include/linux/iocontext.h \
-    $(wildcard include/config/BLK_ICQ) \
-  include/uapi/linux/ioprio.h \
-  include/linux/fs_types.h \
-  include/linux/mount.h \
-  include/linux/mnt_idmapping.h \
-  include/uapi/linux/fs.h \
-  include/linux/quota.h \
-    $(wildcard include/config/QUOTA_NETLINK_INTERFACE) \
-  include/uapi/linux/dqblk_xfs.h \
-  include/linux/dqblk_v1.h \
-  include/linux/dqblk_v2.h \
-  include/linux/dqblk_qtree.h \
-  include/linux/projid.h \
-  include/uapi/linux/quota.h \
-  include/linux/nfs_fs_i.h \
-  include/linux/pinctrl/pinctrl-state.h \
-  include/linux/pinctrl/devinfo.h \
-  include/linux/pinctrl/consumer.h \
-  include/linux/pinctrl/pinconf-generic.h \
-  include/linux/pinctrl/machine.h \
-  include/linux/gpio/consumer.h \
-    $(wildcard include/config/GPIO_SYSFS) \
-  include/linux/i2c.h \
-    $(wildcard include/config/I2C) \
-    $(wildcard include/config/I2C_SLAVE) \
-    $(wildcard include/config/I2C_BOARDINFO) \
-    $(wildcard include/config/I2C_MUX) \
-  include/linux/acpi.h \
-    $(wildcard include/config/ACPI_DEBUGGER) \
-    $(wildcard include/config/ACPI_TABLE_LIB) \
-    $(wildcard include/config/LOONGARCH) \
-    $(wildcard include/config/ARM64) \
-    $(wildcard include/config/ACPI_PROCESSOR_CSTATE) \
-    $(wildcard include/config/ACPI_HOTPLUG_CPU) \
-    $(wildcard include/config/ACPI_HOTPLUG_IOAPIC) \
-    $(wildcard include/config/ACPI_WMI) \
-    $(wildcard include/config/ACPI_NUMA) \
-    $(wildcard include/config/HIBERNATION) \
-    $(wildcard include/config/ACPI_HOTPLUG_MEMORY) \
-    $(wildcard include/config/ACPI_CONTAINER) \
-    $(wildcard include/config/ACPI_GTDT) \
-    $(wildcard include/config/ACPI_TABLE_UPGRADE) \
-    $(wildcard include/config/ACPI_WATCHDOG) \
-    $(wildcard include/config/ACPI_SPCR_TABLE) \
-    $(wildcard include/config/ACPI_GENERIC_GSI) \
-    $(wildcard include/config/ACPI_LPIT) \
-    $(wildcard include/config/ACPI_PPTT) \
-    $(wildcard include/config/ACPI_PCC) \
-  include/linux/resource_ext.h \
-  include/acpi/acpi.h \
-  include/acpi/platform/acenv.h \
-  include/acpi/platform/acgcc.h \
-  include/acpi/platform/aclinux.h \
-    $(wildcard include/config/ACPI_REDUCED_HARDWARE_ONLY) \
-    $(wildcard include/config/ACPI_DEBUG) \
-  arch/x86/include/asm/acenv.h \
-  include/acpi/acnames.h \
-  include/acpi/actypes.h \
-  include/acpi/acexcep.h \
-  include/acpi/actbl.h \
-  include/acpi/actbl1.h \
-  include/acpi/actbl2.h \
-  include/acpi/actbl3.h \
-  include/acpi/acrestyp.h \
-  include/acpi/platform/acenvex.h \
-  include/acpi/platform/aclinuxex.h \
-  include/acpi/platform/acgccex.h \
-  include/acpi/acoutput.h \
-  include/acpi/acpiosxf.h \
-  include/acpi/acpixf.h \
-  include/acpi/acconfig.h \
-  include/acpi/acbuffer.h \
-  include/linux/dynamic_debug.h \
-  include/acpi/acpi_bus.h \
-    $(wildcard include/config/X86_ANDROID_TABLETS) \
-    $(wildcard include/config/ACPI_SYSTEM_POWER_STATES_SUPPORT) \
-    $(wildcard include/config/ACPI_SLEEP) \
-  include/acpi/acpi_drivers.h \
-    $(wildcard include/config/ACPI_DOCK) \
-  include/acpi/acpi_numa.h \
-    $(wildcard include/config/ACPI_HMAT) \
-  include/acpi/acpi_io.h \
-  arch/x86/include/asm/acpi.h \
-    $(wildcard include/config/ACPI_APEI) \
-  include/acpi/pdc_intel.h \
-  arch/x86/include/asm/numa.h \
-    $(wildcard include/config/NUMA_EMU) \
-  arch/x86/include/asm/numa_32.h \
-  include/linux/regulator/consumer.h \
-    $(wildcard include/config/REGULATOR) \
-  include/linux/suspend.h \
-    $(wildcard include/config/VT) \
-    $(wildcard include/config/SUSPEND) \
-    $(wildcard include/config/HIBERNATION_SNAPSHOT_DEV) \
-    $(wildcard include/config/PM_SLEEP_DEBUG) \
-    $(wildcard include/config/PM_AUTOSLEEP) \
-  include/linux/swap.h \
-    $(wildcard include/config/DEVICE_PRIVATE) \
-    $(wildcard include/config/FRONTSWAP) \
-    $(wildcard include/config/THP_SWAP) \
-    $(wildcard include/config/MEMCG_SWAP) \
-  include/linux/memcontrol.h \
-  include/linux/cgroup.h \
-    $(wildcard include/config/CGROUP_CPUACCT) \
-    $(wildcard include/config/SOCK_CGROUP_DATA) \
-    $(wildcard include/config/CGROUP_DATA) \
-    $(wildcard include/config/CGROUP_BPF) \
-  include/uapi/linux/cgroupstats.h \
-  include/uapi/linux/taskstats.h \
-  include/linux/ns_common.h \
-  include/linux/nsproxy.h \
-  include/linux/user_namespace.h \
-    $(wildcard include/config/INOTIFY_USER) \
-    $(wildcard include/config/FANOTIFY) \
-    $(wildcard include/config/PERSISTENT_KEYRINGS) \
-  include/linux/kernel_stat.h \
-  include/linux/interrupt.h \
-    $(wildcard include/config/IRQ_FORCED_THREADING) \
-    $(wildcard include/config/GENERIC_IRQ_PROBE) \
-    $(wildcard include/config/IRQ_TIMINGS) \
-  include/linux/hardirq.h \
-  include/linux/context_tracking_state.h \
-    $(wildcard include/config/CONTEXT_TRACKING) \
-  include/linux/ftrace_irq.h \
-    $(wildcard include/config/HWLAT_TRACER) \
-    $(wildcard include/config/OSNOISE_TRACER) \
-  include/linux/vtime.h \
-    $(wildcard include/config/VIRT_CPU_ACCOUNTING) \
-    $(wildcard include/config/IRQ_TIME_ACCOUNTING) \
-  arch/x86/include/asm/hardirq.h \
-    $(wildcard include/config/KVM_INTEL) \
-    $(wildcard include/config/X86_THERMAL_VECTOR) \
-    $(wildcard include/config/X86_MCE_THRESHOLD) \
-    $(wildcard include/config/X86_MCE_AMD) \
-    $(wildcard include/config/X86_HV_CALLBACK_VECTOR) \
-  include/linux/cgroup-defs.h \
-    $(wildcard include/config/CGROUP_NET_CLASSID) \
-    $(wildcard include/config/CGROUP_NET_PRIO) \
-  include/linux/u64_stats_sync.h \
-  include/linux/bpf-cgroup-defs.h \
-  include/linux/psi_types.h \
-  include/linux/kthread.h \
-  include/linux/cgroup_subsys.h \
-    $(wildcard include/config/CGROUP_DEVICE) \
-    $(wildcard include/config/CGROUP_FREEZER) \
-    $(wildcard include/config/CGROUP_PERF) \
-    $(wildcard include/config/CGROUP_HUGETLB) \
-    $(wildcard include/config/CGROUP_PIDS) \
-    $(wildcard include/config/CGROUP_RDMA) \
-    $(wildcard include/config/CGROUP_MISC) \
-    $(wildcard include/config/CGROUP_DEBUG) \
-  include/linux/vm_event_item.h \
-    $(wildcard include/config/HAVE_ARCH_TRANSPARENT_HUGEPAGE_PUD) \
-    $(wildcard include/config/MEMORY_BALLOON) \
-    $(wildcard include/config/BALLOON_COMPACTION) \
-    $(wildcard include/config/DEBUG_TLBFLUSH) \
-    $(wildcard include/config/DEBUG_VM_VMACACHE) \
-  include/linux/page_counter.h \
-  include/linux/vmpressure.h \
-  include/linux/eventfd.h \
-  include/linux/mm.h \
-    $(wildcard include/config/HAVE_ARCH_MMAP_RND_BITS) \
-    $(wildcard include/config/HAVE_ARCH_MMAP_RND_COMPAT_BITS) \
-    $(wildcard include/config/ARCH_USES_HIGH_VMA_FLAGS) \
-    $(wildcard include/config/ARCH_HAS_PKEYS) \
-    $(wildcard include/config/PPC) \
-    $(wildcard include/config/PARISC) \
-    $(wildcard include/config/SPARC64) \
-    $(wildcard include/config/ARM64_MTE) \
-    $(wildcard include/config/HAVE_ARCH_USERFAULTFD_MINOR) \
-    $(wildcard include/config/SHMEM) \
-    $(wildcard include/config/ARCH_HAS_PTE_SPECIAL) \
-    $(wildcard include/config/ARCH_HAS_PTE_DEVMAP) \
-    $(wildcard include/config/DEBUG_VM_RB) \
-    $(wildcard include/config/PAGE_POISONING) \
-    $(wildcard include/config/INIT_ON_ALLOC_DEFAULT_ON) \
-    $(wildcard include/config/INIT_ON_FREE_DEFAULT_ON) \
-    $(wildcard include/config/DEBUG_PAGEALLOC) \
-    $(wildcard include/config/HUGETLBFS) \
-    $(wildcard include/config/MAPPING_DIRTY_HELPERS) \
-    $(wildcard include/config/ANON_VMA_NAME) \
-  include/linux/mmap_lock.h \
-  include/linux/page_ext.h \
-  include/linux/stacktrace.h \
-    $(wildcard include/config/ARCH_STACKWALK) \
-    $(wildcard include/config/STACKTRACE) \
-    $(wildcard include/config/HAVE_RELIABLE_STACKTRACE) \
-  include/linux/stackdepot.h \
-    $(wildcard include/config/STACKDEPOT_ALWAYS_INIT) \
-  include/linux/page_ref.h \
-    $(wildcard include/config/DEBUG_PAGE_REF) \
-  include/linux/sizes.h \
-  include/linux/pgtable.h \
-    $(wildcard include/config/HIGHPTE) \
-    $(wildcard include/config/GUP_GET_PTE_LOW_HIGH) \
-    $(wildcard include/config/HAVE_ARCH_SOFT_DIRTY) \
-    $(wildcard include/config/ARCH_ENABLE_THP_MIGRATION) \
-    $(wildcard include/config/X86_ESPFIX64) \
-  arch/x86/include/asm/pgtable.h \
-    $(wildcard include/config/DEBUG_WX) \
-    $(wildcard include/config/PAGE_TABLE_CHECK) \
-  arch/x86/include/asm/pkru.h \
-  arch/x86/include/asm/fpu/api.h \
-    $(wildcard include/config/X86_DEBUG_FPU) \
-  arch/x86/include/asm/coco.h \
-  include/asm-generic/pgtable_uffd.h \
-  include/linux/page_table_check.h \
-  arch/x86/include/asm/pgtable_32.h \
-  arch/x86/include/asm/pgtable-3level.h \
-  arch/x86/include/asm/pgtable-invert.h \
-  include/linux/huge_mm.h \
-  include/linux/sched/coredump.h \
-    $(wildcard include/config/CORE_DUMP_DEFAULT_ELF_HEADERS) \
-  include/linux/vmstat.h \
-    $(wildcard include/config/VM_EVENT_COUNTERS) \
-  include/linux/writeback.h \
-  include/linux/flex_proportions.h \
-  include/linux/backing-dev-defs.h \
-    $(wildcard include/config/DEBUG_FS) \
-  include/linux/blk_types.h \
-    $(wildcard include/config/FAIL_MAKE_REQUEST) \
-    $(wildcard include/config/BLK_CGROUP_IOCOST) \
-    $(wildcard include/config/BLK_INLINE_ENCRYPTION) \
-    $(wildcard include/config/BLK_DEV_INTEGRITY) \
-  include/linux/bvec.h \
-  include/linux/highmem.h \
-  include/linux/cacheflush.h \
-  arch/x86/include/asm/cacheflush.h \
-  include/asm-generic/cacheflush.h \
-  include/linux/highmem-internal.h \
-  arch/x86/include/asm/highmem.h \
-  arch/x86/include/asm/tlbflush.h \
-  arch/x86/include/asm/invpcid.h \
-  arch/x86/include/asm/pti.h \
-  include/linux/bio.h \
-  include/linux/mempool.h \
-  include/linux/uio.h \
-    $(wildcard include/config/ARCH_HAS_UACCESS_FLUSHCACHE) \
-  include/uapi/linux/uio.h \
-  include/linux/node.h \
-    $(wildcard include/config/HMEM_REPORTING) \
-  include/linux/pagemap.h \
-  include/linux/hugetlb_inline.h \
-  include/uapi/linux/mempolicy.h \
-  include/linux/freezer.h \
-  include/uapi/linux/i2c.h \
-  include/linux/videodev2.h \
-  include/uapi/linux/videodev2.h \
-  include/uapi/linux/v4l2-common.h \
-  include/uapi/linux/v4l2-controls.h \
-  include/media/v4l2-ctrls.h \
-  include/media/media-request.h \
-    $(wildcard include/config/MEDIA_CONTROLLER) \
-  include/media/media-device.h \
-  include/media/media-devnode.h \
-  include/linux/poll.h \
-  include/uapi/linux/poll.h \
-  arch/x86/include/generated/uapi/asm/poll.h \
-  include/uapi/asm-generic/poll.h \
-  include/uapi/linux/eventpoll.h \
-  include/linux/cdev.h \
-  include/media/media-entity.h \
-  include/uapi/linux/media.h \
-  include/media/hevc-ctrls.h \
-  include/media/v4l2-device.h \
-    $(wildcard include/config/VIDEO_V4L2_SUBDEV_API) \
-  include/media/v4l2-subdev.h \
-  include/uapi/linux/v4l2-subdev.h \
-  include/uapi/linux/v4l2-mediabus.h \
-  include/uapi/linux/media-bus-format.h \
-  include/media/v4l2-async.h \
-  include/media/v4l2-common.h \
-    $(wildcard include/config/VIDEO_V4L2_I2C) \
-    $(wildcard include/config/SPI) \
-  include/media/v4l2-dev.h \
-  include/linux/spi/spi.h \
-    $(wildcard include/config/SPI_SLAVE) \
-  include/linux/scatterlist.h \
-    $(wildcard include/config/NEED_SG_DMA_LENGTH) \
-    $(wildcard include/config/DEBUG_SG) \
-    $(wildcard include/config/SGL_ALLOC) \
-    $(wildcard include/config/ARCH_NO_SG_CHAIN) \
-    $(wildcard include/config/SG_POOL) \
-  include/uapi/linux/spi/spi.h \
-  include/media/v4l2-fh.h \
-  include/media/v4l2-mediabus.h \
-  include/media/v4l2-image-sizes.h \
-  drivers/media/i2c/vs6624_regs.h \
-
-drivers/media/i2c/vs6624.o: $(deps_drivers/media/i2c/vs6624.o)
-
-$(deps_drivers/media/i2c/vs6624.o):
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     ig/NF_CT_PROTO_SCTP) \
-    $(wildcard include/config/NF_FLOW_TABLE) \
-    $(wildcard include/config/NF_CT_PROTO_GRE) \
-    $(wildcard include/config/NF_CONNTRACK_EVENTS) \
-    $(wildcard include/config/NF_CONNTRACK_LABELS) \
-  include/linux/list_nulls.h \
-  include/linux/netfilter/nf_conntrack_tcp.h \
-  include/uapi/linux/netfilter/nf_conntrack_tcp.h \
-  include/linux/netfilter/nf_conntrack_dccp.h \
-  include/uapi/linux/netfilter/nf_conntrack_tuple_common.h \
-  include/linux/netfilter/nf_conntrack_sctp.h \
-  include/uapi/linux/netfilter/nf_conntrack_sctp.h \
-  include/net/netns/nftables.h \
-  include/net/netns/xfrm.h \
-  include/uapi/linux/xfrm.h \
-  include/net/netns/mpls.h \
-  include/net/netns/can.h \
-  include/net/netns/xdp.h \
-  include/net/netns/smc.h \
-  include/net/netns/bpf.h \
-  include/net/netns/mctp.h \
-  include/net/net_trackers.h \
-    $(wildcard include/config/NET_DEV_REFCNT_TRACKER) \
-  include/linux/ref_tracker.h \
-    $(wildcard include/config/REF_TRACKER) \
-  include/linux/seq_file_net.h \
-  include/linux/seq_file.h \
-  include/linux/string_helpers.h \
-  include/linux/ctype.h \
-  include/net/sock.h \
-    $(wildcard include/config/SOCK_RX_QUEUE_MAPPING) \
-    $(wildcard include/config/SOCK_VALIDATE_XMIT) \
-    $(wildcard include/config/RPS) \
-  include/linux/netdevice.h \
-    $(wildcard include/config/DCB) \
-    $(wildcard include/config/HYPERV_NET) \
-    $(wildcard include/config/WLAN) \
-    $(wildcard include/config/AX25) \
-    $(wildcard include/config/MAC80211_MESH) \
-    $(wildcard include/config/NET_IPIP) \
-    $(wildcard include/config/NET_IPGRE) \
-    $(wildcard include/config/IPV6_SIT) \
-    $(wildcard include/config/IPV6_TUNNEL) \
-    $(wildcard include/config/NETPOLL) \
-    $(wildcard include/config/BQL) \
-    $(wildcard include/config/RFS_ACCEL) \
-    $(wildcard include/config/FCOE) \
-    $(wildcard include/config/XFRM_OFFLOAD) \
-    $(wildcard include/config/NET_POLL_CONTROLLER) \
-    $(wildcard include/config/LIBFCOE) \
-    $(wildcard include/config/WIRELESS_EXT) \
-    $(wildcard include/config/VLAN_8021Q) \
-    $(wildcard include/config/NET_DSA) \
-    $(wildcard include/config/TIPC) \
-    $(wildcard include/config/ATALK) \
-    $(wildcard include/config/MPLS_ROUTING) \
-    $(wildcard include/config/NETFILTER_INGRESS) \
-    $(wildcard include/config/NETFILTER_EGRESS) \
-    $(wildcard include/config/PCPU_DEV_REFCNT) \
-    $(wildcard include/config/GARP) \
-    $(wildcard include/config/MRP) \
-    $(wildcard include/config/NET_DROP_MONITOR) \
-    $(wildcard include/config/CGROUP_NET_PRIO) \
-    $(wildcard include/config/MACSEC) \
-    $(wildcard include/config/NET_FLOW_LIMIT) \
-    $(wildcard include/config/ETHTOOL_NETLINK) \
-  include/linux/delay.h \
-  arch/x86/include/asm/delay.h \
-  include/asm-generic/delay.h \
-  include/linux/prefetch.h \
-  arch/x86/include/asm/local.h \
-  include/linux/dynamic_queue_limits.h \
-  include/net/netprio_cgroup.h \
-  include/linux/cgroup.h \
-    $(wildcard include/config/CGROUP_CPUACCT) \
-    $(wildcard include/config/CGROUP_DATA) \
-  include/uapi/linux/cgroupstats.h \
-  include/uapi/linux/taskstats.h \
-  include/linux/kernel_stat.h \
-  include/linux/cgroup-defs.h \
-  include/linux/bpf-cgroup-defs.h \
-  include/linux/psi_types.h \
-  include/linux/kthread.h \
-  include/linux/cgroup_subsys.h \
-    $(wildcard include/config/CGROUP_DEVICE) \
-    $(wildcard include/config/CGROUP_FREEZER) \
-    $(wildcard include/config/CGROUP_PERF) \
-    $(wildcard include/config/CGROUP_HUGETLB) \
-    $(wildcard include/config/CGROUP_PIDS) \
-    $(wildcard include/config/CGROUP_RDMA) \
-    $(wildcard include/config/CGROUP_MISC) \
-    $(wildcard include/config/CGROUP_DEBUG) \
-  include/net/xdp.h \
-  include/uapi/linux/neighbour.h \
-  include/uapi/linux/netdevice.h \
-  include/uapi/linux/if.h \
-  include/uapi/linux/hdlc/ioctl.h \
-  include/linux/if_ether.h \
-  include/linux/if_link.h \
-  include/uapi/linux/if_link.h \
-  include/uapi/linux/if_bonding.h \
-  include/uapi/linux/pkt_cls.h \
-  include/uapi/linux/pkt_sched.h \
-  include/linux/hashtable.h \
-  include/linux/page_counter.h \
-  s);
-
-/**
- * struct pending_free - information about data structures about to be freed
- * @zapped: Head of a list with struct lock_class elements.
- * @lock_chains_being_freed: Bitmap that indicates which lock_chains[] elements
- *	are about to be freed.
- */
-struct pending_free {
-	struct list_head zapped;
-	DECLARE_BITMAP(lock_chains_being_freed, MAX_LOCKDEP_CHAINS);
-};
-
-/**
- * struct delayed_free - data structures used for delayed freeing
- *
- * A data structure for delayed freeing of data structures that may be
- * accessed by RCU readers at the time these were freed.
- *
- * @rcu_head:  Used to schedule an RCU callback for freeing data structures.
- * @index:     Index of @pf to which freed data structures are added.
- * @scheduled: Whether or not an RCU callback has been scheduled.
- * @pf:        Array with information about data structures about to be freed.
- */
-static struct delayed_free {
-	struct rcu_head		rcu_head;
-	int			index;
-	int			scheduled;
-	struct pending_free	pf[2];
-} delayed_free;
-
-/*
- * The lockdep classes are in a hash-table as well, for fast lookup:
- */
-#define CLASSHASH_BITS		(MAX_LOCKDEP_KEYS_BITS - 1)
-#define CLASSHASH_SIZE		(1UL << CLASSHASH_BITS)
-#define __classhashfn(key)	hash_long((unsigned long)key, CLASSHASH_BITS)
-#define classhashentry(key)	(classhash_table + __classhashfn((key)))
-
-static struct hlist_head classhash_table[CLASSHASH_SIZE];
-
-/*
- * We put the lock dependency chains into a hash-table as well, to cache
- * their existence:
- */
-#define CHAINHASH_BITS		(MAX_LOCKDEP_CHAINS_BITS-1)
-#define CHAINHASH_SIZE		(1UL << CHAINHASH_BITS)
-#define __chainhashfn(chain)	hash_long(chain, CHAINHASH_BITS)
-#define chainhashentry(chain)	(chainhash_table + __chainhashfn((chain)))
-
-static struct hlist_head chainhash_table[CHAINHASH_SIZE];
-
-/*
- * the id of held_lock
- */
-static inline u16 hlock_id(struct held_lock *hlock)
-{
-	BUILD_BUG_ON(MAX_LOCKDEP_KEYS_BITS + 2 > 16);
-
-	return (hlock->class_idx | (hlock->read << MAX_LOCKDEP_KEYS_BITS));
-}
-
-static inline unsigned int chain_hlock_class_idx(u16 hlock_id)
-{
-	return hlock_id & (MAX_LOCKDEP_KEYS - 1);
-}
-
-/*
- * The hash key of the lock dependency chains is a hash itself too:
- * it's a hash of all locks taken up to that lock, including that lock.
- * It's a 64-bit hash, because it's important for the keys to be
- * unique.
- */
-static inline u64 iterate_chain_key(u64 key, u32 idx)
-{
-	u32 k0 = key, k1 = key >> 32;
-
-	__jhash_mix(idx, k0, k1); /* Macro that modifies arguments! */
-
-	return k0 | (u64)k1 << 32;
-}
-
-void lockdep_init_task(struct task_struct *task)
-{
-	task->lockdep_depth = 0; /* no locks held yet */
-	task->curr_chain_key = INITIAL_CHAIN_KEY;
-	task->lockdep_recursion = 0;
-}
-
-static __always_inline void lockdep_recursion_inc(void)
-{
-	__this_cpu_inc(lockdep_recursion);
-}
-
-static __always_inline void lockdep_recursion_finish(void)
-{
-	if (WARN_ON_ONCE(__this_cpu_dec_return(lockdep_recursion)))
-		__this_cpu_write(lockdep_recursion, 0);
-}
-
-void lockdep_set_selftest_task(struct task_struct *task)
-{
-	lockdep_selftest_task_struct = task;
-}
-
-/*
- * Debugging switches:
- */
-
-#define VERBOSE			0
-#define VERY_VERBOSE		0
-
-#if VERBOSE
-# define HARDIRQ_VERBOSE	1
-# define SOFTIRQ_VERBOSE	1
-#else
-# define HARDIRQ_VERBOSE	0
-# define SOFTIRQ_VERBOSE	0
-#endif
-
-#if VERBOSE || HARDIRQ_VERBOSE || SOFTIRQ_VERBOSE
-/*
- * Quick filtering for interesting events:
- */
-static int class_filter(struct lock_class *class)
-{
-#if 0
-	/* Example */
-	if (class->name_version == 1 &&
-			!strcmp(class->name, "lockname"))
-		return 1;
-	if (class->name_version == 1 &&
-			!strcmp(class->name, "&struct->lockfield"))
-		return 1;
-#endif
-	/* Filter everything else. 1 would be to allow everything else */
-	return 0;
-}
-#endif
-
-static int verbose(struct lock_class *class)
-{
-#if VERBOSE
-	return class_filter(class);
-#endif
-	return 0;
-}
-
-static void print_lockdep_off(const char *bug_msg)
-{
-	printk(KERN_DEBUG "%s\n", bug_msg);
-	printk(KERN_DEBUG "turning off the locking correctness validator.\n");
-#ifdef CONFIG_LOCK_STAT
-	printk(KERN_DEBUG "Please attach the output of /proc/lock_stat to the bug report\n");
-#endif
-}
-
-unsigned long nr_stack_trace_entries;
-
-#ifdef CONFIG_PROVE_LOCKING
-/**
- * struct lock_trace - single stack backtrace
- * @hash_entry:	Entry in a stack_trace_hash[] list.
- * @hash:	jhash() of @entries.
- * @nr_entries:	Number of entries in @entries.
- * @entries:	Actual stack backtrace.
- */
-struct lock_trace {
-	struct hlist_node	hash_entry;
-	u32			hash;
-	u32			nr_entries;
-	unsigned long		entries[] __aligned(sizeof(unsigned long));
-};
-#define LOCK_TRACE_SIZE_IN_LONGS				\
-	(sizeof(struct lock_trace) / sizeof(unsigned long))
-/*
- * Stack-trace: sequence of lock_trace structures. Protected by the graph_lock.
- */
-static unsigned long stack_trace[MAX_STACK_TRACE_ENTRIES];
-static struct hlist_head stack_trace_hash[STACK_TRACE_HASH_SIZE];
-
-static bool traces_identical(struct lock_trace *t1, struct lock_trace *t2)
-{
-	return t1->hash == t2->hash && t1->nr_entries == t2->nr_entries &&
-		memcmp(t1->entries, t2->entries,
-		       t1->nr_entries * sizeof(t1->entries[0])) == 0;
-}
-
-static struct lock_trace *save_trace(void)
-{
-	struct lock_trace *trace, *t2;
-	struct hlist_head *hash_head;
-	u32 hash;
-	int max_entries;
-
-	BUILD_BUG_ON_NOT_POWER_OF_2(STACK_TRACE_HASH_SIZE);
-	BUILD_BUG_ON(LOCK_TRACE_SIZE_IN_LONGS >= MAX_STACK_TRACE_ENTRIES);
-
-	trace = (struct lock_trace *)(stack_trace + nr_stack_trace_entries);
-	max_entries = MAX_STACK_TRACE_ENTRIES - nr_stack_trace_entries -
-		LOCK_TRACE_SIZE_IN_LONGS;
-
-	if (max_entries <= 0) {
-		if (!debug_locks_off_graph_unlock())
-			return NULL;
-
-		print_lockdep_off("BUG: MAX_STACK_TRACE_ENTRIES too low!");
-		dump_stack();
-
-		return NULL;
-	}
-	trace->nr_entries = stack_trace_save(trace->entries, max_entries, 3);
-
-	hash = jhash(trace->entries, trace->nr_entries *
-		     sizeof(trace->entries[0]), 0);
-	trace->hash = hash;
-	hash_head = stack_trace_hash + (hash & (STACK_TRACE_HASH_SIZE - 1));
-	hlist_for_each_entry(t2, hash_head, hash_entry) {
-		if (traces_identical(trace, t2))
-			return t2;
-	}
-	nr_stack_trace_entries += LOCK_TRACE_SIZE_IN_LONGS + trace->nr_entries;
-	hlist_add_head(&trace->hash_entry, hash_head);
-
-	return trace;
-}
-
-/* Return the number of stack traces in the stack_trace[] array. */
-u64 lockdep_stack_trace_count(void)
-{
-	struct lock_trace *trace;
-	u64 c = 0;
-	int i;
-
-	for (i = 0; i < ARRAY_SIZE(stack_trace_hash); i++) {
-		hlist_for_each_entry(trace, &stack_trace_hash[i], hash_entry) {
-			c++;
-		}
-	}
-
-	return c;
-}
-
-/* Return the number of stack hash chains that have at least one stack trace. */
-u64 lockdep_stack_hash_count(void)
-{
-	u64 c = 0;
-	int i;
-
-	for (i = 0; i < ARRAY_SIZE(stack_trace_hash); i++)
-		if (!hlist_empty(&stack_trace_hash[i]))
-			c++;
-
-	return c;
-}
-#endif
-
-unsigned int nr_hardirq_chains;
-unsigned int nr_softirq_chains;
-unsigned int nr_process_chains;
-unsigned int max_lockdep_depth;
-
-#ifdef CONFIG_DEBUG_LOCKDEP
-/*
- * Various lockdep statistics:
- */
-DEFINE_PER_CPU(struct lockdep_stats, lockdep_stats);
-#endif
-
-#ifdef CONFIG_PROVE_LOCKING
-/*
- * Locking printouts:
- */
-
-#define __USAGE(__STATE)						\
-	[LOCK_USED_IN_##__STATE] = "IN-"__stringify(__STATE)"-W",	\
-	[LOCK_ENABLED_##__STATE] = __stringify(__STATE)"-ON-W",		\
-	[LOCK_USED_IN_##__STATE##_READ] = "IN-"__stringify(__STATE)"-R",\
-	[LOCK_ENABLED_##__STATE##_READ] = __stringify(__STATE)"-ON-R",
-
-static const char *usage_str[] =
-{
-#define LOCKDEP_STATE(__STATE) __USAGE(__STATE)
-#include "lockdep_states.h"
-#undef LOCKDEP_STATE
-	[LOCK_USED] = "INITIAL USE",
-	[LOCK_USED_READ] = "INITIAL READ USE",
-	/* abused as string storage for verify_lock_unused() */
-	[LOCK_USAGE_STATES] = "IN-NMI",
-};
-#endif
-
-const char *__get_key_name(const struct lockdep_subclass_key *key, char *str)
-{
-	return kallsyms_lookup((unsigned long)key, NULL, NULL, NULL, str);
-}
-
-static inline unsigned long lock_flag(enum lock_usage_bit bit)
-{
-	return 1UL << bit;
-}
-
-static char get_usage_char(struct lock_class *class, enum lock_usage_bit bit)
-{
-	/*
-	 * The usage character defaults to '.' (i.e., irqs disabled and not in
-	 * irq context), which is the safest usage category.
-	 */
-	char c = '.';
-
-	/*
-	 * The order of the following usage checks matters, which will
-	 * result in the outcome character as follows:
-	 *
-	 * - '+': irq is enabled and not in irq context
-	 * - '-': in irq context and irq is disabled
-	 * - '?': in irq context and irq is enabled
-	 */
-	if (class->usage_mask & lock_flag(bit + LOCK_USAGE_DIR_MASK)) {
-		c = '+';
-		if (class->usage_mask & lock_flag(bit))
-			c = '?';
-	} else if (class->usage_mask & lock_flag(bit))
-		c = '-';
-
-	return c;
-}
-
-void get_usage_chars(struct lock_class *class, char usage[LOCK_USAGE_CHARS])
-{
-	int i = 0;
-
-#define LOCKDEP_STATE(__STATE) 						\
-	usage[i++] = get_usage_char(class, LOCK_USED_IN_##__STATE);	\
-	usage[i++] = get_usage_char(class, LOCK_USED_IN_##__STATE##_READ);
-#include "lockdep_states.h"
-#undef LOCKDEP_STATE
-
-	usage[i] = '\0';
-}
-
-static void __print_lock_name(struct lock_class *class)
-{
-	char str[KSYM_NAME_LEN];
-	const char *name;
-
-	name = class->name;
-	if (!name) {
-		name = __get_key_name(class->key, str);
-		printk(KERN_CONT "%s", name);
-	} else {
-		printk(KERN_CONT "%s", name);
-		if (class->name_version > 1)
-			printk(KERN_CONT "#%d", class->name_version);
-		if (class->subclass)
-			printk(KERN_CONT "/%d", class->subclass);
-	}
-}
-
-static void print_lock_name(struct lock_class *class)
-{
-	char usage[LOCK_USAGE_CHARS];
-
-	get_usage_chars(class, usage);
-
-	printk(KERN_CONT " (");
-	__print_lock_name(class);
-	printk(KERN_CONT "){%s}-{%d:%d}", usage,
-			class->wait_type_outer ?: class->wait_type_inner,
-			class->wait_type_inner);
-}
-
-static void print_lockdep_cache(struct lockdep_map *lock)
-{
-	const char *name;
-	char str[KSYM_NAME_LEN];
-
-	name = lock->name;
-	if (!name)
-		name = __get_key_name(lock->key->subkeys, str);
-
-	printk(KERN_CONT "%s", name);
-}
-
-static void print_lock(struct held_lock *hlock)
-{
-	/*
-	 * We can be called locklessly through debug_show_all_locks() so be
-	 * extra careful, the hlock might have been released and cleared.
-	 *
-	 * If this indeed happens, lets pretend it does not hurt to continue
-	 * to print the lock unless the hlock class_idx does not point to a
-	 * registered class. The rationale here is: since we don't attempt
-	 * to distinguish whether we are in this situation, if it just
-	 * happened we can't count on class_idx to tell either.
-	 */
-	struct lock_class *lock = hlock_class(hlock);
-
-	if (!lock) {
-		printk(KERN_CONT "<RELEASED>\n");
-		return;
-	}
-
-	printk(KERN_CONT "%px", hlock->instance);
-	print_lock_name(lock);
-	printk(KERN_CONT ", at: %pS\n", (void *)hlock->acquire_ip);
-}
-
-static void lockdep_print_held_locks(struct task_struct *p)
-{
-	int i, depth = READ_ONCE(p->lockdep_depth);
-
-	if (!depth)
-		printk("no locks held by %s/%d.\n", p->comm, task_pid_nr(p));
+K_RCD + 1)
+		count = RXCLK_RCD;
+	else if (count < 2)
+		count = 1;
 	else
-		printk("%d lock%s held by %s/%d:\n", depth,
-		       depth > 1 ? "s" : "", p->comm, task_pid_nr(p));
-	/*
-	 * It's not reliable to print a task's held locks if it's not sleeping
-	 * and it's not the current task.
-	 */
-	if (p != current && task_is_running(p))
-		return;
-	for (i = 0; i < depth; i++) {
-		printk(" #%d: ", i);
-		print_lock(p->held_locks + i);
-	}
-}
-
-static void print_kernel_ident(void)
-{
-	printk("%s %.*s %s\n", init_utsname()->release,
-		(int)strcspn(init_utsname()->version, " "),
-		init_utsname()->version,
-		print_tainted());
-}
-
-static int very_verbose(struct lock_class *class)
-{
-#if VERY_VERBOSE
-	return class_filter(class);
-#endif
-	return 0;
+		count--;
+	return (u16) count;
 }
 
 /*
- * Is this the address of a static object:
+ * IR Control Register helpers
  */
-#ifdef __KERNEL__
-/*
- * Check if an address is part of freed initmem. After initmem is freed,
- * memory can be allocated from it, and such allocations would then have
- * addresses within the range [_stext, _end].
- */
-#ifndef arch_is_kernel_initmem_freed
-static int arch_is_kernel_initmem_freed(unsigned long addr)
+enum tx_fifo_watermark {
+	TX_FIFO_HALF_EMPTY = 0,
+	TX_FIFO_EMPTY      = CNTRL_TIC,
+};
+
+enum rx_fifo_watermark {
+	RX_FIFO_HALF_FULL = 0,
+	RX_FIFO_NOT_EMPTY = CNTRL_RIC,
+};
+
+static inline void control_tx_irq_watermark(struct cx23885_dev *dev,
+					    enum tx_fifo_watermark level)
 {
-	if (system_state < SYSTEM_FREEING_INITMEM)
-		return 0;
-
-	return init_section_contains((void *)addr, 1);
-}
-#endif
-
-static int static_obj(const void *obj)
-{
-	unsigned long start = (unsigned long) &_stext,
-		      end   = (unsigned long) &_end,
-		      addr  = (unsigned long) obj;
-
-	if (arch_is_kernel_initmem_freed(addr))
-		return 0;
-
-	/*
-	 * static variable?
-	 */
-	if ((addr >= start) && (addr < end))
-		return 1;
-
-	/*
-	 * in-kernel percpu var?
-	 */
-	if (is_kernel_percpu_address(addr))
-		return 1;
-
-	/*
-	 * module static or percpu var?
-	 */
-	return is_module_address(addr) || is_module_percpu_address(addr);
-}
-#endif
-
-/*
- * To make lock name printouts unique, we calculate a unique
- * class->name_version generation counter. The caller must hold the graph
- * lock.
- */
-static int count_matching_names(struct lock_class *new_class)
-{
-	struct lock_class *class;
-	int count = 0;
-
-	if (!new_class->name)
-		return 0;
-
-	list_for_each_entry(class, &all_lock_classes, lock_entry) {
-		if (new_class->key - new_class->subclass == class->key)
-			return class->name_version;
-		if (class->name && !strcmp(class->name, new_class->name))
-			count = max(count, class->name_version);
-	}
-
-	return count + 1;
+	cx23888_ir_and_or4(dev, CX23888_IR_CNTRL_REG, ~CNTRL_TIC, level);
 }
 
-/* used from NMI context -- must be lockless */
-static noinstr struct lock_class *
-look_up_lock_class(const struct lockdep_map *lock, unsigned int subclass)
+static inline void control_rx_irq_watermark(struct cx23885_dev *dev,
+					    enum rx_fifo_watermark level)
 {
-	struct lockdep_subclass_key *key;
-	struct hlist_head *hash_head;
-	struct lock_class *class;
+	cx23888_ir_and_or4(dev, CX23888_IR_CNTRL_REG, ~CNTRL_RIC, level);
+}
 
-	if (unlikely(subclass >= MAX_LOCKDEP_SUBCLASSES)) {
-		instrumentation_begin();
-		debug_locks_off();
-		printk(KERN_ERR
-			"BUG: looking up invalid subclass: %u\n", subclass);
-		printk(KERN_ERR
-			"turning off the locking correctness validator.\n");
-		dump_stack();
-		instrumentation_end();
-		return NULL;
+static inline void control_tx_enable(struct cx23885_dev *dev, bool enable)
+{
+	cx23888_ir_and_or4(dev, CX23888_IR_CNTRL_REG, ~(CNTRL_TXE | CNTRL_TFE),
+			   enable ? (CNTRL_TXE | CNTRL_TFE) : 0);
+}
+
+static inline void control_rx_enable(struct cx23885_dev *dev, bool enable)
+{
+	cx23888_ir_and_or4(dev, CX23888_IR_CNTRL_REG, ~(CNTRL_RXE | CNTRL_RFE),
+			   enable ? (CNTRL_RXE | CNTRL_RFE) : 0);
+}
+
+static inline void control_tx_modulation_enable(struct cx23885_dev *dev,
+						bool enable)
+{
+	cx23888_ir_and_or4(dev, CX23888_IR_CNTRL_REG, ~CNTRL_MOD,
+			   enable ? CNTRL_MOD : 0);
+}
+
+static inline void control_rx_demodulation_enable(struct cx23885_dev *dev,
+						  bool enable)
+{
+	cx23888_ir_and_or4(dev, CX23888_IR_CNTRL_REG, ~CNTRL_DMD,
+			   enable ? CNTRL_DMD : 0);
+}
+
+static inline void control_rx_s_edge_detection(struct cx23885_dev *dev,
+					       u32 edge_types)
+{
+	cx23888_ir_and_or4(dev, CX23888_IR_CNTRL_REG, ~CNTRL_EDG_BOTH,
+			   edge_types & CNTRL_EDG_BOTH);
+}
+
+static void control_rx_s_carrier_window(struct cx23885_dev *dev,
+					unsigned int carrier,
+					unsigned int *carrier_range_low,
+					unsigned int *carrier_range_high)
+{
+	u32 v;
+	unsigned int c16 = carrier * 16;
+
+	if (*carrier_range_low < DIV_ROUND_CLOSEST(c16, 16 + 3)) {
+		v = CNTRL_WIN_3_4;
+		*carrier_range_low = DIV_ROUND_CLOSEST(c16, 16 + 4);
+	} else {
+		v = CNTRL_WIN_3_3;
+		*carrier_range_low = DIV_ROUND_CLOSEST(c16, 16 + 3);
 	}
 
-	/*
-	 * If it is not initialised then it has never been locked,
-	 * so it won't be present in the hash table.
-	 */
-	if (unlikely(!lock->key))
-		return NULL;
-
-	/*
-	 * NOTE: the class-key must be unique. For dynamic locks, a static
-	 * lock_class_key variable is passed in through the mutex_init()
-	 * (or spin_lock_init()) call - which acts as the key. For static
-	 * locks we use the lock object itself as the key.
-	 */
-	BUILD_BUG_ON(sizeof(struct lock_class_key) >
-			sizeof(struct lockdep_map));
-
-	key = lock->key->subkeys + subclass;
-
-	hash_head = classhashentry(key);
-
-	/*
-	 * We do an RCU walk of the hash, see lockdep_free_key_range().
-	 */
-	if (DEBUG_LOCKS_WARN_ON(!irqs_disabled()))
-		return NULL;
-
-	hlist_for_each_entry_rcu_notrace(class, hash_head, hash_entry) {
-		if (class->key == key) {
-			/*
-			 * Huh! same key, different name? Did someone trample
-			 * on some memory? We're most confused.
-			 */
-			WARN_ON_ONCE(class->name != lock->name &&
-				     lock->key != &__lockdep_no_validate__);
-			return class;
-		}
+	if (*carrier_range_high > DIV_ROUND_CLOSEST(c16, 16 - 3)) {
+		v |= CNTRL_WIN_4_3;
+		*carrier_range_high = DIV_ROUND_CLOSEST(c16, 16 - 4);
+	} else {
+		v |= CNTRL_WIN_3_3;
+		*carrier_range_high = DIV_ROUND_CLOSEST(c16, 16 - 3);
 	}
+	cx23888_ir_and_or4(dev, CX23888_IR_CNTRL_REG, ~CNTRL_WIN, v);
+}
 
-	return NULL;
+static inline void control_tx_polarity_invert(struct cx23885_dev *dev,
+					      bool invert)
+{
+	cx23888_ir_and_or4(dev, CX23888_IR_CNTRL_REG, ~CNTRL_CPL,
+			   invert ? CNTRL_CPL : 0);
+}
+
+static inline void control_tx_level_invert(struct cx23885_dev *dev,
+					  bool invert)
+{
+	cx23888_ir_and_or4(dev, CX23888_IR_CNTRL_REG, ~CNTRL_IVO,
+			   invert ? CNTRL_IVO : 0);
 }
 
 /*
- * Static locks do not have their class-keys yet - for them the key is
- * the lock object itself. If the lock is in the per cpu area, the
- * canonical address of the lock (per cpu offset removed) is used.
+ * IR Rx & Tx Clock Register helpers
  */
-static bool assign_lock_key(struct lockdep_map *lock)
+static unsigned int txclk_tx_s_carrier(struct cx23885_dev *dev,
+				       unsigned int freq,
+				       u16 *divider)
 {
-	unsigned long can_addr, addr = (unsigned long)lock;
-
-#ifdef __KERNEL__
-	/*
-	 * lockdep_free_key_range() assumes that struct lock_class_key
-	 * objects do not overlap. Since we use the address of lock
-	 * objects as class key for static objects, check whether the
-	 * size of lock_class_key objects does not exceed the size of
-	 * the smallest lock object.
-	 */
-	BUILD_BUG_ON(sizeof(struct lock_class_key) > sizeof(raw_spinlock_t));
-#endif
-
-	if (__is_kernel_percpu_address(addr, &can_addr))
-		lock->key = (void *)can_addr;
-	else if (__is_module_percpu_address(addr, &can_addr))
-		lock->key = (void *)can_addr;
-	else if (static_obj(lock))
-		lock->key = (void *)lock;
-	else {
-		/* Debug-check: all keys must be persistent! */
-		debug_locks_off();
-		pr_err("INFO: trying to register non-static key.\n");
-		pr_err("The code is fine but needs lockdep annotation, or maybe\n");
-		pr_err("you didn't initialize this object before use?\n");
-		pr_err("turning off the locking correctness validator.\n");
-		dump_stack();
-		return false;
-	}
-
-	return true;
+	*divider = carrier_freq_to_clock_divider(freq);
+	cx23888_ir_write4(dev, CX23888_IR_TXCLK_REG, *divider);
+	return clock_divider_to_carrier_freq(*divider);
 }
 
-#ifdef CONFIG_DEBUG_LOCKDEP
-
-/* Check whether element @e occurs in list @h */
-static bool in_list(struct list_head *e, struct list_head *h)
+static unsigned int rxclk_rx_s_carrier(struct cx23885_dev *dev,
+				       unsigned int freq,
+				       u16 *divider)
 {
-	struct list_head *f;
+	*divider = carrier_freq_to_clock_divider(freq);
+	cx23888_ir_write4(dev, CX23888_IR_RXCLK_REG, *divider);
+	return clock_divider_to_carrier_freq(*divider);
+}
 
-	list_for_each(f, h) {
-		if (e == f)
-			return true;
-	}
+static u32 txclk_tx_s_max_pulse_width(struct cx23885_dev *dev, u32 ns,
+				      u16 *divider)
+{
+	u64 pulse_clocks;
 
-	return false;
+	if (ns > IR_MAX_DURATION)
+		ns = IR_MAX_DURATION;
+	pulse_clocks = ns_to_pulse_clocks(ns);
+	*divider = pulse_clocks_to_clock_divider(pulse_clocks);
+	cx23888_ir_write4(dev, CX23888_IR_TXCLK_REG, *divider);
+	return (u32) pulse_width_count_to_ns(FIFO_RXTX, *divider);
+}
+
+static u32 rxclk_rx_s_max_pulse_width(struct cx23885_dev *dev, u32 ns,
+				      u16 *divider)
+{
+	u64 pulse_clocks;
+
+	if (ns > IR_MAX_DURATION)
+		ns = IR_MAX_DURATION;
+	pulse_clocks = ns_to_pulse_clocks(ns);
+	*divider = pulse_clocks_to_clock_divider(pulse_clocks);
+	cx23888_ir_write4(dev, CX23888_IR_RXCLK_REG, *divider);
+	return (u32) pulse_width_count_to_ns(FIFO_RXTX, *divider);
 }
 
 /*
- * Check whether entry @e occurs in any of the locks_after or locks_before
- * lists.
+ * IR Tx Carrier Duty Cycle register helpers
  */
-static bool in_any_class_list(struct list_head *e)
+static unsigned int cduty_tx_s_duty_cycle(struct cx23885_dev *dev,
+					  unsigned int duty_cycle)
 {
-	struct lock_class *class;
-	int i;
-
-	for (i = 0; i < ARRAY_SIZE(lock_classes); i++) {
-		class = &lock_classes[i];
-		if (in_list(e, &class->locks_after) ||
-		    in_list(e, &class->locks_before))
-			return true;
-	}
-	return false;
+	u32 n;
+	n = DIV_ROUND_CLOSEST(duty_cycle * 100, 625); /* 16ths of 100% */
+	if (n != 0)
+		n--;
+	if (n > 15)
+		n = 15;
+	cx23888_ir_write4(dev, CX23888_IR_CDUTY_REG, n);
+	return DIV_ROUND_CLOSEST((n + 1) * 100, 16);
 }
-
-static bool class_lock_list_valid(struct lock_class *c, struct list_head *h)
-{
-	struct lock_list *e;
-
-	list_for_each_entry(e, h, entry) {
-		if (e->links_to != c) {
-			printk(KERN_INFO "class %s: mismatch for lock entry %ld; class %s <> %s",
-			       c->name ? : "(?)",
-			       (unsigned long)(e - list_entries),
-			       e->links_to && e->links_to->name ?
-			       e->links_to->name : "(?)",
-			       e->class && e->class->name ? e->class->name :
-			       "(?)");
-			return false;
-		}
-	}
-	return true;
-}
-
-#ifdef CONFIG_PROVE_LOCKING
-static u16 chain_hlocks[MAX_LOCKDEP_CHAIN_HLOCKS];
-#endif
-
-static bool check_lock_chain_key(struct lock_chain *chain)
-{
-#ifdef CONFIG_PROVE_LOCKING
-	u64 chain_key = INITIAL_CHAIN_KEY;
-	int i;
-
-	for (i = chain->base; i < chain->base + chain->depth; i++)
-		chain_key = iterate_chain_key(chain_key, chain_hlocks[i]);
-	/*
-	 * The 'unsigned long long' casts avoid that a compiler warning
-	 * is reported when building tools/lib/lockdep.
-	 */
-	if (chain->chain_key != chain_key) {
-		printk(KERN_INFO "chain %lld: key %#llx <> %#llx\n",
-		       (unsigned long long)(chain - lock_chains),
-		       (unsigned long long)chain->chain_key,
-		       (unsigned long long)chain_key);
-		return false;
-	}
-#endif
-	return true;
-}
-
-static bool in_any_zapped_class_list(struct lock_class *class)
-{
-	struct pending_free *pf;
-	int i;
-
-	for (i = 0, pf = delayed_free.pf; i < ARRAY_SIZE(delayed_free.pf); i++, pf++) {
-		if (in_list(&class->lock_entry, &pf->zapped))
-			return true;
-	}
-
-	return false;
-}
-
-static bool __check_data_structures(void)
-{
-	struct lock_class *class;
-	struct lock_chain *chain;
-	struct hlist_head *head;
-	struct lock_list *e;
-	int i;
-
-	/* Check whether all classes occur in a lock list. */
-	for (i = 0; i < ARRAY_SIZE(lock_classes); i++) {
-		class = &lock_classes[i];
-		if (!in_list(&class->lock_entry, &all_lock_classes) &&
-		    !in_list(&class->lock_entry, &free_lock_classes) &&
-		    !in_any_zapped_class_list(class)) {
-			printk(KERN_INFO "class %px/%s is not in any class list\n",
-			       class, class->name ? : "(?)");
-			return false;
-		}
-	}
-
-	/* Check whether all classes have valid lock lists. */
-	for (i = 0; i < ARRAY_SIZE(lock_classes); i++) {
-		class = &lock_classes[i];
-		if (!class_lock_list_valid(class, &class->locks_before))
-			return false;
-		if (!class_lock_list_valid(class, &class->locks_after))
-			return false;
-	}
-
-	/* Check the chain_key of all lock chains. */
-	for (i = 0; i < ARRAY_SIZE(chainhash_table); i++) {
-		head = chainhash_table + i;
-		hlist_for_each_entry_rcu(chain, head, entry) {
-			if (!check_lock_chain_key(chain))
-				return false;
-		}
-	}
-
-	/*
-	 * Check whether all list entries that are in use occur in a class
-	 * lock list.
-	 */
-	for_each_set_bit(i, list_entries_in_use, ARRAY_SIZE(list_entries)) {
-		e = list_entries + i;
-		if (!in_any_class_list(&e->entry)) {
-			printk(KERN_INFO "list entry %d is not in any class list; class %s <> %s\n",
-			       (unsigned int)(e - list_entries),
-			       e->class->name ? : "(?)",
-			       e->links_to->name ? : "(?)");
-			return false;
-		}
-	}
-
-	/*
-	 * Check whether all list entries that are not in use do not occur in
-	 * a class lock list.
-	 */
-	for_each_clear_bit(i, list_entries_in_use, ARRAY_SIZE(list_entries)) {
-		e = list_entries + i;
-		if (in_any_class_list(&e->entry)) {
-			printk(KERN_INFO "list entry %d occurs in a class list; class %s <> %s\n",
-			       (unsigned int)(e - list_entries),
-			       e->class && e->class->name ? e->class->name :
-			       "(?)",
-			       e->links_to && e->links_to->name ?
-			       e->links_to->name : "(?)");
-			return false;
-		}
-	}
-
-	return true;
-}
-
-int check_consistency = 0;
-module_param(check_consistency, int, 0644);
-
-static void check_data_structures(void)
-{
-	static bool once = false;
-
-	if (check_consistency && !once) {
-		if (!__check_data_structures()) {
-			once = true;
-			WARN_ON(once);
-		}
-	}
-}
-
-#else /* CONFIG_DEBUG_LOCKDEP */
-
-static inline void check_data_structures(void) { }
-
-#endif /* CONFIG_DEBUG_LOCKDEP */
-
-static void init_chain_block_buckets(void);
 
 /*
- * Initialize the lock_classes[] array elements, the free_lock_classes list
- * and also the delayed_free structure.
+ * IR Filter Register helpers
  */
-static void init_data_structures_once(void)
+static u32 filter_rx_s_min_width(struct cx23885_dev *dev, u32 min_width_ns)
 {
-	static bool __read_mostly ds_initialized, rcu_head_initialized;
-	int i;
-
-	if (likely(rcu_head_initialized))
-		return;
-
-	if (system_state >= SYSTEM_SCHEDULING) {
-		init_rcu_head(&delayed_free.rcu_head);
-		rcu_head_initialized = true;
-	}
-
-	if (ds_initialized)
-		return;
-
-	ds_initialized = true;
-
-	INIT_LIST_HEAD(&delayed_free.pf[0].zapped);
-	INIT_LIST_HEAD(&delayed_free.pf[1].zapped);
-
-	for (i = 0; i < ARRAY_SIZE(lock_classes); i++) {
-		list_add_tail(&lock_classes[i].lock_entry, &free_lock_classes);
-		INIT_LIST_HEAD(&lock_classes[i].locks_after);
-		INIT_LIST_HEAD(&lock_classes[i].locks_before);
-	}
-	init_chain_block_buckets();
+	u32 count = ns_to_lpf_count(min_width_ns);
+	cx23888_ir_write4(dev, CX23888_IR_FILTR_REG, count);
+	return lpf_count_to_ns(count);
 }
 
-static inline struct hlist_head *keyhashentry(const struct lock_class_key *key)
+/*
+ * IR IRQ Enable Register helpers
+ */
+static inline void irqenable_rx(struct cx23885_dev *dev, u32 mask)
 {
-	unsigned long hash = hash_long((uintptr_t)key, KEYHASH_BITS);
-
-	return lock_keys_hash + hash;
+	mask &= (IRQEN_RTE | IRQEN_ROE | IRQEN_RSE);
+	cx23888_ir_and_or4(dev, CX23888_IR_IRQEN_REG,
+			   ~(IRQEN_RTE | IRQEN_ROE | IRQEN_RSE), mask);
 }
 
-/* Register a dynamically allocated key. */
-void lockdep_register_key(struct lock_class_key *key)
+static inline void irqenable_tx(struct cx23885_dev *dev, u32 mask)
 {
-	struct hlist_head *hash_head;
-	struct lock_class_key *k;
+	mask &= IRQEN_TSE;
+	cx23888_ir_and_or4(dev, CX23888_IR_IRQEN_REG, ~IRQEN_TSE, mask);
+}
+
+/*
+ * V4L2 Subdevice IR Ops
+ */
+static int cx23888_ir_irq_handler(struct v4l2_subdev *sd, u32 status,
+				  bool *handled)
+{
+	struct cx23888_ir_state *state = to_state(sd);
+	struct cx23885_dev *dev = state->dev;
 	unsigned long flags;
 
-	if (WARN_ON_ONCE(static_obj(key)))
-		return;
-	hash_head = keyhashentry(key);
+	u32 cntrl = cx23888_ir_read4(dev, CX23888_IR_CNTRL_REG);
+	u32 irqen = cx23888_ir_read4(dev, CX23888_IR_IRQEN_REG);
+	u32 stats = cx23888_ir_read4(dev, CX23888_IR_STATS_REG);
 
-	raw_local_irq_save(flags);
-	if (!graph_lock())
-		goto restore_irqs;
-	hlist_for_each_entry_rcu(k, hash_head, hash_entry) {
-		if (WARN_ON_ONCE(k == key))
-			goto out_unlock;
-	}
-	hlist_add_head_rcu(&key->hash_entry, hash_head);
-out_unlock:
-	graph_unlock();
-restore_irqs:
-	raw_local_irq_restore(flags);
-}
-EXPORT_SYMBOL_GPL(lockdep_register_key);
+	union cx23888_ir_fifo_rec rx_data[FIFO_RX_DEPTH];
+	unsigned int i, j, k;
+	u32 events, v;
+	int tsr, rsr, rto, ror, tse, rse, rte, roe, kror;
 
-/* Check whether a key has been registered as a dynamic key. */
-static bool is_dynamic_key(const struct lock_class_key *key)
-{
-	struct hlist_head *hash_head;
-	struct lock_class_key *k;
-	bool found = false;
+	tsr = stats & STATS_TSR; /* Tx FIFO Service Request */
+	rsr = stats & STATS_RSR; /* Rx FIFO Service Request */
+	rto = stats & STATS_RTO; /* Rx Pulse Width Timer Time Out */
+	ror = stats & STATS_ROR; /* Rx FIFO Over Run */
 
-	if (WARN_ON_ONCE(static_obj(key)))
-		return false;
+	tse = irqen & IRQEN_TSE; /* Tx FIFO Service Request IRQ Enable */
+	rse = irqen & IRQEN_RSE; /* Rx FIFO Service Request IRQ Enable */
+	rte = irqen & IRQEN_RTE; /* Rx Pulse Width Timer Time Out IRQ Enable */
+	roe = irqen & IRQEN_ROE; /* Rx FIFO Over Run IRQ Enable */
+
+	*handled = false;
+	v4l2_dbg(2, ir_888_debug, sd, "IRQ Status:  %s %s %s %s %s %s\n",
+		 tsr ? "tsr" : "   ", rsr ? "rsr" : "   ",
+		 rto ? "rto" : "   ", ror ? "ror" : "   ",
+		 stats & STATS_TBY ? "tby" : "   ",
+		 stats & STATS_RBY ? "rby" : "   ");
+
+	v4l2_dbg(2, ir_888_debug, sd, "IRQ Enables: %s %s %s %s\n",
+		 tse ? "tse" : "   ", rse ? "rse" : "   ",
+		 rte ? "rte" : "   ", roe ? "roe" : "   ");
 
 	/*
-	 * If lock debugging is disabled lock_keys_hash[] may contain
-	 * pointers to memory that has already been freed. Avoid triggering
-	 * a use-after-free in that case by returning early.
+	 * Transmitter interrupt service
 	 */
-	if (!debug_locks)
-		return true;
+	if (tse && tsr) {
+		/*
+		 * TODO:
+		 * Check the watermark threshold setting
+		 * Pull FIFO_TX_DEPTH or FIFO_TX_DEPTH/2 entries from tx_kfifo
+		 * Push the data to the hardware FIFO.
+		 * If there was nothing more to send in the tx_kfifo, disable
+		 *	the TSR IRQ and notify the v4l2_device.
+		 * If there was something in the tx_kfifo, check the tx_kfifo
+		 *      level and notify the v4l2_device, if it is low.
+		 */
+		/* For now, inhibit TSR interrupt until Tx is implemented */
+		irqenable_tx(dev, 0);
+		events = V4L2_SUBDEV_IR_TX_FIFO_SERVICE_REQ;
+		v4l2_subdev_notify(sd, V4L2_SUBDEV_IR_TX_NOTIFY, &events);
+		*handled = true;
+	}
 
-	hash_head = keyhashentry(key);
+	/*
+	 * Receiver interrupt service
+	 */
+	kror = 0;
+	if ((rse && rsr) || (rte && rto)) {
+		/*
+		 * Receive data on RSR to clear the STATS_RSR.
+		 * Receive data on RTO, since we may not have yet hit the RSR
+		 * watermark when we receive the RTO.
+		 */
+		for (i = 0, v = FIFO_RX_NDV;
+		     (v & FIFO_RX_NDV) && !kror; i = 0) {
+			for (j = 0;
+			     (v & FIFO_RX_NDV) && j < FIFO_RX_DEPTH; j++) {
+				v = cx23888_ir_read4(dev, CX23888_IR_FIFO_REG);
+				rx_data[i].hw_fifo_data = v & ~FIFO_RX_NDV;
+				i++;
+			}
+			if (i == 0)
+				break;
+			j = i * sizeof(union cx23888_ir_fifo_rec);
+			k = kfifo_in_locked(&state->rx_kfifo,
+				      (unsigned char *) rx_data, j,
+				      &state->rx_kfifo_lock);
+			if (k != j)
+				kror++; /* rx_kfifo over run */
+		}
+		*handled = true;
+	}
 
-	rcu_read_lock();
-	hlist_for_each_entry_rcu(k, hash_head, hash_entry) {
-		if (k == key) {
-			found = true;
+	events = 0;
+	v = 0;
+	if (kror) {
+		events |= V4L2_SUBDEV_IR_RX_SW_FIFO_OVERRUN;
+		v4l2_err(sd, "IR receiver software FIFO overrun\n");
+	}
+	if (roe && ror) {
+		/*
+		 * The RX FIFO Enable (CNTRL_RFE) must be toggled to clear
+		 * the Rx FIFO Over Run status (STATS_ROR)
+		 */
+		v |= CNTRL_RFE;
+		events |= V4L2_SUBDEV_IR_RX_HW_FIFO_OVERRUN;
+		v4l2_err(sd, "IR receiver hardware FIFO overrun\n");
+	}
+	if (rte && rto) {
+		/*
+		 * The IR Receiver Enable (CNTRL_RXE) must be toggled to clear
+		 * the Rx Pulse Width Timer Time Out (STATS_RTO)
+		 */
+		v |= CNTRL_RXE;
+		events |= V4L2_SUBDEV_IR_RX_END_OF_RX_DETECTED;
+	}
+	if (v) {
+		/* Clear STATS_ROR & STATS_RTO as needed by resetting hardware */
+		cx23888_ir_write4(dev, CX23888_IR_CNTRL_REG, cntrl & ~v);
+		cx23888_ir_write4(dev, CX23888_IR_CNTRL_REG, cntrl);
+		*handled = true;
+	}
+
+	spin_lock_irqsave(&state->rx_kfifo_lock, flags);
+	if (kfifo_len(&state->rx_kfifo) >= CX23888_IR_RX_KFIFO_SIZE / 2)
+		events |= V4L2_SUBDEV_IR_RX_FIFO_SERVICE_REQ;
+	spin_unlock_irqrestore(&state->rx_kfifo_lock, flags);
+
+	if (events)
+		v4l2_subdev_notify(sd, V4L2_SUBDEV_IR_RX_NOTIFY, &events);
+	return 0;
+}
+
+/* Receiver */
+static int cx23888_ir_rx_read(struct v4l2_subdev *sd, u8 *buf, size_t count,
+			      ssize_t *num)
+{
+	struct cx23888_ir_state *state = to_state(sd);
+	bool invert = (bool) atomic_read(&state->rx_invert);
+	u16 divider = (u16) atomic_read(&state->rxclk_divider);
+
+	unsigned int i, n;
+	union cx23888_ir_fifo_rec *p;
+	unsigned u, v, w;
+
+	n = count / sizeof(union cx23888_ir_fifo_rec)
+		* sizeof(union cx23888_ir_fifo_rec);
+	if (n == 0) {
+		*num = 0;
+		return 0;
+	}
+
+	n = kfifo_out_locked(&state->rx_kfifo, buf, n, &state->rx_kfifo_lock);
+
+	n /= sizeof(union cx23888_ir_fifo_rec);
+	*num = n * sizeof(union cx23888_ir_fifo_rec);
+
+	for (p = (union cx23888_ir_fifo_rec *) buf, i = 0; i < n; p++, i++) {
+
+		if ((p->hw_fifo_data & FIFO_RXTX_RTO) == FIFO_RXTX_RTO) {
+			/* Assume RTO was because of no IR light input */
+			u = 0;
+			w = 1;
+		} else {
+			u = (p->hw_fifo_data & FIFO_RXTX_LVL) ? 1 : 0;
+			if (invert)
+				u = u ? 0 : 1;
+			w = 0;
+		}
+
+		v = (unsigned) pulse_width_count_to_ns(
+				  (u16)(p->hw_fifo_data & FIFO_RXTX), divider) / 1000;
+		if (v > IR_MAX_DURATION)
+			v = IR_MAX_DURATION;
+
+		p->ir_core_data = (struct ir_raw_event)
+			{ .pulse = u, .duration = v, .timeout = w };
+
+		v4l2_dbg(2, ir_888_debug, sd, "rx read: %10u ns  %s  %s\n",
+			 v, u ? "mark" : "space", w ? "(timed out)" : "");
+		if (w)
+			v4l2_dbg(2, ir_888_debug, sd, "rx read: end of rx\n");
+	}
+	return 0;
+}
+
+static int cx23888_ir_rx_g_parameters(struct v4l2_subdev *sd,
+				      struct v4l2_subdev_ir_parameters *p)
+{
+	struct cx23888_ir_state *state = to_state(sd);
+	mutex_lock(&state->rx_params_lock);
+	memcpy(p, &state->rx_params, sizeof(struct v4l2_subdev_ir_parameters));
+	mutex_unlock(&state->rx_params_lock);
+	return 0;
+}
+
+static int cx23888_ir_rx_shutdown(struct v4l2_subdev *sd)
+{
+	struct cx23888_ir_state *state = to_state(sd);
+	struct cx23885_dev *dev = state->dev;
+
+	mutex_lock(&state->rx_params_lock);
+
+	/* Disable or slow down all IR Rx circuits and counters */
+	irqenable_rx(dev, 0);
+	control_rx_enable(dev, false);
+	control_rx_demodulation_enable(dev, false);
+	control_rx_s_edge_detection(dev, CNTRL_EDG_NONE);
+	filter_rx_s_min_width(dev, 0);
+	cx23888_ir_write4(dev, CX23888_IR_RXCLK_REG, RXCLK_RCD);
+
+	state->rx_params.shutdown = true;
+
+	mutex_unlock(&state->rx_params_lock);
+	return 0;
+}
+
+static int cx23888_ir_rx_s_parameters(struct v4l2_subdev *sd,
+				      struct v4l2_subdev_ir_parameters *p)
+{
+	struct cx23888_ir_state *state = to_state(sd);
+	struct cx23885_dev *dev = state->dev;
+	struct v4l2_subdev_ir_parameters *o = &state->rx_params;
+	u16 rxclk_divider;
+
+	if (p->shutdown)
+		return cx23888_ir_rx_shutdown(sd);
+
+	if (p->mode != V4L2_SUBDEV_IR_MODE_PULSE_WIDTH)
+		return -ENOSYS;
+
+	mutex_lock(&state->rx_params_lock);
+
+	o->shutdown = p->shutdown;
+
+	o->mode = p->mode = V4L2_SUBDEV_IR_MODE_PULSE_WIDTH;
+
+	o->bytes_per_data_element = p->bytes_per_data_element
+				  = sizeof(union cx23888_ir_fifo_rec);
+
+	/* Before we tweak the hardware, we have to disable the receiver */
+	irqenable_rx(dev, 0);
+	control_rx_enable(dev, false);
+
+	control_rx_demodulation_enable(dev, p->modulation);
+	o->modulation = p->modulation;
+
+	if (p->modulation) {
+		p->carrier_freq = rxclk_rx_s_carrier(dev, p->carrier_freq,
+						     &rxclk_divider);
+
+		o->carrier_freq = p->carrier_freq;
+
+		o->duty_cycle = p->duty_cycle = 50;
+
+		control_rx_s_carrier_window(dev, p->carrier_freq,
+					    &p->carrier_range_lower,
+					    &p->carrier_range_upper);
+		o->carrier_range_lower = p->carrier_range_lower;
+		o->carrier_range_upper = p->carrier_range_upper;
+
+		p->max_pulse_width =
+			(u32) pulse_width_count_to_ns(FIFO_RXTX, rxclk_divider);
+	} else {
+		p->max_pulse_width =
+			    rxclk_rx_s_max_pulse_width(dev, p->max_pulse_width,
+						       &rxclk_divider);
+	}
+	o->max_pulse_width = p->max_pulse_width;
+	atomic_set(&state->rxclk_divider, rxclk_divider);
+
+	p->noise_filter_min_width =
+			  filter_rx_s_min_width(dev, p->noise_filter_min_width);
+	o->noise_filter_min_width = p->noise_filter_min_width;
+
+	p->resolution = clock_divider_to_resolution(rxclk_divider);
+	o->resolution = p->resolution;
+
+	/* FIXME - make this dependent on resolution for better performance */
+	control_rx_irq_watermark(dev, RX_FIFO_HALF_FULL);
+
+	control_rx_s_edge_detection(dev, CNTRL_EDG_BOTH);
+
+	o->invert_level = p->invert_level;
+	atomic_set(&state->rx_invert, p->invert_level);
+
+	o->interrupt_enable = p->interrupt_enable;
+	o->enable = p->enable;
+	if (p->enable) {
+		unsigned long flags;
+
+		spin_lock_irqsave(&state->rx_kfifo_lock, flags);
+		kfifo_reset(&state->rx_kfifo);
+		/* reset tx_fifo too if there is one... */
+		spin_unlock_irqrestore(&state->rx_kfifo_lock, flags);
+		if (p->interrupt_enable)
+			irqenable_rx(dev, IRQEN_RSE | IRQEN_RTE | IRQEN_ROE);
+		control_rx_enable(dev, p->enable);
+	}
+
+	mutex_unlock(&state->rx_params_lock);
+	return 0;
+}
+
+/* Transmitter */
+static int cx23888_ir_tx_write(struct v4l2_subdev *sd, u8 *buf, size_t count,
+			       ssize_t *num)
+{
+	struct cx23888_ir_state *state = to_state(sd);
+	struct cx23885_dev *dev = state->dev;
+	/* For now enable the Tx FIFO Service interrupt & pretend we did work */
+	irqenable_tx(dev, IRQEN_TSE);
+	*num = count;
+	return 0;
+}
+
+static int cx23888_ir_tx_g_parameters(struct v4l2_subdev *sd,
+				      struct v4l2_subdev_ir_parameters *p)
+{
+	struct cx23888_ir_state *state = to_state(sd);
+	mutex_lock(&state->tx_params_lock);
+	memcpy(p, &state->tx_params, sizeof(struct v4l2_subdev_ir_parameters));
+	mutex_unlock(&state->tx_params_lock);
+	return 0;
+}
+
+static int cx23888_ir_tx_shutdown(struct v4l2_subdev *sd)
+{
+	struct cx23888_ir_state *state = to_state(sd);
+	struct cx23885_dev *dev = state->dev;
+
+	mutex_lock(&state->tx_params_lock);
+
+	/* Disable or slow down all IR Tx circuits and counters */
+	irqenable_tx(dev, 0);
+	control_tx_enable(dev, false);
+	control_tx_modulation_enable(dev, false);
+	cx23888_ir_write4(dev, CX23888_IR_TXCLK_REG, TXCLK_TCD);
+
+	state->tx_params.shutdown = true;
+
+	mutex_unlock(&state->tx_params_lock);
+	return 0;
+}
+
+static int cx23888_ir_tx_s_parameters(struct v4l2_subdev *sd,
+				      struct v4l2_subdev_ir_parameters *p)
+{
+	struct cx23888_ir_state *state = to_state(sd);
+	struct cx23885_dev *dev = state->dev;
+	struct v4l2_subdev_ir_parameters *o = &state->tx_params;
+	u16 txclk_divider;
+
+	if (p->shutdown)
+		return cx23888_ir_tx_shutdown(sd);
+
+	if (p->mode != V4L2_SUBDEV_IR_MODE_PULSE_WIDTH)
+		return -ENOSYS;
+
+	mutex_lock(&state->tx_params_lock);
+
+	o->shutdown = p->shutdown;
+
+	o->mode = p->mode = V4L2_SUBDEV_IR_MODE_PULSE_WIDTH;
+
+	o->bytes_per_data_element = p->bytes_per_data_element
+				  = sizeof(union cx23888_ir_fifo_rec);
+
+	/* Before we tweak the hardware, we have to disable the transmitter */
+	irqenable_tx(dev, 0);
+	control_tx_enable(dev, false);
+
+	control_tx_modulation_enable(dev, p->modulation);
+	o->modulation = p->modulation;
+
+	if (p->modulation) {
+		p->carrier_freq = txclk_tx_s_carrier(dev, p->carrier_freq,
+						     &txclk_divider);
+		o->carrier_freq = p->carrier_freq;
+
+		p->duty_cycle = cduty_tx_s_duty_cycle(dev, p->duty_cycle);
+		o->duty_cycle = p->duty_cycle;
+
+		p->max_pulse_width =
+			(u32) pulse_width_count_to_ns(FIFO_RXTX, txclk_divider);
+	} else {
+		p->max_pulse_width =
+			    txclk_tx_s_max_pulse_width(dev, p->max_pulse_width,
+						       &txclk_divider);
+	}
+	o->max_pulse_width = p->max_pulse_width;
+	atomic_set(&state->txclk_divider, txclk_divider);
+
+	p->resolution = clock_divider_to_resolution(txclk_divider);
+	o->resolution = p->resolution;
+
+	/* FIXME - make this dependent on resolution for better performance */
+	control_tx_irq_watermark(dev, TX_FIFO_HALF_EMPTY);
+
+	control_tx_polarity_invert(dev, p->invert_carrier_sense);
+	o->invert_carrier_sense = p->invert_carrier_sense;
+
+	control_tx_level_invert(dev, p->invert_level);
+	o->invert_level = p->invert_level;
+
+	o->interrupt_enable = p->interrupt_enable;
+	o->enable = p->enable;
+	if (p->enable) {
+		if (p->interrupt_enable)
+			irqenable_tx(dev, IRQEN_TSE);
+		control_tx_enable(dev, p->enable);
+	}
+
+	mutex_unlock(&state->tx_params_lock);
+	return 0;
+}
+
+
+/*
+ * V4L2 Subdevice Core Ops
+ */
+static int cx23888_ir_log_status(struct v4l2_subdev *sd)
+{
+	struct cx23888_ir_state *state = to_state(sd);
+	struct cx23885_dev *dev = state->dev;
+	char *s;
+	int i, j;
+
+	u32 cntrl = cx23888_ir_read4(dev, CX23888_IR_CNTRL_REG);
+	u32 txclk = cx23888_ir_read4(dev, CX23888_IR_TXCLK_REG) & TXCLK_TCD;
+	u32 rxclk = cx23888_ir_read4(dev, CX23888_IR_RXCLK_REG) & RXCLK_RCD;
+	u32 cduty = cx23888_ir_read4(dev, CX23888_IR_CDUTY_REG) & CDUTY_CDC;
+	u32 stats = cx23888_ir_read4(dev, CX23888_IR_STATS_REG);
+	u32 irqen = cx23888_ir_read4(dev, CX23888_IR_IRQEN_REG);
+	u32 filtr = cx23888_ir_read4(dev, CX23888_IR_FILTR_REG) & FILTR_LPF;
+
+	v4l2_info(sd, "IR Receiver:\n");
+	v4l2_info(sd, "\tEnabled:                           %s\n",
+		  cntrl & CNTRL_RXE ? "yes" : "no");
+	v4l2_info(sd, "\tDemodulation from a carrier:       %s\n",
+		  cntrl & CNTRL_DMD ? "enabled" : "disabled");
+	v4l2_info(sd, "\tFIFO:                              %s\n",
+		  cntrl & CNTRL_RFE ? "enabled" : "disabled");
+	switch (cntrl & CNTRL_EDG) {
+	case CNTRL_EDG_NONE:
+		s = "disabled";
+		break;
+	case CNTRL_EDG_FALL:
+		s = "falling edge";
+		break;
+	case CNTRL_EDG_RISE:
+		s = "rising edge";
+		break;
+	case CNTRL_EDG_BOTH:
+		s = "rising & falling edges";
+		break;
+	default:
+		s = "??? edge";
+		break;
+	}
+	v4l2_info(sd, "\tPulse timers' start/stop trigger:  %s\n", s);
+	v4l2_info(sd, "\tFIFO data on pulse timer overflow: %s\n",
+		  cntrl & CNTRL_R ? "not loaded" : "overflow marker");
+	v4l2_info(sd, "\tFIFO interrupt watermark:          %s\n",
+		  cntrl & CNTRL_RIC ? "not empty" : "half full or greater");
+	v4l2_info(sd, "\tLoopback mode:                     %s\n",
+		  cntrl & CNTRL_LBM ? "loopback active" : "normal receive");
+	if (cntrl & CNTRL_DMD) {
+		v4l2_info(sd, "\tExpected carrier (16 clocks):      %u Hz\n",
+			  clock_divider_to_carrier_freq(rxclk));
+		switch (cntrl & CNTRL_WIN) {
+		case CNTRL_WIN_3_3:
+			i = 3;
+			j = 3;
+			break;
+		case CNTRL_WIN_4_3:
+			i = 4;
+			j = 3;
+			break;
+		case CNTRL_WIN_3_4:
+			i = 3;
+			j = 4;
+			break;
+		case CNTRL_WIN_4_4:
+			i = 4;
+			j = 4;
+			break;
+		default:
+			i = 0;
+			j = 0;
+			break;
+		}
+		v4l2_info(sd, "\tNext carrier edge window:	    16 clocks -%1d/+%1d, %u to %u Hz\n",
+			  i, j,
+			  clock_divider_to_freq(rxclk, 16 + j),
+			  clock_divider_to_freq(rxclk, 16 - i));
+	}
+	v4l2_info(sd, "\tMax measurable pulse width:        %u us, %llu ns\n",
+		  pulse_width_count_to_us(FIFO_RXTX, rxclk),
+		  pulse_width_count_to_ns(FIFO_RXTX, rxclk));
+	v4l2_info(sd, "\tLow pass filter:                   %s\n",
+		  filtr ? "enabled" : "disabled");
+	if (filtr)
+		v4l2_info(sd, "\tMin acceptable pulse width (LPF):  %u us, %u ns\n",
+			  lpf_count_to_us(filtr),
+			  lpf_count_to_ns(filtr));
+	v4l2_info(sd, "\tPulse width timer timed-out:       %s\n",
+		  stats & STATS_RTO ? "yes" : "no");
+	v4l2_info(sd, "\tPulse width timer time-out intr:   %s\n",
+		  irqen & IRQEN_RTE ? "enabled" : "disabled");
+	v4l2_info(sd, "\tFIFO overrun:                      %s\n",
+		  stats & STATS_ROR ? "yes" : "no");
+	v4l2_info(sd, "\tFIFO overrun interrupt:            %s\n",
+		  irqen & IRQEN_ROE ? "enabled" : "disabled");
+	v4l2_info(sd, "\tBusy:                              %s\n",
+		  stats & STATS_RBY ? "yes" : "no");
+	v4l2_info(sd, "\tFIFO service requested:            %s\n",
+		  stats & STATS_RSR ? "yes" : "no");
+	v4l2_info(sd, "\tFIFO service request interrupt:    %s\n",
+		  irqen & IRQEN_RSE ? "enabled" : "disabled");
+
+	v4l2_info(sd, "IR Transmitter:\n");
+	v4l2_info(sd, "\tEnabled:                           %s\n",
+		  cntrl & CNTRL_TXE ? "yes" : "no");
+	v4l2_info(sd, "\tModulation onto a carrier:         %s\n",
+		  cntrl & CNTRL_MOD ? "enabled" : "disabled");
+	v4l2_info(sd, "\tFIFO:                              %s\n",
+		  cntrl & CNTRL_TFE ? "enabled" : "disabled");
+	v4l2_info(sd, "\tFIFO interrupt watermark:          %s\n",
+		  cntrl & CNTRL_TIC ? "not empty" : "half full or less");
+	v4l2_info(sd, "\tOutput pin level inversion         %s\n",
+		  cntrl & CNTRL_IVO ? "yes" : "no");
+	v4l2_info(sd, "\tCarrier polarity:                  %s\n",
+		  cntrl & CNTRL_CPL ? "space:burst mark:noburst"
+				    : "space:noburst mark:burst");
+	if (cntrl & CNTRL_MOD) {
+		v4l2_info(sd, "\tCarrier (16 clocks):               %u Hz\n",
+			  clock_divider_to_carrier_freq(txclk));
+		v4l2_info(sd, "\tCarrier duty cycle:                %2u/16\n",
+			  cduty + 1);
+	}
+	v4l2_info(sd, "\tMax pulse width:                   %u us, %llu ns\n",
+		  pulse_width_count_to_us(FIFO_RXTX, txclk),
+		  pulse_width_count_to_ns(FIFO_RXTX, txclk));
+	v4l2_info(sd, "\tBusy:                              %s\n",
+		  stats & STATS_TBY ? "yes" : "no");
+	v4l2_info(sd, "\tFIFO service requested:            %s\n",
+		  stats & STATS_TSR ? "yes" : "no");
+	v4l2_info(sd, "\tFIFO service request interrupt:    %s\n",
+		  irqen & IRQEN_TSE ? "enabled" : "disabled");
+
+	return 0;
+}
+
+#ifdef CONFIG_VIDEO_ADV_DEBUG
+static int cx23888_ir_g_register(struct v4l2_subdev *sd,
+				 struct v4l2_dbg_register *reg)
+{
+	struct cx23888_ir_state *state = to_state(sd);
+	u32 addr = CX23888_IR_REG_BASE + (u32) reg->reg;
+
+	if ((addr & 0x3) != 0)
+		return -EINVAL;
+	if (addr < CX23888_IR_CNTRL_REG || addr > CX23888_IR_LEARN_REG)
+		return -EINVAL;
+	reg->size = 4;
+	reg->val = cx23888_ir_read4(state->dev, addr);
+	return 0;
+}
+
+static int cx23888_ir_s_register(struct v4l2_subdev *sd,
+				 const struct v4l2_dbg_register *reg)
+{
+	struct cx23888_ir_state *state = to_state(sd);
+	u32 addr = CX23888_IR_REG_BASE + (u32) reg->reg;
+
+	if ((addr & 0x3) != 0)
+		return -EINVAL;
+	if (addr < CX23888_IR_CNTRL_REG || addr > CX23888_IR_LEARN_REG)
+		return -EINVAL;
+	cx23888_ir_write4(state->dev, addr, reg->val);
+	return 0;
+}
+#endif
+
+static const struct v4l2_subdev_core_ops cx23888_ir_core_ops = {
+	.log_status = cx23888_ir_log_status,
+#ifdef CONFIG_VIDEO_ADV_DEBUG
+	.g_register = cx23888_ir_g_register,
+	.s_register = cx23888_ir_s_register,
+#endif
+	.interrupt_service_routine = cx23888_ir_irq_handler,
+};
+
+static const struct v4l2_subdev_ir_ops cx23888_ir_ir_ops = {
+	.rx_read = cx23888_ir_rx_read,
+	.rx_g_parameters = cx23888_ir_rx_g_parameters,
+	.rx_s_parameters = cx23888_ir_rx_s_parameters,
+
+	.tx_write = cx23888_ir_tx_write,
+	.tx_g_parameters = cx23888_ir_tx_g_parameters,
+	.tx_s_parameters = cx23888_ir_tx_s_parameters,
+};
+
+static const struct v4l2_subdev_ops cx23888_ir_controller_ops = {
+	.core = &cx23888_ir_core_ops,
+	.ir = &cx23888_ir_ir_ops,
+};
+
+static const struct v4l2_subdev_ir_parameters default_rx_params = {
+	.bytes_per_data_element = sizeof(union cx23888_ir_fifo_rec),
+	.mode = V4L2_SUBDEV_IR_MODE_PULSE_WIDTH,
+
+	.enable = false,
+	.interrupt_enable = false,
+	.shutdown = true,
+
+	.modulation = true,
+	.carrier_freq = 36000, /* 36 kHz - RC-5, RC-6, and RC-6A carrier */
+
+	/* RC-5:    666,667 ns = 1/36 kHz * 32 cycles * 1 mark * 0.75 */
+	/* RC-6A:   333,333 ns = 1/36 kHz * 16 cycles * 1 mark * 0.75 */
+	.noise_filter_min_width = 333333, /* ns */
+	.carrier_range_lower = 35000,
+	.carrier_range_upper = 37000,
+	.invert_level = false,
+};
+
+static const struct v4l2_subdev_ir_parameters default_tx_params = {
+	.bytes_per_data_element = sizeof(union cx23888_ir_fifo_rec),
+	.mode = V4L2_SUBDEV_IR_MODE_PULSE_WIDTH,
+
+	.enable = false,
+	.interrupt_enable = false,
+	.shutdown = true,
+
+	.modulation = true,
+	.carrier_freq = 36000, /* 36 kHz - RC-5 carrier */
+	.duty_cycle = 25,      /* 25 %   - RC-5 carrier */
+	.invert_level = false,
+	.invert_carrier_sense = false,
+};
+
+int cx23888_ir_probe(struct cx23885_dev *dev)
+{
+	struct cx23888_ir_state *state;
+	struct v4l2_subdev *sd;
+	struct v4l2_subdev_ir_parameters default_params;
+	int ret;
+
+	state = kzalloc(sizeof(struct cx23888_ir_state), GFP_KERNEL);
+	if (state == NULL)
+		return -ENOMEM;
+
+	spin_lock_init(&state->rx_kfifo_lock);
+	if (kfifo_alloc(&state->rx_kfifo, CX23888_IR_RX_KFIFO_SIZE,
+			GFP_KERNEL)) {
+		kfree(state);
+		return -ENOMEM;
+	}
+
+	state->dev = dev;
+	sd = &state->sd;
+
+	v4l2_subdev_init(sd, &cx23888_ir_controller_ops);
+	v4l2_set_subdevdata(sd, state);
+	/* FIXME - fix the formatting of dev->v4l2_dev.name and use it */
+	snprintf(sd->name, sizeof(sd->name), "%s/888-ir", dev->name);
+	sd->grp_id = CX23885_HW_888_IR;
+
+	ret = v4l2_device_register_subdev(&dev->v4l2_dev, sd);
+	if (ret == 0) {
+		/*
+		 * Ensure no interrupts arrive from '888 specific conditions,
+		 * since we ignore them in this driver to have commonality with
+		 * similar IR controller cores.
+		 */
+		cx23888_ir_write4(dev, CX23888_IR_IRQEN_REG, 0);
+
+		mutex_init(&state->rx_params_lock);
+		default_params = default_rx_params;
+		v4l2_subdev_call(sd, ir, rx_s_parameters, &default_params);
+
+		mutex_init(&state->tx_params_lock);
+		default_params = default_tx_params;
+		v4l2_subdev_call(sd, ir, tx_s_parameters, &default_params);
+	} else {
+		kfifo_free(&state->rx_kfifo);
+	}
+	return ret;
+}
+
+int cx23888_ir_remove(struct cx23885_dev *dev)
+{
+	struct v4l2_subdev *sd;
+	struct cx23888_ir_state *state;
+
+	sd = cx23885_find_hw(dev, CX23885_HW_888_IR);
+	if (sd == NULL)
+		return -ENODEV;
+
+	cx23888_ir_rx_shutdown(sd);
+	cx23888_ir_tx_shutdown(sd);
+
+	state = to_state(sd);
+	v4l2_device_unregister_subdev(sd);
+	kfifo_free(&state->rx_kfifo);
+	kfree(state);
+	/* Nothing more to free() as state held the actual v4l2_subdev object */
+	return 0;
+}
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 x—ppFåâì²`V"†N,v0 ½vµf-ã© 0h|ˆï]ÇÒ”½{3§6Ç—=–bb)ûwYjv€ÌÎ•ú=ßıõjeñû²˜ğû›¶\È­½b>åĞÑm !LĞö‹¸ĞVĞ?÷Â­sÃJÚ®•®¼s	Û¡C‹ÿz1¶pS•Ë(¶üPå¸j@ßb›¢ç"ÖĞ-n³`´ó¢?Û5‚ÔFYÜªD @ş	Ó
+û¶dö'©™–ÃTŸõQ“JÑuaº\ªÒæ~
+¤xO]æ›8Q	Á›ãs?åJLQ¿·ÊP—ûŞAR6èbğÆ?!ŠH&H3Ô>5`$_¡{Íé•vİ4-Rª-²Å& G5àÉs´9IÁë†d.'ç»yw´¢§{B†$7‰<­ËBGËÉïòä³ºç£"BÕÂ™¹İ{„+ĞKğâÑ6*šüeHës „PNá89ùQ!¦…>I™æwÙ83FåsÙDòÎí·Ò¡áæµú ÚÊFß¸¶:*Ÿ²Ê<¾Uü„qÊw¦3"gx$ÈÄ 	ûİùè9Ëàêìig³Öî1¼u+‚º­ÉX©éÀÿ¶Äêè¹iİ*kñwX\y`Ä„m7kî)ÍvïúV\ùcá.I&×9;GW9	ìL{`^&ƒ¦6¹Í>VÎ:Çu™}.±Œ_è:Åª…$²{X+İ Â%şÃ|åíÏ'„¥fô â”à1ğßëêú-}¸»kÁnÌÀÖ¡©RYTÖsÜ¾•Ã-NÛ3¡™À¼ª…u‹rl)8ŸøÀÂ¹¹ÓèXÒHˆÖºC"CÀGA³s·&•¢Cù/^p]Ç±ì
+e,ßRQÇZëdqí{ŠYSšÂ_à&z©åUâª{ú1÷‚„7G³Úô¿î¬[å™3>Öm•ŠÒş©ş `$Û·cÍn‘3ü™™õ7+@j?æğd{NùV,sÓáüü¨§ñÛÿ2 7'mİşE)']£‘ğLGÒ\–s¢GRÄ»+Èx£89FK}¦€1-ÄĞúp¯zÆ×›s}ü¦:¶5ÚÌp ê:Zôc™ôE} 'ú¼@ƒı'"hKƒ£’G!xqƒ9À]ù'*ıe¹ó˜3+ÂC+UÌá8×ì=
+JóşêO3Z\~$"v'F8İ—›Â	)Oâ¡Q\P!šòõ›/’ª
+o¹äwéQÍ7œ¬Í_¼İŒ|½´Ş¬Õ‹æÙ¡ÒÔª6t÷gP/¼iviÃ/­/…ŸÇúc5(¿ŒÉVUI0V]Zİcî(¥™øò"õÛèvÅE˜úÉ;ËßŞ/
+{wÿn‹–rc-Ù:†µ	õ§]¯¾:ÿ‡µ7¶€:«‘|¹µæîIxßç&fşoœÖ)ŠŠ[ïS¹<![Œxx`N?û	Täæ¸YAlÃ Ãx‹äÏî&‡Ü\²ËÇvşxÄLÔNÍ´\HuV÷Qâzî)hÆ*´W}ÄbF~Â9›SÄ{be»rÂ†\¥{ø’5~­‰V8ÍiÆÊ¯B©•£Ú-R´Ò°â$°Åx0L4èŠîEº8¯Á’qc	Ø´Ï{ÿ³t³;^™Ğ(¦Múh¶KP™¸k­Z‡9ë`}~Ë4|\N¼	#yµ9WÎ`y·Pm|šV’	Œ¡w0QŠoü(	ze¯Éétª¯Mƒó<<"
+Ï0fÄ·Íæğ?¦}Fó¶<t!»LêA“Ğ[ƒXMĞ¬ˆÊƒ±_Pİ¹ìeÉØ	ª4|1ÿM§z İyóÀ Òfù³ï F²šÏ!-oE'¨gämÍœ‘q­ Ñò–^ã©‰œ£„7æ]‘†ğ
+l÷ÃnÆéy2…d×¹	>•Z„<Fı[W€¥SçX»€ÖîĞ‰RÚi¦¬³ZZ>?6bÛ³¿×)XFŒƒ¤CÚªÃ
+²"×ÖV´é!¬§ö/Íj^Î3J5v¤$²Ãûãõ‡'Ğª-Ú*"¯ÛwL“Vl{bä¦Ê*uö¿‹¿l{jœE b¢ÜÇùŠ©^ÇÂ>…a¡&Y„Á¥?§‰+I«ŠFğ:[²Ùƒ’*o#°ciÌvè ¤_=é©Š#<`€®# ±+—4N‹æ¥ ¦¶u•§›šPQM5–c%Å§'ğŸ¨½4µ>+ñ8¡A_gãéŠ
+š'ZŠGWÅøık“ëâuñæ"‡À7Òj+¹‡‰g÷‘l-\˜°xYyZxÁÓM«4S	Sİš/$ª¼¢‘µ´CexnF¥##ºNbÅ¯Øâ„‰¥™'dÆ£6])Û#áû[9M_5³oÎ?øõ¶›yùèÆ(¬~´½£·JQ#Dâ‚X©)3
+«şÔ	¹ù|Gæ¼âˆ¥ .ézÂ6Ø¡•_¥Sö|)ø¦ª»ğeµ‹èÙ——(_{4„hø–ÿÔßeÛ¦ªèîtœuÇL¢µ»Šú4Íf£CL•`u8sÍ_ÛÆš].ø¿’°ÒÙ³ğúoz±Z	Á±Lu.¬ê+Û§«²™øgêŒê%äêæ¡3˜'©Íõ·0ˆJÛKı‘ Ö+E—'/dNóİÇ`ñ{UZKjØÃˆõóE°‚ça¹´¾TÇYÅ}ı¡¢ZØb;™XƒÀ7ôde2…föSESVe¡Bn:¨/€¼ÿC¼÷ˆŠ¹ 6Ç<l”ø?t$æ/ëc›ÂÁ§zÇàdcNWD…õ3{‘ûµ¬Ñ¡}æÃnl<š Ş%İ·!§\ø±*H¾H şü>ˆƒárá)p*õl™İ.-u IR”;rî—ó.—'0±¥¨é˜¨ç0Š#X„;lx®s\	‰Ä\·†5)¥ğ4½¦^ÒšdêéÔÍ$×W¬£õÅµ÷K™–]/šË6=iäòM;Ï‡˜½’ÃBş@ŒKCó% ¥lBvÿ)‡Î-´4§È•'ìí$æÊßÒP%-É[­7Ñó·Â¼BĞ.4·.ÆåvmÍ»ÍpŒ?¹|ÙÜ?XİÂ³)r—~‡Á.Ñ	³s(1ßÆtÕË´‡öuØÿ¼TS_3L«OL¶Í‹Õš#•BÑ6sº' à-uhº¦ZéÄl7vwˆ„Î–Ììyña¼¹›iÔª.wqâEö3.÷~ÏŸĞê/Î¿½9‰HŸ}v`Âvcñë\dü-kŒš­16m¹ık\š§8u§y¢;ÏQ”9á÷âá‰¤Ã{.İÃL]uªîÈ0æ›©yQ´+K†Ey—QAPTgJlÑwú9@£´¢­(ú¨óUŠÉ¶¾«±
+Wş·’ñ¸êÍMz)Şd+…¢,õ‚’=ÿ‘“e¿×àöŠ¦Æ¾Ë
+ÔğlŸÁÛHÜ%oı™6˜ÛâQ×‹*¤„Š]!ÕT£àÊóÀä:¬×Hë ÀÌÖ¡SbŞ„%
+™oôÏúôŸãŒG±?b‚~¦çÊu*í¾?T™Ú†.âeZÏ|Ìæ:OZt¬´#(¼öâşmm}4db‘Ò×ªŞÎŠ„€54]RdâŒJKÛ†oß¯–ÖBƒ¯FÛ®¦Õ›OÖNGä¼üf®X‡YáÀ²¶ä;.­Jİ5£jl¼*¨~ï†·Òã±2Oõ;@FO¬B–=òº<qPÓÂ«‹†“İ¹ëfn„zÕÚ§3ĞÏí.öbskƒüÒTğÌìçÎ³8—#´Ê°üK	ÎÉØH{¤÷»ŠÏİèãx,
+•ú~™L—{ü¼.	-m2s“{i»œƒgë	J”•ÃZÌ½ÔZ)VØ¢˜šŞ†òÄ²2y"šR±­ø¤·´M%°¹Ë¥£rÛzqå&†Ÿ•ŠïÏØµÄ¡W§>ÿ%?Ù'ÛÖ´Õ–4¹¡¸MÛïC*4—<8šúÖY"©TìÔ4Ò½h
+BÄB;3²¢cæ&ïÇßÁ½.¼iºùœm .[³–…*]Mó¶œj8XÓoi°	ì¾VöA2 NYşèG®úê‹3ìaã°‘…*iÃ©¤ùo>uå7“(ÆCn]K¨˜±¾Å@;ù¹cî3º–ƒàG9ŸÃëÏº#‰R¼³ßˆ5s¨ÙhYXÅP^T`µI-·ó[œ€K2J—=”×O©?2úËÿCÑh=dÑõ›î]ŞËupÕñîËü¸cY†¢©¥±b°}H´Cq‰ošgÚğ#ãÌ¨æGöÀtXaÎ ZØŞıê¸yõb;ùïm@]oşºS¨˜ÆÛAG‰$ã/…êğĞGÿOñ©ušhQ>dÅx„pA(hç9&È65ïï–sÉ&š“Ñš):cv¯[¸ÿÔ›“Óú_[:`	±»á±_<L@Ù|-h<Ş˜;!½j³«ÒqiGŠø¸¾@SmZÙ¬G…ØÈšºµ²€áĞÜHF$+#f€ªü5ix(!ídq†ı%1lİóàß÷nYFÂñş¨( ã½Ã	àB¢äc¢`…Ë™Â.>}9Åw	Ã"s*)q@p–ñFšâ€o6õ„‡x.Š3û‹„dµV=5Ks˜ìáù£¨¥~Âh"øÆJ“QÉ},• Ïdœ=UÆUDª,?ë^ŠeM{#:Ñ^Í—¯ı:ğeFLgô}ô½´dûB¦—pçøĞŸÛŸß@¤‘œ#©è‰—œIîîÕ7ªî*İ:_w²V•’kó1c×™&öËU y±~ñ…0ıYï.u’µş°%,(K±•Ë‰]k^L}O´]úL¾¡»t37ö'–ŸÃá\ë“]ö›—à1ke»Â+\Ó„ĞëN3&VÄ|•uª®-)ØŸ>‹û'õé$›3Üô×ûY€y•Ñ •?*øª'²yÆK°H¸fedKÎ¡Æ²úÂn=ÄÃªw¦M-Ùâ‚û.d”±.ã¸Ódå Ù´#ÔÌW‚ÔX ›¸Ã/wo¯ÆU^ Î-Š´?ªb>oPßëwZK.š$X½ä¤HâGBü…:™h<rùK¿?EzîYò:[Åì2p5öÒ'7üšëYúÑ'/£&Za˜¢ ¯ãÖM#‹+®{~vîk]¸pî„Ø>¤vzÿÙ)ò-;-@à¬Ì)®²KRO'Áœ<®[øÏä@ã8-f 6–2vÚiı«î°¿L0âøå$²«P¶0dÏìu0ß#dşc` >Y#°ˆÅ¬K¾oX9Ïâô|\ng tasks to offline CPUs is a fairly daft thing.
+	 */
+	WARN_ON_ONCE(!cpu_online(new_cpu));
+
+	WARN_ON_ONCE(is_migration_disabled(p));
+#endif
+
+	trace_sched_migrate_task(p, new_cpu);
+
+	if (task_cpu(p) != new_cpu) {
+		if (p->sched_class->migrate_task_rq)
+			p->sched_class->migrate_task_rq(p, new_cpu);
+		p->se.nr_migrations++;
+		rseq_migrate(p);
+		perf_event_task_migrate(p);
+	}
+
+	__set_task_cpu(p, new_cpu);
+}
+
+#ifdef CONFIG_NUMA_BALANCING
+static void __migrate_swap_task(struct task_struct *p, int cpu)
+{
+	if (task_on_rq_queued(p)) {
+		struct rq *src_rq, *dst_rq;
+		struct rq_flags srf, drf;
+
+		src_rq = task_rq(p);
+		dst_rq = cpu_rq(cpu);
+
+		rq_pin_lock(src_rq, &srf);
+		rq_pin_lock(dst_rq, &drf);
+
+		deactivate_task(src_rq, p, 0);
+		set_task_cpu(p, cpu);
+		activate_task(dst_rq, p, 0);
+		check_preempt_curr(dst_rq, p, 0);
+
+		rq_unpin_lock(dst_rq, &drf);
+		rq_unpin_lock(src_rq, &srf);
+
+	} else {
+		/*
+		 * Task isn't running anymore; make it appear like we migrated
+		 * it before it went to sleep. This means on wakeup we make the
+		 * previous CPU our target instead of where it really is.
+		 */
+		p->wake_cpu = cpu;
+	}
+}
+
+struct migration_swap_arg {
+	struct task_struct *src_task, *dst_task;
+	int src_cpu, dst_cpu;
+};
+
+static int migrate_swap_stop(void *data)
+{
+	struct migration_swap_arg *arg = data;
+	struct rq *src_rq, *dst_rq;
+	int ret = -EAGAIN;
+
+	if (!cpu_active(arg->src_cpu) || !cpu_active(arg->dst_cpu))
+		return -EAGAIN;
+
+	src_rq = cpu_rq(arg->src_cpu);
+	dst_rq = cpu_rq(arg->dst_cpu);
+
+	double_raw_lock(&arg->src_task->pi_lock,
+			&arg->dst_task->pi_lock);
+	double_rq_lock(src_rq, dst_rq);
+
+	if (task_cpu(arg->dst_task) != arg->dst_cpu)
+		goto unlock;
+
+	if (task_cpu(arg->src_task) != arg->src_cpu)
+		goto unlock;
+
+	if (!cpumask_test_cpu(arg->dst_cpu, arg->src_task->cpus_ptr))
+		goto unlock;
+
+	if (!cpumask_test_cpu(arg->src_cpu, arg->dst_task->cpus_ptr))
+		goto unlock;
+
+	__migrate_swap_task(arg->src_task, arg->dst_cpu);
+	__migrate_swap_task(arg->dst_task, arg->src_cpu);
+
+	ret = 0;
+
+unlock:
+	double_rq_unlock(src_rq, dst_rq);
+	raw_spin_unlock(&arg->dst_task->pi_lock);
+	raw_spin_unlock(&arg->src_task->pi_lock);
+
+	return ret;
+}
+
+/*
+ * Cross migrate two tasks
+ */
+int migrate_swap(struct task_struct *cur, struct task_struct *p,
+		int target_cpu, int curr_cpu)
+{
+	struct migration_swap_arg arg;
+	int ret = -EINVAL;
+
+	arg = (struct migration_swap_arg){
+		.src_task = cur,
+		.src_cpu = curr_cpu,
+		.dst_task = p,
+		.dst_cpu = target_cpu,
+	};
+
+	if (arg.src_cpu == arg.dst_cpu)
+		goto out;
+
+	/*
+	 * These three tests are all lockless; this is OK since all of them
+	 * will be re-checked with proper locks held further down the line.
+	 */
+	if (!cpu_active(arg.src_cpu) || !cpu_active(arg.dst_cpu))
+		goto out;
+
+	if (!cpumask_test_cpu(arg.dst_cpu, arg.src_task->cpus_ptr))
+		goto out;
+
+	if (!cpumask_test_cpu(arg.src_cpu, arg.dst_task->cpus_ptr))
+		goto out;
+
+	trace_sched_swap_numa(cur, arg.src_cpu, p, arg.dst_cpu);
+	ret = stop_two_cpus(arg.dst_cpu, arg.src_cpu, migrate_swap_stop, &arg);
+
+out:
+	return ret;
+}
+#endif /* CONFIG_NUMA_BALANCING */
+
+/*
+ * wait_task_inactive - wait for a thread to unschedule.
+ *
+ * If @match_state is nonzero, it's the @p->state value just checked and
+ * not expected to change.  If it changes, i.e. @p might have woken up,
+ * then return zero.  When we succeed in waiting for @p to be off its CPU,
+ * we return a positive number (its total switch count).  If a second call
+ * a short while later returns the same number, the caller can be sure that
+ * @p has remained unscheduled the whole time.
+ *
+ * The caller must ensure that the task *will* unschedule sometime soon,
+ * else this function might spin for a *long* time. This function can't
+ * be called with interrupts off, or it may introduce deadlock with
+ * smp_call_function() if an IPI is sent by the same process we are
+ * waiting to become inactive.
+ */
+unsigned long wait_task_inactive(struct task_struct *p, unsigned int match_state)
+{
+	int running, queued;
+	struct rq_flags rf;
+	unsigned long ncsw;
+	struct rq *rq;
+
+	for (;;) {
+		/*
+		 * We do the initial early heuristics without holding
+		 * any task-queue locks at all. We'll only try to get
+		 * the runqueue lock when things look like they will
+		 * work out!
+		 */
+		rq = task_rq(p);
+
+		/*
+		 * If the task is actively running on another CPU
+		 * still, just relax and busy-wait without holding
+		 * any locks.
+		 *
+		 * NOTE! Since we don't hold any locks, it's not
+		 * even sure that "rq" stays as the right runqueue!
+		 * But we don't care, since "task_running()" will
+		 * return false if the runqueue has changed and p
+		 * is actually now running somewhere else!
+		 */
+		while (task_running(rq, p)) {
+			if (match_state && unlikely(READ_ONCE(p->__state) != match_state))
+				return 0;
+			cpu_relax();
+		}
+
+		/*
+		 * Ok, time to look more closely! We need the rq
+		 * lock now, to be *sure*. If we're wrong, we'll
+		 * just go back and repeat.
+		 */
+		rq = task_rq_lock(p, &rf);
+		trace_sched_wait_task(p);
+		running = task_running(rq, p);
+		queued = task_on_rq_queued(p);
+		ncsw = 0;
+		if (!match_state || READ_ONCE(p->__state) == match_state)
+			ncsw = p->nvcsw | LONG_MIN; /* sets MSB */
+		task_rq_unlock(rq, p, &rf);
+
+		/*
+		 * If it changed from the expected state, bail out now.
+		 */
+		if (unlikely(!ncsw))
+			break;
+
+		/*
+		 * Was it really running after all now that we
+		 * checked with the proper locks actually held?
+		 *
+		 * Oops. Go back and try again..
+		 */
+		if (unlikely(running)) {
+			cpu_relax();
+			continue;
+		}
+
+		/*
+		 * It's not enough that it's not actively running,
+		 * it must be off the runqueue _entirely_, and not
+		 * preempted!
+		 *
+		 * So if it was still runnable (but just not actively
+		 * running right now), it's preempted, and we should
+		 * yield - it could be a while.
+		 */
+		if (unlikely(queued)) {
+			ktime_t to = NSEC_PER_SEC / HZ;
+
+			set_current_state(TASK_UNINTERRUPTIBLE);
+			schedule_hrtimeout(&to, HRTIMER_MODE_REL_HARD);
+			continue;
+		}
+
+		/*
+		 * Ahh, all good. It wasn't running, and it wasn't
+		 * runnable, which means that it will never become
+		 * running in the future either. We're all done!
+		 */
+		break;
+	}
+
+	return ncsw;
+}
+
+/***
+ * kick_process - kick a running thread to enter/exit the kernel
+ * @p: the to-be-kicked thread
+ *
+ * Cause a process which is running on another CPU to enter
+ * kernel-mode, without any delay. (to get signals handled.)
+ *
+ * NOTE: this function doesn't have to take the runqueue lock,
+ * because all it wants to ensure is that the remote task enters
+ * the kernel. If the IPI races and the task has been migrated
+ * to another CPU then no harm is done and the purpose has been
+ * achieved as well.
+ */
+void kick_process(struct task_struct *p)
+{
+	int cpu;
+
+	preempt_disable();
+	cpu = task_cpu(p);
+	if ((cpu != smp_processor_id()) && task_curr(p))
+		smp_send_reschedule(cpu);
+	preempt_enable();
+}
+EXPORT_SYMBOL_GPL(kick_process);
+
+/*
+ * ->cpus_ptr is protected by both rq->lock and p->pi_lock
+ *
+ * A few notes on cpu_active vs cpu_online:
+ *
+ *  - cpu_active must be a subset of cpu_online
+ *
+ *  - on CPU-up we allow per-CPU kthreads on the online && !active CPU,
+ *    see __set_cpus_allowed_ptr(). At this point the newly online
+ *    CPU isn't yet part of the sched domains, and balancing will not
+ *    see it.
+ *
+ *  - on CPU-down we clear cpu_active() to mask the sched domains and
+ *    avoid the load balancer to place new tasks on the to be removed
+ *    CPU. Existing tasks will remain running there and will be taken
+ *    off.
+ *
+ * This means that fallback selection must not select !active CPUs.
+ * And can assume that any active CPU must be online. Conversely
+ * select_task_rq() below may allow selection of !active CPUs in order
+ * to satisfy the above rules.
+ */
+static int select_fallback_rq(int cpu, struct task_struct *p)
+{
+	int nid = cpu_to_node(cpu);
+	const struct cpumask *nodemask = NULL;
+	enum { cpuset, possible, fail } state = cpuset;
+	int dest_cpu;
+
+	/*
+	 * If the node that the CPU is on has been offlined, cpu_to_node()
+	 * will return -1. There is no CPU on the node, and we should
+	 * select the CPU on the other node.
+	 */
+	if (nid != -1) {
+		nodemask = cpumask_of_node(nid);
+
+		/* Look for allowed, online CPU in same node. */
+		for_each_cpu(dest_cpu, nodemask) {
+			if (is_cpu_allowed(p, dest_cpu))
+				return dest_cpu;
+		}
+	}
+
+	for (;;) {
+		/* Any allowed, online CPU? */
+		for_each_cpu(dest_cpu, p->cpus_ptr) {
+			if (!is_cpu_allowed(p, dest_cpu))
+				continue;
+
+			goto out;
+		}
+
+		/* No more Mr. Nice Guy. */
+		switch (state) {
+		case cpuset:
+			if (cpuset_cpus_allowed_fallback(p)) {
+				state = possible;
+				break;
+			}
+			fallthrough;
+		case possible:
+			/*
+			 * XXX When called from select_task_rq() we only
+			 * hold p->pi_lock and again violate locking order.
+			 *
+			 * More yuck to audit.
+			 */
+			do_set_cpus_allowed(p, task_cpu_possible_mask(p));
+			state = fail;
+			break;
+		case fail:
+			BUG();
 			break;
 		}
 	}
+
+out:
+	if (state != cpuset) {
+		/*
+		 * Don't tell them about moving exiting tasks or
+		 * kernel threads (both mm NULL), since they never
+		 * leave kernel.
+		 */
+		if (p->mm && printk_ratelimit()) {
+			printk_deferred("process %d (%s) no longer affine to cpu%d\n",
+					task_pid_nr(p), p->comm, cpu);
+		}
+	}
+
+	return dest_cpu;
+}
+
+/*
+ * The caller (fork, wakeup) owns p->pi_lock, ->cpus_ptr is stable.
+ */
+static inline
+int select_task_rq(struct task_struct *p, int cpu, int wake_flags)
+{
+	lockdep_assert_held(&p->pi_lock);
+
+	if (p->nr_cpus_allowed > 1 && !is_migration_disabled(p))
+		cpu = p->sched_class->select_task_rq(p, cpu, wake_flags);
+	else
+		cpu = cpumask_any(p->cpus_ptr);
+
+	/*
+	 * In order not to call set_task_cpu() on a blocking task we need
+	 * to rely on ttwu() to place the task on a valid ->cpus_ptr
+	 * CPU.
+	 *
+	 * Since this is common to all placement strategies, this lives here.
+	 *
+	 * [ this allows ->select_task() to simply return task_cpu(p) and
+	 *   not worry about this generic constraint ]
+	 */
+	if (unlikely(!is_cpu_allowed(p, cpu)))
+		cpu = select_fallback_rq(task_cpu(p), p);
+
+	return cpu;
+}
+
+void sched_set_stop_task(int cpu, struct task_struct *stop)
+{
+	static struct lock_class_key stop_pi_lock;
+	struct sched_param param = { .sched_priority = MAX_RT_PRIO - 1 };
+	struct task_struct *old_stop = cpu_rq(cpu)->stop;
+
+	if (stop) {
+		/*
+		 * Make it appear like a SCHED_FIFO task, its something
+		 * userspace knows about and won't get confused about.
+		 *
+		 * Also, it will make PI more or less work without too
+		 * much confusion -- but then, stop work should not
+		 * rely on PI working anyway.
+		 */
+		sched_setscheduler_nocheck(stop, SCHED_FIFO, &param);
+
+		stop->sched_class = &stop_sched_class;
+
+		/*
+		 * The PI code calls rt_mutex_setprio() with ->pi_lock held to
+		 * adjust the effective priority of a task. As a result,
+		 * rt_mutex_setprio() can trigger (RT) balancing operations,
+		 * which can then trigger wakeups of the stop thread to push
+		 * around the current task.
+		 *
+		 * The stop task itself will never be part of the PI-chain, it
+		 * never blocks, therefore that ->pi_lock recursion is safe.
+		 * Tell lockdep about this by placing the stop->pi_lock in its
+		 * own class.
+		 */
+		lockdep_set_class(&stop->pi_lock, &stop_pi_lock);
+	}
+
+	cpu_rq(cpu)->stop = stop;
+
+	if (old_stop) {
+		/*
+		 * Reset it back to a normal scheduling class so that
+		 * it can die in pieces.
+		 */
+		old_stop->sched_class = &rt_sched_class;
+	}
+}
+
+#else /* CONFIG_SMP */
+
+static inline int __set_cpus_allowed_ptr(struct task_struct *p,
+					 const struct cpumask *new_mask,
+					 u32 flags)
+{
+	return set_cpus_allowed_ptr(p, new_mask);
+}
+
+static inline void migrate_disable_switch(struct rq *rq, struct task_struct *p) { }
+
+static inline bool rq_has_pinned_tasks(struct rq *rq)
+{
+	return false;
+}
+
+#endif /* !CONFIG_SMP */
+
+static void
+ttwu_stat(struct task_struct *p, int cpu, int wake_flags)
+{
+	struct rq *rq;
+
+	if (!schedstat_enabled())
+		return;
+
+	rq = this_rq();
+
+#ifdef CONFIG_SMP
+	if (cpu == rq->cpu) {
+		__schedstat_inc(rq->ttwu_local);
+		__schedstat_inc(p->stats.nr_wakeups_local);
+	} else {
+		struct sched_domain *sd;
+
+		__schedstat_inc(p->stats.nr_wakeups_remote);
+		rcu_read_lock();
+		for_each_domain(rq->cpu, sd) {
+			if (cpumask_test_cpu(cpu, sched_domain_span(sd))) {
+				__schedstat_inc(sd->ttwu_wake_remote);
+				break;
+			}
+		}
+		rcu_read_unlock();
+	}
+
+	if (wake_flags & WF_MIGRATED)
+		__schedstat_inc(p->stats.nr_wakeups_migrate);
+#endif /* CONFIG_SMP */
+
+	__schedstat_inc(rq->ttwu_count);
+	__schedstat_inc(p->stats.nr_wakeups);
+
+	if (wake_flags & WF_SYNC)
+		__schedstat_inc(p->stats.nr_wakeups_sync);
+}
+
+/*
+ * Mark the task runnable and perform wakeup-preemption.
+ */
+static void ttwu_do_wakeup(struct rq *rq, struct task_struct *p, int wake_flags,
+			   struct rq_flags *rf)
+{
+	check_preempt_curr(rq, p, wake_flags);
+	WRITE_ONCE(p->__state, TASK_RUNNING);
+	trace_sched_wakeup(p);
+
+#ifdef CONFIG_SMP
+	if (p->sched_class->task_woken) {
+		/*
+		 * Our task @p is fully woken up and running; so it's safe to
+		 * drop the rq->lock, hereafter rq is only used for statistics.
+		 */
+		rq_unpin_lock(rq, rf);
+		p->sched_class->task_woken(rq, p);
+		rq_repin_lock(rq, rf);
+	}
+
+	if (rq->idle_stamp) {
+		u64 delta = rq_clock(rq) - rq->idle_stamp;
+		u64 max = 2*rq->max_idle_balance_cost;
+
+		update_avg(&rq->avg_idle, delta);
+
+		if (rq->avg_idle > max)
+			rq->avg_idle = max;
+
+		rq->wake_stamp = jiffies;
+		rq->wake_avg_idle = rq->avg_idle / 2;
+
+		rq->idle_stamp = 0;
+	}
+#endif
+}
+
+static void
+ttwu_do_activate(struct rq *rq, struct task_struct *p, int wake_flags,
+		 struct rq_flags *rf)
+{
+	int en_flags = ENQUEUE_WAKEUP | ENQUEUE_NOCLOCK;
+
+	lockdep_assert_rq_held(rq);
+
+	if (p->sched_contributes_to_load)
+		rq->nr_uninterruptible--;
+
+#ifdef CONFIG_SMP
+	if (wake_flags & WF_MIGRATED)
+		en_flags |= ENQUEUE_MIGRATED;
+	else
+#endif
+	if (p->in_iowait) {
+		delayacct_blkio_end(p);
+		atomic_dec(&task_rq(p)->nr_iowait);
+	}
+
+	activate_task(rq, p, en_flags);
+	ttwu_do_wakeup(rq, p, wake_flags, rf);
+}
+
+/*
+ * Consider @p being inside a wait loop:
+ *
+ *   for (;;) {
+ *      set_current_state(TASK_UNINTERRUPTIBLE);
+ *
+ *      if (CONDITION)
+ *         break;
+ *
+ *      schedule();
+ *   }
+ *   __set_current_state(TASK_RUNNING);
+ *
+ * between set_current_state() and schedule(). In this case @p is still
+ * runnable, so all that needs doing is change p->state back to TASK_RUNNING in
+ * an atomic manner.
+ *
+ * By taking task_rq(p)->lock we serialize against schedule(), if @p->on_rq
+ * then schedule() must still happen and p->state can be changed to
+ * TASK_RUNNING. Otherwise we lost the race, schedule() has happened, and we
+ * need to do a full wakeup with enqueue.
+ *
+ * Returns: %true when the wakeup is done,
+ *          %false otherwise.
+ */
+static int ttwu_runnable(struct task_struct *p, int wake_flags)
+{
+	struct rq_flags rf;
+	struct rq *rq;
+	int ret = 0;
+
+	rq = __task_rq_lock(p, &rf);
+	if (task_on_rq_queued(p)) {
+		/* check_preempt_curr() may use rq clock */
+		update_rq_clock(rq);
+		ttwu_do_wakeup(rq, p, wake_flags, &rf);
+		ret = 1;
+	}
+	__task_rq_unlock(rq, &rf);
+
+	return ret;
+}
+
+#ifdef CONFIG_SMP
+void sched_ttwu_pending(void *arg)
+{
+	struct llist_node *llist = arg;
+	struct rq *rq = this_rq();
+	struct task_struct *p, *t;
+	struct rq_flags rf;
+
+	if (!llist)
+		return;
+
+	/*
+	 * rq::ttwu_pending racy indication of out-standing wakeups.
+	 * Races such that false-negatives are possible, since they
+	 * are shorter lived that false-positives would be.
+	 */
+	WRITE_ONCE(rq->ttwu_pending, 0);
+
+	rq_lock_irqsave(rq, &rf);
+	update_rq_clock(rq);
+
+	llist_for_each_entry_safe(p, t, llist, wake_entry.llist) {
+		if (WARN_ON_ONCE(p->on_cpu))
+			smp_cond_load_acquire(&p->on_cpu, !VAL);
+
+		if (WARN_ON_ONCE(task_cpu(p) != cpu_of(rq)))
+			set_task_cpu(p, cpu_of(rq));
+
+		ttwu_do_activate(rq, p, p->sched_remote_wakeup ? WF_MIGRATED : 0, &rf);
+	}
+
+	rq_unlock_irqrestore(rq, &rf);
+}
+
+void send_call_function_single_ipi(int cpu)
+{
+	struct rq *rq = cpu_rq(cpu);
+
+	if (!set_nr_if_polling(rq->idle))
+		arch_send_call_function_single_ipi(cpu);
+	else
+		trace_sched_wake_idle_without_ipi(cpu);
+}
+
+/*
+ * Queue a task on the target CPUs wake_list and wake the CPU via IPI if
+ * necessary. The wakee CPU on receipt of the IPI will queue the task
+ * via sched_ttwu_wakeup() for activation so the wakee incurs the cost
+ * of the wakeup instead of the waker.
+ */
+static void __ttwu_queue_wakelist(struct task_struct *p, int cpu, int wake_flags)
+{
+	struct rq *rq = cpu_rq(cpu);
+
+	p->sched_remote_wakeup = !!(wake_flags & WF_MIGRATED);
+
+	WRITE_ONCE(rq->ttwu_pending, 1);
+	__smp_call_single_queue(cpu, &p->wake_entry.llist);
+}
+
+void wake_up_if_idle(int cpu)
+{
+	struct rq *rq = cpu_rq(cpu);
+	struct rq_flags rf;
+
+	rcu_read_lock();
+
+	if (!is_idle_task(rcu_dereference(rq->curr)))
+		goto out;
+
+	rq_lock_irqsave(rq, &rf);
+	if (is_idle_task(rq->curr))
+		resched_curr(rq);
+	/* Else CPU is not idle, do nothing here: */
+	rq_unlock_irqrestore(rq, &rf);
+
+out:
 	rcu_read_unlock();
+}
 
-	return found;
+bool cpus_share_cache(int this_cpu, int that_cpu)
+{
+	if (this_cpu == that_cpu)
+		return true;
+
+	return per_cpu(sd_llc_id, this_cpu) == per_cpu(sd_llc_id, that_cpu);
+}
+
+static inline bool ttwu_queue_cond(int cpu, int wake_flags)
+{
+	/*
+	 * Do not complicate things with the async wake_list while the CPU is
+	 * in hotplug state.
+	 */
+	if (!cpu_active(cpu))
+		return false;
+
+	/*
+	 * If the CPU does not share cache, then queue the task on the
+	 * remote rqs wakelist to avoid accessing remote data.
+	 */
+	if (!cpus_share_cache(smp_processor_id(), cpu))
+		return true;
+
+	/*
+	 * If the task is descheduling and the only running task on the
+	 * CPU then use the wakelist to offload the task activation to
+	 * the soon-to-be-idle CPU as the current CPU is likely busy.
+	 * nr_running is checked to avoid unnecessary task stacking.
+	 */
+	if ((wake_flags & WF_ON_CPU) && cpu_rq(cpu)->nr_running <= 1)
+		return true;
+
+	return false;
+}
+
+static bool ttwu_queue_wakelist(struct task_struct *p, int cpu, int wake_flags)
+{
+	if (sched_feat(TTWU_QUEUE) && ttwu_queue_cond(cpu, wake_flags)) {
+		if (WARN_ON_ONCE(cpu == smp_processor_id()))
+			return false;
+
+		sched_clock_cpu(cpu); /* Sync clocks across CPUs */
+		__ttwu_queue_wakelist(p, cpu, wake_flags);
+		return true;
+	}
+
+	return false;
+}
+
+#else /* !CONFIG_SMP */
+
+static inline bool ttwu_queue_wakelist(struct task_struct *p, int cpu, int wake_flags)
+{
+	return false;
+}
+
+#endif /* CONFIG_SMP */
+
+static void ttwu_queue(struct task_struct *p, int cpu, int wake_flags)
+{
+	struct rq *rq = cpu_rq(cpu);
+	struct rq_flags rf;
+
+	if (ttwu_queue_wakelist(p, cpu, wake_flags))
+		return;
+
+	rq_lock(rq, &rf);
+	update_rq_clock(rq);
+	ttwu_do_activate(rq, p, wake_flags, &rf);
+	rq_unlock(rq, &rf);
 }
 
 /*
- * Register a lock's class in the hash-table, if the class is not present
- * yet. Otherwise we look it up. We cache the result in the lock object
- * itself, so actual lookup of the hash should be once per lock object.
+ * Invoked from try_to_wake_up() to check whether the task can be woken up.
+ *
+ * The caller holds p::pi_lock if p != current or has preemption
+ * disabled when p == current.
+ *
+ * The rules of PREEMPT_RT saved_state:
+ *
+ *   The related locking code always holds p::pi_lock when updating
+ *   p::saved_state, which means the code is fully serialized in both cases.
+ *
+ *   The lock wait and lock wakeups happen via TASK_RTLOCK_WAIT. No other
+ *   bits set. This allows to distinguish all wakeup scenarios.
  */
-static struct lock_class *
-register_lock_class(struct lockdep_map *lock, unsigned int subclass, int force)
+static __always_inline
+bool ttwu_state_match(struct task_struct *p, unsigned int state, int *success)
 {
-	struct lockdep_subclass_key *key;
-	struct hlist_head *hash_head;
-	struct lock_class *class;
-	int idx;
-
-	DEBUG_LOCKS_WARN_ON(!irqs_disabled());
-
-	class = look_up_lock_class(lock, subclass);
-	if (likely(class))
-		goto out_set_class_cache;
-
-	if (!lock->key) {
-		if (!assign_lock_key(lock))
-			return NULL;
-	} else if (!static_obj(lock->key) && !is_dynamic_key(lock->key)) {
-		return NULL;
+	if (IS_ENABLED(CONFIG_DEBUG_PREEMPT)) {
+		WARN_ON_ONCE((state & TASK_RTLOCK_WAIT) &&
+			     state != TASK_RTLOCK_WAIT);
 	}
 
-	key = lock->key->subkeys + subclass;
-	hash_head = classhashentry(key);
-
-	if (!graph_lock()) {
-		return NULL;
+	if (READ_ONCE(p->__state) & state) {
+		*success = 1;
+		return true;
 	}
+
+#ifdef CONFIG_PREEMPT_RT
 	/*
-	 * We have to do the hash-walk again, to avoid races
-	 * with another CPU:
+	 * Saved state preserves the task state across blocking on
+	 * an RT lock.  If the state matches, set p::saved_state to
+	 * TASK_RUNNING, but do not wake the task because it waits
+	 * for a lock wakeup. Also indicate success because from
+	 * the regular waker's point of view this has succeeded.
+	 *
+	 * After acquiring the lock the task will restore p::__state
+	 * from p::saved_state which ensures that the regular
+	 * wakeup is not lost. The restore will also set
+	 * p::saved_state to TASK_RUNNING so any further tests will
+	 * not result in false positives vs. @success
 	 */
-	hlist_for_each_entry_rcu(class, hash_head, hash_entry) {
-		if (class->key == key)
-			goto out_unlock_set;
+	if (p->saved_state & state) {
+		p->saved_state = TASK_RUNNING;
+		*success = 1;
+	}
+#endif
+	return false;
+}
+
+/*
+ * Notes on Program-Order guarantees on SMP systems.
+ *
+ *  MIGRATION
+ *
+ * The basic program-order guarantee on SMP systems is that when a task [t]
+ * migrates, all its activity on its old CPU [c0] happens-before any subsequent
+ * execution on its new CPU [c1].
+ *
+ * For migration (of runnable tasks) this is provided by the following means:
+ *
+ *  A) UNLOCK of the rq(c0)->lock scheduling out task t
+ *  B) migration for t is required to synchronize *both* rq(c0)->lock and
+ *     rq(c1)->lock (if not at the same time, then in that order).
+ *  C) LOCK of the rq(c1)->lock scheduling in task
+ *
+ * Release/acquire chaining guarantees that B happens after A and C after B.
+ * Note: the CPU doing B need not be c0 or c1
+ *
+ * Example:
+ *
+ *   CPU0            CPU1            CPU2
+ *
+ *   LOCK rq(0)->lock
+ *   sched-out X
+ *   sched-in Y
+ *   UNLOCK rq(0)->lock
+ *
+ *                                   LOCK rq(0)->lock // orders against CPU0
+ *                                   dequeue X
+ *                                   UNLOCK rq(0)->lock
+ *
+ *                                   LOCK rq(1)->lock
+ *                                   enqueue X
+ *                                   UNLOCK rq(1)->lock
+ *
+ *                   LOCK rq(1)->lock // orders against CPU2
+ *                   sched-out Z
+ *                   sched-in X
+ *                   UNLOCK rq(1)->lock
+ *
+ *
+ *  BLOCKING -- aka. SLEEP + WAKEUP
+ *
+ * For blocking we (obviously) need to provide the same guarantee as for
+ * migration. However the means are completely different as there is no lock
+ * chain to provide order. Instead we do:
+ *
+ *   1) smp_store_release(X->on_cpu, 0)   -- finish_task()
+ *   2) smp_cond_load_acquire(!X->on_cpu) -- try_to_wake_up()
+ *
+ * Example:
+ *
+ *   CPU0 (schedule)  CPU1 (try_to_wake_up) CPU2 (schedule)
+ *
+ *   LOCK rq(0)->lock LOCK X->pi_lock
+ *   dequeue X
+ *   sched-out X
+ *   smp_store_release(X->on_cpu, 0);
+ *
+ *                    smp_cond_load_acquire(&X->on_cpu, !VAL);
+ *                    X->state = WAKING
+ *                    set_task_cpu(X,2)
+ *
+ *                    LOCK rq(2)->lock
+ *                    enqueue X
+ *                    X->state = RUNNING
+ *                    UNLOCK rq(2)->lock
+ *
+ *                                          LOCK rq(2)->lock // orders against CPU1
+ *                                          sched-out Z
+ *                                          sched-in X
+ *                                          UNLOCK rq(2)->lock
+ *
+ *                    UNLOCK X->pi_lock
+ *   UNLOCK rq(0)->lock
+ *
+ *
+ * However, for wakeups there is a second guarantee we must provide, namely we
+ * must ensure that CONDITION=1 done by the caller can not be reordered with
+ * accesses to the task state; see try_to_wake_up() and set_current_state().
+ */
+
+/**
+ * try_to_wake_up - wake up a thread
+ * @p: the thread to be awakened
+ * @state: the mask of task states that can be woken
+ * @wake_flags: wake modifier flags (WF_*)
+ *
+ * Conceptually does:
+ *
+ *   If (@state & @p->state) @p->state = TASK_RUNNING.
+ *
+ * If the task was not queued/runnable, also place it back on a runqueue.
+ *
+ * This function is atomic against schedule() which would dequeue the task.
+ *
+ * It issues a full memory barrier before accessing @p->state, see the comment
+ * with set_current_state().
+ *
+ * Uses p->pi_lock to serialize against concurrent wake-ups.
+ *
+ * Relies on p->pi_lock stabilizing:
+ *  - p->sched_class
+ *  - p->cpus_ptr
+ *  - p->sched_task_group
+ * in order to do migration, see its use of select_task_rq()/set_task_cpu().
+ *
+ * Tries really hard to only take one task_rq(p)->lock for performance.
+ * Takes rq->lock in:
+ *  - ttwu_runnable()    -- old rq, unavoidable, see comment there;
+ *  - ttwu_queue()       -- new rq, for enqueue of the task;
+ *  - psi_ttwu_dequeue() -- much sadness :-( accounting will kill us.
+ *
+ * As a consequence we race really badly with just about everything. See the
+ * many memory barriers and their comments for details.
+ *
+ * Return: %true if @p->state changes (an actual wakeup was done),
+ *	   %false otherwise.
+ */
+static int
+try_to_wake_up(struct task_struct *p, unsigned int state, int wake_flags)
+{
+	unsigned long flags;
+	int cpu, success = 0;
+
+	preempt_disable();
+	if (p == current) {
+		/*
+		 * We're waking current, this means 'p->on_rq' and 'task_cpu(p)
+		 * == smp_processor_id()'. Together this means we can special
+		 * case the whole 'p->on_rq && ttwu_runnable()' case below
+		 * without taking any locks.
+		 *
+		 * In particular:
+		 *  - we rely on Program-Order guarantees for all the ordering,
+		 *  - we're serialized against set_special_state() by virtue of
+		 *    it disabling IRQs (this allows not taking ->pi_lock).
+		 */
+		if (!ttwu_state_match(p, state, &success))
+			goto out;
+
+		trace_sched_waking(p);
+		WRITE_ONCE(p->__state, TASK_RUNNING);
+		trace_sched_wakeup(p);
+		goto out;
 	}
 
-	init_data_structures_once();
+	/*
+	 * If we are going to wake up a thread waiting for CONDITION we
+	 * need to ensure that CONDITION=1 done by the caller can not be
+	 * reordered with p->state check below. This pairs with smp_store_mb()
+	 * in set_current_state() that the waiting thread does.
+	 */
+	raw_spin_lock_irqsave(&p->pi_lock, flags);
+	smp_mb__after_spinlock();
+	if (!ttwu_state_match(p, state, &success))
+		goto unlock;
 
-	/* Allocate a new lock class and add it to the hash. */
-	class = list_first_entry_or_null(&free_lock_classes, typeof(*class),
-					 lock_entry);
-	if (!class) {
-		if (!debug_locks_off_graph_unlock()) {
-			return NULL;
+	trace_sched_waking(p);
+
+	/*
+	 * Ensure we load p->on_rq _after_ p->state, otherwise it would
+	 * be possible to, falsely, observe p->on_rq == 0 and get stuck
+	 * in smp_cond_load_acquire() below.
+	 *
+	 * sched_ttwu_pending()			try_to_wake_up()
+	 *   STORE p->on_rq = 1			  LOAD p->state
+	 *   UNLOCK rq->lock
+	 *
+	 * __schedule() (switch to task 'p')
+	 *   LOCK rq->lock			  smp_rmb();
+	 *   smp_mb__after_spinlock();
+	 *   UNLOCK rq->lock
+	 *
+	 * [task p]
+	 *   STORE p->state = UNINTERRUPTIBLE	  LOAD p->on_rq
+	 *
+	 * Pairs with the LOCK+smp_mb__after_spinlock() on rq->lock in
+	 * __schedule().  See the comment for smp_mb__after_spinlock().
+	 *
+	 * A similar smb_rmb() lives in try_invoke_on_locked_down_task().
+	 */
+	smp_rmb();
+	if (READ_ONCE(p->on_rq) && ttwu_runnable(p, wake_flags))
+		goto unlock;
+
+#ifdef CONFIG_SMP
+	/*
+	 * Ensure we load p->on_cpu _after_ p->on_rq, otherwise it would be
+	 * possible to, falsely, observe p->on_cpu == 0.
+	 *
+	 * One must be running (->on_cpu == 1) in order to remove oneself
+	 * from the runqueue.
+	 *
+	 * __schedule() (switch to task 'p')	try_to_wake_up()
+	 *   STORE p->on_cpu = 1		  LOAD p->on_rq
+	 *   UNLOCK rq->lock
+	 *
+	 * __schedule() (put 'p' to sleep)
+	 *   LOCK rq->lock			  smp_rmb();
+	 *   smp_mb__after_spinlock();
+	 *   STORE p->on_rq = 0			  LOAD p->on_cpu
+	 *
+	 * Pairs with the LOCK+smp_mb__after_spinlock() on rq->lock in
+	 * __schedule().  See the comment for smp_mb__after_spinlock().
+	 *
+	 * Form a control-dep-acquire with p->on_rq == 0 above, to ensure
+	 * schedule()'s deactivate_task() has 'happened' and p will no longer
+	 * care about it's own p->state. See the comment in __schedule().
+	 */
+	smp_acquire__after_ctrl_dep();
+
+	/*
+	 * We're doing the wakeup (@success == 1), they did a dequeue (p->on_rq
+	 * == 0), which means we need to do an enqueue, change p->state to
+	 * TASK_WAKING such that we can unlock p->pi_lock before doing the
+	 * enqueue, such as ttwu_queue_wakelist().
+	 */
+	WRITE_ONCE(p->__state, TASK_WAKING);
+
+	/*
+	 * If the owning (remote) CPU is still in the middle of schedule() with
+	 * this task as prev, considering queueing p on the remote CPUs wake_list
+	 * which potentially sends an IPI instead of spinning on p->on_cpu to
+	 * let the waker make forward progress. This is safe because IRQs are
+	 * disabled and the IPI will deliver after on_cpu is cleared.
+	 *
+	 * Ensure we load task_cpu(p) after p->on_cpu:
+	 *
+	 * set_task_cpu(p, cpu);
+	 *   STORE p->cpu = @cpu
+	 * __schedule() (switch to task 'p')
+	 *   LOCK rq->lock
+	 *   smp_mb__after_spin_lock()		smp_cond_load_acquire(&p->on_cpu)
+	 *   STORE p->on_cpu = 1		LOAD p->cpu
+	 *
+	 * to ensure we observe the correct CPU on which the task is currently
+	 * scheduling.
+	 */
+	if (smp_load_acquire(&p->on_cpu) &&
+	    ttwu_queue_wakelist(p, task_cpu(p), wake_flags | WF_ON_CPU))
+		goto unlock;
+
+	/*
+	 * If the owning (remote) CPU is still in the middle of schedule() with
+	 * this task as prev, wait until it's done referencing the task.
+	 *
+	 * Pairs with the smp_store_release() in finish_task().
+	 *
+	 * This ensures that tasks getting woken will be fully ordered against
+	 * their previous state and preserve Program Order.
+	 */
+	smp_cond_load_acquire(&p->on_cpu, !VAL);
+
+	cpu = select_task_rq(p, p->wake_cpu, wake_flags | WF_TTWU);
+	if (task_cpu(p) != cpu) {
+		if (p->in_iowait) {
+			delayacct_blkio_end(p);
+			atomic_dec(&task_rq(p)->nr_iowait);
 		}
 
-		print_lockdep_off("BUG: MAX_LOCKDEP_KEYS too low!");
-		dump_stack();
-		return NULL;
+		wake_flags |= WF_MIGRATED;
+		psi_ttwu_dequeue(p);
+		set_task_cpu(p, cpu);
 	}
-	nr_lock_classes++;
-	__set_bit(class - lock_classes, lock_classes_in_use);
-	debug_atomic_inc(nr_unused_locks);
-	class->key = key;
-	class->name = lock->name;
-	class->subclass = subclass;
-	WARN_ON_ONCE(!list_empty(&class->locks_before));
-	WARN_ON_ONCE(!list_empty(&class->locks_after));
-	class->name_version = count_matching_names(class);
-	class->wait_type_inner = lock->wait_type_inner;
-	class->wait_type_outer = lock->wait_type_outer;
-	class->lock_type = lock->lock_type;
+#else
+	cpu = task_cpu(p);
+#endif /* CONFIG_SMP */
+
+	ttwu_queue(p, cpu, wake_flags);
+unlock:
+	raw_spin_unlock_irqrestore(&p->pi_lock, flags);
+out:
+	if (success)
+		ttwu_stat(p, task_cpu(p), wake_flags);
+	preempt_enable();
+
+	return success;
+}
+
+/**
+ * task_call_func - Invoke a function on task in fixed state
+ * @p: Process for which the function is to be invoked, can be @current.
+ * @func: Function to invoke.
+ * @arg: Argument to function.
+ *
+ * Fix the task in it's current state by avoiding wakeups and or rq operations
+ * and call @func(@arg) on it.  This function can use ->on_rq and task_curr()
+ * to work out what the state is, if required.  Given that @func can be invoked
+ * with a runqueue lock held, it had better be quite lightweight.
+ *
+ * Returns:
+ *   Whatever @func returns
+ */
+int task_call_func(struct task_struct *p, task_call_f func, void *arg)
+{
+	struct rq *rq = NULL;
+	unsigned int state;
+	struct rq_flags rf;
+	int ret;
+
+	raw_spin_lock_irqsave(&p->pi_lock, rf.flags);
+
+	state = READ_ONCE(p->__state);
+
 	/*
-	 * We use RCU's safe list-add method to make
-	 * parallel walking of the hash-list safe:
+	 * Ensure we load p->on_rq after p->__state, otherwise it would be
+	 * possible to, falsely, observe p->on_rq == 0.
+	 *
+	 * See try_to_wake_up() for a longer comment.
 	 */
-	hlist_add_head_rcu(&class->hash_entry, hash_head);
+	smp_rmb();
+
 	/*
-	 * Remove the class from the free list and add it to the global list
-	 * of classes.
+	 * Since pi->lock blocks try_to_wake_up(), we don't need rq->lock when
+	 * the task is blocked. Make sure to check @state since ttwu() can drop
+	 * locks at the end, see ttwu_queue_wakelist().
 	 */
-	list_move_tail(&class->lock_entry, &all_lock_classes);
-	idx = class - lock_classes;
-	if (idx > max_lock_class_idx)
-		max_lock_class_idx = idx;
+	if (state == TASK_RUNNING || state == TASK_WAKING || p->on_rq)
+		rq = __task_rq_lock(p, &rf);
 
-	if (verbose(class)) {
-		graph_unlock();
+	/*
+	 * At this point the task is pinned; either:
+	 *  - blocked and we're holding off wakeups	 (pi->lock)
+	 *  - woken, and we're holding off enqueue	 (rq->lock)
+	 *  - queued, and we're holding off schedule	 (rq->lock)
+	 *  - running, and we're holding off de-schedule (rq->lock)
+	 *
+	 * The called function (@func) can use: task_curr(), p->on_rq and
+	 * p->__state to differentiate between these states.
+	 */
+	ret = func(p, arg);
 
-		printk("\nnew class %px: %s", class->key, class->name);
-		if (class->name_version > 1)
-			printk(KERN_CONT "#%d", class->name_version);
-		printk(KERN_CONT "\n");
-		dump_stack();
+	if (rq)
+		rq_unlock(rq, &rf);
 
-		if (!graph_lock()) {
-			return NULL;
+	raw_spin_unlock_irqrestore(&p->pi_lock, rf.flags);
+	return ret;
+}
+
+/**
+ * wake_up_process - Wake up a specific process
+ * @p: The process to be woken up.
+ *
+ * Attempt to wake up the nominated process and move it to the set of runnable
+ * processes.
+ *
+ * Return: 1 if the process was woken up, 0 if it was already running.
+ *
+ * This function executes a full memory barrier before accessing the task state.
+ */
+int wake_up_process(struct task_struct *p)
+{
+	return try_to_wake_up(p, TASK_NORMAL, 0);
+}
+EXPORT_SYMBOL(wake_up_process);
+
+int wake_up_state(struct task_struct *p, unsigned int state)
+{
+	return try_to_wake_up(p, state, 0);
+}
+
+/*
+ * Perform scheduler related setup for a newly forked process p.
+ * p is forked by current.
+ *
+ * __sched_fork() is basic setup used by init_idle() too:
+ */
+static void __sched_fork(unsigned long clone_flags, struct task_struct *p)
+{
+	p->on_rq			= 0;
+
+	p->se.on_rq			= 0;
+	p->se.exec_start		= 0;
+	p->se.sum_exec_runtime		= 0;
+	p->se.prev_sum_exec_runtime	= 0;
+	p->se.nr_migrations		= 0;
+	p->se.vruntime			= 0;
+	INIT_LIST_HEAD(&p->se.group_node);
+
+#ifdef CONFIG_FAIR_GROUP_SCHED
+	p->se.cfs_rq			= NULL;
+#endif
+
+#ifdef CONFIG_SCHEDSTATS
+	/* Even if schedstat is disabled, there should not be garbage */
+	memset(&p->stats, 0, sizeof(p->stats));
+#endif
+
+	RB_CLEAR_NODE(&p->dl.rb_node);
+	init_dl_task_timer(&p->dl);
+	init_dl_inactive_task_timer(&p->dl);
+	__dl_clear_params(p);
+
+	INIT_LIST_HEAD(&p->rt.run_list);
+	p->rt.timeout		= 0;
+	p->rt.time_slice	= sched_rr_timeslice;
+	p->rt.on_rq		= 0;
+	p->rt.on_list		= 0;
+
+#ifdef CONFIG_PREEMPT_NOTIFIERS
+	INIT_HLIST_HEAD(&p->preempt_notifiers);
+#endif
+
+#ifdef CONFIG_COMPACTION
+	p->capture_control = NULL;
+#endif
+	init_numa_balancing(clone_flags, p);
+#ifdef CONFIG_SMP
+	p->wake_entry.u_flags = CSD_TYPE_TTWU;
+	p->migration_pending = NULL;
+#endq;
+
+	for (;;) {
+		raw_spin_lock_irqsave(&p->pi_lock, rf->flags);
+		rq = task_rq(p);
+		raw_spin_rq_lock(rq);
+		/*
+		 *	move_queued_task()		task_rq_lock()
+		 *
+		 *	ACQUIRE (rq->lock)
+		 *	[S] ->on_rq = MIGRATING		[L] rq = task_rq()
+		 *	WMB (__set_task_cpu())		ACQUIRE (rq->lock);
+		 *	[S] ->cpu = new_cpu		[L] task_rq()
+		 *					[L] ->on_rq
+		 *	RELEASE (rq->lock)
+		 *
+		 * If we observe the old CPU in task_rq_lock(), the acquire of
+		 * the old rq->lock will fully serialize against the stores.
+		 *
+		 * If we observe the new CPU in task_rq_lock(), the address
+		 * dependency headed by '[L] rq = task_rq()' and the acquire
+		 * will pair with the WMB to ensure we then also see migrating.
+		 */
+		if (likely(rq == task_rq(p) && !task_on_rq_migrating(p))) {
+			rq_pin_lock(rq, rf);
+			return rq;
+		}
+		raw_spin_rq_unlock(rq);
+		raw_spin_unlock_irqrestore(&p->pi_lock, rf->flags);
+
+		while (unlikely(task_on_rq_migrating(p)))
+			cpu_relax();
+	}
+}
+
+/*
+ * RQ-clock updating methods:
+ */
+
+static void update_rq_clock_task(struct rq *rq, s64 delta)
+{
+/*
+ * In theory, the compile should just see 0 here, and optimize out the call
+ * to sched_rt_avg_update. But I don't trust it...
+ */
+	s64 __maybe_unused steal = 0, irq_delta = 0;
+
+#ifdef CONFIG_IRQ_TIME_ACCOUNTING
+	irq_delta = irq_time_read(cpu_of(rq)) - rq->prev_irq_time;
+
+	/*
+	 * Since irq_time is only updated on {soft,}irq_exit, we might run into
+	 * this case when a previous update_rq_clock() happened inside a
+	 * {soft,}irq region.
+	 *
+	 * When this happens, we stop ->clock_task and only update the
+	 * prev_irq_time stamp to account for the part that fit, so that a next
+	 * update will consume the rest. This ensures ->clock_task is
+	 * monotonic.
+	 *
+	 * It does however cause some slight miss-attribution of {soft,}irq
+	 * time, a more accurate solution would be to update the irq_time using
+	 * the current rq->clock timestamp, except that would require using
+	 * atomic ops.
+	 */
+	if (irq_delta > delta)
+		irq_delta = delta;
+
+	rq->prev_irq_time += irq_delta;
+	delta -= irq_delta;
+#endif
+#ifdef CONFIG_PARAVIRT_TIME_ACCOUNTING
+	if (static_key_false((&paravirt_steal_rq_enabled))) {
+		steal = paravirt_steal_clock(cpu_of(rq));
+		steal -= rq->prev_steal_time_rq;
+
+		if (unlikely(steal > delta))
+			steal = delta;
+
+		rq->prev_steal_time_rq += steal;
+		delta -= steal;
+	}
+#endif
+
+	rq->clock_task += delta;
+
+#ifdef CONFIG_HAVE_SCHED_AVG_IRQ
+	if ((irq_delta + steal) && sched_feat(NONTASK_CAPACITY))
+		update_irq_load_avg(rq, irq_delta + steal);
+#endif
+	update_rq_clock_pelt(rq, delta);
+}
+
+void update_rq_clock(struct rq *rq)
+{
+	s64 delta;
+
+	lockdep_assert_rq_held(rq);
+
+	if (rq->clock_update_flags & RQCF_ACT_SKIP)
+		return;
+
+#ifdef CONFIG_SCHED_DEBUG
+	if (sched_feat(WARN_DOUBLE_CLOCK))
+		SCHED_WARN_ON(rq->clock_update_flags & RQCF_UPDATED);
+	rq->clock_update_flags |= RQCF_UPDATED;
+#endif
+
+	delta = sched_clock_cpu(cpu_of(rq)) - rq->clock;
+	if (delta < 0)
+		return;
+	rq->clock += delta;
+	update_rq_clock_task(rq, delta);
+}
+
+#ifdef CONFIG_SCHED_HRTICK
+/*
+ * Use HR-timers to deliver accurate preemption points.
+ */
+
+static void hrtick_clear(struct rq *rq)
+{
+	if (hrtimer_active(&rq->hrtick_timer))
+		hrtimer_cancel(&rq->hrtick_timer);
+}
+
+/*
+ * High-resolution timer tick.
+ * Runs from hardirq context with interrupts disabled.
+ */
+static enum hrtimer_restart hrtick(struct hrtimer *timer)
+{
+	struct rq *rq = container_of(timer, struct rq, hrtick_timer);
+	struct rq_flags rf;
+
+	WARN_ON_ONCE(cpu_of(rq) != smp_processor_id());
+
+	rq_lock(rq, &rf);
+	update_rq_clock(rq);
+	rq->curr->sched_class->task_tick(rq, rq->curr, 1);
+	rq_unlock(rq, &rf);
+
+	return HRTIMER_NORESTART;
+}
+
+#ifdef CONFIG_SMP
+
+static void __hrtick_restart(struct rq *rq)
+{
+	struct hrtimer *timer = &rq->hrtick_timer;
+	ktime_t time = rq->hrtick_time;
+
+	hrtimer_start(timer, time, HRTIMER_MODE_ABS_PINNED_HARD);
+}
+
+/*
+ * called from hardirq (IPI) context
+ */
+static void __hrtick_start(void *arg)
+{
+	struct rq *rq = arg;
+	struct rq_flags rf;
+
+	rq_lock(rq, &rf);
+	__hrtick_restart(rq);
+	rq_unlock(rq, &rf);
+}
+
+/*
+ * Called to set the hrtick timer state.
+ *
+ * called with rq->lock held and irqs disabled
+ */
+void hrtick_start(struct rq *rq, u64 delay)
+{
+	struct hrtimer *timer = &rq->hrtick_timer;
+	s64 delta;
+
+	/*
+	 * Don't schedule slices shorter than 10000ns, that just
+	 * doesn't make sense and can cause timer DoS.
+	 */
+	delta = max_t(s64, delay, 10000LL);
+	rq->hrtick_time = ktime_add_ns(timer->base->get_time(), delta);
+
+	if (rq == this_rq())
+		__hrtick_restart(rq);
+	else
+		smp_call_function_single_async(cpu_of(rq), &rq->hrtick_csd);
+}
+
+#else
+/*
+ * Called to set the hrtick timer state.
+ *
+ * called with rq->lock held and irqs disabled
+ */
+void hrtick_start(struct rq *rq, u64 delay)
+{
+	/*
+	 * Don't schedule slices shorter than 10000ns, that just
+	 * doesn't make sense. Rely on vruntime for fairness.
+	 */
+	delay = max_t(u64, delay, 10000LL);
+	hrtimer_start(&rq->hrtick_timer, ns_to_ktime(delay),
+		      HRTIMER_MODE_REL_PINNED_HARD);
+}
+
+#endif /* CONFIG_SMP */
+
+static void hrtick_rq_init(struct rq *rq)
+{
+#ifdef CONFIG_SMP
+	INIT_CSD(&rq->hrtick_csd, __hrtick_start, rq);
+#endif
+	hrtimer_init(&rq->hrtick_timer, CLOCK_MONOTONIC, HRTIMER_MODE_REL_HARD);
+	rq->hrtick_timer.function = hrtick;
+}
+#else	/* CONFIG_SCHED_HRTICK */
+static inline void hrtick_clear(struct rq *rq)
+{
+}
+
+static inline void hrtick_rq_init(struct rq *rq)
+{
+}
+#endif	/* CONFIG_SCHED_HRTICK */
+
+/*
+ * cmpxchg based fetch_or, macro so it works for different integer types
+ */
+#define fetch_or(ptr, mask)						\
+	({								\
+		typeof(ptr) _ptr = (ptr);				\
+		typeof(mask) _mask = (mask);				\
+		typeof(*_ptr) _old, _val = *_ptr;			\
+									\
+		for (;;) {						\
+			_old = cmpxchg(_ptr, _val, _val | _mask);	\
+			if (_old == _val)				\
+				break;					\
+			_val = _old;					\
+		}							\
+	_old;								\
+})
+
+#if defined(CONFIG_SMP) && defined(TIF_POLLING_NRFLAG)
+/*
+ * Atomically set TIF_NEED_RESCHED and test for TIF_POLLING_NRFLAG,
+ * this avoids any races wrt polling state changes and thereby avoids
+ * spurious IPIs.
+ */
+static bool set_nr_and_not_polling(struct task_struct *p)
+{
+	struct thread_info *ti = task_thread_info(p);
+	return !(fetch_or(&ti->flags, _TIF_NEED_RESCHED) & _TIF_POLLING_NRFLAG);
+}
+
+/*
+ * Atomically set TIF_NEED_RESCHED if TIF_POLLING_NRFLAG is set.
+ *
+ * If this returns true, then the idle task promises to call
+ * sched_ttwu_pending() and reschedule soon.
+ */
+static bool set_nr_if_polling(struct task_struct *p)
+{
+	struct thread_info *ti = task_thread_info(p);
+	typeof(ti->flags) old, val = READ_ONCE(ti->flags);
+
+	for (;;) {
+		if (!(val & _TIF_POLLING_NRFLAG))
+			return false;
+		if (val & _TIF_NEED_RESCHED)
+			return true;
+		old = cmpxchg(&ti->flags, val, val | _TIF_NEED_RESCHED);
+		if (old == val)
+			break;
+		val = old;
+	}
+	return true;
+}
+
+#else
+static bool set_nr_and_not_polling(struct task_struct *p)
+{
+	set_tsk_need_resched(p);
+	return true;
+}
+
+#ifdef CONFIG_SMP
+static bool set_nr_if_polling(struct task_struct *p)
+{
+	return false;
+}
+#endif
+#endif
+
+static bool __wake_q_add(struct wake_q_head *head, struct task_struct *task)
+{
+	struct wake_q_node *node = &task->wake_q;
+
+	/*
+	 * Atomically grab the task, if ->wake_q is !nil already it means
+	 * it's already queued (either by us or someone else) and will get the
+	 * wakeup due to that.
+	 *
+	 * In order to ensure that a pending wakeup will observe our pending
+	 * state, even in the failed case, an explicit smp_mb() must be used.
+	 */
+	smp_mb__before_atomic();
+	if (unlikely(cmpxchg_relaxed(&node->next, NULL, WAKE_Q_TAIL)))
+		return false;
+
+	/*
+	 * The head is context local, there can be no concurrency.
+	 */
+	*head->lastp = node;
+	head->lastp = &node->next;
+	return true;
+}
+
+/**
+ * wake_q_add() - queue a wakeup for 'later' waking.
+ * @head: the wake_q_head to add @task to
+ * @task: the task to queue for 'later' wakeup
+ *
+ * Queue a task for later wakeup, most likely by the wake_up_q() call in the
+ * same context, _HOWEVER_ this is not guaranteed, the wakeup can come
+ * instantly.
+ *
+ * This function must be used as-if it were wake_up_process(); IOW the task
+ * must be ready to be woken at this location.
+ */
+void wake_q_add(struct wake_q_head *head, struct task_struct *task)
+{
+	if (__wake_q_add(head, task))
+		get_task_struct(task);
+}
+
+/**
+ * wake_q_add_safe() - safely queue a wakeup for 'later' waking.
+ * @head: the wake_q_head to add @task to
+ * @task: the task to queue for 'later' wakeup
+ *
+ * Queue a task for later wakeup, most likely by the wake_up_q() call in the
+ * same context, _HOWEVER_ this is not guaranteed, the wakeup can come
+ * instantly.
+ *
+ * This function must be used as-if it were wake_up_process(); IOW the task
+ * must be ready to be woken at this location.
+ *
+ * This function is essentially a task-safe equivalent to wake_q_add(). Callers
+ * that already hold reference to @task can call the 'safe' version and trust
+ * wake_q to do the right thing depending whether or not the @task is already
+ * queued for wakeup.
+ */
+void wake_q_add_safe(struct wake_q_head *head, struct task_struct *task)
+{
+	if (!__wake_q_add(head, task))
+		put_task_struct(task);
+}
+
+void wake_up_q(struct wake_q_head *head)
+{
+	struct wake_q_node *node = head->first;
+
+	while (node != WAKE_Q_TAIL) {
+		struct task_struct *task;
+
+		task = container_of(node, struct task_struct, wake_q);
+		/* Task can safely be re-inserted now: */
+		node = node->next;
+		task->wake_q.next = NULL;
+
+		/*
+		 * wake_up_process() executes a full barrier, which pairs with
+		 * the queueing in wake_q_add() so as not to miss wakeups.
+		 */
+		wake_up_process(task);
+		put_task_struct(task);
+	}
+}
+
+/*
+ * resched_curr - mark rq's current task 'to be rescheduled now'.
+ *
+ * On UP this means the setting of the need_resched flag, on SMP it
+ * might also involve a cross-CPU call to trigger the scheduler on
+ * the target CPU.
+ */
+void resched_curr(struct rq *rq)
+{
+	struct task_struct *curr = rq->curr;
+	int cpu;
+
+	lockdep_assert_rq_held(rq);
+
+	if (test_tsk_need_resched(curr))
+		return;
+
+	cpu = cpu_of(rq);
+
+	if (cpu == smp_processor_id()) {
+		set_tsk_need_resched(curr);
+		set_preempt_need_resched();
+		return;
+	}
+
+	if (set_nr_and_not_polling(curr))
+		smp_send_reschedule(cpu);
+	else
+		trace_sched_wake_idle_without_ipi(cpu);
+}
+
+void resched_cpu(int cpu)
+{
+	struct rq *rq = cpu_rq(cpu);
+	unsigned long flags;
+
+	raw_spin_rq_lock_irqsave(rq, flags);
+	if (cpu_online(cpu) || cpu == smp_processor_id())
+		resched_curr(rq);
+	raw_spin_rq_unlock_irqrestore(rq, flags);
+}
+
+#ifdef CONFIG_SMP
+#ifdef CONFIG_NO_HZ_COMMON
+/*
+ * In the semi idle case, use the nearest busy CPU for migrating timers
+ * from an idle CPU.  This is good for power-savings.
+ *
+ * We don't do similar optimization for completely idle system, as
+ * selecting an idle CPU will add more delays to the timers than intended
+ * (as that CPU's timer base may not be uptodate wrt jiffies etc).
+ */
+int get_nohz_timer_target(void)
+{
+	int i, cpu = smp_processor_id(), default_cpu = -1;
+	struct sched_domain *sd;
+	const struct cpumask *hk_mask;
+
+	if (housekeeping_cpu(cpu, HK_TYPE_TIMER)) {
+		if (!idle_cpu(cpu))
+			return cpu;
+		default_cpu = cpu;
+	}
+
+	hk_mask = housekeeping_cpumask(HK_TYPE_TIMER);
+
+	rcu_read_lock();
+	for_each_domain(cpu, sd) {
+		for_each_cpu_and(i, sched_domain_span(sd), hk_mask) {
+			if (cpu == i)
+				continue;
+
+			if (!idle_cpu(i)) {
+				cpu = i;
+				goto unlock;
+			}
 		}
 	}
-out_unlock_set:
-	graph_unlock();
 
-out_set_class_cache:
-	if (!subclass || force)
-		lock->class_cache[0] = class;
-	else if (subclass < NR_LOCKDEP_CACHING_CLASSES)
-		lock->class_cache[subclass] = class;
-
-	/*
-	 * Hash collision, did we smoke some? We found a class with a matching
-	 * hash but the subclass -- which is hashed in -- didn't match.
-	 */
-	if (DEBUG_LOCKS_WARN_ON(class->subclass != subclass))
-		return NULL;
-
-	return class;
+	if (default_cpu == -1)
+		default_cpu = housekeeping_any_cpu(HK_TYPE_TIMER);
+	cpu = default_cpu;
+unlock:
+	rcu_read_unlock();
+	return cpu;
 }
 
-#ifdef CONFIG_PROVE_LOCKING
 /*
- * Allocate a lockdep entry. (assumes the graph_lock held, returns
- * with NULL on failure)
+ * When add_timer_on() enqueues a timer into the timer wheel of an
+ * idle CPU then this timer might expire before the next timer event
+ * which is scheduled to wake up that CPU. In case of a completely
+ * idle system the next event might even be infinite time into the
+ * future. wake_up_idle_cpu() ensures that the CPU is woken up and
+ * leaves the inner idle loop so the newly added timer is taken into
+ * account when the CPU goes back to idle and evaluates the timer
+ * wheel for the next timer event.
  */
-static struct lock_list *alloc_list_entry(void)
+static void wake_up_idle_cpu(int cpu)
 {
-	int idx = find_first_zero_bit(list_entries_in_use,
-				      ARRAY_SIZE(list_entries));
+	struct rq *rq = cpu_rq(cpu);
 
-	if (idx >= ARRAY_SIZE(list_entries)) {
-		if (!debug_locks_off_graph_unlock())
-			return NULL;
+	if (cpu == smp_processor_id())
+		return;
 
-		print_lockdep_off("BUG: MAX_LOCKDEP_ENTRIES too low!");
-		dump_stack();
-		return NULL;
+	if (set_nr_and_not_polling(rq->idle))
+		smp_send_reschedule(cpu);
+	else
+		trace_sched_wake_idle_without_ipi(cpu);
+}
+
+static bool wake_up_full_nohz_cpu(int cpu)
+{
+	/*
+	 * We just need the target to call irq_exit() and re-evaluate
+	 * the next tick. The nohz full kick at least implies that.
+	 * If needed we can still optimize that later with an
+	 * empty IRQ.
+	 */
+	if (cpu_is_offline(cpu))
+		return true;  /* Don't try to wake offline CPUs. */
+	if (tick_nohz_full_cpu(cpu)) {
+		if (cpu != smp_processor_id() ||
+		    tick_nohz_tick_stopped())
+			tick_nohz_full_kick_cpu(cpu);
+		return true;
 	}
-	nr_list_entries++;
-	__set_bit(idx, list_entries_in_use);
-	return list_entries + idx;
+
+	return false;
 }
 
 /*
- * Add a new dependency to the head of the list:
+ * Wake up the specified CPU.  If the CPU is going offline, it is the
+ * caller's responsibility to deal with the lost wakeup, for example,
+ * by hooking into the CPU_DEAD notifier like timers and hrtimers do.
  */
-static int add_lock_to_list(struct lock_class *this,
-			    struct lock_class *links_to, struct list_head *head,
-			    unsigned long ip, u16 distance, u8 dep,
-			    const struct lock_trace *trace)
+void wake_up_nohz_cpu(int cpu)
 {
-	struct lock_list *entry;
+	if (!wake_up_full_nohz_cpu(cpu))
+		wake_up_idle_cpu(cpu);
+}
+
+static void nohz_csd_func(void *info)
+{
+	struct rq *rq = info;
+	int cpu = cpu_of(rq);
+	unsigned int flags;
+
 	/*
-	 * Lock not present yet - get a new dependency struct and
-	 * add it to the list:
+	 * Release the rq::nohz_csd.
 	 */
-	entry = alloc_list_entry();
-	if (!entry)
-		return 0;
+	flags = atomic_fetch_andnot(NOHZ_KICK_MASK | NOHZ_NEWILB_KICK, nohz_flags(cpu));
+	WARN_ON(!(flags & NOHZ_KICK_MASK));
 
-	entry->class = this;
-	entry->links_to = links_to;
-	entry->dep = dep;
-	entry->distance = distance;
-	entry->trace = trace;
+	rq->idle_balance = idle_cpu(cpu);
+	if (rq->idle_balance && !need_resched()) {
+		rq->nohz_idle_balance = flags;
+		raise_softirq_irqoff(SCHED_SOFTIRQ);
+	}
+}
+
+#endif /* CONFIG_NO_HZ_COMMON */
+
+#ifdef CONFIG_NO_HZ_FULL
+bool sched_can_stop_tick(struct rq *rq)
+{
+	int fifo_nr_running;
+
+	/* Deadline tasks, even if single, need the tick */
+	if (rq->dl.dl_nr_running)
+		return false;
+
 	/*
-	 * Both allocation and removal are done under the graph lock; but
-	 * iteration is under RCU-sched; see look_up_lock_class() and
-	 * lockdep_free_key_range().
+	 * If there are more than one RR tasks, we need the tick to affect the
+	 * actual RR behaviour.
 	 */
-	list_add_tail_rcu(&entry->entry, head);
+	if (rq->rt.rr_nr_running) {
+		if (rq->rt.rr_nr_running == 1)
+			return true;
+		else
+			return false;
+	}
 
-	return 1;
+	/*
+	 * If there's no RR tasks, but FIFO tasks, we can skip the tick, no
+	 * forced preemption between FIFO tasks.
+	 */
+	fifo_nr_running = rq->rt.rt_nr_running - rq->rt.rr_nr_running;
+	if (fifo_nr_running)
+		return true;
+
+	/*
+	 * If there are no DL,RR/FIFO tasks, there must only be CFS tasks left;
+	 * if there's more than one we need the tick for involuntary
+	 * preemption.
+	 */
+	if (rq->nr_running > 1)
+		return false;
+
+	return true;
 }
+#endif /* CONFIG_NO_HZ_FULL */
+#endif /* CONFIG_SMP */
 
+#if defined(CONFIG_RT_GROUP_SCHED) || (defined(CONFIG_FAIR_GROUP_SCHED) && \
+			(defined(CONFIG_SMP) || defined(CONFIG_CFS_BANDWIDTH)))
 /*
- * For good efficiency of modular, we use power of 2
+ * Iterate task_group tree rooted at *from, calling @down when first entering a
+ * node and @up when leaving it for the final time.
+ *
+ * Caller must hold rcu_lock or sufficient equivalent.
  */
-#define MAX_CIRCULAR_QUEUE_SIZE		(1UL << CONFIG_LOCKDEP_CIRCULAR_QUEUE_BITS)
-#define CQ_MASK				(MAX_CIRCULAR_QUEUE_SIZE-1)
-
-/*
- * The circular_queue and helpers are used to implement graph
- * breadth-first search (BFS) algorithm, by which we can determine
- * whether there is a path from a lock to another. In deadlock checks,
- * a path from the next lock to be acquired to a previous held lock
- * indicates that adding the <prev> -> <next> lock dependency will
- * produce a circle in the graph. Breadth-first search instead of
- * depth-first search is used in order to find the shortest (circular)
- * path.
- */
-struct circular_queue {
-	struct lock_list *element[MAX_CIRCULAR_QUEUE_SIZE];
-	unsigned int  front, rear;
-};
-
-static struct circular_queue lock_cq;
-
-unsigned int max_bfs_queue_depth;
-
-static unsigned int lockdep_dependency_gen_id;
-
-static inline void __cq_init(struct circular_queue *cq)
+int walk_tg_tree_from(struct task_group *from,
+			     tg_visitor down, tg_visitor up, void *data)
 {
-	cq->front = cq->rear = 0;
-	lockdep_dependency_gen_id++;
+	struct task_group *parent, *child;
+	int ret;
+
+	parent = from;
+
+down:
+	ret = (*down)(parent, data);
+	if (ret)
+		goto out;
+	list_for_each_entry_rcu(child, &parent->children, siblings) {
+		parent = child;
+		goto down;
+
+up:
+		continue;
+	}
+	ret = (*up)(parent, data);
+	if (ret || parent == from)
+		goto out;
+
+	child = parent;
+	parent = parent->parent;
+	if (parent)
+		goto up;
+out:
+	return ret;
 }
 
-static inline int __cq_empty(struct circular_queue *cq)
+int tg_nop(struct task_group *tg, void *data)
 {
-	return (cq->front == cq->rear);
-}
-
-static inline int __cq_full(struct circular_queue *cq)
-{
-	return ((cq->rear + 1) & CQ_MASK) == cq->front;
-}
-
-static inline int __cq_enqueue(struct circular_queue *cq, struct lock_list *elem)
-{
-	if (__cq_full(cq))
-		return -1;
-
-	cq->element[cq->rear] = elem;
-	cq->rear = (cq->rear + 1) & CQ_MASK;
 	return 0;
 }
+#endif
 
-/*
- * Dequeue an element from the circular_queue, return a lock_list if
- * the queue is not empty, or NULL if otherwise.
- */
-static inline struct lock_list * __cq_dequeue(struct circular_queue *cq)
+static void set_load_weight(struct task_struct *p, bool update_load)
 {
-	struct lock_list * lock;
+	int prio = p->static_prio - MAX_RT_PRIO;
+	struct load_weight *load = &p->se.load;
 
-	if (__cq_empty(cq))
-		return NULL;
-
-	lock = cq->element[cq->front];
-	cq->front = (cq->front + 1) & CQ_MASK;
-
-	return lock;
-}
-
-static inline unsigned int  __cq_get_elem_count(struct circular_queue *cq)
-{
-	return (cq->rear - cq->front) & CQ_MASK;
-}
-
-static inline void mark_lock_accessed(struct lock_list *lock)
-{
-	lock->class->dep_gen_id = lockdep_dependency_gen_id;
-}
-
-static inline void visit_lock_entry(struct lock_list *lock,
-				    struct lock_list *parent)
-{
-	lock->parent = parent;
-}
-
-static inline unsigned long lock_accessed(struct lock_list *lock)
-{
-	return lock->class->dep_gen_id == lockdep_dependency_gen_id;
-}
-
-static inline struct lock_list *get_lock_parent(struct lock_list *child)
-{
-	return child->parent;
-}
-
-static inline int get_lock_depth(struct lock_list *child)
-{
-	int depth = 0;
-	struct lock_list *parent;
-
-	while ((parent = get_lock_parent(child))) {
-		child = parent;
-		depth++;
+	/*
+	 * SCHED_IDLE tasks get minimal weight:
+	 */
+	if (task_has_idle_policy(p)) {
+		load->weight = scale_load(WEIGHT_IDLEPRIO);
+		load->inv_weight = WMULT_IDLEPRIO;
+		return;
 	}
-	return depth;
+
+	/*
+	 * SCHED_OTHER tasks have to update their load when changing their
+	 * weight
+	 */
+	if (update_load && p->sched_class == &fair_sched_class) {
+		reweight_task(p, prio);
+	} else {
+		load->weight = scale_load(sched_prio_to_weight[prio]);
+		load->inv_weight = sched_prio_to_wmult[prio];
+	}
 }
 
+#ifdef CONFIG_UCLAMP_TASK
 /*
- * Return the forward or backward dependency list.
+ * Serializes updates of utilization clamp values
  *
- * @lock:   the lock_list to get its class's dependency list
- * @offset: the offset to struct lock_class to determine whether it is
- *          locks_after or locks_before
+ * The (slow-path) user-space triggers utilization clamp value updates which
+ * can require updates on (fast-path) scheduler's data structures used to
+ * support enqueue/dequeue operations.
+ * While the per-CPU rq lock protects fast-path update operations, user-space
+ * requests are serialized using a mutex to reduce the risk of conflicting
+ * updates or API abuses.
  */
-static inline struct list_head *get_dep_list(struct lock_list *lock, int offset)
-{
-	void *lock_class = lock->class;
+static DEFINE_MUTEX(uclamp_mutex);
 
-	return lock_class + offset;
-}
+/* Max allowed minimum utilization */
+unsigned int sysctl_sched_uclamp_util_min = SCHED_CAPACITY_SCALE;
+
+/* Max allowed maximum utilization */
+unsigned int sysctl_sched_uclamp_util_max = SCHED_CAPACITY_SCALE;
+
 /*
- * Return values of a bfs search:
+ * By default RT tasks run at the maximum performance point/capacity of the
+ * system. Uclamp enforces this by always setting UCLAMP_MIN of RT tasks to
+ * SCHED_CAPACITY_SCALE.
  *
- * BFS_E* indicates an error
- * BFS_R* indicates a result (match or not)
+ * This knob allows admins to change the default behavior when uclamp is being
+ * used. In battery powered devices, particularly, running at the maximum
+ * capacity and frequency will increase energy consumption and shorten the
+ * battery life.
  *
- * BFS_EINVALIDNODE: Find a invalid node in the graph.
+ * This knob only affects RT tasks that their uclamp_se->user_defined == false.
  *
- * BFS_EQUEUEFULL: The queue is full while doing the bfs.
- *
- * BFS_RMATCH: Find the matched node in the graph, and put that node into
- *             *@target_entry.
- *
- * BFS_RNOMATCH: Haven't found the matched node and keep *@target_entry
- *               _unchanged_.
+ * This knob will not override the system default sched_util_clamp_min defined
+ * above.
  */
-enum bfs_result {
-	BFS_EINVALIDNODE = -2,
-	BFS_EQUEUEFULL = -1,
-	BFS_RMATCH = 0,
-	BFS_RNOMATCH = 1,
-};
+unsigned int sysctl_sched_uclamp_util_min_rt_default = SCHED_CAPACITY_SCALE;
+
+/* All clamps are required to be less or equal than these values */
+static struct uclamp_se uclamp_default[UCLAMP_CNT];
 
 /*
- * bfs_result < 0 means error
- */
-static inline bool bfs_error(enum bfs_result res)
-{
-	return res < 0;
-}
-
-/*
- * DEP_*_BIT in lock_list::dep
+ * This static key is used to reduce the uclamp overhead in the fast path. It
+ * primarily disables the call to uclamp_rq_{inc, dec}() in
+ * enqueue/dequeue_task().
  *
- * For dependency @prev -> @next:
+ * This allows users to continue to enable uclamp in their kernel config with
+ * minimum uclamp overhead in the fast path.
  *
- *   SR: @prev is shared reader (->read != 0) and @next is recursive reader
- *       (->read == 2)
- *   ER: @prev is exclusive locker (->read == 0) and @next is recursive reader
- *   SN: @prev is shared reader and @next is non-recursive locker (->read != 2)
- *   EN: @prev is exclusive locker and @next is non-recursive locker
+ * As soon as userspace modifies any of the uclamp knobs, the static key is
+ * enabled, since we have an actual users that make use of uclamp
+ * functionality.
  *
- * Note that we define the value of DEP_*_BITs so that:
- *   bit0 is prev->read == 0
- *   bit1 is next->read != 2
- */
-#define DEP_SR_BIT (0 + (0 << 1)) /* 0 */
-#define DEP_ER_BIT (1 + (0 << 1)) /* 1 */
-#define DEP_SN_BIT (0 + (1 << 1)) /* 2 */
-#define DEP_EN_BIT (1 + (1 << 1)) /* 3 */
-
-#define DEP_SR_MASK (1U << (DEP_SR_BIT))
-#define DEP_ER_MASK (1U << (DEP_ER_BIT))
-#define DEP_SN_MASK (1U << (DEP_SN_BIT))
-#define DEP_EN_MASK (1U << (DEP_EN_BIT))
-
-static inline unsigned int
-__calc_dep_bit(struct held_lock *prev, struct held_lock *next)
-{
-	return (prev->read == 0) + ((next->read != 2) << 1);
-}
-
-static inline u8 calc_dep(struct held_lock *prev, struct held_lock *next)
-{
-	return 1U << __calc_dep_bit(prev, next);
-}
-
-/*
- * calculate the dep_bit for backwards edges. We care about whether @prev is
- * shared and whether @next is recursive.
- */
-static inline unsigned int
-__calc_dep_bitb(struct held_lock *prev, struct held_lock *next)
-{
-	return (next->read != 2) + ((prev->read == 0) << 1);
-}
-
-static inline u8 calc_depb(struct held_lock *prev, struct held_lock *next)
-{
-	return 1U << __calc_dep_bitb(prev, next);
-}
-
-/*
- * Initialize a lock_list entry @lock belonging to @class as the root for a BFS
- * search.
- */
-static inline void __bfs_init_root(struct lock_list *lock,
-				   struct lock_class *class)
-{
-	lock->class = class;
-	lock->parent = NULL;
-	lock->only_xr = 0;
-}
-
-/*
- * Initialize a lock_list entry @lock based on a lock acquisition @hlock as the
- * root for a BFS search.
+ * The knobs that would enable this static key are:
  *
- * ->only_xr of the initial lock node is set to @hlock->read == 2, to make sure
- * that <prev>úËqìéŸ>¸aÊ´‘aÍÊBé\ÉmØ¥ÔcéŠÙ‹„UÉõ\rº8ˆ°§İ`‚|ğß‰üâ	Y¹3@zB=;`9ì”,“ı`_¹ŠÌÈ©‚7ÜÄÉŞËk[ô©ãã‹CêtZ¨*ô«°î’¹Ej7(`!SP?ä_e ÄèÎ€ø÷6è—±/P-Qø›òÃeØ‚4·[Xxúìşu;,+ë…#ãéEÁQ9TY}Kv­Œ”Ë4õ–Ï‡¶æÖŞÃ^÷p´ôQ:u?ÕŞ©í~Ñ(6¬vÒ•!=k\åîäÀ¿^’ıš³ôws/˜3;øzu§ëLÅK81:ÿ•ˆjhÆ¥ÙÃdgƒä<Yòµ†ùšâûÈÈ\@0úŞØÉHxWñ®œŸ"¼o-p[ûb†.<¤í K$!¢Cà•WpÔ°‡ë“uµ{Y€„a¤êÕO ¸ûÃÇY¹X„+Ÿ.ÚÛ*¦Ôëè†µõ»ccl‰Z»Ä¡]uQw< êÊ×ÇÈ Fk±üífÙæÉøiÊ¸Ä@2gÑ€e¾ |IĞx¸(0,bz
-Àu)Fwş`–|œ;°Nl‹%®‹4ÊÑ3Ó£óîúß{òqjLT·zØm38¥¥’6s:Íéô¨M¶qE®Ê.eë¦/Wùn¸t£/Ë<yâğõÉ‹âIâ„äPĞ¡¤É2[B˜—ÖòÅé{÷vÑ˜R\XÉ’n: ÓMê6ø›»i3üÿ;¾6±'cZ›äô|Sn’ÿDù«
-t†ĞŒĞV‡<ìUUÏòne0ï§¾6‹îÖº’yÂ‹éš66@ï©Js`ŸSÅ’¬÷á¨„júUMfÒ5ÜIÏ1bxOnˆ!_ójâ Çh8ß¸M´/ğ^ÎÏÂfy%an€•>i_öœ<µÔ‚Ã"„rO1( İ0f«†^Ò(/Âj;Q6ït3˜PÄë&À©ãŠ>„Ù0{Î5e&å² ƒæaÿíxÿ«‚uŸ*ª|­¯|Ò¥oK¨µ
-»ş7'¬İ9FÈ9%ˆkØ:%Èa,ı8„ËöìyÔóywîÙJÖVÁ™NşãP?ÑÀ?ætºt)9ºíüWgd7ôëß¨ ’â*Ó§ñ·µIíıGõQÇnL~+„]˜S_›'Ò·+ò\¹Y8îe÷M;Õ¬ÛµÉ;©%®CòœÕPm•ìºÏ“zÙŒxyg,èÙàşÀLŠ‹×™µåw‘~Ÿ›n’R@Ş¬Ã(F ñ@TNøÔP–UˆÑbSÌZOH‹ô}d
->ã+ÀwVmØ½C*’®u¤Êª˜f/'©©§±±ĞË0Äúêj=!`QÌÊrıYyß|?ÓèÙ•›Ÿ›Ê:7“t"´•kƒ%+Ò¯2J—~ùŒ|sMNãÛÍÖ4QS¬¿9ÃøÑ”®n Ğyÿîyç7ÜÕçµ
-­dk,Wùèp»x'·l7£,†ïÅØ•òw(—yÂ ñ|(ë_‚S)à Z¢B…şÊVwLÕ7GÍë¢giçË9:pUÁKpXr(à€RXúm© ’'âL#N1ÅLã8‘Zi@UoK\¦kJô¦ƒò€^Š|¾N½(7wÿº·c; M`ÿt½,2@ĞM…7Yu¦¾qñË'(ÊC.Ş-Yaˆ  ¶èö]ÅKa„÷;¾9$N=³š
-ª¿ÍàĞ3P»©óW¼ÏŒ7:ZèÁd›êİ²pHRèV^>"ºfŞáZš¿
-¥Ñ·Ò0qÿ8ïØ†tiŸI;‰fq²®®¯)™>'íäƒõÔPTœÌ^À=j77Ï™2á…¿dúT+ğ}Yè‹ÂW†çbßŠ7P¬rç#î d9÷FoMµˆïjL¹Õï}º(ïJpĞş“ªäA¦—ü"ô¬ãgqYOºüŠÚKS3¢yì"(WàUú¾©ÙZ8]T½L ü$Tp½|;ÀÂéÃb&Î=sÜ
-ô'xÑ¨OúS¡N®mX Àbñ8$—`Ó'üK®&ı²{£†öq()È€\3—çÃo8©=ßC5İQ!ãaH¸Ôß´E®T½s@tvîˆ2´î›î{ 7ÛzTm‚8k¾é5Æ’ª+ÿV…ÅQ1Âzë0a‚lyÓÒïåK©2ƒpìáÈ)‚tÁPyÚÅ»NĞVZ– XbÛmæö˜ˆçm@ë  0İ¥??Şv 3¬pû!³ÍŒ˜ÿ¢áÌ¾ó@€"÷y¤‘Ãæ=âCj(ÎÑüÕx¡$åÖáTg!÷»Z‡s>c¯s¿?fèï?µ°ÓhÓÑƒø®´p„Zc{üôyî¥s ŠÛˆÃè¹ğwkäœ5Jxáõµ_a­LRÑÂÇ©éÛ¼Œ€'İdóÕè3ºÑC‘$t–Ut}¸Ä6ş­©TÛÁÄ¬QÎd,í¦é¬İ†ËÃF&Òô×P¤Âá5mğ¿¹Úàw8ğŞêS{î õ×`j°vˆïÈ	PŞ<ã¢Ä€R\Ñª½¶x”×“]ª_™€Ñg%DaôÔsÒÅ52	¬÷ùŸl#ø’ùÉäÕsR½EÓBîåTY“5ƒ0-S¯Íp ªî\Ë3z·tÒD¹HY‰€,@½87<G¼Ïü”A
-ØŠ¨”§-jµ_´uRÁ¶asÆzéùCğ
-«Ñr:.^ÉMW&È$¹+iáuãHWŒ=u”{†c? Ş¢L²/ÅtÜÈ_³ôÍ7 A–W,<ïÛ‚›®~^S(>d´³;çƒu”çyKßPmÔúKÖ[T:Ua»Üi©`­İÃä<Çy¹¦s÷WØ†¥ğ‚C&…XÎËëÃ<êa~–«1££Çsnşo	¾4’S¢`§wnÑˆ€¿®|`óÍib7…«ó/îtÊèjÜ{ìŞ6Ÿ4Ò3éï:ÿİ¦L¶©ÇB|Vİ}“ÎOog4@®ĞmXÎzî&ÅÛ×¤•´NµŠ²cïîID„.ä ±´R‡½ÔFûG'ëx›İşbkŠ<éŸ{[‰ pr“N…"İ>ö4WLÑ%²¹ÒAE3OÍ
-cÔÎ•Ä<‰OØ|ù£şŸTË¾.`2†·lê¯…Ã¢#@“ãş'VÚµn‰÷¼šY-¦XÛÕV-â3â÷‘Ej4ùñ„çÅ@nDàá¡è~­=Õ³Fx13ÿ½ ’Ã?ø}M-
-—óş ©ëLUñÃƒ÷B2bpOcAºæ»/FH5å˜ı}üÎ wH/¶Hˆ¦Á‹/ÓÔo¤ä[g]¸€ú`J3€÷±íRÛkK¨°@+¨Ş®ôĞ7¶¯‹;R°¡r†ŞŒ”ÎLkÍÔø“ ã}³á·üÆ°~»Üû®®ˆŠ›VÌº¯ä—¼Yâ½9Õ÷ÔvÙ¥¾á…ß%\ç¯Ä¡÷z¾Í½½÷ëIé ~ ˆ:£>*lâ¨ß÷ƒ`E43Á±_¶c^è‰
-”r‘½.êÆS8§	æ]wóZ4iİğêÓ”‚kFD wtg?ÿ+êı«+¾é¯o7bá¬ı\¿k;¡ O-Ed[Bİg„Ÿ²3¸‰·§Î‚şºOÆİYøÆ©LÍ}
-jÜPuæŸ|˜ŸÈT
-^±LÄ½!¡É7F3l AÖtN |İ¤Å:Íì{è’(°RQdĞ„@Û¡(ÂéOŞı™Ü£C×l:î3ƒ4ïTth+kpö’Æú9Ëé¦¾3ªoQr
-ÔE¯:î=Â	7—EO~Êşù¼úáÌ‡n[$>|ã³Ä‰’8¦©GûáU‚YËSğw<§ÖâÄ”ÛÏŠaèÓÀ°­ŒnlP ‘<]~‚Z›.Šîƒ†KûéuÖRÙ9Œ©Yg<ë†×œ¬eç†ì‰ëâú•B©A»¦ğ±ş¬Dn¡6æ]z&=-ólóİõ7q'âæZ©’¡ú¶ıŸàW~”Zyb4%Õw¿Dµ‡³Õ/Y¶Ú'-„T?*·°¼îò~İˆ"ğ.¨gr$Ÿ‹‘²¿›&×}%JMª¯)µ.*Óiõî;ä/:)bW™0ÚşÕºÖhqNfêUbâ¿äâYdş¸IÑ0xå½µ«ÿO&•İÃ%lù÷yBÏ²&' °v¢Œ_}-Ù6¹Å`n¡r¡4–¿ÛvzøÀª]şllò@ÍRfÑ ÀF/>ÅğrRgÁûd;yoé
-Rç(}úÎ,4oÑƒa(¶‚à/›¼œaºŞ $x.÷jŒÕ~ÅõxUçJ	¸û›¼ÔèPsùL»#â„	 Ä¸Z×‹‡¥²âÊğÃ.D~²ó*÷¸z»Ü²†ËÜªs…§¯V·=ÊHÏ4.Ñ§úã(m·Î%ïğÄôz&õ{ábËÛ;4Ö9,6O²wÏş×œãBÜª}’oGˆ~¿µqøµPàE
-c„àÀ¸¿óƒáOÓRóüã®yî04Ú<½	™ï¦ıFÕ¾›³åŒQB-Ê­æĞ¢={ ’ ˆÒbøÇÁr+è‡ÔDGÕF4Ê…\dÆæíÃÕyŠ*új¾>D»ßf¸…`‡g¯>=³}!*ºL!™wn†!Ó!% <>èó&» Î„xŸ«¯”\¥(©`>×€?ó¥	ÛÕ`üj…‡)gÅ}€ûš^µëÙ:§ÍÚ'Ï¢ld5“RĞ)u¶†)©NİkÒ%éP¼¼¸º
-_¿Ò¯¤­¢ ğÁ¢üa¡fŞ17áYKf÷%«ÿDmøM¿é{“¢‚Íîé[¼Ğ`•Ÿ(mÚ_(¡°%¤)È–ŒvB:İy‚ãLAsWªï6TQÁ—¸RèÜbjÙIÊ·ã"'İñ&Ÿ,²XRÓ%™‰Æúvø ìÎid{j”˜”Ò¤‚ïPÈhIËÍY§×³t§šY|7Ey
-=ÑÁ*Ør~Ñü5lÔ&!”D87zu‘ğÀtq|†5	–T˜ƒêÅ‚¶bœ3|o5‰.×Ëˆ±*Ş7?K›É²“#6ÁBEŞ¯½Ò1*ÇÙ„+qí7jÿ»°½AJŠk};f;*v~l´%ŒîÇåfàöEGŞ"jşİAĞ ğÏcHUOıÏ“Š)úvmX¹Ğâ¿‰OÎª0i¨«Œ—Õ47{¨zf< ³ãWĞ2qğ¶¾ìÊ+1t$ií]Lf~÷ødù£Œ9ÍètwÆ>ôv|	ñUıåëÎ¸/)¾sÃé‹6œ
-ù¾ŒmŒÅW#	<ùmïîã¶ŸÓ`|vV» @¥â¹Ğˆ]¯#¯ÖâÈ£¿ìû˜Ê<•—m,[mà§Ãl]´M~ÔÖ>@»‰ÂS…€iš7À Ìâ–ÎD¼‹1ÜUç2ø%B„,Ñ :¸ûµBX}I?«Äx8n]3>.Ø_ã¸ö	ºiÕS*f••İ#ŞÙ³ŒÕÏ½g0$4”à? ’‚ÀAŞCÂayÖïYú%%ù@€h¥oáÿş²éÿ‘©ÈÕ|w°r[>úk_˜DTëÑÆÈ0ï•é'Rî®ˆÄÂT7ÄšrğwÆÉ¬9‰ˆzˆõ–ı+Ò¶Ø6ıÔ•l2*`Ô4â9êz”i8¥¦ÿôR­–û;LK÷¹ÇŒ½P`1ëçq¥½¥û¤ĞÄxÍÂ¼I´(ñá…çOŒÁIí~~¦oœ·å¿(!‘îË¬Ÿ‰Ò¯¥¸Ôè+’åe¸nK$ Ş+ìÚ«r@È_1#ğ#ú9‚l]¨Œ®ÃÉI-0O¸ywÕÃ‡æ¢Ö¬†Îõõß¸›fù÷YFV:êÉ¯ï™@›Û"mÍ».~†º(Í™9™/ËnlO•åY¨ ¢bÖÑY—Ô? M©¯‰0²UÜä0o)´¦)ê&Óø÷ì–§>böõYCöxªG€å_›~$pÅ¦%V8L®¯·ÔhbpH’Z)-®êm[tdíT1÷Ø‹÷âAää]Ól€…â[½Ôšû†O+û
-VæAX÷¡r8oõİ¦5şn+°5«(¼iFB!½;{ù/Šìà$Äyˆ5<ì-P~€‹—¡dÜ_ã§«ÊiO{VxzÈ^7”üÕgåIW=)˜`cê=¬qÊf+¥.(Ü¶¥SU.WIÖãzµû	ï©ÆòÎùî¾âHZúUbë!SÅÒ­â=är&¢tÄ
-n‚ñÉ#]ŒÈÕ)ÍØY{3!î³ëÎ¤T©¦“PÃååbùl~Á5¤Èï^ÈÌ;n â¼2¢ TÙ]•ğõ˜ÜP±ä@4d©iYîÁ/Eh®D°o\5ˆ0ğH¾Uü/ÛzZİİoy÷¾å=¿Ä‹~KA,Xµç/J,íØ`›¶äNÄ
-BøwnQÍæØºtÔw[–Qƒ+EvmÅ&pHİÊôñ¡£&JhJïv~X]~ûã5vÚ›)q¼_€¢Ršøš€kšõ‡vˆW#ÙÖd>ç¼7ŒƒïDBZÒ”PáÃ$Ï+ò‰Öª 6±ù#9±ÖÖW7Œj¿?M÷¶ºu/¯»«³r•‚f»³×+øiû­…¢`Hè·ùáAƒ&Ë‚‰xıáó«m¥«ÀAd	ç¼Â¦½Ó³2Ar!*Uwi“V“Hk®¶[ÑÙ¹3p+•çbÙÔ‹ÅĞímXç[ÕRë•^U„PC¥W ùtÃ¼Ï<š7{Ïúœ
-ì6)‹Ş9‰,P<u×Z8)N—Ä·ÇÊy†ÃıÄ=¯E6‘`µìQ‡bÓÊ@ JÊéõ¥¦„LUŸ5ÃÉ_2ÈWJ^á>¢‡-<„™°p‹?shØ"ÓŸÖ÷ˆ¿D‹×rğÙ fƒÇ±ÒÜZhp–NZH°•]†êô,ÓÍmãËzlè¯æ4ì$«Ê"ttÆÔÅÀ].?g¡üI…0’Æ¨Õ?j0Ò@(,‹.H´Îiõ[‚ï–šÀ€æÿ0t¾)~ç#Qğ-9Z‘Sº¨Ö¦§WxK~×ç^Vnå-µS.h%ø¾²&³¤dthõÅÅ¥z¨)´áÍ1÷`z—§ıg"S‹°U÷vôI"oí‡Sÿ–R7ƒ!qT/ò¸ÇXŸşÇCNÑ-º­ÆPüãWÅ‚«—Ç“ò§”vûîW<¿*'¬k\_àB6ø/	l‹ÂJu¶Êëø@aŸ/Ûi}'h1ÀFİHî+lã³•ÀÃŒ^æ" ã{¡÷CY‘à:(ÜKöà,SÕ&¦ëBy¥Œj›­=»G÷±KÒÉWM˜ú§XDÿğPg8¶”ûËØ‰ K+1?ï¶Ù>“¼¶oU´RïfHfï¶o)mnŞKB¼ëÏ±5-¯^°®E1¯K 0d±_ïR0rqËMÍF‹Ü”ív‘á¯|ßqéjšª3APJ˜•R	Òëáš'K–µ¹(§SÕÿ•ydòÄÇ6‡ô¾ˆF§/ ò5Zñf&Aù‘G’&µ€¶*o‘Ò	HMâ$AÉ°&dDáò—{ÂdrcQ0ù`éI‚®läÕr\6­¶2Ïê5Çj¢xQÎ¸QäƒÙF`Gç°éŠEê9^Ã!»WP•Û‚-²ËÒ0ÀòdÖ£×€°ÿêŠœ:¿^Zß8›:Õ‡®I[·±Á·F–fj0/™ÍÓ`×ğúÜ°Œ&7'€¤}-ôÄaOèÑì.ÄÛÉøT›³´¥\Z·«!XÑW¡Æ‚«Ù3Ëüc¸Åï¶#DT® î­Óz§(y–‚¶úÕ¶-“LHËG‘NbFãaMÿÎSi=’vËò.JËM¿ÃSÖœa£á4F´>İïËş„=q…½»3w½ã°‚«äiŒ	ˆQ¹é…R…iŒC4£xâ*öFã¸ì(W¢ZY
-|ùñ§ÿ%ÜÚ¤¸"Ú=´¯m†){;ÇÛª‡ŸÂ3 §‹é)Yó²kwoD%fv‡¶ƒ²zßy*Ò-È&3¼å-gkÃ%mGê4à“—Ú˜¢4UJ—Â\PA+ÍãÆn¿èOXs×´n!çz}Óg¬û.ı½Ïd,r4w	†¦(‰;®İ—w»üÎî e>€R}ûÛ>ÏS²•»³/-BN Œßnÿ£ˆš¨[¹HV!;õWÓÓ»F!å1h¤ø·šVTø{•LòÕ%İ/ë·²œr½ÈÉ8{MßÜ€‰E·/obÃg¯©MuË¬<Ÿ$Äˆ_¥ÄÖïÎçûöW¢€è§9yÌ—)³ñ†·˜rPŸuÏP>‘!&YÅ@ ±|…ğOúìx=ZÉ}R~ÑræÓqê‘dKA¢z7ÌÏö,'ğ§K	ç+Õ¾™67¼Rëú8?s&q(Õ.Š¢ g¿'¿Å#€Şe+¨!põzB¸ï'p\Œıë©”µë“¦J~“¾~1°±¢CUaFŒmPùYŠ”Ò2T}a™š8Jğ®}sˆò…J·[Ôø¬õ·Ôj™Kş ÈºtØ¹H{±×´üEy0û¿  5(±nè~	/Iarû¯_×@z¢È”¹	i å/ıpc!_¸£ˆæ‹¼ÉnQpKøo¬h•‘N‘7%ÖÙ—è“:ê¹×õ+CtN¡ùñM8ö­ë’9~óHP{WóŒÁ™Ö_ÄtËˆ1!R§\8»OóıÄ–~v˜ùf;e;“ÿ}{ºc÷ ï³'çp“`­§ˆüÔµ|\{xK»r²àKy«ÉæN?	3 ÙMŸóW¼!×]C¥“Y kºÈ4å?¡Ñ€”dÒLÌ+<NŞušÌ+…;aÈ\gê’_©µ)MÒ¿à»ÛÕ‹™ÜÓÁÆØA—aÌ%œÇ!ĞÕ7h#úèï®*­Ëå¸RÎ9ùb•³Ş‡ø£bû}år³Y’óXGhëÓĞ†9Q÷
-•dMÓ1Ö¿[½!(±ªÑö¡àü˜Ævné\V\náî—ºYBî*M8ÏYğ?Æ÷€Cİß1—–êG1ñ-Ø'dĞR_•ïÃ‹ £«Å}ŞÒ\ŠZ|ÿÖë¾I­"Îø`¢Ì)÷ ØêVÿÜh08l1ª11³¢¹+£øU6†N¬¸ûƒûPÙïK.L|ÚH`½·'ÍÌøsk/|>uz©ª’+}*ÄËCY„¹gÁÇÄÆ³¥²ö5}p5v¿)ÇL¹ñ2$Õ§¨'	ÁÎ_xMÎº,£ñ¸×·.Î¤Âsn¿îL-Jşm…E´Ùİ¾mŸCÓ0Œò\üÒš”Z%ÕJA^{
-dlÀc{(ìvtÍ¬liåei¼ˆ°Şo1øĞc¬æ ‚ÁcÉ³…îÛ„˜.d]ã-Ş/…Ã:XÒ,Öán,j£´ØRã€3ãD)ÀŠC.ÌRóxËĞÑw˜ç4r2<Â,Ğ™T¹êÆëOÃ¹K\a’$Mã¾‚âF†ÚË¿péÅ°~«Àx‘´m»³‡ª\»‹şíLgoÔt½ª2€ŒF1\Y€‹gáW¿”|ÊÔoêã•»Ç.×ŠeÎGtw%*ŠÄ^æt.ÍŞÂÿö_è”ŒàÌ9g÷¨n.,İÙË“s«n¹K*Š#	r-¥O´@` •¿™2Œãx ÊÊ}–Z…wÿ$Öù‘ÀºŠ,=Qç”QÔ‚‚3ĞêrÜÔü«ÂJN*N¡‘‚7 "‚i	scr²ùØ´7qÿ-„Ç‡šq)áR:<waéfÊfüu5/šÚ÷Î'\7÷€ïë^''ôpeİ¢x Š¤öœîÚ'ö¶$ugiê››w0ÅÚş=eôv†}€
-†Š‰[š†k¹0Á²8N«dß×D^ÙˆÃBj‰|=Ï€ã«ršé^!—Å2ò=jzªGäA*+D1+ôÒ÷@
-Ùi9x£¿+`Y.1R(ä¸Íká”oœº1Î=V3
-&Ê.½…öÙ>tø’°¨È+93Ø6Sß=}ìï <õjZ!1¼t—íw¼9Çxİ»9‹ğü”œÊÒh½—FˆÒóÊfßéˆ$Ş:qgê½ïD2à&W,<”F†àFµ“H„™–N “vPš]°d‚ŒÑÈıg¼R0:uğöûMWùšò‹0\*(íâ
-ÉìÄ.ƒĞÖip-izn$ÃPš[MÜËú5‚‹ë0(Oí{¸Êíé¾EkrÕ ¨+UÄ3ms'1”œì¡0T"t·±#Ñ°W~À)İ7mz†K	vÜ?p^:-Nû`šWpuÍ…<\ïy$$î1ÒşôM×iYñìW/@«±_"GP_Ñ—ø6‘°İÓÄClcH™<°a´zVÎã‰J_r¾A(•á“`âfAVxÔš]&1×•¸°tn)…DéÌëm¡kQa™E¡òİá@XJ,6öfj£ÊÅ°²$âĞÑ¸:î{÷’»Š$ú~êôk.Ú:¡õr§‘Y·ù R.´U @Gàê®	…mªZº¢Jp¡:Lv_ß>ôxx ¥]3‘Ğhß¢=¶Bkà¨o¯<¹Ù>nŒ Ó¢Md5ìHİ?ƒ·Ğ($“	ß|• †¡!£èw×Œ8Eo.ÂÅõõ²qmÊĞP
-Çôñ?dafÃùBBaŸ6q®ÅR=€™r$]ª±÷ê«rş3Kã*µXëÉ§É][İ
-±ËŠŠØÜ¾-ïg$pß-§W9öıìùµ	c³²ı‰^ƒr ‘1soŞª¾ƒ½ÖL3úgk°08õÏuÉ8qqdµx*q"òËÃËkî(…ĞñÆ\¿ªòB0]8¼?¹HûdÀÆßó È<Å´„Aˆ¦íIf¹–Ó~VhvnúZ1ÂEµlğXâú»‰`ÉTà„À½dM>}/3Q?ŒÍÖ0ğ¯"é¤Œì‰®¨Z6y:Íœ”¶Ğ¸É/Mu×·¹<ÒsŒ£K—mšû÷«Ü™<Á81¤…êPllI{\Ÿ	mrğ’Q œ"¬EÓ:Â|¾áÕT++lÑZFˆC³GÑÎ"²éôÁº£Z® 0–^õ£çÜFãc`úÇ_F‚C6hMP™víÜÔ	M—|'Î„.Ä´¶<V¹™wÏ¢4¯HV:,Ì{-¶
-8e$B‹¥È½¥ƒaEkÊ¨Ûxw/¡PÀ“Ü»¿}d]ğ×oƒf®lWN×ü„äi)EJNÂ‚‚Pˆ <cìsßfÕ;ŸbóúÿŒx)nY ½åñ{6Âø‡7ÈaøamŸ¤|š5ş(ÑNÎ4{d2!{­UPoSµYúºy?¶€Á`¬aÏÇ‰àŒß†‡uYĞuÖpªÜ±?–‹ÚüŠÿæ$ÔS—½ª®uú²Ğ¢’§àSSIhœÏ|ÍôéOP‡³'pØ9Ò&
-»Í¶‰Ş„·3Â'K)O‹Aryƒ…¼÷Vª&/D‘».gor­2gqîn¸_»Üğ9ÏûmjÑØŠT¢ºvz3éz9‘­}Àx†²¸én×¾-Ì˜€¦™àËÌØıK·:pXÔ‰	qLs¦öf^ş²_­DÛ«½«.¿İS•WfJï¨Òç“ƒ‰MCÃ“¿	ÿ‚±©*k$~lJvı’æZÆ•pó¡Ñıg…*^€¶¤[¦”˜±7¯Å>;WM&ËßT#Ç•ñ©J}NLt¼? ŒÏ\õ=UİÃî?×5ÉÍBÏ@“CJ=7½wæÊ¢\p´m¸]'Ğœ‡è»cût c)ûëK9Ìrã"ôyİ“K3•e‘¼1kä”Ëy§’»©€#*éş›³µ¡‡îÂRáÜ`0uï##ƒ	Š©:}®îwã•KH?¶Å)¥rˆe¬…Á„°2üıF‘†vEŞÍ²È”1] x³ahâáùE³ô·oe_S6€FáköÊwÙe•Dıà¼ü3ENE„4‹HWƒB†ç.Ÿuét…+(åT:Ss´©(Ú  )üª—Ë*aŠë\«€£õ+Àö„˜ Qüø(Ğšñ•ó ¡½€©wYÕUíü~‹ê´*Õ`-æ¼bÓE}÷ÿºş…G™cZl97	“r¡Â3ÆnˆaÍn¦Ÿx¯¸yµ¸6Áæ9J
-û-¶€„^şM¹e’®û›ö5Ÿ|®9PP,V­µJœÏÜ¾˜z·ÿIbƒ®54ë}©EAºÓü"ö†º_ÍHã48jû(2ÀuT_‰R7½iæZošK}w	º¹6€¨ÑÃmú7AÁtC˜]¯÷i™=¦ÒXÒVÄªa”Ä{GFjAÙT0Ô/ZÃÓóõw%Ç%×“‹²ê¤ú÷'À»ŸAJ3ƒH…:=° pL«r¤9JJĞšã0õOIĞp3ÎU’¨ø	»–Ùãc™™|4ßÊGSP¹ÄõQCÄ¸½ş¿C{ü4§Fëcˆ/8 T&Ä›¥º¡1ŞTSc„¬áÓ˜\# d.î>–#7ó%Ì‡Ù˜÷ErˆZº¾ÉYÏYJ·N-Ë¶ã¦˜c4ü¦b{§¶ ãĞC‹Ş7f8u?éÇ:!îåQÜ{¯š
-±‚y¸àßü÷q«¸ğqÑr†¡>ÛWùõµU­‰§ÑG.’&±"¦0I¶ñ,¾`Ñ'½²)k
-•k«íØ
-íDëŸÆ-’~õcºï›o+tRvÙğ¾uê¶£°1$â ãê®¨º&mìÖ5grü§¤jÅWY¨/fqß'\¸££DŞWZEûÒ=C±5ª¶GyrŠÉeÇé¢SM¼VÖ÷ıòõŒ$Ü~¿ĞêÍQĞy]—/)îÉÏ®ÌºÔÑ¹2ò5÷W~ù<“«3Wwa6Ïæ™ªfú;^­M4êã£›æºf`$B\K3Ì§ef»{w‡ñ†qYNúçp„°Z„@v¥+)œH9xÎÊÏûµ:´ÁK¥LHôÿıg/ÿèŸ–4KÄ™¨’DñÃ¡?ßn®ècÍáœÔØäà!…ô‡w[,´ø*n"­¯â(ş±®Õ¤õMàó_¶=I È‹ĞJ EçC¯íˆ[3{9knlÕfbé(ƒ‘*Šis:€"…]}ŞU?ŠXÕLÅ[Gî‚¥õ9pÜ\´l}Éüàà½}½“Æ4¼·ñHè¼Y'Ğ£/ç—òù!7.ygb ¶•ëäçbJdËâáå¶s´ÏÜ±`å¼ ÊØ+Û(Ü­ÇUÙõ¯<šëx‰Ô'8Ş›`Í’¯¢Ã”t¡ÂŠtóH‰{mUpÈ?£üºGŒwêS¶ÒÚ©öR?ql9#nÅguY	²®Ö¯H]”UåñÁ']tw(‰.u/6¥§²7
-§‘æŒ>ryp|WØ¼òíá&Ì4Æ0]†ôq¸Î—Y_’e4iÂ½\iŠ«hÈ&à†"~ÈåM‚eÈ“>%NŒg€ç±¼õ™„ÆsÕ Z"°+Ç‰ZÀ@êr–	5Vó«7cBK¢ ™dæÁCQ\&æûI¤D!úË~À\…&.@æ¯`Hb¦)À=‘8E
-Ù³€¥´úl,¿®(Jr>PÕCxæÆ3–Š€jw0×(™cUö¬TÖ©\˜6ºÛYr 9h!1˜µÂ~ÕCLÿÚşi2š‹ zÉ;,êoÊı‚©Ã­±Ñt¶'¹¸j<™‘!mQ{]	x*(‰¡İ‚’Œì¦ß
-’Œg ’ö¬F¯[ëOÌÈd¯¨F&¼}§!!“nx‡µ­z%»]9İ±‡ŒMäî>~BÓfåñëgøÍÏµ×¼Ç4‰İ¸Gh•hR¡é ã·†û¥'‹©.M“q"o†öäá¶¸=Â‰‹¼H3™ô gÍ£#ƒ¾}.fßNÎìNgkCÓérµ‰×‹W×Ñ®Hã×'±Œ´±eÿÕ¤$ÿ‚î®]CJİ×b“œöákÍË
-¬Œtzãd'ÛwBøPã«'òÓÏÓÀ¹ù Ñ?pÈşA…¨IŞƒ˜·KØ³h/ULfFıh-á±m¤†i	oEÕìsv“H‹¦ğëÜ	†ÉÙ#İç‡1H—~`±½Eˆ{RjaŸú`Tù+€’ÍZd­ª¾äv™0¸Cu*^Ã”zóVV{X½Ì§oTûPïBõYH$‹ú¦á·Bj÷HI5\xƒµs€Îé4¤bg1rî¸çZßCo‚U£Cêê Å(¡'ÑSõë\–-3­{â@²Şş–î“
-ƒƒêã©½ëp\Ä€1'MB¯¸FÊkö­~0Ê£éüºº3 xhøX`u«”/ÇDÓ øo™QX5@?ü«¯‰àš{–nïı5ÊÄ\×Kzƒm™täşöGä@Éút£UæÅ ×xò}C¿>­*¸Ş¸ –7õ»³‰ı¾Úö\ÕhŠ1Æ--1ô™´U^ì"”k˜½#'pg„8Í\AwpÉ’±ÍLøÌôªj}Ÿ¹&4ŠkiÄôÂÇonèY<¨µS‘r%@>ë“ÈØ²ï<¸.jĞñ¹ù¸ÿQæúĞp¯Øêpa¡hAt0áÀiÆ”‘©­@¯†sJgƒÚu/½Xˆ\i%ÖWRØå+‘ê‹w2VLÙo/À#r®õˆ÷6Ÿ>ÛÖ^¿ÄÜEbsiıufª·lø(Ã»±8?é±cÿ/o¯§
-2†,‘OÍÍH'øêİ±­8ŞJ0…Šù6Ä\~6‹/^:“Qç”5ÍS-8\ê”¢eİŸ÷ŠAi¹–#ˆIxdµµóòÔÅ"fzÕrÂäıÓ;ê·Q+ }‚P¨±ğ¶Fä%grÅG¡;;öD÷_!ü™v%gvZÿ±N Gó‚Íª™®ù¼VNû(}GFÃÅIœÓßª ¥n&‹l8'µ?m
-LĞ"4–fí×“óƒZU*>Vá-[Â6­ÂAºÑ”…Nx™§Ø#œÁU‰[‹a:¤¨·»3¾2-¨êW™'5Üƒ)å¦sØ}¢¡Œ­	_ÆAôoDnf:jt$£\wJ´ÌiÍš¸üï¬Á=•ÀA¯Ø/·“ãG+ÖV_í…ÉÂ34ËØè|s£áy±y=ò8óÙú45Æ3Úù#%²±Ï[*zß°4j§ Vœ‡ZfçÍw9KÜ†eàëlŸ±æŸà6ãBğkmÇç{d‚è‚û°6è°1`äªWÁ ‹¾&Şß ‡Çój¼m"ş{vi<U?ÕÙûìxß™$¿¡t+zLÿyûDâsÙÅü¾ä%Uä2øû&ùõ“Í*Â;Ëåª›á9ÏYÖíµÜGèoıc{'còa9ÁäÈ™«3!ïnP’Òo›ZvÙ¤½@¢MçÔ[ÀPãû~y)k\y¯¦7òMY†)Û‰1Ç—cğÕ„«ß™Ö¸iUø¤0"1ÕÀ·ôÛÙUÔ‡Ñö*×¢ê,‹ş¬’:¨iIÌ	nZÏúşİ½*Â	ş„×‡à‰A%|­?Ç²—nIá4.<^û¿øéÅÂ{˜ J†BR¡E`E2îu1°Õ‘ÓÖI¡_CAUH;"DµT”S—fÛ?,T5Më«2íb+uÌ7}¤/j~KêIvX©+©­‡'¶/Gu™YR¤ÒàhÎÈu¬/–mõÜ¡`?ô†ÆÛ‹G#©^5ÂõaĞ•¹ànM»÷Â”òÙÕân#_Q’š71RtÑ”$%š¿µXeº½ 	>øI½}…U—"ó»â¯‹î¦šÅ€wöû{è ³lQÍ£>³ØùÍÇ”ìjIéùÛ_AtPĞH4#	bà‹ù/Añ×:K1±WzkLÔ÷—_%u›T¸4N=èu®™ecµÂjÒQlù¬ÉõÒ•ÃÅgÄòa!éÙğ¥èd¿!GCîí«Âš‘¢PL}üCny›~ïøów}OíC·WhËİ½Là% ?(õÀùV¹Æğ0OÑäå%-Dõ	
-vkw7º·\änâC-œÔ0Xï¿`ËdÒÅ}~d.¤ëô‰pHXx1€Ì–è8_±ø«_ô{E²K°[¸;ûV)«=pTGŠ Q8ndò´•í˜>ˆ"È1È¬`ùN<XÅâš÷D%b³ZÔù¾õe§ŠtBŸ:e­5šâö>j'sK	Úk ,ƒù	2ĞågCê‘tû˜xq0)ù\#¥¸«ù{§°ÈOo0Œ‰Ÿ©ê”âP>4œ-ÏS#éÊĞç=ÄVC\-–ğ×L‚…)ĞK:ÿ¨™ãëïá	7ğÜg›JQ:tyâ<—n¢`¸)üÙ¢¡ÏF¹U”ü:Á‘´áæŒc‘@ÉHC.Kâ?\—×Ğê>Õ³w²À÷Vá{’Õ7AHE9~ªü7Å¥ØqA[ š^;Y¦ıßÕµ{hĞòá…ÊËgÁŠÆ(vÉæ‘\.NØj¡±hÒRHh=‘­³’Z+@öµ›ÿRÏ:!1@rğ¤€Ab lÄyœè	Â(ü±®Ş‹g‡ØO-ŠÖt€0Ê¶Œx88‚^ïò;Áé“	Ã¤:y	"ŸTÕóã,w4Á³2Cë¹ŠÕr†íp*˜ı‚iëG½RÇÿTÚ¨u^:|ÓâéG0¹Q›gã3Å¡İ°õ6tôxµtÒ*JéY
- 8¼˜›/ØyÖz`wR˜³Û3˜x¾nƒÑ]d>v&“qW÷š×ß?ì`Â€ıKÌï 0 ôyFÉ5YZàQY³@0]šá~Ø’ÂsD EŸ‡oÜ5xÌï`MÆÉT—›ƒUòôóıV&U@R2~Ãˆo¼ß—-åÊ'5ûø|Ía¯Y¿ÀDÒ„”5„ —?èƒúÒÍ.Áƒ˜}†Ü˜+6h`¬çÓ°†YË•t¬_<¯HQÙSÄ™f	6¤Êş´Jh6xÑîÙ#wë+Í+fÃjs÷ªGz%Âï„æáÄ.…œNQë•:©omOoaèJ4…éUXló¬OÔK.ûÜİ¦¨nAœğSXU„î¡iæd~ğıíHª½hÆ,Øš¢»½}ÍDù}eORŠ£v~ê/]Ab›\2
-µ1×¨EAk~a{zÚât™ZÓğ£ÇÚSæ_íí8µ9$ŒğÉ§‚®zëKØz_ÛŠ×`ZÀ rï4Éîü¯J<`Õ;HüÙßIt‹¡¬€¤ª®­ÎÄÇ:3î»G™À¼½ğa¾{Ÿÿ‡¤Ê/O ¢$•ˆ›šŠÖ'®?ç œôy
-ÊDÓım1”%ÄHezSsä^-¨A”íõ¥m«¬ÏU™hßQ2ËW¿Ğ9oW
-âQ†ÉcU¶ômÌK±BÇÚÍåK¯¼Ml­»h2B¶1‰ÓäÖõEÊCPğN“Ñ3bz#X½ş…áxuÅ±)«VLµçqŒª{ÇŸL­!××%@úµßÅü’o.Ü…~/ş#‚&ÖábÂ 9oi'±WN}íÓo‹Ÿ·¿vÄ– (Şñ³ò*Y`j™ —•ã$¤•R‹)¾ÙDN¢ˆ¤–²}ù
-ôjº“!r]OÊ,…>½·r²Äƒß5Im†¶İ	¢Hœ(şøz«É)„ƒêkªm·ÊŠÏ4SÇ ïŠ3LœÀ7ª­;r¦=…ŠEµÌÙX>c³²³Ÿ÷D£‚üwÓP	† ¥û íz]Ì¼#Që-HDOâ­QL†£_e¨xe¥‚©qaÑ«°‡ğ
-ÛŠ—ú˜ã°(²€‰«C<Ó²›yovåYÃN™[xæQO¾>«%Ïcq>yfšèTïg 	İéÿeÙ.†8Ù`Â´”3Œâí½5²êø†Z}ğ‡ÖR¥Ò?©å€¡ğé3åOÉ–%«¾Ç¼›ÀêÍwÇæ<~grG Îét@lÑ”>…`6‰<˜@SŸGO3Ìh©s[ËC*Q?Má˜¢£Â­Ÿz-"Í@º®±G5Çÿ½úíÿ{/
-Æ›_[“)vÙâ•LO3ôZñÊÉÆü…ƒ@Hèã¾¾Ó^Ú5x=Ë79½(Ï\ö§Î×1Éá%r¿—Ùèó÷§O¦¥(›Ä3>º*´á@›E¨*X¥^ı)u)ËxDR_¡ÑÑetîå®…0b+»£ÏL)Ÿ«^ÕOÆJ8#°SÔ°]Ü¦á¥°Sˆãe®cÚà(ø.*£=JW@¬¯1]ö¦ê½G:~¿„qFŸEPİ’)]'˜}Q¾Cl8“Ãi™Ü-©÷”rK°V±Âİ!!ÏK­›.ÌÉC¨‚ğ–ıhŸ5Hœûv»p¯ƒVÙ®Ù6=ÇÊ‚¤`|*Ê*¹¬ØİÆ	TÉD‡‰?CÒôœ ,«·Góçu)koİ…2pÖå•.Ó˜ßù‘l»ÓIÄ	Ëğ3Ryîğ|ÅûØÁ„êI|oLGL»_˜ğŸçuÆåÖÁ¸”ô6o`ø®ì‚QoúÔaQµÈOyÀ.™É¦½I…öã†xŸ¹©…â*!µ7~Ö‹ÿtuÅóhÇv5rá AŞ×“%7”êbMÑ5Oe"¢“ÔeZzRÖÚzt²E „xµ?_ÍƒÀ•¶²	J(3¿™>ÇS¡"4ÏñÉÛæ}Ãºy_¹R8TÁ¾ ÊõâÔ•·¾ÅÀBVûPË4/Æú4ˆº¾K^>DÜTº•o}»P·¬ÿ;&¬O:¥Ïé%Pñª&ôr0ËOî lz­µl7Y²qF85üF—Éß!°Ãİ
-OÆŞu´3X^­2uaİ~áÉê*¾^LÌh]RL}³ u…‘‰àUò‹Î¶ç¢0P#A¦L}½`Œ	 i³NêÒdKŸŸøŠô¨åá+Ì„¡›Ç3øšµÈú´¦Ç¯§2Tğø€wºYšñÎ»¹$ëújÔÄøÆÙbµ"xN•DÑ$Xbbš
-Ùk·g›k›à$CvÏºoÇ~’÷.,ì¢øşì6Ê¼ÖˆúÇTÖ»çƒæº»êÚ
-š^kÊ:/èy¯23)_§›‘}ì,Zòp
-ÑÜâİÆ<¨T¥ÈH¯Jšár(áÏƒ¸z®v'§eÛYÈ”pó¡İî@Q‘3ïBN )-mwı=ZgrªÚZòd±à
-´ß™‡Zñ»FÜø*›°…kDŒ=3›%Càí`’ÀÇR9·‰É'3€pÍu„àŞ€z§Ng]ğ ÜQ%ù£\ÿ 9‰µĞG
-(}Èòº×¨íƒpõŠ5mZò9h…,‡™Ìu"YĞk×S|{å³Ùü»E"^T/ \ï7â˜˜úÙ¦¡óÿÂè
-Sˆ,Ó²7N`•qhŞşdÿÖŸÿ–¬şµ¿ÆÇÈ°"ÂT»1l‡êÄ·Ç7ˆíªŸ]ànÀ¯°®Çî@Ú×"Û	0‹ê'ŠÑúÛTï#B‰ıÊ‘¡¯…×øÔ«<îÕoÿfà;éçùLÓ81;ûNæFÈúÒ{¯©³°r…šO-HñpñA0„;ùLs_)y=$àV±âm©@(œ¿Åİ½/DìÑòÑGí½ä7ŸŸr³zC‰Ã{ªí/ğ÷Â© ÚM¢U{¼âAÄXª'okŞÒ˜Æ›fãHpÛòØìL¹M×Á\Ô‰û¼e÷G¥sWÂZo
-7\¢“…q[j~N©[Çş_¹³Y¯ô9ü‚%DêáJ1Q“ìêÕöyVISôT$8+Ğc•L\K-™BŞt$ÔLaÆü*.n30”F
-¶zxCY©¿Zşğ”Â4ÿDçÒn´œ7øŸ¡k_‡Ó¼q<ü+ÖX{®L¯_?ƒç_àOª¸`Ze2QİÙì—œ©0ár¹{ü+ye6‡·Éaèğv2Äù%åèÍFNi},soolÒÎİxÿyÌèŞw/Å5Y‹ı¥úFË9dAsâ–¿dœ{eÊpe«‡Ã²N‰ëOêJÊ 9óƒèé²7w^T«ö§Eóìc'c•Ï²Ò‘€ˆ…"~ÌƒšCà¼OX—PğıGÁM€Û“X{.ğV©È3ã&ôÚªq%½u‚»İïYŠêc8+'@™	#¢]â­½¿Ì4êw@x¯f–hfOkÕ4©:r1µcx &)û·ãSãfCÎótWüß”CÈ‡¤ğ7Ï~êt?£âéß¡Ş¢œ›hoŠÄÒŒŠ±Ú»äódÉ !Âêï­Œ±£¦:Q6üLXV¶õ£@©ĞƒwÔˆ_º…›Äİ˜ÿsMqb@ˆ·XöC¼ï,Rı7Ÿ¾ë¸úyS|WW ŞZH²"TI9y?]Ü/Ó@ß³šçæ›NÂÂÎCml<OK—¤11³qÚ»>íy9Ä¿Ü¬´mmŒ Æs»UÉ„ÛúêÃ¼Ò‘…ÃÄ œë@y¶ş/\ßlGç¢Ì`Hú¸‡fõ[büân
-y5xv±4·‘Œ2F²–’Æ
-Fr|GüÑuM¨QĞ?	9]¨Ñƒú/„;ÉİzOë5€/3ö0±…çâM¼÷»¾nDÏİ‹n4KşzÀíGöulcï ½|œ£oI^…¸+”õ,¦c Ã[Ádë±ªØîÍSù§“'áXL•Ò}ÇîÔ‹¦¨Zs|Ã†ÈıT~¹.4Üúx7D9kUÿØxäÁª.èÕ)µ’¢‚8°$«Û¦Ø*ŒÑÒ»‚0=»XÚãh­˜qµi­W^~ªİÌ7JOëQ!ƒ8ó×5ÉÄ ¸-Ğ%4Rµ×æ­"yß_æÅ(3p áV›ãö"¾Zş ¿µ/2cü¿ıreçYÑ`Ñİè³Åw0t¦|0RÇïoÑâ¡÷B
-ÄË•AºÌHOXÜ÷p\}£/®GìÔ"m=õš›ì6Q5óªääŠ|Gğñ.‚pç`öVè¯¬"6msB”cÌavç!CWt˜CqçŞAı?Ej1íd¿“ È©Eåı]Ïôò¸ZÄhø@ìæ¾VÜÏø}+Æ õºNŠ™aÄ)ÇjØŞ£CôNÕ]0TÎ8Z†”¥éÈm²rlüì}–§Èı;3œ¸8mÑEF:-ˆ†üsp@:]ImŸ6Û·°íÄš’`2¸gøÌØ Ÿ+œ%6[yŸ•«ÙÉròë|Õ3—Š32¸,…GtÕvuİI–¤Rî±í†Ò&óaüåÁg—¥·x|åø'RØ¼Y}=include/linux/memcontrol.h \
-    $(wildcard include/config/MEMCG_SWAP) \
-  include/linux/vmpressure.h \
-  include/linux/eventfd.h \
-  include/linux/writeback.h \
-  include/linux/flex_proportions.h \
-  include/linux/backing-dev-defs.h \
-    $(wildcard include/config/DEBUG_FS) \
-  include/linux/blk_types.h \
-    $(wildcard include/config/FAIL_MAKE_REQUEST) \
-    $(wildcard include/config/BLK_CGROUP_IOCOST) \
-    $(wildcard include/config/BLK_INLINE_ENCRYPTION) \
-    $(wildcard include/config/BLK_DEV_INTEGRITY) \
-  include/linux/bio.h \
-  include/linux/mempool.h \
-  include/linux/rculist_nulls.h \
-  include/linux/poll.h \
-  include/uapi/linux/poll.h \
-  arch/x86/include/generated/uapi/asm/poll.h \
-  include/uapi/asm-generic/poll.h \
-  include/uapi/linux/eventpoll.h \
-  include/linux/indirect_call_wrapper.h \
-  include/net/dst.h \
-  include/linux/rtnetlink.h \
-    $(wildcard include/config/NET_INGRESS) \
-    $(wildcard include/config/NET_EGRESS) \
-  include/uapi/linux/rtnetlink.h \
-  include/uapi/linux/if_addr.h \
-  include/net/neighbour.h \
-  include/net/rtnetlink.h \
-  include/net/netlink.h \
-  include/net/tcp_states.h \
-  include/uapi/linux/net_tstamp.h \
-  include/net/l3mdev.h \
-  include/net/fib_rules.h \
-  include/uapi/linux/fib_rules.h \
-  include/net/fib_notifier.h \
-  include/uapi/linux/sock_diag.h \
-  include/net/sock_reuseport.h \
-  include/linux/filter.h \
-    $(wildcard include/config/HAVE_EBPF_JIT) \
-  include/linux/compat.h \
-    $(wildcard include/config/ARCH_HAS_SYSCALL_WRAPPER) \
-    $(wildcard include/config/COMPAT_OLD_SIGACTION) \
-    $(wildcard include/config/ODD_RT_SIGACTION) \
-  include/uapi/linux/aio_abi.h \
-  arch/x86/include/asm/compat.h \
-  include/linux/sched/task_stack.h \
-    $(wildcard include/config/DEBUG_STACK_USAGE) \
-  include/uapi/linux/magic.h \
-  arch/x86/include/asm/user32.h \
-  include/asm-generic/compat.h \
-    $(wildcard include/config/COMPAT_FOR_U64_ALIGNMENT) \
-  arch/x86/include/asm/syscall_wrapper.h \
-  include/linux/set_memory.h \
-    $(wildcard include/config/ARCH_HAS_SET_MEMORY) \
-    $(wildcard include/config/ARCH_HAS_SET_DIRECT_MAP) \
-  arch/x86/include/asm/set_memory.h \
-  include/asm-generic/set_memory.h \
-  include/linux/if_vlan.h \
-  include/linux/etherdevice.h \
-  include/linux/crc32.h \
-  include/linux/bitrev.h \
-    $(wildcard include/config/HAVE_ARCH_BITREVERSE) \
-  arch/x86/include/generated/asm/unaligned.h \
-  include/asm-generic/unaligned.h \
-  include/linux/unaligned/packed_struct.h \
-  include/uapi/linux/if_vlan.h \
-  include/crypto/sha1.h \
-  include/net/sch_generic.h \
-  include/uapi/linux/pkt_cls.h \
-  include/net/gen_stats.h \
-  include/uapi/linux/gen_stats.h \
-  include/net/flow_offload.h \
-  include/uapi/linux/filter.h \
+ *   * A task modifying its uclamp value with sched_setattr().
+ *   * An admin modifying the sysctl_sched_uclamp_{min, max} via procfs.
+ *   * An admin modifying the cgroup cpu.uclamp.{min, max}
+ */
+DEFINE_STATIC_KEY_FALSE(sched_uclamp_used);
 
-kernel/bpf/reuseport_array.o: $(deps_kernel/bpf/reuseport_array.o)
+/* Integer rounded range for each bucket */
+#define UCLAMP_BUCKET_DELTA DIV_ROUND_CLOSEST(SCHED_CAPACITY_SCALE, UCLAMP_BUCKETS)
 
-$(deps_kernel/bpf/reuseport_array.o):
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      ELF                      T      4     (               èüÿÿÿS‹X\‰ØèüÿÿÿƒÀ   èüÿÿÿ1À[ÃèüÿÿÿUWV·ñSƒì‹¨”   ‰D$¡    ‰$…À.   ‹$‰ñ»   < ‰è‰úèüÿÿÿ…Àtƒë„M   ‰ñ‰ú‰èèüÿÿÿ…ÀuèƒÄ[^_]Ã´&    ¶    èüÿÿÿV1É‰ÆS‰Ó‰<  º	   èsÿÿÿûD¬  t+û€»  tSû }  t3‰ğ¹   º	   èJÿÿÿ1À[^Ãt& ¹    º   ‰ğè/ÿÿÿëÒt& ¹   º   ‰ğèÿÿÿëºt& 1Éº   ‰ğèÿÿÿë¥èüÿÿÿx(	˜ ‹P…Û   UWº@ÿÿÿVS»€ €ƒì‹Bx‹p|‹Bp‹h|‹Btº €  ‹@|…À•À¶ÀÁàf‰D$¸   )ğ9ĞOÂ¯Å…Àÿ  HÂÁø‰ÁÁá)Á‰È÷ë‰øÊÁùÁú)Ê‰Ñ1ÒƒáfL$·Éèjşÿÿ¸ €  9ÆOğ¯õ…ö†ÿ  IÆÁø‰ÆÁæ)Æ‰ğ÷ë‰ø2Áşº   Áù)ñƒáfL$·Éè"şÿÿ1ÀƒÄ[^_]Ã´&    ¸êÿÿÿÃ´&    v èüÿÿÿWVS‰Ã‹@‹P‹Rèüÿÿÿ%   =   „k   »ûÿÿÿ‰Ø[^_Ã                                        0                                                                                                                            6%s: Frequency: %u Hz
- 7%s: write: %02x %02x
- wm8739 èüÿÿÿVppS‰Ãÿ°<  Vh    èüÿÿÿƒÀ   ‰òèüÿÿÿ1ÀƒÄ[^ÃVÿt$‹D$ƒÀpPh   èüÿÿÿƒÄéE   ÿ4$V‹D$ƒÀpPh    èüÿÿÿƒÄéw   ‹S·CŠ  Q QPÿ²   ‹CTÿ0h0   èüÿÿÿC¹À  º@  èüÿÿÿ‰ÆƒÄ…Àu
-»ôÿÿÿéI  ‰Ú¹@   ¾À   èüÿÿÿ1Éº   ‰øj èüÿÿÿ¹	˜ º°   ‰øj h0Æ  j h  j hÿÿ  j j èüÿÿÿ¹		˜ º°   ƒÄ$‰†0  ‰øj j j jj jj j èüÿÿÿ¹	˜ º°   ƒÄ ‰†4  ‰øj h €  j h  j hÿÿ  j j èüÿÿÿ‹ü   ‰~l‰†8  ƒÄ …Ût‰øèüÿÿÿéI  –0  ¸   èüÿÿÿ1É‰ğº   Ç†<  €»  è   1É‰ğº   è   1É‰ğº   è   ‰ğ¹I   º   è   1É‰ğº   è   ‰ğ¹   º	   è   ‰øèüÿÿÿéI    3%s: I2C: cannot write %03x to register R%d
-   6%s %d-%04x: chip found @ 0x%x (%s)
- èüÿÿÿº    ¸    éüÿÿÿ¸    éüÿÿÿ                wm8739                                                          €       `                                                                                                                 debug parm=debug:Debug level (0-1) parmtype=debug:int license=GPL author=T. Adachi, Hans Verkuil description=wm8739 driver  ¼           ¤ÿ      GCC: (GNU) 11.2.0           GNU  À       À                                  ñÿ                                          
-                                       	        2    	               *       c     H           >   2   =    	 W           k      ö     y      3     †   o   ˜   	 ˜   @         £   °                      ³            Æ       €     Ô       
-     ç       0                   ñ   €   0       `                   '          @           N  ¼        `  0        w  <          [        ¨             ³             Ñ             è             ğ                          '             @             M             b                          ‘             £             »             É             İ           é             ø      
-           0     )              wm8739.c wm8739_remove wm8739_log_status wm8739_write.isra.0 wm8739_write.isra.0.cold wm8739_s_clock_freq wm8739_s_ctrl wm8739_probe wm8739_probe.cold wm8739_ops wm8739_ctrl_ops wm8739_driver_init wm8739_driver wm8739_driver_exit wm8739_id wm8739_core_ops wm8739_audio_ops __UNIQUE_ID_debug270 __UNIQUE_ID_debugtype269 __param_debug __param_str_debug __UNIQUE_ID_license268 __UNIQUE_ID_author267 __UNIQUE_ID_description266 __fentry__ v4l2_device_unregister_subdev v4l2_ctrl_handler_free _printk v4l2_ctrl_handler_log_status i2c_smbus_write_byte_data __x86_indirect_thunk_edx devm_kmalloc v4l2_i2c_subdev_init v4l2_ctrl_handler_init_class v4l2_ctrl_new_std v4l2_ctrl_cluster v4l2_ctrl_handler_setup __this_module i2c_register_driver init_module i2c_del_driver cleanup_module __mod_i2c__wm8739_id_device_table param_ops_int     "     #     $  !   "  :     [   '  s   '  ‘   "  !  "  !  "  4  (  E     h     D                   h                                            "          %  &   &  @     E   %  ^   	  c   %     	  “   %  ¥   )  ¿     Ê   *  Ú   +  ä       ,      .  ,  8    a  ,  ~  $  “  -  «    ¹    Ç    Ø    æ    ÷    ş  .  M     k     ¸     ƒ           "          /     0          2  @     H     `     €     ¸              /     5        .symtab .strtab .shstrtab .rel.text .rel.data .bss .rel__mcount_loc .rodata.str1.1 .rel.text.unlikely .rodata.str1.4 .rel.init.text .rel.exit.text .rel.rodata .modinfo .rel__param .comment .note.GNU-stack .note.gnu.property                                                         @   S                    	   @          p               )                €                   %   	   @                         /                                  8                                  4   	   @       °  8               E      2       <  7                 X             s                   T   	   @       è       	         g      2       |  V                 z             Ò                    v   	   @       ø                  ‰             æ  
-                  …   	   @                        ˜                Â                   ”   	   @       (  (                             Â  u                  ­             8                    ©   	   @       P                  µ      0       L                   ¾              _                     Î             `  (                                ˆ  `     "         	              è
-  7                               p  á                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      ELF                      ¤k      4     ( & %             èüÿÿÿUd¡    ‹€p  ‰å]‹@™Ã¶    èüÿÿÿU‰Âd¡    ‹€p  ‰å‰P1À1Ò]ÃèüÿÿÿWVS‰Ó‰Ê·Kf…É„‡   fƒùuq¶K‰ÎÀéƒæƒø„¤   Áá¸    Æa	ñf‰BBˆJÇB    ¶K¶ÇB    ƒãƒËaˆZ‰ËƒáÁã	ÙˆJ	1Éf‰J
-‹|$)ĞÁøÇ   [^_Ã[1À^_Ã´&    v ¶‹|$¶KƒàÇ   [ƒÈa^_ˆJˆ¸   f‰B¸   ÇB    Ãv €ù	„¿   ‰ğ<	„   ¹	   ‰ğ¶øAÿƒà9ÏDÈ‰ÈÆ{ÁàÇB    	ğ¾$   f‰r¶ñˆB¶CÁæ‰÷ÇB    Îy $ ƒàÏa   Áà	ø1ÿ‰B¶CÆBcƒàğf‰z	ÈÇB    ˆB¶KB ÇB    ƒáÁá	ñ‰Jéúşÿÿ¶    €ù•ÁƒÁéjÿÿÿ´&    v ¹   éFÿÿÿ¶    èüÿÿÿU‰å…Àt‹ ]‹@$‹  ‹€   Ã¸    ]‹  ‹€   Ã´&    ¶    èüÿÿÿUWV‰ÆS‰Ó‰Ê·Cfƒø„“  ifƒø„Ç  fƒøu)¶CÆaÇA    ˆA¸   f‰A¸   [^_]Ãt& f…À…ÿ   ¶CÆaˆA1É[¸   ^_f‰JÇB    ]Ã¶    fƒø „Ş   fƒø$…„   ¶C‰ÁÀèƒáƒş„o  Áà¾   Æa¿p  	Èf‰r½   ˆBÇB    ¶CÆBa‰Áƒàf‰z
-ÁáÇB    	ÈˆB	¶CÆBa‰Áƒàf‰jÁáÇB    	ÈˆB¸   é.ÿÿÿfƒøu:¶C‰ÁÀèƒáƒş„İ   ÆaÁà[^ÇB    	Á¸   _]f‰B¸   ˆJÃ[1À^_]Ã´&    f¶C‰ÁÀèƒáƒş„k  ÆaÁà[^ÇB    	Á¸   _]f‰B¸   ˆJÃ¶    ¶C‰ÁÀèƒáƒş„#  ÆaÁà[^ÇB    	Á¸   _]f‰B¸   ˆJÃ¶    ¶CÆaˆA¹   [¸   ^_f‰JÇB    ]Ãt& Æcéÿÿÿ<	„Ø   ¾	   €ù	„Ô   Fÿ¶ùƒà9÷Dğ‰ğÆ{ÁàÇB    	È‰ñˆB¶ù¸   f‰B‰ù¶CÁçÁáÇB    ‰ÍƒàÇB    ÁàÍa  	è‰B‰ÈÉy  a p	ø‰B¶CÆBcƒàğÇB    	ğˆB¸   f‰B¶CÇB$    ƒàÁà	È‰B ¸   éiıÿÿv ÆcéØşÿÿÆcéşÿÿ´&    ¾   é,ÿÿÿ<•Àpé-ÿÿÿ´&    fèüÿÿÿ1ÀÃ´&    èüÿÿÿéüÿÿÿ¶    èüÿÿÿUWV‰Æ¸    S‰Óèüÿÿÿ‹F(…Àt2‹€”   ‹x<‹h@¸    èüÿÿÿ‰{‰k‹F,‰C[1À^_]Ã´&    f1ÿ1íëÔ´&    v èüÿÿÿPÇ@àÿÿÿH‰P‰P‹    Ç@  ¸    éüÿÿÿèüÿÿÿUWV‰ÖS‰Ã¸    èüÿÿÿ‹C(…Àt2‹€”   ‹x<‹h@¸    èüÿÿÿÿs,UWh    VèüÿÿÿƒÄ[^_]Ãt& 1ÿ1íëÔ´&    v UW‰×VS‰Ãƒì d¡    ‰D$1ÀöC…§   >t& ‹K$S0‰øèüÿÿÿ‰ÅöC…Ù   ‹D$d+    …ğ   ƒÄ ‰è[^_]Ã¶    èüÿÿÿ‹s$S0‰D$‰øèüÿÿÿ‹s‰Åèüÿÿÿ4…    œ$úƒFƒƒV èüÿÿÿ‹L$1Ò)ÈFVƒF÷$   „zÿÿÿûétÿÿÿ´&    ‹B ÇB     ‰D$‹B$ÇB$    ‰D$‹B(ÇB(    ‰D$‹B,ÇB,    ‰D$‹B0ÇB0    ‰D$éÿÿÿt& ‹D$‰G ‹D$‰G$‹D$‰G(‹D$‰G,‹D$‰G0éÿşÿÿèüÿÿÿ´&    t& èüÿÿÿU‰åWVSƒì‹P‹M‹u…Òt]‹x‰Ãºÿÿÿÿ¸êÿÿÿ…ÿt=ƒ{ t7‰$…Ét=…öt9¸ùÿÿÿºÿÿÿÿşÿ  w‹$‰ñ‰øèüÿÿÿ‰s1À1ÒÇC   ƒÄ[^_]Ãt& ƒÄ¸êÿÿÿºÿÿÿÿ[^_]Ã¶    èüÿÿÿWVS‹t$…Àtb‰Ó…ÒtB‰Ç‰Ê…ÉtB…öt>9ó‰ñFËèüÿÿÿ9ówÆDÿ ¸ùÿÿÿ[^_Ã)ó71Ò‰Ùèüÿÿÿ‰ğ[^_Ãt& ¸ùÿÿÿëİ‰Ù1Ò‰øèüÿÿÿ¸êÿÿÿëÊ¸êÿÿÿëÃ´&    èüÿÿÿU‰åW}S‹H‹‹Wÿp‰
+#define for_each_clamp_id(clamp_id) \
+	for ((clamp_id) = 0; (clamp_id) < UCLAMP_CNT; (clamp_id)++)
+
+static inline unsigned int uclamp_bucket_id(unsigned int clamp_value)
+{
+	return min_t(unsigned int, clamp_value / UCLAMP_BUCKET_DELTA, UCLAMP_BUCKETS - 1);
+}
+
+static inline unsigned int uclamp_none(enum uclamp_id clamp_id)
+{
+	if (clamp_id == UCLAMP_MIN)
+		return 0;
+	return SCHED_CAPACITY_SCALE;
+}
+
+s

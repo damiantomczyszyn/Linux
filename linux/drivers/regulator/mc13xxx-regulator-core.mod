@@ -1,1 +1,3 @@
-rd include/config/ALTERNATE_USER_ADDRESS_SPA
+C417_RWD, regval);
+
+	/* Wait for the trans t

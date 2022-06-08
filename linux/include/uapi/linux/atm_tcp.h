@@ -1,41 +1,92 @@
-EAF) \
-  include/linux/page-flags-layout.h \
-    $(wildcard include/config/KASAN_HW_TAGS) \
-  include/linux/numa.h \
-    $(wildcard include/config/NODES_SHIFT) \
-    $(wildcard include/config/NUMA_KEEP_MEMINFO) \
-    $(wildcard include/config/HAVE_ARCH_NODE_DEV_GROUP) \
-  arch/x86/include/asm/sparsemem.h \
-  include/generated/bounds.h \
-  include/linux/seqlock.h \
-  include/linux/ww_mutex.h \
-    $(wildcard include/config/DEBUG_RT_MUTEXES) \
-    $(wildcard include/config/DEBUG_WW_MUTEX_SLOWPATH) \
-  include/linux/rtmutex.h \
-  arch/x86/include/asm/mmu.h \
-    $(wildcard include/config/MODIFY_LDT_SYSCALL) \
-  include/linux/kmod.h \
-  include/linux/umh.h \
-  include/linux/gfp.h \
-    $(wildcard include/config/HIGHMEM) \
-    $(wildcard include/config/ZONE_DMA) \
-    $(wildcard include/config/ZONE_DMA32) \
-    $(wildcard include/config/ZONE_DEVICE) \
-    $(wildcard include/config/PM_SLEEP) \
-    $(wildcard include/config/CONTIG_ALLOC) \
-    $(wildcard include/config/CMA) \
-  include/linux/mmdebug.h \
-    $(wildcard include/config/DEBUG_VM) \
-    $(wildcard include/config/DEBUG_VM_PGFLAGS) \
-  include/linux/mmzone.h \
-    $(wildcard include/config/FORCE_MAX_ZONEORDER) \
-    $(wildcard include/config/MEMORY_ISOLATION) \
-    $(wildcard include/config/ZSMALLOC) \
-    $(wildcard include/config/MEMORY_HOTPLUG) \
-    $(wildcard include/config/COMPACTION) \
-    $(wildcard include/config/PAGE_EXTENSION) \
-    $(wildcard include/config/DEFERRED_STRUCT_PAGE_INIT) \
-    $(wildcard include/config/HAVE_MEMORYLESS_NODES) \
-    $(wildcard include/config/SPARSEMEM_EXTREME) \
-    $(wildcard include/config/HAVE_ARCH_PFN_VALID) \
-  i
+// SPDX-License-Identifier: GPL-2.0-or-later
+
+/*
+ * netup-eeprom.c
+ *
+ * 24LC02 EEPROM driver in conjunction with NetUP Dual DVB-S2 CI card
+ *
+ * Copyright (C) 2009 NetUP Inc.
+ * Copyright (C) 2009 Abylay Ospan <aospan@netup.ru>
+ */
+
+#
+#include "cx23885.h"
+#include "netup-eeprom.h"
+
+#define EEPROM_I2C_ADDR 0x50
+
+int netup_eeprom_read(struct i2c_adapter *i2c_adap, u8 addr)
+{
+	int ret;
+	unsigned char buf[2];
+
+	/* Read from EEPROM */
+	struct i2c_msg msg[] = {
+		{
+			.addr	= EEPROM_I2C_ADDR,
+			.flags	= 0,
+			.buf	= &buf[0],
+			.len	= 1
+		}, {
+			.addr	= EEPROM_I2C_ADDR,
+			.flags	= I2C_M_RD,
+			.buf	= &buf[1],
+			.len	= 1
+		}
+
+	};
+
+	buf[0] = addr;
+	buf[1] = 0x0;
+
+	ret = i2c_transfer(i2c_adap, msg, 2);
+
+	if (ret != 2) {
+		pr_err("eeprom i2c read error, status=%d\n", ret);
+		return -1;
+	}
+
+	return buf[1];
+};
+
+int netup_eeprom_write(struct i2c_adapter *i2c_adap, u8 addr, u8 data)
+{
+	int ret;
+	unsigned char bufw[2];
+
+	/* Write into EEPROM */
+	struct i2c_msg msg[] = {
+		{
+			.addr	= EEPROM_I2C_ADDR,
+			.flags	= 0,
+			.buf	= &bufw[0],
+			.len	= 2
+		}
+	};
+
+	bufw[0] = addr;
+	bufw[1] = data;
+
+	ret = i2c_transfer(i2c_adap, msg, 1);
+
+	if (ret != 1) {
+		pr_err("eeprom i2c write error, status=%d\n", ret);
+		return -1;
+	}
+
+	mdelay(10); /* prophylactic delay, datasheet write cycle time = 5 ms */
+	return 0;
+};
+
+void netup_get_card_info(struct i2c_adapter *i2c_adap,
+				struct netup_card_info *cinfo)
+{
+	int i, j;
+
+	cinfo->rev =  netup_eeprom_read(i2c_adap, 63);
+
+	for (i = 64, j = 0; i < 70; i++, j++)
+		cinfo->port[0].mac[j] =  netup_eeprom_read(i2c_adap, i);
+
+	for (i = 70, j = 0; i < 76; i++, j++)
+		cinfo->port[1].mac[j] =  netup

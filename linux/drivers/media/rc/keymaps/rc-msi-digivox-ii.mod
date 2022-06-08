@@ -1,2 +1,1 @@
-drivers/media/rc/keymaps/rc-msi-digivox-ii.o
-
+ine void cx23885_irq_disable_all(struct cx2388

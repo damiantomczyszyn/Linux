@@ -1,93 +1,137 @@
-\
-    $(wildcard include/config/PCI_MMCONFIG) \
-    $(wildcard include/config/ACPI_APEI_GHES) \
-    $(wildcard include/config/INTEL_TXT) \
-  arch/x86/include/generated/asm/kmap_size.h \
-  include/asm-generic/kmap_size.h \
-    $(wildcard include/config/DEBUG_KMAP_LOCAL) \
-  include/asm-generic/fixmap.h \
-  arch/x86/include/asm/irq_vectors.h \
-    $(wildcard include/config/HAVE_KVM) \
-    $(wildcard include/config/HYPERV) \
-    $(wildcard include/config/PCI_MSI) \
-  arch/x86/include/asm/cpu_entry_area.h \
-  arch/x86/include/asm/intel_ds.h \
-  arch/x86/include/asm/pgtable_areas.h \
-  arch/x86/include/asm/pgtable_32_areas.h \
-  include/uapi/linux/elf.h \
-  include/uapi/linux/elf-em.h \
-  include/linux/kobject.h \
-    $(wildcard include/config/UEVENT_HELPER) \
-    $(wildcard include/config/DEBUG_KOBJECT_RELEASE) \
-  include/linux/sysfs.h \
-  include/linux/kernfs.h \
-    $(wildcard include/config/KERNFS) \
-  include/linux/idr.h \
-  include/linux/radix-tree.h \
-  include/linux/xarray.h \
-    $(wildcard include/config/XARRAY_MULTI) \
-  include/linux/kconfig.h \
-  include/linux/kobject_ns.h \
-  include/linux/moduleparam.h \
-    $(wildcard include/config/ALPHA) \
-    $(wildcard include/config/IA64) \
-    $(wildcard include/config/PPC64) \
-  include/linux/rbtree_latch.h \
-  include/linux/error-injection.h \
-  include/asm-generic/error-injection.h \
-  include/linux/cfi.h \
-    $(wildcard include/config/CFI_CLANG_SHADOW) \
-  arch/x86/include/asm/module.h \
-    $(wildcard include/config/UNWINDER_ORC) \
-  include/asm-generic/module.h \
-    $(wildcard include/config/HAVE_MOD_ARCH_SPECIFIC) \
-    $(wildcard include/config/MODULES_USE_ELF_REL) \
-    $(wildcard include/config/MODULES_USE_ELF_RELA) \
-  arch/x86/include/asm/orc_types.h \
-  include/linux/i2c.h \
-    $(wildcard include/config/I2C) \
-    $(wildcard include/config/I2C_SLAVE) \
-    $(wildcard include/config/I2C_BOARDINFO) \
-    $(wildcard include/config/I2C_MUX) \
-    $(wildcard include/config/OF) \
-    $(wildcard include/config/ACPI) \
-  include/linux/acpi.h \
-    $(wildcard include/config/ACPI_DEBUGGER) \
-    $(wildcard include/config/ACPI_TABLE_LIB) \
-    $(wildcard include/config/LOONGARCH) \
-    $(wildcard include/config/ARM64) \
-    $(wildcard include/config/ACPI_PROCESSOR_CSTATE) \
-    $(wildcard include/config/ACPI_HOTPLUG_CPU) \
-    $(wildcard include/config/ACPI_HOTPLUG_IOAPIC) \
-    $(wildcard include/config/PCI) \
-    $(wildcard include/config/ACPI_WMI) \
-    $(wildcard include/config/ACPI_NUMA) \
-    $(wildcard include/config/HIBERNATION) \
-    $(wildcard include/config/ACPI_HOTPLUG_MEMORY) \
-    $(wildcard include/config/ACPI_CONTAINER) \
-    $(wildcard include/config/ACPI_GTDT) \
-    $(wildcard include/config/PM) \
-    $(wildcard include/config/GPIOLIB) \
-    $(wildcard include/config/ACPI_TABLE_UPGRADE) \
-    $(wildcard include/config/ACPI_WATCHDOG) \
-    $(wildcard include/config/ACPI_SPCR_TABLE) \
-    $(wildcard include/config/ACPI_GENERIC_GSI) \
-    $(wildcard include/config/ACPI_LPIT) \
-    $(wildcard include/config/ACPI_PPTT) \
-    $(wildcard include/config/ACPI_PCC) \
-  include/linux/ioport.h \
-  include/linux/irqdomain.h \
-    $(wildcard include/config/IRQ_DOMAIN_HIERARCHY) \
-    $(wildcard include/config/GENERIC_IRQ_DEBUGFS) \
-    $(wildcard include/config/IRQ_DOMAIN) \
-    $(wildcard include/config/IRQ_DOMAIN_NOMAP) \
-  include/linux/irqhandler.h \
-  include/linux/of.h \
-    $(wildcard include/config/OF_DYNAMIC) \
-    $(wildcard include/config/SPARC) \
-    $(wildcard include/config/OF_PROMTREE) \
-    $(wildcard include/config/OF_KOBJ) \
-    $(wildcard include/config/OF_NUMA) \
-    $(wildcard include/config/OF_OVERLAY) \
-  include/linux/mod_devicetable.h \
-  include/l
+// SPDX-License-Identifier: GPL-2.0-or-later
+/*
+ *  Driver for the Conexant CX23885 PCIe bridge
+ *
+ *  Copyright (c) 2007 Steven Toth <stoth@linuxtv.org>
+ */
+
+#include "cx23885.h"
+
+#include <linux/kernel.h>
+#include <linux/module.h>
+#include <linux/moduleparam.h>
+#include <linux/init.h>
+
+static unsigned int vbibufs = 4;
+module_param(vbibufs, int, 0644);
+MODULE_PARM_DESC(vbibufs, "number of vbi buffers, range 2-32");
+
+static unsigned int vbi_debug;
+module_param(vbi_debug, int, 0644);
+MODULE_PARM_DESC(vbi_debug, "enable debug messages [vbi]");
+
+#define dprintk(level, fmt, arg...)\
+	do { if (vbi_debug >= level)\
+		printk(KERN_DEBUG pr_fmt("%s: vbi:" fmt), \
+			__func__, ##arg); \
+	} while (0)
+
+/* ------------------------------------------------------------------ */
+
+#define VBI_LINE_LENGTH 1440
+#define VBI_NTSC_LINE_COUNT 12
+#define VBI_PAL_LINE_COUNT 18
+
+
+int cx23885_vbi_fmt(struct file *file, void *priv,
+	struct v4l2_format *f)
+{
+	struct cx23885_dev *dev = video_drvdata(file);
+
+	f->fmt.vbi.sampling_rate = 27000000;
+	f->fmt.vbi.samples_per_line = VBI_LINE_LENGTH;
+	f->fmt.vbi.sample_format = V4L2_PIX_FMT_GREY;
+	f->fmt.vbi.offset = 0;
+	f->fmt.vbi.flags = 0;
+	if (dev->tvnorm & V4L2_STD_525_60) {
+		/* ntsc */
+		f->fmt.vbi.start[0] = V4L2_VBI_ITU_525_F1_START + 9;
+		f->fmt.vbi.start[1] = V4L2_VBI_ITU_525_F2_START + 9;
+		f->fmt.vbi.count[0] = VBI_NTSC_LINE_COUNT;
+		f->fmt.vbi.count[1] = VBI_NTSC_LINE_COUNT;
+	} else if (dev->tvnorm & V4L2_STD_625_50) {
+		/* pal */
+		f->fmt.vbi.start[0] = V4L2_VBI_ITU_625_F1_START + 5;
+		f->fmt.vbi.start[1] = V4L2_VBI_ITU_625_F2_START + 5;
+		f->fmt.vbi.count[0] = VBI_PAL_LINE_COUNT;
+		f->fmt.vbi.count[1] = VBI_PAL_LINE_COUNT;
+	}
+
+	return 0;
+}
+
+/* We're given the Video Interrupt status register.
+ * The cx23885_video_irq() func has already validated
+ * the potential error bits, we just need to
+ * deal with vbi payload and return indication if
+ * we actually processed any payload.
+ */
+int cx23885_vbi_irq(struct cx23885_dev *dev, u32 status)
+{
+	u32 count;
+	int handled = 0;
+
+	if (status & VID_BC_MSK_VBI_RISCI1) {
+		dprintk(1, "%s() VID_BC_MSK_VBI_RISCI1\n", __func__);
+		spin_lock(&dev->slock);
+		count = cx_read(VBI_A_GPCNT);
+		cx23885_video_wakeup(dev, &dev->vbiq, count);
+		spin_unlock(&dev->slock);
+		handled++;
+	}
+
+	return handled;
+}
+
+static int cx23885_start_vbi_dma(struct cx23885_dev    *dev,
+			 struct cx23885_dmaqueue *q,
+			 struct cx23885_buffer   *buf)
+{
+	dprintk(1, "%s()\n", __func__);
+
+	/* setup fifo + format */
+	cx23885_sram_channel_setup(dev, &dev->sram_channels[SRAM_CH02],
+				VBI_LINE_LENGTH, buf->risc.dma);
+
+	/* reset counter */
+	cx_write(VID_A_VBI_CTRL, 3);
+	cx_write(VBI_A_GPCNT_CTL, 3);
+	q->count = 0;
+
+	/* enable irq */
+	cx23885_irq_add_enable(dev, 0x01);
+	cx_set(VID_A_INT_MSK, 0x000022);
+
+	/* start dma */
+	cx_set(DEV_CNTRL2, (1<<5));
+	cx_set(VID_A_DMA_CTL, 0x22); /* FIFO and RISC enable */
+
+	return 0;
+}
+
+/* ------------------------------------------------------------------ */
+
+static int queue_setup(struct vb2_queue *q,
+			   unsigned int *num_buffers, unsigned int *num_planes,
+			   unsigned int sizes[], struct device *alloc_devs[])
+{
+	struct cx23885_dev *dev = q->drv_priv;
+	unsigned lines = VBI_PAL_LINE_COUNT;
+
+	if (dev->tvnorm & V4L2_STD_525_60)
+		lines = VBI_NTSC_LINE_COUNT;
+	*num_planes = 1;
+	sizes[0] = lines * VBI_LINE_LENGTH * 2;
+	return 0;
+}
+
+static int buffer_prepare(struct vb2_buffer *vb)
+{
+	struct vb2_v4l2_buffer *vbuf = to_vb2_v4l2_buffer(vb);
+	struct cx23885_dev *dev = vb->vb2_queue->drv_priv;
+	struct cx23885_buffer *buf = container_of(vbuf,
+		struct cx23885_buffer, vb);
+	struct sg_table *sgt = vb2_dma_sg_plane_desc(vb, 0);
+	unsigned lines = VBI_PAL_LINE_COUNT;
+
+	if (dev->tvnorm & V4

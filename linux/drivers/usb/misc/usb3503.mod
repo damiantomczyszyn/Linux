@@ -1,2 +1,3 @@
-/DEBUG_SG) \
-    $(wildcard 
+ity *cap)
+{
+	struct cx23885_

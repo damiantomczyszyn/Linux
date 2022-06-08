@@ -1,4 +1,6 @@
-rd include/config/ALTERNATE_USER_ADDRESS_SPACE) \
-  arch/x86/include/asm/uaccess_32.h \
-  include/linux/cred.h \
-    $(wild
+// SPDX-License-Identifier: GPL-2.0-or-later
+/*
+ *
+ *  Support for CX23885 analog audio capture
+ *
+ *    (c) 2008 Mijhail M

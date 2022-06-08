@@ -1,105 +1,102 @@
-// SPDX-License-Identifier: GPL-2.0-only
+// SPDX-License-Identifier: GPL-2.0-or-later
 /*
- * kernel/lockdep.c
  *
- * Runtime locking correctness validator
+ *  Support for a cx23417 mpeg encoder via cx23885 host port.
  *
- * Started by Ingo Molnar:
+ *    (c) 2004 Jelle Foks <jelle@foks.us>
+ *    (c) 2004 Gerd Knorr <kraxel@bytesex.org>
+ *    (c) 2008 Steven Toth <stoth@linuxtv.org>
+ *      - CX23885/7/8 support
  *
- *  Copyright (C) 2006,2007 Red Hat, Inc., Ingo Molnar <mingo@redhat.com>
- *  Copyright (C) 2007 Red Hat, Inc., Peter Zijlstra
- *
- * this code maps all the lock dependencies as they occur in a live kernel
- * and will warn about the following classes of locking bugs:
- *
- * - lock inversion scenarios
- * - circular lock dependencies
- * - hardirq/softirq safe/unsafe locking bugs
- *
- * Bugs are reported even if the current locking scenario does not cause
- * any deadlock at this point.
- *
- * I.e. if anytime in the past two locks were taken in a different order,
- * even if it happened for another task, even if those were different
- * locks (but of the same class as this lock), this code will detect it.
- *
- * Thanks to Arjan van de Ven for coming up with the initial idea of
- * mapping lock dependencies runtime.
+ *  Includes parts from the ivtv driver <http://sourceforge.net/projects/ivtv/>
  */
-#define DISABLE_BRANCH_PROFILING
-#include <linux/mutex.h>
-#include <linux/sched.h>
-#include <linux/sched/clock.h>
-#include <linux/sched/task.h>
-#include <linux/sched/mm.h>
-#include <linux/delay.h>
+
+#include "cx23885.h"
+#include "cx23885-ioctl.h"
+
 #include <linux/module.h>
-#include <linux/proc_fs.h>
-#include <linux/seq_file.h>
-#include <linux/spinlock.h>
-#include <linux/kallsyms.h>
-#include <linux/interrupt.h>
-#include <linux/stacktrace.h>
-#include <linux/debug_locks.h>
-#include <linux/irqflags.h>
-#include <linux/utsname.h>
-#include <linux/hash.h>
-#include <linux/ftrace.h>
-#include <linux/stringify.h>
-#include <linux/bitmap.h>
-#include <linux/bitops.h>
-#include <linux/gfp.h>
-#include <linux/random.h>
-#include <linux/jhash.h>
-#include <linux/nmi.h>
-#include <linux/rcupdate.h>
-#include <linux/kprobes.h>
-#include <linux/lockdep.h>
+#include <linux/moduleparam.h>
+#include <linux/init.h>
+#include <linux/fs.h>
+#include <linux/delay.h>
+#include <linux/device.h>
+#include <linux/firmware.h>
+#include <linux/slab.h>
+#include <media/v4l2-common.h>
+#include <media/v4l2-ioctl.h>
+#include <media/drv-intf/cx2341x.h>
 
-#include <asm/sections.h>
+#define CX23885_FIRM_IMAGE_SIZE 376836
+#define CX23885_FIRM_IMAGE_NAME "v4l-cx23885-enc.fw"
 
-#include "lockdep_internals.h"
+static unsigned int mpegbufs = 32;
+module_param(mpegbufs, int, 0644);
+MODULE_PARM_DESC(mpegbufs, "number of mpeg buffers, range 2-32");
+static unsigned int mpeglines = 32;
+module_param(mpeglines, int, 0644);
+MODULE_PARM_DESC(mpeglines, "number of lines in an MPEG buffer, range 2-32");
+static unsigned int mpeglinesize = 512;
+module_param(mpeglinesize, int, 0644);
+MODULE_PARM_DESC(mpeglinesize,
+	"number of bytes in each line of an MPEG buffer, range 512-1024");
 
-#define CREATE_TRACE_POINTS
-#include <trace/events/lock.h>
+static unsigned int v4l_debug;
+module_param(v4l_debug, int, 0644);
+MODULE_PARM_DESC(v4l_debug, "enable V4L debug messages");
 
-#ifdef CONFIG_PROVE_LOCKING
-int prove_locking = 1;
-module_param(prove_locking, int, 0644);
-#else
-#define prove_locking 0
-#endif
+#define dprintk(level, fmt, arg...)\
+	do { if (v4l_debug >= level) \
+		printk(KERN_DEBUG pr_fmt("%s: 417:" fmt), \
+			__func__, ##arg); \
+	} while (0)
 
-#ifdef CONFIG_LOCK_STAT
-int lock_stat = 1;
-module_param(lock_stat, int, 0644);
-#else
-#define lock_stat 0
-#endif
+static struct cx23885_tvnorm cx23885_tvnorms[] = {
+	{
+		.name      = "NTSC-M",
+		.id        = V4L2_STD_NTSC_M,
+	}, {
+		.name      = "NTSC-JP",
+		.id        = V4L2_STD_NTSC_M_JP,
+	}, {
+		.name      = "PAL-BG",
+		.id        = V4L2_STD_PAL_BG,
+	}, {
+		.name      = "PAL-DK",
+		.id        = V4L2_STD_PAL_DK,
+	}, {
+		.name      = "PAL-I",
+		.id        = V4L2_STD_PAL_I,
+	}, {
+		.name      = "PAL-M",
+		.id        = V4L2_STD_PAL_M,
+	}, {
+		.name      = "PAL-N",
+		.id        = V4L2_STD_PAL_N,
+	}, {
+		.name      = "PAL-Nc",
+		.id        = V4L2_STD_PAL_Nc,
+	}, {
+		.name      = "PAL-60",
+		.id        = V4L2_STD_PAL_60,
+	}, {
+		.name      = "SECAM-L",
+		.id        = V4L2_STD_SECAM_L,
+	}, {
+		.name      = "SECAM-DK",
+		.id        = V4L2_STD_SECAM_DK,
+	}
+};
 
-DEFINE_PER_CPU(unsigned int, lockdep_recursion);
-EXPORT_PER_CPU_SYMBOL_GPL(lockdep_recursion);
-
-static __always_inline bool lockdep_enabled(void)
-{
-	if (!debug_locks)
-		return false;
-
-	if (this_cpu_read(lockdep_recursion))
-		return false;
-
-	if (current->lockdep_recursion)
-		return false;
-
-	return true;
-}
-
-/*
- * lockdep_lock: protects the lockdep graph, the hashes and the
- *               class/list/hash allocators.
- *
- * This is one of the rare exceptions where it's justified
- * to use a raw spinlock - we really dont want the spinlock
- * code to recurse back into the lockdep code...
- */
-static arch_spinlock_t __lock = (arch_spinlock_t
+/* ------------------------------------------------------------------ */
+enum cx23885_capture_type {
+	CX23885_MPEG_CAPTURE,
+	CX23885_RAW_CAPTURE,
+	CX23885_RAW_PASSTHRU_CAPTURE
+};
+enum cx23885_capture_bits {
+	CX23885_RAW_BITS_NONE             = 0x00,
+	CX23885_RAW_BITS_YUV_CAPTURE      = 0x01,
+	CX23885_RAW_BITS_PCM_CAPTURE      = 0x02,
+	CX23885_RAW_BITS_VBI_CAPTURE      = 0x04,
+	CX23885_RAW_BITS_PASSTHRU_CAPTURE = 0x08,
+	CX23885_RAW_BITS_TO

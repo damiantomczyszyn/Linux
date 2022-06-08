@@ -1,3 +1,3 @@
-  $(wildcard include/config/ALTERNATE_USER_ADDRESS_SPACE) \
-  arch/x86/include/asm/uaccess_32.h \
-  includ
+/* SPDX-License-Identifier: GPL-2.0 */
+extern int f300_set_voltage(struct dvb_frontend *fe,
+			    enum fe

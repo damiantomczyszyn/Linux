@@ -1,1 +1,2 @@
-cmd_drivers/media/i2c/vpx3220.o := gcc -Wp,-MMD,drivers/media/i2c/.vpx3
+			/* attach tuner */
+			memset(&ts2020_config, 0, sizeof(ts2020_config

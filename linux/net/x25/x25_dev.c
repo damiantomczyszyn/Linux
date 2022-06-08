@@ -1,159 +1,165 @@
-enum bfs_result
-check_redundant(struct held_lock *src, struct held_lock *target)
+q->lock held and irqs disabled
+ */
+void hrtick_start(struct rq *rq, u64 delay)
 {
-	enum bfs_result ret;
-	struct lock_list *target_entry;
-	struct lock_list src_entry;
-
-	bfs_init_root(&src_entry, src);
-	/*
-	 * Special setup for check_redundant().
-	 *
-	 * To report redundant, we need to find a strong dependency path that
-	 * is equal to or stronger than <src> -> <target>. So if <src> is E,
-	 * we need to let __bfs() only search for a path starting at a -(E*)->,
-	 * we achieve this by setting the initial node's ->only_xr to true in
-	 * that case. And if <prev> is S, we set initial ->only_xr to false
-	 * because both -(S*)-> (equal) and -(E*)-> (stronger) are redundant.
-	 */
-	src_entry.only_xr = src->read == 0;
-
-	debug_atomic_inc(nr_redundant_checks);
+	struct hrtimer *timer = &rq->hrtick_timer;
+	s64 delta;
 
 	/*
-	 * Note: we skip local_lock() for redundant check, because as the
-	 * comment in usage_skip(), A -> local_lock() -> B and A -> B are not
-	 * the same.
+	 * Don't schedule slices shorter than 10000ns, that just
+	 * doesn't make sense and can cause timer DoS.
 	 */
-	ret = check_path(target, &src_entry, hlock_equal, usage_skip, &target_entry);
+	delta = max_t(s64, delay, 10000LL);
+	rq->hrtick_time = ktime_add_ns(timer->base->get_time(), delta);
 
-	if (ret == BFS_RMATCH)
-		debug_atomic_inc(nr_redundant);
-
-	return ret;
+	if (rq == this_rq())
+		__hrtick_restart(rq);
+	else
+		smp_call_function_single_async(cpu_of(rq), &rq->hrtick_csd);
 }
 
 #else
-
-static inline enum bfs_result
-check_redundant(struct held_lock *src, struct held_lock *target)
+/*
+ * Called to set the hrtick timer state.
+ *
+ * called with rq->lock held and irqs disabled
+ */
+void hrtick_start(struct rq *rq, u64 delay)
 {
-	return BFS_RNOMATCH;
+	/*
+	 * Don't schedule slices shorter than 10000ns, that just
+	 * doesn't make sense. Rely on vruntime for fairness.
+	 */
+	delay = max_t(u64, delay, 10000LL);
+	hrtimer_start(&rq->hrtick_timer, ns_to_ktime(delay),
+		      HRTIMER_MODE_REL_PINNED_HARD);
 }
 
+#endif /* CONFIG_SMP */
+
+static void hrtick_rq_init(struct rq *rq)
+{
+#ifdef CONFIG_SMP
+	INIT_CSD(&rq->hrtick_csd, __hrtick_start, rq);
+#endif
+	hrtimer_init(&rq->hrtick_timer, CLOCK_MONOTONIC, HRTIMER_MODE_REL_HARD);
+	rq->hrtick_timer.function = hrtick;
+}
+#else	/* CONFIG_SCHED_HRTICK */
+static inline void hrtick_clear(struct rq *rq)
+{
+}
+
+static inline void hrtick_rq_init(struct rq *rq)
+{
+}
+#endif	/* CONFIG_SCHED_HRTICK */
+
+/*
+ * cmpxchg based fetch_or, macro so it works for different integer types
+ */
+#define fetch_or(ptr, mask)						\
+	({								\
+		typeof(ptr) _ptr = (ptr);				\
+		typeof(mask) _mask = (mask);				\
+		typeof(*_ptr) _old, _val = *_ptr;			\
+									\
+		for (;;) {						\
+			_old = cmpxchg(_ptr, _val, _val | _mask);	\
+			if (_old == _val)				\
+				break;					\
+			_val = _old;					\
+		}							\
+	_old;								\
+})
+
+#if defined(CONFIG_SMP) && defined(TIF_POLLING_NRFLAG)
+/*
+ * Atomically set TIF_NEED_RESCHED and test for TIF_POLLING_NRFLAG,
+ * this avoids any races wrt polling state changes and thereby avoids
+ * spurious IPIs.
+ */
+static bool set_nr_and_not_polling(struct task_struct *p)
+{
+	struct thread_info *ti = task_thread_info(p);
+	return !(fetch_or(&ti->flags, _TIF_NEED_RESCHED) & _TIF_POLLING_NRFLAG);
+}
+
+/*
+ * Atomically set TIF_NEED_RESCHED if TIF_POLLING_NRFLAG is set.
+ *
+ * If this returns true, then the idle task promises to call
+ * sched_ttwu_pending() and reschedule soon.
+ */
+static bool set_nr_if_polling(struct task_struct *p)
+{
+	struct thread_info *ti = task_thread_info(p);
+	typeof(ti->flags) old, val = READ_ONCE(ti->flags);
+
+	for (;;) {
+		if (!(val & _TIF_POLLING_NRFLAG))
+			return false;
+		if (val & _TIF_NEED_RESCHED)
+			return true;
+		old = cmpxchg(&ti->flags, val, val | _TIF_NEED_RESCHED);
+		if (old == val)
+			break;
+		val = old;
+	}
+	return true;
+}
+
+#else
+static bool set_nr_and_not_polling(struct task_struct *p)
+{
+	set_tsk_need_resched(p);
+	return true;
+}
+
+#ifdef CONFIG_SMP
+static bool set_nr_if_polling(struct task_struct *p)
+{
+	return false;
+}
+#endif
 #endif
 
-static void inc_chains(int irq_context)
+static bool __wake_q_add(struct wake_q_head *head, struct task_struct *task)
 {
-	if (irq_context & LOCK_CHAIN_HARDIRQ_CONTEXT)
-		nr_hardirq_chains++;
-	else if (irq_context & LOCK_CHAIN_SOFTIRQ_CONTEXT)
-		nr_softirq_chains++;
-	else
-		nr_process_chains++;
+	struct wake_q_node *node = &task->wake_q;
+
+	/*
+	 * Atomically grab the task, if ->wake_q is !nil already it means
+	 * it's already queued (either by us or someone else) and will get the
+	 * wakeup due to that.
+	 *
+	 * In order to ensure that a pending wakeup will observe our pending
+	 * state, even in the failed case, an explicit smp_mb() must be used.
+	 */
+	smp_mb__before_atomic();
+	if (unlikely(cmpxchg_relaxed(&node->next, NULL, WAKE_Q_TAIL)))
+		return false;
+
+	/*
+	 * The head is context local, there can be no concurrency.
+	 */
+	*head->lastp = node;
+	head->lastp = &node->next;
+	return true;
 }
 
-static void dec_chains(int irq_context)
-{
-	if (irq_context & LOCK_CHAIN_HARDIRQ_CONTEXT)
-		nr_hardirq_chains--;
-	else if (irq_context & LOCK_CHAIN_SOFTIRQ_CONTEXT)
-		nr_softirq_chains--;
-	else
-		nr_process_chains--;
-}
-
-static void
-print_deadlock_scenario(struct held_lock *nxt, struct held_lock *prv)
-{
-	struct lock_class *next = hlock_class(nxt);
-	struct lock_class *prev = hlock_class(prv);
-
-	printk(" Possible unsafe locking scenario:\n\n");
-	printk("       CPU0\n");
-	printk("       ----\n");
-	printk("  lock(");
-	__print_lock_name(prev);
-	printk(KERN_CONT ");\n");
-	printk("  lock(");
-	__print_lock_name(next);
-	printk(KERN_CONT ");\n");
-	printk("\n *** DEADLOCK ***\n\n");
-	printk(" May be due to missing lock nesting notation\n\n");
-}
-
-static void
-print_deadlock_bug(struct task_struct *curr, struct held_lock *prev,
-		   struct held_lock *next)
-{
-	if (!debug_locks_off_graph_unlock() || debug_locks_silent)
-		return;
-
-	pr_warn("\n");
-	pr_warn("============================================\n");
-	pr_warn("WARNING: possible recursive locking detected\n");
-	print_kernel_ident();
-	pr_warn("--------------------------------------------\n");
-	pr_warn("%s/%d is trying to acquire lock:\n",
-		curr->comm, task_pid_nr(curr));
-	print_lock(next);
-	pr_warn("\nbut task is already holding lock:\n");
-	print_lock(prev);
-
-	pr_warn("\nother info that might help us debug this:\n");
-	print_deadlock_scenario(next, prev);
-	lockdep_print_held_locks(curr);
-
-	pr_warn("\nstack backtrace:\n");
-	dump_stack();
-}
-
-/*
- * Check whether we are holding such a class already.
+/**
+ * wake_q_add() - queue a wakeup for 'later' waking.
+ * @head: the wake_q_head to add @task to
+ * @task: the task to queue for 'later' wakeup
  *
- * (Note that this has to be done separately, because the graph cannot
- * detect such classes of deadlocks.)
+ * Queue a task for later wakeup, most likely by the wake_up_q() call in the
+ * same context, _HOWEVER_ this is not guaranteed, the wakeup can come
+ * instantly.
  *
- * Returns: 0 on deadlock detected, 1 on OK, 2 if another lock with the same
- * lock class is held but nest_lock is also held, i.e. we rely on the
- * nest_lock to avoid the deadlock.
+ * This function must be used as-if it were wake_up_process(); IOW the task
+ * must be ready to be woken at this location.
  */
-static int
-check_deadlock(struct task_struct *curr, struct held_lock *next)
+void wake_q_add(struct wake_q_head *head, struct task_struct *task)
 {
-	struct held_lock *prev;
-	struct held_lock *nest = NULL;
-	int i;
-
-	for (i = 0; i < curr->lockdep_depth; i++) {
-		prev = curr->held_locks + i;
-
-		if (prev->instance == next->nest_lock)
-			nest = prev;
-
-		if (hlock_class(prev) != hlock_class(next))
-			continue;
-
-		/*
-		 * Allow read-after-read recursion of the same
-		 * lock class (i.e. read_lock(lock)+read_lock(lock)):
-		 */
-		if ((next->read == 2) && prev->read)
-			continue;
-
-		/*
-		 * We're holding the nest_lock, which serializes this lock's
-		 * nesting behaviour.
-		 */
-		if (nest)
-			return 2;
-
-		print_deadlock_bug(curr, prev, next);
-		return 0;
-	}
-	return 1;
-}
-
-/*
- * There was a chain-cache miss, and we are about to add a new dependency
- * to a previous lock. We validat
+	if (

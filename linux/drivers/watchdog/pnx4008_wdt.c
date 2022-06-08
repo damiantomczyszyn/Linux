@@ -1,161 +1,263 @@
-\
-  include/linux/rwlock.h \
-    $(wildcard include/config/PREEMPT) \
-  include/linux/spinlock_api_smp.h \
-    $(wildcard include/config/INLINE_SPIN_LOCK) \
-    $(wildcard include/config/INLINE_SPIN_LOCK_BH) \
-    $(wildcard include/config/INLINE_SPIN_LOCK_IRQ) \
-    $(wildcard include/config/INLINE_SPIN_LOCK_IRQSAVE) \
-    $(wildcard include/config/INLINE_SPIN_TRYLOCK) \
-    $(wildcard include/config/INLINE_SPIN_TRYLOCK_BH) \
-    $(wildcard include/config/UNINLINE_SPIN_UNLOCK) \
-    $(wildcard include/config/INLINE_SPIN_UNLOCK_BH) \
-    $(wildcard include/config/INLINE_SPIN_UNLOCK_IRQ) \
-    $(wildcard include/config/INLINE_SPIN_UNLOCK_IRQRESTORE) \
-    $(wildcard include/config/GENERIC_LOCKBREAK) \
-  include/linux/rwlock_api_smp.h \
-    $(wildcard include/config/INLINE_READ_LOCK) \
-    $(wildcard include/config/INLINE_WRITE_LOCK) \
-    $(wildcard include/config/INLINE_READ_LOCK_BH) \
-    $(wildcard include/config/INLINE_WRITE_LOCK_BH) \
-    $(wildcard include/config/INLINE_READ_LOCK_IRQ) \
-    $(wildcard include/config/INLINE_WRITE_LOCK_IRQ) \
-    $(wildcard include/config/INLINE_READ_LOCK_IRQSAVE) \
-    $(wildcard include/config/INLINE_WRITE_LOCK_IRQSAVE) \
-    $(wildcard include/config/INLINE_READ_TRYLOCK) \
-    $(wildcard include/config/INLINE_WRITE_TRYLOCK) \
-    $(wildcard include/config/INLINE_READ_UNLOCK) \
-    $(wildcard include/config/INLINE_WRITE_UNLOCK) \
-    $(wildcard include/config/INLINE_READ_UNLOCK_BH) \
-    $(wildcard include/config/INLINE_WRITE_UNLOCK_BH) \
-    $(wildcard include/config/INLINE_READ_UNLOCK_IRQ) \
-    $(wildcard include/config/INLINE_WRITE_UNLOCK_IRQ) \
-    $(wildcard include/config/INLINE_READ_UNLOCK_IRQRESTORE) \
-    $(wildcard include/config/INLINE_WRITE_UNLOCK_IRQRESTORE) \
-  include/linux/refcount.h \
-  include/linux/rbtree.h \
-  include/linux/rbtree_types.h \
-  include/linux/rcupdate.h \
-    $(wildcard include/config/PREEMPT_RCU) \
-    $(wildcard include/config/TINY_RCU) \
-    $(wildcard include/config/RCU_STRICT_GRACE_PERIOD) \
-    $(wildcard include/config/TASKS_RCU_GENERIC) \
-    $(wildcard include/config/RCU_STALL_COMMON) \
-    $(wildcard include/config/NO_HZ_FULL) \
-    $(wildcard include/config/RCU_NOCB_CPU) \
-    $(wildcard include/config/TASKS_RCU) \
-    $(wildcard include/config/TASKS_TRACE_RCU) \
-    $(wildcard include/config/TASKS_RUDE_RCU) \
-    $(wildcard include/config/TREE_RCU) \
-    $(wildcard include/config/DEBUG_OBJECTS_RCU_HEAD) \
-    $(wildcard include/config/PROVE_RCU) \
-    $(wildcard include/config/ARCH_WEAK_RELEASE_ACQUIRE) \
-  include/linux/rcutree.h \
-  include/linux/rwsem.h \
-    $(wildcard include/config/RWSEM_SPIN_ON_OWNER) \
-    $(wildcard include/config/DEBUG_RWSEMS) \
-  include/linux/osq_lock.h \
-  include/linux/completion.h \
-  include/linux/swait.h \
-  include/linux/wait.h \
-  include/uapi/linux/wait.h \
-  include/linux/uprobes.h \
-    $(wildcard include/config/UPROBES) \
-  arch/x86/include/asm/uprobes.h \
-  include/linux/notifier.h \
-  include/linux/mutex.h \
-    $(wildcard include/config/MUTEX_SPIN_ON_OWNER) \
-    $(wildcard include/config/DEBUG_MUTEXES) \
-  include/linux/debug_locks.h \
-  include/linux/srcu.h \
-    $(wildcard include/config/TINY_SRCU) \
-    $(wildcard include/config/SRCU) \
-  include/linux/workqueue.h \
-    $(wildcard include/config/DEBUG_OBJECTS_WORK) \
-    $(wildcard include/config/FREEZER) \
-    $(wildcard include/config/WQ_WATCHDOG) \
-  include/linux/timer.h \
-    $(wildcard include/config/DEBUG_OBJECTS_TIMERS) \
-    $(wildcard include/config/NO_HZ_COMMON) \
-  include/linux/ktime.h \
-  include/linux/jiffies.h \
-  include/vdso/jiffies.h \
-  include/generated/timeconst.h \
-  include/vdso/ktime.h \
-  include/linux/timekeeping.h \
-    $(wildcard include/config/GENERIC_CMOS_UPDATE) \
-  include/linux/clocksource_ids.h \
-  include/linux/debugobjects.h \
-    $(wildcard include/config/DEBUG_OBJECTS) \
-    $(wildcard include/config/DEBUG_OBJECTS_FREE) \
-  include/linux/rcu_segcblist.h \
-  include/linux/srcutree.h \
-  include/linux/rcu_node_tree.h \
-    $(wildcard include/config/RCU_FANOUT) \
-    $(wildcard include/config/RCU_FANOUT_LEAF) \
-  include/linux/page-flags-layout.h \
-    $(wildcard include/config/KASAN_HW_TAGS) \
-  include/linux/numa.h \
-    $(wildcard include/config/NODES_SHIFT) \
-    $(wildcard include/config/NUMA_KEEP_MEMINFO) \
-    $(wildcard include/config/HAVE_ARCH_NODE_DEV_GROUP) \
-  arch/x86/include/asm/sparsemem.h \
-  include/generated/bounds.h \
-  include/linux/seqlock.h \
-  include/linux/ww_mutex.h \
-    $(wildcard include/config/DEBUG_RT_MUTEXES) \
-    $(wildcard include/config/DEBUG_WW_MUTEX_SLOWPATH) \
-  include/linux/rtmutex.h \
-  arch/x86/include/asm/mmu.h \
-    $(wildcard include/config/MODIFY_LDT_SYSCALL) \
-  include/linux/kmod.h \
-  include/linux/umh.h \
-  include/linux/gfp.h \
-    $(wildcard include/config/HIGHMEM) \
-    $(wildcard include/config/ZONE_DMA) \
-    $(wildcard include/config/ZONE_DMA32) \
-    $(wildcard include/config/ZONE_DEVICE) \
-    $(wildcard include/config/PM_SLEEP) \
-    $(wildcard include/config/CONTIG_ALLOC) \
-    $(wildcard include/config/CMA) \
-  include/linux/mmdebug.h \
-    $(wildcard include/config/DEBUG_VM) \
-    $(wildcard include/config/DEBUG_VM_PGFLAGS) \
-  include/linux/mmzone.h \
-    $(wildcard include/config/FORCE_MAX_ZONEORDER) \
-    $(wildcard include/config/MEMORY_ISOLATION) \
-    $(wildcard include/config/ZSMALLOC) \
-    $(wildcard include/config/MEMORY_HOTPLUG) \
-    $(wildcard include/config/COMPACTION) \
-    $(wildcard include/config/PAGE_EXTENSION) \
-    $(wildcard include/config/DEFERRED_STRUCT_PAGE_INIT) \
-    $(wildcard include/config/HAVE_MEMORYLESS_NODES) \
-    $(wildcard include/config/SPARSEMEM_EXTREME) \
-    $(wildcard include/config/HAVE_ARCH_PFN_VALID) \
-  include/linux/nodemask.h \
-  include/linux/pageblock-flags.h \
-    $(wildcard include/config/HUGETLB_PAGE_SIZE_VARIABLE) \
-  include/linux/page-flags.h \
-    $(wildcard include/config/ARCH_USES_PG_UNCACHED) \
-    $(wildcard include/config/MEMORY_FAILURE) \
-    $(wildcard include/config/PAGE_IDLE_FLAG) \
-    $(wildcard include/config/HUGETLB_PAGE_FREE_VMEMMAP) \
-    $(wildcard include/config/HUGETLB_PAGE_FREE_VMEMMAP_DEFAULT_ON) \
-    $(wildcard include/config/KSM) \
-  include/linux/local_lock.h \
-  include/linux/local_lock_internal.h \
-  include/linux/memory_hotplug.h \
-    $(wildcard include/config/HAVE_ARCH_NODEDATA_EXTENSION) \
-    $(wildcard include/config/ARCH_HAS_ADD_PAGES) \
-    $(wildcard include/config/MEMORY_HOTREMOVE) \
-  arch/x86/include/asm/mmzone.h \
-  arch/x86/include/asm/mmzone_32.h \
-  include/linux/topology.h \
-    $(wildcard include/config/USE_PERCPU_NUMA_NODE_ID) \
-    $(wildcard include/config/SCHED_SMT) \
-    $(wildcard include/config/SCHED_CLUSTER) \
-  include/linux/arch_topology.h \
-    $(wildcard include/config/ACPI_CPPC_LIB) \
-    $(wildcard include/config/GENERIC_ARCH_TOPOLOGY) \
-  include/linux/percpu.h \
-    $(wildcard include/config/NEED_PER_CPU_EMBED_FIRST_
+= 1,
+	.agc = &xc3028_agc_config,
+	.bw  = &xc3028_bw_config,
+
+	.gpio_dir = DIB7000P_GPIO_DEFAULT_DIRECTIONS,
+	.gpio_val = DIB7000P_GPIO_DEFAULT_VALUES,
+	.gpio_pwm_pos = DIB7000P_GPIO_DEFAULT_PWM_POS,
+
+	.pwm_freq_div = 0,
+	.agc_control  = NULL,
+	.spur_protect = 0,
+
+	.output_mode = OUTMODE_MPEG2_SERIAL,
+};
+
+static struct zl10353_config dvico_fusionhdtv_xc3028 = {
+	.demod_address = 0x0f,
+	.if2           = 45600,
+	.no_tuner      = 1,
+	.disable_i2c_gate_ctrl = 1,
+};
+
+static struct stv0900_reg stv0900_ts_regs[] = {
+	{ R0900_TSGENERAL, 0x00 },
+	{ R0900_P1_TSSPEED, 0x40 },
+	{ R0900_P2_TSSPEED, 0x40 },
+	{ R0900_P1_TSCFGM, 0xc0 },
+	{ R0900_P2_TSCFGM, 0xc0 },
+	{ R0900_P1_TSCFGH, 0xe0 },
+	{ R0900_P2_TSCFGH, 0xe0 },
+	{ R0900_P1_TSCFGL, 0x20 },
+	{ R0900_P2_TSCFGL, 0x20 },
+	{ 0xffff, 0xff }, /* terminate */
+};
+
+static struct stv0900_config netup_stv0900_config = {
+	.demod_address = 0x68,
+	.demod_mode = 1, /* dual */
+	.xtal = 8000000,
+	.clkmode = 3,/* 0-CLKI, 2-XTALI, else AUTO */
+	.diseqc_mode = 2,/* 2/3 PWM */
+	.ts_config_regs = stv0900_ts_regs,
+	.tun1_maddress = 0,/* 0x60 */
+	.tun2_maddress = 3,/* 0x63 */
+	.tun1_adc = 1,/* 1 Vpp */
+	.tun2_adc = 1,/* 1 Vpp */
+};
+
+static struct stv6110_config netup_stv6110_tunerconfig_a = {
+	.i2c_address = 0x60,
+	.mclk = 16000000,
+	.clk_div = 1,
+	.gain = 8, /* +16 dB  - maximum gain */
+};
+
+static struct stv6110_config netup_stv6110_tunerconfig_b = {
+	.i2c_address = 0x63,
+	.mclk = 16000000,
+	.clk_div = 1,
+	.gain = 8, /* +16 dB  - maximum gain */
+};
+
+static struct cx24116_config tbs_cx24116_config = {
+	.demod_address = 0x55,
+};
+
+static struct cx24117_config tbs_cx24117_config = {
+	.demod_address = 0x55,
+};
+
+static struct ds3000_config tevii_ds3000_config = {
+	.demod_address = 0x68,
+};
+
+static struct ts2020_config tevii_ts2020_config  = {
+	.tuner_address = 0x60,
+	.clk_out_div = 1,
+	.frequency_div = 1146000,
+};
+
+static struct cx24116_config dvbworld_cx24116_config = {
+	.demod_address = 0x05,
+};
+
+static struct lgs8gxx_config mygica_x8506_lgs8gl5_config = {
+	.prod = LGS8GXX_PROD_LGS8GL5,
+	.demod_address = 0x19,
+	.serial_ts = 0,
+	.ts_clk_pol = 1,
+	.ts_clk_gated = 1,
+	.if_clk_freq = 30400, /* 30.4 MHz */
+	.if_freq = 5380, /* 5.38 MHz */
+	.if_neg_center = 1,
+	.ext_adc = 0,
+	.adc_signed = 0,
+	.if_neg_edge = 0,
+};
+
+static struct xc5000_config mygica_x8506_xc5000_config = {
+	.i2c_address = 0x61,
+	.if_khz = 5380,
+};
+
+static struct mb86a20s_config mygica_x8507_mb86a20s_config = {
+	.demod_address = 0x10,
+};
+
+static struct xc5000_config mygica_x8507_xc5000_config = {
+	.i2c_address = 0x61,
+	.if_khz = 4000,
+};
+
+static struct stv090x_config prof_8000_stv090x_config = {
+	.device                 = STV0903,
+	.demod_mode             = STV090x_SINGLE,
+	.clk_mode               = STV090x_CLK_EXT,
+	.xtal                   = 27000000,
+	.address                = 0x6A,
+	.ts1_mode               = STV090x_TSMODE_PARALLEL_PUNCTURED,
+	.repeater_level         = STV090x_RPTLEVEL_64,
+	.adc1_range             = STV090x_ADC_2Vpp,
+	.diseqc_envelope_mode   = false,
+
+	.tuner_get_frequency    = stb6100_get_frequency,
+	.tuner_set_frequency    = stb6100_set_frequency,
+	.tuner_set_bandwidth    = stb6100_set_bandwidth,
+	.tuner_get_bandwidth    = stb6100_get_bandwidth,
+};
+
+static struct stb6100_config prof_8000_stb6100_config = {
+	.tuner_address = 0x60,
+	.refclock = 27000000,
+};
+
+static struct lgdt3306a_config hauppauge_quadHD_ATSC_a_config = {
+	.i2c_addr               = 0x59,
+	.qam_if_khz             = 4000,
+	.vsb_if_khz             = 3250,
+	.deny_i2c_rptr          = 1, /* Disabled */
+	.spectral_inversion     = 0, /* Disabled */
+	.mpeg_mode              = LGDT3306A_MPEG_SERIAL,
+	.tpclk_edge             = LGDT3306A_TPCLK_RISING_EDGE,
+	.tpvalid_polarity       = LGDT3306A_TP_VALID_HIGH,
+	.xtalMHz                = 25, /* 24 or 25 */
+};
+
+static struct lgdt3306a_config hauppauge_quadHD_ATSC_b_config = {
+	.i2c_addr               = 0x0e,
+	.qam_if_khz             = 4000,
+	.vsb_if_khz             = 3250,
+	.deny_i2c_rptr          = 1, /* Disabled */
+	.spectral_inversion     = 0, /* Disabled */
+	.mpeg_mode              = LGDT3306A_MPEG_SERIAL,
+	.tpclk_edge             = LGDT3306A_TPCLK_RISING_EDGE,
+	.tpvalid_polarity       = LGDT3306A_TP_VALID_HIGH,
+	.xtalMHz                = 25, /* 24 or 25 */
+};
+
+static int p8000_set_voltage(struct dvb_frontend *fe,
+			     enum fe_sec_voltage voltage)
+{
+	struct cx23885_tsport *port = fe->dvb->priv;
+	struct cx23885_dev *dev = port->dev;
+
+	if (voltage == SEC_VOLTAGE_18)
+		cx_write(MC417_RWD, 0x00001e00);
+	else if (voltage == SEC_VOLTAGE_13)
+		cx_write(MC417_RWD, 0x00001a00);
+	else
+		cx_write(MC417_RWD, 0x00001800);
+	return 0;
+}
+
+static int dvbsky_t9580_set_voltage(struct dvb_frontend *fe,
+					enum fe_sec_voltage voltage)
+{
+	struct cx23885_tsport *port = fe->dvb->priv;
+	struct cx23885_dev *dev = port->dev;
+
+	cx23885_gpio_enable(dev, GPIO_0 | GPIO_1, 1);
+
+	switch (voltage) {
+	case SEC_VOLTAGE_13:
+		cx23885_gpio_set(dev, GPIO_1);
+		cx23885_gpio_clear(dev, GPIO_0);
+		break;
+	case SEC_VOLTAGE_18:
+		cx23885_gpio_set(dev, GPIO_1);
+		cx23885_gpio_set(dev, GPIO_0);
+		break;
+	case SEC_VOLTAGE_OFF:
+		cx23885_gpio_clear(dev, GPIO_1);
+		cx23885_gpio_clear(dev, GPIO_0);
+		break;
+	}
+
+	/* call the frontend set_voltage function */
+	port->fe_set_voltage(fe, voltage);
+
+	return 0;
+}
+
+static int dvbsky_s952_portc_set_voltage(struct dvb_frontend *fe,
+					enum fe_sec_voltage voltage)
+{
+	struct cx23885_tsport *port = fe->dvb->priv;
+	struct cx23885_dev *dev = port->dev;
+
+	cx23885_gpio_enable(dev, GPIO_12 | GPIO_13, 1);
+
+	switch (voltage) {
+	case SEC_VOLTAGE_13:
+		cx23885_gpio_set(dev, GPIO_13);
+		cx23885_gpio_clear(dev, GPIO_12);
+		break;
+	case SEC_VOLTAGE_18:
+		cx23885_gpio_set(dev, GPIO_13);
+		cx23885_gpio_set(dev, GPIO_12);
+		break;
+	case SEC_VOLTAGE_OFF:
+		cx23885_gpio_clear(dev, GPIO_13);
+		cx23885_gpio_clear(dev, GPIO_12);
+		break;
+	}
+	/* call the frontend set_voltage function */
+	return port->fe_set_voltage(fe, voltage);
+}
+
+static int cx23885_sp2_ci_ctrl(void *priv, u8 read, int addr,
+				u8 data, int *mem)
+{
+	/* MC417 */
+	#define SP2_DATA              0x000000ff
+	#define SP2_WR                0x00008000
+	#define SP2_RD                0x00004000
+	#define SP2_ACK               0x00001000
+	#define SP2_ADHI              0x00000800
+	#define SP2_ADLO              0x00000400
+	#define SP2_CS1               0x00000200
+	#define SP2_CS0               0x00000100
+	#define SP2_EN_ALL            0x00001000
+	#define SP2_CTRL_OFF          (SP2_CS1 | SP2_CS0 | SP2_WR | SP2_RD)
+
+	struct cx23885_tsport *port = priv;
+	struct cx23885_dev *dev = port->dev;
+	int ret;
+	int tmp = 0;
+	unsigned long timeout;
+
+	mutex_lock(&dev->gpio_lock);
+
+	/* write addr */
+	cx_write(MC417_OEN, SP2_EN_ALL);
+	cx_write(MC417_RWD, SP2_CTRL_OFF |
+				SP2_ADLO | (0xff & addr));
+	cx_clear(MC417_RWD, SP2_ADLO);
+	cx_write(MC417_RWD, SP2_CTRL_OFF |
+				SP2_ADHI | (0xff & (addr >> 8)));
+	cx_clear(MC417_RWD, SP2_ADHI);
+
+	if (read)
+		/* data in */
+		cx_write(MC417_OEN, SP2_EN_ALL | S

@@ -1,220 +1,297 @@
-ude/config/PARAVIRT_XXL) \
-  arch/x86/include/asm/disabled-features.h \
-    $(wildcard include/config/X86_SMAP) \
-    $(wildcard include/config/X86_UMIP) \
-    $(wildcard include/config/X86_INTEL_MEMORY_PROTECTION_KEYS) \
-    $(wildcard include/config/X86_5LEVEL) \
-    $(wildcard include/config/PAGE_TABLE_ISOLATION) \
-    $(wildcard include/config/INTEL_IOMMU_SVM) \
-    $(wildcard include/config/X86_SGX) \
-  include/asm-generic/bitops/const_hweight.h \
-  include/asm-generic/bitops/instrumented-atomic.h \
-  include/linux/instrumented.h \
-  include/asm-generic/bitops/instrumented-non-atomic.h \
-    $(wildcard include/config/KCSAN_ASSUME_PLAIN_WRITES_ATOMIC) \
-  include/asm-generic/bitops/instrumented-lock.h \
-  include/asm-generic/bitops/le.h \
-  arch/x86/include/uapi/asm/byteorder.h \
-  include/linux/byteorder/little_endian.h \
-  include/uapi/linux/byteorder/little_endian.h \
-  include/linux/swab.h \
-  include/uapi/linux/swab.h \
-  arch/x86/include/uapi/asm/swab.h \
-  include/linux/byteorder/generic.h \
-  include/asm-generic/bitops/ext2-atomic-setbit.h \
-  include/vdso/math64.h \
-  include/linux/time64.h \
-  include/vdso/time64.h \
-  include/uapi/linux/time.h \
-  include/uapi/linux/time_types.h \
-  include/linux/time32.h \
-  include/linux/timex.h \
-  include/uapi/linux/timex.h \
-  include/uapi/linux/param.h \
-  arch/x86/include/generated/uapi/asm/param.h \
-  include/asm-generic/param.h \
-    $(wildcard include/config/HZ) \
-  include/uapi/asm-generic/param.h \
-  arch/x86/include/asm/timex.h \
-    $(wildcard include/config/X86_TSC) \
-  arch/x86/include/asm/processor.h \
-    $(wildcard include/config/X86_VMX_FEATURE_NAMES) \
-    $(wildcard include/config/X86_IOPL_IOPERM) \
-    $(wildcard include/config/STACKPROTECTOR) \
-    $(wildcard include/config/VM86) \
-    $(wildcard include/config/X86_DEBUGCTLMSR) \
-    $(wildcard include/config/CPU_SUP_AMD) \
-    $(wildcard include/config/XEN) \
-  arch/x86/include/asm/processor-flags.h \
-  arch/x86/include/uapi/asm/processor-flags.h \
-  include/linux/mem_encrypt.h \
-    $(wildcard include/config/ARCH_HAS_MEM_ENCRYPT) \
-    $(wildcard include/config/AMD_MEM_ENCRYPT) \
-  arch/x86/include/asm/mem_encrypt.h \
-  include/linux/init.h \
-    $(wildcard include/config/STRICT_KERNEL_RWX) \
-    $(wildcard include/config/STRICT_MODULE_RWX) \
-    $(wildcard include/config/LTO_CLANG) \
-  include/linux/cc_platform.h \
-    $(wildcard include/config/ARCH_HAS_CC_PLATFORM) \
-  arch/x86/include/uapi/asm/bootparam.h \
-  include/linux/screen_info.h \
-  include/uapi/linux/screen_info.h \
-  include/linux/apm_bios.h \
-  include/uapi/linux/apm_bios.h \
-  include/uapi/linux/ioctl.h \
-  arch/x86/include/generated/uapi/asm/ioctl.h \
-  include/asm-generic/ioctl.h \
-  include/uapi/asm-generic/ioctl.h \
-  include/linux/edd.h \
-  include/uapi/linux/edd.h \
-  arch/x86/include/asm/ist.h \
-  arch/x86/include/uapi/asm/ist.h \
-  include/video/edid.h \
-    $(wildcard include/config/X86) \
-  include/uapi/video/edid.h \
-  arch/x86/include/asm/math_emu.h \
-  arch/x86/include/asm/ptrace.h \
-    $(wildcard include/config/PARAVIRT) \
-    $(wildcard include/config/IA32_EMULATION) \
-  arch/x86/include/asm/segment.h \
-    $(wildcard include/config/XEN_PV) \
-  arch/x86/include/asm/page_types.h \
-    $(wildcard include/config/PHYSICAL_START) \
-    $(wildcard include/config/PHYSICAL_ALIGN) \
-    $(wildcard include/config/DYNAMIC_PHYSICAL_MASK) \
-  arch/x86/include/asm/page_32_types.h \
-    $(wildcard include/config/HIGHMEM4G) \
-    $(wildcard include/config/HIGHMEM64G) \
-    $(wildcard include/config/PAGE_OFFSET) \
-  arch/x86/include/uapi/asm/ptrace.h \
-  arch/x86/include/uapi/asm/ptrace-abi.h \
-  arch/x86/include/asm/paravirt_types.h \
-    $(wildcard include/config/PGTABLE_LEVELS) \
-    $(wildcard include/config/PARAVIRT_DEBUG) \
-  arch/x86/include/asm/desc_defs.h \
-  arch/x86/include/asm/pgtable_types.h \
-    $(wildcard include/config/MEM_SOFT_DIRTY) \
-    $(wildcard include/config/HAVE_ARCH_USERFAULTFD_WP) \
-    $(wildcard include/config/PROC_FS) \
-  arch/x86/include/asm/pgtable_32_types.h \
-  arch/x86/include/asm/pgtable-3level_types.h \
-  include/asm-generic/pgtable-nop4d.h \
-  include/asm-generic/pgtable-nopud.h \
-  arch/x86/include/asm/nospec-branch.h \
-  include/linux/static_key.h \
-  include/linux/jump_label.h \
-    $(wildcard include/config/HAVE_ARCH_JUMP_LABEL_RELATIVE) \
-  arch/x86/include/asm/jump_label.h \
-  include/linux/objtool.h \
-    $(wildcard include/config/FRAME_POINTER) \
-  arch/x86/include/asm/msr-index.h \
-  arch/x86/include/asm/unwind_hints.h \
-  arch/x86/include/asm/orc_types.h \
-  arch/x86/include/asm/GEN-for-each-reg.h \
-  arch/x86/include/asm/spinlock_types.h \
-  include/asm-generic/qspinlock_types.h \
-    $(wildcard include/config/NR_CPUS) \
-  include/asm-generic/qrwlock_types.h \
-  arch/x86/include/asm/proto.h \
-  arch/x86/include/uapi/asm/ldt.h \
-  arch/x86/include/uapi/asm/sigcontext.h \
-  arch/x86/include/asm/current.h \
-  arch/x86/include/asm/percpu.h \
-    $(wildcard include/config/X86_64_SMP) \
-  include/linux/kernel.h \
-    $(wildcard include/config/PREEMPT_VOLUNTARY_BUILD) \
-    $(wildcard include/config/PREEMPT_DYNAMIC) \
-    $(wildcard include/config/HAVE_PREEMPT_DYNAMIC_CALL) \
-    $(wildcard include/config/HAVE_PREEMPT_DYNAMIC_KEY) \
-    $(wildcard include/config/PREEMPT_) \
-    $(wildcard include/config/DEBUG_ATOMIC_SLEEP) \
-    $(wildcard include/config/MMU) \
-    $(wildcard include/config/PROVE_LOCKING) \
-  include/linux/stdarg.h \
-  include/linux/align.h \
-  include/linux/limits.h \
-  include/uapi/linux/limits.h \
-  include/vdso/limits.h \
-  include/linux/kstrtox.h \
-  include/linux/minmax.h \
-  include/linux/panic.h \
-    $(wildcard include/config/PANIC_TIMEOUT) \
-  include/linux/printk.h \
-    $(wildcard include/config/MESSAGE_LOGLEVEL_DEFAULT) \
-    $(wildcard include/config/CONSOLE_LOGLEVEL_DEFAULT) \
-    $(wildcard include/config/CONSOLE_LOGLEVEL_QUIET) \
-    $(wildcard include/config/EARLY_PRINTK) \
-    $(wildcard include/config/PRINTK) \
-    $(wildcard include/config/DYNAMIC_DEBUG) \
-    $(wildcard include/config/DYNAMIC_DEBUG_CORE) \
-  include/linux/kern_levels.h \
-  include/linux/ratelimit_types.h \
-  include/linux/spinlock_types_raw.h \
-    $(wildcard include/config/DEBUG_SPINLOCK) \
-    $(wildcard include/config/DEBUG_LOCK_ALLOC) \
-  include/linux/lockdep_types.h \
-    $(wildcard include/config/PROVE_RAW_LOCK_NESTING) \
-    $(wildcard include/config/LOCKDEP) \
-    $(wildcard include/config/LOCK_STAT) \
-  include/linux/once_lite.h \
-  include/linux/static_call_types.h \
-    $(wildcard include/config/HAVE_STATIC_CALL) \
-  include/linux/instruction_pointer.h \
-  include/asm-generic/percpu.h \
-    $(wildcard include/config/DEBUG_PREEMPT) \
-    $(wildcard include/config/HAVE_SETUP_PER_CPU_AREA) \
-  include/linux/threads.h \
-    $(wildcard include/config/BASE_SMALL) \
-  include/linux/percpu-defs.h \
-    $(wildcard include/config/DEBUG_FORCE_WEAK_PER_CPU) \
-  arch/x86/include/asm/page.h \
-  arch/x86/include/asm/page_32.h \
-    $(wildcard include/config/DEBUG_VIRTUAL) \
-    $(wildcard include/config/FLATMEM) \
-  include/linux/string.h \
-    $(wildcard include/config/BINARY_PRINTF) \
-    $(wildcard include/config/FORTIFY_SOURCE) \
-  include/linux/errno.h \
-  include/uapi/linux/errno.h \
-  include/uapi/linux/string.h \
-  arch/x86/include/asm/string.h \
-  arch/x86/include/asm/string_32.h \
-  include/linux/fortify-string.h \
-  include/linux/range.h \
-  include/asm-generic/memory_model.h \
-    $(wildcard include/config/SPARSEMEM_VMEMMAP) \
-    $(wildcard include/config/SPARSEMEM) \
-  include/linux/pfn.h \
-  include/asm-generic/getorder.h \
-  arch/x86/include/asm/msr.h \
-  arch/x86/include/asm/msr-index.h \
-  arch/x86/include/asm/cpumask.h \
-  include/linux/cpumask.h \
-    $(wildcard include/config/CPUMASK_OFFSTACK) \
-    $(wildcard include/config/HOTPLUG_CPU) \
-    $(wildcard include/config/DEBUG_PER_CPU_MAPS) \
-  include/linux/bitmap.h \
-  include/linux/find.h \
-  include/linux/atomic.h \
-  arch/x86/include/asm/atomic.h \
-  arch/x86/include/asm/cmpxchg.h \
-  arch/x86/include/asm/cmpxchg_32.h \
-  arch/x86/include/asm/atomic64_32.h \
-  include/linux/atomic/atomic-arch-fallback.h \
-    $(wildcard include/config/GENERIC_ATOMIC64) \
-  include/linux/atomic/atomic-long.h \
-  include/linux/atomic/atomic-instrumented.h \
-  include/linux/bug.h \
-    $(wildcard include/config/BUG_ON_DATA_CORRUPTION) \
-  arch/x86/include/asm/bug.h \
-    $(wildcard include/config/DEBUG_BUGVERBOSE) \
-  include/linux/instrumentation.h \
-    $(wildcard include/config/DEBUG_ENTRY) \
-  include/asm-generic/bug.h \
-    $(wildcard include/config/BUG) \
-    $(wildcard include/config/GENERIC_BUG_RELATIVE_POINTERS) \
-  arch/x86/include/uapi/asm/msr.h \
-  include/linux/tracepoint-defs.h \
-  arch/x86/include/asm/special_insns.h \
-  include/lin
+-T/C/S2, IR) */
+	}, {
+		.subvendor = 0x0070,
+		.subdevice = 0xc12a,
+		.card      = CX23885_BOARD_HAUPPAUGE_STARBURST, /* Hauppauge WinTV Starburst (Model 121x00, DVB-S2, IR) */
+	}, {
+		.subvendor = 0x0070,
+		.subdevice = 0xc1f8,
+		.card      = CX23885_BOARD_HAUPPAUGE_HVR4400, /* Hauppauge WinTV HVR-5500 (Model 121xxx, Hybrid DVB-T/C/S2, IR) */
+	}, {
+		.subvendor = 0x1461,
+		.subdevice = 0xd939,
+		.card      = CX23885_BOARD_AVERMEDIA_HC81R,
+	}, {
+		.subvendor = 0x0070,
+		.subdevice = 0x7133,
+		.card      = CX23885_BOARD_HAUPPAUGE_IMPACTVCBE,
+	}, {
+		.subvendor = 0x0070,
+		.subdevice = 0x7137,
+		.card      = CX23885_BOARD_HAUPPAUGE_IMPACTVCBE,
+	}, {
+		.subvendor = 0x18ac,
+		.subdevice = 0xdb98,
+		.card      = CX23885_BOARD_DVICO_FUSIONHDTV_DVB_T_DUAL_EXP2,
+	}, {
+		.subvendor = 0x4254,
+		.subdevice = 0x9580,
+		.card      = CX23885_BOARD_DVBSKY_T9580,
+	}, {
+		.subvendor = 0x4254,
+		.subdevice = 0x980c,
+		.card      = CX23885_BOARD_DVBSKY_T980C,
+	}, {
+		.subvendor = 0x4254,
+		.subdevice = 0x950c,
+		.card      = CX23885_BOARD_DVBSKY_S950C,
+	}, {
+		.subvendor = 0x13c2,
+		.subdevice = 0x3013,
+		.card      = CX23885_BOARD_TT_CT2_4500_CI,
+	}, {
+		.subvendor = 0x4254,
+		.subdevice = 0x0950,
+		.card      = CX23885_BOARD_DVBSKY_S950,
+	}, {
+		.subvendor = 0x4254,
+		.subdevice = 0x0952,
+		.card      = CX23885_BOARD_DVBSKY_S952,
+	}, {
+		.subvendor = 0x4254,
+		.subdevice = 0x0982,
+		.card      = CX23885_BOARD_DVBSKY_T982,
+	}, {
+		.subvendor = 0x0070,
+		.subdevice = 0xf038,
+		.card      = CX23885_BOARD_HAUPPAUGE_HVR5525,
+	}, {
+		.subvendor = 0x1576,
+		.subdevice = 0x0260,
+		.card      = CX23885_BOARD_VIEWCAST_260E,
+	}, {
+		.subvendor = 0x1576,
+		.subdevice = 0x0460,
+		.card      = CX23885_BOARD_VIEWCAST_460E,
+	}, {
+		.subvendor = 0x0070,
+		.subdevice = 0x6a28,
+		.card      = CX23885_BOARD_HAUPPAUGE_QUADHD_DVB, /* Tuner Pair 1 */
+	}, {
+		.subvendor = 0x0070,
+		.subdevice = 0x6b28,
+		.card      = CX23885_BOARD_HAUPPAUGE_QUADHD_DVB, /* Tuner Pair 2 */
+	}, {
+		.subvendor = 0x0070,
+		.subdevice = 0x6a18,
+		.card      = CX23885_BOARD_HAUPPAUGE_QUADHD_ATSC, /* Tuner Pair 1 */
+	}, {
+		.subvendor = 0x0070,
+		.subdevice = 0x6b18,
+		.card      = CX23885_BOARD_HAUPPAUGE_QUADHD_ATSC, /* Tuner Pair 2 */
+	}, {
+		.subvendor = 0x0070,
+		.subdevice = 0x2a18,
+		.card      = CX23885_BOARD_HAUPPAUGE_HVR1265_K4, /* Hauppauge WinTV HVR-1265 (Model 161xx1, Hybrid ATSC/QAM-B) */
+	}, {
+		.subvendor = 0x0070,
+		.subdevice = 0xf02a,
+		.card      = CX23885_BOARD_HAUPPAUGE_STARBURST2,
+	}, {
+		.subvendor = 0x1461,
+		.subdevice = 0x3100,
+		.card      = CX23885_BOARD_AVERMEDIA_CE310B,
+	},
+};
+const unsigned int cx23885_idcount = ARRAY_SIZE(cx23885_subids);
+
+void cx23885_card_list(struct cx23885_dev *dev)
+{
+	int i;
+
+	if (0 == dev->pci->subsystem_vendor &&
+	    0 == dev->pci->subsystem_device) {
+		pr_info("%s: Board has no valid PCIe Subsystem ID and can't\n"
+			"%s: be autodetected. Pass card=<n> insmod option\n"
+			"%s: to workaround that. Redirect complaints to the\n"
+			"%s: vendor of the TV card.  Best regards,\n"
+			"%s:         -- tux\n",
+			dev->name, dev->name, dev->name, dev->name, dev->name);
+	} else {
+		pr_info("%s: Your board isn't known (yet) to the driver.\n"
+			"%s: Try to pick one of the existing card configs via\n"
+			"%s: card=<n> insmod option.  Updating to the latest\n"
+			"%s: version might help as well.\n",
+			dev->name, dev->name, dev->name, dev->name);
+	}
+	pr_info("%s: Here is a list of valid choices for the card=<n> insmod option:\n",
+	       dev->name);
+	for (i = 0; i < cx23885_bcount; i++)
+		pr_info("%s:    card=%d -> %s\n",
+			dev->name, i, cx23885_boards[i].name);
+}
+
+static void viewcast_eeprom(struct cx23885_dev *dev, u8 *eeprom_data)
+{
+	u32 sn;
+
+	/* The serial number record begins with tag 0x59 */
+	if (*(eeprom_data + 0x00) != 0x59) {
+		pr_info("%s() eeprom records are undefined, no serial number\n",
+			__func__);
+		return;
+	}
+
+	sn =	(*(eeprom_data + 0x06) << 24) |
+		(*(eeprom_data + 0x05) << 16) |
+		(*(eeprom_data + 0x04) << 8) |
+		(*(eeprom_data + 0x03));
+
+	pr_info("%s: card '%s' sn# MM%d\n",
+		dev->name,
+		cx23885_boards[dev->board].name,
+		sn);
+}
+
+static void hauppauge_eeprom(struct cx23885_dev *dev, u8 *eeprom_data)
+{
+	struct tveeprom tv;
+
+	tveeprom_hauppauge_analog(&tv, eeprom_data);
+
+	/* Make sure we support the board model */
+	switch (tv.model) {
+	case 22001:
+		/* WinTV-HVR1270 (PCIe, Retail, half height)
+		 * ATSC/QAM and basic analog, IR Blast */
+	case 22009:
+		/* WinTV-HVR1210 (PCIe, Retail, half height)
+		 * DVB-T and basic analog, IR Blast */
+	case 22011:
+		/* WinTV-HVR1270 (PCIe, Retail, half height)
+		 * ATSC/QAM and basic analog, IR Recv */
+	case 22019:
+		/* WinTV-HVR1210 (PCIe, Retail, half height)
+		 * DVB-T and basic analog, IR Recv */
+	case 22021:
+		/* WinTV-HVR1275 (PCIe, Retail, half height)
+		 * ATSC/QAM and basic analog, IR Recv */
+	case 22029:
+		/* WinTV-HVR1210 (PCIe, Retail, half height)
+		 * DVB-T and basic analog, IR Recv */
+	case 22101:
+		/* WinTV-HVR1270 (PCIe, Retail, full height)
+		 * ATSC/QAM and basic analog, IR Blast */
+	case 22109:
+		/* WinTV-HVR1210 (PCIe, Retail, full height)
+		 * DVB-T and basic analog, IR Blast */
+	case 22111:
+		/* WinTV-HVR1270 (PCIe, Retail, full height)
+		 * ATSC/QAM and basic analog, IR Recv */
+	case 22119:
+		/* WinTV-HVR1210 (PCIe, Retail, full height)
+		 * DVB-T and basic analog, IR Recv */
+	case 22121:
+		/* WinTV-HVR1275 (PCIe, Retail, full height)
+		 * ATSC/QAM and basic analog, IR Recv */
+	case 22129:
+		/* WinTV-HVR1210 (PCIe, Retail, full height)
+		 * DVB-T and basic analog, IR Recv */
+	case 71009:
+		/* WinTV-HVR1200 (PCIe, Retail, full height)
+		 * DVB-T and basic analog */
+	case 71100:
+		/* WinTV-ImpactVCB-e (PCIe, Retail, half height)
+		 * Basic analog */
+	case 71359:
+		/* WinTV-HVR1200 (PCIe, OEM, half height)
+		 * DVB-T and basic analog */
+	case 71439:
+		/* WinTV-HVR1200 (PCIe, OEM, half height)
+		 * DVB-T and basic analog */
+	case 71449:
+		/* WinTV-HVR1200 (PCIe, OEM, full height)
+		 * DVB-T and basic analog */
+	case 71939:
+		/* WinTV-HVR1200 (PCIe, OEM, half height)
+		 * DVB-T and basic analog */
+	case 71949:
+		/* WinTV-HVR1200 (PCIe, OEM, full height)
+		 * DVB-T and basic analog */
+	case 71959:
+		/* WinTV-HVR1200 (PCIe, OEM, full height)
+		 * DVB-T and basic analog */
+	case 71979:
+		/* WinTV-HVR1200 (PCIe, OEM, half height)
+		 * DVB-T and basic analog */
+	case 71999:
+		/* WinTV-HVR1200 (PCIe, OEM, full height)
+		 * DVB-T and basic analog */
+	case 76601:
+		/* WinTV-HVR1800lp (PCIe, Retail, No IR, Dual
+			channel ATSC and MPEG2 HW Encoder */
+	case 77001:
+		/* WinTV-HVR1500 (Express Card, OEM, No IR, ATSC
+			and Basic analog */
+	case 77011:
+		/* WinTV-HVR1500 (Express Card, Retail, No IR, ATSC
+			and Basic analog */
+	case 77041:
+		/* WinTV-HVR1500Q (Express Card, OEM, No IR, ATSC/QAM
+			and Basic analog */
+	case 77051:
+		/* WinTV-HVR1500Q (Express Card, Retail, No IR, ATSC/QAM
+			and Basic analog */
+	case 78011:
+		/* WinTV-HVR1800 (PCIe, Retail, 3.5mm in, IR, No FM,
+			Dual channel ATSC and MPEG2 HW Encoder */
+	case 78501:
+		/* WinTV-HVR1800 (PCIe, OEM, RCA in, No IR, FM,
+			Dual channel ATSC and MPEG2 HW Encoder */
+	case 78521:
+		/* WinTV-HVR1800 (PCIe, OEM, RCA in, No IR, FM,
+			Dual channel ATSC and MPEG2 HW Encoder */
+	case 78531:
+		/* WinTV-HVR1800 (PCIe, OEM, RCA in, No IR, No FM,
+			Dual channel ATSC and MPEG2 HW Encoder */
+	case 78631:
+		/* WinTV-HVR1800 (PCIe, OEM, No IR, No FM,
+			Dual channel ATSC and MPEG2 HW Encoder */
+	case 79001:
+		/* WinTV-HVR1250 (PCIe, Retail, IR, full height,
+			ATSC and Basic analog */
+	case 79101:
+		/* WinTV-HVR1250 (PCIe, Retail, IR, half height,
+			ATSC and Basic analog */
+	case 79501:
+		/* WinTV-HVR1250 (PCIe, No IR, half height,
+			ATSC [at least] and Basic analog) */
+	case 79561:
+		/* WinTV-HVR1250 (PCIe, OEM, No IR, half height,
+			ATSC and Basic analog */
+	case 79571:
+		/* WinTV-HVR1250 (PCIe, OEM, No IR, full height,
+		 ATSC and Basic analog */
+	case 79671:
+		/* WinTV-HVR1250 (PCIe, OEM, No IR, half height,
+			ATSC and Basic analog */
+	case 80019:
+		/* WinTV-HVR1400 (Express Card, Retail, IR,
+		 * DVB-T and Basic analog */
+	case 81509:
+		/* WinTV-HVR1700 (PCIe, OEM, No IR, half height)
+		 * DVB-T and MPEG2 HW Encoder */
+	case 81519:
+		/* WinTV-HVR1700 (PCIe, OEM, No IR, full height)
+		 * DVB-T and MPEG2 HW Encoder */
+		break;
+	case 85021:
+		/* WinTV-HVR1850 (PCIe, Retail, 3.5mm in, IR, FM,
+			Dual channel ATSC and MPEG2 HW Encoder */
+		break;
+	case 85721:
+		/* WinTV-HVR1290 (PCIe, OEM, RCA in, IR,
+			Dual channel ATSC and Basic analog */
+	case 121019:
+		/* WinTV-HVR4400 (PCIe, DVB-S2, DVB-C/T) */
+		break;
+	case 121029:
+		/* WinTV-HVR5500 (PCIe, DVB-S2, DVB-C/T) */
+		break;
+	case 150329:
+		/* WinTV-HVR5525 (PCIe, DVB-S/S2, DVB-T/T2/C) */
+		break;
+	case 161111:
+		/* WinTV-HVR-1265 K4 (PCIe, Analog/ATSC/QAM-B) */
+		break;
+	case 166100: /* 8

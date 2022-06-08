@@ -1,16 +1,25 @@
-(wildcard include/config/SPLIT_PTLOCK_CPUS) \
-    $(wildcard include/config/ARCH_ENABLE_SPLIT_PMD_PTLOCK) \
-  arch/x86/include/asm/tlbbatch.h \
-  include/linux/task_io_accounting.h \
-    $(wildcard include/config/TASK_IO_ACCOUNTING) \
-  include/linux/posix-timers.h \
-  include/linux/alarmtimer.h \
-    $(wildcard include/config/RTC_CLASS) \
-  include/uapi/linux/rseq.h \
-  include/linux/kcsan.h \
-  arch/x86/include/generated/asm/kmap_size.h \
-  include/asm-generic/kmap_size.h \
-    $(wildcard include/config/DEBUG_KMAP_LOCAL) \
-  arch/x86/include/asm/delay.h \
-  include/asm-generic/delay.h \
-  include/li
+IO moving on encoder ports\n",
+				dev->name);
+		cx_clear(MC417_RWD, (mask & 0x7fff8) >> 3);
+	}
+
+	/* TODO: 23-19 */
+	if (mask & 0x00f80000)
+		pr_info("%s: Unsupported\n", dev->name);
+}
+
+u32 cx23885_gpio_get(struct cx23885_dev *dev, u32 mask)
+{
+	if (mask & 0x00000007)
+		return (cx_read(GP0_IO) >> 8) & mask & 0x7;
+
+	if (mask & 0x0007fff8) {
+		if (encoder_on_portb(dev) || encoder_on_portc(dev))
+			pr_err("%s: Reading GPIO moving on encoder ports\n",
+				dev->name);
+		return (cx_read(MC417_RWD) & ((mask & 0x7fff8) >> 3)) << 3;
+	}
+
+	/* TODO: 23-19 */
+	if (mask & 0x00f80000)
+		pr_info("%s: Unsupported\n", d

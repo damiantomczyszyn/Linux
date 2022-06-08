@@ -1,16 +1,17 @@
-h \
-    $(wildcard include/config/ARCH_NR_GPIO) \
-  include/linux/gpio/driver.h \
-    $(wildcard include/config/IRQ_DOMAIN_HIERARCHY) \
-    $(wildcard include/config/GPIO_GENERIC) \
-    $(wildcard include/config/GPIOLIB_IRQCHIP) \
-    $(wildcard include/config/OF_GPIO) \
-    $(wildcard include/config/PINCTRL) \
-  include/linux/device.h \
-    $(wildcard include/config/GENERIC_MSI_IRQ_DOMAIN) \
-    $(wildcard include/config/GENERIC_MSI_IRQ) \
-    $(wildcard include/config/ENERGY_MODEL) \
-    $(wildcard include/config/DMA_OPS) \
-    $(wildcard include/config/DMA_DECLARE_COHERENT) \
-    $(wildcard include/config/DMA_CMA) \
-  
+ \
+  arch/x86/include/asm/pgtable-3level_types.h \
+  include/asm-generic/pgtable-nop4d.h \
+  include/asm-generic/pgtable-nopud.h \
+  arch/x86/include/asm/nospec-branch.h \
+  include/linux/static_key.h \
+  include/linux/jump_label.h \
+    $(wildcard include/config/HAVE_ARCH_JUMP_LABEL_RELATIVE) \
+  arch/x86/include/asm/jump_label.h \
+  include/linux/objtool.h \
+    $(wildcard include/config/FRAME_POINTER) \
+  arch/x86/include/asm/msr-index.h \
+  arch/x86/include/asm/unwind_hints.h \
+  arch/x86/include/asm/orc_types.h \
+  arch/x86/include/asm/GEN-for-each-reg.h \
+  arch/x86/include/asm/spinlock_types.h \
+  include/asm-gener

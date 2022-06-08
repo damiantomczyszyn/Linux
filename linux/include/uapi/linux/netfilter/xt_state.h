@@ -1,9 +1,12 @@
-IC_IOREMAP) \
-    $(wildcard include/config/VIRT_TO_BUS) \
-    $(wildcard include/config/GENERIC_DEVMEM_IS_ALLOWED) \
-  include/linux/logic_pio.h \
-    $(wildcard include/config/INDIRECT_PIO) \
-  include/linux/vmalloc.h \
-    $(wildcard include/config/HAVE_ARCH_HUGE_VMALLOC) \
-  arch/x86/include/asm/vmalloc.h \
-    $(wildcard inc
+egval = MC417_SPD_CTL(MC417_SPD_CTL_FAST)	|
+		 MC417_GPIO_SEL(MC417_GPIO_SEL_GPIO3)	|
+		 MC417_UART_GPIO_EN;
+	cx_write(MC417_CTL, regval);
+
+	/* Configure MC417_OEN to defaults. */
+	regval = MC417_MIRDY;
+	cx_write(MC417_OEN, regval);
+
+	/* Configure MC417_RWD to defaults. */
+	regval = MC417_MIWR | MC417_MIRD | MC417_MICS;
+	cx_write

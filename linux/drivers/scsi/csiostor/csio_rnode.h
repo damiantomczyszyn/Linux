@@ -1,121 +1,176 @@
-CPI_APEI_GHES) \
-    $(wildcard include/config/INTEL_TXT) \
-  arch/x86/include/generated/asm/kmap_size.h \
-  include/asm-generic/kmap_size.h \
-    $(wildcard include/config/DEBUG_KMAP_LOCAL) \
-  include/asm-generic/fixmap.h \
-  arch/x86/include/asm/irq_vectors.h \
-    $(wildcard include/config/HAVE_KVM) \
-    $(wildcard include/config/HYPERV) \
-    $(wildcard include/config/PCI_MSI) \
-  arch/x86/include/asm/cpu_entry_area.h \
-  arch/x86/include/asm/intel_ds.h \
-  arch/x86/include/asm/pgtable_areas.h \
-  arch/x86/include/asm/pgtable_32_areas.h \
-  include/uapi/linux/elf.h \
-  include/uapi/linux/elf-em.h \
-  include/linux/kobject.h \
-    $(wildcard include/config/UEVENT_HELPER) \
-    $(wildcard include/config/DEBUG_KOBJECT_RELEASE) \
-  include/linux/sysfs.h \
-  include/linux/kernfs.h \
-    $(wildcard include/config/KERNFS) \
-  include/linux/idr.h \
-  include/linux/radix-tree.h \
-  include/linux/xarray.h \
-    $(wildcard include/config/XARRAY_MULTI) \
-  include/linux/kconfig.h \
-  include/linux/kobject_ns.h \
-  include/linux/moduleparam.h \
-    $(wildcard include/config/ALPHA) \
-    $(wildcard include/config/IA64) \
-    $(wildcard include/config/PPC64) \
-  include/linux/rbtree_latch.h \
-  include/linux/error-injection.h \
-  include/asm-generic/error-injection.h \
-  include/linux/cfi.h \
-    $(wildcard include/config/CFI_CLANG_SHADOW) \
-  arch/x86/include/asm/module.h \
-    $(wildcard include/config/UNWINDER_ORC) \
-  include/asm-generic/module.h \
-    $(wildcard include/config/HAVE_MOD_ARCH_SPECIFIC) \
-    $(wildcard include/config/MODULES_USE_ELF_REL) \
-    $(wildcard include/config/MODULES_USE_ELF_RELA) \
-  arch/x86/include/asm/orc_types.h \
-  include/linux/i2c.h \
-    $(wildcard include/config/I2C) \
-    $(wildcard include/config/I2C_SLAVE) \
-    $(wildcard include/config/I2C_BOARDINFO) \
-    $(wildcard include/config/I2C_MUX) \
-    $(wildcard include/config/OF) \
-    $(wildcard include/config/ACPI) \
-  include/linux/acpi.h \
-    $(wildcard include/config/ACPI_DEBUGGER) \
-    $(wildcard include/config/ACPI_TABLE_LIB) \
-    $(wildcard include/config/LOONGARCH) \
-    $(wildcard include/config/ARM64) \
-    $(wildcard include/config/ACPI_PROCESSOR_CSTATE) \
-    $(wildcard include/config/ACPI_HOTPLUG_CPU) \
-    $(wildcard include/config/ACPI_HOTPLUG_IOAPIC) \
-    $(wildcard include/config/PCI) \
-    $(wildcard include/config/ACPI_WMI) \
-    $(wildcard include/config/ACPI_NUMA) \
-    $(wildcard include/config/HIBERNATION) \
-    $(wildcard include/config/ACPI_HOTPLUG_MEMORY) \
-    $(wildcard include/config/ACPI_CONTAINER) \
-    $(wildcard include/config/ACPI_GTDT) \
-    $(wildcard include/config/PM) \
-    $(wildcard include/config/GPIOLIB) \
-    $(wildcard include/config/ACPI_TABLE_UPGRADE) \
-    $(wildcard include/config/ACPI_WATCHDOG) \
-    $(wildcard include/config/ACPI_SPCR_TABLE) \
-    $(wildcard include/config/ACPI_GENERIC_GSI) \
-    $(wildcard include/config/ACPI_LPIT) \
-    $(wildcard include/config/ACPI_PPTT) \
-    $(wildcard include/config/ACPI_PCC) \
-  include/linux/ioport.h \
-  include/linux/irqdomain.h \
-    $(wildcard include/config/IRQ_DOMAIN_HIERARCHY) \
-    $(wildcard include/config/GENERIC_IRQ_DEBUGFS) \
-    $(wildcard include/config/IRQ_DOMAIN) \
-    $(wildcard include/config/IRQ_DOMAIN_NOMAP) \
-  include/linux/irqhandler.h \
-  include/linux/of.h \
-    $(wildcard include/config/OF_DYNAMIC) \
-    $(wildcard include/config/SPARC) \
-    $(wildcard include/config/OF_PROMTREE) \
-    $(wildcard include/config/OF_KOBJ) \
-    $(wildcard include/config/OF_NUMA) \
-    $(wildcard include/config/OF_OVERLAY) \
-  include/linux/mod_devicetable.h \
-  include/linux/uuid.h \
-  include/uapi/linux/uuid.h \
-  include/linux/property.h \
-  include/linux/fwnode.h \
-  include/linux/resource_ext.h \
-  include/linux/slab.h \
-    $(wildcard include/config/DEBUG_SLAB) \
-    $(wildcard include/config/FAILSLAB) \
-    $(wildcard include/config/MEMCG_KMEM) \
-    $(wildcard include/config/KASAN) \
-    $(wildcard include/config/SLAB) \
-    $(wildcard include/config/SLUB) \
-    $(wildcard include/config/SLOB) \
-  include/linux/overflow.h \
-  include/linux/percpu-refcount.h \
-  include/linux/kasan.h \
-    $(wildcard include/config/KASAN_STACK) \
-    $(wildcard include/config/KASAN_VMALLOC) \
-    $(wildcard include/config/KASAN_INLINE) \
-  include/linux/kasan-enabled.h \
-  include/linux/device.h \
-    $(wildcard include/config/GENERIC_MSI_IRQ_DOMAIN) \
-    $(wildcard include/config/GENERIC_MSI_IRQ) \
-    $(wildcard include/config/ENERGY_MODEL) \
-    $(wildcard include/config/PINCTRL) \
-    $(wildcard include/config/DMA_OPS) \
-    $(wildcard include/config/DMA_DECLARE_COHERENT) \
-    $(wildcard include/config/DMA_CMA) \
-    $(wildcard include/config/SWIOTLB) \
-    $(wildcard include/config/ARCH_HAS_SYNC_DMA_FOR_DEVICE) \
-    $(wildcard include/con
+// SPDX-License-Identifier: GPL-2.0-or-later
+/*
+ *
+ *  Support for a cx23417 mpeg encoder via cx23885 host port.
+ *
+ *    (c) 2004 Jelle Foks <jelle@foks.us>
+ *    (c) 2004 Gerd Knorr <kraxel@bytesex.org>
+ *    (c) 2008 Steven Toth <stoth@linuxtv.org>
+ *      - CX23885/7/8 support
+ *
+ *  Includes parts from the ivtv driver <http://sourceforge.net/projects/ivtv/>
+ */
+
+#include "cx23885.h"
+#include "cx23885-ioctl.h"
+
+#include <linux/module.h>
+#include <linux/moduleparam.h>
+#include <linux/init.h>
+#include <linux/fs.h>
+#include <linux/delay.h>
+#include <linux/device.h>
+#include <linux/firmware.h>
+#include <linux/slab.h>
+#include <media/v4l2-common.h>
+#include <media/v4l2-ioctl.h>
+#include <media/drv-intf/cx2341x.h>
+
+#define CX23885_FIRM_IMAGE_SIZE 376836
+#define CX23885_FIRM_IMAGE_NAME "v4l-cx23885-enc.fw"
+
+static unsigned int mpegbufs = 32;
+module_param(mpegbufs, int, 0644);
+MODULE_PARM_DESC(mpegbufs, "number of mpeg buffers, range 2-32");
+static unsigned int mpeglines = 32;
+module_param(mpeglines, int, 0644);
+MODULE_PARM_DESC(mpeglines, "number of lines in an MPEG buffer, range 2-32");
+static unsigned int mpeglinesize = 512;
+module_param(mpeglinesize, int, 0644);
+MODULE_PARM_DESC(mpeglinesize,
+	"number of bytes in each line of an MPEG buffer, range 512-1024");
+
+static unsigned int v4l_debug;
+module_param(v4l_debug, int, 0644);
+MODULE_PARM_DESC(v4l_debug, "enable V4L debug messages");
+
+#define dprintk(level, fmt, arg...)\
+	do { if (v4l_debug >= level) \
+		printk(KERN_DEBUG pr_fmt("%s: 417:" fmt), \
+			__func__, ##arg); \
+	} while (0)
+
+static struct cx23885_tvnorm cx23885_tvnorms[] = {
+	{
+		.name      = "NTSC-M",
+		.id        = V4L2_STD_NTSC_M,
+	}, {
+		.name      = "NTSC-JP",
+		.id        = V4L2_STD_NTSC_M_JP,
+	}, {
+		.name      = "PAL-BG",
+		.id        = V4L2_STD_PAL_BG,
+	}, {
+		.name      = "PAL-DK",
+		.id        = V4L2_STD_PAL_DK,
+	}, {
+		.name      = "PAL-I",
+		.id        = V4L2_STD_PAL_I,
+	}, {
+		.name      = "PAL-M",
+		.id        = V4L2_STD_PAL_M,
+	}, {
+		.name      = "PAL-N",
+		.id        = V4L2_STD_PAL_N,
+	}, {
+		.name      = "PAL-Nc",
+		.id        = V4L2_STD_PAL_Nc,
+	}, {
+		.name      = "PAL-60",
+		.id        = V4L2_STD_PAL_60,
+	}, {
+		.name      = "SECAM-L",
+		.id        = V4L2_STD_SECAM_L,
+	}, {
+		.name      = "SECAM-DK",
+		.id        = V4L2_STD_SECAM_DK,
+	}
+};
+
+/* ------------------------------------------------------------------ */
+enum cx23885_capture_type {
+	CX23885_MPEG_CAPTURE,
+	CX23885_RAW_CAPTURE,
+	CX23885_RAW_PASSTHRU_CAPTURE
+};
+enum cx23885_capture_bits {
+	CX23885_RAW_BITS_NONE             = 0x00,
+	CX23885_RAW_BITS_YUV_CAPTURE      = 0x01,
+	CX23885_RAW_BITS_PCM_CAPTURE      = 0x02,
+	CX23885_RAW_BITS_VBI_CAPTURE      = 0x04,
+	CX23885_RAW_BITS_PASSTHRU_CAPTURE = 0x08,
+	CX23885_RAW_BITS_TO_HOST_CAPTURE  = 0x10
+};
+enum cx23885_capture_end {
+	CX23885_END_AT_GOP, /* stop at the end of gop, generate irq */
+	CX23885_END_NOW, /* stop immediately, no irq */
+};
+enum cx23885_framerate {
+	CX23885_FRAMERATE_NTSC_30, /* NTSC: 30fps */
+	CX23885_FRAMERATE_PAL_25   /* PAL: 25fps */
+};
+enum cx23885_stream_port {
+	CX23885_OUTPUT_PORT_MEMORY,
+	CX23885_OUTPUT_PORT_STREAMING,
+	CX23885_OUTPUT_PORT_SERIAL
+};
+enum cx23885_data_xfer_status {
+	CX23885_MORE_BUFFERS_FOLLOW,
+	CX23885_LAST_BUFFER,
+};
+enum cx23885_picture_mask {
+	CX23885_PICTURE_MASK_NONE,
+	CX23885_PICTURE_MASK_I_FRAMES,
+	CX23885_PICTURE_MASK_I_P_FRAMES = 0x3,
+	CX23885_PICTURE_MASK_ALL_FRAMES = 0x7,
+};
+enum cx23885_vbi_mode_bits {
+	CX23885_VBI_BITS_SLICED,
+	CX23885_VBI_BITS_RAW,
+};
+enum cx23885_vbi_insertion_bits {
+	CX23885_VBI_BITS_INSERT_IN_XTENSION_USR_DATA,
+	CX23885_VBI_BITS_INSERT_IN_PRIVATE_PACKETS = 0x1 << 1,
+	CX23885_VBI_BITS_SEPARATE_STREAM = 0x2 << 1,
+	CX23885_VBI_BITS_SEPARATE_STREAM_USR_DATA = 0x4 << 1,
+	CX23885_VBI_BITS_SEPARATE_STREAM_PRV_DATA = 0x5 << 1,
+};
+enum cx23885_dma_unit {
+	CX23885_DMA_BYTES,
+	CX23885_DMA_FRAMES,
+};
+enum cx23885_dma_transfer_status_bits {
+	CX23885_DMA_TRANSFER_BITS_DONE = 0x01,
+	CX23885_DMA_TRANSFER_BITS_ERROR = 0x04,
+	CX23885_DMA_TRANSFER_BITS_LL_ERROR = 0x10,
+};
+enum cx23885_pause {
+	CX23885_PAUSE_ENCODING,
+	CX23885_RESUME_ENCODING,
+};
+enum cx23885_copyright {
+	CX23885_COPYRIGHT_OFF,
+	CX23885_COPYRIGHT_ON,
+};
+enum cx23885_notification_type {
+	CX23885_NOTIFICATION_REFRESH,
+};
+enum cx23885_notification_status {
+	CX23885_NOTIFICATION_OFF,
+	CX23885_NOTIFICATION_ON,
+};
+enum cx23885_notification_mailbox {
+	CX23885_NOTIFICATION_NO_MAILBOX = -1,
+};
+enum cx23885_field1_lines {
+	CX23885_FIELD1_SAA7114 = 0x00EF, /* 239 */
+	CX23885_FIELD1_SAA7115 = 0x00F0, /* 240 */
+	CX23885_FIELD1_MICRONAS = 0x0105, /* 261 */
+};
+enum cx23885_field2_lines {
+	CX23885_FIELD2_SAA7114 = 0x00EF, /* 239 */
+	CX23885_FIELD2_SAA7115 = 0x00F0, /* 240 */
+	CX23885_FIELD2_MICRONAS = 0x0106, /* 262 */
+};
+enum cx23885_custom_data_type {
+	CX23885_CUSTOM_EXTENSION_USR_DAT

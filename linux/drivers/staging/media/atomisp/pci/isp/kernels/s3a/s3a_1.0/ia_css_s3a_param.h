@@ -1,33 +1,57 @@
-IC_IOREMAP) \
-    $(wildcard include/config/VIRT_TO_BUS) \
-    $(wildcard include/config/GENERIC_DEVMEM_IS_ALLOWED) \
-  include/linux/logic_pio.h \
-    $(wildcard include/config/INDIRECT_PIO) \
-  include/linux/vmalloc.h \
-    $(wildcard include/config/HAVE_ARCH_HUGE_VMALLOC) \
-  arch/x86/include/asm/vmalloc.h \
-    $(wildcard include/config/HAVE_ARCH_HUGE_VMAP) \
-  arch/x86/include/asm/acpi.h \
-    $(wildcard include/config/ACPI_APEI) \
-  include/acpi/pdc_intel.h \
-  arch/x86/include/asm/numa.h \
-    $(wildcard include/config/NUMA_EMU) \
-  arch/x86/include/asm/numa_32.h \
-  include/linux/regulator/consumer.h \
-    $(wildcard include/config/REGULATOR) \
-  include/linux/suspend.h \
-    $(wildcard include/config/VT) \
-    $(wildcard include/config/SUSPEND) \
-    $(wildcard include/config/HIBERNATION_SNAPSHOT_DEV) \
-    $(wildcard include/config/PM_SLEEP_DEBUG) \
-    $(wildcard include/config/PM_AUTOSLEEP) \
-  include/linux/swap.h \
-    $(wildcard include/config/DEVICE_PRIVATE) \
-    $(wildcard include/config/MIGRATION) \
-    $(wildcard include/config/FRONTSWAP) \
-    $(wildcard include/config/THP_SWAP) \
-    $(wildcard include/config/MEMCG_SWAP) \
-  include/linux/memcontrol.h \
-    $(wildcard include/config/CGROUP_WRITEBACK) \
-  include/linux/cgroup.h \
-    $(wi
+args);
+
+	return err;
+}
+
+static int cx23885_api_func(void *priv, u32 cmd, int in, int out, u32 data[CX2341X_MBOX_MAX_DATA])
+{
+	return cx23885_mbox_func(priv, cmd, in, out, data);
+}
+
+static int cx23885_find_mailbox(struct cx23885_dev *dev)
+{
+	u32 signature[4] = {
+		0x12345678, 0x34567812, 0x56781234, 0x78123456
+	};
+	int signaturecnt = 0;
+	u32 value;
+	int i;
+
+	dprintk(2, "%s()\n", __func__);
+
+	for (i = 0; i < CX23885_FIRM_IMAGE_SIZE; i++) {
+		mc417_memory_read(dev, i, &value);
+		if (value == signature[signaturecnt])
+			signaturecnt++;
+		else
+			signaturecnt = 0;
+		if (4 == signaturecnt) {
+			dprintk(1, "Mailbox signature found at 0x%x\n", i+1);
+			return i+1;
+		}
+	}
+	pr_err("Mailbox signature values not found!\n");
+	return -1;
+}
+
+static int cx23885_load_firmware(struct cx23885_dev *dev)
+{
+	static const unsigned char magic[8] = {
+		0xa7, 0x0d, 0x00, 0x00, 0x66, 0xbb, 0x55, 0xaa
+	};
+	const struct firmware *firmware;
+	int i, retval = 0;
+	u32 value = 0;
+	u32 gpio_output = 0;
+	u32 gpio_value;
+	u32 checksum = 0;
+	u32 *dataptr;
+
+	dprintk(2, "%s()\n", __func__);
+
+	/* Save GPIO settings before reset of APU */
+	retval |= mc417_memory_read(dev, 0x9020, &gpio_output);
+	retval |= mc417_memory_read(dev, 0x900C, &gpio_value);
+
+	retval  = mc417_register_write(dev,
+		IVTV_REG_VP

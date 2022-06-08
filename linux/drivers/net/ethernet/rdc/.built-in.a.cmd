@@ -1,5 +1,7 @@
-IC_IOREMAP) \
-    $(wildcard include/config/VIRT_TO_BUS) \
-    $(wildcard include/config/GENERIC_DEVMEM_IS_ALLOWED) \
-  include/linux/logic_pio.h \
-  
+         = &mpeg_fops,
+	.ioctl_ops     = &mpeg_ioctl_ops,
+	.tvnorms       = CX23885_NORMS,
+};
+
+void cx23885_417_unregister(struct cx23885_dev *dev)
+{

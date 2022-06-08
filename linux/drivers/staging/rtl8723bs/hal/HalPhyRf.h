@@ -1,30 +1,46 @@
-    $(wildcard include/config/HIGH_RES_TIMERS) \
-    $(wildcard include/config/TIME_LOW_RES) \
-    $(wildcard include/config/TIMERFD) \
-  include/linux/hrtimer_defs.h \
-  include/linux/timerqueue.h \
-  include/linux/seccomp.h \
-    $(wildcard include/config/SECCOMP) \
-    $(wildcard include/config/HAVE_ARCH_SECCOMP_FILTER) \
-    $(wildcard include/config/SECCOMP_FILTER) \
-    $(wildcard include/config/CHECKPOINT_RESTORE) \
-    $(wildcard include/config/SECCOMP_CACHE_DEBUG) \
-  include/uapi/linux/seccomp.h \
-  arch/x86/include/asm/seccomp.h \
-  arch/x86/include/asm/unistd.h \
-  arch/x86/include/uapi/asm/unistd.h \
-  arch/x86/include/generated/uapi/asm/unistd_32.h \
-  include/asm-generic/seccomp.h \
-  include/uapi/linux/unistd.h \
-  include/linux/resource.h \
-  include/uapi/linux/resource.h \
-  arch/x86/include/generated/uapi/asm/resource.h \
-  include/asm-generic/resource.h \
-  include/uapi/asm-generic/resource.h \
-  include/linux/latencytop.h \
-  include/linux/sched/prio.h \
-  include/linux/sched/types.h \
-  include/linux/signal_types.h \
-    $(wildcard include/config/OLD_SIGACTION) \
-  include/uapi/linux/signal.h \
-  arch/x86/include/asm/signal.
+3885_BOARD_DVBSKY_T980C:
+	case CX23885_BOARD_DVBSKY_S950C:
+	case CX23885_BOARD_TT_CT2_4500_CI:
+	case CX23885_BOARD_DVBSKY_S950:
+	case CX23885_BOARD_DVBSKY_S952:
+	case CX23885_BOARD_DVBSKY_T982:
+		cx23885_irq_remove(dev, PCI_MSK_AV_CORE);
+		/* sd_ir is a duplicate pointer to the AV Core, just clear it */
+		dev->sd_ir = NULL;
+		break;
+	}
+}
+
+static int netup_jtag_io(void *device, int tms, int tdi, int read_tdo)
+{
+	int data;
+	int tdo = 0;
+	struct cx23885_dev *dev = (struct cx23885_dev *)device;
+	/*TMS*/
+	data = ((cx_read(GP0_IO)) & (~0x00000002));
+	data |= (tms ? 0x00020002 : 0x00020000);
+	cx_write(GP0_IO, data);
+
+	/*TDI*/
+	data = ((cx_read(MC417_RWD)) & (~0x0000a000));
+	data |= (tdi ? 0x00008000 : 0);
+	cx_write(MC417_RWD, data);
+	if (read_tdo)
+		tdo = (data & 0x00004000) ? 1 : 0; /*TDO*/
+
+	cx_write(MC417_RWD, data | 0x00002000);
+	udelay(1);
+	/*TCK*/
+	cx_write(MC417_RWD, data);
+
+	return tdo;
+}
+
+void cx23885_ir_pci_int_enable(struct cx23885_dev *dev)
+{
+	switch (dev->board) {
+	case CX23885_BOARD_HAUPPAUGE_HVR1270:
+	case CX23885_BOARD_HAUPPAUGE_HVR1850:
+	case CX23885_BOARD_HAUPPAUGE_HVR1290:
+		if (dev->sd_ir)
+			cx23885_irq_add_enable(dev, PCI_MSK_IR);

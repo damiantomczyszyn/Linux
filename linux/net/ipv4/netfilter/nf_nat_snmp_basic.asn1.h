@@ -1,21 +1,11 @@
-npinned lock\n"))
-				return;
-
-			hlock->pin_count -= cookie.val;
-
-			if (WARN((int)hlock->pin_count < 0, "pin count corrupted\n"))
-				hlock->pin_count = 0;
-
-			return;
-		}
+th =
+			    txclk_tx_s_max_pulse_width(dev, p->max_pulse_width,
+						       &txclk_divider);
 	}
+	o->max_pulse_width = p->max_pulse_width;
+	atomic_set(&state->txclk_divider, txclk_divider);
 
-	WARN(1, "unpinning an unheld lock\n");
-}
+	p->resolution = clock_divider_to_resolution(txclk_divider);
+	o->resolution = p->resolution;
 
-/*
- * Check whether we follow the irq-flags state precisely:
- */
-static noinstr void check_flags(unsigned long flags)
-{
-#if defined(CON
+	/* FIXME - make this dependent on resolution for better performance */

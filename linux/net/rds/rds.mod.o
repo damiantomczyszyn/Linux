@@ -1,50 +1,52 @@
-COE) \
-    $(wildcard include/config/XFRM_OFFLOAD) \
-    $(wildcard include/config/LIBFCOE) \
-    $(wildcard include/config/WIRELESS_EXT) \
-    $(wildcard include/config/NET_L3_MASTER_DEV) \
-    $(wildcard include/config/NET_DSA) \
-    $(wildcard include/config/TIPC) \
-    $(wildcard include/config/ATALK) \
-    $(wildcard include/config/DECNET) \
-    $(wildcard include/config/MPLS_ROUTING) \
-    $(wildcard include/config/MCTP) \
-    $(wildcard include/config/NETFILTER_INGRESS) \
-    $(wildcard include/config/NETFILTER_EGRESS) \
-    $(wildcard include/config/PCPU_DEV_REFCNT) \
-    $(wildcard include/config/GARP) \
-    $(wildcard include/config/MRP) \
-    $(wildcard include/config/NET_DROP_MONITOR) \
-    $(wildcard include/config/MACSEC) \
-    $(wildcard include/config/NET_FLOW_LIMIT) \
-    $(wildcard include/config/NET_DEV_REFCNT_TRACKER) \
-    $(wildcard include/config/ETHTOOL_NETLINK) \
-  include/linux/delay.h \
-  arch/x86/include/asm/delay.h \
-  include/asm-generic/delay.h \
-  include/linux/prefetch.h \
-  arch/x86/include/asm/local.h \
-  include/linux/dynamic_queue_limits.h \
-  include/net/net_namespace.h \
-    $(wildcard include/config/IEEE802154_6LOWPAN) \
-    $(wildcard include/config/IP_SCTP) \
-    $(wildcard include/config/NETFILTER) \
-    $(wildcard include/config/WEXT_CORE) \
-    $(wildcard include/config/MPLS) \
-    $(wildcard include/config/CAN) \
-    $(wildcard include/config/CRYPTO_USER) \
-    $(wildcard include/config/SMC) \
-    $(wildcard include/config/NET_NS) \
-    $(wildcard include/config/NET_NS_REFCNT_TRACKER) \
-  include/net/netns/core.h \
-  include/net/netns/mib.h \
-    $(wildcard include/config/XFRM_STATISTICS) \
-    $(wildcard include/config/TLS) \
-  include/net/snmp.h \
-  include/uapi/linux/snmp.h \
-  include/net/netns/unix.h \
-  include/net/netns/packet.h \
-  include/net/netns/ipv4.h \
-    $(wildcard include/config/IP_MULTIPLE_TABLES) \
-    $(wildcard include/config/IP_MROUTE) \
-  
+g/KMAP_LOCAL) \
+    $(wildcard include/config/PCI_MMCONFIG) \
+    $(wildcard include/config/ACPI_APEI_GHES) \
+    $(wildcard include/config/INTEL_TXT) \
+  arch/x86/include/generated/asm/kmap_size.h \
+  include/asm-generic/kmap_size.h \
+    $(wildcard include/config/DEBUG_KMAP_LOCAL) \
+  include/asm-generic/fixmap.h \
+  arch/x86/include/asm/irq_vectors.h \
+    $(wildcard include/config/HAVE_KVM) \
+    $(wildcard include/config/HYPERV) \
+    $(wildcard include/config/PCI_MSI) \
+  arch/x86/include/asm/cpu_entry_area.h \
+  arch/x86/include/asm/intel_ds.h \
+  arch/x86/include/asm/pgtable_areas.h \
+  arch/x86/include/asm/pgtable_32_areas.h \
+  include/uapi/linux/elf.h \
+  include/uapi/linux/elf-em.h \
+  include/linux/kobject.h \
+    $(wildcard include/config/UEVENT_HELPER) \
+    $(wildcard include/config/DEBUG_KOBJECT_RELEASE) \
+  include/linux/sysfs.h \
+  include/linux/kernfs.h \
+    $(wildcard include/config/KERNFS) \
+  include/linux/idr.h \
+  include/linux/radix-tree.h \
+  include/linux/xarray.h \
+    $(wildcard include/config/XARRAY_MULTI) \
+  include/linux/kconfig.h \
+  include/linux/kobject_ns.h \
+  include/linux/moduleparam.h \
+    $(wildcard include/config/ALPHA) \
+    $(wildcard include/config/IA64) \
+    $(wildcard include/config/PPC64) \
+  include/linux/rbtree_latch.h \
+  include/linux/error-injection.h \
+  include/asm-generic/error-injection.h \
+  include/linux/cfi.h \
+    $(wildcard include/config/CFI_CLANG_SHADOW) \
+  arch/x86/include/asm/module.h \
+    $(wildcard include/config/UNWINDER_ORC) \
+  include/asm-generic/module.h \
+    $(wildcard include/config/HAVE_MOD_ARCH_SPECIFIC) \
+    $(wildcard include/config/MODULES_USE_ELF_REL) \
+    $(wildcard include/config/MODULES_USE_ELF_RELA) \
+  arch/x86/include/asm/orc_types.h \
+  include/linux/build-salt.h \
+    $(wildcard include/config/BUILD_SALT) \
+  include/linux/elfnote.h \
+  include/linux/elfnote-lto.h \
+    $(wildcard include/config/LTO) \
+  inclu

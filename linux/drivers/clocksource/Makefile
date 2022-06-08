@@ -1,100 +1,139 @@
-(wildcard include/config/SPLIT_PTLOCK_CPUS) \
-    $(wildcard include/config/ARCH_ENABLE_SPLIT_PMD_PTLOCK) \
-  arch/x86/include/asm/tlbbatch.h \
-  include/linux/task_io_accounting.h \
-    $(wildcard include/config/TASK_IO_ACCOUNTING) \
-  include/linux/posix-timers.h \
-  include/linux/alarmtimer.h \
-    $(wildcard include/config/RTC_CLASS) \
-  include/uapi/linux/rseq.h \
-  include/linux/kcsan.h \
-  arch/x86/include/generated/asm/kmap_size.h \
-  include/asm-generic/kmap_size.h \
-    $(wildcard include/config/DEBUG_KMAP_LOCAL) \
-  arch/x86/include/asm/delay.h \
-  include/asm-generic/delay.h \
-  include/linux/gpio/consumer.h \
-    $(wildcard include/config/GPIOLIB) \
-    $(wildcard include/config/OF_GPIO) \
-    $(wildcard include/config/ACPI) \
-    $(wildcard include/config/GPIO_SYSFS) \
-  include/linux/i2c.h \
-    $(wildcard include/config/I2C) \
-    $(wildcard include/config/I2C_SLAVE) \
-    $(wildcard include/config/I2C_BOARDINFO) \
-    $(wildcard include/config/I2C_MUX) \
-  include/linux/acpi.h \
-    $(wildcard include/config/ACPI_DEBUGGER) \
-    $(wildcard include/config/ACPI_TABLE_LIB) \
-    $(wildcard include/config/IA64) \
-    $(wildcard include/config/LOONGARCH) \
-    $(wildcard include/config/ARM64) \
-    $(wildcard include/config/ACPI_PROCESSOR_CSTATE) \
-    $(wildcard include/config/ACPI_HOTPLUG_CPU) \
-    $(wildcard include/config/ACPI_HOTPLUG_IOAPIC) \
-    $(wildcard include/config/X86_IO_APIC) \
-    $(wildcard include/config/PCI) \
-    $(wildcard include/config/ACPI_WMI) \
-    $(wildcard include/config/ACPI_NUMA) \
-    $(wildcard include/config/HIBERNATION) \
-    $(wildcard include/config/PM_SLEEP) \
-    $(wildcard include/config/ACPI_HOTPLUG_MEMORY) \
-    $(wildcard include/config/ACPI_CONTAINER) \
-    $(wildcard include/config/ACPI_GTDT) \
-    $(wildcard include/config/PM) \
-    $(wildcard include/config/ACPI_TABLE_UPGRADE) \
-    $(wildcard include/config/ACPI_WATCHDOG) \
-    $(wildcard include/config/ACPI_SPCR_TABLE) \
-    $(wildcard include/config/ACPI_GENERIC_GSI) \
-    $(wildcard include/config/ACPI_LPIT) \
-    $(wildcard include/config/ACPI_PPTT) \
-    $(wildcard include/config/ACPI_PCC) \
-  include/linux/ioport.h \
-    $(wildcard include/config/MEMORY_HOTREMOVE) \
-    $(wildcard include/config/MEMORY_HOTPLUG) \
-  include/linux/irqdomain.h \
-    $(wildcard include/config/IRQ_DOMAIN_HIERARCHY) \
-    $(wildcard include/config/GENERIC_IRQ_DEBUGFS) \
-    $(wildcard include/config/IRQ_DOMAIN) \
-    $(wildcard include/config/IRQ_DOMAIN_NOMAP) \
-  include/linux/irqhandler.h \
-  include/linux/of.h \
-    $(wildcard include/config/OF_DYNAMIC) \
-    $(wildcard include/config/SPARC) \
-    $(wildcard include/config/OF_PROMTREE) \
-    $(wildcard include/config/OF_KOBJ) \
-    $(wildcard include/config/OF_NUMA) \
-    $(wildcard include/config/OF_OVERLAY) \
-  include/linux/kobject.h \
-    $(wildcard include/config/UEVENT_HELPER) \
-    $(wildcard include/config/DEBUG_KOBJECT_RELEASE) \
-  include/linux/sysfs.h \
-  include/linux/kernfs.h \
-    $(wildcard include/config/KERNFS) \
-  include/linux/idr.h \
-  include/linux/radix-tree.h \
-  include/linux/gfp.h \
-    $(wildcard include/config/KASAN_HW_TAGS) \
-    $(wildcard include/config/ZONE_DMA) \
-    $(wildcard include/config/ZONE_DMA32) \
-    $(wildcard include/config/ZONE_DEVICE) \
-    $(wildcard include/config/CONTIG_ALLOC) \
-    $(wildcard include/config/CMA) \
-  include/linux/mmzone.h \
-    $(wildcard include/config/FORCE_MAX_ZONEORDER) \
-    $(wildcard include/config/MEMORY_ISOLATION) \
-    $(wildcard include/config/ZSMALLOC) \
-    $(wildcard include/config/SWAP) \
-    $(wildcard include/config/TRANSPARENT_HUGEPAGE) \
-    $(wildcard include/config/PAGE_EXTENSION) \
-    $(wildcard include/config/DEFERRED_STRUCT_PAGE_INIT) \
-    $(wildcard include/config/HAVE_MEMORYLESS_NODES) \
-    $(wildcard include/config/SPARSEMEM_EXTREME) \
-    $(wildcard include/config/HAVE_ARCH_PFN_VALID) \
-  include/linux/pageblock-flags.h \
-    $(wildcard include/config/HUGETLB_PAGE) \
-    $(wildcard include/config/HUGETLB_PAGE_SIZE_VARIABLE) \
-  include/linux/page-flags-layout.h \
-  include/generated/bounds.h \
-  include/linux/mm_types.h \
-    $(wildcard include/c
+dev->board == CX23885_BOARD_HAUPPAUGE_HVR1275)
+			cx23885_set_frontend_hook(port, fe0->dvb.frontend);
+		break;
+	case CX23885_BOARD_HAUPPAUGE_HVR1255:
+	case CX23885_BOARD_HAUPPAUGE_HVR1255_22111:
+		i2c_bus = &dev->i2c_bus[0];
+		fe0->dvb.frontend = dvb_attach(s5h1411_attach,
+					       &hcw_s5h1411_config,
+					       &i2c_bus->i2c_adap);
+		if (fe0->dvb.frontend == NULL)
+			break;
+
+		dvb_attach(tda18271_attach, fe0->dvb.frontend,
+			   0x60, &dev->i2c_bus[1].i2c_adap,
+			   &hauppauge_tda18271_config);
+
+		tda18271_attach(&dev->ts1.analog_fe,
+			0x60, &dev->i2c_bus[1].i2c_adap,
+			&hauppauge_tda18271_config);
+
+		break;
+	case CX23885_BOARD_HAUPPAUGE_HVR1800:
+		i2c_bus = &dev->i2c_bus[0];
+		switch (alt_tuner) {
+		case 1:
+			fe0->dvb.frontend =
+				dvb_attach(s5h1409_attach,
+					   &hauppauge_ezqam_config,
+					   &i2c_bus->i2c_adap);
+			if (fe0->dvb.frontend == NULL)
+				break;
+
+			dvb_attach(tda829x_attach, fe0->dvb.frontend,
+				   &dev->i2c_bus[1].i2c_adap, 0x42,
+				   &tda829x_no_probe);
+			dvb_attach(tda18271_attach, fe0->dvb.frontend,
+				   0x60, &dev->i2c_bus[1].i2c_adap,
+				   &hauppauge_tda18271_config);
+			break;
+		case 0:
+		default:
+			fe0->dvb.frontend =
+				dvb_attach(s5h1409_attach,
+					   &hauppauge_generic_config,
+					   &i2c_bus->i2c_adap);
+			if (fe0->dvb.frontend == NULL)
+				break;
+			dvb_attach(mt2131_attach, fe0->dvb.frontend,
+				   &i2c_bus->i2c_adap,
+				   &hauppauge_generic_tunerconfig, 0);
+		}
+		break;
+	case CX23885_BOARD_HAUPPAUGE_HVR1800lp:
+		i2c_bus = &dev->i2c_bus[0];
+		fe0->dvb.frontend = dvb_attach(s5h1409_attach,
+						&hauppauge_hvr1800lp_config,
+						&i2c_bus->i2c_adap);
+		if (fe0->dvb.frontend == NULL)
+			break;
+		dvb_attach(mt2131_attach, fe0->dvb.frontend,
+			   &i2c_bus->i2c_adap,
+			   &hauppauge_generic_tunerconfig, 0);
+		break;
+	case CX23885_BOARD_DVICO_FUSIONHDTV_5_EXP:
+		i2c_bus = &dev->i2c_bus[0];
+		fe0->dvb.frontend = dvb_attach(lgdt330x_attach,
+					       &fusionhdtv_5_express,
+					       0x0e,
+					       &i2c_bus->i2c_adap);
+		if (fe0->dvb.frontend == NULL)
+			break;
+		dvb_attach(simple_tuner_attach, fe0->dvb.frontend,
+			   &i2c_bus->i2c_adap, 0x61,
+			   TUNER_LG_TDVS_H06XF);
+		break;
+	case CX23885_BOARD_HAUPPAUGE_HVR1500Q:
+		i2c_bus = &dev->i2c_bus[1];
+		fe0->dvb.frontend = dvb_attach(s5h1409_attach,
+						&hauppauge_hvr1500q_config,
+						&dev->i2c_bus[0].i2c_adap);
+		if (fe0->dvb.frontend == NULL)
+			break;
+		dvb_attach(xc5000_attach, fe0->dvb.frontend,
+			   &i2c_bus->i2c_adap,
+			   &hauppauge_hvr1500q_tunerconfig);
+		break;
+	case CX23885_BOARD_HAUPPAUGE_HVR1500:
+		i2c_bus = &dev->i2c_bus[1];
+		fe0->dvb.frontend = dvb_attach(s5h1409_attach,
+						&hauppauge_hvr1500_config,
+						&dev->i2c_bus[0].i2c_adap);
+		if (fe0->dvb.frontend != NULL) {
+			struct dvb_frontend *fe;
+			struct xc2028_config cfg = {
+				.i2c_adap  = &i2c_bus->i2c_adap,
+				.i2c_addr  = 0x61,
+			};
+			static struct xc2028_ctrl ctl = {
+				.fname       = XC2028_DEFAULT_FIRMWARE,
+				.max_len     = 64,
+				.demod       = XC3028_FE_OREN538,
+			};
+
+			fe = dvb_attach(xc2028_attach,
+					fe0->dvb.frontend, &cfg);
+			if (fe != NULL && fe->ops.tuner_ops.set_config != NULL)
+				fe->ops.tuner_ops.set_config(fe, &ctl);
+		}
+		break;
+	case CX23885_BOARD_HAUPPAUGE_HVR1200:
+	case CX23885_BOARD_HAUPPAUGE_HVR1700:
+		i2c_bus = &dev->i2c_bus[0];
+		fe0->dvb.frontend = dvb_attach(tda10048_attach,
+			&hauppauge_hvr1200_config,
+			&i2c_bus->i2c_adap);
+		if (fe0->dvb.frontend == NULL)
+			break;
+		dvb_attach(tda829x_attach, fe0->dvb.frontend,
+			   &dev->i2c_bus[1].i2c_adap, 0x42,
+			   &tda829x_no_probe);
+		dvb_attach(tda18271_attach, fe0->dvb.frontend,
+			   0x60, &dev->i2c_bus[1].i2c_adap,
+			   &hauppauge_hvr1200_tuner_config);
+		break;
+	case CX23885_BOARD_HAUPPAUGE_HVR1210:
+		i2c_bus = &dev->i2c_bus[0];
+		fe0->dvb.frontend = dvb_attach(tda10048_attach,
+			&hauppauge_hvr1210_config,
+			&i2c_bus->i2c_adap);
+		if (fe0->dvb.frontend != NULL) {
+			dvb_attach(tda18271_attach, fe0->dvb.frontend,
+				0x60, &dev->i2c_bus[1].i2c_adap,
+				&hauppauge_hvr1210_tuner_config);
+		}
+		break;
+	case CX23885_BOARD_HAUPPAUGE_HVR1400:
+		i2c_bus = &dev->i2c_bus[0];
+
+		if (!dvb_attach(dib7000p_attach, &

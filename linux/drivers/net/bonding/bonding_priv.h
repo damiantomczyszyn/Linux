@@ -1,15 +1,24 @@
+/*
+ * Bond several ethernet interfaces into a Cisco, running 'Etherchannel'.
+ *
+ * Portions are (c) Copyright 1995 Simon "Guru Aleph-Null" Janes
+ * NCM: Network and Communications Management, Inc.
+ *
+ * BUT, I'm the one who modified it for ethernet, so:
+ * (c) Copyright 1999, Thomas Davis, tadavis@lbl.gov
+ *
+ *	This software may be used and distributed according to the terms
+ *	of the GNU Public License, incorporated herein by reference.
+ *
+ */
 
-    $(wildcard include/config/PARISC) \
-    $(wildcard include/config/SPARC64) \
-    $(wildcard include/config/ARM64_MTE) \
-    $(wildcard include/config/HAVE_ARCH_USERFAULTFD_MINOR) \
-    $(wildcard include/config/SHMEM) \
-    $(wildcard include/config/ARCH_HAS_PTE_SPECIAL) \
-    $(wildcard include/config/ARCH_HAS_PTE_DEVMAP) \
-    $(wildcard include/config/DEBUG_VM_RB) \
-    $(wildcard include/config/PAGE_POISONING) \
-    $(wildcard include/config/INIT_ON_ALLOC_DEFAULT_ON) \
-    $(wildcard include/config/INIT_ON_FREE_DEFAULT_ON) \
-    $(wildcard include/config/DEBUG_PAGEALLOC) \
-    $(wildcard include/config/HUGETLBFS) \
-    $(wildcard include/config/MAPPING_DIRTY_HELPERS) \
+#ifndef _BONDING_PRIV_H
+#define _BONDING_PRIV_H
+#include <generated/utsrelease.h>
+
+#define DRV_NAME	"bonding"
+#define DRV_DESCRIPTION	"Ethernet Channel Bonding Driver"
+
+#define bond_version DRV_DESCRIPTION ": v" UTS_RELEASE "\n"
+
+#endif

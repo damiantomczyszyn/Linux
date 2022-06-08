@@ -1,2 +1,1 @@
-IC_IOREMAP) \
-    $(
+cx23885_irq_add_enab

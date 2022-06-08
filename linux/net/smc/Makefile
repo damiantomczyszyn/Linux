@@ -1,13 +1,10 @@
-enum bfs_result
-check_redundant(struct held_lock *src, struct held_lock *target)
-{
-	enum bfs_result ret;
-	struct lock_list *target_entry;
-	struct lock_list src_entry;
+ht lock the (previous) rq of a !RUNNABLE task, but that's the
+	 * price to pay to safely serialize util_{min,max} updates with
+	 * enqueues, dequeues and migration operations.
+	 * This is the same locking schema used by __set_cpus_allowed_ptr().
+	 */
+	rq = task_rq_lock(p, &rf);
 
-	bfs_init_root(&src_entry, src);
 	/*
-	 * Special setup for check_redundant().
-	 *
-	 * To report redundant, we need to find a strong dependency path that
-	 * is equal to or stronger tha
+	 * Setting the clamp bucket is serialized by task_rq_lock().
+	 * If

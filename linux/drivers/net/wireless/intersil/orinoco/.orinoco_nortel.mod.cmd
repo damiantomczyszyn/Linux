@@ -1,5 +1,8 @@
-clude/linux/scatterlist.h \
-    $(wildcard include/config/NEED_SG_DMA_LENGTH) \
-    $(wildcard include/config/DEBUG_SG) \
-    $(wildcard include/config/SGL_ALLOC) \
-    $(wildcard include/config/A
+er->owner);
+				i2c_unregister_device(client_demod);
+				port->i2c_client_demod = NULL;
+				goto frontend_detach;
+			}
+			port->i2c_client_tuner = client_tuner;
+
+			dev->ts1.analog_fe.tuner_priv =

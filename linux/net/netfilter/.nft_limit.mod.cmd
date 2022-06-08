@@ -1,3 +1,5 @@
-IC_IOREMAP) \
-    $(wildcard include/config/VIRT_TO_BUS) \
-    $(wildcard include/config/GENERIC_DEVMEM_IS_AL
+h->cmds_start + i, 0);
+
+	/* fill registers */
+	cx_write(ch->ptr1_reg, ch->fifo_start);
+	cx_write(ch->ptr2_reg

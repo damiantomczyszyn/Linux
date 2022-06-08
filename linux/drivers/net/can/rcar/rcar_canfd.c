@@ -1,1307 +1,2118 @@
-cmd_drivers/media/i2c/tw2804.o := gcc -Wp,-MMD,drivers/media/i2c/.tw2804.o.d -nostdinc -I./arch/x86/include -I./arch/x86/include/generated  -I./include -I./arch/x86/include/uapi -I./arch/x86/include/generated/uapi -I./include/uapi -I./include/generated/uapi -include ./include/linux/compiler-version.h -include ./include/linux/kconfig.h -include ./include/linux/compiler_types.h -D__KERNEL__ -fmacro-prefix-map=./= -Wall -Wundef -Werror=strict-prototypes -Wno-trigraphs -fno-strict-aliasing -fno-common -fshort-wchar -fno-PIE -Werror=implicit-function-declaration -Werror=implicit-int -Werror=return-type -Wno-format-security -std=gnu11 -mno-sse -mno-mmx -mno-sse2 -mno-3dnow -mno-avx -fcf-protection=none -m32 -msoft-float -mregparm=3 -freg-struct-return -fno-pic -mpreferred-stack-boundary=2 -march=i686 -mtune=pentium3 -mtune=generic -Wa,-mtune=generic32 -ffreestanding -mstack-protector-guard-reg=fs -mstack-protector-guard-symbol=__stack_chk_guard -Wno-sign-compare -fno-asynchronous-unwind-tables -mindirect-branch=thunk-extern -mindirect-branch-register -fno-jump-tables -fno-delete-null-pointer-checks -Wno-frame-address -Wno-format-truncation -Wno-format-overflow -Wno-address-of-packed-member -O2 -fno-allow-store-data-races -fstack-protector-strong -Wimplicit-fallthrough=5 -Wno-main -Wno-unused-but-set-variable -Wno-unused-const-variable -fno-stack-clash-protection -pg -mrecord-mcount -mfentry -DCC_USING_FENTRY -Wdeclaration-after-statement -Wvla -Wno-pointer-sign -Wcast-function-type -Wno-stringop-truncation -Wno-stringop-overflow -Wno-restrict -Wno-maybe-uninitialized -Wno-alloc-size-larger-than -fno-strict-overflow -fno-stack-check -fconserve-stack -Werror=date-time -Werror=incompatible-pointer-types -Werror=designated-init -Wno-packed-not-aligned  -DMODULE  -DKBUILD_BASENAME='"tw2804"' -DKBUILD_MODNAME='"tw2804"' -D__KBUILD_MODNAME=kmod_tw2804 -c -o drivers/media/i2c/tw2804.o drivers/media/i2c/tw2804.c 
+// SPDX-License-Identifier: GPL-2.0+
+/* Renesas R-Car CAN FD device driver
+ *
+ * Copyright (C) 2015 Renesas Electronics Corp.
+ */
 
-source_drivers/media/i2c/tw2804.o := drivers/media/i2c/tw2804.c
+/* The R-Car CAN FD controller can operate in either one of the below two modes
+ *  - CAN FD only mode
+ *  - Classical CAN (CAN 2.0) only mode
+ *
+ * This driver puts the controller in CAN FD only mode by default. In this
+ * mode, the controller acts as a CAN FD node that can also interoperate with
+ * CAN 2.0 nodes.
+ *
+ * To switch the controller to Classical CAN (CAN 2.0) only mode, add
+ * "renesas,no-can-fd" optional property to the device tree node. A h/w reset is
+ * also required to switch modes.
+ *
+ * Note: The h/w manual register naming convention is clumsy and not acceptable
+ * to use as it is in the driver. However, those names are added as comments
+ * wherever it is modified to a readable name.
+ */
 
-deps_drivers/media/i2c/tw2804.o := \
-  include/linux/compiler-version.h \
-    $(wildcard include/config/CC_VERSION_TEXT) \
-  include/linux/kconfig.h \
-    $(wildcard include/config/CPU_BIG_ENDIAN) \
-    $(wildcard include/config/BOOGER) \
-    $(wildcard include/config/FOO) \
-  include/linux/compiler_types.h \
-    $(wildcard include/config/DEBUG_INFO_BTF) \
-    $(wildcard include/config/PAHOLE_HAS_BTF_TAG) \
-    $(wildcard include/config/HAVE_ARCH_COMPILER_H) \
-    $(wildcard include/config/CC_HAS_ASM_INLINE) \
-  include/linux/compiler_attributes.h \
-  include/linux/compiler-gcc.h \
-    $(wildcard include/config/RETPOLINE) \
-    $(wildcard include/config/ARCH_USE_BUILTIN_BSWAP) \
-    $(wildcard include/config/SHADOW_CALL_STACK) \
-    $(wildcard include/config/KCOV) \
-  include/linux/module.h \
-    $(wildcard include/config/MODULES) \
-    $(wildcard include/config/SYSFS) \
-    $(wildcard include/config/MODULES_TREE_LOOKUP) \
-    $(wildcard include/config/LIVEPATCH) \
-    $(wildcard include/config/STACKTRACE_BUILD_ID) \
-    $(wildcard include/config/CFI_CLANG) \
-    $(wildcard include/config/MODULE_SIG) \
-    $(wildcard include/config/GENERIC_BUG) \
-    $(wildcard include/config/KALLSYMS) \
-    $(wildcard include/config/SMP) \
-    $(wildcard include/config/TRACEPOINTS) \
-    $(wildcard include/config/TREE_SRCU) \
-    $(wildcard include/config/BPF_EVENTS) \
-    $(wildcard include/config/DEBUG_INFO_BTF_MODULES) \
-    $(wildcard include/config/JUMP_LABEL) \
-    $(wildcard include/config/TRACING) \
-    $(wildcard include/config/EVENT_TRACING) \
-    $(wildcard include/config/FTRACE_MCOUNT_RECORD) \
-    $(wildcard include/config/KPROBES) \
-    $(wildcard include/config/HAVE_STATIC_CALL_INLINE) \
-    $(wildcard include/config/PRINTK_INDEX) \
-    $(wildcard include/config/MODULE_UNLOAD) \
-    $(wildcard include/config/CONSTRUCTORS) \
-    $(wildcard include/config/FUNCTION_ERROR_INJECTION) \
-  include/linux/list.h \
-    $(wildcard include/config/DEBUG_LIST) \
-  include/linux/container_of.h \
-  include/linux/build_bug.h \
-  include/linux/compiler.h \
-    $(wildcard include/config/TRACE_BRANCH_PROFILING) \
-    $(wildcard include/config/PROFILE_ALL_BRANCHES) \
-    $(wildcard include/config/STACK_VALIDATION) \
-  include/linux/compiler_types.h \
-  arch/x86/include/generated/asm/rwonce.h \
-  include/asm-generic/rwonce.h \
-  include/linux/kasan-checks.h \
-    $(wildcard include/config/KASAN_GENERIC) \
-    $(wildcard include/config/KASAN_SW_TAGS) \
-  include/linux/types.h \
-    $(wildcard include/config/HAVE_UID16) \
-    $(wildcard include/config/UID16) \
-    $(wildcard include/config/ARCH_DMA_ADDR_T_64BIT) \
-    $(wildcard include/config/PHYS_ADDR_T_64BIT) \
-    $(wildcard include/config/64BIT) \
-    $(wildcard include/config/ARCH_32BIT_USTAT_F_TINODE) \
-  include/uapi/linux/types.h \
-  arch/x86/include/generated/uapi/asm/types.h \
-  include/uapi/asm-generic/types.h \
-  include/asm-generic/int-ll64.h \
-  include/uapi/asm-generic/int-ll64.h \
-  arch/x86/include/uapi/asm/bitsperlong.h \
-  include/asm-generic/bitsperlong.h \
-  include/uapi/asm-generic/bitsperlong.h \
-  include/uapi/linux/posix_types.h \
-  include/linux/stddef.h \
-  include/uapi/linux/stddef.h \
-  arch/x86/include/asm/posix_types.h \
-    $(wildcard include/config/X86_32) \
-  arch/x86/include/uapi/asm/posix_types_32.h \
-  include/uapi/asm-generic/posix_types.h \
-  include/linux/kcsan-checks.h \
-    $(wildcard include/config/KCSAN) \
-    $(wildcard include/config/KCSAN_WEAK_MEMORY) \
-    $(wildcard include/config/KCSAN_IGNORE_ATOMICS) \
-  include/linux/err.h \
-  arch/x86/include/generated/uapi/asm/errno.h \
-  include/uapi/asm-generic/errno.h \
-  include/uapi/asm-generic/errno-base.h \
-  include/linux/poison.h \
-    $(wildcard include/config/ILLEGAL_POINTER_VALUE) \
-  include/linux/const.h \
-  include/vdso/const.h \
-  include/uapi/linux/const.h \
-  arch/x86/include/asm/barrier.h \
-  arch/x86/include/asm/alternative.h \
-  include/linux/stringify.h \
-  arch/x86/include/asm/asm.h \
-  arch/x86/include/asm/extable_fixup_types.h \
-  arch/x86/include/asm/nops.h \
-  include/asm-generic/barrier.h \
-  include/linux/stat.h \
-  arch/x86/include/uapi/asm/stat.h \
-  include/uapi/linux/stat.h \
-  include/linux/time.h \
-    $(wildcard include/config/POSIX_TIMERS) \
-  include/linux/cache.h \
-    $(wildcard include/config/ARCH_HAS_CACHE_LINE_SIZE) \
-  include/uapi/linux/kernel.h \
-  include/uapi/linux/sysinfo.h \
-  arch/x86/include/asm/cache.h \
-    $(wildcard include/config/X86_L1_CACHE_SHIFT) \
-    $(wildcard include/config/X86_INTERNODE_CACHE_SHIFT) \
-    $(wildcard include/config/X86_VSMP) \
-  include/linux/linkage.h \
-    $(wildcard include/config/ARCH_USE_SYM_ANNOTATIONS) \
-  include/linux/export.h \
-    $(wildcard include/config/MODVERSIONS) \
-    $(wildcard include/config/MODULE_REL_CRCS) \
-    $(wildcard include/config/HAVE_ARCH_PREL32_RELOCATIONS) \
-    $(wildcard include/config/TRIM_UNUSED_KSYMS) \
-  arch/x86/include/asm/linkage.h \
-    $(wildcard include/config/X86_64) \
-    $(wildcard include/config/X86_ALIGNMENT_16) \
-    $(wildcard include/config/SLS) \
-  arch/x86/include/asm/ibt.h \
-    $(wildcard include/config/X86_KERNEL_IBT) \
-  include/linux/math64.h \
-    $(wildcard include/config/ARCH_SUPPORTS_INT128) \
-  include/linux/math.h \
-  arch/x86/include/asm/div64.h \
-  include/linux/log2.h \
-    $(wildcard include/config/ARCH_HAS_ILOG2_U32) \
-    $(wildcard include/config/ARCH_HAS_ILOG2_U64) \
-  include/linux/bitops.h \
-  include/linux/bits.h \
-  include/vdso/bits.h \
-  include/linux/typecheck.h \
-  arch/x86/include/asm/bitops.h \
-    $(wildcard include/config/X86_CMOV) \
-  arch/x86/include/asm/rmwcc.h \
-    $(wildcard include/config/CC_HAS_ASM_GOTO) \
-  include/asm-generic/bitops/fls64.h \
-  include/asm-generic/bitops/sched.h \
-  arch/x86/include/asm/arch_hweight.h \
-  arch/x86/include/asm/cpufeatures.h \
-  arch/x86/include/asm/required-features.h \
-    $(wildcard include/config/X86_MINIMUM_CPU_FAMILY) \
-    $(wildcard include/config/MATH_EMULATION) \
-    $(wildcard include/config/X86_PAE) \
-    $(wildcard include/config/X86_CMPXCHG64) \
-    $(wildcard include/config/X86_P6_NOP) \
-    $(wildcard include/config/MATOM) \
-    $(wildcard include/config/PARAVIRT_XXL) \
-  arch/x86/include/asm/disabled-features.h \
-    $(wildcard include/config/X86_SMAP) \
-    $(wildcard include/config/X86_UMIP) \
-    $(wildcard include/config/X86_INTEL_MEMORY_PROTECTION_KEYS) \
-    $(wildcard include/config/X86_5LEVEL) \
-    $(wildcard include/config/PAGE_TABLE_ISOLATION) \
-    $(wildcard include/config/INTEL_IOMMU_SVM) \
-    $(wildcard include/config/X86_SGX) \
-  include/asm-generic/bitops/const_hweight.h \
-  include/asm-generic/bitops/instrumented-atomic.h \
-  include/linux/instrumented.h \
-  include/asm-generic/bitops/instrumented-non-atomic.h \
-    $(wildcard include/config/KCSAN_ASSUME_PLAIN_WRITES_ATOMIC) \
-  include/asm-generic/bitops/instrumented-lock.h \
-  include/asm-generic/bitops/le.h \
-  arch/x86/include/uapi/asm/byteorder.h \
-  include/linux/byteorder/little_endian.h \
-  include/uapi/linux/byteorder/little_endian.h \
-  include/linux/swab.h \
-  include/uapi/linux/swab.h \
-  arch/x86/include/uapi/asm/swab.h \
-  include/linux/byteorder/generic.h \
-  include/asm-generic/bitops/ext2-atomic-setbit.h \
-  include/vdso/math64.h \
-  include/linux/time64.h \
-  include/vdso/time64.h \
-  include/uapi/linux/time.h \
-  include/uapi/linux/time_types.h \
-  include/linux/time32.h \
-  include/linux/timex.h \
-  include/uapi/linux/timex.h \
-  include/uapi/linux/param.h \
-  arch/x86/include/generated/uapi/asm/param.h \
-  include/asm-generic/param.h \
-    $(wildcard include/config/HZ) \
-  include/uapi/asm-generic/param.h \
-  arch/x86/include/asm/timex.h \
-    $(wildcard include/config/X86_TSC) \
-  arch/x86/include/asm/processor.h \
-    $(wildcard include/config/X86_VMX_FEATURE_NAMES) \
-    $(wildcard include/config/X86_IOPL_IOPERM) \
-    $(wildcard include/config/STACKPROTECTOR) \
-    $(wildcard include/config/VM86) \
-    $(wildcard include/config/X86_DEBUGCTLMSR) \
-    $(wildcard include/config/CPU_SUP_AMD) \
-    $(wildcard include/config/XEN) \
-  arch/x86/include/asm/processor-flags.h \
-  arch/x86/include/uapi/asm/processor-flags.h \
-  include/linux/mem_encrypt.h \
-    $(wildcard include/config/ARCH_HAS_MEM_ENCRYPT) \
-    $(wildcard include/config/AMD_MEM_ENCRYPT) \
-  arch/x86/include/asm/mem_encrypt.h \
-  include/linux/init.h \
-    $(wildcard include/config/STRICT_KERNEL_RWX) \
-    $(wildcard include/config/STRICT_MODULE_RWX) \
-    $(wildcard include/config/LTO_CLANG) \
-  include/linux/cc_platform.h \
-    $(wildcard include/config/ARCH_HAS_CC_PLATFORM) \
-  arch/x86/include/uapi/asm/bootparam.h \
-  include/linux/screen_info.h \
-  include/uapi/linux/screen_info.h \
-  include/linux/apm_bios.h \
-  include/uapi/linux/apm_bios.h \
-  include/uapi/linux/ioctl.h \
-  arch/x86/include/generated/uapi/asm/ioctl.h \
-  include/asm-generic/ioctl.h \
-  include/uapi/asm-generic/ioctl.h \
-  include/linux/edd.h \
-  include/uapi/linux/edd.h \
-  arch/x86/include/asm/ist.h \
-  arch/x86/include/uapi/asm/ist.h \
-  include/video/edid.h \
-    $(wildcard include/config/X86) \
-  include/uapi/video/edid.h \
-  arch/x86/include/asm/math_emu.h \
-  arch/x86/include/asm/ptrace.h \
-    $(wildcard include/config/PARAVIRT) \
-    $(wildcard include/config/IA32_EMULATION) \
-  arch/x86/include/asm/segment.h \
-    $(wildcard include/config/XEN_PV) \
-  arch/x86/include/asm/page_types.h \
-    $(wildcard include/config/PHYSICAL_START) \
-    $(wildcard include/config/PHYSICAL_ALIGN) \
-    $(wildcard include/config/DYNAMIC_PHYSICAL_MASK) \
-  arch/x86/include/asm/page_32_types.h \
-    $(wildcard include/config/HIGHMEM4G) \
-    $(wildcard include/config/HIGHMEM64G) \
-    $(wildcard include/config/PAGE_OFFSET) \
-  arch/x86/include/uapi/asm/ptrace.h \
-  arch/x86/include/uapi/asm/ptrace-abi.h \
-  arch/x86/include/asm/paravirt_types.h \
-    $(wildcard include/config/PGTABLE_LEVELS) \
-    $(wildcard include/config/PARAVIRT_DEBUG) \
-  arch/x86/include/asm/desc_defs.h \
-  arch/x86/include/asm/pgtable_types.h \
-    $(wildcard include/config/MEM_SOFT_DIRTY) \
-    $(wildcard include/config/HAVE_ARCH_USERFAULTFD_WP) \
-    $(wildcard include/config/PROC_FS) \
-  arch/x86/include/asm/pgtable_32_types.h \
-  arch/x86/include/asm/pgtable-3level_types.h \
-  include/asm-generic/pgtable-nop4d.h \
-  include/asm-generic/pgtable-nopud.h \
-  arch/x86/include/asm/nospec-branch.h \
-  include/linux/static_key.h \
-  include/linux/jump_label.h \
-    $(wildcard include/config/HAVE_ARCH_JUMP_LABEL_RELATIVE) \
-  arch/x86/include/asm/jump_label.h \
-  include/linux/objtool.h \
-    $(wildcard include/config/FRAME_POINTER) \
-  arch/x86/include/asm/msr-index.h \
-  arch/x86/include/asm/unwind_hints.h \
-  arch/x86/include/asm/orc_types.h \
-  arch/x86/include/asm/GEN-for-each-reg.h \
-  arch/x86/include/asm/spinlock_types.h \
-  include/asm-generic/qspinlock_types.h \
-    $(wildcard include/config/NR_CPUS) \
-  include/asm-generic/qrwlock_types.h \
-  arch/x86/include/asm/proto.h \
-  arch/x86/include/uapi/asm/ldt.h \
-  arch/x86/include/uapi/asm/sigcontext.h \
-  arch/x86/include/asm/current.h \
-  arch/x86/include/asm/percpu.h \
-    $(wildcard include/config/X86_64_SMP) \
-  include/linux/kernel.h \
-    $(wildcard include/config/PREEMPT_VOLUNTARY_BUILD) \
-    $(wildcard include/config/PREEMPT_DYNAMIC) \
-    $(wildcard include/config/HAVE_PREEMPT_DYNAMIC_CALL) \
-    $(wildcard include/config/HAVE_PREEMPT_DYNAMIC_KEY) \
-    $(wildcard include/config/PREEMPT_) \
-    $(wildcard include/config/DEBUG_ATOMIC_SLEEP) \
-    $(wildcard include/config/MMU) \
-    $(wildcard include/config/PROVE_LOCKING) \
-  include/linux/stdarg.h \
-  include/linux/align.h \
-  include/linux/limits.h \
-  include/uapi/linux/limits.h \
-  include/vdso/limits.h \
-  include/linux/kstrtox.h \
-  include/linux/minmax.h \
-  include/linux/panic.h \
-    $(wildcard include/config/PANIC_TIMEOUT) \
-  include/linux/printk.h \
-    $(wildcard include/config/MESSAGE_LOGLEVEL_DEFAULT) \
-    $(wildcard include/config/CONSOLE_LOGLEVEL_DEFAULT) \
-    $(wildcard include/config/CONSOLE_LOGLEVEL_QUIET) \
-    $(wildcard include/config/EARLY_PRINTK) \
-    $(wildcard include/config/PRINTK) \
-    $(wildcard include/config/DYNAMIC_DEBUG) \
-    $(wildcard include/config/DYNAMIC_DEBUG_CORE) \
-  include/linux/kern_levels.h \
-  include/linux/ratelimit_types.h \
-  include/linux/spinlock_types_raw.h \
-    $(wildcard include/config/DEBUG_SPINLOCK) \
-    $(wildcard include/config/DEBUG_LOCK_ALLOC) \
-  include/linux/lockdep_types.h \
-    $(wildcard include/config/PROVE_RAW_LOCK_NESTING) \
-    $(wildcard include/config/LOCKDEP) \
-    $(wildcard include/config/LOCK_STAT) \
-  include/linux/once_lite.h \
-  include/linux/static_call_types.h \
-    $(wildcard include/config/HAVE_STATIC_CALL) \
-  include/linux/instruction_pointer.h \
-  include/asm-generic/percpu.h \
-    $(wildcard include/config/DEBUG_PREEMPT) \
-    $(wildcard include/config/HAVE_SETUP_PER_CPU_AREA) \
-  include/linux/threads.h \
-    $(wildcard include/config/BASE_SMALL) \
-  include/linux/percpu-defs.h \
-    $(wildcard include/config/DEBUG_FORCE_WEAK_PER_CPU) \
-  arch/x86/include/asm/page.h \
-  arch/x86/include/asm/page_32.h \
-    $(wildcard include/config/DEBUG_VIRTUAL) \
-    $(wildcard include/config/FLATMEM) \
-  include/linux/string.h \
-    $(wildcard include/config/BINARY_PRINTF) \
-    $(wildcard include/config/FORTIFY_SOURCE) \
-  include/linux/errno.h \
-  include/uapi/linux/errno.h \
-  include/uapi/linux/string.h \
-  arch/x86/include/asm/string.h \
-  arch/x86/include/asm/string_32.h \
-  include/linux/fortify-string.h \
-  include/linux/range.h \
-  include/asm-generic/memory_model.h \
-    $(wildcard include/config/SPARSEMEM_VMEMMAP) \
-    $(wildcard include/config/SPARSEMEM) \
-  include/linux/pfn.h \
-  include/asm-generic/getorder.h \
-  arch/x86/include/asm/msr.h \
-  arch/x86/include/asm/msr-index.h \
-  arch/x86/include/asm/cpumask.h \
-  include/linux/cpumask.h \
-    $(wildcard include/config/CPUMASK_OFFSTACK) \
-    $(wildcard include/config/HOTPLUG_CPU) \
-    $(wildcard include/config/DEBUG_PER_CPU_MAPS) \
-  include/linux/bitmap.h \
-  include/linux/find.h \
-  include/linux/atomic.h \
-  arch/x86/include/asm/atomic.h \
-  arch/x86/include/asm/cmpxchg.h \
-  arch/x86/include/asm/cmpxchg_32.h \
-  arch/x86/include/asm/atomic64_32.h \
-  include/linux/atomic/atomic-arch-fallback.h \
-    $(wildcard include/config/GENERIC_ATOMIC64) \
-  include/linux/atomic/atomic-long.h \
-  include/linux/atomic/atomic-instrumented.h \
-  include/linux/bug.h \
-    $(wildcard include/config/BUG_ON_DATA_CORRUPTION) \
-  arch/x86/include/asm/bug.h \
-    $(wildcard include/config/DEBUG_BUGVERBOSE) \
-  include/linux/instrumentation.h \
-    $(wildcard include/config/DEBUG_ENTRY) \
-  include/asm-generic/bug.h \
-    $(wildcard include/config/BUG) \
-    $(wildcard include/config/GENERIC_BUG_RELATIVE_POINTERS) \
-  arch/x86/include/uapi/asm/msr.h \
-  include/linux/tracepoint-defs.h \
-  arch/x86/include/asm/special_insns.h \
-  include/linux/irqflags.h \
-    $(wildcard include/config/TRACE_IRQFLAGS) \
-    $(wildcard include/config/PREEMPT_RT) \
-    $(wildcard include/config/IRQSOFF_TRACER) \
-    $(wildcard include/config/PREEMPT_TRACER) \
-    $(wildcard include/config/DEBUG_IRQFLAGS) \
-    $(wildcard include/config/TRACE_IRQFLAGS_SUPPORT) \
-  arch/x86/include/asm/irqflags.h \
-  arch/x86/include/asm/fpu/types.h \
-  arch/x86/include/asm/vmxfeatures.h \
-  arch/x86/include/asm/vdso/processor.h \
-  include/linux/personality.h \
-  include/uapi/linux/personality.h \
-  arch/x86/include/asm/tsc.h \
-  arch/x86/include/asm/cpufeature.h \
-    $(wildcard include/config/X86_FEATURE_NAMES) \
-  include/vdso/time32.h \
-  include/vdso/time.h \
-  include/linux/uidgid.h \
-    $(wildcard include/config/MULTIUSER) \
-    $(wildcard include/config/USER_NS) \
-  include/linux/highuid.h \
-  include/linux/buildid.h \
-    $(wildcard include/config/CRASH_CORE) \
-  include/linux/mm_types.h \
-    $(wildcard include/config/HAVE_ALIGNED_STRUCT_PAGE) \
-    $(wildcard include/config/MEMCG) \
-    $(wildcard include/config/USERFAULTFD) \
-    $(wildcard include/config/SWAP) \
-    $(wildcard include/config/NUMA) \
-    $(wildcard include/config/HAVE_ARCH_COMPAT_MMAP_BASES) \
-    $(wildcard include/config/MEMBARRIER) \
-    $(wildcard include/config/AIO) \
-    $(wildcard include/config/MMU_NOTIFIER) \
-    $(wildcard include/config/TRANSPARENT_HUGEPAGE) \
-    $(wildcard include/config/NUMA_BALANCING) \
-    $(wildcard include/config/ARCH_WANT_BATCHED_UNMAP_TLB_FLUSH) \
-    $(wildcard include/config/HUGETLB_PAGE) \
-    $(wildcard include/config/IOMMU_SVA) \
-  include/linux/mm_types_task.h \
-    $(wildcard include/config/SPLIT_PTLOCK_CPUS) \
-    $(wildcard include/config/ARCH_ENABLE_SPLIT_PMD_PTLOCK) \
-  arch/x86/include/asm/tlbbatch.h \
-  include/linux/auxvec.h \
-  include/uapi/linux/auxvec.h \
-  arch/x86/include/uapi/asm/auxvec.h \
-  include/linux/kref.h \
-  include/linux/spinlock.h \
-    $(wildcard include/config/PREEMPTION) \
-  include/linux/preempt.h \
-    $(wildcard include/config/PREEMPT_COUNT) \
-    $(wildcard include/config/TRACE_PREEMPT_TOGGLE) \
-    $(wildcard include/config/PREEMPT_NOTIFIERS) \
-  arch/x86/include/asm/preempt.h \
-  include/linux/thread_info.h \
-    $(wildcard include/config/THREAD_INFO_IN_TASK) \
-    $(wildcard include/config/GENERIC_ENTRY) \
-    $(wildcard include/config/HAVE_ARCH_WITHIN_STACK_FRAMES) \
-    $(wildcard include/config/HARDENED_USERCOPY) \
-  include/linux/restart_block.h \
-  arch/x86/include/asm/thread_info.h \
-    $(wildcard include/config/COMPAT) \
-  include/linux/bottom_half.h \
-  include/linux/lockdep.h \
-    $(wildcard include/config/DEBUG_LOCKING_API_SELFTESTS) \
-  include/linux/smp.h \
-    $(wildcard include/config/UP_LATE_INIT) \
-  include/linux/smp_types.h \
-  include/linux/llist.h \
-    $(wildcard include/config/ARCH_HAVE_NMI_SAFE_CMPXCHG) \
-  arch/x86/include/asm/smp.h \
-    $(wildcard include/config/X86_LOCAL_APIC) \
-    $(wildcard include/config/DEBUG_NMI_SELFTEST) \
-  arch/x86/include/generated/asm/mmiowb.h \
-  include/asm-generic/mmiowb.h \
-    $(wildcard include/config/MMIOWB) \
-  include/linux/spinlock_types.h \
-  include/linux/rwlock_types.h \
-  arch/x86/include/asm/spinlock.h \
-  arch/x86/include/asm/paravirt.h \
-    $(wildcard include/config/PARAVIRT_SPINLOCKS) \
-  arch/x86/include/asm/frame.h \
-  arch/x86/include/asm/qspinlock.h \
-  include/asm-generic/qspinlock.h \
-  arch/x86/include/asm/qrwlock.h \
-  include/asm-generic/qrwlock.h \
-  include/linux/rwlock.h \
-    $(wildcard include/config/PREEMPT) \
-  include/linux/spinlock_api_smp.h \
-    $(wildcard include/config/INLINE_SPIN_LOCK) \
-    $(wildcard include/config/INLINE_SPIN_LOCK_BH) \
-    $(wildcard include/config/INLINE_SPIN_LOCK_IRQ) \
-    $(wildcard include/config/INLINE_SPIN_LOCK_IRQSAVE) \
-    $(wildcard include/config/INLINE_SPIN_TRYLOCK) \
-    $(wildcard include/config/INLINE_SPIN_TRYLOCK_BH) \
-    $(wildcard include/config/UNINLINE_SPIN_UNLOCK) \
-    $(wildcard include/config/INLINE_SPIN_UNLOCK_BH) \
-    $(wildcard include/config/INLINE_SPIN_UNLOCK_IRQ) \
-    $(wildcard include/config/INLINE_SPIN_UNLOCK_IRQRESTORE) \
-    $(wildcard include/config/GENERIC_LOCKBREAK) \
-  include/linux/rwlock_api_smp.h \
-    $(wildcard include/config/INLINE_READ_LOCK) \
-    $(wildcard include/config/INLINE_WRITE_LOCK) \
-    $(wildcard include/config/INLINE_READ_LOCK_BH) \
-    $(wildcard include/config/INLINE_WRITE_LOCK_BH) \
-    $(wildcard include/config/INLINE_READ_LOCK_IRQ) \
-    $(wildcard include/config/INLINE_WRITE_LOCK_IRQ) \
-    $(wildcard include/config/INLINE_READ_LOCK_IRQSAVE) \
-    $(wildcard include/config/INLINE_WRITE_LOCK_IRQSAVE) \
-    $(wildcard include/config/INLINE_READ_TRYLOCK) \
-    $(wildcard include/config/INLINE_WRITE_TRYLOCK) \
-    $(wildcard include/config/INLINE_READ_UNLOCK) \
-    $(wildcard include/config/INLINE_WRITE_UNLOCK) \
-    $(wildcard include/config/INLINE_READ_UNLOCK_BH) \
-    $(wildcard include/config/INLINE_WRITE_UNLOCK_BH) \
-    $(wildcard include/config/INLINE_READ_UNLOCK_IRQ) \
-    $(wildcard include/config/INLINE_WRITE_UNLOCK_IRQ) \
-    $(wildcard include/config/INLINE_READ_UNLOCK_IRQRESTORE) \
-    $(wildcard include/config/INLINE_WRITE_UNLOCK_IRQRESTORE) \
-  include/linux/refcount.h \
-  include/linux/rbtree.h \
-  include/linux/rbtree_types.h \
-  include/linux/rcupdate.h \
-    $(wildcard include/config/PREEMPT_RCU) \
-    $(wildcard include/config/TINY_RCU) \
-    $(wildcard include/config/RCU_STRICT_GRACE_PERIOD) \
-    $(wildcard include/config/TASKS_RCU_GENERIC) \
-    $(wildcard include/config/RCU_STALL_COMMON) \
-    $(wildcard include/config/NO_HZ_FULL) \
-    $(wildcard include/config/RCU_NOCB_CPU) \
-    $(wildcard include/config/TASKS_RCU) \
-    $(wildcard include/config/TASKS_TRACE_RCU) \
-    $(wildcard include/config/TASKS_RUDE_RCU) \
-    $(wildcard include/config/TREE_RCU) \
-    $(wildcard include/config/DEBUG_OBJECTS_RCU_HEAD) \
-    $(wildcard include/config/PROVE_RCU) \
-    $(wildcard include/config/ARCH_WEAK_RELEASE_ACQUIRE) \
-  include/linux/rcutree.h \
-  include/linux/rwsem.h \
-    $(wildcard include/config/RWSEM_SPIN_ON_OWNER) \
-    $(wildcard include/config/DEBUG_RWSEMS) \
-  include/linux/osq_lock.h \
-  include/linux/completion.h \
-  include/linux/swait.h \
-  include/linux/wait.h \
-  include/uapi/linux/wait.h \
-  include/linux/uprobes.h \
-    $(wildcard include/config/UPROBES) \
-  arch/x86/include/asm/uprobes.h \
-  include/linux/notifier.h \
-  include/linux/mutex.h \
-    $(wildcard include/config/MUTEX_SPIN_ON_OWNER) \
-    $(wildcard include/config/DEBUG_MUTEXES) \
-  include/linux/debug_locks.h \
-  include/linux/srcu.h \
-    $(wildcard include/config/TINY_SRCU) \
-    $(wildcard include/config/SRCU) \
-  include/linux/workqueue.h \
-    $(wildcard include/config/DEBUG_OBJECTS_WORK) \
-    $(wildcard include/config/FREEZER) \
-    $(wildcard include/config/WQ_WATCHDOG) \
-  include/linux/timer.h \
-    $(wildcard include/config/DEBUG_OBJECTS_TIMERS) \
-    $(wildcard include/config/NO_HZ_COMMON) \
-  include/linux/ktime.h \
-  include/linux/jiffies.h \
-  include/vdso/jiffies.h \
-  include/generated/timeconst.h \
-  include/vdso/ktime.h \
-  include/linux/timekeeping.h \
-    $(wildcard include/config/GENERIC_CMOS_UPDATE) \
-  include/linux/clocksource_ids.h \
-  include/linux/debugobjects.h \
-    $(wildcard include/config/DEBUG_OBJECTS) \
-    $(wildcard include/config/DEBUG_OBJECTS_FREE) \
-  include/linux/rcu_segcblist.h \
-  include/linux/srcutree.h \
-  include/linux/rcu_node_tree.h \
-    $(wildcard include/config/RCU_FANOUT) \
-    $(wildcard include/config/RCU_FANOUT_LEAF) \
-  include/linux/page-flags-layout.h \
-    $(wildcard include/config/KASAN_HW_TAGS) \
-  include/linux/numa.h \
-    $(wildcard include/config/NODES_SHIFT) \
-    $(wildcard include/config/NUMA_KEEP_MEMINFO) \
-    $(wildcard include/config/HAVE_ARCH_NODE_DEV_GROUP) \
-  arch/x86/include/asm/sparsemem.h \
-  include/generated/bounds.h \
-  include/linux/seqlock.h \
-  include/linux/ww_mutex.h \
-    $(wildcard include/config/DEBUG_RT_MUTEXES) \
-    $(wildcard include/config/DEBUG_WW_MUTEX_SLOWPATH) \
-  include/linux/rtmutex.h \
-  arch/x86/include/asm/mmu.h \
-    $(wildcard include/config/MODIFY_LDT_SYSCALL) \
-  include/linux/kmod.h \
-  include/linux/umh.h \
-  include/linux/gfp.h \
-    $(wildcard include/config/HIGHMEM) \
-    $(wildcard include/config/ZONE_DMA) \
-    $(wildcard include/config/ZONE_DMA32) \
-    $(wildcard include/config/ZONE_DEVICE) \
-    $(wildcard include/config/PM_SLEEP) \
-    $(wildcard include/config/CONTIG_ALLOC) \
-    $(wildcard include/config/CMA) \
-  include/linux/mmdebug.h \
-    $(wildcard include/config/DEBUG_VM) \
-    $(wildcard include/config/DEBUG_VM_PGFLAGS) \
-  include/linux/mmzone.h \
-    $(wildcard include/config/FORCE_MAX_ZONEORDER) \
-    $(wildcard include/config/MEMORY_ISOLATION) \
-    $(wildcard include/config/ZSMALLOC) \
-    $(wildcard include/config/MEMORY_HOTPLUG) \
-    $(wildcard include/config/COMPACTION) \
-    $(wildcard include/config/PAGE_EXTENSION) \
-    $(wildcard include/config/DEFERRED_STRUCT_PAGE_INIT) \
-    $(wildcard include/config/HAVE_MEMORYLESS_NODES) \
-    $(wildcard include/config/SPARSEMEM_EXTREME) \
-    $(wildcard include/config/HAVE_ARCH_PFN_VALID) \
-  include/linux/nodemask.h \
-  include/linux/pageblock-flags.h \
-    $(wildcard include/config/HUGETLB_PAGE_SIZE_VARIABLE) \
-  include/linux/page-flags.h \
-    $(wildcard include/config/ARCH_USES_PG_UNCACHED) \
-    $(wildcard include/config/MEMORY_FAILURE) \
-    $(wildcard include/config/PAGE_IDLE_FLAG) \
-    $(wildcard include/config/HUGETLB_PAGE_FREE_VMEMMAP) \
-    $(wildcard include/config/HUGETLB_PAGE_FREE_VMEMMAP_DEFAULT_ON) \
-    $(wildcard include/config/KSM) \
-  include/linux/local_lock.h \
-  include/linux/local_lock_internal.h \
-  include/linux/memory_hotplug.h \
-    $(wildcard include/config/HAVE_ARCH_NODEDATA_EXTENSION) \
-    $(wildcard include/config/ARCH_HAS_ADD_PAGES) \
-    $(wildcard include/config/MEMORY_HOTREMOVE) \
-  arch/x86/include/asm/mmzone.h \
-  arch/x86/include/asm/mmzone_32.h \
-  include/linux/topology.h \
-    $(wildcard include/config/USE_PERCPU_NUMA_NODE_ID) \
-    $(wildcard include/config/SCHED_SMT) \
-    $(wildcard include/config/SCHED_CLUSTER) \
-  include/linux/arch_topology.h \
-    $(wildcard include/config/ACPI_CPPC_LIB) \
-    $(wildcard include/config/GENERIC_ARCH_TOPOLOGY) \
-  include/linux/percpu.h \
-    $(wildcard include/config/NEED_PER_CPU_EMBED_FIRST_CHUNK) \
-    $(wildcard include/config/NEED_PER_CPU_PAGE_FIRST_CHUNK) \
-  arch/x86/include/asm/topology.h \
-    $(wildcard include/config/SCHED_MC_PRIO) \
-  arch/x86/include/asm/mpspec.h \
-    $(wildcard include/config/EISA) \
-    $(wildcard include/config/X86_MPPARSE) \
-  arch/x86/include/asm/mpspec_def.h \
-  arch/x86/include/asm/x86_init.h \
-  arch/x86/include/asm/apicdef.h \
-  include/asm-generic/topology.h \
-  include/linux/sysctl.h \
-    $(wildcard include/config/SYSCTL) \
-  include/uapi/linux/sysctl.h \
-  include/linux/elf.h \
-    $(wildcard include/config/ARCH_USE_GNU_PROPERTY) \
-    $(wildcard include/config/ARCH_HAVE_ELF_PROT) \
-  arch/x86/include/asm/elf.h \
-    $(wildcard include/config/X86_X32_ABI) \
-  arch/x86/include/asm/user.h \
-  arch/x86/include/asm/user_32.h \
-  arch/x86/include/asm/fsgsbase.h \
-  arch/x86/include/asm/vdso.h \
-  arch/x86/include/asm/desc.h \
-  arch/x86/include/asm/fixmap.h \
-    $(wildcard include/config/DEBUG_KMAP_LOCAL_FORCE_MAP) \
-    $(wildcard include/config/X86_VSYSCALL_EMULATION) \
-    $(wildcard include/config/PROVIDE_OHCI1394_DMA_INIT) \
-    $(wildcard include/config/X86_IO_APIC) \
-    $(wildcard include/config/KMAP_LOCAL) \
-    $(wildcard include/config/PCI_MMCONFIG) \
-    $(wildcard include/config/ACPI_APEI_GHES) \
-    $(wildcard include/config/INTEL_TXT) \
-  arch/x86/include/generated/asm/kmap_size.h \
-  include/asm-generic/kmap_size.h \
-    $(wildcard include/config/DEBUG_KMAP_LOCAL) \
-  include/asm-generic/fixmap.h \
-  arch/x86/include/asm/irq_vectors.h \
-    $(wildcard include/config/HAVE_KVM) \
-    $(wildcard include/config/HYPERV) \
-    $(wildcard include/config/PCI_MSI) \
-  arch/x86/include/asm/cpu_entry_area.h \
-  arch/x86/include/asm/intel_ds.h \
-  arch/x86/include/asm/pgtable_areas.h \
-  arch/x86/include/asm/pgtable_32_areas.h \
-  include/uapi/linux/elf.h \
-  include/uapi/linux/elf-em.h \
-  include/linux/kobject.h \
-    $(wildcard include/config/UEVENT_HELPER) \
-    $(wildcard include/config/DEBUG_KOBJECT_RELEASE) \
-  include/linux/sysfs.h \
-  include/linux/kernfs.h \
-    $(wildcard include/config/KERNFS) \
-  include/linux/idr.h \
-  include/linux/radix-tree.h \
-  include/linux/xarray.h \
-    $(wildcard include/config/XARRAY_MULTI) \
-  include/linux/kconfig.h \
-  include/linux/kobject_ns.h \
-  include/linux/moduleparam.h \
-    $(wildcard include/config/ALPHA) \
-    $(wildcard include/config/IA64) \
-    $(wildcard include/config/PPC64) \
-  include/linux/rbtree_latch.h \
-  include/linux/error-injection.h \
-  include/asm-generic/error-injection.h \
-  include/linux/cfi.h \
-    $(wildcard include/config/CFI_CLANG_SHADOW) \
-  arch/x86/include/asm/module.h \
-    $(wildcard include/config/UNWINDER_ORC) \
-  include/asm-generic/module.h \
-    $(wildcard include/config/HAVE_MOD_ARCH_SPECIFIC) \
-    $(wildcard include/config/MODULES_USE_ELF_REL) \
-    $(wildcard include/config/MODULES_USE_ELF_RELA) \
-  arch/x86/include/asm/orc_types.h \
-  include/linux/i2c.h \
-    $(wildcard include/config/I2C) \
-    $(wildcard include/config/I2C_SLAVE) \
-    $(wildcard include/config/I2C_BOARDINFO) \
-    $(wildcard include/config/I2C_MUX) \
-    $(wildcard include/config/OF) \
-    $(wildcard include/config/ACPI) \
-  include/linux/acpi.h \
-    $(wildcard include/config/ACPI_DEBUGGER) \
-    $(wildcard include/config/ACPI_TABLE_LIB) \
-    $(wildcard include/config/LOONGARCH) \
-    $(wildcard include/config/ARM64) \
-    $(wildcard include/config/ACPI_PROCESSOR_CSTATE) \
-    $(wildcard include/config/ACPI_HOTPLUG_CPU) \
-    $(wildcard include/config/ACPI_HOTPLUG_IOAPIC) \
-    $(wildcard include/config/PCI) \
-    $(wildcard include/config/ACPI_WMI) \
-    $(wildcard include/config/ACPI_NUMA) \
-    $(wildcard include/config/HIBERNATION) \
-    $(wildcard include/config/ACPI_HOTPLUG_MEMORY) \
-    $(wildcard include/config/ACPI_CONTAINER) \
-    $(wildcard include/config/ACPI_GTDT) \
-    $(wildcard include/config/PM) \
-    $(wildcard include/config/GPIOLIB) \
-    $(wildcard include/config/ACPI_TABLE_UPGRADE) \
-    $(wildcard include/config/ACPI_WATCHDOG) \
-    $(wildcard include/config/ACPI_SPCR_TABLE) \
-    $(wildcard include/config/ACPI_GENERIC_GSI) \
-    $(wildcard include/config/ACPI_LPIT) \
-    $(wildcard include/config/ACPI_PPTT) \
-    $(wildcard include/config/ACPI_PCC) \
-  include/linux/ioport.h \
-  include/linux/irqdomain.h \
-    $(wildcard include/config/IRQ_DOMAIN_HIERARCHY) \
-    $(wildcard include/config/GENERIC_IRQ_DEBUGFS) \
-    $(wildcard include/config/IRQ_DOMAIN) \
-    $(wildcard include/config/IRQ_DOMAIN_NOMAP) \
-  include/linux/irqhandler.h \
-  include/linux/of.h \
-    $(wildcard include/config/OF_DYNAMIC) \
-    $(wildcard include/config/SPARC) \
-    $(wildcard include/config/OF_PROMTREE) \
-    $(wildcard include/config/OF_KOBJ) \
-    $(wildcard include/config/OF_NUMA) \
-    $(wildcard include/config/OF_OVERLAY) \
-  include/linux/mod_devicetable.h \
-  include/linux/uuid.h \
-  include/uapi/linux/uuid.h \
-  include/linux/property.h \
-  include/linux/fwnode.h \
-  include/linux/resource_ext.h \
-  include/linux/slab.h \
-    $(wildcard include/config/DEBUG_SLAB) \
-    $(wildcard include/config/FAILSLAB) \
-    $(wildcard include/config/MEMCG_KMEM) \
-    $(wildcard include/config/KASAN) \
-    $(wildcard include/config/SLAB) \
-    $(wildcard include/config/SLUB) \
-    $(wildcard include/config/SLOB) \
-  include/linux/overflow.h \
-  include/linux/percpu-refcount.h \
-  include/linux/kasan.h \
-    $(wildcard include/config/KASAN_STACK) \
-    $(wildcard include/config/KASAN_VMALLOC) \
-    $(wildcard include/config/KASAN_INLINE) \
-  include/linux/kasan-enabled.h \
-  include/linux/device.h \
-    $(wildcard include/config/GENERIC_MSI_IRQ_DOMAIN) \
-    $(wildcard include/config/GENERIC_MSI_IRQ) \
-    $(wildcard include/config/ENERGY_MODEL) \
-    $(wildcard include/config/PINCTRL) \
-    $(wildcard include/config/DMA_OPS) \
-    $(wildcard include/config/DMA_DECLARE_COHERENT) \
-    $(wildcard include/config/DMA_CMA) \
-    $(wildcard include/config/SWIOTLB) \
-    $(wildcard include/config/ARCH_HAS_SYNC_DMA_FOR_DEVICE) \
-    $(wildcard include/config/ARCH_HAS_SYNC_DMA_FOR_CPU) \
-    $(wildcard include/config/ARCH_HAS_SYNC_DMA_FOR_CPU_ALL) \
-    $(wildcard include/config/DMA_OPS_BYPASS) \
-    $(wildcard include/config/DEVTMPFS) \
-    $(wildcard include/config/SYSFS_DEPRECATED) \
-  include/linux/dev_printk.h \
-  include/linux/ratelimit.h \
-  include/linux/sched.h \
-    $(wildcard include/config/VIRT_CPU_ACCOUNTING_NATIVE) \
-    $(wildcard include/config/SCHED_INFO) \
-    $(wildcard include/config/SCHEDSTATS) \
-    $(wildcard include/config/SCHED_CORE) \
-    $(wildcard include/config/FAIR_GROUP_SCHED) \
-    $(wildcard include/config/RT_GROUP_SCHED) \
-    $(wildcard include/config/RT_MUTEXES) \
-    $(wildcard include/config/UCLAMP_TASK) \
-    $(wildcard include/config/UCLAMP_BUCKETS_COUNT) \
-    $(wildcard include/config/CGROUP_SCHED) \
-    $(wildcard include/config/BLK_DEV_IO_TRACE) \
-    $(wildcard include/config/PSI) \
-    $(wildcard include/config/COMPAT_BRK) \
-    $(wildcard include/config/CGROUPS) \
-    $(wildcard include/config/BLK_CGROUP) \
-    $(wildcard include/config/PAGE_OWNER) \
-    $(wildcard include/config/EVENTFD) \
-    $(wildcard include/config/ARCH_HAS_SCALED_CPUTIME) \
-    $(wildcard include/config/VIRT_CPU_ACCOUNTING_GEN) \
-    $(wildcard include/config/POSIX_CPUTIMERS) \
-    $(wildcard include/config/POSIX_CPU_TIMERS_TASK_WORK) \
-    $(wildcard include/config/KEYS) \
-    $(wildcard include/config/SYSVIPC) \
-    $(wildcard include/config/DETECT_HUNG_TASK) \
-    $(wildcard include/config/IO_URING) \
-    $(wildcard include/config/AUDIT) \
-    $(wildcard include/config/AUDITSYSCALL) \
-    $(wildcard include/config/UBSAN) \
-    $(wildcard include/config/UBSAN_TRAP) \
-    $(wildcard include/config/TASK_XACCT) \
-    $(wildcard include/config/CPUSETS) \
-    $(wildcard include/config/X86_CPU_RESCTRL) \
-    $(wildcard include/config/FUTEX) \
-    $(wildcard include/config/PERF_EVENTS) \
-    $(wildcard include/config/RSEQ) \
-    $(wildcard include/config/TASK_DELAY_ACCT) \
-    $(wildcard include/config/FAULT_INJECTION) \
-    $(wildcard include/config/LATENCYTOP) \
-    $(wildcard include/config/KUNIT) \
-    $(wildcard include/config/FUNCTION_GRAPH_TRACER) \
-    $(wildcard include/config/BCACHE) \
-    $(wildcard include/config/VMAP_STACK) \
-    $(wildcard include/config/SECURITY) \
-    $(wildcard include/config/BPF_SYSCALL) \
-    $(wildcard include/config/GCC_PLUGIN_STACKLEAK) \
-    $(wildcard include/config/X86_MCE) \
-    $(wildcard include/config/KRETPROBES) \
-    $(wildcard include/config/RETHOOK) \
-    $(wildcard include/config/ARCH_HAS_PARANOID_L1D_FLUSH) \
-    $(wildcard include/config/ARCH_TASK_STRUCT_ON_STACK) \
-    $(wildcard include/config/DEBUG_RSEQ) \
-  include/uapi/linux/sched.h \
-  include/linux/pid.h \
-  include/linux/rculist.h \
-    $(wildcard include/config/PROVE_RCU_LIST) \
-  include/linux/sem.h \
-  include/uapi/linux/sem.h \
-  include/linux/ipc.h \
-  include/linux/rhashtable-types.h \
-  include/uapi/linux/ipc.h \
-  arch/x86/include/generated/uapi/asm/ipcbuf.h \
-  include/uapi/asm-generic/ipcbuf.h \
-  arch/x86/include/uapi/asm/sembuf.h \
-  include/linux/shm.h \
-  include/uapi/linux/shm.h \
-  include/uapi/asm-generic/hugetlb_encode.h \
-  arch/x86/include/uapi/asm/shmbuf.h \
-  include/uapi/asm-generic/shmbuf.h \
-  arch/x86/include/asm/shmparam.h \
-  include/linux/plist.h \
-    $(wildcard include/config/DEBUG_PLIST) \
-  include/linux/hrtimer.h \
-    $(wildcard include/config/HIGH_RES_TIMERS) \
-    $(wildcard include/config/TIME_LOW_RES) \
-    $(wildcard include/config/TIMERFD) \
-  include/linux/hrtimer_defs.h \
-  include/linux/timerqueue.h \
-  include/linux/seccomp.h \
-    $(wildcard include/config/SECCOMP) \
-    $(wildcard include/config/HAVE_ARCH_SECCOMP_FILTER) \
-    $(wildcard include/config/SECCOMP_FILTER) \
-    $(wildcard include/config/CHECKPOINT_RESTORE) \
-    $(wildcard include/config/SECCOMP_CACHE_DEBUG) \
-  include/uapi/linux/seccomp.h \
-  arch/x86/include/asm/seccomp.h \
-  arch/x86/include/asm/unistd.h \
-  arch/x86/include/uapi/asm/unistd.h \
-  arch/x86/include/generated/uapi/asm/unistd_32.h \
-  include/asm-generic/seccomp.h \
-  include/uapi/linux/unistd.h \
-  include/linux/resource.h \
-  include/uapi/linux/resource.h \
-  arch/x86/include/generated/uapi/asm/resource.h \
-  include/asm-generic/resource.h \
-  include/uapi/asm-generic/resource.h \
-  include/linux/latencytop.h \
-  include/linux/sched/prio.h \
-  include/linux/sched/types.h \
-  include/linux/signal_types.h \
-    $(wildcard include/config/OLD_SIGACTION) \
-  include/uapi/linux/signal.h \
-  arch/x86/include/asm/signal.h \
-  arch/x86/include/uapi/asm/signal.h \
-  include/uapi/asm-generic/signal-defs.h \
-  arch/x86/include/uapi/asm/siginfo.h \
-  include/uapi/asm-generic/siginfo.h \
-  include/linux/syscall_user_dispatch.h \
-  include/linux/task_io_accounting.h \
-    $(wildcard include/config/TASK_IO_ACCOUNTING) \
-  include/linux/posix-timers.h \
-  include/linux/alarmtimer.h \
-    $(wildcard include/config/RTC_CLASS) \
-  include/uapi/linux/rseq.h \
-  include/linux/kcsan.h \
-  include/linux/energy_model.h \
-  include/linux/sched/cpufreq.h \
-    $(wildcard include/config/CPU_FREQ) \
-  include/linux/sched/topology.h \
-    $(wildcard include/config/SCHED_DEBUG) \
-    $(wildcard include/config/SCHED_MC) \
-    $(wildcard include/config/CPU_FREQ_GOV_SCHEDUTIL) \
-  include/linux/sched/idle.h \
-  include/linux/sched/sd_flags.h \
-  include/linux/klist.h \
-  include/linux/pm.h \
-    $(wildcard include/config/VT_CONSOLE_SLEEP) \
-    $(wildcard include/config/PM_CLK) \
-    $(wildcard include/config/PM_GENERIC_DOMAINS) \
-  include/linux/device/bus.h \
-  include/linux/device/class.h \
-  include/linux/device/driver.h \
-  arch/x86/include/asm/device.h \
-  include/linux/pm_wakeup.h \
-  include/acpi/acpi.h \
-  include/acpi/platform/acenv.h \
-  include/acpi/platform/acgcc.h \
-  include/acpi/platform/aclinux.h \
-    $(wildcard include/config/ACPI_REDUCED_HARDWARE_ONLY) \
-    $(wildcard include/config/ACPI_DEBUG) \
-  include/linux/ctype.h \
-  arch/x86/include/asm/acenv.h \
-  include/acpi/acnames.h \
-  include/acpi/actypes.h \
-  include/acpi/acexcep.h \
-  include/acpi/actbl.h \
-  include/acpi/actbl1.h \
-  include/acpi/actbl2.h \
-  include/acpi/actbl3.h \
-  include/acpi/acrestyp.h \
-  include/acpi/platform/acenvex.h \
-  include/acpi/platform/aclinuxex.h \
-  include/acpi/platform/acgccex.h \
-  include/acpi/acoutput.h \
-  include/acpi/acpiosxf.h \
-  include/acpi/acpixf.h \
-  include/acpi/acconfig.h \
-  include/acpi/acbuffer.h \
-  include/linux/dynamic_debug.h \
-  include/acpi/acpi_bus.h \
-    $(wildcard include/config/X86_ANDROID_TABLETS) \
-    $(wildcard include/config/ACPI_SYSTEM_POWER_STATES_SUPPORT) \
-    $(wildcard include/config/ACPI_SLEEP) \
-  include/acpi/acpi_drivers.h \
-    $(wildcard include/config/ACPI_DOCK) \
-  include/acpi/acpi_numa.h \
-    $(wildcard include/config/ACPI_HMAT) \
-  include/acpi/acpi_io.h \
-  include/linux/io.h \
-    $(wildcard include/config/HAS_IOPORT_MAP) \
-  arch/x86/include/asm/io.h \
-    $(wildcard include/config/MTRR) \
-    $(wildcard include/config/X86_PAT) \
-  arch/x86/include/generated/asm/early_ioremap.h \
-  include/asm-generic/early_ioremap.h \
-    $(wildcard include/config/GENERIC_EARLY_IOREMAP) \
-  include/asm-generic/iomap.h \
-  include/asm-generic/pci_iomap.h \
-    $(wildcard include/config/NO_GENERIC_PCI_IOPORT_MAP) \
-    $(wildcard include/config/GENERIC_PCI_IOMAP) \
-  include/asm-generic/io.h \
-    $(wildcard include/config/GENERIC_IOMAP) \
-    $(wildcard include/config/GENERIC_IOREMAP) \
-    $(wildcard include/config/VIRT_TO_BUS) \
-    $(wildcard include/config/GENERIC_DEVMEM_IS_ALLOWED) \
-  include/linux/logic_pio.h \
-    $(wildcard include/config/INDIRECT_PIO) \
-  include/linux/vmalloc.h \
-    $(wildcard include/config/HAVE_ARCH_HUGE_VMALLOC) \
-  arch/x86/include/asm/vmalloc.h \
-    $(wildcard include/config/HAVE_ARCH_HUGE_VMAP) \
-  arch/x86/include/asm/acpi.h \
-    $(wildcard include/config/ACPI_APEI) \
-  include/acpi/pdc_intel.h \
-  arch/x86/include/asm/numa.h \
-    $(wildcard include/config/NUMA_EMU) \
-  arch/x86/include/asm/numa_32.h \
-  include/linux/regulator/consumer.h \
-    $(wildcard include/config/REGULATOR) \
-  include/linux/suspend.h \
-    $(wildcard include/config/VT) \
-    $(wildcard include/config/SUSPEND) \
-    $(wildcard include/config/HIBERNATION_SNAPSHOT_DEV) \
-    $(wildcard include/config/PM_SLEEP_DEBUG) \
-    $(wildcard include/config/PM_AUTOSLEEP) \
-  include/linux/swap.h \
-    $(wildcard include/config/DEVICE_PRIVATE) \
-    $(wildcard include/config/MIGRATION) \
-    $(wildcard include/config/FRONTSWAP) \
-    $(wildcard include/config/THP_SWAP) \
-    $(wildcard include/config/MEMCG_SWAP) \
-  include/linux/memcontrol.h \
-    $(wildcard include/config/CGROUP_WRITEBACK) \
-  include/linux/cgroup.h \
-    $(wildcard include/config/CGROUP_CPUACCT) \
-    $(wildcard include/config/SOCK_CGROUP_DATA) \
-    $(wildcard include/config/CGROUP_DATA) \
-    $(wildcard include/config/CGROUP_BPF) \
-  include/uapi/linux/cgroupstats.h \
-  include/uapi/linux/taskstats.h \
-  include/linux/fs.h \
-    $(wildcard include/config/READ_ONLY_THP_FOR_FS) \
-    $(wildcard include/config/FS_POSIX_ACL) \
-    $(wildcard include/config/IMA) \
-    $(wildcard include/config/FILE_LOCKING) \
-    $(wildcard include/config/FSNOTIFY) \
-    $(wildcard include/config/FS_ENCRYPTION) \
-    $(wildcard include/config/FS_VERITY) \
-    $(wildcard include/config/EPOLL) \
-    $(wildcard include/config/UNICODE) \
-    $(wildcard include/config/QUOTA) \
-    $(wildcard include/config/FS_DAX) \
-    $(wildcard include/config/BLOCK) \
-  include/linux/wait_bit.h \
-  include/linux/kdev_t.h \
-  include/uapi/linux/kdev_t.h \
-  include/linux/dcache.h \
-  include/linux/rculist_bl.h \
-  include/linux/list_bl.h \
-  include/linux/bit_spinlock.h \
-  include/linux/lockref.h \
-    $(wildcard include/config/ARCH_USE_CMPXCHG_LOCKREF) \
-  include/linux/stringhash.h \
-    $(wildcard include/config/DCACHE_WORD_ACCESS) \
-  include/linux/hash.h \
-    $(wildcard include/config/HAVE_ARCH_HASH) \
-  include/linux/path.h \
-  include/linux/list_lru.h \
-  include/linux/shrinker.h \
-  include/linux/capability.h \
-  include/uapi/linux/capability.h \
-  include/linux/semaphore.h \
-  include/linux/fcntl.h \
-    $(wildcard include/config/ARCH_32BIT_OFF_T) \
-  include/uapi/linux/fcntl.h \
-  arch/x86/include/generated/uapi/asm/fcntl.h \
-  include/uapi/asm-generic/fcntl.h \
-  include/uapi/linux/openat2.h \
-  include/linux/migrate_mode.h \
-  include/linux/percpu-rwsem.h \
-  include/linux/rcuwait.h \
-  include/linux/sched/signal.h \
-    $(wildcard include/config/SCHED_AUTOGROUP) \
-    $(wildcard include/config/BSD_PROCESS_ACCT) \
-    $(wildcard include/config/TASKSTATS) \
-    $(wildcard include/config/STACK_GROWSUP) \
-  include/linux/signal.h \
-    $(wildcard include/config/DYNAMIC_SIGFRAME) \
-  include/linux/sched/jobctl.h \
-  include/linux/sched/task.h \
-    $(wildcard include/config/HAVE_EXIT_THREAD) \
-    $(wildcard include/config/ARCH_WANTS_DYNAMIC_TASK_STRUCT) \
-    $(wildcard include/config/HAVE_ARCH_THREAD_STRUCT_WHITELIST) \
-  include/linux/uaccess.h \
-  include/linux/fault-inject-usercopy.h \
-    $(wildcard include/config/FAULT_INJECTION_USERCOPY) \
-  arch/x86/include/asm/uaccess.h \
-    $(wildcard include/config/CC_HAS_ASM_GOTO_OUTPUT) \
-    $(wildcard include/config/CC_HAS_ASM_GOTO_TIED_OUTPUT) \
-    $(wildcard include/config/ARCH_HAS_COPY_MC) \
-    $(wildcard include/config/X86_INTEL_USERCOPY) \
-  arch/x86/include/asm/smap.h \
-  arch/x86/include/asm/extable.h \
-    $(wildcard include/config/BPF_JIT) \
-  include/asm-generic/access_ok.h \
-    $(wildcard include/config/ALTERNATE_USER_ADDRESS_SPACE) \
-  arch/x86/include/asm/uaccess_32.h \
-  include/linux/cred.h \
-    $(wildcard include/config/DEBUG_CREDENTIALS) \
-  include/linux/key.h \
-    $(wildcard include/config/KEY_NOTIFICATIONS) \
-    $(wildcard include/config/NET) \
-  include/linux/assoc_array.h \
-    $(wildcard include/config/ASSOCIATIVE_ARRAY) \
-  include/linux/sched/user.h \
-    $(wildcard include/config/WATCH_QUEUE) \
-  include/linux/percpu_counter.h \
-  include/linux/rcu_sync.h \
-  include/linux/delayed_call.h \
-  include/linux/errseq.h \
-  include/linux/ioprio.h \
-  include/linux/sched/rt.h \
-  include/linux/iocontext.h \
-    $(wildcard include/config/BLK_ICQ) \
-  include/uapi/linux/ioprio.h \
-  include/linux/fs_types.h \
-  include/linux/mount.h \
-  include/linux/mnt_idmapping.h \
-  include/uapi/linux/fs.h \
-  include/linux/quota.h \
-    $(wildcard include/config/QUOTA_NETLINK_INTERFACE) \
-  include/uapi/linux/dqblk_xfs.h \
-  include/linux/dqblk_v1.h \
-  include/linux/dqblk_v2.h \
-  include/linux/dqblk_qtree.h \
-  include/linux/projid.h \
-  include/uapi/linux/quota.h \
-  include/linux/nfs_fs_i.h \
-  include/linux/seq_file.h \
-  include/linux/string_helpers.h \
-  include/linux/ns_common.h \
-  include/linux/nsproxy.h \
-  include/linux/user_namespace.h \
-    $(wildcard include/config/INOTIFY_USER) \
-    $(wildcard include/config/FANOTIFY) \
-    $(wildcard include/config/PERSISTENT_KEYRINGS) \
-  include/linux/kernel_stat.h \
-  include/linux/interrupt.h \
-    $(wildcard include/config/IRQ_FORCED_THREADING) \
-    $(wildcard include/config/GENERIC_IRQ_PROBE) \
-    $(wildcard include/config/IRQ_TIMINGS) \
-  include/linux/irqreturn.h \
-  include/linux/irqnr.h \
-  include/uapi/linux/irqnr.h \
-  include/linux/hardirq.h \
-  include/linux/context_tracking_state.h \
-    $(wildcard include/config/CONTEXT_TRACKING) \
-  include/linux/ftrace_irq.h \
-    $(wildcard include/config/HWLAT_TRACER) \
-    $(wildcard include/config/OSNOISE_TRACER) \
-  include/linux/vtime.h \
-    $(wildcard include/config/VIRT_CPU_ACCOUNTING) \
-    $(wildcard include/config/IRQ_TIME_ACCOUNTING) \
-  arch/x86/include/asm/hardirq.h \
-    $(wildcard include/config/KVM_INTEL) \
-    $(wildcard include/config/X86_THERMAL_VECTOR) \
-    $(wildcard include/config/X86_MCE_THRESHOLD) \
-    $(wildcard include/config/X86_MCE_AMD) \
-    $(wildcard include/config/X86_HV_CALLBACK_VECTOR) \
-  arch/x86/include/asm/irq.h \
-  arch/x86/include/asm/sections.h \
-  include/asm-generic/sections.h \
-    $(wildcard include/config/HAVE_FUNCTION_DESCRIPTORS) \
-  include/linux/cgroup-defs.h \
-    $(wildcard include/config/CGROUP_NET_CLASSID) \
-    $(wildcard include/config/CGROUP_NET_PRIO) \
-  include/linux/u64_stats_sync.h \
-  include/linux/bpf-cgroup-defs.h \
-  include/linux/psi_types.h \
-  include/linux/kthread.h \
-  include/linux/cgroup_subsys.h \
-    $(wildcard include/config/CGROUP_DEVICE) \
-    $(wildcard include/config/CGROUP_FREEZER) \
-    $(wildcard include/config/CGROUP_PERF) \
-    $(wildcard include/config/CGROUP_HUGETLB) \
-    $(wildcard include/config/CGROUP_PIDS) \
-    $(wildcard include/config/CGROUP_RDMA) \
-    $(wildcard include/config/CGROUP_MISC) \
-    $(wildcard include/config/CGROUP_DEBUG) \
-  include/linux/vm_event_item.h \
-    $(wildcard include/config/HAVE_ARCH_TRANSPARENT_HUGEPAGE_PUD) \
-    $(wildcard include/config/MEMORY_BALLOON) \
-    $(wildcard include/config/BALLOON_COMPACTION) \
-    $(wildcard include/config/DEBUG_TLBFLUSH) \
-    $(wildcard include/config/DEBUG_VM_VMACACHE) \
-  include/linux/page_counter.h \
-  include/linux/vmpressure.h \
-  include/linux/eventfd.h \
-  include/linux/mm.h \
-    $(wildcard include/config/HAVE_ARCH_MMAP_RND_BITS) \
-    $(wildcard include/config/HAVE_ARCH_MMAP_RND_COMPAT_BITS) \
-    $(wildcard include/config/ARCH_USES_HIGH_VMA_FLAGS) \
-    $(wildcard include/config/ARCH_HAS_PKEYS) \
-    $(wildcard include/config/PPC) \
-    $(wildcard include/config/PARISC) \
-    $(wildcard include/config/SPARC64) \
-    $(wildcard include/config/ARM64_MTE) \
-    $(wildcard include/config/HAVE_ARCH_USERFAULTFD_MINOR) \
-    $(wildcard include/config/SHMEM) \
-    $(wildcard include/config/ARCH_HAS_PTE_SPECIAL) \
-    $(wildcard include/config/ARCH_HAS_PTE_DEVMAP) \
-    $(wildcard include/config/DEBUG_VM_RB) \
-    $(wildcard include/config/PAGE_POISONING) \
-    $(wildcard include/config/INIT_ON_ALLOC_DEFAULT_ON) \
-    $(wildcard include/config/INIT_ON_FREE_DEFAULT_ON) \
-    $(wildcard include/config/DEBUG_PAGEALLOC) \
-    $(wildcard include/config/HUGETLBFS) \
-    $(wildcard include/config/MAPPING_DIRTY_HELPERS) \
-    $(wildcard include/config/ANON_VMA_NAME) \
-  include/linux/mmap_lock.h \
-  include/linux/page_ext.h \
-  include/linux/stacktrace.h \
-    $(wildcard include/config/ARCH_STACKWALK) \
-    $(wildcard include/config/STACKTRACE) \
-    $(wildcard include/config/HAVE_RELIABLE_STACKTRACE) \
-  include/linux/stackdepot.h \
-    $(wildcard include/config/STACKDEPOT_ALWAYS_INIT) \
-  include/linux/page_ref.h \
-    $(wildcard include/config/DEBUG_PAGE_REF) \
-  include/linux/sizes.h \
-  include/linux/pgtable.h \
-    $(wildcard include/config/HIGHPTE) \
-    $(wildcard include/config/GUP_GET_PTE_LOW_HIGH) \
-    $(wildcard include/config/HAVE_ARCH_SOFT_DIRTY) \
-    $(wildcard include/config/ARCH_ENABLE_THP_MIGRATION) \
-    $(wildcard include/config/X86_ESPFIX64) \
-  arch/x86/include/asm/pgtable.h \
-    $(wildcard include/config/DEBUG_WX) \
-    $(wildcard include/config/PAGE_TABLE_CHECK) \
-  arch/x86/include/asm/pkru.h \
-  arch/x86/include/asm/fpu/api.h \
-    $(wildcard include/config/X86_DEBUG_FPU) \
-  arch/x86/include/asm/coco.h \
-  include/asm-generic/pgtable_uffd.h \
-  include/linux/page_table_check.h \
-  arch/x86/include/asm/pgtable_32.h \
-  arch/x86/include/asm/pgtable-3level.h \
-  arch/x86/include/asm/pgtable-invert.h \
-  include/linux/huge_mm.h \
-  include/linux/sched/coredump.h \
-    $(wildcard include/config/CORE_DUMP_DEFAULT_ELF_HEADERS) \
-  include/linux/vmstat.h \
-    $(wildcard include/config/VM_EVENT_COUNTERS) \
-  include/linux/writeback.h \
-  include/linux/flex_proportions.h \
-  include/linux/backing-dev-defs.h \
-    $(wildcard include/config/DEBUG_FS) \
-  include/linux/blk_types.h \
-    $(wildcard include/config/FAIL_MAKE_REQUEST) \
-    $(wildcard include/config/BLK_CGROUP_IOCOST) \
-    $(wildcard include/config/BLK_INLINE_ENCRYPTION) \
-    $(wildcard include/config/BLK_DEV_INTEGRITY) \
-  include/linux/bvec.h \
-  include/linux/highmem.h \
-  include/linux/cacheflush.h \
-  arch/x86/include/asm/cacheflush.h \
-  include/asm-generic/cacheflush.h \
-  include/linux/highmem-internal.h \
-  arch/x86/include/asm/highmem.h \
-  arch/x86/include/asm/tlbflush.h \
-  arch/x86/include/asm/invpcid.h \
-  arch/x86/include/asm/pti.h \
-  include/linux/bio.h \
-  include/linux/mempool.h \
-  include/linux/uio.h \
-    $(wildcard include/config/ARCH_HAS_UACCESS_FLUSHCACHE) \
-  include/uapi/linux/uio.h \
-  include/linux/node.h \
-    $(wildcard include/config/HMEM_REPORTING) \
-  include/linux/pagemap.h \
-  include/linux/hugetlb_inline.h \
-  include/uapi/linux/mempolicy.h \
-  include/linux/freezer.h \
-  include/uapi/linux/i2c.h \
-  include/linux/videodev2.h \
-  include/uapi/linux/videodev2.h \
-    $(wildcard include/config/VIDEO_ADV_DEBUG) \
-  include/uapi/linux/v4l2-common.h \
-  include/uapi/linux/v4l2-controls.h \
-  include/media/v4l2-subdev.h \
-    $(wildcard include/config/MEDIA_CONTROLLER) \
-    $(wildcard include/config/VIDEO_V4L2_SUBDEV_API) \
-  include/uapi/linux/v4l2-subdev.h \
-  include/uapi/linux/v4l2-mediabus.h \
-  include/uapi/linux/media-bus-format.h \
-  include/media/media-entity.h \
-  include/uapi/linux/media.h \
-  include/media/v4l2-async.h \
-  include/media/v4l2-common.h \
-    $(wildcard include/config/VIDEO_V4L2_I2C) \
-    $(wildcard include/config/SPI) \
-  include/media/v4l2-dev.h \
-  include/linux/poll.h \
-  include/uapi/linux/poll.h \
-  arch/x86/include/generated/uapi/asm/poll.h \
-  include/uapi/asm-generic/poll.h \
-  include/uapi/linux/eventpoll.h \
-  include/linux/cdev.h \
-  include/linux/spi/spi.h \
-    $(wildcard include/config/SPI_SLAVE) \
-  include/linux/scatterlist.h \
-    $(wildcard include/config/NEED_SG_DMA_LENGTH) \
-    $(wildcard include/config/DEBUG_SG) \
-    $(wildcard include/config/SGL_ALLOC) \
-    $(wildcard include/config/ARCH_NO_SG_CHAIN) \
-    $(wildcard include/config/SG_POOL) \
-  include/linux/gpio/consumer.h \
-    $(wildcard include/config/OF_GPIO) \
-    $(wildcard include/config/GPIO_SYSFS) \
-  include/uapi/linux/spi/spi.h \
-  include/media/v4l2-fh.h \
-  include/media/v4l2-mediabus.h \
-  include/media/v4l2-device.h \
-  include/media/media-device.h \
-  include/media/media-devnode.h \
-  include/media/v4l2-ctrls.h \
-  include/media/media-request.h \
-  include/media/hevc-ctrls.h \
+#include <linux/module.h>
+#include <linux/moduleparam.h>
+#include <linux/kernel.h>
+#include <linux/types.h>
+#include <linux/interrupt.h>
+#include <linux/errno.h>
+#include <linux/netdevice.h>
+#include <linux/platform_device.h>
+#include <linux/can/led.h>
+#include <linux/can/dev.h>
+#include <linux/clk.h>
+#include <linux/of.h>
+#include <linux/of_device.h>
+#include <linux/bitmap.h>
+#include <linux/bitops.h>
+#include <linux/iopoll.h>
+#include <linux/reset.h>
 
-drivers/media/i2c/tw2804.o: $(deps_drivers/media/i2c/tw2804.o)
+#define RCANFD_DRV_NAME			"rcar_canfd"
 
-$(deps_drivers/media/i2c/tw2804.o):
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               ELF                      ÿ      4     (               Ë¸ˇˇˇSãX\âÿË¸ˇˇˇçÉ¿   Ë¸ˇˇˇ1¿[√êË¸ˇˇˇSãP(ãXÅ˙	ò tÅ˙	ò tTπÍˇˇˇÅ˙ 	ò t'â»[√çv ∂H|ãC‘∫   Ë¸ˇˇˇ1…[â»√ç¥&    fê∂H|ãC‘∫   Ë¸ˇˇˇ1…[â»√ç¥&    fê∂H|ãC‘∫   Ë¸ˇˇˇ1…[â»√ç¥&    fêË¸ˇˇˇçãÄî   ∫   É…@∂…Ë¸ˇˇˇ1¿√ç¥&    ç¥&    êË¸ˇˇˇUWVSâ√ã@ãPãRË¸ˇˇˇ%   =   Ñ7   æ˚ˇˇˇ[â^_]√ç¥&    çt& Ë¸ˇˇˇUˆ∆˘âÕWâ◊∫   Vâ∆∏    Sª   DÿÉ√Îç¥&    ∂SÉ√Ñ“t∂ãÜî   Ë¸ˇˇˇÖ¿y„[âæ0  1¿âÆ4  ^_]√    ‡                                                                                                                                  ∞       ‡          6%s: Standard: %d Hz
- tw9903 Ë¸ˇˇˇSâ√ãÄ0  % ˘  É¯¿É‡ˆÉ¿<PçCpPh    Ë¸ˇˇˇâÿË¸ˇˇˇ1¿Éƒ[√ãS∑Cçä  Qç QPˇ≤   ãCTˇ0h    Ë¸ˇˇˇçCπ¿  ∫8  Ë¸ˇˇˇâ«ÉƒÖ¿u
-æÙˇˇˇÈ
-  π`   â⁄çØ¿   Ë¸ˇˇˇ1…∫   âËj Ë¸ˇˇˇπ 	ò ∫  âËj j j jj jjˇjÄË¸ˇˇˇπ	ò ∫  âËÉƒ$j j`j jj hˇ   j j Ë¸ˇˇˇπ	ò ∫  âËÉƒ j j j jj jjˇjÄË¸ˇˇˇã∑¸   âolÉƒ ÖˆtâËË¸ˇˇˇÈ
-  «á0   ∞  Ω   ∫   «á4      ∂Mãáî   Ë¸ˇˇˇÖ¿yÉ√æÍˇˇˇSh(   Ë¸ˇˇˇXZÈ
-  ∂UÉ≈Ñ“u»È
-   6%s %d-%04x: chip found @ 0x%02x (%s)
- 3%s: error initializing TW9903
- Ë¸ˇˇˇ∫    ∏    È¸ˇˇˇ∏    È¸ˇˇˇ                  	     Ä	            tw9903                                                          ‡           Ä                   ∞                                                                                                                                                              Dí Ä@	
-Å–å   `Z √ XÄ †!""#˛$<%8&D' ( )*†+D,7- .•/‡1 3"455;¿  license=GPL v2 description=TW9903 I2C subdev driver  GCC: (GNU) 11.2.0             GNU  ¿       ¿                                  Òˇ                            
-                   á     &   ∞   !                                	 =       ;    	               O   ‡   5     \   ;   R   	 n   `         y          â      b     õ      `     ®       
-     ∂      
-                   ƒ            ◊       Ä     Â       
-                   ¯       0       ‡   0       Ä   P     #           :     %     U             `             ~             ï             Ø             ∑             ”             Ï             ˘                          +             =             K             _           k             z      
-     â      0      tw9903.c tw9903_remove tw9903_s_ctrl tw9903_s_video_routing tw9903_log_status tw9903_probe tw9903_probe.cold tw9903_ops tw9903_ctrl_ops initial_registers tw9903_s_std config_50hz.2 config_60hz.1 tw9903_driver_init tw9903_driver tw9903_driver_exit tw9903_id tw9903_core_ops tw9903_video_ops __UNIQUE_ID_license267 __UNIQUE_ID_description266 __fentry__ v4l2_device_unregister_subdev v4l2_ctrl_handler_free i2c_smbus_write_byte_data _printk v4l2_ctrl_subdev_log_status __x86_indirect_thunk_edx devm_kmalloc v4l2_i2c_subdev_init v4l2_ctrl_handler_init_class v4l2_ctrl_new_std __this_module i2c_register_driver init_module i2c_del_driver cleanup_module __mod_i2c__tw9903_id_device_table                 !     ]      }      ù      ±            ·     ı   #  !    7    =    e                        h                                              $     )   !  0   "  Z   
-  _   !  q   $  â     ñ   %  ¶   &  ∞     «   '  —     Ó   '  ¯       '  )    =    [     m  
-  r  !  Ñ     .    y    â                 (     )          +  `     l     Ä     å     ‡          .symtab .strtab .shstrtab .rel.text .rel.data .bss .rel__mcount_loc .rodata.str1.1 .rel.text.unlikely .rodata.str1.4 .rel.init.text .rel.exit.text .rel.rodata .modinfo .comment .note.GNU-stack .note.gnu.property                                                         @   Ä                    	   @          Ä               )             ¿  Ä                   %   	   @       Ä                  /             @                     8             @                    4   	   @       †  8               E      2       \                   X             z  ç                 T   	   @       ÿ  »      	         g      2         I                 z             Q                    v   	   @       †                  â             e  
-                  Ö   	   @       ¿                 ò             Ä  Ç                  î   	   @       –  0               †               4                  ©      0       6                   ≤              I                     ¬             L  (                                t  ‡              	              T	  ´                                  ’                                                                                                                            
+enum rcanfd_chip_id {
+	RENESAS_RCAR_GEN3 = 0,
+	RENESAS_RZG2L,
+	RENESAS_R8A779A0,
+};
+
+/* Global register bits */
+
+/* RSCFDnCFDGRMCFG */
+#define RCANFD_GRMCFG_RCMC		BIT(0)
+
+/* RSCFDnCFDGCFG / RSCFDnGCFG */
+#define RCANFD_GCFG_EEFE		BIT(6)
+#define RCANFD_GCFG_CMPOC		BIT(5)	/* CAN FD only */
+#define RCANFD_GCFG_DCS			BIT(4)
+#define RCANFD_GCFG_DCE			BIT(1)
+#define RCANFD_GCFG_TPRI		BIT(0)
+
+/* RSCFDnCFDGCTR / RSCFDnGCTR */
+#define RCANFD_GCTR_TSRST		BIT(16)
+#define RCANFD_GCTR_CFMPOFIE		BIT(11)	/* CAN FD only */
+#define RCANFD_GCTR_THLEIE		BIT(10)
+#define RCANFD_GCTR_MEIE		BIT(9)
+#define RCANFD_GCTR_DEIE		BIT(8)
+#define RCANFD_GCTR_GSLPR		BIT(2)
+#define RCANFD_GCTR_GMDC_MASK		(0x3)
+#define RCANFD_GCTR_GMDC_GOPM		(0x0)
+#define RCANFD_GCTR_GMDC_GRESET		(0x1)
+#define RCANFD_GCTR_GMDC_GTEST		(0x2)
+
+/* RSCFDnCFDGSTS / RSCFDnGSTS */
+#define RCANFD_GSTS_GRAMINIT		BIT(3)
+#define RCANFD_GSTS_GSLPSTS		BIT(2)
+#define RCANFD_GSTS_GHLTSTS		BIT(1)
+#define RCANFD_GSTS_GRSTSTS		BIT(0)
+/* Non-operational status */
+#define RCANFD_GSTS_GNOPM		(BIT(0) | BIT(1) | BIT(2) | BIT(3))
+
+/* RSCFDnCFDGERFL / RSCFDnGERFL */
+#define RCANFD_GERFL_EEF0_7		GENMASK(23, 16)
+#define RCANFD_GERFL_EEF1		BIT(17)
+#define RCANFD_GERFL_EEF0		BIT(16)
+#define RCANFD_GERFL_CMPOF		BIT(3)	/* CAN FD only */
+#define RCANFD_GERFL_THLES		BIT(2)
+#define RCANFD_GERFL_MES		BIT(1)
+#define RCANFD_GERFL_DEF		BIT(0)
+
+#define RCANFD_GERFL_ERR(gpriv, x) \
+	((x) & (reg_v3u(gpriv, RCANFD_GERFL_EEF0_7, \
+			RCANFD_GERFL_EEF0 | RCANFD_GERFL_EEF1) | \
+		RCANFD_GERFL_MES | \
+		((gpriv)->fdmode ? RCANFD_GERFL_CMPOF : 0)))
+
+/* AFL Rx rules registers */
+
+/* RSCFDnCFDGAFLCFG0 / RSCFDnGAFLCFG0 */
+#define RCANFD_GAFLCFG_SETRNC(gpriv, n, x) \
+	(((x) & reg_v3u(gpriv, 0x1ff, 0xff)) << \
+	 (reg_v3u(gpriv, 16, 24) - (n) * reg_v3u(gpriv, 16, 8)))
+
+#define RCANFD_GAFLCFG_GETRNC(gpriv, n, x) \
+	(((x) >> (reg_v3u(gpriv, 16, 24) - (n) * reg_v3u(gpriv, 16, 8))) & \
+	 reg_v3u(gpriv, 0x1ff, 0xff))
+
+/* RSCFDnCFDGAFLECTR / RSCFDnGAFLECTR */
+#define RCANFD_GAFLECTR_AFLDAE		BIT(8)
+#define RCANFD_GAFLECTR_AFLPN(gpriv, x)	((x) & reg_v3u(gpriv, 0x7f, 0x1f))
+
+/* RSCFDnCFDGAFLIDj / RSCFDnGAFLIDj */
+#define RCANFD_GAFLID_GAFLLB		BIT(29)
+
+/* RSCFDnCFDGAFLP1_j / RSCFDnGAFLP1_j */
+#define RCANFD_GAFLP1_GAFLFDP(x)	(1 << (x))
+
+/* Channel register bits */
+
+/* RSCFDnCmCFG - Classical CAN only */
+#define RCANFD_CFG_SJW(x)		(((x) & 0x3) << 24)
+#define RCANFD_CFG_TSEG2(x)		(((x) & 0x7) << 20)
+#define RCANFD_CFG_TSEG1(x)		(((x) & 0xf) << 16)
+#define RCANFD_CFG_BRP(x)		(((x) & 0x3ff) << 0)
+
+/* RSCFDnCFDCmNCFG - CAN FD only */
+#define RCANFD_NCFG_NTSEG2(gpriv, x) \
+	(((x) & reg_v3u(gpriv, 0x7f, 0x1f)) << reg_v3u(gpriv, 25, 24))
+
+#define RCANFD_NCFG_NTSEG1(gpriv, x) \
+	(((x) & reg_v3u(gpriv, 0xff, 0x7f)) << reg_v3u(gpriv, 17, 16))
+
+#define RCANFD_NCFG_NSJW(gpriv, x) \
+	(((x) & reg_v3u(gpriv, 0x7f, 0x1f)) << reg_v3u(gpriv, 10, 11))
+
+#define RCANFD_NCFG_NBRP(x)		(((x) & 0x3ff) << 0)
+
+/* RSCFDnCFDCmCTR / RSCFDnCmCTR */
+#define RCANFD_CCTR_CTME		BIT(24)
+#define RCANFD_CCTR_ERRD		BIT(23)
+#define RCANFD_CCTR_BOM_MASK		(0x3 << 21)
+#define RCANFD_CCTR_BOM_ISO		(0x0 << 21)
+#define RCANFD_CCTR_BOM_BENTRY		(0x1 << 21)
+#define RCANFD_CCTR_BOM_BEND		(0x2 << 21)
+#define RCANFD_CCTR_TDCVFIE		BIT(19)
+#define RCANFD_CCTR_SOCOIE		BIT(18)
+#define RCANFD_CCTR_EOCOIE		BIT(17)
+#define RCANFD_CCTR_TAIE		BIT(16)
+#define RCANFD_CCTR_ALIE		BIT(15)
+#define RCANFD_CCTR_BLIE		BIT(14)
+#define RCANFD_CCTR_OLIE		BIT(13)
+#define RCANFD_CCTR_BORIE		BIT(12)
+#define RCANFD_CCTR_BOEIE		BIT(11)
+#define RCANFD_CCTR_EPIE		BIT(10)
+#define RCANFD_CCTR_EWIE		BIT(9)
+#define RCANFD_CCTR_BEIE		BIT(8)
+#define RCANFD_CCTR_CSLPR		BIT(2)
+#define RCANFD_CCTR_CHMDC_MASK		(0x3)
+#define RCANFD_CCTR_CHDMC_COPM		(0x0)
+#define RCANFD_CCTR_CHDMC_CRESET	(0x1)
+#define RCANFD_CCTR_CHDMC_CHLT		(0x2)
+
+/* RSCFDnCFDCmSTS / RSCFDnCmSTS */
+#define RCANFD_CSTS_COMSTS		BIT(7)
+#define RCANFD_CSTS_RECSTS		BIT(6)
+#define RCANFD_CSTS_TRMSTS		BIT(5)
+#define RCANFD_CSTS_BOSTS		BIT(4)
+#define RCANFD_CSTS_EPSTS		BIT(3)
+#define RCANFD_CSTS_SLPSTS		BIT(2)
+#define RCANFD_CSTS_HLTSTS		BIT(1)
+#define RCANFD_CSTS_CRSTSTS		BIT(0)
+
+#define RCANFD_CSTS_TECCNT(x)		(((x) >> 24) & 0xff)
+#define RCANFD_CSTS_RECCNT(x)		(((x) >> 16) & 0xff)
+
+/* RSCFDnCFDCmERFL / RSCFDnCmERFL */
+#define RCANFD_CERFL_ADERR		BIT(14)
+#define RCANFD_CERFL_B0ERR		BIT(13)
+#define RCANFD_CERFL_B1ERR		BIT(12)
+#define RCANFD_CERFL_CERR		BIT(11)
+#define RCANFD_CERFL_AERR		BIT(10)
+#define RCANFD_CERFL_FERR		BIT(9)
+#define RCANFD_CERFL_SERR		BIT(8)
+#define RCANFD_CERFL_ALF		BIT(7)
+#define RCANFD_CERFL_BLF		BIT(6)
+#define RCANFD_CERFL_OVLF		BIT(5)
+#define RCANFD_CERFL_BORF		BIT(4)
+#define RCANFD_CERFL_BOEF		BIT(3)
+#define RCANFD_CERFL_EPF		BIT(2)
+#define RCANFD_CERFL_EWF		BIT(1)
+#define RCANFD_CERFL_BEF		BIT(0)
+
+#define RCANFD_CERFL_ERR(x)		((x) & (0x7fff)) /* above bits 14:0 */
+
+/* RSCFDnCFDCmDCFG */
+#define RCANFD_DCFG_DSJW(x)		(((x) & 0x7) << 24)
+
+#define RCANFD_DCFG_DTSEG2(gpriv, x) \
+	(((x) & reg_v3u(gpriv, 0x0f, 0x7)) << reg_v3u(gpriv, 16, 20))
+
+#define RCANFD_DCFG_DTSEG1(gpriv, x) \
+	(((x) & reg_v3u(gpriv, 0x1f, 0xf)) << reg_v3u(gpriv, 8, 16))
+
+#define RCANFD_DCFG_DBRP(x)		(((x) & 0xff) << 0)
+
+/* RSCFDnCFDCmFDCFG */
+#define RCANFD_FDCFG_CLOE		BIT(30)
+#define RCANFD_FDCFG_FDOE		BIT(28)
+#define RCANFD_FDCFG_TDCE		BIT(9)
+#define RCANFD_FDCFG_TDCOC		BIT(8)
+#define RCANFD_FDCFG_TDCO(x)		(((x) & 0x7f) >> 16)
+
+/* RSCFDnCFDRFCCx */
+#define RCANFD_RFCC_RFIM		BIT(12)
+#define RCANFD_RFCC_RFDC(x)		(((x) & 0x7) << 8)
+#define RCANFD_RFCC_RFPLS(x)		(((x) & 0x7) << 4)
+#define RCANFD_RFCC_RFIE		BIT(1)
+#define RCANFD_RFCC_RFE			BIT(0)
+
+/* RSCFDnCFDRFSTSx */
+#define RCANFD_RFSTS_RFIF		BIT(3)
+#define RCANFD_RFSTS_RFMLT		BIT(2)
+#define RCANFD_RFSTS_RFFLL		BIT(1)
+#define RCANFD_RFSTS_RFEMP		BIT(0)
+
+/* RSCFDnCFDRFIDx */
+#define RCANFD_RFID_RFIDE		BIT(31)
+#define RCANFD_RFID_RFRTR		BIT(30)
+
+/* RSCFDnCFDRFPTRx */
+#define RCANFD_RFPTR_RFDLC(x)		(((x) >> 28) & 0xf)
+#define RCANFD_RFPTR_RFPTR(x)		(((x) >> 16) & 0xfff)
+#define RCANFD_RFPTR_RFTS(x)		(((x) >> 0) & 0xffff)
+
+/* RSCFDnCFDRFFDSTSx */
+#define RCANFD_RFFDSTS_RFFDF		BIT(2)
+#define RCANFD_RFFDSTS_RFBRS		BIT(1)
+#define RCANFD_RFFDSTS_RFESI		BIT(0)
+
+/* Common FIFO bits */
+
+/* RSCFDnCFDCFCCk */
+#define RCANFD_CFCC_CFTML(gpriv, x)	(((x) & 0xf) << reg_v3u(gpriv, 16, 20))
+#define RCANFD_CFCC_CFM(gpriv, x)	(((x) & 0x3) << reg_v3u(gpriv,  8, 16))
+#define RCANFD_CFCC_CFIM		BIT(12)
+#define RCANFD_CFCC_CFDC(gpriv, x)	(((x) & 0x7) << reg_v3u(gpriv, 21,  8))
+#define RCANFD_CFCC_CFPLS(x)		(((x) & 0x7) << 4)
+#define RCANFD_CFCC_CFTXIE		BIT(2)
+#define RCANFD_CFCC_CFE			BIT(0)
+
+/* RSCFDnCFDCFSTSk */
+#define RCANFD_CFSTS_CFMC(x)		(((x) >> 8) & 0xff)
+#define RCANFD_CFSTS_CFTXIF		BIT(4)
+#define RCANFD_CFSTS_CFMLT		BIT(2)
+#define RCANFD_CFSTS_CFFLL		BIT(1)
+#define RCANFD_CFSTS_CFEMP		BIT(0)
+
+/* RSCFDnCFDCFIDk */
+#define RCANFD_CFID_CFIDE		BIT(31)
+#define RCANFD_CFID_CFRTR		BIT(30)
+#define RCANFD_CFID_CFID_MASK(x)	((x) & 0x1fffffff)
+
+/* RSCFDnCFDCFPTRk */
+#define RCANFD_CFPTR_CFDLC(x)		(((x) & 0xf) << 28)
+#define RCANFD_CFPTR_CFPTR(x)		(((x) & 0xfff) << 16)
+#define RCANFD_CFPTR_CFTS(x)		(((x) & 0xff) << 0)
+
+/* RSCFDnCFDCFFDCSTSk */
+#define RCANFD_CFFDCSTS_CFFDF		BIT(2)
+#define RCANFD_CFFDCSTS_CFBRS		BIT(1)
+#define RCANFD_CFFDCSTS_CFESI		BIT(0)
+
+/* This controller supports either Classical CAN only mode or CAN FD only mode.
+ * These modes are supported in two separate set of register maps & names.
+ * However, some of the register offsets are common for both modes. Those
+ * offsets are listed below as Common registers.
+ *
+ * The CAN FD only mode specific registers & Classical CAN only mode specific
+ * registers are listed separately. Their register names starts with
+ * RCANFD_F_xxx & RCANFD_C_xxx respectively.
+ */
+
+/* Common registers */
+
+/* RSCFDnCFDCmNCFG / RSCFDnCmCFG */
+#define RCANFD_CCFG(m)			(0x0000 + (0x10 * (m)))
+/* RSCFDnCFDCmCTR / RSCFDnCmCTR */
+#define RCANFD_CCTR(m)			(0x0004 + (0x10 * (m)))
+/* RSCFDnCFDCmSTS / RSCFDnCmSTS */
+#define RCANFD_CSTS(m)			(0x0008 + (0x10 * (m)))
+/* RSCFDnCFDCmERFL / RSCFDnCmERFL */
+#define RCANFD_CERFL(m)			(0x000C + (0x10 * (m)))
+
+/* RSCFDnCFDGCFG / RSCFDnGCFG */
+#define RCANFD_GCFG			(0x0084)
+/* RSCFDnCFDGCTR / RSCFDnGCTR */
+#define RCANFD_GCTR			(0x0088)
+/* RSCFDnCFDGCTS / RSCFDnGCTS */
+#define RCANFD_GSTS			(0x008c)
+/* RSCFDnCFDGERFL / RSCFDnGERFL */
+#define RCANFD_GERFL			(0x0090)
+/* RSCFDnCFDGTSC / RSCFDnGTSC */
+#define RCANFD_GTSC			(0x0094)
+/* RSCFDnCFDGAFLECTR / RSCFDnGAFLECTR */
+#define RCANFD_GAFLECTR			(0x0098)
+/* RSCFDnCFDGAFLCFG / RSCFDnGAFLCFG */
+#define RCANFD_GAFLCFG(ch)		(0x009c + (0x04 * ((ch) / 2)))
+/* RSCFDnCFDRMNB / RSCFDnRMNB */
+#define RCANFD_RMNB			(0x00a4)
+/* RSCFDnCFDRMND / RSCFDnRMND */
+#define RCANFD_RMND(y)			(0x00a8 + (0x04 * (y)))
+
+/* RSCFDnCFDRFCCx / RSCFDnRFCCx */
+#define RCANFD_RFCC(gpriv, x)		(reg_v3u(gpriv, 0x00c0, 0x00b8) + (0x04 * (x)))
+/* RSCFDnCFDRFSTSx / RSCFDnRFSTSx */
+#define RCANFD_RFSTS(gpriv, x)		(RCANFD_RFCC(gpriv, x) + 0x20)
+/* RSCFDnCFDRFPCTRx / RSCFDnRFPCTRx */
+#define RCANFD_RFPCTR(gpriv, x)		(RCANFD_RFCC(gpriv, x) + 0x40)
+
+/* Common FIFO Control registers */
+
+/* RSCFDnCFDCFCCx / RSCFDnCFCCx */
+#define RCANFD_CFCC(gpriv, ch, idx) \
+	(reg_v3u(gpriv, 0x0120, 0x0118) + (0x0c * (ch)) + (0x04 * (idx)))
+/* RSCFDnCFDCFSTSx / RSCFDnCFSTSx */
+#define RCANFD_CFSTS(gpriv, ch, idx) \
+	(reg_v3u(gpriv, 0x01e0, 0x0178) + (0x0c * (ch)) + (0x04 * (idx)))
+/* RSCFDnCFDCFPCTRx / RSCFDnCFPCTRx */
+#define RCANFD_CFPCTR(gpriv, ch, idx) \
+	(reg_v3u(gpriv, 0x0240, 0x01d8) + (0x0c * (ch)) + (0x04 * (idx)))
+
+/* RSCFDnCFDFESTS / RSCFDnFESTS */
+#define RCANFD_FESTS			(0x0238)
+/* RSCFDnCFDFFSTS / RSCFDnFFSTS */
+#define RCANFD_FFSTS			(0x023c)
+/* RSCFDnCFDFMSTS / RSCFDnFMSTS */
+#define RCANFD_FMSTS			(0x0240)
+/* RSCFDnCFDRFISTS / RSCFDnRFISTS */
+#define RCANFD_RFISTS			(0x0244)
+/* RSCFDnCFDCFRISTS / RSCFDnCFRISTS */
+#define RCANFD_CFRISTS			(0x0248)
+/* RSCFDnCFDCFTISTS / RSCFDnCFTISTS */
+#define RCANFD_CFTISTS			(0x024c)
+
+/* RSCFDnCFDTMCp / RSCFDnTMCp */
+#define RCANFD_TMC(p)			(0x0250 + (0x01 * (p)))
+/* RSCFDnCFDTMSTSp / RSCFDnTMSTSp */
+#define RCANFD_TMSTS(p)			(0x02d0 + (0x01 * (p)))
+
+/* RSCFDnCFDTMTRSTSp / RSCFDnTMTRSTSp */
+#define RCANFD_TMTRSTS(y)		(0x0350 + (0x04 * (y)))
+/* RSCFDnCFDTMTARSTSp / RSCFDnTMTARSTSp */
+#define RCANFD_TMTARSTS(y)		(0x0360 + (0x04 * (y)))
+/* RSCFDnCFDTMTCSTSp / RSCFDnTMTCSTSp */
+#define RCANFD_TMTCSTS(y)		(0x0370 + (0x04 * (y)))
+/* RSCFDnCFDTMTASTSp / RSCFDnTMTASTSp */
+#define RCANFD_TMTASTS(y)		(0x0380 + (0x04 * (y)))
+/* RSCFDnCFDTMIECy / RSCFDnTMIECy */
+#define RCANFD_TMIEC(y)			(0x0390 + (0x04 * (y)))
+
+/* RSCFDnCFDTXQCCm / RSCFDnTXQCCm */
+#define RCANFD_TXQCC(m)			(0x03a0 + (0x04 * (m)))
+/* RSCFDnCFDTXQSTSm / RSCFDnTXQSTSm */
+#define RCANFD_TXQSTS(m)		(0x03c0 + (0x04 * (m)))
+/* RSCFDnCFDTXQPCTRm / RSCFDnTXQPCTRm */
+#define RCANFD_TXQPCTR(m)		(0x03e0 + (0x04 * (m)))
+
+/* RSCFDnCFDTHLCCm / RSCFDnTHLCCm */
+#define RCANFD_THLCC(m)			(0x0400 + (0x04 * (m)))
+/* RSCFDnCFDTHLSTSm / RSCFDnTHLSTSm */
+#define RCANFD_THLSTS(m)		(0x0420 + (0x04 * (m)))
+/* RSCFDnCFDTHLPCTRm / RSCFDnTHLPCTRm */
+#define RCANFD_THLPCTR(m)		(0x0440 + (0x04 * (m)))
+
+/* RSCFDnCFDGTINTSTS0 / RSCFDnGTINTSTS0 */
+#define RCANFD_GTINTSTS0		(0x0460)
+/* RSCFDnCFDGTINTSTS1 / RSCFDnGTINTSTS1 */
+#define RCANFD_GTINTSTS1		(0x0464)
+/* RSCFDnCFDGTSTCFG / RSCFDnGTSTCFG */
+#define RCANFD_GTSTCFG			(0x0468)
+/* RSCFDnCFDGTSTCTR / RSCFDnGTSTCTR */
+#define RCANFD_GTSTCTR			(0x046c)
+/* RSCFDnCFDGLOCKK / RSCFDnGLOCKK */
+#define RCANFD_GLOCKK			(0x047c)
+/* RSCFDnCFDGRMCFG */
+#define RCANFD_GRMCFG			(0x04fc)
+
+/* RSCFDnCFDGAFLIDj / RSCFDnGAFLIDj */
+#define RCANFD_GAFLID(offset, j)	((offset) + (0x10 * (j)))
+/* RSCFDnCFDGAFLMj / RSCFDnGAFLMj */
+#define RCANFD_GAFLM(offset, j)		((offset) + 0x04 + (0x10 * (j)))
+/* RSCFDnCFDGAFLP0j / RSCFDnGAFLP0j */
+#define RCANFD_GAFLP0(offset, j)	((offset) + 0x08 + (0x10 * (j)))
+/* RSCFDnCFDGAFLP1j / RSCFDnGAFLP1j */
+#define RCANFD_GAFLP1(offset, j)	((offset) + 0x0c + (0x10 * (j)))
+
+/* Classical CAN only mode register map */
+
+/* RSCFDnGAFLXXXj offset */
+#define RCANFD_C_GAFL_OFFSET		(0x0500)
+
+/* RSCFDnRMXXXq -> RCANFD_C_RMXXX(q) */
+#define RCANFD_C_RMID(q)		(0x0600 + (0x10 * (q)))
+#define RCANFD_C_RMPTR(q)		(0x0604 + (0x10 * (q)))
+#define RCANFD_C_RMDF0(q)		(0x0608 + (0x10 * (q)))
+#define RCANFD_C_RMDF1(q)		(0x060c + (0x10 * (q)))
+
+/* RSCFDnRFXXx -> RCANFD_C_RFXX(x) */
+#define RCANFD_C_RFOFFSET	(0x0e00)
+#define RCANFD_C_RFID(x)	(RCANFD_C_RFOFFSET + (0x10 * (x)))
+#define RCANFD_C_RFPTR(x)	(RCANFD_C_RFOFFSET + 0x04 + (0x10 * (x)))
+#define RCANFD_C_RFDF(x, df) \
+		(RCANFD_C_RFOFFSET + 0x08 + (0x10 * (x)) + (0x04 * (df)))
+
+/* RSCFDnCFXXk -> RCANFD_C_CFXX(ch, k) */
+#define RCANFD_C_CFOFFSET		(0x0e80)
+
+#define RCANFD_C_CFID(ch, idx) \
+	(RCANFD_C_CFOFFSET + (0x30 * (ch)) + (0x10 * (idx)))
+
+#define RCANFD_C_CFPTR(ch, idx)	\
+	(RCANFD_C_CFOFFSET + 0x04 + (0x30 * (ch)) + (0x10 * (idx)))
+
+#define RCANFD_C_CFDF(ch, idx, df) \
+	(RCANFD_C_CFOFFSET + 0x08 + (0x30 * (ch)) + (0x10 * (idx)) + (0x04 * (df)))
+
+/* RSCFDnTMXXp -> RCANFD_C_TMXX(p) */
+#define RCANFD_C_TMID(p)		(0x1000 + (0x10 * (p)))
+#define RCANFD_C_TMPTR(p)		(0x1004 + (0x10 * (p)))
+#define RCANFD_C_TMDF0(p)		(0x1008 + (0x10 * (p)))
+#define RCANFD_C_TMDF1(p)		(0x100c + (0x10 * (p)))
+
+/* RSCFDnTHLACCm */
+#define RCANFD_C_THLACC(m)		(0x1800 + (0x04 * (m)))
+/* RSCFDnRPGACCr */
+#define RCANFD_C_RPGACC(r)		(0x1900 + (0x04 * (r)))
+
+/* R-Car V3U Classical and CAN FD mode specific register map */
+#define RCANFD_V3U_CFDCFG		(0x1314)
+#define RCANFD_V3U_DCFG(m)		(0x1400 + (0x20 * (m)))
+
+#define RCANFD_V3U_GAFL_OFFSET		(0x1800)
+
+/* CAN FD mode specific register map */
+
+/* RSCFDnCFDCmXXX -> RCANFD_F_XXX(m) */
+#define RCANFD_F_DCFG(m)		(0x0500 + (0x20 * (m)))
+#define RCANFD_F_CFDCFG(m)		(0x0504 + (0x20 * (m)))
+#define RCANFD_F_CFDCTR(m)		(0x0508 + (0x20 * (m)))
+#define RCANFD_F_CFDSTS(m)		(0x050c + (0x20 * (m)))
+#define RCANFD_F_CFDCRC(m)		(0x0510 + (0x20 * (m)))
+
+/* RSCFDnCFDGAFLXXXj offset */
+#define RCANFD_F_GAFL_OFFSET		(0x1000)
+
+/* RSCFDnCFDRMXXXq -> RCANFD_F_RMXXX(q) */
+#define RCANFD_F_RMID(q)		(0x2000 + (0x20 * (q)))
+#define RCANFD_F_RMPTR(q)		(0x2004 + (0x20 * (q)))
+#define RCANFD_F_RMFDSTS(q)		(0x2008 + (0x20 * (q)))
+#define RCANFD_F_RMDF(q, b)		(0x200c + (0x04 * (b)) + (0x20 * (q)))
+
+/* RSCFDnCFDRFXXx -> RCANFD_F_RFXX(x) */
+#define RCANFD_F_RFOFFSET(gpriv)	reg_v3u(gpriv, 0x6000, 0x3000)
+#define RCANFD_F_RFID(gpriv, x)		(RCANFD_F_RFOFFSET(gpriv) + (0x80 * (x)))
+#define RCANFD_F_RFPTR(gpriv, x)	(RCANFD_F_RFOFFSET(gpriv) + 0x04 + (0x80 * (x)))
+#define RCANFD_F_RFFDSTS(gpriv, x)	(RCANFD_F_RFOFFSET(gpriv) + 0x08 + (0x80 * (x)))
+#define RCANFD_F_RFDF(gpriv, x, df) \
+	(RCANFD_F_RFOFFSET(gpriv) + 0x0c + (0x80 * (x)) + (0x04 * (df)))
+
+/* RSCFDnCFDCFXXk -> RCANFD_F_CFXX(ch, k) */
+#define RCANFD_F_CFOFFSET(gpriv)	reg_v3u(gpriv, 0x6400, 0x3400)
+
+#define RCANFD_F_CFID(gpriv, ch, idx) \
+	(RCANFD_F_CFOFFSET(gpriv) + (0x180 * (ch)) + (0x80 * (idx)))
+
+#define RCANFD_F_CFPTR(gpriv, ch, idx) \
+	(RCANFD_F_CFOFFSET(gpriv) + 0x04 + (0x180 * (ch)) + (0x80 * (idx)))
+
+#define RCANFD_F_CFFDCSTS(gpriv, ch, idx) \
+	(RCANFD_F_CFOFFSET(gpriv) + 0x08 + (0x180 * (ch)) + (0x80 * (idx)))
+
+#define RCANFD_F_CFDF(gpriv, ch, idx, df) \
+	(RCANFD_F_CFOFFSET(gpriv) + 0x0c + (0x180 * (ch)) + (0x80 * (idx)) + \
+	 (0x04 * (df)))
+
+/* RSCFDnCFDTMXXp -> RCANFD_F_TMXX(p) */
+#define RCANFD_F_TMID(p)		(0x4000 + (0x20 * (p)))
+#define RCANFD_F_TMPTR(p)		(0x4004 + (0x20 * (p)))
+#define RCANFD_F_TMFDCTR(p)		(0x4008 + (0x20 * (p)))
+#define RCANFD_F_TMDF(p, b)		(0x400c + (0x20 * (p)) + (0x04 * (b)))
+
+/* RSCFDnCFDTHLACCm */
+#define RCANFD_F_THLACC(m)		(0x6000 + (0x04 * (m)))
+/* RSCFDnCFDRPGACCr */
+#define RCANFD_F_RPGACC(r)		(0x6400 + (0x04 * (r)))
+
+/* Constants */
+#define RCANFD_FIFO_DEPTH		8	/* Tx FIFO depth */
+#define RCANFD_NAPI_WEIGHT		8	/* Rx poll quota */
+
+#define RCANFD_NUM_CHANNELS		8	/* Eight channels max */
+#define RCANFD_CHANNELS_MASK		BIT((RCANFD_NUM_CHANNELS) - 1)
+
+#define RCANFD_GAFL_PAGENUM(entry)	((entry) / 16)
+#define RCANFD_CHANNEL_NUMRULES		1	/* only one rule per channel */
+
+/* Rx FIFO is a global resource of the controller. There are 8 such FIFOs
+ * available. Each channel gets a dedicated Rx FIFO (i.e.) the channel
+ * number is added to RFFIFO index.
+ */
+#define RCANFD_RFFIFO_IDX		0
+
+/* Tx/Rx or Common FIFO is a per channel resource. Each channel has 3 Common
+ * FIFOs dedicated to them. Use the first (index 0) FIFO out of the 3 for Tx.
+ */
+#define RCANFD_CFFIFO_IDX		0
+
+/* fCAN clock select register settings */
+enum rcar_canfd_fcanclk {
+	RCANFD_CANFDCLK = 0,		/* CANFD clock */
+	RCANFD_EXTCLK,			/* Externally input clock */
+};
+
+struct rcar_canfd_global;
+
+/* Channel priv data */
+struct rcar_canfd_channel {
+	struct can_priv can;			/* Must be the first member */
+	struct net_device *ndev;
+	struct rcar_canfd_global *gpriv;	/* Controller reference */
+	void __iomem *base;			/* Register base address */
+	struct napi_struct napi;
+	u32 tx_head;				/* Incremented on xmit */
+	u32 tx_tail;				/* Incremented on xmit done */
+	u32 channel;				/* Channel number */
+	spinlock_t tx_lock;			/* To protect tx path */
+};
+
+/* Global priv data */
+struct rcar_canfd_global {
+	struct rcar_canfd_channel *ch[RCANFD_NUM_CHANNELS];
+	void __iomem *base;		/* Register base address */
+	struct platform_device *pdev;	/* Respective platform device */
+	struct clk *clkp;		/* Peripheral clock */
+	struct clk *can_clk;		/* fCAN clock */
+	enum rcar_canfd_fcanclk fcan;	/* CANFD or Ext clock */
+	unsigned long channels_mask;	/* Enabled channels mask */
+	bool fdmode;			/* CAN FD or Classical CAN only mode */
+	struct reset_control *rstc1;
+	struct reset_control *rstc2;
+	enum rcanfd_chip_id chip_id;
+	u32 max_channels;
+};
+
+/* CAN FD mode nominal rate constants */
+static const struct can_bittiming_const rcar_canfd_nom_bittiming_const = {
+	.name = RCANFD_DRV_NAME,
+	.tseg1_min = 2,
+	.tseg1_max = 128,
+	.tseg2_min = 2,
+	.tseg2_max = 32,
+	.sjw_max = 32,
+	.brp_min = 1,
+	.brp_max = 1024,
+	.brp_inc = 1,
+};
+
+/* CAN FD mode data rate constants */
+static const struct can_bittiming_const rcar_canfd_data_bittiming_const = {
+	.name = RCANFD_DRV_NAME,
+	.tseg1_min = 2,
+	.tseg1_max = 16,
+	.tseg2_min = 2,
+	.tseg2_max = 8,
+	.sjw_max = 8,
+	.brp_min = 1,
+	.brp_max = 256,
+	.brp_inc = 1,
+};
+
+/* Classical CAN mode bitrate constants */
+static const struct can_bittiming_const rcar_canfd_bittiming_const = {
+	.name = RCANFD_DRV_NAME,
+	.tseg1_min = 4,
+	.tseg1_max = 16,
+	.tseg2_min = 2,
+	.tseg2_max = 8,
+	.sjw_max = 4,
+	.brp_min = 1,
+	.brp_max = 1024,
+	.brp_inc = 1,
+};
+
+/* Helper functions */
+static inline bool is_v3u(struct rcar_canfd_global *gpriv)
+{
+	return gpriv->chip_id == RENESAS_R8A779A0;
+}
+
+static inline u32 reg_v3u(struct rcar_canfd_global *gpriv,
+			  u32 v3u, u32 not_v3u)
+{
+	return is_v3u(gpriv) ? v3u : not_v3u;
+}
+
+static inline void rcar_canfd_update(u32 mask, u32 val, u32 __iomem *reg)
+{
+	u32 data = readl(reg);
+
+	data &= ~mask;
+	data |= (val & mask);
+	writel(data, reg);
+}
+
+static inline u32 rcar_canfd_read(void __iomem *base, u32 offset)
+{
+	return readl(base + (offset));
+}
+
+static inline void rcar_canfd_write(void __iomem *base, u32 offset, u32 val)
+{
+	writel(val, base + (offset));
+}
+
+static void rcar_canfd_set_bit(void __iomem *base, u32 reg, u32 val)
+{
+	rcar_canfd_update(val, val, base + (reg));
+}
+
+static void rcar_canfd_clear_bit(void __iomem *base, u32 reg, u32 val)
+{
+	rcar_canfd_update(val, 0, base + (reg));
+}
+
+static void rcar_canfd_update_bit(void __iomem *base, u32 reg,
+				  u32 mask, u32 val)
+{
+	rcar_canfd_update(mask, val, base + (reg));
+}
+
+static void rcar_canfd_get_data(struct rcar_canfd_channel *priv,
+				struct canfd_frame *cf, u32 off)
+{
+	u32 i, lwords;
+
+	lwords = DIV_ROUND_UP(cf->len, sizeof(u32));
+	for (i = 0; i < lwords; i++)
+		*((u32 *)cf->data + i) =
+			rcar_canfd_read(priv->base, off + (i * sizeof(u32)));
+}
+
+static void rcar_canfd_put_data(struct rcar_canfd_channel *priv,
+				struct canfd_frame *cf, u32 off)
+{
+	u32 i, lwords;
+
+	lwords = DIV_ROUND_UP(cf->len, sizeof(u32));
+	for (i = 0; i < lwords; i++)
+		rcar_canfd_write(priv->base, off + (i * sizeof(u32)),
+				 *((u32 *)cf->data + i));
+}
+
+static void rcar_canfd_tx_failure_cleanup(struct net_device *ndev)
+{
+	u32 i;
+
+	for (i = 0; i < RCANFD_FIFO_DEPTH; i++)
+		can_free_echo_skb(ndev, i, NULL);
+}
+
+static void rcar_canfd_set_mode(struct rcar_canfd_global *gpriv)
+{
+	if (is_v3u(gpriv)) {
+		if (gpriv->fdmode)
+			rcar_canfd_set_bit(gpriv->base, RCANFD_V3U_CFDCFG,
+					   RCANFD_FDCFG_FDOE);
+		else
+			rcar_canfd_set_bit(gpriv->base, RCANFD_V3U_CFDCFG,
+					   RCANFD_FDCFG_CLOE);
+	} else {
+		if (gpriv->fdmode)
+			rcar_canfd_set_bit(gpriv->base, RCANFD_GRMCFG,
+					   RCANFD_GRMCFG_RCMC);
+		else
+			rcar_canfd_clear_bit(gpriv->base, RCANFD_GRMCFG,
+					     RCANFD_GRMCFG_RCMC);
+	}
+}
+
+static int rcar_canfd_reset_controller(struct rcar_canfd_global *gpriv)
+{
+	u32 sts, ch;
+	int err;
+
+	/* Check RAMINIT flag as CAN RAM initialization takes place
+	 * after the MCU reset
+	 */
+	err = readl_poll_timeout((gpriv->base + RCANFD_GSTS), sts,
+				 !(sts & RCANFD_GSTS_GRAMINIT), 2, 500000);
+	if (err) {
+		dev_dbg(&gpriv->pdev->dev, "global raminit failed\n");
+		return err;
+	}
+
+	/* Transition to Global Reset mode */
+	rcar_canfd_clear_bit(gpriv->base, RCANFD_GCTR, RCANFD_GCTR_GSLPR);
+	rcar_canfd_update_bit(gpriv->base, RCANFD_GCTR,
+			      RCANFD_GCTR_GMDC_MASK, RCANFD_GCTR_GMDC_GRESET);
+
+	/* Ensure Global reset mode */
+	err = readl_poll_timeout((gpriv->base + RCANFD_GSTS), sts,
+				 (sts & RCANFD_GSTS_GRSTSTS), 2, 500000);
+	if (err) {
+		dev_dbg(&gpriv->pdev->dev, "global reset failed\n");
+		return err;
+	}
+
+	/* Reset Global error flags */
+	rcar_canfd_write(gpriv->base, RCANFD_GERFL, 0x0);
+
+	/* Set the controller into appropriate mode */
+	rcar_canfd_set_mode(gpriv);
+
+	/* Transition all Channels to reset mode */
+	for_each_set_bit(ch, &gpriv->channels_mask, gpriv->max_channels) {
+		rcar_canfd_clear_bit(gpriv->base,
+				     RCANFD_CCTR(ch), RCANFD_CCTR_CSLPR);
+
+		rcar_canfd_update_bit(gpriv->base, RCANFD_CCTR(ch),
+				      RCANFD_CCTR_CHMDC_MASK,
+				      RCANFD_CCTR_CHDMC_CRESET);
+
+		/* Ensure Channel reset mode */
+		err = readl_poll_timeout((gpriv->base + RCANFD_CSTS(ch)), sts,
+					 (sts & RCANFD_CSTS_CRSTSTS),
+					 2, 500000);
+		if (err) {
+			dev_dbg(&gpriv->pdev->dev,
+				"channel %u reset failed\n", ch);
+			return err;
+		}
+	}
+	return 0;
+}
+
+static void rcar_canfd_configure_controller(struct rcar_canfd_global *gpriv)
+{
+	u32 cfg, ch;
+
+	/* Global configuration settings */
+
+	/* ECC Error flag Enable */
+	cfg = RCANFD_GCFG_EEFE;
+
+	if (gpriv->fdmode)
+		/* Truncate payload to configured message size RFPLS */
+		cfg |= RCANFD_GCFG_CMPOC;
+
+	/* Set External Clock if selected */
+	if (gpriv->fcan != RCANFD_CANFDCLK)
+		cfg |= RCANFD_GCFG_DCS;
+
+	rcar_canfd_set_bit(gpriv->base, RCANFD_GCFG, cfg);
+
+	/* Channel configuration settings */
+	for_each_set_bit(ch, &gpriv->channels_mask, gpriv->max_channels) {
+		rcar_canfd_set_bit(gpriv->base, RCANFD_CCTR(ch),
+				   RCANFD_CCTR_ERRD);
+		rcar_canfd_update_bit(gpriv->base, RCANFD_CCTR(ch),
+				      RCANFD_CCTR_BOM_MASK,
+				      RCANFD_CCTR_BOM_BENTRY);
+	}
+}
+
+static void rcar_canfd_configure_afl_rules(struct rcar_canfd_global *gpriv,
+					   u32 ch)
+{
+	u32 cfg;
+	int offset, start, page, num_rules = RCANFD_CHANNEL_NUMRULES;
+	u32 ridx = ch + RCANFD_RFFIFO_IDX;
+
+	if (ch == 0) {
+		start = 0; /* Channel 0 always starts from 0th rule */
+	} else {
+		/* Get number of Channel 0 rules and adjust */
+		cfg = rcar_canfd_read(gpriv->base, RCANFD_GAFLCFG(ch));
+		start = RCANFD_GAFLCFG_GETRNC(gpriv, 0, cfg);
+	}
+
+	/* Enable write access to entry */
+	page = RCANFD_GAFL_PAGENUM(start);
+	rcar_canfd_set_bit(gpriv->base, RCANFD_GAFLECTR,
+			   (RCANFD_GAFLECTR_AFLPN(gpriv, page) |
+			    RCANFD_GAFLECTR_AFLDAE));
+
+	/* Write number of rules for channel */
+	rcar_canfd_set_bit(gpriv->base, RCANFD_GAFLCFG(ch),
+			   RCANFD_GAFLCFG_SETRNC(gpriv, ch, num_rules));
+	if (is_v3u(gpriv))
+		offset = RCANFD_V3U_GAFL_OFFSET;
+	else if (gpriv->fdmode)
+		offset = RCANFD_F_GAFL_OFFSET;
+	else
+		offset = RCANFD_C_GAFL_OFFSET;
+
+	/* Accept all IDs */
+	rcar_canfd_write(gpriv->base, RCANFD_GAFLID(offset, start), 0);
+	/* IDE or RTR is not considered for matching */
+	rcar_canfd_write(gpriv->base, RCANFD_GAFLM(offset, start), 0);
+	/* Any data length accepted */
+	rcar_canfd_write(gpriv->base, RCANFD_GAFLP0(offset, start), 0);
+	/* Place the msg in corresponding Rx FIFO entry */
+	rcar_canfd_set_bit(gpriv->base, RCANFD_GAFLP1(offset, start),
+			   RCANFD_GAFLP1_GAFLFDP(ridx));
+
+	/* Disable write access to page */
+	rcar_canfd_clear_bit(gpriv->base,
+			     RCANFD_GAFLECTR, RCANFD_GAFLECTR_AFLDAE);
+}
+
+static void rcar_canfd_configure_rx(struct rcar_canfd_global *gpriv, u32 ch)
+{
+	/* Rx FIFO is used for reception */
+	u32 cfg;
+	u16 rfdc, rfpls;
+
+	/* Select Rx FIFO based on channel */
+	u32 ridx = ch + RCANFD_RFFIFO_IDX;
+
+	rfdc = 2;		/* b010 - 8 messages Rx FIFO depth */
+	if (gpriv->fdmode)
+		rfpls = 7;	/* b111 - Max 64 bytes payload */
+	else
+		rfpls = 0;	/* b000 - Max 8 bytes payload */
+
+	cfg = (RCANFD_RFCC_RFIM | RCANFD_RFCC_RFDC(rfdc) |
+		RCANFD_RFCC_RFPLS(rfpls) | RCANFD_RFCC_RFIE);
+	rcar_canfd_write(gpriv->base, RCANFD_RFCC(gpriv, ridx), cfg);
+}
+
+static void rcar_canfd_configure_tx(struct rcar_canfd_global *gpriv, u32 ch)
+{
+	/* Tx/Rx(Common) FIFO configured in Tx mode is
+	 * used for transmission
+	 *
+	 * Each channel has 3 Common FIFO dedicated to them.
+	 * Use the 1st (index 0) out of 3
+	 */
+	u32 cfg;
+	u16 cftml, cfm, cfdc, cfpls;
+
+	cftml = 0;		/* 0th buffer */
+	cfm = 1;		/* b01 - Transmit mode */
+	cfdc = 2;		/* b010 - 8 messages Tx FIFO depth */
+	if (gpriv->fdmode)
+		cfpls = 7;	/* b111 - Max 64 bytes payload */
+	else
+		cfpls = 0;	/* b000 - Max 8 bytes payload */
+
+	cfg = (RCANFD_CFCC_CFTML(gpriv, cftml) | RCANFD_CFCC_CFM(gpriv, cfm) |
+		RCANFD_CFCC_CFIM | RCANFD_CFCC_CFDC(gpriv, cfdc) |
+		RCANFD_CFCC_CFPLS(cfpls) | RCANFD_CFCC_CFTXIE);
+	rcar_canfd_write(gpriv->base, RCANFD_CFCC(gpriv, ch, RCANFD_CFFIFO_IDX), cfg);
+
+	if (gpriv->fdmode)
+		/* Clear FD mode specific control/status register */
+		rcar_canfd_write(gpriv->base,
+				 RCANFD_F_CFFDCSTS(gpriv, ch, RCANFD_CFFIFO_IDX), 0);
+}
+
+static void rcar_canfd_enable_global_interrupts(struct rcar_canfd_global *gpriv)
+{
+	u32 ctr;
+
+	/* Clear any stray error interrupt flags */
+	rcar_canfd_write(gpriv->base, RCANFD_GERFL, 0);
+
+	/* Global interrupts setup */
+	ctr = RCANFD_GCTR_MEIE;
+	if (gpriv->fdmode)
+		ctr |= RCANFD_GCTR_CFMPOFIE;
+
+	rcar_canfd_set_bit(gpriv->base, RCANFD_GCTR, ctr);
+}
+
+static void rcar_canfd_disable_global_interrupts(struct rcar_canfd_global
+						 *gpriv)
+{
+	/* Disable all interrupts */
+	rcar_canfd_write(gpriv->base, RCANFD_GCTR, 0);
+
+	/* Clear any stray error interrupt flags */
+	rcar_canfd_write(gpriv->base, RCANFD_GERFL, 0);
+}
+
+static void rcar_canfd_enable_channel_interrupts(struct rcar_canfd_channel
+						 *priv)
+{
+	u32 ctr, ch = priv->channel;
+
+	/* Clear any stray error flags */
+	rcar_canfd_write(priv->base, RCANFD_CERFL(ch), 0);
+
+	/* Channel interrupts setup */
+	ctr = (RCANFD_CCTR_TAIE |
+	       RCANFD_CCTR_ALIE | RCANFD_CCTR_BLIE |
+	       RCANFD_CCTR_OLIE | RCANFD_CCTR_BORIE |
+	       RCANFD_CCTR_BOEIE | RCANFD_CCTR_EPIE |
+	       RCANFD_CCTR_EWIE | RCANFD_CCTR_BEIE);
+	rcar_canfd_set_bit(priv->base, RCANFD_CCTR(ch), ctr);
+}
+
+static void rcar_canfd_disable_channel_interrupts(struct rcar_canfd_channel
+						  *priv)
+{
+	u32 ctr, ch = priv->channel;
+
+	ctr = (RCANFD_CCTR_TAIE |
+	       RCANFD_CCTR_ALIE | RCANFD_CCTR_BLIE |
+	       RCANFD_CCTR_OLIE | RCANFD_CCTR_BORIE |
+	       RCANFD_CCTR_BOEIE | RCANFD_CCTR_EPIE |
+	       RCANFD_CCTR_EWIE | RCANFD_CCTR_BEIE);
+	rcar_canfd_clear_bit(priv->base, RCANFD_CCTR(ch), ctr);
+
+	/* Clear any stray error flags */
+	rcar_canfd_write(priv->base, RCANFD_CERFL(ch), 0);
+}
+
+static void rcar_canfd_global_error(struct net_device *ndev)
+{
+	struct rcar_canfd_channel *priv = netdev_priv(ndev);
+	struct rcar_canfd_global *gpriv = priv->gpriv;
+	struct net_device_stats *stats = &ndev->stats;
+	u32 ch = priv->channel;
+	u32 gerfl, sts;
+	u32 ridx = ch + RCANFD_RFFIFO_IDX;
+
+	gerfl = rcar_canfd_read(priv->base, RCANFD_GERFL);
+	if ((gerfl & RCANFD_GERFL_EEF0) && (ch == 0)) {
+		netdev_dbg(ndev, "Ch0: ECC Error flag\n");
+		stats->tx_dropped++;
+	}
+	if ((gerfl & RCANFD_GERFL_EEF1) && (ch == 1)) {
+		netdev_dbg(ndev, "Ch1: ECC Error flag\n");
+		stats->tx_dropped++;
+	}
+	if (gerfl & RCANFD_GERFL_MES) {
+		sts = rcar_canfd_read(priv->base,
+				      RCANFD_CFSTS(gpriv, ch, RCANFD_CFFIFO_IDX));
+		if (sts & RCANFD_CFSTS_CFMLT) {
+			netdev_dbg(ndev, "Tx Message Lost flag\n");
+			stats->tx_dropped++;
+			rcar_canfd_write(priv->base,
+					 RCANFD_CFSTS(gpriv, ch, RCANFD_CFFIFO_IDX),
+					 sts & ~RCANFD_CFSTS_CFMLT);
+		}
+
+		sts = rcar_canfd_read(priv->base, RCANFD_RFSTS(gpriv, ridx));
+		if (sts & RCANFD_RFSTS_RFMLT) {
+			netdev_dbg(ndev, "Rx Message Lost flag\n");
+			stats->rx_dropped++;
+			rcar_canfd_write(priv->base, RCANFD_RFSTS(gpriv, ridx),
+					 sts & ~RCANFD_RFSTS_RFMLT);
+		}
+	}
+	if (gpriv->fdmode && gerfl & RCANFD_GERFL_CMPOF) {
+		/* Message Lost flag will be set for respective channel
+		 * when this condition happens with counters and flags
+		 * already updated.
+		 */
+		netdev_dbg(ndev, "global payload overflow interrupt\n");
+	}
+
+	/* Clear all global error interrupts. Only affected channels bits
+	 * get cleared
+	 */
+	rcar_canfd_write(priv->base, RCANFD_GERFL, 0);
+}
+
+static void rcar_canfd_error(struct net_device *ndev, u32 cerfl,
+			     u16 txerr, u16 rxerr)
+{
+	struct rcar_canfd_channel *priv = netdev_priv(ndev);
+	struct net_device_stats *stats = &ndev->stats;
+	struct can_frame *cf;
+	struct sk_buff *skb;
+	u32 ch = priv->channel;
+
+	netdev_dbg(ndev, "ch erfl %x txerr %u rxerr %u\n", cerfl, txerr, rxerr);
+
+	/* Propagate the error condition to the CAN stack */
+	skb = alloc_can_err_skb(ndev, &cf);
+	if (!skb) {
+		stats->rx_dropped++;
+		return;
+	}
+
+	/* Channel error interrupts */
+	if (cerfl & RCANFD_CERFL_BEF) {
+		netdev_dbg(ndev, "Bus error\n");
+		cf->can_id |= CAN_ERR_BUSERROR | CAN_ERR_PROT;
+		cf->data[2] = CAN_ERR_PROT_UNSPEC;
+		priv->can.can_stats.bus_error++;
+	}
+	if (cerfl & RCANFD_CERFL_ADERR) {
+		netdev_dbg(ndev, "ACK Delimiter Error\n");
+		stats->tx_errors++;
+		cf->data[3] |= CAN_ERR_PROT_LOC_ACK_DEL;
+	}
+	if (cerfl & RCANFD_CERFL_B0ERR) {
+		netdev_dbg(ndev, "Bit Error (dominant)\n");
+		stats->tx_errors++;
+		cf->data[2] |= CAN_ERR_PROT_BIT0;
+	}
+	if (cerfl & RCANFD_CERFL_B1ERR) {
+		netdev_dbg(ndev, "Bit Error (recessive)\n");
+		stats->tx_errors++;
+		cf->data[2] |= CAN_ERR_PROT_BIT1;
+	}
+	if (cerfl & RCANFD_CERFL_CERR) {
+		netdev_dbg(ndev, "CRC Error\n");
+		stats->rx_errors++;
+		cf->data[3] |= CAN_ERR_PROT_LOC_CRC_SEQ;
+	}
+	if (cerfl & RCANFD_CERFL_AERR) {
+		netdev_dbg(ndev, "ACK Error\n");
+		stats->tx_errors++;
+		cf->can_id |= CAN_ERR_ACK;
+		cf->data[3] |= CAN_ERR_PROT_LOC_ACK;
+	}
+	if (cerfl & RCANFD_CERFL_FERR) {
+		netdev_dbg(ndev, "Form Error\n");
+		stats->rx_errors++;
+		cf->data[2] |= CAN_ERR_PROT_FORM;
+	}
+	if (cerfl & RCANFD_CERFL_SERR) {
+		netdev_dbg(ndev, "Stuff Error\n");
+		stats->rx_errors++;
+		cf->data[2] |= CAN_ERR_PROT_STUFF;
+	}
+	if (cerfl & RCANFD_CERFL_ALF) {
+		netdev_dbg(ndev, "Arbitration lost Error\n");
+		priv->can.can_stats.arbitration_lost++;
+		cf->can_id |= CAN_ERR_LOSTARB;
+		cf->data[0] |= CAN_ERR_LOSTARB_UNSPEC;
+	}
+	if (cerfl & RCANFD_CERFL_BLF) {
+		netdev_dbg(ndev, "Bus Lock Error\n");
+		stats->rx_errors++;
+		cf->can_id |= CAN_ERR_BUSERROR;
+	}
+	if (cerfl & RCANFD_CERFL_EWF) {
+		netdev_dbg(ndev, "Error warning interrupt\n");
+		priv->can.state = CAN_STATE_ERROR_WARNING;
+		priv->can.can_stats.error_warning++;
+		cf->can_id |= CAN_ERR_CRTL;
+		cf->data[1] = txerr > rxerr ? CAN_ERR_CRTL_TX_WARNING :
+			CAN_ERR_CRTL_RX_WARNING;
+		cf->data[6] = txerr;
+		cf->data[7] = rxerr;
+	}
+	if (cerfl & RCANFD_CERFL_EPF) {
+		netdev_dbg(ndev, "Error passive interrupt\n");
+		priv->can.state = CAN_STATE_ERROR_PASSIVE;
+		priv->can.can_stats.error_passive++;
+		cf->can_id |= CAN_ERR_CRTL;
+		cf->data[1] = txerr > rxerr ? CAN_ERR_CRTL_TX_PASSIVE :
+			CAN_ERR_CRTL_RX_PASSIVE;
+		cf->data[6] = txerr;
+		cf->data[7] = rxerr;
+	}
+	if (cerfl & RCANFD_CERFL_BOEF) {
+		netdev_dbg(ndev, "Bus-off entry interrupt\n");
+		rcar_canfd_tx_failure_cleanup(ndev);
+		priv->can.state = CAN_STATE_BUS_OFF;
+		priv->can.can_stats.bus_off++;
+		can_bus_off(ndev);
+		cf->can_id |= CAN_ERR_BUSOFF;
+	}
+	if (cerfl & RCANFD_CERFL_OVLF) {
+		netdev_dbg(ndev,
+			   "Overload Frame Transmission error interrupt\n");
+		stats->tx_errors++;
+		cf->can_id |= CAN_ERR_PROT;
+		cf->data[2] |= CAN_ERR_PROT_OVERLOAD;
+	}
+
+	/* Clear channel error interrupts that are handled */
+	rcar_canfd_write(priv->base, RCANFD_CERFL(ch),
+			 RCANFD_CERFL_ERR(~cerfl));
+	netif_rx(skb);
+}
+
+static void rcar_canfd_tx_done(struct net_device *ndev)
+{
+	struct rcar_canfd_channel *priv = netdev_priv(ndev);
+	struct rcar_canfd_global *gpriv = priv->gpriv;
+	struct net_device_stats *stats = &ndev->stats;
+	u32 sts;
+	unsigned long flags;
+	u32 ch = priv->channel;
+
+	do {
+		u8 unsent, sent;
+
+		sent = priv->tx_tail % RCANFD_FIFO_DEPTH;
+		stats->tx_packets++;
+		stats->tx_bytes += can_get_echo_skb(ndev, sent, NULL);
+
+		spin_lock_irqsave(&priv->tx_lock, flags);
+		priv->tx_tail++;
+		sts = rcar_canfd_read(priv->base,
+				      RCANFD_CFSTS(gpriv, ch, RCANFD_CFFIFO_IDX));
+		unsent = RCANFD_CFSTS_CFMC(sts);
+
+		/* Wake producer only when there is room */
+		if (unsent != RCANFD_FIFO_DEPTH)
+			netif_wake_queue(ndev);
+
+		if (priv->tx_head - priv->tx_tail <= unsent) {
+			spin_unlock_irqrestore(&priv->tx_lock, flags);
+			break;
+		}
+		spin_unlock_irqrestore(&priv->tx_lock, flags);
+
+	} while (1);
+
+	/* Clear interrupt */
+	rcar_canfd_write(priv->base, RCANFD_CFSTS(gpriv, ch, RCANFD_CFFIFO_IDX),
+			 sts & ~RCANFD_CFSTS_CFTXIF);
+	can_led_event(ndev, CAN_LED_EVENT_TX);
+}
+
+static void rcar_canfd_handle_global_err(struct rcar_canfd_global *gpriv, u32 ch)
+{
+	struct rcar_canfd_channel *priv = gpriv->ch[ch];
+	struct net_device *ndev = priv->ndev;
+	u32 gerfl;
+
+	/* Handle global error interrupts */
+	gerfl = rcar_canfd_read(priv->base, RCANFD_GERFL);
+	if (unlikely(RCANFD_GERFL_ERR(gpriv, gerfl)))
+		rcar_canfd_global_error(ndev);
+}
+
+static irqreturn_t rcar_canfd_global_err_interrupt(int irq, void *dev_id)
+{
+	struct rcar_canfd_global *gpriv = dev_id;
+	u32 ch;
+
+	for_each_set_bit(ch, &gpriv->channels_mask, gpriv->max_channels)
+		rcar_canfd_handle_global_err(gpriv, ch);
+
+	return IRQ_HANDLED;
+}
+
+static void rcar_canfd_handle_global_receive(struct rcar_canfd_global *gpriv, u32 ch)
+{
+	struct rcar_canfd_channel *priv = gpriv->ch[ch];
+	u32 ridx = ch + RCANFD_RFFIFO_IDX;
+	u32 sts;
+
+	/* Handle Rx interrupts */
+	sts = rcar_canfd_read(priv->base, RCANFD_RFSTS(gpriv, ridx));
+	if (likely(sts & RCANFD_RFSTS_RFIF)) {
+		if (napi_schedule_prep(&priv->napi)) {
+			/* Disable Rx FIFO interrupts */
+			rcar_canfd_clear_bit(priv->base,
+					     RCANFD_RFCC(gpriv, ridx),
+					     RCANFD_RFCC_RFIE);
+			__napi_schedule(&priv->napi);
+		}
+	}
+}
+
+static irqreturn_t rcar_canfd_global_receive_fifo_interrupt(int irq, void *dev_id)
+{
+	struct rcar_canfd_global *gpriv = dev_id;
+	u32 ch;
+
+	for_each_set_bit(ch, &gpriv->channels_mask, gpriv->max_channels)
+		rcar_canfd_handle_global_receive(gpriv, ch);
+
+	return IRQ_HANDLED;
+}
+
+static irqreturn_t rcar_canfd_global_interrupt(int irq, void *dev_id)
+{
+	struct rcar_canfd_global *gpriv = dev_id;
+	u32 ch;
+
+	/* Global error interrupts still indicate a condition specific
+	 * to a channel. RxFIFO interrupt is a global interrupt.
+	 */
+	for_each_set_bit(ch, &gpriv->channels_mask, gpriv->max_channels) {
+		rcar_canfd_handle_global_err(gpriv, ch);
+		rcar_canfd_handle_global_receive(gpriv, ch);
+	}
+	return IRQ_HANDLED;
+}
+
+static void rcar_canfd_state_change(struct net_device *ndev,
+				    u16 txerr, u16 rxerr)
+{
+	struct rcar_canfd_channel *priv = netdev_priv(ndev);
+	struct net_device_stats *stats = &ndev->stats;
+	enum can_state rx_state, tx_state, state = priv->can.state;
+	struct can_frame *cf;
+	struct sk_buff *skb;
+
+	/* Handle transition from error to normal states */
+	if (txerr < 96 && rxerr < 96)
+		state = CAN_STATE_ERROR_ACTIVE;
+	else if (txerr < 128 && rxerr < 128)
+		state = CAN_STATE_ERROR_WARNING;
+
+	if (state != priv->can.state) {
+		netdev_dbg(ndev, "state: new %d, old %d: txerr %u, rxerr %u\n",
+			   state, priv->can.state, txerr, rxerr);
+		skb = alloc_can_err_skb(ndev, &cf);
+		if (!skb) {
+			stats->rx_dropped++;
+			return;
+		}
+		tx_state = txerr >= rxerr ? state : 0;
+		rx_state = txerr <= rxerr ? state : 0;
+
+		can_change_state(ndev, cf, tx_state, rx_state);
+		netif_rx(skb);
+	}
+}
+
+static void rcar_canfd_handle_channel_tx(struct rcar_canfd_global *gpriv, u32 ch)
+{
+	struct rcar_canfd_channel *priv = gpriv->ch[ch];
+	struct net_device *ndev = priv->ndev;
+	u32 sts;
+
+	/* Handle Tx interrupts */
+	sts = rcar_canfd_read(priv->base,
+			      RCANFD_CFSTS(gpriv, ch, RCANFD_CFFIFO_IDX));
+	if (likely(sts & RCANFD_CFSTS_CFTXIF))
+		rcar_canfd_tx_done(ndev);
+}
+
+static irqreturn_t rcar_canfd_channel_tx_interrupt(int irq, void *dev_id)
+{
+	struct rcar_canfd_global *gpriv = dev_id;
+	u32 ch;
+
+	for_each_set_bit(ch, &gpriv->channels_mask, gpriv->max_channels)
+		rcar_canfd_handle_channel_tx(gpriv, ch);
+
+	return IRQ_HANDLED;
+}
+
+static void rcar_canfd_handle_channel_err(struct rcar_canfd_global *gpriv, u32 ch)
+{
+	struct rcar_canfd_channel *priv = gpriv->ch[ch];
+	struct net_device *ndev = priv->ndev;
+	u16 txerr, rxerr;
+	u32 sts, cerfl;
+
+	/* Handle channel error interrupts */
+	cerfl = rcar_canfd_read(priv->base, RCANFD_CERFL(ch));
+	sts = rcar_canfd_read(priv->base, RCANFD_CSTS(ch));
+	txerr = RCANFD_CSTS_TECCNT(sts);
+	rxerr = RCANFD_CSTS_RECCNT(sts);
+	if (unlikely(RCANFD_CERFL_ERR(cerfl)))
+		rcar_canfd_error(ndev, cerfl, txerr, rxerr);
+
+	/* Handle state change to lower states */
+	if (unlikely(priv->can.state != CAN_STATE_ERROR_ACTIVE &&
+		     priv->can.state != CAN_STATE_BUS_OFF))
+		rcar_canfd_state_change(ndev, txerr, rxerr);
+}
+
+static irqreturn_t rcar_canfd_channel_err_interrupt(int irq, void *dev_id)
+{
+	struct rcar_canfd_global *gpriv = dev_id;
+	u32 ch;
+
+	for_each_set_bit(ch, &gpriv->channels_mask, gpriv->max_channels)
+		rcar_canfd_handle_channel_err(gpriv, ch);
+
+	return IRQ_HANDLED;
+}
+
+static irqreturn_t rcar_canfd_channel_interrupt(int irq, void *dev_id)
+{
+	struct rcar_canfd_global *gpriv = dev_id;
+	u32 ch;
+
+	/* Common FIFO is a per channel resource */
+	for_each_set_bit(ch, &gpriv->channels_mask, gpriv->max_channels) {
+		rcar_canfd_handle_channel_err(gpriv, ch);
+		rcar_canfd_handle_channel_tx(gpriv, ch);
+	}
+
+	return IRQ_HANDLED;
+}
+
+static void rcar_canfd_set_bittiming(struct net_device *dev)
+{
+	struct rcar_canfd_channel *priv = netdev_priv(dev);
+	struct rcar_canfd_global *gpriv = priv->gpriv;
+	const struct can_bittiming *bt = &priv->can.bittiming;
+	const struct can_bittiming *dbt = &priv->can.data_bittiming;
+	u16 brp, sjw, tseg1, tseg2;
+	u32 cfg;
+	u32 ch = priv->channel;
+
+	/* Nominal bit timing settings */
+	brp = bt->brp - 1;
+	sjw = bt->sjw - 1;
+	tseg1 = bt->prop_seg + bt->phase_seg1 - 1;
+	tseg2 = bt->phase_seg2 - 1;
+
+	if (priv->can.ctrlmode & CAN_CTRLMODE_FD) {
+		/* CAN FD only mode */
+		cfg = (RCANFD_NCFG_NTSEG1(gpriv, tseg1) | RCANFD_NCFG_NBRP(brp) |
+		       RCANFD_NCFG_NSJW(gpriv, sjw) | RCANFD_NCFG_NTSEG2(gpriv, tseg2));
+
+		rcar_canfd_write(priv->base, RCANFD_CCFG(ch), cfg);
+		netdev_dbg(priv->ndev, "nrate: brp %u, sjw %u, tseg1 %u, tseg2 %u\n",
+			   brp, sjw, tseg1, tseg2);
+
+		/* Data bit timing settings */
+		brp = dbt->brp - 1;
+		sjw = dbt->sjw - 1;
+		tseg1 = dbt->prop_seg + dbt->phase_seg1 - 1;
+		tseg2 = dbt->phase_seg2 - 1;
+
+		cfg = (RCANFD_DCFG_DTSEG1(gpriv, tseg1) | RCANFD_DCFG_DBRP(brp) |
+		       RCANFD_DCFG_DSJW(sjw) | RCANFD_DCFG_DTSEG2(gpriv, tseg2));
+
+		rcar_canfd_write(priv->base, RCANFD_F_DCFG(ch), cfg);
+		netdev_dbg(priv->ndev, "drate: brp %u, sjw %u, tseg1 %u, tseg2 %u\n",
+			   brp, sjw, tseg1, tseg2);
+	} else {
+		/* Classical CAN only mode */
+		if (is_v3u(gpriv)) {
+			cfg = (RCANFD_NCFG_NTSEG1(gpriv, tseg1) |
+			       RCANFD_NCFG_NBRP(brp) |
+			       RCANFD_NCFG_NSJW(gpriv, sjw) |
+			       RCANFD_NCFG_NTSEG2(gpriv, tseg2));
+		} else {
+			cfg = (RCANFD_CFG_TSEG1(tseg1) |
+			       RCANFD_CFG_BRP(brp) |
+			       RCANFD_CFG_SJW(sjw) |
+			       RCANFD_CFG_TSEG2(tseg2));
+		}
+
+		rcar_canfd_write(priv->base, RCANFD_CCFG(ch), cfg);
+		netdev_dbg(priv->ndev,
+			   "rate: brp %u, sjw %u, tseg1 %u, tseg2 %u\n",
+			   brp, sjw, tseg1, tseg2);
+	}
+}
+
+static int rcar_canfd_start(struct net_device *ndev)
+{
+	struct rcar_canfd_channel *priv = netdev_priv(ndev);
+	struct rcar_canfd_global *gpriv = priv->gpriv;
+	int err = -EOPNOTSUPP;
+	u32 sts, ch = priv->channel;
+	u32 ridx = ch + RCANFD_RFFIFO_IDX;
+
+	rcar_canfd_set_bittiming(ndev);
+
+	rcar_canfd_enable_channel_interrupts(priv);
+
+	/* Set channel to Operational mode */
+	rcar_canfd_update_bit(priv->base, RCANFD_CCTR(ch),
+			      RCANFD_CCTR_CHMDC_MASK, RCANFD_CCTR_CHDMC_COPM);
+
+	/* Verify channel mode change */
+	err = readl_poll_timeout((priv->base + RCANFD_CSTS(ch)), sts,
+				 (sts & RCANFD_CSTS_COMSTS), 2, 500000);
+	if (err) {
+		netdev_err(ndev, "channel %u communication state failed\n", ch);
+		goto fail_mode_change;
+	}
+
+	/* Enable Common & Rx FIFO */
+	rcar_canfd_set_bit(priv->base, RCANFD_CFCC(gpriv, ch, RCANFD_CFFIFO_IDX),
+			   RCANFD_CFCC_CFE);
+	rcar_canfd_set_bit(priv->base, RCANFD_RFCC(gpriv, ridx), RCANFD_RFCC_RFE);
+
+	priv->can.state = CAN_STATE_ERROR_ACTIVE;
+	return 0;
+
+fail_mode_change:
+	rcar_canfd_disable_channel_interrupts(priv);
+	return err;
+}
+
+static int rcar_canfd_open(struct net_device *ndev)
+{
+	struct rcar_canfd_channel *priv = netdev_priv(ndev);
+	struct rcar_canfd_global *gpriv = priv->gpriv;
+	int err;
+
+	/* Peripheral clock is already enabled in probe */
+	err = clk_prepare_enable(gpriv->can_clk);
+	if (err) {
+		netdev_err(ndev, "failed to enable CAN clock, error %d\n", err);
+		goto out_clock;
+	}
+
+	err = open_candev(ndev);
+	if (err) {
+		netdev_err(ndev, "open_candev() failed, error %d\n", err);
+		goto out_can_clock;
+	}
+
+	napi_enable(&priv->napi);
+	err = rcar_canfd_start(ndev);
+	if (err)
+		goto out_close;
+	netif_start_queue(ndev);
+	can_led_event(ndev, CAN_LED_EVENT_OPEN);
+	return 0;
+out_close:
+	napi_disable(&priv->napi);
+	close_candev(ndev);
+out_can_clock:
+	clk_disable_unprepare(gpriv->can_clk);
+out_clock:
+	return err;
+}
+
+static void rcar_canfd_stop(struct net_device *ndev)
+{
+	struct rcar_canfd_channel *priv = netdev_priv(ndev);
+	struct rcar_canfd_global *gpriv = priv->gpriv;
+	int err;
+	u32 sts, ch = priv->channel;
+	u32 ridx = ch + RCANFD_RFFIFO_IDX;
+
+	/* Transition to channel reset mode  */
+	rcar_canfd_update_bit(priv->base, RCANFD_CCTR(ch),
+			      RCANFD_CCTR_CHMDC_MASK, RCANFD_CCTR_CHDMC_CRESET);
+
+	/* Check Channel reset mode */
+	err = readl_poll_timeout((priv->base + RCANFD_CSTS(ch)), sts,
+				 (sts & RCANFD_CSTS_CRSTSTS), 2, 500000);
+	if (err)
+		netdev_err(ndev, "channel %u reset failed\n", ch);
+
+	rcar_canfd_disable_channel_interrupts(priv);
+
+	/* Disable Common & Rx FIFO */
+	rcar_canfd_clear_bit(priv->base, RCANFD_CFCC(gpriv, ch, RCANFD_CFFIFO_IDX),
+			     RCANFD_CFCC_CFE);
+	rcar_canfd_clear_bit(priv->base, RCANFD_RFCC(gpriv, ridx), RCANFD_RFCC_RFE);
+
+	/* Set the state as STOPPED */
+	priv->can.state = CAN_STATE_STOPPED;
+}
+
+static int rcar_canfd_close(struct net_device *ndev)
+{
+	struct rcar_canfd_channel *priv = netdev_priv(ndev);
+	struct rcar_canfd_global *gpriv = priv->gpriv;
+
+	netif_stop_queue(ndev);
+	rcar_canfd_stop(ndev);
+	napi_disable(&priv->napi);
+	clk_disable_unprepare(gpriv->can_clk);
+	close_candev(ndev);
+	can_led_event(ndev, CAN_LED_EVENT_STOP);
+	return 0;
+}
+
+static netdev_tx_t rcar_canfd_start_xmit(struct sk_buff *skb,
+					 struct net_device *ndev)
+{
+	struct rcar_canfd_channel *priv = netdev_priv(ndev);
+	struct rcar_canfd_global *gpriv = priv->gpriv;
+	struct canfd_frame *cf = (struct canfd_frame *)skb->data;
+	u32 sts = 0, id, dlc;
+	unsigned long flags;
+	u32 ch = priv->channel;
+
+	if (can_dropped_invalid_skb(ndev, skb))
+		return NETDEV_TX_OK;
+
+	if (cf->can_id & CAN_EFF_FLAG) {
+		id = cf->can_id & CAN_EFF_MASK;
+		id |= RCANFD_CFID_CFIDE;
+	} else {
+		id = cf->can_id & CAN_SFF_MASK;
+	}
+
+	if (cf->can_id & CAN_RTR_FLAG)
+		id |= RCANFD_CFID_CFRTR;
+
+	dlc = RCANFD_CFPTR_CFDLC(can_fd_len2dlc(cf->len));
+
+	if ((priv->can.ctrlmode & CAN_CTRLMODE_FD) || is_v3u(gpriv)) {
+		rcar_canfd_write(priv->base,
+				 RCANFD_F_CFID(gpriv, ch, RCANFD_CFFIFO_IDX), id);
+		rcar_canfd_write(priv->base,
+				 RCANFD_F_CFPTR(gpriv, ch, RCANFD_CFFIFO_IDX), dlc);
+
+		if (can_is_canfd_skb(skb)) {
+			/* CAN FD frame format */
+			sts |= RCANFD_CFFDCSTS_CFFDF;
+			if (cf->flags & CANFD_BRS)
+				sts |= RCANFD_CFFDCSTS_CFBRS;
+
+			if (priv->can.state == CAN_STATE_ERROR_PASSIVE)
+				sts |= RCANFD_CFFDCSTS_CFESI;
+		}
+
+		rcar_canfd_write(priv->base,
+				 RCANFD_F_CFFDCSTS(gpriv, ch, RCANFD_CFFIFO_IDX), sts);
+
+		rcar_canfd_put_data(priv, cf,
+				    RCANFD_F_CFDF(gpriv, ch, RCANFD_CFFIFO_IDX, 0));
+	} else {
+		rcar_canfd_write(priv->base,
+				 RCANFD_C_CFID(ch, RCANFD_CFFIFO_IDX), id);
+		rcar_canfd_write(priv->base,
+				 RCANFD_C_CFPTR(ch, RCANFD_CFFIFO_IDX), dlc);
+		rcar_canfd_put_data(priv, cf,
+				    RCANFD_C_CFDF(ch, RCANFD_CFFIFO_IDX, 0));
+	}
+
+	can_put_echo_skb(skb, ndev, priv->tx_head % RCANFD_FIFO_DEPTH, 0);
+
+	spin_lock_irqsave(&priv->tx_lock, flags);
+	priv->tx_head++;
+
+	/* Stop the queue if we've filled all FIFO entries */
+	if (priv->tx_head - priv->tx_tail >= RCANFD_FIFO_DEPTH)
+		netif_stop_queue(ndev);
+
+	/* Start Tx: Write 0xff to CFPC to increment the CPU-side
+	 * pointer for the Common FIFO
+	 */
+	rcar_canfd_write(priv->base,
+			 RCANFD_CFPCTR(gpriv, ch, RCANFD_CFFIFO_IDX), 0xff);
+
+	spin_unlock_irqrestore(&priv->tx_lock, flags);
+	return NETDEV_TX_OK;
+}
+
+static void rcar_canfd_rx_pkt(struct rcar_canfd_channel *priv)
+{
+	struct net_device_stats *stats = &priv->ndev->stats;
+	struct rcar_canfd_global *gpriv = priv->gpriv;
+	struct canfd_frame *cf;
+	struct sk_buff *skb;
+	u32 sts = 0, id, dlc;
+	u32 ch = priv->channel;
+	u32 ridx = ch + RCANFD_RFFIFO_IDX;
+
+	if ((priv->can.ctrlmode & CAN_CTRLMODE_FD) || is_v3u(gpriv)) {
+		id = rcar_canfd_read(priv->base, RCANFD_F_RFID(gpriv, ridx));
+		dlc = rcar_canfd_read(priv->base, RCANFD_F_RFPTR(gpriv, ridx));
+
+		sts = rcar_canfd_read(priv->base, RCANFD_F_RFFDSTS(gpriv, ridx));
+
+		if ((priv->can.ctrlmode & CAN_CTRLMODE_FD) &&
+		    sts & RCANFD_RFFDSTS_RFFDF)
+			skb = alloc_canfd_skb(priv->ndev, &cf);
+		else
+			skb = alloc_can_skb(priv->ndev,
+					    (struct can_frame **)&cf);
+	} else {
+		id = rcar_canfd_read(priv->base, RCANFD_C_RFID(ridx));
+		dlc = rcar_canfd_read(priv->base, RCANFD_C_RFPTR(ridx));
+		skb = alloc_can_skb(priv->ndev, (struct can_frame **)&cf);
+	}
+
+	if (!skb) {
+		stats->rx_dropped++;
+		return;
+	}
+
+	if (id & RCANFD_RFID_RFIDE)
+		cf->can_id = (id & CAN_EFF_MASK) | CAN_EFF_FLAG;
+	else
+		cf->can_id = id & CAN_SFF_MASK;
+
+	if (priv->can.ctrlmode & CAN_CTRLMODE_FD) {
+		if (sts & RCANFD_RFFDSTS_RFFDF)
+			cf->len = can_fd_dlc2len(RCANFD_RFPTR_RFDLC(dlc));
+		else
+			cf->len = can_cc_dlc2len(RCANFD_RFPTR_RFDLC(dlc));
+
+		if (sts & RCANFD_RFFDSTS_RFESI) {
+			cf->flags |= CANFD_ESI;
+			netdev_dbg(priv->ndev, "ESI Error\n");
+		}
+
+		if (!(sts & RCANFD_RFFDSTS_RFFDF) && (id & RCANFD_RFID_RFRTR)) {
+			cf->can_id |= CAN_RTR_FLAG;
+		} else {
+			if (sts & RCANFD_RFFDSTS_RFBRS)
+				cf->flags |= CANFD_BRS;
+
+			rcar_canfd_get_data(priv, cf, RCANFD_F_RFDF(gpriv, ridx, 0));
+		}
+	} else {
+		cf->len = can_cc_dlc2len(RCANFD_RFPTR_RFDLC(dlc));
+		if (id & RCANFD_RFID_RFRTR)
+			cf->can_id |= CAN_RTR_FLAG;
+		else if (is_v3u(gpriv))
+			rcar_canfd_get_data(priv, cf, RCANFD_F_RFDF(gpriv, ridx, 0));
+		else
+			rcar_canfd_get_data(priv, cf, RCANFD_C_RFDF(ridx, 0));
+	}
+
+	/* Write 0xff to RFPC to increment the CPU-side
+	 * pointer of the Rx FIFO
+	 */
+	rcar_canfd_write(priv->base, RCANFD_RFPCTR(gpriv, ridx), 0xff);
+
+	can_led_event(priv->ndev, CAN_LED_EVENT_RX);
+
+	if (!(cf->can_id & CAN_RTR_FLAG))
+		stats->rx_bytes += cf->len;
+	stats->rx_packets++;
+	netif_receive_skb(skb);
+}
+
+static int rcar_canfd_rx_poll(struct napi_struct *napi, int quota)
+{
+	struct rcar_canfd_channel *priv =
+		container_of(napi, struct rcar_canfd_channel, napi);
+	struct rcar_canfd_global *gpriv = priv->gpriv;
+	int num_pkts;
+	u32 sts;
+	u32 ch = priv->channel;
+	u32 ridx = ch + RCANFD_RFFIFO_IDX;
+
+	for (num_pkts = 0; num_pkts < quota; num_pkts++) {
+		sts = rcar_canfd_read(priv->base, RCANFD_RFSTS(gpriv, ridx));
+		/* Check FIFO empty condition */
+		if (sts & RCANFD_RFSTS_RFEMP)
+			break;
+
+		rcar_canfd_rx_pkt(priv);
+
+		/* Clear interrupt bit */
+		if (sts & RCANFD_RFSTS_RFIF)
+			rcar_canfd_write(priv->base, RCANFD_RFSTS(gpriv, ridx),
+					 sts & ~RCANFD_RFSTS_RFIF);
+	}
+
+	/* All packets processed */
+	if (num_pkts < quota) {
+		if (napi_complete_done(napi, num_pkts)) {
+			/* Enable Rx FIFO interrupts */
+			rcar_canfd_set_bit(priv->base, RCANFD_RFCC(gpriv, ridx),
+					   RCANFD_RFCC_RFIE);
+		}
+	}
+	return num_pkts;
+}
+
+static int rcar_canfd_do_set_mode(struct net_device *ndev, enum can_mode mode)
+{
+	int err;
+
+	switch (mode) {
+	case CAN_MODE_START:
+		err = rcar_canfd_start(ndev);
+		if (err)
+			return err;
+		netif_wake_queue(ndev);
+		return 0;
+	default:
+		return -EOPNOTSUPP;
+	}
+}
+
+static int rcar_canfd_get_berr_counter(const struct net_device *dev,
+				       struct can_berr_counter *bec)
+{
+	struct rcar_canfd_channel *priv = netdev_priv(dev);
+	u32 val, ch = priv->channel;
+
+	/* Peripheral clock is already enabled in probe */
+	val = rcar_canfd_read(priv->base, RCANFD_CSTS(ch));
+	bec->txerr = RCANFD_CSTS_TECCNT(val);
+	bec->rxerr = RCANFD_CSTS_RECCNT(val);
+	return 0;
+}
+
+static const struct net_device_ops rcar_canfd_netdev_ops = {
+	.ndo_open = rcar_canfd_open,
+	.ndo_stop = rcar_canfd_close,
+	.ndo_start_xmit = rcar_canfd_start_xmit,
+	.ndo_change_mtu = can_change_mtu,
+};
+
+static int rcar_canfd_channel_probe(struct rcar_canfd_global *gpriv, u32 ch,
+				    u32 fcan_freq)
+{
+	struct platform_device *pdev = gpriv->pdev;
+	struct rcar_canfd_channel *priv;
+	struct net_device *ndev;
+	int err = -ENODEV;
+
+	ndev = alloc_candev(sizeof(*priv), RCANFD_FIFO_DEPTH);
+	if (!ndev) {
+		dev_err(&pdev->dev, "alloc_candev() failed\n");
+		return -ENOMEM;
+	}
+	priv = netdev_priv(ndev);
+
+	ndev->netdev_ops = &rcar_canfd_netdev_ops;
+	ndev->flags |= IFF_ECHO;
+	priv->ndev = ndev;
+	priv->base = gpriv->base;
+	priv->channel = ch;
+	priv->can.clock.freq = fcan_freq;
+	dev_info(&pdev->dev, "can_clk rate is %u\n", priv->can.clock.freq);
+
+	if (gpriv->chip_id == RENESAS_RZG2L) {
+		char *irq_name;
+		int err_irq;
+		int tx_irq;
+
+		err_irq = platform_get_irq_byname(pdev, ch == 0 ? "ch0_err" : "ch1_err");
+		if (err_irq < 0) {
+			err = err_irq;
+			goto fail;
+		}
+
+		tx_irq = platform_get_irq_byname(pdev, ch == 0 ? "ch0_trx" : "ch1_trx");
+		if (tx_irq < 0) {
+			err = tx_irq;
+			goto fail;
+		}
+
+		irq_name = devm_kasprintf(&pdev->dev, GFP_KERNEL,
+					  "canfd.ch%d_err", ch);
+		if (!irq_name) {
+			err = -ENOMEM;
+			goto fail;
+		}
+		err = devm_request_irq(&pdev->dev, err_irq,
+				       rcar_canfd_channel_err_interrupt, 0,
+				       irq_name, gpriv);
+		if (err) {
+			dev_err(&pdev->dev, "devm_request_irq CH Err(%d) failed, error %d\n",
+				err_irq, err);
+			goto fail;
+		}
+		irq_name = devm_kasprintf(&pdev->dev, GFP_KERNEL,
+					  "canfd.ch%d_trx", ch);
+		if (!irq_name) {
+			err = -ENOMEM;
+			goto fail;
+		}
+		err = devm_request_irq(&pdev->dev, tx_irq,
+				       rcar_canfd_channel_tx_interrupt, 0,
+				       irq_name, gpriv);
+		if (err) {
+			dev_err(&pdev->dev, "devm_request_irq Tx (%d) failed, error %d\n",
+				tx_irq, err);
+			goto fail;
+		}
+	}
+
+	if (gpriv->fdmode) {
+		priv->can.bittiming_const = &rcar_canfd_nom_bittiming_const;
+		priv->can.data_bittiming_const =
+			&rcar_canfd_data_bittiming_const;
+
+		/* Controller starts in CAN FD only mode */
+		err = can_set_static_ctrlmode(ndev, CAN_CTRLMODE_FD);
+		if (err)
+			goto fail;
+		priv->can.ctrlmode_supported = CAN_CTRLMODE_BERR_REPORTING;
+	} else {
+		/* Controller starts in Classical CAN only mode */
+		priv->can.bittiming_const = &rcar_canfd_bittiming_const;
+		priv->can.ctrlmode_supported = CAN_CTRLMODE_BERR_REPORTING;
+	}
+
+	priv->can.do_set_mode = rcar_canfd_do_set_mode;
+	priv->can.do_get_berr_counter = rcar_canfd_get_berr_counter;
+	priv->gpriv = gpriv;
+	SET_NETDEV_DEV(ndev, &pdev->dev);
+
+	netif_napi_add(ndev, &priv->napi, rcar_canfd_rx_poll,
+		       RCANFD_NAPI_WEIGHT);
+	spin_lock_init(&priv->tx_lock);
+	devm_can_led_init(ndev);
+	gpriv->ch[priv->channel] = priv;
+	err = register_candev(ndev);
+	if (err) {
+		dev_err(&pdev->dev,
+			"register_candev() failed, error %d\n", err);
+		goto fail_candev;
+	}
+	dev_info(&pdev->dev, "device registered (channel %u)\n", priv->channel);
+	return 0;
+
+fail_candev:
+	netif_napi_del(&priv->napi);
+fail:
+	free_candev(ndev);
+	return err;
+}
+
+static void rcar_canfd_channel_remove(struct rcar_canfd_global *gpriv, u32 ch)
+{
+	struct rcar_canfd_channel *priv = gpriv->ch[ch];
+
+	if (priv) {
+		unregister_candev(priv->ndev);
+		netif_napi_del(&priv->napi);
+		free_candev(priv->ndev);
+	}
+}
+
+static int rcar_canfd_probe(struct platform_device *pdev)
+{
+	void __iomem *addr;
+	u32 sts, ch, fcan_freq;
+	struct rcar_canfd_global *gpriv;
+	struct device_node *of_child;
+	unsigned long channels_mask = 0;
+	int err, ch_irq, g_irq;
+	int g_err_irq, g_recc_irq;
+	bool fdmode = true;			/* CAN FD only mode - default */
+	enum rcanfd_chip_id chip_id;
+	int max_channels;
+	char name[9] = "channelX";
+	int i;
+
+	chip_id = (uintptr_t)of_device_get_match_data(&pdev->dev);
+	max_channels = chip_id == RENESAS_R8A779A0 ? 8 : 2;
+
+	if (of_property_read_bool(pdev->dev.of_node, "renesas,no-can-fd"))
+		fdmode = false;			/* Classical CAN only mode */
+
+	for (i = 0; i < max_channels; ++i) {
+		name[7] = '0' + i;
+		of_child = of_get_child_by_name(pdev->dev.of_node, name);
+		if (of_child && of_device_is_available(of_child))
+			channels_mask |= BIT(i);
+	}
+
+	if (chip_id != RENESAS_RZG2L) {
+		ch_irq = platform_get_irq_byname_optional(pdev, "ch_int");
+		if (ch_irq < 0) {
+			/* For backward compatibility get irq by index */
+			ch_irq = platform_get_irq(pdev, 0);
+			if (ch_irq < 0)
+				return ch_irq;
+		}
+
+		g_irq = platform_get_irq_byname_optional(pdev, "g_int");
+		if (g_irq < 0) {
+			/* For backward compatibility get irq by index */
+			g_irq = platform_get_irq(pdev, 1);
+			if (g_irq < 0)
+				return g_irq;
+		}
+	} else {
+		g_err_irq = platform_get_irq_byname(pdev, "g_err");
+		if (g_err_irq < 0)
+			return g_err_irq;
+
+		g_recc_irq = platform_get_irq_byname(pdev, "g_recc");
+		if (g_recc_irq < 0)
+			return g_recc_irq;
+	}
+
+	/* Global controller context */
+	gpriv = devm_kzalloc(&pdev->dev, sizeof(*gpriv), GFP_KERNEL);
+	if (!gpriv) {
+		err = -ENOMEM;
+		goto fail_dev;
+	}
+	gpriv->pdev = pdev;
+	gpriv->channels_mask = channels_mask;
+	gpriv->fdmode = fdmode;
+	gpriv->chip_id = chip_id;
+	gpriv->max_channels = max_channels;
+
+	if (gpriv->chip_id == RENESAS_RZG2L) {
+		gpriv->rstc1 = devm_reset_control_get_exclusive(&pdev->dev, "rstp_n");
+		if (IS_ERR(gpriv->rstc1))
+			return dev_err_probe(&pdev->dev, PTR_ERR(gpriv->rstc1),
+					     "failed to get rstp_n\n");
+
+		gpriv->rstc2 = devm_reset_control_get_exclusive(&pdev->dev, "rstc_n");
+		if (IS_ERR(gpriv->rstc2))
+			return dev_err_probe(&pdev->dev, PTR_ERR(gpriv->rstc2),
+					     "failed to get rstc_n\n");
+	}
+
+	/* Peripheral clock */
+	gpriv->clkp = devm_clk_get(&pdev->dev, "fck");
+	if (IS_ERR(gpriv->clkp)) {
+		err = PTR_ERR(gpriv->clkp);
+		dev_err(&pdev->dev, "cannot get peripheral clock, error %d\n",
+			err);
+		goto fail_dev;
+	}
+
+	/* fCAN clock: Pick External clock. If not available fallback to
+	 * CANFD clock
+	 */
+	gpriv->can_clk = devm_clk_get(&pdev->dev, "can_clk");
+	if (IS_ERR(gpriv->can_clk) || (clk_get_rate(gpriv->can_clk) == 0)) {
+		gpriv->can_clk = devm_clk_get(&pdev->dev, "canfd");
+		if (IS_ERR(gpriv->can_clk)) {
+			err = PTR_ERR(gpriv->can_clk);
+			dev_err(&pdev->dev,
+				"cannot get canfd clock, error %d\n", err);
+			goto fail_dev;
+		}
+		gpriv->fcan = RCANFD_CANFDCLK;
+
+	} else {
+		gpriv->fcan = RCANFD_EXTCLK;
+	}
+	fcan_freq = clk_get_rate(gpriv->can_clk);
+
+	if (gpriv->fcan == RCANFD_CANFDCLK && gpriv->chip_id != RENESAS_RZG2L)
+		/* CANFD clock is further divided by (1/2) within the IP */
+		fcan_freq /= 2;
+
+	addr = devm_platform_ioremap_resource(pdev, 0);
+	if (IS_ERR(addr)) {
+		err = PTR_ERR(addr);
+		goto fail_dev;
+	}
+	gpriv->base = addr;
+
+	/* Request IRQ that's common for both channels */
+	if (gpriv->chip_id != RENESAS_RZG2L) {
+		err = devm_request_irq(&pdev->dev, ch_irq,
+				       rcar_canfd_channel_interrupt, 0,
+				       "canfd.ch_int", gpriv);
+		if (err) {
+			dev_err(&pdev->dev, "devm_request_irq(%d) failed, error %d\n",
+				ch_irq, err);
+			goto fail_dev;
+		}
+
+		err = devm_request_irq(&pdev->dev, g_irq,
+				       rcar_canfd_global_interrupt, 0,
+				       "canfd.g_int", gpriv);
+		if (err) {
+			dev_err(&pdev->dev, "devm_request_irq(%d) failed, error %d\n",
+				g_irq, err);
+			goto fail_dev;
+		}
+	} else {
+		err = devm_request_irq(&pdev->dev, g_recc_irq,
+				       rcar_canfd_global_receive_fifo_interrupt, 0,
+				       "canfd.g_recc", gpriv);
+
+		if (err) {
+			dev_err(&pdev->dev, "devm_request_irq(%d) failed, error %d\n",
+				g_recc_irq, err);
+			goto fail_dev;
+		}
+
+		err = devm_request_irq(&pdev->dev, g_err_irq,
+				       rcar_canfd_global_err_interrupt, 0,
+				       "canfd.g_err", gpriv);
+		if (err) {
+			dev_err(&pdev->dev, "devm_request_irq(%d) failed, error %d\n",
+				g_err_irq, err);
+			goto fail_dev;
+		}
+	}
+
+	err = reset_control_reset(gpriv->rstc1);
+	if (err)
+		goto fail_dev;
+	err = reset_control_reset(gpriv->rstc2);
+	if (err) {
+		reset_control_assert(gpriv->rstc1);
+		goto fail_dev;
+	}
+
+	/* Enable peripheral clock for register access */
+	err = clk_prepare_enable(gpriv->clkp);
+	if (err) {
+		dev_err(&pdev->dev,
+			"failed to enable peripheral clock, error %d\n", err);
+		goto fail_reset;
+	}
+
+	err = rcar_canfd_reset_controller(gpriv);
+	if (err) {
+		dev_err(&pdev->dev, "reset controller failed\n");
+		goto fail_clk;
+	}
+
+	/* Controller in Global reset & Channel reset mode */
+	rcar_canfd_configure_controller(gpriv);
+
+	/* Configure per channel attributes */
+	for_each_set_bit(ch, &gpriv->channels_mask, max_channels) {
+		/* Configure Channel's Rx fifo */
+		rcar_canfd_configure_rx(gpriv, ch);
+
+		/* Configure Channel's Tx (Common) fifo */
+		rcar_canfd_configure_tx(gpriv, ch);
+
+		/* Configure receive rules */
+		rcar_canfd_configure_afl_rules(gpriv, ch);
+	}
+
+	/* Configure common interrupts */
+	rcar_canfd_enable_global_interrupts(gpriv);
+
+	/* Start Global operation mode */
+	rcar_canfd_update_bit(gpriv->base, RCANFD_GCTR, RCANFD_GCTR_GMDC_MASK,
+			      RCANFD_GCTR_GMDC_GOPM);
+
+	/* Verify mode change */
+	err = readl_poll_timeout((gpriv->base + RCANFD_GSTS), sts,
+				 !(sts & RCANFD_GSTS_GNOPM), 2, 500000);
+	if (err) {
+		dev_err(&pdev->dev, "global operational mode failed\n");
+		goto fail_mode;
+	}
+
+	for_each_set_bit(ch, &gpriv->channels_mask, max_channels) {
+		err = rcar_canfd_channel_probe(gpriv, ch, fcan_freq);
+		if (err)
+			goto fail_channel;
+	}
+
+	platform_set_drvdata(pdev, gpriv);
+	dev_info(&pdev->dev, "global operational state (clk %d, fdmode %d)\n",
+		 gpriv->fcan, gpriv->fdmode);
+	return 0;
+
+fail_channel:
+	for_each_set_bit(ch, &gpriv->channels_mask, max_channels)
+		rcar_canfd_channel_remove(gpriv, ch);
+fail_mode:
+	rcar_canfd_disable_global_interrupts(gpriv);
+fail_clk:
+	clk_disable_unprepare(gpriv->clkp);
+fail_reset:
+	reset_control_assert(gpriv->rstc1);
+	reset_control_assert(gpriv->rstc2);
+fail_dev:
+	return err;
+}
+
+static int rcar_canfd_remove(struct platform_device *pdev)
+{
+	struct rcar_canfd_global *gpriv = platform_get_drvdata(pdev);
+	u32 ch;
+
+	rcar_canfd_reset_controller(gpriv);
+	rcar_canfd_disable_global_interrupts(gpriv);
+
+	for_each_set_bit(ch, &gpriv->channels_mask, gpriv->max_channels) {
+		rcar_canfd_disable_channel_interrupts(gpriv->ch[ch]);
+		rcar_canfd_channel_remove(gpriv, ch);
+	}
+
+	/* Enter global sleep mode */
+	rcar_canfd_set_bit(gpriv->base, RCANFD_GCTR, RCANFD_GCTR_GSLPR);
+	clk_disable_unprepare(gpriv->clkp);
+	reset_control_assert(gpriv->rstc1);
+	reset_control_assert(gpriv->rstc2);
+
+	return 0;
+}
+
+static int __maybe_unused rcar_canfd_suspend(struct device *dev)
+{
+	return 0;
+}
+
+static int __maybe_unused rcar_canfd_resume(struct device *dev)
+{
+	return 0;
+}
+
+static SIMPLE_DEV_PM_OPS(rcar_canfd_pm_ops, rcar_canfd_suspend,
+			 rcar_canfd_resume);
+
+static const __maybe_unused struct of_device_id rcar_canfd_of_table[] = {
+	{ .compatible = "renesas,rcar-gen3-canfd", .data = (void *)RENESAS_RCAR_GEN3 },
+	{ .compatible = "renesas,rzg2l-canfd", .data = (void *)RENESAS_RZG2L },
+	{ .compatible = "renesas,r8a779a0-canfd", .data = (void *)RENESAS_R8A779A0 },
+	{ }
+};
+
+MODULE_DEVICE_TABLE(of, rcar_canfd_of_table);
+
+static struct platform_driver rcar_canfd_driver = {
+	.driver = {
+		.name = RCANFD_DRV_NAME,
+		.of_match_table = of_match_ptr(rcar_canfd_of_table),
+		.pm = &rcar_canfd_pm_ops,
+	},
+	.probe = rcar_canfd_probe,
+	.remove = rcar_canfd_remove,
+};
+
+module_platform_driver(rcar_canfd_driver);
+
+MODULE_AUTHOR("Ramesh Shanmugasundaram <ramesh.shanmugasundaram@bp.renesas.com>");
+MODULE_LICENSE("GPL");
+MODULE_DESCRIPTION("CAN FD driver for Renesas R-Car SoC");
+MODULE_ALIAS("platform:" RCANFD_DRV_NAME);

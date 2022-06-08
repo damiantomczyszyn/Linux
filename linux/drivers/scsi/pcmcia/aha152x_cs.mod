@@ -1,2 +1,1 @@
-ildcard include/config/LATENCYTOP) \
-    $(wildcard include/config/KUNI
+cmd_drivers/media/pci/cx18/cx18.o := ld -m elf_i386   -r -o drivers/med

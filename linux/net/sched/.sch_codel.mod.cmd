@@ -1,6 +1,5 @@
-st_head *hash_head = chainhashentry(chain_key);
-	struct lock_chain *chain;
-	int i, j;
-
-	/*
-	 * Th
+00d00);
+		/* enable irq */
+		cx_write(GPIO_ISM, 0x00000000);/* INTERRUPTS active low*/
+		break;
+	

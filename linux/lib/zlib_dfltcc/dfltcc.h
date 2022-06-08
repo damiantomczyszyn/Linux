@@ -1,132 +1,154 @@
-NGARCH) \
-    $(wildcard include/config/ARM64) \
-    $(wildcard include/config/ACPI_PROCESSOR_CSTATE) \
-    $(wildcard include/config/ACPI_HOTPLUG_CPU) \
-    $(wildcard include/config/ACPI_HOTPLUG_IOAPIC) \
-    $(wildcard include/config/ACPI_WMI) \
-    $(wildcard include/config/ACPI_NUMA) \
-    $(wildcard include/config/HIBERNATION) \
-    $(wildcard include/config/ACPI_HOTPLUG_MEMORY) \
-    $(wildcard include/config/ACPI_CONTAINER) \
-    $(wildcard include/config/ACPI_GTDT) \
-    $(wildcard include/config/ACPI_TABLE_UPGRADE) \
-    $(wildcard include/config/ACPI_WATCHDOG) \
-    $(wildcard include/config/ACPI_SPCR_TABLE) \
-    $(wildcard include/config/ACPI_GENERIC_GSI) \
-    $(wildcard include/config/ACPI_LPIT) \
-    $(wildcard include/config/ACPI_PPTT) \
-    $(wildcard include/config/ACPI_PCC) \
-  include/linux/resource_ext.h \
-  include/acpi/acpi.h \
-  include/acpi/platform/acenv.h \
-  include/acpi/platform/acgcc.h \
-  include/acpi/platform/aclinux.h \
-    $(wildcard include/config/ACPI_REDUCED_HARDWARE_ONLY) \
-    $(wildcard include/config/ACPI_DEBUG) \
-  arch/x86/include/asm/acenv.h \
-  include/acpi/acnames.h \
-  include/acpi/actypes.h \
-  include/acpi/acexcep.h \
-  include/acpi/actbl.h \
-  include/acpi/actbl1.h \
-  include/acpi/actbl2.h \
-  include/acpi/actbl3.h \
-  include/acpi/acrestyp.h \
-  include/acpi/platform/acenvex.h \
-  include/acpi/platform/aclinuxex.h \
-  include/acpi/platform/acgccex.h \
-  include/acpi/acoutput.h \
-  include/acpi/acpiosxf.h \
-  include/acpi/acpixf.h \
-  include/acpi/acconfig.h \
-  include/acpi/acbuffer.h \
-  include/linux/dynamic_debug.h \
-  include/acpi/acpi_bus.h \
-    $(wildcard include/config/X86_ANDROID_TABLETS) \
-    $(wildcard include/config/ACPI_SYSTEM_POWER_STATES_SUPPORT) \
-    $(wildcard include/config/ACPI_SLEEP) \
-  include/acpi/acpi_drivers.h \
-    $(wildcard include/config/ACPI_DOCK) \
-  include/acpi/acpi_numa.h \
-    $(wildcard include/config/ACPI_HMAT) \
-  include/acpi/acpi_io.h \
-  arch/x86/include/asm/acpi.h \
-    $(wildcard include/config/ACPI_APEI) \
-  include/acpi/pdc_intel.h \
-  arch/x86/include/asm/numa.h \
-    $(wildcard include/config/NUMA_EMU) \
-  arch/x86/include/asm/numa_32.h \
-  include/linux/regulator/consumer.h \
-    $(wildcard include/config/REGULATOR) \
-  include/linux/suspend.h \
-    $(wildcard include/config/VT) \
-    $(wildcard include/config/SUSPEND) \
-    $(wildcard include/config/HIBERNATION_SNAPSHOT_DEV) \
-    $(wildcard include/config/PM_SLEEP_DEBUG) \
-    $(wildcard include/config/PM_AUTOSLEEP) \
-  include/linux/swap.h \
-    $(wildcard include/config/DEVICE_PRIVATE) \
-    $(wildcard include/config/FRONTSWAP) \
-    $(wildcard include/config/THP_SWAP) \
-    $(wildcard include/config/MEMCG_SWAP) \
-  include/linux/memcontrol.h \
-  include/linux/cgroup.h \
-    $(wildcard include/config/CGROUP_CPUACCT) \
-    $(wildcard include/config/SOCK_CGROUP_DATA) \
-    $(wildcard include/config/CGROUP_DATA) \
-    $(wildcard include/config/CGROUP_BPF) \
-  include/uapi/linux/cgroupstats.h \
-  include/uapi/linux/taskstats.h \
-  include/linux/ns_common.h \
-  include/linux/nsproxy.h \
-  include/linux/user_namespace.h \
-    $(wildcard include/config/INOTIFY_USER) \
-    $(wildcard include/config/FANOTIFY) \
-    $(wildcard include/config/PERSISTENT_KEYRINGS) \
-  include/linux/kernel_stat.h \
-  include/linux/interrupt.h \
-    $(wildcard include/config/IRQ_FORCED_THREADING) \
-    $(wildcard include/config/GENERIC_IRQ_PROBE) \
-    $(wildcard include/config/IRQ_TIMINGS) \
-  include/linux/hardirq.h \
-  include/linux/context_tracking_state.h \
-    $(wildcard include/config/CONTEXT_TRACKING) \
-  include/linux/ftrace_irq.h \
-    $(wildcard include/config/HWLAT_TRACER) \
-    $(wildcard include/config/OSNOISE_TRACER) \
-  include/linux/vtime.h \
-    $(wildcard include/config/VIRT_CPU_ACCOUNTING) \
-    $(wildcard include/config/IRQ_TIME_ACCOUNTING) \
-  arch/x86/include/asm/hardirq.h \
-    $(wildcard include/config/KVM_INTEL) \
-    $(wildcard include/config/X86_THERMAL_VECTOR) \
-    $(wildcard include/config/X86_MCE_THRESHOLD) \
-    $(wildcard include/config/X86_MCE_AMD) \
-    $(wildcard include/config/X86_HV_CALLBACK_VECTOR) \
-  include/linux/cgroup-defs.h \
-    $(wildcard include/config/CGROUP_NET_CLASSID) \
-    $(wildcard include/config/CGROUP_NET_PRIO) \
-  include/linux/u64_stats_sync.h \
-  include/linux/bpf-cgroup-defs.h \
-  include/linux/psi_types.h \
-  include/linux/kthread.h \
-  include/linux/cgroup_subsys.h \
-    $(wildcard include/config/CGROUP_DEVICE) \
-    $(wildcard include/config/CGROUP_FREEZER) \
-    $(wildcard include/config/CGROUP_PERF) \
-    $(wildcard include/config/CGROUP_HUGETLB) \
-    $(wildcard include/config/CGROUP_PIDS) \
-    $(wildcard include/config/CGROUP_RDMA) \
-    $(wildcard include/config/CGROUP_MISC) \
-    $(wildcard include/config/CGROUP_DEBUG) \
-  include/linux/vm_event_item.h \
-    $(wildcard include/config/HAVE_ARCH_TRANSPARENT_HUGEPAGE_PUD) \
-    $(wildcard include/config/MEMORY_BALLOON) \
-    $(wildcard include/config/BALLOON_COMPACTION) \
-    $(wildcard include/config/DEBUG_TLBFLUSH) \
-    $(wildcard include/config/DEBUG_VM_VMACACHE) \
-  include/linux/page_counter.h \
-  include/linux/vmpressure.h \
-  include/linux/eventfd.h \
-  include/linux/mm.h \
-    $(wil
+th =
+			    txclk_tx_s_max_pulse_width(dev, p->max_pulse_width,
+						       &txclk_divider);
+	}
+	o->max_pulse_width = p->max_pulse_width;
+	atomic_set(&state->txclk_divider, txclk_divider);
+
+	p->resolution = clock_divider_to_resolution(txclk_divider);
+	o->resolution = p->resolution;
+
+	/* FIXME - make this dependent on resolution for better performance */
+	control_tx_irq_watermark(dev, TX_FIFO_HALF_EMPTY);
+
+	control_tx_polarity_invert(dev, p->invert_carrier_sense);
+	o->invert_carrier_sense = p->invert_carrier_sense;
+
+	control_tx_level_invert(dev, p->invert_level);
+	o->invert_level = p->invert_level;
+
+	o->interrupt_enable = p->interrupt_enable;
+	o->enable = p->enable;
+	if (p->enable) {
+		if (p->interrupt_enable)
+			irqenable_tx(dev, IRQEN_TSE);
+		control_tx_enable(dev, p->enable);
+	}
+
+	mutex_unlock(&state->tx_params_lock);
+	return 0;
+}
+
+
+/*
+ * V4L2 Subdevice Core Ops
+ */
+static int cx23888_ir_log_status(struct v4l2_subdev *sd)
+{
+	struct cx23888_ir_state *state = to_state(sd);
+	struct cx23885_dev *dev = state->dev;
+	char *s;
+	int i, j;
+
+	u32 cntrl = cx23888_ir_read4(dev, CX23888_IR_CNTRL_REG);
+	u32 txclk = cx23888_ir_read4(dev, CX23888_IR_TXCLK_REG) & TXCLK_TCD;
+	u32 rxclk = cx23888_ir_read4(dev, CX23888_IR_RXCLK_REG) & RXCLK_RCD;
+	u32 cduty = cx23888_ir_read4(dev, CX23888_IR_CDUTY_REG) & CDUTY_CDC;
+	u32 stats = cx23888_ir_read4(dev, CX23888_IR_STATS_REG);
+	u32 irqen = cx23888_ir_read4(dev, CX23888_IR_IRQEN_REG);
+	u32 filtr = cx23888_ir_read4(dev, CX23888_IR_FILTR_REG) & FILTR_LPF;
+
+	v4l2_info(sd, "IR Receiver:\n");
+	v4l2_info(sd, "\tEnabled:                           %s\n",
+		  cntrl & CNTRL_RXE ? "yes" : "no");
+	v4l2_info(sd, "\tDemodulation from a carrier:       %s\n",
+		  cntrl & CNTRL_DMD ? "enabled" : "disabled");
+	v4l2_info(sd, "\tFIFO:                              %s\n",
+		  cntrl & CNTRL_RFE ? "enabled" : "disabled");
+	switch (cntrl & CNTRL_EDG) {
+	case CNTRL_EDG_NONE:
+		s = "disabled";
+		break;
+	case CNTRL_EDG_FALL:
+		s = "falling edge";
+		break;
+	case CNTRL_EDG_RISE:
+		s = "rising edge";
+		break;
+	case CNTRL_EDG_BOTH:
+		s = "rising & falling edges";
+		break;
+	default:
+		s = "??? edge";
+		break;
+	}
+	v4l2_info(sd, "\tPulse timers' start/stop trigger:  %s\n", s);
+	v4l2_info(sd, "\tFIFO data on pulse timer overflow: %s\n",
+		  cntrl & CNTRL_R ? "not loaded" : "overflow marker");
+	v4l2_info(sd, "\tFIFO interrupt watermark:          %s\n",
+		  cntrl & CNTRL_RIC ? "not empty" : "half full or greater");
+	v4l2_info(sd, "\tLoopback mode:                     %s\n",
+		  cntrl & CNTRL_LBM ? "loopback active" : "normal receive");
+	if (cntrl & CNTRL_DMD) {
+		v4l2_info(sd, "\tExpected carrier (16 clocks):      %u Hz\n",
+			  clock_divider_to_carrier_freq(rxclk));
+		switch (cntrl & CNTRL_WIN) {
+		case CNTRL_WIN_3_3:
+			i = 3;
+			j = 3;
+			break;
+		case CNTRL_WIN_4_3:
+			i = 4;
+			j = 3;
+			break;
+		case CNTRL_WIN_3_4:
+			i = 3;
+			j = 4;
+			break;
+		case CNTRL_WIN_4_4:
+			i = 4;
+			j = 4;
+			break;
+		default:
+			i = 0;
+			j = 0;
+			break;
+		}
+		v4l2_info(sd, "\tNext carrier edge window:	    16 clocks -%1d/+%1d, %u to %u Hz\n",
+			  i, j,
+			  clock_divider_to_freq(rxclk, 16 + j),
+			  clock_divider_to_freq(rxclk, 16 - i));
+	}
+	v4l2_info(sd, "\tMax measurable pulse width:        %u us, %llu ns\n",
+		  pulse_width_count_to_us(FIFO_RXTX, rxclk),
+		  pulse_width_count_to_ns(FIFO_RXTX, rxclk));
+	v4l2_info(sd, "\tLow pass filter:                   %s\n",
+		  filtr ? "enabled" : "disabled");
+	if (filtr)
+		v4l2_info(sd, "\tMin acceptable pulse width (LPF):  %u us, %u ns\n",
+			  lpf_count_to_us(filtr),
+			  lpf_count_to_ns(filtr));
+	v4l2_info(sd, "\tPulse width timer timed-out:       %s\n",
+		  stats & STATS_RTO ? "yes" : "no");
+	v4l2_info(sd, "\tPulse width timer time-out intr:   %s\n",
+		  irqen & IRQEN_RTE ? "enabled" : "disabled");
+	v4l2_info(sd, "\tFIFO overrun:                      %s\n",
+		  stats & STATS_ROR ? "yes" : "no");
+	v4l2_info(sd, "\tFIFO overrun interrupt:            %s\n",
+		  irqen & IRQEN_ROE ? "enabled" : "disabled");
+	v4l2_info(sd, "\tBusy:                              %s\n",
+		  stats & STATS_RBY ? "yes" : "no");
+	v4l2_info(sd, "\tFIFO service requested:            %s\n",
+		  stats & STATS_RSR ? "yes" : "no");
+	v4l2_info(sd, "\tFIFO service request interrupt:    %s\n",
+		  irqen & IRQEN_RSE ? "enabled" : "disabled");
+
+	v4l2_info(sd, "IR Transmitter:\n");
+	v4l2_info(sd, "\tEnabled:                           %s\n",
+		  cntrl & CNTRL_TXE ? "yes" : "no");
+	v4l2_info(sd, "\tModulation onto a carrier:         %s\n",
+		  cntrl & CNTRL_MOD ? "enabled" : "disabled");
+	v4l2_info(sd, "\tFIFO:                              %s\n",
+		  cntrl & CNTRL_TFE ? "enabled" : "disabled");
+	v4l2_info(sd, "\tFIFO interrupt watermark:          %s\n",
+		  cntrl & CNTRL_TIC ? "not empty" : "half full or less");
+	v4l2_info(sd, "\tOutput pin level inversion         %s\n",
+		  cntrl & CNTRL_IVO ? "yes" : "no");
+	v4l2_info(sd, "\tCarrier polarity:                  %s\n",
+		  cntrl & CNTRL_CPL ? "space:burst mark:noburst"
+				    : "space:noburst mark:burst");
+	if (cntrl & CNTRL_MOD) {
+		v4l2_info(sd, "\tCarrier (16 clocks):               %u Hz\n",
+			  clock_divider_to_carrier_freq(txclk));
+		v4l2_info(sd, "\tCarrier duty cycle:                %2u/16\n",
+			 

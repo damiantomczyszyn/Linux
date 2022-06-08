@@ -1,1 +1,6 @@
-cmd_drivers/media/i2c/tw2804.o := gcc -Wp,-MMD,drivers/media/i2c/.tw2804.o.d -nostdinc -I./arch/x86/
+tialize CI: Error %d.\n", __func__, ret);
+	kfree(state);
+	return ret;
+}
+
+void netup_ci_exit(struct c

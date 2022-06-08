@@ -1,2 +1,3 @@
-drivers/media/rc/keymaps/rc-mecool-kii-pro.o
+ (0x9d << 24); /* 100kHz */
 
+	/* External Mast

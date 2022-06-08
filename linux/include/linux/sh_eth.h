@@ -1,10 +1,15 @@
-e/config/ACPI_APEI_GHES) \
-    $(wildcard include/config/INTEL_TXT) \
-  arch/x86/include/generated/asm/kmap_size.h \
-  include/asm-generic/kmap_size.h \
-    $(wildcard include/config/DEBUG_KMAP_LOCAL) \
-  include/asm-generic/fixmap.h \
-  arch/x86/include/asm/irq_vectors.h \
-    $(wildcard include/config/HAVE_KVM) \
-    $(wildcard include/config/HYPERV) \
-    $(wildca
+.duty_cycle = 25,      /* 25 %   - RC-5 carrier */
+	.invert_level = false,
+	.invert_carrier_sense = false,
+};
+
+int cx23888_ir_probe(struct cx23885_dev *dev)
+{
+	struct cx23888_ir_state *state;
+	struct v4l2_subdev *sd;
+	struct v4l2_subdev_ir_parameters default_params;
+	int ret;
+
+	state = kzalloc(sizeof(struct cx23888_ir_state), GFP_KERNEL);
+	if (state == NULL)
+		return

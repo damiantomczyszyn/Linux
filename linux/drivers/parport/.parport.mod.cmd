@@ -1,6 +1,10 @@
-de/config/INLINE_READ_UNLOCK_IRQRESTORE) \
-    $(wildcard include/config/INLINE_WRITE_UNLOCK_IRQRESTORE) \
-  include/linux/srcu.h \
-    $(wildcard include/config/TINY_SRCU) \
-    $(wildcard include/config/SRCU) \
-  include/linux/rcupdate.
+_MSK_GPIO0)
+			dprintk(7, " (PCI_MSK_GPIO0     0x%08x)\n",
+				PCI_MSK_GPIO0);
+
+		if (pci_status & PCI_MSK_GPIO1)
+			dprintk(7, " (PCI_MSK_GPIO1     0x%08x)\n",
+				PCI_MSK_GPIO1);
+
+		if (pci_status & PCI_MSK_AV_CORE)
+			dprintk(7, " (PCI

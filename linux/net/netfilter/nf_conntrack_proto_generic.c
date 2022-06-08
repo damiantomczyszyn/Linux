@@ -1,52 +1,56 @@
-onfig/FS_ENCRYPTION) \
-    $(wildcard include/config/FS_VERITY) \
-    $(wildcard include/config/EPOLL) \
-    $(wildcard include/config/UNICODE) \
-    $(wildcard include/config/QUOTA) \
-    $(wildcard include/config/BLOCK) \
-  include/linux/wait_bit.h \
-  include/linux/kdev_t.h \
-  include/uapi/linux/kdev_t.h \
-  include/linux/dcache.h \
-  include/linux/rculist_bl.h \
-  include/linux/list_bl.h \
-  include/linux/lockref.h \
-    $(wildcard include/config/ARCH_USE_CMPXCHG_LOCKREF) \
-  include/linux/stringhash.h \
-    $(wildcard include/config/DCACHE_WORD_ACCESS) \
-  include/linux/hash.h \
-    $(wildcard include/config/HAVE_ARCH_HASH) \
-  include/linux/path.h \
-  include/linux/list_lru.h \
-    $(wildcard include/config/MEMCG_KMEM) \
-  include/linux/capability.h \
-  include/uapi/linux/capability.h \
-  include/linux/semaphore.h \
-  include/linux/fcntl.h \
-    $(wildcard include/config/ARCH_32BIT_OFF_T) \
-  include/uapi/linux/fcntl.h \
-  arch/x86/include/generated/uapi/asm/fcntl.h \
-  include/uapi/asm-generic/fcntl.h \
-  include/uapi/linux/openat2.h \
-  include/linux/migrate_mode.h \
-  include/linux/percpu-rwsem.h \
-  include/linux/rcuwait.h \
-  include/linux/sched/signal.h \
-    $(wildcard include/config/SCHED_AUTOGROUP) \
-    $(wildcard include/config/BSD_PROCESS_ACCT) \
-    $(wildcard include/config/TASKSTATS) \
-  include/linux/signal.h \
-    $(wildcard include/config/DYNAMIC_SIGFRAME) \
-  include/linux/sched/jobctl.h \
-  include/linux/sched/task.h \
-    $(wildcard include/config/HAVE_EXIT_THREAD) \
-    $(wildcard include/config/ARCH_WANTS_DYNAMIC_TASK_STRUCT) \
-    $(wildcard include/config/HAVE_ARCH_THREAD_STRUCT_WHITELIST) \
-  include/linux/uaccess.h \
-  include/linux/fault-inject-usercopy.h \
-    $(wildcard include/config/FAULT_INJECTION_USERCOPY) \
-  arch/x86/include/asm/uaccess.h \
-    $(wildcard include/config/CC_HAS_ASM_GOTO_OUTPUT) \
-    $(wildcard include/config/CC_HAS_ASM_GOTO_TIED_OUTPUT) \
-    $(wildcard include/config/ARCH_HAS_COPY_MC) \
-    $
+ct tda10071_platform_data tda10071_pdata = hauppauge_tda10071_pdata;
+		struct a8293_platform_data a8293_pdata = {};
+
+		i2c_bus = &dev->i2c_bus[0];
+		i2c_bus2 = &dev->i2c_bus[1];
+		switch (port->nr) {
+		/* port b */
+		case 1:
+			/* attach demod + tuner combo */
+			memset(&info, 0, sizeof(info));
+			strscpy(info.type, "tda10071_cx24118", I2C_NAME_SIZE);
+			info.addr = 0x05;
+			info.platform_data = &tda10071_pdata;
+			request_module("tda10071");
+			client_demod = i2c_new_client_device(&i2c_bus->i2c_adap, &info);
+			if (!i2c_client_has_driver(client_demod))
+				goto frontend_detach;
+			if (!try_module_get(client_demod->dev.driver->owner)) {
+				i2c_unregister_device(client_demod);
+				goto frontend_detach;
+			}
+			fe0->dvb.frontend = tda10071_pdata.get_dvb_frontend(client_demod);
+			port->i2c_client_demod = client_demod;
+
+			/* attach SEC */
+			a8293_pdata.dvb_frontend = fe0->dvb.frontend;
+			memset(&info, 0, sizeof(info));
+			strscpy(info.type, "a8293", I2C_NAME_SIZE);
+			info.addr = 0x0b;
+			info.platform_data = &a8293_pdata;
+			request_module("a8293");
+			client_sec = i2c_new_client_device(&i2c_bus->i2c_adap, &info);
+			if (!i2c_client_has_driver(client_sec))
+				goto frontend_detach;
+			if (!try_module_get(client_sec->dev.driver->owner)) {
+				i2c_unregister_device(client_sec);
+				goto frontend_detach;
+			}
+			port->i2c_client_sec = client_sec;
+			break;
+		/* port c */
+		case 2:
+			/* attach frontend */
+			memset(&si2165_pdata, 0, sizeof(si2165_pdata));
+			si2165_pdata.fe = &fe0->dvb.frontend;
+			si2165_pdata.chip_mode = SI2165_MODE_PLL_XTAL;
+			si2165_pdata.ref_freq_hz = 16000000;
+			memset(&info, 0, sizeof(struct i2c_board_info));
+			strscpy(info.type, "si2165", I2C_NAME_SIZE);
+			info.addr = 0x64;
+			info.platform_data = &si2165_pdata;
+			request_module(info.type);
+			client_demod = i2c_new_client_device(&i2c_bus->i2c_adap, &info);
+			if (!i2c_client_has_driver(client_demod))
+				goto frontend_detach;
+			if (!try_module_get(client_demod->dev.driver

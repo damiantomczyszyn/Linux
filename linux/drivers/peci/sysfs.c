@@ -1,38 +1,69 @@
-lude/config/SHMEM) \
-    $(wildcard include/config/ARCH_HAS_PTE_SPECIAL) \
-    $(wildcard include/config/ARCH_HAS_PTE_DEVMAP) \
-    $(wildcard include/config/DEBUG_VM_RB) \
-    $(wildcard include/config/PAGE_POISONING) \
-    $(wildcard include/config/INIT_ON_ALLOC_DEFAULT_ON) \
-    $(wildcard include/config/INIT_ON_FREE_DEFAULT_ON) \
-    $(wildcard include/config/DEBUG_PAGEALLOC) \
-    $(wildcard include/config/HUGETLBFS) \
-    $(wildcard include/config/MAPPING_DIRTY_HELPERS) \
-    $(wildcard include/config/ANON_VMA_NAME) \
-  include/linux/mmap_lock.h \
-  include/linux/page_ext.h \
-  include/linux/stacktrace.h \
-    $(wildcard include/config/ARCH_STACKWALK) \
-    $(wildcard include/config/STACKTRACE) \
-    $(wildcard include/config/HAVE_RELIABLE_STACKTRACE) \
-  include/linux/stackdepot.h \
-    $(wildcard include/config/STACKDEPOT_ALWAYS_INIT) \
-  include/linux/page_ref.h \
-    $(wildcard include/config/DEBUG_PAGE_REF) \
-  include/linux/sizes.h \
-  include/linux/pgtable.h \
-    $(wildcard include/config/HIGHPTE) \
-    $(wildcard include/config/GUP_GET_PTE_LOW_HIGH) \
-    $(wildcard include/config/HAVE_ARCH_SOFT_DIRTY) \
-    $(wildcard include/config/ARCH_ENABLE_THP_MIGRATION) \
-    $(wildcard include/config/X86_ESPFIX64) \
-  arch/x86/include/asm/pgtable.h \
-    $(wildcard include/config/DEBUG_WX) \
-    $(wildcard include/config/PAGE_TABLE_CHECK) \
-  arch/x86/include/asm/pkru.h \
-  arch/x86/include/asm/fpu/api.h \
-    $(wildcard include/config/X86_DEBUG_FPU) \
-  arch/x86/include/asm/coco.h \
-  include/asm-generic/pgtable_uffd.h \
-  include/linux/page_table_check.h \
-  arch/x86/include/asm/
+         = &mpeg_fops,
+	.ioctl_ops     = &mpeg_ioctl_ops,
+	.tvnorms       = CX23885_NORMS,
+};
+
+void cx23885_417_unregister(struct cx23885_dev *dev)
+{
+	dprintk(1, "%s()\n", __func__);
+
+	if (dev->v4l_device) {
+		if (video_is_registered(dev->v4l_device))
+			video_unregister_device(dev->v4l_device);
+		else
+			video_device_release(dev->v4l_device);
+		v4l2_ctrl_handler_free(&dev->cxhdl.hdl);
+		dev->v4l_device = NULL;
+	}
+}
+
+static struct video_device *cx23885_video_dev_alloc(
+	struct cx23885_tsport *tsport,
+	struct pci_dev *pci,
+	struct video_device *template,
+	char *type)
+{
+	struct video_device *vfd;
+	struct cx23885_dev *dev = tsport->dev;
+
+	dprintk(1, "%s()\n", __func__);
+
+	vfd = video_device_alloc();
+	if (NULL == vfd)
+		return NULL;
+	*vfd = *template;
+	snprintf(vfd->name, sizeof(vfd->name), "%s (%s)",
+		cx23885_boards[tsport->dev->board].name, type);
+	vfd->v4l2_dev = &dev->v4l2_dev;
+	vfd->release = video_device_release;
+	return vfd;
+}
+
+int cx23885_417_register(struct cx23885_dev *dev)
+{
+	/* FIXME: Port1 hardcoded here */
+	int err = -ENODEV;
+	struct cx23885_tsport *tsport = &dev->ts1;
+	struct vb2_queue *q;
+
+	dprintk(1, "%s()\n", __func__);
+
+	if (cx23885_boards[dev->board].portb != CX23885_MPEG_ENCODER)
+		return err;
+
+	/* Set default TV standard */
+	dev->encodernorm = cx23885_tvnorms[0];
+
+	if (dev->encodernorm.id & V4L2_STD_525_60)
+		tsport->height = 480;
+	else
+		tsport->height = 576;
+
+	tsport->width = 720;
+	dev->cxhdl.port = CX2341X_PORT_SERIAL;
+	err = cx2341x_handler_init(&dev->cxhdl, 50);
+	if (err)
+		return err;
+	dev->cxhdl.priv = dev;
+	dev->cxhdl.func = cx23885_api_func;
+	cx2341x_handler_s

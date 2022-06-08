@@ -1,6 +1,1 @@
-eo/edid.h \
-    $(wildcard include/config/X86) \
-  include/uapi/video/edid.h \
-  arch/x86/include/asm/nospec-branch.h \
-  include/linux/static_key.h \
-  inc
+cmd_drivers/media/pci/cx18/cx18.mod.o := gcc -Wp,-MMD,drivers/media/pci/cx18/.cx18.mod.o.d -nostdinc -I./arch/x86/include -I./arch/x86/include/generated -I.

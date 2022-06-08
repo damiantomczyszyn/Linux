@@ -1,9 +1,14 @@
-ude/config/PARAVIRT_XXL) \
-  arch/x86/include/asm/disabled-features.h \
-    $(wildcard include/config/X86_SMAP) \
-    $(wildcard include/config/X86_UMIP) \
-    $(wildcard include/config/X86_INTEL_MEMORY_PROTECTION_KEYS) \
-    $(wildcard include/config/X86_5LEVEL) \
-    $(wildcard include/config/PAGE_TABLE_ISOLATION) \
-    $(wildcard include/config/INTEL_IOMMU_SVM) \
-    $(wildcar
+TV-HVR1700 (PCIe, OEM, No IR, full height)
+		 * DVB-T and MPEG2 HW Encoder */
+		break;
+	case 85021:
+		/* WinTV-HVR1850 (PCIe, Retail, 3.5mm in, IR, FM,
+			Dual channel ATSC and MPEG2 HW Encoder */
+		break;
+	case 85721:
+		/* WinTV-HVR1290 (PCIe, OEM, RCA in, IR,
+			Dual channel ATSC and Basic analog */
+	case 121019:
+		/* WinTV-HVR4400 (PCIe, DVB-S2, DVB-C/T) */
+		break;
+	case 1210

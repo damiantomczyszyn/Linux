@@ -1,5 +1,9 @@
-card include/config/HAVE_ARCH_USERFAULTFD_MINOR) \
-    $(wildcard include/config/SHMEM) \
-    $(wildcard include/config/ARCH_HAS_PTE_SPECIAL) \
-    $(wildcard include/config/ARCH_HAS_PTE_DEVMAP) \
-    $(wildcard include/conf
+es,
+				   unsigned int lpi);
+
+/* ----------------------------------------------------------- */
+/* tv norms                                                    */
+
+static inline unsigned int norm_maxh(v4l2_std_id norm)
+{
+	re

@@ -1,88 +1,124 @@
-x/build_bug.h \
-  include/linux/compiler.h \
-    $(wildcard include/config/TRACE_BRANCH_PROFILING) \
-    $(wildcard include/config/PROFILE_ALL_BRANCHES) \
-    $(wildcard include/config/STACK_VALIDATION) \
-  include/linux/compiler_types.h \
-  arch/x86/include/generated/asm/rwonce.h \
-  include/asm-generic/rwonce.h \
-  include/linux/kasan-checks.h \
-    $(wildcard include/config/KASAN_GENERIC) \
-    $(wildcard include/config/KASAN_SW_TAGS) \
-  include/linux/types.h \
-    $(wildcard include/config/HAVE_UID16) \
-    $(wildcard include/config/UID16) \
-    $(wildcard include/config/ARCH_DMA_ADDR_T_64BIT) \
-    $(wildcard include/config/PHYS_ADDR_T_64BIT) \
-    $(wildcard include/config/64BIT) \
-    $(wildcard include/config/ARCH_32BIT_USTAT_F_TINODE) \
-  include/uapi/linux/types.h \
-  arch/x86/include/generated/uapi/asm/types.h \
-  include/uapi/asm-generic/types.h \
-  include/asm-generic/int-ll64.h \
-  include/uapi/asm-generic/int-ll64.h \
-  arch/x86/include/uapi/asm/bitsperlong.h \
-  include/asm-generic/bitsperlong.h \
-  include/uapi/asm-generic/bitsperlong.h \
-  include/uapi/linux/posix_types.h \
-  include/linux/stddef.h \
-  include/uapi/linux/stddef.h \
-  arch/x86/include/asm/posix_types.h \
-    $(wildcard include/config/X86_32) \
-  arch/x86/include/uapi/asm/posix_types_32.h \
-  include/uapi/asm-generic/posix_types.h \
-  include/linux/kcsan-checks.h \
-    $(wildcard include/config/KCSAN) \
-    $(wildcard include/config/KCSAN_WEAK_MEMORY) \
-    $(wildcard include/config/KCSAN_IGNORE_ATOMICS) \
-  include/linux/err.h \
-  arch/x86/include/generated/uapi/asm/errno.h \
-  include/uapi/asm-generic/errno.h \
-  include/uapi/asm-generic/errno-base.h \
-  include/linux/poison.h \
-    $(wildcard include/config/ILLEGAL_POINTER_VALUE) \
-  include/linux/const.h \
-  include/vdso/const.h \
-  include/uapi/linux/const.h \
-  arch/x86/include/asm/barrier.h \
-  arch/x86/include/asm/alternative.h \
-  include/linux/stringify.h \
-  arch/x86/include/asm/asm.h \
-  arch/x86/include/asm/extable_fixup_types.h \
-  arch/x86/include/asm/nops.h \
-  include/asm-generic/barrier.h \
-  include/linux/stat.h \
-  arch/x86/include/uapi/asm/stat.h \
-  include/uapi/linux/stat.h \
-  include/linux/time.h \
-    $(wildcard include/config/POSIX_TIMERS) \
-  include/linux/cache.h \
-    $(wildcard include/config/ARCH_HAS_CACHE_LINE_SIZE) \
-  include/uapi/linux/kernel.h \
-  include/uapi/linux/sysinfo.h \
-  arch/x86/include/asm/cache.h \
-    $(wildcard include/config/X86_L1_CACHE_SHIFT) \
-    $(wildcard include/config/X86_INTERNODE_CACHE_SHIFT) \
-    $(wildcard include/config/X86_VSMP) \
-  include/linux/linkage.h \
-    $(wildcard include/config/ARCH_USE_SYM_ANNOTATIONS) \
-  include/linux/export.h \
-    $(wildcard include/config/MODVERSIONS) \
-    $(wildcard include/config/MODULE_REL_CRCS) \
-    $(wildcard include/config/HAVE_ARCH_PREL32_RELOCATIONS) \
-    $(wildcard include/config/TRIM_UNUSED_KSYMS) \
-  arch/x86/include/asm/linkage.h \
-    $(wildcard include/config/X86_64) \
-    $(wildcard include/config/X86_ALIGNMENT_16) \
-    $(wildcard include/config/SLS) \
-  arch/x86/include/asm/ibt.h \
-    $(wildcard include/config/X86_KERNEL_IBT) \
-  include/linux/math64.h \
-    $(wildcard include/config/ARCH_SUPPORTS_INT128) \
-  include/linux/math.h \
-  arch/x86/include/asm/div64.h \
-  include/linux/log2.h \
-    $(wildcard include/config/ARCH_HAS_ILOG2_U32) \
-    $(wildcard include/config/ARCH_HAS_ILOG2_U64) \
-  include/linux/bitops.h \
- 
+reg_dma_ctl;
+	u32                        reg_lngth;
+	u32                        reg_hw_sop_ctrl;
+	u32                        reg_gen_ctrl;
+	u32                        reg_bd_pkt_status;
+	u32                        reg_sop_status;
+	u32                        reg_fifo_ovfl_stat;
+	u32                        reg_vld_misc;
+	u32                        reg_ts_clk_en;
+	u32                        reg_ts_int_msk;
+	u32                        reg_ts_int_stat;
+	u32                        reg_src_sel;
+
+	/* Default register vals */
+	int                        pci_irqmask;
+	u32                        dma_ctl_val;
+	u32                        ts_int_msk_val;
+	u32                        gen_ctrl_val;
+	u32                        ts_clk_en_val;
+	u32                        src_sel_val;
+	u32                        vld_misc_val;
+	u32                        hw_sop_ctrl_val;
+
+	/* Allow a single tsport to have multiple frontends */
+	u32                        num_frontends;
+	void                (*gate_ctrl)(struct cx23885_tsport *port, int open);
+	void                       *port_priv;
+
+	/* Workaround for a temp dvb_frontend that the tuner can attached to */
+	struct dvb_frontend analog_fe;
+
+	struct i2c_client *i2c_client_demod;
+	struct i2c_client *i2c_client_tuner;
+	struct i2c_client *i2c_client_sec;
+	struct i2c_client *i2c_client_ci;
+
+	int (*set_frontend)(struct dvb_frontend *fe);
+	int (*fe_set_voltage)(struct dvb_frontend *fe,
+			      enum fe_sec_voltage voltage);
+};
+
+struct cx23885_kernel_ir {
+	struct cx23885_dev	*cx;
+	char			*name;
+	char			*phys;
+
+	struct rc_dev		*rc;
+};
+
+struct cx23885_audio_buffer {
+	unsigned int		bpl;
+	struct cx23885_riscmem	risc;
+	void			*vaddr;
+	struct scatterlist	*sglist;
+	int			sglen;
+	unsigned long		nr_pages;
+};
+
+struct cx23885_audio_dev {
+	struct cx23885_dev	*dev;
+
+	struct pci_dev		*pci;
+
+	struct snd_card		*card;
+
+	spinlock_t		lock;
+
+	atomic_t		count;
+
+	unsigned int		dma_size;
+	unsigned int		period_size;
+	unsigned int		num_periods;
+
+	struct cx23885_audio_buffer   *buf;
+
+	struct snd_pcm_substream *substream;
+};
+
+struct cx23885_dev {
+	atomic_t                   refcount;
+	struct v4l2_device	   v4l2_dev;
+	struct v4l2_ctrl_handler   ctrl_handler;
+
+	/* pci stuff */
+	struct pci_dev             *pci;
+	unsigned char              pci_rev, pci_lat;
+	int                        pci_bus, pci_slot;
+	u32                        __iomem *lmmio;
+	u8                         __iomem *bmmio;
+	int                        pci_irqmask;
+	spinlock_t		   pci_irqmask_lock; /* protects mask reg too */
+	int                        hwrevision;
+
+	/* This valud is board specific and is used to configure the
+	 * AV core so we see nice clean and stable video and audio. */
+	u32                        clk_freq;
+
+	/* I2C adapters: Master 1 & 2 (External) & Master 3 (Internal only) */
+	struct cx23885_i2c         i2c_bus[3];
+
+	int                        nr;
+	struct mutex               lock;
+	struct mutex               gpio_lock;
+
+	/* board details */
+	unsigned int               board;
+	char                       name[32];
+
+	struct cx23885_tsport      ts1, ts2;
+
+	/* sram configuration */
+	struct sram_channel        *sram_channels;
+
+	enum {
+		CX23885_BRIDGE_UNDEFINED = 0,
+		CX23885_BRIDGE_885 = 885,
+		CX23885_BRIDGE_887 = 887,
+		CX23885_BRIDGE_888 = 888,
+	} bridge;
+
+	/* Analog video */
+	unsigned int               input;
+	unsigned int               audinput; /* Selectable audio input */
+	u32                    

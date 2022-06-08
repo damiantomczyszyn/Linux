@@ -1,283 +1,410 @@
-ig/RCU_FANOUT) \
-    $(wildcard include/config/RCU_FANOUT_LEAF) \
-  include/linux/page-flags-layout.h \
-    $(wildcard include/config/KASAN_HW_TAGS) \
-  include/linux/numa.h \
-    $(wildcard include/config/NODES_SHIFT) \
-    $(wildcard include/config/NUMA_KEEP_MEMINFO) \
-    $(wildcard include/config/HAVE_ARCH_NODE_DEV_GROUP) \
-  arch/x86/include/asm/sparsemem.h \
-  include/generated/bounds.h \
-  include/linux/seqlock.h \
-  include/linux/ww_mutex.h \
-    $(wildcard include/config/DEBUG_RT_MUTEXES) \
-    $(wildcard include/config/DEBUG_WW_MUTEX_SLOWPATH) \
-  include/linux/rtmutex.h \
-  arch/x86/include/asm/mmu.h \
-    $(wildcard include/config/MODIFY_LDT_SYSCALL) \
-  include/linux/kmod.h \
-  include/linux/umh.h \
-  include/linux/gfp.h \
-    $(wildcard include/config/HIGHMEM) \
-    $(wildcard include/config/ZONE_DMA) \
-    $(wildcard include/config/ZONE_DMA32) \
-    $(wildcard include/config/ZONE_DEVICE) \
-    $(wildcard include/config/PM_SLEEP) \
-    $(wildcard include/config/CONTIG_ALLOC) \
-    $(wildcard include/config/CMA) \
-  include/linux/mmdebug.h \
-    $(wildcard include/config/DEBUG_VM) \
-    $(wildcard include/config/DEBUG_VM_PGFLAGS) \
-  include/linux/mmzone.h \
-    $(wildcard include/config/FORCE_MAX_ZONEORDER) \
-    $(wildcard include/config/MEMORY_ISOLATION) \
-    $(wildcard include/config/ZSMALLOC) \
-    $(wildcard include/config/MEMORY_HOTPLUG) \
-    $(wildcard include/config/COMPACTION) \
-    $(wildcard include/config/PAGE_EXTENSION) \
-    $(wildcard include/config/DEFERRED_STRUCT_PAGE_INIT) \
-    $(wildcard include/config/HAVE_MEMORYLESS_NODES) \
-    $(wildcard include/config/SPARSEMEM_EXTREME) \
-    $(wildcard include/config/HAVE_ARCH_PFN_VALID) \
-  include/linux/nodemask.h \
-  include/linux/pageblock-flags.h \
-    $(wildcard include/config/HUGETLB_PAGE_SIZE_VARIABLE) \
-  include/linux/page-flags.h \
-    $(wildcard include/config/ARCH_USES_PG_UNCACHED) \
-    $(wildcard include/config/MEMORY_FAILURE) \
-    $(wildcard include/config/PAGE_IDLE_FLAG) \
-    $(wildcard include/config/HUGETLB_PAGE_FREE_VMEMMAP) \
-    $(wildcard include/config/HUGETLB_PAGE_FREE_VMEMMAP_DEFAULT_ON) \
-    $(wildcard include/config/KSM) \
-  include/linux/local_lock.h \
-  include/linux/local_lock_internal.h \
-  include/linux/memory_hotplug.h \
-    $(wildcard include/config/HAVE_ARCH_NODEDATA_EXTENSION) \
-    $(wildcard include/config/ARCH_HAS_ADD_PAGES) \
-    $(wildcard include/config/MEMORY_HOTREMOVE) \
-  arch/x86/include/asm/mmzone.h \
-  arch/x86/include/asm/mmzone_32.h \
-  include/linux/topology.h \
-    $(wildcard include/config/USE_PERCPU_NUMA_NODE_ID) \
-    $(wildcard include/config/SCHED_SMT) \
-    $(wildcard include/config/SCHED_CLUSTER) \
-  include/linux/arch_topology.h \
-    $(wildcard include/config/ACPI_CPPC_LIB) \
-    $(wildcard include/config/GENERIC_ARCH_TOPOLOGY) \
-  include/linux/percpu.h \
-    $(wildcard include/config/NEED_PER_CPU_EMBED_FIRST_CHUNK) \
-    $(wildcard include/config/NEED_PER_CPU_PAGE_FIRST_CHUNK) \
-  arch/x86/include/asm/topology.h \
-    $(wildcard include/config/SCHED_MC_PRIO) \
-  arch/x86/include/asm/mpspec.h \
-    $(wildcard include/config/EISA) \
-    $(wildcard include/config/X86_MPPARSE) \
-  arch/x86/include/asm/mpspec_def.h \
-  arch/x86/include/asm/x86_init.h \
-  arch/x86/include/asm/apicdef.h \
-  include/asm-generic/topology.h \
-  include/linux/sysctl.h \
-    $(wildcard include/config/SYSCTL) \
-  include/uapi/linux/sysctl.h \
-  include/linux/elf.h \
-    $(wildcard include/config/ARCH_USE_GNU_PROPERTY) \
-    $(wildcard include/config/ARCH_HAVE_ELF_PROT) \
-  arch/x86/include/asm/elf.h \
-    $(wildcard include/config/X86_X32_ABI) \
-  arch/x86/include/asm/user.h \
-  arch/x86/include/asm/user_32.h \
-  arch/x86/include/asm/fsgsbase.h \
-  arch/x86/include/asm/vdso.h \
-  arch/x86/include/asm/desc.h \
-  arch/x86/include/asm/fixmap.h \
-    $(wildcard include/config/DEBUG_KMAP_LOCAL_FORCE_MAP) \
-    $(wildcard include/config/X86_VSYSCALL_EMULATION) \
-    $(wildcard include/config/PROVIDE_OHCI1394_DMA_INIT) \
-    $(wildcard include/config/X86_IO_APIC) \
-    $(wildcard include/config/KMAP_LOCAL) \
-    $(wildcard include/config/PCI_MMCONFIG) \
-    $(wildcard include/config/ACPI_APEI_GHES) \
-    $(wildcard include/config/INTEL_TXT) \
-  arch/x86/include/generated/asm/kmap_size.h \
-  include/asm-generic/kmap_size.h \
-    $(wildcard include/config/DEBUG_KMAP_LOCAL) \
-  include/asm-generic/fixmap.h \
-  arch/x86/include/asm/irq_vectors.h \
-    $(wildcard include/config/HAVE_KVM) \
-    $(wildcard include/config/HYPERV) \
-    $(wildcard include/config/PCI_MSI) \
-  arch/x86/include/asm/cpu_entry_area.h \
-  arch/x86/include/asm/intel_ds.h \
-  arch/x86/include/asm/pgtable_areas.h \
-  arch/x86/include/asm/pgtable_32_areas.h \
-  include/uapi/linux/elf.h \
-  include/uapi/linux/elf-em.h \
-  include/linux/kobject.h \
-    $(wildcard include/config/UEVENT_HELPER) \
-    $(wildcard include/config/DEBUG_KOBJECT_RELEASE) \
-  include/linux/sysfs.h \
-  include/linux/kernfs.h \
-    $(wildcard include/config/KERNFS) \
-  include/linux/idr.h \
-  include/linux/radix-tree.h \
-  include/linux/xarray.h \
-    $(wildcard include/config/XARRAY_MULTI) \
-  include/linux/kconfig.h \
-  include/linux/kobject_ns.h \
-  include/linux/moduleparam.h \
-    $(wildcard include/config/ALPHA) \
-    $(wildcard include/config/IA64) \
-    $(wildcard include/config/PPC64) \
-  include/linux/rbtree_latch.h \
-  include/linux/error-injection.h \
-  include/asm-generic/error-injection.h \
-  include/linux/cfi.h \
-    $(wildcard include/config/CFI_CLANG_SHADOW) \
-  arch/x86/include/asm/module.h \
-    $(wildcard include/config/UNWINDER_ORC) \
-  include/asm-generic/module.h \
-    $(wildcard include/config/HAVE_MOD_ARCH_SPECIFIC) \
-    $(wildcard include/config/MODULES_USE_ELF_REL) \
-    $(wildcard include/config/MODULES_USE_ELF_RELA) \
-  arch/x86/include/asm/orc_types.h \
-  include/linux/i2c.h \
-    $(wildcard include/config/I2C) \
-    $(wildcard include/config/I2C_SLAVE) \
-    $(wildcard include/config/I2C_BOARDINFO) \
-    $(wildcard include/config/I2C_MUX) \
-    $(wildcard include/config/OF) \
-    $(wildcard include/config/ACPI) \
-  include/linux/acpi.h \
-    $(wildcard include/config/ACPI_DEBUGGER) \
-    $(wildcard include/config/ACPI_TABLE_LIB) \
-    $(wildcard include/config/LOONGARCH) \
-    $(wildcard include/config/ARM64) \
-    $(wildcard include/config/ACPI_PROCESSOR_CSTATE) \
-    $(wildcard include/config/ACPI_HOTPLUG_CPU) \
-    $(wildcard include/config/ACPI_HOTPLUG_IOAPIC) \
-    $(wildcard include/config/PCI) \
-    $(wildcard include/config/ACPI_WMI) \
-    $(wildcard include/config/ACPI_NUMA) \
-    $(wildcard include/config/HIBERNATION) \
-    $(wildcard include/config/ACPI_HOTPLUG_MEMORY) \
-    $(wildcard include/config/ACPI_CONTAINER) \
-    $(wildcard include/config/ACPI_GTDT) \
-    $(wildcard include/config/PM) \
-    $(wildcard include/config/GPIOLIB) \
-    $(wildcard include/config/ACPI_TABLE_UPGRADE) \
-    $(wildcard include/config/ACPI_WATCHDOG) \
-    $(wildcard include/config/ACPI_SPCR_TABLE) \
-    $(wildcard include/config/ACPI_GENERIC_GSI) \
-    $(wildcard include/config/ACPI_LPIT) \
-    $(wildcard include/config/ACPI_PPTT) \
-    $(wildcard include/config/ACPI_PCC) \
-  include/linux/ioport.h \
-  include/linux/irqdomain.h \
-    $(wildcard include/config/IRQ_DOMAIN_HIERARCHY) \
-    $(wildcard include/config/GENERIC_IRQ_DEBUGFS) \
-    $(wildcard include/config/IRQ_DOMAIN) \
-    $(wildcard include/config/IRQ_DOMAIN_NOMAP) \
-  include/linux/irqhandler.h \
-  include/linux/of.h \
-    $(wildcard include/config/OF_DYNAMIC) \
-    $(wildcard include/config/SPARC) \
-    $(wildcard include/config/OF_PROMTREE) \
-    $(wildcard include/config/OF_KOBJ) \
-    $(wildcard include/config/OF_NUMA) \
-    $(wildcard include/config/OF_OVERLAY) \
-  include/linux/mod_devicetable.h \
-  include/linux/uuid.h \
-  include/uapi/linux/uuid.h \
-  include/linux/property.h \
-  include/linux/fwnode.h \
-  include/linux/resource_ext.h \
-  include/linux/slab.h \
-    $(wildcard include/config/DEBUG_SLAB) \
-    $(wildcard include/config/FAILSLAB) \
-    $(wildcard include/config/MEMCG_KMEM) \
-    $(wildcard include/config/KASAN) \
-    $(wildcard include/config/SLAB) \
-    $(wildcard include/config/SLUB) \
-    $(wildcard include/config/SLOB) \
-  include/linux/overflow.h \
-  include/linux/percpu-refcount.h \
-  include/linux/kasan.h \
-    $(wildcard include/config/KASAN_STACK) \
-    $(wildcard include/config/KASAN_VMALLOC) \
-    $(wildcard include/config/KASAN_INLINE) \
-  include/linux/kasan-enabled.h \
-  include/linux/device.h \
-    $(wildcard include/config/GENERIC_MSI_IRQ_DOMAIN) \
-    $(wildcard include/config/GENERIC_MSI_IRQ) \
-    $(wildcard include/config/ENERGY_MODEL) \
-    $(wildcard include/config/PINCTRL) \
-    $(wildcard include/config/DMA_OPS) \
-    $(wildcard include/config/DMA_DECLARE_COHERENT) \
-    $(wildcard include/config/DMA_CMA) \
-    $(wildcard include/config/SWIOTLB) \
-    $(wildcard include/config/ARCH_HAS_SYNC_DMA_FOR_DEVICE) \
-    $(wildcard include/config/ARCH_HAS_SYNC_DMA_FOR_CPU) \
-    $(wildcard include/config/ARCH_HAS_SYNC_DMA_FOR_CPU_ALL) \
-    $(wildcard include/config/DMA_OPS_BYPASS) \
-    $(wildcard include/config/DEVTMPFS) \
-    $(wildcard include/config/SYSFS_DEPRECATED) \
-  include/linux/dev_printk.h \
-  include/linux/ratelimit.h \
-  include/linux/sched.h \
-    $(wildcard include/config/VIRT_CPU_ACCOUNTING_NATIVE) \
-    $(wildcard include/config/SCHED_INFO) \
-    $(wildcard include/config/SCHEDSTATS) \
-    $(wildcard include/config/SCHED_CORE) \
-    $(wildcard include/config/FAIR_GROUP_SCHED) \
-    $(wildcard include/config/RT_GROUP_SCHED) \
-    $(wildcard include/config/RT_MUTEXES) \
-    $(wildcard include/config/UCLAMP_TASK) \
-    $(wildcard include/config/UCLAMP_BUCKETS_COUNT) \
-    $(wildcard include/config/CGROUP_SCHED) \
-    $(wildcard include/config/BLK_DEV_IO_TRACE) \
-    $(wildcard include/config/PSI) \
-    $(wildcard include/config/COMPAT_BRK) \
-    $(wildcard include/config/CGROUPS) \
-    $(wildcard include/config/BLK_CGROUP) \
-    $(wildcard include/config/PAGE_OWNER) \
-    $(wildcard include/config/EVENTFD) \
-    $(wildcard include/config/ARCH_HAS_SCALED_CPUTIME) \
-    $(wildcard include/config/VIRT_CPU_ACCOUNTING_GEN) \
-    $(wildcard include/config/POSIX_CPUTIMERS) \
-    $(wildcard include/config/POSIX_CPU_TIMERS_TASK_WORK) \
-    $(wildcard include/config/KEYS) \
-    $(wildcard include/config/SYSVIPC) \
-    $(wildcard include/config/DETECT_HUNG_TASK) \
-    $(wildcard include/config/IO_URING) \
-    $(wildcard include/config/AUDIT) \
-    $(wildcard include/config/AUDITSYSCALL) \
-    $(wildcard include/config/UBSAN) \
-    $(wildcard include/config/UBSAN_TRAP) \
-    $(wildcard include/config/TASK_XACCT) \
-    $(wildcard include/config/CPUSETS) \
-    $(wildcard include/config/X86_CPU_RESCTRL) \
-    $(wildcard include/config/FUTEX) \
-    $(wildcard include/config/PERF_EVENTS) \
-    $(wildcard include/config/RSEQ) \
-    $(wildcard include/config/TASK_DELAY_ACCT) \
-    $(wildcard include/config/FAULT_INJECTION) \
-    $(wildcard include/config/LATENCYTOP) \
-    $(wildcard include/config/KUNIT) \
-    $(wildcard include/config/FUNCTION_GRAPH_TRACER) \
-    $(wildcard include/config/BCACHE) \
-    $(wildcard include/config/VMAP_STACK) \
-    $(wildcard include/config/SECURITY) \
-    $(wildcard include/config/BPF_SYSCALL) \
-    $(wildcard include/config/GCC_PLUGIN_STACKLEAK) \
-    $(wildcard include/config/X86_MCE) \
-    $(wildcard include/config/KRETPROBES) \
-    $(wildcard include/config/RETHOOK) \
-    $(wildcard include/config/ARCH_HAS_PARANOID_L1D_FLUSH) \
-    $(wildcard include/config/ARCH_TASK_STRUCT_ON_STACK) \
-    $(wildcard include/config/DEBUG_RSEQ) \
-  include/uapi/linux/sched.h \
-  include/linux/pid.h \
-  include/linux/rculist.h \
-    $(wildcard include/config/PROVE_RCU_LIST) \
-  include/linux/sem.h \
-  in
+// SPDX-License-Identifier: GPL-2.0-or-later
+/*
+ *  Driver for the Conexant CX23885/7/8 PCIe bridge
+ *
+ *  Infrared remote control input device
+ *
+ *  Most of this file is
+ *
+ *  Copyright (C) 2009  Andy Walls <awalls@md.metrocast.net>
+ *
+ *  However, the cx23885_input_{init,fini} functions contained herein are
+ *  derived from Linux kernel files linux/media/video/.../...-input.c marked as:
+ *
+ *  Copyright (C) 2008 <srinivasa.deevi at conexant dot com>
+ *  Copyright (C) 2005 Ludovico Cavedon <cavedon@sssup.it>
+ *		       Markus Rechberger <mrechberger@gmail.com>
+ *		       Mauro Carvalho Chehab <mchehab@kernel.org>
+ *		       Sascha Sommer <saschasommer@freenet.de>
+ *  Copyright (C) 2004, 2005 Chris Pascoe
+ *  Copyright (C) 2003, 2004 Gerd Knorr
+ *  Copyright (C) 2003 Pavel Machek
+ */
+
+#include "cx23885.h"
+#include "cx23885-input.h"
+
+#include <linux/slab.h>
+#include <media/rc-core.h>
+#include <media/v4l2-subdev.h>
+
+#define MODULE_NAME "cx23885"
+
+static void cx23885_input_process_measurements(struct cx23885_dev *dev,
+					       bool overrun)
+{
+	struct cx23885_kernel_ir *kernel_ir = dev->kernel_ir;
+
+	ssize_t num;
+	int count, i;
+	bool handle = false;
+	struct ir_raw_event ir_core_event[64];
+
+	do {
+		num = 0;
+		v4l2_subdev_call(dev->sd_ir, ir, rx_read, (u8 *) ir_core_event,
+				 sizeof(ir_core_event), &num);
+
+		count = num / sizeof(struct ir_raw_event);
+
+		for (i = 0; i < count; i++) {
+			ir_raw_event_store(kernel_ir->rc,
+					   &ir_core_event[i]);
+			handle = true;
+		}
+	} while (num != 0);
+
+	if (overrun)
+		ir_raw_event_overflow(kernel_ir->rc);
+	else if (handle)
+		ir_raw_event_handle(kernel_ir->rc);
+}
+
+void cx23885_input_rx_work_handler(struct cx23885_dev *dev, u32 events)
+{
+	struct v4l2_subdev_ir_parameters params;
+	int overrun, data_available;
+
+	if (dev->sd_ir == NULL || events == 0)
+		return;
+
+	switch (dev->board) {
+	case CX23885_BOARD_HAUPPAUGE_HVR1270:
+	case CX23885_BOARD_HAUPPAUGE_HVR1850:
+	case CX23885_BOARD_HAUPPAUGE_HVR1290:
+	case CX23885_BOARD_TERRATEC_CINERGY_T_PCIE_DUAL:
+	case CX23885_BOARD_TEVII_S470:
+	case CX23885_BOARD_HAUPPAUGE_HVR1250:
+	case CX23885_BOARD_MYGICA_X8507:
+	case CX23885_BOARD_TBS_6980:
+	case CX23885_BOARD_TBS_6981:
+	case CX23885_BOARD_DVBSKY_T9580:
+	case CX23885_BOARD_DVBSKY_T980C:
+	case CX23885_BOARD_DVBSKY_S950C:
+	case CX23885_BOARD_TT_CT2_4500_CI:
+	case CX23885_BOARD_DVBSKY_S950:
+	case CX23885_BOARD_DVBSKY_S952:
+	case CX23885_BOARD_DVBSKY_T982:
+	case CX23885_BOARD_HAUPPAUGE_HVR1265_K4:
+		/*
+		 * The only boards we handle right now.  However other boards
+		 * using the CX2388x integrated IR controller should be similar
+		 */
+		break;
+	default:
+		return;
+	}
+
+	overrun = events & (V4L2_SUBDEV_IR_RX_SW_FIFO_OVERRUN |
+			    V4L2_SUBDEV_IR_RX_HW_FIFO_OVERRUN);
+
+	data_available = events & (V4L2_SUBDEV_IR_RX_END_OF_RX_DETECTED |
+				   V4L2_SUBDEV_IR_RX_FIFO_SERVICE_REQ);
+
+	if (overrun) {
+		/* If there was a FIFO overrun, stop the device */
+		v4l2_subdev_call(dev->sd_ir, ir, rx_g_parameters, &params);
+		params.enable = false;
+		/* Mitigate race with cx23885_input_ir_stop() */
+		params.shutdown = atomic_read(&dev->ir_input_stopping);
+		v4l2_subdev_call(dev->sd_ir, ir, rx_s_parameters, &params);
+	}
+
+	if (data_available)
+		cx23885_input_process_measurements(dev, overrun);
+
+	if (overrun) {
+		/* If there was a FIFO overrun, clear & restart the device */
+		params.enable = true;
+		/* Mitigate race with cx23885_input_ir_stop() */
+		params.shutdown = atomic_read(&dev->ir_input_stopping);
+		v4l2_subdev_call(dev->sd_ir, ir, rx_s_parameters, &params);
+	}
+}
+
+static int cx23885_input_ir_start(struct cx23885_dev *dev)
+{
+	struct v4l2_subdev_ir_parameters params;
+
+	if (dev->sd_ir == NULL)
+		return -ENODEV;
+
+	atomic_set(&dev->ir_input_stopping, 0);
+
+	v4l2_subdev_call(dev->sd_ir, ir, rx_g_parameters, &params);
+	switch (dev->board) {
+	case CX23885_BOARD_HAUPPAUGE_HVR1270:
+	case CX23885_BOARD_HAUPPAUGE_HVR1850:
+	case CX23885_BOARD_HAUPPAUGE_HVR1290:
+	case CX23885_BOARD_HAUPPAUGE_HVR1250:
+	case CX23885_BOARD_MYGICA_X8507:
+	case CX23885_BOARD_DVBSKY_T9580:
+	case CX23885_BOARD_DVBSKY_T980C:
+	case CX23885_BOARD_DVBSKY_S950C:
+	case CX23885_BOARD_TT_CT2_4500_CI:
+	case CX23885_BOARD_DVBSKY_S950:
+	case CX23885_BOARD_DVBSKY_S952:
+	case CX23885_BOARD_DVBSKY_T982:
+	case CX23885_BOARD_HAUPPAUGE_HVR1265_K4:
+		/*
+		 * The IR controller on this board only returns pulse widths.
+		 * Any other mode setting will fail to set up the device.
+		*/
+		params.mode = V4L2_SUBDEV_IR_MODE_PULSE_WIDTH;
+		params.enable = true;
+		params.interrupt_enable = true;
+		params.shutdown = false;
+
+		/* Setup for baseband compatible with both RC-5 and RC-6A */
+		params.modulation = false;
+		/* RC-5:  2,222,222 ns = 1/36 kHz * 32 cycles * 2 marks * 1.25*/
+		/* RC-6A: 3,333,333 ns = 1/36 kHz * 16 cycles * 6 marks * 1.25*/
+		params.max_pulse_width = 3333333; /* ns */
+		/* RC-5:    666,667 ns = 1/36 kHz * 32 cycles * 1 mark * 0.75 */
+		/* RC-6A:   333,333 ns = 1/36 kHz * 16 cycles * 1 mark * 0.75 */
+		params.noise_filter_min_width = 333333; /* ns */
+		/*
+		 * This board has inverted receive sense:
+		 * mark is received as low logic level;
+		 * falling edges are detected as rising edges; etc.
+		 */
+		params.invert_level = true;
+		break;
+	case CX23885_BOARD_TERRATEC_CINERGY_T_PCIE_DUAL:
+	case CX23885_BOARD_TEVII_S470:
+	case CX23885_BOARD_TBS_6980:
+	case CX23885_BOARD_TBS_6981:
+		/*
+		 * The IR controller on this board only returns pulse widths.
+		 * Any other mode setting will fail to set up the device.
+		 */
+		params.mode = V4L2_SUBDEV_IR_MODE_PULSE_WIDTH;
+		params.enable = true;
+		params.interrupt_enable = true;
+		params.shutdown = false;
+
+		/* Setup for a standard NEC protocol */
+		params.carrier_freq = 37917; /* Hz, 455 kHz/12 for NEC */
+		params.carrier_range_lower = 33000; /* Hz */
+		params.carrier_range_upper = 43000; /* Hz */
+		params.duty_cycle = 33; /* percent, 33 percent for NEC */
+
+		/*
+		 * NEC max pulse width: (64/3)/(455 kHz/12) * 16 nec_units
+		 * (64/3)/(455 kHz/12) * 16 nec_units * 1.375 = 12378022 ns
+		 */
+		params.max_pulse_width = 12378022; /* ns */
+
+		/*
+		 * NEC noise filter min width: (64/3)/(455 kHz/12) * 1 nec_unit
+		 * (64/3)/(455 kHz/12) * 1 nec_units * 0.625 = 351648 ns
+		 */
+		params.noise_filter_min_width = 351648; /* ns */
+
+		params.modulation = false;
+		params.invert_level = true;
+		break;
+	}
+	v4l2_subdev_call(dev->sd_ir, ir, rx_s_parameters, &params);
+	return 0;
+}
+
+static int cx23885_input_ir_open(struct rc_dev *rc)
+{
+	struct cx23885_kernel_ir *kernel_ir = rc->priv;
+
+	if (kernel_ir->cx == NULL)
+		return -ENODEV;
+
+	return cx23885_input_ir_start(kernel_ir->cx);
+}
+
+static void cx23885_input_ir_stop(struct cx23885_dev *dev)
+{
+	struct v4l2_subdev_ir_parameters params;
+
+	if (dev->sd_ir == NULL)
+		return;
+
+	/*
+	 * Stop the sd_ir subdevice from generating notifications and
+	 * scheduling work.
+	 * It is shutdown this way in order to mitigate a race with
+	 * cx23885_input_rx_work_handler() in the overrun case, which could
+	 * re-enable the subdevice.
+	 */
+	atomic_set(&dev->ir_input_stopping, 1);
+	v4l2_subdev_call(dev->sd_ir, ir, rx_g_parameters, &params);
+	while (params.shutdown == false) {
+		params.enable = false;
+		params.interrupt_enable = false;
+		params.shutdown = true;
+		v4l2_subdev_call(dev->sd_ir, ir, rx_s_parameters, &params);
+		v4l2_subdev_call(dev->sd_ir, ir, rx_g_parameters, &params);
+	}
+	flush_work(&dev->cx25840_work);
+	flush_work(&dev->ir_rx_work);
+	flush_work(&dev->ir_tx_work);
+}
+
+static void cx23885_input_ir_close(struct rc_dev *rc)
+{
+	struct cx23885_kernel_ir *kernel_ir = rc->priv;
+
+	if (kernel_ir->cx != NULL)
+		cx23885_input_ir_stop(kernel_ir->cx);
+}
+
+int cx23885_input_init(struct cx23885_dev *dev)
+{
+	struct cx23885_kernel_ir *kernel_ir;
+	struct rc_dev *rc;
+	char *rc_map;
+	u64 allowed_protos;
+
+	int ret;
+
+	/*
+	 * If the IR device (hardware registers, chip, GPIO lines, etc.) isn't
+	 * encapsulated in a v4l2_subdev, then I'm not going to deal with it.
+	 */
+	if (dev->sd_ir == NULL)
+		return -ENODEV;
+
+	switch (dev->board) {
+	case CX23885_BOARD_HAUPPAUGE_HVR1270:
+	case CX23885_BOARD_HAUPPAUGE_HVR1850:
+	case CX23885_BOARD_HAUPPAUGE_HVR1290:
+	case CX23885_BOARD_HAUPPAUGE_HVR1250:
+	case CX23885_BOARD_HAUPPAUGE_HVR1265_K4:
+		/* Integrated CX2388[58] IR controller */
+		allowed_protos = RC_PROTO_BIT_ALL_IR_DECODER;
+		/* The grey Hauppauge RC-5 remote */
+		rc_map = RC_MAP_HAUPPAUGE;
+		break;
+	case CX23885_BOARD_TERRATEC_CINERGY_T_PCIE_DUAL:
+		/* Integrated CX23885 IR controller */
+		allowed_protos = RC_PROTO_BIT_ALL_IR_DECODER;
+		/* The grey Terratec remote with orange buttons */
+		rc_map = RC_MAP_NEC_TERRATEC_CINERGY_XS;
+		break;
+	case CX23885_BOARD_TEVII_S470:
+		/* Integrated CX23885 IR controller */
+		allowed_protos = RC_PROTO_BIT_ALL_IR_DECODER;
+		/* A guess at the remote */
+		rc_map = RC_MAP_TEVII_NEC;
+		break;
+	case CX23885_BOARD_MYGICA_X8507:
+		/* Integrated CX23885 IR controller */
+		allowed_protos = RC_PROTO_BIT_ALL_IR_DECODER;
+		/* A guess at the remote */
+		rc_map = RC_MAP_TOTAL_MEDIA_IN_HAND_02;
+		break;
+	case CX23885_BOARD_TBS_6980:
+	case CX23885_BOARD_TBS_6981:
+		/* Integrated CX23885 IR controller */
+		allowed_protos = RC_PROTO_BIT_ALL_IR_DECODER;
+		/* A guess at the remote */
+		rc_map = RC_MAP_TBS_NEC;
+		break;
+	case CX23885_BOARD_DVBSKY_T9580:
+	case CX23885_BOARD_DVBSKY_T980C:
+	case CX23885_BOARD_DVBSKY_S950C:
+	case CX23885_BOARD_DVBSKY_S950:
+	case CX23885_BOARD_DVBSKY_S952:
+	case CX23885_BOARD_DVBSKY_T982:
+		/* Integrated CX23885 IR controller */
+		allowed_protos = RC_PROTO_BIT_ALL_IR_DECODER;
+		rc_map = RC_MAP_DVBSKY;
+		break;
+	case CX23885_BOARD_TT_CT2_4500_CI:
+		/* Integrated CX23885 IR controller */
+		allowed_protos = RC_PROTO_BIT_ALL_IR_DECODER;
+		rc_map = RC_MAP_TT_1500;
+		break;
+	default:
+		return -ENODEV;
+	}
+
+	/* cx23885 board instance kernel IR state */
+	kernel_ir = kzalloc(sizeof(struct cx23885_kernel_ir), GFP_KERNEL);
+	if (kernel_ir == NULL)
+		return -ENOMEM;
+
+	kernel_ir->cx = dev;
+	kernel_ir->name = kasprintf(GFP_KERNEL, "cx23885 IR (%s)",
+				    cx23885_boards[dev->board].name);
+	if (!kernel_ir->name) {
+		ret = -ENOMEM;
+		goto err_out_free;
+	}
+
+	kernel_ir->phys = kasprintf(GFP_KERNEL, "pci-%s/ir0",
+				    pci_name(dev->pci));
+	if (!kernel_ir->phys) {
+		ret = -ENOMEM;
+		goto err_out_free_name;
+	}
+
+	/* input device */
+	rc = rc_allocate_device(RC_DRIVER_IR_RAW);
+	if (!rc) {
+		ret = -ENOMEM;
+		goto err_out_free_phys;
+	}
+
+	kernel_ir->rc = rc;
+	rc->device_name = kernel_ir->name;
+	rc->input_phys = kernel_ir->phys;
+	rc->input_id.bustype = BUS_PCI;
+	rc->input_id.version = 1;
+	if (dev->pci->subsystem_vendor) {
+		rc->input_id.vendor  = dev->pci->subsystem_vendor;
+		rc->input_id.product = dev->pci->subsystem_device;
+	} else {
+		rc->input_id.vendor  = dev->pci->vendor;
+		rc->input_id.product = dev->pci->device;
+	}
+	rc->dev.parent = &dev->pci->dev;
+	rc->allowed_protocols = allowed_protos;
+	rc->priv = kernel_ir;
+	rc->open = cx23885_input_ir_open;
+	rc->close = cx23885_input_ir_close;
+	rc->map_name = rc_map;
+	rc->driver_name = MODULE_NAME;
+
+	/* Go */
+	dev->kernel_ir = kernel_ir;
+	ret = rc_register_device(rc);
+	if (ret)
+		goto err_out_stop;
+
+	return 0;
+
+err_out_stop:
+	cx23885_input_ir_stop(dev);
+	dev->kernel_ir = NULL;
+	rc_free_device(rc);
+err_out_free_phys:
+	kfree(kernel_ir->phys);
+err_out_free_name:
+	kfree(kernel_ir->name);
+err_out_free:
+	kfree(kernel_ir);
+	return ret;
+}
+
+void cx23885_input_fini(struct cx23885_dev *dev)
+{
+	/* Always stop the IR hardware from generating interrupts */
+	cx23885_input_ir_stop(dev);
+
+	if (dev->kernel_ir == NULL)
+		return;
+	rc_unregister_device(dev->kernel_ir->rc);
+	kfree(dev->kernel_ir->phys);
+	kfree(dev->kernel_ir->name);
+	kfree(dev->kernel_ir);
+	dev->kernel_ir = NULL;
+}
+                                                                                                                                                                                   

@@ -1,7 +1,7 @@
-(int offset, int next, int bucket, int size)
-{
-	chain_hlocks[offset] = (next >> 16) | CHAIN_BLK_FLAG;
-	chain_hlocks[offset + 1] = (u16)next;
-
-	if (size && !bucket) {
-		chain_hlocks[off
+pauge WinTV-HVR1275",
+		.portc		= CX23885_MPEG_DVB,
+	},
+	[CX23885_BOARD_HAUPPAUGE_HVR1255] = {
+		.name		= "Hauppauge WinTV-HVR1255",
+		.porta		= CX23885_ANALOG_VIDEO,
+		.portc		= CX238

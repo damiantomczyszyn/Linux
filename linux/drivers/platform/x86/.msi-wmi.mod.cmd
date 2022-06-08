@@ -1,4 +1,5 @@
-x/scatterlist.h \
-    $(wildcard include/config/NEED_SG_DMA_LENGTH) \
-    $(wildcard include/config/DEBUG_SG) \
-    $(wildca
+_LEADTEK_WINFAST_PXDVR3200_H,
+	}, {
+		.subvendor = 0x107d,
+		.subdevice = 0x6f21,
+		.card      = CX23885_BOARD_LEADTEK_WINFA

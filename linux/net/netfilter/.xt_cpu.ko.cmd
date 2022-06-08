@@ -1,5 +1,8 @@
-    $(wildcard include/config/HIGH_RES_TIMERS) \
-    $(wildcard include/config/TIME_LOW_RES) \
-    $(wildcard include/config/TIMERFD) \
-  include/linux/hrtimer_defs.h \
-  i
+>drv_priv;
+	struct cx23885_buffer *buf = container_of(vbuf,
+		struct cx23885_buffer, vb);
+
+	cx23885_free_buffer(dev, buf);
+}
+
+static void buffer_queue(struct vb2_buffer *vb

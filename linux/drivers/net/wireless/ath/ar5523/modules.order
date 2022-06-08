@@ -1,2 +1,1 @@
-U_FANOUT_LEAF) \
-  include/linux/page-flag
+/* SPDX-License-Identifier: GPL-2.0-or-lat

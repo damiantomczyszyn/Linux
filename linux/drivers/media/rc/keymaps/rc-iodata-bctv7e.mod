@@ -1,2 +1,3 @@
-drivers/media/rc/keymaps/rc-iodata-bctv7e.o
-
+IDEO;
+		break;
+	case CX23885_BOARD_DVBSKY_T95

@@ -1,10 +1,17 @@
-e/linux/rwlock.h \
-    $(wildcard include/config/PREEMPT) \
-  include/linux/spinlock_api_smp.h \
-    $(wildcard include/config/INLINE_SPIN_LOCK) \
-    $(wildcard include/config/INLINE_SPIN_LOCK_BH) \
-    $(wildcard include/config/INLINE_SPIN_LOCK_IRQ) \
-    $(wildcard include/config/INLINE_SPIN_LOCK_IRQSAVE) \
-    $(wildcard include/config/INLINE_SPIN_TRYLOCK) \
-    $(wildcard include/config/INLINE_SPIN_TRYLOCK_BH) \
-    $(wild
+// SPDX-License-Identifier: GPL-2.0-or-later
+/*
+ * cimax2.c
+ *
+ * CIMax2(R) SP2 driver in conjunction with NetUp Dual DVB-S2 CI card
+ *
+ * Copyright (C) 2009 NetUP Inc.
+ * Copyright (C) 2009 Igor M. Liplianin <liplianin@netup.ru>
+ * Copyright (C) 2009 Abylay Ospan <aospan@netup.ru>
+ */
+
+#include "cx23885.h"
+#include "cimax2.h"
+#include <media/dvb_ca_en50221.h>
+
+/* Max transfer size done by I2C transfer functions */
+#define MAX_

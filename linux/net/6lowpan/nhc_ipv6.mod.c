@@ -1,29 +1,27 @@
-tirqs will be enabled:
- */
-void lockdep_softirqs_on(unsigned long ip)
-{
-	struct irqtrace_events *trace = &current->irqtrace;
-
-	if (unlikely(!lockdep_enabled()))
-		return;
-
-	/*
-	 * We fancy IRQs being disabled here, see softirq.c, avoids
-	 * funny state and nesting things.
-	 */
-	if (DEBUG_LOCKS_WARN_ON(!irqs_disabled()))
-		return;
-
-	if (current->softirqs_enabled) {
-		debug_atomic_inc(redundant_softirqs_on);
-		return;
+irqsave(&p->pi_lock, flags);
+#ifdef CONFIG_CGROUP_SCHED
+	if (1) {
+		struct task_group *tg;
+		tg = container_of(kargs->cset->subsys[cpu_cgrp_id],
+				  struct task_group, css);
+		tg = autogroup_task_group(p, tg);
+		p->sched_task_group = tg;
 	}
-
-	lockdep_recursion_inc();
+#endif
+	rseq_migrate(p);
 	/*
-	 * We'll do an OFF -> ON transition:
+	 * We're setting the CPU for the first time, we don't migrate,
+	 * so use __set_task_cpu().
 	 */
-	current->softirqs_enabled = 1;
-	trace->softirq_enable_ip = ip;
-	trace->softirq_enable_event = ++trace->irq_events;
-	d
+	__set_task_cpu(p, smp_processor_id());
+	if (p->sched_class->task_fork)
+		p->sched_class->task_fork(p);
+	raw_spin_unlock_irqrestore(&p->pi_lock, flags);
+}
+
+void sched_post_fork(struct task_struct *p)
+{
+	uclamp_post_fork(p);
+}
+
+unsigned long to_r

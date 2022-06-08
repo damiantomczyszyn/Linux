@@ -1,5 +1,1 @@
-nclude/config/GENERIC_ATOMIC64) \
-  include/linux/atomic/atomic-long.h \
-  include/linux/atomic/atomic-instrumented.h \
-  include/linux/bug.h \
-    $(wildcard include
+cmd_drivers/media/pci/cx18/modules.order := {   echo drivers/media/pci/cx18/cx18.ko;   echo drivers/media/pci/cx18/cx18-alsa.ko; :; } | awk '!x[$$0]++' - > drivers/me

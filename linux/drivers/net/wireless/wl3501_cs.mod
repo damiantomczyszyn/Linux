@@ -1,2 +1,2 @@
-g/CC_HAS_ASM_GOTO_TIED_OUTPUT) \
- 
+sm/atomic64_32.h \
+  include/linux

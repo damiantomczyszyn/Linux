@@ -1,50 +1,59 @@
-IC_IOREMAP) \
-    $(wildcard include/config/VIRT_TO_BUS) \
-    $(wildcard include/config/GENERIC_DEVMEM_IS_ALLOWED) \
-  include/linux/logic_pio.h \
-    $(wildcard include/config/INDIRECT_PIO) \
-  include/linux/vmalloc.h \
-    $(wildcard include/config/HAVE_ARCH_HUGE_VMALLOC) \
-  arch/x86/include/asm/vmalloc.h \
-    $(wildcard include/config/HAVE_ARCH_HUGE_VMAP) \
-  arch/x86/include/asm/acpi.h \
-    $(wildcard include/config/ACPI_APEI) \
-  include/acpi/pdc_intel.h \
-  arch/x86/include/asm/numa.h \
-    $(wildcard include/config/NUMA_EMU) \
-  arch/x86/include/asm/numa_32.h \
-  include/linux/regulator/consumer.h \
-    $(wildcard include/config/REGULATOR) \
-  include/linux/suspend.h \
-    $(wildcard include/config/VT) \
-    $(wildcard include/config/SUSPEND) \
-    $(wildcard include/config/HIBERNATION_SNAPSHOT_DEV) \
-    $(wildcard include/config/PM_SLEEP_DEBUG) \
-    $(wildcard include/config/PM_AUTOSLEEP) \
-  include/linux/swap.h \
-    $(wildcard include/config/DEVICE_PRIVATE) \
-    $(wildcard include/config/MIGRATION) \
-    $(wildcard include/config/FRONTSWAP) \
-    $(wildcard include/config/THP_SWAP) \
-    $(wildcard include/config/MEMCG_SWAP) \
-  include/linux/memcontrol.h \
-    $(wildcard include/config/CGROUP_WRITEBACK) \
-  include/linux/cgroup.h \
-    $(wildcard include/config/CGROUP_CPUACCT) \
-    $(wildcard include/config/SOCK_CGROUP_DATA) \
-    $(wildcard include/config/CGROUP_DATA) \
-    $(wildcard include/config/CGROUP_BPF) \
-  include/uapi/linux/cgroupstats.h \
-  include/uapi/linux/taskstats.h \
-  include/linux/fs.h \
-    $(wildcard include/config/READ_ONLY_THP_FOR_FS) \
-    $(wildcard include/config/FS_POSIX_ACL) \
-    $(wildcard include/config/IMA) \
-    $(wildcard include/config/FILE_LOCKING) \
-    $(wildcard include/config/FSNOTIFY) \
-    $(wildcard include/config/FS_ENCRYPTION) \
-    $(wildcard include/config/FS_VERITY) \
-    $(wildcard include/config/EPOLL) \
-    $(wildcard include/config/UNICODE) \
-    $(wildcard include/config/QUOTA) \
-    $(wildcard include/conf
+00000036);
+		cx_write(MC417_OEN, 0x00001000);
+		cx_set(MC417_RWD, 0x00000002);
+		msleep(200);
+		cx_clear(MC417_RWD, 0x00000800);
+		msleep(200);
+		cx_set(MC417_RWD, 0x00000800);
+		msleep(200);
+		break;
+	case CX23885_BOARD_NETUP_DUAL_DVBS2_CI:
+		/* GPIO-0 INTA from CiMax1
+		   GPIO-1 INTB from CiMax2
+		   GPIO-2 reset chips
+		   GPIO-3 to GPIO-10 data/addr for CA
+		   GPIO-11 ~CS0 to CiMax1
+		   GPIO-12 ~CS1 to CiMax2
+		   GPIO-13 ADL0 load LSB addr
+		   GPIO-14 ADL1 load MSB addr
+		   GPIO-15 ~RDY from CiMax
+		   GPIO-17 ~RD to CiMax
+		   GPIO-18 ~WR to CiMax
+		 */
+		cx_set(GP0_IO, 0x00040000); /* GPIO as out */
+		/* GPIO1 and GPIO2 as INTA and INTB from CiMaxes, reset low */
+		cx_clear(GP0_IO, 0x00030004);
+		msleep(100);/* reset delay */
+		cx_set(GP0_IO, 0x00040004); /* GPIO as out, reset high */
+		cx_write(MC417_CTL, 0x00000037);/* enable GPIO3-18 pins */
+		/* GPIO-15 IN as ~ACK, rest as OUT */
+		cx_write(MC417_OEN, 0x00001000);
+		/* ~RD, ~WR high; ADL0, ADL1 low; ~CS0, ~CS1 high */
+		cx_write(MC417_RWD, 0x0000c300);
+		/* enable irq */
+		cx_write(GPIO_ISM, 0x00000000);/* INTERRUPTS active low*/
+		break;
+	case CX23885_BOARD_HAUPPAUGE_HVR1270:
+	case CX23885_BOARD_HAUPPAUGE_HVR1275:
+	case CX23885_BOARD_HAUPPAUGE_HVR1255:
+	case CX23885_BOARD_HAUPPAUGE_HVR1255_22111:
+	case CX23885_BOARD_HAUPPAUGE_HVR1210:
+		/* GPIO-5 RF Control: 0 = RF1 Terrestrial, 1 = RF2 Cable */
+		/* GPIO-6 I2C Gate which can isolate the demod from the bus */
+		/* GPIO-9 Demod reset */
+
+		/* Put the parts into reset and back */
+		cx23885_gpio_enable(dev, GPIO_9 | GPIO_6 | GPIO_5, 1);
+		cx23885_gpio_set(dev, GPIO_9 | GPIO_6 | GPIO_5);
+		cx23885_gpio_clear(dev, GPIO_9);
+		msleep(20);
+		cx23885_gpio_set(dev, GPIO_9);
+		break;
+	case CX23885_BOARD_MYGICA_X8506:
+	case CX23885_BOARD_MAGICPRO_PROHDTVE2:
+	case CX23885_BOARD_MYGICA_X8507:
+		/* GPIO-0 (0)Analog / (1)Digital TV */
+		/* GPIO-1 reset XC5000 */
+		/* GPIO-2 demod reset */
+		cx23885_gpio_enable(dev, GPIO_0 | GPIO_1 | GPIO_2, 1);
+		cx23885_gpio_clear(dev, GPIO_1 |

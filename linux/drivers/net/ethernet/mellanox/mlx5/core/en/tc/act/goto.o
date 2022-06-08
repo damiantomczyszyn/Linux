@@ -1,72 +1,114 @@
- $(wildcard include/config/EARLY_PRINTK) \
-    $(wildcard include/config/PRINTK) \
-    $(wildcard include/config/PRINTK_INDEX) \
-    $(wildcard include/config/DYNAMIC_DEBUG) \
-    $(wildcard include/config/DYNAMIC_DEBUG_CORE) \
-  include/linux/init.h \
-    $(wildcard include/config/STRICT_KERNEL_RWX) \
-    $(wildcard include/config/STRICT_MODULE_RWX) \
-    $(wildcard include/config/LTO_CLANG) \
-  include/linux/kern_levels.h \
-  include/linux/cache.h \
-    $(wildcard include/config/ARCH_HAS_CACHE_LINE_SIZE) \
-  arch/x86/include/asm/cache.h \
-    $(wildcard include/config/X86_L1_CACHE_SHIFT) \
-    $(wildcard include/config/X86_INTERNODE_CACHE_SHIFT) \
-    $(wildcard include/config/X86_VSMP) \
-  include/linux/ratelimit_types.h \
-  include/uapi/linux/param.h \
-  arch/x86/include/generated/uapi/asm/param.h \
-  include/asm-generic/param.h \
-    $(wildcard include/config/HZ) \
-  include/uapi/asm-generic/param.h \
-  include/linux/spinlock_types_raw.h \
-    $(wildcard include/config/DEBUG_SPINLOCK) \
-    $(wildcard include/config/DEBUG_LOCK_ALLOC) \
-  arch/x86/include/asm/spinlock_types.h \
-  include/asm-generic/qspinlock_types.h \
-    $(wildcard include/config/NR_CPUS) \
-  include/asm-generic/qrwlock_types.h \
-  include/linux/lockdep_types.h \
-    $(wildcard include/config/PROVE_RAW_LOCK_NESTING) \
-    $(wildcard include/config/LOCK_STAT) \
-  include/linux/once_lite.h \
-  include/linux/static_call_types.h \
-    $(wildcard include/config/HAVE_STATIC_CALL) \
-    $(wildcard include/config/HAVE_STATIC_CALL_INLINE) \
-  include/linux/instruction_pointer.h \
-  include/asm-generic/percpu.h \
-    $(wildcard include/config/HAVE_SETUP_PER_CPU_AREA) \
-  include/linux/threads.h \
-    $(wildcard include/config/BASE_SMALL) \
-  include/linux/percpu-defs.h \
-    $(wildcard include/config/DEBUG_FORCE_WEAK_PER_CPU) \
-    $(wildcard include/config/AMD_MEM_ENCRYPT) \
-  include/linux/pid.h \
-  include/linux/rculist.h \
-    $(wildcard include/config/PROVE_RCU_LIST) \
-  include/linux/list.h \
-    $(wildcard include/config/DEBUG_LIST) \
-  include/linux/poison.h \
-    $(wildcard include/config/ILLEGAL_POINTER_VALUE) \
-  include/linux/rcupdate.h \
-    $(wildcard include/config/TINY_RCU) \
-    $(wildcard include/config/RCU_STRICT_GRACE_PERIOD) \
-    $(wildcard include/config/TASKS_RCU_GENERIC) \
-    $(wildcard include/config/RCU_STALL_COMMON) \
-    $(wildcard include/config/RCU_NOCB_CPU) \
-    $(wildcard include/config/TASKS_RUDE_RCU) \
-    $(wildcard include/config/TREE_RCU) \
-    $(wildcard include/config/DEBUG_OBJECTS_RCU_HEAD) \
-    $(wildcard include/config/HOTPLUG_CPU) \
-    $(wildcard include/config/PROVE_RCU) \
-    $(wildcard include/config/ARCH_WEAK_RELEASE_ACQUIRE) \
-  include/linux/atomic.h \
-  arch/x86/include/asm/atomic.h \
-  arch/x86/include/asm/cmpxchg.h \
-  arch/x86/include/asm/cmpxchg_32.h \
-  arch/x86/include/asm/atomic64_32.h \
-  include/linux/atomic/atomic-arch-fallback.h \
-    $(wildcard include/config/GENERIC_ATOMIC64) \
-  include/linux/atomic/atomic-long.h \
-  include/linux/atomic/atomic-instrument
+filt->nr = hw_filt_nr - 1;
+	/* store old feed controls */
+	pid_filt->start_feed = config->demux->start_feed;
+	pid_filt->stop_feed = config->demux->stop_feed;
+	/* replace with new feed controls */
+	if (hw_filt_nr == 1) {
+		pid_filt->demux->start_feed = altera_ci_start_feed_1;
+		pid_filt->demux->stop_feed = altera_ci_stop_feed_1;
+	} else if (hw_filt_nr == 2) {
+		pid_filt->demux->start_feed = altera_ci_start_feed_2;
+		pid_filt->demux->stop_feed = altera_ci_stop_feed_2;
+	}
+
+	altera_toggle_fullts_streaming(pid_filt, 0, 1);
+
+	return 0;
+err:
+	ci_dbg_print("%s: Can't init hardware filter: Error %d\n",
+		     __func__, ret);
+
+	kfree(pid_filt);
+	kfree(inter);
+
+	return ret;
+}
+
+int altera_ci_init(struct altera_ci_config *config, int ci_nr)
+{
+	struct altera_ci_state *state;
+	struct fpga_inode *temp_int = find_inode(config->dev);
+	struct fpga_internal *inter = NULL;
+	int ret = 0;
+	u8 store = 0;
+
+	state = kzalloc(sizeof(struct altera_ci_state), GFP_KERNEL);
+
+	ci_dbg_print("%s\n", __func__);
+
+	if (!state) {
+		ret = -ENOMEM;
+		goto err;
+	}
+
+	if (temp_int != NULL) {
+		inter = temp_int->internal;
+		(inter->cis_used)++;
+		inter->fpga_rw = config->fpga_rw;
+		ci_dbg_print("%s: Find Internal Structure!\n", __func__);
+	} else {
+		inter = kzalloc(sizeof(struct fpga_internal), GFP_KERNEL);
+		if (!inter) {
+			ret = -ENOMEM;
+			goto err;
+		}
+
+		temp_int = append_internal(inter);
+		if (!temp_int) {
+			ret = -ENOMEM;
+			goto err;
+		}
+		inter->cis_used = 1;
+		inter->dev = config->dev;
+		inter->fpga_rw = config->fpga_rw;
+		mutex_init(&inter->fpga_mutex);
+		inter->strt_wrk = 1;
+		ci_dbg_print("%s: Create New Internal Structure!\n", __func__);
+	}
+
+	ci_dbg_print("%s: setting state = %p for ci = %d\n", __func__,
+						state, ci_nr - 1);
+	state->internal = inter;
+	state->nr = ci_nr - 1;
+
+	state->ca.owner = THIS_MODULE;
+	state->ca.read_attribute_mem = altera_ci_read_attribute_mem;
+	state->ca.write_attribute_mem = altera_ci_write_attribute_mem;
+	state->ca.read_cam_control = altera_ci_read_cam_ctl;
+	state->ca.write_cam_control = altera_ci_write_cam_ctl;
+	state->ca.slot_reset = altera_ci_slot_reset;
+	state->ca.slot_shutdown = altera_ci_slot_shutdown;
+	state->ca.slot_ts_enable = altera_ci_slot_ts_ctl;
+	state->ca.poll_slot_status = altera_poll_ci_slot_status;
+	state->ca.data = state;
+
+	ret = dvb_ca_en50221_init(config->adapter,
+				   &state->ca,
+				   /* flags */ 0,
+				   /* n_slots */ 1);
+	if (0 != ret)
+		goto err;
+
+	inter->state[ci_nr - 1] = state;
+
+	altera_hw_filt_init(config, ci_nr);
+
+	if (inter->strt_wrk) {
+		INIT_WORK(&inter->work, netup_read_ci_status);
+		inter->strt_wrk = 0;
+	}
+
+	ci_dbg_print("%s: CI initialized!\n", __func__);
+
+	mutex_lock(&inter->fpga_mutex);
+
+	/* Enable div */
+	netup_fpga_op_rw(inter, NETUP_CI_TSA_DIV, 0x0, 0);
+	netup_fpga_op_rw(inter, NETUP_CI_TSB_DIV, 0x0, 0);
+
+	/* enable TS out */
+	store = netup_fpga_op_rw(inter, NETUP_CI_BUSCTRL2, 0, NETUP_CI_FLG_RD);
+	store |= (3 << 4);
+	netup_fpga_op_rw(inter, NETUP_CI_BUSCTRL2, store, 0);
+
+	ret = netup_fpga_op_rw(inter, NETUP_CI_REVISION, 0, NETUP_CI_FLG_RD

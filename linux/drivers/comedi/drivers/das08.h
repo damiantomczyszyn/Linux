@@ -1,29 +1,50 @@
-$(wildcard include/config/TRACE_BRANCH_PROFILING) \
-    $(wildcard include/config/PROFILE_ALL_BRANCHES) \
-    $(wildcard include/config/STACK_VALIDATION) \
-  include/linux/compiler_types.h \
-  arch/x86/include/generated/asm/rwonce.h \
-  include/asm-generic/rwonce.h \
-  include/linux/kasan-checks.h \
-    $(wildcard include/config/KASAN_GENERIC) \
-    $(wildcard include/config/KASAN_SW_TAGS) \
-  include/linux/types.h \
-    $(wildcard include/config/HAVE_UID16) \
-    $(wildcard include/config/UID16) \
-    $(wildcard include/config/ARCH_DMA_ADDR_T_64BIT) \
-    $(wildcard include/config/PHYS_ADDR_T_64BIT) \
-    $(wildcard include/config/64BIT) \
-    $(wildcard include/config/ARCH_32BIT_USTAT_F_TINODE) \
-  include/uapi/linux/types.h \
-  arch/x86/include/generated/uapi/asm/types.h \
-  include/uapi/asm-generic/types.h \
-  include/asm-generic/int-ll64.h \
-  include/uapi/asm-generic/int-ll64.h \
-  arch/x86/include/uapi/asm/bitsperlong.h \
-  include/asm-generic/bitsperlong.h \
-  include/uapi/asm-generic/bitsperlong.h \
-  include/uapi/linux/posix_types.h \
-  include/linux/stddef.h \
-  include/uapi/linux/stddef.h \
-  arch/x86/include/asm/posix_types.h \
-    $(wildcard include/config/X86
+K_RCD + 1)
+		count = RXCLK_RCD;
+	else if (count < 2)
+		count = 1;
+	else
+		count--;
+	return (u16) count;
+}
+
+/*
+ * IR Control Register helpers
+ */
+enum tx_fifo_watermark {
+	TX_FIFO_HALF_EMPTY = 0,
+	TX_FIFO_EMPTY      = CNTRL_TIC,
+};
+
+enum rx_fifo_watermark {
+	RX_FIFO_HALF_FULL = 0,
+	RX_FIFO_NOT_EMPTY = CNTRL_RIC,
+};
+
+static inline void control_tx_irq_watermark(struct cx23885_dev *dev,
+					    enum tx_fifo_watermark level)
+{
+	cx23888_ir_and_or4(dev, CX23888_IR_CNTRL_REG, ~CNTRL_TIC, level);
+}
+
+static inline void control_rx_irq_watermark(struct cx23885_dev *dev,
+					    enum rx_fifo_watermark level)
+{
+	cx23888_ir_and_or4(dev, CX23888_IR_CNTRL_REG, ~CNTRL_RIC, level);
+}
+
+static inline void control_tx_enable(struct cx23885_dev *dev, bool enable)
+{
+	cx23888_ir_and_or4(dev, CX23888_IR_CNTRL_REG, ~(CNTRL_TXE | CNTRL_TFE),
+			   enable ? (CNTRL_TXE | CNTRL_TFE) : 0);
+}
+
+static inline void control_rx_enable(struct cx23885_dev *dev, bool enable)
+{
+	cx23888_ir_and_or4(dev, CX23888_IR_CNTRL_REG, ~(CNTRL_RXE | CNTRL_RFE),
+			   enable ? (CNTRL_RXE | CNTRL_RFE) : 0);
+}
+
+static inline void control_tx_modulation_enable(struct cx23885_dev *dev,
+						bool enable)
+{
+	cx23888_ir_and_or4(dev, 

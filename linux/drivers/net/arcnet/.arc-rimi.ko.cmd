@@ -1,5 +1,1 @@
-onfig/TRACE_BRANCH_PROFILING) \
-    $(wildcard include/config/PROFILE_ALL_BRANCHES) \
-    $(wildcard include/config/STACK_VALIDATION) \
-  include/linux/compiler_types.h \
-  arch/x86/include/generated/
+cmd_drivers/net/arcnet/arc-rimi.ko := ld -r -m elf_i386 --build-id=sha1  -T scripts/module.lds -o drivers/net/arcnet/arc-rimi.ko drivers/net/arcnet/arc-rimi.o drivers/net/arcnet/arc-rimi.mod.o;  true

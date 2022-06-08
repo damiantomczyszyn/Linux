@@ -1,7 +1,6 @@
-(likely(hlock_class(this)->usage_mask & new_mask))
-		return 1;
-
-	if (!graph_lock())
-		return 0;
-	/*
-	 * Make sure we d
+dio",
+		.cmds_start	= 0x10190,
+		.ctrl_start	= 0x10480,
+		.cdt		= 0x10a00,
+		.fifo_start	= 0x7000,
+		.fifo_size	= 0x10

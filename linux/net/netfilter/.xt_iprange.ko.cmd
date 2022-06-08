@@ -1,5 +1,7 @@
-e/linux/rwlock.h \
-    $(wildcard include/config/PREEMPT) \
-  include/linux/spinlock_api_smp.h \
-    $(wildcard include/config/INLINE_SPIN_LOCK) \
-    $(wildcard include/config/INLINE_SPIN
+pauge WinTV-HVR1275",
+		.portc		= CX23885_MPEG_DVB,
+	},
+	[CX23885_BOARD_HAUPPAUGE_HVR1255] = {
+		.name		= "Hauppauge WinTV-HVR1255",
+		.porta		= CX23885_ANALOG_VIDEO,
+		.portc		= CX23885_M

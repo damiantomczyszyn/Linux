@@ -1,1 +1,6 @@
-cmd_drivers/media/rc/keymaps/built-in.a := echo >/dev/null; rm -f drivers/media/rc/keymaps/built-in.a; ar cDPrST drivers/media/rc/keymaps/built-in.a 
+#include <linux/module.h>
+#define INCLUDE_VERMAGIC
+#include <linux/build-salt.h>
+#include <linux/elfnote-lto.h>
+#include <linux/vermagic.h>
+#include <

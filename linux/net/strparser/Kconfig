@@ -1,4 +1,3 @@
-/* SPDX-License-Identifier: GPL-2.0 */
-/*
- * kernel/lockdep_internals.h
- 
+include/config/MATOM) \
+    $(wildcard include/config/PARAVIRT_XXL) \
+  a

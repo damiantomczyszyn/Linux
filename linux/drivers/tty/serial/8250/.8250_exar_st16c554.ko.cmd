@@ -1,1 +1,13 @@
-cmd_drivers/media/i2c/tw9903.o := gcc -Wp,-MMD,drivers/media/i2c/.tw9903.o.d -nostdinc -I./arch/x86/include -I./arch/x86/include/generated  -I./include -I./arch/x86/include/uapi -I./arch/x86/include/generated/uapi -I./include/uapi -I./include/generated/uapi -i
+.prepare = snd_cx23885_prepare,
+	.trigger = snd_cx23885_card_trigger,
+	.pointer = snd_cx23885_pointer,
+	.page = snd_cx23885_page,
+};
+
+/*
+ * create a PCM device
+ */
+static int snd_cx23885_pcm(struct cx23885_audio_dev *chip, int device,
+	char *name)
+{
+	int err;

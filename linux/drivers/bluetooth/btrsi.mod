@@ -1,1 +1,1 @@
-wildcard include/config/GEN
+nable(dev, p->modulation);

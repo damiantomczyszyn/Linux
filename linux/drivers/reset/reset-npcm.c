@@ -1,186 +1,261 @@
-fig/GENERIC_ATOMIC64) \
-  include/linux/atomic/atomic-long.h \
-  include/linux/atomic/atomic-instrumented.h \
-  include/linux/bug.h \
-    $(wildcard include/config/BUG_ON_DATA_CORRUPTION) \
-  arch/x86/include/asm/bug.h \
-    $(wildcard include/config/DEBUG_BUGVERBOSE) \
-  include/linux/instrumentation.h \
-    $(wildcard include/config/DEBUG_ENTRY) \
-  include/asm-generic/bug.h \
-    $(wildcard include/config/BUG) \
-    $(wildcard include/config/GENERIC_BUG_RELATIVE_POINTERS) \
-  arch/x86/include/uapi/asm/msr.h \
-  include/linux/tracepoint-defs.h \
-  arch/x86/include/asm/special_insns.h \
-  include/linux/irqflags.h \
-    $(wildcard include/config/TRACE_IRQFLAGS) \
-    $(wildcard include/config/PREEMPT_RT) \
-    $(wildcard include/config/IRQSOFF_TRACER) \
-    $(wildcard include/config/PREEMPT_TRACER) \
-    $(wildcard include/config/DEBUG_IRQFLAGS) \
-    $(wildcard include/config/TRACE_IRQFLAGS_SUPPORT) \
-  arch/x86/include/asm/irqflags.h \
-  arch/x86/include/asm/fpu/types.h \
-  arch/x86/include/asm/vmxfeatures.h \
-  arch/x86/include/asm/vdso/processor.h \
-  include/linux/personality.h \
-  include/uapi/linux/personality.h \
-  arch/x86/include/asm/tsc.h \
-  arch/x86/include/asm/cpufeature.h \
-    $(wildcard include/config/X86_FEATURE_NAMES) \
-  include/vdso/time32.h \
-  include/vdso/time.h \
-  include/linux/uidgid.h \
-    $(wildcard include/config/MULTIUSER) \
-    $(wildcard include/config/USER_NS) \
-  include/linux/highuid.h \
-  include/linux/buildid.h \
-    $(wildcard include/config/CRASH_CORE) \
-  include/linux/mm_types.h \
-    $(wildcard include/config/HAVE_ALIGNED_STRUCT_PAGE) \
-    $(wildcard include/config/MEMCG) \
-    $(wildcard include/config/USERFAULTFD) \
-    $(wildcard include/config/SWAP) \
-    $(wildcard include/config/NUMA) \
-    $(wildcard include/config/HAVE_ARCH_COMPAT_MMAP_BASES) \
-    $(wildcard include/config/MEMBARRIER) \
-    $(wildcard include/config/AIO) \
-    $(wildcard include/config/MMU_NOTIFIER) \
-    $(wildcard include/config/TRANSPARENT_HUGEPAGE) \
-    $(wildcard include/config/NUMA_BALANCING) \
-    $(wildcard include/config/ARCH_WANT_BATCHED_UNMAP_TLB_FLUSH) \
-    $(wildcard include/config/HUGETLB_PAGE) \
-    $(wildcard include/config/IOMMU_SVA) \
-  include/linux/mm_types_task.h \
-    $(wildcard include/config/SPLIT_PTLOCK_CPUS) \
-    $(wildcard include/config/ARCH_ENABLE_SPLIT_PMD_PTLOCK) \
-  arch/x86/include/asm/tlbbatch.h \
-  include/linux/auxvec.h \
-  include/uapi/linux/auxvec.h \
-  arch/x86/include/uapi/asm/auxvec.h \
-  include/linux/kref.h \
-  include/linux/spinlock.h \
-    $(wildcard include/config/PREEMPTION) \
-  include/linux/preempt.h \
-    $(wildcard include/config/PREEMPT_COUNT) \
-    $(wildcard include/config/TRACE_PREEMPT_TOGGLE) \
-    $(wildcard include/config/PREEMPT_NOTIFIERS) \
-  arch/x86/include/asm/preempt.h \
-  include/linux/thread_info.h \
-    $(wildcard include/config/THREAD_INFO_IN_TASK) \
-    $(wildcard include/config/GENERIC_ENTRY) \
-    $(wildcard include/config/HAVE_ARCH_WITHIN_STACK_FRAMES) \
-    $(wildcard include/config/HARDENED_USERCOPY) \
-  include/linux/restart_block.h \
-  arch/x86/include/asm/thread_info.h \
-    $(wildcard include/config/COMPAT) \
-  include/linux/bottom_half.h \
-  include/linux/lockdep.h \
-    $(wildcard include/config/DEBUG_LOCKING_API_SELFTESTS) \
-  include/linux/smp.h \
-    $(wildcard include/config/UP_LATE_INIT) \
-  include/linux/smp_types.h \
-  include/linux/llist.h \
-    $(wildcard include/config/ARCH_HAVE_NMI_SAFE_CMPXCHG) \
-  arch/x86/include/asm/smp.h \
-    $(wildcard include/config/X86_LOCAL_APIC) \
-    $(wildcard include/config/DEBUG_NMI_SELFTEST) \
-  arch/x86/include/generated/asm/mmiowb.h \
-  include/asm-generic/mmiowb.h \
-    $(wildcard include/config/MMIOWB) \
-  include/linux/spinlock_types.h \
-  include/linux/rwlock_types.h \
-  arch/x86/include/asm/spinlock.h \
-  arch/x86/include/asm/paravirt.h \
-    $(wildcard include/config/PARAVIRT_SPINLOCKS) \
-  arch/x86/include/asm/frame.h \
-  arch/x86/include/asm/qspinlock.h \
-  include/asm-generic/qspinlock.h \
-  arch/x86/include/asm/qrwlock.h \
-  include/asm-generic/qrwlock.h \
-  include/linux/rwlock.h \
-    $(wildcard include/config/PREEMPT) \
-  include/linux/spinlock_api_smp.h \
-    $(wildcard include/config/INLINE_SPIN_LOCK) \
-    $(wildcard include/config/INLINE_SPIN_LOCK_BH) \
-    $(wildcard include/config/INLINE_SPIN_LOCK_IRQ) \
-    $(wildcard include/config/INLINE_SPIN_LOCK_IRQSAVE) \
-    $(wildcard include/config/INLINE_SPIN_TRYLOCK) \
-    $(wildcard include/config/INLINE_SPIN_TRYLOCK_BH) \
-    $(wildcard include/config/UNINLINE_SPIN_UNLOCK) \
-    $(wildcard include/config/INLINE_SPIN_UNLOCK_BH) \
-    $(wildcard include/config/INLINE_SPIN_UNLOCK_IRQ) \
-    $(wildcard include/config/INLINE_SPIN_UNLOCK_IRQRESTORE) \
-    $(wildcard include/config/GENERIC_LOCKBREAK) \
-  include/linux/rwlock_api_smp.h \
-    $(wildcard include/config/INLINE_READ_LOCK) \
-    $(wildcard include/config/INLINE_WRITE_LOCK) \
-    $(wildcard include/config/INLINE_READ_LOCK_BH) \
-    $(wildcard include/config/INLINE_WRITE_LOCK_BH) \
-    $(wildcard include/config/INLINE_READ_LOCK_IRQ) \
-    $(wildcard include/config/INLINE_WRITE_LOCK_IRQ) \
-    $(wildcard include/config/INLINE_READ_LOCK_IRQSAVE) \
-    $(wildcard include/config/INLINE_WRITE_LOCK_IRQSAVE) \
-    $(wildcard include/config/INLINE_READ_TRYLOCK) \
-    $(wildcard include/config/INLINE_WRITE_TRYLOCK) \
-    $(wildcard include/config/INLINE_READ_UNLOCK) \
-    $(wildcard include/config/INLINE_WRITE_UNLOCK) \
-    $(wildcard include/config/INLINE_READ_UNLOCK_BH) \
-    $(wildcard include/config/INLINE_WRITE_UNLOCK_BH) \
-    $(wildcard include/config/INLINE_READ_UNLOCK_IRQ) \
-    $(wildcard include/config/INLINE_WRITE_UNLOCK_IRQ) \
-    $(wildcard include/config/INLINE_READ_UNLOCK_IRQRESTORE) \
-    $(wildcard include/config/INLINE_WRITE_UNLOCK_IRQRESTORE) \
-  include/linux/refcount.h \
-  include/linux/rbtree.h \
-  include/linux/rbtree_types.h \
-  include/linux/rcupdate.h \
-    $(wildcard include/config/PREEMPT_RCU) \
-    $(wildcard include/config/TINY_RCU) \
-    $(wildcard include/config/RCU_STRICT_GRACE_PERIOD) \
-    $(wildcard include/config/TASKS_RCU_GENERIC) \
-    $(wildcard include/config/RCU_STALL_COMMON) \
-    $(wildcard include/config/NO_HZ_FULL) \
-    $(wildcard include/config/RCU_NOCB_CPU) \
-    $(wildcard include/config/TASKS_RCU) \
-    $(wildcard include/config/TASKS_TRACE_RCU) \
-    $(wildcard include/config/TASKS_RUDE_RCU) \
-    $(wildcard include/config/TREE_RCU) \
-    $(wildcard include/config/DEBUG_OBJECTS_RCU_HEAD) \
-    $(wildcard include/config/PROVE_RCU) \
-    $(wildcard include/config/ARCH_WEAK_RELEASE_ACQUIRE) \
-  include/linux/rcutree.h \
-  include/linux/rwsem.h \
-    $(wildcard include/config/RWSEM_SPIN_ON_OWNER) \
-    $(wildcard include/config/DEBUG_RWSEMS) \
-  include/linux/osq_lock.h \
-  include/linux/completion.h \
-  include/linux/swait.h \
-  include/linux/wait.h \
-  include/uapi/linux/wait.h \
-  include/linux/uprobes.h \
-    $(wildcard include/config/UPROBES) \
-  arch/x86/include/asm/uprobes.h \
-  include/linux/notifier.h \
-  include/linux/mutex.h \
-    $(wildcard include/config/MUTEX_SPIN_ON_OWNER) \
-    $(wildcard include/config/DEBUG_MUTEXES) \
-  include/linux/debug_locks.h \
-  include/linux/srcu.h \
-    $(wildcard include/config/TINY_SRCU) \
-    $(wildcard include/config/SRCU) \
-  include/linux/workqueue.h \
-    $(wildcard include/config/DEBUG_OBJECTS_WORK) \
-    $(wildcard include/config/FREEZER) \
-    $(wildcard include/config/WQ_WATCHDOG) \
-  include/linux/timer.h \
-    $(wildcard include/config/DEBUG_OBJECTS_TIMERS) \
-    $(wildcard include/config/NO_HZ_COMMON) \
-  include/linux/ktime.h \
-  include/linux/jiffies.h \
-  include/vdso/jiffies.h \
-  include/generated/timeconst.h \
-  include/vdso/ktime.h \
-  include/linux/timekeeping.h \
-    $(wildcard include/config/GENERIC_CMOS_UPDAT
+evision(struct cx23885_dev *dev)
+{
+	switch (cx_read(RDR_CFG2) & 0xff) {
+	case 0x00:
+		/* cx23885 */
+		dev->hwrevision = 0xa0;
+		break;
+	case 0x01:
+		/* CX23885-12Z */
+		dev->hwrevision = 0xa1;
+		break;
+	case 0x02:
+		/* CX23885-13Z/14Z */
+		dev->hwrevision = 0xb0;
+		break;
+	case 0x03:
+		if (dev->pci->device == 0x8880) {
+			/* CX23888-21Z/22Z */
+			dev->hwrevision = 0xc0;
+		} else {
+			/* CX23885-14Z */
+			dev->hwrevision = 0xa4;
+		}
+		break;
+	case 0x04:
+		if (dev->pci->device == 0x8880) {
+			/* CX23888-31Z */
+			dev->hwrevision = 0xd0;
+		} else {
+			/* CX23885-15Z, CX23888-31Z */
+			dev->hwrevision = 0xa5;
+		}
+		break;
+	case 0x0e:
+		/* CX23887-15Z */
+		dev->hwrevision = 0xc0;
+		break;
+	case 0x0f:
+		/* CX23887-14Z */
+		dev->hwrevision = 0xb1;
+		break;
+	default:
+		pr_err("%s() New hardware revision found 0x%x\n",
+		       __func__, dev->hwrevision);
+	}
+	if (dev->hwrevision)
+		pr_info("%s() Hardware revision = 0x%02x\n",
+			__func__, dev->hwrevision);
+	else
+		pr_err("%s() Hardware revision unknown 0x%x\n",
+		       __func__, dev->hwrevision);
+}
+
+/* Find the first v4l2_subdev member of the group id in hw */
+struct v4l2_subdev *cx23885_find_hw(struct cx23885_dev *dev, u32 hw)
+{
+	struct v4l2_subdev *result = NULL;
+	struct v4l2_subdev *sd;
+
+	spin_lock(&dev->v4l2_dev.lock);
+	v4l2_device_for_each_subdev(sd, &dev->v4l2_dev) {
+		if (sd->grp_id == hw) {
+			result = sd;
+			break;
+		}
+	}
+	spin_unlock(&dev->v4l2_dev.lock);
+	return result;
+}
+
+static int cx23885_dev_setup(struct cx23885_dev *dev)
+{
+	int i;
+
+	spin_lock_init(&dev->pci_irqmask_lock);
+	spin_lock_init(&dev->slock);
+
+	mutex_init(&dev->lock);
+	mutex_init(&dev->gpio_lock);
+
+	atomic_inc(&dev->refcount);
+
+	dev->nr = cx23885_devcount++;
+	sprintf(dev->name, "cx23885[%d]", dev->nr);
+
+	/* Configure the internal memory */
+	if (dev->pci->device == 0x8880) {
+		/* Could be 887 or 888, assume an 888 default */
+		dev->bridge = CX23885_BRIDGE_888;
+		/* Apply a sensible clock frequency for the PCIe bridge */
+		dev->clk_freq = 50000000;
+		dev->sram_channels = cx23887_sram_channels;
+	} else
+	if (dev->pci->device == 0x8852) {
+		dev->bridge = CX23885_BRIDGE_885;
+		/* Apply a sensible clock frequency for the PCIe bridge */
+		dev->clk_freq = 28000000;
+		dev->sram_channels = cx23885_sram_channels;
+	} else
+		BUG();
+
+	dprintk(1, "%s() Memory configured for PCIe bridge type %d\n",
+		__func__, dev->bridge);
+
+	/* board config */
+	dev->board = UNSET;
+	if (card[dev->nr] < cx23885_bcount)
+		dev->board = card[dev->nr];
+	for (i = 0; UNSET == dev->board  &&  i < cx23885_idcount; i++)
+		if (dev->pci->subsystem_vendor == cx23885_subids[i].subvendor &&
+		    dev->pci->subsystem_device == cx23885_subids[i].subdevice)
+			dev->board = cx23885_subids[i].card;
+	if (UNSET == dev->board) {
+		dev->board = CX23885_BOARD_UNKNOWN;
+		cx23885_card_list(dev);
+	}
+
+	if (dev->pci->device == 0x8852) {
+		/* no DIF on cx23885, so no analog tuner support possible */
+		if (dev->board == CX23885_BOARD_HAUPPAUGE_QUADHD_ATSC)
+			dev->board = CX23885_BOARD_HAUPPAUGE_QUADHD_ATSC_885;
+		else if (dev->board == CX23885_BOARD_HAUPPAUGE_QUADHD_DVB)
+			dev->board = CX23885_BOARD_HAUPPAUGE_QUADHD_DVB_885;
+	}
+
+	/* If the user specific a clk freq override, apply it */
+	if (cx23885_boards[dev->board].clk_freq > 0)
+		dev->clk_freq = cx23885_boards[dev->board].clk_freq;
+
+	if (dev->board == CX23885_BOARD_HAUPPAUGE_IMPACTVCBE &&
+		dev->pci->subsystem_device == 0x7137) {
+		/* Hauppauge ImpactVCBe device ID 0x7137 is populated
+		 * with an 888, and a 25Mhz crystal, instead of the
+		 * usual third overtone 50Mhz. The default clock rate must
+		 * be overridden so the cx25840 is properly configured
+		 */
+		dev->clk_freq = 25000000;
+	}
+
+	dev->pci_bus  = dev->pci->bus->number;
+	dev->pci_slot = PCI_SLOT(dev->pci->devfn);
+	cx23885_irq_add(dev, 0x001f00);
+
+	/* External Master 1 Bus */
+	dev->i2c_bus[0].nr = 0;
+	dev->i2c_bus[0].dev = dev;
+	dev->i2c_bus[0].reg_stat  = I2C1_STAT;
+	dev->i2c_bus[0].reg_ctrl  = I2C1_CTRL;
+	dev->i2c_bus[0].reg_addr  = I2C1_ADDR;
+	dev->i2c_bus[0].reg_rdata = I2C1_RDATA;
+	dev->i2c_bus[0].reg_wdata = I2C1_WDATA;
+	dev->i2c_bus[0].i2c_period = (0x9d << 24); /* 100kHz */
+
+	/* External Master 2 Bus */
+	dev->i2c_bus[1].nr = 1;
+	dev->i2c_bus[1].dev = dev;
+	dev->i2c_bus[1].reg_stat  = I2C2_STAT;
+	dev->i2c_bus[1].reg_ctrl  = I2C2_CTRL;
+	dev->i2c_bus[1].reg_addr  = I2C2_ADDR;
+	dev->i2c_bus[1].reg_rdata = I2C2_RDATA;
+	dev->i2c_bus[1].reg_wdata = I2C2_WDATA;
+	dev->i2c_bus[1].i2c_period = (0x9d << 24); /* 100kHz */
+
+	/* Internal Master 3 Bus */
+	dev->i2c_bus[2].nr = 2;
+	dev->i2c_bus[2].dev = dev;
+	dev->i2c_bus[2].reg_stat  = I2C3_STAT;
+	dev->i2c_bus[2].reg_ctrl  = I2C3_CTRL;
+	dev->i2c_bus[2].reg_addr  = I2C3_ADDR;
+	dev->i2c_bus[2].reg_rdata = I2C3_RDATA;
+	dev->i2c_bus[2].reg_wdata = I2C3_WDATA;
+	dev->i2c_bus[2].i2c_period = (0x07 << 24); /* 1.95MHz */
+
+	if ((cx23885_boards[dev->board].portb == CX23885_MPEG_DVB) ||
+		(cx23885_boards[dev->board].portb == CX23885_MPEG_ENCODER))
+		cx23885_init_tsport(dev, &dev->ts1, 1);
+
+	if ((cx23885_boards[dev->board].portc == CX23885_MPEG_DVB) ||
+		(cx23885_boards[dev->board].portc == CX23885_MPEG_ENCODER))
+		cx23885_init_tsport(dev, &dev->ts2, 2);
+
+	if (get_resources(dev) < 0) {
+		pr_err("CORE %s No more PCIe resources for subsystem: %04x:%04x\n",
+		       dev->name, dev->pci->subsystem_vendor,
+		       dev->pci->subsystem_device);
+
+		cx23885_devcount--;
+		return -ENODEV;
+	}
+
+	/* PCIe stuff */
+	dev->lmmio = ioremap(pci_resource_start(dev->pci, 0),
+			     pci_resource_len(dev->pci, 0));
+
+	dev->bmmio = (u8 __iomem *)dev->lmmio;
+
+	pr_info("CORE %s: subsystem: %04x:%04x, board: %s [card=%d,%s]\n",
+		dev->name, dev->pci->subsystem_vendor,
+		dev->pci->subsystem_device, cx23885_boards[dev->board].name,
+		dev->board, card[dev->nr] == dev->board ?
+		"insmod option" : "autodetected");
+
+	cx23885_pci_quirks(dev);
+
+	/* Assume some sensible defaults */
+	dev->tuner_type = cx23885_boards[dev->board].tuner_type;
+	dev->tuner_addr = cx23885_boards[dev->board].tuner_addr;
+	dev->tuner_bus = cx23885_boards[dev->board].tuner_bus;
+	dev->radio_type = cx23885_boards[dev->board].radio_type;
+	dev->radio_addr = cx23885_boards[dev->board].radio_addr;
+
+	dprintk(1, "%s() tuner_type = 0x%x tuner_addr = 0x%x tuner_bus = %d\n",
+		__func__, dev->tuner_type, dev->tuner_addr, dev->tuner_bus);
+	dprintk(1, "%s() radio_type = 0x%x radio_addr = 0x%x\n",
+		__func__, dev->radio_type, dev->radio_addr);
+
+	/* The cx23417 encoder has GPIO's that need to be initialised
+	 * before DVB, so that demodulators and tuners are out of
+	 * reset before DVB uses them.
+	 */
+	if ((cx23885_boards[dev->board].portb == CX23885_MPEG_ENCODER) ||
+		(cx23885_boards[dev->board].portc == CX23885_MPEG_ENCODER))
+			cx23885_mc417_init(dev);
+
+	/* init hardware */
+	cx23885_reset(dev);
+
+	cx23885_i2c_register(&dev->i2c_bus[0]);
+	cx23885_i2c_register(&dev->i2c_bus[1]);
+	cx23885_i2c_register(&dev->i2c_bus[2]);
+	cx23885_card_setup(dev);
+	call_all(dev, tuner, standby);
+	cx23885_ir_init(dev);
+
+	if (dev->board == CX23885_BOARD_VIEWCAST_460E) {
+		/*
+		 * GPIOs 9/8 are input detection bits for the breakout video
+		 * (gpio 8) and audio (gpio 9) cables. When they're attached,
+		 * this gpios are pulled high. Make sure these GPIOs are marked
+		 * as inputs.
+		 */
+		cx23885_gpio_enable(dev, 0x300, 0);
+	}
+
+	if (cx23885_boards[dev->board].porta == CX23885_ANALOG_VIDEO) {
+		if (cx23885_video_register(dev) < 0) {
+			pr_err("%s() Failed to register analog video adapters on VID_A\n",
+			       __func__);
+		}
+	}
+
+	if (cx23885_boards[dev->board].portb == CX23885_MPEG_DVB) {
+		if (cx23885_boards[dev->board].num_fds_portb)
+			dev->ts1.num_frontends =
+				cx23885_boards[dev->board].num_fds_portb;
+		if (cx23885_dvb_register(&dev->ts1) < 0) {
+			pr_err("%s() Failed to register dvb adapters on VID_B\n",
+			       __func__);
+		}
+	} else
+	if (cx23885_boards[dev->board].portb ==

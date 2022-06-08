@@ -1,2 +1,2 @@
-g/CC_HAS_ASM_GOTO_TIED_OUTPUT) \
-  
+drivers/net/can/m_can/m_can_pci.o
+

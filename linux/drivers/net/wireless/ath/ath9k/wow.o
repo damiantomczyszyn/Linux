@@ -1,128 +1,220 @@
-ldcard include/config/X86_INTEL_USERCOPY) \
-  arch/x86/include/asm/smap.h \
-  arch/x86/include/asm/extable.h \
-    $(wildcard include/config/BPF_JIT) \
-  include/asm-generic/access_ok.h \
-    $(wildcard include/config/ALTERNATE_USER_ADDRESS_SPACE) \
-  arch/x86/include/asm/uaccess_32.h \
-  include/linux/cred.h \
-    $(wildcard include/config/DEBUG_CREDENTIALS) \
-  include/linux/key.h \
-    $(wildcard include/config/KEY_NOTIFICATIONS) \
-    $(wildcard include/config/NET) \
-  include/linux/assoc_array.h \
-    $(wildcard include/config/ASSOCIATIVE_ARRAY) \
-  include/linux/sched/user.h \
-    $(wildcard include/config/WATCH_QUEUE) \
-  include/linux/percpu_counter.h \
-  include/linux/rcu_sync.h \
-  include/linux/delayed_call.h \
-  include/linux/errseq.h \
-  include/linux/ioprio.h \
-  include/linux/sched/rt.h \
-  include/linux/iocontext.h \
-    $(wildcard include/config/BLK_ICQ) \
-  include/uapi/linux/ioprio.h \
-  include/linux/fs_types.h \
-  include/linux/mount.h \
-  include/linux/mnt_idmapping.h \
-  include/uapi/linux/fs.h \
-  include/linux/quota.h \
-    $(wildcard include/config/QUOTA_NETLINK_INTERFACE) \
-  include/uapi/linux/dqblk_xfs.h \
-  include/linux/dqblk_v1.h \
-  include/linux/dqblk_v2.h \
-  include/linux/dqblk_qtree.h \
-  include/linux/projid.h \
-  include/uapi/linux/quota.h \
-  include/linux/nfs_fs_i.h \
-  include/linux/seq_file.h \
-  include/linux/string_helpers.h \
-  include/linux/ns_common.h \
-  include/linux/nsproxy.h \
-  include/linux/user_namespace.h \
-    $(wildcard include/config/INOTIFY_USER) \
-    $(wildcard include/config/FANOTIFY) \
-    $(wildcard include/config/PERSISTENT_KEYRINGS) \
-  include/linux/kernel_stat.h \
-  include/linux/interrupt.h \
-    $(wildcard include/config/IRQ_FORCED_THREADING) \
-    $(wildcard include/config/GENERIC_IRQ_PROBE) \
-    $(wildcard include/config/IRQ_TIMINGS) \
-  include/linux/irqreturn.h \
-  include/linux/irqnr.h \
-  include/uapi/linux/irqnr.h \
-  include/linux/hardirq.h \
-  include/linux/context_tracking_state.h \
-    $(wildcard include/config/CONTEXT_TRACKING) \
-  include/linux/ftrace_irq.h \
-    $(wildcard include/config/HWLAT_TRACER) \
-    $(wildcard include/config/OSNOISE_TRACER) \
-  include/linux/vtime.h \
-    $(wildcard include/config/VIRT_CPU_ACCOUNTING) \
-    $(wildcard include/config/IRQ_TIME_ACCOUNTING) \
-  arch/x86/include/asm/hardirq.h \
-    $(wildcard include/config/KVM_INTEL) \
-    $(wildcard include/config/X86_THERMAL_VECTOR) \
-    $(wildcard include/config/X86_MCE_THRESHOLD) \
-    $(wildcard include/config/X86_MCE_AMD) \
-    $(wildcard include/config/X86_HV_CALLBACK_VECTOR) \
-  arch/x86/include/asm/irq.h \
-  arch/x86/include/asm/sections.h \
-  include/asm-generic/sections.h \
-    $(wildcard include/config/HAVE_FUNCTION_DESCRIPTORS) \
-  include/linux/cgroup-defs.h \
-    $(wildcard include/config/CGROUP_NET_CLASSID) \
-    $(wildcard include/config/CGROUP_NET_PRIO) \
-  include/linux/u64_stats_sync.h \
-  include/linux/bpf-cgroup-defs.h \
-  include/linux/psi_types.h \
-  include/linux/kthread.h \
-  include/linux/cgroup_subsys.h \
-    $(wildcard include/config/CGROUP_DEVICE) \
-    $(wildcard include/config/CGROUP_FREEZER) \
-    $(wildcard include/config/CGROUP_PERF) \
-    $(wildcard include/config/CGROUP_HUGETLB) \
-    $(wildcard include/config/CGROUP_PIDS) \
-    $(wildcard include/config/CGROUP_RDMA) \
-    $(wildcard include/config/CGROUP_MISC) \
-    $(wildcard include/config/CGROUP_DEBUG) \
-  include/linux/vm_event_item.h \
-    $(wildcard include/config/HAVE_ARCH_TRANSPARENT_HUGEPAGE_PUD) \
-    $(wildcard include/config/MEMORY_BALLOON) \
-    $(wildcard include/config/BALLOON_COMPACTION) \
-    $(wildcard include/config/DEBUG_TLBFLUSH) \
-    $(wildcard include/config/DEBUG_VM_VMACACHE) \
-  include/linux/page_counter.h \
-  include/linux/vmpressure.h \
-  include/linux/eventfd.h \
-  include/linux/mm.h \
-    $(wildcard include/config/HAVE_ARCH_MMAP_RND_BITS) \
-    $(wildcard include/config/HAVE_ARCH_MMAP_RND_COMPAT_BITS) \
-    $(wildcard include/config/ARCH_USES_HIGH_VMA_FLAGS) \
-    $(wildcard include/config/ARCH_HAS_PKEYS) \
-    $(wildcard include/config/PPC) \
-    $(wildcard include/config/PARISC) \
-    $(wildcard include/config/SPARC64) \
-    $(wildcard include/config/ARM64_MTE) \
-    $(wildcard include/config/HAVE_ARCH_USERFAULTFD_MINOR) \
-    $(wildcard include/config/SHMEM) \
-    $(wildcard include/config/ARCH_HAS_PTE_SPECIAL) \
-    $(wildcard include/config/ARCH_HAS_PTE_DEVMAP) \
-    $(wildcard include/config/DEBUG_VM_RB) \
-    $(wildcard include/config/PAGE_POISONING) \
-    $(wildcard include/config/INIT_ON_ALLOC_DEFAULT_ON) \
-    $(wildcard include/config/INIT_ON_FREE_DEFAULT_ON) \
-    $(wildcard include/config/DEBUG_PAGEALLOC) \
-    $(wildcard include/config/HUGETLBFS) \
-    $(wildcard include/config/MAPPING_DIRTY_HELPERS) \
-    $(wildcard include/config/ANON_VMA_NAME) \
-  include/linux/mmap_lock.h \
-  include/linux/page_ext.h \
-  include/linux/stacktrace.h \
-    $(wildcard include/config/ARCH_STACKWALK) \
-    $(wildcard include/config/STACKTRACE) \
-    $(wildcard include/config/HAVE_RELIABLE_STACKTRACE) \
-  include/linux/stackdepot.h \
-    $(wildcard include/config/STACKDEPOT_ALWAYS_INIT) \
-  i
+// SPDX-License-Identifier: GPL-2.0-or-later
+/*
+ * cimax2.c
+ *
+ * CIMax2(R) SP2 driver in conjunction with NetUp Dual DVB-S2 CI card
+ *
+ * Copyright (C) 2009 NetUP Inc.
+ * Copyright (C) 2009 Igor M. Liplianin <liplianin@netup.ru>
+ * Copyright (C) 2009 Abylay Ospan <aospan@netup.ru>
+ */
+
+#include "cx23885.h"
+#include "cimax2.h"
+#include <media/dvb_ca_en50221.h>
+
+/* Max transfer size done by I2C transfer functions */
+#define MAX_XFER_SIZE  64
+
+/**** Bit definitions for MC417_RWD and MC417_OEN registers  ***
+  bits 31-16
++-----------+
+| Reserved  |
++-----------+
+  bit 15  bit 14  bit 13 bit 12  bit 11  bit 10  bit 9   bit 8
++-------+-------+-------+-------+-------+-------+-------+-------+
+|  WR#  |  RD#  |       |  ACK# |  ADHI |  ADLO |  CS1# |  CS0# |
++-------+-------+-------+-------+-------+-------+-------+-------+
+ bit 7   bit 6   bit 5   bit 4   bit 3   bit 2   bit 1   bit 0
++-------+-------+-------+-------+-------+-------+-------+-------+
+|  DATA7|  DATA6|  DATA5|  DATA4|  DATA3|  DATA2|  DATA1|  DATA0|
++-------+-------+-------+-------+-------+-------+-------+-------+
+***/
+/* MC417 */
+#define NETUP_DATA		0x000000ff
+#define NETUP_WR		0x00008000
+#define NETUP_RD		0x00004000
+#define NETUP_ACK		0x00001000
+#define NETUP_ADHI		0x00000800
+#define NETUP_ADLO		0x00000400
+#define NETUP_CS1		0x00000200
+#define NETUP_CS0		0x00000100
+#define NETUP_EN_ALL		0x00001000
+#define NETUP_CTRL_OFF		(NETUP_CS1 | NETUP_CS0 | NETUP_WR | NETUP_RD)
+#define NETUP_CI_CTL		0x04
+#define NETUP_CI_RD		1
+
+#define NETUP_IRQ_DETAM		0x1
+#define NETUP_IRQ_IRQAM		0x4
+
+static unsigned int ci_dbg;
+module_param(ci_dbg, int, 0644);
+MODULE_PARM_DESC(ci_dbg, "Enable CI debugging");
+
+static unsigned int ci_irq_enable;
+module_param(ci_irq_enable, int, 0644);
+MODULE_PARM_DESC(ci_irq_enable, "Enable IRQ from CAM");
+
+#define ci_dbg_print(fmt, args...) \
+	do { \
+		if (ci_dbg) \
+			printk(KERN_DEBUG pr_fmt("%s: " fmt), \
+			       __func__, ##args); \
+	} while (0)
+
+#define ci_irq_flags() (ci_irq_enable ? NETUP_IRQ_IRQAM : 0)
+
+/* stores all private variables for communication with CI */
+struct netup_ci_state {
+	struct dvb_ca_en50221 ca;
+	struct mutex ca_mutex;
+	struct i2c_adapter *i2c_adap;
+	u8 ci_i2c_addr;
+	int status;
+	struct work_struct work;
+	void *priv;
+	u8 current_irq_mode;
+	int current_ci_flag;
+	unsigned long next_status_checked_time;
+};
+
+
+static int netup_read_i2c(struct i2c_adapter *i2c_adap, u8 addr, u8 reg,
+						u8 *buf, int len)
+{
+	int ret;
+	struct i2c_msg msg[] = {
+		{
+			.addr	= addr,
+			.flags	= 0,
+			.buf	= &reg,
+			.len	= 1
+		}, {
+			.addr	= addr,
+			.flags	= I2C_M_RD,
+			.buf	= buf,
+			.len	= len
+		}
+	};
+
+	ret = i2c_transfer(i2c_adap, msg, 2);
+
+	if (ret != 2) {
+		ci_dbg_print("%s: i2c read error, Reg = 0x%02x, Status = %d\n",
+						__func__, reg, ret);
+
+		return -1;
+	}
+
+	ci_dbg_print("%s: i2c read Addr=0x%04x, Reg = 0x%02x, data = %02x\n",
+						__func__, addr, reg, buf[0]);
+
+	return 0;
+}
+
+static int netup_write_i2c(struct i2c_adapter *i2c_adap, u8 addr, u8 reg,
+						u8 *buf, int len)
+{
+	int ret;
+	u8 buffer[MAX_XFER_SIZE];
+
+	struct i2c_msg msg = {
+		.addr	= addr,
+		.flags	= 0,
+		.buf	= &buffer[0],
+		.len	= len + 1
+	};
+
+	if (1 + len > sizeof(buffer)) {
+		pr_warn("%s: i2c wr reg=%04x: len=%d is too big!\n",
+		       KBUILD_MODNAME, reg, len);
+		return -EINVAL;
+	}
+
+	buffer[0] = reg;
+	memcpy(&buffer[1], buf, len);
+
+	ret = i2c_transfer(i2c_adap, &msg, 1);
+
+	if (ret != 1) {
+		ci_dbg_print("%s: i2c write error, Reg=[0x%02x], Status=%d\n",
+						__func__, reg, ret);
+		return -1;
+	}
+
+	return 0;
+}
+
+static int netup_ci_get_mem(struct cx23885_dev *dev)
+{
+	int mem;
+	unsigned long timeout = jiffies + msecs_to_jiffies(1);
+
+	for (;;) {
+		mem = cx_read(MC417_RWD);
+		if ((mem & NETUP_ACK) == 0)
+			break;
+		if (time_after(jiffies, timeout))
+			break;
+		udelay(1);
+	}
+
+	cx_set(MC417_RWD, NETUP_CTRL_OFF);
+
+	return mem & 0xff;
+}
+
+static int netup_ci_op_cam(struct dvb_ca_en50221 *en50221, int slot,
+				u8 flag, u8 read, int addr, u8 data)
+{
+	struct netup_ci_state *state = en50221->data;
+	struct cx23885_tsport *port = state->priv;
+	struct cx23885_dev *dev = port->dev;
+
+	u8 store;
+	int mem;
+	int ret;
+
+	if (0 != slot)
+		return -EINVAL;
+
+	if (state->current_ci_flag != flag) {
+		ret = netup_read_i2c(state->i2c_adap, state->ci_i2c_addr,
+				0, &store, 1);
+		if (ret != 0)
+			return ret;
+
+		store &= ~0x0c;
+		store |= flag;
+
+		ret = netup_write_i2c(state->i2c_adap, state->ci_i2c_addr,
+				0, &store, 1);
+		if (ret != 0)
+			return ret;
+	}
+	state->current_ci_flag = flag;
+
+	mutex_lock(&dev->gpio_lock);
+
+	/* write addr */
+	cx_write(MC417_OEN, NETUP_EN_ALL);
+	cx_write(MC417_RWD, NETUP_CTRL_OFF |
+				NETUP_ADLO | (0xff & addr));
+	cx_clear(MC417_RWD, NETUP_ADLO);
+	cx_write(MC417_RWD, NETUP_CTRL_OFF |
+				NETUP_ADHI | (0xff & (addr >> 8)));
+	cx_clear(MC417_RWD, NETUP_ADHI);
+
+	if (read) { /* data in */
+		cx_write(MC417_OEN, NETUP_EN_ALL | NETUP_DATA);
+	} else /* data out */
+		cx_write(MC417_RWD, NETUP_CTRL_OFF | data);
+
+	/* choose chip */
+	cx_clear(MC417_RWD,
+			(state->ci_i2c_addr == 0x40) ? NETUP_CS0 : NETUP_CS1);
+	/* read/write */
+	cx_clear(MC417_RWD, (read) ? NETUP_RD : NETUP_WR);
+	mem = netup_ci_get_mem(dev);
+
+	mutex_unlock(&d

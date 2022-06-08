@@ -1,626 +1,175 @@
- -> @hlock and @hlock -> <whatever __bfs() found> is not -(*R)->
- * and -(S*)->.
+if (__wake_q_add(head, task))
+		get_task_struct(task);
+}
+
+/**
+ * wake_q_add_safe() - safely queue a wakeup for 'later' waking.
+ * @head: the wake_q_head to add @task to
+ * @task: the task to queue for 'later' wakeup
+ *
+ * Queue a task for later wakeup, most likely by the wake_up_q() call in the
+ * same context, _HOWEVER_ this is not guaranteed, the wakeup can come
+ * instantly.
+ *
+ * This function must be used as-if it were wake_up_process(); IOW the task
+ * must be ready to be woken at this location.
+ *
+ * This function is essentially a task-safe equivalent to wake_q_add(). Callers
+ * that already hold reference to @task can call the 'safe' version and trust
+ * wake_q to do the right thing depending whether or not the @task is already
+ * queued for wakeup.
  */
-static inline void bfs_init_root(struct lock_list *lock,
-				 struct held_lock *hlock)
+void wake_q_add_safe(struct wake_q_head *head, struct task_struct *task)
 {
-	__bfs_init_root(lock, hlock_class(hlock));
-	lock->only_xr = (hlock->read == 2);
+	if (!__wake_q_add(head, task))
+		put_task_struct(task);
+}
+
+void wake_up_q(struct wake_q_head *head)
+{
+	struct wake_q_node *node = head->first;
+
+	while (node != WAKE_Q_TAIL) {
+		struct task_struct *task;
+
+		task = container_of(node, struct task_struct, wake_q);
+		/* Task can safely be re-inserted now: */
+		node = node->next;
+		task->wake_q.next = NULL;
+
+		/*
+		 * wake_up_process() executes a full barrier, which pairs with
+		 * the queueing in wake_q_add() so as not to miss wakeups.
+		 */
+		wake_up_process(task);
+		put_task_struct(task);
+	}
 }
 
 /*
- * Similar to bfs_init_root() but initialize the root for backwards BFS.
+ * resched_curr - mark rq's current task 'to be rescheduled now'.
  *
- * ->only_xr of the initial lock node is set to @hlock->read != 0, to make sure
- * that <next> -> @hlock and @hlock -> <whatever backwards BFS found> is not
- * -(*S)-> and -(R*)-> (reverse order of -(*R)-> and -(S*)->).
+ * On UP this means the setting of the need_resched flag, on SMP it
+ * might also involve a cross-CPU call to trigger the scheduler on
+ * the target CPU.
  */
-static inline void bfs_init_rootb(struct lock_list *lock,
-				  struct held_lock *hlock)
+void resched_curr(struct rq *rq)
 {
-	__bfs_init_root(lock, hlock_class(hlock));
-	lock->only_xr = (hlock->read != 0);
+	struct task_struct *curr = rq->curr;
+	int cpu;
+
+	lockdep_assert_rq_held(rq);
+
+	if (test_tsk_need_resched(curr))
+		return;
+
+	cpu = cpu_of(rq);
+
+	if (cpu == smp_processor_id()) {
+		set_tsk_need_resched(curr);
+		set_preempt_need_resched();
+		return;
+	}
+
+	if (set_nr_and_not_polling(curr))
+		smp_send_reschedule(cpu);
+	else
+		trace_sched_wake_idle_without_ipi(cpu);
 }
 
-static inline struct lock_list *__bfs_next(struct lock_list *lock, int offset)
+void resched_cpu(int cpu)
 {
-	if (!lock || !lock->parent)
-		return NULL;
+	struct rq *rq = cpu_rq(cpu);
+	unsigned long flags;
 
-	return list_next_or_null_rcu(get_dep_list(lock->parent, offset),
-				     &lock->entry, struct lock_list, entry);
+	raw_spin_rq_lock_irqsave(rq, flags);
+	if (cpu_online(cpu) || cpu == smp_processor_id())
+		resched_curr(rq);
+	raw_spin_rq_unlock_irqrestore(rq, flags);
 }
 
+#ifdef CONFIG_SMP
+#ifdef CONFIG_NO_HZ_COMMON
 /*
- * Breadth-First Search to find a strong path in the dependency graph.
+ * In the semi idle case, use the nearest busy CPU for migrating timers
+ * from an idle CPU.  This is good for power-savings.
  *
- * @source_entry: the source of the path we are searching for.
- * @data: data used for the second parameter of @match function
- * @match: match function for the search
- * @target_entry: pointer to the target of a matched path
- * @offset: the offset to struct lock_class to determine whether it is
- *          locks_after or locks_before
- *
- * We may have multiple edges (considering different kinds of dependencies,
- * e.g. ER and SN) between two nodes in the dependency graph. But
- * only the strong dependency path in the graph is relevant to deadlocks. A
- * strong dependency path is a dependency path that doesn't have two adjacent
- * dependencies as -(*R)-> -(S*)->, please see:
- *
- *         Documentation/locking/lockdep-design.rst
- *
- * for more explanation of the definition of strong dependency paths
- *
- * In __bfs(), we only traverse in the strong dependency path:
- *
- *     In lock_list::only_xr, we record whether the previous dependency only
- *     has -(*R)-> in the search, and if it does (prev only has -(*R)->), we
- *     filter out any -(S*)-> in the current dependency and after that, the
- *     ->only_xr is set according to whether we only have -(*R)-> left.
+ * We don't do similar optimization for completely idle system, as
+ * selecting an idle CPU will add more delays to the timers than intended
+ * (as that CPU's timer base may not be uptodate wrt jiffies etc).
  */
-static enum bfs_result __bfs(struct lock_list *source_entry,
-			     void *data,
-			     bool (*match)(struct lock_list *entry, void *data),
-			     bool (*skip)(struct lock_list *entry, void *data),
-			     struct lock_list **target_entry,
-			     int offset)
+int get_nohz_timer_target(void)
 {
-	struct circular_queue *cq = &lock_cq;
-	struct lock_list *lock = NULL;
-	struct lock_list *entry;
-	struct list_head *head;
-	unsigned int cq_depth;
-	bool first;
+	int i, cpu = smp_processor_id(), default_cpu = -1;
+	struct sched_domain *sd;
+	const struct cpumask *hk_mask;
 
-	lockdep_assert_locked();
+	if (housekeeping_cpu(cpu, HK_TYPE_TIMER)) {
+		if (!idle_cpu(cpu))
+			return cpu;
+		default_cpu = cpu;
+	}
 
-	__cq_init(cq);
-	__cq_enqueue(cq, source_entry);
+	hk_mask = housekeeping_cpumask(HK_TYPE_TIMER);
 
-	while ((lock = __bfs_next(lock, offset)) || (lock = __cq_dequeue(cq))) {
-		if (!lock->class)
-			return BFS_EINVALIDNODE;
-
-		/*
-		 * Step 1: check whether we already finish on this one.
-		 *
-		 * If we have visited all the dependencies from this @lock to
-		 * others (iow, if we have visited all lock_list entries in
-		 * @lock->class->locks_{after,before}) we skip, otherwise go
-		 * and visit all the dependencies in the list and mark this
-		 * list accessed.
-		 */
-		if (lock_accessed(lock))
-			continue;
-		else
-			mark_lock_accessed(lock);
-
-		/*
-		 * Step 2: check whether prev dependency and this form a strong
-		 *         dependency path.
-		 */
-		if (lock->parent) { /* Parent exists, check prev dependency */
-			u8 dep = lock->dep;
-			bool prev_only_xr = lock->parent->only_xr;
-
-			/*
-			 * Mask out all -(S*)-> if we only have *R in previous
-			 * step, because -(*R)-> -(S*)-> don't make up a strong
-			 * dependency.
-			 */
-			if (prev_only_xr)
-				dep &= ~(DEP_SR_MASK | DEP_SN_MASK);
-
-			/* If nothing left, we skip */
-			if (!dep)
+	rcu_read_lock();
+	for_each_domain(cpu, sd) {
+		for_each_cpu_and(i, sched_domain_span(sd), hk_mask) {
+			if (cpu == i)
 				continue;
 
-			/* If there are only -(*R)-> left, set that for the next step */
-			lock->only_xr = !(dep & (DEP_SN_MASK | DEP_EN_MASK));
-		}
-
-		/*
-		 * Step 3: we haven't visited this and there is a strong
-		 *         dependency path to this, so check with @match.
-		 *         If @skip is provide and returns true, we skip this
-		 *         lock (and any path this lock is in).
-		 */
-		if (skip && skip(lock, data))
-			continue;
-
-		if (match(lock, data)) {
-			*target_entry = lock;
-			return BFS_RMATCH;
-		}
-
-		/*
-		 * Step 4: if not match, expand the path by adding the
-		 *         forward or backwards dependencies in the search
-		 *
-		 */
-		first = true;
-		head = get_dep_list(lock, offset);
-		list_for_each_entry_rcu(entry, head, entry) {
-			visit_lock_entry(entry, lock);
-
-			/*
-			 * Note we only enqueue the first of the list into the
-			 * queue, because we can always find a sibling
-			 * dependency from one (see __bfs_next()), as a result
-			 * the space of queue is saved.
-			 */
-			if (!first)
-				continue;
-
-			first = false;
-
-			if (__cq_enqueue(cq, entry))
-				return BFS_EQUEUEFULL;
-
-			cq_depth = __cq_get_elem_count(cq);
-			if (max_bfs_queue_depth < cq_depth)
-				max_bfs_queue_depth = cq_depth;
+			if (!idle_cpu(i)) {
+				cpu = i;
+				goto unlock;
+			}
 		}
 	}
 
-	return BFS_RNOMATCH;
-}
-
-static inline enum bfs_result
-__bfs_forwards(struct lock_list *src_entry,
-	       void *data,
-	       bool (*match)(struct lock_list *entry, void *data),
-	       bool (*skip)(struct lock_list *entry, void *data),
-	       struct lock_list **target_entry)
-{
-	return __bfs(src_entry, data, match, skip, target_entry,
-		     offsetof(struct lock_class, locks_after));
-
-}
-
-static inline enum bfs_result
-__bfs_backwards(struct lock_list *src_entry,
-		void *data,
-		bool (*match)(struct lock_list *entry, void *data),
-	       bool (*skip)(struct lock_list *entry, void *data),
-		struct lock_list **target_entry)
-{
-	return __bfs(src_entry, data, match, skip, target_entry,
-		     offsetof(struct lock_class, locks_before));
-
-}
-
-static void print_lock_trace(const struct lock_trace *trace,
-			     unsigned int spaces)
-{
-	stack_trace_print(trace->entries, trace->nr_entries, spaces);
+	if (default_cpu == -1)
+		default_cpu = housekeeping_any_cpu(HK_TYPE_TIMER);
+	cpu = default_cpu;
+unlock:
+	rcu_read_unlock();
+	return cpu;
 }
 
 /*
- * Print a dependency chain entry (this is only done when a deadlock
- * has been detected):
+ * When add_timer_on() enqueues a timer into the timer wheel of an
+ * idle CPU then this timer might expire before the next timer event
+ * which is scheduled to wake up that CPU. In case of a completely
+ * idle system the next event might even be infinite time into the
+ * future. wake_up_idle_cpu() ensures that the CPU is woken up and
+ * leaves the inner idle loop so the newly added timer is taken into
+ * account when the CPU goes back to idle and evaluates the timer
+ * wheel for the next timer event.
  */
-static noinline void
-print_circular_bug_entry(struct lock_list *target, int depth)
+static void wake_up_idle_cpu(int cpu)
 {
-	if (debug_locks_silent)
-		return;
-	printk("\n-> #%u", depth);
-	print_lock_name(target->class);
-	printk(KERN_CONT ":\n");
-	print_lock_trace(target->trace, 6);
-}
+	struct rq *rq = cpu_rq(cpu);
 
-static void
-print_circular_lock_scenario(struct held_lock *src,
-			     struct held_lock *tgt,
-			     struct lock_list *prt)
-{
-	struct lock_class *source = hlock_class(src);
-	struct lock_class *target = hlock_class(tgt);
-	struct lock_class *parent = prt->class;
-
-	/*
-	 * A direct locking problem where unsafe_class lock is taken
-	 * directly by safe_class lock, then all we need to show
-	 * is the deadlock scenario, as it is obvious that the
-	 * unsafe lock is taken under the safe lock.
-	 *
-	 * But if there is a chain instead, where the safe lock takes
-	 * an intermediate lock (middle_class) where this lock is
-	 * not the same as the safe lock, then the lock chain is
-	 * used to describe the problem. Otherwise we would need
-	 * to show a different CPU case for each link in the chain
-	 * from the safe_class lock to the unsafe_class lock.
-	 */
-	if (parent != source) {
-		printk("Chain exists of:\n  ");
-		__print_lock_name(source);
-		printk(KERN_CONT " --> ");
-		__print_lock_name(parent);
-		printk(KERN_CONT " --> ");
-		__print_lock_name(target);
-		printk(KERN_CONT "\n\n");
-	}
-
-	printk(" Possible unsafe locking scenario:\n\n");
-	printk("       CPU0                    CPU1\n");
-	printk("       ----                    ----\n");
-	printk("  lock(");
-	__print_lock_name(target);
-	printk(KERN_CONT ");\n");
-	printk("                               lock(");
-	__print_lock_name(parent);
-	printk(KERN_CONT ");\n");
-	printk("                               lock(");
-	__print_lock_name(target);
-	printk(KERN_CONT ");\n");
-	printk("  lock(");
-	__print_lock_name(source);
-	printk(KERN_CONT ");\n");
-	printk("\n *** DEADLOCK ***\n\n");
-}
-
-/*
- * When a circular dependency is detected, print the
- * header first:
- */
-static noinline void
-print_circular_bug_header(struct lock_list *entry, unsigned int depth,
-			struct held_lock *check_src,
-			struct held_lock *check_tgt)
-{
-	struct task_struct *curr = current;
-
-	if (debug_locks_silent)
+	if (cpu == smp_processor_id())
 		return;
 
-	pr_warn("\n");
-	pr_warn("======================================================\n");
-	pr_warn("WARNING: possible circular locking dependency detected\n");
-	print_kernel_ident();
-	pr_warn("------------------------------------------------------\n");
-	pr_warn("%s/%d is trying to acquire lock:\n",
-		curr->comm, task_pid_nr(curr));
-	print_lock(check_src);
-
-	pr_warn("\nbut task is already holding lock:\n");
-
-	print_lock(check_tgt);
-	pr_warn("\nwhich lock already depends on the new lock.\n\n");
-	pr_warn("\nthe existing dependency chain (in reverse order) is:\n");
-
-	print_circular_bug_entry(entry, depth);
+	if (set_nr_and_not_polling(rq->idle))
+		smp_send_reschedule(cpu);
+	else
+		trace_sched_wake_idle_without_ipi(cpu);
 }
 
-/*
- * We are about to add A -> B into the dependency graph, and in __bfs() a
- * strong dependency path A -> .. -> B is found: hlock_class equals
- * entry->class.
- *
- * If A -> .. -> B can replace A -> B in any __bfs() search (means the former
- * is _stronger_ than or equal to the latter), we consider A -> B as redundant.
- * For example if A -> .. -> B is -(EN)-> (i.e. A -(E*)-> .. -(*N)-> B), and A
- * -> B is -(ER)-> or -(EN)->, then we don't need to add A -> B into the
- * dependency graph, as any strong path ..-> A -> B ->.. we can get with
- * having dependency A -> B, we could already get a equivalent path ..-> A ->
- * .. -> B -> .. with A -> .. -> B. Therefore A -> B is redundant.
- *
- * We need to make sure both the start and the end of A -> .. -> B is not
- * weaker than A -> B. For the start part, please see the comment in
- * check_redundant(). For the end part, we need:
- *
- * Either
- *
- *     a) A -> B is -(*R)-> (everything is not weaker than that)
- *
- * or
- *
- *     b) A -> .. -> B is -(*N)-> (nothing is stronger than this)
- *
- */
-static inline bool hlock_equal(struct lock_list *entry, void *data)
-{
-	struct held_lock *hlock = (struct held_lock *)data;
-
-	return hlock_class(hlock) == entry->class && /* Found A -> .. -> B */
-	       (hlock->read == 2 ||  /* A -> B is -(*R)-> */
-		!entry->only_xr); /* A -> .. -> B is -(*N)-> */
-}
-
-/*
- * We are about to add B -> A into the dependency graph, and in __bfs() a
- * strong dependency path A -> .. -> B is found: hlock_class equals
- * entry->class.
- *
- * We will have a deadlock case (conflict) if A -> .. -> B -> A is a strong
- * dependency cycle, that means:
- *
- * Either
- *
- *     a) B -> A is -(E*)->
- *
- * or
- *
- *     b) A -> .. -> B is -(*N)-> (i.e. A -> .. -(*N)-> B)
- *
- * as then we don't have -(*R)-> -(S*)-> in the cycle.
- */
-static inline bool hlock_conflict(struct lock_list *entry, void *data)
-{
-	struct held_lock *hlock = (struct held_lock *)data;
-
-	return hlock_class(hlock) == entry->class && /* Found A -> .. -> B */
-	       (hlock->read == 0 || /* B -> A is -(E*)-> */
-		!entry->only_xr); /* A -> .. -> B is -(*N)-> */
-}
-
-static noinline void print_circular_bug(struct lock_list *this,
-				struct lock_list *target,
-				struct held_lock *check_src,
-				struct held_lock *check_tgt)
-{
-	struct task_struct *curr = current;
-	struct lock_list *parent;
-	struct lock_list *first_parent;
-	int depth;
-
-	if (!debug_locks_off_graph_unlock() || debug_locks_silent)
-		return;
-
-	this->trace = save_trace();
-	if (!this->trace)
-		return;
-
-	depth = get_lock_depth(target);
-
-	print_circular_bug_header(target, depth, check_src, check_tgt);
-
-	parent = get_lock_parent(target);
-	first_parent = parent;
-
-	while (parent) {
-		print_circular_bug_entry(parent, --depth);
-		parent = get_lock_parent(parent);
-	}
-
-	printk("\nother info that might help us debug this:\n\n");
-	print_circular_lock_scenario(check_src, check_tgt,
-				     first_parent);
-
-	lockdep_print_held_locks(curr);
-
-	printk("\nstack backtrace:\n");
-	dump_stack();
-}
-
-static noinline void print_bfs_bug(int ret)
-{
-	if (!debug_locks_off_graph_unlock())
-		return;
-
-	/*
-	 * Breadth-first-search failed, graph got corrupted?
-	 */
-	WARN(1, "lockdep bfs error:%d\n", ret);
-}
-
-static bool noop_count(struct lock_list *entry, void *data)
-{
-	(*(unsigned long *)data)++;
-	return false;
-}
-
-static unsigned long __lockdep_count_forward_deps(struct lock_list *this)
-{
-	unsigned long  count = 0;
-	struct lock_list *target_entry;
-
-	__bfs_forwards(this, (void *)&count, noop_count, NULL, &target_entry);
-
-	return count;
-}
-unsigned long lockdep_count_forward_deps(struct lock_class *class)
-{
-	unsigned long ret, flags;
-	struct lock_list this;
-
-	__bfs_init_root(&this, class);
-
-	raw_local_irq_save(flags);
-	lockdep_lock();
-	ret = __lockdep_count_forward_deps(&this);
-	lockdep_unlock();
-	raw_local_irq_restore(flags);
-
-	return ret;
-}
-
-static unsigned long __lockdep_count_backward_deps(struct lock_list *this)
-{
-	unsigned long  count = 0;
-	struct lock_list *target_entry;
-
-	__bfs_backwards(this, (void *)&count, noop_count, NULL, &target_entry);
-
-	return count;
-}
-
-unsigned long lockdep_count_backward_deps(struct lock_class *class)
-{
-	unsigned long ret, flags;
-	struct lock_list this;
-
-	__bfs_init_root(&this, class);
-
-	raw_local_irq_save(flags);
-	lockdep_lock();
-	ret = __lockdep_count_backward_deps(&this);
-	lockdep_unlock();
-	raw_local_irq_restore(flags);
-
-	return ret;
-}
-
-/*
- * Check that the dependency graph starting at <src> can lead to
- * <target> or not.
- */
-static noinline enum bfs_result
-check_path(struct held_lock *target, struct lock_list *src_entry,
-	   bool (*match)(struct lock_list *entry, void *data),
-	   bool (*skip)(struct lock_list *entry, void *data),
-	   struct lock_list **target_entry)
-{
-	enum bfs_result ret;
-
-	ret = __bfs_forwards(src_entry, target, match, skip, target_entry);
-
-	if (unlikely(bfs_error(ret)))
-		print_bfs_bug(ret);
-
-	return ret;
-}
-
-/*
- * Prove that the dependency graph starting at <src> can not
- * lead to <target>. If it can, there is a circle when adding
- * <target> -> <src> dependency.
- *
- * Print an error and return BFS_RMATCH if it does.
- */
-static noinline enum bfs_result
-check_noncircular(struct held_lock *src, struct held_lock *target,
-		  struct lock_trace **const trace)
-{
-	enum bfs_result ret;
-	struct lock_list *target_entry;
-	struct lock_list src_entry;
-
-	bfs_init_root(&src_entry, src);
-
-	debug_atomic_inc(nr_cyclic_checks);
-
-	ret = check_path(target, &src_entry, hlock_conflict, NULL, &target_entry);
-
-	if (unlikely(ret == BFS_RMATCH)) {
-		if (!*trace) {
-			/*
-			 * If save_trace fails here, the printing might
-			 * trigger a WARN but because of the !nr_entries it
-			 * should not do bad things.
-			 */
-			*trace = save_trace();
-		}
-
-		print_circular_bug(&src_entry, target_entry, src, target);
-	}
-
-	return ret;
-}
-
-#ifdef CONFIG_TRACE_IRQFLAGS
-
-/*
- * Forwards and backwards subgraph searching, for the purposes of
- * proving that two subgraphs can be connected by a new dependency
- * without creating any illegal irq-safe -> irq-unsafe lock dependency.
- *
- * A irq safe->unsafe deadlock happens with the following conditions:
- *
- * 1) We have a strong dependency path A -> ... -> B
- *
- * 2) and we have ENABLED_IRQ usage of B and USED_IN_IRQ usage of A, therefore
- *    irq can create a new dependency B -> A (consider the case that a holder
- *    of B gets interrupted by an irq whose handler will try to acquire A).
- *
- * 3) the dependency circle A -> ... -> B -> A we get from 1) and 2) is a
- *    strong circle:
- *
- *      For the usage bits of B:
- *        a) if A -> B is -(*N)->, then B -> A could be any type, so any
- *           ENABLED_IRQ usage suffices.
- *        b) if A -> B is -(*R)->, then B -> A must be -(E*)->, so only
- *           ENABLED_IRQ_*_READ usage suffices.
- *
- *      For the usage bits of A:
- *        c) if A -> B is -(E*)->, then B -> A could be any type, so any
- *           USED_IN_IRQ usage suffices.
- *        d) if A -> B is -(S*)->, then B -> A must be -(*N)->, so only
- *           USED_IN_IRQ_*_READ usage suffices.
- */
-
-/*
- * There is a strong dependency path in the dependency graph: A -> B, and now
- * we need to decide which usage bit of A should be accumulated to detect
- * safe->unsafe bugs.
- *
- * Note that usage_accumulate() is used in backwards search, so ->only_xr
- * stands for whether A -> B only has -(S*)-> (in this case ->only_xr is true).
- *
- * As above, if only_xr is false, which means A -> B has -(E*)-> dependency
- * path, any usage of A should be considered. Otherwise, we should only
- * consider _READ usage.
- */
-static inline bool usage_accumulate(struct lock_list *entry, void *mask)
-{
-	if (!entry->only_xr)
-		*(unsigned long *)mask |= entry->class->usage_mask;
-	else /* Mask out _READ usage bits */
-		*(unsigned long *)mask |= (entry->class->usage_mask & LOCKF_IRQ);
-
-	return false;
-}
-
-/*
- * There is a strong dependency path in the dependency graph: A -> B, and now
- * we need to decide which usage bit of B conflicts with the usage bits of A,
- * i.e. which usage bit of B may introduce safe->unsafe deadlocks.
- *
- * As above, if only_xr is false, which means A -> B has -(*N)-> dependency
- * path, any usage of B should be considered. Otherwise, we should only
- * consider _READ usage.
- */
-static inline bool usage_match(struct lock_list *entry, void *mask)
-{
-	if (!entry->only_xr)
-		return !!(entry->class->usage_mask & *(unsigned long *)mask);
-	else /* Mask out _READ usage bits */
-		return !!((entry->class->usage_mask & LOCKF_IRQ) & *(unsigned long *)mask);
-}
-
-static inline bool usage_skip(struct lock_list *entry, void *mask)
+static bool wake_up_full_nohz_cpu(int cpu)
 {
 	/*
-	 * Skip local_lock() for irq inversion detection.
-	 *
-	 * For !RT, local_lock() is not a real lock, so it won't carry any
-	 * dependency.
-	 *
-	 * For RT, an irq inversion happens when we have lock A and B, and on
-	 * some CPU we can have:
-	 *
-	 *	lock(A);
-	 *	<interrupted>
-	 *	  lock(B);
-	 *
-	 * where lock(B) cannot sleep, and we have a dependency B -> ... -> A.
-	 *
-	 * Now we prove local_lock() cannot exist in that dependency. First we
-	 * have the observation for any lock chain L1 -> ... -> Ln, for any
-	 * 1 <= i <= n, Li.inner_wait_type <= L1.inner_wait_type, otherwise
-	 * wait context check will complain. And since B is not a sleep lock,
-	 * therefore B.inner_wait_type >= 2, and since the inner_wait_type of
-	 * local_lock() is 3, which is greater than 2, therefore there is no
-	 * way the local_lock() exists in the dependency B -> ... -> A.
-	 *
-	 * As a result, we will skip local_lock(), when we search for irq
-	 * inversion bugs.
+	 * We just need the target to call irq_exit() and re-evaluate
+	 * the next tick. The nohz full kick at least implies that.
+	 * If needed we can still optimize that later with an
+	 * empty IRQ.
 	 */
-	if (entry->class->lock_type == LD_LOCK_PERCPU) {
-		if (DEBUG_LOCKS_WARN_ON(entry->class->wait_type_inner < LD_WAIT_CONFIG))
-			return false;
-
+	if (cpu_is_offline(cpu))
+		return true;  /* Don't try to wake offline CPUs. */
+	if (tick_nohz_full_cpu(cpu)) {
+		if (cpu != smp_processor_id() ||
+		    tick_nohz_tick_stopped())
+			tick_nohz_full_kick_cpu(cpu);
 		return true;
 	}
 
@@ -628,453 +177,784 @@ static inline bool usage_skip(struct lock_list *entry, void *mask)
 }
 
 /*
- * Find a node in the forwards-direction dependency sub-graph starting
- * at @root->class that matches @bit.
- *
- * Return BFS_MATCH if such a node exists in the subgraph, and put that node
- * into *@target_entry.
+ * Wake up the specified CPU.  If the CPU is going offline, it is the
+ * caller's responsibility to deal with the lost wakeup, for example,
+ * by hooking into the CPU_DEAD notifier like timers and hrtimers do.
  */
-static enum bfs_result
-find_usage_forwards(struct lock_list *root, unsigned long usage_mask,
-			struct lock_list **target_entry)
+void wake_up_nohz_cpu(int cpu)
 {
-	enum bfs_result result;
-
-	debug_atomic_inc(nr_find_usage_forwards_checks);
-
-	result = __bfs_forwards(root, &usage_mask, usage_match, usage_skip, target_entry);
-
-	return result;
+	if (!wake_up_full_nohz_cpu(cpu))
+		wake_up_idle_cpu(cpu);
 }
 
+static void nohz_csd_func(void *info)
+{
+	struct rq *rq = info;
+	int cpu = cpu_of(rq);
+	unsigned int flags;
+
+	/*
+	 * Release the rq::nohz_csd.
+	 */
+	flags = atomic_fetch_andnot(NOHZ_KICK_MASK | NOHZ_NEWILB_KICK, nohz_flags(cpu));
+	WARN_ON(!(flags & NOHZ_KICK_MASK));
+
+	rq->idle_balance = idle_cpu(cpu);
+	if (rq->idle_balance && !need_resched()) {
+		rq->nohz_idle_balance = flags;
+		raise_softirq_irqoff(SCHED_SOFTIRQ);
+	}
+}
+
+#endif /* CONFIG_NO_HZ_COMMON */
+
+#ifdef CONFIG_NO_HZ_FULL
+bool sched_can_stop_tick(struct rq *rq)
+{
+	int fifo_nr_running;
+
+	/* Deadline tasks, even if single, need the tick */
+	if (rq->dl.dl_nr_running)
+		return false;
+
+	/*
+	 * If there are more than one RR tasks, we need the tick to affect the
+	 * actual RR behaviour.
+	 */
+	if (rq->rt.rr_nr_running) {
+		if (rq->rt.rr_nr_running == 1)
+			return true;
+		else
+			return false;
+	}
+
+	/*
+	 * If there's no RR tasks, but FIFO tasks, we can skip the tick, no
+	 * forced preemption between FIFO tasks.
+	 */
+	fifo_nr_running = rq->rt.rt_nr_running - rq->rt.rr_nr_running;
+	if (fifo_nr_running)
+		return true;
+
+	/*
+	 * If there are no DL,RR/FIFO tasks, there must only be CFS tasks left;
+	 * if there's more than one we need the tick for involuntary
+	 * preemption.
+	 */
+	if (rq->nr_running > 1)
+		return false;
+
+	return true;
+}
+#endif /* CONFIG_NO_HZ_FULL */
+#endif /* CONFIG_SMP */
+
+#if defined(CONFIG_RT_GROUP_SCHED) || (defined(CONFIG_FAIR_GROUP_SCHED) && \
+			(defined(CONFIG_SMP) || defined(CONFIG_CFS_BANDWIDTH)))
 /*
- * Find a node in the backwards-direction dependency sub-graph starting
- * at @root->class that matches @bit.
+ * Iterate task_group tree rooted at *from, calling @down when first entering a
+ * node and @up when leaving it for the final time.
+ *
+ * Caller must hold rcu_lock or sufficient equivalent.
  */
-static enum bfs_result
-find_usage_backwards(struct lock_list *root, unsigned long usage_mask,
-			struct lock_list **target_entry)
+int walk_tg_tree_from(struct task_group *from,
+			     tg_visitor down, tg_visitor up, void *data)
 {
-	enum bfs_result result;
+	struct task_group *parent, *child;
+	int ret;
 
-	debug_atomic_inc(nr_find_usage_backwards_checks);
+	parent = from;
 
-	result = __bfs_backwards(root, &usage_mask, usage_match, usage_skip, target_entry);
+down:
+	ret = (*down)(parent, data);
+	if (ret)
+		goto out;
+	list_for_each_entry_rcu(child, &parent->children, siblings) {
+		parent = child;
+		goto down;
 
-	return result;
+up:
+		continue;
+	}
+	ret = (*up)(parent, data);
+	if (ret || parent == from)
+		goto out;
+
+	child = parent;
+	parent = parent->parent;
+	if (parent)
+		goto up;
+out:
+	return ret;
 }
 
-static void print_lock_class_header(struct lock_class *class, int depth)
+int tg_nop(struct task_group *tg, void *data)
 {
-	int bit;
-
-	printk("%*s->", depth, "");
-	print_lock_name(class);
-#ifdef CONFIG_DEBUG_LOCKDEP
-	printk(KERN_CONT " ops: %lu", debug_class_ops_read(class));
+	return 0;
+}
 #endif
-	printk(KERN_CONT " {\n");
 
-	for (bit = 0; bit < LOCK_TRACE_STATES; bit++) {
-		if (class->usage_mask & (1 << bit)) {
-			int len = depth;
-
-			len += printk("%*s   %s", depth, "", usage_str[bit]);
-			len += printk(KERN_CONT " at:\n");
-			print_lock_trace(class->usage_traces[bit], len);
-		}
-	}
-	printk("%*s }\n", depth, "");
-
-	printk("%*s ... key      at: [<%px>] %pS\n",
-		depth, "", class->key, class->key);
-}
-
-/*
- * Dependency path printing:
- *
- * After BFS we get a lock dependency path (linked via ->parent of lock_list),
- * printing out each lock in the dependency path will help on understanding how
- * the deadlock could happen. Here are some details about dependency path
- * printing:
- *
- * 1)	A lock_list can be either forwards or backwards for a lock dependency,
- * 	for a lock dependency A -> B, there are two lock_lists:
- *
- * 	a)	lock_list in the ->locks_after list of A, whose ->class is B and
- * 		->links_to is A. In this case, we can say the lock_list is
- * 		"A -> B" (forwards case).
- *
- * 	b)	lock_list in the ->locks_before list of B, whose ->class is A
- * 		and ->links_to is B. In this case, we can say the lock_list is
- * 		"B <- A" (bacwards case).
- *
- * 	The ->trace of both a) and b) point to the call trace where B was
- * 	acquired with A held.
- *
- * 2)	A "helper" lock_list is introduced during BFS, this lock_list doesn't
- * 	represent a certain lock dependency, it only provides an initial entry
- * 	for BFS. For example, BFS may introduce a "helper" lock_list whose
- * 	->class is A, as a result BFS will search all dependencies starting with
- * 	A, e.g. A -> B or A -> C.
- *
- * 	The notation of a forwards helper lock_list is like "-> A", which means
- * 	we should search the forwards dependencies starting with "A", e.g A -> B
- * 	or A -> C.
- *
- * 	The notation of a bacwards helper lock_list is like "<- B", which means
- * 	we should search the backwards dependencies ending with "B", e.g.
- * 	B <- A or B <- C.
- */
-
-/*
- * printk the shortest lock dependencies from @root to @leaf in reverse order.
- *
- * We have a lock dependency path as follow:
- *
- *    @root                                                                 @leaf
- *      |                                                                     |
- *      V                                                                     V
- *	          ->parent                                   ->parent
- * | lock_list | <--------- | lock_list | ... | lock_list  | <--------- | lock_list |
- * |    -> L1  |            | L1 -> L2  | ... |Ln-2 -> Ln-1|            | Ln-1 -> Ln|
- *
- * , so it's natural that we start from @leaf and print every ->class and
- * ->trace until we reach the @root.
- */
-static void __used
-print_shortest_lock_dependencies(struct lock_list *leaf,
-				 struct lock_list *root)
+static void set_load_weight(struct task_struct *p, bool update_load)
 {
-	struct lock_list *entry = leaf;
-	int depth;
-
-	/*compute depth from generated tree by BFS*/
-	depth = get_lock_depth(leaf);
-
-	do {
-		print_lock_class_header(entry->class, depth);
-		printk("%*s ... acquired at:\n", depth, "");
-		print_lock_trace(entry->trace, 2);
-		printk("\n");
-
-		if (depth == 0 && (entry != root)) {
-			printk("lockdep:%s bad path found in chain graph\n", __func__);
-			break;
-		}
-
-		entry = get_lock_parent(entry);
-		depth--;
-	} while (entry && (depth >= 0));
-}
-
-/*
- * printk the shortest lock dependencies from @leaf to @root.
- *
- * We have a lock dependency path (from a backwards search) as follow:
- *
- *    @leaf                                                                 @root
- *      |                                                                     |
- *      V                                                                     V
- *	          ->parent                                   ->parent
- * | lock_list | ---------> | lock_list | ... | lock_list  | ---------> | lock_list |
- * | L2 <- L1  |            | L3 <- L2  | ... | Ln <- Ln-1 |            |    <- Ln  |
- *
- * , so when we iterate from @leaf to @root, we actually print the lock
- * dependency path L1 -> L2 -> .. -> Ln in the non-reverse order.
- *
- * Another thing to notice here is that ->class of L2 <- L1 is L1, while the
- * ->trace of L2 <- L1 is the call trace of L2, in fact we don't have the call
- * trace of L1 in the dependency path, which is alright, because most of the
- * time we can figure out where L1 is held from the call trace of L2.
- */
-static void __used
-print_shortest_lock_dependencies_backwards(struct lock_list *leaf,
-					   struct lock_list *root)
-{
-	struct lock_list *entry = leaf;
-	const struct lock_trace *trace = NULL;
-	int depth;
-
-	/*compute depth from generated tree by BFS*/
-	depth = get_lock_depth(leaf);
-
-	do {
-		print_lock_class_header(entry->class, depth);
-		if (trace) {
-			printk("%*s ... acquired at:\n", depth, "");
-			print_lock_trace(trace, 2);
-			printk("\n");
-		}
-
-		/*
-		 * Record the pointer to the trace for the next lock_list
-		 * entry, see the comments for the function.
-		 */
-		trace = entry->trace;
-
-		if (depth == 0 && (entry != root)) {
-			printk("lockdep:%s bad path found in chain graph\n", __func__);
-			break;
-		}
-
-		entry = get_lock_parent(entry);
-		depth--;
-	} while (entry && (depth >= 0));
-}
-
-static void
-print_irq_lock_scenario(struct lock_list *safe_entry,
-			struct lock_list *unsafe_entry,
-			struct lock_class *prev_class,
-			struct lock_class *next_class)
-{
-	struct lock_class *safe_class = safe_entry->class;
-	struct lock_class *unsafe_class = unsafe_entry->class;
-	struct lock_class *middle_class = prev_class;
-
-	if (middle_class == safe_class)
-		middle_class = next_class;
+	int prio = p->static_prio - MAX_RT_PRIO;
+	struct load_weight *load = &p->se.load;
 
 	/*
-	 * A direct locking problem where unsafe_class lock is taken
-	 * directly by safe_class lock, then all we need to show
-	 * is the deadlock scenario, as it is obvious that the
-	 * unsafe lock is taken under the safe lock.
+	 * SCHED_IDLE tasks get minimal weight:
+	 */
+	if (task_has_idle_policy(p)) {
+		load->weight = scale_load(WEIGHT_IDLEPRIO);
+		load->inv_weight = WMULT_IDLEPRIO;
+		return;
+	}
+
+	/*
+	 * SCHED_OTHER tasks have to update their load when changing their
+	 * weight
+	 */
+	if (update_load && p->sched_class == &fair_sched_class) {
+		reweight_task(p, prio);
+	} else {
+		load->weight = scale_load(sched_prio_to_weight[prio]);
+		load->inv_weight = sched_prio_to_wmult[prio];
+	}
+}
+
+#ifdef CONFIG_UCLAMP_TASK
+/*
+ * Serializes updates of utilization clamp values
+ *
+ * The (slow-path) user-space triggers utilization clamp value updates which
+ * can require updates on (fast-path) scheduler's data structures used to
+ * support enqueue/dequeue operations.
+ * While the per-CPU rq lock protects fast-path update operations, user-space
+ * requests are serialized using a mutex to reduce the risk of conflicting
+ * updates or API abuses.
+ */
+static DEFINE_MUTEX(uclamp_mutex);
+
+/* Max allowed minimum utilization */
+unsigned int sysctl_sched_uclamp_util_min = SCHED_CAPACITY_SCALE;
+
+/* Max allowed maximum utilization */
+unsigned int sysctl_sched_uclamp_util_max = SCHED_CAPACITY_SCALE;
+
+/*
+ * By default RT tasks run at the maximum performance point/capacity of the
+ * system. Uclamp enforces this by always setting UCLAMP_MIN of RT tasks to
+ * SCHED_CAPACITY_SCALE.
+ *
+ * This knob allows admins to change the default behavior when uclamp is being
+ * used. In battery powered devices, particularly, running at the maximum
+ * capacity and frequency will increase energy consumption and shorten the
+ * battery life.
+ *
+ * This knob only affects RT tasks that their uclamp_se->user_defined == false.
+ *
+ * This knob will not override the system default sched_util_clamp_min defined
+ * above.
+ */
+unsigned int sysctl_sched_uclamp_util_min_rt_default = SCHED_CAPACITY_SCALE;
+
+/* All clamps are required to be less or equal than these values */
+static struct uclamp_se uclamp_default[UCLAMP_CNT];
+
+/*
+ * This static key is used to reduce the uclamp overhead in the fast path. It
+ * primarily disables the call to uclamp_rq_{inc, dec}() in
+ * enqueue/dequeue_task().
+ *
+ * This allows users to continue to enable uclamp in their kernel config with
+ * minimum uclamp overhead in the fast path.
+ *
+ * As soon as userspace modifies any of the uclamp knobs, the static key is
+ * enabled, since we have an actual users that make use of uclamp
+ * functionality.
+ *
+ * The knobs that would enable this static key are:
+ *
+ *   * A task modifying its uclamp value with sched_setattr().
+ *   * An admin modifying the sysctl_sched_uclamp_{min, max} via procfs.
+ *   * An admin modifying the cgroup cpu.uclamp.{min, max}
+ */
+DEFINE_STATIC_KEY_FALSE(sched_uclamp_used);
+
+/* Integer rounded range for each bucket */
+#define UCLAMP_BUCKET_DELTA DIV_ROUND_CLOSEST(SCHED_CAPACITY_SCALE, UCLAMP_BUCKETS)
+
+#define for_each_clamp_id(clamp_id) \
+	for ((clamp_id) = 0; (clamp_id) < UCLAMP_CNT; (clamp_id)++)
+
+static inline unsigned int uclamp_bucket_id(unsigned int clamp_value)
+{
+	return min_t(unsigned int, clamp_value / UCLAMP_BUCKET_DELTA, UCLAMP_BUCKETS - 1);
+}
+
+static inline unsigned int uclamp_none(enum uclamp_id clamp_id)
+{
+	if (clamp_id == UCLAMP_MIN)
+		return 0;
+	return SCHED_CAPACITY_SCALE;
+}
+
+static inline void uclamp_se_set(struct uclamp_se *uc_se,
+				 unsigned int value, bool user_defined)
+{
+	uc_se->value = value;
+	uc_se->bucket_id = uclamp_bucket_id(value);
+	uc_se->user_defined = user_defined;
+}
+
+static inline unsigned int
+uclamp_idle_value(struct rq *rq, enum uclamp_id clamp_id,
+		  unsigned int clamp_value)
+{
+	/*
+	 * Avoid blocked utilization pushing up the frequency when we go
+	 * idle (which drops the max-clamp) by retaining the last known
+	 * max-clamp.
+	 */
+	if (clamp_id == UCLAMP_MAX) {
+		rq->uclamp_flags |= UCLAMP_FLAG_IDLE;
+		return clamp_value;
+	}
+
+	return uclamp_none(UCLAMP_MIN);
+}
+
+static inline void uclamp_idle_reset(struct rq *rq, enum uclamp_id clamp_id,
+				     unsigned int clamp_value)
+{
+	/* Reset max-clamp retention only on idle exit */
+	if (!(rq->uclamp_flags & UCLAMP_FLAG_IDLE))
+		return;
+
+	WRITE_ONCE(rq->uclamp[clamp_id].value, clamp_value);
+}
+
+static inline
+unsigned int uclamp_rq_max_value(struct rq *rq, enum uclamp_id clamp_id,
+				   unsigned int clamp_value)
+{
+	struct uclamp_bucket *bucket = rq->uclamp[clamp_id].bucket;
+	int bucket_id = UCLAMP_BUCKETS - 1;
+
+	/*
+	 * Since both min and max clamps are max aggregated, find the
+	 * top most bucket with tasks in.
+	 */
+	for ( ; bucket_id >= 0; bucket_id--) {
+		if (!bucket[bucket_id].tasks)
+			continue;
+		return bucket[bucket_id].value;
+	}
+
+	/* No tasks -- default clamp values */
+	return uclamp_idle_value(rq, clamp_id, clamp_value);
+}
+
+static void __uclamp_update_util_min_rt_default(struct task_struct *p)
+{
+	unsigned int default_util_min;
+	struct uclamp_se *uc_se;
+
+	lockdep_assert_held(&p->pi_lock);
+
+	uc_se = &p->uclamp_req[UCLAMP_MIN];
+
+	/* Only sync if user didn't override the default */
+	if (uc_se->user_defined)
+		return;
+
+	default_util_min = sysctl_sched_uclamp_util_min_rt_default;
+	uclamp_se_set(uc_se, default_util_min, false);
+}
+
+static void uclamp_update_util_min_rt_default(struct task_struct *p)
+{
+	struct rq_flags rf;
+	struct rq *rq;
+
+	if (!rt_task(p))
+		return;
+
+	/* Protect updates to p->uclamp_* */
+	rq = task_rq_lock(p, &rf);
+	__uclamp_update_util_min_rt_default(p);
+	task_rq_unlock(rq, p, &rf);
+}
+
+static void uclamp_sync_util_min_rt_default(void)
+{
+	struct task_struct *g, *p;
+
+	/*
+	 * copy_process()			sysctl_uclamp
+	 *					  uclamp_min_rt = X;
+	 *   write_lock(&tasklist_lock)		  read_lock(&tasklist_lock)
+	 *   // link thread			  smp_mb__after_spinlock()
+	 *   write_unlock(&tasklist_lock)	  read_unlock(&tasklist_lock);
+	 *   sched_post_fork()			  for_each_process_thread()
+	 *     __uclamp_sync_rt()		    __uclamp_sync_rt()
 	 *
-	 * But if there is a chain instead, where the safe lock takes
-	 * an intermediate lock (middle_class) where this lock is
-	 * not the same as the safe lock, then the lock chain is
-	 * used to describe the problem. Otherwise we would need
-	 * to show a different CPU case for each link in the chain
-	 * from the safe_class lock to the unsafe_class lock.
+	 * Ensures that either sched_post_fork() will observe the new
+	 * uclamp_min_rt or for_each_process_thread() will observe the new
+	 * task.
 	 */
-	if (middle_class != unsafe_class) {
-		printk("Chain exists of:\n  ");
-		__print_lock_name(safe_class);
-		printk(KERN_CONT " --> ");
-		__print_lock_name(middle_class);
-		printk(KERN_CONT " --> ");
-		__print_lock_name(unsafe_class);
-		printk(KERN_CONT "\n\n");
-	}
+	read_lock(&tasklist_lock);
+	smp_mb__after_spinlock();
+	read_unlock(&tasklist_lock);
 
-	printk(" Possible interrupt unsafe locking scenario:\n\n");
-	printk("       CPU0                    CPU1\n");
-	printk("       ----                    ----\n");
-	printk("  lock(");
-	__print_lock_name(unsafe_class);
-	printk(KERN_CONT ");\n");
-	printk("                               local_irq_disable();\n");
-	printk("                               lock(");
-	__print_lock_name(safe_class);
-	printk(KERN_CONT ");\n");
-	printk("                               lock(");
-	__print_lock_name(middle_class);
-	printk(KERN_CONT ");\n");
-	printk("  <Interrupt>\n");
-	printk("    lock(");
-	__print_lock_name(safe_class);
-	printk(KERN_CONT ");\n");
-	printk("\n *** DEADLOCK ***\n\n");
+	rcu_read_lock();
+	for_each_process_thread(g, p)
+		uclamp_update_util_min_rt_default(p);
+	rcu_read_unlock();
 }
 
-static void
-print_bad_irq_dependency(struct task_struct *curr,
-			 struct lock_list *prev_root,
-			 struct lock_list *next_root,
-			 struct lock_list *backwards_entry,
-			 struct lock_list *forwards_entry,
-			 struct held_lock *prev,
-			 struct held_lock *next,
-			 enum lock_usage_bit bit1,
-			 enum lock_usage_bit bit2,
-			 const char *irqclass)
+static inline struct uclamp_se
+uclamp_tg_restrict(struct task_struct *p, enum uclamp_id clamp_id)
 {
-	if (!debug_locks_off_graph_unlock() || debug_locks_silent)
-		return;
-
-	pr_warn("\n");
-	pr_warn("=====================================================\n");
-	pr_warn("WARNING: %s-safe -> %s-unsafe lock order detected\n",
-		irqclass, irqclass);
-	print_kernel_ident();
-	pr_warn("-----------------------------------------------------\n");
-	pr_warn("%s/%d [HC%u[%lu]:SC%u[%lu]:HE%u:SE%u] is trying to acquire:\n",
-		curr->comm, task_pid_nr(curr),
-		lockdep_hardirq_context(), hardirq_count() >> HARDIRQ_SHIFT,
-		curr->softirq_context, softirq_count() >> SOFTIRQ_SHIFT,
-		lockdep_hardirqs_enabled(),
-		curr->softirqs_enabled);
-	print_lock(next);
-
-	pr_warn("\nand this task is already holding:\n");
-	print_lock(prev);
-	pr_warn("which would create a new lock dependency:\n");
-	print_lock_name(hlock_class(prev));
-	pr_cont(" ->");
-	print_lock_name(hlock_class(next));
-	pr_cont("\n");
-
-	pr_warn("\nbut this new dependency connects a %s-irq-safe lock:\n",
-		irqclass);
-	print_lock_name(backwards_entry->class);
-	pr_warn("\n... which became %s-irq-safe at:\n", irqclass);
-
-	print_lock_trace(backwards_entry->class->usage_traces[bit1], 1);
-
-	pr_warn("\nto a %s-irq-unsafe lock:\n", irqclass);
-	print_lock_name(forwards_entry->class);
-	pr_warn("\n... which became %s-irq-unsafe at:\n", irqclass);
-	pr_warn("...");
-
-	print_lock_trace(forwards_entry->class->usage_traces[bit2], 1);
-
-	pr_warn("\nother info that might help us debug this:\n\n");
-	print_irq_lock_scenario(backwards_entry, forwards_entry,
-				hlock_class(prev), hlock_class(next));
-
-	lockdep_print_held_locks(curr);
-
-	pr_warn("\nthe dependencies between %s-irq-safe lock and the holding lock:\n", irqclass);
-	print_shortest_lock_dependencies_backwards(backwards_entry, prev_root);
-
-	pr_warn("\nthe dependencies between the lock to be acquired");
-	pr_warn(" and %s-irq-unsafe lock:\n", irqclass);
-	next_root->trace = save_trace();
-	if (!next_root->trace)
-		return;
-	print_shortest_lock_dependencies(forwards_entry, next_root);
-
-	pr_warn("\nstack backtrace:\n");
-	dump_stack();
-}
-
-static const char *state_names[] = {
-#define LOCKDEP_STATE(__STATE) \
-	__stringify(__STATE),
-#include "lockdep_states.h"
-#undef LOCKDEP_STATE
-};
-
-static const char *state_rnames[] = {
-#define LOCKDEP_STATE(__STATE) \
-	__stringify(__STATE)"-READ",
-#include "lockdep_states.h"
-#undef LOCKDEP_STATE
-};
-
-static inline const char *state_name(enum lock_usage_bit bit)
-{
-	if (bit & LOCK_USAGE_READ_MASK)
-		return state_rnames[bit >> LOCK_USAGE_DIR_MASK];
-	else
-		return state_names[bit >> LOCK_USAGE_DIR_MASK];
-}
-
-/*
- * The bit number is encoded like:
- *
- *  bit0: 0 exclusive, 1 read lock
- *  bit1: 0 used in irq, 1 irq enabled
- *  bit2-n: state
- */
-static int exclusive_bit(int new_bit)
-{
-	int state = new_bit & LOCK_USAGE_STATE_MASK;
-	int dir = new_bit & LOCK_USAGE_DIR_MASK;
+	/* Copy by value as we could modify it */
+	struct uclamp_se uc_req = p->uclamp_req[clamp_id];
+#ifdef CONFIG_UCLAMP_TASK_GROUP
+	unsigned int tg_min, tg_max, value;
 
 	/*
-	 * keep state, bit flip the direction and strip read.
+	 * Tasks in autogroups or root task group will be
+	 * restricted by system defaults.
 	 */
-	return state | (dir ^ LOCK_USAGE_DIR_MASK);
+	if (task_group_is_autogroup(task_group(p)))
+		return uc_req;
+	if (task_group(p) == &root_task_group)
+		return uc_req;
+
+	tg_min = task_group(p)->uclamp[UCLAMP_MIN].value;
+	tg_max = task_group(p)->uclamp[UCLAMP_MAX].value;
+	value = uc_req.value;
+	value = clamp(value, tg_min, tg_max);
+	uclamp_se_set(&uc_req, value, false);
+#endif
+
+	return uc_req;
 }
 
 /*
- * Observe that when given a bitmask where each bitnr is encoded as above, a
- * right shift of the mask transforms the individual bitnrs as -1 and
- * conversely, a left shift transforms into +1 for the individual bitnrs.
- *
- * So for all bits whose number have LOCK_ENABLED_* set (bitnr1 == 1), we can
- * create the mask with those bit numbers using LOCK_USED_IN_* (bitnr1 == 0)
- * instead by subtracting the bit number by 2, or shifting the mask right by 2.
- *
- * Similarly, bitnr1 == 0 becomes bitnr1 == 1 by adding 2, or shifting left 2.
- *
- * So split the mask (note that LOCKF_ENABLED_IRQ_ALL|LOCKF_USED_IN_IRQ_ALL is
- * all bits set) and recompose with bitnr1 flipped.
+ * The effective clamp bucket index of a task depends on, by increasing
+ * priority:
+ * - the task specific clamp value, when explicitly requested from userspace
+ * - the task group effective clamp value, for tasks not either in the root
+ *   group or in an autogroup
+ * - the system default clamp value, defined by the sysadmin
  */
-static unsigned long invert_dir_mask(unsigned long mask)
+static inline struct uclamp_se
+uclamp_eff_get(struct task_struct *p, enum uclamp_id clamp_id)
 {
-	unsigned long excl = 0;
+	struct uclamp_se uc_req = uclamp_tg_restrict(p, clamp_id);
+	struct uclamp_se uc_max = uclamp_default[clamp_id];
 
-	/* Invert dir */
-	excl |= (mask & LOCKF_ENABLED_IRQ_ALL) >> LOCK_USAGE_DIR_MASK;
-	excl |= (mask & LOCKF_USED_IN_IRQ_ALL) << LOCK_USAGE_DIR_MASK;
+	/* System default restrictions always apply */
+	if (unlikely(uc_req.value > uc_max.value))
+		return uc_max;
 
-	return excl;
+	return uc_req;
+}
+
+unsigned long uclamp_eff_value(struct task_struct *p, enum uclamp_id clamp_id)
+{
+	struct uclamp_se uc_eff;
+
+	/* Task currently refcounted: use back-annotated (effective) value */
+	if (p->uclamp[clamp_id].active)
+		return (unsigned long)p->uclamp[clamp_id].value;
+
+	uc_eff = uclamp_eff_get(p, clamp_id);
+
+	return (unsigned long)uc_eff.value;
 }
 
 /*
- * Note that a LOCK_ENABLED_IRQ_*_READ usage and a LOCK_USED_IN_IRQ_*_READ
- * usage may cause deadlock too, for example:
+ * When a task is enqueued on a rq, the clamp bucket currently defined by the
+ * task's uclamp::bucket_id is refcounted on that rq. This also immediately
+ * updates the rq's clamp value if required.
  *
- * P1				P2
- * <irq disabled>
- * write_lock(l1);		<irq enabled>
- *				read_lock(l2);
- * write_lock(l2);
- * 				<in irq>
- * 				read_lock(l1);
- *
- * , in above case, l1 will be marked as LOCK_USED_IN_IRQ_HARDIRQ_READ and l2
- * will marked as LOCK_ENABLE_IRQ_HARDIRQ_READ, and this is a possible
- * deadlock.
- *
- * In fact, all of the following cases may cause deadlocks:
- *
- * 	 LOCK_USED_IN_IRQ_* -> LOCK_ENABLED_IRQ_*
- * 	 LOCK_USED_IN_IRQ_*_READ -> LOCK_ENABLED_IRQ_*
- * 	 LOCK_USED_IN_IRQ_* -> LOCK_ENABLED_IRQ_*_READ
- * 	 LOCK_USED_IN_IRQ_*_READ -> LOCK_ENABLED_IRQ_*_READ
- *
- * As a result, to calculate the "exclusive mask", first we invert the
- * direction (USED_IN/ENABLED) of the original mask, and 1) for all bits with
- * bitnr0 set (LOCK_*_READ), add those with bitnr0 cleared (LOCK_*). 2) for all
- * bits with bitnr0 cleared (LOCK_*_READ), add those with bitnr0 set (LOCK_*).
+ * Tasks can have a task-specific value requested from user-space, track
+ * within each bucket the maximum value for tasks refcounted in it.
+ * This "local max aggregation" allows to track the exact "requested" value
+ * for each bucket when all its RUNNABLE tasks require the same clamp.
  */
-static unsigned long exclusive_mask(unsigned long mask)
+static inline void uclamp_rq_inc_id(struct rq *rq, struct task_struct *p,
+				    enum uclamp_id clamp_id)
 {
-	unsigned long excl = invert_dir_mask(mask);
+	struct uclamp_rq *uc_rq = &rq->uclamp[clamp_id];
+	struct uclamp_se *uc_se = &p->uclamp[clamp_id];
+	struct uclamp_bucket *bucket;
 
-	excl |= (excl & LOCKF_IRQ_READ) >> LOCK_USAGE_READ_MASK;
-	excl |= (excl & LOCKF_IRQ) << LOCK_USAGE_READ_MASK;
+	lockdep_assert_rq_held(rq);
 
-	return excl;
+	/* Update task effective clamp */
+	p->uclamp[clamp_id] = uclamp_eff_get(p, clamp_id);
+
+	bucket = &uc_rq->bucket[uc_se->bucket_id];
+	bucket->tasks++;
+	uc_se->active = true;
+
+	uclamp_idle_reset(rq, clamp_id, uc_se->value);
+
+	/*
+	 * Local max aggregation: rq buckets always track the max
+	 * "requested" clamp value of its RUNNABLE tasks.
+	 */
+	if (bucket->tasks == 1 || uc_se->value > bucket->value)
+		bucket->value = uc_se->value;
+
+	if (uc_se->value > READ_ONCE(uc_rq->value))
+		WRITE_ONCE(uc_rq->value, uc_se->value);
 }
 
 /*
- * Retrieve the _possible_ original mask to which @mask is
- * exclusive. Ie: this is the opposite of exclusive_mask().
- * Note that 2 possible original bits can match an exclusive
- * bit: one has LOCK_USAGE_READ_MASK set, the other has it
- * cleared. So both are returned for each exclusive bit.
+ * When a task is dequeued from a rq, the clamp bucket refcounted by the task
+ * is released. If this is the last task reference counting the rq's max
+ * active clamp value, then the rq's clamp value is updated.
+ *
+ * Both refcounted tasks and rq's cached clamp values are expected to be
+ * always valid. If it's detected they are not, as defensive programming,
+ * enforce the expected state and warn.
  */
-static unsigned long original_mask(unsigned long mask)
+static inline void uclamp_rq_dec_id(struct rq *rq, struct task_struct *p,
+				    enum uclamp_id clamp_id)
 {
-	unsigned long excl = invert_dir_mask(mask);
+	struct uclamp_rq *uc_rq = &rq->uclamp[clamp_id];
+	struct uclamp_se *uc_se = &p->uclamp[clamp_id];
+	struct uclamp_bucket *bucket;
+	unsigned int bkt_clamp;
+	unsigned int rq_clamp;
 
-	/* Include read in existing usages */
-	excl |= (excl & LOCKF_IRQ_READ) >> LOCK_USAGE_READ_MASK;
-	excl |= (excl & LOCKF_  ƒ|$`"‡  ‹D$`¾€    ‰D$…Àˆ  ˜„   İ    ‰\$q‰L$$‰ó‰t$‹4$‰õ‹vhİ…ötz8  ‰l$ ‰D$‹D$‹l†‰êƒâuZ‹D$‹D$‹DÆ9Èuë>´&    ƒÂ‹ 9Át‹X…Ûuğ‹X…Ûtì‹[…Ûuâ‹ 9Áuåt& ƒú‡'  „(  ‹vh…öu—‹l$ ‹4$‹\$Ş‰D$‹€4  9Åt‹D$9„ì  …  ‹D$‹˜4  9İ„C  ‰Ø1Òët& ƒÂ‹ 9Åt‹p…öuğ‹H…Étì‹I…Éuâ‹ 9Åuåt& ƒú?‡1  öD$d„  ‹L$‹T$‰Ø´&    v …ÿt9xu9Ï…·   …Òt	;P„ª   ‹ 9ÅuÜ‹T$‹D$…ÒuéÕ   v ‹9İ„ª  ;Cuñû ğÿÿ‡Î  ‰ù…ÿ„ë  ‹$‰\$‰Ë1ö‹€”   ‹P@‹@<‰D$(‹D$`‰T$,‰D$0‹C(‹„°x  …Àt1ÉT$(èüÿÿÿ‰D´4…À„w  ƒştj‹C(¾   ‹„°x  …ÀuÑëæt& ¾êÿÿÿ‹D$Dd+    …>  ƒÄH‰ğ[^_]ÃöD$d…¬  t& ‹D$‹€4  9Å…=ÿÿÿ1ÛéBÿÿÿ´&    ‹\$…Ûtu‹D$‹k‰{‹L$‹|$‰C‹D$4‰ú‰C‹D$8‰C‹$‰Œ¸ì  èüõÿÿ‰Æ…À…ú   …í„Ÿ   ‰èèüÿÿÿ‹<$‹L$`1ö‹D$<‰úèüÿÿÿ‹L$`‹D$@‰úèüÿÿÿé8ÿÿÿ¡   ¹   ºÀ  èüÿÿÿ‰Ã…À„C  ‹t$‹L$‰+‹†8  ‰8  ‰C‰‹D$‰{‹|$‰C‹D$4‰ú‰C‹D$8‰C‹$‰Œ¸ì  èUõÿÿ‰Æ…À…²   ‹D$$àûÿÿèüÿÿÿéUÿÿÿ´&    ‰ò‰Øèüÿÿÿ‰D´4= ğÿÿ‡¾   ‰D´<éhşÿÿ´&    ‹D$‹Hé	şÿÿt& …ít[‰k‹D$<ÇC    èüÿÿÿ‹D$@èüÿÿÿéPşÿÿv éØüÿÿ‰è‹l$ ¨…Õüÿÿ¾ÿÿÿÿé.şÿÿ‹D$¾şÿÿÿ…À…şÿÿ1Ûéœıÿÿ‹D$<èüÿÿÿ‹D$@èüÿÿÿ‹C‹‰B‰‰ØÇ   ÇC"  èüÿÿÿéáıÿÿ¾şÿÿÿé×ıÿÿ‹D$<¾ôÿÿÿèüÿÿÿ‹D$@èüÿÿÿé»ıÿÿ¾ùÿÿÿé±ıÿÿèüÿÿÿ‰Şé¥ıÿÿ´&    èüÿÿÿS‰Ãö@,tƒT  1Ò[éüÿÿÿt& èüÿÿÿ‹C¨udÿ èüÿÿÿƒT  1Ò[éüÿÿÿ¶    ‹Cğƒ ëŞ´&    ´&    èüÿÿÿU¹   ºĞ  WV‰ÆSƒìdd¡    ‰D$`1Àl$‰ïó«†T  ‰$hÀ  èüÿÿÿZ‰Ç…À…¶   ‹^h…Ût"èüÿÿÿ‹ƒT  ¨…ì   dÿ èüÿÿÿ‹[h…ÛuŞ†4  ì  ‰ ‰@ƒÀ9Áuô†H  ‰†H  ‰†L  ëƒÇƒÿtxL½ ‰ú‰ğ‰ëèÉñÿÿ…Àtål$`‹ƒÃèüÿÿÿ9ëuò‹^h…Ûtèüÿÿÿ‹ƒT  ¨u{dÿèüÿÿÿ‹[h…Ûuâ‹$¿ôÿÿÿèüÿÿÿ‹D$`d+    u{ƒÄd‰ø[^_]Ã´&    f1Û¶    ‹L ‹„Ø  “ô   ƒÃ‰L–èüÿÿÿƒûuŞ1ÿë²f‹ƒX  ğƒ éÿÿÿ‹ƒX  ğƒ(…xÿÿÿ‹“X  ƒT  ‹Rèüÿÿÿé_ÿÿÿèüÿÿÿv èüÿÿÿU‰ÕW‰ÏVS‰Ãƒì‹ èüÿÿÿ‰Æ= ğÿÿ‡Ê   ‹S‰ĞƒàƒøtE¸    ‹[‰$èüÿÿÿ‹$1É‰ğR‰úSj è›øÿÿ‰Ã¸    èüÿÿÿƒÄöF,thƒÄ‰Ø[^_]Ãt& ‹C‰ê1Éèüÿÿÿ‰Å= ğÿÿws‹S¸    ‹[‰$èüÿÿÿ‹$‰é‰ğR‰úSj è>øÿÿ‰Ã¸    èüÿÿÿƒÄ…ítŸ‰èèüÿÿÿöF,u˜èüÿÿÿ‹F¨uRdÿèüÿÿÿ‰ØƒÄ[^_]ÃƒÄ‰Ã‰Ø[^_]Ãt& öF,t
-‰ëé]ÿÿÿv èüÿÿÿ‹F¨u-dÿèüÿÿÿ‰ëé?ÿÿÿt& ‹Fğƒ(u¨‹VF‹Rèüÿÿÿë˜‹Fğƒ(uÍ‹VF‹Rèüÿÿÿë½´&    ´&    èüÿÿÿW‰×V‰ÆS‹ èüÿÿÿ‰Ã= ğÿÿwt‹F‰ú1Éèüÿÿÿ‹v‰Ç¸    ÿ ğÿÿwfèüÿÿÿ‰ú1É‰ØVè…ñÿÿ‰Æ¸    èüÿÿÿZ…ÿt‰øèüÿÿÿöC,t‰ğ[^_Ãèüÿÿÿ‹C¨uDdÿèüÿÿÿ‰ğ[^_Ã¶    ‰Æ[‰ğ^_Ã´&    èüÿÿÿ1É1Ò‰ØVèñÿÿ‰Æ¸    èüÿÿÿXë£‹Cğƒ(u¶‹SC‹Rèüÿÿÿë¦´&    èüÿÿÿUWV‰ÆSƒì‹Nd¡    ‰D$1À…É…ó   ‹F‰Õèüÿÿÿ‰Ç= ğÿÿ‡Ô   ¡   ¹0   ºÀ èüÿÿÿ‰Ã…À„ß   U¹\  º   èüÿÿÿ‹F‰{(T$‰C,‰Øèüÿÿÿ‰ÆX…öuS‹s,¸    èüÿÿÿ1É1Ò‰øjVSèÿõÿÿ‰Æ¸    èüÿÿÿƒÄ‰à…öuJèüÿÿÿ‰Æ‹D$d+    uvƒÄ‰ğ[^_]Ãt& ‰ØèüÿÿÿöG,uØèüÿÿÿ‹G¨u/dÿèüÿÿÿëÂt& èüÿÿÿëØ´&    f‰Æë©t& ¾êÿÿÿë‹Gğƒ(uË‹WG‹Rèüÿÿÿë»¾ôÿÿÿëŸèüÿÿÿ´&    t& èüÿÿÿUWV‰ÖS‰Ãƒì d¡    ‰D$‹èüÿÿÿ‰Ç= ğÿÿ‡ò  ¸    èüÿÿÿ‹CÇ$êÿÿÿƒø"‡<  ¾€    …Àˆ-  ˆ„   ‹”‡ì  ‹k‰L$ŒÇ4  ‰L$‹Œ‡Ø  ‹C‰T$‰L$ƒà„D  ‰Èèüÿÿÿ‰D$¹   FT$èüÿÿÿ…À…¬  F¹   T$èüÿÿÿ…À…“  ‹C‰î…À„¢   …í„š   ‹L$‰$…É„’   9ÈƒC  ‰D$Ç$äÿÿÿöC…~  ‹D$1í‹\Ç‹D$9Øtc‰|$‰Çë@t& ‹@(¹   T$‹@ ‰D$‰ğèüÿÿÿ…À…  ƒÅ;l$„Ñ   ‹ƒÆ9ß„Ä   ‹C…Àu½‹C…Àt¶‹@ë±Ç$    ¸    èüÿÿÿöG,t!‹D$d+    …ÿ   ‹$ƒÄ [^_]Ãt& èüÿÿÿ‹G¨…¨   dÿèüÿÿÿëÅ¶    ‹L$‹TÏ‹L$9Ñth‰$‰Ëë
-ƒÀ‹9Ót‹J…Éuğ‹J…Étì‹I…Éuâëã‹$éƒşÿÿ´&    ‰$éoÿÿÿ´&    ‹|$éNÿÿÿ´&    Ç$    é¼şÿÿt& 1ÀéDşÿÿ´&    f‹|$Ç$òÿÿÿéÿÿÿ‹Gğƒ(…Nÿÿÿ‹WG‹Rèüÿÿÿé;ÿÿÿ‹L$‹D$‰êèüÿÿÿ‰$éàşÿÿèüÿÿÿt& èüÿÿÿUWVS‰Ã¿Ûƒì d¡    ‰D$1À¿D$4‰L$‰T$Áà	Ø‰D$d‹    èüÿÿÿ‹ƒÈ  ‹T$8ÇD$    ‹@8‹´Ø  èüÿÿÿèüÿÿÿ‹ƒp  ‰D$D$‰ƒp  ‹^…ÛtB~t& ‰|$>t& ‹K$S0D$èüÿÿÿ‰Æ…öu|$ ğÿÿwÇD$ÿÿÿÿ‹_ƒÇ…ÛuÆ‹L$d¡    ‰ˆp  èüÿÿÿèüÿÿÿ‹\$èüÿÿÿ‹D$d+    ukƒÄ ‰Ø[^_]Ãt& èüÿÿÿS0‹s$‰ÅD$èüÿÿÿ‹[‰Æèüÿÿÿ…    œ$úƒCƒƒS èüÿÿÿ1Ò)èCSƒC÷$   „KÿÿÿûéEÿÿÿèüÿÿÿ´&    ´&    èüÿÿÿU‰ÅWV‰Î¹	   S‰ÓƒìP‹D$d|$(‰D$‹D$h‰D$d¡    ‰D$L1À‰T$$ºÀ  ‰l$ ÇD$    ÇD$    ó«‹D$lÇD$,   ‰t$<‹L$`‰D$@¸   èüÿÿÿ‰D$(…À„4  ‰ÁD$1ÒPD$0P‰Ø‹{èüÿÿÿ[_…À…  …öt‹D$‹…Ét‹D$‹…Ò…  èüÿÿÿ‹T$pd‹    ‹ƒÈ  ÇD$    ‹@8‹´Ø  èüÿÿÿèüÿÿÿ‹ƒp  ~‰D$D$‰ƒp  ‹^…Ût@¶    ‰|$>t& ‹K$S0D$ èüÿÿÿ‰Æ…öu|$ ğÿÿwÇD$ÿÿÿÿ‹_ƒÇ…ÛuÆ‹L$d¡    ‰ˆp  èüÿÿÿèüÿÿÿ‹\$èüÿÿÿ‹D$(èüÿÿÿƒûu‹D$8…À…™   ‹D$0èüÿÿÿ‹D$Ld+    …7  ƒÄP‰Ø[^_]Ãt& ÇD$,    ELF                            4     (               èüÿÿÿÇ€À      1ÀÃ´&    ´&    èüÿÿÿÇ€À       1ÀÃ´&    ´&    èüÿÿÿ‹ˆÀ   …Éu‹€Ä   ÇB(p   ÇB4   ‰B81ÀÃ´&    èüÿÿÿ‹@\èüÿÿÿ1ÀÃèüÿÿÿV1É‰ÆS‰Óƒìd¡    ‰D$‹†”   f‰L$ÆD$ƒútAƒútLƒútGj ¹   T$èüÿÿÿYƒø…-   ‰Ä   ‹D$d+    u!ƒÄ[^Ãt& ÆD$ëÂ´&    fÆD$ë²èüÿÿÿt& èüÿÿÿ‹ˆÀ   …Ét	1ÀÃ¶    ‹R8èPÿÿÿ1ÀÃ´&    ¶    èüÿÿÿVS‰Ã‹@‹P‹Rèüÿÿÿ%   =   „B   ¸ûÿÿÿ[^Ã                     @  p                   "                                                                                                           @   p       €     @       (Radio)  6%s: Audio Mode: %u%s
- vp27smpx èüÿÿÿƒ¸À    ¹	   º    DÑƒÀpRÿpTPh
-   èüÿÿÿ1ÀƒÄÃƒÆpVh    èüÿÿÿXZéÕ   ‹S·CŠ  Q QP‹CTÿ²   ÿ0h$   èüÿÿÿC¹À  ºÈ   èüÿÿÿ‰ÆƒÄ…Àu
-¸ôÿÿÿéh  ¹@   ‰Úèüÿÿÿ‰ğº   Ç†Ä      è|   1Àéh   3%s: I/O error setting audmode
-    6%s %d-%04x: chip found @ 0x%x (%s)
- èüÿÿÿº    ¸    éüÿÿÿ¸    éüÿÿÿ            vp27smpx                                                           À       `                                                                                                                                       @                                                                                         license=GPL author=Hans Verkuil description=vp27smpx driver  GCC: (GNU) 11.2.0           GNU  À       À                                  ñÿ                                                    ,   @   )     =   p                                   	 M       1    	               a   €   Œ     v   1       	      #     ¡   @  /     °   F   v    	 Ä   @                       Ñ            æ       €     ö       
-           0                        0     )  À   ,     <  `   P     O           f          |           —             ¢             À             È             Ú             ô                                       +             @             N             b           n             }      
-     Œ      0      vp27smpx.c vp27smpx_s_radio vp27smpx_s_std vp27smpx_g_tuner vp27smpx_remove vp27smpx_log_status vp27smpx_set_audmode vp27smpx_set_audmode.cold vp27smpx_s_tuner vp27smpx_probe vp27smpx_probe.cold vp27smpx_ops vp27smpx_driver_init vp27smpx_driver vp27smpx_driver_exit vp27smpx_id vp27smpx_core_ops vp27smpx_tuner_ops vp27smpx_video_ops __UNIQUE_ID_license268 __UNIQUE_ID_author267 __UNIQUE_ID_description266 __fentry__ v4l2_device_unregister_subdev _printk __stack_chk_guard i2c_transfer_buffer_flags __stack_chk_fail __x86_indirect_thunk_edx devm_kmalloc v4l2_i2c_subdev_init __this_module i2c_register_driver init_module i2c_del_driver cleanup_module __mod_i2c__vp27smpx_id_device_table      !     A     q     y          ’   !  Å   "  à   !    #      A    S  $  Ï   	  c  	                 h                             	                                      "     '      6     ;      e     j      |   %  ”     ›   &  ±     B          ¸                  '     (          *  @     D     L     l     Ä     Ô     Ø        	   .symtab .strtab .shstrtab .rel.text .rel.data .bss .rel__mcount_loc .rodata.str1.1 .rel.text.unlikely .rodata.str1.4 .rel.init.text .rel.exit.text .rel.rodata .modinfo .comment .note.GNU-stack .note.gnu.property                                                         @   o                    	   @       è
-  x               )             À  €                   %   	   @       `                  /             @                     8             @  $                  4   	   @       €  H               E      2       d  +                 X               ¼                  T   	   @       È  €      	         g      2       L  J                 z             –                    v   	   @       H                  ‰             ª  
-                  …   	   @       h                 ˜             À  0                  ”   	   @       x  @                             ğ  <                  ©      0       ,                   ²              ?                     Â             @  (                                h  Ğ              	              8  °                               ¸  Õ                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      
+	lockdep_assert_rq_held(rq);
+
+	/*
+	 * If sched_uclamp_used was enabled after task @p was enqueued,
+	 * we could end up with unbalanced call to uclamp_rq_dec_id().
+	 *
+	 * In this case the uc_se->active flag should be false since no uclamp
+	 * accounting was performed at enqueue time and we can just return
+	 * here.
+	 *
+	 * Need to be careful of the following enqueue/dequeue ordering
+	 * problem too
+	 *
+	 *	enqueue(taskA)
+	 *	// sched_uclamp_used gets enabled
+	 *	enqueue(taskB)
+	 *	dequeue(taskA)
+	 *	// Must not decrement bucket->tasks here
+	 *	dequeue(taskB)
+	 *
+	 * where we could end up with stale data in uc_se and
+	 * bucket[uc_se->bucket_id].
+	 *
+	 * The following check here eliminates the possibility of such race.
+	 */
+	if (unlikely(!uc_se->active))
+		return;
+
+	bucket = &uc_rq->bucket[uc_se->bucket_id];
+
+	SCHED_WARN_ON(!bucket->tasks);
+	if (likely(bucket->tasks))
+		bucket->tasks--;
+
+	uc_se->active = false;
+
+	/*
+	 * Keep "local max aggregation" simple and accept to (possibly)
+	 * overboost some RUNNABLE tasks in the same bucket.
+	 * The rq clamp bucket value is reset to its base value whenever
+	 * there are no more RUNNABLE tasks refcounting it.
+	 */
+	if (likely(bucket->tasks))
+		return;
+
+	rq_clamp = READ_ONCE(uc_rq->value);
+	/*
+	 * Defensive programming: this should never happen. If it happens,
+	 * e.g. due to future modification, warn and fixup the expected value.
+	 */
+	SCHED_WARN_ON(bucket->value > rq_clamp);
+	if (bucket->value >= rq_clamp) {
+		bkt_clamp = uclamp_rq_max_value(rq, clamp_id, uc_se->value);
+		WRITE_ONCE(uc_rq->value, bkt_clamp);
+	}
+}
+
+static inline void uclamp_rq_inc(struct rq *rq, struct task_struct *p)
+{
+	enum uclamp_id clamp_id;
+
+	/*
+	 * Avoid any overhead until uclamp is actually used by the userspace.
+	 *
+	 * The condition is constructed such that a NOP is generated when
+	 * sched_uclamp_used is disabled.
+	 */
+	if (!static_branch_unlikely(&sched_uclamp_used))
+		return;
+
+	if (unlikely(!p->sched_class->uclamp_enabled))
+		return;
+
+	for_each_clamp_id(clamp_id)
+		uclamp_rq_inc_id(rq, p, clamp_id);
+
+	/* Reset clamp idle holding when there is one RUNNABLE task */
+	if (rq->uclamp_flags & UCLAMP_FLAG_IDLE)
+		rq->uclamp_flags &= ~UCLAMP_FLAG_IDLE;
+}
+
+static inline void uclamp_rq_dec(struct rq *rq, struct task_struct *p)
+{
+	enum uclamp_id clamp_id;
+
+	/*
+	 * Avoid any overhead until uclamp is actually used by the userspace.
+	 *
+	 * The condition is constructed such that a NOP is generated when
+	 * sched_uclamp_used is disabled.
+	 */
+	if (!static_branch_unlikely(&sched_uclamp_used))
+		return;
+
+	if (unlikely(!p->sched_class->uclamp_enabled))
+		return;
+
+	for_each_clamp_id(clamp_id)
+		uclamp_rq_dec_id(rq, p, clamp_id);
+}
+
+static inline void uclamp_rq_reinc_id(struct rq *rq, struct task_struct *p,
+				      enum uclamp_id clamp_id)
+{
+	if (!p->uclamp[clamp_id].active)
+		return;
+
+	uclamp_rq_dec_id(rq, p, clamp_id);
+	uclamp_rq_inc_id(rq, p, clamp_id);
+
+	/*
+	 * Make sure to clear the idle flag if we've transiently reached 0
+	 * active tasks on rq.
+	 */
+	if (clamp_id == UCLAMP_MAX && (rq->uclamp_flags & UCLAMP_FLAG_IDLE))
+		rq->uclamp_flags &= ~UCLAMP_FLAG_IDLE;
+}
+
+static inline void
+uclamp_update_active(struct task_struct *p)
+{
+	enum uclamp_id clamp_id;
+	struct rq_flags rf;
+	struct rq *rq;
+
+	/*
+	 * Lock the task and the rq where the task is (or was) queued.
+	 *
+	 * We might lock the (previous) rq of a !RUNNABLE task, but that's the
+	 * price to pay to safely serialize util_{min,max} updates with
+	 * enqueues, dequeues and migration operations.
+	 * This is the same locking schema used by __set_cpus_allowed_ptr().
+	 */
+	rq = task_rq_lock(p, &rf);
+
+	/*
+	 * Setting the clamp bucket is serialized by task_rq_lock().
+	 * If the task is not yet RUNNABLE and its task_struct is not
+	 * affecting a valid clamp bucket, the next time it's enqueued,
+	 * it will already see the updated clamp bucket value.
+	 */
+	for_each_clamp_id(clamp_id)
+		uclamp_rq_reinc_id(rq, p, clamp_id);
+
+	task_rq_unlock(rq, p, &rf);
+}
+
+#ifdef CONFIG_UCLAMP_TASK_GROUP
+static inline void
+uclamp_update_active_tasks(struct cgroup_subsys_state *css)
+{
+	struct css_task_iter it;
+	struct task_struct *p;
+
+	css_task_iter_start(css, 0, &it);
+	while ((p = css_task_iter_next(&it)))
+		uclamp_update_active(p);
+	css_task_iter_end(&it);
+}
+
+static void cpu_util_update_eff(struct cgroup_subsys_state *css);
+static void uclamp_update_root_tg(void)
+{
+	struct task_group *tg = &root_task_group;
+
+	uclamp_se_set(&tg->uclamp_req[UCLAMP_MIN],
+		      sysctl_sched_uclamp_util_min, false);
+	uclamp_se_set(&tg->uclamp_req[UCLAMP_MAX],
+		      sysctl_sched_uclamp_util_max, false);
+
+	rcu_read_lock();
+	cpu_util_update_eff(&root_task_group.css);
+	rcu_read_unlock();
+}
+#else
+static void uclamp_update_root_tg(void) { }
+#endif
+
+int sysctl_sched_uclamp_handler(struct ctl_table *table, int write,
+				void *buffer, size_t *lenp, loff_t *ppos)
+{
+	bool update_root_tg = false;
+	int old_min, old_max, old_min_rt;
+	int result;
+
+	mutex_lock(&uclamp_mutex);
+	old_min = sysctl_sched_uclamp_util_min;
+	old_max = sysctl_sched_uclamp_util_max;
+	old_min_rt = sysctl_sched_uclamp_util_min_rt_default;
+
+	result = proc_dointvec(table, write, buffer, lenp, ppos);
+	if (result)
+		goto undo;
+	if (!write)
+		goto done;
+
+	if (sysctl_sched_uclamp_util_min > sysctl_sched_uclamp_util_max ||
+	    sysctl_sched_uclamp_util_max > SCHED_CAPACITY_SCALE	||
+	    sysctl_sched_uclamp_util_min_rt_default > SCHED_CAPACITY_SCALE) {
+
+		result = -EINVAL;
+		goto undo;
+	}
+
+	if (old_min != sysctl_sched_uclamp_util_min) {
+		uclamp_se_set(&uclamp_default[UCLAMP_MIN],
+			      sysctl_sched_uclamp_util_min, false);
+		update_root_tg = true;
+	}
+	if (old_max != sysctl_sched_uclamp_util_max) {
+		uclamp_se_set(&uclamp_default[UCLAMP_MAX],
+			      sysctl_sched_uclamp_util_max, false);
+		update_root_tg = true;
+	}
+
+	if (update_root_tg) {
+		static_branch_enable(&sched_uclamp_used);
+		uclamp_update_root_tg();
+	}
+
+	if (old_min_rt != sysctl_sched_uclamp_util_min_rt_default) {
+		static_branch_enable(&sched_uclamp_used);
+		uclamp_sync_util_min_rt_default();
+	}
+
+	/*
+	 * We update all RUNNABLE tasks only when task groups are in use.
+	 * Otherwise, keep it simple and do just a lazy update at each next
+	 * task enqueue time.
+	 */
+
+	goto done;
+
+undo:
+	sysctl_sched_uclamp_util_min = old_min;
+	sysctl_sched_uclamp_util_max = old_max;
+	sysctl_sched_uclamp_util_min_rt_default = old_min_rt;
+done:
+	mutex_unlock(&uclamp_mutex);
+
+	return result;
+}
+
+static int uclamp_validate(struct task_struct *p,
+			   const struct sched_attr *attr)
+{
+	int util_min = p->uclamp_req[UCLAMP_MIN].value;
+	int util_max = p->uclamp_req[UCLAMP_MAX].value;
+
+	if (attr->sched_flags & SCHED_FLAG_UTIL_CLAMP_MIN) {
+		util_min = attr->sched_util_min;
+
+		if (util_min + 1 > SCHED_CAPACITY_SCALE + 1)
+			return -EINVAL;
+	}
+
+	if (attr->sched_flags & SCHED_FLAG_UTIL_CLAMP_MAX) {
+		util_max = attr->sched_util_max;
+
+		if (util_max + 1 > SCHED_CAPACITY_SCALE + 1)
+			return -EINVAL;
+	}
+
+	if (util_min != -1 && util_max != -1 && util_min > util_max)
+		return -EINVAL;
+
+	/*
+	 * We have valid uclamp attributes; make sure uclamp is enabled.
+	 *
+	 * We need to do that here, because enabling static branches is a
+	 * blocking operation which obviously cannot be done while holding
+	 * scheduler locks.
+	 */
+	static_branch_enable(&sched_uclamp_used);
+
+	return 0;
+}
+
+static bool uclamp_reset(const struct sched_attr *attr,
+			 enum uclamp_id clamp_id,
+			 struct uclamp_se *uc_se)
+{
+	/* Reset on sched cl®+v_µøŸ-ğèkÅès6-ëtÛéÎ•7%“p"8ñ²Ñ6Ÿİ“!J]3’FÅÇ;™ãhÃáfrLñŞ²KlÌ©OcàÑBÑïnö9ãÍÌõu4İ!0³!ñº¤ƒ.ìQ£y4ÒÖì¤C^º(Ó•çîÁ^v:Èéş”`hdì¼n}‰ìÂcİÌÇ´L¸â.À|nyîu£‡&@÷(ã‡]À¬¡0| ’½Wübg~UÎXI­ñ'¤7ö]%~OxæË7Ÿz Zw˜ª,7Œá@àxbDË¡ ûÆm£yë
+ ƒó¤ñÙæ«‰lt4Ã~¹½³´XU¤uI!<­sĞIq:šEriÛôÉ™Z•ˆp'Œa*ùEs.´,™	Ë?=ğ/\ïi"£ÜcØ[#yWÎ2ñ&óÀ!GyÓB$G2úO4Œëƒ&æuWH¼Tš7» _B_ŠÙŠ\x×Z)şløI{÷§é¨G)ßaĞøwŒ€—ñºª3ÊõÈìlJG¦‹ZQ×—Ãòƒ”¨ÀRšMË±®û•å
+Ğ8ÊÉ&
+…8RòE7%¦b]˜rmE~Ci9Á¬†c°ø“DJVYkW¡—W¹ôÊ#ùHŠàÆ~—”ãO5S@ÏXj²Í_“f4¶¹™^Æ Â5…à†¤³2bı¡–2¢Ûë]vjíçÁÈ¦çeÈ“¨”Í´é'IöQ¾¬ …’¤\¼õ¢=eoÎ{ñ*/&Ö=>†„È—Xğô%m9Î{b/:¢›O’ `(ª%á´“õXÌÍ.(öæùCœÇBxZeù’Cçí}„¨«ëÕR¿ËWös÷«²pÒç”wç$§˜MAÊ
+Z¢¥VûÌ‚fe £}È²]æxÈ«¯òÂ†a*İ°y¤Ïå™S÷°'N‡ŒÇ»Šà$ò-˜Y°µ¦ Ä~¡:É¸^ñBrÎñÄâî«ag²ïk‡ÓÙ¾»¢¼ÛÔf›0f¶³¤èÏğl"„¥õ†œbÈÓYì¹-SÙ 'áÑàÖü©“f}ˆ@XëÜ~øg«ŠşG°0§=0=NF+3'K¡úÈ”³˜Š‹j«î„7Be•¸Ø¢Iº¸Í˜ssØyQ½m›~i™aè0dÕó÷ØY€‡0Ö]Uíå¦Bd*rƒøÈá:â%”°òÅ_(ëf˜t0ûG’»6,—¨\¹¦œ0šB Ô§ÅœÜÃí	`j«¶PXâCw˜^µ³èöJ”×XVçÅí=rÅC.Ğ6’ç¬_Tö"ÜòW»ƒää$ÒnDE©ªÔÂ[nˆ{—3,»˜oŒbötº7ÉUKÕ¯Ç^ºrÇ8¢¬Kd
+ÀÊùÅõŞÙ¢İ–¾·cåğØ)M>­@pj‡u!»÷.ş™º'"dT¦'®rF/ÈæAVìM¸Ö­±]‹oî]÷"³!ÿğ—zÔ–_EBÚZ«w)~î’:îÀPyG•OiJ•6¸Åá–&cƒ|I!GÄöP’\»kb££´Ï
+©ØŞú5¯iªYy~“¡½.N¥z ÉÙğîÆî—?³f¹0y!à{ÿ›Ô8±Ï^l¿²=ÖaæVäm ¢¯Ğëş.İÑü–	Æ("lúœÚ¦.4¦$¢O½Iél	xvT¬z»i´pÏ¶I±P­İ8bC]·ñàãûH6à5N$…xe­(Û†Dÿ¹k\âFT´vá‡¨füJÃQÕÔU([wBócÉŸwº²êì9±îğ~(b3€À4 Yƒ;TB(Ö™2oµ©‘°
+åsµAãQL¤œgÏÉ™­ïaZİ?òHG|9mEFqA2qxû%dNÁîr´å~{VCp] p^¬ şş_†­b¦cı\&Óò¡8	õSéàïØd{;Ø'	r‹ì^*LÂFD<gÖŸĞá¬#¢œÿh½â„˜y‹ãáBÇŒ®æÿúœ’Sø)KU!¾ßıy
+ÔÂc2r¶ûœë±´l¬åŸçxÊäœ
+¨MHøªenMÚ² ±{¹æ{™à#á\˜èË±ÊğU_;††ÖÖB™êºz0sæUb.Ä—;0ø`l¯=~4cËA5ÊËqß‰@ª½Aå“j|´‘GD-ìå«NŠ»høs<sC¬âHÔ\X(CSKC¡½ÉJöíoÕüp	*1uE]+ß7(77§l4›D	¸oĞE"qã¼(ç´Œ)ˆõ¥¶}«C3@4E»ŞÉ73¢ïšû‰wQ_ÓfúF€(^T¦>¯ÔÍuæ²tÅ=]…éö€ğ_1şö]ñÜ—"Ôàs‘†®hü‰{~Ëæthß£„cJş<6–´A·k—º~³ŸZ²÷‡¤á®¢Œ8´¿° )L®ºk«ÎÔ(Ë¼V|¬ê/öÕ‡$bğNË‘Jö¾ÁÊÔNÚñ¡'|OPÆ„S ˜LîÄŞÜóMWò49Ç…Çª„™}²µ9y"<G%·9šmÄ€°u
+e”&Ûn_›ÑÈ¡R]h(ßªÑ»ÙuÊyÙèûfê!j±_N¾‹“‘û³¶u¸{P[d¦=7P„UäåÙ˜j½ŒæĞ4	ëúF5±q	`Ô®8Øqv«­ûJÂ})TjÇs_ê•jsÄ@U;»ïµ¼îĞJd.€G¿N½?ôBUtÁù:XÆŒpY0®eV° ÂsÇDOjy£œEë%;#Ê¼¢í‰ ï6‡ãfI?0LË‚¥‘ccVdĞIµŒ¿ôÄò]{Bj^†oU&àV+UÂO8YÁôoªı•¸“­~‰ğÀF^;áš7;"(÷U…úÈ†ªº¶€)oÍÎ/‹ºíSlÎ"eP^–1>v«VÏ‡ş¹=Ød³$„5Å3iã
+b©J÷sğ»™œpÒ-‡@ô²êM8	¬tÕ‰OÿGÓD!ûÄÅp¤¢q§xG¼ÔúixS¸ãº
+¬ì•B;tƒt¥ó’Kgà„³º›È‘iÈçáq?åG†õ[|¸Ò× £ºöå #¤ˆ|æ¼èµ0×Ú•®?|U¿QÜ~ ì 1ˆÄ6­+uë·™¨ù'”X‹Ö %e‰ŞFæÏ§c||áŒ>ŞIULe"vO“tHéÕÖ»Õ àMÙqc‘/Äø+üÃôÍ#.¾˜Îh¬fEz×BN»®V×€½F³[˜€<€UnauÏpdäšóşDîV¦ñPš&´ÿ¶×È%LP¬DTIìtnó[>Í-]9ÿªNéyH-HùšlºëòYNTæ€p3&êÿLÈtI^(Cõ7ò…œ¼ÊÌMqPğ¥Zï£Y-È˜ÎaSúÁƒyØ™F•µ´Qû>!ç.ZP'!Y'Zàâş'š‚Â²3+£•“ T[˜}¹Iªl¼E—W+—ËE¼u-èçiÿ^ª+gIğ-¸wFßXL(‹â—ñ˜ÅÂ"º€õÈüßˆ“œ¼¤g³7ä¾|¥>YŸo2Éîò1-•×…9w4®¿Û­$‚”ºÛ<Ø:œxX÷s*¼ìJQá}ÌÊ½\'Á>e­2ùÀ?¾ép¾»#@äL	o`ÇßÌ—†68ÃŠwqm€®£ã™öëšV®ø[l¶fYÃMK£RsêÕŒ^æ•ÆÄh×31Ü3ÍiÀïÕÈôŠkÛ’å¸QP;DrıY•n%¢#©V—ÂX=Dık¼pİC•>dH(0PMÿ=v|¯¼Ê}á‹4şüdkM§®u>?“ú¹ê1O!è!:;_Ş7ğB© ˆ<KâØ«ìšwq$ÑÉÖ¬ç+Ñ¨<¢Æ“É;h©L–âíôõ]HWóÎÛh[§¸^Ãşé–õW~1_•ÑÓ3Ze`ñ7Ø% }‹Gª˜@H8bšHó!ş
+æÓTí>eÃ_ğÙ¢¨W~'Ğ/.´Q ò±>Y·GqüTŒïe­ë£©X¼ÕB[ 3%\ÛÀÄßCû ¬cI<Æ\ÔxÕ	bßØU¿Ÿ¸ã…jQÌöæ3C ÷ûŠ¯.•5f…ô9n¶46Gk¯ÁM$‰§¸Z\X`ıƒÉè`ÔÊ&1ïˆ;€®"¯áØÿğ†Ï_ğ.cğËãw¬`³ÛÅ÷ÄànôÆë\ëV'”"tÑæıvº0ì€™Úº¥µº¡ÂyE]ë¨êXúÕ®±½H¼ mß£ ğ“öz[QÁÑ>6?±õ`§ÑT™Ñk½×ºr«•£İnøíòÀé€¢æ¶„”ıŠyõP¤¸ÒœI—¨qºZ¬/‡§êiî6"=²˜)›¶ê_˜ô3ŸF½cØt=$³JÎ4{
+ãVèT,&¶“õr¨È…%í’˜‚!p¢õx+ÅL¶ˆ‹sïU‰øËÎ’ˆtğ‹¬x!Æ÷èˆ³Ò|OKŸÌ{¡^ò!uµÀ)««?>™ãA¶.©ã`È‘I¤ õ!ZeÖ.³xxX§‰WËNC¨~æe5ŒÖı"$4[J¥QD£¢I¾Í«BÔÖî3^‘S‘7)£#Ò]sdğÙèkecÙnJ¿Áy£¥Ğ™Hîƒz&Ò«”ò½W0Òd“LŒ™ÿ¿]Ÿ
+laÂÁh„n˜4PöD‰m5¯ø$Àª-¸C£îÆ›
+d Áå¨«¸í	Òô²‚(ßó—áã,ïHgb2¿7úN¥û4ªÎ¤ ˜<©%ı)+—vY	—é[F'ÛMÂ”ijàl³tS"ã»¹:à‹¸Pb5]¯5|ZªLTNs¨æØ=r,<ÊÍ[ån•yºzÏÏX†³;töú‘?WwB´#Ğ‘Šô¾c9UtÜó£?¤Ôw¸1‡Ğ€Oäêæ¹xÏ×Dw¹2 Æ!¤H†ì_eèÉ¨ÔûT,GİË˜óàw}»’£Ò­èUÙŠÔ,¤[ƒÇ•¥]o6HãÚi9À» ¯æŒ y€9tÛ`¾x²":ˆ¤Ï‘\J:ÚšG=‘ì›|ÿyR´@Ü|gT›è¿%	è¢›tÔK_¢eBÌxÅâÌA°’¸´Ù›b6¹û’#GìmV?|NÍ”lºØÈCJúáÜò45NÔ'Fq\ªZù¤ßéÌ|¢°U£Â‹ !Í£Ô…uaQ¸'yFN³´•Û;XVL:”ËUßU‚«Yá›L"˜uu=`Sà_²z‚[©H®«ÿ0ßä–ïÊ( 7ŒÈ8ĞÒ{Æø9Ü§í{ÉñXZË@â0Äú”ŞË6LüİÂa>Ü«˜Œ¿µš_ÕêˆNkSøI ë—•)sÆq*n„ùfãÒÃJÍh4>ãâfóñÅF{ÅôJè%ù]^c¹@-0¿!ÿ>’}@Éú‹ÅÔÄ…çó'y`åj“š0Í¢XŞ°S¨ñ%²şÕ6"ÛÉv¹Wà'g‡b¿¸ç^Èº!ÊBÌ€ô	}çËæ!¤ıYôı»‡òƒŸ6î“ç~9¢#rÌz‘ìÃŸB¦§ô¯u™Ç#­în%Ûá¯2Lì²óh,Ñ™S«¾¤
+²e”oC,	°^¡H(ÀTKµuŠUÂk%›ôÆ¼²#|¯”YB×7pdtEIârFÖ¿SÓ3.…Ãıšvq!ĞØ¢“Ü‚tzËÉÉF²Bª¶®@|?©OÃ©høq»ÈÜs)…a–µG]x6W›[–‡›aÈ‘]“3Ê-²Èó#ws@¯qô®³İNµƒLf’ ZÕô5!BÌŸ—›”iH¸í75´6ÇŞ‘GŠ€Y$V×¨ŒÎOEù°¯"h¹Ä>Ú)+‘¥ËC–º|=ĞÕÓEqºEÖ"¬,9¤ï¡
+Zt”Òao÷‚sm[™NfT5÷üFôMÕ[‰Ã”ik®ÿ)cˆŒE;}Í½¼³óéKâ[3ÒH8Éa@@w!ØqúE_İ«¥æV]äT¥Ğ`ëP†6KŒğüsö{^X¢ ,EåĞÎ¯aP…qgsÜÙ%1zF,¬Ç%5q<÷ùèë¡)º
+?¬–ªåÊ`"4ªFÓè.üç˜gÕ66	ïş9\ÚŒ‹Û=®û¶ØmIİå
+È¹ù?©Ê¥öVŠWp•Sÿ¦C.ƒëÒæQ!N°1‹¢"Yœáo_b[Ä?ğ#ÌpB)Ê~¦®|\àp¼!‰cÖ9ô®àIñgxš«ÉßŸè8fw˜îKX¤™LG_]F€ÿ3*oz\˜ï&$a¶"k2~«¶-ŞÀJÅNMµG#j!s	Œûd‰?ZO	ğ¡şömf5ı²n‹?Qi-êE¢}9l–QYò¦yĞ®¯jIôb«;*!’‚ÿE×’…àFÌyÒcGocâ‰$ QF;îĞZr¼›ra¡åı_ÈCEÚhÆ
+ğk[0÷€H2#ï~ù6½¾lÅã÷Û»uã¥«V¦€b`F5¦gß¾."TÌê½°ËRıtÚQ9_váõm}ñôÿlâºÚ‹Ö3cÏ=v‘#‡Æ`8¾ützKÁrçz¦ÏÊ¿â«ì0ÀçÓÁôŒ¿P#òÔ82ù8w—ÿ„½lñBMùöPßî…`	Zûß·Ì8ªÉD€ÕLXcı€î‰û–1ÕUë.`)¤ËøÙŞò¡Š\ŒhF<YáÚåıÑÔo…dÂöÆSşºEtF`vw:âµ“”CVO„‘ˆø`b³]·{Ü.Qœl,g¯çÇS”P ­8¯*ùcÛàJ‰ñÖzú¹,ıó®ÎûˆƒV'Iœ¢£íä+äó±"½+]xºÃÔãÊ¼d¡'ûòkN1ë®ÎòÔg.¶Â´•´ä şyÅñ Mr;’ût82RÒ¢éM1„ È´q\À·G¦H‡˜ %Ç·mˆ,C><te3¦µÄôóoÎ¡}3ôM	f¬o šóuõnğ¢F¶Ô¤Ê„ÿ±èøçşrØ
+~g¤¨ÜîA[»Äšlâ?ne‹ó(^;5.7Z/1«©1hm>bluGÚT¤#·´Ú>D~h>Y±âp´„Í‘î¨ŸDqëĞnó'jõÃoù<“àVÎË%†i)¥‚[>W]|<-Ì]"Mã¥ÎùÅ¯óeFgŒ¦Ğ@©|_¡LïG|N%¸ÁŒ8H3Æ~Ön‹_š©÷)<ÈÉXj¸ƒ~wj^I Ğm‰›Ÿ:I+@å‹=7gÆô“ÛçwP3H¤ŞÆ–õv~ö„LèT
+ÁËZš	/à›&¢ÈòîÚ±¦dÆ`‰¹æà6×‰;û›ğ…å½$¾äcl(³JúÀi©9è«ƒ¡P/ße5è’ËÕ]ÚÆ#2ÈÂ¡Ïá(^Rw^bÂK$|==±ñØDµ—ÔçıÖP±*“>fÛr«"³Q[>ÔM’º±¼ğÚİSÒìGè~ŒıÖ‰õ(Ø#%8¸ë©ÀÆ^£“t0*©;˜%¯0ßMŠ¶‹‘J$8Çúx@)À+3O?~1¯dFßºÿ_î ‡şŒ"RL¨5ê2x#¤à†nü€wŸ9Öü`Ç(
++ßl‡u*Öt@øÉñÚ%"ØÀënïtÂÛ‡¤—ìE˜Cû'oR¹w Uä±–Z85sUBğ°ûÍ9³²Ê»í	,Ş1C{ÙÂËˆÁ÷ÇÖöÙn’ô’ôAgzİÌ•ŠaDb)ÇÖP1” 2ã®‚Ï=¼ÑÛí”àŞ!‡zb¶UAç–Y–	MkXI(LáN~û²&„±p1v¤JxÀèo²˜Ünc‘¼Ş2^û;¹#ûsJ~Úc5Íàõpkæ¡“£§˜Zç	zñ¼c?jÜ¹¡Zîáò	¦*$ø(»üÙÂU5ÅèùqñoÎ°é]×>û-?r¥µ:ûß ÌaA%“œZyİ¤6#¡Ó@o•KrF1c¿1Q¥£²*búÏ Å»t.°™âu^¯,øâÁ×5ª0ÓÁT;ºŞG=°rÜì•:Æ…~Ş¡·„L¡ùèU…éØ«+ë›‘wø<&¨Y±¡Y"ïÙ×ÿPÚ)Õ*‰ÇGãÓ› aZaô}+Déu«!ô°F¸®pš$L\rmóÆòO!¡†¸ƒî>ò<v]¸à­ŸXêVÉö_ Ì·ÑšáãŒĞóZ¢¶ÌJÒ&5PoòAD_²gs¡2M¦ø©P¼>£Ğd)Ó¸%ÑñÏW<‰eœ 	!n)ãáøÔ¬vuğ#9ÔHÕT€ˆVhœr	›À.*õXŞpnÎ-F·¾ÈåtŞu¨uíuÖ3‘v°Å»ÙdRö:-?	ºŞáæÅ›Rœ]$€İÊ+:‚ªÄo1— WDö
+c-¡C.|yÓ7¯‰"ÈûêÿĞG§yıÁç<_ã‘QŞhĞì“fÄ16ı†™epàú.ŞôÎ=öÃØä© m €FêÀÂÜJ©0œ¶kLÓZPf:)9ş–#¶¨=q [Ö¼œóµ3°Ñ‰ŸDXŠzJ¨–¸¨·„‹\ìåcÜ)¬…~x¹§—ê ¥+[yÒeàºæ5ÖñxÃ<nsKËö$N–Ê
+<[S=Æ€QŞ“R—ÀD­YlğX±ã#>×ÎÜUdEKüç¯ô»J‡¯šV¤½¾EÅá&›>’H6Mh]‡ès	çÇßõ×(–Äl7Ôâ%‹â4M†eÖ«—$D&®a‹
+Ø^=ÎKŠ	FoïY]K™§ÑèNÉ:-¤ä¹`n£ÄwZ¨+‡üÙÂ±ÑóşÂÓŞyŞùÔîš'³C“¹.ñªÙ=â¦#ö}gJ¢
+^[gÜÄv$w¿Û‰ÅOvlˆ}è?Ÿ”Ã²b°#'útblµCóH½Êª§œJ6ÉaŸ[µ¨—s"–÷öŞJ?Ç+½	r Gwú‡‡¤\Ï€2£
+²ı?ù¬eøjW‘†uÊÁ{<‘º"‹î|~°O+¦
+ıöé7Õ²!c&€Nâçğ Ir¤Ò‡}Ö$˜¹A±¼VD8}:£ĞT?1T¨9ğ‡|î'i`pñş~õà´@	ğÁu4=<\´×ğşOüx'xeCµ¿¢X£Š,&wF—áİ›<¥Û0Kãë„¾Ü†Œ‚<I$¶Ù|ÊÎjØ„¯A–[[çHoÊj!èüIè
+É¢úòŠöëü¢§•hİ`ş>^1CÖéVÓ˜hÈa‚û*$-{ã€±†ÕÃyi"ö<Ş™Ô%D`“÷ƒW^ŒCÑ·;å‹Y< —LÈÇ¨ã©²ØÜrCJõÀOQ~c±JƒÍ‰¦ÿòZ[~
+IáôãËÀc–QXg¤àów1½è´˜tıÑ¯xomAsÓ€RçÅ¾’QÆ¦·tær°Î³f ±ır|…ÚmFöÏœOôÛéèñ”‚>³"-y\mÚv‘f7IíEše>…«=gD/"§nKSy±jã(¯o|túF¹m›4¸²{Ù2ø–­¥NÕ7Ê“ü¾6­ ¤,ÇFü)ÄB6NÏßùÆ\kxöı·@Öˆ'{,YÈŒQç³’¤0÷ÑúĞjÓ5§mÄ¢ó ìC‹MÁBp­;ê¼—ûÊÜl`2;eCwê÷¹¡¬ÅÛ‡¨òW›ü­‹.İĞıú¼˜´ÅFh;Í%ÊÖò;,Ø£Q—_§"¶§ç3C´¢‹“İQ¯¬¾°QôL7ºÕm©7·zÀ´|WâêÇÎhY»Ïª)¢ (èMh8
+gB@;],_G@:+IÜÿNï%ôänÈXTnŸÒ6ËÙ9Ô(:ë@ÅO·vˆÉ;K27á‚óÔlw‘ÅÂ]İ1º²çÑŠ} wİŒóÔ@Ö±WGW%aN›p ãl"ğRì7V¹{2;ŠšĞ;8p…¼ù©h\*„m”­ ÙÈèl£ ËqÍÍ¹WáhhrİÌî&NŠcåWüqß·ûÂ³ùg$…%½ÕÛ*§(çOñ{c¦–	»ZÏëã‡6RøòŠKƒ@VlC.ô$wÕßö®Å@ë%DŠÁ¥” *¦ÇŸ¾é·´ÕCë ÏdwÁÛ¹ÿv Á§ˆ“¦K¾ƒä2=,6÷0%óTG‡îFè˜U[r-\@"…ÏcÎéQ ı+'ÏŸ`Íiï'B ã_Ê™ÂUM;¹ÂéšJD­«_°ü¤ R÷Ù$…*A¡ñKU¬gXzòX°è»’-r:½'¢	ÅkŸ’ª?ÖÂé×jâüütN.w*ßR¬²5?ÏÒ	ZÏ!¦Å=…O7†€$í¦V<V8ô4’B‰ü˜ŠÑtäRŞx¤/Àm’\r=Ü9r,²ÕÅAÇlM}§îE§H$ô™ve&õÔKÏ‚ë_9ğ÷c‡ş«5ã‡Š%È[«fÉ©,`suPÍ¥Ó€TVB†½ÇmWKŒ½¢œõS¼¢oö«ë³ŸHá·jñ¥a?èÈÄÅv©Ècƒ³K‘f#/A †À:C_Ú¿ÙI€9wy!£È(íS0äÅR=öçîùˆ‡VËÜBZ§ÄA…ö1~37óÿ¾9è9å‡Àm€“vgw>›$ë×&Ò4üÍ3 çIa:(à Ö1:‡Rx<ò;µ‰;ELF                      ¬2     4     (            GNU  À       À          èüÿÿÿWV‰Æ‰Ğ‰ÊS‹Ü   ‹|$‹™  ƒãıƒø‹Ü   Àƒàş  	Ø‰  ‹†Ü      ‹ 1Û€ä_…Ò•ÃÁã	Ã‹†Ü   ‰˜   ‰Ø‰ÚÁøƒà…ÿEø‹†Ü   €Î ‰   ¸Ç  èüÿÿÿ‹†Ü   ‰˜   ‰ø[^_ÃfèüÿÿÿS‰ÃÃ¼  ƒìHd¡    ‰D$D‰àèüÿÿÿ‹D$,=9‰ ‡L  =7‰ ‡   =Õˆ ‡6  =Óˆ ‡   =Q… ‡   =O… ‡   =í„ ‡
+  =ë„ ‡   =Wu „   ‡î  =9K „   ‡İ  =ÅØ „   ‡Ì  =»Ø „   ‡»  =ÙN „   ‡ª  =L „   ‡™  =o> „   ‡ˆ  =e> „   ‡w  =“8 „   ‡f  =77 „   ‡U  =Ó6 „   ‡D  =É6 „   ‡3  =6 „   ‡"  =ı4 „   ‡  =™4 „   ‡   ='3 „   =Ã2 ‡ê   =¤2 ‡?   =»0 „   ‡Î   =û, „   ‡½   =ñ, „   ‡¬   =Ó, „   ‡›   =É, „   ‡Š   =9+ „   w}=? „   wp=+ „   = w^= ‡W   = „   wF= „   w9=¿ „   w,=¼ „   w=a „   w=V  ‡üÿÿÿ=ğU  wPSh    èüÿÿÿƒÄé   éo   ´&    v èüÿÿÿQÿUWVSƒú†Ó   ‹8‰Î…É…í   ‹¸  ƒùwƒùws[‰ğ^_]Ãƒù„Í   ƒù,„®   wåƒù*u¸ûÿÿÿ½   ‹—Ü   Â  ‹
+!È‰»È   ¶    ¸X‰A èüÿÿÿƒëuñ‹‡Ü     ‹€  	Å‰*[‰ğ^_]Ãº   Óâ÷Â`2 u€æu@ƒù…pÿÿÿ¸ıÿÿÿ½   ëv ƒéƒá÷„uÿÿÿéPÿÿÿ´&    1ö[‰ğ^_]Ã´&    ‹hƒıtƒı…(ÿÿÿéCÿÿÿ‹P‰øèüÿÿÿ‰ğ[^_]Ã¸şÿÿÿé2ÿÿÿ´&    èüÿÿÿS‰Ã‹€¸  ƒø„	  wwƒø	„#  †   ƒø„'  †Q  ƒøt†  ƒø„½  ¹   ‰Øº `  èüÿÿÿº `  ‰Øèüÿÿÿ¸d   èüÿÿÿ‰Øº @  èüÿÿÿ¸d   [éüÿÿÿ´&    ƒø)‡  ƒø'‡  ƒø!„Ã  †G  ƒø&„r  ƒø'…é  ‹ƒÜ   (  ‹ƒâş‰‹ƒÜ     ‹Ê   ‰¹   ºø*  ¸'  èüÿÿÿ‹ƒÜ     ‹Ê  ‰¹   ºø*  ¸'  èüÿÿÿ‹ƒÜ     ‹âşÿşÿ‰¹   ºø*  ¸'  èüÿÿÿ‹ƒÜ     ‹Ê  ‰¹   ºø*  ¸'  èüÿÿÿ‹ƒÜ     ‹âüÿüÿ‰¹   ºø*  ¸'  èüÿÿÿ‹ƒÜ     ‹Ê  ‰¹   ºø*  ¸'  èüÿÿÿ‹ƒÜ     ‹Ê  ‰¹   ºø*  ¸'  èüÿÿÿ‹ƒÜ     ‹âıÿıÿ‰‹ƒÜ     ‹Ê  ‰‹ƒÜ     ‹âûÿûÿ‰‹ƒÜ     ‹€    ‰¸<   [éüÿÿÿ´&    fƒøvPƒø„î   ¹   º   ‰Øèüÿÿÿº   ‰Øèüÿÿÿ¸d   èüÿÿÿº   ‰Øèüÿÿÿ¸d   [éüÿÿÿƒø$…[  ¹   ‰Øº`  èüÿÿÿ‰Øº`  èüÿÿÿº   ‰Øèüÿÿÿ¸   èüÿÿÿ‰Øº   [éüÿÿÿv ƒø„/  v]ƒøuT‹ƒÜ     ‹Ê   ‰¸   èüÿÿÿ‹ƒÜ     ‹ƒâû‰¸   èüÿÿÿ‹ƒÜ     ‹€    ‰[Ãfƒøt£ƒøuò‹ƒÜ     ‹€    ‰[Ãv ƒø„  †  ƒø†hÿÿÿƒøu·‹ƒÜ   º6   ‰(  º   ‹ƒÜ   ‰$  ‹ƒÜ      ‹ƒÊ‰¸È   èüÿÿÿ‹ƒÜ      ‹€æ÷‰¸È   èüÿÿÿ‹ƒÜ      ‹€   €Ì‰¸È   [éüÿÿÿ´&    ƒø„·  †É   ƒøt	ƒø…ÿÿÿ‹ƒÜ     ‹Ê   ‰¸   èüÿÿÿ‹ƒÜ     ‹ƒâú‰¸   èüÿÿÿ‹ƒÜ     ‹€    ‰[Ãƒø
+…¸şÿÿ‹ƒÜ     ‹Ê   ‰¸   èüÿÿÿ‹ƒÜ     ‹ƒâğ‰¸   èüÿÿÿ‹ƒÜ     ‹€    ‰[Ã¶    ƒø„aşÿÿƒø„nÿÿÿƒø…Aşÿÿ¹   ‰Øº À  èüÿÿÿº À  ‰Øèüÿÿÿ¸d   èüÿÿÿº À  ‰Øèüÿÿÿ¸d   èüÿÿÿ¹   ‰Øº   èüÿÿÿº   ‰Øèüÿÿÿ¸   èüÿÿÿº   ‰Øèüÿÿÿ¸   èüÿÿÿ‰Øº   èüÿÿÿ¸   [éüÿÿÿt& ƒø1„÷  †   ƒø5w\ƒø3wc‹ƒÜ   º7   ‰(  ¹   ‰Øº  èüÿÿÿº  ‰Øèüÿÿÿ¸d   èüÿÿÿ‰Øº  [éüÿÿÿfƒø%„Œıÿÿé>ıÿÿfƒè8ƒø‡0ıÿÿ¹   º   ‰Øèüÿÿÿº   ‰Øèüÿÿÿ¸d   èüÿÿÿº   é=üÿÿƒø-„cÿÿÿ†ª   ƒø1„çüÿÿ‹ƒÜ     ‹Ê  ‰‹ƒÜ     ‹âûÿşÿ‰¸d   èüÿÿÿ‹ƒÜ     ‹Ê  ‰‹ƒÜ     ‹âıÿşÿ‰º7   ‹ƒÜ   ‰(  º   ‹ƒÜ   ‰$  ‹ƒÜ   º Ã  ‰   1Ò‹ƒÜ   ‰  [Ãƒø*„éûÿÿƒø,„|ıÿÿ[Ã¶    ‹ƒÜ     ‹Ê   ‰‹ƒÜ     ‹âùÿşÿ‰¸d   èüÿÿÿ‹ƒÜ     ‹ƒÊ‰º7   ‹ƒÜ   ‰(  º P  ‹ƒÜ   ‰$  º   ‹ƒÜ   éXÿÿÿ´&    ¹   ‰Øº   èüÿÿÿº   ‰Øèüÿÿÿ¸d   èüÿÿÿ‰Øº   [éüÿÿÿt& ‹ƒÜ     ‹Ê   ‰‹ƒÜ     ‹ƒâú‰¸   èüÿÿÿébüÿÿf¹   º   ‰Øèüÿÿÿº   ‰Øèüÿÿÿ¸d   èüÿÿÿº   éIúÿÿ´&    ‹ƒÜ     ‹Ê   ‰‹ƒÜ     ‹âûÿüÿ‰¸d   èüÿÿÿ‹ƒÜ     ‹Ê  é-şÿÿ´&    t& èüÿÿÿUWVS‰Ãƒì0‹‹¸  d¡    ‰D$,1Àƒù„w  vEƒéƒùw¸   Óà© ãud¨…×  ƒùt71ö‹D$,d+    …±  ƒÄ0‰ğ[^_]Ãt& ƒù„§   1öƒùvĞƒùuh    1öjèüÿÿÿXZë¹´&    fƒùu«‹5   …ötŸº   ‰Øèüÿÿÿ‰ƒ¨  …À„?  ‹ƒ”  …À„wÿÿÿ‹Pd‹…Ò„jÿÿÿ‹Z…Û„_ÿÿÿ‹    ¹   …Ò„æ  ‹r…ö„Û  º   èüÿÿÿ1öé2ÿÿÿf‹   …É„ ÿÿÿº   ‰Øèüÿÿÿ‰ƒ¨  …À„À  ‹ƒ”  …À„øşÿÿ‹Pd‹…Ò„ëşÿÿ‹Z…Û„àşÿÿ‹    ¹    …Ò„x  ‹r…ö„m  º   èüÿÿÿ1öé³şÿÿv ‰Øèüÿÿÿ‰Æ…À…Ÿşÿÿº   ‰Øèüÿÿÿ‰ƒ¨  ‹ƒ”  …À„}şÿÿ‹Pd‹…Ò„pşÿÿ‹Z…Û„eşÿÿ‹    ¹   …Ò„İ  ‹z…ÿ„Ò  º   èüÿÿÿé:şÿÿ´&    v ‰Øèüÿÿÿ‰Æ…À…şÿÿº   ‰Øèüÿÿÿ‰ƒ¨  ‰Á‹ƒ”  …ÀtA‹Pd‹…Òt8‹z…ÿt1‹    ¹    …Ò„@  ‹j…í„5  º   èüÿÿÿ‹‹¨  v …É„¶ıÿÿ‹Ad‹@…À„Ú   ‹x…ÿ„Ï   ¡   ‰â…À„Ô   ‹h…í„É   ‰Èèüÿÿÿ‹‹¨  ÆD$ ÆD$
+ ÆD$…É„_ıÿÿ‹Ad‹@…Àtw‹x…ÿtp¡   ‰â…À„¸   ‹h…í„­   ‰Èèüÿÿÿ‹‹¨  ÆD$
+…É„ıÿÿ‹Ad‹@…À„ıÿÿ‹X…Û„ıÿÿ¡   ‰â…ÀtN‹x…ÿtG‰Èèüÿÿÿéåüÿÿt& ÆD$
+ë½´&    fÆD$ ÆD$
+ ÆD$é[ÿÿÿ‰Èèüÿÿÿ‹‹¨  é2ÿÿÿ‰Èèüÿÿÿéüÿÿº   èüÿÿÿ‹‹¨  éÉşÿÿ‰Èèüÿÿÿ‹‹¨  éNÿÿÿº   èüÿÿÿéhüÿÿº   1öèüÿÿÿéWüÿÿº   èüÿÿÿéFüÿÿ¾íÿÿÿé>üÿÿèüÿÿÿ´&    fèüÿÿÿ‹ˆ¸  ƒù3wpS‰Ãƒùvƒé¸   Óà© ãu¨u3[Ãƒùt
+ƒùt&ƒùuî‰Øº   èüÿÿÿÇƒ¨      [Ã´&    f‰Øº   èüÿÿÿ‰ØèüÿÿÿÇƒ¨      [ÃÃ´&    ´&    èüÿÿÿ‹ˆ¸  ƒù3wƒùvƒéº   Óâ÷Â ãuƒâu,Ãv ƒùt
+ƒùtƒùuí‹¨  …Òtãº   éüÿÿÿt& ‹ˆ¨  …ÉtÊº   éüÿÿÿt& èüÿÿÿWVS‰Ãƒì‹»`  d¡    ‰D$1À…ÿ„9  ‹ƒ¸  ‰Âƒø	t‡æ  ƒø„¬  Hûƒù‡1  ‰Âƒø&†  ƒø2„µ  †ç  ƒø5„f  †Ø  ƒø;„ˆ  †¶  HÄƒù‡\  ÇƒØ     ÇƒÜ     Çƒà     Çƒ     Çƒ      Çƒ$     ƒø"‡½  Jú¸   Óà©ÅXß„³  j “
+  ¹9   CjDèüÿÿÿ‰ƒ”  ZY…À„Ô  “ğ   ‰˜   ‹ƒ”  Ç€      ‹ƒ”  …À„ª  ‹Pd‹…Ò„  ‹R…Ò„’  ‹    …É„|  ‹I…É„q  èüÿÿÿ‹“¸  éo  ƒøt3†Û   Höƒù‡X  Çƒ     Çƒ      Çƒ$     v ÇƒØ     ÇƒÜ     Çƒà     ƒú"‡¶  ƒú‡ğşÿÿBÿƒø†ùşÿÿƒú„"  ƒú„  ‹D$d+    …3  ƒÄ[^_ÃfHÊƒù‡%şÿÿ¾P   ƒô  ¹   º    f‰³ö  èüÿÿÿ‹»`  …ÿ„
+  ‹ƒ¸  ééıÿÿƒø…€  ÇƒØ    ‹ƒÜ   º   ÇƒÜ     Çƒà     Çƒä      Çƒè  ÌG ‰„ Çƒ     ‹“¸  Çƒ      Çƒ$     éûşÿÿt& èüÿÿÿv ‹“¸  ƒú6…Á   j “ü   C¹A   jAèüÿÿÿ‹“¸  _Xƒú…Şşÿÿ‹D$d+    …  ƒÄ‰Ø[^_éüÿÿÿHÈƒù†Jıÿÿé¡  fƒø3…§   ÇƒØ     ÇƒÜ     Çƒà     Çƒ     Çƒ      Çƒ$     BÜƒø‡Mÿÿÿ¹ùş}£Á‚>ıÿÿƒú6„?ÿÿÿƒú7…Uÿÿÿj »ü   s¹A   j@‰ú‰ğèüÿÿÿ‰ú¹A   ‰ğj jAèüÿÿÿ‹“¸  ƒÄéÿÿÿt& ƒø4…æ  ÇƒØ     ÇƒÜ     Çƒà     Çƒ     Çƒ      Çƒ$     éKÿÿÿ¶    ƒø)wKƒø'…  ÇƒØ     ÇƒÜ     Çƒà     Çƒ    Çƒ      Çƒ$     éNüÿÿƒø-„°şÿÿv,ƒø2„;  ÇƒØ     ÇƒÜ     Çƒà     éøûÿÿƒø,„·üÿÿé
+  v ƒø‡×   ƒø„ö  †€üÿÿƒø„fıÿÿ†	  ƒø…×   ÇƒØ     ÇƒÜ     Çƒà     Çƒ     Çƒ      Çƒ$     é­üÿÿ´&    ¾P   º    ƒl  ¹   f‰³n  èüÿÿÿ‹ƒ¸  ‰Âƒø†®   HÜƒù‡³úÿÿ¾   Óæ‰ñ÷Æ… ó…H  á   …müÿÿƒø&‡’úÿÿHâ¾   Óæ‰ñöÁ¨…×şÿÿƒá…­úÿÿƒø&„¡  Çƒ     ‰ÂÇƒ      Çƒ$     éÂûÿÿt& ƒø„rúÿÿvHêƒù†…şÿÿë¾´&    …vşÿÿë¯…Àt«‰Á¾   Óæ‰ñ÷Æ†<……   á`  u]ƒø……şÿÿ‹‹`  …É…uÿÿÿ€=    „tKºà   ‰ØèÑçÿÿ‹ƒ¸  ‰Âéµùÿÿt& ƒú…müÿÿ‹5   …ö„Oûÿÿé1úÿÿt& ‹“`  …Ò…ùÿÿº    ‰Øè†çÿÿé|ûÿÿ‹‹`  …Ét™éşÿÿÇƒØ     ÇƒÜ     Çƒà     éóúÿÿt& ÇƒØ     ÇƒÜ     Çƒà     Çƒ     Çƒ      Çƒ$     é”ùÿÿ´&    ÇƒØ     ‹ƒÜ   ÇƒÜ     Çƒà       Çƒ     Çƒ      Çƒ$     ‹Ê  ‰¹   º'  ¸è  èüÿÿÿ‹ƒÜ     ‹ƒâı‰¹   º'  ¸è  1öèüÿÿÿv ‹ƒÜ     ‹ƒâø‰¹   º'  ¸è  èüÿÿÿ‹ƒÜ     ‹:‰ğ‰ñÁø÷Ñ¶€    ƒáÓø‰Áƒá‰ÈƒÈ÷Ğ!ø	ÈƒÈ‰¹   º'  ¸è  ƒÆèüÿÿÿƒşHu†‹ƒÜ     ‹ƒÊ‰‹“¸  éOùÿÿ´&    fÇƒØ     ÇƒÜ     Çƒà     Çƒ     Çƒ      Çƒ$     é5ùÿÿ´&    ÇƒØ     ÇƒÜ     Çƒà     éùÿÿƒ»`   „{ıÿÿéD÷ÿÿ‰Ø‰\$ÇD$H   ÇD$    èüÿÿÿƒü   º    èüÿÿÿ¡ŒF  …À„6  é1  èüÿÿÿèüÿÿÿ‹P(Ç   ‹‚ì  ¯‚ğ  ‹’è  ¯B‹T$Áè‰1ÀÃ´&    ´&    èüÿÿÿUWVS‰Ãƒì‹ ‹“ˆ  ‹p(‹ƒ  ƒÀ¾¸  ‰B‹ƒŒ  Ç   p‹ƒ  ‹“Œ  ƒÀ‰B‹ƒŒ  Ç@    ‰øèüÿÿÿ‹®ø  ø  ‰Âƒx  9étS‹«ˆ  M    ‹®ü  ‰†ü  ‰‹x  ‰«|  ‰E ‹E‹‹  ƒ=x  ‰H‡ø  ƒÄ‰ø[^_]éüÿÿÿt& ‹®ü  ‰†ü  ‰‹x  ‰«|  ‰E ƒ=x  ‡Ö  ƒÄ‰ø[^_]éüÿÿÿfèüÿÿÿUWVS‹h(‹…Ü   @  ‹ƒâî‰½¸  ø  ‰øèüÿÿÿ‰Æ‹…ø  9Ãt@v ‹…ø  ‹P‹-x  ‰Q‰
+º   Ç€x     Ç€|  "  èüÿÿÿ‹…ø  9ØuÃ[‰ò‰ø^_]éüÿÿÿ¶    èüÿÿÿVSèüÿÿÿ‹°(  ‹FƒÆ9Æt$X´‹Cd‹ …Àt‹…Òt‰Øèüÿÿÿ‹CLX´9Æuà1À[^Ã´&    t& èüÿÿÿWV‰ÎSèüÿÿÿ‹¸(  ‹‡¸  ƒø4tƒè8ƒøwPÇF   ‹‡Ü  ƒÇ‰F‹X´9Çt(t& ‹Cd‹@…Àt‹H…Ét	‰ò‰Øèüÿÿÿ‹CLX´9ÇuÜ1À[^_Ã¶    ƒ¿€  u§¸êÿÿÿëæ´&    èüÿÿÿWV‰ÎSèüÿÿÿ‹¸(  ‹‡¸  ƒø4tƒè8ƒøwH‹…ÀuK‹GƒÇX´9Çt)t& ‹Cd‹@…Àt‹H…Ét	‰ò‰Øèüÿÿÿ‹CLX´9ÇuÜ1À[^_Ã¶    ƒ¿€  u¯¸êÿÿÿëæèüÿÿÿWV‰ÎSèüÿÿÿ‹¸(  ‹‡¸  ƒø4tƒè8ƒøwX‹…Àu[F¹   ºª  ƒÇèüÿÿÿ‹X´9Çt(t& ‹Cd‹@…Àt‹H…Ét	‰ò‰Øèüÿÿÿ‹CLX´9ÇuÜ1À[^_Ã¶    ƒ¿€  uŸ¸êÿÿÿëæèüÿÿÿS‰Ëèüÿÿÿƒ;‹(  uH‹Cƒèƒøw=ÇC    ÇC    ÇCĞ  ‹‚x  % ù  ƒøÀƒà`à  ‰C1À[Ã´&    f¸êÿÿÿ[Ã´&    fèüÿÿÿV‰ÎS‹\$èüÿÿÿ‹€(  ‹€x  %ÿÿ ƒşu(ƒøÒƒâÕƒÂ6ƒøÀ‰ƒàÏƒÀ;‰C1À[^Ã´&    ¸êÿÿÿëî´&    fèüÿÿÿVS‰Ëèüÿÿÿ‹°(  ¡x  …À…  ‹†x  ‹–|  ‰1À‰S[^Ã´&    fèüÿÿÿVS‰Ëèüÿÿÿ‹(  ‹‚ì  ‰C‹Šğ  ‰K‹²ô  ‰s‹²è  ‹6‰s‹’è  ¯BÇC   Áè¯È‰C1À‰K[^Ãt& èüÿÿÿ‹…Àu¡ÔI  ‰A,1ÀÃ´&    v ¸êÿÿÿÃ´&    v èüÿÿÿ‰Â‹ ‹@(éüÿÿÿ´&    ´&    èüÿÿÿU1ÒWVS‰Ãƒì‹ ‹p(‰Øèüÿÿÿ‹k‰Ç‹†è  ‹@¯†ì  Áè‰ƒ€  ‰Â…í…¼   ¯–ğ  …Ò…  ‹–ô  ƒú„À   wTƒú„+  ƒú…  ‹®Ì   ÿ¶ğ  “„  j P‰èj jÿ‹èüÿÿÿƒÄƒ=x  ‡6  1ÀƒÄ[^_]Ã¶    ƒú„  ƒú…J  ‹ğ  ‹®Ì   “„  ÑéQ¯Èj P‰èj Q‹èüÿÿÿƒÄë¥´&    v ¯–ğ  9ST‚  ‰SP‹–ô  ƒú…@ÿÿÿ‹x  ÷†x   ù  ti¸    ‹‰  …É„´   …Ò…p  Ç$    ‰Á‹–Ì   «„  ‰T$‹–ğ  ÑêR‰êQQPÿt$‹‹D$èüÿÿÿƒÄé	ÿÿÿ¶    ‹®Ì   ÿ¶ğ  “„  j Pjÿj ‹‰èèüÿÿÿƒÄéÙşÿÿ¶    ‹ğ  ‹®Ì   “„  ÑéQ¯Èj PQëÉ´&    v ƒÄ¸êÿÿÿ[^_]Ãv …Ò…’  ‰$‰Á1ÀéIÿÿÿ¸êÿÿÿéŠşÿÿèüÿÿÿVS‰Ëèüÿÿÿ‹5ÔI  ‹€(  9s…­   ‹€x  ‹S% ù  ƒøÀƒà`à  …Òt^ƒúwyƒú…   º   j s¹Ğ  j PC‰Sº0   j P‰ğjèüÿÿÿ‹C¯ØI  ÇC   ƒÄÁè‰C¯C‰C1À[^Ã‰Áº   Ñé9Kw§º   ‰Èë´&    fJüƒù¹   CÑë…¸êÿÿÿ[^Ã´&    Ñè‰Á‰Èéjÿÿÿt& èüÿÿÿU‰ÍWV‰ÖS‰Ãƒìpd¡    ‰D$l‰Øèüÿÿÿ¹   ‹€(  |$ÇD$   ‰$1Àƒ=x  ó«‡´  ‰é‰ò‰Øè·şÿÿ‰D$‰Á…À…U  ‹<$‹Ÿ   …Û…]  ‹—`  …Ò…O  ‹‡Ä  …À…A  ¡ÔI  9E¸ÔI  EÁƒ=x  ‰‡è  ‹E‰‡ì  ‹U‰—ğ  ‹M‰ô  ‡Ğ  ‹E‹]0ÇD$$   ‹<$‹u‹M‹U‰D$(‰D$‹E(ƒÇ‰t$ f‰D$0f‰D$‹E,‰L$,f‰D$2f‰D$·Ãf‰\$4‹‰T$‰\$ƒëL;|$tYt& ‹Cd‹@…Àt‹p…ötL$1Ò‰Øèüÿÿÿ‹CLX´9ÇuØ‹D$(‹T$‹t$ ‹L$,‰D$·D$0f‰D$·D$2f‰D$·D$4‰U‹T$‰E0‹$‰U·T$‰u‰U(·T$‰M‰U,‹€ô  ‰E‹D$ld+    u‹D$ƒÄp[^_]ÃÇD$ğÿÿÿëİèüÿÿÿ´&    t& èüÿÿÿUWVS‰ËèüÿÿÿºĞ  ¹   ‹°(  ‰Øèüÿÿÿº    i†¸    ‹¸    ‰øèüÿÿÿƒøÿ„ù  k‰Áƒø tƒÁƒù ‡ï  ‰ú‰èèüÿÿÿ‹–Ì   ‹‚´   …Àu‹‚ˆ   PC0hØ  PèüÿÿÿÇCT …‹†¸  ƒÄƒø4tƒè8ƒøwÇCT …1À[^_]Ãt& ƒ¾€  uä[1À^_]ÃèüÿÿÿW‰×V‰ÆS‹‹@P‰V‰ƒôşÿÿèüÿÿÿ‰ƒœıÿÿ‰“ ıÿÿƒ=x  ‡  ³ˆıÿÿ‹‹C‰B‰‰ğº   Ç   ÇC"  [^_éüÿÿÿ´&    fèüÿÿÿWVS‰Ã¡x  …À…+  ‹ƒúwrs{1ÀÇC    ƒçü‰ñÇF,    )ùƒÁ0Áéó«‹<•À   º    ‰øèüÿÿÿ‰Áƒøÿ„Q  ƒø tƒÁƒù ‡G  ‰ú‰ğèüÿÿÿÇC$   1À[^_Ã´&    ¸êÿÿÿëí´&    fèüÿÿÿ‰ÈéTÿÿÿt& èüÿÿÿS‰Ëèüÿÿÿ‹(  kŠl  i‚¸    ‹„,   ¹   ƒèƒøv‹Šp  ‰¡x  …À…[  ‰Ø[éûşÿÿ´&    t& èüÿÿÿU‰ÍWV‰ÖS‰Ãƒì¡x  …À…x  èüÿÿÿ‰Â…Àt]‰Ç¹Í   Có¥‰‚¬  ƒ  Ç‚      ‰‚0  iƒ¸    Uÿ°    ‚À  hà  j ‰T$Pèüÿÿÿ‹T$ƒÄ‰š(  ƒÄ‰Ğ[^_]Ã´&    ´&    èüÿÿÿV‹x  S‹X(‹³ø  …Ò…”  ‹ƒÜ   @  ‹ƒâî‰‹“d  ‹Nÿv‰Øèüÿÿÿ‹ƒÜ   º   ‰0  Çƒ       ‰Øº   èüÿÿÿ‹ƒÜ      ‹ƒÊ‰‹ƒÜ      ‹ƒÊ ‰‹ƒÜ   @  ‹€@  ƒÈ‰X1À[^Ãt& èüÿÿÿS‰Ëèüÿÿÿ‹€(  ‹€l  ‰‹x  …Ò…°  1À[Ãv èüÿÿÿ‰Ğ‰Ê‹9Èt	éìüÿÿt& Ã´&    èüÿÿÿUWV‰ÆS‰Ë¹   ƒìd‰$|$d¡    ‰D$`1ÀÇD$   ó«‹=x  ÇD$   …ÿ…6  ‹†|  ‹$3–x  1Ø	Ğ„ÿ   ‹   …É…  ‹–`  …Ò…ú   ‹†Ä  …À…ì   ‹$~‰|  ‰İÇ†ì  Ğ  ‰†x  % ù  Ç†ô     ƒøÀƒà`à  ‰†ğ  ‹FX´9Ç„‡   ‰t$v ‹Cd‹@…Àt‹p…öt‹$‰é‰Øèüÿÿÿ‹CLX´9ÇuÙ‹t$‹ğ  ‹–ô  ‹F‹¶ì  ‰L$‰t$X´‰T$9Çt-t& ‹Cd‹@…Àt‹p…ötL$1Ò‰Øèüÿÿÿ‹CLX´9ÇuØ1À‹T$`d+    u8ƒÄd[^_]Ã¸ğÿÿÿëä‰×‰Ğ‰ÚèüÿÿÿPWh

@@ -1,1 +1,1 @@
-cmd_drivers/media/i2c/
+lient.addr = 0xa0 >> 1

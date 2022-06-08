@@ -1,4 +1,7 @@
-ldcard include/config/PCI_MMCONFIG) \
-    $(wildcard include/config/ACPI_APEI_GHES) \
-    $(wildcard include/config/INTEL_TXT) \
-  arch/x86/include/
+E310B         62
+
+#define GPIO_0 0x00000001
+#define GPIO_1 0x00000002
+#define GPIO_2 0x00000004
+#define GPIO_3 0x00000008
+#define GPIO_4 0x00000010

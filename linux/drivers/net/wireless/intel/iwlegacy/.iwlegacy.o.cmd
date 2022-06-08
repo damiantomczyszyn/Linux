@@ -1,6 +1,7 @@
-pes.h \
-  include/asm-generic/pgtable-nop4d.h \
-  include/asm-generic/pgtable-nopud.h \
-  arch/x86/include/asm/nospec-branch.h \
-  include/linux/static_key.h \
-  include
+taval = tempval & 0x000000FF;
+
+	/* Bring CS and RD high. */
+	regval = MC417_MIWR | MC417_MIRD | MC417_MICS | MC417_MIRDY;
+	cx_write(MC417_RWD, regval);
+
+	/* Read data by

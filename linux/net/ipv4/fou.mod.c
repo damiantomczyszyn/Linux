@@ -1,25 +1,32 @@
-turns true, we skip this
-		 *         lock (and any path this lock is in).
-		 */
-		if (skip && skip(lock, data))
-			continue;
+r allowed, online CPU in same node. */
+		for_each_cpu(dest_cpu, nodemask) {
+			if (is_cpu_allowed(p, dest_cpu))
+				return dest_cpu;
+		}
+	}
 
-		if (match(lock, data)) {
-			*target_entry = lock;
-			return BFS_RMATCH;
+	for (;;) {
+		/* Any allowed, online CPU? */
+		for_each_cpu(dest_cpu, p->cpus_ptr) {
+			if (!is_cpu_allowed(p, dest_cpu))
+				continue;
+
+			goto out;
 		}
 
-		/*
-		 * Step 4: if not match, expand the path by adding the
-		 *         forward or backwards dependencies in the search
-		 *
-		 */
-		first = true;
-		head = get_dep_list(lock, offset);
-		list_for_each_entry_rcu(entry, head, entry) {
-			visit_lock_entry(entry, lock);
-
+		/* No more Mr. Nice Guy. */
+		switch (state) {
+		case cpuset:
+			if (cpuset_cpus_allowed_fallback(p)) {
+				state = possible;
+				break;
+			}
+			fallthrough;
+		case possible:
 			/*
-			 * Note we only enqueue the first of the list into the
-			 * queue, because we can always find a sibling
-			 * dependency from one (see __bfs_next()), as a re
+			 * XXX When called from select_task_rq() we only
+			 * hold p->pi_lock and again violate locking order.
+			 *
+			 * More yuck to audit.
+			 */
+			do_set_cpus_all

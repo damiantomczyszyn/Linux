@@ -1,54 +1,150 @@
-cmd_drivers/media/i2c/tw9906.o := gcc -Wp,-MMD,drivers/media/i2c/.tw9906.o.d -nostdinc -I./arch/x86/include -I./arch/x86/include/generated  -I./include -I./arch/x86/include/uapi -I./arch/x86/include/generated/uapi -I./include/uapi -I./include/generated/uapi -include ./include/linux/compiler-version.h -include ./include/linux/kconfig.h -include ./include/linux/compiler_types.h -D__KERNEL__ -fmacro-prefix-map=./= -Wall -Wundef -Werror=strict-prototypes -Wno-trigraphs -fno-strict-aliasing -fno-common -fshort-wchar -fno-PIE -Werror=implicit-function-declaration -Werror=implicit-int -Werror=return-type -Wno-format-security -std=gnu11 -mno-sse -mno-mmx -mno-sse2 -mno-3dnow -mno-avx -fcf-protection=none -m32 -msoft-float -mregparm=3 -freg-struct-return -fno-pic -mpreferred-stack-boundary=2 -march=i686 -mtune=pentium3 -mtune=generic -Wa,-mtune=generic32 -ffreestanding -mstack-protector-guard-reg=fs -mstack-protector-guard-symbol=__stack_chk_guard -Wno-sign-compare -fno-asynchronous-unwind-tables -mindirect-branch=thunk-extern -mindirect-branch-register -fno-jump-tables -fno-delete-null-pointer-checks -Wno-frame-address -Wno-format-truncation -Wno-format-overflow -Wno-address-of-packed-member -O2 -fno-allow-store-data-races -fstack-protector-strong -Wimplicit-fallthrough=5 -Wno-main -Wno-unused-but-set-variable -Wno-unused-const-variable -fno-stack-clash-protection -pg -mrecord-mcount -mfentry -DCC_USING_FENTRY -Wdeclaration-after-statement -Wvla -Wno-pointer-sign -Wcast-function-type -Wno-stringop-truncation -Wno-stringop-overflow -Wno-restrict -Wno-maybe-uninitialized -Wno-alloc-size-larger-than -fno-strict-overflow -fno-stack-check -fconserve-stack -Werror=date-time -Werror=incompatible-pointer-types -Werror=designated-init -Wno-packed-not-aligned  -DMODULE  -DKBUILD_BASENAME='"tw9906"' -DKBUILD_MODNAME='"tw9906"' -D__KBUILD_MODNAME=kmod_tw9906 -c -o drivers/media/i2c/tw9906.o drivers/media/i2c/tw9906.c 
+  = 0x61,
+	.if_khz           = 5380,
+};
 
-source_drivers/media/i2c/tw9906.o := drivers/media/i2c/tw9906.c
+static struct xc5000_config dvico_xc5000_tunerconfig = {
+	.i2c_address      = 0x64,
+	.if_khz           = 5380,
+};
 
-deps_drivers/media/i2c/tw9906.o := \
-  include/linux/compiler-version.h \
-    $(wildcard include/config/CC_VERSION_TEXT) \
-  include/linux/kconfig.h \
-    $(wildcard include/config/CPU_BIG_ENDIAN) \
-    $(wildcard include/config/BOOGER) \
-    $(wildcard include/config/FOO) \
-  include/linux/compiler_types.h \
-    $(wildcard include/config/DEBUG_INFO_BTF) \
-    $(wildcard include/config/PAHOLE_HAS_BTF_TAG) \
-    $(wildcard include/config/HAVE_ARCH_COMPILER_H) \
-    $(wildcard include/config/CC_HAS_ASM_INLINE) \
-  include/linux/compiler_attributes.h \
-  include/linux/compiler-gcc.h \
-    $(wildcard include/config/RETPOLINE) \
-    $(wildcard include/config/ARCH_USE_BUILTIN_BSWAP) \
-    $(wildcard include/config/SHADOW_CALL_STACK) \
-    $(wildcard include/config/KCOV) \
-  include/linux/module.h \
-    $(wildcard include/config/MODULES) \
-    $(wildcard include/config/SYSFS) \
-    $(wildcard include/config/MODULES_TREE_LOOKUP) \
-    $(wildcard include/config/LIVEPATCH) \
-    $(wildcard include/config/STACKTRACE_BUILD_ID) \
-    $(wildcard include/config/CFI_CLANG) \
-    $(wildcard include/config/MODULE_SIG) \
-    $(wildcard include/config/GENERIC_BUG) \
-    $(wildcard include/config/KALLSYMS) \
-    $(wildcard include/config/SMP) \
-    $(wildcard include/config/TRACEPOINTS) \
-    $(wildcard include/config/TREE_SRCU) \
-    $(wildcard include/config/BPF_EVENTS) \
-    $(wildcard include/config/DEBUG_INFO_BTF_MODULES) \
-    $(wildcard include/config/JUMP_LABEL) \
-    $(wildcard include/config/TRACING) \
-    $(wildcard include/config/EVENT_TRACING) \
-    $(wildcard include/config/FTRACE_MCOUNT_RECORD) \
-    $(wildcard include/config/KPROBES) \
-    $(wildcard include/config/HAVE_STATIC_CALL_INLINE) \
-    $(wildcard include/config/PRINTK_INDEX) \
-    $(wildcard include/config/MODULE_UNLOAD) \
-    $(wildcard include/config/CONSTRUCTORS) \
-    $(wildcard include/config/FUNCTION_ERROR_INJECTION) \
-  include/linux/list.h \
-    $(wildcard include/config/DEBUG_LIST) \
-  include/linux/container_of.h \
-  include/linux/build_bug.h \
-  include/linux/compiler.h \
-    $(wildcard include/config/TRACE_BRANCH_PROFILING) \
-    $(wildcard include/config/PROFI
+static struct tda829x_config tda829x_no_probe = {
+	.probe_tuner = TDA829X_DONT_PROBE,
+};
+
+static struct tda18271_std_map hauppauge_tda18271_std_map = {
+	.atsc_6   = { .if_freq = 5380, .agc_mode = 3, .std = 3,
+		      .if_lvl = 6, .rfagc_top = 0x37 },
+	.qam_6    = { .if_freq = 4000, .agc_mode = 3, .std = 0,
+		      .if_lvl = 6, .rfagc_top = 0x37 },
+};
+
+static struct tda18271_std_map hauppauge_hvr1200_tda18271_std_map = {
+	.dvbt_6   = { .if_freq = 3300, .agc_mode = 3, .std = 4,
+		      .if_lvl = 1, .rfagc_top = 0x37, },
+	.dvbt_7   = { .if_freq = 3800, .agc_mode = 3, .std = 5,
+		      .if_lvl = 1, .rfagc_top = 0x37, },
+	.dvbt_8   = { .if_freq = 4300, .agc_mode = 3, .std = 6,
+		      .if_lvl = 1, .rfagc_top = 0x37, },
+};
+
+static struct tda18271_config hauppauge_tda18271_config = {
+	.std_map = &hauppauge_tda18271_std_map,
+	.gate    = TDA18271_GATE_ANALOG,
+	.output_opt = TDA18271_OUTPUT_LT_OFF,
+};
+
+static struct tda18271_config hauppauge_hvr1200_tuner_config = {
+	.std_map = &hauppauge_hvr1200_tda18271_std_map,
+	.gate    = TDA18271_GATE_ANALOG,
+	.output_opt = TDA18271_OUTPUT_LT_OFF,
+};
+
+static struct tda18271_config hauppauge_hvr1210_tuner_config = {
+	.gate    = TDA18271_GATE_DIGITAL,
+	.output_opt = TDA18271_OUTPUT_LT_OFF,
+};
+
+static struct tda18271_config hauppauge_hvr4400_tuner_config = {
+	.gate    = TDA18271_GATE_DIGITAL,
+	.output_opt = TDA18271_OUTPUT_LT_OFF,
+};
+
+static struct tda18271_std_map hauppauge_hvr127x_std_map = {
+	.atsc_6   = { .if_freq = 3250, .agc_mode = 3, .std = 4,
+		      .if_lvl = 1, .rfagc_top = 0x58 },
+	.qam_6    = { .if_freq = 4000, .agc_mode = 3, .std = 5,
+		      .if_lvl = 1, .rfagc_top = 0x58 },
+};
+
+static struct tda18271_config hauppauge_hvr127x_config = {
+	.std_map = &hauppauge_hvr127x_std_map,
+	.output_opt = TDA18271_OUTPUT_LT_OFF,
+};
+
+static struct lgdt3305_config hauppauge_lgdt3305_config = {
+	.i2c_addr           = 0x0e,
+	.mpeg_mode          = LGDT3305_MPEG_SERIAL,
+	.tpclk_edge         = LGDT3305_TPCLK_FALLING_EDGE,
+	.tpvalid_polarity   = LGDT3305_TP_VALID_HIGH,
+	.deny_i2c_rptr      = 1,
+	.spectral_inversion = 1,
+	.qam_if_khz         = 4000,
+	.vsb_if_khz         = 3250,
+};
+
+static struct dibx000_agc_config xc3028_agc_config = {
+	BAND_VHF | BAND_UHF,	/* band_caps */
+
+	/* P_agc_use_sd_mod1=0, P_agc_use_sd_mod2=0, P_agc_freq_pwm_div=0,
+	 * P_agc_inv_pwm1=0, P_agc_inv_pwm2=0,
+	 * P_agc_inh_dc_rv_est=0, P_agc_time_est=3, P_agc_freeze=0,
+	 * P_agc_nb_est=2, P_agc_write=0
+	 */
+	(0 << 15) | (0 << 14) | (0 << 11) | (0 << 10) | (0 << 9) | (0 << 8) |
+		(3 << 5) | (0 << 4) | (2 << 1) | (0 << 0), /* setup */
+
+	712,	/* inv_gain */
+	21,	/* time_stabiliz */
+
+	0,	/* alpha_level */
+	118,	/* thlock */
+
+	0,	/* wbd_inv */
+	2867,	/* wbd_ref */
+	0,	/* wbd_sel */
+	2,	/* wbd_alpha */
+
+	0,	/* agc1_max */
+	0,	/* agc1_min */
+	39718,	/* agc2_max */
+	9930,	/* agc2_min */
+	0,	/* agc1_pt1 */
+	0,	/* agc1_pt2 */
+	0,	/* agc1_pt3 */
+	0,	/* agc1_slope1 */
+	0,	/* agc1_slope2 */
+	0,	/* agc2_pt1 */
+	128,	/* agc2_pt2 */
+	29,	/* agc2_slope1 */
+	29,	/* agc2_slope2 */
+
+	17,	/* alpha_mant */
+	27,	/* alpha_exp */
+	23,	/* beta_mant */
+	51,	/* beta_exp */
+
+	1,	/* perform_agc_softsplit */
+};
+
+/* PLL Configuration for COFDM BW_MHz = 8.000000
+ * With external clock = 30.000000 */
+static struct dibx000_bandwidth_config xc3028_bw_config = {
+	60000,	/* internal */
+	30000,	/* sampling */
+	1,	/* pll_cfg: prediv */
+	8,	/* pll_cfg: ratio */
+	3,	/* pll_cfg: range */
+	1,	/* pll_cfg: reset */
+	0,	/* pll_cfg: bypass */
+	0,	/* misc: refdiv */
+	0,	/* misc: bypclk_div */
+	1,	/* misc: IO_CLK_en_core */
+	1,	/* misc: ADClkSrc */
+	0,	/* misc: modulo */
+	(3 << 14) | (1 << 12) | (524 << 0), /* sad_cfg: refsel, sel, freq_15k */
+	(1 << 25) | 5816102, /* ifreq = 5.200000 MHz */
+	20452225, /* timf */
+	30000000  /* xtal_hz */
+};
+
+static struct dib7000p_config hauppauge_hvr1400_dib7000_config = {
+	.output_mpeg2_in_188_bytes = 1,
+	.hostbus_diversity = 1,
+	.tuner_is_baseband = 0,
+	.update_lna  = NULL,
+
+	.agc_config_count = 1,
+	.agc = &xc3028_agc_config,
+	.bw  = &xc3028_bw_config,
+
+	.gpio

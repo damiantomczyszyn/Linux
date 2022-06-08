@@ -1,31 +1,44 @@
-nclude/asm/atomic64_32.h \
-  include/linux/atomic/atomic-arch-fallback.h \
-    $(wildcard include/config/GENERIC_ATOMIC64) \
-  include/linux/atomic/atomic-long.h \
-  include/linux/atomic/atomic-instrumented.h \
-  include/linux/bug.h \
-    $(wildcard include/config/GENERIC_BUG) \
-    $(wildcard include/config/BUG_ON_DATA_CORRUPTION) \
-  arch/x86/include/asm/bug.h \
-    $(wildcard include/config/DEBUG_BUGVERBOSE) \
-  include/linux/instrumentation.h \
-    $(wildcard include/config/DEBUG_ENTRY) \
-  include/linux/objtool.h \
-    $(wildcard include/config/FRAME_POINTER) \
-  include/asm-generic/bug.h \
-    $(wildcard include/config/BUG) \
-    $(wildcard include/config/GENERIC_BUG_RELATIVE_POINTERS) \
-  include/linux/smp_types.h \
-  include/linux/llist.h \
-    $(wildcard include/config/ARCH_HAVE_NMI_SAFE_CMPXCHG) \
-  include/linux/preempt.h \
-    $(wildcard include/config/TRACE_PREEMPT_TOGGLE) \
-    $(wildcard include/config/PREEMPTION) \
-    $(wildcard include/config/PREEMPT_NOTIFIERS) \
-  arch/x86/include/asm/preempt.h \
-  include/linux/thread_info.h \
-    $(wildcard include/config/THREAD_INFO_IN_TASK) \
-    $(wildcard include/config/GENERIC_ENTRY) \
-    $(wildcard include/config/HAVE_ARCH_WITHIN_STACK_FRAMES) \
-    $(wildcard include/config/HARDENED_USERCOPY) \
-  include/linux/res
+ze, &risc->dma,
+				       GFP_KERNEL);
+	if (risc->cpu == NULL)
+		return -ENOMEM;
+
+	/* write risc instructions */
+	rp = risc->cpu;
+	if (UNSET != top_offset)
+		rp = cx23885_risc_field(rp, sglist, top_offset, 0,
+					bpl, padding, lines, 0, true);
+	if (UNSET != bottom_offset)
+		rp = cx23885_risc_field(rp, sglist, bottom_offset, 0x200,
+					bpl, padding, lines, 0, UNSET == top_offset);
+
+	/* save pointer to jmp instruction address */
+	risc->jmp = rp;
+	BUG_ON((risc->jmp - risc->cpu + 2) * sizeof(*risc->cpu) > risc->size);
+	return 0;
+}
+
+int cx23885_risc_databuffer(struct pci_dev *pci,
+				   struct cx23885_riscmem *risc,
+				   struct scatterlist *sglist,
+				   unsigned int bpl,
+				   unsigned int lines, unsigned int lpi)
+{
+	u32 instructions;
+	__le32 *rp;
+
+	/* estimate risc mem: worst case is one write per page border +
+	   one write per scan line + syncs + jump (all 2 dwords).  Here
+	   there is no padding and no sync.  First DMA region may be smaller
+	   than PAGE_SIZE */
+	/* Jump and write need an extra dword */
+	instructions  = 1 + (bpl * lines) / PAGE_SIZE + lines;
+	instructions += 4;
+
+	risc->size = instructions * 12;
+	risc->cpu = dma_alloc_coherent(&pci->dev, risc->size, &risc->dma,
+				       GFP_KERNEL);
+	if (risc->cpu == NULL)
+		return -ENOMEM;
+
+	/* write risc instructio

@@ -1,25 +1,29 @@
-IC_IOREMAP) \
-    $(wildcard include/config/VIRT_TO_BUS) \
-    $(wildcard include/config/GENERIC_DEVMEM_IS_ALLOWED) \
-  include/linux/logic_pio.h \
-    $(wildcard include/config/INDIRECT_PIO) \
-  include/linux/vmalloc.h \
-    $(wildcard include/config/HAVE_ARCH_HUGE_VMALLOC) \
-  arch/x86/include/asm/vmalloc.h \
-    $(wildcard include/config/HAVE_ARCH_HUGE_VMAP) \
-  arch/x86/include/asm/acpi.h \
-    $(wildcard include/config/ACPI_APEI) \
-  include/acpi/pdc_intel.h \
-  arch/x86/include/asm/numa.h \
-    $(wildcard include/config/NUMA_EMU) \
-  arch/x86/include/asm/numa_32.h \
-  include/linux/regulator/consumer.h \
-    $(wildcard include/config/REGULATOR) \
-  include/linux/suspend.h \
-    $(wildcard include/config/VT) \
-    $(wildcard include/config/SUSPEND) \
-    $(wildcard include/config/HIBERNATION_SNAPSHOT_DEV) \
-    $(wildcard include/config/PM_SLEEP_DEBUG) \
-    $(wildcard include/config/PM_AUTOSLEEP) \
-  include/linux/swap.h \
-   
+ET_SEQ_END:
+		return  "GET_SEQ_END";
+	case CX2341X_ENC_SET_PGM_INDEX_INFO:
+		return  "SET_PGM_INDEX_INFO";
+	case CX2341X_ENC_SET_VBI_CONFIG:
+		return  "SET_VBI_CONFIG";
+	case CX2341X_ENC_SET_DMA_BLOCK_SIZE:
+		return  "SET_DMA_BLOCK_SIZE";
+	case CX2341X_ENC_GET_PREV_DMA_INFO_MB_10:
+		return  "GET_PREV_DMA_INFO_MB_10";
+	case CX2341X_ENC_GET_PREV_DMA_INFO_MB_9:
+		return  "GET_PREV_DMA_INFO_MB_9";
+	case CX2341X_ENC_SCHED_DMA_TO_HOST:
+		return  "SCHED_DMA_TO_HOST";
+	case CX2341X_ENC_INITIALIZE_INPUT:
+		return  "INITIALIZE_INPUT";
+	case CX2341X_ENC_SET_FRAME_DROP_RATE:
+		return  "SET_FRAME_DROP_RATE";
+	case CX2341X_ENC_PAUSE_ENCODER:
+		return  "PAUSE_ENCODER";
+	case CX2341X_ENC_REFRESH_INPUT:
+		return  "REFRESH_INPUT";
+	case CX2341X_ENC_SET_COPYRIGHT:
+		return  "SET_COPYRIGHT";
+	case CX2341X_ENC_SET_EVENT_NOTIFICATION:
+		return  "SET_EVENT_NOTIFICATION";
+	case CX2341X_ENC_SET_NUM_VSYNC_LINES:
+		return  "SET_NUM_VSYNC_LINES";
+	case CX2341X

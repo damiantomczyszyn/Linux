@@ -1,15 +1,21 @@
-h \
-    $(wildcard include/config/ARCH_NR_GPIO) \
-  include/linux/gpio/driver.h \
-    $(wildcard include/config/IRQ_DOMAIN_HIERARCHY) \
-    $(wildcard include/config/GPIO_GENERIC) \
-    $(wildcard include/config/GPIOLIB_IRQCHIP) \
-    $(wildcard include/config/OF_GPIO) \
-    $(wildcard include/config/PINCTRL) \
+\
+    $(wildcard include/config/QUOTA_NETLINK_INTERFACE) \
+  include/uapi/linux/dqblk_xfs.h \
+  include/linux/dqblk_v1.h \
+  include/linux/dqblk_v2.h \
+  include/linux/dqblk_qtree.h \
+  include/linux/projid.h \
+  include/uapi/linux/quota.h \
+  include/linux/nfs_fs_i.h \
+  include/uapi/linux/poll.h \
+  arch/x86/include/generated/uapi/asm/poll.h \
+  include/uapi/asm-generic/poll.h \
+  include/uapi/linux/eventpoll.h \
   include/linux/device.h \
     $(wildcard include/config/GENERIC_MSI_IRQ_DOMAIN) \
     $(wildcard include/config/GENERIC_MSI_IRQ) \
     $(wildcard include/config/ENERGY_MODEL) \
+    $(wildcard include/config/PINCTRL) \
     $(wildcard include/config/DMA_OPS) \
     $(wildcard include/config/DMA_DECLARE_COHERENT) \
     $(wildcard include/config/DMA_CMA) \
@@ -18,12 +24,10 @@ h \
     $(wildcard include/config/ARCH_HAS_SYNC_DMA_FOR_CPU) \
     $(wildcard include/config/ARCH_HAS_SYNC_DMA_FOR_CPU_ALL) \
     $(wildcard include/config/DMA_OPS_BYPASS) \
-    $(wildcard include/config/PM_SLEEP) \
     $(wildcard include/config/OF) \
     $(wildcard include/config/DEVTMPFS) \
     $(wildcard include/config/SYSFS_DEPRECATED) \
   include/linux/dev_printk.h \
-  include/linux/ratelimit.h \
   include/linux/energy_model.h \
   include/linux/kobject.h \
     $(wildcard include/config/UEVENT_HELPER) \
@@ -32,22 +36,24 @@ h \
   include/linux/kernfs.h \
     $(wildcard include/config/KERNFS) \
   include/linux/idr.h \
-  include/linux/radix-tree.h \
-  include/linux/gfp.h \
-    $(wildcard include/config/KASAN_HW_TAGS) \
-    $(wildcard include/config/ZONE_DMA) \
-    $(wildcard include/config/ZONE_DMA32) \
-    $(wildcard include/config/ZONE_DEVICE) \
-    $(wildcard include/config/CONTIG_ALLOC) \
-    $(wildcard include/config/CMA) \
-  include/linux/mmzone.h \
-    $(wildcard include/config/FORCE_MAX_ZONEORDER) \
-    $(wildcard include/config/MEMORY_ISOLATION) \
-    $(wildcard include/config/ZSMALLOC) \
-    $(wildcard include/config/SWAP) \
-    $(wildcard include/config/TRANSPARENT_HUGEPAGE) \
-    $(wildcard include/config/MEMORY_HOTPLUG) \
-    $(wildcard include/config/PAGE_EXTENSION) \
-    $(wildcard include/config/DEFERRED_STRUCT_PAGE_INIT) \
-    $(wildcard include/config/HAVE_MEMORYLESS_NODES) \
-    $(wildcard include/config/SPARSEMEM_EXTREME) \
+  include/linux/kobject_ns.h \
+  include/linux/sched/cpufreq.h \
+    $(wildcard include/config/CPU_FREQ) \
+  include/linux/sched/topology.h \
+    $(wildcard include/config/SCHED_DEBUG) \
+    $(wildcard include/config/SCHED_MC) \
+    $(wildcard include/config/CPU_FREQ_GOV_SCHEDUTIL) \
+  include/linux/sched/idle.h \
+  include/linux/sched/sd_flags.h \
+  include/linux/ioport.h \
+  include/linux/klist.h \
+  include/linux/pm.h \
+    $(wildcard include/config/VT_CONSOLE_SLEEP) \
+    $(wildcard include/config/PM) \
+    $(wildcard include/config/PM_CLK) \
+    $(wildcard include/config/PM_GENERIC_DOMAINS) \
+  include/linux/device/bus.h \
+    $(wildcard include/config/ACPI) \
+  include/linux/device/class.h \
+  include/linux/device/driver.h \
+  include/linux/module.h 

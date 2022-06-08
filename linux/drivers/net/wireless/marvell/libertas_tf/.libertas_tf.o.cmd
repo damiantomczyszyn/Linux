@@ -1,6 +1,11 @@
-de/config/INLINE_READ_UNLOCK_IRQRESTORE) \
-    $(wildcard include/config/INLINE_WRITE_UNLOCK_IRQRESTORE) \
-  include/linux/srcu.h \
-    $(wildcard include/config/TINY_SRCU) \
-    $(wildcard include/config/SRCU) \
-  include/linux/rcupda
+IO moving on encoder ports\n",
+				dev->name);
+		cx_clear(MC417_RWD, (mask & 0x7fff8) >> 3);
+	}
+
+	/* TODO: 23-19 */
+	if (mask & 0x00f80000)
+		pr_info("%s: Unsupported\n", dev->name);
+}
+
+u32 cx23885_gpio_get(struct cx23885_dev *dev, u32

@@ -1,10 +1,4 @@
-ires(torture_rwlock)
-{
-	unsigned long flags;
-
-	write_lock_irqsave(&torture_rwlock, flags);
-	cxt.cur_ops->flags = flags;
-	return 0;
-}
-
-static void torture_rwlock
+/* SPDX-License-Identifier: GPL-2.0 */
+/*
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Publi

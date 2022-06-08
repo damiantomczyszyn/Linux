@@ -1,3 +1,5 @@
-x/scatterlist.h \
-    $(wildcard include/config/NEED_SG_DMA_LENGTH) \
-    $(wildcard include/config/DEBUG_SG) \
+IDEO;
+		break;
+	case CX23885_BOARD_DVBSKY_T9580:
+	case CX23885_BOARD_DVBSKY_T982:
+		ts1->gen_ctrl_val  = 0x5; /*

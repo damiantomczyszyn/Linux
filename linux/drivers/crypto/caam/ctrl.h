@@ -1,9 +1,18 @@
-I2C) \
-    $(wildcard include/config/I2C_SLAVE) \
-    $(wildcard include/config/I2C_BOARDINFO) \
-    $(wildcard include/config/I2C_MUX) \
-    $(wildcard include/config/ACPI) \
-  include/linux/acpi.h \
-    $(wildcard include/config/ACPI_DEBUGGER) \
-    $(wildcard include/config/ACPI_TABLE_LIB) \
-    $(wi
+t_nr)
+{
+	if (temp_int == NULL)
+		return NULL;
+
+	if ((temp_int->pid_filt[filt_nr]) == NULL)
+		return NULL;
+
+	if (temp_int->pid_filt[filt_nr]->demux == demux_dev)
+		return temp_int;
+
+	return NULL;
+}
+
+/* find chip by demux */
+static struct fpga_inode *find_dinode(void *demux_dev)
+{
+	struct fpga_inode *temp

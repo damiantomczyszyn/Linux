@@ -1,17 +1,26 @@
-CPI_APEI_GHES) \
-    $(wildcard include/config/INTEL_TXT) \
-  arch/x86/include/generated/asm/kmap_size.h \
-  include/asm-generic/kmap_size.h \
-    $(wildcard include/config/DEBUG_KMAP_LOCAL) \
-  include/asm-generic/fixmap.h \
-  arch/x86/include/asm/irq_vectors.h \
-    $(wildcard include/config/HAVE_KVM) \
-    $(wildcard include/config/HYPERV) \
-    $(wildcard include/config/PCI_MSI) \
-  arch/x86/include/asm/cpu_entry_area.h \
-  arch/x86/include/asm/intel_ds.h \
-  arch/x86/include/asm/pgtable_areas.h \
-  arch/x86/include/asm/pgtable_32_areas.h \
-  include/uapi/linux/elf.h \
-  include/uapi/linux/elf-em.h \
- 
+* use task_rq_lock() here and obtain the other rq->lock.
+	 *
+	 * Silence PROVE_RCU
+	 */
+	rcu_read_lock();
+	__set_task_cpu(idle, cpu);
+	rcu_read_unlock();
+
+	rq->idle = idle;
+	rcu_assign_pointer(rq->curr, idle);
+	idle->on_rq = TASK_ON_RQ_QUEUED;
+#ifdef CONFIG_SMP
+	idle->on_cpu = 1;
+#endif
+	raw_spin_rq_unlock(rq);
+	raw_spin_unlock_irqrestore(&idle->pi_lock, flags);
+
+	/* Set the preempt count _outside_ the spinlocks! */
+	init_idle_preempt_count(idle, cpu);
+
+	/*
+	 * The idle tasks have their own, simple scheduling class:
+	 */
+	idle->sched_class = &idle_sched_class;
+	ftrace_graph_init_idle_task(idle, cpu);
+	vtim

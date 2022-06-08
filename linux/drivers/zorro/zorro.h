@@ -1,1 +1,14 @@
-cmd_drivers/media/i2c/upd64083.o := gcc -Wp,-MMD,drivers/media/i2c/.upd64083.o.d -nostdinc -I./arch/x86/include -I./arch/x86/include/generated  -I./include -I./arch/x86/include/uapi -I./arch/x86/include/generated/uapi -I./include/uapi -I./include/generated/uapi -include ./include/linux/compiler-version.h -include ./include/linux/kconfig.h 
+2_FIELD_SEQ_BT:
+		break;
+	default:
+		field = V4L2_FIELD_INTERLACED;
+		break;
+	}
+
+	f->fmt.pix.field = field;
+	v4l_bound_align_image(&f->fmt.pix.width, 48, maxw, 2,
+			      &f->fmt.pix.height, 32, maxh, 0, 0);
+	f->fmt.pix.bytesperline =
+		(f->fmt.pix.width * fmt->depth) >> 3;
+	f->fmt.pix.sizeimage =
+		f->fmt.pix.height * f->fmt.pix.bytesper

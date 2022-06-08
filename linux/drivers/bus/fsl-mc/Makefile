@@ -1,13 +1,19 @@
-EAF) \
-  include/linux/page-flags-layout.h \
-    $(wildcard include/config/KASAN_HW_TAGS) \
-  include/linux/numa.h \
-    $(wildcard include/config/NODES_SHIFT) \
-    $(wildcard include/config/NUMA_KEEP_MEMINFO) \
-    $(wildcard include/config/HAVE_ARCH_NODE_DEV_GROUP) \
-  arch/x86/include/asm/sparsemem.h \
-  include/generated/bounds.h \
-  include/linux/seqlock.h \
-  include/linux/ww_mutex.h \
-    $(wildcard include/config/DEBUG_RT_MUTEXES) \
-    $(wildcard include/config/DEBUG_WW_MUTEX_SLOWPAT
+ient_tuner);
+				module_put(client_demod->dev.driver->owner);
+				i2c_unregister_device(client_demod);
+				port->i2c_client_demod = NULL;
+				goto frontend_detach;
+			}
+			port->i2c_client_tuner = client_tuner;
+			break;
+		}
+		break;
+	case CX23885_BOARD_HAUPPAUGE_QUADHD_ATSC:
+	case CX23885_BOARD_HAUPPAUGE_QUADHD_ATSC_885:
+		pr_info("%s(): board=%d port=%d\n", __func__,
+			dev->board, port->nr);
+		switch (port->nr) {
+		/* port b - Terrestrial/cable */
+		case 1:
+			/* attach frontend */
+			i2c_b

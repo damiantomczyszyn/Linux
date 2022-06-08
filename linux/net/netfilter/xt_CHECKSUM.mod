@@ -1,1 +1,2 @@
-  $(wildcard include/config/A
+k_struct *curr,
+				 struct t

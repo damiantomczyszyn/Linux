@@ -1,5 +1,6 @@
-e/linux/rwlock.h \
-    $(wildcard include/config/PREEMPT) \
-  include/linux/spinlock_api_smp.h \
-    $(wildcard include/config/INLINE_SPIN_LOCK) \
-    $(wild
+00d00);
+		/* enable irq */
+		cx_write(GPIO_ISM, 0x00000000);/* INTERRUPTS active low*/
+		break;
+	case CX23885_BOARD_HAUPPAUGE_HVR4400:
+	case CX23885_BOARD_HA

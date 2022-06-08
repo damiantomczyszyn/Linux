@@ -1,2 +1,1 @@
-/config/GENERIC_IOMAP) \
-    $(wildcard include/config/GENERIC_IOR
+cmd_drivers/media/pci/cx18/cx18-alsa.ko := ld -r -m elf_i386 --bui

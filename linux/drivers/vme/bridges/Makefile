@@ -1,1 +1,6 @@
-cmd_drivers/media/i2c/tw9903.o := gcc -Wp,-MMD,drivers/media/i2c/.tw9903.o.d -nostdinc -I./arch/x86/include -I./arch/x86/include/generated  -I./include -I./arch/x86
+truct cx23885_audio_dev *chip = snd_pcm_substream_chip(substream);
+	struct snd_pcm_runtime *runtime = substream->runtime;
+	int err;
+
+	if (!chip) {
+		pr_err("BUG: cx

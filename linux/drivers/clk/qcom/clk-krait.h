@@ -1,18 +1,27 @@
- $(wildcard include/config/SLOB) \
-  include/linux/overflow.h \
-  include/linux/percpu-refcount.h \
-  include/linux/kasan.h \
-    $(wildcard include/config/KASAN_STACK) \
-    $(wildcard include/config/KASAN_VMALLOC) \
-    $(wildcard include/config/KASAN_INLINE) \
-  include/linux/kasan-enabled.h \
-  include/linux/device.h \
-    $(wildcard include/config/GENERIC_MSI_IRQ_DOMAIN) \
-    $(wildcard include/config/GENERIC_MSI_IRQ) \
-    $(wildcard include/config/ENERGY_MODEL) \
-    $(wildcard include/config/PINCTRL) \
-    $(wildcard include/config/DMA_OPS) \
-    $(wildcard include/config/DMA_DECLARE_COHERENT) \
-    $(wildcard include/config/DMA_CMA) \
-    $(wildcard include/config/SWIOTLB) \
-    $(wild
+ntf(vfd->name, sizeof(vfd->name), "%s (%s)",
+		 cx23885_boards[dev->board].name, type);
+	video_set_drvdata(vfd, dev);
+	return vfd;
+}
+
+int cx23885_flatiron_write(struct cx23885_dev *dev, u8 reg, u8 data)
+{
+	/* 8 bit registers, 8 bit values */
+	u8 buf[] = { reg, data };
+
+	struct i2c_msg msg = { .addr = 0x98 >> 1,
+		.flags = 0, .buf = buf, .len = 2 };
+
+	return i2c_transfer(&dev->i2c_bus[2].i2c_adap, &msg, 1);
+}
+
+u8 cx23885_flatiron_read(struct cx23885_dev *dev, u8 reg)
+{
+	/* 8 bit registers, 8 bit values */
+	int ret;
+	u8 b0[] = { reg };
+	u8 b1[] = { 0 };
+
+	struct i2c_msg msg[] = {
+		{ .addr = 0x98 >> 1, .flags = 0, .buf = b0, .len = 1 },
+		{ .addr = 0x98 >> 1, .flags = I2C_M_RD, .buf = b1, .len = 1

@@ -1,2 +1,1 @@
-\
-    $(wildcard include
+smlinkage __visible void

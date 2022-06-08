@@ -1,129 +1,81 @@
-t empty, or NULL if otherwise.
- */
-static inline struct lock_list * __cq_dequeue(struct circular_queue *cq)
-{
-	struct lock_list * lock;
-
-	if (__cq_empty(cq))
-		return NULL;
-
-	lock = cq->element[cq->front];
-	cq->front = (cq->front + 1) & CQ_MASK;
-
-	return lock;
-}
-
-static inline unsigned int  __cq_get_elem_count(struct circular_queue *cq)
-{
-	return (cq->rear - cq->front) & CQ_MASK;
-}
-
-static inline void mark_lock_accessed(struct lock_list *lock)
-{
-	lock->class->dep_gen_id = lockdep_dependency_gen_id;
-}
-
-static inline void visit_lock_entry(struct lock_list *lock,
-				    struct lock_list *parent)
-{
-	lock->parent = parent;
-}
-
-static inline unsigned long lock_accessed(struct lock_list *lock)
-{
-	return lock->class->dep_gen_id == lockdep_dependency_gen_id;
-}
-
-static inline struct lock_list *get_lock_parent(struct lock_list *child)
-{
-	return child->parent;
-}
-
-static inline int get_lock_depth(struct lock_list *child)
-{
-	int depth = 0;
-	struct lock_list *parent;
-
-	while ((parent = get_lock_parent(child))) {
-		child = parent;
-		depth++;
-	}
-	return depth;
-}
-
-/*
- * Return the forward or backward dependency list.
- *
- * @lock:   the lock_list to get its class's dependency list
- * @offset: the offset to struct lock_class to determine whether it is
- *          locks_after or locks_before
- */
-static inline struct list_head *get_dep_list(struct lock_list *lock, int offset)
-{
-	void *lock_class = lock->class;
-
-	return lock_class + offset;
-}
-/*
- * Return values of a bfs search:
- *
- * BFS_E* indicates an error
- * BFS_R* indicates a result (match or not)
- *
- * BFS_EINVALIDNODE: Find a invalid node in the graph.
- *
- * BFS_EQUEUEFULL: The queue is full while doing the bfs.
- *
- * BFS_RMATCH: Find the matched node in the graph, and put that node into
- *             *@target_entry.
- *
- * BFS_RNOMATCH: Haven't found the matched node and keep *@target_entry
- *               _unchanged_.
- */
-enum bfs_result {
-	BFS_EINVALIDNODE = -2,
-	BFS_EQUEUEFULL = -1,
-	BFS_RMATCH = 0,
-	BFS_RNOMATCH = 1,
-};
-
-/*
- * bfs_result < 0 means error
- */
-static inline bool bfs_error(enum bfs_result res)
-{
-	return res < 0;
-}
-
-/*
- * DEP_*_BIT in lock_list::dep
- *
- * For dependency @prev -> @next:
- *
- *   SR: @prev is shared reader (->read != 0) and @next is recursive reader
- *       (->read == 2)
- *   ER: @prev is exclusive locker (->read == 0) and @next is recursive reader
- *   SN: @prev is shared reader and @next is non-recursive locker (->read != 2)
- *   EN: @prev is exclusive locker and @next is non-recursive locker
- *
- * Note that we define the value of DEP_*_BITs so that:
- *   bit0 is prev->read == 0
- *   bit1 is next->read != 2
- */
-#define DEP_SR_BIT (0 + (0 << 1)) /* 0 */
-#define DEP_ER_BIT (1 + (0 << 1)) /* 1 */
-#define DEP_SN_BIT (0 + (1 << 1)) /* 2 */
-#define DEP_EN_BIT (1 + (1 << 1)) /* 3 */
-
-#define DEP_SR_MASK (1U << (DEP_SR_BIT))
-#define DEP_ER_MASK (1U << (DEP_ER_BIT))
-#define DEP_SN_MASK (1U << (DEP_SN_BIT))
-#define DEP_EN_MASK (1U << (DEP_EN_BIT))
-
-static inline unsigned int
-__calc_dep_bit(struct held_lock *prev, struct held_lock *next)
-{
-	return (prev->read == 0) + ((next->read != 2) << 1);
-}
-
-static inline u8 calc_dep(struct held_lock *pre
+.h \
+  include/uapi/linux/shm.h \
+  include/uapi/asm-generic/hugetlb_encode.h \
+  arch/x86/include/uapi/asm/shmbuf.h \
+  include/uapi/asm-generic/shmbuf.h \
+  arch/x86/include/asm/shmparam.h \
+  include/linux/plist.h \
+    $(wildcard include/config/DEBUG_PLIST) \
+  include/linux/hrtimer.h \
+    $(wildcard include/config/HIGH_RES_TIMERS) \
+    $(wildcard include/config/TIME_LOW_RES) \
+    $(wildcard include/config/TIMERFD) \
+  include/linux/hrtimer_defs.h \
+  include/linux/timerqueue.h \
+  include/linux/seccomp.h \
+    $(wildcard include/config/SECCOMP) \
+    $(wildcard include/config/HAVE_ARCH_SECCOMP_FILTER) \
+    $(wildcard include/config/SECCOMP_FILTER) \
+    $(wildcard include/config/CHECKPOINT_RESTORE) \
+    $(wildcard include/config/SECCOMP_CACHE_DEBUG) \
+  include/uapi/linux/seccomp.h \
+  arch/x86/include/asm/seccomp.h \
+  arch/x86/include/asm/unistd.h \
+  arch/x86/include/uapi/asm/unistd.h \
+  arch/x86/include/generated/uapi/asm/unistd_32.h \
+  include/asm-generic/seccomp.h \
+  include/uapi/linux/unistd.h \
+  include/linux/resource.h \
+  include/uapi/linux/resource.h \
+  arch/x86/include/generated/uapi/asm/resource.h \
+  include/asm-generic/resource.h \
+  include/uapi/asm-generic/resource.h \
+  include/linux/latencytop.h \
+  include/linux/sched/prio.h \
+  include/linux/sched/types.h \
+  include/linux/syscall_user_dispatch.h \
+  include/linux/task_io_accounting.h \
+    $(wildcard include/config/TASK_IO_ACCOUNTING) \
+  include/linux/posix-timers.h \
+  include/linux/alarmtimer.h \
+    $(wildcard include/config/RTC_CLASS) \
+  include/uapi/linux/rseq.h \
+  include/linux/kcsan.h \
+  arch/x86/include/generated/asm/kmap_size.h \
+  include/asm-generic/kmap_size.h \
+    $(wildcard include/config/DEBUG_KMAP_LOCAL) \
+  include/linux/sched/jobctl.h \
+  include/linux/sched/task.h \
+    $(wildcard include/config/HAVE_EXIT_THREAD) \
+    $(wildcard include/config/ARCH_WANTS_DYNAMIC_TASK_STRUCT) \
+    $(wildcard include/config/HAVE_ARCH_THREAD_STRUCT_WHITELIST) \
+  include/linux/uaccess.h \
+  include/linux/fault-inject-usercopy.h \
+    $(wildcard include/config/FAULT_INJECTION_USERCOPY) \
+  arch/x86/include/asm/uaccess.h \
+    $(wildcard include/config/CC_HAS_ASM_GOTO_OUTPUT) \
+    $(wildcard include/config/CC_HAS_ASM_GOTO_TIED_OUTPUT) \
+    $(wildcard include/config/ARCH_HAS_COPY_MC) \
+    $(wildcard include/config/X86_INTEL_USERCOPY) \
+  arch/x86/include/asm/smap.h \
+  arch/x86/include/asm/extable.h \
+    $(wildcard include/config/BPF_JIT) \
+  include/asm-generic/access_ok.h \
+    $(wildcard include/config/ALTERNATE_USER_ADDRESS_SPACE) \
+  arch/x86/include/asm/uaccess_32.h \
+  include/linux/cred.h \
+    $(wildcard include/config/DEBUG_CREDENTIALS) \
+  include/linux/key.h \
+    $(wildcard include/config/KEY_NOTIFICATIONS) \
+    $(wildcard include/config/NET) \
+    $(wildcard include/config/SYSCTL) \
+  include/linux/sysctl.h \
+  include/uapi/linux/sysctl.h \
+  include/linux/assoc_array.h \
+    $(wildcard include/config/ASSOCIATIVE_ARRAY) \
+  include/linux/sched/user.h \
+    $(wildcard include/config/WATCH_QUEUE) \
+  include/linux/percpu_counter.h \
+  include/linux/ratelimit.h \
+  include/linux/rcu_sync.h \
+  in

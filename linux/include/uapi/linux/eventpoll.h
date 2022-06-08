@@ -1,71 +1,105 @@
-de/uapi/linux/swab.h \
-  arch/x86/include/uapi/asm/swab.h \
-  include/linux/byteorder/generic.h \
-  include/asm-generic/bitops/ext2-atomic-setbit.h \
-  include/linux/kstrtox.h \
-  include/linux/log2.h \
-    $(wildcard include/config/ARCH_HAS_ILOG2_U32) \
-    $(wildcard include/config/ARCH_HAS_ILOG2_U64) \
-  include/linux/math.h \
-  arch/x86/include/asm/div64.h \
-  include/linux/minmax.h \
-  include/linux/panic.h \
-    $(wildcard include/config/PANIC_TIMEOUT) \
-  include/linux/printk.h \
-    $(wildcard include/config/MESSAGE_LOGLEVEL_DEFAULT) \
-    $(wildcard include/config/CONSOLE_LOGLEVEL_DEFAULT) \
-    $(wildcard include/config/CONSOLE_LOGLEVEL_QUIET) \
-    $(wildcard include/config/EARLY_PRINTK) \
-    $(wildcard include/config/PRINTK) \
-    $(wildcard include/config/PRINTK_INDEX) \
-    $(wildcard include/config/DYNAMIC_DEBUG) \
-    $(wildcard include/config/DYNAMIC_DEBUG_CORE) \
-  include/linux/init.h \
-    $(wildcard include/config/STRICT_KERNEL_RWX) \
-    $(wildcard include/config/STRICT_MODULE_RWX) \
-    $(wildcard include/config/LTO_CLANG) \
-  include/linux/kern_levels.h \
-  include/linux/cache.h \
-    $(wildcard include/config/ARCH_HAS_CACHE_LINE_SIZE) \
-  arch/x86/include/asm/cache.h \
-    $(wildcard include/config/X86_L1_CACHE_SHIFT) \
-    $(wildcard include/config/X86_INTERNODE_CACHE_SHIFT) \
-    $(wildcard include/config/X86_VSMP) \
-  include/linux/ratelimit_types.h \
-  include/uapi/linux/param.h \
-  arch/x86/include/generated/uapi/asm/param.h \
-  include/asm-generic/param.h \
-    $(wildcard include/config/HZ) \
-  include/uapi/asm-generic/param.h \
-  include/linux/spinlock_types_raw.h \
-    $(wildcard include/config/DEBUG_SPINLOCK) \
-    $(wildcard include/config/DEBUG_LOCK_ALLOC) \
-  arch/x86/include/asm/spinlock_types.h \
-  include/asm-generic/qspinlock_types.h \
-    $(wildcard include/config/NR_CPUS) \
-  include/asm-generic/qrwlock_types.h \
-  include/linux/lockdep_types.h \
-    $(wildcard include/config/PROVE_RAW_LOCK_NESTING) \
-    $(wildcard include/config/LOCKDEP) \
-    $(wildcard include/config/LOCK_STAT) \
-  include/linux/once_lite.h \
-  include/linux/static_call_types.h \
-    $(wildcard include/config/HAVE_STATIC_CALL) \
-    $(wildcard include/config/HAVE_STATIC_CALL_INLINE) \
-  include/linux/instruction_pointer.h \
-  include/linux/notifier.h \
-    $(wildcard include/config/TREE_SRCU) \
-  include/linux/errno.h \
-  include/uapi/linux/errno.h \
-  include/linux/mutex.h \
-    $(wildcard include/config/PREEMPT_RT) \
-    $(wildcard include/config/MUTEX_SPIN_ON_OWNER) \
-    $(wildcard include/config/DEBUG_MUTEXES) \
-  arch/x86/include/asm/current.h \
-  arch/x86/include/asm/percpu.h \
-    $(wildcard include/config/X86_64_SMP) \
-  include/asm-generic/percpu.h \
-    $(wildcard include/config/DEBUG_PREEMPT) \
-    $(wildcard include/config/HAVE_SETUP_PER_CPU_AREA) \
-  include/linux/threads.h \
-    $(wildcard include/
+,
+			.amux   = CX25840_AUDIO8,
+		} },
+	},
+	[CX23885_BOARD_HAUPPAUGE_QUADHD_DVB_885] = {
+		.name         = "Hauppauge WinTV-QuadHD-DVB(885)",
+		.portb        = CX23885_MPEG_DVB,
+		.portc        = CX23885_MPEG_DVB,
+		.tuner_type   = TUNER_ABSENT,
+	},
+	[CX23885_BOARD_HAUPPAUGE_QUADHD_ATSC] = {
+		.name         = "Hauppauge WinTV-QuadHD-ATSC",
+		.porta        = CX23885_ANALOG_VIDEO,
+		.portb        = CX23885_MPEG_DVB,
+		.portc        = CX23885_MPEG_DVB,
+		.tuner_type	= TUNER_ABSENT,
+		.input          = {{
+			.type   = CX23885_VMUX_TELEVISION,
+			.vmux   =	CX25840_VIN7_CH3 |
+					CX25840_VIN5_CH2 |
+					CX25840_VIN2_CH1 |
+					CX25840_DIF_ON,
+			.amux   = CX25840_AUDIO8,
+		} },
+	},
+	[CX23885_BOARD_HAUPPAUGE_QUADHD_ATSC_885] = {
+		.name         = "Hauppauge WinTV-QuadHD-ATSC(885)",
+		.portb        = CX23885_MPEG_DVB,
+		.portc        = CX23885_MPEG_DVB,
+		.tuner_type   = TUNER_ABSENT,
+	},
+	[CX23885_BOARD_HAUPPAUGE_HVR1265_K4] = {
+		.name		= "Hauppauge WinTV-HVR-1265(161111)",
+		.porta          = CX23885_ANALOG_VIDEO,
+		.portc		= CX23885_MPEG_DVB,
+		.tuner_type     = TUNER_ABSENT,
+		.input          = {{
+			.type   = CX23885_VMUX_TELEVISION,
+			.vmux   =	CX25840_VIN7_CH3 |
+					CX25840_VIN5_CH2 |
+					CX25840_VIN2_CH1 |
+					CX25840_DIF_ON,
+			.amux   = CX25840_AUDIO8,
+		}, {
+			.type   = CX23885_VMUX_SVIDEO,
+			.vmux   =	CX25840_VIN4_CH2 |
+					CX25840_VIN6_CH1 |
+					CX25840_SVIDEO_ON,
+			.amux   = CX25840_AUDIO7,
+		} },
+	},
+	[CX23885_BOARD_HAUPPAUGE_STARBURST2] = {
+		.name		= "Hauppauge WinTV-Starburst2",
+		.portb		= CX23885_MPEG_DVB,
+	},
+	[CX23885_BOARD_AVERMEDIA_CE310B] = {
+		.name		= "AVerMedia CE310B",
+		.porta		= CX23885_ANALOG_VIDEO,
+		.force_bff	= 1,
+		.input          = {{
+			.type   = CX23885_VMUX_COMPOSITE1,
+			.vmux   = CX25840_VIN1_CH1 |
+				  CX25840_NONE_CH2 |
+				  CX25840_NONE0_CH3,
+			.amux   = CX25840_AUDIO7,
+		}, {
+			.type   = CX23885_VMUX_SVIDEO,
+			.vmux   = CX25840_VIN8_CH1 |
+				  CX25840_NONE_CH2 |
+				  CX25840_VIN7_CH3 |
+				  CX25840_SVIDEO_ON,
+			.amux   = CX25840_AUDIO7,
+		} },
+	},
+};
+const unsigned int cx23885_bcount = ARRAY_SIZE(cx23885_boards);
+
+/* ------------------------------------------------------------------ */
+/* PCI subsystem IDs                                                  */
+
+struct cx23885_subid cx23885_subids[] = {
+	{
+		.subvendor = 0x0070,
+		.subdevice = 0x3400,
+		.card      = CX23885_BOARD_UNKNOWN,
+	}, {
+		.subvendor = 0x0070,
+		.subdevice = 0x7600,
+		.card      = CX23885_BOARD_HAUPPAUGE_HVR1800lp,
+	}, {
+		.subvendor = 0x0070,
+		.subdevice = 0x7800,
+		.card      = CX23885_BOARD_HAUPPAUGE_HVR1800,
+	}, {
+		.subvendor = 0x0070,
+		.subdevice = 0x7801,
+		.card      = CX23885_BOARD_HAUPPAUGE_HVR1800,
+	}, {
+		.subvendor = 0x0070,
+		.subdevice = 0x7809,
+		.card      = CX23885_BOARD_HAUPPAUGE_HVR1800,
+	}, {
+		.subvendor = 0x0070,
+		.subdevice = 0x7911,
+		.card      = CX23885_BOARD_HAUPPAUGE_HV

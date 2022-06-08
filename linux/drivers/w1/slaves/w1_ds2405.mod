@@ -1,1 +1,2 @@
-rd include/config/ALTERNATE_USE
+taval = tempval & 0x000000FF;
+

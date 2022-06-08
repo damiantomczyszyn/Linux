@@ -1,1023 +1,2098 @@
-rd include/config/ALTERNATE_USER_ADDRESS_SPACE) \
-  arch/x86/include/asm/uaccess_32.h \
-  include/linux/cred.h \
-    $(wildcard include/config/DEBUG_CREDENTIALS) \
-  include/linux/key.h \
-    $(wildcard include/config/KEY_NOTIFICATIONS) \
-    $(wildcard include/config/NET) \
-  include/linux/assoc_array.h \
-    $(wildcard include/config/ASSOCIATIVE_ARRAY) \
-  include/linux/sched/user.h \
-    $(wildcard include/config/WATCH_QUEUE) \
-  include/linux/percpu_counter.h \
-  include/linux/rcu_sync.h \
-  include/linux/delayed_call.h \
-  include/linux/errseq.h \
-  include/linux/ioprio.h \
-  include/linux/sched/rt.h \
-  include/linux/iocontext.h \
-    $(wildcard include/config/BLK_ICQ) \
-  include/uapi/linux/ioprio.h \
-  include/linux/fs_types.h \
-  include/linux/mount.h \
-  include/linux/mnt_idmapping.h \
-  include/uapi/linux/fs.h \
-  include/linux/quota.h \
-    $(wildcard include/config/QUOTA_NETLINK_INTERFACE) \
-  include/uapi/linux/dqblk_xfs.h \
-  include/linux/dqblk_v1.h \
-  include/linux/dqblk_v2.h \
-  include/linux/dqblk_qtree.h \
-  include/linux/projid.h \
-  include/uapi/linux/quota.h \
-  include/linux/nfs_fs_i.h \
-  include/linux/seq_file.h \
-  include/linux/string_helpers.h \
-  include/linux/ns_common.h \
-  include/linux/nsproxy.h \
-  include/linux/user_namespace.h \
-    $(wildcard include/config/INOTIFY_USER) \
-    $(wildcard include/config/FANOTIFY) \
-    $(wildcard include/config/PERSISTENT_KEYRINGS) \
-  include/linux/kernel_stat.h \
-  include/linux/interrupt.h \
-    $(wildcard include/config/IRQ_FORCED_THREADING) \
-    $(wildcard include/config/GENERIC_IRQ_PROBE) \
-    $(wildcard include/config/IRQ_TIMINGS) \
-  include/linux/irqreturn.h \
-  include/linux/irqnr.h \
-  include/uapi/linux/irqnr.h \
-  include/linux/hardirq.h \
-  include/linux/context_tracking_state.h \
-    $(wildcard include/config/CONTEXT_TRACKING) \
-  include/linux/ftrace_irq.h \
-    $(wildcard include/config/HWLAT_TRACER) \
-    $(wildcard include/config/OSNOISE_TRACER) \
-  include/linux/vtime.h \
-    $(wildcard include/config/VIRT_CPU_ACCOUNTING) \
-    $(wildcard include/config/IRQ_TIME_ACCOUNTING) \
-  arch/x86/include/asm/hardirq.h \
-    $(wildcard include/config/KVM_INTEL) \
-    $(wildcard include/config/X86_THERMAL_VECTOR) \
-    $(wildcard include/config/X86_MCE_THRESHOLD) \
-    $(wildcard include/config/X86_MCE_AMD) \
-    $(wildcard include/config/X86_HV_CALLBACK_VECTOR) \
-  arch/x86/include/asm/irq.h \
-  arch/x86/include/asm/sections.h \
-  include/asm-generic/sections.h \
-    $(wildcard include/config/HAVE_FUNCTION_DESCRIPTORS) \
-  include/linux/cgroup-defs.h \
-    $(wildcard include/config/CGROUP_NET_CLASSID) \
-    $(wildcard include/config/CGROUP_NET_PRIO) \
-  include/linux/u64_stats_sync.h \
-  include/linux/bpf-cgroup-defs.h \
-  include/linux/psi_types.h \
-  include/linux/kthread.h \
-  include/linux/cgroup_subsys.h \
-    $(wildcard include/config/CGROUP_DEVICE) \
-    $(wildcard include/config/CGROUP_FREEZER) \
-    $(wildcard include/config/CGROUP_PERF) \
-    $(wildcard include/config/CGROUP_HUGETLB) \
-    $(wildcard include/config/CGROUP_PIDS) \
-    $(wildcard include/config/CGROUP_RDMA) \
-    $(wildcard include/config/CGROUP_MISC) \
-    $(wildcard include/config/CGROUP_DEBUG) \
-  include/linux/vm_event_item.h \
-    $(wildcard include/config/HAVE_ARCH_TRANSPARENT_HUGEPAGE_PUD) \
-    $(wildcard include/config/MEMORY_BALLOON) \
-    $(wildcard include/config/BALLOON_COMPACTION) \
-    $(wildcard include/config/DEBUG_TLBFLUSH) \
-    $(wildcard include/config/DEBUG_VM_VMACACHE) \
-  include/linux/page_counter.h \
-  include/linux/vmpressure.h \
-  include/linux/eventfd.h \
-  include/linux/mm.h \
-    $(wildcard include/config/HAVE_ARCH_MMAP_RND_BITS) \
-    $(wildcard include/config/HAVE_ARCH_MMAP_RND_COMPAT_BITS) \
-    $(wildcard include/config/ARCH_USES_HIGH_VMA_FLAGS) \
-    $(wildcard include/config/ARCH_HAS_PKEYS) \
-    $(wildcard include/config/PPC) \
-    $(wildcard include/config/PARISC) \
-    $(wildcard include/config/SPARC64) \
-    $(wildcard include/config/ARM64_MTE) \
-    $(wildcard include/config/HAVE_ARCH_USERFAULTFD_MINOR) \
-    $(wildcard include/config/SHMEM) \
-    $(wildcard include/config/ARCH_HAS_PTE_SPECIAL) \
-    $(wildcard include/config/ARCH_HAS_PTE_DEVMAP) \
-    $(wildcard include/config/DEBUG_VM_RB) \
-    $(wildcard include/config/PAGE_POISONING) \
-    $(wildcard include/config/INIT_ON_ALLOC_DEFAULT_ON) \
-    $(wildcard include/config/INIT_ON_FREE_DEFAULT_ON) \
-    $(wildcard include/config/DEBUG_PAGEALLOC) \
-    $(wildcard include/config/HUGETLBFS) \
-    $(wildcard include/config/MAPPING_DIRTY_HELPERS) \
-    $(wildcard include/config/ANON_VMA_NAME) \
-  include/linux/mmap_lock.h \
-  include/linux/page_ext.h \
-  include/linux/stacktrace.h \
-    $(wildcard include/config/ARCH_STACKWALK) \
-    $(wildcard include/config/STACKTRACE) \
-    $(wildcard include/config/HAVE_RELIABLE_STACKTRACE) \
-  include/linux/stackdepot.h \
-    $(wildcard include/config/STACKDEPOT_ALWAYS_INIT) \
-  include/linux/page_ref.h \
-    $(wildcard include/config/DEBUG_PAGE_REF) \
-  include/linux/sizes.h \
-  include/linux/pgtable.h \
-    $(wildcard include/config/HIGHPTE) \
-    $(wildcard include/config/GUP_GET_PTE_LOW_HIGH) \
-    $(wildcard include/config/HAVE_ARCH_SOFT_DIRTY) \
-    $(wildcard include/config/ARCH_ENABLE_THP_MIGRATION) \
-    $(wildcard include/config/X86_ESPFIX64) \
-  arch/x86/include/asm/pgtable.h \
-    $(wildcard include/config/DEBUG_WX) \
-    $(wildcard include/config/PAGE_TABLE_CHECK) \
-  arch/x86/include/asm/pkru.h \
-  arch/x86/include/asm/fpu/api.h \
-    $(wildcard include/config/X86_DEBUG_FPU) \
-  arch/x86/include/asm/coco.h \
-  include/asm-generic/pgtable_uffd.h \
-  include/linux/page_table_check.h \
-  arch/x86/include/asm/pgtable_32.h \
-  arch/x86/include/asm/pgtable-3level.h \
-  arch/x86/include/asm/pgtable-invert.h \
-  include/linux/huge_mm.h \
-  include/linux/sched/coredump.h \
-    $(wildcard include/config/CORE_DUMP_DEFAULT_ELF_HEADERS) \
-  include/linux/vmstat.h \
-    $(wildcard include/config/VM_EVENT_COUNTERS) \
-  include/linux/writeback.h \
-  include/linux/flex_proportions.h \
-  include/linux/backing-dev-defs.h \
-    $(wildcard include/config/DEBUG_FS) \
-  include/linux/blk_types.h \
-    $(wildcard include/config/FAIL_MAKE_REQUEST) \
-    $(wildcard include/config/BLK_CGROUP_IOCOST) \
-    $(wildcard include/config/BLK_INLINE_ENCRYPTION) \
-    $(wildcard include/config/BLK_DEV_INTEGRITY) \
-  include/linux/bvec.h \
-  include/linux/highmem.h \
-  include/linux/cacheflush.h \
-  arch/x86/include/asm/cacheflush.h \
-  include/asm-generic/cacheflush.h \
-  include/linux/highmem-internal.h \
-  arch/x86/include/asm/highmem.h \
-  arch/x86/include/asm/tlbflush.h \
-  arch/x86/include/asm/invpcid.h \
-  arch/x86/include/asm/pti.h \
-  include/linux/bio.h \
-  include/linux/mempool.h \
-  include/linux/uio.h \
-    $(wildcard include/config/ARCH_HAS_UACCESS_FLUSHCACHE) \
-  include/uapi/linux/uio.h \
-  include/linux/node.h \
-    $(wildcard include/config/HMEM_REPORTING) \
-  include/linux/pagemap.h \
-  include/linux/hugetlb_inline.h \
-  include/uapi/linux/mempolicy.h \
-  include/linux/freezer.h \
-  include/uapi/linux/i2c.h \
-  include/linux/videodev2.h \
-  include/uapi/linux/videodev2.h \
-    $(wildcard include/config/VIDEO_ADV_DEBUG) \
-  include/uapi/linux/v4l2-common.h \
-  include/uapi/linux/v4l2-controls.h \
-  include/media/v4l2-subdev.h \
-    $(wildcard include/config/MEDIA_CONTROLLER) \
-    $(wildcard include/config/VIDEO_V4L2_SUBDEV_API) \
-  include/uapi/linux/v4l2-subdev.h \
-  include/uapi/linux/v4l2-mediabus.h \
-  include/uapi/linux/media-bus-format.h \
-  include/media/media-entity.h \
-  include/uapi/linux/media.h \
-  include/media/v4l2-async.h \
-  include/media/v4l2-common.h \
-    $(wildcard include/config/VIDEO_V4L2_I2C) \
-    $(wildcard include/config/SPI) \
-  include/media/v4l2-dev.h \
-  include/linux/poll.h \
-  include/uapi/linux/poll.h \
-  arch/x86/include/generated/uapi/asm/poll.h \
-  include/uapi/asm-generic/poll.h \
-  include/uapi/linux/eventpoll.h \
-  include/linux/cdev.h \
-  include/linux/spi/spi.h \
-    $(wildcard include/config/SPI_SLAVE) \
-  include/linux/scatterlist.h \
-    $(wildcard include/config/NEED_SG_DMA_LENGTH) \
-    $(wildcard include/config/DEBUG_SG) \
-    $(wildcard include/config/SGL_ALLOC) \
-    $(wildcard include/config/ARCH_NO_SG_CHAIN) \
-    $(wildcard include/config/SG_POOL) \
-  include/linux/gpio/consumer.h \
-    $(wildcard include/config/OF_GPIO) \
-    $(wildcard include/config/GPIO_SYSFS) \
-  include/uapi/linux/spi/spi.h \
-  include/media/v4l2-fh.h \
-  include/media/v4l2-mediabus.h \
-  include/media/v4l2-device.h \
-  include/media/media-device.h \
-  include/media/media-devnode.h \
-  include/media/v4l2-ctrls.h \
-  include/media/media-request.h \
-  include/media/hevc-ctrls.h \
+ET_SEQ_END:
+		return  "GET_SEQ_END";
+	case CX2341X_ENC_SET_PGM_INDEX_INFO:
+		return  "SET_PGM_INDEX_INFO";
+	case CX2341X_ENC_SET_VBI_CONFIG:
+		return  "SET_VBI_CONFIG";
+	case CX2341X_ENC_SET_DMA_BLOCK_SIZE:
+		return  "SET_DMA_BLOCK_SIZE";
+	case CX2341X_ENC_GET_PREV_DMA_INFO_MB_10:
+		return  "GET_PREV_DMA_INFO_MB_10";
+	case CX2341X_ENC_GET_PREV_DMA_INFO_MB_9:
+		return  "GET_PREV_DMA_INFO_MB_9";
+	case CX2341X_ENC_SCHED_DMA_TO_HOST:
+		return  "SCHED_DMA_TO_HOST";
+	case CX2341X_ENC_INITIALIZE_INPUT:
+		return  "INITIALIZE_INPUT";
+	case CX2341X_ENC_SET_FRAME_DROP_RATE:
+		return  "SET_FRAME_DROP_RATE";
+	case CX2341X_ENC_PAUSE_ENCODER:
+		return  "PAUSE_ENCODER";
+	case CX2341X_ENC_REFRESH_INPUT:
+		return  "REFRESH_INPUT";
+	case CX2341X_ENC_SET_COPYRIGHT:
+		return  "SET_COPYRIGHT";
+	case CX2341X_ENC_SET_EVENT_NOTIFICATION:
+		return  "SET_EVENT_NOTIFICATION";
+	case CX2341X_ENC_SET_NUM_VSYNC_LINES:
+		return  "SET_NUM_VSYNC_LINES";
+	case CX2341X_ENC_SET_PLACEHOLDER:
+		return  "SET_PLACEHOLDER";
+	case CX2341X_ENC_MUTE_VIDEO:
+		return  "MUTE_VIDEO";
+	case CX2341X_ENC_MUTE_AUDIO:
+		return  "MUTE_AUDIO";
+	case CX2341X_ENC_MISC:
+		return  "MISC";
+	default:
+		return "UNKNOWN";
+	}
+}
 
-drivers/media/i2c/tw2804.o: $(deps_drivers/media/i2c/tw2804.o)
+static int cx23885_mbox_func(void *priv,
+			     u32 command,
+			     int in,
+			     int out,
+			     u32 data[CX2341X_MBOX_MAX_DATA])
+{
+	struct cx23885_dev *dev = priv;
+	unsigned long timeout;
+	u32 value, flag, retval = 0;
+	int i;
 
-$(deps_drivers/media/i2c/tw2804.o):
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               ELF                      ÿ      4     (               Ë¸ˇˇˇSãX\âÿË¸ˇˇˇçÉ¿   Ë¸ˇˇˇ1¿[√êË¸ˇˇˇSãP(ãXÅ˙	ò tÅ˙	ò tTπÍˇˇˇÅ˙ 	ò t'â»[√çv ∂H|ãC‘∫   Ë¸ˇˇˇ1…[â»√ç¥&    fê∂H|ãC‘∫   Ë¸ˇˇˇ1…[â»√ç¥&    fê∂H|ãC‘∫   Ë¸ˇˇˇ1…[â»√ç¥&    fêË¸ˇˇˇçãÄî   ∫   É…@∂…Ë¸ˇˇˇ1¿√ç¥&    ç¥&    êË¸ˇˇˇUWVSâ√ã@ãPãRË¸ˇˇˇ%   =   Ñ7   æ˚ˇˇˇ[â^_]√ç¥&    çt& Ë¸ˇˇˇUˆ∆˘âÕWâ◊∫   Vâ∆∏    Sª   DÿÉ√Îç¥&    ∂SÉ√Ñ“t∂ãÜî   Ë¸ˇˇˇÖ¿y„[âæ0  1¿âÆ4  ^_]√    ‡                                                                                                                                  ∞       ‡          6%s: Standard: %d Hz
- tw9903 Ë¸ˇˇˇSâ√ãÄ0  % ˘  É¯¿É‡ˆÉ¿<PçCpPh    Ë¸ˇˇˇâÿË¸ˇˇˇ1¿Éƒ[√ãS∑Cçä  Qç QPˇ≤   ãCTˇ0h    Ë¸ˇˇˇçCπ¿  ∫8  Ë¸ˇˇˇâ«ÉƒÖ¿u
-æÙˇˇˇÈ
-  π`   â⁄çØ¿   Ë¸ˇˇˇ1…∫   âËj Ë¸ˇˇˇπ 	ò ∫  âËj j j jj jjˇjÄË¸ˇˇˇπ	ò ∫  âËÉƒ$j j`j jj hˇ   j j Ë¸ˇˇˇπ	ò ∫  âËÉƒ j j j jj jjˇjÄË¸ˇˇˇã∑¸   âolÉƒ ÖˆtâËË¸ˇˇˇÈ
-  «á0   ∞  Ω   ∫   «á4      ∂Mãáî   Ë¸ˇˇˇÖ¿yÉ√æÍˇˇˇSh(   Ë¸ˇˇˇXZÈ
-  ∂UÉ≈Ñ“u»È
-   6%s %d-%04x: chip found @ 0x%02x (%s)
- 3%s: error initializing TW9903
- Ë¸ˇˇˇ∫    ∏    È¸ˇˇˇ∏    È¸ˇˇˇ                  	     Ä	            tw9903                                                          ‡           Ä                   ∞                                                                                                                                                              Dí Ä@	
-Å–å   `Z √ XÄ †!""#˛$<%8&D' ( )*†+D,7- .•/‡1 3"455;¿  license=GPL v2 description=TW9903 I2C subdev driver  GCC: (GNU) 11.2.0             GNU  ¿       ¿                                  Òˇ                            
-                   á     &   ∞   !                                	 =       ;    	               O   ‡   5     \   ;   R   	 n   `         y          â      b     õ      `     ®       
-     ∂      
-                   ƒ            ◊       Ä     Â       
-                   ¯       0       ‡   0       Ä   P     #           :     %     U             `             ~             ï             Ø             ∑             ”             Ï             ˘                          +             =             K             _           k             z      
-     â      0      tw9903.c tw9903_remove tw9903_s_ctrl tw9903_s_video_routing tw9903_log_status tw9903_probe tw9903_probe.cold tw9903_ops tw9903_ctrl_ops initial_registers tw9903_s_std config_50hz.2 config_60hz.1 tw9903_driver_init tw9903_driver tw9903_driver_exit tw9903_id tw9903_core_ops tw9903_video_ops __UNIQUE_ID_license267 __UNIQUE_ID_description266 __fentry__ v4l2_device_unregister_subdev v4l2_ctrl_handler_free i2c_smbus_write_byte_data _printk v4l2_ctrl_subdev_log_status __x86_indirect_thunk_edx devm_kmalloc v4l2_i2c_subdev_init v4l2_ctrl_handler_init_class v4l2_ctrl_new_std __this_module i2c_register_driver init_module i2c_del_driver cleanup_module __mod_i2c__tw9903_id_device_table                 !     ]      }      ù      ±            ·     ı   #  !    7    =    e                        h                                              $     )   !  0   "  Z   
-  _   !  q   $  â     ñ   %  ¶   &  ∞     «   '  —     Ó   '  ¯       '  )    =    [     m  
-  r  !  Ñ     .    y    â                 (     )          +  `     l     Ä     å     ‡          .symtab .strtab .shstrtab .rel.text .rel.data .bss .rel__mcount_loc .rodata.str1.1 .rel.text.unlikely .rodata.str1.4 .rel.init.text .rel.exit.text .rel.rodata .modinfo .comment .note.GNU-stack .note.gnu.property                                                         @   Ä                    	   @          Ä               )             ¿  Ä                   %   	   @       Ä                  /             @                     8             @                    4   	   @       †  8               E      2       \                   X             z  ç                 T   	   @       ÿ  »      	         g      2         I                 z             Q                    v   	   @       †                  â             e  
-                  Ö   	   @       ¿                 ò             Ä  Ç                  î   	   @       –  0               †               4                  ©      0       6                   ≤              I                     ¬             L  (                                t  ‡              	              T	  ´                                  ’                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  ELF                      ÿ      4     (               Ë¸ˇˇˇSãX\âÿË¸ˇˇˇçÉ¿   Ë¸ˇˇˇ1¿[√êË¸ˇˇˇSãP(ãXÅ˙	ò tÅ˙	ò tTπÍˇˇˇÅ˙ 	ò t'â»[√çv ∂H|ãC‘∫   Ë¸ˇˇˇ1…[â»√ç¥&    fê∂H|ãC‘∫   Ë¸ˇˇˇ1…[â»√ç¥&    fê∂H|ãC‘∫   Ë¸ˇˇˇ1…[â»√ç¥&    fêË¸ˇˇˇçãÄî   ∫   É…@∂…Ë¸ˇˇˇ1¿√ç¥&    ç¥&    êË¸ˇˇˇUWVSâ√ã@ãPãRË¸ˇˇˇ%   =   Ñ7   æ˚ˇˇˇ[â^_]√ç¥&    çt& Ë¸ˇˇˇUˆ∆˘âÕWâ◊∫   Vâ∆∏    Sª   DÿÉ√Îç¥&    ∂SÉ√Ñ“t∂ãÜî   Ë¸ˇˇˇÖ¿y„[âæ0  1¿âÆ4  ^_]√    ‡                                                                                                                                  ∞       ‡          6%s: Standard: %d Hz
- tw9903 Ë¸ˇˇˇSâ√ãÄ0  % ˘  É¯¿É‡ˆÉ¿<PçCpPh    Ë¸ˇˇˇâÿË¸ˇˇˇ1¿Éƒ[√ãS∑Cçä  Qç QPˇ≤   ãCTˇ0h    Ë¸ˇˇˇçCπ¿  ∫8  Ë¸ˇˇˇâ«ÉƒÖ¿u
-æÙˇˇˇÈ
-  π`   â⁄çØ¿   Ë¸ˇˇˇ1…∫   âËj Ë¸ˇˇˇπ 	ò ∫  âËj j j jj jjˇjÄË¸ˇˇˇπ	ò ∫  âËÉƒ$j j`j jj hˇ   j j Ë¸ˇˇˇπ	ò ∫  âËÉƒ j j j jj jjˇjÄË¸ˇˇˇã∑¸   âolÉƒ ÖˆtâËË¸ˇˇˇÈ
-  «á0   ∞  Ω   ∫   «á4      ∂Mãáî   Ë¸ˇˇˇÖ¿yÉ√æÍˇˇˇSh(   Ë¸ˇˇˇXZÈ
-  ∂UÉ≈Ñ“u»È
-   6%s %d-%04x: chip found @ 0x%02x (%s)
- 3%s: error initializing TW9903
- Ë¸ˇˇˇ∫    ∏    È¸ˇˇˇ∏    È¸ˇˇˇ                  	     Ä	            tw9903                                                          ‡           Ä                   ∞                                                                                                                                                              Dí Ä@	
-Å–å   `Z √ XÄ †!""#˛$<%8&D' ( )*†+D,7- .•/‡1 3"455;¿  license=GPL v2 description=TW9903 I2C subdev driver  GCC: (GNU) 11.2.0             GNU  ¿       ¿                                  Òˇ                            
-                   á     &   ∞   !                                	 =       ;    	               O   ‡   5     \   ;   R   	 n   `         y          â      b     õ      `     ®       
-     ∂      
-                   ƒ            ◊       Ä     Â       
-                   ¯       0       ‡   0       Ä   P     #           :     %     U             `             ~             ï             Ø             ∑             ”             Ï             ˘                          +             =             K             _           k             z      
-     â      0      tw9903.c tw9903_remove tw9903_s_ctrl tw9903_s_video_routing tw9903_log_status tw9903_probe tw9903_probe.cold tw9903_ops tw9903_ctrl_ops initial_registers tw9903_s_std config_50hz.2 config_60hz.1 tw9903_driver_init tw9903_driver tw9903_driver_exit tw9903_id tw9903_core_ops tw9903_video_ops __UNIQUE_ID_license267 __UNIQUE_ID_description266 __fentry__ v4l2_device_unregister_subdev v4l2_ctrl_handler_free i2c_smbus_write_byte_data _printk v4l2_ctrl_subdev_log_status __x86_indirect_thunk_edx devm_kmalloc v4l2_i2c_subdev_init v4l2_ctrl_handler_init_class v4l2_ctrl_new_std __this_module i2c_register_driver init_module i2c_del_driver cleanup_module __mod_i2c__tw9903_id_device_table                 !     ]      }      ù      ±            ·     ı   #  !    7    =    e                        h                                              $     )   !  0   "  Z   
-  _   !  q   $  â     ñ   %  ¶   &  ∞     «   '  —     Ó   '  ¯       '  )    =    [     m  
-  r  !  Ñ     .    y    â                 (     )          +  `     l     Ä     å     ‡          .symtab .strtab .shstrtab .rel.text .rel.data .bss .rel__mcount_loc .rodata.str1.1 .rel.text.unlikely .rodata.str1.4 .rel.init.text .rel.exit.text .rel.rodata .modinfo .comment .note.GNU-stack .note.gnu.property                                                         @   Ä                    	   @          Ä               )             ¿  Ä                   %   	   @       Ä                  /             @                     8             @                    4   	   @       †  8               E      2       \                   X             z  ç                 T   	   @       ÿ  »      	         g      2         I                 z             Q                    v   	   @       †                  â             e  
-                  Ö   	   @       ¿                 ò             Ä  Ç                  î   	   @       –  0               †               4                  ©      0       6                   ≤              I                     ¬             L  (                                t  ‡              	              T	  ´                                  ’                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  cmd_drivers/media/i2c/tw9903.o := gcc -Wp,-MMD,drivers/media/i2c/.tw9903.o.d -nostdinc -I./arch/x86/include -I./arch/x86/include/generated  -I./include -I./arch/x86/include/uapi -I./arch/x86/include/generated/uapi -I./include/uapi -I./include/generated/uapi -include ./include/linux/compiler-version.h -include ./include/linux/kconfig.h -include ./include/linux/compiler_types.h -D__KERNEL__ -fmacro-prefix-map=./= -Wall -Wundef -Werror=strict-prototypes -Wno-trigraphs -fno-strict-aliasing -fno-common -fshort-wchar -fno-PIE -Werror=implicit-function-declaration -Werror=implicit-int -Werror=return-type -Wno-format-security -std=gnu11 -mno-sse -mno-mmx -mno-sse2 -mno-3dnow -mno-avx -fcf-protection=none -m32 -msoft-float -mregparm=3 -freg-struct-return -fno-pic -mpreferred-stack-boundary=2 -march=i686 -mtune=pentium3 -mtune=generic -Wa,-mtune=generic32 -ffreestanding -mstack-protector-guard-reg=fs -mstack-protector-guard-symbol=__stack_chk_guard -Wno-sign-compare -fno-asynchronous-unwind-tables -mindirect-branch=thunk-extern -mindirect-branch-register -fno-jump-tables -fno-delete-null-pointer-checks -Wno-frame-address -Wno-format-truncation -Wno-format-overflow -Wno-address-of-packed-member -O2 -fno-allow-store-data-races -fstack-protector-strong -Wimplicit-fallthrough=5 -Wno-main -Wno-unused-but-set-variable -Wno-unused-const-variable -fno-stack-clash-protection -pg -mrecord-mcount -mfentry -DCC_USING_FENTRY -Wdeclaration-after-statement -Wvla -Wno-pointer-sign -Wcast-function-type -Wno-stringop-truncation -Wno-stringop-overflow -Wno-restrict -Wno-maybe-uninitialized -Wno-alloc-size-larger-than -fno-strict-overflow -fno-stack-check -fconserve-stack -Werror=date-time -Werror=incompatible-pointer-types -Werror=designated-init -Wno-packed-not-aligned  -DMODULE  -DKBUILD_BASENAME='"tw9903"' -DKBUILD_MODNAME='"tw9903"' -D__KBUILD_MODNAME=kmod_tw9903 -c -o drivers/media/i2c/tw9903.o drivers/media/i2c/tw9903.c 
+	dprintk(3, "%s: command(0x%X) = %s\n", __func__, command,
+		cmd_to_str(command));
 
-source_drivers/media/i2c/tw9903.o := drivers/media/i2c/tw9903.c
+	/* this may not be 100% safe if we can't read any memory location
+	   without side effects */
+	mc417_memory_read(dev, dev->cx23417_mailbox - 4, &value);
+	if (value != 0x12345678) {
+		pr_err("Firmware and/or mailbox pointer not initialized or corrupted, signature = 0x%x, cmd = %s\n",
+			value, cmd_to_str(command));
+		return -1;
+	}
 
-deps_drivers/media/i2c/tw9903.o := \
-  include/linux/compiler-version.h \
-    $(wildcard include/config/CC_VERSION_TEXT) \
-  include/linux/kconfig.h \
-    $(wildcard include/config/CPU_BIG_ENDIAN) \
-    $(wildcard include/config/BOOGER) \
-    $(wildcard include/config/FOO) \
-  include/linux/compiler_types.h \
-    $(wildcard include/config/DEBUG_INFO_BTF) \
-    $(wildcard include/config/PAHOLE_HAS_BTF_TAG) \
-    $(wildcard include/config/HAVE_ARCH_COMPILER_H) \
-    $(wildcard include/config/CC_HAS_ASM_INLINE) \
-  include/linux/compiler_attributes.h \
-  include/linux/compiler-gcc.h \
-    $(wildcard include/config/RETPOLINE) \
-    $(wildcard include/config/ARCH_USE_BUILTIN_BSWAP) \
-    $(wildcard include/config/SHADOW_CALL_STACK) \
-    $(wildcard include/config/KCOV) \
-  include/linux/module.h \
-    $(wildcard include/config/MODULES) \
-    $(wildcard include/config/SYSFS) \
-    $(wildcard include/config/MODULES_TREE_LOOKUP) \
-    $(wildcard include/config/LIVEPATCH) \
-    $(wildcard include/config/STACKTRACE_BUILD_ID) \
-    $(wildcard include/config/CFI_CLANG) \
-    $(wildcard include/config/MODULE_SIG) \
-    $(wildcard include/config/GENERIC_BUG) \
-    $(wildcard include/config/KALLSYMS) \
-    $(wildcard include/config/SMP) \
-    $(wildcard include/config/TRACEPOINTS) \
-    $(wildcard include/config/TREE_SRCU) \
-    $(wildcard include/config/BPF_EVENTS) \
-    $(wildcard include/config/DEBUG_INFO_BTF_MODULES) \
-    $(wildcard include/config/JUMP_LABEL) \
-    $(wildcard include/config/TRACING) \
-    $(wildcard include/config/EVENT_TRACING) \
-    $(wildcard include/config/FTRACE_MCOUNT_RECORD) \
-    $(wildcard include/config/KPROBES) \
-    $(wildcard include/config/HAVE_STATIC_CALL_INLINE) \
-    $(wildcard include/config/PRINTK_INDEX) \
-    $(wildcard include/config/MODULE_UNLOAD) \
-    $(wildcard include/config/CONSTRUCTORS) \
-    $(wildcard include/config/FUNCTION_ERROR_INJECTION) \
-  include/linux/list.h \
-    $(wildcard include/config/DEBUG_LIST) \
-  include/linux/container_of.h \
-  include/linux/build_bug.h \
-  include/linux/compiler.h \
-    $(wildcard include/config/TRACE_BRANCH_PROFILING) \
-    $(wildcard include/config/PROFILE_ALL_BRANCHES) \
-    $(wildcard include/config/STACK_VALIDATION) \
-  include/linux/compiler_types.h \
-  arch/x86/include/generated/asm/rwonce.h \
-  include/asm-generic/rwonce.h \
-  include/linux/kasan-checks.h \
-    $(wildcard include/config/KASAN_GENERIC) \
-    $(wildcard include/config/KASAN_SW_TAGS) \
-  include/linux/types.h \
-    $(wildcard include/config/HAVE_UID16) \
-    $(wildcard include/config/UID16) \
-    $(wildcard include/config/ARCH_DMA_ADDR_T_64BIT) \
-    $(wildcard include/config/PHYS_ADDR_T_64BIT) \
-    $(wildcard include/config/64BIT) \
-    $(wildcard include/config/ARCH_32BIT_USTAT_F_TINODE) \
-  include/uapi/linux/types.h \
-  arch/x86/include/generated/uapi/asm/types.h \
-  include/uapi/asm-generic/types.h \
-  include/asm-generic/int-ll64.h \
-  include/uapi/asm-generic/int-ll64.h \
-  arch/x86/include/uapi/asm/bitsperlong.h \
-  include/asm-generic/bitsperlong.h \
-  include/uapi/asm-generic/bitsperlong.h \
-  include/uapi/linux/posix_types.h \
-  include/linux/stddef.h \
-  include/uapi/linux/stddef.h \
-  arch/x86/include/asm/posix_types.h \
-    $(wildcard include/config/X86_32) \
-  arch/x86/include/uapi/asm/posix_types_32.h \
-  include/uapi/asm-generic/posix_types.h \
-  include/linux/kcsan-checks.h \
-    $(wildcard include/config/KCSAN) \
-    $(wildcard include/config/KCSAN_WEAK_MEMORY) \
-    $(wildcard include/config/KCSAN_IGNORE_ATOMICS) \
-  include/linux/err.h \
-  arch/x86/include/generated/uapi/asm/errno.h \
-  include/uapi/asm-generic/errno.h \
-  include/uapi/asm-generic/errno-base.h \
-  include/linux/poison.h \
-    $(wildcard include/config/ILLEGAL_POINTER_VALUE) \
-  include/linux/const.h \
-  include/vdso/const.h \
-  include/uapi/linux/const.h \
-  arch/x86/include/asm/barrier.h \
-  arch/x86/include/asm/alternative.h \
-  include/linux/stringify.h \
-  arch/x86/include/asm/asm.h \
-  arch/x86/include/asm/extable_fixup_types.h \
-  arch/x86/include/asm/nops.h \
-  include/asm-generic/barrier.h \
-  include/linux/stat.h \
-  arch/x86/include/uapi/asm/stat.h \
-  include/uapi/linux/stat.h \
-  include/linux/time.h \
-    $(wildcard include/config/POSIX_TIMERS) \
-  include/linux/cache.h \
-    $(wildcard include/config/ARCH_HAS_CACHE_LINE_SIZE) \
-  include/uapi/linux/kernel.h \
-  include/uapi/linux/sysinfo.h \
-  arch/x86/include/asm/cache.h \
-    $(wildcard include/config/X86_L1_CACHE_SHIFT) \
-    $(wildcard include/config/X86_INTERNODE_CACHE_SHIFT) \
-    $(wildcard include/config/X86_VSMP) \
-  include/linux/linkage.h \
-    $(wildcard include/config/ARCH_USE_SYM_ANNOTATIONS) \
-  include/linux/export.h \
-    $(wildcard include/config/MODVERSIONS) \
-    $(wildcard include/config/MODULE_REL_CRCS) \
-    $(wildcard include/config/HAVE_ARCH_PREL32_RELOCATIONS) \
-    $(wildcard include/config/TRIM_UNUSED_KSYMS) \
-  arch/x86/include/asm/linkage.h \
-    $(wildcard include/config/X86_64) \
-    $(wildcard include/config/X86_ALIGNMENT_16) \
-    $(wildcard include/config/SLS) \
-  arch/x86/include/asm/ibt.h \
-    $(wildcard include/config/X86_KERNEL_IBT) \
-  include/linux/math64.h \
-    $(wildcard include/config/ARCH_SUPPORTS_INT128) \
-  include/linux/math.h \
-  arch/x86/include/asm/div64.h \
-  include/linux/log2.h \
-    $(wildcard include/config/ARCH_HAS_ILOG2_U32) \
-    $(wildcard include/config/ARCH_HAS_ILOG2_U64) \
-  include/linux/bitops.h \
-  include/linux/bits.h \
-  include/vdso/bits.h \
-  include/linux/typecheck.h \
-  arch/x86/include/asm/bitops.h \
-    $(wildcard include/config/X86_CMOV) \
-  arch/x86/include/asm/rmwcc.h \
-    $(wildcard include/config/CC_HAS_ASM_GOTO) \
-  include/asm-generic/bitops/fls64.h \
-  include/asm-generic/bitops/sched.h \
-  arch/x86/include/asm/arch_hweight.h \
-  arch/x86/include/asm/cpufeatures.h \
-  arch/x86/include/asm/required-features.h \
-    $(wildcard include/config/X86_MINIMUM_CPU_FAMILY) \
-    $(wildcard include/config/MATH_EMULATION) \
-    $(wildcard include/config/X86_PAE) \
-    $(wildcard include/config/X86_CMPXCHG64) \
-    $(wildcard include/config/X86_P6_NOP) \
-    $(wildcard include/config/MATOM) \
-    $(wildcard include/config/PARAVIRT_XXL) \
-  arch/x86/include/asm/disabled-features.h \
-    $(wildcard include/config/X86_SMAP) \
-    $(wildcard include/config/X86_UMIP) \
-    $(wildcard include/config/X86_INTEL_MEMORY_PROTECTION_KEYS) \
-    $(wildcard include/config/X86_5LEVEL) \
-    $(wildcard include/config/PAGE_TABLE_ISOLATION) \
-    $(wildcard include/config/INTEL_IOMMU_SVM) \
-    $(wildcard include/config/X86_SGX) \
-  include/asm-generic/bitops/const_hweight.h \
-  include/asm-generic/bitops/instrumented-atomic.h \
-  include/linux/instrumented.h \
-  include/asm-generic/bitops/instrumented-non-atomic.h \
-    $(wildcard include/config/KCSAN_ASSUME_PLAIN_WRITES_ATOMIC) \
-  include/asm-generic/bitops/instrumented-lock.h \
-  include/asm-generic/bitops/le.h \
-  arch/x86/include/uapi/asm/byteorder.h \
-  include/linux/byteorder/little_endian.h \
-  include/uapi/linux/byteorder/little_endian.h \
-  include/linux/swab.h \
-  include/uapi/linux/swab.h \
-  arch/x86/include/uapi/asm/swab.h \
-  include/linux/byteorder/generic.h \
-  include/asm-generic/bitops/ext2-atomic-setbit.h \
-  include/vdso/math64.h \
-  include/linux/time64.h \
-  include/vdso/time64.h \
-  include/uapi/linux/time.h \
-  include/uapi/linux/time_types.h \
-  include/linux/time32.h \
-  include/linux/timex.h \
-  include/uapi/linux/timex.h \
-  include/uapi/linux/param.h \
-  arch/x86/include/generated/uapi/asm/param.h \
-  include/asm-generic/param.h \
-    $(wildcard include/config/HZ) \
-  include/uapi/asm-generic/param.h \
-  arch/x86/include/asm/timex.h \
-    $(wildcard include/config/X86_TSC) \
-  arch/x86/include/asm/processor.h \
-    $(wildcard include/config/X86_VMX_FEATURE_NAMES) \
-    $(wildcard include/config/X86_IOPL_IOPERM) \
-    $(wildcard include/config/STACKPROTECTOR) \
-    $(wildcard include/config/VM86) \
-    $(wildcard include/config/X86_DEBUGCTLMSR) \
-    $(wildcard include/config/CPU_SUP_AMD) \
-    $(wildcard include/config/XEN) \
-  arch/x86/include/asm/processor-flags.h \
-  arch/x86/include/uapi/asm/processor-flags.h \
-  include/linux/mem_encrypt.h \
-    $(wildcard include/config/ARCH_HAS_MEM_ENCRYPT) \
-    $(wildcard include/config/AMD_MEM_ENCRYPT) \
-  arch/x86/include/asm/mem_encrypt.h \
-  include/linux/init.h \
-    $(wildcard include/config/STRICT_KERNEL_RWX) \
-    $(wildcard include/config/STRICT_MODULE_RWX) \
-    $(wildcard include/config/LTO_CLANG) \
-  include/linux/cc_platform.h \
-    $(wildcard include/config/ARCH_HAS_CC_PLATFORM) \
-  arch/x86/include/uapi/asm/bootparam.h \
-  include/linux/screen_info.h \
-  include/uapi/linux/screen_info.h \
-  include/linux/apm_bios.h \
-  include/uapi/linux/apm_bios.h \
-  include/uapi/linux/ioctl.h \
-  arch/x86/include/generated/uapi/asm/ioctl.h \
-  include/asm-generic/ioctl.h \
-  include/uapi/asm-generic/ioctl.h \
-  include/linux/edd.h \
-  include/uapi/linux/edd.h \
-  arch/x86/include/asm/ist.h \
-  arch/x86/include/uapi/asm/ist.h \
-  include/video/edid.h \
-    $(wildcard include/config/X86) \
-  include/uapi/video/edid.h \
-  arch/x86/include/asm/math_emu.h \
-  arch/x86/include/asm/ptrace.h \
-    $(wildcard include/config/PARAVIRT) \
-    $(wildcard include/config/IA32_EMULATION) \
-  arch/x86/include/asm/segment.h \
-    $(wildcard include/config/XEN_PV) \
-  arch/x86/include/asm/page_types.h \
-    $(wildcard include/config/PHYSICAL_START) \
-    $(wildcard include/config/PHYSICAL_ALIGN) \
-    $(wildcard include/config/DYNAMIC_PHYSICAL_MASK) \
-  arch/x86/include/asm/page_32_types.h \
-    $(wildcard include/config/HIGHMEM4G) \
-    $(wildcard include/config/HIGHMEM64G) \
-    $(wildcard include/config/PAGE_OFFSET) \
-  arch/x86/include/uapi/asm/ptrace.h \
-  arch/x86/include/uapi/asm/ptrace-abi.h \
-  arch/x86/include/asm/paravirt_types.h \
-    $(wildcard include/config/PGTABLE_LEVELS) \
-    $(wildcard include/config/PARAVIRT_DEBUG) \
-  arch/x86/include/asm/desc_defs.h \
-  arch/x86/include/asm/pgtable_types.h \
-    $(wildcard include/config/MEM_SOFT_DIRTY) \
-    $(wildcard include/config/HAVE_ARCH_USERFAULTFD_WP) \
-    $(wildcard include/config/PROC_FS) \
-  arch/x86/include/asm/pgtable_32_types.h \
-  arch/x86/include/asm/pgtable-3level_types.h \
-  include/asm-generic/pgtable-nop4d.h \
-  include/asm-generic/pgtable-nopud.h \
-  arch/x86/include/asm/nospec-branch.h \
-  include/linux/static_key.h \
-  include/linux/jump_label.h \
-    $(wildcard include/config/HAVE_ARCH_JUMP_LABEL_RELATIVE) \
-  arch/x86/include/asm/jump_label.h \
-  include/linux/objtool.h \
-    $(wildcard include/config/FRAME_POINTER) \
-  arch/x86/include/asm/msr-index.h \
-  arch/x86/include/asm/unwind_hints.h \
-  arch/x86/include/asm/orc_types.h \
-  arch/x86/include/asm/GEN-for-each-reg.h \
-  arch/x86/include/asm/spinlock_types.h \
-  include/asm-generic/qspinlock_types.h \
-    $(wildcard include/config/NR_CPUS) \
-  include/asm-generic/qrwlock_types.h \
-  arch/x86/include/asm/proto.h \
-  arch/x86/include/uapi/asm/ldt.h \
-  arch/x86/include/uapi/asm/sigcontext.h \
-  arch/x86/include/asm/current.h \
-  arch/x86/include/asm/percpu.h \
-    $(wildcard include/config/X86_64_SMP) \
-  include/linux/kernel.h \
-    $(wildcard include/config/PREEMPT_VOLUNTARY_BUILD) \
-    $(wildcard include/config/PREEMPT_DYNAMIC) \
-    $(wildcard include/config/HAVE_PREEMPT_DYNAMIC_CALL) \
-    $(wildcard include/config/HAVE_PREEMPT_DYNAMIC_KEY) \
-    $(wildcard include/config/PREEMPT_) \
-    $(wildcard include/config/DEBUG_ATOMIC_SLEEP) \
-    $(wildcard include/config/MMU) \
-    $(wildcard include/config/PROVE_LOCKING) \
-  include/linux/stdarg.h \
-  include/linux/align.h \
-  include/linux/limits.h \
-  include/uapi/linux/limits.h \
-  include/vdso/limits.h \
-  include/linux/kstrtox.h \
-  include/linux/minmax.h \
-  include/linux/panic.h \
-    $(wildcard include/config/PANIC_TIMEOUT) \
-  include/linux/printk.h \
-    $(wildcard include/config/MESSAGE_LOGLEVEL_DEFAULT) \
-    $(wildcard include/config/CONSOLE_LOGLEVEL_DEFAULT) \
-    $(wildcard include/config/CONSOLE_LOGLEVEL_QUIET) \
-    $(wildcard include/config/EARLY_PRINTK) \
-    $(wildcard include/config/PRINTK) \
-    $(wildcard include/config/DYNAMIC_DEBUG) \
-    $(wildcard include/config/DYNAMIC_DEBUG_CORE) \
-  include/linux/kern_levels.h \
-  include/linux/ratelimit_types.h \
-  include/linux/spinlock_types_raw.h \
-    $(wildcard include/config/DEBUG_SPINLOCK) \
-    $(wildcard include/config/DEBUG_LOCK_ALLOC) \
-  include/linux/lockdep_types.h \
-    $(wildcard include/config/PROVE_RAW_LOCK_NESTING) \
-    $(wildcard include/config/LOCKDEP) \
-    $(wildcard include/config/LOCK_STAT) \
-  include/linux/once_lite.h \
-  include/linux/static_call_types.h \
-    $(wildcard include/config/HAVE_STATIC_CALL) \
-  include/linux/instruction_pointer.h \
-  include/asm-generic/percpu.h \
-    $(wildcard include/config/DEBUG_PREEMPT) \
-    $(wildcard include/config/HAVE_SETUP_PER_CPU_AREA) \
-  include/linux/threads.h \
-    $(wildcard include/config/BASE_SMALL) \
-  include/linux/percpu-defs.h \
-    $(wildcard include/config/DEBUG_FORCE_WEAK_PER_CPU) \
-  arch/x86/include/asm/page.h \
-  arch/x86/include/asm/page_32.h \
-    $(wildcard include/config/DEBUG_VIRTUAL) \
-    $(wildcard include/config/FLATMEM) \
-  include/linux/string.h \
-    $(wildcard include/config/BINARY_PRINTF) \
-    $(wildcard include/config/FORTIFY_SOURCE) \
-  include/linux/errno.h \
-  include/uapi/linux/errno.h \
-  include/uapi/linux/string.h \
-  arch/x86/include/asm/string.h \
-  arch/x86/include/asm/string_32.h \
-  include/linux/fortify-string.h \
-  include/linux/range.h \
-  include/asm-generic/memory_model.h \
-    $(wildcard include/config/SPARSEMEM_VMEMMAP) \
-    $(wildcard include/config/SPARSEMEM) \
-  include/linux/pfn.h \
-  include/asm-generic/getorder.h \
-  arch/x86/include/asm/msr.h \
-  arch/x86/include/asm/msr-index.h \
-  arch/x86/include/asm/cpumask.h \
-  include/linux/cpumask.h \
-    $(wildcard include/config/CPUMASK_OFFSTACK) \
-    $(wildcard include/config/HOTPLUG_CPU) \
-    $(wildcard include/config/DEBUG_PER_CPU_MAPS) \
-  include/linux/bitmap.h \
-  include/linux/find.h \
-  include/linux/atomic.h \
-  arch/x86/include/asm/atomic.h \
-  arch/x86/include/asm/cmpxchg.h \
-  arch/x86/include/asm/cmpxchg_32.h \
-  arch/x86/include/asm/atomic64_32.h \
-  include/linux/atomic/atomic-arch-fallback.h \
-    $(wildcard include/config/GENERIC_ATOMIC64) \
-  include/linux/atomic/atomic-long.h \
-  include/linux/atomic/atomic-instrumented.h \
-  include/linux/bug.h \
-    $(wildcard include/config/BUG_ON_DATA_CORRUPTION) \
-  arch/x86/include/asm/bug.h \
-    $(wildcard include/config/DEBUG_BUGVERBOSE) \
-  include/linux/instrumentation.h \
-    $(wildcard include/config/DEBUG_ENTRY) \
-  include/asm-generic/bug.h \
-    $(wildcard include/config/BUG) \
-    $(wildcard include/config/GENERIC_BUG_RELATIVE_POINTERS) \
-  arch/x86/include/uapi/asm/msr.h \
-  include/linux/tracepoint-defs.h \
-  arch/x86/include/asm/special_insns.h \
-  include/linux/irqflags.h \
-    $(wildcard include/config/TRACE_IRQFLAGS) \
-    $(wildcard include/config/PREEMPT_RT) \
-    $(wildcard include/config/IRQSOFF_TRACER) \
-    $(wildcard include/config/PREEMPT_TRACER) \
-    $(wildcard include/config/DEBUG_IRQFLAGS) \
-    $(wildcard include/config/TRACE_IRQFLAGS_SUPPORT) \
-  arch/x86/include/asm/irqflags.h \
-  arch/x86/include/asm/fpu/types.h \
-  arch/x86/include/asm/vmxfeatures.h \
-  arch/x86/include/asm/vdso/processor.h \
-  include/linux/personality.h \
-  include/uapi/linux/personality.h \
-  arch/x86/include/asm/tsc.h \
-  arch/x86/include/asm/cpufeature.h \
-    $(wildcard include/config/X86_FEATURE_NAMES) \
-  include/vdso/time32.h \
-  include/vdso/time.h \
-  include/linux/uidgid.h \
-    $(wildcard include/config/MULTIUSER) \
-    $(wildcard include/config/USER_NS) \
-  include/linux/highuid.h \
-  include/linux/buildid.h \
-    $(wildcard include/config/CRASH_CORE) \
-  include/linux/mm_types.h \
-    $(wildcard include/config/HAVE_ALIGNED_STRUCT_PAGE) \
-    $(wildcard include/config/MEMCG) \
-    $(wildcard include/config/USERFAULTFD) \
-    $(wildcard include/config/SWAP) \
-    $(wildcard include/config/NUMA) \
-    $(wildcard include/config/HAVE_ARCH_COMPAT_MMAP_BASES) \
-    $(wildcard include/config/MEMBARRIER) \
-    $(wildcard include/config/AIO) \
-    $(wildcard include/config/MMU_NOTIFIER) \
-    $(wildcard include/config/TRANSPARENT_HUGEPAGE) \
-    $(wildcard include/config/NUMA_BALANCING) \
-    $(wildcard include/config/ARCH_WANT_BATCHED_UNMAP_TLB_FLUSH) \
-    $(wildcard include/config/HUGETLB_PAGE) \
-    $(wildcard include/config/IOMMU_SVA) \
-  include/linux/mm_types_task.h \
-    $(wildcard include/config/SPLIT_PTLOCK_CPUS) \
-    $(wildcard include/config/ARCH_ENABLE_SPLIT_PMD_PTLOCK) \
-  arch/x86/include/asm/tlbbatch.h \
-  include/linux/auxvec.h \
-  include/uapi/linux/auxvec.h \
-  arch/x86/include/uapi/asm/auxvec.h \
-  include/linux/kref.h \
-  include/linux/spinlock.h \
-    $(wildcard include/config/PREEMPTION) \
-  include/linux/preempt.h \
-    $(wildcard include/config/PREEMPT_COUNT) \
-    $(wildcard include/config/TRACE_PREEMPT_TOGGLE) \
-    $(wildcard include/config/PREEMPT_NOTIFIERS) \
-  arch/x86/include/asm/preempt.h \
-  include/linux/thread_info.h \
-    $(wildcard include/config/THREAD_INFO_IN_TASK) \
-    $(wildcard include/config/GENERIC_ENTRY) \
-    $(wildcard include/config/HAVE_ARCH_WITHIN_STACK_FRAMES) \
-    $(wildcard include/config/HARDENED_USERCOPY) \
-  include/linux/restart_block.h \
-  arch/x86/include/asm/thread_info.h \
-    $(wildcard include/config/COMPAT) \
-  include/linux/bottom_half.h \
-  include/linux/lockdep.h \
-    $(wildcard include/config/DEBUG_LOCKING_API_SELFTESTS) \
-  include/linux/smp.h \
-    $(wildcard include/config/UP_LATE_INIT) \
-  include/linux/smp_types.h \
-  include/linux/llist.h \
-    $(wildcard include/config/ARCH_HAVE_NMI_SAFE_CMPXCHG) \
-  arch/x86/include/asm/smp.h \
-    $(wildcard include/config/X86_LOCAL_APIC) \
-    $(wildcard include/config/DEBUG_NMI_SELFTEST) \
-  arch/x86/include/generated/asm/mmiowb.h \
-  include/asm-generic/mmiowb.h \
-    $(wildcard include/config/MMIOWB) \
-  include/linux/spinlock_types.h \
-  include/linux/rwlock_types.h \
-  arch/x86/include/asm/spinlock.h \
-  arch/x86/include/asm/paravirt.h \
-    $(wildcard include/config/PARAVIRT_SPINLOCKS) \
-  arch/x86/include/asm/frame.h \
-  arch/x86/include/asm/qspinlock.h \
-  include/asm-generic/qspinlock.h \
-  arch/x86/include/asm/qrwlock.h \
-  include/asm-generic/qrwlock.h \
-  include/linux/rwlock.h \
-    $(wildcard include/config/PREEMPT) \
-  include/linux/spinlock_api_smp.h \
-    $(wildcard include/config/INLINE_SPIN_LOCK) \
-    $(wildcard include/config/INLINE_SPIN_LOCK_BH) \
-    $(wildcard include/config/INLINE_SPIN_LOCK_IRQ) \
-    $(wildcard include/config/INLINE_SPIN_LOCK_IRQSAVE) \
-    $(wildcard include/config/INLINE_SPIN_TRYLOCK) \
-    $(wildcard include/config/INLINE_SPIN_TRYLOCK_BH) \
-    $(wildcard include/config/UNINLINE_SPIN_UNLOCK) \
-    $(wildcard include/config/INLINE_SPIN_UNLOCK_BH) \
-    $(wildcard include/config/INLINE_SPIN_UNLOCK_IRQ) \
-    $(wildcard include/config/INLINE_SPIN_UNLOCK_IRQRESTORE) \
-    $(wildcard include/config/GENERIC_LOCKBREAK) \
-  include/linux/rwlock_api_smp.h \
-    $(wildcard include/config/INLINE_READ_LOCK) \
-    $(wildcard include/config/INLINE_WRITE_LOCK) \
-    $(wildcard include/config/INLINE_READ_LOCK_BH) \
-    $(wildcard include/config/INLINE_WRITE_LOCK_BH) \
-    $(wildcard include/config/INLINE_READ_LOCK_IRQ) \
-    $(wildcard include/config/INLINE_WRITE_LOCK_IRQ) \
-    $(wildcard include/config/INLINE_READ_LOCK_IRQSAVE) \
-    $(wildcard include/config/INLINE_WRITE_LOCK_IRQSAVE) \
-    $(wildcard include/config/INLINE_READ_TRYLOCK) \
-    $(wildcard include/config/INLINE_WRITE_TRYLOCK) \
-    $(wildcard include/config/INLINE_READ_UNLOCK) \
-    $(wildcard include/config/INLINE_WRITE_UNLOCK) \
-    $(wildcard include/config/INLINE_READ_UNLOCK_BH) \
-    $(wildcard include/config/INLINE_WRITE_UNLOCK_BH) \
-    $(wildcard include/config/INLINE_READ_UNLOCK_IRQ) \
-    $(wildcard include/config/INLINE_WRITE_UNLOCK_IRQ) \
-    $(wildcard include/config/INLINE_READ_UNLOCK_IRQRESTORE) \
-    $(wildcard include/config/INLINE_WRITE_UNLOCK_IRQRESTORE) \
-  include/linux/refcount.h \
-  include/linux/rbtree.h \
-  include/linux/rbtree_types.h \
-  include/linux/rcupdate.h \
-    $(wildcard include/config/PREEMPT_RCU) \
-    $(wildcard include/config/TINY_RCU) \
-    $(wildcard include/config/RCU_STRICT_GRACE_PERIOD) \
-    $(wildcard include/config/TASKS_RCU_GENERIC) \
-    $(wildcard include/config/RCU_STALL_COMMON) \
-    $(wildcard include/config/NO_HZ_FULL) \
-    $(wildcard include/config/RCU_NOCB_CPU) \
-    $(wildcard include/config/TASKS_RCU) \
-    $(wildcard include/config/TASKS_TRACE_RCU) \
-    $(wildcard include/config/TASKS_RUDE_RCU) \
-    $(wildcard include/config/TREE_RCU) \
-    $(wildcard include/config/DEBUG_OBJECTS_RCU_HEAD) \
-    $(wildcard include/config/PROVE_RCU) \
-    $(wildcard include/config/ARCH_WEAK_RELEASE_ACQUIRE) \
-  include/linux/rcutree.h \
-  include/linux/rwsem.h \
-    $(wildcard include/config/RWSEM_SPIN_ON_OWNER) \
-    $(wildcard include/config/DEBUG_RWSEMS) \
-  include/linux/osq_lock.h \
-  include/linux/completion.h \
-  include/linux/swait.h \
-  include/linux/wait.h \
-  include/uapi/linux/wait.h \
-  include/linux/uprobes.h \
-    $(wildcard include/config/UPROBES) \
-  arch/x86/include/asm/uprobes.h \
-  include/linux/notifier.h \
-  include/linux/mutex.h \
-    $(wildcard include/config/MUTEX_SPIN_ON_OWNER) \
-    $(wildcard include/config/DEBUG_MUTEXES) \
-  include/linux/debug_locks.h \
-  include/linux/srcu.h \
-    $(wildcard include/config/TINY_SRCU) \
-    $(wildcard include/config/SRCU) \
-  include/linux/workqueue.h \
-    $(wildcard include/config/DEBUG_OBJECTS_WORK) \
-    $(wildcard include/config/FREEZER) \
-    $(wildcard include/config/WQ_WATCHDOG) \
-  include/linux/timer.h \
-    $(wildcard include/config/DEBUG_OBJECTS_TIMERS) \
-    $(wildcard include/config/NO_HZ_COMMON) \
-  include/linux/ktime.h \
-  include/linux/jiffies.h \
-  include/vdso/jiffies.h \
-  include/generated/timeconst.h \
-  include/vdso/ktime.h \
-  include/linux/timekeeping.h \
-    $(wildcard include/config/GENERIC_CMOS_UPDATE) \
-  include/linux/clocksource_ids.h \
-  include/linux/debugobjects.h \
-    $(wildcard include/config/DEBUG_OBJECTS) \
-    $(wildcard include/config/DEBUG_OBJECTS_FREE) \
-  include/linux/rcu_segcblist.h \
-  include/linux/srcutree.h \
-  include/linux/rcu_node_tree.h \
-    $(wildcard include/config/RCU_FANOUT) \
-    $(wildcard include/config/RCU_FANOUT_LEAF) \
-  include/linux/page-flags-layout.h \
-    $(wildcard include/config/KASAN_HW_TAGS) \
-  include/linux/numa.h \
-    $(wildcard include/config/NODES_SHIFT) \
-    $(wildcard include/config/NUMA_KEEP_MEMINFO) \
-    $(wildcard include/config/HAVE_ARCH_NODE_DEV_GROUP) \
-  arch/x86/include/asm/sparsemem.h \
-  include/generated/bounds.h \
-  include/linux/seqlock.h \
-  include/linux/ww_mutex.h \
-    $(wildcard include/config/DEBUG_RT_MUTEXES) \
-    $(wildcard include/config/DEBUG_WW_MUTEX_SLOWPATH) \
-  include/linux/rtmutex.h \
-  arch/x86/include/asm/mmu.h \
-    $(wildcard include/config/MODIFY_LDT_SYSCALL) \
-  include/linux/kmod.h \
-  include/linux/umh.h \
-  include/linux/gfp.h \
-    $(wildcard include/config/HIGHMEM) \
-    $(wildcard include/config/ZONE_DMA) \
-    $(wildcard include/config/ZONE_DMA32) \
-    $(wildcard include/config/ZONE_DEVICE) \
-    $(wildcard include/config/PM_SLEEP) \
-    $(wildcard include/config/CONTIG_ALLOC) \
-    $(wildcard include/config/CMA) \
-  include/linux/mmdebug.h \
-    $(wildcard include/config/DEBUG_VM) \
-    $(wildcard include/config/DEBUG_VM_PGFLAGS) \
-  include/linux/mmzone.h \
-    $(wildcard include/config/FORCE_MAX_ZONEORDER) \
-    $(wildcard include/config/MEMORY_ISOLATION) \
-    $(wildcard include/config/ZSMALLOC) \
-    $(wildcard include/config/MEMORY_HOTPLUG) \
-    $(wildcard include/config/COMPACTION) \
-    $(wildcard include/config/PAGE_EXTENSION) \
-    $(wildcard include/config/DEFERRED_STRUCT_PAGE_INIT) \
-    $(wildcard include/config/HAVE_MEMORYLESS_NODES) \
-    $(wildcard include/config/SPARSEMEM_EXTREME) \
-    $(wildcard include/config/HAVE_ARCH_PFN_VALID) \
-  include/linux/nodemask.h \
-  include/linux/pageblock-flags.h \
-    $(wildcard include/config/HUGETLB_PAGE_SIZE_VARIABLE) \
-  include/linux/page-flags.h \
-    $(wildcard include/config/ARCH_USES_PG_UNCACHED) \
-    $(wildcard include/config/MEMORY_FAILURE) \
-    $(wildcard include/config/PAGE_IDLE_FLAG) \
-    $(wildcard include/config/HUGETLB_PAGE_FREE_VMEMMAP) \
-    $(wildcard include/config/HUGETLB_PAGE_FREE_VMEMMAP_DEFAULT_ON) \
-    $(wildcard include/config/KSM) \
-  include/linux/local_lock.h \
-  include/linux/local_lock_internal.h \
-  include/linux/memory_hotplug.h \
-    $(wildcard include/config/HAVE_ARCH_NODEDATA_EXTENSION) \
-    $(wildcard include/config/ARCH_HAS_ADD_PAGES) \
-    $(wildcard include/config/MEMORY_HOTREMOVE) \
-  arch/x86/include/asm/mmzone.h \
-  arch/x86/include/asm/mmzone_32.h \
-  include/linux/topology.h \
-    $(wildcard include/config/USE_PERCPU_NUMA_NODE_ID) \
-    $(wildcard include/config/SCHED_SMT) \
-    $(wildcard include/config/SCHED_CLUSTER) \
-  include/linux/arch_topology.h \
-    $(wildcard include/config/ACPI_CPPC_LIB) \
-    $(wildcard include/config/GENERIC_ARCH_TOPOLOGY) \
-  include/linux/percpu.h \
-    $(wildcard include/config/NEED_PER_CPU_EMBED_FIRST_CHUNK) \
-    $(wildcard include/config/NEED_PER_CPU_PAGE_FIRST_CHUNK) \
-  arch/x86/include/asm/topology.h \
-    $(wildcard include/config/SCHED_MC_PRIO) \
-  arch/x86/include/asm/mpspec.h \
-    $(wildcard include/config/EISA) \
-    $(wildcard include/config/X86_MPPARSE) \
-  arch/x86/include/asm/mpspec_def.h \
-  arch/x86/include/asm/x86_init.h \
-  arch/x86/include/asm/apicdef.h \
-  include/asm-generic/topology.h \
-  include/linux/sysctl.h \
-    $(wildcard include/config/SYSCTL) \
-  include/uapi/linux/sysctl.h \
-  include/linux/elf.h \
-    $(wildcard include/config/ARCH_USE_GNU_PROPERTY) \
-    $(wildcard include/config/ARCH_HAVE_ELF_PROT) \
-  arch/x86/include/asm/elf.h \
-    $(wildcard include/config/X86_X32_ABI) \
-  arch/x86/include/asm/user.h \
-  arch/x86/include/asm/user_32.h \
-  arch/x86/include/asm/fsgsbase.h \
-  arch/x86/include/asm/vdso.h \
-  arch/x86/include/asm/desc.h \
-  arch/x86/include/asm/fixmap.h \
-    $(wildcard include/config/DEBUG_KMAP_LOCAL_FORCE_MAP) \
-    $(wildcard include/config/X86_VSYSCALL_EMULATION) \
-    $(wildcard include/config/PROVIDE_OHCI1394_DMA_INIT) \
-    $(wildcard include/config/X86_IO_APIC) \
-    $(wildcard include/config/KMAP_LOCAL) \
-    $(wildcard include/config/PCI_MMCONFIG) \
-    $(wildcard include/config/ACPI_APEI_GHES) \
-    $(wildcard include/config/INTEL_TXT) \
-  arch/x86/include/generated/asm/kmap_size.h \
-  include/asm-generic/kmap_size.h \
-    $(wildcard include/config/DEBUG_KMAP_LOCAL) \
-  include/asm-generic/fixmap.h \
-  arch/x86/include/asm/irq_vectors.h \
-    $(wildcard include/config/HAVE_KVM) \
-    $(wildcard include/config/HYPERV) \
-    $(wildcard include/config/PCI_MSI) \
-  arch/x86/include/asm/cpu_entry_area.h \
-  arch/x86/include/asm/intel_ds.h \
-  arch/x86/include/asm/pgtable_areas.h \
-  arch/x86/include/asm/pgtable_32_areas.h \
-  include/uapi/linux/elf.h \
-  include/uapi/linux/elf-em.h \
-  include/linux/kobject.h \
-    $(wildcard include/config/UEVENT_HELPER) \
-    $(wildcard include/config/DEBUG_KOBJECT_RELEASE) \
-  include/linux/sysfs.h \
-  include/linux/kernfs.h \
-    $(wildcard include/config/KERNFS) \
-  include/linux/idr.h \
-  include/linux/radix-tree.h \
-  include/linux/xarray.h \
-    $(wildcard include/config/XARRAY_MULTI) \
-  include/linux/kconfig.h \
-  include/linux/kobject_ns.h \
-  include/linux/moduleparam.h \
-    $(wildcard include/config/ALPHA) \
-    $(wildcard include/config/IA64) \
-    $(wildcard include/config/PPC64) \
-  include/linux/rbtree_latch.h \
-  include/linux/error-injection.h \
-  include/asm-generic/error-injection.h \
-  include/linux/cfi.h \
-    $(wildcard include/config/CFI_CLANG_SHADOW) \
-  arch/x86/include/asm/module.h \
-    $(wildcard include/config/UNWINDER_ORC) \
-  include/asm-generic/module.h \
-    $(wildcard include/config/HAVE_MOD_ARCH_SPECIFIC) \
-    $(wildcard include/config/MODULES_USE_ELF_REL) \
-    $(wildcard include/config/MODULES_USE_ELF_RELA) \
-  arch/x86/include/asm/orc_types.h \
-  include/linux/i2c.h \
-    $(wildcard include/config/I2C) \
-    $(wildcard include/config/I2C_SLAVE) \
-    $(wildcard include/config/I2C_BOARDINFO) \
-    $(wildcard include/config/I2C_MUX) \
-    $(wildcard include/config/OF) \
-    $(wildcard include/config/ACPI) \
-  include/linux/acpi.h \
-    $(wildcard include/config/ACPI_DEBUGGER) \
-    $(wildcard include/config/ACPI_TABLE_LIB) \
-    $(wildcard include/config/LOONGARCH) \
-    $(wildcard include/config/ARM64) \
-    $(wildcard include/config/ACPI_PROCESSOR_CSTATE) \
-    $(wildcard include/config/ACPI_HOTPLUG_CPU) \
-    $(wildcard include/config/ACPI_HOTPLUG_IOAPIC) \
-    $(wildcard include/config/PCI) \
-    $(wildcard include/config/ACPI_WMI) \
-    $(wildcard include/config/ACPI_NUMA) \
-    $(wildcard include/config/HIBERNATION) \
-    $(wildcard include/config/ACPI_HOTPLUG_MEMORY) \
-    $(wildcard include/config/ACPI_CONTAINER) \
-    $(wildcard include/config/ACPI_GTDT) \
-    $(wildcard include/config/PM) \
-    $(wildcard include/config/GPIOLIB) \
-    $(wildcard include/config/ACPI_TABLE_UPGRADE) \
-    $(wildcard include/config/ACPI_WATCHDOG) \
-    $(wildcard include/config/ACPI_SPCR_TABLE) \
-    $(wildcard include/config/ACPI_GENERIC_GSI) \
-    $(wildcard include/config/ACPI_LPIT) \
-    $(wildcard include/config/ACPI_PPTT) \
-    $(wildcard include/config/ACPI_PCC) \
-  include/linux/ioport.h \
-  include/linux/irqdomain.h \
-    $(wildcard include/config/IRQ_DOMAIN_HIERARCHY) \
-    $(wildcard include/config/GENERIC_IRQ_DEBUGFS) \
-    $(wildcard include/config/IRQ_DOMAIN) \
-    $(wildcard include/config/IRQ_DOMAIN_NOMAP) \
-  include/linux/irqhandler.h \
-  include/linux/of.h \
-    $(wildcard include/config/OF_DYNAMIC) \
-    $(wildcard include/config/SPARC) \
-    $(wildcard include/config/OF_PROMTREE) \
-    $(wildcard include/config/OF_KOBJ) \
-    $(wildcard include/config/OF_NUMA) \
-    $(wildcard include/config/OF_OVERLAY) \
-  include/linux/mod_devicetable.h \
-  include/linux/uuid.h \
-  include/uapi/linux/uuid.h \
-  include/linux/property.h \
-  include/linux/fwnode.h \
-  include/linux/resource_ext.h \
-  include/linux/slab.h \
-    $(wildcard include/config/DEBUG_SLAB) \
-    $(wildcard include/config/FAILSLAB) \
-    $(wildcard include/config/MEMCG_KMEM) \
-    $(wildcard include/config/KASAN) \
-    $(wildcard include/config/SLAB) \
-    $(wildcard include/config/SLUB) \
-    $(wildcard include/config/SLOB) \
-  include/linux/overflow.h \
-  include/linux/percpu-refcount.h \
-  include/linux/kasan.h \
-    $(wildcard include/config/KASAN_STACK) \
-    $(wildcard include/config/KASAN_VMALLOC) \
-    $(wildcard include/config/KASAN_INLINE) \
-  include/linux/kasan-enabled.h \
-  include/linux/device.h \
-    $(wildcard include/config/GENERIC_MSI_IR
+	/* This read looks at 32 bits, but flag is only 8 bits.
+	 * Seems we also bail if CMD or TIMEOUT bytes are set???
+	 */
+	mc417_memory_read(dev, dev->cx23417_mailbox, &flag);
+	if (flag) {
+		pr_err("ERROR: Mailbox appears to be in use (%x), cmd = %s\n",
+		       flag, cmd_to_str(command));
+		return -1;
+	}
+
+	flag |= 1; /* tell 'em we're working on it */
+	mc417_memory_write(dev, dev->cx23417_mailbox, flag);
+
+	/* write command + args + fill remaining with zeros */
+	/* command code */
+	mc417_memory_write(dev, dev->cx23417_mailbox + 1, command);
+	mc417_memory_write(dev, dev->cx23417_mailbox + 3,
+		IVTV_API_STD_TIMEOUT); /* timeout */
+	for (i = 0; i < in; i++) {
+		mc417_memory_write(dev, dev->cx23417_mailbox + 4 + i, data[i]);
+		dprintk(3, "API Input %d = %d\n", i, data[i]);
+	}
+	for (; i < CX2341X_MBOX_MAX_DATA; i++)
+		mc417_memory_write(dev, dev->cx23417_mailbox + 4 + i, 0);
+
+	flag |= 3; /* tell 'em we're done writing */
+	mc417_memory_write(dev, dev->cx23417_mailbox, flag);
+
+	/* wait for firmware to handle the API command */
+	timeout = jiffies + msecs_to_jiffies(10);
+	for (;;) {
+		mc417_memory_read(dev, dev->cx23417_mailbox, &flag);
+		if (0 != (flag & 4))
+			break;
+		if (time_after(jiffies, timeout)) {
+			pr_err("ERROR: API Mailbox timeout\n");
+			return -1;
+		}
+		udelay(10);
+	}
+
+	/* read output values */
+	for (i = 0; i < out; i++) {
+		mc417_memory_read(dev, dev->cx23417_mailbox + 4 + i, data + i);
+		dprintk(3, "API Output %d = %d\n", i, data[i]);
+	}
+
+	mc417_memory_read(dev, dev->cx23417_mailbox + 2, &retval);
+	dprintk(3, "API result = %d\n", retval);
+
+	flag = 0;
+	mc417_memory_write(dev, dev->cx23417_mailbox, flag);
+
+	return retval;
+}
+
+/* We don't need to call the API often, so using just one
+ * mailbox will probably suffice
+ */
+static int cx23885_api_cmd(struct cx23885_dev *dev,
+			   u32 command,
+			   u32 inputcnt,
+			   u32 outputcnt,
+			   ...)
+{
+	u32 data[CX2341X_MBOX_MAX_DATA];
+	va_list vargs;
+	int i, err;
+
+	dprintk(3, "%s() cmds = 0x%08x\n", __func__, command);
+
+	va_start(vargs, outputcnt);
+	for (i = 0; i < inputcnt; i++)
+		data[i] = va_arg(vargs, int);
+
+	err = cx23885_mbox_func(dev, command, inputcnt, outputcnt, data);
+	for (i = 0; i < outputcnt; i++) {
+		int *vptr = va_arg(vargs, int *);
+		*vptr = data[i];
+	}
+	va_end(vargs);
+
+	return err;
+}
+
+static int cx23885_api_func(void *priv, u32 cmd, int in, int out, u32 data[CX2341X_MBOX_MAX_DATA])
+{
+	return cx23885_mbox_func(priv, cmd, in, out, data);
+}
+
+static int cx23885_find_mailbox(struct cx23885_dev *dev)
+{
+	u32 signature[4] = {
+		0x12345678, 0x34567812, 0x56781234, 0x78123456
+	};
+	int signaturecnt = 0;
+	u32 value;
+	int i;
+
+	dprintk(2, "%s()\n", __func__);
+
+	for (i = 0; i < CX23885_FIRM_IMAGE_SIZE; i++) {
+		mc417_memory_read(dev, i, &value);
+		if (value == signature[signaturecnt])
+			signaturecnt++;
+		else
+			signaturecnt = 0;
+		if (4 == signaturecnt) {
+			dprintk(1, "Mailbox signature found at 0x%x\n", i+1);
+			return i+1;
+		}
+	}
+	pr_err("Mailbox signature values not found!\n");
+	return -1;
+}
+
+static int cx23885_load_firmware(struct cx23885_dev *dev)
+{
+	static const unsigned char magic[8] = {
+		0xa7, 0x0d, 0x00, 0x00, 0x66, 0xbb, 0x55, 0xaa
+	};
+	const struct firmware *firmware;
+	int i, retval = 0;
+	u32 value = 0;
+	u32 gpio_output = 0;
+	u32 gpio_value;
+	u32 checksum = 0;
+	u32 *dataptr;
+
+	dprintk(2, "%s()\n", __func__);
+
+	/* Save GPIO settings before reset of APU */
+	retval |= mc417_memory_read(dev, 0x9020, &gpio_output);
+	retval |= mc417_memory_read(dev, 0x900C, &gpio_value);
+
+	retval  = mc417_register_write(dev,
+		IVTV_REG_VPU, 0xFFFFFFED);
+	retval |= mc417_register_write(dev,
+		IVTV_REG_HW_BLOCKS, IVTV_CMD_HW_BLOCKS_RST);
+	retval |= mc417_register_write(dev,
+		IVTV_REG_ENC_SDRAM_REFRESH, 0x80000800);
+	retval |= mc417_register_write(dev,
+		IVTV_REG_ENC_SDRAM_PRECHARGE, 0x1A);
+	retval |= mc417_register_write(dev,
+		IVTV_REG_APU, 0);
+
+	if (retval != 0) {
+		pr_err("%s: Error with mc417_register_write\n",
+			__func__);
+		return -1;
+	}
+
+	retval = request_firmware(&firmware, CX23885_FIRM_IMAGE_NAME,
+				  &dev->pci->dev);
+
+	if (retval != 0) {
+		pr_err("ERROR: Hotplug firmware request failed (%s).\n",
+		       CX23885_FIRM_IMAGE_NAME);
+		pr_err("Please fix your hotplug setup, the board will not work without firmware loaded!\n");
+		return -1;
+	}
+
+	if (firmware->size != CX23885_FIRM_IMAGE_SIZE) {
+		pr_err("ERROR: Firmware size mismatch (have %zu, expected %d)\n",
+		       firmware->size, CX23885_FIRM_IMAGE_SIZE);
+		release_firmware(firmware);
+		return -1;
+	}
+
+	if (0 != memcmp(firmware->data, magic, 8)) {
+		pr_err("ERROR: Firmware magic mismatch, wrong file?\n");
+		release_firmware(firmware);
+		return -1;
+	}
+
+	/* transfer to the chip */
+	dprintk(2, "Loading firmware ...\n");
+	dataptr = (u32 *)firmware->data;
+	for (i = 0; i < (firmware->size >> 2); i++) {
+		value = *dataptr;
+		checksum += ~value;
+		if (mc417_memory_write(dev, i, value) != 0) {
+			pr_err("ERROR: Loading firmware failed!\n");
+			release_firmware(firmware);
+			return -1;
+		}
+		dataptr++;
+	}
+
+	/* read back to verify with the checksum */
+	dprintk(1, "Verifying firmware ...\n");
+	for (i--; i >= 0; i--) {
+		if (mc417_memory_read(dev, i, &value) != 0) {
+			pr_err("ERROR: Reading firmware failed!\n");
+			release_firmware(firmware);
+			return -1;
+		}
+		checksum -= ~value;
+	}
+	if (checksum) {
+		pr_err("ERROR: Firmware load failed (checksum mismatch).\n");
+		release_firmware(firmware);
+		return -1;
+	}
+	release_firmware(firmware);
+	dprintk(1, "Firmware upload successful.\n");
+
+	retval |= mc417_register_write(dev, IVTV_REG_HW_BLOCKS,
+		IVTV_CMD_HW_BLOCKS_RST);
+
+	/* F/W power up disturbs the GPIOs, restore state */
+	retval |= mc417_register_write(dev, 0x9020, gpio_output);
+	retval |= mc417_register_write(dev, 0x900C, gpio_value);
+
+	retval |= mc417_register_read(dev, IVTV_REG_VPU, &value);
+	retval |= mc417_register_write(dev, IVTV_REG_VPU, value & 0xFFFFFFE8);
+
+	/* Hardcoded GPIO's here */
+	retval |= mc417_register_write(dev, 0x9020, 0x4000);
+	retval |= mc417_register_write(dev, 0x900C, 0x4000);
+
+	mc417_register_read(dev, 0x9020, &gpio_output);
+	mc417_register_read(dev, 0x900C, &gpio_value);
+
+	if (retval < 0)
+		pr_err("%s: Error with mc417_register_write\n",
+			__func__);
+	return 0;
+}
+
+void cx23885_417_check_encoder(struct cx23885_dev *dev)
+{
+	u32 status, seq;
+
+	status = seq = 0;
+	cx23885_api_cmd(dev, CX2341X_ENC_GET_SEQ_END, 0, 2, &status, &seq);
+	dprintk(1, "%s() status = %d, seq = %d\n", __func__, status, seq);
+}
+
+static void cx23885_codec_settings(struct cx23885_dev *dev)
+{
+	dprintk(1, "%s()\n", __func__);
+
+	/* Dynamically change the height based on video standard */
+	if (dev->encodernorm.id & V4L2_STD_525_60)
+		dev->ts1.height = 480;
+	else
+		dev->ts1.height = 576;
+
+	/* assign frame size */
+	cx23885_api_cmd(dev, CX2341X_ENC_SET_FRAME_SIZE, 2, 0,
+				dev->ts1.height, dev->ts1.width);
+
+	dev->cxhdl.width = dev->ts1.width;
+	dev->cxhdl.height = dev->ts1.height;
+	dev->cxhdl.is_50hz =
+		(dev->encodernorm.id & V4L2_STD_625_50) != 0;
+
+	cx2341x_handler_setup(&dev->cxhdl);
+
+	cx23885_api_cmd(dev, CX2341X_ENC_MISC, 2, 0, 3, 1);
+	cx23885_api_cmd(dev, CX2341X_ENC_MISC, 2, 0, 4, 1);
+}
+
+static int cx23885_initialize_codec(struct cx23885_dev *dev, int startencoder)
+{
+	int version;
+	int retval;
+	u32 i, data[7];
+
+	dprintk(1, "%s()\n", __func__);
+
+	retval = cx23885_api_cmd(dev, CX2341X_ENC_PING_FW, 0, 0); /* ping */
+	if (retval < 0) {
+		dprintk(2, "%s() PING OK\n", __func__);
+		retval = cx23885_load_firmware(dev);
+		if (retval < 0) {
+			pr_err("%s() f/w load failed\n", __func__);
+			return retval;
+		}
+		retval = cx23885_find_mailbox(dev);
+		if (retval < 0) {
+			pr_err("%s() mailbox < 0, error\n",
+				__func__);
+			return -1;
+		}
+		dev->cx23417_mailbox = retval;
+		retval = cx23885_api_cmd(dev, CX2341X_ENC_PING_FW, 0, 0);
+		if (retval < 0) {
+			pr_err("ERROR: cx23417 firmware ping failed!\n");
+			return -1;
+		}
+		retval = cx23885_api_cmd(dev, CX2341X_ENC_GET_VERSION, 0, 1,
+			&version);
+		if (retval < 0) {
+			pr_err("ERROR: cx23417 firmware get encoder :version failed!\n");
+			return -1;
+		}
+		dprintk(1, "cx23417 firmware version is 0x%08x\n", version);
+		msleep(200);
+	}
+
+	cx23885_codec_settings(dev);
+	msleep(60);
+
+	cx23885_api_cmd(dev, CX2341X_ENC_SET_NUM_VSYNC_LINES, 2, 0,
+		CX23885_FIELD1_SAA7115, CX23885_FIELD2_SAA7115);
+	cx23885_api_cmd(dev, CX2341X_ENC_SET_PLACEHOLDER, 12, 0,
+		CX23885_CUSTOM_EXTENSION_USR_DATA, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+		0, 0);
+
+	/* Setup to capture VBI */
+	data[0] = 0x0001BD00;
+	data[1] = 1;          /* frames per interrupt */
+	data[2] = 4;          /* total bufs */
+	data[3] = 0x91559155; /* start codes */
+	data[4] = 0x206080C0; /* stop codes */
+	data[5] = 6;          /* lines */
+	data[6] = 64;         /* BPL */
+
+	cx23885_api_cmd(dev, CX2341X_ENC_SET_VBI_CONFIG, 7, 0, data[0], data[1],
+		data[2], data[3], data[4], data[5], data[6]);
+
+	for (i = 2; i <= 24; i++) {
+		int valid;
+
+		valid = ((i >= 19) && (i <= 21));
+		cx23885_api_cmd(dev, CX2341X_ENC_SET_VBI_LINE, 5, 0, i,
+				valid, 0 , 0, 0);
+		cx23885_api_cmd(dev, CX2341X_ENC_SET_VBI_LINE, 5, 0,
+				i | 0x80000000, valid, 0, 0, 0);
+	}
+
+	cx23885_api_cmd(dev, CX2341X_ENC_MUTE_AUDIO, 1, 0, CX23885_UNMUTE);
+	msleep(60);
+
+	/* initialize the video input */
+	cx23885_api_cmd(dev, CX2341X_ENC_INITIALIZE_INPUT, 0, 0);
+	msleep(60);
+
+	/* Enable VIP style pixel invalidation so we work with scaled mode */
+	mc417_memory_write(dev, 2120, 0x00000080);
+
+	/* start capturing to the host interface */
+	if (startencoder) {
+		cx23885_api_cmd(dev, CX2341X_ENC_START_CAPTURE, 2, 0,
+			CX23885_MPEG_CAPTURE, CX23885_RAW_BITS_NONE);
+		msleep(10);
+	}
+
+	return 0;
+}
+
+/* ------------------------------------------------------------------ */
+
+static int queue_setup(struct vb2_queue *q,
+			   unsigned int *num_buffers, unsigned int *num_planes,
+			   unsigned int sizes[], struct device *alloc_devs[])
+{
+	struct cx23885_dev *dev = q->drv_priv;
+
+	dev->ts1.ts_packet_size  = mpeglinesize;
+	dev->ts1.ts_packet_count = mpeglines;
+	*num_planes = 1;
+	sizes[0] = mpeglinesize * mpeglines;
+	*num_buffers = mpegbufs;
+	return 0;
+}
+
+static int buffer_prepare(struct vb2_buffer *vb)
+{
+	struct vb2_v4l2_buffer *vbuf = to_vb2_v4l2_buffer(vb);
+	struct cx23885_dev *dev = vb->vb2_queue->drv_priv;
+	struct cx23885_buffer *buf =
+		container_of(vbuf, struct cx23885_buffer, vb);
+
+	return cx23885_buf_prepare(buf, &dev->ts1);
+}
+
+static void buffer_finish(struct vb2_buffer *vb)
+{
+	struct vb2_v4l2_buffer *vbuf = to_vb2_v4l2_buffer(vb);
+	struct cx23885_dev *dev = vb->vb2_queue->drv_priv;
+	struct cx23885_buffer *buf = container_of(vbuf,
+		struct cx23885_buffer, vb);
+
+	cx23885_free_buffer(dev, buf);
+}
+
+static void buffer_queue(struct vb2_buffer *vb)
+{
+	struct vb2_v4l2_buffer *vbuf = to_vb2_v4l2_buffer(vb);
+	struct cx23885_dev *dev = vb->vb2_queue->drv_priv;
+	struct cx23885_buffer   *buf = container_of(vbuf,
+		struct cx23885_buffer, vb);
+
+	cx23885_buf_queue(&dev->ts1, buf);
+}
+
+static int cx23885_start_streaming(struct vb2_queue *q, unsigned int count)
+{
+	struct cx23885_dev *dev = q->drv_priv;
+	struct cx23885_dmaqueue *dmaq = &dev->ts1.mpegq;
+	unsigned long flags;
+	int ret;
+
+	ret = cx23885_initialize_codec(dev, 1);
+	if (ret == 0) {
+		struct cx23885_buffer *buf = list_entry(dmaq->active.next,
+			struct cx23885_buffer, queue);
+
+		cx23885_start_dma(&dev->ts1, dmaq, buf);
+		return 0;
+	}
+	spin_lock_irqsave(&dev->slock, flags);
+	while (!list_empty(&dmaq->active)) {
+		struct cx23885_buffer *buf = list_entry(dmaq->active.next,
+			struct cx23885_buffer, queue);
+
+		list_del(&buf->queue);
+		vb2_buffer_done(&buf->vb.vb2_buf, VB2_BUF_STATE_QUEUED);
+	}
+	spin_unlock_irqrestore(&dev->slock, flags);
+	return ret;
+}
+
+static void cx23885_stop_streaming(struct vb2_queue *q)
+{
+	struct cx23885_dev *dev = q->drv_priv;
+
+	/* stop mpeg capture */
+	cx23885_api_cmd(dev, CX2341X_ENC_STOP_CAPTURE, 3, 0,
+			CX23885_END_NOW, CX23885_MPEG_CAPTURE,
+			CX23885_RAW_BITS_NONE);
+
+	msleep(500);
+	cx23885_417_check_encoder(dev);
+	cx23885_cancel_buffers(&dev->ts1);
+}
+
+static const struct vb2_ops cx23885_qops = {
+	.queue_setup    = queue_setup,
+	.buf_prepare  = buffer_prepare,
+	.buf_finish = buffer_finish,
+	.buf_queue    = buffer_queue,
+	.wait_prepare = vb2_ops_wait_prepare,
+	.wait_finish = vb2_ops_wait_finish,
+	.start_streaming = cx23885_start_streaming,
+	.stop_streaming = cx23885_stop_streaming,
+};
+
+/* ------------------------------------------------------------------ */
+
+static int vidioc_g_std(struct file *file, void *priv, v4l2_std_id *id)
+{
+	struct cx23885_dev *dev = video_drvdata(file);
+
+	*id = dev->tvnorm;
+	return 0;
+}
+
+static int vidioc_s_std(struct file *file, void *priv, v4l2_std_id id)
+{
+	struct cx23885_dev *dev = video_drvdata(file);
+	unsigned int i;
+	int ret;
+
+	for (i = 0; i < ARRAY_SIZE(cx23885_tvnorms); i++)
+		if (id & cx23885_tvnorms[i].id)
+			break;
+	if (i == ARRAY_SIZE(cx23885_tvnorms))
+		return -EINVAL;
+
+	ret = cx23885_set_tvnorm(dev, id);
+	if (!ret)
+		dev->encodernorm = cx23885_tvnorms[i];
+	return ret;
+}
+
+static int vidioc_enum_input(struct file *file, void *priv,
+	struct v4l2_input *i)
+{
+	struct cx23885_dev *dev = video_drvdata(file);
+	dprintk(1, "%s()\n", __func__);
+	return cx23885_enum_input(dev, i);
+}
+
+static int vidioc_g_input(struct file *file, void *priv, unsigned int *i)
+{
+	return cx23885_get_input(file, priv, i);
+}
+
+static int vidioc_s_input(struct file *file, void *priv, unsigned int i)
+{
+	return cx23885_set_input(file, priv, i);
+}
+
+static int vidioc_g_tuner(struct file *file, void *priv,
+				struct v4l2_tuner *t)
+{
+	struct cx23885_dev *dev = video_drvdata(file);
+
+	if (dev->tuner_type == TUNER_ABSENT)
+		return -EINVAL;
+	if (0 != t->index)
+		return -EINVAL;
+	strscpy(t->name, "Television", sizeof(t->name));
+	call_all(dev, tuner, g_tuner, t);
+
+	dprintk(1, "VIDIOC_G_TUNER: tuner type %d\n", t->type);
+
+	return 0;
+}
+
+static int vidioc_s_tuner(struct file *file, void *priv,
+				const struct v4l2_tuner *t)
+{
+	struct cx23885_dev *dev = video_drvdata(file);
+
+	if (dev->tuner_type == TUNER_ABSENT)
+		return -EINVAL;
+
+	/* Update the A/V core */
+	call_all(dev, tuner, s_tuner, t);
+
+	return 0;
+}
+
+static int vidioc_g_frequency(struct file *file, void *priv,
+				struct v4l2_frequency *f)
+{
+	struct cx23885_dev *dev = video_drvdata(file);
+
+	if (dev->tuner_type == TUNER_ABSENT)
+		return -EINVAL;
+	f->type = V4L2_TUNER_ANALOG_TV;
+	f->frequency = dev->freq;
+
+	call_all(dev, tuner, g_frequency, f);
+
+	return 0;
+}
+
+static int vidioc_s_frequency(struct file *file, void *priv,
+	const struct v4l2_frequency *f)
+{
+	return cx23885_set_frequency(file, priv, f);
+}
+
+static int vidioc_querycap(struct file *file, void  *priv,
+				struct v4l2_capability *cap)
+{
+	struct cx23885_dev *dev = video_drvdata(file);
+	struct cx23885_tsport  *tsport = &dev->ts1;
+
+	strscpy(cap->driver, dev->name, sizeof(cap->driver));
+	strscpy(cap->card, cx23885_boards[tsport->dev->board].name,
+		sizeof(cap->card));
+	sprintf(cap->bus_info, "PCIe:%s", pci_name(dev->pci));
+	cap->capabilities = V4L2_CAP_VIDEO_CAPTURE | V4L2_CAP_READWRITE |
+			    V4L2_CAP_STREAMING | V4L2_CAP_VBI_CAPTURE |
+			    V4L2_CAP_AUDIO | V4L2_CAP_DEVICE_CAPS;
+	if (dev->tuner_type != TUNER_ABSENT)
+		cap->capabilities |= V4L2_CAP_TUNER;
+
+	return 0;
+}
+
+static int vidioc_enum_fmt_vid_cap(struct file *file, void  *priv,
+					struct v4l2_fmtdesc *f)
+{
+	if (f->index != 0)
+		return -EINVAL;
+
+	f->pixelformat = V4L2_PIX_FMT_MPEG;
+
+	return 0;
+}
+
+static int vidioc_g_fmt_vid_cap(struct file *file, void *priv,
+				struct v4l2_format *f)
+{
+	struct cx23885_dev *dev = video_drvdata(file);
+
+	f->fmt.pix.pixelformat  = V4L2_PIX_FMT_MPEG;
+	f->fmt.pix.bytesperline = 0;
+	f->fmt.pix.sizeimage    =
+		dev->ts1.ts_packet_size * dev->ts1.ts_packet_count;
+	f->fmt.pix.colorspace   = 0;
+	f->fmt.pix.width        = dev->ts1.width;
+	f->fmt.pix.height       = dev->ts1.height;
+	f->fmt.pix.field        = V4L2_FIELD_INTERLACED;
+	dprintk(1, "VIDIOC_G_FMT: w: %d, h: %d\n",
+		dev->ts1.width, dev->ts1.height);
+	return 0;
+}
+
+static int vidioc_try_fmt_vid_cap(struct file *file, void *priv,
+				struct v4l2_format *f)
+{
+	struct cx23885_dev *dev = video_drvdata(file);
+
+	f->fmt.pix.pixelformat  = V4L2_PIX_FMT_MPEG;
+	f->fmt.pix.bytesperline = 0;
+	f->fmt.pix.sizeimage    =
+		dev->ts1.ts_packet_size * dev->ts1.ts_packet_count;
+	f->fmt.pix.colorspace   = 0;
+	f->fmt.pix.field        = V4L2_FIELD_INTERLACED;
+	dprintk(1, "VIDIOC_TRY_FMT: w: %d, h: %d\n",
+		dev->ts1.width, dev->ts1.height);
+	return 0;
+}
+
+static int vidioc_s_fmt_vid_cap(struct file *file, void *priv,
+				struct v4l2_format *f)
+{
+	struct cx23885_dev *dev = video_drvdata(file);
+
+	f->fmt.pix.pixelformat  = V4L2_PIX_FMT_MPEG;
+	f->fmt.pix.bytesperline = 0;
+	f->fmt.pix.sizeimage    =
+		dev->ts1.ts_packet_size * dev->ts1.ts_packet_count;
+	f->fmt.pix.colorspace   = 0;
+	f->fmt.pix.field        = V4L2_FIELD_INTERLACED;
+	dprintk(1, "VIDIOC_S_FMT: w: %d, h: %d, f: %d\n",
+		f->fmt.pix.width, f->fmt.pix.height, f->fmt.pix.field);
+	return 0;
+}
+
+static int vidioc_log_status(struct file *file, void *priv)
+{
+	struct cx23885_dev *dev = video_drvdata(file);
+	char name[32 + 2];
+
+	snprintf(name, sizeof(name), "%s/2", dev->name);
+	call_all(dev, core, log_status);
+	v4l2_ctrl_handler_log_status(&dev->cxhdl.hdl, name);
+	return 0;
+}
+
+static const struct v4l2_file_operations mpeg_fops = {
+	.owner	       = THIS_MODULE,
+	.open           = v4l2_fh_open,
+	.release        = vb2_fop_release,
+	.read           = vb2_fop_read,
+	.poll		= vb2_fop_poll,
+	.unlocked_ioctl = video_ioctl2,
+	.mmap           = vb2_fop_mmap,
+};
+
+static const struct v4l2_ioctl_ops mpeg_ioctl_ops = {
+	.vidioc_g_std		 = vidioc_g_std,
+	.vidioc_s_std		 = vidioc_s_std,
+	.vidioc_enum_input	 = vidioc_enum_input,
+	.vidioc_g_input		 = vidioc_g_input,
+	.vidioc_s_input		 = vidioc_s_input,
+	.vidioc_g_tuner		 = vidioc_g_tuner,
+	.vidioc_s_tuner		 = vidioc_s_tuner,
+	.vidioc_g_frequency	 = vidioc_g_frequency,
+	.vidioc_s_frequency	 = vidioc_s_frequency,
+	.vidioc_querycap	 = vidioc_querycap,
+	.vidioc_enum_fmt_vid_cap = vidioc_enum_fmt_vid_cap,
+	.vidioc_g_fmt_vid_cap	 = vidioc_g_fmt_vid_cap,
+	.vidioc_try_fmt_vid_cap	 = vidioc_try_fmt_vid_cap,
+	.vidioc_s_fmt_vid_cap	 = vidioc_s_fmt_vid_cap,
+	.vidioc_reqbufs       = vb2_ioctl_reqbufs,
+	.vidioc_prepare_buf   = vb2_ioctl_prepare_buf,
+	.vidioc_querybuf      = vb2_ioctl_querybuf,
+	.vidioc_qbuf          = vb2_ioctl_qbuf,
+	.vidioc_dqbuf         = vb2_ioctl_dqbuf,
+	.vidioc_streamon      = vb2_ioctl_streamon,
+	.vidioc_streamoff     = vb2_ioctl_streamoff,
+	.vidioc_log_status	 = vidioc_log_status,
+#ifdef CONFIG_VIDEO_ADV_DEBUG
+	.vidioc_g_chip_info	 = cx23885_g_chip_info,
+	.vidioc_g_register	 = cx23885_g_register,
+	.vidioc_s_register	 = cx23885_s_register,
+#endif
+};
+
+static struct video_device cx23885_mpeg_template = {
+	.name          = "cx23885",
+	.fops          = &mpeg_fops,
+	.ioctl_ops     = &mpeg_ioctl_ops,
+	.tvnorms       = CX23885_NORMS,
+};
+
+void cx23885_417_unregister(struct cx23885_dev *dev)
+{
+	dprintk(1, "%s()\n", __func__);
+
+	if (dev->v4l_device) {
+		if (video_is_registered(dev->v4l_device))
+			video_unregister_device(dev->v4l_device);
+		else
+			video_device_release(dev->v4l_device);
+		v4l2_ctrl_handler_free(&dev->cxhdl.hdl);
+		dev->v4l_device = NULL;
+	}
+}
+
+static struct video_device *cx23885_video_dev_alloc(
+	struct cx23885_tsport *tsport,
+	struct pci_dev *pci,
+	struct video_device *template,
+	char *type)
+{
+	struct video_device *vfd;
+	struct cx23885_dev *dev = tsport->dev;
+
+	dprintk(1, "%s()\n", __func__);
+
+	vfd = video_device_alloc();
+	if (NULL == vfd)
+		return NULL;
+	*vfd = *template;
+	snprintf(vfd->name, sizeof(vfd->name), "%s (%s)",
+		cx23885_boards[tsport->dev->board].name, type);
+	vfd->v4l2_dev = &dev->v4l2_dev;
+	vfd->release = video_device_release;
+	return vfd;
+}
+
+int cx23885_417_register(struct cx23885_dev *dev)
+{
+	/* FIXME: Port1 hardcoded here */
+	int err = -ENODEV;
+	struct cx23885_tsport *tsport = &dev->ts1;
+	struct vb2_queue *q;
+
+	dprintk(1, "%s()\n", __func__);
+
+	if (cx23885_boards[dev->board].portb != CX23885_MPEG_ENCODER)
+		return err;
+
+	/* Set default TV standard */
+	dev->encodernorm = cx23885_tvnorms[0];
+
+	if (dev->encodernorm.id & V4L2_STD_525_60)
+		tsport->height = 480;
+	else
+		tsport->height = 576;
+
+	tsport->width = 720;
+	dev->cxhdl.port = CX2341X_PORT_SERIAL;
+	err = cx2341x_handler_init(&dev->cxhdl, 50);
+	if (err)
+		return err;
+	dev->cxhdl.priv = dev;
+	dev->cxhdl.func = cx23885_api_func;
+	cx2341x_handler_set_50hz(&dev->cxhdl, tsport->height == 576);
+	v4l2_ctrl_add_handler(&dev->ctrl_handler, &dev->cxhdl.hdl, NULL, false);
+
+	/* Allocate and initialize V4L video device */
+	dev->v4l_device = cx23885_video_dev_alloc(tsport,
+		dev->pci, &cx23885_mpeg_template, "mpeg");
+	q = &dev->vb2_mpegq;
+	q->type = V4L2_BUF_TYPE_VIDEO_CAPTURE;
+	q->io_modes = VB2_MMAP | VB2_USERPTR | VB2_DMABUF | VB2_READ;
+	q->gfp_flags = GFP_DMA32;
+	q->min_buffers_needed = 2;
+	q->drv_priv = dev;
+	q->buf_struct_size = sizeof(struct cx23885_buffer);
+	q->ops = &cx23885_qops;
+	q->mem_ops = &vb2_dma_sg_memops;
+	q->timestamp_flags = V4L2_BUF_FLAG_TIMESTAMP_MONOTONIC;
+	q->lock = &dev->lock;
+	q->dev = &dev->pci->dev;
+
+	err = vb2_queue_init(q);
+	if (err < 0)
+		return err;
+	video_set_drvdata(dev->v4l_device, dev);
+	dev->v4l_device->lock = &dev->lock;
+	dev->v4l_device->queue = q;
+	dev->v4l_device->device_caps = V4L2_CAP_VIDEO_CAPTURE |
+				       V4L2_CAP_READWRITE | V4L2_CAP_STREAMING;
+	if (dev->tuner_type != TUNER_ABSENT)
+		dev->v4l_device->device_caps |= V4L2_CAP_TUNER;
+	err = video_register_device(dev->v4l_device,
+		VFL_TYPE_VIDEO, -1);
+	if (err < 0) {
+		pr_info("%s: can't register mpeg device\n", dev->name);
+		return err;
+	}
+
+	pr_info("%s: registered device %s [mpeg]\n",
+	       dev->name, video_device_node_name(dev->v4l_device));
+
+	/* ST: Configure the encoder parameters, but don't begin
+	 * encoding, this resolves an issue where the first time the
+	 * encoder is started video can be choppy.
+	 */
+	cx23885_initialize_codec(dev, 0);
+
+	return 0;
+}
+
+MODULE_FIRMWARE(CX23885_FIRM_IMAGE_NAME);
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              // SPDX-License-Identifier: GPL-2.0-or-later
+/*
+ *
+ *  Support for CX23885 analog audio capture
+ *
+ *    (c) 2008 Mijhail Moreyra <mijhail.moreyra@gmail.com>
+ *    Adapted from cx88-alsa.c
+ *    (c) 2009 Steven Toth <stoth@kernellabs.com>
+ */
+
+#include "cx23885.h"
+#include "cx23885-reg.h"
+
+#include <linux/module.h>
+#include <linux/init.h>
+#include <linux/device.h>
+#include <linux/interrupt.h>
+#include <linux/vmalloc.h>
+#include <linux/dma-mapping.h>
+#include <linux/pci.h>
+
+#include <asm/delay.h>
+
+#include <sound/core.h>
+#include <sound/pcm.h>
+#include <sound/pcm_params.h>
+#include <sound/control.h>
+#include <sound/initval.h>
+
+#include <sound/tlv.h>
+
+#define AUDIO_SRAM_CHANNEL	SRAM_CH07
+
+#define dprintk(level, fmt, arg...) do {				\
+	if (audio_debug + 1 > level)					\
+		printk(KERN_DEBUG pr_fmt("%s: alsa: " fmt), \
+			chip->dev->name, ##arg); \
+} while(0)
+
+/****************************************************************************
+			Module global static vars
+ ****************************************************************************/
+
+static unsigned int disable_analog_audio;
+module_param(disable_analog_audio, int, 0644);
+MODULE_PARM_DESC(disable_analog_audio, "disable analog audio ALSA driver");
+
+static unsigned int audio_debug;
+module_param(audio_debug, int, 0644);
+MODULE_PARM_DESC(audio_debug, "enable debug messages [analog audio]");
+
+/****************************************************************************
+			Board specific functions
+ ****************************************************************************/
+
+/* Constants taken from cx88-reg.h */
+#define AUD_INT_DN_RISCI1       (1 <<  0)
+#define AUD_INT_UP_RISCI1       (1 <<  1)
+#define AUD_INT_RDS_DN_RISCI1   (1 <<  2)
+#define AUD_INT_DN_RISCI2       (1 <<  4) /* yes, 3 is skipped */
+#define AUD_INT_UP_RISCI2       (1 <<  5)
+#define AUD_INT_RDS_DN_RISCI2   (1 <<  6)
+#define AUD_INT_DN_SYNC         (1 << 12)
+#define AUD_INT_UP_SYNC         (1 << 13)
+#define AUD_INT_RDS_DN_SYNC     (1 << 14)
+#define AUD_INT_OPC_ERR         (1 << 16)
+#define AUD_INT_BER_IRQ         (1 << 20)
+#define AUD_INT_MCHG_IRQ        (1 << 21)
+#define GP_COUNT_CONTROL_RESET	0x3
+
+static int cx23885_alsa_dma_init(struct cx23885_audio_dev *chip,
+				 unsigned long nr_pages)
+{
+	struct cx23885_audio_buffer *buf = chip->buf;
+	struct page *pg;
+	int i;
+
+	buf->vaddr = vmalloc_32(nr_pages << PAGE_SHIFT);
+	if (NULL == buf->vaddr) {
+		dprintk(1, "vmalloc_32(%lu pages) failed\n", nr_pages);
+		return -ENOMEM;
+	}
+
+	dprintk(1, "vmalloc is at addr %p, size=%lu\n",
+		buf->vaddr, nr_pages << PAGE_SHIFT);
+
+	memset(buf->vaddr, 0, nr_pages << PAGE_SHIFT);
+	buf->nr_pages = nr_pages;
+
+	buf->sglist = vzalloc(array_size(sizeof(*buf->sglist), buf->nr_pages));
+	if (NULL == buf->sglist)
+		goto vzalloc_err;
+
+	sg_init_table(buf->sglist, buf->nr_pages);
+	for (i = 0; i < buf->nr_pages; i++) {
+		pg = vmalloc_to_page(buf->vaddr + i * PAGE_SIZE);
+		if (NULL == pg)
+			goto vmalloc_to_page_err;
+		sg_set_page(&buf->sglist[i], pg, PAGE_SIZE, 0);
+	}
+	return 0;
+
+vmalloc_to_page_err:
+	vfree(buf->sglist);
+	buf->sglist = NULL;
+vzalloc_err:
+	vfree(buf->vaddr);
+	buf->vaddr = NULL;
+	return -ENOMEM;
+}
+
+static int cx23885_alsa_dma_map(struct cx23885_audio_dev *dev)
+{
+	struct cx23885_audio_buffer *buf = dev->buf;
+
+	buf->sglen = dma_map_sg(&dev->pci->dev, buf->sglist,
+			buf->nr_pages, DMA_FROM_DEVICE);
+
+	if (0 == buf->sglen) {
+		pr_warn("%s: cx23885_alsa_map_sg failed\n", __func__);
+		return -ENOMEM;
+	}
+	return 0;
+}
+
+static int cx23885_alsa_dma_unmap(struct cx23885_audio_dev *dev)
+{
+	struct cx23885_audio_buffer *buf = dev->buf;
+
+	if (!buf->sglen)
+		return 0;
+
+	dma_unmap_sg(&dev->pci->dev, buf->sglist, buf->nr_pages, DMA_FROM_DEVICE);
+	buf->sglen = 0;
+	return 0;
+}
+
+static int cx23885_alsa_dma_free(struct cx23885_audio_buffer *buf)
+{
+	vfree(buf->sglist);
+	buf->sglist = NULL;
+	vfree(buf->vaddr);
+	buf->vaddr = NULL;
+	return 0;
+}
+
+/*
+ * BOARD Specific: Sets audio DMA
+ */
+
+static int cx23885_start_audio_dma(struct cx23885_audio_dev *chip)
+{
+	struct cx23885_audio_buffer *buf = chip->buf;
+	struct cx23885_dev *dev  = chip->dev;
+	struct sram_channel *audio_ch =
+		&dev->sram_channels[AUDIO_SRAM_CHANNEL];
+
+	dprintk(1, "%s()\n", __func__);
+
+	/* Make sure RISC/FIFO are off before changing FIFO/RISC settings */
+	cx_clear(AUD_INT_DMA_CTL, 0x11);
+
+	/* setup fifo + format - out channel */
+	cx23885_sram_channel_setup(chip->dev, audio_ch, buf->bpl,
+		buf->risc.dma);
+
+	/* sets bpl size */
+	cx_write(AUD_INT_A_LNGTH, buf->bpl);
+
+	/* This is required to get good audio (1 seems to be ok) */
+	cx_write(AUD_INT_A_MODE, 1);
+
+	/* reset counter */
+	cx_write(AUD_INT_A_GPCNT_CTL, GP_COUNT_CONTROL_RESET);
+	atomic_set(&chip->count, 0);
+
+	dprintk(1, "Start audio DMA, %d B/line, %d lines/FIFO, %d periods, %d byte buffer\n",
+		buf->bpl, cx_read(audio_ch->cmds_start+12)>>1,
+		chip->num_periods, buf->bpl * chip->num_periods);
+
+	/* Enables corresponding bits at AUD_INT_STAT */
+	cx_write(AUDIO_INT_INT_MSK, AUD_INT_OPC_ERR | AUD_INT_DN_SYNC |
+				    AUD_INT_DN_RISCI1);
+
+	/* Clean any pending interrupt bits already set */
+	cx_write(AUDIO_INT_INT_STAT, ~0);
+
+	/* enable audio irqs */
+	cx_set(PCI_INT_MSK, chip->dev->pci_irqmask | PCI_MSK_AUD_INT);
+
+	/* start dma */
+	cx_set(DEV_CNTRL2, (1<<5)); /* Enables Risc Processor */
+	cx_set(AUD_INT_DMA_CTL, 0x11); /* audio downstream FIFO and
+					  RISC enable */
+	if (audio_debug)
+		cx23885_sram_channel_dump(chip->dev, audio_ch);
+
+	return 0;
+}
+
+/*
+ * BOARD Specific: Resets audio DMA
+ */
+static int cx23885_stop_audio_dma(struct cx23885_audio_dev *chip)
+{
+	struct cx23885_dev *dev = chip->dev;
+	dprintk(1, "Stopping audio DMA\n");
+
+	/* stop dma */
+	cx_clear(AUD_INT_DMA_CTL, 0x11);
+
+	/* disable irqs */
+	cx_clear(PCI_INT_MSK, PCI_MSK_AUD_INT);
+	cx_clear(AUDIO_INT_INT_MSK, AUD_INT_OPC_ERR | AUD_INT_DN_SYNC |
+				    AUD_INT_DN_RISCI1);
+
+	if (audio_debug)
+		cx23885_sram_channel_dump(chip->dev,
+			&dev->sram_channels[AUDIO_SRAM_CHANNEL]);
+
+	return 0;
+}
+
+/*
+ * BOARD Specific: Handles audio IRQ
+ */
+int cx23885_audio_irq(struct cx23885_dev *dev, u32 status, u32 mask)
+{
+	struct cx23885_audio_dev *chip = dev->audio_dev;
+
+	if (0 == (status & mask))
+		return 0;
+
+	cx_write(AUDIO_INT_INT_STAT, status);
+
+	/* risc op code error */
+	if (status & AUD_INT_OPC_ERR) {
+		pr_warn("%s/1: Audio risc op code error\n",
+			dev->name);
+		cx_clear(AUD_INT_DMA_CTL, 0x11);
+		cx23885_sram_channel_dump(dev,
+			&dev->sram_channels[AUDIO_SRAM_CHANNEL]);
+	}
+	if (status & AUD_INT_DN_SYNC) {
+		dprintk(1, "Downstream sync error\n");
+		cx_write(AUD_INT_A_GPCNT_CTL, GP_COUNT_CONTROL_RESET);
+		return 1;
+	}
+	/* risc1 downstream */
+	if (status & AUD_INT_DN_RISCI1) {
+		atomic_set(&chip->count, cx_read(AUD_INT_A_GPCNT));
+		snd_pcm_period_elapsed(chip->substream);
+	}
+	/* FIXME: Any other status should deserve a special handling? */
+
+	return 1;
+}
+
+static int dsp_buffer_free(struct cx23885_audio_dev *chip)
+{
+	struct cx23885_riscmem *risc;
+
+	BUG_ON(!chip->dma_size);
+
+	dprintk(2, "Freeing buffer\n");
+	cx23885_alsa_dma_unmap(chip);
+	cx23885_alsa_dma_free(chip->buf);
+	risc = &chip->buf->risc;
+	dma_free_coherent(&chip->pci->dev, risc->size, risc->cpu, risc->dma);
+	kfree(chip->buf);
+
+	chip->buf = NULL;
+	chip->dma_size = 0;
+
+	return 0;
+}
+
+/****************************************************************************
+				ALSA PCM Interface
+ ****************************************************************************/
+
+/*
+ * Digital hardware definition
+ */
+#define DEFAULT_FIFO_SIZE	4096
+
+static const struct snd_pcm_hardware snd_cx23885_digital_hw = {
+	.info = SNDRV_PCM_INFO_MMAP |
+		SNDRV_PCM_INFO_INTERLEAVED |
+		SNDRV_PCM_INFO_BLOCK_TRANSFER |
+		SNDRV_PCM_INFO_MMAP_VALID,
+	.formats = SNDRV_PCM_FMTBIT_S16_LE,
+
+	.rates =		SNDRV_PCM_RATE_48000,
+	.rate_min =		48000,
+	.rate_max =		48000,
+	.channels_min = 2,
+	.channels_max = 2,
+	/* Analog audio output will be full of clicks and pops if there
+	   are not exactly four lines in the SRAM FIFO buffer.  */
+	.period_bytes_min = DEFAULT_FIFO_SIZE/4,
+	.period_bytes_max = DEFAULT_FIFO_SIZE/4,
+	.periods_min = 1,
+	.periods_max = 1024,
+	.buffer_bytes_max = (1024*1024),
+};
+
+/*
+ * audio pcm capture open callback
+ */
+static int snd_cx23885_pcm_open(struct snd_pcm_substream *substream)
+{
+	struct cx23885_audio_dev *chip = snd_pcm_substream_chip(substream);
+	struct snd_pcm_runtime *runtime = substream->runtime;
+	int err;
+
+	if (!chip) {
+		pr_err("BUG: cx23885 can't find device struct. Can't proceed with open\n");
+		return -ENODEV;
+	}
+
+	err = snd_pcm_hw_constraint_pow2(runtime, 0,
+		SNDRV_PCM_HW_PARAM_PERIODS);
+	if (err < 0)
+		goto _error;
+
+	chip->substream = substream;
+
+	runtime->hw = snd_cx23885_digital_hw;
+
+	if (chip->dev->sram_channels[AUDIO_SRAM_CHANNEL].fifo_size !=
+		DEFAULT_FIFO_SIZE) {
+		unsigned int bpl = chip->dev->
+			sram_channels[AUDIO_SRAM_CHANNEL].fifo_size / 4;
+		bpl &= ~7; /* must be multiple of 8 */
+		runtime->hw.period_bytes_min = bpl;
+		runtime->hw.period_bytes_max = bpl;
+	}
+
+	return 0;
+_error:
+	dprintk(1, "Error opening PCM!\n");
+	return err;
+}
+
+/*
+ * audio close callback
+ */
+static int snd_cx23885_close(struct snd_pcm_substream *substream)
+{
+	return 0;
+}
+
+
+/*
+ * hw_params callback
+ */
+static int snd_cx23885_hw_params(struct snd_pcm_substream *substream,
+			      struct snd_pcm_hw_params *hw_params)
+{
+	struct cx23885_audio_dev *chip = snd_pcm_substream_chip(substream);
+	struct cx23885_audio_buffer *buf;
+	int ret;
+
+	if (substream->runtime->dma_area) {
+		dsp_buffer_free(chip);
+		substream->runtime->dma_area = NULL;
+	}
+
+	chip->period_size = params_period_bytes(hw_params);
+	chip->num_periods = params_periods(hw_params);
+	chip->dma_size = chip->period_size * params_periods(hw_params);
+
+	BUG_ON(!chip->dma_size);
+	BUG_ON(chip->num_periods & (chip->num_periods-1));
+
+	buf = kzalloc(sizeof(*buf), GFP_KERNEL);
+	if (NULL == buf)
+		return -ENOMEM;
+
+	buf->bpl = chip->period_size;
+	chip->buf = buf;
+
+	ret = cx23885_alsa_dma_init(chip,
+			(PAGE_ALIGN(chip->dma_size) >> PAGE_SHIFT));
+	if (ret < 0)
+		goto error;
+
+	ret = cx23885_alsa_dma_map(chip);
+	if (ret < 0)
+		goto error;
+
+	ret = cx23885_risc_databuffer(chip->pci, &buf->risc, buf->sglist,
+				   chip->period_size, chip->num_periods, 1);
+	if (ret < 0)
+		goto error;
+
+	/* Loop back to start of program */
+	buf->risc.jmp[0] = cpu_to_le32(RISC_JUMP|RISC_IRQ1|RISC_CNT_INC);
+	buf->risc.jmp[1] = cpu_to_le32(buf->risc.dma);
+	buf->risc.jmp[2] = cpu_to_le32(0); /* bits 63-32 */
+
+	substream->runtime->dma_area = chip->buf->vaddr;
+	substream->runtime->dma_bytes = chip->dma_size;
+	substream->runtime->dma_addr = 0;
+
+	return 0;
+
+error:
+	kfree(buf);
+	chip->buf = NULL;
+	return ret;
+}
+
+/*
+ * hw free callback
+ */
+static int snd_cx23885_hw_free(struct snd_pcm_substream *substream)
+{
+
+	struct cx23885_audio_dev *chip = snd_pcm_substream_chip(substream);
+
+	if (substream->runtime->dma_area) {
+		dsp_buffer_free(chip);
+		substream->runtime->dma_area = NULL;
+	}
+
+	return 0;
+}
+
+/*
+ * prepare callback
+ */
+static int snd_cx23885_prepare(struct snd_pcm_substream *substream)
+{
+	return 0;
+}
+
+/*
+ * trigger callback
+ */
+static int snd_cx23885_card_trigger(struct snd_pcm_substream *substream,
+	int cmd)
+{
+	struct cx23885_audio_dev *chip = snd_pcm_substream_chip(substream);
+	int err;
+
+	/* Local interrupts are already disabled by ALSA */
+	spin_lock(&chip->lock);
+
+	switch (cmd) {
+	case SNDRV_PCM_TRIGGER_START:
+		err = cx23885_start_audio_dma(chip);
+		break;
+	case SNDRV_PCM_TRIGGER_STOP:
+		err = cx23885_stop_audio_dma(chip);
+		break;
+	default:
+		err = -EINVAL;
+		break;
+	}
+
+	spin_unlock(&chip->lock);
+
+	return err;
+}
+
+/*
+ * pointer callback
+ */
+static snd_pcm_uframes_t snd_cx23885_pointer(
+	struct snd_pcm_substream *substream)
+{
+	struct cx23885_audio_dev *chip = snd_pcm_substream_chip(substream);
+	struct snd_pcm_runtime *runtime = substream->runtime;
+	u16 count;
+
+	count = atomic_read(&chip->count);
+
+	return runtime->period_size * (count & (runtime->periods-1));
+}
+
+/*
+ * page callback (needed for mmap)
+ */
+static struct page *snd_cx23885_page(struct snd_pcm_substream *substream,
+				unsigned long offset)
+{
+	void *pageptr = substream->runtime->dma_area + offset;
+	return vmalloc_to_page(pageptr);
+}
+
+/*
+ * operators
+ */
+static const struct snd_pcm_ops snd_cx23885_pcm_ops = {
+	.open = snd_cx23885_pcm_open,
+	.close = snd_cx23885_close,
+	.hw_params = snd_cx23885_hw_params,
+	.hw_free = snd_cx23885_hw_free,
+	.prepare = snd_cx23885_prepare,
+	.trigger = snd_cx23885_card_trigger,
+	.pointer = snd_cx23885_pointer,
+	.page = snd_cx23885_page,
+};
+
+/*
+ * create a PCM device
+ */
+static int snd_cx23885_pcm(struct cx23885_audio_dev *chip, int device,
+	char *name)
+{
+	int err;
+	struct snd_pcm *pcm;
+
+	err = snd_pcm_new(chip->card, name, device, 0, 1, &pcm);
+	if (err < 0)
+		return err;
+	pcm->private_data = chip;
+	strscpy(pcm->name, name, sizeof(pcm->name));
+	snd_pcm_set_ops(pcm, SNDRV_PCM_STREAM_CAPTURE, &snd_cx23885_pcm_ops);
+
+	return 0;
+}
+
+/****************************************************************************
+			Basic Flow for Sound Devices
+ ****************************************************************************/
+
+/*
+ * Alsa Constructor - Component probe
+ */
+
+struct cx23885_audio_dev *cx23885_audio_register(struct cx23885_dev *dev)
+{
+	struct snd_card *card;
+	struct cx23885_audio_dev *chip;
+	int err;
+
+	if (disable_analog_audio)
+		return NULL;
+
+	if (dev->sram_channels[AUDIO_SRAM_CHANNEL].cmds_start == 0) {
+		pr_warn("%s(): Missing SRAM channel configuration for analog TV Audio\n",
+		       __func__);
+		return NULL;
+	}
+
+	err = snd_card_new(&dev->pci->dev,
+			   SNDRV_DEFAULT_IDX1, SNDRV_DEFAULT_STR1,
+			THIS_MODULE, sizeof(struct cx23885_audio_dev), &card);
+	if (err < 0)
+		goto error_msg;
+
+	chip = (struct cx23885_audio_dev *) card->private_data;
+	chip->dev = dev;
+	chip->pci = dev->pci;
+	chip->card = card;
+	spin_lock_init(&chip->lock);
+
+	err = snd_cx23885_pcm(chip, 0, "CX23885 Digital");
+	if (err < 0)
+		goto error;
+
+	strscpy(card->driver, "CX23885", sizeof(card->driver));
+	sprintf(card->shortname, "Conexant CX23885");
+	sprintf(card->longname, "%s at %s", card->shortname, dev->name);
+
+	err = snd_card_register(card);
+	if (err < 0)
+		goto error;
+
+	dprintk(0, "registered ALSA audio device\n");
+
+	return chip;
+
+error:
+	snd_card_free(card);
+error_msg:
+	pr_err("%s(): Failed to register analog audio adapter\n",
+	       __func__);
+
+	return NULL;
+}
+
+/*
+ * ALSA destructor
+ */
+void cx23885_audio_unregister(struct cx23885_dev *dev)
+{
+	struct cx23885_audio_dev *chip = dev->audio_dev;
+
+	snd_card_free(chip->card);
+}
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 // SPDX-License-Identifier: GPL-2.0-or-later
+/*
+ *
+ *  Support for CX23885 analog audio capture
+ *
+ *    (c) 2008 Mijhail Moreyra <mijhail.moreyra@gmail.com>
+ *    Adapted from cx88-alsa.c
+ *    (c) 2009 Steven Toth <stoth@kernellabs.com>
+ */
+
+#include "cx23885.h"
+#include "cx23885-reg.h"
+
+#include <linux/module.h>
+#include <linux/init.h>
+#include <linux/device.h>
+#include <linux/interrupt.h>
+#include <linux/vmalloc.h>
+#include <linux/dma-mapping.h>
+#include <linux/pci.h>
+
+#include <asm/delay.h>
+
+#include <sound/core.h>
+#include <sound/pcm.h>
+#include <sound/pcm_params.h>
+#include <sound/control.h>
+#include <sound/initval.h>
+
+#include <sound/tlv.h>
+
+#define AUDIO_SRAM_CHANNEL	SRAM_CH07
+
+#define dprintk(level, fmt, arg...) do {				\
+	if (audio_debug + 1 > level)					\
+		printk(KERN_DEBUG pr_fmt("%s: alsa: " fmt), \
+			chip->dev->name, ##arg); \
+} while(0)
+
+/****************************************************************************
+			Module global static vars
+ ****************************************************************************/
+
+static unsigned int disable_analog_audio;
+module_param(disable_analog_audio, int, 0644);
+MODULE_PARM_DESC(disable_analog_audio, "disable analog audio ALSA driver");
+
+static unsigned int audio_debug;
+module_param(audio_debug, int, 0644);
+MODULE_PARM_DESC(audio_debug, "enable debug messages [analog audio]");
+
+/****************************************************************************
+			Board specific functions
+ ****************************************************************************/
+
+/* Constants taken from cx88-reg.h */
+#define AUD_INT_DN_RISCI1       (1 <<  0)
+#define AUD_INT_UP_RISCI1       (1 <<  1)
+#define AUD_INT_RDS_DN_RISCI1   (1 <<  2)
+#define AUD_INT_DN_RISCI2       (1 <<  4) /* yes, 3 is skipped */
+#define AUD_INT_UP_RISCI2       (1 <<  5)
+#define AUD_INT_RDS_DN_RISCI2   (1 <<  6)
+#define AUD_INT_DN_SYNC         (1 << 12)
+#define AUD_INT_UP_SYNC         (1 << 13)
+#define AUD_INT_RDS_DN_SYNC     (1 << 14)
+#define AUD_INT_OPC_ERR         (1 << 16)
+#define AUD_INT_BER_IRQ         (1 << 20)
+#define AUD_INT_MCHG_IRQ        (1 << 21)
+#define GP_COUNT_CONTROL_RESET	0x3
+
+static int cx23885_alsa_dma_init(struct cx23885_audio_dev *chip,
+				 unsigned long nr_pages)
+{
+	struct cx23885_audio_buffer *buf = chip->buf;
+	struct page *pg;
+	int i;
+
+	buf->vaddr = vmalloc_32(nr_pages << PAGE_SHIFT);
+	if (NULL == buf->vaddr) {
+		dprintk(1, "vmalloc_32(%lu pages) failed\n", nr_pages);
+		return -ENOMEM;
+	}
+
+	dprintk(1, "vmalloc is at addr %p, size=%lu\n",
+		buf->vaddr, nr_pages << PAGE_SHIFT);
+
+	memset(buf->vaddr, 0, nr_pages << PAGE_SHIFT);
+	buf->nr_pages = nr_pages;
+
+	buf->sglist = vzalloc(array_size(sizeof(*buf->sglist), buf->nr_pages));
+	if (NULL == buf->sglist)
+		goto vzalloc_err;
+
+	sg_init_table(buf->sglist, buf->nr_pages);
+	for (i = 0; i < buf->nr_pages; i++) {
+		pg = vmalloc_to_page(buf->vaddr + i * PAGE_SIZE);
+		if (NULL == pg)
+			goto vmalloc_to_page_err;
+		sg_set_page(&buf->sglist[i], pg, PAGE_SIZE, 0);
+	}
+	return 0;
+
+vmalloc_to_page_err:
+	vfree(buf->sglist);
+	buf->sglist = NULL;
+vzalloc_err:
+	vfree(buf->vaddr);
+	buf->vaddr = NULL;
+	return -ENOMEM;
+}
+
+static int cx23885_alsa_dma_map(struct cx23885_audio_dev *dev)
+{
+	struct cx23885_audio_buffer *buf = dev->buf;
+
+	buf->sglen = dma_map_sg(&dev->pci->dev, buf->sglist,
+			buf->nr_pages, DMA_FROM_DEVICE);
+
+	if (0 == buf->sglen) {
+		pr_warn("%s: cx23885_alsa_map_sg failed\n", __func__);
+		return -ENOMEM;
+	}
+	return 0;
+}
+
+static int cx23885_alsa_dma_unmap(struct cx23885_audio_dev *dev)
+{
+	struct cx23885_audio_buffer *buf = dev->buf;
+
+	if (!buf->sglen)
+		return 0;
+
+	dma_unmap_sg(&dev->pci->dev, buf->sglist, buf->nr_pages, DMA_FROM_DEVICE);
+	buf->sglen = 0;
+	return 0;
+}
+
+static int cx23885_alsa_dma_free(struct cx23885_audio_buffer *buf)
+{
+	vfree(buf->sglist);
+	buf->sglist = NULL;
+	vfree(buf->vaddr);
+	buf->vaddr = NULL;
+	return 0;
+}
+
+/*
+ * BOARD Specific: Sets audio DMA
+ */
+
+static int cx23885_start_audio_dma(struct cx23885_audio_dev *chip)
+{
+	struct cx23885_audio_buffer *buf = chip->buf;
+	struct cx23885_dev *dev  = chip->dev;
+	struct sram_channel *audio_ch =
+		&dev->sram_channels[AUDIO_SRAM_CHANNEL];
+
+	dprintk(1, "%s()\n", __func__);
+
+	/* Make sure RISC/FIFO are off before changing FIFO/RISC settings */
+	cx_clear(AUD_INT_DMA_CTL, 0x11);
+
+	/* setup fifo + format - out channel */
+	cx23885_sram_channel_setup(chip->dev, audio_ch, buf->bpl,
+		buf->risc.dma);
+
+	/* sets bpl size */
+	cx_write(AUD_INT_A_LNGTH, buf->bpl);
+
+	/* This is required to get good audio (1 seems to be ok) */
+	cx_write(AUD_INT_A_MODE, 1);
+
+	/* reset counter */
+	cx_write(AUD_INT_A_GPCNT_CTL, GP_COUNT_CONTROL_RESET);
+	atomic_set(&chip->count, 0);
+
+	dprintk(1, "Start audio DMA, %d B/line, %d lines/FIFO, %d periods, %d byte buffer\n",
+		buf->bpl, cx_read(audio_ch->cmds_start+12)>>1,
+		chip->num_periods, buf->bpl * chip->num_periods);
+
+	/* Enables corresponding bits at AUD_INT_STAT */
+	cx_write(AUDIO_INT_INT_MSK, AUD_INT_OPC_ERR | AUD_INT_DN_SYNC |
+				    AUD_INT_DN_RISCI1);
+
+	/* Clean any pending interrupt bits already set */
+	cx_write(AUDIO_INT_INT_STAT, ~0);
+
+	/* enable audio irqs */
+	cx_set(PCI_INT_MSK, chip->dev->pci_irqmask | PCI_MSK_AUD_INT);
+
+	/* start dma */
+	cx_set(DEV_CNTRL2, (1<<5)); /* Enables Risc Processor */
+	cx_set(AUD_INT_DMA_CTL, 0x11); /* audio downstream FIFO and
+					  RISC enable */
+	if (audio_debug)
+		cx23885_sram_channel_dump(chip->dev, audio_ch);
+
+	return 0;
+}
+
+/*
+ * BOARD Specific: Resets audio DMA
+ */
+static int cx23885_stop_audio_dma(struct cx23885_audio_dev *chip)
+{
+	struct cx23885_dev *dev = chip->dev;
+	dprintk(1, "Stopping audio DMA\n");
+
+	/* stop dma */
+	cx_clear(AUD_INT_DMA_CTL, 0x11);
+
+	/* disable irqs */
+	cx_clear(PCI_INT_MSK, PCI_MSK_AUD_INT);
+	cx_clear(AUDIO_INT_INT_MSK, AUD_INT_OPC_ERR | AUD_INT_DN_SYNC |
+				    AUD_INT_DN_RISCI1);
+
+	if (audio_debug)
+		cx23885_sram_channel_dump(chip->dev,
+			&dev->sram_channels[AUDIO_SRAM_CHANNEL]);
+
+	return 0;
+}
+
+/*
+ * BOARD Specific: Handles audio IRQ
+ */
+int cx23885_audio_irq(struct cx23885_dev *dev, u32 status, u32 mask)
+{
+	struct cx23885_audio_dev *chip = dev->audio_dev;
+
+	if (0 == (status & mask))
+		return 0;
+
+	cx_write(AUDIO_INT_INT_STAT, status);
+
+	/* risc op code error */
+	if (status & AUD_INT_OPC_ERR) {
+		pr_warn("%s/1: Audio risc op code error\n",
+			dev->name);
+		cx_clear(AUD_INT_DMA_CTL, 0x11);
+		cx23885_sram_channel_dump(dev,
+			&dev->sram_channels[AUDIO_SRAM_CHANNEL]);
+	}
+	if (status & AUD_INT_DN_SYNC) {
+		dprintk(1, "Downstream sync error\n");
+		cx_write(AUD_INT_A_GPCNT_CTL, GP_COUNT_CONTROL_RESET);
+		return 1;
+	}
+	/* risc1 downstream */
+	if (status & AUD_INT_DN_RISCI1) {
+		atomic_set(&chip->count, cx_read(AUD_INT_A_GPCNT));
+		snd_pcm_period_elapsed(chip->substream);
+	}
+	/* FIXME: Any other status should deserve a special handling? */
+
+	return 1;
+}
+
+static int dsp_buffer_free(struct cx23885_audio_dev *chip)
+{
+	struct cx23885_riscmem *risc;
+
+	BUG_ON(!chip->dma_size);
+
+	dprintk(2, "Freeing buffer\n");
+	cx23885_alsa_dma_unmap(chip);
+	cx23885_alsa_dma_free(chip->buf);
+	risc = &chip->buf->risc;
+	dma_free_coherent(&chip->pci->dev, risc->size, risc->cpu, risc->dma);
+	kfree(chip->buf);
+
+	chip->buf = NULL;
+	chip->dma_size = 0;
+
+	return 0;
+}
+
+/****************************************************************************
+				ALSA PCM Interface
+ ****************************************************************************/
+
+/*
+ * Digital hardware definition
+ */
+#define DEFAULT_FIFO_SIZE	4096
+
+static const struct snd_pcm_hardware snd_cx23885_digital_hw = {
+	.info = SNDRV_PCM_INFO_MMAP |
+		SNDRV_PCM_INFO_INTERLEAVED |
+		SNDRV_PCM_INFO_BLOCK_TRANSFER |
+		SNDRV_PCM_INFO_MMAP_VALID,
+	.formats = SNDRV_PCM_FMTBIT_S16_LE,
+
+	.rates =		SNDRV_PCM_RATE_48000,
+	.rate_min =		48000,
+	.rate_max =		48000,
+	.channels_min = 2,
+	.channels_max = 2,
+	/* Analog audio output will be full of clicks and pops if there
+	   are not exactly four lines in the SRAM FIFO buffer.  */
+	.period_bytes_min = DEFAULT_FIFO_SIZE/4,
+	.period_bytes_max = DEFAULT_FIFO_SIZE/4,
+	.periods_min = 1,
+	.periods_max = 1024,
+	.buffer_bytes_max = (1024*1024),
+};
+
+/*
+ * audio pcm capture open callback
+ */
+static int snd_cx23885_pcm_open(struct snd_pcm_substream *substream)
+{
+	struct cx23885_audio_dev *chip = snd_pcm_substream_chip(substream);
+	struct snd_pcm_runtime *runtime = substream->runtime;
+	int err;
+
+	if (!chip) {
+		pr_err("BUG: cx23885 can't find device struct. Can't proceed with open\n");
+		return -ENODEV;
+	}
+
+	err = snd_pcm_hw_constraint_pow2(runtime, 0,
+		SNDRV_PCM_HW_PARAM_PERIODS);
+	if (err < 0)
+		goto _error;
+
+	chip->substream = substream;
+
+	runtime->hw = snd_cx23885_digital_hw;
+
+	if (chip->dev->sram_channels[AUDIO_SRAM_CHANNEL].fifo_size !=
+		DEFAULT_FIFO_SIZE) {
+		unsigned int bpl = chip->dev->
+			sram_channels[AUDIO_SRAM_CHANNEL].fifo_size / 4;
+		bpl &= ~7; /* must be multiple of 8 */
+		runtime->hw.period_bytes_min = bpl;
+		runtime->hw.period_bytes_max = bpl;
+	}
+
+	return 0;
+_error:
+	dprintk(1, "Error opening PCM!\n");
+	return err;
+}
+
+/*
+ * audio close callback
+ */
+static int snd_cx23885_close(struct snd_pcm_substream *substream)
+{
+	return 0;
+}
+
+
+/*
+ * hw_params callback
+ */
+static int snd_cx23885_hw_params(struct snd_pcm_substream *substream,
+			      struct snd_pcm_hw_params *hw_params)
+{
+	struct cx23885_audio_dev *chip = snd_pcm_substream_chip(substream);
+	struct cx23885_audio_buffer *buf;
+	int ret;
+
+	if (substream->runtime->dma_area) {
+		dsp_buffer_free(chip);
+		substream->runtime->dma_area = NULL;
+	}
+
+	chip->period_size = params_period_bytes(hw_params);
+	chip->num_periods = params_periods(hw_params);
+	chip->dma_size = chip->period_size * params_periods(hw_params);
+
+	BUG_ON(!chip->dma_size);
+	BUG_ON(chip->num_periods & (chip->num_periods-1));
+
+	buf = kzalloc(sizeof(*buf), GFP_KERNEL);
+	if (NULL == buf)
+		return -ENOMEM;
+
+	buf->bpl = chip->period_size;
+	chip->buf = buf;
+
+	ret = cx23885_alsa_dma_init(chip,
+			(PAGE_ALIGN(chip->dma_size) >> PAGE_SHIFT));
+	if (ret < 0)
+		goto error;
+
+	ret = cx23885_alsa_dma_map(chip);
+	if (ret < 0)
+		goto error;
+
+	ret = cx23885_risc_databuffer(chip->pci, &buf->risc, buf->sglist,
+				   chip->period_size, chip->num_periods, 1);
+	if (ret < 0)
+		goto error;
+
+	/* Loop back to start of program */
+	buf->risc.jmp[0] = cpu_to_le32(RISC_JUMP|RISC_IRQ1|RISC_CNT_INC);
+	buf->risc.jmp[1] = cpu_to_le32(buf->risc.dma);
+	buf->risc.jmp[2] = cpu_to_le32(0); /* bits 63-32 */
+
+	substream->runtime->dma_area = chip->buf->vaddr;
+	substream->runtime->dma_bytes = chip->dma_size;
+	substream->runtime->dma_addr = 0;
+
+	return 0;
+
+error:
+	kfree(buf);
+	chip->buf = NULL;
+	return ret;
+}
+
+/*
+ * hw free callback
+ */
+static int snd_cx23885_hw_free(struct snd_pcm_substream *substream)
+{
+
+	struct cx23885_audio_dev *chip = snd_pcm_substream_chip(substream);
+
+	if (substream->runtime->dma_area) {
+		dsp_buffer_free(chip);
+		substream->runtime->dma_area = NULL;
+	}
+
+	return 0;
+}
+
+/*
+ * prepare callback
+ */
+static int snd_cx23885_prepare(struct snd_pcm_substream *substream)
+{
+	return 0;
+}
+
+/*
+ * trigger callback
+ */
+static int snd_cx23885_card_trigger(struct snd_pcm_substream *substream,
+	int cmd)
+{
+	struct cx23885_audio_dev *chip = snd_pcm_substream_chip(substream);
+	int err;
+
+	/* Local interrupts are already disabled by ALSA */
+	spin_lock(&chip->lock);
+
+	switch (cmd) {
+	case SNDRV_PCM_TRIGGER_START:
+		err = cx23885_start_audio_dma(chip);
+		break;
+	case SNDRV_PCM_TRIGGER_STOP:
+		err = cx23885_stop_audio_dma(chip);
+		break;
+	default:
+		err = -EINVAL;
+		break;
+	}
+
+	spin_unlock(&chip->lock);
+
+	return err;
+}
+
+/*
+ * pointer callback
+ */
+static snd_pcm_uframes_t snd_cx23885_pointer(
+	struct snd_pcm_substream *substream)
+{
+	struct cx23885_audio_dev *chip = snd_pcm_substream_chip(substream);
+	struct snd_pcm_runtime *runtime = substream->runtime;
+	u16 count;
+
+	count = atomic_read(&chip->count);
+
+	return runtime->period_size * (count & (runtime->periods-1));
+}
+
+/*
+ * page callback (needed for mmap)
+ */
+static struct page *snd_cx23885_page(struct snd_pcm_substream *substream,
+				unsigned long offset)
+{
+	void *pageptr = substream->runtime->dma_area + offset;
+	return vmalloc_to_page(pageptr);
+}
+
+/*
+ * operators
+ */
+static const struct snd_pcm_ops snd_cx23885_pcm_ops = {
+	.open = snd_cx23885_pcm_open,
+	.close = snd_cx23885_close,
+	.hw_params = snd_cx23885_hw_params,
+	.hw_free = snd_cx23885_hw_free,
+	.prepare = snd_cx23885_prepare,
+	.trigger = snd_cx23885_card_trigger,
+	.pointer = snd_cx23885_pointer,
+	.page = snd_cx23885_page,
+};
+
+/*
+ * create a PCM device
+ */
+static int snd_cx23885_pcm(struct cx23885_audio_dev *chip, int device,
+	char *name)
+{
+	int err;
+	struct snd_pcm *pcm;
+
+	err = snd_pcm_new(chip->card, name, device, 0, 1, &pcm);
+	if (err < 0)
+		return err;
+	pcm->private_data = chip;
+	strscpy(pcm->name, name, sizeof(pcm->name));
+	snd_pcm_set_ops(pcm, SNDRV_PCM_STREAM_CAPTURE, &snd_cx23885_pcm_ops);
+
+	return 0;
+}
+
+/****************************************************************************
+			Basic Flow for Sound Devices
+ ****************************************************************************/
+
+/*
+ * Alsa Constructor - Component probe
+ */
+
+struct cx23885_audio_dev *cx23885_audio_register(struct cx23885_dev *dev)
+{
+	struct snd_card *card;
+	struct cx23885_audio_dev *chip;
+	int err;
+
+	if (disable_analog_audio)
+		return NULL;
+
+	if (dev->sram_channels[AUDIO_SRAM_CHANNEL].cmds_start == 0) {
+		pr_warn("%s(): Missing SRAM channel configuration for analog TV Audio\n",
+		       __func__);
+		return NULL;
+	}
+
+	err = snd_card_new(&dev->pci->dev,
+			   SNDRV_DEFAULT_IDX1, SNDRV_DEFAULT_STR1,
+			THIS_MODULE, sizeof(struct cx23885_audio_dev), &card);
+	if (err < 0)
+		goto error_msg;
+
+	chip = (struct cx23885_audio_dev *) card->private_data;
+	chip->dev = dev;
+	chip->pci = dev->pci;
+	chip->card = card;
+	spin_lock_init(&chip->lock);
+
+	err = snd_cx23885_pcm(chip, 0, "CX23885 Digital");
+	if (err < 0)
+		goto error;
+
+	strscpy(card->driver, "CX23885", sizeof(card->driver));
+	sprintf(card->shortname, "Conexant CX23885");
+	sprintf(card->longname, "%s at %s", card->shortname, dev->name);
+
+	err = snd_card_register(card);
+	if (err < 0)
+		goto error;
+
+	dprintk(0, "registered ALSA audio device\n");
+
+	return chip;
+
+error:
+	snd_card_free(card);
+error_msg:
+	pr_err("%s(): Failed to register analog audio adapter\n",
+	       __func__);
+
+	return NULL;
+}
+
+/*
+ * ALSA destructor
+ */
+void cx23885_audio_unregister(struct cx23885_dev *dev)
+{
+	struct cx23885_audio_dev *chip = dev->audio_dev;
+
+	snd_card_free(chip->card);
+}
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 // SPDX-License-Identifier: GPL-2.0-or-later
+/*
+ *  Driver for the Conexant CX23885/7/8 PCIe bridge
+ *
+ *  AV device support routines - non-input, non-vl42_subdev routines
+ *
+ *  Copyright (C) 2010  Andy Walls <awalls@md.metrocast.net>
+ */
+
+#include "cx23885.h"
+#include "cx23885-av.h"
+#include "cx23885-video.h"
+
+void cx23885_av_work_handler(struct work_struct *work)
+{
+	struct cx23885_dev *dev =
+			   container_of(work, struct cx23885_dev, cx25840_work);
+	bool handled = false;
+
+	v4l2_subdev_call(dev->sd_cx25840, core, interrupt_service_routine,
+			 PCI_MSK_AV_CORE, &handled);
+
+	/* Getting here with the interrupt not handled
+	   then probbaly flatiron does have pending interrupts.
+	*/
+	if (!handled) {
+		/* clear left and right adc channel interrupt request flag */
+		cx23885_flatiron_write(dev, 0x1f,
+			cx23885_flatiron_read(dev, 0x1f) | 0x80);
+		cx23885_flatiron_write(dev, 0x23,
+			cx23885_flatiron_read(dev, 0x23) | 0x80);
+	}
+
+	cx23885_irq_enable(dev, PCI_MSK_AV_CORE);
+}
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        // SPDX-License-Identifier: GPL-2.0-or-later
+/*
+ *  Driver for the Conexant CX23885/7/8 PCIe bridge
+ *
+ *  AV device support routines - non-input, non-vl42_subdev routines
+ *
+ *  Copyright (C) 2010  Andy Walls <awalls@md.metrocast.net>
+ */
+
+#include "cx23885.h"
+#include "cx23885-av.h"
+#include "cx23

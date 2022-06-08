@@ -1,4 +1,6 @@
-pes.h \
-  include/asm-generic/pgtable-nop4d.h \
-  include/asm-generic/pgtable-nopud.h \
-  arch/x86/include/asm/nospec-branch
+,
+			.amux   = CX25840_AUDIO8,
+		} },
+	},
+	[CX23885_BOARD_HAUPPAUGE_QUADHD_DVB_885] = {
+		.name         = "Hauppauge WinTV-Q

@@ -1,2 +1,1 @@
-VE) \
-  include/linux/scatter
+/* SPDX-License-Identifier: G

@@ -1,773 +1,1110 @@
-onfig/TRACE_BRANCH_PROFILING) \
-    $(wildcard include/config/PROFILE_ALL_BRANCHES) \
-    $(wildcard include/config/STACK_VALIDATION) \
-  include/linux/compiler_types.h \
-  arch/x86/include/generated/asm/rwonce.h \
-  include/asm-generic/rwonce.h \
-  include/linux/kasan-checks.h \
-    $(wildcard include/config/KASAN_GENERIC) \
-    $(wildcard include/config/KASAN_SW_TAGS) \
-  include/linux/types.h \
-    $(wildcard include/config/HAVE_UID16) \
-    $(wildcard include/config/UID16) \
-    $(wildcard include/config/ARCH_DMA_ADDR_T_64BIT) \
-    $(wildcard include/config/PHYS_ADDR_T_64BIT) \
-    $(wildcard include/config/64BIT) \
-    $(wildcard include/config/ARCH_32BIT_USTAT_F_TINODE) \
-  include/uapi/linux/types.h \
-  arch/x86/include/generated/uapi/asm/types.h \
-  include/uapi/asm-generic/types.h \
-  include/asm-generic/int-ll64.h \
-  include/uapi/asm-generic/int-ll64.h \
-  arch/x86/include/uapi/asm/bitsperlong.h \
-  include/asm-generic/bitsperlong.h \
-  include/uapi/asm-generic/bitsperlong.h \
-  include/uapi/linux/posix_types.h \
-  include/linux/stddef.h \
-  include/uapi/linux/stddef.h \
-  arch/x86/include/asm/posix_types.h \
-    $(wildcard include/config/X86_32) \
-  arch/x86/include/uapi/asm/posix_types_32.h \
-  include/uapi/asm-generic/posix_types.h \
-  include/linux/kcsan-checks.h \
-    $(wildcard include/config/KCSAN) \
-    $(wildcard include/config/KCSAN_WEAK_MEMORY) \
-    $(wildcard include/config/KCSAN_IGNORE_ATOMICS) \
-  include/linux/err.h \
-  arch/x86/include/generated/uapi/asm/errno.h \
-  include/uapi/asm-generic/errno.h \
-  include/uapi/asm-generic/errno-base.h \
-  include/linux/poison.h \
-    $(wildcard include/config/ILLEGAL_POINTER_VALUE) \
-  include/linux/const.h \
-  include/vdso/const.h \
-  include/uapi/linux/const.h \
-  arch/x86/include/asm/barrier.h \
-  arch/x86/include/asm/alternative.h \
-  include/linux/stringify.h \
-  arch/x86/include/asm/asm.h \
-  arch/x86/include/asm/extable_fixup_types.h \
-  arch/x86/include/asm/nops.h \
-  include/asm-generic/barrier.h \
-  include/linux/stat.h \
-  arch/x86/include/uapi/asm/stat.h \
-  include/uapi/linux/stat.h \
-  include/linux/time.h \
-    $(wildcard include/config/POSIX_TIMERS) \
-  include/linux/cache.h \
-    $(wildcard include/config/ARCH_HAS_CACHE_LINE_SIZE) \
-  include/uapi/linux/kernel.h \
-  include/uapi/linux/sysinfo.h \
-  arch/x86/include/asm/cache.h \
-    $(wildcard include/config/X86_L1_CACHE_SHIFT) \
-    $(wildcard include/config/X86_INTERNODE_CACHE_SHIFT) \
-    $(wildcard include/config/X86_VSMP) \
-  include/linux/linkage.h \
-    $(wildcard include/config/ARCH_USE_SYM_ANNOTATIONS) \
-  include/linux/export.h \
-    $(wildcard include/config/MODVERSIONS) \
-    $(wildcard include/config/MODULE_REL_CRCS) \
-    $(wildcard include/config/HAVE_ARCH_PREL32_RELOCATIONS) \
-    $(wildcard include/config/TRIM_UNUSED_KSYMS) \
-  arch/x86/include/asm/linkage.h \
-    $(wildcard include/config/X86_64) \
-    $(wildcard include/config/X86_ALIGNMENT_16) \
-    $(wildcard include/config/SLS) \
-  arch/x86/include/asm/ibt.h \
-    $(wildcard include/config/X86_KERNEL_IBT) \
-  include/linux/math64.h \
-    $(wildcard include/config/ARCH_SUPPORTS_INT128) \
-  include/linux/math.h \
-  arch/x86/include/asm/div64.h \
-  include/linux/log2.h \
-    $(wildcard include/config/ARCH_HAS_ILOG2_U32) \
-    $(wildcard include/config/ARCH_HAS_ILOG2_U64) \
-  include/linux/bitops.h \
-  include/linux/bits.h \
-  include/vdso/bits.h \
-  include/linux/typecheck.h \
-  arch/x86/include/asm/bitops.h \
-    $(wildcard include/config/X86_CMOV) \
-  arch/x86/include/asm/rmwcc.h \
-    $(wildcard include/config/CC_HAS_ASM_GOTO) \
-  include/asm-generic/bitops/fls64.h \
-  include/asm-generic/bitops/sched.h \
-  arch/x86/include/asm/arch_hweight.h \
-  arch/x86/include/asm/cpufeatures.h \
-  arch/x86/include/asm/required-features.h \
-    $(wildcard include/config/X86_MINIMUM_CPU_FAMILY) \
-    $(wildcard include/config/MATH_EMULATION) \
-    $(wildcard include/config/X86_PAE) \
-    $(wildcard include/config/X86_CMPXCHG64) \
-    $(wildcard include/config/X86_P6_NOP) \
-    $(wildcard include/config/MATOM) \
-    $(wildcard include/config/PARAVIRT_XXL) \
-  arch/x86/include/asm/disabled-features.h \
-    $(wildcard include/config/X86_SMAP) \
-    $(wildcard include/config/X86_UMIP) \
-    $(wildcard include/config/X86_INTEL_MEMORY_PROTECTION_KEYS) \
-    $(wildcard include/config/X86_5LEVEL) \
-    $(wildcard include/config/PAGE_TABLE_ISOLATION) \
-    $(wildcard include/config/INTEL_IOMMU_SVM) \
-    $(wildcard include/config/X86_SGX) \
-  include/asm-generic/bitops/const_hweight.h \
-  include/asm-generic/bitops/instrumented-atomic.h \
-  include/linux/instrumented.h \
-  include/asm-generic/bitops/instrumented-non-atomic.h \
-    $(wildcard include/config/KCSAN_ASSUME_PLAIN_WRITES_ATOMIC) \
-  include/asm-generic/bitops/instrumented-lock.h \
-  include/asm-generic/bitops/le.h \
-  arch/x86/include/uapi/asm/byteorder.h \
-  include/linux/byteorder/little_endian.h \
-  include/uapi/linux/byteorder/little_endian.h \
-  include/linux/swab.h \
-  include/uapi/linux/swab.h \
-  arch/x86/include/uapi/asm/swab.h \
-  include/linux/byteorder/generic.h \
-  include/asm-generic/bitops/ext2-atomic-setbit.h \
-  include/vdso/math64.h \
-  include/linux/time64.h \
-  include/vdso/time64.h \
-  include/uapi/linux/time.h \
-  include/uapi/linux/time_types.h \
-  include/linux/time32.h \
-  include/linux/timex.h \
-  include/uapi/linux/timex.h \
-  include/uapi/linux/param.h \
-  arch/x86/include/generated/uapi/asm/param.h \
-  include/asm-generic/param.h \
-    $(wildcard include/config/HZ) \
-  include/uapi/asm-generic/param.h \
-  arch/x86/include/asm/timex.h \
-    $(wildcard include/config/X86_TSC) \
-  arch/x86/include/asm/processor.h \
-    $(wildcard include/config/X86_VMX_FEATURE_NAMES) \
-    $(wildcard include/config/X86_IOPL_IOPERM) \
-    $(wildcard include/config/STACKPROTECTOR) \
-    $(wildcard include/config/VM86) \
-    $(wildcard include/config/X86_DEBUGCTLMSR) \
-    $(wildcard include/config/CPU_SUP_AMD) \
-    $(wildcard include/config/XEN) \
-  arch/x86/include/asm/processor-flags.h \
-  arch/x86/include/uapi/asm/processor-flags.h \
-  include/linux/mem_encrypt.h \
-    $(wildcard include/config/ARCH_HAS_MEM_ENCRYPT) \
-    $(wildcard include/config/AMD_MEM_ENCRYPT) \
-  arch/x86/include/asm/mem_encrypt.h \
-  include/linux/init.h \
-    $(wildcard include/config/STRICT_KERNEL_RWX) \
-    $(wildcard include/config/STRICT_MODULE_RWX) \
-    $(wildcard include/config/LTO_CLANG) \
-  include/linux/cc_platform.h \
-    $(wildcard include/config/ARCH_HAS_CC_PLATFORM) \
-  arch/x86/include/uapi/asm/bootparam.h \
-  include/linux/screen_info.h \
-  include/uapi/linux/screen_info.h \
-  include/linux/apm_bios.h \
-  include/uapi/linux/apm_bios.h \
-  include/uapi/linux/ioctl.h \
-  arch/x86/include/generated/uapi/asm/ioctl.h \
-  include/asm-generic/ioctl.h \
-  include/uapi/asm-generic/ioctl.h \
-  include/linux/edd.h \
-  include/uapi/linux/edd.h \
-  arch/x86/include/asm/ist.h \
-  arch/x86/include/uapi/asm/ist.h \
-  include/video/edid.h \
-    $(wildcard include/config/X86) \
-  include/uapi/video/edid.h \
-  arch/x86/include/asm/math_emu.h \
-  arch/x86/include/asm/ptrace.h \
-    $(wildcard include/config/PARAVIRT) \
-    $(wildcard include/config/IA32_EMULATION) \
-  arch/x86/include/asm/segment.h \
-    $(wildcard include/config/XEN_PV) \
-  arch/x86/include/asm/page_types.h \
-    $(wildcard include/config/PHYSICAL_START) \
-    $(wildcard include/config/PHYSICAL_ALIGN) \
-    $(wildcard include/config/DYNAMIC_PHYSICAL_MASK) \
-  arch/x86/include/asm/page_32_types.h \
-    $(wildcard include/config/HIGHMEM4G) \
-    $(wildcard include/config/HIGHMEM64G) \
-    $(wildcard include/config/PAGE_OFFSET) \
-  arch/x86/include/uapi/asm/ptrace.h \
-  arch/x86/include/uapi/asm/ptrace-abi.h \
-  arch/x86/include/asm/paravirt_types.h \
-    $(wildcard include/config/PGTABLE_LEVELS) \
-    $(wildcard include/config/PARAVIRT_DEBUG) \
-  arch/x86/include/asm/desc_defs.h \
-  arch/x86/include/asm/pgtable_types.h \
-    $(wildcard include/config/MEM_SOFT_DIRTY) \
-    $(wildcard include/config/HAVE_ARCH_USERFAULTFD_WP) \
-    $(wildcard include/config/PROC_FS) \
-  arch/x86/include/asm/pgtable_32_types.h \
-  arch/x86/include/asm/pgtable-3level_types.h \
-  include/asm-generic/pgtable-nop4d.h \
-  include/asm-generic/pgtable-nopud.h \
-  arch/x86/include/asm/nospec-branch.h \
-  include/linux/static_key.h \
-  include/linux/jump_label.h \
-    $(wildcard include/config/HAVE_ARCH_JUMP_LABEL_RELATIVE) \
-  arch/x86/include/asm/jump_label.h \
-  include/linux/objtool.h \
-    $(wildcard include/config/FRAME_POINTER) \
-  arch/x86/include/asm/msr-index.h \
-  arch/x86/include/asm/unwind_hints.h \
-  arch/x86/include/asm/orc_types.h \
-  arch/x86/include/asm/GEN-for-each-reg.h \
-  arch/x86/include/asm/spinlock_types.h \
-  include/asm-generic/qspinlock_types.h \
-    $(wildcard include/config/NR_CPUS) \
-  include/asm-generic/qrwlock_types.h \
-  arch/x86/include/asm/proto.h \
-  arch/x86/include/uapi/asm/ldt.h \
-  arch/x86/include/uapi/asm/sigcontext.h \
-  arch/x86/include/asm/current.h \
-  arch/x86/include/asm/percpu.h \
-    $(wildcard include/config/X86_64_SMP) \
-  include/linux/kernel.h \
-    $(wildcard include/config/PREEMPT_VOLUNTARY_BUILD) \
-    $(wildcard include/config/PREEMPT_DYNAMIC) \
-    $(wildcard include/config/HAVE_PREEMPT_DYNAMIC_CALL) \
-    $(wildcard include/config/HAVE_PREEMPT_DYNAMIC_KEY) \
-    $(wildcard include/config/PREEMPT_) \
-    $(wildcard include/config/DEBUG_ATOMIC_SLEEP) \
-    $(wildcard include/config/MMU) \
-    $(wildcard include/config/PROVE_LOCKING) \
-  include/linux/stdarg.h \
-  include/linux/align.h \
-  include/linux/limits.h \
-  include/uapi/linux/limits.h \
-  include/vdso/limits.h \
-  include/linux/kstrtox.h \
-  include/linux/minmax.h \
-  include/linux/panic.h \
-    $(wildcard include/config/PANIC_TIMEOUT) \
-  include/linux/printk.h \
-    $(wildcard include/config/MESSAGE_LOGLEVEL_DEFAULT) \
-    $(wildcard include/config/CONSOLE_LOGLEVEL_DEFAULT) \
-    $(wildcard include/config/CONSOLE_LOGLEVEL_QUIET) \
-    $(wildcard include/config/EARLY_PRINTK) \
-    $(wildcard include/config/PRINTK) \
-    $(wildcard include/config/DYNAMIC_DEBUG) \
-    $(wildcard include/config/DYNAMIC_DEBUG_CORE) \
-  include/linux/kern_levels.h \
-  include/linux/ratelimit_types.h \
-  include/linux/spinlock_types_raw.h \
-    $(wildcard include/config/DEBUG_SPINLOCK) \
-    $(wildcard include/config/DEBUG_LOCK_ALLOC) \
-  include/linux/lockdep_types.h \
-    $(wildcard include/config/PROVE_RAW_LOCK_NESTING) \
-    $(wildcard include/config/LOCKDEP) \
-    $(wildcard include/config/LOCK_STAT) \
-  include/linux/once_lite.h \
-  include/linux/static_call_types.h \
-    $(wildcard include/config/HAVE_STATIC_CALL) \
-  include/linux/instruction_pointer.h \
-  include/asm-generic/percpu.h \
-    $(wildcard include/config/DEBUG_PREEMPT) \
-    $(wildcard include/config/HAVE_SETUP_PER_CPU_AREA) \
-  include/linux/threads.h \
-    $(wildcard include/config/BASE_SMALL) \
-  include/linux/percpu-defs.h \
-    $(wildcard include/config/DEBUG_FORCE_WEAK_PER_CPU) \
-  arch/x86/include/asm/page.h \
-  arch/x86/include/asm/page_32.h \
-    $(wildcard include/config/DEBUG_VIRTUAL) \
-    $(wildcard include/config/FLATMEM) \
-  include/linux/string.h \
-    $(wildcard include/config/BINARY_PRINTF) \
-    $(wildcard include/config/FORTIFY_SOURCE) \
-  include/linux/errno.h \
-  include/uapi/linux/errno.h \
-  include/uapi/linux/string.h \
-  arch/x86/include/asm/string.h \
-  arch/x86/include/asm/string_32.h \
-  include/linux/fortify-string.h \
-  include/linux/range.h \
-  include/asm-generic/memory_model.h \
-    $(wildcard include/config/SPARSEMEM_VMEMMAP) \
-    $(wildcard include/config/SPARSEMEM) \
-  include/linux/pfn.h \
-  include/asm-generic/getorder.h \
-  arch/x86/include/asm/msr.h \
-  arch/x86/include/asm/msr-index.h \
-  arch/x86/include/asm/cpumask.h \
-  include/linux/cpumask.h \
-    $(wildcard include/config/CPUMASK_OFFSTACK) \
-    $(wildcard include/config/HOTPLUG_CPU) \
-    $(wildcard include/config/DEBUG_PER_CPU_MAPS) \
-  include/linux/bitmap.h \
-  include/linux/find.h \
-  include/linux/atomic.h \
-  arch/x86/include/asm/atomic.h \
-  arch/x86/include/asm/cmpxchg.h \
-  arch/x86/include/asm/cmpxchg_32.h \
-  arch/x86/include/asm/atomic64_32.h \
-  include/linux/atomic/atomic-arch-fallback.h \
-    $(wildcard include/config/GENERIC_ATOMIC64) \
-  include/linux/atomic/atomic-long.h \
-  include/linux/atomic/atomic-instrumented.h \
-  include/linux/bug.h \
-    $(wildcard include/config/BUG_ON_DATA_CORRUPTION) \
-  arch/x86/include/asm/bug.h \
-    $(wildcard include/config/DEBUG_BUGVERBOSE) \
-  include/linux/instrumentation.h \
-    $(wildcard include/config/DEBUG_ENTRY) \
-  include/asm-generic/bug.h \
-    $(wildcard include/config/BUG) \
-    $(wildcard include/config/GENERIC_BUG_RELATIVE_POINTERS) \
-  arch/x86/include/uapi/asm/msr.h \
-  include/linux/tracepoint-defs.h \
-  arch/x86/include/asm/special_insns.h \
-  include/linux/irqflags.h \
-    $(wildcard include/config/TRACE_IRQFLAGS) \
-    $(wildcard include/config/PREEMPT_RT) \
-    $(wildcard include/config/IRQSOFF_TRACER) \
-    $(wildcard include/config/PREEMPT_TRACER) \
-    $(wildcard include/config/DEBUG_IRQFLAGS) \
-    $(wildcard include/config/TRACE_IRQFLAGS_SUPPORT) \
-  arch/x86/include/asm/irqflags.h \
-  arch/x86/include/asm/fpu/types.h \
-  arch/x86/include/asm/vmxfeatures.h \
-  arch/x86/include/asm/vdso/processor.h \
-  include/linux/personality.h \
-  include/uapi/linux/personality.h \
-  arch/x86/include/asm/tsc.h \
-  arch/x86/include/asm/cpufeature.h \
-    $(wildcard include/config/X86_FEATURE_NAMES) \
-  include/vdso/time32.h \
-  include/vdso/time.h \
-  include/linux/uidgid.h \
-    $(wildcard include/config/MULTIUSER) \
-    $(wildcard include/config/USER_NS) \
-  include/linux/highuid.h \
-  include/linux/buildid.h \
-    $(wildcard include/config/CRASH_CORE) \
-  include/linux/mm_types.h \
-    $(wildcard include/config/HAVE_ALIGNED_STRUCT_PAGE) \
-    $(wildcard include/config/MEMCG) \
-    $(wildcard include/config/USERFAULTFD) \
-    $(wildcard include/config/SWAP) \
-    $(wildcard include/config/NUMA) \
-    $(wildcard include/config/HAVE_ARCH_COMPAT_MMAP_BASES) \
-    $(wildcard include/config/MEMBARRIER) \
-    $(wildcard include/config/AIO) \
-    $(wildcard include/config/MMU_NOTIFIER) \
-    $(wildcard include/config/TRANSPARENT_HUGEPAGE) \
-    $(wildcard include/config/NUMA_BALANCING) \
-    $(wildcard include/config/ARCH_WANT_BATCHED_UNMAP_TLB_FLUSH) \
-    $(wildcard include/config/HUGETLB_PAGE) \
-    $(wildcard include/config/IOMMU_SVA) \
-  include/linux/mm_types_task.h \
-    $(wildcard include/config/SPLIT_PTLOCK_CPUS) \
-    $(wildcard include/config/ARCH_ENABLE_SPLIT_PMD_PTLOCK) \
-  arch/x86/include/asm/tlbbatch.h \
-  include/linux/auxvec.h \
-  include/uapi/linux/auxvec.h \
-  arch/x86/include/uapi/asm/auxvec.h \
-  include/linux/kref.h \
-  include/linux/spinlock.h \
-    $(wildcard include/config/PREEMPTION) \
-  include/linux/preempt.h \
-    $(wildcard include/config/PREEMPT_COUNT) \
-    $(wildcard include/config/TRACE_PREEMPT_TOGGLE) \
-    $(wildcard include/config/PREEMPT_NOTIFIERS) \
-  arch/x86/include/asm/preempt.h \
-  include/linux/thread_info.h \
-    $(wildcard include/config/THREAD_INFO_IN_TASK) \
-    $(wildcard include/config/GENERIC_ENTRY) \
-    $(wildcard include/config/HAVE_ARCH_WITHIN_STACK_FRAMES) \
-    $(wildcard include/config/HARDENED_USERCOPY) \
-  include/linux/restart_block.h \
-  arch/x86/include/asm/thread_info.h \
-    $(wildcard include/config/COMPAT) \
-  include/linux/bottom_half.h \
-  include/linux/lockdep.h \
-    $(wildcard include/config/DEBUG_LOCKING_API_SELFTESTS) \
-  include/linux/smp.h \
-    $(wildcard include/config/UP_LATE_INIT) \
-  include/linux/smp_types.h \
-  include/linux/llist.h \
-    $(wildcard include/config/ARCH_HAVE_NMI_SAFE_CMPXCHG) \
-  arch/x86/include/asm/smp.h \
-    $(wildcard include/config/X86_LOCAL_APIC) \
-    $(wildcard include/config/DEBUG_NMI_SELFTEST) \
-  arch/x86/include/generated/asm/mmiowb.h \
-  include/asm-generic/mmiowb.h \
-    $(wildcard include/config/MMIOWB) \
-  include/linux/spinlock_types.h \
-  include/linux/rwlock_types.h \
-  arch/x86/include/asm/spinlock.h \
-  arch/x86/include/asm/paravirt.h \
-    $(wildcard include/config/PARAVIRT_SPINLOCKS) \
-  arch/x86/include/asm/frame.h \
-  arch/x86/include/asm/qspinlock.h \
-  include/asm-generic/qspinlock.h \
-  arch/x86/include/asm/qrwlock.h \
-  include/asm-generic/qrwlock.h \
-  include/linux/rwlock.h \
-    $(wildcard include/config/PREEMPT) \
-  include/linux/spinlock_api_smp.h \
-    $(wildcard include/config/INLINE_SPIN_LOCK) \
-    $(wildcard include/config/INLINE_SPIN_LOCK_BH) \
-    $(wildcard include/config/INLINE_SPIN_LOCK_IRQ) \
-    $(wildcard include/config/INLINE_SPIN_LOCK_IRQSAVE) \
-    $(wildcard include/config/INLINE_SPIN_TRYLOCK) \
-    $(wildcard include/config/INLINE_SPIN_TRYLOCK_BH) \
-    $(wildcard include/config/UNINLINE_SPIN_UNLOCK) \
-    $(wildcard include/config/INLINE_SPIN_UNLOCK_BH) \
-    $(wildcard include/config/INLINE_SPIN_UNLOCK_IRQ) \
-    $(wildcard include/config/INLINE_SPIN_UNLOCK_IRQRESTORE) \
-    $(wildcard include/config/GENERIC_LOCKBREAK) \
-  include/linux/rwlock_api_smp.h \
-    $(wildcard include/config/INLINE_READ_LOCK) \
-    $(wildcard include/config/INLINE_WRITE_LOCK) \
-    $(wildcard include/config/INLINE_READ_LOCK_BH) \
-    $(wildcard include/config/INLINE_WRITE_LOCK_BH) \
-    $(wildcard include/config/INLINE_READ_LOCK_IRQ) \
-    $(wildcard include/config/INLINE_WRITE_LOCK_IRQ) \
-    $(wildcard include/config/INLINE_READ_LOCK_IRQSAVE) \
-    $(wildcard include/config/INLINE_WRITE_LOCK_IRQSAVE) \
-    $(wildcard include/config/INLINE_READ_TRYLOCK) \
-    $(wildcard include/config/INLINE_WRITE_TRYLOCK) \
-    $(wildcard include/config/INLINE_READ_UNLOCK) \
-    $(wildcard include/config/INLINE_WRITE_UNLOCK) \
-    $(wildcard include/config/INLINE_READ_UNLOCK_BH) \
-    $(wildcard include/config/INLINE_WRITE_UNLOCK_BH) \
-    $(wildcard include/config/INLINE_READ_UNLOCK_IRQ) \
-    $(wildcard include/config/INLINE_WRITE_UNLOCK_IRQ) \
-    $(wildcard include/config/INLINE_READ_UNLOCK_IRQRESTORE) \
-    $(wildcard include/config/INLINE_WRITE_UNLOCK_IRQRESTORE) \
-  include/linux/refcount.h \
-  include/linux/rbtree.h \
-  include/linux/rbtree_types.h \
-  include/linux/rcupdate.h \
-    $(wildcard include/config/PREEMPT_RCU) \
-    $(wildcard include/config/TINY_RCU) \
-    $(wildcard include/config/RCU_STRICT_GRACE_PERIOD) \
-    $(wildcard include/config/TASKS_RCU_GENERIC) \
-    $(wildcard include/config/RCU_STALL_COMMON) \
-    $(wildcard include/config/NO_HZ_FULL) \
-    $(wildcard include/config/RCU_NOCB_CPU) \
-    $(wildcard include/config/TASKS_RCU) \
-    $(wildcard include/config/TASKS_TRACE_RCU) \
-    $(wildcard include/config/TASKS_RUDE_RCU) \
-    $(wildcard include/config/TREE_RCU) \
-    $(wildcard include/config/DEBUG_OBJECTS_RCU_HEAD) \
-    $(wildcard include/config/PROVE_RCU) \
-    $(wildcard include/config/ARCH_WEAK_RELEASE_ACQUIRE) \
-  include/linux/rcutree.h \
-  include/linux/rwsem.h \
-    $(wildcard include/config/RWSEM_SPIN_ON_OWNER) \
-    $(wildcard include/config/DEBUG_RWSEMS) \
-  include/linux/osq_lock.h \
-  include/linux/completion.h \
-  include/linux/swait.h \
-  include/linux/wait.h \
-  include/uapi/linux/wait.h \
-  include/linux/uprobes.h \
-    $(wildcard include/config/UPROBES) \
-  arch/x86/include/asm/uprobes.h \
-  include/linux/notifier.h \
-  include/linux/mutex.h \
-    $(wildcard include/config/MUTEX_SPIN_ON_OWNER) \
-    $(wildcard include/config/DEBUG_MUTEXES) \
-  include/linux/debug_locks.h \
-  include/linux/srcu.h \
-    $(wildcard include/config/TINY_SRCU) \
-    $(wildcard include/config/SRCU) \
-  include/linux/workqueue.h \
-    $(wildcard include/config/DEBUG_OBJECTS_WORK) \
-    $(wildcard include/config/FREEZER) \
-    $(wildcard include/config/WQ_WATCHDOG) \
-  include/linux/timer.h \
-    $(wildcard include/config/DEBUG_OBJECTS_TIMERS) \
-    $(wildcard include/config/NO_HZ_COMMON) \
-  include/linux/ktime.h \
-  include/linux/jiffies.h \
-  include/vdso/jiffies.h \
-  include/generated/timeconst.h \
-  include/vdso/ktime.h \
-  include/linux/timekeeping.h \
-    $(wildcard include/config/GENERIC_CMOS_UPDATE) \
-  include/linux/clocksource_ids.h \
-  include/linux/debugobjects.h \
-    $(wildcard include/config/DEBUG_OBJECTS) \
-    $(wildcard include/config/DEBUG_OBJECTS_FREE) \
-  include/linux/rcu_segcblist.h \
-  include/linux/srcutree.h \
-  include/linux/rcu_node_tree.h \
-    $(wildcard include/config/RCU_FANOUT) \
-    $(wildcard include/config/RCU_FANOUT_LEAF) \
-  include/linux/page-flags-layout.h \
-    $(wildcard include/config/KASAN_HW_TAGS) \
-  include/linux/numa.h \
-    $(wildcard include/config/NODES_SHIFT) \
-    $(wildcard include/config/NUMA_KEEP_MEMINFO) \
-    $(wildcard include/config/HAVE_ARCH_NODE_DEV_GROUP) \
-  arch/x86/include/asm/sparsemem.h \
-  include/generated/bounds.h \
-  include/linux/seqlock.h \
-  include/linux/ww_mutex.h \
-    $(wildcard include/config/DEBUG_RT_MUTEXES) \
-    $(wildcard include/config/DEBUG_WW_MUTEX_SLOWPATH) \
-  include/linux/rtmutex.h \
-  arch/x86/include/asm/mmu.h \
-    $(wildcard include/config/MODIFY_LDT_SYSCALL) \
-  include/linux/kmod.h \
-  include/linux/umh.h \
-  include/linux/gfp.h \
-    $(wildcard include/config/HIGHMEM) \
-    $(wildcard include/config/ZONE_DMA) \
-    $(wildcard include/config/ZONE_DMA32) \
-    $(wildcard include/config/ZONE_DEVICE) \
-    $(wildcard include/config/PM_SLEEP) \
-    $(wildcard include/config/CONTIG_ALLOC) \
-    $(wildcard include/config/CMA) \
-  include/linux/mmdebug.h \
-    $(wildcard include/config/DEBUG_VM) \
-    $(wildcard include/config/DEBUG_VM_PGFLAGS) \
-  include/linux/mmzone.h \
-    $(wildcard include/config/FORCE_MAX_ZONEORDER) \
-    $(wildcard include/config/MEMORY_ISOLATION) \
-    $(wildcard include/config/ZSMALLOC) \
-    $(wildcard include/config/MEMORY_HOTPLUG) \
-    $(wildcard include/config/COMPACTION) \
-    $(wildcard include/config/PAGE_EXTENSION) \
-    $(wildcard include/config/DEFERRED_STRUCT_PAGE_INIT) \
-    $(wildcard include/config/HAVE_MEMORYLESS_NODES) \
-    $(wildcard include/config/SPARSEMEM_EXTREME) \
-    $(wildcard include/config/HAVE_ARCH_PFN_VALID) \
-  include/linux/nodemask.h \
-  include/linux/pageblock-flags.h \
-    $(wildcard include/config/HUGETLB_PAGE_SIZE_VARIABLE) \
-  include/linux/page-flags.h \
-    $(wildcard include/config/ARCH_USES_PG_UNCACHED) \
-    $(wildcard include/config/MEMORY_FAILURE) \
-    $(wildcard include/config/PAGE_IDLE_FLAG) \
-    $(wildcard include/config/HUGETLB_PAGE_FREE_VMEMMAP) \
-    $(wildcard include/config/HUGETLB_PAGE_FREE_VMEMMAP_DEFAULT_ON) \
-    $(wildcard include/config/KSM) \
-  include/linux/local_lock.h \
-  include/linux/local_lock_internal.h \
-  include/linux/memory_hotplug.h \
-    $(wildcard include/config/HAVE_ARCH_NODEDATA_EXTENSION) \
-    $(wildcard include/config/ARCH_HAS_ADD_PAGES) \
-    $(wildcard include/config/MEMORY_HOTREMOVE) \
-  arch/x86/include/asm/mmzone.h \
-  arch/x86/include/asm/mmzone_32.h \
-  include/linux/topology.h \
-    $(wildcard include/config/USE_PERCPU_NUMA_NODE_ID) \
-    $(wildcard include/config/SCHED_SMT) \
-    $(wildcard include/config/SCHED_CLUSTER) \
-  include/linux/arch_topology.h \
-    $(wildcard include/config/ACPI_CPPC_LIB) \
-    $(wildcard include/config/GENERIC_ARCH_TOPOLOGY) \
-  include/linux/percpu.h \
-    $(wildcard include/config/NEED_PER_CPU_EMBED_FIRST_CHUNK) \
-    $(wildcard include/config/NEED_PER_CPU_PAGE_FIRST_CHUNK) \
-  arch/x86/include/asm/topology.h \
-    $(wildcard include/config/SCHED_MC_PRIO) \
-  arch/x86/include/asm/mpspec.h \
-    $(wildcard include/config/EISA) \
-    $(wildcard include/config/X86_MPPARSE) \
-  arch/x86/include/asm/mpspec_def.h \
-  arch/x86/include/asm/x86_init.h \
-  arch/x86/include/asm/apicdef.h \
-  include/asm-generic/topology.h \
-  include/linux/sysctl.h \
-    $(wildcard include/config/SYSCTL) \
-  include/uapi/linux/sysctl.h \
-  include/linux/elf.h \
-    $(wildcard include/config/ARCH_USE_GNU_PROPERTY) \
-    $(wildcard include/config/ARCH_HAVE_ELF_PROT) \
-  arch/x86/include/asm/elf.h \
-    $(wildcard include/config/X86_X32_ABI) \
-  arch/x86/include/asm/user.h \
-  arch/x86/include/asm/user_32.h \
-  arch/x86/include/asm/fsgsbase.h \
-  arch/x86/include/asm/vdso.h \
-  arch/x86/include/asm/desc.h \
-  arch/x86/include/asm/fixmap.h \
-    $(wildcard include/config/DEBUG_KMAP_LOCAL_FORCE_MAP) \
-    $(wildcard include/config/X86_VSYSCALL_EMULATION) \
-    $(wildcard include/config/PROVIDE_OHCI1394_DMA_INIT) \
-    $(wildcard include/config/X86_IO_APIC) \
-    $(wildcard include/config/KMAP_LOCAL) \
-    $(wildcard include/config/PCI_MMCONFIG) \
-    $(wildcard include/config/ACPI_APEI_GHES) \
-    $(wildcard include/config/INTEL_TXT) \
-  arch/x86/include/generated/asm/kmap_size.h \
-  include/asm-generic/kmap_size.h \
-    $(wildcard include/config/DEBUG_KMAP_LOCAL) \
-  include/asm-generic/fixmap.h \
-  arch/x86/include/asm/irq_vectors.h \
-    $(wildcard include/config/HAVE_KVM) \
-    $(wildcard include/config/HYPERV) \
-    $(wildcard include/config/PCI_MSI) \
-  arch/x86/include/asm/cpu_entry_area.h \
-  arch/x86/include/asm/intel_ds.h \
-  arch/x86/include/asm/pgtable_areas.h \
-  arch/x86/include/asm/pgtable_32_areas.h \
-  include/uapi/linux/elf.h \
-  include/uapi/linux/elf-em.h \
-  include/linux/kobject.h \
-    $(wildcard include/config/UEVENT_HELPER) \
-    $(wildcard include/config/DEBUG_KOBJECT_RELEASE) \
-  include/linux/sysfs.h \
-  include/linux/kernfs.h \
-    $(wildcard include/config/KERNFS) \
-  include/linux/idr.h \
-  include/linux/radix-tree.h \
-  include/linux/xarray.h \
-    $(wildcard include/config/XARRAY_MULTI) \
-  include/linux/kconfig.h \
-  include/linux/kobject_ns.h \
-  include/linux/moduleparam.h \
-    $(wildcard include/config/ALPHA) \
-    $(wildcard include/config/IA64) \
-    $(wildcard include/config/PPC64) \
-  include/linux/rbtree_latch.h \
-  include/linux/error-injection.h \
-  include/asm-generic/error-injection.h \
-  include/linux/cfi.h \
-    $(wildcard include/config/CFI_CLANG_SHADOW) \
-  arch/x86/include/asm/module.h \
-    $(wildcard include/config/UNWINDER_ORC) \
-  include/asm-generic/module.h \
-    $(wildcard include/config/HAVE_MOD_ARCH_SPECIFIC) \
-    $(wildcard include/config/MODULES_USE_ELF_REL) \
-    $(wildcard include/config/MODULES_USE_ELF_RELA) \
-  arch/x86/include/asm/orc_types.h \
-  include/linux/i2c.h \
-    $(wildcard include/config/I2C) \
-    $(wildcard include/config/I2C_SLAVE) \
-    $(wildcard include/config/I2C_BOARDINFO) \
-    $(wildcard include/config/I2C_MUX) \
-    $(wildcard include/config/OF) \
-    $(wildcard include/config/ACPI) \
-  include/linux/acpi.h \
-    $(wildcard include/config/ACPI_DEBUGGER) \
-    $(wildcard include/config/ACPI_TABLE_LIB) \
-    $(wildcard include/config/LOONGARCH) \
-    $(wildcard include/config/ARM64) \
-    $(wildcard include/config/ACPI_PROCESSOR_CSTATE) \
-    $(wildcard include/config/ACPI_HOTPLUG_CPU) \
-    $(wildcard include/config/ACPI_HOTPLUG_IOAPIC) \
-    $(wildcard include/config/PCI) \
-    $(wildcard include/config/ACPI_WMI) \
-    $(wildcard include/config/ACPI_NUMA) \
-    $(wildcard include/config/HIBERNATION) \
-    $(wildcard include/config/ACPI_HOTPLUG_MEMORY) \
-    $(wildcard include/config/ACPI_CONTAINER) \
-    $(wildcard include/config/ACPI_GTDT) \
-    $(wildcard include/config/PM) \
-    $(wildcard include/config/GPIOLIB) \
-    $(wildcard include/config/ACPI_TABLE_UPGRADE) \
-    $(wildcard include/config/ACPI_WATCHDOG) \
-    $(wildcard include/config/ACPI_SPCR_TABLE) \
-    $(wildcard include/config/ACPI_GENERIC_GSI) \
-    $(wildcard include/config/ACPI_LPIT) \
-    $(wildcard include/config/ACPI_PPTT) \
-    $(wildcard include/config/ACPI_PCC) \
-  include/linux/ioport.h \
-  include/linux/irqdomain.h \
-    $(wildcard include/config/IRQ_DOMAIN_HIERARCHY) \
-    $(wildcard include/config/GENERIC_IRQ_DEBUGFS) \
-    $(wildcard include/config/IRQ_DOMAIN) \
-    $(wildcard include/config/IRQ_DOMAIN_NOMAP) \
-  include/linux/irqhandler.h \
-  include/linux/of.h \
-    $(wildcard include/config/OF_DYNAMIC) \
-    $(wildcard include/config/SPARC) \
-    $(wildcard include/config/OF_PROMTREE) \
-    $(wildcard include/config/OF_KOBJ) \
-    $(wildcard include/config/OF_NUMA) \
-    $(wildcard include/config/OF_OVERLAY) \
-  include/linux/mod_devicetable.h \
-  include/linux/uuid.h \
-  include/uapi/linux/uuid.h \
-  include/linux/property.h \
-  include/linux/fwnode.h \
-  include/linux/resource_ext.h \
-  include/linux/slab.h \
-    $(wildcard include/config/DEBUG_SLAB) \
-    $(wildcard include/config/FAILSLAB) \
-    $(wildcard include/config/MEMCG_KMEM) \
-    $(wildcard include/config/KASAN) \
-    $(wildcard include/config/SLAB) \
-    $(wildcard include/config/SLUB) \
-    $(wildcard include/config/SLOB) \
-  include/linux/overflow.h \
-  include/linux/percpu-refcount.h \
-  include/linux/kasan.h \
-    $(wildcard include/config/KASAN_STACK) \
-    $(wildcard include/config/KASAN_VMALLOC) \
-    $(wildcard include/config/KASAN_INLINE) \
-  include/linux/kasan-enabled.h \
-  include/linux/device.h \
-    $(wildcard include/config/GENERIC_MSI_IRQ_DOMAIN) \
-    $(wildcard include/config/GENERIC_MSI_IRQ) \
-    $(wildcard include/config/ENERGY_MODEL) \
-    $(wildcard include/config/PINCTRL) \
-    $(wildcard include/config/DMA_OPS) \
-    $(wildcard include/config/DMA_DECLARE_COHERENT) \
-    $(wildcard include/config/DMA_CMA) \
-    $(wildcard include/config/SWIOTLB) \
-    $(wildcard include/config/ARCH_HAS_SYNC_DMA_FOR_DEVICE) \
-    $(wildcard include/config/ARCH_HAS_SYNC_DMA_FOR_CPU) \
-    $(wildcard include/config/ARCH_HAS_SYNC_DMA_FOR_CPU_ALL) \
-    $(wildcard include/config/DMA_OPS_BYPASS) \
-    $(wildcard include/config/DEVTMPFS) \
-    $(wildcard include/config/SYSFS_DEPRECATED) \
-  include/linux/dev_printk.h \
-  include/linux/ratelimit.h \
-  include/linux/sched.h \
-    $(wildcard include/config/VIRT_CPU_ACCOUNTING_NATIVE) \
-    $(wildcard include/config/SCHED_INFO) \
-    $(wildcard include/config/SCHEDSTATS) \
-    $(wildcard include/config/SCHED_CORE) \
-    $(wildcard include/config/FAIR_GROUP_SCHED) \
-    $(wildcard include/config/RT_GROUP_SCHED) \
-    $(wildcard include/config/RT_MUTEXES) \
-    $(wildcard include/config/UCLAMP_TASK) \
-    $(wildcard include/config/UCLAMP_BUCKETS_COUNT) \
-    $(wildcard include/config/CGROUP_SCHED) \
-    $(wildcard include/config/BLK_DEV_IO_TRACE) \
-    $(wildcard include/config/PSI) \
-    $(wildcard include/config/COMPAT_BRK) \
-    $(wildcard include/config/CGROUPS) \
-    $(wildcard include/config/BLK_CGROUP) \
-    $(wildcard include/config/PAGE_OWNER) \
-    $(wildcard include/config/EVENTFD) \
-    $(wildcard include/config/ARCH_HAS_SCALED_CPUTIME) \
-    $(wildcard include/config/VIRT_CPU_ACCOUNTING_GEN) \
-    $(wildcard include/config/POSIX_CPUTIMERS) \
-    $(wildcard include/config/POSIX_CPU_TIMERS_TASK_WORK) \
-    $(wildcard include/config/KEYS) \
-    $(wildcard include/config/SYSVIPC) \
-    $(wildcard include/config/DETECT_HUNG_TASK) \
-    $(wildcard include/config/IO_URING) \
-    $(wildcard include/config/AUDIT) \
-    $(wildcard include/config/AUDITSYSCALL) \
-    $(wildcard include/config/UBSAN) \
-    $(wildcard include/config/UBSAN_TRAP) \
-    $(wildcard include/config/TASK_XACCT) \
-    $(wildcard include/config/CPUSETS) \
-    $(wildcard include/config/X86_CPU_RESCTRL) \
-    $(wildcard include/config/FUTEX) \
-    $(wildcard include/config/PERF_EVENTS) \
-    $(wildcard include/config/RSEQ) \
-    $(wildcard include/config/TASK_DELAY_ACCT) \
-    $(wildcard include/config/FAULT_INJECTION) \
-    $(wildcard include/config/LATENCYTOP) \
-    $(wildcard include/config/KUNIT) \
-    $(wildcard include/config/FUNCTION_GRAPH_TRACER) \
-    $(wildcard include/config/BCACHE) \
-    $(wildcard include/config/VMAP_STACK) \
-    $(wildcard include/config/SECURITY) \
-    $(wildcard include/config/BPF_SYSCALL) \
-    $(wildcard include/config/GCC_PLUGIN_STACKLEAK) \
-    $(wildcard include/config/X86_MCE) \
-    $(wildcard 
+,
+			.amux   = CX25840_AUDIO8,
+		} },
+	},
+	[CX23885_BOARD_HAUPPAUGE_QUADHD_DVB_885] = {
+		.name         = "Hauppauge WinTV-QuadHD-DVB(885)",
+		.portb        = CX23885_MPEG_DVB,
+		.portc        = CX23885_MPEG_DVB,
+		.tuner_type   = TUNER_ABSENT,
+	},
+	[CX23885_BOARD_HAUPPAUGE_QUADHD_ATSC] = {
+		.name         = "Hauppauge WinTV-QuadHD-ATSC",
+		.porta        = CX23885_ANALOG_VIDEO,
+		.portb        = CX23885_MPEG_DVB,
+		.portc        = CX23885_MPEG_DVB,
+		.tuner_type	= TUNER_ABSENT,
+		.input          = {{
+			.type   = CX23885_VMUX_TELEVISION,
+			.vmux   =	CX25840_VIN7_CH3 |
+					CX25840_VIN5_CH2 |
+					CX25840_VIN2_CH1 |
+					CX25840_DIF_ON,
+			.amux   = CX25840_AUDIO8,
+		} },
+	},
+	[CX23885_BOARD_HAUPPAUGE_QUADHD_ATSC_885] = {
+		.name         = "Hauppauge WinTV-QuadHD-ATSC(885)",
+		.portb        = CX23885_MPEG_DVB,
+		.portc        = CX23885_MPEG_DVB,
+		.tuner_type   = TUNER_ABSENT,
+	},
+	[CX23885_BOARD_HAUPPAUGE_HVR1265_K4] = {
+		.name		= "Hauppauge WinTV-HVR-1265(161111)",
+		.porta          = CX23885_ANALOG_VIDEO,
+		.portc		= CX23885_MPEG_DVB,
+		.tuner_type     = TUNER_ABSENT,
+		.input          = {{
+			.type   = CX23885_VMUX_TELEVISION,
+			.vmux   =	CX25840_VIN7_CH3 |
+					CX25840_VIN5_CH2 |
+					CX25840_VIN2_CH1 |
+					CX25840_DIF_ON,
+			.amux   = CX25840_AUDIO8,
+		}, {
+			.type   = CX23885_VMUX_SVIDEO,
+			.vmux   =	CX25840_VIN4_CH2 |
+					CX25840_VIN6_CH1 |
+					CX25840_SVIDEO_ON,
+			.amux   = CX25840_AUDIO7,
+		} },
+	},
+	[CX23885_BOARD_HAUPPAUGE_STARBURST2] = {
+		.name		= "Hauppauge WinTV-Starburst2",
+		.portb		= CX23885_MPEG_DVB,
+	},
+	[CX23885_BOARD_AVERMEDIA_CE310B] = {
+		.name		= "AVerMedia CE310B",
+		.porta		= CX23885_ANALOG_VIDEO,
+		.force_bff	= 1,
+		.input          = {{
+			.type   = CX23885_VMUX_COMPOSITE1,
+			.vmux   = CX25840_VIN1_CH1 |
+				  CX25840_NONE_CH2 |
+				  CX25840_NONE0_CH3,
+			.amux   = CX25840_AUDIO7,
+		}, {
+			.type   = CX23885_VMUX_SVIDEO,
+			.vmux   = CX25840_VIN8_CH1 |
+				  CX25840_NONE_CH2 |
+				  CX25840_VIN7_CH3 |
+				  CX25840_SVIDEO_ON,
+			.amux   = CX25840_AUDIO7,
+		} },
+	},
+};
+const unsigned int cx23885_bcount = ARRAY_SIZE(cx23885_boards);
+
+/* ------------------------------------------------------------------ */
+/* PCI subsystem IDs                                                  */
+
+struct cx23885_subid cx23885_subids[] = {
+	{
+		.subvendor = 0x0070,
+		.subdevice = 0x3400,
+		.card      = CX23885_BOARD_UNKNOWN,
+	}, {
+		.subvendor = 0x0070,
+		.subdevice = 0x7600,
+		.card      = CX23885_BOARD_HAUPPAUGE_HVR1800lp,
+	}, {
+		.subvendor = 0x0070,
+		.subdevice = 0x7800,
+		.card      = CX23885_BOARD_HAUPPAUGE_HVR1800,
+	}, {
+		.subvendor = 0x0070,
+		.subdevice = 0x7801,
+		.card      = CX23885_BOARD_HAUPPAUGE_HVR1800,
+	}, {
+		.subvendor = 0x0070,
+		.subdevice = 0x7809,
+		.card      = CX23885_BOARD_HAUPPAUGE_HVR1800,
+	}, {
+		.subvendor = 0x0070,
+		.subdevice = 0x7911,
+		.card      = CX23885_BOARD_HAUPPAUGE_HVR1250,
+	}, {
+		.subvendor = 0x18ac,
+		.subdevice = 0xd500,
+		.card      = CX23885_BOARD_DVICO_FUSIONHDTV_5_EXP,
+	}, {
+		.subvendor = 0x0070,
+		.subdevice = 0x7790,
+		.card      = CX23885_BOARD_HAUPPAUGE_HVR1500Q,
+	}, {
+		.subvendor = 0x0070,
+		.subdevice = 0x7797,
+		.card      = CX23885_BOARD_HAUPPAUGE_HVR1500Q,
+	}, {
+		.subvendor = 0x0070,
+		.subdevice = 0x7710,
+		.card      = CX23885_BOARD_HAUPPAUGE_HVR1500,
+	}, {
+		.subvendor = 0x0070,
+		.subdevice = 0x7717,
+		.card      = CX23885_BOARD_HAUPPAUGE_HVR1500,
+	}, {
+		.subvendor = 0x0070,
+		.subdevice = 0x71d1,
+		.card      = CX23885_BOARD_HAUPPAUGE_HVR1200,
+	}, {
+		.subvendor = 0x0070,
+		.subdevice = 0x71d3,
+		.card      = CX23885_BOARD_HAUPPAUGE_HVR1200,
+	}, {
+		.subvendor = 0x0070,
+		.subdevice = 0x8101,
+		.card      = CX23885_BOARD_HAUPPAUGE_HVR1700,
+	}, {
+		.subvendor = 0x0070,
+		.subdevice = 0x8010,
+		.card      = CX23885_BOARD_HAUPPAUGE_HVR1400,
+	}, {
+		.subvendor = 0x18ac,
+		.subdevice = 0xd618,
+		.card      = CX23885_BOARD_DVICO_FUSIONHDTV_7_DUAL_EXP,
+	}, {
+		.subvendor = 0x18ac,
+		.subdevice = 0xdb78,
+		.card      = CX23885_BOARD_DVICO_FUSIONHDTV_DVB_T_DUAL_EXP,
+	}, {
+		.subvendor = 0x107d,
+		.subdevice = 0x6681,
+		.card      = CX23885_BOARD_LEADTEK_WINFAST_PXDVR3200_H,
+	}, {
+		.subvendor = 0x107d,
+		.subdevice = 0x6f21,
+		.card      = CX23885_BOARD_LEADTEK_WINFAST_PXPVR2200,
+	}, {
+		.subvendor = 0x107d,
+		.subdevice = 0x6f39,
+		.card	   = CX23885_BOARD_LEADTEK_WINFAST_PXDVR3200_H_XC4000,
+	}, {
+		.subvendor = 0x185b,
+		.subdevice = 0xe800,
+		.card      = CX23885_BOARD_COMPRO_VIDEOMATE_E650F,
+	}, {
+		.subvendor = 0x6920,
+		.subdevice = 0x8888,
+		.card      = CX23885_BOARD_TBS_6920,
+	}, {
+		.subvendor = 0x6980,
+		.subdevice = 0x8888,
+		.card      = CX23885_BOARD_TBS_6980,
+	}, {
+		.subvendor = 0x6981,
+		.subdevice = 0x8888,
+		.card      = CX23885_BOARD_TBS_6981,
+	}, {
+		.subvendor = 0xd470,
+		.subdevice = 0x9022,
+		.card      = CX23885_BOARD_TEVII_S470,
+	}, {
+		.subvendor = 0x0001,
+		.subdevice = 0x2005,
+		.card      = CX23885_BOARD_DVBWORLD_2005,
+	}, {
+		.subvendor = 0x1b55,
+		.subdevice = 0x2a2c,
+		.card      = CX23885_BOARD_NETUP_DUAL_DVBS2_CI,
+	}, {
+		.subvendor = 0x0070,
+		.subdevice = 0x2211,
+		.card      = CX23885_BOARD_HAUPPAUGE_HVR1270,
+	}, {
+		.subvendor = 0x0070,
+		.subdevice = 0x2215,
+		.card      = CX23885_BOARD_HAUPPAUGE_HVR1275,
+	}, {
+		.subvendor = 0x0070,
+		.subdevice = 0x221d,
+		.card      = CX23885_BOARD_HAUPPAUGE_HVR1275,
+	}, {
+		.subvendor = 0x0070,
+		.subdevice = 0x2251,
+		.card      = CX23885_BOARD_HAUPPAUGE_HVR1255,
+	}, {
+		.subvendor = 0x0070,
+		.subdevice = 0x2259,
+		.card      = CX23885_BOARD_HAUPPAUGE_HVR1255_22111,
+	}, {
+		.subvendor = 0x0070,
+		.subdevice = 0x2291,
+		.card      = CX23885_BOARD_HAUPPAUGE_HVR1210,
+	}, {
+		.subvendor = 0x0070,
+		.subdevice = 0x2295,
+		.card      = CX23885_BOARD_HAUPPAUGE_HVR1210,
+	}, {
+		.subvendor = 0x0070,
+		.subdevice = 0x2299,
+		.card      = CX23885_BOARD_HAUPPAUGE_HVR1210,
+	}, {
+		.subvendor = 0x0070,
+		.subdevice = 0x229d,
+		.card      = CX23885_BOARD_HAUPPAUGE_HVR1210, /* HVR1215 */
+	}, {
+		.subvendor = 0x0070,
+		.subdevice = 0x22f0,
+		.card      = CX23885_BOARD_HAUPPAUGE_HVR1210,
+	}, {
+		.subvendor = 0x0070,
+		.subdevice = 0x22f1,
+		.card      = CX23885_BOARD_HAUPPAUGE_HVR1255,
+	}, {
+		.subvendor = 0x0070,
+		.subdevice = 0x22f2,
+		.card      = CX23885_BOARD_HAUPPAUGE_HVR1275,
+	}, {
+		.subvendor = 0x0070,
+		.subdevice = 0x22f3,
+		.card      = CX23885_BOARD_HAUPPAUGE_HVR1210, /* HVR1215 */
+	}, {
+		.subvendor = 0x0070,
+		.subdevice = 0x22f4,
+		.card      = CX23885_BOARD_HAUPPAUGE_HVR1210,
+	}, {
+		.subvendor = 0x0070,
+		.subdevice = 0x22f5,
+		.card      = CX23885_BOARD_HAUPPAUGE_HVR1210, /* HVR1215 */
+	}, {
+		.subvendor = 0x14f1,
+		.subdevice = 0x8651,
+		.card      = CX23885_BOARD_MYGICA_X8506,
+	}, {
+		.subvendor = 0x14f1,
+		.subdevice = 0x8657,
+		.card      = CX23885_BOARD_MAGICPRO_PROHDTVE2,
+	}, {
+		.subvendor = 0x0070,
+		.subdevice = 0x8541,
+		.card      = CX23885_BOARD_HAUPPAUGE_HVR1850,
+	}, {
+		.subvendor = 0x1858,
+		.subdevice = 0xe800,
+		.card      = CX23885_BOARD_COMPRO_VIDEOMATE_E800,
+	}, {
+		.subvendor = 0x0070,
+		.subdevice = 0x8551,
+		.card      = CX23885_BOARD_HAUPPAUGE_HVR1290,
+	}, {
+		.subvendor = 0x14f1,
+		.subdevice = 0x8578,
+		.card      = CX23885_BOARD_MYGICA_X8558PRO,
+	}, {
+		.subvendor = 0x107d,
+		.subdevice = 0x6f22,
+		.card      = CX23885_BOARD_LEADTEK_WINFAST_PXTV1200,
+	}, {
+		.subvendor = 0x5654,
+		.subdevice = 0x2390,
+		.card      = CX23885_BOARD_GOTVIEW_X5_3D_HYBRID,
+	}, {
+		.subvendor = 0x1b55,
+		.subdevice = 0xe2e4,
+		.card      = CX23885_BOARD_NETUP_DUAL_DVB_T_C_CI_RF,
+	}, {
+		.subvendor = 0x14f1,
+		.subdevice = 0x8502,
+		.card      = CX23885_BOARD_MYGICA_X8507,
+	}, {
+		.subvendor = 0x153b,
+		.subdevice = 0x117e,
+		.card      = CX23885_BOARD_TERRATEC_CINERGY_T_PCIE_DUAL,
+	}, {
+		.subvendor = 0xd471,
+		.subdevice = 0x9022,
+		.card      = CX23885_BOARD_TEVII_S471,
+	}, {
+		.subvendor = 0x8000,
+		.subdevice = 0x3034,
+		.card      = CX23885_BOARD_PROF_8000,
+	}, {
+		.subvendor = 0x0070,
+		.subdevice = 0xc108,
+		.card      = CX23885_BOARD_HAUPPAUGE_HVR4400, /* Hauppauge WinTV HVR-4400 (Model 121xxx, Hybrid DVB-T/S2, IR) */
+	}, {
+		.subvendor = 0x0070,
+		.subdevice = 0xc138,
+		.card      = CX23885_BOARD_HAUPPAUGE_HVR4400, /* Hauppauge WinTV HVR-5500 (Model 121xxx, Hybrid DVB-T/C/S2, IR) */
+	}, {
+		.subvendor = 0x0070,
+		.subdevice = 0xc12a,
+		.card      = CX23885_BOARD_HAUPPAUGE_STARBURST, /* Hauppauge WinTV Starburst (Model 121x00, DVB-S2, IR) */
+	}, {
+		.subvendor = 0x0070,
+		.subdevice = 0xc1f8,
+		.card      = CX23885_BOARD_HAUPPAUGE_HVR4400, /* Hauppauge WinTV HVR-5500 (Model 121xxx, Hybrid DVB-T/C/S2, IR) */
+	}, {
+		.subvendor = 0x1461,
+		.subdevice = 0xd939,
+		.card      = CX23885_BOARD_AVERMEDIA_HC81R,
+	}, {
+		.subvendor = 0x0070,
+		.subdevice = 0x7133,
+		.card      = CX23885_BOARD_HAUPPAUGE_IMPACTVCBE,
+	}, {
+		.subvendor = 0x0070,
+		.subdevice = 0x7137,
+		.card      = CX23885_BOARD_HAUPPAUGE_IMPACTVCBE,
+	}, {
+		.subvendor = 0x18ac,
+		.subdevice = 0xdb98,
+		.card      = CX23885_BOARD_DVICO_FUSIONHDTV_DVB_T_DUAL_EXP2,
+	}, {
+		.subvendor = 0x4254,
+		.subdevice = 0x9580,
+		.card      = CX23885_BOARD_DVBSKY_T9580,
+	}, {
+		.subvendor = 0x4254,
+		.subdevice = 0x980c,
+		.card      = CX23885_BOARD_DVBSKY_T980C,
+	}, {
+		.subvendor = 0x4254,
+		.subdevice = 0x950c,
+		.card      = CX23885_BOARD_DVBSKY_S950C,
+	}, {
+		.subvendor = 0x13c2,
+		.subdevice = 0x3013,
+		.card      = CX23885_BOARD_TT_CT2_4500_CI,
+	}, {
+		.subvendor = 0x4254,
+		.subdevice = 0x0950,
+		.card      = CX23885_BOARD_DVBSKY_S950,
+	}, {
+		.subvendor = 0x4254,
+		.subdevice = 0x0952,
+		.card      = CX23885_BOARD_DVBSKY_S952,
+	}, {
+		.subvendor = 0x4254,
+		.subdevice = 0x0982,
+		.card      = CX23885_BOARD_DVBSKY_T982,
+	}, {
+		.subvendor = 0x0070,
+		.subdevice = 0xf038,
+		.card      = CX23885_BOARD_HAUPPAUGE_HVR5525,
+	}, {
+		.subvendor = 0x1576,
+		.subdevice = 0x0260,
+		.card      = CX23885_BOARD_VIEWCAST_260E,
+	}, {
+		.subvendor = 0x1576,
+		.subdevice = 0x0460,
+		.card      = CX23885_BOARD_VIEWCAST_460E,
+	}, {
+		.subvendor = 0x0070,
+		.subdevice = 0x6a28,
+		.card      = CX23885_BOARD_HAUPPAUGE_QUADHD_DVB, /* Tuner Pair 1 */
+	}, {
+		.subvendor = 0x0070,
+		.subdevice = 0x6b28,
+		.card      = CX23885_BOARD_HAUPPAUGE_QUADHD_DVB, /* Tuner Pair 2 */
+	}, {
+		.subvendor = 0x0070,
+		.subdevice = 0x6a18,
+		.card      = CX23885_BOARD_HAUPPAUGE_QUADHD_ATSC, /* Tuner Pair 1 */
+	}, {
+		.subvendor = 0x0070,
+		.subdevice = 0x6b18,
+		.card      = CX23885_BOARD_HAUPPAUGE_QUADHD_ATSC, /* Tuner Pair 2 */
+	}, {
+		.subvendor = 0x0070,
+		.subdevice = 0x2a18,
+		.card      = CX23885_BOARD_HAUPPAUGE_HVR1265_K4, /* Hauppauge WinTV HVR-1265 (Model 161xx1, Hybrid ATSC/QAM-B) */
+	}, {
+		.subvendor = 0x0070,
+		.subdevice = 0xf02a,
+		.card      = CX23885_BOARD_HAUPPAUGE_STARBURST2,
+	}, {
+		.subvendor = 0x1461,
+		.subdevice = 0x3100,
+		.card      = CX23885_BOARD_AVERMEDIA_CE310B,
+	},
+};
+const unsigned int cx23885_idcount = ARRAY_SIZE(cx23885_subids);
+
+void cx23885_card_list(struct cx23885_dev *dev)
+{
+	int i;
+
+	if (0 == dev->pci->subsystem_vendor &&
+	    0 == dev->pci->subsystem_device) {
+		pr_info("%s: Board has no valid PCIe Subsystem ID and can't\n"
+			"%s: be autodetected. Pass card=<n> insmod option\n"
+			"%s: to workaround that. Redirect complaints to the\n"
+			"%s: vendor of the TV card.  Best regards,\n"
+			"%s:         -- tux\n",
+			dev->name, dev->name, dev->name, dev->name, dev->name);
+	} else {
+		pr_info("%s: Your board isn't known (yet) to the driver.\n"
+			"%s: Try to pick one of the existing card configs via\n"
+			"%s: card=<n> insmod option.  Updating to the latest\n"
+			"%s: version might help as well.\n",
+			dev->name, dev->name, dev->name, dev->name);
+	}
+	pr_info("%s: Here is a list of valid choices for the card=<n> insmod option:\n",
+	       dev->name);
+	for (i = 0; i < cx23885_bcount; i++)
+		pr_info("%s:    card=%d -> %s\n",
+			dev->name, i, cx23885_boards[i].name);
+}
+
+static void viewcast_eeprom(struct cx23885_dev *dev, u8 *eeprom_data)
+{
+	u32 sn;
+
+	/* The serial number record begins with tag 0x59 */
+	if (*(eeprom_data + 0x00) != 0x59) {
+		pr_info("%s() eeprom records are undefined, no serial number\n",
+			__func__);
+		return;
+	}
+
+	sn =	(*(eeprom_data + 0x06) << 24) |
+		(*(eeprom_data + 0x05) << 16) |
+		(*(eeprom_data + 0x04) << 8) |
+		(*(eeprom_data + 0x03));
+
+	pr_info("%s: card '%s' sn# MM%d\n",
+		dev->name,
+		cx23885_boards[dev->board].name,
+		sn);
+}
+
+static void hauppauge_eeprom(struct cx23885_dev *dev, u8 *eeprom_data)
+{
+	struct tveeprom tv;
+
+	tveeprom_hauppauge_analog(&tv, eeprom_data);
+
+	/* Make sure we support the board model */
+	switch (tv.model) {
+	case 22001:
+		/* WinTV-HVR1270 (PCIe, Retail, half height)
+		 * ATSC/QAM and basic analog, IR Blast */
+	case 22009:
+		/* WinTV-HVR1210 (PCIe, Retail, half height)
+		 * DVB-T and basic analog, IR Blast */
+	case 22011:
+		/* WinTV-HVR1270 (PCIe, Retail, half height)
+		 * ATSC/QAM and basic analog, IR Recv */
+	case 22019:
+		/* WinTV-HVR1210 (PCIe, Retail, half height)
+		 * DVB-T and basic analog, IR Recv */
+	case 22021:
+		/* WinTV-HVR1275 (PCIe, Retail, half height)
+		 * ATSC/QAM and basic analog, IR Recv */
+	case 22029:
+		/* WinTV-HVR1210 (PCIe, Retail, half height)
+		 * DVB-T and basic analog, IR Recv */
+	case 22101:
+		/* WinTV-HVR1270 (PCIe, Retail, full height)
+		 * ATSC/QAM and basic analog, IR Blast */
+	case 22109:
+		/* WinTV-HVR1210 (PCIe, Retail, full height)
+		 * DVB-T and basic analog, IR Blast */
+	case 22111:
+		/* WinTV-HVR1270 (PCIe, Retail, full height)
+		 * ATSC/QAM and basic analog, IR Recv */
+	case 22119:
+		/* WinTV-HVR1210 (PCIe, Retail, full height)
+		 * DVB-T and basic analog, IR Recv */
+	case 22121:
+		/* WinTV-HVR1275 (PCIe, Retail, full height)
+		 * ATSC/QAM and basic analog, IR Recv */
+	case 22129:
+		/* WinTV-HVR1210 (PCIe, Retail, full height)
+		 * DVB-T and basic analog, IR Recv */
+	case 71009:
+		/* WinTV-HVR1200 (PCIe, Retail, full height)
+		 * DVB-T and basic analog */
+	case 71100:
+		/* WinTV-ImpactVCB-e (PCIe, Retail, half height)
+		 * Basic analog */
+	case 71359:
+		/* WinTV-HVR1200 (PCIe, OEM, half height)
+		 * DVB-T and basic analog */
+	case 71439:
+		/* WinTV-HVR1200 (PCIe, OEM, half height)
+		 * DVB-T and basic analog */
+	case 71449:
+		/* WinTV-HVR1200 (PCIe, OEM, full height)
+		 * DVB-T and basic analog */
+	case 71939:
+		/* WinTV-HVR1200 (PCIe, OEM, half height)
+		 * DVB-T and basic analog */
+	case 71949:
+		/* WinTV-HVR1200 (PCIe, OEM, full height)
+		 * DVB-T and basic analog */
+	case 71959:
+		/* WinTV-HVR1200 (PCIe, OEM, full height)
+		 * DVB-T and basic analog */
+	case 71979:
+		/* WinTV-HVR1200 (PCIe, OEM, half height)
+		 * DVB-T and basic analog */
+	case 71999:
+		/* WinTV-HVR1200 (PCIe, OEM, full height)
+		 * DVB-T and basic analog */
+	case 76601:
+		/* WinTV-HVR1800lp (PCIe, Retail, No IR, Dual
+			channel ATSC and MPEG2 HW Encoder */
+	case 77001:
+		/* WinTV-HVR1500 (Express Card, OEM, No IR, ATSC
+			and Basic analog */
+	case 77011:
+		/* WinTV-HVR1500 (Express Card, Retail, No IR, ATSC
+			and Basic analog */
+	case 77041:
+		/* WinTV-HVR1500Q (Express Card, OEM, No IR, ATSC/QAM
+			and Basic analog */
+	case 77051:
+		/* WinTV-HVR1500Q (Express Card, Retail, No IR, ATSC/QAM
+			and Basic analog */
+	case 78011:
+		/* WinTV-HVR1800 (PCIe, Retail, 3.5mm in, IR, No FM,
+			Dual channel ATSC and MPEG2 HW Encoder */
+	case 78501:
+		/* WinTV-HVR1800 (PCIe, OEM, RCA in, No IR, FM,
+			Dual channel ATSC and MPEG2 HW Encoder */
+	case 78521:
+		/* WinTV-HVR1800 (PCIe, OEM, RCA in, No IR, FM,
+			Dual channel ATSC and MPEG2 HW Encoder */
+	case 78531:
+		/* WinTV-HVR1800 (PCIe, OEM, RCA in, No IR, No FM,
+			Dual channel ATSC and MPEG2 HW Encoder */
+	case 78631:
+		/* WinTV-HVR1800 (PCIe, OEM, No IR, No FM,
+			Dual channel ATSC and MPEG2 HW Encoder */
+	case 79001:
+		/* WinTV-HVR1250 (PCIe, Retail, IR, full height,
+			ATSC and Basic analog */
+	case 79101:
+		/* WinTV-HVR1250 (PCIe, Retail, IR, half height,
+			ATSC and Basic analog */
+	case 79501:
+		/* WinTV-HVR1250 (PCIe, No IR, half height,
+			ATSC [at least] and Basic analog) */
+	case 79561:
+		/* WinTV-HVR1250 (PCIe, OEM, No IR, half height,
+			ATSC and Basic analog */
+	case 79571:
+		/* WinTV-HVR1250 (PCIe, OEM, No IR, full height,
+		 ATSC and Basic analog */
+	case 79671:
+		/* WinTV-HVR1250 (PCIe, OEM, No IR, half height,
+			ATSC and Basic analog */
+	case 80019:
+		/* WinTV-HVR1400 (Express Card, Retail, IR,
+		 * DVB-T and Basic analog */
+	case 81509:
+		/* WinTV-HVR1700 (PCIe, OEM, No IR, half height)
+		 * DVB-T and MPEG2 HW Encoder */
+	case 81519:
+		/* WinTV-HVR1700 (PCIe, OEM, No IR, full height)
+		 * DVB-T and MPEG2 HW Encoder */
+		break;
+	case 85021:
+		/* WinTV-HVR1850 (PCIe, Retail, 3.5mm in, IR, FM,
+			Dual channel ATSC and MPEG2 HW Encoder */
+		break;
+	case 85721:
+		/* WinTV-HVR1290 (PCIe, OEM, RCA in, IR,
+			Dual channel ATSC and Basic analog */
+	case 121019:
+		/* WinTV-HVR4400 (PCIe, DVB-S2, DVB-C/T) */
+		break;
+	case 121029:
+		/* WinTV-HVR5500 (PCIe, DVB-S2, DVB-C/T) */
+		break;
+	case 150329:
+		/* WinTV-HVR5525 (PCIe, DVB-S/S2, DVB-T/T2/C) */
+		break;
+	case 161111:
+		/* WinTV-HVR-1265 K4 (PCIe, Analog/ATSC/QAM-B) */
+		break;
+	case 166100: /* 888 version, hybrid */
+	case 166200: /* 885 version, DVB only */
+		/* WinTV-QuadHD (DVB) Tuner Pair 1 (PCIe, IR, half height,
+		   DVB-T/T2/C, DVB-T/T2/C */
+		break;
+	case 166101: /* 888 version, hybrid */
+	case 166201: /* 885 version, DVB only */
+		/* WinTV-QuadHD (DVB) Tuner Pair 2 (PCIe, IR, half height,
+		   DVB-T/T2/C, DVB-T/T2/C */
+		break;
+	case 165100: /* 888 version, hybrid */
+	case 165200: /* 885 version, digital only */
+		/* WinTV-QuadHD (ATSC) Tuner Pair 1 (PCIe, IR, half height,
+		 * ATSC/QAM-B, ATSC/QAM-B */
+		break;
+	case 165101: /* 888 version, hybrid */
+	case 165201: /* 885 version, digital only */
+		/* WinTV-QuadHD (ATSC) Tuner Pair 2 (PCIe, IR, half height,
+		 * ATSC/QAM-B, ATSC/QAM-B */
+		break;
+	default:
+		pr_warn("%s: warning: unknown hauppauge model #%d\n",
+			dev->name, tv.model);
+		break;
+	}
+
+	pr_info("%s: hauppauge eeprom: model=%d\n",
+		dev->name, tv.model);
+}
+
+/* Some TBS cards require initing a chip using a bitbanged SPI attached
+   to the cx23885 gpio's. If this chip doesn't get init'ed the demod
+   doesn't respond to any command. */
+static void tbs_card_init(struct cx23885_dev *dev)
+{
+	int i;
+	static const u8 buf[] = {
+		0xe0, 0x06, 0x66, 0x33, 0x65,
+		0x01, 0x17, 0x06, 0xde};
+
+	switch (dev->board) {
+	case CX23885_BOARD_TBS_6980:
+	case CX23885_BOARD_TBS_6981:
+		cx_set(GP0_IO, 0x00070007);
+		usleep_range(1000, 10000);
+		cx_clear(GP0_IO, 2);
+		usleep_range(1000, 10000);
+		for (i = 0; i < 9 * 8; i++) {
+			cx_clear(GP0_IO, 7);
+			usleep_range(1000, 10000);
+			cx_set(GP0_IO,
+				((buf[i >> 3] >> (7 - (i & 7))) & 1) | 4);
+			usleep_range(1000, 10000);
+		}
+		cx_set(GP0_IO, 7);
+		break;
+	}
+}
+
+int cx23885_tuner_callback(void *priv, int component, int command, int arg)
+{
+	struct cx23885_tsport *port = priv;
+	struct cx23885_dev *dev = port->dev;
+	u32 bitmask = 0;
+
+	if ((command == XC2028_RESET_CLK) || (command == XC2028_I2C_FLUSH))
+		return 0;
+
+	if (command != 0) {
+		pr_err("%s(): Unknown command 0x%x.\n",
+		       __func__, command);
+		return -EINVAL;
+	}
+
+	switch (dev->board) {
+	case CX23885_BOARD_HAUPPAUGE_HVR1400:
+	case CX23885_BOARD_HAUPPAUGE_HVR1500:
+	case CX23885_BOARD_HAUPPAUGE_HVR1500Q:
+	case CX23885_BOARD_LEADTEK_WINFAST_PXDVR3200_H:
+	case CX23885_BOARD_LEADTEK_WINFAST_PXPVR2200:
+	case CX23885_BOARD_LEADTEK_WINFAST_PXDVR3200_H_XC4000:
+	case CX23885_BOARD_COMPRO_VIDEOMATE_E650F:
+	case CX23885_BOARD_COMPRO_VIDEOMATE_E800:
+	case CX23885_BOARD_LEADTEK_WINFAST_PXTV1200:
+		/* Tuner Reset Command */
+		bitmask = 0x04;
+		break;
+	case CX23885_BOARD_DVICO_FUSIONHDTV_7_DUAL_EXP:
+	case CX23885_BOARD_DVICO_FUSIONHDTV_DVB_T_DUAL_EXP:
+	case CX23885_BOARD_DVICO_FUSIONHDTV_DVB_T_DUAL_EXP2:
+		/* Two identical tuners on two different i2c buses,
+		 * we need to reset the correct gpio. */
+		if (port->nr == 1)
+			bitmask = 0x01;
+		else if (port->nr == 2)
+			bitmask = 0x04;
+		break;
+	case CX23885_BOARD_GOTVIEW_X5_3D_HYBRID:
+		/* Tuner Reset Command */
+		bitmask = 0x02;
+		break;
+	case CX23885_BOARD_NETUP_DUAL_DVB_T_C_CI_RF:
+		altera_ci_tuner_reset(dev, port->nr);
+		break;
+	case CX23885_BOARD_AVERMEDIA_HC81R:
+		/* XC3028L Reset Command */
+		bitmask = 1 << 2;
+		break;
+	}
+
+	if (bitmask) {
+		/* Drive the tuner into reset and back out */
+		cx_clear(GP0_IO, bitmask);
+		mdelay(200);
+		cx_set(GP0_IO, bitmask);
+	}
+
+	return 0;
+}
+
+void cx23885_gpio_setup(struct cx23885_dev *dev)
+{
+	switch (dev->board) {
+	case CX23885_BOARD_HAUPPAUGE_HVR1250:
+		/* GPIO-0 cx24227 demodulator reset */
+		cx_set(GP0_IO, 0x00010001); /* Bring the part out of reset */
+		break;
+	case CX23885_BOARD_HAUPPAUGE_HVR1500:
+		/* GPIO-0 cx24227 demodulator */
+		/* GPIO-2 xc3028 tuner */
+
+		/* Put the parts into reset */
+		cx_set(GP0_IO, 0x00050000);
+		cx_clear(GP0_IO, 0x00000005);
+		msleep(5);
+
+		/* Bring the parts out of reset */
+		cx_set(GP0_IO, 0x00050005);
+		break;
+	case CX23885_BOARD_HAUPPAUGE_HVR1500Q:
+		/* GPIO-0 cx24227 demodulator reset */
+		/* GPIO-2 xc5000 tuner reset */
+		cx_set(GP0_IO, 0x00050005); /* Bring the part out of reset */
+		break;
+	case CX23885_BOARD_HAUPPAUGE_HVR1800:
+		/* GPIO-0 656_CLK */
+		/* GPIO-1 656_D0 */
+		/* GPIO-2 8295A Reset */
+		/* GPIO-3-10 cx23417 data0-7 */
+		/* GPIO-11-14 cx23417 addr0-3 */
+		/* GPIO-15-18 cx23417 READY, CS, RD, WR */
+		/* GPIO-19 IR_RX */
+
+		/* CX23417 GPIO's */
+		/* EIO15 Zilog Reset */
+		/* EIO14 S5H1409/CX24227 Reset */
+		mc417_gpio_enable(dev, GPIO_15 | GPIO_14, 1);
+
+		/* Put the demod into reset and protect the eeprom */
+		mc417_gpio_clear(dev, GPIO_15 | GPIO_14);
+		msleep(100);
+
+		/* Bring the demod and blaster out of reset */
+		mc417_gpio_set(dev, GPIO_15 | GPIO_14);
+		msleep(100);
+
+		/* Force the TDA8295A into reset and back */
+		cx23885_gpio_enable(dev, GPIO_2, 1);
+		cx23885_gpio_set(dev, GPIO_2);
+		msleep(20);
+		cx23885_gpio_clear(dev, GPIO_2);
+		msleep(20);
+		cx23885_gpio_set(dev, GPIO_2);
+		msleep(20);
+		break;
+	case CX23885_BOARD_HAUPPAUGE_HVR1200:
+		/* GPIO-0 tda10048 demodulator reset */
+		/* GPIO-2 tda18271 tuner reset */
+
+		/* Put the parts into reset and back */
+		cx_set(GP0_IO, 0x00050000);
+		msleep(20);
+		cx_clear(GP0_IO, 0x00000005);
+		msleep(20);
+		cx_set(GP0_IO, 0x00050005);
+		break;
+	case CX23885_BOARD_HAUPPAUGE_HVR1700:
+		/* GPIO-0 TDA10048 demodulator reset */
+		/* GPIO-2 TDA8295A Reset */
+		/* GPIO-3-10 cx23417 data0-7 */
+		/* GPIO-11-14 cx23417 addr0-3 */
+		/* GPIO-15-18 cx23417 READY, CS, RD, WR */
+
+		/* The following GPIO's are on the interna AVCore (cx25840) */
+		/* GPIO-19 IR_RX */
+		/* GPIO-20 IR_TX 416/DVBT Select */
+		/* GPIO-21 IIS DAT */
+		/* GPIO-22 IIS WCLK */
+		/* GPIO-23 IIS BCLK */
+
+		/* Put the parts into reset and back */
+		cx_set(GP0_IO, 0x00050000);
+		msleep(20);
+		cx_clear(GP0_IO, 0x00000005);
+		msleep(20);
+		cx_set(GP0_IO, 0x00050005);
+		break;
+	case CX23885_BOARD_HAUPPAUGE_HVR1400:
+		/* GPIO-0  Dibcom7000p demodulator reset */
+		/* GPIO-2  xc3028L tuner reset */
+		/* GPIO-13 LED */
+
+		/* Put the parts into reset and back */
+		cx_set(GP0_IO, 0x00050000);
+		msleep(20);
+		cx_clear(GP0_IO, 0x00000005);
+		msleep(20);
+		cx_set(GP0_IO, 0x00050005);
+		break;
+	case CX23885_BOARD_DVICO_FUSIONHDTV_7_DUAL_EXP:
+		/* GPIO-0 xc5000 tuner reset i2c bus 0 */
+		/* GPIO-1 s5h1409 demod reset i2c bus 0 */
+		/* GPIO-2 xc5000 tuner reset i2c bus 1 */
+		/* GPIO-3 s5h1409 demod reset i2c bus 0 */
+
+		/* Put the parts into reset and back */
+		cx_set(GP0_IO, 0x000f0000);
+		msleep(20);
+		cx_clear(GP0_IO, 0x0000000f);
+		msleep(20);
+		cx_set(GP0_IO, 0x000f000f);
+		break;
+	case CX23885_BOARD_DVICO_FUSIONHDTV_DVB_T_DUAL_EXP:
+	case CX23885_BOARD_DVICO_FUSIONHDTV_DVB_T_DUAL_EXP2:
+		/* GPIO-0 portb xc3028 reset */
+		/* GPIO-1 portb zl10353 reset */
+		/* GPIO-2 portc xc3028 reset */
+		/* GPIO-3 portc zl10353 reset */
+
+		/* Put the parts into reset and back */
+		cx_set(GP0_IO, 0x000f0000);
+		msleep(20);
+		cx_clear(GP0_IO, 0x0000000f);
+		msleep(20);
+		cx_set(GP0_IO, 0x000f000f);
+		break;
+	case CX23885_BOARD_LEADTEK_WINFAST_PXDVR3200_H:
+	case CX23885_BOARD_LEADTEK_WINFAST_PXPVR2200:
+	case CX23885_BOARD_LEADTEK_WINFAST_PXDVR3200_H_XC4000:
+	case CX23885_BOARD_COMPRO_VIDEOMATE_E650F:
+	case CX23885_BOARD_COMPRO_VIDEOMATE_E800:
+	case CX23885_BOARD_LEADTEK_WINFAST_PXTV1200:
+		/* GPIO-2  xc3028 tuner reset */
+
+		/* The following GPIO's are on the internal AVCore (cx25840) */
+		/* GPIO-?  zl10353 demod reset */
+
+		/* Put the parts into reset and back */
+		cx_set(GP0_IO, 0x00040000);
+		msleep(20);
+		cx_clear(GP0_IO, 0x00000004);
+		msleep(20);
+		cx_set(GP0_IO, 0x00040004);
+		break;
+	case CX23885_BOARD_TBS_6920:
+	case CX23885_BOARD_TBS_6980:
+	case CX23885_BOARD_TBS_6981:
+	case CX23885_BOARD_PROF_8000:
+		cx_write(MC417_CTL, 0x00000036);
+		cx_write(MC417_OEN, 0x00001000);
+		cx_set(MC417_RWD, 0x00000002);
+		msleep(200);
+		cx_clear(MC417_RWD, 0x00000800);
+		msleep(200);
+		cx_set(MC417_RWD, 0x00000800);
+		msleep(200);
+		break;
+	case CX23885_BOARD_NETUP_DUAL_DVBS2_CI:
+		/* GPIO-0 INTA from CiMax1
+		   GPIO-1 INTB from CiMax2
+		   GPIO-2 reset chips
+		   GPIO-3 to GPIO-10 data/addr for CA
+		   GPIO-11 ~CS0 to CiMax1
+		   GPIO-12 ~CS1 to CiMax2
+		   GPIO-13 ADL0 load LSB addr
+		   GPIO-14 ADL1 load MSB addr
+		   GPIO-15 ~RDY from CiMax
+		   GPIO-17 ~RD to CiMax
+		   GPIO-18 ~WR to CiMax
+		 */
+		cx_set(GP0_IO, 0x00040000); /* GPIO as out */
+		/* GPIO1 and GPIO2 as INTA and INTB from CiMaxes, reset low */
+		cx_clear(GP0_IO, 0x00030004);
+		msleep(100);/* reset delay */
+		cx_set(GP0_IO, 0x00040004); /* GPIO as out, reset high */
+		cx_write(MC417_CTL, 0x00000037);/* enable GPIO3-18 pins */
+		/* GPIO-15 IN as ~ACK, rest as OUT */
+		cx_write(MC417_OEN, 0x00001000);
+		/* ~RD, ~WR high; ADL0, ADL1 low; ~CS0, ~CS1 high */
+		cx_write(MC417_RWD, 0x0000c300);
+		/* enable irq */
+		cx_write(GPIO_ISM, 0x00000000);/* INTERRUPTS active low*/
+		break;
+	case CX23885_BOARD_HAUPPAUGE_HVR1270:
+	case CX23885_BOARD_HAUPPAUGE_HVR1275:
+	case CX23885_BOARD_HAUPPAUGE_HVR1255:
+	case CX23885_BOARD_HAUPPAUGE_HVR1255_22111:
+	case CX23885_BOARD_HAUPPAUGE_HVR1210:
+		/* GPIO-5 RF Control: 0 = RF1 Terrestrial, 1 = RF2 Cable */
+		/* GPIO-6 I2C Gate which can isolate the demod from the bus */
+		/* GPIO-9 Demod reset */
+
+		/* Put the parts into reset and back */
+		cx23885_gpio_enable(dev, GPIO_9 | GPIO_6 | GPIO_5, 1);
+		cx23885_gpio_set(dev, GPIO_9 | GPIO_6 | GPIO_5);
+		cx23885_gpio_clear(dev, GPIO_9);
+		msleep(20);
+		cx23885_gpio_set(dev, GPIO_9);
+		break;
+	case CX23885_BOARD_MYGICA_X8506:
+	case CX23885_BOARD_MAGICPRO_PROHDTVE2:
+	case CX23885_BOARD_MYGICA_X8507:
+		/* GPIO-0 (0)Analog / (1)Digital TV */
+		/* GPIO-1 reset XC5000 */
+		/* GPIO-2 demod reset */
+		cx23885_gpio_enable(dev, GPIO_0 | GPIO_1 | GPIO_2, 1);
+		cx23885_gpio_clear(dev, GPIO_1 | GPIO_2);
+		msleep(100);
+		cx23885_gpio_set(dev, GPIO_0 | GPIO_1 | GPIO_2);
+		msleep(100);
+		break;
+	case CX23885_BOARD_MYGICA_X8558PRO:
+		/* GPIO-0 reset first ATBM8830 */
+		/* GPIO-1 reset second ATBM8830 */
+		cx23885_gpio_enable(dev, GPIO_0 | GPIO_1, 1);
+		cx23885_gpio_clear(dev, GPIO_0 | GPIO_1);
+		msleep(100);
+		cx23885_gpio_set(dev, GPIO_0 | GPIO_1);
+		msleep(100);
+		break;
+	case CX23885_BOARD_HAUPPAUGE_HVR1850:
+	case CX23885_BOARD_HAUPPAUGE_HVR1290:
+		/* GPIO-0 656_CLK */
+		/* GPIO-1 656_D0 */
+		/* GPIO-2 Wake# */
+		/* GPIO-3-10 cx23417 data0-7 */
+		/* GPIO-11-14 cx23417 addr0-3 */
+		/* GPIO-15-18 cx23417 READY, CS, RD, WR */
+		/* GPIO-19 IR_RX */
+		/* GPIO-20 C_IR_TX */
+		/* GPIO-21 I2S DAT */
+		/* GPIO-22 I2S WCLK */
+		/* GPIO-23 I2S BCLK */
+		/* ALT GPIO: EXP GPIO LATCH */
+
+		/* CX23417 GPIO's */
+		/* GPIO-14 S5H1411/CX24228 Reset */
+		/* GPIO-13 EEPROM write protect */
+		mc417_gpio_enable(dev, GPIO_14 | GPIO_13, 1);
+
+		/* Put the demod into reset and protect the eeprom */
+		mc417_gpio_clear(dev, GPIO_14 | GPIO_13);
+		msleep(100);
+
+		/* Bring the demod out of reset */
+		mc417_gpio_set(dev, GPIO_14);
+		msleep(100);
+
+		/* CX24228 GPIO */
+		/* Connected to IF / Mux */
+		break;
+	case CX23885_BOARD_GOTVIEW_X5_3D_HYBRID:
+		cx_set(GP0_IO, 0x00010001); /* Bring the part out of reset */
+		break;
+	case CX23885_BOARD_NETUP_DUAL_DVB_T_C_CI_RF:
+		/* GPIO-0 ~INT in
+		   GPIO-1 TMS out
+		   GPIO-2 ~reset chips out
+		   GPIO-3 to GPIO-10 data/addr for CA in/out
+		   GPIO-11 ~CS out
+		   GPIO-12 ADDR out
+		   GPIO-13 ~WR out
+		   GPIO-14 ~RD out
+		   GPIO-15 ~RDY in
+		   GPIO-16 TCK out
+		   GPIO-17 TDO in
+		   GPIO-18 TDI out
+		 */
+		cx_set(GP0_IO, 0x00060000); /* GPIO-1,2 as out */
+		/* GPIO-0 as INT, reset & TMS low */
+		cx_clear(GP0_IO, 0x00010006);
+		msleep(100);/* reset delay */
+		cx_set(GP0_IO, 0x00000004); /* reset high */
+		cx_write(MC417_CTL, 0x00000037);/* enable GPIO-3..18 pins */
+		/* GPIO-17 is TDO in, GPIO-15 is ~RDY in, rest is out */
+		cx_write(MC417_OEN, 0x00005000);
+		/* ~RD, ~WR high; ADDR low; ~CS high */
+		cx_write(MC417_RWD, 0x00000d00);
+		/* enable irq */
+		cx_write(GPIO_ISM, 0x00000000);/* INTERRUPTS active low*/
+		break;
+	case CX23885_BOARD_HAUPPAUGE_HVR4400:
+	case CX23885_BOARD_HAUPPAUGE_STARBURST:
+		/* GPIO-8 tda10071 demod reset */
+		/* GPIO-9 si2165 demod reset (only HVR4400/HVR5500)*/
+
+		/* Put the parts into reset and back */
+		cx23885_gpio_enable(dev, GPIO_8 | GPIO_9, 1);
+
+		cx23885_gpio_clear(dev, GPIO_8 | GPIO_9);
+		msleep(100);
+		cx23885_gpio_set(dev, GPIO_8 | GPIO_9);
+		msleep(100);
+
+		break;
+	case CX23885_BOARD_AVERMEDIA_HC81R:
+		cx_clear(MC417_CTL, 1);
+		/* GPIO-0,1,2 setup direction as output */
+		cx_set(GP0_IO, 0x00070000);
+		usleep_range(10000, 11000);
+		/* AF9013 demod reset */
+		cx_set(GP0_IO, 0x00010001);
+		usleep_range(10000, 11000);
+		cx_clear(GP0_IO, 0x00010001);
+		usleep_range(10000, 11000);
+		cx_set(GP0_IO, 0x00010001);
+		usleep_range(10000, 11000);
+		/* demod tune? */
+		cx_clear(GP0_IO, 0x00030003);
+		usleep_range(10000, 11000);
+		cx_set(GP0_IO, 0x00020002);
+		usleep_range(10000, 11000);
+		cx_set(GP0_IO, 0x00010001);
+		usleep_range(10000, 11000);
+		cx_clear(GP0_IO, 0x00020002);
+		/* XC3028L tuner reset */
+		cx_set(GP0_IO, 0x00040004);
+		cx_clear(GP0_IO, 0x00040004);
+		cx_set(GP0_IO, 0x00040004);
+		msleep(60);
+		break;
+	case CX23885_BOARD_DVBSKY_T9580:
+	case CX23885_BOARD_DVBSKY_S952:
+	case CX23885_BOARD_DVBSKY_T982:
+		/* enable GPIO3-18 pins */
+		cx_write(MC417_CTL, 0x00000037);
+		cx23885_gpio_enable(dev, GPIO_2 | GPIO_11, 1);
+		cx23885_gpio_clear(dev, GPIO_2 | GPIO_11);
+		msleep(100);
+		cx23885_gpio_set(dev, GPIO_2 | GPIO_11);
+		break;
+	case CX23885_BOARD_DVBSKY_T980C:
+	case CX23885_BOARD_DVBSKY_S950C:
+	case CX23885_BOARD_TT_CT2_4500_CI:
+		/*
+		 * GPIO-0 INTA from CiMax, input
+		 * GPIO-1 reset CiMax, output, high active
+		 * GPIO-2 reset demod, output, low active
+		 * GPIO-3 to GPIO-10 data/addr for CAM
+		 * GPIO-11 ~CS0 to CiMax1
+		 * GPIO-12 ~CS1 to CiMax2
+		 * GPIO-13 ADL0 load LSB addr
+		 * GPIO-14 ADL1 load MSB addr
+		 * GPIO-15 ~RDY from CiMax
+		 * GPIO-17 ~RD to CiMax
+		 * GPIO-18 ~WR to CiMax
+		 */
+
+		cx_set(GP0_IO, 0x00060002); /* GPIO 1/2 as output */
+		cx_clear(GP0_IO, 0x00010004); /* GPIO 0 as input */
+		msleep(100); /* reset delay */
+		cx_set(GP0_IO, 0x00060004); /* GPIO as out, reset high */
+		cx_clear(GP0_IO, 0x00010002);
+		cx_write(MC417_CTL, 0x00000037); /* enable GPIO3-18 pins */
+
+		/* GPIO-15 IN as ~ACK, rest as OUT */
+		cx_write(MC417_OEN, 0x00001000);
+
+		/* ~RD, ~WR high; ADL0, ADL1 low; ~CS0, ~CS1 high */
+		cx_write(MC417_RWD, 0x0000c300);
+
+		/* enable irq */
+		cx_write(GPIO_ISM, 0x00000000); /* INTERRUPTS active low */
+		break;
+	case CX23885_BOARD_DVBSKY_S950:
+		cx23885_gpio_enable(dev, GPIO_2, 1);
+		cx23885_gpio_clear(dev, GPIO_2);
+		msleep(100);
+		cx23885_gpio_set(dev, GPIO_2);
+		break;
+	case CX23885_BOARD_HAUPPAUGE_HVR5525:
+	case CX23885_BOARD_HAUPPAUGE_STARBURST2:
+		/*
+		 * HVR5525 GPIO Details:
+		 *  GPIO-00 IR_WIDE
+		 *  GPIO-02 wake#
+		 *  GPIO-03 VAUX Pres.
+		 *  GPIO-07 PROG#
+		 *  GPIO-08 SAT_RESN
+		 *  GPIO-09 TER_RESN
+		 *  GPIO-10 B2_SENSE
+		 *  GPIO-11 B1_SENSE
+		 *  GPIO-15 IR_LED_STATUS
+		 *  GPIO-19 IR_NARROW
+		 *  GPIO-20 Blauster1
+		 *  ALTGPIO VAUX

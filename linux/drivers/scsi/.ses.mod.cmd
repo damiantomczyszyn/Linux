@@ -1,4 +1,2 @@
-\
-  include/linux/rwlock.h \
-    $(wildcard include/config/PREEMPT) \
-  include/linux/sp
+        = LGDT3306A_TPCLK_RISING_EDGE,
+	.tpvalid_polarity       = LGDT3306A_TP_VALID_HIG

@@ -1,146 +1,191 @@
-ig/NF_CT_PROTO_SCTP) \
-    $(wildcard include/config/NF_FLOW_TABLE) \
-    $(wildcard include/config/NF_CT_PROTO_GRE) \
-    $(wildcard include/config/NF_CONNTRACK_EVENTS) \
-    $(wildcard include/config/NF_CONNTRACK_LABELS) \
-  include/linux/list_nulls.h \
-  include/linux/netfilter/nf_conntrack_tcp.h \
-  include/uapi/linux/netfilter/nf_conntrack_tcp.h \
-  include/linux/netfilter/nf_conntrack_dccp.h \
-  include/uapi/linux/netfilter/nf_conntrack_tuple_common.h \
-  include/linux/netfilter/nf_conntrack_sctp.h \
-  include/uapi/linux/netfilter/nf_conntrack_sctp.h \
-  include/net/netns/nftables.h \
-  include/net/netns/xfrm.h \
-  include/uapi/linux/xfrm.h \
-  include/net/netns/mpls.h \
-  include/net/netns/can.h \
-  include/net/netns/xdp.h \
-  include/net/netns/smc.h \
-  include/net/netns/bpf.h \
-  include/net/netns/mctp.h \
-  include/net/net_trackers.h \
-    $(wildcard include/config/NET_DEV_REFCNT_TRACKER) \
-  include/linux/ref_tracker.h \
-    $(wildcard include/config/REF_TRACKER) \
-  include/linux/seq_file_net.h \
-  include/linux/seq_file.h \
-  include/linux/string_helpers.h \
-  include/linux/ctype.h \
-  include/net/sock.h \
-    $(wildcard include/config/SOCK_RX_QUEUE_MAPPING) \
-    $(wildcard include/config/SOCK_VALIDATE_XMIT) \
-    $(wildcard include/config/RPS) \
-  include/linux/netdevice.h \
-    $(wildcard include/config/DCB) \
-    $(wildcard include/config/HYPERV_NET) \
-    $(wildcard include/config/WLAN) \
-    $(wildcard include/config/AX25) \
-    $(wildcard include/config/MAC80211_MESH) \
-    $(wildcard include/config/NET_IPIP) \
-    $(wildcard include/config/NET_IPGRE) \
-    $(wildcard include/config/IPV6_SIT) \
-    $(wildcard include/config/IPV6_TUNNEL) \
-    $(wildcard include/config/NETPOLL) \
-    $(wildcard include/config/BQL) \
-    $(wildcard include/config/RFS_ACCEL) \
-    $(wildcard include/config/FCOE) \
-    $(wildcard include/config/XFRM_OFFLOAD) \
-    $(wildcard include/config/NET_POLL_CONTROLLER) \
-    $(wildcard include/config/LIBFCOE) \
-    $(wildcard include/config/WIRELESS_EXT) \
-    $(wildcard include/config/VLAN_8021Q) \
-    $(wildcard include/config/NET_DSA) \
-    $(wildcard include/config/TIPC) \
-    $(wildcard include/config/ATALK) \
-    $(wildcard include/config/MPLS_ROUTING) \
-    $(wildcard include/config/NETFILTER_INGRESS) \
-    $(wildcard include/config/NETFILTER_EGRESS) \
-    $(wildcard include/config/PCPU_DEV_REFCNT) \
-    $(wildcard include/config/GARP) \
-    $(wildcard include/config/MRP) \
-    $(wildcard include/config/NET_DROP_MONITOR) \
-    $(wildcard include/config/CGROUP_NET_PRIO) \
-    $(wildcard include/config/MACSEC) \
-    $(wildcard include/config/NET_FLOW_LIMIT) \
-    $(wildcard include/config/ETHTOOL_NETLINK) \
-  include/linux/delay.h \
-  arch/x86/include/asm/delay.h \
-  include/asm-generic/delay.h \
-  include/linux/prefetch.h \
-  arch/x86/include/asm/local.h \
-  include/linux/dynamic_queue_limits.h \
-  include/net/netprio_cgroup.h \
-  include/linux/cgroup.h \
-    $(wildcard include/config/CGROUP_CPUACCT) \
-    $(wildcard include/config/CGROUP_DATA) \
-  include/uapi/linux/cgroupstats.h \
-  include/uapi/linux/taskstats.h \
-  include/linux/kernel_stat.h \
-  include/linux/cgroup-defs.h \
-  include/linux/bpf-cgroup-defs.h \
-  include/linux/psi_types.h \
-  include/linux/kthread.h \
-  include/linux/cgroup_subsys.h \
-    $(wildcard include/config/CGROUP_DEVICE) \
-    $(wildcard include/config/CGROUP_FREEZER) \
-    $(wildcard include/config/CGROUP_PERF) \
-    $(wildcard include/config/CGROUP_HUGETLB) \
-    $(wildcard include/config/CGROUP_PIDS) \
-    $(wildcard include/config/CGROUP_RDMA) \
-    $(wildcard include/config/CGROUP_MISC) \
-    $(wildcard include/config/CGROUP_DEBUG) \
-  include/net/xdp.h \
-  include/uapi/linux/neighbour.h \
-  include/uapi/linux/netdevice.h \
-  include/uapi/linux/if.h \
-  include/uapi/linux/hdlc/ioctl.h \
-  include/linux/if_ether.h \
-  include/linux/if_link.h \
-  include/uapi/linux/if_link.h \
-  include/uapi/linux/if_bonding.h \
-  include/uapi/linux/pkt_cls.h \
-  include/uapi/linux/pkt_sched.h \
-  include/linux/hashtable.h \
-  include/linux/page_counter.h \
-  h \
-  include/vdso/bits.h \
-  include/linux/build_bug.h \
-  include/linux/compiler.h \
-    $(wildcard include/config/TRACE_BRANCH_PROFILING) \
-    $(wildcard include/config/PROFILE_ALL_BRANCHES) \
-    $(wildcard include/config/STACK_VALIDATION) \
-    $(wildcard include/config/CFI_CLANG) \
-  arch/x86/include/generated/asm/rwonce.h \
-  include/asm-generic/rwonce.h \
-  include/linux/kasan-checks.h \
-    $(wildcard include/config/KASAN_GENERIC) \
-    $(wildcard include/config/KASAN_SW_TAGS) \
-  include/linux/kcsan-checks.h \
-    $(wildcard include/config/KCSAN) \
-    $(wildcard include/config/KCSAN_WEAK_MEMORY) \
-    $(wildcard include/config/KCSAN_IGNORE_ATOMICS) \
-  include/linux/typecheck.h \
-  include/uapi/linux/kernel.h \
-  include/uapi/linux/sysinfo.h \
-  arch/x86/include/asm/bitops.h \
-    $(wildcard include/config/X86_64) \
-    $(wildcard include/config/X86_CMOV) \
-  arch/x86/include/asm/alternative.h \
-    $(wildcard include/config/SMP) \
-  include/linux/stringify.h \
-  arch/x86/include/asm/asm.h \
-    $(wildcard include/config/KPROBES) \
-  arch/x86/include/asm/extable_fixup_types.h \
-  arch/x86/include/asm/rmwcc.h \
-    $(wildcard include/config/CC_HAS_ASM_GOTO) \
-  arch/x86/include/asm/barrier.h \
-  arch/x86/include/asm/nops.h \
-  include/asm-generic/barrier.h \
-  include/asm-generic/bitops/fls64.h \
-  include/asm-generic/bitops/sched.h \
-  arch/x86/include/asm/arch_hweight.h \
-  arch/x86/include/asm/cpufeatures.h \
-  arch/x86/include/asm/required-features.h \
-    $(wildcard include/config/X86_MINIMUM_CPU_FAMILY) \
-    $(wildcard include/c
+n interrupt which signals that the previous buffer has been
+ * DMAed successfully and that it can be returned to userspace.
+ *
+ * It also sets the final jump of the previous buffer to the start of the new
+ * buffer, thus chaining the new buffer into the DMA chain. This is a single
+ * atomic u32 write, so there is no race condition.
+ *
+ * The end-result of all this that you only get an interrupt when a buffer
+ * is ready, so the control flow is very easy.
+ */
+static void buffer_queue(struct vb2_buffer *vb)
+{
+	struct vb2_v4l2_buffer *vbuf = to_vb2_v4l2_buffer(vb);
+	struct cx23885_dev *dev = vb->vb2_queue->drv_priv;
+	struct cx23885_buffer   *buf = container_of(vbuf,
+		struct cx23885_buffer, vb);
+	struct cx23885_buffer   *prev;
+	struct cx23885_dmaqueue *q    = &dev->vidq;
+	unsigned long flags;
+
+	/* add jump to start */
+	buf->risc.cpu[1] = cpu_to_le32(buf->risc.dma + 12);
+	buf->risc.jmp[0] = cpu_to_le32(RISC_JUMP | RISC_CNT_INC);
+	buf->risc.jmp[1] = cpu_to_le32(buf->risc.dma + 12);
+	buf->risc.jmp[2] = cpu_to_le32(0); /* bits 63-32 */
+
+	spin_lock_irqsave(&dev->slock, flags);
+	if (list_empty(&q->active)) {
+		list_add_tail(&buf->queue, &q->active);
+		dprintk(2, "[%p/%d] buffer_queue - first active\n",
+			buf, buf->vb.vb2_buf.index);
+	} else {
+		buf->risc.cpu[0] |= cpu_to_le32(RISC_IRQ1);
+		prev = list_entry(q->active.prev, struct cx23885_buffer,
+			queue);
+		list_add_tail(&buf->queue, &q->active);
+		prev->risc.jmp[1] = cpu_to_le32(buf->risc.dma);
+		dprintk(2, "[%p/%d] buffer_queue - append to active\n",
+				buf, buf->vb.vb2_buf.index);
+	}
+	spin_unlock_irqrestore(&dev->slock, flags);
+}
+
+static int cx23885_start_streaming(struct vb2_queue *q, unsigned int count)
+{
+	struct cx23885_dev *dev = q->drv_priv;
+	struct cx23885_dmaqueue *dmaq = &dev->vidq;
+	struct cx23885_buffer *buf = list_entry(dmaq->active.next,
+			struct cx23885_buffer, queue);
+
+	cx23885_start_video_dma(dev, dmaq, buf);
+	return 0;
+}
+
+static void cx23885_stop_streaming(struct vb2_queue *q)
+{
+	struct cx23885_dev *dev = q->drv_priv;
+	struct cx23885_dmaqueue *dmaq = &dev->vidq;
+	unsigned long flags;
+
+	cx_clear(VID_A_DMA_CTL, 0x11);
+	spin_lock_irqsave(&dev->slock, flags);
+	while (!list_empty(&dmaq->active)) {
+		struct cx23885_buffer *buf = list_entry(dmaq->active.next,
+			struct cx23885_buffer, queue);
+
+		list_del(&buf->queue);
+		vb2_buffer_done(&buf->vb.vb2_buf, VB2_BUF_STATE_ERROR);
+	}
+	spin_unlock_irqrestore(&dev->slock, flags);
+}
+
+static const struct vb2_ops cx23885_video_qops = {
+	.queue_setup    = queue_setup,
+	.buf_prepare  = buffer_prepare,
+	.buf_finish = buffer_finish,
+	.buf_queue    = buffer_queue,
+	.wait_prepare = vb2_ops_wait_prepare,
+	.wait_finish = vb2_ops_wait_finish,
+	.start_streaming = cx23885_start_streaming,
+	.stop_streaming = cx23885_stop_streaming,
+};
+
+/* ------------------------------------------------------------------ */
+/* VIDEO IOCTLS                                                       */
+
+static int vidioc_g_fmt_vid_cap(struct file *file, void *priv,
+	struct v4l2_format *f)
+{
+	struct cx23885_dev *dev = video_drvdata(file);
+
+	f->fmt.pix.width        = dev->width;
+	f->fmt.pix.height       = dev->height;
+	f->fmt.pix.field        = dev->field;
+	f->fmt.pix.pixelformat  = dev->fmt->fourcc;
+	f->fmt.pix.bytesperline =
+		(f->fmt.pix.width * dev->fmt->depth) >> 3;
+	f->fmt.pix.sizeimage =
+		f->fmt.pix.height * f->fmt.pix.bytesperline;
+	f->fmt.pix.colorspace   = V4L2_COLORSPACE_SMPTE170M;
+
+	return 0;
+}
+
+static int vidioc_try_fmt_vid_cap(struct file *file, void *priv,
+	struct v4l2_format *f)
+{
+	struct cx23885_dev *dev = video_drvdata(file);
+	struct cx23885_fmt *fmt;
+	enum v4l2_field   field;
+	unsigned int      maxw, maxh;
+
+	fmt = format_by_fourcc(f->fmt.pix.pixelformat);
+	if (NULL == fmt)
+		return -EINVAL;
+
+	field = f->fmt.pix.field;
+	maxw  = 720;
+	maxh  = norm_maxh(dev->tvnorm);
+
+	if (V4L2_FIELD_ANY == field) {
+		field = (f->fmt.pix.height > maxh/2)
+			? V4L2_FIELD_INTERLACED
+			: V4L2_FIELD_BOTTOM;
+	}
+
+	switch (field) {
+	case V4L2_FIELD_TOP:
+	case V4L2_FIELD_BOTTOM:
+		maxh = maxh / 2;
+		break;
+	case V4L2_FIELD_INTERLACED:
+	case V4L2_FIELD_SEQ_TB:
+	case V4L2_FIELD_SEQ_BT:
+		break;
+	default:
+		field = V4L2_FIELD_INTERLACED;
+		break;
+	}
+
+	f->fmt.pix.field = field;
+	v4l_bound_align_image(&f->fmt.pix.width, 48, maxw, 2,
+			      &f->fmt.pix.height, 32, maxh, 0, 0);
+	f->fmt.pix.bytesperline =
+		(f->fmt.pix.width * fmt->depth) >> 3;
+	f->fmt.pix.sizeimage =
+		f->fmt.pix.height * f->fmt.pix.bytesperline;
+	f->fmt.pix.colorspace = V4L2_COLORSPACE_SMPTE170M;
+
+	return 0;
+}
+
+static int vidioc_s_fmt_vid_cap(struct file *file, void *priv,
+	struct v4l2_format *f)
+{
+	struct cx23885_dev *dev = video_drvdata(file);
+	struct v4l2_subdev_format format = {
+		.which = V4L2_SUBDEV_FORMAT_ACTIVE,
+	};
+	int err;
+
+	dprintk(2, "%s()\n", __func__);
+	err = vidioc_try_fmt_vid_cap(file, priv, f);
+
+	if (0 != err)
+		return err;
+
+	if (vb2_is_busy(&dev->vb2_vidq) || vb2_is_busy(&dev->vb2_vbiq) ||
+	    vb2_is_busy(&dev->vb2_mpegq))
+		return -EBUSY;
+
+	dev->fmt        = format_by_fourcc(f->fmt.pix.pixelformat);
+	dev->width      = f->fmt.pix.width;
+	dev->height     = f->fmt.pix.height;
+	dev->field	= f->fmt.pix.field;
+	dprintk(2, "%s() width=%d height=%d field=%d\n", __func__,
+		dev->width, dev->height, dev->field);
+	v4l2_fill_mbus_format(&format.format, &f->fmt.pix, MEDIA_BUS_FMT_FIXED);
+	call_all(dev, pad, set_fmt, NULL, &format);
+	v4l2_fill_pix_format(&f->fmt.pix, &format.format);
+	/* set_fmt overwrites f->fmt.pix.field, restore it */
+	f->fmt.pix.field = dev->field;
+	return 0;
+}
+
+static int vidioc_querycap(struct file *file, void  *priv,
+	struct v4l2_capability *cap)
+{
+	struct cx23885_dev *dev = video_drvdata(file);
+
+	strscpy(cap->driver

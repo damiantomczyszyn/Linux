@@ -1,1 +1,5 @@
-cmd_drivers/media/rc/keymaps/rc-tivo.mod := { echo  drivers/media/rc/keymaps/rc-tivo.o;  echo; } > drivers/media/rc/keymaps/rc-tivo.mod
+// SPDX-License-Identifier: GPL-2.0-or-later
+/*
+ *  Driver for the Conexant CX23885/7/8 PCIe bridge
+ *
+ *  Infrared device support routi

@@ -1,4 +1,3 @@
-e/config/ACPI_APEI_GHES) \
-    $(wildcard include/config/INTEL_TXT) \
-  arch/x86/include/generated/asm/kmap_size.h \
-  include
+/* SPDX-License-Identifier: GPL-2.0 */
+extern int f300_set_voltage(struct dvb_frontend *fe,
+			    enum fe_sec_voltage voltage

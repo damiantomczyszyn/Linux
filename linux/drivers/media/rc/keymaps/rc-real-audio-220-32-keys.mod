@@ -1,2 +1,3 @@
-drivers/media/rc/keymaps/rc-real-audio-220-32-keys.o
-
+fault_pm	  = 0,
+				.dvb_amplitude	  = 134,
+				.set_s

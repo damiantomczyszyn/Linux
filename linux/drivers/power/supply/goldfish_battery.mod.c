@@ -1,22 +1,27 @@
-media/v4l2-dev.h \
-  include/linux/poll.h \
-  include/uapi/linux/poll.h \
-  arch/x86/include/generated/uapi/asm/poll.h \
-  include/uapi/asm-generic/poll.h \
-  include/uapi/linux/eventpoll.h \
-  include/linux/cdev.h \
-  include/linux/spi/spi.h \
-    $(wildcard include/config/SPI_SLAVE) \
-  include/linux/scatterlist.h \
-    $(wildcard include/config/NEED_SG_DMA_LENGTH) \
-    $(wildcard include/config/DEBUG_SG) \
-    $(wildcard include/config/SGL_ALLOC) \
-    $(wildcard include/config/ARCH_NO_SG_CHAIN) \
-    $(wildcard include/config/SG_POOL) \
-  include/uapi/linux/spi/spi.h \
-  include/media/v4l2-fh.h \
-  include/media/v4l2-mediabus.h \
+        = LGDT3306A_TPCLK_RISING_EDGE,
+	.tpvalid_polarity       = LGDT3306A_TP_VALID_HIGH,
+	.xtalMHz                = 25, /* 24 or 25 */
+};
 
-drivers/media/i2c/tw9910.o: $(deps_drivers/media/i2c/tw9910.o)
+static int p8000_set_voltage(struct dvb_frontend *fe,
+			     enum fe_sec_voltage voltage)
+{
+	struct cx23885_tsport *port = fe->dvb->priv;
+	struct cx23885_dev *dev = port->dev;
 
-$(deps_drivers/media/i2c/tw9910.o)
+	if (voltage == SEC_VOLTAGE_18)
+		cx_write(MC417_RWD, 0x00001e00);
+	else if (voltage == SEC_VOLTAGE_13)
+		cx_write(MC417_RWD, 0x00001a00);
+	else
+		cx_write(MC417_RWD, 0x00001800);
+	return 0;
+}
+
+static int dvbsky_t9580_set_voltage(struct dvb_frontend *fe,
+					enum fe_sec_voltage voltage)
+{
+	struct cx23885_tsport *port = fe->dvb->priv;
+	struct cx23885_dev *dev = port->dev;
+
+	cx23885_gpio_enable(dev, GPIO_0 | GPIO_1, 1);

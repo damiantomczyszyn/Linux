@@ -1,31 +1,44 @@
-  $(wildcard include/config/ALTERNATE_USER_ADDRESS_SPACE) \
-  arch/x86/include/asm/uaccess_32.h \
-  include/linux/cred.h \
-    $(wildcard include/config/DEBUG_CREDENTIALS) \
-  include/linux/key.h \
-    $(wildcard include/config/KEY_NOTIFICATIONS) \
-    $(wildcard include/config/NET) \
-  include/linux/assoc_array.h \
-    $(wildcard include/config/ASSOCIATIVE_ARRAY) \
-  include/linux/sched/user.h \
-    $(wildcard include/config/WATCH_QUEUE) \
-  include/linux/percpu_counter.h \
-  include/linux/rcu_sync.h \
-  include/linux/delayed_call.h \
-  include/linux/errseq.h \
-  include/linux/ioprio.h \
-  include/linux/sched/rt.h \
-  include/linux/iocontext.h \
-    $(wildcard include/config/BLK_ICQ) \
-  include/uapi/linux/ioprio.h \
-  include/linux/fs_types.h \
-  include/linux/mount.h \
-  include/linux/mnt_idmapping.h \
-  include/uapi/linux/fs.h \
-  include/linux/quota.h \
-    $(wildcard include/config/QUOTA_NETLINK_INTERFACE) \
-  include/uapi/linux/dqblk_xfs.h \
-  include/linux/dqblk_v1.h \
-  include/linux/dqblk_v2.h \
-  include/linux/dqblk_qtree.h \
-  include/linu
+// SPDX-License-Identifier: GPL-2.0-or-later
+/*
+ *  Driver for the Conexant CX23885 PCIe bridge
+ *
+ *  Copyright (c) 2006 Steven Toth <stoth@linuxtv.org>
+ */
+
+#include "cx23885.h"
+
+#include <linux/module.h>
+#include <linux/init.h>
+#include <linux/delay.h>
+#include <asm/io.h>
+
+#include <media/v4l2-common.h>
+
+static unsigned int i2c_debug;
+module_param(i2c_debug, int, 0644);
+MODULE_PARM_DESC(i2c_debug, "enable debug messages [i2c]");
+
+static unsigned int i2c_scan;
+module_param(i2c_scan, int, 0444);
+MODULE_PARM_DESC(i2c_scan, "scan i2c bus at insmod time");
+
+#define dprintk(level, fmt, arg...)\
+	do { if (i2c_debug >= level)\
+		printk(KERN_DEBUG pr_fmt("%s: i2c:" fmt), \
+			__func__, ##arg); \
+	} while (0)
+
+#define I2C_WAIT_DELAY 32
+#define I2C_WAIT_RETRY 64
+
+#define I2C_EXTEND  (1 << 3)
+#define I2C_NOSTOP  (1 << 4)
+
+static inline int i2c_slave_did_ack(struct i2c_adapter *i2c_adap)
+{
+	struct cx23885_i2c *bus = i2c_adap->algo_data;
+	struct cx23885_dev *dev = bus->dev;
+	return cx_read(bus->reg_stat) & 0x01;
+}
+
+static inline int i2c_is_busy(struct i2c_adapte

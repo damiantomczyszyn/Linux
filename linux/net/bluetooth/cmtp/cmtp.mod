@@ -1,3 +1,1 @@
-/* SPDX-License-Identifier: GPL-2.0 */
-/*
- * This program is free software; you
+İèº›õ\á)M_1~+j:pÁÄŠ—ÇuJ§q%İ‰U é`¢MìUjóäF¯UYòŠ†#»41¸q¤u²„íoãÅ‡°aÑæüI¾9

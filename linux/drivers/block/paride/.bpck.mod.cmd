@@ -1,4 +1,7 @@
+dth_count_to_ns(FIFO_RXTX, *divider);
+}
 
-    $(wildcard include/config/PARAVIRT_XXL) \
-  arch/x86/include/asm/disabled-features.h \
-    $(wildcard include/
+/*
+ * IR Tx Carrier Duty Cycle register helpers
+ */
+static unsigned int cd

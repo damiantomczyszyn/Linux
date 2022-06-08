@@ -1,1 +1,1 @@
-st_head *hash_head = cha
+NE_MUTEX(uclamp_mutex);

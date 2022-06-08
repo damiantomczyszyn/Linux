@@ -1,10 +1,18 @@
-odule.h \
-    $(wildcard include/config/MODULES_TREE_LOOKUP) \
-    $(wildcard include/config/STACKTRACE_BUILD_ID) \
-    $(wildcard include/config/MODULE_SIG) \
-    $(wildcard include/config/KALLSYMS) \
-    $(wildcard include/config/BPF_EVENTS) \
-    $(wildcard include/config/DEBUG_INFO_BTF_MODULES) \
-    $(wildcard include/config/EVENT_TRACING) \
-    $(wildcard include/config/MODULE_UNLOAD) \
-    $(wildcard includ
+00);
+		break;
+	}
+}
+
+int cx23885_ir_init(struct cx23885_dev *dev)
+{
+	static struct v4l2_subdev_io_pin_config ir_rxtx_pin_cfg[] = {
+		{
+			.flags	  = BIT(V4L2_SUBDEV_IO_PIN_INPUT),
+			.pin	  = CX23885_PIN_IR_RX_GPIO19,
+			.function = CX23885_PAD_IR_RX,
+			.value	  = 0,
+			.strength = CX25840_PIN_DRIVE_MEDIUM,
+		}, {
+			.flags	  = BIT(V4L2_SUBDEV_IO_PIN_OUTPUT),
+			.pin	  = CX23885_PIN_IR_TX_GPIO20,
+			.function = CX

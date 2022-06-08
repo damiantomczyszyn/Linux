@@ -1,6 +1,1 @@
-\
-    $(wildcard include/config/SHMEM) \
-    $(wildcard include/config/ARCH_HAS_PTE_SPECIAL) \
-    $(wildcard include/config/ARCH_HAS_PTE_DEVMAP) \
-    $(wildcard include/config/DEBUG_VM_RB) \
-    $(wildc
+cmd_drivers/net/can/usb/usb_8dev.ko := ld -r -m elf_i386 --build-id=sha1  -T scripts/module.lds -o drivers/net/can/usb/usb_8dev.ko drivers/net/can/usb/usb_8dev.o drivers/net/can/usb/usb_8dev.mod.o;  true

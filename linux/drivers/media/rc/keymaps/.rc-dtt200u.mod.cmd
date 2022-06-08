@@ -1,1 +1,6 @@
-cmd_drivers/media/rc/keymaps/rc-dtt200u.mod := { echo  drivers/media/rc/keymaps/rc-dtt200u.o;  echo; } > drivers/media/rc/keymaps/rc-dtt200u.mod
+ET_SEQ_END:
+		return  "GET_SEQ_END";
+	case CX2341X_ENC_SET_PGM_INDEX_INFO:
+		return  "SET_PGM_INDEX_INFO";
+	case CX2341X_ENC_SET_VBI_CONFIG:
+		re

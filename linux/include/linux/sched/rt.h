@@ -1,42 +1,50 @@
-  $(wildcard include/config/ALTERNATE_USER_ADDRESS_SPACE) \
-  arch/x86/include/asm/uaccess_32.h \
-  include/linux/cred.h \
-    $(wildcard include/config/DEBUG_CREDENTIALS) \
-  include/linux/key.h \
-    $(wildcard include/config/KEY_NOTIFICATIONS) \
-    $(wildcard include/config/NET) \
-  include/linux/assoc_array.h \
-    $(wildcard include/config/ASSOCIATIVE_ARRAY) \
-  include/linux/sched/user.h \
-    $(wildcard include/config/WATCH_QUEUE) \
-  include/linux/percpu_counter.h \
-  include/linux/rcu_sync.h \
-  include/linux/delayed_call.h \
-  include/linux/errseq.h \
-  include/linux/ioprio.h \
-  include/linux/sched/rt.h \
-  include/linux/iocontext.h \
-    $(wildcard include/config/BLK_ICQ) \
-  include/uapi/linux/ioprio.h \
-  include/linux/fs_types.h \
-  include/linux/mount.h \
-  include/linux/mnt_idmapping.h \
-  include/uapi/linux/fs.h \
-  include/linux/quota.h \
-    $(wildcard include/config/QUOTA_NETLINK_INTERFACE) \
-  include/uapi/linux/dqblk_xfs.h \
-  include/linux/dqblk_v1.h \
-  include/linux/dqblk_v2.h \
-  include/linux/dqblk_qtree.h \
-  include/linux/projid.h \
-  include/uapi/linux/quota.h \
-  include/linux/nfs_fs_i.h \
-  include/linux/seq_file.h \
-  include/linux/string_helpers.h \
-  include/linux/ns_common.h \
-  include/linux/nsproxy.h \
-  include/linux/user_namespace.h \
-    $(wildcard include/config/INOTIFY_USER) \
-    $(wildcard include/config/FANOTIFY) \
-    $(wildcard include/config/PERSISTENT_KEYRINGS) \
-  in
+dev->board == CX23885_BOARD_HAUPPAUGE_HVR1275)
+			cx23885_set_frontend_hook(port, fe0->dvb.frontend);
+		break;
+	case CX23885_BOARD_HAUPPAUGE_HVR1255:
+	case CX23885_BOARD_HAUPPAUGE_HVR1255_22111:
+		i2c_bus = &dev->i2c_bus[0];
+		fe0->dvb.frontend = dvb_attach(s5h1411_attach,
+					       &hcw_s5h1411_config,
+					       &i2c_bus->i2c_adap);
+		if (fe0->dvb.frontend == NULL)
+			break;
+
+		dvb_attach(tda18271_attach, fe0->dvb.frontend,
+			   0x60, &dev->i2c_bus[1].i2c_adap,
+			   &hauppauge_tda18271_config);
+
+		tda18271_attach(&dev->ts1.analog_fe,
+			0x60, &dev->i2c_bus[1].i2c_adap,
+			&hauppauge_tda18271_config);
+
+		break;
+	case CX23885_BOARD_HAUPPAUGE_HVR1800:
+		i2c_bus = &dev->i2c_bus[0];
+		switch (alt_tuner) {
+		case 1:
+			fe0->dvb.frontend =
+				dvb_attach(s5h1409_attach,
+					   &hauppauge_ezqam_config,
+					   &i2c_bus->i2c_adap);
+			if (fe0->dvb.frontend == NULL)
+				break;
+
+			dvb_attach(tda829x_attach, fe0->dvb.frontend,
+				   &dev->i2c_bus[1].i2c_adap, 0x42,
+				   &tda829x_no_probe);
+			dvb_attach(tda18271_attach, fe0->dvb.frontend,
+				   0x60, &dev->i2c_bus[1].i2c_adap,
+				   &hauppauge_tda18271_config);
+			break;
+		case 0:
+		default:
+			fe0->dvb.frontend =
+				dvb_attach(s5h1409_attach,
+					   &hauppauge_generic_config,
+					   &i2c_bus->i2c_adap);
+			if (fe0->dvb.frontend == NULL)
+				break;
+			dvb_attach(mt2131_attach, fe0->dvb.frontend,
+				   &i2c_bus->i2c_adap,
+				   &hauppauge_generic_tunerconfig, 0);

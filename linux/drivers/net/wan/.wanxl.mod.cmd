@@ -1,3 +1,6 @@
-x/scatterlist.h \
-    $(wildcard include/config/NEED_SG_DMA_LENGTH) \
-    $(wildcard include/config/DEB
+		sn);
+}
+
+static void hauppauge_eeprom(struct cx23885_dev *dev, u8 *eeprom_data)
+{
+	struct tveeprom tv;

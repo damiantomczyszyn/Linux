@@ -1,10 +1,10 @@
- include/config/TRACE_BRANCH_PROFILING) \
-    $(wildcard include/config/PROFILE_ALL_BRANCHES) \
-    $(wildcard include/config/STACK_VALIDATION) \
-  include/linux/compiler_types.h \
-  arch/x86/include/generated/asm/rwonce.h \
-  include/asm-generic/rwonce.h \
-  include/linux/kasan-checks.h \
-    $(wildcard include/config/KASAN_GENERIC) \
-    $(wildcard include/config/KASAN_SW_TAGS) \
-  incl
+			/* attach tuner */
+			memset(&ts2020_config, 0, sizeof(ts2020_config));
+			ts2020_config.fe = fe0->dvb.frontend;
+			ts2020_config.get_agc_pwm = m88ds3103_get_agc_pwm;
+			memset(&info, 0, sizeof(struct i2c_board_info));
+			strscpy(info.type, "ts2020", I2C_NAME_SIZE);
+			info.addr = 0x60;
+			info.platform_data = &ts2020_config;
+			request_module(info.type);
+			client_tuner = i2c_new_clie

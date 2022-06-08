@@ -1,2 +1,2 @@
-IC_IOREMAP) \
-    $(wildcard include/config/VIRT_TO_BUS)
+3885_BOARD_DVBSKY_T980C:
+	case CX23885_BOARD_DVBSKY_S950

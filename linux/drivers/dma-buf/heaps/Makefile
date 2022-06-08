@@ -1,4 +1,6 @@
-wildcard include/config/GENERIC_ATOMIC64) \
-  include/linux/atomic/atomic-long.h \
-  include/linux/atomic/atomic-instrumented.h \
-  
+ware FIFO overrun\n");
+	}
+	if (roe && ror) {
+		/*
+		 * The RX FIFO Enable (CNTRL_RFE) must be toggled to clear
+		 * the Rx FIFO Over

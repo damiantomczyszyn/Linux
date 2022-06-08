@@ -1,30 +1,48 @@
-nux/ktime.h \
-  include/linux/time.h \
-    $(wildcard include/config/POSIX_TIMERS) \
-  include/linux/time32.h \
-  include/linux/timex.h \
-  include/uapi/linux/timex.h \
-  arch/x86/include/asm/timex.h \
-    $(wildcard include/config/X86_TSC) \
-  arch/x86/include/asm/tsc.h \
-  include/vdso/time32.h \
-  include/vdso/time.h \
-  include/linux/jiffies.h \
-  include/vdso/jiffies.h \
-  include/generated/timeconst.h \
-  include/vdso/ktime.h \
-  include/linux/timekeeping.h \
-    $(wildcard include/config/GENERIC_CMOS_UPDATE) \
-  include/linux/clocksource_ids.h \
-  include/linux/debugobjects.h \
-    $(wildcard include/config/DEBUG_OBJECTS) \
-    $(wildcard include/config/DEBUG_OBJECTS_FREE) \
-  include/uapi/linux/ipc.h \
-  arch/x86/include/generated/uapi/asm/ipcbuf.h \
-  include/uapi/asm-generic/ipcbuf.h \
-  arch/x86/include/uapi/asm/sembuf.h \
-  include/linux/shm.h \
-  include/uapi/linux/shm.h \
-  include/uapi/asm-generic/hugetlb_encode.h \
-  arch/x86/include/uapi/asm/shmbuf.h \
-  include/uapi/asm
+t("%s\n", __func__);
+
+	if (0 != slot)
+		return -EINVAL;
+
+	mutex_lock(&inter->fpga_mutex);
+
+	ret = netup_fpga_op_rw(inter, NETUP_CI_BUSCTRL, 0, NETUP_CI_FLG_RD);
+	netup_fpga_op_rw(inter, NETUP_CI_BUSCTRL,
+				(ret & 0xcf) | (1 << (5 - state->nr)), 0);
+
+	mutex_unlock(&inter->fpga_mutex);
+
+	for (;;) {
+		msleep(50);
+
+		mutex_lock(&inter->fpga_mutex);
+
+		ret = netup_fpga_op_rw(inter, NETUP_CI_BUSCTRL,
+						0, NETUP_CI_FLG_RD);
+		mutex_unlock(&inter->fpga_mutex);
+
+		if ((ret & (1 << (5 - state->nr))) == 0)
+			break;
+		if (time_after(jiffies, t_out))
+			break;
+	}
+
+
+	ci_dbg_print("%s: %d msecs\n", __func__,
+		jiffies_to_msecs(jiffies + msecs_to_jiffies(9999) - t_out));
+
+	return 0;
+}
+
+static int altera_ci_slot_shutdown(struct dvb_ca_en50221 *en50221, int slot)
+{
+	/* not implemented */
+	return 0;
+}
+
+static int altera_ci_slot_ts_ctl(struct dvb_ca_en50221 *en50221, int slot)
+{
+	struct altera_ci_state *state = en50221->data;
+	struct fpga_internal *inter = state->internal;
+	int ret;
+
+	ci_dbg_print("%

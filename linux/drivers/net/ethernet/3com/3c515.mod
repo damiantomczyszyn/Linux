@@ -1,2 +1,2 @@
-RCOPY) \
-  arch/x86/include/asm/uac
+drivers/net/ethernet/3com/3c515.o
+

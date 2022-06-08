@@ -1,1 +1,1 @@
-cmd_drivers/media/i2c/wm8739.o := gcc -Wp,-MMD,drivers/media/i2c/.wm8739.o.d -nostdinc -I./arch/x86/include -I./arch/x86/include/generated  -I./include -I./arch/x86/include/uapi -I./arch/x86/include/generated/uapi -I
+cmd_drivers/media/pci/cx18/cx18-alsa-pcm.o := gcc -Wp,-MMD,drivers/media/pci/cx18/.cx18-alsa-pcm.o.d -nostdinc -I./arch/x86/include -I./arch/x86/include/generated  -I./include -I./arch/x86/include/uapi -I./arch/x86/i

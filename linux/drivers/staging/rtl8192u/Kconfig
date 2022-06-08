@@ -1,7 +1,8 @@
-ude/config/PARAVIRT_XXL) \
-  arch/x86/include/asm/disabled-features.h \
-    $(wildcard include/config/X86_SMAP) \
-    $(wildcard include/config/X86_UMIP) \
-    $(wildcard include/config/X86_INTEL_MEMORY_PROTECTION_KEYS) \
-    $(wildcard include/config/X86_5LEVEL) \
-    $(wildcar
+\
+    $(wildcard include/config/HAVE_EFFICIENT_UNALIGNED_ACCESS) \
+  include/uapi/linux/if_ether.h \
+  include/net/netns/core.h \
+  include/net/netns/mib.h \
+    $(wildcard include/config/XFRM_STATISTICS) \
+    $(wildcard include/config/TLS) \
+    $(wildcard include/config/MPTCP

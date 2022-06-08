@@ -1,3 +1,79 @@
-cmd_drivers/media/i2c/tw2804.o := gcc -Wp,-MMD,drivers/media/i2c/.tw2804.o.d -nostdinc -I./arch/x86/include -I./arch/x86/include/generated  -I./include -I./arch/x86/include/uapi -I./arch/x86/include/generated/uapi -I./include/uapi -I./include/generated/uapi -include ./include/linux/compiler-version.h -include ./include/linux/kconfig.h -include ./include/linux/compiler_types.h -D__KERNEL__ -fmacro-prefix-map=./= -Wall -Wundef -Werror=strict-prototypes -Wno-trigraphs -fno-strict-aliasing -fno-common -fshort-wchar -fno-PIE -Werror=implicit-function-declaration -Werror=implicit-int -Werror=return-type -Wno-format-security -std=gnu11 -mno-sse -mno-mmx -mno-sse2 -mno-3dnow -mno-avx -fcf-protection=none -m32 -msoft-float -mregparm=3 -freg-struct-return -fno-pic -mpreferred-stack-boundary=2 -march=i686 -mtune=pentium3 -mtune=generic -Wa,-mtune=generic32 -ffreestanding -mstack-protector-guard-reg=fs -mstack-protector-guard-symbol=__stack_chk_guard -Wno-sign-compare -fno-asynchronous-unwind-tables -mindirect-branch=thunk-extern -mindirect-branch-register -fno-jump-tables -fno-delete-null-pointer-checks -Wno-frame-address -Wno-format-truncation -Wno-format-overflow -Wno-address-of-packed-member -O2 -fno-allow-store-data-races -fstack-protector-strong -Wimplicit-fallthrough=5 -Wno-main -Wno-unused-but-set-variable -Wno-unused-const-variable -fno-stack-clash-protection -pg -mrecord-mcount -mfentry -DCC_USING_FENTRY -Wdeclaration-after-statement -Wvla -Wno-pointer-sign -Wcast-function-type -Wno-stringop-truncation -Wno-stringop-overflow -Wno-restrict -Wno-maybe-uninitialized -Wno-alloc-size-larger-than -fno-strict-overflow -fno-stack-check -fconserve-stack -Werror=date-time -Werror=incompatible-pointer-types -Werror=designated-init -Wno-packed-not-aligned  -DMODULE  -DKBUILD_BASENAME='"tw2804"' -DKBUILD_MODNAME='"tw2804"' -D__KBUILD_MODNAME=kmod_tw2804 -c -o drivers/media/i2c/tw2804.o drivers/media/i2c/tw2804.c 
+x], Reg=[0x%02x], data=%02x, TS config = %02x\n",
+			     __func__,	state->ci_i2c_addr, 0, buf[0], buf[0]);
 
-source_driv
+
+		if (buf[0] & 1)
+			state->status = DVB_CA_EN50221_POLL_CAM_PRESENT |
+				DVB_CA_EN50221_POLL_CAM_READY;
+		else
+			state->status = 0;
+	}
+}
+
+/* CI irq handler */
+int netup_ci_slot_status(struct cx23885_dev *dev, u32 pci_status)
+{
+	struct cx23885_tsport *port = NULL;
+	struct netup_ci_state *state = NULL;
+
+	ci_dbg_print("%s:\n", __func__);
+
+	if (0 == (pci_status & (PCI_MSK_GPIO0 | PCI_MSK_GPIO1)))
+		return 0;
+
+	if (pci_status & PCI_MSK_GPIO0) {
+		port = &dev->ts1;
+		state = port->port_priv;
+		schedule_work(&state->work);
+		ci_dbg_print("%s: Wakeup CI0\n", __func__);
+	}
+
+	if (pci_status & PCI_MSK_GPIO1) {
+		port = &dev->ts2;
+		state = port->port_priv;
+		schedule_work(&state->work);
+		ci_dbg_print("%s: Wakeup CI1\n", __func__);
+	}
+
+	return 1;
+}
+
+int netup_poll_ci_slot_status(struct dvb_ca_en50221 *en50221,
+				     int slot, int open)
+{
+	struct netup_ci_state *state = en50221->data;
+
+	if (0 != slot)
+		return -EINVAL;
+
+	netup_ci_set_irq(en50221, open ? (NETUP_IRQ_DETAM | ci_irq_flags())
+			: NETUP_IRQ_DETAM);
+
+	return state->status;
+}
+
+int netup_ci_init(struct cx23885_tsport *port)
+{
+	struct netup_ci_state *state;
+	u8 cimax_init[34] = {
+		0x00, /* module A control*/
+		0x00, /* auto select mask high A */
+		0x00, /* auto select mask low A */
+		0x00, /* auto select pattern high A */
+		0x00, /* auto select pattern low A */
+		0x44, /* memory access time A */
+		0x00, /* invert input A */
+		0x00, /* RFU */
+		0x00, /* RFU */
+		0x00, /* module B control*/
+		0x00, /* auto select mask high B */
+		0x00, /* auto select mask low B */
+		0x00, /* auto select pattern high B */
+		0x00, /* auto select pattern low B */
+		0x44, /* memory access time B */
+		0x00, /* invert input B */
+		0x00, /* RFU */
+		0x00, /* RFU */
+		0x00, /* auto select mask high Ext */
+		0x00, /* auto select mask low Ext */
+		0x00, /* auto select pattern hi

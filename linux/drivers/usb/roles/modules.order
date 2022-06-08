@@ -1,2 +1,4 @@
-rd include/config/ALTERNATE_USER_ADDRESS_SPACE) \
-  arch/x86/include/asm/ua
+IDEO;
+		break;
+	case CX23885_BOARD_DVBSKY_T9580:
+	case CX23885_BOARD_DVBSKY

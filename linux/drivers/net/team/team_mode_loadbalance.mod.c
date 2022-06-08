@@ -1,18 +1,21 @@
-ig/SPI_SLAVE) \
-  include/linux/scatterlist.h \
-    $(wildcard include/config/NEED_SG_DMA_LENGTH) \
-    $(wildcard include/config/DEBUG_SG) \
-    $(wildcard include/config/SGL_ALLOC) \
-    $(wildcard include/config/ARCH_NO_SG_CHAIN) \
-    $(wildcard include/config/SG_POOL) \
-  include/linux/gpio/consumer.h \
-    $(wildcard include/config/OF_GPIO) \
-    $(wildcard include/config/GPIO_SYSFS) \
-  include/uapi/linux/spi/spi.h \
-  include/media/v4l2-fh.h \
-  include/media/v4l2-mediabus.h \
-  include/media/i2c/upd64031a.h \
+ in both TC_REQ and TC_REQ_SET
+ * indicate a stall in the RISC engine for a
+ * particular rider traffic class. This causes
+ * the 885 and 888 bridges (unknown about 887)
+ * to become inoperable. Setting bits in
+ * TC_REQ_SET resets the corresponding bits
+ * in TC_REQ (and TC_REQ_SET) allowing
+ * operation to continue.
+ */
+#define TC_REQ		0x00040090
+#define TC_REQ_SET	0x00040094
 
-drivers/media/i2c/upd64031a.o: $(deps_drivers/media/i2c/upd64031a.o)
+#define RDR_CFG0	0x00050000
+#define RDR_CFG1	0x00050004
+#define RDR_CFG2	0x00050008
+#define RDR_RDRCTL1	0x0005030c
+#define RDR_TLCTL0	0x00050318
 
-$(deps_drivers/me
+/* APB DMAC Current Buffer Pointer */
+#define DMA1_PTR1	0x00100000
+#define DMA2_PTR1

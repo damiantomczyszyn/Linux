@@ -1,26 +1,25 @@
-t));
+p_assert_rq_held(rq);
 
-	lockdep_print_held_locks(curr);
+	/*
+	 * Ensure the thing is persistent until balance_push_set(.on = false);
+	 */
+	rq->balance_callback = &balance_push_callback;
 
-	pr_warn("\nthe dependencies between %s-irq-safe lock and the holding lock:\n", irqclass);
-	print_shortest_lock_dependencies_backwards(backwards_entry, prev_root);
-
-	pr_warn("\nthe dependencies between the lock to be acquired");
-	pr_warn(" and %s-irq-unsafe lock:\n", irqclass);
-	next_root->trace = save_trace();
-	if (!next_root->trace)
+	/*
+	 * Only active while going offline and when invoked on the outgoing
+	 * CPU.
+	 */
+	if (!cpu_dying(rq->cpu) || rq != this_rq())
 		return;
-	print_shortest_lock_dependencies(forwards_entry, next_root);
 
-	pr_warn("\nstack backtrace:\n");
-	dump_stack();
-}
+	/*
+	 * Both the cpu-hotplug and stop task are in this case and are
+	 * required to complete the hotplug process.
+	 */
+	if (kthread_is_per_cpu(push_task) ||
+	    is_migration_disabled(push_task)) {
 
-static const char *state_names[] = {
-#define LOCKDEP_STATE(__STATE) \
-	__stringify(__STATE),
-#include "lockdep_states.h"
-#undef LOCKDEP_STATE
-};
-
-static const char *state_rna
+		/*
+		 * If this is the idle task on the outgoing CPU try to wake
+		 * up the hotplug control thread which might wait for the
+		 * last task to vanish. The rcuwait_active() check i

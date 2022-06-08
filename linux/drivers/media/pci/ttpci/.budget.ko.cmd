@@ -1,6 +1,8 @@
-config/X86_P6_NOP) \
-    $(wildcard include/config/MATOM) \
-    $(wildcard include/config/PARAVIRT_XXL) \
-  arch/x86/include/asm/disabled-features.h \
-    $(wildcard include/config/X86_SMAP) \
-    $(wildcard incl
+] = {
+		.name		= "Hauppauge WinTV-HVR1500Q",
+		.portc		= CX23885_MPEG_DVB,
+	},
+	[CX23885_BOARD_HAUPPAUGE_HVR1500] = {
+		.name		= "Hauppauge WinTV-HVR1500",
+		.porta		= CX23885_ANALOG_VIDEO,
+		.portc		= CX23885_MP

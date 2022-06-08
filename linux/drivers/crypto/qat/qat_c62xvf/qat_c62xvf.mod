@@ -1,3 +1,4 @@
-lude/linux/percpu-refcount.h \
-  include/linux/kasan.h \
-    $(wildcard include/config/KASAN
+ of reset */
+		break;
+	case CX23885_BOARD_HAUPPAUGE_HVR1500:
+		/* GPIO-0 cx24227 demodulator

@@ -1,5 +1,5 @@
-IC_IOREMAP) \
-    $(wildcard include/config/VIRT_TO_BUS) \
-    $(wildcard include/config/GENERIC_DEVMEM_IS_ALLOWED) \
-  include/linux/logic_pio.h \
-    $(wildcard include/confi
+_read(ALT_PIN_OUT_SEL));
+	dprintk(1, "%s() GPIO2                    0x%08X\n", __func__,
+		cx_read(GPIO2));
+	dprintk(1, "%s() gpcnt(0x%08X)          0x%08X\n", __func__,
+		port

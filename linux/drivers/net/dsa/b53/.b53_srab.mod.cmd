@@ -1,3 +1,1 @@
-de/generated/asm/early_ioremap.h \
-  include/asm-generic/early_ioremap.h \
-    $(wildcard include/config/GENERIC_EARLY_IOREM
+cmd_drivers/net/dsa/b53/b53_srab.mod := { echo  drivers/net/dsa/b53/b53_srab.o;  echo; } > drivers/net/dsa/b53/b53_srab.mod

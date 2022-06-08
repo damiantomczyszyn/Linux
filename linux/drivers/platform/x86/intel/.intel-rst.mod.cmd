@@ -1,4 +1,7 @@
-ated/bounds.h \
-  include/linux/mm_types.h \
-    $(wildcard include/config/HAVE_ALIGNED_STRUCT_PAGE) \
-    $(wildcard include/config/USERFAULT
+cx23885_irq_add_enable(dev, PCI_MSK_GPIO0);
+		break;
+	}
+
+	/*
+	 * The CX2388[58] IR controller can start firing interrupts when
+	 * enabled, so

@@ -1,452 +1,614 @@
-(wildcard include/config/SPLIT_PTLOCK_CPUS) \
-    $(wildcard include/config/ARCH_ENABLE_SPLIT_PMD_PTLOCK) \
-  arch/x86/include/asm/tlbbatch.h \
-  include/linux/task_io_accounting.h \
-    $(wildcard include/config/TASK_IO_ACCOUNTING) \
-  include/linux/posix-timers.h \
-  include/linux/alarmtimer.h \
-    $(wildcard include/config/RTC_CLASS) \
-  include/uapi/linux/rseq.h \
-  include/linux/kcsan.h \
-  arch/x86/include/generated/asm/kmap_size.h \
-  include/asm-generic/kmap_size.h \
-    $(wildcard include/config/DEBUG_KMAP_LOCAL) \
-  arch/x86/include/asm/delay.h \
-  include/asm-generic/delay.h \
-  include/linux/gpio/consumer.h \
-    $(wildcard include/config/GPIOLIB) \
-    $(wildcard include/config/OF_GPIO) \
-    $(wildcard include/config/ACPI) \
-    $(wildcard include/config/GPIO_SYSFS) \
-  include/linux/i2c.h \
-    $(wildcard include/config/I2C) \
-    $(wildcard include/config/I2C_SLAVE) \
-    $(wildcard include/config/I2C_BOARDINFO) \
-    $(wildcard include/config/I2C_MUX) \
-  include/linux/acpi.h \
-    $(wildcard include/config/ACPI_DEBUGGER) \
-    $(wildcard include/config/ACPI_TABLE_LIB) \
-    $(wildcard include/config/IA64) \
-    $(wildcard include/config/LOONGARCH) \
-    $(wildcard include/config/ARM64) \
-    $(wildcard include/config/ACPI_PROCESSOR_CSTATE) \
-    $(wildcard include/config/ACPI_HOTPLUG_CPU) \
-    $(wildcard include/config/ACPI_HOTPLUG_IOAPIC) \
-    $(wildcard include/config/X86_IO_APIC) \
-    $(wildcard include/config/PCI) \
-    $(wildcard include/config/ACPI_WMI) \
-    $(wildcard include/config/ACPI_NUMA) \
-    $(wildcard include/config/HIBERNATION) \
-    $(wildcard include/config/PM_SLEEP) \
-    $(wildcard include/config/ACPI_HOTPLUG_MEMORY) \
-    $(wildcard include/config/ACPI_CONTAINER) \
-    $(wildcard include/config/ACPI_GTDT) \
-    $(wildcard include/config/PM) \
-    $(wildcard include/config/ACPI_TABLE_UPGRADE) \
-    $(wildcard include/config/ACPI_WATCHDOG) \
-    $(wildcard include/config/ACPI_SPCR_TABLE) \
-    $(wildcard include/config/ACPI_GENERIC_GSI) \
-    $(wildcard include/config/ACPI_LPIT) \
-    $(wildcard include/config/ACPI_PPTT) \
-    $(wildcard include/config/ACPI_PCC) \
-  include/linux/ioport.h \
-    $(wildcard include/config/MEMORY_HOTREMOVE) \
-    $(wildcard include/config/MEMORY_HOTPLUG) \
-  include/linux/irqdomain.h \
-    $(wildcard include/config/IRQ_DOMAIN_HIERARCHY) \
-    $(wildcard include/config/GENERIC_IRQ_DEBUGFS) \
-    $(wildcard include/config/IRQ_DOMAIN) \
-    $(wildcard include/config/IRQ_DOMAIN_NOMAP) \
-  include/linux/irqhandler.h \
-  include/linux/of.h \
-    $(wildcard include/config/OF_DYNAMIC) \
-    $(wildcard include/config/SPARC) \
-    $(wildcard include/config/OF_PROMTREE) \
-    $(wildcard include/config/OF_KOBJ) \
-    $(wildcard include/config/OF_NUMA) \
-    $(wildcard include/config/OF_OVERLAY) \
-  include/linux/kobject.h \
-    $(wildcard include/config/UEVENT_HELPER) \
-    $(wildcard include/config/DEBUG_KOBJECT_RELEASE) \
-  include/linux/sysfs.h \
-  include/linux/kernfs.h \
-    $(wildcard include/config/KERNFS) \
-  include/linux/idr.h \
-  include/linux/radix-tree.h \
-  include/linux/gfp.h \
-    $(wildcard include/config/KASAN_HW_TAGS) \
-    $(wildcard include/config/ZONE_DMA) \
-    $(wildcard include/config/ZONE_DMA32) \
-    $(wildcard include/config/ZONE_DEVICE) \
-    $(wildcard include/config/CONTIG_ALLOC) \
-    $(wildcard include/config/CMA) \
-  include/linux/mmzone.h \
-    $(wildcard include/config/FORCE_MAX_ZONEORDER) \
-    $(wildcard include/config/MEMORY_ISOLATION) \
-    $(wildcard include/config/ZSMALLOC) \
-    $(wildcard include/config/SWAP) \
-    $(wildcard include/config/TRANSPARENT_HUGEPAGE) \
-    $(wildcard include/config/PAGE_EXTENSION) \
-    $(wildcard include/config/DEFERRED_STRUCT_PAGE_INIT) \
-    $(wildcard include/config/HAVE_MEMORYLESS_NODES) \
-    $(wildcard include/config/SPARSEMEM_EXTREME) \
-    $(wildcard include/config/HAVE_ARCH_PFN_VALID) \
-  include/linux/pageblock-flags.h \
-    $(wildcard include/config/HUGETLB_PAGE) \
-    $(wildcard include/config/HUGETLB_PAGE_SIZE_VARIABLE) \
-  include/linux/page-flags-layout.h \
-  include/generated/bounds.h \
-  include/linux/mm_types.h \
-    $(wildcard include/config/HAVE_ALIGNED_STRUCT_PAGE) \
-    $(wildcard include/config/USERFAULTFD) \
-    $(wildcard include/config/HAVE_ARCH_COMPAT_MMAP_BASES) \
-    $(wildcard include/config/MEMBARRIER) \
-    $(wildcard include/config/AIO) \
-    $(wildcard include/config/MMU_NOTIFIER) \
-  include/linux/auxvec.h \
-  include/uapi/linux/auxvec.h \
-  arch/x86/include/uapi/asm/auxvec.h \
-  include/linux/kref.h \
-  include/linux/uprobes.h \
-  arch/x86/include/asm/uprobes.h \
-  arch/x86/include/asm/mmu.h \
-    $(wildcard include/config/MODIFY_LDT_SYSCALL) \
-  include/linux/page-flags.h \
-    $(wildcard include/config/ARCH_USES_PG_UNCACHED) \
-    $(wildcard include/config/MEMORY_FAILURE) \
-    $(wildcard include/config/PAGE_IDLE_FLAG) \
-    $(wildcard include/config/HUGETLB_PAGE_FREE_VMEMMAP) \
-    $(wildcard include/config/HUGETLB_PAGE_FREE_VMEMMAP_DEFAULT_ON) \
-    $(wildcard include/config/KSM) \
-  include/linux/local_lock.h \
-  include/linux/local_lock_internal.h \
-  include/linux/memory_hotplug.h \
-    $(wildcard include/config/HAVE_ARCH_NODEDATA_EXTENSION) \
-    $(wildcard include/config/ARCH_HAS_ADD_PAGES) \
-  arch/x86/include/asm/mmzone.h \
-  arch/x86/include/asm/mmzone_32.h \
-  include/linux/topology.h \
-    $(wildcard include/config/USE_PERCPU_NUMA_NODE_ID) \
-    $(wildcard include/config/SCHED_SMT) \
-    $(wildcard include/config/SCHED_CLUSTER) \
-  include/linux/arch_topology.h \
-    $(wildcard include/config/ACPI_CPPC_LIB) \
-    $(wildcard include/config/GENERIC_ARCH_TOPOLOGY) \
-  arch/x86/include/asm/topology.h \
-    $(wildcard include/config/SCHED_MC_PRIO) \
-  arch/x86/include/asm/mpspec.h \
-    $(wildcard include/config/EISA) \
-    $(wildcard include/config/X86_MPPARSE) \
-  arch/x86/include/asm/mpspec_def.h \
-  arch/x86/include/asm/x86_init.h \
-  arch/x86/include/asm/apicdef.h \
-  include/asm-generic/topology.h \
-  include/linux/xarray.h \
-    $(wildcard include/config/XARRAY_MULTI) \
-  include/linux/kconfig.h \
-  include/linux/kobject_ns.h \
-  include/linux/stat.h \
-  arch/x86/include/uapi/asm/stat.h \
-  include/uapi/linux/stat.h \
-  include/linux/mod_devicetable.h \
-  include/linux/uuid.h \
-  include/uapi/linux/uuid.h \
-  include/linux/property.h \
-  include/linux/fwnode.h \
-  include/linux/resource_ext.h \
-  include/linux/slab.h \
-    $(wildcard include/config/DEBUG_SLAB) \
-    $(wildcard include/config/FAILSLAB) \
-    $(wildcard include/config/MEMCG_KMEM) \
-    $(wildcard include/config/KASAN) \
-    $(wildcard include/config/SLAB) \
-    $(wildcard include/config/SLUB) \
-    $(wildcard include/config/SLOB) \
-  include/linux/overflow.h \
-  include/linux/percpu-refcount.h \
-  include/linux/kasan.h \
-    $(wildcard include/config/KASAN_STACK) \
-    $(wildcard include/config/KASAN_VMALLOC) \
-    $(wildcard include/config/KASAN_INLINE) \
-  include/linux/kasan-enabled.h \
-  include/linux/device.h \
-    $(wildcard include/config/GENERIC_MSI_IRQ_DOMAIN) \
-    $(wildcard include/config/GENERIC_MSI_IRQ) \
-    $(wildcard include/config/ENERGY_MODEL) \
-    $(wildcard include/config/PINCTRL) \
-    $(wildcard include/config/DMA_OPS) \
-    $(wildcard include/config/DMA_DECLARE_COHERENT) \
-    $(wildcard include/config/DMA_CMA) \
-    $(wildcard include/config/SWIOTLB) \
-    $(wildcard include/config/ARCH_HAS_SYNC_DMA_FOR_DEVICE) \
-    $(wildcard include/config/ARCH_HAS_SYNC_DMA_FOR_CPU) \
-    $(wildcard include/config/ARCH_HAS_SYNC_DMA_FOR_CPU_ALL) \
-    $(wildcard include/config/DMA_OPS_BYPASS) \
-    $(wildcard include/config/DEVTMPFS) \
-    $(wildcard include/config/SYSFS_DEPRECATED) \
-  include/linux/dev_printk.h \
-  include/linux/ratelimit.h \
-  include/linux/energy_model.h \
-  include/linux/sched/cpufreq.h \
-    $(wildcard include/config/CPU_FREQ) \
-  include/linux/sched/topology.h \
-    $(wildcard include/config/SCHED_DEBUG) \
-    $(wildcard include/config/SCHED_MC) \
-    $(wildcard include/config/CPU_FREQ_GOV_SCHEDUTIL) \
-  include/linux/sched/idle.h \
-  include/linux/sched/sd_flags.h \
-  include/linux/klist.h \
-  include/linux/pm.h \
-    $(wildcard include/config/VT_CONSOLE_SLEEP) \
-    $(wildcard include/config/PM_CLK) \
-    $(wildcard include/config/PM_GENERIC_DOMAINS) \
-  include/linux/device/bus.h \
-  include/linux/device/class.h \
-  include/linux/device/driver.h \
-  include/linux/module.h \
-    $(wildcard include/config/MODULES_TREE_LOOKUP) \
-    $(wildcard include/config/STACKTRACE_BUILD_ID) \
-    $(wildcard include/config/MODULE_SIG) \
-    $(wildcard include/config/KALLSYMS) \
-    $(wildcard include/config/BPF_EVENTS) \
-    $(wildcard include/config/DEBUG_INFO_BTF_MODULES) \
-    $(wildcard include/config/EVENT_TRACING) \
-    $(wildcard include/config/MODULE_UNLOAD) \
-    $(wildcard include/config/CONSTRUCTORS) \
-    $(wildcard include/config/FUNCTION_ERROR_INJECTION) \
-  include/linux/buildid.h \
-    $(wildcard include/config/CRASH_CORE) \
-  include/linux/kmod.h \
-  include/linux/umh.h \
-  include/linux/sysctl.h \
-    $(wildcard include/config/SYSCTL) \
-  include/uapi/linux/sysctl.h \
-  include/linux/elf.h \
-    $(wildcard include/config/ARCH_USE_GNU_PROPERTY) \
-    $(wildcard include/config/ARCH_HAVE_ELF_PROT) \
-  arch/x86/include/asm/elf.h \
-    $(wildcard include/config/X86_X32_ABI) \
-  arch/x86/include/asm/user.h \
-  arch/x86/include/asm/user_32.h \
-  arch/x86/include/asm/fsgsbase.h \
-  arch/x86/include/asm/vdso.h \
-  arch/x86/include/asm/desc.h \
-  arch/x86/include/asm/fixmap.h \
-    $(wildcard include/config/DEBUG_KMAP_LOCAL_FORCE_MAP) \
-    $(wildcard include/config/X86_VSYSCALL_EMULATION) \
-    $(wildcard include/config/PROVIDE_OHCI1394_DMA_INIT) \
-    $(wildcard include/config/PCI_MMCONFIG) \
-    $(wildcard include/config/ACPI_APEI_GHES) \
-    $(wildcard include/config/INTEL_TXT) \
-  include/asm-generic/fixmap.h \
-  arch/x86/include/asm/irq_vectors.h \
-    $(wildcard include/config/HAVE_KVM) \
-    $(wildcard include/config/HYPERV) \
-    $(wildcard include/config/PCI_MSI) \
-  arch/x86/include/asm/cpu_entry_area.h \
-  arch/x86/include/asm/intel_ds.h \
-  arch/x86/include/asm/pgtable_areas.h \
-  arch/x86/include/asm/pgtable_32_areas.h \
-  include/uapi/linux/elf.h \
-  include/uapi/linux/elf-em.h \
-  include/linux/moduleparam.h \
-    $(wildcard include/config/ALPHA) \
-    $(wildcard include/config/PPC64) \
-  include/linux/rbtree_latch.h \
-  include/linux/error-injection.h \
-  include/asm-generic/error-injection.h \
-  include/linux/cfi.h \
-    $(wildcard include/config/CFI_CLANG_SHADOW) \
-  arch/x86/include/asm/module.h \
-    $(wildcard include/config/UNWINDER_ORC) \
-  include/asm-generic/module.h \
-    $(wildcard include/config/HAVE_MOD_ARCH_SPECIFIC) \
-    $(wildcard include/config/MODULES_USE_ELF_REL) \
-    $(wildcard include/config/MODULES_USE_ELF_RELA) \
-  arch/x86/include/asm/orc_types.h \
-  arch/x86/include/asm/device.h \
-  include/linux/pm_wakeup.h \
-  include/acpi/acpi.h \
-  include/acpi/platform/acenv.h \
-  include/acpi/platform/acgcc.h \
-  include/acpi/platform/aclinux.h \
-    $(wildcard include/config/ACPI_REDUCED_HARDWARE_ONLY) \
-    $(wildcard include/config/ACPI_DEBUG) \
-  include/linux/ctype.h \
-  arch/x86/include/asm/acenv.h \
-  include/acpi/acnames.h \
-  include/acpi/actypes.h \
-  include/acpi/acexcep.h \
-  include/acpi/actbl.h \
-  include/acpi/actbl1.h \
-  include/acpi/actbl2.h \
-  include/acpi/actbl3.h \
-  include/acpi/acrestyp.h \
-  include/acpi/platform/acenvex.h \
-  include/acpi/platform/aclinuxex.h \
-  include/acpi/platform/acgccex.h \
-  include/acpi/acoutput.h \
-  include/acpi/acpiosxf.h \
-  include/acpi/acpixf.h \
-  include/acpi/acconfig.h \
-  include/acpi/acbuffer.h \
-  include/linux/dynamic_debug.h \
-  include/acpi/acpi_bus.h \
-    $(wildcard include/config/X86_ANDROID_TABLETS) \
-    $(wildcard include/config/ACPI_SYSTEM_POWER_STATES_SUPPORT) \
-    $(wildcard include/config/ACPI_SLEEP) \
-  include/acpi/acpi_drivers.h \
-    $(wildcard include/config/ACPI_DOCK) \
-  include/acpi/acpi_numa.h \
-    $(wildcard include/config/ACPI_HMAT) \
-  include/acpi/acpi_io.h \
-  include/linux/io.h \
-    $(wildcard include/config/HAS_IOPORT_MAP) \
-  arch/x86/include/asm/io.h \
-    $(wildcard include/config/MTRR) \
-    $(wildcard include/config/X86_PAT) \
-  arch/x86/include/generated/asm/early_ioremap.h \
-  include/asm-generic/early_ioremap.h \
-    $(wildcard include/config/GENERIC_EARLY_IOREMAP) \
-  include/asm-generic/iomap.h \
-  include/asm-generic/pci_iomap.h \
-    $(wildcard include/config/NO_GENERIC_PCI_IOPORT_MAP) \
-    $(wildcard include/config/GENERIC_PCI_IOMAP) \
-  include/asm-generic/io.h \
-    $(wildcard include/config/GENERIC_IOMAP) \
-    $(wildcard include/config/GENERIC_IOREMAP) \
-    $(wildcard include/config/VIRT_TO_BUS) \
-    $(wildcard include/config/GENERIC_DEVMEM_IS_ALLOWED) \
-  include/linux/logic_pio.h \
-    $(wildcard include/config/INDIRECT_PIO) \
-  include/linux/vmalloc.h \
-    $(wildcard include/config/HAVE_ARCH_HUGE_VMALLOC) \
-  arch/x86/include/asm/vmalloc.h \
-    $(wildcard include/config/HAVE_ARCH_HUGE_VMAP) \
-  arch/x86/include/asm/acpi.h \
-    $(wildcard include/config/ACPI_APEI) \
-  include/acpi/pdc_intel.h \
-  arch/x86/include/asm/numa.h \
-    $(wildcard include/config/NUMA_EMU) \
-  arch/x86/include/asm/numa_32.h \
-  include/linux/regulator/consumer.h \
-    $(wildcard include/config/REGULATOR) \
-  include/linux/suspend.h \
-    $(wildcard include/config/VT) \
-    $(wildcard include/config/SUSPEND) \
-    $(wildcard include/config/HIBERNATION_SNAPSHOT_DEV) \
-    $(wildcard include/config/PM_SLEEP_DEBUG) \
-    $(wildcard include/config/PM_AUTOSLEEP) \
-  include/linux/swap.h \
-    $(wildcard include/config/DEVICE_PRIVATE) \
-    $(wildcard include/config/MIGRATION) \
-    $(wildcard include/config/FRONTSWAP) \
-    $(wildcard include/config/THP_SWAP) \
-    $(wildcard include/config/MEMCG_SWAP) \
-  include/linux/memcontrol.h \
-    $(wildcard include/config/CGROUP_WRITEBACK) \
-  include/linux/cgroup.h \
-    $(wildcard include/config/CGROUP_CPUACCT) \
-    $(wildcard include/config/SOCK_CGROUP_DATA) \
-    $(wildcard include/config/CGROUP_DATA) \
-    $(wildcard include/config/CGROUP_BPF) \
-  include/uapi/linux/cgroupstats.h \
-  include/uapi/linux/taskstats.h \
-  include/linux/fs.h \
-    $(wildcard include/config/READ_ONLY_THP_FOR_FS) \
-    $(wildcard include/config/FS_POSIX_ACL) \
-    $(wildcard include/config/IMA) \
-    $(wildcard include/config/FILE_LOCKING) \
-    $(wildcard include/config/FSNOTIFY) \
-    $(wildcard include/config/FS_ENCRYPTION) \
-    $(wildcard include/config/FS_VERITY) \
-    $(wildcard include/config/EPOLL) \
-    $(wildcard include/config/UNICODE) \
-    $(wildcard include/config/QUOTA) \
-    $(wildcard include/config/FS_DAX) \
-    $(wildcard include/config/BLOCK) \
-  include/linux/wait_bit.h \
-  include/linux/kdev_t.h \
-  include/uapi/linux/kdev_t.h \
-  include/linux/dcache.h \
-  include/linux/rculist_bl.h \
-  include/linux/list_bl.h \
-  include/linux/bit_spinlock.h \
-  include/linux/lockref.h \
-    $(wildcard include/config/ARCH_USE_CMPXCHG_LOCKREF) \
-  include/linux/stringhash.h \
-    $(wildcard include/config/DCACHE_WORD_ACCESS) \
-  include/linux/hash.h \
-    $(wildcard include/config/HAVE_ARCH_HASH) \
-  include/linux/path.h \
-  include/linux/list_lru.h \
-  include/linux/shrinker.h \
-  include/linux/capability.h \
-  include/uapi/linux/capability.h \
-  include/linux/semaphore.h \
-  include/linux/fcntl.h \
-    $(wildcard include/config/ARCH_32BIT_OFF_T) \
-  include/uapi/linux/fcntl.h \
-  arch/x86/include/generated/uapi/asm/fcntl.h \
-  include/uapi/asm-generic/fcntl.h \
-  include/uapi/linux/openat2.h \
-  include/linux/migrate_mode.h \
-  include/linux/percpu-rwsem.h \
-  include/linux/rcuwait.h \
-  include/linux/sched/signal.h \
-    $(wildcard include/config/SCHED_AUTOGROUP) \
-    $(wildcard include/config/BSD_PROCESS_ACCT) \
-    $(wildcard include/config/TASKSTATS) \
-    $(wildcard include/config/STACK_GROWSUP) \
-  include/linux/signal.h \
-    $(wildcard include/config/DYNAMIC_SIGFRAME) \
-  include/linux/sched/jobctl.h \
-  include/linux/sched/task.h \
-    $(wildcard include/config/HAVE_EXIT_THREAD) \
-    $(wildcard include/config/ARCH_WANTS_DYNAMIC_TASK_STRUCT) \
-    $(wildcard include/config/HAVE_ARCH_THREAD_STRUCT_WHITELIST) \
-  include/linux/uaccess.h \
-  include/linux/fault-inject-usercopy.h \
-    $(wildcard include/config/FAULT_INJECTION_USERCOPY) \
-  arch/x86/include/asm/uaccess.h \
-    $(wildcard include/config/CC_HAS_ASM_GOTO_OUTPUT) \
-    $(wildcard include/config/CC_HAS_ASM_GOTO_TIED_OUTPUT) \
-    $(wildcard include/config/ARCH_HAS_COPY_MC) \
-    $(wildcard include/config/X86_INTEL_USERCOPY) \
-  arch/x86/include/asm/smap.h \
-  arch/x86/include/asm/extable.h \
-    $(wildcard include/config/BPF_JIT) \
-  include/asm-generic/access_ok.h \
-    $(wildcard include/config/ALTERNATE_USER_ADDRESS_SPACE) \
-  arch/x86/include/asm/uaccess_32.h \
-  include/linux/cred.h \
-    $(wildcard include/config/DEBUG_CREDENTIALS) \
-  include/linux/key.h \
-    $(wildcard include/config/KEY_NOTIFICATIONS) \
-    $(wildcard include/config/NET) \
-  include/linux/assoc_array.h \
-    $(wildcard include/config/ASSOCIATIVE_ARRAY) \
-  include/linux/sched/user.h \
-    $(wildcard include/config/WATCH_QUEUE) \
-  include/linux/percpu_counter.h \
-  include/linux/rcu_sync.h \
-  include/linux/delayed_call.h \
-  include/linux/errseq.h \
-  include/linux/ioprio.h \
-  include/linux/sched/rt.h \
-  include/linux/iocontext.h \
-    $(wildcard include/config/BLK_ICQ) \
-  include/uapi/linux/ioprio.h \
-  include/linux/fs_types.h \
-  include/linux/mount.h \
-  include/linux/mnt_idmapping.h \
-  include/uapi/linux/fs.h \
-  include/linux/quota.h \
-    $(wildcard include/config/QUOTA_NETLINK_INTERFACE) \
-  include/uapi/linux/dqblk_xfs.h \
-  include/linux/dqblk_v1.h \
-  include/linux/dqblk_v2.h \
-  include/linux/dqblk_qtree.h \
-  include/linux/projid.h \
-  include/uapi/linux/quota.h \
-  include/linux/nfs_fs_i.h 
+dev->board == CX23885_BOARD_HAUPPAUGE_HVR1275)
+			cx23885_set_frontend_hook(port, fe0->dvb.frontend);
+		break;
+	case CX23885_BOARD_HAUPPAUGE_HVR1255:
+	case CX23885_BOARD_HAUPPAUGE_HVR1255_22111:
+		i2c_bus = &dev->i2c_bus[0];
+		fe0->dvb.frontend = dvb_attach(s5h1411_attach,
+					       &hcw_s5h1411_config,
+					       &i2c_bus->i2c_adap);
+		if (fe0->dvb.frontend == NULL)
+			break;
+
+		dvb_attach(tda18271_attach, fe0->dvb.frontend,
+			   0x60, &dev->i2c_bus[1].i2c_adap,
+			   &hauppauge_tda18271_config);
+
+		tda18271_attach(&dev->ts1.analog_fe,
+			0x60, &dev->i2c_bus[1].i2c_adap,
+			&hauppauge_tda18271_config);
+
+		break;
+	case CX23885_BOARD_HAUPPAUGE_HVR1800:
+		i2c_bus = &dev->i2c_bus[0];
+		switch (alt_tuner) {
+		case 1:
+			fe0->dvb.frontend =
+				dvb_attach(s5h1409_attach,
+					   &hauppauge_ezqam_config,
+					   &i2c_bus->i2c_adap);
+			if (fe0->dvb.frontend == NULL)
+				break;
+
+			dvb_attach(tda829x_attach, fe0->dvb.frontend,
+				   &dev->i2c_bus[1].i2c_adap, 0x42,
+				   &tda829x_no_probe);
+			dvb_attach(tda18271_attach, fe0->dvb.frontend,
+				   0x60, &dev->i2c_bus[1].i2c_adap,
+				   &hauppauge_tda18271_config);
+			break;
+		case 0:
+		default:
+			fe0->dvb.frontend =
+				dvb_attach(s5h1409_attach,
+					   &hauppauge_generic_config,
+					   &i2c_bus->i2c_adap);
+			if (fe0->dvb.frontend == NULL)
+				break;
+			dvb_attach(mt2131_attach, fe0->dvb.frontend,
+				   &i2c_bus->i2c_adap,
+				   &hauppauge_generic_tunerconfig, 0);
+		}
+		break;
+	case CX23885_BOARD_HAUPPAUGE_HVR1800lp:
+		i2c_bus = &dev->i2c_bus[0];
+		fe0->dvb.frontend = dvb_attach(s5h1409_attach,
+						&hauppauge_hvr1800lp_config,
+						&i2c_bus->i2c_adap);
+		if (fe0->dvb.frontend == NULL)
+			break;
+		dvb_attach(mt2131_attach, fe0->dvb.frontend,
+			   &i2c_bus->i2c_adap,
+			   &hauppauge_generic_tunerconfig, 0);
+		break;
+	case CX23885_BOARD_DVICO_FUSIONHDTV_5_EXP:
+		i2c_bus = &dev->i2c_bus[0];
+		fe0->dvb.frontend = dvb_attach(lgdt330x_attach,
+					       &fusionhdtv_5_express,
+					       0x0e,
+					       &i2c_bus->i2c_adap);
+		if (fe0->dvb.frontend == NULL)
+			break;
+		dvb_attach(simple_tuner_attach, fe0->dvb.frontend,
+			   &i2c_bus->i2c_adap, 0x61,
+			   TUNER_LG_TDVS_H06XF);
+		break;
+	case CX23885_BOARD_HAUPPAUGE_HVR1500Q:
+		i2c_bus = &dev->i2c_bus[1];
+		fe0->dvb.frontend = dvb_attach(s5h1409_attach,
+						&hauppauge_hvr1500q_config,
+						&dev->i2c_bus[0].i2c_adap);
+		if (fe0->dvb.frontend == NULL)
+			break;
+		dvb_attach(xc5000_attach, fe0->dvb.frontend,
+			   &i2c_bus->i2c_adap,
+			   &hauppauge_hvr1500q_tunerconfig);
+		break;
+	case CX23885_BOARD_HAUPPAUGE_HVR1500:
+		i2c_bus = &dev->i2c_bus[1];
+		fe0->dvb.frontend = dvb_attach(s5h1409_attach,
+						&hauppauge_hvr1500_config,
+						&dev->i2c_bus[0].i2c_adap);
+		if (fe0->dvb.frontend != NULL) {
+			struct dvb_frontend *fe;
+			struct xc2028_config cfg = {
+				.i2c_adap  = &i2c_bus->i2c_adap,
+				.i2c_addr  = 0x61,
+			};
+			static struct xc2028_ctrl ctl = {
+				.fname       = XC2028_DEFAULT_FIRMWARE,
+				.max_len     = 64,
+				.demod       = XC3028_FE_OREN538,
+			};
+
+			fe = dvb_attach(xc2028_attach,
+					fe0->dvb.frontend, &cfg);
+			if (fe != NULL && fe->ops.tuner_ops.set_config != NULL)
+				fe->ops.tuner_ops.set_config(fe, &ctl);
+		}
+		break;
+	case CX23885_BOARD_HAUPPAUGE_HVR1200:
+	case CX23885_BOARD_HAUPPAUGE_HVR1700:
+		i2c_bus = &dev->i2c_bus[0];
+		fe0->dvb.frontend = dvb_attach(tda10048_attach,
+			&hauppauge_hvr1200_config,
+			&i2c_bus->i2c_adap);
+		if (fe0->dvb.frontend == NULL)
+			break;
+		dvb_attach(tda829x_attach, fe0->dvb.frontend,
+			   &dev->i2c_bus[1].i2c_adap, 0x42,
+			   &tda829x_no_probe);
+		dvb_attach(tda18271_attach, fe0->dvb.frontend,
+			   0x60, &dev->i2c_bus[1].i2c_adap,
+			   &hauppauge_hvr1200_tuner_config);
+		break;
+	case CX23885_BOARD_HAUPPAUGE_HVR1210:
+		i2c_bus = &dev->i2c_bus[0];
+		fe0->dvb.frontend = dvb_attach(tda10048_attach,
+			&hauppauge_hvr1210_config,
+			&i2c_bus->i2c_adap);
+		if (fe0->dvb.frontend != NULL) {
+			dvb_attach(tda18271_attach, fe0->dvb.frontend,
+				0x60, &dev->i2c_bus[1].i2c_adap,
+				&hauppauge_hvr1210_tuner_config);
+		}
+		break;
+	case CX23885_BOARD_HAUPPAUGE_HVR1400:
+		i2c_bus = &dev->i2c_bus[0];
+
+		if (!dvb_attach(dib7000p_attach, &dib7000p_ops))
+			return -ENODEV;
+
+		fe0->dvb.frontend = dib7000p_ops.init(&i2c_bus->i2c_adap,
+			0x12, &hauppauge_hvr1400_dib7000_config);
+		if (fe0->dvb.frontend != NULL) {
+			struct dvb_frontend *fe;
+			struct xc2028_config cfg = {
+				.i2c_adap  = &dev->i2c_bus[1].i2c_adap,
+				.i2c_addr  = 0x64,
+			};
+			static struct xc2028_ctrl ctl = {
+				.fname   = XC3028L_DEFAULT_FIRMWARE,
+				.max_len = 64,
+				.demod   = XC3028_FE_DIBCOM52,
+				/* This is true for all demods with
+					v36 firmware? */
+				.type    = XC2028_D2633,
+			};
+
+			fe = dvb_attach(xc2028_attach,
+					fe0->dvb.frontend, &cfg);
+			if (fe != NULL && fe->ops.tuner_ops.set_config != NULL)
+				fe->ops.tuner_ops.set_config(fe, &ctl);
+		}
+		break;
+	case CX23885_BOARD_DVICO_FUSIONHDTV_7_DUAL_EXP:
+		i2c_bus = &dev->i2c_bus[port->nr - 1];
+
+		fe0->dvb.frontend = dvb_attach(s5h1409_attach,
+						&dvico_s5h1409_config,
+						&i2c_bus->i2c_adap);
+		if (fe0->dvb.frontend == NULL)
+			fe0->dvb.frontend = dvb_attach(s5h1411_attach,
+							&dvico_s5h1411_config,
+							&i2c_bus->i2c_adap);
+		if (fe0->dvb.frontend != NULL)
+			dvb_attach(xc5000_attach, fe0->dvb.frontend,
+				   &i2c_bus->i2c_adap,
+				   &dvico_xc5000_tunerconfig);
+		break;
+	case CX23885_BOARD_DVICO_FUSIONHDTV_DVB_T_DUAL_EXP: {
+		i2c_bus = &dev->i2c_bus[port->nr - 1];
+
+		fe0->dvb.frontend = dvb_attach(zl10353_attach,
+					       &dvico_fusionhdtv_xc3028,
+					       &i2c_bus->i2c_adap);
+		if (fe0->dvb.frontend != NULL) {
+			struct dvb_frontend      *fe;
+			struct xc2028_config	  cfg = {
+				.i2c_adap  = &i2c_bus->i2c_adap,
+				.i2c_addr  = 0x61,
+			};
+			static struct xc2028_ctrl ctl = {
+				.fname       = XC2028_DEFAULT_FIRMWARE,
+				.max_len     = 64,
+				.demod       = XC3028_FE_ZARLINK456,
+			};
+
+			fe = dvb_attach(xc2028_attach, fe0->dvb.frontend,
+					&cfg);
+			if (fe != NULL && fe->ops.tuner_ops.set_config != NULL)
+				fe->ops.tuner_ops.set_config(fe, &ctl);
+		}
+		break;
+	}
+	case CX23885_BOARD_DVICO_FUSIONHDTV_DVB_T_DUAL_EXP2: {
+		i2c_bus = &dev->i2c_bus[port->nr - 1];
+		/* cxusb_ctrl_msg(adap->dev, CMD_DIGITAL, NULL, 0, NULL, 0); */
+		/* cxusb_bluebird_gpio_pulse(adap->dev, 0x02, 1); */
+
+		if (!dvb_attach(dib7000p_attach, &dib7000p_ops))
+			return -ENODEV;
+
+		if (dib7000p_ops.i2c_enumeration(&i2c_bus->i2c_adap, 1, 0x12, &dib7070p_dib7000p_config) < 0) {
+			pr_warn("Unable to enumerate dib7000p\n");
+			return -ENODEV;
+		}
+		fe0->dvb.frontend = dib7000p_ops.init(&i2c_bus->i2c_adap, 0x80, &dib7070p_dib7000p_config);
+		if (fe0->dvb.frontend != NULL) {
+			struct i2c_adapter *tun_i2c;
+
+			fe0->dvb.frontend->sec_priv = kmemdup(&dib7000p_ops, sizeof(dib7000p_ops), GFP_KERNEL);
+			if (!fe0->dvb.frontend->sec_priv)
+				return -ENOMEM;
+			tun_i2c = dib7000p_ops.get_i2c_master(fe0->dvb.frontend, DIBX000_I2C_INTERFACE_TUNER, 1);
+			if (!dvb_attach(dib0070_attach, fe0->dvb.frontend, tun_i2c, &dib7070p_dib0070_config))
+				return -ENODEV;
+		}
+		break;
+	}
+	case CX23885_BOARD_LEADTEK_WINFAST_PXDVR3200_H:
+	case CX23885_BOARD_COMPRO_VIDEOMATE_E650F:
+	case CX23885_BOARD_COMPRO_VIDEOMATE_E800:
+		i2c_bus = &dev->i2c_bus[0];
+
+		fe0->dvb.frontend = dvb_attach(zl10353_attach,
+			&dvico_fusionhdtv_xc3028,
+			&i2c_bus->i2c_adap);
+		if (fe0->dvb.frontend != NULL) {
+			struct dvb_frontend      *fe;
+			struct xc2028_config	  cfg = {
+				.i2c_adap  = &dev->i2c_bus[1].i2c_adap,
+				.i2c_addr  = 0x61,
+			};
+			static struct xc2028_ctrl ctl = {
+				.fname       = XC2028_DEFAULT_FIRMWARE,
+				.max_len     = 64,
+				.demod       = XC3028_FE_ZARLINK456,
+			};
+
+			fe = dvb_attach(xc2028_attach, fe0->dvb.frontend,
+				&cfg);
+			if (fe != NULL && fe->ops.tuner_ops.set_config != NULL)
+				fe->ops.tuner_ops.set_config(fe, &ctl);
+		}
+		break;
+	case CX23885_BOARD_LEADTEK_WINFAST_PXDVR3200_H_XC4000:
+		i2c_bus = &dev->i2c_bus[0];
+
+		fe0->dvb.frontend = dvb_attach(zl10353_attach,
+					       &dvico_fusionhdtv_xc3028,
+					       &i2c_bus->i2c_adap);
+		if (fe0->dvb.frontend != NULL) {
+			struct dvb_frontend	*fe;
+			struct xc4000_config	cfg = {
+				.i2c_address	  = 0x61,
+				.default_pm	  = 0,
+				.dvb_amplitude	  = 134,
+				.set_smoothedcvbs = 1,
+				.if_khz		  = 4560
+			};
+
+			fe = dvb_attach(xc4000_attach, fe0->dvb.frontend,
+					&dev->i2c_bus[1].i2c_adap, &cfg);
+			if (!fe) {
+				pr_err("%s/2: xc4000 attach failed\n",
+				       dev->name);
+				goto frontend_detach;
+			}
+		}
+		break;
+	case CX23885_BOARD_TBS_6920:
+		i2c_bus = &dev->i2c_bus[1];
+
+		fe0->dvb.frontend = dvb_attach(cx24116_attach,
+					&tbs_cx24116_config,
+					&i2c_bus->i2c_adap);
+		if (fe0->dvb.frontend != NULL)
+			fe0->dvb.frontend->ops.set_voltage = f300_set_voltage;
+
+		break;
+	case CX23885_BOARD_TBS_6980:
+	case CX23885_BOARD_TBS_6981:
+		i2c_bus = &dev->i2c_bus[1];
+
+		switch (port->nr) {
+		/* PORT B */
+		case 1:
+			fe0->dvb.frontend = dvb_attach(cx24117_attach,
+					&tbs_cx24117_config,
+					&i2c_bus->i2c_adap);
+			break;
+		/* PORT C */
+		case 2:
+			fe0->dvb.frontend = dvb_attach(cx24117_attach,
+					&tbs_cx24117_config,
+					&i2c_bus->i2c_adap);
+			break;
+		}
+		break;
+	case CX23885_BOARD_TEVII_S470:
+		i2c_bus = &dev->i2c_bus[1];
+
+		fe0->dvb.frontend = dvb_attach(ds3000_attach,
+					&tevii_ds3000_config,
+					&i2c_bus->i2c_adap);
+		if (fe0->dvb.frontend != NULL) {
+			dvb_attach(ts2020_attach, fe0->dvb.frontend,
+				&tevii_ts2020_config, &i2c_bus->i2c_adap);
+			fe0->dvb.frontend->ops.set_voltage = f300_set_voltage;
+		}
+
+		break;
+	case CX23885_BOARD_DVBWORLD_2005:
+		i2c_bus = &dev->i2c_bus[1];
+
+		fe0->dvb.frontend = dvb_attach(cx24116_attach,
+			&dvbworld_cx24116_config,
+			&i2c_bus->i2c_adap);
+		break;
+	case CX23885_BOARD_NETUP_DUAL_DVBS2_CI:
+		i2c_bus = &dev->i2c_bus[0];
+		switch (port->nr) {
+		/* port B */
+		case 1:
+			fe0->dvb.frontend = dvb_attach(stv0900_attach,
+							&netup_stv0900_config,
+							&i2c_bus->i2c_adap, 0);
+			if (fe0->dvb.frontend != NULL) {
+				if (dvb_attach(stv6110_attach,
+						fe0->dvb.frontend,
+						&netup_stv6110_tunerconfig_a,
+						&i2c_bus->i2c_adap)) {
+					if (!dvb_attach(lnbh24_attach,
+							fe0->dvb.frontend,
+							&i2c_bus->i2c_adap,
+							LNBH24_PCL | LNBH24_TTX,
+							LNBH24_TEN, 0x09))
+						pr_err("No LNBH24 found!\n");
+
+				}
+			}
+			break;
+		/* port C */
+		case 2:
+			fe0->dvb.frontend = dvb_attach(stv0900_attach,
+							&netup_stv0900_config,
+							&i2c_bus->i2c_adap, 1);
+			if (fe0->dvb.frontend != NULL) {
+				if (dvb_attach(stv6110_attach,
+						fe0->dvb.frontend,
+						&netup_stv6110_tunerconfig_b,
+						&i2c_bus->i2c_adap)) {
+					if (!dvb_attach(lnbh24_attach,
+							fe0->dvb.frontend,
+							&i2c_bus->i2c_adap,
+							LNBH24_PCL | LNBH24_TTX,
+							LNBH24_TEN, 0x0a))
+						pr_err("No LNBH24 found!\n");
+
+				}
+			}
+			break;
+		}
+		break;
+	case CX23885_BOARD_MYGICA_X8506:
+		i2c_bus = &dev->i2c_bus[0];
+		i2c_bus2 = &dev->i2c_bus[1];
+		fe0->dvb.frontend = dvb_attach(lgs8gxx_attach,
+			&mygica_x8506_lgs8gl5_config,
+			&i2c_bus->i2c_adap);
+		if (fe0->dvb.frontend == NULL)
+			break;
+		dvb_attach(xc5000_attach, fe0->dvb.frontend,
+			   &i2c_bus2->i2c_adap, &mygica_x8506_xc5000_config);
+		cx23885_set_frontend_hook(port, fe0->dvb.frontend);
+		break;
+	case CX23885_BOARD_MYGICA_X8507:
+		i2c_bus = &dev->i2c_bus[0];
+		i2c_bus2 = &dev->i2c_bus[1];
+		fe0->dvb.frontend = dvb_attach(mb86a20s_attach,
+			&mygica_x8507_mb86a20s_config,
+			&i2c_bus->i2c_adap);
+		if (fe0->dvb.frontend == NULL)
+			break;
+
+		dvb_attach(xc5000_attach, fe0->dvb.frontend,
+			   &i2c_bus2->i2c_adap,
+			   &mygica_x8507_xc5000_config);
+		cx23885_set_frontend_hook(port, fe0->dvb.frontend);
+		break;
+	case CX23885_BOARD_MAGICPRO_PROHDTVE2:
+		i2c_bus = &dev->i2c_bus[0];
+		i2c_bus2 = &dev->i2c_bus[1];
+		fe0->dvb.frontend = dvb_attach(lgs8gxx_attach,
+			&magicpro_prohdtve2_lgs8g75_config,
+			&i2c_bus->i2c_adap);
+		if (fe0->dvb.frontend == NULL)
+			break;
+		dvb_attach(xc5000_attach, fe0->dvb.frontend,
+			   &i2c_bus2->i2c_adap,
+			   &magicpro_prohdtve2_xc5000_config);
+		cx23885_set_frontend_hook(port, fe0->dvb.frontend);
+		break;
+	case CX23885_BOARD_HAUPPAUGE_HVR1850:
+		i2c_bus = &dev->i2c_bus[0];
+		fe0->dvb.frontend = dvb_attach(s5h1411_attach,
+			&hcw_s5h1411_config,
+			&i2c_bus->i2c_adap);
+		if (fe0->dvb.frontend == NULL)
+			break;
+		dvb_attach(tda18271_attach, fe0->dvb.frontend,
+			   0x60, &dev->i2c_bus[0].i2c_adap,
+			   &hauppauge_tda18271_config);
+
+		tda18271_attach(&dev->ts1.analog_fe,
+			0x60, &dev->i2c_bus[1].i2c_adap,
+			&hauppauge_tda18271_config);
+
+		break;
+	case CX23885_BOARD_HAUPPAUGE_HVR1290:
+		i2c_bus = &dev->i2c_bus[0];
+		fe0->dvb.frontend = dvb_attach(s5h1411_attach,
+			&hcw_s5h1411_config,
+			&i2c_bus->i2c_adap);
+		if (fe0->dvb.frontend == NULL)
+			break;
+		dvb_attach(tda18271_attach, fe0->dvb.frontend,
+			   0x60, &dev->i2c_bus[0].i2c_adap,
+			   &hauppauge_tda18271_config);
+		break;
+	case CX23885_BOARD_MYGICA_X8558PRO:
+		switch (port->nr) {
+		/* port B */
+		case 1:
+			i2c_bus = &dev->i2c_bus[0];
+			fe0->dvb.frontend = dvb_attach(atbm8830_attach,
+				&mygica_x8558pro_atbm8830_cfg1,
+				&i2c_bus->i2c_adap);
+			if (fe0->dvb.frontend == NULL)
+				break;
+			dvb_attach(max2165_attach, fe0->dvb.frontend,
+				   &i2c_bus->i2c_adap,
+				   &mygic_x8558pro_max2165_cfg1);
+			break;
+		/* port C */
+		case 2:
+			i2c_bus = &dev->i2c_bus[1];
+			fe0->dvb.frontend = dvb_attach(atbm8830_attach,
+				&mygica_x8558pro_atbm8830_cfg2,
+				&i2c_bus->i2c_adap);
+			if (fe0->dvb.frontend == NULL)
+				break;
+			dvb_attach(max2165_attach, fe0->dvb.frontend,
+				   &i2c_bus->i2c_adap,
+				   &mygic_x8558pro_max2165_cfg2);
+		}
+		break;
+	case CX23885_BOARD_NETUP_DUAL_DVB_T_C_CI_RF:
+		if (port->nr > 2)
+			return 0;
+
+		i2c_bus = &dev->i2c_bus[0];
+		mfe_shared = 1;/* MFE */
+		port->frontends.gate = 0;/* not clear for me yet */
+		/* ports B, C */
+		/* MFE frontend 1 DVB-T */
+		fe0->dvb.frontend = dvb_attach(stv0367ter_attach,
+					&netup_stv0367_config[port->nr - 1],
+					&i2c_bus->i2c_adap);
+		if (fe0->dvb.frontend == NULL)
+			break;
+		if (NULL == dvb_attach(xc5000_attach, fe0->dvb.frontend,
+					&i2c_bus->i2c_adap,
+					&netup_xc5000_config[port->nr - 1]))
+			goto frontend_detach;
+		/* load xc5000 firmware */
+		fe0->dvb.frontend->ops.tuner_ops.init(fe0->dvb.frontend);
+
+		/* MFE frontend 2 */
+		fe1 = vb2_dvb_get_frontend(&port->frontends, 2);
+		if (fe1 == NULL)
+			goto frontend_detach;
+		/* DVB-C init */
+		fe1->dvb.frontend = dvb_attach(stv0367cab_attach,
+					&netup_stv0367_config[port->nr - 1],
+					&i2c_bus->i2c_adap);
+		if (fe1->dvb.frontend == NULL)
+			break;
+
+		fe1->dvb.frontend->id = 1;
+		if (NULL == dvb_attach(xc5000_attach,
+				       fe1->dvb.frontend,
+				       &i2c_bus->i2c_adap,
+				       &netup_xc5000_config[port->nr - 1]))
+			goto frontend_detach;
+		break;
+	case CX23885_BOARD_TERRATEC_CINERGY_T_PCIE_DUAL:
+		i2c_bus = &dev->i2c_bus[0];
+		i2c_bus2 = &dev->i2c_bus[1];
+
+		switch (port->nr) {
+		/* port b */
+		case 1:
+			fe0->dvb.frontend = dvb_attach(drxk_attach,
+					&terratec_drxk_config[0],
+					&i2c_bus->i2c_adap);
+			if (fe0->dvb.frontend == NULL)
+				break;
+			if (!dvb_attach(mt2063_attach,
+					fe0->dvb.frontend,
+					&terratec_mt2063_config[0],
+					&i2c_bus2->i2c_adap))
+				goto frontend_detach;
+			break;
+		/* port c */
+		case 2:
+			fe0->dvb.frontend = dvb_attach(drxk_attach,
+					&terratec_drxk_config[1],
+					&i2c_bus->i2c_adap);
+			if (fe0->dvb.frontend == NULL)
+				break;
+			if (!dvb_attach(mt2063_attach,
+					fe0->dvb.frontend,
+					&terratec_mt2063_config[1],
+					&i2c_bus2->i2c_adap))
+				goto frontend_detach;
+			break;
+		}
+		break;
+	case CX23885_BOARD_TEVII_S471:
+		i2c_bus = &dev->i2c_bus[1];
+
+		fe0->dvb.frontend = dvb_attach(ds3000_attach,
+					&tevii_ds3000_config,
+					&i2c_bus->i2c_adap);
+		if (fe0->dvb.frontend == NULL)
+			break;
+		dvb_attach(ts2020_attach, fe0->dvb.frontend,
+			   &tevii_ts2020_config, &i2c_bus->i2c_adap);
+		break;
+	case CX23885_BOARD_PROF_8000:
+		i2c_bus = &dev->i2c_bus[0];
+
+		fe0->dvb.frontend = dvb_attach(stv090x_attach,
+						&prof_8000_stv090x_config,
+						&i2c_bus->i2c_adap,
+						STV090x_DEMODULATOR_0);
+		if (fe0->dvb.frontend == NULL)
+			break;
+		if (!dvb_attach(stb6100_attach,
+				fe0->dvb.frontend,
+				&prof_8000_stb6100_config,
+				&i2c_bus->i2c_adap))
+			goto frontend_detach;
+
+		fe0->dvb.frontend->ops.set_voltage = p8000_set_voltage;
+		break;
+	case CX23885_BOARD_HAUPPAUGE_HVR4400: {
+		struct tda10071_platform_data tda10071_pdata = hauppauge_tda10071_pdata;
+		struct a8293_platform_data a8293_pdata = {};
+
+		i2c_bus = &dev->i2c_bus[0];
+		i2c_bus2 = &dev->i2c_bus[1];
+		switch (port->nr) {
+		/* port b */
+		case 1:
+			/* attach demod + tuner combo */
+			memset(&info, 0, sizeof(info));
+			strscpy(info.type, "tda10071_cx24118", I2C_NAME_SIZE);
+			info.addr = 0x05;
+			info.platform_data = &tda10071_pdata;
+			request_module("tda10071");
+			client_demod = i2c_new_client_device(&i2c_bus->i2c_adap, &info);
+			if (!i2c_client_has_driver(client_demod))
+				goto frontend_detach;
+			if (!try_module_get(client_demod->dev.driver->owner)) {
+				i2c_unregister_device(client_demod);
+				goto frontend_detach;
+			}
+			fe0->dvb.frontend = tda10071_pdata.get_dvb_frontend(client_demod);
+			port->i2c_client_demod = client_demod;
+
+			/* attach SEC */
+			a8293_pdata.dvb_frontend = fe0->dvb.frontend;
+			memset(&info, 0, sizeof(info));
+			strscpy(info.type, "a8293", I2C_NAME_SIZE);
+			info.addr = 0x0b;
+			info.platform_data = &a8293_pdata;
+			request_module("a8293");
+			client_sec = i2c_new_client_device(&i2c_bus->i2c_adap, &info);
+			if (!i2c_client_has_driver(client_sec))
+				goto frontend_detach;
+			if (!try_module_get(client_sec->dev.driver->owner)) {
+				i2c_unregister_device(client_sec);
+				goto frontend_detach;
+			}
+			port->i2c_client_sec = client_sec;
+			break;
+		/* port c */
+		case 2:
+			/* attach frontend */
+			memset(&si2165_pdata, 0, sizeof(si2165_pdata));
+			si2165_pdata.fe = &fe0->dvb.frontend;
+			si2165_pdata.chip_mode =

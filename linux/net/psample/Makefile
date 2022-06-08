@@ -1,4 +1,9 @@
-/uapi/asm/sigcontext.h \
-  arch/x86/include/asm/msr.h \
-    $(wildcard include/config/TRACEPOINTS) \
-  arch/x86/include/asm
+push_set(smp_processor_id(), false);
+#endif
+	init_sched_fair_class();
+
+	psi_init();
+
+	init_uclamp();
+
+	preempt_dynamic_init

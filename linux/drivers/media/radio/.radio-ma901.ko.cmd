@@ -1,1 +1,1 @@
-cmd_drivers/media/radio/radio-ma901.ko := ld -r -m elf_i386 --build-id=sha1  -T scripts/module.lds -o drivers/media/radio/radio-ma901.ko drivers/media/radio/radio-ma901.o drivers/media/radio/radio-ma901.mod.o;  true
+cmd_drivers/media/pci/cx18/cx18-alsa.mod.o := gcc -Wp,-MMD,drivers/media/pci/cx18/.cx18-alsa.mod.o.d -nostdinc -I./arch/x86/include -I./arch/x86/include/generated -I./include -I./arch/x86/include/uapi -I./arch/x86/in

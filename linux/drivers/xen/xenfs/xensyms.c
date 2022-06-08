@@ -1,78 +1,114 @@
-.h \
-  include/linux/atomic/atomic-arch-fallback.h \
-    $(wildcard include/config/GENERIC_ATOMIC64) \
-  include/linux/atomic/atomic-long.h \
-  include/linux/atomic/atomic-instrumented.h \
-  include/linux/bug.h \
-    $(wildcard include/config/BUG_ON_DATA_CORRUPTION) \
-  arch/x86/include/asm/bug.h \
-    $(wildcard include/config/DEBUG_BUGVERBOSE) \
-  include/linux/instrumentation.h \
-    $(wildcard include/config/DEBUG_ENTRY) \
-  include/asm-generic/bug.h \
-    $(wildcard include/config/BUG) \
-    $(wildcard include/config/GENERIC_BUG_RELATIVE_POINTERS) \
-  arch/x86/include/uapi/asm/msr.h \
-  include/linux/tracepoint-defs.h \
-  arch/x86/include/asm/special_insns.h \
-  include/linux/irqflags.h \
-    $(wildcard include/config/TRACE_IRQFLAGS) \
-    $(wildcard include/config/PREEMPT_RT) \
-    $(wildcard include/config/IRQSOFF_TRACER) \
-    $(wildcard include/config/PREEMPT_TRACER) \
-    $(wildcard include/config/DEBUG_IRQFLAGS) \
-    $(wildcard include/config/TRACE_IRQFLAGS_SUPPORT) \
-  arch/x86/include/asm/irqflags.h \
-  arch/x86/include/asm/fpu/types.h \
-  arch/x86/include/asm/vmxfeatures.h \
-  arch/x86/include/asm/vdso/processor.h \
-  include/linux/personality.h \
-  include/uapi/linux/personality.h \
-  arch/x86/include/asm/tsc.h \
-  arch/x86/include/asm/cpufeature.h \
-    $(wildcard include/config/X86_FEATURE_NAMES) \
-  include/vdso/time32.h \
-  include/vdso/time.h \
-  include/linux/uidgid.h \
-    $(wildcard include/config/MULTIUSER) \
-    $(wildcard include/config/USER_NS) \
-  include/linux/highuid.h \
-  include/linux/buildid.h \
-    $(wildcard include/config/CRASH_CORE) \
-  include/linux/mm_types.h \
-    $(wildcard include/config/HAVE_ALIGNED_STRUCT_PAGE) \
-    $(wildcard include/config/MEMCG) \
-    $(wildcard include/config/USERFAULTFD) \
-    $(wildcard include/config/SWAP) \
-    $(wildcard include/config/NUMA) \
-    $(wildcard include/config/HAVE_ARCH_COMPAT_MMAP_BASES) \
-    $(wildcard include/config/MEMBARRIER) \
-    $(wildcard include/config/AIO) \
-    $(wildcard include/config/MMU_NOTIFIER) \
-    $(wildcard include/config/TRANSPARENT_HUGEPAGE) \
-    $(wildcard include/config/NUMA_BALANCING) \
-    $(wildcard include/config/ARCH_WANT_BATCHED_UNMAP_TLB_FLUSH) \
-    $(wildcard include/config/HUGETLB_PAGE) \
-    $(wildcard include/config/IOMMU_SVA) \
-  include/linux/mm_types_task.h \
-    $(wildcard include/config/SPLIT_PTLOCK_CPUS) \
-    $(wildcard include/config/ARCH_ENABLE_SPLIT_PMD_PTLOCK) \
-  arch/x86/include/asm/tlbbatch.h \
-  include/linux/auxvec.h \
-  include/uapi/linux/auxvec.h \
-  arch/x86/include/uapi/asm/auxvec.h \
-  include/linux/kref.h \
-  include/linux/spinlock.h \
-    $(wildcard include/config/PREEMPTION) \
-  include/linux/preempt.h \
-    $(wildcard include/config/PREEMPT_COUNT) \
-    $(wildcard include/config/TRACE_PREEMPT_TOGGLE) \
-    $(wildcard include/config/PREEMPT_NOTIFIERS) \
-  arch/x86/include/asm/preempt.h \
-  include/linux/thread_info.h \
-    $(wildcard include/config/THREAD_INFO_IN_TASK) \
-    $(wildcard include/config/GENERIC_ENTRY) \
-    $(wildcard include/config/HAVE_ARCH_WITHIN_STACK_FRAMES) \
-    $(wildcard include/config/HARDENED_USERCOPY) \
-  include/linux/restart_block.h \
-  arch/x86/include/asm/thread_info.h 
+ in both TC_REQ and TC_REQ_SET
+ * indicate a stall in the RISC engine for a
+ * particular rider traffic class. This causes
+ * the 885 and 888 bridges (unknown about 887)
+ * to become inoperable. Setting bits in
+ * TC_REQ_SET resets the corresponding bits
+ * in TC_REQ (and TC_REQ_SET) allowing
+ * operation to continue.
+ */
+#define TC_REQ		0x00040090
+#define TC_REQ_SET	0x00040094
+
+#define RDR_CFG0	0x00050000
+#define RDR_CFG1	0x00050004
+#define RDR_CFG2	0x00050008
+#define RDR_RDRCTL1	0x0005030c
+#define RDR_TLCTL0	0x00050318
+
+/* APB DMAC Current Buffer Pointer */
+#define DMA1_PTR1	0x00100000
+#define DMA2_PTR1	0x00100004
+#define DMA3_PTR1	0x00100008
+#define DMA4_PTR1	0x0010000C
+#define DMA5_PTR1	0x00100010
+#define DMA6_PTR1	0x00100014
+#define DMA7_PTR1	0x00100018
+#define DMA8_PTR1	0x0010001C
+
+/* APB DMAC Current Table Pointer */
+#define DMA1_PTR2	0x00100040
+#define DMA2_PTR2	0x00100044
+#define DMA3_PTR2	0x00100048
+#define DMA4_PTR2	0x0010004C
+#define DMA5_PTR2	0x00100050
+#define DMA6_PTR2	0x00100054
+#define DMA7_PTR2	0x00100058
+#define DMA8_PTR2	0x0010005C
+
+/* APB DMAC Buffer Limit */
+#define DMA1_CNT1	0x00100080
+#define DMA2_CNT1	0x00100084
+#define DMA3_CNT1	0x00100088
+#define DMA4_CNT1	0x0010008C
+#define DMA5_CNT1	0x00100090
+#define DMA6_CNT1	0x00100094
+#define DMA7_CNT1	0x00100098
+#define DMA8_CNT1	0x0010009C
+
+/* APB DMAC Table Size */
+#define DMA1_CNT2	0x001000C0
+#define DMA2_CNT2	0x001000C4
+#define DMA3_CNT2	0x001000C8
+#define DMA4_CNT2	0x001000CC
+#define DMA5_CNT2	0x001000D0
+#define DMA6_CNT2	0x001000D4
+#define DMA7_CNT2	0x001000D8
+#define DMA8_CNT2	0x001000DC
+
+/* Timer Counters */
+#define TM_CNT_LDW	0x00110000
+#define TM_CNT_UW	0x00110004
+#define TM_LMT_LDW	0x00110008
+#define TM_LMT_UW	0x0011000C
+
+/* GPIO */
+#define GP0_IO		0x00110010
+#define GPIO_ISM	0x00110014
+#define SOFT_RESET	0x0011001C
+
+/* GPIO (417 Microsoftcontroller) RW Data */
+#define MC417_RWD	0x00110020
+
+/* GPIO (417 Microsoftcontroller) Output Enable, Low Active */
+#define MC417_OEN	0x00110024
+#define MC417_CTL	0x00110028
+#define ALT_PIN_OUT_SEL 0x0011002C
+#define CLK_DELAY	0x00110048
+#define PAD_CTRL	0x0011004C
+
+/* Video A Interface */
+#define VID_A_GPCNT		0x00130020
+#define VBI_A_GPCNT		0x00130024
+#define VID_A_GPCNT_CTL		0x00130030
+#define VBI_A_GPCNT_CTL		0x00130034
+#define VID_A_DMA_CTL		0x00130040
+#define VID_A_VIP_CTRL		0x00130080
+#define VID_A_PIXEL_FRMT	0x00130084
+#define VID_A_VBI_CTRL		0x00130088
+
+/* Video B Interface */
+#define VID_B_DMA		0x00130100
+#define VBI_B_DMA		0x00130108
+#define VID_B_GPCNT		0x00130120
+#define VBI_B_GPCNT		0x00130124
+#define VID_B_GPCNT_CTL		0x00130134
+#define VBI_B_GPCNT_CTL		0x00130138
+#define VID_B_DMA_CTL		0x00130140
+#define VID_B_SRC_SEL		0x00130144
+#define VID_B_LNGTH		0x00130150
+#define VID_B_HW_SOP_CTL	0x00130154
+#define VID_B_GEN_CTL		0x00130158
+#define VID_B_BD_PKT_STATUS	0x0013015C
+#define VID_B_SOP_STATUS	0x00130160
+#define VID_B_FIFO_OVFL_STAT	0x00130164
+#define VID_B_VLD_MISC		0x00130168
+#define VID_B_TS_CLK_EN		0x0013016C
+#define VID_B_VIP_CTRL		0x00130180
+#define VID_B_PIXEL_FRMT	0x00130184
+
+/* Video C Interface */
+#define VID_C_DMA		0x00130200
+#define VBI_C_DMA		0x00130208
+#define VID_C_GPCNT		0x00130220
+#define VID_C_GPCNT_CTL

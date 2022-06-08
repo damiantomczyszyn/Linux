@@ -1,44 +1,72 @@
-LE_SLEEP) \
-    $(wildcard include/config/PM_CLK) \
-    $(wildcard include/config/PM_GENERIC_DOMAINS) \
-  include/linux/device/bus.h \
-  include/linux/device/class.h \
-  include/linux/device/driver.h \
-  include/linux/module.h \
-    $(wildcard include/config/MODULES_TREE_LOOKUP) \
-    $(wildcard include/config/STACKTRACE_BUILD_ID) \
-    $(wildcard include/config/MODULE_SIG) \
-    $(wildcard include/config/KALLSYMS) \
-    $(wildcard include/config/BPF_EVENTS) \
-    $(wildcard include/config/DEBUG_INFO_BTF_MODULES) \
-    $(wildcard include/config/EVENT_TRACING) \
-    $(wildcard include/config/MODULE_UNLOAD) \
-    $(wildcard include/config/CONSTRUCTORS) \
-    $(wildcard include/config/FUNCTION_ERROR_INJECTION) \
-  include/linux/buildid.h \
-    $(wildcard include/config/CRASH_CORE) \
-  include/linux/kmod.h \
-  include/linux/umh.h \
-  include/linux/sysctl.h \
-    $(wildcard include/config/SYSCTL) \
-  include/uapi/linux/sysctl.h \
-  include/linux/elf.h \
-    $(wildcard include/config/ARCH_USE_GNU_PROPERTY) \
-    $(wildcard include/config/ARCH_HAVE_ELF_PROT) \
-  arch/x86/include/asm/elf.h \
-    $(wildcard include/config/X86_X32_ABI) \
-  arch/x86/include/asm/user.h \
-  arch/x86/include/asm/user_32.h \
-  arch/x86/include/asm/fsgsbase.h \
-  arch/x86/include/asm/vdso.h \
-  arch/x86/include/asm/desc.h \
-  arch/x86/include/asm/fixmap.h \
-    $(wildcard include/config/DEBUG_KMAP_LOCAL_FORCE_MAP) \
-    $(wildcard include/config/X86_VSYSCALL_EMULATION) \
-    $(wildcard include/config/PROVIDE_OHCI1394_DMA_INIT) \
-    $(wildcard include/config/PCI_MMCONFIG) \
-    $(wildcard include/config/ACPI_APEI_GHES) \
-    $(wildcard include/config/INTEL_TXT) \
-  include/asm-generic/fixmap.h \
-  arch/x86/include/asm/irq_vectors.h \
-    $(wildca
+fault_pm	  = 0,
+				.dvb_amplitude	  = 134,
+				.set_smoothedcvbs = 1,
+				.if_khz		  = 4560
+			};
+
+			fe = dvb_attach(xc4000_attach, fe0->dvb.frontend,
+					&dev->i2c_bus[1].i2c_adap, &cfg);
+			if (!fe) {
+				pr_err("%s/2: xc4000 attach failed\n",
+				       dev->name);
+				goto frontend_detach;
+			}
+		}
+		break;
+	case CX23885_BOARD_TBS_6920:
+		i2c_bus = &dev->i2c_bus[1];
+
+		fe0->dvb.frontend = dvb_attach(cx24116_attach,
+					&tbs_cx24116_config,
+					&i2c_bus->i2c_adap);
+		if (fe0->dvb.frontend != NULL)
+			fe0->dvb.frontend->ops.set_voltage = f300_set_voltage;
+
+		break;
+	case CX23885_BOARD_TBS_6980:
+	case CX23885_BOARD_TBS_6981:
+		i2c_bus = &dev->i2c_bus[1];
+
+		switch (port->nr) {
+		/* PORT B */
+		case 1:
+			fe0->dvb.frontend = dvb_attach(cx24117_attach,
+					&tbs_cx24117_config,
+					&i2c_bus->i2c_adap);
+			break;
+		/* PORT C */
+		case 2:
+			fe0->dvb.frontend = dvb_attach(cx24117_attach,
+					&tbs_cx24117_config,
+					&i2c_bus->i2c_adap);
+			break;
+		}
+		break;
+	case CX23885_BOARD_TEVII_S470:
+		i2c_bus = &dev->i2c_bus[1];
+
+		fe0->dvb.frontend = dvb_attach(ds3000_attach,
+					&tevii_ds3000_config,
+					&i2c_bus->i2c_adap);
+		if (fe0->dvb.frontend != NULL) {
+			dvb_attach(ts2020_attach, fe0->dvb.frontend,
+				&tevii_ts2020_config, &i2c_bus->i2c_adap);
+			fe0->dvb.frontend->ops.set_voltage = f300_set_voltage;
+		}
+
+		break;
+	case CX23885_BOARD_DVBWORLD_2005:
+		i2c_bus = &dev->i2c_bus[1];
+
+		fe0->dvb.frontend = dvb_attach(cx24116_attach,
+			&dvbworld_cx24116_config,
+			&i2c_bus->i2c_adap);
+		break;
+	case CX23885_BOARD_NETUP_DUAL_DVBS2_CI:
+		i2c_bus = &dev->i2c_bus[0];
+		switch (port->nr) {
+		/* port B */
+		case 1:
+			fe0->dvb.frontend = dvb_attach(stv0900_attach,
+							&netup_stv0900_config,
+							&i2c_bus->i2c_ad

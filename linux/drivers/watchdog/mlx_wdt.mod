@@ -1,1 +1,1 @@
- $(wildcard include/config/G
+// SPDX-License-Identifier: 

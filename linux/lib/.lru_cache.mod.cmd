@@ -1,3 +1,2 @@
-/x86/include/asm/highmem.h \
-  arch/x86/include/asm/tlbflush.h \
-  arch/x86/inc
+	v4l2_info(sd, "\tFIFO service requested:            %s\n",
+		  stats & STATS_R

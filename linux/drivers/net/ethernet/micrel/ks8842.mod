@@ -1,2 +1,2 @@
-ude/asm/pgtable_32_types.h \
-  arch/x8
+nput)->amux == CX25840_AUDIO6)
+		cx238

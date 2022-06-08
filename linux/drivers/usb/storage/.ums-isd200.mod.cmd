@@ -1,4 +1,5 @@
-CPI_APEI_GHES) \
-    $(wildcard include/config/INTEL_TXT) \
-  arch/x86/include/generated/asm/kmap_size.h \
-  include/asm-gener
+taval = tempval & 0x000000FF;
+
+	/* Bring CS and RD high. */
+	regval = MC417_MIWR | MC417_MIRD | MC417_MICS | MC417_MIRDY;
+	cx_

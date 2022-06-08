@@ -1,1 +1,41 @@
-cmd_drivers/media/i2c/upd64031a.o := gcc -Wp,-MMD,drivers/media/i2c/.upd64031a.o.d -nostdinc -I./arch/x86/include -I./arch/x86/include/generated  -I./include -I./arch/x86/include/uapi -I./arch/x86/include/generated/uapi -I./include/uapi -I./include/generated/uapi -include ./include/linux/compiler-version.h -include ./include/linux/kconfig.h -include ./include/linux/compiler_types.h -D__KERNEL__ -fmacro-prefix-map=./= -Wall -Wundef -Werror=strict-prototypes -Wno-trigraphs -fno-strict-aliasing -fno-common -fshort-wchar -fno-PIE -Werror=implicit-function-declaration -Werror=implicit-int -Werror=return-type -Wno-format-security -std=gnu11 -mno-sse -mno-mmx -mno-sse2 -mno-3dnow -mno-avx -fcf-protection=none -m32 -msoft-float -mregparm=3 -freg-struct-return -fno-pic -mpreferred-stack-boundary=2 -march=i686 -mtune=pentium3 -mtune=generic -Wa,-mtune=generic32 -ffreestanding -mstack-protector-guard-reg=fs -mstack-protector-guard-symbol=__stack_chk_guard -Wno-sign-compare -fno-asynchronous-unwind-tables -mindirect-branch=thunk-extern -mindirect-branch-register -fno-jump-tables -fno-delete-null-pointer-checks -Wno-frame-addres
+ION		0x000004B4
+#define VBI_PASS_CTRL		0x000004BC
+
+/* Audio Decoder Registers */
+/* 8051 Configuration */
+#define DL_CTL		0x00000800
+#define STD_DET_STATUS	0x00000804
+#define STD_DET_CTL	0x00000808
+#define DW8051_INT	0x0000080C
+#define GENERAL_CTL	0x00000810
+#define AAGC_CTL	0x00000814
+#define DEMATRIX_CTL	0x000008CC
+#define PATH1_CTL1	0x000008D0
+#define PATH1_VOL_CTL	0x000008D4
+#define PATH1_EQ_CTL	0x000008D8
+#define PATH1_SC_CTL	0x000008DC
+#define PATH2_CTL1	0x000008E0
+#define PATH2_VOL_CTL	0x000008E4
+#define PATH2_EQ_CTL	0x000008E8
+#define PATH2_SC_CTL	0x000008EC
+
+/* Sample Rate Converter */
+#define SRC_CTL		0x000008F0
+#define SRC_LF_COEF	0x000008F4
+#define SRC1_CTL	0x000008F8
+#define SRC2_CTL	0x000008FC
+#define SRC3_CTL	0x00000900
+#define SRC4_CTL	0x00000904
+#define SRC5_CTL	0x00000908
+#define SRC6_CTL	0x0000090C
+#define BAND_OUT_SEL	0x00000910
+#define I2S_N_CTL	0x00000914
+#define I2S_OUT_CTL	0x00000918
+#define AUTOCONFIG_REG	0x000009C4
+
+/* Audio ADC Registers */
+#define DSM_CTRL1	0x00000000
+#define DSM_CTRL2	0x00000001
+#define CHP_EN_CTRL	0x00000002
+#define CHP_CLK_CTRL1	0x00000004
+#define CHP_CLK_CTRL2	0x00000

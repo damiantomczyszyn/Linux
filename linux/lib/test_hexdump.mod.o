@@ -1,55 +1,74 @@
-NTRIES);
-	seq_printf(m, " indirect dependencies:         %11lu\n",
-			sum_forward_deps);
+g
+		 * any task-queue locks at all. We'll only try to get
+		 * the runqueue lock when things look like they will
+		 * work out!
+		 */
+		rq = task_rq(p);
 
-	/*
-	 * Total number of dependencies:
-	 *
-	 * All irq-safe locks may nest inside irq-unsafe locks,
-	 * plus all the other known dependencies:
-	 */
-	seq_printf(m, " all direct dependencies:       %11lu\n",
-			nr_irq_unsafe * nr_irq_safe +
-			nr_hardirq_unsafe * nr_hardirq_safe +
-			nr_list_entries);
+		/*
+		 * If the task is actively running on another CPU
+		 * still, just relax and busy-wait without holding
+		 * any locks.
+		 *
+		 * NOTE! Since we don't hold any locks, it's not
+		 * even sure that "rq" stays as the right runqueue!
+		 * But we don't care, since "task_running()" will
+		 * return false if the runqueue has changed and p
+		 * is actually now running somewhere else!
+		 */
+		while (task_running(rq, p)) {
+			if (match_state && unlikely(READ_ONCE(p->__state) != match_state))
+				return 0;
+			cpu_relax();
+		}
 
-#ifdef CONFIG_PROVE_LOCKING
-	seq_printf(m, " dependency chains:             %11lu [max: %lu]\n",
-			lock_chain_count(), MAX_LOCKDEP_CHAINS);
-	seq_printf(m, " dependency chain hlocks used:  %11lu [max: %lu]\n",
-			MAX_LOCKDEP_CHAIN_HLOCKS -
-			(nr_free_chain_hlocks + nr_lost_chain_hlocks),
-			MAX_LOCKDEP_CHAIN_HLOCKS);
-	seq_printf(m, " dependency chain hlocks lost:  %11u\n",
-			nr_lost_chain_hlocks);
-#endif
+		/*
+		 * Ok, time to look more closely! We need the rq
+		 * lock now, to be *sure*. If we're wrong, we'll
+		 * just go back and repeat.
+		 */
+		rq = task_rq_lock(p, &rf);
+		trace_sched_wait_task(p);
+		running = task_running(rq, p);
+		queued = task_on_rq_queued(p);
+		ncsw = 0;
+		if (!match_state || READ_ONCE(p->__state) == match_state)
+			ncsw = p->nvcsw | LONG_MIN; /* sets MSB */
+		task_rq_unlock(rq, p, &rf);
 
-#ifdef CONFIG_TRACE_IRQFLAGS
-	seq_printf(m, " in-hardirq chains:             %11u\n",
-			nr_hardirq_chains);
-	seq_printf(m, " in-softirq chains:             %11u\n",
-			nr_softirq_chains);
-#endif
-	seq_printf(m, " in-process chains:             %11u\n",
-			nr_process_chains);
-	seq_printf(m, " stack-trace entries:           %11lu [max: %lu]\n",
-			nr_stack_trace_entries, MAX_STACK_TRACE_ENTRIES);
-#if defined(CONFIG_TRACE_IRQFLAGS) && defined(CONFIG_PROVE_LOCKING)
-	seq_printf(m, " number of stack traces:        %11llu\n",
-		   lockdep_stack_trace_count());
-	seq_printf(m, " number of stack hash chains:   %11llu\n",
-		   lockdep_stack_hash_count());
-#endif
-	seq_printf(m, " combined max dependencies:     %11u\n",
-			(nr_hardirq_chains + 1) *
-			(nr_softirq_chains + 1) *
-			(nr_process_chains + 1)
-	);
-	seq_printf(m, " hardirq-safe locks:            %11lu\n",
-			nr_hardirq_safe);
-	seq_printf(m, " hardirq-unsafe locks:          %11lu\n",
-			nr_hardirq_unsafe);
-	seq_printf(m, " softirq-safe locks:            %11lu\n",
-			nr_softirq_safe);
-	seq_printf(m, " softirq-unsafe locks:          %11lu\n",
-			
+		/*
+		 * If it changed from the expected state, bail out now.
+		 */
+		if (unlikely(!ncsw))
+			break;
+
+		/*
+		 * Was it really running after all now that we
+		 * checked with the proper locks actually held?
+		 *
+		 * Oops. Go back and try again..
+		 */
+		if (unlikely(running)) {
+			cpu_relax();
+			continue;
+		}
+
+		/*
+		 * It's not enough that it's not actively running,
+		 * it must be off the runqueue _entirely_, and not
+		 * preempted!
+		 *
+		 * So if it was still runnable (but just not actively
+		 * running right now), it's preempted, and we should
+		 * yield - it could be a while.
+		 */
+		if (unlikely(queued)) {
+			ktime_t to = NSEC_PER_SEC / HZ;
+
+			set_current_state(TASK_UNINTERRUPTIBLE);
+			schedule_hrtimeout(&to, HRTIMER_MODE_REL_HARD);
+			continue;
+		}
+
+		/*
+		 * Ahh, all good. It wasn't runn

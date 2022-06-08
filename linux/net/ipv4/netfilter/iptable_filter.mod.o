@@ -1,92 +1,48 @@
-k.hardirqs_off = true;
-			hlock.references = 0;
+	v4l2_info(sd, "\tFIFO service requested:            %s\n",
+		  stats & STATS_RSR ? "yes" : "no");
+	v4l2_info(sd, "\tFIFO service request interrupt:    %s\n",
+		  irqen & IRQEN_RSE ? "enabled" : "disabled");
 
-			verify_lock_unused(lock, &hlock, subclass);
-		}
-		return;
+	v4l2_info(sd, "IR Transmitter:\n");
+	v4l2_info(sd, "\tEnabled:                           %s\n",
+		  cntrl & CNTRL_TXE ? "yes" : "no");
+	v4l2_info(sd, "\tModulation onto a carrier:         %s\n",
+		  cntrl & CNTRL_MOD ? "enabled" : "disabled");
+	v4l2_info(sd, "\tFIFO:                              %s\n",
+		  cntrl & CNTRL_TFE ? "enabled" : "disabled");
+	v4l2_info(sd, "\tFIFO interrupt watermark:          %s\n",
+		  cntrl & CNTRL_TIC ? "not empty" : "half full or less");
+	v4l2_info(sd, "\tOutput pin level inversion         %s\n",
+		  cntrl & CNTRL_IVO ? "yes" : "no");
+	v4l2_info(sd, "\tCarrier polarity:                  %s\n",
+		  cntrl & CNTRL_CPL ? "space:burst mark:noburst"
+				    : "space:noburst mark:burst");
+	if (cntrl & CNTRL_MOD) {
+		v4l2_info(sd, "\tCarrier (16 clocks):               %u Hz\n",
+			  clock_divider_to_carrier_freq(txclk));
+		v4l2_info(sd, "\tCarrier duty cycle:                %2u/16\n",
+			  cduty + 1);
 	}
+	v4l2_info(sd, "\tMax pulse width:                   %u us, %llu ns\n",
+		  pulse_width_count_to_us(FIFO_RXTX, txclk),
+		  pulse_width_count_to_ns(FIFO_RXTX, txclk));
+	v4l2_info(sd, "\tBusy:                              %s\n",
+		  stats & STATS_TBY ? "yes" : "no");
+	v4l2_info(sd, "\tFIFO service requested:            %s\n",
+		  stats & STATS_TSR ? "yes" : "no");
+	v4l2_info(sd, "\tFIFO service request interrupt:    %s\n",
+		  irqen & IRQEN_TSE ? "enabled" : "disabled");
 
-	raw_local_irq_save(flags);
-	check_flags(flags);
-
-	lockdep_recursion_inc();
-	__lock_acquire(lock, subclass, trylock, read, check,
-		       irqs_disabled_flags(flags), nest_lock, ip, 0, 0);
-	lockdep_recursion_finish();
-	raw_local_irq_restore(flags);
+	return 0;
 }
-EXPORT_SYMBOL_GPL(lock_acquire);
 
-void lock_release(struct lockdep_map *lock, unsigned long ip)
+#ifdef CONFIG_VIDEO_ADV_DEBUG
+static int cx23888_ir_g_register(struct v4l2_subdev *sd,
+				 struct v4l2_dbg_register *reg)
 {
-	unsigned long flags;
+	struct cx23888_ir_state *state = to_state(sd);
+	u32 addr = CX23888_IR_REG_BASE + (u32) reg->reg;
 
-	trace_lock_release(lock, ip);
-
-	if (unlikely(!lockdep_enabled()))
-		return;
-
-	raw_local_irq_save(flags);
-	check_flags(flags);
-
-	lockdep_recursion_inc();
-	if (__lock_release(lock, ip))
-		check_chain_key(current);
-	lockdep_recursion_finish();
-	raw_local_irq_restore(flags);
-}
-EXPORT_SYMBOL_GPL(lock_release);
-
-noinstr int lock_is_held_type(const struct lockdep_map *lock, int read)
-{
-	unsigned long flags;
-	int ret = LOCK_STATE_NOT_HELD;
-
-	/*
-	 * Avoid false negative lockdep_assert_held() and
-	 * lockdep_assert_not_held().
-	 */
-	if (unlikely(!lockdep_enabled()))
-		return LOCK_STATE_UNKNOWN;
-
-	raw_local_irq_save(flags);
-	check_flags(flags);
-
-	lockdep_recursion_inc();
-	ret = __lock_is_held(lock, read);
-	lockdep_recursion_finish();
-	raw_local_irq_restore(flags);
-
-	return ret;
-}
-EXPORT_SYMBOL_GPL(lock_is_held_type);
-NOKPROBE_SYMBOL(lock_is_held_type);
-
-struct pin_cookie lock_pin_lock(struct lockdep_map *lock)
-{
-	struct pin_cookie cookie = NIL_COOKIE;
-	unsigned long flags;
-
-	if (unlikely(!lockdep_enabled()))
-		return cookie;
-
-	raw_local_irq_save(flags);
-	check_flags(flags);
-
-	lockdep_recursion_inc();
-	cookie = __lock_pin_lock(lock);
-	lockdep_recursion_finish();
-	raw_local_irq_restore(flags);
-
-	return cookie;
-}
-EXPORT_SYMBOL_GPL(lock_pin_lock);
-
-void lock_repin_lock(struct lockdep_map *lock, struct pin_cookie cookie)
-{
-	unsigned long flags;
-
-	if (unlikely(!lockdep_enabled()))
-		return;
-
-	raw_local_irq_save(fla
+	if ((addr & 0x3) != 0)
+		return -EINVAL;
+	i

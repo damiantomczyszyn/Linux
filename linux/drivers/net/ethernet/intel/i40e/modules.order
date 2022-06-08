@@ -1,2 +1,2 @@
-nclude/config/GENERIC_ATOMIC64) \
-  incl
+lient.addr = 0xa0 >> 1;
+		tveeprom_read(

@@ -1,40 +1,76 @@
-ude/config/PARAVIRT_XXL) \
-  arch/x86/include/asm/disabled-features.h \
-    $(wildcard include/config/X86_SMAP) \
-    $(wildcard include/config/X86_UMIP) \
-    $(wildcard include/config/X86_INTEL_MEMORY_PROTECTION_KEYS) \
-    $(wildcard include/config/X86_5LEVEL) \
-    $(wildcard include/config/PAGE_TABLE_ISOLATION) \
-    $(wildcard include/config/INTEL_IOMMU_SVM) \
-    $(wildcard include/config/X86_SGX) \
-  include/asm-generic/bitops/const_hweight.h \
-  include/asm-generic/bitops/instrumented-atomic.h \
-  include/linux/instrumented.h \
-  include/asm-generic/bitops/instrumented-non-atomic.h \
-    $(wildcard include/config/KCSAN_ASSUME_PLAIN_WRITES_ATOMIC) \
-  include/asm-generic/bitops/instrumented-lock.h \
-  include/asm-generic/bitops/le.h \
-  arch/x86/include/uapi/asm/byteorder.h \
-  include/linux/byteorder/little_endian.h \
-  include/uapi/linux/byteorder/little_endian.h \
-  include/linux/swab.h \
-  include/uapi/linux/swab.h \
-  arch/x86/include/uapi/asm/swab.h \
-  include/linux/byteorder/generic.h \
-  include/asm-generic/bitops/ext2-atomic-setbit.h \
-  include/vdso/math64.h \
-  include/linux/time64.h \
-  include/vdso/time64.h \
-  include/uapi/linux/time.h \
-  include/uapi/linux/time_types.h \
-  include/linux/time32.h \
-  include/linux/timex.h \
-  include/uapi/linux/timex.h \
-  include/uapi/linux/param.h \
-  arch/x86/include/generated/uapi/asm/param.h \
-  include/asm-generic/param.h \
-    $(wildcard include/config/HZ) \
-  include/uapi/asm-generic/param.h \
-  arch/x86/include/asm/timex.h \
-    $(wildcard include/config/X86_TSC) \
-  arc
+evision(struct cx23885_dev *dev)
+{
+	switch (cx_read(RDR_CFG2) & 0xff) {
+	case 0x00:
+		/* cx23885 */
+		dev->hwrevision = 0xa0;
+		break;
+	case 0x01:
+		/* CX23885-12Z */
+		dev->hwrevision = 0xa1;
+		break;
+	case 0x02:
+		/* CX23885-13Z/14Z */
+		dev->hwrevision = 0xb0;
+		break;
+	case 0x03:
+		if (dev->pci->device == 0x8880) {
+			/* CX23888-21Z/22Z */
+			dev->hwrevision = 0xc0;
+		} else {
+			/* CX23885-14Z */
+			dev->hwrevision = 0xa4;
+		}
+		break;
+	case 0x04:
+		if (dev->pci->device == 0x8880) {
+			/* CX23888-31Z */
+			dev->hwrevision = 0xd0;
+		} else {
+			/* CX23885-15Z, CX23888-31Z */
+			dev->hwrevision = 0xa5;
+		}
+		break;
+	case 0x0e:
+		/* CX23887-15Z */
+		dev->hwrevision = 0xc0;
+		break;
+	case 0x0f:
+		/* CX23887-14Z */
+		dev->hwrevision = 0xb1;
+		break;
+	default:
+		pr_err("%s() New hardware revision found 0x%x\n",
+		       __func__, dev->hwrevision);
+	}
+	if (dev->hwrevision)
+		pr_info("%s() Hardware revision = 0x%02x\n",
+			__func__, dev->hwrevision);
+	else
+		pr_err("%s() Hardware revision unknown 0x%x\n",
+		       __func__, dev->hwrevision);
+}
+
+/* Find the first v4l2_subdev member of the group id in hw */
+struct v4l2_subdev *cx23885_find_hw(struct cx23885_dev *dev, u32 hw)
+{
+	struct v4l2_subdev *result = NULL;
+	struct v4l2_subdev *sd;
+
+	spin_lock(&dev->v4l2_dev.lock);
+	v4l2_device_for_each_subdev(sd, &dev->v4l2_dev) {
+		if (sd->grp_id == hw) {
+			result = sd;
+			break;
+		}
+	}
+	spin_unlock(&dev->v4l2_dev.lock);
+	return result;
+}
+
+static int cx23885_dev_setup(struct cx23885_dev *dev)
+{
+	int i;
+
+	spin_lock_init(&dev->pci_irqmask_lock);
+	spin_

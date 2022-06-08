@@ -1,18 +1,39 @@
-wildcard include/config/GENERIC_ATOMIC64) \
-  include/linux/atomic/atomic-long.h \
-  include/linux/atomic/atomic-instrumented.h \
-  include/linux/bug.h \
-    $(wildcard include/config/BUG_ON_DATA_CORRUPTION) \
-  arch/x86/include/asm/bug.h \
-    $(wildcard include/config/DEBUG_BUGVERBOSE) \
-  include/linux/instrumentation.h \
-    $(wildcard include/config/DEBUG_ENTRY) \
-  include/asm-generic/bug.h \
-    $(wildcard include/config/BUG) \
-    $(wildcard include/config/GENERIC_BUG_RELATIVE_POINTERS) \
-  arch/x86/include/uapi/asm/msr.h \
-  include/linux/tracepoint-defs.h \
-  arch/x86/include/asm/special_insns.h \
-  include/linux/irqflags.h \
-    $(wildcard include/config/TRACE_IRQFLAGS) \
-    $(wildcard include/config/PREEMPT
+// SPDX-License-Identifier: GPL-2.0-or-later
+/*
+ * netup-init.c
+ *
+ * NetUP Dual DVB-S2 CI driver
+ *
+ * Copyright (C) 2009 NetUP Inc.
+ * Copyright (C) 2009 Igor M. Liplianin <liplianin@netup.ru>
+ * Copyright (C) 2009 Abylay Ospan <aospan@netup.ru>
+ */
+
+#include "cx23885.h"
+#include "netup-init.h"
+
+static void i2c_av_write(struct i2c_adapter *i2c, u16 reg, u8 val)
+{
+	int ret;
+	u8 buf[3];
+	struct i2c_msg msg = {
+		.addr	= 0x88 >> 1,
+		.flags	= 0,
+		.buf	= buf,
+		.len	= 3
+	};
+
+	buf[0] = reg >> 8;
+	buf[1] = reg & 0xff;
+	buf[2] = val;
+
+	ret = i2c_transfer(i2c, &msg, 1);
+
+	if (ret != 1)
+		pr_err("%s: i2c write error!\n", __func__);
+}
+
+static void i2c_av_write4(struct i2c_adapter *i2c, u16 reg, u32 val)
+{
+	int ret;
+	u8 buf[6];

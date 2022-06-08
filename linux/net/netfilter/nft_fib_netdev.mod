@@ -1,1 +1,1 @@
-de/config/INLINE_READ_UNLOCK_IRQ
+// SPDX-License-Identifier: GPL-

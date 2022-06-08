@@ -1,64 +1,80 @@
-nclude/config/GENERIC_ATOMIC64) \
-  include/linux/atomic/atomic-long.h \
-  include/linux/atomic/atomic-instrumented.h \
-  include/linux/bug.h \
-    $(wildcard include/config/BUG_ON_DATA_CORRUPTION) \
-  arch/x86/include/asm/bug.h \
-    $(wildcard include/config/DEBUG_BUGVERBOSE) \
-  include/linux/instrumentation.h \
-    $(wildcard include/config/DEBUG_ENTRY) \
-  include/asm-generic/bug.h \
-    $(wildcard include/config/BUG) \
-    $(wildcard include/config/GENERIC_BUG_RELATIVE_POINTERS) \
-  arch/x86/include/uapi/asm/msr.h \
-  include/linux/tracepoint-defs.h \
-  arch/x86/include/asm/special_insns.h \
-  include/linux/irqflags.h \
-    $(wildcard include/config/TRACE_IRQFLAGS) \
-    $(wildcard include/config/PREEMPT_RT) \
-    $(wildcard include/config/IRQSOFF_TRACER) \
-    $(wildcard include/config/PREEMPT_TRACER) \
-    $(wildcard include/config/DEBUG_IRQFLAGS) \
-    $(wildcard include/config/TRACE_IRQFLAGS_SUPPORT) \
-  arch/x86/include/asm/irqflags.h \
-  arch/x86/include/asm/fpu/types.h \
-  arch/x86/include/asm/vmxfeatures.h \
-  arch/x86/include/asm/vdso/processor.h \
-  include/linux/personality.h \
-  include/uapi/linux/personality.h \
-  arch/x86/include/asm/tsc.h \
-  arch/x86/include/asm/cpufeature.h \
-    $(wildcard include/config/X86_FEATURE_NAMES) \
-  include/vdso/time32.h \
-  include/vdso/time.h \
-  include/linux/uidgid.h \
-    $(wildcard include/config/MULTIUSER) \
-    $(wildcard include/config/USER_NS) \
-  include/linux/highuid.h \
-  include/linux/buildid.h \
-    $(wildcard include/config/CRASH_CORE) \
-  include/linux/mm_types.h \
-    $(wildcard include/config/HAVE_ALIGNED_STRUCT_PAGE) \
-    $(wildcard include/config/MEMCG) \
-    $(wildcard include/config/USERFAULTFD) \
-    $(wildcard include/config/SWAP) \
-    $(wildcard include/config/NUMA) \
-    $(wildcard include/config/HAVE_ARCH_COMPAT_MMAP_BASES) \
-    $(wildcard include/config/MEMBARRIER) \
-    $(wildcard include/config/AIO) \
-    $(wildcard include/config/MMU_NOTIFIER) \
-    $(wildcard include/config/TRANSPARENT_HUGEPAGE) \
-    $(wildcard include/config/NUMA_BALANCING) \
-    $(wildcard include/config/ARCH_WANT_BATCHED_UNMAP_TLB_FLUSH) \
-    $(wildcard include/config/HUGETLB_PAGE) \
-    $(wildcard include/config/IOMMU_SVA) \
-  include/linux/mm_types_task.h \
-    $(wildcard include/config/SPLIT_PTLOCK_CPUS) \
-    $(wildcard include/config/ARCH_ENABLE_SPLIT_PMD_PTLOCK) \
-  arch/x86/include/asm/tlbbatch.h \
-  include/linux/auxvec.h \
-  include/uapi/linux/auxvec.h \
-  arch/x86/include/uapi/asm/auxvec.h \
-  include/linux/kref.h \
-  include/linux/spinlock.h \
-    $(wildcard include/config/PREEMPTIO
+}
+
+static const struct vb2_ops dvb_qops = {
+	.queue_setup    = queue_setup,
+	.buf_prepare  = buffer_prepare,
+	.buf_finish = buffer_finish,
+	.buf_queue    = buffer_queue,
+	.wait_prepare = vb2_ops_wait_prepare,
+	.wait_finish = vb2_ops_wait_finish,
+	.start_streaming = cx23885_start_streaming,
+	.stop_streaming = cx23885_stop_streaming,
+};
+
+static struct s5h1409_config hauppauge_generic_config = {
+	.demod_address = 0x32 >> 1,
+	.output_mode   = S5H1409_SERIAL_OUTPUT,
+	.gpio          = S5H1409_GPIO_ON,
+	.qam_if        = 44000,
+	.inversion     = S5H1409_INVERSION_OFF,
+	.status_mode   = S5H1409_DEMODLOCKING,
+	.mpeg_timing   = S5H1409_MPEGTIMING_CONTINUOUS_NONINVERTING_CLOCK,
+};
+
+static struct tda10048_config hauppauge_hvr1200_config = {
+	.demod_address    = 0x10 >> 1,
+	.output_mode      = TDA10048_SERIAL_OUTPUT,
+	.fwbulkwritelen   = TDA10048_BULKWRITE_200,
+	.inversion        = TDA10048_INVERSION_ON,
+	.dtv6_if_freq_khz = TDA10048_IF_3300,
+	.dtv7_if_freq_khz = TDA10048_IF_3800,
+	.dtv8_if_freq_khz = TDA10048_IF_4300,
+	.clk_freq_khz     = TDA10048_CLK_16000,
+};
+
+static struct tda10048_config hauppauge_hvr1210_config = {
+	.demod_address    = 0x10 >> 1,
+	.output_mode      = TDA10048_SERIAL_OUTPUT,
+	.fwbulkwritelen   = TDA10048_BULKWRITE_200,
+	.inversion        = TDA10048_INVERSION_ON,
+	.dtv6_if_freq_khz = TDA10048_IF_3300,
+	.dtv7_if_freq_khz = TDA10048_IF_3500,
+	.dtv8_if_freq_khz = TDA10048_IF_4000,
+	.clk_freq_khz     = TDA10048_CLK_16000,
+};
+
+static struct s5h1409_config hauppauge_ezqam_config = {
+	.demod_address = 0x32 >> 1,
+	.output_mode   = S5H1409_SERIAL_OUTPUT,
+	.gpio          = S5H1409_GPIO_OFF,
+	.qam_if        = 4000,
+	.inversion     = S5H1409_INVERSION_ON,
+	.status_mode   = S5H1409_DEMODLOCKING,
+	.mpeg_timing   = S5H1409_MPEGTIMING_CONTINUOUS_NONINVERTING_CLOCK,
+};
+
+static struct s5h1409_config hauppauge_hvr1800lp_config = {
+	.demod_address = 0x32 >> 1,
+	.output_mode   = S5H1409_SERIAL_OUTPUT,
+	.gpio          = S5H1409_GPIO_OFF,
+	.qam_if        = 44000,
+	.inversion     = S5H1409_INVERSION_OFF,
+	.status_mode   = S5H1409_DEMODLOCKING,
+	.mpeg_timing   = S5H1409_MPEGTIMING_CONTINUOUS_NONINVERTING_CLOCK,
+};
+
+static struct s5h1409_config hauppauge_hvr1500_config = {
+	.demod_address = 0x32 >> 1,
+	.output_mode   = S5H1409_SERIAL_OUTPUT,
+	.gpio          = S5H1409_GPIO_OFF,
+	.inversion     = S5H1409_INVERSION_OFF,
+	.status_mode   = S5H1409_DEMODLOCKING,
+	.mpeg_timing   = S5H1409_MPEGTIMING_CONTINUOUS_NONINVERTING_CLOCK,
+};
+
+static struct mt2131_config hauppauge_generic_tunerconfig = {
+	0x61
+};
+
+static struct lgdt330x_config fusionhdtv_5_express = {
+	.demod_chip = LGD

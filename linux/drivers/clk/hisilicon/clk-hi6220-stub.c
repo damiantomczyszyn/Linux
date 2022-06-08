@@ -1,160 +1,278 @@
-_P6_NOP) \
-    $(wildcard include/config/MATOM) \
-    $(wildcard include/config/PARAVIRT_XXL) \
-  arch/x86/include/asm/disabled-features.h \
-    $(wildcard include/config/X86_SMAP) \
-    $(wildcard include/config/X86_UMIP) \
-    $(wildcard include/config/X86_INTEL_MEMORY_PROTECTION_KEYS) \
-    $(wildcard include/config/X86_5LEVEL) \
-    $(wildcard include/config/PAGE_TABLE_ISOLATION) \
-    $(wildcard include/config/INTEL_IOMMU_SVM) \
-    $(wildcard include/config/X86_SGX) \
-  include/asm-generic/bitops/const_hweight.h \
-  include/asm-generic/bitops/instrumented-atomic.h \
-  include/linux/instrumented.h \
-  include/asm-generic/bitops/instrumented-non-atomic.h \
-    $(wildcard include/config/KCSAN_ASSUME_PLAIN_WRITES_ATOMIC) \
-  include/asm-generic/bitops/instrumented-lock.h \
-  include/asm-generic/bitops/le.h \
-  arch/x86/include/uapi/asm/byteorder.h \
-  include/linux/byteorder/little_endian.h \
-  include/uapi/linux/byteorder/little_endian.h \
-  include/linux/swab.h \
-  include/uapi/linux/swab.h \
-  arch/x86/include/uapi/asm/swab.h \
-  include/linux/byteorder/generic.h \
-  include/asm-generic/bitops/ext2-atomic-setbit.h \
-  include/vdso/math64.h \
-  include/linux/time64.h \
-  include/vdso/time64.h \
-  include/uapi/linux/time.h \
-  include/uapi/linux/time_types.h \
-  include/linux/time32.h \
-  include/linux/timex.h \
-  include/uapi/linux/timex.h \
-  include/uapi/linux/param.h \
-  arch/x86/include/generated/uapi/asm/param.h \
-  include/asm-generic/param.h \
-    $(wildcard include/config/HZ) \
-  include/uapi/asm-generic/param.h \
-  arch/x86/include/asm/timex.h \
-    $(wildcard include/config/X86_TSC) \
-  arch/x86/include/asm/processor.h \
-    $(wildcard include/config/X86_VMX_FEATURE_NAMES) \
-    $(wildcard include/config/X86_IOPL_IOPERM) \
-    $(wildcard include/config/STACKPROTECTOR) \
-    $(wildcard include/config/VM86) \
-    $(wildcard include/config/X86_DEBUGCTLMSR) \
-    $(wildcard include/config/CPU_SUP_AMD) \
-    $(wildcard include/config/XEN) \
-  arch/x86/include/asm/processor-flags.h \
-  arch/x86/include/uapi/asm/processor-flags.h \
-  include/linux/mem_encrypt.h \
-    $(wildcard include/config/ARCH_HAS_MEM_ENCRYPT) \
-    $(wildcard include/config/AMD_MEM_ENCRYPT) \
-  arch/x86/include/asm/mem_encrypt.h \
-  include/linux/init.h \
-    $(wildcard include/config/STRICT_KERNEL_RWX) \
-    $(wildcard include/config/STRICT_MODULE_RWX) \
-    $(wildcard include/config/LTO_CLANG) \
-  include/linux/cc_platform.h \
-    $(wildcard include/config/ARCH_HAS_CC_PLATFORM) \
-  arch/x86/include/uapi/asm/bootparam.h \
-  include/linux/screen_info.h \
-  include/uapi/linux/screen_info.h \
-  include/linux/apm_bios.h \
-  include/uapi/linux/apm_bios.h \
-  include/uapi/linux/ioctl.h \
-  arch/x86/include/generated/uapi/asm/ioctl.h \
-  include/asm-generic/ioctl.h \
-  include/uapi/asm-generic/ioctl.h \
-  include/linux/edd.h \
-  include/uapi/linux/edd.h \
-  arch/x86/include/asm/ist.h \
-  arch/x86/include/uapi/asm/ist.h \
-  include/video/edid.h \
-    $(wildcard include/config/X86) \
-  include/uapi/video/edid.h \
-  arch/x86/include/asm/math_emu.h \
-  arch/x86/include/asm/ptrace.h \
-    $(wildcard include/config/PARAVIRT) \
-    $(wildcard include/config/IA32_EMULATION) \
-  arch/x86/include/asm/segment.h \
-    $(wildcard include/config/XEN_PV) \
-  arch/x86/include/asm/page_types.h \
-    $(wildcard include/config/PHYSICAL_START) \
-    $(wildcard include/config/PHYSICAL_ALIGN) \
-    $(wildcard include/config/DYNAMIC_PHYSICAL_MASK) \
-  arch/x86/include/asm/page_32_types.h \
-    $(wildcard include/config/HIGHMEM4G) \
-    $(wildcard include/config/HIGHMEM64G) \
-    $(wildcard include/config/PAGE_OFFSET) \
-  arch/x86/include/uapi/asm/ptrace.h \
-  arch/x86/include/uapi/asm/ptrace-abi.h \
-  arch/x86/include/asm/paravirt_types.h \
-    $(wildcard include/config/PGTABLE_LEVELS) \
-    $(wildcard include/config/PARAVIRT_DEBUG) \
-  arch/x86/include/asm/desc_defs.h \
-  arch/x86/include/asm/pgtable_types.h \
-    $(wildcard include/config/MEM_SOFT_DIRTY) \
-    $(wildcard include/config/HAVE_ARCH_USERFAULTFD_WP) \
-    $(wildcard include/config/PROC_FS) \
-  arch/x86/include/asm/pgtable_32_types.h \
-  arch/x86/include/asm/pgtable-3level_types.h \
-  include/asm-generic/pgtable-nop4d.h \
-  include/asm-generic/pgtable-nopud.h \
-  arch/x86/include/asm/nospec-branch.h \
-  include/linux/static_key.h \
-  include/linux/jump_label.h \
-    $(wildcard include/config/HAVE_ARCH_JUMP_LABEL_RELATIVE) \
-  arch/x86/include/asm/jump_label.h \
-  include/linux/objtool.h \
-    $(wildcard include/config/FRAME_POINTER) \
-  arch/x86/include/asm/msr-index.h \
-  arch/x86/include/asm/unwind_hints.h \
-  arch/x86/include/asm/orc_types.h \
-  arch/x86/include/asm/GEN-for-each-reg.h \
-  arch/x86/include/asm/spinlock_types.h \
-  include/asm-generic/qspinlock_types.h \
-    $(wildcard include/config/NR_CPUS) \
-  include/asm-generic/qrwlock_types.h \
-  arch/x86/include/asm/proto.h \
-  arch/x86/include/uapi/asm/ldt.h \
-  arch/x86/include/uapi/asm/sigcontext.h \
-  arch/x86/include/asm/current.h \
-  arch/x86/include/asm/percpu.h \
-    $(wildcard include/config/X86_64_SMP) \
-  include/linux/kernel.h \
-    $(wildcard include/config/PREEMPT_VOLUNTARY_BUILD) \
-    $(wildcard include/config/PREEMPT_DYNAMIC) \
-    $(wildcard include/config/HAVE_PREEMPT_DYNAMIC_CALL) \
-    $(wildcard include/config/HAVE_PREEMPT_DYNAMIC_KEY) \
-    $(wildcard include/config/PREEMPT_) \
-    $(wildcard include/config/DEBUG_ATOMIC_SLEEP) \
-    $(wildcard include/config/MMU) \
-    $(wildcard include/config/PROVE_LOCKING) \
-  include/linux/stdarg.h \
-  include/linux/align.h \
-  include/linux/limits.h \
-  include/uapi/linux/limits.h \
-  include/vdso/limits.h \
-  include/linux/kstrtox.h \
-  include/linux/minmax.h \
-  include/linux/panic.h \
-    $(wildcard include/config/PANIC_TIMEOUT) \
-  include/linux/printk.h \
-    $(wildcard include/config/MESSAGE_LOGLEVEL_DEFAULT) \
-    $(wildcard include/config/CONSOLE_LOGLEVEL_DEFAULT) \
-    $(wildcard include/config/CONSOLE_LOGLEVEL_QUIET) \
-    $(wildcard include/config/EARLY_PRINTK) \
-    $(wildcard include/config/PRINTK) \
-    $(wildcard include/config/DYNAMIC_DEBUG) \
-    $(wildcard include/config/DYNAMIC_DEBUG_CORE) \
-  include/linux/kern_levels.h \
-  include/linux/ratelimit_types.h \
-  include/linux/spinlock_types_raw.h \
-    $(wildcard include/config/DEBUG_SPINLOCK) \
-    $(wildcard include/config/DEBUG_LOCK_ALLOC) \
-  include/linux/lockdep_types.h \
-    $(wildcard include/config/PROVE_RAW_LOCK_NESTING) \
-  
+"Television",
+		[CX23885_VMUX_CABLE]      = "Cable TV",
+		[CX23885_VMUX_DVB]        = "DVB",
+		[CX23885_VMUX_DEBUG]      = "for debug only",
+	};
+	unsigned int n;
+	dprintk(1, "%s()\n", __func__);
+
+	n = i->index;
+	if (n >= MAX_CX23885_INPUT)
+		return -EINVAL;
+
+	if (0 == INPUT(n)->type)
+		return -EINVAL;
+
+	i->index = n;
+	i->type  = V4L2_INPUT_TYPE_CAMERA;
+	strscpy(i->name, iname[INPUT(n)->type], sizeof(i->name));
+	i->std = CX23885_NORMS;
+	if ((CX23885_VMUX_TELEVISION == INPUT(n)->type) ||
+		(CX23885_VMUX_CABLE == INPUT(n)->type)) {
+		i->type = V4L2_INPUT_TYPE_TUNER;
+		i->audioset = 4;
+	} else {
+		/* Two selectable audio inputs for non-tv inputs */
+		i->audioset = 3;
+	}
+
+	if (dev->input == n) {
+		/* enum'd input matches our configured input.
+		 * Ask the video decoder to process the call
+		 * and give it an oppertunity to update the
+		 * status field.
+		 */
+		call_all(dev, video, g_input_status, &i->status);
+	}
+
+	return 0;
+}
+
+static int vidioc_enum_input(struct file *file, void *priv,
+				struct v4l2_input *i)
+{
+	struct cx23885_dev *dev = video_drvdata(file);
+	dprintk(1, "%s()\n", __func__);
+	return cx23885_enum_input(dev, i);
+}
+
+int cx23885_get_input(struct file *file, void *priv, unsigned int *i)
+{
+	struct cx23885_dev *dev = video_drvdata(file);
+
+	*i = dev->input;
+	dprintk(1, "%s() returns %d\n", __func__, *i);
+	return 0;
+}
+
+static int vidioc_g_input(struct file *file, void *priv, unsigned int *i)
+{
+	return cx23885_get_input(file, priv, i);
+}
+
+int cx23885_set_input(struct file *file, void *priv, unsigned int i)
+{
+	struct cx23885_dev *dev = video_drvdata(file);
+
+	dprintk(1, "%s(%d)\n", __func__, i);
+
+	if (i >= MAX_CX23885_INPUT) {
+		dprintk(1, "%s() -EINVAL\n", __func__);
+		return -EINVAL;
+	}
+
+	if (INPUT(i)->type == 0)
+		return -EINVAL;
+
+	cx23885_video_mux(dev, i);
+
+	/* By default establish the default audio input for the card also */
+	/* Caller is free to use VIDIOC_S_AUDIO to override afterwards */
+	cx23885_audio_mux(dev, i);
+	return 0;
+}
+
+static int vidioc_s_input(struct file *file, void *priv, unsigned int i)
+{
+	return cx23885_set_input(file, priv, i);
+}
+
+static int vidioc_log_status(struct file *file, void *priv)
+{
+	struct cx23885_dev *dev = video_drvdata(file);
+
+	call_all(dev, core, log_status);
+	return 0;
+}
+
+static int cx23885_query_audinput(struct file *file, void *priv,
+	struct v4l2_audio *i)
+{
+	static const char *iname[] = {
+		[0] = "Baseband L/R 1",
+		[1] = "Baseband L/R 2",
+		[2] = "TV",
+	};
+	unsigned int n;
+	dprintk(1, "%s()\n", __func__);
+
+	n = i->index;
+	if (n >= 3)
+		return -EINVAL;
+
+	memset(i, 0, sizeof(*i));
+	i->index = n;
+	strscpy(i->name, iname[n], sizeof(i->name));
+	i->capability = V4L2_AUDCAP_STEREO;
+	return 0;
+
+}
+
+static int vidioc_enum_audinput(struct file *file, void *priv,
+				struct v4l2_audio *i)
+{
+	return cx23885_query_audinput(file, priv, i);
+}
+
+static int vidioc_g_audinput(struct file *file, void *priv,
+	struct v4l2_audio *i)
+{
+	struct cx23885_dev *dev = video_drvdata(file);
+
+	if ((CX23885_VMUX_TELEVISION == INPUT(dev->input)->type) ||
+		(CX23885_VMUX_CABLE == INPUT(dev->input)->type))
+		i->index = 2;
+	else
+		i->index = dev->audinput;
+	dprintk(1, "%s(input=%d)\n", __func__, i->index);
+
+	return cx23885_query_audinput(file, priv, i);
+}
+
+static int vidioc_s_audinput(struct file *file, void *priv,
+	const struct v4l2_audio *i)
+{
+	struct cx23885_dev *dev = video_drvdata(file);
+
+	if ((CX23885_VMUX_TELEVISION == INPUT(dev->input)->type) ||
+		(CX23885_VMUX_CABLE == INPUT(dev->input)->type)) {
+		return i->index != 2 ? -EINVAL : 0;
+	}
+	if (i->index > 1)
+		return -EINVAL;
+
+	dprintk(1, "%s(%d)\n", __func__, i->index);
+
+	dev->audinput = i->index;
+
+	/* Skip the audio defaults from the cards struct, caller wants
+	 * directly touch the audio mux hardware. */
+	cx23885_flatiron_mux(dev, dev->audinput + 1);
+	return 0;
+}
+
+static int vidioc_g_tuner(struct file *file, void *priv,
+				struct v4l2_tuner *t)
+{
+	struct cx23885_dev *dev = video_drvdata(file);
+
+	switch (dev->board) { /* i2c device tuners */
+	case CX23885_BOARD_HAUPPAUGE_HVR1265_K4:
+	case CX23885_BOARD_HAUPPAUGE_HVR5525:
+	case CX23885_BOARD_HAUPPAUGE_QUADHD_DVB:
+	case CX23885_BOARD_HAUPPAUGE_QUADHD_ATSC:
+		break;
+	default:
+		if (dev->tuner_type == TUNER_ABSENT)
+			return -EINVAL;
+		break;
+	}
+	if (0 != t->index)
+		return -EINVAL;
+
+	strscpy(t->name, "Television", sizeof(t->name));
+
+	call_all(dev, tuner, g_tuner, t);
+	return 0;
+}
+
+static int vidioc_s_tuner(struct file *file, void *priv,
+				const struct v4l2_tuner *t)
+{
+	struct cx23885_dev *dev = video_drvdata(file);
+
+	switch (dev->board) { /* i2c device tuners */
+	case CX23885_BOARD_HAUPPAUGE_HVR1265_K4:
+	case CX23885_BOARD_HAUPPAUGE_HVR5525:
+	case CX23885_BOARD_HAUPPAUGE_QUADHD_DVB:
+	case CX23885_BOARD_HAUPPAUGE_QUADHD_ATSC:
+		break;
+	default:
+		if (dev->tuner_type == TUNER_ABSENT)
+			return -EINVAL;
+		break;
+	}
+	if (0 != t->index)
+		return -EINVAL;
+	/* Update the A/V core */
+	call_all(dev, tuner, s_tuner, t);
+
+	return 0;
+}
+
+static int vidioc_g_frequency(struct file *file, void *priv,
+				struct v4l2_frequency *f)
+{
+	struct cx23885_dev *dev = video_drvdata(file);
+
+	switch (dev->board) { /* i2c device tuners */
+	case CX23885_BOARD_HAUPPAUGE_HVR1265_K4:
+	case CX23885_BOARD_HAUPPAUGE_HVR5525:
+	case CX23885_BOARD_HAUPPAUGE_QUADHD_DVB:
+	case CX23885_BOARD_HAUPPAUGE_QUADHD_ATSC:
+		break;
+	default:
+		if (dev->tuner_type == TUNER_ABSENT)
+			return -EINVAL;
+		break;
+	}
+	f->type = V4L2_TUNER_ANALOG_TV;
+	f->frequency = dev->freq;
+
+	call_all(dev, tuner, g_frequency, f);
+
+	return 0;
+}
+
+static int cx23885_set_freq(struct cx23885_dev *dev, const struct v4l2_frequency *f)
+{
+	struct v4l2_ctrl *mute;
+	int old_mute_val = 1;
+
+	switch (dev->board) { /* i2c device tuners */
+	case CX23885_BOARD_HAUPPAUGE_HVR1265_K4:
+	case CX23885_BOARD_HAUPPAUGE_HVR5525:
+	case CX23885_BOARD_HAUPPAUGE_QUADHD_DVB:
+	case CX23885_BOARD_HAUPPAUGE_QUADHD_ATSC:
+		break;
+	default:
+		if (dev->tuner_type == TUNER_ABSENT)
+			return -EINVAL;
+		break;
+	}
+	if (unlikely(f->tuner != 0))
+		return -EINVAL;
+
+	dev->freq = f->frequency;
+
+	/* I need to mute audio here */
+	mute = v4l2_ctrl_find(&dev->ctrl_handler, V4L2_CID_AUDIO_MUTE);
+	if (mute) {
+		old_mute_val = v4l2_ctrl_g_ctrl(mute);
+		if (!old_mute_val)
+			v4l2_ctrl_s_ctrl(mute, 1);
+	}
+
+	call_all(dev, tuner, s_frequency, f);
+
+	/* When changing channels it is required to reset TVAUDIO */
+	msleep(100);
+
+	/* I need to unmute audio here */
+	if (old_mute_val == 0)
+		v4l2_ctrl_s_ctrl(mute, old_mute_val);
+
+	return 0;
+}
+
+static int c

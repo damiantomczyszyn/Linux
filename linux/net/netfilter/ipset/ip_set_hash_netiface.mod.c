@@ -1,4 +1,18 @@
-µdNİ7Ò=Œh#9ÃsıŠ½ÊéyOT±,[9!µ&{¬S_1$´Ô >¾¦Ïwú‘*-'HŒĞ(Š¥âNÄĞlVÁa!JĞ{zí÷çh–X¾Cãm'M’â‚Zìˆ©õšŞØÅInpL27ä&87^Vc%ù@Ë¤÷BZÑ–“8.nÆw5!}‡Gİ	sÊ×õ¥R!‹y3‡"¶@Æ²Ñé@£*V”Er”éTÜZOĞS·G®ÅìŒ»àµ»ı‘SõjìYqÏÈ…§ÀÂú&ìe6MËEÄ¤®hû!íQkÕ¤\KÈzoO<ñÉı@Uâ•x¸aT¢¼Ş"›”Es=™®@Üş«nö$_¶<)¹	ªh”ßj(Ì®¦"9²|“ª¹ÇŞ¢x'ícŸ=âüÛE•Y­rBàÔl3*`Ÿ2ZŒ&Dİ<H¸Ôı £5ó2H[ó&VaâVÿT~®kısêx¢5Ú—^2ÚrŸ§‡';DÙ1ÿÇFíâŸ§;Ë*?>±ÅEÆG.¥$_åiXÖ›ÀÑ%Eñîü@ôîWF–ê+O`C˜ä<K{B™gïsÄ	*
-J&¹iûgÒ‚ê…N:ºdİ²Âx°¸SàPá\9
-°-µ‡jp…È…Ç±òÚ€Ql¡^Ä|@ŒA"[ŠèˆvFŸhnpà$±2ß7 RµÛíÙŒrÛ1POÈ	Ëø©Ä<Øœa)0Æ;»WæB‰[‚t$	™¶İ›
-KØ³¥Y™Dg(‘Øøoµ2×mÈKà
+ffer *vbuf = to_vb2_v4l2_buffer(vb);
+	struct cx23885_buffer *buf = container_of(vbuf,
+		struct cx23885_buffer, vb);
+
+	cx23885_free_buffer(vb->vb2_queue->drv_priv, buf);
+}
+
+/*
+ * The risc program for each buffer works as follows: it starts with a simple
+ * 'JUMP to addr + 12', which is effectively a NOP. Then the code to DMA the
+ * buffer follows and at the end we have a JUMP back to the start + 12 (skipping
+ * the initial JUMP).
+ *
+ * This is the risc program of the first buffer to be queued if the active list
+ * is empty and it just keeps DMAing this buffer without generating any
+ * interrupts.
+ *
+ * If a 

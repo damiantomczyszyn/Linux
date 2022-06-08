@@ -1,8 +1,10 @@
-de/linux/bits.h \
-  include/linux/const.h \
-  include/vdso/const.h \
-  include/uapi/linux/const.h \
-  include/vdso/bits.h \
-  include/linux/build_bug.h \
-  include/linux/compiler.h \
-    $(wildcard include/c
+t("%s\n", __func__);
+
+	if (0 != slot)
+		return -EINVAL;
+
+	mutex_lock(&inter->fpga_mutex);
+
+	ret = netup_fpga_op_rw(inter, NETUP_CI_BUSCTRL, 0, NETUP_CI_FLG_RD);
+	netup_fpga_op_rw(inter, NETUP_CI_BUSCTRL,
+			

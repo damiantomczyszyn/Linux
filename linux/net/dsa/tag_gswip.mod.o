@@ -1,69 +1,70 @@
-(int offset, int next, int bucket, int size)
-{
-	chain_hlocks[offset] = (next >> 16) | CHAIN_BLK_FLAG;
-	chain_hlocks[offset + 1] = (u16)next;
-
-	if (size && !bucket) {
-		chain_hlocks[offset + 2] = size >> 16;
-		chain_hlocks[offset + 3] = (u16)size;
-	}
-}
-
-static inline void add_chain_block(int offset, int size)
-{
-	int bucket = size_to_bucket(size);
-	int next = chain_block_buckets[bucket];
-	int prev, curr;
-
-	if (unlikely(size < 2)) {
-		/*
-		 * We can't store single entries on the freelist. Leak them.
-		 *
-		 * One possible way out would be to uniquely mark them, other
-		 * than with CHAIN_BLK_FLAG, such that we can recover them when
-		 * the block before it is re-added.
-		 */
-		if (size)
-			nr_lost_chain_hlocks++;
-		return;
-	}
-
-	nr_free_chain_hlocks += size;
-	if (!bucket) {
-		nr_large_chain_blocks++;
-
-		/*
-		 * Variable sized, sort large to small.
-		 */
-		for_each_chain_block(0, prev, curr) {
-			if (size >= chain_block_size(curr))
-				break;
-		}
-		init_chain_block(offset, curr, 0, size);
-		if (prev < 0)
-			chain_block_buckets[0] = offset;
-		else
-			init_chain_block(prev, offset, 0, 0);
-		return;
-	}
-	/*
-	 * Fixed size, add to head.
-	 */
-	init_chain_block(offset, next, bucket, size);
-	chain_block_buckets[bucket] = offset;
+dth_count_to_ns(FIFO_RXTX, *divider);
 }
 
 /*
- * Only the first block in the list can be deleted.
- *
- * For the variable size bucket[0], the first block (the largest one) is
- * returned, broken up and put back into the pool. So if a chain block of
- * length > MAX_CHAIN_BUCKETS is ever used and zapped, it will just be
- * queued up after the primordial chain block and never be used until the
- * hlock entries in the primordial chain block is almost used up. That
- * causes fragmentation and reduce allocation efficiency. That can be
- * monitored by looking at the "large chain blocks" number in lockdep_stats.
+ * IR Tx Carrier Duty Cycle register helpers
  */
-static inline void del_chain_block(int bucket, int size, int next)
+static unsigned int cduty_tx_s_duty_cycle(struct cx23885_dev *dev,
+					  unsigned int duty_cycle)
 {
-	nr_free_chain_hlocks -=
+	u32 n;
+	n = DIV_ROUND_CLOSEST(duty_cycle * 100, 625); /* 16ths of 100% */
+	if (n != 0)
+		n--;
+	if (n > 15)
+		n = 15;
+	cx23888_ir_write4(dev, CX23888_IR_CDUTY_REG, n);
+	return DIV_ROUND_CLOSEST((n + 1) * 100, 16);
+}
+
+/*
+ * IR Filter Register helpers
+ */
+static u32 filter_rx_s_min_width(struct cx23885_dev *dev, u32 min_width_ns)
+{
+	u32 count = ns_to_lpf_count(min_width_ns);
+	cx23888_ir_write4(dev, CX23888_IR_FILTR_REG, count);
+	return lpf_count_to_ns(count);
+}
+
+/*
+ * IR IRQ Enable Register helpers
+ */
+static inline void irqenable_rx(struct cx23885_dev *dev, u32 mask)
+{
+	mask &= (IRQEN_RTE | IRQEN_ROE | IRQEN_RSE);
+	cx23888_ir_and_or4(dev, CX23888_IR_IRQEN_REG,
+			   ~(IRQEN_RTE | IRQEN_ROE | IRQEN_RSE), mask);
+}
+
+static inline void irqenable_tx(struct cx23885_dev *dev, u32 mask)
+{
+	mask &= IRQEN_TSE;
+	cx23888_ir_and_or4(dev, CX23888_IR_IRQEN_REG, ~IRQEN_TSE, mask);
+}
+
+/*
+ * V4L2 Subdevice IR Ops
+ */
+static int cx23888_ir_irq_handler(struct v4l2_subdev *sd, u32 status,
+				  bool *handled)
+{
+	struct cx23888_ir_state *state = to_state(sd);
+	struct cx23885_dev *dev = state->dev;
+	unsigned long flags;
+
+	u32 cntrl = cx23888_ir_read4(dev, CX23888_IR_CNTRL_REG);
+	u32 irqen = cx23888_ir_read4(dev, CX23888_IR_IRQEN_REG);
+	u32 stats = cx23888_ir_read4(dev, CX23888_IR_STATS_REG);
+
+	union cx23888_ir_fifo_rec rx_data[FIFO_RX_DEPTH];
+	unsigned int i, j, k;
+	u32 events, v;
+	int tsr, rsr, rto, ror, tse, rse, rte, roe, kror;
+
+	tsr = stats & STATS_TSR; /* Tx FIFO Service Request */
+	rsr = stats & STATS_RSR; /* Rx FIFO Service Request */
+	rto = stats & STATS_RTO; /* Rx Pulse Width Timer Time Out */
+	ror = stats & STATS_ROR; /* Rx FIFO Over Run */
+
+	tse = irqen & IRQEN_TSE; /* Tx FIFO Service Request I

@@ -1,2 +1,2 @@
--3level_types.h \
-  include/asm-generic/pgtab
+#include <linux/module.h>
+#define INCLUDE_VER

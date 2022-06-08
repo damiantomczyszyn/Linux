@@ -1,13 +1,9 @@
- 0, 40 + 1 + 12 * (14 + 1));
-	seq_printf(m, "\n");
+nt));
+	WRITE_ONCE(rdp->dynticks_nesting, 1);
+	WARN_ON_ONCE(rdp->dynticks_nmi_nesting);
+	WRITE_ONCE(rdp->dynticks_nmi_nesting, DYNTICK_IRQ_NONIDLE);
+	instrumentation_end();
 }
 
-static void *ls_start(struct seq_file *m, loff_t *pos)
-{
-	struct lock_stat_seq *data = m->private;
-	struct lock_stat_data *iter;
-
-	if (*pos == 0)
-		return SEQ_START_TOKEN;
-
-	iter
+/**
+ * rcu_idle_exit - inform RCU that current CPU is lea

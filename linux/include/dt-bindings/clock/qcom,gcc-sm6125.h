@@ -1,218 +1,371 @@
-t.h \
-    $(wildcard include/config/DEBUG_PLIST) \
-  include/linux/hrtimer.h \
-    $(wildcard include/config/HIGH_RES_TIMERS) \
-    $(wildcard include/config/TIME_LOW_RES) \
-    $(wildcard include/config/TIMERFD) \
-  include/linux/hrtimer_defs.h \
-  include/linux/timerqueue.h \
-  include/linux/seccomp.h \
-    $(wildcard include/config/SECCOMP) \
-    $(wildcard include/config/HAVE_ARCH_SECCOMP_FILTER) \
-    $(wildcard include/config/SECCOMP_FILTER) \
-    $(wildcard include/config/CHECKPOINT_RESTORE) \
-    $(wildcard include/config/SECCOMP_CACHE_DEBUG) \
-  include/uapi/linux/seccomp.h \
-  arch/x86/include/asm/seccomp.h \
-  arch/x86/include/asm/unistd.h \
-  arch/x86/include/uapi/asm/unistd.h \
-  arch/x86/include/generated/uapi/asm/unistd_32.h \
-  include/asm-generic/seccomp.h \
-  include/uapi/linux/unistd.h \
-  include/linux/resource.h \
-  include/uapi/linux/resource.h \
-  arch/x86/include/generated/uapi/asm/resource.h \
-  include/asm-generic/resource.h \
-  include/uapi/asm-generic/resource.h \
-  include/linux/latencytop.h \
-  include/linux/sched/prio.h \
-  include/linux/sched/types.h \
-  include/linux/signal_types.h \
-    $(wildcard include/config/OLD_SIGACTION) \
-  include/uapi/linux/signal.h \
-  arch/x86/include/asm/signal.h \
-  arch/x86/include/uapi/asm/signal.h \
-  include/uapi/asm-generic/signal-defs.h \
-  arch/x86/include/uapi/asm/siginfo.h \
-  include/uapi/asm-generic/siginfo.h \
-  include/linux/syscall_user_dispatch.h \
-  include/linux/task_io_accounting.h \
-    $(wildcard include/config/TASK_IO_ACCOUNTING) \
-  include/linux/posix-timers.h \
-  include/linux/alarmtimer.h \
-    $(wildcard include/config/RTC_CLASS) \
-  include/uapi/linux/rseq.h \
-  include/linux/kcsan.h \
-  include/linux/energy_model.h \
-  include/linux/sched/cpufreq.h \
-    $(wildcard include/config/CPU_FREQ) \
-  include/linux/sched/topology.h \
-    $(wildcard include/config/SCHED_DEBUG) \
-    $(wildcard include/config/SCHED_MC) \
-    $(wildcard include/config/CPU_FREQ_GOV_SCHEDUTIL) \
-  include/linux/sched/idle.h \
-  include/linux/sched/sd_flags.h \
-  include/linux/klist.h \
-  include/linux/pm.h \
-    $(wildcard include/config/VT_CONSOLE_SLEEP) \
-    $(wildcard include/config/PM_CLK) \
-    $(wildcard include/config/PM_GENERIC_DOMAINS) \
-  include/linux/device/bus.h \
-  include/linux/device/class.h \
-  include/linux/device/driver.h \
-  arch/x86/include/asm/device.h \
-  include/linux/pm_wakeup.h \
-  include/acpi/acpi.h \
-  include/acpi/platform/acenv.h \
-  include/acpi/platform/acgcc.h \
-  include/acpi/platform/aclinux.h \
-    $(wildcard include/config/ACPI_REDUCED_HARDWARE_ONLY) \
-    $(wildcard include/config/ACPI_DEBUG) \
-  include/linux/ctype.h \
-  arch/x86/include/asm/acenv.h \
-  include/acpi/acnames.h \
-  include/acpi/actypes.h \
-  include/acpi/acexcep.h \
-  include/acpi/actbl.h \
-  include/acpi/actbl1.h \
-  include/acpi/actbl2.h \
-  include/acpi/actbl3.h \
-  include/acpi/acrestyp.h \
-  include/acpi/platform/acenvex.h \
-  include/acpi/platform/aclinuxex.h \
-  include/acpi/platform/acgccex.h \
-  include/acpi/acoutput.h \
-  include/acpi/acpiosxf.h \
-  include/acpi/acpixf.h \
-  include/acpi/acconfig.h \
-  include/acpi/acbuffer.h \
-  include/linux/dynamic_debug.h \
-  include/acpi/acpi_bus.h \
-    $(wildcard include/config/X86_ANDROID_TABLETS) \
-    $(wildcard include/config/ACPI_SYSTEM_POWER_STATES_SUPPORT) \
-    $(wildcard include/config/ACPI_SLEEP) \
-  include/acpi/acpi_drivers.h \
-    $(wildcard include/config/ACPI_DOCK) \
-  include/acpi/acpi_numa.h \
-    $(wildcard include/config/ACPI_HMAT) \
-  include/acpi/acpi_io.h \
-  include/linux/io.h \
-    $(wildcard include/config/HAS_IOPORT_MAP) \
-  arch/x86/include/asm/io.h \
-    $(wildcard include/config/MTRR) \
-    $(wildcard include/config/X86_PAT) \
-  arch/x86/include/generated/asm/early_ioremap.h \
-  include/asm-generic/early_ioremap.h \
-    $(wildcard include/config/GENERIC_EARLY_IOREMAP) \
-  include/asm-generic/iomap.h \
-  include/asm-generic/pci_iomap.h \
-    $(wildcard include/config/NO_GENERIC_PCI_IOPORT_MAP) \
-    $(wildcard include/config/GENERIC_PCI_IOMAP) \
-  include/asm-generic/io.h \
-    $(wildcard include/config/GENERIC_IOMAP) \
-    $(wildcard include/config/GENERIC_IOREMAP) \
-    $(wildcard include/config/VIRT_TO_BUS) \
-    $(wildcard include/config/GENERIC_DEVMEM_IS_ALLOWED) \
-  include/linux/logic_pio.h \
-    $(wildcard include/config/INDIRECT_PIO) \
-  include/linux/vmalloc.h \
-    $(wildcard include/config/HAVE_ARCH_HUGE_VMALLOC) \
-  arch/x86/include/asm/vmalloc.h \
-    $(wildcard include/config/HAVE_ARCH_HUGE_VMAP) \
-  arch/x86/include/asm/acpi.h \
-    $(wildcard include/config/ACPI_APEI) \
-  include/acpi/pdc_intel.h \
-  arch/x86/include/asm/numa.h \
-    $(wildcard include/config/NUMA_EMU) \
-  arch/x86/include/asm/numa_32.h \
-  include/linux/regulator/consumer.h \
-    $(wildcard include/config/REGULATOR) \
-  include/linux/suspend.h \
-    $(wildcard include/config/VT) \
-    $(wildcard include/config/SUSPEND) \
-    $(wildcard include/config/HIBERNATION_SNAPSHOT_DEV) \
-    $(wildcard include/config/PM_SLEEP_DEBUG) \
-    $(wildcard include/config/PM_AUTOSLEEP) \
-  include/linux/swap.h \
-    $(wildcard include/config/DEVICE_PRIVATE) \
-    $(wildcard include/config/MIGRATION) \
-    $(wildcard include/config/FRONTSWAP) \
-    $(wildcard include/config/THP_SWAP) \
-    $(wildcard include/config/MEMCG_SWAP) \
-  include/linux/memcontrol.h \
-    $(wildcard include/config/CGROUP_WRITEBACK) \
-  include/linux/cgroup.h \
-    $(wildcard include/config/CGROUP_CPUACCT) \
-    $(wildcard include/config/SOCK_CGROUP_DATA) \
-    $(wildcard include/config/CGROUP_DATA) \
-    $(wildcard include/config/CGROUP_BPF) \
-  include/uapi/linux/cgroupstats.h \
-  include/uapi/linux/taskstats.h \
-  include/linux/fs.h \
-    $(wildcard include/config/READ_ONLY_THP_FOR_FS) \
-    $(wildcard include/config/FS_POSIX_ACL) \
-    $(wildcard include/config/IMA) \
-    $(wildcard include/config/FILE_LOCKING) \
-    $(wildcard include/config/FSNOTIFY) \
-    $(wildcard include/config/FS_ENCRYPTION) \
-    $(wildcard include/config/FS_VERITY) \
-    $(wildcard include/config/EPOLL) \
-    $(wildcard include/config/UNICODE) \
-    $(wildcard include/config/QUOTA) \
-    $(wildcard include/config/FS_DAX) \
-    $(wildcard include/config/BLOCK) \
-  include/linux/wait_bit.h \
-  include/linux/kdev_t.h \
-  include/uapi/linux/kdev_t.h \
-  include/linux/dcache.h \
-  include/linux/rculist_bl.h \
-  include/linux/list_bl.h \
-  include/linux/bit_spinlock.h \
-  include/linux/lockref.h \
-    $(wildcard include/config/ARCH_USE_CMPXCHG_LOCKREF) \
-  include/linux/stringhash.h \
-    $(wildcard include/config/DCACHE_WORD_ACCESS) \
-  include/linux/hash.h \
-    $(wildcard include/config/HAVE_ARCH_HASH) \
-  include/linux/path.h \
-  include/linux/list_lru.h \
-  include/linux/shrinker.h \
-  include/linux/capability.h \
-  include/uapi/linux/capability.h \
-  include/linux/semaphore.h \
-  include/linux/fcntl.h \
-    $(wildcard include/config/ARCH_32BIT_OFF_T) \
-  include/uapi/linux/fcntl.h \
-  arch/x86/include/generated/uapi/asm/fcntl.h \
-  include/uapi/asm-generic/fcntl.h \
-  include/uapi/linux/openat2.h \
-  include/linux/migrate_mode.h \
-  include/linux/percpu-rwsem.h \
-  include/linux/rcuwait.h \
-  include/linux/sched/signal.h \
-    $(wildcard include/config/SCHED_AUTOGROUP) \
-    $(wildcard include/config/BSD_PROCESS_ACCT) \
-    $(wildcard include/config/TASKSTATS) \
-    $(wildcard include/config/STACK_GROWSUP) \
-  include/linux/signal.h \
-    $(wildcard include/config/DYNAMIC_SIGFRAME) \
-  include/linux/sched/jobctl.h \
-  include/linux/sched/task.h \
-    $(wildcard include/config/HAVE_EXIT_THREAD) \
-    $(wildcard include/config/ARCH_WANTS_DYNAMIC_TASK_STRUCT) \
-    $(wildcard include/config/HAVE_ARCH_THREAD_STRUCT_WHITELIST) \
-  include/linux/uaccess.h \
-  include/linux/fault-inject-usercopy.h \
-    $(wildcard include/config/FAULT_INJECTION_USERCOPY) \
-  arch/x86/include/asm/uaccess.h \
-    $(wildcard include/config/CC_HAS_ASM_GOTO_OUTPUT) \
-    $(wildcard include/config/CC_HAS_ASM_GOTO_TIED_OUTPUT) \
-    $(wildcard include/config/ARCH_HAS_COPY_MC) \
-    $(wildcard include/config/X86_INTEL_USERCOPY) \
-  arch/x86/include/asm/smap.h \
-  arch/x86/include/asm/extable.h \
-    $(wildcard include/config/BPF_JIT) \
-  include/asm-generic/access_ok.h \
-    $(wildcard include/config/ALTERNATE_USER_ADDRESS_SPACE) \
-  arch/x86/include/asm/uaccess_32.h \
-  include/linu
+        = LGDT3306A_TPCLK_RISING_EDGE,
+	.tpvalid_polarity       = LGDT3306A_TP_VALID_HIGH,
+	.xtalMHz                = 25, /* 24 or 25 */
+};
+
+static int p8000_set_voltage(struct dvb_frontend *fe,
+			     enum fe_sec_voltage voltage)
+{
+	struct cx23885_tsport *port = fe->dvb->priv;
+	struct cx23885_dev *dev = port->dev;
+
+	if (voltage == SEC_VOLTAGE_18)
+		cx_write(MC417_RWD, 0x00001e00);
+	else if (voltage == SEC_VOLTAGE_13)
+		cx_write(MC417_RWD, 0x00001a00);
+	else
+		cx_write(MC417_RWD, 0x00001800);
+	return 0;
+}
+
+static int dvbsky_t9580_set_voltage(struct dvb_frontend *fe,
+					enum fe_sec_voltage voltage)
+{
+	struct cx23885_tsport *port = fe->dvb->priv;
+	struct cx23885_dev *dev = port->dev;
+
+	cx23885_gpio_enable(dev, GPIO_0 | GPIO_1, 1);
+
+	switch (voltage) {
+	case SEC_VOLTAGE_13:
+		cx23885_gpio_set(dev, GPIO_1);
+		cx23885_gpio_clear(dev, GPIO_0);
+		break;
+	case SEC_VOLTAGE_18:
+		cx23885_gpio_set(dev, GPIO_1);
+		cx23885_gpio_set(dev, GPIO_0);
+		break;
+	case SEC_VOLTAGE_OFF:
+		cx23885_gpio_clear(dev, GPIO_1);
+		cx23885_gpio_clear(dev, GPIO_0);
+		break;
+	}
+
+	/* call the frontend set_voltage function */
+	port->fe_set_voltage(fe, voltage);
+
+	return 0;
+}
+
+static int dvbsky_s952_portc_set_voltage(struct dvb_frontend *fe,
+					enum fe_sec_voltage voltage)
+{
+	struct cx23885_tsport *port = fe->dvb->priv;
+	struct cx23885_dev *dev = port->dev;
+
+	cx23885_gpio_enable(dev, GPIO_12 | GPIO_13, 1);
+
+	switch (voltage) {
+	case SEC_VOLTAGE_13:
+		cx23885_gpio_set(dev, GPIO_13);
+		cx23885_gpio_clear(dev, GPIO_12);
+		break;
+	case SEC_VOLTAGE_18:
+		cx23885_gpio_set(dev, GPIO_13);
+		cx23885_gpio_set(dev, GPIO_12);
+		break;
+	case SEC_VOLTAGE_OFF:
+		cx23885_gpio_clear(dev, GPIO_13);
+		cx23885_gpio_clear(dev, GPIO_12);
+		break;
+	}
+	/* call the frontend set_voltage function */
+	return port->fe_set_voltage(fe, voltage);
+}
+
+static int cx23885_sp2_ci_ctrl(void *priv, u8 read, int addr,
+				u8 data, int *mem)
+{
+	/* MC417 */
+	#define SP2_DATA              0x000000ff
+	#define SP2_WR                0x00008000
+	#define SP2_RD                0x00004000
+	#define SP2_ACK               0x00001000
+	#define SP2_ADHI              0x00000800
+	#define SP2_ADLO              0x00000400
+	#define SP2_CS1               0x00000200
+	#define SP2_CS0               0x00000100
+	#define SP2_EN_ALL            0x00001000
+	#define SP2_CTRL_OFF          (SP2_CS1 | SP2_CS0 | SP2_WR | SP2_RD)
+
+	struct cx23885_tsport *port = priv;
+	struct cx23885_dev *dev = port->dev;
+	int ret;
+	int tmp = 0;
+	unsigned long timeout;
+
+	mutex_lock(&dev->gpio_lock);
+
+	/* write addr */
+	cx_write(MC417_OEN, SP2_EN_ALL);
+	cx_write(MC417_RWD, SP2_CTRL_OFF |
+				SP2_ADLO | (0xff & addr));
+	cx_clear(MC417_RWD, SP2_ADLO);
+	cx_write(MC417_RWD, SP2_CTRL_OFF |
+				SP2_ADHI | (0xff & (addr >> 8)));
+	cx_clear(MC417_RWD, SP2_ADHI);
+
+	if (read)
+		/* data in */
+		cx_write(MC417_OEN, SP2_EN_ALL | SP2_DATA);
+	else
+		/* data out */
+		cx_write(MC417_RWD, SP2_CTRL_OFF | data);
+
+	/* chip select 0 */
+	cx_clear(MC417_RWD, SP2_CS0);
+
+	/* read/write */
+	cx_clear(MC417_RWD, (read) ? SP2_RD : SP2_WR);
+
+	/* wait for a maximum of 1 msec */
+	timeout = jiffies + msecs_to_jiffies(1);
+	while (!time_after(jiffies, timeout)) {
+		tmp = cx_read(MC417_RWD);
+		if ((tmp & SP2_ACK) == 0)
+			break;
+		usleep_range(50, 100);
+	}
+
+	cx_set(MC417_RWD, SP2_CTRL_OFF);
+	*mem = tmp & 0xff;
+
+	mutex_unlock(&dev->gpio_lock);
+
+	if (!read) {
+		if (*mem < 0) {
+			ret = -EREMOTEIO;
+			goto err;
+		}
+	}
+
+	return 0;
+err:
+	return ret;
+}
+
+static int cx23885_dvb_set_frontend(struct dvb_frontend *fe)
+{
+	struct dtv_frontend_properties *p = &fe->dtv_property_cache;
+	struct cx23885_tsport *port = fe->dvb->priv;
+	struct cx23885_dev *dev = port->dev;
+
+	switch (dev->board) {
+	case CX23885_BOARD_HAUPPAUGE_HVR1275:
+		switch (p->modulation) {
+		case VSB_8:
+			cx23885_gpio_clear(dev, GPIO_5);
+			break;
+		case QAM_64:
+		case QAM_256:
+		default:
+			cx23885_gpio_set(dev, GPIO_5);
+			break;
+		}
+		break;
+	case CX23885_BOARD_MYGICA_X8506:
+	case CX23885_BOARD_MYGICA_X8507:
+	case CX23885_BOARD_MAGICPRO_PROHDTVE2:
+		/* Select Digital TV */
+		cx23885_gpio_set(dev, GPIO_0);
+		break;
+	}
+
+	/* Call the real set_frontend */
+	if (port->set_frontend)
+		return port->set_frontend(fe);
+
+	return 0;
+}
+
+static void cx23885_set_frontend_hook(struct cx23885_tsport *port,
+				     struct dvb_frontend *fe)
+{
+	port->set_frontend = fe->ops.set_frontend;
+	fe->ops.set_frontend = cx23885_dvb_set_frontend;
+}
+
+static struct lgs8gxx_config magicpro_prohdtve2_lgs8g75_config = {
+	.prod = LGS8GXX_PROD_LGS8G75,
+	.demod_address = 0x19,
+	.serial_ts = 0,
+	.ts_clk_pol = 1,
+	.ts_clk_gated = 1,
+	.if_clk_freq = 30400, /* 30.4 MHz */
+	.if_freq = 6500, /* 6.50 MHz */
+	.if_neg_center = 1,
+	.ext_adc = 0,
+	.adc_signed = 1,
+	.adc_vpp = 2, /* 1.6 Vpp */
+	.if_neg_edge = 1,
+};
+
+static struct xc5000_config magicpro_prohdtve2_xc5000_config = {
+	.i2c_address = 0x61,
+	.if_khz = 6500,
+};
+
+static struct atbm8830_config mygica_x8558pro_atbm8830_cfg1 = {
+	.prod = ATBM8830_PROD_8830,
+	.demod_address = 0x44,
+	.serial_ts = 0,
+	.ts_sampling_edge = 1,
+	.ts_clk_gated = 0,
+	.osc_clk_freq = 30400, /* in kHz */
+	.if_freq = 0, /* zero IF */
+	.zif_swap_iq = 1,
+	.agc_min = 0x2E,
+	.agc_max = 0xFF,
+	.agc_hold_loop = 0,
+};
+
+static struct max2165_config mygic_x8558pro_max2165_cfg1 = {
+	.i2c_address = 0x60,
+	.osc_clk = 20
+};
+
+static struct atbm8830_config mygica_x8558pro_atbm8830_cfg2 = {
+	.prod = ATBM8830_PROD_8830,
+	.demod_address = 0x44,
+	.serial_ts = 1,
+	.ts_sampling_edge = 1,
+	.ts_clk_gated = 0,
+	.osc_clk_freq = 30400, /* in kHz */
+	.if_freq = 0, /* zero IF */
+	.zif_swap_iq = 1,
+	.agc_min = 0x2E,
+	.agc_max = 0xFF,
+	.agc_hold_loop = 0,
+};
+
+static struct max2165_config mygic_x8558pro_max2165_cfg2 = {
+	.i2c_address = 0x60,
+	.osc_clk = 20
+};
+static struct stv0367_config netup_stv0367_config[] = {
+	{
+		.demod_address = 0x1c,
+		.xtal = 27000000,
+		.if_khz = 4500,
+		.if_iq_mode = 0,
+		.ts_mode = 1,
+		.clk_pol = 0,
+	}, {
+		.demod_address = 0x1d,
+		.xtal = 27000000,
+		.if_khz = 4500,
+		.if_iq_mode = 0,
+		.ts_mode = 1,
+		.clk_pol = 0,
+	},
+};
+
+static struct xc5000_config netup_xc5000_config[] = {
+	{
+		.i2c_address = 0x61,
+		.if_khz = 4500,
+	}, {
+		.i2c_address = 0x64,
+		.if_khz = 4500,
+	},
+};
+
+static struct drxk_config terratec_drxk_config[] = {
+	{
+		.adr = 0x29,
+		.no_i2c_bridge = 1,
+	}, {
+		.adr = 0x2a,
+		.no_i2c_bridge = 1,
+	},
+};
+
+static struct mt2063_config terratec_mt2063_config[] = {
+	{
+		.tuner_address = 0x60,
+	}, {
+		.tuner_address = 0x67,
+	},
+};
+
+static const struct tda10071_platform_data hauppauge_tda10071_pdata = {
+	.clk = 40444000, /* 40.444 MHz */
+	.i2c_wr_max = 64,
+	.ts_mode = TDA10071_TS_SERIAL,
+	.pll_multiplier = 20,
+	.tuner_i2c_addr = 0x54,
+};
+
+static const struct m88ds3103_config dvbsky_t9580_m88ds3103_config = {
+	.i2c_addr = 0x68,
+	.clock = 27000000,
+	.i2c_wr_max = 33,
+	.clock_out = 0,
+	.ts_mode = M88DS3103_TS_PARALLEL,
+	.ts_clk = 16000,
+	.ts_clk_pol = 1,
+	.lnb_en_pol = 1,
+	.lnb_hv_pol = 0,
+	.agc = 0x99,
+};
+
+static const struct m88ds3103_config dvbsky_s950c_m88ds3103_config = {
+	.i2c_addr = 0x68,
+	.clock = 27000000,
+	.i2c_wr_max = 33,
+	.clock_out = 0,
+	.ts_mode = M88DS3103_TS_CI,
+	.ts_clk = 10000,
+	.ts_clk_pol = 1,
+	.lnb_en_pol = 1,
+	.lnb_hv_pol = 0,
+	.agc = 0x99,
+};
+
+static const struct m88ds3103_config hauppauge_hvr5525_m88ds3103_config = {
+	.i2c_addr = 0x69,
+	.clock = 27000000,
+	.i2c_wr_max = 33,
+	.ts_mode = M88DS3103_TS_PARALLEL,
+	.ts_clk = 16000,
+	.ts_clk_pol = 1,
+	.agc = 0x99,
+};
+
+static struct lgdt3306a_config hauppauge_hvr1265k4_config = {
+	.i2c_addr               = 0x59,
+	.qam_if_khz             = 4000,
+	.vsb_if_khz             = 3250,
+	.deny_i2c_rptr          = 1, /* Disabled */
+	.spectral_inversion     = 0, /* Disabled */
+	.mpeg_mode              = LGDT3306A_MPEG_SERIAL,
+	.tpclk_edge             = LGDT3306A_TPCLK_RISING_EDGE,
+	.tpvalid_polarity       = LGDT3306A_TP_VALID_HIGH,
+	.xtalMHz                = 25, /* 24 or 25 */
+};
+
+static int netup_altera_fpga_rw(void *device, int flag, int data, int read)
+{
+	struct cx23885_dev *dev = (struct cx23885_dev *)device;
+	unsigned long timeout = jiffies + msecs_to_jiffies(1);
+	uint32_t mem = 0;
+
+	mem = cx_read(MC417_RWD);
+	if (read)
+		cx_set(MC417_OEN, ALT_DATA);
+	else {
+		cx_clear(MC417_OEN, ALT_DATA);/* D0-D7 out */
+		mem &= ~ALT_DATA;
+		mem |= (data & ALT_DATA);
+	}
+
+	if (flag)
+		mem |= ALT_AD_RG;
+	else
+		mem &= ~ALT_AD_RG;
+
+	mem &= ~ALT_CS;
+	if (read)
+		mem = (mem & ~ALT_RD) | ALT_WR;
+	else
+		

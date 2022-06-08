@@ -1,7 +1,10 @@
- $(wildcard include/config/EARLY_PRINTK) \
-    $(wildcard include/config/PRINTK) \
-    $(wildcard include/config/PRINTK_INDEX) \
-    $(wildcard include/config/DYNAMIC_DEBUG) \
-    $(wildcard include/config/DYNAMIC_DEBUG_CORE) \
-  include/linux/init.h \
-    $(wildcar
+h->cmds_start + i, 0);
+
+	/* fill registers */
+	cx_write(ch->ptr1_reg, ch->fifo_start);
+	cx_write(ch->ptr2_reg, cdt);
+	cx_write(ch->cnt2_reg, (lines*16) >> 3);
+	cx_write(ch->cnt1_reg, (bpl >> 3) - 1);
+
+	dprintk(2, "[bridge %d] sram setup %s: bpl=%d lines=%d\n",
+		dev

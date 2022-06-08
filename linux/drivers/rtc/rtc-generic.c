@@ -1,27 +1,39 @@
-ldcard include/config/X86_INTEL_USERCOPY) \
-  arch/x86/include/asm/smap.h \
-  arch/x86/include/asm/extable.h \
-    $(wildcard include/config/BPF_JIT) \
-  include/asm-generic/access_ok.h \
-    $(wildcard include/config/ALTERNATE_USER_ADDRESS_SPACE) \
-  arch/x86/include/asm/uaccess_32.h \
-  include/linux/cred.h \
-    $(wildcard include/config/DEBUG_CREDENTIALS) \
-  include/linux/key.h \
-    $(wildcard include/config/KEY_NOTIFICATIONS) \
-    $(wildcard include/config/NET) \
-  include/linux/assoc_array.h \
-    $(wildcard include/config/ASSOCIATIVE_ARRAY) \
-  include/linux/sched/user.h \
-    $(wildcard include/config/WATCH_QUEUE) \
-  include/linux/percpu_counter.h \
-  include/linux/rcu_sync.h \
-  include/linux/delayed_call.h \
-  include/linux/errseq.h \
-  include/linux/ioprio.h \
-  include/linux/sched/rt.h \
-  include/linux/iocontext.h \
-    $(wildcard include/config/BLK_ICQ) \
-  include/uapi/linux/ioprio.h \
-  include/linux/fs_types.h \
-  inc
+tate);
+		}
+	}
+
+}
+EXPORT_SYMBOL(altera_ci_release);
+
+static void altera_pid_control(struct netup_hw_pid_filter *pid_filt,
+		u16 pid, int onoff)
+{
+	struct fpga_internal *inter = pid_filt->internal;
+	u8 store = 0;
+
+	/* pid 0-0x1f always enabled, don't touch them */
+	if ((pid == 0x2000) || (pid < 0x20))
+		return;
+
+	mutex_lock(&inter->fpga_mutex);
+
+	netup_fpga_op_rw(inter, NETUP_CI_PID_ADDR0, (pid >> 3) & 0xff, 0);
+	netup_fpga_op_rw(inter, NETUP_CI_PID_ADDR1,
+			((pid >> 11) & 0x03) | (pid_filt->nr << 2), 0);
+
+	store = netup_fpga_op_rw(inter, NETUP_CI_PID_DATA, 0, NETUP_CI_FLG_RD);
+
+	if (onoff)/* 0 - on, 1 - off */
+		store |= (1 << (pid & 7));
+	else
+		store &= ~(1 << (pid & 7));
+
+	netup_fpga_op_rw(inter, NETUP_CI_PID_DATA, store, 0);
+
+	mutex_unlock(&inter->fpga_mutex);
+
+	pid_dbg_print("%s: (%d) set pid: %5d 0x%04x '%s'\n", __func__,
+		pid_filt->nr, pid, pid, onoff ? "off" : "on");
+}
+
+static void altera_toggle_fullts_streaming(struct netup_hw_p

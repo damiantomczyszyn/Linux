@@ -1,17 +1,25 @@
-clude/config/RCU_FANOUT) \
-    $(wildcard include/config/RCU_FANOUT_LEAF) \
-  include/linux/page-flags-layout.h \
-    $(wildcard include/config/KASAN_HW_TAGS) \
-  include/linux/numa.h \
-    $(wildcard include/config/NODES_SHIFT) \
-    $(wildcard include/config/NUMA_KEEP_MEMINFO) \
-    $(wildcard include/config/HAVE_ARCH_NODE_DEV_GROUP) \
-  arch/x86/include/asm/sparsemem.h \
-  include/generated/bounds.h \
-  include/linux/seqlock.h \
-  include/linux/ww_mutex.h \
-    $(wildcard include/config/DEBUG_RT_MUTEXES) \
-    $(wildcard include/config/DEBUG_WW_MUTEX_SLOWPATH) \
-  include/linux/rtmutex.h \
-  arch/x86/include/asm/mmu.h \
-    $(wildcard include/config/MODI
+ION		0x000004B4
+#define VBI_PASS_CTRL		0x000004BC
+
+/* Audio Decoder Registers */
+/* 8051 Configuration */
+#define DL_CTL		0x00000800
+#define STD_DET_STATUS	0x00000804
+#define STD_DET_CTL	0x00000808
+#define DW8051_INT	0x0000080C
+#define GENERAL_CTL	0x00000810
+#define AAGC_CTL	0x00000814
+#define DEMATRIX_CTL	0x000008CC
+#define PATH1_CTL1	0x000008D0
+#define PATH1_VOL_CTL	0x000008D4
+#define PATH1_EQ_CTL	0x000008D8
+#define PATH1_SC_CTL	0x000008DC
+#define PATH2_CTL1	0x000008E0
+#define PATH2_VOL_CTL	0x000008E4
+#define PATH2_EQ_CTL	0x000008E8
+#define PATH2_SC_CTL	0x000008EC
+
+/* Sample Rate Converter */
+#define SRC_CTL		0x000008F0
+#define SRC_LF_COEF	0x000008F4
+#def

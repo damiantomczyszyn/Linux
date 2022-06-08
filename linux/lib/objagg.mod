@@ -1,1 +1,1 @@
-g nr_stack_tra
+ng tasks to of

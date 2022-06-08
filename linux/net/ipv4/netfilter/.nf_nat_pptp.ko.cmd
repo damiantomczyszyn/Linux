@@ -1,11 +1,9 @@
-RT_SYMBOL_GPL(debug_check_no_locks_held);
+nt));
+	WRITE_ONCE(rdp->dynticks_nesting, 1);
+	WARN_ON_ONCE(rdp->dynticks_nmi_nesting);
+	WRITE_ONCE(rdp->dynticks_nmi_nesting, DYNTICK_IRQ_NONIDLE);
+	instrumentation_end();
+}
 
-#ifdef __KERNEL__
-void debug_show_all_locks(void)
-{
-	struct task_struct *g, *p;
-
-	if (unlikely(!debug_locks)) {
-		pr_warn("INFO: lockdep is turned off.\n");
-		return;
-	}
+/**
+ * rcu_idle_exit - inform RCU tha

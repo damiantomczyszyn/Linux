@@ -1,46 +1,66 @@
-nclude/linux/page-flags-layout.h \
-    $(wildcard include/config/KASAN_HW_TAGS) \
-  include/linux/numa.h \
-    $(wildcard include/config/NODES_SHIFT) \
-    $(wildcard include/config/NUMA_KEEP_MEMINFO) \
-    $(wildcard include/config/HAVE_ARCH_NODE_DEV_GROUP) \
-  arch/x86/include/asm/sparsemem.h \
-  include/generated/bounds.h \
-  include/linux/seqlock.h \
-  include/linux/ww_mutex.h \
-    $(wildcard include/config/DEBUG_RT_MUTEXES) \
-    $(wildcard include/config/DEBUG_WW_MUTEX_SLOWPATH) \
-  include/linux/rtmutex.h \
-  arch/x86/include/asm/mmu.h \
-    $(wildcard include/config/MODIFY_LDT_SYSCALL) \
-  include/linux/kmod.h \
-  include/linux/umh.h \
-  include/linux/gfp.h \
-    $(wildcard include/config/HIGHMEM) \
-    $(wildcard include/config/ZONE_DMA) \
-    $(wildcard include/config/ZONE_DMA32) \
-    $(wildcard include/config/ZONE_DEVICE) \
-    $(wildcard include/config/PM_SLEEP) \
-    $(wildcard include/config/CONTIG_ALLOC) \
-    $(wildcard include/config/CMA) \
-  include/linux/mmdebug.h \
-    $(wildcard include/config/DEBUG_VM) \
-    $(wildcard include/config/DEBUG_VM_PGFLAGS) \
-  include/linux/mmzone.h \
-    $(wildcard include/config/FORCE_MAX_ZONEORDER) \
-    $(wildcard include/config/MEMORY_ISOLATION) \
-    $(wildcard include/config/ZSMALLOC) \
-    $(wildcard include/config/MEMORY_HOTPLUG) \
-    $(wildcard include/config/COMPACTION) \
-    $(wildcard include/config/PAGE_EXTENSION) \
-    $(wildcard include/config/DEFERRED_STRUCT_PAGE_INIT) \
-    $(wildcard include/config/HAVE_MEMORYLESS_NODES) \
-    $(wildcard include/config/SPARSEMEM_EXTREME) \
-    $(wildcard include/config/HAVE_ARCH_PFN_VALID) \
-  include/linux/nodemask.h \
-  include/linux/pageblock-flags.h \
-    $(wildcard include/config/HUGETLB_PAGE_SIZE_VARIABLE) \
-  include/linux/page-flags.h \
-    $(wildcard include/config/ARCH_USES_PG_UNCACHED) \
-    $(wildcard include/config/MEMORY_FAILURE) \
-    $(wildcard include/config
+00);
+		break;
+	}
+}
+
+int cx23885_ir_init(struct cx23885_dev *dev)
+{
+	static struct v4l2_subdev_io_pin_config ir_rxtx_pin_cfg[] = {
+		{
+			.flags	  = BIT(V4L2_SUBDEV_IO_PIN_INPUT),
+			.pin	  = CX23885_PIN_IR_RX_GPIO19,
+			.function = CX23885_PAD_IR_RX,
+			.value	  = 0,
+			.strength = CX25840_PIN_DRIVE_MEDIUM,
+		}, {
+			.flags	  = BIT(V4L2_SUBDEV_IO_PIN_OUTPUT),
+			.pin	  = CX23885_PIN_IR_TX_GPIO20,
+			.function = CX23885_PAD_IR_TX,
+			.value	  = 0,
+			.strength = CX25840_PIN_DRIVE_MEDIUM,
+		}
+	};
+	const size_t ir_rxtx_pin_cfg_count = ARRAY_SIZE(ir_rxtx_pin_cfg);
+
+	static struct v4l2_subdev_io_pin_config ir_rx_pin_cfg[] = {
+		{
+			.flags	  = BIT(V4L2_SUBDEV_IO_PIN_INPUT),
+			.pin	  = CX23885_PIN_IR_RX_GPIO19,
+			.function = CX23885_PAD_IR_RX,
+			.value	  = 0,
+			.strength = CX25840_PIN_DRIVE_MEDIUM,
+		}
+	};
+	const size_t ir_rx_pin_cfg_count = ARRAY_SIZE(ir_rx_pin_cfg);
+
+	struct v4l2_subdev_ir_parameters params;
+	int ret = 0;
+	switch (dev->board) {
+	case CX23885_BOARD_HAUPPAUGE_HVR1500:
+	case CX23885_BOARD_HAUPPAUGE_HVR1500Q:
+	case CX23885_BOARD_HAUPPAUGE_HVR1800:
+	case CX23885_BOARD_HAUPPAUGE_HVR1200:
+	case CX23885_BOARD_HAUPPAUGE_HVR1400:
+	case CX23885_BOARD_HAUPPAUGE_HVR1275:
+	case CX23885_BOARD_HAUPPAUGE_HVR1255:
+	case CX23885_BOARD_HAUPPAUGE_HVR1255_22111:
+	case CX23885_BOARD_HAUPPAUGE_HVR1210:
+	case CX23885_BOARD_HAUPPAUGE_QUADHD_DVB:
+	case CX23885_BOARD_HAUPPAUGE_QUADHD_ATSC:
+		/* FIXME: Implement me */
+		break;
+	case CX23885_BOARD_HAUPPAUGE_HVR1270:
+		ret = cx23888_ir_probe(dev);
+		if (ret)
+			break;
+		dev->sd_ir = cx23885_find_hw(dev, CX23885_HW_888_IR);
+		v4l2_subdev_call(dev->sd_cx25840, core, s_io_pin_config,
+				 ir_rx_pin_cfg_count, ir_rx_pin_cfg);
+		break;
+	case CX23885_BOARD_HAUPPAUGE_HVR1850:
+	case CX23885_BOARD_HAUPPAUGE_HVR1290:
+		ret = cx23888_ir_probe(dev);
+		if (ret)
+			break;
+		dev->sd_ir = cx23885_find_hw(dev, CX23885_HW_888_IR);
+		v4l2_subdev_call(dev->sd_cx2

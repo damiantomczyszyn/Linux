@@ -1,2 +1,2 @@
-_P6_NOP) \
-    $(wildcard includ
+q;
+	dev->video_dev->device_caps 

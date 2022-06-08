@@ -1,3 +1,2 @@
-nux/pid.h \
-  include/linux/rculist.h \
-    $(wil
+#include <linux/module.h>
+#define INCLUDE_VERMAGI

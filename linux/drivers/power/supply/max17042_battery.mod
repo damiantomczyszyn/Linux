@@ -1,2 +1,2 @@
-ude/config/PARAVIRT_XXL) \
-  arch/x86/inc
+.prepare = snd_cx23885_prepare,
+	.trigger

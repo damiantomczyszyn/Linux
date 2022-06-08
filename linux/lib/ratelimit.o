@@ -1,77 +1,73 @@
-_percpu_address(addr))
-		return 1;
 
-	/*
-	 * module static or percpu var?
-	 */
-	return is_module_address(addr) || is_module_percpu_address(addr);
-}
-#endif
-
-/*
- * To make lock name printouts unique, we calculate a unique
- * class->name_version generation counter. The caller must hold the graph
- * lock.
- */
-static int count_matching_names(struct lock_class *new_class)
-{
-	struct lock_class *class;
-	int count = 0;
-
-	if (!new_class->name)
-		return 0;
-
-	list_for_each_entry(class, &all_lock_classes, lock_entry) {
-		if (new_class->key - new_class->subclass == class->key)
-			return class->name_version;
-		if (class->name && !strcmp(class->name, new_class->name))
-			count = max(count, class->name_version);
-	}
-
-	return count + 1;
+	dprintk(1, "%s() status = %d, seq = %d\n", __func__, status, seq);
 }
 
-/* used from NMI context -- must be lockless */
-static noinstr struct lock_class *
-look_up_lock_class(const struct lockdep_map *lock, unsigned int subclass)
+static void cx23885_codec_settings(struct cx23885_dev *dev)
 {
-	struct lockdep_subclass_key *key;
-	struct hlist_head *hash_head;
-	struct lock_class *class;
+	dprintk(1, "%s()\n", __func__);
 
-	if (unlikely(subclass >= MAX_LOCKDEP_SUBCLASSES)) {
-		instrumentation_begin();
-		debug_locks_off();
-		printk(KERN_ERR
-			"BUG: looking up invalid subclass: %u\n", subclass);
-		printk(KERN_ERR
-			"turning off the locking correctness validator.\n");
-		dump_stack();
-		instrumentation_end();
-		return NULL;
+	/* Dynamically change the height based on video standard */
+	if (dev->encodernorm.id & V4L2_STD_525_60)
+		dev->ts1.height = 480;
+	else
+		dev->ts1.height = 576;
+
+	/* assign frame size */
+	cx23885_api_cmd(dev, CX2341X_ENC_SET_FRAME_SIZE, 2, 0,
+				dev->ts1.height, dev->ts1.width);
+
+	dev->cxhdl.width = dev->ts1.width;
+	dev->cxhdl.height = dev->ts1.height;
+	dev->cxhdl.is_50hz =
+		(dev->encodernorm.id & V4L2_STD_625_50) != 0;
+
+	cx2341x_handler_setup(&dev->cxhdl);
+
+	cx23885_api_cmd(dev, CX2341X_ENC_MISC, 2, 0, 3, 1);
+	cx23885_api_cmd(dev, CX2341X_ENC_MISC, 2, 0, 4, 1);
+}
+
+static int cx23885_initialize_codec(struct cx23885_dev *dev, int startencoder)
+{
+	int version;
+	int retval;
+	u32 i, data[7];
+
+	dprintk(1, "%s()\n", __func__);
+
+	retval = cx23885_api_cmd(dev, CX2341X_ENC_PING_FW, 0, 0); /* ping */
+	if (retval < 0) {
+		dprintk(2, "%s() PING OK\n", __func__);
+		retval = cx23885_load_firmware(dev);
+		if (retval < 0) {
+			pr_err("%s() f/w load failed\n", __func__);
+			return retval;
+		}
+		retval = cx23885_find_mailbox(dev);
+		if (retval < 0) {
+			pr_err("%s() mailbox < 0, error\n",
+				__func__);
+			return -1;
+		}
+		dev->cx23417_mailbox = retval;
+		retval = cx23885_api_cmd(dev, CX2341X_ENC_PING_FW, 0, 0);
+		if (retval < 0) {
+			pr_err("ERROR: cx23417 firmware ping failed!\n");
+			return -1;
+		}
+		retval = cx23885_api_cmd(dev, CX2341X_ENC_GET_VERSION, 0, 1,
+			&version);
+		if (retval < 0) {
+			pr_err("ERROR: cx23417 firmware get encoder :version failed!\n");
+			return -1;
+		}
+		dprintk(1, "cx23417 firmware version is 0x%08x\n", version);
+		msleep(200);
 	}
 
-	/*
-	 * If it is not initialised then it has never been locked,
-	 * so it won't be present in the hash table.
-	 */
-	if (unlikely(!lock->key))
-		return NULL;
+	cx23885_codec_settings(dev);
+	msleep(60);
 
-	/*
-	 * NOTE: the class-key must be unique. For dynamic locks, a static
-	 * lock_class_key variable is passed in through the mutex_init()
-	 * (or spin_lock_init()) call - which acts as the key. For static
-	 * locks we use the lock object itself as the key.
-	 */
-	BUILD_BUG_ON(sizeof(struct lock_class_key) >
-			sizeof(struct lockdep_map));
-
-	key = lock->key->subkeys + subclass;
-
-	hash_head = classhashentry(key);
-
-	/*
-	 * We do an RCU walk of the hash, see lockdep_free_key_range().
-	 */
-	if (
+	cx23885_api_cmd(dev, CX2341X_ENC_SET_NUM_VSYNC_LINES, 2, 0,
+		CX23885_FIELD1_SAA7115, CX23885_FIELD2_SAA7115);
+	cx23885_api_cmd(dev, CX2341X_ENC_SET_PLACEHOLD

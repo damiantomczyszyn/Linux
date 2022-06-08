@@ -1,6 +1,5 @@
-silent)
-		return;
+return cx_read(addr);
+}
 
-	pr_warn("\n");
-	pr_warn("======================================================\n");
-	pr_warn("WARNING: 
+static inline int cx23888_ir_and_or4(struct cx23885_dev *dev, u32 addr,
+				     u32 and_mask, u32 

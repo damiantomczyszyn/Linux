@@ -1,203 +1,178 @@
-// SPDX-License-Identifier: GPL-2.0-only
-/* Copyright (c) 2012, Code Aurora Forum. All rights reserved.
- */
 
-#include <linux/kernel.h>
-#include <linux/init.h>
-#include <linux/module.h>
-#include <linux/interrupt.h>
-#include <linux/gpio/consumer.h>
-#include <linux/slab.h>
-#include <linux/of.h>
-#include <linux/of_gpio.h>
-#include <linux/platform_device.h>
-#include <linux/pm_runtime.h>
-#include <linux/pm_qos.h>
-#include <linux/irq.h>
-#include <media/rc-core.h>
+			break;
+		dvb_attach(tda18271_attach, fe0->dvb.frontend,
+			   0x60, &dev->i2c_bus[0].i2c_adap,
+			   &hauppauge_tda18271_config);
 
-#define GPIO_IR_DEVICE_NAME	"gpio_ir_recv"
+		tda18271_attach(&dev->ts1.analog_fe,
+			0x60, &dev->i2c_bus[1].i2c_adap,
+			&hauppauge_tda18271_config);
 
-struct gpio_rc_dev {
-	struct rc_dev *rcdev;
-	struct gpio_desc *gpiod;
-	int irq;
-	struct device *pmdev;
-	struct pm_qos_request qos;
-};
+		break;
+	case CX23885_BOARD_HAUPPAUGE_HVR1290:
+		i2c_bus = &dev->i2c_bus[0];
+		fe0->dvb.frontend = dvb_attach(s5h1411_attach,
+			&hcw_s5h1411_config,
+			&i2c_bus->i2c_adap);
+		if (fe0->dvb.frontend == NULL)
+			break;
+		dvb_attach(tda18271_attach, fe0->dvb.frontend,
+			   0x60, &dev->i2c_bus[0].i2c_adap,
+			   &hauppauge_tda18271_config);
+		break;
+	case CX23885_BOARD_MYGICA_X8558PRO:
+		switch (port->nr) {
+		/* port B */
+		case 1:
+			i2c_bus = &dev->i2c_bus[0];
+			fe0->dvb.frontend = dvb_attach(atbm8830_attach,
+				&mygica_x8558pro_atbm8830_cfg1,
+				&i2c_bus->i2c_adap);
+			if (fe0->dvb.frontend == NULL)
+				break;
+			dvb_attach(max2165_attach, fe0->dvb.frontend,
+				   &i2c_bus->i2c_adap,
+				   &mygic_x8558pro_max2165_cfg1);
+			break;
+		/* port C */
+		case 2:
+			i2c_bus = &dev->i2c_bus[1];
+			fe0->dvb.frontend = dvb_attach(atbm8830_attach,
+				&mygica_x8558pro_atbm8830_cfg2,
+				&i2c_bus->i2c_adap);
+			if (fe0->dvb.frontend == NULL)
+				break;
+			dvb_attach(max2165_attach, fe0->dvb.frontend,
+				   &i2c_bus->i2c_adap,
+				   &mygic_x8558pro_max2165_cfg2);
+		}
+		break;
+	case CX23885_BOARD_NETUP_DUAL_DVB_T_C_CI_RF:
+		if (port->nr > 2)
+			return 0;
 
-static irqreturn_t gpio_ir_recv_irq(int irq, void *dev_id)
-{
-	int val;
-	struct gpio_rc_dev *gpio_dev = dev_id;
-	struct device *pmdev = gpio_dev->pmdev;
+		i2c_bus = &dev->i2c_bus[0];
+		mfe_shared = 1;/* MFE */
+		port->frontends.gate = 0;/* not clear for me yet */
+		/* ports B, C */
+		/* MFE frontend 1 DVB-T */
+		fe0->dvb.frontend = dvb_attach(stv0367ter_attach,
+					&netup_stv0367_config[port->nr - 1],
+					&i2c_bus->i2c_adap);
+		if (fe0->dvb.frontend == NULL)
+			break;
+		if (NULL == dvb_attach(xc5000_attach, fe0->dvb.frontend,
+					&i2c_bus->i2c_adap,
+					&netup_xc5000_config[port->nr - 1]))
+			goto frontend_detach;
+		/* load xc5000 firmware */
+		fe0->dvb.frontend->ops.tuner_ops.init(fe0->dvb.frontend);
 
-	/*
-	 * For some cpuidle systems, not all:
-	 * Respond to interrupt taking more latency when cpu in idle.
-	 * Invoke asynchronous pm runtime get from interrupt context,
-	 * this may introduce a millisecond delay to call resume callback,
-	 * where to disable cpuilde.
-	 *
-	 * Two issues lead to fail to decode first frame, one is latency to
-	 * respond to interrupt, another is delay introduced by async api.
-	 */
-	if (pmdev)
-		pm_runtime_get(pmdev);
+		/* MFE frontend 2 */
+		fe1 = vb2_dvb_get_frontend(&port->frontends, 2);
+		if (fe1 == NULL)
+			goto frontend_detach;
+		/* DVB-C init */
+		fe1->dvb.frontend = dvb_attach(stv0367cab_attach,
+					&netup_stv0367_config[port->nr - 1],
+					&i2c_bus->i2c_adap);
+		if (fe1->dvb.frontend == NULL)
+			break;
 
-	val = gpiod_get_value(gpio_dev->gpiod);
-	if (val >= 0)
-		ir_raw_event_store_edge(gpio_dev->rcdev, val == 1);
+		fe1->dvb.frontend->id = 1;
+		if (NULL == dvb_attach(xc5000_attach,
+				       fe1->dvb.frontend,
+				       &i2c_bus->i2c_adap,
+				       &netup_xc5000_config[port->nr - 1]))
+			goto frontend_detach;
+		break;
+	case CX23885_BOARD_TERRATEC_CINERGY_T_PCIE_DUAL:
+		i2c_bus = &dev->i2c_bus[0];
+		i2c_bus2 = &dev->i2c_bus[1];
 
-	if (pmdev) {
-		pm_runtime_mark_last_busy(pmdev);
-		pm_runtime_put_autosuspend(pmdev);
-	}
+		switch (port->nr) {
+		/* port b */
+		case 1:
+			fe0->dvb.frontend = dvb_attach(drxk_attach,
+					&terratec_drxk_config[0],
+					&i2c_bus->i2c_adap);
+			if (fe0->dvb.frontend == NULL)
+				break;
+			if (!dvb_attach(mt2063_attach,
+					fe0->dvb.frontend,
+					&terratec_mt2063_config[0],
+					&i2c_bus2->i2c_adap))
+				goto frontend_detach;
+			break;
+		/* port c */
+		case 2:
+			fe0->dvb.frontend = dvb_attach(drxk_attach,
+					&terratec_drxk_config[1],
+					&i2c_bus->i2c_adap);
+			if (fe0->dvb.frontend == NULL)
+				break;
+			if (!dvb_attach(mt2063_attach,
+					fe0->dvb.frontend,
+					&terratec_mt2063_config[1],
+					&i2c_bus2->i2c_adap))
+				goto frontend_detach;
+			break;
+		}
+		break;
+	case CX23885_BOARD_TEVII_S471:
+		i2c_bus = &dev->i2c_bus[1];
 
-	return IRQ_HANDLED;
-}
+		fe0->dvb.frontend = dvb_attach(ds3000_attach,
+					&tevii_ds3000_config,
+					&i2c_bus->i2c_adap);
+		if (fe0->dvb.frontend == NULL)
+			break;
+		dvb_attach(ts2020_attach, fe0->dvb.frontend,
+			   &tevii_ts2020_config, &i2c_bus->i2c_adap);
+		break;
+	case CX23885_BOARD_PROF_8000:
+		i2c_bus = &dev->i2c_bus[0];
 
-static int gpio_ir_recv_probe(struct platform_device *pdev)
-{
-	struct device *dev = &pdev->dev;
-	struct device_node *np = dev->of_node;
-	struct gpio_rc_dev *gpio_dev;
-	struct rc_dev *rcdev;
-	u32 period = 0;
-	int rc;
+		fe0->dvb.frontend = dvb_attach(stv090x_attach,
+						&prof_8000_stv090x_config,
+						&i2c_bus->i2c_adap,
+						STV090x_DEMODULATOR_0);
+		if (fe0->dvb.frontend == NULL)
+			break;
+		if (!dvb_attach(stb6100_attach,
+				fe0->dvb.frontend,
+				&prof_8000_stb6100_config,
+				&i2c_bus->i2c_adap))
+			goto frontend_detach;
 
-	if (!np)
-		return -ENODEV;
+		fe0->dvb.frontend->ops.set_voltage = p8000_set_voltage;
+		break;
+	case CX23885_BOARD_HAUPPAUGE_HVR4400: {
+		struct tda10071_platform_data tda10071_pdata = hauppauge_tda10071_pdata;
+		struct a8293_platform_data a8293_pdata = {};
 
-	gpio_dev = devm_kzalloc(dev, sizeof(*gpio_dev), GFP_KERNEL);
-	if (!gpio_dev)
-		return -ENOMEM;
+		i2c_bus = &dev->i2c_bus[0];
+		i2c_bus2 = &dev->i2c_bus[1];
+		switch (port->nr) {
+		/* port b */
+		case 1:
+			/* attach demod + tuner combo */
+			memset(&info, 0, sizeof(info));
+			strscpy(info.type, "tda10071_cx24118", I2C_NAME_SIZE);
+			info.addr = 0x05;
+			info.platform_data = &tda10071_pdata;
+			request_module("tda10071");
+			client_demod = i2c_new_client_device(&i2c_bus->i2c_adap, &info);
+			if (!i2c_client_has_driver(client_demod))
+				goto frontend_detach;
+			if (!try_module_get(client_demod->dev.driver->owner)) {
+				i2c_unregister_device(client_demod);
+				goto frontend_detach;
+			}
+			fe0->dvb.frontend = tda10071_pdata.get_dvb_frontend(client_demod);
+			port->i2c_client_demod = client_demod;
 
-	gpio_dev->gpiod = devm_gpiod_get(dev, NULL, GPIOD_IN);
-	if (IS_ERR(gpio_dev->gpiod)) {
-		rc = PTR_ERR(gpio_dev->gpiod);
-		/* Just try again if this happens */
-		if (rc != -EPROBE_DEFER)
-			dev_err(dev, "error getting gpio (%d)\n", rc);
-		return rc;
-	}
-	gpio_dev->irq = gpiod_to_irq(gpio_dev->gpiod);
-	if (gpio_dev->irq < 0)
-		return gpio_dev->irq;
-
-	rcdev = devm_rc_allocate_device(dev, RC_DRIVER_IR_RAW);
-	if (!rcdev)
-		return -ENOMEM;
-
-	rcdev->priv = gpio_dev;
-	rcdev->device_name = GPIO_IR_DEVICE_NAME;
-	rcdev->input_phys = GPIO_IR_DEVICE_NAME "/input0";
-	rcdev->input_id.bustype = BUS_HOST;
-	rcdev->input_id.vendor = 0x0001;
-	rcdev->input_id.product = 0x0001;
-	rcdev->input_id.version = 0x0100;
-	rcdev->dev.parent = dev;
-	rcdev->driver_name = KBUILD_MODNAME;
-	rcdev->min_timeout = 1;
-	rcdev->timeout = IR_DEFAULT_TIMEOUT;
-	rcdev->max_timeout = 10 * IR_DEFAULT_TIMEOUT;
-	rcdev->allowed_protocols = RC_PROTO_BIT_ALL_IR_DECODER;
-	rcdev->map_name = of_get_property(np, "linux,rc-map-name", NULL);
-	if (!rcdev->map_name)
-		rcdev->map_name = RC_MAP_EMPTY;
-
-	gpio_dev->rcdev = rcdev;
-
-	rc = devm_rc_register_device(dev, rcdev);
-	if (rc < 0) {
-		dev_err(dev, "failed to register rc device (%d)\n", rc);
-		return rc;
-	}
-
-	of_property_read_u32(np, "linux,autosuspend-period", &period);
-	if (period) {
-		gpio_dev->pmdev = dev;
-		pm_runtime_set_autosuspend_delay(dev, period);
-		pm_runtime_use_autosuspend(dev);
-		pm_runtime_set_suspended(dev);
-		pm_runtime_enable(dev);
-	}
-
-	platform_set_drvdata(pdev, gpio_dev);
-
-	return devm_request_irq(dev, gpio_dev->irq, gpio_ir_recv_irq,
-				IRQF_TRIGGER_FALLING | IRQF_TRIGGER_RISING,
-				"gpio-ir-recv-irq", gpio_dev);
-}
-
-#ifdef CONFIG_PM
-static int gpio_ir_recv_suspend(struct device *dev)
-{
-	struct gpio_rc_dev *gpio_dev = dev_get_drvdata(dev);
-
-	if (device_may_wakeup(dev))
-		enable_irq_wake(gpio_dev->irq);
-	else
-		disable_irq(gpio_dev->irq);
-
-	return 0;
-}
-
-static int gpio_ir_recv_resume(struct device *dev)
-{
-	struct gpio_rc_dev *gpio_dev = dev_get_drvdata(dev);
-
-	if (device_may_wakeup(dev))
-		disable_irq_wake(gpio_dev->irq);
-	else
-		enable_irq(gpio_dev->irq);
-
-	return 0;
-}
-
-static int gpio_ir_recv_runtime_suspend(struct device *dev)
-{
-	struct gpio_rc_dev *gpio_dev = dev_get_drvdata(dev);
-
-	cpu_latency_qos_remove_request(&gpio_dev->qos);
-
-	return 0;
-}
-
-static int gpio_ir_recv_runtime_resume(struct device *dev)
-{
-	struct gpio_rc_dev *gpio_dev = dev_get_drvdata(dev);
-
-	cpu_latency_qos_add_request(&gpio_dev->qos, 0);
-
-	return 0;
-}
-
-static const struct dev_pm_ops gpio_ir_recv_pm_ops = {
-	.suspend        = gpio_ir_recv_suspend,
-	.resume         = gpio_ir_recv_resume,
-	.runtime_suspend = gpio_ir_recv_runtime_suspend,
-	.runtime_resume  = gpio_ir_recv_runtime_resume,
-};
-#endif
-
-static const struct of_device_id gpio_ir_recv_of_match[] = {
-	{ .compatible = "gpio-ir-receiver", },
-	{ },
-};
-MODULE_DEVICE_TABLE(of, gpio_ir_recv_of_match);
-
-static struct platform_driver gpio_ir_recv_driver = {
-	.probe  = gpio_ir_recv_probe,
-	.driver = {
-		.name   = KBUILD_MODNAME,
-		.of_match_table = of_match_ptr(gpio_ir_recv_of_match),
-#ifdef CONFIG_PM
-		.pm	= &gpio_ir_recv_pm_ops,
-#endif
-	},
-};
-module_platform_driver(gpio_ir_recv_driver);
-
-MODULE_DESCRIPTION("GPIO IR Receiver driver");
-MODULE_LICENSE("GPL v2");
+			/* attach SEC */
+			a8293_pdata.dvb_frontend = fe0->dvb.frontend;
+			memset(&info, 0, sizeof(info));
+			strscpy(info.type, "a8293", I

@@ -1,1 +1,34 @@
-cmd_drivers/media/i2c/tw9910.o := gcc -Wp,-MMD,drivers/media/i2c/.tw9910.o.d -nostdinc -I./arch/x86/include -I./arch/x86/include/generated  -I./include -I./arch/x86/include/uapi -I./arch/x86/include/generated/uapi -I./include/uapi -I./include/generated/uapi -include ./include/linux/compiler-version.h -include ./include/linux/kconfig.h -include ./include/linux/compiler_types.h -D__KERNEL__ -fmacro-prefix-map=./= -Wall -Wundef -Werror=strict-prototypes -Wno-trigraphs -fno-strict-aliasing -fno-common -fshort-wchar -fno-PIE -Werror=implicit-function-declaration -Werror=implicit-int -Werror=return-type -Wno-format-security -std=gnu11 -mno-sse -mno-mmx -mno-sse2 -mno-3dnow -mno-avx -fcf-protection=none -m32 -msoft-float -mregparm=3 -freg-struct-return -fno-pic -mpreferred-stack-boundary=2 
+< 0) {
+			pr_err("%s() Failed to register dvb on VID_C\n",
+			       __func__);
+		}
+	} else
+	if (cx23885_boards[dev->board].portc == CX23885_MPEG_ENCODER) {
+		if (cx23885_417_register(dev) < 0) {
+			pr_err("%s() Failed to register 417 on VID_C\n",
+			       __func__);
+		}
+	}
+
+	cx23885_dev_checkrevision(dev);
+
+	/* disable MSI for NetUP cards, otherwise CI is not working */
+	if (cx23885_boards[dev->board].ci_type > 0)
+		cx_clear(RDR_RDRCTL1, 1 << 8);
+
+	switch (dev->board) {
+	case CX23885_BOARD_TEVII_S470:
+	case CX23885_BOARD_TEVII_S471:
+		cx_clear(RDR_RDRCTL1, 1 << 8);
+		break;
+	}
+
+	return 0;
+}
+
+static void cx23885_dev_unregister(struct cx23885_dev *dev)
+{
+	release_mem_region(pci_resource_start(dev->pci, 0),
+			   pci_resource_len(dev->pci, 0));
+
+	if (!atomic_dec_and_test(&dev->refcoun

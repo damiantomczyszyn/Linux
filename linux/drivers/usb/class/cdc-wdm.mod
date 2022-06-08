@@ -1,1 +1,1 @@
-config/ACPI_HOTPLUG_IOAPIC) \
+/* SPDX-License-Identifier: G

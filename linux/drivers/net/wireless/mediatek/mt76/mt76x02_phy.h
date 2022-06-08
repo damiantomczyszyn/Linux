@@ -1,33 +1,48 @@
-config/X86_P6_NOP) \
-    $(wildcard include/config/MATOM) \
-    $(wildcard include/config/PARAVIRT_XXL) \
-  arch/x86/include/asm/disabled-features.h \
-    $(wildcard include/config/X86_SMAP) \
-    $(wildcard include/config/X86_UMIP) \
-    $(wildcard include/config/X86_INTEL_MEMORY_PROTECTION_KEYS) \
-    $(wildcard include/config/X86_5LEVEL) \
-    $(wildcard include/config/PAGE_TABLE_ISOLATION) \
-    $(wildcard include/config/INTEL_IOMMU_SVM) \
-    $(wildcard include/config/X86_SGX) \
-  include/asm-generic/bitops/const_hweight.h \
-  include/asm-generic/bitops/instrumented-atomic.h \
-  include/linux/instrumented.h \
-  include/asm-generic/bitops/instrumented-non-atomic.h \
-    $(wildcard include/config/KCSAN_ASSUME_PLAIN_WRITES_ATOMIC) \
-  include/asm-generic/bitops/instrumented-lock.h \
-  include/asm-generic/bitops/le.h \
-  arch/x86/include/uapi/asm/byteorder.h \
-  include/linux/byteorder/little_endian.h \
-  include/uapi/linux/byteorder/little_endian.h \
-  include/linux/swab.h \
-  include/uapi/linux/swab.h \
-  arch/x86/include/uapi/asm/swab.h \
-  include/linux/byteorder/generic.h \
-  include/asm-generic/bitops/ext2-atomic-setbit.h \
-  include/vdso/math64.h \
-  include/linux/time64.h \
-  include/vdso/time64.h \
-  include/uapi/linux/time.h \
-  include/uapi/linux/time_types.h \
-  include/linux/time32.h \
-  include/
+ION		0x000004B4
+#define VBI_PASS_CTRL		0x000004BC
+
+/* Audio Decoder Registers */
+/* 8051 Configuration */
+#define DL_CTL		0x00000800
+#define STD_DET_STATUS	0x00000804
+#define STD_DET_CTL	0x00000808
+#define DW8051_INT	0x0000080C
+#define GENERAL_CTL	0x00000810
+#define AAGC_CTL	0x00000814
+#define DEMATRIX_CTL	0x000008CC
+#define PATH1_CTL1	0x000008D0
+#define PATH1_VOL_CTL	0x000008D4
+#define PATH1_EQ_CTL	0x000008D8
+#define PATH1_SC_CTL	0x000008DC
+#define PATH2_CTL1	0x000008E0
+#define PATH2_VOL_CTL	0x000008E4
+#define PATH2_EQ_CTL	0x000008E8
+#define PATH2_SC_CTL	0x000008EC
+
+/* Sample Rate Converter */
+#define SRC_CTL		0x000008F0
+#define SRC_LF_COEF	0x000008F4
+#define SRC1_CTL	0x000008F8
+#define SRC2_CTL	0x000008FC
+#define SRC3_CTL	0x00000900
+#define SRC4_CTL	0x00000904
+#define SRC5_CTL	0x00000908
+#define SRC6_CTL	0x0000090C
+#define BAND_OUT_SEL	0x00000910
+#define I2S_N_CTL	0x00000914
+#define I2S_OUT_CTL	0x00000918
+#define AUTOCONFIG_REG	0x000009C4
+
+/* Audio ADC Registers */
+#define DSM_CTRL1	0x00000000
+#define DSM_CTRL2	0x00000001
+#define CHP_EN_CTRL	0x00000002
+#define CHP_CLK_CTRL1	0x00000004
+#define CHP_CLK_CTRL2	0x00000005
+#define BG_REF_CTRL	0x00000006
+#define SD2_SW_CTRL1	0x00000008
+#define SD2_SW_CTRL2	0x00000009
+#define SD2_BIAS_CTRL	0x0000000A
+#define AMP_BIAS_CTRL	0x0000000C
+#define CH_PWR_CTRL1	0x0000000E
+#

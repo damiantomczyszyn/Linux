@@ -1,1 +1,8 @@
-cmd_drivers/media/i2c/tw9903.o := gcc -Wp,-MMD,drivers/media/i2c/.tw9903.o.d -nostdinc -I./arch/x86/include -I./arch/x86/include/generated  -I./include -I./arch/x86/include/uapi -I./arch/x
+/* SPDX-License-Identifier: GPL-2.0-or-later */
+/*
+ * altera-ci.c
+ *
+ *  CI driver in conjunction with NetUp Dual DVB-T/C RF CI card
+ *
+ * Copyright (C) 2010 NetUP Inc.
+ * Copyright (C) 20

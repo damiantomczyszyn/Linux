@@ -1,199 +1,375 @@
-cmd_drivers/media/i2c/upd64083.o := gcc -Wp,-MMD,drivers/media/i2c/.upd64083.o.d -nostdinc -I./arch/x86/include -I./arch/x86/include/generated  -I./include -I./arch/x86/include/uapi -I./arch/x86/include/generated/uapi -I./include/uapi -I./include/generated/uapi -include ./include/linux/compiler-version.h -include ./include/linux/kconfig.h -include ./include/linux/compiler_types.h -D__KERNEL__ -fmacro-prefix-map=./= -Wall -Wundef -Werror=strict-prototypes -Wno-trigraphs -fno-strict-aliasing -fno-common -fshort-wchar -fno-PIE -Werror=implicit-function-declaration -Werror=implicit-int -Werror=return-type -Wno-format-security -std=gnu11 -mno-sse -mno-mmx -mno-sse2 -mno-3dnow -mno-avx -fcf-protection=none -m32 -msoft-float -mregparm=3 -freg-struct-return -fno-pic -mpreferred-stack-boundary=2 -march=i686 -mtune=pentium3 -mtune=generic -Wa,-mtune=generic32 -ffreestanding -mstack-protector-guard-reg=fs -mstack-protector-guard-symbol=__stack_chk_guard -Wno-sign-compare -fno-asynchronous-unwind-tables -mindirect-branch=thunk-extern -mindirect-branch-register -fno-jump-tables -fno-delete-null-pointer-checks -Wno-frame-address -Wno-format-truncation -Wno-format-overflow -Wno-address-of-packed-member -O2 -fno-allow-store-data-races -fstack-protector-strong -Wimplicit-fallthrough=5 -Wno-main -Wno-unused-but-set-variable -Wno-unused-const-variable -fno-stack-clash-protection -pg -mrecord-mcount -mfentry -DCC_USING_FENTRY -Wdeclaration-after-statement -Wvla -Wno-pointer-sign -Wcast-function-type -Wno-stringop-truncation -Wno-stringop-overflow -Wno-restrict -Wno-maybe-uninitialized -Wno-alloc-size-larger-than -fno-strict-overflow -fno-stack-check -fconserve-stack -Werror=date-time -Werror=incompatible-pointer-types -Werror=designated-init -Wno-packed-not-aligned  -DMODULE  -DKBUILD_BASENAME='"upd64083"' -DKBUILD_MODNAME='"upd64083"' -D__KBUILD_MODNAME=kmod_upd64083 -c -o drivers/media/i2c/upd64083.o drivers/media/i2c/upd64083.c 
+// SPDX-License-Identifier: GPL-2.0-or-later
+/*
+ *  Driver for the Conexant CX23885 PCIe bridge
+ *
+ *  Copyright (c) 2006 Steven Toth <stoth@linuxtv.org>
+ */
 
-source_drivers/media/i2c/upd64083.o := drivers/media/i2c/upd64083.c
+#include "cx23885.h"
 
-deps_drivers/media/i2c/upd64083.o := \
-    $(wildcard include/config/VIDEO_ADV_DEBUG) \
-  include/linux/compiler-version.h \
-    $(wildcard include/config/CC_VERSION_TEXT) \
-  include/linux/kconfig.h \
-    $(wildcard include/config/CPU_BIG_ENDIAN) \
-    $(wildcard include/config/BOOGER) \
-    $(wildcard include/config/FOO) \
-  include/linux/compiler_types.h \
-    $(wildcard include/config/DEBUG_INFO_BTF) \
-    $(wildcard include/config/PAHOLE_HAS_BTF_TAG) \
-    $(wildcard include/config/HAVE_ARCH_COMPILER_H) \
-    $(wildcard include/config/CC_HAS_ASM_INLINE) \
-  include/linux/compiler_attributes.h \
-  include/linux/compiler-gcc.h \
-    $(wildcard include/config/RETPOLINE) \
-    $(wildcard include/config/ARCH_USE_BUILTIN_BSWAP) \
-    $(wildcard include/config/SHADOW_CALL_STACK) \
-    $(wildcard include/config/KCOV) \
-  include/linux/module.h \
-    $(wildcard include/config/MODULES) \
-    $(wildcard include/config/SYSFS) \
-    $(wildcard include/config/MODULES_TREE_LOOKUP) \
-    $(wildcard include/config/LIVEPATCH) \
-    $(wildcard include/config/STACKTRACE_BUILD_ID) \
-    $(wildcard include/config/CFI_CLANG) \
-    $(wildcard include/config/MODULE_SIG) \
-    $(wildcard include/config/GENERIC_BUG) \
-    $(wildcard include/config/KALLSYMS) \
-    $(wildcard include/config/SMP) \
-    $(wildcard include/config/TRACEPOINTS) \
-    $(wildcard include/config/TREE_SRCU) \
-    $(wildcard include/config/BPF_EVENTS) \
-    $(wildcard include/config/DEBUG_INFO_BTF_MODULES) \
-    $(wildcard include/config/JUMP_LABEL) \
-    $(wildcard include/config/TRACING) \
-    $(wildcard include/config/EVENT_TRACING) \
-    $(wildcard include/config/FTRACE_MCOUNT_RECORD) \
-    $(wildcard include/config/KPROBES) \
-    $(wildcard include/config/HAVE_STATIC_CALL_INLINE) \
-    $(wildcard include/config/PRINTK_INDEX) \
-    $(wildcard include/config/MODULE_UNLOAD) \
-    $(wildcard include/config/CONSTRUCTORS) \
-    $(wildcard include/config/FUNCTION_ERROR_INJECTION) \
-  include/linux/list.h \
-    $(wildcard include/config/DEBUG_LIST) \
-  include/linux/container_of.h \
-  include/linux/build_bug.h \
-  include/linux/compiler.h \
-    $(wildcard include/config/TRACE_BRANCH_PROFILING) \
-    $(wildcard include/config/PROFILE_ALL_BRANCHES) \
-    $(wildcard include/config/STACK_VALIDATION) \
-  include/linux/compiler_types.h \
-  arch/x86/include/generated/asm/rwonce.h \
-  include/asm-generic/rwonce.h \
-  include/linux/kasan-checks.h \
-    $(wildcard include/config/KASAN_GENERIC) \
-    $(wildcard include/config/KASAN_SW_TAGS) \
-  include/linux/types.h \
-    $(wildcard include/config/HAVE_UID16) \
-    $(wildcard include/config/UID16) \
-    $(wildcard include/config/ARCH_DMA_ADDR_T_64BIT) \
-    $(wildcard include/config/PHYS_ADDR_T_64BIT) \
-    $(wildcard include/config/64BIT) \
-    $(wildcard include/config/ARCH_32BIT_USTAT_F_TINODE) \
-  include/uapi/linux/types.h \
-  arch/x86/include/generated/uapi/asm/types.h \
-  include/uapi/asm-generic/types.h \
-  include/asm-generic/int-ll64.h \
-  include/uapi/asm-generic/int-ll64.h \
-  arch/x86/include/uapi/asm/bitsperlong.h \
-  include/asm-generic/bitsperlong.h \
-  include/uapi/asm-generic/bitsperlong.h \
-  include/uapi/linux/posix_types.h \
-  include/linux/stddef.h \
-  include/uapi/linux/stddef.h \
-  arch/x86/include/asm/posix_types.h \
-    $(wildcard include/config/X86_32) \
-  arch/x86/include/uapi/asm/posix_types_32.h \
-  include/uapi/asm-generic/posix_types.h \
-  include/linux/kcsan-checks.h \
-    $(wildcard include/config/KCSAN) \
-    $(wildcard include/config/KCSAN_WEAK_MEMORY) \
-    $(wildcard include/config/KCSAN_IGNORE_ATOMICS) \
-  include/linux/err.h \
-  arch/x86/include/generated/uapi/asm/errno.h \
-  include/uapi/asm-generic/errno.h \
-  include/uapi/asm-generic/errno-base.h \
-  include/linux/poison.h \
-    $(wildcard include/config/ILLEGAL_POINTER_VALUE) \
-  include/linux/const.h \
-  include/vdso/const.h \
-  include/uapi/linux/const.h \
-  arch/x86/include/asm/barrier.h \
-  arch/x86/include/asm/alternative.h \
-  include/linux/stringify.h \
-  arch/x86/include/asm/asm.h \
-  arch/x86/include/asm/extable_fixup_types.h \
-  arch/x86/include/asm/nops.h \
-  include/asm-generic/barrier.h \
-  include/linux/stat.h \
-  arch/x86/include/uapi/asm/stat.h \
-  include/uapi/linux/stat.h \
-  include/linux/time.h \
-    $(wildcard include/config/POSIX_TIMERS) \
-  include/linux/cache.h \
-    $(wildcard include/config/ARCH_HAS_CACHE_LINE_SIZE) \
-  include/uapi/linux/kernel.h \
-  include/uapi/linux/sysinfo.h \
-  arch/x86/include/asm/cache.h \
-    $(wildcard include/config/X86_L1_CACHE_SHIFT) \
-    $(wildcard include/config/X86_INTERNODE_CACHE_SHIFT) \
-    $(wildcard include/config/X86_VSMP) \
-  include/linux/linkage.h \
-    $(wildcard include/config/ARCH_USE_SYM_ANNOTATIONS) \
-  include/linux/export.h \
-    $(wildcard include/config/MODVERSIONS) \
-    $(wildcard include/config/MODULE_REL_CRCS) \
-    $(wildcard include/config/HAVE_ARCH_PREL32_RELOCATIONS) \
-    $(wildcard include/config/TRIM_UNUSED_KSYMS) \
-  arch/x86/include/asm/linkage.h \
-    $(wildcard include/config/X86_64) \
-    $(wildcard include/config/X86_ALIGNMENT_16) \
-    $(wildcard include/config/SLS) \
-  arch/x86/include/asm/ibt.h \
-    $(wildcard include/config/X86_KERNEL_IBT) \
-  include/linux/math64.h \
-    $(wildcard include/config/ARCH_SUPPORTS_INT128) \
-  include/linux/math.h \
-  arch/x86/include/asm/div64.h \
-  include/linux/log2.h \
-    $(wildcard include/config/ARCH_HAS_ILOG2_U32) \
-    $(wildcard include/config/ARCH_HAS_ILOG2_U64) \
-  include/linux/bitops.h \
-  include/linux/bits.h \
-  include/vdso/bits.h \
-  include/linux/typecheck.h \
-  arch/x86/include/asm/bitops.h \
-    $(wildcard include/config/X86_CMOV) \
-  arch/x86/include/asm/rmwcc.h \
-    $(wildcard include/config/CC_HAS_ASM_GOTO) \
-  include/asm-generic/bitops/fls64.h \
-  include/asm-generic/bitops/sched.h \
-  arch/x86/include/asm/arch_hweight.h \
-  arch/x86/include/asm/cpufeatures.h \
-  arch/x86/include/asm/required-features.h \
-    $(wildcard include/config/X86_MINIMUM_CPU_FAMILY) \
-    $(wildcard include/config/MATH_EMULATION) \
-    $(wildcard include/config/X86_PAE) \
-    $(wildcard include/config/X86_CMPXCHG64) \
-    $(wildcard include/config/X86_P6_NOP) \
-    $(wildcard include/config/MATOM) \
-    $(wildcard include/config/PARAVIRT_XXL) \
-  arch/x86/include/asm/disabled-features.h \
-    $(wildcard include/config/X86_SMAP) \
-    $(wildcard include/config/X86_UMIP) \
-    $(wildcard include/config/X86_INTEL_MEMORY_PROTECTION_KEYS) \
-    $(wildcard include/config/X86_5LEVEL) \
-    $(wildcard include/config/PAGE_TABLE_ISOLATION) \
-    $(wildcard include/config/INTEL_IOMMU_SVM) \
-    $(wildcard include/config/X86_SGX) \
-  include/asm-generic/bitops/const_hweight.h \
-  include/asm-generic/bitops/instrumented-atomic.h \
-  include/linux/instrumented.h \
-  include/asm-generic/bitops/instrumented-non-atomic.h \
-    $(wildcard include/config/KCSAN_ASSUME_PLAIN_WRITES_ATOMIC) \
-  include/asm-generic/bitops/instrumented-lock.h \
-  include/asm-generic/bitops/le.h \
-  arch/x86/include/uapi/asm/byteorder.h \
-  include/linux/byteorder/little_endian.h \
-  include/uapi/linux/byteorder/little_endian.h \
-  include/linux/swab.h \
-  include/uapi/linux/swab.h \
-  arch/x86/include/uapi/asm/swab.h \
-  include/linux/byteorder/generic.h \
-  include/asm-generic/bitops/ext2-atomic-setbit.h \
-  include/vdso/math64.h \
-  include/linux/time64.h \
-  include/vdso/time64.h \
-  include/uapi/linux/time.h \
-  include/uapi/linux/time_types.h \
-  include/linux/time32.h \
-  include/linux/timex.h \
-  include/uapi/linux/timex.h \
-  include/uapi/linux/param.h \
-  arch/x86/include/generated/uapi/asm/param.h \
-  include/asm-generic/param.h \
-    $(wildcard include/config/HZ) \
-  include/uapi/asm-generic/param.h \
-  arch/x86/include/asm/timex.h \
-    $(wildcard include/config/X86_TSC) \
-  arch/x86/include/asm/processor.h \
-    $(wildcard include/config/X86_VMX_FEATURE_NAMES) \
-    $(wildcard include/config/X86_IOPL_IOPERM) \
-    $(wildca
+#include <linux/module.h>
+#include <linux/init.h>
+#include <linux/delay.h>
+#include <asm/io.h>
+
+#include <media/v4l2-common.h>
+
+static unsigned int i2c_debug;
+module_param(i2c_debug, int, 0644);
+MODULE_PARM_DESC(i2c_debug, "enable debug messages [i2c]");
+
+static unsigned int i2c_scan;
+module_param(i2c_scan, int, 0444);
+MODULE_PARM_DESC(i2c_scan, "scan i2c bus at insmod time");
+
+#define dprintk(level, fmt, arg...)\
+	do { if (i2c_debug >= level)\
+		printk(KERN_DEBUG pr_fmt("%s: i2c:" fmt), \
+			__func__, ##arg); \
+	} while (0)
+
+#define I2C_WAIT_DELAY 32
+#define I2C_WAIT_RETRY 64
+
+#define I2C_EXTEND  (1 << 3)
+#define I2C_NOSTOP  (1 << 4)
+
+static inline int i2c_slave_did_ack(struct i2c_adapter *i2c_adap)
+{
+	struct cx23885_i2c *bus = i2c_adap->algo_data;
+	struct cx23885_dev *dev = bus->dev;
+	return cx_read(bus->reg_stat) & 0x01;
+}
+
+static inline int i2c_is_busy(struct i2c_adapter *i2c_adap)
+{
+	struct cx23885_i2c *bus = i2c_adap->algo_data;
+	struct cx23885_dev *dev = bus->dev;
+	return cx_read(bus->reg_stat) & 0x02 ? 1 : 0;
+}
+
+static int i2c_wait_done(struct i2c_adapter *i2c_adap)
+{
+	int count;
+
+	for (count = 0; count < I2C_WAIT_RETRY; count++) {
+		if (!i2c_is_busy(i2c_adap))
+			break;
+		udelay(I2C_WAIT_DELAY);
+	}
+
+	if (I2C_WAIT_RETRY == count)
+		return 0;
+
+	return 1;
+}
+
+static int i2c_sendbytes(struct i2c_adapter *i2c_adap,
+			 const struct i2c_msg *msg, int joined_rlen)
+{
+	struct cx23885_i2c *bus = i2c_adap->algo_data;
+	struct cx23885_dev *dev = bus->dev;
+	u32 wdata, addr, ctrl;
+	int retval, cnt;
+
+	if (joined_rlen)
+		dprintk(1, "%s(msg->wlen=%d, nextmsg->rlen=%d)\n", __func__,
+			msg->len, joined_rlen);
+	else
+		dprintk(1, "%s(msg->len=%d)\n", __func__, msg->len);
+
+	/* Deal with i2c probe functions with zero payload */
+	if (msg->len == 0) {
+		cx_write(bus->reg_addr, msg->addr << 25);
+		cx_write(bus->reg_ctrl, bus->i2c_period | (1 << 2));
+		if (!i2c_wait_done(i2c_adap))
+			return -EIO;
+		if (!i2c_slave_did_ack(i2c_adap))
+			return -ENXIO;
+
+		dprintk(1, "%s() returns 0\n", __func__);
+		return 0;
+	}
+
+
+	/* dev, reg + first byte */
+	addr = (msg->addr << 25) | msg->buf[0];
+	wdata = msg->buf[0];
+	ctrl = bus->i2c_period | (1 << 12) | (1 << 2);
+
+	if (msg->len > 1)
+		ctrl |= I2C_NOSTOP | I2C_EXTEND;
+	else if (joined_rlen)
+		ctrl |= I2C_NOSTOP;
+
+	cx_write(bus->reg_addr, addr);
+	cx_write(bus->reg_wdata, wdata);
+	cx_write(bus->reg_ctrl, ctrl);
+
+	if (!i2c_wait_done(i2c_adap))
+		goto eio;
+	if (i2c_debug) {
+		printk(KERN_DEBUG " <W %02x %02x", msg->addr << 1, msg->buf[0]);
+		if (!(ctrl & I2C_NOSTOP))
+			pr_cont(" >\n");
+	}
+
+	for (cnt = 1; cnt < msg->len; cnt++) {
+		/* following bytes */
+		wdata = msg->buf[cnt];
+		ctrl = bus->i2c_period | (1 << 12) | (1 << 2);
+
+		if (cnt < msg->len - 1)
+			ctrl |= I2C_NOSTOP | I2C_EXTEND;
+		else if (joined_rlen)
+			ctrl |= I2C_NOSTOP;
+
+		cx_write(bus->reg_addr, addr);
+		cx_write(bus->reg_wdata, wdata);
+		cx_write(bus->reg_ctrl, ctrl);
+
+		if (!i2c_wait_done(i2c_adap))
+			goto eio;
+		if (i2c_debug) {
+			pr_cont(" %02x", msg->buf[cnt]);
+			if (!(ctrl & I2C_NOSTOP))
+				pr_cont(" >\n");
+		}
+	}
+	return msg->len;
+
+ eio:
+	retval = -EIO;
+	if (i2c_debug)
+		pr_err(" ERR: %d\n", retval);
+	return retval;
+}
+
+static int i2c_readbytes(struct i2c_adapter *i2c_adap,
+			 const struct i2c_msg *msg, int joined)
+{
+	struct cx23885_i2c *bus = i2c_adap->algo_data;
+	struct cx23885_dev *dev = bus->dev;
+	u32 ctrl, cnt;
+	int retval;
+
+
+	if (i2c_debug && !joined)
+		dprintk(1, "%s(msg->len=%d)\n", __func__, msg->len);
+
+	/* Deal with i2c probe functions with zero payload */
+	if (msg->len == 0) {
+		cx_write(bus->reg_addr, msg->addr << 25);
+		cx_write(bus->reg_ctrl, bus->i2c_period | (1 << 2) | 1);
+		if (!i2c_wait_done(i2c_adap))
+			return -EIO;
+		if (!i2c_slave_did_ack(i2c_adap))
+			return -ENXIO;
+
+
+		dprintk(1, "%s() returns 0\n", __func__);
+		return 0;
+	}
+
+	if (i2c_debug) {
+		if (joined)
+			dprintk(1, " R");
+		else
+			dprintk(1, " <R %02x", (msg->addr << 1) + 1);
+	}
+
+	for (cnt = 0; cnt < msg->len; cnt++) {
+
+		ctrl = bus->i2c_period | (1 << 12) | (1 << 2) | 1;
+
+		if (cnt < msg->len - 1)
+			ctrl |= I2C_NOSTOP | I2C_EXTEND;
+
+		cx_write(bus->reg_addr, msg->addr << 25);
+		cx_write(bus->reg_ctrl, ctrl);
+
+		if (!i2c_wait_done(i2c_adap))
+			goto eio;
+		msg->buf[cnt] = cx_read(bus->reg_rdata) & 0xff;
+		if (i2c_debug) {
+			dprintk(1, " %02x", msg->buf[cnt]);
+			if (!(ctrl & I2C_NOSTOP))
+				dprintk(1, " >\n");
+		}
+	}
+	return msg->len;
+
+ eio:
+	retval = -EIO;
+	if (i2c_debug)
+		pr_err(" ERR: %d\n", retval);
+	return retval;
+}
+
+static int i2c_xfer(struct i2c_adapter *i2c_adap,
+		    struct i2c_msg *msgs, int num)
+{
+	int i, retval = 0;
+
+	dprintk(1, "%s(num = %d)\n", __func__, num);
+
+	for (i = 0 ; i < num; i++) {
+		dprintk(1, "%s(num = %d) addr = 0x%02x  len = 0x%x\n",
+			__func__, num, msgs[i].addr, msgs[i].len);
+		if (msgs[i].flags & I2C_M_RD) {
+			/* read */
+			retval = i2c_readbytes(i2c_adap, &msgs[i], 0);
+		} else if (i + 1 < num && (msgs[i + 1].flags & I2C_M_RD) &&
+			   msgs[i].addr == msgs[i + 1].addr) {
+			/* write then read from same address */
+			retval = i2c_sendbytes(i2c_adap, &msgs[i],
+					       msgs[i + 1].len);
+			if (retval < 0)
+				goto err;
+			i++;
+			retval = i2c_readbytes(i2c_adap, &msgs[i], 1);
+		} else {
+			/* write */
+			retval = i2c_sendbytes(i2c_adap, &msgs[i], 0);
+		}
+		if (retval < 0)
+			goto err;
+	}
+	return num;
+
+ err:
+	return retval;
+}
+
+static u32 cx23885_functionality(struct i2c_adapter *adap)
+{
+	return I2C_FUNC_SMBUS_EMUL | I2C_FUNC_I2C;
+}
+
+static const struct i2c_algorithm cx23885_i2c_algo_template = {
+	.master_xfer	= i2c_xfer,
+	.functionality	= cx23885_functionality,
+};
+
+/* ----------------------------------------------------------------------- */
+
+static const struct i2c_adapter cx23885_i2c_adap_template = {
+	.name              = "cx23885",
+	.owner             = THIS_MODULE,
+	.algo              = &cx23885_i2c_algo_template,
+};
+
+static const struct i2c_client cx23885_i2c_client_template = {
+	.name	= "cx23885 internal",
+};
+
+static char *i2c_devs[128] = {
+	[0x10 >> 1] = "tda10048",
+	[0x12 >> 1] = "dib7000pc",
+	[0x1c >> 1] = "lgdt3303",
+	[0x80 >> 1] = "cs3308",
+	[0x82 >> 1] = "cs3308",
+	[0x86 >> 1] = "tda9887",
+	[0x32 >> 1] = "cx24227",
+	[0x88 >> 1] = "cx25837",
+	[0x84 >> 1] = "tda8295",
+	[0x98 >> 1] = "flatiron",
+	[0xa0 >> 1] = "eeprom",
+	[0xc0 >> 1] = "tuner/mt2131/tda8275",
+	[0xc2 >> 1] = "tuner/mt2131/tda8275/xc5000/xc3028",
+	[0xc8 >> 1] = "tuner/xc3028L",
+};
+
+static void do_i2c_scan(char *name, struct i2c_client *c)
+{
+	unsigned char buf;
+	int i, rc;
+
+	for (i = 0; i < 128; i++) {
+		c->addr = i;
+		rc = i2c_master_recv(c, &buf, 0);
+		if (rc < 0)
+			continue;
+		pr_info("%s: i2c scan: found device @ 0x%04x  [%s]\n",
+		       name, i, i2c_devs[i] ? i2c_devs[i] : "???");
+	}
+}
+
+/* init + register i2c adapter */
+int cx23885_i2c_register(struct cx23885_i2c *bus)
+{
+	struct cx23885_dev *dev = bus->dev;
+
+	dprintk(1, "%s(bus = %d)\n", __func__, bus->nr);
+
+	bus->i2c_adap = cx23885_i2c_adap_template;
+	bus->i2c_client = cx23885_i2c_client_template;
+	bus->i2c_adap.dev.parent = &dev->pci->dev;
+
+	strscpy(bus->i2c_adap.name, bus->dev->name,
+		sizeof(bus->i2c_adap.name));
+
+	bus->i2c_adap.algo_data = bus;
+	i2c_set_adapdata(&bus->i2c_adap, &dev->v4l2_dev);
+	i2c_add_adapter(&bus->i2c_adap);
+
+	bus->i2c_client.adapter = &bus->i2c_adap;
+
+	if (0 == bus->i2c_rc) {
+		dprintk(1, "%s: i2c bus %d registered\n", dev->name, bus->nr);
+		if (i2c_scan) {
+			pr_info("%s: scan bus %d:\n",
+					dev->name, bus->nr);
+			do_i2c_scan(dev->name, &bus->i2c_client);
+		}
+	} else
+		pr_warn("%s: i2c bus %d register FAILED\n",
+			dev->name, bus->nr);
+
+	/* Instantiate the IR receiver device, if present */
+	if (0 == bus->i2c_rc) {
+		struct i2c_board_info info;
+		static const unsigned short addr_list[] = {
+			0x6b, I2C_CLIENT_END
+		};
+
+		memset(&info, 0, sizeof(struct i2c_board_info));
+		strscpy(info.type, "ir_video", I2C_NAME_SIZE);
+		/* Use quick read command for probe, some IR chips don't
+		 * support writes */
+		i2c_new_scanned_device(&bus->i2c_adap, &info, addr_list,
+				       i2c_probe_func_quick_read);
+	}
+
+	return bus->i2c_rc;
+}
+
+int cx23885_i2c_unregister(struct cx23885_i2c *bus)
+{
+	i2c_del_adapter(&bus->i2c_adap);
+	return 0;
+}
+
+void cx23885_av_clk(struct cx23885_dev *dev, int enable)
+{
+	/* write 0 to bus 2 addr 0x144 via i2x_xfer() */
+	char buffer[3];
+	struct i2c_msg msg;
+	dprintk(1, "%s(enabled = %d)\n", __func__, enable);
+
+	/* Register 0x144 */
+	buffer[0] = 0x01;
+	buffer[1] = 0x44;
+	if (enable == 1)
+		buffer[2] = 0x05;
+	else
+		buffer[2] = 0x00;
+
+	msg.addr = 0x44;
+	msg.flags = I2C_M_TEN;
+	msg.len = 3;
+	msg.buf = buffer;
+
+	i2c_xfer(&dev->i2c_bus[2].i2c_adap, &msg, 1);
+}
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                

@@ -1,8 +1,14 @@
-pes.h \
-  include/asm-generic/pgtable-nop4d.h \
-  include/asm-generic/pgtable-nopud.h \
-  arch/x86/include/asm/nospec-branch.h \
-  include/linux/static_key.h \
-  include/linux/jump_label.h \
-    $(wildcard include/config/HAVE_ARCH_JUMP_LABEL_RELATIVE) \
-  arch/x86/include/
+DING,
+};
+enum cx23885_copyright {
+	CX23885_COPYRIGHT_OFF,
+	CX23885_COPYRIGHT_ON,
+};
+enum cx23885_notification_type {
+	CX23885_NOTIFICATION_REFRESH,
+};
+enum cx23885_notification_status {
+	CX23885_NOTIFICATION_OFF,
+	CX23885_NOTIFICATION_ON,
+};
+enum cx23885_notification_mailb

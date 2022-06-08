@@ -1,5 +1,5 @@
-s);
+TRL, reg);
+	}
 
-/**
- * struct pending_free - information about data structures about to be freed
- * @zapp
+	/* Set VIDC pins to input */
+	if (cx23885_boards[dev->board].portc == CX23885_

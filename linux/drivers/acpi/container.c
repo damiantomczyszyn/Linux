@@ -1,66 +1,113 @@
-dcard include/config/PARAVIRT_XXL) \
-  arch/x86/include/asm/disabled-features.h \
-    $(wildcard include/config/X86_SMAP) \
-    $(wildcard include/config/X86_UMIP) \
-    $(wildcard include/config/X86_INTEL_MEMORY_PROTECTION_KEYS) \
-    $(wildcard include/config/X86_5LEVEL) \
-    $(wildcard include/config/PAGE_TABLE_ISOLATION) \
-    $(wildcard include/config/INTEL_IOMMU_SVM) \
-    $(wildcard include/config/X86_SGX) \
-  include/asm-generic/bitops/const_hweight.h \
-  include/asm-generic/bitops/instrumented-atomic.h \
-  include/linux/instrumented.h \
-  include/asm-generic/bitops/instrumented-non-atomic.h \
-    $(wildcard include/config/KCSAN_ASSUME_PLAIN_WRITES_ATOMIC) \
-  include/asm-generic/bitops/instrumented-lock.h \
-  include/asm-generic/bitops/le.h \
-  arch/x86/include/uapi/asm/byteorder.h \
-  include/linux/byteorder/little_endian.h \
-  include/uapi/linux/byteorder/little_endian.h \
-  include/linux/swab.h \
-  include/uapi/linux/swab.h \
-  arch/x86/include/uapi/asm/swab.h \
-  include/linux/byteorder/generic.h \
-  include/asm-generic/bitops/ext2-atomic-setbit.h \
-  include/vdso/math64.h \
-  include/linux/time64.h \
-  include/vdso/time64.h \
-  include/uapi/linux/time.h \
-  include/uapi/linux/time_types.h \
-  include/linux/time32.h \
-  include/linux/timex.h \
-  include/uapi/linux/timex.h \
-  include/uapi/linux/param.h \
-  arch/x86/include/generated/uapi/asm/param.h \
-  include/asm-generic/param.h \
-    $(wildcard include/config/HZ) \
-  include/uapi/asm-generic/param.h \
-  arch/x86/include/asm/timex.h \
-    $(wildcard include/config/X86_TSC) \
-  arch/x86/include/asm/processor.h \
-    $(wildcard include/config/X86_VMX_FEATURE_NAMES) \
-    $(wildcard include/config/X86_IOPL_IOPERM) \
-    $(wildcard include/config/STACKPROTECTOR) \
-    $(wildcard include/config/VM86) \
-    $(wildcard include/config/X86_DEBUGCTLMSR) \
-    $(wildcard include/config/CPU_SUP_AMD) \
-    $(wildcard include/config/XEN) \
-  arch/x86/include/asm/processor-flags.h \
-  arch/x86/include/uapi/asm/processor-flags.h \
-  include/linux/mem_encrypt.h \
-    $(wildcard include/config/ARCH_HAS_MEM_ENCRYPT) \
-    $(wildcard include/config/AMD_MEM_ENCRYPT) \
-  arch/x86/include/asm/mem_encrypt.h \
-  include/linux/init.h \
-    $(wildcard include/config/STRICT_KERNEL_RWX) \
-    $(wildcard include/config/STRICT_MODULE_RWX) \
-    $(wildcard include/config/LTO_CLANG) \
-  include/linux/cc_platform.h \
-    $(wildcard include/config/ARCH_HAS_CC_PLATFORM) \
-  arch/x86/include/uapi/asm/bootparam.h \
-  include/linux/screen_info.h \
-  include/uapi/linux/screen_info.h \
-  include/linux/apm_bios.h \
-  include/uapi/linux/apm_bios.h \
-  include/uapi/linux/ioctl.h \
-  arch/x86/includ
+// SPDX-License-Identifier: GPL-2.0-or-later
+/*
+ *  Driver for the Conexant CX23885 PCIe bridge
+ *
+ *  Copyright (c) 2006 Steven Toth <stoth@linuxtv.org>
+ */
+
+#include "cx23885.h"
+
+#include <linux/module.h>
+#include <linux/init.h>
+#include <linux/device.h>
+#include <linux/fs.h>
+#include <linux/kthread.h>
+#include <linux/file.h>
+#include <linux/suspend.h>
+
+#include <media/v4l2-common.h>
+
+#include <media/dvb_ca_en50221.h>
+#include "s5h1409.h"
+#include "s5h1411.h"
+#include "mt2131.h"
+#include "tda8290.h"
+#include "tda18271.h"
+#include "lgdt330x.h"
+#include "xc4000.h"
+#include "xc5000.h"
+#include "max2165.h"
+#include "tda10048.h"
+#include "xc2028.h"
+#include "tuner-simple.h"
+#include "dib7000p.h"
+#include "dib0070.h"
+#include "dibx000_common.h"
+#include "zl10353.h"
+#include "stv0900.h"
+#include "stv0900_reg.h"
+#include "stv6110.h"
+#include "lnbh24.h"
+#include "cx24116.h"
+#include "cx24117.h"
+#include "cimax2.h"
+#include "lgs8gxx.h"
+#include "netup-eeprom.h"
+#include "netup-init.h"
+#include "lgdt3305.h"
+#include "atbm8830.h"
+#include "ts2020.h"
+#include "ds3000.h"
+#include "cx23885-f300.h"
+#include "altera-ci.h"
+#include "stv0367.h"
+#include "drxk.h"
+#include "mt2063.h"
+#include "stv090x.h"
+#include "stb6100.h"
+#include "stb6100_cfg.h"
+#include "tda10071.h"
+#include "a8293.h"
+#include "mb86a20s.h"
+#include "si2165.h"
+#include "si2168.h"
+#include "si2157.h"
+#include "sp2.h"
+#include "m88ds3103.h"
+#include "m88rs6000t.h"
+#include "lgdt3306a.h"
+
+static unsigned int debug;
+
+#define dprintk(level, fmt, arg...)\
+	do { if (debug >= level)\
+		printk(KERN_DEBUG pr_fmt("%s dvb: " fmt), \
+			__func__, ##arg); \
+	} while (0)
+
+/* ------------------------------------------------------------------ */
+
+static unsigned int alt_tuner;
+module_param(alt_tuner, int, 0644);
+MODULE_PARM_DESC(alt_tuner, "Enable alternate tuner configuration");
+
+DVB_DEFINE_MOD_OPT_ADAPTER_NR(adapter_nr);
+
+/* ------------------------------------------------------------------ */
+
+static int queue_setup(struct vb2_queue *q,
+			   unsigned int *num_buffers, unsigned int *num_planes,
+			   unsigned int sizes[], struct device *alloc_devs[])
+{
+	struct cx23885_tsport *port = q->drv_priv;
+
+	port->ts_packet_size  = 188 * 4;
+	port->ts_packet_count = 32;
+	*num_planes = 1;
+	sizes[0] = port->ts_packet_size * port->ts_packet_count;
+	*num_buffers = 32;
+	return 0;
+}
+
+
+static int buffer_prepare(struct vb2_buffer *vb)
+{
+	struct vb2_v4l2_buffer *vbuf = to_vb2_v4l2_buffer(vb);
+	struct cx23885_tsport *port = vb->vb2_queue->drv_priv;
+	struct cx23885_buffer *buf =
+		container_of(vbuf, struct cx23885_buffer, vb);
+
+	return cx23885_buf_prepare(buf, port);
+}
+
+static void buffer_finish(struct vb

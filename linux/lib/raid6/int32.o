@@ -1,22 +1,29 @@
-RRAY_SIZE(lock_classes); i++) {
-		class = &lock_classes[i];
-		if (in_list(e, &class->locks_after) ||
-		    in_list(e, &class->locks_before))
-			return true;
-	}
-	return false;
+args);
+
+	return err;
 }
 
-static bool class_lock_list_valid(struct lock_class *c, struct list_head *h)
+static int cx23885_api_func(void *priv, u32 cmd, int in, int out, u32 data[CX2341X_MBOX_MAX_DATA])
 {
-	struct lock_list *e;
+	return cx23885_mbox_func(priv, cmd, in, out, data);
+}
 
-	list_for_each_entry(e, h, entry) {
-		if (e->links_to != c) {
-			printk(KERN_INFO "class %s: mismatch for lock entry %ld; class %s <> %s",
-			       c->name ? : "(?)",
-			       (unsigned long)(e - list_entries),
-			       e->links_to && e->links_to->name ?
-			       e->links_to->name : "(?)",
-			       e->class && e->class->name ? e->class->name :
-			       "(?
+static int cx23885_find_mailbox(struct cx23885_dev *dev)
+{
+	u32 signature[4] = {
+		0x12345678, 0x34567812, 0x56781234, 0x78123456
+	};
+	int signaturecnt = 0;
+	u32 value;
+	int i;
+
+	dprintk(2, "%s()\n", __func__);
+
+	for (i = 0; i < CX23885_FIRM_IMAGE_SIZE; i++) {
+		mc417_memory_read(dev, i, &value);
+		if (value == signature[signaturecnt])
+			signaturecnt++;
+		else
+			signaturecnt = 0;
+		if (4 == signaturecnt) {
+			dprintk(1, "Mailbox signature found at 0x%x\n", 

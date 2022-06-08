@@ -1,1 +1,1 @@
-(int offset, int next, int bucket,
+truct cx23885_audio_dev *chip = sn

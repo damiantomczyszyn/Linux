@@ -1,9 +1,7 @@
-// SPDX-License-Identifier: GPL-2.0
-/*
- * kernel/lockdep_proc.c
- *
- * Runtime locking correctness validator
- *
- * Started by Ingo Molnar:
- *
- *  Copyright (C) 2006,2007 Red Hat, Inc., Ingo
+ GFP_KERNEL, cpu_to_node(i));
+		per_cpu(select_idle_mask, i) = (cpumask_var_t)kzalloc_node(
+			cpumask_size(), GFP_KERNEL, cpu_to_node(i));
+	}
+#endif /* CONFIG_CPUMASK_OFFSTACK */
+
+	init_r

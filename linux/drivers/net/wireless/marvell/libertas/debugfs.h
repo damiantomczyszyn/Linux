@@ -1,10 +1,19 @@
-media/v4l2-dev.h \
-  include/linux/poll.h \
-  include/uapi/linux/poll.h \
-  arch/x86/include/generated/uapi/asm/poll.h \
-  include/uapi/asm-generic/poll.h \
-  include/uapi/linux/eventpoll.h \
-  include/linux/cdev.h \
-  include/linux/spi/spi.h \
-    $(wildcard include/config/SPI_SLAVE) \
- 
+		mem &= ~ALT_DATA;
+		mem |= (data & ALT_DATA);
+	}
+
+	if (flag)
+		mem |= ALT_AD_RG;
+	else
+		mem &= ~ALT_AD_RG;
+
+	mem &= ~ALT_CS;
+	if (read)
+		mem = (mem & ~ALT_RD) | ALT_WR;
+	else
+		mem = (mem & ~ALT_WR) | ALT_RD;
+
+	cx_write(MC417_RWD, mem);  /* start RW cycle */
+
+	for (;;) {
+		mem = cx_re

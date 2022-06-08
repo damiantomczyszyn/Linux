@@ -1,16 +1,21 @@
-nclude/linux/page-flags-layout.h \
-    $(wildcard include/config/KASAN_HW_TAGS) \
-  include/linux/numa.h \
-    $(wildcard include/config/NODES_SHIFT) \
-    $(wildcard include/config/NUMA_KEEP_MEMINFO) \
-    $(wildcard include/config/HAVE_ARCH_NODE_DEV_GROUP) \
-  arch/x86/include/asm/sparsemem.h \
-  include/generated/bounds.h \
-  include/linux/seqlock.h \
-  include/linux/ww_mutex.h \
-    $(wildcard include/config/DEBUG_RT_MUTEXES) \
-    $(wildcard include/config/DEBUG_WW_MUTEX_SLOWPATH) \
-  include/linux/rtmutex.h \
-  arch/x86/include/asm/mmu.h \
-    $(wildcard include/config/MODIFY_LDT_SYSCALL) \
-  include/li
+uted by a highprio stopper thread
+ * and performs thread migration by bumping thread off CPU then
+ * 'pushing' onto another runqueue.
+ */
+static int migration_cpu_stop(void *data)
+{
+	struct migration_arg *arg = data;
+	struct set_affinity_pending *pending = arg->pending;
+	struct task_struct *p = arg->task;
+	struct rq *rq = this_rq();
+	bool complete = false;
+	struct rq_flags rf;
+
+	/*
+	 * The original target CPU might have gone down and we might
+	 * be on another CPU but it doesn't matter.
+	 */
+	local_irq_save(rf.flags);
+	/*
+	 * We need to explicitly wake pending tasks before running
+	 * __migrate_task() such th

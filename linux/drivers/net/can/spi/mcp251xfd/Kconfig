@@ -1,12 +1,18 @@
-ude/config/PARAVIRT_XXL) \
-  arch/x86/include/asm/disabled-features.h \
-    $(wildcard include/config/X86_SMAP) \
-    $(wildcard include/config/X86_UMIP) \
-    $(wildcard include/config/X86_INTEL_MEMORY_PROTECTION_KEYS) \
-    $(wildcard include/config/X86_5LEVEL) \
-    $(wildcard include/config/PAGE_TABLE_ISOLATION) \
-    $(wildcard include/config/INTEL_IOMMU_SVM) \
-    $(wildcard include/config/X86_SGX) \
-  include/asm-generic/bitops/const_hweight.h \
-  include/asm-generic/bitops/instrumented-atomic.h \
-  include/
+# SPDX-License-Identifier: GPL-2.0-only
+
+config CAN_MCP251XFD
+	tristate "Microchip MCP251xFD SPI CAN controllers"
+	select REGMAP
+	select WANT_DEV_COREDUMP
+	help
+	  Driver for the Microchip MCP251XFD SPI FD-CAN controller
+	  family.
+
+config CAN_MCP251XFD_SANITY
+	depends on CAN_MCP251XFD
+	bool "Additional Sanity Checks"
+	help
+	  This option enables additional sanity checks in the driver,
+	  that compares various internal counters with the in chip
+	  variants. This comes with a runtime overhead.
+	  Disable if unsure.

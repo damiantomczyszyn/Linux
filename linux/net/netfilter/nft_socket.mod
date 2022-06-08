@@ -1,1 +1,2 @@
-(wildcard include/config/SPL
+  = 0x61,
+	.if_khz          

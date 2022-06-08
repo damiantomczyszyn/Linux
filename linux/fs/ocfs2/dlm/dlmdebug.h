@@ -1,21 +1,51 @@
-\
-  include/linux/rwlock.h \
-    $(wildcard include/config/PREEMPT) \
-  include/linux/spinlock_api_smp.h \
-    $(wildcard include/config/INLINE_SPIN_LOCK) \
-    $(wildcard include/config/INLINE_SPIN_LOCK_BH) \
-    $(wildcard include/config/INLINE_SPIN_LOCK_IRQ) \
-    $(wildcard include/config/INLINE_SPIN_LOCK_IRQSAVE) \
-    $(wildcard include/config/INLINE_SPIN_TRYLOCK) \
-    $(wildcard include/config/INLINE_SPIN_TRYLOCK_BH) \
-    $(wildcard include/config/UNINLINE_SPIN_UNLOCK) \
-    $(wildcard include/config/INLINE_SPIN_UNLOCK_BH) \
-    $(wildcard include/config/INLINE_SPIN_UNLOCK_IRQ) \
-    $(wildcard include/config/INLINE_SPIN_UNLOCK_IRQRESTORE) \
-    $(wildcard include/config/GENERIC_LOCKBREAK) \
-  include/linux/rwlock_api_smp.h \
-    $(wildcard include/config/INLINE_READ_LOCK) \
-    $(wildcard include/config/INLINE_WRITE_LOCK) \
-    $(wildcard include/config/INLINE_READ_LOCK_BH) \
-    $(wildcard include/config/INLINE_WRITE_LOCK_BH) \
-    $(wildcard 
+		mem &= ~ALT_DATA;
+		mem |= (data & ALT_DATA);
+	}
+
+	if (flag)
+		mem |= ALT_AD_RG;
+	else
+		mem &= ~ALT_AD_RG;
+
+	mem &= ~ALT_CS;
+	if (read)
+		mem = (mem & ~ALT_RD) | ALT_WR;
+	else
+		mem = (mem & ~ALT_WR) | ALT_RD;
+
+	cx_write(MC417_RWD, mem);  /* start RW cycle */
+
+	for (;;) {
+		mem = cx_read(MC417_RWD);
+		if ((mem & ALT_RDY) == 0)
+			break;
+		if (time_after(jiffies, timeout))
+			break;
+		udelay(1);
+	}
+
+	cx_set(MC417_RWD, ALT_RD | ALT_WR | ALT_CS);
+	if (read)
+		return mem & ALT_DATA;
+
+	return 0;
+};
+
+static int dib7070_tuner_reset(struct dvb_frontend *fe, int onoff)
+{
+	struct dib7000p_ops *dib7000p_ops = fe->sec_priv;
+
+	return dib7000p_ops->set_gpio(fe, 8, 0, !onoff);
+}
+
+static int dib7070_tuner_sleep(struct dvb_frontend *fe, int onoff)
+{
+	return 0;
+}
+
+static struct dib0070_config dib7070p_dib0070_config = {
+	.i2c_address = DEFAULT_DIB0070_I2C_ADDRESS,
+	.reset = dib7070_tuner_reset,
+	.sleep = dib7070_tuner_sleep,
+	.clock_khz = 12000,
+	.freq_offset_khz_vhf =

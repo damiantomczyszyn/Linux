@@ -1,1 +1,5 @@
-cmd_drivers/media/radio/radio-mr800.mod := { echo  drivers/media/radio/radio-mr800.o;  echo; } > drivers/media/radio/radio-mr800.mod
+UGE_HVR1500:
+	case CX23885_BOARD_MPX885:
+	case CX23885_BOARD_MYGICA_X8507:
+	case CX23885_BOARD_TERRATEC_CINERGY_T_PCIE_DUAL:
+	case CX

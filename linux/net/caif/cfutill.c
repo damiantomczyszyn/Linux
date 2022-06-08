@@ -1,71 +1,89 @@
-fig/GENERIC_ATOMIC64) \
-  include/linux/atomic/atomic-long.h \
-  include/linux/atomic/atomic-instrumented.h \
-  include/linux/bug.h \
-    $(wildcard include/config/BUG_ON_DATA_CORRUPTION) \
-  arch/x86/include/asm/bug.h \
-    $(wildcard include/config/DEBUG_BUGVERBOSE) \
-  include/linux/instrumentation.h \
-    $(wildcard include/config/DEBUG_ENTRY) \
-  include/asm-generic/bug.h \
-    $(wildcard include/config/BUG) \
-    $(wildcard include/config/GENERIC_BUG_RELATIVE_POINTERS) \
-  arch/x86/include/uapi/asm/msr.h \
-  include/linux/tracepoint-defs.h \
-  arch/x86/include/asm/special_insns.h \
-  include/linux/irqflags.h \
-    $(wildcard include/config/TRACE_IRQFLAGS) \
-    $(wildcard include/config/PREEMPT_RT) \
-    $(wildcard include/config/IRQSOFF_TRACER) \
-    $(wildcard include/config/PREEMPT_TRACER) \
-    $(wildcard include/config/DEBUG_IRQFLAGS) \
-    $(wildcard include/config/TRACE_IRQFLAGS_SUPPORT) \
-  arch/x86/include/asm/irqflags.h \
-  arch/x86/include/asm/fpu/types.h \
-  arch/x86/include/asm/vmxfeatures.h \
-  arch/x86/include/asm/vdso/processor.h \
-  include/linux/personality.h \
-  include/uapi/linux/personality.h \
-  arch/x86/include/asm/tsc.h \
-  arch/x86/include/asm/cpufeature.h \
-    $(wildcard include/config/X86_FEATURE_NAMES) \
-  include/vdso/time32.h \
-  include/vdso/time.h \
-  include/linux/uidgid.h \
-    $(wildcard include/config/MULTIUSER) \
-    $(wildcard include/config/USER_NS) \
-  include/linux/highuid.h \
-  include/linux/buildid.h \
-    $(wildcard include/config/CRASH_CORE) \
-  include/linux/mm_types.h \
-    $(wildcard include/config/HAVE_ALIGNED_STRUCT_PAGE) \
-    $(wildcard include/config/MEMCG) \
-    $(wildcard include/config/USERFAULTFD) \
-    $(wildcard include/config/SWAP) \
-    $(wildcard include/config/NUMA) \
-    $(wildcard include/config/HAVE_ARCH_COMPAT_MMAP_BASES) \
-    $(wildcard include/config/MEMBARRIER) \
-    $(wildcard include/config/AIO) \
-    $(wildcard include/config/MMU_NOTIFIER) \
-    $(wildcard include/config/TRANSPARENT_HUGEPAGE) \
-    $(wildcard include/config/NUMA_BALANCING) \
-    $(wildcard include/config/ARCH_WANT_BATCHED_UNMAP_TLB_FLUSH) \
-    $(wildcard include/config/HUGETLB_PAGE) \
-    $(wildcard include/config/IOMMU_SVA) \
-  include/linux/mm_types_task.h \
-    $(wildcard include/config/SPLIT_PTLOCK_CPUS) \
-    $(wildcard include/config/ARCH_ENABLE_SPLIT_PMD_PTLOCK) \
-  arch/x86/include/asm/tlbbatch.h \
-  include/linux/auxvec.h \
-  include/uapi/linux/auxvec.h \
-  arch/x86/include/uapi/asm/auxvec.h \
-  include/linux/kref.h \
-  include/linux/spinlock.h \
-    $(wildcard include/config/PREEMPTION) \
-  include/linux/preempt.h \
-    $(wildcard include/config/PREEMPT_COUNT) \
-    $(wildcard include/config/TRACE_PREEMPT_TOGGLE) \
-    $(wildcard include/config/PREEMPT_NOTIFIERS) \
-  arch/x86/include/asm/preempt.h \
-  include/linux/thread_info.h \
-    $(wildcard include
+00000036);
+		cx_write(MC417_OEN, 0x00001000);
+		cx_set(MC417_RWD, 0x00000002);
+		msleep(200);
+		cx_clear(MC417_RWD, 0x00000800);
+		msleep(200);
+		cx_set(MC417_RWD, 0x00000800);
+		msleep(200);
+		break;
+	case CX23885_BOARD_NETUP_DUAL_DVBS2_CI:
+		/* GPIO-0 INTA from CiMax1
+		   GPIO-1 INTB from CiMax2
+		   GPIO-2 reset chips
+		   GPIO-3 to GPIO-10 data/addr for CA
+		   GPIO-11 ~CS0 to CiMax1
+		   GPIO-12 ~CS1 to CiMax2
+		   GPIO-13 ADL0 load LSB addr
+		   GPIO-14 ADL1 load MSB addr
+		   GPIO-15 ~RDY from CiMax
+		   GPIO-17 ~RD to CiMax
+		   GPIO-18 ~WR to CiMax
+		 */
+		cx_set(GP0_IO, 0x00040000); /* GPIO as out */
+		/* GPIO1 and GPIO2 as INTA and INTB from CiMaxes, reset low */
+		cx_clear(GP0_IO, 0x00030004);
+		msleep(100);/* reset delay */
+		cx_set(GP0_IO, 0x00040004); /* GPIO as out, reset high */
+		cx_write(MC417_CTL, 0x00000037);/* enable GPIO3-18 pins */
+		/* GPIO-15 IN as ~ACK, rest as OUT */
+		cx_write(MC417_OEN, 0x00001000);
+		/* ~RD, ~WR high; ADL0, ADL1 low; ~CS0, ~CS1 high */
+		cx_write(MC417_RWD, 0x0000c300);
+		/* enable irq */
+		cx_write(GPIO_ISM, 0x00000000);/* INTERRUPTS active low*/
+		break;
+	case CX23885_BOARD_HAUPPAUGE_HVR1270:
+	case CX23885_BOARD_HAUPPAUGE_HVR1275:
+	case CX23885_BOARD_HAUPPAUGE_HVR1255:
+	case CX23885_BOARD_HAUPPAUGE_HVR1255_22111:
+	case CX23885_BOARD_HAUPPAUGE_HVR1210:
+		/* GPIO-5 RF Control: 0 = RF1 Terrestrial, 1 = RF2 Cable */
+		/* GPIO-6 I2C Gate which can isolate the demod from the bus */
+		/* GPIO-9 Demod reset */
+
+		/* Put the parts into reset and back */
+		cx23885_gpio_enable(dev, GPIO_9 | GPIO_6 | GPIO_5, 1);
+		cx23885_gpio_set(dev, GPIO_9 | GPIO_6 | GPIO_5);
+		cx23885_gpio_clear(dev, GPIO_9);
+		msleep(20);
+		cx23885_gpio_set(dev, GPIO_9);
+		break;
+	case CX23885_BOARD_MYGICA_X8506:
+	case CX23885_BOARD_MAGICPRO_PROHDTVE2:
+	case CX23885_BOARD_MYGICA_X8507:
+		/* GPIO-0 (0)Analog / (1)Digital TV */
+		/* GPIO-1 reset XC5000 */
+		/* GPIO-2 demod reset */
+		cx23885_gpio_enable(dev, GPIO_0 | GPIO_1 | GPIO_2, 1);
+		cx23885_gpio_clear(dev, GPIO_1 | GPIO_2);
+		msleep(100);
+		cx23885_gpio_set(dev, GPIO_0 | GPIO_1 | GPIO_2);
+		msleep(100);
+		break;
+	case CX23885_BOARD_MYGICA_X8558PRO:
+		/* GPIO-0 reset first ATBM8830 */
+		/* GPIO-1 reset second ATBM8830 */
+		cx23885_gpio_enable(dev, GPIO_0 | GPIO_1, 1);
+		cx23885_gpio_clear(dev, GPIO_0 | GPIO_1);
+		msleep(100);
+		cx23885_gpio_set(dev, GPIO_0 | GPIO_1);
+		msleep(100);
+		break;
+	case CX23885_BOARD_HAUPPAUGE_HVR1850:
+	case CX23885_BOARD_HAUPPAUGE_HVR1290:
+		/* GPIO-0 656_CLK */
+		/* GPIO-1 656_D0 */
+		/* GPIO-2 Wake# */
+		/* GPIO-3-10 cx23417 data0-7 */
+		/* GPIO-11-14 cx23417 addr0-3 */
+		/* GPIO-15-18 cx23417 READY, CS, RD, WR */
+		/* GPIO-19 IR_RX */
+		/* GPIO-20 C_IR_TX */
+		/* GPIO-21 I2S DAT */
+		/* GPIO-22 I2S WCLK */
+		/* GPIO-23 I2S BCLK */
+		/* ALT GPIO: EXP GPIO LATCH */
+
+		/* CX23417 GPIO's */
+		/* GPIO-14 S5H1411/CX24228 

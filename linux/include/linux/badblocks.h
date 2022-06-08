@@ -1,60 +1,76 @@
-ask.h \
-    $(wildcard include/config/HAVE_EXIT_THREAD) \
-    $(wildcard include/config/ARCH_WANTS_DYNAMIC_TASK_STRUCT) \
-    $(wildcard include/config/HAVE_ARCH_THREAD_STRUCT_WHITELIST) \
-  include/linux/cred.h \
-    $(wildcard include/config/DEBUG_CREDENTIALS) \
-  include/linux/key.h \
-    $(wildcard include/config/KEY_NOTIFICATIONS) \
-    $(wildcard include/config/NET) \
-  include/linux/assoc_array.h \
-    $(wildcard include/config/ASSOCIATIVE_ARRAY) \
-  include/linux/sched/user.h \
-    $(wildcard include/config/WATCH_QUEUE) \
-  include/linux/percpu_counter.h \
-  include/linux/rcu_sync.h \
-  include/linux/delayed_call.h \
-  include/linux/errseq.h \
-  include/linux/ioprio.h \
-  include/linux/sched/rt.h \
-  include/linux/iocontext.h \
-    $(wildcard include/config/BLK_ICQ) \
-  include/uapi/linux/ioprio.h \
-  include/linux/fs_types.h \
-  include/linux/mount.h \
-  include/linux/mnt_idmapping.h \
-  include/uapi/linux/fs.h \
-  include/linux/quota.h \
-    $(wildcard include/config/QUOTA_NETLINK_INTERFACE) \
-  include/uapi/linux/dqblk_xfs.h \
-  include/linux/dqblk_v1.h \
-  include/linux/dqblk_v2.h \
-  include/linux/dqblk_qtree.h \
-  include/linux/projid.h \
-  include/uapi/linux/quota.h \
-  include/linux/nfs_fs_i.h \
-  include/linux/seq_file.h \
-  include/linux/string_helpers.h \
-  include/linux/ns_common.h \
-  include/linux/nsproxy.h \
-  include/linux/user_namespace.h \
-    $(wildcard include/config/INOTIFY_USER) \
-    $(wildcard include/config/FANOTIFY) \
-    $(wildcard include/config/PERSISTENT_KEYRINGS) \
-  include/linux/kernel_stat.h \
-  include/linux/interrupt.h \
-    $(wildcard include/config/IRQ_FORCED_THREADING) \
-    $(wildcard include/config/GENERIC_IRQ_PROBE) \
-    $(wildcard include/config/IRQ_TIMINGS) \
-  include/linux/irqreturn.h \
-  include/linux/irqnr.h \
-  include/uapi/linux/irqnr.h \
-  include/linux/hardirq.h \
-  include/linux/context_tracking_state.h \
-    $(wildcard include/config/CONTEXT_TRACKING) \
-  include/linux/ftrace_irq.h \
-    $(wildcard include/config/HWLAT_TRACER) \
-    $(wildcard include/config/OSNOISE_TRACER) \
-  include/linux/vtime.h \
-    $(wildcard include/config/VIRT_CPU_ACCOUNTING) \
-    $(wildcard include/config/IRQ_T
+dth_count_to_ns(FIFO_RXTX, *divider);
+}
+
+/*
+ * IR Tx Carrier Duty Cycle register helpers
+ */
+static unsigned int cduty_tx_s_duty_cycle(struct cx23885_dev *dev,
+					  unsigned int duty_cycle)
+{
+	u32 n;
+	n = DIV_ROUND_CLOSEST(duty_cycle * 100, 625); /* 16ths of 100% */
+	if (n != 0)
+		n--;
+	if (n > 15)
+		n = 15;
+	cx23888_ir_write4(dev, CX23888_IR_CDUTY_REG, n);
+	return DIV_ROUND_CLOSEST((n + 1) * 100, 16);
+}
+
+/*
+ * IR Filter Register helpers
+ */
+static u32 filter_rx_s_min_width(struct cx23885_dev *dev, u32 min_width_ns)
+{
+	u32 count = ns_to_lpf_count(min_width_ns);
+	cx23888_ir_write4(dev, CX23888_IR_FILTR_REG, count);
+	return lpf_count_to_ns(count);
+}
+
+/*
+ * IR IRQ Enable Register helpers
+ */
+static inline void irqenable_rx(struct cx23885_dev *dev, u32 mask)
+{
+	mask &= (IRQEN_RTE | IRQEN_ROE | IRQEN_RSE);
+	cx23888_ir_and_or4(dev, CX23888_IR_IRQEN_REG,
+			   ~(IRQEN_RTE | IRQEN_ROE | IRQEN_RSE), mask);
+}
+
+static inline void irqenable_tx(struct cx23885_dev *dev, u32 mask)
+{
+	mask &= IRQEN_TSE;
+	cx23888_ir_and_or4(dev, CX23888_IR_IRQEN_REG, ~IRQEN_TSE, mask);
+}
+
+/*
+ * V4L2 Subdevice IR Ops
+ */
+static int cx23888_ir_irq_handler(struct v4l2_subdev *sd, u32 status,
+				  bool *handled)
+{
+	struct cx23888_ir_state *state = to_state(sd);
+	struct cx23885_dev *dev = state->dev;
+	unsigned long flags;
+
+	u32 cntrl = cx23888_ir_read4(dev, CX23888_IR_CNTRL_REG);
+	u32 irqen = cx23888_ir_read4(dev, CX23888_IR_IRQEN_REG);
+	u32 stats = cx23888_ir_read4(dev, CX23888_IR_STATS_REG);
+
+	union cx23888_ir_fifo_rec rx_data[FIFO_RX_DEPTH];
+	unsigned int i, j, k;
+	u32 events, v;
+	int tsr, rsr, rto, ror, tse, rse, rte, roe, kror;
+
+	tsr = stats & STATS_TSR; /* Tx FIFO Service Request */
+	rsr = stats & STATS_RSR; /* Rx FIFO Service Request */
+	rto = stats & STATS_RTO; /* Rx Pulse Width Timer Time Out */
+	ror = stats & STATS_ROR; /* Rx FIFO Over Run */
+
+	tse = irqen & IRQEN_TSE; /* Tx FIFO Service Request IRQ Enable */
+	rse = irqen & IRQEN_RSE; /* Rx FIFO Service Request IRQ Enable */
+	rte = irqen & IRQEN_RTE; /* Rx Pulse Width Timer Time Out IRQ Enable */
+	roe = irqen & IRQEN_ROE; /* Rx FIFO Over Run IRQ Enable */
+
+	*handled = false;
+	v4l2_dbg(2, ir_888_debug, sd, "IRQ Status:  %s %s 

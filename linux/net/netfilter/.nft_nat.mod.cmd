@@ -1,3 +1,6 @@
-lude/config/SHMEM) \
-    $(wildcard include/config/ARCH_HAS_PTE_SPECIAL) \
-    $(wildcard include/confi
+evision(struct cx23885_dev *dev)
+{
+	switch (cx_read(RDR_CFG2) & 0xff) {
+	case 0x00:
+		/* cx23885 */
+		d

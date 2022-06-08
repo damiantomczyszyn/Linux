@@ -1,8 +1,10 @@
-RCU) \
-  include/linux/srcu.h \
-    $(wildcard include/config/TINY_SRCU) \
-    $(wildcard include/config/SRCU) \
-  include/linux/rcu_segcblist.h \
-  include/linux/srcutree.h \
-  include/linux/rcu_node_tree.h \
-    $(
+t("%s\n", __func__);
+
+	if (0 != slot)
+		return -EINVAL;
+
+	mutex_lock(&inter->fpga_mutex);
+
+	ret = netup_fpga_op_rw(inter, NETUP_CI_BUSCTRL, 0, NETUP_CI_FLG_RD);
+	netup_fpga_op_rw(inter, NETUP_CI_BUSCTRL,
+				(ret & 0

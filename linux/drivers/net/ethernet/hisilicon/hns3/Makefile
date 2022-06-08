@@ -1,27 +1,40 @@
-) \
-  include/acpi/acpi_io.h \
-  include/linux/io.h \
-    $(wildcard include/config/HAS_IOPORT_MAP) \
-  arch/x86/include/asm/io.h \
-    $(wildcard include/config/MTRR) \
-    $(wildcard include/config/X86_PAT) \
-  arch/x86/include/generated/asm/early_ioremap.h \
-  include/asm-generic/early_ioremap.h \
-    $(wildcard include/config/GENERIC_EARLY_IOREMAP) \
-  include/asm-generic/iomap.h \
-  include/asm-generic/pci_iomap.h \
-    $(wildcard include/config/NO_GENERIC_PCI_IOPORT_MAP) \
-    $(wildcard include/config/GENERIC_PCI_IOMAP) \
-  include/asm-generic/io.h \
-    $(wildcard include/config/GENERIC_IOMAP) \
-    $(wildcard include/config/GENERIC_IOREMAP) \
-    $(wildcard include/config/VIRT_TO_BUS) \
-    $(wildcard include/config/GENERIC_DEVMEM_IS_ALLOWED) \
-  include/linux/logic_pio.h \
-    $(wildcard include/config/INDIRECT_PIO) \
-  include/linux/vmalloc.h \
-    $(wildcard include/config/HAVE_ARCH_HUGE_VMALLOC) \
-  arch/x86/include/asm/vmalloc.h \
-    $(wildcard include/config/HAVE_ARCH_HUGE_VMAP) \
-  arch/x86/include/asm/acpi.h \
-    $(wildcard include/config/ACPI_APEI) 
+.duty_cycle = 25,      /* 25 %   - RC-5 carrier */
+	.invert_level = false,
+	.invert_carrier_sense = false,
+};
+
+int cx23888_ir_probe(struct cx23885_dev *dev)
+{
+	struct cx23888_ir_state *state;
+	struct v4l2_subdev *sd;
+	struct v4l2_subdev_ir_parameters default_params;
+	int ret;
+
+	state = kzalloc(sizeof(struct cx23888_ir_state), GFP_KERNEL);
+	if (state == NULL)
+		return -ENOMEM;
+
+	spin_lock_init(&state->rx_kfifo_lock);
+	if (kfifo_alloc(&state->rx_kfifo, CX23888_IR_RX_KFIFO_SIZE,
+			GFP_KERNEL)) {
+		kfree(state);
+		return -ENOMEM;
+	}
+
+	state->dev = dev;
+	sd = &state->sd;
+
+	v4l2_subdev_init(sd, &cx23888_ir_controller_ops);
+	v4l2_set_subdevdata(sd, state);
+	/* FIXME - fix the formatting of dev->v4l2_dev.name and use it */
+	snprintf(sd->name, sizeof(sd->name), "%s/888-ir", dev->name);
+	sd->grp_id = CX23885_HW_888_IR;
+
+	ret = v4l2_device_register_subdev(&dev->v4l2_dev, sd);
+	if (ret == 0) {
+		/*
+		 * Ensure no interrupts arrive from '888 specific conditions,
+		 * since we ignore them in this driver to have commonality with
+		 * similar IR controller cores.
+		 */
+		cx23888_ir_w

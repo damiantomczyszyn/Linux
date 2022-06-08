@@ -1,54 +1,82 @@
-card include/config/BPF_JIT) \
-  include/asm-generic/access_ok.h \
-    $(wildcard include/config/ALTERNATE_USER_ADDRESS_SPACE) \
-  arch/x86/include/asm/uaccess_32.h \
-  include/linux/cred.h \
-    $(wildcard include/config/DEBUG_CREDENTIALS) \
-  include/linux/key.h \
-    $(wildcard include/config/KEY_NOTIFICATIONS) \
-    $(wildcard include/config/NET) \
-  include/linux/assoc_array.h \
-    $(wildcard include/config/ASSOCIATIVE_ARRAY) \
-  include/linux/sched/user.h \
-    $(wildcard include/config/WATCH_QUEUE) \
-  include/linux/percpu_counter.h \
-  include/linux/rcu_sync.h \
-  include/linux/delayed_call.h \
-  include/linux/errseq.h \
-  include/linux/ioprio.h \
-  include/linux/sched/rt.h \
-  include/linux/iocontext.h \
-    $(wildcard include/config/BLK_ICQ) \
-  include/uapi/linux/ioprio.h \
-  include/linux/fs_types.h \
-  include/linux/mount.h \
-  include/linux/mnt_idmapping.h \
-  include/uapi/linux/fs.h \
-  include/linux/quota.h \
-    $(wildcard include/config/QUOTA_NETLINK_INTERFACE) \
-  include/uapi/linux/dqblk_xfs.h \
-  include/linux/dqblk_v1.h \
-  include/linux/dqblk_v2.h \
-  include/linux/dqblk_qtree.h \
-  include/linux/projid.h \
-  include/uapi/linux/quota.h \
-  include/linux/nfs_fs_i.h \
-  include/linux/seq_file.h \
-  include/linux/string_helpers.h \
-  include/linux/ns_common.h \
-  include/linux/nsproxy.h \
-  include/linux/user_namespace.h \
-    $(wildcard include/config/INOTIFY_USER) \
-    $(wildcard include/config/FANOTIFY) \
-    $(wildcard include/config/PERSISTENT_KEYRINGS) \
-  include/linux/kernel_stat.h \
-  include/linux/interrupt.h \
-    $(wildcard include/config/IRQ_FORCED_THREADING) \
-    $(wildcard include/config/GENERIC_IRQ_PROBE) \
-    $(wildcard include/config/IRQ_TIMINGS) \
-  include/linux/irqreturn.h \
-  include/linux/irqnr.h \
-  include/uapi/linux/irqnr.h \
-  include/linux/hardirq.h \
-  include/linux/context_tracking_state.h \
-    $(wildcard include/conf
+// SPDX-License-Identifier: GPL-2.0-or-later
+/*
+ *  Driver for the Conexant CX23885/7/8 PCIe bridge
+ *
+ *  Various common ioctl() support functions
+ *
+ *  Copyright (c) 2009 Andy Walls <awalls@md.metrocast.net>
+ */
+
+#include "cx23885.h"
+#include "cx23885-ioctl.h"
+
+#ifdef CONFIG_VIDEO_ADV_DEBUG
+int cx23885_g_chip_info(struct file *file, void *fh,
+			 struct v4l2_dbg_chip_info *chip)
+{
+	struct cx23885_dev *dev = video_drvdata(file);
+
+	if (chip->match.addr > 1)
+		return -EINVAL;
+	if (chip->match.addr == 1) {
+		if (dev->v4l_device == NULL)
+			return -EINVAL;
+		strscpy(chip->name, "cx23417", sizeof(chip->name));
+	} else {
+		strscpy(chip->name, dev->v4l2_dev.name, sizeof(chip->name));
+	}
+	return 0;
+}
+
+static int cx23417_g_register(struct cx23885_dev *dev,
+			      struct v4l2_dbg_register *reg)
+{
+	u32 value;
+
+	if (dev->v4l_device == NULL)
+		return -EINVAL;
+
+	if ((reg->reg & 0x3) != 0 || reg->reg >= 0x10000)
+		return -EINVAL;
+
+	if (mc417_register_read(dev, (u16) reg->reg, &value))
+		return -EINVAL; /* V4L2 spec, but -EREMOTEIO really */
+
+	reg->size = 4;
+	reg->val = value;
+	return 0;
+}
+
+int cx23885_g_register(struct file *file, void *fh,
+		       struct v4l2_dbg_register *reg)
+{
+	struct cx23885_dev *dev = video_drvdata(file);
+
+	if (reg->match.addr > 1)
+		return -EINVAL;
+	if (reg->match.addr)
+		return cx23417_g_register(dev, reg);
+
+	if ((reg->reg & 0x3) != 0 || reg->reg >= pci_resource_len(dev->pci, 0))
+		return -EINVAL;
+
+	reg->size = 4;
+	reg->val = cx_read(reg->reg);
+	return 0;
+}
+
+static int cx23417_s_register(struct cx23885_dev *dev,
+			      const struct v4l2_dbg_register *reg)
+{
+	if (dev->v4l_device == NULL)
+		return -EINVAL;
+
+	if ((reg->reg & 0x3) != 0 || reg->reg >= 0x10000)
+		return -EINVAL;
+
+	if (mc417_register_write(dev, (u16) reg->reg, (u32) reg->val))
+		return -EINVAL; /* V4L2 spec, but -EREMOTEIO really */
+	return 0;
+}
+
+int cx23885_s_register(struct file *file, void *f

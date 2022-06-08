@@ -1,4 +1,4 @@
-\
-  arch/x86/include/asm/qrwlock.h \
-  include/asm-generic/qrwlock.h \
-  include/linux/rwlo
+gister(port);
+	if (err != 0)
+		pr_err("%s() dvb_register failed err = %d\n",
+		       __fun

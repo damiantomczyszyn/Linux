@@ -1,12 +1,15 @@
-CPI_APEI_GHES) \
-    $(wildcard include/config/INTEL_TXT) \
-  arch/x86/include/generated/asm/kmap_size.h \
-  include/asm-generic/kmap_size.h \
-    $(wildcard include/config/DEBUG_KMAP_LOCAL) \
-  include/asm-generic/fixmap.h \
-  arch/x86/include/asm/irq_vectors.h \
-    $(wildcard include/config/HAVE_KVM) \
-    $(wildcard include/config/HYPERV) \
-    $(wildcard include/config/PCI_MSI) \
-  arch/x86/include/asm/cpu_entry_area.h \
-  arch/x86/inclu
+00d00);
+		/* enable irq */
+		cx_write(GPIO_ISM, 0x00000000);/* INTERRUPTS active low*/
+		break;
+	case CX23885_BOARD_HAUPPAUGE_HVR4400:
+	case CX23885_BOARD_HAUPPAUGE_STARBURST:
+		/* GPIO-8 tda10071 demod reset */
+		/* GPIO-9 si2165 demod reset (only HVR4400/HVR5500)*/
+
+		/* Put the parts into reset and back */
+		cx23885_gpio_enable(dev, GPIO_8 | GPIO_9, 1);
+
+		cx23885_gpio_clear(dev, GPIO_8 | GPIO_9);
+		msleep(100);
+		cx23885_gpio_set(dev, GPI

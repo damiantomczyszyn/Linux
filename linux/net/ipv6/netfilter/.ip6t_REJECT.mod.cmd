@@ -1,1 +1,7 @@
-cmd_drivers/media/i2c/tw9906.o := gcc -Wp,-MMD,drivers/media/i2c/.tw9906.o.d -nostdinc -I./arch/x86/include -I./arch/x86/include/g
+ze, &risc->dma,
+				       GFP_KERNEL);
+	if (risc->cpu == NULL)
+		return -ENOMEM;
+
+	/* write risc instructions */
+	rp = risc->cpu;

@@ -1,271 +1,354 @@
-atic inline int check_wait_context(struct task_struct *curr,
-				     struct held_lock *next)
+* use task_rq_lock() here and obtain the other rq->lock.
+	 *
+	 * Silence PROVE_RCU
+	 */
+	rcu_read_lock();
+	__set_task_cpu(idle, cpu);
+	rcu_read_unlock();
+
+	rq->idle = idle;
+	rcu_assign_pointer(rq->curr, idle);
+	idle->on_rq = TASK_ON_RQ_QUEUED;
+#ifdef CONFIG_SMP
+	idle->on_cpu = 1;
+#endif
+	raw_spin_rq_unlock(rq);
+	raw_spin_unlock_irqrestore(&idle->pi_lock, flags);
+
+	/* Set the preempt count _outside_ the spinlocks! */
+	init_idle_preempt_count(idle, cpu);
+
+	/*
+	 * The idle tasks have their own, simple scheduling class:
+	 */
+	idle->sched_class = &idle_sched_class;
+	ftrace_graph_init_idle_task(idle, cpu);
+	vtime_init_idle(idle, cpu);
+#ifdef CONFIG_SMP
+	sprintf(idle->comm, "%s/%d", INIT_TASK_COMM, cpu);
+#endif
+}
+
+#ifdef CONFIG_SMP
+
+int cpuset_cpumask_can_shrink(const struct cpumask *cur,
+			      const struct cpumask *trial)
 {
+	int ret = 1;
+
+	if (cpumask_empty(cur))
+		return ret;
+
+	ret = dl_cpuset_cpumask_can_shrink(cur, trial);
+
+	return ret;
+}
+
+int task_can_attach(struct task_struct *p,
+		    const struct cpumask *cs_cpus_allowed)
+{
+	int ret = 0;
+
+	/*
+	 * Kthreads which disallow setaffinity shouldn't be moved
+	 * to a new cpuset; we don't want to change their CPU
+	 * affinity and isolating such threads by their set of
+	 * allowed nodes is unnecessary.  Thus, cpusets are not
+	 * applicable for such threads.  This prevents checking for
+	 * success of set_cpus_allowed_ptr() on all attached tasks
+	 * before cpus_mask may be changed.
+	 */
+	if (p->flags & PF_NO_SETAFFINITY) {
+		ret = -EINVAL;
+		goto out;
+	}
+
+	if (dl_task(p) && !cpumask_intersects(task_rq(p)->rd->span,
+					      cs_cpus_allowed)) {
+		int cpu = cpumask_any_and(cpu_active_mask, cs_cpus_allowed);
+
+		ret = dl_cpu_busy(cpu, p);
+	}
+
+out:
+	return ret;
+}
+
+bool sched_smp_initialized __read_mostly;
+
+#ifdef CONFIG_NUMA_BALANCING
+/* Migrate current task p to target_cpu */
+int migrate_task_to(struct task_struct *p, int target_cpu)
+{
+	struct migration_arg arg = { p, target_cpu };
+	int curr_cpu = task_cpu(p);
+
+	if (curr_cpu == target_cpu)
+		return 0;
+
+	if (!cpumask_test_cpu(target_cpu, p->cpus_ptr))
+		return -EINVAL;
+
+	/* TODO: This is not properly updating schedstats */
+
+	trace_sched_move_numa(p, curr_cpu, target_cpu);
+	return stop_one_cpu(curr_cpu, migration_cpu_stop, &arg);
+}
+
+/*
+ * Requeue a task on a given node and accurately track the number of NUMA
+ * tasks on the runqueues
+ */
+void sched_setnuma(struct task_struct *p, int nid)
+{
+	bool queued, running;
+	struct rq_flags rf;
+	struct rq *rq;
+
+	rq = task_rq_lock(p, &rf);
+	queued = task_on_rq_queued(p);
+	running = task_current(rq, p);
+
+	if (queued)
+		dequeue_task(rq, p, DEQUEUE_SAVE);
+	if (running)
+		put_prev_task(rq, p);
+
+	p->numa_preferred_nid = nid;
+
+	if (queued)
+		enqueue_task(rq, p, ENQUEUE_RESTORE | ENQUEUE_NOCLOCK);
+	if (running)
+		set_next_task(rq, p);
+	task_rq_unlock(rq, p, &rf);
+}
+#endif /* CONFIG_NUMA_BALANCING */
+
+#ifdef CONFIG_HOTPLUG_CPU
+/*
+ * Ensure that the idle task is using init_mm right before its CPU goes
+ * offline.
+ */
+void idle_task_exit(void)
+{
+	struct mm_struct *mm = current->active_mm;
+
+	BUG_ON(cpu_online(smp_processor_id()));
+	BUG_ON(current != this_rq()->idle);
+
+	if (mm != &init_mm) {
+		switch_mm(mm, &init_mm, current);
+		finish_arch_post_lock_switch();
+	}
+
+	/* finish_cpu(), as ran on the BP, will clean up the active_mm state */
+}
+
+static int __balance_push_cpu_stop(void *arg)
+{
+	struct task_struct *p = arg;
+	struct rq *rq = this_rq();
+	struct rq_flags rf;
+	int cpu;
+
+	raw_spin_lock_irq(&p->pi_lock);
+	rq_lock(rq, &rf);
+
+	update_rq_clock(rq);
+
+	if (task_rq(p) == rq && task_on_rq_queued(p)) {
+		cpu = select_fallback_rq(rq->cpu, p);
+		rq = __migrate_task(rq, &rf, p, cpu);
+	}
+
+	rq_unlock(rq, &rf);
+	raw_spin_unlock_irq(&p->pi_lock);
+
+	put_task_struct(p);
+
 	return 0;
 }
 
-#endif /* CONFIG_PROVE_LOCKING */
+static DEFINE_PER_CPU(struct cpu_stop_work, push_work);
 
 /*
- * Initialize a lock instance's lock-class mapping info:
- */
-void lockdep_init_map_type(struct lockdep_map *lock, const char *name,
-			    struct lock_class_key *key, int subclass,
-			    u8 inner, u8 outer, u8 lock_type)
-{
-	int i;
-
-	for (i = 0; i < NR_LOCKDEP_CACHING_CLASSES; i++)
-		lock->class_cache[i] = NULL;
-
-#ifdef CONFIG_LOCK_STAT
-	lock->cpu = raw_smp_processor_id();
-#endif
-
-	/*
-	 * Can't be having no nameless bastards around this place!
-	 */
-	if (DEBUG_LOCKS_WARN_ON(!name)) {
-		lock->name = "NULL";
-		return;
-	}
-
-	lock->name = name;
-
-	lock->wait_type_outer = outer;
-	lock->wait_type_inner = inner;
-	lock->lock_type = lock_type;
-
-	/*
-	 * No key, no joy, we need to hash something.
-	 */
-	if (DEBUG_LOCKS_WARN_ON(!key))
-		return;
-	/*
-	 * Sanity check, the lock-class key must either have been allocated
-	 * statically or must have been registered as a dynamic key.
-	 */
-	if (!static_obj(key) && !is_dynamic_key(key)) {
-		if (debug_locks)
-			printk(KERN_ERR "BUG: key %px has not been registered!\n", key);
-		DEBUG_LOCKS_WARN_ON(1);
-		return;
-	}
-	lock->key = key;
-
-	if (unlikely(!debug_locks))
-		return;
-
-	if (subclass) {
-		unsigned long flags;
-
-		if (DEBUG_LOCKS_WARN_ON(!lockdep_enabled()))
-			return;
-
-		raw_local_irq_save(flags);
-		lockdep_recursion_inc();
-		register_lock_class(lock, subclass, 1);
-		lockdep_recursion_finish();
-		raw_local_irq_restore(flags);
-	}
-}
-EXPORT_SYMBOL_GPL(lockdep_init_map_type);
-
-struct lock_class_key __lockdep_no_validate__;
-EXPORT_SYMBOL_GPL(__lockdep_no_validate__);
-
-static void
-print_lock_nested_lock_not_held(struct task_struct *curr,
-				struct held_lock *hlock,
-				unsigned long ip)
-{
-	if (!debug_locks_off())
-		return;
-	if (debug_locks_silent)
-		return;
-
-	pr_warn("\n");
-	pr_warn("==================================\n");
-	pr_warn("WARNING: Nested lock was not taken\n");
-	print_kernel_ident();
-	pr_warn("----------------------------------\n");
-
-	pr_warn("%s/%d is trying to lock:\n", curr->comm, task_pid_nr(curr));
-	print_lock(hlock);
-
-	pr_warn("\nbut this task is not holding:\n");
-	pr_warn("%s\n", hlock->nest_lock->name);
-
-	pr_warn("\nstack backtrace:\n");
-	dump_stack();
-
-	pr_warn("\nother info that might help us debug this:\n");
-	lockdep_print_held_locks(curr);
-
-	pr_warn("\nstack backtrace:\n");
-	dump_stack();
-}
-
-static int __lock_is_held(const struct lockdep_map *lock, int read);
-
-/*
- * This gets called for every mutex_lock*()/spin_lock*() operation.
- * We maintain the dependency maps and validate the locking attempt:
+ * Ensure we only run per-cpu kthreads once the CPU goes !active.
  *
- * The callers must make sure that IRQs are disabled before calling it,
- * otherwise we could get an interrupt which would want to take locks,
- * which would end up in lockdep again.
+ * This is enabled below SCHED_AP_ACTIVE; when !cpu_active(), but only
+ * effective when the hotplug motion is down.
  */
-static int __lock_acquire(struct lockdep_map *lock, unsigned int subclass,
-			  int trylock, int read, int check, int hardirqs_off,
-			  struct lockdep_map *nest_lock, unsigned long ip,
-			  int references, int pin_count)
+static void balance_push(struct rq *rq)
 {
-	struct task_struct *curr = current;
-	struct lock_class *class = NULL;
-	struct held_lock *hlock;
-	unsigned int depth;
-	int chain_head = 0;
-	int class_idx;
-	u64 chain_key;
+	struct task_struct *push_task = rq->curr;
 
-	if (unlikely(!debug_locks))
-		return 0;
+	lockdep_assert_rq_held(rq);
 
-	if (!prove_locking || lock->key == &__lockdep_no_validate__)
-		check = 0;
-
-	if (subclass < NR_LOCKDEP_CACHING_CLASSES)
-		class = lock->class_cache[subclass];
 	/*
-	 * Not cached?
+	 * Ensure the thing is persistent until balance_push_set(.on = false);
 	 */
-	if (unlikely(!class)) {
-		class = register_lock_class(lock, subclass, 0);
-		if (!class)
-			return 0;
+	rq->balance_callback = &balance_push_callback;
+
+	/*
+	 * Only active while going offline and when invoked on the outgoing
+	 * CPU.
+	 */
+	if (!cpu_dying(rq->cpu) || rq != this_rq())
+		return;
+
+	/*
+	 * Both the cpu-hotplug and stop task are in this case and are
+	 * required to complete the hotplug process.
+	 */
+	if (kthread_is_per_cpu(push_task) ||
+	    is_migration_disabled(push_task)) {
+
+		/*
+		 * If this is the idle task on the outgoing CPU try to wake
+		 * up the hotplug control thread which might wait for the
+		 * last task to vanish. The rcuwait_active() check is
+		 * accurate here because the waiter is pinned on this CPU
+		 * and can't obviously be running in parallel.
+		 *
+		 * On RT kernels this also has to check whether there are
+		 * pinned and scheduled out tasks on the runqueue. They
+		 * need to leave the migrate disabled section first.
+		 */
+		if (!rq->nr_running && !rq_has_pinned_tasks(rq) &&
+		    rcuwait_active(&rq->hotplug_wait)) {
+			raw_spin_rq_unlock(rq);
+			rcuwait_wake_up(&rq->hotplug_wait);
+			raw_spin_rq_lock(rq);
+		}
+		return;
 	}
 
-	debug_class_ops_inc(class);
+	get_task_struct(push_task);
+	/*
+	 * Temporarily drop rq->lock such that we can wake-up the stop task.
+	 * Both preemption and IRQs are still disabled.
+	 */
+	raw_spin_rq_unlock(rq);
+	stop_one_cpu_nowait(rq->cpu, __balance_push_cpu_stop, push_task,
+			    this_cpu_ptr(&push_work));
+	/*
+	 * At this point need_resched() is true and we'll take the loop in
+	 * schedule(). The next pick is obviously going to be the stop task
+	 * which kthread_is_per_cpu() and will push this task away.
+	 */
+	raw_spin_rq_lock(rq);
+}
 
-	if (very_verbose(class)) {
-		printk("\nacquire class [%px] %s", class->key, class->name);
-		if (class->name_version > 1)
-			printk(KERN_CONT "#%d", class->name_version);
-		printk(KERN_CONT "\n");
-		dump_stack();
+static void balance_push_set(int cpu, bool on)
+{
+	struct rq *rq = cpu_rq(cpu);
+	struct rq_flags rf;
+
+	rq_lock_irqsave(rq, &rf);
+	if (on) {
+		WARN_ON_ONCE(rq->balance_callback);
+		rq->balance_callback = &balance_push_callback;
+	} else if (rq->balance_callback == &balance_push_callback) {
+		rq->balance_callback = NULL;
 	}
+	rq_unlock_irqrestore(rq, &rf);
+}
 
-	/*
-	 * Add the lock to the list of currently held locks.
-	 * (we dont increase the depth just yet, up until the
-	 * dependency checks are done)
-	 */
-	depth = curr->lockdep_depth;
-	/*
-	 * Ran out of static storage for our per-task lock stack again have we?
-	 */
-	if (DEBUG_LOCKS_WARN_ON(depth >= MAX/dqblk_xfs.h \
-  include/linux/dqblk_v1.h \
-  include/linux/dqblk_v2.h \
-  include/linux/dqblk_qtree.h \
-  include/linux/projid.h \
-  include/uapi/linux/quota.h \
-  include/linux/nfs_fs_i.h \
-  include/linux/seq_file.h \
-  include/linux/string_helpers.h \
-  include/linux/ctype.h \
-  include/linux/kernfs.h \
-    $(wildcard include/config/KERNFS) \
-  include/linux/idr.h \
-  include/linux/ns_common.h \
-  include/linux/nsproxy.h \
-  include/linux/user_namespace.h \
-    $(wildcard include/config/INOTIFY_USER) \
-    $(wildcard include/config/FANOTIFY) \
-    $(wildcard include/config/PERSISTENT_KEYRINGS) \
-  include/linux/kernel_stat.h \
-  include/linux/interrupt.h \
-    $(wildcard include/config/IRQ_FORCED_THREADING) \
-    $(wildcard include/config/GENERIC_IRQ_PROBE) \
-    $(wildcard include/config/IRQ_TIMINGS) \
-  include/linux/irqreturn.h \
-  include/linux/irqnr.h \
-  include/uapi/linux/irqnr.h \
-  include/linux/hardirq.h \
-  include/linux/context_tracking_state.h \
-    $(wildcard include/config/CONTEXT_TRACKING) \
-  include/linux/ftrace_irq.h \
-    $(wildcard include/config/HWLAT_TRACER) \
-    $(wildcard include/config/OSNOISE_TRACER) \
-  include/linux/vtime.h \
-    $(wildcard include/config/VIRT_CPU_ACCOUNTING) \
-    $(wildcard include/config/IRQ_TIME_ACCOUNTING) \
-  arch/x86/include/asm/hardirq.h \
-    $(wildcard include/config/KVM_INTEL) \
-    $(wildcard include/config/HAVE_KVM) \
-    $(wildcard include/config/X86_THERMAL_VECTOR) \
-    $(wildcard include/config/X86_MCE_THRESHOLD) \
-    $(wildcard include/config/X86_MCE_AMD) \
-    $(wildcard include/config/X86_HV_CALLBACK_VECTOR) \
-    $(wildcard include/config/HYPERV) \
-  arch/x86/include/asm/irq.h \
-  arch/x86/include/asm/irq_vectors.h \
-    $(wildcard include/config/X86_IO_APIC) \
-    $(wildcard include/config/PCI_MSI) \
-  arch/x86/include/asm/sections.h \
-  include/asm-generic/sections.h \
-    $(wildcard include/config/HAVE_FUNCTION_DESCRIPTORS) \
-  include/linux/cgroup-defs.h \
-    $(wildcard include/config/CGROUP_NET_CLASSID) \
-    $(wildcard include/config/CGROUP_NET_PRIO) \
-  include/linux/u64_stats_sync.h \
-  include/linux/bpf-cgroup-defs.h \
-  include/linux/psi_types.h \
-  include/linux/kthread.h \
-  include/linux/cgroup_subsys.h \
-    $(wildcard include/config/CGROUP_DEVICE) \
-    $(wildcard include/config/CGROUP_FREEZER) \
-    $(wildcard include/config/CGROUP_PERF) \
-    $(wildcard include/config/CGROUP_HUGETLB) \
-    $(wildcard include/config/CGROUP_PIDS) \
-    $(wildcard include/config/CGROUP_RDMA) \
-    $(wildcard include/config/CGROUP_MISC) \
-    $(wildcard include/config/CGROUP_DEBUG) \
-  include/linux/filter.h \
-    $(wildcard include/config/BPF_JIT_ALWAYS_ON) \
-    $(wildcard include/config/HAVE_EBPF_JIT) \
-    $(wildcard include/config/IPV6) \
-  include/linux/bpf.h \
-  include/uapi/linux/bpf.h \
-    $(wildcard include/config/BPF_LIRC_MODE2) \
-    $(wildcard include/config/EFFICIENT_UNALIGNED_ACCESS) \
-    $(wildcard include/config/IP_ROUTE_CLASSID) \
-    $(wildcard include/config/BPF_KPROBE_OVERRIDE) \
-    $(wildcard include/config/FUNCTION_ERROR_INJECTION) \
-    $(wildcard include/config/XFRM) \
-  include/uapi/linux/bpf_common.h \
-  include/linux/file.h \
-  include/linux/rbtree_latch.h \
-  include/linux/module.h \
-    $(wildcard include/config/MODULES_TREE_LOOKUP) \
-    $(wildcard include/config/STACKTRACE_BUILD_ID) \
-    $(wildcard include/config/MODULE_SIG) \
-    $(wildcard include/config/KALLSYMS) \
-    $(wildcard include/config/BPF_EVENTS) \
-    $(wildcard include/config/DEBUG_INFO_BTF_MODULES) \
-    $(wildcard include/config/EVENT_TRACING) \
-    $(wildcard include/config/MODULE_UNLOAD) \
-    $(wildcard include/config/CONSTRUCTORS) \
-  include/linux/buildid.h \
-    $(wildcard include/config/CRASH_CORE) \
-  include/linux/kmod.h \
-  include/linux/umh.h \
-  include/linux/elf.h \
-    $(wildcard include/config/ARCH_USE_GNU_PROPERTY) \
-    $(wildcard include/config/ARCH_HAVE_ELF_PROT) \
-  arch/x86/include/asm/elf.h \
-    $(wildcard include/config/X86_X32_ABI) \
-  arch/x86/include/asm/user.h \
-  arch/x86/include/asm/user_32.h \
-  arch/x86/include/asm/fsgELF                      °      4     (               èüÿÿÿS‹X\‰ØèüÿÿÿƒÀ   èüÿÿÿ1À[ÃèüÿÿÿS‹P(‹Xú	˜ tú	˜ tT¹êÿÿÿú 	˜ t'‰È[Ãv ¶H|‹CÔº   èüÿÿÿ1É[‰ÈÃ´&    f¶H|‹CÔº   èüÿÿÿ1É
+/*
+ * Invoked from a CPUs hotplug control thread after the CPU has been marked
+ * inactive. All tasks which are not per CPU kernel threads are either
+ * pushed off this CPU now via balance_push() or placed on a different CPU
+ * during wakeup. Wait until the CPU is quiescent.
+ */
+static void balance_hotplug_wait(void)
+{
+	struct rq *rq = this_rq();
+
+	rcuwait_wait_event(&rq->hotplug_wait,
+			   rq->nr_running == 1 && !rq_has_pinned_tasks(rq),
+			   TASK_UNINTERRUPTIBLE);
+}
+
+#else
+
+static inline void balance_push(struct rq *rq)
+{
+}
+
+static inline void balance_push_set(int cpu, bool on)
+{
+}
+
+static inline void balance_hotplug_wait(void)
+{
+}
+
+#endif /* CONFIG_HOTPLUG_CPU */
+
+void set_rq_online(struct rq *rq)
+{
+	if (!rq->online) {
+		const struct sched_class *class;
+
+		cpumask_set_cpu(rq->cpu, rq->rd->online);
+		rq->online = 1;
+
+		for_each_class(class) {
+			if (class->rq_online)
+				class->rq_online(rq);
+		}
+	}
+}
+
+void set_rq_offline(struct rq *rq)
+{
+	if (rq->online) {
+		const struct sched_class *class;
+
+		for_each_class(class) {
+			if (class->rq_offline)
+				class->rq_offline(rq);
+		}
+
+		cpumask_clear_cpu(rq->cpu, rq->rd->online);
+		rq->online = 0;
+	}
+}
+
+/*
+ * used to mark begin/end of suspend/resume:
+ */
+static int num_cpus_frozen;
+
+/*
+ * Update cpusets according to cpu_active mask.  If cpusets are
+ * disabled, cpuset_update_active_cpus() becomes a simple wrapper
+ * around partition_sched_domains().
+ *
+ * If we come here as part of a suspend/resume, don't touch cpusets because we
+ * want to restore it back to its original state upon resume anyway.
+ */
+static void cpuset_cpu_active(void)
+{
+	if (cpuhp_tasks_frozen) {
+		/*
+		 * num_cpus_frozen tracks how many CPUs are involved in suspend
+		 * resume sequence. As long as this is not the last online
+		 * operation in the resume sequence, just build a single sched
+		 * domain, ignoring cpusets.
+		 */
+		partition_sched_domains(1, NULL, NULL);
+		if (--num_cpus_frozen)
+			return;
+		/*
+		 * This is the last CPU online operation. So fall through and
+		 * restore the original sched domains by considering the
+		 * cpuset configurations.
+		 */
+		cpuset_force_rebuild();
+	}
+	cpuset_update_active_cpus();
+}
+
+static int cpuset_cpu_inactive(unsigned int cpu)
+{
+	if (!cpuhp_tasks_f

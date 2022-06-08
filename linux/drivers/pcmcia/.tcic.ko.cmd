@@ -1,6 +1,7 @@
-pes.h \
-  include/asm-generic/pgtable-nop4d.h \
-  include/asm-generic/pgtable-nopud.h \
-  arch/x86/include/asm/nospec-branch.h \
-  include/linux/static_key.h \
-  includ
+/* SPDX-License-Identifier: GPL-2.0-or-later */
+/*
+ * cimax2.h
+ *
+ * CIMax(R) SP2 driver in conjunction with NetUp Dual DVB-S2 CI card
+ *
+ * Copyright (C) 2009 NetUP In

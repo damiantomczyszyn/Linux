@@ -1,82 +1,76 @@
-UMA) \
-    $(wildcard include/config/NUMA_BALANCING) \
-    $(wildcard include/config/RSEQ) \
-    $(wildcard include/config/TASK_DELAY_ACCT) \
-    $(wildcard include/config/FAULT_INJECTION) \
-    $(wildcard include/config/LATENCYTOP) \
-    $(wildcard include/config/KUNIT) \
-    $(wildcard include/config/FUNCTION_GRAPH_TRACER) \
-    $(wildcard include/config/UPROBES) \
-    $(wildcard include/config/BCACHE) \
-    $(wildcard include/config/VMAP_STACK) \
-    $(wildcard include/config/LIVEPATCH) \
-    $(wildcard include/config/SECURITY) \
-    $(wildcard include/config/BPF_SYSCALL) \
-    $(wildcard include/config/GCC_PLUGIN_STACKLEAK) \
-    $(wildcard include/config/X86_MCE) \
-    $(wildcard include/config/KRETPROBES) \
-    $(wildcard include/config/RETHOOK) \
-    $(wildcard include/config/ARCH_HAS_PARANOID_L1D_FLUSH) \
-    $(wildcard include/config/ARCH_TASK_STRUCT_ON_STACK) \
-    $(wildcard include/config/DEBUG_RSEQ) \
-  include/uapi/linux/sched.h \
-  include/linux/pid.h \
-  include/linux/rculist.h \
-    $(wildcard include/config/PROVE_RCU_LIST) \
-  include/linux/refcount.h \
-  include/linux/sem.h \
-  include/uapi/linux/sem.h \
-  include/linux/ipc.h \
-  include/linux/uidgid.h \
-    $(wildcard include/config/MULTIUSER) \
-    $(wildcard include/config/USER_NS) \
-  include/linux/highuid.h \
-  include/linux/rhashtable-types.h \
-  include/uapi/linux/ipc.h \
-  arch/x86/include/generated/uapi/asm/ipcbuf.h \
-  include/uapi/asm-generic/ipcbuf.h \
-  arch/x86/include/uapi/asm/sembuf.h \
-  include/linux/shm.h \
-  include/uapi/linux/shm.h \
-  include/uapi/asm-generic/hugetlb_encode.h \
-  arch/x86/include/uapi/asm/shmbuf.h \
-  include/uapi/asm-generic/shmbuf.h \
-  arch/x86/include/asm/shmparam.h \
-  include/linux/plist.h \
-    $(wildcard include/config/DEBUG_PLIST) \
-  include/linux/hrtimer.h \
-    $(wildcard include/config/HIGH_RES_TIMERS) \
-    $(wildcard include/config/TIME_LOW_RES) \
-    $(wildcard include/config/TIMERFD) \
-  include/linux/hrtimer_defs.h \
-  include/linux/rbtree.h \
-  include/linux/rbtree_types.h \
-  include/linux/percpu.h \
-    $(wildcard include/config/NEED_PER_CPU_EMBED_FIRST_CHUNK) \
-    $(wildcard include/config/NEED_PER_CPU_PAGE_FIRST_CHUNK) \
-  include/linux/mmdebug.h \
-    $(wildcard include/config/DEBUG_VM) \
-    $(wildcard include/config/DEBUG_VM_PGFLAGS) \
-  include/linux/seqlock.h \
-  include/linux/ww_mutex.h \
-    $(wildcard include/config/DEBUG_RT_MUTEXES) \
-    $(wildcard include/config/DEBUG_WW_MUTEX_SLOWPATH) \
-  include/linux/rtmutex.h \
-  include/linux/timerqueue.h \
-  include/linux/seccomp.h \
-    $(wildcard include/config/SECCOMP) \
-    $(wildcard include/config/HAVE_ARCH_SECCOMP_FILTER) \
-    $(wildcard include/config/SECCOMP_FILTER) \
-    $(wildcard include/config/CHECKPOINT_RESTORE) \
-    $(wildcard include/config/SECCOMP_CACHE_DEBUG) \
-  include/uapi/linux/seccomp.h \
-  arch/x86/include/asm/seccomp.h \
-  arch/x86/include/asm/unistd.h \
-  arch/x86/include/uapi/asm/unistd.h \
-  arch/x86/include/generated/uapi/asm/unistd_32.h \
-  include/asm-generic/seccomp.h \
-  include/uapi/linux/unistd.h \
-  include/linux/nodemask.h \
-    $(wildcard include/config/HIGHMEM) \
-  include/linux/numa.h \
-    $(wildcard include/config/
+_read(ALT_PIN_OUT_SEL));
+	dprintk(1, "%s() GPIO2                    0x%08X\n", __func__,
+		cx_read(GPIO2));
+	dprintk(1, "%s() gpcnt(0x%08X)          0x%08X\n", __func__,
+		port->reg_gpcnt, cx_read(port->reg_gpcnt));
+	dprintk(1, "%s() gpcnt_ctl(0x%08X)      0x%08x\n", __func__,
+		port->reg_gpcnt_ctl, cx_read(port->reg_gpcnt_ctl));
+	dprintk(1, "%s() dma_ctl(0x%08X)        0x%08x\n", __func__,
+		port->reg_dma_ctl, cx_read(port->reg_dma_ctl));
+	if (port->reg_src_sel)
+		dprintk(1, "%s() src_sel(0x%08X)        0x%08x\n", __func__,
+			port->reg_src_sel, cx_read(port->reg_src_sel));
+	dprintk(1, "%s() lngth(0x%08X)          0x%08x\n", __func__,
+		port->reg_lngth, cx_read(port->reg_lngth));
+	dprintk(1, "%s() hw_sop_ctrl(0x%08X)    0x%08x\n", __func__,
+		port->reg_hw_sop_ctrl, cx_read(port->reg_hw_sop_ctrl));
+	dprintk(1, "%s() gen_ctrl(0x%08X)       0x%08x\n", __func__,
+		port->reg_gen_ctrl, cx_read(port->reg_gen_ctrl));
+	dprintk(1, "%s() bd_pkt_status(0x%08X)  0x%08x\n", __func__,
+		port->reg_bd_pkt_status, cx_read(port->reg_bd_pkt_status));
+	dprintk(1, "%s() sop_status(0x%08X)     0x%08x\n", __func__,
+		port->reg_sop_status, cx_read(port->reg_sop_status));
+	dprintk(1, "%s() fifo_ovfl_stat(0x%08X) 0x%08x\n", __func__,
+		port->reg_fifo_ovfl_stat, cx_read(port->reg_fifo_ovfl_stat));
+	dprintk(1, "%s() vld_misc(0x%08X)       0x%08x\n", __func__,
+		port->reg_vld_misc, cx_read(port->reg_vld_misc));
+	dprintk(1, "%s() ts_clk_en(0x%08X)      0x%08x\n", __func__,
+		port->reg_ts_clk_en, cx_read(port->reg_ts_clk_en));
+	dprintk(1, "%s() ts_int_msk(0x%08X)     0x%08x\n", __func__,
+		port->reg_ts_int_msk, cx_read(port->reg_ts_int_msk));
+	dprintk(1, "%s() ts_int_status(0x%08X)  0x%08x\n", __func__,
+		port->reg_ts_int_stat, cx_read(port->reg_ts_int_stat));
+	dprintk(1, "%s() PCI_INT_STAT           0x%08X\n", __func__,
+		cx_read(PCI_INT_STAT));
+	dprintk(1, "%s() VID_B_INT_MSTAT        0x%08X\n", __func__,
+		cx_read(VID_B_INT_MSTAT));
+	dprintk(1, "%s() VID_B_INT_SSTAT        0x%08X\n", __func__,
+		cx_read(VID_B_INT_SSTAT));
+	dprintk(1, "%s() VID_C_INT_MSTAT        0x%08X\n", __func__,
+		cx_read(VID_C_INT_MSTAT));
+	dprintk(1, "%s() VID_C_INT_SSTAT        0x%08X\n", __func__,
+		cx_read(VID_C_INT_SSTAT));
+}
+
+int cx23885_start_dma(struct cx23885_tsport *port,
+			     struct cx23885_dmaqueue *q,
+			     struct cx23885_buffer   *buf)
+{
+	struct cx23885_dev *dev = port->dev;
+	u32 reg;
+
+	dprintk(1, "%s() w: %d, h: %d, f: %d\n", __func__,
+		dev->width, dev->height, dev->field);
+
+	/* clear dma in progress */
+	cx23885_clear_bridge_error(dev);
+
+	/* Stop the fifo and risc engine for this port */
+	cx_clear(port->reg_dma_ctl, port->dma_ctl_val);
+
+	/* setup fifo + format */
+	cx23885_sram_channel_setup(dev,
+				   &dev->sram_channels[port->sram_chno],
+				   port->ts_packet_size, buf->risc.dma);
+	if (debug > 5) {
+		cx23885_sram_channel_dump(dev,
+			&dev->sram_channels[port->sram_chno]);
+		cx23885_risc_disasm(port, &buf->risc);
+	}
+
+	/* write TS length to chip */
+	cx_write(port->reg_lngth, port->ts_packet_size);
+
+	if ((!(cx23885_boards[dev->board].portb & CX23885_MPEG_DVB)) &&
+		(!(cx23885_boards[dev->board].portc & CX23885_MPEG_DVB))) {
+		pr_err("%s() Unsupported .portb/c (0x%08x)/(0x%08

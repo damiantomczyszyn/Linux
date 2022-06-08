@@ -1,4 +1,6 @@
-x86/include/asm/desc_defs.h \
-  arch/x86/include/asm/pgtable_types.h \
-    $(wildcard include/config/MEM_SOFT_DIRTY) \
-    $(wildcard include/config/HAVE_AR
+us & VID_BC_MSK_SYNC) ||
+		(status & VID_BC_MSK_OF)) {
+
+		if (status & VID_BC_MSK_OPC_ERR)
+			dprintk(7, " (VID_BC_MSK_OPC_ERR 0x%08x)\n",
+				VID_BC_MSK_OP

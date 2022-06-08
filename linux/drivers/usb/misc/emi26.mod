@@ -1,1 +1,6 @@
-ldcard include/config/X86_
+tate);
+		}
+	}
+
+}
+EXPORT_SY

@@ -1,3 +1,2 @@
-tirqs will be enabled:
- */
-void lo
+00000036);
+		cx_write(MC417_OEN, 0

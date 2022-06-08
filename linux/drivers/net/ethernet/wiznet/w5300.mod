@@ -1,2 +1,3 @@
-ig/RCU_FANOUT) \
-    $(wildcard inclu
+E310B         62
+
+#define GPIO_0 0x00

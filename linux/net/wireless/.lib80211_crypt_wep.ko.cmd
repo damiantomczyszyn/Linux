@@ -1,6 +1,11 @@
-wildcard include/config/GENERIC_ATOMIC64) \
-  include/linux/atomic/atomic-long.h \
-  include/linux/atomic/atomic-instrumented.h \
-  include/linux/bug.h \
-    $(wildcard include/config/BUG_ON_DATA_CORRUPTION) \
-  arch
+dth_count_to_ns(FIFO_RXTX, *divider);
+}
+
+/*
+ * IR Tx Carrier Duty Cycle register helpers
+ */
+static unsigned int cduty_tx_s_duty_cycle(struct cx23885_dev *dev,
+					  unsigned int duty_cycle)
+{
+	u32 n;
+	n = DIV_ROUND

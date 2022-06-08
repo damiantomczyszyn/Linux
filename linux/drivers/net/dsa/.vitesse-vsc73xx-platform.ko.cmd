@@ -1,1 +1,1 @@
-cmd_drivers/media/i2c/tvp514x.o := gcc -Wp,-MMD,drivers/media/i2c/.tvp514x.o.d -nostdinc -I./arch/x86/include -I./arch/x86/include/generated  -I./include -I./arch/x86/include/uapi -I./arch/x86/include/generated/uapi -I./include/uapi -I./include/generat
+cmd_drivers/net/dsa/vitesse-vsc73xx-platform.ko := ld -r -m elf_i386 --build-id=sha1  -T scripts/module.lds -o drivers/net/dsa/vitesse-vsc73xx-platform.ko drivers/net/dsa/vitesse-vsc73xx-platform.o drivers/net/dsa/vitesse-vsc73xx-platform.mod.o;  true

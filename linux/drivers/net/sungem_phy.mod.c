@@ -1,15 +1,16 @@
-clude/linux/scatterlist.h \
-    $(wildcard include/config/NEED_SG_DMA_LENGTH) \
-    $(wildcard include/config/DEBUG_SG) \
-    $(wildcard include/config/SGL_ALLOC) \
-    $(wildcard include/config/ARCH_NO_SG_CHAIN) \
-    $(wildcard include/config/SG_POOL) \
-  include/linux/gpio/consumer.h \
-    $(wildcard include/config/OF_GPIO) \
-    $(wildcard include/config/GPIO_SYSFS) \
-  include/uapi/linux/spi/spi.h \
-  include/media/v4l2-fh.h \
-  include/media/v4l2-mediabus.h \
-  include/media/i2c/uda1342.h \
-
-drivers/media/i2c/uda13
+// SPDX-License-Identifier: GPL-2.0-or-later
+/*
+ *  Driver for the Conexant CX23885/7/8 PCIe bridge
+ *
+ *  Infrared remote control input device
+ *
+ *  Most of this file is
+ *
+ *  Copyright (C) 2009  Andy Walls <awalls@md.metrocast.net>
+ *
+ *  However, the cx23885_input_{init,fini} functions contained herein are
+ *  derived from Linux kernel files linux/media/video/.../...-input.c marked as:
+ *
+ *  Copyright (C) 2008 <srinivasa.deevi at conexant dot com>
+ *  Copyright (C) 2005 Ludovico Cavedon <cavedon@sssup.it>
+ *		     

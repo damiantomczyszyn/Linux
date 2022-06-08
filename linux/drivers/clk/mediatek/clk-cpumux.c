@@ -1,99 +1,133 @@
-    $(wildcard include/config/HIGH_RES_TIMERS) \
-    $(wildcard include/config/TIME_LOW_RES) \
-    $(wildcard include/config/TIMERFD) \
-  include/linux/hrtimer_defs.h \
-  include/linux/timerqueue.h \
-  include/linux/seccomp.h \
-    $(wildcard include/config/SECCOMP) \
-    $(wildcard include/config/HAVE_ARCH_SECCOMP_FILTER) \
-    $(wildcard include/config/SECCOMP_FILTER) \
-    $(wildcard include/config/CHECKPOINT_RESTORE) \
-    $(wildcard include/config/SECCOMP_CACHE_DEBUG) \
-  include/uapi/linux/seccomp.h \
-  arch/x86/include/asm/seccomp.h \
-  arch/x86/include/asm/unistd.h \
-  arch/x86/include/uapi/asm/unistd.h \
-  arch/x86/include/generated/uapi/asm/unistd_32.h \
-  include/asm-generic/seccomp.h \
-  include/uapi/linux/unistd.h \
-  include/linux/resource.h \
-  include/uapi/linux/resource.h \
-  arch/x86/include/generated/uapi/asm/resource.h \
-  include/asm-generic/resource.h \
-  include/uapi/asm-generic/resource.h \
-  include/linux/latencytop.h \
-  include/linux/sched/prio.h \
-  include/linux/sched/types.h \
-  include/linux/signal_types.h \
-    $(wildcard include/config/OLD_SIGACTION) \
-  include/uapi/linux/signal.h \
-  arch/x86/include/asm/signal.h \
-  arch/x86/include/uapi/asm/signal.h \
-  include/uapi/asm-generic/signal-defs.h \
-  arch/x86/include/uapi/asm/siginfo.h \
-  include/uapi/asm-generic/siginfo.h \
-  include/linux/syscall_user_dispatch.h \
-  include/linux/task_io_accounting.h \
-    $(wildcard include/config/TASK_IO_ACCOUNTING) \
-  include/linux/posix-timers.h \
-  include/linux/alarmtimer.h \
-    $(wildcard include/config/RTC_CLASS) \
-  include/uapi/linux/rseq.h \
-  include/linux/kcsan.h \
-  include/linux/energy_model.h \
-  include/linux/sched/cpufreq.h \
-    $(wildcard include/config/CPU_FREQ) \
-  include/linux/sched/topology.h \
-    $(wildcard include/config/SCHED_DEBUG) \
-    $(wildcard include/config/SCHED_MC) \
-    $(wildcard include/config/CPU_FREQ_GOV_SCHEDUTIL) \
-  include/linux/sched/idle.h \
-  include/linux/sched/sd_flags.h \
-  include/linux/klist.h \
-  include/linux/pm.h \
-    $(wildcard include/config/VT_CONSOLE_SLEEP) \
-    $(wildcard include/config/PM_CLK) \
-    $(wildcard include/config/PM_GENERIC_DOMAINS) \
-  include/linux/device/bus.h \
-  include/linux/device/class.h \
-  include/linux/device/driver.h \
-  arch/x86/include/asm/device.h \
-  include/linux/pm_wakeup.h \
-  include/acpi/acpi.h \
-  include/acpi/platform/acenv.h \
-  include/acpi/platform/acgcc.h \
-  include/acpi/platform/aclinux.h \
-    $(wildcard include/config/ACPI_REDUCED_HARDWARE_ONLY) \
-    $(wildcard include/config/ACPI_DEBUG) \
-  include/linux/ctype.h \
-  arch/x86/include/asm/acenv.h \
-  include/acpi/acnames.h \
-  include/acpi/actypes.h \
-  include/acpi/acexcep.h \
-  include/acpi/actbl.h \
-  include/acpi/actbl1.h \
-  include/acpi/actbl2.h \
-  include/acpi/actbl3.h \
-  include/acpi/acrestyp.h \
-  include/acpi/platform/acenvex.h \
-  include/acpi/platform/aclinuxex.h \
-  include/acpi/platform/acgccex.h \
-  include/acpi/acoutput.h \
-  include/acpi/acpiosxf.h \
-  include/acpi/acpixf.h \
-  include/acpi/acconfig.h \
-  include/acpi/acbuffer.h \
-  include/linux/dynamic_debug.h \
-  include/acpi/acpi_bus.h \
-    $(wildcard include/config/X86_ANDROID_TABLETS) \
-    $(wildcard include/config/ACPI_SYSTEM_POWER_STATES_SUPPORT) \
-    $(wildcard include/config/ACPI_SLEEP) \
-  include/acpi/acpi_drivers.h \
-    $(wildcard include/config/ACPI_DOCK) \
-  include/acpi/acpi_numa.h \
-    $(wildcard include/config/ACPI_HMAT) \
-  include/acpi/acpi_io.h \
-  include/linux/io.h \
-    $(wildcard include/config/HAS_IOPORT_MAP) \
-  arch/x86/include/asm/io.h \
-  
+// SPDX-License-Identifier: GPL-2.0-or-later
+/*
+ *
+ *  Support for a cx23417 mpeg encoder via cx23885 host port.
+ *
+ *    (c) 2004 Jelle Foks <jelle@foks.us>
+ *    (c) 2004 Gerd Knorr <kraxel@bytesex.org>
+ *    (c) 2008 Steven Toth <stoth@linuxtv.org>
+ *      - CX23885/7/8 support
+ *
+ *  Includes parts from the ivtv driver <http://sourceforge.net/projects/ivtv/>
+ */
+
+#include "cx23885.h"
+#include "cx23885-ioctl.h"
+
+#include <linux/module.h>
+#include <linux/moduleparam.h>
+#include <linux/init.h>
+#include <linux/fs.h>
+#include <linux/delay.h>
+#include <linux/device.h>
+#include <linux/firmware.h>
+#include <linux/slab.h>
+#include <media/v4l2-common.h>
+#include <media/v4l2-ioctl.h>
+#include <media/drv-intf/cx2341x.h>
+
+#define CX23885_FIRM_IMAGE_SIZE 376836
+#define CX23885_FIRM_IMAGE_NAME "v4l-cx23885-enc.fw"
+
+static unsigned int mpegbufs = 32;
+module_param(mpegbufs, int, 0644);
+MODULE_PARM_DESC(mpegbufs, "number of mpeg buffers, range 2-32");
+static unsigned int mpeglines = 32;
+module_param(mpeglines, int, 0644);
+MODULE_PARM_DESC(mpeglines, "number of lines in an MPEG buffer, range 2-32");
+static unsigned int mpeglinesize = 512;
+module_param(mpeglinesize, int, 0644);
+MODULE_PARM_DESC(mpeglinesize,
+	"number of bytes in each line of an MPEG buffer, range 512-1024");
+
+static unsigned int v4l_debug;
+module_param(v4l_debug, int, 0644);
+MODULE_PARM_DESC(v4l_debug, "enable V4L debug messages");
+
+#define dprintk(level, fmt, arg...)\
+	do { if (v4l_debug >= level) \
+		printk(KERN_DEBUG pr_fmt("%s: 417:" fmt), \
+			__func__, ##arg); \
+	} while (0)
+
+static struct cx23885_tvnorm cx23885_tvnorms[] = {
+	{
+		.name      = "NTSC-M",
+		.id        = V4L2_STD_NTSC_M,
+	}, {
+		.name      = "NTSC-JP",
+		.id        = V4L2_STD_NTSC_M_JP,
+	}, {
+		.name      = "PAL-BG",
+		.id        = V4L2_STD_PAL_BG,
+	}, {
+		.name      = "PAL-DK",
+		.id        = V4L2_STD_PAL_DK,
+	}, {
+		.name      = "PAL-I",
+		.id        = V4L2_STD_PAL_I,
+	}, {
+		.name      = "PAL-M",
+		.id        = V4L2_STD_PAL_M,
+	}, {
+		.name      = "PAL-N",
+		.id        = V4L2_STD_PAL_N,
+	}, {
+		.name      = "PAL-Nc",
+		.id        = V4L2_STD_PAL_Nc,
+	}, {
+		.name      = "PAL-60",
+		.id        = V4L2_STD_PAL_60,
+	}, {
+		.name      = "SECAM-L",
+		.id        = V4L2_STD_SECAM_L,
+	}, {
+		.name      = "SECAM-DK",
+		.id        = V4L2_STD_SECAM_DK,
+	}
+};
+
+/* ------------------------------------------------------------------ */
+enum cx23885_capture_type {
+	CX23885_MPEG_CAPTURE,
+	CX23885_RAW_CAPTURE,
+	CX23885_RAW_PASSTHRU_CAPTURE
+};
+enum cx23885_capture_bits {
+	CX23885_RAW_BITS_NONE             = 0x00,
+	CX23885_RAW_BITS_YUV_CAPTURE      = 0x01,
+	CX23885_RAW_BITS_PCM_CAPTURE      = 0x02,
+	CX23885_RAW_BITS_VBI_CAPTURE      = 0x04,
+	CX23885_RAW_BITS_PASSTHRU_CAPTURE = 0x08,
+	CX23885_RAW_BITS_TO_HOST_CAPTURE  = 0x10
+};
+enum cx23885_capture_end {
+	CX23885_END_AT_GOP, /* stop at the end of gop, generate irq */
+	CX23885_END_NOW, /* stop immediately, no irq */
+};
+enum cx23885_framerate {
+	CX23885_FRAMERATE_NTSC_30, /* NTSC: 30fps */
+	CX23885_FRAMERATE_PAL_25   /* PAL: 25fps */
+};
+enum cx23885_stream_port {
+	CX23885_OUTPUT_PORT_MEMORY,
+	CX23885_OUTPUT_PORT_STREAMING,
+	CX23885_OUTPUT_PORT_SERIAL
+};
+enum cx23885_data_xfer_status {
+	CX23885_MORE_BUFFERS_FOLLOW,
+	CX23885_LAST_BUFFER,
+};
+enum cx23885_picture_mask {
+	CX23885_PICTURE_MASK_NONE,
+	CX23885_PICTURE_MASK_I_FRAMES,
+	CX23885_PICTURE_MASK_I_P_FRAMES = 0x3,
+	CX23885_PICTURE_MASK_ALL_FRAMES = 0x7,
+};
+enum cx23885_vbi_mode_bits {
+	CX23885_VBI_BITS_SLICED,
+	CX23885_VBI_BITS_RAW,
+};
+enum cx23885_vbi_insertion_bits {
+	CX23885_VBI_BITS_INSERT_IN_XTENSION_USR_DATA,
+	CX23

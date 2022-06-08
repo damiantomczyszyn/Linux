@@ -1,77 +1,54 @@
-ount_matching_names(class);
-	class->wait_type_inner = lock->wait_type_inner;
-	class->wait_type_outer = lock->wait_type_outer;
-	class->lock_type = lock->lock_type;
-	/*
-	 * We use RCU's safe list-add method to make
-	 * parallel walking of the hash-list safe:
-	 */
-	hlist_add_head_rcu(&class->hash_entry, hash_head);
-	/*
-	 * Remove the class from the free list and add it to the global list
-	 * of classes.
-	 */
-	list_move_tail(&class->lock_entry, &all_lock_classes);
-	idx = class - lock_classes;
-	if (idx > max_lock_class_idx)
-		max_lock_class_idx = idx;
+ct tda10071_platform_data tda10071_pdata = hauppauge_tda10071_pdata;
+		struct a8293_platform_data a8293_pdata = {};
 
-	if (verbose(class)) {
-		graph_unlock();
+		i2c_bus = &dev->i2c_bus[0];
+		i2c_bus2 = &dev->i2c_bus[1];
+		switch (port->nr) {
+		/* port b */
+		case 1:
+			/* attach demod + tuner combo */
+			memset(&info, 0, sizeof(info));
+			strscpy(info.type, "tda10071_cx24118", I2C_NAME_SIZE);
+			info.addr = 0x05;
+			info.platform_data = &tda10071_pdata;
+			request_module("tda10071");
+			client_demod = i2c_new_client_device(&i2c_bus->i2c_adap, &info);
+			if (!i2c_client_has_driver(client_demod))
+				goto frontend_detach;
+			if (!try_module_get(client_demod->dev.driver->owner)) {
+				i2c_unregister_device(client_demod);
+				goto frontend_detach;
+			}
+			fe0->dvb.frontend = tda10071_pdata.get_dvb_frontend(client_demod);
+			port->i2c_client_demod = client_demod;
 
-		printk("\nnew class %px: %s", class->key, class->name);
-		if (class->name_version > 1)
-			printk(KERN_CONT "#%d", class->name_version);
-		printk(KERN_CONT "\n");
-		dump_stack();
-
-		if (!graph_lock()) {
-			return NULL;
-		}
-	}
-out_unlock_set:
-	graph_unlock();
-
-out_set_class_cache:
-	if (!subclass || force)
-		lock->class_cache[0] = class;
-	else if (subclass < NR_LOCKDEP_CACHING_CLASSES)
-		lock->class_cache[subclass] = class;
-
-	/*
-	 * Hash collision, did we smoke some? We found a class with a matching
-	 * hash but the subclass -- which is hashed in -- didn't match.
-	 */
-	if (DEBUG_LOCKS_WARN_ON(class->subclass != subclass))
-		return NULL;
-
-	return class;
-}
-
-#ifdef CONFIG_PROVE_LOCKING
-/*
- * Allocate a lockdep entry. (assumes the graph_lock held, returns
- * with NULL on failure)
- */
-static struct lock_list *alloc_list_entry(void)
-{
-	int idx = find_first_zero_bit(list_entries_in_use,
-				      ARRAY_SIZE(list_entries));
-
-	if (idx >= ARRAY_SIZE(list_entries)) {
-		if (!debug_locks_off_graph_unlock())
-			return NULL;
-
-		print_lockdep_off("BUG: MAX_LOCKDEP_ENTRIES too low!");
-		dump_stack();
-		return NULL;
-	}
-	nr_list_entries++;
-	__set_bit(idx, list_entries_in_use);
-	return list_entries + idx;
-}
-
-/*
- * Add a new dependency to the head of the list:
- */
-static int add_lock_to_list(struct lock_class
+			/* attach SEC */
+			a8293_pdata.dvb_frontend = fe0->dvb.frontend;
+			memset(&info, 0, sizeof(info));
+			strscpy(info.type, "a8293", I2C_NAME_SIZE);
+			info.addr = 0x0b;
+			info.platform_data = &a8293_pdata;
+			request_module("a8293");
+			client_sec = i2c_new_client_device(&i2c_bus->i2c_adap, &info);
+			if (!i2c_client_has_driver(client_sec))
+				goto frontend_detach;
+			if (!try_module_get(client_sec->dev.driver->owner)) {
+				i2c_unregister_device(client_sec);
+				goto frontend_detach;
+			}
+			port->i2c_client_sec = client_sec;
+			break;
+		/* port c */
+		case 2:
+			/* attach frontend */
+			memset(&si2165_pdata, 0, sizeof(si2165_pdata));
+			si2165_pdata.fe = &fe0->dvb.frontend;
+			si2165_pdata.chip_mode = SI2165_MODE_PLL_XTAL;
+			si2165_pdata.ref_freq_hz = 16000000;
+			memset(&info, 0, sizeof(struct i2c_board_info));
+			strscpy(info.type, "si2165", I2C_NAME_SIZE);
+			info.addr = 0x64;
+			info.platform_data = &si2165_pdata;
+			request_module(info.type);
+			client_demod = i2c_new_client_device(&i2c_bus->i2c_adap, &info);
+			if (!i2c_client_has_driver(client

@@ -1,15 +1,24 @@
-IC_IOREMAP) \
-    $(wildcard include/config/VIRT_TO_BUS) \
-    $(wildcard include/config/GENERIC_DEVMEM_IS_ALLOWED) \
-  include/linux/logic_pio.h \
-    $(wildcard include/config/INDIRECT_PIO) \
-  include/linux/vmalloc.h \
-    $(wildcard include/config/HAVE_ARCH_HUGE_VMALLOC) \
-  arch/x86/include/asm/vmalloc.h \
-    $(wildcard include/config/HAVE_ARCH_HUGE_VMAP) \
-  arch/x86/include/asm/acpi.h \
-    $(wildcard include/config/ACPI_APEI) \
-  include/acpi/pdc_intel.h \
-  arch/x86/include/asm/numa.h \
-    $(wildcard include/config/NUMA_EMU) \
-  arch/x86/include/as
+DING,
+};
+enum cx23885_copyright {
+	CX23885_COPYRIGHT_OFF,
+	CX23885_COPYRIGHT_ON,
+};
+enum cx23885_notification_type {
+	CX23885_NOTIFICATION_REFRESH,
+};
+enum cx23885_notification_status {
+	CX23885_NOTIFICATION_OFF,
+	CX23885_NOTIFICATION_ON,
+};
+enum cx23885_notification_mailbox {
+	CX23885_NOTIFICATION_NO_MAILBOX = -1,
+};
+enum cx23885_field1_lines {
+	CX23885_FIELD1_SAA7114 = 0x00EF, /* 239 */
+	CX23885_FIELD1_SAA7115 = 0x00F0, /* 240 */
+	CX23885_FIELD1_MICRONAS = 0x0105, /* 261 */
+};
+enum cx23885_field2_lines {
+	CX23885_FIELD2_SAA7114 = 0x00EF, /* 239 */
+	CX23885_

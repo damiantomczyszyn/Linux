@@ -1,31 +1,24 @@
-fig/GENERIC_ATOMIC64) \
-  include/linux/atomic/atomic-long.h \
-  include/linux/atomic/atomic-instrumented.h \
-  include/linux/bug.h \
-    $(wildcard include/config/BUG_ON_DATA_CORRUPTION) \
-  arch/x86/include/asm/bug.h \
-    $(wildcard include/config/DEBUG_BUGVERBOSE) \
-  include/linux/instrumentation.h \
-    $(wildcard include/config/DEBUG_ENTRY) \
-  include/asm-generic/bug.h \
-    $(wildcard include/config/BUG) \
-    $(wildcard include/config/GENERIC_BUG_RELATIVE_POINTERS) \
-  arch/x86/include/uapi/asm/msr.h \
-  include/linux/tracepoint-defs.h \
-  arch/x86/include/asm/special_insns.h \
-  include/linux/irqflags.h \
-    $(wildcard include/config/TRACE_IRQFLAGS) \
-    $(wildcard include/config/PREEMPT_RT) \
-    $(wildcard include/config/IRQSOFF_TRACER) \
-    $(wildcard include/config/PREEMPT_TRACER) \
-    $(wildcard include/config/DEBUG_IRQFLAGS) \
-    $(wildcard include/config/TRACE_IRQFLAGS_SUPPORT) \
-  arch/x86/include/asm/irqflags.h \
-  arch/x86/include/asm/fpu/types.h \
-  arch/x86/include/asm/vmxfeatures.h \
-  arch/x86/include/asm/vdso/processor.h \
-  include/linux/personality.h \
-  include/uapi/linux/personality.h \
-  arch/x86/include/asm/tsc.h \
-  arch/x86/include/asm/cpufeature.h \
-    $(wildcard include/config/X86_FEATURE_NAMES
+_read(ALT_PIN_OUT_SEL));
+	dprintk(1, "%s() GPIO2                    0x%08X\n", __func__,
+		cx_read(GPIO2));
+	dprintk(1, "%s() gpcnt(0x%08X)          0x%08X\n", __func__,
+		port->reg_gpcnt, cx_read(port->reg_gpcnt));
+	dprintk(1, "%s() gpcnt_ctl(0x%08X)      0x%08x\n", __func__,
+		port->reg_gpcnt_ctl, cx_read(port->reg_gpcnt_ctl));
+	dprintk(1, "%s() dma_ctl(0x%08X)        0x%08x\n", __func__,
+		port->reg_dma_ctl, cx_read(port->reg_dma_ctl));
+	if (port->reg_src_sel)
+		dprintk(1, "%s() src_sel(0x%08X)        0x%08x\n", __func__,
+			port->reg_src_sel, cx_read(port->reg_src_sel));
+	dprintk(1, "%s() lngth(0x%08X)          0x%08x\n", __func__,
+		port->reg_lngth, cx_read(port->reg_lngth));
+	dprintk(1, "%s() hw_sop_ctrl(0x%08X)    0x%08x\n", __func__,
+		port->reg_hw_sop_ctrl, cx_read(port->reg_hw_sop_ctrl));
+	dprintk(1, "%s() gen_ctrl(0x%08X)       0x%08x\n", __func__,
+		port->reg_gen_ctrl, cx_read(port->reg_gen_ctrl));
+	dprintk(1, "%s() bd_pkt_status(0x%08X)  0x%08x\n", __func__,
+		port->reg_bd_pkt_status, cx_read(port->reg_bd_pkt_status));
+	dprintk(1, "%s() sop_status(0x%08X)     0x%08x\n", __func__,
+		port->reg_sop_status, cx_read(port->reg_sop_status));
+	dprintk(1, "%s() fifo_ovfl_stat(0x%08X) 0x%08x\n", __func__,
+		port->reg_fifo_ovfl_stat,

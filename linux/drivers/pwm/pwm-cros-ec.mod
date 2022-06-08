@@ -1,2 +1,2 @@
-lude/config/SHMEM) \
-    $(
+         = &mpeg_fops,
+	.io

@@ -1,19 +1,16 @@
-IOAPIC) \
-    $(wildcard include/config/PCI) \
-    $(wildcard include/config/ACPI_WMI) \
-    $(wildcard include/config/ACPI_NUMA) \
-    $(wildcard include/config/HIBERNATION) \
-    $(wildcard include/config/ACPI_HOTPLUG_MEMORY) \
-    $(wildcard include/config/ACPI_CONTAINER) \
-    $(wildcard include/config/ACPI_GTDT) \
-    $(wildcard include/config/PM) \
-    $(wildcard include/config/GPIOLIB) \
-    $(wildcard include/config/ACPI_TABLE_UPGRADE) \
-    $(wildcard include/config/ACPI_WATCHDOG) \
-    $(wildcard include/config/ACPI_SPCR_TABLE) \
-    $(wildcard include/config/ACPI_GENERIC_GSI) \
-    $(wildcard include/config/ACPI_LPIT) \
-    $(wildcard include/config/ACPI_PPTT) \
-    $(wildcard include/config/ACPI_PCC) \
-  include/linux/ioport.h \
-  include/linux/irqdo
+NE_READ_LOCK_IRQSAVE) \
+    $(wildcard include/config/INLINE_WRITE_LOCK_IRQSAVE) \
+    $(wildcard include/config/INLINE_READ_TRYLOCK) \
+    $(wildcard include/config/INLINE_WRITE_TRYLOCK) \
+    $(wildcard include/config/INLINE_READ_UNLOCK) \
+    $(wildcard include/config/INLINE_WRITE_UNLOCK) \
+    $(wildcard include/config/INLINE_READ_UNLOCK_BH) \
+    $(wildcard include/config/INLINE_WRITE_UNLOCK_BH) \
+    $(wildcard include/config/INLINE_READ_UNLOCK_IRQ) \
+    $(wildcard include/config/INLINE_WRITE_UNLOCK_IRQ) \
+    $(wildcard include/config/INLINE_READ_UNLOCK_IRQRESTORE) \
+    $(wildcard include/config/INLINE_WRITE_UNLOCK_IRQRESTORE) \
+  include/uapi/linux/wait.h \
+  include/linux/fs.h \
+    $(wildcard include/config/READ_ONLY_THP_FOR_FS) \
+    $(wildcard incl

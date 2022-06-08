@@ -1,1 +1,10 @@
-cmd_drivers/media/i2c/tw9906.o := gcc -Wp,-MMD,drivers/media/i2c/.tw9906.o.d -nostdinc -I./arch/x86/include -I./arch/x86/include/generated  -I./include -I./arch/x86/include/ua
+evision(struct cx23885_dev *dev)
+{
+	switch (cx_read(RDR_CFG2) & 0xff) {
+	case 0x00:
+		/* cx23885 */
+		dev->hwrevision = 0xa0;
+		break;
+	case 0x01:
+		/* CX23885-12Z */
+		dev->h

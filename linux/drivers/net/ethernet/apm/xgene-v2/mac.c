@@ -1,70 +1,57 @@
-UMA) \
-    $(wildcard include/config/NUMA_BALANCING) \
-    $(wildcard include/config/RSEQ) \
-    $(wildcard include/config/TASK_DELAY_ACCT) \
-    $(wildcard include/config/FAULT_INJECTION) \
-    $(wildcard include/config/LATENCYTOP) \
-    $(wildcard include/config/KUNIT) \
-    $(wildcard include/config/FUNCTION_GRAPH_TRACER) \
-    $(wildcard include/config/UPROBES) \
-    $(wildcard include/config/BCACHE) \
-    $(wildcard include/config/VMAP_STACK) \
-    $(wildcard include/config/LIVEPATCH) \
-    $(wildcard include/config/SECURITY) \
-    $(wildcard include/config/BPF_SYSCALL) \
-    $(wildcard include/config/GCC_PLUGIN_STACKLEAK) \
-    $(wildcard include/config/X86_MCE) \
-    $(wildcard include/config/KRETPROBES) \
-    $(wildcard include/config/RETHOOK) \
-    $(wildcard include/config/ARCH_HAS_PARANOID_L1D_FLUSH) \
-    $(wildcard include/config/ARCH_TASK_STRUCT_ON_STACK) \
-    $(wildcard include/config/DEBUG_RSEQ) \
-  include/uapi/linux/sched.h \
-  include/linux/pid.h \
-  include/linux/rculist.h \
-    $(wildcard include/config/PROVE_RCU_LIST) \
-  include/linux/refcount.h \
-  include/linux/sem.h \
-  include/uapi/linux/sem.h \
-  include/linux/ipc.h \
-  include/linux/uidgid.h \
-    $(wildcard include/config/MULTIUSER) \
-    $(wildcard include/config/USER_NS) \
-  include/linux/highuid.h \
-  include/linux/rhashtable-types.h \
-  include/uapi/linux/ipc.h \
-  arch/x86/include/generated/uapi/asm/ipcbuf.h \
-  include/uapi/asm-generic/ipcbuf.h \
-  arch/x86/include/uapi/asm/sembuf.h \
-  include/linux/shm.h \
-  include/uapi/linux/shm.h \
-  include/uapi/asm-generic/hugetlb_encode.h \
-  arch/x86/include/uapi/asm/shmbuf.h \
-  include/uapi/asm-generic/shmbuf.h \
-  arch/x86/include/asm/shmparam.h \
-  include/linux/plist.h \
-    $(wildcard include/config/DEBUG_PLIST) \
-  include/linux/hrtimer.h \
-    $(wildcard include/config/HIGH_RES_TIMERS) \
-    $(wildcard include/config/TIME_LOW_RES) \
-    $(wildcard include/config/TIMERFD) \
-  include/linux/hrtimer_defs.h \
-  include/linux/rbtree.h \
-  include/linux/rbtree_types.h \
-  include/linux/percpu.h \
-    $(wildcard include/config/NEED_PER_CPU_EMBED_FIRST_CHUNK) \
-    $(wildcard include/config/NEED_PER_CPU_PAGE_FIRST_CHUNK) \
-  include/linux/mmdebug.h \
-    $(wildcard include/config/DEBUG_VM) \
-    $(wildcard include/config/DEBUG_VM_PGFLAGS) \
-  include/linux/seqlock.h \
-  include/linux/ww_mutex.h \
-    $(wildcard include/config/DEBUG_RT_MUTEXES) \
-    $(wildcard include/config/DEBUG_WW_MUTEX_SLOWPATH) \
-  include/linux/rtmutex.h \
-  include/linux/timerqueue.h \
-  include/linux/seccomp.h \
-    $(wildcard include/config/SECCOMP) \
-    $(wildcard include/config/HAVE_ARCH_SECCOMP_FILTER) \
-    $(wildcard include/config/SECCOMP_FILTER) \
-    $(wildcard include/co
+cx23885-cards.c                                             */
+extern struct cx23885_board cx23885_boards[];
+extern const unsigned int cx23885_bcount;
+
+extern struct cx23885_subid cx23885_subids[];
+extern const unsigned int cx23885_idcount;
+
+extern int cx23885_tuner_callback(void *priv, int component,
+	int command, int arg);
+extern void cx23885_card_list(struct cx23885_dev *dev);
+extern int  cx23885_ir_init(struct cx23885_dev *dev);
+extern void cx23885_ir_pci_int_enable(struct cx23885_dev *dev);
+extern void cx23885_ir_fini(struct cx23885_dev *dev);
+extern void cx23885_gpio_setup(struct cx23885_dev *dev);
+extern void cx23885_card_setup(struct cx23885_dev *dev);
+extern void cx23885_card_setup_pre_i2c(struct cx23885_dev *dev);
+
+extern int cx23885_dvb_register(struct cx23885_tsport *port);
+extern int cx23885_dvb_unregister(struct cx23885_tsport *port);
+
+extern int cx23885_buf_prepare(struct cx23885_buffer *buf,
+			       struct cx23885_tsport *port);
+extern void cx23885_buf_queue(struct cx23885_tsport *port,
+			      struct cx23885_buffer *buf);
+extern void cx23885_free_buffer(struct cx23885_dev *dev,
+				struct cx23885_buffer *buf);
+
+/* ----------------------------------------------------------- */
+/* cx23885-video.c                                             */
+/* Video */
+extern int cx23885_video_register(struct cx23885_dev *dev);
+extern void cx23885_video_unregister(struct cx23885_dev *dev);
+extern int cx23885_video_irq(struct cx23885_dev *dev, u32 status);
+extern void cx23885_video_wakeup(struct cx23885_dev *dev,
+	struct cx23885_dmaqueue *q, u32 count);
+int cx23885_enum_input(struct cx23885_dev *dev, struct v4l2_input *i);
+int cx23885_set_input(struct file *file, void *priv, unsigned int i);
+int cx23885_get_input(struct file *file, void *priv, unsigned int *i);
+int cx23885_set_frequency(struct file *file, void *priv, const struct v4l2_frequency *f);
+int cx23885_set_tvnorm(struct cx23885_dev *dev, v4l2_std_id norm);
+
+/* ----------------------------------------------------------- */
+/* cx23885-vbi.c                                               */
+extern int cx23885_vbi_fmt(struct file *file, void *priv,
+	struct v4l2_format *f);
+extern void cx23885_vbi_timeout(unsigned long data);
+extern const struct vb2_ops cx23885_vbi_qops;
+extern int cx23885_vbi_irq(struct cx23885_dev *dev, u32 status);
+
+/* cx23885-i2c.c                                                */
+extern int cx23885_i2c_register(struct cx23885_i2c *bus);
+extern int cx23885_i2c_unregister(struct cx23885_i2c *bus);
+extern void cx23885_av_clk(struct cx23885_dev *dev, int enable);
+
+/* ----------------------------------------------------------- */
+/* cx23885-417.c                                               */
+extern int cx23885

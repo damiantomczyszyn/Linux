@@ -1,7 +1,8 @@
-turns true, we skip this
-		 *         lock (and any path this lock is in).
-		 */
-		if (skip && skip(lock, data))
-			continue;
+,
+				&dvbsky_s950c_m88ds3103_config,
+				&i2c_bus2->i2c_adap, &adapter);
+		if (fe0->dvb.frontend == NULL)
+			break;
 
-		if (match(lock,
+		/* attach tuner */
+		mem

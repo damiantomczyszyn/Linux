@@ -1,56 +1,56 @@
-IRQ) << LOCK_USAGE_READ_MASK;
-
-	return excl;
-}
-
-/*
- * Find the first pair of bit match between an original
- * usage mask and an exclusive usage mask.
- */
-static int find_exclusive_match(unsigned long mask,
-				unsigned long excl_mask,
-				enum lock_usage_bit *bitp,
-				enum lock_usage_bit *excl_bitp)
-{
-	int bit, excl, excl_read;
-
-	for_each_set_bit(bit, &mask, LOCK_USED) {
-		/*
-		 * exclusive_bit() strips the read bit, however,
-		 * LOCK_ENABLED_IRQ_*_READ may cause deadlocks too, so we need
-		 * to search excl | LOCK_USAGE_READ_MASK as well.
-		 */
-		excl = exclusive_bit(bit);
-		excl_read = excl | LOCK_USAGE_READ_MASK;
-		if (excl_mask & lock_flag(excl)) {
-			*bitp = bit;
-			*excl_bitp = excl;
-			return 0;
-		} else if (excl_mask & lock_flag(excl_read)) {
-			*bitp = bit;
-			*excl_bitp = excl_read;
-			return 0;
-		}
+nt_modules();
+	if (irqs_disabled())
+		print_irqtrace_events(prev);
+	if (IS_ENABLED(CONFIG_DEBUG_PREEMPT)
+	    && in_atomic_preempt_off()) {
+		pr_err("Preemption disabled at:");
+		print_ip_sym(KERN_ERR, preempt_disable_ip);
 	}
-	return -1;
+	if (panic_on_warn)
+		panic("scheduling while atomic\n");
+
+	dump_stack();
+	add_taint(TAINT_WARN, LOCKDEP_STILL_OK);
 }
 
 /*
- * Prove that the new dependency does not connect a hardirq-safe(-read)
- * lock with a hardirq-unsafe lock - to achieve this we search
- * the backwards-subgraph starting at <prev>, and the
- * forwards-subgraph starting at <next>:
+ * Various schedule()-time debugging checks and statistics:
  */
-static int check_irq_usage(struct task_struct *curr, struct held_lock *prev,
-			   struct held_lock *next)
+static inline void schedule_debug(struct task_struct *prev, bool preempt)
 {
-	unsigned long usage_mask = 0, forward_mask, backward_mask;
-	enum lock_usage_bit forward_bit = 0, backward_bit = 0;
-	struct lock_list *target_entry1;
-	struct lock_list *target_entry;
-	struct lock_list this, that;
-	enum bfs_result ret;
+#ifdef CONFIG_SCHED_STACK_END_CHECK
+	if (task_stack_end_corrupted(prev))
+		panic("corrupted stack end detected inside scheduler\n");
 
+	if (task_scs_end_corrupted(prev))
+		panic("corrupted shadow stack detected inside scheduler\n");
+#endif
+
+#ifdef CONFIG_DEBUG_ATOMIC_SLEEP
+	if (!preempt && READ_ONCE(prev->__state) && prev->non_block_count) {
+		printk(KERN_ERR "BUG: scheduling in a non-blocking section: %s/%d/%i\n",
+			prev->comm, prev->pid, prev->non_block_count);
+		dump_stack();
+		add_taint(TAINT_WARN, LOCKDEP_STILL_OK);
+	}
+#endif
+
+	if (unlikely(in_atomic_preempt_off())) {
+		__schedule_bug(prev);
+		preempt_count_set(PREEMPT_DISABLED);
+	}
+	rcu_sleep_check();
+	SCHED_WARN_ON(ct_state() == CONTEXT_USER);
+
+	profile_hit(SCHED_PROFILING, __builtin_return_address(0));
+
+	schedstat_inc(this_rq()->sched_count);
+}
+
+static void put_prev_task_balance(struct rq *rq, struct task_struct *prev,
+				  struct rq_flags *rf)
+{
+#ifdef CONFIG_SMP
+	const struct sched_class *class;
 	/*
-	 * Step 1: gather all hard/soft IRQs usages backward in an
-	 * a
+	 * We must do the balancing 

@@ -1,44 +1,37 @@
-_POINTS)
-		stats->contention_point[contention_point]++;
-	if (contending_point < LOCKSTAT_POINTS)
-		stats->contending_point[contending_point]++;
-	if (lock->cpu != smp_processor_id())
-		stats->bounces[bounce_contended + !!hlock->read]++;
-}
-
-static void
-__lock_acquired(struct lockdep_map *lock, unsigned long ip)
+_cpus_allowed(struct task_struct *p, const struct cpumask *new_mask, u32 flags)
 {
-	struct task_struct *curr = current;
-	struct held_lock *hlock;
-	struct lock_class_stats *stats;
-	unsigned int depth;
-	u64 now, waittime = 0;
-	int i, cpu;
+	struct rq *rq = task_rq(p);
+	bool queued, running;
 
-	depth = curr->lockdep_depth;
 	/*
-	 * Yay, we acquired ownership of this lock we didn't try to
-	 * acquire, how the heck did that happen?
+	 * This here violates the locking rules for affinity, since we're only
+	 * supposed to change these variables while holding both rq->lock and
+	 * p->pi_lock.
+	 *
+	 * HOWEVER, it magically works, because ttwu() is the only code that
+	 * accesses these variables under p->pi_lock and only does so after
+	 * smp_cond_load_acquire(&p->on_cpu, !VAL), and we're in __schedule()
+	 * before finish_task().
+	 *
+	 * XXX do further audits, this smells like something putrid.
 	 */
-	if (DEBUG_LOCKS_WARN_ON(!depth))
-		return;
+	if (flags & SCA_MIGRATE_DISABLE)
+		SCHED_WARN_ON(!p->on_cpu);
+	else
+		lockdep_assert_held(&p->pi_lock);
 
-	hlock = find_held_lock(curr, lock, depth, &i);
-	if (!hlock) {
-		print_lock_contention_bug(curr, lock, _RET_IP_);
-		return;
+	queued = task_on_rq_queued(p);
+	running = task_current(rq, p);
+
+	if (queued) {
+		/*
+		 * Because __kthread_bind() calls this on blocked tasks without
+		 * holding rq->lock.
+		 */
+		lockdep_assert_rq_held(rq);
+		dequeue_task(rq, p, DEQUEUE_SAVE | DEQUEUE_NOCLOCK);
 	}
+	if (running)
+		put_prev_task(rq, p);
 
-	if (hlock->instance != lock)
-		return;
-
-	cpu = smp_processor_id();
-	if (hlock->waittime_stamp) {
-		now = lockstat_clock();
-		waittime = now - hlock->waittime_stamp;
-		hlock->holdtime_stamp = now;
-	}
-
-	stats = get_lock_stats(hlock_class(hlock));
-	if (waittime) 
+	p->sched_class->set_cp

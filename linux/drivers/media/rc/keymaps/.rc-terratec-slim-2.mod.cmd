@@ -1,1 +1,7 @@
-cmd_drivers/media/rc/keymaps/rc-terratec-slim-2.mod := { echo  drivers/media/rc/keymaps/rc-terratec-slim-2.o;  echo; } > drivers/media/rc/keymaps/rc-terratec-slim-2.mod
+/* SPDX-License-Identifier: GPL-2.0-or-later */
+/*
+ *  Driver for the Conexant CX23885/7/8 PCIe bridge
+ *
+ *  Infrared remote control input device
+ *
+ *  Copyright (C) 2

@@ -1,2 +1,2 @@
-drivers/media/rc/keymaps/rc-twinhan1027.o
-
+ in both TC_REQ and TC_REQ_SET
+ * indicate 

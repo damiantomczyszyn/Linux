@@ -1,398 +1,540 @@
-lude/linux/percpu-refcount.h \
-  include/linux/kasan.h \
-    $(wildcard include/config/KASAN_STACK) \
-    $(wildcard include/config/KASAN_VMALLOC) \
-    $(wildcard include/config/KASAN_INLINE) \
-  include/linux/kasan-enabled.h \
-  include/linux/device.h \
-    $(wildcard include/config/GENERIC_MSI_IRQ_DOMAIN) \
-    $(wildcard include/config/GENERIC_MSI_IRQ) \
-    $(wildcard include/config/ENERGY_MODEL) \
-    $(wildcard include/config/PINCTRL) \
-    $(wildcard include/config/DMA_OPS) \
-    $(wildcard include/config/DMA_DECLARE_COHERENT) \
-    $(wildcard include/config/DMA_CMA) \
-    $(wildcard include/config/SWIOTLB) \
-    $(wildcard include/config/ARCH_HAS_SYNC_DMA_FOR_DEVICE) \
-    $(wildcard include/config/ARCH_HAS_SYNC_DMA_FOR_CPU) \
-    $(wildcard include/config/ARCH_HAS_SYNC_DMA_FOR_CPU_ALL) \
-    $(wildcard include/config/DMA_OPS_BYPASS) \
-    $(wildcard include/config/DEVTMPFS) \
-    $(wildcard include/config/SYSFS_DEPRECATED) \
-  include/linux/dev_printk.h \
-  include/linux/ratelimit.h \
-  include/linux/sched.h \
-    $(wildcard include/config/VIRT_CPU_ACCOUNTING_NATIVE) \
-    $(wildcard include/config/SCHED_INFO) \
-    $(wildcard include/config/SCHEDSTATS) \
-    $(wildcard include/config/SCHED_CORE) \
-    $(wildcard include/config/FAIR_GROUP_SCHED) \
-    $(wildcard include/config/RT_GROUP_SCHED) \
-    $(wildcard include/config/RT_MUTEXES) \
-    $(wildcard include/config/UCLAMP_TASK) \
-    $(wildcard include/config/UCLAMP_BUCKETS_COUNT) \
-    $(wildcard include/config/CGROUP_SCHED) \
-    $(wildcard include/config/BLK_DEV_IO_TRACE) \
-    $(wildcard include/config/PSI) \
-    $(wildcard include/config/COMPAT_BRK) \
-    $(wildcard include/config/CGROUPS) \
-    $(wildcard include/config/BLK_CGROUP) \
-    $(wildcard include/config/PAGE_OWNER) \
-    $(wildcard include/config/EVENTFD) \
-    $(wildcard include/config/ARCH_HAS_SCALED_CPUTIME) \
-    $(wildcard include/config/VIRT_CPU_ACCOUNTING_GEN) \
-    $(wildcard include/config/POSIX_CPUTIMERS) \
-    $(wildcard include/config/POSIX_CPU_TIMERS_TASK_WORK) \
-    $(wildcard include/config/KEYS) \
-    $(wildcard include/config/SYSVIPC) \
-    $(wildcard include/config/DETECT_HUNG_TASK) \
-    $(wildcard include/config/IO_URING) \
-    $(wildcard include/config/AUDIT) \
-    $(wildcard include/config/AUDITSYSCALL) \
-    $(wildcard include/config/UBSAN) \
-    $(wildcard include/config/UBSAN_TRAP) \
-    $(wildcard include/config/TASK_XACCT) \
-    $(wildcard include/config/CPUSETS) \
-    $(wildcard include/config/X86_CPU_RESCTRL) \
-    $(wildcard include/config/FUTEX) \
-    $(wildcard include/config/PERF_EVENTS) \
-    $(wildcard include/config/RSEQ) \
-    $(wildcard include/config/TASK_DELAY_ACCT) \
-    $(wildcard include/config/FAULT_INJECTION) \
-    $(wildcard include/config/LATENCYTOP) \
-    $(wildcard include/config/KUNIT) \
-    $(wildcard include/config/FUNCTION_GRAPH_TRACER) \
-    $(wildcard include/config/BCACHE) \
-    $(wildcard include/config/VMAP_STACK) \
-    $(wildcard include/config/SECURITY) \
-    $(wildcard include/config/BPF_SYSCALL) \
-    $(wildcard include/config/GCC_PLUGIN_STACKLEAK) \
-    $(wildcard include/config/X86_MCE) \
-    $(wildcard include/config/KRETPROBES) \
-    $(wildcard include/config/RETHOOK) \
-    $(wildcard include/config/ARCH_HAS_PARANOID_L1D_FLUSH) \
-    $(wildcard include/config/ARCH_TASK_STRUCT_ON_STACK) \
-    $(wildcard include/config/DEBUG_RSEQ) \
-  include/uapi/linux/sched.h \
-  include/linux/pid.h \
-  include/linux/rculist.h \
-    $(wildcard include/config/PROVE_RCU_LIST) \
-  include/linux/sem.h \
-  include/uapi/linux/sem.h \
-  include/linux/ipc.h \
-  include/linux/rhashtable-types.h \
-  include/uapi/linux/ipc.h \
-  arch/x86/include/generated/uapi/asm/ipcbuf.h \
-  include/uapi/asm-generic/ipcbuf.h \
-  arch/x86/include/uapi/asm/sembuf.h \
-  include/linux/shm.h \
-  include/uapi/linux/shm.h \
-  include/uapi/asm-generic/hugetlb_encode.h \
-  arch/x86/include/uapi/asm/shmbuf.h \
-  include/uapi/asm-generic/shmbuf.h \
-  arch/x86/include/asm/shmparam.h \
-  include/linux/plist.h \
-    $(wildcard include/config/DEBUG_PLIST) \
-  include/linux/hrtimer.h \
-    $(wildcard include/config/HIGH_RES_TIMERS) \
-    $(wildcard include/config/TIME_LOW_RES) \
-    $(wildcard include/config/TIMERFD) \
-  include/linux/hrtimer_defs.h \
-  include/linux/timerqueue.h \
-  include/linux/seccomp.h \
-    $(wildcard include/config/SECCOMP) \
-    $(wildcard include/config/HAVE_ARCH_SECCOMP_FILTER) \
-    $(wildcard include/config/SECCOMP_FILTER) \
-    $(wildcard include/config/CHECKPOINT_RESTORE) \
-    $(wildcard include/config/SECCOMP_CACHE_DEBUG) \
-  include/uapi/linux/seccomp.h \
-  arch/x86/include/asm/seccomp.h \
-  arch/x86/include/asm/unistd.h \
-  arch/x86/include/uapi/asm/unistd.h \
-  arch/x86/include/generated/uapi/asm/unistd_32.h \
-  include/asm-generic/seccomp.h \
-  include/uapi/linux/unistd.h \
-  include/linux/resource.h \
-  include/uapi/linux/resource.h \
-  arch/x86/include/generated/uapi/asm/resource.h \
-  include/asm-generic/resource.h \
-  include/uapi/asm-generic/resource.h \
-  include/linux/latencytop.h \
-  include/linux/sched/prio.h \
-  include/linux/sched/types.h \
-  include/linux/signal_types.h \
-    $(wildcard include/config/OLD_SIGACTION) \
-  include/uapi/linux/signal.h \
-  arch/x86/include/asm/signal.h \
-  arch/x86/include/uapi/asm/signal.h \
-  include/uapi/asm-generic/signal-defs.h \
-  arch/x86/include/uapi/asm/siginfo.h \
-  include/uapi/asm-generic/siginfo.h \
-  include/linux/syscall_user_dispatch.h \
-  include/linux/task_io_accounting.h \
-    $(wildcard include/config/TASK_IO_ACCOUNTING) \
-  include/linux/posix-timers.h \
-  include/linux/alarmtimer.h \
-    $(wildcard include/config/RTC_CLASS) \
-  include/uapi/linux/rseq.h \
-  include/linux/kcsan.h \
-  include/linux/energy_model.h \
-  include/linux/sched/cpufreq.h \
-    $(wildcard include/config/CPU_FREQ) \
-  include/linux/sched/topology.h \
-    $(wildcard include/config/SCHED_DEBUG) \
-    $(wildcard include/config/SCHED_MC) \
-    $(wildcard include/config/CPU_FREQ_GOV_SCHEDUTIL) \
-  include/linux/sched/idle.h \
-  include/linux/sched/sd_flags.h \
-  include/linux/klist.h \
-  include/linux/pm.h \
-    $(wildcard include/config/VT_CONSOLE_SLEEP) \
-    $(wildcard include/config/PM_CLK) \
-    $(wildcard include/config/PM_GENERIC_DOMAINS) \
-  include/linux/device/bus.h \
-  include/linux/device/class.h \
-  include/linux/device/driver.h \
-  arch/x86/include/asm/device.h \
-  include/linux/pm_wakeup.h \
-  include/acpi/acpi.h \
-  include/acpi/platform/acenv.h \
-  include/acpi/platform/acgcc.h \
-  include/acpi/platform/aclinux.h \
-    $(wildcard include/config/ACPI_REDUCED_HARDWARE_ONLY) \
-    $(wildcard include/config/ACPI_DEBUG) \
-  include/linux/ctype.h \
-  arch/x86/include/asm/acenv.h \
-  include/acpi/acnames.h \
-  include/acpi/actypes.h \
-  include/acpi/acexcep.h \
-  include/acpi/actbl.h \
-  include/acpi/actbl1.h \
-  include/acpi/actbl2.h \
-  include/acpi/actbl3.h \
-  include/acpi/acrestyp.h \
-  include/acpi/platform/acenvex.h \
-  include/acpi/platform/aclinuxex.h \
-  include/acpi/platform/acgccex.h \
-  include/acpi/acoutput.h \
-  include/acpi/acpiosxf.h \
-  include/acpi/acpixf.h \
-  include/acpi/acconfig.h \
-  include/acpi/acbuffer.h \
-  include/linux/dynamic_debug.h \
-  include/acpi/acpi_bus.h \
-    $(wildcard include/config/X86_ANDROID_TABLETS) \
-    $(wildcard include/config/ACPI_SYSTEM_POWER_STATES_SUPPORT) \
-    $(wildcard include/config/ACPI_SLEEP) \
-  include/acpi/acpi_drivers.h \
-    $(wildcard include/config/ACPI_DOCK) \
-  include/acpi/acpi_numa.h \
-    $(wildcard include/config/ACPI_HMAT) \
-  include/acpi/acpi_io.h \
-  include/linux/io.h \
-    $(wildcard include/config/HAS_IOPORT_MAP) \
-  arch/x86/include/asm/io.h \
-    $(wildcard include/config/MTRR) \
-    $(wildcard include/config/X86_PAT) \
-  arch/x86/include/generated/asm/early_ioremap.h \
-  include/asm-generic/early_ioremap.h \
-    $(wildcard include/config/GENERIC_EARLY_IOREMAP) \
-  include/asm-generic/iomap.h \
-  include/asm-generic/pci_iomap.h \
-    $(wildcard include/config/NO_GENERIC_PCI_IOPORT_MAP) \
-    $(wildcard include/config/GENERIC_PCI_IOMAP) \
-  include/asm-generic/io.h \
-    $(wildcard include/config/GENERIC_IOMAP) \
-    $(wildcard include/config/GENERIC_IOREMAP) \
-    $(wildcard include/config/VIRT_TO_BUS) \
-    $(wildcard include/config/GENERIC_DEVMEM_IS_ALLOWED) \
-  include/linux/logic_pio.h \
-    $(wildcard include/config/INDIRECT_PIO) \
-  include/linux/vmalloc.h \
-    $(wildcard include/config/HAVE_ARCH_HUGE_VMALLOC) \
-  arch/x86/include/asm/vmalloc.h \
-    $(wildcard include/config/HAVE_ARCH_HUGE_VMAP) \
-  arch/x86/include/asm/acpi.h \
-    $(wildcard include/config/ACPI_APEI) \
-  include/acpi/pdc_intel.h \
-  arch/x86/include/asm/numa.h \
-    $(wildcard include/config/NUMA_EMU) \
-  arch/x86/include/asm/numa_32.h \
-  include/linux/regulator/consumer.h \
-    $(wildcard include/config/REGULATOR) \
-  include/linux/suspend.h \
-    $(wildcard include/config/VT) \
-    $(wildcard include/config/SUSPEND) \
-    $(wildcard include/config/HIBERNATION_SNAPSHOT_DEV) \
-    $(wildcard include/config/PM_SLEEP_DEBUG) \
-    $(wildcard include/config/PM_AUTOSLEEP) \
-  include/linux/swap.h \
-    $(wildcard include/config/DEVICE_PRIVATE) \
-    $(wildcard include/config/MIGRATION) \
-    $(wildcard include/config/FRONTSWAP) \
-    $(wildcard include/config/THP_SWAP) \
-    $(wildcard include/config/MEMCG_SWAP) \
-  include/linux/memcontrol.h \
-    $(wildcard include/config/CGROUP_WRITEBACK) \
-  include/linux/cgroup.h \
-    $(wildcard include/config/CGROUP_CPUACCT) \
-    $(wildcard include/config/SOCK_CGROUP_DATA) \
-    $(wildcard include/config/CGROUP_DATA) \
-    $(wildcard include/config/CGROUP_BPF) \
-  include/uapi/linux/cgroupstats.h \
-  include/uapi/linux/taskstats.h \
-  include/linux/fs.h \
-    $(wildcard include/config/READ_ONLY_THP_FOR_FS) \
-    $(wildcard include/config/FS_POSIX_ACL) \
-    $(wildcard include/config/IMA) \
-    $(wildcard include/config/FILE_LOCKING) \
-    $(wildcard include/config/FSNOTIFY) \
-    $(wildcard include/config/FS_ENCRYPTION) \
-    $(wildcard include/config/FS_VERITY) \
-    $(wildcard include/config/EPOLL) \
-    $(wildcard include/config/UNICODE) \
-    $(wildcard include/config/QUOTA) \
-    $(wildcard include/config/FS_DAX) \
-    $(wildcard include/config/BLOCK) \
-  include/linux/wait_bit.h \
-  include/linux/kdev_t.h \
-  include/uapi/linux/kdev_t.h \
-  include/linux/dcache.h \
-  include/linux/rculist_bl.h \
-  include/linux/list_bl.h \
-  include/linux/bit_spinlock.h \
-  include/linux/lockref.h \
-    $(wildcard include/config/ARCH_USE_CMPXCHG_LOCKREF) \
-  include/linux/stringhash.h \
-    $(wildcard include/config/DCACHE_WORD_ACCESS) \
-  include/linux/hash.h \
-    $(wildcard include/config/HAVE_ARCH_HASH) \
-  include/linux/path.h \
-  include/linux/list_lru.h \
-  include/linux/shrinker.h \
-  include/linux/capability.h \
-  include/uapi/linux/capability.h \
-  include/linux/semaphore.h \
-  include/linux/fcntl.h \
-    $(wildcard include/config/ARCH_32BIT_OFF_T) \
-  include/uapi/linux/fcntl.h \
-  arch/x86/include/generated/uapi/asm/fcntl.h \
-  include/uapi/asm-generic/fcntl.h \
-  include/uapi/linux/openat2.h \
-  include/linux/migrate_mode.h \
-  include/linux/percpu-rwsem.h \
-  include/linux/rcuwait.h \
-  include/linux/sched/signal.h \
-    $(wildcard include/config/SCHED_AUTOGROUP) \
-    $(wildcard include/config/BSD_PROCESS_ACCT) \
-    $(wildcard include/config/TASKSTATS) \
-    $(wildcard include/config/STACK_GROWSUP) \
-  include/linux/signal.h \
-    $(wildcard include/config/DYNAMIC_SIGFRAME) \
-  include/linux/sched/jobctl.h \
-  include/linux/sched/task.h \
-    $(wildcard include/config/HAVE_EXIT_THREAD) \
-    $(wildcard include/config/ARCH_WANTS_DYNAMIC_TASK_STRUCT) \
-    $(wildcard include/config/HAVE_ARCH_THREAD_STRUCT_WHITELIST) \
-  include/linux/uaccess.h \
-  include/linux/fault-inject-usercopy.h \
-    $(wildcard include/config/FAULT_INJECTION_USERCOPY) \
-  arch/x86/include/asm/uaccess.h \
-    $(wildcard include/config/CC_HAS_ASM_GOTO_OUTPUT) \
-    $(wildcard include/config/CC_HAS_ASM_GOTO_TIED_OUTPUT) \
-    $(wildcard include/config/ARCH_HAS_COPY_MC) \
-    $(wildcard include/config/X86_INTEL_USERCOPY) \
-  arch/x86/include/asm/smap.h \
-  arch/x86/include/asm/extable.h \
-    $(wildcard include/config/BPF_JIT) \
-  include/asm-generic/access_ok.h \
-    $(wildcard include/config/ALTERNATE_USER_ADDRESS_SPACE) \
-  arch/x86/include/asm/uaccess_32.h \
-  include/linux/cred.h \
-    $(wildcard include/config/DEBUG_CREDENTIALS) \
-  include/linux/key.h \
-    $(wildcard include/config/KEY_NOTIFICATIONS) \
-    $(wildcard include/config/NET) \
-  include/linux/assoc_array.h \
-    $(wildcard include/config/ASSOCIATIVE_ARRAY) \
-  include/linux/sched/user.h \
-    $(wildcard include/config/WATCH_QUEUE) \
-  include/linux/percpu_counter.h \
-  include/linux/rcu_sync.h \
-  include/linux/delayed_call.h \
-  include/linux/errseq.h \
-  include/linux/ioprio.h \
-  include/linux/sched/rt.h \
-  include/linux/iocontext.h \
-    $(wildcard include/config/BLK_ICQ) \
-  include/uapi/linux/ioprio.h \
-  include/linux/fs_types.h \
-  include/linux/mount.h \
-  include/linux/mnt_idmapping.h \
-  include/uapi/linux/fs.h \
-  include/linux/quota.h \
-    $(wildcard include/config/QUOTA_NETLINK_INTERFACE) \
-  include/uapi/linux/dqblk_xfs.h \
-  include/linux/dqblk_v1.h \
-  include/linux/dqblk_v2.h \
-  include/linux/dqblk_qtree.h \
-  include/linux/projid.h \
-  include/uapi/linux/quota.h \
-  include/linux/nfs_fs_i.h \
-  include/linux/seq_file.h \
-  include/linux/string_helpers.h \
-  include/linux/ns_common.h \
-  include/linux/nsproxy.h \
-  include/linux/user_namespace.h \
-    $(wildcard include/config/INOTIFY_USER) \
-    $(wildcard include/config/FANOTIFY) \
-    $(wildcard include/config/PERSISTENT_KEYRINGS) \
-  include/linux/kernel_stat.h \
-  include/linux/interrupt.h \
-    $(wildcard include/config/IRQ_FORCED_THREADING) \
-    $(wildcard include/config/GENERIC_IRQ_PROBE) \
-    $(wildcard include/config/IRQ_TIMINGS) \
-  include/linux/irqreturn.h \
-  include/linux/irqnr.h \
-  include/uapi/linux/irqnr.h \
-  include/linux/hardirq.h \
-  include/linux/context_tracking_state.h \
-    $(wildcard include/config/CONTEXT_TRACKING) \
-  include/linux/ftrace_irq.h \
-    $(wildcard include/config/HWLAT_TRACER) \
-    $(wildcard include/config/OSNOISE_TRACER) \
-  include/linux/vtime.h \
-    $(wildcard include/config/VIRT_CPU_ACCOUNTING) \
-    $(wildcard include/config/IRQ_TIME_ACCOUNTING) \
-  arch/x86/include/asm/hardirq.h \
-    $(wildcard include/config/KVM_INTEL) \
-    $(wildcard include/config/X86_THERMAL_VECTOR) \
-    $(wildcard include/config/X86_MCE_THRESHOLD) \
-    $(wildcard include/config/X86_MCE_AMD) \
-    $(wildcard include/config/X86_HV_CALLBACK_VECTOR) \
-  arch/x86/include/asm/irq.h \
-  arch/x86/include/asm/sections.h \
-  include/asm-generic/sections.h \
-    $(wildcard include/config/HAVE_FUNCTION_DESCRIPTORS) \
-  include/linux/cgroup-defs.h \
-    $(wildcard include/config/CGROUP_NET_CLASSID) \
-    $(wildcard include/config/CGROUP_NET_PRIO) \
-  include/linux/u64_stats_sync.h \
-  include/linux/bpf-cgroup-defs.h \
-  include/linux/psi_types.h \
-  include/linux/kthread.h \
-  include/linux/cgroup_subsys.h \
-    $(wildcard include/config/CGROUP_DEVICE) \
-    $(wildcard include/config/CGROUP_FREEZER) \
-    $(wildcard include/config/CGROUP_PERF) \
-    $(wildcard include/config/CGROUP_HUGETLB) \
-    $(wildcard include/config/CGROUP_PIDS) \
-    $(wildcard include/config/CGROUP_RDMA) \
-    $(wildcard include/config/CGROUP_MISC) \
-    $(wildcard include/config/CGROUP_DEBUG) \
-  include/linux/vm_event_item.h \
-    $(wildcard include/config/HAVE_ARCH_TRANSPARENT_HUGEPAGE_PUD) \
-    $(wildcard include/config/MEMORY_BALLOON) \
-    $(wildcard include/config/BALLOON_COMPACTION) \
-    $(wildcard include/config/DEBUG_TLBFLUSH) \
-    $(wildcard include/config/DEBUG_VM_VMACA
+TV-HVR1700 (PCIe, OEM, No IR, full height)
+		 * DVB-T and MPEG2 HW Encoder */
+		break;
+	case 85021:
+		/* WinTV-HVR1850 (PCIe, Retail, 3.5mm in, IR, FM,
+			Dual channel ATSC and MPEG2 HW Encoder */
+		break;
+	case 85721:
+		/* WinTV-HVR1290 (PCIe, OEM, RCA in, IR,
+			Dual channel ATSC and Basic analog */
+	case 121019:
+		/* WinTV-HVR4400 (PCIe, DVB-S2, DVB-C/T) */
+		break;
+	case 121029:
+		/* WinTV-HVR5500 (PCIe, DVB-S2, DVB-C/T) */
+		break;
+	case 150329:
+		/* WinTV-HVR5525 (PCIe, DVB-S/S2, DVB-T/T2/C) */
+		break;
+	case 161111:
+		/* WinTV-HVR-1265 K4 (PCIe, Analog/ATSC/QAM-B) */
+		break;
+	case 166100: /* 888 version, hybrid */
+	case 166200: /* 885 version, DVB only */
+		/* WinTV-QuadHD (DVB) Tuner Pair 1 (PCIe, IR, half height,
+		   DVB-T/T2/C, DVB-T/T2/C */
+		break;
+	case 166101: /* 888 version, hybrid */
+	case 166201: /* 885 version, DVB only */
+		/* WinTV-QuadHD (DVB) Tuner Pair 2 (PCIe, IR, half height,
+		   DVB-T/T2/C, DVB-T/T2/C */
+		break;
+	case 165100: /* 888 version, hybrid */
+	case 165200: /* 885 version, digital only */
+		/* WinTV-QuadHD (ATSC) Tuner Pair 1 (PCIe, IR, half height,
+		 * ATSC/QAM-B, ATSC/QAM-B */
+		break;
+	case 165101: /* 888 version, hybrid */
+	case 165201: /* 885 version, digital only */
+		/* WinTV-QuadHD (ATSC) Tuner Pair 2 (PCIe, IR, half height,
+		 * ATSC/QAM-B, ATSC/QAM-B */
+		break;
+	default:
+		pr_warn("%s: warning: unknown hauppauge model #%d\n",
+			dev->name, tv.model);
+		break;
+	}
+
+	pr_info("%s: hauppauge eeprom: model=%d\n",
+		dev->name, tv.model);
+}
+
+/* Some TBS cards require initing a chip using a bitbanged SPI attached
+   to the cx23885 gpio's. If this chip doesn't get init'ed the demod
+   doesn't respond to any command. */
+static void tbs_card_init(struct cx23885_dev *dev)
+{
+	int i;
+	static const u8 buf[] = {
+		0xe0, 0x06, 0x66, 0x33, 0x65,
+		0x01, 0x17, 0x06, 0xde};
+
+	switch (dev->board) {
+	case CX23885_BOARD_TBS_6980:
+	case CX23885_BOARD_TBS_6981:
+		cx_set(GP0_IO, 0x00070007);
+		usleep_range(1000, 10000);
+		cx_clear(GP0_IO, 2);
+		usleep_range(1000, 10000);
+		for (i = 0; i < 9 * 8; i++) {
+			cx_clear(GP0_IO, 7);
+			usleep_range(1000, 10000);
+			cx_set(GP0_IO,
+				((buf[i >> 3] >> (7 - (i & 7))) & 1) | 4);
+			usleep_range(1000, 10000);
+		}
+		cx_set(GP0_IO, 7);
+		break;
+	}
+}
+
+int cx23885_tuner_callback(void *priv, int component, int command, int arg)
+{
+	struct cx23885_tsport *port = priv;
+	struct cx23885_dev *dev = port->dev;
+	u32 bitmask = 0;
+
+	if ((command == XC2028_RESET_CLK) || (command == XC2028_I2C_FLUSH))
+		return 0;
+
+	if (command != 0) {
+		pr_err("%s(): Unknown command 0x%x.\n",
+		       __func__, command);
+		return -EINVAL;
+	}
+
+	switch (dev->board) {
+	case CX23885_BOARD_HAUPPAUGE_HVR1400:
+	case CX23885_BOARD_HAUPPAUGE_HVR1500:
+	case CX23885_BOARD_HAUPPAUGE_HVR1500Q:
+	case CX23885_BOARD_LEADTEK_WINFAST_PXDVR3200_H:
+	case CX23885_BOARD_LEADTEK_WINFAST_PXPVR2200:
+	case CX23885_BOARD_LEADTEK_WINFAST_PXDVR3200_H_XC4000:
+	case CX23885_BOARD_COMPRO_VIDEOMATE_E650F:
+	case CX23885_BOARD_COMPRO_VIDEOMATE_E800:
+	case CX23885_BOARD_LEADTEK_WINFAST_PXTV1200:
+		/* Tuner Reset Command */
+		bitmask = 0x04;
+		break;
+	case CX23885_BOARD_DVICO_FUSIONHDTV_7_DUAL_EXP:
+	case CX23885_BOARD_DVICO_FUSIONHDTV_DVB_T_DUAL_EXP:
+	case CX23885_BOARD_DVICO_FUSIONHDTV_DVB_T_DUAL_EXP2:
+		/* Two identical tuners on two different i2c buses,
+		 * we need to reset the correct gpio. */
+		if (port->nr == 1)
+			bitmask = 0x01;
+		else if (port->nr == 2)
+			bitmask = 0x04;
+		break;
+	case CX23885_BOARD_GOTVIEW_X5_3D_HYBRID:
+		/* Tuner Reset Command */
+		bitmask = 0x02;
+		break;
+	case CX23885_BOARD_NETUP_DUAL_DVB_T_C_CI_RF:
+		altera_ci_tuner_reset(dev, port->nr);
+		break;
+	case CX23885_BOARD_AVERMEDIA_HC81R:
+		/* XC3028L Reset Command */
+		bitmask = 1 << 2;
+		break;
+	}
+
+	if (bitmask) {
+		/* Drive the tuner into reset and back out */
+		cx_clear(GP0_IO, bitmask);
+		mdelay(200);
+		cx_set(GP0_IO, bitmask);
+	}
+
+	return 0;
+}
+
+void cx23885_gpio_setup(struct cx23885_dev *dev)
+{
+	switch (dev->board) {
+	case CX23885_BOARD_HAUPPAUGE_HVR1250:
+		/* GPIO-0 cx24227 demodulator reset */
+		cx_set(GP0_IO, 0x00010001); /* Bring the part out of reset */
+		break;
+	case CX23885_BOARD_HAUPPAUGE_HVR1500:
+		/* GPIO-0 cx24227 demodulator */
+		/* GPIO-2 xc3028 tuner */
+
+		/* Put the parts into reset */
+		cx_set(GP0_IO, 0x00050000);
+		cx_clear(GP0_IO, 0x00000005);
+		msleep(5);
+
+		/* Bring the parts out of reset */
+		cx_set(GP0_IO, 0x00050005);
+		break;
+	case CX23885_BOARD_HAUPPAUGE_HVR1500Q:
+		/* GPIO-0 cx24227 demodulator reset */
+		/* GPIO-2 xc5000 tuner reset */
+		cx_set(GP0_IO, 0x00050005); /* Bring the part out of reset */
+		break;
+	case CX23885_BOARD_HAUPPAUGE_HVR1800:
+		/* GPIO-0 656_CLK */
+		/* GPIO-1 656_D0 */
+		/* GPIO-2 8295A Reset */
+		/* GPIO-3-10 cx23417 data0-7 */
+		/* GPIO-11-14 cx23417 addr0-3 */
+		/* GPIO-15-18 cx23417 READY, CS, RD, WR */
+		/* GPIO-19 IR_RX */
+
+		/* CX23417 GPIO's */
+		/* EIO15 Zilog Reset */
+		/* EIO14 S5H1409/CX24227 Reset */
+		mc417_gpio_enable(dev, GPIO_15 | GPIO_14, 1);
+
+		/* Put the demod into reset and protect the eeprom */
+		mc417_gpio_clear(dev, GPIO_15 | GPIO_14);
+		msleep(100);
+
+		/* Bring the demod and blaster out of reset */
+		mc417_gpio_set(dev, GPIO_15 | GPIO_14);
+		msleep(100);
+
+		/* Force the TDA8295A into reset and back */
+		cx23885_gpio_enable(dev, GPIO_2, 1);
+		cx23885_gpio_set(dev, GPIO_2);
+		msleep(20);
+		cx23885_gpio_clear(dev, GPIO_2);
+		msleep(20);
+		cx23885_gpio_set(dev, GPIO_2);
+		msleep(20);
+		break;
+	case CX23885_BOARD_HAUPPAUGE_HVR1200:
+		/* GPIO-0 tda10048 demodulator reset */
+		/* GPIO-2 tda18271 tuner reset */
+
+		/* Put the parts into reset and back */
+		cx_set(GP0_IO, 0x00050000);
+		msleep(20);
+		cx_clear(GP0_IO, 0x00000005);
+		msleep(20);
+		cx_set(GP0_IO, 0x00050005);
+		break;
+	case CX23885_BOARD_HAUPPAUGE_HVR1700:
+		/* GPIO-0 TDA10048 demodulator reset */
+		/* GPIO-2 TDA8295A Reset */
+		/* GPIO-3-10 cx23417 data0-7 */
+		/* GPIO-11-14 cx23417 addr0-3 */
+		/* GPIO-15-18 cx23417 READY, CS, RD, WR */
+
+		/* The following GPIO's are on the interna AVCore (cx25840) */
+		/* GPIO-19 IR_RX */
+		/* GPIO-20 IR_TX 416/DVBT Select */
+		/* GPIO-21 IIS DAT */
+		/* GPIO-22 IIS WCLK */
+		/* GPIO-23 IIS BCLK */
+
+		/* Put the parts into reset and back */
+		cx_set(GP0_IO, 0x00050000);
+		msleep(20);
+		cx_clear(GP0_IO, 0x00000005);
+		msleep(20);
+		cx_set(GP0_IO, 0x00050005);
+		break;
+	case CX23885_BOARD_HAUPPAUGE_HVR1400:
+		/* GPIO-0  Dibcom7000p demodulator reset */
+		/* GPIO-2  xc3028L tuner reset */
+		/* GPIO-13 LED */
+
+		/* Put the parts into reset and back */
+		cx_set(GP0_IO, 0x00050000);
+		msleep(20);
+		cx_clear(GP0_IO, 0x00000005);
+		msleep(20);
+		cx_set(GP0_IO, 0x00050005);
+		break;
+	case CX23885_BOARD_DVICO_FUSIONHDTV_7_DUAL_EXP:
+		/* GPIO-0 xc5000 tuner reset i2c bus 0 */
+		/* GPIO-1 s5h1409 demod reset i2c bus 0 */
+		/* GPIO-2 xc5000 tuner reset i2c bus 1 */
+		/* GPIO-3 s5h1409 demod reset i2c bus 0 */
+
+		/* Put the parts into reset and back */
+		cx_set(GP0_IO, 0x000f0000);
+		msleep(20);
+		cx_clear(GP0_IO, 0x0000000f);
+		msleep(20);
+		cx_set(GP0_IO, 0x000f000f);
+		break;
+	case CX23885_BOARD_DVICO_FUSIONHDTV_DVB_T_DUAL_EXP:
+	case CX23885_BOARD_DVICO_FUSIONHDTV_DVB_T_DUAL_EXP2:
+		/* GPIO-0 portb xc3028 reset */
+		/* GPIO-1 portb zl10353 reset */
+		/* GPIO-2 portc xc3028 reset */
+		/* GPIO-3 portc zl10353 reset */
+
+		/* Put the parts into reset and back */
+		cx_set(GP0_IO, 0x000f0000);
+		msleep(20);
+		cx_clear(GP0_IO, 0x0000000f);
+		msleep(20);
+		cx_set(GP0_IO, 0x000f000f);
+		break;
+	case CX23885_BOARD_LEADTEK_WINFAST_PXDVR3200_H:
+	case CX23885_BOARD_LEADTEK_WINFAST_PXPVR2200:
+	case CX23885_BOARD_LEADTEK_WINFAST_PXDVR3200_H_XC4000:
+	case CX23885_BOARD_COMPRO_VIDEOMATE_E650F:
+	case CX23885_BOARD_COMPRO_VIDEOMATE_E800:
+	case CX23885_BOARD_LEADTEK_WINFAST_PXTV1200:
+		/* GPIO-2  xc3028 tuner reset */
+
+		/* The following GPIO's are on the internal AVCore (cx25840) */
+		/* GPIO-?  zl10353 demod reset */
+
+		/* Put the parts into reset and back */
+		cx_set(GP0_IO, 0x00040000);
+		msleep(20);
+		cx_clear(GP0_IO, 0x00000004);
+		msleep(20);
+		cx_set(GP0_IO, 0x00040004);
+		break;
+	case CX23885_BOARD_TBS_6920:
+	case CX23885_BOARD_TBS_6980:
+	case CX23885_BOARD_TBS_6981:
+	case CX23885_BOARD_PROF_8000:
+		cx_write(MC417_CTL, 0x00000036);
+		cx_write(MC417_OEN, 0x00001000);
+		cx_set(MC417_RWD, 0x00000002);
+		msleep(200);
+		cx_clear(MC417_RWD, 0x00000800);
+		msleep(200);
+		cx_set(MC417_RWD, 0x00000800);
+		msleep(200);
+		break;
+	case CX23885_BOARD_NETUP_DUAL_DVBS2_CI:
+		/* GPIO-0 INTA from CiMax1
+		   GPIO-1 INTB from CiMax2
+		   GPIO-2 reset chips
+		   GPIO-3 to GPIO-10 data/addr for CA
+		   GPIO-11 ~CS0 to CiMax1
+		   GPIO-12 ~CS1 to CiMax2
+		   GPIO-13 ADL0 load LSB addr
+		   GPIO-14 ADL1 load MSB addr
+		   GPIO-15 ~RDY from CiMax
+		   GPIO-17 ~RD to CiMax
+		   GPIO-18 ~WR to CiMax
+		 */
+		cx_set(GP0_IO, 0x00040000); /* GPIO as out */
+		/* GPIO1 and GPIO2 as INTA and INTB from CiMaxes, reset low */
+		cx_clear(GP0_IO, 0x00030004);
+		msleep(100);/* reset delay */
+		cx_set(GP0_IO, 0x00040004); /* GPIO as out, reset high */
+		cx_write(MC417_CTL, 0x00000037);/* enable GPIO3-18 pins */
+		/* GPIO-15 IN as ~ACK, rest as OUT */
+		cx_write(MC417_OEN, 0x00001000);
+		/* ~RD, ~WR high; ADL0, ADL1 low; ~CS0, ~CS1 high */
+		cx_write(MC417_RWD, 0x0000c300);
+		/* enable irq */
+		cx_write(GPIO_ISM, 0x00000000);/* INTERRUPTS active low*/
+		break;
+	case CX23885_BOARD_HAUPPAUGE_HVR1270:
+	case CX23885_BOARD_HAUPPAUGE_HVR1275:
+	case CX23885_BOARD_HAUPPAUGE_HVR1255:
+	case CX23885_BOARD_HAUPPAUGE_HVR1255_22111:
+	case CX23885_BOARD_HAUPPAUGE_HVR1210:
+		/* GPIO-5 RF Control: 0 = RF1 Terrestrial, 1 = RF2 Cable */
+		/* GPIO-6 I2C Gate which can isolate the demod from the bus */
+		/* GPIO-9 Demod reset */
+
+		/* Put the parts into reset and back */
+		cx23885_gpio_enable(dev, GPIO_9 | GPIO_6 | GPIO_5, 1);
+		cx23885_gpio_set(dev, GPIO_9 | GPIO_6 | GPIO_5);
+		cx23885_gpio_clear(dev, GPIO_9);
+		msleep(20);
+		cx23885_gpio_set(dev, GPIO_9);
+		break;
+	case CX23885_BOARD_MYGICA_X8506:
+	case CX23885_BOARD_MAGICPRO_PROHDTVE2:
+	case CX23885_BOARD_MYGICA_X8507:
+		/* GPIO-0 (0)Analog / (1)Digital TV */
+		/* GPIO-1 reset XC5000 */
+		/* GPIO-2 demod reset */
+		cx23885_gpio_enable(dev, GPIO_0 | GPIO_1 | GPIO_2, 1);
+		cx23885_gpio_clear(dev, GPIO_1 | GPIO_2);
+		msleep(100);
+		cx23885_gpio_set(dev, GPIO_0 | GPIO_1 | GPIO_2);
+		msleep(100);
+		break;
+	case CX23885_BOARD_MYGICA_X8558PRO:
+		/* GPIO-0 reset first ATBM8830 */
+		/* GPIO-1 reset second ATBM8830 */
+		cx23885_gpio_enable(dev, GPIO_0 | GPIO_1, 1);
+		cx23885_gpio_clear(dev, GPIO_0 | GPIO_1);
+		msleep(100);
+		cx23885_gpio_set(dev, GPIO_0 | GPIO_1);
+		msleep(100);
+		break;
+	case CX23885_BOARD_HAUPPAUGE_HVR1850:
+	case CX23885_BOARD_HAUPPAUGE_HVR1290:
+		/* GPIO-0 656_CLK */
+		/* GPIO-1 656_D0 */
+		/* GPIO-2 Wake# */
+		/* GPIO-3-10 cx23417 data0-7 */
+		/* GPIO-11-14 cx23417 addr0-3 */
+		/* GPIO-15-18 cx23417 READY, CS, RD, WR */
+		/* GPIO-19 IR_RX */
+		/* GPIO-20 C_IR_TX */
+		/* GPIO-21 I2S DAT */
+		/* GPIO-22 I2S WCLK */
+		/* GPIO-23 I2S BCLK */
+		/* ALT GPIO: EXP GPIO LATCH */
+
+		/* CX23417 GPIO's */
+		/* GPIO-14 S5H1411/CX24228 Reset */
+		/* GPIO-13 EEPROM write protect */
+		mc417_gpio_enable(dev, GPIO_14 | GPIO_13, 1);
+
+		/* Put the demod into reset and protect the eeprom */
+		mc417_gpio_clear(dev, GPIO_14 | GPIO_13);
+		msleep(100);
+
+		/* Bring the demod out of reset */
+		mc417_gpio_set(dev, GPIO_14);
+		msleep(100);
+
+		/* CX24228 GPIO */
+		/* Connected to IF / Mux */
+		break;
+	case CX23885_BOARD_GOTVIEW_X5_3D_HYBRID:
+		cx_set(GP0_IO, 0x00010001); /* Bring the part out of reset */
+		break;
+	case CX23885_BOARD_NETUP_DUAL_DVB_T_C_CI_RF:
+		/* GPIO-0 ~INT in
+		   GPIO-1 TMS out
+		   GPIO-2 ~reset chips out
+		   GPIO-3 to GPIO-10 data/addr for CA in/out
+		   GPIO-11 ~CS out
+		   GPIO-12 ADDR out
+		   GPIO-13 ~WR out
+		   GPIO-14 ~RD out
+		   GPIO-15 ~RDY in
+		   GPIO-16 TCK out
+		   GPIO-17 TDO in
+		   GPIO-18 TDI out
+		 */
+		cx_set(GP0_IO, 0x00060000); /* GPIO-1,2 as out */
+		/* GPIO-0 as INT, reset & TMS low */
+		cx_clear(GP0_IO, 0x00010006);
+		msleep(100);/* reset delay */
+		cx_set(GP0_IO, 0x00000004); /* reset high */
+		cx_write(MC417_CTL, 0x00000037);/* enable GPIO-3..18 pins */
+		/* GPIO-17 is TDO in, GPIO-15 is ~RDY in, rest is out */
+		cx_write(MC417_OEN, 0x00005000);
+		/* ~RD, ~WR high; ADDR low; ~CS high */
+		cx_write(MC417_RWD, 0x00000d00);
+		/* enable irq */
+		cx_write(GPIO_ISM, 0x00000000);/* INTERRUPTS active low*/
+		break;
+	case CX23885_BOARD_HAUPPAUGE_HVR4400:
+	case CX23885_BOARD_HAUPPAUGE_STARBURST:
+		/* GPIO-8 tda10071 demod reset */
+		/* GPIO-9 si2165 demod reset (only HVR4400/HVR5500)*/
+
+		/* Put the parts into reset and back */
+		cx23885_gpio_enable(dev, GPIO_8 | GPIO_9, 1);
+
+		cx23885_gpio_clear(dev, GPIO_8 | GPIO_9);
+		msleep(100);
+		cx23885_gpio_set(dev, GPIO_8 | GPIO_9);
+		msleep(100);
+
+		break;
+	case CX23885_BOARD_AVERMEDIA_HC81R:
+		cx_clear(MC417_CTL, 1);
+		/* GPIO-0,1,2 setup direction as output */
+		cx_set(GP0_IO, 0x00070000);
+		usleep_range(10000, 11000);
+		/* AF9013 demod reset */
+		cx_set(GP0_IO, 0x00010001);
+		usleep_range(10000, 11000);
+		cx_clear(GP0_IO, 0x00010001);
+		usleep_range(10000, 11000);
+		cx_set(GP0_IO, 0x00010001);
+		usleep_range(10000, 11000);
+		/* demod tune? */
+		cx_clear(GP0_IO, 0x00030003);
+		usleep_range(10000, 11000);
+		cx_set(GP0_IO, 0x00020002);
+		usleep_range(10000, 11000);
+		cx_set(GP0_IO, 0x00010001);
+		usleep_range(10000, 11000);
+		cx_clear(GP0_IO, 0x00020002);
+		/* XC3028L tuner reset */
+		cx_set(GP0_IO, 0x00040004);
+		cx_clear(GP0_IO, 0x00040004);
+		cx_set(GP0_IO, 0x00040004);
+		msleep(60);
+		break;
+	case CX23885_BOARD_DVBSKY_T9580:
+	case CX23885_BOARD_DVBSKY_S952:
+	case CX23885_BOARD_DVBSKY_T982:
+		/* enable GPIO3-18 pins */
+		cx_write(MC417_CTL, 0x00000037);
+		cx23885_gpio_enable(dev, GPIO_2 | GPIO_11, 1);
+		cx23885_gpio_clear(dev, GPIO_2 | GPIO_11);
+		msleep(100);
+		cx23885_gpio_set(dev, GPIO_2 | GPIO_11);
+		break;
+	case CX23885_BOARD_DVBSKY_T980C:
+	case CX23885_BOARD_DVBSKY_S950C:
+	case CX23885_BOARD_TT_CT2_4500_CI:
+		/*
+		 * GPIO-0 INTA from CiMax, input
+		 * GPIO-1 reset CiMax, output, high active
+		 * GPIO-2 reset demod, output, low active
+		 * GPIO-3 to GPIO-10 data/addr for CAM
+		 * GPIO-11 ~CS0 to CiMax1
+		 * GPIO-12 ~CS1 to CiMax2
+		 * GPIO-13 ADL0 load LSB addr
+		 * GPIO-14 ADL1 load MSB addr
+		 * GPIO-15 ~RDY from CiMax
+		 * GPIO-17 ~RD to CiMax
+		 * GPIO-18 ~WR to CiMax
+		 */
+
+		cx_set(GP0_IO, 0x00060002); /* GPIO 1/2 as output */
+		cx_clear(GP0_IO, 0x00010004); /* GPIO 0 as input */
+		msleep(100); /* reset delay */
+		cx_set(GP0_IO, 0x00060004); /* GPIO as out, reset high */
+		cx_clear(GP0_IO, 0x00010002);
+		cx_write(MC417_CTL, 0x00000037); /* enable GPIO3-18 pins */
+
+		/* GPIO-15 IN as ~ACK, rest as OUT */
+		cx_write(MC417_OEN, 0x00001000);
+
+		/* ~RD, ~WR high; ADL0, ADL1 low; ~CS0, ~CS1 high */
+		cx_write(MC417_RWD, 0x0000c300);
+
+		/* enable irq */
+		cx_write(GPIO_ISM, 0x00000000); /* INTERRUPTS active low */
+		break;
+	case CX23885_BOARD_DVBSKY_S950:
+		cx23885_gpio_enable(dev, GPIO_2, 1);
+		cx23885_gpio_clear(dev, GPIO_2);
+		msleep(100);
+		cx23885_gpio_set(dev, GPIO_2);
+		break;
+	case CX23885_BOARD_HAUPPAUGE_HVR5525:
+	case CX23885_BOARD_HAUPPAUGE_STARBURST2:
+		/*
+		 * HVR5525 GPIO Details:
+		 *  GPIO-00 IR_WIDE
+		 *  GPIO-02 wake#
+		 *  GPIO-03 VAUX Pres.
+		 *  GPIO-07 PROG#
+		 *  GPIO-08 SAT_RESN
+		 *  GPIO-09 TER_RESN
+		 *  GPIO-10 B2_SENSE
+		 *  GPIO-11 B1_SENSE
+		 *  GPIO-15 IR_LED_STATUS
+		 *  GPIO-19 IR_NARROW
+		 *  GPIO-20 Blauster1
+		 *  ALTGPIO VAUX_SWITCH
+		 *  AUX_PLL_CLK : Blaster2
+		 */
+		/* Put the parts into reset and back */
+		cx23885_gpio_enable(dev, GPIO_8 | GPIO_9, 1);
+		cx23885_gpio_clear(dev, GPIO_8 | GPIO_9);
+		msleep(100);
+		cx23885_gpio_set(dev, GPIO_8 | GPIO_9);
+		msleep(100);
+		break;
+	case CX23885_BOARD_VIEWCAST_260E:
+	case CX23885_BOARD_VIEWCAST_460E:
+		/* For documentation purpo

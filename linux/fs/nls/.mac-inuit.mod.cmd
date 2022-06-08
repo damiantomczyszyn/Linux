@@ -1,3 +1,6 @@
-card include/config/BPF_JIT) \
-  include/asm-generic/access_ok.h \
-    $(wildcard includ
+
+	}
+
+	for (cnt = 0; cnt < msg->len; cnt++) {
+
+		ctrl = bus->i2c_period | (1 << 12) | (1 

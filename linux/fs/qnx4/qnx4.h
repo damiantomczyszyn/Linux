@@ -1,35 +1,55 @@
-\
-    $(wildcard include/config/PCI_MMCONFIG) \
-    $(wildcard include/config/ACPI_APEI_GHES) \
-    $(wildcard include/config/INTEL_TXT) \
-  arch/x86/include/generated/asm/kmap_size.h \
-  include/asm-generic/kmap_size.h \
-    $(wildcard include/config/DEBUG_KMAP_LOCAL) \
-  include/asm-generic/fixmap.h \
-  arch/x86/include/asm/irq_vectors.h \
-    $(wildcard include/config/HAVE_KVM) \
-    $(wildcard include/config/HYPERV) \
-    $(wildcard include/config/PCI_MSI) \
-  arch/x86/include/asm/cpu_entry_area.h \
-  arch/x86/include/asm/intel_ds.h \
-  arch/x86/include/asm/pgtable_areas.h \
-  arch/x86/include/asm/pgtable_32_areas.h \
-  include/uapi/linux/elf.h \
-  include/uapi/linux/elf-em.h \
-  include/linux/kobject.h \
-    $(wildcard include/config/UEVENT_HELPER) \
-    $(wildcard include/config/DEBUG_KOBJECT_RELEASE) \
-  include/linux/sysfs.h \
-  include/linux/kernfs.h \
-    $(wildcard include/config/KERNFS) \
-  include/linux/idr.h \
-  include/linux/radix-tree.h \
-  include/linux/xarray.h \
-    $(wildcard include/config/XARRAY_MULTI) \
-  include/linux/kconfig.h \
-  include/linux/kobject_ns.h \
-  include/linux/moduleparam.h \
-    $(wildcard include/config/ALPHA) \
-    $(wildcard include/config/IA64) \
-    $(wildcard include/config/PPC64) \
- 
+he real set_frontend */
+	if (port->set_frontend)
+		return port->set_frontend(fe);
+
+	return 0;
+}
+
+static void cx23885_set_frontend_hook(struct cx23885_tsport *port,
+				     struct dvb_frontend *fe)
+{
+	port->set_frontend = fe->ops.set_frontend;
+	fe->ops.set_frontend = cx23885_dvb_set_frontend;
+}
+
+static struct lgs8gxx_config magicpro_prohdtve2_lgs8g75_config = {
+	.prod = LGS8GXX_PROD_LGS8G75,
+	.demod_address = 0x19,
+	.serial_ts = 0,
+	.ts_clk_pol = 1,
+	.ts_clk_gated = 1,
+	.if_clk_freq = 30400, /* 30.4 MHz */
+	.if_freq = 6500, /* 6.50 MHz */
+	.if_neg_center = 1,
+	.ext_adc = 0,
+	.adc_signed = 1,
+	.adc_vpp = 2, /* 1.6 Vpp */
+	.if_neg_edge = 1,
+};
+
+static struct xc5000_config magicpro_prohdtve2_xc5000_config = {
+	.i2c_address = 0x61,
+	.if_khz = 6500,
+};
+
+static struct atbm8830_config mygica_x8558pro_atbm8830_cfg1 = {
+	.prod = ATBM8830_PROD_8830,
+	.demod_address = 0x44,
+	.serial_ts = 0,
+	.ts_sampling_edge = 1,
+	.ts_clk_gated = 0,
+	.osc_clk_freq = 30400, /* in kHz */
+	.if_freq = 0, /* zero IF */
+	.zif_swap_iq = 1,
+	.agc_min = 0x2E,
+	.agc_max = 0xFF,
+	.agc_hold_loop = 0,
+};
+
+static struct max2165_config mygic_x8558pro_max2165_cfg1 = {
+	.i2c_address = 0x60,
+	.osc_clk = 20
+};
+
+static struct atbm8830_config mygica_x8558pro_atbm8830_cfg2 = {
+	

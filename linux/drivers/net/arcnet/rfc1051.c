@@ -1,166 +1,242 @@
-ux/module.h \
-    $(wildcard include/config/MODULES_TREE_LOOKUP) \
-    $(wildcard include/config/STACKTRACE_BUILD_ID) \
-    $(wildcard include/config/MODULE_SIG) \
-    $(wildcard include/config/KALLSYMS) \
-    $(wildcard include/config/BPF_EVENTS) \
-    $(wildcard include/config/DEBUG_INFO_BTF_MODULES) \
-    $(wildcard include/config/EVENT_TRACING) \
-    $(wildcard include/config/MODULE_UNLOAD) \
-    $(wildcard include/config/CONSTRUCTORS) \
-    $(wildcard include/config/FUNCTION_ERROR_INJECTION) \
-  include/linux/buildid.h \
-    $(wildcard include/config/CRASH_CORE) \
-  include/linux/kmod.h \
-  include/linux/umh.h \
-  include/linux/sysctl.h \
-    $(wildcard include/config/SYSCTL) \
-  include/uapi/linux/sysctl.h \
-  include/linux/elf.h \
-    $(wildcard include/config/ARCH_USE_GNU_PROPERTY) \
-    $(wildcard include/config/ARCH_HAVE_ELF_PROT) \
-  arch/x86/include/asm/elf.h \
-    $(wildcard include/config/X86_X32_ABI) \
-  arch/x86/include/asm/user.h \
-  arch/x86/include/asm/user_32.h \
-  arch/x86/include/asm/fsgsbase.h \
-  arch/x86/include/asm/vdso.h \
-  arch/x86/include/asm/desc.h \
-  arch/x86/include/asm/fixmap.h \
-    $(wildcard include/config/DEBUG_KMAP_LOCAL_FORCE_MAP) \
-    $(wildcard include/config/X86_VSYSCALL_EMULATION) \
-    $(wildcard include/config/PROVIDE_OHCI1394_DMA_INIT) \
-    $(wildcard include/config/PCI_MMCONFIG) \
-    $(wildcard include/config/ACPI_APEI_GHES) \
-    $(wildcard include/config/INTEL_TXT) \
-  include/asm-generic/fixmap.h \
-  arch/x86/include/asm/irq_vectors.h \
-    $(wildcard include/config/HAVE_KVM) \
-    $(wildcard include/config/HYPERV) \
-    $(wildcard include/config/PCI_MSI) \
-  arch/x86/include/asm/cpu_entry_area.h \
-  arch/x86/include/asm/intel_ds.h \
-  arch/x86/include/asm/pgtable_areas.h \
-  arch/x86/include/asm/pgtable_32_areas.h \
-  include/uapi/linux/elf.h \
-  include/uapi/linux/elf-em.h \
-  include/linux/moduleparam.h \
-    $(wildcard include/config/ALPHA) \
-    $(wildcard include/config/PPC64) \
-  include/linux/rbtree_latch.h \
-  include/linux/error-injection.h \
-  include/asm-generic/error-injection.h \
-  include/linux/cfi.h \
-    $(wildcard include/config/CFI_CLANG_SHADOW) \
-  arch/x86/include/asm/module.h \
-    $(wildcard include/config/UNWINDER_ORC) \
-  include/asm-generic/module.h \
-    $(wildcard include/config/HAVE_MOD_ARCH_SPECIFIC) \
-    $(wildcard include/config/MODULES_USE_ELF_REL) \
-    $(wildcard include/config/MODULES_USE_ELF_RELA) \
-  arch/x86/include/asm/orc_types.h \
-  arch/x86/include/asm/device.h \
-  include/linux/pm_wakeup.h \
-  include/acpi/acpi.h \
-  include/acpi/platform/acenv.h \
-  include/acpi/platform/acgcc.h \
-  include/acpi/platform/aclinux.h \
-    $(wildcard include/config/ACPI_REDUCED_HARDWARE_ONLY) \
-    $(wildcard include/config/ACPI_DEBUG) \
-  include/linux/ctype.h \
-  arch/x86/include/asm/acenv.h \
-  include/acpi/acnames.h \
-  include/acpi/actypes.h \
-  include/acpi/acexcep.h \
-  include/acpi/actbl.h \
-  include/acpi/actbl1.h \
-  include/acpi/actbl2.h \
-  include/acpi/actbl3.h \
-  include/acpi/acrestyp.h \
-  include/acpi/platform/acenvex.h \
-  include/acpi/platform/aclinuxex.h \
-  include/acpi/platform/acgccex.h \
-  include/acpi/acoutput.h \
-  include/acpi/acpiosxf.h \
-  include/acpi/acpixf.h \
-  include/acpi/acconfig.h \
-  include/acpi/acbuffer.h \
-  include/linux/dynamic_debug.h \
-  include/acpi/acpi_bus.h \
-    $(wildcard include/config/X86_ANDROID_TABLETS) \
-    $(wildcard include/config/ACPI_SYSTEM_POWER_STATES_SUPPORT) \
-    $(wildcard include/config/ACPI_SLEEP) \
-  include/acpi/acpi_drivers.h \
-    $(wildcard include/config/ACPI_DOCK) \
-  include/acpi/acpi_numa.h \
-    $(wildcard include/config/ACPI_HMAT) \
-  include/acpi/acpi_io.h \
-  include/linux/io.h \
-    $(wildcard include/config/HAS_IOPORT_MAP) \
-  arch/x86/include/asm/io.h \
-    $(wildcard include/config/MTRR) \
-    $(wildcard include/config/X86_PAT) \
-  arch/x86/include/generated/asm/early_ioremap.h \
-  include/asm-generic/early_ioremap.h \
-    $(wildcard include/config/GENERIC_EARLY_IOREMAP) \
-  include/asm-generic/iomap.h \
-  include/asm-generic/pci_iomap.h \
-    $(wildcard include/config/NO_GENERIC_PCI_IOPORT_MAP) \
-    $(wildcard include/config/GENERIC_PCI_IOMAP) \
-  include/asm-generic/io.h \
-    $(wildcard include/config/GENERIC_IOMAP) \
-    $(wildcard include/config/GENERIC_IOREMAP) \
-    $(wildcard include/config/VIRT_TO_BUS) \
-    $(wildcard include/config/GENERIC_DEVMEM_IS_ALLOWED) \
-  include/linux/logic_pio.h \
-    $(wildcard include/config/INDIRECT_PIO) \
-  include/linux/vmalloc.h \
-    $(wildcard include/config/HAVE_ARCH_HUGE_VMALLOC) \
-  arch/x86/include/asm/vmalloc.h \
-    $(wildcard include/config/HAVE_ARCH_HUGE_VMAP) \
-  arch/x86/include/asm/acpi.h \
-    $(wildcard include/config/ACPI_APEI) \
-  include/acpi/pdc_intel.h \
-  arch/x86/include/asm/numa.h \
-    $(wildcard include/config/NUMA_EMU) \
-  arch/x86/include/asm/numa_32.h \
-  include/linux/regulator/consumer.h \
-    $(wildcard include/config/REGULATOR) \
-  include/linux/suspend.h \
-    $(wildcard include/config/VT) \
-    $(wildcard include/config/SUSPEND) \
-    $(wildcard include/config/HIBERNATION_SNAPSHOT_DEV) \
-    $(wildcard include/config/PM_SLEEP_DEBUG) \
-    $(wildcard include/config/PM_AUTOSLEEP) \
-  include/linux/swap.h \
-    $(wildcard include/config/DEVICE_PRIVATE) \
-    $(wildcard include/config/MIGRATION) \
-    $(wildcard include/config/FRONTSWAP) \
-    $(wildcard include/config/THP_SWAP) \
-    $(wildcard include/config/MEMCG_SWAP) \
-  include/linux/memcontrol.h \
-    $(wildcard include/config/CGROUP_WRITEBACK) \
-  include/linux/cgroup.h \
-    $(wildcard include/config/CGROUP_CPUACCT) \
-    $(wildcard include/config/SOCK_CGROUP_DATA) \
-    $(wildcard include/config/CGROUP_DATA) \
-    $(wildcard include/config/CGROUP_BPF) \
-  include/uapi/linux/cgroupstats.h \
-  include/uapi/linux/taskstats.h \
-  include/linux/fs.h \
-    $(wildcard include/config/READ_ONLY_THP_FOR_FS) \
-    $(wildcard include/config/FS_POSIX_ACL) \
-    $(wildcard include/config/IMA) \
-    $(wildcard include/config/FILE_LOCKING) \
-    $(wildcard include/config/FSNOTIFY) \
-    $(wildcard include/config/FS_ENCRYPTION) \
-    $(wildcard include/config/FS_VERITY) \
-    $(wildcard include/config/EPOLL) \
-    $(wildcard include/config/UNICODE) \
-    $(wildcard include/config/QUOTA) \
-    $(wildcard include/config/FS_DAX) \
-    $(wildcard include/config/BLOCK) \
-  include/linux/wait_bit.h \
-  include/linux/kdev_t.h \
-  include/uapi/linux/kdev_t.h \
-  inc
+/*
+ * Linux ARCnet driver - RFC1051 ("simple" standard) packet encapsulation
+ *
+ * Written 1994-1999 by Avery Pennarun.
+ * Derived from skeleton.c by Donald Becker.
+ *
+ * Special thanks to Contemporary Controls, Inc. (www.ccontrols.com)
+ *  for sponsoring the further development of this driver.
+ *
+ * **********************
+ *
+ * The original copyright of skeleton.c was as follows:
+ *
+ * skeleton.c Written 1993 by Donald Becker.
+ * Copyright 1993 United States Government as represented by the
+ * Director, National Security Agency.  This software may only be used
+ * and distributed according to the terms of the GNU General Public License as
+ * modified by SRC, incorporated herein by reference.
+ *
+ * **********************
+ *
+ * For more details, see drivers/net/arcnet.c
+ *
+ * **********************
+ */
+
+#define pr_fmt(fmt) "arcnet:" KBUILD_MODNAME ": " fmt
+
+#include <linux/module.h>
+#include <linux/gfp.h>
+#include <linux/init.h>
+#include <linux/if_arp.h>
+#include <net/arp.h>
+#include <linux/netdevice.h>
+#include <linux/skbuff.h>
+
+#include "arcdevice.h"
+
+static __be16 type_trans(struct sk_buff *skb, struct net_device *dev);
+static void rx(struct net_device *dev, int bufnum,
+	       struct archdr *pkthdr, int length);
+static int build_header(struct sk_buff *skb, struct net_device *dev,
+			unsigned short type, uint8_t daddr);
+static int prepare_tx(struct net_device *dev, struct archdr *pkt, int length,
+		      int bufnum);
+
+static struct ArcProto rfc1051_proto = {
+	.suffix		= 's',
+	.mtu		= XMTU - RFC1051_HDR_SIZE,
+	.is_ip          = 1,
+	.rx		= rx,
+	.build_header	= build_header,
+	.prepare_tx	= prepare_tx,
+	.continue_tx    = NULL,
+	.ack_tx         = NULL
+};
+
+static int __init arcnet_rfc1051_init(void)
+{
+	pr_info("%s\n", "RFC1051 \"simple standard\" (`s') encapsulation support loaded");
+
+	arc_proto_map[ARC_P_IP_RFC1051]
+	    = arc_proto_map[ARC_P_ARP_RFC1051]
+	    = &rfc1051_proto;
+
+	/* if someone else already owns the broadcast, we won't take it */
+	if (arc_bcast_proto == arc_proto_default)
+		arc_bcast_proto = &rfc1051_proto;
+
+	return 0;
+}
+
+static void __exit arcnet_rfc1051_exit(void)
+{
+	arcnet_unregister_proto(&rfc1051_proto);
+}
+
+module_init(arcnet_rfc1051_init);
+module_exit(arcnet_rfc1051_exit);
+
+MODULE_LICENSE("GPL");
+
+/* Determine a packet's protocol ID.
+ *
+ * With ARCnet we have to convert everything to Ethernet-style stuff.
+ */
+static __be16 type_trans(struct sk_buff *skb, struct net_device *dev)
+{
+	struct archdr *pkt = (struct archdr *)skb->data;
+	struct arc_rfc1051 *soft = &pkt->soft.rfc1051;
+	int hdr_size = ARC_HDR_SIZE + RFC1051_HDR_SIZE;
+
+	/* Pull off the arcnet header. */
+	skb_reset_mac_header(skb);
+	skb_pull(skb, hdr_size);
+
+	if (pkt->hard.dest == 0) {
+		skb->pkt_type = PACKET_BROADCAST;
+	} else if (dev->flags & IFF_PROMISC) {
+		/* if we're not sending to ourselves :) */
+		if (pkt->hard.dest != dev->dev_addr[0])
+			skb->pkt_type = PACKET_OTHERHOST;
+	}
+	/* now return the protocol number */
+	switch (soft->proto) {
+	case ARC_P_IP_RFC1051:
+		return htons(ETH_P_IP);
+	case ARC_P_ARP_RFC1051:
+		return htons(ETH_P_ARP);
+
+	default:
+		dev->stats.rx_errors++;
+		dev->stats.rx_crc_errors++;
+		return 0;
+	}
+
+	return htons(ETH_P_IP);
+}
+
+/* packet receiver */
+static void rx(struct net_device *dev, int bufnum,
+	       struct archdr *pkthdr, int length)
+{
+	struct arcnet_local *lp = netdev_priv(dev);
+	struct sk_buff *skb;
+	struct archdr *pkt = pkthdr;
+	int ofs;
+
+	arc_printk(D_DURING, dev, "it's a raw packet (length=%d)\n", length);
+
+	if (length >= MinTU)
+		ofs = 512 - length;
+	else
+		ofs = 256 - length;
+
+	skb = alloc_skb(length + ARC_HDR_SIZE, GFP_ATOMIC);
+	if (!skb) {
+		dev->stats.rx_dropped++;
+		return;
+	}
+	skb_put(skb, length + ARC_HDR_SIZE);
+	skb->dev = dev;
+
+	pkt = (struct archdr *)skb->data;
+
+	/* up to sizeof(pkt->soft) has already been copied from the card */
+	memcpy(pkt, pkthdr, sizeof(struct archdr));
+	if (length > sizeof(pkt->soft))
+		lp->hw.copy_from_card(dev, bufnum, ofs + sizeof(pkt->soft),
+				      pkt->soft.raw + sizeof(pkt->soft),
+				      length - sizeof(pkt->soft));
+
+	if (BUGLVL(D_SKB))
+		arcnet_dump_skb(dev, skb, "rx");
+
+	skb->protocol = type_trans(skb, dev);
+	netif_rx(skb);
+}
+
+/* Create the ARCnet hard/soft headers for RFC1051 */
+static int build_header(struct sk_buff *skb, struct net_device *dev,
+			unsigned short type, uint8_t daddr)
+{
+	int hdr_size = ARC_HDR_SIZE + RFC1051_HDR_SIZE;
+	struct archdr *pkt = skb_push(skb, hdr_size);
+	struct arc_rfc1051 *soft = &pkt->soft.rfc1051;
+
+	/* set the protocol ID according to RFC1051 */
+	switch (type) {
+	case ETH_P_IP:
+		soft->proto = ARC_P_IP_RFC1051;
+		break;
+	case ETH_P_ARP:
+		soft->proto = ARC_P_ARP_RFC1051;
+		break;
+	default:
+		arc_printk(D_NORMAL, dev, "RFC1051: I don't understand protocol %d (%Xh)\n",
+			   type, type);
+		dev->stats.tx_errors++;
+		dev->stats.tx_aborted_errors++;
+		return 0;
+	}
+
+	/* Set the source hardware address.
+	 *
+	 * This is pretty pointless for most purposes, but it can help in
+	 * debugging.  ARCnet does not allow us to change the source address
+	 * in the actual packet sent.
+	 */
+	pkt->hard.source = *dev->dev_addr;
+
+	/* see linux/net/ethernet/eth.c to see where I got the following */
+
+	if (dev->flags & (IFF_LOOPBACK | IFF_NOARP)) {
+		/* FIXME: fill in the last byte of the dest ipaddr here to
+		 * better comply with RFC1051 in "noarp" mode.
+		 */
+		pkt->hard.dest = 0;
+		return hdr_size;
+	}
+	/* otherwise, just fill it in and go! */
+	pkt->hard.dest = daddr;
+
+	return hdr_size;	/* success */
+}
+
+static int prepare_tx(struct net_device *dev, struct archdr *pkt, int length,
+		      int bufnum)
+{
+	struct arcnet_local *lp = netdev_priv(dev);
+	struct arc_hardware *hard = &pkt->hard;
+	int ofs;
+
+	arc_printk(D_DURING, dev, "prepare_tx: txbufs=%d/%d/%d\n",
+		   lp->next_tx, lp->cur_tx, bufnum);
+
+	/* hard header is not included in packet length */
+	length -= ARC_HDR_SIZE;
+
+	if (length > XMTU) {
+		/* should never happen! other people already check for this. */
+		arc_printk(D_NORMAL, dev, "Bug!  prepare_tx with size %d (> %d)\n",
+			   length, XMTU);
+		length = XMTU;
+	}
+	if (length > MinTU) {
+		hard->offset[0] = 0;
+		hard->offset[1] = ofs = 512 - length;
+	} else if (length > MTU) {
+		hard->offset[0] = 0;
+		hard->offset[1] = ofs = 512 - length - 3;
+	} else {
+		hard->offset[0] = ofs = 256 - length;
+	}
+
+	lp->hw.copy_to_card(dev, bufnum, 0, hard, ARC_HDR_SIZE);
+	lp->hw.copy_to_card(dev, bufnum, ofs, &pkt->soft, length);
+
+	lp->lastload_dest = hard->dest;
+
+	return 1;		/* done */
+}

@@ -1,49 +1,74 @@
-d include/config/GENERIC_IOMAP) \
-    $(wildcard include/config/GENERIC_IOREMAP) \
-    $(wildcard include/config/VIRT_TO_BUS) \
-    $(wildcard include/config/GENERIC_DEVMEM_IS_ALLOWED) \
-  include/linux/logic_pio.h \
-    $(wildcard include/config/INDIRECT_PIO) \
-  include/linux/vmalloc.h \
-    $(wildcard include/config/HAVE_ARCH_HUGE_VMALLOC) \
-  arch/x86/include/asm/vmalloc.h \
-    $(wildcard include/config/HAVE_ARCH_HUGE_VMAP) \
-  arch/x86/include/asm/acpi.h \
-    $(wildcard include/config/ACPI_APEI) \
-  include/acpi/pdc_intel.h \
-  arch/x86/include/asm/numa.h \
-    $(wildcard include/config/NUMA_EMU) \
-  arch/x86/include/asm/numa_32.h \
-  include/linux/regulator/consumer.h \
-    $(wildcard include/config/REGULATOR) \
-  include/linux/suspend.h \
-    $(wildcard include/config/VT) \
-    $(wildcard include/config/SUSPEND) \
-    $(wildcard include/config/HIBERNATION_SNAPSHOT_DEV) \
-    $(wildcard include/config/PM_SLEEP_DEBUG) \
-    $(wildcard include/config/PM_AUTOSLEEP) \
-  include/linux/swap.h \
-    $(wildcard include/config/DEVICE_PRIVATE) \
-    $(wildcard include/config/MIGRATION) \
-    $(wildcard include/config/FRONTSWAP) \
-    $(wildcard include/config/THP_SWAP) \
-    $(wildcard include/config/MEMCG_SWAP) \
-  include/linux/memcontrol.h \
-    $(wildcard include/config/CGROUP_WRITEBACK) \
-  include/linux/cgroup.h \
-    $(wildcard include/config/CGROUP_CPUACCT) \
-    $(wildcard include/config/SOCK_CGROUP_DATA) \
-    $(wildcard include/config/CGROUP_DATA) \
-    $(wildcard include/config/CGROUP_BPF) \
-  include/uapi/linux/cgroupstats.h \
-  include/uapi/linux/taskstats.h \
-  include/linux/fs.h \
-    $(wildcard include/config/READ_ONLY_THP_FOR_FS) \
-    $(wildcard include/config/FS_POSIX_ACL) \
-    $(wildcard include/config/IMA) \
-    $(wildcard include/config/FILE_LOCKING) \
-    $(wildcard include/config/FSNOTIFY) \
-    $(wildcard include/config/FS_ENCRYPTION) \
-    $(wildcard include/config/FS_VERITY) \
-    $(wildcard include/config/EPOLL) \
-    $(wildcard include/config/UNICODE)
+e        *video_dev;
+	struct video_device        *vbi_dev;
+
+	/* video capture */
+	struct cx23885_fmt         *fmt;
+	unsigned int               width, height;
+	unsigned		   field;
+
+	struct cx23885_dmaqueue    vidq;
+	struct vb2_queue           vb2_vidq;
+	struct cx23885_dmaqueue    vbiq;
+	struct vb2_queue           vb2_vbiq;
+
+	spinlock_t                 slock;
+
+	/* MPEG Encoder ONLY settings */
+	u32                        cx23417_mailbox;
+	struct cx2341x_handler     cxhdl;
+	struct video_device        *v4l_device;
+	struct vb2_queue           vb2_mpegq;
+	struct cx23885_tvnorm      encodernorm;
+
+	/* Analog raw audio */
+	struct cx23885_audio_dev   *audio_dev;
+
+	/* Does the system require periodic DMA resets? */
+	unsigned int		need_dma_reset:1;
+};
+
+static inline struct cx23885_dev *to_cx23885(struct v4l2_device *v4l2_dev)
+{
+	return container_of(v4l2_dev, struct cx23885_dev, v4l2_dev);
+}
+
+#define call_all(dev, o, f, args...) \
+	v4l2_device_call_all(&dev->v4l2_dev, 0, o, f, ##args)
+
+#define CX23885_HW_888_IR  (1 << 0)
+#define CX23885_HW_AV_CORE (1 << 1)
+
+#define call_hw(dev, grpid, o, f, args...) \
+	v4l2_device_call_all(&dev->v4l2_dev, grpid, o, f, ##args)
+
+extern struct v4l2_subdev *cx23885_find_hw(struct cx23885_dev *dev, u32 hw);
+
+#define SRAM_CH01  0 /* Video A */
+#define SRAM_CH02  1 /* VBI A */
+#define SRAM_CH03  2 /* Video B */
+#define SRAM_CH04  3 /* Transport via B */
+#define SRAM_CH05  4 /* VBI B */
+#define SRAM_CH06  5 /* Video C */
+#define SRAM_CH07  6 /* Transport via C */
+#define SRAM_CH08  7 /* Audio Internal A */
+#define SRAM_CH09  8 /* Audio Internal B */
+#define SRAM_CH10  9 /* Audio External */
+#define SRAM_CH11 10 /* COMB_3D_N */
+#define SRAM_CH12 11 /* Comb 3D N1 */
+#define SRAM_CH13 12 /* Comb 3D N2 */
+#define SRAM_CH14 13 /* MOE Vid */
+#define SRAM_CH15 14 /* MOE RSLT */
+
+struct sram_channel {
+	char *name;
+	u32  cmds_start;
+	u32  ctrl_start;
+	u32  cdt;
+	u32  fifo_start;
+	u32  fifo_size;
+	u32  ptr1_reg;
+	u32  ptr2_reg;
+	u32  cnt1_reg;
+	u32  cnt2_reg;
+	u32  jumponly;
+}

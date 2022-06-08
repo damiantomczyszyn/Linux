@@ -1,8 +1,15 @@
-onfig/TRACE_BRANCH_PROFILING) \
-    $(wildcard include/config/PROFILE_ALL_BRANCHES) \
-    $(wildcard include/config/STACK_VALIDATION) \
-  include/linux/compiler_types.h \
-  arch/x86/include/generated/asm/rwonce.h \
-  include/asm-generic/rwonce.h \
-  include/linux/kasan-checks.h \
-    $(wildcard include/config/KASAN
+DING,
+};
+enum cx23885_copyright {
+	CX23885_COPYRIGHT_OFF,
+	CX23885_COPYRIGHT_ON,
+};
+enum cx23885_notification_type {
+	CX23885_NOTIFICATION_REFRESH,
+};
+enum cx23885_notification_status {
+	CX23885_NOTIFICATION_OFF,
+	CX23885_NOTIFICATION_ON,
+};
+enum cx23885_notification_mailbox {
+	CX23885_NOTIFICATION_NO_MAILBOX = -1,

@@ -1,85 +1,83 @@
-_POINTS)
-		stats->contention_point[contention_point]++;
-	if (contending_point < LOCKSTAT_POINTS)
-		stats->contending_point[contending_point]++;
-	if (lock->cpu != smp_processor_id())
-		stats->bounces[bounce_contended + !!hlock->read]++;
+tore;
+	int mem;
+	int ret;
+
+	if (0 != slot)
+		return -EINVAL;
+
+	if (state->current_ci_flag != flag) {
+		ret = netup_read_i2c(state->i2c_adap, state->ci_i2c_addr,
+				0, &store, 1);
+		if (ret != 0)
+			return ret;
+
+		store &= ~0x0c;
+		store |= flag;
+
+		ret = netup_write_i2c(state->i2c_adap, state->ci_i2c_addr,
+				0, &store, 1);
+		if (ret != 0)
+			return ret;
+	}
+	state->current_ci_flag = flag;
+
+	mutex_lock(&dev->gpio_lock);
+
+	/* write addr */
+	cx_write(MC417_OEN, NETUP_EN_ALL);
+	cx_write(MC417_RWD, NETUP_CTRL_OFF |
+				NETUP_ADLO | (0xff & addr));
+	cx_clear(MC417_RWD, NETUP_ADLO);
+	cx_write(MC417_RWD, NETUP_CTRL_OFF |
+				NETUP_ADHI | (0xff & (addr >> 8)));
+	cx_clear(MC417_RWD, NETUP_ADHI);
+
+	if (read) { /* data in */
+		cx_write(MC417_OEN, NETUP_EN_ALL | NETUP_DATA);
+	} else /* data out */
+		cx_write(MC417_RWD, NETUP_CTRL_OFF | data);
+
+	/* choose chip */
+	cx_clear(MC417_RWD,
+			(state->ci_i2c_addr == 0x40) ? NETUP_CS0 : NETUP_CS1);
+	/* read/write */
+	cx_clear(MC417_RWD, (read) ? NETUP_RD : NETUP_WR);
+	mem = netup_ci_get_mem(dev);
+
+	mutex_unlock(&dev->gpio_lock);
+
+	if (!read)
+		if (mem < 0)
+			return -EREMOTEIO;
+
+	ci_dbg_print("%s: %s: chipaddr=[0x%x] addr=[0x%02x], %s=%x\n", __func__,
+			(read) ? "read" : "write", state->ci_i2c_addr, addr,
+			(flag == NETUP_CI_CTL) ? "ctl" : "mem",
+			(read) ? mem : data);
+
+	if (read)
+		return mem;
+
+	return 0;
 }
 
-static void
-__lock_acquired(struct lockdep_map *lock, unsigned long ip)
+int netup_ci_read_attribute_mem(struct dvb_ca_en50221 *en50221,
+						int slot, int addr)
 {
-	struct task_struct *curr = current;
-	struct held_lock *hlock;
-	struct lock_class_stats *stats;
-	unsigned int depth;
-	u64 now, waittime = 0;
-	int i, cpu;
-
-	depth = curr->lockdep_depth;
-	/*
-	 * Yay, we acquired ownership of this lock we didn't try to
-	 * acquire, how the heck did that happen?
-	 */
-	if (DEBUG_LOCKS_WARN_ON(!depth))
-		return;
-
-	hlock = find_held_lock(curr, lock, depth, &i);
-	if (!hlock) {
-		print_lock_contention_bug(curr, lock, _RET_IP_);
-		return;
-	}
-
-	if (hlock->instance != lock)
-		return;
-
-	cpu = smp_processor_id();
-	if (hlock->waittime_stamp) {
-		now = lockstat_clock();
-		waittime = now - hlock->waittime_stamp;
-		hlock->holdtime_stamp = now;
-	}
-
-	stats = get_lock_stats(hlock_class(hlock));
-	if (waittime) {
-		if (hlock->read)
-			lock_time_inc(&stats->read_waittime, waittime);
-		else
-			lock_time_inc(&stats->write_waittime, waittime);
-	}
-	if (lock->cpu != cpu)
-		stats->bounces[bounce_acquired + !!hlock->read]++;
-
-	lock->cpu = cpu;
-	lock->ip = ip;
+	return netup_ci_op_cam(en50221, slot, 0, NETUP_CI_RD, addr, 0);
 }
 
-void lock_contended(struct lockdep_map *lock, unsigned long ip)
+int netup_ci_write_attribute_mem(struct dvb_ca_en50221 *en50221,
+						int slot, int addr, u8 data)
 {
-	unsigned long flags;
-
-	trace_lock_contended(lock, ip);
-
-	if (unlikely(!lock_stat || !lockdep_enabled()))
-		return;
-
-	raw_local_irq_save(flags);
-	check_flags(flags);
-	lockdep_recursion_inc();
-	__lock_contended(lock, ip);
-	lockdep_recursion_finish();
-	raw_local_irq_restore(flags);
+	return netup_ci_op_cam(en50221, slot, 0, 0, addr, data);
 }
-EXPORT_SYMBOL_GPL(lock_contended);
 
-void lock_acquired(struct lockdep_map *lock, unsigned long ip)
+int netup_ci_read_cam_ctl(struct dvb_ca_en50221 *en50221, int slot,
+				 u8 addr)
 {
-	unsigned long flags;
+	return netup_ci_op_cam(en50221, slot, NETUP_CI_CTL,
+							NETUP_CI_RD, addr, 0);
+}
 
-	trace_lock_acquired(lock, ip);
-
-	if (unlikely(!lock_stat || !lockdep_enabled()))
-		return;
-
-	raw_local_irq_save(flags);
-	check_flags(flag
+int netup_ci_write_cam_ctl(struct dvb_ca_en50

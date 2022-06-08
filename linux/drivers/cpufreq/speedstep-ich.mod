@@ -1,1 +1,1 @@
-    $(wildcard include/config/HAV
+// SPDX-License-Identifier: GPL-2

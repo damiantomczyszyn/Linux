@@ -1,228 +1,341 @@
-rd include/config/ALTERNATE_USER_ADDRESS_SPACE) \
-  arch/x86/include/asm/uaccess_32.h \
-  include/linux/cred.h \
-    $(wildcard include/config/DEBUG_CREDENTIALS) \
-  include/linux/key.h \
-    $(wildcard include/config/KEY_NOTIFICATIONS) \
-    $(wildcard include/config/NET) \
-  include/linux/assoc_array.h \
-    $(wildcard include/config/ASSOCIATIVE_ARRAY) \
-  include/linux/sched/user.h \
-    $(wildcard include/config/WATCH_QUEUE) \
-  include/linux/percpu_counter.h \
-  include/linux/rcu_sync.h \
-  include/linux/delayed_call.h \
-  include/linux/errseq.h \
-  include/linux/ioprio.h \
-  include/linux/sched/rt.h \
-  include/linux/iocontext.h \
-    $(wildcard include/config/BLK_ICQ) \
-  include/uapi/linux/ioprio.h \
-  include/linux/fs_types.h \
-  include/linux/mount.h \
-  include/linux/mnt_idmapping.h \
-  include/uapi/linux/fs.h \
-  include/linux/quota.h \
-    $(wildcard include/config/QUOTA_NETLINK_INTERFACE) \
-  include/uapi/linux/dqblk_xfs.h \
-  include/linux/dqblk_v1.h \
-  include/linux/dqblk_v2.h \
-  include/linux/dqblk_qtree.h \
-  include/linux/projid.h \
-  include/uapi/linux/quota.h \
-  include/linux/nfs_fs_i.h \
-  include/linux/seq_file.h \
-  include/linux/string_helpers.h \
-  include/linux/ns_common.h \
-  include/linux/nsproxy.h \
-  include/linux/user_namespace.h \
-    $(wildcard include/config/INOTIFY_USER) \
-    $(wildcard include/config/FANOTIFY) \
-    $(wildcard include/config/PERSISTENT_KEYRINGS) \
-  include/linux/kernel_stat.h \
-  include/linux/interrupt.h \
-    $(wildcard include/config/IRQ_FORCED_THREADING) \
-    $(wildcard include/config/GENERIC_IRQ_PROBE) \
-    $(wildcard include/config/IRQ_TIMINGS) \
-  include/linux/irqreturn.h \
-  include/linux/irqnr.h \
-  include/uapi/linux/irqnr.h \
-  include/linux/hardirq.h \
-  include/linux/context_tracking_state.h \
-    $(wildcard include/config/CONTEXT_TRACKING) \
-  include/linux/ftrace_irq.h \
-    $(wildcard include/config/HWLAT_TRACER) \
-    $(wildcard include/config/OSNOISE_TRACER) \
-  include/linux/vtime.h \
-    $(wildcard include/config/VIRT_CPU_ACCOUNTING) \
-    $(wildcard include/config/IRQ_TIME_ACCOUNTING) \
-  arch/x86/include/asm/hardirq.h \
-    $(wildcard include/config/KVM_INTEL) \
-    $(wildcard include/config/X86_THERMAL_VECTOR) \
-    $(wildcard include/config/X86_MCE_THRESHOLD) \
-    $(wildcard include/config/X86_MCE_AMD) \
-    $(wildcard include/config/X86_HV_CALLBACK_VECTOR) \
-  arch/x86/include/asm/irq.h \
-  arch/x86/include/asm/sections.h \
-  include/asm-generic/sections.h \
-    $(wildcard include/config/HAVE_FUNCTION_DESCRIPTORS) \
-  include/linux/cgroup-defs.h \
-    $(wildcard include/config/CGROUP_NET_CLASSID) \
-    $(wildcard include/config/CGROUP_NET_PRIO) \
-  include/linux/u64_stats_sync.h \
-  include/linux/bpf-cgroup-defs.h \
-  include/linux/psi_types.h \
-  include/linux/kthread.h \
-  include/linux/cgroup_subsys.h \
-    $(wildcard include/config/CGROUP_DEVICE) \
-    $(wildcard include/config/CGROUP_FREEZER) \
-    $(wildcard include/config/CGROUP_PERF) \
-    $(wildcard include/config/CGROUP_HUGETLB) \
-    $(wildcard include/config/CGROUP_PIDS) \
-    $(wildcard include/config/CGROUP_RDMA) \
-    $(wildcard include/config/CGROUP_MISC) \
-    $(wildcard include/config/CGROUP_DEBUG) \
-  include/linux/vm_event_item.h \
-    $(wildcard include/config/HAVE_ARCH_TRANSPARENT_HUGEPAGE_PUD) \
-    $(wildcard include/config/MEMORY_BALLOON) \
-    $(wildcard include/config/BALLOON_COMPACTION) \
-    $(wildcard include/config/DEBUG_TLBFLUSH) \
-    $(wildcard include/config/DEBUG_VM_VMACACHE) \
-  include/linux/page_counter.h \
-  include/linux/vmpressure.h \
-  include/linux/eventfd.h \
-  include/linux/mm.h \
-    $(wildcard include/config/HAVE_ARCH_MMAP_RND_BITS) \
-    $(wildcard include/config/HAVE_ARCH_MMAP_RND_COMPAT_BITS) \
-    $(wildcard include/config/ARCH_USES_HIGH_VMA_FLAGS) \
-    $(wildcard include/config/ARCH_HAS_PKEYS) \
-    $(wildcard include/config/PPC) \
-    $(wildcard include/config/PARISC) \
-    $(wildcard include/config/SPARC64) \
-    $(wildcard include/config/ARM64_MTE) \
-    $(wildcard include/config/HAVE_ARCH_USERFAULTFD_MINOR) \
-    $(wildcard include/config/SHMEM) \
-    $(wildcard include/config/ARCH_HAS_PTE_SPECIAL) \
-    $(wildcard include/config/ARCH_HAS_PTE_DEVMAP) \
-    $(wildcard include/config/DEBUG_VM_RB) \
-    $(wildcard include/config/PAGE_POISONING) \
-    $(wildcard include/config/INIT_ON_ALLOC_DEFAULT_ON) \
-    $(wildcard include/config/INIT_ON_FREE_DEFAULT_ON) \
-    $(wildcard include/config/DEBUG_PAGEALLOC) \
-    $(wildcard include/config/HUGETLBFS) \
-    $(wildcard include/config/MAPPING_DIRTY_HELPERS) \
-    $(wildcard include/config/ANON_VMA_NAME) \
-  include/linux/mmap_lock.h \
-  include/linux/page_ext.h \
-  include/linux/stacktrace.h \
-    $(wildcard include/config/ARCH_STACKWALK) \
-    $(wildcard include/config/STACKTRACE) \
-    $(wildcard include/config/HAVE_RELIABLE_STACKTRACE) \
-  include/linux/stackdepot.h \
-    $(wildcard include/config/STACKDEPOT_ALWAYS_INIT) \
-  include/linux/page_ref.h \
-    $(wildcard include/config/DEBUG_PAGE_REF) \
-  include/linux/sizes.h \
-  include/linux/pgtable.h \
-    $(wildcard include/config/HIGHPTE) \
-    $(wildcard include/config/GUP_GET_PTE_LOW_HIGH) \
-    $(wildcard include/config/HAVE_ARCH_SOFT_DIRTY) \
-    $(wildcard include/config/ARCH_ENABLE_THP_MIGRATION) \
-    $(wildcard include/config/X86_ESPFIX64) \
-  arch/x86/include/asm/pgtable.h \
-    $(wildcard include/config/DEBUG_WX) \
-    $(wildcard include/config/PAGE_TABLE_CHECK) \
-  arch/x86/include/asm/pkru.h \
-  arch/x86/include/asm/fpu/api.h \
-    $(wildcard include/config/X86_DEBUG_FPU) \
-  arch/x86/include/asm/coco.h \
-  include/asm-generic/pgtable_uffd.h \
-  include/linux/page_table_check.h \
-  arch/x86/include/asm/pgtable_32.h \
-  arch/x86/include/asm/pgtable-3level.h \
-  arch/x86/include/asm/pgtable-invert.h \
-  include/linux/huge_mm.h \
-  include/linux/sched/coredump.h \
-    $(wildcard include/config/CORE_DUMP_DEFAULT_ELF_HEADERS) \
-  include/linux/vmstat.h \
-    $(wildcard include/config/VM_EVENT_COUNTERS) \
-  include/linux/writeback.h \
-  include/linux/flex_proportions.h \
-  include/linux/backing-dev-defs.h \
-    $(wildcard include/config/DEBUG_FS) \
-  include/linux/blk_types.h \
-    $(wildcard include/config/FAIL_MAKE_REQUEST) \
-    $(wildcard include/config/BLK_CGROUP_IOCOST) \
-    $(wildcard include/config/BLK_INLINE_ENCRYPTION) \
-    $(wildcard include/config/BLK_DEV_INTEGRITY) \
-  include/linux/bvec.h \
-  include/linux/highmem.h \
-  include/linux/cacheflush.h \
-  arch/x86/include/asm/cacheflush.h \
-  include/asm-generic/cacheflush.h \
-  include/linux/highmem-internal.h \
-  arch/x86/include/asm/highmem.h \
-  arch/x86/include/asm/tlbflush.h \
-  arch/x86/include/asm/invpcid.h \
-  arch/x86/include/asm/pti.h \
-  include/linux/bio.h \
-  include/linux/mempool.h \
-  include/linux/uio.h \
-    $(wildcard include/config/ARCH_HAS_UACCESS_FLUSHCACHE) \
-  include/uapi/linux/uio.h \
-  include/linux/node.h \
-    $(wildcard include/config/HMEM_REPORTING) \
-  include/linux/pagemap.h \
-  include/linux/hugetlb_inline.h \
-  include/uapi/linux/mempolicy.h \
-  include/linux/freezer.h \
-  include/uapi/linux/i2c.h \
-  include/linux/videodev2.h \
-  include/uapi/linux/videodev2.h \
-    $(wildcard include/config/VIDEO_ADV_DEBUG) \
-  include/uapi/linux/v4l2-common.h \
-  include/uapi/linux/v4l2-controls.h \
-  include/media/v4l2-device.h \
-    $(wildcard include/config/VIDEO_V4L2_SUBDEV_API) \
-  include/media/media-device.h \
-    $(wildcard include/config/MEDIA_CONTROLLER) \
-  include/media/media-devnode.h \
-  include/linux/poll.h \
-  include/uapi/linux/poll.h \
-  arch/x86/include/generated/uapi/asm/poll.h \
-  include/uapi/asm-generic/poll.h \
-  include/uapi/linux/eventpoll.h \
-  include/linux/cdev.h \
-  include/media/media-entity.h \
-  include/uapi/linux/media.h \
-  include/media/v4l2-subdev.h \
-  include/uapi/linux/v4l2-subdev.h \
-  include/uapi/linux/v4l2-mediabus.h \
-  include/uapi/linux/media-bus-format.h \
-  include/media/v4l2-async.h \
-  include/media/v4l2-common.h \
-    $(wildcard include/config/VIDEO_V4L2_I2C) \
-    $(wildcard include/config/SPI) \
-  include/media/v4l2-dev.h \
-  include/linux/spi/spi.h \
-    $(wildcard include/config/SPI_SLAVE) \
-  include/linux/scatterlist.h \
-    $(wildcard include/config/NEED_SG_DMA_LENGTH) \
-    $(wildcard include/config/DEBUG_SG) \
-    $(wildcard include/config/SGL_ALLOC) \
-    $(wildcard include/config/ARCH_NO_SG_CHAIN) \
-    $(wildcard include/config/SG_POOL) \
-  include/linux/gpio/consumer.h \
-    $(wildcard include/config/OF_GPIO) \
-    $(wildcard include/config/GPIO_SYSFS) \
-  include/uapi/linux/spi/spi.h \
-  include/media/v4l2-fh.h \
-  include/media/v4l2-mediabus.h \
-  include/media/v4l2-ctrls.h \
-  include/media/media-request.h \
-  include/media/hevc-ctrls.h \
+// SPDX-License-Identifier: GPL-2.0-or-later
+/*
+ *
+ *  Support for a cx23417 mpeg encoder via cx23885 host port.
+ *
+ *    (c) 2004 Jelle Foks <jelle@foks.us>
+ *    (c) 2004 Gerd Knorr <kraxel@bytesex.org>
+ *    (c) 2008 Steven Toth <stoth@linuxtv.org>
+ *      - CX23885/7/8 support
+ *
+ *  Includes parts from the ivtv driver <http://sourceforge.net/projects/ivtv/>
+ */
 
-drivers/media/i2c/tw9903.o: $(deps_drivers/media/i2c/tw9903.o)
+#include "cx23885.h"
+#include "cx23885-ioctl.h"
 
-$(deps_drivers/media/i2c/tw9903.o):
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                
+#include <linux/module.h>
+#include <linux/moduleparam.h>
+#include <linux/init.h>
+#include <linux/fs.h>
+#include <linux/delay.h>
+#include <linux/device.h>
+#include <linux/firmware.h>
+#include <linux/slab.h>
+#include <media/v4l2-common.h>
+#include <media/v4l2-ioctl.h>
+#include <media/drv-intf/cx2341x.h>
+
+#define CX23885_FIRM_IMAGE_SIZE 376836
+#define CX23885_FIRM_IMAGE_NAME "v4l-cx23885-enc.fw"
+
+static unsigned int mpegbufs = 32;
+module_param(mpegbufs, int, 0644);
+MODULE_PARM_DESC(mpegbufs, "number of mpeg buffers, range 2-32");
+static unsigned int mpeglines = 32;
+module_param(mpeglines, int, 0644);
+MODULE_PARM_DESC(mpeglines, "number of lines in an MPEG buffer, range 2-32");
+static unsigned int mpeglinesize = 512;
+module_param(mpeglinesize, int, 0644);
+MODULE_PARM_DESC(mpeglinesize,
+	"number of bytes in each line of an MPEG buffer, range 512-1024");
+
+static unsigned int v4l_debug;
+module_param(v4l_debug, int, 0644);
+MODULE_PARM_DESC(v4l_debug, "enable V4L debug messages");
+
+#define dprintk(level, fmt, arg...)\
+	do { if (v4l_debug >= level) \
+		printk(KERN_DEBUG pr_fmt("%s: 417:" fmt), \
+			__func__, ##arg); \
+	} while (0)
+
+static struct cx23885_tvnorm cx23885_tvnorms[] = {
+	{
+		.name      = "NTSC-M",
+		.id        = V4L2_STD_NTSC_M,
+	}, {
+		.name      = "NTSC-JP",
+		.id        = V4L2_STD_NTSC_M_JP,
+	}, {
+		.name      = "PAL-BG",
+		.id        = V4L2_STD_PAL_BG,
+	}, {
+		.name      = "PAL-DK",
+		.id        = V4L2_STD_PAL_DK,
+	}, {
+		.name      = "PAL-I",
+		.id        = V4L2_STD_PAL_I,
+	}, {
+		.name      = "PAL-M",
+		.id        = V4L2_STD_PAL_M,
+	}, {
+		.name      = "PAL-N",
+		.id        = V4L2_STD_PAL_N,
+	}, {
+		.name      = "PAL-Nc",
+		.id        = V4L2_STD_PAL_Nc,
+	}, {
+		.name      = "PAL-60",
+		.id        = V4L2_STD_PAL_60,
+	}, {
+		.name      = "SECAM-L",
+		.id        = V4L2_STD_SECAM_L,
+	}, {
+		.name      = "SECAM-DK",
+		.id        = V4L2_STD_SECAM_DK,
+	}
+};
+
+/* ------------------------------------------------------------------ */
+enum cx23885_capture_type {
+	CX23885_MPEG_CAPTURE,
+	CX23885_RAW_CAPTURE,
+	CX23885_RAW_PASSTHRU_CAPTURE
+};
+enum cx23885_capture_bits {
+	CX23885_RAW_BITS_NONE             = 0x00,
+	CX23885_RAW_BITS_YUV_CAPTURE      = 0x01,
+	CX23885_RAW_BITS_PCM_CAPTURE      = 0x02,
+	CX23885_RAW_BITS_VBI_CAPTURE      = 0x04,
+	CX23885_RAW_BITS_PASSTHRU_CAPTURE = 0x08,
+	CX23885_RAW_BITS_TO_HOST_CAPTURE  = 0x10
+};
+enum cx23885_capture_end {
+	CX23885_END_AT_GOP, /* stop at the end of gop, generate irq */
+	CX23885_END_NOW, /* stop immediately, no irq */
+};
+enum cx23885_framerate {
+	CX23885_FRAMERATE_NTSC_30, /* NTSC: 30fps */
+	CX23885_FRAMERATE_PAL_25   /* PAL: 25fps */
+};
+enum cx23885_stream_port {
+	CX23885_OUTPUT_PORT_MEMORY,
+	CX23885_OUTPUT_PORT_STREAMING,
+	CX23885_OUTPUT_PORT_SERIAL
+};
+enum cx23885_data_xfer_status {
+	CX23885_MORE_BUFFERS_FOLLOW,
+	CX23885_LAST_BUFFER,
+};
+enum cx23885_picture_mask {
+	CX23885_PICTURE_MASK_NONE,
+	CX23885_PICTURE_MASK_I_FRAMES,
+	CX23885_PICTURE_MASK_I_P_FRAMES = 0x3,
+	CX23885_PICTURE_MASK_ALL_FRAMES = 0x7,
+};
+enum cx23885_vbi_mode_bits {
+	CX23885_VBI_BITS_SLICED,
+	CX23885_VBI_BITS_RAW,
+};
+enum cx23885_vbi_insertion_bits {
+	CX23885_VBI_BITS_INSERT_IN_XTENSION_USR_DATA,
+	CX23885_VBI_BITS_INSERT_IN_PRIVATE_PACKETS = 0x1 << 1,
+	CX23885_VBI_BITS_SEPARATE_STREAM = 0x2 << 1,
+	CX23885_VBI_BITS_SEPARATE_STREAM_USR_DATA = 0x4 << 1,
+	CX23885_VBI_BITS_SEPARATE_STREAM_PRV_DATA = 0x5 << 1,
+};
+enum cx23885_dma_unit {
+	CX23885_DMA_BYTES,
+	CX23885_DMA_FRAMES,
+};
+enum cx23885_dma_transfer_status_bits {
+	CX23885_DMA_TRANSFER_BITS_DONE = 0x01,
+	CX23885_DMA_TRANSFER_BITS_ERROR = 0x04,
+	CX23885_DMA_TRANSFER_BITS_LL_ERROR = 0x10,
+};
+enum cx23885_pause {
+	CX23885_PAUSE_ENCODING,
+	CX23885_RESUME_ENCODING,
+};
+enum cx23885_copyright {
+	CX23885_COPYRIGHT_OFF,
+	CX23885_COPYRIGHT_ON,
+};
+enum cx23885_notification_type {
+	CX23885_NOTIFICATION_REFRESH,
+};
+enum cx23885_notification_status {
+	CX23885_NOTIFICATION_OFF,
+	CX23885_NOTIFICATION_ON,
+};
+enum cx23885_notification_mailbox {
+	CX23885_NOTIFICATION_NO_MAILBOX = -1,
+};
+enum cx23885_field1_lines {
+	CX23885_FIELD1_SAA7114 = 0x00EF, /* 239 */
+	CX23885_FIELD1_SAA7115 = 0x00F0, /* 240 */
+	CX23885_FIELD1_MICRONAS = 0x0105, /* 261 */
+};
+enum cx23885_field2_lines {
+	CX23885_FIELD2_SAA7114 = 0x00EF, /* 239 */
+	CX23885_FIELD2_SAA7115 = 0x00F0, /* 240 */
+	CX23885_FIELD2_MICRONAS = 0x0106, /* 262 */
+};
+enum cx23885_custom_data_type {
+	CX23885_CUSTOM_EXTENSION_USR_DATA,
+	CX23885_CUSTOM_PRIVATE_PACKET,
+};
+enum cx23885_mute {
+	CX23885_UNMUTE,
+	CX23885_MUTE,
+};
+enum cx23885_mute_video_mask {
+	CX23885_MUTE_VIDEO_V_MASK = 0x0000FF00,
+	CX23885_MUTE_VIDEO_U_MASK = 0x00FF0000,
+	CX23885_MUTE_VIDEO_Y_MASK = 0xFF000000,
+};
+enum cx23885_mute_video_shift {
+	CX23885_MUTE_VIDEO_V_SHIFT = 8,
+	CX23885_MUTE_VIDEO_U_SHIFT = 16,
+	CX23885_MUTE_VIDEO_Y_SHIFT = 24,
+};
+
+/* defines below are from ivtv-driver.h */
+#define IVTV_CMD_HW_BLOCKS_RST 0xFFFFFFFF
+
+/* Firmware API commands */
+#define IVTV_API_STD_TIMEOUT 500
+
+/* Registers */
+/* IVTV_REG_OFFSET */
+#define IVTV_REG_ENC_SDRAM_REFRESH (0x07F8)
+#define IVTV_REG_ENC_SDRAM_PRECHARGE (0x07FC)
+#define IVTV_REG_SPU (0x9050)
+#define IVTV_REG_HW_BLOCKS (0x9054)
+#define IVTV_REG_VPU (0x9058)
+#define IVTV_REG_APU (0xA064)
+
+/**** Bit definitions for MC417_RWD and MC417_OEN registers  ***
+  bits 31-16
++-----------+
+| Reserved  |
++-----------+
+  bit 15  bit 14  bit 13 bit 12  bit 11  bit 10  bit 9   bit 8
++-------+-------+-------+-------+-------+-------+-------+-------+
+| MIWR# | MIRD# | MICS# |MIRDY# |MIADDR3|MIADDR2|MIADDR1|MIADDR0|
++-------+-------+-------+-------+-------+-------+-------+-------+
+ bit 7   bit 6   bit 5   bit 4   bit 3   bit 2   bit 1   bit 0
++-------+-------+-------+-------+-------+-------+-------+-------+
+|MIDATA7|MIDATA6|MIDATA5|MIDATA4|MIDATA3|MIDATA2|MIDATA1|MIDATA0|
++-------+-------+-------+-------+-------+-------+-------+-------+
+***/
+#define MC417_MIWR	0x8000
+#define MC417_MIRD	0x4000
+#define MC417_MICS	0x2000
+#define MC417_MIRDY	0x1000
+#define MC417_MIADDR	0x0F00
+#define MC417_MIDATA	0x00FF
+
+/* MIADDR* nibble definitions */
+#define  MCI_MEMORY_DATA_BYTE0          0x000
+#define  MCI_MEMORY_DATA_BYTE1          0x100
+#define  MCI_MEMORY_DATA_BYTE2          0x200
+#define  MCI_MEMORY_DATA_BYTE3          0x300
+#define  MCI_MEMORY_ADDRESS_BYTE2       0x400
+#define  MCI_MEMORY_ADDRESS_BYTE1       0x500
+#define  MCI_MEMORY_ADDRESS_BYTE0       0x600
+#define  MCI_REGISTER_DATA_BYTE0        0x800
+#define  MCI_REGISTER_DATA_BYTE1        0x900
+#define  MCI_REGISTER_DATA_BYTE2        0xA00
+#define  MCI_REGISTER_DATA_BYTE3        0xB00
+#define  MCI_REGISTER_ADDRESS_BYTE0     0xC00
+#define  MCI_REGISTER_ADDRESS_BYTE1     0xD00
+#define  MCI_REGISTER_MODE              0xE00
+
+/* Read and write modes */
+#define  MCI_MODE_REGISTER_READ         0
+#define  MCI_MODE_REGISTER_WRITE        1
+#define  MCI_MODE_MEMORY_READ           0
+#define  MCI_MODE_MEMORY_WRITE          0x40
+
+/*** Bit definitions for MC417_CTL register ****
+ bits 31-6   bits 5-4   bit 3    bits 2-1       Bit 0
++--------+-------------+--------+--------------+------------+
+|Reserved|MC417_SPD_CTL|Reserved|MC417_GPIO_SEL|UART_GPIO_EN|
++--------+-------------+--------+--------------+------------+
+***/
+#define MC417_SPD_CTL(x)	(((x) << 4) & 0x00000030)
+#define MC417_GPIO_SEL(x)	(((x) << 1) & 0x00000006)
+#define MC417_UART_GPIO_EN	0x00000001
+
+/* Values for speed control */
+#define MC417_SPD_CTL_SLOW	0x1
+#define MC417_SPD_CTL_MEDIUM	0x0
+#define MC417_SPD_CTL_FAST	0x3     /* b'1x, but we use b'11 */
+
+/* Values for GPIO select */
+#define MC417_GPIO_SEL_GPIO3	0x3
+#define MC417_GPIO_SEL_GPIO2	0x2
+#define MC417_GPIO_SEL_GPIO1	0x1
+#define MC417_GPIO_SEL_GPIO0	0x0
+
+void cx23885_mc417_init(struct cx23885_dev *dev)
+{
+	u32 regval;
+
+	dprintk(2, "%s()\n", __func__);
+
+	/* Configure MC417_CTL register to defaults. */
+	regval = MC417_SPD_CTL(MC417_SPD_CTL_FAST)	|
+		 MC417_GPIO_SEL(MC417_GPIO_SEL_GPIO3)	|
+		 MC417_UART_GPIO_EN;
+	cx_write(MC417_CTL, regval);
+
+	/* Configure MC417_OEN to defaults. */
+	regval = MC417_MIRDY;
+	cx_write(MC417_OEN, regval);
+
+	/* Configure MC417_RWD to defaults. */
+	regval = MC417_MIWR | MC417_MIRD | MC417_MICS;
+	cx_write(MC417_RWD, regval);
+}
+
+static int mc417_wait_ready(struct cx23885_dev *dev)
+{
+	u32 mi_ready;
+	unsigned long timeout = jiffies + msecs_to_jiffies(1);
+
+	for (;;) {
+		mi_ready = cx_read(MC417_RWD) & MC417_MIRDY;
+		if (mi_ready != 0)
+			return 0;
+		if (time_after(jiffies, timeout))
+			return -1;
+		udelay(1);
+	}
+}
+
+int mc417_register_write(struct cx23885_dev *dev, u16 address, u32 value)
+{
+	u32 regval;
+
+	/* Enable MC417 GPIO outputs except for MC417_MIRDY,
+	 * which is an input.
+	 */
+	cx_write(MC417_OEN, MC417_MIRDY);
+
+	/* Write data byte 0 */
+	regval = MC417_MIRD | MC417_MIRDY | MCI_REGISTER_DATA_BYTE0 |
+		(value & 0x000000FF);
+	cx_write(MC417_RWD, regval);
+
+	/* Transition CS/WR to effect write transaction across bus. */
+	regval |= MC417_MICS | MC417_MIWR;
+	cx_write(MC417_RWD, regval);
+
+	/* Write data byte 1 */
+	regval = MC417_MIRD | MC417_MIRDY | MCI_REGISTER_DATA_BYTE1 |
+		((value >> 8) & 0x000000FF);
+	cx_write(MC417_RWD, regval);
+	regval |= MC417_MICS | MC417_MIWR;
+	cx_write(MC417_RWD, regval);
+
+	/* Write data byte 2 */
+	regval = MC417_MIRD | MC417_MIRDY | MCI_REGISTER_DATA_BYTE2 |
+		((value >> 16) & 0x000000FF);
+	cx_write(MC417_RWD, regval);
+	regval |= MC417_MICS | MC417_MIWR;
+	cx_write(MC417_RWD, regval);
+
+	/* Write 

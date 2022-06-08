@@ -1,1 +1,2 @@
-lude/linux/percpu-r
+_MSK_GPIO0)
+			dpri

@@ -1,4 +1,7 @@
-.h \
-  include/linux/percpu-refcount.h \
-  include/linux/kasan.h \
-    $(wildcard include/config/KASAN_STACK)
+:
+		i2c_bus = &dev->i2c_bus[0];
+
+		if (!dvb_attach(dib7000p_attach, &dib7000p_ops))
+			return -ENODEV;
+
+		fe0

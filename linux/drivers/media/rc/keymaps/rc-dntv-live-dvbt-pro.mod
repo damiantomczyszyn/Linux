@@ -1,2 +1,2 @@
-drivers/media/rc/keymaps/rc-dntv-live-dvbt-pro.o
-
+egval = MC417_SPD_CTL(MC417_SPD_CTL_FAST)	|
+		 MC4

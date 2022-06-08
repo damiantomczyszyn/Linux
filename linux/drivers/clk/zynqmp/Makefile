@@ -1,1 +1,7 @@
-cmd_drivers/media/i2c/tw9910.o := gcc -Wp,-MMD,drivers/media/i2c/.tw9910.o.d -nostdinc -I./arch/x86/include -I./arch/x86/include/generated  -I./include -I./arch/x86/include
+h->cmds_start + i, 0);
+
+	/* fill registers */
+	cx_write(ch->ptr1_reg, ch->fifo_start);
+	cx_write(ch->ptr2_reg, cdt);
+	cx_write(ch->cnt2_reg, (lines*16) >> 3);
+	cx_write(ch-

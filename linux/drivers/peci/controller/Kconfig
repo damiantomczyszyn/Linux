@@ -1,16 +1,24 @@
-CPI_APEI_GHES) \
-    $(wildcard include/config/INTEL_TXT) \
-  arch/x86/include/generated/asm/kmap_size.h \
-  include/asm-generic/kmap_size.h \
-    $(wildcard include/config/DEBUG_KMAP_LOCAL) \
-  include/asm-generic/fixmap.h \
-  arch/x86/include/asm/irq_vectors.h \
-    $(wildcard include/config/HAVE_KVM) \
-    $(wildcard include/config/HYPERV) \
-    $(wildcard include/config/PCI_MSI) \
-  arch/x86/include/asm/cpu_entry_area.h \
-  arch/x86/include/asm/intel_ds.h \
-  arch/x86/include/asm/pgtable_areas.h \
-  arch/x86/include/asm/pgtable_32_areas.h \
-  include/uapi/linux/elf.h \
-  include/
+egval = MC417_SPD_CTL(MC417_SPD_CTL_FAST)	|
+		 MC417_GPIO_SEL(MC417_GPIO_SEL_GPIO3)	|
+		 MC417_UART_GPIO_EN;
+	cx_write(MC417_CTL, regval);
+
+	/* Configure MC417_OEN to defaults. */
+	regval = MC417_MIRDY;
+	cx_write(MC417_OEN, regval);
+
+	/* Configure MC417_RWD to defaults. */
+	regval = MC417_MIWR | MC417_MIRD | MC417_MICS;
+	cx_write(MC417_RWD, regval);
+}
+
+static int mc417_wait_ready(struct cx23885_dev *dev)
+{
+	u32 mi_ready;
+	unsigned long timeout = jiffies + msecs_to_jiffies(1);
+
+	for (;;) {
+		mi_ready = cx_read(MC417_RWD) & MC417_MIRDY;
+		if (mi_ready != 0)
+			return 0;
+		if (time_afte

@@ -1,5 +1,1 @@
-ount_matching_names(class);
-	class->wait_type_inner = lock->wait_type_inner;
-	class->wait_type_outer = lock->wait_type_outer;
-	class->lock_type = lock->lock_type;
-	
+[îvzÔtð»Œþe¹Üì¥¨JjÀ™/œV¦·šÚôh(÷ër/:*ÃWÔ»´%1b‹2ç9u	aîÅ8¡„¦JÑDÁ#1<WÌ(Þ¯û_XÚ§µ§¯ùúTŽÅœ9/Ÿ‘ß<ZøïåŒE’»L¼R)Dû€±S‘Pº¦‡n×“~¬Î½ÂYÈ<¼)E2,\5uð'ûu¥Ÿ›ÒÊ†« ¢¬‚

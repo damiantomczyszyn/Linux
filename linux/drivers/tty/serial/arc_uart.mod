@@ -1,2 +1,1 @@
-pes.h \
-  include/asm-generic/p
+truct cx23885_audio_dev *chip =

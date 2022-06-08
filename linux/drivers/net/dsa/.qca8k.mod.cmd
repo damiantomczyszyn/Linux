@@ -1,3 +1,1 @@
-$(wildcard include/config/DEBUG_PLIST) \
-  include/linux/hrtimer.h \
-    $(wildcard include/config/HIGH
+cmd_drivers/net/dsa/qca8k.mod := { echo  drivers/net/dsa/qca8k.o;  echo; } > drivers/net/dsa/qca8k.mod

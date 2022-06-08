@@ -1,2 +1,2 @@
-drivers/media/rc/keymaps/rc-terratec-cinergy-s2-hd.o
-
+] IR controller */
+		allowed_protos = RC_PROTO_BIT_ALL

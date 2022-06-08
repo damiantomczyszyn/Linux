@@ -1,76 +1,71 @@
-// SPDX-License-Identifier: GPL-2.0+
-// apac-viewcomp.h - Keytable for apac_viewcomp Remote Controller
-//
-// keymap imported from ir-keymaps.c
-//
-// Copyright (c) 2010 by Mauro Carvalho Chehab
-
-#include <media/rc-map.h>
-#include <linux/module.h>
-
-/* Attila Kondoros <attila.kondoros@chello.hu> */
-
-static struct rc_map_table apac_viewcomp[] = {
-
-	{ 0x01, KEY_NUMERIC_1 },
-	{ 0x02, KEY_NUMERIC_2 },
-	{ 0x03, KEY_NUMERIC_3 },
-	{ 0x04, KEY_NUMERIC_4 },
-	{ 0x05, KEY_NUMERIC_5 },
-	{ 0x06, KEY_NUMERIC_6 },
-	{ 0x07, KEY_NUMERIC_7 },
-	{ 0x08, KEY_NUMERIC_8 },
-	{ 0x09, KEY_NUMERIC_9 },
-	{ 0x00, KEY_NUMERIC_0 },
-	{ 0x17, KEY_LAST },		/* +100 */
-	{ 0x0a, KEY_LIST },		/* recall */
-
-
-	{ 0x1c, KEY_TUNER },		/* TV/FM */
-	{ 0x15, KEY_SEARCH },		/* scan */
-	{ 0x12, KEY_POWER },		/* power */
-	{ 0x1f, KEY_VOLUMEDOWN },	/* vol up */
-	{ 0x1b, KEY_VOLUMEUP },		/* vol down */
-	{ 0x1e, KEY_CHANNELDOWN },	/* chn up */
-	{ 0x1a, KEY_CHANNELUP },	/* chn down */
-
-	{ 0x11, KEY_VIDEO },		/* video */
-	{ 0x0f, KEY_ZOOM },		/* full screen */
-	{ 0x13, KEY_MUTE },		/* mute/unmute */
-	{ 0x10, KEY_TEXT },		/* min */
-
-	{ 0x0d, KEY_STOP },		/* freeze */
-	{ 0x0e, KEY_RECORD },		/* record */
-	{ 0x1d, KEY_PLAYPAUSE },	/* stop */
-	{ 0x19, KEY_PLAY },		/* play */
-
-	{ 0x16, KEY_GOTO },		/* osd */
-	{ 0x14, KEY_REFRESH },		/* default */
-	{ 0x0c, KEY_KPPLUS },		/* fine tune >>>> */
-	{ 0x18, KEY_KPMINUS },		/* fine tune <<<< */
-};
-
-static struct rc_map_list apac_viewcomp_map = {
-	.map = {
-		.scan     = apac_viewcomp,
-		.size     = ARRAY_SIZE(apac_viewcomp),
-		.rc_proto = RC_PROTO_UNKNOWN,	/* Legacy IR type */
-		.name     = RC_MAP_APAC_VIEWCOMP,
-	}
-};
-
-static int __init init_rc_map_apac_viewcomp(void)
-{
-	return rc_map_register(&apac_viewcomp_map);
+dth_count_to_ns(FIFO_RXTX, *divider);
 }
 
-static void __exit exit_rc_map_apac_viewcomp(void)
+/*
+ * IR Tx Carrier Duty Cycle register helpers
+ */
+static unsigned int cduty_tx_s_duty_cycle(struct cx23885_dev *dev,
+					  unsigned int duty_cycle)
 {
-	rc_map_unregister(&apac_viewcomp_map);
+	u32 n;
+	n = DIV_ROUND_CLOSEST(duty_cycle * 100, 625); /* 16ths of 100% */
+	if (n != 0)
+		n--;
+	if (n > 15)
+		n = 15;
+	cx23888_ir_write4(dev, CX23888_IR_CDUTY_REG, n);
+	return DIV_ROUND_CLOSEST((n + 1) * 100, 16);
 }
 
-module_init(init_rc_map_apac_viewcomp)
-module_exit(exit_rc_map_apac_viewcomp)
+/*
+ * IR Filter Register helpers
+ */
+static u32 filter_rx_s_min_width(struct cx23885_dev *dev, u32 min_width_ns)
+{
+	u32 count = ns_to_lpf_count(min_width_ns);
+	cx23888_ir_write4(dev, CX23888_IR_FILTR_REG, count);
+	return lpf_count_to_ns(count);
+}
 
-MODULE_LICENSE("GPL");
-MODULE_AUTHOR("Mauro Carvalho Chehab");
+/*
+ * IR IRQ Enable Register helpers
+ */
+static inline void irqenable_rx(struct cx23885_dev *dev, u32 mask)
+{
+	mask &= (IRQEN_RTE | IRQEN_ROE | IRQEN_RSE);
+	cx23888_ir_and_or4(dev, CX23888_IR_IRQEN_REG,
+			   ~(IRQEN_RTE | IRQEN_ROE | IRQEN_RSE), mask);
+}
+
+static inline void irqenable_tx(struct cx23885_dev *dev, u32 mask)
+{
+	mask &= IRQEN_TSE;
+	cx23888_ir_and_or4(dev, CX23888_IR_IRQEN_REG, ~IRQEN_TSE, mask);
+}
+
+/*
+ * V4L2 Subdevice IR Ops
+ */
+static int cx23888_ir_irq_handler(struct v4l2_subdev *sd, u32 status,
+				  bool *handled)
+{
+	struct cx23888_ir_state *state = to_state(sd);
+	struct cx23885_dev *dev = state->dev;
+	unsigned long flags;
+
+	u32 cntrl = cx23888_ir_read4(dev, CX23888_IR_CNTRL_REG);
+	u32 irqen = cx23888_ir_read4(dev, CX23888_IR_IRQEN_REG);
+	u32 stats = cx23888_ir_read4(dev, CX23888_IR_STATS_REG);
+
+	union cx23888_ir_fifo_rec rx_data[FIFO_RX_DEPTH];
+	unsigned int i, j, k;
+	u32 events, v;
+	int tsr, rsr, rto, ror, tse, rse, rte, roe, kror;
+
+	tsr = stats & STATS_TSR; /* Tx FIFO Service Request */
+	rsr = stats & STATS_RSR; /* Rx FIFO Service Request */
+	rto = stats & STATS_RTO; /* Rx Pulse Width Timer Time Out */
+	ror = stats & STATS_ROR; /* Rx FIFO Over Run */
+
+	tse = irqen & IRQEN_TSE; /* Tx FIFO Service Request IRQ Enable */
+	rse = irqen & IRQEN_RSE; /* Rx FIFO Service Re

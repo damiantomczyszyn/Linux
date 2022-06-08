@@ -1,3 +1,5 @@
-ude/asm/pgtable_32_types.h \
-  arch/x86/include/asm/pgtable-3level_types.h \
-  include/asm-generic/pgtable-nop4d.h 
+/* SPDX-License-Identifier: GPL-2.0-or-later */
+/*
+ *  Driver for the Conexant CX23885/7/8 PCIe bridge
+ *
+ *  Copyr

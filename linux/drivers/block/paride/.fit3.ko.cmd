@@ -1,5 +1,10 @@
-e/linux/rwlock.h \
-    $(wildcard include/config/PREEMPT) \
-  include/linux/spinlock_api_smp.h \
-    $(wildcard include/config/INLINE_SPIN_LOCK) \
-    $(wildcard include/config/INLINE_SPIN_LOC
+         = &mpeg_fops,
+	.ioctl_ops     = &mpeg_ioctl_ops,
+	.tvnorms       = CX23885_NORMS,
+};
+
+void cx23885_417_unregister(struct cx23885_dev *dev)
+{
+	dprintk(1, "%s()\n", __func__);
+
+	if (dev

@@ -1,12 +1,22 @@
-e/config/NO_GENERIC_PCI_IOPORT_MAP) \
-    $(wildcard include/config/GENERIC_PCI_IOMAP) \
-  include/asm-generic/io.h \
-    $(wildcard include/config/GENERIC_IOMAP) \
-    $(wildcard include/config/GENERIC_IOREMAP) \
-    $(wildcard include/config/VIRT_TO_BUS) \
-    $(wildcard include/config/GENERIC_DEVMEM_IS_ALLOWED) \
-  include/linux/logic_pio.h \
-    $(wildcard include/config/INDIRECT_PIO) \
-  include/linux/vmalloc.h \
-    $(wildcard include/config/HAVE_ARCH_HUGE_VMALLOC) \
-  arch/x86/include/asm/v
+// SPDX-License-Identifier: GPL-2.0-or-later
+/*
+ * altera-ci.c
+ *
+ *  CI driver in conjunction with NetUp Dual DVB-T/C RF CI card
+ *
+ * Copyright (C) 2010,2011 NetUP Inc.
+ * Copyright (C) 2010,2011 Igor M. Liplianin <liplianin@netup.ru>
+ */
+
+/*
+ * currently cx23885 GPIO's used.
+ * GPIO-0 ~INT in
+ * GPIO-1 TMS out
+ * GPIO-2 ~reset chips out
+ * GPIO-3 to GPIO-10 data/addr for CA in/out
+ * GPIO-11 ~CS out
+ * GPIO-12 AD_RG out
+ * GPIO-13 ~WR out
+ * GPIO-14 ~RD out
+ * GPIO-15 ~RDY in
+ * GPIO-16 TCK out

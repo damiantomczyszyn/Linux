@@ -1,3 +1,3 @@
-LE_UPGRADE) \
-    $(wildcard include/config/ACPI_WATCHDOG) \
-    $(wildcard include/config/ACPI_SPCR_TABLE)
+dcard include/config/RCU_FANOUT_LEAF) \
+  include/linux/page-flags-layout.h \
+    $(wildcard include/config

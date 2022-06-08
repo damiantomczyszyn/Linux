@@ -1,1 +1,4 @@
-cmd_drivers/media/i2c/uda1342.o := gcc -Wp,-MMD,drivers/media/i2c/.uda1342.o.d -nostdinc -I./arch/x86/include -I./arch/x8
+			/* attach tuner */
+			memset(&ts2020_config, 0, sizeof(ts2020_config));
+			ts2020_config.fe = fe0->dvb.frontend;
+			ts

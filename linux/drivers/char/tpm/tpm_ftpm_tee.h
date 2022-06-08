@@ -1,23 +1,31 @@
-_BITS) \
-    $(wildcard include/config/HAVE_ARCH_MMAP_RND_COMPAT_BITS) \
-    $(wildcard include/config/ARCH_USES_HIGH_VMA_FLAGS) \
-    $(wildcard include/config/ARCH_HAS_PKEYS) \
-    $(wildcard include/config/PPC) \
-    $(wildcard include/config/PARISC) \
-    $(wildcard include/config/SPARC64) \
-    $(wildcard include/config/ARM64_MTE) \
-    $(wildcard include/config/HAVE_ARCH_USERFAULTFD_MINOR) \
-    $(wildcard include/config/SHMEM) \
-    $(wildcard include/config/ARCH_HAS_PTE_SPECIAL) \
-    $(wildcard include/config/ARCH_HAS_PTE_DEVMAP) \
-    $(wildcard include/config/DEBUG_VM_RB) \
-    $(wildcard include/config/PAGE_POISONING) \
-    $(wildcard include/config/INIT_ON_ALLOC_DEFAULT_ON) \
-    $(wildcard include/config/INIT_ON_FREE_DEFAULT_ON) \
-    $(wildcard include/config/DEBUG_PAGEALLOC) \
-    $(wildcard include/config/HUGETLBFS) \
-    $(wildcard include/config/MAPPING_DIRTY_HELPERS) \
-    $(wildcard include/config/ANON_VMA_NAME) \
-  include/linux/mmap_lock.h \
-  include/linux/page_ext.h \
-  include/linux/st
+			/* attach tuner */
+			memset(&ts2020_config, 0, sizeof(ts2020_config));
+			ts2020_config.fe = fe0->dvb.frontend;
+			ts2020_config.get_agc_pwm = m88ds3103_get_agc_pwm;
+			memset(&info, 0, sizeof(struct i2c_board_info));
+			strscpy(info.type, "ts2020", I2C_NAME_SIZE);
+			info.addr = 0x60;
+			info.platform_data = &ts2020_config;
+			request_module(info.type);
+			client_tuner = i2c_new_client_device(adapter, &info);
+			if (!i2c_client_has_driver(client_tuner))
+				goto frontend_detach;
+			if (!try_module_get(client_tuner->dev.driver->owner)) {
+				i2c_unregister_device(client_tuner);
+				goto frontend_detach;
+			}
+
+			/* delegate signal strength measurement to tuner */
+			fe0->dvb.frontend->ops.read_signal_strength =
+				fe0->dvb.frontend->ops.tuner_ops.get_rf_strength;
+
+			/*
+			 * for setting the voltage we need to set GPIOs on
+			 * the card.
+			 */
+			port->fe_set_voltage =
+				fe0->dvb.frontend->ops.set_voltage;
+			fe0->dvb.frontend->ops.set_voltage =
+				dvbsky_t9580_set_voltage;
+
+			port->i2c_client_tuner 

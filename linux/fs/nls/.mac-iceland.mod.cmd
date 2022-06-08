@@ -1,4 +1,3 @@
-t.h \
-    $(wildcard include/config/DEBUG_PLIST) \
-  include/linux/hrtimer.h \
-    $(wildcard 
+/* SPDX-License-Identifier: GPL-2.0 */
+extern int f300_set_voltage(struct dvb_frontend *fe,
+		

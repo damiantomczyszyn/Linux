@@ -1,724 +1,653 @@
-_percpu_address(addr))
-		return 1;
-
-	/*
-	 * module static or percpu var?
-	 */
-	return is_module_address(addr) || is_module_percpu_address(addr);
-}
-#endif
-
-/*
- * To make lock name printouts unique, we calculate a unique
- * class->name_version generation counter. The caller must hold the graph
- * lock.
+(of runnable tasks) this is provided by the following means:
+ *
+ *  A) UNLOCK of the rq(c0)->lock scheduling out task t
+ *  B) migration for t is required to synchronize *both* rq(c0)->lock and
+ *     rq(c1)->lock (if not at the same time, then in that order).
+ *  C) LOCK of the rq(c1)->lock scheduling in task
+ *
+ * Release/acquire chaining guarantees that B happens after A and C after B.
+ * Note: the CPU doing B need not be c0 or c1
+ *
+ * Example:
+ *
+ *   CPU0            CPU1            CPU2
+ *
+ *   LOCK rq(0)->lock
+ *   sched-out X
+ *   sched-in Y
+ *   UNLOCK rq(0)->lock
+ *
+ *                                   LOCK rq(0)->lock // orders against CPU0
+ *                                   dequeue X
+ *                                   UNLOCK rq(0)->lock
+ *
+ *                                   LOCK rq(1)->lock
+ *                                   enqueue X
+ *                                   UNLOCK rq(1)->lock
+ *
+ *                   LOCK rq(1)->lock // orders against CPU2
+ *                   sched-out Z
+ *                   sched-in X
+ *                   UNLOCK rq(1)->lock
+ *
+ *
+ *  BLOCKING -- aka. SLEEP + WAKEUP
+ *
+ * For blocking we (obviously) need to provide the same guarantee as for
+ * migration. However the means are completely different as there is no lock
+ * chain to provide order. Instead we do:
+ *
+ *   1) smp_store_release(X->on_cpu, 0)   -- finish_task()
+ *   2) smp_cond_load_acquire(!X->on_cpu) -- try_to_wake_up()
+ *
+ * Example:
+ *
+ *   CPU0 (schedule)  CPU1 (try_to_wake_up) CPU2 (schedule)
+ *
+ *   LOCK rq(0)->lock LOCK X->pi_lock
+ *   dequeue X
+ *   sched-out X
+ *   smp_store_release(X->on_cpu, 0);
+ *
+ *                    smp_cond_load_acquire(&X->on_cpu, !VAL);
+ *                    X->state = WAKING
+ *                    set_task_cpu(X,2)
+ *
+ *                    LOCK rq(2)->lock
+ *                    enqueue X
+ *                    X->state = RUNNING
+ *                    UNLOCK rq(2)->lock
+ *
+ *                                          LOCK rq(2)->lock // orders against CPU1
+ *                                          sched-out Z
+ *                                          sched-in X
+ *                                          UNLOCK rq(2)->lock
+ *
+ *                    UNLOCK X->pi_lock
+ *   UNLOCK rq(0)->lock
+ *
+ *
+ * However, for wakeups there is a second guarantee we must provide, namely we
+ * must ensure that CONDITION=1 done by the caller can not be reordered with
+ * accesses to the task state; see try_to_wake_up() and set_current_state().
  */
-static int count_matching_names(struct lock_class *new_class)
-{
-	struct lock_class *class;
-	int count = 0;
 
-	if (!new_class->name)
-		return 0;
-
-	list_for_each_entry(class, &all_lock_classes, lock_entry) {
-		if (new_class->key - new_class->subclass == class->key)
-			return class->name_version;
-		if (class->name && !strcmp(class->name, new_class->name))
-			count = max(count, class->name_version);
-	}
-
-	return count + 1;
-}
-
-/* used from NMI context -- must be lockless */
-static noinstr struct lock_class *
-look_up_lock_class(const struct lockdep_map *lock, unsigned int subclass)
-{
-	struct lockdep_subclass_key *key;
-	struct hlist_head *hash_head;
-	struct lock_class *class;
-
-	if (unlikely(subclass >= MAX_LOCKDEP_SUBCLASSES)) {
-		instrumentation_begin();
-		debug_locks_off();
-		printk(KERN_ERR
-			"BUG: looking up invalid subclass: %u\n", subclass);
-		printk(KERN_ERR
-			"turning off the locking correctness validator.\n");
-		dump_stack();
-		instrumentation_end();
-		return NULL;
-	}
-
-	/*
-	 * If it is not initialised then it has never been locked,
-	 * so it won't be present in the hash table.
-	 */
-	if (unlikely(!lock->key))
-		return NULL;
-
-	/*
-	 * NOTE: the class-key must be unique. For dynamic locks, a static
-	 * lock_class_key variable is passed in through the mutex_init()
-	 * (or spin_lock_init()) call - which acts as the key. For static
-	 * locks we use the lock object itself as the key.
-	 */
-	BUILD_BUG_ON(sizeof(struct lock_class_key) >
-			sizeof(struct lockdep_map));
-
-	key = lock->key->subkeys + subclass;
-
-	hash_head = classhashentry(key);
-
-	/*
-	 * We do an RCU walk of the hash, see lockdep_free_key_range().
-	 */
-	if (DEBUG_LOCKS_WARN_ON(!irqs_disabled()))
-		return NULL;
-
-	hlist_for_each_entry_rcu_notrace(class, hash_head, hash_entry) {
-		if (class->key == key) {
-			/*
-			 * Huh! same key, different name? Did someone trample
-			 * on some memory? We're most confused.
-			 */
-			WARN_ON_ONCE(class->name != lock->name &&
-				     lock->key != &__lockdep_no_validate__);
-			return class;
-		}
-	}
-
-	return NULL;
-}
-
-/*
- * Static locks do not have their class-keys yet - for them the key is
- * the lock object itself. If the lock is in the per cpu area, the
- * canonical address of the lock (per cpu offset removed) is used.
+/**
+ * try_to_wake_up - wake up a thread
+ * @p: the thread to be awakened
+ * @state: the mask of task states that can be woken
+ * @wake_flags: wake modifier flags (WF_*)
+ *
+ * Conceptually does:
+ *
+ *   If (@state & @p->state) @p->state = TASK_RUNNING.
+ *
+ * If the task was not queued/runnable, also place it back on a runqueue.
+ *
+ * This function is atomic against schedule() which would dequeue the task.
+ *
+ * It issues a full memory barrier before accessing @p->state, see the comment
+ * with set_current_state().
+ *
+ * Uses p->pi_lock to serialize against concurrent wake-ups.
+ *
+ * Relies on p->pi_lock stabilizing:
+ *  - p->sched_class
+ *  - p->cpus_ptr
+ *  - p->sched_task_group
+ * in order to do migration, see its use of select_task_rq()/set_task_cpu().
+ *
+ * Tries really hard to only take one task_rq(p)->lock for performance.
+ * Takes rq->lock in:
+ *  - ttwu_runnable()    -- old rq, unavoidable, see comment there;
+ *  - ttwu_queue()       -- new rq, for enqueue of the task;
+ *  - psi_ttwu_dequeue() -- much sadness :-( accounting will kill us.
+ *
+ * As a consequence we race really badly with just about everything. See the
+ * many memory barriers and their comments for details.
+ *
+ * Return: %true if @p->state changes (an actual wakeup was done),
+ *	   %false otherwise.
  */
-static bool assign_lock_key(struct lockdep_map *lock)
+static int
+try_to_wake_up(struct task_struct *p, unsigned int state, int wake_flags)
 {
-	unsigned long can_addr, addr = (unsigned long)lock;
-
-#ifdef __KERNEL__
-	/*
-	 * lockdep_free_key_range() assumes that struct lock_class_key
-	 * objects do not overlap. Since we use the address of lock
-	 * objects as class key for static objects, check whether the
-	 * size of lock_class_key objects does not exceed the size of
-	 * the smallest lock object.
-	 */
-	BUILD_BUG_ON(sizeof(struct lock_class_key) > sizeof(raw_spinlock_t));
-#endif
-
-	if (__is_kernel_percpu_address(addr, &can_addr))
-		lock->key = (void *)can_addr;
-	else if (__is_module_percpu_address(addr, &can_addr))
-		lock->key = (void *)can_addr;
-	else if (static_obj(lock))
-		lock->key = (void *)lock;
-	else {
-		/* Debug-check: all keys must be persistent! */
-		debug_locks_off();
-		pr_err("INFO: trying to register non-static key.\n");
-		pr_err("The code is fine but needs lockdep annotation, or maybe\n");
-		pr_err("you didn't initialize this object before use?\n");
-		pr_err("turning off the locking correctness validator.\n");
-		dump_stack();
-		return false;
-	}
-
-	return true;
-}
-
-#ifdef CONFIG_DEBUG_LOCKDEP
-
-/* Check whether element @e occurs in list @h */
-static bool in_list(struct list_head *e, struct list_head *h)
-{
-	struct list_head *f;
-
-	list_for_each(f, h) {
-		if (e == f)
-			return true;
-	}
-
-	return false;
-}
-
-/*
- * Check whether entry @e occurs in any of the locks_after or locks_before
- * lists.
- */
-static bool in_any_class_list(struct list_head *e)
-{
-	struct lock_class *class;
-	int i;
-
-	for (i = 0; i < ARRAY_SIZE(lock_classes); i++) {
-		class = &lock_classes[i];
-		if (in_list(e, &class->locks_after) ||
-		    in_list(e, &class->locks_before))
-			return true;
-	}
-	return false;
-}
-
-static bool class_lock_list_valid(struct lock_class *c, struct list_head *h)
-{
-	struct lock_list *e;
-
-	list_for_each_entry(e, h, entry) {
-		if (e->links_to != c) {
-			printk(KERN_INFO "class %s: mismatch for lock entry %ld; class %s <> %s",
-			       c->name ? : "(?)",
-			       (unsigned long)(e - list_entries),
-			       e->links_to && e->links_to->name ?
-			       e->links_to->name : "(?)",
-			       e->class && e->class->name ? e->class->name :
-			       "(?)");
-			return false;
-		}
-	}
-	return true;
-}
-
-#ifdef CONFIG_PROVE_LOCKING
-static u16 chain_hlocks[MAX_LOCKDEP_CHAIN_HLOCKS];
-#endif
-
-static bool check_lock_chain_key(struct lock_chain *chain)
-{
-#ifdef CONFIG_PROVE_LOCKING
-	u64 chain_key = INITIAL_CHAIN_KEY;
-	int i;
-
-	for (i = chain->base; i < chain->base + chain->depth; i++)
-		chain_key = iterate_chain_key(chain_key, chain_hlocks[i]);
-	/*
-	 * The 'unsigned long long' casts avoid that a compiler warning
-	 * is reported when building tools/lib/lockdep.
-	 */
-	if (chain->chain_key != chain_key) {
-		printk(KERN_INFO "chain %lld: key %#llx <> %#llx\n",
-		       (unsigned long long)(chain - lock_chains),
-		       (unsigned long long)chain->chain_key,
-		       (unsigned long long)chain_key);
-		return false;
-	}
-#endif
-	return true;
-}
-
-static bool in_any_zapped_class_list(struct lock_class *class)
-{
-	struct pending_free *pf;
-	int i;
-
-	for (i = 0, pf = delayed_free.pf; i < ARRAY_SIZE(delayed_free.pf); i++, pf++) {
-		if (in_list(&class->lock_entry, &pf->zapped))
-			return true;
-	}
-
-	return false;
-}
-
-static bool __check_data_structures(void)
-{
-	struct lock_class *class;
-	struct lock_chain *chain;
-	struct hlist_head *head;
-	struct lock_list *e;
-	int i;
-
-	/* Check whether all classes occur in a lock list. */
-	for (i = 0; i < ARRAY_SIZE(lock_classes); i++) {
-		class = &lock_classes[i];
-		if (!in_list(&class->lock_entry, &all_lock_classes) &&
-		    !in_list(&class->lock_entry, &free_lock_classes) &&
-		    !in_any_zapped_class_list(class)) {
-			printk(KERN_INFO "class %px/%s is not in any class list\n",
-			       class, class->name ? : "(?)");
-			return false;
-		}
-	}
-
-	/* Check whether all classes have valid lock lists. */
-	for (i = 0; i < ARRAY_SIZE(lock_classes); i++) {
-		class = &lock_classes[i];
-		if (!class_lock_list_valid(class, &class->locks_before))
-			return false;
-		if (!class_lock_list_valid(class, &class->locks_after))
-			return false;
-	}
-
-	/* Check the chain_key of all lock chains. */
-	for (i = 0; i < ARRAY_SIZE(chainhash_table); i++) {
-		head = chainhash_table + i;
-		hlist_for_each_entry_rcu(chain, head, entry) {
-			if (!check_lock_chain_key(chain))
-				return false;
-		}
-	}
-
-	/*
-	 * Check whether all list entries that are in use occur in a class
-	 * lock list.
-	 */
-	for_each_set_bit(i, list_entries_in_use, ARRAY_SIZE(list_entries)) {
-		e = list_entries + i;
-		if (!in_any_class_list(&e->entry)) {
-			printk(KERN_INFO "list entry %d is not in any class list; class %s <> %s\n",
-			       (unsigned int)(e - list_entries),
-			       e->class->name ? : "(?)",
-			       e->links_to->name ? : "(?)");
-			return false;
-		}
-	}
-
-	/*
-	 * Check whether all list entries that are not in use do not occur in
-	 * a class lock list.
-	 */
-	for_each_clear_bit(i, list_entries_in_use, ARRAY_SIZE(list_entries)) {
-		e = list_entries + i;
-		if (in_any_class_list(&e->entry)) {
-			printk(KERN_INFO "list entry %d occurs in a class list; class %s <> %s\n",
-			       (unsigned int)(e - list_entries),
-			       e->class && e->class->name ? e->class->name :
-			       "(?)",
-			       e->links_to && e->links_to->name ?
-			       e->links_to->name : "(?)");
-			return false;
-		}
-	}
-
-	return true;
-}
-
-int check_consistency = 0;
-module_param(check_consistency, int, 0644);
-
-static void check_data_structures(void)
-{
-	static bool once = false;
-
-	if (check_consistency && !once) {
-		if (!__check_data_structures()) {
-			once = true;
-			WARN_ON(once);
-		}
-	}
-}
-
-#else /* CONFIG_DEBUG_LOCKDEP */
-
-static inline void check_data_structures(void) { }
-
-#endif /* CONFIG_DEBUG_LOCKDEP */
-
-static void init_chain_block_buckets(void);
-
-/*
- * Initialize the lock_classes[] array elements, the free_lock_classes list
- * and also the delayed_free structure.
- */
-static void init_data_structures_once(void)
-{
-	static bool __read_mostly ds_initialized, rcu_head_initialized;
-	int i;
-
-	if (likely(rcu_head_initialized))
-		return;
-
-	if (system_state >= SYSTEM_SCHEDULING) {
-		init_rcu_head(&delayed_free.rcu_head);
-		rcu_head_initialized = true;
-	}
-
-	if (ds_initialized)
-		return;
-
-	ds_initialized = true;
-
-	INIT_LIST_HEAD(&delayed_free.pf[0].zapped);
-	INIT_LIST_HEAD(&delayed_free.pf[1].zapped);
-
-	for (i = 0; i < ARRAY_SIZE(lock_classes); i++) {
-		list_add_tail(&lock_classes[i].lock_entry, &free_lock_classes);
-		INIT_LIST_HEAD(&lock_classes[i].locks_after);
-		INIT_LIST_HEAD(&lock_classes[i].locks_before);
-	}
-	init_chain_block_buckets();
-}
-
-static inline struct hlist_head *keyhashentry(const struct lock_class_key *key)
-{
-	unsigned long hash = hash_long((uintptr_t)key, KEYHASH_BITS);
-
-	return lock_keys_hash + hash;
-}
-
-/* Register a dynamically allocated key. */
-void lockdep_register_key(struct lock_class_key *key)
-{
-	struct hlist_head *hash_head;
-	struct lock_class_key *k;
 	unsigned long flags;
+	int cpu, success = 0;
 
-	if (WARN_ON_ONCE(static_obj(key)))
+	preempt_disable();
+	if (p == current) {
+		/*
+		 * We're waking current, this means 'p->on_rq' and 'task_cpu(p)
+		 * == smp_processor_id()'. Together this means we can special
+		 * case the whole 'p->on_rq && ttwu_runnable()' case below
+		 * without taking any locks.
+		 *
+		 * In particular:
+		 *  - we rely on Program-Order guarantees for all the ordering,
+		 *  - we're serialized against set_special_state() by virtue of
+		 *    it disabling IRQs (this allows not taking ->pi_lock).
+		 */
+		if (!ttwu_state_match(p, state, &success))
+			goto out;
+
+		trace_sched_waking(p);
+		WRITE_ONCE(p->__state, TASK_RUNNING);
+		trace_sched_wakeup(p);
+		goto out;
+	}
+
+	/*
+	 * If we are going to wake up a thread waiting for CONDITION we
+	 * need to ensure that CONDITION=1 done by the caller can not be
+	 * reordered with p->state check below. This pairs with smp_store_mb()
+	 * in set_current_state() that the waiting thread does.
+	 */
+	raw_spin_lock_irqsave(&p->pi_lock, flags);
+	smp_mb__after_spinlock();
+	if (!ttwu_state_match(p, state, &success))
+		goto unlock;
+
+	trace_sched_waking(p);
+
+	/*
+	 * Ensure we load p->on_rq _after_ p->state, otherwise it would
+	 * be possible to, falsely, observe p->on_rq == 0 and get stuck
+	 * in smp_cond_load_acquire() below.
+	 *
+	 * sched_ttwu_pending()			try_to_wake_up()
+	 *   STORE p->on_rq = 1			  LOAD p->state
+	 *   UNLOCK rq->lock
+	 *
+	 * __schedule() (switch to task 'p')
+	 *   LOCK rq->lock			  smp_rmb();
+	 *   smp_mb__after_spinlock();
+	 *   UNLOCK rq->lock
+	 *
+	 * [task p]
+	 *   STORE p->state = UNINTERRUPTIBLE	  LOAD p->on_rq
+	 *
+	 * Pairs with the LOCK+smp_mb__after_spinlock() on rq->lock in
+	 * __schedule().  See the comment for smp_mb__after_spinlock().
+	 *
+	 * A similar smb_rmb() lives in try_invoke_on_locked_down_task().
+	 */
+	smp_rmb();
+	if (READ_ONCE(p->on_rq) && ttwu_runnable(p, wake_flags))
+		goto unlock;
+
+#ifdef CONFIG_SMP
+	/*
+	 * Ensure we load p->on_cpu _after_ p->on_rq, otherwise it would be
+	 * possible to, falsely, observe p->on_cpu == 0.
+	 *
+	 * One must be running (->on_cpu == 1) in order to remove oneself
+	 * from the runqueue.
+	 *
+	 * __schedule() (switch to task 'p')	try_to_wake_up()
+	 *   STORE p->on_cpu = 1		  LOAD p->on_rq
+	 *   UNLOCK rq->lock
+	 *
+	 * __schedule() (put 'p' to sleep)
+	 *   LOCK rq->lock			  smp_rmb();
+	 *   smp_mb__after_spinlock();
+	 *   STORE p->on_rq = 0			  LOAD p->on_cpu
+	 *
+	 * Pairs with the LOCK+smp_mb__after_spinlock() on rq->lock in
+	 * __schedule().  See the comment for smp_mb__after_spinlock().
+	 *
+	 * Form a control-dep-acquire with p->on_rq == 0 above, to ensure
+	 * schedule()'s deactivate_task() has 'happened' and p will no longer
+	 * care about it's own p->state. See the comment in __schedule().
+	 */
+	smp_acquire__after_ctrl_dep();
+
+	/*
+	 * We're doing the wakeup (@success == 1), they did a dequeue (p->on_rq
+	 * == 0), which means we need to do an enqueue, change p->state to
+	 * TASK_WAKING such that we can unlock p->pi_lock before doing the
+	 * enqueue, such as ttwu_queue_wakelist().
+	 */
+	WRITE_ONCE(p->__state, TASK_WAKING);
+
+	/*
+	 * If the owning (remote) CPU is still in the middle of schedule() with
+	 * this task as prev, considering queueing p on the remote CPUs wake_list
+	 * which potentially sends an IPI instead of spinning on p->on_cpu to
+	 * let the waker make forward progress. This is safe because IRQs are
+	 * disabled and the IPI will deliver after on_cpu is cleared.
+	 *
+	 * Ensure we load task_cpu(p) after p->on_cpu:
+	 *
+	 * set_task_cpu(p, cpu);
+	 *   STORE p->cpu = @cpu
+	 * __schedule() (switch to task 'p')
+	 *   LOCK rq->lock
+	 *   smp_mb__after_spin_lock()		smp_cond_load_acquire(&p->on_cpu)
+	 *   STORE p->on_cpu = 1		LOAD p->cpu
+	 *
+	 * to ensure we observe the correct CPU on which the task is currently
+	 * scheduling.
+	 */
+	if (smp_load_acquire(&p->on_cpu) &&
+	    ttwu_queue_wakelist(p, task_cpu(p), wake_flags | WF_ON_CPU))
+		goto unlock;
+
+	/*
+	 * If the owning (remote) CPU is still in the middle of schedule() with
+	 * this task as prev, wait until it's done referencing the task.
+	 *
+	 * Pairs with the smp_store_release() in finish_task().
+	 *
+	 * This ensures that tasks getting woken will be fully ordered against
+	 * their previous state and preserve Program Order.
+	 */
+	smp_cond_load_acquire(&p->on_cpu, !VAL);
+
+	cpu = select_task_rq(p, p->wake_cpu, wake_flags | WF_TTWU);
+	if (task_cpu(p) != cpu) {
+		if (p->in_iowait) {
+			delayacct_blkio_end(p);
+			atomic_dec(&task_rq(p)->nr_iowait);
+		}
+
+		wake_flags |= WF_MIGRATED;
+		psi_ttwu_dequeue(p);
+		set_task_cpu(p, cpu);
+	}
+#else
+	cpu = task_cpu(p);
+#endif /* CONFIG_SMP */
+
+	ttwu_queue(p, cpu, wake_flags);
+unlock:
+	raw_spin_unlock_irqrestore(&p->pi_lock, flags);
+out:
+	if (success)
+		ttwu_stat(p, task_cpu(p), wake_flags);
+	preempt_enable();
+
+	return success;
+}
+
+/**
+ * task_call_func - Invoke a function on task in fixed state
+ * @p: Process for which the function is to be invoked, can be @current.
+ * @func: Function to invoke.
+ * @arg: Argument to function.
+ *
+ * Fix the task in it's current state by avoiding wakeups and or rq operations
+ * and call @func(@arg) on it.  This function can use ->on_rq and task_curr()
+ * to work out what the state is, if required.  Given that @func can be invoked
+ * with a runqueue lock held, it had better be quite lightweight.
+ *
+ * Returns:
+ *   Whatever @func returns
+ */
+int task_call_func(struct task_struct *p, task_call_f func, void *arg)
+{
+	struct rq *rq = NULL;
+	unsigned int state;
+	struct rq_flags rf;
+	int ret;
+
+	raw_spin_lock_irqsave(&p->pi_lock, rf.flags);
+
+	state = READ_ONCE(p->__state);
+
+	/*
+	 * Ensure we load p->on_rq after p->__state, otherwise it would be
+	 * possible to, falsely, observe p->on_rq == 0.
+	 *
+	 * See try_to_wake_up() for a longer comment.
+	 */
+	smp_rmb();
+
+	/*
+	 * Since pi->lock blocks try_to_wake_up(), we don't need rq->lock when
+	 * the task is blocked. Make sure to check @state since ttwu() can drop
+	 * locks at the end, see ttwu_queue_wakelist().
+	 */
+	if (state == TASK_RUNNING || state == TASK_WAKING || p->on_rq)
+		rq = __task_rq_lock(p, &rf);
+
+	/*
+	 * At this point the task is pinned; either:
+	 *  - blocked and we're holding off wakeups	 (pi->lock)
+	 *  - woken, and we're holding off enqueue	 (rq->lock)
+	 *  - queued, and we're holding off schedule	 (rq->lock)
+	 *  - running, and we're holding off de-schedule (rq->lock)
+	 *
+	 * The called function (@func) can use: task_curr(), p->on_rq and
+	 * p->__state to differentiate between these states.
+	 */
+	ret = func(p, arg);
+
+	if (rq)
+		rq_unlock(rq, &rf);
+
+	raw_spin_unlock_irqrestore(&p->pi_lock, rf.flags);
+	return ret;
+}
+
+/**
+ * wake_up_process - Wake up a specific process
+ * @p: The process to be woken up.
+ *
+ * Attempt to wake up the nominated process and move it to the set of runnable
+ * processes.
+ *
+ * Return: 1 if the process was woken up, 0 if it was already running.
+ *
+ * This function executes a full memory barrier before accessing the task state.
+ */
+int wake_up_process(struct task_struct *p)
+{
+	return try_to_wake_up(p, TASK_NORMAL, 0);
+}
+EXPORT_SYMBOL(wake_up_process);
+
+int wake_up_state(struct task_struct *p, unsigned int state)
+{
+	return try_to_wake_up(p, state, 0);
+}
+
+/*
+ * Perform scheduler related setup for a newly forked process p.
+ * p is forked by current.
+ *
+ * __sched_fork() is basic setup used by init_idle() too:
+ */
+static void __sched_fork(unsigned long clone_flags, struct task_struct *p)
+{
+	p->on_rq			= 0;
+
+	p->se.on_rq			= 0;
+	p->se.exec_start		= 0;
+	p->se.sum_exec_runtime		= 0;
+	p->se.prev_sum_exec_runtime	= 0;
+	p->se.nr_migrations		= 0;
+	p->se.vruntime			= 0;
+	INIT_LIST_HEAD(&p->se.group_node);
+
+#ifdef CONFIG_FAIR_GROUP_SCHED
+	p->se.cfs_rq			= NULL;
+#endif
+
+#ifdef CONFIG_SCHEDSTATS
+	/* Even if schedstat is disabled, there should not be garbage */
+	memset(&p->stats, 0, sizeof(p->stats));
+#endif
+
+	RB_CLEAR_NODE(&p->dl.rb_node);
+	init_dl_task_timer(&p->dl);
+	init_dl_inactive_task_timer(&p->dl);
+	__dl_clear_params(p);
+
+	INIT_LIST_HEAD(&p->rt.run_list);
+	p->rt.timeout		= 0;
+	p->rt.time_slice	= sched_rr_timeslice;
+	p->rt.on_rq		= 0;
+	p->rt.on_list		= 0;
+
+#ifdef CONFIG_PREEMPT_NOTIFIERS
+	INIT_HLIST_HEAD(&p->preempt_notifiers);
+#endif
+
+#ifdef CONFIG_COMPACTION
+	p->capture_control = NULL;
+#endif
+	init_numa_balancing(clone_flags, p);
+#ifdef CONFIG_SMP
+	p->wake_entry.u_flags = CSD_TYPE_TTWU;
+	p->migration_pending = NULL;
+#endq;
+
+	for (;;) {
+		raw_spin_lock_irqsave(&p->pi_lock, rf->flags);
+		rq = task_rq(p);
+		raw_spin_rq_lock(rq);
+		/*
+		 *	move_queued_task()		task_rq_lock()
+		 *
+		 *	ACQUIRE (rq->lock)
+		 *	[S] ->on_rq = MIGRATING		[L] rq = task_rq()
+		 *	WMB (__set_task_cpu())		ACQUIRE (rq->lock);
+		 *	[S] ->cpu = new_cpu		[L] task_rq()
+		 *					[L] ->on_rq
+		 *	RELEASE (rq->lock)
+		 *
+		 * If we observe the old CPU in task_rq_lock(), the acquire of
+		 * the old rq->lock will fully serialize against the stores.
+		 *
+		 * If we observe the new CPU in task_rq_lock(), the address
+		 * dependency headed by '[L] rq = task_rq()' and the acquire
+		 * will pair with the WMB to ensure we then also see migrating.
+		 */
+		if (likely(rq == task_rq(p) && !task_on_rq_migrating(p))) {
+			rq_pin_lock(rq, rf);
+			return rq;
+		}
+		raw_spin_rq_unlock(rq);
+		raw_spin_unlock_irqrestore(&p->pi_lock, rf->flags);
+
+		while (unlikely(task_on_rq_migrating(p)))
+			cpu_relax();
+	}
+}
+
+/*
+ * RQ-clock updating methods:
+ */
+
+static void update_rq_clock_task(struct rq *rq, s64 delta)
+{
+/*
+ * In theory, the compile should just see 0 here, and optimize out the call
+ * to sched_rt_avg_update. But I don't trust it...
+ */
+	s64 __maybe_unused steal = 0, irq_delta = 0;
+
+#ifdef CONFIG_IRQ_TIME_ACCOUNTING
+	irq_delta = irq_time_read(cpu_of(rq)) - rq->prev_irq_time;
+
+	/*
+	 * Since irq_time is only updated on {soft,}irq_exit, we might run into
+	 * this case when a previous update_rq_clock() happened inside a
+	 * {soft,}irq region.
+	 *
+	 * When this happens, we stop ->clock_task and only update the
+	 * prev_irq_time stamp to account for the part that fit, so that a next
+	 * update will consume the rest. This ensures ->clock_task is
+	 * monotonic.
+	 *
+	 * It does however cause some slight miss-attribution of {soft,}irq
+	 * time, a more accurate solution would be to update the irq_time using
+	 * the current rq->clock timestamp, except that would require using
+	 * atomic ops.
+	 */
+	if (irq_delta > delta)
+		irq_delta = delta;
+
+	rq->prev_irq_time += irq_delta;
+	delta -= irq_delta;
+#endif
+#ifdef CONFIG_PARAVIRT_TIME_ACCOUNTING
+	if (static_key_false((&paravirt_steal_rq_enabled))) {
+		steal = paravirt_steal_clock(cpu_of(rq));
+		steal -= rq->prev_steal_time_rq;
+
+		if (unlikely(steal > delta))
+			steal = delta;
+
+		rq->prev_steal_time_rq += steal;
+		delta -= steal;
+	}
+#endif
+
+	rq->clock_task += delta;
+
+#ifdef CONFIG_HAVE_SCHED_AVG_IRQ
+	if ((irq_delta + steal) && sched_feat(NONTASK_CAPACITY))
+		update_irq_load_avg(rq, irq_delta + steal);
+#endif
+	update_rq_clock_pelt(rq, delta);
+}
+
+void update_rq_clock(struct rq *rq)
+{
+	s64 delta;
+
+	lockdep_assert_rq_held(rq);
+
+	if (rq->clock_update_flags & RQCF_ACT_SKIP)
 		return;
-	hash_head = keyhashentry(key);
 
-	raw_local_irq_save(flags);
-	if (!graph_lock())
-		goto restore_irqs;
-	hlist_for_each_entry_rcu(k, hash_head, hash_entry) {
-		if (WARN_ON_ONCE(k == key))
-			goto out_unlock;
-	}
-	hlist_add_head_rcu(&key->hash_entry, hash_head);
-out_unlock:
-	graph_unlock();
-restore_irqs:
-	raw_local_irq_restore(flags);
-}
-EXPORT_SYMBOL_GPL(lockdep_register_key);
+#ifdef CONFIG_SCHED_DEBUG
+	if (sched_feat(WARN_DOUBLE_CLOCK))
+		SCHED_WARN_ON(rq->clock_update_flags & RQCF_UPDATED);
+	rq->clock_update_flags |= RQCF_UPDATED;
+#endif
 
-/* Check whether a key has been registered as a dynamic key. */
-static bool is_dynamic_key(const struct lock_class_key *key)
-{
-	struct hlist_head *hash_head;
-	struct lock_class_key *k;
-	bool found = false;
-
-	if (WARN_ON_ONCE(static_obj(key)))
-		return false;
-
-	/*
-	 * If lock debugging is disabled lock_keys_hash[] may contain
-	 * pointers to memory that has already been freed. Avoid triggering
-	 * a use-after-free in that case by returning early.
-	 */
-	if (!debug_locks)
-		return true;
-
-	hash_head = keyhashentry(key);
-
-	rcu_read_lock();
-	hlist_for_each_entry_rcu(k, hash_head, hash_entry) {
-		if (k == key) {
-			found = true;
-			break;
-		}
-	}
-	rcu_read_unlock();
-
-	return found;
+	delta = sched_clock_cpu(cpu_of(rq)) - rq->clock;
+	if (delta < 0)
+		return;
+	rq->clock += delta;
+	update_rq_clock_task(rq, delta);
 }
 
+#ifdef CONFIG_SCHED_HRTICK
 /*
- * Register a lock's class in the hash-table, if the class is not present
- * yet. Otherwise we look it up. We cache the result in the lock object
- * itself, so actual lookup of the hash should be once per lock object.
+ * Use HR-timers to deliver accurate preemption points.
  */
-static struct lock_class *
-register_lock_class(struct lockdep_map *lock, unsigned int subclass, int force)
+
+static void hrtick_clear(struct rq *rq)
 {
-	struct lockdep_subclass_key *key;
-	struct hlist_head *hash_head;
-	struct lock_class *class;
-	int idx;
-
-	DEBUG_LOCKS_WARN_ON(!irqs_disabled());
-
-	class = look_up_lock_class(lock, subclass);
-	if (likely(class))
-		goto out_set_class_cache;
-
-	if (!lock->key) {
-		if (!assign_lock_key(lock))
-			return NULL;
-	} else if (!static_obj(lock->key) && !is_dynamic_key(lock->key)) {
-		return NULL;
-	}
-
-	key = lock->key->subkeys + subclass;
-	hash_head = classhashentry(key);
-
-	if (!graph_lock()) {
-		return NULL;
-	}
-	/*
-	 * We have to do the hash-walk again, to avoid races
-	 * with another CPU:
-	 */
-	hlist_for_each_entry_rcu(class, hash_head, hash_entry) {
-		if (class->key == key)
-			goto out_unlock_set;
-	}
-
-	init_data_structures_once();
-
-	/* Allocate a new lock class and add it to the hash. */
-	class = list_first_entry_or_null(&free_lock_classes, typeof(*class),
-					 lock_entry);
-	if (!class) {
-		if (!debug_locks_off_graph_unlock()) {
-			return NULL;
-		}
-
-		print_lockdep_off("BUG: MAX_LOCKDEP_KEYS too low!");
-		dump_stack();
-		return NULL;
-	}
-	nr_lock_classes++;
-	__set_bit(class - lock_classes, lock_classes_in_use);
-	debug_atomic_inc(nr_unused_locks);
-	class->key = key;
-	class->name = lock->name;
-	class->subclass = subclass;
-	WARN_ON_ONCE(!list_empty(&class->locks_before));
-	WARN_ON_ONCE(!list_empty(&class->locks_after));
-	class->name_version = count_matching_names(class);
-	class->wait_type_inner = lock->wait_type_inner;
-	class->wait_type_outer = lock->wait_type_outer;
-	class->lock_type = lock->lock_type;
-	/*
-	 * We use RCU's safe list-add method to make
-	 * parallel walking of the hash-list safe:
-	 */
-	hlist_add_head_rcu(&class->hash_entry, hash_head);
-	/*
-	 * Remove the class from the free list and add it to the global list
-	 * of classes.
-	 */
-	list_move_tail(&class->lock_entry, &all_lock_classes);
-	idx = class - lock_classes;
-	if (idx > max_lock_class_idx)
-		max_lock_class_idx = idx;
-
-	if (verbose(class)) {
-		graph_unlock();
-
-		printk("\nnew class %px: %s", class->key, class->name);
-		if (class->name_version > 1)
-			printk(KERN_CONT "#%d", class->name_version);
-		printk(KERN_CONT "\n");
-		dump_stack();
-
-		if (!graph_lock()) {
-			return NULL;
-		}
-	}
-out_unlock_set:
-	graph_unlock();
-
-out_set_class_cache:
-	if (!subclass || force)
-		lock->class_cache[0] = class;
-	else if (subclass < NR_LOCKDEP_CACHING_CLASSES)
-		lock->class_cache[subclass] = class;
-
-	/*
-	 * Hash collision, did we smoke some? We found a class with a matching
-	 * hash but the subclass -- which is hashed in -- didn't match.
-	 */
-	if (DEBUG_LOCKS_WARN_ON(class->subclass != subclass))
-		return NULL;
-
-	return class;
+	if (hrtimer_active(&rq->hrtick_timer))
+		hrtimer_cancel(&rq->hrtick_timer);
 }
 
-#ifdef CONFIG_PROVE_LOCKING
 /*
- * Allocate a lockdep entry. (assumes the graph_lock held, returns
- * with NULL on failure)
+ * High-resolution timer tick.
+ * Runs from hardirq context with interrupts disabled.
  */
-static struct lock_list *alloc_list_entry(void)
+static enum hrtimer_restart hrtick(struct hrtimer *timer)
 {
-	int idx = find_first_zero_bit(list_entries_in_use,
-				      ARRAY_SIZE(list_entries));
+	struct rq *rq = container_of(timer, struct rq, hrtick_timer);
+	struct rq_flags rf;
 
-	if (idx >= ARRAY_SIZE(list_entries)) {
-		if (!debug_locks_off_graph_unlock())
-			return NULL;
+	WARN_ON_ONCE(cpu_of(rq) != smp_processor_id());
 
-		print_lockdep_off("BUG: MAX_LOCKDEP_ENTRIES too low!");
-		dump_stack();
-		return NULL;
-	}
-	nr_list_entries++;
-	__set_bit(idx, list_entries_in_use);
-	return list_entries + idx;
+	rq_lock(rq, &rf);
+	update_rq_clock(rq);
+	rq->curr->sched_class->task_tick(rq, rq->curr, 1);
+	rq_unlock(rq, &rf);
+
+	return HRTIMER_NORESTART;
+}
+
+#ifdef CONFIG_SMP
+
+static void __hrtick_restart(struct rq *rq)
+{
+	struct hrtimer *timer = &rq->hrtick_timer;
+	ktime_t time = rq->hrtick_time;
+
+	hrtimer_start(timer, time, HRTIMER_MODE_ABS_PINNED_HARD);
 }
 
 /*
- * Add a new dependency to the head of the list:
+ * called from hardirq (IPI) context
  */
-static int add_lock_to_list(struct lock_class *this,
-			    struct lock_class *links_to, struct list_head *head,
-			    unsigned long ip, u16 distance, u8 dep,
-			    const struct lock_trace *trace)
+static void __hrtick_start(void *arg)
 {
-	struct lock_list *entry;
-	/*
-	 * Lock not present yet - get a new dependency struct and
-	 * add it to the list:
-	 */
-	entry = alloc_list_entry();
-	if (!entry)
-		return 0;
+	struct rq *rq = arg;
+	struct rq_flags rf;
 
-	entry->class = this;
-	entry->links_to = links_to;
-	entry->dep = dep;
-	entry->distance = distance;
-	entry->trace = trace;
-	/*
-	 * Both allocation and removal are done under the graph lock; but
-	 * iteration is under RCU-sched; see look_up_lock_class() and
-	 * lockdep_free_key_range().
-	 */
-	list_add_tail_rcu(&entry->entry, head);
-
-	return 1;
+	rq_lock(rq, &rf);
+	__hrtick_restart(rq);
+	rq_unlock(rq, &rf);
 }
 
 /*
- * For good efficiency of modular, we use power of 2
- */
-#define MAX_CIRCULAR_QUEUE_SIZE		(1UL << CONFIG_LOCKDEP_CIRCULAR_QUEUE_BITS)
-#define CQ_MASK				(MAX_CIRCULAR_QUEUE_SIZE-1)
-
-/*
- * The circular_queue and helpers are used to implement graph
- * breadth-first search (BFS) algorithm, by which we can determine
- * whether there is a path from a lock to another. In deadlock checks,
- * a path from the next lock to be acquired to a previous held lock
- * indicates that adding the <prev> -> <next> lock dependency will
- * produce a circle in the graph. Breadth-first search instead of
- * depth-first search is used in order to find the shortest (circular)
- * path.
- */
-struct circular_queue {
-	struct lock_list *element[MAX_CIRCULAR_QUEUE_SIZE];
-	unsigned int  front, rear;
-};
-
-static struct circular_queue lock_cq;
-
-unsigned int max_bfs_queue_depth;
-
-static unsigned int lockdep_dependency_gen_id;
-
-static inline void __cq_init(struct circular_queue *cq)
-{
-	cq->front = cq->rear = 0;
-	lockdep_dependency_gen_id++;
-}
-
-static inline int __cq_empty(struct circular_queue *cq)
-{
-	return (cq->front == cq->rear);
-}
-
-static inline int __cq_full(struct circular_queue *cq)
-{
-	return ((cq->rear + 1) & CQ_MASK) == cq->front;
-}
-
-static inline int __cq_enqueue(struct circular_queue *cq, struct lock_list *elem)
-{
-	if (__cq_full(cq))
-		return -1;
-
-	cq->element[cq->rear] = elem;
-	cq->rear = (cq->rear + 1) & CQ_MASK;
-	return 0;
-}
-
-/*
- * Dequeue an element from the circular_queue, return a lock_list if
- * the queue is not empty, or NULL if otherwise.
- */
-static inline struct lock_list * __cq_dequeue(struct circular_queue *cq)
-{
-	struct lock_list * lock;
-
-	if (__cq_empty(cq))
-		return NULL;
-
-	lock = cq->element[cq->front];
-	cq->front = (cq->front + 1) & CQ_MASK;
-
-	return lock;
-}
-
-static inline unsigned int  __cq_get_elem_count(struct circular_queue *cq)
-{
-	return (cq->rear - cq->front) & CQ_MASK;
-}
-
-static inline void mark_lock_accessed(struct lock_list *lock)
-{
-	lock->class->dep_gen_id = lockdep_dependency_gen_id;
-}
-
-static inline void visit_lock_entry(struct lock_list *lock,
-				    struct lock_list *parent)
-{
-	lock->parent = parent;
-}
-
-static inline unsigned long lock_accessed(struct lock_list *lock)
-{
-	return lock->class->dep_gen_id == lockdep_dependency_gen_id;
-}
-
-static inline struct lock_list *get_lock_parent(struct lock_list *child)
-{
-	return child->parent;
-}
-
-static inline int get_lock_depth(struct lock_list *child)
-{
-	int depth = 0;
-	struct lock_list *parent;
-
-	while ((parent = get_lock_parent(child))) {
-		child = parent;
-		depth++;
-	}
-	return depth;
-}
-
-/*
- * Return the forward or backward dependency list.
+ * Called to set the hrtick timer state.
  *
- * @lock:   the lock_list to get its class's dependency list
- * @offset: the offset to struct lock_class to determine whether it is
- *          locks_after or locks_before
+ * called with rq->lock held and irqs disabled
  */
-static inline struct list_head *get_dep_list(struct lock_list *lock, int offset)
+void hrtick_start(struct rq *rq, u64 delay)
 {
-	void *lock_class = lock->class;
+	struct hrtimer *timer = &rq->hrtick_timer;
+	s64 delta;
 
-	return lock_class + offset;
+	/*
+	 * Don't schedule slices shorter than 10000ns, that just
+	 * doesn't make sense and can cause timer DoS.
+	 */
+	delta = max_t(s64, delay, 10000LL);
+	rq->hrtick_time = ktime_add_ns(timer->base->get_time(), delta);
+
+	if (rq == this_rq())
+		__hrtick_restart(rq);
+	else
+		smp_call_function_single_async(cpu_of(rq), &rq->hrtick_csd);
 }
+
+#else
 /*
- * Return values of a bfs search:
+ * Called to set the hrtick timer state.
  *
- * BFS_E* indicates an error
- * BFS_R* indicates a result (match or not)
- *
- * BFS_EINVALIDNODE: Find a invalid node in the graph.
- *
- * BFS_EQUEUEFULL: The queue is full while doing the bfs.
- *
- * BFS_RMATCH: Find the matched node in the graph, and put that node into
- *             *@target_entry.
- *
- * BFS_RNOMATCH: Haven't found the matched node and keep *@target_entry
- *        
+ * called with rq->lock held and irqs disabled
+ */
+void hrtick_start(struct rq *rq, u64 delay)
+{
+	/*
+	 * Don't schedule slices shorter than 10000ns, that just
+	 * doesn't make sense. Rely on vruntime for fairness.
+	 */
+	delay = max_t(u64, delay, 10000LL);
+	hrtimer_start(&rq->hrtick_timer, ns_to_ktime(delay),
+		      HRTIMER_MODE_REL_PINNED_HARD);
+}
+
+#endif /* CONFIG_SMP */
+
+static void hrtick_rq_init(struct rq *rq)
+{
+#ifdef CONFIG_SMP
+	INIT_CSD(&rq->hrtick_csd, __hrtick_start, rq);
+#endif
+	hrtimer_init(&rq->hrtick_timer, CLOCK_MONOTONIC, HRTIMER_MODE_REL_HARD);
+	rq->hrtick_timer.function = hrtick;
+}
+#else	/* CONFIG_SCHED_HRTICK */
+static inline void hrtick_clear(struct rq *rq)
+{
+}
+
+static inline void hrtick_rq_init(struct rq *rq)
+{
+}
+#endif	/* CONFIG_SCHED_HRTICK */
+
+/*
+ * cmpxchg based fetch_or, macro so it works for different integer types
+ */
+#define fetch_or(ptr, mask)						\
+	({								\
+		typeof(ptr) _ptr = (ptr);				\
+		typeof(mask) _mask = (mask);				\
+		typeof(*_ptr) _old, _val = *_ptr;			\
+									\
+		for (;;) {						\
+			_old = cmpxchg(_ptr, _val, _val | _mask);	\
+			if (_old == _val)				\
+				break;					\
+			_val = _old;					\
+		}							\
+	_old;								\
+})
+
+#if defined(CONFIG_SMP) && defined(TIF_POLLING_NRFLAG)
+/*
+ * Atomically set TIF_NEED_RESCHED and test for TIF_POLLING_NRFLAG,
+ * this avoids any races w

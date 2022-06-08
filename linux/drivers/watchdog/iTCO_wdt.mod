@@ -1,2 +1,1 @@
-EAF) \
-  include/linux/page-f
+        = LGDT3306A_TPCLK_RIS

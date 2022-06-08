@@ -1,70 +1,99 @@
-$(wildcard include/config/DEBUG_PLIST) \
-  include/linux/hrtimer.h \
-    $(wildcard include/config/HIGH_RES_TIMERS) \
-    $(wildcard include/config/TIME_LOW_RES) \
-    $(wildcard include/config/TIMERFD) \
-  include/linux/hrtimer_defs.h \
-  include/linux/timerqueue.h \
-  include/linux/seccomp.h \
-    $(wildcard include/config/SECCOMP) \
-    $(wildcard include/config/HAVE_ARCH_SECCOMP_FILTER) \
-    $(wildcard include/config/SECCOMP_FILTER) \
-    $(wildcard include/config/CHECKPOINT_RESTORE) \
-    $(wildcard include/config/SECCOMP_CACHE_DEBUG) \
-  include/uapi/linux/seccomp.h \
-  arch/x86/include/asm/seccomp.h \
-  arch/x86/include/asm/unistd.h \
-  arch/x86/include/uapi/asm/unistd.h \
-  arch/x86/include/generated/uapi/asm/unistd_32.h \
-  include/asm-generic/seccomp.h \
-  include/uapi/linux/unistd.h \
-  include/linux/resource.h \
-  include/uapi/linux/resource.h \
-  arch/x86/include/generated/uapi/asm/resource.h \
-  include/asm-generic/resource.h \
-  include/uapi/asm-generic/resource.h \
-  include/linux/latencytop.h \
-  include/linux/sched/prio.h \
-  include/linux/sched/types.h \
-  include/linux/signal_types.h \
-    $(wildcard include/config/OLD_SIGACTION) \
-  include/uapi/linux/signal.h \
-  arch/x86/include/asm/signal.h \
-  arch/x86/include/uapi/asm/signal.h \
-  include/uapi/asm-generic/signal-defs.h \
-  arch/x86/include/uapi/asm/siginfo.h \
-  include/uapi/asm-generic/siginfo.h \
-  include/linux/syscall_user_dispatch.h \
-  include/linux/task_io_accounting.h \
-    $(wildcard include/config/TASK_IO_ACCOUNTING) \
-  include/linux/posix-timers.h \
-  include/linux/alarmtimer.h \
-    $(wildcard include/config/RTC_CLASS) \
-  include/uapi/linux/rseq.h \
-  include/linux/kcsan.h \
-  include/linux/energy_model.h \
-  include/linux/sched/cpufreq.h \
-    $(wildcard include/config/CPU_FREQ) \
-  include/linux/sched/topology.h \
-    $(wildcard include/config/SCHED_DEBUG) \
-    $(wildcard include/config/SCHED_MC) \
-    $(wildcard include/config/CPU_FREQ_GOV_SCHEDUTIL) \
-  include/linux/sched/idle.h \
-  include/linux/sched/sd_flags.h \
-  include/linux/klist.h \
-  include/linux/pm.h \
-    $(wildcard include/config/VT_CONSOLE_SLEEP) \
-    $(wildcard include/config/PM_CLK) \
-    $(wildcard include/config/PM_GENERIC_DOMAINS) \
-  include/linux/device/bus.h \
-  include/linux/device/class.h \
-  include/linux/device/driver.h \
-  arch/x86/include/asm/device.h \
-  include/linux/pm_wakeup.h \
-  include/acpi/acpi.h \
-  include/acpi/platform/acenv.h \
-  include/acpi/platform/acgcc.h \
-  include/acpi/platform/aclinux.h \
-    $(wildcard include/config/ACPI_REDUCED_HARDWARE_ONLY) \
-    $(wildcard include/config/ACPI_DEBUG) \
-  inc
+/* SPDX-License-Identifier: GPL-2.0-or-later */
+/*
+ *  Driver for the Conexant CX23885 PCIe bridge
+ *
+ *  Copyright (c) 2006 Steven Toth <stoth@linuxtv.org>
+ */
+
+#ifndef _CX23885_REG_H_
+#define _CX23885_REG_H_
+
+/*
+Address Map
+0x00000000 -> 0x00009000   TX SRAM  (Fifos)
+0x00010000 -> 0x00013c00   RX SRAM  CMDS + CDT
+
+EACH CMDS struct is 0x80 bytes long
+
+DMAx_PTR1 = 0x03040 address of first cluster
+DMAx_PTR2 = 0x10600 address of the CDT
+DMAx_CNT1 = cluster size in (bytes >> 4) -1
+DMAx_CNT2 = total cdt size for all entries >> 3
+
+Cluster Descriptor entry = 4 DWORDS
+ DWORD 0 -> ptr to cluster
+ DWORD 1 Reserved
+ DWORD 2 Reserved
+ DWORD 3 Reserved
+
+Channel manager Data Structure entry = 20 DWORD
+  0  IntialProgramCounterLow
+  1  IntialProgramCounterHigh
+  2  ClusterDescriptorTableBase
+  3  ClusterDescriptorTableSize
+  4  InstructionQueueBase
+  5  InstructionQueueSize
+...  Reserved
+ 19  Reserved
+*/
+
+/* Risc Instructions */
+#define RISC_CNT_INC		 0x00010000
+#define RISC_CNT_RESET		 0x00030000
+#define RISC_IRQ1		 0x01000000
+#define RISC_IRQ2		 0x02000000
+#define RISC_EOL		 0x04000000
+#define RISC_SOL		 0x08000000
+#define RISC_WRITE		 0x10000000
+#define RISC_SKIP		 0x20000000
+#define RISC_JUMP		 0x70000000
+#define RISC_SYNC		 0x80000000
+#define RISC_RESYNC		 0x80008000
+#define RISC_READ		 0x90000000
+#define RISC_WRITERM		 0xB0000000
+#define RISC_WRITECM		 0xC0000000
+#define RISC_WRITECR		 0xD0000000
+#define RISC_WRITEC		 0x50000000
+#define RISC_READC		 0xA0000000
+
+
+/* Audio and Video Core */
+#define HOST_REG1		0x00000000
+#define HOST_REG2		0x00000001
+#define HOST_REG3		0x00000002
+
+/* Chip Configuration Registers */
+#define CHIP_CTRL		0x00000100
+#define AFE_CTRL		0x00000104
+#define VID_PLL_INT_POST	0x00000108
+#define VID_PLL_FRAC		0x0000010C
+#define AUX_PLL_INT_POST	0x00000110
+#define AUX_PLL_FRAC		0x00000114
+#define SYS_PLL_INT_POST	0x00000118
+#define SYS_PLL_FRAC		0x0000011C
+#define PIN_CTRL		0x00000120
+#define AUD_IO_CTRL		0x00000124
+#define AUD_LOCK1		0x00000128
+#define AUD_LOCK2		0x0000012C
+#define POWER_CTRL		0x00000130
+#define AFE_DIAG_CTRL1		0x00000134
+#define AFE_DIAG_CTRL3		0x0000013C
+#define PLL_DIAG_CTRL		0x00000140
+#define AFE_CLK_OUT_CTRL	0x00000144
+#define DLL1_DIAG_CTRL		0x0000015C
+
+/* GPIO[23:19] Output Enable */
+#define GPIO2_OUT_EN_REG	0x00000160
+/* GPIO[23:19] Data Registers */
+#define GPIO2			0x00000164
+
+#define IFADC_CTRL		0x00000180
+
+/* Infrared Remote Registers */
+#define IR_CNTRL_REG	0x00000200
+#define IR_TXCLK_REG	0x00000204
+#define IR_RXCLK_REG	0x00000208
+#define IR_CDUTY_REG	0x0000020C
+#define IR_STAT_REG	0x00000210
+#define IR_IRQEN_REG	0x00000214
+#define IR_FILTR_REG	0x0000

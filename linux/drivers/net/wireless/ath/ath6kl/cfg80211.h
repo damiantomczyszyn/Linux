@@ -1,58 +1,112 @@
- $(wildcard include/config/PARISC) \
-    $(wildcard include/config/SPARC64) \
-    $(wildcard include/config/ARM64_MTE) \
-    $(wildcard include/config/HAVE_ARCH_USERFAULTFD_MINOR) \
-    $(wildcard include/config/SHMEM) \
-    $(wildcard include/config/ARCH_HAS_PTE_SPECIAL) \
-    $(wildcard include/config/ARCH_HAS_PTE_DEVMAP) \
-    $(wildcard include/config/DEBUG_VM_RB) \
-    $(wildcard include/config/PAGE_POISONING) \
-    $(wildcard include/config/INIT_ON_ALLOC_DEFAULT_ON) \
-    $(wildcard include/config/INIT_ON_FREE_DEFAULT_ON) \
-    $(wildcard include/config/DEBUG_PAGEALLOC) \
-    $(wildcard include/config/HUGETLBFS) \
-    $(wildcard include/config/MAPPING_DIRTY_HELPERS) \
-    $(wildcard include/config/ANON_VMA_NAME) \
-  include/linux/mmap_lock.h \
-  include/linux/page_ext.h \
-  include/linux/stacktrace.h \
-    $(wildcard include/config/ARCH_STACKWALK) \
-    $(wildcard include/config/STACKTRACE) \
-    $(wildcard include/config/HAVE_RELIABLE_STACKTRACE) \
-  include/linux/stackdepot.h \
-    $(wildcard include/config/STACKDEPOT_ALWAYS_INIT) \
-  include/linux/page_ref.h \
-    $(wildcard include/config/DEBUG_PAGE_REF) \
-  include/linux/sizes.h \
-  include/linux/pgtable.h \
-    $(wildcard include/config/HIGHPTE) \
-    $(wildcard include/config/GUP_GET_PTE_LOW_HIGH) \
-    $(wildcard include/config/HAVE_ARCH_SOFT_DIRTY) \
-    $(wildcard include/config/ARCH_ENABLE_THP_MIGRATION) \
-    $(wildcard include/config/X86_ESPFIX64) \
-  arch/x86/include/asm/pgtable.h \
-    $(wildcard include/config/DEBUG_WX) \
-    $(wildcard include/config/PAGE_TABLE_CHECK) \
-  arch/x86/include/asm/pkru.h \
-  arch/x86/include/asm/fpu/api.h \
-    $(wildcard include/config/X86_DEBUG_FPU) \
-  arch/x86/include/asm/coco.h \
-  include/asm-generic/pgtable_uffd.h \
-  include/linux/page_table_check.h \
-  arch/x86/include/asm/pgtable_32.h \
-  arch/x86/include/asm/pgtable-3level.h \
-  arch/x86/include/asm/pgtable-invert.h \
-  include/linux/huge_mm.h \
-  include/linux/sched/coredump.h \
-    $(wildcard include/config/CORE_DUMP_DEFAULT_ELF_HEADERS) \
-  include/linux/vmstat.h \
-    $(wildcard include/config/VM_EVENT_COUNTERS) \
-  include/linux/writeback.h \
-  include/linux/flex_proportions.h \
-  include/linux/backing-dev-defs.h \
-    $(wildcard include/config/DEBUG_FS) \
-  include/linux/blk_types.h \
-    $(wildcard include/config/FAIL_MAKE_REQUEST) \
-    $(wildcard include/config/BLK_CGROUP_IOCOST) \
-    $(wildcard include/config/BLK_INLINE_ENCRYPTION) \
-    $(
+tore;
+	int mem;
+	int ret;
+
+	if (0 != slot)
+		return -EINVAL;
+
+	if (state->current_ci_flag != flag) {
+		ret = netup_read_i2c(state->i2c_adap, state->ci_i2c_addr,
+				0, &store, 1);
+		if (ret != 0)
+			return ret;
+
+		store &= ~0x0c;
+		store |= flag;
+
+		ret = netup_write_i2c(state->i2c_adap, state->ci_i2c_addr,
+				0, &store, 1);
+		if (ret != 0)
+			return ret;
+	}
+	state->current_ci_flag = flag;
+
+	mutex_lock(&dev->gpio_lock);
+
+	/* write addr */
+	cx_write(MC417_OEN, NETUP_EN_ALL);
+	cx_write(MC417_RWD, NETUP_CTRL_OFF |
+				NETUP_ADLO | (0xff & addr));
+	cx_clear(MC417_RWD, NETUP_ADLO);
+	cx_write(MC417_RWD, NETUP_CTRL_OFF |
+				NETUP_ADHI | (0xff & (addr >> 8)));
+	cx_clear(MC417_RWD, NETUP_ADHI);
+
+	if (read) { /* data in */
+		cx_write(MC417_OEN, NETUP_EN_ALL | NETUP_DATA);
+	} else /* data out */
+		cx_write(MC417_RWD, NETUP_CTRL_OFF | data);
+
+	/* choose chip */
+	cx_clear(MC417_RWD,
+			(state->ci_i2c_addr == 0x40) ? NETUP_CS0 : NETUP_CS1);
+	/* read/write */
+	cx_clear(MC417_RWD, (read) ? NETUP_RD : NETUP_WR);
+	mem = netup_ci_get_mem(dev);
+
+	mutex_unlock(&dev->gpio_lock);
+
+	if (!read)
+		if (mem < 0)
+			return -EREMOTEIO;
+
+	ci_dbg_print("%s: %s: chipaddr=[0x%x] addr=[0x%02x], %s=%x\n", __func__,
+			(read) ? "read" : "write", state->ci_i2c_addr, addr,
+			(flag == NETUP_CI_CTL) ? "ctl" : "mem",
+			(read) ? mem : data);
+
+	if (read)
+		return mem;
+
+	return 0;
+}
+
+int netup_ci_read_attribute_mem(struct dvb_ca_en50221 *en50221,
+						int slot, int addr)
+{
+	return netup_ci_op_cam(en50221, slot, 0, NETUP_CI_RD, addr, 0);
+}
+
+int netup_ci_write_attribute_mem(struct dvb_ca_en50221 *en50221,
+						int slot, int addr, u8 data)
+{
+	return netup_ci_op_cam(en50221, slot, 0, 0, addr, data);
+}
+
+int netup_ci_read_cam_ctl(struct dvb_ca_en50221 *en50221, int slot,
+				 u8 addr)
+{
+	return netup_ci_op_cam(en50221, slot, NETUP_CI_CTL,
+							NETUP_CI_RD, addr, 0);
+}
+
+int netup_ci_write_cam_ctl(struct dvb_ca_en50221 *en50221, int slot,
+							u8 addr, u8 data)
+{
+	return netup_ci_op_cam(en50221, slot, NETUP_CI_CTL, 0, addr, data);
+}
+
+int netup_ci_slot_reset(struct dvb_ca_en50221 *en50221, int slot)
+{
+	struct netup_ci_state *state = en50221->data;
+	u8 buf =  0x80;
+	int ret;
+
+	if (0 != slot)
+		return -EINVAL;
+
+	udelay(500);
+	ret = netup_write_i2c(state->i2c_adap, state->ci_i2c_addr,
+							0, &buf, 1);
+
+	if (ret != 0)
+		return ret;
+
+	udelay(500);
+
+	buf = 0x00;
+	ret = netup_write_i2c(state->i2c_adap, state->ci_i2c_addr,
+							0, &buf, 1);
+
+	msleep(1000);
+	d

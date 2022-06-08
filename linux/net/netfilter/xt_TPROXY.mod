@@ -1,2 +1,1 @@
-_POINTS)
-		stats->contentio
+ntf(vfd->name, sizeof(vfd->

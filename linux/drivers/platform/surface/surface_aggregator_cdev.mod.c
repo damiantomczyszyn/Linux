@@ -1,17 +1,25 @@
-EAF) \
-  include/linux/page-flags-layout.h \
-    $(wildcard include/config/KASAN_HW_TAGS) \
-  include/linux/numa.h \
-    $(wildcard include/config/NODES_SHIFT) \
-    $(wildcard include/config/NUMA_KEEP_MEMINFO) \
-    $(wildcard include/config/HAVE_ARCH_NODE_DEV_GROUP) \
-  arch/x86/include/asm/sparsemem.h \
-  include/generated/bounds.h \
-  include/linux/seqlock.h \
-  include/linux/ww_mutex.h \
-    $(wildcard include/config/DEBUG_RT_MUTEXES) \
-    $(wildcard include/config/DEBUG_WW_MUTEX_SLOWPATH) \
-  include/linux/rtmutex.h \
-  arch/x86/include/asm/mmu.h \
-    $(wildcard include/config/MODIFY_LDT_SYSCALL) \
-  include/li
+// SPDX-License-Identifier: GPL-2.0-or-later
+/*
+ * Driver for Silicon Labs C8051F300 microcontroller.
+ *
+ * It is used for LNB power control in TeVii S470,
+ * TBS 6920 PCIe DVB-S2 cards.
+ *
+ * Microcontroller connected to cx23885 GPIO pins:
+ * GPIO0 - data		- P0.3 F300
+ * GPIO1 - reset	- P0.2 F300
+ * GPIO2 - clk		- P0.1 F300
+ * GPIO3 - busy		- P0.0 F300
+ *
+ * Copyright (C) 2009 Igor M. Liplianin <liplianin@me.by>
+ */
+
+#include "cx23885.h"
+#include "cx23885-f300.h"
+
+#define F300_DATA	GPIO_0
+#define F300_RESET	GPIO_1
+#define F300_CLK	GPIO_2
+#define F300_BUSY	GPIO_3
+
+static void f300_set_line(struct cx23885_dev *dev, u32 

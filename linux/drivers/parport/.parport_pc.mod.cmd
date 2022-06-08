@@ -1,3 +1,6 @@
-(wildcard include/config/SPLIT_PTLOCK_CPUS) \
-    $(wildcard include/config/ARCH_ENABLE_SPLIT_PMD_PTLOCK) \
-  arch/x86
+cx23885_irq_add_enable(dev, PCI_MSK_GPIO0);
+		break;
+	}
+
+	/*
+	 * The CX2388[58] IR controller can start firing interru

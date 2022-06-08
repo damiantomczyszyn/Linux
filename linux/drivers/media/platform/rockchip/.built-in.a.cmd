@@ -1,6 +1,11 @@
-dcard include/config/PARAVIRT_XXL) \
-  arch/x86/include/asm/disabled-features.h \
-    $(wildcard include/config/X86_SMAP) \
-    $(wildcard include/config/X86_UMIP) \
-    $(wildcard include/config/X86_INTEL_MEMORY_PROTECTION_KEYS) \
-    $(wildcard include/config/X86_5
+/* SPDX-License-Identifier: GPL-2.0-or-later */
+/*
+ * netup-init.h
+ *
+ * NetUP Dual DVB-S2 CI driver
+ *
+ * Copyright (C) 2009 NetUP Inc.
+ * Copyright (C) 2009 Igor M. Liplianin <liplianin@netup.ru>
+ * Copyright (C) 2009 Abylay Ospan <aospan@netup.ru>
+ */
+extern void 

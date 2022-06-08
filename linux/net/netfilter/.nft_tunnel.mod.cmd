@@ -1,7 +1,6 @@
+r enqueuing work.
+ * @cpu: the CPU in question.
+ *
+ * Return: 1 if the CPU is currently idle. 0 otherwise.
  */
-
-static inline void check_data_structures(void) { }
-
-#endif /* CONFIG_DEBUG_LOCKDEP */
-
-static void init_cha
+i

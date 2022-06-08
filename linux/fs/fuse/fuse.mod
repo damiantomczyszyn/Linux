@@ -1,4 +1,5 @@
-CPI_APEI_GHES) \
-    $(wildcard include/config/INTEL_TXT) \
-  arch/x86/include/generated/asm/kmap_size.h \
-  include/asm-generic/kmap_size.h \
+i/cx18/cx18-av-core.h \
+  include/media/v4l2-ctrls.h \
+  include/media/media-request.h \
+  include/media/hevc-ctrls.h \
+  drivers/media/pci/cx

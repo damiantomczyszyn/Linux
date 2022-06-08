@@ -1,5 +1,1 @@
-cpi_io.h \
-  include/linux/io.h \
-    $(wildcard include/config/HAS_IOPORT_MAP) \
-  arch/x86/include/asm/io.h \
-    $(wildcard include/config/MTRR)
+cmd_drivers/media/pci/cx18/cx18.o := ld -m elf_i386   -r -o drivers/media/pci/cx18/cx18.o drivers/media/pci/cx18/cx18-driver.o drivers/media/pci/cx

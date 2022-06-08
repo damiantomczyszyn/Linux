@@ -1,4 +1,7 @@
-t.h \
-    $(wildcard include/config/DEBUG_PLIST) \
-  include/linux/hrtimer.h \
-    $(wildcard include/config/HIGH_R
+v_state = exception_enter();
+
+	do {
+		preempt_disable();
+		local_irq_enable();
+		__schedule(SM_PREEMPT);
+		local_ir

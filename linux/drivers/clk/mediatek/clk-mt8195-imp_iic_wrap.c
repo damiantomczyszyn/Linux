@@ -1,52 +1,94 @@
-card include/config/HAVE_ARCH_USERFAULTFD_MINOR) \
-    $(wildcard include/config/SHMEM) \
-    $(wildcard include/config/ARCH_HAS_PTE_SPECIAL) \
-    $(wildcard include/config/ARCH_HAS_PTE_DEVMAP) \
-    $(wildcard include/config/DEBUG_VM_RB) \
-    $(wildcard include/config/PAGE_POISONING) \
-    $(wildcard include/config/INIT_ON_ALLOC_DEFAULT_ON) \
-    $(wildcard include/config/INIT_ON_FREE_DEFAULT_ON) \
-    $(wildcard include/config/DEBUG_PAGEALLOC) \
-    $(wildcard include/config/HUGETLBFS) \
-    $(wildcard include/config/MAPPING_DIRTY_HELPERS) \
-    $(wildcard include/config/ANON_VMA_NAME) \
-  include/linux/mmap_lock.h \
-  include/linux/page_ext.h \
-  include/linux/stacktrace.h \
-    $(wildcard include/config/ARCH_STACKWALK) \
-    $(wildcard include/config/STACKTRACE) \
-    $(wildcard include/config/HAVE_RELIABLE_STACKTRACE) \
-  include/linux/stackdepot.h \
-    $(wildcard include/config/STACKDEPOT_ALWAYS_INIT) \
-  include/linux/page_ref.h \
-    $(wildcard include/config/DEBUG_PAGE_REF) \
-  include/linux/sizes.h \
-  include/linux/pgtable.h \
-    $(wildcard include/config/HIGHPTE) \
-    $(wildcard include/config/GUP_GET_PTE_LOW_HIGH) \
-    $(wildcard include/config/HAVE_ARCH_SOFT_DIRTY) \
-    $(wildcard include/config/ARCH_ENABLE_THP_MIGRATION) \
-    $(wildcard include/config/X86_ESPFIX64) \
-  arch/x86/include/asm/pgtable.h \
-    $(wildcard include/config/DEBUG_WX) \
-    $(wildcard include/config/PAGE_TABLE_CHECK) \
-  arch/x86/include/asm/pkru.h \
-  arch/x86/include/asm/fpu/api.h \
-    $(wildcard include/config/X86_DEBUG_FPU) \
-  arch/x86/include/asm/coco.h \
-  include/asm-generic/pgtable_uffd.h \
-  include/linux/page_table_check.h \
-  arch/x86/include/asm/pgtable_32.h \
-  arch/x86/include/asm/pgtable-3level.h \
-  arch/x86/include/asm/pgtable-invert.h \
-  include/linux/huge_mm.h \
-  include/linux/sched/coredump.h \
-    $(wildcard include/config/CORE_DUMP_DEFAULT_ELF_HEADERS) \
-  include/linux/vmstat.h \
-    $(wildcard include/config/VM_EVENT_COUNTERS) \
-  include/linux/writeback.h \
-  include/linux/flex_proportions.h \
-  include/linux/backing-dev-defs.h \
-    $(wildcard include/config/DEBUG_FS) \
-  include/linux/blk_types.h \
-    $(wildcard include/config/FAIL_MAKE_REQUE
+"Television",
+		[CX23885_VMUX_CABLE]      = "Cable TV",
+		[CX23885_VMUX_DVB]        = "DVB",
+		[CX23885_VMUX_DEBUG]      = "for debug only",
+	};
+	unsigned int n;
+	dprintk(1, "%s()\n", __func__);
+
+	n = i->index;
+	if (n >= MAX_CX23885_INPUT)
+		return -EINVAL;
+
+	if (0 == INPUT(n)->type)
+		return -EINVAL;
+
+	i->index = n;
+	i->type  = V4L2_INPUT_TYPE_CAMERA;
+	strscpy(i->name, iname[INPUT(n)->type], sizeof(i->name));
+	i->std = CX23885_NORMS;
+	if ((CX23885_VMUX_TELEVISION == INPUT(n)->type) ||
+		(CX23885_VMUX_CABLE == INPUT(n)->type)) {
+		i->type = V4L2_INPUT_TYPE_TUNER;
+		i->audioset = 4;
+	} else {
+		/* Two selectable audio inputs for non-tv inputs */
+		i->audioset = 3;
+	}
+
+	if (dev->input == n) {
+		/* enum'd input matches our configured input.
+		 * Ask the video decoder to process the call
+		 * and give it an oppertunity to update the
+		 * status field.
+		 */
+		call_all(dev, video, g_input_status, &i->status);
+	}
+
+	return 0;
+}
+
+static int vidioc_enum_input(struct file *file, void *priv,
+				struct v4l2_input *i)
+{
+	struct cx23885_dev *dev = video_drvdata(file);
+	dprintk(1, "%s()\n", __func__);
+	return cx23885_enum_input(dev, i);
+}
+
+int cx23885_get_input(struct file *file, void *priv, unsigned int *i)
+{
+	struct cx23885_dev *dev = video_drvdata(file);
+
+	*i = dev->input;
+	dprintk(1, "%s() returns %d\n", __func__, *i);
+	return 0;
+}
+
+static int vidioc_g_input(struct file *file, void *priv, unsigned int *i)
+{
+	return cx23885_get_input(file, priv, i);
+}
+
+int cx23885_set_input(struct file *file, void *priv, unsigned int i)
+{
+	struct cx23885_dev *dev = video_drvdata(file);
+
+	dprintk(1, "%s(%d)\n", __func__, i);
+
+	if (i >= MAX_CX23885_INPUT) {
+		dprintk(1, "%s() -EINVAL\n", __func__);
+		return -EINVAL;
+	}
+
+	if (INPUT(i)->type == 0)
+		return -EINVAL;
+
+	cx23885_video_mux(dev, i);
+
+	/* By default establish the default audio input for the card also */
+	/* Caller is free to use VIDIOC_S_AUDIO to override afterwards */
+	cx23885_audio_mux(dev, i);
+	return 0;
+}
+
+static int vidioc_s_input(struct file *file, void *priv, unsigned int i)
+{
+	return cx23885_set_input(file, priv, i);
+}
+
+static int vidioc_log_status(struct file *file, void *priv)
+{
+	struct cx23885_dev *dev = video_drvdata(file);
+
+	ca

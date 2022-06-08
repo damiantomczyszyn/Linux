@@ -1,5 +1,6 @@
-p_next_lockchain(long i);
-unsigned long lock_chain_count(void);
-extern unsigned long nr_stack_trace_entries;
-
-extern unsigned int nr_hardir
+tes, loff_t off)
+{
+	struct task_group *tg = css_tg(of_css(of));
+	u64 period = tg_get_cfs_period(tg);
+	u64 burst = tg_get_cfs_burst(tg);
+	u6

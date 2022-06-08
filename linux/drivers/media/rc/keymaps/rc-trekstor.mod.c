@@ -1,31 +1,29 @@
-#include <linux/module.h>
-#define INCLUDE_VERMAGIC
-#include <linux/build-salt.h>
-#include <linux/elfnote-lto.h>
-#include <linux/vermagic.h>
-#include <linux/compiler.h>
+return cx_read(addr);
+}
 
-BUILD_SALT;
-BUILD_LTO_INFO;
+static inline int cx23888_ir_and_or4(struct cx23885_dev *dev, u32 addr,
+				     u32 and_mask, u32 or_value)
+{
+	cx_andor(addr, ~and_mask, or_value);
+	return 0;
+}
 
-MODULE_INFO(vermagic, VERMAGIC_STRING);
-MODULE_INFO(name, KBUILD_MODNAME);
+/*
+ * Rx and Tx Clock Divider register computations
+ *
+ * Note the largest clock divider value of 0xffff corresponds to:
+ *	(0xffff + 1) * 1000 / 108/2 MHz = 1,213,629.629... ns
+ * which fits in 21 bits, so we'll use unsigned int for time arguments.
+ */
+static inline u16 count_to_clock_divider(unsigned int d)
+{
+	if (d > RXCLK_RCD + 1)
+		d = RXCLK_RCD;
+	else if (d < 2)
+		d = 1;
+	else
+		d--;
+	return (u16) d;
+}
 
-__visible struct module __this_module
-__section(".gnu.linkonce.this_module") = {
-	.name = KBUILD_MODNAME,
-	.init = init_module,
-#ifdef CONFIG_MODULE_UNLOAD
-	.exit = cleanup_module,
-#endif
-	.arch = MODULE_ARCH_INIT,
-};
-
-MODULE_INFO(intree, "Y");
-
-#ifdef CONFIG_RETPOLINE
-MODULE_INFO(retpoline, "Y");
-#endif
-
-MODULE_INFO(depends, "rc-core");
-
+static inline 

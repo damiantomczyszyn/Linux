@@ -1,5 +1,6 @@
-x/cgroupstats.h \
-  include/uapi/linux/taskstats.h \
-  include/linux/fs.h \
-    $(wildcard include/config/READ_ONLY_THP_FOR_FS) \
-    $(wil
+00000036);
+		cx_write(MC417_OEN, 0x00001000);
+		cx_set(MC417_RWD, 0x00000002);
+		msleep(200);
+		cx_clear(MC417_RWD, 0x00000800);
+		msleep(2

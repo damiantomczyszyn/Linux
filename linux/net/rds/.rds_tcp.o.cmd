@@ -1,8 +1,8 @@
-it(void)
-{
-	int i, j;
-	int firsterr = 0;
-	static struct lock_torture_ops *torture_ops[] = {
-		&lock_busted_ops,
-		&spin_lock_ops, &spin_lock_irq_ops,
-		&rw_lock_ops, &rw_lock_irq_op
+debugfs_create_file(lockevent_names[LOCKEVENT_reset_cnts], 0200,
+				 d_counts, (void *)(long)LOCKEVENT_reset_cnts,
+				 &fops_lockevent))
+		goto fail_undo;
+
+	return 0;
+fail_undo:
+	

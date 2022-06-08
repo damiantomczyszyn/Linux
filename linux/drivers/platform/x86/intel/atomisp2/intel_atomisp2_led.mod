@@ -1,2 +1,3 @@
-IC_IOREMAP) \
-    $(wildcard include/config
+UGE_HVR1500:
+	case CX23885_BOARD_MPX885:
+	c

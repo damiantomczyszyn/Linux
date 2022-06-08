@@ -1,1 +1,4 @@
-cmd_drivers/media/rc/keymaps/rc-videomate-s350.mod := { echo  drivers/media/rc/keymaps/rc-videomate-s350.o;  echo; } > drivers/media/rc/keymaps/rc-videomate-s350.mod
+n interrupt which signals that the previous buffer has been
+ * DMAed successfully and that it can be returned to userspace.
+ *
+ * It also sets the final jump of the p

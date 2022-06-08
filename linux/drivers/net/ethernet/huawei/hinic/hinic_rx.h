@@ -1,31 +1,49 @@
-ig/RCU_FANOUT) \
-    $(wildcard include/config/RCU_FANOUT_LEAF) \
-  include/linux/page-flags-layout.h \
-    $(wildcard include/config/KASAN_HW_TAGS) \
-  include/linux/numa.h \
-    $(wildcard include/config/NODES_SHIFT) \
-    $(wildcard include/config/NUMA_KEEP_MEMINFO) \
-    $(wildcard include/config/HAVE_ARCH_NODE_DEV_GROUP) \
-  arch/x86/include/asm/sparsemem.h \
-  include/generated/bounds.h \
-  include/linux/seqlock.h \
-  include/linux/ww_mutex.h \
-    $(wildcard include/config/DEBUG_RT_MUTEXES) \
-    $(wildcard include/config/DEBUG_WW_MUTEX_SLOWPATH) \
-  include/linux/rtmutex.h \
-  arch/x86/include/asm/mmu.h \
-    $(wildcard include/config/MODIFY_LDT_SYSCALL) \
-  include/linux/kmod.h \
-  include/linux/umh.h \
-  include/linux/gfp.h \
-    $(wildcard include/config/HIGHMEM) \
-    $(wildcard include/config/ZONE_DMA) \
-    $(wildcard include/config/ZONE_DMA32) \
-    $(wildcard include/config/ZONE_DEVICE) \
-    $(wildcard include/config/PM_SLEEP) \
-    $(wildcard include/config/CONTIG_ALLOC) \
-    $(wildcard include/config/CMA) \
-  include/linux/mmdebug.h \
-    $(wildcard include/config/DEBUG_VM) \
-    $(wildcard include/config/DEBUG_VM_PGFLAGS) \
-  incl
+"Television",
+		[CX23885_VMUX_CABLE]      = "Cable TV",
+		[CX23885_VMUX_DVB]        = "DVB",
+		[CX23885_VMUX_DEBUG]      = "for debug only",
+	};
+	unsigned int n;
+	dprintk(1, "%s()\n", __func__);
+
+	n = i->index;
+	if (n >= MAX_CX23885_INPUT)
+		return -EINVAL;
+
+	if (0 == INPUT(n)->type)
+		return -EINVAL;
+
+	i->index = n;
+	i->type  = V4L2_INPUT_TYPE_CAMERA;
+	strscpy(i->name, iname[INPUT(n)->type], sizeof(i->name));
+	i->std = CX23885_NORMS;
+	if ((CX23885_VMUX_TELEVISION == INPUT(n)->type) ||
+		(CX23885_VMUX_CABLE == INPUT(n)->type)) {
+		i->type = V4L2_INPUT_TYPE_TUNER;
+		i->audioset = 4;
+	} else {
+		/* Two selectable audio inputs for non-tv inputs */
+		i->audioset = 3;
+	}
+
+	if (dev->input == n) {
+		/* enum'd input matches our configured input.
+		 * Ask the video decoder to process the call
+		 * and give it an oppertunity to update the
+		 * status field.
+		 */
+		call_all(dev, video, g_input_status, &i->status);
+	}
+
+	return 0;
+}
+
+static int vidioc_enum_input(struct file *file, void *priv,
+				struct v4l2_input *i)
+{
+	struct cx23885_dev *dev = video_drvdata(file);
+	dprintk(1, "%s()\n", __func__);
+	return cx23885_enum_input(dev, i);
+}
+
+int cx23885_get_input(str

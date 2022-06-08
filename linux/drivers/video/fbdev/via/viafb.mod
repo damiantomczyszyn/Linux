@@ -1,26 +1,34 @@
-CPI_APEI_GHES) \
-    $(wildcard include/config/INTEL_TXT) \
-  arch/x86/include/generated/asm/kmap_size.h \
-  include/asm-generic/kmap_size.h \
-    $(wildcard include/config/DEBUG_KMAP_LOCAL) \
-  include/asm-generic/fixmap.h \
-  arch/x86/include/asm/irq_vectors.h \
-    $(wildcard include/config/HAVE_KVM) \
-    $(wildcard include/config/HYPERV) \
-    $(wildcard include/config/PCI_MSI) \
-  arch/x86/include/asm/cpu_entry_area.h \
-  arch/x86/include/asm/intel_ds.h \
-  arch/x86/include/asm/pgtable_areas.h \
-  arch/x86/include/asm/pgtable_32_areas.h \
-  include/uapi/linux/elf.h \
-  include/uapi/linux/elf-em.h \
-  include/linux/kobject.h \
-    $(wildcard include/config/UEVENT_HELPER) \
-    $(wildcard include/config/DEBUG_KOBJECT_RELEASE) \
-  include/linux/sysfs.h \
-  include/linux/kernfs.h \
-    $(wildcard include/config/KERNFS) \
-  include/linux/idr.h \
-  include/linux/radix-tree.h \
-  include/linux/xarray.h \
-    $(wildcard include/config/XAR
+// SPDX-License-Identifier: GPL-2.0-or-later
+/*
+ *  Driver for the Conexant CX23885/7/8 PCIe bridge
+ *
+ *  AV device support routines - non-input, non-vl42_subdev routines
+ *
+ *  Copyright (C) 2010  Andy Walls <awalls@md.metrocast.net>
+ */
+
+#include "cx23885.h"
+#include "cx23885-av.h"
+#include "cx23885-video.h"
+
+void cx23885_av_work_handler(struct work_struct *work)
+{
+	struct cx23885_dev *dev =
+			   container_of(work, struct cx23885_dev, cx25840_work);
+	bool handled = false;
+
+	v4l2_subdev_call(dev->sd_cx25840, core, interrupt_service_routine,
+			 PCI_MSK_AV_CORE, &handled);
+
+	/* Getting here with the interrupt not handled
+	   then probbaly flatiron does have pending interrupts.
+	*/
+	if (!handled) {
+		/* clear left and right adc channel interrupt request flag */
+		cx23885_flatiron_write(dev, 0x1f,
+			cx23885_flatiron_read(dev, 0x1f) | 0x80);
+		cx23885_flatiron_write(dev, 0x23,
+			cx23885_flatiron_read(dev, 0x23) | 0x80);
+	}
+
+	cx23885_ir

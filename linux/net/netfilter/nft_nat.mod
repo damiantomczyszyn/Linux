@@ -1,1 +1,2 @@
-rd include/config/ALTERNA
+00000);
+	cx_write(PAD_CTR

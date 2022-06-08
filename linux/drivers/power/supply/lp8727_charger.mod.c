@@ -1,19 +1,15 @@
-de/uapi/linux/swab.h \
-  arch/x86/include/uapi/asm/swab.h \
-  include/linux/byteorder/generic.h \
-  include/asm-generic/bitops/ext2-atomic-setbit.h \
-  include/linux/kstrtox.h \
-  include/linux/log2.h \
-    $(wildcard include/config/ARCH_HAS_ILOG2_U32) \
-    $(wildcard include/config/ARCH_HAS_ILOG2_U64) \
-  include/linux/math.h \
-  arch/x86/include/asm/div64.h \
-  include/linux/minmax.h \
-  include/linux/panic.h \
-    $(wildcard include/config/PANIC_TIMEOUT) \
-  include/linux/printk.h \
-    $(wildcard include/config/MESSAGE_LOGLEVEL_DEFAULT) \
-    $(wildcard include/config/CONSOLE_LOGLEVEL_DEFAULT) \
-    $(wildcard include/config/CONSOLE_LOGLEVEL_QUIET) \
-    $(wildcard include/config/EARLY_PRINTK) \
-    $(
+_read(ALT_PIN_OUT_SEL));
+	dprintk(1, "%s() GPIO2                    0x%08X\n", __func__,
+		cx_read(GPIO2));
+	dprintk(1, "%s() gpcnt(0x%08X)          0x%08X\n", __func__,
+		port->reg_gpcnt, cx_read(port->reg_gpcnt));
+	dprintk(1, "%s() gpcnt_ctl(0x%08X)      0x%08x\n", __func__,
+		port->reg_gpcnt_ctl, cx_read(port->reg_gpcnt_ctl));
+	dprintk(1, "%s() dma_ctl(0x%08X)        0x%08x\n", __func__,
+		port->reg_dma_ctl, cx_read(port->reg_dma_ctl));
+	if (port->reg_src_sel)
+		dprintk(1, "%s() src_sel(0x%08X)        0x%08x\n", __func__,
+			port->reg_src_sel, cx_read(port->reg_src_sel));
+	dprintk(1, "%s() lngth(0x%08X)          0x%08x\n", __func__,
+		port->reg_lngth, cx_read(port->reg_lngth));
+	dprintk(1, "%s() hw_sop_c

@@ -1,375 +1,340 @@
+just need the target to call irq_exit() and re-evaluate
+	 * the next tick. The nohz full kick at least implies that.
+	 * If needed we can still optimize that later with an
+	 * empty IRQ.
+	 */
+	if (cpu_is_offline(cpu))
+		return true;  /* Don't try to wake offline CPUs. */
+	if (tick_nohz_full_cpu(cpu)) {
+		if (cpu != smp_processor_id() ||
+		    tick_nohz_tick_stopped())
+			tick_nohz_full_kick_cpu(cpu);
+		return true;
+	}
 
-			       &hlock_class(prev)->locks_after,
-			       next->acquire_ip, distance,
-			       calc_dep(prev, next),
-			       *trace);
-
-	if (!ret)
-		return 0;
-
-	ret = add_lock_to_list(hlock_class(prev), hlock_class(next),
-			       &hlock_class(next)->locks_before,
-			       next->acquire_ip, distance,
-			       calc_depb(prev, next),
-			       *trace);
-	if (!ret)
-		return 0;
-
-	return 2;
+	return false;
 }
 
 /*
- * Add the dependency to all directly-previous locks that are 'relevant'.
- * The ones that are relevant are (in increasing distance from curr):
- * all consecutive trylock entries and the final non-trylock entry - or
- * the end of this context's lock-chain - whichever comes first.
+ * Wake up the specified CPU.  If the CPU is going offline, it is the
+ * caller's responsibility to deal with the lost wakeup, for example,
+ * by hooking into the CPU_DEAD notifier like timers and hrtimers do.
  */
-static int
-check_prevs_add(struct task_struct *curr, struct held_lock *next)
+void wake_up_nohz_cpu(int cpu)
 {
-	struct lock_trace *trace = NULL;
-	int depth = curr->lockdep_depth;
-	struct held_lock *hlock;
+	if (!wake_up_full_nohz_cpu(cpu))
+		wake_up_idle_cpu(cpu);
+}
+
+static void nohz_csd_func(void *info)
+{
+	struct rq *rq = info;
+	int cpu = cpu_of(rq);
+	unsigned int flags;
 
 	/*
-	 * Debugging checks.
-	 *
-	 * Depth must not be zero for a non-head lock:
+	 * Release the rq::nohz_csd.
 	 */
-	if (!depth)
-		goto out_bug;
-	/*
-	 * At least two relevant locks must exist for this
-	 * to be a head:
-	 */
-	if (curr->held_locks[depth].irq_context !=
-			curr->held_locks[depth-1].irq_context)
-		goto out_bug;
+	flags = atomic_fetch_andnot(NOHZ_KICK_MASK | NOHZ_NEWILB_KICK, nohz_flags(cpu));
+	WARN_ON(!(flags & NOHZ_KICK_MASK));
 
-	for (;;) {
-		u16 distance = curr->lockdep_depth - depth + 1;
-		hlock = curr->held_locks + depth - 1;
-
-		if (hlock->check) {
-			int ret = check_prev_add(curr, hlock, next, distance, &trace);
-			if (!ret)
-				return 0;
-
-			/*
-			 * Stop after the first non-trylock entry,
-			 * as non-trylock entries have added their
-			 * own direct dependencies already, so this
-			 * lock is connected to them indirectly:
-			 */
-			if (!hlock->trylock)
-				break;
-		}
-
-		depth--;
-		/*
-		 * End of lock-stack?
-		 */
-		if (!depth)
-			break;
-		/*
-		 * Stop the search if we cross into another context:
-		 */
-		if (curr->held_locks[depth].irq_context !=
-				curr->held_locks[depth-1].irq_context)
-			break;
+	rq->idle_balance = idle_cpu(cpu);
+	if (rq->idle_balance && !need_resched()) {
+		rq->nohz_idle_balance = flags;
+		raise_softirq_irqoff(SCHED_SOFTIRQ);
 	}
-	return 1;
-out_bug:
-	if (!debug_locks_off_graph_unlock())
-		return 0;
+}
+
+#endif /* CONFIG_NO_HZ_COMMON */
+
+#ifdef CONFIG_NO_HZ_FULL
+bool sched_can_stop_tick(struct rq *rq)
+{
+	int fifo_nr_running;
+
+	/* Deadline tasks, even if single, need the tick */
+	if (rq->dl.dl_nr_running)
+		return false;
 
 	/*
-	 * Clearly we all shouldn't be here, but since we made it we
-	 * can reliable say we messed up our state. See the above two
-	 * gotos for reasons why we could possibly end up here.
+	 * If there are more than one RR tasks, we need the tick to affect the
+	 * actual RR behaviour.
 	 */
-	WARN_ON(1);
+	if (rq->rt.rr_nr_running) {
+		if (rq->rt.rr_nr_running == 1)
+			return true;
+		else
+			return false;
+	}
 
+	/*
+	 * If there's no RR tasks, but FIFO tasks, we can skip the tick, no
+	 * forced preemption between FIFO tasks.
+	 */
+	fifo_nr_running = rq->rt.rt_nr_running - rq->rt.rr_nr_running;
+	if (fifo_nr_running)
+		return true;
+
+	/*
+	 * If there are no DL,RR/FIFO tasks, there must only be CFS tasks left;
+	 * if there's more than one we need the tick for involuntary
+	 * preemption.
+	 */
+	if (rq->nr_running > 1)
+		return false;
+
+	return true;
+}
+#endif /* CONFIG_NO_HZ_FULL */
+#endif /* CONFIG_SMP */
+
+#if defined(CONFIG_RT_GROUP_SCHED) || (defined(CONFIG_FAIR_GROUP_SCHED) && \
+			(defined(CONFIG_SMP) || defined(CONFIG_CFS_BANDWIDTH)))
+/*
+ * Iterate task_group tree rooted at *from, calling @down when first entering a
+ * node and @up when leaving it for the final time.
+ *
+ * Caller must hold rcu_lock or sufficient equivalent.
+ */
+int walk_tg_tree_from(struct task_group *from,
+			     tg_visitor down, tg_visitor up, void *data)
+{
+	struct task_group *parent, *child;
+	int ret;
+
+	parent = from;
+
+down:
+	ret = (*down)(parent, data);
+	if (ret)
+		goto out;
+	list_for_each_entry_rcu(child, &parent->children, siblings) {
+		parent = child;
+		goto down;
+
+up:
+		continue;
+	}
+	ret = (*up)(parent, data);
+	if (ret || parent == from)
+		goto out;
+
+	child = parent;
+	parent = parent->parent;
+	if (parent)
+		goto up;
+out:
+	return ret;
+}
+
+int tg_nop(struct task_group *tg, void *data)
+{
 	return 0;
 }
+#endif
 
-struct lock_chain lock_chains[MAX_LOCKDEP_CHAINS];
-static DECLARE_BITMAP(lock_chains_in_use, MAX_LOCKDEP_CHAINS);
-static u16 chain_hlocks[MAX_LOCKDEP_CHAIN_HLOCKS];
-unsigned long nr_zapped_lock_chains;
-unsigned int nr_free_chain_hlocks;	/* Free chain_hlocks in buckets */
-unsigned int nr_lost_chain_hlocks;	/* Lost chain_hlocks */
-unsigned int nr_large_chain_blocks;	/* size > MAX_CHAIN_BUCKETS */
+static void set_load_weight(struct task_struct *p, bool update_load)
+{
+	int prio = p->static_prio - MAX_RT_PRIO;
+	struct load_weight *load = &p->se.load;
+
+	/*
+	 * SCHED_IDLE tasks get minimal weight:
+	 */
+	if (task_has_idle_policy(p)) {
+		load->weight = scale_load(WEIGHT_IDLEPRIO);
+		load->inv_weight = WMULT_IDLEPRIO;
+		return;
+	}
+
+	/*
+	 * SCHED_OTHER tasks have to update their load when changing their
+	 * weight
+	 */
+	if (update_load && p->sched_class == &fair_sched_class) {
+		reweight_task(p, prio);
+	} else {
+		load->weight = scale_load(sched_prio_to_weight[prio]);
+		load->inv_weight = sched_prio_to_wmult[prio];
+	}
+}
+
+#ifdef CONFIG_UCLAMP_TASK
+/*
+ * Serializes updates of utilization clamp values
+ *
+ * The (slow-path) user-space triggers utilization clamp value updates which
+ * can require updates on (fast-path) scheduler's data structures used to
+ * support enqueue/dequeue operations.
+ * While the per-CPU rq lock protects fast-path update operations, user-space
+ * requests are serialized using a mutex to reduce the risk of conflicting
+ * updates or API abuses.
+ */
+static DEFINE_MUTEX(uclamp_mutex);
+
+/* Max allowed minimum utilization */
+unsigned int sysctl_sched_uclamp_util_min = SCHED_CAPACITY_SCALE;
+
+/* Max allowed maximum utilization */
+unsigned int sysctl_sched_uclamp_util_max = SCHED_CAPACITY_SCALE;
 
 /*
- * The first 2 chain_hlocks entries in the chain block in the bucket
- * list contains the following meta data:
+ * By default RT tasks run at the maximum performance point/capacity of the
+ * system. Uclamp enforces this by always setting UCLAMP_MIN of RT tasks to
+ * SCHED_CAPACITY_SCALE.
  *
- *   entry[0]:
- *     Bit    15 - always set to 1 (it is not a class index)
- *     Bits 0-14 - upper 15 bits of the next block index
- *   entry[1]    - lower 16 bits of next block index
+ * This knob allows admins to change the default behavior when uclamp is being
+ * used. In battery powered devices, particularly, running at the maximum
+ * capacity and frequency will increase energy consumption and shorten the
+ * battery life.
  *
- * A next block index of all 1 bits means it is the end of the list.
+ * This knob only affects RT tasks that their uclamp_se->user_defined == false.
  *
- * On the unsized bucket (bucket-0), the 3rd and 4th entries contain
- * the chain block size:
- *
- *   entry[2] - upper 16 bits of the chain block size
- *   entry[3] - lower 16 bits of the chain block size
+ * This knob will not override the system default sched_util_clamp_min defined
+ * above.
  */
-#define MAX_CHAIN_BUCKETS	16
-#define CHAIN_BLK_FLAG		(1U << 15)
-#define CHAIN_BLK_LIST_END	0xFFFFU
+unsigned int sysctl_sched_uclamp_util_min_rt_default = SCHED_CAPACITY_SCALE;
 
-static int chain_block_buckets[MAX_CHAIN_BUCKETS];
+/* All clamps are required to be less or equal than these values */
+static struct uclamp_se uclamp_default[UCLAMP_CNT];
 
-static inline int size_to_bucket(int size)
+/*
+ * This static key is used to reduce the uclamp overhead in the fast path. It
+ * primarily disables the call to uclamp_rq_{inc, dec}() in
+ * enqueue/dequeue_task().
+ *
+ * This allows users to continue to enable uclamp in their kernel config with
+ * minimum uclamp overhead in the fast path.
+ *
+ * As soon as userspace modifies any of the uclamp knobs, the static key is
+ * enabled, since we have an actual users that make use of uclamp
+ * functionality.
+ *
+ * The knobs that would enable this static key are:
+ *
+ *   * A task modifying its uclamp value with sched_setattr().
+ *   * An admin modifying the sysctl_sched_uclamp_{min, max} via procfs.
+ *   * An admin modifying the cgroup cpu.uclamp.{min, max}
+ */
+DEFINE_STATIC_KEY_FALSE(sched_uclamp_used);
+
+/* Integer rounded range for each bucket */
+#define UCLAMP_BUCKET_DELTA DIV_ROUND_CLOSEST(SCHED_CAPACITY_SCALE, UCLAMP_BUCKETS)
+
+#define for_each_clamp_id(clamp_id) \
+	for ((clamp_id) = 0; (clamp_id) < UCLAMP_CNT; (clamp_id)++)
+
+static inline unsigned int uclamp_bucket_id(unsigned int clamp_value)
 {
-	if (size > MAX_CHAIN_BUCKETS)
+	return min_t(unsigned int, clamp_value / UCLAMP_BUCKET_DELTA, UCLAMP_BUCKETS - 1);
+}
+
+static inline unsigned int uclamp_none(enum uclamp_id clamp_id)
+{
+	if (clamp_id == UCLAMP_MIN)
 		return 0;
-
-	return size - 1;
+	return SCHED_CAPACITY_SCALE;
 }
 
-/*
- * Iterate all the chain blocks in a bucket.
- */
-#define for_each_chain_block(bucket, prev, curr)		\
-	for ((prev) = -1, (curr) = chain_block_buckets[bucket];	\
-	     (curr) >= 0;					\
-	     (prev) = (curr), (curr) = chain_block_next(curr))
-
-/*
- * next block or -1
- */
-static inline int chain_block_next(int offset)
+static inline void uclamp_se_set(struct uclamp_se *uc_se,
+				 unsigned int value, bool user_defined)
 {
-	int next = chain_hlocks[offset];
-
-	WARN_ON_ONCE(!(next & CHAIN_BLK_FLAG));
-
-	if (next == CHAIN_BLK_LIST_END)
-		return -1;
-
-	next &= ~CHAIN_BLK_FLAG;
-	next <<= 16;
-	next |= chain_hlocks[offset + 1];
-
-	return next;
+	uc_se->value = value;
+	uc_se->bucket_id = uclamp_bucket_id(value);
+	uc_se->user_defined = user_defined;
 }
 
-/*
- * bucket-0 only
- */
-static inline int chain_block_size(int offset)
+static inline unsigned int
+uclamp_idle_value(struct rq *rq, enum uclamp_id clamp_id,
+		  unsigned int clamp_value)
 {
-	return (chain_hlocks[offset + 2] << 16) | chain_hlocks[offset + 3];
-}
-
-static inline void init_chain_block(int offset, int next, int bucket, int size)
-{
-	chain_hlocks[offset] = (next >> 16) | CHAIN_BLK_FLAG;
-	chain_hlocks[offset + 1] = (u16)next;
-
-	if (size && !bucket) {
-		chain_hlocks[offset + 2] = size >> 16;
-		chain_hlocks[offset + 3] = (u16)size;
+	/*
+	 * Avoid blocked utilization pushing up the frequency when we go
+	 * idle (which drops the max-clamp) by retaining the last known
+	 * max-clamp.
+	 */
+	if (clamp_id == UCLAMP_MAX) {
+		rq->uclamp_flags |= UCLAMP_FLAG_IDLE;
+		return clamp_value;
 	}
+
+	return uclamp_none(UCLAMP_MIN);
 }
 
-static inline void add_chain_block(int offset, int size)
+static inline void uclamp_idle_reset(struct rq *rq, enum uclamp_id clamp_id,
+				     unsigned int clamp_value)
 {
-	int bucket = size_to_bucket(size);
-	int next = chain_block_buckets[bucket];
-	int prev, curr;
-
-	if (unlikely(size < 2)) {
-		/*
-		 * We can't store single entries on the freelist. Leak them.
-		 *
-		 * One possible way out would be to uniquely mark them, other
-		 * than with CHAIN_BLK_FLAG, such that we can recover them when
-		 * the block before it is re-added.
-		 */
-		if (size)
-			nr_lost_chain_hlocks++;
+	/* Reset max-clamp retention only on idle exit */
+	if (!(rq->uclamp_flags & UCLAMP_FLAG_IDLE))
 		return;
-	}
 
-	nr_free_chain_hlocks += size;
-	if (!bucket) {
-		nr_large_chain_blocks++;
-
-		/*
-		 * Variable sized, sort large to small.
-		 */
-		for_each_chain_block(0, prev, curr) {
-			if (size >= chain_block_size(curr))
-				break;
-		}
-		init_chain_block(offset, curr, 0, size);
-		if (prev < 0)
-			chain_block_buckets[0] = offset;
-		else
-			init_chain_block(prev, offset, 0, 0);
-		return;
-	}
-	/*
-	 * Fixed size, add to head.
-	 */
-	init_chain_block(offset, next, bucket, size);
-	chain_block_buckets[bucket] = offset;
+	WRITE_ONCE(rq->uclamp[clamp_id].value, clamp_value);
 }
 
-/*
- * Only the first block in the list can be deleted.
- *
- * For the variable size bucket[0], the first block (the largest one) is
- * returned, broken up and put back into the pool. So if a chain block of
- * length > MAX_CHAIN_BUCKETS is ever used and zapped, it will just be
- * queued up after the primordial chain block and never be used until the
- * hlock entries in the primordial chain block is almost used up. That
- * causes fragmentation and reduce allocation efficiency. That can be
- * monitored by looking at the "large chain blocks" number in lockdep_stats.
- */
-static inline void del_chain_block(int bucket, int size, int next)
+static inline
+unsigned int uclamp_rq_max_value(struct rq *rq, enum uclamp_id clamp_id,
+				   unsigned int clamp_value)
 {
-	nr_free_chain_hlocks -= size;
-	chain_block_buckets[bucket] = next;
-
-	if (!bucket)
-		nr_large_chain_blocks--;
-}
-
-static void init_chain_block_buckets(void)
-{
-	int i;
-
-	for (i = 0; i < MAX_CHAIN_BUCKETS; i++)
-		chain_block_buckets[i] = -1;
-
-	add_chain_block(0, ARRAY_SIZE(chain_hlocks));
-}
-
-/*
- * Return offset of a chain block of the right size or -1 if not found.
- *
- * Fairly simple worst-fit allocator with the addition of a number of size
- * specific free lists.
- */
-static int alloc_chain_hlocks(int req)
-{
-	int bucket, curr, size;
+	struct uclamp_bucket *bucket = rq->uclamp[clamp_id].bucket;
+	int bucket_id = UCLAMP_BUCKETS - 1;
 
 	/*
-	 * We rely on the MSB to act as an escape bit to denote freelist
-	 * pointers. Make sure this bit isn't set in 'normal' class_idx usage.
+	 * Since both min and max clamps are max aggregated, find the
+	 * top most bucket with tasks in.
 	 */
-	BUILD_BUG_ON((MAX_LOCKDEP_KEYS-1) & CHAIN_BLK_FLAG);
-
-	init_data_structures_once();
-
-	if (nr_free_chain_hlocks < req)
-		return -1;
-
-	/*
-	 * We require a minimum of 2 (u16) entries to encode a freelist
-	 * 'pointer'.
-	 */
-	req = max(req, 2);
-	bucket = size_to_bucket(req);
-	curr = chain_block_buckets[bucket];
-
-	if (bucket) {
-		if (curr >= 0) {
-			del_chain_block(bucket, req, chain_block_next(curr));
-			return curr;
-		}
-		/* Try bucket 0 */
-		curr = chain_block_buckets[0];
-	}
-
-	/*
-	 * The variable sized freelist is sorted by size; the first entry is
-	 * the largest. Use it if it fits.
-	 */
-	if (curr >= 0) {
-		size = chain_block_size(curr);
-		if (likely(size >= req)) {
-			del_chain_block(0, size, chain_block_next(curr));
-			add_chain_block(curr + req, size - req);
-			return curr;
-		}
-	}
-
-	/*
-	 * Last resort, split a block in a larger sized bucket.
-	 */
-	for (size = MAX_CHAIN_BUCKETS; size > req; size--) {
-		bucket = size_to_bucket(size);
-		curr = chain_block_buckets[bucket];
-		if (curr < 0)
+	for ( ; bucket_id >= 0; bucket_id--) {
+		if (!bucket[bucket_id].tasks)
 			continue;
-
-		del_chain_block(bucket, size, chain_block_next(curr));
-		add_chain_block(curr + req, size - req);
-		return curr;
+		return bucket[bucket_id].value;
 	}
 
-	return -1;
+	/* No tasks -- default clamp values */
+	return uclamp_idle_value(rq, clamp_id, clamp_value);
 }
 
-static inline void free_chain_hlocks(int base, int size)
+static void __uclamp_update_util_min_rt_default(struct task_struct *p)
 {
-	add_chain_block(base, max(size, 2));
+	unsigned int default_util_min;
+	struct uclamp_se *uc_se;
+
+	lockdep_assert_held(&p->pi_lock);
+
+	uc_se = &p->uclamp_req[UCLAMP_MIN];
+
+	/* Only sync if user didn't override the default */
+	if (uc_se->user_defined)
+		return;
+
+	default_util_min = sysctl_sched_uclamp_util_min_rt_default;
+	uclamp_se_set(uc_se, default_util_min, false);
 }
 
-struct lock_class *lock_chain_get_class(struct lock_chain *chain, int i)
+static void uclamp_update_util_min_rt_default(struct task_struct *p)
 {
-	u16 chain_hlock = chain_hlocks[chain->base + i];
-	unsigned int class_idx = chain_hlock_class_idx(chain_hlock);
+	struct rq_flags rf;
+	struct rq *rq;
 
-	return lock_classes + class_idx;
+	if (!rt_task(p))
+		return;
+
+	/* Protect updates to p->uclamp_* */
+	rq = task_rq_lock(p, &rf);
+	__uclamp_update_util_min_rt_default(p);
+	task_rq_unlock(rq, p, &rf);
 }
 
-/*
- * Returns the index of the first held_lock of the current chain
- */
-static inline int get_first_held_lock(struct task_struct *curr,
-					struct held_lock *hlock)
+static void uclamp_sync_util_min_rt_default(void)
 {
-	int i;
-	struct held_lock *hlock_curr;
+	struct task_struct *g, *p;
 
-	for (i = curr->lockdep_depth - 1; i >= 0; i--) {
-		hlock_curr = curr->held_locks + i;
-		if (hlock_curr->irq_context != hlock->irq_context)
-			break;
-
-	}
-
-	return ++i;
-}
-
-#ifdef CONFIG_DEBUG_LOCKDEP
-/*
- * Returns the next chain_key iteration
- */
-static u64 print_chain_key_iteration(u16 hlock_id, u64 chain_key)
-{
-	u64 new_chain_key = iterate_chain_key(chain_key, hlock_id);
-
-	printk(" hlock_id:%d -> chain_key:%016Lx",
-		(unsigned int)hlock_id,
-		(unsigned long long)new_chain_key);
-	return new_chain_key;
-}
-
-static void
-print_chain_keys_held_locks(struct task_struct *curr, struct held_lock *hlock_next)
-{
-	struct held_lock *hlock;
-	u64 chain_key = INITIAL_CHAIN_KEY;
-	int depth = curr->lockdep_depth;
-	int i = get_first_held_lock(curr, h
+	/*
+	 * copy_process()			sysctl_uclamp
+	 *					  uclamp_min_rt = X;
+	 *   write_lock(&tasklist_lock)		  read_lock(&tasklist_lock)
+	 *   // link thread			  smp_mb__after_spinlock()
+	 *   write_unlock(&tasklist_lock)	  read_unlock(&tasklist_lock);
+	 *   sched_post_fork()			  for_each_process_thread()
+	 *     __uclamp_sync_rt()		    __uclamp_sync_rt()
+	 *
+	 * Ensures that either sched_post_fork() will observe the new
+	 * uclamp_min_rt or for_each_proc

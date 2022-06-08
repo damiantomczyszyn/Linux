@@ -1,6 +1,4 @@
-tic void zap_class(struct pending_free *pf, struct lock_class *class)
-{
-	struct lock_list *entry;
-	int i;
-
-	W
+nput)->amux == CX25840_AUDIO6)
+		cx23885_flatiron_mux(dev, 2);
+	else {
+		/* Not specifically defined, assume 

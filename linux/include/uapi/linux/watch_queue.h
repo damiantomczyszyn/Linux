@@ -1,84 +1,103 @@
-EAF) \
-  include/linux/page-flags-layout.h \
-    $(wildcard include/config/KASAN_HW_TAGS) \
-  include/linux/numa.h \
-    $(wildcard include/config/NODES_SHIFT) \
-    $(wildcard include/config/NUMA_KEEP_MEMINFO) \
-    $(wildcard include/config/HAVE_ARCH_NODE_DEV_GROUP) \
-  arch/x86/include/asm/sparsemem.h \
-  include/generated/bounds.h \
-  include/linux/seqlock.h \
-  include/linux/ww_mutex.h \
-    $(wildcard include/config/DEBUG_RT_MUTEXES) \
-    $(wildcard include/config/DEBUG_WW_MUTEX_SLOWPATH) \
-  include/linux/rtmutex.h \
-  arch/x86/include/asm/mmu.h \
-    $(wildcard include/config/MODIFY_LDT_SYSCALL) \
-  include/linux/kmod.h \
-  include/linux/umh.h \
-  include/linux/gfp.h \
-    $(wildcard include/config/HIGHMEM) \
-    $(wildcard include/config/ZONE_DMA) \
-    $(wildcard include/config/ZONE_DMA32) \
-    $(wildcard include/config/ZONE_DEVICE) \
-    $(wildcard include/config/PM_SLEEP) \
-    $(wildcard include/config/CONTIG_ALLOC) \
-    $(wildcard include/config/CMA) \
-  include/linux/mmdebug.h \
-    $(wildcard include/config/DEBUG_VM) \
-    $(wildcard include/config/DEBUG_VM_PGFLAGS) \
-  include/linux/mmzone.h \
-    $(wildcard include/config/FORCE_MAX_ZONEORDER) \
-    $(wildcard include/config/MEMORY_ISOLATION) \
-    $(wildcard include/config/ZSMALLOC) \
-    $(wildcard include/config/MEMORY_HOTPLUG) \
-    $(wildcard include/config/COMPACTION) \
-    $(wildcard include/config/PAGE_EXTENSION) \
-    $(wildcard include/config/DEFERRED_STRUCT_PAGE_INIT) \
-    $(wildcard include/config/HAVE_MEMORYLESS_NODES) \
-    $(wildcard include/config/SPARSEMEM_EXTREME) \
-    $(wildcard include/config/HAVE_ARCH_PFN_VALID) \
-  include/linux/nodemask.h \
-  include/linux/pageblock-flags.h \
-    $(wildcard include/config/HUGETLB_PAGE_SIZE_VARIABLE) \
-  include/linux/page-flags.h \
-    $(wildcard include/config/ARCH_USES_PG_UNCACHED) \
-    $(wildcard include/config/MEMORY_FAILURE) \
-    $(wildcard include/config/PAGE_IDLE_FLAG) \
-    $(wildcard include/config/HUGETLB_PAGE_FREE_VMEMMAP) \
-    $(wildcard include/config/HUGETLB_PAGE_FREE_VMEMMAP_DEFAULT_ON) \
-    $(wildcard include/config/KSM) \
-  include/linux/local_lock.h \
-  include/linux/local_lock_internal.h \
-  include/linux/memory_hotplug.h \
-    $(wildcard include/config/HAVE_ARCH_NODEDATA_EXTENSION) \
-    $(wildcard include/config/ARCH_HAS_ADD_PAGES) \
-    $(wildcard include/config/MEMORY_HOTREMOVE) \
-  arch/x86/include/asm/mmzone.h \
-  arch/x86/include/asm/mmzone_32.h \
-  include/linux/topology.h \
-    $(wildcard include/config/USE_PERCPU_NUMA_NODE_ID) \
-    $(wildcard include/config/SCHED_SMT) \
-    $(wildcard include/config/SCHED_CLUSTER) \
-  include/linux/arch_topology.h \
-    $(wildcard include/config/ACPI_CPPC_LIB) \
-    $(wildcard include/config/GENERIC_ARCH_TOPOLOGY) \
-  include/linux/percpu.h \
-    $(wildcard include/config/NEED_PER_CPU_EMBED_FIRST_CHUNK) \
-    $(wildcard include/config/NEED_PER_CPU_PAGE_FIRST_CHUNK) \
-  arch/x86/include/asm/topology.h \
-    $(wildcard include/config/SCHED_MC_PRIO) \
-  arch/x86/include/asm/mpspec.h \
-    $(wildcard include/config/EISA) \
-    $(wildcard include/config/X86_MPPARSE) \
-  arch/x86/include/asm/mpspec_def.h \
-  arch/x86/include/asm/x86_init.h \
-  arch/x86/include/asm/apicdef.h \
-  include/asm-generic/topology.h \
-  include/linux/sysctl.h \
-    $(wildcard include/config/SYSCTL) \
-  include/uapi/linux/sysctl.h \
-  include/linux/elf.h \
-    $(wildcard include/config/ARCH_USE_GNU_PROPERTY) \
-    $(wildcard include/config/ARCH_HAVE_ELF_PROT) \
-  arch/x86/includ
+	v4l2_info(sd, "\tFIFO service requested:            %s\n",
+		  stats & STATS_RSR ? "yes" : "no");
+	v4l2_info(sd, "\tFIFO service request interrupt:    %s\n",
+		  irqen & IRQEN_RSE ? "enabled" : "disabled");
+
+	v4l2_info(sd, "IR Transmitter:\n");
+	v4l2_info(sd, "\tEnabled:                           %s\n",
+		  cntrl & CNTRL_TXE ? "yes" : "no");
+	v4l2_info(sd, "\tModulation onto a carrier:         %s\n",
+		  cntrl & CNTRL_MOD ? "enabled" : "disabled");
+	v4l2_info(sd, "\tFIFO:                              %s\n",
+		  cntrl & CNTRL_TFE ? "enabled" : "disabled");
+	v4l2_info(sd, "\tFIFO interrupt watermark:          %s\n",
+		  cntrl & CNTRL_TIC ? "not empty" : "half full or less");
+	v4l2_info(sd, "\tOutput pin level inversion         %s\n",
+		  cntrl & CNTRL_IVO ? "yes" : "no");
+	v4l2_info(sd, "\tCarrier polarity:                  %s\n",
+		  cntrl & CNTRL_CPL ? "space:burst mark:noburst"
+				    : "space:noburst mark:burst");
+	if (cntrl & CNTRL_MOD) {
+		v4l2_info(sd, "\tCarrier (16 clocks):               %u Hz\n",
+			  clock_divider_to_carrier_freq(txclk));
+		v4l2_info(sd, "\tCarrier duty cycle:                %2u/16\n",
+			  cduty + 1);
+	}
+	v4l2_info(sd, "\tMax pulse width:                   %u us, %llu ns\n",
+		  pulse_width_count_to_us(FIFO_RXTX, txclk),
+		  pulse_width_count_to_ns(FIFO_RXTX, txclk));
+	v4l2_info(sd, "\tBusy:                              %s\n",
+		  stats & STATS_TBY ? "yes" : "no");
+	v4l2_info(sd, "\tFIFO service requested:            %s\n",
+		  stats & STATS_TSR ? "yes" : "no");
+	v4l2_info(sd, "\tFIFO service request interrupt:    %s\n",
+		  irqen & IRQEN_TSE ? "enabled" : "disabled");
+
+	return 0;
+}
+
+#ifdef CONFIG_VIDEO_ADV_DEBUG
+static int cx23888_ir_g_register(struct v4l2_subdev *sd,
+				 struct v4l2_dbg_register *reg)
+{
+	struct cx23888_ir_state *state = to_state(sd);
+	u32 addr = CX23888_IR_REG_BASE + (u32) reg->reg;
+
+	if ((addr & 0x3) != 0)
+		return -EINVAL;
+	if (addr < CX23888_IR_CNTRL_REG || addr > CX23888_IR_LEARN_REG)
+		return -EINVAL;
+	reg->size = 4;
+	reg->val = cx23888_ir_read4(state->dev, addr);
+	return 0;
+}
+
+static int cx23888_ir_s_register(struct v4l2_subdev *sd,
+				 const struct v4l2_dbg_register *reg)
+{
+	struct cx23888_ir_state *state = to_state(sd);
+	u32 addr = CX23888_IR_REG_BASE + (u32) reg->reg;
+
+	if ((addr & 0x3) != 0)
+		return -EINVAL;
+	if (addr < CX23888_IR_CNTRL_REG || addr > CX23888_IR_LEARN_REG)
+		return -EINVAL;
+	cx23888_ir_write4(state->dev, addr, reg->val);
+	return 0;
+}
+#endif
+
+static const struct v4l2_subdev_core_ops cx23888_ir_core_ops = {
+	.log_status = cx23888_ir_log_status,
+#ifdef CONFIG_VIDEO_ADV_DEBUG
+	.g_register = cx23888_ir_g_register,
+	.s_register = cx23888_ir_s_register,
+#endif
+	.interrupt_service_routine = cx23888_ir_irq_handler,
+};
+
+static const struct v4l2_subdev_ir_ops cx23888_ir_ir_ops = {
+	.rx_read = cx23888_ir_rx_read,
+	.rx_g_parameters = cx23888_ir_rx_g_parameters,
+	.rx_s_parameters = cx23888_ir_rx_s_parameters,
+
+	.tx_write = cx23888_ir_tx_write,
+	.tx_g_parameters = cx23888_ir_tx_g_parameters,
+	.tx_s_parameters = cx23888_ir_tx_s_parameters,
+};
+
+static const struct v4l2_subdev_ops cx23888_ir_controller_ops = {
+	.core = &cx23888_ir_core_ops,
+	.ir = &cx23888_ir_ir_ops,
+};
+
+static const struct v4l2_subdev_ir_parameters default_rx_params = {
+	.bytes_per_data_element = sizeof(union cx23888_ir_fifo_rec),
+	.mode = V4L2_SUBDEV_IR_MODE_PULSE_WIDTH,
+
+	.enable = false,
+	.interrupt_enable = false,
+	.shutdown = true,
+
+	.modulation = true,
+	.carrier_freq = 36000, /* 36 kHz - RC-5, RC-6, and RC-6A 

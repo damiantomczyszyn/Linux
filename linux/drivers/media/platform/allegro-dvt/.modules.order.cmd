@@ -1,6 +1,1 @@
-de/linux/bits.h \
-  include/linux/const.h \
-  include/vdso/const.h \
-  include/uapi/linux/const.h \
-  include/vdso/bits.h \
-  include/l
+cmd_drivers/media/pci/cx18/modules.order := {   echo drivers/media/pci/cx18/cx18.ko;   echo drivers/media/pci/cx18/cx18-alsa.ko; :; } |

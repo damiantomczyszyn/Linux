@@ -1,17 +1,24 @@
-fig/GENERIC_ATOMIC64) \
-  include/linux/atomic/atomic-long.h \
-  include/linux/atomic/atomic-instrumented.h \
-  include/linux/bug.h \
-    $(wildcard include/config/BUG_ON_DATA_CORRUPTION) \
-  arch/x86/include/asm/bug.h \
-    $(wildcard include/config/DEBUG_BUGVERBOSE) \
-  include/linux/instrumentation.h \
-    $(wildcard include/config/DEBUG_ENTRY) \
-  include/asm-generic/bug.h \
-    $(wildcard include/config/BUG) \
-    $(wildcard include/config/GENERIC_BUG_RELATIVE_POINTERS) \
-  arch/x86/include/uapi/asm/msr.h \
-  include/linux/tracepoint-defs.h \
-  arch/x86/include/asm/special_insns.h \
-  include/linux/irqflags.h \
-    $(wildcard include
+us & VID_BC_MSK_SYNC) ||
+		(status & VID_BC_MSK_OF)) {
+
+		if (status & VID_BC_MSK_OPC_ERR)
+			dprintk(7, " (VID_BC_MSK_OPC_ERR 0x%08x)\n",
+				VID_BC_MSK_OPC_ERR);
+
+		if (status & VID_BC_MSK_BAD_PKT)
+			dprintk(7, " (VID_BC_MSK_BAD_PKT 0x%08x)\n",
+				VID_BC_MSK_BAD_PKT);
+
+		if (status & VID_BC_MSK_SYNC)
+			dprintk(7, " (VID_BC_MSK_SYNC    0x%08x)\n",
+				VID_BC_MSK_SYNC);
+
+		if (status & VID_BC_MSK_OF)
+			dprintk(7, " (VID_BC_MSK_OF      0x%08x)\n",
+				VID_BC_MSK_OF);
+
+		pr_err("%s: mpeg risc op code error\n", dev->name);
+
+		cx_clear(port->reg_dma_ctl, port->dma_ctl_val);
+		cx23885_sram_channel_dump(dev,
+			&dev->sram_channels[port->sra

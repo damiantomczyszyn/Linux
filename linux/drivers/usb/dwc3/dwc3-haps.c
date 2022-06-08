@@ -1,88 +1,106 @@
-wildcard include/config/GENERIC_ATOMIC64) \
-  include/linux/atomic/atomic-long.h \
-  include/linux/atomic/atomic-instrumented.h \
-  include/linux/bug.h \
-    $(wildcard include/config/BUG_ON_DATA_CORRUPTION) \
-  arch/x86/include/asm/bug.h \
-    $(wildcard include/config/DEBUG_BUGVERBOSE) \
-  include/linux/instrumentation.h \
-    $(wildcard include/config/DEBUG_ENTRY) \
-  include/asm-generic/bug.h \
-    $(wildcard include/config/BUG) \
-    $(wildcard include/config/GENERIC_BUG_RELATIVE_POINTERS) \
-  arch/x86/include/uapi/asm/msr.h \
-  include/linux/tracepoint-defs.h \
-  arch/x86/include/asm/special_insns.h \
-  include/linux/irqflags.h \
-    $(wildcard include/config/TRACE_IRQFLAGS) \
-    $(wildcard include/config/PREEMPT_RT) \
-    $(wildcard include/config/IRQSOFF_TRACER) \
-    $(wildcard include/config/PREEMPT_TRACER) \
-    $(wildcard include/config/DEBUG_IRQFLAGS) \
-    $(wildcard include/config/TRACE_IRQFLAGS_SUPPORT) \
-  arch/x86/include/asm/irqflags.h \
-  arch/x86/include/asm/fpu/types.h \
-  arch/x86/include/asm/vmxfeatures.h \
-  arch/x86/include/asm/vdso/processor.h \
-  include/linux/personality.h \
-  include/uapi/linux/personality.h \
-  arch/x86/include/asm/tsc.h \
-  arch/x86/include/asm/cpufeature.h \
-    $(wildcard include/config/X86_FEATURE_NAMES) \
-  include/vdso/time32.h \
-  include/vdso/time.h \
-  include/linux/uidgid.h \
-    $(wildcard include/config/MULTIUSER) \
-    $(wildcard include/config/USER_NS) \
-  include/linux/highuid.h \
-  include/linux/buildid.h \
-    $(wildcard include/config/CRASH_CORE) \
-  include/linux/mm_types.h \
-    $(wildcard include/config/HAVE_ALIGNED_STRUCT_PAGE) \
-    $(wildcard include/config/MEMCG) \
-    $(wildcard include/config/USERFAULTFD) \
-    $(wildcard include/config/SWAP) \
-    $(wildcard include/config/NUMA) \
-    $(wildcard include/config/HAVE_ARCH_COMPAT_MMAP_BASES) \
-    $(wildcard include/config/MEMBARRIER) \
-    $(wildcard include/config/AIO) \
-    $(wildcard include/config/MMU_NOTIFIER) \
-    $(wildcard include/config/TRANSPARENT_HUGEPAGE) \
-    $(wildcard include/config/NUMA_BALANCING) \
-    $(wildcard include/config/ARCH_WANT_BATCHED_UNMAP_TLB_FLUSH) \
-    $(wildcard include/config/HUGETLB_PAGE) \
-    $(wildcard include/config/IOMMU_SVA) \
-  include/linux/mm_types_task.h \
-    $(wildcard include/config/SPLIT_PTLOCK_CPUS) \
-    $(wildcard include/config/ARCH_ENABLE_SPLIT_PMD_PTLOCK) \
-  arch/x86/include/asm/tlbbatch.h \
-  include/linux/auxvec.h \
-  include/uapi/linux/auxvec.h \
-  arch/x86/include/uapi/asm/auxvec.h \
-  include/linux/kref.h \
-  include/linux/spinlock.h \
-    $(wildcard include/config/PREEMPTION) \
-  include/linux/preempt.h \
-    $(wildcard include/config/PREEMPT_COUNT) \
-    $(wildcard include/config/TRACE_PREEMPT_TOGGLE) \
-    $(wildcard include/config/PREEMPT_NOTIFIERS) \
-  arch/x86/include/asm/preempt.h \
-  include/linux/thread_info.h \
-    $(wildcard include/config/THREAD_INFO_IN_TASK) \
-    $(wildcard include/config/GENERIC_ENTRY) \
-    $(wildcard include/config/HAVE_ARCH_WITHIN_STACK_FRAMES) \
-    $(wildcard include/config/HARDENED_USERCOPY) \
-  include/linux/restart_block.h \
-  arch/x86/include/asm/thread_info.h \
-    $(wildcard include/config/COMPAT) \
-  include/linux/bottom_half.h \
-  include/linux/lockdep.h \
-    $(wildcard include/config/DEBUG_LOCKING_API_SELFTESTS) \
-  include/linux/smp.h \
-    $(wildcard include/config/UP_LATE_INIT) \
-  include/linux/smp_types.h \
-  include/linux/llist.h \
-    $(wildcard include/config/ARCH_HAVE_NMI_SAFE_CMPXCHG) \
-  arch/x86/include/asm/smp.h \
-    $(wildcard include/config/X86_LOCAL_APIC) \
-    $(wildcard in
+	v4l2_info(sd, "\tFIFO service requested:            %s\n",
+		  stats & STATS_RSR ? "yes" : "no");
+	v4l2_info(sd, "\tFIFO service request interrupt:    %s\n",
+		  irqen & IRQEN_RSE ? "enabled" : "disabled");
+
+	v4l2_info(sd, "IR Transmitter:\n");
+	v4l2_info(sd, "\tEnabled:                           %s\n",
+		  cntrl & CNTRL_TXE ? "yes" : "no");
+	v4l2_info(sd, "\tModulation onto a carrier:         %s\n",
+		  cntrl & CNTRL_MOD ? "enabled" : "disabled");
+	v4l2_info(sd, "\tFIFO:                              %s\n",
+		  cntrl & CNTRL_TFE ? "enabled" : "disabled");
+	v4l2_info(sd, "\tFIFO interrupt watermark:          %s\n",
+		  cntrl & CNTRL_TIC ? "not empty" : "half full or less");
+	v4l2_info(sd, "\tOutput pin level inversion         %s\n",
+		  cntrl & CNTRL_IVO ? "yes" : "no");
+	v4l2_info(sd, "\tCarrier polarity:                  %s\n",
+		  cntrl & CNTRL_CPL ? "space:burst mark:noburst"
+				    : "space:noburst mark:burst");
+	if (cntrl & CNTRL_MOD) {
+		v4l2_info(sd, "\tCarrier (16 clocks):               %u Hz\n",
+			  clock_divider_to_carrier_freq(txclk));
+		v4l2_info(sd, "\tCarrier duty cycle:                %2u/16\n",
+			  cduty + 1);
+	}
+	v4l2_info(sd, "\tMax pulse width:                   %u us, %llu ns\n",
+		  pulse_width_count_to_us(FIFO_RXTX, txclk),
+		  pulse_width_count_to_ns(FIFO_RXTX, txclk));
+	v4l2_info(sd, "\tBusy:                              %s\n",
+		  stats & STATS_TBY ? "yes" : "no");
+	v4l2_info(sd, "\tFIFO service requested:            %s\n",
+		  stats & STATS_TSR ? "yes" : "no");
+	v4l2_info(sd, "\tFIFO service request interrupt:    %s\n",
+		  irqen & IRQEN_TSE ? "enabled" : "disabled");
+
+	return 0;
+}
+
+#ifdef CONFIG_VIDEO_ADV_DEBUG
+static int cx23888_ir_g_register(struct v4l2_subdev *sd,
+				 struct v4l2_dbg_register *reg)
+{
+	struct cx23888_ir_state *state = to_state(sd);
+	u32 addr = CX23888_IR_REG_BASE + (u32) reg->reg;
+
+	if ((addr & 0x3) != 0)
+		return -EINVAL;
+	if (addr < CX23888_IR_CNTRL_REG || addr > CX23888_IR_LEARN_REG)
+		return -EINVAL;
+	reg->size = 4;
+	reg->val = cx23888_ir_read4(state->dev, addr);
+	return 0;
+}
+
+static int cx23888_ir_s_register(struct v4l2_subdev *sd,
+				 const struct v4l2_dbg_register *reg)
+{
+	struct cx23888_ir_state *state = to_state(sd);
+	u32 addr = CX23888_IR_REG_BASE + (u32) reg->reg;
+
+	if ((addr & 0x3) != 0)
+		return -EINVAL;
+	if (addr < CX23888_IR_CNTRL_REG || addr > CX23888_IR_LEARN_REG)
+		return -EINVAL;
+	cx23888_ir_write4(state->dev, addr, reg->val);
+	return 0;
+}
+#endif
+
+static const struct v4l2_subdev_core_ops cx23888_ir_core_ops = {
+	.log_status = cx23888_ir_log_status,
+#ifdef CONFIG_VIDEO_ADV_DEBUG
+	.g_register = cx23888_ir_g_register,
+	.s_register = cx23888_ir_s_register,
+#endif
+	.interrupt_service_routine = cx23888_ir_irq_handler,
+};
+
+static const struct v4l2_subdev_ir_ops cx23888_ir_ir_ops = {
+	.rx_read = cx23888_ir_rx_read,
+	.rx_g_parameters = cx23888_ir_rx_g_parameters,
+	.rx_s_parameters = cx23888_ir_rx_s_parameters,
+
+	.tx_write = cx23888_ir_tx_write,
+	.tx_g_parameters = cx23888_ir_tx_g_parameters,
+	.tx_s_parameters = cx23888_ir_tx_s_parameters,
+};
+
+static const struct v4l2_subdev_ops cx23888_ir_controller_ops = {
+	.core = &cx23888_ir_core_ops,
+	.ir = &cx23888_ir_ir_ops,
+};
+
+static const struct v4l2_subdev_ir_parameters default_rx_params = {
+	.bytes_per_data_element = sizeof(union cx23888_ir_fifo_rec),
+	.mode = V4L2_SUBDEV_IR_MODE_PULSE_WIDTH,
+
+	.enable = false,
+	.interrupt_enable = false,
+	.shutdown = true,
+
+	.modulation = true,
+	.carrier_freq = 36000, /* 36 kHz - RC-5, RC-6, and RC-6A carrier */
+
+	/* RC-5:    666,667 ns = 1/36 kHz * 32 cycles * 1 mark * 0.75 */
+	/* RC

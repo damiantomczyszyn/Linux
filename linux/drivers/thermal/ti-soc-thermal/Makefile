@@ -1,11 +1,19 @@
-clude/linux/build_bug.h \
-  include/linux/compiler.h \
-    $(wildcard include/config/TRACE_BRANCH_PROFILING) \
-    $(wildcard include/config/PROFILE_ALL_BRANCHES) \
-    $(wildcard include/config/STACK_VALIDATION) \
-  include/linux/compiler_types.h \
-  arch/x86/include/generated/asm/rwonce.h \
-  include/asm-generic/rwonce.h \
-  include/linux/kasan-checks.h \
-    $(wildcard include/config/KASAN_GENERIC) \
-    $(wildcard include/con
+/* SPDX-License-Identifier: GPL-2.0-or-later */
+/*
+ *  Driver for the Conexant CX23885 PCIe bridge
+ *
+ *  Copyright (c) 2006 Steven Toth <stoth@linuxtv.org>
+ */
+
+#ifndef _CX23885_REG_H_
+#define _CX23885_REG_H_
+
+/*
+Address Map
+0x00000000 -> 0x00009000   TX SRAM  (Fifos)
+0x00010000 -> 0x00013c00   RX SRAM  CMDS + CDT
+
+EACH CMDS struct is 0x80 bytes long
+
+DMAx_PTR1 = 0x03040 address of first cluster
+DMAx_PTR2 = 0x10600 address of th

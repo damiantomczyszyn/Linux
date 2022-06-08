@@ -1,104 +1,123 @@
-) \
-  include/acpi/acpi_io.h \
-  include/linux/io.h \
-    $(wildcard include/config/HAS_IOPORT_MAP) \
-  arch/x86/include/asm/io.h \
-    $(wildcard include/config/MTRR) \
-    $(wildcard include/config/X86_PAT) \
-  arch/x86/include/generated/asm/early_ioremap.h \
-  include/asm-generic/early_ioremap.h \
-    $(wildcard include/config/GENERIC_EARLY_IOREMAP) \
-  include/asm-generic/iomap.h \
-  include/asm-generic/pci_iomap.h \
-    $(wildcard include/config/NO_GENERIC_PCI_IOPORT_MAP) \
-    $(wildcard include/config/GENERIC_PCI_IOMAP) \
-  include/asm-generic/io.h \
-    $(wildcard include/config/GENERIC_IOMAP) \
-    $(wildcard include/config/GENERIC_IOREMAP) \
-    $(wildcard include/config/VIRT_TO_BUS) \
-    $(wildcard include/config/GENERIC_DEVMEM_IS_ALLOWED) \
-  include/linux/logic_pio.h \
-    $(wildcard include/config/INDIRECT_PIO) \
-  include/linux/vmalloc.h \
-    $(wildcard include/config/HAVE_ARCH_HUGE_VMALLOC) \
-  arch/x86/include/asm/vmalloc.h \
-    $(wildcard include/config/HAVE_ARCH_HUGE_VMAP) \
-  arch/x86/include/asm/acpi.h \
-    $(wildcard include/config/ACPI_APEI) \
-  include/acpi/pdc_intel.h \
-  arch/x86/include/asm/numa.h \
-    $(wildcard include/config/NUMA_EMU) \
-  arch/x86/include/asm/numa_32.h \
-  include/linux/regulator/consumer.h \
-    $(wildcard include/config/REGULATOR) \
-  include/linux/suspend.h \
-    $(wildcard include/config/VT) \
-    $(wildcard include/config/SUSPEND) \
-    $(wildcard include/config/HIBERNATION_SNAPSHOT_DEV) \
-    $(wildcard include/config/PM_SLEEP_DEBUG) \
-    $(wildcard include/config/PM_AUTOSLEEP) \
-  include/linux/swap.h \
-    $(wildcard include/config/DEVICE_PRIVATE) \
-    $(wildcard include/config/MIGRATION) \
-    $(wildcard include/config/FRONTSWAP) \
-    $(wildcard include/config/THP_SWAP) \
-    $(wildcard include/config/MEMCG_SWAP) \
-  include/linux/memcontrol.h \
-    $(wildcard include/config/CGROUP_WRITEBACK) \
-  include/linux/cgroup.h \
-    $(wildcard include/config/CGROUP_CPUACCT) \
-    $(wildcard include/config/SOCK_CGROUP_DATA) \
-    $(wildcard include/config/CGROUP_DATA) \
-    $(wildcard include/config/CGROUP_BPF) \
-  include/uapi/linux/cgroupstats.h \
-  include/uapi/linux/taskstats.h \
-  include/linux/fs.h \
-    $(wildcard include/config/READ_ONLY_THP_FOR_FS) \
-    $(wildcard include/config/FS_POSIX_ACL) \
-    $(wildcard include/config/IMA) \
-    $(wildcard include/config/FILE_LOCKING) \
-    $(wildcard include/config/FSNOTIFY) \
-    $(wildcard include/config/FS_ENCRYPTION) \
-    $(wildcard include/config/FS_VERITY) \
-    $(wildcard include/config/EPOLL) \
-    $(wildcard include/config/UNICODE) \
-    $(wildcard include/config/QUOTA) \
-    $(wildcard include/config/FS_DAX) \
-    $(wildcard include/config/BLOCK) \
-  include/linux/wait_bit.h \
-  include/linux/kdev_t.h \
-  include/uapi/linux/kdev_t.h \
-  include/linux/dcache.h \
-  include/linux/rculist_bl.h \
-  include/linux/list_bl.h \
-  include/linux/bit_spinlock.h \
-  include/linux/lockref.h \
-    $(wildcard include/config/ARCH_USE_CMPXCHG_LOCKREF) \
-  include/linux/stringhash.h \
-    $(wildcard include/config/DCACHE_WORD_ACCESS) \
-  include/linux/hash.h \
-    $(wildcard include/config/HAVE_ARCH_HASH) \
-  include/linux/path.h \
-  include/linux/list_lru.h \
-  include/linux/shrinker.h \
-  include/linux/capability.h \
-  include/uapi/linux/capability.h \
-  include/linux/semaphore.h \
-  include/linux/fcntl.h \
-    $(wildcard include/config/ARCH_32BIT_OFF_T) \
-  include/uapi/linux/fcntl.h \
-  arch/x86/include/generated/uapi/asm/fcntl.h \
-  include/uapi/asm-generic/fcntl.h \
-  include/uapi/linux/openat2.h \
-  include/linux/migrate_mode.h \
-  include/linux/percpu-rwsem.h \
-  include/linux/rcuwait.h \
-  include/linux/sched/signal.h \
-    $(wildcard include/config/SCHED_AUTOGROUP) \
-    $(wildcard include/config/BSD_PROCESS_ACCT) \
-    $(wildcard include/config/TASKSTATS) \
-    $(wildcard include/config/STACK_GROWSUP) \
-  include/linux/signal.h \
-    $(wildcard include/config/DYNAMIC_SIGFRAME) \
-  include/linux/sched/jobctl.h \
-  include/linux/sched
+e        *video_dev;
+	struct video_device        *vbi_dev;
+
+	/* video capture */
+	struct cx23885_fmt         *fmt;
+	unsigned int               width, height;
+	unsigned		   field;
+
+	struct cx23885_dmaqueue    vidq;
+	struct vb2_queue           vb2_vidq;
+	struct cx23885_dmaqueue    vbiq;
+	struct vb2_queue           vb2_vbiq;
+
+	spinlock_t                 slock;
+
+	/* MPEG Encoder ONLY settings */
+	u32                        cx23417_mailbox;
+	struct cx2341x_handler     cxhdl;
+	struct video_device        *v4l_device;
+	struct vb2_queue           vb2_mpegq;
+	struct cx23885_tvnorm      encodernorm;
+
+	/* Analog raw audio */
+	struct cx23885_audio_dev   *audio_dev;
+
+	/* Does the system require periodic DMA resets? */
+	unsigned int		need_dma_reset:1;
+};
+
+static inline struct cx23885_dev *to_cx23885(struct v4l2_device *v4l2_dev)
+{
+	return container_of(v4l2_dev, struct cx23885_dev, v4l2_dev);
+}
+
+#define call_all(dev, o, f, args...) \
+	v4l2_device_call_all(&dev->v4l2_dev, 0, o, f, ##args)
+
+#define CX23885_HW_888_IR  (1 << 0)
+#define CX23885_HW_AV_CORE (1 << 1)
+
+#define call_hw(dev, grpid, o, f, args...) \
+	v4l2_device_call_all(&dev->v4l2_dev, grpid, o, f, ##args)
+
+extern struct v4l2_subdev *cx23885_find_hw(struct cx23885_dev *dev, u32 hw);
+
+#define SRAM_CH01  0 /* Video A */
+#define SRAM_CH02  1 /* VBI A */
+#define SRAM_CH03  2 /* Video B */
+#define SRAM_CH04  3 /* Transport via B */
+#define SRAM_CH05  4 /* VBI B */
+#define SRAM_CH06  5 /* Video C */
+#define SRAM_CH07  6 /* Transport via C */
+#define SRAM_CH08  7 /* Audio Internal A */
+#define SRAM_CH09  8 /* Audio Internal B */
+#define SRAM_CH10  9 /* Audio External */
+#define SRAM_CH11 10 /* COMB_3D_N */
+#define SRAM_CH12 11 /* Comb 3D N1 */
+#define SRAM_CH13 12 /* Comb 3D N2 */
+#define SRAM_CH14 13 /* MOE Vid */
+#define SRAM_CH15 14 /* MOE RSLT */
+
+struct sram_channel {
+	char *name;
+	u32  cmds_start;
+	u32  ctrl_start;
+	u32  cdt;
+	u32  fifo_start;
+	u32  fifo_size;
+	u32  ptr1_reg;
+	u32  ptr2_reg;
+	u32  cnt1_reg;
+	u32  cnt2_reg;
+	u32  jumponly;
+};
+
+/* ----------------------------------------------------------- */
+
+#define cx_read(reg)             readl(dev->lmmio + ((reg)>>2))
+#define cx_write(reg, value)     writel((value), dev->lmmio + ((reg)>>2))
+
+#define cx_andor(reg, mask, value) \
+  writel((readl(dev->lmmio+((reg)>>2)) & ~(mask)) |\
+  ((value) & (mask)), dev->lmmio+((reg)>>2))
+
+#define cx_set(reg, bit)          cx_andor((reg), (bit), (bit))
+#define cx_clear(reg, bit)        cx_andor((reg), (bit), 0)
+
+/* ----------------------------------------------------------- */
+/* cx23885-core.c                                              */
+
+extern int cx23885_sram_channel_setup(struct cx23885_dev *dev,
+	struct sram_channel *ch,
+	unsigned int bpl, u32 risc);
+
+extern void cx23885_sram_channel_dump(struct cx23885_dev *dev,
+	struct sram_channel *ch);
+
+extern int cx23885_risc_buffer(struct pci_dev *pci, struct cx23885_riscmem *risc,
+	struct scatterlist *sglist,
+	unsigned int top_offset, unsigned int bottom_offset,
+	unsigned int bpl, unsigned int padding, unsigned int lines);
+
+extern int cx23885_risc_vbibuffer(struct pci_dev *pci,
+	struct cx23885_riscmem *risc, struct scatterlist *sglist,
+	unsigned int top_offset, unsigned int bottom_offset,
+	unsigned int bpl, unsigned int padding, unsigned int lines);
+
+int cx23885_start_dma(struct cx23885_tsport *port,
+			     struct cx23885_dmaqueue *q,
+			     struct cx23885_buffer   *buf);
+void cx23885_cancel_buffers(struct cx23885_tsport *port);
+
+
+extern void cx23885_gpio_set(struct cx23885_dev *dev, u32 mask);
+extern void cx23885_gpio_clear(struct cx23885_dev *dev, u32 mask);
+extern u32 cx23885_gpio_get(struct cx23885_dev *dev, u32 mask);
+extern void cx23885_gpio_enable(struct cx23885_dev *dev, u32 mask,
+	int asoutput);
+
+extern void cx23885_irq_add_enable(struct cx23885_dev *dev, u32 mask);
+extern void cx23885_irq_enable(struct cx23885_dev *dev, u32 mask);
+extern void cx23885_irq_disable(struct cx23885_dev *dev, u32 mask);
+extern void cx23885_irq_remove(struct cx23885_dev *dev

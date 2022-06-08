@@ -1,20 +1,30 @@
-nclude/asm/atomic64_32.h \
-  include/linux/atomic/atomic-arch-fallback.h \
-    $(wildcard include/config/GENERIC_ATOMIC64) \
-  include/linux/atomic/atomic-long.h \
-  include/linux/atomic/atomic-instrumented.h \
-  include/linux/bug.h \
-    $(wildcard include/config/GENERIC_BUG) \
-    $(wildcard include/config/BUG_ON_DATA_CORRUPTION) \
-  arch/x86/include/asm/bug.h \
-    $(wildcard include/config/DEBUG_BUGVERBOSE) \
-  include/linux/instrumentation.h \
-    $(wildcard include/config/DEBUG_ENTRY) \
-  include/linux/objtool.h \
-    $(wildcard include/config/FRAME_POINTER) \
-  include/asm-generic/bug.h \
-    $(wildcard include/config/BUG) \
-    $(wildcard include/config/GENERIC_BUG_RELATIVE_POINTERS) \
-  include/linux/smp_types.h \
-  include/linux/llist.h \
-    $(wildcard include/c
+TRL, reg);
+	}
+
+	/* Set VIDC pins to input */
+	if (cx23885_boards[dev->board].portc == CX23885_MPEG_DVB) {
+		reg = cx_read(PAD_CTRL);
+		reg &= ~0x4; /* Clear TS2_SOP_OE */
+		cx_write(PAD_CTRL, reg);
+	}
+
+	if (cx23885_boards[dev->board].portb == CX23885_MPEG_ENCODER) {
+
+		reg = cx_read(PAD_CTRL);
+		reg = reg & ~0x1;    /* Clear TS1_OE */
+
+		/* FIXME, bit 2 writing here is questionable */
+		/* set TS1_SOP_OE and TS1_OE_HI */
+		reg = reg | 0xa;
+		cx_write(PAD_CTRL, reg);
+
+		/* Sets MOE_CLK_DIS to disable MoE clock */
+		/* sets MCLK_DLY_SEL/BCLK_DLY_SEL to 1 buffer delay each */
+		cx_write(CLK_DELAY, cx_read(CLK_DELAY) | 0x80000011);
+
+		/* ALT_GPIO_ALT_SET: GPIO[0]
+		 * IR_ALT_TX_SEL: GPIO[1]
+		 * GPIO1_ALT_SEL: VIP_656_DATA[0]
+		 * GPIO0_ALT_SEL: VIP_656_CLK
+		 */
+		cx_write(AL

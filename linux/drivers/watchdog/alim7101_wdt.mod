@@ -1,2 +1,1 @@
-_BITS) \
-    $(wildcard include/c
+// SPDX-License-Identifier: GPL-2

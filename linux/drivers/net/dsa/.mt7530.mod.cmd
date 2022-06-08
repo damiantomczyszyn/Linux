@@ -1,3 +1,1 @@
-ldcard include/config/PCI_MMCONFIG) \
-    $(wildcard include/config/ACPI_APEI_GHES) \
-    $(wildcard inclu
+cmd_drivers/net/dsa/mt7530.mod := { echo  drivers/net/dsa/mt7530.o;  echo; } > drivers/net/dsa/mt7530.mod

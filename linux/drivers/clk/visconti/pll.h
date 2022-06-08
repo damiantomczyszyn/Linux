@@ -1,42 +1,53 @@
+// SPDX-License-Identifier: GPL-2.0-or-later
+/*
+ * altera-ci.c
+ *
+ *  CI driver in conjunction with NetUp Dual DVB-T/C RF CI card
+ *
+ * Copyright (C) 2010,2011 NetUP Inc.
+ * Copyright (C) 2010,2011 Igor M. Liplianin <liplianin@netup.ru>
+ */
 
-  arch/x86/include/asm/msr-index.h \
-  arch/x86/include/asm/cpumask.h \
-  include/linux/cpumask.h \
-    $(wildcard include/config/CPUMASK_OFFSTACK) \
-    $(wildcard include/config/DEBUG_PER_CPU_MAPS) \
-  include/linux/bitmap.h \
-  include/linux/find.h \
-  arch/x86/include/uapi/asm/msr.h \
-  include/linux/tracepoint-defs.h \
-  arch/x86/include/asm/special_insns.h \
-  arch/x86/include/asm/fpu/types.h \
-  arch/x86/include/asm/vmxfeatures.h \
-  arch/x86/include/asm/vdso/processor.h \
-  include/linux/personality.h \
-  include/uapi/linux/personality.h \
-  include/linux/bottom_half.h \
-  include/linux/lockdep.h \
-    $(wildcard include/config/DEBUG_LOCKING_API_SELFTESTS) \
-  include/linux/smp.h \
-    $(wildcard include/config/UP_LATE_INIT) \
-  include/linux/smp_types.h \
-  include/linux/llist.h \
-    $(wildcard include/config/ARCH_HAVE_NMI_SAFE_CMPXCHG) \
-  arch/x86/include/asm/smp.h \
-    $(wildcard include/config/X86_LOCAL_APIC) \
-    $(wildcard include/config/DEBUG_NMI_SELFTEST) \
-  include/linux/rcutree.h \
-  include/linux/wait.h \
-  include/linux/spinlock.h \
-  arch/x86/include/generated/asm/mmiowb.h \
-  include/asm-generic/mmiowb.h \
-    $(wildcard include/config/MMIOWB) \
-  include/linux/spinlock_types.h \
-  include/linux/rwlock_types.h \
-  arch/x86/include/asm/spinlock.h \
-  arch/x86/include/asm/paravirt.h \
-    $(wildcard include/config/PARAVIRT_SPINLOCKS) \
-  arch/x86/include/asm/frame.h \
-  arch/x86/include/asm/qspinlock.h \
-  include/asm-generic/qspinlock.h \
-  arch/x86/i
+/*
+ * currently cx23885 GPIO's used.
+ * GPIO-0 ~INT in
+ * GPIO-1 TMS out
+ * GPIO-2 ~reset chips out
+ * GPIO-3 to GPIO-10 data/addr for CA in/out
+ * GPIO-11 ~CS out
+ * GPIO-12 AD_RG out
+ * GPIO-13 ~WR out
+ * GPIO-14 ~RD out
+ * GPIO-15 ~RDY in
+ * GPIO-16 TCK out
+ * GPIO-17 TDO in
+ * GPIO-18 TDI out
+ */
+/*
+ *  Bit definitions for MC417_RWD and MC417_OEN registers
+ * bits 31-16
+ * +-----------+
+ * | Reserved  |
+ * +-----------+
+ *   bit 15  bit 14  bit 13 bit 12  bit 11  bit 10  bit 9   bit 8
+ * +-------+-------+-------+-------+-------+-------+-------+-------+
+ * |  TDI  |  TDO  |  TCK  |  RDY# |  #RD  |  #WR  | AD_RG |  #CS  |
+ * +-------+-------+-------+-------+-------+-------+-------+-------+
+ *  bit 7   bit 6   bit 5   bit 4   bit 3   bit 2   bit 1   bit 0
+ * +-------+-------+-------+-------+-------+-------+-------+-------+
+ * |  DATA7|  DATA6|  DATA5|  DATA4|  DATA3|  DATA2|  DATA1|  DATA0|
+ * +-------+-------+-------+-------+-------+-------+-------+-------+
+ */
+
+#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
+
+#include <media/dvb_demux.h>
+#include <media/dvb_frontend.h>
+#include "altera-ci.h"
+#include <media/dvb_ca_en50221.h>
+
+/* FPGA regs */
+#define NETUP_CI_INT_CTRL	0x00
+#define NETUP_CI_BUSCTRL2	0x01
+#define NETUP_CI_ADDR0		0x04
+#define NE

@@ -1,2 +1,3 @@
- include/config/TRACE_BRANCH_PROFILING) \
-    $(wildcard include/config/PROFILE_A
+00d00);
+		/* enable irq */
+		cx_write(GPIO_ISM, 0x00000000);/* INTERRUPTS active 

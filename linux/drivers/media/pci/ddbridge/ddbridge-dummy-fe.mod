@@ -1,3 +1,1 @@
-qrwlock.h \
-  include/linux/rwlock.h \
-    $(wil
+!try_module_get(client_tuner->dev.driver->owner)

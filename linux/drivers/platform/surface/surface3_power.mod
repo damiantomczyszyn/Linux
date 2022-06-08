@@ -1,2 +1,3 @@
-_BITS) \
-    $(wildcard include/config/HAVE
+= 1,
+	.agc = &xc3028_agc_config,
+	.bw  = &x

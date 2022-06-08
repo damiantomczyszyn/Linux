@@ -1,47 +1,89 @@
-qrwlock.h \
-  include/linux/rwlock.h \
-    $(wildcard include/config/PREEMPT) \
-  include/linux/spinlock_api_smp.h \
-    $(wildcard include/config/INLINE_SPIN_LOCK) \
-    $(wildcard include/config/INLINE_SPIN_LOCK_BH) \
-    $(wildcard include/config/INLINE_SPIN_LOCK_IRQ) \
-    $(wildcard include/config/INLINE_SPIN_LOCK_IRQSAVE) \
-    $(wildcard include/config/INLINE_SPIN_TRYLOCK) \
-    $(wildcard include/config/INLINE_SPIN_TRYLOCK_BH) \
-    $(wildcard include/config/UNINLINE_SPIN_UNLOCK) \
-    $(wildcard include/config/INLINE_SPIN_UNLOCK_BH) \
-    $(wildcard include/config/INLINE_SPIN_UNLOCK_IRQ) \
-    $(wildcard include/config/INLINE_SPIN_UNLOCK_IRQRESTORE) \
-    $(wildcard include/config/GENERIC_LOCKBREAK) \
-  include/linux/rwlock_api_smp.h \
-    $(wildcard include/config/INLINE_READ_LOCK) \
-    $(wildcard include/config/INLINE_WRITE_LOCK) \
-    $(wildcard include/config/INLINE_READ_LOCK_BH) \
-    $(wildcard include/config/INLINE_WRITE_LOCK_BH) \
-    $(wildcard include/config/INLINE_READ_LOCK_IRQ) \
-    $(wildcard include/config/INLINE_WRITE_LOCK_IRQ) \
-    $(wildcard include/config/INLINE_READ_LOCK_IRQSAVE) \
-    $(wildcard include/config/INLINE_WRITE_LOCK_IRQSAVE) \
-    $(wildcard include/config/INLINE_READ_TRYLOCK) \
-    $(wildcard include/config/INLINE_WRITE_TRYLOCK) \
-    $(wildcard include/config/INLINE_READ_UNLOCK) \
-    $(wildcard include/config/INLINE_WRITE_UNLOCK) \
-    $(wildcard include/config/INLINE_READ_UNLOCK_BH) \
-    $(wildcard include/config/INLINE_WRITE_UNLOCK_BH) \
-    $(wildcard include/config/INLINE_READ_UNLOCK_IRQ) \
-    $(wildcard include/config/INLINE_WRITE_UNLOCK_IRQ) \
-    $(wildcard include/config/INLINE_READ_UNLOCK_IRQRESTORE) \
-    $(wildcard include/config/INLINE_WRITE_UNLOCK_IRQRESTORE) \
-  include/linux/refcount.h \
-  include/linux/rbtree.h \
-  include/linux/rbtree_types.h \
-  include/linux/rcupdate.h \
-    $(wildcard include/config/PREEMPT_RCU) \
-    $(wildcard include/config/TINY_RCU) \
-    $(wildcard include/config/RCU_STRICT_GRACE_PERIOD) \
-    $(wildcard include/config/TASKS_RCU_GENERIC) \
-    $(wildcard include/config/RCU_STALL_COMMON) \
-    $(wildcard include/config/NO_HZ_FULL) \
-    $(wildcard include/config/RCU_NOCB_CPU) \
-    $(wildcard include/config/TASKS_RCU) \
-    $(wildcard include/conf
+return cx_read(addr);
+}
+
+static inline int cx23888_ir_and_or4(struct cx23885_dev *dev, u32 addr,
+				     u32 and_mask, u32 or_value)
+{
+	cx_andor(addr, ~and_mask, or_value);
+	return 0;
+}
+
+/*
+ * Rx and Tx Clock Divider register computations
+ *
+ * Note the largest clock divider value of 0xffff corresponds to:
+ *	(0xffff + 1) * 1000 / 108/2 MHz = 1,213,629.629... ns
+ * which fits in 21 bits, so we'll use unsigned int for time arguments.
+ */
+static inline u16 count_to_clock_divider(unsigned int d)
+{
+	if (d > RXCLK_RCD + 1)
+		d = RXCLK_RCD;
+	else if (d < 2)
+		d = 1;
+	else
+		d--;
+	return (u16) d;
+}
+
+static inline u16 carrier_freq_to_clock_divider(unsigned int freq)
+{
+	return count_to_clock_divider(
+			  DIV_ROUND_CLOSEST(CX23888_IR_REFCLK_FREQ, freq * 16));
+}
+
+static inline unsigned int clock_divider_to_carrier_freq(unsigned int divider)
+{
+	return DIV_ROUND_CLOSEST(CX23888_IR_REFCLK_FREQ, (divider + 1) * 16);
+}
+
+static inline unsigned int clock_divider_to_freq(unsigned int divider,
+						 unsigned int rollovers)
+{
+	return DIV_ROUND_CLOSEST(CX23888_IR_REFCLK_FREQ,
+				 (divider + 1) * rollovers);
+}
+
+/*
+ * Low Pass Filter register calculations
+ *
+ * Note the largest count value of 0xffff corresponds to:
+ *	0xffff * 1000 / 108/2 MHz = 1,213,611.11... ns
+ * which fits in 21 bits, so we'll use unsigned int for time arguments.
+ */
+static inline u16 count_to_lpf_count(unsigned int d)
+{
+	if (d > FILTR_LPF)
+		d = FILTR_LPF;
+	else if (d < 4)
+		d = 0;
+	return (u16) d;
+}
+
+static inline u16 ns_to_lpf_count(unsigned int ns)
+{
+	return count_to_lpf_count(
+		DIV_ROUND_CLOSEST(CX23888_IR_REFCLK_FREQ / 1000000 * ns, 1000));
+}
+
+static inline unsigned int lpf_count_to_ns(unsigned int count)
+{
+	/* Duration of the Low Pass Filter rejection window in ns */
+	return DIV_ROUND_CLOSEST(count * 1000,
+				 CX23888_IR_REFCLK_FREQ / 1000000);
+}
+
+static inline unsigned int lpf_count_to_us(unsigned int count)
+{
+	/* Duration of the Low Pass Filter rejection window in us */
+	return DIV_ROUND_CLOSEST(count, CX23888_IR_REFCLK_FREQ / 1000000);
+}
+
+/*
+ * FIFO register pulse width count computations
+ */
+static u32 clock_divider_to_resolution(u16 divider)
+{
+	/*
+	 * Resolution is the duration of 1 tick of the readable portion of
+	 * of the pulse width counter as read from the FIFO.  T

@@ -1,4 +1,1 @@
-EAF) \
-  include/linux/page-flags-layout.h \
-    $(wildcard include/config/KASAN_HW_TAGS) \
-  include/linux/numa.h 
+cmd_drivers/net/arcnet/arcnet.mod := { echo  drivers/net/arcnet/arcnet.o;  echo; } > drivers/net/arcnet/arcnet.mod

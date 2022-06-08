@@ -1,2 +1,1 @@
-pes.h \
-  include/asm-gener
+taval = tempval & 0x000000F

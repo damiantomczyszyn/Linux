@@ -1,865 +1,1398 @@
- include/config/IOMMU_SVA) \
-    $(wildcard include/config/STACKPROTECTOR) \
-    $(wildcard include/config/ARCH_HAS_SCALED_CPUTIME) \
-    $(wildcard include/config/VIRT_CPU_ACCOUNTING_GEN) \
-    $(wildcard include/config/NO_HZ_FULL) \
-    $(wildcard include/config/POSIX_CPUTIMERS) \
-    $(wildcard include/config/POSIX_CPU_TIMERS_TASK_WORK) \
-    $(wildcard include/config/KEYS) \
-    $(wildcard include/config/SYSVIPC) \
-    $(wildcard include/config/DETECT_HUNG_TASK) \
-    $(wildcard include/config/IO_URING) \
-    $(wildcard include/config/AUDIT) \
-    $(wildcard include/config/AUDITSYSCALL) \
-    $(wildcard include/config/DEBUG_MUTEXES) \
-    $(wildcard include/config/TRACE_IRQFLAGS) \
-    $(wildcard include/config/LOCKDEP) \
-    $(wildcard include/config/UBSAN) \
-    $(wildcard include/config/UBSAN_TRAP) \
-    $(wildcard include/config/COMPACTION) \
-    $(wildcard include/config/TASK_XACCT) \
-    $(wildcard include/config/CPUSETS) \
-    $(wildcard include/config/X86_CPU_RESCTRL) \
-    $(wildcard include/config/FUTEX) \
-    $(wildcard include/config/COMPAT) \
-    $(wildcard include/config/PERF_EVENTS) \
-    $(wildcard include/config/DEBUG_PREEMPT) \
-    $(wildcard include/config/NUMA) \
-    $(wildcard include/config/NUMA_BALANCING) \
-    $(wildcard include/config/RSEQ) \
-    $(wildcard include/config/TASK_DELAY_ACCT) \
-    $(wildcard include/config/FAULT_INJECTION) \
-    $(wildcard include/config/LATENCYTOP) \
-    $(wildcard include/config/KUNIT) \
-    $(wildcard include/config/FUNCTION_GRAPH_TRACER) \
-    $(wildcard include/config/TRACING) \
-    $(wildcard include/config/UPROBES) \
-    $(wildcard include/config/BCACHE) \
-    $(wildcard include/config/MMU) \
-    $(wildcard include/config/VMAP_STACK) \
-    $(wildcard include/config/LIVEPATCH) \
-    $(wildcard include/config/SECURITY) \
-    $(wildcard include/config/BPF_SYSCALL) \
-    $(wildcard include/config/GCC_PLUGIN_STACKLEAK) \
-    $(wildcard include/config/X86_MCE) \
-    $(wildcard include/config/KRETPROBES) \
-    $(wildcard include/config/RETHOOK) \
-    $(wildcard include/config/ARCH_HAS_PARANOID_L1D_FLUSH) \
-    $(wildcard include/config/ARCH_TASK_STRUCT_ON_STACK) \
-    $(wildcard include/config/PREEMPTION) \
-    $(wildcard include/config/PREEMPT_DYNAMIC) \
-    $(wildcard include/config/HAVE_PREEMPT_DYNAMIC_CALL) \
-    $(wildcard include/config/HAVE_PREEMPT_DYNAMIC_KEY) \
-    $(wildcard include/config/DEBUG_RSEQ) \
-  include/uapi/linux/sched.h \
-  arch/x86/include/asm/current.h \
-  arch/x86/include/asm/percpu.h \
-    $(wildcard include/config/X86_64_SMP) \
-  include/linux/kernel.h \
-    $(wildcard include/config/PREEMPT_VOLUNTARY_BUILD) \
-    $(wildcard include/config/PREEMPT_) \
-    $(wildcard include/config/PROVE_LOCKING) \
-    $(wildcard include/config/FTRACE_MCOUNT_RECORD) \
-  include/linux/stdarg.h \
-  include/linux/align.h \
-  include/linux/limits.h \
-  include/uapi/linux/limits.h \
-  include/vdso/limits.h \
-  include/linux/linkage.h \
-    $(wildcard include/config/ARCH_USE_SYM_ANNOTATIONS) \
-  include/linux/export.h \
-    $(wildcard include/config/MODVERSIONS) \
-    $(wildcard include/config/MODULE_REL_CRCS) \
-    $(wildcard include/config/HAVE_ARCH_PREL32_RELOCATIONS) \
-    $(wildcard include/config/MODULES) \
-    $(wildcard include/config/TRIM_UNUSED_KSYMS) \
-  arch/x86/include/asm/linkage.h \
-    $(wildcard include/config/X86_ALIGNMENT_16) \
-    $(wildcard include/config/SLS) \
-  arch/x86/include/asm/ibt.h \
-    $(wildcard include/config/X86_KERNEL_IBT) \
-  include/linux/container_of.h \
-  include/linux/err.h \
-  arch/x86/include/generated/uapi/asm/errno.h \
-  include/uapi/asm-generic/errno.h \
-  include/uapi/asm-generic/errno-base.h \
-  include/linux/kstrtox.h \
-  include/linux/minmax.h \
-  include/linux/panic.h \
-    $(wildcard include/config/PANIC_TIMEOUT) \
-  include/linux/printk.h \
-    $(wildcard include/config/MESSAGE_LOGLEVEL_DEFAULT) \
-    $(wildcard include/config/CONSOLE_LOGLEVEL_DEFAULT) \
-    $(wildcard include/config/CONSOLE_LOGLEVEL_QUIET) \
-    $(wildcard include/config/EARLY_PRINTK) \
-    $(wildcard include/config/PRINTK) \
-    $(wildcard include/config/PRINTK_INDEX) \
-    $(wildcard include/config/DYNAMIC_DEBUG) \
-    $(wildcard include/config/DYNAMIC_DEBUG_CORE) \
-  include/linux/init.h \
-    $(wildcard include/config/STRICT_KERNEL_RWX) \
-    $(wildcard include/config/STRICT_MODULE_RWX) \
-    $(wildcard include/config/LTO_CLANG) \
-  include/linux/kern_levels.h \
-  include/linux/cache.h \
-    $(wildcard include/config/ARCH_HAS_CACHE_LINE_SIZE) \
-  arch/x86/include/asm/cache.h \
-    $(wildcard include/config/X86_L1_CACHE_SHIFT) \
-    $(wildcard include/config/X86_INTERNODE_CACHE_SHIFT) \
-    $(wildcard include/config/X86_VSMP) \
-  include/linux/ratelimit_types.h \
-  include/uapi/linux/param.h \
-  arch/x86/include/generated/uapi/asm/param.h \
-  include/asm-generic/param.h \
-    $(wildcard include/config/HZ) \
-  include/uapi/asm-generic/param.h \
-  include/linux/spinlock_types_raw.h \
-    $(wildcard include/config/DEBUG_SPINLOCK) \
-    $(wildcard include/config/DEBUG_LOCK_ALLOC) \
-  arch/x86/include/asm/spinlock_types.h \
-  include/asm-generic/qspinlock_types.h \
-    $(wildcard include/config/NR_CPUS) \
-  include/asm-generic/qrwlock_types.h \
-  include/linux/lockdep_types.h \
-    $(wildcard include/config/PROVE_RAW_LOCK_NESTING) \
-    $(wildcard include/config/LOCK_STAT) \
-  include/linux/once_lite.h \
-  include/linux/static_call_types.h \
-    $(wildcard include/config/HAVE_STATIC_CALL) \
-    $(wildcard include/config/HAVE_STATIC_CALL_INLINE) \
-  include/linux/instruction_pointer.h \
-  include/asm-generic/percpu.h \
-    $(wildcard include/config/HAVE_SETUP_PER_CPU_AREA) \
-  include/linux/threads.h \
-    $(wildcard include/config/BASE_SMALL) \
-  include/linux/percpu-defs.h \
-    $(wildcard include/config/DEBUG_FORCE_WEAK_PER_CPU) \
-    $(wildcard include/config/AMD_MEM_ENCRYPT) \
-  include/linux/pid.h \
-  include/linux/rculist.h \
-    $(wildcard include/config/PROVE_RCU_LIST) \
-  include/linux/list.h \
-    $(wildcard include/config/DEBUG_LIST) \
-  include/linux/poison.h \
-    $(wildcard include/config/ILLEGAL_POINTER_VALUE) \
-  include/linux/rcupdate.h \
-    $(wildcard include/config/TINY_RCU) \
-    $(wildcard include/config/RCU_STRICT_GRACE_PERIOD) \
-    $(wildcard include/config/TASKS_RCU_GENERIC) \
-    $(wildcard include/config/RCU_STALL_COMMON) \
-    $(wildcard include/config/RCU_NOCB_CPU) \
-    $(wildcard include/config/TASKS_RUDE_RCU) \
-    $(wildcard include/config/TREE_RCU) \
-    $(wildcard include/config/DEBUG_OBJECTS_RCU_HEAD) \
-    $(wildcard include/config/HOTPLUG_CPU) \
-    $(wildcard include/config/PROVE_RCU) \
-    $(wildcard include/config/ARCH_WEAK_RELEASE_ACQUIRE) \
-  include/linux/atomic.h \
-  arch/x86/include/asm/atomic.h \
-  arch/x86/include/asm/cmpxchg.h \
-  arch/x86/include/asm/cmpxchg_32.h \
-  arch/x86/include/asm/atomic64_32.h \
-  include/linux/atomic/atomic-arch-fallback.h \
-    $(wildcard include/config/GENERIC_ATOMIC64) \
-  include/linux/atomic/atomic-long.h \
-  include/linux/atomic/atomic-instrumented.h \
-  include/linux/irqflags.h \
-    $(wildcard include/config/IRQSOFF_TRACER) \
-    $(wildcard include/config/PREEMPT_TRACER) \
-    $(wildcard include/config/DEBUG_IRQFLAGS) \
-    $(wildcard include/config/TRACE_IRQFLAGS_SUPPORT) \
-  arch/x86/include/asm/irqflags.h \
-    $(wildcard include/config/DEBUG_ENTRY) \
-    $(wildcard include/config/XEN_PV) \
-  arch/x86/include/asm/processor-flags.h \
-    $(wildcard include/config/VM86) \
-  arch/x86/include/uapi/asm/processor-flags.h \
-  include/linux/mem_encrypt.h \
-    $(wildcard include/config/ARCH_HAS_MEM_ENCRYPT) \
-  arch/x86/include/asm/mem_encrypt.h \
-  include/linux/cc_platform.h \
-    $(wildcard include/config/ARCH_HAS_CC_PLATFORM) \
-  arch/x86/include/uapi/asm/bootparam.h \
-  include/linux/screen_info.h \
-  include/uapi/linux/screen_info.h \
-  include/linux/apm_bios.h \
-  include/uapi/linux/apm_bios.h \
-  include/uapi/linux/ioctl.h \
-  arch/x86/include/generated/uapi/asm/ioctl.h \
-  include/asm-generic/ioctl.h \
-  include/uapi/asm-generic/ioctl.h \
-  include/linux/edd.h \
-  include/uapi/linux/edd.h \
-  arch/x86/include/asm/ist.h \
-  arch/x86/include/uapi/asm/ist.h \
-  include/video/edid.h \
-    $(wildcard include/config/X86) \
-  include/uapi/video/edid.h \
-  arch/x86/include/asm/nospec-branch.h \
-  include/linux/static_key.h \
-  include/linux/jump_label.h \
-    $(wildcard include/config/JUMP_LABEL) \
-    $(wildcard include/config/HAVE_ARCH_JUMP_LABEL_RELATIVE) \
-  arch/x86/include/asm/jump_label.h \
-  include/linux/objtool.h \
-    $(wildcard include/config/FRAME_POINTER) \
-  arch/x86/include/asm/msr-index.h \
-  arch/x86/include/asm/unwind_hints.h \
-  arch/x86/include/asm/orc_types.h \
-  arch/x86/include/asm/GEN-for-each-reg.h \
-  arch/x86/include/asm/segment.h \
-  include/linux/preempt.h \
-    $(wildcard include/config/PREEMPT_COUNT) \
-    $(wildcard include/config/TRACE_PREEMPT_TOGGLE) \
-  arch/x86/include/asm/preempt.h \
-  include/linux/thread_info.h \
-    $(wildcard include/config/GENERIC_ENTRY) \
-    $(wildcard include/config/HAVE_ARCH_WITHIN_STACK_FRAMES) \
-    $(wildcard include/config/HARDENED_USERCOPY) \
-    $(wildcard include/config/BUG) \
-  include/linux/bug.h \
-    $(wildcard include/config/GENERIC_BUG) \
-    $(wildcard include/config/BUG_ON_DATA_CORRUPTION) \
-  arch/x86/include/asm/bug.h \
-    $(wildcard include/config/DEBUG_BUGVERBOSE) \
-  include/linux/instrumentation.h \
-  include/asm-generic/bug.h \
-    $(wildcard include/config/GENERIC_BUG_RELATIVE_POINTERS) \
-  include/linux/restart_block.h \
-  include/linux/time64.h \
-  include/linux/math64.h \
-    $(wildcard include/config/ARCH_SUPPORTS_INT128) \
-  include/vdso/math64.h \
-  include/vdso/time64.h \
-  include/uapi/linux/time.h \
-  include/uapi/linux/time_types.h \
-  include/linux/errno.h \
-  include/uapi/linux/errno.h \
-  arch/x86/include/asm/thread_info.h \
-    $(wildcard include/config/X86_IOPL_IOPERM) \
-    $(wildcard include/config/IA32_EMULATION) \
-  arch/x86/include/asm/page.h \
-  arch/x86/include/asm/page_types.h \
-    $(wildcard include/config/PHYSICAL_START) \
-    $(wildcard include/config/PHYSICAL_ALIGN) \
-    $(wildcard include/config/DYNAMIC_PHYSICAL_MASK) \
-  arch/x86/include/asm/page_32_types.h \
-    $(wildcard include/config/HIGHMEM4G) \
-    $(wildcard include/config/HIGHMEM64G) \
-    $(wildcard include/config/PAGE_OFFSET) \
-  arch/x86/include/asm/page_32.h \
-    $(wildcard include/config/DEBUG_VIRTUAL) \
-    $(wildcard include/config/FLATMEM) \
-  include/linux/string.h \
-    $(wildcard include/config/BINARY_PRINTF) \
-    $(wildcard include/config/FORTIFY_SOURCE) \
-  include/uapi/linux/string.h \
-  arch/x86/include/asm/string.h \
-  arch/x86/include/asm/string_32.h \
-  include/linux/fortify-string.h \
-  include/linux/range.h \
-  include/asm-generic/memory_model.h \
-    $(wildcard include/config/SPARSEMEM_VMEMMAP) \
-    $(wildcard include/config/SPARSEMEM) \
-  include/linux/pfn.h \
-  include/asm-generic/getorder.h \
-  arch/x86/include/asm/cpufeature.h \
-    $(wildcard include/config/X86_FEATURE_NAMES) \
-  arch/x86/include/asm/processor.h \
-    $(wildcard include/config/X86_VMX_FEATURE_NAMES) \
-    $(wildcard include/config/X86_DEBUGCTLMSR) \
-    $(wildcard include/config/CPU_SUP_AMD) \
-    $(wildcard include/config/XEN) \
-  arch/x86/include/asm/math_emu.h \
-  arch/x86/include/asm/ptrace.h \
-    $(wildcard include/config/PARAVIRT) \
-  arch/x86/include/uapi/asm/ptrace.h \
-  arch/x86/include/uapi/asm/ptrace-abi.h \
-  arch/x86/include/asm/paravirt_types.h \
-    $(wildcard include/config/PGTABLE_LEVELS) \
-    $(wildcard include/config/PARAVIRT_DEBUG) \
-  arch/x86/include/asm/desc_defs.h \
-  arch/x86/include/asm/pgtable_types.h \
-    $(wildcard include/config/MEM_SOFT_DIRTY) \
-    $(wildcard include/config/HAVE_ARCH_USERFAULTFD_WP) \
-    $(wildcard include/config/PROC_FS) \
-  arch/x86/include/asm/pgtable_32_types.h \
-  arch/x86/include/asm/pgtable-3level_types.h \
-  include/asm-generic/pgtable-nop4d.h \
-  include/asm-generic/pgtable-nopud.h \
-  arch/x86/include/asm/proto.h \
-  arch/x86/include/uapi/asm/ldt.h \
-  arch/x86/include/uapi/asm/sigcontext.h \
-  arch/x86/include/asm/msr.h \
-    $(wildcard include/config/TRACEPOINTS) \
-  arch/x86/include/asm/msr-index.h \
-  arch/x86/include/asm/cpumask.h \
-  include/linux/cpumask.h \
-    $(wildcard include/config/CPUMASK_OFFSTACK) \
-    $(wildcard include/config/DEBUG_PER_CPU_MAPS) \
-  include/linux/bitmap.h \
-  include/linux/find.h \
-  arch/x86/include/uapi/asm/msr.h \
-  include/linux/tracepoint-defs.h \
-  arch/x86/include/asm/special_insns.h \
-  arch/x86/include/asm/fpu/types.h \
-  arch/x86/include/asm/vmxfeatures.h \
-  arch/x86/include/asm/vdso/processor.h \
-  include/linux/personality.h \
-  include/uapi/linux/personality.h \
-  include/linux/bottom_half.h \
-  include/linux/lockdep.h \
-    $(wildcard include/config/DEBUG_LOCKING_API_SELFTESTS) \
-  include/linux/smp.h \
-    $(wildcard include/config/UP_LATE_INIT) \
-  include/linux/smp_types.h \
-  include/linux/llist.h \
-    $(wildcard include/config/ARCH_HAVE_NMI_SAFE_CMPXCHG) \
-  arch/x86/include/asm/smp.h \
-    $(wildcard include/config/X86_LOCAL_APIC) \
-    $(wildcard include/config/DEBUG_NMI_SELFTEST) \
-  include/linux/rcutree.h \
-  include/linux/wait.h \
-  include/linux/spinlock.h \
-  arch/x86/include/generated/asm/mmiowb.h \
-  include/asm-generic/mmiowb.h \
-    $(wildcard include/config/MMIOWB) \
-  include/linux/spinlock_types.h \
-  include/linux/rwlock_types.h \
-  arch/x86/include/asm/spinlock.h \
-  arch/x86/include/asm/paravirt.h \
-    $(wildcard include/config/PARAVIRT_SPINLOCKS) \
-  arch/x86/include/asm/frame.h \
-  arch/x86/include/asm/qspinlock.h \
-  include/asm-generic/qspinlock.h \
-  arch/x86/include/asm/qrwlock.h \
-  include/asm-generic/qrwlock.h \
-  include/linux/rwlock.h \
-    $(wildcard include/config/PREEMPT) \
-  include/linux/spinlock_api_smp.h \
-    $(wildcard include/config/INLINE_SPIN_LOCK) \
-    $(wildcard include/config/INLINE_SPIN_LOCK_BH) \
-    $(wildcard include/config/INLINE_SPIN_LOCK_IRQ) \
-    $(wildcard include/config/INLINE_SPIN_LOCK_IRQSAVE) \
-    $(wildcard include/config/INLINE_SPIN_TRYLOCK) \
-    $(wildcard include/config/INLINE_SPIN_TRYLOCK_BH) \
-    $(wildcard include/config/UNINLINE_SPIN_UNLOCK) \
-    $(wildcard include/config/INLINE_SPIN_UNLOCK_BH) \
-    $(wildcard include/config/INLINE_SPIN_UNLOCK_IRQ) \
-    $(wildcard include/config/INLINE_SPIN_UNLOCK_IRQRESTORE) \
-    $(wildcard include/config/GENERIC_LOCKBREAK) \
-  include/linux/rwlock_api_smp.h \
-    $(wildcard include/config/INLINE_READ_LOCK) \
-    $(wildcard include/config/INLINE_WRITE_LOCK) \
-    $(wildcard include/config/INLINE_READ_LOCK_BH) \
-    $(wildcard include/config/INLINE_WRITE_LOCK_BH) \
-    $(wildcard include/config/INLINE_READ_LOCK_IRQ) \
-    $(wildcard include/config/INLINE_WRITE_LOCK_IRQ) \
-    $(wildcard include/config/INLINE_READ_LOCK_IRQSAVE) \
-    $(wildcard include/config/INLINE_WRITE_LOCK_IRQSAVE) \
-    $(wildcard include/config/INLINE_READ_TRYLOCK) \
-    $(wildcard include/config/INLINE_WRITE_TRYLOCK) \
-    $(wildcard include/config/INLINE_READ_UNLOCK) \
-    $(wildcard include/config/INLINE_WRITE_UNLOCK) \
-    $(wildcard include/config/INLINE_READ_UNLOCK_BH) \
-    $(wildcard include/config/INLINE_WRITE_UNLOCK_BH) \
-    $(wildcard include/config/INLINE_READ_UNLOCK_IRQ) \
-    $(wildcard include/config/INLINE_WRITE_UNLOCK_IRQ) \
-    $(wildcard include/config/INLINE_READ_UNLOCK_IRQRESTORE) \
-    $(wildcard include/config/INLINE_WRITE_UNLOCK_IRQRESTORE) \
-  include/uapi/linux/wait.h \
-  include/linux/refcount.h \
-  include/linux/sem.h \
-  include/uapi/linux/sem.h \
-  include/linux/ipc.h \
-  include/linux/uidgid.h \
-    $(wildcard include/config/MULTIUSER) \
-    $(wildcard include/config/USER_NS) \
-  include/linux/highuid.h \
-  include/linux/rhashtable-types.h \
-  include/linux/mutex.h \
-    $(wildcard include/config/MUTEX_SPIN_ON_OWNER) \
-  include/linux/osq_lock.h \
-  include/linux/debug_locks.h \
-  include/linux/workqueue.h \
-    $(wildcard include/config/DEBUG_OBJECTS_WORK) \
-    $(wildcard include/config/FREEZER) \
-    $(wildcard include/config/SYSFS) \
-    $(wildcard include/config/WQ_WATCHDOG) \
-  include/linux/timer.h \
-    $(wildcard include/config/DEBUG_OBJECTS_TIMERS) \
-    $(wildcard include/config/NO_HZ_COMMON) \
-  include/linux/ktime.h \
-  include/linux/time.h \
-    $(wildcard include/config/POSIX_TIMERS) \
-  include/linux/time32.h \
-  include/linux/timex.h \
-  include/uapi/linux/timex.h \
-  arch/x86/include/asm/timex.h \
-    $(wildcard include/config/X86_TSC) \
-  arch/x86/include/asm/tsc.h \
-  include/vdso/time32.h \
-  include/vdso/time.h \
-  include/linux/jiffies.h \
-  include/vdso/jiffies.h \
-  include/generated/timeconst.h \
-  include/vdso/ktime.h \
-  include/linux/timekeeping.h \
-    $(wildcard include/config/GENERIC_CMOS_UPDATE) \
-  include/linux/clocksource_ids.h \
-  include/linux/debugobjects.h \
-    $(wildcard include/config/DEBUG_OBJECTS) \
-    $(wildcard include/config/DEBUG_OBJECTS_FREE) \
-  include/uapi/linux/ipc.h \
-  arch/x86/include/generated/uapi/asm/ipcbuf.h \
-  include/uapi/asm-generic/ipcbuf.h \
-  arch/x86/include/uapi/asm/sembuf.h \
-  include/linux/shm.h \
-  include/uapi/linux/shm.h \
-  include/uapi/asm-generic/hugetlb_encode.h \
-  arch/x86/include/uapi/asm/shmbuf.h \
-  include/uapi/asm-generic/shmbuf.h \
-  arch/x86/include/asm/shmparam.h \
-  include/linux/plist.h \
-    $(wildcard include/config/DEBUG_PLIST) \
-  include/linux/hrtimer.h \
-    $(wildcard include/config/HIGH_RES_TIMERS) \
-    $(wildcard include/config/TIME_LOW_RES) \
-    $(wildcard include/config/TIMERFD) \
-  include/linux/hrtimer_defs.h \
-  include/linux/rbtree.h \
-  include/linux/rbtree_types.h \
-  include/linux/percpu.h \
-    $(wildcard include/config/NEED_PER_CPU_EMBED_FIRST_CHUNK) \
-    $(wildcard include/config/NEED_PER_CPU_PAGE_FIRST_CHUNK) \
-  include/linux/mmdebug.h \
-    $(wildcard include/config/DEBUG_VM) \
-    $(wildcard include/config/DEBUG_VM_PGFLAGS) \
-  include/linux/seqlock.h \
-  include/linux/ww_mutex.h \
-    $(wildcard include/config/DEBUG_RT_MUTEXES) \
-    $(wildcard include/config/DEBUG_WW_MUTEX_SLOWPATH) \
-  include/linux/rtmutex.h \
-  include/linux/timerqueue.h \
-  include/linux/seccomp.h \
-    $(wildcard include/config/SECCOMP) \
-    $(wildcard include/config/HAVE_ARCH_SECCOMP_FILTER) \
-    $(wildcard include/config/SECCOMP_FILTER) \
-    $(wildcard include/config/CHECKPOINT_RESTORE) \
-    $(wildcard include/config/SECCOMP_CACHE_DEBUG) \
-  include/uapi/linux/seccomp.h \
-  arch/x86/include/asm/seccomp.h \
-  arch/x86/include/asm/unistd.h \
-  arch/x86/include/uapi/asm/unistd.h \
-  arch/x86/include/generated/uapi/asm/unistd_32.h \
-  include/asm-generic/seccomp.h \
-  include/uapi/linux/unistd.h \
-  include/linux/nodemask.h \
-    $(wildcard include/config/HIGHMEM) \
-  include/linux/numa.h \
-    $(wildcard include/config/NODES_SHIFT) \
-    $(wildcard include/config/NUMA_KEEP_MEMINFO) \
-    $(wildcard include/config/HAVE_ARCH_NODE_DEV_GROUP) \
-  arch/x86/include/asm/sparsemem.h \
-  include/linux/resource.h \
-  include/uapi/linux/resource.h \
-  arch/x86/include/generated/uapi/asm/resource.h \
-  include/asm-generic/resource.h \
-  include/uapi/asm-generic/resource.h \
-  include/linux/latencytop.h \
-  include/linux/sched/prio.h \
-  include/linux/sched/types.h \
-  include/linux/signal_types.h \
-    $(wildcard include/config/OLD_SIGACTION) \
-  include/uapi/linux/signal.h \
-  arch/x86/include/asm/signal.h \
-  arch/x86/include/uapi/asm/signal.h \
-  include/uapi/asm-generic/signal-defs.h \
-  arch/x86/include/uapi/asm/siginfo.h \
-  include/uapi/asm-generic/siginfo.h \
-  include/linux/syscall_user_dispatch.h \
-  include/linux/mm_types_task.h \
-    $(wildcard include/config/ARCH_WANT_BATCHED_UNMAP_TLB_FLUSH) \
-    $(wildcard include/config/SPLIT_PTLOCK_CPUS) \
-    $(wildcard include/config/ARCH_ENABLE_SPLIT_PMD_PTLOCK) \
-  arch/x86/include/asm/tlbbatch.h \
-  include/linux/task_io_accounting.h \
-    $(wildcard include/config/TASK_IO_ACCOUNTING) \
-  include/linux/posix-timers.h \
-  include/linux/alarmtimer.h \
-    $(wildcard include/config/RTC_CLASS) \
-  include/uapi/linux/rseq.h \
-  include/linux/kcsan.h \
-  arch/x86/include/generated/asm/kmap_size.h \
-  include/asm-generic/kmap_size.h \
-    $(wildcard include/config/DEBUG_KMAP_LOCAL) \
-  arch/x86/include/asm/delay.h \
-  include/asm-generic/delay.h \
-  include/linux/gpio.h \
-    $(wildcard include/config/GPIOLIB) \
-    $(wildcard include/config/ARCH_HAVE_CUSTOM_GPIO_H) \
-  include/asm-generic/gpio.h \
-    $(wildcard include/config/ARCH_NR_GPIO) \
-  include/linux/gpio/driver.h \
-    $(wildcard include/config/IRQ_DOMAIN_HIERARCHY) \
-    $(wildcard include/config/GPIO_GENERIC) \
-    $(wildcard include/config/GPIOLIB_IRQCHIP) \
-    $(wildcard include/config/OF_GPIO) \
-    $(wildcard include/config/PINCTRL) \
-  include/linux/device.h \
-    $(wildcard include/config/GENERIC_MSI_IRQ_DOMAIN) \
-    $(wildcard include/config/GENERIC_MSI_IRQ) \
-    $(wildcard include/config/ENERGY_MODEL) \
-    $(wildcard include/config/DMA_OPS) \
-    $(wildcard include/config/DMA_DECLARE_COHERENT) \
-    $(wildcard include/config/DMA_CMA) \
-    $(wildcard include/config/SWIOTLB) \
-    $(wildcard include/config/ARCH_HAS_SYNC_DMA_FOR_DEVICE) \
-    $(wildcard include/config/ARCH_HAS_SYNC_DMA_FOR_CPU) \
-    $(wildcard include/config/ARCH_HAS_SYNC_DMA_FOR_CPU_ALL) \
-    $(wildcard include/config/DMA_OPS_BYPASS) \
-    $(wildcard include/config/PM_SLEEP) \
-    $(wildcard include/config/OF) \
-    $(wildcard include/config/DEVTMPFS) \
-    $(wildcard include/config/SYSFS_DEPRECATED) \
-  include/linux/dev_printk.h \
-  include/linux/ratelimit.h \
-  include/linux/energy_model.h \
-  include/linux/kobject.h \
-    $(wildcard include/config/UEVENT_HELPER) \
-    $(wildcard include/config/DEBUG_KOBJECT_RELEASE) \
-  include/linux/sysfs.h \
-  include/linux/kernfs.h \
-    $(wildcard include/config/KERNFS) \
-  include/linux/idr.h \
-  include/linux/radix-tree.h \
-  include/linux/gfp.h \
-    $(wildcard include/config/KASAN_HW_TAGS) \
-    $(wildcard include/config/ZONE_DMA) \
-    $(wildcard include/config/ZONE_DMA32) \
-    $(wildcard include/config/ZONE_DEVICE) \
-    $(wildcard include/config/CONTIG_ALLOC) \
-    $(wildcard include/config/CMA) \
-  include/linux/mmzone.h \
-    $(wildcard include/config/FORCE_MAX_ZONEORDER) \
-    $(wildcard include/config/MEMORY_ISOLATION) \
-    $(wildcard include/config/ZSMALLOC) \
-    $(wildcard include/config/SWAP) \
-    $(wildcard include/config/TRANSPARENT_HUGEPAGE) \
-    $(wildcard include/config/MEMORY_HOTPLUG) \
-    $(wildcard include/config/PAGE_EXTENSION) \
-    $(wildcard include/config/DEFERRED_STRUCT_PAGE_INIT) \
-    $(wildcard include/config/HAVE_MEMORYLESS_NODES) \
-    $(wildcard include/config/SPARSEMEM_EXTREME) \
-    $(wildcard include/config/HAVE_ARCH_PFN_VALID) \
-  include/linux/pageblock-flags.h \
-    $(wildcard include/config/HUGETLB_PAGE) \
-    $(wildcard include/config/HUGETLB_PAGE_SIZE_VARIABLE) \
-  include/linux/page-flags-layout.h \
-  include/generated/bounds.h \
-  include/linux/mm_types.h \
-    $(wildcard include/config/HAVE_ALIGNED_STRUCT_PAGE) \
-    $(wildcard include/config/USERFAULTFD) \
-    $(wildcard include/config/HAVE_ARCH_COMPAT_MMAP_BASES) \
-    $(wildcard include/config/MEMBARRIER) \
-    $(wildcard include/config/AIO) \
-    $(wildcard include/config/MMU_NOTIFIER) \
-  include/linux/auxvec.h \
-  include/uapi/linux/auxvec.h \
-  arch/x86/include/uapi/asm/auxvec.h \
-  include/linux/kref.h \
-  include/linux/rwsem.h \
-    $(wildcard include/config/RWSEM_SPIN_ON_OWNER) \
-    $(wildcard include/config/DEBUG_RWSEMS) \
-  include/linux/completion.h \
-  include/linux/swait.h \
-  include/linux/uprobes.h \
-  arch/x86/include/asm/uprobes.h \
-  include/linux/notifier.h \
-    $(wildcard include/config/TREE_SRCU) \
-  include/linux/srcu.h \
-    $(wildcard include/config/TINY_SRCU) \
-    $(wildcard include/config/SRCU) \
-  include/linux/rcu_segcblist.h \
-  include/linux/srcutree.h \
-  include/linux/rcu_node_tree.h \
-    $(wildcard include/config/RCU_FANOUT) \
-    $(wildcard include/config/RCU_FANOUT_LEAF) \
-  arch/x86/include/asm/mmu.h \
-    $(wildcard include/config/MODIFY_LDT_SYSCALL) \
-  include/linux/page-flags.h \
-    $(wildcard include/config/ARCH_USES_PG_UNCACHED) \
-    $(wildcard include/config/MEMORY_FAILURE) \
-    $(wildcard include/config/PAGE_IDLE_FLAG) \
-    $(wildcard include/config/HUGETLB_PAGE_FREE_VMEMMAP) \
-    $(wildcard include/config/HUGETLB_PAGE_FREE_VMEMMAP_DEFAULT_ON) \
-    $(wildcard include/config/KSM) \
-  include/linux/local_lock.h \
-  include/linux/local_lock_internal.h \
-  include/linux/memory_hotplug.h \
-    $(wildcard include/config/HAVE_ARCH_NODEDATA_EXTENSION) \
-    $(wildcard include/config/ARCH_HAS_ADD_PAGES) \
-    $(wildcard include/config/MEMORY_HOTREMOVE) \
-  arch/x86/include/asm/mmzone.h \
-  arch/x86/include/asm/mmzone_32.h \
-  include/linux/topology.h \
-    $(wildcard include/config/USE_PERCPU_NUMA_NODE_ID) \
-    $(wildcard include/config/SCHED_SMT) \
-    $(wildcard include/config/SCHED_CLUSTER) \
-  include/linux/arch_topology.h \
-    $(wildcard include/config/ACPI_CPPC_LIB) \
-    $(wildcard include/config/GENERIC_ARCH_TOPOLOGY) \
-  arch/x86/include/asm/topology.h \
-    $(wildcard include/config/SCHED_MC_PRIO) \
-  arch/x86/include/asm/mpspec.h \
-    $(wildcard include/config/EISA) \
-    $(wildcard include/config/X86_MPPARSE) \
-  arch/x86/include/asm/mpspec_def.h \
-  arch/x86/include/asm/x86_init.h \
-  arch/x86/include/asm/apicdef.h \
-  include/asm-generic/topology.h \
-  include/linux/xarray.h \
-    $(wildcard include/config/XARRAY_MULTI) \
-  include/linux/kconfig.h \
-  include/linux/kobject_ns.h \
-  include/linux/stat.h \
-  arch/x86/include/uapi/asm/stat.h \
-  include/uapi/linux/stat.h \
-  include/linux/sched/cpufreq.h \
-    $(wildcard include/config/CPU_FREQ) \
-  include/linux/sched/topology.h \
-    $(wildcard include/config/SCHED_DEBUG) \
-    $(wildcard include/config/SCHED_MC) \
-    $(wildcard include/config/CPU_FREQ_GOV_SCHEDUTIL) \
-  include/linux/sched/idle.h \
-  include/linux/sched/sd_flags.h \
-  include/linux/ioport.h \
-  include/linux/klist.h \
-  include/linux/pm.h \
-    $(wildcard include/config/VT_CONSOLE_SLEEP) \
-    $(wildcard include/config/PM) \
-    $(wildcard include/config/PM_CLK) \
-    $(wildcard include/config/PM_GENERIC_DOMAINS) \
-  include/linux/overflow.h \
-  include/linux/device/bus.h \
-    $(wildcard include/config/ACPI) \
-  include/linux/device/class.h \
-  include/linux/device/driver.h \
-  include/linux/module.h \
-    $(wildcard include/config/MODULES_TREE_LOOKUP) \
-    $(wildcard include/config/STACKTRACE_BUILD_ID) \
-    $(wildcard include/config/MODULE_SIG) \
-    $(wildcard include/config/KALLSYMS) \
-    $(wildcard include/config/BPF_EVENTS) \
-    $(wildcard include/config/DEBUG_INFO_BTF_MODULES) \
-    $(wildcard include/config/EVENT_TRACING) \
-    $(wildcard include/config/MODULE_UNLOAD) \
-    $(wildcard include/config/CONSTRUCTORS) \
-    $(wildcard include/config/FUNCTION_ERROR_INJECTION) \
-  include/linux/buildid.h \
-    $(wildcard include/config/CRASH_CORE) \
-  include/linux/kmod.h \
-  include/linux/umh.h \
-  include/linux/sysctl.h \
-    $(wildcard include/config/SYSCTL) \
-  include/uapi/linux/sysctl.h \
-  include/linux/elf.h \
-    $(wildcard include/config/ARCH_USE_GNU_PROPERTY) \
-    $(wildcard include/config/ARCH_HAVE_ELF_PROT) \
-  arch/x86/include/asm/elf.h \
-    $(wildcard include/config/X86_X32_ABI) \
-  arch/x86/include/asm/user.h \
-  arch/x86/include/asm/user_32.h \
-  arch/x86/include/asm/fsgsbase.h \
-  arch/x86/include/asm/vdso.h \
-  arch/x86/include/asm/desc.h \
-  arch/x86/include/asm/fixmap.h \
-    $(wildcard include/config/DEBUG_KMAP_LOCAL_FORCE_MAP) \
-    $(wildcard include/config/X86_VSYSCALL_EMULATION) \
-    $(wildcard include/config/PROVIDE_OHCI1394_DMA_INIT) \
-    $(wildcard include/config/X86_IO_APIC) \
-    $(wildcard include/config/PCI_MMCONFIG) \
-    $(wildcard include/config/ACPI_APEI_GHES) \
-    $(wildcard include/config/INTEL_TXT) \
-  include/asm-generic/fixmap.h \
-  arch/x86/include/asm/irq_vectors.h \
-    $(wildcard include/config/HAVE_KVM) \
-    $(wildcard include/config/HYPERV) \
-    $(wildcard include/config/PCI_MSI) \
-  arch/x86/include/asm/cpu_entry_area.h \
-  arch/x86/include/asm/intel_ds.h \
-  arch/x86/include/asm/pgtable_areas.h \
-  arch/x86/include/asm/pgtable_32_areas.h \
-  include/uapi/linux/elf.h \
-  include/uapi/linux/elf-em.h \
-  include/linux/moduleparam.h \
-    $(wildcard include/config/ALPHA) \
-    $(wildcard include/config/IA64) \
-    $(wildcard include/config/PPC64) \
-  include/linux/rbtree_latch.h \
-  include/linux/error-injection.h \
-  include/asm-generic/error-injection.h \
-  include/linux/cfi.h \
-    $(wildcard include/config/CFI_CLANG_SHADOW) \
-  arch/x86/include/asm/module.h \
-    $(wildcard include/config/UNWINDER_ORC) \
-  include/asm-generic/module.h \
-    $(wildcard include/config/HAVE_MOD_ARCH_SPECIFIC) \
-    $(wildcard include/config/MODULES_USE_ELF_REL) \
-    $(wildcard include/config/MODULES_USE_ELF_RELA) \
-  arch/x86/include/asm/orc_types.h \
-  arch/x86/include/asm/device.h \
-  include/linux/pm_wakeup.h \
-  include/linux/irq.h \
-    $(wildcard include/config/GENERIC_IRQ_EFFECTIVE_AFF_MASK) \
-    $(wildcard include/config/GENERIC_IRQ_IPI) \
-    $(wildcard include/config/DEPRECATED_IRQ_CPU_ONOFFLINE) \
-    $(wildcard include/config/GENERIC_IRQ_MIGRATION) \
-    $(wildcard include/config/GENERIC_PENDING_IRQ) \
-    $(wildcard include/config/HARDIRQS_SW_RESEND) \
-    $(wildcard include/config/GENERIC_IRQ_LEGACY) \
-    $(wildcard include/config/GENERIC_IRQ_MULTI_HANDLER) \
-  include/linux/irqhandler.h \
-  include/linux/irqreturn.h \
-  include/linux/irqnr.h \
-  include/uapi/linux/irqnr.h \
-  include/linux/io.h \
-    $(wildcard include/config/HAS_IOPORT_MAP) \
-    $(wildcard include/config/PCI) \
-  arch/x86/include/asm/io.h \
-    $(wildcard include/config/MTRR) \
-    $(wildcard include/config/X86_PAT) \
-  arch/x86/include/generated/asm/early_ioremap.h \
-  include/asm-generic/early_ioremap.h \
-    $(wildcard include/config/GENERIC_EARLY_IOREMAP) \
-  include/asm-generic/iomap.h \
-  include/asm-generic/pci_iomap.h \
-    $(wildcard include/config/NO_GENERIC_PCI_IOPORT_MAP) \
-    $(wildcard include/config/GENERIC_PCI_IOMAP) \
-  include/asm-generic/io.h \
-    $(wildcard include/config/GENERIC_IOMAP) \
-    $(wildcard include/config/GENERIC_IOREMAP) \
-    $(wildcard include/config/VIRT_TO_BUS) \
-    $(wildcard include/config/GENERIC_DEVMEM_IS_ALLOWED) \
-  include/linux/logic_pio.h \
-    $(wildcard include/config/INDIRECT_PIO) \
-  include/linux/fwnode.h \
-  include/linux/vmalloc.h \
-    $(wildcard include/config/KASAN_VMALLOC) \
-    $(wildcard include/config/HAVE_ARCH_HUGE_VMALLOC) \
-  arch/x86/include/asm/vmalloc.h \
-    $(wildcard include/config/HAVE_ARCH_HUGE_VMAP) \
-  include/linux/slab.h \
-    $(wildcard include/config/DEBUG_SLAB) \
-    $(wildcard include/config/FAILSLAB) \
-    $(wildcard include/config/MEMCG_KMEM) \
-    $(wildcard include/config/KASAN) \
-    $(wildcard include/config/SLAB) \
-    $(wildcard include/config/SLUB) \
-    $(wildcard include/config/SLOB) \
-  include/linux/percpu-refcount.h \
-  include/linux/kasan.h \
-    $(wildcard include/config/KASAN_STACK) \
-    $(wildcard include/config/KASAN_INLINE) \
-  include/linux/kasan-enabled.h \
-  arch/x86/include/asm/irq.h \
-  arch/x86/include/generated/asm/irq_regs.h \
-  include/asm-generic/irq_regs.h \
-  include/linux/irqdesc.h \
-    $(wildcard include/config/GENERIC_IRQ_DEBUGFS) \
-    $(wildcard include/config/SPARSE_IRQ) \
-    $(wildcard include/config/IRQ_DOMAIN) \
-  arch/x86/include/asm/hw_irq.h \
-  include/linux/profile.h \
-    $(wildcard include/config/PROFILING) \
-  arch/x86/include/asm/sections.h \
-  include/asm-generic/sections.h \
-    $(wildcard include/config/HAVE_FUNCTION_DESCRIPTORS) \
-  arch/x86/include/asm/extable.h \
-    $(wildcard include/config/BPF_JIT) \
-  include/linux/irqchip/chained_irq.h \
-  include/linux/irqdomain.h \
-    $(wildcard include/config/IRQ_DOMAIN_NOMAP) \
-  include/linux/of.h \
-    $(wildcard include/config/OF_DYNAMIC) \
-    $(wildcard include/config/SPARC) \
-    $(wildcard include/config/OF_PROMTREE) \
-    $(wildcard include/config/OF_KOBJ) \
-    $(wildcard include/config/OF_NUMA) \
-    $(wildcard include/config/OF_OVERLAY) \
-  include/linux/mod_devicetable.h \
-  include/linux/uuid.h \
-  include/uapi/linux/uuid.h \
-  include/linux/property.h \
-  include/linux/pinctrl/pinctrl.h \
-    $(wildcard include/config/GENERIC_PINCONF) \
-  include/linux/seq_file.h \
-  include/linux/string_helpers.h \
-  include/linux/ctype.h \
-  include/linux/fs.h \
-    $(wildcard include/config/READ_ONLY_THP_FOR_FS) \
-    $(wildcard include/config/FS_POSIX_ACL) \
-    $(wildcard include/config/CGROUP_WRITEBACK) \
-    $(wildcard include/config/IMA) \
-    $(wildcard include/config/FILE_LOCKING) \
-    $(wildcard include/config/FSNOTIFY) \
-    $(wildcard include/config/FS_ENCRYPTION) \
-    $(wildcard include/config/FS_VERITY) \
-    $(wildcard include/config/EPOLL) \
-    $(wildcard include/config/UNICODE) \
-    $(wildcard include/config/QUOTA) \
-    $(wildcard include/config/FS_DAX) \
-    $(wildcard include/config/BLOCK) \
-    $(wildcard include/config/MIGRATION) \
-  include/linux/wait_bit.h \
-  include/linux/kdev_t.h \
-  include/uapi/linux/kdev_t.h \
-  include/linux/dcache.h \
-  include/linux/rculist_bl.h \
-  include/linux/list_bl.h \
-  include/linux/bit_spinlock.h \
-  include/linux/lockref.h \
-    $(wildcard include/config/ARCH_USE_CMPXCHG_LOCKREF) \
-  include/linux/stringhash.h \
-    $(wildcard include/config/DCACHE_WORD_ACCESS) \
-  include/linux/hash.h \
-    $(wildcard include/config/HAVE_ARCH_HASH) \
-  include/linux/path.h \
-  include/linux/list_lru.h \
-  include/linux/shrinker.h \
-  include/linux/capability.h \
-  include/uapi/linux/capability.h \
-  include/linux/semaphore.h \
-  include/linux/fcntl.h \
-    $(wildcard include/config/ARCH_32BIT_OFF_T) \
-  include/uapi/linux/fcntl.h \
-  arch/x86/include/generated/uapi/asm/fcntl.h \
-  include/uapi/asm-generic/fcntl.h \
-  include/uapi/linux/openat2.h \
-  include/linux/migrate_mode.h \
-  include/linux/percpu-rwsem.h \
-  include/linux/rcuwait.h \
-  include/linux/sched/signal.h \
-    $(wildcard include/config/SCHED_AUTOGROUP) \
-    $(wildcard include/config/BSD_PROCESS_ACCT) \
-    $(wildcard include/config/TASKSTATS) \
-    $(wildcard include/config/STACK_GROWSUP) \
-  include/linux/signal.h \
-    $(wildcard include/config/DYNAMIC_SIGFRAME) \
-  include/linux/sched/jobctl.h \
-  include/linux/sched/task.h \
-    $(wildcard include/config/HAVE_EXIT_THREAD) \
-    $(wildcard include/config/ARCH_WANTS_DYNAMIC_TASK_STRUCT) \
-    $(wildcard include/config/HAVE_ARCH_THREAD_STRUCT_WHITELIST) \
-  include/linux/uaccess.h \
-  include/linux/fault-inject-usercopy.h \
-    $(wildcard include/config/FAULT_INJECTION_USERCOPY) \
-  arch/x86/include/asm/uaccess.h \
-    $(wildcard include/config/CC_HAS_ASM_GOTO_OUTPUT) \
-    $(wildcard include/config/CC_HAS_ASM_GOTO_TIED_OUTPUT) \
-    $(wildcard include/config/ARCH_HAS_COPY_MC) \
-    $(wildcard include/config/X86_INTEL_USERCOPY) \
-  arch/x86/include/asm/smap.h \
-  include/asm-generic/access_ok.h \
-    $(wildcard include/config/ALTERNATE_USER_ADDRESS_SPACE) \
-  arch/x86/include/asm/uac
+// SPDX-License-Identifier: GPL-2.0
+/* Parts of this driver are based on the following:
+ *  - Kvaser linux leaf driver (version 4.78)
+ *  - CAN driver for esd CAN-USB/2
+ *  - Kvaser linux usbcanII driver (version 5.3)
+ *
+ * Copyright (C) 2002-2018 KVASER AB, Sweden. All rights reserved.
+ * Copyright (C) 2010 Matthias Fuchs <matthias.fuchs@esd.eu>, esd gmbh
+ * Copyright (C) 2012 Olivier Sobrie <olivier@sobrie.be>
+ * Copyright (C) 2015 Valeo S.A.
+ */
+
+#include <linux/completion.h>
+#include <linux/device.h>
+#include <linux/gfp.h>
+#include <linux/jiffies.h>
+#include <linux/kernel.h>
+#include <linux/netdevice.h>
+#include <linux/spinlock.h>
+#include <linux/string.h>
+#include <linux/types.h>
+#include <linux/units.h>
+#include <linux/usb.h>
+
+#include <linux/can.h>
+#include <linux/can/dev.h>
+#include <linux/can/error.h>
+#include <linux/can/netlink.h>
+
+#include "kvaser_usb.h"
+
+#define MAX_USBCAN_NET_DEVICES		2
+
+/* Command header size */
+#define CMD_HEADER_LEN			2
+
+/* Kvaser CAN message flags */
+#define MSG_FLAG_ERROR_FRAME		BIT(0)
+#define MSG_FLAG_OVERRUN		BIT(1)
+#define MSG_FLAG_NERR			BIT(2)
+#define MSG_FLAG_WAKEUP			BIT(3)
+#define MSG_FLAG_REMOTE_FRAME		BIT(4)
+#define MSG_FLAG_RESERVED		BIT(5)
+#define MSG_FLAG_TX_ACK			BIT(6)
+#define MSG_FLAG_TX_REQUEST		BIT(7)
+
+/* CAN states (M16C CxSTRH register) */
+#define M16C_STATE_BUS_RESET		BIT(0)
+#define M16C_STATE_BUS_ERROR		BIT(4)
+#define M16C_STATE_BUS_PASSIVE		BIT(5)
+#define M16C_STATE_BUS_OFF		BIT(6)
+
+/* Leaf/usbcan command ids */
+#define CMD_RX_STD_MESSAGE		12
+#define CMD_TX_STD_MESSAGE		13
+#define CMD_RX_EXT_MESSAGE		14
+#define CMD_TX_EXT_MESSAGE		15
+#define CMD_SET_BUS_PARAMS		16
+#define CMD_CHIP_STATE_EVENT		20
+#define CMD_SET_CTRL_MODE		21
+#define CMD_RESET_CHIP			24
+#define CMD_START_CHIP			26
+#define CMD_START_CHIP_REPLY		27
+#define CMD_STOP_CHIP			28
+#define CMD_STOP_CHIP_REPLY		29
+
+#define CMD_USBCAN_CLOCK_OVERFLOW_EVENT	33
+
+#define CMD_GET_CARD_INFO		34
+#define CMD_GET_CARD_INFO_REPLY		35
+#define CMD_GET_SOFTWARE_INFO		38
+#define CMD_GET_SOFTWARE_INFO_REPLY	39
+#define CMD_FLUSH_QUEUE			48
+#define CMD_TX_ACKNOWLEDGE		50
+#define CMD_CAN_ERROR_EVENT		51
+#define CMD_FLUSH_QUEUE_REPLY		68
+
+#define CMD_LEAF_LOG_MESSAGE		106
+
+/* Leaf frequency options */
+#define KVASER_USB_LEAF_SWOPTION_FREQ_MASK 0x60
+#define KVASER_USB_LEAF_SWOPTION_FREQ_16_MHZ_CLK 0
+#define KVASER_USB_LEAF_SWOPTION_FREQ_32_MHZ_CLK BIT(5)
+#define KVASER_USB_LEAF_SWOPTION_FREQ_24_MHZ_CLK BIT(6)
+
+/* error factors */
+#define M16C_EF_ACKE			BIT(0)
+#define M16C_EF_CRCE			BIT(1)
+#define M16C_EF_FORME			BIT(2)
+#define M16C_EF_STFE			BIT(3)
+#define M16C_EF_BITE0			BIT(4)
+#define M16C_EF_BITE1			BIT(5)
+#define M16C_EF_RCVE			BIT(6)
+#define M16C_EF_TRE			BIT(7)
+
+/* Only Leaf-based devices can report M16C error factors,
+ * thus define our own error status flags for USBCANII
+ */
+#define USBCAN_ERROR_STATE_NONE		0
+#define USBCAN_ERROR_STATE_TX_ERROR	BIT(0)
+#define USBCAN_ERROR_STATE_RX_ERROR	BIT(1)
+#define USBCAN_ERROR_STATE_BUSERROR	BIT(2)
+
+/* bittiming parameters */
+#define KVASER_USB_TSEG1_MIN		1
+#define KVASER_USB_TSEG1_MAX		16
+#define KVASER_USB_TSEG2_MIN		1
+#define KVASER_USB_TSEG2_MAX		8
+#define KVASER_USB_SJW_MAX		4
+#define KVASER_USB_BRP_MIN		1
+#define KVASER_USB_BRP_MAX		64
+#define KVASER_USB_BRP_INC		1
+
+/* ctrl modes */
+#define KVASER_CTRL_MODE_NORMAL		1
+#define KVASER_CTRL_MODE_SILENT		2
+#define KVASER_CTRL_MODE_SELFRECEPTION	3
+#define KVASER_CTRL_MODE_OFF		4
+
+/* Extended CAN identifier flag */
+#define KVASER_EXTENDED_FRAME		BIT(31)
+
+struct kvaser_cmd_simple {
+	u8 tid;
+	u8 channel;
+} __packed;
+
+struct kvaser_cmd_cardinfo {
+	u8 tid;
+	u8 nchannels;
+	__le32 serial_number;
+	__le32 padding0;
+	__le32 clock_resolution;
+	__le32 mfgdate;
+	u8 ean[8];
+	u8 hw_revision;
+	union {
+		struct {
+			u8 usb_hs_mode;
+		} __packed leaf1;
+		struct {
+			u8 padding;
+		} __packed usbcan1;
+	} __packed;
+	__le16 padding1;
+} __packed;
+
+struct leaf_cmd_softinfo {
+	u8 tid;
+	u8 padding0;
+	__le32 sw_options;
+	__le32 fw_version;
+	__le16 max_outstanding_tx;
+	__le16 padding1[9];
+} __packed;
+
+struct usbcan_cmd_softinfo {
+	u8 tid;
+	u8 fw_name[5];
+	__le16 max_outstanding_tx;
+	u8 padding[6];
+	__le32 fw_version;
+	__le16 checksum;
+	__le16 sw_options;
+} __packed;
+
+struct kvaser_cmd_busparams {
+	u8 tid;
+	u8 channel;
+	__le32 bitrate;
+	u8 tseg1;
+	u8 tseg2;
+	u8 sjw;
+	u8 no_samp;
+} __packed;
+
+struct kvaser_cmd_tx_can {
+	u8 channel;
+	u8 tid;
+	u8 data[14];
+	union {
+		struct {
+			u8 padding;
+			u8 flags;
+		} __packed leaf;
+		struct {
+			u8 flags;
+			u8 padding;
+		} __packed usbcan;
+	} __packed;
+} __packed;
+
+struct kvaser_cmd_rx_can_header {
+	u8 channel;
+	u8 flag;
+} __packed;
+
+struct leaf_cmd_rx_can {
+	u8 channel;
+	u8 flag;
+
+	__le16 time[3];
+	u8 data[14];
+} __packed;
+
+struct usbcan_cmd_rx_can {
+	u8 channel;
+	u8 flag;
+
+	u8 data[14];
+	__le16 time;
+} __packed;
+
+struct leaf_cmd_chip_state_event {
+	u8 tid;
+	u8 channel;
+
+	__le16 time[3];
+	u8 tx_errors_count;
+	u8 rx_errors_count;
+
+	u8 status;
+	u8 padding[3];
+} __packed;
+
+struct usbcan_cmd_chip_state_event {
+	u8 tid;
+	u8 channel;
+
+	u8 tx_errors_count;
+	u8 rx_errors_count;
+	__le16 time;
+
+	u8 status;
+	u8 padding[3];
+} __packed;
+
+struct kvaser_cmd_tx_acknowledge_header {
+	u8 channel;
+	u8 tid;
+} __packed;
+
+struct leaf_cmd_error_event {
+	u8 tid;
+	u8 flags;
+	__le16 time[3];
+	u8 channel;
+	u8 padding;
+	u8 tx_errors_count;
+	u8 rx_errors_count;
+	u8 status;
+	u8 error_factor;
+} __packed;
+
+struct usbcan_cmd_error_event {
+	u8 tid;
+	u8 padding;
+	u8 tx_errors_count_ch0;
+	u8 rx_errors_count_ch0;
+	u8 tx_errors_count_ch1;
+	u8 rx_errors_count_ch1;
+	u8 status_ch0;
+	u8 status_ch1;
+	__le16 time;
+} __packed;
+
+struct kvaser_cmd_ctrl_mode {
+	u8 tid;
+	u8 channel;
+	u8 ctrl_mode;
+	u8 padding[3];
+} __packed;
+
+struct kvaser_cmd_flush_queue {
+	u8 tid;
+	u8 channel;
+	u8 flags;
+	u8 padding[3];
+} __packed;
+
+struct leaf_cmd_log_message {
+	u8 channel;
+	u8 flags;
+	__le16 time[3];
+	u8 dlc;
+	u8 time_offset;
+	__le32 id;
+	u8 data[8];
+} __packed;
+
+struct kvaser_cmd {
+	u8 len;
+	u8 id;
+	union	{
+		struct kvaser_cmd_simple simple;
+		struct kvaser_cmd_cardinfo cardinfo;
+		struct kvaser_cmd_busparams busparams;
+
+		struct kvaser_cmd_rx_can_header rx_can_header;
+		struct kvaser_cmd_tx_acknowledge_header tx_acknowledge_header;
+
+		union {
+			struct leaf_cmd_softinfo softinfo;
+			struct leaf_cmd_rx_can rx_can;
+			struct leaf_cmd_chip_state_event chip_state_event;
+			struct leaf_cmd_error_event error_event;
+			struct leaf_cmd_log_message log_message;
+		} __packed leaf;
+
+		union {
+			struct usbcan_cmd_softinfo softinfo;
+			struct usbcan_cmd_rx_can rx_can;
+			struct usbcan_cmd_chip_state_event chip_state_event;
+			struct usbcan_cmd_error_event error_event;
+		} __packed usbcan;
+
+		struct kvaser_cmd_tx_can tx_can;
+		struct kvaser_cmd_ctrl_mode ctrl_mode;
+		struct kvaser_cmd_flush_queue flush_queue;
+	} u;
+} __packed;
+
+/* Summary of a kvaser error event, for a unified Leaf/Usbcan error
+ * handling. Some discrepancies between the two families exist:
+ *
+ * - USBCAN firmware does not report M16C "error factors"
+ * - USBCAN controllers has difficulties reporting if the raised error
+ *   event is for ch0 or ch1. They leave such arbitration to the OS
+ *   driver by letting it compare error counters with previous values
+ *   and decide the error event's channel. Thus for USBCAN, the channel
+ *   field is only advisory.
+ */
+struct kvaser_usb_err_summary {
+	u8 channel, status, txerr, rxerr;
+	union {
+		struct {
+			u8 error_factor;
+		} leaf;
+		struct {
+			u8 other_ch_status;
+			u8 error_state;
+		} usbcan;
+	};
+};
+
+static const struct can_bittiming_const kvaser_usb_leaf_bittiming_const = {
+	.name = "kvaser_usb",
+	.tseg1_min = KVASER_USB_TSEG1_MIN,
+	.tseg1_max = KVASER_USB_TSEG1_MAX,
+	.tseg2_min = KVASER_USB_TSEG2_MIN,
+	.tseg2_max = KVASER_USB_TSEG2_MAX,
+	.sjw_max = KVASER_USB_SJW_MAX,
+	.brp_min = KVASER_USB_BRP_MIN,
+	.brp_max = KVASER_USB_BRP_MAX,
+	.brp_inc = KVASER_USB_BRP_INC,
+};
+
+static const struct kvaser_usb_dev_cfg kvaser_usb_leaf_dev_cfg_8mhz = {
+	.clock = {
+		.freq = 8 * MEGA /* Hz */,
+	},
+	.timestamp_freq = 1,
+	.bittiming_const = &kvaser_usb_leaf_bittiming_const,
+};
+
+static const struct kvaser_usb_dev_cfg kvaser_usb_leaf_dev_cfg_16mhz = {
+	.clock = {
+		.freq = 16 * MEGA /* Hz */,
+	},
+	.timestamp_freq = 1,
+	.bittiming_const = &kvaser_usb_leaf_bittiming_const,
+};
+
+static const struct kvaser_usb_dev_cfg kvaser_usb_leaf_dev_cfg_24mhz = {
+	.clock = {
+		.freq = 24 * MEGA /* Hz */,
+	},
+	.timestamp_freq = 1,
+	.bittiming_const = &kvaser_usb_leaf_bittiming_const,
+};
+
+static const struct kvaser_usb_dev_cfg kvaser_usb_leaf_dev_cfg_32mhz = {
+	.clock = {
+		.freq = 32 * MEGA /* Hz */,
+	},
+	.timestamp_freq = 1,
+	.bittiming_const = &kvaser_usb_leaf_bittiming_const,
+};
+
+static void *
+kvaser_usb_leaf_frame_to_cmd(const struct kvaser_usb_net_priv *priv,
+			     const struct sk_buff *skb, int *cmd_len,
+			     u16 transid)
+{
+	struct kvaser_usb *dev = priv->dev;
+	struct kvaser_cmd *cmd;
+	u8 *cmd_tx_can_flags = NULL;		/* GCC */
+	struct can_frame *cf = (struct can_frame *)skb->data;
+
+	cmd = kmalloc(sizeof(*cmd), GFP_ATOMIC);
+	if (cmd) {
+		cmd->u.tx_can.tid = transid & 0xff;
+		cmd->len = *cmd_len = CMD_HEADER_LEN +
+				      sizeof(struct kvaser_cmd_tx_can);
+		cmd->u.tx_can.channel = priv->channel;
+
+		switch (dev->card_data.leaf.family) {
+		case KVASER_LEAF:
+			cmd_tx_can_flags = &cmd->u.tx_can.leaf.flags;
+			break;
+		case KVASER_USBCAN:
+			cmd_tx_can_flags = &cmd->u.tx_can.usbcan.flags;
+			break;
+		}
+
+		*cmd_tx_can_flags = 0;
+
+		if (cf->can_id & CAN_EFF_FLAG) {
+			cmd->id = CMD_TX_EXT_MESSAGE;
+			cmd->u.tx_can.data[0] = (cf->can_id >> 24) & 0x1f;
+			cmd->u.tx_can.data[1] = (cf->can_id >> 18) & 0x3f;
+			cmd->u.tx_can.data[2] = (cf->can_id >> 14) & 0x0f;
+			cmd->u.tx_can.data[3] = (cf->can_id >> 6) & 0xff;
+			cmd->u.tx_can.data[4] = cf->can_id & 0x3f;
+		} else {
+			cmd->id = CMD_TX_STD_MESSAGE;
+			cmd->u.tx_can.data[0] = (cf->can_id >> 6) & 0x1f;
+			cmd->u.tx_can.data[1] = cf->can_id & 0x3f;
+		}
+
+		cmd->u.tx_can.data[5] = cf->len;
+		memcpy(&cmd->u.tx_can.data[6], cf->data, cf->len);
+
+		if (cf->can_id & CAN_RTR_FLAG)
+			*cmd_tx_can_flags |= MSG_FLAG_REMOTE_FRAME;
+	}
+	return cmd;
+}
+
+static int kvaser_usb_leaf_wait_cmd(const struct kvaser_usb *dev, u8 id,
+				    struct kvaser_cmd *cmd)
+{
+	struct kvaser_cmd *tmp;
+	void *buf;
+	int actual_len;
+	int err;
+	int pos;
+	unsigned long to = jiffies + msecs_to_jiffies(KVASER_USB_TIMEOUT);
+
+	buf = kzalloc(KVASER_USB_RX_BUFFER_SIZE, GFP_KERNEL);
+	if (!buf)
+		return -ENOMEM;
+
+	do {
+		err = kvaser_usb_recv_cmd(dev, buf, KVASER_USB_RX_BUFFER_SIZE,
+					  &actual_len);
+		if (err < 0)
+			goto end;
+
+		pos = 0;
+		while (pos <= actual_len - CMD_HEADER_LEN) {
+			tmp = buf + pos;
+
+			/* Handle commands crossing the USB endpoint max packet
+			 * size boundary. Check kvaser_usb_read_bulk_callback()
+			 * for further details.
+			 */
+			if (tmp->len == 0) {
+				pos = round_up(pos,
+					       le16_to_cpu
+						(dev->bulk_in->wMaxPacketSize));
+				continue;
+			}
+
+			if (pos + tmp->len > actual_len) {
+				dev_err_ratelimited(&dev->intf->dev,
+						    "Format error\n");
+				break;
+			}
+
+			if (tmp->id == id) {
+				memcpy(cmd, tmp, tmp->len);
+				goto end;
+			}
+
+			pos += tmp->len;
+		}
+	} while (time_before(jiffies, to));
+
+	err = -EINVAL;
+
+end:
+	kfree(buf);
+
+	return err;
+}
+
+static int kvaser_usb_leaf_send_simple_cmd(const struct kvaser_usb *dev,
+					   u8 cmd_id, int channel)
+{
+	struct kvaser_cmd *cmd;
+	int rc;
+
+	cmd = kmalloc(sizeof(*cmd), GFP_KERNEL);
+	if (!cmd)
+		return -ENOMEM;
+
+	cmd->id = cmd_id;
+	cmd->len = CMD_HEADER_LEN + sizeof(struct kvaser_cmd_simple);
+	cmd->u.simple.channel = channel;
+	cmd->u.simple.tid = 0xff;
+
+	rc = kvaser_usb_send_cmd(dev, cmd, cmd->len);
+
+	kfree(cmd);
+	return rc;
+}
+
+static void kvaser_usb_leaf_get_software_info_leaf(struct kvaser_usb *dev,
+						   const struct leaf_cmd_softinfo *softinfo)
+{
+	u32 sw_options = le32_to_cpu(softinfo->sw_options);
+
+	dev->fw_version = le32_to_cpu(softinfo->fw_version);
+	dev->max_tx_urbs = le16_to_cpu(softinfo->max_outstanding_tx);
+
+	switch (sw_options & KVASER_USB_LEAF_SWOPTION_FREQ_MASK) {
+	case KVASER_USB_LEAF_SWOPTION_FREQ_16_MHZ_CLK:
+		dev->cfg = &kvaser_usb_leaf_dev_cfg_16mhz;
+		break;
+	case KVASER_USB_LEAF_SWOPTION_FREQ_24_MHZ_CLK:
+		dev->cfg = &kvaser_usb_leaf_dev_cfg_24mhz;
+		break;
+	case KVASER_USB_LEAF_SWOPTION_FREQ_32_MHZ_CLK:
+		dev->cfg = &kvaser_usb_leaf_dev_cfg_32mhz;
+		break;
+	}
+}
+
+static int kvaser_usb_leaf_get_software_info_inner(struct kvaser_usb *dev)
+{
+	struct kvaser_cmd cmd;
+	int err;
+
+	err = kvaser_usb_leaf_send_simple_cmd(dev, CMD_GET_SOFTWARE_INFO, 0);
+	if (err)
+		return err;
+
+	err = kvaser_usb_leaf_wait_cmd(dev, CMD_GET_SOFTWARE_INFO_REPLY, &cmd);
+	if (err)
+		return err;
+
+	switch (dev->card_data.leaf.family) {
+	case KVASER_LEAF:
+		kvaser_usb_leaf_get_software_info_leaf(dev, &cmd.u.leaf.softinfo);
+		break;
+	case KVASER_USBCAN:
+		dev->fw_version = le32_to_cpu(cmd.u.usbcan.softinfo.fw_version);
+		dev->max_tx_urbs =
+			le16_to_cpu(cmd.u.usbcan.softinfo.max_outstanding_tx);
+		dev->cfg = &kvaser_usb_leaf_dev_cfg_8mhz;
+		break;
+	}
+
+	return 0;
+}
+
+static int kvaser_usb_leaf_get_software_info(struct kvaser_usb *dev)
+{
+	int err;
+	int retry = 3;
+
+	/* On some x86 laptops, plugging a Kvaser device again after
+	 * an unplug makes the firmware always ignore the very first
+	 * command. For such a case, provide some room for retries
+	 * instead of completely exiting the driver.
+	 */
+	do {
+		err = kvaser_usb_leaf_get_software_info_inner(dev);
+	} while (--retry && err == -ETIMEDOUT);
+
+	return err;
+}
+
+static int kvaser_usb_leaf_get_card_info(struct kvaser_usb *dev)
+{
+	struct kvaser_cmd cmd;
+	int err;
+
+	err = kvaser_usb_leaf_send_simple_cmd(dev, CMD_GET_CARD_INFO, 0);
+	if (err)
+		return err;
+
+	err = kvaser_usb_leaf_wait_cmd(dev, CMD_GET_CARD_INFO_REPLY, &cmd);
+	if (err)
+		return err;
+
+	dev->nchannels = cmd.u.cardinfo.nchannels;
+	if (dev->nchannels > KVASER_USB_MAX_NET_DEVICES ||
+	    (dev->card_data.leaf.family == KVASER_USBCAN &&
+	     dev->nchannels > MAX_USBCAN_NET_DEVICES))
+		return -EINVAL;
+
+	return 0;
+}
+
+static void kvaser_usb_leaf_tx_acknowledge(const struct kvaser_usb *dev,
+					   const struct kvaser_cmd *cmd)
+{
+	struct net_device_stats *stats;
+	struct kvaser_usb_tx_urb_context *context;
+	struct kvaser_usb_net_priv *priv;
+	unsigned long flags;
+	u8 channel, tid;
+
+	channel = cmd->u.tx_acknowledge_header.channel;
+	tid = cmd->u.tx_acknowledge_header.tid;
+
+	if (channel >= dev->nchannels) {
+		dev_err(&dev->intf->dev,
+			"Invalid channel number (%d)\n", channel);
+		return;
+	}
+
+	priv = dev->nets[channel];
+
+	if (!netif_device_present(priv->netdev))
+		return;
+
+	stats = &priv->netdev->stats;
+
+	context = &priv->tx_contexts[tid % dev->max_tx_urbs];
+
+	/* Sometimes the state change doesn't come after a bus-off event */
+	if (priv->can.restart_ms && priv->can.state >= CAN_STATE_BUS_OFF) {
+		struct sk_buff *skb;
+		struct can_frame *cf;
+
+		skb = alloc_can_err_skb(priv->netdev, &cf);
+		if (skb) {
+			cf->can_id |= CAN_ERR_RESTARTED;
+
+			netif_rx(skb);
+		} else {
+			netdev_err(priv->netdev,
+				   "No memory left for err_skb\n");
+		}
+
+		priv->can.can_stats.restarts++;
+		netif_carrier_on(priv->netdev);
+
+		priv->can.state = CAN_STATE_ERROR_ACTIVE;
+	}
+
+	spin_lock_irqsave(&priv->tx_contexts_lock, flags);
+
+	stats->tx_packets++;
+	stats->tx_bytes += can_get_echo_skb(priv->netdev,
+					    context->echo_index, NULL);
+	context->echo_index = dev->max_tx_urbs;
+	--priv->active_tx_contexts;
+	netif_wake_queue(priv->netdev);
+
+	spin_unlock_irqrestore(&priv->tx_contexts_lock, flags);
+}
+
+static int kvaser_usb_leaf_simple_cmd_async(struct kvaser_usb_net_priv *priv,
+					    u8 cmd_id)
+{
+	struct kvaser_cmd *cmd;
+	int err;
+
+	cmd = kzalloc(sizeof(*cmd), GFP_ATOMIC);
+	if (!cmd)
+		return -ENOMEM;
+
+	cmd->len = CMD_HEADER_LEN + sizeof(struct kvaser_cmd_simple);
+	cmd->id = cmd_id;
+	cmd->u.simple.channel = priv->channel;
+
+	err = kvaser_usb_send_cmd_async(priv, cmd, cmd->len);
+	if (err)
+		kfree(cmd);
+
+	return err;
+}
+
+static void
+kvaser_usb_leaf_rx_error_update_can_state(struct kvaser_usb_net_priv *priv,
+					const struct kvaser_usb_err_summary *es,
+					struct can_frame *cf)
+{
+	struct kvaser_usb *dev = priv->dev;
+	struct net_device_stats *stats = &priv->netdev->stats;
+	enum can_state cur_state, new_state, tx_state, rx_state;
+
+	netdev_dbg(priv->netdev, "Error status: 0x%02x\n", es->status);
+
+	new_state = priv->can.state;
+	cur_state = priv->can.state;
+
+	if (es->status & (M16C_STATE_BUS_OFF | M16C_STATE_BUS_RESET)) {
+		new_state = CAN_STATE_BUS_OFF;
+	} else if (es->status & M16C_STATE_BUS_PASSIVE) {
+		new_state = CAN_STATE_ERROR_PASSIVE;
+	} else if (es->status & M16C_STATE_BUS_ERROR) {
+		/* Guard against spurious error events after a busoff */
+		if (cur_state < CAN_STATE_BUS_OFF) {
+			if (es->txerr >= 128 || es->rxerr >= 128)
+				new_state = CAN_STATE_ERROR_PASSIVE;
+			else if (es->txerr >= 96 || es->rxerr >= 96)
+				new_state = CAN_STATE_ERROR_WARNING;
+			else if (cur_state > CAN_STATE_ERROR_ACTIVE)
+				new_state = CAN_STATE_ERROR_ACTIVE;
+		}
+	}
+
+	if (!es->status)
+		new_state = CAN_STATE_ERROR_ACTIVE;
+
+	if (new_state != cur_state) {
+		tx_state = (es->txerr >= es->rxerr) ? new_state : 0;
+		rx_state = (es->txerr <= es->rxerr) ? new_state : 0;
+
+		can_change_state(priv->netdev, cf, tx_state, rx_state);
+	}
+
+	if (priv->can.restart_ms &&
+	    cur_state >= CAN_STATE_BUS_OFF &&
+	    new_state < CAN_STATE_BUS_OFF)
+		priv->can.can_stats.restarts++;
+
+	switch (dev->card_data.leaf.family) {
+	case KVASER_LEAF:
+		if (es->leaf.error_factor) {
+			priv->can.can_stats.bus_error++;
+			stats->rx_errors++;
+		}
+		break;
+	case KVASER_USBCAN:
+		if (es->usbcan.error_state & USBCAN_ERROR_STATE_TX_ERROR)
+			stats->tx_errors++;
+		if (es->usbcan.error_state & USBCAN_ERROR_STATE_RX_ERROR)
+			stats->rx_errors++;
+		if (es->usbcan.error_state & USBCAN_ERROR_STATE_BUSERROR)
+			priv->can.can_stats.bus_error++;
+		break;
+	}
+
+	priv->bec.txerr = es->txerr;
+	priv->bec.rxerr = es->rxerr;
+}
+
+static void kvaser_usb_leaf_rx_error(const struct kvaser_usb *dev,
+				     const struct kvaser_usb_err_summary *es)
+{
+	struct can_frame *cf;
+	struct can_frame tmp_cf = { .can_id = CAN_ERR_FLAG,
+				    .len = CAN_ERR_DLC };
+	struct sk_buff *skb;
+	struct net_device_stats *stats;
+	struct kvaser_usb_net_priv *priv;
+	enum can_state old_state, new_state;
+
+	if (es->channel >= dev->nchannels) {
+		dev_err(&dev->intf->dev,
+			"Invalid channel number (%d)\n", es->channel);
+		return;
+	}
+
+	priv = dev->nets[es->channel];
+	stats = &priv->netdev->stats;
+
+	/* Update all of the CAN interface's state and error counters before
+	 * trying any memory allocation that can actually fail with -ENOMEM.
+	 *
+	 * We send a temporary stack-allocated error CAN frame to
+	 * can_change_state() for the very same reason.
+	 *
+	 * TODO: Split can_change_state() responsibility between updating the
+	 * CAN interface's state and counters, and the setting up of CAN error
+	 * frame ID and data to userspace. Remove stack allocation afterwards.
+	 */
+	old_state = priv->can.state;
+	kvaser_usb_leaf_rx_error_update_can_state(priv, es, &tmp_cf);
+	new_state = priv->can.state;
+
+	skb = alloc_can_err_skb(priv->netdev, &cf);
+	if (!skb) {
+		stats->rx_dropped++;
+		return;
+	}
+	memcpy(cf, &tmp_cf, sizeof(*cf));
+
+	if (new_state != old_state) {
+		if (es->status &
+		    (M16C_STATE_BUS_OFF | M16C_STATE_BUS_RESET)) {
+			if (!priv->can.restart_ms)
+				kvaser_usb_leaf_simple_cmd_async(priv,
+								 CMD_STOP_CHIP);
+			netif_carrier_off(priv->netdev);
+		}
+
+		if (priv->can.restart_ms &&
+		    old_state >= CAN_STATE_BUS_OFF &&
+		    new_state < CAN_STATE_BUS_OFF) {
+			cf->can_id |= CAN_ERR_RESTARTED;
+			netif_carrier_on(priv->netdev);
+		}
+	}
+
+	switch (dev->card_data.leaf.family) {
+	case KVASER_LEAF:
+		if (es->leaf.error_factor) {
+			cf->can_id |= CAN_ERR_BUSERROR | CAN_ERR_PROT;
+
+			if (es->leaf.error_factor & M16C_EF_ACKE)
+				cf->data[3] = CAN_ERR_PROT_LOC_ACK;
+			if (es->leaf.error_factor & M16C_EF_CRCE)
+				cf->data[3] = CAN_ERR_PROT_LOC_CRC_SEQ;
+			if (es->leaf.error_factor & M16C_EF_FORME)
+				cf->data[2] |= CAN_ERR_PROT_FORM;
+			if (es->leaf.error_factor & M16C_EF_STFE)
+				cf->data[2] |= CAN_ERR_PROT_STUFF;
+			if (es->leaf.error_factor & M16C_EF_BITE0)
+				cf->data[2] |= CAN_ERR_PROT_BIT0;
+			if (es->leaf.error_factor & M16C_EF_BITE1)
+				cf->data[2] |= CAN_ERR_PROT_BIT1;
+			if (es->leaf.error_factor & M16C_EF_TRE)
+				cf->data[2] |= CAN_ERR_PROT_TX;
+		}
+		break;
+	case KVASER_USBCAN:
+		if (es->usbcan.error_state & USBCAN_ERROR_STATE_BUSERROR)
+			cf->can_id |= CAN_ERR_BUSERROR;
+		break;
+	}
+
+	cf->data[6] = es->txerr;
+	cf->data[7] = es->rxerr;
+
+	netif_rx(skb);
+}
+
+/* For USBCAN, report error to userspace if the channels's errors counter
+ * has changed, or we're the only channel seeing a bus error state.
+ */
+static void
+kvaser_usb_leaf_usbcan_conditionally_rx_error(const struct kvaser_usb *dev,
+					      struct kvaser_usb_err_summary *es)
+{
+	struct kvaser_usb_net_priv *priv;
+	unsigned int channel;
+	bool report_error;
+
+	channel = es->channel;
+	if (channel >= dev->nchannels) {
+		dev_err(&dev->intf->dev,
+			"Invalid channel number (%d)\n", channel);
+		return;
+	}
+
+	priv = dev->nets[channel];
+	report_error = false;
+
+	if (es->txerr != priv->bec.txerr) {
+		es->usbcan.error_state |= USBCAN_ERROR_STATE_TX_ERROR;
+		report_error = true;
+	}
+	if (es->rxerr != priv->bec.rxerr) {
+		es->usbcan.error_state |= USBCAN_ERROR_STATE_RX_ERROR;
+		report_error = true;
+	}
+	if ((es->status & M16C_STATE_BUS_ERROR) &&
+	    !(es->usbcan.other_ch_status & M16C_STATE_BUS_ERROR)) {
+		es->usbcan.error_state |= USBCAN_ERROR_STATE_BUSERROR;
+		report_error = true;
+	}
+
+	if (report_error)
+		kvaser_usb_leaf_rx_error(dev, es);
+}
+
+static void kvaser_usb_leaf_usbcan_rx_error(const struct kvaser_usb *dev,
+					    const struct kvaser_cmd *cmd)
+{
+	struct kvaser_usb_err_summary es = { };
+
+	switch (cmd->id) {
+	/* Sometimes errors are sent as unsolicited chip state events */
+	case CMD_CHIP_STATE_EVENT:
+		es.channel = cmd->u.usbcan.chip_state_event.channel;
+		es.status = cmd->u.usbcan.chip_state_event.status;
+		es.txerr = cmd->u.usbcan.chip_state_event.tx_errors_count;
+		es.rxerr = cmd->u.usbcan.chip_state_event.rx_errors_count;
+		kvaser_usb_leaf_usbcan_conditionally_rx_error(dev, &es);
+		break;
+
+	case CMD_CAN_ERROR_EVENT:
+		es.channel = 0;
+		es.status = cmd->u.usbcan.error_event.status_ch0;
+		es.txerr = cmd->u.usbcan.error_event.tx_errors_count_ch0;
+		es.rxerr = cmd->u.usbcan.error_event.rx_errors_count_ch0;
+		es.usbcan.other_ch_status =
+			cmd->u.usbcan.error_event.status_ch1;
+		kvaser_usb_leaf_usbcan_conditionally_rx_error(dev, &es);
+
+		/* The USBCAN firmware supports up to 2 channels.
+		 * Now that ch0 was checked, check if ch1 has any errors.
+		 */
+		if (dev->nchannels == MAX_USBCAN_NET_DEVICES) {
+			es.channel = 1;
+			es.status = cmd->u.usbcan.error_event.status_ch1;
+			es.txerr =
+				cmd->u.usbcan.error_event.tx_errors_count_ch1;
+			es.rxerr =
+				cmd->u.usbcan.error_event.rx_errors_count_ch1;
+			es.usbcan.other_ch_status =
+				cmd->u.usbcan.error_event.status_ch0;
+			kvaser_usb_leaf_usbcan_conditionally_rx_error(dev, &es);
+		}
+		break;
+
+	default:
+		dev_err(&dev->intf->dev, "Invalid cmd id (%d)\n", cmd->id);
+	}
+}
+
+static void kvaser_usb_leaf_leaf_rx_error(const struct kvaser_usb *dev,
+					  const struct kvaser_cmd *cmd)
+{
+	struct kvaser_usb_err_summary es = { };
+
+	switch (cmd->id) {
+	case CMD_CAN_ERROR_EVENT:
+		es.channel = cmd->u.leaf.error_event.channel;
+		es.status = cmd->u.leaf.error_event.status;
+		es.txerr = cmd->u.leaf.error_event.tx_errors_count;
+		es.rxerr = cmd->u.leaf.error_event.rx_errors_count;
+		es.leaf.error_factor = cmd->u.leaf.error_event.error_factor;
+		break;
+	case CMD_LEAF_LOG_MESSAGE:
+		es.channel = cmd->u.leaf.log_message.channel;
+		es.status = cmd->u.leaf.log_message.data[0];
+		es.txerr = cmd->u.leaf.log_message.data[2];
+		es.rxerr = cmd->u.leaf.log_message.data[3];
+		es.leaf.error_factor = cmd->u.leaf.log_message.data[1];
+		break;
+	case CMD_CHIP_STATE_EVENT:
+		es.channel = cmd->u.leaf.chip_state_event.channel;
+		es.status = cmd->u.leaf.chip_state_event.status;
+		es.txerr = cmd->u.leaf.chip_state_event.tx_errors_count;
+		es.rxerr = cmd->u.leaf.chip_state_event.rx_errors_count;
+		es.leaf.error_factor = 0;
+		break;
+	default:
+		dev_err(&dev->intf->dev, "Invalid cmd id (%d)\n", cmd->id);
+		return;
+	}
+
+	kvaser_usb_leaf_rx_error(dev, &es);
+}
+
+static void kvaser_usb_leaf_rx_can_err(const struct kvaser_usb_net_priv *priv,
+				       const struct kvaser_cmd *cmd)
+{
+	if (cmd->u.rx_can_header.flag & (MSG_FLAG_ERROR_FRAME |
+					 MSG_FLAG_NERR)) {
+		struct net_device_stats *stats = &priv->netdev->stats;
+
+		netdev_err(priv->netdev, "Unknown error (flags: 0x%02x)\n",
+			   cmd->u.rx_can_header.flag);
+
+		stats->rx_errors++;
+		return;
+	}
+
+	if (cmd->u.rx_can_header.flag & MSG_FLAG_OVERRUN)
+		kvaser_usb_can_rx_over_error(priv->netdev);
+}
+
+static void kvaser_usb_leaf_rx_can_msg(const struct kvaser_usb *dev,
+				       const struct kvaser_cmd *cmd)
+{
+	struct kvaser_usb_net_priv *priv;
+	struct can_frame *cf;
+	struct sk_buff *skb;
+	struct net_device_stats *stats;
+	u8 channel = cmd->u.rx_can_header.channel;
+	const u8 *rx_data = NULL;	/* GCC */
+
+	if (channel >= dev->nchannels) {
+		dev_err(&dev->intf->dev,
+			"Invalid channel number (%d)\n", channel);
+		return;
+	}
+
+	priv = dev->nets[channel];
+	stats = &priv->netdev->stats;
+
+	if ((cmd->u.rx_can_header.flag & MSG_FLAG_ERROR_FRAME) &&
+	    (dev->card_data.leaf.family == KVASER_LEAF &&
+	     cmd->id == CMD_LEAF_LOG_MESSAGE)) {
+		kvaser_usb_leaf_leaf_rx_error(dev, cmd);
+		return;
+	} else if (cmd->u.rx_can_header.flag & (MSG_FLAG_ERROR_FRAME |
+						MSG_FLAG_NERR |
+						MSG_FLAG_OVERRUN)) {
+		kvaser_usb_leaf_rx_can_err(priv, cmd);
+		return;
+	} else if (cmd->u.rx_can_header.flag & ~MSG_FLAG_REMOTE_FRAME) {
+		netdev_warn(priv->netdev,
+			    "Unhandled frame (flags: 0x%02x)\n",
+			    cmd->u.rx_can_header.flag);
+		return;
+	}
+
+	switch (dev->card_data.leaf.family) {
+	case KVASER_LEAF:
+		rx_data = cmd->u.leaf.rx_can.data;
+		break;
+	case KVASER_USBCAN:
+		rx_data = cmd->u.usbcan.rx_can.data;
+		break;
+	}
+
+	skb = alloc_can_skb(priv->netdev, &cf);
+	if (!skb) {
+		stats->rx_dropped++;
+		return;
+	}
+
+	if (dev->card_data.leaf.family == KVASER_LEAF && cmd->id ==
+	    CMD_LEAF_LOG_MESSAGE) {
+		cf->can_id = le32_to_cpu(cmd->u.leaf.log_message.id);
+		if (cf->can_id & KVASER_EXTENDED_FRAME)
+			cf->can_id &= CAN_EFF_MASK | CAN_EFF_FLAG;
+		else
+			cf->can_id &= CAN_SFF_MASK;
+
+		cf->len = can_cc_dlc2len(cmd->u.leaf.log_message.dlc);
+
+		if (cmd->u.leaf.log_message.flags & MSG_FLAG_REMOTE_FRAME)
+			cf->can_id |= CAN_RTR_FLAG;
+		else
+			memcpy(cf->data, &cmd->u.leaf.log_message.data,
+			       cf->len);
+	} else {
+		cf->can_id = ((rx_data[0] & 0x1f) << 6) | (rx_data[1] & 0x3f);
+
+		if (cmd->id == CMD_RX_EXT_MESSAGE) {
+			cf->can_id <<= 18;
+			cf->can_id |= ((rx_data[2] & 0x0f) << 14) |
+				      ((rx_data[3] & 0xff) << 6) |
+				      (rx_data[4] & 0x3f);
+			cf->can_id |= CAN_EFF_FLAG;
+		}
+
+		cf->len = can_cc_dlc2len(rx_data[5]);
+
+		if (cmd->u.rx_can_header.flag & MSG_FLAG_REMOTE_FRAME)
+			cf->can_id |= CAN_RTR_FLAG;
+		else
+			memcpy(cf->data, &rx_data[6], cf->len);
+	}
+
+	stats->rx_packets++;
+	if (!(cf->can_id & CAN_RTR_FLAG))
+		stats->rx_bytes += cf->len;
+	netif_rx(skb);
+}
+
+static void kvaser_usb_leaf_start_chip_reply(const struct kvaser_usb *dev,
+					     const struct kvaser_cmd *cmd)
+{
+	struct kvaser_usb_net_priv *priv;
+	u8 channel = cmd->u.simple.channel;
+
+	if (channel >= dev->nchannels) {
+		dev_err(&dev->intf->dev,
+			"Invalid channel number (%d)\n", channel);
+		return;
+	}
+
+	priv = dev->nets[channel];
+
+	if (completion_done(&priv->start_comp) &&
+	    netif_queue_stopped(priv->netdev)) {
+		netif_wake_queue(priv->netdev);
+	} else {
+		netif_start_queue(priv->netdev);
+		complete(&priv->start_comp);
+	}
+}
+
+static void kvaser_usb_leaf_stop_chip_reply(const struct kvaser_usb *dev,
+					    const struct kvaser_cmd *cmd)
+{
+	struct kvaser_usb_net_priv *priv;
+	u8 channel = cmd->u.simple.channel;
+
+	if (channel >= dev->nchannels) {
+		dev_err(&dev->intf->dev,
+			"Invalid channel number (%d)\n", channel);
+		return;
+	}
+
+	priv = dev->nets[channel];
+
+	complete(&priv->stop_comp);
+}
+
+static void kvaser_usb_leaf_handle_command(const struct kvaser_usb *dev,
+					   const struct kvaser_cmd *cmd)
+{
+	switch (cmd->id) {
+	case CMD_START_CHIP_REPLY:
+		kvaser_usb_leaf_start_chip_reply(dev, cmd);
+		break;
+
+	case CMD_STOP_CHIP_REPLY:
+		kvaser_usb_leaf_stop_chip_reply(dev, cmd);
+		break;
+
+	case CMD_RX_STD_MESSAGE:
+	case CMD_RX_EXT_MESSAGE:
+		kvaser_usb_leaf_rx_can_msg(dev, cmd);
+		break;
+
+	case CMD_LEAF_LOG_MESSAGE:
+		if (dev->card_data.leaf.family != KVASER_LEAF)
+			goto warn;
+		kvaser_usb_leaf_rx_can_msg(dev, cmd);
+		break;
+
+	case CMD_CHIP_STATE_EVENT:
+	case CMD_CAN_ERROR_EVENT:
+		if (dev->card_data.leaf.family == KVASER_LEAF)
+			kvaser_usb_leaf_leaf_rx_error(dev, cmd);
+		else
+			kvaser_usb_leaf_usbcan_rx_error(dev, cmd);
+		break;
+
+	case CMD_TX_ACKNOWLEDGE:
+		kvaser_usb_leaf_tx_acknowledge(dev, cmd);
+		break;
+
+	/* Ignored commands */
+	case CMD_USBCAN_CLOCK_OVERFLOW_EVENT:
+		if (dev->card_data.leaf.family != KVASER_USBCAN)
+			goto warn;
+		break;
+
+	case CMD_FLUSH_QUEUE_REPLY:
+		if (dev->card_data.leaf.family != KVASER_LEAF)
+			goto warn;
+		break;
+
+	default:
+warn:		dev_warn(&dev->intf->dev, "Unhandled command (%d)\n", cmd->id);
+		break;
+	}
+}
+
+static void kvaser_usb_leaf_read_bulk_callback(struct kvaser_usb *dev,
+					       void *buf, int len)
+{
+	struct kvaser_cmd *cmd;
+	int pos = 0;
+
+	while (pos <= len - CMD_HEADER_LEN) {
+		cmd = buf + pos;
+
+		/* The Kvaser firmware can only read and write commands that
+		 * does not cross the USB's endpoint wMaxPacketSize boundary.
+		 * If a follow-up command crosses such boundary, firmware puts
+		 * a placeholder zero-length command in its place then aligns
+		 * the real command to the next max packet size.
+		 *
+		 * Handle such cases or we're going to miss a significant
+		 * number of events in case of a heavy rx load on the bus.
+		 */
+		if (cmd->len == 0) {
+			pos = round_up(pos, le16_to_cpu
+						(dev->bulk_in->wMaxPacketSize));
+			continue;
+		}
+
+		if (pos + cmd->len > len) {
+			dev_err_ratelimited(&dev->intf->dev, "Format error\n");
+			break;
+		}
+
+		kvaser_usb_leaf_handle_command(dev, cmd);
+		pos += cmd->len;
+	}
+}
+
+static int kvaser_usb_leaf_set_opt_mode(const struct kvaser_usb_net_priv *priv)
+{
+	struct kvaser_cmd *cmd;
+	int rc;
+
+	cmd = kzalloc(sizeof(*cmd), GFP_KERNEL);
+	if (!cmd)
+		return -ENOMEM;
+
+	cmd->id = CMD_SET_CTRL_MODE;
+	cmd->len = CMD_HEADER_LEN + sizeof(struct kvaser_cmd_ctrl_mode);
+	cmd->u.ctrl_mode.tid = 0xff;
+	cmd->u.ctrl_mode.channel = priv->channel;
+
+	if (priv->can.ctrlmode & CAN_CTRLMODE_LISTENONLY)
+		cmd->u.ctrl_mode.ctrl_mode = KVASER_CTRL_MODE_SILENT;
+	else
+		cmd->u.ctrl_mode.ctrl_mode = KVASER_CTRL_MODE_NORMAL;
+
+	rc = kvaser_usb_send_cmd(priv->dev, cmd, cmd->len);
+
+	kfree(cmd);
+	return rc;
+}
+
+static int kvaser_usb_leaf_start_chip(struct kvaser_usb_net_priv *priv)
+{
+	int err;
+
+	init_completion(&priv->start_comp);
+
+	err = kvaser_usb_leaf_send_simple_cmd(priv->dev, CMD_START_CHIP,
+					      priv->channel);
+	if (err)
+		return err;
+
+	if (!wait_for_completion_timeout(&priv->start_comp,
+					 msecs_to_jiffies(KVASER_USB_TIMEOUT)))
+		return -ETIMEDOUT;
+
+	return 0;
+}
+
+static int kvaser_usb_leaf_stop_chip(struct kvaser_usb_net_priv *priv)
+{
+	int err;
+
+	init_completion(&priv->stop_comp);
+
+	err = kvaser_usb_leaf_send_simple_cmd(priv->dev, CMD_STOP_CHIP,
+					      priv->channel);
+	if (err)
+		return err;
+
+	if (!wait_for_completion_timeout(&priv->stop_comp,
+					 msecs_to_jiffies(KVASER_USB_TIMEOUT)))
+		return -ETIMEDOUT;
+
+	return 0;
+}
+
+static int kvaser_usb_leaf_reset_chip(struct kvaser_usb *dev, int channel)
+{
+	return kvaser_usb_leaf_send_simple_cmd(dev, CMD_RESET_CHIP, channel);
+}
+
+static int kvaser_usb_leaf_flush_queue(struct kvaser_usb_net_priv *priv)
+{
+	struct kvaser_cmd *cmd;
+	int rc;
+
+	cmd = kzalloc(sizeof(*cmd), GFP_KERNEL);
+	if (!cmd)
+		return -ENOMEM;
+
+	cmd->id = CMD_FLUSH_QUEUE;
+	cmd->len = CMD_HEADER_LEN + sizeof(struct kvaser_cmd_flush_queue);
+	cmd->u.flush_queue.channel = priv->channel;
+	cmd->u.flush_queue.flags = 0x00;
+
+	rc = kvaser_usb_send_cmd(priv->dev, cmd, cmd->len);
+
+	kfree(cmd);
+	return rc;
+}
+
+static int kvaser_usb_leaf_init_card(struct kvaser_usb *dev)
+{
+	struct kvaser_usb_dev_card_data *card_data = &dev->card_data;
+
+	card_data->ctrlmode_supported |= CAN_CTRLMODE_3_SAMPLES;
+
+	return 0;
+}
+
+static int kvaser_usb_leaf_set_bittiming(struct net_device *netdev)
+{
+	struct kvaser_usb_net_priv *priv = netdev_priv(netdev);
+	struct can_bittiming *bt = &priv->can.bittiming;
+	struct kvaser_usb *dev = priv->dev;
+	struct kvaser_cmd *cmd;
+	int rc;
+
+	cmd = kmalloc(sizeof(*cmd), GFP_KERNEL);
+	if (!cmd)
+		return -ENOMEM;
+
+	cmd->id = CMD_SET_BUS_PARAMS;
+	cmd->len = CMD_HEADER_LEN + sizeof(struct kvaser_cmd_busparams);
+	cmd->u.busparams.channel = priv->channel;
+	cmd->u.busparams.tid = 0xff;
+	cmd->u.busparams.bitrate = cpu_to_le32(bt->bitrate);
+	cmd->u.busparams.sjw = bt->sjw;
+	cmd->u.busparams.tseg1 = bt->prop_seg + bt->phase_seg1;
+	cmd->u.busparams.tseg2 = bt->phase_seg2;
+
+	if (priv->can.ctrlmode & CAN_CTRLMODE_3_SAMPLES)
+		cmd->u.busparams.no_samp = 3;
+	else
+		cmd->u.busparams.no_samp = 1;
+
+	rc = kvaser_usb_send_cmd(dev, cmd, cmd->len);
+
+	kfree(cmd);
+	return rc;
+}
+
+static int kvaser_usb_leaf_set_mode(struct net_device *netdev,
+				    enum can_mode mode)
+{
+	struct kvaser_usb_net_priv *priv = netdev_priv(netdev);
+	int err;
+
+	switch (mode) {
+	case CAN_MODE_START:
+		err = kvaser_usb_leaf_simple_cmd_async(priv, CMD_START_CHIP);
+		if (err)
+			return err;
+		break;
+	default:
+		return -EOPNOTSUPP;
+	}
+
+	return 0;
+}
+
+static int kvaser_usb_leaf_get_berr_counter(const struct net_device *netdev,
+					    struct can_berr_counter *bec)
+{
+	struct kvaser_usb_net_priv *priv = netdev_priv(netdev);
+
+	*bec = priv->bec;
+
+	return 0;
+}
+
+static int kvaser_usb_leaf_setup_endpoints(struct kvaser_usb *dev)
+{
+	const struct usb_host_interface *iface_desc;
+	struct usb_endpoint_descriptor *endpoint;
+	int i;
+
+	iface_desc = dev->intf->cur_altsetting;
+
+	for (i = 0; i < iface_desc->desc.bNumEndpoints; ++i) {
+		endpoint = &iface_desc->endpoint[i].desc;
+
+		if (!dev->bulk_in && usb_endpoint_is_bulk_in(endpoint))
+			dev->bulk_in = endpoint;
+
+		if (!dev->bulk_out && usb_endpoint_is_bulk_out(endpoint))
+			dev->bulk_out = endpoint;
+
+		/* use first bulk endpoint for in and out */
+		if (dev->bulk_in && dev->bulk_out)
+			return 0;
+	}
+
+	return -ENODEV;
+}
+
+const struct kvaser_usb_dev_ops kvaser_usb_leaf_dev_ops = {
+	.dev_set_mode = kvaser_usb_leaf_set_mode,
+	.dev_set_bittiming = kvaser_usb_leaf_set_bittiming,
+	.dev_set_data_bittiming = NULL,
+	.dev_get_berr_counter = kvaser_usb_leaf_get_berr_counter,
+	.dev_setup_endpoints = kvaser_usb_leaf_setup_endpoints,
+	.dev_init_card = kvaser_usb_leaf_init_card,
+	.dev_get_software_info = kvaser_usb_leaf_get_software_info,
+	.dev_get_software_details = NULL,
+	.dev_get_card_info = kvaser_usb_leaf_get_card_info,
+	.dev_get_capabilities = NULL,
+	.dev_set_opt_mode = kvaser_usb_leaf_set_opt_mode,
+	.dev_start_chip = kvaser_usb_leaf_start_chip,
+	.dev_stop_chip = kvaser_usb_leaf_stop_chip,
+	.dev_reset_chip = kvaser_usb_leaf_reset_chip,
+	.dev_flush_queue = kvaser_usb_leaf_flush_queue,
+	.dev_read_bulk_callback = kvaser_usb_leaf_read_bulk_callback,
+	.dev_frame_to_cmd = kvaser_usb_leaf_frame_to_cmd,
+};

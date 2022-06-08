@@ -1,35 +1,44 @@
-CPI_APEI_GHES) \
-    $(wildcard include/config/INTEL_TXT) \
-  arch/x86/include/generated/asm/kmap_size.h \
-  include/asm-generic/kmap_size.h \
-    $(wildcard include/config/DEBUG_KMAP_LOCAL) \
-  include/asm-generic/fixmap.h \
-  arch/x86/include/asm/irq_vectors.h \
-    $(wildcard include/config/HAVE_KVM) \
-    $(wildcard include/config/HYPERV) \
-    $(wildcard include/config/PCI_MSI) \
-  arch/x86/include/asm/cpu_entry_area.h \
-  arch/x86/include/asm/intel_ds.h \
-  arch/x86/include/asm/pgtable_areas.h \
-  arch/x86/include/asm/pgtable_32_areas.h \
-  include/uapi/linux/elf.h \
-  include/uapi/linux/elf-em.h \
-  include/linux/kobject.h \
-    $(wildcard include/config/UEVENT_HELPER) \
-    $(wildcard include/config/DEBUG_KOBJECT_RELEASE) \
-  include/linux/sysfs.h \
-  include/linux/kernfs.h \
-    $(wildcard include/config/KERNFS) \
-  include/linux/idr.h \
-  include/linux/radix-tree.h \
-  include/linux/xarray.h \
-    $(wildcard include/config/XARRAY_MULTI) \
-  include/linux/kconfig.h \
-  include/linux/kobject_ns.h \
-  include/linux/moduleparam.h \
-    $(wildcard include/config/ALPHA) \
-    $(wildcard include/config/IA64) \
-    $(wildcard include/config/PPC64) \
-  include/linux/rbtree_latch.h \
-  include/linux/error-injection.h \
-  include/asm-generi
+#include <linux/module.h>
+#define INCLUDE_VERMAGIC
+#include <linux/build-salt.h>
+#include <linux/elfnote-lto.h>
+#include <linux/vermagic.h>
+#include <linux/compiler.h>
+
+BUILD_SALT;
+BUILD_LTO_INFO;
+
+MODULE_INFO(vermagic, VERMAGIC_STRING);
+MODULE_INFO(name, KBUILD_MODNAME);
+
+__visible struct module __this_module
+__section(".gnu.linkonce.this_module") = {
+	.name = KBUILD_MODNAME,
+	.init = init_module,
+#ifdef CONFIG_MODULE_UNLOAD
+	.exit = cleanup_module,
+#endif
+	.arch = MODULE_ARCH_INIT,
+};
+
+MODULE_INFO(intree, "Y");
+
+#ifdef CONFIG_RETPOLINE
+MODULE_INFO(retpoline, "Y");
+#endif
+
+MODULE_INFO(depends, "8390");
+
+MODULE_ALIAS("pci:v000010ECd00008029sv*sd*bc*sc*i*");
+MODULE_ALIAS("pci:v00001050d00000940sv*sd*bc*sc*i*");
+MODULE_ALIAS("pci:v000011F6d00001401sv*sd*bc*sc*i*");
+MODULE_ALIAS("pci:v00008E2Ed00003000sv*sd*bc*sc*i*");
+MODULE_ALIAS("pci:v00004A14d00005000sv*sd*bc*sc*i*");
+MODULE_ALIAS("pci:v00001106d00000926sv*sd*bc*sc*i*");
+MODULE_ALIAS("pci:v000010BDd00000E34sv*sd*bc*sc*i*");
+MODULE_ALIAS("pci:v00001050d00005A5Asv*sd*bc*sc*i*");
+MODULE_ALIAS("pci:v000012C3d00000058sv*sd*bc*sc*i*");
+MODULE_ALIAS("pci:v000012C3d00005598sv*sd*bc*sc*i*");
+MODULE_ALIAS("pci:v00008C4Ad00001980sv*sd*bc*sc*i*");
+
+MODULE_INFO(srcversion, "980F2C053C9D60B31B0C151");

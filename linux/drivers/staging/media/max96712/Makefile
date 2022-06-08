@@ -1,3 +1,8 @@
-ude/config/PARAVIRT_XXL) \
-  arch/x86/include/asm/disabled-features.h \
-    $(
+tore;
+	int mem;
+	int ret;
+
+	if (0 != slot)
+		return -EINVAL;
+
+	if (state->curr

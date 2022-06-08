@@ -1,83 +1,72 @@
-IRQ) << LOCK_USAGE_READ_MASK;
+q;
 
-	return excl;
-}
-
-/*
- * Find the first pair of bit match between an original
- * usage mask and an exclusive usage mask.
- */
-static int find_exclusive_match(unsigned long mask,
-				unsigned long excl_mask,
-				enum lock_usage_bit *bitp,
-				enum lock_usage_bit *excl_bitp)
-{
-	int bit, excl, excl_read;
-
-	for_each_set_bit(bit, &mask, LOCK_USED) {
+	for (;;) {
+		raw_spin_lock_irqsave(&p->pi_lock, rf->flags);
+		rq = task_rq(p);
+		raw_spin_rq_lock(rq);
 		/*
-		 * exclusive_bit() strips the read bit, however,
-		 * LOCK_ENABLED_IRQ_*_READ may cause deadlocks too, so we need
-		 * to search excl | LOCK_USAGE_READ_MASK as well.
+		 *	move_queued_task()		task_rq_lock()
+		 *
+		 *	ACQUIRE (rq->lock)
+		 *	[S] ->on_rq = MIGRATING		[L] rq = task_rq()
+		 *	WMB (__set_task_cpu())		ACQUIRE (rq->lock);
+		 *	[S] ->cpu = new_cpu		[L] task_rq()
+		 *					[L] ->on_rq
+		 *	RELEASE (rq->lock)
+		 *
+		 * If we observe the old CPU in task_rq_lock(), the acquire of
+		 * the old rq->lock will fully serialize against the stores.
+		 *
+		 * If we observe the new CPU in task_rq_lock(), the address
+		 * dependency headed by '[L] rq = task_rq()' and the acquire
+		 * will pair with the WMB to ensure we then also see migrating.
 		 */
-		excl = exclusive_bit(bit);
-		excl_read = excl | LOCK_USAGE_READ_MASK;
-		if (excl_mask & lock_flag(excl)) {
-			*bitp = bit;
-			*excl_bitp = excl;
-			return 0;
-		} else if (excl_mask & lock_flag(excl_read)) {
-			*bitp = bit;
-			*excl_bitp = excl_read;
-			return 0;
+		if (likely(rq == task_rq(p) && !task_on_rq_migrating(p))) {
+			rq_pin_lock(rq, rf);
+			return rq;
 		}
+		raw_spin_rq_unlock(rq);
+		raw_spin_unlock_irqrestore(&p->pi_lock, rf->flags);
+
+		while (unlikely(task_on_rq_migrating(p)))
+			cpu_relax();
 	}
-	return -1;
 }
 
 /*
- * Prove that the new dependency does not connect a hardirq-safe(-read)
- * lock with a hardirq-unsafe lock - to achieve this we search
- * the backwards-subgraph starting at <prev>, and the
- * forwards-subgraph starting at <next>:
+ * RQ-clock updating methods:
  */
-static int check_irq_usage(struct task_struct *curr, struct held_lock *prev,
-			   struct held_lock *next)
+
+static void update_rq_clock_task(struct rq *rq, s64 delta)
 {
-	unsigned long usage_mask = 0, forward_mask, backward_mask;
-	enum lock_usage_bit forward_bit = 0, backward_bit = 0;
-	struct lock_list *target_entry1;
-	struct lock_list *target_entry;
-	struct lock_list this, that;
-	enum bfs_result ret;
+/*
+ * In theory, the compile should just see 0 here, and optimize out the call
+ * to sched_rt_avg_update. But I don't trust it...
+ */
+	s64 __maybe_unused steal = 0, irq_delta = 0;
+
+#ifdef CONFIG_IRQ_TIME_ACCOUNTING
+	irq_delta = irq_time_read(cpu_of(rq)) - rq->prev_irq_time;
 
 	/*
-	 * Step 1: gather all hard/soft IRQs usages backward in an
-	 * accumulated usage mask.
+	 * Since irq_time is only updated on {soft,}irq_exit, we might run into
+	 * this case when a previous update_rq_clock() happened inside a
+	 * {soft,}irq region.
+	 *
+	 * When this happens, we stop ->clock_task and only update the
+	 * prev_irq_time stamp to account for the part that fit, so that a next
+	 * update will consume the rest. This ensures ->clock_task is
+	 * monotonic.
+	 *
+	 * It does however cause some slight miss-attribution of {soft,}irq
+	 * time, a more accurate solution would be to update the irq_time using
+	 * the current rq->clock timestamp, except that would require using
+	 * atomic ops.
 	 */
-	bfs_init_rootb(&this, prev);
+	if (irq_delta > delta)
+		irq_delta = delta;
 
-	ret = __bfs_backwards(&this, &usage_mask, usage_accumulate, usage_skip, NULL);
-	if (bfs_error(ret)) {
-		print_bfs_bug(ret);
-		return 0;
-	}
-
-	usage_mask &= LOCKF_USED_IN_IRQ_ALL;
-	if (!usage_mask)
-		return 1;
-
-	/*
-	 * Step 2: find exclusive uses forward that match the previous
-	 * backward accumulated mask.
-	 */
-	forward_mask = exclusive_mask(usage_mask);
-
-	bfs_init_root(&that, next);
-
-	ret = find_usage_forwards(&that, forward_mask, &target_entry1);
-	if (bfs_error(ret)) {
-		print_bfs_bug(ret);
-		return 0;
-	}
-	if (ret ==
+	rq->prev_irq_time += irq_delta;
+	delta -= irq_delta;
+#endif
+#ifdef CONFIG_PARAVIRT

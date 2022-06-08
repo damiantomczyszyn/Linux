@@ -1,4 +1,1 @@
-nclude/config/GENERIC_ATOMIC64) \
-  include/linux/atomic/atomic-long.h \
-  include/linux/atomic/atomic-instrumented.h \
-  include/linux/bug
+cmd_drivers/net/ethernet/3com/typhoon.mod := { echo  drivers/net/ethernet/3com/typhoon.o;  echo; } > drivers/net/ethernet/3com/typhoon.mod

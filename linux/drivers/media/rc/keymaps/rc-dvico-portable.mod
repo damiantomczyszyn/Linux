@@ -1,2 +1,2 @@
-drivers/media/rc/keymaps/rc-dvico-portable.o
-
+         = &mpeg_fops,
+	.ioctl_ops     = &mpeg

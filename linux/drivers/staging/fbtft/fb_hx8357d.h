@@ -1,46 +1,78 @@
-(wildcard include/config/SPLIT_PTLOCK_CPUS) \
-    $(wildcard include/config/ARCH_ENABLE_SPLIT_PMD_PTLOCK) \
-  arch/x86/include/asm/tlbbatch.h \
-  include/linux/task_io_accounting.h \
-    $(wildcard include/config/TASK_IO_ACCOUNTING) \
-  include/linux/posix-timers.h \
-  include/linux/alarmtimer.h \
-    $(wildcard include/config/RTC_CLASS) \
-  include/uapi/linux/rseq.h \
-  include/linux/kcsan.h \
-  arch/x86/include/generated/asm/kmap_size.h \
-  include/asm-generic/kmap_size.h \
-    $(wildcard include/config/DEBUG_KMAP_LOCAL) \
-  arch/x86/include/asm/delay.h \
-  include/asm-generic/delay.h \
-  include/linux/gpio/consumer.h \
-    $(wildcard include/config/GPIOLIB) \
-    $(wildcard include/config/OF_GPIO) \
-    $(wildcard include/config/ACPI) \
-    $(wildcard include/config/GPIO_SYSFS) \
-  include/linux/i2c.h \
-    $(wildcard include/config/I2C) \
-    $(wildcard include/config/I2C_SLAVE) \
-    $(wildcard include/config/I2C_BOARDINFO) \
-    $(wildcard include/config/I2C_MUX) \
-  include/linux/acpi.h \
-    $(wildcard include/config/ACPI_DEBUGGER) \
-    $(wildcard include/config/ACPI_TABLE_LIB) \
-    $(wildcard include/config/IA64) \
-    $(wildcard include/config/LOONGARCH) \
-    $(wildcard include/config/ARM64) \
-    $(wildcard include/config/ACPI_PROCESSOR_CSTATE) \
-    $(wildcard include/config/ACPI_HOTPLUG_CPU) \
-    $(wildcard include/config/ACPI_HOTPLUG_IOAPIC) \
-    $(wildcard include/config/X86_IO_APIC) \
-    $(wildcard include/config/PCI) \
-    $(wildcard include/config/ACPI_WMI) \
-    $(wildcard include/config/ACPI_NUMA) \
-    $(wildcard include/config/HIBERNATION) \
-    $(wildcard include/config/PM_SLEEP) \
-    $(wildcard include/config/ACPI_HOTPLUG_MEMORY) \
-    $(wildcard include/config/ACPI_CONTAINER) \
-    $(wildcard include/config/ACPI_GTDT) \
-    $(wildcard include/config/PM) \
-    $(wildcard include/config/ACPI_TABLE_UPGRADE) \
-    $(wildcard include/config/ACPI_WATCHDOG) \
+fault_pm	  = 0,
+				.dvb_amplitude	  = 134,
+				.set_smoothedcvbs = 1,
+				.if_khz		  = 4560
+			};
+
+			fe = dvb_attach(xc4000_attach, fe0->dvb.frontend,
+					&dev->i2c_bus[1].i2c_adap, &cfg);
+			if (!fe) {
+				pr_err("%s/2: xc4000 attach failed\n",
+				       dev->name);
+				goto frontend_detach;
+			}
+		}
+		break;
+	case CX23885_BOARD_TBS_6920:
+		i2c_bus = &dev->i2c_bus[1];
+
+		fe0->dvb.frontend = dvb_attach(cx24116_attach,
+					&tbs_cx24116_config,
+					&i2c_bus->i2c_adap);
+		if (fe0->dvb.frontend != NULL)
+			fe0->dvb.frontend->ops.set_voltage = f300_set_voltage;
+
+		break;
+	case CX23885_BOARD_TBS_6980:
+	case CX23885_BOARD_TBS_6981:
+		i2c_bus = &dev->i2c_bus[1];
+
+		switch (port->nr) {
+		/* PORT B */
+		case 1:
+			fe0->dvb.frontend = dvb_attach(cx24117_attach,
+					&tbs_cx24117_config,
+					&i2c_bus->i2c_adap);
+			break;
+		/* PORT C */
+		case 2:
+			fe0->dvb.frontend = dvb_attach(cx24117_attach,
+					&tbs_cx24117_config,
+					&i2c_bus->i2c_adap);
+			break;
+		}
+		break;
+	case CX23885_BOARD_TEVII_S470:
+		i2c_bus = &dev->i2c_bus[1];
+
+		fe0->dvb.frontend = dvb_attach(ds3000_attach,
+					&tevii_ds3000_config,
+					&i2c_bus->i2c_adap);
+		if (fe0->dvb.frontend != NULL) {
+			dvb_attach(ts2020_attach, fe0->dvb.frontend,
+				&tevii_ts2020_config, &i2c_bus->i2c_adap);
+			fe0->dvb.frontend->ops.set_voltage = f300_set_voltage;
+		}
+
+		break;
+	case CX23885_BOARD_DVBWORLD_2005:
+		i2c_bus = &dev->i2c_bus[1];
+
+		fe0->dvb.frontend = dvb_attach(cx24116_attach,
+			&dvbworld_cx24116_config,
+			&i2c_bus->i2c_adap);
+		break;
+	case CX23885_BOARD_NETUP_DUAL_DVBS2_CI:
+		i2c_bus = &dev->i2c_bus[0];
+		switch (port->nr) {
+		/* port B */
+		case 1:
+			fe0->dvb.frontend = dvb_attach(stv0900_attach,
+							&netup_stv0900_config,
+							&i2c_bus->i2c_adap, 0);
+			if (fe0->dvb.frontend != NULL) {
+				if (dvb_attach(stv6110_attach,
+						fe0->dvb.frontend,
+						&netup_stv6110_tunerconfig_a,
+						&i2c_bus->i2c_adap)) {
+				

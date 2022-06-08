@@ -1,2 +1,1 @@
-NAMIC_TASK_STRUCT) \
-    $
+cmd_drivers/media/pci/cx18

@@ -1,39 +1,60 @@
-de/config/INLINE_READ_UNLOCK_IRQRESTORE) \
-    $(wildcard include/config/INLINE_WRITE_UNLOCK_IRQRESTORE) \
-  include/linux/srcu.h \
-    $(wildcard include/config/TINY_SRCU) \
-    $(wildcard include/config/SRCU) \
-  include/linux/rcupdate.h \
-    $(wildcard include/config/PREEMPT_RCU) \
-    $(wildcard include/config/TINY_RCU) \
-    $(wildcard include/config/RCU_STRICT_GRACE_PERIOD) \
-    $(wildcard include/config/TASKS_RCU_GENERIC) \
-    $(wildcard include/config/RCU_STALL_COMMON) \
-    $(wildcard include/config/NO_HZ_FULL) \
-    $(wildcard include/config/RCU_NOCB_CPU) \
-    $(wildcard include/config/TASKS_RCU) \
-    $(wildcard include/config/TASKS_TRACE_RCU) \
-    $(wildcard include/config/TASKS_RUDE_RCU) \
-    $(wildcard include/config/TREE_RCU) \
-    $(wildcard include/config/DEBUG_OBJECTS_RCU_HEAD) \
-    $(wildcard include/config/PROVE_RCU) \
-    $(wildcard include/config/ARCH_WEAK_RELEASE_ACQUIRE) \
-  include/linux/rcutree.h \
-  include/linux/workqueue.h \
-    $(wildcard include/config/DEBUG_OBJECTS_WORK) \
-    $(wildcard include/config/FREEZER) \
-    $(wildcard include/config/SYSFS) \
-    $(wildcard include/config/WQ_WATCHDOG) \
-  include/linux/timer.h \
-    $(wildcard include/config/DEBUG_OBJECTS_TIMERS) \
-    $(wildcard include/config/NO_HZ_COMMON) \
-  include/linux/ktime.h \
-  include/linux/time.h \
-    $(wildcard include/config/POSIX_TIMERS) \
-  include/linux/time32.h \
-  include/linux/timex.h \
-  include/uapi/linux/timex.h \
-  arch/x86/include/asm/timex.h \
-    $(wildcard include/config/X86_TSC) \
-  arch/x86/include/asm/tsc.h \
- 
+TRL, reg);
+	}
+
+	/* Set VIDC pins to input */
+	if (cx23885_boards[dev->board].portc == CX23885_MPEG_DVB) {
+		reg = cx_read(PAD_CTRL);
+		reg &= ~0x4; /* Clear TS2_SOP_OE */
+		cx_write(PAD_CTRL, reg);
+	}
+
+	if (cx23885_boards[dev->board].portb == CX23885_MPEG_ENCODER) {
+
+		reg = cx_read(PAD_CTRL);
+		reg = reg & ~0x1;    /* Clear TS1_OE */
+
+		/* FIXME, bit 2 writing here is questionable */
+		/* set TS1_SOP_OE and TS1_OE_HI */
+		reg = reg | 0xa;
+		cx_write(PAD_CTRL, reg);
+
+		/* Sets MOE_CLK_DIS to disable MoE clock */
+		/* sets MCLK_DLY_SEL/BCLK_DLY_SEL to 1 buffer delay each */
+		cx_write(CLK_DELAY, cx_read(CLK_DELAY) | 0x80000011);
+
+		/* ALT_GPIO_ALT_SET: GPIO[0]
+		 * IR_ALT_TX_SEL: GPIO[1]
+		 * GPIO1_ALT_SEL: VIP_656_DATA[0]
+		 * GPIO0_ALT_SEL: VIP_656_CLK
+		 */
+		cx_write(ALT_PIN_OUT_SEL, 0x10100045);
+	}
+
+	switch (dev->bridge) {
+	case CX23885_BRIDGE_885:
+	case CX23885_BRIDGE_887:
+	case CX23885_BRIDGE_888:
+		/* enable irqs */
+		dprintk(1, "%s() enabling TS int's and DMA\n", __func__);
+		/* clear dma in progress */
+		cx23885_clear_bridge_error(dev);
+		cx_set(port->reg_ts_int_msk,  port->ts_int_msk_val);
+		cx_set(port->reg_dma_ctl, port->dma_ctl_val);
+
+		/* clear dma in progress */
+		cx23885_clear_bridge_error(dev);
+		cx23885_irq_add(dev, port->pci_irqmask);
+		cx23885_irq_enable_all(dev);
+
+		/* clear dma in progress */
+		cx23885_clear_bridge_error(dev);
+		break;
+	default:
+		BUG();
+	}
+
+	cx_set(DEV_CNTRL2, (1<<5)); /* Enable RISC controller */
+	/* clear dma in progress */
+	cx23885_clear_bridge_error(dev);
+
+	if (cx23885_boards[dev->board].portb ==

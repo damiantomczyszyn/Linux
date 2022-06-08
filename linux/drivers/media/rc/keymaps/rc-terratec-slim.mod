@@ -1,2 +1,1 @@
-drivers/media/rc/keymaps/rc-terratec-slim.o
-
+// SPDX-License-Identifier: GPL-2.0-or-later

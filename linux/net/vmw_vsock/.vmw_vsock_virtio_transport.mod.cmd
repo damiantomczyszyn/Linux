@@ -1,9 +1,6 @@
-(likely(hlock_class(this)->usage_mask & new_mask))
-		return 1;
-
-	if (!graph_lock())
-		return 0;
-	/*
-	 * Make sure we didn't race:
-	 */
-	if (unlikely(h
+00d00);
+		/* enable irq */
+		cx_write(GPIO_ISM, 0x00000000);/* INTERRUPTS active low*/
+		break;
+	case CX23885_BOARD_HAUPPAUGE_HVR4400:
+	case CX23885_B

@@ -1,2 +1,2 @@
-    $(wildcard include/config/HIGH_RES_TIMERS) \
-    $(wi
+_read(ALT_PIN_OUT_SEL));
+	dprintk(1, "%s() GPIO2         

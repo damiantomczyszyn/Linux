@@ -1,74 +1,181 @@
-cmd_drivers/media/i2c/tw2804.o := gcc -Wp,-MMD,drivers/media/i2c/.tw2804.o.d -nostdinc -I./arch/x86/include -I./arch/x86/include/generated  -I./include -I./arch/x86/include/uapi -I./arch/x86/include/generated/uapi -I./include/uapi -I./include/generated/uapi -include ./include/linux/compiler-version.h -include ./include/linux/kconfig.h -include ./include/linux/compiler_types.h -D__KERNEL__ -fmacro-prefix-map=./= -Wall -Wundef -Werror=strict-prototypes -Wno-trigraphs -fno-strict-aliasing -fno-common -fshort-wchar -fno-PIE -Werror=implicit-function-declaration -Werror=implicit-int -Werror=return-type -Wno-format-security -std=gnu11 -mno-sse -mno-mmx -mno-sse2 -mno-3dnow -mno-avx -fcf-protection=none -m32 -msoft-float -mregparm=3 -freg-struct-return -fno-pic -mpreferred-stack-boundary=2 -march=i686 -mtune=pentium3 -mtune=generic -Wa,-mtune=generic32 -ffreestanding -mstack-protector-guard-reg=fs -mstack-protector-guard-symbol=__stack_chk_guard -Wno-sign-compare -fno-asynchronous-unwind-tables -mindirect-branch=thunk-extern -mindirect-branch-register -fno-jump-tables -fno-delete-null-pointer-checks -Wno-frame-address -Wno-format-truncation -Wno-format-overflow -Wno-address-of-packed-member -O2 -fno-allow-store-data-races -fstack-protector-strong -Wimplicit-fallthrough=5 -Wno-main -Wno-unused-but-set-variable -Wno-unused-const-variable -fno-stack-clash-protection -pg -mrecord-mcount -mfentry -DCC_USING_FENTRY -Wdeclaration-after-statement -Wvla -Wno-pointer-sign -Wcast-function-type -Wno-stringop-truncation -Wno-stringop-overflow -Wno-restrict -Wno-maybe-uninitialized -Wno-alloc-size-larger-than -fno-strict-overflow -fno-stack-check -fconserve-stack -Werror=date-time -Werror=incompatible-pointer-types -Werror=designated-init -Wno-packed-not-aligned  -DMODULE  -DKBUILD_BASENAME='"tw2804"' -DKBUILD_MODNAME='"tw2804"' -D__KBUILD_MODNAME=kmod_tw2804 -c -o drivers/media/i2c/tw2804.o drivers/media/i2c/tw2804.c 
 
-source_drivers/media/i2c/tw2804.o := drivers/media/i2c/tw2804.c
+	dprintk(1, "%s() status = %d, seq = %d\n", __func__, status, seq);
+}
 
-deps_drivers/media/i2c/tw2804.o := \
-  include/linux/compiler-version.h \
-    $(wildcard include/config/CC_VERSION_TEXT) \
-  include/linux/kconfig.h \
-    $(wildcard include/config/CPU_BIG_ENDIAN) \
-    $(wildcard include/config/BOOGER) \
-    $(wildcard include/config/FOO) \
-  include/linux/compiler_types.h \
-    $(wildcard include/config/DEBUG_INFO_BTF) \
-    $(wildcard include/config/PAHOLE_HAS_BTF_TAG) \
-    $(wildcard include/config/HAVE_ARCH_COMPILER_H) \
-    $(wildcard include/config/CC_HAS_ASM_INLINE) \
-  include/linux/compiler_attributes.h \
-  include/linux/compiler-gcc.h \
-    $(wildcard include/config/RETPOLINE) \
-    $(wildcard include/config/ARCH_USE_BUILTIN_BSWAP) \
-    $(wildcard include/config/SHADOW_CALL_STACK) \
-    $(wildcard include/config/KCOV) \
-  include/linux/module.h \
-    $(wildcard include/config/MODULES) \
-    $(wildcard include/config/SYSFS) \
-    $(wildcard include/config/MODULES_TREE_LOOKUP) \
-    $(wildcard include/config/LIVEPATCH) \
-    $(wildcard include/config/STACKTRACE_BUILD_ID) \
-    $(wildcard include/config/CFI_CLANG) \
-    $(wildcard include/config/MODULE_SIG) \
-    $(wildcard include/config/GENERIC_BUG) \
-    $(wildcard include/config/KALLSYMS) \
-    $(wildcard include/config/SMP) \
-    $(wildcard include/config/TRACEPOINTS) \
-    $(wildcard include/config/TREE_SRCU) \
-    $(wildcard include/config/BPF_EVENTS) \
-    $(wildcard include/config/DEBUG_INFO_BTF_MODULES) \
-    $(wildcard include/config/JUMP_LABEL) \
-    $(wildcard include/config/TRACING) \
-    $(wildcard include/config/EVENT_TRACING) \
-    $(wildcard include/config/FTRACE_MCOUNT_RECORD) \
-    $(wildcard include/config/KPROBES) \
-    $(wildcard include/config/HAVE_STATIC_CALL_INLINE) \
-    $(wildcard include/config/PRINTK_INDEX) \
-    $(wildcard include/config/MODULE_UNLOAD) \
-    $(wildcard include/config/CONSTRUCTORS) \
-    $(wildcard include/config/FUNCTION_ERROR_INJECTION) \
-  include/linux/list.h \
-    $(wildcard include/config/DEBUG_LIST) \
-  include/linux/container_of.h \
-  include/linux/build_bug.h \
-  include/linux/compiler.h \
-    $(wildcard include/config/TRACE_BRANCH_PROFILING) \
-    $(wildcard include/config/PROFILE_ALL_BRANCHES) \
-    $(wildcard include/config/STACK_VALIDATION) \
-  include/linux/compiler_types.h \
-  arch/x86/include/generated/asm/rwonce.h \
-  include/asm-generic/rwonce.h \
-  include/linux/kasan-checks.h \
-    $(wildcard include/config/KASAN_GENERIC) \
-    $(wildcard include/config/KASAN_SW_TAGS) \
-  include/linux/types.h \
-    $(wildcard include/config/HAVE_UID16) \
-    $(wildcard include/config/UID16) \
-    $(wildcard include/config/ARCH_DMA_ADDR_T_64BIT) \
-    $(wildcard include/config/PHYS_ADDR_T_64BIT) \
-    $(wildcard include/config/64BIT) \
-    $(wildcard include/config/ARCH_32BIT_USTAT_F_TINODE) \
-  include/uapi/linux/types.h \
-  arch/x86/include/generated/uapi/asm/types.h \
-  include/uapi/asm-generic/types.h \
-  include/asm-generic/int-ll64.h \
-  include/uapi/asm-generic/int-ll64.h \
-  arch/
+static void cx23885_codec_settings(struct cx23885_dev *dev)
+{
+	dprintk(1, "%s()\n", __func__);
+
+	/* Dynamically change the height based on video standard */
+	if (dev->encodernorm.id & V4L2_STD_525_60)
+		dev->ts1.height = 480;
+	else
+		dev->ts1.height = 576;
+
+	/* assign frame size */
+	cx23885_api_cmd(dev, CX2341X_ENC_SET_FRAME_SIZE, 2, 0,
+				dev->ts1.height, dev->ts1.width);
+
+	dev->cxhdl.width = dev->ts1.width;
+	dev->cxhdl.height = dev->ts1.height;
+	dev->cxhdl.is_50hz =
+		(dev->encodernorm.id & V4L2_STD_625_50) != 0;
+
+	cx2341x_handler_setup(&dev->cxhdl);
+
+	cx23885_api_cmd(dev, CX2341X_ENC_MISC, 2, 0, 3, 1);
+	cx23885_api_cmd(dev, CX2341X_ENC_MISC, 2, 0, 4, 1);
+}
+
+static int cx23885_initialize_codec(struct cx23885_dev *dev, int startencoder)
+{
+	int version;
+	int retval;
+	u32 i, data[7];
+
+	dprintk(1, "%s()\n", __func__);
+
+	retval = cx23885_api_cmd(dev, CX2341X_ENC_PING_FW, 0, 0); /* ping */
+	if (retval < 0) {
+		dprintk(2, "%s() PING OK\n", __func__);
+		retval = cx23885_load_firmware(dev);
+		if (retval < 0) {
+			pr_err("%s() f/w load failed\n", __func__);
+			return retval;
+		}
+		retval = cx23885_find_mailbox(dev);
+		if (retval < 0) {
+			pr_err("%s() mailbox < 0, error\n",
+				__func__);
+			return -1;
+		}
+		dev->cx23417_mailbox = retval;
+		retval = cx23885_api_cmd(dev, CX2341X_ENC_PING_FW, 0, 0);
+		if (retval < 0) {
+			pr_err("ERROR: cx23417 firmware ping failed!\n");
+			return -1;
+		}
+		retval = cx23885_api_cmd(dev, CX2341X_ENC_GET_VERSION, 0, 1,
+			&version);
+		if (retval < 0) {
+			pr_err("ERROR: cx23417 firmware get encoder :version failed!\n");
+			return -1;
+		}
+		dprintk(1, "cx23417 firmware version is 0x%08x\n", version);
+		msleep(200);
+	}
+
+	cx23885_codec_settings(dev);
+	msleep(60);
+
+	cx23885_api_cmd(dev, CX2341X_ENC_SET_NUM_VSYNC_LINES, 2, 0,
+		CX23885_FIELD1_SAA7115, CX23885_FIELD2_SAA7115);
+	cx23885_api_cmd(dev, CX2341X_ENC_SET_PLACEHOLDER, 12, 0,
+		CX23885_CUSTOM_EXTENSION_USR_DATA, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+		0, 0);
+
+	/* Setup to capture VBI */
+	data[0] = 0x0001BD00;
+	data[1] = 1;          /* frames per interrupt */
+	data[2] = 4;          /* total bufs */
+	data[3] = 0x91559155; /* start codes */
+	data[4] = 0x206080C0; /* stop codes */
+	data[5] = 6;          /* lines */
+	data[6] = 64;         /* BPL */
+
+	cx23885_api_cmd(dev, CX2341X_ENC_SET_VBI_CONFIG, 7, 0, data[0], data[1],
+		data[2], data[3], data[4], data[5], data[6]);
+
+	for (i = 2; i <= 24; i++) {
+		int valid;
+
+		valid = ((i >= 19) && (i <= 21));
+		cx23885_api_cmd(dev, CX2341X_ENC_SET_VBI_LINE, 5, 0, i,
+				valid, 0 , 0, 0);
+		cx23885_api_cmd(dev, CX2341X_ENC_SET_VBI_LINE, 5, 0,
+				i | 0x80000000, valid, 0, 0, 0);
+	}
+
+	cx23885_api_cmd(dev, CX2341X_ENC_MUTE_AUDIO, 1, 0, CX23885_UNMUTE);
+	msleep(60);
+
+	/* initialize the video input */
+	cx23885_api_cmd(dev, CX2341X_ENC_INITIALIZE_INPUT, 0, 0);
+	msleep(60);
+
+	/* Enable VIP style pixel invalidation so we work with scaled mode */
+	mc417_memory_write(dev, 2120, 0x00000080);
+
+	/* start capturing to the host interface */
+	if (startencoder) {
+		cx23885_api_cmd(dev, CX2341X_ENC_START_CAPTURE, 2, 0,
+			CX23885_MPEG_CAPTURE, CX23885_RAW_BITS_NONE);
+		msleep(10);
+	}
+
+	return 0;
+}
+
+/* ------------------------------------------------------------------ */
+
+static int queue_setup(struct vb2_queue *q,
+			   unsigned int *num_buffers, unsigned int *num_planes,
+			   unsigned int sizes[], struct device *alloc_devs[])
+{
+	struct cx23885_dev *dev = q->drv_priv;
+
+	dev->ts1.ts_packet_size  = mpeglinesize;
+	dev->ts1.ts_packet_count = mpeglines;
+	*num_planes = 1;
+	sizes[0] = mpeglinesize * mpeglines;
+	*num_buffers = mpegbufs;
+	return 0;
+}
+
+static int buffer_prepare(struct vb2_buffer *vb)
+{
+	struct vb2_v4l2_buffer *vbuf = to_vb2_v4l2_buffer(vb);
+	struct cx23885_dev *dev = vb->vb2_queue->drv_priv;
+	struct cx23885_buffer *buf =
+		container_of(vbuf, struct cx23885_buffer, vb);
+
+	return cx23885_buf_prepare(buf, &dev->ts1);
+}
+
+static void buffer_finish(struct vb2_buffer *vb)
+{
+	struct vb2_v4l2_buffer *vbuf = to_vb2_v4l2_buffer(vb);
+	struct cx23885_dev *dev = vb->vb2_queue->drv_priv;
+	struct cx23885_buffer *buf = container_of(vbuf,
+		struct cx23885_buffer, vb);
+
+	cx23885_free_buffer(dev, buf);
+}
+
+static void buffer_queue(struct vb2_buffer *vb)
+{
+	struct vb2_v4l2_buffer *vbuf = to_vb2_v4l2_buffer(vb);
+	struct cx23885_dev *dev = vb->vb2_queue->drv_priv;
+	struct cx23885_buffer   *buf = container_of(vbuf,
+		struct cx23885_buffer, vb);
+
+	cx23885_buf_queue(&dev->ts1, buf);
+}
+
+static int cx23885_start_streaming(struct vb2_queue *q, unsigned int count)
+{
+	struct cx23885_dev *dev = q->drv_priv;
+	struct cx23885_dmaqueue *dmaq = &dev->ts1.mpegq;
+	unsigned long flags;
+	int ret;
+
+	ret = cx23885_initialize_codec(dev, 1);
+	if (ret == 0) {
+		struct cx23885_buffer *buf = list_entry(dmaq->active.next,
+			struct cx23885_buffer, queue);
+
+		cx23885_start_dma(&dev->ts1, dmaq, buf);
+		return 0;
+	}
+	spin_lock_irqsave(&dev->slock, flags);
+	while (!list_empty(&dmaq->a

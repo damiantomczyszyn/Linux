@@ -1,6 +1,1 @@
- $(wildcard include/config/EARLY_PRINTK) \
-    $(wildcard include/config/PRINTK) \
-    $(wildcard include/config/PRINTK_INDEX) \
-    $(wildcard include/config/DYNAMIC_DEBUG) \
-    $(wildcard include/config/DYNAMIC_DEBUG_CORE) \
-  include/
+cmd_drivers/net/can/cc770/modules.order := {   echo drivers/net/can/cc770/cc770.ko;   echo drivers/net/can/cc770/cc770_isa.ko;   echo drivers/net/can/cc770/cc770_platform.ko; :; } | awk '!x[$$0]++' - > drivers/net/can/cc770/modules.order

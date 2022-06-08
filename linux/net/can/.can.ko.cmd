@@ -1,4 +1,6 @@
-
-    $(wildcard include/config/CONTEXT_TRACKING) \
-  include/linux/percpu.h \
-    $(wildcard include/config/NEED_PER_CPU_EMBED_FIRST_CHU
+// SPDX-License-Identifier: GPL-2.0-or-later
+/*
+ *
+ *  Support for a cx23417 mpeg encoder via cx23885 host port.
+ *
+ *    (c) 2004 Jelle

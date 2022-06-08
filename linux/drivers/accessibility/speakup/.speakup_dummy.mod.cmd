@@ -1,5 +1,13 @@
-config/ACPI_HOTPLUG_IOAPIC) \
-    $(wildcard include/config/PCI) \
-    $(wildcard include/config/ACPI_WMI) \
-    $(wildcard include/config/ACPI_NUMA) \
-    $(wildcard in
+K_RCD + 1)
+		count = RXCLK_RCD;
+	else if (count < 2)
+		count = 1;
+	else
+		count--;
+	return (u16) count;
+}
+
+/*
+ * IR Control Register helpers
+ */
+enum tx_fifo_watermark {

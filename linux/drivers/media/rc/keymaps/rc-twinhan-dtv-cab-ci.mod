@@ -1,2 +1,3 @@
-drivers/media/rc/keymaps/rc-twinhan-dtv-cab-ci.o
-
+// SPDX-License-Identifier: GPL-2.0-or-later
+/*
+ *

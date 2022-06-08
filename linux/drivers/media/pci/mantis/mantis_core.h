@@ -1,22 +1,40 @@
-de/uapi/linux/swab.h \
-  arch/x86/include/uapi/asm/swab.h \
-  include/linux/byteorder/generic.h \
-  include/asm-generic/bitops/ext2-atomic-setbit.h \
-  include/linux/kstrtox.h \
-  include/linux/log2.h \
-    $(wildcard include/config/ARCH_HAS_ILOG2_U32) \
-    $(wildcard include/config/ARCH_HAS_ILOG2_U64) \
-  include/linux/math.h \
-  arch/x86/include/asm/div64.h \
-  include/linux/minmax.h \
-  include/linux/panic.h \
-    $(wildcard include/config/PANIC_TIMEOUT) \
-  include/linux/printk.h \
-    $(wildcard include/config/MESSAGE_LOGLEVEL_DEFAULT) \
-    $(wildcard include/config/CONSOLE_LOGLEVEL_DEFAULT) \
-    $(wildcard include/config/CONSOLE_LOGLEVEL_QUIET) \
-    $(wildcard include/config/EARLY_PRINTK) \
-    $(wildcard include/config/PRINTK) \
-    $(wildcard include/config/PRINTK_INDEX) \
-    $(wildcard include/config/DYNAMIC_DEBUG) \
-    $(wildcard includ
+tore;
+	int mem;
+	int ret;
+
+	if (0 != slot)
+		return -EINVAL;
+
+	if (state->current_ci_flag != flag) {
+		ret = netup_read_i2c(state->i2c_adap, state->ci_i2c_addr,
+				0, &store, 1);
+		if (ret != 0)
+			return ret;
+
+		store &= ~0x0c;
+		store |= flag;
+
+		ret = netup_write_i2c(state->i2c_adap, state->ci_i2c_addr,
+				0, &store, 1);
+		if (ret != 0)
+			return ret;
+	}
+	state->current_ci_flag = flag;
+
+	mutex_lock(&dev->gpio_lock);
+
+	/* write addr */
+	cx_write(MC417_OEN, NETUP_EN_ALL);
+	cx_write(MC417_RWD, NETUP_CTRL_OFF |
+				NETUP_ADLO | (0xff & addr));
+	cx_clear(MC417_RWD, NETUP_ADLO);
+	cx_write(MC417_RWD, NETUP_CTRL_OFF |
+				NETUP_ADHI | (0xff & (addr >> 8)));
+	cx_clear(MC417_RWD, NETUP_ADHI);
+
+	if (read) { /* data in */
+		cx_write(MC417_OEN, NETUP_EN_ALL | NETUP_DATA);
+	} else /* data out */
+		cx_write(MC417_RWD, NETUP_CTRL_OFF | data);
+
+	/* choose chip */

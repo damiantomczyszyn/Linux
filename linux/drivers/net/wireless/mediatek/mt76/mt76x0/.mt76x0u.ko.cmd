@@ -1,7 +1,10 @@
-clude/linux/scatterlist.h \
-    $(wildcard include/config/NEED_SG_DMA_LENGTH) \
-    $(wildcard include/config/DEBUG_SG) \
-    $(wildcard include/config/SGL_ALLOC) \
-    $(wildcard include/config/ARCH_NO_SG_CHAIN) \
-    $(wildcard include/config/SG_POOL) \
-  include/linux/gpio/consumer.h 
+er->owner);
+				i2c_unregister_device(client_demod);
+				port->i2c_client_demod = NULL;
+				goto frontend_detach;
+			}
+			port->i2c_client_tuner = client_tuner;
+
+			dev->ts1.analog_fe.tuner_priv = client_tuner;
+			memcpy(&dev->ts1.analog_fe.ops.tuner_ops,
+			       &fe0->dvb.frontend->op

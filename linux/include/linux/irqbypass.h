@@ -1,91 +1,134 @@
-config/ACPI_HOTPLUG_IOAPIC) \
-    $(wildcard include/config/PCI) \
-    $(wildcard include/config/ACPI_WMI) \
-    $(wildcard include/config/ACPI_NUMA) \
-    $(wildcard include/config/HIBERNATION) \
-    $(wildcard include/config/ACPI_HOTPLUG_MEMORY) \
-    $(wildcard include/config/ACPI_CONTAINER) \
-    $(wildcard include/config/ACPI_GTDT) \
-    $(wildcard include/config/PM) \
-    $(wildcard include/config/GPIOLIB) \
-    $(wildcard include/config/ACPI_TABLE_UPGRADE) \
-    $(wildcard include/config/ACPI_WATCHDOG) \
-    $(wildcard include/config/ACPI_SPCR_TABLE) \
-    $(wildcard include/config/ACPI_GENERIC_GSI) \
-    $(wildcard include/config/ACPI_LPIT) \
-    $(wildcard include/config/ACPI_PPTT) \
-    $(wildcard include/config/ACPI_PCC) \
-  include/linux/ioport.h \
-  include/linux/irqdomain.h \
-    $(wildcard include/config/IRQ_DOMAIN_HIERARCHY) \
-    $(wildcard include/config/GENERIC_IRQ_DEBUGFS) \
-    $(wildcard include/config/IRQ_DOMAIN) \
-    $(wildcard include/config/IRQ_DOMAIN_NOMAP) \
-  include/linux/irqhandler.h \
-  include/linux/of.h \
-    $(wildcard include/config/OF_DYNAMIC) \
-    $(wildcard include/config/SPARC) \
-    $(wildcard include/config/OF_PROMTREE) \
-    $(wildcard include/config/OF_KOBJ) \
-    $(wildcard include/config/OF_NUMA) \
-    $(wildcard include/config/OF_OVERLAY) \
-  include/linux/mod_devicetable.h \
-  include/linux/uuid.h \
-  include/uapi/linux/uuid.h \
-  include/linux/property.h \
-  include/linux/fwnode.h \
-  include/linux/resource_ext.h \
-  include/linux/device.h \
-    $(wildcard include/config/GENERIC_MSI_IRQ_DOMAIN) \
-    $(wildcard include/config/GENERIC_MSI_IRQ) \
-    $(wildcard include/config/ENERGY_MODEL) \
-    $(wildcard include/config/PINCTRL) \
-    $(wildcard include/config/DMA_OPS) \
-    $(wildcard include/config/DMA_DECLARE_COHERENT) \
-    $(wildcard include/config/DMA_CMA) \
-    $(wildcard include/config/SWIOTLB) \
-    $(wildcard include/config/ARCH_HAS_SYNC_DMA_FOR_DEVICE) \
-    $(wildcard include/config/ARCH_HAS_SYNC_DMA_FOR_CPU) \
-    $(wildcard include/config/ARCH_HAS_SYNC_DMA_FOR_CPU_ALL) \
-    $(wildcard include/config/DMA_OPS_BYPASS) \
-    $(wildcard include/config/DEVTMPFS) \
-    $(wildcard include/config/SYSFS_DEPRECATED) \
-  include/linux/dev_printk.h \
-  include/linux/ratelimit.h \
-  include/linux/energy_model.h \
-  include/linux/sched/cpufreq.h \
-    $(wildcard include/config/CPU_FREQ) \
-  include/linux/sched/topology.h \
-    $(wildcard include/config/SCHED_DEBUG) \
-    $(wildcard include/config/SCHED_MC) \
-    $(wildcard include/config/CPU_FREQ_GOV_SCHEDUTIL) \
-  include/linux/sched/idle.h \
-  include/linux/sched/sd_flags.h \
-  include/linux/klist.h \
-  include/linux/pm.h \
-    $(wildcard include/config/VT_CONSOLE_SLEEP) \
-    $(wildcard include/config/PM_CLK) \
-    $(wildcard include/config/PM_GENERIC_DOMAINS) \
-  include/linux/device/bus.h \
-  include/linux/device/class.h \
-  include/linux/device/driver.h \
-  arch/x86/include/asm/device.h \
-  include/linux/pm_wakeup.h \
-  include/acpi/acpi.h \
-  include/acpi/platform/acenv.h \
-  include/acpi/platform/acgcc.h \
-  include/acpi/platform/aclinux.h \
-    $(wildcard include/config/ACPI_REDUCED_HARDWARE_ONLY) \
-    $(wildcard include/config/ACPI_DEBUG) \
-  include/linux/ctype.h \
-  arch/x86/include/asm/acenv.h \
-  include/acpi/acnames.h \
-  include/acpi/actypes.h \
-  include/acpi/acexcep.h \
-  include/acpi/actbl.h \
-  include/acpi/actbl1.h \
-  include/acpi/actbl2.h \
-  include/acpi/actbl3.h \
-  include/acpi/acrestyp.h \
-  include/acpi/platform/acenvex.h \
-  include/acpi/plat
+// SPDX-License-Identifier: GPL-2.0-or-later
+/*
+ *  Driver for the Conexant CX23885 PCIe bridge
+ *
+ *  Copyright (c) 2007 Steven Toth <stoth@linuxtv.org>
+ */
+
+#include "cx23885.h"
+#include "cx23885-video.h"
+
+#include <linux/init.h>
+#include <linux/list.h>
+#include <linux/module.h>
+#include <linux/moduleparam.h>
+#include <linux/kmod.h>
+#include <linux/kernel.h>
+#include <linux/slab.h>
+#include <linux/interrupt.h>
+#include <linux/delay.h>
+#include <linux/kthread.h>
+#include <asm/div64.h>
+
+#include <media/v4l2-common.h>
+#include <media/v4l2-ioctl.h>
+#include <media/v4l2-event.h>
+#include "cx23885-ioctl.h"
+#include "xc2028.h"
+
+#include <media/drv-intf/cx25840.h>
+
+MODULE_DESCRIPTION("v4l2 driver module for cx23885 based TV cards");
+MODULE_AUTHOR("Steven Toth <stoth@linuxtv.org>");
+MODULE_LICENSE("GPL");
+
+/* ------------------------------------------------------------------ */
+
+static unsigned int video_nr[] = {[0 ... (CX23885_MAXBOARDS - 1)] = UNSET };
+static unsigned int vbi_nr[]   = {[0 ... (CX23885_MAXBOARDS - 1)] = UNSET };
+
+module_param_array(video_nr, int, NULL, 0444);
+module_param_array(vbi_nr,   int, NULL, 0444);
+
+MODULE_PARM_DESC(video_nr, "video device numbers");
+MODULE_PARM_DESC(vbi_nr, "vbi device numbers");
+
+static unsigned int video_debug;
+module_param(video_debug, int, 0644);
+MODULE_PARM_DESC(video_debug, "enable debug messages [video]");
+
+static unsigned int irq_debug;
+module_param(irq_debug, int, 0644);
+MODULE_PARM_DESC(irq_debug, "enable debug messages [IRQ handler]");
+
+static unsigned int vid_limit = 16;
+module_param(vid_limit, int, 0644);
+MODULE_PARM_DESC(vid_limit, "capture memory limit in megabytes");
+
+#define dprintk(level, fmt, arg...)\
+	do { if (video_debug >= level)\
+		printk(KERN_DEBUG pr_fmt("%s: video:" fmt), \
+			__func__, ##arg); \
+	} while (0)
+
+/* ------------------------------------------------------------------- */
+/* static data                                                         */
+
+#define FORMAT_FLAGS_PACKED       0x01
+static struct cx23885_fmt formats[] = {
+	{
+		.fourcc   = V4L2_PIX_FMT_YUYV,
+		.depth    = 16,
+		.flags    = FORMAT_FLAGS_PACKED,
+	}
+};
+
+static struct cx23885_fmt *format_by_fourcc(unsigned int fourcc)
+{
+	unsigned int i;
+
+	for (i = 0; i < ARRAY_SIZE(formats); i++)
+		if (formats[i].fourcc == fourcc)
+			return formats+i;
+	return NULL;
+}
+
+/* ------------------------------------------------------------------- */
+
+void cx23885_video_wakeup(struct cx23885_dev *dev,
+	struct cx23885_dmaqueue *q, u32 count)
+{
+	struct cx23885_buffer *buf;
+
+	if (list_empty(&q->active))
+		return;
+	buf = list_entry(q->active.next,
+			struct cx23885_buffer, queue);
+
+	buf->vb.sequence = q->count++;
+	buf->vb.vb2_buf.timestamp = ktime_get_ns();
+	dprintk(2, "[%p/%d] wakeup reg=%d buf=%d\n", buf,
+			buf->vb.vb2_buf.index, count, q->count);
+	list_del(&buf->queue);
+	vb2_buffer_done(&buf->vb.vb2_buf, VB2_BUF_STATE_DONE);
+}
+
+int cx23885_set_tvnorm(struct cx23885_dev *dev, v4l2_std_id norm)
+{
+	struct v4l2_subdev_format format = {
+		.which = V4L2_SUBDEV_FORMAT_ACTIVE,
+		.format.code = MEDIA_BUS_FMT_FIXED,
+	};
+
+	dprintk(1, "%s(norm = 0x%08x) name: [%s]\n",
+		__func__,
+		(unsigned int)norm,
+		v4l2_norm_to_name(norm));
+
+	if (dev->tvnorm == norm)
+		return 0;
+
+	if (dev->tvnorm != norm) {
+		if (vb2_is_busy(&dev->vb2_vidq) || vb2_is_busy(&dev->vb2_vbiq) ||
+		    vb2_is_busy(&dev->vb2_mpegq))
+			return -EBUSY;
+	}
+
+	dev->tvnorm = norm;
+	dev->width = 720;
+	dev->height = norm_maxh(norm);
+	dev->field = V4L2_FIELD_INTERLACED;
+
+	call_all(dev, video, s_std, norm);
+
+	format.for

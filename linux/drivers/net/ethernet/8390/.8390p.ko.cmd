@@ -1,6 +1,1 @@
-RCOPY) \
-  arch/x86/include/asm/uaccess.h \
-    $(wildcard include/config/CC_HAS_ASM_GOTO_OUTPUT) \
-    $(wildcard include/config/CC_HAS_ASM_GOTO_TIED_OUTPUT) \
-    $(wildcard include/config/ARCH_HAS_COPY_MC) \
-    $
+cmd_drivers/net/ethernet/8390/8390p.ko := ld -r -m elf_i386 --build-id=sha1  -T scripts/module.lds -o drivers/net/ethernet/8390/8390p.ko drivers/net/ethernet/8390/8390p.o drivers/net/ethernet/8390/8390p.mod.o;  true

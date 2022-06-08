@@ -1,1 +1,68 @@
-cmd_drivers/media/i2c/upd64083.o := gcc -Wp,-MMD,drivers/media/i2c/.upd64083.o.d -nostdinc -I./arch/x86/include -I./arch/x86/include/generated  -I./include -I./arch/x86/include/uapi -I./arch/x86/include/generated/uapi -I./include/uapi -I./include/generated/uapi -include ./include/linux/compiler-version.h -include ./include/linux/kconfig.h -include ./include/linux/compiler_types.h -D__KERNEL__ -fmacro-prefix-map=./= -Wall -Wundef -Werror=strict-prototypes -Wno-trigraphs -fno-strict-aliasing -fno-common -fshort-wchar -fno-PIE -Werror=implicit-function-declaration -Werror=implicit-int -Werror=return-type -Wno-format-security -std=gnu11 -mno-sse -mno-mmx -mno-sse2 -mno-3dnow -mno-avx -fcf-protection=none -m32 -msoft-float -mregparm=3 -freg-struct-return -fno-pic -mpreferred-stack-boundary=2 -march=i686 -mtune=pentium3 -mtune=generic -Wa,-mtune=generic32 -ffreestanding -mstack-protector-guard-reg=fs -mstack-protector-guard-symbol=__stack_chk_guard -Wno-sign-compare -fno-asynchronous-unwind-tables -mindirect-branch=thunk-extern -mindirect-branch-register -fno-jump-tables -fno-delete-null-pointer-checks -Wno-frame-address -Wno-format-truncation -Wno-format-overflow -Wno-address-of-packed-member -O2 -fno-allow-store-data-races -fstack-protector-strong -Wimplicit-fallthrough=5 -Wno-main -Wno-unused-but-set-variable -Wno-unused-const-variable -fno-stack-clash-protection -pg -mrecord-mcount -mfentry -DCC_USING_FENTRY -Wdeclaration-after-statement -Wvla -Wno-pointer-sign -Wcast-function-type -Wno-stringop-truncation -Wno-stringop-overflow -Wno-restrict -Wno-maybe-uninitialized -Wno-alloc-size-larger-than -fno-strict-overflow -fno-stack-check -fconserve-stack -Werror=date-time -Werror=incompatible-point
+885_video_template = {
+	.name                 = "cx23885-video",
+	.fops                 = &video_fops,
+	.ioctl_ops	      = &video_ioctl_ops,
+	.tvnorms              = CX23885_NORMS,
+};
+
+void cx23885_video_unregister(struct cx23885_dev *dev)
+{
+	dprintk(1, "%s()\n", __func__);
+	cx23885_irq_remove(dev, 0x01);
+
+	if (dev->vbi_dev) {
+		if (video_is_registered(dev->vbi_dev))
+			video_unregister_device(dev->vbi_dev);
+		else
+			video_device_release(dev->vbi_dev);
+		dev->vbi_dev = NULL;
+	}
+	if (dev->video_dev) {
+		if (video_is_registered(dev->video_dev))
+			video_unregister_device(dev->video_dev);
+		else
+			video_device_release(dev->video_dev);
+		dev->video_dev = NULL;
+	}
+
+	if (dev->audio_dev)
+		cx23885_audio_unregister(dev);
+}
+
+int cx23885_video_register(struct cx23885_dev *dev)
+{
+	struct vb2_queue *q;
+	int err;
+
+	dprintk(1, "%s()\n", __func__);
+
+	/* Initialize VBI template */
+	cx23885_vbi_template = cx23885_video_template;
+	strscpy(cx23885_vbi_template.name, "cx23885-vbi",
+		sizeof(cx23885_vbi_template.name));
+
+	dev->tvnorm = V4L2_STD_NTSC_M;
+	dev->fmt = format_by_fourcc(V4L2_PIX_FMT_YUYV);
+	dev->field = V4L2_FIELD_INTERLACED;
+	dev->width = 720;
+	dev->height = norm_maxh(dev->tvnorm);
+
+	/* init video dma queues */
+	INIT_LIST_HEAD(&dev->vidq.active);
+
+	/* init vbi dma queues */
+	INIT_LIST_HEAD(&dev->vbiq.active);
+
+	cx23885_irq_add_enable(dev, 0x01);
+
+	if ((TUNER_ABSENT != dev->tuner_type) &&
+			((dev->tuner_bus == 0) || (dev->tuner_bus == 1))) {
+		struct v4l2_subdev *sd = NULL;
+
+		if (dev->tuner_addr)
+			sd = v4l2_i2c_new_subdev(&dev->v4l2_dev,
+				&dev->i2c_bus[dev->tuner_bus].i2c_adap,
+				"tuner", dev->tuner_addr, NULL);
+		else
+			sd = v4l2_i2c_new_subdev(&dev->v4l2_dev,
+				&dev->i2c_bus[dev->tune

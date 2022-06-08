@@ -1,7 +1,9 @@
-onfig/TRACE_BRANCH_PROFILING) \
-    $(wildcard include/config/PROFILE_ALL_BRANCHES) \
-    $(wildcard include/config/STACK_VALIDATION) \
-  include/linux/compiler_types.h \
-  arch/x86/include/generated/asm/rwonce.h \
-  include/asm-generic/rwonce.h \
-  include/li
+/* SPDX-License-Identifier: GPL-2.0-or-later */
+/*
+ * cimax2.h
+ *
+ * CIMax(R) SP2 driver in conjunction with NetUp Dual DVB-S2 CI card
+ *
+ * Copyright (C) 2009 NetUP Inc.
+ * Copyright (C) 2009 Igor M. Liplianin <liplianin@netup.ru>
+ * Copyright (C) 2009 Abylay

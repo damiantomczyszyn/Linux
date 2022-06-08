@@ -1,162 +1,162 @@
-silent)
-		return;
 
-	pr_warn("\n");
-	pr_warn("======================================================\n");
-	pr_warn("WARNING: possible circular locking dependency detected\n");
-	print_kernel_ident();
-	pr_warn("------------------------------------------------------\n");
-	pr_warn("%s/%d is trying to acquire lock:\n",
-		curr->comm, task_pid_nr(curr));
-	print_lock(check_src);
+			break;
+		dvb_attach(tda18271_attach, fe0->dvb.frontend,
+			   0x60, &dev->i2c_bus[0].i2c_adap,
+			   &hauppauge_tda18271_config);
 
-	pr_warn("\nbut task is already holding lock:\n");
+		tda18271_attach(&dev->ts1.analog_fe,
+			0x60, &dev->i2c_bus[1].i2c_adap,
+			&hauppauge_tda18271_config);
 
-	print_lock(check_tgt);
-	pr_warn("\nwhich lock already depends on the new lock.\n\n");
-	pr_warn("\nthe existing dependency chain (in reverse order) is:\n");
+		break;
+	case CX23885_BOARD_HAUPPAUGE_HVR1290:
+		i2c_bus = &dev->i2c_bus[0];
+		fe0->dvb.frontend = dvb_attach(s5h1411_attach,
+			&hcw_s5h1411_config,
+			&i2c_bus->i2c_adap);
+		if (fe0->dvb.frontend == NULL)
+			break;
+		dvb_attach(tda18271_attach, fe0->dvb.frontend,
+			   0x60, &dev->i2c_bus[0].i2c_adap,
+			   &hauppauge_tda18271_config);
+		break;
+	case CX23885_BOARD_MYGICA_X8558PRO:
+		switch (port->nr) {
+		/* port B */
+		case 1:
+			i2c_bus = &dev->i2c_bus[0];
+			fe0->dvb.frontend = dvb_attach(atbm8830_attach,
+				&mygica_x8558pro_atbm8830_cfg1,
+				&i2c_bus->i2c_adap);
+			if (fe0->dvb.frontend == NULL)
+				break;
+			dvb_attach(max2165_attach, fe0->dvb.frontend,
+				   &i2c_bus->i2c_adap,
+				   &mygic_x8558pro_max2165_cfg1);
+			break;
+		/* port C */
+		case 2:
+			i2c_bus = &dev->i2c_bus[1];
+			fe0->dvb.frontend = dvb_attach(atbm8830_attach,
+				&mygica_x8558pro_atbm8830_cfg2,
+				&i2c_bus->i2c_adap);
+			if (fe0->dvb.frontend == NULL)
+				break;
+			dvb_attach(max2165_attach, fe0->dvb.frontend,
+				   &i2c_bus->i2c_adap,
+				   &mygic_x8558pro_max2165_cfg2);
+		}
+		break;
+	case CX23885_BOARD_NETUP_DUAL_DVB_T_C_CI_RF:
+		if (port->nr > 2)
+			return 0;
 
-	print_circular_bug_entry(entry, depth);
-}
+		i2c_bus = &dev->i2c_bus[0];
+		mfe_shared = 1;/* MFE */
+		port->frontends.gate = 0;/* not clear for me yet */
+		/* ports B, C */
+		/* MFE frontend 1 DVB-T */
+		fe0->dvb.frontend = dvb_attach(stv0367ter_attach,
+					&netup_stv0367_config[port->nr - 1],
+					&i2c_bus->i2c_adap);
+		if (fe0->dvb.frontend == NULL)
+			break;
+		if (NULL == dvb_attach(xc5000_attach, fe0->dvb.frontend,
+					&i2c_bus->i2c_adap,
+					&netup_xc5000_config[port->nr - 1]))
+			goto frontend_detach;
+		/* load xc5000 firmware */
+		fe0->dvb.frontend->ops.tuner_ops.init(fe0->dvb.frontend);
 
-/*
- * We are about to add A -> B into the dependency graph, and in __bfs() a
- * strong dependency path A -> .. -> B is found: hlock_class equals
- * entry->class.
- *
- * If A -> .. -> B can replace A -> B in any __bfs() search (means the former
- * is _stronger_ than or equal to the latter), we consider A -> B as redundant.
- * For example if A -> .. -> B is -(EN)-> (i.e. A -(E*)-> .. -(*N)-> B), and A
- * -> B is -(ER)-> or -(EN)->, then we don't need to add A -> B into the
- * dependency graph, as any strong path ..-> A -> B ->.. we can get with
- * having dependency A -> B, we could already get a equivalent path ..-> A ->
- * .. -> B -> .. with A -> .. -> B. Therefore A -> B is redundant.
- *
- * We need to make sure both the start and the end of A -> .. -> B is not
- * weaker than A -> B. For the start part, please see the comment in
- * check_redundant(). For the end part, we need:
- *
- * Either
- *
- *     a) A -> B is -(*R)-> (everything is not weaker than that)
- *
- * or
- *
- *     b) A -> .. -> B is -(*N)-> (nothing is stronger than this)
- *
- */
-static inline bool hlock_equal(struct lock_list *entry, void *data)
-{
-	struct held_lock *hlock = (struct held_lock *)data;
+		/* MFE frontend 2 */
+		fe1 = vb2_dvb_get_frontend(&port->frontends, 2);
+		if (fe1 == NULL)
+			goto frontend_detach;
+		/* DVB-C init */
+		fe1->dvb.frontend = dvb_attach(stv0367cab_attach,
+					&netup_stv0367_config[port->nr - 1],
+					&i2c_bus->i2c_adap);
+		if (fe1->dvb.frontend == NULL)
+			break;
 
-	return hlock_class(hlock) == entry->class && /* Found A -> .. -> B */
-	       (hlock->read == 2 ||  /* A -> B is -(*R)-> */
-		!entry->only_xr); /* A -> .. -> B is -(*N)-> */
-}
+		fe1->dvb.frontend->id = 1;
+		if (NULL == dvb_attach(xc5000_attach,
+				       fe1->dvb.frontend,
+				       &i2c_bus->i2c_adap,
+				       &netup_xc5000_config[port->nr - 1]))
+			goto frontend_detach;
+		break;
+	case CX23885_BOARD_TERRATEC_CINERGY_T_PCIE_DUAL:
+		i2c_bus = &dev->i2c_bus[0];
+		i2c_bus2 = &dev->i2c_bus[1];
 
-/*
- * We are about to add B -> A into the dependency graph, and in __bfs() a
- * strong dependency path A -> .. -> B is found: hlock_class equals
- * entry->class.
- *
- * We will have a deadlock case (conflict) if A -> .. -> B -> A is a strong
- * dependency cycle, that means:
- *
- * Either
- *
- *     a) B -> A is -(E*)->
- *
- * or
- *
- *     b) A -> .. -> B is -(*N)-> (i.e. A -> .. -(*N)-> B)
- *
- * as then we don't have -(*R)-> -(S*)-> in the cycle.
- */
-static inline bool hlock_conflict(struct lock_list *entry, void *data)
-{
-	struct held_lock *hlock = (struct held_lock *)data;
+		switch (port->nr) {
+		/* port b */
+		case 1:
+			fe0->dvb.frontend = dvb_attach(drxk_attach,
+					&terratec_drxk_config[0],
+					&i2c_bus->i2c_adap);
+			if (fe0->dvb.frontend == NULL)
+				break;
+			if (!dvb_attach(mt2063_attach,
+					fe0->dvb.frontend,
+					&terratec_mt2063_config[0],
+					&i2c_bus2->i2c_adap))
+				goto frontend_detach;
+			break;
+		/* port c */
+		case 2:
+			fe0->dvb.frontend = dvb_attach(drxk_attach,
+					&terratec_drxk_config[1],
+					&i2c_bus->i2c_adap);
+			if (fe0->dvb.frontend == NULL)
+				break;
+			if (!dvb_attach(mt2063_attach,
+					fe0->dvb.frontend,
+					&terratec_mt2063_config[1],
+					&i2c_bus2->i2c_adap))
+				goto frontend_detach;
+			break;
+		}
+		break;
+	case CX23885_BOARD_TEVII_S471:
+		i2c_bus = &dev->i2c_bus[1];
 
-	return hlock_class(hlock) == entry->class && /* Found A -> .. -> B */
-	       (hlock->read == 0 || /* B -> A is -(E*)-> */
-		!entry->only_xr); /* A -> .. -> B is -(*N)-> */
-}
+		fe0->dvb.frontend = dvb_attach(ds3000_attach,
+					&tevii_ds3000_config,
+					&i2c_bus->i2c_adap);
+		if (fe0->dvb.frontend == NULL)
+			break;
+		dvb_attach(ts2020_attach, fe0->dvb.frontend,
+			   &tevii_ts2020_config, &i2c_bus->i2c_adap);
+		break;
+	case CX23885_BOARD_PROF_8000:
+		i2c_bus = &dev->i2c_bus[0];
 
-static noinline void print_circular_bug(struct lock_list *this,
-				struct lock_list *target,
-				struct held_lock *check_src,
-				struct held_lock *check_tgt)
-{
-	struct task_struct *curr = current;
-	struct lock_list *parent;
-	struct lock_list *first_parent;
-	int depth;
+		fe0->dvb.frontend = dvb_attach(stv090x_attach,
+						&prof_8000_stv090x_config,
+						&i2c_bus->i2c_adap,
+						STV090x_DEMODULATOR_0);
+		if (fe0->dvb.frontend == NULL)
+			break;
+		if (!dvb_attach(stb6100_attach,
+				fe0->dvb.frontend,
+				&prof_8000_stb6100_config,
+				&i2c_bus->i2c_adap))
+			goto frontend_detach;
 
-	if (!debug_locks_off_graph_unlock() || debug_locks_silent)
-		return;
+		fe0->dvb.frontend->ops.set_voltage = p8000_set_voltage;
+		break;
+	case CX23885_BOARD_HAUPPAUGE_HVR4400: {
+		struct tda10071_platform_data tda10071_pdata = hauppauge_tda10071_pdata;
+		struct a8293_platform_data a8293_pdata = {};
 
-	this->trace = save_trace();
-	if (!this->trace)
-		return;
-
-	depth = get_lock_depth(target);
-
-	print_circular_bug_header(target, depth, check_src, check_tgt);
-
-	parent = get_lock_parent(target);
-	first_parent = parent;
-
-	while (parent) {
-		print_circular_bug_entry(parent, --depth);
-		parent = get_lock_parent(parent);
-	}
-
-	printk("\nother info that might help us debug this:\n\n");
-	print_circular_lock_scenario(check_src, check_tgt,
-				     first_parent);
-
-	lockdep_print_held_locks(curr);
-
-	printk("\nstack backtrace:\n");
-	dump_stack();
-}
-
-static noinline void print_bfs_bug(int ret)
-{
-	if (!debug_locks_off_graph_unlock())
-		return;
-
-	/*
-	 * Breadth-first-search failed, graph got corrupted?
-	 */
-	WARN(1, "lockdep bfs error:%d\n", ret);
-}
-
-static bool noop_count(struct lock_list *entry, void *data)
-{
-	(*(unsigned long *)data)++;
-	return false;
-}
-
-static unsigned long __lockdep_count_forward_deps(struct lock_list *this)
-{
-	unsigned long  count = 0;
-	struct lock_list *target_entry;
-
-	__bfs_forwards(this, (void *)&count, noop_count, NULL, &target_entry);
-
-	return count;
-}
-unsigned long lockdep_count_forward_deps(struct lock_class *class)
-{
-	unsigned long ret, flags;
-	struct lock_list this;
-
-	__bfs_init_root(&this, class);
-
-	raw_local_irq_save(flags);
-	lockdep_lock();
-	ret = __lockdep_count_forward_deps(&this);
-	lockdep_unlock();
-	raw_local_irq_restore(flags);
-
-	retur
+		i2c_bus = &dev->i2c_bus[0];
+		i2c_bus2 = &dev->i2c_bus[1];
+		switch (port->nr) {
+		/* port b */
+		case 1:
+			/* attach demod + tuner combo */
+			memset(&info, 0, sizeof(info));
+			strscpy(info.type, "tda10071_cx24118", I2C_NAME_SIZE);
+			info.addr =

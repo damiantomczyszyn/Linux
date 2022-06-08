@@ -1,2 +1,4 @@
-drivers/media/rc/keymaps/rc-cinergy-1400.o
+t("%s\n", __func__);
 
+	if (0 != slot)
+		retu

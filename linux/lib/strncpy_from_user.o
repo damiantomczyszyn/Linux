@@ -1,52 +1,79 @@
-.h \
-    $(wildcard include/config/CPUMASK_OFFSTACK) \
-    $(wildcard include/config/DEBUG_PER_CPU_MAPS) \
-  include/linux/bitmap.h \
-  include/linux/find.h \
-  arch/x86/include/uapi/asm/msr.h \
-  include/linux/tracepoint-defs.h \
-  arch/x86/include/asm/special_insns.h \
-  arch/x86/include/asm/fpu/types.h \
-  arch/x86/include/asm/vmxfeatures.h \
-  arch/x86/include/asm/vdso/processor.h \
-  include/linux/personality.h \
-  include/uapi/linux/personality.h \
-  include/linux/bottom_half.h \
-  include/linux/lockdep.h \
-    $(wildcard include/config/DEBUG_LOCKING_API_SELFTESTS) \
-  include/linux/smp.h \
-    $(wildcard include/config/UP_LATE_INIT) \
-  include/linux/smp_types.h \
-  include/linux/llist.h \
-    $(wildcard include/config/ARCH_HAVE_NMI_SAFE_CMPXCHG) \
-  arch/x86/include/asm/smp.h \
-    $(wildcard include/config/X86_LOCAL_APIC) \
-    $(wildcard include/config/DEBUG_NMI_SELFTEST) \
-  include/linux/rcutree.h \
-  include/linux/wait.h \
-  include/linux/spinlock.h \
-  arch/x86/include/generated/asm/mmiowb.h \
-  include/asm-generic/mmiowb.h \
-    $(wildcard include/config/MMIOWB) \
-  include/linux/spinlock_types.h \
-  include/linux/rwlock_types.h \
-  arch/x86/include/asm/spinlock.h \
-  arch/x86/include/asm/paravirt.h \
-    $(wildcard include/config/PARAVIRT_SPINLOCKS) \
-  arch/x86/include/asm/frame.h \
-  arch/x86/include/asm/qspinlock.h \
-  include/asm-generic/qspinlock.h \
-  arch/x86/include/asm/qrwlock.h \
-  include/asm-generic/qrwlock.h \
-  include/linux/rwlock.h \
-    $(wildcard include/config/PREEMPT) \
-  include/linux/spinlock_api_smp.h \
-    $(wildcard include/config/INLINE_SPIN_LOCK) \
-    $(wildcard include/config/INLINE_SPIN_LOCK_BH) \
-    $(wildcard include/config/INLINE_SPIN_LOCK_IRQ) \
-    $(wildcard include/config/INLINE_SPIN_LOCK_IRQSAVE) \
-    $(wildcard include/config/INLINE_SPIN_TRYLOCK) \
-    $(wildcard include/config/INLINE_SPIN_TRYLOCK_BH) \
-    $(wildcard include/config/UNINLINE_SPIN_UNLOCK) \
-    $(wildcard include/config/INLINE_SPIN_UNLOCK_BH) \
-    $(w
+K_RCD + 1)
+		count = RXCLK_RCD;
+	else if (count < 2)
+		count = 1;
+	else
+		count--;
+	return (u16) count;
+}
+
+/*
+ * IR Control Register helpers
+ */
+enum tx_fifo_watermark {
+	TX_FIFO_HALF_EMPTY = 0,
+	TX_FIFO_EMPTY      = CNTRL_TIC,
+};
+
+enum rx_fifo_watermark {
+	RX_FIFO_HALF_FULL = 0,
+	RX_FIFO_NOT_EMPTY = CNTRL_RIC,
+};
+
+static inline void control_tx_irq_watermark(struct cx23885_dev *dev,
+					    enum tx_fifo_watermark level)
+{
+	cx23888_ir_and_or4(dev, CX23888_IR_CNTRL_REG, ~CNTRL_TIC, level);
+}
+
+static inline void control_rx_irq_watermark(struct cx23885_dev *dev,
+					    enum rx_fifo_watermark level)
+{
+	cx23888_ir_and_or4(dev, CX23888_IR_CNTRL_REG, ~CNTRL_RIC, level);
+}
+
+static inline void control_tx_enable(struct cx23885_dev *dev, bool enable)
+{
+	cx23888_ir_and_or4(dev, CX23888_IR_CNTRL_REG, ~(CNTRL_TXE | CNTRL_TFE),
+			   enable ? (CNTRL_TXE | CNTRL_TFE) : 0);
+}
+
+static inline void control_rx_enable(struct cx23885_dev *dev, bool enable)
+{
+	cx23888_ir_and_or4(dev, CX23888_IR_CNTRL_REG, ~(CNTRL_RXE | CNTRL_RFE),
+			   enable ? (CNTRL_RXE | CNTRL_RFE) : 0);
+}
+
+static inline void control_tx_modulation_enable(struct cx23885_dev *dev,
+						bool enable)
+{
+	cx23888_ir_and_or4(dev, CX23888_IR_CNTRL_REG, ~CNTRL_MOD,
+			   enable ? CNTRL_MOD : 0);
+}
+
+static inline void control_rx_demodulation_enable(struct cx23885_dev *dev,
+						  bool enable)
+{
+	cx23888_ir_and_or4(dev, CX23888_IR_CNTRL_REG, ~CNTRL_DMD,
+			   enable ? CNTRL_DMD : 0);
+}
+
+static inline void control_rx_s_edge_detection(struct cx23885_dev *dev,
+					       u32 edge_types)
+{
+	cx23888_ir_and_or4(dev, CX23888_IR_CNTRL_REG, ~CNTRL_EDG_BOTH,
+			   edge_types & CNTRL_EDG_BOTH);
+}
+
+static void control_rx_s_carrier_window(struct cx23885_dev *dev,
+					unsigned int carrier,
+					unsigned int *carrier_range_low,
+					unsigned int *carrier_range_high)
+{
+	u32 v;
+	unsigned int c16 = carrier * 16;
+
+	if (*carrier_range_low < DIV_ROUND_CLOSEST(c16, 16 + 3)) {
+		v = CNTRL_WIN_3_4;
+		*carrier_range_low = DIV_ROUND_CLOSEST(c16, 16 + 4);
+	}

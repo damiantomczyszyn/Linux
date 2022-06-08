@@ -1,6 +1,60 @@
-cmd_drivers/media/i2c/uda1342.o := gcc -Wp,-MMD,drivers/media/i2c/.uda1342.o.d -nostdinc -I./arch/x86/include -I./arch/x86/include/generated  -I./include -I./arch/x86/include/uapi -I./arch/x86/include/generated/uapi -I./include/uapi -I./include/generated/uapi -include ./include/linux/compiler-version.h -include ./include/linux/kconfig.h -include ./include/linux/compiler_types.h -D__KERNEL__ -fmacro-prefix-map=./= -Wall -Wundef -Werror=strict-prototypes -Wno-trigraphs -fno-strict-aliasing -fno-common -fshort-wchar -fno-PIE -Werror=implicit-function-declaration -Werror=implicit-int -Werror=return-type -Wno-format-security -std=gnu11 -mno-sse -mno-mmx -mno-sse2 -mno-3dnow -mno-avx -fcf-protection=none -m32 -msoft-float -mregparm=3 -freg-struct-return -fno-pic -mpreferred-stack-boundary=2 -march=i686 -mtune=pentium3 -mtune=generic -Wa,-mtune=generic32 -ffreestanding -mstack-protector-guard-reg=fs -mstack-protector-guard-symbol=__stack_chk_guard -Wno-sign-compare -fno-asynchronous-unwind-tables -mindirect-branch=thunk-extern -mindirect-branch-register -fno-jump-tables -fno-delete-null-pointer-checks -Wno-frame-address -Wno-format-truncation -Wno-format-overflow -Wno-address-of-packed-member -O2 -fno-allow-store-data-races -fstack-protector-strong -Wimplicit-fallthrough=5 -Wno-main -Wno-unused-but-set-variable -Wno-unused-const-variable -fno-stack-clash-protection -pg -mrecord-mcount -mfentry -DCC_USING_FENTRY -Wdeclaration-after-statement -Wvla -Wno-pointer-sign -Wcast-function-type -Wno-stringop-truncation -Wno-stringop-overflow -Wno-restrict -Wno-maybe-uninitialized -Wno-alloc-size-larger-than -fno-strict-overflow -fno-stack-check -fconserve-stack -Werror=date-time -Werror=incompatible-pointer-types -Werror=designated-init -Wno-packed-not-aligned  -DMODULE  -DKBUILD_BASENAME='"uda1342"' -DKBUILD_MODNAME='"uda1342"' -D__KBUILD_MODNAME=kmod_uda1342 -c -o drivers/media/i2c/uda1342.o drivers/media/i2c/uda1342.c 
+			/* attach tuner */
+			memset(&ts2020_config, 0, sizeof(ts2020_config));
+			ts2020_config.fe = fe0->dvb.frontend;
+			ts2020_config.get_agc_pwm = m88ds3103_get_agc_pwm;
+			memset(&info, 0, sizeof(struct i2c_board_info));
+			strscpy(info.type, "ts2020", I2C_NAME_SIZE);
+			info.addr = 0x60;
+			info.platform_data = &ts2020_config;
+			request_module(info.type);
+			client_tuner = i2c_new_client_device(adapter, &info);
+			if (!i2c_client_has_driver(client_tuner))
+				goto frontend_detach;
+			if (!try_module_get(client_tuner->dev.driver->owner)) {
+				i2c_unregister_device(client_tuner);
+				goto frontend_detach;
+			}
 
-source_drivers/media/i2c/uda1342.o := drivers/media/i2c/uda1342.c
+			/* delegate signal strength measurement to tuner */
+			fe0->dvb.frontend->ops.read_signal_strength =
+				fe0->dvb.frontend->ops.tuner_ops.get_rf_strength;
 
-deps_drivers/media/i2c/uda1342.o := \
-  inclu
+			/*
+			 * for setting the voltage we need to set GPIOs on
+			 * the card.
+			 */
+			port->fe_set_voltage =
+				fe0->dvb.frontend->ops.set_voltage;
+			fe0->dvb.frontend->ops.set_voltage =
+				dvbsky_t9580_set_voltage;
+
+			port->i2c_client_tuner = client_tuner;
+
+			break;
+		/* port c - terrestrial/cable */
+		case 2:
+			/* attach frontend */
+			memset(&si2168_config, 0, sizeof(si2168_config));
+			si2168_config.i2c_adapter = &adapter;
+			si2168_config.fe = &fe0->dvb.frontend;
+			si2168_config.ts_mode = SI2168_TS_SERIAL;
+			memset(&info, 0, sizeof(struct i2c_board_info));
+			strscpy(info.type, "si2168", I2C_NAME_SIZE);
+			info.addr = 0x64;
+			info.platform_data = &si2168_config;
+			request_module(info.type);
+			client_demod = i2c_new_client_device(&i2c_bus->i2c_adap, &info);
+			if (!i2c_client_has_driver(client_demod))
+				goto frontend_detach;
+			if (!try_module_get(client_demod->dev.driver->owner)) {
+				i2c_unregister_device(client_demod);
+				goto frontend_detach;
+			}
+			port->i2c_client_demod = client_demod;
+
+			/* attach tuner */
+			memset(&si2157_config, 0, sizeof(si2157_config));
+			si2157_config.fe = fe0->dvb.frontend;
+			si2157_config.if_port = 1;
+			memset(&info, 0, sizeof(struct i2c_board_info));
+			strscpy(info.type, "si2157", I2C_NAME_SIZE)

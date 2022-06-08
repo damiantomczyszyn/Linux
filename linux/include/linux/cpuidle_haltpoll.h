@@ -1,8 +1,11 @@
-ig/RCU_FANOUT) \
-    $(wildcard include/config/RCU_FANOUT_LEAF) \
-  include/linux/page-flags-layout.h \
-    $(wildcard include/config/KASAN_HW_TAGS) \
-  include/linux/numa.h \
-    $(wildcard include/config/NODES_SHIFT) \
-    $(wildcard include/config/NUMA_KEEP_MEMINFO) \
-    $(wildcard include/config/HAVE_ARCH_
+// SPDX-License-Identifier: GPL-2.0-or-later
+/*
+ *  Driver for the Conexant CX23885/7/8 PCIe bridge
+ *
+ *  Infrared remote control input device
+ *
+ *  Most of this file is
+ *
+ *  Copyright (C) 2009  Andy Walls <awalls@md.metrocast.net>
+ *
+ *  However, the cx23885_input_{init,fini} functions contained herein are

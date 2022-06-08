@@ -1,81 +1,93 @@
-// SPDX-License-Identifier: GPL-2.0+
-// avertv-303.h - Keytable for avertv_303 Remote Controller
-//
-// keymap imported from ir-keymaps.c
-//
-// Copyright (c) 2010 by Mauro Carvalho Chehab
+// SPDX-License-Identifier: GPL-2.0-or-later
+/*
+ * netup-init.c
+ *
+ * NetUP Dual DVB-S2 CI driver
+ *
+ * Copyright (C) 2009 NetUP Inc.
+ * Copyright (C) 2009 Igor M. Liplianin <liplianin@netup.ru>
+ * Copyright (C) 2009 Abylay Ospan <aospan@netup.ru>
+ */
 
-#include <media/rc-map.h>
-#include <linux/module.h>
+#include "cx23885.h"
+#include "netup-init.h"
 
-/* AVERTV STUDIO 303 Remote */
-
-static struct rc_map_table avertv_303[] = {
-	{ 0x2a, KEY_NUMERIC_1 },
-	{ 0x32, KEY_NUMERIC_2 },
-	{ 0x3a, KEY_NUMERIC_3 },
-	{ 0x4a, KEY_NUMERIC_4 },
-	{ 0x52, KEY_NUMERIC_5 },
-	{ 0x5a, KEY_NUMERIC_6 },
-	{ 0x6a, KEY_NUMERIC_7 },
-	{ 0x72, KEY_NUMERIC_8 },
-	{ 0x7a, KEY_NUMERIC_9 },
-	{ 0x0e, KEY_NUMERIC_0 },
-
-	{ 0x02, KEY_POWER },
-	{ 0x22, KEY_VIDEO },
-	{ 0x42, KEY_AUDIO },
-	{ 0x62, KEY_ZOOM },
-	{ 0x0a, KEY_TV },
-	{ 0x12, KEY_CD },
-	{ 0x1a, KEY_TEXT },
-
-	{ 0x16, KEY_SUBTITLE },
-	{ 0x1e, KEY_REWIND },
-	{ 0x06, KEY_PRINT },
-
-	{ 0x2e, KEY_SEARCH },
-	{ 0x36, KEY_SLEEP },
-	{ 0x3e, KEY_SHUFFLE },
-	{ 0x26, KEY_MUTE },
-
-	{ 0x4e, KEY_RECORD },
-	{ 0x56, KEY_PAUSE },
-	{ 0x5e, KEY_STOP },
-	{ 0x46, KEY_PLAY },
-
-	{ 0x6e, KEY_RED },
-	{ 0x0b, KEY_GREEN },
-	{ 0x66, KEY_YELLOW },
-	{ 0x03, KEY_BLUE },
-
-	{ 0x76, KEY_LEFT },
-	{ 0x7e, KEY_RIGHT },
-	{ 0x13, KEY_DOWN },
-	{ 0x1b, KEY_UP },
-};
-
-static struct rc_map_list avertv_303_map = {
-	.map = {
-		.scan     = avertv_303,
-		.size     = ARRAY_SIZE(avertv_303),
-		.rc_proto = RC_PROTO_UNKNOWN,	/* Legacy IR type */
-		.name     = RC_MAP_AVERTV_303,
-	}
-};
-
-static int __init init_rc_map_avertv_303(void)
+static void i2c_av_write(struct i2c_adapter *i2c, u16 reg, u8 val)
 {
-	return rc_map_register(&avertv_303_map);
+	int ret;
+	u8 buf[3];
+	struct i2c_msg msg = {
+		.addr	= 0x88 >> 1,
+		.flags	= 0,
+		.buf	= buf,
+		.len	= 3
+	};
+
+	buf[0] = reg >> 8;
+	buf[1] = reg & 0xff;
+	buf[2] = val;
+
+	ret = i2c_transfer(i2c, &msg, 1);
+
+	if (ret != 1)
+		pr_err("%s: i2c write error!\n", __func__);
 }
 
-static void __exit exit_rc_map_avertv_303(void)
+static void i2c_av_write4(struct i2c_adapter *i2c, u16 reg, u32 val)
 {
-	rc_map_unregister(&avertv_303_map);
+	int ret;
+	u8 buf[6];
+	struct i2c_msg msg = {
+		.addr	= 0x88 >> 1,
+		.flags	= 0,
+		.buf	= buf,
+		.len	= 6
+	};
+
+	buf[0] = reg >> 8;
+	buf[1] = reg & 0xff;
+	buf[2] = val & 0xff;
+	buf[3] = (val >> 8) & 0xff;
+	buf[4] = (val >> 16) & 0xff;
+	buf[5] = val >> 24;
+
+	ret = i2c_transfer(i2c, &msg, 1);
+
+	if (ret != 1)
+		pr_err("%s: i2c write error!\n", __func__);
 }
 
-module_init(init_rc_map_avertv_303)
-module_exit(exit_rc_map_avertv_303)
+static u8 i2c_av_read(struct i2c_adapter *i2c, u16 reg)
+{
+	int ret;
+	u8 buf[2];
+	struct i2c_msg msg = {
+		.addr	= 0x88 >> 1,
+		.flags	= 0,
+		.buf	= buf,
+		.len	= 2
+	};
 
-MODULE_LICENSE("GPL");
-MODULE_AUTHOR("Mauro Carvalho Chehab");
+	buf[0] = reg >> 8;
+	buf[1] = reg & 0xff;
+
+	ret = i2c_transfer(i2c, &msg, 1);
+
+	if (ret != 1)
+		pr_err("%s: i2c write error!\n", __func__);
+
+	msg.flags = I2C_M_RD;
+	msg.len = 1;
+
+	ret = i2c_transfer(i2c, &msg, 1);
+
+	if (ret != 1)
+		pr_err("%s: i2c read error!\n", __func__);
+
+	return buf[0];
+}
+
+static void i2c_av_and_or(struct i2c_adapter *i2c, u16 reg, unsigned and_mask,
+								u8 or_value)
+{
+	i2c_av_write(i2c, reg, (i2c_av_read(i2c, reg) & an

@@ -1,18 +1,23 @@
-VE) \
-  include/linux/scatterlist.h \
-    $(wildcard include/config/NEED_SG_DMA_LENGTH) \
-    $(wildcard include/config/DEBUG_SG) \
-    $(wildcard include/config/SGL_ALLOC) \
-    $(wildcard include/config/ARCH_NO_SG_CHAIN) \
-    $(wildcard include/config/SG_POOL) \
-  include/linux/gpio/consumer.h \
-    $(wildcard include/config/OF_GPIO) \
-    $(wildcard include/config/GPIO_SYSFS) \
-  include/uapi/linux/spi/spi.h \
-  include/media/v4l2-fh.h \
-  include/media/v4l2-mediabus.h \
-  include/media/i2c/upd64083.h \
+e        *video_dev;
+	struct video_device        *vbi_dev;
 
-drivers/media/i2c/upd64083.o: $(deps_drivers/media/i2c/upd64083.o)
+	/* video capture */
+	struct cx23885_fmt         *fmt;
+	unsigned int               width, height;
+	unsigned		   field;
 
-$(deps_drivers/media/i2c/upd64
+	struct cx23885_dmaqueue    vidq;
+	struct vb2_queue           vb2_vidq;
+	struct cx23885_dmaqueue    vbiq;
+	struct vb2_queue           vb2_vbiq;
+
+	spinlock_t                 slock;
+
+	/* MPEG Encoder ONLY settings */
+	u32                        cx23417_mailbox;
+	struct cx2341x_handler     cxhdl;
+	struct video_device        *v4l_device;
+	struct vb2_queue           vb2_mpegq;
+	struct cx23885_tvnorm      encodernorm;
+
+	/* Analog raw 

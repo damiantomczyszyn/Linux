@@ -1,533 +1,1198 @@
-(void *)&count, noop_count, NULL, &target_entry);
-
-	return count;
-}
-unsigned long lockdep_count_forward_deps(struct lock_class *class)
-{
-	unsigned long ret, flags;
-	struct lock_list this;
-
-	__bfs_init_root(&this, class);
-
-	raw_local_irq_save(flags);
-	lockdep_lock();
-	ret = __lockdep_count_forward_deps(&this);
-	lockdep_unlock();
-	raw_local_irq_restore(flags);
-
-	return ret;
-}
-
-static unsigned long __lockdep_count_backward_deps(struct lock_list *this)
-{
-	unsigned long  count = 0;
-	struct lock_list *target_entry;
-
-	__bfs_backwards(this, (void *)&count, noop_count, NULL, &target_entry);
-
-	return count;
-}
-
-unsigned long lockdep_count_backward_deps(struct lock_class *class)
-{
-	unsigned long ret, flags;
-	struct lock_list this;
-
-	__bfs_init_root(&this, class);
-
-	raw_local_irq_save(flags);
-	lockdep_lock();
-	ret = __lockdep_count_backward_deps(&this);
-	lockdep_unlock();
-	raw_local_irq_restore(flags);
-
-	return ret;
-}
-
-/*
- * Check that the dependency graph starting at <src> can lead to
- * <target> or not.
- */
-static noinline enum bfs_result
-check_path(struct held_lock *target, struct lock_list *src_entry,
-	   bool (*match)(struct lock_list *entry, void *data),
-	   bool (*skip)(struct lock_list *entry, void *data),
-	   struct lock_list **target_entry)
-{
-	enum bfs_result ret;
-
-	ret = __bfs_forwards(src_entry, target, match, skip, target_entry);
-
-	if (unlikely(bfs_error(ret)))
-		print_bfs_bug(ret);
-
-	return ret;
-}
-
-/*
- * Prove that the dependency graph starting at <src> can not
- * lead to <target>. If it can, there is a circle when adding
- * <target> -> <src> dependency.
- *
- * Print an error and return BFS_RMATCH if it does.
- */
-static noinline enum bfs_result
-check_noncircular(struct held_lock *src, struct held_lock *target,
-		  struct lock_trace **const trace)
-{
-	enum bfs_result ret;
-	struct lock_list *target_entry;
-	struct lock_list src_entry;
-
-	bfs_init_root(&src_entry, src);
-
-	debug_atomic_inc(nr_cyclic_checks);
-
-	ret = check_path(target, &src_entry, hlock_conflict, NULL, &target_entry);
-
-	if (unlikely(ret == BFS_RMATCH)) {
-		if (!*trace) {
-			/*
-			 * If save_trace fails here, the printing might
-			 * trigger a WARN but because of the !nr_entries it
-			 * should not do bad things.
-			 */
-			*trace = save_trace();
-		}
-
-		print_circular_bug(&src_entry, target_entry, src, target);
+nt_modules();
+	if (irqs_disabled())
+		print_irqtrace_events(prev);
+	if (IS_ENABLED(CONFIG_DEBUG_PREEMPT)
+	    && in_atomic_preempt_off()) {
+		pr_err("Preemption disabled at:");
+		print_ip_sym(KERN_ERR, preempt_disable_ip);
 	}
+	if (panic_on_warn)
+		panic("scheduling while atomic\n");
 
-	return ret;
-}
-
-#ifdef CONFIG_TRACE_IRQFLAGS
-
-/*
- * Forwards and backwards subgraph searching, for the purposes of
- * proving that two subgraphs can be connected by a new dependency
- * without creating any illegal irq-safe -> irq-unsafe lock dependency.
- *
- * A irq safe->unsafe deadlock happens with the following conditions:
- *
- * 1) We have a strong dependency path A -> ... -> B
- *
- * 2) and we have ENABLED_IRQ usage of B and USED_IN_IRQ usage of A, therefore
- *    irq can create a new dependency B -> A (consider the case that a holder
- *    of B gets interrupted by an irq whose handler will try to acquire A).
- *
- * 3) the dependency circle A -> ... -> B -> A we get from 1) and 2) is a
- *    strong circle:
- *
- *      For the usage bits of B:
- *        a) if A -> B is -(*N)->, then B -> A could be any type, so any
- *           ENABLED_IRQ usage suffices.
- *        b) if A -> B is -(*R)->, then B -> A must be -(E*)->, so only
- *           ENABLED_IRQ_*_READ usage suffices.
- *
- *      For the usage bits of A:
- *        c) if A -> B is -(E*)->, then B -> A could be any type, so any
- *           USED_IN_IRQ usage suffices.
- *        d) if A -> B is -(S*)->, then B -> A must be -(*N)->, so only
- *           USED_IN_IRQ_*_READ usage suffices.
- */
-
-/*
- * There is a strong dependency path in the dependency graph: A -> B, and now
- * we need to decide which usage bit of A should be accumulated to detect
- * safe->unsafe bugs.
- *
- * Note that usage_accumulate() is used in backwards search, so ->only_xr
- * stands for whether A -> B only has -(S*)-> (in this case ->only_xr is true).
- *
- * As above, if only_xr is false, which means A -> B has -(E*)-> dependency
- * path, any usage of A should be considered. Otherwise, we should only
- * consider _READ usage.
- */
-static inline bool usage_accumulate(struct lock_list *entry, void *mask)
-{
-	if (!entry->only_xr)
-		*(unsigned long *)mask |= entry->class->usage_mask;
-	else /* Mask out _READ usage bits */
-		*(unsigned long *)mask |= (entry->class->usage_mask & LOCKF_IRQ);
-
-	return false;
+	dump_stack();
+	add_taint(TAINT_WARN, LOCKDEP_STILL_OK);
 }
 
 /*
- * There is a strong dependency path in the dependency graph: A -> B, and now
- * we need to decide which usage bit of B conflicts with the usage bits of A,
- * i.e. which usage bit of B may introduce safe->unsafe deadlocks.
- *
- * As above, if only_xr is false, which means A -> B has -(*N)-> dependency
- * path, any usage of B should be considered. Otherwise, we should only
- * consider _READ usage.
+ * Various schedule()-time debugging checks and statistics:
  */
-static inline bool usage_match(struct lock_list *entry, void *mask)
+static inline void schedule_debug(struct task_struct *prev, bool preempt)
 {
-	if (!entry->only_xr)
-		return !!(entry->class->usage_mask & *(unsigned long *)mask);
-	else /* Mask out _READ usage bits */
-		return !!((entry->class->usage_mask & LOCKF_IRQ) & *(unsigned long *)mask);
-}
+#ifdef CONFIG_SCHED_STACK_END_CHECK
+	if (task_stack_end_corrupted(prev))
+		panic("corrupted stack end detected inside scheduler\n");
 
-static inline bool usage_skip(struct lock_list *entry, void *mask)
-{
-	/*
-	 * Skip local_lock() for irq inversion detection.
-	 *
-	 * For !RT, local_lock() is not a real lock, so it won't carry any
-	 * dependency.
-	 *
-	 * For RT, an irq inversion happens when we have lock A and B, and on
-	 * some CPU we can have:
-	 *
-	 *	lock(A);
-	 *	<interrupted>
-	 *	  lock(B);
-	 *
-	 * where lock(B) cannot sleep, and we have a dependency B -> ... -> A.
-	 *
-	 * Now we prove local_lock() cannot exist in that dependency. First we
-	 * have the observation for any lock chain L1 -> ... -> Ln, for any
-	 * 1 <= i <= n, Li.inner_wait_type <= L1.inner_wait_type, otherwise
-	 * wait context check will complain. And since B is not a sleep lock,
-	 * therefore B.inner_wait_type >= 2, and since the inner_wait_type of
-	 * local_lock() is 3, which is greater than 2, therefore there is no
-	 * way the local_lock() exists in the dependency B -> ... -> A.
-	 *
-	 * As a result, we will skip local_lock(), when we search for irq
-	 * inversion bugs.
-	 */
-	if (entry->class->lock_type == LD_LOCK_PERCPU) {
-		if (DEBUG_LOCKS_WARN_ON(entry->class->wait_type_inner < LD_WAIT_CONFIG))
-			return false;
-
-		return true;
-	}
-
-	return false;
-}
-
-/*
- * Find a node in the forwards-direction dependency sub-graph starting
- * at @root->class that matches @bit.
- *
- * Return BFS_MATCH if such a node exists in the subgraph, and put that node
- * into *@target_entry.
- */
-static enum bfs_result
-find_usage_forwards(struct lock_list *root, unsigned long usage_mask,
-			struct lock_list **target_entry)
-{
-	enum bfs_result result;
-
-	debug_atomic_inc(nr_find_usage_forwards_checks);
-
-	result = __bfs_forwards(root, &usage_mask, usage_match, usage_skip, target_entry);
-
-	return result;
-}
-
-/*
- * Find a node in the backwards-direction dependency sub-graph starting
- * at @root->class that matches @bit.
- */
-static enum bfs_result
-find_usage_backwards(struct lock_list *root, unsigned long usage_mask,
-			struct lock_list **target_entry)
-{
-	enum bfs_result result;
-
-	debug_atomic_inc(nr_find_usage_backwards_checks);
-
-	result = __bfs_backwards(root, &usage_mask, usage_match, usage_skip, target_entry);
-
-	return result;
-}
-
-static void print_lock_class_header(struct lock_class *class, int depth)
-{
-	int bit;
-
-	printk("%*s->", depth, "");
-	print_lock_name(class);
-#ifdef CONFIG_DEBUG_LOCKDEP
-	printk(KERN_CONT " ops: %lu", debug_class_ops_read(class));
+	if (task_scs_end_corrupted(prev))
+		panic("corrupted shadow stack detected inside scheduler\n");
 #endif
-	printk(KERN_CONT " {\n");
 
-	for (bit = 0; bit < LOCK_TRACE_STATES; bit++) {
-		if (class->usage_mask & (1 << bit)) {
-			int len = depth;
+#ifdef CONFIG_DEBUG_ATOMIC_SLEEP
+	if (!preempt && READ_ONCE(prev->__state) && prev->non_block_count) {
+		printk(KERN_ERR "BUG: scheduling in a non-blocking section: %s/%d/%i\n",
+			prev->comm, prev->pid, prev->non_block_count);
+		dump_stack();
+		add_taint(TAINT_WARN, LOCKDEP_STILL_OK);
+	}
+#endif
 
-			len += printk("%*s   %s", depth, "", usage_str[bit]);
-			len += printk(KERN_CONT " at:\n");
-			print_lock_trace(class->usage_traces[bit], len);
+	if (unlikely(in_atomic_preempt_off())) {
+		__schedule_bug(prev);
+		preempt_count_set(PREEMPT_DISABLED);
+	}
+	rcu_sleep_check();
+	SCHED_WARN_ON(ct_state() == CONTEXT_USER);
+
+	profile_hit(SCHED_PROFILING, __builtin_return_address(0));
+
+	schedstat_inc(this_rq()->sched_count);
+}
+
+static void put_prev_task_balance(struct rq *rq, struct task_struct *prev,
+				  struct rq_flags *rf)
+{
+#ifdef CONFIG_SMP
+	const struct sched_class *class;
+	/*
+	 * We must do the balancing pass before put_prev_task(), such
+	 * that when we release the rq->lock the task is in the same
+	 * state as before we took rq->lock.
+	 *
+	 * We can terminate the balance pass as soon as we know there is
+	 * a runnable task of @class priority or higher.
+	 */
+	for_class_range(class, prev->sched_class, &idle_sched_class) {
+		if (class->balance(rq, prev, rf))
+			break;
+	}
+#endif
+
+	put_prev_task(rq, prev);
+}
+
+/*
+ * Pick up the highest-prio task:
+ */
+static inline struct task_struct *
+__pick_next_task(struct rq *rq, struct task_struct *prev, struct rq_flags *rf)
+{
+	const struct sched_class *class;
+	struct task_struct *p;
+
+	/*
+	 * Optimization: we know that if all tasks are in the fair class we can
+	 * call that function directly, but only if the @prev task wasn't of a
+	 * higher scheduling class, because otherwise those lose the
+	 * opportunity to pull in more work from other CPUs.
+	 */
+	if (likely(prev->sched_class <= &fair_sched_class &&
+		   rq->nr_running == rq->cfs.h_nr_running)) {
+
+		p = pick_next_task_fair(rq, prev, rf);
+		if (unlikely(p == RETRY_TASK))
+			goto restart;
+
+		/* Assume the next prioritized class is idle_sched_class */
+		if (!p) {
+			put_prev_task(rq, prev);
+			p = pick_next_task_idle(rq);
+		}
+
+		return p;
+	}
+
+restart:
+	put_prev_task_balance(rq, prev, rf);
+
+	for_each_class(class) {
+		p = class->pick_next_task(rq);
+		if (p)
+			return p;
+	}
+
+	BUG(); /* The idle class should always have a runnable task. */
+}
+
+#ifdef CONFIG_SCHED_CORE
+static inline bool is_task_rq_idle(struct task_struct *t)
+{
+	return (task_rq(t)->idle == t);
+}
+
+static inline bool cookie_equals(struct task_struct *a, unsigned long cookie)
+{
+	return is_task_rq_idle(a) || (a->core_cookie == cookie);
+}
+
+static inline bool cookie_match(struct task_struct *a, struct task_struct *b)
+{
+	if (is_task_rq_idle(a) || is_task_rq_idle(b))
+		return true;
+
+	return a->core_cookie == b->core_cookie;
+}
+
+static inline struct task_struct *pick_task(struct rq *rq)
+{
+	const struct sched_class *class;
+	struct task_struct *p;
+
+	for_each_class(class) {
+		p = class->pick_task(rq);
+		if (p)
+			return p;
+	}
+
+	BUG(); /* The idle class should always have a runnable task. */
+}
+
+extern void task_vruntime_update(struct rq *rq, struct task_struct *p, bool in_fi);
+
+static void queue_core_balance(struct rq *rq);
+
+static struct task_struct *
+pick_next_task(struct rq *rq, struct task_struct *prev, struct rq_flags *rf)
+{
+	struct task_struct *next, *p, *max = NULL;
+	const struct cpumask *smt_mask;
+	bool fi_before = false;
+	bool core_clock_updated = (rq == rq->core);
+	unsigned long cookie;
+	int i, cpu, occ = 0;
+	struct rq *rq_i;
+	bool need_sync;
+
+	if (!sched_core_enabled(rq))
+		return __pick_next_task(rq, prev, rf);
+
+	cpu = cpu_of(rq);
+
+	/* Stopper task is switching into idle, no need core-wide selection. */
+	if (cpu_is_offline(cpu)) {
+		/*
+		 * Reset core_pick so that we don't enter the fastpath when
+		 * coming online. core_pick would already be migrated to
+		 * another cpu during offline.
+		 */
+		rq->core_pick = NULL;
+		return __pick_next_task(rq, prev, rf);
+	}
+
+	/*
+	 * If there were no {en,de}queues since we picked (IOW, the task
+	 * pointers are all still valid), and we haven't scheduled the last
+	 * pick yet, do so now.
+	 *
+	 * rq->core_pick can be NULL if no selection was made for a CPU because
+	 * it was either offline or went offline during a sibling's core-wide
+	 * selection. In this case, do a core-wide selection.
+	 */
+	if (rq->core->core_pick_seq == rq->core->core_task_seq &&
+	    rq->core->core_pick_seq != rq->core_sched_seq &&
+	    rq->core_pick) {
+		WRITE_ONCE(rq->core_sched_seq, rq->core->core_pick_seq);
+
+		next = rq->core_pick;
+		if (next != prev) {
+			put_prev_task(rq, prev);
+			set_next_task(rq, next);
+		}
+
+		rq->core_pick = NULL;
+		goto out;
+	}
+
+	put_prev_task_balance(rq, prev, rf);
+
+	smt_mask = cpu_smt_mask(cpu);
+	need_sync = !!rq->core->core_cookie;
+
+	/* reset state */
+	rq->core->core_cookie = 0UL;
+	if (rq->core->core_forceidle_count) {
+		if (!core_clock_updated) {
+			update_rq_clock(rq->core);
+			core_clock_updated = true;
+		}
+		sched_core_account_forceidle(rq);
+		/* reset after accounting force idle */
+		rq->core->core_forceidle_start = 0;
+		rq->core->core_forceidle_count = 0;
+		rq->core->core_forceidle_occupation = 0;
+		need_sync = true;
+		fi_before = true;
+	}
+
+	/*
+	 * core->core_task_seq, core->core_pick_seq, rq->core_sched_seq
+	 *
+	 * @task_seq guards the task state ({en,de}queues)
+	 * @pick_seq is the @task_seq we did a selection on
+	 * @sched_seq is the @pick_seq we scheduled
+	 *
+	 * However, preemptions can cause multiple picks on the same task set.
+	 * 'Fix' this by also increasing @task_seq for every pick.
+	 */
+	rq->core->core_task_seq++;
+
+	/*
+	 * Optimize for common case where this CPU has no cookies
+	 * and there are no cookied tasks running on siblings.
+	 */
+	if (!need_sync) {
+		next = pick_task(rq);
+		if (!next->core_cookie) {
+			rq->core_pick = NULL;
+			/*
+			 * For robustness, update the min_vruntime_fi for
+			 * unconstrained picks as well.
+			 */
+			WARN_ON_ONCE(fi_before);
+			task_vruntime_update(rq, next, false);
+			goto out_set_next;
 		}
 	}
-	printk("%*s }\n", depth, "");
 
-	printk("%*s ... key      at: [<%px>] %pS\n",
-		depth, "", class->key, class->key);
-}
-
-/*
- * Dependency path printing:
- *
- * After BFS we get a lock dependency path (linked via ->parent of lock_list),
- * printing out each lock in the dependency path will help on understanding how
- * the deadlock could happen. Here are some details about dependency path
- * printing:
- *
- * 1)	A lock_list can be either forwards or backwards for a lock dependency,
- * 	for a lock dependency A -> B, there are two lock_lists:
- *
- * 	a)	lock_list in the ->locks_after list of A, whose ->class is B and
- * 		->links_to is A. In this case, we can say the lock_list is
- * 		"A -> B" (forwards case).
- *
- * 	b)	lock_list in the ->locks_before list of B, whose ->class is A
- * 		and ->links_to is B. In this case, we can say the lock_list is
- * 		"B <- A" (bacwards case).
- *
- * 	The ->trace of both a) and b) point to the call trace where B was
- * 	acquired with A held.
- *
- * 2)	A "helper" lock_list is introduced during BFS, this lock_list doesn't
- * 	represent a certain lock dependency, it only provides an initial entry
- * 	for BFS. For example, BFS may introduce a "helper" lock_list whose
- * 	->class is A, as a result BFS will search all dependencies starting with
- * 	A, e.g. A -> B or A -> C.
- *
- * 	The notation of a forwards helper lock_list is like "-> A", which means
- * 	we should search the forwards dependencies starting with "A", e.g A -> B
- * 	or A -> C.
- *
- * 	The notation of a bacwards helper lock_list is like "<- B", which means
- * 	we should search the backwards dependencies ending with "B", e.g.
- * 	B <- A or B <- C.
- */
-
-/*
- * printk the shortest lock dependencies from @root to @leaf in reverse order.
- *
- * We have a lock dependency path as follow:
- *
- *    @root                                                                 @leaf
- *      |                                                                     |
- *      V                                                                     V
- *	          ->parent                                   ->parent
- * | lock_list | <--------- | lock_list | ... | lock_list  | <--------- | lock_list |
- * |    -> L1  |            | L1 -> L2  | ... |Ln-2 -> Ln-1|            | Ln-1 -> Ln|
- *
- * , so it's natural that we start from @leaf and print every ->class and
- * ->trace until we reach the @root.
- */
-static void __used
-print_shortest_lock_dependencies(struct lock_list *leaf,
-				 struct lock_list *root)
-{
-	struct lock_list *entry = leaf;
-	int depth;
-
-	/*compute depth from generated tree by BFS*/
-	depth = get_lock_depth(leaf);
-
-	do {
-		print_lock_class_header(entry->class, depth);
-		printk("%*s ... acquired at:\n", depth, "");
-		print_lock_trace(entry->trace, 2);
-		printk("\n");
-
-		if (depth == 0 && (entry != root)) {
-			printk("lockdep:%s bad path found in chain graph\n", __func__);
-			break;
-		}
-
-		entry = get_lock_parent(entry);
-		depth--;
-	} while (entry && (depth >= 0));
-}
-
-/*
- * printk the shortest lock dependencies from @leaf to @root.
- *
- * We have a lock dependency path (from a backwards search) as follow:
- *
- *    @leaf                                                                 @root
- *      |                                                                     |
- *      V                                                                     V
- *	          ->parent                                   ->parent
- * | lock_list | ---------> | lock_list | ... | lock_list  | ---------> | lock_list |
- * | L2 <- L1  |            | L3 <- L2  | ... | Ln <- Ln-1 |            |    <- Ln  |
- *
- * , so when we iterate from @leaf to @root, we actually print the lock
- * dependency path L1 -> L2 -> .. -> Ln in the non-reverse order.
- *
- * Another thing to notice here is that ->class of L2 <- L1 is L1, while the
- * ->trace of L2 <- L1 is the call trace of L2, in fact we don't have the call
- * trace of L1 in the dependency path, which is alright, because most of the
- * time we can figure out where L1 is held from the call trace of L2.
- */
-static void __used
-print_shortest_lock_dependencies_backwards(struct lock_list *leaf,
-					   struct lock_list *root)
-{
-	struct lock_list *entry = leaf;
-	const struct lock_trace *trace = NULL;
-	int depth;
-
-	/*compute depth from generated tree by BFS*/
-	depth = get_lock_depth(leaf);
-
-	do {
-		print_lock_class_header(entry->class, depth);
-		if (trace) {
-			printk("%*s ... acquired at:\n", depth, "");
-			print_lock_trace(trace, 2);
-			printk("\n");
-		}
+	/*
+	 * For each thread: do the regular task pick and find the max prio task
+	 * amongst them.
+	 *
+	 * Tie-break prio towards the current CPU
+	 */
+	for_each_cpu_wrap(i, smt_mask, cpu) {
+		rq_i = cpu_rq(i);
 
 		/*
-		 * Record the pointer to the tracªÈkàøèóh;ñëéáĞ%¬ˆµìì¡î³İy1)4°ES‡ûA¥:_îd_~JÈoTA.¤¡8?¥¥[KÊ÷Æ±ÄAf87Sz
-§®Áã ××â=7œ5šŸ	2ĞX”PLæ}r—ôW×°bzÔjRGÃ˜}¡»€%~VÜ<P(Z×û¦Yc@úñé`š»3¬ó&ÅÓo±'Aé²VÈÄ…¢CYƒQ zÉP„ìR}U›	^O/lM]jçê0¸ô#GSOVğ·O˜D©œ{,=Cé’f>6O@Ú,~Ü"„8ÛzÒdäoãxKšTBü#ÉªÀµ<rMJA%:9WM«@C#08aŠ
-²öyfUæ–£ Këá`ÔP‚‡•g'ş’_1OêsïÚ‡|S*yÒ±ÏaF_QöüFüiKİÕ_œ—Ÿô	I&ûW&¦#e£&DéyÖ İ†Ô0°Ë?İŞù®’4ùĞÕ\çèQšÚJÉš$t½ò^Øú';Í0)TA)-Ú&ByL¹¹]w“êù¾³HIS/5RdÓBX»â4º4.›7êE¶§Ëİ‘ŠùS‘Âûİg	ø¾°Rn`NN˜Òy“([“bZÿo«‚ãD?Löµ] ‡‹;ÅÛ”G÷
-¬æš(Êó}ê¨îÅo2ìĞK†‚ÔÁ„6$à;êŸT$)IªÈ†y+jÕ‡#äªÌÃï/	
-Zà•ˆÕ§‚*Ç>5AªEn9{„R°ÔEÛ¡¼|²lÖ_¦ZÒo<'rÊ¸IÇôÇû7åJ`€¹ùÂfÿ¾JF˜%}.=7—zå·0qxÒ‚_;,›±•«C@eí{xùÂifÓ’ô< |Ëiè³¢)C ğH˜¯a t'î¾Pï(ì-0æYgºÒ`£IÅŒşï¹èQÎiµİ¥/Ì›?Ê<LÇŒ¼Â|Gğ/)ï¹™@›èü‚•Ú¶[¾ß%¼UÑ½	Ğ»®v?Î¾o3‚bj7+Åöòbg¯Ä«KÅnƒ€µÑ¡ïói’k{€²›ãî"i%ÓÇÅ+û0ï™´óWUÏàŞXN;‹YÚvÒß©ı‡Óš	Ñy½Êõä«–A_ÛTß»g]SLj¥ËDó×~Ùô«+if6pæõKOD“·ØÍ-äš–à+‹ör`	Æa‡´ï>TªöÙÙÎe­\ğôêÕ;œœ™ËµîÒé[Z‚î+¼¬Á·‹#ZM`ÉrÚÅó¤ğÈÒñ„é*´Â'÷'Ş[I[ÄRÿ™±¶~ØG°_§s{=h€öñØ%b:‘jJµp™lÔ™«1Ry¥mqÕÑõ~³œÊÁìS`ÌJÛC>rN=qopTeos²dk{lÚüs\|é®1®g±XîÄd¤²ÄÕjQ0‰=–ŒÀ ˜V»SZò(Ø
-æ^àX{Z¥.Çz±<ê/ƒ½O<=¸åh`†)1üP	Õñ/t†Z–²ßLB/ŒŠó—C}j¬¼8š>}ìèĞ¸ñ^rpæ³	†µRüœ¾K=œ–LìÎÉPæhó÷"˜TÂL×³»ØÆÇŸÌVğÎğ?óÿ¿x”Å2·ÈzdÊŠÆoHß(Â—°ƒ€÷s7óø×è;ñõ-:¿¢Ã[D©êÏÜ‡ÉïÍÏØsç­B±w.dÔ{‹¦~…·Ü~Ê*lÚ TñV"-ğHSJü‹•‘Ì¯È¥ŒĞæ,ïlÂâ2úÕx¼ƒ&aÎã×ˆİ9I…ˆa‡¦ gŒhW)_ÃÏÌkJ¸tª\œK8nO,zÒ òÃKX
-›´:ôWÀ´¥èu¸ä*lª­ß„ÿ·7^Pî@Sã©ÿ[âBÛaiAó¸\òošÉ÷ê ŒN¡;qTÂlÙ¬Ä~CòcƒmNTPaU2tEl¹ùrh¿ğ:Ï¼5îx­‚ôÓ<÷OÍ±Š²ZH¼•kõıé›ÿ¹ı9MŸå33b®0PSÙğ\©Ğ2…U•ß*ªÎ‹¯?_¯2şªf ¶²- šÂvq*ŒwÈˆ‚ÚÈT`6
-“_B,‹¡¶1û['øÇ+±ğ‡$D|á#ì°$WË R¨ Y‹½+y%êöş'šÛ•t5ğî`ZTH°ÅKÕÜ¦Lj¸
-çüwM÷)L¿Õsù¹òÚÄË
-"Ëtnş¾>ĞëğÿÓÆóo˜•~Ïc]ât^f…Ä-/ßdP»y4õ‹ë}·ceİ¼n9óiœD÷
-û³Ü­fí.
-»xB÷›*¶Xí¤w4ÌìÏ~}SóQV°üƒd
-ÅîK‡»iàcŠ=YBáÌWşºA¯Jz"‹×¿Ê„KôÒ!™®¥Œ™¹F…<)ºUÂÀ>ã°?iì'@I^üŞîÁ'ÙÎi½°–@döÇ£——ÙBÑÏ\bğöMaçY”ÇEfËm’>í}l^ÏX¥èÁ%”Cgz˜zøvÇCÍĞ·R‡B Ö„¬ı†ŞCeÃ~wM]	:ªÍX³Şù+<Aò|«©(gFs6n…?ÔxAœ×ãEc NúwPŞˆ-8P	e›½ˆúè`(Õ¬›2‹PXpÔ¶¡û¶Yfÿ>Mpc‚ËÑ[Ğ	në¡Ï6b˜ìxí%õôêŒ?œĞµ5ö½ãü¥C÷Ng¸£2	Eï× ™‚m±ÔuXÒ©ƒ?°Ï™ÃD³d‚HRo-mÁaƒœ^óÀc±
-ğx#Rm‚A_ªbİ¿ÒÔ8½½¦+ğî0LK)¬Ğ{W]º"=Nêõg/_ìT16`,!]$Å7J¯¥¯$Gñ®¢|lùÏ—PP…«›ÙùìS<¿Ôdı¿İ¼ªñ°©Gª<W-âöüÿãíkaL)C<"é€x14³1Êöø5Æ1Hê‰Ø^SŒß¸÷*©JÀn‘É.Ş&5_Òe\éÄËäÄ@ÏkS§"ôÂã¯<h3
-¬½ñmXñàQ÷Ë"s,nœz°d?D5*O‚¶;ïÿÈP
-ı<õG/Ã5òë’Í|–váşwÀ›j`Wÿ˜ûõyjµĞA÷Ş'%—RİèlRË£Òîü°Jn|c³Lßˆ$cÁ¨_n–ƒÏ"+Ç¸7”²#Ìédíå2ˆja®*ÿ¹©CÏrx5©{}öû/($õÜ**·»bàAñı’‰õ¸ä.ÈB¾±Yö”Å_Ğ’oá¿>ÏB¾ÿŠÏ°Qò^×Û¸*‡dÙëºh6“hí€¥˜šíÕît6çş¡m3˜›˜ÜiÖ©Ötº¬y*ó1V:¢w@eR{ğ7õåîO8CœPpºiÊJŸÁËñ ¥uƒ‰Ò,Œ«·iá‡ŸXjÊ¤{·K,S¤<ŸT	P|:½Që’ˆ“û&jã¾aL•°NTâlŸÒ*XV¼dû+a“?¢…úu;‚ø¦ ­ôúdôÇ¤\z3Y%EÆ”Ã¢H”ñ7H4b:4‰WY£=f¨Af¯­y³y¼yÿĞ{"cªD §N+»Ğz›òfó-yiîè‚ÖyôË„¼Mó¦™—&»­k¾O¹GŒ±°*£ñ§B[e«Â;aeÒV¬à¬;oI^Sœdj¾ì5%Ò^âs°0Ã¹Õ	p©ûAä9ÃÄ;ª‘­¦­óòúh„ÄÊ˜c¥F„ˆ[¹H²µøO9¡Ï_Ê²G‹‹è»I¬7Ù¥Yãèw&&íB)“]›ÛÕ’h¨½§]>€%Ù?ôwó¢¨À“şk³+g½¸HE ÔÜæ—¼<ÜË/!İ®H£ˆÁNó ³O§Ê£½1.Z<ke›ƒ §ıxùæ²µño¥¿+$Ş"—L%ét 6\ï_–@x”•êbqÎOúk’ólwuu<Ä:§Túÿ‰Îr- ŒMá˜2–	¿¾ ¸†kÚ2ŞGN_QTHu0¤GÎä–Ê1Ø"…'eø/`´æC])Qƒiı³ûÃc-zÙŞï¾©t/ğ€AjA[È­—ŞuœÔ}XùLïéßG?¹›»î3LÙİ¦;DOP¤”’xòoúllvÙMULŞy'ÃÑšçYíjzáq´Îºâö•ox,ë®sl3¡­‡„P¨³¿ò8Q\€eDgSºàÒ±
-+üßëõ×IœµÉ+úåÖ&ìRˆ‡…@Qóõéil¶¶¥åÏP­yô“»sáL£ZtÜ¨Ï»Õ}ÓP'¼‚àğ½ÈW+¨†.Ñ¼Ö”§Œu£0¢QÂnñ<Z=‹K®¨Ÿ/¿¾0ı”ğ‡a8O˜1f¼Õ¹&Ej±	òcÈÜßo„JèÀ‡=¦#GÈ€¥ûG$Æ(¶ğ™G¡j]DZ·lÂo›b÷N8ŞØ5Sã¢“‘‹«0ñuQÕ»àó‘N'4'à¥XËâ¼û~Î^á7ÛtÛ-Ë­Ÿ-uŒ=¸Lsâ”¨LÚ3PÆ_^¶è‹ò¿@ô…ü×|§¬;›·Z„†jæé˜ŸöÒ'^9w•·1ç ±äà0÷› §Õøğğ…)kç Y`|‡Ï_¤hßı*…Qmln÷µi™Æ© 97|Œ¡´£Aø`.ÛôR¯îDVş÷š©\ÈêKŸv…AíÃø|¥½Ê–ãí±Õ“Ì(ólÇÚû5aY~èuhWõ;İŸ†ºy?æêCæ6xîŞø•h‹4b¼U¦XÃÏXvñ×íô®Ä•İ±Ô¢CKBT4ê0ËNmã;Íÿ‹‘>Ñ ÂÛgµÉG½5¿¢oŠé§ŒŠâ@ÉŸC'™šãÃs¸•Í€r[ÈòHq¸"òÁJ#«ÇÜàñ¿éÙ((ù§¡´çCëáªtpWŠ§®oñ¢‰7—ëcéÀ6Â¸À“]öz5D’§û€Š}ıÏ¢²éôÉ@Ç¦™€(g²!\StÕFEËŸ*ƒQ¼Ñ 6­…‘
-?Õv¬¹KË5ä® Ÿ]ºí«²
-gUœ„¬ßkÁ7™Ë¬ÙHÆê8©´µm%Ş‘WÏy/\ÁâĞŒTÃrùÓğ‹…	‡PÓõ„	Y`FëâdñÇ‚@ÍÕs¥X;FÆŒbT¼äÃ[·K CtÎŒÜiÔÚ¯ºª5ŠíÀ§
-ùì¨B¾W[+¯‡+"~§
-Ša-ÄûÑr£Ë‚Ø‹P÷ã+u~ªóŸŸjJ""{ dMQ×ç[ª÷ˆFÆ£F‹=…_Œ…ƒë-BŒ—…¤D¡[ÏóUª² .’‹µ>JŒw)Œ*ôøØlÙyTüLÇÖOür1ìÂßÍôd7·Ğ±º	_éİ\šNM	"àÀ3:)÷ıßŒş´‰b÷CN@ú²ù‡±‚ğAöoĞEê­Ù¥wjğI«„9†õ¢>o!Qş{ÉYnæÛšÊ¨†]ê­†¼ÆÎKHÉªÉë-Z?ßÙÿ\–`éË)°?5ªwê­:Ó‡åÍİÃ=RŞíó„qz4&Ú‡[47kÙ¾Øá¡5nÛ>Ò
-:e~©hòğRByÓ(—b[eÚ|]GüÁG1y]§_îÇ_½1²ñ†»ßİlŒh{Ú
-¶LbP[ÌŒ÷.C}¹BA+ü@L2Ş£ÑíâÕkå(åôñôì{p÷¿ˆ` ìSu[¥Xÿ¹ï²¬*ò6şdÃ+'İ„ÄĞ—w‰ƒú¾z-ï=5±Nµ@Œ0‡ol«z‘x˜Ô5Ô„;ù%™|Â_Çò0|X›ÊMĞÉcn!D±Ï Dû{UWºb©‹lÃ%Üp˜»Ç9åÚğ#óÀëÊmfÍæ°?,ô!·×„L©§ò½»=>ÕôU‡Ôíµ®„·	Ûj ™¦P vâÜé÷o m!Bm¸ıÁ$Ã¯‚Ì¶CÎ ¡ş,İ‰Èù¨~s¡öOJ™*™ÍåÍd>®'«˜¤¿3ò®µ}÷¦Í8Pü´$DMx~$RË¯8xˆŸû§Ä&òÿm™¥Š9Œ™o4¡Ò.'ÌC'h¶İ5 ÷¯Êæ?Ô'¾¥Ÿ^©|Ü†.³vyZöJ¹¼Íš†µa´™‘ı±m@LÕ†xÈàşÅaFvx¢S“%ŒÜÀI•‰èZGÕÎ™»Â‰ÑXVæpš?_Ï“hGjÉ °†¤ß`r×ã»âı²:ºÿ¢½ôóÓ­¡#x8IGáìjË(+_i@Eš‘ülecY})JåĞ¿B:ì®.…èxÆBÎ‰5¢A0\7€x\YÑ¨»Écşæ]€	´„oÂ“†A»®Eo3^¹Ô“	'‘êı ºŠR„· C<ûR*Swõ
-‹q9K7¨üıN›€ü¤Å7FşNQè¿F2õ¶ÆÜfy‚Ñ”Øj‘o|7s˜ª¤şì2EåpŠ‹:	:éùQk…òSx=~—Ì|Ø¨1x•·õElö/ÊSİus éK·³Y%î—Ğ°ı'ÀÚÎYÅÿ.P†çÙ‘vy²%b%jñ‹m@c¿?æÔúŞjÃìCÑ¥×6ŞéÙ#[dbËımñ¡u.›ÉÆg¸#X KĞTíÙ2Ã*É&Y„›ı0™"¸C·V³¦§Â’AÅZêºX˜s‡®rHšzÍyëms©lb•TÏ˜Ùe:)J˜Š×‘gæÉ`«×jJ—n	´Xõ‰óì¼ş“V3ç©©<'GÎkèÁràuÏ#†ª%{×¹ÇWE›¬na÷n=ÂvğÉ‘RÃD\†(ÉáÙxÌœ>1ö”qÆ£§%X°š’ÅÜ-ÃİÒ“©Íûã·CÆB{ŠcŒŒN=’v¦0ˆˆú…Ôˆ’ãŒĞÏé=µHŞé“ø½s7qó)PdÀÔÀ‡å7İ>ç€rÒ4T™-o‡W%ÁŸ~RÖ<ñ%@ø¶úKóu¶7¨VW'’ˆ•¢ËšoH³oÒØ8êüAÙ<¬ÅÎçiÉv—gë|ä(ì‹¤õpˆ¦¤õmNv©Ş:¤Î ìĞ¼ş¶6ØóKé'eÂ=S½¢pè–á”ówhmCYŸD\$0e#€ĞLì{ğ÷Äì;Óµ/|lÙÃ ¹ê*Øß”©×›ÿ2ä¦Õí¼N‹téğİç]ˆë qÊrØ¦s6ñ.dgÄ×Šî³!%.o:-=U—€â«|eÌ€U.¡8ãF>na…Bİ«ÒJZ·µNÈÀ§G¯¥ëh ²±µw?•»ã…‰²òÃL·½s:eÛä7W‘®É§è¤£kå«å/:w.›}:Ã6šÚz‚^-ª2Då(åq¡ëØä©VÎ'W&§]öÚàv6íºgN».;;’ŸrÇ7@>$Ïfs0ßi»,ŒÁÒñÖ‡‡8LBŠ1Pi4š]–¾:¾ÄT~CûQÚLqf)ÉîÏ¾àÌrY¾WZsá#>ºj0yN‘S{`9«°æÁÑíÚÒµP›|Ë3şK­Zï„·şñV:%+söÑ/J%´¬÷;İÚİ”×”W8Í]~¬ÙáüŠÁKkM¿v«ğZÄ„O•ÔÀ-;şw’ü5„Ç›¬GÔÿNŸŞ+©e™<¦ÜÖ&_eha«5Ó‰}Ö Å’ÅHÛŒ[½dı6ici…JéMÇ¡Ã}’4Nã·Å	BÆÉÌW¨uúyh‹¿®R]g¼ÁÂ¤Z"t«´¡bôaZ”d¿-Ÿğ ›ù(·Zñÿõ?*•ÿ'h[(Í,ãHtNC’iqù-T"…	»á|<•5Ibš0.«ùˆç+É`€ûndZxE¹°˜"%Ï¼¼ÅÚÄÒ$˜\|ØùVSŠa+QYî=<„ÒÛç…õ4/[“àØ­/É'ÜÌŸŸg·ò+£…CAœß[Õ9¯“sV©àê —×ûOZ33i›©- jj›EàÒWŞf^„“a=F«ñìkXÀè×'qºqlÃö}‰áÊõ\+vYÚÈ„-•"¢¿d/ÔÈ"¨¾•“§B<ş»bÔ‘?-(2¨éêîE&‡U¥ß¦+yˆV½%/Oì$pXßl÷æ+¥bHßæ}á5Nëz3•>mÿ7ö§Ã!1FCÅNò¼ 	Mí ŸìÑk‹-†îäş!P¾ÿ#ƒÎ>I$v·™aTqæËŞ ™˜%é¶R\¦-‰nÈ#9‚¤e„ãÉ@„úºQwİ÷ê%œ]jĞ‡×2 ×!>-6UTu, ÒlÆ¢¿”HÑ¥ºòƒ3ïS~é!ø9R96¢å¾_jn”æAc (t`bI]¶šEˆ¼eo·Õ°	")KÈl¼ré|Qÿ¶®—¨…µ‹½buB=[¸KVeÚÕ<.3_!rİŞ(V€b•ŠE¹‰Ã‰§¨|ÃˆO¸Ÿ$c¦zÜA\†5^oqKÃ~XÑÉóÚƒ®‰#Cvk™¥Øša/:tÕDœ¤Ø=(ç-®Ìà;Ë2…{cZV®º¾Qå´LÌ]}ñŠ&<›ªêB#“Ê¤Å²½Ÿ]8Jh“WoYÓõ«>D”Xp‚:ˆìöK\ÍQlûÓşNİ¹¾œ•Ã—Â¦1«21Á	zmîR[6®àìXNg#é1îÖ5ö§¼Ìx¥w]ëhö_™Mîe%h”×&äÑh ‰i<`‡òÎÄ’İM|@â ÙK†€8½NÂ«7ĞÔ¾sÁ¥ãg5?îˆºuë<…¢fE‹³™t¨îÉ”Ø£ºó	ğ»~jéSÛ¦í÷èm“´/¸ÜÇ­È„/7ô÷ºV©Tø
-&¢M˜­ˆªGäN¦á÷Bğ#e…û\Q°ú
-9Üì™u®*9½TxÅ ½ç7ô-j .Üæ3M¯úæ9q-—y¨‰-
-'©|š¡É\¾OI~? /I.H(x¥I¢£ä;“B¿¹å¯ •JG¯ÿOypÖïeŞ¨@I`E³Ç9Ã²ùØ):U6’”<P¸Ys„+wÆ:b®_Í\HZœLŠ5Á`÷±„xö°JR‹¿:Rİ÷À{A!òÕÚıW6G¤MAUşƒ$.)XĞ}T¥h:‹ÃŒºrÿ4MÑDÜñ<˜ê•ÀîÊë^¨>wI?g¸lJÒÀPŠŒ!®.W{Wü"rÌ«?–$6ƒı,_ ¤:ª²ó·„5. w‹§
-:ëØË½ µ‘ ˜äÉ©éen +®ĞˆeÆW¡ÏR*7-Q+î¬KüÒÃ˜»+¿Oât¾Çdsˆ‚ "•¦I <–ŞÊz®3/Œv	cÈDüú)Ö¹½‹{F£¸ÈérÃ Gb
-û~ª(Ø]ÊnÅ×~«'O!+6X5¡¦/Xãá²XºqµF)o÷\Ñœ¹Ú|>ğ øÒğóTª^dÚÌ€iˆ„$¶»OÅïeYXàöYºüd‹%u Äëâ«îWØö†<+áGfÃ<éü›D£ã¶şÎ3@?õrº‚Ù×²˜ó¤¹oké'§®Ñı)ü›ÄØöÑü«ô)æğËñàMü½CüüÙš]×ƒ/F
-½¸CxÙ³%*š¶+ º•ÓMSK–rbÿ{`jCÿX¼õ–alÎ4¥ü’)º”Pqˆ¢E¯ I!¤0¬º’7Û“tÃê%·Âµ‹àûsaŞ,¬YèâÏùía}ŞI`´ÌL“I &¤|coÎö?~>HQÊ<­Wß?ˆÔÓ»ÂÀñL39k¸âZ‚;^¤ÔãÑëµÕ!…R«—3`’áâCÜß×ÖÅíÊÒ.qãS†¯)z$|K^eªydÀÒ>!ïşy©ƒdî6®~Âí<À,ÉST2ø{VP¬Õô¤–Ë*$ùÄaŞ	˜ìWœt§ÆbŒtãëá½Vƒ~#™^Ô—ø‡4æY›¦´S÷,^ÄïÿæÍ‰Šísj’š¿ „	œ•&:ÉX€£’İ¢ Õ¸3Ã<ª¼$fçÕyulÕÈ¼8uk¾æ‘Ïíùa”¬?ı:ôW‹„ø&`¯£º™ˆÖ%¿4ø…âé<Ïußiuš\ô1Ê°Û„ÑL$‚bñy´0~—V­Òö u	8y¾D~TÀÓ½Li¢½/ÔòPˆƒËL6S¥"ÏïÖÉÎÜë˜ı¦	¥=î %c³Õ÷OÃL5Ş½yuq,l
-§¹¥†r}Ñ
-4¦æsÿ"×ò¤äg7D3cÄ’ÅßúâÈ»/-¶Où˜8·"ç=+´Ù–ñqœ›W’‹ò6PH˜ü‚3b¿Ã|ªÜîº<ˆQ–ecÕæ–="Ç§C["Èsvt¼w\-Òí,ÉáË	'…PKlvğ@ø­?SyJàe«:nˆÌŒ'ç2Ø16;û÷ğŸ+¸•z‹±7÷W#H¥».€UpX_×%·{n‰ğÜ‹v(De ıÉÉàv¸\Y®~>sP„èùà^¯zt?åùH•ñrÊÇ–?|l,G@}™^u¼Wµu@ i}ÄÈ‰½ı^-,°ÔŒ¹ãÄàÜ¹Û&É`x³§äÚ»<x/HİdÊæT·6Xaš_£qÌ³¯êq€Í2IúèĞ†ÜIBİ–}mF¼z¶¥Pd³uI/5DÕï˜3¿n­¼¦4qa9ªœ°kjØŸiGsj³yTb9÷,óÓ¼ó²úiƒ"oy¼²ŞÀO½9Î(eñÓƒ9¹¨˜H;Šò-[*
-²5[=½ü]Ø.\±ˆÛbÒnë€Ã…,H,°XZ„ ¸@¹i¤)•¸1a³Y&İØyT€³öÿu”Z¯µÅKÔ»ì
-Çõvù¢8'nÄÆc³¨ˆvü¼sX‹l‹óL=Y (1‘-ö›ûZö”xßÌ–€S³Ì¶ò¶
-ƒs>¯e ÏàŠ{Ê±MvøfÕ<Â½ÍúxÒÛé‘Û¦™ÑÕ6 &I˜m¿Áİ¯­ë¦ wË!ï‚æ[¾‹ë‡òDNHg2ç9e»'dxNpJ!Ñü}¹/Ù	¤5¹˜ylNl¾‚@,ĞÏïêxãï-qúäÁ~>íFc”ş÷äÏ»ı€ÃSbƒ9RUà[ğ’*MƒÅ ÷¤—BÅ©·‘è]ö„êş¸±3ï8`°tŠã€™•ö@&sH©3ŸzKï]üêÛv—”†6¹¬H¼ıâÜòNÙ¾Z‘OÕWp‹"HaK³}Èg	<ùó¸Ş,M×\”ˆ¾bËC„Åv´£÷:(ÈSĞ+vPXÙ")#ÎHÛˆEqˆ@YŞûÉ~¡;“SµÎ¥'€"eQçÛlQ²ˆ™¡­ñiª˜fCŸhW…GiyGş[hÈ¸Oî^âh2«ÒÃ(¨ÑvUà·÷M7R?´>RbËP-'üÄsfX¸Š¾1X ûF^“s
-æ@tÌg«Ú1õµãÏğš9r
-ÿƒ¦?gY¼$‹ÌQÏŸI G©`äJmzúÆfîà•oX­Ë†®—Aæˆ‚Ş€´Çùc·±ÒH©ÒAp”–-ae_O8&Ä¦PŸÿß Ì»*½Ÿcõûr2Ef‘$ŸT³ïå€·÷á¹Ë]G%ÂX~Õı ÇO»á@ƒå^i±DjRÚ¥£ÃÇqxø7ËS[Z‚Ao’9j»)úAÊ  Â({òò6È²İ´^Ğâ5&ıóºie2®&¾ÚH“Ù¯©•<ƒ˜XVz™%
-PHæ*ÿê·+û™dk ­—¨ìŞq›~é‹ÚX2A
-ÊE2:B>ãdaß‘lxŠê-Ş¤"¬É2Ò—ªS±˜!qŠ·k‰<@ó‡ê,mª;“ÇËOx´æ²6—ç˜òóÉW»:¤{—şş(ÔSä6ãËtá¢u2U	ªhjbª¸2{]Hv¹rõ’©™uõ#áq')YÜB´A€«¶c}Ãœ|W³UE±4Ó,ÏşvE“ä`±Êú!ßiçlÂÁĞB¼»ï¥
-6F­¨Ğä†¢[ÃûwLßÖŸ²o-ÇA\Î}êO®z`„‡7:/q1ÕénÒÊë¾y¼"ŠÊP®ß‹İ¿³ŠNGç Tï±yÿÕIL`.ïGÒ 7’s)"¼IÂ¥X,¡Y 5;cGM4İåô’hº@râÓEe<\@©}ÎÄ3è1®t	ò‰•b!)}%TyL€<Ü;HÕÜˆ6÷ÑypÇ Ò–Ú”¼HÍW­UN,ûãC&ÃÂW›´ø‡8}QE-}{*èHcõ|*µjéïMœŒlÏŸíó3fC(»'¨6lÕö‰i…Œw/¶gÄ—¸GÙQV|R?èüìp7(÷zª€g+ôşÄ,ëNè4¦T,%¾cÁW}ÀB™3Åy8Î‚‚•XV¥rÄ=¯›ÏÂS‘1©w;ŸÁ;Ü4´`:™ÖÄ>,ªlåNÔ˜Ë-ò/©Iù-»áEŒëI7µØg«ìuäv;fIËÿ˜°Êw™oHi2—¾ò@¶½:NWCûúÉ¤øPEÙÂO¢ÒÕ¡áWÅ¸Á	úä÷ÔÎù‚Í)Öƒã(şÕ©KÕÀ“§Mgˆ/6=_¶ü[}¿íTA–/Mìh`×²&w#°qäsø,ìÌ“<soD÷(ï~ôßÂ~é¤ÿ‹§ˆ3·…Ê|ikì¢Õ¿Çï“†5~ákÏ'[¬13;£
-ÄË)Q^ZÁÆ¬P¥¬ßt¬+³?úSyÁqH]7¿É2xòP£R”âÒÈÁ2‡c~¢ÿcéCßÕDeF²ºÊÎõÈÔ [û°–÷—øJ_‘ÌµĞ¥t“KhKU>„¦ §$ÕW·º^[³tcÕÅlbğ¼_Ó»^ïqä1ot™Ôp\‘~ebß"‰È×U{˜e:s
-œI®&~/jÅğT%ıG‰_+œÙ›ÎÕó#¡‰ğ=y`ÒøMå_Çx“ğ+äıòq÷2±ÙXñšÖe.|EG32§BNG"gËb"z#p
-nnÓ°à6-ªû€á'eò®ÊAælKÏuU]š…‚ÕMRód¶b§õ(wêaÀXòX÷şy\ÓL¥=Á#ù#öù‡0ß Û¯s;BHÛÁ:’)S«9QÅ}¸ŞÀ?`¥İMõ	|¬+Ğc47Ù³+¸WŠ´¦•°íŸkHö«å›äWÔö¯Í²ğê_’Ø‘;Í—¹ßèHBüŸÚ×OæÉõÇ¿îö)É¼…a‡ø»\B6\ÛL
-nĞ„‚V´dRÉ=ÎæGŸ_…¨¹,pº¼NN•ıv}t„åÌ şykK'¿(oºøâœöº[¯$A Õb™ÔSª”‚Ü§ı{oz"¯¿VT+àöÒDh|¡@/Ï8Ë#^³¼âi&‰nv\8ÆSlíÜ(qùMÛÜµ_‰¨a„Kà/Hú¶XšóÔqİ|ğƒÓğD›Z¼ÏÚ‹İŒhIˆ,Üb ëÌó5'ºÎê¡¬|ãhM‚Ssüœ÷ÂLg-L¡r]GÀ%ı?‚)e#â“fPÕ‰èÜªH“$¤7+$hŒà€Ñ¤Aø3{Ëáç®@Á™açï Rë0hk¾5Ü&‡3ŒèŸ¸"‹ªz_ïøÁÔö%cáà¼š–{÷Äæ€a¦ª—ĞûøÓæÂ¢õY¬:æ•‘È«çnÃ©ªWãZÍè‰]Õê‹>Ÿœ@íçâİ­,< Ë>¶›¯bÙ)äœwù	y¨Ø¨uäşUºkˆÂf¿‰eõ¬ÁÅ	¾Ëê¬âMßä8êÚ„™n«’şÿ¢r“Æ»~ˆ¢øóŒ‘Ï‘HíÎ¶/b£.‰ƒ*âd~Ÿ°«µôşg;~ÕóŸˆQ¿\:J g²¤ª°)y•Äsy~Ï7»ÖÑTËí1YÕTX8ş„ú³ë¤¦t 7_†´ÀæPâMEÆ_¥ÿÄÔµàÈu¥¸?ê`ƒ}’X»4óyZRÒ0)^öùÆ¡óÆ5£3ã.B&à‚ ¹¸¡Ê¬Ù±<léQ‚ÕTğT[J1“=şQ@¸G9# ‰#ttYpyø
-Cqc¬í¾: íÔ>’©ãW8Â­IBå­‚ó†Ğ„$MÿÄÌâaÀRâlànˆÏìJ˜Æ¡mö±J½	İêóüu¹oCdIÍ¡ò,=(¨2Ûk¨RÒ"»çW'ùAöâQ–ãÕjJÄöËK‚™ Vê#¡=$	 !{¿wåf 4D– >§›İ,üşz2r'Îå‰†ì†9¯u7Œ*!•îÂéGÎ#)·÷@JjRW|B}gÀÊB¤ ÛÈ"MX™L=Î­ßoK»Ç˜’&(oÎÉù×Lñ6äm½VÆ^:ä‹-¥’;Õ59àÉB°·ĞşiwÀ•\Î¨<ë3º®ZF:èn|p°ı¢–”n»àÆ…¢÷Rõ@Šé¸ğM!ÅjŞØ¨¿' îÏNÑ5„0} “ğöjY”å~ÖîqLÏo]±`mD“Ù@ù*˜¯úó &iÊÇq1¿Yš¬o{ªí9í@$,ar˜C‰ØlŠ*5u1 ydÍ,Kà&¼]²s<8ùöü O@õbÉX/É!XiyÉ¢=ôÀt>´JXªI‹°™m|¡Ÿ„õOya|›Ê$#4“’{œè—x[K,²O«U¤k7ú…QË´ÆÛô@k1Ú§o¯n>è!Éqã?gPZ½E!Åy» Í3ıÂK#£D I‚µ6´mãó\zwZñ.îü_\1@äDü_¤4Aäã¹,€İ­à6•HQV=	„~ôŠÎ$ë8’®×„‘MèvDJ´S‡™ÍU’+Ø‚†fÖÄAêÿîA}Â¸:gIähã‡X9ÉB)nùãªç†!Û&»m®@ÏV/¬bõ‰Îà{†	1²I3"´ı«Ôò¦‚\Æ¦•¦/ŸÂµmÀ?|:)´KfgAÁ¶tlù®TìŠ…â¨R^Ù™–Êİ)¯ŞÙ‰š×Ö|e
-…úl&IzjbÎq¾{Å[`_àÙYüDíÁ|lnÀW(zÛ+Éæ~'«Qh¨¼õªq+åşÃwãŠ:M5•p”àK02ÙéïC±ò„/w À´aç8oÉ@úêJ2ç}?|mÇ¡g€fõ‘ÆFkš-àÃÏŠ`T¯ú +VºøMƒWC©¡8æÔNë0Ï¯½Æ  Éš˜ÇÃD£.vKFhä&ïŠ2úßÚ²Dg6l>v*C_(÷ÿİTyÕ§yµ
-5TÕ_V÷Şùx÷¸	ÑÄÏó[ÁîÈXÈ6Gfäé{šäxy´0u¢,Ÿáh¿‰®µ~š}à¿Æ¾ßM¿üRáîT œËŒ¶Z4@D*©½ÚiRL „Š6ıÕÌ:¸ëäÍ—Òx6
-¶í¾/îÉ•HÈß{¬¦„Ú`‹¥œ
-O5A
-<Ãz|e‘ap\ŸÑ¨QŒi
-tã0óX“X&d÷@½€ğâ7Åà­+v¡vxÏ±³(~”ä52YÃ×‚ªwj( Oáì©Ì$ë&şó8	:ŒÜ>Êûh^;2KÎ³&NßT”q:–”!çšŠùşt]—>Ë2/5Öî~$.ÏÉÿJò¿“Í;˜€¹ÅÑ\^6üÃ€wŠëRºP›’©7r }“¤ö­ˆ´lC×Y&¼«è§r\[ÑQ€:R…G‹qj2$pÂ¾lÁ9ñ„ß°ñ1s™Dós´<.ş£c_íó*GZ“p_ú5eRÄ»›ñÈaåtóAn_ÜÛÀyéÃzW[§pùáê×t¯ã;M}ò£±w„ošê[Lll[¾9{6|xï{1S(*F§‚‰BnQp—ß|ıÓø«`ßÑf€5Û`'nAwÜŒBº˜Èøµ2¥ª…Bê½/»Şã{]/ÂŠu‡’Øi1ˆ!–şşZüpœWI…tSê.š0„Ñ¾ƒÂl>™jÆ½Ÿiı[~ÂŒ 5q®7šİî”=Åhà·éŸ:aÆ€‹…ÏÑÃ;7s:ì›ÒpÊl˜ Š¥#"ŠÀâÈøúü#u	;Î˜‡Àü/NfâÛ")!Ü‚¨®Â+Şi{jWS6òğ™İarhğ„ëh|sÍÑ%	uÅ\ŸKˆ4! ,X“¶/²h¤Ÿ›Q4€¯ûK€dªzP•ch
-)¿!­r!ãèPûè%Z!yU$6dü(Ñ,âõ	&º¤ÁÓ±06–6œVÑYóƒ=‹Ö1Ô‡İ˜µ|M|cI‹ˆM…’a_f’$s_|s÷È/ZP^ö¡+Â
-ı™şCSş™%~4ÚŞÀu¡NT)ÊP—?×A#ñÿ¹4!¢»ŞÃGßxƒbg
-wB'¨ÄÙF5bô(&Œ„¼ztœœkR#œ½Âtd(‰®9Ø‰/=H “µxøG9¯€MÇ¥©gbŞúóõ¦›’ ğQ‰C±âpÔş}‰ŠC¯qV)Bwá!H¨‘XèV?ü(FO¿%fqÛŸ)ÀDíW;%›ì¯»Äõf sWDd¨ÇÊÌëBöÀ]Â~xgj_l +Y^M¶mOòK·V@ù€ËaFC0XÅ–Wr-í
-ƒ¯_ìƒÙ1upO!¹&=üè.G³ôŸÈªœpqsÜ™±f›Ö”	óú²5|UyÓºPâ)mYh´]	f7v5µ¨²ªµ0X‘vf¥ä.İ.ˆ»!CâÔ!ÄãkS{ŒØ±ô¡8'!N‹è‚´yÙEç‹sDbºø^J¢Ip³…OŒıäœªèÈñÿ(šÈL_Şh‘Bg\Eß`$kDE{[çOYTúj]Ãñ1°š"MsPÒ™¡Jj[)‹Œ,n~5?1H­v¹šnI‡nß•A¶ÂÔ‡Òù¿îK–Ìxg@u‡P»£fŠÃ^æ¦*’šê‘“<}-7€hIy‚ÓŞ®œaùÖZ’lF?ÏuèĞ‡®ÑÄ½
-®ş‡IO¤bzàW4âùmï×´“ZY8¬‹Ô±éõ®©ÍøÛ\tşÆœq%¯Ï‚§èÛ¥|p»R‹ˆdƒÄXÌ™rù«/ë4*ËP]Ç!\G¢„1›HÌ±—D*!~ŒjÈA‘€óÜOxº½äIP×ŞoH½“oë¦¼ŠÌ‘KÌŸ
-»å*j6c¾0NP:’ÓY3°KçnîPÍˆ9FUJîp·äñ³hÚ”—A*¶©E„jğZşWV©„éÖXImÀFE÷£­”u­²w»Ù	Ü‚ıŞƒÁ­Íú ƒŞÚ(IİÔ”GÕö8?æ¡îî{~óÓ6 îˆoÕµ•¶ZG`t(§Sß•²ˆ&A¹½à”Á}×Ï_è¼¬¾ZD¤ª$˜ŒÕòÛø	íòuYûáˆ­“L—¢òÂ;ËóÈ]öóíUë´6¯µíEBj•µ l€ÿÀ0–¡¡jÀi¸?‡Ÿ!ÂZîœÆîû‡ïÁš‹±gô`0 wëê»€}±ÒŒ?Ú¾$Jv`…¾X7Rğ#÷ĞİFÇ%|ÓºÛîtÅÃ x¶¨IlNq—î8(FYƒ/•îŠáÀ¦SÒ=°Ùº ²È*6xYnÉ†$è%kûŒOá4*ó|¹ï)h(ş9'K‡E›#,ĞÚO¸!+«
-ÒmÇFúSÁ½ÉÖ>±{é­—:ÿñÑ.v6 ÍbìczaõíV)·±—T¥ÜXI1ù0¿ú\ıƒqëévñ–Õ£æ  R2R£Â_B59«J:IƒÍİÓJiÚ%š¹ˆ¨vâà ]2œùƒëç¬ùï-&™/ñ_¿Zm%à…ë j›™'Ü;­Ì§Î–?÷R×‘Ù@†vaë=jQ4c´Àfñó™h¨›E_[4Ø=r` sÕg—Úƒñî$G	‡ÚÀº£oˆ÷ƒˆcÔí72ê6Gt¾Â³O¦]Åœı{š†£²×2ğc+!cK'Ú{pF®´ùÒfbœÊE¦FB=Th*Dàãî•ÇVÉ”Bf”î¤¹^Ê–‡n;u_½íPYœÜ·Òµ°f¦;U—“me[cdÆ¿v«¸» ¯ù5±¸qós…âÕ²‡úIÑQåXáDĞJ d@Naı=f;3êÅ‘wæÌSŠ¢¹™,C§ÌM>ÉŸ7¶q±ìôÈïÅÆî®kjsÜN$oXA½/œ^º6©1U¾‚|D{
-ø
-Õah˜M’â~³?ë‚“´Ãâ}ï1&8ªJ®ôI™Iõ—0S½^mbtüx¾„Y´?WVv:äşhA¶Ê9[ÕæÑëµm¨í	Ôé•şİ{0Ş;ø8R…ûÃ}l«4
-ş™ús¥ÛœîS&­PboüQ¬{Ïø’³W¦=ºÁ´–'ª4í{	Âûâ¢å³«JÜõ3ñó¯
-¼šÀ‡9¯’—Õ!L‘®¬å¶,ªz¨f(I¯4xñ¸F@é¢2Œlç^®ÓšËIÒ#¿“ö´= »à« š±íÃ:Íò@VSì£ÚÃq‰‚¥î‰­ö÷¸ªsñ|ÈhzFVYõfI0‹ã?ş:JøÃ4™ÙØìÄo¶Ü_g¬e7gÖ—ŒÑÅu²“¥Y°Ìk3g»;Ç{ìKB?Ä”>XS˜Şlq> Ô]«mò‘°öèÙO¢†Ò×ŒéÚ¸ÖŒä@7`Î×Wë[×sI¦W  ş¢Ihf‰'øÊYq|+zlZpzÃ»,4’1‚ñÈr(í³šÉáÓÔ>Sáx¤‡J¦cG.3öË.ÓkƒØÑË;’‘6»«ÉE³m¢ÑYøÿ¬hXŒgcš³Ê~yğ‚H“ó‘ûĞz§?fqN´8\ªòÚù1H8æ“ÎçVZõ+
-áË²cz;úË±Sõ¸²/U5óè¤ Ê<°xŞu Rgéf™}ë®RØd Ù7]üïõFàD¦?fô­´ÚñÌI¢a]«+«©søpÇx·d|ÀƒÛä#tU.Ü®‚l[¨47@ú8s—7äìËv&ŸeÏÖ°´ Õ6€t6¯Nº±¸+^Å3LÇ#óxûv…Ê “eƒju13p¶ı"åáy&ä¿ğ«u]H4K•ÚíF4*KM6¨Ãú^2/­ÅP›^“ìĞ|>Œ°w+G˜‚ŒNå	Õ%U÷C‚ÁF‡°M…î²gOÑÑ\FÂU„%ŠğŒ¸kkº÷!4(—ôiª7H¾„øœ†¨õÛñèµ•ÿj–‹—à<Äxâ!§E{ƒ¶—ÇcmíğWÁÍ¿Œ3úšcŒ˜5Cİ¡¥Ü•Ï‚ ‰¥Ò¶3XÖ=¸É”Ú¶òlwÈÈg™MîÃ
-S±(ehX­w¼4cäÖc¸#Å0â£Ç¿îÏ`¼<T£Å]w@aÎn²ö¯ïè¿«Ÿ1(šƒ?AK‘ª?rû ïùmO
-pKË×œZÆ‘P‰„#B%¼¿}óóuØïYq·¸J½d—×Â¹”B`UM‚Üû6gT©*˜¢ÀrD¼äÃrnî-;AÎ¨	mNuäü E)ê"=1í»+ïwÚ+Kh-ÒÂ%6ÈE4æÜøµÖ†‘ÁF-×Áş‚êƒ¿5 @xs°«Ë‚Ñ×ü›µìY£ŸXJï ñÚRÓ§2µ§kÙ“½¾Ìd•Š:xŞO(kÊËq´Ì¤›ÃlyÀ]Áÿ—ºİtLÀ›ó~šmyËaÕCU¾Òw™XlT¹`õµ8lh®Ä÷ÛùGa<mn‚,cë÷µĞ ^€Ã—ë2Å@¿â§´â¿w[åîJ4È)_ºÑ¦EşA¤3&=_>ˆbî”-J&òP²oQÑ'r>²!Ğ‰Æƒ.8ÿàÒ†Y­	ãbÀó€'™œe=gŒ,mo€Fánn1u²ó³-å-Á¸?K]Ì&Â—‚ùÎ$ÌZÅ&õ+£ºËg´çù‰ÛEr¢ÌÄ®³Ñ?‰±*¤ÌşPÎx&ÃÑãDtLe´_&h¾Å/5uPíòõX#=8û¢ï¯ûâÚsT°Â±?…bU›•cÉ3Ê³˜›2‰£Ò½ÛšR(§XÊÊæv—Ìı¾JüGÖÆ6ÛËÓ|Î1`—Ö†	¬Ó‡¢ºWl¬â†åë&ı2Ÿ0= ‚—‹‚ñâØ—×X¿C¦<¨ï²uÓç4¡:¢†lÈïÅƒû¤“SyÖ÷9‘ı2äY&ìF®ü¢hÖ²Hr½ÜßY‡Àé†¨:x¤6ÿMDYË/°sÊ‘¡¡ü-·m»µÍ|²•\İ¶œIAhBXûË¾À*Í‹s$tè{ı#¶IÜqÂ†q…«œ' '}EN”'²üy°™»¶ÁÇZƒ~f—/GE‘7$4íšN1 aªÀŒb¬4¦‚#ÔzÈŸ$ãì‚'¡p`Ğjİb–Cšì;¦¦y«Œ§hql–Ü«£‰Po ŒRĞİOòƒ0ó'°iºk6Ğª¨(ïËåäÛ2‰‘%;Äï›T–“.äéUP®‹ç¿Ÿd¢ëjUaùT^ôÆ±Ÿ®ì„æ¢
-›Ğ[¿*ü+€5Ş÷Áæ3zL©ŒÊœLğ¸WêMZ;J‰~„§vJUr¬uuVˆµŠÑƒæ¨Ÿ„÷²èSÁ.Ş	@²ÁÇıE'——áÄ-ËMÌÙùI~#âd{Dävˆ}p ¢ôÑIØŸ2“I0å'OR'd&36dUMøã¯~–íµ‰ŠO3ºÊ¨"=ÎT¸#ÉNIÛ_ÁË+á½¦¥¢Wí‰ğ¢MN×¡ŞM,š¸ç¥D*ÍRO9öJGæ=Æ¶8°÷G ]<Œ‹„€÷çO­rÕØcL®!ö~a|›òÜâD¾p¦æ—jsÿ`Í%Î¹¢4Ÿ*î0Îíò[ß²mëïízä¹aÏŠÎBÖÔÂªZ0ÅîÛ®mØ¢i„“Õ%]û »:7Â”p……›Ïa¶£íCU%fÕg~R[	c¢"ówœeÇ¬¸Ûm^JKz$C»'VİÎ¢ÊT÷îV$Zõ„-©Øô1q^^0"g¸¾^ğnÈdG4Z¿fÂ²DÌ¹7Ê^[fœwîF>Z°$df…Ä‡ôõ©›Ûp.ÁyzèåWì#k€ÀpS
-å~v/hİğH…<¿_ÔDÎK›ÁéBwŸkÕ¨Ü«ınM‘‹Qõxiìîó·³‡†aĞß”Ouõ¡½W»+T³ÛÅ3ÏE Û^0¦áLm:N d include/config/NO_HZ_FULL) \
-    $(wildcard include/config/POSIX_CPUTIMERS) \
-    $(wildcard include/config/POSIX_CPU_TIMERS_TASK_WORK) \
-    $(wildcard include/config/KEYS) \
-    $(wildcard include/config/SYSVIPC) \
-    $(wildcard include/config/DETECT_HUNG_TASK) \
-    $(wildcard include/config/IO_URING) \
-    $(wildcard include/config/AUDIT) \
-    $(wildcard include/config/AUDITSYSCALL) \
-    $(wildcard include/config/DEBUG_MUTEXES) \
-    $(wildcard include/config/TRACE_IRQFLAGS) \
-    $(wildcard include/config/UBSAN) \
-    $(wildcard include/config/UBSAN_TRAP) \
-    $(wildcard include/config/COMPACTION) \
-    $(wildcard include/config/TASK_XACCT) \
-    $(wildcard include/config/CPUSETS) \
-    $(wildcard include/config/X86_CPU_RESCTRL) \
-    $(wildcard include/config/FUTEX) \
-    $(wildcard include/config/COMPAT) \
-    $(wildcard include/config/PERF_EVENTS) \
-    $(wildcard include/config/DEBUG_PREEMPT) \
-    $(wildcard include/config/NUMA) \
-    $(wildcard include/config/NUMA_BALANCING) \
-    $(wildcard include/config/RSEQ) \
-    $(wildcard include/config/TASK_DELAY_ACCT) \
-    $(wildcard include/config/FAULT_INJECTION) \
-    $(wildcard include/config/LATENCYTOP) \
-    $(wildcard include/config/KUNIT) \
-    $(wildcard include/config/FUNCTION_GRAPH_TRACER) \
-    $(wildcard include/config/UPROBES) \
-    $(wildcard include/config/BCACHE) \
-    $(wildcard include/config/VMAP_STACK) \
-    $(wildcard include/config/LIVEPATCH) \
-    $(wildcard include/config/SECURITY) \
-    $(wildcard include/config/BPF_SYSCALL) \
-    $(wildcard include/config/GCC_PLUGIN_STACKLEAK) \
-    $(wildcard include/config/X86_MCE) \
-    $(wildcard include/config/KRETPROBES) \
-    $(wildcard include/config/RETHOOK) \
-    $(wildcard include/config/ARCH_HAS_PARANOID_L1D_FLUSH) \
-    $(wildcard include/config/ARCH_TASK_STRUCT_ON_STACK) \
-    $(wildcard include/config/PREEMPTION) \
-    $(wildcard include/config/DEBUG_RSEQ) \
-  include/uapi/linux/sched.h \
-  arch/x86/include/asm/current.h \
-  arch/x86/include/asm/percpu.h \
-    $(wildcard include/config/X86_64_SMP) \
-  include/asm-generic/percpu.h \
-    $(wildcard include/config/HAVE_SETUP_PER_CPU_AREA) \
-  include/linux/threads.h \
-    $(wildcard include/config/BASE_SMALL) \
-  include/linux/percpu-defs.h \
-    $(wildcard include/config/DEBUG_FORCE_WEAK_PER_CPU) \
-    $(wildcard include/config/AMD_MEM_ENCRYPT) \
-  include/linux/pid.h \
-  include/linux/rculist.h \
-    $(wildcard include/config/PROVE_RCU_LIST) \
-  include/linux/list.h \
-    $(wildcard include/config/DEBUG_LIST) \
-  include/linux/poison.h \
-    $(wildcard include/config/ILLEGAL_POINTER_VALUE) \
-  include/linux/rcupdate.h \
-    $(wildcard include/config/TINY_RCU) \
-    $(wildcard include/config/RCU_STRICT_GRACE_PERIOD) \
-    $(wildcard include/config/TASKS_RCU_GENERIC) \
-    $(wildcard include/config/RCU_STALL_COMMON) \
-    $(wildcard include/config/RCU_NOCB_CPU) \
-    $(wildcard include/config/TASKS_RUDE_RCU) \
-    $(wildcard include/config/TREE_RCU) \
-    $(wildcard include/config/DEBUG_OBJECTS_RCU_HEAD) \
-    $(wildcard include/config/HOTPLUG_CPU) \
-    $(wildcard include/config/ARCH_WEAK_RELEASE_ACQUIRE) \
-  include/linux/irqflags.h \
-    $(wildcard include/config/IRQSOFF_TRACER) \
- 
+		 * Current cpu always has its clock updated on entrance to
+		 * pick_next_task(). If the current cpu is not the core,
+		 * the core may also have been updated above.
+		 */
+		if (i != cpu && (rq_i != rq->core || !core_clock_updated))
+			update_rq_clock(rq_i);
+
+		p = rq_i->core_pick = pick_task(rq_i);
+		if (!max || prio_less(max, p, fi_before))
+			max = p;
+	}
+
+	cookie = rq->core->core_cookie = max->core_cookie;
+
+	/*
+	 * For each thread: try and find a runnable task that matches @max or
+	 * force idle.
+	 */
+	for_each_cpu(i, smt_mask) {
+		rq_i = cpu_rq(i);
+		p = rq_i->core_pick;
+
+		if (!cookie_equals(p, cookie)) {
+			p = NULL;
+			if (cookie)
+				p = sched_core_find(rq_i, cookie);
+			if (!p)
+				p = idle_sched_class.pick_task(rq_i);
+		}
+
+		rq_i->core_pick = p;
+
+		if (p == rq_i->idle) {
+			if (rq_i->nr_running) {
+				rq->core->core_forceidle_count++;
+				if (!fi_before)
+					rq->core->core_forceidle_seq++;
+			}
+		} else {
+			occ++;
+		}
+	}
+
+	if (schedstat_enabled() && rq->core->core_forceidle_count) {
+		rq->core->core_forceidle_start = rq_clock(rq->core);
+		rq->core->core_forceidle_occupation = occ;
+	}
+
+	rq->core->core_pick_seq = rq->core->core_task_seq;
+	next = rq->core_pick;
+	rq->core_sched_seq = rq->core->core_pick_seq;
+
+	/* Something should have been selected for current CPU */
+	WARN_ON_ONCE(!next);
+
+	/*
+	 * Reschedule siblings
+	 *
+	 * NOTE: L1TF -- at this point we're no longer running the old task and
+	 * sending an IPI (below) ensures the sibling will no longer be running
+	 * their task. This ensures there is no inter-sibling overlap between
+	 * non-matching user state.
+	 */
+	for_each_cpu(i, smt_mask) {
+		rq_i = cpu_rq(i);
+
+		/*
+		 * An online sibling might have gone offline before a task
+		 * could be picked for it, or it might be offline but later
+		 * happen to come online, but its too late and nothing was
+		 * picked for it.  That's Ok - it will pick tasks for itself,
+		 * so ignore it.
+		 */
+		if (!rq_i->core_pick)
+			continue;
+
+		/*
+		 * Update for new !FI->FI transitions, or if continuing to be in !FI:
+		 * fi_before     fi      update?
+		 *  0            0       1
+		 *  0            1       1
+		 *  1            0       1
+		 *  1            1       0
+		 */
+		if (!(fi_before && rq->core->core_forceidle_count))
+			task_vruntime_update(rq_i, rq_i->core_pick, !!rq->core->core_forceidle_count);
+
+		rq_i->core_pick->core_occupation = occ;
+
+		if (i == cpu) {
+			rq_i->core_pick = NULL;
+			continue;
+		}
+
+		/* Did we break L1TF mitigation requirements? */
+		WARN_ON_ONCE(!cookie_match(next, rq_i->core_pick));
+
+		if (rq_i->curr == rq_i->core_pick) {
+			rq_i->core_pick = NULL;
+			continue;
+		}
+
+		resched_curr(rq_i);
+	}
+
+out_set_next:
+	set_next_task(rq, next);
+out:
+	if (rq->core->core_forceidle_count && next == rq->idle)
+		queue_core_balance(rq);
+
+	return next;
+}
+
+static bool try_steal_cookie(int this, int that)
+{
+	struct rq *dst = cpu_rq(this), *src = cpu_rq(that);
+	struct task_struct *p;
+	unsigned long cookie;
+	bool success = false;
+
+	local_irq_disable();
+	double_rq_lock(dst, src);
+
+	cookie = dst->core->core_cookie;
+	if (!cookie)
+		goto unlock;
+
+	if (dst->curr != dst->idle)
+		goto unlock;
+
+	p = sched_core_find(src, cookie);
+	if (p == src->idle)
+		goto unlock;
+
+	do {
+		if (p == src->core_pick || p == src->curr)
+			goto next;
+
+		if (!is_cpu_allowed(p, this))
+			goto next;
+
+		if (p->core_occupation > dst->idle->core_occupation)
+			goto next;
+
+		deactivate_task(src, p, 0);
+		set_task_cpu(p, this);
+		activate_task(dst, p, 0);
+
+		resched_curr(dst);
+
+		success = true;
+		break;
+
+next:
+		p = sched_core_next(p, cookie);
+	} while (p);
+
+unlock:
+	double_rq_unlock(dst, src);
+	local_irq_enable();
+
+	return success;
+}
+
+static bool steal_cookie_task(int cpu, struct sched_domain *sd)
+{
+	int i;
+
+	for_each_cpu_wrap(i, sched_domain_span(sd), cpu) {
+		if (i == cpu)
+			continue;
+
+		if (need_resched())
+			break;
+
+		if (try_steal_cookie(cpu, i))
+			return true;
+	}
+
+	return false;
+}
+
+static void sched_core_balance(struct rq *rq)
+{
+	struct sched_domain *sd;
+	int cpu = cpu_of(rq);
+
+	preempt_disable();
+	rcu_read_lock();
+	raw_spin_rq_unlock_irq(rq);
+	for_each_domain(cpu, sd) {
+		if (need_resched())
+			break;
+
+		if (steal_cookie_task(cpu, sd))
+			break;
+	}
+	raw_spin_rq_lock_irq(rq);
+	rcu_read_unlock();
+	preempt_enable();
+}
+
+static DEFINE_PER_CPU(struct callback_head, core_balance_head);
+
+static void queue_core_balance(struct rq *rq)
+{
+	if (!sched_core_enabled(rq))
+		return;
+
+	if (!rq->core->core_cookie)
+		return;
+
+	if (!rq->nr_running) /* not forced idle */
+		return;
+
+	queue_balance_callback(rq, &per_cpu(core_balance_head, rq->cpu), sched_core_balance);
+}
+
+static void sched_core_cpu_starting(unsigned int cpu)
+{
+	const struct cpumask *smt_mask = cpu_smt_mask(cpu);
+	struct rq *rq = cpu_rq(cpu), *core_rq = NULL;
+	unsigned long flags;
+	int t;
+
+	sched_core_lock(cpu, &flags);
+
+	WARN_ON_ONCE(rq->core != rq);
+
+	/* if we're the first, we'll be our own leader */
+	if (cpumask_weight(smt_mask) == 1)
+		goto unlock;
+
+	/* find the leader */
+	for_each_cpu(t, smt_mask) {
+		if (t == cpu)
+			continue;
+		rq = cpu_rq(t);
+		if (rq->core == rq) {
+			core_rq = rq;
+			break;
+		}
+	}
+
+	if (WARN_ON_ONCE(!core_rq)) /* whoopsie */
+		goto unlock;
+
+	/* install and validate core_rq */
+	for_each_cpu(t, smt_mask) {
+		rq = cpu_rq(t);
+
+		if (t == cpu)
+			rq->core = core_rq;
+
+		WARN_ON_ONCE(rq->core != core_rq);
+	}
+
+unlock:
+	sched_core_unlock(cpu, &flags);
+}
+
+static void sched_core_cpu_deactivate(unsigned int cpu)
+{
+	const struct cpumask *smt_mask = cpu_smt_mask(cpu);
+	struct rq *rq = cpu_rq(cpu), *core_rq = NULL;
+	unsigned long flags;
+	int t;
+
+	sched_core_lock(cpu, &flags);
+
+	/* if we're the last man standing, nothing to do */
+	if (cpumask_weight(smt_mask) == 1) {
+		WARN_ON_ONCE(rq->core != rq);
+		goto unlock;
+	}
+
+	/* if we're not the leader, nothing to do */
+	if (rq->core != rq)
+		goto unlock;
+
+	/* find a new leader */
+	for_each_cpu(t, smt_mask) {
+		if (t == cpu)
+			continue;
+		core_rq = cpu_rq(t);
+		break;
+	}
+
+	if (WARN_ON_ONCE(!core_rq)) /* impossible */
+		goto unlock;
+
+	/* copy the shared state to the new leader */
+	core_rq->core_task_seq             = rq->core_task_seq;
+	core_rq->core_pick_seq             = rq->core_pick_seq;
+	core_rq->core_cookie               = rq->core_cookie;
+	core_rq->core_forceidle_count      = rq->core_forceidle_count;
+	core_rq->core_forceidle_seq        = rq->core_forceidle_seq;
+	core_rq->core_forceidle_occupation = rq->core_forceidle_occupation;
+
+	/*
+	 * Accounting edge for forced idle is handled in pick_next_task().
+	 * Don't need another one here, since the hotplug thread shouldn't
+	 * have a cookie.
+	 */
+	core_rq->core_forceidle_start = 0;
+
+	/* install new leader */
+	for_each_cpu(t, smt_mask) {
+		rq = cpu_rq(t);
+		rq->core = core_rq;
+	}
+
+unlock:
+	sched_core_unlock(cpu, &flags);
+}
+
+static inline void sched_core_cpu_dying(unsigned int cpu)
+{
+	struct rq *rq = cpu_rq(cpu);
+
+	if (rq->core != rq)
+		rq->core = rq;
+}
+
+#else /* !CONFIG_SCHED_CORE */
+
+static inline void sched_core_cpu_starting(unsigned int cpu) {}
+static inline void sched_core_cpu_deactivate(unsigned int cpu) {}
+static inline void sched_core_cpu_dying(unsigned int cpu) {}
+
+static struct task_struct *
+pick_next_task(struct rq *rq, struct task_struct *prev, struct rq_flags *rf)
+{
+	return __pick_next_task(rq, prev, rf);
+}
+
+#endif /* CONFIG_SCHED_CORE */
+
+/*
+ * Constants for the sched_mode argument of __schedule().
+ *
+ * The mode argument allows RT enabled kernels to differentiate a
+ * preemption from blocking on an 'sleeping' spin/rwlock. Note that
+ * SM_MASK_PREEMPT for !RT has all bits set, which allows the compiler to
+ * optimize the AND operation out and just check for zero.
+ */
+#define SM_NONE			0x0
+#define SM_PREEMPT		0x1
+#define SM_RTLOCK_WAIT		0x2
+
+#ifndef CONFIG_PREEMPT_RT
+# define SM_MASK_PREEMPT	(~0U)
+#else
+# define SM_MASK_PREEMPT	SM_PREEMPT
+#endif
+
+/*
+ * __schedule() is the main scheduler function.
+ *
+ * The main means of driving the scheduler and thus entering this function are:
+ *
+ *   1. Explicit blocking: mutex, semaphore, waitqueue, etc.
+ *
+ *   2. TIF_NEED_RESCHED flag is checked on interrupt and userspace return
+ *      paths. For example, see arch/x86/entry_64.S.
+ *
+ *      To drive preemption between tasks, the scheduler sets the flag in timer
+ *      interrupt handler scheduler_tick().
+ *
+ *   3. Wakeups don't really cause entry into schedule(). They add a
+ *      task to the run-queue and that's it.
+ *
+ *      Now, if the new task added to the run-queue preempts the current
+ *      task, then the wakeup sets TIF_NEED_RESCHED and schedule() gets
+ *      called on the nearest possible occasion:
+ *
+ *       - If the kernel is preemptible (CONFIG_PREEMPTION=y):
+ *
+ *         - in syscall or exception context, at the next outmost
+ *           preempt_enable(). (this might be as soon as the wake_up()'s
+ *           spin_unlock()!)
+ *
+ *         - in IRQ context, return from interrupt-handler to
+ *           preemptible context
+ *
+ *       - If the kernel is not preemptible (CONFIG_PREEMPTION is not set)
+ *         then at the next:
+ *
+ *          - cond_resched() call
+ *          - explicit schedule() call
+ *          - return from syscall or exception to user-space
+ *          - return from interrupt-handler to user-space
+ *
+ * WARNING: must be called with preemption disabled!
+ */
+static void __sched notrace __schedule(unsigned int sched_mode)
+{
+	struct task_struct *prev, *next;
+	unsigned long *switch_count;
+	unsigned long prev_state;
+	struct rq_flags rf;
+	struct rq *rq;
+	int cpu;
+
+	cpu = smp_processor_id();
+	rq = cpu_rq(cpu);
+	prev = rq->curr;
+
+	schedule_debug(prev, !!sched_mode);
+
+	if (sched_feat(HRTICK) || sched_feat(HRTICK_DL))
+		hrtick_clear(rq);
+
+	local_irq_disable();
+	rcu_note_context_switch(!!sched_mode);
+
+	/*
+	 * Make sure that signal_pending_state()->signal_pending() below
+	 * can't be reordered with __set_current_state(TASK_INTERRUPTIBLE)
+	 * done by the caller to avoid the race with signal_wake_up():
+	 *
+	 * __set_current_state(@state)		signal_wake_up()
+	 * schedule()				  set_tsk_thread_flag(p, TIF_SIGPENDING)
+	 *					  wake_up_state(p, state)
+	 *   LOCK rq->lock			    LOCK p->pi_state
+	 *   smp_mb__after_spinlock()		    smp_mb__after_spinlock()
+	 *     if (signal_pending_state())	    if (p->state & @state)
+	 *
+	 * Also, the membarrier system call requires a full memory barrier
+	 * after coming from user-space, before storing to rq->curr.
+	 */
+	rq_lock(rq, &rf);
+	smp_mb__after_spinlock();
+
+	/* Promote REQ to ACT */
+	rq->clock_update_flags <<= 1;
+	update_rq_clock(rq);
+
+	switch_count = &prev->nivcsw;
+
+	/*
+	 * We must load prev->state once (task_struct::state is volatile), such
+	 * that:
+	 *
+	 *  - we form a control dependency vs deactivate_task() below.
+	 *  - ptrace_{,un}freeze_traced() can change ->state underneath us.
+	 */
+	prev_state = READ_ONCE(prev->__state);
+	if (!(sched_mode & SM_MASK_PREEMPT) && prev_state) {
+		if (signal_pending_state(prev_state, prev)) {
+			WRITE_ONCE(prev->__state, TASK_RUNNING);
+		} else {
+			prev->sched_contributes_to_load =
+				(prev_state & TASK_UNINTERRUPTIBLE) &&
+				!(prev_state & TASK_NOLOAD) &&
+				!(prev->flags & PF_FROZEN);
+
+			if (prev->sched_contributes_to_load)
+				rq->nr_uninterruptible++;
+
+			/*
+			 * __schedule()			ttwu()
+			 *   prev_state = prev->state;    if (p->on_rq && ...)
+			 *   if (prev_state)		    goto out;
+			 *     p->on_rq = 0;		  smp_acquire__after_ctrl_dep();
+			 *				  p->state = TASK_WAKING
+			 *
+			 * Where __schedule() and ttwu() have matching control dependencies.
+			 *
+			 * After this, schedule() must not care about p->state any more.
+			 */
+			deactivate_task(rq, prev, DEQUEUE_SLEEP | DEQUEUE_NOCLOCK);
+
+			if (prev->in_iowait) {
+				atomic_inc(&rq->nr_iowait);
+				delayacct_blkio_start();
+			}
+		}
+		switch_count = &prev->nvcsw;
+	}
+
+	next = pick_next_task(rq, prev, &rf);
+	clear_tsk_need_resched(prev);
+	clear_preempt_need_resched();
+#ifdef CONFIG_SCHED_DEBUG
+	rq->last_seen_need_resched_ns = 0;
+#endif
+
+	if (likely(prev != next)) {
+		rq->nr_switches++;
+		/*
+		 * RCU users of rcu_dereference(rq->curr) may not see
+		 * changes to task_struct made by pick_next_task().
+		 */
+		RCU_INIT_POINTER(rq->curr, next);
+		/*
+		 * The membarrier system call requires each architecture
+		 * to have a full memory barrier after updating
+		 * rq->curr, before returning to user-space.
+		 *
+		 * Here are the schemes providing that barrier on the
+		 * various architectures:
+		 * - mm ? switch_mm() : mmdrop() for x86, s390, sparc, PowerPC.
+		 *   switch_mm() rely on membarrier_arch_switch_mm() on PowerPC.
+		 * - finish_lock_switch() for weakly-ordered
+		 *   architectures where spin_unlock is a full barrier,
+		 * - switch_to() for arm64 (weakly-ordered, spin_unlock
+		 *   is a RELEASE barrier),
+		 */
+		++*switch_count;
+
+		migrate_disable_switch(rq, prev);
+		psi_sched_switch(prev, next, !task_on_rq_queued(prev));
+
+		trace_sched_switch(sched_mode & SM_MASK_PREEMPT, prev, next, prev_state);
+
+		/* Also unlocks the rq: */
+		rq = context_switch(rq, prev, next, &rf);
+	} else {
+		rq->clock_update_flags &= ~(RQCF_ACT_SKIP|RQCF_REQ_SKIP);
+
+		rq_unpin_lock(rq, &rf);
+		__balance_callbacks(rq);
+		raw_spin_rq_unlock_irq(rq);
+	}
+}
+
+void __noreturn do_task_dead(void)
+{
+	/* Causes final put_task_struct in finish_task_switch(): */
+	set_special_state(TASK_DEAD);
+
+	/* Tell freezer to ignore us: */
+	current->flags |= PF_NOFREEZE;
+
+	__schedule(SM_NONE);
+	BUG();
+
+	/* Avoid "noreturn function does return" - but don't continue if BUG() is a NOP: */
+	for (;;)
+		cpu_relax();
+}
+
+static inline void sched_submit_work(struct task_struct *tsk)
+{
+	unsigned int task_flags;
+
+	if (task_is_running(tsk))
+		return;
+
+	task_flags = tsk->flags;
+	/*
+	 * If a worker goes to sleep, notify and ask workqueue whether it
+	 * wants to wake up a task to maintain concurrency.
+	 */
+	if (task_flags & (PF_WQ_WORKER | PF_IO_WORKER)) {
+		if (task_flags & PF_WQ_WORKER)
+			wq_worker_sleeping(tsk);
+		else
+			io_wq_worker_sleeping(tsk);
+	}
+
+	if (tsk_is_pi_blocked(tsk))
+		return;
+
+	/*
+	 * If we are going to sleep and we have plugged IO queued,
+	 * make sure to submit it to avoid deadlocks.
+	 */
+	blk_flush_plug(tsk->plug, true);
+}
+
+static void sched_update_worker(struct task_struct *tsk)
+{
+	if (tsk->flags & (PF_WQ_WORKER | PF_IO_WORKER)) {
+		if (tsk->flags & PF_WQ_WORKER)
+			wq_worker_running(tsk);
+		else
+			io_wq_worker_running(tsk);
+	}
+}
+
+asmlinkage __visible void __sched schedule(void)
+{
+	struct task_struct *tsk = current;
+
+	sched_submit_work(tsk);
+	do {
+		preempt_disable();
+		__schedule(SM_NONE);
+		sched_preempt_enable_no_resched();
+	} while (need_resched());
+	sched_update_worker(tsk);
+}
+EXPORT_SYMBOL(schedule);
+
+/*
+ * synchronize_rcu_tasks() makes sure that no task is stuck in preempted
+ * state (have scheduled out non-voluntarily) by making sure that all
+ * tasks have either left the run queue or have gone into user space.
+ * As idle tasks do not do either, they must not ever be preempted
+ * (schedule out non-voluntarily).
+ *
+ * schedule_idle() is similar to schedule_preempt_disable() except that it
+ * never enables preemption because it does not call sched_submit_work().
+ */
+void __sched schedule_idle(void)
+{
+	/*
+	 * As this skips calling sched_submit_work(), which the idle task does
+	 * regardless because that function is a nop when the task is in a
+	 * TASK_RUNNING state, make sure this isn't used someplace that the
+	 * current task can be in any other state. Note, idle is always in the
+	 * TASK_RUNNING state.
+	 */
+	WARN_ON_ONCE(current->__state);
+	do {
+		__schedule(SM_NONE);
+	} while (need_resched());
+}
+
+#if defined(CONFIG_CONTEXT_TRACKING) && !defined(CONFIG_HAVE_CONTEXT_TRACKING_OFFSTACK)
+asmlinkage __visible void __sched schedule_user(void)
+{
+	/*
+	 * If we come here after a random call to set_need_resched(),
+	 * or we have been woken up remotely but the IPI has not yet arrived,
+	 * we haven't yet exited the RCU idle mode. Do it here manually until
+	 * we find a better solution.
+	 *
+	 * NB: There are buggy callers of this function.  Ideally we
+	 * should warn if prev_state != CONTEXT_USER, but that will trigger
+	 * too frequently to make sense yet.
+	 */
+	enum ctx_state prev_state = exception_enter();
+	schedule();
+	exception_exit(prev_state);
+}
+#endif
+
+/**
+ * schedule_preempt_disabled - called with preemption disabled
+ *
+ * Returns with preemption disabled. Note: preempt_count must be 1
+ */
+void __sched schedule_preempt_disabled(void)
+{
+	sched_preempt_enable_no_resched();
+	schedule();
+	preempt_disable();
+}
+
+#ifdef CONFIG_PREEMPT_RT
+void __sched notrace schedule_rtlock(void)
+{
+	do {
+		preempt_disable();
+		__schedule(SM_RTLOCK_WAIT);
+		sched_preempt_enable_no_resched();
+	} while (need_resched());
+}
+NOKPROBE_SYMBOL(schedule_rtlock);
+#endif
+
+static void __sched notrace preempt_schedule_common(void)
+{
+	do {
+		/*
+		 * Because the function tracer can trace preempt_count_sub()
+		 * and it also uses preempt_enable/disable_notrace(), if
+		 * NEED_RESCHED is set, the preempt_enable_notrace() called
+		 * by the function tracer will call this function again and
+		 * cause infinite recursion.
+		 *
+		 * Preemption must be disabled here before the function
+		 * tracer can trace. Break up preempt_disable() into two
+		 * calls. One to disable preemption without fear of being
+		 * traced. The other to still record the preemption latency,
+		 * which can also be traced by the function tracer.
+		 */
+		preempt_disable_notrace();
+		preempt_latency_start(1);
+		__schedule(SM_PREEMPT);
+		preempt_latency_stop(1);
+		preempt_enable_no_resched_notrace();
+
+		/*
+		 * Check again in case we missed a preemption opportunity
+		 * between schedule and now.
+		 */
+	} while (need_resched());
+}
+
+#ifdef CONFIG_PREEMPTION
+/*
+ * This is the entry point to schedule() from in-kernel preemption
+ * off of preempt_enable.
+ */
+asmlinkage __visible void __sched notrace preempt_schedule(void)
+{
+	/*
+	 * If there is a non-zero preempt_count or interrupts are disabled,
+	 * we do not want to preempt the current task. Just return..
+	 */
+	if (likely(!preemptible()))
+		return;
+	preempt_schedule_common();
+}
+NOKPROBE_SYMBOL(preempt_schedule);
+EXPORT_SYMBOL(preempt_schedule);
+
+#ifdef CONFIG_PREEMPT_DYNAMIC
+#if defined(CONFIG_HAVE_PREEMPT_DYNAMIC_CALL)
+#ifndef preempt_schedule_dynamic_enabled
+#define preempt_schedule_dynamic_enabled	preempt_schedule
+#define preempt_schedule_dynamic_disabled	NULL
+#endif
+DEFINE_STATIC_CALL(preempt_schedule, preempt_schedule_dynamic_enabled);
+EXPORT_STATIC_CALL_TRAMP(preempt_schedule);
+#elif defined(CONFIG_HAVE_PREEMPT_DYNAMIC_KEY)
+static DEFINE_STATIC_KEY_TRUE(sk_dynamic_preempt_schedule);
+void __sched notrace dynamic_preempt_schedule(void)
+{
+	if (!static_branch_unlikely(&sk_dynamic_preempt_schedule))
+		return;
+	preempt_schedule();
+}
+NOKPROBE_SYMBOL(dynamic_preempt_schedule);
+EXPORT_SYMBOL(dynamic_preempt_schedule);
+#endif
+#endif
+
+/**
+ * preempt_schedule_notrace - preempt_schedule called by tracing
+ *
+ * The tracing infrastructure uses preempt_enable_notrace to prevent
+ * recursion and tracing preempt enabling caused by the tracing
+ * infrastructure itself. But as tracing can happen in areas coming
+ * from userspace or just about to enter userspace, a preempt enable
+ * can occur before user_exit() is called. This will cause the scheduler
+ * to be called when the system is still in usermode.
+ *
+ * To prevent this, the preempt_enable_notrace will use this function
+ * instead of preempt_schedule() to exit user context if needed before
+ * calling the scheduler.
+ */
+asmlinkage __visible void __sched notrace preempt_schedule_notrace(void)
+{
+	enum ctx_state prev_ctx;
+
+	if (likely(!preemptible()))
+		return;
+
+	do {
+		/*
+		 * Because the function tracer can trace preempt_count_sub()
+		 * and it also uses preempt_enable/disable_notrace(), if
+		 * NEED_RESCHED is set, the preempt_enable_notrace() called
+		 * by the function tracer will call this function again and
+		 * cause infinite recursion.
+		 *
+		 * Preemption must be disabled here before the function
+		 * tracer can trace. Break up preempt_disable() into two
+		 * calls. One to disable preemption without fear of being
+		 * traced. The other to still record the preemption latency,
+		 * which can also be traced by the function tracer.
+		 */
+		preempt_disable_notrace();
+		preempt_latency_start(1);
+		/*
+		 * Needs preempt disabled in case user_exit() is traced
+		 * and the tracer calls preempt_enable_notrace() causing
+		 * an infinite recursion.
+		 */
+		prev_ctx = exception_enter();
+		__schedule(SM_PREEMPT);
+		exception_exit(prev_ctx);
+
+		preempt_latency_stop(1);
+		preempt_enable_no_resched_notrace();
+	} while (need_resched());
+}
+EXPORT_SYMBOL_GPL(preempt_schedule_notrace);
+
+#ifdef CONFIG_PREEMPT_DYNAMIC
+#if defined(CONFIG_HAVE_PREEMPT_DYNAMIC_CALL)
+#ifndef preempt_schedule_notrace_dynamic_enabled
+#define preempt_schedule_notrace_dynamic_enabled	preempt_schedule_notrace
+#define preempt_schedule_notrace_dynamic_disabled	NULL
+#endif
+DEFINE_STATIC_CALL(preempt_schedule_notrace, preempt_schedule_notrace_dynamic_enabled);
+EXPORT_STATIC_CALL_TRAMP(preempt_schedule_notrace);
+#elif defined(CONFIG_HAVE_PREEMPT_DYNAMIC_KEY)
+static DEFINE_STATIC_KEY_TRUE(sk_dynamic_preempt_schedule_notrace);
+void __sched notrace dynamic_preempt_schedule_notrace(void)
+{
+	if (!static_branch_unlikely(&sk_dynamic_preempt_schedule_notrace))
+		return;
+	preempt_schedule_notrace();
+}
+NOKPROBE_SYMBOL(dynamic_preempt_schedule_notrace);
+EXPORT_SYMBOL(dynamic_preempt_schedule_notrace);
+#endif
+#endif
+
+#endif /* CONFIG_PREEMPTION */
+
+/*
+ * This is the entry point to schedule() from kernel preemption
+ * off of irq context.
+ * Note, that this is called and return with irqs disabled. This will
+ * protect us against recursive calling from irq.
+ */
+asmlinkage __visible void __sched preempt_schedule_irq(void)
+{
+	enum ctx_state prev_state;
+
+	/* Catch callers which need to be fixed */
+	BUG_ON(preempt_count() || !irqs_disabled());
+
+	prev_state = exception_enter();
+
+	do {
+		preempt_disable();
+		local_irq_enable();
+		__schedule(SM_PREEMPT);
+		local_irq_disable();
+		sched_preempt_enable_no_resched();
+	} while (need_resched());
+
+	exception_exit(prev_state);
+}
+
+int default_wake_function(wait_queue_entry_t *curr, unsigned mode, int wake_flags,
+			  void *key)
+{
+	WARN_ON_ONCE(IS_ENABLED(CONFIG_SCHED_DEBUG) && wake_flags & ~WF_SYNC);
+	return try_to_wake_up(curr->private, mode, wake_flags);
+}
+EXPORT_SYMBOL(default_wake_function);
+
+static void __setscheduler_prio(struct task_struct *p, int prio)
+{
+	if (dl_prio(prio))
+		p->sched_class = &dl_sched_class;
+	else if (rt_prio(prio))
+		p->sched_class = &rt_sched_class;
+	else
+		p->sched_class = &fair_sched_class;
+
+	p->prio = prio;
+}
+
+#ifdef CONFIG_RT_MUTEXES
+
+static inline int __rt_effective_prio(struct task_struct *pi_task, int prio)
+{
+	if (pi_task)
+		prio = min(prio, pi_task->prio);
+
+	return prio;
+}
+
+static inline int rt_effective_prio(struct task_struct *p, int prio)
+{
+	struct task_struct *pi_task = rt_mutex_get_top_task(p);
+
+	return __rt_effective_prio(pi_task, prio);
+}
+
+/*
+ * rt_mutex_setprio - set the current priority of a task
+ * @p: task to boost
+ * @pi_task: donor task
+ *
+ * This function changes the 'effective' priority of a task. It does
+ * not touch ->normal_prio like __setscheduler().
+ *
+ * Used by the rt_mutex code to implement priority inheritance
+ * logic. Call site only calls if the priority of the task changed.
+ */
+void rt_mutex_setprio(struct task_struct *p, struct task_struct *pi_task)
+{
+	int prio, oldprio, queued, running, queue_flag =
+		DEQUEUE_SAVE | DEQUEUE_MOVE | DEQUEUE_NOCLOCK;
+	const struct sched_class *prev_class;
+	struct rq_flags rf;
+	struct rq *rq;
+
+	/* XXX used to be waiter->prio, not waiter->task->prio */
+	prio = __rt_effective_prio(pi_task, p->normal_prio);
+
+	/*
+	 * If nothing changed; bail early.
+	 */
+	if (p->pi_top_task == pi_task && prio == p->prio && !dl_prio(prio))
+		return;
+
+	rq = __task_rq_lock(p, &rf);
+	update_rq_clock(rq);
+	/*
+	 * Set under pi_lock && rq->lock, such that the value can be used under
+	 * either lock.
+	 *
+	 * Note that there is loads of tricky to make this pointer cache work
+	 * right. rt_mutex_slowunlock()+rt_mutex_postunlock() work together to
+	 * ensure a task is de-boosted (pi_task is set to NULL) before the
+	 * task is allowed to run again (and can exit). This ensures the pointer
+	 * points to a blocked task -- which guarantees the task is present.
+	 */
+	p->pi_top_task = pi_task;
+
+	/*
+	 * For FIFO/RR we only need to set prio, if that matches we're done.
+	 */
+	if (prio == p->prio && !dl_prio(prio))
+		goto out_unlock;
+
+	/*
+	 * Idle task boosting is a nono in general. There is one
+	 * exception, when PREEMPT_RT and NOHZ is active:
+	 *
+	 * The idle task calls get_next_timer_interrupt() and holds
+	 * the timer wheel base->lock on the CPU and another CPU wants
+	 * to access the timer (probably to cancel it). We can safely
+	 * ignore the boosting request, as the idle CPU runs this code
+	 * with interrupts disabled and will complete the lock
+	 * protected section without being interrupted. So there is no
+	 * real need to boost.
+	 */
+	if (unlikely(p == rq->idle)) {
+		WARN_ON(p != rq->curr);
+		WARN_ON(p->pi_blocked

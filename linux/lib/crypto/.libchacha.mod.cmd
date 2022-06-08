@@ -1,4 +1,4 @@
-ETS) \
-    $(wildcard include/config/X86_CPU_RESCTRL) \
-    $(wildcard include/config/FUTEX) \
-    $
+c/qspinlock.h \
+  arch/x86/include/asm/qrwlock.h \
+  include/asm-generic/qrwlock.h \
+  include/linux

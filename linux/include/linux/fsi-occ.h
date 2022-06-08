@@ -1,1 +1,26 @@
-cmd_drivers/media/i2c/upd64031a.o := gcc -Wp,-MMD,drivers/media/i2c/.upd64031a.o.d -nostdinc -I./arch/x86/include -I./arch/x86/include/generated  -I./include -I./arch/x86/include/uapi -I./arch/x86/include/generated/uapi -I./include/uapi -I./include/generated/uapi -include ./include/linux/compiler-version.h -include ./include/linux/kconfig.h -include ./include/linux/compiler_types.h -D__KERNEL__ -fmacro-prefix-map=./= -Wall -Wundef -Werror=strict-prototypes -Wno-trigraphs -fno-strict-aliasing -fno-common -fshort-wchar -fno-PIE -Werror=implicit-function-declaration -Werror=implicit-int -Werror=return-type -Wno-format-security -std=gnu11 -mno-sse -mno-mmx -mno-sse2 -mno-3dnow -mno-avx -fcf-protection=none -m3
+:
+		i2c_bus = &dev->i2c_bus[0];
+
+		if (!dvb_attach(dib7000p_attach, &dib7000p_ops))
+			return -ENODEV;
+
+		fe0->dvb.frontend = dib7000p_ops.init(&i2c_bus->i2c_adap,
+			0x12, &hauppauge_hvr1400_dib7000_config);
+		if (fe0->dvb.frontend != NULL) {
+			struct dvb_frontend *fe;
+			struct xc2028_config cfg = {
+				.i2c_adap  = &dev->i2c_bus[1].i2c_adap,
+				.i2c_addr  = 0x64,
+			};
+			static struct xc2028_ctrl ctl = {
+				.fname   = XC3028L_DEFAULT_FIRMWARE,
+				.max_len = 64,
+				.demod   = XC3028_FE_DIBCOM52,
+				/* This is true for all demods with
+					v36 firmware? */
+				.type    = XC2028_D2633,
+			};
+
+			fe = dvb_attach(xc2028_attach,
+					fe0->dvb.frontend, &cfg);
+			if (fe != NULL && fe->ops.tuner_ops.set_

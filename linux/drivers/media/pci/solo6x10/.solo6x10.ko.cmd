@@ -1,6 +1,1 @@
-ldcard include/config/X86_P6_NOP) \
-    $(wildcard include/config/MATOM) \
-    $(wildcard include/config/PARAVIRT_XXL) \
-  arch/x86/include/asm/disabled-features.h \
-    $(wildcard include/config/X86_SMAP) \
-    $(wildcard include/c
+cmd_drivers/media/pci/cx18/cx18.o := ld -m elf_i386   -r -o drivers/media/pci/cx18/cx18.o drivers/media/pci/cx18/cx18-driver.o drivers/media/pci/cx18/cx18-cards.o drivers/media/pci/cx18/cx18-i2c.o drivers/media/pci/cx18/cx18-firmwar

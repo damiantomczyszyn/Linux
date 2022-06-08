@@ -1,6 +1,9 @@
-RCOPY) \
-  arch/x86/include/asm/uaccess.h \
-    $(wildcard include/config/CC_HAS_ASM_GOTO_OUTPUT) \
-    $(wildcard include/config/CC_HAS_ASM_GOTO_TIED_OUTPUT) \
-    $(wildcard include/config/ARCH_HAS_COPY_MC) \
-    $(wildcard include/config/X86_INTEL_USERCOPY
+!try_module_get(client_tuner->dev.driver->owner)) {
+				i2c_unregister_device(client_tuner);
+				client_tuner = NULL;
+				goto frontend_detach;
+			}
+			port->i2c_client_tuner = client_tuner;
+
+			dev->ts1.analog_fe.tuner_priv = client_tuner;
+			memcpy(&dev->ts

@@ -1,89 +1,133 @@
-x86/include/asm/desc_defs.h \
-  arch/x86/include/asm/pgtable_types.h \
-    $(wildcard include/config/MEM_SOFT_DIRTY) \
-    $(wildcard include/config/HAVE_ARCH_USERFAULTFD_WP) \
-    $(wildcard include/config/PROC_FS) \
-  arch/x86/include/asm/pgtable_32_types.h \
-  arch/x86/include/asm/pgtable-3level_types.h \
-  include/asm-generic/pgtable-nop4d.h \
-  include/asm-generic/pgtable-nopud.h \
-  arch/x86/include/asm/nospec-branch.h \
-  include/linux/static_key.h \
-  include/linux/jump_label.h \
-    $(wildcard include/config/JUMP_LABEL) \
-    $(wildcard include/config/HAVE_ARCH_JUMP_LABEL_RELATIVE) \
-  arch/x86/include/asm/jump_label.h \
-  arch/x86/include/asm/msr-index.h \
-  arch/x86/include/asm/unwind_hints.h \
-  arch/x86/include/asm/orc_types.h \
-  arch/x86/include/asm/GEN-for-each-reg.h \
-  arch/x86/include/asm/proto.h \
-  arch/x86/include/uapi/asm/ldt.h \
-  arch/x86/include/uapi/asm/sigcontext.h \
-  arch/x86/include/asm/msr.h \
-    $(wildcard include/config/TRACEPOINTS) \
-  arch/x86/include/asm/msr-index.h \
-  arch/x86/include/asm/cpumask.h \
-  arch/x86/include/uapi/asm/msr.h \
-  include/linux/tracepoint-defs.h \
-  arch/x86/include/asm/special_insns.h \
-  include/linux/irqflags.h \
-    $(wildcard include/config/TRACE_IRQFLAGS) \
-    $(wildcard include/config/IRQSOFF_TRACER) \
-    $(wildcard include/config/PREEMPT_TRACER) \
-    $(wildcard include/config/DEBUG_IRQFLAGS) \
-    $(wildcard include/config/TRACE_IRQFLAGS_SUPPORT) \
-  arch/x86/include/asm/irqflags.h \
-  arch/x86/include/asm/fpu/types.h \
-  arch/x86/include/asm/vmxfeatures.h \
-  arch/x86/include/asm/vdso/processor.h \
-  include/linux/personality.h \
-  include/uapi/linux/personality.h \
-  arch/x86/include/asm/smp.h \
-    $(wildcard include/config/X86_LOCAL_APIC) \
-    $(wildcard include/config/DEBUG_NMI_SELFTEST) \
-  include/linux/osq_lock.h \
-  include/linux/debug_locks.h \
-  include/linux/rwsem.h \
-    $(wildcard include/config/RWSEM_SPIN_ON_OWNER) \
-    $(wildcard include/config/DEBUG_RWSEMS) \
-  include/linux/spinlock.h \
-  include/linux/bottom_half.h \
-  arch/x86/include/generated/asm/mmiowb.h \
-  include/asm-generic/mmiowb.h \
-    $(wildcard include/config/MMIOWB) \
-  arch/x86/include/asm/spinlock.h \
-  arch/x86/include/asm/paravirt.h \
-    $(wildcard include/config/PARAVIRT_SPINLOCKS) \
-  arch/x86/include/asm/frame.h \
-  arch/x86/include/asm/qspinlock.h \
-  include/asm-generic/qspinlock.h \
-  arch/x86/include/asm/qrwlock.h \
-  include/asm-generic/qrwlock.h \
-  include/linux/rwlock.h \
-    $(wildcard include/config/PREEMPT) \
-  include/linux/spinlock_api_smp.h \
-    $(wildcard include/config/INLINE_SPIN_LOCK) \
-    $(wildcard include/config/INLINE_SPIN_LOCK_BH) \
-    $(wildcard include/config/INLINE_SPIN_LOCK_IRQ) \
-    $(wildcard include/config/INLINE_SPIN_LOCK_IRQSAVE) \
-    $(wildcard include/config/INLINE_SPIN_TRYLOCK) \
-    $(wildcard include/config/INLINE_SPIN_TRYLOCK_BH) \
-    $(wildcard include/config/UNINLINE_SPIN_UNLOCK) \
-    $(wildcard include/config/INLINE_SPIN_UNLOCK_BH) \
-    $(wildcard include/config/INLINE_SPIN_UNLOCK_IRQ) \
-    $(wildcard include/config/INLINE_SPIN_UNLOCK_IRQRESTORE) \
-    $(wildcard include/config/GENERIC_LOCKBREAK) \
-  include/linux/rwlock_api_smp.h \
-    $(wildcard include/config/INLINE_READ_LOCK) \
-    $(wildcard include/config/INLINE_WRITE_LOCK) \
-    $(wildcard include/config/INLINE_READ_LOCK_BH) \
-    $(wildcard include/config/INLINE_WRITE_LOCK_BH) \
-    $(wildcard include/config/INLINE_READ_LOCK_IRQ) \
-    $(wildcard include/config/INLINE_WRITE_LOCK_IRQ) \
-    $(wildcard include/config/INLINE_READ_LOCK_IRQSAVE) \
-    $(wildcard include/config/INLINE_WRITE_LOCK_IRQSAVE) \
-    $(wildcard include/config/INLINE_READ_TRYLOCK) \
-    $(wildcard include/config/INLINE_WRITE_TRYLOCK) \
-    $(wildcard include/config/INLINE_READ_UNLOCK) \
-    $(wildcard in
+_MSK_GPIO0)
+			dprintk(7, " (PCI_MSK_GPIO0     0x%08x)\n",
+				PCI_MSK_GPIO0);
+
+		if (pci_status & PCI_MSK_GPIO1)
+			dprintk(7, " (PCI_MSK_GPIO1     0x%08x)\n",
+				PCI_MSK_GPIO1);
+
+		if (pci_status & PCI_MSK_AV_CORE)
+			dprintk(7, " (PCI_MSK_AV_CORE   0x%08x)\n",
+				PCI_MSK_AV_CORE);
+
+		if (pci_status & PCI_MSK_IR)
+			dprintk(7, " (PCI_MSK_IR        0x%08x)\n",
+				PCI_MSK_IR);
+	}
+
+	if (cx23885_boards[dev->board].ci_type == 1 &&
+			(pci_status & (PCI_MSK_GPIO1 | PCI_MSK_GPIO0)))
+		handled += netup_ci_slot_status(dev, pci_status);
+
+	if (cx23885_boards[dev->board].ci_type == 2 &&
+			(pci_status & PCI_MSK_GPIO0))
+		handled += altera_ci_irq(dev);
+
+	if (ts1_status) {
+		if (cx23885_boards[dev->board].portb == CX23885_MPEG_DVB)
+			handled += cx23885_irq_ts(ts1, ts1_status);
+		else
+		if (cx23885_boards[dev->board].portb == CX23885_MPEG_ENCODER)
+			handled += cx23885_irq_417(dev, ts1_status);
+	}
+
+	if (ts2_status) {
+		if (cx23885_boards[dev->board].portc == CX23885_MPEG_DVB)
+			handled += cx23885_irq_ts(ts2, ts2_status);
+		else
+		if (cx23885_boards[dev->board].portc == CX23885_MPEG_ENCODER)
+			handled += cx23885_irq_417(dev, ts2_status);
+	}
+
+	if (vida_status)
+		handled += cx23885_video_irq(dev, vida_status);
+
+	if (audint_status)
+		handled += cx23885_audio_irq(dev, audint_status, audint_mask);
+
+	if (pci_status & PCI_MSK_IR) {
+		subdev_handled = false;
+		v4l2_subdev_call(dev->sd_ir, core, interrupt_service_routine,
+				 pci_status, &subdev_handled);
+		if (subdev_handled)
+			handled++;
+	}
+
+	if ((pci_status & pci_mask) & PCI_MSK_AV_CORE) {
+		cx23885_irq_disable(dev, PCI_MSK_AV_CORE);
+		schedule_work(&dev->cx25840_work);
+		handled++;
+	}
+
+	if (handled)
+		cx_write(PCI_INT_STAT, pci_status & pci_mask);
+out:
+	return IRQ_RETVAL(handled);
+}
+
+static void cx23885_v4l2_dev_notify(struct v4l2_subdev *sd,
+				    unsigned int notification, void *arg)
+{
+	struct cx23885_dev *dev;
+
+	if (sd == NULL)
+		return;
+
+	dev = to_cx23885(sd->v4l2_dev);
+
+	switch (notification) {
+	case V4L2_SUBDEV_IR_RX_NOTIFY: /* Possibly called in an IRQ context */
+		if (sd == dev->sd_ir)
+			cx23885_ir_rx_v4l2_dev_notify(sd, *(u32 *)arg);
+		break;
+	case V4L2_SUBDEV_IR_TX_NOTIFY: /* Possibly called in an IRQ context */
+		if (sd == dev->sd_ir)
+			cx23885_ir_tx_v4l2_dev_notify(sd, *(u32 *)arg);
+		break;
+	}
+}
+
+static void cx23885_v4l2_dev_notify_init(struct cx23885_dev *dev)
+{
+	INIT_WORK(&dev->cx25840_work, cx23885_av_work_handler);
+	INIT_WORK(&dev->ir_rx_work, cx23885_ir_rx_work_handler);
+	INIT_WORK(&dev->ir_tx_work, cx23885_ir_tx_work_handler);
+	dev->v4l2_dev.notify = cx23885_v4l2_dev_notify;
+}
+
+static inline int encoder_on_portb(struct cx23885_dev *dev)
+{
+	return cx23885_boards[dev->board].portb == CX23885_MPEG_ENCODER;
+}
+
+static inline int encoder_on_portc(struct cx23885_dev *dev)
+{
+	return cx23885_boards[dev->board].portc == CX23885_MPEG_ENCODER;
+}
+
+/* Mask represents 32 different GPIOs, GPIO's are split into multiple
+ * registers depending on the board configuration (and whether the
+ * 417 encoder (wi it's own GPIO's) are present. Each GPIO bit will
+ * be pushed into the correct hardware register, regardless of the
+ * physical location. Certain registers are shared so we sanity check
+ * and report errors if we think we're tampering with a GPIo that might
+ * be assigned to the encoder (and used for the host bus).
+ *
+ * GPIO  2 through  0 - On the cx23885 bridge
+ * GPIO 18 through  3 - On the cx23417 host bus interface
+ * GPIO 23 through 19 - On the cx25840 a/v core
+ */
+void cx23885_gpio_set(struct cx23885_dev *dev, u32 mask)
+{
+	if (mask & 0x7)
+		cx_set(GP0_IO, mask & 0x7);
+
+	if (mask & 0x0007fff8) {
+		if (encoder_on_portb(dev) || encoder_on_portc(dev))
+			pr_err("%s: Setting GPIO on encoder ports\n",
+				dev->name);
+		cx_set(MC417_RWD, (mask & 0x0007fff8) >> 3);
+	}
+
+	/* TODO: 23-19 */
+	if (mask & 0x

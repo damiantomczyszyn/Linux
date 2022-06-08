@@ -1,5 +1,7 @@
- \
-    $(wildcard include/config/ARCH_HAS_PKEYS) \
-    $(wildcard include/config/PPC) \
-    $(wildcard include/config/PARISC) \
-    $(wildcard include/config
+/* SPDX-License-Identifier: GPL-2.0-or-later */
+/*
+ * netup-eeprom.h
+ *
+ * 24LC02 EEPROM driver in conjunction with NetUP Dual DVB-S2 CI card
+ *
+ * Copyright

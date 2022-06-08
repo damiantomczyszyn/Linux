@@ -1,1 +1,2 @@
-idate the following 
+ *rq_i;
+	bool need_s

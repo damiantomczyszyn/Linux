@@ -1,6 +1,1 @@
- \
-    $(wildcard include/config/ARCH_HAS_PKEYS) \
-    $(wildcard include/config/PPC) \
-    $(wildcard include/config/PARISC) \
-    $(wildcard include/config/SPARC64) \
-    $
+cmd_drivers/media/pci/cx18/cx18-alsa.mod := { echo  drivers/media/pci/cx18/cx18-alsa-main.o drivers/media/pci/cx18/cx18-alsa-pcm.o;  echo; } > drivers/media/pci/cx18/cx18-als

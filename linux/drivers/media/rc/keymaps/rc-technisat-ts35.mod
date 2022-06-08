@@ -1,2 +1,6 @@
-drivers/media/rc/keymaps/rc-technisat-ts35.o
 
+
+	return bus->i2c_rc;
+}
+
+int cx23885_i2c_unre

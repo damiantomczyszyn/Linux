@@ -1,25 +1,35 @@
-IC_IOREMAP) \
-    $(wildcard include/config/VIRT_TO_BUS) \
-    $(wildcard include/config/GENERIC_DEVMEM_IS_ALLOWED) \
-  include/linux/logic_pio.h \
-    $(wildcard include/config/INDIRECT_PIO) \
-  include/linux/vmalloc.h \
-    $(wildcard include/config/HAVE_ARCH_HUGE_VMALLOC) \
-  arch/x86/include/asm/vmalloc.h \
-    $(wildcard include/config/HAVE_ARCH_HUGE_VMAP) \
-  arch/x86/include/asm/acpi.h \
-    $(wildcard include/config/ACPI_APEI) \
-  include/acpi/pdc_intel.h \
-  arch/x86/include/asm/numa.h \
-    $(wildcard include/config/NUMA_EMU) \
-  arch/x86/include/asm/numa_32.h \
-  include/linux/regulator/consumer.h \
-    $(wildcard include/config/REGULATOR) \
-  include/linux/suspend.h \
-    $(wildcard include/config/VT) \
-    $(wildcard include/config/SUSPEND) \
-    $(wildcard include/config/HIBERNATION_SNAPSHOT_DEV) \
-    $(wildcard include/config/PM_SLEEP_DEBUG) \
-    $(wildcard include/config/PM_AUTOSLEEP) \
-  include/linux/swap.h \
-    $(wi
+_MSK_GPIO0)
+			dprintk(7, " (PCI_MSK_GPIO0     0x%08x)\n",
+				PCI_MSK_GPIO0);
+
+		if (pci_status & PCI_MSK_GPIO1)
+			dprintk(7, " (PCI_MSK_GPIO1     0x%08x)\n",
+				PCI_MSK_GPIO1);
+
+		if (pci_status & PCI_MSK_AV_CORE)
+			dprintk(7, " (PCI_MSK_AV_CORE   0x%08x)\n",
+				PCI_MSK_AV_CORE);
+
+		if (pci_status & PCI_MSK_IR)
+			dprintk(7, " (PCI_MSK_IR        0x%08x)\n",
+				PCI_MSK_IR);
+	}
+
+	if (cx23885_boards[dev->board].ci_type == 1 &&
+			(pci_status & (PCI_MSK_GPIO1 | PCI_MSK_GPIO0)))
+		handled += netup_ci_slot_status(dev, pci_status);
+
+	if (cx23885_boards[dev->board].ci_type == 2 &&
+			(pci_status & PCI_MSK_GPIO0))
+		handled += altera_ci_irq(dev);
+
+	if (ts1_status) {
+		if (cx23885_boards[dev->board].portb == CX23885_MPEG_DVB)
+			handled += cx23885_irq_ts(ts1, ts1_status);
+		else
+		if (cx23885_boards[dev->board].portb == CX23885_MPEG_ENCODER)
+			handled += cx23885_irq_417(dev, ts1_status);
+	}
+
+	if (ts2_status) {
+		if (cx23885_boards[dev->boa

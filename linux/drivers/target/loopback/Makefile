@@ -1,3 +1,5 @@
- $(wildcard include/config/EARLY_PRINTK) \
-    $(wildcard include/config/PRINTK) \
- 
+// SPDX-License-Identifier: GPL-2.0-or-later
+/*
+ * altera-ci.c
+ *
+ *  CI driver in c

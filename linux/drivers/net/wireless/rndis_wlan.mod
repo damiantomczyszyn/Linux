@@ -1,2 +1,1 @@
-lude/config/SPI) \
-  include/media/
+ $(wildcard include/config/RCU_FANO

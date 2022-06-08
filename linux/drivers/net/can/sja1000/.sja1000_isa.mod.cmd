@@ -1,4 +1,1 @@
-ask.h \
-    $(wildcard include/config/HAVE_EXIT_THREAD) \
-    $(wildcard include/config/ARCH_WANTS_DYNAMIC_TASK_STRUCT) \
-    $(wildcard include/
+cmd_drivers/net/can/sja1000/sja1000_isa.mod := { echo  drivers/net/can/sja1000/sja1000_isa.o;  echo; } > drivers/net/can/sja1000/sja1000_isa.mod

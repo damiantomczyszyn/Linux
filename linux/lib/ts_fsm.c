@@ -1,402 +1,330 @@
-turns true, we skip this
-		 *         lock (and any path this lock is in).
-		 */
-		if (skip && skip(lock, data))
-			continue;
-
-		if (match(lock, data)) {
-			*target_entry = lock;
-			return BFS_RMATCH;
-		}
-
-		/*
-		 * Step 4: if not match, expand the path by adding the
-		 *         forward or backwards dependencies in the search
-		 *
-		 */
-		first = true;
-		head = get_dep_list(lock, offset);
-		list_for_each_entry_rcu(entry, head, entry) {
-			visit_lock_entry(entry, lock);
-
-			/*
-			 * Note we only enqueue the first of the list into the
-			 * queue, because we can always find a sibling
-			 * dependency from one (see __bfs_next()), as a result
-			 * the space of queue is saved.
-			 */
-			if (!first)
-				continue;
-
-			first = false;
-
-			if (__cq_enqueue(cq, entry))
-				return BFS_EQUEUEFULL;
-
-			cq_depth = __cq_get_elem_count(cq);
-			if (max_bfs_queue_depth < cq_depth)
-				max_bfs_queue_depth = cq_depth;
-		}
-	}
-
-	return BFS_RNOMATCH;
-}
-
-static inline enum bfs_result
-__bfs_forwards(struct lock_list *src_entry,
-	       void *data,
-	       bool (*match)(struct lock_list *entry, void *data),
-	       bool (*skip)(struct lock_list *entry, void *data),
-	       struct lock_list **target_entry)
-{
-	return __bfs(src_entry, data, match, skip, target_entry,
-		     offsetof(struct lock_class, locks_after));
-
-}
-
-static inline enum bfs_result
-__bfs_backwards(struct lock_list *src_entry,
-		void *data,
-		bool (*match)(struct lock_list *entry, void *data),
-	       bool (*skip)(struct lock_list *entry, void *data),
-		struct lock_list **target_entry)
-{
-	return __bfs(src_entry, data, match, skip, target_entry,
-		     offsetof(struct lock_class, locks_before));
-
-}
-
-static void print_lock_trace(const struct lock_trace *trace,
-			     unsigned int spaces)
-{
-	stack_trace_print(trace->entries, trace->nr_entries, spaces);
-}
-
-/*
- * Print a dependency chain entry (this is only done when a deadlock
- * has been detected):
- */
-static noinline void
-print_circular_bug_entry(struct lock_list *target, int depth)
-{
-	if (debug_locks_silent)
-		return;
-	printk("\n-> #%u", depth);
-	print_lock_name(target->class);
-	printk(KERN_CONT ":\n");
-	print_lock_trace(target->trace, 6);
-}
-
-static void
-print_circular_lock_scenario(struct held_lock *src,
-			     struct held_lock *tgt,
-			     struct lock_list *prt)
-{
-	struct lock_class *source = hlock_class(src);
-	struct lock_class *target = hlock_class(tgt);
-	struct lock_class *parent = prt->class;
-
-	/*
-	 * A direct locking problem where unsafe_class lock is taken
-	 * directly by safe_class lock, then all we need to show
-	 * is the deadlock scenario, as it is obvious that the
-	 * unsafe lock is taken under the safe lock.
-	 *
-	 * But if there is a chain instead, where the safe lock takes
-	 * an intermediate lock (middle_class) where this lock is
-	 * not the same as the safe lock, then the lock chain is
-	 * used to describe the problem. Otherwise we would need
-	 * to show a different CPU case for each link in the chain
-	 * from the safe_class lock to the unsafe_class lock.
-	 */
-	if (parent != source) {
-		printk("Chain exists of:\n  ");
-		__print_lock_name(source);
-		printk(KERN_CONT " --> ");
-		__print_lock_name(parent);
-		printk(KERN_CONT " --> ");
-		__print_lock_name(target);
-		printk(KERN_CONT "\n\n");
-	}
-
-	printk(" Possible unsafe locking scenario:\n\n");
-	printk("       CPU0                    CPU1\n");
-	printk("       ----                    ----\n");
-	printk("  lock(");
-	__print_lock_name(target);
-	printk(KERN_CONT ");\n");
-	printk("                               lock(");
-	__print_lock_name(parent);
-	printk(KERN_CONT ");\n");
-	printk("                               lock(");
-	__print_lock_name(target);
-	printk(KERN_CONT ");\n");
-	printk("  lock(");
-	__print_lock_name(source);
-	printk(KERN_CONT ");\n");
-	printk("\n *** DEADLOCK ***\n\n");
-}
-
-/*
- * When a circular dependency is detected, print the
- * header first:
- */
-static noinline void
-print_circular_bug_header(struct lock_list *entry, unsigned int depth,
-			struct held_lock *check_src,
-			struct held_lock *check_tgt)
-{
-	struct task_struct *curr = current;
-
-	if (debug_locks_silent)
-		return;
-
-	pr_warn("\n");
-	pr_warn("======================================================\n");
-	pr_warn("WARNING: possible circular locking dependency detected\n");
-	print_kernel_ident();
-	pr_warn("------------------------------------------------------\n");
-	pr_warn("%s/%d is trying to acquire lock:\n",
-		curr->comm, task_pid_nr(curr));
-	print_lock(check_src);
-
-	pr_warn("\nbut task is already holding lock:\n");
-
-	print_lock(check_tgt);
-	pr_warn("\nwhich lock already depends on the new lock.\n\n");
-	pr_warn("\nthe existing dependency chain (in reverse order) is:\n");
-
-	print_circular_bug_entry(entry, depth);
-}
-
-/*
- * We are about to add A -> B into the dependency graph, and in __bfs() a
- * strong dependency path A -> .. -> B is found: hlock_class equals
- * entry->class.
- *
- * If A -> .. -> B can replace A -> B in any __bfs() search (means the former
- * is _stronger_ than or equal to the latter), we consider A -> B as redundant.
- * For example if A -> .. -> B is -(EN)-> (i.e. A -(E*)-> .. -(*N)-> B), and A
- * -> B is -(ER)-> or -(EN)->, then we don't need to add A -> B into the
- * dependency graph, as any strong path ..-> A -> B ->.. we can get with
- * having dependency A -> B, we could already get a equivalent path ..-> A ->
- * .. -> B -> .. with A -> .. -> B. Therefore A -> B is redundant.
- *
- * We need to make sure both the start and the end of A -> .. -> B is not
- * weaker than A -> B. For the start part, please see the comment in
- * check_redundant(). For the end part, we need:
- *
- * Either
- *
- *     a) A -> B is -(*R)-> (everything is not weaker than that)
- *
- * or
- *
- *     b) A -> .. -> B is -(*N)-> (nothing is stronger than this)
- *
- */
-static inline bool hlock_equal(struct lock_list *entry, void *data)
-{
-	struct held_lock *hlock = (struct held_lock *)data;
-
-	return hlock_class(hlock) == entry->class && /* Found A -> .. -> B */
-	       (hlock->read == 2 ||  /* A -> B is -(*R)-> */
-		!entry->only_xr); /* A -> .. -> B is -(*N)-> */
-}
-
-/*
- * We are about to add B -> A into the dependency graph, and in __bfs() a
- * strong dependency path A -> .. -> B is found: hlock_class equals
- * entry->class.
- *
- * We will have a deadlock case (conflict) if A -> .. -> B -> A is a strong
- * dependency cycle, that means:
- *
- * Either
- *
- *     a) B -> A is -(E*)->
- *
- * or
- *
- *     b) A -> .. -> B is -(*N)-> (i.e. A -> .. -(*N)-> B)
- *
- * as then we don't have -(*R)-> -(S*)-> in the cycle.
- */
-static inline bool hlock_conflict(struct lock_list *entry, void *data)
-{
-	struct held_lock *hlock = (struct held_lock *)data;
-
-	return hlock_class(hlock) == entry->class && /* Found A -> .. -> B */
-	       (hlock->read == 0 || /* B -> A is -(E*)-> */
-		!entry->only_xr); /* A -> .. -> B is -(*N)-> */
-}
-
-static noinline void print_circular_bug(struct lock_list *this,
-				struct lock_list *target,
-				struct held_lock *check_src,
-				struct held_lock *check_tgt)
-{
-	struct task_struct *curr = current;
-	struct lock_list *parent;
-	struct lock_list *first_parent;
-	int depth;
-
-	if (!debug_locks_off_graph_unlock() || debug_locks_silent)
-		return;
-
-	this->trace = save_trace();
-	if (!this->trace)
-		return;
-
-	depth = get_lock_depth(target);
-
-	print_circular_bug_header(target, depth, check_src, check_tgt);
-
-	parent = get_lock_parent(target);
-	first_parent = parent;
-
-	while (parent) {
-		print_circular_bug_entry(parent, --depth);
-		parent = get_lock_parent(parent);
-	}
-
-	printk("\nother info that might help us debug this:\n\n");
-	print_circular_lock_scenario(check_src, check_tgt,
-				     first_parent);
-
-	lockdep_print_held_locks(curr);
-
-	printk("\nstack backtrace:\n");
-	dump_stack();
-}
-
-static noinline void print_bfs_bug(int ret)
-{
-	if (!debug_locks_off_graph_unlock())
-		return;
-
-	/*
-	 * Breadth-first-search failed, graph got corrupted?
-	 */
-	WARN(1, "lockdep bfs error:%d\n", ret);
-}
-
-static bool noop_count(struct lock_list *entry, void *data)
-{
-	(*(unsigned long *)data)++;
-	return false;
-}
-
-static unsigned long __lockdep_count_forward_deps(struct lock_list *this)
-{
-	unsigned long  count = 0;
-	struct lock_list *target_entry;
-
-	__bfs_forwards(this, (void *)&count, noop_count, NULL, &target_entry);
-
-	return count;
-}
-unsigned long lockdep_count_forward_deps(struct lock_class *class)
-{
-	unsigned long ret, flags;
-	struct lock_list this;
-
-	__bfs_init_root(&this, class);
-
-	raw_local_irq_save(flags);
-	lockdep_lock();
-	ret = __lockdep_count_forward_deps(&this);
-	lockdep_unlock();
-	raw_local_irq_restore(flags);
-
-	return ret;
-}
-
-static unsigned long __lockdep_count_backward_deps(struct lock_list *this)
-{
-	unsigned long  count = 0;
-	struct lock_list *target_entry;
-
-	__bfs_backwards(this, (void *)&count, noop_count, NULL, &target_entry);
-
-	return count;
-}
-
-unsigned long lockdep_count_backward_deps(struct lock_class *class)
-{
-	unsigned long ret, flags;
-	struct lock_list this;
-
-	__bfs_init_root(&this, class);
-
-	raw_local_irq_save(flags);
-	lockdep_lock();
-	ret = __lockdep_count_backward_deps(&this);
-	lockdep_unlock();
-	raw_local_irq_restore(flags);
-
-	return ret;
-}
-
-/*
- * Check that the dependency graph starting at <src> can lead to
- * <target> or not.
- */
-static noinline enum bfs_result
-check_path(struct held_lock *target, struct lock_list *src_entry,
-	   bool (*match)(struct lock_list *entry, void *data),
-	   bool (*skip)(struct lock_list *entry, void *data),
-	   struct lock_list **target_entry)
-{
-	enum bfs_result ret;
-
-	ret = __bfs_forwards(src_entry, target, match, skip, target_entry);
-
-	if (unlikely(bfs_error(ret)))
-		print_bfs_bug(ret);
-
-	return ret;
-}
-
-/*
- * Prove that the dependency graph starting at <src> can not
- * lead to <target>. If it can, there is a circle when adding
- * <target> -> <src> dependency.
- *
- * Print an error and return BFS_RMATCH if it does.
- */
-static noinline enum bfs_result
-check_noncircular(struct held_lock *src, struct held_lock *target,
-		  struct lock_trace **const trace)
-{
-	enum bfs_result ret;
-	struct lock_list *target_entry;
-	struct lock_list src_entry;
-
-	bfs_init_root(&src_entry, src);
-
-	debug_atomic_inc(nr_cyclic_checks);
-
-	ret = check_path(target, &src_entry, hlock_conflict, NULL, &target_entry);
-
-	if (unlikely(ret == BFS_RMATCH)) {
-		if (!*trace) {
-			/*
-			 * If save_trace fails here, the printing might
-			 * trigger a WARN but because of the !nr_entries it
-			 * should not do bad things.
-			 */
-			*trace = save_trace();
-		}
-
-		print_circular_bug(&src_entry, target_entry, src, target);
-	}
-
-	return ret;
-}
-
-#ifdef CONFIG_TRACE_IRQFLAGS
-
-/*
- * Forwards and backwards subgraph searching, for the purposes of
- * proving that two subg
+] = {
+		.name		= "Hauppauge WinTV-HVR1500Q",
+		.portc		= CX23885_MPEG_DVB,
+	},
+	[CX23885_BOARD_HAUPPAUGE_HVR1500] = {
+		.name		= "Hauppauge WinTV-HVR1500",
+		.porta		= CX23885_ANALOG_VIDEO,
+		.portc		= CX23885_MPEG_DVB,
+		.tuner_type	= TUNER_XC2028,
+		.tuner_addr	= 0x61, /* 0xc2 >> 1 */
+		.input          = {{
+			.type   = CX23885_VMUX_TELEVISION,
+			.vmux   =	CX25840_VIN7_CH3 |
+					CX25840_VIN5_CH2 |
+					CX25840_VIN2_CH1,
+			.gpio0  = 0,
+		}, {
+			.type   = CX23885_VMUX_COMPOSITE1,
+			.vmux   =	CX25840_VIN7_CH3 |
+					CX25840_VIN4_CH2 |
+					CX25840_VIN6_CH1,
+			.gpio0  = 0,
+		}, {
+			.type   = CX23885_VMUX_SVIDEO,
+			.vmux   =	CX25840_VIN7_CH3 |
+					CX25840_VIN4_CH2 |
+					CX25840_VIN8_CH1 |
+					CX25840_SVIDEO_ON,
+			.gpio0  = 0,
+		} },
+	},
+	[CX23885_BOARD_HAUPPAUGE_HVR1200] = {
+		.name		= "Hauppauge WinTV-HVR1200",
+		.portc		= CX23885_MPEG_DVB,
+	},
+	[CX23885_BOARD_HAUPPAUGE_HVR1700] = {
+		.name		= "Hauppauge WinTV-HVR1700",
+		.portc		= CX23885_MPEG_DVB,
+	},
+	[CX23885_BOARD_HAUPPAUGE_HVR1400] = {
+		.name		= "Hauppauge WinTV-HVR1400",
+		.portc		= CX23885_MPEG_DVB,
+	},
+	[CX23885_BOARD_DVICO_FUSIONHDTV_7_DUAL_EXP] = {
+		.name		= "DViCO FusionHDTV7 Dual Express",
+		.portb		= CX23885_MPEG_DVB,
+		.portc		= CX23885_MPEG_DVB,
+	},
+	[CX23885_BOARD_DVICO_FUSIONHDTV_DVB_T_DUAL_EXP] = {
+		.name		= "DViCO FusionHDTV DVB-T Dual Express",
+		.portb		= CX23885_MPEG_DVB,
+		.portc		= CX23885_MPEG_DVB,
+	},
+	[CX23885_BOARD_LEADTEK_WINFAST_PXDVR3200_H] = {
+		.name		= "Leadtek Winfast PxDVR3200 H",
+		.portc		= CX23885_MPEG_DVB,
+	},
+	[CX23885_BOARD_LEADTEK_WINFAST_PXPVR2200] = {
+		.name		= "Leadtek Winfast PxPVR2200",
+		.porta		= CX23885_ANALOG_VIDEO,
+		.tuner_type	= TUNER_XC2028,
+		.tuner_addr	= 0x61,
+		.tuner_bus	= 1,
+		.input		= {{
+			.type	= CX23885_VMUX_TELEVISION,
+			.vmux	= CX25840_VIN2_CH1 |
+				  CX25840_VIN5_CH2,
+			.amux	= CX25840_AUDIO8,
+			.gpio0	= 0x704040,
+		}, {
+			.type	= CX23885_VMUX_COMPOSITE1,
+			.vmux	= CX25840_COMPOSITE1,
+			.amux	= CX25840_AUDIO7,
+			.gpio0	= 0x704040,
+		}, {
+			.type	= CX23885_VMUX_SVIDEO,
+			.vmux	= CX25840_SVIDEO_LUMA3 |
+				  CX25840_SVIDEO_CHROMA4,
+			.amux	= CX25840_AUDIO7,
+			.gpio0	= 0x704040,
+		}, {
+			.type	= CX23885_VMUX_COMPONENT,
+			.vmux	= CX25840_VIN7_CH1 |
+				  CX25840_VIN6_CH2 |
+				  CX25840_VIN8_CH3 |
+				  CX25840_COMPONENT_ON,
+			.amux	= CX25840_AUDIO7,
+			.gpio0	= 0x704040,
+		} },
+	},
+	[CX23885_BOARD_LEADTEK_WINFAST_PXDVR3200_H_XC4000] = {
+		.name		= "Leadtek Winfast PxDVR3200 H XC4000",
+		.porta		= CX23885_ANALOG_VIDEO,
+		.portc		= CX23885_MPEG_DVB,
+		.tuner_type	= TUNER_XC4000,
+		.tuner_addr	= 0x61,
+		.radio_type	= UNSET,
+		.radio_addr	= ADDR_UNSET,
+		.input		= {{
+			.type	= CX23885_VMUX_TELEVISION,
+			.vmux	= CX25840_VIN2_CH1 |
+				  CX25840_VIN5_CH2 |
+				  CX25840_NONE0_CH3,
+		}, {
+			.type	= CX23885_VMUX_COMPOSITE1,
+			.vmux	= CX25840_COMPOSITE1,
+		}, {
+			.type	= CX23885_VMUX_SVIDEO,
+			.vmux	= CX25840_SVIDEO_LUMA3 |
+				  CX25840_SVIDEO_CHROMA4,
+		}, {
+			.type	= CX23885_VMUX_COMPONENT,
+			.vmux	= CX25840_VIN7_CH1 |
+				  CX25840_VIN6_CH2 |
+				  CX25840_VIN8_CH3 |
+				  CX25840_COMPONENT_ON,
+		} },
+	},
+	[CX23885_BOARD_COMPRO_VIDEOMATE_E650F] = {
+		.name		= "Compro VideoMate E650F",
+		.portc		= CX23885_MPEG_DVB,
+	},
+	[CX23885_BOARD_TBS_6920] = {
+		.name		= "TurboSight TBS 6920",
+		.portb		= CX23885_MPEG_DVB,
+	},
+	[CX23885_BOARD_TBS_6980] = {
+		.name		= "TurboSight TBS 6980",
+		.portb		= CX23885_MPEG_DVB,
+		.portc		= CX23885_MPEG_DVB,
+	},
+	[CX23885_BOARD_TBS_6981] = {
+		.name		= "TurboSight TBS 6981",
+		.portb		= CX23885_MPEG_DVB,
+		.portc		= CX23885_MPEG_DVB,
+	},
+	[CX23885_BOARD_TEVII_S470] = {
+		.name		= "TeVii S470",
+		.portb		= CX23885_MPEG_DVB,
+	},
+	[CX23885_BOARD_DVBWORLD_2005] = {
+		.name		= "DVBWorld DVB-S2 2005",
+		.portb		= CX23885_MPEG_DVB,
+	},
+	[CX23885_BOARD_NETUP_DUAL_DVBS2_CI] = {
+		.ci_type	= 1,
+		.name		= "NetUP Dual DVB-S2 CI",
+		.portb		= CX23885_MPEG_DVB,
+		.portc		= CX23885_MPEG_DVB,
+	},
+	[CX23885_BOARD_HAUPPAUGE_HVR1270] = {
+		.name		= "Hauppauge WinTV-HVR1270",
+		.portc		= CX23885_MPEG_DVB,
+	},
+	[CX23885_BOARD_HAUPPAUGE_HVR1275] = {
+		.name		= "Hauppauge WinTV-HVR1275",
+		.portc		= CX23885_MPEG_DVB,
+	},
+	[CX23885_BOARD_HAUPPAUGE_HVR1255] = {
+		.name		= "Hauppauge WinTV-HVR1255",
+		.porta		= CX23885_ANALOG_VIDEO,
+		.portc		= CX23885_MPEG_DVB,
+		.tuner_type	= TUNER_ABSENT,
+		.tuner_addr	= 0x42, /* 0x84 >> 1 */
+		.force_bff	= 1,
+		.input          = {{
+			.type   = CX23885_VMUX_TELEVISION,
+			.vmux   =	CX25840_VIN7_CH3 |
+					CX25840_VIN5_CH2 |
+					CX25840_VIN2_CH1 |
+					CX25840_DIF_ON,
+			.amux   = CX25840_AUDIO8,
+		}, {
+			.type   = CX23885_VMUX_COMPOSITE1,
+			.vmux   =	CX25840_VIN7_CH3 |
+					CX25840_VIN4_CH2 |
+					CX25840_VIN6_CH1,
+			.amux   = CX25840_AUDIO7,
+		}, {
+			.type   = CX23885_VMUX_SVIDEO,
+			.vmux   =	CX25840_VIN7_CH3 |
+					CX25840_VIN4_CH2 |
+					CX25840_VIN8_CH1 |
+					CX25840_SVIDEO_ON,
+			.amux   = CX25840_AUDIO7,
+		} },
+	},
+	[CX23885_BOARD_HAUPPAUGE_HVR1255_22111] = {
+		.name		= "Hauppauge WinTV-HVR1255",
+		.porta		= CX23885_ANALOG_VIDEO,
+		.portc		= CX23885_MPEG_DVB,
+		.tuner_type	= TUNER_ABSENT,
+		.tuner_addr	= 0x42, /* 0x84 >> 1 */
+		.force_bff	= 1,
+		.input          = {{
+			.type   = CX23885_VMUX_TELEVISION,
+			.vmux   =	CX25840_VIN7_CH3 |
+					CX25840_VIN5_CH2 |
+					CX25840_VIN2_CH1 |
+					CX25840_DIF_ON,
+			.amux   = CX25840_AUDIO8,
+		}, {
+			.type   = CX23885_VMUX_SVIDEO,
+			.vmux   =	CX25840_VIN7_CH3 |
+					CX25840_VIN4_CH2 |
+					CX25840_VIN8_CH1 |
+					CX25840_SVIDEO_ON,
+			.amux   = CX25840_AUDIO7,
+		} },
+	},
+	[CX23885_BOARD_HAUPPAUGE_HVR1210] = {
+		.name		= "Hauppauge WinTV-HVR1210",
+		.portc		= CX23885_MPEG_DVB,
+	},
+	[CX23885_BOARD_MYGICA_X8506] = {
+		.name		= "Mygica X8506 DMB-TH",
+		.tuner_type = TUNER_XC5000,
+		.tuner_addr = 0x61,
+		.tuner_bus	= 1,
+		.porta		= CX23885_ANALOG_VIDEO,
+		.portb		= CX23885_MPEG_DVB,
+		.input		= {
+			{
+				.type   = CX23885_VMUX_TELEVISION,
+				.vmux   = CX25840_COMPOSITE2,
+			},
+			{
+				.type   = CX23885_VMUX_COMPOSITE1,
+				.vmux   = CX25840_COMPOSITE8,
+			},
+			{
+				.type   = CX23885_VMUX_SVIDEO,
+				.vmux   = CX25840_SVIDEO_LUMA3 |
+						CX25840_SVIDEO_CHROMA4,
+			},
+			{
+				.type   = CX23885_VMUX_COMPONENT,
+				.vmux   = CX25840_COMPONENT_ON |
+					CX25840_VIN1_CH1 |
+					CX25840_VIN6_CH2 |
+					CX25840_VIN7_CH3,
+			},
+		},
+	},
+	[CX23885_BOARD_MAGICPRO_PROHDTVE2] = {
+		.name		= "Magic-Pro ProHDTV Extreme 2",
+		.tuner_type = TUNER_XC5000,
+		.tuner_addr = 0x61,
+		.tuner_bus	= 1,
+		.porta		= CX23885_ANALOG_VIDEO,
+		.portb		= CX23885_MPEG_DVB,
+		.input		= {
+			{
+				.type   = CX23885_VMUX_TELEVISION,
+				.vmux   = CX25840_COMPOSITE2,
+			},
+			{
+				.type   = CX23885_VMUX_COMPOSITE1,
+				.vmux   = CX25840_COMPOSITE8,
+			},
+			{
+				.type   = CX23885_VMUX_SVIDEO,
+				.vmux   = CX25840_SVIDEO_LUMA3 |
+						CX25840_SVIDEO_CHROMA4,
+			},
+			{
+				.type   = CX23885_VMUX_COMPONENT,
+				.vmux   = CX25840_COMPONENT_ON |
+					CX25840_VIN1_CH1 |
+					CX25840_VIN6_CH2 |
+					CX25840_VIN7_CH3,
+			},
+		},
+	},
+	[CX23885_BOARD_HAUPPAUGE_HVR1850] = {
+		.name		= "Hauppauge WinTV-HVR1850",
+		.porta		= CX23885_ANALOG_VIDEO,
+		.portb		= CX23885_MPEG_ENCODER,
+		.portc		= CX23885_MPEG_DVB,
+		.tuner_type	= TUNER_ABSENT,
+		.tuner_addr	= 0x42, /* 0x84 >> 1 */
+		.force_bff	= 1,
+		.input          = {{
+			.type   = CX23885_VMUX_TELEVISION,
+			.vmux   =	CX25840_VIN7_CH3 |
+					CX25840_VIN5_CH2 |
+					CX25840_VIN2_CH1 |
+					CX25840_DIF_ON,
+			.amux   = CX25840_AUDIO8,
+		}, {
+			.type   = CX23885_VMUX_COMPOSITE1,
+			.vmux   =	CX25840_VIN7_CH3 |
+					CX25840_VIN4_CH2 |
+					CX25840_VIN6_CH1,
+			.amux   = CX25840_AUDIO7,
+		}, {
+			.type   = CX23885_VMUX_SVIDEO,
+			.vmux   =	CX25840_VIN7_CH3 |
+					CX25840_VIN4_CH2 |
+					CX25840_VIN8_CH1 |
+					CX25840_SVIDEO_ON,
+			.amux   = CX25840_AUDIO7,
+		} },
+	},
+	[CX23885_BOARD_COMPRO_VIDEOMATE_E800] = {
+		.name		= "Compro VideoMate E800",
+		.portc		= CX23885_MPEG_DVB,
+	},
+	[CX23885_BOARD_HAUPPAUGE_HVR1290] = {
+		.name		= "Hauppauge WinTV-HVR1290",
+		.portc		= CX23885_MPEG_DVB,
+	},
+	[CX23885_BOARD_MYGICA_X8558PRO] = {
+		.name		= "Mygica X8558 PRO DMB-TH",
+		.portb		= CX23885_MPEG_DVB,
+		.portc		= CX23885_MPEG_DVB,
+	},
+	[CX23885_BOARD_LEADTEK_WINFAST_PXTV1200] = {
+		.name           = "LEADl£çy
+bcâ¹P«±Å;
+©°9Ô·¤óËŸÊ·4'7‚k›×Ñú]ªE&Ï–÷a2ÇñóŸ½He?%ÆUöVd§·>!mêeY£¨[
+b¢§RC;n@	Dïrï¡OŠsX¾“Äõéã¡ø{)FOëlìOÆÔ²\É¤áv4…ÛrÁPÜ‰ÉÛ˜ùå´eONÄ€õHm±—=ÏpDK£‘Üç&¾}'X’ƒŞÿË•%cÕˆB†6=pWyäé&dPa@şÖ›Áı^÷ñ«Ù«öcÒ~‚yæ¸MßwoÒŒ­ €°¨¥ëıã>û©n«¯Õš£MOÀv4ƒ‚rËÅ²[~ı-ıàBK!S7(ç¡¦Õüç$YÖŞ§nzakg=^½ô±ªƒØó+§{’&­ÇÀ½?.!µ³;»®¬ÎÌş@®£ÿ|î~1œ#ºYnièÍÙÙ‡_şl_ä8¼ù² f5ĞÅ”ö`•
+íuÔQnÙ÷èñ~åûÄíËHŸw&ÛfMAÚø¡òÑ;gk–¢4‡yòB„
+*şÕDÍpArØÀ0a×<Ü“ó¯k5Í¤ÃX•f–+[Ò¦«g¤¾Ö@à¬L-İ¤°b%—§ÿifYÜëØ;ã«™ÉD„Œ½—a7¾Nâ÷ªÎwúMo:c„c°¡ ®ÌÀd\õÏ¢/nkû¨†R2¦ºöòC‹à++<ò–$
+ß¨Ì4ß…y*c–¾r«ç‹?/:$TõBW's° ƒ£¯#rtKv)¯îk0, ×BÏ) ùˆéÜ&¯ÁÊ³
+»R‹)ÆIüãTˆm5±	>'bkrÙxàiªb6‰Me=ÓU.±šÀçô	ı”0A&qÌlWK]5œıo%>ø31­vëyò
+
+FÕûí^ÀŠqZ¤vÔ• °ĞÖ(jÁkj¬îş2ÑC<¨ô´«•ô8%£1U:›2ÇìÈAø€šİÒ…”Ğ°¸Š0â 6·Æ6Ø~¹j—z.›m§"5üÿz×ËÖfÍgÇÁÍ$²=”PøúI]Äš¹­°Ò)t+2ç„1T¨ËõÜõ­³~^KóÆ’¹3¾ü]Ë&.×Á§Ö²u–®ºÖİ¾Ó@À«’_eâNË®ˆ…ŸŒä½dÙÔÛW¬µ™ ­D¢ˆğˆoÒÒ^Ù:Š6"Hß£“õ½aœ!I,}ˆ: >eQwĞ8÷1x÷İÅÇgÇÉúAÓ“QÀöìf-êj†Iuxkâ6¶c´bQ½Èq{òˆÆßPÍ¼p¸|ğ$Jé±x«¹·!ºş]@vC\F;T÷Lƒò“Q[£ga"£a^cûÀR…TéwÕóKÑ—Ê{ÂïäŸÚ¼GõÛÿH'¿¸ïlÊÔ¿—ÁŞşEıpÈTS’)(l*Ÿ(£„ÅPÛn“d@èLXÊ³N» òƒJà{³Õ“õ9R¬f8œW[oÌX,S³å¨ñYÅ,§ÁêÀøJ2"n©Ú>Ò³M:ÂeŸ”šAÍ¥<#>™RŞÔ€Ü|`òù—`ûÍÅëè”Œé"hHÏ{3‘½¥K›5´ì4àXµÜ³±sÍVm:eC­4ŠL=A<õ~_·óÚpØØ}’ÛWmŒßÀRcç45:é¥n LÃv•!BRDŞÃ,ÃôbşèJ$–`’BfR3´ë’Âk*2öÔÏéóì˜¦²˜ÔoZó³Äã6	™Èv" òÛÆ‡4)LtñYé•ÆèÇ6*¿îÂãÖ~y$,çÄ0É­N,Ø®ÕPbb>KE´³Ü/AñÍVO¼ªò¼f t06š ìlpêXS˜Oº6@af “KX“ÉŞ¿ëåpe8%)±/b[Øí§îÚd`c=Qßvó¿ãƒğÏ»#ç}6ˆdÛÄt´ÛOÖµ+	¬ssNÀ™ôß§ŸáÕ0.3c“l•…"ÉƒãGƒ©ôf`“­
+ $Ñ¿:êÂÜg)!ÍÀ•ØdşÅŸoh3™ºø‰n±AúñÎl¦!k_V?òú¥aTdÏ_(1j˜²aG›ÿ,Æ÷fÙ²¹ÈC-iÜzÊºŞ¹Y˜Ûã‡ßà³yòçËs,Š!²åñnÅì®œıÍ"½#¥âşq›W1“õø»v¢lK7¢ç™,ê™ezŸ…ˆr:öãÜeßŒq9˜¢âQ- +Ù¤Ôuf¿`ŒÊ.DÜ r$ëBÖ´zŠ¨¨–%¤iÛ¸’Áöp\¬ÛÍ‚¾Œÿ‡Zœü|Öa'¾˜¬\§D•t'÷Ò~*³>6&´É [C&-s»*‰Vã}œ+ºëY{ß<¬ {W§Æuæ¬½ÿFT“Ú¤Ó‚ŠbXØ‹p"¦†+‰İõÆ°8ü³İ#=Ãz»ešĞ>÷cNò.ùq˜a¿eğy×007Ír[ƒªŠ$å1®õ­'h½pv@Lréü´@wïNc$Ğ ÊÇà1ıÑô¤9hÃäYf`_s¥C÷ôÑ:¡ãæ‰€}ĞFe&Ú4L°·İ€–Ög²EëNäø:;AÙS&L'™ÃzŸ—À$Ò7ËIÉSÖ°³n•xŞØU™kvR¶ú'RÄ+óNà}0÷üC«)o©,ÃCq'ír|69ÃæCÉ Ó°²ÖÛŸt#á0LFËQÕá/Îštiœ‡zc _û/ao—ïôæ5 î©Äi¥÷^ÓµÍp™Ø¥‘Zô‘`'Ş"Yø×tXİÙ8:$RÁ¿šcê¤äE½ài:-[Ù€r¿•nà0gÌÀ<@l©Âø«èÕ+!|„Ì%ŸªØh”Ú#}©:KĞ=]“52+jF+(¶¸¥ğvsU:Ô·V_Zÿô9ÈåPvˆ¡‹½Øa¡øBk)ÙhßçŸ6p ìT/Jğ)ØJ·<ùKBú…Œïm¢zøcËU$×hÁi¤Şdã)"ç,İX|ÔI‘Ö¢ŞKL,&Ö¹.#¤ğyxÖ*ºsÈ™Dh¨2¬YfÇÓó6îİÆãBÁ
+[ç¼Ûe-îq%í{ó^+°œ„ŞëusæA›_-¿ ãØÉ=\‹¥²d†}Ú; ë<89ô–Ø%HæQĞZ˜:ÈÇp™µúâÜZì04z

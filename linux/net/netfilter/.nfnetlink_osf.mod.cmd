@@ -1,4 +1,6 @@
-IC_IOREMAP) \
-    $(wildcard include/config/VIRT_TO_BUS) \
-    $(wildcard include/config/GENERIC_DEVMEM_IS_ALLOWED) \
-  i
+ity *cap)
+{
+	struct cx23885_dev *dev = video_drvdata(file);
+	struct cx23885_tsport  *tsport = &dev->ts1;
+
+	strscpy(cap->d

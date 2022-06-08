@@ -1,80 +1,78 @@
-INJECTION) \
-    $(wildcard include/config/LATENCYTOP) \
-    $(wildcard include/config/KUNIT) \
-    $(wildcard include/config/FUNCTION_GRAPH_TRACER) \
-    $(wildcard include/config/BCACHE) \
-    $(wildcard include/config/VMAP_STACK) \
-    $(wildcard include/config/SECURITY) \
-    $(wildcard include/config/BPF_SYSCALL) \
-    $(wildcard include/config/GCC_PLUGIN_STACKLEAK) \
-    $(wildcard include/config/X86_MCE) \
-    $(wildcard include/config/KRETPROBES) \
-    $(wildcard include/config/RETHOOK) \
-    $(wildcard include/config/ARCH_HAS_PARANOID_L1D_FLUSH) \
-    $(wildcard include/config/ARCH_TASK_STRUCT_ON_STACK) \
-    $(wildcard include/config/DEBUG_RSEQ) \
-  include/uapi/linux/sched.h \
-  include/linux/pid.h \
-  include/linux/rculist.h \
-    $(wildcard include/config/PROVE_RCU_LIST) \
-  include/linux/sem.h \
-  include/uapi/linux/sem.h \
-  include/linux/ipc.h \
-  include/linux/rhashtable-types.h \
-  include/uapi/linux/ipc.h \
-  arch/x86/include/generated/uapi/asm/ipcbuf.h \
-  include/uapi/asm-generic/ipcbuf.h \
-  arch/x86/include/uapi/asm/sembuf.h \
-  include/linux/shm.h \
-  include/uapi/linux/shm.h \
-  include/uapi/asm-generic/hugetlb_encode.h \
-  arch/x86/include/uapi/asm/shmbuf.h \
-  include/uapi/asm-generic/shmbuf.h \
-  arch/x86/include/asm/shmparam.h \
-  include/linux/plist.h \
-    $(wildcard include/config/DEBUG_PLIST) \
-  include/linux/hrtimer.h \
-    $(wildcard include/config/HIGH_RES_TIMERS) \
-    $(wildcard include/config/TIME_LOW_RES) \
-    $(wildcard include/config/TIMERFD) \
-  include/linux/hrtimer_defs.h \
-  include/linux/timerqueue.h \
-  include/linux/seccomp.h \
-    $(wildcard include/config/SECCOMP) \
-    $(wildcard include/config/HAVE_ARCH_SECCOMP_FILTER) \
-    $(wildcard include/config/SECCOMP_FILTER) \
-    $(wildcard include/config/CHECKPOINT_RESTORE) \
-    $(wildcard include/config/SECCOMP_CACHE_DEBUG) \
-  include/uapi/linux/seccomp.h \
-  arch/x86/include/asm/seccomp.h \
-  arch/x86/include/asm/unistd.h \
-  arch/x86/include/uapi/asm/unistd.h \
-  arch/x86/include/generated/uapi/asm/unistd_32.h \
-  include/asm-generic/seccomp.h \
-  include/uapi/linux/unistd.h \
-  include/linux/resource.h \
-  include/uapi/linux/resource.h \
-  arch/x86/include/generated/uapi/asm/resource.h \
-  include/asm-generic/resource.h \
-  include/uapi/asm-generic/resource.h \
-  include/linux/latencytop.h \
-  include/linux/sched/prio.h \
-  include/linux/sched/types.h \
-  include/linux/signal_types.h \
-    $(wildcard include/config/OLD_SIGACTION) \
-  include/uapi/linux/signal.h \
-  arch/x86/include/asm/signal.h \
-  arch/x86/include/uapi/asm/signal.h \
-  include/uapi/asm-generic/signal-defs.h \
-  arch/x86/include/uapi/asm/siginfo.h \
-  include/uapi/asm-generic/siginfo.h \
-  include/linux/syscall_user_dispatch.h \
-  include/linux/task_io_accounting.h \
-    $(wildcard include/config/TASK_IO_ACCOUNTING) \
-  include/linux/posix-timers.h \
-  include/linux/alarmtimer.h \
-    $(wildcard include/config/RTC_CLASS) \
-  include/uapi/linux/rseq.h \
-  include/linux/kcsan.h \
-  arch/x86/include/asm/uaccess.h \
- 
+mempolicy.h \
+  include/linux/freezer.h \
+  include/uapi/linux/i2c.h \
+  include/linux/spi/spi.h \
+    $(wildcard include/config/SPI_SLAVE) \
+  include/linux/scatterlist.h \
+    $(wildcard include/config/NEED_SG_DMA_LENGTH) \
+    $(wildcard include/config/DEBUG_SG) \
+    $(wildcard include/config/SGL_ALLOC) \
+    $(wildcard include/config/ARCH_NO_SG_CHAIN) \
+    $(wildcard include/config/SG_POOL) \
+  include/linux/gpio/consumer.h \
+    $(wildcard include/config/OF_GPIO) \
+    $(wildcard include/config/GPIO_SYSFS) \
+  include/uapi/linux/spi/spi.h \
+  include/media/v4l2-fh.h \
+  include/media/v4l2-mediabus.h \
+  include/sound/core.h \
+    $(wildcard include/config/SND_DYNAMIC_MINORS) \
+    $(wildcard include/config/SND_MAX_CARDS) \
+    $(wildcard include/config/SND_MAJOR) \
+    $(wildcard include/config/SND_DEBUG) \
+    $(wildcard include/config/SND_MIXER_OSS) \
+    $(wildcard include/config/SND_OSSEMUL) \
+    $(wildcard include/config/ISA_DMA_API) \
+    $(wildcard include/config/SND_VERBOSE_PRINTK) \
+    $(wildcard include/config/SND_DEBUG_VERBOSE) \
+    $(wildcard include/config/GAMEPORT) \
+  include/sound/pcm.h \
+    $(wildcard include/config/SND_PCM_OSS) \
+    $(wildcard include/config/SND_VERBOSE_PROCFS) \
+    $(wildcard include/config/SND_PCM_XRUN_DEBUG) \
+  include/sound/asound.h \
+  include/uapi/sound/asound.h \
+  include/sound/memalloc.h \
+    $(wildcard include/config/GENERIC_ALLOCATOR) \
+    $(wildcard include/config/SND_DMA_SGBUF) \
+    $(wildcard include/config/HAS_DMA) \
+  include/linux/dma-direction.h \
+  include/sound/minors.h \
+  include/linux/pm_qos.h \
+    $(wildcard include/config/CPU_IDLE) \
+  include/sound/pcm_oss.h \
+    $(wildcard include/config/SND_PCM_OSS_PLUGINS) \
+  drivers/media/pci/cx18/cx18-driver.h \
+  include/linux/delay.h \
+  arch/x86/include/asm/delay.h \
+  include/asm-generic/delay.h \
+  include/linux/pci.h \
+    $(wildcard include/config/PCI_IOV) \
+    $(wildcard include/config/PCIEAER) \
+    $(wildcard include/config/PCIEPORTBUS) \
+    $(wildcard include/config/PCIEASPM) \
+    $(wildcard include/config/HOTPLUG_PCI_PCIE) \
+    $(wildcard include/config/PCIE_PTM) \
+    $(wildcard include/config/PCIE_DPC) \
+    $(wildcard include/config/PCI_ATS) \
+    $(wildcard include/config/PCI_PRI) \
+    $(wildcard include/config/PCI_PASID) \
+    $(wildcard include/config/PCI_P2PDMA) \
+    $(wildcard include/config/PCI_DOMAINS_GENERIC) \
+    $(wildcard include/config/PCI_DOMAINS) \
+    $(wildcard include/config/PCI_QUIRKS) \
+    $(wildcard include/config/ACPI_MCFG) \
+    $(wildcard include/config/HOTPLUG_PCI) \
+    $(wildcard include/config/EEH) \
+  include/uapi/linux/pci.h \
+  include/uapi/linux/pci_regs.h \
+  include/linux/pci_ids.h \
+  include/linux/dmapool.h \
+  arch/x86/include/asm/pci.h \
+    $(wildcard include/config/PCI_MSI_IRQ_DOMAIN) \
+    $(wildcard include/config/VMD) \
+  arch/x86/include/asm/memtype.h \
+  include/asm-generic/pci.h \
+  include/linux/dma-mapping.h \
+    $(wildcard include/config/DMA_API_DEBUG) \
+    $(wildcard include/config/NEED_DMA_MA

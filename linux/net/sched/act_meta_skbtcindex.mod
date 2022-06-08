@@ -1,2 +1,1 @@
-linux/log2.h \
-    $(wildcard inc
+tialize CI: Error %d.\n", __func_

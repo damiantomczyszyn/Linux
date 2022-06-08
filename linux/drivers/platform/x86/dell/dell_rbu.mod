@@ -1,2 +1,3 @@
-NGARCH) \
-    $(wildcard include/confi
+.h \
+  include/uapi/linux/shm.h \
+  in

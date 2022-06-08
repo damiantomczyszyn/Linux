@@ -1,1 +1,2 @@
-$(wildcard include/config/TR
+th =
+			    txclk_tx_s_max_p

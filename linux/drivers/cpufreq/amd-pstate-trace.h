@@ -1,57 +1,92 @@
-ude/config/PARAVIRT_XXL) \
-  arch/x86/include/asm/disabled-features.h \
-    $(wildcard include/config/X86_SMAP) \
-    $(wildcard include/config/X86_UMIP) \
-    $(wildcard include/config/X86_INTEL_MEMORY_PROTECTION_KEYS) \
-    $(wildcard include/config/X86_5LEVEL) \
-    $(wildcard include/config/PAGE_TABLE_ISOLATION) \
-    $(wildcard include/config/INTEL_IOMMU_SVM) \
-    $(wildcard include/config/X86_SGX) \
-  include/asm-generic/bitops/const_hweight.h \
-  include/asm-generic/bitops/instrumented-atomic.h \
-  include/linux/instrumented.h \
-  include/asm-generic/bitops/instrumented-non-atomic.h \
-    $(wildcard include/config/KCSAN_ASSUME_PLAIN_WRITES_ATOMIC) \
-  include/asm-generic/bitops/instrumented-lock.h \
-  include/asm-generic/bitops/le.h \
-  arch/x86/include/uapi/asm/byteorder.h \
-  include/linux/byteorder/little_endian.h \
-  include/uapi/linux/byteorder/little_endian.h \
-  include/linux/swab.h \
-  include/uapi/linux/swab.h \
-  arch/x86/include/uapi/asm/swab.h \
-  include/linux/byteorder/generic.h \
-  include/asm-generic/bitops/ext2-atomic-setbit.h \
-  include/vdso/math64.h \
-  include/linux/time64.h \
-  include/vdso/time64.h \
-  include/uapi/linux/time.h \
-  include/uapi/linux/time_types.h \
-  include/linux/time32.h \
-  include/linux/timex.h \
-  include/uapi/linux/timex.h \
-  include/uapi/linux/param.h \
-  arch/x86/include/generated/uapi/asm/param.h \
-  include/asm-generic/param.h \
-    $(wildcard include/config/HZ) \
-  include/uapi/asm-generic/param.h \
-  arch/x86/include/asm/timex.h \
-    $(wildcard include/config/X86_TSC) \
-  arch/x86/include/asm/processor.h \
-    $(wildcard include/config/X86_VMX_FEATURE_NAMES) \
-    $(wildcard include/config/X86_IOPL_IOPERM) \
-    $(wildcard include/config/STACKPROTECTOR) \
-    $(wildcard include/config/VM86) \
-    $(wildcard include/config/X86_DEBUGCTLMSR) \
-    $(wildcard include/config/CPU_SUP_AMD) \
-    $(wildcard include/config/XEN) \
-  arch/x86/include/asm/processor-flags.h \
-  arch/x86/include/uapi/asm/processor-flags.h \
-  include/linux/mem_encrypt.h \
-    $(wildcard include/config/ARCH_HAS_MEM_ENCRYPT) \
-    $(wildcard include/config/AMD_MEM_ENCRYPT) \
-  arch/x86/include/asm/mem_encrypt.h \
-  include/linux/init.h \
-    $(wildcard include/config/STRICT_KERNEL_RWX) \
-    $(wildcard include/config/STRICT_MODULE_RWX) \
-    $(wildcard include/config/LTO_CL
+args);
+
+	return err;
+}
+
+static int cx23885_api_func(void *priv, u32 cmd, int in, int out, u32 data[CX2341X_MBOX_MAX_DATA])
+{
+	return cx23885_mbox_func(priv, cmd, in, out, data);
+}
+
+static int cx23885_find_mailbox(struct cx23885_dev *dev)
+{
+	u32 signature[4] = {
+		0x12345678, 0x34567812, 0x56781234, 0x78123456
+	};
+	int signaturecnt = 0;
+	u32 value;
+	int i;
+
+	dprintk(2, "%s()\n", __func__);
+
+	for (i = 0; i < CX23885_FIRM_IMAGE_SIZE; i++) {
+		mc417_memory_read(dev, i, &value);
+		if (value == signature[signaturecnt])
+			signaturecnt++;
+		else
+			signaturecnt = 0;
+		if (4 == signaturecnt) {
+			dprintk(1, "Mailbox signature found at 0x%x\n", i+1);
+			return i+1;
+		}
+	}
+	pr_err("Mailbox signature values not found!\n");
+	return -1;
+}
+
+static int cx23885_load_firmware(struct cx23885_dev *dev)
+{
+	static const unsigned char magic[8] = {
+		0xa7, 0x0d, 0x00, 0x00, 0x66, 0xbb, 0x55, 0xaa
+	};
+	const struct firmware *firmware;
+	int i, retval = 0;
+	u32 value = 0;
+	u32 gpio_output = 0;
+	u32 gpio_value;
+	u32 checksum = 0;
+	u32 *dataptr;
+
+	dprintk(2, "%s()\n", __func__);
+
+	/* Save GPIO settings before reset of APU */
+	retval |= mc417_memory_read(dev, 0x9020, &gpio_output);
+	retval |= mc417_memory_read(dev, 0x900C, &gpio_value);
+
+	retval  = mc417_register_write(dev,
+		IVTV_REG_VPU, 0xFFFFFFED);
+	retval |= mc417_register_write(dev,
+		IVTV_REG_HW_BLOCKS, IVTV_CMD_HW_BLOCKS_RST);
+	retval |= mc417_register_write(dev,
+		IVTV_REG_ENC_SDRAM_REFRESH, 0x80000800);
+	retval |= mc417_register_write(dev,
+		IVTV_REG_ENC_SDRAM_PRECHARGE, 0x1A);
+	retval |= mc417_register_write(dev,
+		IVTV_REG_APU, 0);
+
+	if (retval != 0) {
+		pr_err("%s: Error with mc417_register_write\n",
+			__func__);
+		return -1;
+	}
+
+	retval = request_firmware(&firmware, CX23885_FIRM_IMAGE_NAME,
+				  &dev->pci->dev);
+
+	if (retval != 0) {
+		pr_err("ERROR: Hotplug firmware request failed (%s).\n",
+		       CX23885_FIRM_IMAGE_NAME);
+		pr_err("Please fix your hotplug setup, the board will not work without firmware loaded!\n");
+		return -1;
+	}
+
+	if (firmware->size != CX23885_FIRM_IMAGE_SIZE) {
+		pr_err("ERROR: Firmware size mismatch (have %zu, expected %d)\n",
+		       firmware->size, CX23885_FIRM_IMAGE_SIZE);
+		release_firmware(firmware);
+		return -1;
+	}
+
+	if (0 != memcmp(firmware->data, magic, 8)) {
+		pr_err("ERROR: Firmware magic mismatch, wrong file?\n");
+		release_firmw

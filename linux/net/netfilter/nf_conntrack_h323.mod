@@ -1,3 +1,4 @@
-idate the following rules:
+// SPDX-License-Identifier: GPL-2.0-or-later
+/*
  *
- *  - would the adding of the <prev> -> <next> de
+ *  Support for CX23885 anal

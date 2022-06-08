@@ -1,23 +1,25 @@
-tic void zap_class(struct pending_free *pf, struct lock_class *class)
-{
-	struct lock_list *entry;
-	int i;
+"Television",
+		[CX23885_VMUX_CABLE]      = "Cable TV",
+		[CX23885_VMUX_DVB]        = "DVB",
+		[CX23885_VMUX_DEBUG]      = "for debug only",
+	};
+	unsigned int n;
+	dprintk(1, "%s()\n", __func__);
 
-	WARN_ON_ONCE(!class->key);
+	n = i->index;
+	if (n >= MAX_CX23885_INPUT)
+		return -EINVAL;
 
-	/*
-	 * Remove all dependencies this lock is
-	 * involved in:
-	 */
-	for_each_set_bit(i, list_entries_in_use, ARRAY_SIZE(list_entries)) {
-		entry = list_entries + i;
-		if (entry->class != class && entry->links_to != class)
-			continue;
-		__clear_bit(i, list_entries_in_use);
-		nr_list_entries--;
-		list_del_rcu(&entry->entry);
-	}
-	if (list_empty(&class->locks_after) &&
-	    list_empty(&class->locks_before)) {
-		list_move_tail(&class->lock_entry, &pf->zapped);
-		hlist_del_rcu(&
+	if (0 == INPUT(n)->type)
+		return -EINVAL;
+
+	i->index = n;
+	i->type  = V4L2_INPUT_TYPE_CAMERA;
+	strscpy(i->name, iname[INPUT(n)->type], sizeof(i->name));
+	i->std = CX23885_NORMS;
+	if ((CX23885_VMUX_TELEVISION == INPUT(n)->type) ||
+		(CX23885_VMUX_CABLE == INPUT(n)->type)) {
+		i->type = V4L2_INPUT_TYPE_TUNER;
+		i->audioset = 4;
+	} else {
+		/* Two select

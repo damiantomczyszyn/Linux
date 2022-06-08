@@ -1,2 +1,1 @@
-ude/config/PARAVIRT_XXL) \
-  arch/
+// SPDX-License-Identifier: GPL-2.

@@ -1,2 +1,2 @@
-pes.h \
-  include/asm-generic
+drivers/net/arcnet/arcnet.o
+

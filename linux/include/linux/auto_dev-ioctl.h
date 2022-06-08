@@ -1,7 +1,18 @@
-$(wildcard include/config/TRACE_BRANCH_PROFILING) \
-    $(wildcard include/config/PROFILE_ALL_BRANCHES) \
-    $(wildcard include/config/STACK_VALIDATION) \
-  include/linux/compiler_types.h \
-  arch/x86/include/generated/asm/rwonce.h \
-  include/asm-generic/rwonce.h \
-  include/linux/kasan-checks
+D_DVB:
+	case CX23885_BOARD_HAUPPAUGE_QUADHD_ATSC:
+		break;
+	default:
+		if (dev->tuner_type == TUNER_ABSENT)
+			return -EINVAL;
+		break;
+	}
+	if (0 != t->index)
+		return -EINVAL;
+
+	strscpy(t->name, "Television", sizeof(t->name));
+
+	call_all(dev, tuner, g_tuner, t);
+	return 0;
+}
+
+static int vidioc_

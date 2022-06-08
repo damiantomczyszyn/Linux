@@ -1,1 +1,2 @@
- $(wildcard include/config/SL
+e        *video_dev;
+	struct 

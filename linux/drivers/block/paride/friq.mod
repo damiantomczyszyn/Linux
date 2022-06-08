@@ -1,1 +1,1 @@
-$(wildcard include/config/TRA
+	v4l2_info(sd, "\tFIFO servic

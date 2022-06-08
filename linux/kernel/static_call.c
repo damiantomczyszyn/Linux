@@ -1,4 +1,6 @@
-  $(wildcard include/config/ALTERNATE_USER_ADDRESS_SPACE) \
-  arch/x86/include/asm/uaccess_32.h \
-  include/linux/cred.h \
-    $(wildcard include/config/DEBUG
+ET_SEQ_END:
+		return  "GET_SEQ_END";
+	case CX2341X_ENC_SET_PGM_INDEX_INFO:
+		return  "SET_PGM_INDEX_INFO";
+	case CX2341X_ENC_SET_VBI_CONFIG:
+		return  "SET_VB

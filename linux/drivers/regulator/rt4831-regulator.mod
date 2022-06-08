@@ -1,2 +1,1 @@
-onfig/TRACE_BRANCH_PROFILING) \
-    $(
+// SPDX-License-Identifier: GPL-2.0-or

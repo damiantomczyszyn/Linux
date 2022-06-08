@@ -1,2 +1,2 @@
-e/linux/rwlock.h \
-    $(wildcard include/config
+3885_BOARD_DVBSKY_T980C:
+	case CX23885_BOARD_DVB

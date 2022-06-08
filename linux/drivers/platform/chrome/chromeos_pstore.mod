@@ -1,2 +1,2 @@
-pes.h \
-  include/asm-generic/pgtable-nop4d
+\
+    $(wildcard include/config/HAVE_EFFICI

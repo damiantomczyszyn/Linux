@@ -1,3 +1,3 @@
-clude/config/RCU_FANOUT) \
-    $(wildcard include/config/RCU_FANOUT_LEAF) \
-  include/linux/page-flags-
+] IR controller */
+		allowed_protos = RC_PROTO_BIT_ALL_IR_DECODER;
+		/* The grey Hauppauge RC-5 remote 

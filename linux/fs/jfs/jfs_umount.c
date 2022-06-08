@@ -1,80 +1,126 @@
-ig/RCU_FANOUT) \
-    $(wildcard include/config/RCU_FANOUT_LEAF) \
-  include/linux/page-flags-layout.h \
-    $(wildcard include/config/KASAN_HW_TAGS) \
-  include/linux/numa.h \
-    $(wildcard include/config/NODES_SHIFT) \
-    $(wildcard include/config/NUMA_KEEP_MEMINFO) \
-    $(wildcard include/config/HAVE_ARCH_NODE_DEV_GROUP) \
-  arch/x86/include/asm/sparsemem.h \
-  include/generated/bounds.h \
-  include/linux/seqlock.h \
-  include/linux/ww_mutex.h \
-    $(wildcard include/config/DEBUG_RT_MUTEXES) \
-    $(wildcard include/config/DEBUG_WW_MUTEX_SLOWPATH) \
-  include/linux/rtmutex.h \
-  arch/x86/include/asm/mmu.h \
-    $(wildcard include/config/MODIFY_LDT_SYSCALL) \
-  include/linux/kmod.h \
-  include/linux/umh.h \
-  include/linux/gfp.h \
-    $(wildcard include/config/HIGHMEM) \
-    $(wildcard include/config/ZONE_DMA) \
-    $(wildcard include/config/ZONE_DMA32) \
-    $(wildcard include/config/ZONE_DEVICE) \
-    $(wildcard include/config/PM_SLEEP) \
-    $(wildcard include/config/CONTIG_ALLOC) \
-    $(wildcard include/config/CMA) \
-  include/linux/mmdebug.h \
-    $(wildcard include/config/DEBUG_VM) \
-    $(wildcard include/config/DEBUG_VM_PGFLAGS) \
-  include/linux/mmzone.h \
-    $(wildcard include/config/FORCE_MAX_ZONEORDER) \
-    $(wildcard include/config/MEMORY_ISOLATION) \
-    $(wildcard include/config/ZSMALLOC) \
-    $(wildcard include/config/MEMORY_HOTPLUG) \
-    $(wildcard include/config/COMPACTION) \
-    $(wildcard include/config/PAGE_EXTENSION) \
-    $(wildcard include/config/DEFERRED_STRUCT_PAGE_INIT) \
-    $(wildcard include/config/HAVE_MEMORYLESS_NODES) \
-    $(wildcard include/config/SPARSEMEM_EXTREME) \
-    $(wildcard include/config/HAVE_ARCH_PFN_VALID) \
-  include/linux/nodemask.h \
-  include/linux/pageblock-flags.h \
-    $(wildcard include/config/HUGETLB_PAGE_SIZE_VARIABLE) \
-  include/linux/page-flags.h \
-    $(wildcard include/config/ARCH_USES_PG_UNCACHED) \
-    $(wildcard include/config/MEMORY_FAILURE) \
-    $(wildcard include/config/PAGE_IDLE_FLAG) \
-    $(wildcard include/config/HUGETLB_PAGE_FREE_VMEMMAP) \
-    $(wildcard include/config/HUGETLB_PAGE_FREE_VMEMMAP_DEFAULT_ON) \
-    $(wildcard include/config/KSM) \
-  include/linux/local_lock.h \
-  include/linux/local_lock_internal.h \
-  include/linux/memory_hotplug.h \
-    $(wildcard include/config/HAVE_ARCH_NODEDATA_EXTENSION) \
-    $(wildcard include/config/ARCH_HAS_ADD_PAGES) \
-    $(wildcard include/config/MEMORY_HOTREMOVE) \
-  arch/x86/include/asm/mmzone.h \
-  arch/x86/include/asm/mmzone_32.h \
-  include/linux/topology.h \
-    $(wildcard include/config/USE_PERCPU_NUMA_NODE_ID) \
-    $(wildcard include/config/SCHED_SMT) \
-    $(wildcard include/config/SCHED_CLUSTER) \
-  include/linux/arch_topology.h \
-    $(wildcard include/config/ACPI_CPPC_LIB) \
-    $(wildcard include/config/GENERIC_ARCH_TOPOLOGY) \
-  include/linux/percpu.h \
-    $(wildcard include/config/NEED_PER_CPU_EMBED_FIRST_CHUNK) \
-    $(wildcard include/config/NEED_PER_CPU_PAGE_FIRST_CHUNK) \
-  arch/x86/include/asm/topology.h \
-    $(wildcard include/config/SCHED_MC_PRIO) \
-  arch/x86/include/asm/mpspec.h \
-    $(wildcard include/config/EISA) \
-    $(wildcard include/config/X86_MPPARSE) \
-  arch/x86/include/asm/mpspec_def.h \
-  arch/x86/include/asm/x86_init.h \
-  arch/x86/include/asm/apicdef.h \
-  include/asm-generic/topology.h \
-  include/linux/sysctl.h \
-    $(wildcard include/config/SYSCTL
+885_video_template = {
+	.name                 = "cx23885-video",
+	.fops                 = &video_fops,
+	.ioctl_ops	      = &video_ioctl_ops,
+	.tvnorms              = CX23885_NORMS,
+};
+
+void cx23885_video_unregister(struct cx23885_dev *dev)
+{
+	dprintk(1, "%s()\n", __func__);
+	cx23885_irq_remove(dev, 0x01);
+
+	if (dev->vbi_dev) {
+		if (video_is_registered(dev->vbi_dev))
+			video_unregister_device(dev->vbi_dev);
+		else
+			video_device_release(dev->vbi_dev);
+		dev->vbi_dev = NULL;
+	}
+	if (dev->video_dev) {
+		if (video_is_registered(dev->video_dev))
+			video_unregister_device(dev->video_dev);
+		else
+			video_device_release(dev->video_dev);
+		dev->video_dev = NULL;
+	}
+
+	if (dev->audio_dev)
+		cx23885_audio_unregister(dev);
+}
+
+int cx23885_video_register(struct cx23885_dev *dev)
+{
+	struct vb2_queue *q;
+	int err;
+
+	dprintk(1, "%s()\n", __func__);
+
+	/* Initialize VBI template */
+	cx23885_vbi_template = cx23885_video_template;
+	strscpy(cx23885_vbi_template.name, "cx23885-vbi",
+		sizeof(cx23885_vbi_template.name));
+
+	dev->tvnorm = V4L2_STD_NTSC_M;
+	dev->fmt = format_by_fourcc(V4L2_PIX_FMT_YUYV);
+	dev->field = V4L2_FIELD_INTERLACED;
+	dev->width = 720;
+	dev->height = norm_maxh(dev->tvnorm);
+
+	/* init video dma queues */
+	INIT_LIST_HEAD(&dev->vidq.active);
+
+	/* init vbi dma queues */
+	INIT_LIST_HEAD(&dev->vbiq.active);
+
+	cx23885_irq_add_enable(dev, 0x01);
+
+	if ((TUNER_ABSENT != dev->tuner_type) &&
+			((dev->tuner_bus == 0) || (dev->tuner_bus == 1))) {
+		struct v4l2_subdev *sd = NULL;
+
+		if (dev->tuner_addr)
+			sd = v4l2_i2c_new_subdev(&dev->v4l2_dev,
+				&dev->i2c_bus[dev->tuner_bus].i2c_adap,
+				"tuner", dev->tuner_addr, NULL);
+		else
+			sd = v4l2_i2c_new_subdev(&dev->v4l2_dev,
+				&dev->i2c_bus[dev->tuner_bus].i2c_adap,
+				"tuner", 0, v4l2_i2c_tuner_addrs(ADDRS_TV));
+		if (sd) {
+			struct tuner_setup tun_setup;
+
+			memset(&tun_setup, 0, sizeof(tun_setup));
+			tun_setup.mode_mask = T_ANALOG_TV;
+			tun_setup.type = dev->tuner_type;
+			tun_setup.addr = v4l2_i2c_subdev_addr(sd);
+			tun_setup.tuner_callback = cx23885_tuner_callback;
+
+			v4l2_subdev_call(sd, tuner, s_type_addr, &tun_setup);
+
+			if ((dev->board == CX23885_BOARD_LEADTEK_WINFAST_PXTV1200) ||
+			    (dev->board == CX23885_BOARD_LEADTEK_WINFAST_PXPVR2200)) {
+				struct xc2028_ctrl ctrl = {
+					.fname = XC2028_DEFAULT_FIRMWARE,
+					.max_len = 64
+				};
+				struct v4l2_priv_tun_config cfg = {
+					.tuner = dev->tuner_type,
+					.priv = &ctrl
+				};
+				v4l2_subdev_call(sd, tuner, s_config, &cfg);
+			}
+
+			if (dev->board == CX23885_BOARD_AVERMEDIA_HC81R) {
+				struct xc2028_ctrl ctrl = {
+					.fname = "xc3028L-v36.fw",
+					.max_len = 64
+				};
+				struct v4l2_priv_tun_config cfg = {
+					.tuner = dev->tuner_type,
+					.priv = &ctrl
+				};
+				v4l2_subdev_call(sd, tuner, s_config, &cfg);
+			}
+		}
+	}
+
+	/* initial device configuration */
+	mutex_lock(&dev->lock);
+	cx23885_set_tvnorm(dev, dev->tvnorm);
+	cx23885_video_mux(dev, 0);
+	cx23885_audio_mux(dev, 0);
+	mutex_unlock(&dev->lock);
+
+	q = &dev->vb2_vidq;
+	q->type = V4L2_BUF_TYPE_VIDEO_CAPTURE;
+	q->io_modes = VB2_MMAP | VB2_USERPTR | VB2_DMABUF | VB2_READ;
+	q->gfp_flags = GFP_DMA32;
+	q->min_buffers_needed = 2;
+	q->drv_priv = dev;
+	q->buf_struct_size = sizeof(struct cx23885_buffer);
+	q->ops = &cx23885_video_qops;
+	q->mem_ops = &vb2_dma_sg_memops;
+	q->timestamp_flags = V4L2_BUF_FLAG_TIMESTAMP_MONOTONIC;
+	q->lock = &dev->lock;
+	q->de

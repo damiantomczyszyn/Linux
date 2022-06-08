@@ -1,1 +1,4 @@
-cmd_drivers/media/rc/keymaps/rc-reddo.mod := { echo  drivers/media/rc/keymaps/rc-reddo.o;  echo; } > drivers/media/rc/keymaps/rc-reddo.mod
+			/* attach tuner */
+			memset(&ts2020_config, 0, sizeof(ts2020_config));
+			ts2020_config.fe = fe0->dvb.frontend;
+			ts2020_config.get_ag

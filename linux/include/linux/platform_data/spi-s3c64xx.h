@@ -1,30 +1,48 @@
-e/linux/rwlock.h \
-    $(wildcard include/config/PREEMPT) \
-  include/linux/spinlock_api_smp.h \
-    $(wildcard include/config/INLINE_SPIN_LOCK) \
-    $(wildcard include/config/INLINE_SPIN_LOCK_BH) \
-    $(wildcard include/config/INLINE_SPIN_LOCK_IRQ) \
-    $(wildcard include/config/INLINE_SPIN_LOCK_IRQSAVE) \
-    $(wildcard include/config/INLINE_SPIN_TRYLOCK) \
-    $(wildcard include/config/INLINE_SPIN_TRYLOCK_BH) \
-    $(wildcard include/config/UNINLINE_SPIN_UNLOCK) \
-    $(wildcard include/config/INLINE_SPIN_UNLOCK_BH) \
-    $(wildcard include/config/INLINE_SPIN_UNLOCK_IRQ) \
-    $(wildcard include/config/INLINE_SPIN_UNLOCK_IRQRESTORE) \
-    $(wildcard include/config/GENERIC_LOCKBREAK) \
-  include/linux/rwlock_api_smp.h \
-    $(wildcard include/config/INLINE_READ_LOCK) \
-    $(wildcard include/config/INLINE_WRITE_LOCK) \
-    $(wildcard include/config/INLINE_READ_LOCK_BH) \
-    $(wildcard include/config/INLINE_WRITE_LOCK_BH) \
-    $(wildcard include/config/INLINE_READ_LOCK_IRQ) \
-    $(wildcard include/config/INLINE_WRITE_LOCK_IRQ) \
-    $(wildcard include/config/INLINE_READ_LOCK_IRQSAVE) \
-    $(wildcard include/config/INLINE_WRITE_LOCK_IRQSAVE) \
-    $(wildcard include/config/INLINE_READ_TRYLOCK) \
-    $(wildcard include/config/INLINE_WRITE_TRYLOCK) \
-    $(wildcard include/config/INLINE_READ_UNLOCK) \
-    $(wildcard include/config/INLINE_WRITE_UNLOCK) \
-    $(wildcard include/config/INLINE_READ_UNLOCK_BH) \
-    $(wildcard include/config/INLINE_WRITE_UNLOCK_BH) \
-    $(wildcard include/config/INLINE_READ_UNLOCK_IRQ) \
+// SPDX-License-Identifier: GPL-2.0-or-later
+/*
+ * cimax2.c
+ *
+ * CIMax2(R) SP2 driver in conjunction with NetUp Dual DVB-S2 CI card
+ *
+ * Copyright (C) 2009 NetUP Inc.
+ * Copyright (C) 2009 Igor M. Liplianin <liplianin@netup.ru>
+ * Copyright (C) 2009 Abylay Ospan <aospan@netup.ru>
+ */
+
+#include "cx23885.h"
+#include "cimax2.h"
+#include <media/dvb_ca_en50221.h>
+
+/* Max transfer size done by I2C transfer functions */
+#define MAX_XFER_SIZE  64
+
+/**** Bit definitions for MC417_RWD and MC417_OEN registers  ***
+  bits 31-16
++-----------+
+| Reserved  |
++-----------+
+  bit 15  bit 14  bit 13 bit 12  bit 11  bit 10  bit 9   bit 8
++-------+-------+-------+-------+-------+-------+-------+-------+
+|  WR#  |  RD#  |       |  ACK# |  ADHI |  ADLO |  CS1# |  CS0# |
++-------+-------+-------+-------+-------+-------+-------+-------+
+ bit 7   bit 6   bit 5   bit 4   bit 3   bit 2   bit 1   bit 0
++-------+-------+-------+-------+-------+-------+-------+-------+
+|  DATA7|  DATA6|  DATA5|  DATA4|  DATA3|  DATA2|  DATA1|  DATA0|
++-------+-------+-------+-------+-------+-------+-------+-------+
+***/
+/* MC417 */
+#define NETUP_DATA		0x000000ff
+#define NETUP_WR		0x00008000
+#define NETUP_RD		0x00004000
+#define NETUP_ACK		0x00001000
+#define NETUP_ADHI		0x00000800
+#define NETUP_ADLO		0x00000400
+#define NETUP_CS1		0x00000200
+#define NETUP_CS0		0x00000100
+#define NETUP_EN_ALL		0x00001000
+#define NETUP_CTRL_OFF		(NETUP_CS1 | NETUP_CS0 | NETUP_WR | NETUP_RD)
+#define NETUP_CI_CTL		0x04
+#define NETUP_CI_RD		1
+
+#define NETUP_IRQ_DETAM		0x1
+#define NETUP_IRQ_I

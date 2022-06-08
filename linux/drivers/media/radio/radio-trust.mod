@@ -1,2 +1,2 @@
-drivers/media/radio/radio-trust.o
-
+         = &mpeg_fops,
+	.ioctl_ops 

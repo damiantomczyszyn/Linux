@@ -1,16 +1,16 @@
-inline bool usage_accumulate(struct lock_list *entry, void *mask)
-{
-	if (!entry->only_xr)
-		*(unsigned long *)mask |= entry->class->usage_mask;
-	else /* Mask out _READ usage bits */
-		*(unsigned long *)mask |= (entry->class->usage_mask & LOCKF_IRQ);
+t this point we're no longer running the old task and
+	 * sending an IPI (below) ensures the sibling will no longer be running
+	 * their task. This ensures there is no inter-sibling overlap between
+	 * non-matching user state.
+	 */
+	for_each_cpu(i, smt_mask) {
+		rq_i = cpu_rq(i);
 
-	return false;
-}
-
-/*
- * There is a strong dependency path in the dependency graph: A -> B, and now
- * we need to decide which usage bit of B conflicts with the usage bits of A,
- * i.e. which usage bit of B may introduce safe->unsafe deadlocks.
- *
- * As above, if only_xr is false, which means A -> B has -(*N)->
+		/*
+		 * An online sibling might have gone offline before a task
+		 * could be picked for it, or it might be offline but later
+		 * happen to come online, but its too late and nothing was
+		 * picked for it.  That's Ok - it will pick tasks for itself,
+		 * so ignore it.
+		 */
+		

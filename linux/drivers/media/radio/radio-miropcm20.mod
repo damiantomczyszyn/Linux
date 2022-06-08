@@ -1,2 +1,1 @@
-drivers/media/radio/radio-miropcm20.o
-
+tialize CI: Error %d.\n", __func__, ret

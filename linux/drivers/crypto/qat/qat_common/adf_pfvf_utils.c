@@ -1,40 +1,63 @@
-.h \
-  include/linux/percpu-refcount.h \
-  include/linux/kasan.h \
-    $(wildcard include/config/KASAN_STACK) \
-    $(wildcard include/config/KASAN_VMALLOC) \
-    $(wildcard include/config/KASAN_INLINE) \
-  include/linux/kasan-enabled.h \
-  include/linux/device.h \
-    $(wildcard include/config/GENERIC_MSI_IRQ_DOMAIN) \
-    $(wildcard include/config/GENERIC_MSI_IRQ) \
-    $(wildcard include/config/ENERGY_MODEL) \
-    $(wildcard include/config/PINCTRL) \
-    $(wildcard include/config/DMA_OPS) \
-    $(wildcard include/config/DMA_DECLARE_COHERENT) \
-    $(wildcard include/config/DMA_CMA) \
-    $(wildcard include/config/SWIOTLB) \
-    $(wildcard include/config/ARCH_HAS_SYNC_DMA_FOR_DEVICE) \
-    $(wildcard include/config/ARCH_HAS_SYNC_DMA_FOR_CPU) \
-    $(wildcard include/config/ARCH_HAS_SYNC_DMA_FOR_CPU_ALL) \
-    $(wildcard include/config/DMA_OPS_BYPASS) \
-    $(wildcard include/config/DEVTMPFS) \
-    $(wildcard include/config/SYSFS_DEPRECATED) \
-  include/linux/dev_printk.h \
-  include/linux/ratelimit.h \
-  include/linux/sched.h \
-    $(wildcard include/config/VIRT_CPU_ACCOUNTING_NATIVE) \
-    $(wildcard include/config/SCHED_INFO) \
-    $(wildcard include/config/SCHEDSTATS) \
-    $(wildcard include/config/SCHED_CORE) \
-    $(wildcard include/config/FAIR_GROUP_SCHED) \
-    $(wildcard include/config/RT_GROUP_SCHED) \
-    $(wildcard include/config/RT_MUTEXES) \
-    $(wildcard include/config/UCLAMP_TASK) \
-    $(wildcard include/config/UCLAMP_BUCKETS_COUNT) \
-    $(wildcard include/config/CGROUP_SCHED) \
-    $(wildcard include/config/BLK_DEV_IO_TRACE) \
-    $(wildcard include/config/PSI) \
-    $(wildcard include/config/COMPAT_BRK) \
-    $(wildcard include/config/CGROUPS) \
-  
+!try_module_get(client_tuner->dev.driver->owner)) {
+				i2c_unregister_device(client_tuner);
+				client_tuner = NULL;
+				goto frontend_detach;
+			}
+			port->i2c_client_tuner = client_tuner;
+
+			dev->ts1.analog_fe.tuner_priv = client_tuner;
+			memcpy(&dev->ts1.analog_fe.ops.tuner_ops,
+			       &fe0->dvb.frontend->ops.tuner_ops,
+			       sizeof(struct dvb_tuner_ops));
+			break;
+		}
+		break;
+	default:
+		pr_info("%s: The frontend of your DVB/ATSC card  isn't supported yet\n",
+			dev->name);
+		break;
+	}
+
+	if ((NULL == fe0->dvb.frontend) || (fe1 && NULL == fe1->dvb.frontend)) {
+		pr_err("%s: frontend initialization failed\n",
+		       dev->name);
+		goto frontend_detach;
+	}
+
+	/* define general-purpose callback pointer */
+	fe0->dvb.frontend->callback = cx23885_tuner_callback;
+	if (fe1)
+		fe1->dvb.frontend->callback = cx23885_tuner_callback;
+#if 0
+	/* Ensure all frontends negotiate bus access */
+	fe0->dvb.frontend->ops.ts_bus_ctrl = cx23885_dvb_bus_ctrl;
+	if (fe1)
+		fe1->dvb.frontend->ops.ts_bus_ctrl = cx23885_dvb_bus_ctrl;
+#endif
+
+	/* Put the tuner in standby to keep it quiet */
+	call_all(dev, tuner, standby);
+
+	if (fe0->dvb.frontend->ops.analog_ops.standby)
+		fe0->dvb.frontend->ops.analog_ops.standby(fe0->dvb.frontend);
+
+	/* register everything */
+	ret = vb2_dvb_register_bus(&port->frontends, THIS_MODULE, port,
+				   &dev->pci->dev, NULL,
+				   adapter_nr, mfe_shared);
+	if (ret)
+		goto frontend_detach;
+
+	ret = dvb_register_ci_mac(port);
+	if (ret)
+		goto frontend_detach;
+
+	return 0;
+
+frontend_detach:
+	/* remove I2C client for SEC */
+	client_sec = port->i2c_client_sec;
+	if (client_sec) {
+		module_put(client_sec->dev.driver->owner);
+		i2c_unregister_device(client_sec);
+		port

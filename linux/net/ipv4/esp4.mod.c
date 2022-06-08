@@ -1,1 +1,20 @@
-cmd_kernel/bpf/cgroup.o := gcc -Wp,-MMD,kernel/bpf/.cgroup.o.d -nostdinc -I./arch/x86/include -I./arch/x86/include/generated  -I./include -I./arch/x86/include/uapi -I./arch/x86/include/generated/uapi -I./include/uapi -I./include/generated/uapi -include ./include/linux/compiler-version.h -include ./include/linux/kconfig.h -include ./include/linux/compiler_types.h -D__KERNEL__ -fmacro-prefix-map=./= -Wall -Wundef -Werror=strict-prototypes -Wno-trigraphs -fno-strict-aliasing -fno-common -fshort-wchar -fno-PIE -Werror=implicit-function-declaration -Werror=implicit-int -Werror=return-type -Wno-format-secur
+th =
+			    txclk_tx_s_max_pulse_width(dev, p->max_pulse_width,
+						       &txclk_divider);
+	}
+	o->max_pulse_width = p->max_pulse_width;
+	atomic_set(&state->txclk_divider, txclk_divider);
+
+	p->resolution = clock_divider_to_resolution(txclk_divider);
+	o->resolution = p->resolution;
+
+	/* FIXME - make this dependent on resolution for better performance */
+	control_tx_irq_watermark(dev, TX_FIFO_HALF_EMPTY);
+
+	control_tx_polarity_invert(dev, p->invert_carrier_sense);
+	o->invert_carrier_sense = p->invert_carrier_sense;
+
+	control_tx_level_invert(dev, p->invert_level);
+	o->invert_level = p->invert_level;
+
+	

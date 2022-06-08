@@ -1,1345 +1,1110 @@
-npinned lock\n"))
-				return;
-
-			hlock->pin_count -= cookie.val;
-
-			if (WARN((int)hlock->pin_count < 0, "pin count corrupted\n"))
-				hlock->pin_count = 0;
-
-			return;
-		}
-	}
-
-	WARN(1, "unpinning an unheld lock\n");
-}
-
-/*
- * Check whether we follow the irq-flags state precisely:
- */
-static noinstr void check_flags(unsigned long flags)
-{
-#if defined(CONFIG_PROVE_LOCKING) && defined(CONFIG_DEBUG_LOCKDEP)
-	if (!debug_locks)
-		return;
-
-	/* Get the warning out..  */
-	instrumentation_begin();
-
-	if (irqs_disabled_flags(flags)) {
-		if (DEBUG_LOCKS_WARN_ON(lockdep_hardirqs_enabled())) {
-			printk("possible reason: unannotated irqs-off.\n");
-		}
-	} else {
-		if (DEBUG_LOCKS_WARN_ON(!lockdep_hardirqs_enabled())) {
-			printk("possible reason: unannotated irqs-on.\n");
-		}
-	}
-
-#ifndef CONFIG_PREEMPT_RT
-	/*
-	 * We dont accurately track softirq state in e.g.
-	 * hardirq contexts (such as on 4KSTACKS), so only
-	 * check if not in hardirq contexts:
-	 */
-	if (!hardirq_count()) {
-		if (softirq_count()) {
-			/* like the above, but with softirqs */
-			DEBUG_LOCKS_WARN_ON(current->softirqs_enabled);
-		} else {
-			/* lick the above, does it taste good? */
-			DEBUG_LOCKS_WARN_ON(!current->softirqs_enabled);
-		}
-	}
-#endif
-
-	if (!debug_locks)
-		print_irqtrace_events(current);
-
-	instrumentation_end();
-#endif
-}
-
-void lock_set_class(struct lockdep_map *lock, const char *name,
-		    struct lock_class_key *key, unsigned int subclass,
-		    unsigned long ip)
-{
-	unsigned long flags;
-
-	if (unlikely(!lockdep_enabled()))
-		return;
-
-	raw_local_irq_save(flags);
-	lockdep_recursion_inc();
-	check_flags(flags);
-	if (__lock_set_class(lock, name, key, subclass, ip))
-		check_chain_key(current);
-	lockdep_recursion_finish();
-	raw_local_irq_restore(flags);
-}
-EXPORT_SYMBOL_GPL(lock_set_class);
-
-void lock_downgrade(struct lockdep_map *lock, unsigned long ip)
-{
-	unsigned long flags;
-
-	if (unlikely(!lockdep_enabled()))
-		return;
-
-	raw_local_irq_save(flags);
-	lockdep_recursion_inc();
-	check_flags(flags);
-	if (__lock_downgrade(lock, ip))
-		check_chain_key(current);
-	lockdep_recursion_finish();
-	raw_local_irq_restore(flags);
-}
-EXPORT_SYMBOL_GPL(lock_downgrade);
-
-/* NMI context !!! */
-static void verify_lock_unused(struct lockdep_map *lock, struct held_lock *hlock, int subclass)
-{
-#ifdef CONFIG_PROVE_LOCKING
-	struct lock_class *class = look_up_lock_class(lock, subclass);
-	unsigned long mask = LOCKF_USED;
-
-	/* if it doesn't have a class (yet), it certainly hasn't been used yet */
-	if (!class)
-		return;
-
-	/*
-	 * READ locks only conflict with USED, such that if we only ever use
-	 * READ locks, there is no deadlock possible -- RCU.
-	 */
-	if (!hlock->read)
-		mask |= LOCKF_USED_READ;
-
-	if (!(class->usage_mask & mask))
-		return;
-
-	hlock->class_idx = class - lock_classes;
-
-	print_usage_bug(current, hlock, LOCK_USED, LOCK_USAGE_STATES);
-#endif
-}
-
-static bool lockdep_nmi(void)
-{
-	if (raw_cpu_read(lockdep_recursion))
-		return false;
-
-	if (!in_nmi())
-		return false;
-
-	return true;
-}
-
-/*
- * read_lock() is recursive if:
- * 1. We force lockdep think this way in selftests or
- * 2. The implementation is not queued read/write lock or
- * 3. The locker is at an in_interrupt() context.
- */
-bool read_lock_is_recursive(void)
-{
-	return force_read_lock_recursive ||
-	       !IS_ENABLED(CONFIG_QUEUED_RWLOCKS) ||
-	       in_interrupt();
-}
-EXPORT_SYMBOL_GPL(read_lock_is_recursive);
-
-/*
- * We are not always called with irqs disabled - do that here,
- * and also avoid lockdep recursion:
- */
-void lock_acquire(struct lockdep_map *lock, unsigned int subclass,
-			  int trylock, int read, int check,
-			  struct lockdep_map *nest_lock, unsigned long ip)
-{
-	unsigned long flags;
-
-	trace_lock_acquire(lock, subclass, trylock, read, check, nest_lock, ip);
-
-	if (!debug_locks)
-		return;
-
-	if (unlikely(!lockdep_enabled())) {
-		/* XXX allow trylock from NMI ?!? */
-		if (lockdep_nmi() && !trylock) {
-			struct held_lock hlock;
-
-			hlock.acquire_ip = ip;
-			hlock.instance = lock;
-			hlock.nest_lock = nest_lock;
-			hlock.irq_context = 2; // XXX
-			hlock.trylock = trylock;
-			hlock.read = read;
-			hlock.check = check;
-			hlock.hardirqs_off = true;
-			hlock.references = 0;
-
-			verify_lock_unused(lock, &hlock, subclass);
-		}
-		return;
-	}
-
-	raw_local_irq_save(flags);
-	check_flags(flags);
-
-	lockdep_recursion_inc();
-	__lock_acquire(lock, subclass, trylock, read, check,
-		       irqs_disabled_flags(flags), nest_lock, ip, 0, 0);
-	lockdep_recursion_finish();
-	raw_local_irq_restore(flags);
-}
-EXPORT_SYMBOL_GPL(lock_acquire);
-
-void lock_release(struct lockdep_map *lock, unsigned long ip)
-{
-	unsigned long flags;
-
-	trace_lock_release(lock, ip);
-
-	if (unlikely(!lockdep_enabled()))
-		return;
-
-	raw_local_irq_save(flags);
-	check_flags(flags);
-
-	lockdep_recursion_inc();
-	if (__lock_release(lock, ip))
-		check_chain_key(current);
-	lockdep_recursion_finish();
-	raw_local_irq_restore(flags);
-}
-EXPORT_SYMBOL_GPL(lock_release);
-
-noinstr int lock_is_held_type(const struct lockdep_map *lock, int read)
-{
-	unsigned long flags;
-	int ret = LOCK_STATE_NOT_HELD;
-
-	/*
-	 * Avoid false negative lockdep_assert_held() and
-	 * lockdep_assert_not_held().
-	 */
-	if (unlikely(!lockdep_enabled()))
-		return LOCK_STATE_UNKNOWN;
-
-	raw_local_irq_save(flags);
-	check_flags(flags);
-
-	lockdep_recursion_inc();
-	ret = __lock_is_held(lock, read);
-	lockdep_recursion_finish();
-	raw_local_irq_restore(flags);
-
-	return ret;
-}
-EXPORT_SYMBOL_GPL(lock_is_held_type);
-NOKPROBE_SYMBOL(lock_is_held_type);
-
-struct pin_cookie lock_pin_lock(struct lockdep_map *lock)
-{
-	struct pin_cookie cookie = NIL_COOKIE;
-	unsigned long flags;
-
-	if (unlikely(!lockdep_enabled()))
-		return cookie;
-
-	raw_local_irq_save(flags);
-	check_flags(flags);
-
-	lockdep_recursion_inc();
-	cookie = __lock_pin_lock(lock);
-	lockdep_recursion_finish();
-	raw_local_irq_restore(flags);
-
-	return cookie;
-}
-EXPORT_SYMBOL_GPL(lock_pin_lock);
-
-void lock_repin_lock(struct lockdep_map *lock, struct pin_cookie cookie)
-{
-	unsigned long flags;
-
-	if (unlikely(!lockdep_enabled()))
-		return;
-
-	raw_local_irq_save(flags);
-	check_flags(flags);
-
-	lockdep_recursion_inc();
-	__lock_repin_lock(lock, cookie);
-	lockdep_recursion_finish();
-	raw_local_irq_restore(flags);
-}
-EXPORT_SYMBOL_GPL(lock_repin_lock);
-
-void lock_unpin_lock(struct lockdep_map *lock, struct pin_cookie cookie)
-{
-	unsigned long flags;
-
-	if (unlikely(!lockdep_enabled()))
-		return;
-
-	raw_local_irq_save(flags);
-	check_flags(flags);
-
-	lockdep_recursion_inc();
-	__lock_unpin_lock(lock, cookie);
-	lockdep_recursion_finish();
-	raw_local_irq_restore(flags);
-}
-EXPORT_SYMBOL_GPL(lock_unpin_lock);
-
-#ifdef CONFIG_LOCK_STAT
-static void print_lock_contention_bug(struct task_struct *curr,
-				      struct lockdep_map *lock,
-				      unsigned long ip)
-{
-	if (!debug_locks_off())
-		return;
-	if (debug_locks_silent)
-		return;
-
-	pr_warn("\n");
-	pr_warn("=================================\n");
-	pr_warn("WARNING: bad contention detected!\n");
-	print_kernel_ident();
-	pr_warn("---------------------------------\n");
-	pr_warn("%s/%d is trying to contend lock (",
-		curr->comm, task_pid_nr(curr));
-	print_lockdep_cache(lock);
-	pr_cont(") at:\n");
-	print_ip_sym(KERN_WARNING, ip);
-	pr_warn("but there are no locks held!\n");
-	pr_warn("\nother info that might help us debug this:\n");
-	lockdep_print_held_locks(curr);
-
-	pr_warn("\nstack backtrace:\n");
-	dump_stack();
-}
-
-static void
-__lock_contended(struct lockdep_map *lock, unsigned long ip)
-{
-	struct task_struct *curr = current;
-	struct held_lock *hlock;
-	struct lock_class_stats *stats;
-	unsigned int depth;
-	int i, contention_point, contending_point;
-
-	depth = curr->lockdep_depth;
-	/*
-	 * Whee, we contended on this lock, except it seems we're not
-	 * actually trying to acquire anything much at all..
-	 */
-	if (DEBUG_LOCKS_WARN_ON(!depth))
-		return;
-
-	hlock = find_held_lock(curr, lock, depth, &i);
-	if (!hlock) {
-		print_lock_contention_bug(curr, lock, ip);
-		return;
-	}
-
-	if (hlock->instance != lock)
-		return;
-
-	hlock->waittime_stamp = lockstat_clock();
-
-	contention_point = lock_point(hlock_class(hlock)->contention_point, ip);
-	contending_point = lock_point(hlock_class(hlock)->contending_point,
-				      lock->ip);
-
-	stats = get_lock_stats(hlock_class(hlock));
-	if (contention_point < LOCKSTAT_POINTS)
-		stats->contention_point[contention_point]++;
-	if (contending_point < LOCKSTAT_POINTS)
-		stats->contending_point[contending_point]++;
-	if (lock->cpu != smp_processor_id())
-		stats->bounces[bounce_contended + !!hlock->read]++;
-}
-
-static void
-__lock_acquired(struct lockdep_map *lock, unsigned long ip)
-{
-	struct task_struct *curr = current;
-	struct held_lock *hlock;
-	struct lock_class_stats *stats;
-	unsigned int depth;
-	u64 now, waittime = 0;
-	int i, cpu;
-
-	depth = curr->lockdep_depth;
-	/*
-	 * Yay, we acquired ownership of this lock we didn't try to
-	 * acquire, how the heck did that happen?
-	 */
-	if (DEBUG_LOCKS_WARN_ON(!depth))
-		return;
-
-	hlock = find_held_lock(curr, lock, depth, &i);
-	if (!hlock) {
-		print_lock_contention_bug(curr, lock, _RET_IP_);
-		return;
-	}
-
-	if (hlock->instance != lock)
-		return;
-
-	cpu = smp_processor_id();
-	if (hlock->waittime_stamp) {
-		now = lockstat_clock();
-		waittime = now - hlock->waittime_stamp;
-		hlock->holdtime_stamp = now;
-	}
-
-	stats = get_lock_stats(hlock_class(hlock));
-	if (waittime) {
-		if (hlock->read)
-			lock_time_inc(&stats->read_waittime, waittime);
-		else
-			lock_time_inc(&stats->write_waittime, waittime);
-	}
-	if (lock->cpu != cpu)
-		stats->bounces[bounce_acquired + !!hlock->read]++;
-
-	lock->cpu = cpu;
-	lock->ip = ip;
-}
-
-void lock_contended(struct lockdep_map *lock, unsigned long ip)
-{
-	unsigned long flags;
-
-	trace_lock_contended(lock, ip);
-
-	if (unlikely(!lock_stat || !lockdep_enabled()))
-		return;
-
-	raw_local_irq_save(flags);
-	check_flags(flags);
-	lockdep_recursion_inc();
-	__lock_contended(lock, ip);
-	lockdep_recursion_finish();
-	raw_local_irq_restore(flags);
-}
-EXPORT_SYMBOL_GPL(lock_contended);
-
-void lock_acquired(struct lockdep_map *lock, unsigned long ip)
-{
-	unsigned long flags;
-
-	trace_lock_acquired(lock, ip);
-
-	if (unlikely(!lock_stat || !lockdep_enabled()))
-		return;
-
-	raw_local_irq_save(flags);
-	check_flags(flags);
-	lockdep_recursion_inc();
-	__lock_acquired(lock, ip);
-	lockdep_recursion_finish();
-	raw_local_irq_restore(flags);
-}
-EXPORT_SYMBOL_GPL(lock_acquired);
-#endif
-
-/*
- * Used by the testsuite, sanitize the validator state
- * after a simulated failure:
- */
-
-void lockdep_reset(void)
-{
-	unsigned long flags;
-	int i;
-
-	raw_local_irq_save(flags);
-	lockdep_init_task(current);
-	memset(current->held_locks, 0, MAX_LOCK_DEPTH*sizeof(struct held_lock));
-	nr_hardirq_chains = 0;
-	nr_softirq_chains = 0;
-	nr_process_chains = 0;
-	debug_locks = 1;
-	for (i = 0; i < CHAINHASH_SIZE; i++)
-		INIT_HLIST_HEAD(chainhash_table + i);
-	raw_local_irq_restore(flags);
-}
-
-/* Remove a class from a lock chain. Must be called with the graph lock held. */
-static void remove_class_from_lock_chain(struct pending_free *pf,
-					 struct lock_chain *chain,
-					 struct lock_class *class)
-{
-#ifdef CONFIG_PROVE_LOCKING
-	int i;
-
-	for (i = chain->base; i < chain->base + chain->depth; i++) {
-		if (chain_hlock_class_idx(chain_hlocks[i]) != class - lock_classes)
-			continue;
-		/*
-		 * Each lock class occurs at most once in a lock chain so once
-		 * we found a match we can break out of this loop.
-		 */
-		goto free_lock_chain;
-	}
-	/* Since the chain has not been modified, return. */
-	return;
-
-free_lock_chain:
-	free_chain_hlocks(chain->base, chain->depth);
-	/* Overwrite the chain key for concurrent RCU readers. */
-	WRITE_ONCE(chain->chain_key, INITIAL_CHAIN_KEY);
-	dec_chains(chain->irq_context);
-
-	/*
-	 * Note: calling hlist_del_rcu() from inside a
-	 * hlist_for_each_entry_rcu() loop is safe.
-	 */
-	hlist_del_rcu(&chain->entry);
-	__set_bit(chain - lock_chains, pf->lock_chains_being_freed);
-	nr_zapped_lock_chains++;
-#endif
-}
-
-/* Must be called with the graph lock held. */
-static void remove_class_from_lock_chains(struct pending_free *pf,
-					  struct lock_class *class)
-{
-	struct lock_chain *chain;
-	struct hlist_head *head;
-	int i;
-
-	for (i = 0; i < ARRAY_SIZE(chainhash_table); i++) {
-		head = chainhash_table + i;
-		hlist_for_each_entry_rcu(chain, head, entry) {
-			remove_class_from_lock_chain(pf, chain, class);
-		}
-	}
-}
-
-/*
- * Remove all references to a lock class. The caller must hold the graph lock.
- */
-static void zap_class(struct pending_free *pf, struct lock_class *class)
-{
-	struct lock_list *entry;
-	int i;
-
-	WARN_ON_ONCE(!class->key);
-
-	/*
-	 * Remove all dependencies this lock is
-	 * involved in:
-	 */
-	for_each_set_bit(i, list_entries_in_use, ARRAY_SIZE(list_entries)) {
-		entry = list_entries + i;
-		if (entry->class != class && entry->links_to != class)
-			continue;
-		__clear_bit(i, list_entries_in_use);
-		nr_list_entries--;
-		list_del_rcu(&entry->entry);
-	}
-	if (list_empty(&class->locks_after) &&
-	    list_empty(&class->locks_before)) {
-		list_move_tail(&class->lock_entry, &pf->zapped);
-		hlist_del_rcu(&class->hash_entry);
-		WRITE_ONCE(class->key, NULL);
-		WRITE_ONCE(class->name, NULL);
-		nr_lock_classes--;
-		__clear_bit(class - lock_classes, lock_classes_in_use);
-		if (class - lock_classes == max_lock_class_idx)
-			max_lock_class_idx--;
-	} else {
-		WARN_ONCE(true, "%s() failed for class %s\n", __func__,
-			  class->name);
-	}
-
-	remove_class_from_lock_chains(pf, class);
-	nr_zapped_classes++;
-}
-
-static void reinit_class(struct lock_class *class)
-{
-	WARN_ON_ONCE(!class->lock_entry.next);
-	WARN_ON_ONCE(!list_empty(&class->locks_after));
-	WARN_ON_ONCE(!list_empty(&class->locks_before));
-	memset_startat(class, 0, key);
-	WARN_ON_ONCE(!class->lock_entry.next);
-	WARN_ON_ONCE(!list_empty(&class->locks_after));
-	WARN_ON_ONCE(!list_empty(&class->locks_before));
-}
-
-static inline int within(const void *addr, void *start, unsigned long size)
-{
-	return addr >= start && addr < start + size;
-}
-
-static bool inside_selftest(void)
-{
-	return current == lockdep_selftest_task_struct;
-}
-
-/* The caller must hold the graph lock. */
-static struct pending_free *get_pending_free(void)
-{
-	return delayed_free.pf + delayed_free.index;
-}
-
-static void free_zapped_rcu(struct rcu_head *cb);
-
-/*
- * Schedule an RCU callback if no RCU callback is pending. Must be called with
- * the graph lock held.
- */
-static void call_rcu_zapped(struct pending_free *pf)
-{
-	WARN_ON_ONCE(inside_selftest());
-
-	if (list_empty(&pf->zapped))
-		return;
-
-	if (delayed_free.scheduled)
-		return;
-
-	delayed_free.scheduled = true;
-
-	WARN_ON_ONCE(delayed_free.pf + delayed_free.index != pf);
-	delayed_free.index ^= 1;
-
-	call_rcu(&delayed_free.rcu_head, free_zapped_rcu);
-}
-
-/* The caller must hold the graph lock. May be called from RCU context. */
-static void __free_zapped_classes(struct pending_free *pf)
-{
-	struct lock_class *class;
-
-	check_data_structures();
-
-	list_for_each_entry(class, &pf->zapped, lock_entry)
-		reinit_class(class);
-
-	list_splice_init(&pf->zapped, &free_lock_classes);
-
-#ifdef CONFIG_PROVE_LOCKING
-	bitmap_andnot(lock_chains_in_use, lock_chains_in_use,
-		      pf->lock_chains_being_freed, ARRAY_SIZE(lock_chains));
-	bitmap_clear(pf->lock_chains_being_freed, 0, ARRAY_SIZE(lock_chains));
-#endif
-}
-
-static void free_zapped_rcu(struct rcu_head *ch)
-{
-	struct pending_free *pf;
-	unsigned long flags;
-
-	if (WARN_ON_ONCE(ch != &delayed_free.rcu_head))
-		return;
-
-	raw_local_irq_save(flags);
-	lockdep_lock();
-
-	/* closed head */
-	pf = delayed_free.pf + (delayed_free.index ^ 1);
-	__free_zapped_classes(pf);
-	delayed_free.scheduled = false;
-
-	/*
-	 * If there's anything on the open list, close and start a new callback.
-	 */
-	call_rcu_zapped(delayed_free.pf + delayed_free.index);
-
-	lockdep_unlock();
-	raw_local_irq_restore(flags);
-}
-
-/*
- * Remove all lock classes from the class hash table and from the
- * all_lock_classes list whose key or name is in the address range [start,
- * start + size). Move these lock classes to the zapped_classes list. Must
- * be called with the graph lock held.
- */
-static void __lockdep_free_key_range(struct pending_free *pf, void *start,
-				     unsigned long size)
-{
-	struct lock_class *class;
-	struct hlist_head *head;
-	int i;
-
-	/* Unhash all classes that were created by a module. */
-	for (i = 0; i < CLASSHASH_SIZE; i++) {
-		head = classhash_table + i;
-		hlist_for_each_entry_rcu(class, head, hash_entry) {
-			if (!within(class->key, start, size) &&
-			    !within(class->name, start, size))
-				continue;
-			zap_class(pf, class);
-		}
-	}
-}
-
-/*
- * Used in module.c to remove lock classes from memory that is going to be
- * freed; and possibly re-used by other modules.
- *
- * We will have had one synchronize_rcu() before getting here, so we're
- * guaranteed nobody will look up these exact classes -- they're properly dead
- * but still allocated.
- */
-static void lockdep_free_key_range_reg(void *start, unsigned long size)
-{
-	struct pending_free *pf;
-	unsigned long flags;
-
-	init_data_structures_once();
-
-	raw_local_irq_save(flags);
-	lockdep_lock();
-	pf = get_pending_free();
-	__lockdep_free_key_range(pf, start, size);
-	call_rcu_zapped(pf);
-	lockdep_unlock();
-	raw_local_irq_restore(flags);
-
-	/*
-	 * Wait for any possible iterators from look_up_lock_class() to pass
-	 * before continuing to free the memory they refer to.
-	 */
-	synchronize_rcu();
-}
-
-/*
- * Free all lockdep keys in the range [start, start+size). Does not sleep.
- * Ignores debug_locks. Must only be used by the lockdep selftests.
- */
-static void lockdep_free_key_range_imm(void *start, unsigned long size)
-{
-	struct pending_free *pf = delayed_free.pf;
-	unsigned long flags;
-
-	init_data_structures_once();
-
-	raw_local_irq_save(flags);
-	lockdep_lock();
-	__lockdep_free_key_range(pf, start, size);
-	__free_zapped_classes(pf);
-	lockdep_unlock();
-	raw_local_irq_restore(flags);
-}
-
-void lockdep_free_key_range(void *start, unsigned long size)
-{
-	init_data_structures_once();
-
-	if (inside_selftest())
-		lockdep_free_key_range_imm(start, size);
-	else
-		lockdep_free_key_range_reg(start, size);
-}
-
-/*
- * Check whether any element of the @lock->class_cache[] array refers to a
- * registered lock class. The caller must hold either the graph lock or the
- * RCU read lock.
- */
-static bool lock_class_cache_is_registered(struct lockdep_map *lock)
-{
-	struct lock_class *class;
-	struct hlist_head *head;
-	int i, j;
-
-	for (i = 0; i < CLASSHASH_SIZE; i++) {
-		head = classhash_table + i;
-		hlist_for_each_entry_rcu(class, head, hash_entry) {
-			for (j = 0; j < NR_LOCKDEP_CACHING_CLASSES; j++)
-				if (lock->class_cache[j] == class)
-					return true;
-		}
-	}
-	return false;
-}
-
-/* The caller must hold the graph lock. Does not sleep. */
-static void __lockdep_reset_lock(struct pending_free *pf,
-				 struct lockdep_map *lock)
-{
-	struct lock_class *class;
-	int j;
-
-	/*
-	 * Remove all classes this lock might have:
-	 */
-	for (j = 0; j < MAX_LOCKDEP_SUBCLASSES; j++) {
-		/*
-		 * If the class exists we look it up and zap it:
-		 */
-		class = look_up_lock_class(lock, j);
-		if (class)
-			zap_class(pf, class);
-	}
-	/*
-	 * Debug check: in the end all mapped classes should
-	 * be gone.
-	 */
-	if (WARN_ON_ONCE(lock_class_cache_is_registered(lock)))
-		debug_locks_off();
-}
-
-/*
- * Remove all information lockdep has about a lock if debug_locks == 1. Free
- * released data structures from RCU context.
- */
-static void lockdep_reset_lock_reg(struct lockdep_map *lock)
-{
-	struct pending_free *pf;
-	unsigned long flags;
-	int locked;
-
-	raw_local_irq_save(flags);
-	locked = graph_lock();
-	if (!locked)
-		goto out_irq;
-
-	pf = get_pending_free();
-	__lockdep_reset_lock(pf, lock);
-	call_rcu_zapped(pf);
-
-	graph_unlock();
-out_irq:
-	raw_local_irq_restore(flags);
-}
-
-/*
- * Reset a lock. Does not sleep. Ignores debug_locks. Must only be used by the
- * lockdep selftests.
- */
-static void lockdep_reset_lock_imm(struct lockdep_map *lock)
-{
-	struct pending_free *pf = delayed_free.pf;
-	unsigned long flags;
-
-	raw_local_irq_save(flags);
-	lockdep_lock();
-	__lockdep_reset_lock(pf, lock);
-	__free_zapped_classes(pf);
-	lockdep_unlock();
-	raw_local_irq_restore(flags);
-}
-
-void lockdep_reset_lock(struct lockdep_map *lock)
-{
-	init_data_structures_once();
-
-	if (inside_selftest())
-		lockdep_reset_lock_imm(lock);
-	else
-		lockdep_reset_lock_reg(lock);
-}
-
-/*
- * Unregister a dynamically allocated key.
- *
- * Unlike lockdep_register_key(), a search is always done to find a matching
- * key irrespective of debug_locks to avoid potential invalid access to freed
- * memory in lock_class entry.
- */
-void lockdep_unregister_key(struct lock_class_key *key)
-{
-	struct hlist_head *hash_head = keyhashentry(key);
-	struct lock_class_key *k;
-	struct pending_free *pf;
-	unsigned long flags;
-	bool found = false;
-
-	might_sleep();
-
-	if (WARN_ON_ONCE(static_obj(key)))
-		return;
-
-	raw_local_irq_save(flags);
-	lockdep_lock();
-
-	hlist_for_each_entry_rcu(k, hash_head, hash_entry) {
-		if (k == key) {
-			hlist_del_rcu(&k->hash_entry);
-			found = true;
-			break;
-		}
-	}
-	WARN_ON_ONCE(!found && debug_locks);
-	if (found) {
-		pf = get_pending_free();
-		__lockdep_free_key_range(pf, key, 1);
-		call_rcu_zapped(pf);
-	}
-	lockdep_unlock();
-	raw_local_irq_restore(flags);
-
-	/* Wait until is_dynamic_key() has finished accessing k->hash_entry. */
-	synchronize_rcu();
-}
-EXPORT_SYMBOL_GPL(lockdep_unregister_key);
-
-void __init lockdep_init(void)
-{
-	printk("Lock dependency validator: Copyright (c) 2006 Red Hat, Inc., Ingo Molnar\n");
-
-	printk("... MAX_LOCKDEP_SUBCLASSES:  %lu\n", MAX_LOCKDEP_SUBCLASSES);
-	printk("... MAX_LOCK_DEPTH:          %lu\n", MAX_LOCK_DEPTH);
-	printk("... MAX_LOCKDEP_KEYS:        %lu\n", MAX_LOCKDEP_KEYS);
-	printk("... CLASSHASH_SIZE:          %lu\n", CLASSHASH_SIZE);
-	printk("... MAX_LOCKDEP_ENTRIES:     %lu\n", MAX_LOCKDEP_ENTRIES);
-	printk("... MAX_LOCKDEP_CHAINS:      %lu\n", MAX_LOCKDEP_CHAINS);
-	printk("... CHAINHASH_SIZE:          %lu\n", CHAINHASH_SIZE);
-
-	printk(" memory used by lock dependency info: %zu kB\n",
-	       (sizeof(lock_classes) +
-		sizeof(lock_classes_in_use) +
-		sizeof(classhash_table) +
-		sizeof(list_entries) +
-		sizeof(list_entries_in_use) +
-		sizeof(chainhash_table) +
-		sizeof(delayed_free)
-#ifdef CONFIG_PROVE_LOCKING
-		+ sizeof(lock_cq)
-		+ sizeof(lock_chains)
-		+ sizeof(lock_chains_in_use)
-		+ sizeof(chain_hlocks)
-#endif
-		) / 1024
-		);
-
-#if defined(CONFIG_TRACE_IRQFLAGS) && defined(CONFIG_PROVE_LOCKING)
-	printk(" memory used for stack traces: %zu kB\n",
-	       (sizeof(stack_trace) + sizeof(stack_trace_hash)) / 1024
-	       );
-#endif
-
-	printk(" per task-struct memory footprint: %zu bytes\n",
-	       sizeof(((struct task_struct *)NULL)->held_locks));
-}
-
-static void
-print_freed_lock_bug(struct task_struct *curr, const void *mem_from,
-		     const void *mem_to, struct held_lock *hlock)
-{
-	if (!debug_locks_off())
-		return;
-	if (debug_locks_silent)
-		return;
-
-	pr_warn("\n");
-	pr_warn("=========================\n");
-	pr_warn("WARNING: held lock freed!\n");
-	print_kernel_ident();
-	pr_warn("-------------------------\n");
-	pr_warn("%s/%d is freeing memory %px-%px, with a lock still held there!\n",
-		curr->comm, task_pid_nr(curr), mem_from, mem_to-1);
-	print_lock(hlock);
-	lockdep_print_held_locks(curr);
-
-	pr_warn("\nstack backtrace:\n");
-	dump_stack();
-}
-
-static inline int not_in_range(const void* mem_from, unsigned long mem_len,
-				const void* lock_from, unsigned long lock_len)
-{
-	return lock_from + lock_len <= mem_from ||
-		mem_from + mem_len <= lock_from;
-}
-
-/*
- * Called when kernel memory is freed (or unmapped), or if a lock
- * is destroyed or reinitialized - this code checks whether there is
- * any held lock in the memory range of <from> to <to>:
- */
-void debug_check_no_locks_freed(const void *mem_from, unsigned long mem_len)
-{
-	struct task_struct *curr = current;
-	struct held_lock *hlock;
-	unsigned long flags;
-	int i;
-
-	if (unlikely(!debug_locks))
-		return;
-
-	raw_local_irq_save(flags);
-	for (i = 0; i < curr->lockdep_depth; i++) {
-		hlock = curr->held_locks + i;
-
-		if (not_in_range(mem_from, mem_len, hlock->instance,
-					sizeof(*hlock->instance)))
-			continue;
-
-		print_freed_lock_bug(curr, mem_from, mem_from + mem_len, hlock);
-		break;
-	}
-	raw_local_irq_restore(flags);
-}
-EXPORT_SYMBOL_GPL(debug_check_no_locks_freed);
-
-static void print_held_locks_bug(void)
-{
-	if (!debug_locks_off())
-		return;
-	if (debug_locks_silent)
-		return;
-
-	pr_warn("\n");
-	pr_warn("====================================\n");
-	pr_warn("WARNING: %s/%d still has locks held!\n",
-	       current->comm, task_pid_nr(current));
-	print_kernel_ident();
-	pr_warn("------------------------------------\n");
-	lockdep_print_held_locks(current);
-	pr_warn("\nstack backtrace:\n");
-	dump_stack();
-}
-
-void debug_check_no_locks_held(void)
-{
-	if (unlikely(current->lockdep_depth > 0))
-		print_held_locks_bug();
-}
-EXPORT_SYMBOL_GPL(debug_check_no_locks_held);
-
-#ifdef __KERNEL__
-void debug_show_all_locks(void)
-{
-	struct task_struct *g, *p;
-
-	if (unlikely(!debug_locks)) {
-		pr_warn("INFO: lockdep is turned off.\n");
-		return;
-	}
-	pr_warn("\nShowing all locks held in the system:\n");
-
-	rcu_read_lock();
-	for_each_process_thread(g, p) {
-		if (!p->lockdep_depth)
-			continue;
-		lockdep_print_held_locks(p);
-		touch_nmi_watchdog();
-		touch_all_softlockup_watchdogs();
-	}
-	rcu_read_unlock();
-
-	pr_warn("\n");
-	pr_warn("=============================================\n\n");
-}
-EXPORT_SYMBOL_GPL(debug_show_all_locks);
-#endif
-
-/*
- * Careful: only use this function if you are sure that
- * the task cannot run in parallel!
- */
-void debug_show_held_locks(struct task_struct *task)
-{
-	if (unlikely(!debug_locks)) {
-		printk("INFO: lockdep is turned off.\n");
-		return;
-	}
-	lockdep_print_held_locks(task);
-}
-EXPORT_SYMBOL_GPL(debug_show_held_locks);
-
-asmlinkage __visible void lockdep_sys_exit(void)
-{
-	struct task_struct *curr = current;
-
-	if (unlikely(curr->lockdep_depth)) {
-		if (!debug_locks_off())
-			return;
-		pr_warn("\n");
-		pr_warn("================================================\n");
-		pr_warn("WARNING: lock held when returning to user space!\n");
-		print_kernel_ident();
-		pr_warn("------------------------------------------------\n");
-		pr_warn("%s/%d is leaving the kernel with locks still held!\n",
-				curr->comm, curr->pid);
-		lockdep_print_held_locks(curr);
-	}
-
-	/*
-	 * The lock history for each syscall should be independent. So wipe the
-	 * slate clean on return to userspace.
-	 */
-	lockdep_invariant_state(false);
-}
-
-void lockdep_rcu_suspicious(const char *file, const int line, const char *s)
-{
-	struct task_struct *curr = current;
-	int dl = READ_ONCE(debug_locks);
-
-	/* Note: the following can be executed concurrently, so be careful. */
-	pr_warn("\n");
-	pr_warn("=============================\n");
-	pr_warn("WARNING: suspicious RCU usage\n");
-	print_kernel_ident();
-	pr_warn("-----------------------------\n");
-	pr_warn("%s:%d %s!\n", file, line, s);
-	pr_warn("\nother info that might help us debug this:\n\n");
-	pr_warn("\n%srcu_scheduler_active = %d, debug_locks = %d\n%s",
-	       !rcu_lockdep_current_cpu_online()
-			? "RCU used illegally from offline CPU!\n"
-			: "",
-	       rcu_scheduler_active, dl,
-	       dl ? "" : "Possible false positive due to lockdep disabling via debug_locks = 0\n");
-
-	/*
-	 * If a CPU is in the RCU-free window in idle (ie: in the section
-	 * between rcu_idle_enter() and rcu_idle_exit(), then RCU
-	 * considers that CPU to be in an "extended quiescent state",
-	 * which means that RCU will be completely ignoring that CPU.
-	 * Therefore, rcu_read_lock() and friends have absolutely no
-	 * effect on a CPU running in that state. In other words, even if
-	 * such an RCU-idle CPU has called rcu_read_lock(), RCU might well
-	 * delete data structures out from under it.  RCU really has no
-	 * choice here: we need to keep an RCU-free window in idle where
-	 * the CPU may possibly enter into low power mode. This way we can
-	 * notice an extended quiescent state to other CPUs that started a grace
-	 * period. Otherwise we would delay any grace period as long as we run
-	 * in the idle task.
+E310B         62
+
+#define GPIO_0 0x00000001
+#define GPIO_1 0x00000002
+#define GPIO_2 0x00000004
+#define GPIO_3 0x00000008
+#define GPIO_4 0x00000010
+#define GPIO_5 0x00000020
+#define GPIO_6 0x00000040
+#define GPIO_7 0x00000080
+#define GPIO_8 0x00000100
+#define GPIO_9 0x00000200
+#define GPIO_10 0x00000400
+#define GPIO_11 0x00000800
+#define GPIO_12 0x00001000
+#define GPIO_13 0x00002000
+#define GPIO_14 0x00004000
+#define GPIO_15 0x00008000
+
+/* Currently unsupported by the driver: PAL/H, NTSC/Kr, SECAM B/G/H/LC */
+#define CX23885_NORMS (\
+	V4L2_STD_NTSC_M |  V4L2_STD_NTSC_M_JP |  V4L2_STD_NTSC_443 | \
+	V4L2_STD_PAL_BG |  V4L2_STD_PAL_DK    |  V4L2_STD_PAL_I    | \
+	V4L2_STD_PAL_M  |  V4L2_STD_PAL_N     |  V4L2_STD_PAL_Nc   | \
+	V4L2_STD_PAL_60 |  V4L2_STD_SECAM_L   |  V4L2_STD_SECAM_DK)
+
+struct cx23885_fmt {
+	u32   fourcc;          /* v4l2 format id */
+	int   depth;
+	int   flags;
+	u32   cxformat;
+};
+
+struct cx23885_tvnorm {
+	char		*name;
+	v4l2_std_id	id;
+	u32		cxiformat;
+	u32		cxoformat;
+};
+
+enum cx23885_itype {
+	CX23885_VMUX_COMPOSITE1 = 1,
+	CX23885_VMUX_COMPOSITE2,
+	CX23885_VMUX_COMPOSITE3,
+	CX23885_VMUX_COMPOSITE4,
+	CX23885_VMUX_SVIDEO,
+	CX23885_VMUX_COMPONENT,
+	CX23885_VMUX_TELEVISION,
+	CX23885_VMUX_CABLE,
+	CX23885_VMUX_DVB,
+	CX23885_VMUX_DEBUG,
+	CX23885_RADIO,
+};
+
+enum cx23885_src_sel_type {
+	CX23885_SRC_SEL_EXT_656_VIDEO = 0,
+	CX23885_SRC_SEL_PARALLEL_MPEG_VIDEO
+};
+
+struct cx23885_riscmem {
+	unsigned int   size;
+	__le32         *cpu;
+	__le32         *jmp;
+	dma_addr_t     dma;
+};
+
+/* buffer for one video frame */
+struct cx23885_buffer {
+	/* common v4l buffer stuff -- must be first */
+	struct vb2_v4l2_buffer vb;
+	struct list_head queue;
+
+	/* cx23885 specific */
+	unsigned int           bpl;
+	struct cx23885_riscmem risc;
+	struct cx23885_fmt     *fmt;
+	u32                    count;
+};
+
+struct cx23885_input {
+	enum cx23885_itype type;
+	unsigned int    vmux;
+	unsigned int    amux;
+	u32             gpio0, gpio1, gpio2, gpio3;
+};
+
+typedef enum {
+	CX23885_MPEG_UNDEFINED = 0,
+	CX23885_MPEG_DVB,
+	CX23885_ANALOG_VIDEO,
+	CX23885_MPEG_ENCODER,
+} port_t;
+
+struct cx23885_board {
+	char                    *name;
+	port_t			porta, portb, portc;
+	int		num_fds_portb, num_fds_portc;
+	unsigned int		tuner_type;
+	unsigned int		radio_type;
+	unsigned char		tuner_addr;
+	unsigned char		radio_addr;
+	unsigned int		tuner_bus;
+
+	/* Vendors can and do run the PCIe bridge at different
+	 * clock rates, driven physically by crystals on the PCBs.
+	 * The core has to accommodate this. This allows the user
+	 * to add new boards with new frequencys. The value is
+	 * expressed in Hz.
 	 *
-	 * So complain bitterly if someone does call rcu_read_lock(),
-	 * rcu_read_lock_bh() and so on from extended quiescent states.
+	 * The core framework will default this value based on
+	 * current designs, but it can vary.
 	 */
-	if (!rcu_is_watching())
-		pr_warn("RCU used illegally from extended quiescent state!\n");
+	u32			clk_freq;
+	struct cx23885_input    input[MAX_CX23885_INPUT];
+	int			ci_type; /* for NetUP */
+	/* Force bottom field first during DMA (888 workaround) */
+	u32                     force_bff;
+};
 
-	lockdep_print_held_locks(curr);
-	pr_warn("\nstack backtrace:\n");
-	dump_stack();
+struct cx23885_subid {
+	u16     subvendor;
+	u16     subdevice;
+	u32     card;
+};
+
+struct cx23885_i2c {
+	struct cx23885_dev *dev;
+
+	int                        nr;
+
+	/* i2c i/o */
+	struct i2c_adapter         i2c_adap;
+	struct i2c_client          i2c_client;
+	u32                        i2c_rc;
+
+	/* 885 registers used for raw address */
+	u32                        i2c_period;
+	u32                        reg_ctrl;
+	u32                        reg_stat;
+	u32                        reg_addr;
+	u32                        reg_rdata;
+	u32                        reg_wdata;
+};
+
+struct cx23885_dmaqueue {
+	struct list_head       active;
+	u32                    count;
+};
+
+struct cx23885_tsport {
+	struct cx23885_dev *dev;
+
+	unsigned                   nr;
+	int                        sram_chno;
+
+	struct vb2_dvb_frontends   frontends;
+
+	/* dma queues */
+	struct cx23885_dmaqueue    mpegq;
+	u32                        ts_packet_size;
+	u32                        ts_packet_count;
+
+	int                        width;
+	int                        height;
+
+	spinlock_t                 slock;
+
+	/* registers */
+	u32                        reg_gpcnt;
+	u32                        reg_gpcnt_ctl;
+	u32                        reg_dma_ctl;
+	u32                        reg_lngth;
+	u32                        reg_hw_sop_ctrl;
+	u32                        reg_gen_ctrl;
+	u32                        reg_bd_pkt_status;
+	u32                        reg_sop_status;
+	u32                        reg_fifo_ovfl_stat;
+	u32                        reg_vld_misc;
+	u32                        reg_ts_clk_en;
+	u32                        reg_ts_int_msk;
+	u32                        reg_ts_int_stat;
+	u32                        reg_src_sel;
+
+	/* Default register vals */
+	int                        pci_irqmask;
+	u32                        dma_ctl_val;
+	u32                        ts_int_msk_val;
+	u32                        gen_ctrl_val;
+	u32                        ts_clk_en_val;
+	u32                        src_sel_val;
+	u32                        vld_misc_val;
+	u32                        hw_sop_ctrl_val;
+
+	/* Allow a single tsport to have multiple frontends */
+	u32                        num_frontends;
+	void                (*gate_ctrl)(struct cx23885_tsport *port, int open);
+	void                       *port_priv;
+
+	/* Workaround for a temp dvb_frontend that the tuner can attached to */
+	struct dvb_frontend analog_fe;
+
+	struct i2c_client *i2c_client_demod;
+	struct i2c_client *i2c_client_tuner;
+	struct i2c_client *i2c_client_sec;
+	struct i2c_client *i2c_client_ci;
+
+	int (*set_frontend)(struct dvb_frontend *fe);
+	int (*fe_set_voltage)(struct dvb_frontend *fe,
+			      enum fe_sec_voltage voltage);
+};
+
+struct cx23885_kernel_ir {
+	struct cx23885_dev	*cx;
+	char			*name;
+	char			*phys;
+
+	struct rc_dev		*rc;
+};
+
+struct cx23885_audio_buffer {
+	unsigned int		bpl;
+	struct cx23885_riscmem	risc;
+	void			*vaddr;
+	struct scatterlist	*sglist;
+	int			sglen;
+	unsigned long		nr_pages;
+};
+
+struct cx23885_audio_dev {
+	struct cx23885_dev	*dev;
+
+	struct pci_dev		*pci;
+
+	struct snd_card		*card;
+
+	spinlock_t		lock;
+
+	atomic_t		count;
+
+	unsigned int		dma_size;
+	unsigned int		period_size;
+	unsigned int		num_periods;
+
+	struct cx23885_audio_buffer   *buf;
+
+	struct snd_pcm_substream *substream;
+};
+
+struct cx23885_dev {
+	atomic_t                   refcount;
+	struct v4l2_device	   v4l2_dev;
+	struct v4l2_ctrl_handler   ctrl_handler;
+
+	/* pci stuff */
+	struct pci_dev             *pci;
+	unsigned char              pci_rev, pci_lat;
+	int                        pci_bus, pci_slot;
+	u32                        __iomem *lmmio;
+	u8                         __iomem *bmmio;
+	int                        pci_irqmask;
+	spinlock_t		   pci_irqmask_lock; /* protects mask reg too */
+	int                        hwrevision;
+
+	/* This valud is board specific and is used to configure the
+	 * AV core so we see nice clean and stable video and audio. */
+	u32                        clk_freq;
+
+	/* I2C adapters: Master 1 & 2 (External) & Master 3 (Internal only) */
+	struct cx23885_i2c         i2c_bus[3];
+
+	int                        nr;
+	struct mutex               lock;
+	struct mutex               gpio_lock;
+
+	/* board details */
+	unsigned int               board;
+	char                       name[32];
+
+	struct cx23885_tsport      ts1, ts2;
+
+	/* sram configuration */
+	struct sram_channel        *sram_channels;
+
+	enum {
+		CX23885_BRIDGE_UNDEFINED = 0,
+		CX23885_BRIDGE_885 = 885,
+		CX23885_BRIDGE_887 = 887,
+		CX23885_BRIDGE_888 = 888,
+	} bridge;
+
+	/* Analog video */
+	unsigned int               input;
+	unsigned int               audinput; /* Selectable audio input */
+	u32                        tvaudio;
+	v4l2_std_id                tvnorm;
+	unsigned int               tuner_type;
+	unsigned char              tuner_addr;
+	unsigned int               tuner_bus;
+	unsigned int               radio_type;
+	unsigned char              radio_addr;
+	struct v4l2_subdev	   *sd_cx25840;
+	struct work_struct	   cx25840_work;
+
+	/* Infrared */
+	struct v4l2_subdev         *sd_ir;
+	struct work_struct	   ir_rx_work;
+	unsigned long		   ir_rx_notifications;
+	struct work_struct	   ir_tx_work;
+	unsigned long		   ir_tx_notifications;
+
+	struct cx23885_kernel_ir   *kernel_ir;
+	atomic_t		   ir_input_stopping;
+
+	/* V4l */
+	u32                        freq;
+	struct video_device        *video_dev;
+	struct video_device        *vbi_dev;
+
+	/* video capture */
+	struct cx23885_fmt         *fmt;
+	unsigned int               width, height;
+	unsigned		   field;
+
+	struct cx23885_dmaqueue    vidq;
+	struct vb2_queue           vb2_vidq;
+	struct cx23885_dmaqueue    vbiq;
+	struct vb2_queue           vb2_vbiq;
+
+	spinlock_t                 slock;
+
+	/* MPEG Encoder ONLY settings */
+	u32                        cx23417_mailbox;
+	struct cx2341x_handler     cxhdl;
+	struct video_device        *v4l_device;
+	struct vb2_queue           vb2_mpegq;
+	struct cx23885_tvnorm      encodernorm;
+
+	/* Analog raw audio */
+	struct cx23885_audio_dev   *audio_dev;
+
+	/* Does the system require periodic DMA resets? */
+	unsigned int		need_dma_reset:1;
+};
+
+static inline struct cx23885_dev *to_cx23885(struct v4l2_device *v4l2_dev)
+{
+	return container_of(v4l2_dev, struct cx23885_dev, v4l2_dev);
 }
-EXPORT_SYMBOL_GPL(lockdep_rcu_suspicious);
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        free cgroup_mutex mutex_lock mutex_unlock system_wq queue_work_on seq_printf __stack_chk_guard bpf_stats_enabled_key __x86_indirect_thunk_ecx sched_clock __x86_indirect_thunk_esi debug_smp_processor_id __per_cpu_offset __stack_chk_fail bpf_sysctl_set_new_value memcpy memset bpf_sysctl_get_current_value bpf_sysctl_get_new_value migrate_disable __rcu_read_lock __rcu_read_unlock migrate_enable strscpy strnlen fortify_panic bpf_sysctl_get_name bpf_ktime_get_coarse_ns_proto bpf_strtol_proto bpf_get_current_cgroup_id_proto bpf_get_current_uid_gid_proto bpf_base_func_proto bpf_strtoul_proto bpf_event_output_data_proto bpf_get_local_storage_proto __kmalloc css_next_descendant_pre percpu_ref_is_zero bpf_prog_put __x86_indirect_thunk_ebx bpf_prog_array_alloc bpf_prog_array_free static_key_slow_dec __x86_indirect_thunk_edx bpf_tcp_sock_proto bpf_sk_setsockopt_proto bpf_sk_storage_delete_proto bpf_sk_getsockopt_proto bpf_sk_storage_get_proto bpf_cgroup_storage_unlink bpf_cgroup_storage_free percpu_ref_exit cgroup_storage_lookup bpf_cgroup_storage_link kmalloc_caches kmem_cache_alloc_trace static_key_slow_inc bpf_cgroup_storage_alloc cgroup_bpf_offline percpu_ref_kill_and_confirm cgroup_bpf_inherit percpu_ref_init cgroup_bpf_prog_attach cgroup_get_from_fd bpf_prog_get_type_dev cgroup_bpf_prog_detach cgroup_bpf_link_attach bpf_link_init bpf_link_prime bpf_link_settle bpf_link_cleanup cgroup_bpf_prog_query bpf_prog_array_length bpf_prog_array_copy_to_user __cgroup_bpf_check_dev_permission __cgroup_bpf_run_filter_sysctl __kmalloc_track_caller __x86_indirect_thunk_edi __cgroup_bpf_run_filter_setsockopt __check_object_size _copy_from_user lock_sock_nested release_sock __cgroup_bpf_run_filter_getsockopt __get_user_4 __put_user_4 __cgroup_bpf_run_filter_getsockopt_kern cg_sockopt_prog_ops cg_sockopt_verifier_ops cg_sysctl_prog_ops cg_sysctl_verifier_ops cg_dev_verifier_ops cg_dev_prog_ops      F     G  !   F  *   G  A   F  ñ  F    J  1  F  Q  F  a  F  q  F  {  L  ƒ  M  ›  L     N  Ñ  F  ê  O  ñ      F    L    M  +  L  0  N  :    @  Q  m  R    T  ¦  R  Á  U  Ò  V  Ü  W  ã  X  ø  U  ¡  Y  ±  F  	  [  A  F  j  [  Š  \  §  \  Á  F  ñ  F  	  \  a	  F  x	  R  
-  _  
-  `  %
-  G  m
-  G  x
-  a  }
-  b  ´
-  R  ÿ
-  _    `    G  g  G  r  a  w  b  ³  Y  Á  F  í  c  	      d  7    <  c    F  —  R  ¼  c  Ï  R    Y  !  F  ‘  F  !  F  !  F  :  :  V  g  b  h  z  :  ‰  :  Ÿ  i  ©  j  Á  l  Ñ  :  á  :  ñ  :    m    n  !  F  b  o  ¡  F  °  L  ¸  M  æ  :  N  p  v  p  ‹  q  ¶  L  »  N  1  p  F  r  q  F  ‡  R  ¡  _  ¦  `  ¯  G  â  T    G    a    b  -  R  A  U  R  V  \  W  c  X  x  U  ¢  Y  ±  F  À  R  Ş  _  ã  `  ì  G  "  T  N  G  Y  a  ^  b  m  R    U  ’  V  œ  W  £  X  ¸  U  â  Y  ñ  F  
-  R  p  _  u  `  ~  G  ´  T  å  G  ğ  a  õ  b    R  !  U  4  s  >  W  E  X  Z  U  Ÿ  Y  ±  F  Â  i  ß  :  ñ  j    :    m  !  n  1  F  Ë  t  q  F  ‚  p  —  q  ½  p  Ò  p  ï  p     q    u  *  p  E  p  W  u  j  p    F  ¥  :  º  K  Ó  r  Ü  @  á  v    F    L    M  F  L  K  N  a  `  ‚  L  «  w  Á  F  á  F    F    x  3  :  J  y  a  z  u  {  —  :  ­  i  »  j  Ñ  |  á  :  ñ  m    n    F    @  /  L  4  M  l  K  s  v  œ  r  ¸  `  Õ  a  í  u  ü  @  #  }  ,  ~  >  L  C  N  V  `  h  a  {    ª  T  ·  `  ô  w  !  w  1  F  M  R  Ô  :  ¹!  €  ô!  R  ‰"  r  "    ¬"    ¶"  ‚  Å"  ƒ  *#  @  /#  „  E#  …  ‹#  ~  ”#  ~  Ü#  ~  å#  ~  $  K   $  ~  )$  ~  =$  Y  Q$  F  q$  `  €$  a  ±$  F  ¼$    Ê$  R  ë$  ‰  %  `  %  a  v%  u  †%  `  ˜%  a  ¬%    ·%  R  ñ%  u  /&  w  9&  Y  A&  F  U&  ‹  t&  L  &  M  ˜&  L  &  N  À&  Œ  Ñ&  L  Ü&  M  õ&  L  ú&  N  '  r  '  `  "'  a  Q'  `  `'  a  ELF                      ü      4     (               èüÿÿÿ‹@\èüÿÿÿ1ÀÃèüÿÿÿS‰Ã¹   ƒÃpƒìd¡    ‰D$‹C$jT$èüÿÿÿ¶D$P¶D$P¶D$P¶D$P¶D$P¶D$P¶D$PSh    èüÿÿÿƒÄ(‹D$d+    uƒÄ1À[Ãèüÿÿÿt& èüÿÿÿUW‰ÏV‰ÖS‰Ãƒì‹«”   d¡    ‰D$1À€=     ˆT$ˆL$…   j ¹   ‰èT$èüÿÿÿZƒø…üÿÿÿ‹D$d+    uƒÄ[^_]ÃèüÿÿÿèüÿÿÿƒúwvVS‰Ã‰ĞƒàƒøtX¶‹Â   ‰ĞÁâ¶³Ä   Áàƒâ ˆƒÀ   ƒá?ƒæßˆ“Á   	Á	Ö‰Ø¶É1Òè=ÿÿÿ‰ğº   ¶È‰Øè,ÿÿÿ1À[^Ã´&    ¸êÿÿÿëï´&    f¸êÿÿÿÃ´&    v èüÿÿÿUWVS‰Ã‹@‹P‹Rèüÿÿÿ%   =   „<   ¸ûÿÿÿ[^_]Ã                                                                                                                                                                              6%s: Status: SA00=%02x SA01=%02x SA02=%02x SA03=%02x SA04=%02x SA05=%02x SA06=%02x
-    7%s: write reg: %02x val: %02x
-    3%s: I/O error write 0x%02x/0x%02x
-    6%s %d-%04x: chip found @ 0x%x (%s)
- ‰øƒÃp¶ø‰ğ¶ğWVSh|   èüÿÿÿƒÄéá   ¶ÁP¶ÂPCpPhX   èüÿÿÿƒÄéÅ   ‹S·CŠ  Q QPÿ²   ‹CTÿ0h¤   èüÿÿÿC¹À  ºÜ   èüÿÿÿ‰ÅƒÄ…Àu
-¸ôÿÿÿéº  ¹`   ‰Ú½Â   1Ûèüÿÿÿ¾    ¹   fÇ…À     ó¤¶ŒÂ   ‰Ú‰èƒÃèŒ   ƒûuç1Àéº           -)6İVH : D`RøS`         upd64083                                                        à           €                                                                                                                                                                 debug èüÿÿÿº    ¸    éüÿÿÿ¸    éüÿÿÿupd64083 parm=debug:Debug level (0-1) parmtype=debug:bool license=GPL author=T. Adachi, Takeru KOMORIYA, Hans Verkuil description=uPD64083 driver             ¤ÿ      GCC: (GNU) 11.2.0           GNU  À        À                                  ñÿ                                                                          |                  	 0      o     7           ?       @    	 S      †                   f     3     u   @   –    	 ‰   `                       –            «       €     »       
-                   Ğ       0     Ü   à   0     î   €   P                          /           =         O  1        f  =   0     |  m        —             ¢             À             Ò             ì             ô                                       +             @             N             b           n             }      
-     Œ      0     °              upd64083.c upd64083_remove upd64083_log_status upd64083_write upd64083_write.cold upd64083_s_routing upd64083_probe upd64083_probe.cold upd64083_ops upd64083_driver_init upd64083_driver upd64083_driver_exit upd64083_id upd64083_core_ops upd64083_video_ops __UNIQUE_ID_debug270 __UNIQUE_ID_debugtype269 __param_debug __param_str_debug __UNIQUE_ID_license268 __UNIQUE_ID_author267 __UNIQUE_ID_description266 __fentry__ v4l2_device_unregister_subdev __stack_chk_guard i2c_transfer_buffer_flags _printk __stack_chk_fail __x86_indirect_thunk_edx devm_kmalloc v4l2_i2c_subdev_init __this_module i2c_register_driver init_module i2c_del_driver cleanup_module __mod_i2c__upd64083_id_device_table param_ops_bool        	   !        %   "  7   #  g     l   $  z   "  ˆ   %  ‘      ª   "  ¶     ×   #  ì   "  û   %       ‘     ¥  &  Å     á     µ                   h                                            $  /     4   $  _     d   $  v   '          (  ¢     Æ          <     ‰     Ò     `     l     €     à                   )     *          ,           )     /        .symtab .strtab .shstrtab .rel.text .rel.data .bss .rel__mcount_loc .rodata.str1.4 .rel.text.unlikely .rel.rodata .rel.init.text .rel.exit.text .rodata.str1.1 .modinfo .rel__param .comment .note.GNU-stack .note.gnu.property                                                         @   Ã                    	   @       8  ¨               )                €                   %   	   @       à                  /                                  8                                  4   	   @          0               E      2       ¸  Ê                 X             ‚  Ö                  T   	   @       0  x      	         k             `                    g   	   @       ¨                  w             v                    s   	   @       È                  †             Š  
-                  ‚   	   @       è                 ‘      2       ”  	                                 ‰                  ­             (                    ©   	   @       ø                  µ      0       <                   ¾              O                     Î             P  (                                x                  	              x	  ¿                                 á                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              ƒ'  w  œ'  w  ±'  F  ¿'  ‹  Ô'  Œ  Ş'  L  ë'  M  ş'  L  (  N  (  r  !(  `  0(  a  Q(  M  d(  L  i(  N  ƒ(  w  ‘(  F  £(  R  »(  ‹  Í(  ‚  Ü(  ƒ  ì(  :  ö(    
-)    )  L  )  M  4)  L  9)  N  G)  ‘  T)  R  k)  K  v)  `  …)  a  ‘)  ’  Ã)  w  Ñ)  Y  á)  F  ò)  R  ı)  ‹  *  L  *  M  .*  :  w*  ”  Œ*  •  ¥*  •  &+  •  h+  L  m+  N  ~+  R  ™+  `  ¬+  a  g,  w  {,  –  ˆ,  Y  ‘,  F  £,  R  Æ,  G  Ë,  `  ì,  _  ñ,  `  ,-  T  X-  G  c-  a  h-  b  q-  a  |-  R  ‘-  U  ¢-  V  ¬-  W  ³-  X  È-  U  î-  Y  .  F  -.  R  t.  ™  ˜.  š  Ã.  `  Î.  G  ë.  _  ğ.  `  ,/  T  X/  G  c/  a  h/  b  q/  a  z/  K  ”/  K  Ÿ/  R  É/  U  Ú/  V  ä/  W  ë/  X   0  U  /0  K  _0  ™  á0  Y  ñ0  F  11  R  ¶1  œ  Á1    â1  K  í1  R  2    "2  _  *2  `  02  G  d2  T  2  G  ›2  a   2  b  ­2  Ÿ  !3  U  23  V  <3  W  C3  X  X3  U  º3  o  Í3  [  å3  Y  4  F  64  R  r4  G  ¥4  ¡  Ó4  œ  à4    ó4    5  _  
-5  `  5  G  D5  T  p5  G  {5  a  €5  b  5  Ÿ  ¼5  œ  Ê5  •  Û5  ¢  ğ5  K  û5  R  16  U  B6  V  L6  W  S6  X  h6  U  š6  Y  ¡6  F  ¿6  R  7  G  7  _  7  `  T7  T  €7  G  ‹7  a  7  b  ·7  R  É7  U  Ú7  V  ä7  W  ë7  X   8  U  78  Y  f  K  û  P  (    ³  k  û  k  r  a  ˆ  N  É  k  Ô  a  h$  ‡  $  ‡      @                A                B     	     
-      C                D                                                           $     (     ,     0     4     8     <     @     D     H     L     P     T     X     \     `     d     h     l     p     t     x     |     €     „     ˆ     Œ          ”     ˜     œ           ¤     ¨     ¬     °     ´     ¸                   S               S                S  $     (     ,   S  0     4     8   S  <     @     D   S  H     L     P   S  T     X     \   S  `     d     h   S                                 $     (     0     4        :     e                                                 $     (     ,     0     4     8     @     `   I        ¤     °     À   Z     ^  @  ]  €  f  ¼    À    à  H     E  \    `    d    h    l    p        D     C     B     A     @   .symtab .strtab .shstrtab .rel.text .data .bss __ksymtab_strings .rel___ksymtab+cgroup_bpf_enabled_key .rel___ksymtab+__cgroup_bpf_run_filter_skb .rel___ksymtab+__cgroup_bpf_run_filter_sk .rel___ksymtab+__cgroup_bpf_run_filter_sock_addr .rel___ksymtab+__cgroup_bpf_run_filter_sock_ops .rel__mcount_loc .rodata.str1.4 .rel__jump_table .rodata.str1.1 .rel__bug_table .rel.text.unlikely .rel.smp_locks .rel.rodata .rel.discard.addressable .comment .note.GNU-stack .note.gnu.property                                                         @   ;8                    	   @       pW  ğ  #            %             {8                     +             €8  ¸                   0      2       €8  –                 F             9                    B   	   @       `e     #            l             $9                    h   	   @       xe     #            —             09                    “   	   @       e     #   
-         Á             <9                    ½   	   @       ¨e     #            ò             H9                    î   	   @       Àe     #            "            T9  ¼                    	   @       Øe  x  #            /     2       :  !                 B            4:  l                  >  	   @       Pg  Ø   #            O     2        :  I                 b            é:  <                  ^  	   @       (h  P   #            r            %;  
-                  n  	   @       xh     #            …            0;  0                    	   @       ˆh  `   #            ”            `;  t                    	   @       èh  °   #                         Ô=                    œ  	   @       ˜i  (   #            µ     0       è=                   ¾             û=                     Î            ü=  (                                $>   
-  $   @         	              ÄH  ª                               Ài  á                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             cmd_drivers/media/i2c/upd64083.o := gcc -Wp,-MMD,drivers/media/i2c/.upd64083.o.d -nostdinc -I./arch/x86/include -I./arch/x86/include/generated  -I./include -I./arch/x86/include/uapi -I./arch/x86/include/generated/uapi -I./include/uapi -I./include/generated/uapi -include ./include/linux/compiler-version.h -include ./include/linux/kconfig.h -include ./include/linux/compiler_types.h -D__KERNEL__ -fmacro-prefix-map=./= -Wall -Wundef -Werror=strict-prototypes -Wno-trigraphs -fno-strict-aliasing -fno-common -fshort-wchar -fno-PIE -Werror=implicit-function-declaration -Werror=implicit-int -Werror=return-type -Wno-format-security -std=gnu11 -mno-sse -mno-mmx -mno-sse2 -mno-3dnow -mno-avx -fcf-protection=none -m32 -msoft-float -mregparm=3 -freg-struct-return -fno-pic -mpreferred-stack-boundary=2 -march=i686 -mtune=pentium3 -mtune=generic -Wa,-mtune=generic32 -ffreestanding -mstack-protector-guard-reg=fs -mstack-protector-guard-symbol=__stack_chk_guard -Wno-sign-compare -fno-asynchronous-unwind-tables -mindirect-branch=thunk-extern -mindirect-branch-register -fno-jump-tables -fno-delete-null-pointer-checks -Wno-frame-address -Wno-format-truncation -Wno-format-overflow -Wno-address-of-packed-member -O2 -fno-allow-store-data-races -fstack-protector-strong -Wimplicit-fallthrough=5 -Wno-main -Wno-unused-but-set-variable -Wno-unused-const-variable -fno-stack-clash-protection -pg -mrecord-mcount -mfentry -DCC_USING_FENTRY -Wdeclaration-after-statement -Wvla -Wno-pointer-sign -Wcast-function-type -Wno-stringop-truncation -Wno-stringop-overflow -Wno-restrict -Wno-maybe-uninitialized -Wno-alloc-size-larger-than -fno-strict-overflow -fno-stack-check -fconserve-stack -Werror=date-time -Werror=incompatible-pointer-types -Werror=designated-init -Wno-packed-not-aligned  -DMODULE  -DKBUILD_BASENAME='"upd64083"' -DKBUILD_MODNAME='"upd64083"' -D__KBUILD_MODNAME=kmod_upd64083 -c -o drivers/media/i2c/upd64083.o drivers/media/i2c/upd64083.c 
 
-source_drivers/media/i2c/upd64083.o := drivers/media/i2c/upd64083.c
+#define call_all(dev, o, f, args...) \
+	v4l2_device_call_all(&dev->v4l2_dev, 0, o, f, ##args)
 
-deps_drivers/media/i2c/upd64083.o := \
-    $(wildcard include/config/VIDEO_ADV_DEBUG) \
-  include/linux/compiler-version.h \
-    $(wildcard include/config/CC_VERSION_TEXT) \
-  include/linux/kconfig.h \
-    $(wildcard include/config/CPU_BIG_ENDIAN) \
-    $(wildcard include/config/BOOGER) \
-    $(wildcard include/config/FOO) \
-  include/linux/compiler_types.h \
-    $(wildcard include/config/DEBUG_INFO_BTF) \
-    $(wildcard include/config/PAHOLE_HAS_BTF_TAG) \
-    $(wildcard include/config/HAVE_ARCH_COMPILER_H) \
-    $(wildcard include/config/CC_HAS_ASM_INLINE) \
-  include/linux/compiler_attributes.h \
-  include/linux/compiler-gcc.h \
-    $(wildcard include/config/RETPOLINE) \
-    $(wildcard include/config/ARCH_USE_BUILTIN_BSWAP) \
-    $(wildcard include/config/SHADOW_CALL_STACK) \
-    $(wildcard include/config/KCOV) \
-  include/linux/module.h \
-    $(wildcard include/config/MODULES) \
-    $(wildcard include/config/SYSFS) \
-    $(wildcard include/config/MODULES_TREE_LOOKUP) \
-    $(wildcard include/config/LIVEPATCH) \
-    $(wildcard include/config/STACKTRACE_BUILD_ID) \
-    $(wildcard include/config/CFI_CLANG) \
-    $(wildcard include/config/MODULE_SIG) \
-    $(wildcard include/config/GENERIC_BUG) \
-    $(wildcard include/config/KALLSYMS) \
-    $(wildcard include/config/SMP) \
-    $(wildcard include/config/TRACEPOINTS) \
-    $(wildcard include/config/TREE_SRCU) \
-    $(wildcard include/config/BPF_EVENTS) \
-    $(wildcard include/config/DEBUG_INFO_BTF_MODULES) \
-    $(wildcard include/config/JUMP_LABEL) \
-    $(wildcard include/config/TRACING) \
-    $(wildcard include/config/EVENT_TRACING) \
-    $(wildcard include/config/FTRACE_MCOUNT_RECORD) \
-    $(wildcard include/config/KPROBES) \
-    $(wildcard include/config/HAVE_STATIC_CALL_INLINE) \
-    $(wildcard include/config/PRINTK_INDEX) \
-    $(wildcard include/config/MODULE_UNLOAD) \
-    $(wildcard include/config/CONSTRUCTORS) \
-    $(wildcard include/config/FUNCTION_ERROR_INJECTION) \
-  include/linux/list.h \
-    $(wildcard include/config/DEBUG_LIST) \
-  include/linux/container_of.h \
-  include/linux/build_bug.h \
-  include/linux/compiler.h \
-    $(wildcard include/config/TRACE_BRANCH_PROFILING) \
-    $(wildcard include/config/PROFILE_ALL_BRANCHES) \
-    $(wildcard include/config/STACK_VALIDATION) \
-  include/linux/compiler_types.h \
-  arch/x86/include/generated/asm/rwonce.h \
-  include/asm-generic/rwonce.h \
-  include/linux/kasan-checks.h \
-    $(wildcard include/config/KASAN_GENERIC) \
-    $(wildcard include/config/KASAN_SW_TAGS) \
-  include/linux/types.h \
-    $(wildcard include/config/HAVE_UID16) \
-    $(wildcard include/config/UID16) \
-    $(wildcard include/config/ARCH_DMA_ADDR_T_64BIT) \
-    $(wildcard include/config/PHYS_ADDR_T_64BIT) \
-    $(wildcard include/config/64BIT) \
-    $(wildcard include/config/ARCH_32BIT_USTAT_F_TINODE) \
-  include/uapi/linux/types.h \
-  arch/x86/include/generated/uapi/asm/types.h \
-  include/uapi/asm-generic/types.h \
-  include/asm-generic/int-ll64.h \
-  include/uapi/asm-generic/int-ll64.h \
-  arch/x86/include/uapi/asm/bitsperlong.h \
-  include/asm-generic/bitsperlong.h \
-  include/uapi/asm-generic/bitsperlong.h \
-  include/uapi/linux/posix_types.h \
-  include/linux/stddef.h \
-  include/uapi/linux/stddef.h \
-  arch/x86/include/asm/posix_types.h \
-    $(wildcard include/config/X86_32) \
-  arch/x86/include/uapi/asm/posix_types_32.h \
-  include/uapi/asm-generic/posix_types.h \
-  include/linux/kcsan-checks.h \
-    $(wildcard include/config/KCSAN) \
-    $(wildcard include/config/KCSAN_WEAK_MEMORY) \
-    $(wildcard include/config/KCSAN_IGNORE_ATOMICS) \
-  include/linux/err.h \
-  arch/x86/include/generated/uapi/asm/errno.h \
-  include/uapi/asm-generic/errno.h \
-  include/uapi/asm-generic/errno-base.h \
-  include/linux/poison.h \
-    $(wildcard include/config/ILLEGAL_POINTER_VALUE) \
-  include/linux/const.h \
-  include/vdso/const.h \
-  include/uapi/linux/const.h \
-  arch/x86/include/asm/barrier.h \
-  arch/x86/include/asm/alternative.h \
-  include/linux/stringify.h \
-  arch/x86/include/asm/asm.h \
-  arch/x86/include/asm/extable_fixup_types.h \
-  arch/x86/include/asm/nops.h \
-  include/asm-generic/barrier.h \
-  include/linux/stat.h \
-  arch/x86/include/uapi/asm/stat.h \
-  include/uapi/linux/stat.h \
-  include/linux/time.h \
-    $(wildcard include/config/POSIX_TIMERS) \
-  include/linux/cache.h \
-    $(wildcard include/config/ARCH_HAS_CACHE_LINE_SIZE) \
-  include/uapi/linux/kernel.h \
-  include/uapi/linux/sysinfo.h \
-  arch/x86/include/asm/cache.h \
-    $(wildcard include/config/X86_L1_CACHE_SHIFT) \
-    $(wildcard include/config/X86_INTERNODE_CACHE_SHIFT) \
-    $(wildcard include/config/X86_VSMP) \
-  include/linux/linkage.h \
-    $(wildcard include/config/ARCH_USE_SYM_ANNOTATIONS) \
-  include/linux/export.h \
-    $(wildcard include/config/MODVERSIONS) \
-    $(wildcard include/config/MODULE_REL_CRCS) \
-    $(wildcard include/config/HAVE_ARCH_PREL32_RELOCATIONS) \
-    $(wildcard include/config/TRIM_UNUSED_KSYMS) \
-  arch/x86/include/asm/linkage.h \
-    $(wildcard include/config/X86_64) \
-    $(wildcard include/config/X86_ALIGNMENT_16) \
-    $(wildcard include/config/SLS) \
-  arch/x86/include/asm/ibt.h \
-    $(wildcard include/config/X86_KERNEL_IBT) \
-  include/linux/math64.h \
-    $(wildcard include/config/ARCH_SUPPORTS_INT128) \
-  include/linux/math.h \
-  arch/x86/include/asm/div64.h \
-  include/linux/log2.h \
-    $(wildcard include/config/ARCH_HAS_ILOG2_U32) \
-    $(wildcard include/config/ARCH_HAS_ILOG2_U64) \
-  include/linux/bitops.h \
-  include/linux/bits.h \
-  include/vdso/bits.h \
-  include/linux/typecheck.h \
-  arch/x86/include/asm/bitops.h \
-    $(wildcard include/config/X86_CMOV) \
-  arch/x86/include/asm/rmwcc.h \
-    $(wildcard include/config/CC_HAS_ASM_GOTO) \
-  include/asm-generic/bitops/fls64.h \
-  include/asm-generic/bitops/sched.h \
-  arch/x86/include/asm/arch_hweight.h \
-  arch/x86/include/asm/cpufeatures.h \
-  arch/x86/include/asm/required-features.h \
-    $(wildcard include/config/X86_MINIMUM_CPU_FAMILY) \
-    $(wildcard include/config/MATH_EMULATION) \
-    $(wildcard include/config/X86_PAE) \
-    $(wildcard include/config/X86_CMPXCHG64) \
-    $(wildcard include/config/X86_P6_NOP) \
-    $(wildcard include/config/MATOM) \
-    $(wildcard include/config/PARAVIRT_XXL) \
-  arch/x86/include/asm/disabled-features.h \
-    $(wildcard include/config/X86_SMAP) \
-    $(wildcard include/config/X86_UMIP) \
-    $(wildcard include/config/X86_INTEL_MEMORY_PROTECTION_KEYS) \
-    $(wildcard include/config/X86_5LEVEL) \
-    $(wildcard include/config/PAGE_TABLE_ISOLATION) \
-    $(wildcard include/config/INTEL_IOMMU_SVM) \
-    $(wildcard include/config/X86_SGX) \
-  include/asm-generic/bitops/const_hweight.h \
-  include/asm-generic/bitops/instrumented-atomic.h \
-  include/linux/instrumented.h \
-  include/asm-generic/bitops/instrumented-non-atomic.h \
-    $(wildcard include/config/KCSAN_ASSUME_PLAIN_WRITES_ATOMIC) \
-  include/asm-generic/bitops/instrumented-lock.h \
-  include/asm-generic/bitops/le.h \
-  arch/x86/include/uapi/asm/byteorder.h \
-  include/linux/byteorder/little_endian.h \
-  include/uapi/linux/byteorder/little_endian.h \
-  include/linux/swab.h \
-  include/uapi/linux/swab.h \
-  arch/x86/include/uapi/asm/swab.h \
-  include/linux/byteorder/generic.h \
-  include/asm-generic/bitops/ext2-atomic-setbit.h \
-  include/vdso/math64.h \
-  include/linux/time64.h \
-  include/vdso/time64.h \
-  include/uapi/linux/time.h \
-  include/uapi/linux/time_types.h \
-  include/linux/time32.h \
-  include/linux/timex.h \
-  include/uapi/linux/timex.h \
-  include/uapi/linux/param.h \
-  arch/x86/include/generated/uapi/asm/param.h \
-  include/asm-generic/param.h \
-    $(wildcard include/config/HZ) \
-  include/uapi/asm-generic/param.h \
-  arch/x86/include/asm/timex.h \
-    $(wildcard include/config/X86_TSC) \
-  arch/x86/include/asm/processor.h \
-    $(wildcard include/config/X86_VMX_FEATURE_NAMES) \
-    $(wildcard include/config/X86_IOPL_IOPERM) \
-    $(wildcard include/config/STACKPROTECTOR) \
-    $(wildcard include/config/VM86) \
-    $(wildcard include/config/X86_DEBUGCTLMSR) \
-    $(wildcard include/config
+#define CX23885_HW_888_IR  (1 << 0)
+#define CX23885_HW_AV_CORE (1 << 1)
+
+#define call_hw(dev, grpid, o, f, args...) \
+	v4l2_device_call_all(&dev->v4l2_dev, grpid, o, f, ##args)
+
+extern struct v4l2_subdev *cx23885_find_hw(struct cx23885_dev *dev, u32 hw);
+
+#define SRAM_CH01  0 /* Video A */
+#define SRAM_CH02  1 /* VBI A */
+#define SRAM_CH03  2 /* Video B */
+#define SRAM_CH04  3 /* Transport via B */
+#define SRAM_CH05  4 /* VBI B */
+#define SRAM_CH06  5 /* Video C */
+#define SRAM_CH07  6 /* Transport via C */
+#define SRAM_CH08  7 /* Audio Internal A */
+#define SRAM_CH09  8 /* Audio Internal B */
+#define SRAM_CH10  9 /* Audio External */
+#define SRAM_CH11 10 /* COMB_3D_N */
+#define SRAM_CH12 11 /* Comb 3D N1 */
+#define SRAM_CH13 12 /* Comb 3D N2 */
+#define SRAM_CH14 13 /* MOE Vid */
+#define SRAM_CH15 14 /* MOE RSLT */
+
+struct sram_channel {
+	char *name;
+	u32  cmds_start;
+	u32  ctrl_start;
+	u32  cdt;
+	u32  fifo_start;
+	u32  fifo_size;
+	u32  ptr1_reg;
+	u32  ptr2_reg;
+	u32  cnt1_reg;
+	u32  cnt2_reg;
+	u32  jumponly;
+};
+
+/* ----------------------------------------------------------- */
+
+#define cx_read(reg)             readl(dev->lmmio + ((reg)>>2))
+#define cx_write(reg, value)     writel((value), dev->lmmio + ((reg)>>2))
+
+#define cx_andor(reg, mask, value) \
+  writel((readl(dev->lmmio+((reg)>>2)) & ~(mask)) |\
+  ((value) & (mask)), dev->lmmio+((reg)>>2))
+
+#define cx_set(reg, bit)          cx_andor((reg), (bit), (bit))
+#define cx_clear(reg, bit)        cx_andor((reg), (bit), 0)
+
+/* ----------------------------------------------------------- */
+/* cx23885-core.c                                              */
+
+extern int cx23885_sram_channel_setup(struct cx23885_dev *dev,
+	struct sram_channel *ch,
+	unsigned int bpl, u32 risc);
+
+extern void cx23885_sram_channel_dump(struct cx23885_dev *dev,
+	struct sram_channel *ch);
+
+extern int cx23885_risc_buffer(struct pci_dev *pci, struct cx23885_riscmem *risc,
+	struct scatterlist *sglist,
+	unsigned int top_offset, unsigned int bottom_offset,
+	unsigned int bpl, unsigned int padding, unsigned int lines);
+
+extern int cx23885_risc_vbibuffer(struct pci_dev *pci,
+	struct cx23885_riscmem *risc, struct scatterlist *sglist,
+	unsigned int top_offset, unsigned int bottom_offset,
+	unsigned int bpl, unsigned int padding, unsigned int lines);
+
+int cx23885_start_dma(struct cx23885_tsport *port,
+			     struct cx23885_dmaqueue *q,
+			     struct cx23885_buffer   *buf);
+void cx23885_cancel_buffers(struct cx23885_tsport *port);
+
+
+extern void cx23885_gpio_set(struct cx23885_dev *dev, u32 mask);
+extern void cx23885_gpio_clear(struct cx23885_dev *dev, u32 mask);
+extern u32 cx23885_gpio_get(struct cx23885_dev *dev, u32 mask);
+extern void cx23885_gpio_enable(struct cx23885_dev *dev, u32 mask,
+	int asoutput);
+
+extern void cx23885_irq_add_enable(struct cx23885_dev *dev, u32 mask);
+extern void cx23885_irq_enable(struct cx23885_dev *dev, u32 mask);
+extern void cx23885_irq_disable(struct cx23885_dev *dev, u32 mask);
+extern void cx23885_irq_remove(struct cx23885_dev *dev, u32 mask);
+
+/* ----------------------------------------------------------- */
+/* cx23885-cards.c                                             */
+extern struct cx23885_board cx23885_boards[];
+extern const unsigned int cx23885_bcount;
+
+extern struct cx23885_subid cx23885_subids[];
+extern const unsigned int cx23885_idcount;
+
+extern int cx23885_tuner_callback(void *priv, int component,
+	int command, int arg);
+extern void cx23885_card_list(struct cx23885_dev *dev);
+extern int  cx23885_ir_init(struct cx23885_dev *dev);
+extern void cx23885_ir_pci_int_enable(struct cx23885_dev *dev);
+extern void cx23885_ir_fini(struct cx23885_dev *dev);
+extern void cx23885_gpio_setup(struct cx23885_dev *dev);
+extern void cx23885_card_setup(struct cx23885_dev *dev);
+extern void cx23885_card_setup_pre_i2c(struct cx23885_dev *dev);
+
+extern int cx23885_dvb_register(struct cx23885_tsport *port);
+extern int cx23885_dvb_unregister(struct cx23885_tsport *port);
+
+extern int cx23885_buf_prepare(struct cx23885_buffer *buf,
+			       struct cx23885_tsport *port);
+extern void cx23885_buf_queue(struct cx23885_tsport *port,
+			      struct cx23885_buffer *buf);
+extern void cx23885_free_buffer(struct cx23885_dev *dev,
+				struct cx23885_buffer *buf);
+
+/* ----------------------------------------------------------- */
+/* cx23885-video.c                                             */
+/* Video */
+extern int cx23885_video_register(struct cx23885_dev *dev);
+extern void cx23885_video_unregister(struct cx23885_dev *dev);
+extern int cx23885_video_irq(struct cx23885_dev *dev, u32 status);
+extern void cx23885_video_wakeup(struct cx23885_dev *dev,
+	struct cx23885_dmaqueue *q, u32 count);
+int cx23885_enum_input(struct cx23885_dev *dev, struct v4l2_input *i);
+int cx23885_set_input(struct file *file, void *priv, unsigned int i);
+int cx23885_get_input(struct file *file, void *priv, unsigned int *i);
+int cx23885_set_frequency(struct file *file, void *priv, const struct v4l2_frequency *f);
+int cx23885_set_tvnorm(struct cx23885_dev *dev, v4l2_std_id norm);
+
+/* ----------------------------------------------------------- */
+/* cx23885-vbi.c                                               */
+extern int cx23885_vbi_fmt(struct file *file, void *priv,
+	struct v4l2_format *f);
+extern void cx23885_vbi_timeout(unsigned long data);
+extern const struct vb2_ops cx23885_vbi_qops;
+extern int cx23885_vbi_irq(struct cx23885_dev *dev, u32 status);
+
+/* cx23885-i2c.c                                                */
+extern int cx23885_i2c_register(struct cx23885_i2c *bus);
+extern int cx23885_i2c_unregister(struct cx23885_i2c *bus);
+extern void cx23885_av_clk(struct cx23885_dev *dev, int enable);
+
+/* ----------------------------------------------------------- */
+/* cx23885-417.c                                               */
+extern int cx23885_417_register(struct cx23885_dev *dev);
+extern void cx23885_417_unregister(struct cx23885_dev *dev);
+extern int cx23885_irq_417(struct cx23885_dev *dev, u32 status);
+extern void cx23885_417_check_encoder(struct cx23885_dev *dev);
+extern void cx23885_mc417_init(struct cx23885_dev *dev);
+extern int mc417_memory_read(struct cx23885_dev *dev, u32 address, u32 *value);
+extern int mc417_memory_write(struct cx23885_dev *dev, u32 address, u32 value);
+extern int mc417_register_read(struct cx23885_dev *dev,
+				u16 address, u32 *value);
+extern int mc417_register_write(struct cx23885_dev *dev,
+				u16 address, u32 value);
+extern void mc417_gpio_set(struct cx23885_dev *dev, u32 mask);
+extern void mc417_gpio_clear(struct cx23885_dev *dev, u32 mask);
+extern void mc417_gpio_enable(struct cx23885_dev *dev, u32 mask, int asoutput);
+
+/* ----------------------------------------------------------- */
+/* cx23885-alsa.c                                             */
+extern struct cx23885_audio_dev *cx23885_audio_register(
+					struct cx23885_dev *dev);
+extern void cx23885_audio_unregister(struct cx23885_dev *dev);
+extern int cx23885_audio_irq(struct cx23885_dev *dev, u32 status, u32 mask);
+extern int cx23885_risc_databuffer(struct pci_dev *pci,
+				   struct cx23885_riscmem *risc,
+				   struct scatterlist *sglist,
+				   unsigned int bpl,
+				   unsigned int lines,
+				   unsigned int lpi);
+
+/* ----------------------------------------------------------- */
+/* tv norms                                                    */
+
+static inline unsigned int norm_maxh(v4l2_std_id norm)
+{
+	return (norm & V4L2_STD_525_60) ? 480 : 576;
+}
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   Eş˜‹Åœ²¹áõ¶¥ä5wDf¸à÷>ÌÌ{i—ûÁ§Ô¨_`¢ê¯x³ÔXôk¯¿
+?XÍa-@Îµ‹oOË÷5j‡aÃ&D@,0¡:-¹Mîú±Y#•"TV…ïÓÛùoYYfJ½-£°ó–æ›@ , cr°~T¬&£ÔmğC—ïÌ&#j³PÎxƒ¯9MõµC´ùpš·ÁVEC¥{zÙk2hÒË[wKò‘Paí?Èröğ4*×µ§>4§°„HGXß«7\‚¬ëÁ\Íª­âmE•: åí¾¹ˆÈTQêtt¤n™rµóäEü¹ßÅ›¯ok#ùkëÛÊbòEYˆ
+Ù°T…³°oô|©ƒ†æÔ’Ìµ7²È‹öÙˆ¡dş_ÕÅÈš¯¿6ÓË&h^šÑn×IÍ ®÷ª…kœˆç¾‘tÎ{¦²2Ó¾ƒ@Å\ HW{ùå+ÌÙÒúZŠ$°r¸"Æ’{¶å“(sÈ5<ÇŠÕÎò/4÷U`ô™ı^¿ËÒLÁfêwø…Ù¶$ûÊÑ¼0¦§&2®\ “h(d‹ÜHÆŞlĞvMáoTègßÓÃğV2Áxê4°–{ÛÔU”ÖŒÑ|4p{üéJ`û×N½tTŸûœ®G JxÂ=@ cú@rh{Âj	-Şv{±Ú«ş«ßOX‹‹e“e¼½0Ñ¹lå›ê5!”èËÖI ÎÚŒØé æaõqz1%Œò­%y»ÛCwïL±6Â©­ÉÎœ÷LÔÊ»¿Õ[ğÈc£óé~.Ôş”*ØMï‹z+Õ±°¥•U¬:>ù©ËÎû*tPhi›½Q™(á–› z¸/³DÉ@Ş·/¿¥}ÎÓäI~rmW é/ù†D@S@:Qp…•Í<CJuÄ[§¬Fä]DÿşR@yé&ºß&
+çf‡Üå¤T ´gJƒj@3EÕv^)CŞXöÛ/ñËlÊ¨TŸKN3jfáÍª”û”aÕ?\iñgÃë6,ù=|YüˆĞÅS£g½æâ³ÛÍpIÂÚWnoİ¬«e]1òá,k)»°]%‰å›pé´:]Høµ•¢ÄªbMœ ç©×ZÖµĞ—ÿÊyPZ°¹İ+zg@tKïÙ˜1“®³Bü¢ã`„
+ Ä/ççP-ÌlŠçIüH<ÙÛ’1³ì\æójEØÍk‚Òå÷‚8©Ş…ôùŠ¯ì­¢U¤İcÙE’Ù²?b,ñ—Š±Â˜Œ®,n¹YìJ°¾$>Mî“‘«2rW"áÇ3ÿô_`Ÿ¡¨È8Y+åT6-wÑ œìØB@ZäzqÑù)€¥­°û0 ¹…³Î}Ñ'‡¶­×‚Åz¿hµÔa±1"¯W7m.Øù›hÁqS9­’AçtÜÇ_èNÛR£2‹û£ïS·7ëŸp“ŸèÒ:Õú™iÜZCHía¡†ƒ¹yz0ø^m Çpëu#X$g4î"UèĞ‡ˆïCuä!xcÙ”CÍ^ïË>UH€©øü†Rİ€–/Ã/öiã/öá„ÀLTõDÛKÑìØ”ÔÿU5UCâäj‰¾p‹±-ªl«Á`ÿßÕæ6Í?³r#úµˆóöchQ[æjLõø"j2~ÿÃûç>H1)qJ$­Uğ¶ËQ~Q’Ù.àBeÉË?Ÿ7‚JÙûGÕyÏÂëé.r€U»0Ã)±èÙl«’)S†ÿŞ;Ú@±Í$İàıù¯¾íç'ÓcR1o#_®9^Çz22¨*êÓPk`l‹˜Ü*’‚­Ğ¼#|'ÅYJ«SV‚ûí˜L8+íB	Ó¹+ğõ;0‚š©®m†áwÁÌÀMöâLª8u•İK´ê>S%(S7kÓ.‡ "ÔwîgY‚7ƒİ'0!yÄÃ¥÷LëŠş™"Š/ÕÓæzÏ¡š¤áÊMUÔDÒòç¢$ù€Ş"åQ©á³íÃ+59²é£Ç-’ ¥‹ŸéêéF«³óäy yêlšcjgµÔ¹y¨vÏ"Ó&„DêË3¯TÃ2èPº€L7ÿpøå5ªÍq)mÿ©yS¿ïÊ¬l•¡!°/OÖ,NÆÁZp—ığPÒ‹c•^Q~ËÓMšZÍ¬m5À›nãÚâ’›äÎ©äË¡«Z€‘P‹\¿*²tÉ£ûXÏD¸ƒ(iµG^êÑ•"“Ö§Ê›N¥ÔŠøŠJş¯Kş6}ÓR#:‹uèé¨’q–ÒQmã¨Ì©¾¥¡@FMg›‹ğpM„Ò7P*e‘2*aîmAk~Oj;y\q‰¨¹;µ’IÚN]Ä‚‰©[o^—FÎı\b3"œ½¶W•ƒ°Ğr	ö‘¼ÒÓ‘K9“Çkgtå±0ÔJx‘´õ$ßÕ­‡™Â& CqPÌ%öØ7¨Üi”€ãJ·ox­ë1‘¢¨¼*ÛsA0çú©î<	vwÈ¥t ·Sş|Šı¬­‚Aã‡˜u‚2sÑ{¬ÂzJÈâ½ˆÉ¹6f?sgò6³õàwQ¦RÆÙƒ…‚ µ¦Ã
+Ø~ÿÌÅ@((%OmÇF®8°5Ğc¶`À2=ùKîíhMT¤l5l92AŸèLÕ-‹©fòÒƒv¨ßıÙ(ß4ò°íŒÙC>_xÏABŒÙjå áö~O@äÂä|ç¿bÈB”²¼fvqx%#òËT÷¼WÕÁN¶øºeˆäÔØô–´Œ}¥Qsöıg í§ø†ÓtÙ³Å¦ª£˜şQ+å_±'«i;oåÎœå}âJò=Ö*­a-±ö(K‡	ñò"Ş6ÿƒgİÃ«•Õ_¨ #,í»9'mJ“ùÉÙ1û¹ãdC©›=JfIàtöbV'°¢ÿã›ëáhhµ¡(Sö¤oª
+ó]¹¦HD¡â9&çlx”Gr1R$¡š«“yı¶>3è­\Ÿ¸(î ì­B/6Ÿ³ºÈÎ›• Œ'aØL5‹(†¨rÆjG‰­MõDjîœ1¬Æÿe¼’í6B/ùªF ‰™˜_‚–Ã1ÓÄ°ï%%iU
+Dß15$en´àŸ˜×‹êê¶ïêï¢ùÙ¿ƒfĞBôOÌóÎa[É!5oÌ‹hÜ„ÏvIòMÏeoÃûö÷<VY`5“ïw —*Vm}%æVƒ\7sLÏxfß½«^LfhBÁ51ní(2ø´8u¯‡¿äÛ¨åÍP’.y‰Æ™VVMáğ¶[øA²M¹V@ıËc«³sÓ¸áwj6ˆÑê¤ç¢úJíŞøX‹ºw"û;Åz”~ "”»(ËÂˆÌíªû­ü@›£€ˆIún‡šÊ˜ÑBâQ‰ÙkTgz3štç•nP!)–|Ñ8œª4]A`j:Ö(‹¸ü×d´×
+¬šŸÌVêµHò¼mZ0ò©ª‹€¸0CZÌHğiûÄBŠzÍu;ŸR——6éò×R^ê$CvÛ?C{¤"ü¢Ç|6bQt\v>‹¼Î]!õeşÕ@ŠN»™‡$³©½Êwñ>t‹»PÎLÎîÄÇ¡Ğ9
+Ô¡éL|S[¢¶bZ¾ŠšŠ‚v†ïÑ‰ˆl¬:¼†º²m„)ü( İ°ıSŒ à<c9·û±ìşö‹ı¢·¦q3ÿ”:+ò!¼ÂP)ioºÑ«‹"t1)Õ€èş.	^Ô%¹¼œÑÛƒGÊb+ÌãÚm”d?Çsó;Ô;,³S¸ÏNµ{qD÷T‚J}WXuÚ„!ŒeÅ˜mm1èâAMh9ô7=…~“2›gu•ÈòG€P4‡'é SÏïÖ9YÒ€…›ò÷??&6B†Ó p›í=·:ßáµüƒfƒBv ç­Úm<eê€1^[ÚçVßİ¡~ôO3íÀòøÊgyvÁ³KïŞJëŠNYfHyGÿÌâ©¥šè¤e†§ûÓjgnò×î‰ÕÜæë¾òhˆ1¶öøl©xÿ¢²’õ¯SË;UÏ?©B£û%{ï×™ØµóË»© 9[NŠ>uÏóT½ Œ\y ïípttfÂW@Ø±‹7‘tÛ7™4³·$½	1Èc»Ìr¶¦™>FmşåAğ¥^Îš±cP9LŞ£rÃl¹ı/üh4˜+)3`æFXÏyUÅdœ¯*Z¦ÎêHœ¾ó€0KÓ.jÌD“TWÿÚz7T8ap©ÿ¹†QH‹àTh}¬AO&‹õRyæŠs'Xó%-	Š¤|j	"}ÀFİy‘Òı=ÃòÏ &vùÿ<'ÿ#ÚÄç–K}¢oÙ™Z7°“UJÚ·,Yiuß±şİÇY¦ÄeİdãÖÁ'Óç[%c“èk¦z¾L„º0ıuw½Ór—ì÷½Åe™ßúŠˆ7ò|¡‚¿Ó'Ä­`Pü¡ñİœq*h¥f $¹½?åB'LàO×º~¥ÉiUKÁk3óÙYF‚e+âsNŸeİô 7j?)8¤l90€†C™v†Æ×ãºƒc>ò¡%Ï»ı¥œ±Ş´Î¶Ğ?Ñûæ"ÆÚG#¬ÈöUõ@ûû!Yõ2ı¹ˆayE¿A.nŸã0î®Ùª²7bLá£"’ah]éõÌÀ±DMñwe÷šû"*şG³U¤#İÁ‡ÔÂ vÜíŒÀîÁb¨ÚùËIİ­•8ñ÷7$ˆ®ÎJ)ˆÇ(•‹tM-v*:Gï|úWxÃ"ŸÖÓKÃjï`¶Æ[‰Ö·Øn"U’9]³ÏÈ®v0¨æ6Â\EàXıRâ(\GÅ‹~èŞöËõ†`7%÷Ø£ŞDŠ§Î™…U1vKÿ]GUñyXÎÉ†++/A5QSÊy)
+¢Ïn:C¨¢°ñfîĞ5=§Nú`ë?â~²ú
+=/ÿbŠLÇëÊÿmv¿Y§ñk L`ò0—Æ/•¢3H[Ñ¹İ¹0­³b´çM5V0¦ìÇÈÌÏjÑç|²'tÒò;©›@å÷Ò>Ë«q
+NÏI4 ñ}º…£áaAD½FpÇªµ6^·^rg,m„í“ĞÉœëGª®Mmé®ÖØåä…µ°pfÊBäöcùk‚6·Xé¡mƒÒ6y\Oé£¡Q‰¢ôúª¶ˆ>‹ŒÁä>,n“Zˆªîc¦_¾/íˆ5¶!6.¦vO¸mÎ?Ipí¿9=«†K®Ÿb2Ø–*êâ¯¯²´$áÑ /Wœ››çf»~LC| ÚY¶h³L¥337G979/Óé³¾†Hˆ“uşÆãêÉ*{<A˜cYL@¶«mÉS‚e‰&?¾ìÒ¥Òı‰·ş'SªáËŠWÛ6´[€kõÀåªÇ3Ñ÷&Ûâ}®0““1¢ê…ÖV'6Ï}·ƒ-Øˆ™}Xiü=[´{ùá÷·øöe{-/—ößLûŒ™‘µàĞÿÌcéş³ÔU¤œ	&u¹4K8ˆ.Ón.ˆ‰Ïçe6F-0,íyP9y~ÿš<R4¼\”"C-€á]Åt@é¾)9óŠÆú,ß×­¾É´:.fM„cë˜1GˆÅ<²%Ø/ U"gÀÕQ?ğfà¨;õ¡“#¼Ÿ5VWC}ı††É^ï+†N;ÕÔ¶Ü]b î¡Õ±èiSˆ„g=Ï=°ß+6eóÉxÌ\òwp0#“¹ÉÒEãÅÆ8éNŸÂJ[V§(çùyyØ0Gj2Çn^\Ú¢GÄ ó.ñ×ºW†šTÎ4ò-·•¿jÆX²Âj;¨€êŸ#ŒLÏJÈ—|ŒîNd5#Ï—©BÜãZêyo³ökÒÉÄK/«öá
+	3™3fAgwëÙÆèáo†ıÒÖıqTJb¾Ôã|èR9tR˜0Ôìpæµ¯×—İŞ-Õ®—Ğ9V"vç´ ã¯›õãØ4×ûrÎ—Íçwü‰°,ªQ6Ö¸Ç¯Õ6Q£fÊÎB#LÕŒİÒ7<¯½ÂL¾ıôá»	°èo©éÏ¤Ÿb»"Wü¦{rø,TãëI9ÜÎ?™AQ¦wÒVedŸÂo=×ˆ,¾iâÃ*Ï«â³”üõ
+6~»^Š~NkIk×iÅ£™Xká%À%)ò+³Êëô¸¯Jr¬6Ò}áQ'Şˆ²H„ÿ¾Û‚\ÓH,)¦îSïgPCÖÒe÷LËæ–oE¯ßsV eÎGùHÄT¼äÏ»õY½G”&C³Å6@Ûeï23ÒQ¸é/IæíëhöGçC ½QaøñI (zPªŞ¼òJ´ÍkÒÉ›¡Â´ô¹m?°Sƒ!«[è£™Ï-M§EÊ¯rõcàö‹eª_şäXÑ	G æš'ZIÚ²z«]ÿ^›ñ÷z"AÁEa¶Lçg7"Æy Á¶ËvÄ'12–
+Ú”ÿj[/=V“•Œ,ù©Ò1l[²gÙaCğA§µØ)i°³vÀV¶¬—yêg³†öQˆÙ(‘øØ6î¯<ái²1M¦CQÎ–=áP³+µKÌá=]Rê¿|Ä(TÏ:*Ù¤$mn,ÆgZ0Õ±Ãüï,ãP53.¾'~¸ï5„şŞğMşÜây¶}™¬ä¸¡0ZÜ~Ê¯g*øĞ'xÚ£På	åÚÈÙÀ"ÇÂ~UÆ ‰fâs½””qqæîu×š³è:~%®Á˜ÿ}q'ü¤¡ º*Ù5=º<”YşÁ`…h“‰3¼à	ôï=¼‘^t
+1ë]dysSÑ ú"ÂøW?×÷Y˜CÎx‰L4ÿëŸ6“Ä —e…ñ
+ˆ­X¸:¡Kš¢AäÌKó(i {.zSC&(›ÚlûMU #Á‘-1+áØáëÇâ³EÊ9F?Æi+YEBELüíÉô*v,Æ§:äÛã…qXJ§<ˆÎ€ZNdªHHcpù^ïîÙÿQ|Á«mì@LxãË¾h {L)ÊÉÑë½-ñÔ>1¥(6ìô|(_§ê!íeIHz±¿›`…ş“Hìû¾µ‹¹|nëj\¾‹m9è´Ô×öĞÌ|;˜È¥ƒ¾¨­Ãí'MY´#ÏGb¡ı*:ßœ'ós$uk‘xM;€–Ü·°ïÖNÁê1ÈdŞ½œ¸åx†®Òh1ú‹*à½©¢»ŞÄ-k¦Ä)AÅi‰Ü¿DÍ :¶q¶»ƒµ}w‘ÆxbÆÑS]»ír$ğáZxÆÈÇÜşéK¶O-Ô“Ø …({Æ£;(’È¾z|;Y¼ıvôFŞ"øõò Ÿ¤@8ÏSÀ’ ñê`Õ›¬É»!ŞA‡­4]¿_à™È
+ÆçËÅ÷‘5?úá ìÊWsãê˜qX4Cw›ö+é˜Àå´F˜¹oaÍÙŞ+Ö#S²K•ÈÀzçÕeÖî¨A›!—*‰¹É¤®V'ÌJ=ÌÍ¬ˆ6VF½h[¯
+s¦¡¯÷F> 7ğu…ûştaüµ,M”ø—½Á‰Øµ
+ıyá±÷md³¦†ÙÆ¬ÓÛß–7MV9%–¸ÑÑv«Fa4Ÿ¦&û‹„¦¥Î³ŞŞ8¾²˜’3bk™ë-·Óõywıæ£é¢iÅálşA“§ĞŞ™.fzgEö?K©	Ñ}ˆÜÅ¹¾°¢W¢šo-@³ÎñªG»ƒ¼OåU0h~Ôzî„-ÖEæu¦*²=ÍNA ßZx~§zÌmè+ûY0	oèW;óáÀØªÀ˜–'¨•q×÷ŒÅéÉ=¢NÔ&­EüÃª(£±~G»®¬?­¤ò5“œL´åu³
+§3a€ ¾ÈC}A¥ïN'BUq°ÂMâ"¬ á?ˆ£Ó°©’pã×Ü?jMR»+al–Çæ$PÄg]t¶RÜ¨‚ °Xœ!¤ß¥l`X¥¿pı‘J…¤šT[-æ¯„‘ï®	Àºº‚Âò5ëì”¢}"À5î§³¦Ü0
+Tš³Ô÷óµZÍ‹y–€q¸\=y_MÄ|´†hgı([mlÒB+Ûä¸àüÜ”>¿,q®ÕßÎH€/°ç…ó¾•H‹E”uÕøİ¨Ú+°Ã˜|ç+8ZJz±ü´<éTfëhYüMaùê8¹³¥rL.2ëãiçlS$šÑU¨¢i¤÷›ŸêE{·wÑ	ÜÁşƒ€KİV¢4JqsÆ“;êÉ0@QVšÕ¡¥ï˜G ÛB-©~qêXò=>Õ2%HEÆËR}Ï­›Ó=.Ó¢öİ“7ÛzŠÎ ÿ=
+½˜R|—ğ¥‘mXw¸…²7©Eı»oÆ],\¾µÎ­ç˜ Ô&÷[˜j¶	.R¢
+Lº^‡ ¯Ü–Kù-åË
+ÍÇ²iĞO	S,´%FM¨Cf¬ bg|¯úgL™L¹­bÉ½7oñCÅx¼eÂÇÉ«TH¥jô·¦Ÿ^§Š÷O‡¬óÃfn·€fÓSP¦ëpºl`w)¾`Îd½ECÏEfÚFdÀõ™…Â§ónÑ××XãÓì“{T$-æ÷Ÿ^ÔùJSİ+å™==”Æ? 4`W½ÚİZú`[´İÄë¿”53ÈsR‘î{VW_C•…-ğzK°åÓßã¬ÂQ_áXƒŒüÕö$ãÉR ;>‚`Ù§ç¸®@ ù#Ç-…ÊWfÃ oÒfj $ÄY‘Ô\µBúé”bYöPË«\ÍÙ˜×îUi0¸>k¥ì§ãÂÚH¹œı‚¨"U^ñıËˆ?0>‚?Ãô>¿§ıá"5¨D„ƒk~°Úz–ëĞJ§±Î` tôÂåĞÇOI|¨0‡’ei-Z·æÁ‰Ä%;$g}U¡5q)‘ñC"ÑäŠãf(’ğÛ5­µÔll^ÙÏ^<±÷iË%ıd°O`,5HúœÆXÿG¿|DRQ€æ;óMÒİD„:¿Æ vB“uV|–¯ò™¡2„ä*š¹­¥^Rí–[t|òèd7Gù)©™õûÄ9xåÊ‹¦Ëk¹†dì&;G¨'õ!ÒŸıR½3ã9*\´Ğ~oğÛ¾ÙÁ5–M¬|º´…Qõe&Y{ş<^Ëãg 'à»>ãq[„ÆeH\aØ,yÒïŞÆVĞ|BCÃÉ?ˆír¡·] ­uK_˜8ğ»x… X°!ƒLü6¢QS”«ÿÒ9¨N‰ød·ÇZEŒ‹¯\9¸×ë9¨4KHXI([?ÆPş‡jeâú PæÃşŠ#Ì!Ñ36Ô·çºò´íñmÊ”x#0P­W‡š%Ÿä.'ñ/K>=L˜¦eHL$$‚R;ËR 5ÃlKI¨$|ª8ÿéCwD7uz»ix6·Q[d‚¡ß½¬Û9«<ğº¿­n:m›£¹&U× 'EÍnşŞ°8v/=)U3¡ÄÛş’
+“ÆX÷(½´p¯Ê¢¯5guÌ`bB.Í7İ™],9Ë†€¢£”Z%¦[‹k}¼]ßî”0Á›nrÄ¼–SLd]û ˆ¨÷bñ¥á±‚oÇLíuª¦A¢,[œv³=ûz]Ù':ç°å
+áîUETğm ğ0e`› °"GRıŒ&Cş~Çş±ëæÙNÖ›Ğü¢y9\r)ƒ@ÀM[ŠÑÙ@±¥™ÙP¦w³\8@Ğ[İ®\7 á>~Šä•	¦·ÚV¦kš¾Ù%Ç»ªÓ^¬W|dÖ¯Ê—“
+ß-ı$ûçBR5sEp1İ¶Ó¦ÏøË·@h°ùŸRÁècshä1O´¢Ğ>ÛÙGÎÎäáø$<ÙÀ‡ 'Aúø.ºÆ­G©gˆêÓÆì"q\ã—‡ØZ{K ‡Üğ9‘KìUD°.²[eØİ}4Wšãô((‚û¹[]_Íe,Ğ_ÙŠèjÃ\øaÜé4”;ÃÂÚ!Eò ó­Ø¦Sò„×x‡<§mpŠä@~AÆ½<uĞ¾=(‡0Iƒ3aµßss£±Y0ğªûô)†´¹~^6[ûû%_‰@É¢%³Z€M5Ø§HùöaÓ=³äÒSpÌ3Å…#4"…
+~ıwzkEis¬Ò©r´ìWÂİÓ
+ª;ü´(V«‰1	'í#gN»t,5Ùq¿^Ùàİ~evh%kQ¾zİo‡œÎ¤t‡ŒZ	ej%[âå(k„¨³õÌ¯åÀ
+B…Œk/ g„ÈïÁ_šwj…Ñ±3øÃæe•ÒzíjFıYŸ"Š¨j9Ûg<C÷^GF?Z¸›ğ¢ÛÍ›•ÓtL#âí²7;öÄàçv!!ŒÓj$ãôù­©Šçm~8§ru‚óş‰yq'O ÆP ¢’D$k–&ìxXZd.ì´}½¨'w/í+…±ã~vÜ2¯Û‹³‹M,_ó›äƒ-›oç‘ı:B»SSã2¬2ŞU_`S‚¸ç,EX\tı«À£±”3Bµ	L*lâËÓN$æÏÇ
+£™½ÏŠ2<y)?"fÍ·½6vè®­	a/ûßÄÔ`‡°õ3}¥&à8!,h-DÙGÄ«÷–Bòy~»çO˜âs
+äJbÚ„ÔŞ°NÁã»Udı:ø®£Ú8(o“•—O+Å“™@û‡—wáÍ×ÖjaÌ^mÅšI¥SÔ¼L|}’/÷4îÚôlqtcßOd’¨ßÂj“ıR!!Ÿ}Šz«¸Y|a‰™míWÇûLÍl*ß2ÿÙ+4åø0ÿüi­_ü­}‰óa÷ê7\˜+Šˆï<'u«’ë„çÎ+.¥;4_>ÏLUc?Q ÕíL;ÊÖƒÉ½áŠ![+û5úø ê”q –İëğÿ+Äš¯¬1s”jÜl¤‰ÒS ´VFR*"m‘¸LÍ`Œ˜ıÃzíÚ¾ñæÒÁ™Ã•(u?¨‘ºOİÍ~G±3Üúª“1gÄâTc;P¶ÑÒãEQÜĞÌş¶Ë±¢ñq\v\=†ßM _sƒ—	÷I[è 5õ­D¿_Òv¨Uki„ùzl÷ı3ˆâûÃB+~ÒêU¾0p¾ëŸÖàñßı`¢÷vÉEòÂ*á›†×!Òvãq°aMŒ>eÓLh	«#&£ÏlOiÆß}YÆ œ|(Ş’‘N-]œğz¯œ‚;ÉÂ6´á’”	(S)i8Ag­@Ì:ÿ§Õ.x²ÕB„>!À‹İœÿt§øßªkÁğ/ŸçğóÖeñ|tS!Ê/‚ÊÙÉmMùºóm×½¾Äq*è§fíÛ[i%ßbjL*}†“zòƒªGŒ¼ÊŞ'	·Îä—lŒ°¥=4Ñ¢ùR3rwF·pJ³ËÁn¤åTÎ¢/pÀ“[x€¹Ï
+$9nò“0š‚ËKµ.^º tùĞ=ÖıŒÉL Í	¤£o¶æ}ŸEK!Jšr½%ì=…5ê^ÏİgPDatÛMŞíµ{ÿŒ ” ÆÌ±Úm»é|ƒh&šÍá¯UJĞû¶V6®d‰Ò¡›Em_wšøõ‹tD«,¬È¿®¡4ÊĞÁ_:–áv I«'Ï¯ïÈÒw$äñkmÔø÷&bÌ'ùNü2U÷€öïU;Ht	o‰D[v åÓş÷ßÃgZ-¼“@N¼´s¸ƒÀ¤À$.}ç}§°³¨å×€CØöCäã:h0*27YŞN³®¦ÌØŞXö¨áøÁ|óÛ[35#»_¶zÑ˜fÂšÄ¨³$°J.xzfY‡	—]‘>ùå¤ó¿ûö°‚²˜²gŠ9¢4±‘AÓ‹¸(:~èæ>2’|Eìg¢)ì«ª¥ÓÙœ-ôKn†PQE®Ÿ‡+pw4~ìÊ÷¶í’_ôËq!~›ßûqØ‚óøvŸoé¶Š€´ÎÕGDïzseÌxâêKCøW†y›¹¸¾«¸jzîò÷¿‹dzØ‹‰X
+ıoÀ³(2Ë¥ˆ˜{AùvŒãéĞ…¤/¹ñs+H(iìók)ïBhdaH¦eq˜P]â·u/ÍjİŠş·|@AÛc)zhh…SõW©]ìäš˜›$ÂÛãoİ¥t7SO%¸¡ -`PŸë½N’HCšlŞ’# å!sCñ	İäL‘œl0,ûD‰lÒ–Ú$¶€{ÿ7¤zEÛ­˜ÀÔÎrÉqjkÏ{÷^È‡ ªtGÌ(Ö=v$[iVé>5*…’–UãX`õÊ<W¯¦Pdìšùyå°(ÜM^ê¹ñ!®'€¶¼ WùMºpX&Šêœ2åøñ´äÃ#ÆÏAÒ•»¸DzùÁ0·)J½(}ïªÎò-“ğc¨ùEËüÄêxNì'şu÷^UÃ4°¾šRÃ¬œæ„{•¼•ÌyO°Í&¥I1ƒj[Àÿc;/=Ä¶>$kÓ¦íY¸[şœ:!3ƒóTTÁ) 4+–ï •İQŒËÔgÀw(öyUã·îj.hj*Vœöúõ¦ôß>àı–M#·³ã.jÖpÚw[~/JÆ–¥	Oç54B»§ó=ütA˜kû¢æ`ŠÃ'(¤VÙenÏ.ìú†öDB˜(îgV•l#—Æ¢]+aGiíà^g˜¤hŞlB©Ùã´	UãŸ“·WœÅkóì0ß«ËĞ+á®†ÛÌvüıcß	huÛ É!ÿÖKJºzoÛ£iiÈQ¢Äœ'mhı²ŒÜKB$dİÑêGŸªAáo™‚¥~qú€öL*n8”Âù.šü÷¥a|Ğ¾\¨*´ö2ÊOÄa+5Àñ'10êùÆ'¶Ë>€×tò¦rã­öçßŒ|®rˆVxYONIF^$! Q‹[ûÁñş¸Ê^9¼ıGÌ0äO ÎıGÚ†Â?ê$5óe"Bd©Ğ†¼m¬ûnÆušÌ¿¦Sd%@tLïEÊ‡rà.‘”Ä)¬§!1¥MäD~<šMÑ%(î`<Ä)Ëå[â¬½£Ôç:}„!ã9Î)+†{ş„©ùÅ¸ë·q5»·õ•“÷ßÿuÒe§ş!^FêkZIROİ'0q$	;Ó,Ï¼üc27’@*1¼†öYÄ#åü³	3ëÀ‘­¶Œ(KÑÛdP¸ ´êğà0¬‰n¹nYœy¶­Ÿ³vI‹sòKÊ1É‰2É°Öòÿ±,¢ÀYŞ—’åá0E1…¢ŸØ@Îg›¨-Zlò§.ÿÑ'å¨şXÖMõ¬}3•€¾+¸dŞ‹F†dÈ‡¾öÌÆ^xG£û-ÙÉ?åU¨Ø´‹Î¹€6íRqyÅšëméLŸ‚ ùš^íêÏ¬?¾îB=)ªŸ"1u£è—R•-‚%ƒ'“+€q0s¦‰Q$1ŸŠ_ğ¿éİ­¨€æY(¹âkv$½2ó;Œ'>œ›èP üvHtĞ	LâÅWDxÉ?È‘âºóŞV+¦k‚@mè°R<Ì#ÃkdÜ{´ ÒK¯Ü¿tpZPr7¦J±5|ÌÙ|)èÙmTdÃN³Ä¹eCó“£Ç*M¤õ&¾¸¤ŸhX‹%îÍÛ’Ûô8Ã÷)!L~ıÍ.›ùŒá%‹Áe6HáHX‘Rm'…„Y†k¨ğ"­$Â¶›«Ûƒ0/ã–F“LÜßN†é~ PL]è-v¦÷†íöòïÏ¾ÿ[É+q(Pç´ñ|7ëGß1Ì[tgxhîS”6ê‹şÃœ­Ç+£¿Eÿ<‡S¡äÿµš³ïÙÑİˆZ7Œ†À9Ôp&>¿*9ÌÖÌ½tª~ãH‡GŸ`ÎpóË·Ãá³4úi*H‡¼_8‡mZuÔ6ô ³)ˆ~´ÅKØròW´zìv}nOz:{));ëßÎÌş¶ó:5^¤X×™¦ÏD4İÿê=l˜¾Ù@<åaHèĞØö­©ÈPø1Ğ `¼+¬ü/Ç÷ÛÆLò êt®îÆ-ä7RæğCtæ½§—aí•¨é«A‚_PBc1{I÷8C9‰¿"TF}ƒåqgfŒ”Š‡˜xİµƒSøR¢{QãyÕæXÄ0Óéæ.Ÿ³ı!ã—/ô¦+¾WKe"¨»¼!Ü|åW,;«¨ƒ™1-+¦;^ÃÜÓÈÛSÌˆ>X•£\Ô}ßšÜßuòÄƒQò„	·ğ­’œ¿gÃEI¿Œ/¡;aR äÛŞëiNyÂQñ@§}uWCUË¨íe†g®*(™C¦<8"ø¨&(j?+GÎÆ’„ÔS~esÍQ ²t»SºYğ§ã5	â¾a‰:î½ÌÅ`™uÆÖîşSü¸âI?›	EĞ^â”hów*‚ö8ß"èÆÅri#ÀêÉ÷æŞí‡íßL‚€‰Y	àÓùàÔ!Ö¨CÕî Î¼G[ÇŒc¬öo-ÛÒÕ¯ügtç)ı·ıçë ²ŒìöS-8ÓÜøù¯¥…Ùøos>âb	híâl’o˜ğ¶¦lò¬±Œy=×šÅ°ÛÑûé"RUÓ±——{‰@Ÿ¬lÕ$_W;NB¿ü7[}¯¢d2{º	ôÊ~yÌ«Ğ°ÚH¹€1à4	² 
+HóÅÀ¶±#>O—…>ÏÿÖS¯=Óµó‰İ¨újÍã–Ù3€Ü¨áv°"‹«øô­Â„q1xiÂº™øÇã¶µ³İmk>„T³õòß'„Ai4°hç£¯J^/Æ‘X j€~'Ù¸¸¶ü¥@¥ªP\×_gO_Š‹6ü5epH_o‰ƒ1°híüösœ7Á ]Vvê±&Æ;xRa¥ìJâãèŸuØú^GO ›^Öw½t-w‡Zÿr—äåğÇ–±3;g›Ò¡şøÇb÷gˆuïö?;¹R¿fsz¨ÿ·¡Æí¢•œï™:ÙÌ˜<¸É`bû'rÔúë‘“´¡0ÁLñûj
+s^İ “‡‡3ú‹[§Á‚ÀŸ¨³Ô@]£ºã´CÚ]•XËÓ¬ÿ¬.ª¸¦·"‰5T`4Jİï–µñÑ û+9ÎåˆÑ`“6deæõ3QMø: ^¥Ìç Sï[çpõºi¦!|PPí:çø”ÂÄbêœ6Ö]Ç½­Ì‡ÌA†ï/[G«ÚAô+ò|³Ä ™¸¹ÆIn<ÍÄûøÆºÛ”*•2`l.‘_\[wöàJ\0L‘€ƒ/]	+—Q.ê<gK¿,Î²dÆCùK“zm¤¸è³²÷èœJÊµ»ßˆ¹Ş)À¬éä`?ò™¬oQ}³Ş²ä© áx<rghê±è‰¥E]*ß«ïx¼È%iûÿ¶Ü=	ğæ4.)Ì²¦B¾ip¹”‚ë}Ÿ0·ûX4j©€%9êí¡{S#ë93
+%ëzmş7ŠÄ£^Ó9,ïØ.È™1y5Ü¬4]Qòdæ•w/\[³¸ğè$ *µÍ¢×·Öô¬–Laİõò.î;UŞ!‚˜”qè²õß‡DªÌ«ä8ëÜÍSËCNñBÆ¹ö‡Â’ãô0¡_Ô!š«µÙLOI‰uëŞ÷O½ĞéY<Õ›³Ôb8áğQµ¯êªM'®tPcÍ^ü
+ÜıI«á ö¨ØiÀ™©°løşmGéÇ1ÌXªipÕØƒŞpAe±—aŸØ£Qƒ/—¾$ú]ú	eî7®xòî<d/|w#ãÕ:Á[ÕQ„·ë‰SëÓîÏ‹ÒéØRkœöQ×—@ÜP„Éğnê†Œõ]™b„Ÿ‚££LP"±²`Ò-[p¢1õ!Jü½×o(V“Ú§Rï‹¹¿¦=£,Ê çK<ëpĞjÊÄk5%:Út¼jâ&®E«Ãf§/æåy¼»İ‚Ùø»= ç0£9İéV°*&£	TO2c'²,ğ¯b:d‡•ô£İí61ô}4­1¿F†§nßö"^,(s\*7Û%^Î_ÁAù÷ó ^AtR¢<_Ú ‘Ñ¿‡âHÅmºŞA5FæóB±ˆw ]Ÿ jõÍ?AÖ¼ÎpPg[(`ÿwuÎL-ZÜdÀ@Ö015:?°ò,¯ÎfMöqJ€Ù—5èü£(†É	*§”ÜçûÅ<É=ıqVË¡i®†rµRoÇ‡ş8Í”¿%­z¸çyØ³´Z6¾§Yá/_à .¦¢PãQñ·ğŞø¬\±GÌ÷öŞ}µ¥sÖ”´azT:m©QEÔ(ùÆÙ²rê…?%ùH¸o¿cÌ«{p×9OL Ğ4“ƒQüFZ×OúÌ‹x
+íls"5öûşì„¼“üP´×t%ÆÉ˜jô_½–-.ºÿ6ÚœÙÛRˆX5Íea›²ôSÛÏ`Ú.&Ğ£NX5æôø…÷wtç€›ñ%‡û×Áï×¸Ò‚qvŞ·Pd!hGÆŒr†6]+Õ´”ÕmË­n	ãäøš^ù;(­s€şƒñ"ôùOÉ¶•ÉMW>mYõì”rT`váZ¤ÄuVÿ~¢NHúÑÚ¡”½¨š!>7v[n%¡¹Tû³€üÑêsöø´ã‡¶:Íp¯ƒá Sa<Mó(/>‰şb_%Ìş—¤íéÎæ†@¦†<°”_©À«ì$ƒ¨uR…¤éi™/8úKV5_Àdf%×1î¯Áv†ÍQ¼>Â+c6òpSé¬S²•zÜˆ¤ôI>¢E¬Øx-ÌÂÿ{2vhµãqÅ	Õ=&rÑEzjòòY`Î£.á‰dŸmûÃª§ÅÀçÙ+¶l­¸ò©Á˜si‡pu ¤…ïnsCQ#¤Æ_ëOØ¿e”nqŒMÄcïßìLUK ¶AQpn‚”4»Zï°düb4w`”È§YËˆ=å”ô=õEbH^İk_ù^¼	:È2‰3á?ğ(¦‡]v¾Ğà¸cÓÑÍãû!‚è¶oøë¿ªnäñÈÓ¶iÜ fĞ:[¬z]ìï„s¯qšÍĞÃøb”_`Î°,pIy?¯zS›ÿAe*×b« [†#Mé=@Û5p²JëPM0\¿¡»³7Öhé(ks«E×ĞÑİÄ%ñ¥}3J¡rµ‡+­y‹Czk(É{ä÷#tjúŞ–>Ğ1ğZlóO¾¯ml8–4‡Ø³HØF#\E®áD*‘°z,Û”š#k•Ô!*^;E™äñò…A7pY¶Ö¼Ì^ıE(Úûø^7‹İó`øöR¹ˆ8CÀm¶[wÑç”$“ÉÂ€¡‡:ü¢ŠºÍã«	Q–ft»–@1L¶ªWZ%¡guâaç`r«KNÎª÷$Ÿ(ƒN®;Hi†©Ñ<”]ùìe†œŸÏ†Ù8o4“„ªe–cÚñ0õöôÉGvœjFå•9GÒ[Òqï¤6XÿñŸEÍjœB¹¶CëŞ—±==TAÍ_Y;§ÎVü5–iL­PiÏ¤_‹Ê˜å±#E,–Ëq}¢ıÜWµÓê«¦œæW–ÂcsÑ¿³ñØ#O}ÍÛ‚DåP»Š'•gÿ[°ÔºÎåè˜ï·Z™ûaï¹@"á?wÃy•¤¦÷87Ôšw ×ÚñâKÒQb„‡é½èyø…c£!£Å`ÈŠÉ .¹Mk6TÂq†0Ÿ¶²&ÏæTpZéİ’+Båùûkò=Pµş‰ë…m64¹À?¹º™)/ËXıô§ X†u)Écì]ïâ|·b qH“Í(êÒÇ]ÖF=PÚÛ°b”›bD4ËÈ÷‰:#…ÊëğÁ2bÿ’t2p6Ôb+Æsü	Ów¢*$C‘Á:¶±*î·ÉrÍ×ôğÎmñ-Nú<å7–·¢§_»+maÊjy¹`ù%Ô_·hÂ+/‡ÚmªZÜĞ`Jëƒ^L$‹7;XSêbŒïn ;N3{•:a) ¿uÇçíĞäB€Á`T¤œE!ÓšR^¼z…‹µ×kêB.Rì„¹kRQ|ÛlJ$Ú•$“&ò*äÀÓ,ĞáìJÌ8aÏŸÈ,}O[ıg3Xæ£w M¹S²&!\¨™´¿‰1ÙyIªïeªs¤y7\ıGüå›é*ShOÅ&G©·³óøA3ÀEûÑ‹ÃSeY¯÷ÒL>ÀxI@ø·…»XÒ³ŞGb MhÓk†ÿ)wî¸éñŒ°Â™›^ƒ`¯é¹™ç€ÂyYÿv¯ã#¹Ôcu á´Â°¾»	÷ÈiÁ·‹êo±=Ân+ââ²ä˜}»‡0”ÑüJö©EP‹\³µò”ØÜn(N<îµí¸~ÈáyI4-ûº„í•üú
+$%İ
+€F…ÙpÛB~hj´†NöÁd“Â)çä}¼gLŞ õ«¦Ì"º¬L),ñFŒçğv~„)!éÈ`®ÙÑ—:ûz??Sÿ¯&ˆj`3ĞÓ%òÀYå\şs¾±Şıvü"7Ô¿@Êğ™x¶ŒJ5.äğÌğ§ä6œ-²!0ÃÃÔe5ˆıøÌì¬åÕHğàoL»İM”³p5b@ÊÓ½'pàŠOÄÓ'dş°´]qW&œÒQUæİ~P…0]MÄŠ$JM™_8…1Î¦56ÔfCÖ|;Ç¸¯ğ¼¶óî¹k
+Ö#iÈ”_‘,¬w»ĞQx©ºA…†ï/xWè¥Xm6íÚ€e9¤‹$OïO+¨ìÑvã]B©oÓ³€÷ÍÔ®¦ «:“K3çÛíW`kÒ&NòÉâTaØÆâéõ"_O`dø9ô´Rn7ÖƒùÀ£¿‹›’ò¶2çU.G{‹¨õì+äxl¦õÊüEät±B§ .3ä–Q"å@*ëĞµŞF¬œƒ“\—–•àšAf“èÓµrIh×OÚ¶TO¼?ë¡&êº¬æÆÔïÌ„>IúTyùù,%Ã/¨w‘§oÑÀG ¦\¹büĞ~§Ü©ãbßì1µ ¨óÄ½(ôÁtÊx)¬µ-KE2HÁ[úfŠ°°±Ô·\ÀjB¿ëÏúiø‘’ÛÚ,Í4…Ğ†€41¿=vl÷4¯|ĞÕ³»µ)^¯“]¶£ºY°v×Ğ5qZÆÅnÇÔÜï·ú¹‰ĞéÑMYJ¢šk<oŞßçIBİe_¹a.åÀPÙ‰Î:W÷?¿ÂKá»èâ¤Ş®Dáª`Ã4}"sI­è/vGÅEÔ:l"4	¨=!Ó˜BP]ì¥¬kv;¬8së€:è]¥¨´c½ê;)-æWğux{;5±E|z˜âo”ıëÃ?øNÆºòæ ¿ñkÕJwãÔ]x"¯{¦œµR…§Aäl,CÔ½Ú İìÂŞhSèèoºÏ+Yˆ!WfGÕs!¨ïmã ‰8~ã©ÅÊ ÖÈ¢¦cíÍ“Lú˜ Šjgk}JYOÑ¹^~mÄ_ª>LÀHkßnEˆydúÚÚÙ¥² 3nÃ§)äƒ6ªğ”7lÙVØıYÖ!OEÏvZCÊr•æåv²á)Å–O3Y¼ó[z6L?= ~:+'"Fc$£jÿ³]?ö¨ ZáIÚãA82^¸¹¦¡Ál`dƒÙJÛÕíJæ§Pbğyï`É¶Qœ5°AĞ©`J£-¨Ê8O#Æa_Gƒuˆ¿¸½ÙR‡°RoBÒ¨·xİxîÔø…Ø½s¥­
+…@ÑmĞú•íjû}Î`6¬î¿?Šçõ­AÚ.ŸÁxGbØÃ óâ}.Ø,Á"[„×öƒøl%ÉVé~Q¿e‚æZ—> Á‰²TaÙEC"áùÇšpÚ¼äèäÒú®°×Ø—eoÒNqQâ\°Ù¤dN´üUĞ7›çÓwOèõO”ÔÕ~<u÷óÕ¢íÅ<L¬ôiRšÈ…´€ —¦bJÁ2'f³ªpQï®;ä£”õœ×yt•E]KÉzæÛ¿ÆÎ£"ü»DUª2"IU?Îv!qÌ°…öIûĞ)ë€µpº ìF DÈ¿œVß6Nw ã~B½6•ÃKı¢ê¤¤"%öë”EÒ49ì 4´ É¼‹Q‡Ãî(K_hy#ŸÄ¬ÈÎæá¨¨Ãî>ÿB,´DD}†t¥ªæ¯Y,ò€¬‰g˜–Ê*!( ï®£Í–ÒHä9>€?k‹Á­më…ÇÖïÇXBšÆ8ø´ŸG7”a	‚CHšÛèBëkøÜö‹l“¨ÓOa•ş¾!ä¤yQCı•%÷Û^Ô‡ë~Â¤ËğàKÄSCÎ¥÷úoQ¶Œ<NJ9tÂŒ…Î<66-~
+lå…té–Í­€R¤a…j„xÃ‘t?¹b'l.ËŸ#Ş°Ú¦‚=vt†1ì-*÷í!rQ@±´ÁÉÎŠCÈ©/—Ï4öAk"'&dˆ›	Ù¼3½Îİ*g1·#ßœ|µç)XšI ²iÿ‹…ŸÎå/ùòdÊë<Ì7çm çĞõ°Ç[C–N´ø=	ÍO@Iª|r­±8ØL'`²si£tK¼³W'zõ8,%ÁÍÈ’¹Æ|Mçi
+éüŠkø‹	ÕÅÛgŠyÛŒa_^I¸YkvX0ˆ5P6ÌãŸş£6¼ƒ„5<0&•Î¥¶R_]Ó¸öä¶Lå‡-Ò,Î`öãøn‹‰'Oœä¾óO,~·Â3’T¢ı){!¶yDŞeH9Â/9ÒÆ'4oÑ3è;œİŒäÂ‹Â¹ğ}x¾Ñã‚’»6O9d H7-Å™•[]îà®Œ=šÕÎÌı­ï\ºÚ–×(»vP¿†¨4ÈÇ?Lîn\Ku"qnømÏ|.}2Ÿè¶$í1î°haíü.qÍ½kl=''Ø
+]'WÆlÄ¿zY?€tr%g0Â¸”å-~dÇöÃgb+·t‹–„ô8´MQCÄy­«Xd‘2J—Öø–ô·Q°ëï5·Ól6‘Ü„Üùo(SQè­á²ºšo,fã®gŞãáŸ¶OÜÙCõhª]o^Ô2Ÿ^8ıÔO®7Æ—¿+qBq”ÈŠƒ½S¤w&4Ä_kÆH­4±ŞZ5¯–:Kõ×9
+ëÔ¥Î7cÉi9Ğ^€‰Ñığ÷-VkQÚ;IHxëüÏÁ+Ûµè…jSo…N¡Êa:ŠÆŞpË›*yY–Ñæ\z¡¡Æ2ŠùSÕ¥hIS.pú3UÖ¥»ş3¤@·£ÍC*(A$cEƒ›>ÏD²ıƒç‚k·¯d.Ñœ¦S÷öB6L¡5	ë#dØ?$ØÕ!næ3Şˆİ´uk_÷oq¯úT­*ÄÍ·@’¢ÖË€/¼‘Ò§yv·uÂıÅ§òÀ1­`bÁdÙ¿şşöÒ2C³¶Ë]Õ ü]Ê"›2ÔŸ1Ùş^™	Øæ~KeOîwIËL1mÃNÉ&œZş&„:%ùÌ|€ß"°E¡x	lÄégq¸àÊ\¥ˆ_	 ÿÆ²åÑµdr‚w`ü±úrÏS( Ñâ_ÜËZ	²ãvF™ªãÎ
+JîTvxObºµÊĞ¬ÉQC³:UÛJ0Ö?ÆqSí¯2ORRUÅíş¦*g›‘.AÂ•X+éVW'×xyø	a˜hŸy¬1Nó ¦Ìg_»¥ö¯yˆğf²Ò˜€ºKwRs°ùë ÒÍ©a£‰ıØ¢`^íôìÇÖæ¿ ¶?@˜®z*+Ck8\.qšÜê7L"Szò¾ñQŞd¸¬ÜX Î[c{™OL8j±ÒİBÒõ'q.C·G‡ø¨â‰2X•³"lZ]¨ˆ†¯Shn$ñ‚¬+‚}hÁh,	öäü-‡ƒ¤rè½ËûPN{t¼„_ˆå½4¿XÔC
+›5*½!¼ì;AV:Æ µrA‘w¹ßÔÅèº—g½U23™w«H+ÊêO™@À`Ã7³wÒ1 ¶Çû$yß^¤½öÂ”û&”eÔH»"4Í2m„!îå©§âİ›¢¡ÔñãOB$—ı eŞW•]	æ~C‹bwX[5ƒ2˜˜™¤ôÙ‹×Şœ‹pàÂ€˜U±væÆ÷É·@·QjáàÆÎ+¨	²Ìm{`ršÂ«Ùš	¿* À‡'¢„„ˆÌğöaÓòdy èk—Î!‡±©{;Ú—À;¬;=W+ÑpN5]U¹k£ÛeÂüh?ºıÀ'(±Ú$±¨ŒÙo$æNÚ¨»÷ ÷×AO›Í¼¬^ ü®OhÂ³KÖÍn
+:¥êJ­Ş{]!(
+HmİİQù‘Ş‚µ‰uKºÙ*ê.îee}ùñ(©úPC×háİlŸ~1gwé›‰<¢`‰…5!Fiõ`î9W²ÈË¯Œ®b5•æüÑ’Ö¯ëit‚ »KÍyë·İù>•*Éc–hN¦@µ¿ñBï÷`Kô´Ÿ©…ö"3ö8’GàæÏ¾ıï3q13RaºãÈºÂñm’8¥?Bw†şz*cüæI”µ¤Kİ“Ü&ÿ©ë°=<j2«8_œHÏ«Y–­ø"˜ı·±‡ë¥×§E[†7´bşŒ(V<{ÚÚ€ølÿ‘InÌÛ×Å–1(ğI÷ò¯dxÃÄ“¥’££ü°¢.hŸ;ÇiU}3ã;Ê:¦«2tŞA@¬Bx™±> ¦ª6™áãƒÒn@Î ĞHEûS“¸~¢ ğ®M·¿*½ñåõıšpÄàÔT¯S,Ÿr0kíÒ±|ƒ›¬íõÏ!L,6ıGbğË™9Ycß7&İ¾ŠIoİ0†á)1ã¢/UÔÚËŸÌ2CÁiê3CàhjdÑ*F¡‘Œ„ëèO,}G'eÊs˜ÂP'%,ÂcûeJ0´61WÇNöVõ€¥÷ÕÀFXAN?Ş¬UÙëoœ$Úß¼uK§¸'’	¦)¯ˆÓ€Aô–^x´»ò`’e÷‹?ê±nü\¾y
+Û`I	h*¼P&ï’+¸í›ûı_ˆ~÷ê”}ÿ “ïßô=£GˆdÂ8æËe(‡±"V®Nƒv¾É¬šúòóÎ,ñF»—Tp6½²Åa©ŠqîÆ‡QŠX¶‘öÑ¨óî™—êãâËEGöâçÒÔ®“`~ÁoŠšû“bS‡ÀÄ3Å¾÷c÷”q“%¥Pİ{Ù£yê;GOÒEˆ¸×Ì­ù²o]po|~§C#ğµ‡&¹k×Zæ‡P8ÿa!—½ß(pÊéˆæŸ$bvøèèd°¸°VÉ[d›c$‘B²ëeÅ*‡KÂÿõ‡ëïú¹ä"Ø°IÄq¦(D@Ù7ßqV`õ×
+ÚÍ0t€á|	ã‹8‚z~İÃÌC¹Š[ğˆŸ._10³`ºä!‘ˆÂù¾ì[d¾¯:‡/o
+ˆ,7“ÙEpïÅB“vlò/ÕğW#ˆÿpáÜËmNp\kş VèÑ¸ì¸ hEg÷'»wã*²¨%òNÏ	ÂI–9dñZ§¼¢µƒL€Ä¿ƒû’—ÍRq¹loîªÈ6{ÌKaşp}Ç¬X¼« {5áæƒÔ#`Ù™°oüÉ€¥zPÔäÌV_íŒ
+WušÍÇ£Í¹¼ššgQíì¥»Š9ïŠ©fÓøq²yÇ{°/–u+"Âß’É îÎº‚c8ÉSú	kqêM6£ÜÎ÷P:ëqµÀ9:0dşÚÛì%i4U’³:œÈa³À®n»‹ºsåÆì,¡.H$6MÏº'mº&?Ğ¯èœİĞî[ŸÉÆ»+™µ:ªfÿ}&EÔ‘á¾œÜhÇ€†íONïó}J†á:Dgµ/¹’ LA¡=ã{­è)şÓ¿wòüæôphÎÄy¥!D Æ†$^‚uVO !<Nw€5öè¨20Š“S¶¡Õ•™7ĞÔ¹Cè!šd×já<#dÀ[SO¡–ZOæZ±lÑÌé;"’{ë„ÇQdÌBz%ŠyŞ§P„¤Ú†|É?n¢qÈ¢'®ñöD&	sMû{CöjıÏÎÊ³[FûÇ.&Î¯š›‚Y¼+«Q§²9,wí¥Y÷ÆY@*C±[â¬üßw«¦ŸQV/ªÌ•ëv–[(îïht-æm
+>ày˜xï!º~Ør9ïb‘Ñ0;Eé&ÕO('ßooŒïW‰á¼D€cô<»lwÊi8­@·ÁMI„,¯ä˜ï‚IğşÂªŒ0şw
+êI	:€—9Š«!-­1¬†ÓhOæÅŸÌøÔ©~iØ=b-V™OdWKg,œ°ÌOÕ¢ã"{dPº€†1DÒ½œQ_1@ä^,°¶JhIJ-u€
+%ÍÁ‘Xº\Æ¹¾Ú‰ß+k¡ƒ6<7ÉÕI&s ZSùâ=vYmuèµ©ÍD sï•u*ä¢Ù†
+7Ú´2Ã³|sÅh!¾ÃU¿£u]¦% üğ^éDGãà ÅÈa1Áµ L^¥‰_ˆ›Í\ìğS{p@Hk:xoâî|É+«;âùxŠİ‚½ä„Œè#®¡ãñî0Óƒs@d¥¿ ôÈaÆóàx­[ïÁÌÉ £?dM¸ÊÁ¹ny-<Cd&ÁİM<}¼†ÇªmXq3Wëù´æ^jˆg„„à±~¹–ºz˜0ÏÁø1Ê‡ª@G|<ëL€¼Vƒc49/D"ö‹7Â(ç]Dò¶Áš9H•­ZîRÁáÅ5·Ÿº™	­%^ êâ¿LŒÒLJ›fCïæt)Ã.ğ)´ÔA‘=¾İiwÿÀ£ê!J9rr9X±óêÿ73Ãqy½ÛÇÜı¨K!¼}šŸ|\6¦˜kYãñ`¶j0|caÿ¿qŠ“J2ávÕPÛ4äı(èç´äFšˆ³Áj4bˆ¿-Órøå;?ŒÄ o"Ëö×à÷åq‘¾ÜŠt”È1dğc—¬²šz‘°ò¢ÌÇz`[$›ô‚(ÕfAUòÀÕí““È]ğ¯Ü8k„"20ıÿ[ä@ ³‚`–¸ÚoxÅîMÂ¸n‘	8]V›Òƒxé	ÉzR†îo¯cÇ^áÜÃÛ5yñÛ©È¨Š¨ ‡'Ç©µ­mËSx§'<¢\_#ËIRá¨äPàŞZªêö[Õ0½„#Ê¸;Í÷6¼Jü~ÅspßØ&lë@"g×7Á+jŒLE:•+Ädt-ÄÚòÄôÌb'ö0±YCÙ4ÔA¶FÅ‚6DĞêe5Ih&İŠÉÓt<¶Tœ¹š9’6„TÍÙ}úCÉG‘ÄudÔk²ƒËµ…°[*åfQÉÉä^˜ERì§e{ò=oÑzš•ˆ+{gN"^é“]İnê¹¤a·Äò‚sÖ¿x²»õ‰›H.ØCÄª.ÑÀ6‹"‚ÌÁ!ªOFŠÅÂß·ã[ÛsHÂk1Á4¥'[nª×cíù[ç“²­iK	±úrü†à,q;‘ÂKƒã]Ğ%¾üV^8è…†«-îP³î*Í—eé¨×ùÿyWäÍ¾GJÇ’Ø\8Å¼­š”‚ÉÂâGÁßÁLÛ"©\ôÒ[ÑM©ñ‰)›1|
+ÌMtkí/ÚE9÷|}#‘FÁÿ÷·X:Šr€ÂÆÇVÌ»G öÖ$+ œíÚÒ2Àw$¿Ø¾!–Ûqò7#"`'”h£†!ïQ¯Sh¨®rhÅ¥°³³µM×ÄX!ÉSUwC¬'î–ßExùƒ&§6QMı0„ÏÖÚD˜/s\aÓv@;¯}‰÷«ŒË™6zº}	¢·@`¯ˆ`UdwZı\ ŠTE&Ãã³Ê³ÇşÄ™ñÅ¾(J„¦¯N…RÉÇ&7ÂŠ^­¥¡§÷qbÒ×lNZÈ$,»”'ÿaÙ8¿&±ãy>^[®Ê8ì„´tîÖ†µí³Âu;ã0|ŞÈ2"¯4à²d¶WdŒ2õ*Nş	ÜÅÏºzØÎ>®MO"TıŒ‡ «ö·M"›Ñ;5@›â¦T&y$hêú— `ª÷¼>Ÿëq1Zâlƒ×‘^V,Ãêf$JwGÖK2~.XÇŒÙx«G÷íNÅÂ%UÍJS6Œ¸5¥ØÀ°OİÈğáˆgUŞ—}=ç˜¥gİ,è2IÈ•ÕwüëXĞo²ùK<ğTÌºìÅdóü¾e SSñ¨™Ô•	(Ç¾=‘»ã–xbÉ¶k.U£ ”Ş˜J?Ğ%™W@·Ş»iÊ™³Çª·QŠ‚±ƒ)6Z$±§Z‹àû£cğ
+'×E¹÷@ñc¦éË$ Gå‚ğ'ç™u>!úş5-©Şlğ”Ó~Àš¸7¯sµŸDUpä‰o¯kk¨ùí¾†Ç#F9¿±íÿ¤$ÈæuğŒ6&İ£aSã;³p”\Gï|g ¶'¿-UT™?‰™E¶tÊ¢i‚ÕÛbq£I@§’EÀ›áz™”OÁ¯›—ÉSÍ÷ûZ‡x ‰@Z5R>MÎÃê?!~´»ÜaôXMºÙG,fñs³<}ó!¾À½.•jï÷ŒV’ÖÅFóÃ[Iœ(•in”·q,*´@á¹øKZ%K*Ìÿ›$ØZš¸¨M}.ÀRkšÎÂ=3;Ev¼@QFOuÜ®PG–2yÜ<qş×E5‹IÔ‘Ï[oìcÁ¾JŒ\72Œ’Æ¹üÜl±±±Úõ^³Ö	‡È·;Sì“F+úæM‘aIrBÑl¾äËÒCÀ[\£™
+\µ$³ÂºË3'¡	-½tG·*kÆŒé„pFÜ•°c2\M§“yŞ¬¸"Ü“ŸX®f–›êÒšwò+ç÷¡7Ê:Ô÷ŸwDè1¾†$¢`ª~‰g0bEšŞùíÜÿnİñ ƒ|@>+roŒ0îŒ§=ä6Â»î E:XY~wÜZÁê‰-V7×e-ûz‰™_œ­B$+‡˜§çgd›äCvı¬UÀçwKø’ãÜo
+9dd'j›†®º¼Êæ"ò1àŒŞœïâSCJ.Õr¶‘84·.¨‰>;q³+á{ÿWº‰³„Ñ=ë¤XøyHü*:XŞJ˜/ÑËuWÂIç‘+uÂÕF+Éù?ÓÒ‰€Ëï£õáä„·¨
+…øÄÃ¶ZO?ÃV¿¶_€I3ÜµŸ1×~ŠÁH†Å`e§ùÃÌzäá$$t«ÖæoâÛë‚œ±/ğÌ®şT:Ùœ\™Ç%@—g£áföçâÿóšÛ)I¼!(%NøŞµ´*f]Ò7DÊ*"È‹pÒ.RÚ„“_QJ\b®”€o‚*´(j~ÑÀ‡5¹íïÎùfvn0%ˆ„Å¡˜XL¦jß[$ßhL³]=Œ­¿4h´nïma µ¤ï.û€ÑIAƒ¬t:k˜ )…EZîÌT›Ü¶¹ÁÄCKœ¬‘"IbH2í
+Æ¼<ÇÄ{Ã  ×—>Ë,%ÿ3çôõkà#nú8—sñrIwš+ª¤|¯Åì™eÍZTÏE4œàÁôF5<w$¨éa)ş£õŞ­ïÉéË½ç×LU(WÇÆºP>Cû^áJğÚQıB2âkâ¶$êkaeËlšÛ«^`ƒ÷‘¡P››rfAØø§oÜ‰ BÈ¢¶Ï·dá~‡:ÍÃ	§·" Ü„B§´Õ?¯@ó]—ş}‚@Óå€g*Ù¡”Ş¾?./«S^Õ)ÿY-Vp|Êq`´‹;¶ƒ ]ÙèWÃ+™êİş)~8±²Í§İ¢Àè£'$j¦®ë'*áfÉ°šû
+_ï4O™ÑSÀ°ï± ûV‘éİoX4åpåjÉ¾¡¬ßõçQÎâó8D'æHeŞ¸áêí0m;ÿJÛ£E­ˆr`Œ£ğÃ­%pÒ$ÎTâêíõo6=Š9¡jVËdñêÌ„„º½Dtï…DóúágúºÚıö¡ŞGh»v&ÌNÚÂWºŞ)^¼iæ»Ï'¦håÑH‘ÎîF—ÉÃü”¦ˆ­C<¢£à\Òî›†%²Ht¹?µ^FìE,š÷~qùÆÖ¶Â÷v¾ëˆœŒ sá;
+ëÿkTù=ÇCí<J^‹iUµ(ºnjY[[şË_íZO‰jğ;ôUëÌ­Zß¿%ÏÀOY¤½Û[C3a†Tƒ5›À<!Ø¦ 5ıH•ˆàü°bñH–+¦­PÙ Cr÷ıÑToˆõ:–DèB…ı‡e»©±Ú¥r•ÊZZVêÆÈdNFnÆ:m%FcMÜwá“
+s¾Nõ“Æÿ®æÊ	ÕÙ¬ ^“~”şfºƒù0Èà@áÎjÊÇ»Û‰C×)I¢JLô¯Y5;T³:SÍ‘¹û1	„ôÀqd1‚™İ$ØĞ,pû»u	qAÕùÙ¶Q”B…ìß¹›´A†#¤!ôëqÀe€pÓ‚@ÇQÍšÕòˆ±è¢“/)h8âXÀ¦1¸
+EFƒÛeKÄ|ZÕE=¶CB8õ¨Ÿì4š½Ñˆ*äuÏ3‹˜ò¾Zª`¸›1Œ¼±<.„˜Ş|SiÙëœª¸ÄÍc>H,ÆìiÔ‘È¸ÂÄ¢F«>¶"Uå»,–#,ó„"c€ˆ;•Î1–’WùÈÍ±Àø%®÷4Ç:°;ô[n¢V
+EK@ìà¢q>“¨ÑÿËZ-7üÏBõG/ßö&4âöKcØ®ë^–ùˆøE­Âó£ìè[š·*"=ú‹nÕ4Œ)T©ãŒ]úgd¨Rà(F¤şÄQŠ³À9¯PJ]X¨Tí?N*»rf-»â+_-E7T5Mï22„QHM
+5œÕ ûV?+v÷
+5CoĞÇŞ:g‚Bøá’T#§Æú£De³KEâow‡c‚v[§şòD0Ù÷šv‚•åï¸5xu­³.şĞï­3|ÍbĞyÉgT.·S~Cø¨Ømì^¬)«;Vkô¹»Q¦ÜÎÒ9÷İänA?oQ„EüMi»îá?Ü$ÈÔyÙ{jFšÍÙĞë2»Á¼t&ÊD³~ÈÃšõÇÖ	·ëƒ—Og”6Fi9Wã}"rĞEŸCÇ:‘™c  ¨v`H„[Qÿj°u$¥=¾Ó.-V…î[bÆğj]•N[Hşoê&`H]qÙÜfÀğç¯ø*£UÚæÍ~‡ ışm¼Â°×¨,ÛGRX{påMƒ#ä„5{Á¢Ãy¿m®óR#]tÌªØ³mª.îsOTYg­:dæ'ë<|¹|e‡?+¦r~“ô6şI@'Kgà:äĞcC#¬>VZA)€Ø7?ğrdÕ‡Üq#Wa;!gB“ßûÓ3K:3zu)†"VûšŠ¨‹ÚÑRÉØq/²]ÒIÏ11b'|¯¯ºX¸ô.dã{ûjâ"›+øƒFfşr~ÊUë)?0!ú0%«³×ë˜—•ˆ@ºhµ·|ë@Drhƒ‰yy›‡¡°ğrê&ÿEÒ( q‘zqlÂpêZ¥FÍã/5‹Ïíïx›¬õw^çÛÜİŸìgĞ<VOJk¸€î6İ³õšfGÿ’5ö6_!G8iTP·‘@wQI£ÎÿŠ},l³(¥X1GF]jŒaA¼G³7XKëÁSŸ ]O5? ÍøúÁ–Hp .—R*QS*²:„»ÕœÎ_Ú¿?a2wQˆ?.)â r…ô‰$oŸW²Ò‡ÒâWÎa"æ7„#õ-S-Êl–„VäDÂ"Lµî™­¥`‡uzÏcYds3¾Bê¦¾G×Ï-½P™W*z $¥iŒf¡BRÛRi¯îã;|©Á)-/©7jb…,¥NËc2Vj¹`½zùmè}'õvÀlÒ­•ªŸì¢€«`©aĞÎCRå’%ú#˜i×…qÅş”6›‘Pû bhR3yU“Û}t¾v‡ÿ¶ş*)Ûı£%oøub7ü–?~’oçwùeóE@DÆK|uohøÀ;’ë‘–Øp]ÈÒæã‰0ÄãØ;Y{€ğmßiùßœ;¾.îCèi£x=d¤6Úêg¶cu9˜k ÅF$&tÊ%ì:x–ø†3Ó¨«‡ú
+e
+æ„'«ú*sOÂ@c¾£ÃûŒnTÕšüÛŸš’/‡S?«Èá»!ËÃ)Î£ä—2¦}¾İ&cÖl-T·%¢ÆğÌëQsDª	ÁVYhÎ¡+ËÌ¬V0'’eè1i÷n„Ëú:`Ô»3Şò qx®QTh/ÂÕ2J s´¢Õ½{5ğJ9ıÙ#î–1j²Ü?Œß/C6¸PwŞ#Äguı•¿B:~oLï •¿$÷YxÍšK•œ–5¨Ş%?…åaxÇÒKXÿ7Êy¥ØÅ>\oû[Ã·;8ßXxLzæO'Ê\îï7¸õ°›Œ„¸îš©’ÙVy[qP@òË¡êË…uhøíté…|‘zĞÏöô€ãN—DÁ"¤4¨|Ö¯%dÆìÖ
+ I½ ½*,|Ø—¢aÏØ³’òûÙ6³Í³:Dvlıäêåøğ”àËæƒú“|Æ¸¢¹ü&æbşÄI$·õ_!™ÿ¡V>…6ˆ¶~Ú“’œòÿ€£©Ğ{‡¿Ion/ªm8şµº´á11˜Ñè-DËwˆU/ØäYšK &áK	ËÑz\5åèDšô	¾A™=ÙOĞL®…X²o¥S?¹O°öÕÂ0"×åöA±†çgSm)Ú©®0s›Î¯´X!Íïıà:d†8D>k·K²(Qª­ÃÕ&z%Ã³U9„0>?ƒàü¬xh‚ovzê–'_Êšœxl;ù%×Taç8º:øF&b0æe9BG‘7rh-­¹§_ à@YæÈÑÊ¶@à€Sƒy‚^¹v¼”Ù2‘Lä(E”P0¯j¯.ôaşæşï(™Iö•â¦ú(©JeG4£&&©™éáÑĞÙìÏC¿ytbò³ÌëÓÂgpˆ_¶Õ4Ãhµåÿz¸uTE§œ:e=juµ£#b$ví]´oÆİOH–S)ìyŠwtFOtÔyŒ¾é„3#K¢ºÇÉ«·eñ™JR™¶\ö©ÌÇ«¥ißHõ>I0bY-õ(…å¹Z5Úñ½{Øù%Ïá0®Ô’¼ÑNÔåfJĞFˆğÓÀ¾ğÖI §«íç€Ï“/ jªñş	@b¿ÃcoLàe€ä™:@Ş#ãÃÕîÀã?úTÉ®v µ®Q¦‘•ËõeŒŠş^!èKåöu€ÊZPbç=t@İ$b¿ÌY‡UWÁåàs¾ìñ;Ğdà÷rãğ.WüCWóY K
+áĞê²}fev0Y+Ú å«)‘1D‚©`Ë„æv±¶ı„WÙ,¡s3ğ´ék9e¤QBÎè± y5Óû¤öøªÓĞ_ Qø™yÚI¬r,½ø÷G›k.S1?„VˆúoÃF•øÅ6S]²G-MÕ
+ °ÊoõxdbvvôË[€ñ@`DğÊ?üiÍ“?ıÇÑz¥]áv¸¿¹W0Õ-‚9ã™ÌÏRè`l>1}¿ÓBK§’šDã’‘6MR>°¬óàgiÄ„²¤3S8Á|–W&z«ÙmW<ÚP8p½>°Ä@›Bô¸_Ñé!»J‹éµŸ±±—z[°o¯]fT~#¸] 0b¸ïÛ2¤GF)DU>ŞĞ"Ôí ßñæU`'©ù‚éˆFfu²5Iö"™~Ë¢]$šråê}œIE<ia‘ ¿#ş±ò¸vsøHÕSpk0m°„†á@¸ï¿^¿’wh6‹•ÁÈÉm<öÈbìzÃhæå^î/î$€½¸!Í†ªCŞˆÃ(†¸EsxP‚¦´f'ª°˜ÑåOšç×cÃêBTréê­Ó'bûû˜Íà°n’¶BË!{E±%µ¶ˆr!²şæRUPê‡§ÀªZ*,zŒAÙqò“qáŠG¼.ÂI9bHĞ¯„~5İ‚vØF„TÆ3-¼UB*eKéß4xù>ıê,¾ÔF1µ5ÍõÁÄÍÔòqÅ=o[ôU0ÀsF²áz?²Çû±`ÊˆĞrkz(6Â™ö³Ü@àÊ// SPDX-License-Identifier: GPL-2.0-or-later
+/*
+ *  Driver for the Conexant CX23885/7/8 PCIe bridge
+ *
+ *  CX23888 Integrated Consumer Infrared Controller
+ *
+ *  Copyright (C) 2009  Andy Walls <awalls@md.metrocast.net>
+ */
+
+#include "cx23885.h"
+#include "cx23888-ir.h"
+
+#include <linux/kfifo.h>
+#include <linux/slab.h>
+
+#include <media/v4l2-device.h>
+#include <media/rc-core.h>
+
+static unsigned int ir_888_debug;
+module_param(ir_888_debug, int, 0644);
+MODULE_PARM_DESC(ir_888_debug, "enable debug messages [CX23888 IR controller]");
+
+#define CX23888_IR_REG_BASE	0x170000
+/*
+ * These CX23888 register offsets have a straightforward one to one mapping
+ * to the CX23885 register offsets of 0x200 through 0x218
+ */
+#define CX23888_IR_CNTRL_REG	0x170000
+#define CNTRL_WIN_3_3	0x00000000
+#define CNTRL_WIN_4_3	0x00000001
+#define CNTRL_WIN_3_4	0x00000002
+#define CNTRL_WIN_4_4	0x00000003
+#define CNTRL_WIN	0x00000003
+#define CNTRL_EDG_NONE	0x00000000
+#define CNTRL_EDG_FALL	0x00000004
+#define CNTRL_EDG_RISE	0x00000008
+#define CNTRL_EDG_BOTH	0x0000000C
+#define CNTRL_EDG	0x0000000C
+#define CNTRL_DMD	0x00000010
+#define CNTRL_MOD	0x00000020
+#define CNTRL_RFE	0x00000040
+#define CNTRL_TFE	0x00000080
+#define CNTRL_RXE	0x00000100
+#define CNTRL_TXE	0x00000200
+#define CNTRL_RIC	0x00000400
+#define CNTRL_TIC	0x00000800
+#define CNTRL_CPL	0x00001000
+#define CNTRL_LBM	0x00002000
+#define CNTRL_R		0x00004000
+/* CX23888 specific control flag */
+#define CNTRL_IVO	0x00008000
+
+#define CX23888_IR_TXCLK_REG	0x170004
+#define TXCLK_TCD	0x0000FFFF
+
+#define CX23888_IR_RXCLK_REG	0x170008
+#define RXCLK_RCD	0x0000FFFF
+
+#define CX23888_IR_CDUTY_REG	0x17000C
+#define CDUTY_CDC	0x0000000F
+
+#define CX23888_IR_STATS_REG	0x170010
+#define STATS_RTO	0x00000001
+#define STATS_ROR	0x00000002
+#define STATS_RBY	0x00000004
+#define STATS_TBY	0x00000008
+#define STATS_RSR	0x00000010
+#define STATS_TSR	0x00000020
+
+#define CX23888_IR_IRQEN_REG	0x170014
+#define IRQEN_RTE	0x00000001
+#define IRQEN_ROE	0x00000002
+#define IRQEN_RSE	0x00000010
+#define IRQEN_TSE	0x00000020
+
+#define CX23888_IR_FILTR_REG	0x170018
+#define FILTR_LPF	0x0000FFFF
+
+/* This register doesn't follow the pattern; it's 0x23C on a CX23885 */
+#define CX23888_IR_FIFO_REG	0x170040
+#define FIFO_RXTX	0x0000FFFF
+#define FIFO_RXTX_LVL	0x00010000
+#define FIFO_RXTX_RTO	0x0001FFFF
+#define FIFO_RX_NDV	0x00020000
+#define FIFO_RX_DEPTH	8
+#define FIFO_TX_DEPTH	8
+
+/* CX23888 unique registers */
+#define CX23888_IR_SEEDP_REG	0x17001C
+#define CX23888_IR_TIMOL_REG	0x170020
+#define CX23888_IR_WAKE0_REG	0x170024
+#define CX23888_IR_WAKE1_REG	0x170028
+#define CX23888_IR_WAKE2_REG	0x17002C
+#define CX23888_IR_MASK0_REG	0x170030
+#define CX23888_IR_MASK1_REG	0x170034
+#define CX23888_IR_MAKS2_REG	0x170038
+#define CX23888_IR_DPIPG_REG	0x17003C
+#define CX23888_IR_LEARN_REG	0x170044
+
+#define CX23888_VIDCLK_FREQ	108000000 /* 108 MHz, BT.656 */
+#define CX23888_IR_REFCLK_FREQ	(CX23888_VIDCLK_FREQ / 2)
+
+/*
+ * We use this union internally for convenience, but callers to tx_write
+ * and rx_read will be expecting records of type struct ir_raw_event.
+ * Always ensure the size of this union is dictated by struct ir_raw_event.
+ */
+union cx23888_ir_fifo_rec {
+	u32 hw_fifo_data;
+	struct ir_raw_event ir_core_data;
+};
+
+#define CX23888_IR_RX_KFIFO_SIZE    (256 * sizeof(union cx23888_ir_fifo_rec))
+#define CX23888_IR_TX_KFIFO_SIZE    (256 * sizeof(union cx23888_ir_fifo_rec))
+
+struct cx23888_ir_state {
+	struct v4l2_subdev sd;
+	struct cx23885_dev *dev;
+
+	struct v4l2_subdev_ir_parameters rx_params;
+	struct mutex rx_params_lock;
+	atomic_t rxclk_divider;
+	atomic_t rx_invert;
+
+	struct kfifo rx_kfifo;
+	spinlock_t rx_kfifo_lock;
+
+	struct v4l2_subdev_ir_parameters tx_params;
+	struct mutex tx_params_lock;
+	atomic_t txclk_divider;
+};
+
+static inline struct cx23888_ir_state *to_state(struct v4l2_subdev *sd)
+{
+	return v4l2_get_subdevdata(sd);
+}
+
+/*
+ * IR register block read and write functions
+ */
+static
+inline int cx23888_ir_write4(struct cx23885_dev *dev, u32 addr, u32 value)
+{
+	cx_write(addr, value);
+	return 0;
+}
+
+static inline u32 cx23888_ir_read4(struct cx23885_dev *dev, u32 addr)
+{
+	return cx_read(addr);
+}
+
+static inline int cx23888_ir_and_or4(struct cx23885_dev *dev, u32 addr,
+				     u32 and_mask, u32 or_value)
+{
+	cx_andor(addr, ~and_mask, or_value);
+	return 0;
+}
+
+/*
+ * Rx and Tx Clock Divider register computations
+ *
+ * Note the largest clock divider value of 0xffff corresponds to:
+ *	(0xffff + 1) * 1000 / 108/2 MHz = 1,213,629.629... ns
+ * which fits in 21 bits, so we'll use unsigned int for time arguments.
+ */
+static inline u16 count_to_clock_divider(unsigned int d)
+{
+	if (d > RXCLK_RCD + 1)
+		d = RXCLK_RCD;
+	else if (d < 2)
+		d = 1;
+	else
+		d--;
+	return (u16) d;
+}
+
+static inline u16 carrier_freq_to_clock_divider(unsigned int freq)
+{
+	return count_to_clock_divider(
+			  DIV_ROUND_CLOSEST(CX23888_IR_REFCLK_FREQ, freq * 16));
+}
+
+static inline unsigned int clock_divider_to_carrier_freq(unsigned int divider)
+{
+	return DIV_ROUND_CLOSEST(CX23888_IR_REFCLK_FREQ, (divider + 1) * 16);
+}
+
+static inline unsigned int clock_divider_to_freq(unsigned int divider,
+						 unsigned int rollovers)
+{
+	return DIV_ROUND_CLOSEST(CX23888_IR_REFCLK_FREQ,
+				 (divider + 1) * rollovers);
+}
+
+/*
+ * Low Pass Filter register calculations
+ *
+ * Note the largest count value of 0xffff corresponds to:
+ *	0xffff * 1000 / 108/2 MHz = 1,213,611.11... ns
+ * which fits in 21 bits, so we'll use unsigned int for time arguments.
+ */
+static inline u16 count_to_lpf_count(unsigned int d)
+{
+	if (d > FILTR_LPF)
+		d = FILTR_LPF;
+	else if (d < 4)
+		d = 0;
+	return (u16) d;
+}
+
+static inline u16 ns_to_lpf_count(unsigned int ns)
+{
+	return count_to_lpf_count(
+		DIV_ROUND_CLOSEST(CX23888_IR_REFCLK_FREQ / 1000000 * ns, 1000));
+}
+
+static inline unsigned int lpf_count_to_ns(unsigned int count)
+{
+	/* Duration of the Low Pass Filter rejection window in ns */
+	return DIV_ROUND_CLOSEST(count * 1000,
+				 CX23888_IR_REFCLK_FREQ / 1000000);
+}
+
+static inline unsigned int lpf_count_to_us(unsigned int count)
+{
+	/* Duration of the Low Pass Filter rejection window in us */
+	return DIV_ROUND_CLOSEST(count, CX23888_IR_REFCLK_FREQ / 1000000);
+}
+
+/*
+ * FIFO register pulse width count computations
+ */
+static u32 clock_divider_to_resolution(u16 divider)
+{
+	/*
+	 * Resolution is the duration of 1 tick of the readable portion of
+	 * of the pulse width counter as read from the FIFO.  The two lsb's are
+	 * not readable, hence the << 2.  This function returns ns.
+	 */
+	return DIV_ROUND_CLOSEST((1 << 2)  * ((u32) divider + 1) * 1000,
+				 CX23888_IR_REFCLK_FREQ / 1000000);
+}
+
+static u64 pulse_width_count_to_ns(u16 count, u16 divider)
+{
+	u64 n;
+	u32 rem;
+
+	/*
+	 * The 2 lsb's of the pulse width timer count are not readable, hence
+	 * the (count << 2) | 0x3
+	 */
+	n = (((u64) count << 2) | 0x3) * (divider + 1) * 1000; /* millicycles */
+	rem = do_div(n, CX23888_IR_REFCLK_FREQ / 1000000);     /* / MHz => ns */
+	if (rem >= CX23888_IR_REFCLK_FREQ / 1000000 / 2)
+		n++;
+	return n;
+}
+
+static unsigned int pulse_width_count_to_us(u16 count, u16 divider)
+{
+	u64 n;
+	u32 rem;
+
+	/*
+	 * The 2 lsb's of the pulse width timer count are not readable, hence
+	 * the (count << 2) | 0x3
+	 */
+	n = (((u64) count << 2) | 0x3) * (divider + 1);    /* cycles      */
+	rem = do_div(n, CX23888_IR_REFCLK_FREQ / 1000000); /* / MHz => us */
+	if (rem >= CX23888_IR_REFCLK_FREQ / 1000000 / 2)
+		n++;
+	return (unsigned int) n;
+}
+
+/*
+ * Pulse Clocks computations: Combined Pulse Width Count & Rx Clock Counts
+ *
+ * The total pulse clock count is an 18 bit pulse width timer count as the most
+ * significant part and (up to) 16 bit clock divider count as a modulus.
+ * When the Rx clock divider ticks down to 0, it increments the 18 bit pulse
+ * width timer count's least significant bit.
+ */
+static u64 ns_to_pulse_clocks(u32 ns)
+{
+	u64 clocks;
+	u32 rem;
+	clocks = CX23888_IR_REFCLK_FREQ / 1000000 * (u64) ns; /* millicycles  */
+	rem = do_div(clocks, 1000);                         /* /1000 = cycles */
+	if (rem >= 1000 / 2)
+		clocks++;
+	return clocks;
+}
+
+static u16 pulse_clocks_to_clock_divider(u64 count)
+{
+	do_div(count, (FIFO_RXTX << 2) | 0x3);
+
+	/* net result needs to be rounded down and decremented by 1 */
+	if (count > RXCLK_RCD + 1)
+		count = RXCLK_RCD;
+	else if (count < 2)
+		count = 1;
+	else
+		count--;
+	return (u16) count;
+}
+
+/*
+ * IR Control Register helpers
+ */
+enum tx_fifo_watermark {
+	TX_FIFO_HALF_EMPTY = 0,
+	TX_FIFO_EMPTY      = CNTRL_TIC,
+};
+
+enum rx_fifo_watermark {
+	RX_FIFO_HALF_FULL = 0,
+	RX_FIFO_NOT_EMPTY = CNTRL_RIC,
+};
+
+static inline void control_tx_irq_watermark(struct cx23885_dev *dev,
+					    enum tx_fifo_watermark level)
+{
+	cx23888_ir_and_or4(dev, CX23888_IR_CNTRL_REG, ~CNTRL_TIC, level);
+}
+
+static inline void control_rx_irq_watermark(struct cx23885_dev *dev,
+					    enum rx_fifo_watermark level)
+{
+	cx23888_ir_and_or4(dev, CX23888_IR_CNTRL_REG, ~CNTRL_RIC, level);
+}
+
+static inline void control_tx_enable(struct cx23885_dev *dev, bool enable)
+{
+	cx23888_ir_and_or4(dev, CX23888_IR_CNTRL_REG, ~(CNTRL_TXE | CNTRL_TFE),
+			   enable ? (CNTRL_TXE | CNTRL_TFE) : 0);
+}
+
+static inline void control_rx_enable(struct cx23885_dev *dev, bool enable)
+{
+	cx23888_ir_and_or4(dev, CX23888_IR_CNTRL_REG, ~(CNTRL_RXE | CNTRL_RFE),
+			   enable ? (CNTRL_RXE | CNTRL_RFE) : 0);
+}
+
+static inline void control_tx_modulation_enable(struct cx23885_dev *dev,
+						bool enable)
+{
+	cx23888_ir_and_or4(dev, CX23888_IR_CNTRL_REG, ~CNTRL_MOD,
+			   enable ? CNTRL_MOD : 0);
+}
+
+static inline void control_rx_demodulation_enable(struct cx23885_dev *dev,
+						  bool enable)
+{
+	cx23888_ir_and_or4(dev, CX23888_IR_CNTRL_REG, ~CNTRL_DMD,
+			   enable ? CNTRL_DMD : 0);
+}
+
+static inline void control_rx_s_edge_detection(struct cx23885_dev *dev,
+					       u32 edge_types)
+{
+	cx23888_ir_and_or4(dev, CX23888_IR_CNTRL_REG, ~CNTRL_EDG_BOTH,
+			   edge_types & CNTRL_EDG_BOTH);
+}
+
+static void control_rx_s_carrier_window(struct cx23885_dev *dev,
+					unsigned int carrier,
+					unsigned int *carrier_range_low,
+					unsigned int *carrier_range_high)
+{
+	u32 v;
+	unsigned int c16 = carrier * 16;
+
+	if (*carrier_range_low < DIV_ROUND_CLOSEST(c16, 16 + 3)) {
+		v = CNTRL_WIN_3_4;
+		*carrier_range_low = DIV_ROUND_CLOSEST(c16, 16 + 4);
+	} else {
+		v = CNTRL_WIN_3_3;
+		*carrier_range_low = DIV_ROUND_CLOSEST(c16, 16 + 3);
+	}
+
+	if (*carrier_range_high > DIV_ROUND_CLOSEST(c16, 16 - 3)) {
+		v |= CNTRL_WIN_4_3;
+		*carrier_range_high = DIV_ROUND_CLOSEST(c16, 16 - 4);
+	} else {
+		v |= CNTRL_WIN_3_3;
+		*carrier_range_high = DIV_ROUND_CLOSEST(c16, 16 - 3);
+	}
+	cx23888_ir_and_or4(dev, CX23888_IR_CNTRL_REG, ~CNTRL_WIN, v);
+}
+
+static inline void control_tx_polarity_invert(struct cx23885_dev *dev,
+					      bool invert)
+{
+	cx23888_ir_and_or4(dev, CX23888_IR_CNTRL_REG, ~CNTRL_CPL,
+			   invert ? CNTRL_CPL : 0);
+}
+
+static inline void control_tx_level_invert(struct cx23885_dev *dev,
+					  bool invert)
+{
+	cx23888_ir_and_or4(dev, CX23888_IR_CNTRL_REG, ~CNTRL_IVO,
+			   invert ? CNTRL_IVO : 0);
+}
+
+/*
+ * IR Rx & Tx Clock Register helpers
+ */
+static unsigned int txclk_tx_s_carrier(struct cx23885_dev *dev,
+				       unsigned int freq,
+				       u16 *divider)
+{
+	*divider = carrier_freq_to_clock_divider(freq);
+	cx23888_ir_write4(dev, CX23888_IR_TXCLK_REG, *divider);
+	return clock_divider_to_carrier_freq(*divider);
+}
+
+static unsigned int rxclk_rx_s_carrier(struct cx23885_dev *dev,
+				       unsigned int freq,
+				       u16 *divider)
+{
+	*divider = carrier_freq_to_clock_divider(freq);
+	cx23888_ir_write4(dev, CX23888_IR_RXCLK_REG, *divider);
+	return clock_divider_to_carrier_freq(*divider);
+}
+
+static u32 txclk_tx_s_max_pulse_width(struct cx23885_dev *dev, u32 ns,
+				      u16 *divider)
+{
+	u64 pulse_clocks;
+
+	if (ns > IR_MAX_DURATION)
+		ns = IR_MAX_DURATION;
+	pulse_clocks = ns_to_pulse_clocks(ns);
+	*divider = pulse_clocks_to_clock_divider(pulse_clocks);
+	cx23888_ir_write4(dev, CX23888_IR_TXCLK_REG, *divider);
+	return (u32) pulse_width_count_to_ns(FIFO_RXTX, *divider);
+}
+
+static u32 rxclk_rx_s_max_pulse_width(struct cx23885_dev *dev, u32 ns,
+				      u16 *divider)
+{
+	u64 pulse_clocks;
+
+	if (ns > IR_MAX_DURATION)
+		ns = IR_MAX_DURATION;
+	pulse_clocks = ns_to_pulse_clocks(ns);
+	*divider = pulse_clocks_to_clock_divider(pulse_clocks);
+	cx23888_ir_write4(dev, CX23888_IR_RXCLK_REG, *divider);
+	return (u32) pulse_width_count_to_ns(FIFO_RXTX, *divider);
+}
+
+/*
+ * IR Tx Carrier Duty Cycle register helpers
+ */
+static unsigned int cduty_tx_s_duty_cycle(struct cx23885_dev *dev,
+					  unsigned int duty_cycle)
+{
+	u32 n;
+	n = DIV_ROUND_CLOSEST(duty_cycle * 100, 625); /* 16ths of 100% */
+	if (n != 0)
+		n--;
+	if (n > 15)
+		n = 15;
+	cx23888_ir_write4(dev, CX23888_IR_CDUTY_REG, n);
+	return DIV_ROUND_CLOSEST((n + 1) * 100, 16);
+}
+
+/*
+ * IR Filter Register helpers
+ */
+static u32 filter_rx_s_min_width(struct cx23885_dev *dev, u32 min_width_ns)
+{
+	u32 count = ns_to_lpf_count(min_width_ns);
+	cx23888_ir_write4(dev, CX23888_IR_FILTR_REG, count);
+	return lpf_count_to_ns(count);
+}
+
+/*
+ * IR IRQ Enable Register helpers
+ */
+static inline void irqenable_rx(struct cx23885_dev *dev, u32 mask)
+{
+	mask &= (IRQEN_RTE | IRQEN_ROE | IRQEN_RSE);
+	cx23888_ir_and_or4(dev, CX23888_IR_IRQEN_REG,
+			   ~(IRQEN_RTE | IRQEN_ROE | IRQEN_RSE), mask);
+}
+
+static inline void irqenable_tx(struct cx23885_dev *dev, u32 mask)
+{
+	mask &= IRQEN_TSE;
+	cx23888_ir_and_or4(dev, CX23888_IR_IRQEN_REG, ~IRQEN_TSE, mask);
+}
+
+/*
+ * V4L2 Subdevice IR Ops
+ */
+static int cx23888_ir_irq_handler(struct v4l2_subdev *sd, u32 status,
+				 

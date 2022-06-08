@@ -1,2 +1,3 @@
-drivers/media/rc/keymaps/rc-msi-tvanywhere-plus.o
+ (0x9d << 24); /* 100kHz */
 
+	/* External Master 2 

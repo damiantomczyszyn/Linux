@@ -1,163 +1,181 @@
-(void *)&count, noop_count, NULL, &target_entry);
-
-	return count;
-}
-unsigned long lockdep_count_forward_deps(struct lock_class *class)
+ int cpu, int wake_flags)
 {
-	unsigned long ret, flags;
-	struct lock_list this;
+	struct rq *rq = cpu_rq(cpu);
 
-	__bfs_init_root(&this, class);
+	p->sched_remote_wakeup = !!(wake_flags & WF_MIGRATED);
 
-	raw_local_irq_save(flags);
-	lockdep_lock();
-	ret = __lockdep_count_forward_deps(&this);
-	lockdep_unlock();
-	raw_local_irq_restore(flags);
-
-	return ret;
+	WRITE_ONCE(rq->ttwu_pending, 1);
+	__smp_call_single_queue(cpu, &p->wake_entry.llist);
 }
 
-static unsigned long __lockdep_count_backward_deps(struct lock_list *this)
+void wake_up_if_idle(int cpu)
 {
-	unsigned long  count = 0;
-	struct lock_list *target_entry;
+	struct rq *rq = cpu_rq(cpu);
+	struct rq_flags rf;
 
-	__bfs_backwards(this, (void *)&count, noop_count, NULL, &target_entry);
+	rcu_read_lock();
 
-	return count;
+	if (!is_idle_task(rcu_dereference(rq->curr)))
+		goto out;
+
+	rq_lock_irqsave(rq, &rf);
+	if (is_idle_task(rq->curr))
+		resched_curr(rq);
+	/* Else CPU is not idle, do nothing here: */
+	rq_unlock_irqrestore(rq, &rf);
+
+out:
+	rcu_read_unlock();
 }
 
-unsigned long lockdep_count_backward_deps(struct lock_class *class)
+bool cpus_share_cache(int this_cpu, int that_cpu)
 {
-	unsigned long ret, flags;
-	struct lock_list this;
+	if (this_cpu == that_cpu)
+		return true;
 
-	__bfs_init_root(&this, class);
-
-	raw_local_irq_save(flags);
-	lockdep_lock();
-	ret = __lockdep_count_backward_deps(&this);
-	lockdep_unlock();
-	raw_local_irq_restore(flags);
-
-	return ret;
+	return per_cpu(sd_llc_id, this_cpu) == per_cpu(sd_llc_id, that_cpu);
 }
 
-/*
- * Check that the dependency graph starting at <src> can lead to
- * <target> or not.
- */
-static noinline enum bfs_result
-check_path(struct held_lock *target, struct lock_list *src_entry,
-	   bool (*match)(struct lock_list *entry, void *data),
-	   bool (*skip)(struct lock_list *entry, void *data),
-	   struct lock_list **target_entry)
+static inline bool ttwu_queue_cond(int cpu, int wake_flags)
 {
-	enum bfs_result ret;
+	/*
+	 * Do not complicate things with the async wake_list while the CPU is
+	 * in hotplug state.
+	 */
+	if (!cpu_active(cpu))
+		return false;
 
-	ret = __bfs_forwards(src_entry, target, match, skip, target_entry);
+	/*
+	 * If the CPU does not share cache, then queue the task on the
+	 * remote rqs wakelist to avoid accessing remote data.
+	 */
+	if (!cpus_share_cache(smp_processor_id(), cpu))
+		return true;
 
-	if (unlikely(bfs_error(ret)))
-		print_bfs_bug(ret);
-
-	return ret;
-}
-
-/*
- * Prove that the dependency graph starting at <src> can not
- * lead to <target>. If it can, there is a circle when adding
- * <target> -> <src> dependency.
- *
- * Print an error and return BFS_RMATCH if it does.
- */
-static noinline enum bfs_result
-check_noncircular(struct held_lock *src, struct held_lock *target,
-		  struct lock_trace **const trace)
-{
-	enum bfs_result ret;
-	struct lock_list *target_entry;
-	struct lock_list src_entry;
-
-	bfs_init_root(&src_entry, src);
-
-	debug_atomic_inc(nr_cyclic_checks);
-
-	ret = check_path(target, &src_entry, hlock_conflict, NULL, &target_entry);
-
-	if (unlikely(ret == BFS_RMATCH)) {
-		if (!*trace) {
-			/*
-			 * If save_trace fails here, the printing might
-			 * trigger a WARN but because of the !nr_entries it
-			 * should not do bad things.
-			 */
-			*trace = save_trace();
-		}
-
-		print_circular_bug(&src_entry, target_entry, src, target);
-	}
-
-	return ret;
-}
-
-#ifdef CONFIG_TRACE_IRQFLAGS
-
-/*
- * Forwards and backwards subgraph searching, for the purposes of
- * proving that two subgraphs can be connected by a new dependency
- * without creating any illegal irq-safe -> irq-unsafe lock dependency.
- *
- * A irq safe->unsafe deadlock happens with the following conditions:
- *
- * 1) We have a strong dependency path A -> ... -> B
- *
- * 2) and we have ENABLED_IRQ usage of B and USED_IN_IRQ usage of A, therefore
- *    irq can create a new dependency B -> A (consider the case that a holder
- *    of B gets interrupted by an irq whose handler will try to acquire A).
- *
- * 3) the dependency circle A -> ... -> B -> A we get from 1) and 2) is a
- *    strong circle:
- *
- *      For the usage bits of B:
- *        a) if A -> B is -(*N)->, then B -> A could be any type, so any
- *           ENABLED_IRQ usage suffices.
- *        b) if A -> B is -(*R)->, then B -> A must be -(E*)->, so only
- *           ENABLED_IRQ_*_READ usage suffices.
- *
- *      For the usage bits of A:
- *        c) if A -> B is -(E*)->, then B -> A could be any type, so any
- *           USED_IN_IRQ usage suffices.
- *        d) if A -> B is -(S*)->, then B -> A must be -(*N)->, so only
- *           USED_IN_IRQ_*_READ usage suffices.
- */
-
-/*
- * There is a strong dependency path in the dependency graph: A -> B, and now
- * we need to decide which usage bit of A should be accumulated to detect
- * safe->unsafe bugs.
- *
- * Note that usage_accumulate() is used in backwards search, so ->only_xr
- * stands for whether A -> B only has -(S*)-> (in this case ->only_xr is true).
- *
- * As above, if only_xr is false, which means A -> B has -(E*)-> dependency
- * path, any usage of A should be considered. Otherwise, we should only
- * consider _READ usage.
- */
-static inline bool usage_accumulate(struct lock_list *entry, void *mask)
-{
-	if (!entry->only_xr)
-		*(unsigned long *)mask |= entry->class->usage_mask;
-	else /* Mask out _READ usage bits */
-		*(unsigned long *)mask |= (entry->class->usage_mask & LOCKF_IRQ);
+	/*
+	 * If the task is descheduling and the only running task on the
+	 * CPU then use the wakelist to offload the task activation to
+	 * the soon-to-be-idle CPU as the current CPU is likely busy.
+	 * nr_running is checked to avoid unnecessary task stacking.
+	 */
+	if ((wake_flags & WF_ON_CPU) && cpu_rq(cpu)->nr_running <= 1)
+		return true;
 
 	return false;
 }
 
+static bool ttwu_queue_wakelist(struct task_struct *p, int cpu, int wake_flags)
+{
+	if (sched_feat(TTWU_QUEUE) && ttwu_queue_cond(cpu, wake_flags)) {
+		if (WARN_ON_ONCE(cpu == smp_processor_id()))
+			return false;
+
+		sched_clock_cpu(cpu); /* Sync clocks across CPUs */
+		__ttwu_queue_wakelist(p, cpu, wake_flags);
+		return true;
+	}
+
+	return false;
+}
+
+#else /* !CONFIG_SMP */
+
+static inline bool ttwu_queue_wakelist(struct task_struct *p, int cpu, int wake_flags)
+{
+	return false;
+}
+
+#endif /* CONFIG_SMP */
+
+static void ttwu_queue(struct task_struct *p, int cpu, int wake_flags)
+{
+	struct rq *rq = cpu_rq(cpu);
+	struct rq_flags rf;
+
+	if (ttwu_queue_wakelist(p, cpu, wake_flags))
+		return;
+
+	rq_lock(rq, &rf);
+	update_rq_clock(rq);
+	ttwu_do_activate(rq, p, wake_flags, &rf);
+	rq_unlock(rq, &rf);
+}
+
 /*
- * There is a strong dependency path in the dependency graph: A -> B, and now
- * we need to decide which usage bit of B conflicts with the usage bits of A,
- * i.e. which usage bit of B may introduce safe->unsafe deadlocks.
+ * Invoked from try_to_wake_up() to check whether the task can be woken up.
  *
- * As above, if only_xr is false, which means A -> B has -(*N)-> dependency
- * path, any usage of B should be cons
+ * The caller holds p::pi_lock if p != current or has preemption
+ * disabled when p == current.
+ *
+ * The rules of PREEMPT_RT saved_state:
+ *
+ *   The related locking code always holds p::pi_lock when updating
+ *   p::saved_state, which means the code is fully serialized in both cases.
+ *
+ *   The lock wait and lock wakeups happen via TASK_RTLOCK_WAIT. No other
+ *   bits set. This allows to distinguish all wakeup scenarios.
+ */
+static __always_inline
+bool ttwu_state_match(struct task_struct *p, unsigned int state, int *success)
+{
+	if (IS_ENABLED(CONFIG_DEBUG_PREEMPT)) {
+		WARN_ON_ONCE((state & TASK_RTLOCK_WAIT) &&
+			     state != TASK_RTLOCK_WAIT);
+	}
+
+	if (READ_ONCE(p->__state) & state) {
+		*success = 1;
+		return true;
+	}
+
+#ifdef CONFIG_PREEMPT_RT
+	/*
+	 * Saved state preserves the task state across blocking on
+	 * an RT lock.  If the state matches, set p::saved_state to
+	 * TASK_RUNNING, but do not wake the task because it waits
+	 * for a lock wakeup. Also indicate success because from
+	 * the regular waker's point of view this has succeeded.
+	 *
+	 * After acquiring the lock the task will restore p::__state
+	 * from p::saved_state which ensures that the regular
+	 * wakeup is not lost. The restore will also set
+	 * p::saved_state to TASK_RUNNING so any further tests will
+	 * not result in false positives vs. @success
+	 */
+	if (p->saved_state & state) {
+		p->saved_state = TASK_RUNNING;
+		*success = 1;
+	}
+#endif
+	return false;
+}
+
+/*
+ * Notes on Program-Order guarantees on SMP systems.
+ *
+ *  MIGRATION
+ *
+ * The basic program-order guarantee on SMP systems is that when a task [t]
+ * migrates, all its activity on its old CPU [c0] happens-before any subsequent
+ * execution on its new CPU [c1].
+ *
+ * For migration (of runnable tasks) this is provided by the following means:
+ *
+ *  A) UNLOCK of the rq(c0)->lock scheduling out task t
+ *  B) migration for t is required to synchronize *both* rq(c0)->lock and
+ *     rq(c1)->lock (if not at the same time, then in that order).
+ *  C) LOCK of the rq(c1)->lock scheduling in task
+ *
+ * Release/acquire chaining guarantees that B happens after A and C after B.
+ * Note: the CPU doing B need not be c0 or c1
+ *
+ * Example:
+ *
+ *   CPU0            CPU1            CPU2
+ *
+ *   LOCK rq(0)->lock
+ *   sched-out X
+ *   sched-in Y
+ *   UNLOCK rq(0)->lock
+ *
+ *                           

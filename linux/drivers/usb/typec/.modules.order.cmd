@@ -1,12 +1,17 @@
--3level_types.h \
-  include/asm-generic/pgtable-nop4d.h \
-  include/asm-generic/pgtable-nopud.h \
-  arch/x86/include/asm/nospec-branch.h \
-  include/linux/static_key.h \
-  include/linux/jump_label.h \
-    $(wildcard include/config/HAVE_ARCH_JUMP_LABEL_RELATIVE) \
-  arch/x86/include/asm/jump_label.h \
-  include/linux/objtool.h \
-    $(wildcard include/config/FRAME_POINTER) \
-  arch/x86/include/asm/msr-index.h \
-  arch/x86/include/asm
+  = 0x61,
+	.if_khz           = 5380,
+};
+
+static struct xc5000_config dvico_xc5000_tunerconfig = {
+	.i2c_address      = 0x64,
+	.if_khz           = 5380,
+};
+
+static struct tda829x_config tda829x_no_probe = {
+	.probe_tuner = TDA829X_DONT_PROBE,
+};
+
+static struct tda18271_std_map hauppauge_tda18271_std_map = {
+	.atsc_6   = { .if_freq = 5380, .agc_mode = 3, .std = 3,
+		      .if_lvl = 6, .rfagc_top = 0x37 },
+	.qam_6    = { .if_freq = 400

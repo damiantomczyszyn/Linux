@@ -1,2 +1,1 @@
-\
-  include/linux/rwlock.h
+/* SPDX-License-Identifier

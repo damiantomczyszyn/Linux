@@ -1,39 +1,31 @@
-urrent chain
- */
-static inline int get_first_held_lock(struct task_struct *curr,
-					struct held_lock *hlock)
-{
-	int i;
-	struct held_lock *hlock_curr;
-
-	for (i = curr->lockdep_depth - 1; i >= 0; i--) {
-		hlock_curr = curr->held_locks + i;
-		if (hlock_curr->irq_context != hlock->irq_context)
-			break;
-
+just need the target to call irq_exit() and re-evaluate
+	 * the next tick. The nohz full kick at least implies that.
+	 * If needed we can still optimize that later with an
+	 * empty IRQ.
+	 */
+	if (cpu_is_offline(cpu))
+		return true;  /* Don't try to wake offline CPUs. */
+	if (tick_nohz_full_cpu(cpu)) {
+		if (cpu != smp_processor_id() ||
+		    tick_nohz_tick_stopped())
+			tick_nohz_full_kick_cpu(cpu);
+		return true;
 	}
 
-	return ++i;
+	return false;
 }
 
-#ifdef CONFIG_DEBUG_LOCKDEP
 /*
- * Returns the next chain_key iteration
+ * Wake up the specified CPU.  If the CPU is going offline, it is the
+ * caller's responsibility to deal with the lost wakeup, for example,
+ * by hooking into the CPU_DEAD notifier like timers and hrtimers do.
  */
-static u64 print_chain_key_iteration(u16 hlock_id, u64 chain_key)
+void wake_up_nohz_cpu(int cpu)
 {
-	u64 new_chain_key = iterate_chain_key(chain_key, hlock_id);
-
-	printk(" hlock_id:%d -> chain_key:%016Lx",
-		(unsigned int)hlock_id,
-		(unsigned long long)new_chain_key);
-	return new_chain_key;
+	if (!wake_up_full_nohz_cpu(cpu))
+		wake_up_idle_cpu(cpu);
 }
 
-static void
-print_chain_keys_held_locks(struct task_struct *curr, struct held_lock *hlock_next)
+static void nohz_csd_func(void *info)
 {
-	struct held_lock *hlock;
-	u64 chain_key = INITIAL_CHAIN_KEY;
-	int depth = curr->lockdep_depth;
-	int i = get_first_held_l
+	struct rq *rq = 

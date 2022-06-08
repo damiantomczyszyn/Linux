@@ -1,75 +1,58 @@
-_percpu_address(addr))
-		return 1;
+s);
 
-	/*
-	 * module static or percpu var?
-	 */
-	return is_module_address(addr) || is_module_percpu_address(addr);
-}
-#endif
+/**
+ * struct pending_free - information about data structures about to be freed
+ * @zapped: Head of a list with struct lock_class elements.
+ * @lock_chains_being_freed: Bitmap that indicates which lock_chains[] elements
+ *	are about to be freed.
+ */
+struct pending_free {
+	struct list_head zapped;
+	DECLARE_BITMAP(lock_chains_being_freed, MAX_LOCKDEP_CHAINS);
+};
+
+/**
+ * struct delayed_free - data structures used for delayed freeing
+ *
+ * A data structure for delayed freeing of data structures that may be
+ * accessed by RCU readers at the time these were freed.
+ *
+ * @rcu_head:  Used to schedule an RCU callback for freeing data structures.
+ * @index:     Index of @pf to which freed data structures are added.
+ * @scheduled: Whether or not an RCU callback has been scheduled.
+ * @pf:        Array with information about data structures about to be freed.
+ */
+static struct delayed_free {
+	struct rcu_head		rcu_head;
+	int			index;
+	int			scheduled;
+	struct pending_free	pf[2];
+} delayed_free;
 
 /*
- * To make lock name printouts unique, we calculate a unique
- * class->name_version generation counter. The caller must hold the graph
- * lock.
+ * The lockdep classes are in a hash-table as well, for fast lookup:
  */
-static int count_matching_names(struct lock_class *new_class)
+#define CLASSHASH_BITS		(MAX_LOCKDEP_KEYS_BITS - 1)
+#define CLASSHASH_SIZE		(1UL << CLASSHASH_BITS)
+#define __classhashfn(key)	hash_long((unsigned long)key, CLASSHASH_BITS)
+#define classhashentry(key)	(classhash_table + __classhashfn((key)))
+
+static struct hlist_head classhash_table[CLASSHASH_SIZE];
+
+/*
+ * We put the lock dependency chains into a hash-table as well, to cache
+ * their existence:
+ */
+#define CHAINHASH_BITS		(MAX_LOCKDEP_CHAINS_BITS-1)
+#define CHAINHASH_SIZE		(1UL << CHAINHASH_BITS)
+#define __chainhashfn(chain)	hash_long(chain, CHAINHASH_BITS)
+#define chainhashentry(chain)	(chainhash_table + __chainhashfn((chain)))
+
+static struct hlist_head chainhash_table[CHAINHASH_SIZE];
+
+/*
+ * the id of held_lock
+ */
+static inline u16 hlock_id(struct held_lock *hlock)
 {
-	struct lock_class *class;
-	int count = 0;
-
-	if (!new_class->name)
-		return 0;
-
-	list_for_each_entry(class, &all_lock_classes, lock_entry) {
-		if (new_class->key - new_class->subclass == class->key)
-			return class->name_version;
-		if (class->name && !strcmp(class->name, new_class->name))
-			count = max(count, class->name_version);
-	}
-
-	return count + 1;
-}
-
-/* used from NMI context -- must be lockless */
-static noinstr struct lock_class *
-look_up_lock_class(const struct lockdep_map *lock, unsigned int subclass)
-{
-	struct lockdep_subclass_key *key;
-	struct hlist_head *hash_head;
-	struct lock_class *class;
-
-	if (unlikely(subclass >= MAX_LOCKDEP_SUBCLASSES)) {
-		instrumentation_begin();
-		debug_locks_off();
-		printk(KERN_ERR
-			"BUG: looking up invalid subclass: %u\n", subclass);
-		printk(KERN_ERR
-			"turning off the locking correctness validator.\n");
-		dump_stack();
-		instrumentation_end();
-		return NULL;
-	}
-
-	/*
-	 * If it is not initialised then it has never been locked,
-	 * so it won't be present in the hash table.
-	 */
-	if (unlikely(!lock->key))
-		return NULL;
-
-	/*
-	 * NOTE: the class-key must be unique. For dynamic locks, a static
-	 * lock_class_key variable is passed in through the mutex_init()
-	 * (or spin_lock_init()) call - which acts as the key. For static
-	 * locks we use the lock object itself as the key.
-	 */
-	BUILD_BUG_ON(sizeof(struct lock_class_key) >
-			sizeof(struct lockdep_map));
-
-	key = lock->key->subkeys + subclass;
-
-	hash_head = classhashentry(key);
-
-	/*
-	 * We do an RCU walk of the hash, see 
+	BUILD_BUG_ON(MAX_LOCKDEP_KEYS_BITS + 2 > 16);

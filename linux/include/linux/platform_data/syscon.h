@@ -1,4 +1,7 @@
-    $(wildcard include/config/HIGH_RES_TIMERS) \
-    $(wildcard include/config/TIME_LOW_RES) \
-    $(wildcard include/config/TIMERFD) \
-  include/linux/hrtimer_def
+/* SPDX-License-Identifier: GPL-2.0-or-later */
+/*
+ * cimax2.h
+ *
+ * CIMax(R) SP2 driver in conjunction with NetUp Dual DVB-S2 CI card
+ *
+ * Copyright (C) 2009 Net

@@ -1,5 +1,1 @@
-NAMIC_TASK_STRUCT) \
-    $(wildcard include/config/HAVE_ARCH_THREAD_STRUCT_WHITELIST) \
-  include/linux/cred.h \
-    $(wildcard include/config/DEBUG_CREDENTIALS) \
-  inc
+cmd_drivers/net/dsa/hirschmann/modules.order := {   echo drivers/net/dsa/hirschmann/hellcreek_sw.ko; :; } | awk '!x[$$0]++' - > drivers/net/dsa/hirschmann/modules.order

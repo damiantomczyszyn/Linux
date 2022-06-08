@@ -1,5 +1,6 @@
- $(wildcard include/config/PARISC) \
-    $(wildcard include/config/SPARC64) \
-    $(wildcard include/config/ARM64_MTE) \
-    $(wildcard include/config/HAVE_ARCH_USERFAULTFD_MINOR) \
-    $(wildcard include
+filt->nr = hw_filt_nr - 1;
+	/* store old feed controls */
+	pid_filt->start_feed = config->demux->start_feed;
+	pid_filt->stop_feed = config->demux->stop_feed;
+	/* replace with new feed controls */
+	if (hw_

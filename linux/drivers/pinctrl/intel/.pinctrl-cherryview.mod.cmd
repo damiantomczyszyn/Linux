@@ -1,4 +1,5 @@
-e/config/NO_GENERIC_PCI_IOPORT_MAP) \
-    $(wildcard include/config/GENERIC_PCI_IOMAP) \
-  include/asm-generic/io.h \
-    $(wildcard include/config/GENERIC_IOMA
+filt->nr = hw_filt_nr - 1;
+	/* store old feed controls */
+	pid_filt->start_feed = config->demux->start_feed;
+	pid_filt->stop_feed = config->demux->stop_feed;
+	/

@@ -1,1 +1,2 @@
-nclude/config/GENERI
+ze, &risc->dma,
+				

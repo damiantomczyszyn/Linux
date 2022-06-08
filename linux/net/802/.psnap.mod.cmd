@@ -1,5 +1,3 @@
- 0, 40 + 1 + 12 * (14 + 1));
-	seq_printf(m, "\n");
-}
-
-static void *ls_start(str
+/* SPDX-License-Identifier: GPL-2.0 */
+/*
+ * This program is free software; you

@@ -1,5 +1,10 @@
- include/config/TRACE_BRANCH_PROFILING) \
-    $(wildcard include/config/PROFILE_ALL_BRANCHES) \
-    $(wildcard include/config/STACK_VALIDATION) \
-  include/linux/compiler_types.h \
-  arch/x86/incl
+  = 0x61,
+	.if_khz           = 5380,
+};
+
+static struct xc5000_config dvico_xc5000_tunerconfig = {
+	.i2c_address      = 0x64,
+	.if_khz           = 5380,
+};
+
+static struct tda829x_config tda829x_no_

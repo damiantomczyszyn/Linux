@@ -1,34 +1,47 @@
-ig/RCU_FANOUT) \
-    $(wildcard include/config/RCU_FANOUT_LEAF) \
-  include/linux/page-flags-layout.h \
-    $(wildcard include/config/KASAN_HW_TAGS) \
-  include/linux/numa.h \
-    $(wildcard include/config/NODES_SHIFT) \
-    $(wildcard include/config/NUMA_KEEP_MEMINFO) \
-    $(wildcard include/config/HAVE_ARCH_NODE_DEV_GROUP) \
-  arch/x86/include/asm/sparsemem.h \
-  include/generated/bounds.h \
-  include/linux/seqlock.h \
-  include/linux/ww_mutex.h \
-    $(wildcard include/config/DEBUG_RT_MUTEXES) \
-    $(wildcard include/config/DEBUG_WW_MUTEX_SLOWPATH) \
-  include/linux/rtmutex.h \
-  arch/x86/include/asm/mmu.h \
-    $(wildcard include/config/MODIFY_LDT_SYSCALL) \
-  include/linux/kmod.h \
-  include/linux/umh.h \
-  include/linux/gfp.h \
-    $(wildcard include/config/HIGHMEM) \
-    $(wildcard include/config/ZONE_DMA) \
-    $(wildcard include/config/ZONE_DMA32) \
-    $(wildcard include/config/ZONE_DEVICE) \
-    $(wildcard include/config/PM_SLEEP) \
-    $(wildcard include/config/CONTIG_ALLOC) \
-    $(wildcard include/config/CMA) \
-  include/linux/mmdebug.h \
-    $(wildcard include/config/DEBUG_VM) \
-    $(wildcard include/config/DEBUG_VM_PGFLAGS) \
-  include/linux/mmzone.h \
-    $(wildcard include/config/FORCE_MAX_ZONEORDER) \
-    $(wildcard include/config/MEMORY_ISOLATION) \
-    $(wildcard 
+ION		0x000004B4
+#define VBI_PASS_CTRL		0x000004BC
+
+/* Audio Decoder Registers */
+/* 8051 Configuration */
+#define DL_CTL		0x00000800
+#define STD_DET_STATUS	0x00000804
+#define STD_DET_CTL	0x00000808
+#define DW8051_INT	0x0000080C
+#define GENERAL_CTL	0x00000810
+#define AAGC_CTL	0x00000814
+#define DEMATRIX_CTL	0x000008CC
+#define PATH1_CTL1	0x000008D0
+#define PATH1_VOL_CTL	0x000008D4
+#define PATH1_EQ_CTL	0x000008D8
+#define PATH1_SC_CTL	0x000008DC
+#define PATH2_CTL1	0x000008E0
+#define PATH2_VOL_CTL	0x000008E4
+#define PATH2_EQ_CTL	0x000008E8
+#define PATH2_SC_CTL	0x000008EC
+
+/* Sample Rate Converter */
+#define SRC_CTL		0x000008F0
+#define SRC_LF_COEF	0x000008F4
+#define SRC1_CTL	0x000008F8
+#define SRC2_CTL	0x000008FC
+#define SRC3_CTL	0x00000900
+#define SRC4_CTL	0x00000904
+#define SRC5_CTL	0x00000908
+#define SRC6_CTL	0x0000090C
+#define BAND_OUT_SEL	0x00000910
+#define I2S_N_CTL	0x00000914
+#define I2S_OUT_CTL	0x00000918
+#define AUTOCONFIG_REG	0x000009C4
+
+/* Audio ADC Registers */
+#define DSM_CTRL1	0x00000000
+#define DSM_CTRL2	0x00000001
+#define CHP_EN_CTRL	0x00000002
+#define CHP_CLK_CTRL1	0x00000004
+#define CHP_CLK_CTRL2	0x00000005
+#define BG_REF_CTRL	0x00000006
+#define SD2_SW_CTRL1	0x00000008
+#define SD2_SW_CTRL2	0x00000009
+#define SD2_BIAS_CTRL	0x0000000A
+#define AMP_BIAS_CTRL	0x0000000C
+#define CH

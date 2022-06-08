@@ -1,42 +1,45 @@
-it(void)
-{
-	int i, j;
-	int firsterr = 0;
-	static struct lock_torture_ops *torture_ops[] = {
-		&lock_busted_ops,
-		&spin_lock_ops, &spin_lock_irq_ops,
-		&rw_lock_ops, &rw_lock_irq_ops,
-		&mutex_lock_ops,
-		&ww_mutex_lock_ops,
-#ifdef CONFIG_RT_MUTEXES
-		&rtmutex_lock_ops,
-#endif
-		&rwsem_lock_ops,
-		&percpu_rwsem_lock_ops,
-	};
+/* SPDX-License-Identifier: GPL-2.0-or-later */
+/*
+ *  Driver for the Conexant CX23885 PCIe bridge
+ *
+ *  Copyright (c) 2006 Steven Toth <stoth@linuxtv.org>
+ */
 
-	if (!torture_init_begin(torture_type, verbose))
-		return -EBUSY;
+#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
 
-	/* Process args and tell the world that the torturer is on the job. */
-	for (i = 0; i < ARRAY_SIZE(torture_ops); i++) {
-		cxt.cur_ops = torture_ops[i];
-		if (strcmp(torture_type, cxt.cur_ops->name) == 0)
-			break;
-	}
-	if (i == ARRAY_SIZE(torture_ops)) {
-		pr_alert("lock-torture: invalid torture type: \"%s\"\n",
-			 torture_type);
-		pr_alert("lock-torture types:");
-		for (i = 0; i < ARRAY_SIZE(torture_ops); i++)
-			pr_alert(" %s", torture_ops[i]->name);
-		pr_alert("\n");
-		firsterr = -EINVAL;
-		goto unwind;
-	}
+#include <linux/pci.h>
+#include <linux/i2c.h>
+#include <linux/kdev_t.h>
+#include <linux/slab.h>
 
-	if (nwriters_stress == 0 &&
-	    (!cxt.cur_ops->readlock || nreaders_stress == 0)) {
-		pr_alert("lock-torture: must run at least one locking thread\n");
-		firsterr = -EINVAL;
-		goto unwi
+#include <media/v4l2-device.h>
+#include <media/v4l2-fh.h>
+#include <media/v4l2-ctrls.h>
+#include <media/tuner.h>
+#include <media/tveeprom.h>
+#include <media/videobuf2-dma-sg.h>
+#include <media/videobuf2-dvb.h>
+#include <media/rc-core.h>
+
+#include "cx23885-reg.h"
+#include "media/drv-intf/cx2341x.h"
+
+#include <linux/mutex.h>
+
+#define CX23885_VERSION "0.0.4"
+
+#define UNSET (-1U)
+
+#define CX23885_MAXBOARDS 8
+
+/* Max number of inputs by card */
+#define MAX_CX23885_INPUT 8
+#define INPUT(nr) (&cx23885_boards[dev->board].input[nr])
+
+#define BUFFER_TIMEOUT     (HZ)  /* 0.5 seconds */
+
+#define CX23885_BOARD_NOAUTO               UNSET
+#define CX23885_BOARD_UNKNOWN                  0
+#define CX23885_BOARD_HAUPPAUGE_HVR1800lp      1
+#define CX23885_BOARD_HAUPPAUGE_HVR1800        2
+#define CX23885_

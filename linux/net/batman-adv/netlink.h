@@ -1,44 +1,31 @@
-RT_SYMBOL_GPL(debug_check_no_locks_held);
-
-#ifdef __KERNEL__
-void debug_show_all_locks(void)
-{
-	struct task_struct *g, *p;
-
-	if (unlikely(!debug_locks)) {
-		pr_warn("INFO: lockdep is turned off.\n");
-		return;
-	}
-	pr_warn("\nShowing all locks held in the system:\n");
-
-	rcu_read_lock();
-	for_each_process_thread(g, p) {
-		if (!p->lockdep_depth)
-			continue;
-		lockdep_print_held_locks(p);
-		touch_nmi_watchdog();
-		touch_all_softlockup_watchdogs();
-	}
-	rcu_read_unlock();
-
-	pr_warn("\n");
-	pr_warn("=============================================\n\n");
-}
-EXPORT_SYMBOL_GPL(debug_show_all_locks);
-#endif
-
-/*
- * Careful: only use this function if you are sure that
- * the task cannot run in parallel!
+FIG_RCU_EQS_DEBUG=y.
  */
-void debug_show_held_locks(struct task_struct *task)
+noinstr void rcu_nmi_enter(void)
 {
-	if (unlikely(!debug_locks)) {
-		printk("INFO: lockdep is turned off.\n");
-		return;
-	}
-	lockdep_print_held_locks(task);
-}
-EXPORT_SYMBOL_GPL(debug_show_held_locks);
+	long incby = 2;
+	struct rcu_data *rdp = this_cpu_ptr(&rcu_data);
 
-asmlinkage __visible 
+	/* Complain about underflow. */
+	WARN_ON_ONCE(rdp->dynticks_nmi_nesting < 0);
+
+	/*
+	 * If idle from RCU viewpoint, atomically increment ->dynticks
+	 * to mark non-idle and increment ->dynticks_nmi_nesting by one.
+	 * Otherwise, increment ->dynticks_nmi_nesting by two.  This means
+	 * if ->dynticks_nmi_nesting is equal to one, we are guaranteed
+	 * to be in the outermost NMI handler that interrupted an RCU-idle
+	 * period (observation due to Andy Lutomirski).
+	 */
+	if (rcu_dynticks_curr_cpu_in_eqs()) {
+
+		if (!in_nmi())
+			rcu_dynticks_task_exit();
+
+		// RCU is not watching here ...
+		rcu_dynticks_eqs_exit();
+		// ... but is watching here.
+
+		instrumentation_begin();
+		// instrumentation for the noinstr rcu_dynticks_curr_cpu_in_eqs()
+		instrument_atomic_read(&rdp->dynticks, sizeof(rdp->dynticks));
+		// ins

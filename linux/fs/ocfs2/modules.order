@@ -1,2 +1,4 @@
-e/config/ACPI_APEI_GHES) \
-  
+TRL, reg);
+	}
+
+	/* Set VIDC p

@@ -1,2 +1,1 @@
-ude/config/HAVE_ARCH_USERFAULTFD_MINOR) \
-    $(wildcard include/config/S
+cmd_drivers/media/pci/cx18/cx18-alsa.ko := ld -r -m elf_i386 --build-id=s

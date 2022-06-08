@@ -1,48 +1,67 @@
-nclude/linux/page-flags-layout.h \
-    $(wildcard include/config/KASAN_HW_TAGS) \
-  include/linux/numa.h \
-    $(wildcard include/config/NODES_SHIFT) \
-    $(wildcard include/config/NUMA_KEEP_MEMINFO) \
-    $(wildcard include/config/HAVE_ARCH_NODE_DEV_GROUP) \
-  arch/x86/include/asm/sparsemem.h \
-  include/generated/bounds.h \
-  include/linux/seqlock.h \
-  include/linux/ww_mutex.h \
-    $(wildcard include/config/DEBUG_RT_MUTEXES) \
-    $(wildcard include/config/DEBUG_WW_MUTEX_SLOWPATH) \
-  include/linux/rtmutex.h \
-  arch/x86/include/asm/mmu.h \
-    $(wildcard include/config/MODIFY_LDT_SYSCALL) \
-  include/linux/kmod.h \
-  include/linux/umh.h \
-  include/linux/gfp.h \
-    $(wildcard include/config/HIGHMEM) \
-    $(wildcard include/config/ZONE_DMA) \
-    $(wildcard include/config/ZONE_DMA32) \
-    $(wildcard include/config/ZONE_DEVICE) \
-    $(wildcard include/config/PM_SLEEP) \
-    $(wildcard include/config/CONTIG_ALLOC) \
-    $(wildcard include/config/CMA) \
-  include/linux/mmdebug.h \
-    $(wildcard include/config/DEBUG_VM) \
-    $(wildcard include/config/DEBUG_VM_PGFLAGS) \
-  include/linux/mmzone.h \
-    $(wildcard include/config/FORCE_MAX_ZONEORDER) \
-    $(wildcard include/config/MEMORY_ISOLATION) \
-    $(wildcard include/config/ZSMALLOC) \
-    $(wildcard include/config/MEMORY_HOTPLUG) \
-    $(wildcard include/config/COMPACTION) \
-    $(wildcard include/config/PAGE_EXTENSION) \
-    $(wildcard include/config/DEFERRED_STRUCT_PAGE_INIT) \
-    $(wildcard include/config/HAVE_MEMORYLESS_NODES) \
-    $(wildcard include/config/SPARSEMEM_EXTREME) \
-    $(wildcard include/config/HAVE_ARCH_PFN_VALID) \
-  include/linux/nodemask.h \
-  include/linux/pageblock-flags.h \
-    $(wildcard include/config/HUGETLB_PAGE_SIZE_VARIABLE) \
-  include/linux/page-flags.h \
-    $(wildcard include/config/ARCH_USES_PG_UNCACHED) \
-    $(wildcard include/config/MEMORY_FAILURE) \
-    $(wildcard include/config/PAGE_IDLE_FLAG) \
-    $(wildcard include/config/HUGETLB_PAGE_FREE_VMEMMAP) \
-    $(wildcard inc
+00000);
+	cx_write(PAD_CTRL, 0x00500300);
+
+	/* clear dma in progress */
+	cx23885_clear_bridge_error(dev);
+	msleep(100);
+
+	cx23885_sram_channel_setup(dev, &dev->sram_channels[SRAM_CH01],
+		720*4, 0);
+	cx23885_sram_channel_setup(dev, &dev->sram_channels[SRAM_CH02], 128, 0);
+	cx23885_sram_channel_setup(dev, &dev->sram_channels[SRAM_CH03],
+		188*4, 0);
+	cx23885_sram_channel_setup(dev, &dev->sram_channels[SRAM_CH04], 128, 0);
+	cx23885_sram_channel_setup(dev, &dev->sram_channels[SRAM_CH05], 128, 0);
+	cx23885_sram_channel_setup(dev, &dev->sram_channels[SRAM_CH06],
+		188*4, 0);
+	cx23885_sram_channel_setup(dev, &dev->sram_channels[SRAM_CH07], 128, 0);
+	cx23885_sram_channel_setup(dev, &dev->sram_channels[SRAM_CH08], 128, 0);
+	cx23885_sram_channel_setup(dev, &dev->sram_channels[SRAM_CH09], 128, 0);
+
+	cx23885_gpio_setup(dev);
+
+	cx23885_irq_get_mask(dev);
+
+	/* clear dma in progress */
+	cx23885_clear_bridge_error(dev);
+}
+
+
+static int cx23885_pci_quirks(struct cx23885_dev *dev)
+{
+	dprintk(1, "%s()\n", __func__);
+
+	/* The cx23885 bridge has a weird bug which causes NMI to be asserted
+	 * when DMA begins if RDR_TLCTL0 bit4 is not cleared. It does not
+	 * occur on the cx23887 bridge.
+	 */
+	if (dev->bridge == CX23885_BRIDGE_885)
+		cx_clear(RDR_TLCTL0, 1 << 4);
+
+	/* clear dma in progress */
+	cx23885_clear_bridge_error(dev);
+	return 0;
+}
+
+static int get_resources(struct cx23885_dev *dev)
+{
+	if (request_mem_region(pci_resource_start(dev->pci, 0),
+			       pci_resource_len(dev->pci, 0),
+			       dev->name))
+		return 0;
+
+	pr_err("%s: can't get MMIO memory @ 0x%llx\n",
+	       dev->name, (unsigned long long)pci_resource_start(dev->pci, 0));
+
+	return -EBUSY;
+}
+
+static int cx23885_init_tsport(struct cx23885_dev *dev,
+	struct cx23885_tsport *port, int portno)
+{
+	dprintk(1, "%s(portno=%d)\n", __func__, portno);
+
+	/* Transport bus init dma queue  - Common settings */
+	port->dma_ctl_val        = 0x11; /* Enable RISC controller and Fifo */
+	port->ts_int_msk_val     = 0x1111; /* TS port bits for RISC */
+	

@@ -1,19 +1,26 @@
- -> @hlock and @hlock -> <whatever __bfs() found> is not -(*R)->
- * and -(S*)->.
- */
-static inline void bfs_init_root(struct lock_list *lock,
-				 struct held_lock *hlock)
-{
-	__bfs_init_root(lock, hlock_class(hlock));
-	lock->only_xr = (hlock->read == 2);
+ntf(vfd->name, sizeof(vfd->name), "%s (%s)",
+		 cx23885_boards[dev->board].name, type);
+	video_set_drvdata(vfd, dev);
+	return vfd;
 }
 
-/*
- * Similar to bfs_init_root() but initialize the root for backwards BFS.
- *
- * ->only_xr of the initial lock node is set to @hlock->read != 0, to make sure
- * that <next> -> @hlock and @hlock -> <whatever backwards BFS found> is not
- * -(*S)-> and -(R*)-> (reverse order of -(*R)-> and -(S*)->).
- */
-static inline void bfs_init_rootb(struct lock_list *lock,
-				
+int cx23885_flatiron_write(struct cx23885_dev *dev, u8 reg, u8 data)
+{
+	/* 8 bit registers, 8 bit values */
+	u8 buf[] = { reg, data };
+
+	struct i2c_msg msg = { .addr = 0x98 >> 1,
+		.flags = 0, .buf = buf, .len = 2 };
+
+	return i2c_transfer(&dev->i2c_bus[2].i2c_adap, &msg, 1);
+}
+
+u8 cx23885_flatiron_read(struct cx23885_dev *dev, u8 reg)
+{
+	/* 8 bit registers, 8 bit values */
+	int ret;
+	u8 b0[] = { reg };
+	u8 b1[] = { 0 };
+
+	struct i2c_msg msg[] = {
+		{ .addr = 0x98 >> 1, .flags = 0, .bu

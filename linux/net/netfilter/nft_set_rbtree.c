@@ -1,774 +1,540 @@
-_lock_class(lock, 0);
-
-		/*
-		 * If look_up_lock_class() failed to find a class, we're trying
-		 * to test if we hold a lock that has never yet been acquired.
-		 * Clearly if the lock hasn't been acquired _ever_, we're not
-		 * holding it either, so report failure.
-		 */
-		if (!class)
-			return 0;
-
-		/*
-		 * References, but not a lock we're actually ref-counting?
-		 * State got messed up, follow the sites that change ->references
-		 * and try to make sense of it.
-		 */
-		if (DEBUG_LOCKS_WARN_ON(!hlock->nest_lock))
-			return 0;
-
-		if (hlock->class_idx == class - lock_classes)
-			return 1;
-	}
-
-	return 0;
-}
-
-/* @depth must not be zero */
-static struct held_lock *find_held_lock(struct task_struct *curr,
-					struct lockdep_map *lock,
-					unsigned int depth, int *idx)
-{
-	struct held_lock *ret, *hlock, *prev_hlock;
-	int i;
-
-	i = depth - 1;
-	hlock = curr->held_locks + i;
-	ret = hlock;
-	if (match_held_lock(hlock, lock))
-		goto out;
-
-	ret = NULL;
-	for (i--, prev_hlock = hlock--;
-	     i >= 0;
-	     i--, prev_hlock = hlock--) {
-		/*
-		 * We must not cross into another context:
-		 */
-		if (prev_hlock->irq_context != hlock->irq_context) {
-			ret = NULL;
-			break;
-		}
-		if (match_held_lock(hlock, lock)) {
-			ret = hlock;
-			break;
-		}
-	}
-
-out:
-	*idx = i;
-	return ret;
-}
-
-static int reacquire_held_locks(struct task_struct *curr, unsigned int depth,
-				int idx, unsigned int *merged)
-{
-	struct held_lock *hlock;
-	int first_idx = idx;
-
-	if (DEBUG_LOCKS_WARN_ON(!irqs_disabled()))
-		return 0;
-
-	for (hlock = curr->held_locks + idx; idx < depth; idx++, hlock++) {
-		switch (__lock_acquire(hlock->instance,
-				    hlock_class(hlock)->subclass,
-				    hlock->trylock,
-				    hlock->read, hlock->check,
-				    hlock->hardirqs_off,
-				    hlock->nest_lock, hlock->acquire_ip,
-				    hlock->references, hlock->pin_count)) {
-		case 0:
-			return 1;
-		case 1:
-			break;
-		case 2:
-			*merged += (idx == first_idx);
-			break;
-		default:
-			WARN_ON(1);
-			return 0;
-		}
-	}
-	return 0;
-}
-
-static int
-__lock_set_class(struct lockdep_map *lock, const char *name,
-		 struct lock_class_key *key, unsigned int subclass,
-		 unsigned long ip)
-{
-	struct task_struct *curr = current;
-	unsigned int depth, merged = 0;
-	struct held_lock *hlock;
-	struct lock_class *class;
-	int i;
-
-	if (unlikely(!debug_locks))
-		return 0;
-
-	depth = curr->lockdep_depth;
-	/*
-	 * This function is about (re)setting the class of a held lock,
-	 * yet we're not actually holding any locks. Naughty user!
-	 */
-	if (DEBUG_LOCKS_WARN_ON(!depth))
-		return 0;
-
-	hlock = find_held_lock(curr, lock, depth, &i);
-	if (!hlock) {
-		print_unlock_imbalance_bug(curr, lock, ip);
-		return 0;
-	}
-
-	lockdep_init_map_waits(lock, name, key, 0,
-			       lock->wait_type_inner,
-			       lock->wait_type_outer);
-	class = register_lock_class(lock, subclass, 0);
-	hlock->class_idx = class - lock_classes;
-
-	curr->lockdep_depth = i;
-	curr->curr_chain_key = hlock->prev_chain_key;
-
-	if (reacquire_held_locks(curr, depth, i, &merged))
-		return 0;
-
-	/*
-	 * I took it apart and put it back together again, except now I have
-	 * these 'spare' parts.. where shall I put them.
-	 */
-	if (DEBUG_LOCKS_WARN_ON(curr->lockdep_depth != depth - merged))
-		return 0;
-	return 1;
-}
-
-static int __lock_downgrade(struct lockdep_map *lock, unsigned long ip)
-{
-	struct task_struct *curr = current;
-	unsigned int depth, merged = 0;
-	struct held_lock *hlock;
-	int i;
-
-	if (unlikely(!debug_locks))
-		return 0;
-
-	depth = curr->lockdep_depth;
-	/*
-	 * This function is about (re)setting the class of a held lock,
-	 * yet we're not actually holding any locks. Naughty user!
-	 */
-	if (DEBUG_LOCKS_WARN_ON(!depth))
-		return 0;
-
-	hlock = find_held_lock(curr, lock, depth, &i);
-	if (!hlock) {
-		print_unlock_imbalance_bug(curr, lock, ip);
-		return 0;
-	}
-
-	curr->lockdep_depth = i;
-	curr->curr_chain_key = hlock->prev_chain_key;
-
-	WARN(hlock->read, "downgrading a read lock");
-	hlock->read = 1;
-	hlock->acquire_ip = ip;
-
-	if (reacquire_held_locks(curr, depth, i, &merged))
-		return 0;
-
-	/* Merging can't happen with unchanged classes.. */
-	if (DEBUG_LOCKS_WARN_ON(merged))
-		return 0;
-
-	/*
-	 * I took it apart and put it back together again, except now I have
-	 * these 'spare' parts.. where shall I put them.
-	 */
-	if (DEBUG_LOCKS_WARN_ON(curr->lockdep_depth != depth))
-		return 0;
-
-	return 1;
-}
-
+// SPDX-License-Identifier: GPL-2.0-or-later
 /*
- * Remove the lock from the list of currently held locks - this gets
- * called on mutex_unlock()/spin_unlock*() (or on a failed
- * mutex_lock_interruptible()).
+ * cimax2.c
+ *
+ * CIMax2(R) SP2 driver in conjunction with NetUp Dual DVB-S2 CI card
+ *
+ * Copyright (C) 2009 NetUP Inc.
+ * Copyright (C) 2009 Igor M. Liplianin <liplianin@netup.ru>
+ * Copyright (C) 2009 Abylay Ospan <aospan@netup.ru>
  */
-static int
-__lock_release(struct lockdep_map *lock, unsigned long ip)
+
+#include "cx23885.h"
+#include "cimax2.h"
+#include <media/dvb_ca_en50221.h>
+
+/* Max transfer size done by I2C transfer functions */
+#define MAX_XFER_SIZE  64
+
+/**** Bit definitions for MC417_RWD and MC417_OEN registers  ***
+  bits 31-16
++-----------+
+| Reserved  |
++-----------+
+  bit 15  bit 14  bit 13 bit 12  bit 11  bit 10  bit 9   bit 8
++-------+-------+-------+-------+-------+-------+-------+-------+
+|  WR#  |  RD#  |       |  ACK# |  ADHI |  ADLO |  CS1# |  CS0# |
++-------+-------+-------+-------+-------+-------+-------+-------+
+ bit 7   bit 6   bit 5   bit 4   bit 3   bit 2   bit 1   bit 0
++-------+-------+-------+-------+-------+-------+-------+-------+
+|  DATA7|  DATA6|  DATA5|  DATA4|  DATA3|  DATA2|  DATA1|  DATA0|
++-------+-------+-------+-------+-------+-------+-------+-------+
+***/
+/* MC417 */
+#define NETUP_DATA		0x000000ff
+#define NETUP_WR		0x00008000
+#define NETUP_RD		0x00004000
+#define NETUP_ACK		0x00001000
+#define NETUP_ADHI		0x00000800
+#define NETUP_ADLO		0x00000400
+#define NETUP_CS1		0x00000200
+#define NETUP_CS0		0x00000100
+#define NETUP_EN_ALL		0x00001000
+#define NETUP_CTRL_OFF		(NETUP_CS1 | NETUP_CS0 | NETUP_WR | NETUP_RD)
+#define NETUP_CI_CTL		0x04
+#define NETUP_CI_RD		1
+
+#define NETUP_IRQ_DETAM		0x1
+#define NETUP_IRQ_IRQAM		0x4
+
+static unsigned int ci_dbg;
+module_param(ci_dbg, int, 0644);
+MODULE_PARM_DESC(ci_dbg, "Enable CI debugging");
+
+static unsigned int ci_irq_enable;
+module_param(ci_irq_enable, int, 0644);
+MODULE_PARM_DESC(ci_irq_enable, "Enable IRQ from CAM");
+
+#define ci_dbg_print(fmt, args...) \
+	do { \
+		if (ci_dbg) \
+			printk(KERN_DEBUG pr_fmt("%s: " fmt), \
+			       __func__, ##args); \
+	} while (0)
+
+#define ci_irq_flags() (ci_irq_enable ? NETUP_IRQ_IRQAM : 0)
+
+/* stores all private variables for communication with CI */
+struct netup_ci_state {
+	struct dvb_ca_en50221 ca;
+	struct mutex ca_mutex;
+	struct i2c_adapter *i2c_adap;
+	u8 ci_i2c_addr;
+	int status;
+	struct work_struct work;
+	void *priv;
+	u8 current_irq_mode;
+	int current_ci_flag;
+	unsigned long next_status_checked_time;
+};
+
+
+static int netup_read_i2c(struct i2c_adapter *i2c_adap, u8 addr, u8 reg,
+						u8 *buf, int len)
 {
-	struct task_struct *curr = current;
-	unsigned int depth, merged = 1;
-	struct held_lock *hlock;
-	int i;
-
-	if (unlikely(!debug_locks))
-		return 0;
-
-	depth = curr->lockdep_depth;
-	/*
-	 * So we're all set to release this lock.. wait what lock? We don't
-	 * own any locks, you've been drinking again?
-	 */
-	if (depth <= 0) {
-		print_unlock_imbalance_bug(curr, lock, ip);
-		return 0;
-	}
-
-	/*
-	 * Check whether the lock exists in the current stack
-	 * of held locks:
-	 */
-	hlock = find_held_lock(curr, lock, depth, &i);
-	if (!hlock) {
-		print_unlock_imbalance_bug(curr, lock, ip);
-		return 0;
-	}
-
-	if (hlock->instance == lock)
-		lock_release_holdtime(hlock);
-
-	WARN(hlock->pin_count, "releasing a pinned lock\n");
-
-	if (hlock->references) {
-		hlock->references--;
-		if (hlock->references) {
-			/*
-			 * We had, and after removing one, still have
-			 * references, the current lock stack is still
-			 * valid. We're done!
-			 */
-			return 1;
+	int ret;
+	struct i2c_msg msg[] = {
+		{
+			.addr	= addr,
+			.flags	= 0,
+			.buf	= &reg,
+			.len	= 1
+		}, {
+			.addr	= addr,
+			.flags	= I2C_M_RD,
+			.buf	= buf,
+			.len	= len
 		}
+	};
+
+	ret = i2c_transfer(i2c_adap, msg, 2);
+
+	if (ret != 2) {
+		ci_dbg_print("%s: i2c read error, Reg = 0x%02x, Status = %d\n",
+						__func__, reg, ret);
+
+		return -1;
 	}
 
-	/*
-	 * We have the right lock to unlock, 'hlock' points to it.
-	 * Now we remove it from the stack, and add back the other
-	 * entries (if any), recalculating the hash along the way:
-	 */
+	ci_dbg_print("%s: i2c read Addr=0x%04x, Reg = 0x%02x, data = %02x\n",
+						__func__, addr, reg, buf[0]);
 
-	curr->lockdep_depth = i;
-	curr->curr_chain_key = hlock->prev_chain_key;
-
-	/*
-	 * The most likely case is when the unlock is on the innermost
-	 * lock. In this case, we are done!
-	 */
-	if (i == depth-1)
-		return 1;
-
-	if (reacquire_held_locks(curr, depth, i + 1, &merged))
-		return 0;
-
-	/*
-	 * We had N bottles of beer on the wall, we drank one, but now
-	 * there's not N-1 bottles of beer left on the wall...
-	 * Pouring two of the bottles together is acceptable.
-	 */
-	DEBUG_LOCKS_WARN_ON(curr->lockdep_depth != depth - merged);
-
-	/*
-	 * Since reacquire_held_locks() would have called check_chain_key()
-	 * indirectly via __lock_acquire(), we don't need to do it again
-	 * on return.
-	 */
 	return 0;
 }
 
-static __always_inline
-int __lock_is_held(const struct lockdep_map *lock, int read)
+static int netup_write_i2c(struct i2c_adapter *i2c_adap, u8 addr, u8 reg,
+						u8 *buf, int len)
 {
-	struct task_struct *curr = current;
-	int i;
+	int ret;
+	u8 buffer[MAX_XFER_SIZE];
 
-	for (i = 0; i < curr->lockdep_depth; i++) {
-		struct held_lock *hlock = curr->held_locks + i;
+	struct i2c_msg msg = {
+		.addr	= addr,
+		.flags	= 0,
+		.buf	= &buffer[0],
+		.len	= len + 1
+	};
 
-		if (match_held_lock(hlock, lock)) {
-			if (read == -1 || !!hlock->read == read)
-				return LOCK_STATE_HELD;
-
-			return LOCK_STATE_NOT_HELD;
-		}
+	if (1 + len > sizeof(buffer)) {
+		pr_warn("%s: i2c wr reg=%04x: len=%d is too big!\n",
+		       KBUILD_MODNAME, reg, len);
+		return -EINVAL;
 	}
 
-	return LOCK_STATE_NOT_HELD;
-}
+	buffer[0] = reg;
+	memcpy(&buffer[1], buf, len);
 
-static struct pin_cookie __lock_pin_lock(struct lockdep_map *lock)
-{
-	struct pin_cookie cookie = NIL_COOKIE;
-	struct task_struct *curr = current;
-	int i;
+	ret = i2c_transfer(i2c_adap, &msg, 1);
 
-	if (unlikely(!debug_locks))
-		return cookie;
-
-	for (i = 0; i < curr->lockdep_depth; i++) {
-		struct held_lock *hlock = curr->held_locks + i;
-
-		if (match_held_lock(hlock, lock)) {
-			/*
-			 * Grab 16bits of randomness; this is sufficient to not
-			 * be guessable and still allows some pin nesting in
-			 * our u32 pin_count.
-			 */
-			cookie.val = 1 + (prandom_u32() >> 16);
-			hlock->pin_count += cookie.val;
-			return cookie;
-		}
+	if (ret != 1) {
+		ci_dbg_print("%s: i2c write error, Reg=[0x%02x], Status=%d\n",
+						__func__, reg, ret);
+		return -1;
 	}
 
-	WARN(1, "pinning an unheld lock\n");
-	return cookie;
+	return 0;
 }
 
-static void __lock_repin_lock(struct lockdep_map *lock, struct pin_cookie cookie)
+static int netup_ci_get_mem(struct cx23885_dev *dev)
 {
-	struct task_struct *curr = current;
-	int i;
+	int mem;
+	unsigned long timeout = jiffies + msecs_to_jiffies(1);
 
-	if (unlikely(!debug_locks))
-		return;
+	for (;;) {
+		mem = cx_read(MC417_RWD);
+		if ((mem & NETUP_ACK) == 0)
+			break;
+		if (time_after(jiffies, timeout))
+			break;
+		udelay(1);
+	}
 
-	for (i = 0; i < curr->lockdep_depth; i++) {
-		struct held_lock *hlock = curr->held_locks + i;
+	cx_set(MC417_RWD, NETUP_CTRL_OFF);
 
-		if (match_held_lock(hlock, lock)) {
-			hlock->pin_count += cookie.val;
+	return mem & 0xff;
+}
+
+static int netup_ci_op_cam(struct dvb_ca_en50221 *en50221, int slot,
+				u8 flag, u8 read, int addr, u8 data)
+{
+	struct netup_ci_state *state = en50221->data;
+	struct cx23885_tsport *port = state->priv;
+	struct cx23885_dev *dev = port->dev;
+
+	u8 store;
+	int mem;
+	int ret;
+
+	if (0 != slot)
+		return -EINVAL;
+
+	if (state->current_ci_flag != flag) {
+		ret = netup_read_i2c(state->i2c_adap, state->ci_i2c_addr,
+				0, &store, 1);
+		if (ret != 0)
+			return ret;
+
+		store &= ~0x0c;
+		store |= flag;
+
+		ret = netup_write_i2c(state->i2c_adap, state->ci_i2c_addr,
+				0, &store, 1);
+		if (ret != 0)
+			return ret;
+	}
+	state->current_ci_flag = flag;
+
+	mutex_lock(&dev->gpio_lock);
+
+	/* write addr */
+	cx_write(MC417_OEN, NETUP_EN_ALL);
+	cx_write(MC417_RWD, NETUP_CTRL_OFF |
+				NETUP_ADLO | (0xff & addr));
+	cx_clear(MC417_RWD, NETUP_ADLO);
+	cx_write(MC417_RWD, NETUP_CTRL_OFF |
+				NETUP_ADHI | (0xff & (addr >> 8)));
+	cx_clear(MC417_RWD, NETUP_ADHI);
+
+	if (read) { /* data in */
+		cx_write(MC417_OEN, NETUP_EN_ALL | NETUP_DATA);
+	} else /* data out */
+		cx_write(MC417_RWD, NETUP_CTRL_OFF | data);
+
+	/* choose chip */
+	cx_clear(MC417_RWD,
+			(state->ci_i2c_addr == 0x40) ? NETUP_CS0 : NETUP_CS1);
+	/* read/write */
+	cx_clear(MC417_RWD, (read) ? NETUP_RD : NETUP_WR);
+	mem = netup_ci_get_mem(dev);
+
+	mutex_unlock(&dev->gpio_lock);
+
+	if (!read)
+		if (mem < 0)
+			return -EREMOTEIO;
+
+	ci_dbg_print("%s: %s: chipaddr=[0x%x] addr=[0x%02x], %s=%x\n", __func__,
+			(read) ? "read" : "write", state->ci_i2c_addr, addr,
+			(flag == NETUP_CI_CTL) ? "ctl" : "mem",
+			(read) ? mem : data);
+
+	if (read)
+		return mem;
+
+	return 0;
+}
+
+int netup_ci_read_attribute_mem(struct dvb_ca_en50221 *en50221,
+						int slot, int addr)
+{
+	return netup_ci_op_cam(en50221, slot, 0, NETUP_CI_RD, addr, 0);
+}
+
+int netup_ci_write_attribute_mem(struct dvb_ca_en50221 *en50221,
+						int slot, int addr, u8 data)
+{
+	return netup_ci_op_cam(en50221, slot, 0, 0, addr, data);
+}
+
+int netup_ci_read_cam_ctl(struct dvb_ca_en50221 *en50221, int slot,
+				 u8 addr)
+{
+	return netup_ci_op_cam(en50221, slot, NETUP_CI_CTL,
+							NETUP_CI_RD, addr, 0);
+}
+
+int netup_ci_write_cam_ctl(struct dvb_ca_en50221 *en50221, int slot,
+							u8 addr, u8 data)
+{
+	return netup_ci_op_cam(en50221, slot, NETUP_CI_CTL, 0, addr, data);
+}
+
+int netup_ci_slot_reset(struct dvb_ca_en50221 *en50221, int slot)
+{
+	struct netup_ci_state *state = en50221->data;
+	u8 buf =  0x80;
+	int ret;
+
+	if (0 != slot)
+		return -EINVAL;
+
+	udelay(500);
+	ret = netup_write_i2c(state->i2c_adap, state->ci_i2c_addr,
+							0, &buf, 1);
+
+	if (ret != 0)
+		return ret;
+
+	udelay(500);
+
+	buf = 0x00;
+	ret = netup_write_i2c(state->i2c_adap, state->ci_i2c_addr,
+							0, &buf, 1);
+
+	msleep(1000);
+	dvb_ca_en50221_camready_irq(&state->ca, 0);
+
+	return 0;
+
+}
+
+int netup_ci_slot_shutdown(struct dvb_ca_en50221 *en50221, int slot)
+{
+	/* not implemented */
+	return 0;
+}
+
+static int netup_ci_set_irq(struct dvb_ca_en50221 *en50221, u8 irq_mode)
+{
+	struct netup_ci_state *state = en50221->data;
+	int ret;
+
+	if (irq_mode == state->current_irq_mode)
+		return 0;
+
+	ci_dbg_print("%s: chipaddr=[0x%x] setting ci IRQ to [0x%x] \n",
+			__func__, state->ci_i2c_addr, irq_mode);
+	ret = netup_write_i2c(state->i2c_adap, state->ci_i2c_addr,
+							0x1b, &irq_mode, 1);
+
+	if (ret != 0)
+		return ret;
+
+	state->current_irq_mode = irq_mode;
+
+	return 0;
+}
+
+int netup_ci_slot_ts_ctl(struct dvb_ca_en50221 *en50221, int slot)
+{
+	struct netup_ci_state *state = en50221->data;
+	u8 buf;
+
+	if (0 != slot)
+		return -EINVAL;
+
+	netup_read_i2c(state->i2c_adap, state->ci_i2c_addr,
+			0, &buf, 1);
+	buf |= 0x60;
+
+	return netup_write_i2c(state->i2c_adap, state->ci_i2c_addr,
+							0, &buf, 1);
+}
+
+/* work handler */
+static void netup_read_ci_status(struct work_struct *work)
+{
+	struct netup_ci_state *state =
+			container_of(work, struct netup_ci_state, work);
+	u8 buf[33];
+	int ret;
+
+	/* CAM module IRQ processing. fast operation */
+	dvb_ca_en50221_frda_irq(&state->ca, 0);
+
+	/* CAM module INSERT/REMOVE processing. slow operation because of i2c
+	 * transfers */
+	if (time_after(jiffies, state->next_status_checked_time)
+			|| !state->status) {
+		ret = netup_read_i2c(state->i2c_adap, state->ci_i2c_addr,
+				0, &buf[0], 33);
+
+		state->next_status_checked_time = jiffies
+			+ msecs_to_jiffies(1000);
+
+		if (ret != 0)
 			return;
-		}
-	}
 
-	WARN(1, "pinning an unheld lock\n");
-}
+		ci_dbg_print("%s: Slot Status Addr=[0x%04x], Reg=[0x%02x], data=%02x, TS config = %02x\n",
+			     __func__,	state->ci_i2c_addr, 0, buf[0], buf[0]);
 
-static void __lock_unpin_lock(struct lockdep_map *lock, struct pin_cookie cookie)
-{
-	struct task_struct *curr = current;
-	int i;
 
-	if (unlikely(!debug_locks))
-		return;
-
-	for (i = 0; i < curr->lockdep_depth; i++) {
-		struct held_lock *hlock = curr->held_locks + i;
-
-		if (match_held_lock(hlock, lock)) {
-			if (WARN(!hlock->pin_count, "unpinning an unpinned lock\n"))
-				return;
-
-			hlock->pin_count -= cookie.val;
-
-			if (WARN((int)hlock->pin_count < 0, "pin count corrupted\n"))
-				hlock->pin_count = 0;
-
-			return;
-		}
-	}
-
-	WARN(1, "unpinning an unheld lock\n");
-}
-
-/*
- * Check whether we follow the irq-flags state precisely:
- */
-static noinstr void check_flags(unsigned long flags)
-{
-#if defined(CONFIG_PROVE_LOCKING) && defined(CONFIG_DEBUG_LOCKDEP)
-	if (!debug_locks)
-		return;
-
-	/* Get the warning out..  */
-	instrumentation_begin();
-
-	if (irqs_disabled_flags(flags)) {
-		if (DEBUG_LOCKS_WARN_ON(lockdep_hardirqs_enabled())) {
-			printk("possible reason: unannotated irqs-off.\n");
-		}
-	} else {
-		if (DEBUG_LOCKS_WARN_ON(!lockdep_hardirqs_enabled())) {
-			printk("possible reason: unannotated irqs-on.\n");
-		}
-	}
-
-#ifndef CONFIG_PREEMPT_RT
-	/*
-	 * We dont accurately track softirq state in e.g.
-	 * hardirq contexts (such as on 4KSTACKS), so only
-	 * check if not in hardirq contexts:
-	 */
-	if (!hardirq_count()) {
-		if (softirq_count()) {
-			/* like the above, but with softirqs */
-			DEBUG_LOCKS_WARN_ON(current->softirqs_enabled);
-		} else {
-			/* lick the above, does it taste good? */
-			DEBUG_LOCKS_WARN_ON(!current->softirqs_enabled);
-		}
-	}
-#endif
-
-	if (!debug_locks)
-		print_irqtrace_events(current);
-
-	instrumentation_end();
-#endif
-}
-
-void lock_set_class(struct lockdep_map *lock, const char *name,
-		    struct lock_class_key *key, unsigned int subclass,
-		    unsigned long ip)
-{
-	unsigned long flags;
-
-	if (unlikely(!lockdep_enabled()))
-		return;
-
-	raw_local_irq_save(flags);
-	lockdep_recursion_inc();
-	check_flags(flags);
-	if (__lock_set_class(lock, name, key, subclass, ip))
-		check_chain_key(current);
-	lockdep_recursion_finish();
-	raw_local_irq_restore(flags);
-}
-EXPORT_SYMBOL_GPL(lock_set_class);
-
-void lock_downgrade(struct lockdep_map *lock, unsigned long ip)
-{
-	unsigned long flags;
-
-	if (unlikely(!lockdep_enabled()))
-		return;
-
-	raw_local_irq_save(flags);
-	lockdep_recursion_inc();
-	check_flags(flags);
-	if (__lock_downgrade(lock, ip))
-		check_chain_key(current);
-	lockdep_recursion_finish();
-	raw_local_irq_restore(flags);
-}
-EXPORT_SYMBOL_GPL(lock_downgrade);
-
-/* NMI context !!! */
-static void verify_lock_unused(struct lockdep_map *lock, struct held_lock *hlock, int subclass)
-{
-#ifdef CONFIG_PROVE_LOCKING
-	struct lock_class *class = look_up_lock_class(lock, subclass);
-	unsigned long mask = LOCKF_USED;
-
-	/* if it doesn't have a class (yet), it certainly hasn't been used yet */
-	if (!class)
-		return;
-
-	/*
-	 * READ locks only conflict with USED, such that if we only ever use
-	 * READ locks, there is no deadlock possible -- RCU.
-	 */
-	if (!hlock->read)
-		mask |= LOCKF_USED_READ;
-
-	if (!(class->usage_mask & mask))
-		return;
-
-	hlock->class_idx = class - lock_classes;
-
-	print_usage_bug(current, hlock, LOCK_USED, LOCK_USAGE_STATES);
-#endif
-}
-
-static bool lockdep_nmi(void)
-{
-	if (raw_cpu_read(lockdep_recursion))
-		return false;
-
-	if (!in_nmi())
-		return false;
-
-	return true;
-}
-
-/*
- * read_lock() is recursive if:
- * 1. We force lockdep think this way in selftests or
- * 2. The implementation is not queued read/write lock or
- * 3. The locker is at an in_interrupt() context.
- */
-bool read_lock_is_recursive(void)
-{
-	return force_read_lock_recursive ||
-	       !IS_ENABLED(CONFIG_QUEUED_RWLOCKS) ||
-	       in_interrupt();
-}
-EXPORT_SYMBOL_GPL(read_lock_is_recursive);
-
-/*
- * We are not always called with irqs disabled - do that here,
- * and also avoid lockdep recursion:
- */
-void lock_acquire(struct lockdep_map *lock, unsigned int subclass,
-			  int trylock, int read, int check,
-			  struct lockdep_map *nest_lock, unsigned long ip)
-{
-	unsigned long flags;
-
-	trace_lock_acquire(lock, subclass, trylock, read, check, nest_lock, ip);
-
-	if (!debug_locks)
-		return;
-
-	if (unlikely(!lockdep_enabled())) {
-		/* XXX allow trylock from NMI ?!? */
-		if (lockdep_nmi() && !trylock) {
-			struct held_lock hlock;
-
-			hlock.acquire_ip = ip;
-			hlock.instance = lock;
-			hlock.nest_lock = nest_lock;
-			hlock.irq_context = 2; // XXX
-			hlock.trylock = trylock;
-			hlock.read = read;
-			hlock.check = check;
-			hlock.hardirqs_off = true;
-			hlock.references = 0;
-
-			verify_lock_unused(lock, &hlock, subclass);
-		}
-		return;
-	}
-
-	raw_local_irq_save(flags);
-	check_flags(flags);
-
-	lockdep_recursion_inc();
-	__lock_acquire(lock, subclass, trylock, read, check,
-		       irqs_disabled_flags(flags), nest_lock, ip, 0, 0);
-	lockdep_recursion_finish();
-	raw_local_irq_restore(flags);
-}
-EXPORT_SYMBOL_GPL(lock_acquire);
-
-void lock_release(struct lockdep_map *lock, unsigned long ip)
-{
-	unsigned long flags;
-
-	trace_lock_release(lock, ip);
-
-	if (unlikely(!lockdep_enabled()))
-		return;
-
-	raw_local_irq_save(flags);
-	check_flags(flags);
-
-	lockdep_recursion_inc();
-	if (__lock_release(lock, ip))
-		check_chain_key(current);
-	lockdep_recursion_finish();
-	raw_local_irq_restore(flags);
-}
-EXPORT_SYMBOL_GPL(lock_release);
-
-noinstr int lock_is_held_type(const struct lockdep_map *lock, int read)
-{
-	unsigned long flags;
-	int ret = LOCK_STATE_NOT_HELD;
-
-	/*
-	 * Avoid false negative lockdep_assert_held() and
-	 * lockdep_assert_not_held().
-	 */
-	if (unlikely(!lockdep_enabled()))
-		return LOCK_STATE_UNKNOWN;
-
-	raw_local_irq_save(flags);
-	check_flags(flags);
-
-	lockdep_recursion_inc();
-	ret = __lock_is_held(lock, read);
-	lockdep_recursion_finish();
-	raw_local_irq_restore(flags);
-
-	return ret;
-}
-EXPORT_SYMBOL_GPL(lock_is_held_type);
-NOKPROBE_SYMBOL(lock_is_held_type);
-
-struct pin_cookie lock_pin_lock(struct lockdep_map *lock)
-{
-	struct pin_cookie cookie = NIL_COOKIE;
-	unsigned long flags;
-
-	if (unlikely(!lockdep_enabled()))
-		return cookie;
-
-	raw_local_irq_save(flags);
-	check_flags(flags);
-
-	lockdep_recursion_inc();
-	cookie = __lock_pin_lock(lock);
-	lockdep_recursion_finish();
-	raw_local_irq_restore(flags);
-
-	return cookie;
-}
-EXPORT_SYMBOL_GPL(lock_pin_lock);
-
-void lock_repin_lock(struct lockdep_map *lock, struct pin_cookie cookie)
-{
-	unsigned long flags;
-
-	if (unlikely(!lockdep_enabled()))
-		return;
-
-	raw_local_irq_save(flags);
-	check_flags(flags);
-
-	lockdep_recursion_inc();
-	__lock_repin_lock(lock, cookie);
-	lockdep_recursion_finish();
-	raw_local_irq_restore(flags);
-}
-EXPORT_SYMBOL_GPL(lock_repin_lock);
-
-void lock_unpin_lock(struct lockdep_map *lock, struct pin_cookie cookie)
-{
-	unsigned long flags;
-
-	if (unlikely(!lockdep_enabled()))
-		return;
-
-	raw_local_irq_save(flags);
-	check_flags(flags);
-
-	lockdep_recursion_inc();
-	__lock_unpin_lock(lock, cookie);
-	lockdep_recursion_finish();
-	raw_local_irq_restore(flags);
-}
-EXPORT_SYMBOL_GPL(lock_unpin_lock);
-
-#ifdef CONFIG_LOCK_STAT
-static void print_lock_contention_bug(struct task_struct *curr,
-				      struct lockdep_map *lock,
-				      unsigned long ip)
-{
-	if (!debug_locks_off())
-		return;
-	if (debug_locks_silent)
-		return;
-
-	pr_warn("\n");
-	pr_warn("=================================\n");
-	pr_warn("WARNING: bad contention detected!\n");
-	print_kernel_ident();
-	pr_warn("---------------------------------\n");
-	pr_warn("%s/%d is trying to contend lock (",
-		curr->comm, task_pid_nr(curr));
-	print_lockdep_cache(lock);
-	pr_cont(") at:\n");
-	print_ip_sym(KERN_WARNING, ip);
-	pr_warn("but there are no locks held!\n");
-	pr_warn("\nother info that might help us debug this:\n");
-	lockdep_print_held_locks(curr);
-
-	pr_warn("\nstack backtrace:\n");
-	dump_stack();
-}
-
-static void
-__lock_contended(struct lockdep_map *lock, unsigned long ip)
-{
-	struct task_struct *curr = current;
-	struct held_lock *hlock;
-	struct lock_class_stats *stats;
-	unsigned int depth;
-	int i, contention_point, contending_point;
-
-	depth = curr->lockdep_depth;
-	/*
-	 * Whee, we contended on this lock, except it seems we're not
-	 * actually trying to acquire anything much at all..
-	 */
-	if (DEBUG_LOCKS_WARN_ON(!depth))
-		return;
-
-	hlock = find_held_lock(curr, lock, depth, &i);
-	if (!hlock) {
-		print_lock_contention_bug(curr, lock, ip);
-		return;
-	}
-
-	if (hlock->instance != lock)
-		return;
-
-	hlock->waittime_stamp = lockstat_clock();
-
-	contention_point = lock_point(hlock_class(hlock)->contention_point, ip);
-	contending_point = lock_point(hlock_class(hlock)->contending_point,
-				      lock->ip);
-
-	stats = get_lock_stats(hlock_class(hlock));
-	if (contention_point < LOCKSTAT_POINTS)
-		stats->contention_point[contention_point]++;
-	if (contending_point < LOCKSTAT_POINTS)
-		stats->contending_point[contending_point]++;
-	if (lock->cpu != smp_processor_id())
-		stats->bounces[bounce_contended + !!hlock->read]++;
-}
-
-static void
-__lock_acquired(struct lockdep_map *lock, unsigned long ip)
-{
-	struct task_struct *curr = current;
-	struct held_lock *hlock;
-	struct lock_class_stats *stats;
-	unsigned int depth;
-	u64 now, waittime = 0;
-	int i, cpu;
-
-	depth = curr->lockdep_depth;
-	/*
-	 * Yay, we acquired ownership of this lock we didn't try to
-	 * acquire, how the heck did that happen?
-	 */
-	if (DEBUG_LOCKS_WARN_ON(!depth))
-		return;
-
-	hlock = find_held_lock(curr, lock, depth, &i);
-	if (!hlock) {
-		print_lock_contention_bug(curr, lock, _RET_IP_);
-		return;
-	}
-
-	if (hlock->instance != lock)
-		return;
-
-	cpu = smp_processor_id();
-	if (hlock->waittime_stamp) {
-		now = lockstat_clock();
-		waittime = now - hlock->waittime_stamp;
-		hlock->holdtime_stamp = now;
-	}
-
-	stats = get_lock_stats(hlock_class(hlock));
-	if (waittime) {
-		if (hlock->read)
-			lock_time_inc(&stats->read_waittime, waittime);
+		if (buf[0] & 1)
+			state->status = DVB_CA_EN50221_POLL_CAM_PRESENT |
+				DVB_CA_EN50221_POLL_CAM_READY;
 		else
-			lock_time_inc(&stats->write_waittime, waittime);
+			state->status = 0;
 	}
-	if (lock->cpu != cpu)
-		stats->bounces[bounce_acquired + !!hlock->read]++;
-
-	lock->cpu = cpu;
-	lock->ip = ip;
 }
 
-void lock_contended(struct lockdep_map *lock, unsigned long ip)
+/* CI irq handler */
+int netup_ci_slot_status(struct cx23885_dev *dev, u32 pci_status)
 {
-	unsigned long flags;
+	struct cx23885_tsport *port = NULL;
+	struct netup_ci_state *state = NULL;
 
-	trace_lock_conte
+	ci_dbg_print("%s:\n", __func__);
+
+	if (0 == (pci_status & (PCI_MSK_GPIO0 | PCI_MSK_GPIO1)))
+		return 0;
+
+	if (pci_status & PCI_MSK_GPIO0) {
+		port = &dev->ts1;
+		state = port->port_priv;
+		schedule_work(&state->work);
+		ci_dbg_print("%s: Wakeup CI0\n", __func__);
+	}
+
+	if (pci_status & PCI_MSK_GPIO1) {
+		port = &dev->ts2;
+		state = port->port_priv;
+		schedule_work(&state->work);
+		ci_dbg_print("%s: Wakeup CI1\n", __func__);
+	}
+
+	return 1;
+}
+
+int netup_poll_ci_slot_status(struct dvb_ca_en50221 *en50221,
+				     int slot, int open)
+{
+	struct netup_ci_state *state = en50221->data;
+
+	if (0 != slot)
+		return -EINVAL;
+
+	netup_ci_set_irq(en50221, open ? (NETUP_IRQ_DETAM | ci_irq_flags())
+			: NETUP_IRQ_DETAM);
+
+	return state->status;
+}
+
+int netup_ci_init(struct cx23885_tsport *port)
+{
+	struct netup_ci_state *state;
+	u8 cimax_init[34] = {
+		0x00, /* module A control*/
+		0x00, /* auto select mask high A */
+		0x00, /* auto select mask low A */
+		0x00, /* auto select pattern high A */
+		0x00, /* auto select pattern low A */
+		0x44, /* memory access time A */
+		0x00, /* invert input A */
+		0x00, /* RFU */
+		0x00, /* RFU */
+		0x00, /* module B control*/
+		0x00, /* auto select mask high B */
+		0x00, /* auto select mask low B */
+		0x00, /* auto select pattern high B */
+		0x00, /* auto select pattern low B */
+		0x44, /* memory access time B */
+		0x00, /* invert input B */
+		0x00, /* RFU */
+		0x00, /* RFU */
+		0x00, /* auto select mask high Ext */
+		0x00, /* auto select mask low Ext */
+		0x00, /* auto select pattern high Ext */
+		0x00, /* auto select pattern low Ext */
+		0x00, /* RFU */
+		0x02, /* destination - module A */
+		0x01, /* power on (use it like store place) */
+		0x00, /* RFU */
+		0x00, /* int status read only */
+		ci_irq_flags() | NETUP_IRQ_DETAM, /* DETAM, IRQAM unmasked */
+		0x05, /* EXTINT=active-high, INT=push-pull */
+		0x00, /* USCG1 */
+		0x04, /* ack active low */
+		0x00, /* LOCK = 0 */
+		0x33, /* serial mode, rising in, rising out, MSB first*/
+		0x31, /* synchronization */
+	};
+	int ret;
+
+	ci_dbg_print("%s\n", __func__);
+	state = kzalloc(sizeof(struct netup_ci_state), GFP_KERNEL);
+	if (!state) {
+		ci_dbg_print("%s: Unable create CI structure!\n", __func__);
+		ret = -ENOMEM;
+		goto err;
+	}
+
+	port->port_priv = state;
+
+	switch (port->nr) {
+	case 1:
+		state->ci_i2c_addr = 0x40;
+		break;
+	case 2:
+		state->ci_i2c_addr = 0x41;
+		break;
+	}
+
+	state->i2c_adap = &port->dev->i2c_bus[0].i2c_adap;
+	state->ca.owner = THIS_MODULE;
+	state->ca.read_attribute_mem = netup_ci_read_attribute_mem;
+	state->ca.write_attribute_mem = netup_ci_write_attribute_mem;
+	state->ca.read_cam_control = netup_ci_read_cam_ctl;
+	state->ca.write_cam_control = netup_ci_write_cam_ctl;
+	state->ca.slot_reset = netup_ci_slot_reset;
+	state->ca.slot_shutdown = netup_ci_slot_shutdown;
+	state->ca.slot_ts_enable = netup_ci_slot_ts_ctl;
+	state->ca.poll_slot_status = netup_poll_ci_slot_status;
+	state->ca.data = state;
+	state->priv = port;
+	state->current_irq_mode = ci_irq_flags() | NETUP_IRQ_DETAM;
+
+	ret = netup_write_i2c(state->i2c_adap, state->ci_i2c_addr,
+						0, &cimax_init[0], 34);
+	/* lock registers */
+	ret |= netup_write_i2c(state->i2c_adap, state->ci_i2c_addr,
+						0x1f, &cimax_init[0x18], 1);
+	/* power on slots */
+	ret |= netup_write_i2c(state->i2c_adap, state->ci_i2c_addr,
+						0x18, &cimax_init[0x18], 1);
+
+	if (0 != ret)
+		goto err;
+
+	ret = dvb_ca_en50221_init(&port->frontends.adapter,
+				   &state->ca,
+				   /* flags */ 0,
+				   /* n_slots */ 1);
+	if (0 != ret)
+		goto err;
+
+	INIT_WORK(&state->work, netup_read_ci_status);
+	schedule_work(&state->work);
+
+	ci_dbg_print("%s: CI initialized!\n", __func__);
+
+	return 0;
+err:
+	ci_dbg_print("%s: Cannot initialize CI: Error %d.\n", __func__, ret);
+	kfree(state);
+	return ret;
+}
+
+void netup_ci_exit(struct cx23885_tsport *port)
+{
+	struct netup_ci_state *state;
+
+	if (NULL == port)
+		return;
+
+	state = (struct netup_ci_state *)port->port_priv;
+	if (NULL == state)
+		return;
+
+	if (NULL == state->ca.data)
+		return;
+
+	dvb_ca_en50221_release(&state->ca);
+	kfree(state);
+}
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       |1(JŸN­ÙÊƒÀ`«k)öf­ü€ğö×–<èRçÈúOx€¡VÒ€²ì_… @ŞâŞîõò#â­Ó¸aĞø«$8
+È?–†ßé|-;İfåóxûdî9?À€‘½ıÌù>Z©kÌà;í
+É%õ¦·ÄÔæµ“@)\­2ßW£°IŠ©YÚ'Kˆº=<O¼ß‘(ºí²@6ãåáØöÍ/a¡ÎE_µõñ7FùGúçıÄ0_Ü™Î6H•ïğLU¥ÛÄ˜E³ÄRİæ-ä›È°ƒ²îŞø–{æò‰QìmšäZ’Ã¥›Ö¶’K~?_ŠÍoÃ!t8[tÜ¸MÜõçé,%V­vşŒ-Ef$¼X9ÃAQÇû\}ËÆ$×/LH?P“YêIöYíMè‰ÿ‚²7ôZGSîî^ir?­Ã ÊTìğŞE
+G)nŠeq5øÌX”b•&A¿¦6ÑìÍ–ÁÉ£HBğ¦0E` ÜÕ¶Øk’‚y €W¨ñşñ@VŸ×bİ_ †w×ÒqÍ±fnÊ ‡B²ïş ¡ÂÒí¦pcqë·%í£?yÎk4 Ã7Qó)“¥ıüñUuM’Ä~L£­Å²åVz³m%º^´ÿãÓe&v“ØäBÀxÄ¹õÒİe¤¶3˜—Í_AëğFåÙ;}JŒ<œù  )Ğœ:k'Ù¿Ã`gè|v¨|‘ñIã4?†óMÁlddºñ}J4ş?1XºÚ„¦”!Ù‹8ÊÅWÿ—ÛËÀ˜o­gõÂ½}¡ íDó?iÑ†bHõ*ìOÛŒ°]hêzßì"DR¨|J	ıàãZ–§_˜†^¡Õ”&ˆiğÍ¢
+”;#Ds‹›’{·¥È`g¡åâs-¶‡”-ó÷@;vË1»“lÿ,UÓ'vp~­¢q³.¿®+>½G¯ÊîLèß|ö>mıX#©Úã=¶ğIP]·˜‹4UêÁè%£ğlh-ıs­¶šWiqüÓ	Š¯Nrq]A-4”¹È 2òz¾À`Bé9pgàıyı~Óe*ÿïÀûTÙ’m¡„Bòêa‘7ä©Íá†[¨n ßÜ
+{â¾àï³óÀ^/F´Ú1't®*ä7Ò¦êåƒ'VÍŒ)¾ˆô¯š•èâãÛ¥¯ù#TGˆÎ"ğƒÊH#Ëş¬<t²¡õM<‚ó^öo®51Ôƒ€ÓêÍÑ™QDİ§[®TŞÈ.¾fá!XbxŠ$.o:“\§Á„…zâ @FÃ£İ1âwµĞWùŠÚ8uè“Xq~°'#¹~™šZÔ•L£´xÜÀ¹wÔ©ä¿ş\Zh`K$uT‡(§ò½HPâØ3|b´ûÕÄª7DC`œèìœ‰¦ªéÉ2†”¤‘ƒã/h§"·¦KÄ=½WğI-bNWuäÓÑjx˜ôD¶÷/³ï”q8F±×\,DEë"tà¦ëÍ>Ik;`|È<ôş£Ì pÜnwåw¹ãİÒ	g(í@+¦(D:ÿ«. ÀÉW§4}OF†µÒnNv-.Šäb±óV ÕL
+cöŸpüêtÇ¬Æ„°£ä¥F÷yf^WgæAé:€¨wñÔ³í0şÙ>#23¬éq\æ˜æ¥/wjŒ‚>ûôŞÚ“IFGŠ:t9Å;K_ŠnÓç0-Òc…¬ë+å}™3¤ëĞ¤X” ¥”—üƒ–B¶üm%gjªÚ'ß¾Í÷¥b÷ÓÈh(¢´ÈñíÛq‚ù¦?Ë¥"M–tûÔDõè¯·†‚‡ÊB’»ÙÆ G™7€ò‚Àèq³f4°

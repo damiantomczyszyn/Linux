@@ -1,1 +1,2 @@
-lude/linux/atomic/atomic-arch-fall
+885_video_template = {
+	.name     

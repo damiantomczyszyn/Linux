@@ -1,6 +1,6 @@
- \
-    $(wildcard include/config/ARCH_HAS_PKEYS) \
-    $(wildcard include/config/PPC) \
-    $(wildcard include/config/PARISC) \
-    $(wildcard include/config/SPARC64) \
-    $(wildc
+c/qspinlock.h \
+  arch/x86/include/asm/qrwlock.h \
+  include/asm-generic/qrwlock.h \
+  include/linux/rwlock.h \
+    $(wildcard include/config/PREEMPT) \
+  include/linux/spinlock_ap

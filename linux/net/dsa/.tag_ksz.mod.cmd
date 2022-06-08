@@ -1,2 +1,3 @@
-move lock classes from memory that is going to be
- * freed; and possibly re-used by o
+] IR controller */
+		allowed_protos = RC_PROTO_BIT_ALL_IR_DECODER;
+		/* The grey Haup

@@ -1,5 +1,11 @@
- include/config/TRACE_BRANCH_PROFILING) \
-    $(wildcard include/config/PROFILE_ALL_BRANCHES) \
-    $(wildcard include/config/STACK_VALIDATION) \
-  include/linux/compiler_types.h \
-  arc
+
+	}
+
+	for (cnt = 0; cnt < msg->len; cnt++) {
+
+		ctrl = bus->i2c_period | (1 << 12) | (1 << 2) | 1;
+
+		if (cnt < msg->len - 1)
+			ctrl |= I2C_NOSTOP | I2C_EXTEND;
+
+		cx_write(bus->reg_add

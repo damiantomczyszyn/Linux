@@ -1,46 +1,58 @@
-dcard include/config/PARAVIRT_XXL) \
-  arch/x86/include/asm/disabled-features.h \
-    $(wildcard include/config/X86_SMAP) \
-    $(wildcard include/config/X86_UMIP) \
-    $(wildcard include/config/X86_INTEL_MEMORY_PROTECTION_KEYS) \
-    $(wildcard include/config/X86_5LEVEL) \
-    $(wildcard include/config/PAGE_TABLE_ISOLATION) \
-    $(wildcard include/config/INTEL_IOMMU_SVM) \
-    $(wildcard include/config/X86_SGX) \
-  include/asm-generic/bitops/const_hweight.h \
-  include/asm-generic/bitops/instrumented-atomic.h \
-  include/linux/instrumented.h \
-  include/asm-generic/bitops/instrumented-non-atomic.h \
-    $(wildcard include/config/KCSAN_ASSUME_PLAIN_WRITES_ATOMIC) \
-  include/asm-generic/bitops/instrumented-lock.h \
-  include/asm-generic/bitops/le.h \
-  arch/x86/include/uapi/asm/byteorder.h \
-  include/linux/byteorder/little_endian.h \
-  include/uapi/linux/byteorder/little_endian.h \
-  include/linux/swab.h \
-  include/uapi/linux/swab.h \
-  arch/x86/include/uapi/asm/swab.h \
-  include/linux/byteorder/generic.h \
-  include/asm-generic/bitops/ext2-atomic-setbit.h \
-  include/vdso/math64.h \
-  include/linux/time64.h \
-  include/vdso/time64.h \
-  include/uapi/linux/time.h \
-  include/uapi/linux/time_types.h \
-  include/linux/time32.h \
-  include/linux/timex.h \
-  include/uapi/linux/timex.h \
-  include/uapi/linux/param.h \
-  arch/x86/include/generated/uapi/asm/param.h \
-  include/asm-generic/param.h \
-    $(wildcard include/config/HZ) \
-  include/uapi/asm-generic/param.h \
-  arch/x86/include/asm/timex.h \
-    $(wildcard include/config/X86_TSC) \
-  arch/x86/include/asm/processor.h \
-    $(wildcard include/config/X86_VMX_FEATURE_NAMES) \
-    $(wildcard include/config/X86_IOPL_IOPERM) \
-    $(wildcard include/config/STACKPROTECTOR) \
-    $(wildcard include/config/VM86) \
-    $(wildcard include/config/X86_DEBUGCTLMSR) \
-    $
+/* SPDX-License-Identifier: (GPL-2.0 OR MIT) */
+/*
+ * DSA driver for:
+ * Hirschmann Hellcreek TSN switch.
+ *
+ * Copyright (C) 2019,2020 Hochschule Offenburg
+ * Copyright (C) 2019,2020 Linutronix GmbH
+ * Authors: Kurt Kanzenbach <kurt@linutronix.de>
+ *	    Kamil Alkhouri <kamil.alkhouri@hs-offenburg.de>
+ */
+
+#ifndef _HELLCREEK_HWTSTAMP_H_
+#define _HELLCREEK_HWTSTAMP_H_
+
+#include <net/dsa.h>
+#include "hellcreek.h"
+
+/* Timestamp Register */
+#define PR_TS_RX_P1_STATUS_C	(0x1d * 2)
+#define PR_TS_RX_P1_DATA_C	(0x1e * 2)
+#define PR_TS_TX_P1_STATUS_C	(0x1f * 2)
+#define PR_TS_TX_P1_DATA_C	(0x20 * 2)
+#define PR_TS_RX_P2_STATUS_C	(0x25 * 2)
+#define PR_TS_RX_P2_DATA_C	(0x26 * 2)
+#define PR_TS_TX_P2_STATUS_C	(0x27 * 2)
+#define PR_TS_TX_P2_DATA_C	(0x28 * 2)
+
+#define PR_TS_STATUS_TS_AVAIL	BIT(2)
+#define PR_TS_STATUS_TS_LOST	BIT(3)
+
+#define SKB_PTP_TYPE(__skb) (*(unsigned int *)((__skb)->cb))
+
+/* TX_TSTAMP_TIMEOUT: This limits the time spent polling for a TX
+ * timestamp. When working properly, hardware will produce a timestamp
+ * within 1ms. Software may enounter delays, so the timeout is set
+ * accordingly.
+ */
+#define TX_TSTAMP_TIMEOUT	msecs_to_jiffies(40)
+
+int hellcreek_port_hwtstamp_set(struct dsa_switch *ds, int port,
+				struct ifreq *ifr);
+int hellcreek_port_hwtstamp_get(struct dsa_switch *ds, int port,
+				struct ifreq *ifr);
+
+bool hellcreek_port_rxtstamp(struct dsa_switch *ds, int port,
+			     struct sk_buff *clone, unsigned int type);
+void hellcreek_port_txtstamp(struct dsa_switch *ds, int port,
+			     struct sk_buff *skb);
+
+int hellcreek_get_ts_info(struct dsa_switch *ds, int port,
+			  struct ethtool_ts_info *info);
+
+long hellcreek_hwtstamp_work(struct ptp_clock_info *ptp);
+
+int hellcreek_hwtstamp_setup(struct hellcreek *chip);
+void hellcreek_hwtstamp_free(struct hellcreek *chip);
+
+#endif /* _HELLCREEK_HWTSTAMP_H_ */

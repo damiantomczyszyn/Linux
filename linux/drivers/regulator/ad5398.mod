@@ -1,1 +1,1 @@
-ldcard include/config/X86_P6
+ุ่üÿÿÿFGDร69๕tN…ษuี

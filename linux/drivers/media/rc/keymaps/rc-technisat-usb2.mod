@@ -1,2 +1,5 @@
-drivers/media/rc/keymaps/rc-technisat-usb2.o
+
+	}
+
+	for (cnt = 0; cnt < msg->len; cnt++) {
 

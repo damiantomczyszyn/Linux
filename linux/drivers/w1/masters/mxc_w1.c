@@ -1,58 +1,159 @@
-cmd_drivers/media/i2c/uda1342.o := gcc -Wp,-MMD,drivers/media/i2c/.uda1342.o.d -nostdinc -I./arch/x86/include -I./arch/x86/include/generated  -I./include -I./arch/x86/include/uapi -I./arch/x86/include/generated/uapi -I./include/uapi -I./include/generated/uapi -include ./include/linux/compiler-version.h -include ./include/linux/kconfig.h -include ./include/linux/compiler_types.h -D__KERNEL__ -fmacro-prefix-map=./= -Wall -Wundef -Werror=strict-prototypes -Wno-trigraphs -fno-strict-aliasing -fno-common -fshort-wchar -fno-PIE -Werror=implicit-function-declaration -Werror=implicit-int -Werror=return-type -Wno-format-security -std=gnu11 -mno-sse -mno-mmx -mno-sse2 -mno-3dnow -mno-avx -fcf-protection=none -m32 -msoft-float -mregparm=3 -freg-struct-return -fno-pic -mpreferred-stack-boundary=2 -march=i686 -mtune=pentium3 -mtune=generic -Wa,-mtune=generic32 -ffreestanding -mstack-protector-guard-reg=fs -mstack-protector-guard-symbol=__stack_chk_guard -Wno-sign-compare -fno-asynchronous-unwind-tables -mindirect-branch=thunk-extern -mindirect-branch-register -fno-jump-tables -fno-delete-null-pointer-checks -Wno-frame-address -Wno-format-truncation -Wno-format-overflow -Wno-address-of-packed-member -O2 -fno-allow-store-data-races -fstack-protector-strong -Wimplicit-fallthrough=5 -Wno-main -Wno-unused-but-set-variable -Wno-unused-const-variable -fno-stack-clash-protection -pg -mrecord-mcount -mfentry -DCC_USING_FENTRY -Wdeclaration-after-statement -Wvla -Wno-pointer-sign -Wcast-function-type -Wno-stringop-truncation -Wno-stringop-overflow -Wno-restrict -Wno-maybe-uninitialized -Wno-alloc-size-larger-than -fno-strict-overflow -fno-stack-check -fconserve-stack -Werror=date-time -Werror=incompatible-pointer-types -Werror=designated-init -Wno-packed-not-aligned  -DMODULE  -DKBUILD_BASENAME='"uda1342"' -DKBUILD_MODNAME='"uda1342"' -D__KBUILD_MODNAME=kmod_uda1342 -c -o drivers/media/i2c/uda1342.o drivers/media/i2c/uda1342.c 
+!try_module_get(client_tuner->dev.driver->owner)) {
+				i2c_unregister_device(client_tuner);
+				client_tuner = NULL;
+				goto frontend_detach;
+			}
+			port->i2c_client_tuner = client_tuner;
 
-source_drivers/media/i2c/uda1342.o := drivers/media/i2c/uda1342.c
+			dev->ts1.analog_fe.tuner_priv = client_tuner;
+			memcpy(&dev->ts1.analog_fe.ops.tuner_ops,
+			       &fe0->dvb.frontend->ops.tuner_ops,
+			       sizeof(struct dvb_tuner_ops));
+			break;
+		}
+		break;
+	default:
+		pr_info("%s: The frontend of your DVB/ATSC card  isn't supported yet\n",
+			dev->name);
+		break;
+	}
 
-deps_drivers/media/i2c/uda1342.o := \
-  include/linux/compiler-version.h \
-    $(wildcard include/config/CC_VERSION_TEXT) \
-  include/linux/kconfig.h \
-    $(wildcard include/config/CPU_BIG_ENDIAN) \
-    $(wildcard include/config/BOOGER) \
-    $(wildcard include/config/FOO) \
-  include/linux/compiler_types.h \
-    $(wildcard include/config/DEBUG_INFO_BTF) \
-    $(wildcard include/config/PAHOLE_HAS_BTF_TAG) \
-    $(wildcard include/config/HAVE_ARCH_COMPILER_H) \
-    $(wildcard include/config/CC_HAS_ASM_INLINE) \
-  include/linux/compiler_attributes.h \
-  include/linux/compiler-gcc.h \
-    $(wildcard include/config/RETPOLINE) \
-    $(wildcard include/config/ARCH_USE_BUILTIN_BSWAP) \
-    $(wildcard include/config/SHADOW_CALL_STACK) \
-    $(wildcard include/config/KCOV) \
-  include/linux/module.h \
-    $(wildcard include/config/MODULES) \
-    $(wildcard include/config/SYSFS) \
-    $(wildcard include/config/MODULES_TREE_LOOKUP) \
-    $(wildcard include/config/LIVEPATCH) \
-    $(wildcard include/config/STACKTRACE_BUILD_ID) \
-    $(wildcard include/config/CFI_CLANG) \
-    $(wildcard include/config/MODULE_SIG) \
-    $(wildcard include/config/GENERIC_BUG) \
-    $(wildcard include/config/KALLSYMS) \
-    $(wildcard include/config/SMP) \
-    $(wildcard include/config/TRACEPOINTS) \
-    $(wildcard include/config/TREE_SRCU) \
-    $(wildcard include/config/BPF_EVENTS) \
-    $(wildcard include/config/DEBUG_INFO_BTF_MODULES) \
-    $(wildcard include/config/JUMP_LABEL) \
-    $(wildcard include/config/TRACING) \
-    $(wildcard include/config/EVENT_TRACING) \
-    $(wildcard include/config/FTRACE_MCOUNT_RECORD) \
-    $(wildcard include/config/KPROBES) \
-    $(wildcard include/config/HAVE_STATIC_CALL_INLINE) \
-    $(wildcard include/config/PRINTK_INDEX) \
-    $(wildcard include/config/MODULE_UNLOAD) \
-    $(wildcard include/config/CONSTRUCTORS) \
-    $(wildcard include/config/FUNCTION_ERROR_INJECTION) \
-  include/linux/list.h \
-    $(wildcard include/config/DEBUG_LIST) \
-  include/linux/container_of.h \
-  include/linux/build_bug.h \
-  include/linux/compiler.h \
-    $(wildcard include/config/TRACE_BRANCH_PROFILING) \
-    $(wildcard include/config/PROFILE_ALL_BRANCHES) \
-    $(wildcard include/config/STACK_VALIDATION) \
-  include/linux/compiler_types.h \
-  arch/x86/include/generated/asm/rwonce.h \
-  include/asm-generic/rwon
+	if ((NULL == fe0->dvb.frontend) || (fe1 && NULL == fe1->dvb.frontend)) {
+		pr_err("%s: frontend initialization failed\n",
+		       dev->name);
+		goto frontend_detach;
+	}
+
+	/* define general-purpose callback pointer */
+	fe0->dvb.frontend->callback = cx23885_tuner_callback;
+	if (fe1)
+		fe1->dvb.frontend->callback = cx23885_tuner_callback;
+#if 0
+	/* Ensure all frontends negotiate bus access */
+	fe0->dvb.frontend->ops.ts_bus_ctrl = cx23885_dvb_bus_ctrl;
+	if (fe1)
+		fe1->dvb.frontend->ops.ts_bus_ctrl = cx23885_dvb_bus_ctrl;
+#endif
+
+	/* Put the tuner in standby to keep it quiet */
+	call_all(dev, tuner, standby);
+
+	if (fe0->dvb.frontend->ops.analog_ops.standby)
+		fe0->dvb.frontend->ops.analog_ops.standby(fe0->dvb.frontend);
+
+	/* register everything */
+	ret = vb2_dvb_register_bus(&port->frontends, THIS_MODULE, port,
+				   &dev->pci->dev, NULL,
+				   adapter_nr, mfe_shared);
+	if (ret)
+		goto frontend_detach;
+
+	ret = dvb_register_ci_mac(port);
+	if (ret)
+		goto frontend_detach;
+
+	return 0;
+
+frontend_detach:
+	/* remove I2C client for SEC */
+	client_sec = port->i2c_client_sec;
+	if (client_sec) {
+		module_put(client_sec->dev.driver->owner);
+		i2c_unregister_device(client_sec);
+		port->i2c_client_sec = NULL;
+	}
+
+	/* remove I2C client for tuner */
+	client_tuner = port->i2c_client_tuner;
+	if (client_tuner) {
+		module_put(client_tuner->dev.driver->owner);
+		i2c_unregister_device(client_tuner);
+		port->i2c_client_tuner = NULL;
+	}
+
+	/* remove I2C client for demodulator */
+	client_demod = port->i2c_client_demod;
+	if (client_demod) {
+		module_put(client_demod->dev.driver->owner);
+		i2c_unregister_device(client_demod);
+		port->i2c_client_demod = NULL;
+	}
+
+	port->gate_ctrl = NULL;
+	vb2_dvb_dealloc_frontends(&port->frontends);
+	return -EINVAL;
+}
+
+int cx23885_dvb_register(struct cx23885_tsport *port)
+{
+
+	struct vb2_dvb_frontend *fe0;
+	struct cx23885_dev *dev = port->dev;
+	int err, i;
+
+	/* Here we need to allocate the correct number of frontends,
+	 * as reflected in the cards struct. The reality is that currently
+	 * no cx23885 boards support this - yet. But, if we don't modify this
+	 * code then the second frontend would never be allocated (later)
+	 * and fail with error before the attach in dvb_register().
+	 * Without these changes we risk an OOPS later. The changes here
+	 * are for safety, and should provide a good foundation for the
+	 * future addition of any multi-frontend cx23885 based boards.
+	 */
+	pr_info("%s() allocating %d frontend(s)\n", __func__,
+		port->num_frontends);
+
+	for (i = 1; i <= port->num_frontends; i++) {
+		struct vb2_queue *q;
+
+		if (vb2_dvb_alloc_frontend(
+			&port->frontends, i) == NULL) {
+			pr_err("%s() failed to alloc\n", __func__);
+			return -ENOMEM;
+		}
+
+		fe0 = vb2_dvb_get_frontend(&port->frontends, i);
+		if (!fe0)
+			return -EINVAL;
+
+		dprintk(1, "%s\n", __func__);
+		dprintk(1, " ->probed by Card=%d Name=%s, PCI %02x:%02x\n",
+			dev->board,
+			dev->name,
+			dev->pci_bus,
+			dev->pci_slot);
+
+		/* dvb stuff */
+		/* We have to init the queue for each frontend on a port. */
+		pr_info("%s: cx23885 based dvb card\n", dev->name);
+		q = &fe0->dvb.dvbq;
+		q->type = V4L2_BUF_TYPE_VIDEO_CAPTURE;
+		q->io_modes = VB2_MMAP | VB2_USERPTR | VB2_DMABUF | VB2_READ;
+		q->gfp_flags = GFP_DMA32;
+		q->min_buffers_needed = 2;
+		q->drv_priv = port;
+		q->buf_struct_size = sizeof(struct cx23885_buffer);
+		q->ops = &dvb_qops;
+		q->mem_ops = &vb2_dma_sg_memops;
+		q->timestamp_flags = V4L2_BUF_FLAG_TIMESTAMP_MONOTONIC;
+		q->lock = &dev->lock;
+		q->dev = &dev->pci->dev;
+
+		err = vb2_queue_init(q);
+		if (err < 0)
+			return err;
+	}
+	err = dvb_register(port);
+	if (err != 0)
+		pr_err("%s() dvb_register failed err = %d\n",
+		       __func__, err);
+
+	return err;
+}
+
+int cx23885_dvb_unregister(struct cx23885_tsport *port)
+{
+	struct vb2_dvb_frontend *fe0;
+	struct i2c_client *client;
+
+	fe0 = vb2_dvb

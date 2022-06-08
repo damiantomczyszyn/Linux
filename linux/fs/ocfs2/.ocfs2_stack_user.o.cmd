@@ -1,3 +1,6 @@
-nclude/config/GENERIC_ATOMIC64) \
-  include/linux/atomic/atomic-long.h \
-  include/linux/atomic/atomic-instr
+< 0) {
+			pr_err("%s() Failed to register dvb on VID_C\n",
+			       __func__);
+		}
+	} else
+	if (cx23885_boa

@@ -1,1 +1,2 @@
-cmd_drivers/media/i2c/uda1342.o 
+drivers/net/can/usb/usb_8dev.o
+

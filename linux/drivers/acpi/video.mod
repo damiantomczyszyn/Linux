@@ -1,3 +1,3 @@
-.h \
-  include/linux/atomic/atomic-arch-fallback.h \
-  
+C:
+	case CX23885_BOARD_TT_CT2_4500_CI:
+	case CX23885_BO

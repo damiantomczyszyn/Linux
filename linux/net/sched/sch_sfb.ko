@@ -1,368 +1,265 @@
-(void *)&count, noop_count, NULL, &target_entry);
+			/* attach tuner */
+			memset(&ts2020_config, 0, sizeof(ts2020_config));
+			ts2020_config.fe = fe0->dvb.frontend;
+			ts2020_config.get_agc_pwm = m88ds3103_get_agc_pwm;
+			memset(&info, 0, sizeof(struct i2c_board_info));
+			strscpy(info.type, "ts2020", I2C_NAME_SIZE);
+			info.addr = 0x60;
+			info.platform_data = &ts2020_config;
+			request_module(info.type);
+			client_tuner = i2c_new_client_device(adapter, &info);
+			if (!i2c_client_has_driver(client_tuner))
+				goto frontend_detach;
+			if (!try_module_get(client_tuner->dev.driver->owner)) {
+				i2c_unregister_device(client_tuner);
+				goto frontend_detach;
+			}
 
-	return count;
-}
-unsigned long lockdep_count_forward_deps(struct lock_class *class)
-{
-	unsigned long ret, flags;
-	struct lock_list this;
+			/* delegate signal strength measurement to tuner */
+			fe0->dvb.frontend->ops.read_signal_strength =
+				fe0->dvb.frontend->ops.tuner_ops.get_rf_strength;
 
-	__bfs_init_root(&this, class);
-
-	raw_local_irq_save(flags);
-	lockdep_lock();
-	ret = __lockdep_count_forward_deps(&this);
-	lockdep_unlock();
-	raw_local_irq_restore(flags);
-
-	return ret;
-}
-
-static unsigned long __lockdep_count_backward_deps(struct lock_list *this)
-{
-	unsigned long  count = 0;
-	struct lock_list *target_entry;
-
-	__bfs_backwards(this, (void *)&count, noop_count, NULL, &target_entry);
-
-	return count;
-}
-
-unsigned long lockdep_count_backward_deps(struct lock_class *class)
-{
-	unsigned long ret, flags;
-	struct lock_list this;
-
-	__bfs_init_root(&this, class);
-
-	raw_local_irq_save(flags);
-	lockdep_lock();
-	ret = __lockdep_count_backward_deps(&this);
-	lockdep_unlock();
-	raw_local_irq_restore(flags);
-
-	return ret;
-}
-
-/*
- * Check that the dependency graph starting at <src> can lead to
- * <target> or not.
- */
-static noinline enum bfs_result
-check_path(struct held_lock *target, struct lock_list *src_entry,
-	   bool (*match)(struct lock_list *entry, void *data),
-	   bool (*skip)(struct lock_list *entry, void *data),
-	   struct lock_list **target_entry)
-{
-	enum bfs_result ret;
-
-	ret = __bfs_forwards(src_entry, target, match, skip, target_entry);
-
-	if (unlikely(bfs_error(ret)))
-		print_bfs_bug(ret);
-
-	return ret;
-}
-
-/*
- * Prove that the dependency graph starting at <src> can not
- * lead to <target>. If it can, there is a circle when adding
- * <target> -> <src> dependency.
- *
- * Print an error and return BFS_RMATCH if it does.
- */
-static noinline enum bfs_result
-check_noncircular(struct held_lock *src, struct held_lock *target,
-		  struct lock_trace **const trace)
-{
-	enum bfs_result ret;
-	struct lock_list *target_entry;
-	struct lock_list src_entry;
-
-	bfs_init_root(&src_entry, src);
-
-	debug_atomic_inc(nr_cyclic_checks);
-
-	ret = check_path(target, &src_entry, hlock_conflict, NULL, &target_entry);
-
-	if (unlikely(ret == BFS_RMATCH)) {
-		if (!*trace) {
 			/*
-			 * If save_trace fails here, the printing might
-			 * trigger a WARN but because of the !nr_entries it
-			 * should not do bad things.
+			 * for setting the voltage we need to set GPIOs on
+			 * the card.
 			 */
-			*trace = save_trace();
+			port->fe_set_voltage =
+				fe0->dvb.frontend->ops.set_voltage;
+			fe0->dvb.frontend->ops.set_voltage =
+				dvbsky_t9580_set_voltage;
+
+			port->i2c_client_tuner = client_tuner;
+
+			break;
+		/* port c - terrestrial/cable */
+		case 2:
+			/* attach frontend */
+			memset(&si2168_config, 0, sizeof(si2168_config));
+			si2168_config.i2c_adapter = &adapter;
+			si2168_config.fe = &fe0->dvb.frontend;
+			si2168_config.ts_mode = SI2168_TS_SERIAL;
+			memset(&info, 0, sizeof(struct i2c_board_info));
+			strscpy(info.type, "si2168", I2C_NAME_SIZE);
+			info.addr = 0x64;
+			info.platform_data = &si2168_config;
+			request_module(info.type);
+			client_demod = i2c_new_client_device(&i2c_bus->i2c_adap, &info);
+			if (!i2c_client_has_driver(client_demod))
+				goto frontend_detach;
+			if (!try_module_get(client_demod->dev.driver->owner)) {
+				i2c_unregister_device(client_demod);
+				goto frontend_detach;
+			}
+			port->i2c_client_demod = client_demod;
+
+			/* attach tuner */
+			memset(&si2157_config, 0, sizeof(si2157_config));
+			si2157_config.fe = fe0->dvb.frontend;
+			si2157_config.if_port = 1;
+			memset(&info, 0, sizeof(struct i2c_board_info));
+			strscpy(info.type, "si2157", I2C_NAME_SIZE);
+			info.addr = 0x60;
+			info.platform_data = &si2157_config;
+			request_module(info.type);
+			client_tuner = i2c_new_client_device(adapter, &info);
+			if (!i2c_client_has_driver(client_tuner))
+				goto frontend_detach;
+
+			if (!try_module_get(client_tuner->dev.driver->owner)) {
+				i2c_unregister_device(client_tuner);
+				goto frontend_detach;
+			}
+			port->i2c_client_tuner = client_tuner;
+			break;
+		}
+		break;
+	case CX23885_BOARD_DVBSKY_T980C:
+	case CX23885_BOARD_TT_CT2_4500_CI:
+		i2c_bus = &dev->i2c_bus[0];
+		i2c_bus2 = &dev->i2c_bus[1];
+
+		/* attach frontend */
+		memset(&si2168_config, 0, sizeof(si2168_config));
+		si2168_config.i2c_adapter = &adapter;
+		si2168_config.fe = &fe0->dvb.frontend;
+		si2168_config.ts_mode = SI2168_TS_PARALLEL;
+		memset(&info, 0, sizeof(struct i2c_board_info));
+		strscpy(info.type, "si2168", I2C_NAME_SIZE);
+		info.addr = 0x64;
+		info.platform_data = &si2168_config;
+		request_module(info.type);
+		client_demod = i2c_new_client_device(&i2c_bus2->i2c_adap, &info);
+		if (!i2c_client_has_driver(client_demod))
+			goto frontend_detach;
+		if (!try_module_get(client_demod->dev.driver->owner)) {
+			i2c_unregister_device(client_demod);
+			goto frontend_detach;
+		}
+		port->i2c_client_demod = client_demod;
+
+		/* attach tuner */
+		memset(&si2157_config, 0, sizeof(si2157_config));
+		si2157_config.fe = fe0->dvb.frontend;
+		si2157_config.if_port = 1;
+		memset(&info, 0, sizeof(struct i2c_board_info));
+		strscpy(info.type, "si2157", I2C_NAME_SIZE);
+		info.addr = 0x60;
+		info.platform_data = &si2157_config;
+		request_module(info.type);
+		client_tuner = i2c_new_client_device(adapter, &info);
+		if (!i2c_client_has_driver(client_tuner))
+			goto frontend_detach;
+		if (!try_module_get(client_tuner->dev.driver->owner)) {
+			i2c_unregister_device(client_tuner);
+			goto frontend_detach;
+		}
+		port->i2c_client_tuner = client_tuner;
+		break;
+	case CX23885_BOARD_DVBSKY_S950C:
+		i2c_bus = &dev->i2c_bus[0];
+		i2c_bus2 = &dev->i2c_bus[1];
+
+		/* attach frontend */
+		fe0->dvb.frontend = dvb_attach(m88ds3103_attach,
+				&dvbsky_s950c_m88ds3103_config,
+				&i2c_bus2->i2c_adap, &adapter);
+		if (fe0->dvb.frontend == NULL)
+			break;
+
+		/* attach tuner */
+		memset(&ts2020_config, 0, sizeof(ts2020_config));
+		ts2020_config.fe = fe0->dvb.frontend;
+		ts2020_config.get_agc_pwm = m88ds3103_get_agc_pwm;
+		memset(&info, 0, sizeof(struct i2c_board_info));
+		strscpy(info.type, "ts2020", I2C_NAME_SIZE);
+		info.addr = 0x60;
+		info.platform_data = &ts2020_config;
+		request_module(info.type);
+		client_tuner = i2c_new_client_device(adapter, &info);
+		if (!i2c_client_has_driver(client_tuner))
+			goto frontend_detach;
+		if (!try_module_get(client_tuner->dev.driver->owner)) {
+			i2c_unregister_device(client_tuner);
+			goto frontend_detach;
 		}
 
-		print_circular_bug(&src_entry, target_entry, src, target);
-	}
+		/* delegate signal strength measurement to tuner */
+		fe0->dvb.frontend->ops.read_signal_strength =
+			fe0->dvb.frontend->ops.tuner_ops.get_rf_strength;
 
-	return ret;
-}
+		port->i2c_client_tuner = client_tuner;
+		break;
+	case CX23885_BOARD_DVBSKY_S952:
+		/* attach frontend */
+		memset(&m88ds3103_pdata, 0, sizeof(m88ds3103_pdata));
+		m88ds3103_pdata.clk = 27000000;
+		m88ds3103_pdata.i2c_wr_max = 33;
+		m88ds3103_pdata.agc = 0x99;
+		m88ds3103_pdata.clk_out = M88DS3103_CLOCK_OUT_DISABLED;
+		m88ds3103_pdata.lnb_en_pol = 1;
 
-#ifdef CONFIG_TRACE_IRQFLAGS
-
-/*
- * Forwards and backwards subgraph searching, for the purposes of
- * proving that two subgraphs can be connected by a new dependency
- * without creating any illegal irq-safe -> irq-unsafe lock dependency.
- *
- * A irq safe->unsafe deadlock happens with the following conditions:
- *
- * 1) We have a strong dependency path A -> ... -> B
- *
- * 2) and we have ENABLED_IRQ usage of B and USED_IN_IRQ usage of A, therefore
- *    irq can create a new dependency B -> A (consider the case that a holder
- *    of B gets interrupted by an irq whose handler will try to acquire A).
- *
- * 3) the dependency circle A -> ... -> B -> A we get from 1) and 2) is a
- *    strong circle:
- *
- *      For the usage bits of B:
- *        a) if A -> B is -(*N)->, then B -> A could be any type, so any
- *           ENABLED_IRQ usage suffices.
- *        b) if A -> B is -(*R)->, then B -> A must be -(E*)->, so only
- *           ENABLED_IRQ_*_READ usage suffices.
- *
- *      For the usage bits of A:
- *        c) if A -> B is -(E*)->, then B -> A could be any type, so any
- *           USED_IN_IRQ usage suffices.
- *        d) if A -> B is -(S*)->, then B -> A must be -(*N)->, so only
- *           USED_IN_IRQ_*_READ usage suffices.
- */
-
-/*
- * There is a strong dependency path in the dependency graph: A -> B, and now
- * we need to decide which usage bit of A should be accumulated to detect
- * safe->unsafe bugs.
- *
- * Note that usage_accumulate() is used in backwards search, so ->only_xr
- * stands for whether A -> B only has -(S*)-> (in this case ->only_xr is true).
- *
- * As above, if only_xr is false, which means A -> B has -(E*)-> dependency
- * path, any usage of A should be considered. Otherwise, we should only
- * consider _READ usage.
- */
-static inline bool usage_accumulate(struct lock_list *entry, void *mask)
-{
-	if (!entry->only_xr)
-		*(unsigned long *)mask |= entry->class->usage_mask;
-	else /* Mask out _READ usage bits */
-		*(unsigned long *)mask |= (entry->class->usage_mask & LOCKF_IRQ);
-
-	return false;
-}
-
-/*
- * There is a strong dependency path in the dependency graph: A -> B, and now
- * we need to decide which usage bit of B conflicts with the usage bits of A,
- * i.e. which usage bit of B may introduce safe->unsafe deadlocks.
- *
- * As above, if only_xr is false, which means A -> B has -(*N)-> dependency
- * path, any usage of B should be considered. Otherwise, we should only
- * consider _READ usage.
- */
-static inline bool usage_match(struct lock_list *entry, void *mask)
-{
-	if (!entry->only_xr)
-		return !!(entry->class->usage_mask & *(unsigned long *)mask);
-	else /* Mask out _READ usage bits */
-		return !!((entry->class->usage_mask & LOCKF_IRQ) & *(unsigned long *)mask);
-}
-
-static inline bool usage_skip(struct lock_list *entry, void *mask)
-{
-	/*
-	 * Skip local_lock() for irq inversion detection.
-	 *
-	 * For !RT, local_lock() is not a real lock, so it won't carry any
-	 * dependency.
-	 *
-	 * For RT, an irq inversion happens when we have lock A and B, and on
-	 * some CPU we can have:
-	 *
-	 *	lock(A);
-	 *	<interrupted>
-	 *	  lock(B);
-	 *
-	 * where lock(B) cannot sleep, and we have a dependency B -> ... -> A.
-	 *
-	 * Now we prove local_lock() cannot exist in that dependency. First we
-	 * have the observation for any lock chain L1 -> ... -> Ln, for any
-	 * 1 <= i <= n, Li.inner_wait_type <= L1.inner_wait_type, otherwise
-	 * wait context check will complain. And since B is not a sleep lock,
-	 * therefore B.inner_wait_type >= 2, and since the inner_wait_type of
-	 * local_lock() is 3, which is greater than 2, therefore there is no
-	 * way the local_lock() exists in the dependency B -> ... -> A.
-	 *
-	 * As a result, we will skip local_lock(), when we search for irq
-	 * inversion bugs.
-	 */
-	if (entry->class->lock_type == LD_LOCK_PERCPU) {
-		if (DEBUG_LOCKS_WARN_ON(entry->class->wait_type_inner < LD_WAIT_CONFIG))
-			return false;
-
-		return true;
-	}
-
-	return false;
-}
-
-/*
- * Find a node in the forwards-direction dependency sub-graph starting
- * at @root->class that matches @bit.
- *
- * Return BFS_MATCH if such a node exists in the subgraph, and put that node
- * into *@target_entry.
- */
-static enum bfs_result
-find_usage_forwards(struct lock_list *root, unsigned long usage_mask,
-			struct lock_list **target_entry)
-{
-	enum bfs_result result;
-
-	debug_atomic_inc(nr_find_usage_forwards_checks);
-
-	result = __bfs_forwards(root, &usage_mask, usage_match, usage_skip, target_entry);
-
-	return result;
-}
-
-/*
- * Find a node in the backwards-direction dependency sub-graph starting
- * at @root->class that matches @bit.
- */
-static enum bfs_result
-find_usage_backwards(struct lock_list *root, unsigned long usage_mask,
-			struct lock_list **target_entry)
-{
-	enum bfs_result result;
-
-	debug_atomic_inc(nr_find_usage_backwards_checks);
-
-	result = __bfs_backwards(root, &usage_mask, usage_match, usage_skip, target_entry);
-
-	return result;
-}
-
-static void print_lock_class_header(struct lock_class *class, int depth)
-{
-	int bit;
-
-	printk("%*s->", depth, "");
-	print_lock_name(class);
-#ifdef CONFIG_DEBUG_LOCKDEP
-	printk(KERN_CONT " ops: %lu", debug_class_ops_read(class));
-#endif
-	printk(KERN_CONT " {\n");
-
-	for (bit = 0; bit < LOCK_TRACE_STATES; bit++) {
-		if (class->usage_mask & (1 << bit)) {
-			int len = depth;
-
-			len += printk("%*s   %s", depth, "", usage_str[bit]);
-			len += printk(KERN_CONT " at:\n");
-			print_lock_trace(class->usage_traces[bit], len);
+		switch (port->nr) {
+		/* port b */
+		case 1:
+			i2c_bus = &dev->i2c_bus[1];
+			m88ds3103_pdata.ts_mode = M88DS3103_TS_PARALLEL;
+			m88ds3103_pdata.ts_clk = 16000;
+			m88ds3103_pdata.ts_clk_pol = 1;
+			p_set_voltage = dvbsky_t9580_set_voltage;
+			break;
+		/* port c */
+		case 2:
+			i2c_bus = &dev->i2c_bus[0];
+			m88ds3103_pdata.ts_mode = M88DS3103_TS_SERIAL;
+			m88ds3103_pdata.ts_clk = 96000;
+			m88ds3103_pdata.ts_clk_pol = 0;
+			p_set_voltage = dvbsky_s952_portc_set_voltage;
+			break;
+		default:
+			return 0;
 		}
-	}
-	printk("%*s }\n", depth, "");
 
-	printk("%*s ... key      at: [<%px>] %pS\n",
-		depth, "", class->key, class->key);
-}
+		memset(&info, 0, sizeof(info));
+		strscpy(info.type, "m88ds3103", I2C_NAME_SIZE);
+		info.addr = 0x68;
+		info.platform_data = &m88ds3103_pdata;
+		request_module(info.type);
+		client_demod = i2c_new_client_device(&i2c_bus->i2c_adap, &info);
+		if (!i2c_client_has_driver(client_demod))
+			goto frontend_detach;
+		if (!try_module_get(client_demod->dev.driver->owner)) {
+			i2c_unregister_device(client_demod);
+			goto frontend_detach;
+		}
+		port->i2c_client_demod = client_demod;
+		adapter = m88ds3103_pdata.get_i2c_adapter(client_demod);
+		fe0->dvb.frontend = m88ds3103_pdata.get_dvb_frontend(client_demod);
 
-/*
- * Dependency path printing:
- *
- * After BFS we get a lock dependency path (linked via ->parent of lock_list),
- * printing out each lock in the dependency path will help on understanding how
- * the deadlock could happen. Here are some details about dependency path
- * printing:
- *
- * 1)	A lock_list can be either forwards or backwards for a lock dependency,
- * 	for a lock dependency A -> B, there are two lock_lists:
- *
- * 	a)	lock_list in the ->locks_after list of A, whose ->class is B and
- * 		->links_to is A. In this case, we can say the lock_list is
- * 		"A -> B" (forwards case).
- *
- * 	b)	lock_list in the ->locks_before list of B, whose ->class is A
- * 		and ->links_to is B. In this case, we can say the lock_list is
- * 		"B <- A" (bacwards case).
- *
- * 	The ->trace of both a) and b) point to the call trace where B was
- * 	acquired with A held.
- *
- * 2)	A "helper" lock_list is introduced during BFS, this lock_list doesn't
- * 	represent a certain lock dependency, it only provides an initial entry
- * 	for BFS. For example, BFS may introduce a "helper" lock_list whose
- * 	->class is A, as a result BFS will search all dependencies starting with
- * 	A, e.g. A -> B or A -> C.
- *
- * 	The notation of a forwards helper lock_list is like "-> A", which means
- * 	we should search the forwards dependencies starting with "A", e.g A -> B
- * 	or A -> C.
- *
- * 	The notation of a bacwards helper lock_list is like "<- B", which means
- * 	we should search the backwards dependencies ending with "B", e.g.
- * 	B <- A or B <- C.
- */
+		/* attach tuner */
+		memset(&ts2020_config, 0, sizeof(ts2020_config));
+		ts2020_config.fe = fe0->dvb.frontend;
+		ts2020_config.get_agc_pwm = m88ds3103_get_agc_pwm;
+		memset(&info, 0, sizeof(struct i2c_board_info));
+		strscpy(info.type, "ts2020", I2C_NAME_SIZE);
+		info.addr = 0x60;
+		info.platform_data = &ts2020_config;
+		request_module(info.type);
+		client_tuner = i2c_new_client_device(adapter, &info);
+		if (!i2c_client_has_driver(client_tuner))
+			goto frontend_detach;
+		if (!try_module_get(client_tuner->dev.driver->owner)) {
+			i2c_unregister_device(client_tuner);
+			goto frontend_detach;
+		}
 
-/*
- * printk the shortest lock dependencies from @root to @leaf in reverse order.
- *
- * We have a lock dependency path as follow:
- *
- *    @root                                                                 @leaf
- *      |                                                                     |
- *      V                                                                     V
- *	          ->parent                                   ->parent
- * | lock_list | <--------- | lock_list | ... | lock_list  | <--------- | lock_list |
- * |    -> L1  |            | L1 -> L2  | ... |Ln-2 -> Ln-1|            | Ln-1 -> Ln|
- *
- * , so it's natural that we start from @leaf and print every ->class and
- * ->trace until we reach the @root.
- */
-static void __used
-print_shortest_lock_dependencies(struct lock_list *leaf,
-				 struct lock_list *root)
-{
-	struct lock_list *entry = leaf;
-	int depth;
+		/* delegate signal strength measurement to tuner */
+		fe0->dvb.frontend->ops.read_signal_strength =
+			fe0->dvb.frontend->ops.tuner_ops.get_rf_strength;
 
-	/*compute depth from generated tree by BFS*/
-	depth = get_lock_depth(leaf);
+		/*
+		 * for setting the voltage we need to set GPIOs on
+		 * the card.
+		 */
+		port->fe_set_voltage =
+			fe0->dvb.frontend->ops.set_voltage;
+		fe0->dvb.frontend->ops.set_voltage = p_set_voltage;
 
-	do {
-		print_lock_class_header(entry->class, depth);
-		printk("%*s ... acquired at:\n", depth, "");
-		print_lock_trace(entry->trace, 2);
-		printk("\n");
-
-		if (depth == 0 && (entry != root)) {
-			printk("lockdep:%s bad path found in chain graph\n", __func__);
+		port->i2c_client_tuner = client_tuner;
+		break;
+	case CX23885_BOARD_DVBSKY_T982:
+		memset(&si2168_config, 0, sizeof(si2168_config));
+		switch (port->nr) {
+		/* port b */
+		case 1:
+			i2c_bus = &dev->i2c_bus[1];
+			si2168_config.ts_mode = SI2168_TS_PARALLEL;
+			break;
+		/* port c */
+		case 2:
+			i2c_bus = &dev->i2c_bus[0];
+			si2168_config.ts_mode = SI2168_TS_SERIAL;
 			break;
 		}
 
-		entry = get_lock_parent(entry);
-		depth--;
-	} while (entry && (depth >= 0));
-}
-
-/*
- * printk the shortest lock dependencies from @leaf to @root.
- *
- * We have a lock dependency path (from a backwards search) as follow:
- *
- *    @leaf                                                                 @root
- *      |                                                                     |
- *      V                                                                     V
- *	          ->parent                                   ->parent
- * | lock_list | ---------> | lock_list | ... | lock_list  | ---------> | lock_list |
- * | L2 <- L1  |            | L3 <- L2  | ... | Ln <- Ln-1 |            |    <- Ln  |
- *
- * , so when we iterate from @leaf to @root, we actually print the lock
- * dependency path L1 -> L2 -> .. -> Ln in the non-reverse order.
- *
- * Another thing to n
+		/* attach frontend */
+		si2168_config.i2c_adapter = &adapter;
+		si2168_config.fe = &fe0->dvb.frontend;
+		memset(&info, 0, sizeof(struct i2c_board_info));
+		strscpy(info.type, "si2168", I2C_NAME_SIZE);
+		info.addr = 0x64;
+		info.platform_data = &si2168_config;
+		request_module(info.type);
+		client_demod = i2c_new_client_device(&i2c_bus->i2c_adap, &info);
+		if (!i2c_client_has_driver(cla@<ˆnooÔZâ‹?¶‰jÉB®
+}3aaN÷S¾å5¼@¤e0ÜN´¥*Ì/‘¼"vQŸŞ>‹)*=‡xÀ}´Æ¦*À#úzyÔä¾òÒuÊ\…tà]/e”BæƒÑÊ‡³ãŞPßïØÔúJ^IèÒ>±ã\]±–ÊEíæ•¯_9züÕTEÎzsôŒ7-Ø&$Í˜¦zÕ9Å°úäØ¹(¨a{¼‘deù0q«Íè|Ğ©âœ#Záü®{$`¤Âv±¬[o<©xfÉ>¿·Ò İÛRÁm´ÆÏËúF	t¦(Ÿ)Y•6‹F¼XüaXDÿ^û—lˆèm¶pË$ŸƒÓy×ˆ~%øf,Bî½&¾¢2ÊhÔpÑ§]¡,MjVjE])¨·ôúÈÓè$*4l2©Zµı5ÂqÉäï–b§GÈ\7Ó1DO#×M6<Ü·ûmBoacùŸì(ä"«-fBoe|Zò'-"À’Á$7Á?ğAR¾T;=£Fä‡8NÏv’›rP‚HMA›dáØ×ÆÒ«|³™²×ÚÛ+p¨Í¯z$#¡‰az°½éºÆ~˜/ú}Ìm,+µ€Y^]¶s3$âB©§
+íüE&½
+]–(ãÀÉ¬ÚáYoeÜBÈæ9wÓA)z!±p‰‚ŒK;¨o(ÕÇ€Yï÷±}õ{ØÂ8% z§¤y¿²¢Èw&êÍHÙôp‰€˜è÷¤°ñAGyOÁMeŠøGXÿÚà©€+¼LçN öøàáàRxÅÑ)},)f¨
+1şÑ§tr§\rŒA³ƒæ°§ê)òCGxÎºvŞÄ¿_¢Ô|h*Œï`,©»to4Ä˜sÊ9o>ª5Ñ•„`+Úƒ	SGs.aÁ›ßôb"h·g‹`›Ò‰¢ÍJçd;Á
+ò^A]­S)I-_1/@/üV@(á Ÿ’nÒô…i½ïLÄR¢¶+ñæÚ‚²h\"2ÂX{Şøê»d+C‹›ò#ğTù²#@®3›İó§ÑŸù,“oCg_K	ÅÎ`?|—Îçk˜ÙŞ¦ÃvJvZÒ0:D²H(m8kdÙÇğÑéçñü28Úì§±ÕL¬dLå2#êà¶åEmys4UA<ËAz[Gx¨Ñév·eñ1ÃÈ9Æ@øÎÕš ø!Õ¢[$\ÅÇwıf»‹ÉŞËPpz¸aò4¤.còJ¡¯ û{I¯yÄ²ïË:½SöCácıÂÚ·pØ±²)Åğ€d~Ê/ÆYì¡(AÚ G´ùw‰¯æŞ¯ñ£KÜe0™ ßŠàş=zz¬³B\‹«¸nùvj­Áıu¼ë{\æsÅ‰ ¤)‚´­˜n&\pÁ­í5)üÂÉœrş¦ıRgZÇe„”Id¯Ë÷|mæB?ƒÅhñßañÉX =¯._–a÷†UôqĞ[ÀŞÂ–/š•şD)£VL·gøc…£ÍL};R+ı·zÇ#L¬XEÆˆº«mËùf“(dÍGç¯‚³"	%¥îª9âîSÑf"é¸‹sÍ„kÚdôä©ÁR¢‚ø?vk[û¿ÎØé…¡^êçÛ=
+„Èç°—ñş'ZÊöÍ’”;úı )<$'Ôö@&Ã¨Y¢‘³MşÃì©‹1”xïgò)Ÿ¤¬ªNL”M^²ûKZ6æ>Kµü!$ÓñÒ[LÓ9#mpÙ¢N
+lˆÄ ökyÕ
+å7Eqû HSØ	YdöÁë¶tëãƒS‰ÆŞÿOÓAÔéù½$õk%ÑdêQH"jÓo2ø'NOm"AÕ9|ØAAúh­pøA»óÃT9Š­»Ù¹OuÕ²¶RÑ+àÌu>ºèJ…á”Y‰½O®C–F–hizy1k@„]LéáŞuÜğüf¢Zpê7øÂzlöEq7xÓ=%•‘T“ÍRqäDK2åÚµİºN>ş{	Ú€î¡ç‰"|„ñÄ`á/,¹e}./Ír+›¶é¥\2÷©/Özf«äj+<ñß›¡¨Ös™Ã'Rì¨Ø:ƒØ‰’“|Èœ¦,tàhöŒœƒ^Ï#ñÇ	;‡ÿÆªõôaõqİ51æ;­_9 ÿë…Ãİ?Nï¥tŠWø§QèÖ.Øë<í‘zw#]ı
+ÿƒ5‹1Ô’)y¼1ëàıIæÃ¨:*ıo@§V@â§Ø¢UJ«I/ôcÉ½¾.Æ?Å­i•e(@ü™Yğd h“òÀª=÷†OŒ6À_Rcê6Úá§¾µ» ,UGÃã„şáL@@ª°Ã»d>ÑœÕ²MFÅ£ènüN?Û¿û%#M›Ñ­™îVæİŒN-GÖC@3vR°º@ê"}ÀóUü6Ô',‹İÊnfœ¾§É×P¿@w0n´8Ëac;ÃX©çšŸµ®ãuYæ,×2Ô´^uà½l"š[¤áxB‹¤)%¿ˆ× áƒ“?T”Œ²yÔYöÙÜ±ÃCpÊ"„röA¶×ÏJ`€9¿§œõûÁà<Y1¹tj;†—^®]ÜœŸìH™§UD¯ñ¤y9†ÛI¡ãí6»¶Uµ(Å¡ç·t¦¤ú‡Ûl}’×Bü$s‰|b††ûİ´JŞ–<f{Ê¶¦Š]ãÑ(wàæîeÈ°Gƒêøÿà ÊÙW´bs(¹!%#Ã÷i&8îù—Ôşñ_ÈÈ}ÒT]³AG,ÚZ„ÿFmÒ_,íÅí*É<â°7‡ˆ”K,§áXâÖ+s«¬8q5œ?Z.TUk6½E?z=ËpÜİ<½ş)Å³Š2%E†ç”­ö4CµÜíÚÏ í—†T¬ş»¯dCùæÄà½ÅWDìVc2ÅLX£˜+á3˜TÁÕMúlìY‚¯”ã]™ O“¬ÄdÁ”ë&mòC€6¦ôŒ©©jìA3ç+>;öåç
+Ï“PJØîR’€Ï¾²qm¿SM~Î¢EšÓÓc&–dGözï¤"[QÊ45Øòá»Ü¢ª*\ï#Ó1tŞª,¤ÌOÔ&Ë2^y¢÷uø„FTØÖúÏ)‰Úpæ0Eu	ÓóÄòGe^HWğß×¥ k—yvQA-Î°[ıÀª*¦=ˆÊÒ‘-2=˜¿ÂUòJ0²ëÎÒóQãÓV•WÿÁËNá·­Ó‚ª9:¥Á#ï3*~™"1A À¶ŸPXÉgú;%°Òö?ØwƒŞ«°n]!Á;¸dÎÊÌ°µ0_ú®áeö Ë–§¿Šş9˜Ÿ3O$ƒ[¾ÔÓã
+š¦Ìlx;(šI[;ÌÉQü~¶v¨—rÇ:Íem»[px,([R£ yÿÆöÚ§BıcšÒ¤­ë¥É[p³æqcbÅ$+4¹+‘İ‹]GN×zÆp„Í!¾c(4ùóû»‹¾M=¹»ÈdËğ0à2„½¿ûNGÄ_ØĞ,„~Ÿ«»"<‚´n—ç¹KRŠÕx¨ÂŒT<Å¯ıTb>®K2ØÕ¢D ,6¢„¢ÆŠ'Ş=p‘vÿNt´PBu¢Zíë:ìÑ³±J»ª?SPı5¯q—UÁÔ	lO{5ú×£ Œ8z'8_Mc7¢&Éã2óQŒãE(Õ¡î«iğ”Úõ$×íE)ºù¹Å{t²ÂYPw|¦;!¤çd’#‘ÿO[Ş­÷	ùF+^ÀÒqÎoûGs³ı¯ùJÃË «å(8;b«á¼¦:Ï‹js^gZfË„À„ÊF²~¿iWûäúù@5›T.B€Şüqæc`éFBçÉ·&dñ÷´{	§Hi…{/C)¼‹3Å‡Ö^ºå£”x¶w§Á•P-¡Lû³à¹·tQOï›‰y8TÌXöà¦`1ö&†öŸhïÁéV»p{Vš¸Ô[=£(9 Xºû[RM ´á€Z{Ç…GWb'n:¿¢în[MĞn{	Ê~Ë0k_-è½õGbS)ËöÿW´ëøTÖ¤µåô;œ:®ß¦C‡Ì´‘#‹‡V¿üÓÁæZ%tr&9 IÎr¯Úƒ‰5şX™ÒƒKôÓîP”Ôã±6¬@3á>8«ï, áğ~ônPğXÃHAPªĞ¤éÃô‡a5Š§hE¯zÚÂá™ıDpXœ(Aá­:0Gc¹Ğ±oÈDGŞÙ	š¿Õ<4€“˜
+kLå›¼Ş9qÌôûøù†¼Ô( Îeœ9á9	Ôn¼…±“@NPô—ºÉ¯ÕŠ­*ò¾µíbï}Æ¦˜’HÌ­«P\‹ô‚ÁG`O“7&b;¤C–

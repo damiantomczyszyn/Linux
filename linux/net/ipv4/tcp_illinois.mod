@@ -1,2 +1,2 @@
-/*
-	 * I took it apart an
+k_struct *p, int flags)
+{

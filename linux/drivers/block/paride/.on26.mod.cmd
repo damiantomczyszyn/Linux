@@ -1,5 +1,7 @@
-) \
-  include/acpi/acpi_io.h \
-  include/linux/io.h \
-    $(wildcard include/config/HAS_IOPORT_MAP) \
-  arch/x86/in
+// SPDX-License-Identifier: GPL-2.0-or-later
+/*
+ * netup-init.c
+ *
+ * NetUP Dual DVB-S2 CI driver
+ *
+ * Copyright (

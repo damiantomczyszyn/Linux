@@ -1,112 +1,167 @@
-LUB) \
-    $(wildcard include/config/SLOB) \
-  include/linux/overflow.h \
-  include/linux/percpu-refcount.h \
-  include/linux/kasan.h \
-    $(wildcard include/config/KASAN_STACK) \
-    $(wildcard include/config/KASAN_VMALLOC) \
-    $(wildcard include/config/KASAN_INLINE) \
-  include/linux/kasan-enabled.h \
-  include/linux/device.h \
-    $(wildcard include/config/GENERIC_MSI_IRQ_DOMAIN) \
-    $(wildcard include/config/GENERIC_MSI_IRQ) \
-    $(wildcard include/config/ENERGY_MODEL) \
-    $(wildcard include/config/PINCTRL) \
-    $(wildcard include/config/DMA_OPS) \
-    $(wildcard include/config/DMA_DECLARE_COHERENT) \
-    $(wildcard include/config/DMA_CMA) \
-    $(wildcard include/config/SWIOTLB) \
-    $(wildcard include/config/ARCH_HAS_SYNC_DMA_FOR_DEVICE) \
-    $(wildcard include/config/ARCH_HAS_SYNC_DMA_FOR_CPU) \
-    $(wildcard include/config/ARCH_HAS_SYNC_DMA_FOR_CPU_ALL) \
-    $(wildcard include/config/DMA_OPS_BYPASS) \
-    $(wildcard include/config/DEVTMPFS) \
-    $(wildcard include/config/SYSFS_DEPRECATED) \
-  include/linux/dev_printk.h \
-  include/linux/ratelimit.h \
-  include/linux/sched.h \
-    $(wildcard include/config/VIRT_CPU_ACCOUNTING_NATIVE) \
-    $(wildcard include/config/SCHED_INFO) \
-    $(wildcard include/config/SCHEDSTATS) \
-    $(wildcard include/config/SCHED_CORE) \
-    $(wildcard include/config/FAIR_GROUP_SCHED) \
-    $(wildcard include/config/RT_GROUP_SCHED) \
-    $(wildcard include/config/RT_MUTEXES) \
-    $(wildcard include/config/UCLAMP_TASK) \
-    $(wildcard include/config/UCLAMP_BUCKETS_COUNT) \
-    $(wildcard include/config/CGROUP_SCHED) \
-    $(wildcard include/config/BLK_DEV_IO_TRACE) \
-    $(wildcard include/config/PSI) \
-    $(wildcard include/config/COMPAT_BRK) \
-    $(wildcard include/config/CGROUPS) \
-    $(wildcard include/config/BLK_CGROUP) \
-    $(wildcard include/config/PAGE_OWNER) \
-    $(wildcard include/config/EVENTFD) \
-    $(wildcard include/config/ARCH_HAS_SCALED_CPUTIME) \
-    $(wildcard include/config/VIRT_CPU_ACCOUNTING_GEN) \
-    $(wildcard include/config/POSIX_CPUTIMERS) \
-    $(wildcard include/config/POSIX_CPU_TIMERS_TASK_WORK) \
-    $(wildcard include/config/KEYS) \
-    $(wildcard include/config/SYSVIPC) \
-    $(wildcard include/config/DETECT_HUNG_TASK) \
-    $(wildcard include/config/IO_URING) \
-    $(wildcard include/config/AUDIT) \
-    $(wildcard include/config/AUDITSYSCALL) \
-    $(wildcard include/config/UBSAN) \
-    $(wildcard include/config/UBSAN_TRAP) \
-    $(wildcard include/config/TASK_XACCT) \
-    $(wildcard include/config/CPUSETS) \
-    $(wildcard include/config/X86_CPU_RESCTRL) \
-    $(wildcard include/config/FUTEX) \
-    $(wildcard include/config/PERF_EVENTS) \
-    $(wildcard include/config/RSEQ) \
-    $(wildcard include/config/TASK_DELAY_ACCT) \
-    $(wildcard include/config/FAULT_INJECTION) \
-    $(wildcard include/config/LATENCYTOP) \
-    $(wildcard include/config/KUNIT) \
-    $(wildcard include/config/FUNCTION_GRAPH_TRACER) \
-    $(wildcard include/config/BCACHE) \
-    $(wildcard include/config/VMAP_STACK) \
-    $(wildcard include/config/SECURITY) \
-    $(wildcard include/config/BPF_SYSCALL) \
-    $(wildcard include/config/GCC_PLUGIN_STACKLEAK) \
-    $(wildcard include/config/X86_MCE) \
-    $(wildcard include/config/KRETPROBES) \
-    $(wildcard include/config/RETHOOK) \
-    $(wildcard include/config/ARCH_HAS_PARANOID_L1D_FLUSH) \
-    $(wildcard include/config/ARCH_TASK_STRUCT_ON_STACK) \
-    $(wildcard include/config/DEBUG_RSEQ) \
-  include/uapi/linux/sched.h \
-  include/linux/pid.h \
-  include/linux/rculist.h \
-    $(wildcard include/config/PROVE_RCU_LIST) \
-  include/linux/sem.h \
-  include/uapi/linux/sem.h \
-  include/linux/ipc.h \
-  include/linux/rhashtable-types.h \
-  include/uapi/linux/ipc.h \
-  arch/x86/include/generated/uapi/asm/ipcbuf.h \
-  include/uapi/asm-generic/ipcbuf.h \
-  arch/x86/include/uapi/asm/sembuf.h \
-  include/linux/shm.h \
-  include/uapi/linux/shm.h \
-  include/uapi/asm-generic/hugetlb_encode.h \
-  arch/x86/include/uapi/asm/shmbuf.h \
-  include/uapi/asm-generic/shmbuf.h \
-  arch/x86/include/asm/shmparam.h \
-  include/linux/plist.h \
-    $(wildcard include/config/DEBUG_PLIST) \
-  include/linux/hrtimer.h \
-    $(wildcard include/config/HIGH_RES_TIMERS) \
-    $(wildcard include/config/TIME_LOW_RES) \
-    $(wildcard include/config/TIMERFD) \
-  include/linux/hrtimer_defs.h \
-  include/linux/timerqueue.h \
-  include/linux/seccomp.h \
-    $(wildcard include/config/SECCOMP) \
-    $(wildcard include/config/HAVE_ARCH_SECCOMP_FILTER) \
-    $(wildcard include/config/SECCOMP_FILTER) \
-    $(wildcard include/config/CHECKPOINT_RESTORE) \
-    $(wildcard include/config/SECCOMP_CACHE_DEBUG) \
-  include/uapi/linux/seccomp.h \
-  arch/x8
+ in both TC_REQ and TC_REQ_SET
+ * indicate a stall in the RISC engine for a
+ * particular rider traffic class. This causes
+ * the 885 and 888 bridges (unknown about 887)
+ * to become inoperable. Setting bits in
+ * TC_REQ_SET resets the corresponding bits
+ * in TC_REQ (and TC_REQ_SET) allowing
+ * operation to continue.
+ */
+#define TC_REQ		0x00040090
+#define TC_REQ_SET	0x00040094
+
+#define RDR_CFG0	0x00050000
+#define RDR_CFG1	0x00050004
+#define RDR_CFG2	0x00050008
+#define RDR_RDRCTL1	0x0005030c
+#define RDR_TLCTL0	0x00050318
+
+/* APB DMAC Current Buffer Pointer */
+#define DMA1_PTR1	0x00100000
+#define DMA2_PTR1	0x00100004
+#define DMA3_PTR1	0x00100008
+#define DMA4_PTR1	0x0010000C
+#define DMA5_PTR1	0x00100010
+#define DMA6_PTR1	0x00100014
+#define DMA7_PTR1	0x00100018
+#define DMA8_PTR1	0x0010001C
+
+/* APB DMAC Current Table Pointer */
+#define DMA1_PTR2	0x00100040
+#define DMA2_PTR2	0x00100044
+#define DMA3_PTR2	0x00100048
+#define DMA4_PTR2	0x0010004C
+#define DMA5_PTR2	0x00100050
+#define DMA6_PTR2	0x00100054
+#define DMA7_PTR2	0x00100058
+#define DMA8_PTR2	0x0010005C
+
+/* APB DMAC Buffer Limit */
+#define DMA1_CNT1	0x00100080
+#define DMA2_CNT1	0x00100084
+#define DMA3_CNT1	0x00100088
+#define DMA4_CNT1	0x0010008C
+#define DMA5_CNT1	0x00100090
+#define DMA6_CNT1	0x00100094
+#define DMA7_CNT1	0x00100098
+#define DMA8_CNT1	0x0010009C
+
+/* APB DMAC Table Size */
+#define DMA1_CNT2	0x001000C0
+#define DMA2_CNT2	0x001000C4
+#define DMA3_CNT2	0x001000C8
+#define DMA4_CNT2	0x001000CC
+#define DMA5_CNT2	0x001000D0
+#define DMA6_CNT2	0x001000D4
+#define DMA7_CNT2	0x001000D8
+#define DMA8_CNT2	0x001000DC
+
+/* Timer Counters */
+#define TM_CNT_LDW	0x00110000
+#define TM_CNT_UW	0x00110004
+#define TM_LMT_LDW	0x00110008
+#define TM_LMT_UW	0x0011000C
+
+/* GPIO */
+#define GP0_IO		0x00110010
+#define GPIO_ISM	0x00110014
+#define SOFT_RESET	0x0011001C
+
+/* GPIO (417 Microsoftcontroller) RW Data */
+#define MC417_RWD	0x00110020
+
+/* GPIO (417 Microsoftcontroller) Output Enable, Low Active */
+#define MC417_OEN	0x00110024
+#define MC417_CTL	0x00110028
+#define ALT_PIN_OUT_SEL 0x0011002C
+#define CLK_DELAY	0x00110048
+#define PAD_CTRL	0x0011004C
+
+/* Video A Interface */
+#define VID_A_GPCNT		0x00130020
+#define VBI_A_GPCNT		0x00130024
+#define VID_A_GPCNT_CTL		0x00130030
+#define VBI_A_GPCNT_CTL		0x00130034
+#define VID_A_DMA_CTL		0x00130040
+#define VID_A_VIP_CTRL		0x00130080
+#define VID_A_PIXEL_FRMT	0x00130084
+#define VID_A_VBI_CTRL		0x00130088
+
+/* Video B Interface */
+#define VID_B_DMA		0x00130100
+#define VBI_B_DMA		0x00130108
+#define VID_B_GPCNT		0x00130120
+#define VBI_B_GPCNT		0x00130124
+#define VID_B_GPCNT_CTL		0x00130134
+#define VBI_B_GPCNT_CTL		0x00130138
+#define VID_B_DMA_CTL		0x00130140
+#define VID_B_SRC_SEL		0x00130144
+#define VID_B_LNGTH		0x00130150
+#define VID_B_HW_SOP_CTL	0x00130154
+#define VID_B_GEN_CTL		0x00130158
+#define VID_B_BD_PKT_STATUS	0x0013015C
+#define VID_B_SOP_STATUS	0x00130160
+#define VID_B_FIFO_OVFL_STAT	0x00130164
+#define VID_B_VLD_MISC		0x00130168
+#define VID_B_TS_CLK_EN		0x0013016C
+#define VID_B_VIP_CTRL		0x00130180
+#define VID_B_PIXEL_FRMT	0x00130184
+
+/* Video C Interface */
+#define VID_C_DMA		0x00130200
+#define VBI_C_DMA		0x00130208
+#define VID_C_GPCNT		0x00130220
+#define VID_C_GPCNT_CTL		0x00130230
+#define VBI_C_GPCNT_CTL		0x00130234
+#define VID_C_DMA_CTL		0x00130240
+#define VID_C_LNGTH		0x00130250
+#define VID_C_HW_SOP_CTL	0x00130254
+#define VID_C_GEN_CTL		0x00130258
+#define VID_C_BD_PKT_STATUS	0x0013025C
+#define VID_C_SOP_STATUS	0x00130260
+#define VID_C_FIFO_OVFL_STAT	0x00130264
+#define VID_C_VLD_MISC		0x00130268
+#define VID_C_TS_CLK_EN		0x0013026C
+
+/* Internal Audio Interface */
+#define AUD_INT_A_GPCNT		0x00140020
+#define AUD_INT_B_GPCNT		0x00140024
+#define AUD_INT_A_GPCNT_CTL	0x00140030
+#define AUD_INT_B_GPCNT_CTL	0x00140034
+#define AUD_INT_DMA_CTL		0x00140040
+#define AUD_INT_A_LNGTH		0x00140050
+#define AUD_INT_B_LNGTH		0x00140054
+#define AUD_INT_A_MODE		0x00140058
+#define AUD_INT_B_MODE		0x0014005C
+
+/* External Audio Interface */
+#define AUD_EXT_DMA		0x00140100
+#define AUD_EXT_GPCNT		0x00140120
+#define AUD_EXT_GPCNT_CTL	0x00140130
+#define AUD_EXT_DMA_CTL		0x00140140
+#define AUD_EXT_LNGTH		0x00140150
+#define AUD_EXT_A_MODE		0x00140158
+
+/* I2C Bus 1 */
+#define I2C1_ADDR	0x00180000
+#define I2C1_WDATA	0x00180004
+#define I2C1_CTRL	0x00180008
+#define I2C1_RDATA	0x0018000C
+#define I2C1_STAT	0x00180010
+
+/* I2C Bus 2 */
+#define I2C2_ADDR	0x00190000
+#define I2C2_WDATA	0x00190004
+#define I2C2_CTRL	0x00190008
+#define I2C2_RDATA	0x0019000C
+#define I2C2_STAT	0x00190010
+
+/* I2C Bus 3 */
+#define I2C3_ADDR	0x001A0000
+#define I2C3_WDATA	0x001A0004
+#define I2C3_CTRL	0x001A0008
+#define I2C3_RDATA	0x001A000C
+#define I2C3_STAT	0x001A0010
+
+/* UART */
+#define UART_CTL	0x

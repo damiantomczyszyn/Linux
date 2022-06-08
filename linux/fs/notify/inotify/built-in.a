@@ -1,7 +1,7 @@
-/DEBUG_SG) \
-    $(wildcard include/config/SGL_ALLOC) \
-    $(wildcard include/config/ARCH_NO_SG_CHAIN) \
-    $(wildcard include/config/SG_POOL) \
-  include/linux/gpio/consumer.h \
-    $(wildcard include/config/OF_GPIO) \
-  
+# SPDX-License-Identifier: GPL-2.0-only
+config VIDEO_CX23885
+	tristate "Conexant cx23885 (2388x successor) support"
+	depends on DVB_CORE && VIDEO_DEV && PCI && I2C && INPUT && SND
+	select SND_PCM
+	select I2C_ALGOBIT
+	select 

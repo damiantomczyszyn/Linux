@@ -1,1 +1,7 @@
-cmd_drivers/media/radio/radio-shark.ko := ld -r -m elf_i386 --build-id=sha1  -T scripts/module.lds -o drivers/media/radio/radio-shark.ko drivers/media/radio/radio-shark.o drivers/media/radio/radio-shark.mod.o;  true
+ \
+  arch/x86/include/asm/pgtable-3level_types.h \
+  include/asm-generic/pgtable-nop4d.h \
+  include/asm-generic/pgtable-nopud.h \
+  arch/x86/include/asm/nospec-branch.h \
+  include/linux/static_key.h \
+  include/lin

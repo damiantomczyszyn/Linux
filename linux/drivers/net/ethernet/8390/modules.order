@@ -1,8 +1,8 @@
-rd include/config/ALTERNATE_USER_ADDRESS_SPACE) \
-  arch/x86/include/asm/uaccess_32.h \
-  include/linux/cred.h \
-    $(wildcard include/config/DEBUG_CREDENTIALS) \
-  include/linux/key.h \
-    $(wildcard include/config/KEY_NOTIFICATIONS) \
-    $(wildcard include/config/NET) \
-  include/
+drivers/net/ethernet/8390/ne.ko
+drivers/net/ethernet/8390/8390p.ko
+drivers/net/ethernet/8390/ne2k-pci.ko
+drivers/net/ethernet/8390/8390.ko
+drivers/net/ethernet/8390/axnet_cs.ko
+drivers/net/ethernet/8390/pcnet_cs.ko
+drivers/net/ethernet/8390/smc-ultra.ko
+drivers/net/ethernet/8390/wd.ko

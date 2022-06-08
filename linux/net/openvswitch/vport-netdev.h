@@ -1,14 +1,20 @@
-CPI_APEI_GHES) \
-    $(wildcard include/config/INTEL_TXT) \
-  arch/x86/include/generated/asm/kmap_size.h \
-  include/asm-generic/kmap_size.h \
-    $(wildcard include/config/DEBUG_KMAP_LOCAL) \
-  include/asm-generic/fixmap.h \
-  arch/x86/include/asm/irq_vectors.h \
-    $(wildcard include/config/HAVE_KVM) \
-    $(wildcard include/config/HYPERV) \
-    $(wildcard include/config/PCI_MSI) \
-  arch/x86/include/asm/cpu_entry_area.h \
-  arch/x86/include/asm/intel_ds.h \
-  arch/x86/include/asm/pgtable_areas.h \
-  arch/x86/include/asm/pgtable_3
+uted by a highprio stopper thread
+ * and performs thread migration by bumping thread off CPU then
+ * 'pushing' onto another runqueue.
+ */
+static int migration_cpu_stop(void *data)
+{
+	struct migration_arg *arg = data;
+	struct set_affinity_pending *pending = arg->pending;
+	struct task_struct *p = arg->task;
+	struct rq *rq = this_rq();
+	bool complete = false;
+	struct rq_flags rf;
+
+	/*
+	 * The original target CPU might have gone down and we might
+	 * be on another CPU but it doesn't matter.
+	 */
+	local_irq_save(rf.flags);
+	/*
+	 * We need

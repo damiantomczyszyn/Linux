@@ -1,2 +1,2 @@
-IC_IOREMAP) \
-    $(wildcard include
+UGE_HVR1500:
+	case CX23885_BOARD_MPX

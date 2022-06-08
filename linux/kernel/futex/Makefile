@@ -1,5 +1,8 @@
-h \
-  include/vdso/bits.h \
-  include/linux/build_bug.h \
-  include/linux/compiler.h \
-  
+2_FIELD_SEQ_BT:
+		break;
+	default:
+		field = V4L2_FIELD_INTERLACED;
+		break;
+	}
+
+	f->fmt.

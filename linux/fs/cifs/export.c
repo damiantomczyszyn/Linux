@@ -1,47 +1,59 @@
-nux/ktime.h \
-  include/linux/time.h \
-    $(wildcard include/config/POSIX_TIMERS) \
-  include/linux/time32.h \
-  include/linux/timex.h \
-  include/uapi/linux/timex.h \
-  arch/x86/include/asm/timex.h \
-    $(wildcard include/config/X86_TSC) \
-  arch/x86/include/asm/tsc.h \
-  include/vdso/time32.h \
-  include/vdso/time.h \
-  include/linux/jiffies.h \
-  include/vdso/jiffies.h \
-  include/generated/timeconst.h \
-  include/vdso/ktime.h \
-  include/linux/timekeeping.h \
-    $(wildcard include/config/GENERIC_CMOS_UPDATE) \
-  include/linux/clocksource_ids.h \
-  include/linux/debugobjects.h \
-    $(wildcard include/config/DEBUG_OBJECTS) \
-    $(wildcard include/config/DEBUG_OBJECTS_FREE) \
-  include/uapi/linux/ipc.h \
-  arch/x86/include/generated/uapi/asm/ipcbuf.h \
-  include/uapi/asm-generic/ipcbuf.h \
-  arch/x86/include/uapi/asm/sembuf.h \
-  include/linux/shm.h \
-  include/uapi/linux/shm.h \
-  include/uapi/asm-generic/hugetlb_encode.h \
-  arch/x86/include/uapi/asm/shmbuf.h \
-  include/uapi/asm-generic/shmbuf.h \
-  arch/x86/include/asm/shmparam.h \
-  include/linux/plist.h \
-    $(wildcard include/config/DEBUG_PLIST) \
-  include/linux/hrtimer.h \
-    $(wildcard include/config/HIGH_RES_TIMERS) \
-    $(wildcard include/config/TIME_LOW_RES) \
-    $(wildcard include/config/TIMERFD) \
-  include/linux/hrtimer_defs.h \
-  include/linux/rbtree.h \
-  include/linux/rbtree_types.h \
-  include/linux/percpu.h \
-    $(wildcard include/config/NEED_PER_CPU_EMBED_FIRST_CHUNK) \
-    $(wildcard include/config/NEED_PER_CPU_PAGE_FIRST_CHUNK) \
-  include/linux/mmdebug.h \
-    $(wildcard include/config/DEBUG_VM) \
-    $(wildcard include/config/DEBUG_VM_PGFLAGS) \
-  include/linux/seqlock.h \
+// SPDX-License-Identifier: GPL-2.0-or-later
+/*
+ * altera-ci.c
+ *
+ *  CI driver in conjunction with NetUp Dual DVB-T/C RF CI card
+ *
+ * Copyright (C) 2010,2011 NetUP Inc.
+ * Copyright (C) 2010,2011 Igor M. Liplianin <liplianin@netup.ru>
+ */
+
+/*
+ * currently cx23885 GPIO's used.
+ * GPIO-0 ~INT in
+ * GPIO-1 TMS out
+ * GPIO-2 ~reset chips out
+ * GPIO-3 to GPIO-10 data/addr for CA in/out
+ * GPIO-11 ~CS out
+ * GPIO-12 AD_RG out
+ * GPIO-13 ~WR out
+ * GPIO-14 ~RD out
+ * GPIO-15 ~RDY in
+ * GPIO-16 TCK out
+ * GPIO-17 TDO in
+ * GPIO-18 TDI out
+ */
+/*
+ *  Bit definitions for MC417_RWD and MC417_OEN registers
+ * bits 31-16
+ * +-----------+
+ * | Reserved  |
+ * +-----------+
+ *   bit 15  bit 14  bit 13 bit 12  bit 11  bit 10  bit 9   bit 8
+ * +-------+-------+-------+-------+-------+-------+-------+-------+
+ * |  TDI  |  TDO  |  TCK  |  RDY# |  #RD  |  #WR  | AD_RG |  #CS  |
+ * +-------+-------+-------+-------+-------+-------+-------+-------+
+ *  bit 7   bit 6   bit 5   bit 4   bit 3   bit 2   bit 1   bit 0
+ * +-------+-------+-------+-------+-------+-------+-------+-------+
+ * |  DATA7|  DATA6|  DATA5|  DATA4|  DATA3|  DATA2|  DATA1|  DATA0|
+ * +-------+-------+-------+-------+-------+-------+-------+-------+
+ */
+
+#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
+
+#include <media/dvb_demux.h>
+#include <media/dvb_frontend.h>
+#include "altera-ci.h"
+#include <media/dvb_ca_en50221.h>
+
+/* FPGA regs */
+#define NETUP_CI_INT_CTRL	0x00
+#define NETUP_CI_BUSCTRL2	0x01
+#define NETUP_CI_ADDR0		0x04
+#define NETUP_CI_ADDR1		0x05
+#define NETUP_CI_DATA		0x06
+#define NETUP_CI_BUSCTRL	0x07
+#define NETUP_CI_PID_ADDR0	0x08
+#define NETUP_CI_PID_ADDR1	0x09
+#define NETUP_CI_PID_DATA	0x0a
+#define NETUP_

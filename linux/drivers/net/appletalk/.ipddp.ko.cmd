@@ -1,1 +1,1 @@
-cmd_drivers/media/i2c/tvp514x.o := gcc -Wp,-MMD,drivers/media/i2c/.tvp514x.o.d -nostdinc -I./arch/x86/include -I./arch/x86/include/generated  -I./include -I./arch/x86/include/uapi -I./arch/x86/include
+cmd_drivers/net/appletalk/ipddp.ko := ld -r -m elf_i386 --build-id=sha1  -T scripts/module.lds -o drivers/net/appletalk/ipddp.ko drivers/net/appletalk/ipddp.o drivers/net/appletalk/ipddp.mod.o;  true

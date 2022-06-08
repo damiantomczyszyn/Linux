@@ -1,1 +1,2 @@
-ildcard include/config/PHYS_AD
+fault_pm	  = 0,
+				.dvb_ampli

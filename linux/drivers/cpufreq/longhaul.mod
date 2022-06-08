@@ -1,2 +1,1 @@
-.h \
-  include/linux/atomic/
+/* SPDX-License-Identifier: 

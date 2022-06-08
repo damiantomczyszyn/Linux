@@ -1,1 +1,1 @@
-cmd_drivers/media/i2c/uda
+cx23885_irq_add_enable(de

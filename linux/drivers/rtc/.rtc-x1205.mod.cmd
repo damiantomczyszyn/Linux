@@ -1,4 +1,1 @@
-nux/pid.h \
-  include/linux/rculist.h \
-    $(wildcard include/config/PROVE_RCU_LIST) \
-  include/linux
+drivers/media/pci/cx18/cx18-driver.o drivers/media/pci/cx18/cx18-cards.o drivers/media/pci/cx18/cx18-i2

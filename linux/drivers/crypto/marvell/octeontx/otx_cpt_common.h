@@ -1,29 +1,45 @@
-ig/RCU_FANOUT) \
-    $(wildcard include/config/RCU_FANOUT_LEAF) \
-  include/linux/page-flags-layout.h \
-    $(wildcard include/config/KASAN_HW_TAGS) \
-  include/linux/numa.h \
-    $(wildcard include/config/NODES_SHIFT) \
-    $(wildcard include/config/NUMA_KEEP_MEMINFO) \
-    $(wildcard include/config/HAVE_ARCH_NODE_DEV_GROUP) \
-  arch/x86/include/asm/sparsemem.h \
-  include/generated/bounds.h \
-  include/linux/seqlock.h \
-  include/linux/ww_mutex.h \
-    $(wildcard include/config/DEBUG_RT_MUTEXES) \
-    $(wildcard include/config/DEBUG_WW_MUTEX_SLOWPATH) \
-  include/linux/rtmutex.h \
-  arch/x86/include/asm/mmu.h \
-    $(wildcard include/config/MODIFY_LDT_SYSCALL) \
-  include/linux/kmod.h \
-  include/linux/umh.h \
-  include/linux/gfp.h \
-    $(wildcard include/config/HIGHMEM) \
-    $(wildcard include/config/ZONE_DMA) \
-    $(wildcard include/config/ZONE_DMA32) \
-    $(wildcard include/config/ZONE_DEVICE) \
-    $(wildcard include/config/PM_SLEEP) \
-    $(wildcard include/config/CONTIG_ALLOC) \
-    $(wildcard include/config/CMA) \
-  include/linux/mmdebug.h \
-    $(wildcar
+/* SPDX-License-Identifier: GPL-2.0-or-later */
+/*
+ *  Driver for the Conexant CX23885 PCIe bridge
+ *
+ *  Copyright (c) 2006 Steven Toth <stoth@linuxtv.org>
+ */
+
+#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
+
+#include <linux/pci.h>
+#include <linux/i2c.h>
+#include <linux/kdev_t.h>
+#include <linux/slab.h>
+
+#include <media/v4l2-device.h>
+#include <media/v4l2-fh.h>
+#include <media/v4l2-ctrls.h>
+#include <media/tuner.h>
+#include <media/tveeprom.h>
+#include <media/videobuf2-dma-sg.h>
+#include <media/videobuf2-dvb.h>
+#include <media/rc-core.h>
+
+#include "cx23885-reg.h"
+#include "media/drv-intf/cx2341x.h"
+
+#include <linux/mutex.h>
+
+#define CX23885_VERSION "0.0.4"
+
+#define UNSET (-1U)
+
+#define CX23885_MAXBOARDS 8
+
+/* Max number of inputs by card */
+#define MAX_CX23885_INPUT 8
+#define INPUT(nr) (&cx23885_boards[dev->board].input[nr])
+
+#define BUFFER_TIMEOUT     (HZ)  /* 0.5 seconds */
+
+#define CX23885_BOARD_NOAUTO               UNSET
+#define CX23885_BOARD_UNKNOWN                  0
+#define CX23885_BOARD_HAUPPAUGE_HVR1800lp      1
+#define CX23885_BOARD_HAUPPAUGE_HVR1800        2
+#

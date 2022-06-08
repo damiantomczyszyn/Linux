@@ -1,125 +1,238 @@
-e/linux/rwlock.h \
-    $(wildcard include/config/PREEMPT) \
-  include/linux/spinlock_api_smp.h \
-    $(wildcard include/config/INLINE_SPIN_LOCK) \
-    $(wildcard include/config/INLINE_SPIN_LOCK_BH) \
-    $(wildcard include/config/INLINE_SPIN_LOCK_IRQ) \
-    $(wildcard include/config/INLINE_SPIN_LOCK_IRQSAVE) \
-    $(wildcard include/config/INLINE_SPIN_TRYLOCK) \
-    $(wildcard include/config/INLINE_SPIN_TRYLOCK_BH) \
-    $(wildcard include/config/UNINLINE_SPIN_UNLOCK) \
-    $(wildcard include/config/INLINE_SPIN_UNLOCK_BH) \
-    $(wildcard include/config/INLINE_SPIN_UNLOCK_IRQ) \
-    $(wildcard include/config/INLINE_SPIN_UNLOCK_IRQRESTORE) \
-    $(wildcard include/config/GENERIC_LOCKBREAK) \
-  include/linux/rwlock_api_smp.h \
-    $(wildcard include/config/INLINE_READ_LOCK) \
-    $(wildcard include/config/INLINE_WRITE_LOCK) \
-    $(wildcard include/config/INLINE_READ_LOCK_BH) \
-    $(wildcard include/config/INLINE_WRITE_LOCK_BH) \
-    $(wildcard include/config/INLINE_READ_LOCK_IRQ) \
-    $(wildcard include/config/INLINE_WRITE_LOCK_IRQ) \
-    $(wildcard include/config/INLINE_READ_LOCK_IRQSAVE) \
-    $(wildcard include/config/INLINE_WRITE_LOCK_IRQSAVE) \
-    $(wildcard include/config/INLINE_READ_TRYLOCK) \
-    $(wildcard include/config/INLINE_WRITE_TRYLOCK) \
-    $(wildcard include/config/INLINE_READ_UNLOCK) \
-    $(wildcard include/config/INLINE_WRITE_UNLOCK) \
-    $(wildcard include/config/INLINE_READ_UNLOCK_BH) \
-    $(wildcard include/config/INLINE_WRITE_UNLOCK_BH) \
-    $(wildcard include/config/INLINE_READ_UNLOCK_IRQ) \
-    $(wildcard include/config/INLINE_WRITE_UNLOCK_IRQ) \
-    $(wildcard include/config/INLINE_READ_UNLOCK_IRQRESTORE) \
-    $(wildcard include/config/INLINE_WRITE_UNLOCK_IRQRESTORE) \
-  include/linux/refcount.h \
-  include/linux/rbtree.h \
-  include/linux/rbtree_types.h \
-  include/linux/rcupdate.h \
-    $(wildcard include/config/PREEMPT_RCU) \
-    $(wildcard include/config/TINY_RCU) \
-    $(wildcard include/config/RCU_STRICT_GRACE_PERIOD) \
-    $(wildcard include/config/TASKS_RCU_GENERIC) \
-    $(wildcard include/config/RCU_STALL_COMMON) \
-    $(wildcard include/config/NO_HZ_FULL) \
-    $(wildcard include/config/RCU_NOCB_CPU) \
-    $(wildcard include/config/TASKS_RCU) \
-    $(wildcard include/config/TASKS_TRACE_RCU) \
-    $(wildcard include/config/TASKS_RUDE_RCU) \
-    $(wildcard include/config/TREE_RCU) \
-    $(wildcard include/config/DEBUG_OBJECTS_RCU_HEAD) \
-    $(wildcard include/config/PROVE_RCU) \
-    $(wildcard include/config/ARCH_WEAK_RELEASE_ACQUIRE) \
-  include/linux/rcutree.h \
-  include/linux/rwsem.h \
-    $(wildcard include/config/RWSEM_SPIN_ON_OWNER) \
-    $(wildcard include/config/DEBUG_RWSEMS) \
-  include/linux/osq_lock.h \
-  include/linux/completion.h \
-  include/linux/swait.h \
-  include/linux/wait.h \
-  include/uapi/linux/wait.h \
-  include/linux/uprobes.h \
-    $(wildcard include/config/UPROBES) \
-  arch/x86/include/asm/uprobes.h \
-  include/linux/notifier.h \
-  include/linux/mutex.h \
-    $(wildcard include/config/MUTEX_SPIN_ON_OWNER) \
-    $(wildcard include/config/DEBUG_MUTEXES) \
-  include/linux/debug_locks.h \
-  include/linux/srcu.h \
-    $(wildcard include/config/TINY_SRCU) \
-    $(wildcard include/config/SRCU) \
-  include/linux/workqueue.h \
-    $(wildcard include/config/DEBUG_OBJECTS_WORK) \
-    $(wildcard include/config/FREEZER) \
-    $(wildcard include/config/WQ_WATCHDOG) \
-  include/linux/timer.h \
-    $(wildcard include/config/DEBUG_OBJECTS_TIMERS) \
-    $(wildcard include/config/NO_HZ_COMMON) \
-  include/linux/ktime.h \
-  include/linux/jiffies.h \
-  include/vdso/jiffies.h \
-  include/generated/timeconst.h \
-  include/vdso/ktime.h \
-  include/linux/timekeeping.h \
-    $(wildcard include/config/GENERIC_CMOS_UPDATE) \
-  include/linux/clocksource_ids.h \
-  include/linux/debugobjects.h \
-    $(wildcard include/config/DEBUG_OBJECTS) \
-    $(wildcard include/config/DEBUG_OBJECTS_FREE) \
-  include/linux/rcu_segcblist.h \
-  include/linux/srcutree.h \
-  include/linux/rcu_node_tree.h \
-    $(wildcard include/config/RCU_FANOUT) \
-    $(wildcard include/config/RCU_FANOUT_LEAF) \
-  include/linux/page-flags-layout.h \
-    $(wildcard include/config/KASAN_HW_TAGS) \
-  include/linux/numa.h \
-    $(wildcard include/config/NODES_SHIFT) \
-    $(wildcard include/config/NUMA_KEEP_MEMINFO) \
-    $(wildcard include/config/HAVE_ARCH_NODE_DEV_GROUP) \
-  arch/x86/include/asm/sparsemem.h \
-  include/generated/bounds.h \
-  include/linux/seqlock.h \
-  include/linux/ww_mutex.h \
-    $(wildcard include/config/DEBUG_RT_MUTEXES) \
-    $(wildcard include/config/DEBUG_WW_MUTEX_SLOWPATH) \
-  include/linux/rtmutex.h \
-  arch/x86/include/asm/mmu.h \
-    $(wildcard include/config/MODIFY_LDT_SYSCALL) \
-  include/linux/kmod.h \
-  include/linux/umh.h \
-  include/linux/gfp.h \
-    $(wildcard include/config/HIGHMEM) \
-    $(wildcard include/config/ZONE_DMA) \
-    $(wildcard include/config/ZONE_DMA32) \
-    $(wildcard include/config/ZONE_DEVICE) \
-    $(wildcard include/config/PM_SLEEP) \
-    $(wildcard include/config/CONTIG_ALLOC) \
-    $(wildcard include/config/CMA) \
-  include/linux/mmdebug.h \
-    $(wildcard include/config/DEBUG_VM) \
-    $(wildcard include/config/DEBUG_VM_PGFLAGS) \
-  include/linux/mmzone.h \
-    $(wildcard include/config/FORCE_MAX_ZONEORDER) \
-    $(wildc
+truct cx23885_audio_dev *chip = snd_pcm_substream_chip(substream);
+	struct snd_pcm_runtime *runtime = substream->runtime;
+	int err;
+
+	if (!chip) {
+		pr_err("BUG: cx23885 can't find device struct. Can't proceed with open\n");
+		return -ENODEV;
+	}
+
+	err = snd_pcm_hw_constraint_pow2(runtime, 0,
+		SNDRV_PCM_HW_PARAM_PERIODS);
+	if (err < 0)
+		goto _error;
+
+	chip->substream = substream;
+
+	runtime->hw = snd_cx23885_digital_hw;
+
+	if (chip->dev->sram_channels[AUDIO_SRAM_CHANNEL].fifo_size !=
+		DEFAULT_FIFO_SIZE) {
+		unsigned int bpl = chip->dev->
+			sram_channels[AUDIO_SRAM_CHANNEL].fifo_size / 4;
+		bpl &= ~7; /* must be multiple of 8 */
+		runtime->hw.period_bytes_min = bpl;
+		runtime->hw.period_bytes_max = bpl;
+	}
+
+	return 0;
+_error:
+	dprintk(1, "Error opening PCM!\n");
+	return err;
+}
+
+/*
+ * audio close callback
+ */
+static int snd_cx23885_close(struct snd_pcm_substream *substream)
+{
+	return 0;
+}
+
+
+/*
+ * hw_params callback
+ */
+static int snd_cx23885_hw_params(struct snd_pcm_substream *substream,
+			      struct snd_pcm_hw_params *hw_params)
+{
+	struct cx23885_audio_dev *chip = snd_pcm_substream_chip(substream);
+	struct cx23885_audio_buffer *buf;
+	int ret;
+
+	if (substream->runtime->dma_area) {
+		dsp_buffer_free(chip);
+		substream->runtime->dma_area = NULL;
+	}
+
+	chip->period_size = params_period_bytes(hw_params);
+	chip->num_periods = params_periods(hw_params);
+	chip->dma_size = chip->period_size * params_periods(hw_params);
+
+	BUG_ON(!chip->dma_size);
+	BUG_ON(chip->num_periods & (chip->num_periods-1));
+
+	buf = kzalloc(sizeof(*buf), GFP_KERNEL);
+	if (NULL == buf)
+		return -ENOMEM;
+
+	buf->bpl = chip->period_size;
+	chip->buf = buf;
+
+	ret = cx23885_alsa_dma_init(chip,
+			(PAGE_ALIGN(chip->dma_size) >> PAGE_SHIFT));
+	if (ret < 0)
+		goto error;
+
+	ret = cx23885_alsa_dma_map(chip);
+	if (ret < 0)
+		goto error;
+
+	ret = cx23885_risc_databuffer(chip->pci, &buf->risc, buf->sglist,
+				   chip->period_size, chip->num_periods, 1);
+	if (ret < 0)
+		goto error;
+
+	/* Loop back to start of program */
+	buf->risc.jmp[0] = cpu_to_le32(RISC_JUMP|RISC_IRQ1|RISC_CNT_INC);
+	buf->risc.jmp[1] = cpu_to_le32(buf->risc.dma);
+	buf->risc.jmp[2] = cpu_to_le32(0); /* bits 63-32 */
+
+	substream->runtime->dma_area = chip->buf->vaddr;
+	substream->runtime->dma_bytes = chip->dma_size;
+	substream->runtime->dma_addr = 0;
+
+	return 0;
+
+error:
+	kfree(buf);
+	chip->buf = NULL;
+	return ret;
+}
+
+/*
+ * hw free callback
+ */
+static int snd_cx23885_hw_free(struct snd_pcm_substream *substream)
+{
+
+	struct cx23885_audio_dev *chip = snd_pcm_substream_chip(substream);
+
+	if (substream->runtime->dma_area) {
+		dsp_buffer_free(chip);
+		substream->runtime->dma_area = NULL;
+	}
+
+	return 0;
+}
+
+/*
+ * prepare callback
+ */
+static int snd_cx23885_prepare(struct snd_pcm_substream *substream)
+{
+	return 0;
+}
+
+/*
+ * trigger callback
+ */
+static int snd_cx23885_card_trigger(struct snd_pcm_substream *substream,
+	int cmd)
+{
+	struct cx23885_audio_dev *chip = snd_pcm_substream_chip(substream);
+	int err;
+
+	/* Local interrupts are already disabled by ALSA */
+	spin_lock(&chip->lock);
+
+	switch (cmd) {
+	case SNDRV_PCM_TRIGGER_START:
+		err = cx23885_start_audio_dma(chip);
+		break;
+	case SNDRV_PCM_TRIGGER_STOP:
+		err = cx23885_stop_audio_dma(chip);
+		break;
+	default:
+		err = -EINVAL;
+		break;
+	}
+
+	spin_unlock(&chip->lock);
+
+	return err;
+}
+
+/*
+ * pointer callback
+ */
+static snd_pcm_uframes_t snd_cx23885_pointer(
+	struct snd_pcm_substream *substream)
+{
+	struct cx23885_audio_dev *chip = snd_pcm_substream_chip(substream);
+	struct snd_pcm_runtime *runtime = substream->runtime;
+	u16 count;
+
+	count = atomic_read(&chip->count);
+
+	return runtime->period_size * (count & (runtime->periods-1));
+}
+
+/*
+ * page callback (needed for mmap)
+ */
+static struct page *snd_cx23885_page(struct snd_pcm_substream *substream,
+				unsigned long offset)
+{
+	void *pageptr = substream->runtime->dma_area + offset;
+	return vmalloc_to_page(pageptr);
+}
+
+/*
+ * operators
+ */
+static const struct snd_pcm_ops snd_cx23885_pcm_ops = {
+	.open = snd_cx23885_pcm_open,
+	.close = snd_cx23885_close,
+	.hw_params = snd_cx23885_hw_params,
+	.hw_free = snd_cx23885_hw_free,
+	.prepare = snd_cx23885_prepare,
+	.trigger = snd_cx23885_card_trigger,
+	.pointer = snd_cx23885_pointer,
+	.page = snd_cx23885_page,
+};
+
+/*
+ * create a PCM device
+ */
+static int snd_cx23885_pcm(struct cx23885_audio_dev *chip, int device,
+	char *name)
+{
+	int err;
+	struct snd_pcm *pcm;
+
+	err = snd_pcm_new(chip->card, name, device, 0, 1, &pcm);
+	if (err < 0)
+		return err;
+	pcm->private_data = chip;
+	strscpy(pcm->name, name, sizeof(pcm->name));
+	snd_pcm_set_ops(pcm, SNDRV_PCM_STREAM_CAPTURE, &snd_cx23885_pcm_ops);
+
+	return 0;
+}
+
+/****************************************************************************
+			Basic Flow for Sound Devices
+ ****************************************************************************/
+
+/*
+ * Alsa Constructor - Component probe
+ */
+
+struct cx23885_audio_dev *cx23885_audio_register(struct cx23885_dev *dev)
+{
+	struct snd_card *card;
+	struct cx23885_audio_dev *chip;
+	int err;
+
+	if (disable_analog_audio)
+		return NULL;
+
+	if (dev->sram_channels[AUDIO_SRAM_CHANNEL].cmds_start == 0) {
+		pr_warn("%s(): Missing SRAM channel configuration for analog TV Audio\n",
+		       __func__);
+		return NULL;
+	}
+
+	err = snd_card_new(&dev->pci->dev,
+			   SNDRV_DEFAULT_

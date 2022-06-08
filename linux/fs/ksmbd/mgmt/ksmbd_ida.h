@@ -1,26 +1,24 @@
-d include/config/GENERIC_IOMAP) \
-    $(wildcard include/config/GENERIC_IOREMAP) \
-    $(wildcard include/config/VIRT_TO_BUS) \
-    $(wildcard include/config/GENERIC_DEVMEM_IS_ALLOWED) \
-  include/linux/logic_pio.h \
-    $(wildcard include/config/INDIRECT_PIO) \
-  include/linux/vmalloc.h \
-    $(wildcard include/config/HAVE_ARCH_HUGE_VMALLOC) \
-  arch/x86/include/asm/vmalloc.h \
-    $(wildcard include/config/HAVE_ARCH_HUGE_VMAP) \
-  arch/x86/include/asm/acpi.h \
-    $(wildcard include/config/ACPI_APEI) \
-  include/acpi/pdc_intel.h \
-  arch/x86/include/asm/numa.h \
-    $(wildcard include/config/NUMA_EMU) \
-  arch/x86/include/asm/numa_32.h \
-  include/linux/regulator/consumer.h \
-    $(wildcard include/config/REGULATOR) \
-  include/linux/suspend.h \
-    $(wildcard include/config/VT) \
-    $(wildcard include/config/SUSPEND) \
-    $(wildcard include/config/HIBERNATION_SNAPSHOT_DEV) \
-    $(wildcard include/config/PM_SLEEP_DEBUG) \
-    $(wildcard include/config/PM_AUTOSLEEP) \
-  include/linux/swap.h \
-    $(wildcard include/config/DEVICE_PR
+cx23885-cards.c                                             */
+extern struct cx23885_board cx23885_boards[];
+extern const unsigned int cx23885_bcount;
+
+extern struct cx23885_subid cx23885_subids[];
+extern const unsigned int cx23885_idcount;
+
+extern int cx23885_tuner_callback(void *priv, int component,
+	int command, int arg);
+extern void cx23885_card_list(struct cx23885_dev *dev);
+extern int  cx23885_ir_init(struct cx23885_dev *dev);
+extern void cx23885_ir_pci_int_enable(struct cx23885_dev *dev);
+extern void cx23885_ir_fini(struct cx23885_dev *dev);
+extern void cx23885_gpio_setup(struct cx23885_dev *dev);
+extern void cx23885_card_setup(struct cx23885_dev *dev);
+extern void cx23885_card_setup_pre_i2c(struct cx23885_dev *dev);
+
+extern int cx23885_dvb_register(struct cx23885_tsport *port);
+extern int cx23885_dvb_unregister(struct cx23885_tsport *port);
+
+extern int cx23885_buf_prepare(struct cx23885_buffer *buf,
+			       struct cx23885_tsport *port);
+extern void cx23885_buf_queue(struct cx23885_tsport *port,
+			      struct cx23885_buffer 

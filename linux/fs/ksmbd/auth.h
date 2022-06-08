@@ -1,53 +1,82 @@
-ig/RCU_FANOUT) \
-    $(wildcard include/config/RCU_FANOUT_LEAF) \
-  include/linux/page-flags-layout.h \
-    $(wildcard include/config/KASAN_HW_TAGS) \
-  include/linux/numa.h \
-    $(wildcard include/config/NODES_SHIFT) \
-    $(wildcard include/config/NUMA_KEEP_MEMINFO) \
-    $(wildcard include/config/HAVE_ARCH_NODE_DEV_GROUP) \
-  arch/x86/include/asm/sparsemem.h \
-  include/generated/bounds.h \
-  include/linux/seqlock.h \
-  include/linux/ww_mutex.h \
-    $(wildcard include/config/DEBUG_RT_MUTEXES) \
-    $(wildcard include/config/DEBUG_WW_MUTEX_SLOWPATH) \
-  include/linux/rtmutex.h \
-  arch/x86/include/asm/mmu.h \
-    $(wildcard include/config/MODIFY_LDT_SYSCALL) \
-  include/linux/kmod.h \
-  include/linux/umh.h \
-  include/linux/gfp.h \
-    $(wildcard include/config/HIGHMEM) \
-    $(wildcard include/config/ZONE_DMA) \
-    $(wildcard include/config/ZONE_DMA32) \
-    $(wildcard include/config/ZONE_DEVICE) \
-    $(wildcard include/config/PM_SLEEP) \
-    $(wildcard include/config/CONTIG_ALLOC) \
-    $(wildcard include/config/CMA) \
-  include/linux/mmdebug.h \
-    $(wildcard include/config/DEBUG_VM) \
-    $(wildcard include/config/DEBUG_VM_PGFLAGS) \
-  include/linux/mmzone.h \
-    $(wildcard include/config/FORCE_MAX_ZONEORDER) \
-    $(wildcard include/config/MEMORY_ISOLATION) \
-    $(wildcard include/config/ZSMALLOC) \
-    $(wildcard include/config/MEMORY_HOTPLUG) \
-    $(wildcard include/config/COMPACTION) \
-    $(wildcard include/config/PAGE_EXTENSION) \
-    $(wildcard include/config/DEFERRED_STRUCT_PAGE_INIT) \
-    $(wildcard include/config/HAVE_MEMORYLESS_NODES) \
-    $(wildcard include/config/SPARSEMEM_EXTREME) \
-    $(wildcard include/config/HAVE_ARCH_PFN_VALID) \
-  include/linux/nodemask.h \
-  include/linux/pageblock-flags.h \
-    $(wildcard include/config/HUGETLB_PAGE_SIZE_VARIABLE) \
-  include/linux/page-flags.h \
-    $(wildcard include/config/ARCH_USES_PG_UNCACHED) \
-    $(wildcard include/config/MEMORY_FAILURE) \
-    $(wildcard include/config/PAGE_IDLE_FLAG) \
-    $(wildcard include/config/HUGETLB_PAGE_FREE_VMEMMAP) \
-    $(wildcard include/config/HUGETLB_PAGE_FREE_VMEMMAP_DEFAULT_ON) \
-    $(wildcard include/config/KSM) \
-  include/linux/local_lock.h \
-  include/linux/local_lock_internal.h
+885_video_template = {
+	.name                 = "cx23885-video",
+	.fops                 = &video_fops,
+	.ioctl_ops	      = &video_ioctl_ops,
+	.tvnorms              = CX23885_NORMS,
+};
+
+void cx23885_video_unregister(struct cx23885_dev *dev)
+{
+	dprintk(1, "%s()\n", __func__);
+	cx23885_irq_remove(dev, 0x01);
+
+	if (dev->vbi_dev) {
+		if (video_is_registered(dev->vbi_dev))
+			video_unregister_device(dev->vbi_dev);
+		else
+			video_device_release(dev->vbi_dev);
+		dev->vbi_dev = NULL;
+	}
+	if (dev->video_dev) {
+		if (video_is_registered(dev->video_dev))
+			video_unregister_device(dev->video_dev);
+		else
+			video_device_release(dev->video_dev);
+		dev->video_dev = NULL;
+	}
+
+	if (dev->audio_dev)
+		cx23885_audio_unregister(dev);
+}
+
+int cx23885_video_register(struct cx23885_dev *dev)
+{
+	struct vb2_queue *q;
+	int err;
+
+	dprintk(1, "%s()\n", __func__);
+
+	/* Initialize VBI template */
+	cx23885_vbi_template = cx23885_video_template;
+	strscpy(cx23885_vbi_template.name, "cx23885-vbi",
+		sizeof(cx23885_vbi_template.name));
+
+	dev->tvnorm = V4L2_STD_NTSC_M;
+	dev->fmt = format_by_fourcc(V4L2_PIX_FMT_YUYV);
+	dev->field = V4L2_FIELD_INTERLACED;
+	dev->width = 720;
+	dev->height = norm_maxh(dev->tvnorm);
+
+	/* init video dma queues */
+	INIT_LIST_HEAD(&dev->vidq.active);
+
+	/* init vbi dma queues */
+	INIT_LIST_HEAD(&dev->vbiq.active);
+
+	cx23885_irq_add_enable(dev, 0x01);
+
+	if ((TUNER_ABSENT != dev->tuner_type) &&
+			((dev->tuner_bus == 0) || (dev->tuner_bus == 1))) {
+		struct v4l2_subdev *sd = NULL;
+
+		if (dev->tuner_addr)
+			sd = v4l2_i2c_new_subdev(&dev->v4l2_dev,
+				&dev->i2c_bus[dev->tuner_bus].i2c_adap,
+				"tuner", dev->tuner_addr, NULL);
+		else
+			sd = v4l2_i2c_new_subdev(&dev->v4l2_dev,
+				&dev->i2c_bus[dev->tuner_bus].i2c_adap,
+				"tuner", 0, v4l2_i2c_tuner_addrs(ADDRS_TV));
+		if (sd) {
+			struct tuner_setup tun_setup;
+
+			memset(&tun_setup, 0, sizeof(tun_setup));
+			tun_setup.mode_mask = T_ANALOG_TV;
+			tun_setup.type = dev->tuner_type;
+			tun_setup.addr = v4l2_i2c_subdev_addr(sd);
+			tun_setup.tuner_callback = cx23885_tuner_callback;
+
+			v4l2_subdev_call(sd, tuner, s_type_addr, &tun_setup);
+
+			if ((dev->board == CX23885_BOARD_LEADTEK_WINFAST_PXTV1200) ||
+			    (dev->board == CX23885_BOARD_LEADTEK_WINFAST_PXPVR22

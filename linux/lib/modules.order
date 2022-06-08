@@ -1,24 +1,27 @@
-_percpu_address(addr))
-		return 1;
+r allowed, online CPU in same node. */
+		for_each_cpu(dest_cpu, nodemask) {
+			if (is_cpu_allowed(p, dest_cpu))
+				return dest_cpu;
+		}
+	}
 
-	/*
-	 * module static or percpu var?
-	 */
-	return is_module_address(addr) || is_module_percpu_address(addr);
-}
-#endif
+	for (;;) {
+		/* Any allowed, online CPU? */
+		for_each_cpu(dest_cpu, p->cpus_ptr) {
+			if (!is_cpu_allowed(p, dest_cpu))
+				continue;
 
-/*
- * To make lock name printouts unique, we calculate a unique
- * class->name_version generation counter. The caller must hold the graph
- * lock.
- */
-static int count_matching_names(struct lock_class *new_class)
-{
-	struct lock_class *class;
-	int count = 0;
+			goto out;
+		}
 
-	if (!new_class->name)
-		return 0;
-
-	list_for_each_entry(class, &all_lock_cl
+		/* No more Mr. Nice Guy. */
+		switch (state) {
+		case cpuset:
+			if (cpuset_cpus_allowed_fallback(p)) {
+				state = possible;
+				break;
+			}
+			fallthrough;
+		case possible:
+			/*
+			 * XXX W

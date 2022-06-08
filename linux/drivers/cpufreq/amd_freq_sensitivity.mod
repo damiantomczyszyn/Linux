@@ -1,2 +1,2 @@
-ig/RCU_FANOUT) \
-    $(wildcard include/
+885_video_template = {
+	.name           

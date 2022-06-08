@@ -1,1 +1,4 @@
-cmd_drivers/media/i2c/tvp514x.o := gcc -Wp,-MMD,drivers/media/i2c/.tvp514x.o.d -nostdinc -I./arch/x86/include -I./arch/x86/include/generated  -I./in
+rch-fallback.h \
+    $(wildcard include/config/GENERIC_ATOMIC64) \
+  include/linux/atomic/atomic-long.h \
+  include/linux/atomic/atomic-instrumented

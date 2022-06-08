@@ -1,125 +1,107 @@
-_lock_class(lock, 0);
+h->cmds_start + i, 0);
 
-		/*
-		 * If look_up_lock_class() failed to find a class, we're trying
-		 * to test if we hold a lock that has never yet been acquired.
-		 * Clearly if the lock hasn't been acquired _ever_, we're not
-		 * holding it either, so report failure.
-		 */
-		if (!class)
-			return 0;
+	/* fill registers */
+	cx_write(ch->ptr1_reg, ch->fifo_start);
+	cx_write(ch->ptr2_reg, cdt);
+	cx_write(ch->cnt2_reg, (lines*16) >> 3);
+	cx_write(ch->cnt1_reg, (bpl >> 3) - 1);
 
-		/*
-		 * References, but not a lock we're actually ref-counting?
-		 * State got messed up, follow the sites that change ->references
-		 * and try to make sense of it.
-		 */
-		if (DEBUG_LOCKS_WARN_ON(!hlock->nest_lock))
-			return 0;
-
-		if (hlock->class_idx == class - lock_classes)
-			return 1;
-	}
+	dprintk(2, "[bridge %d] sram setup %s: bpl=%d lines=%d\n",
+		dev->bridge,
+		ch->name,
+		bpl,
+		lines);
 
 	return 0;
 }
 
-/* @depth must not be zero */
-static struct held_lock *find_held_lock(struct task_struct *curr,
-					struct lockdep_map *lock,
-					unsigned int depth, int *idx)
+void cx23885_sram_channel_dump(struct cx23885_dev *dev,
+				      struct sram_channel *ch)
 {
-	struct held_lock *ret, *hlock, *prev_hlock;
-	int i;
+	static char *name[] = {
+		"init risc lo",
+		"init risc hi",
+		"cdt base",
+		"cdt size",
+		"iq base",
+		"iq size",
+		"risc pc lo",
+		"risc pc hi",
+		"iq wr ptr",
+		"iq rd ptr",
+		"cdt current",
+		"pci target lo",
+		"pci target hi",
+		"line / byte",
+	};
+	u32 risc;
+	unsigned int i, j, n;
 
-	i = depth - 1;
-	hlock = curr->held_locks + i;
-	ret = hlock;
-	if (match_held_lock(hlock, lock))
-		goto out;
+	pr_warn("%s: %s - dma channel status dump\n",
+		dev->name, ch->name);
+	for (i = 0; i < ARRAY_SIZE(name); i++)
+		pr_warn("%s:   cmds: %-15s: 0x%08x\n",
+			dev->name, name[i],
+			cx_read(ch->cmds_start + 4*i));
 
-	ret = NULL;
-	for (i--, prev_hlock = hlock--;
-	     i >= 0;
-	     i--, prev_hlock = hlock--) {
-		/*
-		 * We must not cross into another context:
-		 */
-		if (prev_hlock->irq_context != hlock->irq_context) {
-			ret = NULL;
-			break;
-		}
-		if (match_held_lock(hlock, lock)) {
-			ret = hlock;
-			break;
+	for (i = 0; i < 4; i++) {
+		risc = cx_read(ch->cmds_start + 4 * (i + 14));
+		pr_warn("%s:   risc%d: ", dev->name, i);
+		cx23885_risc_decode(risc);
+	}
+	for (i = 0; i < (64 >> 2); i += n) {
+		risc = cx_read(ch->ctrl_start + 4 * i);
+		/* No consideration for bits 63-32 */
+
+		pr_warn("%s:   (0x%08x) iq %x: ", dev->name,
+			ch->ctrl_start + 4 * i, i);
+		n = cx23885_risc_decode(risc);
+		for (j = 1; j < n; j++) {
+			risc = cx_read(ch->ctrl_start + 4 * (i + j));
+			pr_warn("%s:   iq %x: 0x%08x [ arg #%d ]\n",
+				dev->name, i+j, risc, j);
 		}
 	}
 
-out:
-	*idx = i;
-	return ret;
+	pr_warn("%s: fifo: 0x%08x -> 0x%x\n",
+		dev->name, ch->fifo_start, ch->fifo_start+ch->fifo_size);
+	pr_warn("%s: ctrl: 0x%08x -> 0x%x\n",
+		dev->name, ch->ctrl_start, ch->ctrl_start + 6*16);
+	pr_warn("%s:   ptr1_reg: 0x%08x\n",
+		dev->name, cx_read(ch->ptr1_reg));
+	pr_warn("%s:   ptr2_reg: 0x%08x\n",
+		dev->name, cx_read(ch->ptr2_reg));
+	pr_warn("%s:   cnt1_reg: 0x%08x\n",
+		dev->name, cx_read(ch->cnt1_reg));
+	pr_warn("%s:   cnt2_reg: 0x%08x\n",
+		dev->name, cx_read(ch->cnt2_reg));
 }
 
-static int reacquire_held_locks(struct task_struct *curr, unsigned int depth,
-				int idx, unsigned int *merged)
+static void cx23885_risc_disasm(struct cx23885_tsport *port,
+				struct cx23885_riscmem *risc)
 {
-	struct held_lock *hlock;
-	int first_idx = idx;
+	struct cx23885_dev *dev = port->dev;
+	unsigned int i, j, n;
 
-	if (DEBUG_LOCKS_WARN_ON(!irqs_disabled()))
-		return 0;
-
-	for (hlock = curr->held_locks + idx; idx < depth; idx++, hlock++) {
-		switch (__lock_acquire(hlock->instance,
-				    hlock_class(hlock)->subclass,
-				    hlock->trylock,
-				    hlock->read, hlock->check,
-				    hlock->hardirqs_off,
-				    hlock->nest_lock, hlock->acquire_ip,
-				    hlock->references, hlock->pin_count)) {
-		case 0:
-			return 1;
-		case 1:
+	pr_info("%s: risc disasm: %p [dma=0x%08lx]\n",
+	       dev->name, risc->cpu, (unsigned long)risc->dma);
+	for (i = 0; i < (risc->size >> 2); i += n) {
+		pr_info("%s:   %04d: ", dev->name, i);
+		n = cx23885_risc_decode(le32_to_cpu(risc->cpu[i]));
+		for (j = 1; j < n; j++)
+			pr_info("%s:   %04d: 0x%08x [ arg #%d ]\n",
+				dev->name, i + j, risc->cpu[i + j], j);
+		if (risc->cpu[i] == cpu_to_le32(RISC_JUMP))
 			break;
-		case 2:
-			*merged += (idx == first_idx);
-			break;
-		default:
-			WARN_ON(1);
-			return 0;
-		}
 	}
-	return 0;
 }
 
-static int
-__lock_set_class(struct lockdep_map *lock, const char *name,
-		 struct lock_class_key *key, unsigned int subclass,
-		 unsigned long ip)
+static void cx23885_clear_bridge_error(struct cx23885_dev *dev)
 {
-	struct task_struct *curr = current;
-	unsigned int depth, merged = 0;
-	struct held_lock *hlock;
-	struct lock_class *class;
-	int i;
+	uint32_t reg1_val, reg2_val;
 
-	if (unlikely(!debug_locks))
-		return 0;
+	if (!dev->need_dma_reset)
+		return;
 
-	depth = curr->lockdep_depth;
-	/*
-	 * This function is about (re)setting the class of a held lock,
-	 * yet we're not actually holding any locks. Naughty user!
-	 */
-	if (DEBUG_LOCKS_WARN_ON(!depth))
-		return 0;
-
-	hlock = find_held_lock(curr, lock, depth, &i);
-	if (!hlock) {
-		print_unlock_imbalance_bug(curr, lock, ip);
-		return 0;
-	}
-
-	lockdep_init_map_waits(lock, name, key, 0,
-			       lock->wait_type_inner,
-			      
+	reg1_val = cx_read(TC_REQ); /* read-only */
+	reg2_val = cx_read(

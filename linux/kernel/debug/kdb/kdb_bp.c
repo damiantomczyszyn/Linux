@@ -1,233 +1,309 @@
-cmd_drivers/media/i2c/vs6624.o := gcc -Wp,-MMD,drivers/media/i2c/.vs6624.o.d -nostdinc -I./arch/x86/include -I./arch/x86/include/generated  -I./include -I./arch/x86/include/uapi -I./arch/x86/include/generated/uapi -I./include/uapi -I./include/generated/uapi -include ./include/linux/compiler-version.h -include ./include/linux/kconfig.h -include ./include/linux/compiler_types.h -D__KERNEL__ -fmacro-prefix-map=./= -Wall -Wundef -Werror=strict-prototypes -Wno-trigraphs -fno-strict-aliasing -fno-common -fshort-wchar -fno-PIE -Werror=implicit-function-declaration -Werror=implicit-int -Werror=return-type -Wno-format-security -std=gnu11 -mno-sse -mno-mmx -mno-sse2 -mno-3dnow -mno-avx -fcf-protection=none -m32 -msoft-float -mregparm=3 -freg-struct-return -fno-pic -mpreferred-stack-boundary=2 -march=i686 -mtune=pentium3 -mtune=generic -Wa,-mtune=generic32 -ffreestanding -mstack-protector-guard-reg=fs -mstack-protector-guard-symbol=__stack_chk_guard -Wno-sign-compare -fno-asynchronous-unwind-tables -mindirect-branch=thunk-extern -mindirect-branch-register -fno-jump-tables -fno-delete-null-pointer-checks -Wno-frame-address -Wno-format-truncation -Wno-format-overflow -Wno-address-of-packed-member -O2 -fno-allow-store-data-races -fstack-protector-strong -Wimplicit-fallthrough=5 -Wno-main -Wno-unused-but-set-variable -Wno-unused-const-variable -fno-stack-clash-protection -pg -mrecord-mcount -mfentry -DCC_USING_FENTRY -Wdeclaration-after-statement -Wvla -Wno-pointer-sign -Wcast-function-type -Wno-stringop-truncation -Wno-stringop-overflow -Wno-restrict -Wno-maybe-uninitialized -Wno-alloc-size-larger-than -fno-strict-overflow -fno-stack-check -fconserve-stack -Werror=date-time -Werror=incompatible-pointer-types -Werror=designated-init -Wno-packed-not-aligned  -DMODULE  -DKBUILD_BASENAME='"vs6624"' -DKBUILD_MODNAME='"vs6624"' -D__KBUILD_MODNAME=kmod_vs6624 -c -o drivers/media/i2c/vs6624.o drivers/media/i2c/vs6624.c 
+ION		0x000004B4
+#define VBI_PASS_CTRL		0x000004BC
 
-source_drivers/media/i2c/vs6624.o := drivers/media/i2c/vs6624.c
+/* Audio Decoder Registers */
+/* 8051 Configuration */
+#define DL_CTL		0x00000800
+#define STD_DET_STATUS	0x00000804
+#define STD_DET_CTL	0x00000808
+#define DW8051_INT	0x0000080C
+#define GENERAL_CTL	0x00000810
+#define AAGC_CTL	0x00000814
+#define DEMATRIX_CTL	0x000008CC
+#define PATH1_CTL1	0x000008D0
+#define PATH1_VOL_CTL	0x000008D4
+#define PATH1_EQ_CTL	0x000008D8
+#define PATH1_SC_CTL	0x000008DC
+#define PATH2_CTL1	0x000008E0
+#define PATH2_VOL_CTL	0x000008E4
+#define PATH2_EQ_CTL	0x000008E8
+#define PATH2_SC_CTL	0x000008EC
 
-deps_drivers/media/i2c/vs6624.o := \
-    $(wildcard include/config/VIDEO_ADV_DEBUG) \
-  include/linux/compiler-version.h \
-    $(wildcard include/config/CC_VERSION_TEXT) \
-  include/linux/kconfig.h \
-    $(wildcard include/config/CPU_BIG_ENDIAN) \
-    $(wildcard include/config/BOOGER) \
-    $(wildcard include/config/FOO) \
-  include/linux/compiler_types.h \
-    $(wildcard include/config/DEBUG_INFO_BTF) \
-    $(wildcard include/config/PAHOLE_HAS_BTF_TAG) \
-    $(wildcard include/config/HAVE_ARCH_COMPILER_H) \
-    $(wildcard include/config/CC_HAS_ASM_INLINE) \
-  include/linux/compiler_attributes.h \
-  include/linux/compiler-gcc.h \
-    $(wildcard include/config/RETPOLINE) \
-    $(wildcard include/config/ARCH_USE_BUILTIN_BSWAP) \
-    $(wildcard include/config/SHADOW_CALL_STACK) \
-    $(wildcard include/config/KCOV) \
-  include/linux/delay.h \
-  include/linux/math.h \
-  include/linux/types.h \
-    $(wildcard include/config/HAVE_UID16) \
-    $(wildcard include/config/UID16) \
-    $(wildcard include/config/ARCH_DMA_ADDR_T_64BIT) \
-    $(wildcard include/config/PHYS_ADDR_T_64BIT) \
-    $(wildcard include/config/64BIT) \
-    $(wildcard include/config/ARCH_32BIT_USTAT_F_TINODE) \
-  include/uapi/linux/types.h \
-  arch/x86/include/generated/uapi/asm/types.h \
-  include/uapi/asm-generic/types.h \
-  include/asm-generic/int-ll64.h \
-  include/uapi/asm-generic/int-ll64.h \
-  arch/x86/include/uapi/asm/bitsperlong.h \
-  include/asm-generic/bitsperlong.h \
-  include/uapi/asm-generic/bitsperlong.h \
-  include/uapi/linux/posix_types.h \
-  include/linux/stddef.h \
-  include/uapi/linux/stddef.h \
-  include/linux/compiler_types.h \
-  arch/x86/include/asm/posix_types.h \
-    $(wildcard include/config/X86_32) \
-  arch/x86/include/uapi/asm/posix_types_32.h \
-  include/uapi/asm-generic/posix_types.h \
-  arch/x86/include/asm/div64.h \
-  include/linux/log2.h \
-    $(wildcard include/config/ARCH_HAS_ILOG2_U32) \
-    $(wildcard include/config/ARCH_HAS_ILOG2_U64) \
-  include/linux/bitops.h \
-  include/linux/bits.h \
-  include/linux/const.h \
-  include/vdso/const.h \
-  include/uapi/linux/const.h \
-  include/vdso/bits.h \
-  include/linux/build_bug.h \
-  include/linux/compiler.h \
-    $(wildcard include/config/TRACE_BRANCH_PROFILING) \
-    $(wildcard include/config/PROFILE_ALL_BRANCHES) \
-    $(wildcard include/config/STACK_VALIDATION) \
-    $(wildcard include/config/CFI_CLANG) \
-  arch/x86/include/generated/asm/rwonce.h \
-  include/asm-generic/rwonce.h \
-  include/linux/kasan-checks.h \
-    $(wildcard include/config/KASAN_GENERIC) \
-    $(wildcard include/config/KASAN_SW_TAGS) \
-  include/linux/kcsan-checks.h \
-    $(wildcard include/config/KCSAN) \
-    $(wildcard include/config/KCSAN_WEAK_MEMORY) \
-    $(wildcard include/config/KCSAN_IGNORE_ATOMICS) \
-  include/linux/typecheck.h \
-  include/uapi/linux/kernel.h \
-  include/uapi/linux/sysinfo.h \
-  arch/x86/include/asm/bitops.h \
-    $(wildcard include/config/X86_64) \
-    $(wildcard include/config/X86_CMOV) \
-  arch/x86/include/asm/alternative.h \
-    $(wildcard include/config/SMP) \
-  include/linux/stringify.h \
-  arch/x86/include/asm/asm.h \
-    $(wildcard include/config/KPROBES) \
-  arch/x86/include/asm/extable_fixup_types.h \
-  arch/x86/include/asm/rmwcc.h \
-    $(wildcard include/config/CC_HAS_ASM_GOTO) \
-  arch/x86/include/asm/barrier.h \
-  arch/x86/include/asm/nops.h \
-  include/asm-generic/barrier.h \
-  include/asm-generic/bitops/fls64.h \
-  include/asm-generic/bitops/sched.h \
-  arch/x86/include/asm/arch_hweight.h \
-  arch/x86/include/asm/cpufeatures.h \
-  arch/x86/include/asm/required-features.h \
-    $(wildcard include/config/X86_MINIMUM_CPU_FAMILY) \
-    $(wildcard include/config/MATH_EMULATION) \
-    $(wildcard include/config/X86_PAE) \
-    $(wildcard include/config/X86_CMPXCHG64) \
-    $(wildcard include/config/X86_P6_NOP) \
-    $(wildcard include/config/MATOM) \
-    $(wildcard include/config/PARAVIRT_XXL) \
-  arch/x86/include/asm/disabled-features.h \
-    $(wildcard include/config/X86_SMAP) \
-    $(wildcard include/config/X86_UMIP) \
-    $(wildcard include/config/X86_INTEL_MEMORY_PROTECTION_KEYS) \
-    $(wildcard include/config/X86_5LEVEL) \
-    $(wildcard include/config/PAGE_TABLE_ISOLATION) \
-    $(wildcard include/config/INTEL_IOMMU_SVM) \
-    $(wildcard include/config/X86_SGX) \
-  include/asm-generic/bitops/const_hweight.h \
-  include/asm-generic/bitops/instrumented-atomic.h \
-  include/linux/instrumented.h \
-  include/asm-generic/bitops/instrumented-non-atomic.h \
-    $(wildcard include/config/KCSAN_ASSUME_PLAIN_WRITES_ATOMIC) \
-  include/asm-generic/bitops/instrumented-lock.h \
-  include/asm-generic/bitops/le.h \
-  arch/x86/include/uapi/asm/byteorder.h \
-  include/linux/byteorder/little_endian.h \
-  include/uapi/linux/byteorder/little_endian.h \
-  include/linux/swab.h \
-  include/uapi/linux/swab.h \
-  arch/x86/include/uapi/asm/swab.h \
-  include/linux/byteorder/generic.h \
-  include/asm-generic/bitops/ext2-atomic-setbit.h \
-  include/linux/sched.h \
-    $(wildcard include/config/DEBUG_ATOMIC_SLEEP) \
-    $(wildcard include/config/PREEMPT_RT) \
-    $(wildcard include/config/VIRT_CPU_ACCOUNTING_NATIVE) \
-    $(wildcard include/config/SCHED_INFO) \
-    $(wildcard include/config/SCHEDSTATS) \
-    $(wildcard include/config/SCHED_CORE) \
-    $(wildcard include/config/FAIR_GROUP_SCHED) \
-    $(wildcard include/config/RT_GROUP_SCHED) \
-    $(wildcard include/config/RT_MUTEXES) \
-    $(wildcard include/config/UCLAMP_TASK) \
-    $(wildcard include/config/UCLAMP_BUCKETS_COUNT) \
-    $(wildcard include/config/KMAP_LOCAL) \
-    $(wildcard include/config/THREAD_INFO_IN_TASK) \
-    $(wildcard include/config/CGROUP_SCHED) \
-    $(wildcard include/config/PREEMPT_NOTIFIERS) \
-    $(wildcard include/config/BLK_DEV_IO_TRACE) \
-    $(wildcard include/config/PREEMPT_RCU) \
-    $(wildcard include/config/TASKS_RCU) \
-    $(wildcard include/config/TASKS_TRACE_RCU) \
-    $(wildcard include/config/PSI) \
-    $(wildcard include/config/MEMCG) \
-    $(wildcard include/config/COMPAT_BRK) \
-    $(wildcard include/config/CGROUPS) \
-    $(wildcard include/config/BLK_CGROUP) \
-    $(wildcard include/config/PAGE_OWNER) \
-    $(wildcard include/config/EVENTFD) \
-    $(wildcard include/config/IOMMU_SVA) \
-    $(wildcard include/config/STACKPROTECTOR) \
-    $(wildcard include/config/ARCH_HAS_SCALED_CPUTIME) \
-    $(wildcard include/config/VIRT_CPU_ACCOUNTING_GEN) \
-    $(wildcard include/config/NO_HZ_FULL) \
-    $(wildcard include/config/POSIX_CPUTIMERS) \
-    $(wildcard include/config/POSIX_CPU_TIMERS_TASK_WORK) \
-    $(wildcard include/config/KEYS) \
-    $(wildcard include/config/SYSVIPC) \
-    $(wildcard include/config/DETECT_HUNG_TASK) \
-    $(wildcard include/config/IO_URING) \
-    $(wildcard include/config/AUDIT) \
-    $(wildcard include/config/AUDITSYSCALL) \
-    $(wildcard include/config/DEBUG_MUTEXES) \
-    $(wildcard include/config/TRACE_IRQFLAGS) \
-    $(wildcard include/config/LOCKDEP) \
-    $(wildcard include/config/UBSAN) \
-    $(wildcard include/config/UBSAN_TRAP) \
-    $(wildcard include/config/COMPACTION) \
-    $(wildcard include/config/TASK_XACCT) \
-    $(wildcard include/config/CPUSETS) \
-    $(wildcard include/config/X86_CPU_RESCTRL) \
-    $(wildcard include/config/FUTEX) \
-    $(wildcard include/config/COMPAT) \
-    $(wildcard include/config/PERF_EVENTS) \
-    $(wildcard include/config/DEBUG_PREEMPT) \
-    $(wildcard include/config/NUMA) \
-    $(wildcard include/config/NUMA_BALANCING) \
-    $(wildcard include/config/RSEQ) \
-    $(wildcard include/config/TASK_DELAY_ACCT) \
-    $(wildcard include/config/FAULT_INJECTION) \
-    $(wildcard include/config/LATENCYTOP) \
-    $(wildcard include/config/KUNIT) \
-    $(wildcard include/config/FUNCTION_GRAPH_TRACER) \
-    $(wildcard include/config/TRACING) \
-    $(wildcard include/config/UPROBES) \
-    $(wildcard include/config/BCACHE) \
-    $(wildcard include/config/MMU) \
-    $(wildcard include/config/VMAP_STACK) \
-    $(wildcard include/config/LIVEPATCH) \
-    $(wildcard include/config/SECURITY) \
-    $(wildcard include/config/BPF_SYSCALL) \
-    $(wildcard include/config/GCC_PLUGIN_STACKLEAK) \
-    $(wildcard include/config/X86_MCE) \
-    $(wildcard include/config/KRETPROBES) \
-    $(wildcard include/config/RETHOOK) \
-    $(wildcard include/config/ARCH_HAS_PARANOID_L1D_FLUSH) \
-    $(wildcard include/config/ARCH_TASK_STRUCT_ON_STACK) \
-    $(wildcard include/config/PREEMPTION) \
-    $(wildcard include/config/PREEMPT_DYNAMIC) \
-    $(wildcard include/config/HAVE_PREEMPT_DYNAMIC_CALL) \
-    $(wildcard include/config/HAVE_PREEMPT_DYNAMIC_KEY) \
-    $(wildcard include/config/DEBUG_RSEQ) \
-  include/uapi/linux/sched.h \
-  arch/x86/include/asm/current.h \
-  arch/x86/include/asm/percpu.h \
-    $(wildcard include/config/X86_64_SMP) \
-  include/linux/kernel.h \
-    $(wildcard include/config/PREEMPT_VOLUNTARY_BUILD) \
-    $(wildcard include/config/PREEMPT_) \
-    $(wildcard include/config/PROVE_LOCKING) \
-    $(wildcard include/config/FTRACE_MCOUNT_RECORD) \
-  include/linux/stdarg.h \
-  include/linux/align.h \
-  include/linux/limits.h \
-  include/uapi/linux/limits.h \
-  include/vdso/limits.h \
-  include/linux/linkage.h \
-    $(wildcard include/config/ARCH_USE_SYM_ANNOTATIONS) \
-  include/linux/export.h \
-    $(wildcard include/config/MODVERSIONS) \
-    $(wildcard include/config/MODULE_REL_CRCS) \
-    $(wildcard include/config/HAVE_ARCH_PREL32_RELOCATIONS) \
-    $(wildcard include/config/MODULES) \
-    $(wildcard include/config/TRIM_UNUSED_KSYMS) \
-  arch/x86/include/asm/linkage.h \
-    $(wildcard include/config/X86_ALIGNMENT_16) \
-    $(wildcard include/config/SLS) \
-  arch/x86/include/asm/ibt.h \
-    $(wildcard include/config/X86_KERNEL_IBT) \
-  include/linux/container_of.
+/* Sample Rate Converter */
+#define SRC_CTL		0x000008F0
+#define SRC_LF_COEF	0x000008F4
+#define SRC1_CTL	0x000008F8
+#define SRC2_CTL	0x000008FC
+#define SRC3_CTL	0x00000900
+#define SRC4_CTL	0x00000904
+#define SRC5_CTL	0x00000908
+#define SRC6_CTL	0x0000090C
+#define BAND_OUT_SEL	0x00000910
+#define I2S_N_CTL	0x00000914
+#define I2S_OUT_CTL	0x00000918
+#define AUTOCONFIG_REG	0x000009C4
+
+/* Audio ADC Registers */
+#define DSM_CTRL1	0x00000000
+#define DSM_CTRL2	0x00000001
+#define CHP_EN_CTRL	0x00000002
+#define CHP_CLK_CTRL1	0x00000004
+#define CHP_CLK_CTRL2	0x00000005
+#define BG_REF_CTRL	0x00000006
+#define SD2_SW_CTRL1	0x00000008
+#define SD2_SW_CTRL2	0x00000009
+#define SD2_BIAS_CTRL	0x0000000A
+#define AMP_BIAS_CTRL	0x0000000C
+#define CH_PWR_CTRL1	0x0000000E
+#define FLD_CH_SEL      (1 << 3)
+#define CH_PWR_CTRL2	0x0000000F
+#define DSM_STATUS1	0x00000010
+#define DSM_STATUS2	0x00000011
+#define DIG_CTL1	0x00000012
+#define DIG_CTL2	0x00000013
+#define I2S_TX_CFG	0x0000001A
+
+#define DEV_CNTRL2	0x00040000
+
+#define PCI_MSK_IR        (1 << 28)
+#define PCI_MSK_AV_CORE   (1 << 27)
+#define PCI_MSK_GPIO1     (1 << 24)
+#define PCI_MSK_GPIO0     (1 << 23)
+#define PCI_MSK_APB_DMA   (1 << 12)
+#define PCI_MSK_AL_WR     (1 << 11)
+#define PCI_MSK_AL_RD     (1 << 10)
+#define PCI_MSK_RISC_WR   (1 <<  9)
+#define PCI_MSK_RISC_RD   (1 <<  8)
+#define PCI_MSK_AUD_EXT   (1 <<  4)
+#define PCI_MSK_AUD_INT   (1 <<  3)
+#define PCI_MSK_VID_C     (1 <<  2)
+#define PCI_MSK_VID_B     (1 <<  1)
+#define PCI_MSK_VID_A      1
+#define PCI_INT_MSK	0x00040010
+
+#define PCI_INT_STAT	0x00040014
+#define PCI_INT_MSTAT	0x00040018
+
+#define VID_A_INT_MSK	0x00040020
+#define VID_A_INT_STAT	0x00040024
+#define VID_A_INT_MSTAT	0x00040028
+#define VID_A_INT_SSTAT	0x0004002C
+
+#define VID_B_INT_MSK	0x00040030
+#define VID_B_MSK_BAD_PKT     (1 << 20)
+#define VID_B_MSK_VBI_OPC_ERR (1 << 17)
+#define VID_B_MSK_OPC_ERR     (1 << 16)
+#define VID_B_MSK_VBI_SYNC    (1 << 13)
+#define VID_B_MSK_SYNC        (1 << 12)
+#define VID_B_MSK_VBI_OF      (1 <<  9)
+#define VID_B_MSK_OF          (1 <<  8)
+#define VID_B_MSK_VBI_RISCI2  (1 <<  5)
+#define VID_B_MSK_RISCI2      (1 <<  4)
+#define VID_B_MSK_VBI_RISCI1  (1 <<  1)
+#define VID_B_MSK_RISCI1       1
+#define VID_B_INT_STAT	0x00040034
+#define VID_B_INT_MSTAT	0x00040038
+#define VID_B_INT_SSTAT	0x0004003C
+
+#define VID_B_MSK_BAD_PKT (1 << 20)
+#define VID_B_MSK_OPC_ERR (1 << 16)
+#define VID_B_MSK_SYNC    (1 << 12)
+#define VID_B_MSK_OF      (1 <<  8)
+#define VID_B_MSK_RISCI2  (1 <<  4)
+#define VID_B_MSK_RISCI1   1
+
+#define VID_C_MSK_BAD_PKT (1 << 20)
+#define VID_C_MSK_OPC_ERR (1 << 16)
+#define VID_C_MSK_SYNC    (1 << 12)
+#define VID_C_MSK_OF      (1 <<  8)
+#define VID_C_MSK_RISCI2  (1 <<  4)
+#define VID_C_MSK_RISCI1   1
+
+/* A superset for testing purposes */
+#define VID_BC_MSK_BAD_PKT (1 << 20)
+#define VID_BC_MSK_OPC_ERR (1 << 16)
+#define VID_BC_MSK_SYNC    (1 << 12)
+#define VID_BC_MSK_OF      (1 <<  8)
+#define VID_BC_MSK_VBI_RISCI2 (1 <<  5)
+#define VID_BC_MSK_RISCI2  (1 <<  4)
+#define VID_BC_MSK_VBI_RISCI1 (1 <<  1)
+#define VID_BC_MSK_RISCI1   1
+
+#define VID_C_INT_MSK	0x00040040
+#define VID_C_INT_STAT	0x00040044
+#define VID_C_INT_MSTAT	0x00040048
+#define VID_C_INT_SSTAT	0x0004004C
+
+#define AUDIO_INT_INT_MSK	0x00040050
+#define AUDIO_INT_INT_STAT	0x00040054
+#define AUDIO_INT_INT_MSTAT	0x00040058
+#define AUDIO_INT_INT_SSTAT	0x0004005C
+
+#define AUDIO_EXT_INT_MSK	0x00040060
+#define AUDIO_EXT_INT_STAT	0x00040064
+#define AUDIO_EXT_INT_MSTAT	0x00040068
+#define AUDIO_EXT_INT_SSTAT	0x0004006C
+
+/* Bits [7:0] set in both TC_REQ and TC_REQ_SET
+ * indicate a stall in the RISC engine for a
+ * particular rider traffic class. This causes
+ * the 885 and 888 bridges (unknown about 887)
+ * to become inoperable. Setting bits in
+ * TC_REQ_SET resets the corresponding bits
+ * in TC_REQ (and TC_REQ_SET) allowing
+ * operation to continue.
+ */
+#define TC_REQ		0x00040090
+#define TC_REQ_SET	0x00040094
+
+#define RDR_CFG0	0x00050000
+#define RDR_CFG1	0x00050004
+#define RDR_CFG2	0x00050008
+#define RDR_RDRCTL1	0x0005030c
+#define RDR_TLCTL0	0x00050318
+
+/* APB DMAC Current Buffer Pointer */
+#define DMA1_PTR1	0x00100000
+#define DMA2_PTR1	0x00100004
+#define DMA3_PTR1	0x00100008
+#define DMA4_PTR1	0x0010000C
+#define DMA5_PTR1	0x00100010
+#define DMA6_PTR1	0x00100014
+#define DMA7_PTR1	0x00100018
+#define DMA8_PTR1	0x0010001C
+
+/* APB DMAC Current Table Pointer */
+#define DMA1_PTR2	0x00100040
+#define DMA2_PTR2	0x00100044
+#define DMA3_PTR2	0x00100048
+#define DMA4_PTR2	0x0010004C
+#define DMA5_PTR2	0x00100050
+#define DMA6_PTR2	0x00100054
+#define DMA7_PTR2	0x00100058
+#define DMA8_PTR2	0x0010005C
+
+/* APB DMAC Buffer Limit */
+#define DMA1_CNT1	0x00100080
+#define DMA2_CNT1	0x00100084
+#define DMA3_CNT1	0x00100088
+#define DMA4_CNT1	0x0010008C
+#define DMA5_CNT1	0x00100090
+#define DMA6_CNT1	0x00100094
+#define DMA7_CNT1	0x00100098
+#define DMA8_CNT1	0x0010009C
+
+/* APB DMAC Table Size */
+#define DMA1_CNT2	0x001000C0
+#define DMA2_CNT2	0x001000C4
+#define DMA3_CNT2	0x001000C8
+#define DMA4_CNT2	0x001000CC
+#define DMA5_CNT2	0x001000D0
+#define DMA6_CNT2	0x001000D4
+#define DMA7_CNT2	0x001000D8
+#define DMA8_CNT2	0x001000DC
+
+/* Timer Counters */
+#define TM_CNT_LDW	0x00110000
+#define TM_CNT_UW	0x00110004
+#define TM_LMT_LDW	0x00110008
+#define TM_LMT_UW	0x0011000C
+
+/* GPIO */
+#define GP0_IO		0x00110010
+#define GPIO_ISM	0x00110014
+#define SOFT_RESET	0x0011001C
+
+/* GPIO (417 Microsoftcontroller) RW Data */
+#define MC417_RWD	0x00110020
+
+/* GPIO (417 Microsoftcontroller) Output Enable, Low Active */
+#define MC417_OEN	0x00110024
+#define MC417_CTL	0x00110028
+#define ALT_PIN_OUT_SEL 0x0011002C
+#define CLK_DELAY	0x00110048
+#define PAD_CTRL	0x0011004C
+
+/* Video A Interface */
+#define VID_A_GPCNT		0x00130020
+#define VBI_A_GPCNT		0x00130024
+#define VID_A_GPCNT_CTL		0x00130030
+#define VBI_A_GPCNT_CTL		0x00130034
+#define VID_A_DMA_CTL		0x00130040
+#define VID_A_VIP_CTRL		0x00130080
+#define VID_A_PIXEL_FRMT	0x00130084
+#define VID_A_VBI_CTRL		0x00130088
+
+/* Video B Interface */
+#define VID_B_DMA		0x00130100
+#define VBI_B_DMA		0x00130108
+#define VID_B_GPCNT		0x00130120
+#define VBI_B_GPCNT		0x00130124
+#define VID_B_GPCNT_CTL		0x00130134
+#define VBI_B_GPCNT_CTL		0x00130138
+#define VID_B_DMA_CTL		0x00130140
+#define VID_B_SRC_SEL		0x00130144
+#define VID_B_LNGTH		0x00130150
+#define VID_B_HW_SOP_CTL	0x00130154
+#define VID_B_GEN_CTL		0x00130158
+#define VID_B_BD_PKT_STATUS	0x0013015C
+#define VID_B_SOP_STATUS	0x00130160
+#define VID_B_FIFO_OVFL_STAT	0x00130164
+#define VID_B_VLD_MISC		0x00130168
+#define VID_B_TS_CLK_EN		0x0013016C
+#define VID_B_VIP_CTRL		0x00130180
+#define VID_B_PIXEL_FRMT	0x00130184
+
+/* Video C Interface */
+#define VID_C_DMA		0x00130200
+#define VBI_C_DMA		0x00130208
+#define VID_C_GPCNT		0x00130220
+#define VID_C_GPCNT_CTL		0x00130230
+#define VBI_C_GPCNT_CTL		0x00130234
+#define VID_C_DMA_CTL		0x00130240
+#define VID_C_LNGTH		0x00130250
+#define VID_C_HW_SOP_CTL	0x00130254
+#define VID_C_GEN_CTL		0x00130258
+#define VID_C_BD_PKT_STATUS	0x0013025C
+#define VID_C_SOP_STATUS	0x00130260
+#define VID_C_FIFO_OVFL_STAT	0x00130264
+#define VID_C_VLD_MISC		0x00130268
+#define VID_C_TS_CLK_EN		0x0013026C
+
+/* Internal Audio Interface */
+#define AUD_INT_A_GPCNT		0x00140020
+#define AUD_INT_B_GPCNT		0x00140024
+#define AUD_INT_A_GPCNT_CTL	0x00140030
+#define AUD_INT_B_GPCNT_CTL	0x00140034
+#define AUD_INT_DMA_CTL		0x00140040
+#define AUD_INT_A_LNGTH		0x00140050
+#define AUD_INT_B_LNGTH		0x00140054
+#define AUD_INT_A_MODE		0x00140058
+#define AUD_INT_B_MODE		0x0014005C
+
+/* External Audio Interface */
+#define AUD_EXT_DMA		0x00140100
+#define AUD_EXT_GPCNT		0x00140120
+#define AUD_EXT_GPCNT_CTL	0x00140130
+#define AUD_EXT_DMA_CTL		0x00140140
+#define AUD_EXT_LNGTH		0x00140150
+#define AUD_EXT_A_MODE		0x00140158
+
+/* I2C Bus 1 */
+#define I2C1_ADDR	0x00180000
+#define I2C1_WDATA	0x00180004
+#define I2C1_CTRL	0x00180008
+#define I2C1_RDATA	0x0018000C
+#define I2C1_STAT	0x00180010
+
+/* I2C Bus 2 */
+#define I2C2_ADDR	0x00190000
+#define I2C2_WDATA	0x00190004
+#define I2C2_CTRL	0x00190008
+#define I2C2_RDATA	0x0019000C
+#define I2C2_STAT	0x00190010
+
+/* I2C Bus 3 */
+#define I2C3_ADDR	0x001A0000
+#define I2C3_WDATA	0x001A0004
+#define I2C3_CTRL	0x001A0008
+#define I2C3_RDATA	0x001A000C
+#define I2C3_STAT	0x001A0010
+
+/* UART */
+#define UART_CTL	0x001B0000
+#define UART_BRD	0x001B0004
+#define UART_ISR	0x001B000C
+#define UART_CNT	0x001B0010
+
+#endif /* _CX23885_REG_H_ */
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       

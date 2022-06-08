@@ -1,6 +1,10 @@
-config/ARCH_WANTS_DYNAMIC_TASK_STRUCT) \
-    $(wildcard include/config/HAVE_ARCH_THREAD_STRUCT_WHITELIST) \
-  include/linux/cred.h \
-    $(wildcard include/config/DEBUG_CREDENTIALS) \
-  include/linux/key.h \
-    
+nable(dev, p->modulation);
+	o->modulation = p->modulation;
+
+	if (p->modulation) {
+		p->carrier_freq = rxclk_rx_s_carrier(dev, p->carrier_freq,
+						     &rxclk_divider);
+
+		o->carrier_freq = p->carrier_freq;
+
+		

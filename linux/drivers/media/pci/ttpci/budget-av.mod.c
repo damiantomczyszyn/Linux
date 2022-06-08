@@ -1,63 +1,101 @@
-(wildcard include/config/SPLIT_PTLOCK_CPUS) \
-    $(wildcard include/config/ARCH_ENABLE_SPLIT_PMD_PTLOCK) \
-  arch/x86/include/asm/tlbbatch.h \
-  include/linux/task_io_accounting.h \
-    $(wildcard include/config/TASK_IO_ACCOUNTING) \
-  include/linux/posix-timers.h \
-  include/linux/alarmtimer.h \
-    $(wildcard include/config/RTC_CLASS) \
-  include/uapi/linux/rseq.h \
-  include/linux/kcsan.h \
-  arch/x86/include/generated/asm/kmap_size.h \
-  include/asm-generic/kmap_size.h \
-    $(wildcard include/config/DEBUG_KMAP_LOCAL) \
-  arch/x86/include/asm/delay.h \
-  include/asm-generic/delay.h \
-  include/linux/gpio/consumer.h \
-    $(wildcard include/config/GPIOLIB) \
-    $(wildcard include/config/OF_GPIO) \
-    $(wildcard include/config/ACPI) \
-    $(wildcard include/config/GPIO_SYSFS) \
-  include/linux/i2c.h \
-    $(wildcard include/config/I2C) \
-    $(wildcard include/config/I2C_SLAVE) \
-    $(wildcard include/config/I2C_BOARDINFO) \
-    $(wildcard include/config/I2C_MUX) \
-  include/linux/acpi.h \
-    $(wildcard include/config/ACPI_DEBUGGER) \
-    $(wildcard include/config/ACPI_TABLE_LIB) \
-    $(wildcard include/config/IA64) \
-    $(wildcard include/config/LOONGARCH) \
-    $(wildcard include/config/ARM64) \
-    $(wildcard include/config/ACPI_PROCESSOR_CSTATE) \
-    $(wildcard include/config/ACPI_HOTPLUG_CPU) \
-    $(wildcard include/config/ACPI_HOTPLUG_IOAPIC) \
-    $(wildcard include/config/X86_IO_APIC) \
-    $(wildcard include/config/PCI) \
-    $(wildcard include/config/ACPI_WMI) \
-    $(wildcard include/config/ACPI_NUMA) \
-    $(wildcard include/config/HIBERNATION) \
-    $(wildcard include/config/PM_SLEEP) \
-    $(wildcard include/config/ACPI_HOTPLUG_MEMORY) \
-    $(wildcard include/config/ACPI_CONTAINER) \
-    $(wildcard include/config/ACPI_GTDT) \
-    $(wildcard include/config/PM) \
-    $(wildcard include/config/ACPI_TABLE_UPGRADE) \
-    $(wildcard include/config/ACPI_WATCHDOG) \
-    $(wildcard include/config/ACPI_SPCR_TABLE) \
-    $(wildcard include/config/ACPI_GENERIC_GSI) \
-    $(wildcard include/config/ACPI_LPIT) \
-    $(wildcard include/config/ACPI_PPTT) \
-    $(wildcard include/config/ACPI_PCC) \
-  include/linux/ioport.h \
-    $(wildcard include/config/MEMORY_HOTREMOVE) \
-    $(wildcard include/config/MEMORY_HOTPLUG) \
-  include/linux/irqdomain.h \
-    $(wildcard include/config/IRQ_DOMAIN_HIERARCHY) \
-    $(wildcard include/config/GENERIC_IRQ_DEBUGFS) \
-    $(wildcard include/config/IRQ_DOMAIN) \
-    $(wildcard include/config/IRQ_DOMAIN_NOMAP) \
-  include/linux/irqhandler.h \
-  include/linux/of.h \
-    $(wildcard include/config/OF_DYNAMIC) \
-    $(wildcard include/config/
+filt->nr = hw_filt_nr - 1;
+	/* store old feed controls */
+	pid_filt->start_feed = config->demux->start_feed;
+	pid_filt->stop_feed = config->demux->stop_feed;
+	/* replace with new feed controls */
+	if (hw_filt_nr == 1) {
+		pid_filt->demux->start_feed = altera_ci_start_feed_1;
+		pid_filt->demux->stop_feed = altera_ci_stop_feed_1;
+	} else if (hw_filt_nr == 2) {
+		pid_filt->demux->start_feed = altera_ci_start_feed_2;
+		pid_filt->demux->stop_feed = altera_ci_stop_feed_2;
+	}
+
+	altera_toggle_fullts_streaming(pid_filt, 0, 1);
+
+	return 0;
+err:
+	ci_dbg_print("%s: Can't init hardware filter: Error %d\n",
+		     __func__, ret);
+
+	kfree(pid_filt);
+	kfree(inter);
+
+	return ret;
+}
+
+int altera_ci_init(struct altera_ci_config *config, int ci_nr)
+{
+	struct altera_ci_state *state;
+	struct fpga_inode *temp_int = find_inode(config->dev);
+	struct fpga_internal *inter = NULL;
+	int ret = 0;
+	u8 store = 0;
+
+	state = kzalloc(sizeof(struct altera_ci_state), GFP_KERNEL);
+
+	ci_dbg_print("%s\n", __func__);
+
+	if (!state) {
+		ret = -ENOMEM;
+		goto err;
+	}
+
+	if (temp_int != NULL) {
+		inter = temp_int->internal;
+		(inter->cis_used)++;
+		inter->fpga_rw = config->fpga_rw;
+		ci_dbg_print("%s: Find Internal Structure!\n", __func__);
+	} else {
+		inter = kzalloc(sizeof(struct fpga_internal), GFP_KERNEL);
+		if (!inter) {
+			ret = -ENOMEM;
+			goto err;
+		}
+
+		temp_int = append_internal(inter);
+		if (!temp_int) {
+			ret = -ENOMEM;
+			goto err;
+		}
+		inter->cis_used = 1;
+		inter->dev = config->dev;
+		inter->fpga_rw = config->fpga_rw;
+		mutex_init(&inter->fpga_mutex);
+		inter->strt_wrk = 1;
+		ci_dbg_print("%s: Create New Internal Structure!\n", __func__);
+	}
+
+	ci_dbg_print("%s: setting state = %p for ci = %d\n", __func__,
+						state, ci_nr - 1);
+	state->internal = inter;
+	state->nr = ci_nr - 1;
+
+	state->ca.owner = THIS_MODULE;
+	state->ca.read_attribute_mem = altera_ci_read_attribute_mem;
+	state->ca.write_attribute_mem = altera_ci_write_attribute_mem;
+	state->ca.read_cam_control = altera_ci_read_cam_ctl;
+	state->ca.write_cam_control = altera_ci_write_cam_ctl;
+	state->ca.slot_reset = altera_ci_slot_reset;
+	state->ca.slot_shutdown = altera_ci_slot_shutdown;
+	state->ca.slot_ts_enable = altera_ci_slot_ts_ctl;
+	state->ca.poll_slot_status = altera_poll_ci_slot_status;
+	state->ca.data = state;
+
+	ret = dvb_ca_en50221_init(config->adapter,
+				   &state->ca,
+				   /* flags */ 0,
+				   /* n_slots */ 1);
+	if (0 != ret)
+		goto err;
+
+	inter->state[ci_nr - 1] = state;
+
+	altera_hw_filt_init(config, ci_nr);
+
+	if (inter->strt_wrk) {
+		INIT_WORK(&inter->work, netup_read_ci_status);
+		inter->strt_wrk = 0;
+	}
+
+	ci_dbg_print("%s: CI initialized!

@@ -1,1 +1,3 @@
-RRAY_SIZE(lock_classes); i++
+{
+		if (dl_prio(oldprio))
+		

@@ -1,4 +1,1 @@
-card include/config/BPF_JIT) \
-  include/asm-generic/access_ok.h \
-    $(wildcard include/config/ALTERNATE_USER_ADDRESS_SPACE) \
-  ar
+cmd_drivers/net/arcnet/com20020-pci.mod := { echo  drivers/net/arcnet/com20020-pci.o;  echo; } > drivers/net/arcnet/com20020-pci.mod

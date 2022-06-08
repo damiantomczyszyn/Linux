@@ -1,1 +1,11 @@
-cmd_drivers/media/i2c/upd64083.o := gcc -Wp,-MMD,drivers/media/i2c/.upd64083.o.d -nostdinc -I./arch/x86/include -I./arch/x86/include/generated  -I./include -I./arch/x86/include/uapi -I./arch/x86/include/generated/uapi -I./include/uapi -I./include/generated/uapi -include ./include/linux/compiler-version.h
+/* SPDX-License-Identifier: GPL-2.0-or-later */
+/*
+ *  Driver for the Conexant CX23885/7/8 PCIe bridge
+ *
+ *  Copyright (C) 2010  Andy Walls <awalls@md.metrocast.net>
+ */
+
+#ifndef _CX23885_VIDEO_H_
+#define _CX23885_VIDEO_H_
+int cx23885_flatiron_write(struct cx23885_dev *dev, u8 reg, u8 data);
+u8 cx23885_

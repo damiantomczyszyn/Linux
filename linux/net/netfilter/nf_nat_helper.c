@@ -1,190 +1,198 @@
-e for the next lock_list
-		 * entry, see the comments for the function.
-		 */
-		trace = entry->trace;
+nable(dev, p->modulation);
+	o->modulation = p->modulation;
 
-		if (depth == 0 && (entry != root)) {
-			printk("lockdep:%s bad path found in chain graph\n", __func__);
-			break;
-		}
+	if (p->modulation) {
+		p->carrier_freq = rxclk_rx_s_carrier(dev, p->carrier_freq,
+						     &rxclk_divider);
 
-		entry = get_lock_parent(entry);
-		depth--;
-	} while (entry && (depth >= 0));
-}
+		o->carrier_freq = p->carrier_freq;
 
-static void
-print_irq_lock_scenario(struct lock_list *safe_entry,
-			struct lock_list *unsafe_entry,
-			struct lock_class *prev_class,
-			struct lock_class *next_class)
-{
-	struct lock_class *safe_class = safe_entry->class;
-	struct lock_class *unsafe_class = unsafe_entry->class;
-	struct lock_class *middle_class = prev_class;
+		o->duty_cycle = p->duty_cycle = 50;
 
-	if (middle_class == safe_class)
-		middle_class = next_class;
+		control_rx_s_carrier_window(dev, p->carrier_freq,
+					    &p->carrier_range_lower,
+					    &p->carrier_range_upper);
+		o->carrier_range_lower = p->carrier_range_lower;
+		o->carrier_range_upper = p->carrier_range_upper;
 
-	/*
-	 * A direct locking problem where unsafe_class lock is taken
-	 * directly by safe_class lock, then all we need to show
-	 * is the deadlock scenario, as it is obvious that the
-	 * unsafe lock is taken under the safe lock.
-	 *
-	 * But if there is a chain instead, where the safe lock takes
-	 * an intermediate lock (middle_class) where this lock is
-	 * not the same as the safe lock, then the lock chain is
-	 * used to describe the problem. Otherwise we would need
-	 * to show a different CPU case for each link in the chain
-	 * from the safe_class lock to the unsafe_class lock.
-	 */
-	if (middle_class != unsafe_class) {
-		printk("Chain exists of:\n  ");
-		__print_lock_name(safe_class);
-		printk(KERN_CONT " --> ");
-		__print_lock_name(middle_class);
-		printk(KERN_CONT " --> ");
-		__print_lock_name(unsafe_class);
-		printk(KERN_CONT "\n\n");
+		p->max_pulse_width =
+			(u32) pulse_width_count_to_ns(FIFO_RXTX, rxclk_divider);
+	} else {
+		p->max_pulse_width =
+			    rxclk_rx_s_max_pulse_width(dev, p->max_pulse_width,
+						       &rxclk_divider);
+	}
+	o->max_pulse_width = p->max_pulse_width;
+	atomic_set(&state->rxclk_divider, rxclk_divider);
+
+	p->noise_filter_min_width =
+			  filter_rx_s_min_width(dev, p->noise_filter_min_width);
+	o->noise_filter_min_width = p->noise_filter_min_width;
+
+	p->resolution = clock_divider_to_resolution(rxclk_divider);
+	o->resolution = p->resolution;
+
+	/* FIXME - make this dependent on resolution for better performance */
+	control_rx_irq_watermark(dev, RX_FIFO_HALF_FULL);
+
+	control_rx_s_edge_detection(dev, CNTRL_EDG_BOTH);
+
+	o->invert_level = p->invert_level;
+	atomic_set(&state->rx_invert, p->invert_level);
+
+	o->interrupt_enable = p->interrupt_enable;
+	o->enable = p->enable;
+	if (p->enable) {
+		unsigned long flags;
+
+		spin_lock_irqsave(&state->rx_kfifo_lock, flags);
+		kfifo_reset(&state->rx_kfifo);
+		/* reset tx_fifo too if there is one... */
+		spin_unlock_irqrestore(&state->rx_kfifo_lock, flags);
+		if (p->interrupt_enable)
+			irqenable_rx(dev, IRQEN_RSE | IRQEN_RTE | IRQEN_ROE);
+		control_rx_enable(dev, p->enable);
 	}
 
-	printk(" Possible interrupt unsafe locking scenario:\n\n");
-	printk("       CPU0                    CPU1\n");
-	printk("       ----                    ----\n");
-	printk("  lock(");
-	__print_lock_name(unsafe_class);
-	printk(KERN_CONT ");\n");
-	printk("                               local_irq_disable();\n");
-	printk("                               lock(");
-	__print_lock_name(safe_class);
-	printk(KERN_CONT ");\n");
-	printk("                               lock(");
-	__print_lock_name(middle_class);
-	printk(KERN_CONT ");\n");
-	printk("  <Interrupt>\n");
-	printk("    lock(");
-	__print_lock_name(safe_class);
-	printk(KERN_CONT ");\n");
-	printk("\n *** DEADLOCK ***\n\n");
+	mutex_unlock(&state->rx_params_lock);
+	return 0;
 }
 
-static void
-print_bad_irq_dependency(struct task_struct *curr,
-			 struct lock_list *prev_root,
-			 struct lock_list *next_root,
-			 struct lock_list *backwards_entry,
-			 struct lock_list *forwards_entry,
-			 struct held_lock *prev,
-			 struct held_lock *next,
-			 enum lock_usage_bit bit1,
-			 enum lock_usage_bit bit2,
-			 const char *irqclass)
+/* Transmitter */
+static int cx23888_ir_tx_write(struct v4l2_subdev *sd, u8 *buf, size_t count,
+			       ssize_t *num)
 {
-	if (!debug_locks_off_graph_unlock() || debug_locks_silent)
-		return;
-
-	pr_warn("\n");
-	pr_warn("=====================================================\n");
-	pr_warn("WARNING: %s-safe -> %s-unsafe lock order detected\n",
-		irqclass, irqclass);
-	print_kernel_ident();
-	pr_warn("-----------------------------------------------------\n");
-	pr_warn("%s/%d [HC%u[%lu]:SC%u[%lu]:HE%u:SE%u] is trying to acquire:\n",
-		curr->comm, task_pid_nr(curr),
-		lockdep_hardirq_context(), hardirq_count() >> HARDIRQ_SHIFT,
-		curr->softirq_context, softirq_count() >> SOFTIRQ_SHIFT,
-		lockdep_hardirqs_enabled(),
-		curr->softirqs_enabled);
-	print_lock(next);
-
-	pr_warn("\nand this task is already holding:\n");
-	print_lock(prev);
-	pr_warn("which would create a new lock dependency:\n");
-	print_lock_name(hlock_class(prev));
-	pr_cont(" ->");
-	print_lock_name(hlock_class(next));
-	pr_cont("\n");
-
-	pr_warn("\nbut this new dependency connects a %s-irq-safe lock:\n",
-		irqclass);
-	print_lock_name(backwards_entry->class);
-	pr_warn("\n... which became %s-irq-safe at:\n", irqclass);
-
-	print_lock_trace(backwards_entry->class->usage_traces[bit1], 1);
-
-	pr_warn("\nto a %s-irq-unsafe lock:\n", irqclass);
-	print_lock_name(forwards_entry->class);
-	pr_warn("\n... which became %s-irq-unsafe at:\n", irqclass);
-	pr_warn("...");
-
-	print_lock_trace(forwards_entry->class->usage_traces[bit2], 1);
-
-	pr_warn("\nother info that might help us debug this:\n\n");
-	print_irq_lock_scenario(backwards_entry, forwards_entry,
-				hlock_class(prev), hlock_class(next));
-
-	lockdep_print_held_locks(curr);
-
-	pr_warn("\nthe dependencies between %s-irq-safe lock and the holding lock:\n", irqclass);
-	print_shortest_lock_dependencies_backwards(backwards_entry, prev_root);
-
-	pr_warn("\nthe dependencies between the lock to be acquired");
-	pr_warn(" and %s-irq-unsafe lock:\n", irqclass);
-	next_root->trace = save_trace();
-	if (!next_root->trace)
-		return;
-	print_shortest_lock_dependencies(forwards_entry, next_root);
-
-	pr_warn("\nstack backtrace:\n");
-	dump_stack();
+	struct cx23888_ir_state *state = to_state(sd);
+	struct cx23885_dev *dev = state->dev;
+	/* For now enable the Tx FIFO Service interrupt & pretend we did work */
+	irqenable_tx(dev, IRQEN_TSE);
+	*num = count;
+	return 0;
 }
 
-static const char *state_names[] = {
-#define LOCKDEP_STATE(__STATE) \
-	__stringify(__STATE),
-#include "lockdep_states.h"
-#undef LOCKDEP_STATE
-};
-
-static const char *state_rnames[] = {
-#define LOCKDEP_STATE(__STATE) \
-	__stringify(__STATE)"-READ",
-#include "lockdep_states.h"
-#undef LOCKDEP_STATE
-};
-
-static inline const char *state_name(enum lock_usage_bit bit)
+static int cx23888_ir_tx_g_parameters(struct v4l2_subdev *sd,
+				      struct v4l2_subdev_ir_parameters *p)
 {
-	if (bit & LOCK_USAGE_READ_MASK)
-		return state_rnames[bit >> LOCK_USAGE_DIR_MASK];
-	else
-		return state_names[bit >> LOCK_USAGE_DIR_MASK];
+	struct cx23888_ir_state *state = to_state(sd);
+	mutex_lock(&state->tx_params_lock);
+	memcpy(p, &state->tx_params, sizeof(struct v4l2_subdev_ir_parameters));
+	mutex_unlock(&state->tx_params_lock);
+	return 0;
 }
+
+static int cx23888_ir_tx_shutdown(struct v4l2_subdev *sd)
+{
+	struct cx23888_ir_state *state = to_state(sd);
+	struct cx23885_dev *dev = state->dev;
+
+	mutex_lock(&state->tx_params_lock);
+
+	/* Disable or slow down all IR Tx circuits and counters */
+	irqenable_tx(dev, 0);
+	control_tx_enable(dev, false);
+	control_tx_modulation_enable(dev, false);
+	cx23888_ir_write4(dev, CX23888_IR_TXCLK_REG, TXCLK_TCD);
+
+	state->tx_params.shutdown = true;
+
+	mutex_unlock(&state->tx_params_lock);
+	return 0;
+}
+
+static int cx23888_ir_tx_s_parameters(struct v4l2_subdev *sd,
+				      struct v4l2_subdev_ir_parameters *p)
+{
+	struct cx23888_ir_state *state = to_state(sd);
+	struct cx23885_dev *dev = state->dev;
+	struct v4l2_subdev_ir_parameters *o = &state->tx_params;
+	u16 txclk_divider;
+
+	if (p->shutdown)
+		return cx23888_ir_tx_shutdown(sd);
+
+	if (p->mode != V4L2_SUBDEV_IR_MODE_PULSE_WIDTH)
+		return -ENOSYS;
+
+	mutex_lock(&state->tx_params_lock);
+
+	o->shutdown = p->shutdown;
+
+	o->mode = p->mode = V4L2_SUBDEV_IR_MODE_PULSE_WIDTH;
+
+	o->bytes_per_data_element = p->bytes_per_data_element
+				  = sizeof(union cx23888_ir_fifo_rec);
+
+	/* Before we tweak the hardware, we have to disable the transmitter */
+	irqenable_tx(dev, 0);
+	control_tx_enable(dev, false);
+
+	control_tx_modulation_enable(dev, p->modulation);
+	o->modulation = p->modulation;
+
+	if (p->modulation) {
+		p->carrier_freq = txclk_tx_s_carrier(dev, p->carrier_freq,
+						     &txclk_divider);
+		o->carrier_freq = p->carrier_freq;
+
+		p->duty_cycle = cduty_tx_s_duty_cycle(dev, p->duty_cycle);
+		o->duty_cycle = p->duty_cycle;
+
+		p->max_pulse_width =
+			(u32) pulse_width_count_to_ns(FIFO_RXTX, txclk_divider);
+	} else {
+		p->max_pulse_width =
+			    txclk_tx_s_max_pulse_width(dev, p->max_pulse_width,
+						       &txclk_divider);
+	}
+	o->max_pulse_width = p->max_pulse_width;
+	atomic_set(&state->txclk_divider, txclk_divider);
+
+	p->resolution = clock_divider_to_resolution(txclk_divider);
+	o->resolution = p->resolution;
+
+	/* FIXME - make this dependent on resolution for better performance */
+	control_tx_irq_watermark(dev, TX_FIFO_HALF_EMPTY);
+
+	control_tx_polarity_invert(dev, p->invert_carrier_sense);
+	o->invert_carrier_sense = p->invert_carrier_sense;
+
+	control_tx_level_invert(dev, p->invert_level);
+	o->invert_level = p->invert_level;
+
+	o->interrupt_enable = p->interrupt_enable;
+	o->enable = p->enable;
+	if (p->enable) {
+		if (p->interrupt_enable)
+			irqenable_tx(dev, IRQEN_TSE);
+		control_tx_enable(dev, p->enable);
+	}
+
+	mutex_unlock(&state->tx_params_lock);
+	return 0;
+}
+
 
 /*
- * The bit number is encoded like:
- *
- *  bit0: 0 exclusive, 1 read lock
- *  bit1: 0 used in irq, 1 irq enabled
- *  bit2-n: state
+ * V4L2 Subdevice Core Ops
  */
-static int exclusive_bit(int new_bit)
+static int cx23888_ir_log_status(struct v4l2_subdev *sd)
 {
-	int state = new_bit & LOCK_USAGE_STATE_MASK;
-	int dir = new_bit & LOCK_USAGE_DIR_MASK;
+	struct cx23888_ir_state *state = to_state(sd);
+	struct cx23885_dev *dev = state->dev;
+	char *s;
+	int i, j;
 
-	/*
-	 * keep state, bit flip the direction and strip read.
-	 */
-	return state | (dir ^ LOCK_USAGE_DIR_MASK);
-}
+	u32 cntrl = cx23888_ir_read4(dev, CX23888_IR_CNTRL_REG);
+	u32 txclk = cx23888_ir_read4(dev, CX23888_IR_TXCLK_REG) & TXCLK_TCD;
+	u32 rxclk = cx23888_ir_read4(dev, CX23888_IR_RXCLK_REG) & RXCLK_RCD;
+	u32 cduty = cx23888_ir_read4(dev, CX23888_IR_CDUTY_REG) & CDUTY_CDC;
+	u32 stats = cx23888_ir_read4(dev, CX23888_IR_STATS_REG);
+	u32 irqen = cx23888_ir_read4(dev, CX23888_IR_IRQEN_REG);
+	u32 filtr = cx23888_ir_read4(dev, CX23888_IR_FILTR_REG) & FILTR_LPF;
 
-/*
- * Observe that when given a bitmask where each bitnr is encoded as above, a
- * right shift of the mask transforms the individual bitnrs as -1 and
- * conversely, a left shift transforms into +1 for the individual bitnrs.
- *
- * So for all bits whose number have LOCK_ENABLED_* set (bitnr1 == 1), we can
- * create the mask with those bit numbers using LOCK_USED_IN_* (bitnr1 == 0)
- * instead by subtracting the bit n
+	v4l2_info(sd, "IR Receiver:\n");
+	v4l2_info(sd, "\tEnabled:                           %s\n",
+		  cntrl & CNTRL_RXE ? "yes" : "no");
+	v4l2_info(sd, "\tDemodulation from a carrier:       %s\n",
+		  cntrl & CNTRL_DMD ? "enabled" : "disabled");
+	v4l2_info(sd, "\tFIFO:                              %s\n

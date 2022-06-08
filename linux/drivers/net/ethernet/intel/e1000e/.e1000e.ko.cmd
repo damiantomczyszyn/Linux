@@ -1,6 +1,9 @@
-ude/config/PARAVIRT_XXL) \
-  arch/x86/include/asm/disabled-features.h \
-    $(wildcard include/config/X86_SMAP) \
-    $(wildcard include/config/X86_UMIP) \
-    $(wildcard include/config/X86_INTEL_MEMORY_PROTECTION_KEYS) \
-    $(wildcard include/config/
+de/linux/ptr_ring.h \
+  include/linux/seq_file_net.h \
+  include/net/netprio_cgroup.h \
+  include/net/xdp.h \
+  include/uapi/linux/neighbour.h \
+  include/linux/netlink.h \
+  include/net/scm.h \
+    $(wildcard include/config/SECURITY_NETWORK) \
+  inclu

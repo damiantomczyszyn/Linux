@@ -1,173 +1,256 @@
-fig/GENERIC_ATOMIC64) \
-  include/linux/atomic/atomic-long.h \
-  include/linux/atomic/atomic-instrumented.h \
-  include/linux/bug.h \
-    $(wildcard include/config/BUG_ON_DATA_CORRUPTION) \
-  arch/x86/include/asm/bug.h \
-    $(wildcard include/config/DEBUG_BUGVERBOSE) \
-  include/linux/instrumentation.h \
-    $(wildcard include/config/DEBUG_ENTRY) \
-  include/asm-generic/bug.h \
-    $(wildcard include/config/BUG) \
-    $(wildcard include/config/GENERIC_BUG_RELATIVE_POINTERS) \
-  arch/x86/include/uapi/asm/msr.h \
-  include/linux/tracepoint-defs.h \
-  arch/x86/include/asm/special_insns.h \
-  include/linux/irqflags.h \
-    $(wildcard include/config/TRACE_IRQFLAGS) \
-    $(wildcard include/config/PREEMPT_RT) \
-    $(wildcard include/config/IRQSOFF_TRACER) \
-    $(wildcard include/config/PREEMPT_TRACER) \
-    $(wildcard include/config/DEBUG_IRQFLAGS) \
-    $(wildcard include/config/TRACE_IRQFLAGS_SUPPORT) \
-  arch/x86/include/asm/irqflags.h \
-  arch/x86/include/asm/fpu/types.h \
-  arch/x86/include/asm/vmxfeatures.h \
-  arch/x86/include/asm/vdso/processor.h \
-  include/linux/personality.h \
-  include/uapi/linux/personality.h \
-  arch/x86/include/asm/tsc.h \
-  arch/x86/include/asm/cpufeature.h \
-    $(wildcard include/config/X86_FEATURE_NAMES) \
-  include/vdso/time32.h \
-  include/vdso/time.h \
-  include/linux/uidgid.h \
-    $(wildcard include/config/MULTIUSER) \
-    $(wildcard include/config/USER_NS) \
-  include/linux/highuid.h \
-  include/linux/buildid.h \
-    $(wildcard include/config/CRASH_CORE) \
-  include/linux/mm_types.h \
-    $(wildcard include/config/HAVE_ALIGNED_STRUCT_PAGE) \
-    $(wildcard include/config/MEMCG) \
-    $(wildcard include/config/USERFAULTFD) \
-    $(wildcard include/config/SWAP) \
-    $(wildcard include/config/NUMA) \
-    $(wildcard include/config/HAVE_ARCH_COMPAT_MMAP_BASES) \
-    $(wildcard include/config/MEMBARRIER) \
-    $(wildcard include/config/AIO) \
-    $(wildcard include/config/MMU_NOTIFIER) \
-    $(wildcard include/config/TRANSPARENT_HUGEPAGE) \
-    $(wildcard include/config/NUMA_BALANCING) \
-    $(wildcard include/config/ARCH_WANT_BATCHED_UNMAP_TLB_FLUSH) \
-    $(wildcard include/config/HUGETLB_PAGE) \
-    $(wildcard include/config/IOMMU_SVA) \
-  include/linux/mm_types_task.h \
-    $(wildcard include/config/SPLIT_PTLOCK_CPUS) \
-    $(wildcard include/config/ARCH_ENABLE_SPLIT_PMD_PTLOCK) \
-  arch/x86/include/asm/tlbbatch.h \
-  include/linux/auxvec.h \
-  include/uapi/linux/auxvec.h \
-  arch/x86/include/uapi/asm/auxvec.h \
-  include/linux/kref.h \
-  include/linux/spinlock.h \
-    $(wildcard include/config/PREEMPTION) \
-  include/linux/preempt.h \
-    $(wildcard include/config/PREEMPT_COUNT) \
-    $(wildcard include/config/TRACE_PREEMPT_TOGGLE) \
-    $(wildcard include/config/PREEMPT_NOTIFIERS) \
-  arch/x86/include/asm/preempt.h \
-  include/linux/thread_info.h \
-    $(wildcard include/config/THREAD_INFO_IN_TASK) \
-    $(wildcard include/config/GENERIC_ENTRY) \
-    $(wildcard include/config/HAVE_ARCH_WITHIN_STACK_FRAMES) \
-    $(wildcard include/config/HARDENED_USERCOPY) \
-  include/linux/restart_block.h \
-  arch/x86/include/asm/thread_info.h \
-    $(wildcard include/config/COMPAT) \
-  include/linux/bottom_half.h \
-  include/linux/lockdep.h \
-    $(wildcard include/config/DEBUG_LOCKING_API_SELFTESTS) \
-  include/linux/smp.h \
-    $(wildcard include/config/UP_LATE_INIT) \
-  include/linux/smp_types.h \
-  include/linux/llist.h \
-    $(wildcard include/config/ARCH_HAVE_NMI_SAFE_CMPXCHG) \
-  arch/x86/include/asm/smp.h \
-    $(wildcard include/config/X86_LOCAL_APIC) \
-    $(wildcard include/config/DEBUG_NMI_SELFTEST) \
-  arch/x86/include/generated/asm/mmiowb.h \
-  include/asm-generic/mmiowb.h \
-    $(wildcard include/config/MMIOWB) \
-  include/linux/spinlock_types.h \
-  include/linux/rwlock_types.h \
-  arch/x86/include/asm/spinlock.h \
-  arch/x86/include/asm/paravirt.h \
-    $(wildcard include/config/PARAVIRT_SPINLOCKS) \
-  arch/x86/include/asm/frame.h \
-  arch/x86/include/asm/qspinlock.h \
-  include/asm-generic/qspinlock.h \
-  arch/x86/include/asm/qrwlock.h \
-  include/asm-generic/qrwlock.h \
-  include/linux/rwlock.h \
-    $(wildcard include/config/PREEMPT) \
-  include/linux/spinlock_api_smp.h \
-    $(wildcard include/config/INLINE_SPIN_LOCK) \
-    $(wildcard include/config/INLINE_SPIN_LOCK_BH) \
-    $(wildcard include/config/INLINE_SPIN_LOCK_IRQ) \
-    $(wildcard include/config/INLINE_SPIN_LOCK_IRQSAVE) \
-    $(wildcard include/config/INLINE_SPIN_TRYLOCK) \
-    $(wildcard include/config/INLINE_SPIN_TRYLOCK_BH) \
-    $(wildcard include/config/UNINLINE_SPIN_UNLOCK) \
-    $(wildcard include/config/INLINE_SPIN_UNLOCK_BH) \
-    $(wildcard include/config/INLINE_SPIN_UNLOCK_IRQ) \
-    $(wildcard include/config/INLINE_SPIN_UNLOCK_IRQRESTORE) \
-    $(wildcard include/config/GENERIC_LOCKBREAK) \
-  include/linux/rwlock_api_smp.h \
-    $(wildcard include/config/INLINE_READ_LOCK) \
-    $(wildcard include/config/INLINE_WRITE_LOCK) \
-    $(wildcard include/config/INLINE_READ_LOCK_BH) \
-    $(wildcard include/config/INLINE_WRITE_LOCK_BH) \
-    $(wildcard include/config/INLINE_READ_LOCK_IRQ) \
-    $(wildcard include/config/INLINE_WRITE_LOCK_IRQ) \
-    $(wildcard include/config/INLINE_READ_LOCK_IRQSAVE) \
-    $(wildcard include/config/INLINE_WRITE_LOCK_IRQSAVE) \
-    $(wildcard include/config/INLINE_READ_TRYLOCK) \
-    $(wildcard include/config/INLINE_WRITE_TRYLOCK) \
-    $(wildcard include/config/INLINE_READ_UNLOCK) \
-    $(wildcard include/config/INLINE_WRITE_UNLOCK) \
-    $(wildcard include/config/INLINE_READ_UNLOCK_BH) \
-    $(wildcard include/config/INLINE_WRITE_UNLOCK_BH) \
-    $(wildcard include/config/INLINE_READ_UNLOCK_IRQ) \
-    $(wildcard include/config/INLINE_WRITE_UNLOCK_IRQ) \
-    $(wildcard include/config/INLINE_READ_UNLOCK_IRQRESTORE) \
-    $(wildcard include/config/INLINE_WRITE_UNLOCK_IRQRESTORE) \
-  include/linux/refcount.h \
-  include/linux/rbtree.h \
-  include/linux/rbtree_types.h \
-  include/linux/rcupdate.h \
-    $(wildcard include/config/PREEMPT_RCU) \
-    $(wildcard include/config/TINY_RCU) \
-    $(wildcard include/config/RCU_STRICT_GRACE_PERIOD) \
-    $(wildcard include/config/TASKS_RCU_GENERIC) \
-    $(wildcard include/config/RCU_STALL_COMMON) \
-    $(wildcard include/config/NO_HZ_FULL) \
-    $(wildcard include/config/RCU_NOCB_CPU) \
-    $(wildcard include/config/TASKS_RCU) \
-    $(wildcard include/config/TASKS_TRACE_RCU) \
-    $(wildcard include/config/TASKS_RUDE_RCU) \
-    $(wildcard include/config/TREE_RCU) \
-    $(wildcard include/config/DEBUG_OBJECTS_RCU_HEAD) \
-    $(wildcard include/config/PROVE_RCU) \
-    $(wildcard include/config/ARCH_WEAK_RELEASE_ACQUIRE) \
-  include/linux/rcutree.h \
-  include/linux/rwsem.h \
-    $(wildcard include/config/RWSEM_SPIN_ON_OWNER) \
-    $(wildcard include/config/DEBUG_RWSEMS) \
-  include/linux/osq_lock.h \
-  include/linux/completion.h \
-  include/linux/swait.h \
-  include/linux/wait.h \
-  include/uapi/linux/wait.h \
-  include/linux/uprobes.h \
-    $(wildcard include/config/UPROBES) \
-  arch/x86/include/asm/uprobes.h \
-  include/linux/notifier.h \
-  include/linux/mutex.h \
-    $(wildcard include/config/MUTEX_SPIN_ON_OWNER) \
-    $(wildcard include/config/DEBUG_MUTEXES) \
-  include/linux/debug_locks.h \
-  include/linux/srcu.h \
-    $(wildcard include/config/TINY_SRCU) \
-    $(wildcard include/config/SRCU) \
-  in
+00000);
+	cx_write(PAD_CTRL, 0x00500300);
+
+	/* clear dma in progress */
+	cx23885_clear_bridge_error(dev);
+	msleep(100);
+
+	cx23885_sram_channel_setup(dev, &dev->sram_channels[SRAM_CH01],
+		720*4, 0);
+	cx23885_sram_channel_setup(dev, &dev->sram_channels[SRAM_CH02], 128, 0);
+	cx23885_sram_channel_setup(dev, &dev->sram_channels[SRAM_CH03],
+		188*4, 0);
+	cx23885_sram_channel_setup(dev, &dev->sram_channels[SRAM_CH04], 128, 0);
+	cx23885_sram_channel_setup(dev, &dev->sram_channels[SRAM_CH05], 128, 0);
+	cx23885_sram_channel_setup(dev, &dev->sram_channels[SRAM_CH06],
+		188*4, 0);
+	cx23885_sram_channel_setup(dev, &dev->sram_channels[SRAM_CH07], 128, 0);
+	cx23885_sram_channel_setup(dev, &dev->sram_channels[SRAM_CH08], 128, 0);
+	cx23885_sram_channel_setup(dev, &dev->sram_channels[SRAM_CH09], 128, 0);
+
+	cx23885_gpio_setup(dev);
+
+	cx23885_irq_get_mask(dev);
+
+	/* clear dma in progress */
+	cx23885_clear_bridge_error(dev);
+}
+
+
+static int cx23885_pci_quirks(struct cx23885_dev *dev)
+{
+	dprintk(1, "%s()\n", __func__);
+
+	/* The cx23885 bridge has a weird bug which causes NMI to be asserted
+	 * when DMA begins if RDR_TLCTL0 bit4 is not cleared. It does not
+	 * occur on the cx23887 bridge.
+	 */
+	if (dev->bridge == CX23885_BRIDGE_885)
+		cx_clear(RDR_TLCTL0, 1 << 4);
+
+	/* clear dma in progress */
+	cx23885_clear_bridge_error(dev);
+	return 0;
+}
+
+static int get_resources(struct cx23885_dev *dev)
+{
+	if (request_mem_region(pci_resource_start(dev->pci, 0),
+			       pci_resource_len(dev->pci, 0),
+			       dev->name))
+		return 0;
+
+	pr_err("%s: can't get MMIO memory @ 0x%llx\n",
+	       dev->name, (unsigned long long)pci_resource_start(dev->pci, 0));
+
+	return -EBUSY;
+}
+
+static int cx23885_init_tsport(struct cx23885_dev *dev,
+	struct cx23885_tsport *port, int portno)
+{
+	dprintk(1, "%s(portno=%d)\n", __func__, portno);
+
+	/* Transport bus init dma queue  - Common settings */
+	port->dma_ctl_val        = 0x11; /* Enable RISC controller and Fifo */
+	port->ts_int_msk_val     = 0x1111; /* TS port bits for RISC */
+	port->vld_misc_val       = 0x0;
+	port->hw_sop_ctrl_val    = (0x47 << 16 | 188 << 4);
+
+	spin_lock_init(&port->slock);
+	port->dev = dev;
+	port->nr = portno;
+
+	INIT_LIST_HEAD(&port->mpegq.active);
+	mutex_init(&port->frontends.lock);
+	INIT_LIST_HEAD(&port->frontends.felist);
+	port->frontends.active_fe_id = 0;
+
+	/* This should be hardcoded allow a single frontend
+	 * attachment to this tsport, keeping the -dvb.c
+	 * code clean and safe.
+	 */
+	if (!port->num_frontends)
+		port->num_frontends = 1;
+
+	switch (portno) {
+	case 1:
+		port->reg_gpcnt          = VID_B_GPCNT;
+		port->reg_gpcnt_ctl      = VID_B_GPCNT_CTL;
+		port->reg_dma_ctl        = VID_B_DMA_CTL;
+		port->reg_lngth          = VID_B_LNGTH;
+		port->reg_hw_sop_ctrl    = VID_B_HW_SOP_CTL;
+		port->reg_gen_ctrl       = VID_B_GEN_CTL;
+		port->reg_bd_pkt_status  = VID_B_BD_PKT_STATUS;
+		port->reg_sop_status     = VID_B_SOP_STATUS;
+		port->reg_fifo_ovfl_stat = VID_B_FIFO_OVFL_STAT;
+		port->reg_vld_misc       = VID_B_VLD_MISC;
+		port->reg_ts_clk_en      = VID_B_TS_CLK_EN;
+		port->reg_src_sel        = VID_B_SRC_SEL;
+		port->reg_ts_int_msk     = VID_B_INT_MSK;
+		port->reg_ts_int_stat    = VID_B_INT_STAT;
+		port->sram_chno          = SRAM_CH03; /* VID_B */
+		port->pci_irqmask        = 0x02; /* VID_B bit1 */
+		break;
+	case 2:
+		port->reg_gpcnt          = VID_C_GPCNT;
+		port->reg_gpcnt_ctl      = VID_C_GPCNT_CTL;
+		port->reg_dma_ctl        = VID_C_DMA_CTL;
+		port->reg_lngth          = VID_C_LNGTH;
+		port->reg_hw_sop_ctrl    = VID_C_HW_SOP_CTL;
+		port->reg_gen_ctrl       = VID_C_GEN_CTL;
+		port->reg_bd_pkt_status  = VID_C_BD_PKT_STATUS;
+		port->reg_sop_status     = VID_C_SOP_STATUS;
+		port->reg_fifo_ovfl_stat = VID_C_FIFO_OVFL_STAT;
+		port->reg_vld_misc       = VID_C_VLD_MISC;
+		port->reg_ts_clk_en      = VID_C_TS_CLK_EN;
+		port->reg_src_sel        = 0;
+		port->reg_ts_int_msk     = VID_C_INT_MSK;
+		port->reg_ts_int_stat    = VID_C_INT_STAT;
+		port->sram_chno          = SRAM_CH06; /* VID_C */
+		port->pci_irqmask        = 0x04; /* VID_C bit2 */
+		break;
+	default:
+		BUG();
+	}
+
+	return 0;
+}
+
+static void cx23885_dev_checkrevision(struct cx23885_dev *dev)
+{
+	switch (cx_read(RDR_CFG2) & 0xff) {
+	case 0x00:
+		/* cx23885 */
+		dev->hwrevision = 0xa0;
+		break;
+	case 0x01:
+		/* CX23885-12Z */
+		dev->hwrevision = 0xa1;
+		break;
+	case 0x02:
+		/* CX23885-13Z/14Z */
+		dev->hwrevision = 0xb0;
+		break;
+	case 0x03:
+		if (dev->pci->device == 0x8880) {
+			/* CX23888-21Z/22Z */
+			dev->hwrevision = 0xc0;
+		} else {
+			/* CX23885-14Z */
+			dev->hwrevision = 0xa4;
+		}
+		break;
+	case 0x04:
+		if (dev->pci->device == 0x8880) {
+			/* CX23888-31Z */
+			dev->hwrevision = 0xd0;
+		} else {
+			/* CX23885-15Z, CX23888-31Z */
+			dev->hwrevision = 0xa5;
+		}
+		break;
+	case 0x0e:
+		/* CX23887-15Z */
+		dev->hwrevision = 0xc0;
+		break;
+	case 0x0f:
+		/* CX23887-14Z */
+		dev->hwrevision = 0xb1;
+		break;
+	default:
+		pr_err("%s() New hardware revision found 0x%x\n",
+		       __func__, dev->hwrevision);
+	}
+	if (dev->hwrevision)
+		pr_info("%s() Hardware revision = 0x%02x\n",
+			__func__, dev->hwrevision);
+	else
+		pr_err("%s() Hardware revision unknown 0x%x\n",
+		       __func__, dev->hwrevision);
+}
+
+/* Find the first v4l2_subdev member of the group id in hw */
+struct v4l2_subdev *cx23885_find_hw(struct cx23885_dev *dev, u32 hw)
+{
+	struct v4l2_subdev *result = NULL;
+	struct v4l2_subdev *sd;
+
+	spin_lock(&dev->v4l2_dev.lock);
+	v4l2_device_for_each_subdev(sd, &dev->v4l2_dev) {
+		if (sd->grp_id == hw) {
+			result = sd;
+			break;
+		}
+	}
+	spin_unlock(&dev->v4l2_dev.lock);
+	return result;
+}
+
+static int cx23885_dev_setup(struct cx23885_dev *dev)
+{
+	int i;
+
+	spin_lock_init(&dev->pci_irqmask_lock);
+	spin_lock_init(&dev->slock);
+
+	mutex_init(&dev->lock);
+	mutex_init(&dev->gpio_lock);
+
+	atomic_inc(&dev->refcount);
+
+	dev->nr = cx23885_devcount++;
+	sprintf(dev->name, "cx23885[%d]", dev->nr);
+
+	/* Configure the internal memory */
+	if (dev->pci->device == 0x8880) {
+		/* Could be 887 or 888, assume an 888 default */
+		dev->bridge = CX23885_BRIDGE_888;
+		/* Apply a sensible clock frequency for the PCIe bridge */
+		dev->clk_freq = 50000000;
+		dev->sram_channels = cx23887_sram_channels;
+	} else
+	if (dev->pci->device == 0x8852) {
+		dev->bridge = CX23885_BRIDGE_885;
+		/* Apply a sensible clock frequency for the PCIe bridge */
+		dev->clk_freq = 28000000;
+		dev->sram_channels = cx23885_sram_channels;
+	} else
+		BUG();
+
+	dprintk(1, "%s() Memory configured for PCIe bridge type %d\n",
+		__func__, dev->bridge);
+
+	/* board config */
+	dev->board = UNSET;
+	if (card[dev->nr] < cx23885_bcount)
+		dev->board = card[dev->nr];
+	for (i = 0; UNSET == dev->board  &&  i < cx23885_idcount; i++)
+		if (dev->pci->subsystem_vendor == cx23885_subids[i].subvendor &&
+		    dev->pci->subsystem_device == cx23885_subids[i].subdevice)
+			dev->board = cx23885_subids[i].card;
+	if (UNSET == dev->board) {
+		dev->board = CX23885_BOARD_UNKNOWN;
+		cx23885_card_list(dev);
+	}
+
+	if (dev->pci->device == 0x8852) {
+		/* no DIF on cx23885, so no analog tuner support possible */
+		if (dev->board == CX23885_BOARD_HAUPPAUGE_QUADHD_ATSC)
+			dev->board = CX23885_BOARD_HAUPPAUGE_QUADHD_ATSC_885;
+		else if (dev->board == CX23885_BOARD_HAUPPAUGE_QUADHD_DVB)
+			dev->board = CX23885_BOARD_HAUPPAUGE_QUADHD_DVB_885;
+	}
+
+	/* If the user specific a clk freq override, apply it */
+	if (cx23885_boards[de

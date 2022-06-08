@@ -1,3 +1,2 @@
-/* SPDX-License-Identifier: GPL-2.0 */
-/*
- * This program is free software; you can redi
+uted by a highprio stopper thread
+ * and performs thread migration by bumping thread off

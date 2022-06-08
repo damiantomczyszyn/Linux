@@ -1,506 +1,634 @@
-nclude/config/GENERIC_ATOMIC64) \
-  include/linux/atomic/atomic-long.h \
-  include/linux/atomic/atomic-instrumented.h \
-  include/linux/bug.h \
-    $(wildcard include/config/BUG_ON_DATA_CORRUPTION) \
-  arch/x86/include/asm/bug.h \
-    $(wildcard include/config/DEBUG_BUGVERBOSE) \
-  include/linux/instrumentation.h \
-    $(wildcard include/config/DEBUG_ENTRY) \
-  include/asm-generic/bug.h \
-    $(wildcard include/config/BUG) \
-    $(wildcard include/config/GENERIC_BUG_RELATIVE_POINTERS) \
-  arch/x86/include/uapi/asm/msr.h \
-  include/linux/tracepoint-defs.h \
-  arch/x86/include/asm/special_insns.h \
-  include/linux/irqflags.h \
-    $(wildcard include/config/TRACE_IRQFLAGS) \
-    $(wildcard include/config/PREEMPT_RT) \
-    $(wildcard include/config/IRQSOFF_TRACER) \
-    $(wildcard include/config/PREEMPT_TRACER) \
-    $(wildcard include/config/DEBUG_IRQFLAGS) \
-    $(wildcard include/config/TRACE_IRQFLAGS_SUPPORT) \
-  arch/x86/include/asm/irqflags.h \
-  arch/x86/include/asm/fpu/types.h \
-  arch/x86/include/asm/vmxfeatures.h \
-  arch/x86/include/asm/vdso/processor.h \
-  include/linux/personality.h \
-  include/uapi/linux/personality.h \
-  arch/x86/include/asm/tsc.h \
-  arch/x86/include/asm/cpufeature.h \
-    $(wildcard include/config/X86_FEATURE_NAMES) \
-  include/vdso/time32.h \
-  include/vdso/time.h \
-  include/linux/uidgid.h \
-    $(wildcard include/config/MULTIUSER) \
-    $(wildcard include/config/USER_NS) \
-  include/linux/highuid.h \
-  include/linux/buildid.h \
-    $(wildcard include/config/CRASH_CORE) \
-  include/linux/mm_types.h \
-    $(wildcard include/config/HAVE_ALIGNED_STRUCT_PAGE) \
-    $(wildcard include/config/MEMCG) \
-    $(wildcard include/config/USERFAULTFD) \
-    $(wildcard include/config/SWAP) \
-    $(wildcard include/config/NUMA) \
-    $(wildcard include/config/HAVE_ARCH_COMPAT_MMAP_BASES) \
-    $(wildcard include/config/MEMBARRIER) \
-    $(wildcard include/config/AIO) \
-    $(wildcard include/config/MMU_NOTIFIER) \
-    $(wildcard include/config/TRANSPARENT_HUGEPAGE) \
-    $(wildcard include/config/NUMA_BALANCING) \
-    $(wildcard include/config/ARCH_WANT_BATCHED_UNMAP_TLB_FLUSH) \
-    $(wildcard include/config/HUGETLB_PAGE) \
-    $(wildcard include/config/IOMMU_SVA) \
-  include/linux/mm_types_task.h \
-    $(wildcard include/config/SPLIT_PTLOCK_CPUS) \
-    $(wildcard include/config/ARCH_ENABLE_SPLIT_PMD_PTLOCK) \
-  arch/x86/include/asm/tlbbatch.h \
-  include/linux/auxvec.h \
-  include/uapi/linux/auxvec.h \
-  arch/x86/include/uapi/asm/auxvec.h \
-  include/linux/kref.h \
-  include/linux/spinlock.h \
-    $(wildcard include/config/PREEMPTION) \
-  include/linux/preempt.h \
-    $(wildcard include/config/PREEMPT_COUNT) \
-    $(wildcard include/config/TRACE_PREEMPT_TOGGLE) \
-    $(wildcard include/config/PREEMPT_NOTIFIERS) \
-  arch/x86/include/asm/preempt.h \
-  include/linux/thread_info.h \
-    $(wildcard include/config/THREAD_INFO_IN_TASK) \
-    $(wildcard include/config/GENERIC_ENTRY) \
-    $(wildcard include/config/HAVE_ARCH_WITHIN_STACK_FRAMES) \
-    $(wildcard include/config/HARDENED_USERCOPY) \
-  include/linux/restart_block.h \
-  arch/x86/include/asm/thread_info.h \
-    $(wildcard include/config/COMPAT) \
-  include/linux/bottom_half.h \
-  include/linux/lockdep.h \
-    $(wildcard include/config/DEBUG_LOCKING_API_SELFTESTS) \
-  include/linux/smp.h \
-    $(wildcard include/config/UP_LATE_INIT) \
-  include/linux/smp_types.h \
-  include/linux/llist.h \
-    $(wildcard include/config/ARCH_HAVE_NMI_SAFE_CMPXCHG) \
-  arch/x86/include/asm/smp.h \
-    $(wildcard include/config/X86_LOCAL_APIC) \
-    $(wildcard include/config/DEBUG_NMI_SELFTEST) \
-  arch/x86/include/generated/asm/mmiowb.h \
-  include/asm-generic/mmiowb.h \
-    $(wildcard include/config/MMIOWB) \
-  include/linux/spinlock_types.h \
-  include/linux/rwlock_types.h \
-  arch/x86/include/asm/spinlock.h \
-  arch/x86/include/asm/paravirt.h \
-    $(wildcard include/config/PARAVIRT_SPINLOCKS) \
-  arch/x86/include/asm/frame.h \
-  arch/x86/include/asm/qspinlock.h \
-  include/asm-generic/qspinlock.h \
-  arch/x86/include/asm/qrwlock.h \
-  include/asm-generic/qrwlock.h \
-  include/linux/rwlock.h \
-    $(wildcard include/config/PREEMPT) \
-  include/linux/spinlock_api_smp.h \
-    $(wildcard include/config/INLINE_SPIN_LOCK) \
-    $(wildcard include/config/INLINE_SPIN_LOCK_BH) \
-    $(wildcard include/config/INLINE_SPIN_LOCK_IRQ) \
-    $(wildcard include/config/INLINE_SPIN_LOCK_IRQSAVE) \
-    $(wildcard include/config/INLINE_SPIN_TRYLOCK) \
-    $(wildcard include/config/INLINE_SPIN_TRYLOCK_BH) \
-    $(wildcard include/config/UNINLINE_SPIN_UNLOCK) \
-    $(wildcard include/config/INLINE_SPIN_UNLOCK_BH) \
-    $(wildcard include/config/INLINE_SPIN_UNLOCK_IRQ) \
-    $(wildcard include/config/INLINE_SPIN_UNLOCK_IRQRESTORE) \
-    $(wildcard include/config/GENERIC_LOCKBREAK) \
-  include/linux/rwlock_api_smp.h \
-    $(wildcard include/config/INLINE_READ_LOCK) \
-    $(wildcard include/config/INLINE_WRITE_LOCK) \
-    $(wildcard include/config/INLINE_READ_LOCK_BH) \
-    $(wildcard include/config/INLINE_WRITE_LOCK_BH) \
-    $(wildcard include/config/INLINE_READ_LOCK_IRQ) \
-    $(wildcard include/config/INLINE_WRITE_LOCK_IRQ) \
-    $(wildcard include/config/INLINE_READ_LOCK_IRQSAVE) \
-    $(wildcard include/config/INLINE_WRITE_LOCK_IRQSAVE) \
-    $(wildcard include/config/INLINE_READ_TRYLOCK) \
-    $(wildcard include/config/INLINE_WRITE_TRYLOCK) \
-    $(wildcard include/config/INLINE_READ_UNLOCK) \
-    $(wildcard include/config/INLINE_WRITE_UNLOCK) \
-    $(wildcard include/config/INLINE_READ_UNLOCK_BH) \
-    $(wildcard include/config/INLINE_WRITE_UNLOCK_BH) \
-    $(wildcard include/config/INLINE_READ_UNLOCK_IRQ) \
-    $(wildcard include/config/INLINE_WRITE_UNLOCK_IRQ) \
-    $(wildcard include/config/INLINE_READ_UNLOCK_IRQRESTORE) \
-    $(wildcard include/config/INLINE_WRITE_UNLOCK_IRQRESTORE) \
-  include/linux/refcount.h \
-  include/linux/rbtree.h \
-  include/linux/rbtree_types.h \
-  include/linux/rcupdate.h \
-    $(wildcard include/config/PREEMPT_RCU) \
-    $(wildcard include/config/TINY_RCU) \
-    $(wildcard include/config/RCU_STRICT_GRACE_PERIOD) \
-    $(wildcard include/config/TASKS_RCU_GENERIC) \
-    $(wildcard include/config/RCU_STALL_COMMON) \
-    $(wildcard include/config/NO_HZ_FULL) \
-    $(wildcard include/config/RCU_NOCB_CPU) \
-    $(wildcard include/config/TASKS_RCU) \
-    $(wildcard include/config/TASKS_TRACE_RCU) \
-    $(wildcard include/config/TASKS_RUDE_RCU) \
-    $(wildcard include/config/TREE_RCU) \
-    $(wildcard include/config/DEBUG_OBJECTS_RCU_HEAD) \
-    $(wildcard include/config/PROVE_RCU) \
-    $(wildcard include/config/ARCH_WEAK_RELEASE_ACQUIRE) \
-  include/linux/rcutree.h \
-  include/linux/rwsem.h \
-    $(wildcard include/config/RWSEM_SPIN_ON_OWNER) \
-    $(wildcard include/config/DEBUG_RWSEMS) \
-  include/linux/osq_lock.h \
-  include/linux/completion.h \
-  include/linux/swait.h \
-  include/linux/wait.h \
-  include/uapi/linux/wait.h \
-  include/linux/uprobes.h \
-    $(wildcard include/config/UPROBES) \
-  arch/x86/include/asm/uprobes.h \
-  include/linux/notifier.h \
-  include/linux/mutex.h \
-    $(wildcard include/config/MUTEX_SPIN_ON_OWNER) \
-    $(wildcard include/config/DEBUG_MUTEXES) \
-  include/linux/debug_locks.h \
-  include/linux/srcu.h \
-    $(wildcard include/config/TINY_SRCU) \
-    $(wildcard include/config/SRCU) \
-  include/linux/workqueue.h \
-    $(wildcard include/config/DEBUG_OBJECTS_WORK) \
-    $(wildcard include/config/FREEZER) \
-    $(wildcard include/config/WQ_WATCHDOG) \
-  include/linux/timer.h \
-    $(wildcard include/config/DEBUG_OBJECTS_TIMERS) \
-    $(wildcard include/config/NO_HZ_COMMON) \
-  include/linux/ktime.h \
-  include/linux/jiffies.h \
-  include/vdso/jiffies.h \
-  include/generated/timeconst.h \
-  include/vdso/ktime.h \
-  include/linux/timekeeping.h \
-    $(wildcard include/config/GENERIC_CMOS_UPDATE) \
-  include/linux/clocksource_ids.h \
-  include/linux/debugobjects.h \
-    $(wildcard include/config/DEBUG_OBJECTS) \
-    $(wildcard include/config/DEBUG_OBJECTS_FREE) \
-  include/linux/rcu_segcblist.h \
-  include/linux/srcutree.h \
-  include/linux/rcu_node_tree.h \
-    $(wildcard include/config/RCU_FANOUT) \
-    $(wildcard include/config/RCU_FANOUT_LEAF) \
-  include/linux/page-flags-layout.h \
-    $(wildcard include/config/KASAN_HW_TAGS) \
-  include/linux/numa.h \
-    $(wildcard include/config/NODES_SHIFT) \
-    $(wildcard include/config/NUMA_KEEP_MEMINFO) \
-    $(wildcard include/config/HAVE_ARCH_NODE_DEV_GROUP) \
-  arch/x86/include/asm/sparsemem.h \
-  include/generated/bounds.h \
-  include/linux/seqlock.h \
-  include/linux/ww_mutex.h \
-    $(wildcard include/config/DEBUG_RT_MUTEXES) \
-    $(wildcard include/config/DEBUG_WW_MUTEX_SLOWPATH) \
-  include/linux/rtmutex.h \
-  arch/x86/include/asm/mmu.h \
-    $(wildcard include/config/MODIFY_LDT_SYSCALL) \
-  include/linux/kmod.h \
-  include/linux/umh.h \
-  include/linux/gfp.h \
-    $(wildcard include/config/HIGHMEM) \
-    $(wildcard include/config/ZONE_DMA) \
-    $(wildcard include/config/ZONE_DMA32) \
-    $(wildcard include/config/ZONE_DEVICE) \
-    $(wildcard include/config/PM_SLEEP) \
-    $(wildcard include/config/CONTIG_ALLOC) \
-    $(wildcard include/config/CMA) \
-  include/linux/mmdebug.h \
-    $(wildcard include/config/DEBUG_VM) \
-    $(wildcard include/config/DEBUG_VM_PGFLAGS) \
-  include/linux/mmzone.h \
-    $(wildcard include/config/FORCE_MAX_ZONEORDER) \
-    $(wildcard include/config/MEMORY_ISOLATION) \
-    $(wildcard include/config/ZSMALLOC) \
-    $(wildcard include/config/MEMORY_HOTPLUG) \
-    $(wildcard include/config/COMPACTION) \
-    $(wildcard include/config/PAGE_EXTENSION) \
-    $(wildcard include/config/DEFERRED_STRUCT_PAGE_INIT) \
-    $(wildcard include/config/HAVE_MEMORYLESS_NODES) \
-    $(wildcard include/config/SPARSEMEM_EXTREME) \
-    $(wildcard include/config/HAVE_ARCH_PFN_VALID) \
-  include/linux/nodemask.h \
-  include/linux/pageblock-flags.h \
-    $(wildcard include/config/HUGETLB_PAGE_SIZE_VARIABLE) \
-  include/linux/page-flags.h \
-    $(wildcard include/config/ARCH_USES_PG_UNCACHED) \
-    $(wildcard include/config/MEMORY_FAILURE) \
-    $(wildcard include/config/PAGE_IDLE_FLAG) \
-    $(wildcard include/config/HUGETLB_PAGE_FREE_VMEMMAP) \
-    $(wildcard include/config/HUGETLB_PAGE_FREE_VMEMMAP_DEFAULT_ON) \
-    $(wildcard include/config/KSM) \
-  include/linux/local_lock.h \
-  include/linux/local_lock_internal.h \
-  include/linux/memory_hotplug.h \
-    $(wildcard include/config/HAVE_ARCH_NODEDATA_EXTENSION) \
-    $(wildcard include/config/ARCH_HAS_ADD_PAGES) \
-    $(wildcard include/config/MEMORY_HOTREMOVE) \
-  arch/x86/include/asm/mmzone.h \
-  arch/x86/include/asm/mmzone_32.h \
-  include/linux/topology.h \
-    $(wildcard include/config/USE_PERCPU_NUMA_NODE_ID) \
-    $(wildcard include/config/SCHED_SMT) \
-    $(wildcard include/config/SCHED_CLUSTER) \
-  include/linux/arch_topology.h \
-    $(wildcard include/config/ACPI_CPPC_LIB) \
-    $(wildcard include/config/GENERIC_ARCH_TOPOLOGY) \
-  include/linux/percpu.h \
-    $(wildcard include/config/NEED_PER_CPU_EMBED_FIRST_CHUNK) \
-    $(wildcard include/config/NEED_PER_CPU_PAGE_FIRST_CHUNK) \
-  arch/x86/include/asm/topology.h \
-    $(wildcard include/config/SCHED_MC_PRIO) \
-  arch/x86/include/asm/mpspec.h \
-    $(wildcard include/config/EISA) \
-    $(wildcard include/config/X86_MPPARSE) \
-  arch/x86/include/asm/mpspec_def.h \
-  arch/x86/include/asm/x86_init.h \
-  arch/x86/include/asm/apicdef.h \
-  include/asm-generic/topology.h \
-  include/linux/sysctl.h \
-    $(wildcard include/config/SYSCTL) \
-  include/uapi/linux/sysctl.h \
-  include/linux/elf.h \
-    $(wildcard include/config/ARCH_USE_GNU_PROPERTY) \
-    $(wildcard include/config/ARCH_HAVE_ELF_PROT) \
-  arch/x86/include/asm/elf.h \
-    $(wildcard include/config/X86_X32_ABI) \
-  arch/x86/include/asm/user.h \
-  arch/x86/include/asm/user_32.h \
-  arch/x86/include/asm/fsgsbase.h \
-  arch/x86/include/asm/vdso.h \
-  arch/x86/include/asm/desc.h \
-  arch/x86/include/asm/fixmap.h \
-    $(wildcard include/config/DEBUG_KMAP_LOCAL_FORCE_MAP) \
-    $(wildcard include/config/X86_VSYSCALL_EMULATION) \
-    $(wildcard include/config/PROVIDE_OHCI1394_DMA_INIT) \
-    $(wildcard include/config/X86_IO_APIC) \
-    $(wildcard include/config/KMAP_LOCAL) \
-    $(wildcard include/config/PCI_MMCONFIG) \
-    $(wildcard include/config/ACPI_APEI_GHES) \
-    $(wildcard include/config/INTEL_TXT) \
-  arch/x86/include/generated/asm/kmap_size.h \
-  include/asm-generic/kmap_size.h \
-    $(wildcard include/config/DEBUG_KMAP_LOCAL) \
-  include/asm-generic/fixmap.h \
-  arch/x86/include/asm/irq_vectors.h \
-    $(wildcard include/config/HAVE_KVM) \
-    $(wildcard include/config/HYPERV) \
-    $(wildcard include/config/PCI_MSI) \
-  arch/x86/include/asm/cpu_entry_area.h \
-  arch/x86/include/asm/intel_ds.h \
-  arch/x86/include/asm/pgtable_areas.h \
-  arch/x86/include/asm/pgtable_32_areas.h \
-  include/uapi/linux/elf.h \
-  include/uapi/linux/elf-em.h \
-  include/linux/kobject.h \
-    $(wildcard include/config/UEVENT_HELPER) \
-    $(wildcard include/config/DEBUG_KOBJECT_RELEASE) \
-  include/linux/sysfs.h \
-  include/linux/kernfs.h \
-    $(wildcard include/config/KERNFS) \
-  include/linux/idr.h \
-  include/linux/radix-tree.h \
-  include/linux/xarray.h \
-    $(wildcard include/config/XARRAY_MULTI) \
-  include/linux/kconfig.h \
-  include/linux/kobject_ns.h \
-  include/linux/moduleparam.h \
-    $(wildcard include/config/ALPHA) \
-    $(wildcard include/config/IA64) \
-    $(wildcard include/config/PPC64) \
-  include/linux/rbtree_latch.h \
-  include/linux/error-injection.h \
-  include/asm-generic/error-injection.h \
-  include/linux/cfi.h \
-    $(wildcard include/config/CFI_CLANG_SHADOW) \
-  arch/x86/include/asm/module.h \
-    $(wildcard include/config/UNWINDER_ORC) \
-  include/asm-generic/module.h \
-    $(wildcard include/config/HAVE_MOD_ARCH_SPECIFIC) \
-    $(wildcard include/config/MODULES_USE_ELF_REL) \
-    $(wildcard include/config/MODULES_USE_ELF_RELA) \
-  arch/x86/include/asm/orc_types.h \
-  include/linux/delay.h \
-  include/linux/sched.h \
-    $(wildcard include/config/VIRT_CPU_ACCOUNTING_NATIVE) \
-    $(wildcard include/config/SCHED_INFO) \
-    $(wildcard include/config/SCHEDSTATS) \
-    $(wildcard include/config/SCHED_CORE) \
-    $(wildcard include/config/FAIR_GROUP_SCHED) \
-    $(wildcard include/config/RT_GROUP_SCHED) \
-    $(wildcard include/config/RT_MUTEXES) \
-    $(wildcard include/config/UCLAMP_TASK) \
-    $(wildcard include/config/UCLAMP_BUCKETS_COUNT) \
-    $(wildcard include/config/CGROUP_SCHED) \
-    $(wildcard include/config/BLK_DEV_IO_TRACE) \
-    $(wildcard include/config/PSI) \
-    $(wildcard include/config/COMPAT_BRK) \
-    $(wildcard include/config/CGROUPS) \
-    $(wildcard include/config/BLK_CGROUP) \
-    $(wildcard include/config/PAGE_OWNER) \
-    $(wildcard include/config/EVENTFD) \
-    $(wildcard include/config/ARCH_HAS_SCALED_CPUTIME) \
-    $(wildcard include/config/VIRT_CPU_ACCOUNTING_GEN) \
-    $(wildcard include/config/POSIX_CPUTIMERS) \
-    $(wildcard include/config/POSIX_CPU_TIMERS_TASK_WORK) \
-    $(wildcard include/config/KEYS) \
-    $(wildcard include/config/SYSVIPC) \
-    $(wildcard include/config/DETECT_HUNG_TASK) \
-    $(wildcard include/config/IO_URING) \
-    $(wildcard include/config/AUDIT) \
-    $(wildcard include/config/AUDITSYSCALL) \
-    $(wildcard include/config/UBSAN) \
-    $(wildcard include/config/UBSAN_TRAP) \
-    $(wildcard include/config/TASK_XACCT) \
-    $(wildcard include/config/CPUSETS) \
-    $(wildcard include/config/X86_CPU_RESCTRL) \
-    $(wildcard include/config/FUTEX) \
-    $(wildcard include/config/PERF_EVENTS) \
-    $(wildcard include/config/RSEQ) \
-    $(wildcard include/config/TASK_DELAY_ACCT) \
-    $(wildcard include/config/FAULT_INJECTION) \
-    $(wildcard include/config/LATENCYTOP) \
-    $(wildcard include/config/KUNIT) \
-    $(wildcard include/config/FUNCTION_GRAPH_TRACER) \
-    $(wildcard include/config/BCACHE) \
-    $(wildcard include/config/VMAP_STACK) \
-    $(wildcard include/config/SECURITY) \
-    $(wildcard include/config/BPF_SYSCALL) \
-    $(wildcard include/config/GCC_PLUGIN_STACKLEAK) \
-    $(wildcard include/config/X86_MCE) \
-    $(wildcard include/config/KRETPROBES) \
-    $(wildcard include/config/RETHOOK) \
-    $(wildcard include/config/ARCH_HAS_PARANOID_L1D_FLUSH) \
-    $(wildcard include/config/ARCH_TASK_STRUCT_ON_STACK) \
-    $(wildcard include/config/DEBUG_RSEQ) \
-  include/uapi/linux/sched.h \
-  include/linux/pid.h \
-  include/linux/rculist.h \
-    $(wildcard include/config/PROVE_RCU_LIST) \
-  include/linux/sem.h \
-  include/uapi/linux/sem.h \
-  include/linux/ipc.h \
-  include/linux/rhashtable-types.h \
-  include/uapi/linux/ipc.h \
-  arch/x86/include/generated/uapi/asm/ipcbuf.h \
-  include/uapi/asm-generic/ipcbuf.h \
-  arch/x86/include/uapi/asm/sembuf.h \
-  include/linux/shm.h \
-  include/uapi/linux/shm.h \
-  include/uapi/asm-generic/hugetlb_encode.h \
-  arch/x86/include/uapi/asm/shmbuf.h \
-  include/uapi/asm-generic/shmbuf.h \
-  arch/x86/include/asm/shmparam.h \
-  include/linux/plist.h \
-    $(wildcard include/config/DEBUG_PLIST) \
-  include/linux/hrtimer.h \
-    $(wildcard include/config/HIGH_RES_TIMERS) \
-    $(wildcard include/config/TIME_LOW_RES) \
-    $(wildcard include/config/TIMERFD) \
-  include/linux/hrtimer_defs.h \
-  include/linux/timerqueue.h \
-  include/linux/seccomp.h \
-    $(wildcard include/config/SECCOMP) \
-    $(wildcard include/config/HAVE_ARCH_SECCOMP_FILTER) \
-    $(wildcard include/config/SECCOMP_FILTER) \
-    $(wildcard include/config/CHECKPOINT_RESTORE) \
-    $(wildcard include/config/SECCOMP_CACHE_DEBUG) \
-  include/uapi/linux/seccomp.h \
-  arch/x86/include/asm/seccomp.h \
-  arch/x86/include/asm/unistd.h \
-  arch/x86/include/uapi/asm/unistd.h \
-  arch/x86/include/generated/uapi/asm/unistd_32.h \
-  include/asm-generic/seccomp.h \
-  include/uapi/linux/unistd.h \
-  include/linux/resource.h \
-  include/uapi/linux/resource.h \
-  arch/x86/include/generated/uapi/asm/resource.h \
-  include/asm-generic/resource.h \
-  include/uapi/asm-generic/resource.h \
-  include/linux/latencytop.h \
-  include/linux/sched/prio.h \
-  include/linux/sched/types.h \
-  include/linux/signal_types.h \
-    $(wildcard include/config/OLD_SIGACTION) \
-  include/uapi/linux/signal.h \
-  arch/x86/include/asm/signal.h \
-  arch/x86/include/uapi/asm/signal.h \
-  include/uapi/asm-generic/signal-defs.h \
-  arch/x86/include/uapi/asm/siginfo.h \
-  include/uapi/asm-generic/siginfo.h \
-  include/linux/syscall_user_dispatch.h \
-  include/linux/task_io_accounting.h \
-    $(wildcard include/config/TASK_IO_ACCOUNTING) \
-  include/linux/posix-timers.h \
-  include/linux/alarmtimer.h \
-    $(wildcard include/config/RTC_CLASS) \
-  include/uapi/linux/rseq.h \
-  include/linux/kcsan.h \
-  arch/x86/include/asm/delay.h \
-  include/asm-generic/delay.h \
-  include/linux/slab.h \
-    $(wildcard include/config/DEBUG_SLAB) \
-    $(wildcard include/config/FAILSLAB) \
-    $(wildcard include/config/MEMCG_KMEM) \
-    $(wildcard include/config/KASAN) \
-    $(wildcard include/config/SLAB) \
-    $(wildcard include/config/SLUB) \
-    $(wildcard include/config/SLOB) \
-  include/linux/overflow.h \
-  include/linux/percpu-refcount.h \
-  include/linux/kasan.h \
-    $(wildcard include/config/KASAN_STACK) \
-    $(wildcard include/config/KASAN_VMALLOC) \
-    $(wildcard include/config/KASAN_INLINE) \
-  include/linux/kasan-enabled.h \
-  include/linux/uaccess.h \
-  include/linux/fault-inject-usercopy.h \
-    $(wildcard include/config/FAULT_INJECTION_USERCOPY) \
-  arch/x86/include/asm/uaccess.h \
-    $(wildcard include/config/CC_HAS_ASM_GOTO_OUTPUT) \
-    $(wildcard include/config/CC_HAS_ASM_GOTO_TIED_OUTPUT) \
-    $(wildcard include/config/ARCH_HAS_COPY_MC) \
-    $(wildcard include/config/X86_INTEL_USERCOPY) \
-  arch/x86/include/asm/smap.h \
-  arch/x86/include/asm/extable.h \
-    $(wildcard include/config/BPF_JIT) \
-  include/asm-generic/access_ok.h \
-    $(wildcard include/config/ALTERNATE_USER_ADDRESS_SPACE) \
-  arch/x86/include/asm/uaccess_32.h \
-  include/linux/i2c.h \
-    $(wildcard include/config/I2C) \
-    $(wildcard include/config/I2C_SLAVE) \
-    $(wildcard include/config/I2C_BOARDINFO) \
-    $(wildcard include/config/I2C_MUX) \
-    $(wildcard include/config/OF) \
-    $(wildcard include/config/ACPI) \
-  include/linux/acpi.h \
-    $(wildcard include/config/ACPI_DEBUGGER) \
-    $(wildcard include/config/ACPI_TABLE_LIB) \
-    $(wildcard include/config/LOONGARCH) \
-    $(wildcard include/config/ARM64) \
-    $(wildcard include/config/ACPI_PROCESSOR_CSTATE) \
-    $(wildcard include/config/ACPI_HOTPLUG_CPU) \
-    $(wildcard include/config/ACPI_HOTPLUG_IOAPIC) \
-    $(wildcard include/config/PCI) \
-    $(wildcard include/config/ACPI_WMI) \
-    $(wildcard include/config/ACPI_NUMA) \
-    $(wildcard include/config/HIBERNATION) \
-    $(wildcard include/config/ACPI_HOTPLUG_MEMORY) \
-    $(wildcard include/config/ACPI_CONTAINER) \
-    $(wildcard include/config/ACPI_GTDT) \
-    $(wildcard include/config/PM) \
-    $(w
+nable(dev, p->modulation);
+	o->modulation = p->modulation;
+
+	if (p->modulation) {
+		p->carrier_freq = rxclk_rx_s_carrier(dev, p->carrier_freq,
+						     &rxclk_divider);
+
+		o->carrier_freq = p->carrier_freq;
+
+		o->duty_cycle = p->duty_cycle = 50;
+
+		control_rx_s_carrier_window(dev, p->carrier_freq,
+					    &p->carrier_range_lower,
+					    &p->carrier_range_upper);
+		o->carrier_range_lower = p->carrier_range_lower;
+		o->carrier_range_upper = p->carrier_range_upper;
+
+		p->max_pulse_width =
+			(u32) pulse_width_count_to_ns(FIFO_RXTX, rxclk_divider);
+	} else {
+		p->max_pulse_width =
+			    rxclk_rx_s_max_pulse_width(dev, p->max_pulse_width,
+						       &rxclk_divider);
+	}
+	o->max_pulse_width = p->max_pulse_width;
+	atomic_set(&state->rxclk_divider, rxclk_divider);
+
+	p->noise_filter_min_width =
+			  filter_rx_s_min_width(dev, p->noise_filter_min_width);
+	o->noise_filter_min_width = p->noise_filter_min_width;
+
+	p->resolution = clock_divider_to_resolution(rxclk_divider);
+	o->resolution = p->resolution;
+
+	/* FIXME - make this dependent on resolution for better performance */
+	control_rx_irq_watermark(dev, RX_FIFO_HALF_FULL);
+
+	control_rx_s_edge_detection(dev, CNTRL_EDG_BOTH);
+
+	o->invert_level = p->invert_level;
+	atomic_set(&state->rx_invert, p->invert_level);
+
+	o->interrupt_enable = p->interrupt_enable;
+	o->enable = p->enable;
+	if (p->enable) {
+		unsigned long flags;
+
+		spin_lock_irqsave(&state->rx_kfifo_lock, flags);
+		kfifo_reset(&state->rx_kfifo);
+		/* reset tx_fifo too if there is one... */
+		spin_unlock_irqrestore(&state->rx_kfifo_lock, flags);
+		if (p->interrupt_enable)
+			irqenable_rx(dev, IRQEN_RSE | IRQEN_RTE | IRQEN_ROE);
+		control_rx_enable(dev, p->enable);
+	}
+
+	mutex_unlock(&state->rx_params_lock);
+	return 0;
+}
+
+/* Transmitter */
+static int cx23888_ir_tx_write(struct v4l2_subdev *sd, u8 *buf, size_t count,
+			       ssize_t *num)
+{
+	struct cx23888_ir_state *state = to_state(sd);
+	struct cx23885_dev *dev = state->dev;
+	/* For now enable the Tx FIFO Service interrupt & pretend we did work */
+	irqenable_tx(dev, IRQEN_TSE);
+	*num = count;
+	return 0;
+}
+
+static int cx23888_ir_tx_g_parameters(struct v4l2_subdev *sd,
+				      struct v4l2_subdev_ir_parameters *p)
+{
+	struct cx23888_ir_state *state = to_state(sd);
+	mutex_lock(&state->tx_params_lock);
+	memcpy(p, &state->tx_params, sizeof(struct v4l2_subdev_ir_parameters));
+	mutex_unlock(&state->tx_params_lock);
+	return 0;
+}
+
+static int cx23888_ir_tx_shutdown(struct v4l2_subdev *sd)
+{
+	struct cx23888_ir_state *state = to_state(sd);
+	struct cx23885_dev *dev = state->dev;
+
+	mutex_lock(&state->tx_params_lock);
+
+	/* Disable or slow down all IR Tx circuits and counters */
+	irqenable_tx(dev, 0);
+	control_tx_enable(dev, false);
+	control_tx_modulation_enable(dev, false);
+	cx23888_ir_write4(dev, CX23888_IR_TXCLK_REG, TXCLK_TCD);
+
+	state->tx_params.shutdown = true;
+
+	mutex_unlock(&state->tx_params_lock);
+	return 0;
+}
+
+static int cx23888_ir_tx_s_parameters(struct v4l2_subdev *sd,
+				      struct v4l2_subdev_ir_parameters *p)
+{
+	struct cx23888_ir_state *state = to_state(sd);
+	struct cx23885_dev *dev = state->dev;
+	struct v4l2_subdev_ir_parameters *o = &state->tx_params;
+	u16 txclk_divider;
+
+	if (p->shutdown)
+		return cx23888_ir_tx_shutdown(sd);
+
+	if (p->mode != V4L2_SUBDEV_IR_MODE_PULSE_WIDTH)
+		return -ENOSYS;
+
+	mutex_lock(&state->tx_params_lock);
+
+	o->shutdown = p->shutdown;
+
+	o->mode = p->mode = V4L2_SUBDEV_IR_MODE_PULSE_WIDTH;
+
+	o->bytes_per_data_element = p->bytes_per_data_element
+				  = sizeof(union cx23888_ir_fifo_rec);
+
+	/* Before we tweak the hardware, we have to disable the transmitter */
+	irqenable_tx(dev, 0);
+	control_tx_enable(dev, false);
+
+	control_tx_modulation_enable(dev, p->modulation);
+	o->modulation = p->modulation;
+
+	if (p->modulation) {
+		p->carrier_freq = txclk_tx_s_carrier(dev, p->carrier_freq,
+						     &txclk_divider);
+		o->carrier_freq = p->carrier_freq;
+
+		p->duty_cycle = cduty_tx_s_duty_cycle(dev, p->duty_cycle);
+		o->duty_cycle = p->duty_cycle;
+
+		p->max_pulse_width =
+			(u32) pulse_width_count_to_ns(FIFO_RXTX, txclk_divider);
+	} else {
+		p->max_pulse_width =
+			    txclk_tx_s_max_pulse_width(dev, p->max_pulse_width,
+						       &txclk_divider);
+	}
+	o->max_pulse_width = p->max_pulse_width;
+	atomic_set(&state->txclk_divider, txclk_divider);
+
+	p->resolution = clock_divider_to_resolution(txclk_divider);
+	o->resolution = p->resolution;
+
+	/* FIXME - make this dependent on resolution for better performance */
+	control_tx_irq_watermark(dev, TX_FIFO_HALF_EMPTY);
+
+	control_tx_polarity_invert(dev, p->invert_carrier_sense);
+	o->invert_carrier_sense = p->invert_carrier_sense;
+
+	control_tx_level_invert(dev, p->invert_level);
+	o->invert_level = p->invert_level;
+
+	o->interrupt_enable = p->interrupt_enable;
+	o->enable = p->enable;
+	if (p->enable) {
+		if (p->interrupt_enable)
+			irqenable_tx(dev, IRQEN_TSE);
+		control_tx_enable(dev, p->enable);
+	}
+
+	mutex_unlock(&state->tx_params_lock);
+	return 0;
+}
+
+
+/*
+ * V4L2 Subdevice Core Ops
+ */
+static int cx23888_ir_log_status(struct v4l2_subdev *sd)
+{
+	struct cx23888_ir_state *state = to_state(sd);
+	struct cx23885_dev *dev = state->dev;
+	char *s;
+	int i, j;
+
+	u32 cntrl = cx23888_ir_read4(dev, CX23888_IR_CNTRL_REG);
+	u32 txclk = cx23888_ir_read4(dev, CX23888_IR_TXCLK_REG) & TXCLK_TCD;
+	u32 rxclk = cx23888_ir_read4(dev, CX23888_IR_RXCLK_REG) & RXCLK_RCD;
+	u32 cduty = cx23888_ir_read4(dev, CX23888_IR_CDUTY_REG) & CDUTY_CDC;
+	u32 stats = cx23888_ir_read4(dev, CX23888_IR_STATS_REG);
+	u32 irqen = cx23888_ir_read4(dev, CX23888_IR_IRQEN_REG);
+	u32 filtr = cx23888_ir_read4(dev, CX23888_IR_FILTR_REG) & FILTR_LPF;
+
+	v4l2_info(sd, "IR Receiver:\n");
+	v4l2_info(sd, "\tEnabled:                           %s\n",
+		  cntrl & CNTRL_RXE ? "yes" : "no");
+	v4l2_info(sd, "\tDemodulation from a carrier:       %s\n",
+		  cntrl & CNTRL_DMD ? "enabled" : "disabled");
+	v4l2_info(sd, "\tFIFO:                              %s\n",
+		  cntrl & CNTRL_RFE ? "enabled" : "disabled");
+	switch (cntrl & CNTRL_EDG) {
+	case CNTRL_EDG_NONE:
+		s = "disabled";
+		break;
+	case CNTRL_EDG_FALL:
+		s = "falling edge";
+		break;
+	case CNTRL_EDG_RISE:
+		s = "rising edge";
+		break;
+	case CNTRL_EDG_BOTH:
+		s = "rising & falling edges";
+		break;
+	default:
+		s = "??? edge";
+		break;
+	}
+	v4l2_info(sd, "\tPulse timers' start/stop trigger:  %s\n", s);
+	v4l2_info(sd, "\tFIFO data on pulse timer overflow: %s\n",
+		  cntrl & CNTRL_R ? "not loaded" : "overflow marker");
+	v4l2_info(sd, "\tFIFO interrupt watermark:          %s\n",
+		  cntrl & CNTRL_RIC ? "not empty" : "half full or greater");
+	v4l2_info(sd, "\tLoopback mode:                     %s\n",
+		  cntrl & CNTRL_LBM ? "loopback active" : "normal receive");
+	if (cntrl & CNTRL_DMD) {
+		v4l2_info(sd, "\tExpected carrier (16 clocks):      %u Hz\n",
+			  clock_divider_to_carrier_freq(rxclk));
+		switch (cntrl & CNTRL_WIN) {
+		case CNTRL_WIN_3_3:
+			i = 3;
+			j = 3;
+			break;
+		case CNTRL_WIN_4_3:
+			i = 4;
+			j = 3;
+			break;
+		case CNTRL_WIN_3_4:
+			i = 3;
+			j = 4;
+			break;
+		case CNTRL_WIN_4_4:
+			i = 4;
+			j = 4;
+			break;
+		default:
+			i = 0;
+			j = 0;
+			break;
+		}
+		v4l2_info(sd, "\tNext carrier edge window:	    16 clocks -%1d/+%1d, %u to %u Hz\n",
+			  i, j,
+			  clock_divider_to_freq(rxclk, 16 + j),
+			  clock_divider_to_freq(rxclk, 16 - i));
+	}
+	v4l2_info(sd, "\tMax measurable pulse width:        %u us, %llu ns\n",
+		  pulse_width_count_to_us(FIFO_RXTX, rxclk),
+		  pulse_width_count_to_ns(FIFO_RXTX, rxclk));
+	v4l2_info(sd, "\tLow pass filter:                   %s\n",
+		  filtr ? "enabled" : "disabled");
+	if (filtr)
+		v4l2_info(sd, "\tMin acceptable pulse width (LPF):  %u us, %u ns\n",
+			  lpf_count_to_us(filtr),
+			  lpf_count_to_ns(filtr));
+	v4l2_info(sd, "\tPulse width timer timed-out:       %s\n",
+		  stats & STATS_RTO ? "yes" : "no");
+	v4l2_info(sd, "\tPulse width timer time-out intr:   %s\n",
+		  irqen & IRQEN_RTE ? "enabled" : "disabled");
+	v4l2_info(sd, "\tFIFO overrun:                      %s\n",
+		  stats & STATS_ROR ? "yes" : "no");
+	v4l2_info(sd, "\tFIFO overrun interrupt:            %s\n",
+		  irqen & IRQEN_ROE ? "enabled" : "disabled");
+	v4l2_info(sd, "\tBusy:                              %s\n",
+		  stats & STATS_RBY ? "yes" : "no");
+	v4l2_info(sd, "\tFIFO service requested:            %s\n",
+		  stats & STATS_RSR ? "yes" : "no");
+	v4l2_info(sd, "\tFIFO service request interrupt:    %s\n",
+		  irqen & IRQEN_RSE ? "enabled" : "disabled");
+
+	v4l2_info(sd, "IR Transmitter:\n");
+	v4l2_info(sd, "\tEnabled:                           %s\n",
+		  cntrl & CNTRL_TXE ? "yes" : "no");
+	v4l2_info(sd, "\tModulation onto a carrier:         %s\n",
+		  cntrl & CNTRL_MOD ? "enabled" : "disabled");
+	v4l2_info(sd, "\tFIFO:                              %s\n",
+		  cntrl & CNTRL_TFE ? "enabled" : "disabled");
+	v4l2_info(sd, "\tFIFO interrupt watermark:          %s\n",
+		  cntrl & CNTRL_TIC ? "not empty" : "half full or less");
+	v4l2_info(sd, "\tOutput pin level inversion         %s\n",
+		  cntrl & CNTRL_IVO ? "yes" : "no");
+	v4l2_info(sd, "\tCarrier polarity:                  %s\n",
+		  cntrl & CNTRL_CPL ? "space:burst mark:noburst"
+				    : "space:noburst mark:burst");
+	if (cntrl & CNTRL_MOD) {
+		v4l2_info(sd, "\tCarrier (16 clocks):               %u Hz\n",
+			  clock_divider_to_carrier_freq(txclk));
+		v4l2_info(sd, "\tCarrier duty cycle:                %2u/16\n",
+			  cduty + 1);
+	}
+	v4l2_info(sd, "\tMax pulse width:                   %u us, %llu ns\n",
+		  pulse_width_count_to_us(FIFO_RXTX, txclk),
+		  pulse_width_count_to_ns(FIFO_RXTX, txclk));
+	v4l2_info(sd, "\tBusy:                              %s\n",
+		  stats & STATS_TBY ? "yes" : "no");
+	v4l2_info(sd, "\tFIFO service requested:            %s\n",
+		  stats & STATS_TSR ? "yes" : "no");
+	v4l2_info(sd, "\tFIFO service request interrupt:    %s\n",
+		  irqen & IRQEN_TSE ? "enabled" : "disabled");
+
+	return 0;
+}
+
+#ifdef CONFIG_VIDEO_ADV_DEBUG
+static int cx23888_ir_g_register(struct v4l2_subdev *sd,
+				 struct v4l2_dbg_register *reg)
+{
+	struct cx23888_ir_state *state = to_state(sd);
+	u32 addr = CX23888_IR_REG_BASE + (u32) reg->reg;
+
+	if ((addr & 0x3) != 0)
+		return -EINVAL;
+	if (addr < CX23888_IR_CNTRL_REG || addr > CX23888_IR_LEARN_REG)
+		return -EINVAL;
+	reg->size = 4;
+	reg->val = cx23888_ir_read4(state->dev, addr);
+	return 0;
+}
+
+static int cx23888_ir_s_register(struct v4l2_subdev *sd,
+				 const struct v4l2_dbg_register *reg)
+{
+	struct cx23888_ir_state *state = to_state(sd);
+	u32 addr = CX23888_IR_REG_BASE + (u32) reg->reg;
+
+	if ((addr & 0x3) != 0)
+		return -EINVAL;
+	if (addr < CX23888_IR_CNTRL_REG || addr > CX23888_IR_LEARN_REG)
+		return -EINVAL;
+	cx23888_ir_write4(state->dev, addr, reg->val);
+	return 0;
+}
+#endif
+
+static const struct v4l2_subdev_core_ops cx23888_ir_core_ops = {
+	.log_status = cx23888_ir_log_status,
+#ifdef CONFIG_VIDEO_ADV_DEBUG
+	.g_register = cx23888_ir_g_register,
+	.s_register = cx23888_ir_s_register,
+#endif
+	.interrupt_service_routine = cx23888_ir_irq_handler,
+};
+
+static const struct v4l2_subdev_ir_ops cx23888_ir_ir_ops = {
+	.rx_read = cx23888_ir_rx_read,
+	.rx_g_parameters = cx23888_ir_rx_g_parameters,
+	.rx_s_parameters = cx23888_ir_rx_s_parameters,
+
+	.tx_write = cx23888_ir_tx_write,
+	.tx_g_parameters = cx23888_ir_tx_g_parameters,
+	.tx_s_parameters = cx23888_ir_tx_s_parameters,
+};
+
+static const struct v4l2_subdev_ops cx23888_ir_controller_ops = {
+	.core = &cx23888_ir_core_ops,
+	.ir = &cx23888_ir_ir_ops,
+};
+
+static const struct v4l2_subdev_ir_parameters default_rx_params = {
+	.bytes_per_data_element = sizeof(union cx23888_ir_fifo_rec),
+	.mode = V4L2_SUBDEV_IR_MODE_PULSE_WIDTH,
+
+	.enable = false,
+	.interrupt_enable = false,
+	.shutdown = true,
+
+	.modulation = true,
+	.carrier_freq = 36000, /* 36 kHz - RC-5, RC-6, and RC-6A carrier */
+
+	/* RC-5:    666,667 ns = 1/36 kHz * 32 cycles * 1 mark * 0.75 */
+	/* RC-6A:   333,333 ns = 1/36 kHz * 16 cycles * 1 mark * 0.75 */
+	.noise_filter_min_width = 333333, /* ns */
+	.carrier_range_lower = 35000,
+	.carrier_range_upper = 37000,
+	.invert_level = false,
+};
+
+static const struct v4l2_subdev_ir_parameters default_tx_params = {
+	.bytes_per_data_element = sizeof(union cx23888_ir_fifo_rec),
+	.mode = V4L2_SUBDEV_IR_MODE_PULSE_WIDTH,
+
+	.enable = false,
+	.interrupt_enable = false,
+	.shutdown = true,
+
+	.modulation = true,
+	.carrier_freq = 36000, /* 36 kHz - RC-5 carrier */
+	.duty_cycle = 25,      /* 25 %   - RC-5 carrier */
+	.invert_level = false,
+	.invert_carrier_sense = false,
+};
+
+int cx23888_ir_probe(struct cx23885_dev *dev)
+{
+	struct cx23888_ir_state *state;
+	struct v4l2_subdev *sd;
+	struct v4l2_subdev_ir_parameters default_params;
+	int ret;
+
+	state = kzalloc(sizeof(struct cx23888_ir_state), GFP_KERNEL);
+	if (state == NULL)
+		return -ENOMEM;
+
+	spin_lock_init(&state->rx_kfifo_lock);
+	if (kfifo_alloc(&state->rx_kfifo, CX23888_IR_RX_KFIFO_SIZE,
+			GFP_KERNEL)) {
+		kfree(state);
+		return -ENOMEM;
+	}
+
+	state->dev = dev;
+	sd = &state->sd;
+
+	v4l2_subdev_init(sd, &cx23888_ir_controller_ops);
+	v4l2_set_subdevdata(sd, state);
+	/* FIXME - fix the formatting of dev->v4l2_dev.name and use it */
+	snprintf(sd->name, sizeof(sd->name), "%s/888-ir", dev->name);
+	sd->grp_id = CX23885_HW_888_IR;
+
+	ret = v4l2_device_register_subdev(&dev->v4l2_dev, sd);
+	if (ret == 0) {
+		/*
+		 * Ensure no interrupts arrive from '888 specific conditions,
+		 * since we ignore them in this driver to have commonality with
+		 * similar IR controller cores.
+		 */
+		cx23888_ir_write4(dev, CX23888_IR_IRQEN_REG, 0);
+
+		mutex_init(&state->rx_params_lock);
+		default_params = default_rx_params;
+		v4l2_subdev_call(sd, ir, rx_s_parameters, &default_params);
+
+		mutex_init(&state->tx_params_lock);
+		default_params = default_tx_params;
+		v4l2_subdev_call(sd, ir, tx_s_parameters, &default_params);
+	} else {
+		kfifo_free(&state->rx_kfifo);
+	}
+	return ret;
+}
+
+int cx23888_ir_remove(struct cx23885_dev *dev)
+{
+	struct v4l2_subdev *sd;
+	struct cx23888_ir_state *state;
+
+	sd = cx23885_find_hw(dev, CX23885_HW_888_IR);
+	if (sd == NULL)
+		return -ENODEV;
+
+	cx23888_ir_rx_shutdown(sd);
+	cx23888_ir_tx_shutdown(sd);
+
+	state = to_state(sd);
+	v4l2_device_unregister_subdev(sd);
+	kfifo_free(&state->rx_kfifo);
+	kfree(state);
+	/* Nothing more to free() as state held the actual v4l2_subdev object */
+	return 0;
+}
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 // SPDX-License-Identifier: GPL-2.0-or-later
+/*
+ *  Driver for the Conexant CX23885/7/8 PCIe bridge
+ *
+ *  CX23888 Integrated Consumer Infrared Controller
+ *
+ *  Copyright (C) 2009  Andy Walls <awalls@md.metrocast.net>
+ */
+
+#include "cx23885.h"
+#include "cx23888-ir.h"
+
+#include <linux/kfifo.h>
+#include <linux/slab.h>
+
+#include <media/v4l2-device.h>
+#include <media/rc-core.h>
+
+static unsigned int ir_888_debug;
+module_param(ir_888_debug, int, 0644);
+MODULE_PARM_DESC(ir_888_debug, "enable debug messages [CX23888 IR controller]");
+
+#define CX23888_IR_REG_BASE	0x170000
+/*
+ * These CX23888 register offsets have a straightforward one to one mapping
+ * to the CX23885 register offsets of 0x200 through 0x218
+ */
+#define CX23888_IR_CNTRL_REG	0x170000
+#define CNTRL_WIN_3_3	0x00000000
+#define CNTRL_WIN_4_3	0x00000001
+#define CNTRL_WIN_3_4	0x00000002
+#define CNTRL_WIN_4_4	0x00000003
+#define CNTRL_WIN	0x00000003
+#define CNTRL_EDG_NONE	0x00000000
+#define CNTRL_EDG_FALL	0x00000004
+#define CNTRL_EDG_RISE	0x00000008
+#define CNTRL_EDG_BOTH	0x0000000C
+#define CNTRL_EDG	0x0000000C
+#define CNTRL_DMD	0x00000010
+#define CNTRL_MOD	0x00000020
+#define CNTRL_RFE	0x00000040
+#define CNTRL_TFE	0x00000080
+#define CNTRL_RXE	0x00000100
+#define CNTRL_TXE	0x00000200
+#define CNTRL_RIC	0x00000400
+#define CNTRL_TIC	0x00000800
+#define CNTRL_CPL	0x00001000
+#define CNTRL_LBM	0x00002000
+#define CNTRL_R		0x00004000
+/* CX23888 specific control flag */
+#define CNTRL_IVO	0x00008000
+
+#define CX23888_IR_TXCLK_REG	0x170004
+#define TXCLK_TCD	0x0000FFFF
+
+#define CX23888_IR_RXCLK_REG	0x170008
+#define RXCLK_RCD	0x0000FFFF
+
+#define CX23888_IR_CDUTY_REG	0x17000C
+#define CDUTY_CDC	0x0000000F
+
+#define CX23888_IR_STATS_REG	0x170010
+#define STATS_RTO	0x00000001
+#define STATS_ROR	0x00000002
+#define STATS_RBY	0x00000004
+#define STATS_TBY	0x00000008
+#define STATS_RSR	0x00000010
+#define STATS_TSR	0x00000020
+
+#define CX23888_IR_IRQEN_REG	0x170014
+#define IRQEN_RTE	0x00000001
+#define IRQEN_ROE	0x00000002
+#define IRQEN_RSE	0x00000010
+#define IRQEN_TSE	0x00000020
+
+#define CX23888_IR_FILTR_REG	0x170018
+#define FILTR_LPF	0x0000FFFF
+
+/* This register doesn't follow the pattern; it's 0x23C on a CX23885 */
+#define CX23888_IR_FIFO_REG	0x170040
+#define FIFO_RXTX	0x0000FFFF
+#define FIFO_RXTX_LVL	0x00010000
+#define FIFO_RXTX_RTO	0x0001FFFF
+#define FIFO_RX_NDV	0x00020000
+#define FIFO_RX_DEPTH	8
+#define FIFO_TX_DEPTH	8
+
+/* CX23888 unique registers */
+#define CX23888_IR_SEEDP_REG	0x17001C
+#define CX23888_IR_TIMOL_REG	0x170020
+#define CX23888_IR_WAKE0_REG	0x170024
+#define CX23888_IR_WAKE1_REG	0x170028
+#define CX23888_IR_WAKE2_REG	0x17002C
+#define CX23888_IR_MASK0_REG	0x170030
+#define CX23888_IR_MASK1_REG	0x170034
+#define CX23888_IR_MAKS2_REG	0x170038
+#define CX23888_IR_DPIPG_REG	0x17003C
+#define CX23888_IR_LEARN_REG	0x170044
+
+#define CX23888_VIDCLK_FREQ	108000000 /* 108 MHz, BT.656 */
+#define CX23888_IR_REFCLK_FREQ	(CX23888_VIDCLK_FREQ / 2)
+
+/*
+ * We use this union internally for convenience, but callers to tx_write
+ * and rx_read will be expecting records of type struct ir_raw_event.
+ * Always ensure the size of this union is dictated by struct ir_raw_event.
+ */
+union cx23888_ir_fifo_rec {
+	u32 hw_fifo_data;
+	struct ir_raw_event ir_core_data;
+};
+
+#define CX23888_IR_RX_KFIFO_SIZE    (256 * sizeof(union cx23888_ir_fifo_rec))
+#define CX23888_IR_TX_KFIFO_SIZE    (256 * sizeof(union cx23888_ir_fifo_rec))
+
+struct cx23888_ir_state {
+	struct v4l2_subdev sd;
+	struct cx23885_dev *dev;
+
+	struct v4l2_subdev_ir_parameters rx_params;
+	struct mutex rx_params_lock;
+	atomic_t rxclk_divider;
+	atomic_t rx_invert;
+
+	struct kfifo rx_kfifo;
+	spinlock_t rx_kfifo_lock;
+
+	struct v4l2_subdev_ir_parameters tx_params;
+	struct mutex tx_params_lock;
+	atomic_t txclk_divider;
+};
+
+static inline struct cx23888_ir_state *to_state(struct v4l2_subdev *sd)
+{
+	return v4l2_get_subdevdata(sd);
+}
+
+/*
+ * IR register block read and write functions
+ */
+static
+inline int cx23888_ir_write4(struct cx23885_dev *dev, u32 addr, u32 value)
+{
+	cx_write(addr, value);
+	return 0;
+}
+
+static inline u32 cx23888_ir_read4(struct cx23885_dev *dev, u32 addr)
+{
+	return cx_read(addr);
+}
+
+static inline int cx23888_ir_and_or4(struct cx23885_dev *dev, u32 addr,
+				     u32 and_mask, u32 or_value)
+{
+	cx_andor(addr, ~and_mask, or_value);
+	return 0;
+}
+
+/*
+ * Rx and Tx Clock Divider register computations
+ *
+ * Note the largest clock divider value of 0xffff corresponds to:
+ *	(0xffff + 1) * 1000 / 108/2 MHz = 1,213,629.629... ns
+ * which fits in 21 bits, so we'll use unsigned int for time arguments.
+ */
+static inline u16 count

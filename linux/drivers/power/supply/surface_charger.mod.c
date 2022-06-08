@@ -1,17 +1,31 @@
-fig/GENERIC_ATOMIC64) \
-  include/linux/atomic/atomic-long.h \
-  include/linux/atomic/atomic-instrumented.h \
-  include/linux/bug.h \
-    $(wildcard include/config/BUG_ON_DATA_CORRUPTION) \
-  arch/x86/include/asm/bug.h \
-    $(wildcard include/config/DEBUG_BUGVERBOSE) \
-  include/linux/instrumentation.h \
-    $(wildcard include/config/DEBUG_ENTRY) \
-  include/asm-generic/bug.h \
-    $(wildcard include/config/BUG) \
-    $(wildcard include/config/GENERIC_BUG_RELATIVE_POINTERS) \
-  arch/x86/include/uapi/asm/msr.h \
-  include/linux/tracepoint-defs.h \
-  arch/x86/include/asm/special_insns.h \
-  include/linux/irqflags.h \
-    $(wildcard include/config/TRACE_IRQF
+< 0) {
+			pr_err("%s() Failed to register dvb on VID_C\n",
+			       __func__);
+		}
+	} else
+	if (cx23885_boards[dev->board].portc == CX23885_MPEG_ENCODER) {
+		if (cx23885_417_register(dev) < 0) {
+			pr_err("%s() Failed to register 417 on VID_C\n",
+			       __func__);
+		}
+	}
+
+	cx23885_dev_checkrevision(dev);
+
+	/* disable MSI for NetUP cards, otherwise CI is not working */
+	if (cx23885_boards[dev->board].ci_type > 0)
+		cx_clear(RDR_RDRCTL1, 1 << 8);
+
+	switch (dev->board) {
+	case CX23885_BOARD_TEVII_S470:
+	case CX23885_BOARD_TEVII_S471:
+		cx_clear(RDR_RDRCTL1, 1 << 8);
+		break;
+	}
+
+	return 0;
+}
+
+static void cx23885_dev_unregister(struct cx23885_dev *dev)
+{
+	

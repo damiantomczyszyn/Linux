@@ -1,53 +1,87 @@
-nclude/linux/page-flags-layout.h \
-    $(wildcard include/config/KASAN_HW_TAGS) \
-  include/linux/numa.h \
-    $(wildcard include/config/NODES_SHIFT) \
-    $(wildcard include/config/NUMA_KEEP_MEMINFO) \
-    $(wildcard include/config/HAVE_ARCH_NODE_DEV_GROUP) \
-  arch/x86/include/asm/sparsemem.h \
-  include/generated/bounds.h \
-  include/linux/seqlock.h \
-  include/linux/ww_mutex.h \
-    $(wildcard include/config/DEBUG_RT_MUTEXES) \
-    $(wildcard include/config/DEBUG_WW_MUTEX_SLOWPATH) \
-  include/linux/rtmutex.h \
-  arch/x86/include/asm/mmu.h \
-    $(wildcard include/config/MODIFY_LDT_SYSCALL) \
-  include/linux/kmod.h \
-  include/linux/umh.h \
-  include/linux/gfp.h \
-    $(wildcard include/config/HIGHMEM) \
-    $(wildcard include/config/ZONE_DMA) \
-    $(wildcard include/config/ZONE_DMA32) \
-    $(wildcard include/config/ZONE_DEVICE) \
-    $(wildcard include/config/PM_SLEEP) \
-    $(wildcard include/config/CONTIG_ALLOC) \
-    $(wildcard include/config/CMA) \
-  include/linux/mmdebug.h \
-    $(wildcard include/config/DEBUG_VM) \
-    $(wildcard include/config/DEBUG_VM_PGFLAGS) \
-  include/linux/mmzone.h \
-    $(wildcard include/config/FORCE_MAX_ZONEORDER) \
-    $(wildcard include/config/MEMORY_ISOLATION) \
-    $(wildcard include/config/ZSMALLOC) \
-    $(wildcard include/config/MEMORY_HOTPLUG) \
-    $(wildcard include/config/COMPACTION) \
-    $(wildcard include/config/PAGE_EXTENSION) \
-    $(wildcard include/config/DEFERRED_STRUCT_PAGE_INIT) \
-    $(wildcard include/config/HAVE_MEMORYLESS_NODES) \
-    $(wildcard include/config/SPARSEMEM_EXTREME) \
-    $(wildcard include/config/HAVE_ARCH_PFN_VALID) \
-  include/linux/nodemask.h \
-  include/linux/pageblock-flags.h \
-    $(wildcard include/config/HUGETLB_PAGE_SIZE_VARIABLE) \
-  include/linux/page-flags.h \
-    $(wildcard include/config/ARCH_USES_PG_UNCACHED) \
-    $(wildcard include/config/MEMORY_FAILURE) \
-    $(wildcard include/config/PAGE_IDLE_FLAG) \
-    $(wildcard include/config/HUGETLB_PAGE_FREE_VMEMMAP) \
-    $(wildcard include/config/HUGETLB_PAGE_FREE_VMEMMAP_DEFAULT_ON) \
-    $(wildcard include/config/KSM) \
-  include/linux/local_lock.h \
-  include/linux/local_lock_internal.h \
-  include/linux/memory_hotplug.h \
-    $(wildcard include/config/HAVE_ARCH_NODEDATA_EXTEN
+x], Reg=[0x%02x], data=%02x, TS config = %02x\n",
+			     __func__,	state->ci_i2c_addr, 0, buf[0], buf[0]);
+
+
+		if (buf[0] & 1)
+			state->status = DVB_CA_EN50221_POLL_CAM_PRESENT |
+				DVB_CA_EN50221_POLL_CAM_READY;
+		else
+			state->status = 0;
+	}
+}
+
+/* CI irq handler */
+int netup_ci_slot_status(struct cx23885_dev *dev, u32 pci_status)
+{
+	struct cx23885_tsport *port = NULL;
+	struct netup_ci_state *state = NULL;
+
+	ci_dbg_print("%s:\n", __func__);
+
+	if (0 == (pci_status & (PCI_MSK_GPIO0 | PCI_MSK_GPIO1)))
+		return 0;
+
+	if (pci_status & PCI_MSK_GPIO0) {
+		port = &dev->ts1;
+		state = port->port_priv;
+		schedule_work(&state->work);
+		ci_dbg_print("%s: Wakeup CI0\n", __func__);
+	}
+
+	if (pci_status & PCI_MSK_GPIO1) {
+		port = &dev->ts2;
+		state = port->port_priv;
+		schedule_work(&state->work);
+		ci_dbg_print("%s: Wakeup CI1\n", __func__);
+	}
+
+	return 1;
+}
+
+int netup_poll_ci_slot_status(struct dvb_ca_en50221 *en50221,
+				     int slot, int open)
+{
+	struct netup_ci_state *state = en50221->data;
+
+	if (0 != slot)
+		return -EINVAL;
+
+	netup_ci_set_irq(en50221, open ? (NETUP_IRQ_DETAM | ci_irq_flags())
+			: NETUP_IRQ_DETAM);
+
+	return state->status;
+}
+
+int netup_ci_init(struct cx23885_tsport *port)
+{
+	struct netup_ci_state *state;
+	u8 cimax_init[34] = {
+		0x00, /* module A control*/
+		0x00, /* auto select mask high A */
+		0x00, /* auto select mask low A */
+		0x00, /* auto select pattern high A */
+		0x00, /* auto select pattern low A */
+		0x44, /* memory access time A */
+		0x00, /* invert input A */
+		0x00, /* RFU */
+		0x00, /* RFU */
+		0x00, /* module B control*/
+		0x00, /* auto select mask high B */
+		0x00, /* auto select mask low B */
+		0x00, /* auto select pattern high B */
+		0x00, /* auto select pattern low B */
+		0x44, /* memory access time B */
+		0x00, /* invert input B */
+		0x00, /* RFU */
+		0x00, /* RFU */
+		0x00, /* auto select mask high Ext */
+		0x00, /* auto select mask low Ext */
+		0x00, /* auto select pattern high Ext */
+		0x00, /* auto select pattern low Ext */
+		0x00, /* RFU */
+		0x02, /* destination - module A */
+		0x01, /* power on (use it like store place) */
+		0x00, /* RFU */
+		0x00, /* int status read only */
+		ci_irq_flags() | NETUP_IRQ_DETAM, /* DETAM, IRQAM unmasked */
+		0x05, /* EXTINT=active-high, INT=push-

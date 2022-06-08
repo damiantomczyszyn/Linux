@@ -1,8 +1,14 @@
-de/config/INLINE_READ_UNLOCK_IRQRESTORE) \
-    $(wildcard include/config/INLINE_WRITE_UNLOCK_IRQRESTORE) \
-  include/linux/srcu.h \
-    $(wildcard include/config/TINY_SRCU) \
-    $(wildcard include/config/SRCU) \
-  include/linux/rcupdate.h \
-    $(wildcard include/config/PREEMPT_RCU) \
-    
+t("%s\n", __func__);
+
+	if (0 != slot)
+		return -EINVAL;
+
+	mutex_lock(&inter->fpga_mutex);
+
+	ret = netup_fpga_op_rw(inter, NETUP_CI_BUSCTRL, 0, NETUP_CI_FLG_RD);
+	netup_fpga_op_rw(inter, NETUP_CI_BUSCTRL,
+				(ret & 0xcf) | (1 << (5 - state->nr)), 0);
+
+	mutex_unlock(&inter->fpga_mutex);
+
+	fo

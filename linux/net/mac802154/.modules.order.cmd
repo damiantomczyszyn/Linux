@@ -1,4 +1,5 @@
-_POINTS)
-		stats->contention_point[contention_point]++;
-	if (contending_point < LOCKSTAT_POINTS)
-		stats->contending_point[cont
+taval = tempval & 0x000000FF;
+
+	/* Bring CS and RD high. */
+	regval = MC417_MIWR | MC417_MIRD | MC417_MICS | MC417_MIRDY;
+	cx_w

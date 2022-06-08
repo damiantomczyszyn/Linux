@@ -1,254 +1,167 @@
-atic void torture_rwsem_up_read(int tid __maybe_unused)
-__releases(torture_rwsem)
-{
-	up_read(&torture_rwsem);
-}
-
-static struct lock_torture_ops rwsem_lock_ops = {
-	.writelock	= torture_rwsem_down_write,
-	.write_delay	= torture_rwsem_write_delay,
-	.task_boost     = torture_boost_dummy,
-	.writeunlock	= torture_rwsem_up_write,
-	.readlock       = torture_rwsem_down_read,
-	.read_delay     = torture_rwsem_read_delay,
-	.readunlock     = torture_rwsem_up_read,
-	.name		= "rwsem_lock"
-};
-
-#include <linux/percpu-rwsem.h>
-static struct percpu_rw_semaphore pcpu_rwsem;
-
-static void torture_percpu_rwsem_init(void)
-{
-	BUG_ON(percpu_init_rwsem(&pcpu_rwsem));
-}
-
-static void torture_percpu_rwsem_exit(void)
-{
-	percpu_free_rwsem(&pcpu_rwsem);
-}
-
-static int torture_percpu_rwsem_down_write(int tid __maybe_unused)
-__acquires(pcpu_rwsem)
-{
-	percpu_down_write(&pcpu_rwsem);
-	return 0;
-}
-
-static void torture_percpu_rwsem_up_write(int tid __maybe_unused)
-__releases(pcpu_rwsem)
-{
-	percpu_up_write(&pcpu_rwsem);
-}
-
-static int torture_percpu_rwsem_down_read(int tid __maybe_unused)
-__acquires(pcpu_rwsem)
-{
-	percpu_down_read(&pcpu_rwsem);
-	return 0;
-}
-
-static void torture_percpu_rwsem_up_read(int tid __maybe_unused)
-__releases(pcpu_rwsem)
-{
-	percpu_up_read(&pcpu_rwsem);
-}
-
-static struct lock_torture_ops percpu_rwsem_lock_ops = {
-	.init		= torture_percpu_rwsem_init,
-	.exit		= torture_percpu_rwsem_exit,
-	.writelock	= torture_percpu_rwsem_down_write,
-	.write_delay	= torture_rwsem_write_delay,
-	.task_boost     = torture_boost_dummy,
-	.writeunlock	= torture_percpu_rwsem_up_write,
-	.readlock       = torture_percpu_rwsem_down_read,
-	.read_delay     = torture_rwsem_read_delay,
-	.readunlock     = torture_percpu_rwsem_up_read,
-	.name		= "percpu_rwsem_lock"
-};
-
-/*
- * Lock torture writer kthread.  Repeatedly acquires and releases
- * the lock, checking for duplicate acquisitions.
- */
-static int lock_torture_writer(void *arg)
-{
-	struct lock_stress_stats *lwsp = arg;
-	int tid = lwsp - cxt.lwsa;
-	DEFINE_TORTURE_RANDOM(rand);
-
-	VERBOSE_TOROUT_STRING("lock_torture_writer task started");
-	set_user_nice(current, MAX_NICE);
-
-	do {
-		if ((torture_random(&rand) & 0xfffff) == 0)
-			schedule_timeout_uninterruptible(1);
-
-		cxt.cur_ops->task_boost(&rand);
-		cxt.cur_ops->writelock(tid);
-		if (WARN_ON_ONCE(lock_is_write_held))
-			lwsp->n_lock_fail++;
-		lock_is_write_held = true;
-		if (WARN_ON_ONCE(atomic_read(&lock_is_read_held)))
-			lwsp->n_lock_fail++; /* rare, but... */
-
-		lwsp->n_lock_acquired++;
-		cxt.cur_ops->write_delay(&rand);
-		lock_is_write_held = false;
-		WRITE_ONCE(last_lock_release, jiffies);
-		cxt.cur_ops->writeunlock(tid);
-
-		stutter_wait("lock_torture_writer");
-	} while (!torture_must_stop());
-
-	cxt.cur_ops->task_boost(NULL); /* reset prio */
-	torture_kthread_stopping("lock_torture_writer");
-	return 0;
-}
-
-/*
- * Lock torture reader kthread.  Repeatedly acquires and releases
- * the reader lock.
- */
-static int lock_torture_reader(void *arg)
-{
-	struct lock_stress_stats *lrsp = arg;
-	int tid = lrsp - cxt.lrsa;
-	DEFINE_TORTURE_RANDOM(rand);
-
-	VERBOSE_TOROUT_STRING("lock_torture_reader task started");
-	set_user_nice(current, MAX_NICE);
-
-	do {
-		if ((torture_random(&rand) & 0xfffff) == 0)
-			schedule_timeout_uninterruptible(1);
-
-		cxt.cur_ops->readlock(tid);
-		atomic_inc(&lock_is_read_held);
-		if (WARN_ON_ONCE(lock_is_write_held))
-			lrsp->n_lock_fail++; /* rare, but... */
-
-		lrsp->n_lock_acquired++;
-		cxt.cur_ops->read_delay(&rand);
-		atomic_dec(&lock_is_read_held);
-		cxt.cur_ops->readunlock(tid);
-
-		stutter_wait("lock_torture_reader");
-	} while (!torture_must_stop());
-	torture_kthread_stopping("lock_torture_reader");
-	return 0;
-}
-
-/*
- * Create an lock-torture-statistics message in the specified buffer.
- */
-static void __torture_print_stats(char *page,
-				  struct lock_stress_stats *statp, bool write)
-{
-	long cur;
-	bool fail = false;
-	int i, n_stress;
-	long max = 0, min = statp ? data_race(statp[0].n_lock_acquired) : 0;
-	long long sum = 0;
-
-	n_stress = write ? cxt.nrealwriters_stress : cxt.nrealreaders_stress;
-	for (i = 0; i < n_stress; i++) {
-		if (data_race(statp[i].n_lock_fail))
-			fail = true;
-		cur = data_race(statp[i].n_lock_acquired);
-		sum += cur;
-		if (max < cur)
-			max = cur;
-		if (min > cur)
-			min = cur;
-	}
-	page += sprintf(page,
-			"%s:  Total: %lld  Max/Min: %ld/%ld %s  Fail: %d %s\n",
-			write ? "Writes" : "Reads ",
-			sum, max, min,
-			!onoff_interval && max / 2 > min ? "???" : "",
-			fail, fail ? "!!!" : "");
-	if (fail)
-		atomic_inc(&cxt.n_lock_torture_errors);
-}
-
-/*
- * Print torture statistics.  Caller must ensure that there is only one
- * call to this function at a given time!!!  This is normally accomplished
- * by relying on the module system to only have one copy of the module
- * loaded, and then by giving the lock_torture_stats kthread full control
- * (or the init/cleanup functions when lock_torture_stats thread is not
- * running).
- */
-static void lock_torture_stats_print(void)
-{
-	int size = cxt.nrealwriters_stress * 200 + 8192;
-	char *buf;
-
-	if (cxt.cur_ops->readlock)
-		size += cxt.nrealreaders_stress * 200 + 8192;
-
-	buf = kmalloc(size, GFP_KERNEL);
-	if (!buf) {
-		pr_err("lock_torture_stats_print: Out of memory, need: %d",
-		       size);
-		return;
-	}
-
-	__torture_print_stats(buf, cxt.lwsa, true);
-	pr_alert("%s", buf);
-	kfree(buf);
-
-	if (cxt.cur_ops->readlock) {
-		buf = kmalloc(size, GFP_KERNEL);
-		if (!buf) {
-			pr_err("lock_torture_stats_print: Out of memory, need: %d",
-			       size);
-			return;
-		}
-
-		__torture_print_stats(buf, cxt.lrsa, false);
-		pr_alert("%s", buf);
-		kfree(buf);
-	}
-}
-
-/*
- * Periodically prints torture statistics, if periodic statistics printing
- * was specified via the stat_interval module parameter.
- *
- * No need to worry about fullstop here, since this one doesn't reference
- * volatile state or register callbacks.
- */
-static int lock_torture_stats(void *arg)
-{
-	VERBOSE_TOROUT_STRING("lock_torture_stats task started");
-	do {
-		schedule_timeout_interruptible(stat_interval * HZ);
-		lock_torture_stats_print();
-		torture_shutdown_absorb("lock_torture_stats");
-	} while (!torture_must_stop());
-	torture_kthread_stopping("lock_torture_stats");
-	return 0;
-}
-
-static inline void
-lock_torture_print_module_parms(struct lock_torture_ops *cur_ops,
-				const char *tag)
-{
-	pr_alert("%s" TORTURE_FLAG
-		 "--- %s%s: nwriters_stress=%d nreaders_stress=%d stat_interval=%d verbose=%d shuffle_interval=%d stutter=%d shutdown_secs=%d onoff_interval=%d onoff_holdoff=%d\n",
-		 torture_type, tag, cxt.debug_lock ? " [debug]": "",
-		 cxt.nrealwriters_stress, cxt.nrealreaders_stress, stat_interval,
-		 verbose, shuffle_interval, stutter, shutdown_secs,
-		 onoff_interval, onoff_holdoff);
-}
-
-static void lock_torture_cleanup(void)
-{
-	int i;
-
-	if (torture_cleanup_begin())
-		return;
-
-	/*
+dcard include/config/X86_P6_NOP) \
+    $(wildcard include/config/MATOM) \
+    $(wildcard include/config/PARAVIRT_XXL) \
+  arch/x86/include/asm/disabled-features.h \
+    $(wildcard include/config/X86_SMAP) \
+    $(wildcard include/config/X86_UMIP) \
+    $(wildcard include/config/X86_INTEL_MEMORY_PROTECTION_KEYS) \
+    $(wildcard include/config/X86_5LEVEL) \
+    $(wildcard include/config/PAGE_TABLE_ISOLATION) \
+    $(wildcard include/config/INTEL_IOMMU_SVM) \
+    $(wildcard include/config/X86_SGX) \
+  include/asm-generic/bitops/const_hweight.h \
+  include/asm-generic/bitops/instrumented-atomic.h \
+  include/linux/instrumented.h \
+  include/asm-generic/bitops/instrumented-non-atomic.h \
+    $(wildcard include/config/KCSAN_ASSUME_PLAIN_WRITES_ATOMIC) \
+  include/asm-generic/bitops/instrumented-lock.h \
+  include/asm-generic/bitops/le.h \
+  arch/x86/include/uapi/asm/byteorder.h \
+  include/linux/byteorder/little_endian.h \
+  include/uapi/linux/byteorder/little_endian.h \
+  include/linux/swab.h \
+  include/uapi/linux/swab.h \
+  arch/x86/include/uapi/asm/swab.h \
+  include/linux/byteorder/generic.h \
+  include/asm-generic/bitops/ext2-atomic-setbit.h \
+  include/vdso/math64.h \
+  include/linux/time64.h \
+  include/vdso/time64.h \
+  include/uapi/linux/time.h \
+  include/uapi/linux/time_types.h \
+  include/linux/time32.h \
+  include/linux/timex.h \
+  include/uapi/linux/timex.h \
+  include/uapi/linux/param.h \
+  arch/x86/include/generated/uapi/asm/param.h \
+  include/asm-generic/param.h \
+    $(wildcard include/config/HZ) \
+  include/uapi/asm-generic/param.h \
+  arch/x86/include/asm/timex.h \
+    $(wildcard include/config/X86_TSC) \
+  arch/x86/include/asm/processor.h \
+    $(wildcard include/config/X86_VMX_FEATURE_NAMES) \
+    $(wildcard include/config/X86_IOPL_IOPERM) \
+    $(wildcard include/config/STACKPROTECTOR) \
+    $(wildcard include/config/VM86) \
+    $(wildcard include/config/X86_DEBUGCTLMSR) \
+    $(wildcard include/config/CPU_SUP_AMD) \
+    $(wildcard include/config/XEN) \
+  arch/x86/include/asm/processor-flags.h \
+  arch/x86/include/uapi/asm/processor-flags.h \
+  include/linux/mem_encrypt.h \
+    $(wildcard include/config/ARCH_HAS_MEM_ENCRYPT) \
+    $(wildcard include/config/AMD_MEM_ENCRYPT) \
+  arch/x86/include/asm/mem_encrypt.h \
+  include/linux/init.h \
+    $(wildcard include/config/STRICT_KERNEL_RWX) \
+    $(wildcard include/config/STRICT_MODULE_RWX) \
+    $(wildcard include/config/LTO_CLANG) \
+  include/linux/cc_platform.h \
+    $(wildcard include/config/ARCH_HAS_CC_PLATFORM) \
+  arch/x86/include/uapi/asm/bootparam.h \
+  include/linux/screen_info.h \
+  include/uapi/linux/screen_info.h \
+  include/linux/apm_bios.h \
+  include/uapi/linux/apm_bios.h \
+  include/uapi/linux/ioctl.h \
+  arch/x86/include/generated/uapi/asm/ioctl.h \
+  include/asm-generic/ioctl.h \
+  include/uapi/asm-generic/ioctl.h \
+  include/linux/edd.h \
+  include/uapi/linux/edd.h \
+  arch/x86/include/asm/ist.h \
+  arch/x86/include/uapi/asm/ist.h \
+  include/video/edid.h \
+    $(wildcard include/config/X86) \
+  include/uapi/video/edid.h \
+  arch/x86/include/asm/math_emu.h \
+  arch/x86/include/asm/ptrace.h \
+    $(wildcard include/config/PARAVIRT) \
+    $(wildcard include/config/IA32_EMULATION) \
+  arch/x86/include/asm/segment.h \
+    $(wildcard include/config/XEN_PV) \
+  arch/x86/include/asm/page_types.h \
+    $(wildcard include/config/PHYSICAL_START) \
+    $(wildcard include/config/PHYSICAL_ALIGN) \
+    $(wildcard include/config/DYNAMIC_PHYSICAL_MASK) \
+  arch/x86/include/asm/page_32_types.h \
+    $(wildcard include/config/HIGHMEM4G) \
+    $(wildcard include/config/HIGHMEM64G) \
+    $(wildcard include/config/PAGE_OFFSET) \
+  arch/x86/include/uapi/asm/ptrace.h \
+  arch/x86/include/uapi/asm/ptrace-abi.h \
+  arch/x86/include/asm/paravirt_types.h \
+    $(wildcard include/config/PGTABLE_LEVELS) \
+    $(wildcard include/config/PARAVIRT_DEBUG) \
+  arch/x86/include/asm/desc_defs.h \
+  arch/x86/include/asm/pgtable_types.h \
+    $(wildcard include/config/MEM_SOFT_DIRTY) \
+    $(wildcard include/config/HAVE_ARCH_USERFAULTFD_WP) \
+    $(wildcard include/config/PROC_FS) \
+  arch/x86/include/asm/pgtable_32_types.h \
+  arch/x86/include/asm/pgtable-3level_types.h \
+  include/asm-generic/pgtable-nop4d.h \
+  include/asm-generic/pgtable-nopud.h \
+  arch/x86/include/asm/nospec-branch.h \
+  include/linux/static_key.h \
+  include/linux/jump_label.h \
+    $(wildcard include/config/HAVE_ARCH_JUMP_LABEL_RELATIVE) \
+  arch/x86/include/asm/jump_label.h \
+  include/linux/objtool.h \
+    $(wildcard include/config/FRAME_POINTER) \
+  arch/x86/include/asm/msr-index.h \
+  arch/x86/include/asm/unwind_hints.h \
+  arch/x86/include/asm/orc_types.h \
+  arch/x86/include/asm/GEN-for-each-reg.h \
+  arch/x86/include/asm/spinlock_types.h \
+  include/asm-generic/qspinlock_types.h \
+    $(wildcard include/config/NR_CPUS) \
+  include/asm-generic/qrwlock_types.h \
+  arch/x86/include/asm/proto.h \
+  arch/x86/include/uapi/asm/ldt.h \
+  arch/x86/include/uapi/asm/sigcontext.h \
+  arch/x86/include/asm/current.h \
+  arch/x86/include/asm/percpu.h \
+    $(wildcard include/config/X86_64_SMP) \
+  include/linux/kernel.h \
+    $(wildcard include/config/PREEMPT_VOLUNTARY_BUILD) \
+    $(wildcard include/config/PREEMPT_DYNAMIC) \
+    $(wildcard include/config/HAVE_PREEMPT_DYNAMIC_CALL) \
+    $(wildcard include/config/HAVE_PREEMPT_DYNAMIC_KEY) \
+    $(wildcard include/config/PREEMPT_) \
+    $(wildcard include/config/DEBUG_ATOMIC_SLEEP) \
+    $(wildcard include/config/MMU) \
+    $(wildcard include/config/PROVE_LOCKING) \
+  include/linux/stdarg.h \
+  include/linux/align.h \
+  include/linux/limits.h \
+  include/uapi/linux/limits.h \
+  include/vdso/limits.h \
+  include/linux/kstrtox.h \
+  include/linux/minmax.h \
+  include/linux/panic.h \
+    $(wildcard include/config/PANIC_TIMEOUT) \
+  include/linux/printk.h \
+    $(wildcard include/config/MESSAGE_LOGLEVEL_DEFAULT) \
+    $(wildcard include/config/CONSOLE_LOGLEVEL_DEFAULT) \
+    $(wildcard include/config/CONSOLE_LOGLEVEL_QUIET) \
+    $(wildcard include/config/EARLY_PRINTK) \
+    $(wildcard include/config/PRINTK) \
+    $(wildcard include/config/DYNAMIC_DEBUG) \
+    $(wildcard include/config/DYNAMIC_DEBUG_CORE) \
+  include/linux/kern_levels.h \
+  include/linux/ratelimit_types.h \
+  include/linux/spinlock_types_raw.h \
+    $(wildcard include/config/DEBUG_SPINLOCK) \
+    $(wildcard include/config/DEBUG_LOCK_ALLOC) \
+  include/linux/lockdep_types.h \
+    $(wildcard include/config/PROVE_RAW_LOCK_NESTING) \
+    $(wildcard include/config/LOCKDEP) \
+    $(wildcard include/config/LOCK_STAT) \
+  include/linux/once_lite.h \
+  include/linux/static_call_types.h \
+    $(wildcard include/config/HAVE_STATIC_CALL) \
+  include/linux/instruction_pointer.h \
+  include/asm-generic/percpu.h \
+    $(wildcard inclu

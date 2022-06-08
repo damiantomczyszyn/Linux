@@ -1,11 +1,15 @@
-$(wildcard include/config/DEBUG_PLIST) \
-  include/linux/hrtimer.h \
-    $(wildcard include/config/HIGH_RES_TIMERS) \
-    $(wildcard include/config/TIME_LOW_RES) \
-    $(wildcard include/config/TIMERFD) \
-  include/linux/hrtimer_defs.h \
-  include/linux/timerqueue.h \
-  include/linux/seccomp.h \
-    $(wildcard include/config/SECCOMP) \
-    $(wildcard include/config/HAVE_ARCH_SECCOMP_FILTER) \
-    $(wildcard include/config/SECCOMP_FILTER) 
+ (0x9d << 24); /* 100kHz */
+
+	/* External Master 2 Bus */
+	dev->i2c_bus[1].nr = 1;
+	dev->i2c_bus[1].dev = dev;
+	dev->i2c_bus[1].reg_stat  = I2C2_STAT;
+	dev->i2c_bus[1].reg_ctrl  = I2C2_CTRL;
+	dev->i2c_bus[1].reg_addr  = I2C2_ADDR;
+	dev->i2c_bus[1].reg_rdata = I2C2_RDATA;
+	dev->i2c_bus[1].reg_wdata = I2C2_WDATA;
+	dev->i2c_bus[1].i2c_period = (0x9d << 24); /* 100kHz */
+
+	/* Internal Master 3 Bus */
+	dev->i2c_bus[2].nr = 2;
+	dev->i2c_bus[2].

@@ -1,1 +1,2 @@
- $(wildcard include/config/PAGE_OWNER) \
+drivers/net/dsa/microchip/ksz_common.o
+

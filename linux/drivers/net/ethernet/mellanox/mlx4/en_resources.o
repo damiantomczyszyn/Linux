@@ -1,8 +1,41 @@
-cmd_drivers/media/i2c/tw9910.o := gcc -Wp,-MMD,drivers/media/i2c/.tw9910.o.d -nostdinc -I./arch/x86/include -I./arch/x86/include/generated  -I./include -I./arch/x86/include/uapi -I./arch/x86/include/generated/uapi -I./include/uapi -I./include/generated/uapi -include ./include/linux/compiler-version.h -include ./include/linux/kconfig.h -include ./include/linux/compiler_types.h -D__KERNEL__ -fmacro-prefix-map=./= -Wall -Wundef -Werror=strict-prototypes -Wno-trigraphs -fno-strict-aliasing -fno-common -fshort-wchar -fno-PIE -Werror=implicit-function-declaration -Werror=implicit-int -Werror=return-type -Wno-format-security -std=gnu11 -mno-sse -mno-mmx -mno-sse2 -mno-3dnow -mno-avx -fcf-protection=none -m32 -msoft-float -mregparm=3 -freg-struct-return -fno-pic -mpreferred-stack-boundary=2 -march=i686 -mtune=pentium3 -mtune=generic -Wa,-mtune=generic32 -ffreestanding -mstack-protector-guard-reg=fs -mstack-protector-guard-symbol=__stack_chk_guard -Wno-sign-compare -fno-asynchronous-unwind-tables -mindirect-branch=thunk-extern -mindirect-branch-register -fno-jump-tables -fno-delete-null-pointer-checks -Wno-frame-address -Wno-format-truncation -Wno-format-overflow -Wno-address-of-packed-member -O2 -fno-allow-store-data-races -fstack-protector-strong -Wimplicit-fallthrough=5 -Wno-main -Wno-unused-but-set-variable -Wno-unused-const-variable -fno-stack-clash-protection -pg -mrecord-mcount -mfentry -DCC_USING_FENTRY -Wdeclaration-after-statement -Wvla -Wno-pointer-sign -Wcast-function-type -Wno-stringop-truncation -Wno-stringop-overflow -Wno-restrict -Wno-maybe-uninitialized -Wno-alloc-size-larger-than -fno-strict-overflow -fno-stack-check -fconserve-stack -Werror=date-time -Werror=incompatible-pointer-types -Werror=designated-init -Wno-packed-not-aligned  -DMODULE  -DKBUILD_BASENAME='"tw9910"' -DKBUILD_MODNAME='"tw9910"' -D__KBUILD_MODNAME=kmod_tw9910 -c -o drivers/media/i2c/tw9910.o drivers/media/i2c/tw9910.c 
-
-source_drivers/media/i2c/tw9910.o := drivers/media/i2c/tw9910.c
-
-deps_drivers/media/i2c/tw9910.o := \
-    $(wildcard include/config/VIDEO_ADV_DEBUG) \
-  include/linux/compiler-version.h \
-    $(wildcard include/config/CC_VERSION_TE
+_read(ALT_PIN_OUT_SEL));
+	dprintk(1, "%s() GPIO2                    0x%08X\n", __func__,
+		cx_read(GPIO2));
+	dprintk(1, "%s() gpcnt(0x%08X)          0x%08X\n", __func__,
+		port->reg_gpcnt, cx_read(port->reg_gpcnt));
+	dprintk(1, "%s() gpcnt_ctl(0x%08X)      0x%08x\n", __func__,
+		port->reg_gpcnt_ctl, cx_read(port->reg_gpcnt_ctl));
+	dprintk(1, "%s() dma_ctl(0x%08X)        0x%08x\n", __func__,
+		port->reg_dma_ctl, cx_read(port->reg_dma_ctl));
+	if (port->reg_src_sel)
+		dprintk(1, "%s() src_sel(0x%08X)        0x%08x\n", __func__,
+			port->reg_src_sel, cx_read(port->reg_src_sel));
+	dprintk(1, "%s() lngth(0x%08X)          0x%08x\n", __func__,
+		port->reg_lngth, cx_read(port->reg_lngth));
+	dprintk(1, "%s() hw_sop_ctrl(0x%08X)    0x%08x\n", __func__,
+		port->reg_hw_sop_ctrl, cx_read(port->reg_hw_sop_ctrl));
+	dprintk(1, "%s() gen_ctrl(0x%08X)       0x%08x\n", __func__,
+		port->reg_gen_ctrl, cx_read(port->reg_gen_ctrl));
+	dprintk(1, "%s() bd_pkt_status(0x%08X)  0x%08x\n", __func__,
+		port->reg_bd_pkt_status, cx_read(port->reg_bd_pkt_status));
+	dprintk(1, "%s() sop_status(0x%08X)     0x%08x\n", __func__,
+		port->reg_sop_status, cx_read(port->reg_sop_status));
+	dprintk(1, "%s() fifo_ovfl_stat(0x%08X) 0x%08x\n", __func__,
+		port->reg_fifo_ovfl_stat, cx_read(port->reg_fifo_ovfl_stat));
+	dprintk(1, "%s() vld_misc(0x%08X)       0x%08x\n", __func__,
+		port->reg_vld_misc, cx_read(port->reg_vld_misc));
+	dprintk(1, "%s() ts_clk_en(0x%08X)      0x%08x\n", __func__,
+		port->reg_ts_clk_en, cx_read(port->reg_ts_clk_en));
+	dprintk(1, "%s() ts_int_msk(0x%08X)     0x%08x\n", __func__,
+		port->reg_ts_int_msk, cx_read(port->reg_ts_int_msk));
+	dprintk(1, "%s() ts_int_status(0x%08X)  0x%08x\n", __func__,
+		port->reg_ts_int_stat, cx_read(port->reg_ts_int_stat));
+	dprintk(1, "%s() PCI_INT_STAT           0x%08X\n", __func__,
+		cx_read(PCI_INT_STAT));
+	dprintk(1, "%s() VID_B_INT_MSTAT        0x%08X\n", __func__,
+		cx_read(VID_B_INT_MSTAT));
+	dprintk(1, "%s() VID_B_INT_SSTAT        0x%08X\n", __func__,
+		cx_read(VID_B_INT_SSTAT));
+	dprintk(1, "%s() VID_C_INT_MSTAT        0x%08X\n", __func__,
+		cx_read(VID_C_INT_MSTAT));
+	dprintk(1, "%s() VID_C_INT_SSTAT        0x

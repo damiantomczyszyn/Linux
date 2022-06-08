@@ -1,6 +1,1 @@
-IC_IOREMAP) \
-    $(wildcard include/config/VIRT_TO_BUS) \
-    $(wildcard include/config/GENERIC_DEVMEM_IS_ALLOWED) \
-  include/linux/logic_pio.h \
-    $(wildcard include/config/INDIRECT_PIO) \
-  incl
+cmd_drivers/net/can/cc770/cc770.ko := ld -r -m elf_i386 --build-id=sha1  -T scripts/module.lds -o drivers/net/can/cc770/cc770.ko drivers/net/can/cc770/cc770.o drivers/net/can/cc770/cc770.mod.o;  true

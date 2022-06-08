@@ -1,76 +1,111 @@
-ude/config/PARAVIRT_XXL) \
-  arch/x86/include/asm/disabled-features.h \
-    $(wildcard include/config/X86_SMAP) \
-    $(wildcard include/config/X86_UMIP) \
-    $(wildcard include/config/X86_INTEL_MEMORY_PROTECTION_KEYS) \
-    $(wildcard include/config/X86_5LEVEL) \
-    $(wildcard include/config/PAGE_TABLE_ISOLATION) \
-    $(wildcard include/config/INTEL_IOMMU_SVM) \
-    $(wildcard include/config/X86_SGX) \
-  include/asm-generic/bitops/const_hweight.h \
-  include/asm-generic/bitops/instrumented-atomic.h \
-  include/linux/instrumented.h \
-  include/asm-generic/bitops/instrumented-non-atomic.h \
-    $(wildcard include/config/KCSAN_ASSUME_PLAIN_WRITES_ATOMIC) \
-  include/asm-generic/bitops/instrumented-lock.h \
-  include/asm-generic/bitops/le.h \
-  arch/x86/include/uapi/asm/byteorder.h \
-  include/linux/byteorder/little_endian.h \
-  include/uapi/linux/byteorder/little_endian.h \
-  include/linux/swab.h \
-  include/uapi/linux/swab.h \
-  arch/x86/include/uapi/asm/swab.h \
-  include/linux/byteorder/generic.h \
-  include/asm-generic/bitops/ext2-atomic-setbit.h \
-  include/vdso/math64.h \
-  include/linux/time64.h \
-  include/vdso/time64.h \
-  include/uapi/linux/time.h \
-  include/uapi/linux/time_types.h \
-  include/linux/time32.h \
-  include/linux/timex.h \
-  include/uapi/linux/timex.h \
-  include/uapi/linux/param.h \
-  arch/x86/include/generated/uapi/asm/param.h \
-  include/asm-generic/param.h \
-    $(wildcard include/config/HZ) \
-  include/uapi/asm-generic/param.h \
-  arch/x86/include/asm/timex.h \
-    $(wildcard include/config/X86_TSC) \
-  arch/x86/include/asm/processor.h \
-    $(wildcard include/config/X86_VMX_FEATURE_NAMES) \
-    $(wildcard include/config/X86_IOPL_IOPERM) \
-    $(wildcard include/config/STACKPROTECTOR) \
-    $(wildcard include/config/VM86) \
-    $(wildcard include/config/X86_DEBUGCTLMSR) \
-    $(wildcard include/config/CPU_SUP_AMD) \
-    $(wildcard include/config/XEN) \
-  arch/x86/include/asm/processor-flags.h \
-  arch/x86/include/uapi/asm/processor-flags.h \
-  include/linux/mem_encrypt.h \
-    $(wildcard include/config/ARCH_HAS_MEM_ENCRYPT) \
-    $(wildcard include/config/AMD_MEM_ENCRYPT) \
-  arch/x86/include/asm/mem_encrypt.h \
-  include/linux/init.h \
-    $(wildcard include/config/STRICT_KERNEL_RWX) \
-    $(wildcard include/config/STRICT_MODULE_RWX) \
-    $(wildcard include/config/LTO_CLANG) \
-  include/linux/cc_platform.h \
-    $(wildcard include/config/ARCH_HAS_CC_PLATFORM) \
-  arch/x86/include/uapi/asm/bootparam.h \
-  include/linux/screen_info.h \
-  include/uapi/linux/screen_info.h \
-  include/linux/apm_bios.h \
-  include/uapi/linux/apm_bios.h \
-  include/uapi/linux/ioctl.h \
-  arch/x86/include/generated/uapi/asm/ioctl.h \
-  include/asm-generic/ioctl.h \
-  include/uapi/asm-generic/ioctl.h \
-  include/linux/edd.h \
-  include/uapi/linux/edd.h \
-  arch/x86/include/asm/ist.h \
-  arch/x86/include/uapi/asm/ist.h \
-  include/video/edid.h \
-    $(wildcard include/config/X86) \
-  include/uapi/video/edid.h \
-  ar
+< 0) {
+			pr_err("%s() Failed to register dvb on VID_C\n",
+			       __func__);
+		}
+	} else
+	if (cx23885_boards[dev->board].portc == CX23885_MPEG_ENCODER) {
+		if (cx23885_417_register(dev) < 0) {
+			pr_err("%s() Failed to register 417 on VID_C\n",
+			       __func__);
+		}
+	}
+
+	cx23885_dev_checkrevision(dev);
+
+	/* disable MSI for NetUP cards, otherwise CI is not working */
+	if (cx23885_boards[dev->board].ci_type > 0)
+		cx_clear(RDR_RDRCTL1, 1 << 8);
+
+	switch (dev->board) {
+	case CX23885_BOARD_TEVII_S470:
+	case CX23885_BOARD_TEVII_S471:
+		cx_clear(RDR_RDRCTL1, 1 << 8);
+		break;
+	}
+
+	return 0;
+}
+
+static void cx23885_dev_unregister(struct cx23885_dev *dev)
+{
+	release_mem_region(pci_resource_start(dev->pci, 0),
+			   pci_resource_len(dev->pci, 0));
+
+	if (!atomic_dec_and_test(&dev->refcount))
+		return;
+
+	if (cx23885_boards[dev->board].porta == CX23885_ANALOG_VIDEO)
+		cx23885_video_unregister(dev);
+
+	if (cx23885_boards[dev->board].portb == CX23885_MPEG_DVB)
+		cx23885_dvb_unregister(&dev->ts1);
+
+	if (cx23885_boards[dev->board].portb == CX23885_MPEG_ENCODER)
+		cx23885_417_unregister(dev);
+
+	if (cx23885_boards[dev->board].portc == CX23885_MPEG_DVB)
+		cx23885_dvb_unregister(&dev->ts2);
+
+	if (cx23885_boards[dev->board].portc == CX23885_MPEG_ENCODER)
+		cx23885_417_unregister(dev);
+
+	cx23885_i2c_unregister(&dev->i2c_bus[2]);
+	cx23885_i2c_unregister(&dev->i2c_bus[1]);
+	cx23885_i2c_unregister(&dev->i2c_bus[0]);
+
+	iounmap(dev->lmmio);
+}
+
+static __le32 *cx23885_risc_field(__le32 *rp, struct scatterlist *sglist,
+			       unsigned int offset, u32 sync_line,
+			       unsigned int bpl, unsigned int padding,
+			       unsigned int lines,  unsigned int lpi, bool jump)
+{
+	struct scatterlist *sg;
+	unsigned int line, todo, sol;
+
+
+	if (jump) {
+		*(rp++) = cpu_to_le32(RISC_JUMP);
+		*(rp++) = cpu_to_le32(0);
+		*(rp++) = cpu_to_le32(0); /* bits 63-32 */
+	}
+
+	/* sync instruction */
+	if (sync_line != NO_SYNC_LINE)
+		*(rp++) = cpu_to_le32(RISC_RESYNC | sync_line);
+
+	/* scan lines */
+	sg = sglist;
+	for (line = 0; line < lines; line++) {
+		while (offset && offset >= sg_dma_len(sg)) {
+			offset -= sg_dma_len(sg);
+			sg = sg_next(sg);
+		}
+
+		if (lpi && line > 0 && !(line % lpi))
+			sol = RISC_SOL | RISC_IRQ1 | RISC_CNT_INC;
+		else
+			sol = RISC_SOL;
+
+		if (bpl <= sg_dma_len(sg)-offset) {
+			/* fits into current chunk */
+			*(rp++) = cpu_to_le32(RISC_WRITE|sol|RISC_EOL|bpl);
+			*(rp++) = cpu_to_le32(sg_dma_address(sg)+offset);
+			*(rp++) = cpu_to_le32(0); /* bits 63-32 */
+			offset += bpl;
+		} else {
+			/* scanline needs to be split */
+			todo = bpl;
+			*(rp++) = cpu_to_le32(RISC_WRITE|sol|
+					    (sg_dma_len(sg)-offset));
+			*(rp++) = cpu_to_le32(sg_dma_address(sg)+offset);
+			*(rp++) = cpu_to_le32(0); /* bits 63-32 */
+			todo -= (sg_dma_len(sg)-offset);
+			offset = 0;
+			sg = sg_next(sg);
+			while (todo > sg_dma_len(sg)) {
+				*(rp++) = cpu_to_le32(RISC_WRITE|
+						    sg_dma_len(sg));
+				*(rp++) = cpu_to_le32(sg_dma_address(sg));
+				*(rp++) = cpu_to

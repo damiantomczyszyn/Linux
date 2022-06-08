@@ -1,4 +1,1 @@
-silent)
-		return;
-
-	pr_w
+        = LGDT3306A_TPCL

@@ -1,11 +1,10 @@
-/* SPDX-License-Identifier: GPL-2.0 */
-/*
- * kernel/lockdep_internals.h
- *
- * Runtime locking correctness validator
- *
- * lockdep subsystem internal functions and variables.
- */
+// SPDX-License-Identifier: GPL-2.0-only
 
-/*
- * Lock-class usage-state bits
+#include <linux/bug.h>
+#include <linux/export.h>
+#include <linux/irqflags.h>
+
+noinstr void warn_bogus_irq_restore(void)
+{
+	instrumentation_begin();
+	WARN_ONCE(1, "raw_loc

@@ -1,32 +1,77 @@
-sm/pgtable-3level_types.h \
-  include/asm-generic/pgtable-nop4d.h \
-  include/asm-generic/pgtable-nopud.h \
-  arch/x86/include/asm/nospec-branch.h \
-  include/linux/static_key.h \
-  include/linux/jump_label.h \
-    $(wildcard include/config/HAVE_ARCH_JUMP_LABEL_RELATIVE) \
-  arch/x86/include/asm/jump_label.h \
-  include/linux/objtool.h \
-    $(wildcard include/config/FRAME_POINTER) \
-  arch/x86/include/asm/msr-index.h \
-  arch/x86/include/asm/unwind_hints.h \
-  arch/x86/include/asm/orc_types.h \
-  arch/x86/include/asm/GEN-for-each-reg.h \
-  arch/x86/include/asm/spinlock_types.h \
-  include/asm-generic/qspinlock_types.h \
-    $(wildcard include/config/NR_CPUS) \
-  include/asm-generic/qrwlock_types.h \
-  arch/x86/include/asm/proto.h \
-  arch/x86/include/uapi/asm/ldt.h \
-  arch/x86/include/uapi/asm/sigcontext.h \
-  arch/x86/include/asm/current.h \
-  arch/x86/include/asm/percpu.h \
-    $(wildcard include/config/X86_64_SMP) \
-  include/linux/kernel.h \
-    $(wildcard include/config/PREEMPT_VOLUNTARY_BUILD) \
-    $(wildcard include/config/PREEMPT_DYNAMIC) \
-    $(wildcard include/config/HAVE_PREEMPT_DYNAMIC_CALL) \
-    $(wildcard include/config/HAVE_PREEMPT_DYNAMIC_KEY) \
-    $(wildcard include/config/PREEMPT_) \
-    $(wildcard include/config/DEBUG_ATOMIC_SLEEP) \
-    $(wildcard i
+// SPDX-License-Identifier: GPL-2.0-or-later
+
+/*
+ * netup-eeprom.c
+ *
+ * 24LC02 EEPROM driver in conjunction with NetUP Dual DVB-S2 CI card
+ *
+ * Copyright (C) 2009 NetUP Inc.
+ * Copyright (C) 2009 Abylay Ospan <aospan@netup.ru>
+ */
+
+#
+#include "cx23885.h"
+#include "netup-eeprom.h"
+
+#define EEPROM_I2C_ADDR 0x50
+
+int netup_eeprom_read(struct i2c_adapter *i2c_adap, u8 addr)
+{
+	int ret;
+	unsigned char buf[2];
+
+	/* Read from EEPROM */
+	struct i2c_msg msg[] = {
+		{
+			.addr	= EEPROM_I2C_ADDR,
+			.flags	= 0,
+			.buf	= &buf[0],
+			.len	= 1
+		}, {
+			.addr	= EEPROM_I2C_ADDR,
+			.flags	= I2C_M_RD,
+			.buf	= &buf[1],
+			.len	= 1
+		}
+
+	};
+
+	buf[0] = addr;
+	buf[1] = 0x0;
+
+	ret = i2c_transfer(i2c_adap, msg, 2);
+
+	if (ret != 2) {
+		pr_err("eeprom i2c read error, status=%d\n", ret);
+		return -1;
+	}
+
+	return buf[1];
+};
+
+int netup_eeprom_write(struct i2c_adapter *i2c_adap, u8 addr, u8 data)
+{
+	int ret;
+	unsigned char bufw[2];
+
+	/* Write into EEPROM */
+	struct i2c_msg msg[] = {
+		{
+			.addr	= EEPROM_I2C_ADDR,
+			.flags	= 0,
+			.buf	= &bufw[0],
+			.len	= 2
+		}
+	};
+
+	bufw[0] = addr;
+	bufw[1] = data;
+
+	ret = i2c_transfer(i2c_adap, msg, 1);
+
+	if (ret != 1) {
+		pr_err("eeprom i2c write error, status=%d\n", ret);
+		return -1;
+	}
+
+	mdelay(10); /* prophylactic delay, datasheet write cycle time = 5 ms

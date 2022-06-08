@@ -1,44 +1,69 @@
-pes.h \
-  include/asm-generic/pgtable-nop4d.h \
-  include/asm-generic/pgtable-nopud.h \
-  arch/x86/include/asm/nospec-branch.h \
-  include/linux/static_key.h \
-  include/linux/jump_label.h \
-    $(wildcard include/config/HAVE_ARCH_JUMP_LABEL_RELATIVE) \
-  arch/x86/include/asm/jump_label.h \
-  include/linux/objtool.h \
-    $(wildcard include/config/FRAME_POINTER) \
-  arch/x86/include/asm/msr-index.h \
-  arch/x86/include/asm/unwind_hints.h \
-  arch/x86/include/asm/orc_types.h \
-  arch/x86/include/asm/GEN-for-each-reg.h \
-  arch/x86/include/asm/spinlock_types.h \
-  include/asm-generic/qspinlock_types.h \
-    $(wildcard include/config/NR_CPUS) \
-  include/asm-generic/qrwlock_types.h \
-  arch/x86/include/asm/proto.h \
-  arch/x86/include/uapi/asm/ldt.h \
-  arch/x86/include/uapi/asm/sigcontext.h \
-  arch/x86/include/asm/current.h \
-  arch/x86/include/asm/percpu.h \
-    $(wildcard include/config/X86_64_SMP) \
-  include/linux/kernel.h \
-    $(wildcard include/config/PREEMPT_VOLUNTARY_BUILD) \
-    $(wildcard include/config/PREEMPT_DYNAMIC) \
-    $(wildcard include/config/HAVE_PREEMPT_DYNAMIC_CALL) \
-    $(wildcard include/config/HAVE_PREEMPT_DYNAMIC_KEY) \
-    $(wildcard include/config/PREEMPT_) \
-    $(wildcard include/config/DEBUG_ATOMIC_SLEEP) \
-    $(wildcard include/config/MMU) \
-    $(wildcard include/config/PROVE_LOCKING) \
-  include/linux/stdarg.h \
-  include/linux/align.h \
-  include/linux/limits.h \
-  include/uapi/linux/limits.h \
-  include/vdso/limits.h \
-  include/linux/kstrtox.h \
-  include/linux/minmax.h \
-  include/linux/panic.h \
-    $(wildcard include/config/PANIC_TIMEOUT) \
-  include/linux/printk.h \
-    $(wildcard include/config/MESSAGE_LOGLEVEL_
+_LEADTEK_WINFAST_PXDVR3200_H,
+	}, {
+		.subvendor = 0x107d,
+		.subdevice = 0x6f21,
+		.card      = CX23885_BOARD_LEADTEK_WINFAST_PXPVR2200,
+	}, {
+		.subvendor = 0x107d,
+		.subdevice = 0x6f39,
+		.card	   = CX23885_BOARD_LEADTEK_WINFAST_PXDVR3200_H_XC4000,
+	}, {
+		.subvendor = 0x185b,
+		.subdevice = 0xe800,
+		.card      = CX23885_BOARD_COMPRO_VIDEOMATE_E650F,
+	}, {
+		.subvendor = 0x6920,
+		.subdevice = 0x8888,
+		.card      = CX23885_BOARD_TBS_6920,
+	}, {
+		.subvendor = 0x6980,
+		.subdevice = 0x8888,
+		.card      = CX23885_BOARD_TBS_6980,
+	}, {
+		.subvendor = 0x6981,
+		.subdevice = 0x8888,
+		.card      = CX23885_BOARD_TBS_6981,
+	}, {
+		.subvendor = 0xd470,
+		.subdevice = 0x9022,
+		.card      = CX23885_BOARD_TEVII_S470,
+	}, {
+		.subvendor = 0x0001,
+		.subdevice = 0x2005,
+		.card      = CX23885_BOARD_DVBWORLD_2005,
+	}, {
+		.subvendor = 0x1b55,
+		.subdevice = 0x2a2c,
+		.card      = CX23885_BOARD_NETUP_DUAL_DVBS2_CI,
+	}, {
+		.subvendor = 0x0070,
+		.subdevice = 0x2211,
+		.card      = CX23885_BOARD_HAUPPAUGE_HVR1270,
+	}, {
+		.subvendor = 0x0070,
+		.subdevice = 0x2215,
+		.card      = CX23885_BOARD_HAUPPAUGE_HVR1275,
+	}, {
+		.subvendor = 0x0070,
+		.subdevice = 0x221d,
+		.card      = CX23885_BOARD_HAUPPAUGE_HVR1275,
+	}, {
+		.subvendor = 0x0070,
+		.subdevice = 0x2251,
+		.card      = CX23885_BOARD_HAUPPAUGE_HVR1255,
+	}, {
+		.subvendor = 0x0070,
+		.subdevice = 0x2259,
+		.card      = CX23885_BOARD_HAUPPAUGE_HVR1255_22111,
+	}, {
+		.subvendor = 0x0070,
+		.subdevice = 0x2291,
+		.card      = CX23885_BOARD_HAUPPAUGE_HVR1210,
+	}, {
+		.subvendor = 0x0070,
+		.subdevice = 0x2295,
+		.card      = CX23885_BOARD_HAUPPAUGE_HVR1210,
+	}, {
+		.subvendor = 0x0070,
+		.subdevice = 0x2299,
+		.

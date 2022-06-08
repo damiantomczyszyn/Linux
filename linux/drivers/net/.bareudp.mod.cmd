@@ -1,3 +1,5 @@
-nclude/asm/atomic64_32.h \
-  include/linux/atomic/atomic-arch-fallback.h \
-    $(wildcard include
+us & VID_BC_MSK_SYNC) ||
+		(status & VID_BC_MSK_OF)) {
+
+		if (status & VID_BC_MSK_OPC_ERR)
+			dpr

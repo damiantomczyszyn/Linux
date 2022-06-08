@@ -1,4 +1,1 @@
-lude/config/SHMEM) \
-    $(wildcard include/config/ARCH_HAS_PTE_SPECIAL) \
-    $(wildcard include/config/ARCH_HAS_PTE_DEVMAP) \
-    $(wildcard
+cmd_drivers/net/can/softing/softing_cs.mod := { echo  drivers/net/can/softing/softing_cs.o;  echo; } > drivers/net/can/softing/softing_cs.mod

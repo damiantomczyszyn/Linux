@@ -1,2 +1,2 @@
-e/config/ACPI_APEI_GHES) \
-    $(wildcard inclu
+#include <linux/module.h>
+#define INCLUDE_VERMA

@@ -1,2 +1,2 @@
-ldcard include/config/PCI_MMCONFIG) \
-   
+D_DVB:
+	case CX23885_BOARD_HAUPPAUGE_QUAD

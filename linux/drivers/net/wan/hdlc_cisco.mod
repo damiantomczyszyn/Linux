@@ -1,2 +1,1 @@
-e/linux/rwlock.h \
-    $(wildc
+egval = MC417_SPD_CTL(MC417_SP

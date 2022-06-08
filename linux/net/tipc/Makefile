@@ -1,1 +1,16 @@
-cmd_kernel/irq/cpuhotplug.o := gcc -Wp,-MMD,kernel/irq/.cpuhotplug.o.d -nostdinc -I./arch/x86/include -I./arch/x86/include/generated  -I./include -I./arch/x86/include/uapi -I./arch/x86/include/generated/uapi -I./include/uapi -I./include/generated/uapi -include ./include/linux/compiler-version.h -include ./include/linux/kconfig.h -include ./include/linux/compiler_types.h -D__KERNEL__ -fmacro-prefix-map=./= -Wall -Wundef -Werror=strict-prototypes -Wno-trigraphs -fno-strict-aliasing -fno-common -fshort-wchar -fno-PIE -Werror=implicit-function-declaratio
+ue of having been offline.
+ */
+static int rcu_implicit_dynticks_qs(struct rcu_data *rdp)
+{
+	unsigned long jtsq;
+	struct rcu_node *rnp = rdp->mynode;
+
+	/*
+	 * If the CPU passed through or entered a dynticks idle phase with
+	 * no active irq/NMI handlers, then we can safely pretend that the CPU
+	 * already acknowledged the request to pass through a quiescent
+	 * state.  Either way, that CPU cannot possibly be in an RCU
+	 * read-side critical section that started before the beginning
+	 * of the current RCU grace period.
+	 */
+	if (rcu_dynticks_in_eqs_sin

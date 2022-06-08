@@ -1,2 +1,1 @@
-EAF) \
-  include/linux/page-flags-layou
+/* SPDX-License-Identifier: GPL-2.0 */

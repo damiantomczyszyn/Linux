@@ -1,103 +1,143 @@
-config/ARCH_WANTS_DYNAMIC_TASK_STRUCT) \
-    $(wildcard include/config/HAVE_ARCH_THREAD_STRUCT_WHITELIST) \
-  include/linux/cred.h \
-    $(wildcard include/config/DEBUG_CREDENTIALS) \
-  include/linux/key.h \
-    $(wildcard include/config/KEY_NOTIFICATIONS) \
-    $(wildcard include/config/NET) \
-  include/linux/assoc_array.h \
-    $(wildcard include/config/ASSOCIATIVE_ARRAY) \
-  include/linux/sched/user.h \
-    $(wildcard include/config/WATCH_QUEUE) \
-  include/linux/percpu_counter.h \
-  include/linux/rcu_sync.h \
-  include/linux/delayed_call.h \
-  include/linux/errseq.h \
-  include/linux/ioprio.h \
-  include/linux/sched/rt.h \
-  include/linux/iocontext.h \
-    $(wildcard include/config/BLK_ICQ) \
-  include/uapi/linux/ioprio.h \
-  include/linux/fs_types.h \
-  include/linux/mount.h \
-  include/linux/mnt_idmapping.h \
-  include/uapi/linux/fs.h \
-  include/linux/quota.h \
-    $(wildcard include/config/QUOTA_NETLINK_INTERFACE) \
-  include/uapi/linux/dqblk_xfs.h \
-  include/linux/dqblk_v1.h \
-  include/linux/dqblk_v2.h \
-  include/linux/dqblk_qtree.h \
-  include/linux/projid.h \
-  include/uapi/linux/quota.h \
-  include/linux/nfs_fs_i.h \
-  include/linux/seq_file.h \
-  include/linux/string_helpers.h \
-  include/linux/ns_common.h \
-  include/linux/nsproxy.h \
-  include/linux/user_namespace.h \
-    $(wildcard include/config/INOTIFY_USER) \
-    $(wildcard include/config/FANOTIFY) \
-    $(wildcard include/config/PERSISTENT_KEYRINGS) \
-  include/linux/kernel_stat.h \
-  include/linux/interrupt.h \
-    $(wildcard include/config/IRQ_FORCED_THREADING) \
-    $(wildcard include/config/GENERIC_IRQ_PROBE) \
-    $(wildcard include/config/IRQ_TIMINGS) \
-  include/linux/irqreturn.h \
-  include/linux/irqnr.h \
-  include/uapi/linux/irqnr.h \
-  include/linux/hardirq.h \
-  include/linux/context_tracking_state.h \
-    $(wildcard include/config/CONTEXT_TRACKING) \
-  include/linux/ftrace_irq.h \
-    $(wildcard include/config/HWLAT_TRACER) \
-    $(wildcard include/config/OSNOISE_TRACER) \
-  include/linux/vtime.h \
-    $(wildcard include/config/VIRT_CPU_ACCOUNTING) \
-    $(wildcard include/config/IRQ_TIME_ACCOUNTING) \
-  arch/x86/include/asm/hardirq.h \
-    $(wildcard include/config/KVM_INTEL) \
-    $(wildcard include/config/X86_THERMAL_VECTOR) \
-    $(wildcard include/config/X86_MCE_THRESHOLD) \
-    $(wildcard include/config/X86_MCE_AMD) \
-    $(wildcard include/config/X86_HV_CALLBACK_VECTOR) \
-  arch/x86/include/asm/irq.h \
-  arch/x86/include/asm/sections.h \
-  include/asm-generic/sections.h \
-    $(wildcard include/config/HAVE_FUNCTION_DESCRIPTORS) \
-  include/linux/cgroup-defs.h \
-    $(wildcard include/config/CGROUP_NET_CLASSID) \
-    $(wildcard include/config/CGROUP_NET_PRIO) \
-  include/linux/u64_stats_sync.h \
-  include/linux/bpf-cgroup-defs.h \
-  include/linux/psi_types.h \
-  include/linux/kthread.h \
-  include/linux/cgroup_subsys.h \
-    $(wildcard include/config/CGROUP_DEVICE) \
-    $(wildcard include/config/CGROUP_FREEZER) \
-    $(wildcard include/config/CGROUP_PERF) \
-    $(wildcard include/config/CGROUP_HUGETLB) \
-    $(wildcard include/config/CGROUP_PIDS) \
-    $(wildcard include/config/CGROUP_RDMA) \
-    $(wildcard include/config/CGROUP_MISC) \
-    $(wildcard include/config/CGROUP_DEBUG) \
-  include/linux/vm_event_item.h \
-    $(wildcard include/config/HAVE_ARCH_TRANSPARENT_HUGEPAGE_PUD) \
-    $(wildcard include/config/MEMORY_BALLOON) \
-    $(wildcard include/config/BALLOON_COMPACTION) \
-    $(wildcard include/config/DEBUG_TLBFLUSH) \
-    $(wildcard include/config/DEBUG_VM_VMACACHE) \
-  include/linux/page_counter.h \
-  include/linux/vmpressure.h \
-  include/linux/eventfd.h \
-  include/linux/mm.h \
-    $(wildcard include/config/HAVE_ARCH_MMAP_RND_BITS) \
-    $(wildcard include/config/HAVE_ARCH_MMAP_RND_COMPAT_BITS) \
-    $(wildcard include/config/ARCH_USES_HIGH_VMA_FLAGS) \
-    $(wildcard include/config/ARCH_HAS_PKEYS) \
-    $(wildcard include/config/PPC) \
-    $(wildcard include/config/PARISC) \
-    $(wildcard include/config/SPARC64) \
-    $(wildcard include/config/ARM64_MTE) \
-    $(wildcard include/config/HAVE_ARCH_USERFAULTFD
+// SPDX-License-Identifier: GPL-2.0-or-later
+/*
+ *  Driver for the Conexant CX23885/7/8 PCIe bridge
+ *
+ *  Infrared remote control input device
+ *
+ *  Most of this file is
+ *
+ *  Copyright (C) 2009  Andy Walls <awalls@md.metrocast.net>
+ *
+ *  However, the cx23885_input_{init,fini} functions contained herein are
+ *  derived from Linux kernel files linux/media/video/.../...-input.c marked as:
+ *
+ *  Copyright (C) 2008 <srinivasa.deevi at conexant dot com>
+ *  Copyright (C) 2005 Ludovico Cavedon <cavedon@sssup.it>
+ *		       Markus Rechberger <mrechberger@gmail.com>
+ *		       Mauro Carvalho Chehab <mchehab@kernel.org>
+ *		       Sascha Sommer <saschasommer@freenet.de>
+ *  Copyright (C) 2004, 2005 Chris Pascoe
+ *  Copyright (C) 2003, 2004 Gerd Knorr
+ *  Copyright (C) 2003 Pavel Machek
+ */
+
+#include "cx23885.h"
+#include "cx23885-input.h"
+
+#include <linux/slab.h>
+#include <media/rc-core.h>
+#include <media/v4l2-subdev.h>
+
+#define MODULE_NAME "cx23885"
+
+static void cx23885_input_process_measurements(struct cx23885_dev *dev,
+					       bool overrun)
+{
+	struct cx23885_kernel_ir *kernel_ir = dev->kernel_ir;
+
+	ssize_t num;
+	int count, i;
+	bool handle = false;
+	struct ir_raw_event ir_core_event[64];
+
+	do {
+		num = 0;
+		v4l2_subdev_call(dev->sd_ir, ir, rx_read, (u8 *) ir_core_event,
+				 sizeof(ir_core_event), &num);
+
+		count = num / sizeof(struct ir_raw_event);
+
+		for (i = 0; i < count; i++) {
+			ir_raw_event_store(kernel_ir->rc,
+					   &ir_core_event[i]);
+			handle = true;
+		}
+	} while (num != 0);
+
+	if (overrun)
+		ir_raw_event_overflow(kernel_ir->rc);
+	else if (handle)
+		ir_raw_event_handle(kernel_ir->rc);
+}
+
+void cx23885_input_rx_work_handler(struct cx23885_dev *dev, u32 events)
+{
+	struct v4l2_subdev_ir_parameters params;
+	int overrun, data_available;
+
+	if (dev->sd_ir == NULL || events == 0)
+		return;
+
+	switch (dev->board) {
+	case CX23885_BOARD_HAUPPAUGE_HVR1270:
+	case CX23885_BOARD_HAUPPAUGE_HVR1850:
+	case CX23885_BOARD_HAUPPAUGE_HVR1290:
+	case CX23885_BOARD_TERRATEC_CINERGY_T_PCIE_DUAL:
+	case CX23885_BOARD_TEVII_S470:
+	case CX23885_BOARD_HAUPPAUGE_HVR1250:
+	case CX23885_BOARD_MYGICA_X8507:
+	case CX23885_BOARD_TBS_6980:
+	case CX23885_BOARD_TBS_6981:
+	case CX23885_BOARD_DVBSKY_T9580:
+	case CX23885_BOARD_DVBSKY_T980C:
+	case CX23885_BOARD_DVBSKY_S950C:
+	case CX23885_BOARD_TT_CT2_4500_CI:
+	case CX23885_BOARD_DVBSKY_S950:
+	case CX23885_BOARD_DVBSKY_S952:
+	case CX23885_BOARD_DVBSKY_T982:
+	case CX23885_BOARD_HAUPPAUGE_HVR1265_K4:
+		/*
+		 * The only boards we handle right now.  However other boards
+		 * using the CX2388x integrated IR controller should be similar
+		 */
+		break;
+	default:
+		return;
+	}
+
+	overrun = events & (V4L2_SUBDEV_IR_RX_SW_FIFO_OVERRUN |
+			    V4L2_SUBDEV_IR_RX_HW_FIFO_OVERRUN);
+
+	data_available = events & (V4L2_SUBDEV_IR_RX_END_OF_RX_DETECTED |
+				   V4L2_SUBDEV_IR_RX_FIFO_SERVICE_REQ);
+
+	if (overrun) {
+		/* If there was a FIFO overrun, stop the device */
+		v4l2_subdev_call(dev->sd_ir, ir, rx_g_parameters, &params);
+		params.enable = false;
+		/* Mitigate race with cx23885_input_ir_stop() */
+		params.shutdown = atomic_read(&dev->ir_input_stopping);
+		v4l2_subdev_call(dev->sd_ir, ir, rx_s_parameters, &params);
+	}
+
+	if (data_available)
+		cx23885_input_process_measurements(dev, overrun);
+
+	if (overrun) {
+		/* If there was a FIFO overrun, clear & restart the device */
+		params.enable = true;
+		/* Mitigate race with cx23885_input_ir_stop() */
+		params.shutdown = atomic_read(&dev->ir_input_stopping);
+		v4l2_subdev_call(dev->sd_ir, ir, rx_s_parameters, &params);
+	}
+}
+
+static int cx23885_input_ir_start(struct cx23885_dev *dev)
+{
+	struct v4l2_subdev_ir_parameters params;
+
+	if (dev->sd_ir == NULL)
+		return -ENODEV;
+
+	atomic_set(&dev->ir_input_stopping, 0);
+
+	v4l2_subdev_call(dev->sd_ir, ir, rx_g_parameters, &params);
+	switch (dev->board) {
+	case CX23885_BOARD_HAUPPAUGE_HVR1270:
+	case CX23885_BOARD_HAUPPAUGE_HVR1850:
+	case CX23885_BOARD_HAUPPAUGE_HVR1290:
+	case CX23885_BOARD_HAUPPAUGE_HVR1250:
+	case CX23885_BOARD_MYGICA_X8507:
+	case CX23885_BOARD_DVBSKY_T9580:
+	case CX23885_BOARD_DVBSKY_T980C:
+	case CX23885_BOARD_DVB

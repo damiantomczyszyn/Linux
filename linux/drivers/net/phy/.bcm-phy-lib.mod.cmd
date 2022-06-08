@@ -1,4 +1,5 @@
-
-    $(wildcard include/config/PARAVIRT_XXL) \
-  arch/x86/include/asm/disabled-features.h \
-    $(wildcard include/config
+/* SPDX-License-Identifier: GPL-2.0-or-later */
+/*
+ * netup-eeprom.h
+ *
+ * 24LC02 EEPROM driver in conjunction with NetUP

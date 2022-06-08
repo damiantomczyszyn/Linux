@@ -1,5 +1,2 @@
-(likely(hlock_class(this)->usage_mask & new_mask))
-		return 1;
-
-	if (!graph_lock())
-		ret
+ass change for a non user-defined clamp value. */
+	if (likely(!(attr->sched_flags & SCHED

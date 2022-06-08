@@ -1,74 +1,73 @@
-ip)
-{
-	if (unlikely(!debug_locks))
-		return;
-
-	/*
-	 * NMIs do not (and cannot) track lock dependencies, nothing to do.
-	 */
-	if (unlikely(in_nmi()))
-		return;
-
-	if (unlikely(this_cpu_read(lockdep_recursion)))
-		return;
-
-	if (unlikely(lockdep_hardirqs_enabled())) {
-		/*
-		 * Neither irq nor preemption are disabled here
-		 * so this is racy by nature but losing one hit
-		 * in a stat is not a big deal.
-		 */
-		__debug_atomic_inc(redundant_hardirqs_on);
-		return;
-	}
-
-	/*
-	 * We're enabling irqs and according to our state above irqs weren't
-	 * already enabled, yet we find the hardware thinks they are in fact
-	 * enabled.. someone messed up their IRQ state tracing.
-	 */
-	if (DEBUG_LOCKS_WARN_ON(!irqs_disabled()))
-		return;
-
-	/*
-	 * See the fine text that goes along with this variable definition.
-	 */
-	if (DEBUG_LOCKS_WARN_ON(early_boot_irqs_disabled))
-		return;
-
-	/*
-	 * Can't allow enabling interrupts while in an interrupt handler,
-	 * that's general bad form and such. Recursion, limited stack etc..
-	 */
-	if (DEBUG_LOCKS_WARN_ON(lockdep_hardirq_context()))
-		return;
-
-	current->hardirq_chain_key = current->curr_chain_key;
-
-	lockdep_recursion_inc();
-	__trace_hardirqs_on_caller();
-	lockdep_recursion_finish();
-}
-EXPORT_SYMBOL_GPL(lockdep_hardirqs_on_prepare);
-
-void noinstr lockdep_hardirqs_on(unsigned long ip)
-{
-	struct irqtrace_events *trace = &current->irqtrace;
-
-	if (unlikely(!debug_locks))
-		return;
-
-	/*
-	 * NMIs can happen in the middle of local_irq_{en,dis}able() where the
-	 * tracking state and hardware state are out of sync.
-	 *
-	 * NMIs must save lockdep_hardirqs_enabled() to restore IRQ state from,
-	 * and not rely on hardware state like normal interrupts.
-	 */
-	if (unlikely(in_nmi())) {
-		if (!IS_ENABLED(CONFIG_TRACE_IRQFLAGS_NMI))
-			return;
-
-		/*
-		 * Skip:
-		 *  
+_LEADTEK_WINFAST_PXDVR3200_H,
+	}, {
+		.subvendor = 0x107d,
+		.subdevice = 0x6f21,
+		.card      = CX23885_BOARD_LEADTEK_WINFAST_PXPVR2200,
+	}, {
+		.subvendor = 0x107d,
+		.subdevice = 0x6f39,
+		.card	   = CX23885_BOARD_LEADTEK_WINFAST_PXDVR3200_H_XC4000,
+	}, {
+		.subvendor = 0x185b,
+		.subdevice = 0xe800,
+		.card      = CX23885_BOARD_COMPRO_VIDEOMATE_E650F,
+	}, {
+		.subvendor = 0x6920,
+		.subdevice = 0x8888,
+		.card      = CX23885_BOARD_TBS_6920,
+	}, {
+		.subvendor = 0x6980,
+		.subdevice = 0x8888,
+		.card      = CX23885_BOARD_TBS_6980,
+	}, {
+		.subvendor = 0x6981,
+		.subdevice = 0x8888,
+		.card      = CX23885_BOARD_TBS_6981,
+	}, {
+		.subvendor = 0xd470,
+		.subdevice = 0x9022,
+		.card      = CX23885_BOARD_TEVII_S470,
+	}, {
+		.subvendor = 0x0001,
+		.subdevice = 0x2005,
+		.card      = CX23885_BOARD_DVBWORLD_2005,
+	}, {
+		.subvendor = 0x1b55,
+		.subdevice = 0x2a2c,
+		.card      = CX23885_BOARD_NETUP_DUAL_DVBS2_CI,
+	}, {
+		.subvendor = 0x0070,
+		.subdevice = 0x2211,
+		.card      = CX23885_BOARD_HAUPPAUGE_HVR1270,
+	}, {
+		.subvendor = 0x0070,
+		.subdevice = 0x2215,
+		.card      = CX23885_BOARD_HAUPPAUGE_HVR1275,
+	}, {
+		.subvendor = 0x0070,
+		.subdevice = 0x221d,
+		.card      = CX23885_BOARD_HAUPPAUGE_HVR1275,
+	}, {
+		.subvendor = 0x0070,
+		.subdevice = 0x2251,
+		.card      = CX23885_BOARD_HAUPPAUGE_HVR1255,
+	}, {
+		.subvendor = 0x0070,
+		.subdevice = 0x2259,
+		.card      = CX23885_BOARD_HAUPPAUGE_HVR1255_22111,
+	}, {
+		.subvendor = 0x0070,
+		.subdevice = 0x2291,
+		.card      = CX23885_BOARD_HAUPPAUGE_HVR1210,
+	}, {
+		.subvendor = 0x0070,
+		.subdevice = 0x2295,
+		.card      = CX23885_BOARD_HAUPPAUGE_HVR1210,
+	}, {
+		.subvendor = 0x0070,
+		.subdevice = 0x2299,
+		.card      = CX23885_BOARD_HAUPPAUGE_HVR1210,
+	}, {
+		.subvendor = 0x0070,
+		.subdevice = 0x229d,
+		.card      = CX23

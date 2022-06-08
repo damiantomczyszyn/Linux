@@ -1,1 +1,2 @@
-(likely(hlock_class(this)->usa
+f (should_resched(0)) {
+		pree

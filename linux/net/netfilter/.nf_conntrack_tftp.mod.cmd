@@ -1,4 +1,6 @@
-lude/linux/percpu-refcount.h \
-  include/linux/kasan.h \
-    $(wildcard include/config/KASAN_STACK) \
-    $(wildcard include/config/K
+,
+			.amux   = CX25840_AUDIO8,
+		} },
+	},
+	[CX23885_BOARD_HAUPPAUGE_QUADHD_DVB_885] = {
+		.name         = "Hauppauge WinTV-QuadHD-DVB

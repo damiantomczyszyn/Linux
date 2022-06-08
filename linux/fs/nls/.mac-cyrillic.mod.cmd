@@ -1,3 +1,3 @@
-h/x86/include/asm/pgtable_32_types.h \
-  arch/x86/include/asm/pgtable-3level_types.h \
-  include/
+ient_tuner);
+				module_put(client_demod->dev.driver->owner);
+				i2c_unregister_device(client_de

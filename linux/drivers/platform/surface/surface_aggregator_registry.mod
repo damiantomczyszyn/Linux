@@ -1,1 +1,4 @@
-cmd_drivers/media/i2c/uda1342.o := gcc -Wp,-MMD,drivers/
+}
+
+static const struct vb2_ops dvb_qops = {
+	.queue_setu

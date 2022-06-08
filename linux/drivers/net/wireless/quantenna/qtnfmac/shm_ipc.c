@@ -1,102 +1,142 @@
-clude/linux/build_bug.h \
-  include/linux/compiler.h \
-    $(wildcard include/config/TRACE_BRANCH_PROFILING) \
-    $(wildcard include/config/PROFILE_ALL_BRANCHES) \
-    $(wildcard include/config/STACK_VALIDATION) \
-  include/linux/compiler_types.h \
-  arch/x86/include/generated/asm/rwonce.h \
-  include/asm-generic/rwonce.h \
-  include/linux/kasan-checks.h \
-    $(wildcard include/config/KASAN_GENERIC) \
-    $(wildcard include/config/KASAN_SW_TAGS) \
-  include/linux/types.h \
-    $(wildcard include/config/HAVE_UID16) \
-    $(wildcard include/config/UID16) \
-    $(wildcard include/config/ARCH_DMA_ADDR_T_64BIT) \
-    $(wildcard include/config/PHYS_ADDR_T_64BIT) \
-    $(wildcard include/config/64BIT) \
-    $(wildcard include/config/ARCH_32BIT_USTAT_F_TINODE) \
-  include/uapi/linux/types.h \
-  arch/x86/include/generated/uapi/asm/types.h \
-  include/uapi/asm-generic/types.h \
-  include/asm-generic/int-ll64.h \
-  include/uapi/asm-generic/int-ll64.h \
-  arch/x86/include/uapi/asm/bitsperlong.h \
-  include/asm-generic/bitsperlong.h \
-  include/uapi/asm-generic/bitsperlong.h \
-  include/uapi/linux/posix_types.h \
-  include/linux/stddef.h \
-  include/uapi/linux/stddef.h \
-  arch/x86/include/asm/posix_types.h \
-    $(wildcard include/config/X86_32) \
-  arch/x86/include/uapi/asm/posix_types_32.h \
-  include/uapi/asm-generic/posix_types.h \
-  include/linux/kcsan-checks.h \
-    $(wildcard include/config/KCSAN) \
-    $(wildcard include/config/KCSAN_WEAK_MEMORY) \
-    $(wildcard include/config/KCSAN_IGNORE_ATOMICS) \
-  include/linux/err.h \
-  arch/x86/include/generated/uapi/asm/errno.h \
-  include/uapi/asm-generic/errno.h \
-  include/uapi/asm-generic/errno-base.h \
-  include/linux/poison.h \
-    $(wildcard include/config/ILLEGAL_POINTER_VALUE) \
-  include/linux/const.h \
-  include/vdso/const.h \
-  include/uapi/linux/const.h \
-  arch/x86/include/asm/barrier.h \
-  arch/x86/include/asm/alternative.h \
-  include/linux/stringify.h \
-  arch/x86/include/asm/asm.h \
-  arch/x86/include/asm/extable_fixup_types.h \
-  arch/x86/include/asm/nops.h \
-  include/asm-generic/barrier.h \
-  include/linux/stat.h \
-  arch/x86/include/uapi/asm/stat.h \
-  include/uapi/linux/stat.h \
-  include/linux/time.h \
-    $(wildcard include/config/POSIX_TIMERS) \
-  include/linux/cache.h \
-    $(wildcard include/config/ARCH_HAS_CACHE_LINE_SIZE) \
-  include/uapi/linux/kernel.h \
-  include/uapi/linux/sysinfo.h \
-  arch/x86/include/asm/cache.h \
-    $(wildcard include/config/X86_L1_CACHE_SHIFT) \
-    $(wildcard include/config/X86_INTERNODE_CACHE_SHIFT) \
-    $(wildcard include/config/X86_VSMP) \
-  include/linux/linkage.h \
-    $(wildcard include/config/ARCH_USE_SYM_ANNOTATIONS) \
-  include/linux/export.h \
-    $(wildcard include/config/MODVERSIONS) \
-    $(wildcard include/config/MODULE_REL_CRCS) \
-    $(wildcard include/config/HAVE_ARCH_PREL32_RELOCATIONS) \
-    $(wildcard include/config/TRIM_UNUSED_KSYMS) \
-  arch/x86/include/asm/linkage.h \
-    $(wildcard include/config/X86_64) \
-    $(wildcard include/config/X86_ALIGNMENT_16) \
-    $(wildcard include/config/SLS) \
-  arch/x86/include/asm/ibt.h \
-    $(wildcard include/config/X86_KERNEL_IBT) \
-  include/linux/math64.h \
-    $(wildcard include/config/ARCH_SUPPORTS_INT128) \
-  include/linux/math.h \
-  arch/x86/include/asm/div64.h \
-  include/linux/log2.h \
-    $(wildcard include/config/ARCH_HAS_ILOG2_U32) \
-    $(wildcard include/config/ARCH_HAS_ILOG2_U64) \
-  include/linux/bitops.h \
-  include/linux/bits.h \
-  include/vdso/bits.h \
-  include/linux/typecheck.h \
-  arch/x86/include/asm/bitops.h \
-    $(wildcard include/config/X86_CMOV) \
-  arch/x86/include/asm/rmwcc.h \
-    $(wildcard include/config/CC_HAS_ASM_GOTO) \
-  include/asm-generic/bitops/fls64.h \
-  include/asm-generic/bitops/sched.h \
-  arch/x86/include/asm/arch_hweight.h \
-  arch/x86/include/asm/cpufeatures.h \
-  arch/x86/include/asm/required-features.h \
-    $(wildcard include/config/X86_MINIMUM_CPU_FAMILY) \
-    $(wildcard include/config/MATH_EMULATION) \
-    $(
+/* SPDX-License-Identifier: GPL-2.0-or-later */
+/*
+ *  Driver for the Conexant CX23885 PCIe bridge
+ *
+ *  Copyright (c) 2006 Steven Toth <stoth@linuxtv.org>
+ */
+
+#ifndef _CX23885_REG_H_
+#define _CX23885_REG_H_
+
+/*
+Address Map
+0x00000000 -> 0x00009000   TX SRAM  (Fifos)
+0x00010000 -> 0x00013c00   RX SRAM  CMDS + CDT
+
+EACH CMDS struct is 0x80 bytes long
+
+DMAx_PTR1 = 0x03040 address of first cluster
+DMAx_PTR2 = 0x10600 address of the CDT
+DMAx_CNT1 = cluster size in (bytes >> 4) -1
+DMAx_CNT2 = total cdt size for all entries >> 3
+
+Cluster Descriptor entry = 4 DWORDS
+ DWORD 0 -> ptr to cluster
+ DWORD 1 Reserved
+ DWORD 2 Reserved
+ DWORD 3 Reserved
+
+Channel manager Data Structure entry = 20 DWORD
+  0  IntialProgramCounterLow
+  1  IntialProgramCounterHigh
+  2  ClusterDescriptorTableBase
+  3  ClusterDescriptorTableSize
+  4  InstructionQueueBase
+  5  InstructionQueueSize
+...  Reserved
+ 19  Reserved
+*/
+
+/* Risc Instructions */
+#define RISC_CNT_INC		 0x00010000
+#define RISC_CNT_RESET		 0x00030000
+#define RISC_IRQ1		 0x01000000
+#define RISC_IRQ2		 0x02000000
+#define RISC_EOL		 0x04000000
+#define RISC_SOL		 0x08000000
+#define RISC_WRITE		 0x10000000
+#define RISC_SKIP		 0x20000000
+#define RISC_JUMP		 0x70000000
+#define RISC_SYNC		 0x80000000
+#define RISC_RESYNC		 0x80008000
+#define RISC_READ		 0x90000000
+#define RISC_WRITERM		 0xB0000000
+#define RISC_WRITECM		 0xC0000000
+#define RISC_WRITECR		 0xD0000000
+#define RISC_WRITEC		 0x50000000
+#define RISC_READC		 0xA0000000
+
+
+/* Audio and Video Core */
+#define HOST_REG1		0x00000000
+#define HOST_REG2		0x00000001
+#define HOST_REG3		0x00000002
+
+/* Chip Configuration Registers */
+#define CHIP_CTRL		0x00000100
+#define AFE_CTRL		0x00000104
+#define VID_PLL_INT_POST	0x00000108
+#define VID_PLL_FRAC		0x0000010C
+#define AUX_PLL_INT_POST	0x00000110
+#define AUX_PLL_FRAC		0x00000114
+#define SYS_PLL_INT_POST	0x00000118
+#define SYS_PLL_FRAC		0x0000011C
+#define PIN_CTRL		0x00000120
+#define AUD_IO_CTRL		0x00000124
+#define AUD_LOCK1		0x00000128
+#define AUD_LOCK2		0x0000012C
+#define POWER_CTRL		0x00000130
+#define AFE_DIAG_CTRL1		0x00000134
+#define AFE_DIAG_CTRL3		0x0000013C
+#define PLL_DIAG_CTRL		0x00000140
+#define AFE_CLK_OUT_CTRL	0x00000144
+#define DLL1_DIAG_CTRL		0x0000015C
+
+/* GPIO[23:19] Output Enable */
+#define GPIO2_OUT_EN_REG	0x00000160
+/* GPIO[23:19] Data Registers */
+#define GPIO2			0x00000164
+
+#define IFADC_CTRL		0x00000180
+
+/* Infrared Remote Registers */
+#define IR_CNTRL_REG	0x00000200
+#define IR_TXCLK_REG	0x00000204
+#define IR_RXCLK_REG	0x00000208
+#define IR_CDUTY_REG	0x0000020C
+#define IR_STAT_REG	0x00000210
+#define IR_IRQEN_REG	0x00000214
+#define IR_FILTR_REG	0x00000218
+#define IR_FIFO_REG	0x0000023C
+
+/* Video Decoder Registers */
+#define MODE_CTRL		0x00000400
+#define OUT_CTRL1		0x00000404
+#define OUT_CTRL2		0x00000408
+#define GEN_STAT		0x0000040C
+#define INT_STAT_MASK		0x00000410
+#define LUMA_CTRL		0x00000414
+#define HSCALE_CTRL		0x00000418
+#define VSCALE_CTRL		0x0000041C
+#define CHROMA_CTRL		0x00000420
+#define VBI_LINE_CTRL1		0x00000424
+#define VBI_LINE_CTRL2		0x00000428
+#define VBI_LINE_CTRL3		0x0000042C
+#define VBI_LINE_CTRL4		0x00000430
+#define VBI_LINE_CTRL5		0x00000434
+#define VBI_FC_CFG		0x00000438
+#define VBI_MISC_CFG1		0x0000043C
+#define VBI_MISC_CFG2		0x00000440
+#define VBI_PAY1		0x00000444
+#define VBI_PAY2		0x00000448
+#define VBI_CUST1_CFG1		0x0000044C
+#define VBI_CUST1_CFG2		0x00000450
+#define VBI_CUST1_CFG3		0x00000454
+#define VBI_CUST2_CFG1		0x00000458
+#define VBI_CUST2_CFG2		0x0000045C
+#define VBI_CUST2_CFG3		0x00000460
+#define VBI_CUST3_CFG1		0x00000464
+#define VBI_CUST3_CFG2		0x00000468
+#define VBI_CUST3_CFG3		0x0000046C
+#define HORIZ_TIM_CTRL		0x00000470
+#define VERT_TIM_CTRL		0x00000474
+#define SRC_COMB_CFG		0x00000478
+#define CHROMA_VBIOFF_CFG	0x0000047C
+#define FIELD_COUNT		0x00000480
+#define MISC_TIM_CTRL		0x00000484
+#define DFE_CTRL1		0x00000488
+#define DFE_CTRL2		0x0000048C
+#define DFE_CTRL3		0x00000490
+#define PLL_CTRL		0x00000494
+#define HTL_CTRL		0x00000498
+#define 

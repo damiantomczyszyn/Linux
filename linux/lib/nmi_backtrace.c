@@ -1,86 +1,116 @@
- include/config/TRACE_BRANCH_PROFILING) \
-    $(wildcard include/config/PROFILE_ALL_BRANCHES) \
-    $(wildcard include/config/STACK_VALIDATION) \
-  include/linux/compiler_types.h \
-  arch/x86/include/generated/asm/rwonce.h \
-  include/asm-generic/rwonce.h \
-  include/linux/kasan-checks.h \
-    $(wildcard include/config/KASAN_GENERIC) \
-    $(wildcard include/config/KASAN_SW_TAGS) \
-  include/linux/types.h \
-    $(wildcard include/config/HAVE_UID16) \
-    $(wildcard include/config/UID16) \
-    $(wildcard include/config/ARCH_DMA_ADDR_T_64BIT) \
-    $(wildcard include/config/PHYS_ADDR_T_64BIT) \
-    $(wildcard include/config/64BIT) \
-    $(wildcard include/config/ARCH_32BIT_USTAT_F_TINODE) \
-  include/uapi/linux/types.h \
-  arch/x86/include/generated/uapi/asm/types.h \
-  include/uapi/asm-generic/types.h \
-  include/asm-generic/int-ll64.h \
-  include/uapi/asm-generic/int-ll64.h \
-  arch/x86/include/uapi/asm/bitsperlong.h \
-  include/asm-generic/bitsperlong.h \
-  include/uapi/asm-generic/bitsperlong.h \
-  include/uapi/linux/posix_types.h \
-  include/linux/stddef.h \
-  include/uapi/linux/stddef.h \
-  arch/x86/include/asm/posix_types.h \
-    $(wildcard include/config/X86_32) \
-  arch/x86/include/uapi/asm/posix_types_32.h \
-  include/uapi/asm-generic/posix_types.h \
-  include/linux/kcsan-checks.h \
-    $(wildcard include/config/KCSAN) \
-    $(wildcard include/config/KCSAN_WEAK_MEMORY) \
-    $(wildcard include/config/KCSAN_IGNORE_ATOMICS) \
-  include/linux/err.h \
-  arch/x86/include/generated/uapi/asm/errno.h \
-  include/uapi/asm-generic/errno.h \
-  include/uapi/asm-generic/errno-base.h \
-  include/linux/poison.h \
-    $(wildcard include/config/ILLEGAL_POINTER_VALUE) \
-  include/linux/const.h \
-  include/vdso/const.h \
-  include/uapi/linux/const.h \
-  arch/x86/include/asm/barrier.h \
-  arch/x86/include/asm/alternative.h \
-  include/linux/stringify.h \
-  arch/x86/include/asm/asm.h \
-  arch/x86/include/asm/extable_fixup_types.h \
-  arch/x86/include/asm/nops.h \
-  include/asm-generic/barrier.h \
-  include/linux/stat.h \
-  arch/x86/include/uapi/asm/stat.h \
-  include/uapi/linux/stat.h \
-  include/linux/time.h \
-    $(wildcard include/config/POSIX_TIMERS) \
-  include/linux/cache.h \
-    $(wildcard include/config/ARCH_HAS_CACHE_LINE_SIZE) \
-  include/uapi/linux/kernel.h \
-  include/uapi/linux/sysinfo.h \
-  arch/x86/include/asm/cache.h \
-    $(wildcard include/config/X86_L1_CACHE_SHIFT) \
-    $(wildcard include/config/X86_INTERNODE_CACHE_SHIFT) \
-    $(wildcard include/config/X86_VSMP) \
-  include/linux/linkage.h \
-    $(wildcard include/config/ARCH_USE_SYM_ANNOTATIONS) \
-  include/linux/export.h \
-    $(wildcard include/config/MODVERSIONS) \
-    $(wildcard include/config/MODULE_REL_CRCS) \
-    $(wildcard include/config/HAVE_ARCH_PREL32_RELOCATIONS) \
-    $(wildcard include/config/TRIM_UNUSED_KSYMS) \
-  arch/x86/include/asm/linkage.h \
-    $(wildcard include/config/X86_64) \
-    $(wildcard include/config/X86_ALIGNMENT_16) \
-    $(wildcard include/config/SLS) \
-  arch/x86/include/asm/ibt.h \
-    $(wildcard include/config/X86_KERNEL_IBT) \
-  include/linux/math64.h \
-    $(wildcard include/config/ARCH_SUPPORTS_INT128) \
-  include/linux/math.h \
-  arch/x86/include/asm/div64.h \
-  include/linux/log2.h \
-    $(wildcard include/config/ARCH_HAS_ILOG2_U32) \
-    $(wildcard include/config/ARCH_HAS_ILOG2_U64) \
-  include/linux/bitops.h \
-  inclu
+00d00);
+		/* enable irq */
+		cx_write(GPIO_ISM, 0x00000000);/* INTERRUPTS active low*/
+		break;
+	case CX23885_BOARD_HAUPPAUGE_HVR4400:
+	case CX23885_BOARD_HAUPPAUGE_STARBURST:
+		/* GPIO-8 tda10071 demod reset */
+		/* GPIO-9 si2165 demod reset (only HVR4400/HVR5500)*/
+
+		/* Put the parts into reset and back */
+		cx23885_gpio_enable(dev, GPIO_8 | GPIO_9, 1);
+
+		cx23885_gpio_clear(dev, GPIO_8 | GPIO_9);
+		msleep(100);
+		cx23885_gpio_set(dev, GPIO_8 | GPIO_9);
+		msleep(100);
+
+		break;
+	case CX23885_BOARD_AVERMEDIA_HC81R:
+		cx_clear(MC417_CTL, 1);
+		/* GPIO-0,1,2 setup direction as output */
+		cx_set(GP0_IO, 0x00070000);
+		usleep_range(10000, 11000);
+		/* AF9013 demod reset */
+		cx_set(GP0_IO, 0x00010001);
+		usleep_range(10000, 11000);
+		cx_clear(GP0_IO, 0x00010001);
+		usleep_range(10000, 11000);
+		cx_set(GP0_IO, 0x00010001);
+		usleep_range(10000, 11000);
+		/* demod tune? */
+		cx_clear(GP0_IO, 0x00030003);
+		usleep_range(10000, 11000);
+		cx_set(GP0_IO, 0x00020002);
+		usleep_range(10000, 11000);
+		cx_set(GP0_IO, 0x00010001);
+		usleep_range(10000, 11000);
+		cx_clear(GP0_IO, 0x00020002);
+		/* XC3028L tuner reset */
+		cx_set(GP0_IO, 0x00040004);
+		cx_clear(GP0_IO, 0x00040004);
+		cx_set(GP0_IO, 0x00040004);
+		msleep(60);
+		break;
+	case CX23885_BOARD_DVBSKY_T9580:
+	case CX23885_BOARD_DVBSKY_S952:
+	case CX23885_BOARD_DVBSKY_T982:
+		/* enable GPIO3-18 pins */
+		cx_write(MC417_CTL, 0x00000037);
+		cx23885_gpio_enable(dev, GPIO_2 | GPIO_11, 1);
+		cx23885_gpio_clear(dev, GPIO_2 | GPIO_11);
+		msleep(100);
+		cx23885_gpio_set(dev, GPIO_2 | GPIO_11);
+		break;
+	case CX23885_BOARD_DVBSKY_T980C:
+	case CX23885_BOARD_DVBSKY_S950C:
+	case CX23885_BOARD_TT_CT2_4500_CI:
+		/*
+		 * GPIO-0 INTA from CiMax, input
+		 * GPIO-1 reset CiMax, output, high active
+		 * GPIO-2 reset demod, output, low active
+		 * GPIO-3 to GPIO-10 data/addr for CAM
+		 * GPIO-11 ~CS0 to CiMax1
+		 * GPIO-12 ~CS1 to CiMax2
+		 * GPIO-13 ADL0 load LSB addr
+		 * GPIO-14 ADL1 load MSB addr
+		 * GPIO-15 ~RDY from CiMax
+		 * GPIO-17 ~RD to CiMax
+		 * GPIO-18 ~WR to CiMax
+		 */
+
+		cx_set(GP0_IO, 0x00060002); /* GPIO 1/2 as output */
+		cx_clear(GP0_IO, 0x00010004); /* GPIO 0 as input */
+		msleep(100); /* reset delay */
+		cx_set(GP0_IO, 0x00060004); /* GPIO as out, reset high */
+		cx_clear(GP0_IO, 0x00010002);
+		cx_write(MC417_CTL, 0x00000037); /* enable GPIO3-18 pins */
+
+		/* GPIO-15 IN as ~ACK, rest as OUT */
+		cx_write(MC417_OEN, 0x00001000);
+
+		/* ~RD, ~WR high; ADL0, ADL1 low; ~CS0, ~CS1 high */
+		cx_write(MC417_RWD, 0x0000c300);
+
+		/* enable irq */
+		cx_write(GPIO_ISM, 0x00000000); /* INTERRUPTS active low */
+		break;
+	case CX23885_BOARD_DVBSKY_S950:
+		cx23885_gpio_enable(dev, GPIO_2, 1);
+		cx23885_gpio_clear(dev, GPIO_2);
+		msleep(100);
+		cx23885_gpio_set(dev, GPIO_2);
+		break;
+	case CX23885_BOARD_HAUPPAUGE_HVR5525:
+	case CX23885_BOARD_HAUPPAUGE_STARBURST2:
+		/*
+		 * HVR5525 GPIO Details:
+		 *  GPIO-00 IR_WIDE
+		 *  GPIO-02 wake#
+		 *  GPIO-03 VAUX Pres.
+		 *  GPIO-07 PROG#
+		 *  GPIO-08 SAT_RESN
+		 *  GPIO-09 TER_RESN
+		 *  GPIO-10 B2_SENSE
+		 *  GPIO-11 B1_SENSE
+		 *  GPIO-15 IR_LED_STATUS
+		 *  GPIO-19 IR_NARROW
+		 *  GPIO-20 Blauster1
+		 *  ALTGPIO VAUX_SWITCH
+		 *  AUX_PLL_CLK : Blaster2
+		 */
+		/* Put the parts into reset and back */
+		cx23885_gpio_enable(dev, GPIO_8 | GPIO_9, 1);
+		cx23885_gpio_clear(dev, GPIO_8 | GPIO_9);
+		msleep(100);
+		cx23885_gpio_set(dev, GPIO_8 | GPIO

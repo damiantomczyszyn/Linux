@@ -1,2 +1,2 @@
-_P6_NOP) \
-    $(wildcard
+q;
+	dev->video_dev->devic

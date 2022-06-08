@@ -1,3 +1,5 @@
-ude/config/PARAVIRT_XXL) \
-  arch/x86/include/asm/disabled-features.h \
-    $(wildcard include/config/X86_SMAP) \
+de/linux/ptr_ring.h \
+  include/linux/seq_file_net.h \
+  include/net/netprio_cgroup.h \
+  include/net/xdp.h \
+  i

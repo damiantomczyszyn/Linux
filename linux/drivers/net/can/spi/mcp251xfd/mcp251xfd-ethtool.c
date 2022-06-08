@@ -1,116 +1,143 @@
-    $(wildcard include/config/HIGH_RES_TIMERS) \
-    $(wildcard include/config/TIME_LOW_RES) \
-    $(wildcard include/config/TIMERFD) \
-  include/linux/hrtimer_defs.h \
-  include/linux/timerqueue.h \
-  include/linux/seccomp.h \
-    $(wildcard include/config/SECCOMP) \
-    $(wildcard include/config/HAVE_ARCH_SECCOMP_FILTER) \
-    $(wildcard include/config/SECCOMP_FILTER) \
-    $(wildcard include/config/CHECKPOINT_RESTORE) \
-    $(wildcard include/config/SECCOMP_CACHE_DEBUG) \
-  include/uapi/linux/seccomp.h \
-  arch/x86/include/asm/seccomp.h \
-  arch/x86/include/asm/unistd.h \
-  arch/x86/include/uapi/asm/unistd.h \
-  arch/x86/include/generated/uapi/asm/unistd_32.h \
-  include/asm-generic/seccomp.h \
-  include/uapi/linux/unistd.h \
-  include/linux/resource.h \
-  include/uapi/linux/resource.h \
-  arch/x86/include/generated/uapi/asm/resource.h \
-  include/asm-generic/resource.h \
-  include/uapi/asm-generic/resource.h \
-  include/linux/latencytop.h \
-  include/linux/sched/prio.h \
-  include/linux/sched/types.h \
-  include/linux/signal_types.h \
-    $(wildcard include/config/OLD_SIGACTION) \
-  include/uapi/linux/signal.h \
-  arch/x86/include/asm/signal.h \
-  arch/x86/include/uapi/asm/signal.h \
-  include/uapi/asm-generic/signal-defs.h \
-  arch/x86/include/uapi/asm/siginfo.h \
-  include/uapi/asm-generic/siginfo.h \
-  include/linux/syscall_user_dispatch.h \
-  include/linux/task_io_accounting.h \
-    $(wildcard include/config/TASK_IO_ACCOUNTING) \
-  include/linux/posix-timers.h \
-  include/linux/alarmtimer.h \
-    $(wildcard include/config/RTC_CLASS) \
-  include/uapi/linux/rseq.h \
-  include/linux/kcsan.h \
-  include/linux/energy_model.h \
-  include/linux/sched/cpufreq.h \
-    $(wildcard include/config/CPU_FREQ) \
-  include/linux/sched/topology.h \
-    $(wildcard include/config/SCHED_DEBUG) \
-    $(wildcard include/config/SCHED_MC) \
-    $(wildcard include/config/CPU_FREQ_GOV_SCHEDUTIL) \
-  include/linux/sched/idle.h \
-  include/linux/sched/sd_flags.h \
-  include/linux/klist.h \
-  include/linux/pm.h \
-    $(wildcard include/config/VT_CONSOLE_SLEEP) \
-    $(wildcard include/config/PM_CLK) \
-    $(wildcard include/config/PM_GENERIC_DOMAINS) \
-  include/linux/device/bus.h \
-  include/linux/device/class.h \
-  include/linux/device/driver.h \
-  arch/x86/include/asm/device.h \
-  include/linux/pm_wakeup.h \
-  include/acpi/acpi.h \
-  include/acpi/platform/acenv.h \
-  include/acpi/platform/acgcc.h \
-  include/acpi/platform/aclinux.h \
-    $(wildcard include/config/ACPI_REDUCED_HARDWARE_ONLY) \
-    $(wildcard include/config/ACPI_DEBUG) \
-  include/linux/ctype.h \
-  arch/x86/include/asm/acenv.h \
-  include/acpi/acnames.h \
-  include/acpi/actypes.h \
-  include/acpi/acexcep.h \
-  include/acpi/actbl.h \
-  include/acpi/actbl1.h \
-  include/acpi/actbl2.h \
-  include/acpi/actbl3.h \
-  include/acpi/acrestyp.h \
-  include/acpi/platform/acenvex.h \
-  include/acpi/platform/aclinuxex.h \
-  include/acpi/platform/acgccex.h \
-  include/acpi/acoutput.h \
-  include/acpi/acpiosxf.h \
-  include/acpi/acpixf.h \
-  include/acpi/acconfig.h \
-  include/acpi/acbuffer.h \
-  include/linux/dynamic_debug.h \
-  include/acpi/acpi_bus.h \
-    $(wildcard include/config/X86_ANDROID_TABLETS) \
-    $(wildcard include/config/ACPI_SYSTEM_POWER_STATES_SUPPORT) \
-    $(wildcard include/config/ACPI_SLEEP) \
-  include/acpi/acpi_drivers.h \
-    $(wildcard include/config/ACPI_DOCK) \
-  include/acpi/acpi_numa.h \
-    $(wildcard include/config/ACPI_HMAT) \
-  include/acpi/acpi_io.h \
-  include/linux/io.h \
-    $(wildcard include/config/HAS_IOPORT_MAP) \
-  arch/x86/include/asm/io.h \
-    $(wildcard include/config/MTRR) \
-    $(wildcard include/config/X86_PAT) \
-  arch/x86/include/generated/asm/early_ioremap.h \
-  include/asm-generic/early_ioremap.h \
-    $(wildcard include/config/GENERIC_EARLY_IOREMAP) \
-  include/asm-generic/iomap.h \
-  include/asm-generic/pci_iomap.h \
-    $(wildcard include/config/NO_GENERIC_PCI_IOPORT_MAP) \
-    $(wildcard include/config/GENERIC_PCI_IOMAP) \
-  include/asm-generic/io.h \
-    $(wildcard include/config/GENERIC_IOMAP) \
-    $(wildcard include/config/GENERIC_IOREMAP) \
-    $(wildcard include/config/VIRT_TO_BUS) \
-    $(wildcard include/config/GENERIC_DEVMEM_IS_ALLOWED) \
-  include/linux/logic_pio.h \
-    $(wildcard include/config/INDIRECT_PIO) \
-  include/linux/vmalloc.h \
-    $(wildcard include/config/HAVE_ARCH_HUGE_VMALLOC
+// SPDX-License-Identifier: GPL-2.0
+//
+// mcp251xfd - Microchip MCP251xFD Family CAN controller driver
+//
+// Copyright (c) 2021, 2022 Pengutronix,
+//               Marc Kleine-Budde <kernel@pengutronix.de>
+//
+
+#include <linux/ethtool.h>
+
+#include "mcp251xfd.h"
+#include "mcp251xfd-ram.h"
+
+static void
+mcp251xfd_ring_get_ringparam(struct net_device *ndev,
+			     struct ethtool_ringparam *ring,
+			     struct kernel_ethtool_ringparam *kernel_ring,
+			     struct netlink_ext_ack *extack)
+{
+	const struct mcp251xfd_priv *priv = netdev_priv(ndev);
+	const bool fd_mode = mcp251xfd_is_fd_mode(priv);
+	struct can_ram_layout layout;
+
+	can_ram_get_layout(&layout, &mcp251xfd_ram_config, NULL, NULL, fd_mode);
+	ring->rx_max_pending = layout.max_rx;
+	ring->tx_max_pending = layout.max_tx;
+
+	ring->rx_pending = priv->rx_obj_num;
+	ring->tx_pending = priv->tx->obj_num;
+}
+
+static int
+mcp251xfd_ring_set_ringparam(struct net_device *ndev,
+			     struct ethtool_ringparam *ring,
+			     struct kernel_ethtool_ringparam *kernel_ring,
+			     struct netlink_ext_ack *extack)
+{
+	struct mcp251xfd_priv *priv = netdev_priv(ndev);
+	const bool fd_mode = mcp251xfd_is_fd_mode(priv);
+	struct can_ram_layout layout;
+
+	can_ram_get_layout(&layout, &mcp251xfd_ram_config, ring, NULL, fd_mode);
+	if ((layout.cur_rx != priv->rx_obj_num ||
+	     layout.cur_tx != priv->tx->obj_num) &&
+	    netif_running(ndev))
+		return -EBUSY;
+
+	priv->rx_obj_num = layout.cur_rx;
+	priv->rx_obj_num_coalesce_irq = layout.rx_coalesce;
+	priv->tx->obj_num = layout.cur_tx;
+
+	return 0;
+}
+
+static int mcp251xfd_ring_get_coalesce(struct net_device *ndev,
+				       struct ethtool_coalesce *ec,
+				       struct kernel_ethtool_coalesce *kec,
+				       struct netlink_ext_ack *ext_ack)
+{
+	struct mcp251xfd_priv *priv = netdev_priv(ndev);
+	u32 rx_max_frames, tx_max_frames;
+
+	/* The ethtool doc says:
+	 * To disable coalescing, set usecs = 0 and max_frames = 1.
+	 */
+	if (priv->rx_obj_num_coalesce_irq == 0)
+		rx_max_frames = 1;
+	else
+		rx_max_frames = priv->rx_obj_num_coalesce_irq;
+
+	ec->rx_max_coalesced_frames_irq = rx_max_frames;
+	ec->rx_coalesce_usecs_irq = priv->rx_coalesce_usecs_irq;
+
+	if (priv->tx_obj_num_coalesce_irq == 0)
+		tx_max_frames = 1;
+	else
+		tx_max_frames = priv->tx_obj_num_coalesce_irq;
+
+	ec->tx_max_coalesced_frames_irq = tx_max_frames;
+	ec->tx_coalesce_usecs_irq = priv->tx_coalesce_usecs_irq;
+
+	return 0;
+}
+
+static int mcp251xfd_ring_set_coalesce(struct net_device *ndev,
+				       struct ethtool_coalesce *ec,
+				       struct kernel_ethtool_coalesce *kec,
+				       struct netlink_ext_ack *ext_ack)
+{
+	struct mcp251xfd_priv *priv = netdev_priv(ndev);
+	const bool fd_mode = mcp251xfd_is_fd_mode(priv);
+	const struct ethtool_ringparam ring = {
+		.rx_pending = priv->rx_obj_num,
+		.tx_pending = priv->tx->obj_num,
+	};
+	struct can_ram_layout layout;
+
+	can_ram_get_layout(&layout, &mcp251xfd_ram_config, &ring, ec, fd_mode);
+
+	if ((layout.rx_coalesce != priv->rx_obj_num_coalesce_irq ||
+	     ec->rx_coalesce_usecs_irq != priv->rx_coalesce_usecs_irq ||
+	     layout.tx_coalesce != priv->tx_obj_num_coalesce_irq ||
+	     ec->tx_coalesce_usecs_irq != priv->tx_coalesce_usecs_irq) &&
+	    netif_running(ndev))
+		return -EBUSY;
+
+	priv->rx_obj_num = layout.cur_rx;
+	priv->rx_obj_num_coalesce_irq = layout.rx_coalesce;
+	priv->rx_coalesce_usecs_irq = ec->rx_coalesce_usecs_irq;
+
+	priv->tx->obj_num = layout.cur_tx;
+	priv->tx_obj_num_coalesce_irq = layout.tx_coalesce;
+	priv->tx_coalesce_usecs_irq = ec->tx_coalesce_usecs_irq;
+
+	return 0;
+}
+
+static const struct ethtool_ops mcp251xfd_ethtool_ops = {
+	.supported_coalesce_params = ETHTOOL_COALESCE_RX_USECS_IRQ |
+		ETHTOOL_COALESCE_RX_MAX_FRAMES_IRQ |
+		ETHTOOL_COALESCE_TX_USECS_IRQ |
+		ETHTOOL_COALESCE_TX_MAX_FRAMES_IRQ,
+	.get_ringparam = mcp251xfd_ring_get_ringparam,
+	.set_ringparam = mcp251xfd_ring_set_ringparam,
+	.get_coalesce = mcp251xfd_ring_get_coalesce,
+	.set_coalesce = mcp251xfd_ring_set_coalesce,
+};
+
+void mcp251xfd_ethtool_init(struct mcp251xfd_priv *priv)
+{
+	struct can_ram_layout layout;
+
+	priv->ndev->ethtool_ops = &mcp251xfd_ethtool_ops;
+
+	can_ram_get_layout(&layout, &mcp251xfd_ram_config, NULL, NULL, false);
+	priv->rx_obj_num = layout.default_rx;
+	priv->tx->obj_num = layout.default_tx;
+
+	priv->rx_obj_num_coalesce_irq = 0;
+	priv->tx_obj_num_coalesce_irq = 0;
+	priv->rx_coalesce_usecs_irq = 0;
+	priv->tx_coalesce_usecs_irq = 0;
+}

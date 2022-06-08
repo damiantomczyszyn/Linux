@@ -1,971 +1,1567 @@
-lude/config/PHYSICAL_ALIGN) \
-    $(wildcard include/config/DYNAMIC_PHYSICAL_MASK) \
-  include/linux/mem_encrypt.h \
-    $(wildcard include/config/ARCH_HAS_MEM_ENCRYPT) \
-  arch/x86/include/asm/mem_encrypt.h \
-  include/linux/cc_platform.h \
-    $(wildcard include/config/ARCH_HAS_CC_PLATFORM) \
-  arch/x86/include/uapi/asm/bootparam.h \
-  include/linux/screen_info.h \
-  include/uapi/linux/screen_info.h \
-  include/linux/apm_bios.h \
-  include/uapi/linux/apm_bios.h \
-  include/uapi/linux/ioctl.h \
-  arch/x86/include/generated/uapi/asm/ioctl.h \
-  include/asm-generic/ioctl.h \
-  include/uapi/asm-generic/ioctl.h \
-  include/linux/edd.h \
-  include/uapi/linux/edd.h \
-  arch/x86/include/asm/ist.h \
-  arch/x86/include/uapi/asm/ist.h \
-  include/video/edid.h \
-  include/uapi/video/edid.h \
-  arch/x86/include/asm/page_32_types.h \
-    $(wildcard include/config/HIGHMEM4G) \
-    $(wildcard include/config/HIGHMEM64G) \
-    $(wildcard include/config/PAGE_OFFSET) \
-  arch/x86/include/asm/page_32.h \
-    $(wildcard include/config/DEBUG_VIRTUAL) \
-    $(wildcard include/config/FLATMEM) \
-  include/linux/range.h \
-  include/asm-generic/memory_model.h \
-    $(wildcard include/config/SPARSEMEM_VMEMMAP) \
-    $(wildcard include/config/SPARSEMEM) \
-  include/linux/pfn.h \
-  include/asm-generic/getorder.h \
-  arch/x86/include/asm/cpufeature.h \
-    $(wildcard include/config/X86_FEATURE_NAMES) \
-  arch/x86/include/asm/processor.h \
-    $(wildcard include/config/X86_VMX_FEATURE_NAMES) \
-    $(wildcard include/config/STACKPROTECTOR) \
-    $(wildcard include/config/X86_DEBUGCTLMSR) \
-    $(wildcard include/config/CPU_SUP_AMD) \
-    $(wildcard include/config/XEN) \
-  arch/x86/include/asm/processor-flags.h \
-  arch/x86/include/uapi/asm/processor-flags.h \
-  arch/x86/include/asm/math_emu.h \
-  arch/x86/include/asm/ptrace.h \
-    $(wildcard include/config/PARAVIRT) \
-  arch/x86/include/asm/segment.h \
-    $(wildcard include/config/XEN_PV) \
-  arch/x86/include/uapi/asm/ptrace.h \
-  arch/x86/include/uapi/asm/ptrace-abi.h \
-  arch/x86/include/asm/paravirt_types.h \
-    $(wildcard include/config/PGTABLE_LEVELS) \
-    $(wildcard include/config/PARAVIRT_DEBUG) \
-  arch/x86/include/asm/desc_defs.h \
-  arch/x86/include/asm/pgtable_types.h \
-    $(wildcard include/config/MEM_SOFT_DIRTY) \
-    $(wildcard include/config/HAVE_ARCH_USERFAULTFD_WP) \
-    $(wildcard include/config/PROC_FS) \
-  arch/x86/include/asm/pgtable_32_types.h \
-  arch/x86/include/asm/pgtable-3level_types.h \
-  include/asm-generic/pgtable-nop4d.h \
-  include/asm-generic/pgtable-nopud.h \
-  arch/x86/include/asm/nospec-branch.h \
-  include/linux/static_key.h \
-  include/linux/jump_label.h \
-    $(wildcard include/config/JUMP_LABEL) \
-    $(wildcard include/config/HAVE_ARCH_JUMP_LABEL_RELATIVE) \
-  arch/x86/include/asm/jump_label.h \
-  arch/x86/include/asm/msr-index.h \
-  arch/x86/include/asm/unwind_hints.h \
-  arch/x86/include/asm/orc_types.h \
-  arch/x86/include/asm/GEN-for-each-reg.h \
-  arch/x86/include/asm/proto.h \
-  arch/x86/include/uapi/asm/ldt.h \
-  arch/x86/include/uapi/asm/sigcontext.h \
-  arch/x86/include/asm/msr.h \
-    $(wildcard include/config/TRACEPOINTS) \
-  arch/x86/include/asm/msr-index.h \
-  arch/x86/include/asm/cpumask.h \
-  arch/x86/include/uapi/asm/msr.h \
-  include/linux/tracepoint-defs.h \
-  arch/x86/include/asm/special_insns.h \
-  include/linux/irqflags.h \
-    $(wildcard include/config/TRACE_IRQFLAGS) \
-    $(wildcard include/config/IRQSOFF_TRACER) \
-    $(wildcard include/config/PREEMPT_TRACER) \
-    $(wildcard include/config/DEBUG_IRQFLAGS) \
-    $(wildcard include/config/TRACE_IRQFLAGS_SUPPORT) \
-  arch/x86/include/asm/irqflags.h \
-  arch/x86/include/asm/fpu/types.h \
-  arch/x86/include/asm/vmxfeatures.h \
-  arch/x86/include/asm/vdso/processor.h \
-  include/linux/personality.h \
-  include/uapi/linux/personality.h \
-  arch/x86/include/asm/smp.h \
-    $(wildcard include/config/X86_LOCAL_APIC) \
-    $(wildcard include/config/DEBUG_NMI_SELFTEST) \
-  include/linux/osq_lock.h \
-  include/linux/debug_locks.h \
-  include/linux/idr.h \
-  include/linux/radix-tree.h \
-  include/linux/gfp.h \
-    $(wildcard include/config/KASAN_HW_TAGS) \
-    $(wildcard include/config/HIGHMEM) \
-    $(wildcard include/config/ZONE_DMA) \
-    $(wildcard include/config/ZONE_DMA32) \
-    $(wildcard include/config/ZONE_DEVICE) \
-    $(wildcard include/config/CONTIG_ALLOC) \
-    $(wildcard include/config/CMA) \
-  include/linux/mmdebug.h \
-    $(wildcard include/config/DEBUG_VM) \
-    $(wildcard include/config/DEBUG_VM_PGFLAGS) \
-  include/linux/mmzone.h \
-    $(wildcard include/config/FORCE_MAX_ZONEORDER) \
-    $(wildcard include/config/MEMORY_ISOLATION) \
-    $(wildcard include/config/ZSMALLOC) \
-    $(wildcard include/config/SWAP) \
-    $(wildcard include/config/NUMA_BALANCING) \
-    $(wildcard include/config/TRANSPARENT_HUGEPAGE) \
-    $(wildcard include/config/MEMCG) \
-    $(wildcard include/config/COMPACTION) \
-    $(wildcard include/config/PAGE_EXTENSION) \
-    $(wildcard include/config/DEFERRED_STRUCT_PAGE_INIT) \
-    $(wildcard include/config/HAVE_MEMORYLESS_NODES) \
-    $(wildcard include/config/SPARSEMEM_EXTREME) \
-    $(wildcard include/config/HAVE_ARCH_PFN_VALID) \
-  include/linux/spinlock.h \
-  include/linux/bottom_half.h \
-  arch/x86/include/generated/asm/mmiowb.h \
-  include/asm-generic/mmiowb.h \
-    $(wildcard include/config/MMIOWB) \
-  arch/x86/include/asm/spinlock.h \
-  arch/x86/include/asm/paravirt.h \
-    $(wildcard include/config/PARAVIRT_SPINLOCKS) \
-  arch/x86/include/asm/frame.h \
-  arch/x86/include/asm/qspinlock.h \
-  include/asm-generic/qspinlock.h \
-  arch/x86/include/asm/qrwlock.h \
-  include/asm-generic/qrwlock.h \
-  include/linux/rwlock.h \
-    $(wildcard include/config/PREEMPT) \
-  include/linux/spinlock_api_smp.h \
-    $(wildcard include/config/INLINE_SPIN_LOCK) \
-    $(wildcard include/config/INLINE_SPIN_LOCK_BH) \
-    $(wildcard include/config/INLINE_SPIN_LOCK_IRQ) \
-    $(wildcard include/config/INLINE_SPIN_LOCK_IRQSAVE) \
-    $(wildcard include/config/INLINE_SPIN_TRYLOCK) \
-    $(wildcard include/config/INLINE_SPIN_TRYLOCK_BH) \
-    $(wildcard include/config/UNINLINE_SPIN_UNLOCK) \
-    $(wildcard include/config/INLINE_SPIN_UNLOCK_BH) \
-    $(wildcard include/config/INLINE_SPIN_UNLOCK_IRQ) \
-    $(wildcard include/config/INLINE_SPIN_UNLOCK_IRQRESTORE) \
-    $(wildcard include/config/GENERIC_LOCKBREAK) \
-  include/linux/rwlock_api_smp.h \
-    $(wildcard include/config/INLINE_READ_LOCK) \
-    $(wildcard include/config/INLINE_WRITE_LOCK) \
-    $(wildcard include/config/INLINE_READ_LOCK_BH) \
-    $(wildcard include/config/INLINE_WRITE_LOCK_BH) \
-    $(wildcard include/config/INLINE_READ_LOCK_IRQ) \
-    $(wildcard include/config/INLINE_WRITE_LOCK_IRQ) \
-    $(wildcard include/config/INLINE_READ_LOCK_IRQSAVE) \
-    $(wildcard include/config/INLINE_WRITE_LOCK_IRQSAVE) \
-    $(wildcard include/config/INLINE_READ_TRYLOCK) \
-    $(wildcard include/config/INLINE_WRITE_TRYLOCK) \
-    $(wildcard include/config/INLINE_READ_UNLOCK) \
-    $(wildcard include/config/INLINE_WRITE_UNLOCK) \
-    $(wildcard include/config/INLINE_READ_UNLOCK_BH) \
-    $(wildcard include/config/INLINE_WRITE_UNLOCK_BH) \
-    $(wildcard include/config/INLINE_READ_UNLOCK_IRQ) \
-    $(wildcard include/config/INLINE_WRITE_UNLOCK_IRQ) \
-    $(wildcard include/config/INLINE_READ_UNLOCK_IRQRESTORE) \
-    $(wildcard include/config/INLINE_WRITE_UNLOCK_IRQRESTORE) \
-  include/linux/wait.h \
-  include/uapi/linux/wait.h \
-  include/linux/numa.h \
-    $(wildcard include/config/NODES_SHIFT) \
-    $(wildcard include/config/NUMA_KEEP_MEMINFO) \
-    $(wildcard include/config/HAVE_ARCH_NODE_DEV_GROUP) \
-  arch/x86/include/asm/sparsemem.h \
-  include/linux/seqlock.h \
-  include/linux/ww_mutex.h \
-    $(wildcard include/config/DEBUG_RT_MUTEXES) \
-    $(wildcard include/config/DEBUG_WW_MUTEX_SLOWPATH) \
-  include/linux/rtmutex.h \
-  include/linux/rbtree_types.h \
-  include/linux/nodemask.h \
-  include/linux/pageblock-flags.h \
-    $(wildcard include/config/HUGETLB_PAGE) \
-    $(wildcard include/config/HUGETLB_PAGE_SIZE_VARIABLE) \
-  include/linux/page-flags-layout.h \
-  include/generated/bounds.h \
-  include/linux/mm_types.h \
-    $(wildcard include/config/HAVE_ALIGNED_STRUCT_PAGE) \
-    $(wildcard include/config/USERFAULTFD) \
-    $(wildcard include/config/HAVE_ARCH_COMPAT_MMAP_BASES) \
-    $(wildcard include/config/MEMBARRIER) \
-    $(wildcard include/config/AIO) \
-    $(wildcard include/config/MMU_NOTIFIER) \
-    $(wildcard include/config/ARCH_WANT_BATCHED_UNMAP_TLB_FLUSH) \
-    $(wildcard include/config/IOMMU_SVA) \
-  include/linux/mm_types_task.h \
-    $(wildcard include/config/SPLIT_PTLOCK_CPUS) \
-    $(wildcard include/config/ARCH_ENABLE_SPLIT_PMD_PTLOCK) \
-  arch/x86/include/asm/tlbbatch.h \
-  include/linux/auxvec.h \
-  include/uapi/linux/auxvec.h \
-  arch/x86/include/uapi/asm/auxvec.h \
-  include/linux/kref.h \
-  include/linux/refcount.h \
-  include/linux/rbtree.h \
-  include/linux/rcupdate.h \
-    $(wildcard include/config/PREEMPT_RCU) \
-    $(wildcard include/config/TINY_RCU) \
-    $(wildcard include/config/RCU_STRICT_GRACE_PERIOD) \
-    $(wildcard include/config/TASKS_RCU_GENERIC) \
-    $(wildcard include/config/RCU_STALL_COMMON) \
-    $(wildcard include/config/NO_HZ_FULL) \
-    $(wildcard include/config/RCU_NOCB_CPU) \
-    $(wildcard include/config/TASKS_RCU) \
-    $(wildcard include/config/TASKS_TRACE_RCU) \
-    $(wildcard include/config/TASKS_RUDE_RCU) \
-    $(wildcard include/config/TREE_RCU) \
-    $(wildcard include/config/DEBUG_OBJECTS_RCU_HEAD) \
-    $(wildcard include/config/PROVE_RCU) \
-    $(wildcard include/config/ARCH_WEAK_RELEASE_ACQUIRE) \
-  include/linux/rcutree.h \
-  include/linux/rwsem.h \
-    $(wildcard include/config/RWSEM_SPIN_ON_OWNER) \
-    $(wildcard include/config/DEBUG_RWSEMS) \
-  include/linux/completion.h \
-  include/linux/swait.h \
-  include/linux/uprobes.h \
-    $(wildcard include/config/UPROBES) \
-  arch/x86/include/asm/uprobes.h \
-  include/linux/notifier.h \
-    $(wildcard include/config/TREE_SRCU) \
-  include/linux/srcu.h \
-    $(wildcard include/config/TINY_SRCU) \
-    $(wildcard include/config/SRCU) \
-  include/linux/workqueue.h \
-    $(wildcard include/config/DEBUG_OBJECTS_WORK) \
-    $(wildcard include/config/FREEZER) \
-    $(wildcard include/config/WQ_WATCHDOG) \
-  include/linux/timer.h \
-    $(wildcard include/config/DEBUG_OBJECTS_TIMERS) \
-    $(wildcard include/config/NO_HZ_COMMON) \
-  include/linux/ktime.h \
-  include/linux/time.h \
-    $(wildcard include/config/POSIX_TIMERS) \
-  include/linux/time32.h \
-  include/linux/timex.h \
-  include/uapi/linux/timex.h \
-  arch/x86/include/asm/timex.h \
-    $(wildcard include/config/X86_TSC) \
-  arch/x86/include/asm/tsc.h \
-  include/vdso/time32.h \
-  include/vdso/time.h \
-  include/linux/jiffies.h \
-  include/vdso/jiffies.h \
-  include/generated/timeconst.h \
-  include/vdso/ktime.h \
-  include/linux/timekeeping.h \
-    $(wildcard include/config/GENERIC_CMOS_UPDATE) \
-  include/linux/clocksource_ids.h \
-  include/linux/debugobjects.h \
-    $(wildcard include/config/DEBUG_OBJECTS) \
-    $(wildcard include/config/DEBUG_OBJECTS_FREE) \
-  include/linux/rcu_segcblist.h \
-  include/linux/srcutree.h \
-  include/linux/rcu_node_tree.h \
-    $(wildcard include/config/RCU_FANOUT) \
-    $(wildcard include/config/RCU_FANOUT_LEAF) \
-  arch/x86/include/asm/mmu.h \
-    $(wildcard include/config/MODIFY_LDT_SYSCALL) \
-  include/linux/page-flags.h \
-    $(wildcard include/config/ARCH_USES_PG_UNCACHED) \
-    $(wildcard include/config/MEMORY_FAILURE) \
-    $(wildcard include/config/PAGE_IDLE_FLAG) \
-    $(wildcard include/config/HUGETLB_PAGE_FREE_VMEMMAP) \
-    $(wildcard include/config/HUGETLB_PAGE_FREE_VMEMMAP_DEFAULT_ON) \
-    $(wildcard include/config/KSM) \
-  include/linux/local_lock.h \
-  include/linux/local_lock_internal.h \
-  include/linux/memory_hotplug.h \
-    $(wildcard include/config/HAVE_ARCH_NODEDATA_EXTENSION) \
-    $(wildcard include/config/ARCH_HAS_ADD_PAGES) \
-  arch/x86/include/asm/mmzone.h \
-  arch/x86/include/asm/mmzone_32.h \
-  include/linux/topology.h \
-    $(wildcard include/config/USE_PERCPU_NUMA_NODE_ID) \
-    $(wildcard include/config/SCHED_SMT) \
-    $(wildcard include/config/SCHED_CLUSTER) \
-  include/linux/arch_topology.h \
-    $(wildcard include/config/ACPI_CPPC_LIB) \
-    $(wildcard include/config/GENERIC_ARCH_TOPOLOGY) \
-  include/linux/percpu.h \
-    $(wildcard include/config/NEED_PER_CPU_EMBED_FIRST_CHUNK) \
-    $(wildcard include/config/NEED_PER_CPU_PAGE_FIRST_CHUNK) \
-  arch/x86/include/asm/topology.h \
-    $(wildcard include/config/SCHED_MC_PRIO) \
-  arch/x86/include/asm/mpspec.h \
-    $(wildcard include/config/EISA) \
-    $(wildcard include/config/X86_MPPARSE) \
-  arch/x86/include/asm/mpspec_def.h \
-  arch/x86/include/asm/x86_init.h \
-  arch/x86/include/asm/apicdef.h \
-  include/asm-generic/topology.h \
-  include/linux/xarray.h \
-    $(wildcard include/config/XARRAY_MULTI) \
-  include/linux/kconfig.h \
-  include/linux/uidgid.h \
-    $(wildcard include/config/MULTIUSER) \
-    $(wildcard include/config/USER_NS) \
-  include/linux/highuid.h \
-  include/linux/kobject_ns.h \
-  include/linux/stat.h \
-  arch/x86/include/uapi/asm/stat.h \
-  include/uapi/linux/stat.h \
-  include/linux/mod_devicetable.h \
-  include/linux/uuid.h \
-  include/uapi/linux/uuid.h \
-  include/linux/property.h \
-  include/linux/fwnode.h \
-  include/linux/resource_ext.h \
-  include/linux/slab.h \
-    $(wildcard include/config/DEBUG_SLAB) \
-    $(wildcard include/config/FAILSLAB) \
-    $(wildcard include/config/MEMCG_KMEM) \
-    $(wildcard include/config/KASAN) \
-    $(wildcard include/config/SLAB) \
-    $(wildcard include/config/SLUB) \
-    $(wildcard include/config/SLOB) \
-  include/linux/overflow.h \
-  include/linux/percpu-refcount.h \
-  include/linux/kasan.h \
-    $(wildcard include/config/KASAN_STACK) \
-    $(wildcard include/config/KASAN_VMALLOC) \
-    $(wildcard include/config/KASAN_INLINE) \
-  include/linux/kasan-enabled.h \
-  include/linux/device.h \
-    $(wildcard include/config/GENERIC_MSI_IRQ_DOMAIN) \
-    $(wildcard include/config/GENERIC_MSI_IRQ) \
-    $(wildcard include/config/ENERGY_MODEL) \
-    $(wildcard include/config/PINCTRL) \
-    $(wildcard include/config/DMA_OPS) \
-    $(wildcard include/config/DMA_DECLARE_COHERENT) \
-    $(wildcard include/config/DMA_CMA) \
-    $(wildcard include/config/SWIOTLB) \
-    $(wildcard include/config/ARCH_HAS_SYNC_DMA_FOR_DEVICE) \
-    $(wildcard include/config/ARCH_HAS_SYNC_DMA_FOR_CPU) \
-    $(wildcard include/config/ARCH_HAS_SYNC_DMA_FOR_CPU_ALL) \
-    $(wildcard include/config/DMA_OPS_BYPASS) \
-    $(wildcard include/config/DEVTMPFS) \
-    $(wildcard include/config/SYSFS_DEPRECATED) \
-  include/linux/dev_printk.h \
-  include/linux/ratelimit.h \
-  include/linux/sched.h \
-    $(wildcard include/config/VIRT_CPU_ACCOUNTING_NATIVE) \
-    $(wildcard include/config/SCHED_INFO) \
-    $(wildcard include/config/SCHEDSTATS) \
-    $(wildcard include/config/SCHED_CORE) \
-    $(wildcard include/config/FAIR_GROUP_SCHED) \
-    $(wildcard include/config/RT_GROUP_SCHED) \
-    $(wildcard include/config/RT_MUTEXES) \
-    $(wildcard include/config/UCLAMP_TASK) \
-    $(wildcard include/config/UCLAMP_BUCKETS_COUNT) \
-    $(wildcard include/config/KMAP_LOCAL) \
-    $(wildcard include/config/CGROUP_SCHED) \
-    $(wildcard include/config/BLK_DEV_IO_TRACE) \
-    $(wildcard include/config/PSI) \
-    $(wildcard include/config/COMPAT_BRK) \
-    $(wildcard include/config/CGROUPS) \
-    $(wildcard include/config/BLK_CGROUP) \
-    $(wildcard include/config/PAGE_OWNER) \
-    $(wildcard include/config/EVENTFD) \
-    $(wildcard include/config/ARCH_HAS_SCALED_CPUTIME) \
-    $(wildcard include/config/VIRT_CPU_ACCOUNTING_GEN) \
-    $(wildcard include/config/POSIX_CPUTIMERS) \
-    $(wildcard include/config/POSIX_CPU_TIMERS_TASK_WORK) \
-    $(wildcard include/config/KEYS) \
-    $(wildcard include/config/SYSVIPC) \
-    $(wildcard include/config/DETECT_HUNG_TASK) \
-    $(wildcard include/config/IO_URING) \
-    $(wildcard include/config/AUDIT) \
-    $(wildcard include/config/AUDITSYSCALL) \
-    $(wildcard include/config/UBSAN) \
-    $(wildcard include/config/UBSAN_TRAP) \
-    $(wildcard include/config/TASK_XACCT) \
-    $(wildcard include/config/CPUSETS) \
-    $(wildcard include/config/X86_CPU_RESCTRL) \
-    $(wildcard include/config/FUTEX) \
-    $(wildcard include/config/PERF_EVENTS) \
-    $(wildcard include/config/RSEQ) \
-    $(wildcard include/config/TASK_DELAY_ACCT) \
-    $(wildcard include/config/FAULT_INJECTION) \
-    $(wildcard include/config/LATENCYTOP) \
-    $(wildcard include/config/KUNIT) \
-    $(wildcard include/config/FUNCTION_GRAPH_TRACER) \
-    $(wildcard include/config/BCACHE) \
-    $(wildcard include/config/VMAP_STACK) \
-    $(wildcard include/config/LIVEPATCH) \
-    $(wildcard include/config/SECURITY) \
-    $(wildcard include/config/BPF_SYSCALL) \
-    $(wildcard include/config/GCC_PLUGIN_STACKLEAK) \
-    $(wildcard include/config/X86_MCE) \
-    $(wildcard include/config/KRETPROBES) \
-    $(wildcard include/config/RETHOOK) \
-    $(wildcard include/config/ARCH_HAS_PARANOID_L1D_FLUSH) \
-    $(wildcard include/config/ARCH_TASK_STRUCT_ON_STACK) \
-    $(wildcard include/config/DEBUG_RSEQ) \
-  include/uapi/linux/sched.h \
-  include/linux/pid.h \
-  include/linux/rculist.h \
-    $(wildcard include/config/PROVE_RCU_LIST) \
-  include/linux/sem.h \
-  include/uapi/linux/sem.h \
-  include/linux/ipc.h \
-  include/linux/rhashtable-types.h \
-  include/uapi/linux/ipc.h \
-  arch/x86/include/generated/uapi/asm/ipcbuf.h \
-  include/uapi/asm-generic/ipcbuf.h \
-  arch/x86/include/uapi/asm/sembuf.h \
-  include/linux/shm.h \
-  include/uapi/linux/shm.h \
-  include/uapi/asm-generic/hugetlb_encode.h \
-  arch/x86/include/uapi/asm/shmbuf.h \
-  include/uapi/asm-generic/shmbuf.h \
-  arch/x86/include/asm/shmparam.h \
-  include/linux/plist.h \
-    $(wildcard include/config/DEBUG_PLIST) \
-  include/linux/hrtimer.h \
-    $(wildcard include/config/HIGH_RES_TIMERS) \
-    $(wildcard include/config/TIME_LOW_RES) \
-    $(wildcard include/config/TIMERFD) \
-  include/linux/hrtimer_defs.h \
-  include/linux/timerqueue.h \
-  include/linux/seccomp.h \
-    $(wildcard include/config/SECCOMP) \
-    $(wildcard include/config/HAVE_ARCH_SECCOMP_FILTER) \
-    $(wildcard include/config/SECCOMP_FILTER) \
-    $(wildcard include/config/CHECKPOINT_RESTORE) \
-    $(wildcard include/config/SECCOMP_CACHE_DEBUG) \
-  include/uapi/linux/seccomp.h \
-  arch/x86/include/asm/seccomp.h \
-  arch/x86/include/asm/unistd.h \
-  arch/x86/include/uapi/asm/unistd.h \
-  arch/x86/include/generated/uapi/asm/unistd_32.h \
-  include/asm-generic/seccomp.h \
-  include/uapi/linux/unistd.h \
-  include/linux/resource.h \
-  include/uapi/linux/resource.h \
-  arch/x86/include/generated/uapi/asm/resource.h \
-  include/asm-generic/resource.h \
-  include/uapi/asm-generic/resource.h \
-  include/linux/latencytop.h \
-  include/linux/sched/prio.h \
-  include/linux/sched/types.h \
-  include/linux/signal_types.h \
-    $(wildcard include/config/OLD_SIGACTION) \
-  include/uapi/linux/signal.h \
-  arch/x86/include/asm/signal.h \
-  arch/x86/include/uapi/asm/signal.h \
-  include/uapi/asm-generic/signal-defs.h \
-  arch/x86/include/uapi/asm/siginfo.h \
-  include/uapi/asm-generic/siginfo.h \
-  include/linux/syscall_user_dispatch.h \
-  include/linux/task_io_accounting.h \
-    $(wildcard include/config/TASK_IO_ACCOUNTING) \
-  include/linux/posix-timers.h \
-  include/linux/alarmtimer.h \
-    $(wildcard include/config/RTC_CLASS) \
-  include/uapi/linux/rseq.h \
-  include/linux/kcsan.h \
-  arch/x86/include/generated/asm/kmap_size.h \
-  include/asm-generic/kmap_size.h \
-    $(wildcard include/config/DEBUG_KMAP_LOCAL) \
-  include/linux/energy_model.h \
-  include/linux/sched/cpufreq.h \
-    $(wildcard include/config/CPU_FREQ) \
-  include/linux/sched/topology.h \
-    $(wildcard include/config/SCHED_DEBUG) \
-    $(wildcard include/config/SCHED_MC) \
-    $(wildcard include/config/CPU_FREQ_GOV_SCHEDUTIL) \
-  include/linux/sched/idle.h \
-  include/linux/sched/sd_flags.h \
-  include/linux/klist.h \
-  include/linux/pm.h \
-    $(wildcard include/config/VT_CONSOLE_SLEEP) \
-    $(wildcard include/config/PM_CLK) \
-    $(wildcard include/config/PM_GENERIC_DOMAINS) \
-  include/linux/device/bus.h \
-  include/linux/device/class.h \
-  include/linux/device/driver.h \
-  include/linux/module.h \
-    $(wildcard include/config/MODULES_TREE_LOOKUP) \
-    $(wildcard include/config/STACKTRACE_BUILD_ID) \
-    $(wildcard include/config/MODULE_SIG) \
-    $(wildcard include/config/KALLSYMS) \
-    $(wildcard include/config/BPF_EVENTS) \
-    $(wildcard include/config/DEBUG_INFO_BTF_MODULES) \
-    $(wildcard include/config/EVENT_TRACING) \
-    $(wildcard include/config/MODULE_UNLOAD) \
-    $(wildcard include/config/CONSTRUCTORS) \
-    $(wildcard include/config/FUNCTION_ERROR_INJECTION) \
-  include/linux/buildid.h \
-    $(wildcard include/config/CRASH_CORE) \
-  include/linux/kmod.h \
-  include/linux/umh.h \
-  include/linux/sysctl.h \
-    $(wildcard include/config/SYSCTL) \
-  include/uapi/linux/sysctl.h \
-  include/linux/elf.h \
-    $(wildcard include/config/ARCH_USE_GNU_PROPERTY) \
-    $(wildcard include/config/ARCH_HAVE_ELF_PROT) \
-  arch/x86/include/asm/elf.h \
-    $(wildcard include/config/X86_X32_ABI) \
-  arch/x86/include/asm/user.h \
-  arch/x86/include/asm/user_32.h \
-  arch/x86/include/asm/fsgsbase.h \
-  arch/x86/include/asm/vdso.h \
-  arch/x86/include/asm/desc.h \
-  arch/x86/include/asm/fixmap.h \
-    $(wildcard include/config/DEBUG_KMAP_LOCAL_FORCE_MAP) \
-    $(wildcard include/config/X86_VSYSCALL_EMULATION) \
-    $(wildcard include/config/PROVIDE_OHCI1394_DMA_INIT) \
-    $(wildcard include/config/PCI_MMCONFIG) \
-    $(wildcard include/config/ACPI_APEI_GHES) \
-    $(wildcard include/config/INTEL_TXT) \
-  include/asm-generic/fixmap.h \
-  arch/x86/include/asm/irq_vectors.h \
-    $(wildcard include/config/HAVE_KVM) \
-    $(wildcard include/config/HYPERV) \
-    $(wildcard include/config/PCI_MSI) \
-  arch/x86/include/asm/cpu_entry_area.h \
-  arch/x86/include/asm/intel_ds.h \
-  arch/x86/include/asm/pgtable_areas.h \
-  arch/x86/include/asm/pgtable_32_areas.h \
-  include/uapi/linux/elf.h \
-  include/uapi/linux/elf-em.h \
-  include/linux/moduleparam.h \
-    $(wildcard include/config/ALPHA) \
-    $(wildcard include/config/PPC64) \
-  include/linux/rbtree_latch.h \
-  include/linux/error-injection.h \
-  include/asm-generic/error-injection.h \
-  include/linux/cfi.h \
-    $(wildcard include/config/CFI_CLANG_SHADOW) \
-  arch/x86/include/asm/module.h \
-    $(wildcard include/config/UNWINDER_ORC) \
-  include/asm-generic/module.h \
-    $(wildcard include/config/HAVE_MOD_ARCH_SPECIFIC) \
-    $(wildcard include/config/MODULES_USE_ELF_REL) \
-    $(wildcard include/config/MODULES_USE_ELF_RELA) \
-  arch/x86/include/asm/orc_types.h \
-  arch/x86/include/asm/device.h \
-  include/linux/pm_wakeup.h \
-  include/acpi/acpi.h \
-  include/acpi/platform/acenv.h \
-  include/acpi/platform/acgcc.h \
-  include/acpi/platform/aclinux.h \
-    $(wildcard include/config/ACPI_REDUCED_HARDWARE_ONLY) \
-    $(wildcard include/config/ACPI_DEBUG) \
-  include/linux/ctype.h \
-  arch/x86/include/asm/acenv.h \
-  include/acpi/acnames.h \
-  include/acpi/actypes.h \
-  include/acpi/acexcep.h \
-  include/acpi/actbl.h \
-  include/acpi/actbl1.h \
-  include/acpi/actbl2.h \
-  include/acpi/actbl3.h \
-  include/acpi/acrestyp.h \
-  include/acpi/platform/acenvex.h \
-  include/acpi/platform/aclinuxex.h \
-  include/acpi/platform/acgccex.h \
-  include/acpi/acoutput.h \
-  include/acpi/acpiosxf.h \
-  include/acpi/acpixf.h \
-  include/acpi/acconfig.h \
-  include/acpi/acbuffer.h \
-  include/linux/dynamic_debug.h \
-  include/acpi/acpi_bus.h \
-    $(wildcard include/config/X86_ANDROID_TABLETS) \
-    $(wildcard include/config/ACPI_SYSTEM_POWER_STATES_SUPPORT) \
-    $(wildcard include/config/ACPI_SLEEP) \
-  include/acpi/acpi_drivers.h \
-    $(wildcard include/config/ACPI_DOCK) \
-  include/acpi/acpi_numa.h \
-    $(wildcard include/config/ACPI_HMAT) \
-  include/acpi/acpi_io.h \
-  include/linux/io.h \
-    $(wildcard include/config/HAS_IOPORT_MAP) \
-  arch/x86/include/asm/io.h \
-    $(wildcard include/config/MTRR) \
-    $(wildcard include/config/X86_PAT) \
-  arch/x86/include/generated/asm/early_ioremap.h \
-  include/asm-generic/early_ioremap.h \
-    $(wildcard include/config/GENERIC_EARLY_IOREMAP) \
-  include/asm-generic/iomap.h \
-  include/asm-generic/pci_iomap.h \
-    $(wildcard include/config/NO_GENERIC_PCI_IOPORT_MAP) \
-    $(wildcard include/config/GENERIC_PCI_IOMAP) \
-  include/asm-generic/io.h \
-    $(wildcard include/config/GENERIC_IOMAP) \
-    $(wildcard include/config/GENERIC_IOREMAP) \
-    $(wildcard include/config/VIRT_TO_BUS) \
-    $(wildcard include/config/GENERIC_DEVMEM_IS_ALLOWED) \
-  include/linux/logic_pio.h \
-    $(wildcard include/config/INDIRECT_PIO) \
-  include/linux/vmalloc.h \
-    $(wildcard include/config/HAVE_ARCH_HUGE_VMALLOC) \
-  arch/x86/include/asm/vmalloc.h \
-    $(wildcard include/config/HAVE_ARCH_HUGE_VMAP) \
-  arch/x86/include/asm/acpi.h \
-    $(wildcard include/config/ACPI_APEI) \
-  include/acpi/pdc_intel.h \
-  arch/x86/include/asm/numa.h \
-    $(wildcard include/config/NUMA_EMU) \
-  arch/x86/include/asm/numa_32.h \
-  include/linux/regulator/consumer.h \
-    $(wildcard include/config/REGULATOR) \
-  include/linux/suspend.h \
-    $(wildcard include/config/VT) \
-    $(wildcard include/config/SUSPEND) \
-    $(wildcard include/config/HIBERNATION_SNAPSHOT_DEV) \
-    $(wildcard include/config/PM_SLEEP_DEBUG) \
-    $(wildcard include/config/PM_AUTOSLEEP) \
-  include/linux/swap.h \
-    $(wildcard include/config/DEVICE_PRIVATE) \
-    $(wildcard include/config/MIGRATION) \
-    $(wildcard include/config/FRONTSWAP) \
-    $(wildcard include/config/THP_SWAP) \
-    $(wildcard include/config/MEMCG_SWAP) \
-  include/linux/memcontrol.h \
-    $(wildcard include/config/CGROUP_WRITEBACK) \
-  include/linux/cgroup.h \
-    $(wildcard include/config/CGROUP_CPUACCT) \
-    $(wildcard include/config/SOCK_CGROUP_DATA) \
-    $(wildcard include/config/CGROUP_DATA) \
-    $(wildcard include/config/CGROUP_BPF) \
-  include/uapi/linux/cgroupstats.h \
-  include/uapi/linux/taskstats.h \
-  include/linux/fs.h \
-    $(wildcard include/config/READ_ONLY_THP_FOR_FS) \
-    $(wildcard include/config/FS_POSIX_ACL) \
-    $(wildcard include/config/IMA) \
-    $(wildcard include/config/FILE_LOCKING) \
-    $(wildcard include/config/FSNOTIFY) \
-    $(wildcard include/config/FS_ENCRYPTION) \
-    $(wildcard include/config/FS_VERITY) \
-    $(wildcard include/config/EPOLL) \
-    $(wildcard include/config/UNICODE) \
-    $(wildcard include/config/QUOTA) \
-    $(wildcard include/config/FS_DAX) \
-    $(wildcard include/config/BLOCK) \
-  include/linux/wait_bit.h \
-  include/linux/kdev_t.h \
-  include/uapi/linux/kdev_t.h \
-  include/linux/dcache.h \
-  include/linux/rculist_bl.h \
-  include/linux/list_bl.h \
-  include/linux/bit_spinlock.h \
-  include/linux/lockref.h \
-    $(wildcard include/config/ARCH_USE_CMPXCHG_LOCKREF) \
-  include/linux/stringhash.h \
-    $(wildcard include/config/DCACHE_WORD_ACCESS) \
-  include/linux/hash.h \
-    $(wildcard include/config/HAVE_ARCH_HASH) \
-  include/linux/path.h \
-  include/linux/list_lru.h \
-  include/linux/shrinker.h \
-  include/linux/capability.h \
-  include/uapi/linux/capability.h \
-  include/linux/semaphore.h \
-  include/linux/fcntl.h \
-    $(wildcard include/config/ARCH_32BIT_OFF_T) \
-  include/uapi/linux/fcntl.h \
-  arch/x86/include/generated/uapi/asm/fcntl.h \
-  include/uapi/asm-generic/fcntl.h \
-  include/uapi/linux/openat2.h \
-  include/linux/migrate_mode.h \
-  include/linux/percpu-rwsem.h \
-  include/linux/rcuwait.h \
-  include/linux/sched/signal.h \
-    $(wildcard include/config/SCHED_AUTOGROUP) \
-    $(wildcard include/config/BSD_PROCESS_ACCT) \
-    $(wildcard include/config/TASKSTATS) \
-    $(wildcard include/config/STACK_GROWSUP) \
-  include/linux/signal.h \
-    $(wildcard include/config/DYNAMIC_SIGFRAME) \
-  include/linux/sched/jobctl.h \
-  include/linux/sched/task.h \
-    $(wildcard include/config/HAVE_EXIT_THREAD) \
-    $(wildcard include/config/ARCH_WANTS_DYNAMIC_TASK_STRUCT) \
-    $(wildcard include/config/HAVE_ARCH_THREAD_STRUCT_WHITELIST) \
-  include/linux/uaccess.h \
-  include/linux/fault-inject-usercopy.h \
-    $(wildcard include/config/FAULT_INJECTION_USERCOPY) \
-  arch/x86/include/asm/uaccess.h \
-    $(wildcard include/config/CC_HAS_ASM_GOTO_OUTPUT) \
-    $(wildcard include/config/CC_HAS_ASM_GOTO_TIED_OUTPUT) \
-    $(wildcard include/config/ARCH_HAS_COPY_MC) \
-    $(wildcard include/config/X86_INTEL_USERCOPY) \
-  arch/x86/include/asm/smap.h \
-  arch/x86/include/asm/extable.h \
-    $(wildcard include/config/BPF_JIT) \
-  include/asm-generic/access_ok.h \
-    $(wildcard include/config/ALTERNATE_USER_ADDRESS_SPACE) \
-  arch/x86/include/asm/uaccess_32.h \
-  include/linux/cred.h \
-    $(wildcard include/config/DEBUG_CREDENTIALS) \
-  include/linux/key.h \
-    $(wildcard include/config/KEY_NOTIFICATIONS) \
-    $(wildcard include/config/NET) \
-  include/linux/assoc_array.h \
-    $(wildcard include/config/ASSOCIATIVE_ARRAY) \
-  include/linux/sched/user.h \
-    $(wildcard include/config/WATCH_QUEUE) \
-  include/linux/percpu_counter.h \
-  include/linux/rcu_sync.h \
-  include/linux/delayed_call.h \
-  include/linux/errseq.h \
-  include/linux/ioprio.h \
-  include/linux/sched/rt.h \
-  include/linux/iocontext.h \
-    $(wildcard include/config/BLK_ICQ) \
-  include/uapi/linux/ioprio.h \
-  include/linux/fs_types.h \
-  include/linux/mount.h \
-  include/linux/mnt_idmapping.h \
-  include/uapi/linux/fs.h \
-  include/linux/quota.h \
-    $(wildcard include/config/QUOTA_NETLINK_INTERFACE) \
-  include/uapi/linux/dqblk_xfs.h \
-  include/linux/dqblk_v1.h \
-  include/linux/dqblk_v2.h \
-  include/linux/dqblk_qtree.h \
-  include/linux/projid.h \
-  include/uapi/linux/quota.h \
-  include/linux/nfs_fs_i.h \
-  include/linux/seq_file.h \
-  include/linux/string_helpers.h \
-  include/linux/ns_common.h \
-  include/linux/nsproxy.h \
-  include/linux/user_namespace.h \
-    $(wildcard include/config/INOTIFY_USER) \
-    $(wildcard include/config/FANOTIFY) \
-    $(wildcard include/config/PERSISTENT_KEYRINGS) \
-  include/linux/kernel_stat.h \
-  include/linux/interrupt.h \
-    $(wildcard include/config/IRQ_FORCED_THREADING) \
-    $(wildcard include/config/GENERIC_IRQ_PROBE) \
-    $(wildcard include/config/IRQ_TIMINGS) \
-  include/linux/irqreturn.h \
-  include/linux/irqnr.h \
-  include/uapi/linux/irqnr.h \
-  include/linux/hardirq.h \
-  include/linux/context_tracking_state.h \
-    $(wildcard include/config/CONTEXT_TRACKING) \
-  include/linux/ftrace_irq.h \
-    $(wildcard include/config/HWLAT_TRACER) \
-    $(wildcard include/config/OSNOISE_TRACER) \
-  include/linux/vtime.h \
-    $(wildcard include/config/VIRT_CPU_ACCOUNTING) \
-    $(wildcard include/config/IRQ_TIME_ACCOUNTING) \
-  arch/x86/include/asm/hardirq.h \
-    $(wildcard include/config/KVM_INTEL) \
-    $(wildcard include/config/X86_THERMAL_VECTOR) \
-    $(wildcard include/config/X86_MCE_THRESHOLD) \
-    $(wildcard include/config/X86_MCE_AMD) \
-    $(wildcard include/config/X86_HV_CALLBACK_VECTOR) \
-  arch/x86/include/asm/irq.h \
-  arch/x86/include/asm/sections.h \
-  include/asm-generic/sections.h \
-    $(wildcard include/config/HAVE_FUNCTION_DESCRIPTORS) \
-  include/linux/cgroup-defs.h \
-    $(wildcard include/config/CGROUP_NET_CLASSID) \
-    $(wildcard include/config/CGROUP_NET_PRIO) \
-  include/linux/u64_stats_sync.h \
-  include/linux/bpf-cgroup-defs.h \
-  include/linux/psi_types.h \
-  include/linux/kthread.h \
-  include/linux/cgroup_subsys.h \
-    $(wildcard include/config/CGROUP_DEVICE) \
-    $(wildcard include/config/CGROUP_FREEZER) \
-    $(wildcard include/config/CGROUP_PERF) \
-    $(wildcard include/config/CGROUP_HUGETLB) \
-    $(wildcard include/config/CGROUP_PIDS) \
-    $(wildcard include/config/CGROUP_RDMA) \
-    $(wildcard include/config/CGROUP_MISC) \
-    $(wildcard include/config/CGROUP_DEBUG) \
-  include/linux/vm_event_item.h \
-    $(wildcard include/config/HAVE_ARCH_TRANSPARENT_HUGEPAGE_PUD) \
-    $(wildcard include/config/MEMORY_BALLOON) \
-    $(wildcard include/config/BALLOON_COMPACTION) \
-    $(wildcard include/config/DEBUG_TLBFLUSH) \
-    $(wildcard include/config/DEBUG_VM_VMACACHE) \
-  include/linux/page_counter.h \
-  include/linux/vmpressure.h \
-  include/linux/eventfd.h \
-  include/linux/mm.h \
-    $(wildcard include/config/HAVE_ARCH_MMAP_RND_BITS) \
-    $(wildcard include/config/HAVE_ARCH_MMAP_RND_COMPAT_BITS) \
-    $(wildcard include/config/ARCH_USES_HIGH_VMA_FLAGS) \
-    $(wildcard include/config/ARCH_HAS_PKEYS) \
-    $(wildcard include/config/PPC) \
-    $(wildcard include/config/PARISC) \
-    $(wildcard include/config/SPARC64) \
-    $(wildcard include/config/ARM64_MTE) \
-    $(wildcard include/config/HAVE_ARCH_USERFAULTFD_MINOR) \
-    $(wildcard include/config/SHMEM) \
-    $(wildcard include/config/ARCH_HAS_PTE_SPECIAL) \
-    $(wildcard include/config/ARCH_HAS_PTE_DEVMAP) \
-    $(wildcard include/config/DEBUG_VM_RB) \
-    $(wildcard include/config/PAGE_POISONING) \
-    $(wildcard include/config/INIT_ON_ALLOC_DEFAULT_ON) \
-    $(wildcard include/config/INIT_ON_FREE_DEFAULT_ON) \
-    $(wildcard include/config/DEBUG_PAGEALLOC) \
-    $(wildcard include/config/HUGETLBFS) \
-    $(wildcard include/config/MAPPING_DIRTY_HELPERS) \
-    $(wildcard include/config/ANON_VMA_NAME) \
-  include/linux/mmap_lock.h \
-  include/linux/page_ext.h \
-  include/linux/stacktrace.h \
-    $(wildcard include/config/ARCH_STACKWALK) \
-    $(wildcard include/config/STACKTRACE) \
-    $(wildcard include/config/HAVE_RELIABLE_STACKTRACE) \
-  include/linux/stackdepot.h \
-    $(wildcard include/config/STACKDEPOT_ALWAYS_INIT) \
-  include/linux/page_ref.h \
-    $(wildcard include/config/DEBUG_PAGE_REF) \
-  include/linux/sizes.h \
-  include/linux/pgtable.h \
-    $(wildcard include/config/HIGHPTE) \
-    $(wildcard include/config/GUP_GET_PTE_LOW_HIGH) \
-    $(wildcard include/config/HAVE_ARCH_SOFT_DIRTY) \
-    $(wildcard include/config/ARCH_ENABLE_THP_MIGRATION) \
-    $(wildcard include/config/X86_ESPFIX64) \
-  arch/x86/include/asm/pgtable.h \
-    $(wildcard include/config/DEBUG_WX) \
-    $(wildcard include/config/PAGE_TABLE_CHECK) \
-  arch/x86/include/asm/pkru.h \
-  arch/x86/include/asm/fpu/api.h \
-    $(wildcard include/config/X86_DEBUG_FPU) \
-  arch/x86/include/asm/coco.h \
-  include/asm-generic/pgtable_uffd.h \
-  include/linux/page_table_check.h \
-  arch/x86/include/asm/pgtable_32.h \
-  arch/x86/include/asm/pgtable-3level.h \
-  arch/x86/include/asm/pgtable-invert.h \
-  include/linux/huge_mm.h \
-  include/linux/sched/coredump.h \
-    $(wildcard include/config/CORE_DUMP_DEFAULT_ELF_HEADERS) \
-  include/linux/vmstat.h \
-    $(wildcard include/config/VM_EVENT_COUNTERS) \
-  include/linux/writeback.h \
-  include/linux/flex_proportions.h \
-  include/linux/backing-dev-defs.h \
-    $(wildcard include/config/DEBUG_FS) \
-  include/linux/blk_types.h \
-    $(wildcard include/config/FAIL_MAKE_REQUEST) \
-    $(wildcard include/config/BLK_CGROUP_IOCOST) \
-    $(wildcard include/config/BLK_INLINE_ENCRYPTION) \
-    $(wildcard include/config/BLK_DEV_INTEGRITY) \
-  include/linux/bvec.h \
-  include/linux/highmem.h \
-  include/linux/cacheflush.h \
-  arch/x86/include/asm/cacheflush.h \
-  include/asm-generic/cacheflush.h \
-  include/linux/highmem-internal.h \
-  arch/x86/include/asm/highmem.h \
-  arch/x86/include/asm/tlbflush.h \
-  arch/x86/include/asm/invpcid.h \
-  arch/x86/include/asm/pti.h \
-  include/linux/bio.h \
-  include/linux/mempool.h \
-  include/linux/uio.h \
-    $(wildcard include/config/ARCH_HAS_UACCESS_FLUSHCACHE) \
-  include/uapi/linux/uio.h \
-  include/linux/node.h \
-    $(wildcard include/config/HMEM_REPORTING) \
-  include/linux/pagemap.h \
-  include/linux/hugetlb_inline.h \
-  include/uapi/linux/mempolicy.h \
-  include/linux/freezer.h \
-  include/uapi/linux/i2c.h \
-  include/linux/delay.h \
-  arch/x86/include/asm/delay.h \
-  include/asm-generic/delay.h \
-  include/linux/videodev2.h \
-  include/uapi/linux/videodev2.h \
-    $(wildcard include/config/VIDEO_ADV_DEBUG) \
-  include/uapi/linux/v4l2-common.h \
-  include/uapi/linux/v4l2-controls.h \
-  include/uapi/linux/v4l2-mediabus.h \
-  include/uapi/linux/media-bus-format.h \
-  include/linux/of_graph.h \
-  include/media/v4l2-async.h \
-  include/media/v4l2-device.h \
-    $(wildcard include/config/VIDEO_V4L2_SUBDEV_API) \
-  include/media/media-device.h \
-  include/media/media-devnode.h \
-  include/linux/poll.h \
-  include/uapi/linux/poll.h \
-  arch/x86/include/generated/uapi/asm/poll.h \
-  include/uapi/asm-generic/poll.h \
-  include/uapi/linux/eventpoll.h \
-  include/linux/cdev.h \
-  include/media/media-entity.h \
-  include/uapi/linux/media.h \
-  include/media/v4l2-subdev.h \
-  include/uapi/linux/v4l2-subdev.h \
-  include/media/v4l2-common.h \
-    $(wildcard include/config/VIDEO_V4L2_I2C) \
-    $(wildcard include/config/SPI) \
-  include/media/v4l2-dev.h \
-  include/linux/spi/spi.h \
-    $(wildcard include/config/SPI_SLAVE) \
-  include/linux/scatterlist.h \
-    $(wildcard include/config/NEED_SG_DMA_LENGTH) \
-    $(wildcard include/config/DEBUG_SG) \
-    $(wildcard include/config/SGL_ALLOC) \
-    $(wildcard include/config/ARCH_NO_SG_CHAIN) \
-    $(wildcard include/config/SG_POOL) \
-  include/linux/gpio/consumer.h \
-    $(wildcard include/config/OF_GPIO) \
-    $(wildcard include/config/GPIO_SYSFS) \
-  include/uapi/linux/spi/spi.h \
-  include/media/v4l2-fh.h \
-  include/media/v4l2-mediabus.h \
-  include/media/v4l2-fwnode.h \
-  include/media/v4l2-ctrls.h \
-  include/media/media-request.h \
-  include/media/hevc-ctrls.h \
-  include/media/i2c/tvp514x.h \
-  drivers/media/i2c/tvp514x_regs.h \
+/*
+	Written 1997-1998 by Donald Becker.
 
-drivers/media/i2c/tvp514x.o: $(deps_drivers/media/i2c/tvp514x.o)
+	This software may be used and distributed according to the terms
+	of the GNU General Public License, incorporated herein by reference.
 
-$(deps_drivers/media/i2c/tvp514x.o):
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     ELF                       j      4     (               Ë¸ˇˇˇSãòX  ãàT  1¿âZ[â
-√çt& êË¸ˇˇˇãÄ|  «AA	  â1¿√ç¥&    fêË¸ˇˇˇãÖ“uãAÖ¿u«A   1¿√çt& ∏Íˇˇˇ√ç¥&    çv Ë¸ˇˇˇÉ9w6Åy   u-ãêD  âQâQãêH  —ÍâQãÄH  —ËâA1¿√ç¥&    ê∏Íˇˇˇ√ç¥&    çv Ë¸ˇˇˇÅ˙å   vçäPˇˇˇÉ˘w ∏ ¡ ”ËÉ‡√çt& êÅ˙É   ó¿√ç∂    1¿√çt& êË¸ˇˇˇãP@ãÇP  Ö¿u√çt& êãÇL  j π@   ∫¡   j j j@Ë¸ˇˇˇÉƒ√ç¥&    Ë¸ˇˇˇãP@ãÇP  Ö¿u√çt& êãÇL  j π@   ∫¡   j j j Ë¸ˇˇˇÉƒ√ç¥&    Ë¸ˇˇˇÉÏãÄL  ∂“dã    âL$1…â·Ë¸ˇˇˇÖ¿I$ãT$d+    uÉƒ√Ë¸ˇˇˇç¥&    ç¥&    êË¸ˇˇˇUWVSâ√â–â â¡Äı@ÉÏ	—t}â¡Äı	—t<â∆â◊Å∆ ˛ˇˇÉ◊ˇÅÊˇ˝ˇˇâ˘	Òtkâ¡Å· ∞  uqÑ¿u}%  ˇ â«˜ﬂ…É·â»Îçv π   ∏   ã    Ö“è¸ˇˇˇãÉL  ∫(   Ë¸ˇˇˇ1¿Éƒ[^_]√ç∂    π
-   ∏
-   Î∆çt& π   ∏   Î∂çt& π   ∏   Î¶çt& π   ∏   Îñç¥&    çt& êË¸ˇˇˇWVSãòX  ã∞T  1À1÷	Ûtdã∞»  ãòƒ  ÖˆtDã{ãs!Œ!◊âÛ	˚tJâ”â∏T  Å„ ˘  â∞X  É˚€É„`Å√‡  âòH  [^_È¥˛ˇˇçt& øˇˇˇ 1ˆÎπç¥&    1¿[^_√∏ÍˇˇˇÎıçv Ë¸ˇˇˇÖ…tGÉyuASãòD  âYãêH  «A   —Í«A   âQ«A   ã    Ö…è!   1¿[√çt& ê∏Íˇˇˇ√ç¥&    çv Ë¸ˇˇˇãÄ†   ∫   Ë¸ˇˇˇ1¿√ç¥&    êË¸ˇˇˇWVSâ”ã    Ö“è›   ç{âŸ1¿«    ÉÁ¸«Cp    ∫»  )˘É¡t¡ÈÛ´fêÉ¬$Å˙ú  t/ãz¸ÖˇtÓããJâ˛9»wçv f	tCÉ¿9»vÙÉ¬$f	;Å˙ú  u—[1¿^_√Ë¸ˇˇˇSãÉ˚tÉ˚u[È¸ˇˇˇç¥&    ê[È¸ˇˇˇç¥&    çv ∏Íˇˇˇ[√ç¥&    fêË¸ˇˇˇã    Uâ≈WVSãx\Ö“è˙   ãá»  ç∑   1€Ö¿tJfêâÉ√Å∆å   Ë¸ˇˇˇãá»  9ÿwÊÖ¿t*ç∑@  1€ç¥&    çv âÉ√Å∆å   Ë¸ˇˇˇ9ü»  wËâ¯É≈Ë¸ˇˇˇçáÃ  Ë¸ˇˇˇâË∫   Ë¸ˇˇˇâË∫   Ë¸ˇˇˇ1¿[^_]√çt& Ë¸ˇˇˇVâ∆SÅzGREYâ”t<É{t1¿[^√êÉ{uÙãÜL  1…∫   Ë¸ˇˇˇãÜL  π   ∫   Ë¸ˇˇˇÎÀêãÄL  πp   ∫   Ë¸ˇˇˇÎ≠ç¥&    fêË¸ˇˇˇUâ≈WVSÉÏfÉ: â$ÑÊ   1€çv ã$1…fâLX2∑|XãÖT  â¬ÅÚˇˇˇ ïX  Ñ  ©ˇˇ çsDÛ1…çF˙âD$É¯wl∏»  1…É¿$∫ú  9¬t#ãP¸Ö“tÌÖ◊t	;0r;pvÉ¿$∫ú  É¡9¬u›ã|$âŒãÖL  ÅŒ   ˇâÒçW–∂“Ë¸ˇˇˇãÖL  çW—âÒ∂“Ë¸ˇˇˇâÒã$fâLXÉ√É˚Ö>ˇˇˇãÖL  π   ∫Õ   Ë¸ˇˇˇ1¿Éƒ[^_]√ãÄL  1…∫Õ   ª–   Ë¸ˇˇˇãÖL  1…∫œ   Ë¸ˇˇˇç∂    ãÖL  â⁄πˇ   É√Ë¸ˇˇˇÅ˚¸   u„Éƒ1¿[^_]√ç¥&    fêË¸ˇˇˇVSâ”ÉÏã≤L  ∫¿   d°    âD$1¿çL$«$    â«D$    Ë¸ˇˇˇãL$Ö…ukâ·∫á   âË¸ˇˇˇã$Ö¿u&ãD$d+    Ö∞   Éƒ∏   [^√ç¥&    çv çL$∫Ü   â«D$    Ë¸ˇˇˇãL$Ö…t∫∫   âË¸ˇˇˇÎ¨fê∫¿   âË¸ˇˇˇãD$®@tñã    %Ä   ïÉt  Ö“è7  âÿ∫@  Ë¸ˇˇˇ1¿Äªt   tãÉl  j π   ∫   j j PâË¸ˇˇˇÉƒÈ?ˇˇˇË¸ˇˇˇË¸ˇˇˇSãò†   ∫   âÿË¸ˇˇˇ1“Ö¿x
-â–[√ç∂    â¬ãÉÙ   Ö¿tÍçHˇ±ãÙ   uÔâ–[√ç¥&    çt& Ë¸ˇˇˇVSâ√∑Äv  f=PQÑ∂   1ˆf=QQÑÇ   ãÉd  Ö¿tâÚÉŒÉ É¯DÚã    Ö“èd  ãÉL  1…∫   Ë¸ˇˇˇãÉL  âÒ1“Ë¸ˇˇˇ∫@   ∏   Éªd  E¬ãõL  j πP   j ∫   j PâÿË¸ˇˇˇÉƒ[^√çv fÅªx   Öoˇˇˇããp  1¿Ö…î¿ç4≈    ÈVˇˇˇ1ˆfÅªx   ÖEˇˇˇÎ‘ç¥&    ç∂    Ë¸ˇˇˇãP(ãHÅ˙	ò tmv;Å˙	ò Ñ   Å˙	ü Ö´   ã@|Ö¿î¿∂¿âÅ§   çÅ4˝ˇˇË«˛ˇˇ1¿√çt& Å˙ 	ò thÅ˙	ò uxãP|ãÅÄ   â—∫   Ë¸ˇˇˇ1¿√ç¥&    êãP|ãÅÄ   â—∫
-   Ë¸ˇˇˇ1¿√ç¥&    êãP|ãÅÄ   â—∫   Ë¸ˇˇˇ1¿√ç¥&    êãP|ãÅÄ   â—∫	   Ë¸ˇˇˇ1¿√∏Íˇˇˇ√fêË¸ˇˇˇâêd  1“É˘ï¬âàh  âêp  Ë˛ˇˇ1¿√ç¥&    fêË¸ˇˇˇUâ≈W1ˇVç∞,     SÉÏãù»  âD$Ö€uÈZ  fêÉ«Å∆å   9Ω»  ÜC  i«å   1“ç^çN`ËãÄ,  9D¬ãV¸ã@«F|   â$∫   âD$1¿Öˇî¿âD$âÿË¸ˇˇˇÖ¿à≠   ãE`â⁄ã@Ë¸ˇˇˇÖ¿àò   ˇt$∑D$âÈ1“PâÿË¸ˇˇˇZYÖ¿x}É<$tOÖˇÖ_ˇˇˇãT$1¿Ö“ï¿â$ã$âÖd  âËË˝ˇˇãD$ãï8  ãç<  âÖƒ  âËË4˜ˇˇÈˇˇˇç¥&    ˇt$ãFâÈ1“∑@PâÿË¸ˇˇˇY[Ö¿xÖˇt¶ÈÚ˛ˇˇfêâ¬ãÖ»  Ö¿t.çµ@  1€â◊ç¥&    çv âÉ√Å∆å   Ë¸ˇˇˇ9ù»  wËâ˙Éƒâ–[^_]√çt& Éƒ1“[â–^_]√ç¥&    çt& êË¸ˇˇˇUWVSâ√ÉÏ∑Bfâ$ãBÉ‡Öã  â÷∑$âœÉÚ∑ âL$ãã»  Ö…Ñ~  ãoçì@  Îçv É¿Å¬å   9»Ñ_  9’uÎi¿å   ã    ãÑ(  Ö…èë  É¯Ö@  Ω   çì¿   â–â$Ë¸ˇˇˇÖ¿t!ã$Ë¸ˇˇˇÖ¿ÑX  «@$    ã@ «@$    çì‡   â–â$Ë¸ˇˇˇÖ¿t!ã$Ë¸ˇˇˇÖ¿Ñ#  «@$    ã@ «@$    ãD$$âÈÉ‡â¬ÉÚÑ…u~∑Nâìh  âãd  Ö¿t~«Ép     âÿË1˚ˇˇãì»  Ö“ttçGîãìT  âÉƒ  ãO¨ãÉT  ão∞1ˇ! 1–ÉX  â÷tIÖ“uâŒâÔâÚâ˘âÿË)ıˇˇ1¿Éƒ[^_]√ç¥&    «Éd     âìh  Ö¿u4«Ép      âÿË≥˙ˇˇ1¿Éƒ[^_]√ç¥&    fê°    Ö¿M1ÌÈæ˛ˇˇ«Ép     âÿË˙ˇˇãT$â¯É¬¡‚⁄Ë¸ˇˇˇÖ¿tãt$$âp$ã@ âp$È%ˇˇˇ∏ÍˇˇˇÎûÈµ  ÈW  çt& êË¸ˇˇˇUâ≈1…WVSª¿  ÉÏã∞L  1¿∂–â˜Îçt& ∂KãΩL  â¯É√Ë¸ˇˇˇ∂Ä˙ˇu‰ãïP  Ö“Ñ  1…∫   âË¸ˇˇˇπ   ∫¬   âË¸ˇˇˇπ   ∫   âË¸ˇˇˇãµL  1…∫œ   ª–   âË¸ˇˇˇçt& êâ⁄πˇ   âÉ√Ë¸ˇˇˇÅ˚¸   uÁª–  â,$ç{$Å˚Ä  tçt& ãGÙÖ¿u1â˚ç{$Å˚Ä  uÏã,$âËËR˘ˇˇçÖÃ  Ë¸ˇˇˇ1¿Éƒ[^_]√çt& ê∑o∫≈   âÉ√âÈf¡È∑…Ë¸ˇˇˇ∑Õ∫ƒ   âË¸ˇˇˇçt& ê∂K∫√   âÉ√Ë¸ˇˇˇ9˚uÈâ˚ÎÜπ   ∫   âË¸ˇˇˇπ   ∫¬   âË¸ˇˇˇ1…∫   âË¸ˇˇˇÈ˙˛ˇˇç¥&    êË¸ˇˇˇUâ≈WVS1€ÉÏâT$d°    âD$â–çxçH«@    ÉÁ¸«@^    1¿)˘É¡`¡ÈÛ´«D$    ÎCçv ãD$Ö¿àì  É‡É¯
-ç¿4Öƒ  É«;<$uXâ∑ˆ	t$ãL$fâDYÉ√É˚t`ãÖT  â¬ÅÚˇˇˇ ïX  Ñ≥  ©ˇˇ çSD”1¿ÉÍÉ˙w¿çT–1ˆ∂˙çGâ$ãÖL  çL$â˙Ë¸ˇˇˇÖ¿âiˇˇˇÈì  çt& â»∑L$fâãD$d+    u
-Éƒ1¿[^_]√Ë¸ˇˇˇç¥&    çv Ë¸ˇˇˇSâ”ÉÏãÄL  dã    âT$1“â·∫à   Ë¸ˇˇˇ∫    Ö¿I$É‡É¯∏ˇˇ  E¬âC<ãD$d+    uÉƒ1¿[√Ë¸ˇˇˇêË¸ˇˇˇVSâ√ÉÏã≥†   d°    âD$1¿Ö“Ñ¢   ∫   âË¸ˇˇˇâ¬Ö¿à$  π   ∫   æî  Îçv ∂NãÉL  É∆Ë¸ˇˇˇ∂Ä˙ˇuÊãìT  ããX  â–5ˇˇˇ 	»Ñ˚   âÿËˇˇãÉ|  É¯Ñï   É¯Ñ|   ãÉP  Ö¿ubã≥l  ∫@  âÿË¸ˇˇˇÎç∂    â∫   1ˆË¸ˇˇˇj ãÉL  ∫   π   j j VË¸ˇˇˇ1“ÉƒãD$d+    Öª   Éƒâ–[^√1ˆÄªt   tôÎëçv «Él  	   Èuˇˇˇêj ãÉL  π   ∫   j j j Ë¸ˇˇˇ«Él     ÉƒÈEˇˇˇêãÜÙ   Ö¿tççHˇ±éÙ   Ñ|ˇˇˇÎÈçv ãÉL  â·∫å   Ë¸ˇˇˇÖ¿I$É‡ÉËÉ¯
-v1“1…ÈŸ˛ˇˇçt& ã≈    ã≈   È¬˛ˇˇË¸ˇˇˇç¥&    êË¸ˇˇˇVâ÷Sâ√ÉÏd°    âD$1¿ãÉP  Ö¿t,∂Ét  Ö¿uF1¿1“ââVãD$d+    ucÉƒ1¿[^√çv ãÉL  â·∫à   Ë¸ˇˇˇã$É‡É¯î¿∂¿Ö¿t∫ãÉL  â·∫å   Ë¸ˇˇˇÖ¿I$É‡ÉËÉ¯
-wóã≈   ã≈    ÎãË¸ˇˇˇçv Ë¸ˇˇˇVSâ√ÉÏd°    âD$ãÉT  5ˇˇˇ ÉX  tãD$d+    Ö·   Éƒ1¿[^√ç∂    ãÉL  â·∫å   Ë¸ˇˇˇãã\  ãì`  Ö¿I$É‡ÉËÉ¯
-vI	 tÆ«É\      «É`      «É@      «É<      «ÉD  –  «ÉH  @  Èmˇˇˇçt& ã4≈    ã≈   1Ò1¬	 ÑOˇˇˇâ≥\  ÅÊ ˘  âÉ`  «É@      «É<      «ÉD  –  t°«ÉH  ‡  ÈˇˇˇË¸ˇˇˇË¸ˇˇˇU1“WVSâ√ÉÏd°    âD$ãÉL  çL$Ë¸ˇˇˇÖ¿à–  ÈÃ  ç¥&    çv Ë¸ˇˇˇUWâ«VSÉÏd°    âD$ãGãPãRË¸ˇˇˇ%   =   Öö  çoπ   ∫  âËË¸ˇˇˇâ√= ˇˇáY  Ö¿t1“Ë¸ˇˇˇ∏   Ë¸ˇˇˇπ   ∫  âËË¸ˇˇˇâ√= ˇˇá&  Ö¿t'∏ƒ	  Ë¸ˇˇˇ1“âÿË¸ˇˇˇπ   ∫˙   ∏»   Ë¸ˇˇˇπ¿  ∫Ä  âËË¸ˇˇˇâ∆Ö¿Ñ  j 1…∫Ä   â¯Ë¸ˇˇˇ[â√= ˇˇá    âÜL  π¿  â˙âË¸ˇˇˇ∫   âÉN\çé¿   «Fhê  «Ü|     «F8  «F  «Ü‹      «Üÿ      «Ü¸      «Ü¯      «Ü     «Ü     Ë¸ˇˇˇâ√Ö¿u?ãÜî   ∫Ä   â$ãÜL  jçL$Ë¸ˇˇˇYâ√Ö¿â$  È˝  ç¥&    êÖ€Ñ˝˛ˇˇãD$d+    uÉƒâÿ[^_]√êª˚ˇˇˇÎ·Ë¸ˇˇˇªÙˇˇˇÎ’ç¥&    ç∂    Ë¸ˇˇˇUWVâ∆SÉÏãYd°    âD$1¿Ö€Ö´  °    â◊âÀÖ¿èÈ  ãk1¿ãSÖÌHË∏ˇ  9≈OË1¿Ö“H–∏   âk9¬O–âSãÜT  â¡ÅÒˇˇˇ éX  Ñö  % ˘  É¯¿É‡`‡  )–j π–  ∫—   j )Í)ÈçkPÉËPçCPâËjË¸ˇˇˇããCÉƒÖ“Ñ  ∏ÍˇˇˇÉ˙tãT$d+    Ö  Éƒ[^_]√çt& çæ<  Åˇ ˇˇáı  ãÜD  9CÑO  ãéT  ãÜL  â ÅÚˇˇˇ ñX  Ñg  ÄÂ˘ÑÅ  Ω‡  ãK∫   Ë¸ˇˇˇãKãÜL  ∫   K)ÈË¸ˇˇˇãKãÜL  ∫   ¡˘Ë¸ˇˇˇãKãÜL  ∫   É…Ë¸ˇˇˇãSãCçå˛ˇˇãÜL  ∫   ¡ÈË¸ˇˇˇãSãCçå˛ˇˇãÜL  ∫   Ë¸ˇˇˇÎ$ê∑N 9»ÉÏ   çÄ¡‚çz0Åˇ ˇˇá  ãCâãCâGãCâGãCâG1¿È¬˛ˇˇç¥&    ãÜL  â·∫å   Ë¸ˇˇˇãSãkÖ¿I$É‡çHˇ∏@  É˘
-áF˛ˇˇãÕ    È(˛ˇˇç¥&    çv ãÜH  9CÖ¢˛ˇˇãÜ@  9CÖì˛ˇˇãÜ<  9CÖÑ˛ˇˇÈaˇˇˇç∂    â·∫å   Ë¸ˇˇˇÖ¿I$É‡ÉËÉ¯
-v+ãÜL  Ω@  Èz˛ˇˇçv Èˇˇˇê∏ÍˇˇˇÈ˘˝ˇˇç∂    ã≈    ãÜL  È?˛ˇˇË¸ˇˇˇâ¯È’˝ˇˇfêË¸ˇˇˇVâ∆SâÀÉÏãId°    âD$1¿Ö…to∏ÍˇˇˇÉ˘uE«C    «C    «C–  ãñT  â–5ˇˇˇ ÜX  Ñá   ÄÊ˘Ñ°   «C‡  1¿çt& êãT$d+    Ö√   Éƒ[^√ç¥&    fêããKÖ¿tÉ¯u2çÜ<  = ˇˇw≈ãâSãPâSãPâSã@âC1¿Î™ç¥&    çv ∏ÍˇˇˇÎôç¥&    fêãÜL  â·∫å   Ë¸ˇˇˇÖ¿I$É‡ÉËÉ¯
-v-«C@  1¿È_ˇˇˇç¥&    ∑v 9Òs çâ¡‡É¿0Ètˇˇˇã≈    Èˇˇˇçt& Î‚Ë¸ˇˇˇ               Ä                 [                                                              ¿           Ä                                                         ¿                                               ˇ       $                                                                                             @   p   ¿      @  Ä  –  ∞  @  F   †  ¿  @  Ä  0  †        p  `	  @
-  p
-    0  ¿  ‡  @    ¿  ‡             Set video std register to %d.
-  tvp5150.c: removing tvp5150 adapter on address 0x%x
-    VBI can't be configured without knowing number of lines
-    Selecting video route: route input=%s, output=%s => tvp5150 input=0x%02x, opmode=0x%02x
-    link setup '%s':%d->'%s':%d[%d] tvp5150: Video input source selection #1 = 0x%02x
-  tvp5150: Analog channel controls = 0x%02x
-  tvp5150: Operation mode controls = 0x%02x
-  tvp5150: Miscellaneous controls = 0x%02x
-   tvp5150: Autoswitch mask= 0x%02x
-   tvp5150: Color killer threshold control = 0x%02x
-   tvp5150: Luminance processing controls #1 #2 and #3 = %02x %02x %02x
-   tvp5150: Brightness control = 0x%02x
-   tvp5150: Color saturation control = 0x%02x
- tvp5150: Hue control = 0x%02
+	This driver is for the 3Com ISA EtherLink XL "Corkscrew" 3c515 ethercard.
+
+	The author may be reached as becker@scyld.com, or C/O
+	Scyld Computing Corporation
+	410 Severn Ave., Suite 210
+	Annapolis MD 21403
+
+
+	2000/2/2- Added support for kernel-level ISAPnP
+		by Stephen Frost <sfrost@snowman.net> and Alessandro Zummo
+	Cleaned up for 2.3.x/softnet by Jeff Garzik and Alan Cox.
+
+	2001/11/17 - Added ethtool support (jgarzik)
+
+	2002/10/28 - Locking updates for 2.5 (alan@lxorguk.ukuu.org.uk)
+
+*/
+
+#define DRV_NAME		"3c515"
+
+#define CORKSCREW 1
+
+/* "Knobs" that adjust features and parameters. */
+/* Set the copy breakpoint for the copy-only-tiny-frames scheme.
+   Setting to > 1512 effectively disables this feature. */
+static int rx_copybreak = 200;
+
+/* Allow setting MTU to a larger size, bypassing the normal ethernet setup. */
+static const int mtu = 1500;
+
+/* Maximum events (Rx packets, etc.) to handle at each interrupt. */
+static int max_interrupt_work = 20;
+
+/* Enable the automatic media selection code -- usually set. */
+#define AUTOMEDIA 1
+
+/* Allow the use of fragment bus master transfers instead of only
+   programmed-I/O for Vortex cards.  Full-bus-master transfers are always
+   enabled by default on Boomerang cards.  If VORTEX_BUS_MASTER is defined,
+   the feature may be turned on using 'options'. */
+#define VORTEX_BUS_MASTER
+
+/* A few values that may be tweaked. */
+/* Keep the ring sizes a power of two for efficiency. */
+#define TX_RING_SIZE	16
+#define RX_RING_SIZE	16
+#define PKT_BUF_SZ		1536	/* Size of each temporary Rx buffer. */
+
+#include <linux/module.h>
+#include <linux/isapnp.h>
+#include <linux/kernel.h>
+#include <linux/netdevice.h>
+#include <linux/string.h>
+#include <linux/errno.h>
+#include <linux/in.h>
+#include <linux/ioport.h>
+#include <linux/skbuff.h>
+#include <linux/etherdevice.h>
+#include <linux/interrupt.h>
+#include <linux/timer.h>
+#include <linux/ethtool.h>
+#include <linux/bitops.h>
+
+#include <linux/uaccess.h>
+#include <asm/io.h>
+#include <asm/dma.h>
+
+#define NEW_MULTICAST
+#include <linux/delay.h>
+
+#define MAX_UNITS 8
+
+MODULE_AUTHOR("Donald Becker <becker@scyld.com>");
+MODULE_DESCRIPTION("3Com 3c515 Corkscrew driver");
+MODULE_LICENSE("GPL");
+
+/* "Knobs" for adjusting internal parameters. */
+/* Put out somewhat more debugging messages. (0 - no msg, 1 minimal msgs). */
+#define DRIVER_DEBUG 1
+/* Some values here only for performance evaluation and path-coverage
+   debugging. */
+static int rx_nocopy, rx_copy, queued_packet;
+
+/* Number of times to check to see if the Tx FIFO has space, used in some
+   limited cases. */
+#define WAIT_TX_AVAIL 200
+
+/* Operational parameter that usually are not changed. */
+#define TX_TIMEOUT  ((4*HZ)/10)	/* Time in jiffies before concluding Tx hung */
+
+/* The size here is somewhat misleading: the Corkscrew also uses the ISA
+   aliased registers at <base>+0x400.
+   */
+#define CORKSCREW_TOTAL_SIZE 0x20
+
+#ifdef DRIVER_DEBUG
+static int corkscrew_debug = DRIVER_DEBUG;
+#else
+static int corkscrew_debug = 1;
+#endif
+
+#define CORKSCREW_ID 10
+
+/*
+				Theory of Operation
+
+I. Board Compatibility
+
+This device driver is designed for the 3Com 3c515 ISA Fast EtherLink XL,
+3Com's ISA bus adapter for Fast Ethernet.  Due to the unique I/O port layout,
+it's not practical to integrate this driver with the other EtherLink drivers.
+
+II. Board-specific settings
+
+The Corkscrew has an EEPROM for configuration, but no special settings are
+needed for Linux.
+
+III. Driver operation
+
+The 3c515 series use an interface that's very similar to the 3c900 "Boomerang"
+PCI cards, with the bus master interface extensively modified to work with
+the ISA bus.
+
+The card is capable of full-bus-master transfers with separate
+lists of transmit and receive descriptors, similar to the AMD LANCE/PCnet,
+DEC Tulip and Intel Speedo3.
+
+This driver uses a "RX_COPYBREAK" scheme rather than a fixed intermediate
+receive buffer.  This scheme allocates full-sized skbuffs as receive
+buffers.  The value RX_COPYBREAK is used as the copying breakpoint: it is
+chosen to trade-off the memory wasted by passing the full-sized skbuff to
+the queue layer for all frames vs. the copying cost of copying a frame to a
+correctly-sized skbuff.
+
+
+IIIC. Synchronization
+The driver runs as two independent, single-threaded flows of control.  One
+is the send-packet routine, which enforces single-threaded use by the netif
+layer.  The other thread is the interrupt handler, which is single
+threaded by the hardware and other software.
+
+IV. Notes
+
+Thanks to Terry Murphy of 3Com for providing documentation and a development
+board.
+
+The names "Vortex", "Boomerang" and "Corkscrew" are the internal 3Com
+project names.  I use these names to eliminate confusion -- 3Com product
+numbers and names are very similar and often confused.
+
+The new chips support both ethernet (1.5K) and FDDI (4.5K) frame sizes!
+This driver only supports ethernet frames because of the recent MTU limit
+of 1.5K, but the changes to support 4.5K are minimal.
+*/
+
+/* Operational definitions.
+   These are not used by other compilation units and thus are not
+   exported in a ".h" file.
+
+   First the windows.  There are eight register windows, with the command
+   and status registers available in each.
+   */
+#define EL3WINDOW(win_num) outw(SelectWindow + (win_num), ioaddr + EL3_CMD)
+#define EL3_CMD 0x0e
+#define EL3_STATUS 0x0e
+
+/* The top five bits written to EL3_CMD are a command, the lower
+   11 bits are the parameter, if applicable.
+   Note that 11 parameters bits was fine for ethernet, but the new chips
+   can handle FDDI length frames (~4500 octets) and now parameters count
+   32-bit 'Dwords' rather than octets. */
+
+enum corkscrew_cmd {
+	TotalReset = 0 << 11, SelectWindow = 1 << 11, StartCoax = 2 << 11,
+	RxDisable = 3 << 11, RxEnable = 4 << 11, RxReset = 5 << 11,
+	UpStall = 6 << 11, UpUnstall = (6 << 11) + 1, DownStall = (6 << 11) + 2,
+	DownUnstall = (6 << 11) + 3, RxDiscard = 8 << 11, TxEnable = 9 << 11,
+	TxDisable = 10 << 11, TxReset = 11 << 11, FakeIntr = 12 << 11,
+	AckIntr = 13 << 11, SetIntrEnb = 14 << 11, SetStatusEnb = 15 << 11,
+	SetRxFilter = 16 << 11, SetRxThreshold = 17 << 11,
+	SetTxThreshold = 18 << 11, SetTxStart = 19 << 11, StartDMAUp = 20 << 11,
+	StartDMADown = (20 << 11) + 1, StatsEnable = 21 << 11,
+	StatsDisable = 22 << 11, StopCoax = 23 << 11,
+};
+
+/* The SetRxFilter command accepts the following classes: */
+enum RxFilter {
+	RxStation = 1, RxMulticast = 2, RxBroadcast = 4, RxProm = 8
+};
+
+/* Bits in the general status register. */
+enum corkscrew_status {
+	IntLatch = 0x0001, AdapterFailure = 0x0002, TxComplete = 0x0004,
+	TxAvailable = 0x0008, RxComplete = 0x0010, RxEarly = 0x0020,
+	IntReq = 0x0040, StatsFull = 0x0080,
+	DMADone = 1 << 8, DownComplete = 1 << 9, UpComplete = 1 << 10,
+	DMAInProgress = 1 << 11,	/* DMA controller is still busy. */
+	CmdInProgress = 1 << 12,	/* EL3_CMD is still busy. */
+};
+
+/* Register window 1 offsets, the window used in normal operation.
+   On the Corkscrew this window is always mapped at offsets 0x10-0x1f. */
+enum Window1 {
+	TX_FIFO = 0x10, RX_FIFO = 0x10, RxErrors = 0x14,
+	RxStatus = 0x18, Timer = 0x1A, TxStatus = 0x1B,
+	TxFree = 0x1C,		/* Remaining free bytes in Tx buffer. */
+};
+enum Window0 {
+	Wn0IRQ = 0x08,
+#if defined(CORKSCREW)
+	Wn0EepromCmd = 0x200A,	/* Corkscrew EEPROM command register. */
+	Wn0EepromData = 0x200C,	/* Corkscrew EEPROM results register. */
+#else
+	Wn0EepromCmd = 10,	/* Window 0: EEPROM command register. */
+	Wn0EepromData = 12,	/* Window 0: EEPROM results register. */
+#endif
+};
+enum Win0_EEPROM_bits {
+	EEPROM_Read = 0x80, EEPROM_WRITE = 0x40, EEPROM_ERASE = 0xC0,
+	EEPROM_EWENB = 0x30,	/* Enable erasing/writing for 10 msec. */
+	EEPROM_EWDIS = 0x00,	/* Disable EWENB before 10 msec timeout. */
+};
+
+/* EEPROM locations. */
+enum eeprom_offset {
+	PhysAddr01 = 0, PhysAddr23 = 1, PhysAddr45 = 2, ModelID = 3,
+	EtherLink3ID = 7,
+};
+
+enum Window3 {			/* Window 3: MAC/config bits. */
+	Wn3_Config = 0, Wn3_MAC_Ctrl = 6, Wn3_Options = 8,
+};
+enum wn3_config {
+	Ram_size = 7,
+	Ram_width = 8,
+	Ram_speed = 0x30,
+	Rom_size = 0xc0,
+	Ram_split_shift = 16,
+	Ram_split = 3 << Ram_split_shift,
+	Xcvr_shift = 20,
+	Xcvr = 7 << Xcvr_shift,
+	Autoselect = 0x1000000,
+};
+
+enum Window4 {
+	Wn4_NetDiag = 6, Wn4_Media = 10,	/* Window 4: Xcvr/media bits. */
+};
+enum Win4_Media_bits {
+	Media_SQE = 0x0008,	/* Enable SQE error counting for AUI. */
+	Media_10TP = 0x00C0,	/* Enable link beat and jabber for 10baseT. */
+	Media_Lnk = 0x0080,	/* Enable just link beat for 100TX/100FX. */
+	Media_LnkBeat = 0x0800,
+};
+enum Window7 {			/* Window 7: Bus Master control. */
+	Wn7_MasterAddr = 0, Wn7_MasterLen = 6, Wn7_MasterStatus = 12,
+};
+
+/* Boomerang-style bus master control registers.  Note ISA aliases! */
+enum MasterCtrl {
+	PktStatus = 0x400, DownListPtr = 0x404, FragAddr = 0x408, FragLen =
+	    0x40c,
+	TxFreeThreshold = 0x40f, UpPktStatus = 0x410, UpListPtr = 0x418,
+};
+
+/* The Rx and Tx descriptor lists.
+   Caution Alpha hackers: these types are 32 bits!  Note also the 8 byte
+   alignment contraint on tx_ring[] and rx_ring[]. */
+struct boom_rx_desc {
+	u32 next;
+	s32 status;
+	u32 addr;
+	s32 length;
+};
+
+/* Values for the Rx status entry. */
+enum rx_desc_status {
+	RxDComplete = 0x00008000, RxDError = 0x4000,
+	/* See boomerang_rx() for actual error bits */
+};
+
+struct boom_tx_desc {
+	u32 next;
+	s32 status;
+	u32 addr;
+	s32 length;
+};
+
+struct corkscrew_private {
+	const char *product_name;
+	struct list_head list;
+	struct net_device *our_dev;
+	/* The Rx and Tx rings are here to keep them quad-word-aligned. */
+	struct boom_rx_desc rx_ring[RX_RING_SIZE];
+	struct boom_tx_desc tx_ring[TX_RING_SIZE];
+	/* The addresses of transmit- and receive-in-place skbuffs. */
+	struct sk_buff *rx_skbuff[RX_RING_SIZE];
+	struct sk_buff *tx_skbuff[TX_RING_SIZE];
+	unsigned int cur_rx, cur_tx;	/* The next free ring entry */
+	unsigned int dirty_rx, dirty_tx;/* The ring entries to be free()ed. */
+	struct sk_buff *tx_skb;	/* Packet being eaten by bus master ctrl.  */
+	struct timer_list timer;	/* Media selection timer. */
+	int capabilities	;	/* Adapter capabilities word. */
+	int options;			/* User-settable misc. driver options. */
+	int last_rx_packets;		/* For media autoselection. */
+	unsigned int available_media:8,	/* From Wn3_Options */
+		media_override:3,	/* Passed-in media type. */
+		default_media:3,	/* Read from the EEPROM. */
+		full_duplex:1, autoselect:1, bus_master:1,	/* Vortex can only do a fragment bus-m. */
+		full_bus_master_tx:1, full_bus_master_rx:1,	/* Boomerang  */
+		tx_full:1;
+	spinlock_t lock;
+	struct device *dev;
+};
+
+/* The action to take with a media selection timer tick.
+   Note that we deviate from the 3Com order by checking 10base2 before AUI.
+ */
+enum xcvr_types {
+	XCVR_10baseT = 0, XCVR_AUI, XCVR_10baseTOnly, XCVR_10base2, XCVR_100baseTx,
+	XCVR_100baseFx, XCVR_MII = 6, XCVR_Default = 8,
+};
+
+static struct media_table {
+	char *name;
+	unsigned int media_bits:16,	/* Bits to set in Wn4_Media register. */
+		mask:8,			/* The transceiver-present bit in Wn3_Config. */
+		next:8;			/* The media type to try next. */
+	short wait;			/* Time before we check media status. */
+} media_tbl[] = {
+	{ "10baseT", Media_10TP, 0x08, XCVR_10base2, (14 * HZ) / 10 },
+	{ "10Mbs AUI", Media_SQE, 0x20, XCVR_Default, (1 * HZ) / 10},
+	{ "undefined", 0, 0x80, XCVR_10baseT, 10000},
+	{ "10base2", 0, 0x10, XCVR_AUI, (1 * HZ) / 10},
+	{ "100baseTX", Media_Lnk, 0x02, XCVR_100baseFx, (14 * HZ) / 10},
+	{ "100baseFX", Media_Lnk, 0x04, XCVR_MII, (14 * HZ) / 10},
+	{ "MII", 0, 0x40, XCVR_10baseT, 3 * HZ},
+	{ "undefined", 0, 0x01, XCVR_10baseT, 10000},
+	{ "Default", 0, 0xFF, XCVR_10baseT, 10000},
+};
+
+#ifdef __ISAPNP__
+static struct isapnp_device_id corkscrew_isapnp_adapters[] = {
+	{	ISAPNP_ANY_ID, ISAPNP_ANY_ID,
+		ISAPNP_VENDOR('T', 'C', 'M'), ISAPNP_FUNCTION(0x5051),
+		(long) "3Com Fast EtherLink ISA" },
+	{ }	/* terminate list */
+};
+
+MODULE_DEVICE_TABLE(isapnp, corkscrew_isapnp_adapters);
+
+static int nopnp;
+#endif /* __ISAPNP__ */
+
+static struct net_device *corkscrew_scan(int unit);
+static int corkscrew_setup(struct net_device *dev, int ioaddr,
+			    struct pnp_dev *idev, int card_number);
+static int corkscrew_open(struct net_device *dev);
+static void corkscrew_timer(struct timer_list *t);
+static netdev_tx_t corkscrew_start_xmit(struct sk_buff *skb,
+					struct net_device *dev);
+static int corkscrew_rx(struct net_device *dev);
+static void corkscrew_timeout(struct net_device *dev, unsigned int txqueue);
+static int boomerang_rx(struct net_device *dev);
+static irqreturn_t corkscrew_interrupt(int irq, void *dev_id);
+static int corkscrew_close(struct net_device *dev);
+static void update_stats(int addr, struct net_device *dev);
+static struct net_device_stats *corkscrew_get_stats(struct net_device *dev);
+static void set_rx_mode(struct net_device *dev);
+static const struct ethtool_ops netdev_ethtool_ops;
+
+
+/*
+   Unfortunately maximizing the shared code between the integrated and
+   module version of the driver results in a complicated set of initialization
+   procedures.
+   init_module() -- modules /  tc59x_init()  -- built-in
+		The wrappers for corkscrew_scan()
+   corkscrew_scan()  		 The common routine that scans for PCI and EISA cards
+   corkscrew_found_device() Allocate a device structure when we find a card.
+					Different versions exist for modules and built-in.
+   corkscrew_probe1()		Fill in the device structure -- this is separated
+					so that the modules code can put it in dev->init.
+*/
+/* This driver uses 'options' to pass the media type, full-duplex flag, etc. */
+/* Note: this is the only limit on the number of cards supported!! */
+static int options[MAX_UNITS] = { -1, -1, -1, -1, -1, -1, -1, -1, };
+
+#ifdef MODULE
+static int debug = -1;
+
+module_param(debug, int, 0);
+module_param_array(options, int, NULL, 0);
+module_param(rx_copybreak, int, 0);
+module_param(max_interrupt_work, int, 0);
+MODULE_PARM_DESC(debug, "3c515 debug level (0-6)");
+MODULE_PARM_DESC(options, "3c515: Bits 0-2: media type, bit 3: full duplex, bit 4: bus mastering");
+MODULE_PARM_DESC(rx_copybreak, "3c515 copy breakpoint for copy-only-tiny-frames");
+MODULE_PARM_DESC(max_interrupt_work, "3c515 maximum events handled per interrupt");
+
+/* A list of all installed Vortex devices, for removing the driver module. */
+/* we will need locking (and refcounting) if we ever use it for more */
+static LIST_HEAD(root_corkscrew_dev);
+
+static int corkscrew_init_module(void)
+{
+	int found = 0;
+	if (debug >= 0)
+		corkscrew_debug = debug;
+	while (corkscrew_scan(-1))
+		found++;
+	return found ? 0 : -ENODEV;
+}
+module_init(corkscrew_init_module);
+
+#else
+struct net_device *tc515_probe(int unit)
+{
+	struct net_device *dev = corkscrew_scan(unit);
+
+	if (!dev)
+		return ERR_PTR(-ENODEV);
+
+	return dev;
+}
+#endif				/* not MODULE */
+
+static int check_device(unsigned ioaddr)
+{
+	int timer;
+
+	if (!request_region(ioaddr, CORKSCREW_TOTAL_SIZE, "3c515"))
+		return 0;
+	/* Check the resource configuration for a matching ioaddr. */
+	if ((inw(ioaddr + 0x2002) & 0x1f0) != (ioaddr & 0x1f0)) {
+		release_region(ioaddr, CORKSCREW_TOTAL_SIZE);
+		return 0;
+	}
+	/* Verify by reading the device ID from the EEPROM. */
+	outw(EEPROM_Read + 7, ioaddr + Wn0EepromCmd);
+	/* Pause for at least 162 us. for the read to take place. */
+	for (timer = 4; timer >= 0; timer--) {
+		udelay(162);
+		if ((inw(ioaddr + Wn0EepromCmd) & 0x0200) == 0)
+			break;
+	}
+	if (inw(ioaddr + Wn0EepromData) != 0x6d50) {
+		release_region(ioaddr, CORKSCREW_TOTAL_SIZE);
+		return 0;
+	}
+	return 1;
+}
+
+static void cleanup_card(struct net_device *dev)
+{
+	struct corkscrew_private *vp = netdev_priv(dev);
+	list_del_init(&vp->list);
+	if (dev->dma)
+		free_dma(dev->dma);
+	outw(TotalReset, dev->base_addr + EL3_CMD);
+	release_region(dev->base_addr, CORKSCREW_TOTAL_SIZE);
+	if (vp->dev)
+		pnp_device_detach(to_pnp_dev(vp->dev));
+}
+
+static struct net_device *corkscrew_scan(int unit)
+{
+	struct net_device *dev;
+	static int cards_found = 0;
+	static int ioaddr;
+	int err;
+#ifdef __ISAPNP__
+	short i;
+	static int pnp_cards;
+#endif
+
+	dev = alloc_etherdev(sizeof(struct corkscrew_private));
+	if (!dev)
+		return ERR_PTR(-ENOMEM);
+
+	if (unit >= 0) {
+		sprintf(dev->name, "eth%d", unit);
+		netdev_boot_setup_check(dev);
+	}
+
+#ifdef __ISAPNP__
+	if(nopnp == 1)
+		goto no_pnp;
+	for(i=0; corkscrew_isapnp_adapters[i].vendor != 0; i++) {
+		struct pnp_dev *idev = NULL;
+		int irq;
+		while((idev = pnp_find_dev(NULL,
+					   corkscrew_isapnp_adapters[i].vendor,
+					   corkscrew_isapnp_adapters[i].function,
+					   idev))) {
+
+			if (pnp_device_attach(idev) < 0)
+				continue;
+			if (pnp_activate_dev(idev) < 0) {
+				pr_warn("pnp activate failed (out of resources?)\n");
+				pnp_device_detach(idev);
+				continue;
+			}
+			if (!pnp_port_valid(idev, 0) || !pnp_irq_valid(idev, 0)) {
+				pnp_device_detach(idev);
+				continue;
+			}
+			ioaddr = pnp_port_start(idev, 0);
+			irq = pnp_irq(idev, 0);
+			if (!check_device(ioaddr)) {
+				pnp_device_detach(idev);
+				continue;
+			}
+			if(corkscrew_debug)
+				pr_debug("ISAPNP reports %s at i/o 0x%x, irq %d\n",
+					(char*) corkscrew_isapnp_adapters[i].driver_data, ioaddr, irq);
+			pr_info("3c515 Resource configuration register %#4.4x, DCR %4.4x.\n",
+		     		inl(ioaddr + 0x2002), inw(ioaddr + 0x2000));
+			/* irq = inw(ioaddr + 0x2002) & 15; */ /* Use the irq from isapnp */
+			SET_NETDEV_DEV(dev, &idev->dev);
+			pnp_cards++;
+			err = corkscrew_setup(dev, ioaddr, idev, cards_found++);
+			if (!err)
+				return dev;
+			cleanup_card(dev);
+		}
+	}
+no_pnp:
+#endif /* __ISAPNP__ */
+
+	/* Check all locations on the ISA bus -- evil! */
+	for (ioaddr = 0x100; ioaddr < 0x400; ioaddr += 0x20) {
+		if (!check_device(ioaddr))
+			continue;
+
+		pr_info("3c515 Resource configuration register %#4.4x, DCR %4.4x.\n",
+		     inl(ioaddr + 0x2002), inw(ioaddr + 0x2000));
+		err = corkscrew_setup(dev, ioaddr, NULL, cards_found++);
+		if (!err)
+			return dev;
+		cleanup_card(dev);
+	}
+	free_netdev(dev);
+	return NULL;
+}
+
+
+static const struct net_device_ops netdev_ops = {
+	.ndo_open		= corkscrew_open,
+	.ndo_stop		= corkscrew_close,
+	.ndo_start_xmit		= corkscrew_start_xmit,
+	.ndo_tx_timeout		= corkscrew_timeout,
+	.ndo_get_stats		= corkscrew_get_stats,
+	.ndo_set_rx_mode	= set_rx_mode,
+	.ndo_set_mac_address 	= eth_mac_addr,
+	.ndo_validate_addr	= eth_validate_addr,
+};
+
+
+static int corkscrew_setup(struct net_device *dev, int ioaddr,
+			    struct pnp_dev *idev, int card_number)
+{
+	struct corkscrew_private *vp = netdev_priv(dev);
+	unsigned int eeprom[0x40], checksum = 0;	/* EEPROM contents */
+	__be16 addr[ETH_ALEN / 2];
+	int i;
+	int irq;
+
+#ifdef __ISAPNP__
+	if (idev) {
+		irq = pnp_irq(idev, 0);
+		vp->dev = &idev->dev;
+	} else {
+		irq = inw(ioaddr + 0x2002) & 15;
+	}
+#else
+	irq = inw(ioaddr + 0x2002) & 15;
+#endif
+
+	dev->base_addr = ioaddr;
+	dev->irq = irq;
+	dev->dma = inw(ioaddr + 0x2000) & 7;
+	vp->product_name = "3c515";
+	vp->options = dev->mem_start;
+	vp->our_dev = dev;
+
+	if (!vp->options) {
+		 if (card_number >= MAX_UNITS)
+			vp->options = -1;
+		else
+			vp->options = options[card_number];
+	}
+
+	if (vp->options >= 0) {
+		vp->media_override = vp->options & 7;
+		if (vp->media_override == 2)
+			vp->media_override = 0;
+		vp->full_duplex = (vp->options & 8) ? 1 : 0;
+		vp->bus_master = (vp->options & 16) ? 1 : 0;
+	} else {
+		vp->media_override = 7;
+		vp->full_duplex = 0;
+		vp->bus_master = 0;
+	}
+#ifdef MODULE
+	list_add(&vp->list, &root_corkscrew_dev);
+#endif
+
+	pr_info("%s: 3Com %s at %#3x,", dev->name, vp->product_name, ioaddr);
+
+	spin_lock_init(&vp->lock);
+
+	timer_setup(&vp->timer, corkscrew_timer, 0);
+
+	/* Read the station address from the EEPROM. */
+	EL3WINDOW(0);
+	for (i = 0; i < 0x18; i++) {
+		int timer;
+		outw(EEPROM_Read + i, ioaddr + Wn0EepromCmd);
+		/* Pause for at least 162 us. for the read to take place. */
+		for (timer = 4; timer >= 0; timer--) {
+			udelay(162);
+			if ((inw(ioaddr + Wn0EepromCmd) & 0x0200) == 0)
+				break;
+		}
+		eeprom[i] = inw(ioaddr + Wn0EepromData);
+		checksum ^= eeprom[i];
+		if (i < 3)
+			addr[i] = htons(eeprom[i]);
+	}
+	eth_hw_addr_set(dev, (u8 *)addr);
+	checksum = (checksum ^ (checksum >> 8)) & 0xff;
+	if (checksum != 0x00)
+		pr_cont(" ***INVALID CHECKSUM %4.4x*** ", checksum);
+	pr_cont(" %pM", dev->dev_addr);
+	if (eeprom[16] == 0x11c7) {	/* Corkscrew */
+		if (request_dma(dev->dma, "3c515")) {
+			pr_cont(", DMA %d allocation failed", dev->dma);
+			dev->dma = 0;
+		} else
+			pr_cont(", DMA %d", dev->dma);
+	}
+	pr_cont(", IRQ %d\n", dev->irq);
+	/* Tell them about an invalid IRQ. */
+	if (corkscrew_debug && (dev->irq <= 0 || dev->irq > 15))
+		pr_warn(" *** Warning: this IRQ is unlikely to work! ***\n");
+
+	{
+		static const char * const ram_split[] = {
+			"5:3", "3:1", "1:1", "3:5"
+		};
+		__u32 config;
+		EL3WINDOW(3);
+		vp->available_media = inw(ioaddr + Wn3_Options);
+		config = inl(ioaddr + Wn3_Config);
+		if (corkscrew_debug > 1)
+			pr_info("  Internal config register is %4.4x, transceivers %#x.\n",
+				config, inw(ioaddr + Wn3_Options));
+		pr_info("  %dK %s-wide RAM %s Rx:Tx split, %s%s interface.\n",
+			8 << config & Ram_size,
+			config & Ram_width ? "word" : "byte",
+			ram_split[(config & Ram_split) >> Ram_split_shift],
+			config & Autoselect ? "autoselect/" : "",
+			media_tbl[(config & Xcvr) >> Xcvr_shift].name);
+		vp->default_media = (config & Xcvr) >> Xcvr_shift;
+		vp->autoselect = config & Autoselect ? 1 : 0;
+		dev->if_port = vp->default_media;
+	}
+	if (vp->media_override != 7) {
+		pr_info("  Media override to transceiver type %d (%s).\n",
+		       vp->media_override,
+		       media_tbl[vp->media_override].name);
+		dev->if_port = vp->media_override;
+	}
+
+	vp->capabilities = eeprom[16];
+	vp->full_bus_master_tx = (vp->capabilities & 0x20) ? 1 : 0;
+	/* Rx is broken at 10mbps, so we always disable it. */
+	/* vp->full_bus_master_rx = 0; */
+	vp->full_bus_master_rx = (vp->capabilities & 0x20) ? 1 : 0;
+
+	/* The 3c51x-specific entries in the device structure. */
+	dev->netdev_ops = &netdev_ops;
+	dev->watchdog_timeo = (400 * HZ) / 1000;
+	dev->ethtool_ops = &netdev_ethtool_ops;
+
+	return register_netdev(dev);
+}
+
+
+static int corkscrew_open(struct net_device *dev)
+{
+	int ioaddr = dev->base_addr;
+	struct corkscrew_private *vp = netdev_priv(dev);
+	bool armtimer = false;
+	__u32 config;
+	int i;
+
+	/* Before initializing select the active media port. */
+	EL3WINDOW(3);
+	if (vp->full_duplex)
+		outb(0x20, ioaddr + Wn3_MAC_Ctrl);	/* Set the full-duplex bit. */
+	config = inl(ioaddr + Wn3_Config);
+
+	if (vp->media_override != 7) {
+		if (corkscrew_debug > 1)
+			pr_info("%s: Media override to transceiver %d (%s).\n",
+				dev->name, vp->media_override,
+				media_tbl[vp->media_override].name);
+		dev->if_port = vp->media_override;
+	} else if (vp->autoselect) {
+		/* Find first available media type, starting with 100baseTx. */
+		dev->if_port = 4;
+		while (!(vp->available_media & media_tbl[dev->if_port].mask))
+			dev->if_port = media_tbl[dev->if_port].next;
+
+		if (corkscrew_debug > 1)
+			pr_debug("%s: Initial media type %s.\n",
+			       dev->name, media_tbl[dev->if_port].name);
+		armtimer = true;
+	} else
+		dev->if_port = vp->default_media;
+
+	config = (config & ~Xcvr) | (dev->if_port << Xcvr_shift);
+	outl(config, ioaddr + Wn3_Config);
+
+	if (corkscrew_debug > 1) {
+		pr_debug("%s: corkscrew_open() InternalConfig %8.8x.\n",
+		       dev->name, config);
+	}
+
+	outw(TxReset, ioaddr + EL3_CMD);
+	for (i = 20; i >= 0; i--)
+		if (!(inw(ioaddr + EL3_STATUS) & CmdInProgress))
+			break;
+
+	outw(RxReset, ioaddr + EL3_CMD);
+	/* Wait a few ticks for the RxReset command to complete. */
+	for (i = 20; i >= 0; i--)
+		if (!(inw(ioaddr + EL3_STATUS) & CmdInProgress))
+			break;
+
+	outw(SetStatusEnb | 0x00, ioaddr + EL3_CMD);
+
+	/* Use the now-standard shared IRQ implementation. */
+	if (vp->capabilities == 0x11c7) {
+		/* Corkscrew: Cannot share ISA resources. */
+		if (dev->irq == 0 ||
+		    dev->dma == 0 ||
+		    request_irq(dev->irq, corkscrew_interrupt, 0,
+				vp->product_name, dev))
+			return -EAGAIN;
+		enable_dma(dev->dma);
+		set_dma_mode(dev->dma, DMA_MODE_CASCADE);
+	} else if (request_irq(dev->irq, corkscrew_interrupt, IRQF_SHARED,
+			       vp->product_name, dev)) {
+		return -EAGAIN;
+	}
+
+	if (armtimer)
+		mod_timer(&vp->timer, jiffies + media_tbl[dev->if_port].wait);
+
+	if (corkscrew_debug > 1) {
+		EL3WINDOW(4);
+		pr_debug("%s: corkscrew_open() irq %d media status %4.4x.\n",
+		       dev->name, dev->irq, inw(ioaddr + Wn4_Media));
+	}
+
+	/* Set the station address and mask in window 2 each time opened. */
+	EL3WINDOW(2);
+	for (i = 0; i < 6; i++)
+		outb(dev->dev_addr[i], ioaddr + i);
+	for (; i < 12; i += 2)
+		outw(0, ioaddr + i);
+
+	if (dev->if_port == 3)
+		/* Start the thinnet transceiver. We should really wait 50ms... */
+		outw(StartCoax, ioaddr + EL3_CMD);
+	EL3WINDOW(4);
+	outw((inw(ioaddr + Wn4_Media) & ~(Media_10TP | Media_SQE)) |
+	     media_tbl[dev->if_port].media_bits, ioaddr + Wn4_Media);
+
+	/* Switch to the stats window, and clear all stats by reading. */
+	outw(StatsDisable, ioaddr + EL3_CMD);
+	EL3WINDOW(6);
+	for (i = 0; i < 10; i++)
+		inb(ioaddr + i);
+	inw(ioaddr + 10);
+	inw(ioaddr + 12);
+	/* New: On the Vortex we must also clear the BadSSD counter. */
+	EL3WINDOW(4);
+	inb(ioaddr + 12);
+	/* ..and on the Boomerang we enable the extra statistics bits. */
+	outw(0x0040, ioaddr + Wn4_NetDiag);
+
+	/* Switch to register set 7 for normal use. */
+	EL3WINDOW(7);
+
+	if (vp->full_bus_master_rx) {	/* Boomerang bus master. */
+		vp->cur_rx = vp->dirty_rx = 0;
+		if (corkscrew_debug > 2)
+			pr_debug("%s:  Filling in the Rx ring.\n", dev->name);
+		for (i = 0; i < RX_RING_SIZE; i++) {
+			struct sk_buff *skb;
+			if (i < (RX_RING_SIZE - 1))
+				vp->rx_ring[i].next =
+				    isa_virt_to_bus(&vp->rx_ring[i + 1]);
+			else
+				vp->rx_ring[i].next = 0;
+			vp->rx_ring[i].status = 0;	/* Clear complete bit. */
+			vp->rx_ring[i].length = PKT_BUF_SZ | 0x80000000;
+			skb = netdev_alloc_skb(dev, PKT_BUF_SZ);
+			vp->rx_skbuff[i] = skb;
+			if (skb == NULL)
+				break;	/* Bad news!  */
+			skb_reserve(skb, 2);	/* Align IP on 16 byte boundaries */
+			vp->rx_ring[i].addr = isa_virt_to_bus(skb->data);
+		}
+		if (i != 0)
+			vp->rx_ring[i - 1].next =
+				isa_virt_to_bus(&vp->rx_ring[0]);	/* Wrap the ring. */
+		outl(isa_virt_to_bus(&vp->rx_ring[0]), ioaddr + UpListPtr);
+	}
+	if (vp->full_bus_master_tx) {	/* Boomerang bus master Tx. */
+		vp->cur_tx = vp->dirty_tx = 0;
+		outb(PKT_BUF_SZ >> 8, ioaddr + TxFreeThreshold);	/* Room for a packet. */
+		/* Clear the Tx ring. */
+		for (i = 0; i < TX_RING_SIZE; i++)
+			vp->tx_skbuff[i] = NULL;
+		outl(0, ioaddr + DownListPtr);
+	}
+	/* Set receiver mode: presumably accept b-case and phys addr only. */
+	set_rx_mode(dev);
+	outw(StatsEnable, ioaddr + EL3_CMD);	/* Turn on statistics. */
+
+	netif_start_queue(dev);
+
+	outw(RxEnable, ioaddr + EL3_CMD);	/* Enable the receiver. */
+	outw(TxEnable, ioaddr + EL3_CMD);	/* Enable transmitter. */
+	/* Allow status bits to be seen. */
+	outw(SetStatusEnb | AdapterFailure | IntReq | StatsFull |
+	     (vp->full_bus_master_tx ? DownComplete : TxAvailable) |
+	     (vp->full_bus_master_rx ? UpComplete : RxComplete) |
+	     (vp->bus_master ? DMADone : 0), ioaddr + EL3_CMD);
+	/* Ack all pending events, and set active indicator mask. */
+	outw(AckIntr | IntLatch | TxAvailable | RxEarly | IntReq,
+	     ioaddr + EL3_CMD);
+	outw(SetIntrEnb | IntLatch | TxAvailable | RxComplete | StatsFull
+	     | (vp->bus_master ? DMADone : 0) | UpComplete | DownComplete,
+	     ioaddr + EL3_CMD);
+
+	return 0;
+}
+
+static void corkscrew_timer(struct timer_list *t)
+{
+#ifdef AUTOMEDIA
+	struct corkscrew_private *vp = from_timer(vp, t, timer);
+	struct net_device *dev = vp->our_dev;
+	int ioaddr = dev->base_addr;
+	unsigned long flags;
+	int ok = 0;
+
+	if (corkscrew_debug > 1)
+		pr_debug("%s: Media selection timer tick happened, %s.\n",
+		       dev->name, media_tbl[dev->if_port].name);
+
+	spin_lock_irqsave(&vp->lock, flags);
+
+	{
+		int old_window = inw(ioaddr + EL3_CMD) >> 13;
+		int media_status;
+		EL3WINDOW(4);
+		media_status = inw(ioaddr + Wn4_Media);
+		switch (dev->if_port) {
+		case 0:
+		case 4:
+		case 5:	/* 10baseT, 100baseTX, 100baseFX  */
+			if (media_status & Media_LnkBeat) {
+				ok = 1;
+				if (corkscrew_debug > 1)
+					pr_debug("%s: Media %s has link beat, %x.\n",
+						dev->name,
+						media_tbl[dev->if_port].name,
+						media_status);
+			} else if (corkscrew_debug > 1)
+				pr_debug("%s: Media %s is has no link beat, %x.\n",
+					dev->name,
+					media_tbl[dev->if_port].name,
+					media_status);
+
+			break;
+		default:	/* Other media types handled by Tx timeouts. */
+			if (corkscrew_debug > 1)
+				pr_debug("%s: Media %s is has no indication, %x.\n",
+					dev->name,
+					media_tbl[dev->if_port].name,
+					media_status);
+			ok = 1;
+		}
+		if (!ok) {
+			__u32 config;
+
+			do {
+				dev->if_port =
+				    media_tbl[dev->if_port].next;
+			}
+			while (!(vp->available_media & media_tbl[dev->if_port].mask));
+
+			if (dev->if_port == 8) {	/* Go back to default. */
+				dev->if_port = vp->default_media;
+				if (corkscrew_debug > 1)
+					pr_debug("%s: Media selection failing, using default %s port.\n",
+						dev->name,
+						media_tbl[dev->if_port].name);
+			} else {
+				if (corkscrew_debug > 1)
+					pr_debug("%s: Media selection failed, now trying %s port.\n",
+						dev->name,
+						media_tbl[dev->if_port].name);
+				vp->timer.expires = jiffies + media_tbl[dev->if_port].wait;
+				add_timer(&vp->timer);
+			}
+			outw((media_status & ~(Media_10TP | Media_SQE)) |
+			     media_tbl[dev->if_port].media_bits,
+			     ioaddr + Wn4_Media);
+
+			EL3WINDOW(3);
+			config = inl(ioaddr + Wn3_Config);
+			config = (config & ~Xcvr) | (dev->if_port << Xcvr_shift);
+			outl(config, ioaddr + Wn3_Config);
+
+			outw(dev->if_port == 3 ? StartCoax : StopCoax,
+			     ioaddr + EL3_CMD);
+		}
+		EL3WINDOW(old_window);
+	}
+
+	spin_unlock_irqrestore(&vp->lock, flags);
+	if (corkscrew_debug > 1)
+		pr_debug("%s: Media selection timer finished, %s.\n",
+		       dev->name, media_tbl[dev->if_port].name);
+
+#endif				/* AUTOMEDIA */
+}
+
+static void corkscrew_timeout(struct net_device *dev, unsigned int txqueue)
+{
+	int i;
+	struct corkscrew_private *vp = netdev_priv(dev);
+	int ioaddr = dev->base_addr;
+
+	pr_warn("%s: transmit timed out, tx_status %2.2x status %4.4x\n",
+		dev->name, inb(ioaddr + TxStatus),
+		inw(ioaddr + EL3_STATUS));
+	/* Slight code bloat to be user friendly. */
+	if ((inb(ioaddr + TxStatus) & 0x88) == 0x88)
+		pr_warn("%s: Transmitter encountered 16 collisions -- network cable problem?\n",
+			dev->name);
+#ifndef final_version
+	pr_debug("  Flags; bus-master %d, full %d; dirty %d current %d.\n",
+	       vp->full_bus_master_tx, vp->tx_full, vp->dirty_tx,
+	       vp->cur_tx);
+	pr_debug("  Down list %8.8x vs. %p.\n", inl(ioaddr + DownListPtr),
+	       &vp->tx_ring[0]);
+	for (i = 0; i < TX_RING_SIZE; i++) {
+		pr_debug("  %d: %p  length %8.8x status %8.8x\n", i,
+		       &vp->tx_ring[i],
+		       vp->tx_ring[i].length, vp->tx_ring[i].status);
+	}
+#endif
+	/* Issue TX_RESET and TX_START commands. */
+	outw(TxReset, ioaddr + EL3_CMD);
+	for (i = 20; i >= 0; i--)
+		if (!(inw(ioaddr + EL3_STATUS) & CmdInProgress))
+			break;
+	outw(TxEnable, ioaddr + EL3_CMD);
+	netif_trans_update(dev); /* prevent tx timeout */
+	dev->stats.tx_errors++;
+	dev->stats.tx_dropped++;
+	netif_wake_queue(dev);
+}
+
+static netdev_tx_t corkscrew_start_xmit(struct sk_buff *skb,
+					struct net_device *dev)
+{
+	struct corkscrew_private *vp = netdev_priv(dev);
+	int ioaddr = dev->base_addr;
+
+	/* Block a timer-based transmit from overlapping. */
+
+	netif_stop_queue(dev);
+
+	if (vp->full_bus_master_tx) {	/* BOOMERANG bus-master */
+		/* Calculate the next Tx descriptor entry. */
+		int entry = vp->cur_tx % TX_RING_SIZE;
+		struct boom_tx_desc *prev_entry;
+		unsigned long flags;
+		int i;
+
+		if (vp->tx_full)	/* No room to transmit with */
+			return NETDEV_TX_BUSY;
+		if (vp->cur_tx != 0)
+			prev_entry = &vp->tx_ring[(vp->cur_tx - 1) % TX_RING_SIZE];
+		else
+			prev_entry = NULL;
+		if (corkscrew_debug > 3)
+			pr_debug("%s: Trying to send a packet, Tx index %d.\n",
+				dev->name, vp->cur_tx);
+		/* vp->tx_full = 1; */
+		vp->tx_skbuff[entry] = skb;
+		vp->tx_ring[entry].next = 0;
+		vp->tx_ring[entry].addr = isa_virt_to_bus(skb->data);
+		vp->tx_ring[entry].length = skb->len | 0x80000000;
+		vp->tx_ring[entry].status = skb->len | 0x80000000;
+
+		spin_lock_irqsave(&vp->lock, flags);
+		outw(DownStall, ioaddr + EL3_CMD);
+		/* Wait for the stall to complete. */
+		for (i = 20; i >= 0; i--)
+			if ((inw(ioaddr + EL3_STATUS) & CmdInProgress) == 0)
+				break;
+		if (prev_entry)
+			prev_entry->next = isa_virt_to_bus(&vp->tx_ring[entry]);
+		if (inl(ioaddr + DownListPtr) == 0) {
+			outl(isa_virt_to_bus(&vp->tx_ring[entry]),
+			     ioaddr + DownListPtr);
+			queued_packet++;
+		}
+		outw(DownUnstall, ioaddr + EL3_CMD);
+		spin_unlock_irqrestore(&vp->lock, flags);
+
+		vp->cur_tx++;
+		if (vp->cur_tx - vp->dirty_tx > TX_RING_SIZE - 1)
+			vp->tx_full = 1;
+		else {		/* Clear previous interrupt enable. */
+			if (prev_entry)
+				prev_entry->status &= ~0x80000000;
+			netif_wake_queue(dev);
+		}
+		return NETDEV_TX_OK;
+	}
+	/* Put out the doubleword header... */
+	outl(skb->len, ioaddr + TX_FIFO);
+	dev->stats.tx_bytes += skb->len;
+#ifdef VORTEX_BUS_MASTER
+	if (vp->bus_master) {
+		/* Set the bus-master controller to transfer the packet. */
+		outl(isa_virt_to_bus(skb->data), ioaddr + Wn7_MasterAddr);
+		outw((skb->len + 3) & ~3, ioaddr + Wn7_MasterLen);
+		vp->tx_skb = skb;
+		outw(StartDMADown, ioaddr + EL3_CMD);
+		/* queue will be woken at the DMADone interrupt. */
+	} else {
+		/* ... and the packet rounded to a doubleword. */
+		outsl(ioaddr + TX_FIFO, skb->data, (skb->len + 3) >> 2);
+		dev_kfree_skb(skb);
+		if (inw(ioaddr + TxFree) > 1536) {
+			netif_wake_queue(dev);
+		} else
+			/* Interrupt us when the FIFO has room for max-sized packet. */
+			outw(SetTxThreshold + (1536 >> 2),
+			     ioaddr + EL3_CMD);
+	}
+#else
+	/* ... and the packet rounded to a doubleword. */
+	outsl(ioaddr + TX_FIFO, skb->data, (skb->len + 3) >> 2);
+	dev_kfree_skb(skb);
+	if (inw(ioaddr + TxFree) > 1536) {
+		netif_wake_queue(dev);
+	} else
+		/* Interrupt us when the FIFO has room for max-sized packet. */
+		outw(SetTxThreshold + (1536 >> 2), ioaddr + EL3_CMD);
+#endif				/* bus master */
+
+
+	/* Clear the Tx status stack. */
+	{
+		short tx_status;
+		int i = 4;
+
+		while (--i > 0 && (tx_status = inb(ioaddr + TxStatus)) > 0) {
+			if (tx_status & 0x3C) {	/* A Tx-disabling error occurred.  */
+				if (corkscrew_debug > 2)
+					pr_debug("%s: Tx error, status %2.2x.\n",
+						dev->name, tx_status);
+				if (tx_status & 0x04)
+					dev->stats.tx_fifo_errors++;
+				if (tx_status & 0x38)
+					dev->stats.tx_aborted_errors++;
+				if (tx_status & 0x30) {
+					int j;
+					outw(TxReset, ioaddr + EL3_CMD);
+					for (j = 20; j >= 0; j--)
+						if (!(inw(ioaddr + EL3_STATUS) & CmdInProgress))
+							break;
+				}
+				outw(TxEnable, ioaddr + EL3_CMD);
+			}
+			outb(0x00, ioaddr + TxStatus);	/* Pop the status stack. */
+		}
+	}
+	return NETDEV_TX_OK;
+}
+
+/* The interrupt handler does all of the Rx thread work and cleans up
+   after the Tx thread. */
+
+static irqreturn_t corkscrew_interrupt(int irq, void *dev_id)
+{
+	/* Use the now-standard shared IRQ implementation. */
+	struct net_device *dev = dev_id;
+	struct corkscrew_private *lp = netdev_priv(dev);
+	int ioaddr, status;
+	int latency;
+	int i = max_interrupt_work;
+
+	ioaddr = dev->base_addr;
+	latency = inb(ioaddr + Timer);
+
+	spin_lock(&lp->lock);
+
+	status = inw(ioaddr + EL3_STATUS);
+
+	if (corkscrew_debug > 4)
+		pr_debug("%s: interrupt, status %4.4x, timer %d.\n",
+			dev->name, status, latency);
+	if ((status & 0xE000) != 0xE000) {
+		static int donedidthis;
+		/* Some interrupt controllers store a bogus interrupt from boot-time.
+		   Ignore a single early interrupt, but don't hang the machine for
+		   other interrupt problems. */
+		if (donedidthis++ > 100) {
+			pr_err("%s: Bogus interrupt, bailing. Status %4.4x, start=%d.\n",
+				   dev->name, status, netif_running(dev));
+			free_irq(dev->irq, dev);
+			dev->irq = -1;
+		}
+	}
+
+	do {
+		if (corkscrew_debug > 5)
+			pr_debug("%s: In interrupt loop, status %4.4x.\n",
+			       dev->name, status);
+		if (status & RxComplete)
+			corkscrew_rx(dev);
+
+		if (status & TxAvailable) {
+			if (corkscrew_debug > 5)
+				pr_debug("	TX room bit was handled.\n");
+			/* There's room in the FIFO for a full-sized packet. */
+			outw(AckIntr | TxAvailable, ioaddr + EL3_CMD);
+			netif_wake_queue(dev);
+		}
+		if (status & DownComplete) {
+			unsigned int dirty_tx = lp->dirty_tx;
+
+			while (lp->cur_tx - dirty_tx > 0) {
+				int entry = dirty_tx % TX_RING_SIZE;
+				if (inl(ioaddr + DownListPtr) == isa_virt_to_bus(&lp->tx_ring[entry]))
+					break;	/* It still hasn't been processed. */
+				if (lp->tx_skbuff[entry]) {
+					dev_consume_skb_irq(lp->tx_skbuff[entry]);
+					lp->tx_skbuff[entry] = NULL;
+				}
+				dirty_tx++;
+			}
+			lp->dirty_tx = dirty_tx;
+			outw(AckIntr | DownComplete, ioaddr + EL3_CMD);
+			if (lp->tx_full && (lp->cur_tx - dirty_tx <= TX_RING_SIZE - 1)) {
+				lp->tx_full = 0;
+				netif_wake_queue(dev);
+			}
+		}
+#ifdef VORTEX_BUS_MASTER
+		if (status & DMADone) {
+			outw(0x1000, ioaddr + Wn7_MasterStatus);	/* Ack the event. */
+			dev_consume_skb_irq(lp->tx_skb);	/* Release the transferred buffer */
+			netif_wake_queue(dev);
+		}
+#endif
+		if (status & UpComplete) {
+			boomerang_rx(dev);
+			outw(AckIntr | UpComplete, ioaddr + EL3_CMD);
+		}
+		if (status & (AdapterFailure | RxEarly | StatsFull)) {
+			/* Handle all uncommon interrupts at once. */
+			if (status & RxEarly) {	/* Rx early is unused. */
+				corkscrew_rx(dev);
+				outw(AckIntr | RxEarly, ioaddr + EL3_CMD);
+			}
+			if (status & StatsFull) {	/* Empty statistics. */
+				static int DoneDidThat;
+				if (corkscrew_debug > 4)
+					pr_debug("%s: Updating stats.\n", dev->name);
+				update_stats(ioaddr, dev);
+				/* DEBUG HACK: Disable statistics as an interrupt source. */
+				/* This occurs when we have the wrong media type! */
+				if (DoneDidThat == 0 && inw(ioaddr + EL3_STATUS) & StatsFull) {
+					int win, reg;
+					pr_notice("%s: Updating stats failed, disabling stats as an interrupt source.\n",
+						dev->name);
+					for (win = 0; win < 8; win++) {
+						EL3WINDOW(win);
+						pr_notice("Vortex window %d:", win);
+						for (reg = 0; reg < 16; reg++)
+							pr_cont(" %2.2x", inb(ioaddr + reg));
+						pr_cont("\n");
+					}
+					EL3WINDOW(7);
+					outw(SetIntrEnb | TxAvailable |
+					     RxComplete | AdapterFailure |
+					     UpComplete | DownComplete |
+					     TxComplete, ioaddr + EL3_CMD);
+					DoneDidThat++;
+				}
+			}
+			if (status & AdapterFailure) {
+				/* Adapter failure requires Rx reset and reinit. */
+				outw(RxReset, ioaddr + EL3_CMD);
+				/* Set the Rx filter to the current state. */
+				set_rx_mode(dev);
+				outw(RxEnable, ioaddr + EL3_CMD);	/* Re-enable the receiver. */
+				outw(AckIntr | AdapterFailure,
+				     ioaddr + EL3_CMD);
+			}
+		}
+
+		if (--i < 0) {
+			pr_err("%s: Too much work in interrupt, status %4.4x. Disabling functions (%4.4x).\n",
+				dev->name, status, SetStatusEnb | ((~status) & 0x7FE));
+			/* Disable all pending interrupts. */
+			outw(SetStatusEnb | ((~status) & 0x7FE), ioaddr + EL3_CMD);
+			outw(AckIntr | 0x7FF, ioaddr + EL3_CMD);
+			break;
+		}
+		/* Acknowledge the IRQ. */
+		outw(AckIntr | IntReq | IntLatch, ioaddr + EL3_CMD);
+
+	} while ((status = inw(ioaddr + EL3_STATUS)) & (IntLatch | RxComplete));
+
+	spin_unlock(&lp->lock);
+
+	if (corkscrew_debug > 4)
+		pr_debug("%s: exiting interrupt, status %4.4x.\n", dev->name, status);
+	return IRQ_HANDLED;
+}
+
+static int corkscrew_rx(struct net_device *dev)
+{
+	int ioaddr = dev->base_addr;
+	int i;
+	short rx_status;
+
+	if (corkscrew_debug > 5)
+		pr_debug("   In rx_packet(), status %4.4x, rx_status %4.4x.\n",
+		     inw(ioaddr + EL3_STATUS), inw(ioaddr + RxStatus));
+	while ((rx_status = inw(ioaddr + RxStatus)) > 0) {
+		if (rx_status & 0x4000) {	/* Error, update stats. */
+			unsigned char rx_error = inb(ioaddr + RxErrors);
+			if (corkscrew_debug > 2)
+				pr_debug(" Rx error: status %2.2x.\n",
+				       rx_error);
+			dev->stats.rx_errors++;
+			if (rx_error & 0x01)
+				dev->stats.rx_over_errors++;
+			if (rx_error & 0x02)
+				dev->stats.rx_length_errors++;
+			if (rx_error & 0x04)
+				dev->stats.rx_frame_errors++;
+			if (rx_error & 0x08)
+				dev->stats.rx_crc_errors++;
+			if (rx_error & 0x10)
+				dev->stats.rx_length_errors++;
+		} else {
+			/* The packet length: up to 4.5K!. */
+			short pkt_len = rx_status & 0x1fff;
+			struct sk_buff *skb;
+
+			skb = netdev_alloc_skb(dev, pkt_len + 5 + 2);
+			if (corkscrew_debug > 4)
+				pr_debug("Receiving packet size %d status %4.4x.\n",
+				     pkt_len, rx_status);
+			if (skb != NULL) {
+				skb_reserve(skb, 2);	/* Align IP on 16 byte boundaries */
+				/* 'skb_put()' points to the start of sk_buff data area. */
+				insl(ioaddr + RX_FIFO,
+				     skb_put(skb, pkt_len),
+				     (pkt_len + 3) >> 2);
+				outw(RxDiscard, ioaddr + EL3_CMD);	/* Pop top Rx packet. */
+				skb->protocol = eth_type_trans(skb, dev);
+				netif_rx(skb);
+				dev->stats.rx_packets++;
+				dev->stats.rx_bytes += pkt_len;
+				/* Wait a limited time to go to next packet. */
+				for (i = 200; i >= 0; i--)
+					if (! (inw(ioaddr + EL3_STATUS) & CmdInProgress))
+						break;
+				continue;
+			} else if (corkscrew_debug)
+				pr_debug("%s: Couldn't allocate a sk_buff of size %d.\n", dev->name, pkt_len);
+		}
+		outw(RxDiscard, ioaddr + EL3_CMD);
+		dev->stats.rx_dropped++;
+		/* Wait a limited time to skip this packet. */
+		for (i = 200; i >= 0; i--)
+			if (!(inw(ioaddr + EL3_STATUS) & CmdInProgress))
+				break;
+	}
+	return 0;
+}
+
+static int boomerang_rx(struct net_device *dev)
+{
+	struct corkscrew_private *vp = netdev_priv(dev);
+	int entry = vp->cur_rx % RX_RING_SIZE;
+	int ioaddr = dev->base_addr;
+	int rx_status;
+
+	if (corkscrew_debug > 5)
+		pr_debug("   In boomerang_rx(), status %4.4x, rx_status %4.4x.\n",
+			inw(ioaddr + EL3_STATUS), inw(ioaddr + RxStatus));
+	while ((rx_status = vp->rx_ring[entry].status) & RxDComplete) {
+		if (rx_status & RxDError) {	/* Error, update stats. */
+			unsigned char rx_error = rx_status >> 16;
+			if (corkscrew_debug > 2)
+				pr_debug(" Rx error: status %2.2x.\n",
+				       rx_error);
+			dev->stats.rx_errors++;
+			if (rx_error & 0x01)
+				dev->stats.rx_over_errors++;
+			if (rx_error & 0x02)
+				dev->stats.rx_length_errors++;
+			if (rx_error & 0x04)
+				dev->stats.rx_frame_errors++;
+			if (rx_error & 0x08)
+				dev->stats.rx_crc_errors++;
+			if (rx_error & 0x10)
+				dev->stats.rx_length_errors++;
+		} else {
+			/* The packet length: up to 4.5K!. */
+			short pkt_len = rx_status & 0x1fff;
+			struct sk_buff *skb;
+
+			dev->stats.rx_bytes += pkt_len;
+			if (corkscrew_debug > 4)
+				pr_debug("Receiving packet size %d status %4.4x.\n",
+				     pkt_len, rx_status);
+
+			/* Check if the packet is long enough to just accept without
+			   copying to a properly sized skbuff. */
+			if (pkt_len < rx_copybreak &&
+			    (skb = netdev_alloc_skb(dev, pkt_len + 4)) != NULL) {
+				skb_reserve(skb, 2);	/* Align IP on 16 byte boundaries */
+				/* 'skb_put()' points to the start of sk_buff data area. */
+				skb_put_data(skb,
+					     isa_bus_to_virt(vp->rx_ring[entry].addr),
+					     pkt_len);
+				rx_copy++;
+			} else {
+				void *temp;
+				/* Pass up the skbuff already on the Rx ring. */
+				skb = vp->rx_skbuff[entry];
+				vp->rx_skbuff[entry] = NULL;
+				temp = skb_put(skb, pkt_len);
+				/* Remove this checking code for final release. */
+				if (isa_bus_to_virt(vp->rx_ring[entry].addr) != temp)
+					pr_warn("%s: Warning -- the skbuff addresses do not match in boomerang_rx: %p vs. %p / %p\n",
+						dev->name,
+						isa_bus_to_virt(vp->rx_ring[entry].addr),
+						skb->head, temp);
+				rx_nocopy++;
+			}
+			skb->protocol = eth_type_trans(skb, dev);
+			netif_rx(skb);
+			dev->stats.rx_packets++;
+		}
+		entry = (++vp->cur_rx) % RX_RING_SIZE;
+	}
+	/* Refill the Rx ring buffers. */
+	for (; vp->cur_rx - vp->dirty_rx > 0; vp->dirty_rx++) {
+		struct sk_buff *skb;
+		entry = vp->dirty_rx % RX_RING_SIZE;
+		if (vp->rx_skbuff[entry] == NULL) {
+			skb = netdev_alloc_skb(dev, PKT_BUF_SZ);
+			if (skb == NULL)
+				break;	/* Bad news!  */
+			skb_reserve(skb, 2);	/* Align IP on 16 byte boundaries */
+			vp->rx_ring[entry].addr = isa_virt_to_bus(skb->data);
+			vp->rx_skbuff[entry] = skb;
+		}
+		vp->rx_ring[entry].status = 0;	/* Clear complete bit. */
+	}
+	return 0;
+}
+
+static int corkscrew_close(struct net_device *dev)
+{
+	struct corkscrew_private *vp = netdev_priv(dev);
+	int ioaddr = dev->base_addr;
+	int i;
+
+	netif_stop_queue(dev);
+
+	if (corkscrew_debug > 1) {
+		pr_debug("%s: corkscrew_close() status %4.4x, Tx status %2.2x.\n",
+		     dev->name, inw(ioaddr + EL3_STATUS),
+		     inb(ioaddr + TxStatus));
+		pr_debug("%s: corkscrew close stats: rx_nocopy %d rx_copy %d tx_queued %d.\n",
+			dev->name, rx_nocopy, rx_copy, queued_packet);
+	}
+
+	del_timer_sync(&vp->timer);
+
+	/* Turn off statistics ASAP.  We update lp->stats below. */
+	outw(StatsDisable, ioaddr + EL3_CMD);
+
+	/* Disable the receiver and transmitter. */
+	outw(RxDisable, ioaddr + EL3_CMD);
+	outw(TxDisable, ioaddr + EL3_CMD);
+
+	if (dev->if_port == XCVR_10base2)
+		/* Turn off thinnet power.  Green! */
+		outw(StopCoax, ioaddr + EL3_CMD);
+
+	free_irq(dev->irq, dev);
+
+	outw(SetIntrEnb | 0x0000, ioaddr + EL3_CMD);
+
+	update_stats(ioaddr, dev);
+	if (vp->full_bus_master_rx) {	/* Free Boomerang bus master Rx buffers. */
+		outl(0, ioaddr + UpListPtr);
+		for (i = 0; i < RX_RING_SIZE; i++)
+			if (vp->rx_skbuff[i]) {
+				dev_kfree_skb(vp->rx_skbuff[i]);
+				vp->rx_skbuff[i] = NULL;
+			}
+	}
+	if (vp->full_bus_master_tx) {	/* Free Boomerang bus master Tx buffers. */
+		outl(0, ioaddr + DownListPtr);
+		for (i = 0; i < TX_RING_SIZE; i++)
+			if (vp->tx_skbuff[i]) {
+				dev_kfree_skb(vp->tx_skbuff[i]);
+				vp->tx_skbuff[i] = NULL;
+			}
+	}
+
+	return 0;
+}
+
+static struct net_device_stats *corkscrew_get_stats(struct net_device *dev)
+{
+	struct corkscrew_private *vp = netdev_priv(dev);
+	unsigned long flags;
+
+	if (netif_running(dev)) {
+		spin_lock_irqsave(&vp->lock, flags);
+		update_stats(dev->base_addr, dev);
+		spin_unlock_irqrestore(&vp->lock, flags);
+	}
+	return &dev->stats;
+}
+
+/*  Update statistics.
+	Unlike with the EL3 we need not worry about interrupts changing
+	the window setting from underneath us, but we must still guard
+	against a race condition with a StatsUpdate interrupt updating the
+	table.  This is done by checking that the ASM (!) code generated uses
+	atomic updates with '+='.
+	*/
+static void update_stats(int ioaddr, struct net_device *dev)
+{
+	/* Unlike the 3c5x9 we need not turn off stats updates while reading. */
+	/* Switch to the stats window, and read everything. */
+	EL3WINDOW(6);
+	dev->stats.tx_carrier_errors += inb(ioaddr + 0);
+	dev->stats.tx_heartbeat_errors += inb(ioaddr + 1);
+	/* Multiple collisions. */ inb(ioaddr + 2);
+	dev->stats.collisions += inb(ioaddr + 3);
+	dev->stats.tx_window_errors += inb(ioaddr + 4);
+	dev->stats.rx_fifo_errors += inb(ioaddr + 5);
+	dev->stats.tx_packets += inb(ioaddr + 6);
+	dev->stats.tx_packets += (inb(ioaddr + 9) & 0x30) << 4;
+						/* Rx packets   */ inb(ioaddr + 7);
+						/* Must read to clear */
+	/* Tx deferrals */ inb(ioaddr + 8);
+	/* Don't bother with register 9, an extension of registers 6&7.
+	   If we do use the 6&7 values the atomic update assumption above
+	   is invalid. */
+	inw(ioaddr + 10);	/* Total Rx and Tx octets. */
+	inw(ioaddr + 12);
+	/* New: On the Vortex we must also clear the BadSSD counter. */
+	EL3WINDOW(4);
+	inb(ioaddr + 12);
+
+	/* We change back to window 7 (not 1) with the Vortex. */
+	EL3WINDOW(7);
+}
+
+/* This new version of set_rx_mode() supports v1.4 kernels.
+   The Vortex chip has no documented multicast filter, so the only
+   multicast setting is to receive all multicast frames.  At least
+   the chip has a very clean way to set the mode, unlike many others. */
+static void set_rx_mode(struct net_device *dev)
+{
+	int ioaddr = dev->base_addr;
+	unsigned short new_mode;
+
+	if (dev->flags & IFF_PROMISC) {
+		if (corkscrew_debug > 3)
+			pr_debug("%s: Setting promiscuous mode.\n",
+			       dev->name);
+		new_mode = SetRxFilter | RxStation | RxMulticast | RxBroadcast | RxProm;
+	} else if (!netdev_mc_empty(dev) || dev->flags & IFF_ALLMULTI) {
+		new_mode = SetRxFilter | RxStation | RxMulticast | RxBroadcast;
+	} else
+		new_mode = SetRxFilter | RxStation | RxBroadcast;
+
+	outw(new_mode, ioaddr + EL3_CMD);
+}
+
+static void netdev_get_drvinfo(struct net_device *dev,
+			       struct ethtool_drvinfo *info)
+{
+	strlcpy(info->driver, DRV_NAME, sizeof(info->driver));
+	snprintf(info->bus_info, sizeof(info->bus_info), "ISA 0x%lx",
+		 dev->base_addr);
+}
+
+static u32 netdev_get_msglevel(struct net_device *dev)
+{
+	return corkscrew_debug;
+}
+
+static void netdev_set_msglevel(struct net_device *dev, u32 level)
+{
+	corkscrew_debug = level;
+}
+
+static const struct ethtool_ops netdev_ethtool_ops = {
+	.get_drvinfo		= netdev_get_drvinfo,
+	.get_msglevel		= netdev_get_msglevel,
+	.set_msglevel		= netdev_set_msglevel,
+};
+
+
+#ifdef MODULE
+void cleanup_module(void)
+{
+	while (!list_empty(&root_corkscrew_dev)) {
+		struct net_device *dev;
+		struct corkscrew_private *vp;
+
+		vp = list_entry(root_corkscrew_dev.next,
+				struct corkscrew_private, list);
+		dev = vp->our_dev;
+		unregister_netdev(dev);
+		cleanup_card(dev);
+		free_netdev(dev);
+	}
+}
+#endif				/* MODULE */

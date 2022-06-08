@@ -1,5 +1,1 @@
-I2C) \
-    $(wildcard include/config/I2C_SLAVE) \
-    $(wildcard include/config/I2C_BOARDINFO) \
-    $(wildcard include/config/I2C_MUX) \
-    $(wildcard include/c
+cmd_drivers/media/pci/cx18/cx18.ko := ld -r -m elf_i386 --build-id=sha1  -T scripts/module.lds -o drivers/media/pci/cx18/cx18.ko drivers/media/pci/cx18/cx18.o dri

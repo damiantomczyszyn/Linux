@@ -1,5 +1,9 @@
-g/VM_EVENT_COUNTERS) \
-    $(wildcard include/config/DEBUG_TLBFLUSH) \
-    $(wildcard include/config/DEBUG_VM_VMACACHE) \
-  include/linux/vm_event_item.h \
-    $(wildcard i
+d domains by considering the
+		 * cpuset configurations.
+		 */
+		cpuset_force_rebuild();
+	}
+	cpuset_update_active_cpus();
+}
+
+static int cpuset_cpu_inactive(unsigned int cpu

@@ -1,981 +1,4 @@
-IRQ) << LOCK_USAGE_READ_MASK;
-
-	return excl;
-}
-
-/*
- * Find the first pair of bit match between an original
- * usage mask and an exclusive usage mask.
- */
-static int find_exclusive_match(unsigned long mask,
-				unsigned long excl_mask,
-				enum lock_usage_bit *bitp,
-				enum lock_usage_bit *excl_bitp)
-{
-	int bit, excl, excl_read;
-
-	for_each_set_bit(bit, &mask, LOCK_USED) {
-		/*
-		 * exclusive_bit() strips the read bit, however,
-		 * LOCK_ENABLED_IRQ_*_READ may cause deadlocks too, so we need
-		 * to search excl | LOCK_USAGE_READ_MASK as well.
-		 */
-		excl = exclusive_bit(bit);
-		excl_read = excl | LOCK_USAGE_READ_MASK;
-		if (excl_mask & lock_flag(excl)) {
-			*bitp = bit;
-			*excl_bitp = excl;
-			return 0;
-		} else if (excl_mask & lock_flag(excl_read)) {
-			*bitp = bit;
-			*excl_bitp = excl_read;
-			return 0;
-		}
-	}
-	return -1;
-}
-
-/*
- * Prove that the new dependency does not connect a hardirq-safe(-read)
- * lock with a hardirq-unsafe lock - to achieve this we search
- * the backwards-subgraph starting at <prev>, and the
- * forwards-subgraph starting at <next>:
- */
-static int check_irq_usage(struct task_struct *curr, struct held_lock *prev,
-			   struct held_lock *next)
-{
-	unsigned long usage_mask = 0, forward_mask, backward_mask;
-	enum lock_usage_bit forward_bit = 0, backward_bit = 0;
-	struct lock_list *target_entry1;
-	struct lock_list *target_entry;
-	struct lock_list this, that;
-	enum bfs_result ret;
-
-	/*
-	 * Step 1: gather all hard/soft IRQs usages backward in an
-	 * accumulated usage mask.
-	 */
-	bfs_init_rootb(&this, prev);
-
-	ret = __bfs_backwards(&this, &usage_mask, usage_accumulate, usage_skip, NULL);
-	if (bfs_error(ret)) {
-		print_bfs_bug(ret);
-		return 0;
-	}
-
-	usage_mask &= LOCKF_USED_IN_IRQ_ALL;
-	if (!usage_mask)
-		return 1;
-
-	/*
-	 * Step 2: find exclusive uses forward that match the previous
-	 * backward accumulated mask.
-	 */
-	forward_mask = exclusive_mask(usage_mask);
-
-	bfs_init_root(&that, next);
-
-	ret = find_usage_forwards(&that, forward_mask, &target_entry1);
-	if (bfs_error(ret)) {
-		print_bfs_bug(ret);
-		return 0;
-	}
-	if (ret == BFS_RNOMATCH)
-		return 1;
-
-	/*
-	 * Step 3: we found a bad match! Now retrieve a lock from the backward
-	 * list whose usage mask matches the exclusive usage mask from the
-	 * lock found on the forward list.
-	 *
-	 * Note, we should only keep the LOCKF_ENABLED_IRQ_ALL bits, considering
-	 * the follow case:
-	 *
-	 * When trying to add A -> B to the graph, we find that there is a
-	 * hardirq-safe L, that L -> ... -> A, and another hardirq-unsafe M,
-	 * that B -> ... -> M. However M is **softirq-safe**, if we use exact
-	 * invert bits of M's usage_mask, we will find another lock N that is
-	 * **softirq-unsafe** and N -> ... -> A, however N -> .. -> M will not
-	 * cause a inversion deadlock.
-	 */
-	backward_mask = original_mask(target_entry1->class->usage_mask & LOCKF_ENABLED_IRQ_ALL);
-
-	ret = find_usage_backwards(&this, backward_mask, &target_entry);
-	if (bfs_error(ret)) {
-		print_bfs_bug(ret);
-		return 0;
-	}
-	if (DEBUG_LOCKS_WARN_ON(ret == BFS_RNOMATCH))
-		return 1;
-
-	/*
-	 * Step 4: narrow down to a pair of incompatible usage bits
-	 * and report it.
-	 */
-	ret = find_exclusive_match(target_entry->class->usage_mask,
-				   target_entry1->class->usage_mask,
-				   &backward_bit, &forward_bit);
-	if (DEBUG_LOCKS_WARN_ON(ret == -1))
-		return 1;
-
-	print_bad_irq_dependency(curr, &this, &that,
-				 target_entry, target_entry1,
-				 prev, next,
-				 backward_bit, forward_bit,
-				 state_name(backward_bit));
-
-	return 0;
-}
-
-#else
-
-static inline int check_irq_usage(struct task_struct *curr,
-				  struct held_lock *prev, struct held_lock *next)
-{
-	return 1;
-}
-
-static inline bool usage_skip(struct lock_list *entry, void *mask)
-{
-	return false;
-}
-
-#endif /* CONFIG_TRACE_IRQFLAGS */
-
-#ifdef CONFIG_LOCKDEP_SMALL
-/*
- * Check that the dependency graph starting at <src> can lead to
- * <target> or not. If it can, <src> -> <target> dependency is already
- * in the graph.
- *
- * Return BFS_RMATCH if it does, or BFS_RNOMATCH if it does not, return BFS_E* if
- * any error appears in the bfs search.
- */
-static noinline enum bfs_result
-check_redundant(struct held_lock *src, struct held_lock *target)
-{
-	enum bfs_result ret;
-	struct lock_list *target_entry;
-	struct lock_list src_entry;
-
-	bfs_init_root(&src_entry, src);
-	/*
-	 * Special setup for check_redundant().
-	 *
-	 * To report redundant, we need to find a strong dependency path that
-	 * is equal to or stronger than <src> -> <target>. So if <src> is E,
-	 * we need to let __bfs() only search for a path starting at a -(E*)->,
-	 * we achieve this by setting the initial node's ->only_xr to true in
-	 * that case. And if <prev> is S, we set initial ->only_xr to false
-	 * because both -(S*)-> (equal) and -(E*)-> (stronger) are redundant.
-	 */
-	src_entry.only_xr = src->read == 0;
-
-	debug_atomic_inc(nr_redundant_checks);
-
-	/*
-	 * Note: we skip local_lock() for redundant check, because as the
-	 * comment in usage_skip(), A -> local_lock() -> B and A -> B are not
-	 * the same.
-	 */
-	ret = check_path(target, &src_entry, hlock_equal, usage_skip, &target_entry);
-
-	if (ret == BFS_RMATCH)
-		debug_atomic_inc(nr_redundant);
-
-	return ret;
-}
-
-#else
-
-static inline enum bfs_result
-check_redundant(struct held_lock *src, struct held_lock *target)
-{
-	return BFS_RNOMATCH;
-}
-
-#endif
-
-static void inc_chains(int irq_context)
-{
-	if (irq_context & LOCK_CHAIN_HARDIRQ_CONTEXT)
-		nr_hardirq_chains++;
-	else if (irq_context & LOCK_CHAIN_SOFTIRQ_CONTEXT)
-		nr_softirq_chains++;
-	else
-		nr_process_chains++;
-}
-
-static void dec_chains(int irq_context)
-{
-	if (irq_context & LOCK_CHAIN_HARDIRQ_CONTEXT)
-		nr_hardirq_chains--;
-	else if (irq_context & LOCK_CHAIN_SOFTIRQ_CONTEXT)
-		nr_softirq_chains--;
-	else
-		nr_process_chains--;
-}
-
-static void
-print_deadlock_scenario(struct held_lock *nxt, struct held_lock *prv)
-{
-	struct lock_class *next = hlock_class(nxt);
-	struct lock_class *prev = hlock_class(prv);
-
-	printk(" Possible unsafe locking scenario:\n\n");
-	printk("       CPU0\n");
-	printk("       ----\n");
-	printk("  lock(");
-	__print_lock_name(prev);
-	printk(KERN_CONT ");\n");
-	printk("  lock(");
-	__print_lock_name(next);
-	printk(KERN_CONT ");\n");
-	printk("\n *** DEADLOCK ***\n\n");
-	printk(" May be due to missing lock nesting notation\n\n");
-}
-
-static void
-print_deadlock_bug(struct task_struct *curr, struct held_lock *prev,
-		   struct held_lock *next)
-{
-	if (!debug_locks_off_graph_unlock() || debug_locks_silent)
-		return;
-
-	pr_warn("\n");
-	pr_warn("============================================\n");
-	pr_warn("WARNING: possible recursive locking detected\n");
-	print_kernel_ident();
-	pr_warn("--------------------------------------------\n");
-	pr_warn("%s/%d is trying to acquire lock:\n",
-		curr->comm, task_pid_nr(curr));
-	print_lock(next);
-	pr_warn("\nbut task is already holding lock:\n");
-	print_lock(prev);
-
-	pr_warn("\nother info that might help us debug this:\n");
-	print_deadlock_scenario(next, prev);
-	lockdep_print_held_locks(curr);
-
-	pr_warn("\nstack backtrace:\n");
-	dump_stack();
-}
-
-/*
- * Check whether we are holding such a class already.
- *
- * (Note that this has to be done separately, because the graph cannot
- * detect such classes of deadlocks.)
- *
- * Returns: 0 on deadlock detected, 1 on OK, 2 if another lock with the same
- * lock class is held but nest_lock is also held, i.e. we rely on the
- * nest_lock to avoid the deadlock.
- */
-static int
-check_deadlock(struct task_struct *curr, struct held_lock *next)
-{
-	struct held_lock *prev;
-	struct held_lock *nest = NULL;
-	int i;
-
-	for (i = 0; i < curr->lockdep_depth; i++) {
-		prev = curr->held_locks + i;
-
-		if (prev->instance == next->nest_lock)
-			nest = prev;
-
-		if (hlock_class(prev) != hlock_class(next))
-			continue;
-
-		/*
-		 * Allow read-after-read recursion of the same
-		 * lock class (i.e. read_lock(lock)+read_lock(lock)):
-		 */
-		if ((next->read == 2) && prev->read)
-			continue;
-
-		/*
-		 * We're holding the nest_lock, which serializes this lock's
-		 * nesting behaviour.
-		 */
-		if (nest)
-			return 2;
-
-		print_deadlock_bug(curr, prev, next);
-		return 0;
-	}
-	return 1;
-}
-
-/*
- * There was a chain-cache miss, and we are about to add a new dependency
- * to a previous lock. We validate the following rules:
- *
- *  - would the adding of the <prev> -> <next> dependency create a
- *    circular dependency in the graph? [== circular deadlock]
- *
- *  - does the new prev->next dependency connect any hardirq-safe lock
- *    (in the full backwards-subgraph starting at <prev>) with any
- *    hardirq-unsafe lock (in the full forwards-subgraph starting at
- *    <next>)? [== illegal lock inversion with hardirq contexts]
- *
- *  - does the new prev->next dependency connect any softirq-safe lock
- *    (in the full backwards-subgraph starting at <prev>) with any
- *    softirq-unsafe lock (in the full forwards-subgraph starting at
- *    <next>)? [== illegal lock inversion with softirq contexts]
- *
- * any of these scenarios could lead to a deadlock.
- *
- * Then if all the validations pass, we add the forwards and backwards
- * dependency.
- */
-static int
-check_prev_add(struct task_struct *curr, struct held_lock *prev,
-	       struct held_lock *next, u16 distance,
-	       struct lock_trace **const trace)
-{
-	struct lock_list *entry;
-	enum bfs_result ret;
-
-	if (!hlock_class(prev)->key || !hlock_class(next)->key) {
-		/*
-		 * The warning statements below may trigger a use-after-free
-		 * of the class name. It is better to trigger a use-after free
-		 * and to have the class name most of the time instead of not
-		 * having the class name available.
-		 */
-		WARN_ONCE(!debug_locks_silent && !hlock_class(prev)->key,
-			  "Detected use-after-free of lock class %px/%s\n",
-			  hlock_class(prev),
-			  hlock_class(prev)->name);
-		WARN_ONCE(!debug_locks_silent && !hlock_class(next)->key,
-			  "Detected use-after-free of lock class %px/%s\n",
-			  hlock_class(next),
-			  hlock_class(next)->name);
-		return 2;
-	}
-
-	/*
-	 * Prove that the new <prev> -> <next> dependency would not
-	 * create a circular dependency in the graph. (We do this by
-	 * a breadth-first search into the graph starting at <next>,
-	 * and check whether we can reach <prev>.)
-	 *
-	 * The search is limited by the size of the circular queue (i.e.,
-	 * MAX_CIRCULAR_QUEUE_SIZE) which keeps track of a breadth of nodes
-	 * in the graph whose neighbours are to be checked.
-	 */
-	ret = check_noncircular(next, prev, trace);
-	if (unlikely(bfs_error(ret) || ret == BFS_RMATCH))
-		return 0;
-
-	if (!check_irq_usage(curr, prev, next))
-		return 0;
-
-	/*
-	 * Is the <prev> -> <next> dependency already present?
-	 *
-	 * (this may occur even though this is a new chain: consider
-	 *  e.g. the L1 -> L2 -> L3 -> L4 and the L5 -> L1 -> L2 -> L3
-	 *  chains - the second one will be new, but L1 already has
-	 *  L2 added to its dependency list, due to the first chain.)
-	 */
-	list_for_each_entry(entry, &hlock_class(prev)->locks_after, entry) {
-		if (entry->class == hlock_class(next)) {
-			if (distance == 1)
-				entry->distance = 1;
-			entry->dep |= calc_dep(prev, next);
-
-			/*
-			 * Also, update the reverse dependency in @next's
-			 * ->locks_before list.
-			 *
-			 *  Here we reuse @entry as the cursor, which is fine
-			 *  because we won't go to the next iteration of the
-			 *  outer loop:
-			 *
-			 *  For normal cases, we return in the inner loop.
-			 *
-			 *  If we fail to return, we have inconsistency, i.e.
-			 *  <prev>::locks_after contains <next> while
-			 *  <next>::locks_before doesn't contain <prev>. In
-			 *  that case, we return after the inner and indicate
-			 *  something is wrong.
-			 */
-			list_for_each_entry(entry, &hlock_class(next)->locks_before, entry) {
-				if (entry->class == hlock_class(prev)) {
-					if (distance == 1)
-						entry->distance = 1;
-					entry->dep |= calc_depb(prev, next);
-					return 1;
-				}
-			}
-
-			/* <prev> is not found in <next>::locks_before */
-			return 0;
-		}
-	}
-
-	/*
-	 * Is the <prev> -> <next> link redundant?
-	 */
-	ret = check_redundant(prev, next);
-	if (bfs_error(ret))
-		return 0;
-	else if (ret == BFS_RMATCH)
-		return 2;
-
-	if (!*trace) {
-		*trace = save_trace();
-		if (!*trace)
-			return 0;
-	}
-
-	/*
-	 * Ok, all validations passed, add the new lock
-	 * to the previous lock's dependency list:
-	 */
-	ret = add_lock_to_list(hlock_class(next), hlock_class(prev),
-			       &hlock_class(prev)->locks_after,
-			       next->acquire_ip, distance,
-			       calc_dep(prev, next),
-			       *trace);
-
-	if (!ret)
-		return 0;
-
-	ret = add_lock_to_list(hlock_class(prev), hlock_class(next),
-			       &hlock_class(next)->locks_before,
-			       next->acquire_ip, distance,
-			       calc_depb(prev, next),
-			       *trace);
-	if (!ret)
-		return 0;
-
-	return 2;
-}
-
-/*
- * Add the dependency to all directly-previous locks that are 'relevant'.
- * The ones that are relevant are (in increasing distance from curr):
- * all consecutive trylock entries and the final non-trylock entry - or
- * the end of this context's lock-chain - whichever comes first.
- */
-static int
-check_prevs_add(struct task_struct *curr, struct held_lock *next)
-{
-	struct lock_trace *trace = NULL;
-	int depth = curr->lockdep_depth;
-	struct held_lock *hlock;
-
-	/*
-	 * Debugging checks.
-	 *
-	 * Depth must not be zero for a non-head lock:
-	 */
-	if (!depth)
-		goto out_bug;
-	/*
-	 * At least two relevant locks must exist for this
-	 * to be a head:
-	 */
-	if (curr->held_locks[depth].irq_context !=
-			curr->held_locks[depth-1].irq_context)
-		goto out_bug;
-
-	for (;;) {
-		u16 distance = curr->lockdep_depth - depth + 1;
-		hlock = curr->held_locks + depth - 1;
-
-		if (hlock->check) {
-			int ret = check_prev_add(curr, hlock, next, distance, &trace);
-			if (!ret)
-				return 0;
-
-			/*
-			 * Stop after the first non-trylock entry,
-			 * as non-trylock entries have added their
-			 * own direct dependencies already, so this
-			 * lock is connected to them indirectly:
-			 */
-			if (!hlock->trylock)
-				break;
-		}
-
-		depth--;
-		/*
-		 * End of lock-stack?
-		 */
-		if (!depth)
-			break;
-		/*
-		 * Stop the search if we cross into another context:
-		 */
-		if (curr->held_locks[depth].irq_context !=
-				curr->held_locks[depth-1].irq_context)
-			break;
-	}
-	return 1;
-out_bug:
-	if (!debug_locks_off_graph_unlock())
-		return 0;
-
-	/*
-	 * Clearly we all shouldn't be here, but since we made it we
-	 * can reliable say we messed up our state. See the above two
-	 * gotos for reasons why we could possibly end up here.
-	 */
-	WARN_ON(1);
-
-	return 0;
-}
-
-struct lock_chain lock_chains[MAX_LOCKDEP_CHAINS];
-static DECLARE_BITMAP(lock_chains_in_use, MAX_LOCKDEP_CHAINS);
-static u16 chain_hlocks[MAX_LOCKDEP_CHAIN_HLOCKS];
-unsigned long nr_zapped_lock_chains;
-unsigned int nr_free_chain_hlocks;	/* Free chain_hlocks in buckets */
-unsigned int nr_lost_chain_hlocks;	/* Lost chain_hlocks */
-unsigned int nr_large_chain_blocks;	/* size > MAX_CHAIN_BUCKETS */
-
-/*
- * The first 2 chain_hlocks entries in the chain block in the bucket
- * list contains the following meta data:
- *
- *   entry[0]:
- *     Bit    15 - always set to 1 (it is not a class index)
- *     Bits 0-14 - upper 15 bits of the next block index
- *   entry[1]    - lower 16 bits of next block index
- *
- * A next block index of all 1 bits means it is the end of the list.
- *
- * On the unsized bucket (bucket-0), the 3rd and 4th entries contain
- * the chain block size:
- *
- *   entry[2] - upper 16 bits of the chain block size
- *   entry[3] - lower 16 bits of the chain block size
- */
-#define MAX_CHAIN_BUCKETS	16
-#define CHAIN_BLK_FLAG		(1U << 15)
-#define CHAIN_BLK_LIST_END	0xFFFFU
-
-static int chain_block_buckets[MAX_CHAIN_BUCKETS];
-
-static inline int size_to_bucket(int size)
-{
-	if (size > MAX_CHAIN_BUCKETS)
-		return 0;
-
-	return size - 1;
-}
-
-/*
- * Iterate all the chain blocks in a bucket.
- */
-#define for_each_chain_block(bucket, prev, curr)		\
-	for ((prev) = -1, (curr) = chain_block_buckets[bucket];	\
-	     (curr) >= 0;					\
-	     (prev) = (curr), (curr) = chain_block_next(curr))
-
-/*
- * next block or -1
- */
-static inline int chain_block_next(int offset)
-{
-	int next = chain_hlocks[offset];
-
-	WARN_ON_ONCE(!(next & CHAIN_BLK_FLAG));
-
-	if (next == CHAIN_BLK_LIST_END)
-		return -1;
-
-	next &= ~CHAIN_BLK_FLAG;
-	next <<= 16;
-	next |= chain_hlocks[offset + 1];
-
-	return next;
-}
-
-/*
- * bucket-0 only
- */
-static inline int chain_block_size(int offset)
-{
-	return (chain_hlocks[offset + 2] << 16) | chain_hlocks[offset + 3];
-}
-
-static inline void init_chain_block(int offset, int next, int bucket, int size)
-{
-	chain_hlocks[offset] = (next >> 16) | CHAIN_BLK_FLAG;
-	chain_hlocks[offset + 1] = (u16)next;
-
-	if (size && !bucket) {
-		chain_hlocks[offset + 2] = size >> 16;
-		chain_hlocks[offset + 3] = (u16)size;
-	}
-}
-
-static inline void add_chain_block(int offset, int size)
-{
-	int bucket = size_to_bucket(size);
-	int next = chain_block_buckets[bucket];
-	int prev, curr;
-
-	if (unlikely(size < 2)) {
-		/*
-		 * We can't store single entries on the freelist. Leak them.
-		 *
-		 * One possible way out would be to uniquely mark them, other
-		 * than with CHAIN_BLK_FLAG, such that we can recover them when
-		 * the block before it is re-added.
-		 */
-		if (size)
-			nr_lost_chain_hlocks++;
-		return;
-	}
-
-	nr_free_chain_hlocks += size;
-	if (!bucket) {
-		nr_large_chain_blocks++;
-
-		/*
-		 * Variable sized, sort large to small.
-		 */
-		for_each_chain_block(0, prev, curr) {
-			if (size >= chain_block_size(curr))
-				break;
-		}
-		init_chain_block(offset, curr, 0, size);
-		if (prev < 0)
-			chain_block_buckets[0] = offset;
-		else
-			init_chain_block(prev, offset, 0, 0);
-		return;
-	}
-	/*
-	 * Fixed size, add to head.
-	 */
-	init_chain_block(offset, next, bucket, size);
-	chain_block_buckets[bucket] = offset;
-}
-
-/*
- * Only the first block in the list can be deleted.
- *
- * For the variable size bucket[0], the first block (the largest one) is
- * returned, broken up and put back into the pool. So if a chain block of
- * length > MAX_CHAIN_BUCKETS is ever used and zapped, it will just be
- * queued up after the primordial chain block and never be used until the
- * hlock entries in the primordial chain block is almost used up. That
- * causes fragmentation and reduce allocation efficiency. That can be
- * monitored by looking at the "large chain blocks" number in lockdep_stats.
- */
-static inline void del_chain_block(int bucket, int size, int next)
-{
-	nr_free_chain_hlocks -= size;
-	chain_block_buckets[bucket] = next;
-
-	if (!bucket)
-		nr_large_chain_blocks--;
-}
-
-static void init_chain_block_buckets(void)
-{
-	int i;
-
-	for (i = 0; i < MAX_CHAIN_BUCKETS; i++)
-		chain_block_buckets[i] = -1;
-
-	add_chain_block(0, ARRAY_SIZE(chain_hlocks));
-}
-
-/*
- * Return offset of a chain block of the right size or -1 if not found.
- *
- * Fairly simple worst-fit allocator with the addition of a number of size
- * specific free lists.
- */
-static int alloc_chain_hlocks(int req)
-{
-	int bucket, curr, size;
-
-	/*
-	 * We rely on the MSB to act as an escape bit to denote freelist
-	 * pointers. Make sure this bit isn't set in 'normal' class_idx usage.
-	 */
-	BUILD_BUG_ON((MAX_LOCKDEP_KEYS-1) & CHAIN_BLK_FLAG);
-
-	init_data_structures_once();
-
-	if (nr_free_chain_hlocks < req)
-		return -1;
-
-	/*
-	 * We require a minimum of 2 (u16) entries to encode a freelist
-	 * 'pointer'.
-	 */
-	req = max(req, 2);
-	bucket = size_to_bucket(req);
-	curr = chain_block_buckets[bucket];
-
-	if (bucket) {
-		if (curr >= 0) {
-			del_chain_block(bucket, req, chain_block_next(curr));
-			return curr;
-		}
-		/* Try bucket 0 */
-		curr = chain_block_buckets[0];
-	}
-
-	/*
-	 * The variable sized freelist is sorted by size; the first entry is
-	 * the largest. Use it if it fits.
-	 */
-	if (curr >= 0) {
-		size = chain_block_size(curr);
-		if (likely(size >= req)) {
-			del_chain_block(0, size, chain_block_next(curr));
-			add_chain_block(curr + req, size - req);
-			return curr;
-		}
-	}
-
-	/*
-	 * Last resort, split a block in a larger sized bucket.
-	 */
-	for (size = MAX_CHAIN_BUCKETS; size > req; size--) {
-		bucket = size_to_bucket(size);
-		curr = chain_block_buckets[bucket];
-		if (curr < 0)
-			continue;
-
-		del_chain_block(bucket, size, chain_block_next(curr));
-		add_chain_block(curr + req, size - req);
-		return curr;
-	}
-
-	return -1;
-}
-
-static inline void free_chain_hlocks(int base, int size)
-{
-	add_chain_block(base, max(size, 2));
-}
-
-struct lock_class *lock_chain_get_class(struct lock_chain *chain, int i)
-{
-	u16 chain_hlock = chain_hlocks[chain->base + i];
-	unsigned int class_idx = chain_hlock_class_idx(chain_hlock);
-
-	return lock_classes + class_idx;
-}
-
-/*
- * Returns the index of the first held_lock of the current chain
- */
-static inline int get_first_held_lock(struct task_struct *curr,
-					struct held_lock *hlock)
-{
-	int i;
-	struct held_lock *hlock_curr;
-
-	for (i = curr->lockdep_depth - 1; i >= 0; i--) {
-		hlock_curr = curr->held_locks + i;
-		if (hlock_curr->irq_context != hlock->irq_context)
-			break;
-
-	}
-
-	return ++i;
-}
-
-#ifdef CONFIG_DEBUG_LOCKDEP
-/*
- * Returns the next chain_key iteration
- */
-static u64 print_chain_key_iteration(u16 hlock_id, u64 chain_key)
-{
-	u64 new_chain_key = iterate_chain_key(chain_key, hlock_id);
-
-	printk(" hlock_id:%d -> chain_key:%016Lx",
-		(unsigned int)hlock_id,
-		(unsigned long long)new_chain_key);
-	return new_chain_key;
-}
-
-static void
-print_chain_keys_held_locks(struct task_struct *curr, struct held_lock *hlock_next)
-{
-	struct held_lock *hlock;
-	u64 chain_key = INITIAL_CHAIN_KEY;
-	int depth = curr->lockdep_depth;
-	int i = get_first_held_lock(curr, hlock_next);
-
-	printk("depth: %u (irq_context %u)\n", depth - i + 1,
-		hlock_next->irq_context);
-	for (; i < depth; i++) {
-		hlock = curr->held_locks + i;
-		chain_key = print_chain_key_iteration(hlock_id(hlock), chain_key);
-
-		print_lock(hlock);
-	}
-
-	print_chain_key_iteration(hlock_id(hlock_next), chain_key);
-	print_lock(hlock_next);
-}
-
-static void print_chain_keys_chain(struct lock_chain *chain)
-{
-	int i;
-	u64 chain_key = INITIAL_CHAIN_KEY;
-	u16 hlock_id;
-
-	printk("depth: %u\n", chain->depth);
-	for (i = 0; i < chain->depth; i++) {
-		hlock_id = chain_hlocks[chain->base + i];
-		chain_key = print_chain_key_iteration(hlock_id, chain_key);
-
-		print_lock_name(lock_classes + chain_hlock_class_idx(hlock_id));
-		printk("\n");
-	}
-}
-
-static void print_collision(struct task_struct *curr,
-			struct held_lock *hlock_next,
-			struct lock_chain *chain)
-{
-	pr_warn("\n");
-	pr_warn("============================\n");
-	pr_warn("WARNING: chain_key collision\n");
-	print_kernel_ident();
-	pr_warn("----------------------------\n");
-	pr_warn("%s/%d: ", current->comm, task_pid_nr(current));
-	pr_warn("Hash chain already cached but the contents don't match!\n");
-
-	pr_warn("Held locks:");
-	print_chain_keys_held_locks(curr, hlock_next);
-
-	pr_warn("Locks in cached chain:");
-	print_chain_keys_chain(chain);
-
-	pr_warn("\nstack backtrace:\n");
-	dump_stack();
-}
-#endif
-
-/*
- * Checks whether the chain and the current held locks are consistent
- * in depth and also in content. If they are not it most likely means
- * that there was a collision during the calculation of the chain_key.
- * Returns: 0 not passed, 1 passed
- */
-static int check_no_collision(struct task_struct *curr,
-			struct held_lock *hlock,
-			struct lock_chain *chain)
-{
-#ifdef CONFIG_DEBUG_LOCKDEP
-	int i, j, id;
-
-	i = get_first_held_lock(curr, hlock);
-
-	if (DEBUG_LOCKS_WARN_ON(chain->depth != curr->lockdep_depth - (i - 1))) {
-		print_collision(curr, hlock, chain);
-		return 0;
-	}
-
-	for (j = 0; j < chain->depth - 1; j++, i++) {
-		id = hlock_id(&curr->held_locks[i]);
-
-		if (DEBUG_LOCKS_WARN_ON(chain_hlocks[chain->base + j] != id)) {
-			print_collision(curr, hlock, chain);
-			return 0;
-		}
-	}
-#endif
-	return 1;
-}
-
-/*
- * Given an index that is >= -1, return the index of the next lock chain.
- * Return -2 if there is no next lock chain.
- */
-long lockdep_next_lockchain(long i)
-{
-	i = find_next_bit(lock_chains_in_use, ARRAY_SIZE(lock_chains), i + 1);
-	return i < ARRAY_SIZE(lock_chains) ? i : -2;
-}
-
-unsigned long lock_chain_count(void)
-{
-	return bitmap_weight(lock_chains_in_use, ARRAY_SIZE(lock_chains));
-}
-
-/* Must be called with the graph lock held. */
-static struct lock_chain *alloc_lock_chain(void)
-{
-	int idx = find_first_zero_bit(lock_chains_in_use,
-				      ARRAY_SIZE(lock_chains));
-
-	if (unlikely(idx >= ARRAY_SIZE(lock_chains)))
-		return NULL;
-	__set_bit(idx, lock_chains_in_use);
-	return lock_chains + idx;
-}
-
-/*
- * Adds a dependency chain into chain hashtable. And must be called with
- * graph_lock held.
- *
- * Return 0 if fail, and graph_lock is released.
- * Return 1 if succeed, with graph_lock held.
- */
-static inline int add_chain_cache(struct task_struct *curr,
-				  struct held_lock *hlock,
-				  u64 chain_key)
-{
-	struct hli/uapi/asm/sigcontext.h \
-  arch/x86/include/asm/msr.h \
-    $(wildcard include/config/TRACEPOINTS) \
-  arch/x86/include/asm/msr-index.h \
-  arch/x86/include/asm/cpumask.h \
-  include/linux/cpumask.h \
-    $(wildcard include/config/CPUMASK_OFFSTACK) \
-    $(wildcard include/config/DEBUG_PER_CPU_MAPS) \
-  include/linux/bitmap.h \
-  include/linux/find.h \
-  arch/x86/include/uapi/asm/msr.h \
-  include/linux/tracepoint-defs.h \
-  arch/x86/include/asm/special_insns.h \
-  arch/x86/include/asm/fpu/types.h \
-  arch/x86/include/asm/vmxfeatures.h \
-  arch/x86/include/asm/vdso/processor.h \
-  include/linux/personality.h \
-  include/uapi/linux/personality.h \
-  include/linux/bottom_half.h \
-  include/linux/lockdep.h \
-    $(wildcard include/config/DEBUG_LOCKING_API_SELFTESTS) \
-  include/linux/smp.h \
-    $(wildcard include/config/UP_LATE_INIT) \
-  include/linux/smp_types.h \
-  include/linux/llist.h \
-    $(wildcard include/config/ARCH_HAVE_NMI_SAFE_CMPXCHG) \
-  arch/x86/include/asm/smp.h \
-    $(wildcard include/config/X86_LOCAL_APIC) \
-    $(wildcard include/config/DEBUG_NMI_SELFTEST) \
-  include/linux/rcutree.h \
-  include/linux/wait.h \
-  include/linux/spinlock.h \
-  arch/x86/include/generated/asm/mmiowb.h \
-  include/asm-generic/mmiowb.h \
-    $(wildcard include/config/MMIOWB) \
-  include/linux/spinlock_types.h \
-  include/linux/rwlock_types.h \
-  arch/x86/include/asm/spinlock.h \
-  arch/x86/include/asm/paravirt.h \
-    $(wildcard include/config/PARAVIRT_SPINLOCKS) \
-  arch/x86/include/asm/frame.h \
-  arch/x86/include/asm/qspinlock.h \
-  include/asm-generic/qspinlock.h \
+c/qspinlock.h \
   arch/x86/include/asm/qrwlock.h \
   include/asm-generic/qrwlock.h \
   include/linux/rwlock.h \
@@ -1011,56 +34,52 @@ static inline int add_chain_cache(struct task_struct *curr,
     $(wildcard include/config/INLINE_WRITE_UNLOCK_IRQ) \
     $(wildcard include/config/INLINE_READ_UNLOCK_IRQRESTORE) \
     $(wildcard include/config/INLINE_WRITE_UNLOCK_IRQRESTORE) \
-  include/uapi/linux/wait.h \
   include/linux/refcount.h \
-  include/linux/sem.h \
-  include/uapi/linux/sem.h \
-  include/linux/ipc.h \
-  include/linux/uidgid.h \
-    $(wildcard include/config/MULTIUSER) \
-    $(wildcard include/config/USER_NS) \
-  include/linux/highuid.h \
-  include/linux/rhashtable-types.h \
+  include/linux/rbtree.h \
+  include/linux/rbtree_types.h \
+  include/linux/rcupdate.h \
+    $(wildcard include/config/PREEMPT_RCU) \
+    $(wildcard include/config/TINY_RCU) \
+    $(wildcard include/config/RCU_STRICT_GRACE_PERIOD) \
+    $(wildcard include/config/TASKS_RCU_GENERIC) \
+    $(wildcard include/config/RCU_STALL_COMMON) \
+    $(wildcard include/config/NO_HZ_FULL) \
+    $(wildcard include/config/RCU_NOCB_CPU) \
+    $(wildcard include/config/TASKS_RCU) \
+    $(wildcard include/config/TASKS_TRACE_RCU) \
+    $(wildcard include/config/TASKS_RUDE_RCU) \
+    $(wildcard include/config/TREE_RCU) \
+    $(wildcard include/config/DEBUG_OBJECTS_RCU_HEAD) \
+    $(wildcard include/config/PROVE_RCU) \
+    $(wildcard include/config/ARCH_WEAK_RELEASE_ACQUIRE) \
+  include/linux/rcutree.h \
+  include/linux/rwsem.h \
+    $(wildcard include/config/RWSEM_SPIN_ON_OWNER) \
+    $(wildcard include/config/DEBUG_RWSEMS) \
+  include/linux/osq_lock.h \
+  include/linux/completion.h \
+  include/linux/swait.h \
+  include/linux/wait.h \
+  include/uapi/linux/wait.h \
+  include/linux/uprobes.h \
+    $(wildcard include/config/UPROBES) \
+  arch/x86/include/asm/uprobes.h \
+  include/linux/notifier.h \
   include/linux/mutex.h \
     $(wildcard include/config/MUTEX_SPIN_ON_OWNER) \
-  include/linux/osq_lock.h \
+    $(wildcard include/config/DEBUG_MUTEXES) \
   include/linux/debug_locks.h \
+  include/linux/srcu.h \
+    $(wildcard include/config/TINY_SRCU) \
+    $(wildcard include/config/SRCU) \
   include/linux/workqueue.h \
     $(wildcard include/config/DEBUG_OBJECTS_WORK) \
     $(wildcard include/config/FREEZER) \
-    $(wildcard include/config/SYSFS) \
     $(wildcard include/config/WQ_WATCHDOG) \
   include/linux/timer.h \
-    $(wildcaELF                      Ø      4     (               èüÿÿÿS‹X\‰ØèüÿÿÿƒÀ   èüÿÿÿ1À[ÃèüÿÿÿS‹P(‹Xú	˜ tú	˜ tT¹êÿÿÿú 	˜ t'‰È[Ãv ¶H|‹CÔº   èüÿÿÿ1É[‰ÈÃ´&    f¶H|‹CÔº   èüÿÿÿ1É[‰ÈÃ´&    f¶H|‹CÔº   èüÿÿÿ1É[‰ÈÃ´&    fèüÿÿÿ‹€”   º   ƒÉ@¶Éèüÿÿÿ1ÀÃ´&    ´&    èüÿÿÿUWVS‰Ã‹@‹P‹Rèüÿÿÿ%   =   „7   ¾ûÿÿÿ[‰ğ^_]Ã´&    t& èüÿÿÿUöÆù‰ÍW‰×º   V‰Æ¸    S»   DØƒÃë´&    ¶SƒÃ„Òt¶‹†”   èüÿÿÿ…Àyã[‰¾0  1À‰®4  ^_]Ã    à                                                                                                                                  °       à          6%s: Standard: %d Hz
- tw9903 èüÿÿÿS‰Ã‹€0  % ù  ƒøÀƒàöƒÀ<PCpPh    èüÿÿÿ‰Øèüÿÿÿ1ÀƒÄ[Ã‹S·CŠ  Q QPÿ²   ‹CTÿ0h    èüÿÿÿC¹À  º8  èüÿÿÿ‰ÇƒÄ…Àu
-¾ôÿÿÿé
-  ¹`   ‰Ú¯À   èüÿÿÿ1Éº   ‰èj èüÿÿÿ¹ 	˜ º  ‰èj j j jj jjÿj€èüÿÿÿ¹	˜ º  ‰èƒÄ$j j`j jj hÿ   j j èüÿÿÿ¹	˜ º  ‰èƒÄ j j j jj jjÿj€èüÿÿÿ‹·ü   ‰olƒÄ …öt‰èèüÿÿÿé
-  Ç‡0   °  ½   º   Ç‡4      ¶M‹‡”   èüÿÿÿ…ÀyƒÃ¾êÿÿÿSh(   èüÿÿÿXZé
-  ¶UƒÅ„ÒuÈé
-   6%s %d-%04x: chip found @ 0x%02x (%s)
- 3%s: error initializing TW9903
- èüÿÿÿº    ¸    éüÿÿÿ¸    éüÿÿÿ                  	     €	ğ            tw9903                                                          à           €                   °                                                                                                                                                              D’ €@	ğ
-ĞŒ   `Z Ã X€  !""ğ#ş$<%8&D' ( )* +D,7- .¥/à1 3"455;À  license=GPL v2 description=TW9903 I2C subdev driver  GCC: (GNU) 11.2.0             GNU  À       À                                  ñÿ                            
-                   ‡     &   °   !                                	 =       ;    	               O   à   5     \   ;   R   	 n   `         y          ‰      b     ›      `     ¨       
-     ¶      
-                   Ä            ×       €     å       
-                   ø       0       à   0       €   P     #           :     %     U             `             ~             •             ¯             ·             Ó             ì             ù                          +             =             K             _           k             z      
-     ‰      0      tw9903.c tw9903_remove tw9903_s_ctrl tw9903_s_video_routing tw9903_log_status tw9903_probe tw9903_probe.cold tw9903_ops tw9903_ctrl_ops initial_registers tw9903_s_std config_50hz.2 config_60hz.1 tw9903_driver_init tw9903_driver tw9903_driver_exit tw9903_id tw9903_core_ops tw9903_video_ops __UNIQUE_ID_license267 __UNIQUE_ID_description266 __fentry__ v4l2_device_unregister_subdev v4l2_ctrl_handler_free i2c_smbus_write_byte_data _printk v4l2_ctrl_subdev_log_status __x86_indirect_thunk_edx devm_kmalloc v4l2_i2c_subdev_init v4l2_ctrl_handler_init_class v4l2_ctrl_new_std __this_module i2c_register_driver init_module i2c_del_driver cleanup_module __mod_i2c__tw9903_id_device_table                 !     ]      }            ±     Ê      á     õ   #  !    7    =    e                        h                                              $     )   !  0   "  Z   
-  _   !  q   $  ‰     –   %  ¦   &  °     Ç   '  Ñ     î   '  ø       '  )    =    [     m  
-  r  !  „     .    y    ‰                 (     )          +  `     l     €     Œ     à          .symtab .strtab .shstrtab .rel.text .rel.data .bss .rel__mcount_loc .rodata.str1.1 .rel.text.unlikely .rodata.str1.4 .rel.init.text .rel.exit.text .rel.rodata .modinfo .comment .note.GNU-stack .note.gnu.property                                                         @   €                    	   @          €               )             À  €                   %   	   @       €                  /             @                     8             @                    4   	   @          8               E      2       \                   X             z                   T   	   @       Ø  È      	         g      2         I                 z             Q                    v   	   @                          ‰             e  
-                  …   	   @       À                 ˜             €  ‚                  ”   	   @       Ğ  0                               4                  ©      0       6                   ²              I                     Â             L  (                                t  à              	              T	  «                                  Õ                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  rd include/config/DEBUG_OBJECTS_TIMERS) \
+    $(wildcard include/config/DEBUG_OBJECTS_TIMERS) \
     $(wildcard include/config/NO_HZ_COMMON) \
   include/linux/ktime.h \
-  include/linux/time.h \
-    $(wildcard include/config/POSIX_TIMERS) \
-  include/linux/time32.h \
-  include/linux/timex.h \
-  include/uapi/linux/timex.h \
-  arch/x86/include/asm/timex.h \
-    $(wildcard include/config/X86_TSC) \
-  arch/x86/include/asm/tsc.h \
-  include/vdso/time32.h \
-  include/vdso/time.h \
   include/linux/jiffies.h \
   include/vdso/jiffies.h \
   include/generated/timeconst.h \
@@ -1071,14 +90,860 @@ static inline int add_chain_cache(struct task_struct *curr,
   include/linux/debugobjects.h \
     $(wildcard include/config/DEBUG_OBJECTS) \
     $(wildcard include/config/DEBUG_OBJECTS_FREE) \
-  include/uapi/linux/ipc.h \
-  arch/x86/include/generated/uapi/asm/ipcbuf.h \
-  include/uapi/asm-generic/ipcbuf.h \
-  arch/x86/include/uapi/asm/sembuf.h \
-  include/linux/shm.h \
-  include/uapi/linux/shm.h \
-  include/uapi/asm-generic/hugetlb_encode.h \
-  arch/x86/include/uapi/asm/shmbuf.h \
-  include/uapi/asm-generic/shmbuf.h \
-  arch/x86/include/asm/shmparam.h \
-  include/linux/plist.h 
+  include/linux/rcu_segcblist.h \
+  include/linux/srcutree.h \
+  include/linux/rcu_node_tree.h \
+    $(wildcard include/config/RCU_FANOUT) \
+    $(wildcard include/config/RCU_FANOUT_LEAF) \
+  include/linux/page-flags-layout.h \
+    $(wildcard include/config/KASAN_HW_TAGS) \
+  include/linux/numa.h \
+    $(wildcard include/config/NODES_SHIFT) \
+    $(wildcard include/config/NUMA_KEEP_MEMINFO) \
+    $(wildcard include/config/HAVE_ARCH_NODE_DEV_GROUP) \
+  arch/x86/include/asm/sparsemem.h \
+  include/generated/bounds.h \
+  include/linux/seqlock.h \
+  include/linux/ww_mutex.h \
+    $(wildcard include/config/DEBUG_RT_MUTEXES) \
+    $(wildcard include/config/DEBUG_WW_MUTEX_SLOWPATH) \
+  include/linux/rtmutex.h \
+  arch/x86/include/asm/mmu.h \
+    $(wildcard include/config/MODIFY_LDT_SYSCALL) \
+  include/linux/kmod.h \
+  include/linux/umh.h \
+  include/linux/gfp.h \
+    $(wildcard include/config/HIGHMEM) \
+    $(wildcard include/config/ZONE_DMA) \
+    $(wildcard include/config/ZONE_DMA32) \
+    $(wildcard include/config/ZONE_DEVICE) \
+    $(wildcard include/config/PM_SLEEP) \
+    $(wildcard include/config/CONTIG_ALLOC) \
+    $(wildcard include/config/CMA) \
+  include/linux/mmdebug.h \
+    $(wildcard include/config/DEBUG_VM) \
+    $(wildcard include/config/DEBUG_VM_PGFLAGS) \
+  include/linux/mmzone.h \
+    $(wildcard include/config/FORCE_MAX_ZONEORDER) \
+    $(wildcard include/config/MEMORY_ISOLATION) \
+    $(wildcard include/config/ZSMALLOC) \
+    $(wildcard include/config/MEMORY_HOTPLUG) \
+    $(wildcard include/config/COMPACTION) \
+    $(wildcard include/config/PAGE_EXTENSION) \
+    $(wildcard include/config/DEFERRED_STRUCT_PAGE_INIT) \
+    $(wildcard include/config/HAVE_MEMORYLESS_NODES) \
+    $(wildcard include/config/SPARSEMEM_EXTREME) \
+    $(wildcard include/config/HAVE_ARCH_PFN_VALID) \
+  include/linux/nodemask.h \
+  include/linux/pageblock-flags.h \
+    $(wildcard include/config/HUGETLB_PAGE_SIZE_VARIABLE) \
+  include/linux/page-flags.h \
+    $(wildcard include/config/ARCH_USES_PG_UNCACHED) \
+    $(wildcard include/config/MEMORY_FAILURE) \
+    $(wildcard include/config/PAGE_IDLE_FLAG) \
+    $(wildcard include/config/HUGETLB_PAGE_FREE_VMEMMAP) \
+    $(wildcard include/config/HUGETLB_PAGE_FREE_VMEMMAP_DEFAULT_ON) \
+    $(wildcard include/config/KSM) \
+  include/linux/local_lock.h \
+  include/linux/local_lock_internal.h \
+  include/linux/memory_hotplug.h \
+    $(wildcard include/config/HAVE_ARCH_NODEDATA_EXTENSION) \
+    $(wildcard include/config/ARCH_HAS_ADD_PAGES) \
+    $(wildcard include/config/MEMORY_HOTREMOVE) \
+  arch/x86/include/asm/mmzone.h \
+  arch/x86/include/asm/mmzone_32.h \
+  include/linux/topology.h \
+    $(wildcard include/config/USE_PERCPU_NUMA_NODE_ID) \
+    $(wildcard include/config/SCHED_SMT) \
+    $(wildcard include/config/SCHED_CLUSTER) \
+  include/linux/arch_topology.h \
+    $(wildcard include/config/ACPI_CPPC_LIB) \
+    $(wildcard include/config/GENERIC_ARCH_TOPOLOGY) \
+  include/linux/percpu.h \
+    $(wildcard include/config/NEED_PER_CPU_EMBED_FIRST_CHUNK) \
+    $(wildcard include/config/NEED_PER_CPU_PAGE_FIRST_CHUNK) \
+  arch/x86/include/asm/topology.h \
+    $(wildcard include/config/SCHED_MC_PRIO) \
+  arch/x86/include/asm/mpspec.h \
+    $(wildcard include/config/EISA) \
+    $(wildcard include/config/X86_MPPARSE) \
+  arch/x86/include/asm/mpspec_def.h \
+  arch/x86/include/asm/x86_init.h \
+  arch/x86/include/asm/apicdef.h \
+  include/asm-generic/topology.h \
+  include/linux/sysctl.h \
+    $(wildcard include/config/SYSCTL) \
+  include/uapi/linux/sysctl.h \
+  include/linux/elf.h \
+    $(wildcard include/config/ARCH_USE_GNU_PROPERTY) \
+    $(wildcard include/config/ARCH_HAVE_ELF_PROT) \
+  arch/x86/include/asm/elf.h \
+    $(wildcard include/config/X86_X32_ABI) \
+  arch/x86/include/asm/user.h \
+  arch/x86/include/asm/user_32.h \
+  arch/x86/include/asm/fsgsbase.h \
+  arch/x86/include/asm/vdso.h \
+  arch/x86/include/asm/desc.h \
+  arch/x86/include/asm/fixmap.h \
+    $(wildcard include/config/DEBUG_KMAP_LOCAL_FORCE_MAP) \
+    $(wildcard include/config/X86_VSYSCALL_EMULATION) \
+    $(wildcard include/config/PROVIDE_OHCI1394_DMA_INIT) \
+    $(wildcard include/config/X86_IO_APIC) \
+    $(wildcard include/config/KMAP_LOCAL) \
+    $(wildcard include/config/PCI_MMCONFIG) \
+    $(wildcard include/config/ACPI_APEI_GHES) \
+    $(wildcard include/config/INTEL_TXT) \
+  arch/x86/include/generated/asm/kmap_size.h \
+  include/asm-generic/kmap_size.h \
+    $(wildcard include/config/DEBUG_KMAP_LOCAL) \
+  include/asm-generic/fixmap.h \
+  arch/x86/include/asm/irq_vectors.h \
+    $(wildcard include/config/HAVE_KVM) \
+    $(wildcard include/config/HYPERV) \
+    $(wildcard include/config/PCI_MSI) \
+  arch/x86/include/asm/cpu_entry_area.h \
+  arch/x86/include/asm/intel_ds.h \
+  arch/x86/include/asm/pgtable_areas.h \
+  arch/x86/include/asm/pgtable_32_areas.h \
+  include/uapi/linux/elf.h \
+  include/uapi/linux/elf-em.h \
+  include/linux/kobject.h \
+    $(wildcard include/config/UEVENT_HELPER) \
+    $(wildcard include/config/DEBUG_KOBJECT_RELEASE) \
+  include/linux/sysfs.h \
+  include/linux/kernfs.h \
+    $(wildcard include/config/KERNFS) \
+  include/linux/idr.h \
+  include/linux/radix-tree.h \
+  include/linux/xarray.h \
+    $(wildcard include/config/XARRAY_MULTI) \
+  include/linux/kconfig.h \
+  include/linux/kobject_ns.h \
+  include/linux/moduleparam.h \
+    $(wildcard include/config/ALPHA) \
+    $(wildcard include/config/IA64) \
+    $(wildcard include/config/PPC64) \
+  include/linux/rbtree_latch.h \
+  include/linux/error-injection.h \
+  include/asm-generic/error-injection.h \
+  include/linux/cfi.h \
+    $(wildcard include/config/CFI_CLANG_SHADOW) \
+  arch/x86/include/asm/module.h \
+    $(wildcard include/config/UNWINDER_ORC) \
+  include/asm-generic/module.h \
+    $(wildcard include/config/HAVE_MOD_ARCH_SPECIFIC) \
+    $(wildcard include/config/MODULES_USE_ELF_REL) \
+    $(wildcard include/config/MODULES_USE_ELF_RELA) \
+  arch/x86/include/asm/orc_types.h \
+  include/linux/build-salt.h \
+    $(wildcard include/config/BUILD_SALT) \
+  include/linux/elfnote.h \
+  include/linux/elfnote-lto.h \
+    $(wildcard include/config/LTO) \
+  include/linux/vermagic.h \
+    $(wildcard include/config/PREEMPT_BUILD) \
+  include/generated/utsrelease.h \
+  arch/x86/include/asm/vermagic.h \
+    $(wildcard include/config/M486SX) \
+    $(wildcard include/config/M486) \
+    $(wildcard include/config/M586) \
+    $(wildcard include/config/M586TSC) \
+    $(wildcard include/config/M586MMX) \
+    $(wildcard include/config/MCORE2) \
+    $(wildcard include/config/M686) \
+    $(wildcard include/config/MPENTIUMII) \
+    $(wildcard include/config/MPENTIUMIII) \
+    $(wildcard include/config/MPENTIUMM) \
+    $(wildcard include/config/MPENTIUM4) \
+    $(wildcard include/config/MK6) \
+    $(wildcard include/config/MK7) \
+    $(wildcard include/config/MK8) \
+    $(wildcard include/config/MELAN) \
+    $(wildcard include/config/MCRUSOE) \
+    $(wildcard include/config/MEFFICEON) \
+    $(wildcard include/config/MWINCHIPC6) \
+    $(wildcard include/config/MWINCHIP3D) \
+    $(wildcard include/config/MCYRIXIII) \
+    $(wildcard include/config/MVIAC3_2) \
+    $(wildcard include/config/MVIAC7) \
+    $(wildcard include/config/MGEODEGX1) \
+    $(wildcard include/config/MGEODE_LX) \
+
+drivers/media/pci/cx18/cx18-alsa.mod.o: $(deps_drivers/media/pci/cx18/cx18-alsa.mod.o)
+
+$(deps_drivers/media/pci/cx18/cx18-alsa.mod.o):
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               .ã{Š}äg?L¨ÿ¶kì±lÌŸkH ¬DŸ@ößkˆ/ÚÆ¼ƒßÏ›:WjT!S#½e¨d4˜ÉÈú¼ÈBÿªp,Ô«¾{½šilä	âÌ¯—¿ª
+½sÍçCAÚcâÀÖ¯Ú6˜‘³¬‚@~Ğ8ò>"ÂAãskırè.l¤~¶ O1¸te§VG?µúpÍ–J:¸§µyø;ÌÃªæM7%HÂÑ›JU–•UJY" 76FWÄ3';£Ö7Z^Qrq",È÷ ËbqÀmÑFaC£æšg¢ëÙbwg—Iad¥¨7÷AU|‹“é•s® ‚­›‹ŸIãTe¨ÈWà)ØÂ|›*©;„1œ\B(G(¢ù¯~5¯¤´$¾æ»¤Ø©–N\	¸v! :oöB«%¢˜wÜ­êØu%Jú„Ü¤ÃÀÜêuÅøæeßàŞºOGÎ*hrux¤ns	 Ï¶Óª¯«Æ·Æ%ø¤ád­}{%Í¿—’åÉ9µaÅEmzÍˆšl«XG€<ïnÈé<âõ{T#†¶$ŸE˜m©RS2^*%ædàŠU„bê0ı¢ÉòxN¼U@jşÜ†Ê†AğJl´âs|AiÍÈ‚åşÈ0™#FV•èlÉ¼¢’%59‰ÒM¿S•IñæÜn^0Ï8!ÖR¶}Ï©b‰¸L‘Îh¦˜;ÚYC’°wºŸÒ&Ü$ÁÛæ·´¸Ú4™–±·ŸL?lnÈÜ{…„‰÷ë@äÄˆ»rğu\ˆC¥¶di³Mƒ0Üké,a|s¡3<;oWVŞp/¿%­0o…İ¹—7V\7U0 ·²åŞ«XÉ¸~Ì|~3}‡"2x²ÖçgÔÀlúoÓXYóÿîå+‚úí8äŸè+î½—Hòj¯\Åı«:ãŞâ˜Ş$ÙùŞÍƒ° "âé#>~Î‡ßÕê%‰Å,*¤@ş¿ğ 1Ş®øcÅÚ”C[pÿ:È‡ë‰›âvŞ__kHk=3[±ÃävRií=¨Ò¢¸‡´p@Âú Sç·¯©VÔj0dJãò{ÛÌCŸrÒát‹¦5„UÂ¥[²œYp­	aŠsYoËG@6Ö‹ákl„“£YêÀ’Ïà]iqóuƒOB{ÀQD‡tÕ£<ô3¼CÕ…NÀ6ß$ø3LõfóuDï«=ãfáyµ¯…½X—yÆ @2Ğ*ƒô<OP[‘’Q»KM½‡!-ßŞ"è]T£¶GBÌÒ>s£wT²­Åë5Ìï ã‚çsšš¹VüC/Ô'•õtc5â@FñF2ÿ2øú¶ÍãÎ5sˆ2ôÅ¿ ¥@ÕÏ'İ´ìì±ûŠÜ‹ÿ­™ˆìWt"t…“Œ+ö& «©ÊÍ?Ÿ
+M{za˜ˆ(ZŞ‹gêÌ½•„_‡y?*8Óâød>ná*6f([â²ƒÈ0¯…½¨îB S€"z¡i1WtŒ›cd¥ıcp‘
++B#%ÑÛ©"Z¤ŠjøíSè*lĞÈiÌØŞ!9/.‚×ã2„ç¼''ÍÆq6¦ËSzWÓ>Í¨pê;0 .ÜÏ?jFÁÉ›ùm*ØÇ¼0İ<÷¦F»¿•`R+`,kL*¿³w¯dR#&q9Eq¢â:ç8Ÿw6tB¯vŸ–wƒĞ~Ÿ©5 Ã,ı‰/£w$šù`ù9DoÃ×CÎ¬2üõí\PˆÚf$ÌAO]:qÜ—ÀÁ´ğÁ¤]C«æRœgÖLnïFÒuÀ(ªcÙ3ò7¡wºÑ£…±æ3°V-ğò¸áƒl}M‚xÑHÁWZ´,YÒ”]-áé½PÖqK¯K$«ÿÈç*h‡S²€ù%WLJ0MëáeÊ0”†xóW`¼¯@ßs p» û3Lô˜½ô%¡È½%!˜_hèİúÏ4W;®qü ™äzv©8Yúåm9ñûÀà?á5ô…í¤5tXw¦Á¡[Ôü€rü-ßÑğ›ğÙä&.¨s57kk÷¼È~(~Ôùñ¿…İ²Î,LÃä)¸,1(,w»h4Ãh<q¾~à´«OiØ7¼è¥Ã†I³äÅ„¨|mdKÈ)EešÉÀˆ»şY2_ñû½è·Í¨ 9˜©×oû´¢åæÁ¼)í%¬oÚ^©Tÿ^°	dÚ´ú_i÷rySnøf•Ö¨£³¿r»ªƒû+3@]Ñ]`›0¿„>Z£caG”Š™ÂÍ“•fì{¡ïõˆ”ù¥§¹÷f&^RïÁ¿’ˆÜù6j ¤.DO‹è42s¢)HºM
+²Ô6æĞˆï°îZYˆ³Yé‹%ãn¡vª~T÷şPae"¦DåQ2›ÉVÀ•
+×âîsVoĞ9OİL!GÙø¬Ÿ¯×ÃÅ@¢ì!·­kL¦ÅNÚ1HÑ.jn¯x3?…À<b+çs²ë8 eæ>î}QŞ $°DMk³Ît™j€šs Y*š¬
+–¥b“êès}9¬IÎ<ö“öÜra»ÅÄÈô¾c»LöÄ¹š%ù,î;I0-í1Òˆ•R?Rl8ùw´²™)7DËü–œÒ±ÓÌÇˆßŒÄq¶ŞÊTã]ŸŠÛ›ºNtvmDŞµÇ¡µtr–«ªá[–ÉÀS×Ï¢ì‹6ÉÃ"3ø¹4àOtŞdS''ÂÒÜÃ™0B’#×/?nÜö€À¼É8`\!Îä¬ÓÊºùUÖ „.ëWÔîû„˜9ã:ØºŸJ?pP±xÕ×óW:<zkşª]w3ğêYÅ¤ÏPêà\uŒ¿wœÜ7›¸gíå,ÆË¡Xı¶Ò¢¬°xËËÿ~fÕûŒFP‡¬÷•®Šl¦ÿÚÆyMŠEÅT‹ù3‰ØôÙÌÂtŠF‚sá(£:üÄÙ\—=†rçµJoJeŒ•ÆXƒ©-SíöTsk-ş1ZÙ5Üv#vP•Á·şpå¹”À¦9BTÿei<–RQx_›ß'ZzÌ¡_‰Ök½CÃæ²$œg4Ó:To”á¹^JLo¦2÷:£|3¡Z“è€U†‰@Ø+‘¾Jw°
+¹R@#ŸhÙ-¹ş]¼T<´¨.Yrş@‹læH*2Ü‘èİZ÷ö¤©¯+ñ\sÇårwşxª`Æq)$!)²ÇÆC€“g  §²ç{Œ²€„UÒQüşŒèmuš›bÊü7œşç¡ãjaÌ«7O÷<µ§ª)\*à[{"µÉS ôI[ovSõë{©ÌİÚ¹»6EY^¢@°ğ¼=ÕºİMUMVO†ˆŸ¿L“êJ
+sÇÚ À³ş‡öîÙ=ìrÎ¹Šg8Á¦é?U´ù¤ÍiÏ§a\0‘´Úûo¯ 4ÚÆ§ĞãU&|æ]™7TyÔü{sLyQPš}ËİŠcÛ;æÿ¶ëa¶£Ã¼©ikâ)¡º¥Dùê1˜ÑñÀÄ—ÂPıpİ‚LlƒÎ»*C“eá1£Á2
+~ÿ¯…$C€æCş9V€_‹iyŸxE5–‘^¡`‘ÒpØ=‡H°®æ¨Ædé;÷±§$o¹Î°õ.%:¡&mÂ­ë£2é>¨ÏqÆÑmØ„513çÈ¢Æt¢Iæ'Ê:‘?—M¥¼Ì3^Liì¡`a­àxÕ'âwëxä©5ŠÌû$–í.z•ı€eªK‰á‘‡%'yÛ³vœ ıøú~´¡‡Uª<ÿh“şêFv¡I{İaœ9G€ıˆQçfıKG.û“óö ñˆ¥—v"}/ZÔšJd^µu[™<ŸTÈpU™ÍŸJFµiI
+YßÎá¤‹œ®c‡›€ÈaË(’`# Y[’Ïğ¸Ş4eU”È-hGå'“èK¯Ú¬sÍgD—µºèb5Ÿë­µâ-Õõzp)òßtm×nŠ9Ô4å±ì\Ú«ªÂèÓ+0Ú˜bvÍ/“
+Ç!`ò•(|1·ñ*h?h‚â83 ]Gn€B6¾…ıĞPo:kÓÎ6ö:"­m™—œàv®ó¥PG	.õ÷ªü—DÈêZo"ëF¯bÏÇ»©âA‹Úİ®”2‡O™FÕÇÒ®×dòW^Zn¿î	\·%Ôó^c:H™Í€ƒ8wq»º&¢[y’0¡›¢‘ÒLâ8l/gfdR8–ŸásILCH’Òƒím(ˆ¤d,Y^Y£”|Ñµ³O µ.4‰s½dqLJ•M8ÖîòIÔ¤aL™2VH/0uã‹oƒFDÙùì_º˜£Õé¬ƒ+Tè3â“] P¢ìxÓzg¶B÷Ì7ıÉ˜³E·ÏÃcûOéVå²%Ù§)â©zå¡nQ/–ªÍá–‚z‘£¹ºj"Ÿûår¸ç¸iIH–èx[PßÔ÷_qÒzùˆŒ³$ú:À¾ÑæøOŞXúçM”Ü@›6m¨ù»D¦¡¹´È6µ3(T|gB‹+0{º™µ4ğo3;µ.<¢[AÌ@x§-”àl\!Yîì¸6ä2	ëÜŞÊyXÎHóI9­füÒµ5éÌßK>BfÁw#CØ°nt[ˆt,_¤9â
+{q+I‡Í Èªk¯9ãê„TUÙ+\Õ0;ÉÜTÜpÖx
+vbZ›å­[ÅÁ³ÃœªíÛTÛ^¸ßJ(,Æó;vxè¯DsÚÄİÖUş[ì>$;şT¸ë=,z. ÿ$çÒD‰•Éªı.›/9gıI5y<[ú;X„jÈ‹}Éı4ç™EÕïûaÏ±=hÑ™™‘sPË=à$Ã|w"»û¾E|/ÒBøí5ôˆl¶RJLY¯\ùùb¢RØ¥ƒOR2õÜ«å£ÆuàFY©ÄÂv´ÎÎ’J%8Wõ`!ÿZşA2©¹JämåÄA5YÃ¶Øg‰‘s¦¬œb)ÆÉ/¤IéÏ‘
+¸¶5à|ƒÊ·®5Ş—òÇ5ÆzbváHåq,Ï5Ê#IÈ<«·û…ì¸¤IÓ	Ù6mÖİ’Yv'¯üüœ}Á2ŠUşù¢_I ‚Ù"Â|ôå:B5k™âÂèK“şô9#&‘€Á÷C€û¼i€¸ =8¹ñÆ1°0 ª“K†öÇªÂÁPÏ–USs\ó’Ô K²æO€ÔŞB}Yl<õk¶Y//eir…5Hx‰®°ş[µ7«ºÏóZ¦-é®Ğ«tRp–âÉ½Éı n1"êfÈH~€lY`¼¤U:„“è!Ç¥¡VFC€Rb˜zù ã®‚¦¥ûËèè^[€ı B:†MRˆtpwO¦i•×}¢²b„ÖÊM)×ãó“àµ°=ÕgòëPrÖ8¬\ ™M E(Ê‰w:E‘Á¯U—¸M©”«ã%µÅk9ª	,Ğ]
+›:–¶\Í„Ñæ~ÅtÖ~%,Os¼”†ÛÙº;TQØ£`lÏ®½3½ê§¸³¶sQi``e¶÷Xw8aA¿·"\ùÁåU©ß¨óÁ[icêµs7ùº]°ù2`yTFİ‡e»j²¼œ»nõŞRa=Ä„œ-wwá*€²¬Î/uLß«İ^m^ÃO0İgdn¦ó 1à7›šÑ„ôŒâH‚˜ÚÀ€ú¿˜*!‘ñõ«šMşùöYrb£ÄiÈÕ)nÕCõ›–[¬/	ı€``ì¸:¢H§ö×G.áhØ»ç­·ÇWÏ^¢Èö‚tô:!JëzoÔëQQ½%#v{°¡š¸a}GkCg*ÃqÎfR(…¾‡r–S}ã—ñƒÂ×-lŒ’“¹X±­6	«§,ø”G~`”ñÃ`vÚí>*ùãøèpC¡Ñÿï—˜&†ù6Éög+8})şlh¨r]4ë(Ø’)€"ÎèvüÁÆ¿Zx(p=¸ÿö"2Ê+´ ò³m3‚2¹¯ÁË´Æ³¹Ú‘¤mpû‹€ÓcY‚$	mº©•~Ôs›™Qğ©AºU(	ÄÊ¦½qé¡Š!:÷.<ÏÄEïGHˆ—NGRù¶Ô§mÒh¥ê-+¾ÍÏFQ+„üQ‹ÖØóMFe„ĞWíŒÉ!TÕy“Ÿø+¸J;’ÉÉ'Ì¡Z+ˆ‰³µêAO¡1GŠÑI^H®S5f“óÕêcU…êáG.s®K0q¼‡-çBØì[ºø'†ÁØ/àV”7íš®Ëtáşo+A5brÚhæMB¶}ú$È®ŠºšUBÓ\²ccw5…ª®jÅ…rÇÆ-¸6@~gÃv;_K›2Dæ¶ İEä\ÄrÆìœ¬:„û)FæºáÙf;’$NÂè?>’S%f%)¶û+}¶[¸¢rÃT„áÈı¤®F¢Ö?eÒÙfor~›§Æs î}ì²È³|v(¤ó©®G9Oµıÿ™;W #NÒd|÷ Jö·næ/+­Ü?j3(şöuAü¹éòêwirD÷ªòxb—9Z›˜Q¾¹I’Yº(æÙ÷#—Ò0÷º…GçR‹'uq§&©ø'à¼2¡ôşl~9	C-O1‰7ãLºH|Â¹Ôu·¨ÄÜQ£È?O9÷ÄZ`iíä*önXyÜøxEåFË]&!J<‡7#â‰.N(¿÷û-çÂ0‰Æ§TlglÏ2G0Ë^”‹"%w
+ÇUõ–øİ*»Åº…=RÇQVÎ!ä¦&ƒ´¶)_³ë‡dÍ™	ÕIÓ
+_àÁüµVµ“ïV'¨ÿš/;¢O^÷>ó½­¬ˆÊ(ËX/BV­ÊïˆVlºP÷õšğ©(ÎŠ´·HÂùú?¥r-Å`Rw_ú¦ª©ØnÏÑ»7nÁ´ÖÖ‡›ƒDxpCî{¬ãö}r4İ^jİÇ%ÙÃÆ11
+©|>‡ÈÂµ1¤ñnµÈF½†¬œ6oÓ¬õY÷@2»t=1m±(_eâA¨Xh:Ø=Âá CÃˆÑÙr
+å¬´b
+ºó,¡jBœ5OxËŠG¶×vğ>a¿Ÿ Ï'Í°Ç>‡5ñ˜!Ñ€hæ-VÈ£ v‹ºóMµEu}X¢„9¼_Ò“OD+'¦óKuôÑTc{_óN>5Œ"ñ)]™[²È3[ÓŸc.©—o«ÜëÌ³‰€J¸W ¤‚¦ ğO2ÃxÏ§c‚ºQÕ÷XÃË#Ïæ#ş—OÉ¬Æt—RÜõ¿OÏäû{TU§À“_òê¦Ü>Êİ­¤_Vx£ÀFù„­ª„ÿ@ã‚a+´.·ş£HÏOW„ÍİèHö¶İ	²#-wäC ØñE/ƒu»a«Nlõ÷OcmQúŞ½¯îò°¹ YØÿ@#a=b¦Úıp-^Ğ…¯Pï}
+–zˆ_çÏ	a*ùM¤àáÆ‡&>¦vì÷Õ…ø›¿»Yœ[.S¢z›—®k‰6}G…iBù"3ÄŞáÓšĞ|Vw‚E xøxÄº-nmF9~_[r”¿OÆiÈ#&#Ä‚ñò×ÄË÷7Û;xê_%‡8Á›]d×LY.z·¾‚İ¤–iñÜH”#–!»ÍŸ³ûä3¢ZÇÃ·zc£øQä—¿!Í©	SWJ–]g¦şŞ5UØ?«¾ù€R‡uÄœŸf‘l†ƒf2o¬¼”DDR3í—|m‘÷z csrñÓ‚!aİ{ê-Šì†]¤[Sİú½5g»–õôrô×ÜÀ¦X,¦QÍÿ/+A—ÿ\œ$„¾Œ’ïì§\’òş*æp@ PÒ|2Í@İ½gÙ*G|lÁO	®šz?Ë£‰uéô\Mä}“ÉÌTõ§ö¹[— Ê;E†&óñò¡J‹Ç	‚Nyßæ	z €½n.ŞùÈÄfŞÎ/Ôª)ÿGó”c¨^—[k³–éÉ0oèçûİ/h˜Õó‡Bzâ¶ØYêß2Ş¸5ó«›ö¥åİ¦¢©µœl—ÿ®OZòàÆ×iûNú½¯cÒiœ!²<V<˜äw2rñiˆZxŠ)kd’–äÌÚ¬ñò5*RtÉÅN®xÀq+Ïø3|É@™¸¬}â/PÎ.•Ò#Á\D~(d'şeŞÀ@r	+‘hŠ‡t3=o.†l„’‘4•8p´EìÀQÓ—Qy}†
+c[éi¿ÆûFûDì|jÅ1®36LÜƒğ¤8I	,‘¤]ü8-³3>EO(Õµ6±TLØS§Y5ÆÃØïßĞ„¨—`ù’ ñWÏp”uV9fy¾5£Ÿ„©f™S*ïX»_mVAnl7	9Ó;Ê³ GÍÕ¥^ÉÁŒb‰ d‹ı´†] â*æyÓ0£3r ÛŞÀúİ’PÈªÜn”ş.Q†yp†V©ìsØñ1£j]cÇ6HÃÅ$|İcş+şµtĞ¦°N€\>ğÍá 9#
+„Q*’£<ª&½hÄèCßªÿ:p[Ûçoå'vê4¶T· à©ñÎ&ÒüELŞÎ¦±âtØK0;ı–Ö”¾?EQ’] Gb#šõFaî©‹™’ó˜Ü¶h“š©vJ½@Ï&mHw×^N(¶#ÿĞ‘‰Z“Û!¸Ïbc}HF`·§“³ÿjü²6¦ûĞ‚†;<uÅ
+íY÷ó97°ëß;ñYº£ ”ÉÿpÙòG
+‘¹^;	•Ú-NK³‚œ6oÉ×š&Y«hÛº` ƒ»X+b0nä}„ƒƒ'^-xWŸP¸‰\ÕYÄ×C¶Gğë…}„·NÆèÃ®×-¾ùÿ€xo™øÚE˜½cu\õÚÆ‚ÇÓê?Ã"L“…×
+êyÎ¡Àä<Ù¥…;Øıê4²Û#û‘Z^–¥ŞeK)E{¾ù¨=8p&ã}İ/^–ópŠ¼ÓHßH]
+G-{d’mŠŞì…KÉ¯+´°!w›	ç_èÂô£SP'S kŒ¤g”“öµ¨ß‡~—üÀDñI©,±:w%t²o‰¬’S§%ıRÀ×.›êÜW»K¥è7(È$»ÀÅ¡—mµúü^ğşFl^Æ>xî6 Š,’aÁ½¡·VGv>š{øn.—6ÔOœ¬ã1Yó¦µ}ïKöRˆ¹›(îG2¤yd­É—U³:åš¤$¨Ú/á
+mY\ÔW¶pûbÒÎN(İO÷|æyÃ÷£’ı¤ıûÍ¾c©Qjn³ÔäàaˆµrKó¬Gp`/Ò|¸ˆ>³Æ¾$„C“ôháÈ¹ÆÜùİmNÚŸ€Œ8İ^û¦aÕeÓ;? ¯ò³_:f1KËğvÂ¬¦¿ëŞåB÷ÂFK)\`ªv‘nÛ8.à	Áfí3BÙóª¦¸@WÚæ„‡.­/ê•¬xyïÍaj}S2–nzeó0˜X]àrğ©dl$ãİÔaxÑÃC÷©"_Î13i-†ocª-±×“`Æ]H¼±<wŒUå,—÷6}W³‰xV•Ì®ÿ´K§N»¸™Ã¾\À~õ8¢ßAT<§Q}ü©»pT“Ú6ÀªlEç=g‘É¶±k(_ ¢»P;hO^İnK;|šıÈ?Ç¤Ë†JsÔ0/5Ãİv4¢VÀ™ûñåÚÆ/àm¡GĞ}ş÷™=Ø±qÿşˆu"T÷Õõƒ`Pø—r.[…oùÏ-CÁŞğ8^'|5,‰Ş»¸¥×.iNÍl;‹gw=@M¯¯YF=+tt×k…Ê±”{	S-ùö¢}6«”š?¼E±#0"TØäOá@\2`Sp;$}W¢àÆA3ÑNÌ‚8ÃgE,æfi<ªljãVÌCKûfGğgåòZs§ŠÀ,ñ‰şjW,š1á\ıcºÅ4F@hÆØê°Ğ:ò¤ì…›Ğå†¾İ7óÇDg€³ ç8¾0ûåS7á¸òwºÈ¶â£—±<6Ëiÿş†¿loš±õh*Ô	EN4ãpÑÏÅ—Y+¢öUoV!l~d\Š›nC2Q<Ñ'ÁL~—k,œ9aßØ!ã[Ğ™/-ˆ=¯;†´„Z_¸ñ} “Fsàú²“@¯¢Œå¨'ˆø¤Î³{I-Ë´ã”M_Ï»ÎY˜©Ñ[½w?%_îMªôâ˜¹†ÿ	ÀàâÃ­€¾[~ŞŞfr‡³
+,T4;µ%±`yYáy¢ÛyŒt¯(³1x|:?³¢Óôïæ¾\›]Æ”R/|çûç'Î¾ë†~TL*Èx~»}_Ğÿ¡òˆ™|Ééä¦Ğ[3Õlrù-ÚÅÒmÕû}Âözî»è³±TKK6eÜ“r>UTÄ‡÷»¥a™ïÇA¿ÊnĞÏş8
+F=¦\ÿnrê,ûzÆ"'G7Ìyêå¯‹}ö²Ö®jPüyN×oSLå®B]ÄD$"ÕĞúâ—÷%ñ—şF+«ÚtèJB1mkTÉŠâ»YZXmÓm‡$¼ó[®4Áâğ†¸ëˆi?¬ÁcDôƒÙÎN:ìh1“ùnkFİ×Pfz^4İ„¬öš×$êˆ¨°;•êû‡S	wPÀkHZlXk¸¤}È:?>‡q"ìs«‹éuñêTÓ¦ˆr'Gx*Z<¥LYÒó”¨Å8Şİq&]àÕ’°Ã}.ú7]ÒX™ `·£¼tl(if (__wake_q_add(head, task))
+		get_task_struct(task);
+}
+
+/**
+ * wake_q_add_safe() - safely queue a wakeup for 'later' waking.
+ * @head: the wake_q_head to add @task to
+ * @task: the task to queue for 'later' wakeup
+ *
+ * Queue a task for later wakeup, most likely by the wake_up_q() call in the
+ * same context, _HOWEVER_ this is not guaranteed, the wakeup can come
+ * instantly.
+ *
+ * This function must be used as-if it were wake_up_process(); IOW the task
+ * must be ready to be woken at this location.
+ *
+ * This function is essentially a task-safe equivalent to wake_q_add(). Callers
+ * that already hold reference to @task can call the 'safe' version and trust
+ * wake_q to do the right thing depending whether or not the @task is already
+ * queued for wakeup.
+ */
+void wake_q_add_safe(struct wake_q_head *head, struct task_struct *task)
+{
+	if (!__wake_q_add(head, task))
+		put_task_struct(task);
+}
+
+void wake_up_q(struct wake_q_head *head)
+{
+	struct wake_q_node *node = head->first;
+
+	while (node != WAKE_Q_TAIL) {
+		struct task_struct *task;
+
+		task = container_of(node, struct task_struct, wake_q);
+		/* Task can safely be re-inserted now: */
+		node = node->next;
+		task->wake_q.next = NULL;
+
+		/*
+		 * wake_up_process() executes a full barrier, which pairs with
+		 * the queueing in wake_q_add() so as not to miss wakeups.
+		 */
+		wake_up_process(task);
+		put_task_struct(task);
+	}
+}
+
+/*
+ * resched_curr - mark rq's current task 'to be rescheduled now'.
+ *
+ * On UP this means the setting of the need_resched flag, on SMP it
+ * might also involve a cross-CPU call to trigger the scheduler on
+ * the target CPU.
+ */
+void resched_curr(struct rq *rq)
+{
+	struct task_struct *curr = rq->curr;
+	int cpu;
+
+	lockdep_assert_rq_held(rq);
+
+	if (test_tsk_need_resched(curr))
+		return;
+
+	cpu = cpu_of(rq);
+
+	if (cpu == smp_processor_id()) {
+		set_tsk_need_resched(curr);
+		set_preempt_need_resched();
+		return;
+	}
+
+	if (set_nr_and_not_polling(curr))
+		smp_send_reschedule(cpu);
+	else
+		trace_sched_wake_idle_without_ipi(cpu);
+}
+
+void resched_cpu(int cpu)
+{
+	struct rq *rq = cpu_rq(cpu);
+	unsigned long flags;
+
+	raw_spin_rq_lock_irqsave(rq, flags);
+	if (cpu_online(cpu) || cpu == smp_processor_id())
+		resched_curr(rq);
+	raw_spin_rq_unlock_irqrestore(rq, flags);
+}
+
+#ifdef CONFIG_SMP
+#ifdef CONFIG_NO_HZ_COMMON
+/*
+ * In the semi idle case, use the nearest busy CPU for migrating timers
+ * from an idle CPU.  This is good for power-savings.
+ *
+ * We don't do similar optimization for completely idle system, as
+ * selecting an idle CPU will add more delays to the timers than intended
+ * (as that CPU's timer base may not be uptodate wrt jiffies etc).
+ */
+int get_nohz_timer_target(void)
+{
+	int i, cpu = smp_processor_id(), default_cpu = -1;
+	struct sched_domain *sd;
+	const struct cpumask *hk_mask;
+
+	if (housekeeping_cpu(cpu, HK_TYPE_TIMER)) {
+		if (!idle_cpu(cpu))
+			return cpu;
+		default_cpu = cpu;
+	}
+
+	hk_mask = housekeeping_cpumask(HK_TYPE_TIMER);
+
+	rcu_read_lock();
+	for_each_domain(cpu, sd) {
+		for_each_cpu_and(i, sched_domain_span(sd), hk_mask) {
+			if (cpu == i)
+				continue;
+
+			if (!idle_cpu(i)) {
+				cpu = i;
+				goto unlock;
+			}
+		}
+	}
+
+	if (default_cpu == -1)
+		default_cpu = housekeeping_any_cpu(HK_TYPE_TIMER);
+	cpu = default_cpu;
+unlock:
+	rcu_read_unlock();
+	return cpu;
+}
+
+/*
+ * When add_timer_on() enqueues a timer into the timer wheel of an
+ * idle CPU then this timer might expire before the next timer event
+ * which is scheduled to wake up that CPU. In case of a completely
+ * idle system the next event might even be infinite time into the
+ * future. wake_up_idle_cpu() ensures that the CPU is woken up and
+ * leaves the inner idle loop so the newly added timer is taken into
+ * account when the CPU goes back to idle and evaluates the timer
+ * wheel for the next timer event.
+ */
+static void wake_up_idle_cpu(int cpu)
+{
+	struct rq *rq = cpu_rq(cpu);
+
+	if (cpu == smp_processor_id())
+		return;
+
+	if (set_nr_and_not_polling(rq->idle))
+		smp_send_reschedule(cpu);
+	else
+		trace_sched_wake_idle_without_ipi(cpu);
+}
+
+static bool wake_up_full_nohz_cpu(int cpu)
+{
+	/*
+	 * We just need the target to call irq_exit() and re-evaluate
+	 * the next tick. The nohz full kick at least implies that.
+	 * If needed we can still optimize that later with an
+	 * empty IRQ.
+	 */
+	if (cpu_is_offline(cpu))
+		return true;  /* Don't try to wake offline CPUs. */
+	if (tick_nohz_full_cpu(cpu)) {
+		if (cpu != smp_processor_id() ||
+		    tick_nohz_tick_stopped())
+			tick_nohz_full_kick_cpu(cpu);
+		return true;
+	}
+
+	return false;
+}
+
+/*
+ * Wake up the specified CPU.  If the CPU is going offline, it is the
+ * caller's responsibility to deal with the lost wakeup, for example,
+ * by hooking into the CPU_DEAD notifier like timers and hrtimers do.
+ */
+void wake_up_nohz_cpu(int cpu)
+{
+	if (!wake_up_full_nohz_cpu(cpu))
+		wake_up_idle_cpu(cpu);
+}
+
+static void nohz_csd_func(void *info)
+{
+	struct rq *rq = info;
+	int cpu = cpu_of(rq);
+	unsigned int flags;
+
+	/*
+	 * Release the rq::nohz_csd.
+	 */
+	flags = atomic_fetch_andnot(NOHZ_KICK_MASK | NOHZ_NEWILB_KICK, nohz_flags(cpu));
+	WARN_ON(!(flags & NOHZ_KICK_MASK));
+
+	rq->idle_balance = idle_cpu(cpu);
+	if (rq->idle_balance && !need_resched()) {
+		rq->nohz_idle_balance = flags;
+		raise_softirq_irqoff(SCHED_SOFTIRQ);
+	}
+}
+
+#endif /* CONFIG_NO_HZ_COMMON */
+
+#ifdef CONFIG_NO_HZ_FULL
+bool sched_can_stop_tick(struct rq *rq)
+{
+	int fifo_nr_running;
+
+	/* Deadline tasks, even if single, need the tick */
+	if (rq->dl.dl_nr_running)
+		return false;
+
+	/*
+	 * If there are more than one RR tasks, we need the tick to affect the
+	 * actual RR behaviour.
+	 */
+	if (rq->rt.rr_nr_running) {
+		if (rq->rt.rr_nr_running == 1)
+			return true;
+		else
+			return false;
+	}
+
+	/*
+	 * If there's no RR tasks, but FIFO tasks, we can skip the tick, no
+	 * forced preemption between FIFO tasks.
+	 */
+	fifo_nr_running = rq->rt.rt_nr_running - rq->rt.rr_nr_running;
+	if (fifo_nr_running)
+		return true;
+
+	/*
+	 * If there are no DL,RR/FIFO tasks, there must only be CFS tasks left;
+	 * if there's more than one we need the tick for involuntary
+	 * preemption.
+	 */
+	if (rq->nr_running > 1)
+		return false;
+
+	return true;
+}
+#endif /* CONFIG_NO_HZ_FULL */
+#endif /* CONFIG_SMP */
+
+#if defined(CONFIG_RT_GROUP_SCHED) || (defined(CONFIG_FAIR_GROUP_SCHED) && \
+			(defined(CONFIG_SMP) || defined(CONFIG_CFS_BANDWIDTH)))
+/*
+ * Iterate task_group tree rooted at *from, calling @down when first entering a
+ * node and @up when leaving it for the final time.
+ *
+ * Caller must hold rcu_lock or sufficient equivalent.
+ */
+int walk_tg_tree_from(struct task_group *from,
+			     tg_visitor down, tg_visitor up, void *data)
+{
+	struct task_group *parent, *child;
+	int ret;
+
+	parent = from;
+
+down:
+	ret = (*down)(parent, data);
+	if (ret)
+		goto out;
+	list_for_each_entry_rcu(child, &parent->children, siblings) {
+		parent = child;
+		goto down;
+
+up:
+		continue;
+	}
+	ret = (*up)(parent, data);
+	if (ret || parent == from)
+		goto out;
+
+	child = parent;
+	parent = parent->parent;
+	if (parent)
+		goto up;
+out:
+	return ret;
+}
+
+int tg_nop(struct task_group *tg, void *data)
+{
+	return 0;
+}
+#endif
+
+static void set_load_weight(struct task_struct *p, bool update_load)
+{
+	int prio = p->static_prio - MAX_RT_PRIO;
+	struct load_weight *load = &p->se.load;
+
+	/*
+	 * SCHED_IDLE tasks get minimal weight:
+	 */
+	if (task_has_idle_policy(p)) {
+		load->weight = scale_load(WEIGHT_IDLEPRIO);
+		load->inv_weight = WMULT_IDLEPRIO;
+		return;
+	}
+
+	/*
+	 * SCHED_OTHER tasks have to update their load when changing their
+	 * weight
+	 */
+	if (update_load && p->sched_class == &fair_sched_class) {
+		reweight_task(p, prio);
+	} else {
+		load->weight = scale_load(sched_prio_to_weight[prio]);
+		load->inv_weight = sched_prio_to_wmult[prio];
+	}
+}
+
+#ifdef CONFIG_UCLAMP_TASK
+/*
+ * Serializes updates of utilization clamp values
+ *
+ * The (slow-path) user-space triggers utilization clamp value updates which
+ * can require updates on (fast-path) scheduler's data structures used to
+ * support enqueue/dequeue operations.
+ * While the per-CPU rq lock protects fast-path update operations, user-space
+ * requests are serialized using a mutex to reduce the risk of conflicting
+ * updates or API abuses.
+ */
+static DEFINE_MUTEX(uclamp_mutex);
+
+/* Max allowed minimum utilization */
+unsigned int sysctl_sched_uclamp_util_min = SCHED_CAPACITY_SCALE;
+
+/* Max allowed maximum utilization */
+unsigned int sysctl_sched_uclamp_util_max = SCHED_CAPACITY_SCALE;
+
+/*
+ * By default RT tasks run at the maximum performance point/capacity of the
+ * system. Uclamp enforces this by always setting UCLAMP_MIN of RT tasks to
+ * SCHED_CAPACITY_SCALE.
+ *
+ * This knob allows admins to change the default behavior when uclamp is being
+ * used. In battery powered devices, particularly, running at the maximum
+ * capacity and frequency will increase energy consumption and shorten the
+ * battery life.
+ *
+ * This knob only affects RT tasks that their uclamp_se->user_defined == false.
+ *
+ * This knob will not override the system default sched_util_clamp_min defined
+ * above.
+ */
+unsigned int sysctl_sched_uclamp_util_min_rt_default = SCHED_CAPACITY_SCALE;
+
+/* All clamps are required to be less or equal than these values */
+static struct uclamp_se uclamp_default[UCLAMP_CNT];
+
+/*
+ * This static key is used to reduce the uclamp overhead in the fast path. It
+ * primarily disables the call to uclamp_rq_{inc, dec}() in
+ * enqueue/dequeue_task().
+ *
+ * This allows users to continue to enable uclamp in their kernel config with
+ * minimum uclamp overhead in the fast path.
+ *
+ * As soon as userspace modifies any of the uclamp knobs, the static key is
+ * enabled, since we have an actual users that make use of uclamp
+ * functionality.
+ *
+ * The knobs that would enable this static key are:
+ *
+ *   * A task modifying its uclamp value with sched_setattr().
+ *   * An admin modifying the sysctl_sched_uclamp_{min, max} via procfs.
+ *   * An admin modifying the cgroup cpu.uclamp.{min, max}
+ */
+DEFINE_STATIC_KEY_FALSE(sched_uclamp_used);
+
+/* Integer rounded range for each bucket */
+#define UCLAMP_BUCKET_DELTA DIV_ROUND_CLOSEST(SCHED_CAPACITY_SCALE, UCLAMP_BUCKETS)
+
+#define for_each_clamp_id(clamp_id) \
+	for ((clamp_id) = 0; (clamp_id) < UCLAMP_CNT; (clamp_id)++)
+
+static inline unsigned int uclamp_bucket_id(unsigned int clamp_value)
+{
+	return min_t(unsigned int, clamp_value / UCLAMP_BUCKET_DELTA, UCLAMP_BUCKETS - 1);
+}
+
+static inline unsigned int uclamp_none(enum uclamp_id clamp_id)
+{
+	if (clamp_id == UCLAMP_MIN)
+		return 0;
+	return SCHED_CAPACITY_SCALE;
+}
+
+static inline void uclamp_se_set(struct uclamp_se *uc_se,
+				 unsigned int value, bool user_defined)
+{
+	uc_se->value = value;
+	uc_se->bucket_id = uclamp_bucket_id(value);
+	uc_se->user_defined = user_defined;
+}
+
+static inline unsigned int
+uclamp_idle_value(struct rq *rq, enum uclamp_id clamp_id,
+		  unsigned int clamp_value)
+{
+	/*
+	 * Avoid blocked utilization pushing up the frequency when we go
+	 * idle (which drops the max-clamp) by retaining the last known
+	 * max-clamp.
+	 */
+	if (clamp_id == UCLAMP_MAX) {
+		rq->uclamp_flags |= UCLAMP_FLAG_IDLE;
+		return clamp_value;
+	}
+
+	return uclamp_none(UCLAMP_MIN);
+}
+
+static inline void uclamp_idle_reset(struct rq *rq, enum uclamp_id clamp_id,
+				     unsigned int clamp_value)
+{
+	/* Reset max-clamp retention only on idle exit */
+	if (!(rq->uclamp_flags & UCLAMP_FLAG_IDLE))
+		return;
+
+	WRITE_ONCE(rq->uclamp[clamp_id].value, clamp_value);
+}
+
+static inline
+unsigned int uclamp_rq_max_value(struct rq *rq, enum uclamp_id clamp_id,
+				   unsigned int clamp_value)
+{
+	struct uclamp_bucket *bucket = rq->uclamp[clamp_id].bucket;
+	int bucket_id = UCLAMP_BUCKETS - 1;
+
+	/*
+	 * Since both min and max clamps are max aggregated, find the
+	 * top most bucket with tasks in.
+	 */
+	for ( ; bucket_id >= 0; bucket_id--) {
+		if (!bucket[bucket_id].tasks)
+			continue;
+		return bucket[bucket_id].value;
+	}
+
+	/* No tasks -- default clamp values */
+	return uclamp_idle_value(rq, clamp_id, clamp_value);
+}
+
+static void __uclamp_update_util_min_rt_default(struct task_struct *p)
+{
+	unsigned int default_util_min;
+	struct uclamp_se *uc_se;
+
+	lockdep_assert_held(&p->pi_lock);
+
+	uc_se = &p->uclamp_req[UCLAMP_MIN];
+
+	/* Only sync if user didn't override the default */
+	if (uc_se->user_defined)
+		return;
+
+	default_util_min = sysctl_sched_uclamp_util_min_rt_default;
+	uclamp_se_set(uc_se, default_util_min, false);
+}
+
+static void uclamp_update_util_min_rt_default(struct task_struct *p)
+{
+	struct rq_flags rf;
+	struct rq *rq;
+
+	if (!rt_task(p))
+		return;
+
+	/* Protect updates to p->uclamp_* */
+	rq = task_rq_lock(p, &rf);
+	__uclamp_update_util_min_rt_default(p);
+	task_rq_unlock(rq, p, &rf);
+}
+
+static void uclamp_sync_util_min_rt_default(void)
+{
+	struct task_struct *g, *p;
+
+	/*
+	 * copy_process()			sysctl_uclamp
+	 *					  uclamp_min_rt = X;
+	 *   write_lock(&tasklist_lock)		  read_lock(&tasklist_lock)
+	 *   // link thread			  smp_mb__after_spinlock()
+	 *   write_unlock(&tasklist_lock)	  read_unlock(&tasklist_lock);
+	 *   sched_post_fork()			  for_each_process_thread()
+	 *     __uclamp_sync_rt()		    __uclamp_sync_rt()
+	 *
+	 * Ensures that either sched_post_fork() will observe the new
+	 * uclamp_min_rt or for_each_process_thread() will observe the new
+	 * task.
+	 */
+	read_lock(&tasklist_lock);
+	smp_mb__after_spinlock();
+	read_unlock(&tasklist_lock);
+
+	rcu_read_lock();
+	for_each_process_thread(g, p)
+		uclamp_update_util_min_rt_default(p);
+	rcu_read_unlock();
+}
+
+static inline struct uclamp_se
+uclamp_tg_restrict(struct task_struct *p, enum uclamp_id clamp_id)
+{
+	/* Copy by value as we could modify it */
+	struct uclamp_se uc_req = p->uclamp_req[clamp_id];
+#ifdef CONFIG_UCLAMP_TASK_GROUP
+	unsigned int tg_min, tg_max, value;
+
+	/*
+	 * Tasks in autogroups or root task group will be
+	 * restricted by system defaults.
+	 */
+	if (task_group_is_autogroup(task_group(p)))
+		return uc_req;
+	if (task_group(p) == &root_task_group)
+		return uc_req;
+
+	tg_min = task_group(p)->uclamp[UCLAMP_MIN].value;
+	tg_max = task_group(p)->uclamp[UCLAMP_MAX].value;
+	value = uc_req.value;
+	value = clamp(value, tg_min, tg_max);
+	uclamp_se_set(&uc_req, value, false);
+#endif
+
+	return uc_req;
+}
+
+/*
+ * The effective clamp bucket index of a task depends on, by increasing
+ * priority:
+ * - the task specific clamp value, when explicitly requested from userspace
+ * - the task group effective clamp value, for tasks not either in the root
+ *   group or in an autogroup
+ * - the system default clamp value, defined by the sysadmin
+ */
+static inline struct uclamp_se
+uclamp_eff_get(struct task_struct *p, enum uclamp_id clamp_id)
+{
+	struct uclamp_se uc_req = uclamp_tg_restrict(p, clamp_id);
+	struct uclamp_se uc_max = uclamp_default[clamp_id];
+
+	/* System default restrictions always apply */
+	if (unlikely(uc_req.value > uc_max.value))
+		return uc_max;
+
+	return uc_req;
+}
+
+unsigned long uclamp_eff_value(struct task_struct *p, enum uclamp_id clamp_id)
+{
+	struct uclamp_se uc_eff;
+
+	/* Task currently refcounted: use back-annotated (effective) value */
+	if (p->uclamp[clamp_id].active)
+		return (unsigned long)p->uclamp[clamp_id].value;
+
+	uc_eff = uclamp_eff_get(p, clamp_id);
+
+	return (unsigned long)uc_eff.value;
+}
+
+/*
+ * When a task is enqueued on a rq, the clamp bucket currently defined by the
+ * task's uclamp::bucket_id is refcounted on that rq. This also immediately
+ * updates the rq's clamp value if required.
+ *
+ * Tasks can have a task-specific value requested from user-space, track
+ * within each bucket the maximum value for tasks refcounted in it.
+ * This "local max aggregation" allows to track the exact "requested" value
+ * for each bucket when all its RUNNABLE tasks require the same clamp.
+ */
+static inline void uclamp_rq_inc_id(struct rq *rq, struct task_struct *p,
+				    enum uclamp_id clamp_id)
+{
+	struct uclamp_rq *uc_rq = &rq->uclamp[clamp_id];
+	struct uclamp_se *uc_se = &p->uclamp[clamp_id];
+	struct uclamp_bucket *bucket;
+
+	lockdep_assert_rq_held(rq);
+
+	/* Update task effective clamp */
+	p->uclamp[clamp_id] = uclamp_eff_get(p, clamp_id);
+
+	bucket = &uc_rq->bucket[uc_se->bucket_id];
+	bucket->tasks++;
+	uc_se->active = true;
+
+	uclamp_idle_reset(rq, clamp_id, uc_se->value);
+
+	/*
+	 * Local max aggregation: rq buckets always track the max
+	 * "requested" clamp value of its RUNNABLE tasks.
+	 */
+	if (bucket->tasks == 1 || uc_se->value > bucket->value)
+		bucket->value = uc_se->value;
+
+	if (uc_se->value > READ_ONCE(uc_rq->value))
+		WRITE_ONCE(uc_rq->value, uc_se->value);
+}
+
+/*
+ * When a task is dequeued from a rq, the clamp bucket refcounted by the task
+ * is released. If this is the last task reference counting the rq's max
+ * active clamp value, then the rq's clamp value is updated.
+ *
+ * Both refcounted tasks and rq's cached clamp values are expected to be
+ * always valid. If it's detected they are not, as defensive programming,
+ * enforce the expected state and warn.
+ */
+static inline void uclamp_rq_dec_id(struct rq *rq, struct task_struct *p,
+				    enum uclamp_id clamp_id)
+{
+	struct uclamp_rq *uc_rq = &rq->uclamp[clamp_id];
+	struct uclamp_se *uc_se = &p->uclamp[clamp_id];
+	struct uclamp_bucket *bucket;
+	unsigned int bkt_clamp;
+	unsigned int rq_clamp;
+
+	lockdep_assert_rq_held(rq);
+
+	/*
+	 * If sched_uclamp_used was enabled after task @p was enqueued,
+	 * we could end up with unbalanced call to uclamp_rq_dec_id().
+	 *
+	 * In this case the uc_se->active flag should be false since no uclamp
+	 * accounting was performed at enqueue time and we can just return
+	 * here.
+	 *
+	 * Need to be careful of the following enqueue/dequeue ordering
+	 * problem too
+	 *
+	 *	enqueue(task

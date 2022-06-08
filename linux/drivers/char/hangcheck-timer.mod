@@ -1,2 +1,3 @@
-ude/config/PARAVIRT_XXL) \
-  arc
+,
+			.amux   = CX25840_AUDIO8,
+	

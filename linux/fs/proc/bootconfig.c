@@ -1,50 +1,89 @@
-IC_IOREMAP) \
-    $(wildcard include/config/VIRT_TO_BUS) \
-    $(wildcard include/config/GENERIC_DEVMEM_IS_ALLOWED) \
-  include/linux/logic_pio.h \
-    $(wildcard include/config/INDIRECT_PIO) \
-  include/linux/vmalloc.h \
-    $(wildcard include/config/HAVE_ARCH_HUGE_VMALLOC) \
-  arch/x86/include/asm/vmalloc.h \
-    $(wildcard include/config/HAVE_ARCH_HUGE_VMAP) \
-  arch/x86/include/asm/acpi.h \
-    $(wildcard include/config/ACPI_APEI) \
-  include/acpi/pdc_intel.h \
-  arch/x86/include/asm/numa.h \
-    $(wildcard include/config/NUMA_EMU) \
-  arch/x86/include/asm/numa_32.h \
-  include/linux/regulator/consumer.h \
-    $(wildcard include/config/REGULATOR) \
-  include/linux/suspend.h \
-    $(wildcard include/config/VT) \
-    $(wildcard include/config/SUSPEND) \
-    $(wildcard include/config/HIBERNATION_SNAPSHOT_DEV) \
-    $(wildcard include/config/PM_SLEEP_DEBUG) \
-    $(wildcard include/config/PM_AUTOSLEEP) \
-  include/linux/swap.h \
-    $(wildcard include/config/DEVICE_PRIVATE) \
-    $(wildcard include/config/MIGRATION) \
-    $(wildcard include/config/FRONTSWAP) \
-    $(wildcard include/config/THP_SWAP) \
-    $(wildcard include/config/MEMCG_SWAP) \
-  include/linux/memcontrol.h \
-    $(wildcard include/config/CGROUP_WRITEBACK) \
-  include/linux/cgroup.h \
-    $(wildcard include/config/CGROUP_CPUACCT) \
-    $(wildcard include/config/SOCK_CGROUP_DATA) \
-    $(wildcard include/config/CGROUP_DATA) \
-    $(wildcard include/config/CGROUP_BPF) \
-  include/uapi/linux/cgroupstats.h \
-  include/uapi/linux/taskstats.h \
-  include/linux/fs.h \
-    $(wildcard include/config/READ_ONLY_THP_FOR_FS) \
-    $(wildcard include/config/FS_POSIX_ACL) \
-    $(wildcard include/config/IMA) \
-    $(wildcard include/config/FILE_LOCKING) \
-    $(wildcard include/config/FSNOTIFY) \
-    $(wildcard include/config/FS_ENCRYPTION) \
-    $(wildcard include/config/FS_VERITY) \
-    $(wildcard include/config/EPOLL) \
-    $(wildcard include/config/UNICODE) \
-    $(wildcard include/config/QUOTA) \
-    $(wildcard include/config/FS_D
+t("%s\n", __func__);
+
+	if (0 != slot)
+		return -EINVAL;
+
+	mutex_lock(&inter->fpga_mutex);
+
+	ret = netup_fpga_op_rw(inter, NETUP_CI_BUSCTRL, 0, NETUP_CI_FLG_RD);
+	netup_fpga_op_rw(inter, NETUP_CI_BUSCTRL,
+				(ret & 0xcf) | (1 << (5 - state->nr)), 0);
+
+	mutex_unlock(&inter->fpga_mutex);
+
+	for (;;) {
+		msleep(50);
+
+		mutex_lock(&inter->fpga_mutex);
+
+		ret = netup_fpga_op_rw(inter, NETUP_CI_BUSCTRL,
+						0, NETUP_CI_FLG_RD);
+		mutex_unlock(&inter->fpga_mutex);
+
+		if ((ret & (1 << (5 - state->nr))) == 0)
+			break;
+		if (time_after(jiffies, t_out))
+			break;
+	}
+
+
+	ci_dbg_print("%s: %d msecs\n", __func__,
+		jiffies_to_msecs(jiffies + msecs_to_jiffies(9999) - t_out));
+
+	return 0;
+}
+
+static int altera_ci_slot_shutdown(struct dvb_ca_en50221 *en50221, int slot)
+{
+	/* not implemented */
+	return 0;
+}
+
+static int altera_ci_slot_ts_ctl(struct dvb_ca_en50221 *en50221, int slot)
+{
+	struct altera_ci_state *state = en50221->data;
+	struct fpga_internal *inter = state->internal;
+	int ret;
+
+	ci_dbg_print("%s\n", __func__);
+
+	if (0 != slot)
+		return -EINVAL;
+
+	mutex_lock(&inter->fpga_mutex);
+
+	ret = netup_fpga_op_rw(inter, NETUP_CI_BUSCTRL, 0, NETUP_CI_FLG_RD);
+	netup_fpga_op_rw(inter, NETUP_CI_BUSCTRL,
+				(ret & 0x0f) | (1 << (3 - state->nr)), 0);
+
+	mutex_unlock(&inter->fpga_mutex);
+
+	return 0;
+}
+
+/* work handler */
+static void netup_read_ci_status(struct work_struct *work)
+{
+	struct fpga_internal *inter =
+			container_of(work, struct fpga_internal, work);
+	int ret;
+
+	ci_dbg_print("%s\n", __func__);
+
+	mutex_lock(&inter->fpga_mutex);
+	/* ack' irq */
+	ret = netup_fpga_op_rw(inter, NETUP_CI_INT_CTRL, 0, NETUP_CI_FLG_RD);
+	ret = netup_fpga_op_rw(inter, NETUP_CI_BUSCTRL, 0, NETUP_CI_FLG_RD);
+
+	mutex_unlock(&inter->fpga_mutex);
+
+	if (inter->state[1] != NULL) {
+		inter->state[1]->status =
+				((ret & 1) == 0 ?
+				DVB_CA_EN50221_POLL_CAM_PRESENT |
+				DVB_CA_EN50221_POLL_CAM_READY : 0);
+		ci_dbg_print("%s: setting CI[1] status = 0x%x\n",
+				__func__, inter->state[1]->status);
+	}
+
+	if (inter->state[0] != NULL) {

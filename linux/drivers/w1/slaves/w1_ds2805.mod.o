@@ -1,1 +1,70 @@
-cmd_drivers/media/i2c/uda1342.o := gcc -Wp,-MMD,drivers/media/i2c/.uda1342.o.d -nostdinc -I./arch/x86/include -I./arch/x86/include/generated  -I./include -I./arch/x86/include/uapi -I./arch/x86/include/generated/uapi -I./include/uapi -I./include/generated/uapi -include ./include/linux/compiler-version.h -include ./include/linux/kconfig.h -include ./include/linux/compiler_types.h -D__KERNEL__ -fmacro-prefix-map=./= -Wall -Wundef -Werror=strict-prototypes -Wno-trigraphs -fno-strict-aliasing -fno-common -fshort-wchar -fno-PIE -Werror=implicit-function-declaration -Werror=implicit-int -Werror=return-type -Wno-format-security -std=gnu11 -mno-sse -mno-mmx -mno-sse2 -mno-3dnow -mno-avx -fcf-protection=none -m32 -msoft-float -mregparm=3 -freg-struct-return -fno-pic -mpreferred-stack-boundary=2 -march=i686 -mtune=pentium3 -mtune=generic -Wa,-mtune=generic32 -ffreestanding -mstack-protector-guard-reg=fs -mstack-protector-guard-symbol=__stack_chk_guard -Wno-sign-compare -fno-asynchronous-unwind-tables -mindirect-branch=thunk-extern -mindirect-branch-register -fno-jump-tables -fno-delete-null-pointer-checks -Wno-frame-address -Wno-format-truncation -Wno-format-overflow -Wno-address-of-packed-member -O2 -fno-allow-store-data-races -fstack-protector-strong -Wimplicit-fallthrough=5 -Wno-main -Wno-unused-but-set-variable -Wno-unused-const-variable -fno-stack-clash-protection -pg -mrecord-mcount -mfentry -DCC_USING_FENTRY -Wdeclaration-after-statement -Wvla -Wno-pointer-sign -Wcast-function-type -Wno-stringop-truncation -Wno-stringop-overflow -Wno-restrict -Wno-maybe-uninitialized -Wno-alloc-size-larger-than -fno-strict-overflow -fno-stack-check -fconserve-stack -Werror=date-time -Werror=incompatible-pointer-types -Werror=designated-init -Wno-packed-not-aligned  -DMODULE  -DKBUILD_BASENAME='"uda1342"' -DKBUILD_MODNAME='"uda1342"' -D__KBUILD_MODNAME=kmod_uda1342 -c -o drivers/media/i2c/uda1
+!try_module_get(client_tuner->dev.driver->owner)) {
+				i2c_unregister_device(client_tuner);
+				client_tuner = NULL;
+				goto frontend_detach;
+			}
+			port->i2c_client_tuner = client_tuner;
+
+			dev->ts1.analog_fe.tuner_priv = client_tuner;
+			memcpy(&dev->ts1.analog_fe.ops.tuner_ops,
+			       &fe0->dvb.frontend->ops.tuner_ops,
+			       sizeof(struct dvb_tuner_ops));
+			break;
+		}
+		break;
+	default:
+		pr_info("%s: The frontend of your DVB/ATSC card  isn't supported yet\n",
+			dev->name);
+		break;
+	}
+
+	if ((NULL == fe0->dvb.frontend) || (fe1 && NULL == fe1->dvb.frontend)) {
+		pr_err("%s: frontend initialization failed\n",
+		       dev->name);
+		goto frontend_detach;
+	}
+
+	/* define general-purpose callback pointer */
+	fe0->dvb.frontend->callback = cx23885_tuner_callback;
+	if (fe1)
+		fe1->dvb.frontend->callback = cx23885_tuner_callback;
+#if 0
+	/* Ensure all frontends negotiate bus access */
+	fe0->dvb.frontend->ops.ts_bus_ctrl = cx23885_dvb_bus_ctrl;
+	if (fe1)
+		fe1->dvb.frontend->ops.ts_bus_ctrl = cx23885_dvb_bus_ctrl;
+#endif
+
+	/* Put the tuner in standby to keep it quiet */
+	call_all(dev, tuner, standby);
+
+	if (fe0->dvb.frontend->ops.analog_ops.standby)
+		fe0->dvb.frontend->ops.analog_ops.standby(fe0->dvb.frontend);
+
+	/* register everything */
+	ret = vb2_dvb_register_bus(&port->frontends, THIS_MODULE, port,
+				   &dev->pci->dev, NULL,
+				   adapter_nr, mfe_shared);
+	if (ret)
+		goto frontend_detach;
+
+	ret = dvb_register_ci_mac(port);
+	if (ret)
+		goto frontend_detach;
+
+	return 0;
+
+frontend_detach:
+	/* remove I2C client for SEC */
+	client_sec = port->i2c_client_sec;
+	if (client_sec) {
+		module_put(client_sec->dev.driver->owner);
+		i2c_unregister_device(client_sec);
+		port->i2c_client_sec = NULL;
+	}
+
+	/* remove I2C client for tuner */
+	client_tuner = port->i2c_client_tuner;
+	if (client_tuner) {
+		module_put(client_tuner->dev.driver->owner);
+		i2c_unregister_device(client_tu

@@ -1,5 +1,3 @@
-_lock_class(lock, 0);
-
-		/*
-		 * If look_up_lock_class() failed to find a class, we're trying
-		 * to test if we hold a loc
+ount_matching_names(class);
+	class->wait_type_inner = lock->wait_type_inner;
+	class->wait_type_outer = lock->wait_type_oute

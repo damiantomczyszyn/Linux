@@ -1,2 +1,1 @@
-drivers/media/rc/keymaps/rc-flydvb.o
-
+truct cx23885_audio_dev *chip = snd_pc

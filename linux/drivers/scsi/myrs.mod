@@ -1,1 +1,2 @@
-cmd_drivers/media/i2c
+= 1,
+	.agc = &xc3028_

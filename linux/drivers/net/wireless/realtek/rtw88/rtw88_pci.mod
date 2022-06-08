@@ -1,2 +1,2 @@
-nclude/asm/atomic64_32.h \
-  include/linux
+us & VID_BC_MSK_SYNC) ||
+		(status & VID_B

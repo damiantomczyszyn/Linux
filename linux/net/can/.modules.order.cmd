@@ -1,14 +1,5 @@
-/* SPDX-License-Identifier: GPL-2.0 */
-/*
- * kernel/lockdep_internals.h
+e if RCU thinks that the current CPU is not idle
  *
- * Runtime locking correctness validator
- *
- * lockdep subsystem internal functions and variables.
- */
-
-/*
- * Lock-class usage-state bits:
- */
-enum lock_usage_bit {
-#define
+ * Return true if RCU is watching the running CPU, which means that this
+ * CPU can safely enter RCU read-side critical sections.  In other words,
+ * if the current CPU is not in its idle loop or

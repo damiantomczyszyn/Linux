@@ -1,3 +1,6 @@
-LE_SLEEP) \
-    $(wildcard include/config/PM_CLK) \
-    $(wildcard include/config/PM_GENERIC_DOMAINS) \
+IO moving on encoder ports\n",
+				dev->name);
+		cx_clear(MC417_RWD, (mask & 0x7fff8) >> 3);
+	}
+
+	/* TO

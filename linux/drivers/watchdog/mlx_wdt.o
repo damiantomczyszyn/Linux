@@ -1,143 +1,251 @@
-ldcard include/config/X86_INTEL_USERCOPY) \
-  arch/x86/include/asm/smap.h \
-  arch/x86/include/asm/extable.h \
-    $(wildcard include/config/BPF_JIT) \
-  include/asm-generic/access_ok.h \
-    $(wildcard include/config/ALTERNATE_USER_ADDRESS_SPACE) \
-  arch/x86/include/asm/uaccess_32.h \
-  include/linux/cred.h \
-    $(wildcard include/config/DEBUG_CREDENTIALS) \
-  include/linux/key.h \
-    $(wildcard include/config/KEY_NOTIFICATIONS) \
-    $(wildcard include/config/NET) \
-  include/linux/assoc_array.h \
-    $(wildcard include/config/ASSOCIATIVE_ARRAY) \
-  include/linux/sched/user.h \
-    $(wildcard include/config/WATCH_QUEUE) \
-  include/linux/percpu_counter.h \
-  include/linux/rcu_sync.h \
-  include/linux/delayed_call.h \
-  include/linux/errseq.h \
-  include/linux/ioprio.h \
-  include/linux/sched/rt.h \
-  include/linux/iocontext.h \
-    $(wildcard include/config/BLK_ICQ) \
-  include/uapi/linux/ioprio.h \
-  include/linux/fs_types.h \
-  include/linux/mount.h \
-  include/linux/mnt_idmapping.h \
-  include/uapi/linux/fs.h \
-  include/linux/quota.h \
-    $(wildcard include/config/QUOTA_NETLINK_INTERFACE) \
-  include/uapi/linux/dqblk_xfs.h \
-  include/linux/dqblk_v1.h \
-  include/linux/dqblk_v2.h \
-  include/linux/dqblk_qtree.h \
-  include/linux/projid.h \
-  include/uapi/linux/quota.h \
-  include/linux/nfs_fs_i.h \
-  include/linux/seq_file.h \
-  include/linux/string_helpers.h \
-  include/linux/ns_common.h \
-  include/linux/nsproxy.h \
-  include/linux/user_namespace.h \
-    $(wildcard include/config/INOTIFY_USER) \
-    $(wildcard include/config/FANOTIFY) \
-    $(wildcard include/config/PERSISTENT_KEYRINGS) \
-  include/linux/kernel_stat.h \
-  include/linux/interrupt.h \
-    $(wildcard include/config/IRQ_FORCED_THREADING) \
-    $(wildcard include/config/GENERIC_IRQ_PROBE) \
-    $(wildcard include/config/IRQ_TIMINGS) \
-  include/linux/irqreturn.h \
-  include/linux/irqnr.h \
-  include/uapi/linux/irqnr.h \
-  include/linux/hardirq.h \
-  include/linux/context_tracking_state.h \
-    $(wildcard include/config/CONTEXT_TRACKING) \
-  include/linux/ftrace_irq.h \
-    $(wildcard include/config/HWLAT_TRACER) \
-    $(wildcard include/config/OSNOISE_TRACER) \
-  include/linux/vtime.h \
-    $(wildcard include/config/VIRT_CPU_ACCOUNTING) \
-    $(wildcard include/config/IRQ_TIME_ACCOUNTING) \
-  arch/x86/include/asm/hardirq.h \
-    $(wildcard include/config/KVM_INTEL) \
-    $(wildcard include/config/X86_THERMAL_VECTOR) \
-    $(wildcard include/config/X86_MCE_THRESHOLD) \
-    $(wildcard include/config/X86_MCE_AMD) \
-    $(wildcard include/config/X86_HV_CALLBACK_VECTOR) \
-  arch/x86/include/asm/irq.h \
-  arch/x86/include/asm/sections.h \
-  include/asm-generic/sections.h \
-    $(wildcard include/config/HAVE_FUNCTION_DESCRIPTORS) \
-  include/linux/cgroup-defs.h \
-    $(wildcard include/config/CGROUP_NET_CLASSID) \
-    $(wildcard include/config/CGROUP_NET_PRIO) \
-  include/linux/u64_stats_sync.h \
-  include/linux/bpf-cgroup-defs.h \
-  include/linux/psi_types.h \
-  include/linux/kthread.h \
-  include/linux/cgroup_subsys.h \
-    $(wildcard include/config/CGROUP_DEVICE) \
-    $(wildcard include/config/CGROUP_FREEZER) \
-    $(wildcard include/config/CGROUP_PERF) \
-    $(wildcard include/config/CGROUP_HUGETLB) \
-    $(wildcard include/config/CGROUP_PIDS) \
-    $(wildcard include/config/CGROUP_RDMA) \
-    $(wildcard include/config/CGROUP_MISC) \
-    $(wildcard include/config/CGROUP_DEBUG) \
-  include/linux/vm_event_item.h \
-    $(wildcard include/config/HAVE_ARCH_TRANSPARENT_HUGEPAGE_PUD) \
-    $(wildcard include/config/MEMORY_BALLOON) \
-    $(wildcard include/config/BALLOON_COMPACTION) \
-    $(wildcard include/config/DEBUG_TLBFLUSH) \
-    $(wildcard include/config/DEBUG_VM_VMACACHE) \
-  include/linux/page_counter.h \
-  include/linux/vmpressure.h \
-  include/linux/eventfd.h \
-  include/linux/mm.h \
-    $(wildcard include/config/HAVE_ARCH_MMAP_RND_BITS) \
-    $(wildcard include/config/HAVE_ARCH_MMAP_RND_COMPAT_BITS) \
-    $(wildcard include/config/ARCH_USES_HIGH_VMA_FLAGS) \
-    $(wildcard include/config/ARCH_HAS_PKEYS) \
-    $(wildcard include/config/PPC) \
-    $(wildcard include/config/PARISC) \
-    $(wildcard include/config/SPARC64) \
-    $(wildcard include/config/ARM64_MTE) \
-    $(wildcard include/config/HAVE_ARCH_USERFAULTFD_MINOR) \
-    $(wildcard include/config/SHMEM) \
-    $(wildcard include/config/ARCH_HAS_PTE_SPECIAL) \
-    $(wildcard include/config/ARCH_HAS_PTE_DEVMAP) \
-    $(wildcard include/config/DEBUG_VM_RB) \
-    $(wildcard include/config/PAGE_POISONING) \
-    $(wildcard include/config/INIT_ON_ALLOC_DEFAULT_ON) \
-    $(wildcard include/config/INIT_ON_FREE_DEFAULT_ON) \
-    $(wildcard include/config/DEBUG_PAGEALLOC) \
-    $(wildcard include/config/HUGETLBFS) \
-    $(wildcard include/config/MAPPING_DIRTY_HELPERS) \
-    $(wildcard include/config/ANON_VMA_NAME) \
-  include/linux/mmap_lock.h \
-  include/linux/page_ext.h \
-  include/linux/stacktrace.h \
-    $(wildcard include/config/ARCH_STACKWALK) \
-    $(wildcard include/config/STACKTRACE) \
-    $(wildcard include/config/HAVE_RELIABLE_STACKTRACE) \
-  include/linux/stackdepot.h \
-    $(wildcard include/config/STACKDEPOT_ALWAYS_INIT) \
-  include/linux/page_ref.h \
-    $(wildcard include/config/DEBUG_PAGE_REF) \
-  include/linux/sizes.h \
-  include/linux/pgtable.h \
-    $(wildcard include/config/HIGHPTE) \
-    $(wildcard include/config/GUP_GET_PTE_LOW_HIGH) \
-    $(wildcard include/config/HAVE_ARCH_SOFT_DIRTY) \
-    $(wildcard include/config/ARCH_ENABLE_THP_MIGRATION) \
-    $(wildcard include/config/X86_ESPFIX64) \
-  arch/x86/include/asm/pgtable.h \
-    $(wildcard include/config/DEBUG_WX) \
-    $(wildcard include/config/PAGE_TABLE_CHECK) \
-  arch/x86/include/asm/pkru.h \
-  arch/x86/include/asm/fpu/api.h \
-    $(wildcard include/config/X86_DEBUG_FPU) \
- 
+t("%s\n", __func__);
+
+	if (0 != slot)
+		return -EINVAL;
+
+	mutex_lock(&inter->fpga_mutex);
+
+	ret = netup_fpga_op_rw(inter, NETUP_CI_BUSCTRL, 0, NETUP_CI_FLG_RD);
+	netup_fpga_op_rw(inter, NETUP_CI_BUSCTRL,
+				(ret & 0xcf) | (1 << (5 - state->nr)), 0);
+
+	mutex_unlock(&inter->fpga_mutex);
+
+	for (;;) {
+		msleep(50);
+
+		mutex_lock(&inter->fpga_mutex);
+
+		ret = netup_fpga_op_rw(inter, NETUP_CI_BUSCTRL,
+						0, NETUP_CI_FLG_RD);
+		mutex_unlock(&inter->fpga_mutex);
+
+		if ((ret & (1 << (5 - state->nr))) == 0)
+			break;
+		if (time_after(jiffies, t_out))
+			break;
+	}
+
+
+	ci_dbg_print("%s: %d msecs\n", __func__,
+		jiffies_to_msecs(jiffies + msecs_to_jiffies(9999) - t_out));
+
+	return 0;
+}
+
+static int altera_ci_slot_shutdown(struct dvb_ca_en50221 *en50221, int slot)
+{
+	/* not implemented */
+	return 0;
+}
+
+static int altera_ci_slot_ts_ctl(struct dvb_ca_en50221 *en50221, int slot)
+{
+	struct altera_ci_state *state = en50221->data;
+	struct fpga_internal *inter = state->internal;
+	int ret;
+
+	ci_dbg_print("%s\n", __func__);
+
+	if (0 != slot)
+		return -EINVAL;
+
+	mutex_lock(&inter->fpga_mutex);
+
+	ret = netup_fpga_op_rw(inter, NETUP_CI_BUSCTRL, 0, NETUP_CI_FLG_RD);
+	netup_fpga_op_rw(inter, NETUP_CI_BUSCTRL,
+				(ret & 0x0f) | (1 << (3 - state->nr)), 0);
+
+	mutex_unlock(&inter->fpga_mutex);
+
+	return 0;
+}
+
+/* work handler */
+static void netup_read_ci_status(struct work_struct *work)
+{
+	struct fpga_internal *inter =
+			container_of(work, struct fpga_internal, work);
+	int ret;
+
+	ci_dbg_print("%s\n", __func__);
+
+	mutex_lock(&inter->fpga_mutex);
+	/* ack' irq */
+	ret = netup_fpga_op_rw(inter, NETUP_CI_INT_CTRL, 0, NETUP_CI_FLG_RD);
+	ret = netup_fpga_op_rw(inter, NETUP_CI_BUSCTRL, 0, NETUP_CI_FLG_RD);
+
+	mutex_unlock(&inter->fpga_mutex);
+
+	if (inter->state[1] != NULL) {
+		inter->state[1]->status =
+				((ret & 1) == 0 ?
+				DVB_CA_EN50221_POLL_CAM_PRESENT |
+				DVB_CA_EN50221_POLL_CAM_READY : 0);
+		ci_dbg_print("%s: setting CI[1] status = 0x%x\n",
+				__func__, inter->state[1]->status);
+	}
+
+	if (inter->state[0] != NULL) {
+		inter->state[0]->status =
+				((ret & 2) == 0 ?
+				DVB_CA_EN50221_POLL_CAM_PRESENT |
+				DVB_CA_EN50221_POLL_CAM_READY : 0);
+		ci_dbg_print("%s: setting CI[0] status = 0x%x\n",
+				__func__, inter->state[0]->status);
+	}
+}
+
+/* CI irq handler */
+int altera_ci_irq(void *dev)
+{
+	struct fpga_inode *temp_int = NULL;
+	struct fpga_internal *inter = NULL;
+
+	ci_dbg_print("%s\n", __func__);
+
+	if (dev != NULL) {
+		temp_int = find_inode(dev);
+		if (temp_int != NULL) {
+			inter = temp_int->internal;
+			schedule_work(&inter->work);
+		}
+	}
+
+	return 1;
+}
+EXPORT_SYMBOL(altera_ci_irq);
+
+static int altera_poll_ci_slot_status(struct dvb_ca_en50221 *en50221,
+				      int slot, int open)
+{
+	struct altera_ci_state *state = en50221->data;
+
+	if (0 != slot)
+		return -EINVAL;
+
+	return state->status;
+}
+
+static void altera_hw_filt_release(void *main_dev, int filt_nr)
+{
+	struct fpga_inode *temp_int = find_inode(main_dev);
+	struct netup_hw_pid_filter *pid_filt = NULL;
+
+	ci_dbg_print("%s\n", __func__);
+
+	if (temp_int != NULL) {
+		pid_filt = temp_int->internal->pid_filt[filt_nr - 1];
+		/* stored old feed controls */
+		pid_filt->demux->start_feed = pid_filt->start_feed;
+		pid_filt->demux->stop_feed = pid_filt->stop_feed;
+
+		if (((--(temp_int->internal->filts_used)) <= 0) &&
+			 ((temp_int->internal->cis_used) <= 0)) {
+
+			ci_dbg_print("%s: Actually removing\n", __func__);
+
+			remove_inode(temp_int->internal);
+			kfree(pid_filt->internal);
+		}
+
+		kfree(pid_filt);
+
+	}
+
+}
+
+void altera_ci_release(void *dev, int ci_nr)
+{
+	struct fpga_inode *temp_int = find_inode(dev);
+	struct altera_ci_state *state = NULL;
+
+	ci_dbg_print("%s\n", __func__);
+
+	if (temp_int != NULL) {
+		state = temp_int->internal->state[ci_nr - 1];
+		altera_hw_filt_release(dev, ci_nr);
+
+
+		if (((temp_int->internal->filts_used) <= 0) &&
+				((--(temp_int->internal->cis_used)) <= 0)) {
+
+			ci_dbg_print("%s: Actually removing\n", __func__);
+
+			remove_inode(temp_int->internal);
+			kfree(state->internal);
+		}
+
+		if (state != NULL) {
+			if (state->ca.data != NULL)
+				dvb_ca_en50221_release(&state->ca);
+
+			kfree(state);
+		}
+	}
+
+}
+EXPORT_SYMBOL(altera_ci_release);
+
+static void altera_pid_control(struct netup_hw_pid_filter *pid_filt,
+		u16 pid, int onoff)
+{
+	struct fpga_internal *inter = pid_filt->internal;
+	u8 store = 0;
+
+	/* pid 0-0x1f always enabled, don't touch them */
+	if ((pid == 0x2000) || (pid < 0x20))
+		return;
+
+	mutex_lock(&inter->fpga_mutex);
+
+	netup_fpga_op_rw(inter, NETUP_CI_PID_ADDR0, (pid >> 3) & 0xff, 0);
+	netup_fpga_op_rw(inter, NETUP_CI_PID_ADDR1,
+			((pid >> 11) & 0x03) | (pid_filt->nr << 2), 0);
+
+	store = netup_fpga_op_rw(inter, NETUP_CI_PID_DATA, 0, NETUP_CI_FLG_RD);
+
+	if (onoff)/* 0 - on, 1 - off */
+		store |= (1 << (pid & 7));
+	else
+		store &= ~(1 << (pid & 7));
+
+	netup_fpga_op_rw(inter, NETUP_CI_PID_DATA, store, 0);
+
+	mutex_unlock(&inter->fpga_mutex);
+
+	pid_dbg_print("%s: (%d) set pid: %5d 0x%04x '%s'\n", __func__,
+		pid_filt->nr, pid, pid, onoff ? "off" : "on");
+}
+
+static void altera_toggle_fullts_streaming(struct netup_hw_pid_filter *pid_filt,
+					int filt_nr, int onoff)
+{
+	struct fpga_internal *inter = pid_filt->internal;
+	u8 store = 0;
+	int i;
+
+	pid_dbg_print("%s: pid_filt->nr[%d]  now %s\n", __func__, pid_filt->nr,
+			onoff ? "off" : "on");
+
+	if (onoff)/* 0 - on, 1 - off */
+		store = 0xff;/* ignore pid */
+	else
+		store = 0;/* enable pid */
+
+	mutex_lock(&inter->fpga_mutex);
+
+	for (i = 0; i < 1024; i++) {
+		netup_fpga_op_rw(inter, NETUP_CI_PID_ADDR0, i & 0xff, 0);
+
+		netup_fpga_op_rw(inter, NETUP_CI_PID_ADDR1,
+				((i >> 8) & 0x03) | (pid_filt->nr << 2), 0);
+		/* pid 0-0x1f always enabled */
+		netup_fpga_op_rw(inter, NETUP_CI_PID_DATA,
+				(i > 3 ? store : 0), 0);
+	}
+
+	mutex_unlock(&inter->fpga_mutex);
+}
+
+static int altera_pid_feed_control

@@ -1,1 +1,6 @@
-cmd_drivers/media/rc/keymaps/rc-norwood.mod := { echo  drivers/media/rc/keymaps/rc-norwood.o;  echo; } > drivers/media/rc/keymaps/rc-norwood.mod
+_MSK_GPIO0)
+			dprintk(7, " (PCI_MSK_GPIO0     0x%08x)\n",
+				PCI_MSK_GPIO0);
+
+		if (pci_status & PCI_MSK_GPIO1)
+			dprintk(7, " (PCI_MSK_GPIO1 

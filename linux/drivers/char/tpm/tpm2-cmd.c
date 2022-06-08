@@ -1,470 +1,618 @@
-UMA) \
-    $(wildcard include/config/NUMA_BALANCING) \
-    $(wildcard include/config/RSEQ) \
-    $(wildcard include/config/TASK_DELAY_ACCT) \
-    $(wildcard include/config/FAULT_INJECTION) \
-    $(wildcard include/config/LATENCYTOP) \
-    $(wildcard include/config/KUNIT) \
-    $(wildcard include/config/FUNCTION_GRAPH_TRACER) \
-    $(wildcard include/config/UPROBES) \
-    $(wildcard include/config/BCACHE) \
-    $(wildcard include/config/VMAP_STACK) \
-    $(wildcard include/config/LIVEPATCH) \
-    $(wildcard include/config/SECURITY) \
-    $(wildcard include/config/BPF_SYSCALL) \
-    $(wildcard include/config/GCC_PLUGIN_STACKLEAK) \
-    $(wildcard include/config/X86_MCE) \
-    $(wildcard include/config/KRETPROBES) \
-    $(wildcard include/config/RETHOOK) \
-    $(wildcard include/config/ARCH_HAS_PARANOID_L1D_FLUSH) \
-    $(wildcard include/config/ARCH_TASK_STRUCT_ON_STACK) \
-    $(wildcard include/config/DEBUG_RSEQ) \
-  include/uapi/linux/sched.h \
-  include/linux/pid.h \
-  include/linux/rculist.h \
-    $(wildcard include/config/PROVE_RCU_LIST) \
-  include/linux/refcount.h \
-  include/linux/sem.h \
-  include/uapi/linux/sem.h \
-  include/linux/ipc.h \
-  include/linux/uidgid.h \
-    $(wildcard include/config/MULTIUSER) \
-    $(wildcard include/config/USER_NS) \
-  include/linux/highuid.h \
-  include/linux/rhashtable-types.h \
-  include/uapi/linux/ipc.h \
-  arch/x86/include/generated/uapi/asm/ipcbuf.h \
-  include/uapi/asm-generic/ipcbuf.h \
-  arch/x86/include/uapi/asm/sembuf.h \
-  include/linux/shm.h \
-  include/uapi/linux/shm.h \
-  include/uapi/asm-generic/hugetlb_encode.h \
-  arch/x86/include/uapi/asm/shmbuf.h \
-  include/uapi/asm-generic/shmbuf.h \
-  arch/x86/include/asm/shmparam.h \
-  include/linux/plist.h \
-    $(wildcard include/config/DEBUG_PLIST) \
-  include/linux/hrtimer.h \
-    $(wildcard include/config/HIGH_RES_TIMERS) \
-    $(wildcard include/config/TIME_LOW_RES) \
-    $(wildcard include/config/TIMERFD) \
-  include/linux/hrtimer_defs.h \
-  include/linux/rbtree.h \
-  include/linux/rbtree_types.h \
-  include/linux/percpu.h \
-    $(wildcard include/config/NEED_PER_CPU_EMBED_FIRST_CHUNK) \
-    $(wildcard include/config/NEED_PER_CPU_PAGE_FIRST_CHUNK) \
-  include/linux/mmdebug.h \
-    $(wildcard include/config/DEBUG_VM) \
-    $(wildcard include/config/DEBUG_VM_PGFLAGS) \
-  include/linux/seqlock.h \
-  include/linux/ww_mutex.h \
-    $(wildcard include/config/DEBUG_RT_MUTEXES) \
-    $(wildcard include/config/DEBUG_WW_MUTEX_SLOWPATH) \
-  include/linux/rtmutex.h \
-  include/linux/timerqueue.h \
-  include/linux/seccomp.h \
-    $(wildcard include/config/SECCOMP) \
-    $(wildcard include/config/HAVE_ARCH_SECCOMP_FILTER) \
-    $(wildcard include/config/SECCOMP_FILTER) \
-    $(wildcard include/config/CHECKPOINT_RESTORE) \
-    $(wildcard include/config/SECCOMP_CACHE_DEBUG) \
-  include/uapi/linux/seccomp.h \
-  arch/x86/include/asm/seccomp.h \
-  arch/x86/include/asm/unistd.h \
-  arch/x86/include/uapi/asm/unistd.h \
-  arch/x86/include/generated/uapi/asm/unistd_32.h \
-  include/asm-generic/seccomp.h \
-  include/uapi/linux/unistd.h \
-  include/linux/nodemask.h \
-    $(wildcard include/config/HIGHMEM) \
-  include/linux/numa.h \
-    $(wildcard include/config/NODES_SHIFT) \
-    $(wildcard include/config/NUMA_KEEP_MEMINFO) \
-    $(wildcard include/config/HAVE_ARCH_NODE_DEV_GROUP) \
-  arch/x86/include/asm/sparsemem.h \
-  include/linux/resource.h \
-  include/uapi/linux/resource.h \
-  arch/x86/include/generated/uapi/asm/resource.h \
-  include/asm-generic/resource.h \
-  include/uapi/asm-generic/resource.h \
-  include/linux/latencytop.h \
-  include/linux/sched/prio.h \
-  include/linux/sched/types.h \
-  include/linux/signal_types.h \
-    $(wildcard include/config/OLD_SIGACTION) \
-  include/uapi/linux/signal.h \
-  arch/x86/include/asm/signal.h \
-  arch/x86/include/uapi/asm/signal.h \
-  include/uapi/asm-generic/signal-defs.h \
-  arch/x86/include/uapi/asm/siginfo.h \
-  include/uapi/asm-generic/siginfo.h \
-  include/linux/syscall_user_dispatch.h \
-  include/linux/mm_types_task.h \
-    $(wildcard include/config/ARCH_WANT_BATCHED_UNMAP_TLB_FLUSH) \
-    $(wildcard include/config/SPLIT_PTLOCK_CPUS) \
-    $(wildcard include/config/ARCH_ENABLE_SPLIT_PMD_PTLOCK) \
-  arch/x86/include/asm/tlbbatch.h \
-  include/linux/task_io_accounting.h \
-    $(wildcard include/config/TASK_IO_ACCOUNTING) \
-  include/linux/posix-timers.h \
-  include/linux/alarmtimer.h \
-    $(wildcard include/config/RTC_CLASS) \
-  include/uapi/linux/rseq.h \
-  include/linux/kcsan.h \
-  arch/x86/include/generated/asm/kmap_size.h \
-  include/asm-generic/kmap_size.h \
-    $(wildcard include/config/DEBUG_KMAP_LOCAL) \
-  arch/x86/include/asm/delay.h \
-  include/asm-generic/delay.h \
-  include/linux/gpio/consumer.h \
-    $(wildcard include/config/GPIOLIB) \
-    $(wildcard include/config/OF_GPIO) \
-    $(wildcard include/config/ACPI) \
-    $(wildcard include/config/GPIO_SYSFS) \
-  include/linux/i2c.h \
-    $(wildcard include/config/I2C) \
-    $(wildcard include/config/I2C_SLAVE) \
-    $(wildcard include/config/I2C_BOARDINFO) \
-    $(wildcard include/config/I2C_MUX) \
-  include/linux/acpi.h \
-    $(wildcard include/config/ACPI_DEBUGGER) \
-    $(wildcard include/config/ACPI_TABLE_LIB) \
-    $(wildcard include/config/IA64) \
-    $(wildcard include/config/LOONGARCH) \
-    $(wildcard include/config/ARM64) \
-    $(wildcard include/config/ACPI_PROCESSOR_CSTATE) \
-    $(wildcard include/config/ACPI_HOTPLUG_CPU) \
-    $(wildcard include/config/ACPI_HOTPLUG_IOAPIC) \
-    $(wildcard include/config/X86_IO_APIC) \
-    $(wildcard include/config/PCI) \
-    $(wildcard include/config/ACPI_WMI) \
-    $(wildcard include/config/ACPI_NUMA) \
-    $(wildcard include/config/HIBERNATION) \
-    $(wildcard include/config/PM_SLEEP) \
-    $(wildcard include/config/ACPI_HOTPLUG_MEMORY) \
-    $(wildcard include/config/ACPI_CONTAINER) \
-    $(wildcard include/config/ACPI_GTDT) \
-    $(wildcard include/config/PM) \
-    $(wildcard include/config/ACPI_TABLE_UPGRADE) \
-    $(wildcard include/config/ACPI_WATCHDOG) \
-    $(wildcard include/config/ACPI_SPCR_TABLE) \
-    $(wildcard include/config/ACPI_GENERIC_GSI) \
-    $(wildcard include/config/ACPI_LPIT) \
-    $(wildcard include/config/ACPI_PPTT) \
-    $(wildcard include/config/ACPI_PCC) \
-  include/linux/ioport.h \
-    $(wildcard include/config/MEMORY_HOTREMOVE) \
-    $(wildcard include/config/MEMORY_HOTPLUG) \
-  include/linux/irqdomain.h \
-    $(wildcard include/config/IRQ_DOMAIN_HIERARCHY) \
-    $(wildcard include/config/GENERIC_IRQ_DEBUGFS) \
-    $(wildcard include/config/IRQ_DOMAIN) \
-    $(wildcard include/config/IRQ_DOMAIN_NOMAP) \
-  include/linux/irqhandler.h \
-  include/linux/of.h \
-    $(wildcard include/config/OF_DYNAMIC) \
-    $(wildcard include/config/SPARC) \
-    $(wildcard include/config/OF_PROMTREE) \
-    $(wildcard include/config/OF_KOBJ) \
-    $(wildcard include/config/OF_NUMA) \
-    $(wildcard include/config/OF_OVERLAY) \
-  include/linux/kobject.h \
-    $(wildcard include/config/UEVENT_HELPER) \
-    $(wildcard include/config/DEBUG_KOBJECT_RELEASE) \
-  include/linux/sysfs.h \
-  include/linux/kernfs.h \
-    $(wildcard include/config/KERNFS) \
-  include/linux/idr.h \
-  include/linux/radix-tree.h \
-  include/linux/gfp.h \
-    $(wildcard include/config/KASAN_HW_TAGS) \
-    $(wildcard include/config/ZONE_DMA) \
-    $(wildcard include/config/ZONE_DMA32) \
-    $(wildcard include/config/ZONE_DEVICE) \
-    $(wildcard include/config/CONTIG_ALLOC) \
-    $(wildcard include/config/CMA) \
-  include/linux/mmzone.h \
-    $(wildcard include/config/FORCE_MAX_ZONEORDER) \
-    $(wildcard include/config/MEMORY_ISOLATION) \
-    $(wildcard include/config/ZSMALLOC) \
-    $(wildcard include/config/SWAP) \
-    $(wildcard include/config/TRANSPARENT_HUGEPAGE) \
-    $(wildcard include/config/PAGE_EXTENSION) \
-    $(wildcard include/config/DEFERRED_STRUCT_PAGE_INIT) \
-    $(wildcard include/config/HAVE_MEMORYLESS_NODES) \
-    $(wildcard include/config/SPARSEMEM_EXTREME) \
-    $(wildcard include/config/HAVE_ARCH_PFN_VALID) \
-  include/linux/pageblock-flags.h \
-    $(wildcard include/config/HUGETLB_PAGE) \
-    $(wildcard include/config/HUGETLB_PAGE_SIZE_VARIABLE) \
-  include/linux/page-flags-layout.h \
-  include/generated/bounds.h \
-  include/linux/mm_types.h \
-    $(wildcard include/config/HAVE_ALIGNED_STRUCT_PAGE) \
-    $(wildcard include/config/USERFAULTFD) \
-    $(wildcard include/config/HAVE_ARCH_COMPAT_MMAP_BASES) \
-    $(wildcard include/config/MEMBARRIER) \
-    $(wildcard include/config/AIO) \
-    $(wildcard include/config/MMU_NOTIFIER) \
-  include/linux/auxvec.h \
-  include/uapi/linux/auxvec.h \
-  arch/x86/include/uapi/asm/auxvec.h \
-  include/linux/kref.h \
-  include/linux/uprobes.h \
-  arch/x86/include/asm/uprobes.h \
-  arch/x86/include/asm/mmu.h \
-    $(wildcard include/config/MODIFY_LDT_SYSCALL) \
-  include/linux/page-flags.h \
-    $(wildcard include/config/ARCH_USES_PG_UNCACHED) \
-    $(wildcard include/config/MEMORY_FAILURE) \
-    $(wildcard include/config/PAGE_IDLE_FLAG) \
-    $(wildcard include/config/HUGETLB_PAGE_FREE_VMEMMAP) \
-    $(wildcard include/config/HUGETLB_PAGE_FREE_VMEMMAP_DEFAULT_ON) \
-    $(wildcard include/config/KSM) \
-  include/linux/local_lock.h \
-  include/linux/local_lock_internal.h \
-  include/linux/memory_hotplug.h \
-    $(wildcard include/config/HAVE_ARCH_NODEDATA_EXTENSION) \
-    $(wildcard include/config/ARCH_HAS_ADD_PAGES) \
-  arch/x86/include/asm/mmzone.h \
-  arch/x86/include/asm/mmzone_32.h \
-  include/linux/topology.h \
-    $(wildcard include/config/USE_PERCPU_NUMA_NODE_ID) \
-    $(wildcard include/config/SCHED_SMT) \
-    $(wildcard include/config/SCHED_CLUSTER) \
-  include/linux/arch_topology.h \
-    $(wildcard include/config/ACPI_CPPC_LIB) \
-    $(wildcard include/config/GENERIC_ARCH_TOPOLOGY) \
-  arch/x86/include/asm/topology.h \
-    $(wildcard include/config/SCHED_MC_PRIO) \
-  arch/x86/include/asm/mpspec.h \
-    $(wildcard include/config/EISA) \
-    $(wildcard include/config/X86_MPPARSE) \
-  arch/x86/include/asm/mpspec_def.h \
-  arch/x86/include/asm/x86_init.h \
-  arch/x86/include/asm/apicdef.h \
-  include/asm-generic/topology.h \
-  include/linux/xarray.h \
-    $(wildcard include/config/XARRAY_MULTI) \
-  include/linux/kconfig.h \
-  include/linux/kobject_ns.h \
-  include/linux/stat.h \
-  arch/x86/include/uapi/asm/stat.h \
-  include/uapi/linux/stat.h \
-  include/linux/mod_devicetable.h \
-  include/linux/uuid.h \
-  include/uapi/linux/uuid.h \
-  include/linux/property.h \
-  include/linux/fwnode.h \
-  include/linux/resource_ext.h \
-  include/linux/slab.h \
-    $(wildcard include/config/DEBUG_SLAB) \
-    $(wildcard include/config/FAILSLAB) \
-    $(wildcard include/config/MEMCG_KMEM) \
-    $(wildcard include/config/KASAN) \
-    $(wildcard include/config/SLAB) \
-    $(wildcard include/config/SLUB) \
-    $(wildcard include/config/SLOB) \
-  include/linux/overflow.h \
-  include/linux/percpu-refcount.h \
-  include/linux/kasan.h \
-    $(wildcard include/config/KASAN_STACK) \
-    $(wildcard include/config/KASAN_VMALLOC) \
-    $(wildcard include/config/KASAN_INLINE) \
-  include/linux/kasan-enabled.h \
-  include/linux/device.h \
-    $(wildcard include/config/GENERIC_MSI_IRQ_DOMAIN) \
-    $(wildcard include/config/GENERIC_MSI_IRQ) \
-    $(wildcard include/config/ENERGY_MODEL) \
-    $(wildcard include/config/PINCTRL) \
-    $(wildcard include/config/DMA_OPS) \
-    $(wildcard include/config/DMA_DECLARE_COHERENT) \
-    $(wildcard include/config/DMA_CMA) \
-    $(wildcard include/config/SWIOTLB) \
-    $(wildcard include/config/ARCH_HAS_SYNC_DMA_FOR_DEVICE) \
-    $(wildcard include/config/ARCH_HAS_SYNC_DMA_FOR_CPU) \
-    $(wildcard include/config/ARCH_HAS_SYNC_DMA_FOR_CPU_ALL) \
-    $(wildcard include/config/DMA_OPS_BYPASS) \
-    $(wildcard include/config/DEVTMPFS) \
-    $(wildcard include/config/SYSFS_DEPRECATED) \
-  include/linux/dev_printk.h \
-  include/linux/ratelimit.h \
-  include/linux/energy_model.h \
-  include/linux/sched/cpufreq.h \
-    $(wildcard include/config/CPU_FREQ) \
-  include/linux/sched/topology.h \
-    $(wildcard include/config/SCHED_DEBUG) \
-    $(wildcard include/config/SCHED_MC) \
-    $(wildcard include/config/CPU_FREQ_GOV_SCHEDUTIL) \
-  include/linux/sched/idle.h \
-  include/linux/sched/sd_flags.h \
-  include/linux/klist.h \
-  include/linux/pm.h \
-    $(wildcard include/config/VT_CONSOLE_SLEEP) \
-    $(wildcard include/config/PM_CLK) \
-    $(wildcard include/config/PM_GENERIC_DOMAINS) \
-  include/linux/device/bus.h \
-  include/linux/device/class.h \
-  include/linux/device/driver.h \
-  include/linux/module.h \
-    $(wildcard include/config/MODULES_TREE_LOOKUP) \
-    $(wildcard include/config/STACKTRACE_BUILD_ID) \
-    $(wildcard include/config/MODULE_SIG) \
-    $(wildcard include/config/KALLSYMS) \
-    $(wildcard include/config/BPF_EVENTS) \
-    $(wildcard include/config/DEBUG_INFO_BTF_MODULES) \
-    $(wildcard include/config/EVENT_TRACING) \
-    $(wildcard include/config/MODULE_UNLOAD) \
-    $(wildcard include/config/CONSTRUCTORS) \
-    $(wildcard include/config/FUNCTION_ERROR_INJECTION) \
-  include/linux/buildid.h \
-    $(wildcard include/config/CRASH_CORE) \
-  include/linux/kmod.h \
-  include/linux/umh.h \
-  include/linux/sysctl.h \
-    $(wildcard include/config/SYSCTL) \
-  include/uapi/linux/sysctl.h \
-  include/linux/elf.h \
-    $(wildcard include/config/ARCH_USE_GNU_PROPERTY) \
-    $(wildcard include/config/ARCH_HAVE_ELF_PROT) \
-  arch/x86/include/asm/elf.h \
-    $(wildcard include/config/X86_X32_ABI) \
-  arch/x86/include/asm/user.h \
-  arch/x86/include/asm/user_32.h \
-  arch/x86/include/asm/fsgsbase.h \
-  arch/x86/include/asm/vdso.h \
-  arch/x86/include/asm/desc.h \
-  arch/x86/include/asm/fixmap.h \
-    $(wildcard include/config/DEBUG_KMAP_LOCAL_FORCE_MAP) \
-    $(wildcard include/config/X86_VSYSCALL_EMULATION) \
-    $(wildcard include/config/PROVIDE_OHCI1394_DMA_INIT) \
-    $(wildcard include/config/PCI_MMCONFIG) \
-    $(wildcard include/config/ACPI_APEI_GHES) \
-    $(wildcard include/config/INTEL_TXT) \
-  include/asm-generic/fixmap.h \
-  arch/x86/include/asm/irq_vectors.h \
-    $(wildcard include/config/HAVE_KVM) \
-    $(wildcard include/config/HYPERV) \
-    $(wildcard include/config/PCI_MSI) \
-  arch/x86/include/asm/cpu_entry_area.h \
-  arch/x86/include/asm/intel_ds.h \
-  arch/x86/include/asm/pgtable_areas.h \
-  arch/x86/include/asm/pgtable_32_areas.h \
-  include/uapi/linux/elf.h \
-  include/uapi/linux/elf-em.h \
-  include/linux/moduleparam.h \
-    $(wildcard include/config/ALPHA) \
-    $(wildcard include/config/PPC64) \
-  include/linux/rbtree_latch.h \
-  include/linux/error-injection.h \
-  include/asm-generic/error-injection.h \
-  include/linux/cfi.h \
-    $(wildcard include/config/CFI_CLANG_SHADOW) \
-  arch/x86/include/asm/module.h \
-    $(wildcard include/config/UNWINDER_ORC) \
-  include/asm-generic/module.h \
-    $(wildcard include/config/HAVE_MOD_ARCH_SPECIFIC) \
-    $(wildcard include/config/MODULES_USE_ELF_REL) \
-    $(wildcard include/config/MODULES_USE_ELF_RELA) \
-  arch/x86/include/asm/orc_types.h \
-  arch/x86/include/asm/device.h \
-  include/linux/pm_wakeup.h \
-  include/acpi/acpi.h \
-  include/acpi/platform/acenv.h \
-  include/acpi/platform/acgcc.h \
-  include/acpi/platform/aclinux.h \
-    $(wildcard include/config/ACPI_REDUCED_HARDWARE_ONLY) \
-    $(wildcard include/config/ACPI_DEBUG) \
-  include/linux/ctype.h \
-  arch/x86/include/asm/acenv.h \
-  include/acpi/acnames.h \
-  include/acpi/actypes.h \
-  include/acpi/acexcep.h \
-  include/acpi/actbl.h \
-  include/acpi/actbl1.h \
-  include/acpi/actbl2.h \
-  include/acpi/actbl3.h \
-  include/acpi/acrestyp.h \
-  include/acpi/platform/acenvex.h \
-  include/acpi/platform/aclinuxex.h \
-  include/acpi/platform/acgccex.h \
-  include/acpi/acoutput.h \
-  include/acpi/acpiosxf.h \
-  include/acpi/acpixf.h \
-  include/acpi/acconfig.h \
-  include/acpi/acbuffer.h \
-  include/linux/dynamic_debug.h \
-  include/acpi/acpi_bus.h \
-    $(wildcard include/config/X86_ANDROID_TABLETS) \
-    $(wildcard include/config/ACPI_SYSTEM_POWER_STATES_SUPPORT) \
-    $(wildcard include/config/ACPI_SLEEP) \
-  include/acpi/acpi_drivers.h \
-    $(wildcard include/config/ACPI_DOCK) \
-  include/acpi/acpi_numa.h \
-    $(wildcard include/config/ACPI_HMAT) \
-  include/acpi/acpi_io.h \
-  include/linux/io.h \
-    $(wildcard include/config/HAS_IOPORT_MAP) \
-  arch/x86/include/asm/io.h \
-    $(wildcard include/config/MTRR) \
-    $(wildcard include/config/X86_PAT) \
-  arch/x86/include/generated/asm/early_ioremap.h \
-  include/asm-generic/early_ioremap.h \
-    $(wildcard include/config/GENERIC_EARLY_IOREMAP) \
-  include/asm-generic/iomap.h \
-  include/asm-generic/pci_iomap.h \
-    $(wildcard include/config/NO_GENERIC_PCI_IOPORT_MAP) \
-    $(wildcard include/config/GENERIC_PCI_IOMAP) \
-  include/asm-generic/io.h \
-    $(wildcard include/config/GENERIC_IOMAP) \
-    $(wildcard include/config/GENERIC_IOREMAP) \
-    $(wildcard include/config/VIRT_TO_BUS) \
-    $(wildcard include/config/GENERIC_DEVMEM_IS_ALLOWED) \
-  include/linux/logic_pio.h \
-    $(wildcard include/config/INDIRECT_PIO) \
-  include/linux/vmalloc.h \
-    $(wildcard include/config/HAVE_ARCH_HUGE_VMALLOC) \
-  arch/x86/include/asm/vmalloc.h \
-    $(wildcard include/config/HAVE_ARCH_HUGE_VMAP) \
-  arch/x86/include/asm/acpi.h \
-    $(wildcard include/config/ACPI_APEI) \
-  include/acpi/pdc_intel.h \
-  arch/x86/include/asm/numa.h \
-    $(wildcard include/config/NUMA_EMU) \
-  arch/x86/include/asm/numa_32.h \
-  include/linux/regulator/consumer.h \
-    $(wildcard include/config/REGULATOR) \
-  include/linux/suspend.h \
-    $(wildcard include/config/VT) \
-    $(wildcard include/config/SUSPEND) \
-    $(wildcard include/config/HIBERNATION_SNAPSHOT_DEV) \
-    $(wildcard include/config/PM_SLEEP_DEBUG) \
-    $(wildcard include/config/PM_AUTOSLEEP) \
-  include/linux/swap.h \
-    $(wildcard include/config/DEVICE_PRIVATE) \
-    $(wildcard include/config/MIGRATION) \
-    $(wildcard include/config/FRONTSWAP) \
-    $(wildcard include/config/THP_SWAP) \
-    $(wildcard include/config/MEMCG_SWAP) \
-  include/linux/memcontrol.h \
-    $(wildcard include/config/CGROUP_WRITEBACK) \
-  include/linux/cgroup.h \
-    $(wildcard include/config/CGROUP_CPUACCT) \
-    $(wildcard include/config/SOCK_CGROUP_DATA) \
-    $(wildcard include/config/CGROUP_DATA) \
-    $(wildcard include/config/CGROUP_BPF) \
-  include/uapi/linux/cgroupstats.h \
-  include/uapi/linux/taskstats.h \
-  include/linux/fs.h \
-    $(wildcard include/config/READ_ONLY_THP_FOR_FS) \
-    $(wildcard include/config/FS_POSIX_ACL) \
-    $(wildcard include/config/IMA) \
-    $(wildcard include/config/FILE_LOCKING) \
-    $(wildcard include/config/FSNOTIFY) \
-    $(wildcard include/config/FS_ENCRYPTION) \
-    $(wildcard include/config/FS_VERITY) \
-    $(wildcard include/config/EPOLL) \
-    $(wildcard include/config/UNICODE) \
-    $(wildcard include/config/QUOTA) \
-    $(wildcard include/config/FS_DAX
+_read(ALT_PIN_OUT_SEL));
+	dprintk(1, "%s() GPIO2                    0x%08X\n", __func__,
+		cx_read(GPIO2));
+	dprintk(1, "%s() gpcnt(0x%08X)          0x%08X\n", __func__,
+		port->reg_gpcnt, cx_read(port->reg_gpcnt));
+	dprintk(1, "%s() gpcnt_ctl(0x%08X)      0x%08x\n", __func__,
+		port->reg_gpcnt_ctl, cx_read(port->reg_gpcnt_ctl));
+	dprintk(1, "%s() dma_ctl(0x%08X)        0x%08x\n", __func__,
+		port->reg_dma_ctl, cx_read(port->reg_dma_ctl));
+	if (port->reg_src_sel)
+		dprintk(1, "%s() src_sel(0x%08X)        0x%08x\n", __func__,
+			port->reg_src_sel, cx_read(port->reg_src_sel));
+	dprintk(1, "%s() lngth(0x%08X)          0x%08x\n", __func__,
+		port->reg_lngth, cx_read(port->reg_lngth));
+	dprintk(1, "%s() hw_sop_ctrl(0x%08X)    0x%08x\n", __func__,
+		port->reg_hw_sop_ctrl, cx_read(port->reg_hw_sop_ctrl));
+	dprintk(1, "%s() gen_ctrl(0x%08X)       0x%08x\n", __func__,
+		port->reg_gen_ctrl, cx_read(port->reg_gen_ctrl));
+	dprintk(1, "%s() bd_pkt_status(0x%08X)  0x%08x\n", __func__,
+		port->reg_bd_pkt_status, cx_read(port->reg_bd_pkt_status));
+	dprintk(1, "%s() sop_status(0x%08X)     0x%08x\n", __func__,
+		port->reg_sop_status, cx_read(port->reg_sop_status));
+	dprintk(1, "%s() fifo_ovfl_stat(0x%08X) 0x%08x\n", __func__,
+		port->reg_fifo_ovfl_stat, cx_read(port->reg_fifo_ovfl_stat));
+	dprintk(1, "%s() vld_misc(0x%08X)       0x%08x\n", __func__,
+		port->reg_vld_misc, cx_read(port->reg_vld_misc));
+	dprintk(1, "%s() ts_clk_en(0x%08X)      0x%08x\n", __func__,
+		port->reg_ts_clk_en, cx_read(port->reg_ts_clk_en));
+	dprintk(1, "%s() ts_int_msk(0x%08X)     0x%08x\n", __func__,
+		port->reg_ts_int_msk, cx_read(port->reg_ts_int_msk));
+	dprintk(1, "%s() ts_int_status(0x%08X)  0x%08x\n", __func__,
+		port->reg_ts_int_stat, cx_read(port->reg_ts_int_stat));
+	dprintk(1, "%s() PCI_INT_STAT           0x%08X\n", __func__,
+		cx_read(PCI_INT_STAT));
+	dprintk(1, "%s() VID_B_INT_MSTAT        0x%08X\n", __func__,
+		cx_read(VID_B_INT_MSTAT));
+	dprintk(1, "%s() VID_B_INT_SSTAT        0x%08X\n", __func__,
+		cx_read(VID_B_INT_SSTAT));
+	dprintk(1, "%s() VID_C_INT_MSTAT        0x%08X\n", __func__,
+		cx_read(VID_C_INT_MSTAT));
+	dprintk(1, "%s() VID_C_INT_SSTAT        0x%08X\n", __func__,
+		cx_read(VID_C_INT_SSTAT));
+}
+
+int cx23885_start_dma(struct cx23885_tsport *port,
+			     struct cx23885_dmaqueue *q,
+			     struct cx23885_buffer   *buf)
+{
+	struct cx23885_dev *dev = port->dev;
+	u32 reg;
+
+	dprintk(1, "%s() w: %d, h: %d, f: %d\n", __func__,
+		dev->width, dev->height, dev->field);
+
+	/* clear dma in progress */
+	cx23885_clear_bridge_error(dev);
+
+	/* Stop the fifo and risc engine for this port */
+	cx_clear(port->reg_dma_ctl, port->dma_ctl_val);
+
+	/* setup fifo + format */
+	cx23885_sram_channel_setup(dev,
+				   &dev->sram_channels[port->sram_chno],
+				   port->ts_packet_size, buf->risc.dma);
+	if (debug > 5) {
+		cx23885_sram_channel_dump(dev,
+			&dev->sram_channels[port->sram_chno]);
+		cx23885_risc_disasm(port, &buf->risc);
+	}
+
+	/* write TS length to chip */
+	cx_write(port->reg_lngth, port->ts_packet_size);
+
+	if ((!(cx23885_boards[dev->board].portb & CX23885_MPEG_DVB)) &&
+		(!(cx23885_boards[dev->board].portc & CX23885_MPEG_DVB))) {
+		pr_err("%s() Unsupported .portb/c (0x%08x)/(0x%08x)\n",
+			__func__,
+			cx23885_boards[dev->board].portb,
+			cx23885_boards[dev->board].portc);
+		return -EINVAL;
+	}
+
+	if (cx23885_boards[dev->board].portb == CX23885_MPEG_ENCODER)
+		cx23885_av_clk(dev, 0);
+
+	udelay(100);
+
+	/* If the port supports SRC SELECT, configure it */
+	if (port->reg_src_sel)
+		cx_write(port->reg_src_sel, port->src_sel_val);
+
+	cx_write(port->reg_hw_sop_ctrl, port->hw_sop_ctrl_val);
+	cx_write(port->reg_ts_clk_en, port->ts_clk_en_val);
+	cx_write(port->reg_vld_misc, port->vld_misc_val);
+	cx_write(port->reg_gen_ctrl, port->gen_ctrl_val);
+	udelay(100);
+
+	/* NOTE: this is 2 (reserved) for portb, does it matter? */
+	/* reset counter to zero */
+	cx_write(port->reg_gpcnt_ctl, 3);
+	q->count = 0;
+
+	/* Set VIDB pins to input */
+	if (cx23885_boards[dev->board].portb == CX23885_MPEG_DVB) {
+		reg = cx_read(PAD_CTRL);
+		reg &= ~0x3; /* Clear TS1_OE & TS1_SOP_OE */
+		cx_write(PAD_CTRL, reg);
+	}
+
+	/* Set VIDC pins to input */
+	if (cx23885_boards[dev->board].portc == CX23885_MPEG_DVB) {
+		reg = cx_read(PAD_CTRL);
+		reg &= ~0x4; /* Clear TS2_SOP_OE */
+		cx_write(PAD_CTRL, reg);
+	}
+
+	if (cx23885_boards[dev->board].portb == CX23885_MPEG_ENCODER) {
+
+		reg = cx_read(PAD_CTRL);
+		reg = reg & ~0x1;    /* Clear TS1_OE */
+
+		/* FIXME, bit 2 writing here is questionable */
+		/* set TS1_SOP_OE and TS1_OE_HI */
+		reg = reg | 0xa;
+		cx_write(PAD_CTRL, reg);
+
+		/* Sets MOE_CLK_DIS to disable MoE clock */
+		/* sets MCLK_DLY_SEL/BCLK_DLY_SEL to 1 buffer delay each */
+		cx_write(CLK_DELAY, cx_read(CLK_DELAY) | 0x80000011);
+
+		/* ALT_GPIO_ALT_SET: GPIO[0]
+		 * IR_ALT_TX_SEL: GPIO[1]
+		 * GPIO1_ALT_SEL: VIP_656_DATA[0]
+		 * GPIO0_ALT_SEL: VIP_656_CLK
+		 */
+		cx_write(ALT_PIN_OUT_SEL, 0x10100045);
+	}
+
+	switch (dev->bridge) {
+	case CX23885_BRIDGE_885:
+	case CX23885_BRIDGE_887:
+	case CX23885_BRIDGE_888:
+		/* enable irqs */
+		dprintk(1, "%s() enabling TS int's and DMA\n", __func__);
+		/* clear dma in progress */
+		cx23885_clear_bridge_error(dev);
+		cx_set(port->reg_ts_int_msk,  port->ts_int_msk_val);
+		cx_set(port->reg_dma_ctl, port->dma_ctl_val);
+
+		/* clear dma in progress */
+		cx23885_clear_bridge_error(dev);
+		cx23885_irq_add(dev, port->pci_irqmask);
+		cx23885_irq_enable_all(dev);
+
+		/* clear dma in progress */
+		cx23885_clear_bridge_error(dev);
+		break;
+	default:
+		BUG();
+	}
+
+	cx_set(DEV_CNTRL2, (1<<5)); /* Enable RISC controller */
+	/* clear dma in progress */
+	cx23885_clear_bridge_error(dev);
+
+	if (cx23885_boards[dev->board].portb == CX23885_MPEG_ENCODER)
+		cx23885_av_clk(dev, 1);
+
+	if (debug > 4)
+		cx23885_tsport_reg_dump(port);
+
+	cx23885_irq_get_mask(dev);
+
+	/* clear dma in progress */
+	cx23885_clear_bridge_error(dev);
+
+	return 0;
+}
+
+static int cx23885_stop_dma(struct cx23885_tsport *port)
+{
+	struct cx23885_dev *dev = port->dev;
+	u32 reg;
+	int delay = 0;
+	uint32_t reg1_val;
+	uint32_t reg2_val;
+
+	dprintk(1, "%s()\n", __func__);
+
+	/* Stop interrupts and DMA */
+	cx_clear(port->reg_ts_int_msk, port->ts_int_msk_val);
+	cx_clear(port->reg_dma_ctl, port->dma_ctl_val);
+	/* just in case wait for any dma to complete before allowing dealloc */
+	mdelay(20);
+	for (delay = 0; delay < 100; delay++) {
+		reg1_val = cx_read(TC_REQ);
+		reg2_val = cx_read(TC_REQ_SET);
+		if (reg1_val == 0 || reg2_val == 0)
+			break;
+		mdelay(1);
+	}
+	dev_dbg(&dev->pci->dev, "delay=%d reg1=0x%08x reg2=0x%08x\n",
+		delay, reg1_val, reg2_val);
+
+	if (cx23885_boards[dev->board].portb == CX23885_MPEG_ENCODER) {
+		reg = cx_read(PAD_CTRL);
+
+		/* Set TS1_OE */
+		reg = reg | 0x1;
+
+		/* clear TS1_SOP_OE and TS1_OE_HI */
+		reg = reg & ~0xa;
+		cx_write(PAD_CTRL, reg);
+		cx_write(port->reg_src_sel, 0);
+		cx_write(port->reg_gen_ctrl, 8);
+	}
+
+	if (cx23885_boards[dev->board].portb == CX23885_MPEG_ENCODER)
+		cx23885_av_clk(dev, 0);
+
+	return 0;
+}
+
+/* ------------------------------------------------------------------ */
+
+int cx23885_buf_prepare(struct cx23885_buffer *buf, struct cx23885_tsport *port)
+{
+	struct cx23885_dev *dev = port->dev;
+	int size = port->ts_packet_size * port->ts_packet_count;
+	struct sg_table *sgt = vb2_dma_sg_plane_desc(&buf->vb.vb2_buf, 0);
+
+	dprintk(1, "%s: %p\n", __func__, buf);
+	if (vb2_plane_size(&buf->vb.vb2_buf, 0) < size)
+		return -EINVAL;
+	vb2_set_plane_payload(&buf->vb.vb2_buf, 0, size);
+
+	cx23885_risc_databuffer(dev->pci, &buf->risc,
+				sgt->sgl,
+				port->ts_packet_size, port->ts_packet_count, 0);
+	return 0;
+}
+
+/*
+ * The risc program for each buffer works as follows: it starts with a simple
+ * 'JUMP to addr + 12', which is effectively a NOP. Then the code to DMA the
+ * buffer follows and at the end we have a JUMP back to the start + 12 (skipping
+ * the initial JUMP).
+ *
+ * This is the risc program of the first buffer to be queued if the active list
+ * is empty and it just keeps DMAing this buffer without generating any
+ * interrupts.
+ *
+ * If a new buffer is added then the initial JUMP in the code for that buffer
+ * will generate an interrupt which signals that the previous buffer has been
+ * DMAed successfully and that it can be returned to userspace.
+ *
+ * It also sets the final jump of the previous buffer to the start of the new
+ * buffer, thus chaining the new buffer into the DMA chain. This is a single
+ * atomic u32 write, so there is no race condition.
+ *
+ * The end-result of all this that you only get an interrupt when a buffer
+ * is ready, so the control flow is very easy.
+ */
+void cx23885_buf_queue(struct cx23885_tsport *port, struct cx23885_buffer *buf)
+{
+	struct cx23885_buffer    *prev;
+	struct cx23885_dev *dev = port->dev;
+	struct cx23885_dmaqueue  *cx88q = &port->mpegq;
+	unsigned long flags;
+
+	buf->risc.cpu[1] = cpu_to_le32(buf->risc.dma + 12);
+	buf->risc.jmp[0] = cpu_to_le32(RISC_JUMP | RISC_CNT_INC);
+	buf->risc.jmp[1] = cpu_to_le32(buf->risc.dma + 12);
+	buf->risc.jmp[2] = cpu_to_le32(0); /* bits 63-32 */
+
+	spin_lock_irqsave(&dev->slock, flags);
+	if (list_empty(&cx88q->active)) {
+		list_add_tail(&buf->queue, &cx88q->active);
+		dprintk(1, "[%p/%d] %s - first active\n",
+			buf, buf->vb.vb2_buf.index, __func__);
+	} else {
+		buf->risc.cpu[0] |= cpu_to_le32(RISC_IRQ1);
+		prev = list_entry(cx88q->active.prev, struct cx23885_buffer,
+				  queue);
+		list_add_tail(&buf->queue, &cx88q->active);
+		prev->risc.jmp[1] = cpu_to_le32(buf->risc.dma);
+		dprintk(1, "[%p/%d] %s - append to active\n",
+			 buf, buf->vb.vb2_buf.index, __func__);
+	}
+	spin_unlock_irqrestore(&dev->slock, flags);
+}
+
+/* ----------------------------------------------------------- */
+
+static void do_cancel_buffers(struct cx23885_tsport *port, char *reason)
+{
+	struct cx23885_dmaqueue *q = &port->mpegq;
+	struct cx23885_buffer *buf;
+	unsigned long flags;
+
+	spin_lock_irqsave(&port->slock, flags);
+	while (!list_empty(&q->active)) {
+		buf = list_entry(q->active.next, struct cx23885_buffer,
+				 queue);
+		list_del(&buf->queue);
+		vb2_buffer_done(&buf->vb.vb2_buf, VB2_BUF_STATE_ERROR);
+		dprintk(1, "[%p/%d] %s - dma=0x%08lx\n",
+			buf, buf->vb.vb2_buf.index, reason,
+			(unsigned long)buf->risc.dma);
+	}
+	spin_unlock_irqrestore(&port->slock, flags);
+}
+
+void cx23885_cancel_buffers(struct cx23885_tsport *port)
+{
+	dprintk(1, "%s()\n", __func__);
+	cx23885_stop_dma(port);
+	do_cancel_buffers(port, "cancel");
+}
+
+int cx23885_irq_417(struct cx23885_dev *dev, u32 status)
+{
+	/* FIXME: port1 assumption here. */
+	struct cx23885_tsport *port = &dev->ts1;
+	int count = 0;
+	int handled = 0;
+
+	if (status == 0)
+		return handled;
+
+	count = cx_read(port->reg_gpcnt);
+	dprintk(7, "status: 0x%08x  mask: 0x%08x count: 0x%x\n",
+		status, cx_read(port->reg_ts_int_msk), count);
+
+	if ((status & VID_B_MSK_BAD_PKT)         ||
+		(status & VID_B_MSK_OPC_ERR)     ||
+		(status & VID_B_MSK_VBI_OPC_ERR) ||
+		(status & VID_B_MSK_SYNC)        ||
+		(status & VID_B_MSK_VBI_SYNC)    ||
+		(status & VID_B_MSK_OF)          ||
+		(status & VID_B_MSK_VBI_OF)) {
+		pr_err("%s: V4L mpeg risc op code error, status = 0x%x\n",
+		       dev->name, status);
+		if (status & VID_B_MSK_BAD_PKT)
+			dprintk(1, "        VID_B_MSK_BAD_PKT\n");
+		if (status & VID_B_MSK_OPC_ERR)
+			dprintk(1, "        VID_B_MSK_OPC_ERR\n");
+		if (status & VID_B_MSK_VBI_OPC_ERR)
+			dprintk(1, "        VID_B_MSK_VBI_OPC_ERR\n");
+		if (status & VID_B_MSK_SYNC)
+			dprintk(1, "        VID_B_MSK_SYNC\n");
+		if (status & VID_B_MSK_VBI_SYNC)
+			dprintk(1, "        VID_B_MSK_VBI_SYNC\n");
+		if (status & VID_B_MSK_OF)
+			dprintk(1, "        VID_B_MSK_OF\n");
+		if (status & VID_B_MSK_VBI_OF)
+			dprintk(1, "        VID_B_MSK_VBI_OF\n");
+
+		cx_clear(port->reg_dma_ctl, port->dma_ctl_val);
+		cx23885_sram_channel_dump(dev,
+			&dev->sram_channels[port->sram_chno]);
+		cx23885_417_check_encoder(dev);
+	} else if (status & VID_B_MSK_RISCI1) {
+		dprintk(7, "        VID_B_MSK_RISCI1\n");
+		spin_lock(&port->slock);
+		cx23885_wakeup(port, &port->mpegq, count);
+		spin_unlock(&port->slock);
+	}
+	if (status) {
+		cx_write(port->reg_ts_int_stat, status);
+		handled = 1;
+	}
+
+	return handled;
+}
+
+static int cx23885_irq_ts(struct cx23885_tsport *port, u32 status)
+{
+	struct cx23885_dev *dev = port->dev;
+	int handled = 0;
+	u32 count;
+
+	if ((status & VID_BC_MSK_OPC_ERR) ||
+		(status & VID_BC_MSK_BAD_PKT) ||
+		(status & VID_BC_MSK_SYNC) ||
+		(status & VID_BC_MSK_OF)) {
+
+		if (status & VID_BC_MSK_OPC_ERR)
+			dprintk(7, " (VID_BC_MSK_OPC_ERR 0x%08x)\n",
+				VID_BC_MSK_OPC_ERR);
+
+		if (status & VID_BC_MSK_BAD_PKT)
+			dprintk(7, " (VID_BC_MSK_BAD_PKT 0x%08x)\n",
+				VID_BC_MSK_BAD_PKT);
+
+		if (status & VID_BC_MSK_SYNC)
+			dprintk(7, " (VID_BC_MSK_SYNC    0x%08x)\n",
+				VID_BC_MSK_SYNC);
+
+		if (status & VID_BC_MSK_OF)
+			dprintk(7, " (VID_BC_MSK_OF      0x%08x)\n",
+				VID_BC_MSK_OF);
+
+		pr_err("%s: mpeg risc op code error\n", dev->name);
+
+		cx_clear(port->reg_dma_ctl, port->dma_ctl_val);
+		cx23885_sram_channel_dump(dev,
+			&dev->sram_channels[port->sram_chno]);
+
+	} else if (status & VID_BC_MSK_RISCI1) {
+
+		dprintk(7, " (RISCI1            0x%08x)\n", VID_BC_MSK_RISCI1);
+
+		spin_lock(&port->slock);
+		count = cx_read(port->reg_gpcnt);
+		cx23885_wakeup(port, &port->mpegq, count);
+		spin_unlock(&port->slock);
+
+	}
+	if (status) {
+		cx_write(port->reg_ts_int_stat, status);
+		handled = 1;
+	}
+
+	return handled;
+}
+
+static irqreturn_t cx23885_irq(int irq, void *dev_id)
+{
+	struct cx23885_dev *dev = dev_id;
+	struct cx23885_tsport *ts1 = &dev->ts1;
+	struct cx23885_tsport *ts2 = &dev->ts2;
+	u32 pci_status, pci_mask;
+	u32 vida_status, vida_mask;
+	u32 audint_status, audint_mask;
+	u32 ts1_status, ts1_mask;
+	u32 ts2_status, ts2_mask;
+	int vida_count = 0, ts1_count = 0, ts2_count = 0, handled = 0;
+	int audint_count = 0;
+	bool subdev_handled;
+
+	pci_status = cx_read(PCI_INT_STAT);
+	pci_mask = cx23885_irq_get_mask(dev);
+	if ((pci_status & pci_mask) == 0) {
+		dprintk(7, "pci_status: 0x%08x  pci_mask: 0x%08x\n",
+			pci_status, pci_mask);
+		goto out;
+	}
+
+	vida_status = cx_read(VID_A_INT_STAT);
+	vida_mask = cx_read(VID_A_INT_MSK);
+	audint_status = cx_read(AUDIO_INT_INT_STAT);
+	audint_mask = cx_read(AUDIO_INT_INT_MSK);
+	ts1_status = cx_read(VID_B_INT_STAT);
+	ts1_mask = cx_read(VID_B_INT_MSK);
+	ts2_status = cx_read(VID_C_INT_STAT);
+	ts2_mask = cx_read(VID_C_INT_MSK);
+
+	if (((pci_status & pci_mask) == 0) &&
+		((ts2_status & ts2_mask) == 0) &&
+		((ts1_status & ts1_mask) == 0))
+		goto out;
+
+	vida_count = cx_read(VID_A_GPCNT);
+	audint_count = cx_read(AUD_INT_A_GPCNT);
+	ts1_count = cx_read(ts1->reg_gpcnt);
+	ts2_count = cx_read(ts2->reg_gpcnt);
+	dprintk(7, "pci_status: 0x%08x  pci_mask: 0x%08x\n",
+		pci_status, pci_mask);
+	dprintk(7, "vida_status: 0x%08x vida_mask: 0x%08x count: 0x%x\n",
+		vida_status, vida_mask, vida_count);
+	dprintk(7, "audint_status: 0x%08x audint_mask: 0x%08x count: 0x%x\n",
+		audint_status, audint_mask, audint_count);
+	dprintk(7, "ts1_status: 0x%08x  ts1_mask: 0x%08x count: 0x%x\n",
+		ts1_status, ts1_mask, ts1_count);
+	dprintk(7, "ts2_status: 0x%08x  ts2_mask: 0x%08x count: 0x%x\n",
+		ts2_status, ts2_mask, ts2_count);
+
+	if (pci_status & (PCI_MSK_RISC_RD | PCI_MSK_RISC_WR |
+			  PCI_MSK_AL_RD   | PCI_MSK_AL_WR   | PCI_MSK_APB_DMA |
+			  PCI_MSK_VID_C   | PCI_MSK_VID_B   | PCI_MSK_VID_A   |
+			  PCI_MSK_AUD_INT | PCI_MSK_AUD_EXT |
+			  PCI_MSK_GPIO0   | PCI_MSK_GPIO1   |
+			  PCI_MSK_AV_CORE | PCI_MSK_IR)) {
+
+		if (pci_status & PCI_MSK_RISC_RD)
+			dprintk(7, " (PCI_MSK_RISC_RD   0x%08x)\n",
+				PCI_MSK_RISC_RD);
+
+		if (pci_status & PCI_MSK_RISC_WR)
+			dprintk(7, " (PCI_MSK_RISC_WR   0x%08x)\n",
+				PCI_MSK_RISC_WR);
+
+		if (pci_status & PCI_MSK_AL_RD)
+			dprintk(7, " (PCI_MSK_AL_RD     0x%08x)\n",
+				PCI_MSK_AL_RD);
+
+		if (pci_status & PCI_MSK_AL_WR)
+			dprintk(7, " (PCI_MSK_AL_WR     0x%08x)\n",
+				PCI_MSK_AL_WR);
+
+		if (pci_status & PCI_MSK_APB_DMA)
+			dprintk(7, " (PCI_MSK_APB_DMA   0x%08x)\n",
+				PCI_MSK_APB_DMA);
+
+		if (pci_status & PCI_MSK_VID_C)
+			dprintk(7, " (PCI_MSK_VID_C     0x%08x)\n",
+				PCI_MSK_VID_C);
+
+		if (pci_status & PCI_MSK_VID_B)
+			dprintk(7, " (PCI_MSK_VID_B     0x%08x)\n",
+				PCI_MSK_VID_B);
+
+		if (pci_status & PCI_MSK_VID_A)
+			dprintk(7, " (PCI_MSK_VID_A     0x%08x)\n",
+				PCI_MSK_VID_A);
+
+		if (pci_status & PCI_MSK_AUD_INT)
+			dprintk(7, " (PCI_MSK_AUD_INT   0x%08x)\n",
+				PCI_MSK_AUD_INT);
+
+		if (pci_status & PCI_MSK_AUD_EXT)
+			dprintk(7, " (PCI_MSK_AUD_EXT   0x%08x)\n",
+				PCI_MSK_AUD_EXT);
+
+		if (pci_status & PCI_MSK_GPIO0)
+			dprintk(7, " (PCI_MSK_GPIO0     0x%08x)\n",
+				PCI_MSK_GPIO0);
+
+		if (pci_status & PCI_MSK_GPIO1)
+			dprintk(7, " (PCI_MSK_GPIO1     0x%08x)\n",
+				PCI_MSK_GPIO1);
+
+		if (pci_status & PCI_MSK_AV_CORE)
+			dprintk(7, " (PCI_MSK_AV_CORE   0x%08x)\n",
+				PCI_MSK_AV_CORE);
+
+		if (pci_status & PCI_MSK_IR)
+			dprintk(7, " (PCI_MSK_IR        0x%08x)\n",
+				PCI_MSK_IR);
+	}
+
+	if (cx23885_boards[dev->board].ci_type == 1 &&
+			(pci_status & (PCI_MSK_GPIO1 | PCI_MSK_GPIO0)))
+		handled += netup_ci_slot_status(dev, pci_status);
+
+	if (cx23885_boards[dev->board].ci_type == 2 &&
+			(pci_status & PCI_MSK_GPIO0))
+		handled += altera_ci_irq(dev);
+
+	if (ts1_status) {
+		if (cx23885_boards[dev->board].portb == CX23885_MPEG_DVB)
+			handled += cx23885_irq_ts(ts1, ts1_status);
+		else
+		if (cx23885_boards[dev->board].portb == CX23885_MPEG_ENCODER)
+			handled += cx23885_irq_417(dev, ts1_status);
+	}
+
+	if (ts2_status) {
+		if (cx23885_boards[dev->board].portc == CX23885_MPEG_DVB)
+			handled += cx23885_irq_ts(ts2, ts2_status);
+		else
+		if (cx23885_boards[dev->board].portc == CX23885_MPEG_ENCODER)
+			handled += cx23885_irq_417(dev, ts2_status);
+	}
+
+	if (vida_status)
+		handled += cx23885_video_irq(dev, vida_status);
+
+	if (audint_status)
+		handled += cx23885_audio_irq(dev, audint_status, audint_mask);
+
+	if (pci_status & PCI_MSK_IR) {
+		subdev_handled = false;
+		v4l2_subdev_call(dev->sd_ir, core, interrupt_service_routine,
+				 pci_status, &subdev_handled);
+		if (subdev_handled)
+			handled++;
+	}
+
+	if ((pci_status & pci_mask) & PCI_MSK_AV_CORE) {
+		cx23885_irq_disable(dev, PCI_MSK_AV_CORE);
+		schedule_work(&dev->cx25840_work);
+		handled++;
+	}
+
+	if (handled)
+		cx_write(PCI_INT_STAT, pci_status & pci_mask);
+out:
+	return IRQ_RETVAL(handled);
+}
+
+static void cx23885_v4l2_dev_notify(struct v4l2_subdev *sd,
+				    unsigned int notification, void *arg)
+{
+	struct cx23885_dev *dev;
+
+	if (sd == NULL)
+		return;
+
+	dev = to_cx23885(sd->v4l2_dev);
+
+	switch (notification) {
+	case V4L2_SUBDEV_IR_RX_NOTIFY: /* Possibly called in an IRQ context */
+		if (sd == dev->sd_ir)
+			cx23885_ir_rx_v4l2_dev_notify(sd, *(u32 *)arg);
+		break;
+	case V4L2_SUBDEV_IR_TX_NOTIFY: /* Possibly called in an IRQ context */
+		if (sd == dev->sd_ir)
+			cx23885_ir_tx_v4l2_dev_notify(sd, *(u32 *)arg);
+		break;
+	}
+}
+
+static void cx23885_v4l2_dev_notify_init(struct cx23885_dev *dev)
+{
+	INIT_WORK(&dev->cx25840_work, cx23885_av_work_handler);
+	INIT_WORK(&dev->ir_rx_w

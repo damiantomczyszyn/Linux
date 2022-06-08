@@ -1,16 +1,18 @@
-s[0]),
-				       GFP_KERNEL);
-		if (reader_tasks == NULL) {
-			TOROUT_ERRSTRING("reader_tasks: Out of memory");
-			kfree(writer_tasks);
-			writer_tasks = NULL;
-			firsterr = -ENOMEM;
-			goto unwind;
-		}
-	}
+E310B         62
 
-	/*
-	 * Create the kthreads and start torturing (oh, those poor little locks).
-	 *
-	 * TODO: Note that we interleave writers with readers, giving writers a
-	 * slight advantage, by creating its kthread first. This can be modifi
+#define GPIO_0 0x00000001
+#define GPIO_1 0x00000002
+#define GPIO_2 0x00000004
+#define GPIO_3 0x00000008
+#define GPIO_4 0x00000010
+#define GPIO_5 0x00000020
+#define GPIO_6 0x00000040
+#define GPIO_7 0x00000080
+#define GPIO_8 0x00000100
+#define GPIO_9 0x00000200
+#define GPIO_10 0x00000400
+#define GPIO_11 0x00000800
+#define GPIO_12 0x00001000
+#define GPIO_13 0x00002000
+#define GPIO_14 0x00004000
+#define GPIO_15 0x0000

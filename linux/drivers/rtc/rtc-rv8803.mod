@@ -1,2 +1,2 @@
-NAMIC_TASK_STRUCT) \
-    $
+6/include/asm/mpspec.h \
+ 

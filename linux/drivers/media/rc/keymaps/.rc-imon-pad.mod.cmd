@@ -1,1 +1,10 @@
-cmd_drivers/media/rc/keymaps/rc-imon-pad.mod := { echo  drivers/media/rc/keymaps/rc-imon-pad.o;  echo; } > drivers/media/rc/keymaps/rc-imon-pad.mod
+00);
+		break;
+	}
+}
+
+int cx23885_ir_init(struct cx23885_dev *dev)
+{
+	static struct v4l2_subdev_io_pin_config ir_rxtx_pin_cfg[] = {
+		{
+			.flags	  = 

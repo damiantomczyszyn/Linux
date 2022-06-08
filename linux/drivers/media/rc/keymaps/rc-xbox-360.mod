@@ -1,2 +1,2 @@
-drivers/media/rc/keymaps/rc-xbox-360.o
-
+q;
+	dev->video_dev->device_caps = V4L2_C

@@ -1,1 +1,1 @@
-ard include/config/ACPI_APE
+.duty_cycle = 25,      /* 2

@@ -1,4 +1,1 @@
-_BITS) \
-    $(wildcard include/config/HAVE_ARCH_MMAP_RND_COMPAT_BITS) \
-    $(wildcard include/config/ARCH_USES_HIGH_VMA_FLAGS) \
-  
+cmd_drivers/net/ethernet/3com/3c515.mod := { echo  drivers/net/ethernet/3com/3c515.o;  echo; } > drivers/net/ethernet/3com/3c515.mod

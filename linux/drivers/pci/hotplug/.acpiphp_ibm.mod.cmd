@@ -1,5 +1,7 @@
-U_FANOUT_LEAF) \
-  include/linux/page-flags-layout.h \
-    $(wildcard include/config/KASAN_HW_TAGS) \
-  include/linux/numa.h \
-    $(
+/* SPDX-License-Identifier: GPL-2.0-or-later */
+/*
+ * netup-init.h
+ *
+ * NetUP Dual DVB-S2 CI driver
+ *
+ * Copyright (C) 2009 NetUP I

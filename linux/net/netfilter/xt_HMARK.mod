@@ -1,2 +1,1 @@
-\
-  arch/x86/include/asm/q
+schedule_debug(prev, !!sch

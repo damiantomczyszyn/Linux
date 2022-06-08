@@ -1,2 +1,2 @@
-LE_SLEEP) \
-    $(wildcard include/config/
+lient.addr = 0xa0 >> 1;
+		tveeprom_read(&d

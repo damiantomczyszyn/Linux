@@ -1,37 +1,148 @@
-cmd_drivers/media/i2c/upd64083.o := gcc -Wp,-MMD,drivers/media/i2c/.upd64083.o.d -nostdinc -I./arch/x86/include -I./arch/x86/include/generated  -I./include -I./arch/x86/include/uapi -I./arch/x86/include/generated/uapi -I./include/uapi -I./include/generated/uapi -include ./include/linux/compiler-version.h -include ./include/linux/kconfig.h -include ./include/linux/compiler_types.h -D__KERNEL__ -fmacro-prefix-map=./= -Wall -Wundef -Werror=strict-prototypes -Wno-trigraphs -fno-strict-aliasing -fno-common -fshort-wchar -fno-PIE -Werror=implicit-function-declaration -Werror=implicit-int -Werror=return-type -Wno-format-security -std=gnu11 -mno-sse -mno-mmx -mno-sse2 -mno-3dnow -mno-avx -fcf-protection=none -m32 -msoft-float -mregparm=3 -freg-struct-return -fno-pic -mpreferred-stack-boundary=2 -march=i686 -mtune=pentium3 -mtune=generic -Wa,-mtune=generic32 -ffreestanding -mstack-protector-guard-reg=fs -mstack-protector-guard-symbol=__stack_chk_guard -Wno-sign-compare -fno-asynchronous-unwind-tables -mindirect-branch=thunk-extern -mindirect-branch-register -fno-jump-tables -fno-delete-null-pointer-checks -Wno-frame-address -Wno-format-truncation -Wno-format-overflow -Wno-address-of-packed-member -O2 -fno-allow-store-data-races -fstack-protector-strong -Wimplicit-fallthrough=5 -Wno-main -Wno-unused-but-set-variable -Wno-unused-const-variable -fno-stack-clash-protection -pg -mrecord-mcount -mfentry -DCC_USING_FENTRY -Wdeclaration-after-statement -Wvla -Wno-pointer-sign -Wcast-function-type -Wno-stringop-truncation -Wno-stringop-overflow -Wno-restrict -Wno-maybe-uninitialized -Wno-alloc-size-larger-than -fno-strict-overflow -fno-stack-check -fconserve-stack -Werror=date-time -Werror=incompatible-pointer-types -Werror=designated-init -Wno-packed-not-aligned  -DMODULE  -DKBUILD_BASENAME='"upd64083"' -DKBUILD_MODNAME='"upd64083"' -D__KBUILD_MODNAME=kmod_upd64083 -c -o drivers/media/i2c/upd64083.o drivers/media/i2c/upd64083.c 
+"Television",
+		[CX23885_VMUX_CABLE]      = "Cable TV",
+		[CX23885_VMUX_DVB]        = "DVB",
+		[CX23885_VMUX_DEBUG]      = "for debug only",
+	};
+	unsigned int n;
+	dprintk(1, "%s()\n", __func__);
 
-source_drivers/media/i2c/upd64083.o := drivers/media/i2c/upd64083.c
+	n = i->index;
+	if (n >= MAX_CX23885_INPUT)
+		return -EINVAL;
 
-deps_drivers/media/i2c/upd64083.o := \
-    $(wildcard include/config/VIDEO_ADV_DEBUG) \
-  include/linux/compiler-version.h \
-    $(wildcard include/config/CC_VERSION_TEXT) \
-  include/linux/kconfig.h \
-    $(wildcard include/config/CPU_BIG_ENDIAN) \
-    $(wildcard include/config/BOOGER) \
-    $(wildcard include/config/FOO) \
-  include/linux/compiler_types.h \
-    $(wildcard include/config/DEBUG_INFO_BTF) \
-    $(wildcard include/config/PAHOLE_HAS_BTF_TAG) \
-    $(wildcard include/config/HAVE_ARCH_COMPILER_H) \
-    $(wildcard include/config/CC_HAS_ASM_INLINE) \
-  include/linux/compiler_attributes.h \
-  include/linux/compiler-gcc.h \
-    $(wildcard include/config/RETPOLINE) \
-    $(wildcard include/config/ARCH_USE_BUILTIN_BSWAP) \
-    $(wildcard include/config/SHADOW_CALL_STACK) \
-    $(wildcard include/config/KCOV) \
-  include/linux/module.h \
-    $(wildcard include/config/MODULES) \
-    $(wildcard include/config/SYSFS) \
-    $(wildcard include/config/MODULES_TREE_LOOKUP) \
-    $(wildcard include/config/LIVEPATCH) \
-    $(wildcard include/config/STACKTRACE_BUILD_ID) \
-    $(wildcard include/config/CFI_CLANG) \
-    $(wildcard include/config/MODULE_SIG) \
-    $(wildcard include/config/GENERIC_BUG) \
-    $(wildcard include/config/KALLSYMS) \
-    $(wildcard include/config/SMP) \
-    $(wildcard include/config/TRACEPOINTS) \
-    $(wildcard include/config/TREE_SRCU) \
-    $(wildcard include/config/BPF_E
+	if (0 == INPUT(n)->type)
+		return -EINVAL;
+
+	i->index = n;
+	i->type  = V4L2_INPUT_TYPE_CAMERA;
+	strscpy(i->name, iname[INPUT(n)->type], sizeof(i->name));
+	i->std = CX23885_NORMS;
+	if ((CX23885_VMUX_TELEVISION == INPUT(n)->type) ||
+		(CX23885_VMUX_CABLE == INPUT(n)->type)) {
+		i->type = V4L2_INPUT_TYPE_TUNER;
+		i->audioset = 4;
+	} else {
+		/* Two selectable audio inputs for non-tv inputs */
+		i->audioset = 3;
+	}
+
+	if (dev->input == n) {
+		/* enum'd input matches our configured input.
+		 * Ask the video decoder to process the call
+		 * and give it an oppertunity to update the
+		 * status field.
+		 */
+		call_all(dev, video, g_input_status, &i->status);
+	}
+
+	return 0;
+}
+
+static int vidioc_enum_input(struct file *file, void *priv,
+				struct v4l2_input *i)
+{
+	struct cx23885_dev *dev = video_drvdata(file);
+	dprintk(1, "%s()\n", __func__);
+	return cx23885_enum_input(dev, i);
+}
+
+int cx23885_get_input(struct file *file, void *priv, unsigned int *i)
+{
+	struct cx23885_dev *dev = video_drvdata(file);
+
+	*i = dev->input;
+	dprintk(1, "%s() returns %d\n", __func__, *i);
+	return 0;
+}
+
+static int vidioc_g_input(struct file *file, void *priv, unsigned int *i)
+{
+	return cx23885_get_input(file, priv, i);
+}
+
+int cx23885_set_input(struct file *file, void *priv, unsigned int i)
+{
+	struct cx23885_dev *dev = video_drvdata(file);
+
+	dprintk(1, "%s(%d)\n", __func__, i);
+
+	if (i >= MAX_CX23885_INPUT) {
+		dprintk(1, "%s() -EINVAL\n", __func__);
+		return -EINVAL;
+	}
+
+	if (INPUT(i)->type == 0)
+		return -EINVAL;
+
+	cx23885_video_mux(dev, i);
+
+	/* By default establish the default audio input for the card also */
+	/* Caller is free to use VIDIOC_S_AUDIO to override afterwards */
+	cx23885_audio_mux(dev, i);
+	return 0;
+}
+
+static int vidioc_s_input(struct file *file, void *priv, unsigned int i)
+{
+	return cx23885_set_input(file, priv, i);
+}
+
+static int vidioc_log_status(struct file *file, void *priv)
+{
+	struct cx23885_dev *dev = video_drvdata(file);
+
+	call_all(dev, core, log_status);
+	return 0;
+}
+
+static int cx23885_query_audinput(struct file *file, void *priv,
+	struct v4l2_audio *i)
+{
+	static const char *iname[] = {
+		[0] = "Baseband L/R 1",
+		[1] = "Baseband L/R 2",
+		[2] = "TV",
+	};
+	unsigned int n;
+	dprintk(1, "%s()\n", __func__);
+
+	n = i->index;
+	if (n >= 3)
+		return -EINVAL;
+
+	memset(i, 0, sizeof(*i));
+	i->index = n;
+	strscpy(i->name, iname[n], sizeof(i->name));
+	i->capability = V4L2_AUDCAP_STEREO;
+	return 0;
+
+}
+
+static int vidioc_enum_audinput(struct file *file, void *priv,
+				struct v4l2_audio *i)
+{
+	return cx23885_query_audinput(file, priv, i);
+}
+
+static int vidioc_g_audinput(struct file *file, void *priv,
+	struct v4l2_audio *i)
+{
+	struct cx23885_dev *dev = video_drvdata(file);
+
+	if ((CX23885_VMUX_TELEVISION == INPUT(dev->input)->type) ||
+		(CX23885_VMUX_CABLE == INPUT(dev->input)->type))
+		i->index = 2;
+	else
+		i->index = dev->audinput;
+	dprintk(1, "%s(input=%d)\n", __func__, i->index);
+
+	return cx23885_query_audinput(file, priv, i);
+}
+
+static int vidioc_s_audinput(struct file *file, void *priv,
+	const struct v4l2_audio *i)
+{
+	struct cx23885_dev *dev = video_drvdata(file);
+
+	if ((CX23885_VMUX_TELEVISION == INPUT(dev->input)->type) ||
+		(CX23885_V

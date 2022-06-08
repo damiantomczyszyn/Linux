@@ -1,1 +1,1 @@
-    $(wildcard include/
+ct tda10071_platform_da

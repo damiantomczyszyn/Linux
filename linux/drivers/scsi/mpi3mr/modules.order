@@ -1,2 +1,2 @@
-e/linux/rwlock.h \
-    $(wildc
+\
+  include/uapi/asm-generic/i

@@ -1,17 +1,1 @@
-\
-  include/uapi/linux/media.h \
-  include/media/v4l2-subdev.h \
-  include/uapi/linux/v4l2-subdev.h \
-  include/uapi/linux/v4l2-mediabus.h \
-  include/uapi/linux/media-bus-format.h \
-  include/media/v4l2-common.h \
-    $(wildcard include/config/VIDEO_V4L2_I2C) \
-    $(wildcard include/config/SPI) \
-  include/media/v4l2-dev.h \
-  include/linux/spi/spi.h \
-    $(wildcard include/config/SPI_SLAVE) \
-  include/linux/scatterlist.h \
-    $(wildcard include/config/NEED_SG_DMA_LENGTH) \
-    $(wildcard include/config/DEBUG_SG) \
-    $(wildcard include/config/SGL_ALLOC) \
-    $(wildcard include/config/ARCH_NO_SG_CHA
+cmd_drivers/media/pci/cx18/cx18.mod := { echo  drivers/media/pci/cx18/cx18-driver.o drivers/media/pci/cx18/cx18-cards.o drivers/media/pci/cx18/cx18-i2c.o drivers/media/pci/cx18/cx18-firmware.o drivers/media/pci/cx18/cx18-gpio.o drivers/media/pci/cx18/cx18-queue.o drivers/media/pci/cx18/cx18-streams.o drivers/media/pci/cx18/cx18-fileops.o drivers/media/pci/cx18/cx18-ioctl.o drivers/media/pci/cx18/cx18-controls.o drivers/media/pci/cx18/cx18-mailbox.o drivers/media/pci/cx18/cx18-vbi.o drivers/media/pci/cx18/cx18-audio.o drivers/media/pci/cx18/cx18-video.o drivers/media/pci/cx18/cx18-irq.o drivers/media/pci/cx

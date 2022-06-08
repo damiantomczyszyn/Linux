@@ -1,2 +1,2 @@
-clude/linux/build_bug.h \
-  inc
+drivers/net/arcnet/arc-rimi.o
+

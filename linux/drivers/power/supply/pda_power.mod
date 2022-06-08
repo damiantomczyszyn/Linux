@@ -1,2 +1,1 @@
-fig/GENERIC_ATOMIC64) \
-  include/
+/* SPDX-License-Identifier: GPL-2.

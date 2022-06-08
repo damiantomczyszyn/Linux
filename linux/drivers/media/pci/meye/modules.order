@@ -1,3 +1,2 @@
-\
-  include/linux/rwlock.h \
-  
+         = &mpeg_fops,
+	.ioctl_

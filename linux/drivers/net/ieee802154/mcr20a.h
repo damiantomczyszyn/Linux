@@ -1,14 +1,59 @@
-NGARCH) \
+include/config/ALPHA) \
+    $(wildcard include/config/IA64) \
+    $(wildcard include/config/PPC64) \
+  include/linux/rbtree_latch.h \
+  include/linux/error-injection.h \
+  include/asm-generic/error-injection.h \
+  include/linux/cfi.h \
+    $(wildcard include/config/CFI_CLANG_SHADOW) \
+  arch/x86/include/asm/module.h \
+    $(wildcard include/config/UNWINDER_ORC) \
+  include/asm-generic/module.h \
+    $(wildcard include/config/HAVE_MOD_ARCH_SPECIFIC) \
+    $(wildcard include/config/MODULES_USE_ELF_REL) \
+    $(wildcard include/config/MODULES_USE_ELF_RELA) \
+  arch/x86/include/asm/orc_types.h \
+  arch/x86/include/asm/device.h \
+  include/linux/pm_wakeup.h \
+  include/linux/cdev.h \
+  include/media/media-entity.h \
+  include/linux/fwnode.h \
+  include/uapi/linux/media.h \
+  include/media/v4l2-subdev.h \
+    $(wildcard include/config/VIDEO_ADV_DEBUG) \
+  include/uapi/linux/v4l2-subdev.h \
+  include/uapi/linux/v4l2-common.h \
+  include/uapi/linux/v4l2-mediabus.h \
+  include/uapi/linux/media-bus-format.h \
+  include/linux/videodev2.h \
+  include/uapi/linux/videodev2.h \
+  include/uapi/linux/v4l2-controls.h \
+  include/media/v4l2-async.h \
+  include/media/v4l2-common.h \
+    $(wildcard include/config/VIDEO_V4L2_I2C) \
+    $(wildcard include/config/SPI) \
+  include/media/v4l2-dev.h \
+  include/linux/i2c.h \
+    $(wildcard include/config/I2C) \
+    $(wildcard include/config/I2C_SLAVE) \
+    $(wildcard include/config/I2C_BOARDINFO) \
+    $(wildcard include/config/I2C_MUX) \
+  include/linux/acpi.h \
+    $(wildcard include/config/ACPI_DEBUGGER) \
+    $(wildcard include/config/ACPI_TABLE_LIB) \
+    $(wildcard include/config/LOONGARCH) \
     $(wildcard include/config/ARM64) \
     $(wildcard include/config/ACPI_PROCESSOR_CSTATE) \
     $(wildcard include/config/ACPI_HOTPLUG_CPU) \
     $(wildcard include/config/ACPI_HOTPLUG_IOAPIC) \
+    $(wildcard include/config/PCI) \
     $(wildcard include/config/ACPI_WMI) \
     $(wildcard include/config/ACPI_NUMA) \
     $(wildcard include/config/HIBERNATION) \
     $(wildcard include/config/ACPI_HOTPLUG_MEMORY) \
     $(wildcard include/config/ACPI_CONTAINER) \
     $(wildcard include/config/ACPI_GTDT) \
+    $(wildcard include/config/GPIOLIB) \
     $(wildcard include/config/ACPI_TABLE_UPGRADE) \
     $(wildcard include/config/ACPI_WATCHDOG) \
     $(wildcard include/config/ACPI_SPCR_TABLE) \
@@ -16,6 +61,21 @@ NGARCH) \
     $(wildcard include/config/ACPI_LPIT) \
     $(wildcard include/config/ACPI_PPTT) \
     $(wildcard include/config/ACPI_PCC) \
+  include/linux/irqdomain.h \
+    $(wildcard include/config/IRQ_DOMAIN_HIERARCHY) \
+    $(wildcard include/config/GENERIC_IRQ_DEBUGFS) \
+    $(wildcard include/config/IRQ_DOMAIN) \
+    $(wildcard include/config/IRQ_DOMAIN_NOMAP) \
+  include/linux/irqhandler.h \
+  include/linux/of.h \
+    $(wildcard include/config/OF_DYNAMIC) \
+    $(wildcard include/config/SPARC) \
+    $(wildcard include/config/OF_PROMTREE) \
+    $(wildcard include/config/OF_KOBJ) \
+    $(wildcard include/config/OF_NUMA) \
+    $(wildcard include/config/OF_OVERLAY) \
+  include/linux/mod_devicetable.h \
+  include/linux/property.h \
   include/linux/resource_ext.h \
   include/acpi/acpi.h \
   include/acpi/platform/acenv.h \
@@ -23,6 +83,7 @@ NGARCH) \
   include/acpi/platform/aclinux.h \
     $(wildcard include/config/ACPI_REDUCED_HARDWARE_ONLY) \
     $(wildcard include/config/ACPI_DEBUG) \
+  include/linux/ctype.h \
   arch/x86/include/asm/acenv.h \
   include/acpi/acnames.h \
   include/acpi/actypes.h \
@@ -50,6 +111,29 @@ NGARCH) \
   include/acpi/acpi_numa.h \
     $(wildcard include/config/ACPI_HMAT) \
   include/acpi/acpi_io.h \
+  include/linux/io.h \
+    $(wildcard include/config/HAS_IOPORT_MAP) \
+  arch/x86/include/asm/io.h \
+    $(wildcard include/config/MTRR) \
+    $(wildcard include/config/X86_PAT) \
+  arch/x86/include/generated/asm/early_ioremap.h \
+  include/asm-generic/early_ioremap.h \
+    $(wildcard include/config/GENERIC_EARLY_IOREMAP) \
+  include/asm-generic/iomap.h \
+  include/asm-generic/pci_iomap.h \
+    $(wildcard include/config/NO_GENERIC_PCI_IOPORT_MAP) \
+    $(wildcard include/config/GENERIC_PCI_IOMAP) \
+  include/asm-generic/io.h \
+    $(wildcard include/config/GENERIC_IOMAP) \
+    $(wildcard include/config/GENERIC_IOREMAP) \
+    $(wildcard include/config/VIRT_TO_BUS) \
+    $(wildcard include/config/GENERIC_DEVMEM_IS_ALLOWED) \
+  include/linux/logic_pio.h \
+    $(wildcard include/config/INDIRECT_PIO) \
+  include/linux/vmalloc.h \
+    $(wildcard include/config/HAVE_ARCH_HUGE_VMALLOC) \
+  arch/x86/include/asm/vmalloc.h \
+    $(wildcard include/config/HAVE_ARCH_HUGE_VMAP) \
   arch/x86/include/asm/acpi.h \
     $(wildcard include/config/ACPI_APEI) \
   include/acpi/pdc_intel.h \
@@ -77,6 +161,8 @@ NGARCH) \
     $(wildcard include/config/CGROUP_BPF) \
   include/uapi/linux/cgroupstats.h \
   include/uapi/linux/taskstats.h \
+  include/linux/seq_file.h \
+  include/linux/string_helpers.h \
   include/linux/ns_common.h \
   include/linux/nsproxy.h \
   include/linux/user_namespace.h \
@@ -88,6 +174,9 @@ NGARCH) \
     $(wildcard include/config/IRQ_FORCED_THREADING) \
     $(wildcard include/config/GENERIC_IRQ_PROBE) \
     $(wildcard include/config/IRQ_TIMINGS) \
+  include/linux/irqreturn.h \
+  include/linux/irqnr.h \
+  include/uapi/linux/irqnr.h \
   include/linux/hardirq.h \
   include/linux/context_tracking_state.h \
     $(wildcard include/config/CONTEXT_TRACKING) \
@@ -103,6 +192,10 @@ NGARCH) \
     $(wildcard include/config/X86_MCE_THRESHOLD) \
     $(wildcard include/config/X86_MCE_AMD) \
     $(wildcard include/config/X86_HV_CALLBACK_VECTOR) \
+  arch/x86/include/asm/irq.h \
+  arch/x86/include/asm/sections.h \
+  include/asm-generic/sections.h \
+    $(wildcard include/config/HAVE_FUNCTION_DESCRIPTORS) \
   include/linux/cgroup-defs.h \
     $(wildcard include/config/CGROUP_NET_CLASSID) \
     $(wildcard include/config/CGROUP_NET_PRIO) \
@@ -214,35 +307,6 @@ NGARCH) \
   include/uapi/linux/mempolicy.h \
   include/linux/freezer.h \
   include/uapi/linux/i2c.h \
-  include/linux/videodev2.h \
-  include/uapi/linux/videodev2.h \
-  include/uapi/linux/v4l2-common.h \
-  include/uapi/linux/v4l2-controls.h \
-  include/media/v4l2-ctrls.h \
-  include/media/media-request.h \
-    $(wildcard include/config/MEDIA_CONTROLLER) \
-  include/media/media-device.h \
-  include/media/media-devnode.h \
-  include/linux/poll.h \
-  include/uapi/linux/poll.h \
-  arch/x86/include/generated/uapi/asm/poll.h \
-  include/uapi/asm-generic/poll.h \
-  include/uapi/linux/eventpoll.h \
-  include/linux/cdev.h \
-  include/media/media-entity.h \
-  include/uapi/linux/media.h \
-  include/media/hevc-ctrls.h \
-  include/media/v4l2-device.h \
-    $(wildcard include/config/VIDEO_V4L2_SUBDEV_API) \
-  include/media/v4l2-subdev.h \
-  include/uapi/linux/v4l2-subdev.h \
-  include/uapi/linux/v4l2-mediabus.h \
-  include/uapi/linux/media-bus-format.h \
-  include/media/v4l2-async.h \
-  include/media/v4l2-common.h \
-    $(wildcard include/config/VIDEO_V4L2_I2C) \
-    $(wildcard include/config/SPI) \
-  include/media/v4l2-dev.h \
   include/linux/spi/spi.h \
     $(wildcard include/config/SPI_SLAVE) \
   include/linux/scatterlist.h \
@@ -251,21 +315,75 @@ NGARCH) \
     $(wildcard include/config/SGL_ALLOC) \
     $(wildcard include/config/ARCH_NO_SG_CHAIN) \
     $(wildcard include/config/SG_POOL) \
+  include/linux/gpio/consumer.h \
+    $(wildcard include/config/OF_GPIO) \
+    $(wildcard include/config/GPIO_SYSFS) \
   include/uapi/linux/spi/spi.h \
   include/media/v4l2-fh.h \
   include/media/v4l2-mediabus.h \
-  include/media/v4l2-image-sizes.h \
-  drivers/media/i2c/vs6624_regs.h \
-
-drivers/media/i2c/vs6624.o: $(deps_drivers/media/i2c/vs6624.o)
-
-$(deps_drivers/media/i2c/vs6624.o):
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     ELF                      T      4     (               Ë¸ˇˇˇSãX\âÿË¸ˇˇˇçÉ¿   Ë¸ˇˇˇ1¿[√êË¸ˇˇˇUWV∑ÒSÉÏã®î   âD$°    â$Ö¿è.   ã$âÒª   ç< âËâ˙Ë¸ˇˇˇÖ¿tÉÎÑM   âÒâ˙âËË¸ˇˇˇÖ¿uËÉƒ[^_]√ç¥&    ç∂    Ë¸ˇˇˇV1…â∆Sâ”âê<  ∫	   ËsˇˇˇÅ˚D¨  t+Å˚Äª  tSÅ˚ }  t3âπ   ∫	   ËJˇˇˇ1¿[^√çt& êπ    ∫   âË/ˇˇˇÎ“çt& êπ   ∫   âËˇˇˇÎ∫çt& ê1…∫   âËˇˇˇÎ•Ë¸ˇˇˇÅx(	ò ãPÖ€   UWç∫@ˇˇˇVSªÄ ÄÉÏãBxãp|ãBpãh|ãBt∫ Ä  ã@|Ö¿ï¿∂¿¡‡fâD$∏   )9–O¬Ø≈Ö¿çêˇ  H¬¡¯â¡¡·)¡â»˜Îâ¯ ¡˘¡˙) â—1“É·fL$∑…Ëj˛ˇˇ∏ Ä  9∆OØıÖˆçÜˇ  I∆¡¯â∆¡Ê)∆â˜Îâ¯ç2¡˛∫   ¡˘)ÒÉ·fL$∑…Ë"˛ˇˇ1¿Éƒ[^_]√ç¥&    ê∏Íˇˇˇ√ç¥&    çv Ë¸ˇˇˇWVSâ√ã@ãPãRË¸ˇˇˇ%   =   Ñk   ª˚ˇˇˇâÿ[^_√                                        0                                                                                                               ê             6%s: Frequency: %u Hz
- 7%s: write: %02x %02x
- wm8739 Ë¸ˇˇˇVçppSâ√ˇ∞<  Vh    Ë¸ˇˇˇçÉ¿   âÚË¸ˇˇˇ1¿Éƒ[^√Vˇt$ãD$É¿pPh   Ë¸ˇˇˇÉƒÈE   ˇ4$VãD$É¿pPh    Ë¸ˇˇˇÉƒÈw   ãS∑Cçä  Qç QPˇ≤   ãCTˇ0h0   Ë¸ˇˇˇçCπ¿  ∫@  Ë¸ˇˇˇâ∆ÉƒÖ¿u
-ªÙˇˇˇÈI  â⁄π@   çæ¿   Ë¸ˇˇˇ1…∫   â¯j Ë¸ˇˇˇπ	ò ∫∞   â¯j h0∆  j hè  j hˇˇ  j j Ë¸ˇˇˇπ		ò ∫∞   Éƒ$âÜ0  â¯j j j jj jj j Ë¸ˇˇˇπ	ò ∫∞   Éƒ âÜ4  â¯j h Ä  j hè  j hˇˇ  j j Ë¸ˇˇˇãû¸   â~lâÜ8  Éƒ Ö€tâ¯Ë¸ˇˇˇÈI  çñ0  ∏   Ë¸ˇˇˇ1…â∫   «Ü<  Äª  Ë   1…â∫   Ë   1…â∫   Ë   âπI   ∫   Ë   1…â∫   Ë   âπ   ∫	   Ë   â¯Ë¸ˇˇˇÈI    3%s: I2C: cannot write %03x to register R%d
-   6%s %d-%04x: chip found @ 0x%x (%s)
- Ë¸ˇˇˇ∫    ∏    È¸ˇˇˇ∏    È¸ˇˇˇ                wm8739                                                          Ä       `                       ê                                                                                          debug parm=debug:Debug level (0-1) parmtype=debug:int license=GPL author=T. Adachi, Hans Verkuil description=wm8739 driver  º           §ˇ      GCC: (GNU) 11.2.0           GNU  ¿       ¿                                  Òˇ                                          
-                                       	        2    	               *       c     H           >   2   =    	 W   ê   ê     k      ˆ     y      3     Ü   o   ò   	 ò   @         £   ∞                      ≥            ∆       Ä     ‘       
-     Á       0                   Ò   Ä   0       `                   '          @           N  º        `  0        w  <        ç  [        ®             ≥             —             Ë                                       '             @             M             b                          ë             £             ª             …             ›           È             ¯      
-           0     )              wm8739.c wm8739_remove wm8739_log_status wm8739_write.isra.0 wm8739_write.isra.0.cold wm8739_s_clock_freq wm8739_s_ctrl wm8739_probe wm8739_probe.cold wm8739_ops wm8739_ctrl_ops wm8739_driver_init wm8739_driver wm8739_driver_exit wm8739_id wm8739_core_ops wm8739_audio_ops __UNIQUE_ID_debug270 __UNIQUE_ID_debugtype269 __param_debug __param_str_debug __UNIQUE_ID_license268 __UNIQUE_ID
+  include/sound/core.h \
+    $(wildcard include/config/SND_DYNAMIC_MINORS) \
+    $(wildcard include/config/SND_MAX_CARDS) \
+    $(wildcard include/config/SND_MAJOR) \
+    $(wildcard include/config/SND_DEBUG) \
+    $(wildcard include/config/SND_MIXER_OSS) \
+    $(wildcard include/config/SND_OSSEMUL) \
+    $(wildcard include/config/ISA_DMA_API) \
+    $(wildcard include/config/SND_VERBOSE_PRINTK) \
+    $(wildcard include/config/SND_DEBUG_VERBOSE) \
+    $(wildcard include/config/GAMEPORT) \
+  include/sound/pcm.h \
+    $(wildcard include/config/SND_PCM_OSS) \
+    $(wildcard include/config/SND_VERBOSE_PROCFS) \
+    $(wildcard include/config/SND_PCM_XRUN_DEBUG) \
+  include/sound/asound.h \
+  include/uapi/sound/asound.h \
+  include/sound/memalloc.h \
+    $(wildcard include/config/GENERIC_ALLOCATOR) \
+    $(wildcard include/config/SND_DMA_SGBUF) \
+    $(wildcard include/config/HAS_DMA) \
+  include/linux/dma-direction.h \
+  include/sound/minors.h \
+  include/linux/pm_qos.h \
+    $(wildcard include/config/CPU_IDLE) \
+  include/sound/pcm_oss.h \
+    $(wildcard include/config/SND_PCM_OSS_PLUGINS) \
+  drivers/media/pci/cx18/cx18-driver.h \
+  include/linux/delay.h \
+  arch/x86/include/asm/delay.h \
+  include/asm-generic/delay.h \
+  include/linux/pci.h \
+    $(wildcard include/config/PCI_IOV) \
+    $(wildcard include/config/PCIEAER) \
+    $(wildcard include/config/PCIEPORTBUS) \
+    $(wildcard include/config/PCIEASPM) \
+    $(wildcard include/config/HOTPLUG_PCI_PCIE) \
+    $(wildcard include/config/PCIE_PTM) \
+    $(wildcard include/config/PCIE_DPC) \
+    $(wildcard include/config/PCI_ATS) \
+    $(wildcard include/config/PCI_PRI) \
+    $(wildcard include/config/PCI_PASID) \
+    $(wildcard include/config/PCI_P2PDMA) \
+    $(wildcard include/config/PCI_DOMAINS_GENERIC) \
+    $(wildcard include/config/PCI_DOMAINS) \
+    $(wildcard include/config/PCI_QUIRKS) \
+    $(wildcard include/config/ACPI_MCFG) \
+    $(wildcard include/config/HOTPLUG_PCI) \
+    $(wildcard include/config/EEH) \
+  include/uapi/linux/pci.h \
+  include/uapi/linux/pci_regs.h \
+  include/linux/pci_ids.h \
+  include/linux/dmapool.h \
+  arch/x86/include/asm/pci.h \
+    $(wildcard include/config/PCI_MSI_IRQ_DOMAIN) \
+    $(wildcard include/config/VMD) \
+  arch/x86/include/asm/memtype.h \
+  include/asm-generic/pci.h \
+  include/linux/dma-mapping.h \
+    $(wildcard include/config/DMA_API_DEBUG) \
+    $(wildcard include/config/NEED_DMA_MAP_STATE) \
+  include/linux/i2c-algo-bit.h \
+  include/media/v4l2-ioctl.h \
+  include/media/tuner.h \
+  include/media/v4l2-mc.h \
+  include/m

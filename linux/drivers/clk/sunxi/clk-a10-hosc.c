@@ -1,34 +1,44 @@
-nclude/asm/atomic64_32.h \
-  include/linux/atomic/atomic-arch-fallback.h \
-    $(wildcard include/config/GENERIC_ATOMIC64) \
-  include/linux/atomic/atomic-long.h \
-  include/linux/atomic/atomic-instrumented.h \
-  include/linux/bug.h \
-    $(wildcard include/config/GENERIC_BUG) \
-    $(wildcard include/config/BUG_ON_DATA_CORRUPTION) \
-  arch/x86/include/asm/bug.h \
-    $(wildcard include/config/DEBUG_BUGVERBOSE) \
-  include/linux/instrumentation.h \
-    $(wildcard include/config/DEBUG_ENTRY) \
-  include/linux/objtool.h \
-    $(wildcard include/config/FRAME_POINTER) \
-  include/asm-generic/bug.h \
-    $(wildcard include/config/BUG) \
-    $(wildcard include/config/GENERIC_BUG_RELATIVE_POINTERS) \
-  include/linux/smp_types.h \
-  include/linux/llist.h \
-    $(wildcard include/config/ARCH_HAVE_NMI_SAFE_CMPXCHG) \
-  include/linux/preempt.h \
-    $(wildcard include/config/TRACE_PREEMPT_TOGGLE) \
-    $(wildcard include/config/PREEMPTION) \
-    $(wildcard include/config/PREEMPT_NOTIFIERS) \
-  arch/x86/include/asm/preempt.h \
-  include/linux/thread_info.h \
-    $(wildcard include/config/THREAD_INFO_IN_TASK) \
-    $(wildcard include/config/GENERIC_ENTRY) \
-    $(wildcard include/config/HAVE_ARCH_WITHIN_STACK_FRAMES) \
-    $(wildcard include/config/HARDENED_USERCOPY) \
-  include/linux/restart_block.h \
-  include/linux/time64.h \
-  include/linux/math64.h \
-    $(wildcard include/config/ARCH_SUPPORTS_
+ (0x9d << 24); /* 100kHz */
+
+	/* External Master 2 Bus */
+	dev->i2c_bus[1].nr = 1;
+	dev->i2c_bus[1].dev = dev;
+	dev->i2c_bus[1].reg_stat  = I2C2_STAT;
+	dev->i2c_bus[1].reg_ctrl  = I2C2_CTRL;
+	dev->i2c_bus[1].reg_addr  = I2C2_ADDR;
+	dev->i2c_bus[1].reg_rdata = I2C2_RDATA;
+	dev->i2c_bus[1].reg_wdata = I2C2_WDATA;
+	dev->i2c_bus[1].i2c_period = (0x9d << 24); /* 100kHz */
+
+	/* Internal Master 3 Bus */
+	dev->i2c_bus[2].nr = 2;
+	dev->i2c_bus[2].dev = dev;
+	dev->i2c_bus[2].reg_stat  = I2C3_STAT;
+	dev->i2c_bus[2].reg_ctrl  = I2C3_CTRL;
+	dev->i2c_bus[2].reg_addr  = I2C3_ADDR;
+	dev->i2c_bus[2].reg_rdata = I2C3_RDATA;
+	dev->i2c_bus[2].reg_wdata = I2C3_WDATA;
+	dev->i2c_bus[2].i2c_period = (0x07 << 24); /* 1.95MHz */
+
+	if ((cx23885_boards[dev->board].portb == CX23885_MPEG_DVB) ||
+		(cx23885_boards[dev->board].portb == CX23885_MPEG_ENCODER))
+		cx23885_init_tsport(dev, &dev->ts1, 1);
+
+	if ((cx23885_boards[dev->board].portc == CX23885_MPEG_DVB) ||
+		(cx23885_boards[dev->board].portc == CX23885_MPEG_ENCODER))
+		cx23885_init_tsport(dev, &dev->ts2, 2);
+
+	if (get_resources(dev) < 0) {
+		pr_err("CORE %s No more PCIe resources for subsystem: %04x:%04x\n",
+		       dev->name, dev->pci->subsystem_vendor,
+		       dev->pci->subsystem_device);
+
+		cx23885_devcount--;
+		return -ENODEV;
+	}
+
+	/* PCIe stuff */
+	dev->lmmio = ioremap(pci_resource_start(dev->pci, 0),
+			     pci_resource_len(dev->pci, 0));
+
+	dev->bmmio =

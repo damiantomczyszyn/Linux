@@ -1,632 +1,866 @@
-/HUGETLB_PAGE_SIZE_VARIABLE) \
-  include/linux/page-flags-layout.h \
-  include/generated/bounds.h \
-  include/linux/mm_types.h \
-    $(wildcard include/config/HAVE_ALIGNED_STRUCT_PAGE) \
-    $(wildcard include/config/USERFAULTFD) \
-    $(wildcard include/config/HAVE_ARCH_COMPAT_MMAP_BASES) \
-    $(wildcard include/config/MEMBARRIER) \
-    $(wildcard include/config/AIO) \
-    $(wildcard include/config/MMU_NOTIFIER) \
-    $(wildcard include/config/ARCH_WANT_BATCHED_UNMAP_TLB_FLUSH) \
-    $(wildcard include/config/IOMMU_SVA) \
-  include/linux/mm_types_task.h \
-    $(wildcard include/config/SPLIT_PTLOCK_CPUS) \
-    $(wildcard include/config/ARCH_ENABLE_SPLIT_PMD_PTLOCK) \
-  arch/x86/include/asm/tlbbatch.h \
-  include/linux/auxvec.h \
-  include/uapi/linux/auxvec.h \
-  arch/x86/include/uapi/asm/auxvec.h \
-  include/linux/kref.h \
-  include/linux/refcount.h \
-  include/linux/rbtree.h \
-  include/linux/rcupdate.h \
-    $(wildcard include/config/PREEMPT_RCU) \
-    $(wildcard include/config/TINY_RCU) \
-    $(wildcard include/config/RCU_STRICT_GRACE_PERIOD) \
-    $(wildcard include/config/TASKS_RCU_GENERIC) \
-    $(wildcard include/config/RCU_STALL_COMMON) \
-    $(wildcard include/config/NO_HZ_FULL) \
-    $(wildcard include/config/RCU_NOCB_CPU) \
-    $(wildcard include/config/TASKS_RCU) \
-    $(wildcard include/config/TASKS_TRACE_RCU) \
-    $(wildcard include/config/TASKS_RUDE_RCU) \
-    $(wildcard include/config/TREE_RCU) \
-    $(wildcard include/config/DEBUG_OBJECTS_RCU_HEAD) \
-    $(wildcard include/config/PROVE_RCU) \
-    $(wildcard include/config/ARCH_WEAK_RELEASE_ACQUIRE) \
-  include/linux/rcutree.h \
-  include/linux/rwsem.h \
-    $(wildcard include/config/RWSEM_SPIN_ON_OWNER) \
-    $(wildcard include/config/DEBUG_RWSEMS) \
-  include/linux/completion.h \
-  include/linux/swait.h \
-  include/linux/uprobes.h \
-    $(wildcard include/config/UPROBES) \
-  arch/x86/include/asm/uprobes.h \
-  include/linux/notifier.h \
-    $(wildcard include/config/TREE_SRCU) \
-  include/linux/srcu.h \
-    $(wildcard include/config/TINY_SRCU) \
-    $(wildcard include/config/SRCU) \
-  include/linux/workqueue.h \
-    $(wildcard include/config/DEBUG_OBJECTS_WORK) \
-    $(wildcard include/config/FREEZER) \
-    $(wildcard include/config/WQ_WATCHDOG) \
-  include/linux/timer.h \
-    $(wildcard include/config/DEBUG_OBJECTS_TIMERS) \
-    $(wildcard include/config/NO_HZ_COMMON) \
-  include/linux/ktime.h \
-  include/linux/time.h \
-    $(wildcard include/config/POSIX_TIMERS) \
-  include/linux/time32.h \
-  include/linux/timex.h \
-  include/uapi/linux/timex.h \
-  arch/x86/include/asm/timex.h \
-    $(wildcard include/config/X86_TSC) \
-  arch/x86/include/asm/tsc.h \
-  include/vdso/time32.h \
-  include/vdso/time.h \
-  include/linux/jiffies.h \
-  include/vdso/jiffies.h \
-  include/generated/timeconst.h \
-  include/vdso/ktime.h \
-  include/linux/timekeeping.h \
-    $(wildcard include/config/GENERIC_CMOS_UPDATE) \
-  include/linux/clocksource_ids.h \
-  include/linux/debugobjects.h \
-    $(wildcard include/config/DEBUG_OBJECTS) \
-    $(wildcard include/config/DEBUG_OBJECTS_FREE) \
-  include/linux/rcu_segcblist.h \
-  include/linux/srcutree.h \
-  include/linux/rcu_node_tree.h \
-    $(wildcard include/config/RCU_FANOUT) \
-    $(wildcard include/config/RCU_FANOUT_LEAF) \
-  arch/x86/include/asm/mmu.h \
-    $(wildcard include/config/MODIFY_LDT_SYSCALL) \
-  include/linux/page-flags.h \
-    $(wildcard include/config/ARCH_USES_PG_UNCACHED) \
-    $(wildcard include/config/MEMORY_FAILURE) \
-    $(wildcard include/config/PAGE_IDLE_FLAG) \
-    $(wildcard include/config/HUGETLB_PAGE_FREE_VMEMMAP) \
-    $(wildcard include/config/HUGETLB_PAGE_FREE_VMEMMAP_DEFAULT_ON) \
-    $(wildcard include/config/KSM) \
-  include/linux/local_lock.h \
-  include/linux/local_lock_internal.h \
-  include/linux/memory_hotplug.h \
-    $(wildcard include/config/HAVE_ARCH_NODEDATA_EXTENSION) \
-    $(wildcard include/config/ARCH_HAS_ADD_PAGES) \
-  arch/x86/include/asm/mmzone.h \
-  arch/x86/include/asm/mmzone_32.h \
-  include/linux/topology.h \
-    $(wildcard include/config/USE_PERCPU_NUMA_NODE_ID) \
-    $(wildcard include/config/SCHED_SMT) \
-    $(wildcard include/config/SCHED_CLUSTER) \
-  include/linux/arch_topology.h \
-    $(wildcard include/config/ACPI_CPPC_LIB) \
-    $(wildcard include/config/GENERIC_ARCH_TOPOLOGY) \
-  include/linux/percpu.h \
-    $(wildcard include/config/NEED_PER_CPU_EMBED_FIRST_CHUNK) \
-    $(wildcard include/config/NEED_PER_CPU_PAGE_FIRST_CHUNK) \
-  arch/x86/include/asm/topology.h \
-    $(wildcard include/config/SCHED_MC_PRIO) \
-  arch/x86/include/asm/mpspec.h \
-    $(wildcard include/config/EISA) \
-    $(wildcard include/config/X86_MPPARSE) \
-  arch/x86/include/asm/mpspec_def.h \
-  arch/x86/include/asm/x86_init.h \
-  arch/x86/include/asm/apicdef.h \
-  include/asm-generic/topology.h \
-  include/linux/xarray.h \
-    $(wildcard include/config/XARRAY_MULTI) \
-  include/linux/kconfig.h \
-  include/linux/uidgid.h \
-    $(wildcard include/config/MULTIUSER) \
-    $(wildcard include/config/USER_NS) \
-  include/linux/highuid.h \
-  include/linux/kobject_ns.h \
-  include/linux/stat.h \
-  arch/x86/include/uapi/asm/stat.h \
-  include/uapi/linux/stat.h \
-  include/linux/mod_devicetable.h \
-  include/linux/uuid.h \
-  include/uapi/linux/uuid.h \
-  include/linux/property.h \
-  include/linux/fwnode.h \
-  include/linux/resource_ext.h \
-  include/linux/slab.h \
-    $(wildcard include/config/DEBUG_SLAB) \
-    $(wildcard include/config/FAILSLAB) \
-    $(wildcard include/config/MEMCG_KMEM) \
-    $(wildcard include/config/KASAN) \
-    $(wildcard include/config/SLAB) \
-    $(wildcard include/config/SLUB) \
-    $(wildcard include/config/SLOB) \
-  include/linux/overflow.h \
-  include/linux/percpu-refcount.h \
-  include/linux/kasan.h \
-    $(wildcard include/config/KASAN_STACK) \
-    $(wildcard include/config/KASAN_VMALLOC) \
-    $(wildcard include/config/KASAN_INLINE) \
-  include/linux/kasan-enabled.h \
-  include/linux/device.h \
-    $(wildcard include/config/GENERIC_MSI_IRQ_DOMAIN) \
-    $(wildcard include/config/GENERIC_MSI_IRQ) \
-    $(wildcard include/config/ENERGY_MODEL) \
-    $(wildcard include/config/PINCTRL) \
-    $(wildcard include/config/DMA_OPS) \
-    $(wildcard include/config/DMA_DECLARE_COHERENT) \
-    $(wildcard include/config/DMA_CMA) \
-    $(wildcard include/config/SWIOTLB) \
-    $(wildcard include/config/ARCH_HAS_SYNC_DMA_FOR_DEVICE) \
-    $(wildcard include/config/ARCH_HAS_SYNC_DMA_FOR_CPU) \
-    $(wildcard include/config/ARCH_HAS_SYNC_DMA_FOR_CPU_ALL) \
-    $(wildcard include/config/DMA_OPS_BYPASS) \
-    $(wildcard include/config/DEVTMPFS) \
-    $(wildcard include/config/SYSFS_DEPRECATED) \
-  include/linux/dev_printk.h \
-  include/linux/ratelimit.h \
-  include/linux/sched.h \
-    $(wildcard include/config/VIRT_CPU_ACCOUNTING_NATIVE) \
-    $(wildcard include/config/SCHED_INFO) \
-    $(wildcard include/config/SCHEDSTATS) \
-    $(wildcard include/config/SCHED_CORE) \
-    $(wildcard include/config/FAIR_GROUP_SCHED) \
-    $(wildcard include/config/RT_GROUP_SCHED) \
-    $(wildcard include/config/RT_MUTEXES) \
-    $(wildcard include/config/UCLAMP_TASK) \
-    $(wildcard include/config/UCLAMP_BUCKETS_COUNT) \
-    $(wildcard include/config/KMAP_LOCAL) \
-    $(wildcard include/config/CGROUP_SCHED) \
-    $(wildcard include/config/BLK_DEV_IO_TRACE) \
-    $(wildcard include/config/PSI) \
-    $(wildcard include/config/COMPAT_BRK) \
-    $(wildcard include/config/CGROUPS) \
-    $(wildcard include/config/BLK_CGROUP) \
-    $(wildcard include/config/PAGE_OWNER) \
-    $(wildcard include/config/EVENTFD) \
-    $(wildcard include/config/ARCH_HAS_SCALED_CPUTIME) \
-    $(wildcard include/config/VIRT_CPU_ACCOUNTING_GEN) \
-    $(wildcard include/config/POSIX_CPUTIMERS) \
-    $(wildcard include/config/POSIX_CPU_TIMERS_TASK_WORK) \
-    $(wildcard include/config/KEYS) \
-    $(wildcard include/config/SYSVIPC) \
-    $(wildcard include/config/DETECT_HUNG_TASK) \
-    $(wildcard include/config/IO_URING) \
-    $(wildcard include/config/AUDIT) \
-    $(wildcard include/config/AUDITSYSCALL) \
-    $(wildcard include/config/UBSAN) \
-    $(wildcard include/config/UBSAN_TRAP) \
-    $(wildcard include/config/TASK_XACCT) \
-    $(wildcard include/config/CPUSETS) \
-    $(wildcard include/config/X86_CPU_RESCTRL) \
-    $(wildcard include/config/FUTEX) \
-    $(wildcard include/config/PERF_EVENTS) \
-    $(wildcard include/config/RSEQ) \
-    $(wildcard include/config/TASK_DELAY_ACCT) \
-    $(wildcard include/config/FAULT_INJECTION) \
-    $(wildcard include/config/LATENCYTOP) \
-    $(wildcard include/config/KUNIT) \
-    $(wildcard include/config/FUNCTION_GRAPH_TRACER) \
-    $(wildcard include/config/BCACHE) \
-    $(wildcard include/config/VMAP_STACK) \
-    $(wildcard include/config/LIVEPATCH) \
-    $(wildcard include/config/SECURITY) \
-    $(wildcard include/config/BPF_SYSCALL) \
-    $(wildcard include/config/GCC_PLUGIN_STACKLEAK) \
-    $(wildcard include/config/X86_MCE) \
-    $(wildcard include/config/KRETPROBES) \
-    $(wildcard include/config/RETHOOK) \
-    $(wildcard include/config/ARCH_HAS_PARANOID_L1D_FLUSH) \
-    $(wildcard include/config/ARCH_TASK_STRUCT_ON_STACK) \
-    $(wildcard include/config/DEBUG_RSEQ) \
-  include/uapi/linux/sched.h \
-  include/linux/pid.h \
-  include/linux/rculist.h \
-    $(wildcard include/config/PROVE_RCU_LIST) \
-  include/linux/sem.h \
-  include/uapi/linux/sem.h \
-  include/linux/ipc.h \
-  include/linux/rhashtable-types.h \
-  include/uapi/linux/ipc.h \
-  arch/x86/include/generated/uapi/asm/ipcbuf.h \
-  include/uapi/asm-generic/ipcbuf.h \
-  arch/x86/include/uapi/asm/sembuf.h \
-  include/linux/shm.h \
-  include/uapi/linux/shm.h \
-  include/uapi/asm-generic/hugetlb_encode.h \
-  arch/x86/include/uapi/asm/shmbuf.h \
-  include/uapi/asm-generic/shmbuf.h \
-  arch/x86/include/asm/shmparam.h \
-  include/linux/plist.h \
-    $(wildcard include/config/DEBUG_PLIST) \
-  include/linux/hrtimer.h \
-    $(wildcard include/config/HIGH_RES_TIMERS) \
-    $(wildcard include/config/TIME_LOW_RES) \
-    $(wildcard include/config/TIMERFD) \
-  include/linux/hrtimer_defs.h \
-  include/linux/timerqueue.h \
-  include/linux/seccomp.h \
-    $(wildcard include/config/SECCOMP) \
-    $(wildcard include/config/HAVE_ARCH_SECCOMP_FILTER) \
-    $(wildcard include/config/SECCOMP_FILTER) \
-    $(wildcard include/config/CHECKPOINT_RESTORE) \
-    $(wildcard include/config/SECCOMP_CACHE_DEBUG) \
-  include/uapi/linux/seccomp.h \
-  arch/x86/include/asm/seccomp.h \
-  arch/x86/include/asm/unistd.h \
-  arch/x86/include/uapi/asm/unistd.h \
-  arch/x86/include/generated/uapi/asm/unistd_32.h \
-  include/asm-generic/seccomp.h \
-  include/uapi/linux/unistd.h \
-  include/linux/resource.h \
-  include/uapi/linux/resource.h \
-  arch/x86/include/generated/uapi/asm/resource.h \
-  include/asm-generic/resource.h \
-  include/uapi/asm-generic/resource.h \
-  include/linux/latencytop.h \
-  include/linux/sched/prio.h \
-  include/linux/sched/types.h \
-  include/linux/signal_types.h \
-    $(wildcard include/config/OLD_SIGACTION) \
-  include/uapi/linux/signal.h \
-  arch/x86/include/asm/signal.h \
-  arch/x86/include/uapi/asm/signal.h \
-  include/uapi/asm-generic/signal-defs.h \
-  arch/x86/include/uapi/asm/siginfo.h \
-  include/uapi/asm-generic/siginfo.h \
-  include/linux/syscall_user_dispatch.h \
-  include/linux/task_io_accounting.h \
-    $(wildcard include/config/TASK_IO_ACCOUNTING) \
-  include/linux/posix-timers.h \
-  include/linux/alarmtimer.h \
-    $(wildcard include/config/RTC_CLASS) \
-  include/uapi/linux/rseq.h \
-  include/linux/kcsan.h \
-  arch/x86/include/generated/asm/kmap_size.h \
-  include/asm-generic/kmap_size.h \
-    $(wildcard include/config/DEBUG_KMAP_LOCAL) \
-  include/linux/energy_model.h \
-  include/linux/sched/cpufreq.h \
-    $(wildcard include/config/CPU_FREQ) \
-  include/linux/sched/topology.h \
-    $(wildcard include/config/SCHED_DEBUG) \
-    $(wildcard include/config/SCHED_MC) \
-    $(wildcard include/config/CPU_FREQ_GOV_SCHEDUTIL) \
-  include/linux/sched/idle.h \
-  include/linux/sched/sd_flags.h \
-  include/linux/klist.h \
-  include/linux/pm.h \
-    $(wildcard include/config/VT_CONSOLE_SLEEP) \
-    $(wildcard include/config/PM_CLK) \
-    $(wildcard include/config/PM_GENERIC_DOMAINS) \
-  include/linux/device/bus.h \
-  include/linux/device/class.h \
-  include/linux/device/driver.h \
-  include/linux/module.h \
-    $(wildcard include/config/MODULES_TREE_LOOKUP) \
-    $(wildcard include/config/STACKTRACE_BUILD_ID) \
-    $(wildcard include/config/MODULE_SIG) \
-    $(wildcard include/config/KALLSYMS) \
-    $(wildcard include/config/BPF_EVENTS) \
-    $(wildcard include/config/DEBUG_INFO_BTF_MODULES) \
-    $(wildcard include/config/EVENT_TRACING) \
-    $(wildcard include/config/MODULE_UNLOAD) \
-    $(wildcard include/config/CONSTRUCTORS) \
-    $(wildcard include/config/FUNCTION_ERROR_INJECTION) \
-  include/linux/buildid.h \
-    $(wildcard include/config/CRASH_CORE) \
-  include/linux/kmod.h \
-  include/linux/umh.h \
-  include/linux/sysctl.h \
-    $(wildcard include/config/SYSCTL) \
-  include/uapi/linux/sysctl.h \
-  include/linux/elf.h \
-    $(wildcard include/config/ARCH_USE_GNU_PROPERTY) \
-    $(wildcard include/config/ARCH_HAVE_ELF_PROT) \
-  arch/x86/include/asm/elf.h \
-    $(wildcard include/config/X86_X32_ABI) \
-  arch/x86/include/asm/user.h \
-  arch/x86/include/asm/user_32.h \
-  arch/x86/include/asm/fsgsbase.h \
-  arch/x86/include/asm/vdso.h \
-  arch/x86/include/asm/desc.h \
-  arch/x86/include/asm/fixmap.h \
-    $(wildcard include/config/DEBUG_KMAP_LOCAL_FORCE_MAP) \
-    $(wildcard include/config/X86_VSYSCALL_EMULATION) \
-    $(wildcard include/config/PROVIDE_OHCI1394_DMA_INIT) \
-    $(wildcard include/config/PCI_MMCONFIG) \
-    $(wildcard include/config/ACPI_APEI_GHES) \
-    $(wildcard include/config/INTEL_TXT) \
-  include/asm-generic/fixmap.h \
-  arch/x86/include/asm/irq_vectors.h \
-    $(wildcard include/config/HAVE_KVM) \
-    $(wildcard include/config/HYPERV) \
-    $(wildcard include/config/PCI_MSI) \
-  arch/x86/include/asm/cpu_entry_area.h \
-  arch/x86/include/asm/intel_ds.h \
-  arch/x86/include/asm/pgtable_areas.h \
-  arch/x86/include/asm/pgtable_32_areas.h \
-  include/uapi/linux/elf.h \
-  include/uapi/linux/elf-em.h \
-  include/linux/moduleparam.h \
-    $(wildcard include/config/ALPHA) \
-    $(wildcard include/config/PPC64) \
-  include/linux/rbtree_latch.h \
-  include/linux/error-injection.h \
-  include/asm-generic/error-injection.h \
-  include/linux/cfi.h \
-    $(wildcard include/config/CFI_CLANG_SHADOW) \
-  arch/x86/include/asm/module.h \
-    $(wildcard include/config/UNWINDER_ORC) \
-  include/asm-generic/module.h \
-    $(wildcard include/config/HAVE_MOD_ARCH_SPECIFIC) \
-    $(wildcard include/config/MODULES_USE_ELF_REL) \
-    $(wildcard include/config/MODULES_USE_ELF_RELA) \
-  arch/x86/include/asm/orc_types.h \
-  arch/x86/include/asm/device.h \
-  include/linux/pm_wakeup.h \
-  include/acpi/acpi.h \
-  include/acpi/platform/acenv.h \
-  include/acpi/platform/acgcc.h \
-  include/acpi/platform/aclinux.h \
-    $(wildcard include/config/ACPI_REDUCED_HARDWARE_ONLY) \
-    $(wildcard include/config/ACPI_DEBUG) \
-  include/linux/ctype.h \
-  arch/x86/include/asm/acenv.h \
-  include/acpi/acnames.h \
-  include/acpi/actypes.h \
-  include/acpi/acexcep.h \
-  include/acpi/actbl.h \
-  include/acpi/actbl1.h \
-  include/acpi/actbl2.h \
-  include/acpi/actbl3.h \
-  include/acpi/acrestyp.h \
-  include/acpi/platform/acenvex.h \
-  include/acpi/platform/aclinuxex.h \
-  include/acpi/platform/acgccex.h \
-  include/acpi/acoutput.h \
-  include/acpi/acpiosxf.h \
-  include/acpi/acpixf.h \
-  include/acpi/acconfig.h \
-  include/acpi/acbuffer.h \
-  include/linux/dynamic_debug.h \
-  include/acpi/acpi_bus.h \
-    $(wildcard include/config/X86_ANDROID_TABLETS) \
-    $(wildcard include/config/ACPI_SYSTEM_POWER_STATES_SUPPORT) \
-    $(wildcard include/config/ACPI_SLEEP) \
-  include/acpi/acpi_drivers.h \
-    $(wildcard include/config/ACPI_DOCK) \
-  include/acpi/acpi_numa.h \
-    $(wildcard include/config/ACPI_HMAT) \
-  include/acpi/acpi_io.h \
-  include/linux/io.h \
-    $(wildcard include/config/HAS_IOPORT_MAP) \
-  arch/x86/include/asm/io.h \
-    $(wildcard include/config/MTRR) \
-    $(wildcard include/config/X86_PAT) \
-  arch/x86/include/generated/asm/early_ioremap.h \
-  include/asm-generic/early_ioremap.h \
-    $(wildcard include/config/GENERIC_EARLY_IOREMAP) \
-  include/asm-generic/iomap.h \
-  include/asm-generic/pci_iomap.h \
-    $(wildcard include/config/NO_GENERIC_PCI_IOPORT_MAP) \
-    $(wildcard include/config/GENERIC_PCI_IOMAP) \
-  include/asm-generic/io.h \
-    $(wildcard include/config/GENERIC_IOMAP) \
-    $(wildcard include/config/GENERIC_IOREMAP) \
-    $(wildcard include/config/VIRT_TO_BUS) \
-    $(wildcard include/config/GENERIC_DEVMEM_IS_ALLOWED) \
-  include/linux/logic_pio.h \
-    $(wildcard include/config/INDIRECT_PIO) \
-  include/linux/vmalloc.h \
-    $(wildcard include/config/HAVE_ARCH_HUGE_VMALLOC) \
-  arch/x86/include/asm/vmalloc.h \
-    $(wildcard include/config/HAVE_ARCH_HUGE_VMAP) \
-  arch/x86/include/asm/acpi.h \
-    $(wildcard include/config/ACPI_APEI) \
-  include/acpi/pdc_intel.h \
-  arch/x86/include/asm/numa.h \
-    $(wildcard include/config/NUMA_EMU) \
-  arch/x86/include/asm/numa_32.h \
-  include/linux/regulator/consumer.h \
-    $(wildcard include/config/REGULATOR) \
-  include/linux/suspend.h \
-    $(wildcard include/config/VT) \
-    $(wildcard include/config/SUSPEND) \
-    $(wildcard include/config/HIBERNATION_SNAPSHOT_DEV) \
-    $(wildcard include/config/PM_SLEEP_DEBUG) \
-    $(wildcard include/config/PM_AUTOSLEEP) \
-  include/linux/swap.h \
-    $(wildcard include/config/DEVICE_PRIVATE) \
-    $(wildcard include/config/MIGRATION) \
-    $(wildcard include/config/FRONTSWAP) \
-    $(wildcard include/config/THP_SWAP) \
-    $(wildcard include/config/MEMCG_SWAP) \
-  include/linux/memcontrol.h \
-    $(wildcard include/config/CGROUP_WRITEBACK) \
-  include/linux/cgroup.h \
-    $(wildcard include/config/CGROUP_CPUACCT) \
-    $(wildcard include/config/SOCK_CGROUP_DATA) \
-    $(wildcard include/config/CGROUP_DATA) \
-    $(wildcard include/config/CGROUP_BPF) \
-  include/uapi/linux/cgroupstats.h \
-  include/uapi/linux/taskstats.h \
-  include/linux/fs.h \
-    $(wildcard include/config/READ_ONLY_THP_FOR_FS) \
-    $(wildcard include/config/FS_POSIX_ACL) \
-    $(wildcard include/config/IMA) \
-    $(wildcard include/config/FILE_LOCKING) \
-    $(wildcard include/config/FSNOTIFY) \
-    $(wildcard include/config/FS_ENCRYPTION) \
-    $(wildcard include/config/FS_VERITY) \
-    $(wildcard include/config/EPOLL) \
-    $(wildcard include/config/UNICODE) \
-    $(wildcard include/config/QUOTA) \
-    $(wildcard include/config/FS_DAX) \
-    $(wildcard include/config/BLOCK) \
-  include/linux/wait_bit.h \
-  include/linux/kdev_t.h \
-  include/uapi/linux/kdev_t.h \
-  include/linux/dcache.h \
-  include/linux/rculist_bl.h \
-  include/linux/list_bl.h \
-  include/linux/bit_spinlock.h \
-  include/linux/lockref.h \
-    $(wildcard include/config/ARCH_USE_CMPXCHG_LOCKREF) \
-  include/linux/stringhash.h \
-    $(wildcard include/config/DCACHE_WORD_ACCESS) \
-  include/linux/hash.h \
-    $(wildcard include/config/HAVE_ARCH_HASH) \
-  include/linux/path.h \
-  include/linux/list_lru.h \
-  include/linux/shrinker.h \
-  include/linux/capability.h \
-  include/uapi/linux/capability.h \
-  include/linux/semaphore.h \
-  include/linux/fcntl.h \
-    $(wildcard include/config/ARCH_32BIT_OFF_T) \
-  include/uapi/linux/fcntl.h \
-  arch/x86/include/generated/uapi/asm/fcntl.h \
-  include/uapi/asm-generic/fcntl.h \
-  include/uapi/linux/openat2.h \
-  include/linux/migrate_mode.h \
-  include/linux/percpu-rwsem.h \
-  include/linux/rcuwait.h \
-  include/linux/sched/signal.h \
-    $(wildcard include/config/SCHED_AUTOGROUP) \
-    $(wildcard include/config/BSD_PROCESS_ACCT) \
-    $(wildcard include/config/TASKSTATS) \
-    $(wildcard include/config/STACK_GROWSUP) \
-  include/linux/signal.h \
-    $(wildcard include/config/DYNAMIC_SIGFRAME) \
-  include/linux/sched/jobctl.h \
-  include/linux/sched/task.h \
-    $(wildcard include/config/HAVE_EXIT_THREAD) \
-    $(wildcard include/config/ARCH_WANTS_DYNAMIC_TASK_STRUCT) \
-    $(wildcard include/config/HAVE_ARCH_THREAD_STRUCT_WHITELIST) \
-  include/linux/uaccess.h \
-  include/linux/fault-inject-usercopy.h \
-    $(wildcard include/config/FAULT_INJECTION_USERCOPY) \
-  arch/x86/include/asm/uaccess.h \
-    $(wildcard include/config/CC_HAS_ASM_GOTO_OUTPUT) \
-    $(wildcard include/config/CC_HAS_ASM_GOTO_TIED_OUTPUT) \
-    $(wildcard include/config/ARCH_HAS_COPY_MC) \
-    $(wildcard include/config/X86_INTEL_USERCOPY) \
-  arch/x86/include/asm/smap.h \
-  arch/x86/include/asm/extable.h \
-    $(wildcard include/config/BPF_JIT) \
-  include/asm-generic/access_ok.h \
-    $(wildcard include/config/ALTERNATE_USER_ADDRESS_SPACE) \
-  arch/x86/include/asm/uaccess_32.h \
-  include/linux/cred.h \
-    $(wildcard include/config/DEBUG_CREDENTIALS) \
-  include/linux/key.h \
-    $(wildcard include/config/KEY_NOTIFICATIONS) \
-    $(wildcard include/config/NET) \
-  include/linux/assoc_array.h \
-    $(wildcard include/config/ASSOCIATIVE_ARRAY) \
-  include/linux/sched/user.h \
-    $(wildcard include/config/WATCH_QUEUE) \
-  include/linux/percpu_counter.h \
-  include/linux/rcu_sync.h \
-  include/linux/delayed_call.h \
-  include/linux/errseq.h \
-  include/linux/ioprio.h \
-  include/linux/sched/rt.h \
-  include/linux/iocontext.h \
-    $(wildcard include/config/BLK_ICQ) \
-  include/uapi/linux/ioprio.h \
-  include/linux/fs_types.h \
-  include/linux/mount.h \
-  include/linux/mnt_idmapping.h \
-  include/uapi/linux/fs.h \
-  include/linux/quota.h \
-    $(wildcard include/config/QUOTA_NETLINK_INTERFACE) \
-  include/uapi/linux/dqblk_xfs.h \
-  include/linux/dqblk_v1.h \
-  include/linux/dqblk_v2.h \
-  include/linux/dqblk_qtree.h \
-  include/linux/projid.h \
-  include/uapi/linux/quota.h \
-  include/linux/nfs_fs_i.h \
-  include/linux/seq_file.h \
-  include/linux/string_helpers.h \
-  include/linux/ns_common.h \
-  include/linux/nsproxy.h \
-  include/linux/user_namespace.h \
-    $(wildcard include/config/INOTIFY_USER) \
-    $(wildcard include/config/FANOTIFY) \
-    $(wildcard include/config/PERSISTENT_KEYRINGS) \
-  include/linux/kernel_stat.h \
-  include/linux/interrupt.h \
-    $(wildcard include/config/IRQ_FORCED_THREADING) \
-    $(wildcard include/config/GENERIC_IRQ_PROBE) \
-    $(wildcard include/config/IRQ_TIMINGS) \
-  include/linux/irqreturn.h \
-  include/linux/irqnr.h \
-  include/uapi/linux/irqnr.h \
-  include/linux/hardirq.h \
-  include/linux/context_tracking_state.h \
-    $(wildcard include/config/CONTEXT_TRACKING) \
-  include/linux/ftrace_irq.h \
-    $(wildcard include/config/HWLAT_TRACER) \
-    $(wildcard include/config/OSNOISE_TRACER) \
-  include/linux/vtime.h \
-    $(wildcard include/config/VIRT_CPU_ACCOUNTING) \
-    $(wildcard include/config/IRQ_TIME_ACCOUNTING) \
-  arch/x86/include/asm/hardirq.h \
-    $(wildcard include/config/KVM_INTEL) \
-    $(wildcard include/config/X86_THERMAL_VECTOR) \
-    $(wildcard include/config/X86_MCE_THRESHOLD) \
-    $(wildcard include/config/X86_MCE_AMD) \
-    $(wildcard include/config/X86_HV_CALLBACK_VECTOR) \
-  arch/x86/include/asm/irq.h \
-  arch/x86/include/asm/sections.h \
-  include/asm-generic/sections.h \
-    $(wildcard include/config/HAVE_FUNCTION_DESCRIPTORS) \
-  include/linux/cgroup-defs.h \
-    $(wildcard include/config/CGROUP_NET_CLASSID) \
-    $(wildcard include/config/CGROUP_NET_PRIO) \
-  include/linux/u64_stats_sync.h \
-  include/linux/bpf-cgroup-defs.h \
-  include/linux/psi_types.h \
-  include/linux/kthread.h \
-  include/linux/cgroup_subsys.h \
-    $(wildcard include/config/CGROUP_DEVICE) \
-    $(wildcard include/config/CGROUP_FREEZER) \
-    $(wildcard include/config/CGROUP_PERF) \
-    $(wildcard include/config/CGROUP_HUGETLB) \
-    $(wildcard include/config/CGROUP_PIDS) \
-    $(wildcard include/config/CGROUP_RDMA) \
-    $(wildcard include/config/CGROUP_MISC) \
-    $(wildcard include/config/CGROUP_DEBUG) \
-  include/linux/vm_event_item.h \
-    $(wildcard include/config/HAVE_ARCH_TRANSPARENT_HUGEPAGE_PUD) \
-    $(wildcard include/config/MEMORY_BALLOON) \
-    $(wildcard include/config/BALLOON_COMPACTION) \
-    $(wildcard include/config/DEBUG_TLBFLUSH) \
-    $(wildcard include/config/DEBUG_VM_VMACACHE) \
-  include/linux/page_counter.h \
-  include/linux/vmpressure.h \
-  include/linux/eventfd.h \
-  include/linux/mm.h \
-    $(wildcard include/config/HAVE_ARCH_MMAP_RND_BITS) \
-    $(wildcard include/config/HAVE_ARCH_MMAP_RND_COMPAT_BITS) \
-    $(wildcard include/config/ARCH_USES_HIGH_VMA_FLAGS) \
-    $(wildcard include/config/ARCH_HAS_PKEYS) \
-    $(wildcard include/config/PPC) \
-    $(wildcard include/config/PARISC) \
-    $(wildcard include/config/SPARC64) \
-    $(wildcard include/config/ARM64_MTE) \
-    $(wildcard include/config/HAVE_ARCH_USERFAULTFD_MINOR) \
-    $(wildcard include/config/SHMEM) \
-    $(wildcard include/config/ARCH_HAS_PTE_SPECIAL) \
-    $(wildcard include/config/ARCH_HAS_PTE_DEVMAP) \
-    $(wildcard include/config/DEBUG_VM_RB) \
-    $(wildcard include/config/PAGE_POISONING) \
-    $(wildcard include/config/INIT_ON_ALLOC_DEFAULT_ON) \
-    $(wildcard include/config/INIT_ON_FREE_DEFAULT_ON) \
-    $(wildcard include/config/DEBUG_PAGEALLOC) \
-    $(wildcard include/config/HUGETLBFS) \
-    $(w
+// SPDX-License-Identifier: GPL-2.0-only
+/* Copyright (C) 2007, 2011 Wolfgang Grandegger <wg@grandegger.com>
+ * Copyright (C) 2012 Stephane Grosjean <s.grosjean@peak-system.com>
+ *
+ * Derived from the PCAN project file driver/src/pcan_pci.c:
+ *
+ * Copyright (C) 2001-2006  PEAK System-Technik GmbH
+ */
+
+#include <linux/kernel.h>
+#include <linux/module.h>
+#include <linux/interrupt.h>
+#include <linux/netdevice.h>
+#include <linux/delay.h>
+#include <linux/pci.h>
+#include <linux/io.h>
+#include <linux/can.h>
+#include <linux/can/dev.h>
+
+#include "peak_canfd_user.h"
+
+MODULE_AUTHOR("Stephane Grosjean <s.grosjean@peak-system.com>");
+MODULE_DESCRIPTION("Socket-CAN driver for PEAK PCAN PCIe/M.2 FD family cards");
+MODULE_LICENSE("GPL v2");
+
+#define PCIEFD_DRV_NAME		"peak_pciefd"
+
+#define PEAK_PCI_VENDOR_ID	0x001c	/* The PCI device and vendor IDs */
+#define PEAK_PCIEFD_ID		0x0013	/* for PCIe slot cards */
+#define PCAN_CPCIEFD_ID		0x0014	/* for Compact-PCI Serial slot cards */
+#define PCAN_PCIE104FD_ID	0x0017	/* for PCIe-104 Express slot cards */
+#define PCAN_MINIPCIEFD_ID      0x0018	/* for mini-PCIe slot cards */
+#define PCAN_PCIEFD_OEM_ID      0x0019	/* for PCIe slot OEM cards */
+#define PCAN_M2_ID		0x001a	/* for M2 slot cards */
+
+/* PEAK PCIe board access description */
+#define PCIEFD_BAR0_SIZE		(64 * 1024)
+#define PCIEFD_RX_DMA_SIZE		(4 * 1024)
+#define PCIEFD_TX_DMA_SIZE		(4 * 1024)
+
+#define PCIEFD_TX_PAGE_SIZE		(2 * 1024)
+
+/* System Control Registers */
+#define PCIEFD_REG_SYS_CTL_SET		0x0000	/* set bits */
+#define PCIEFD_REG_SYS_CTL_CLR		0x0004	/* clear bits */
+
+/* Version info registers */
+#define PCIEFD_REG_SYS_VER1		0x0040	/* version reg #1 */
+#define PCIEFD_REG_SYS_VER2		0x0044	/* version reg #2 */
+
+#define PCIEFD_FW_VERSION(x, y, z)	(((u32)(x) << 24) | \
+					 ((u32)(y) << 16) | \
+					 ((u32)(z) << 8))
+
+/* System Control Registers Bits */
+#define PCIEFD_SYS_CTL_TS_RST		0x00000001	/* timestamp clock */
+#define PCIEFD_SYS_CTL_CLK_EN		0x00000002	/* system clock */
+
+/* CAN-FD channel addresses */
+#define PCIEFD_CANX_OFF(c)		(((c) + 1) * 0x1000)
+
+#define PCIEFD_ECHO_SKB_MAX		PCANFD_ECHO_SKB_DEF
+
+/* CAN-FD channel registers */
+#define PCIEFD_REG_CAN_MISC		0x0000	/* Misc. control */
+#define PCIEFD_REG_CAN_CLK_SEL		0x0008	/* Clock selector */
+#define PCIEFD_REG_CAN_CMD_PORT_L	0x0010	/* 64-bits command port */
+#define PCIEFD_REG_CAN_CMD_PORT_H	0x0014
+#define PCIEFD_REG_CAN_TX_REQ_ACC	0x0020	/* Tx request accumulator */
+#define PCIEFD_REG_CAN_TX_CTL_SET	0x0030	/* Tx control set register */
+#define PCIEFD_REG_CAN_TX_CTL_CLR	0x0038	/* Tx control clear register */
+#define PCIEFD_REG_CAN_TX_DMA_ADDR_L	0x0040	/* 64-bits addr for Tx DMA */
+#define PCIEFD_REG_CAN_TX_DMA_ADDR_H	0x0044
+#define PCIEFD_REG_CAN_RX_CTL_SET	0x0050	/* Rx control set register */
+#define PCIEFD_REG_CAN_RX_CTL_CLR	0x0058	/* Rx control clear register */
+#define PCIEFD_REG_CAN_RX_CTL_WRT	0x0060	/* Rx control write register */
+#define PCIEFD_REG_CAN_RX_CTL_ACK	0x0068	/* Rx control ACK register */
+#define PCIEFD_REG_CAN_RX_DMA_ADDR_L	0x0070	/* 64-bits addr for Rx DMA */
+#define PCIEFD_REG_CAN_RX_DMA_ADDR_H	0x0074
+
+/* CAN-FD channel misc register bits */
+#define CANFD_MISC_TS_RST		0x00000001	/* timestamp cnt rst */
+
+/* CAN-FD channel Clock SELector Source & DIVider */
+#define CANFD_CLK_SEL_DIV_MASK		0x00000007
+#define CANFD_CLK_SEL_DIV_60MHZ		0x00000000	/* SRC=240MHz only */
+#define CANFD_CLK_SEL_DIV_40MHZ		0x00000001	/* SRC=240MHz only */
+#define CANFD_CLK_SEL_DIV_30MHZ		0x00000002	/* SRC=240MHz only */
+#define CANFD_CLK_SEL_DIV_24MHZ		0x00000003	/* SRC=240MHz only */
+#define CANFD_CLK_SEL_DIV_20MHZ		0x00000004	/* SRC=240MHz only */
+
+#define CANFD_CLK_SEL_SRC_MASK		0x00000008	/* 0=80MHz, 1=240MHz */
+#define CANFD_CLK_SEL_SRC_240MHZ	0x00000008
+#define CANFD_CLK_SEL_SRC_80MHZ		(~CANFD_CLK_SEL_SRC_240MHZ & \
+							CANFD_CLK_SEL_SRC_MASK)
+
+#define CANFD_CLK_SEL_20MHZ		(CANFD_CLK_SEL_SRC_240MHZ |\
+						CANFD_CLK_SEL_DIV_20MHZ)
+#define CANFD_CLK_SEL_24MHZ		(CANFD_CLK_SEL_SRC_240MHZ |\
+						CANFD_CLK_SEL_DIV_24MHZ)
+#define CANFD_CLK_SEL_30MHZ		(CANFD_CLK_SEL_SRC_240MHZ |\
+						CANFD_CLK_SEL_DIV_30MHZ)
+#define CANFD_CLK_SEL_40MHZ		(CANFD_CLK_SEL_SRC_240MHZ |\
+						CANFD_CLK_SEL_DIV_40MHZ)
+#define CANFD_CLK_SEL_60MHZ		(CANFD_CLK_SEL_SRC_240MHZ |\
+						CANFD_CLK_SEL_DIV_60MHZ)
+#define CANFD_CLK_SEL_80MHZ		(CANFD_CLK_SEL_SRC_80MHZ)
+
+/* CAN-FD channel Rx/Tx control register bits */
+#define CANFD_CTL_UNC_BIT		0x00010000	/* Uncached DMA mem */
+#define CANFD_CTL_RST_BIT		0x00020000	/* reset DMA action */
+#define CANFD_CTL_IEN_BIT		0x00040000	/* IRQ enable */
+
+/* Rx IRQ Count and Time Limits */
+#define CANFD_CTL_IRQ_CL_DEF	16	/* Rx msg max nb per IRQ in Rx DMA */
+#define CANFD_CTL_IRQ_TL_DEF	10	/* Time before IRQ if < CL (x100 µs) */
+
+/* Tx anticipation window (link logical address should be aligned on 2K
+ * boundary)
+ */
+#define PCIEFD_TX_PAGE_COUNT	(PCIEFD_TX_DMA_SIZE / PCIEFD_TX_PAGE_SIZE)
+
+#define CANFD_MSG_LNK_TX	0x1001	/* Tx msgs link */
+
+/* 32-bits IRQ status fields, heading Rx DMA area */
+static inline int pciefd_irq_tag(u32 irq_status)
+{
+	return irq_status & 0x0000000f;
+}
+
+static inline int pciefd_irq_rx_cnt(u32 irq_status)
+{
+	return (irq_status & 0x000007f0) >> 4;
+}
+
+static inline int pciefd_irq_is_lnk(u32 irq_status)
+{
+	return irq_status & 0x00010000;
+}
+
+/* Rx record */
+struct pciefd_rx_dma {
+	__le32 irq_status;
+	__le32 sys_time_low;
+	__le32 sys_time_high;
+	struct pucan_rx_msg msg[];
+} __packed __aligned(4);
+
+/* Tx Link record */
+struct pciefd_tx_link {
+	__le16 size;
+	__le16 type;
+	__le32 laddr_lo;
+	__le32 laddr_hi;
+} __packed __aligned(4);
+
+/* Tx page descriptor */
+struct pciefd_page {
+	void *vbase;			/* page virtual address */
+	dma_addr_t lbase;		/* page logical address */
+	u32 offset;
+	u32 size;
+};
+
+/* CAN-FD channel object */
+struct pciefd_board;
+struct pciefd_can {
+	struct peak_canfd_priv ucan;	/* must be the first member */
+	void __iomem *reg_base;		/* channel config base addr */
+	struct pciefd_board *board;	/* reverse link */
+
+	struct pucan_command pucan_cmd;	/* command buffer */
+
+	dma_addr_t rx_dma_laddr;	/* DMA virtual and logical addr */
+	void *rx_dma_vaddr;		/* for Rx and Tx areas */
+	dma_addr_t tx_dma_laddr;
+	void *tx_dma_vaddr;
+
+	struct pciefd_page tx_pages[PCIEFD_TX_PAGE_COUNT];
+	u16 tx_pages_free;		/* free Tx pages counter */
+	u16 tx_page_index;		/* current page used for Tx */
+	spinlock_t tx_lock;
+
+	u32 irq_status;
+	u32 irq_tag;				/* next irq tag */
+};
+
+/* PEAK-PCIe FD board object */
+struct pciefd_board {
+	void __iomem *reg_base;
+	struct pci_dev *pci_dev;
+	int can_count;
+	spinlock_t cmd_lock;		/* 64-bits cmds must be atomic */
+	struct pciefd_can *can[];	/* array of network devices */
+};
+
+/* supported device ids. */
+static const struct pci_device_id peak_pciefd_tbl[] = {
+	{PEAK_PCI_VENDOR_ID, PEAK_PCIEFD_ID, PCI_ANY_ID, PCI_ANY_ID,},
+	{PEAK_PCI_VENDOR_ID, PCAN_CPCIEFD_ID, PCI_ANY_ID, PCI_ANY_ID,},
+	{PEAK_PCI_VENDOR_ID, PCAN_PCIE104FD_ID, PCI_ANY_ID, PCI_ANY_ID,},
+	{PEAK_PCI_VENDOR_ID, PCAN_MINIPCIEFD_ID, PCI_ANY_ID, PCI_ANY_ID,},
+	{PEAK_PCI_VENDOR_ID, PCAN_PCIEFD_OEM_ID, PCI_ANY_ID, PCI_ANY_ID,},
+	{PEAK_PCI_VENDOR_ID, PCAN_M2_ID, PCI_ANY_ID, PCI_ANY_ID,},
+	{0,}
+};
+
+MODULE_DEVICE_TABLE(pci, peak_pciefd_tbl);
+
+/* read a 32 bits value from a SYS block register */
+static inline u32 pciefd_sys_readreg(const struct pciefd_board *priv, u16 reg)
+{
+	return readl(priv->reg_base + reg);
+}
+
+/* write a 32 bits value into a SYS block register */
+static inline void pciefd_sys_writereg(const struct pciefd_board *priv,
+				       u32 val, u16 reg)
+{
+	writel(val, priv->reg_base + reg);
+}
+
+/* read a 32 bits value from CAN-FD block register */
+static inline u32 pciefd_can_readreg(const struct pciefd_can *priv, u16 reg)
+{
+	return readl(priv->reg_base + reg);
+}
+
+/* write a 32 bits value into a CAN-FD block register */
+static inline void pciefd_can_writereg(const struct pciefd_can *priv,
+				       u32 val, u16 reg)
+{
+	writel(val, priv->reg_base + reg);
+}
+
+/* give a channel logical Rx DMA address to the board */
+static void pciefd_can_setup_rx_dma(struct pciefd_can *priv)
+{
+#ifdef CONFIG_ARCH_DMA_ADDR_T_64BIT
+	const u32 dma_addr_h = (u32)(priv->rx_dma_laddr >> 32);
+#else
+	const u32 dma_addr_h = 0;
+#endif
+
+	/* (DMA must be reset for Rx) */
+	pciefd_can_writereg(priv, CANFD_CTL_RST_BIT, PCIEFD_REG_CAN_RX_CTL_SET);
+
+	/* write the logical address of the Rx DMA area for this channel */
+	pciefd_can_writereg(priv, (u32)priv->rx_dma_laddr,
+			    PCIEFD_REG_CAN_RX_DMA_ADDR_L);
+	pciefd_can_writereg(priv, dma_addr_h, PCIEFD_REG_CAN_RX_DMA_ADDR_H);
+
+	/* also indicates that Rx DMA is cacheable */
+	pciefd_can_writereg(priv, CANFD_CTL_UNC_BIT, PCIEFD_REG_CAN_RX_CTL_CLR);
+}
+
+/* clear channel logical Rx DMA address from the board */
+static void pciefd_can_clear_rx_dma(struct pciefd_can *priv)
+{
+	/* DMA must be reset for Rx */
+	pciefd_can_writereg(priv, CANFD_CTL_RST_BIT, PCIEFD_REG_CAN_RX_CTL_SET);
+
+	/* clear the logical address of the Rx DMA area for this channel */
+	pciefd_can_writereg(priv, 0, PCIEFD_REG_CAN_RX_DMA_ADDR_L);
+	pciefd_can_writereg(priv, 0, PCIEFD_REG_CAN_RX_DMA_ADDR_H);
+}
+
+/* give a channel logical Tx DMA address to the board */
+static void pciefd_can_setup_tx_dma(struct pciefd_can *priv)
+{
+#ifdef CONFIG_ARCH_DMA_ADDR_T_64BIT
+	const u32 dma_addr_h = (u32)(priv->tx_dma_laddr >> 32);
+#else
+	const u32 dma_addr_h = 0;
+#endif
+
+	/* (DMA must be reset for Tx) */
+	pciefd_can_writereg(priv, CANFD_CTL_RST_BIT, PCIEFD_REG_CAN_TX_CTL_SET);
+
+	/* write the logical address of the Tx DMA area for this channel */
+	pciefd_can_writereg(priv, (u32)priv->tx_dma_laddr,
+			    PCIEFD_REG_CAN_TX_DMA_ADDR_L);
+	pciefd_can_writereg(priv, dma_addr_h, PCIEFD_REG_CAN_TX_DMA_ADDR_H);
+
+	/* also indicates that Tx DMA is cacheable */
+	pciefd_can_writereg(priv, CANFD_CTL_UNC_BIT, PCIEFD_REG_CAN_TX_CTL_CLR);
+}
+
+/* clear channel logical Tx DMA address from the board */
+static void pciefd_can_clear_tx_dma(struct pciefd_can *priv)
+{
+	/* DMA must be reset for Tx */
+	pciefd_can_writereg(priv, CANFD_CTL_RST_BIT, PCIEFD_REG_CAN_TX_CTL_SET);
+
+	/* clear the logical address of the Tx DMA area for this channel */
+	pciefd_can_writereg(priv, 0, PCIEFD_REG_CAN_TX_DMA_ADDR_L);
+	pciefd_can_writereg(priv, 0, PCIEFD_REG_CAN_TX_DMA_ADDR_H);
+}
+
+static void pciefd_can_ack_rx_dma(struct pciefd_can *priv)
+{
+	/* read value of current IRQ tag and inc it for next one */
+	priv->irq_tag = le32_to_cpu(*(__le32 *)priv->rx_dma_vaddr);
+	priv->irq_tag++;
+	priv->irq_tag &= 0xf;
+
+	/* write the next IRQ tag for this CAN */
+	pciefd_can_writereg(priv, priv->irq_tag, PCIEFD_REG_CAN_RX_CTL_ACK);
+}
+
+/* IRQ handler */
+static irqreturn_t pciefd_irq_handler(int irq, void *arg)
+{
+	struct pciefd_can *priv = arg;
+	struct pciefd_rx_dma *rx_dma = priv->rx_dma_vaddr;
+
+	/* INTA mode only to sync with PCIe transaction */
+	if (!pci_dev_msi_enabled(priv->board->pci_dev))
+		(void)pciefd_sys_readreg(priv->board, PCIEFD_REG_SYS_VER1);
+
+	/* read IRQ status from the first 32-bits of the Rx DMA area */
+	priv->irq_status = le32_to_cpu(rx_dma->irq_status);
+
+	/* check if this (shared) IRQ is for this CAN */
+	if (pciefd_irq_tag(priv->irq_status) != priv->irq_tag)
+		return IRQ_NONE;
+
+	/* handle rx messages (if any) */
+	peak_canfd_handle_msgs_list(&priv->ucan,
+				    rx_dma->msg,
+				    pciefd_irq_rx_cnt(priv->irq_status));
+
+	/* handle tx link interrupt (if any) */
+	if (pciefd_irq_is_lnk(priv->irq_status)) {
+		unsigned long flags;
+
+		spin_lock_irqsave(&priv->tx_lock, flags);
+		priv->tx_pages_free++;
+		spin_unlock_irqrestore(&priv->tx_lock, flags);
+
+		/* wake producer up (only if enough room in echo_skb array) */
+		spin_lock_irqsave(&priv->ucan.echo_lock, flags);
+		if (!priv->ucan.can.echo_skb[priv->ucan.echo_idx])
+			netif_wake_queue(priv->ucan.ndev);
+
+		spin_unlock_irqrestore(&priv->ucan.echo_lock, flags);
+	}
+
+	/* re-enable Rx DMA transfer for this CAN */
+	pciefd_can_ack_rx_dma(priv);
+
+	return IRQ_HANDLED;
+}
+
+static int pciefd_enable_tx_path(struct peak_canfd_priv *ucan)
+{
+	struct pciefd_can *priv = (struct pciefd_can *)ucan;
+	int i;
+
+	/* initialize the Tx pages descriptors */
+	priv->tx_pages_free = PCIEFD_TX_PAGE_COUNT - 1;
+	priv->tx_page_index = 0;
+
+	priv->tx_pages[0].vbase = priv->tx_dma_vaddr;
+	priv->tx_pages[0].lbase = priv->tx_dma_laddr;
+
+	for (i = 0; i < PCIEFD_TX_PAGE_COUNT; i++) {
+		priv->tx_pages[i].offset = 0;
+		priv->tx_pages[i].size = PCIEFD_TX_PAGE_SIZE -
+					 sizeof(struct pciefd_tx_link);
+		if (i) {
+			priv->tx_pages[i].vbase =
+					  priv->tx_pages[i - 1].vbase +
+					  PCIEFD_TX_PAGE_SIZE;
+			priv->tx_pages[i].lbase =
+					  priv->tx_pages[i - 1].lbase +
+					  PCIEFD_TX_PAGE_SIZE;
+		}
+	}
+
+	/* setup Tx DMA addresses into IP core */
+	pciefd_can_setup_tx_dma(priv);
+
+	/* start (TX_RST=0) Tx Path */
+	pciefd_can_writereg(priv, CANFD_CTL_RST_BIT, PCIEFD_REG_CAN_TX_CTL_CLR);
+
+	return 0;
+}
+
+/* board specific CANFD command pre-processing */
+static int pciefd_pre_cmd(struct peak_canfd_priv *ucan)
+{
+	struct pciefd_can *priv = (struct pciefd_can *)ucan;
+	u16 cmd = pucan_cmd_get_opcode(&priv->pucan_cmd);
+	int err;
+
+	/* pre-process command */
+	switch (cmd) {
+	case PUCAN_CMD_NORMAL_MODE:
+	case PUCAN_CMD_LISTEN_ONLY_MODE:
+
+		if (ucan->can.state == CAN_STATE_BUS_OFF)
+			break;
+
+		/* going into operational mode: setup IRQ handler */
+		err = request_irq(priv->ucan.ndev->irq,
+				  pciefd_irq_handler,
+				  IRQF_SHARED,
+				  PCIEFD_DRV_NAME,
+				  priv);
+		if (err)
+			return err;
+
+		/* setup Rx DMA address */
+		pciefd_can_setup_rx_dma(priv);
+
+		/* setup max count of msgs per IRQ */
+		pciefd_can_writereg(priv, (CANFD_CTL_IRQ_TL_DEF) << 8 |
+				    CANFD_CTL_IRQ_CL_DEF,
+				    PCIEFD_REG_CAN_RX_CTL_WRT);
+
+		/* clear DMA RST for Rx (Rx start) */
+		pciefd_can_writereg(priv, CANFD_CTL_RST_BIT,
+				    PCIEFD_REG_CAN_RX_CTL_CLR);
+
+		/* reset timestamps */
+		pciefd_can_writereg(priv, !CANFD_MISC_TS_RST,
+				    PCIEFD_REG_CAN_MISC);
+
+		/* do an initial ACK */
+		pciefd_can_ack_rx_dma(priv);
+
+		/* enable IRQ for this CAN after having set next irq_tag */
+		pciefd_can_writereg(priv, CANFD_CTL_IEN_BIT,
+				    PCIEFD_REG_CAN_RX_CTL_SET);
+
+		/* Tx path will be setup as soon as RX_BARRIER is received */
+		break;
+	default:
+		break;
+	}
+
+	return 0;
+}
+
+/* write a command */
+static int pciefd_write_cmd(struct peak_canfd_priv *ucan)
+{
+	struct pciefd_can *priv = (struct pciefd_can *)ucan;
+	unsigned long flags;
+
+	/* 64-bits command is atomic */
+	spin_lock_irqsave(&priv->board->cmd_lock, flags);
+
+	pciefd_can_writereg(priv, *(u32 *)ucan->cmd_buffer,
+			    PCIEFD_REG_CAN_CMD_PORT_L);
+	pciefd_can_writereg(priv, *(u32 *)(ucan->cmd_buffer + 4),
+			    PCIEFD_REG_CAN_CMD_PORT_H);
+
+	spin_unlock_irqrestore(&priv->board->cmd_lock, flags);
+
+	return 0;
+}
+
+/* board specific CANFD command post-processing */
+static int pciefd_post_cmd(struct peak_canfd_priv *ucan)
+{
+	struct pciefd_can *priv = (struct pciefd_can *)ucan;
+	u16 cmd = pucan_cmd_get_opcode(&priv->pucan_cmd);
+
+	switch (cmd) {
+	case PUCAN_CMD_RESET_MODE:
+
+		if (ucan->can.state == CAN_STATE_STOPPED)
+			break;
+
+		/* controller now in reset mode: */
+
+		/* disable IRQ for this CAN */
+		pciefd_can_writereg(priv, CANFD_CTL_IEN_BIT,
+				    PCIEFD_REG_CAN_RX_CTL_CLR);
+
+		/* stop and reset DMA addresses in Tx/Rx engines */
+		pciefd_can_clear_tx_dma(priv);
+		pciefd_can_clear_rx_dma(priv);
+
+		/* wait for above commands to complete (read cycle) */
+		(void)pciefd_sys_readreg(priv->board, PCIEFD_REG_SYS_VER1);
+
+		free_irq(priv->ucan.ndev->irq, priv);
+
+		ucan->can.state = CAN_STATE_STOPPED;
+
+		break;
+	}
+
+	return 0;
+}
+
+static void *pciefd_alloc_tx_msg(struct peak_canfd_priv *ucan, u16 msg_size,
+				 int *room_left)
+{
+	struct pciefd_can *priv = (struct pciefd_can *)ucan;
+	struct pciefd_page *page = priv->tx_pages + priv->tx_page_index;
+	unsigned long flags;
+	void *msg;
+
+	spin_lock_irqsave(&priv->tx_lock, flags);
+
+	if (page->offset + msg_size > page->size) {
+		struct pciefd_tx_link *lk;
+
+		/* not enough space in this page: try another one */
+		if (!priv->tx_pages_free) {
+			spin_unlock_irqrestore(&priv->tx_lock, flags);
+
+			/* Tx overflow */
+			return NULL;
+		}
+
+		priv->tx_pages_free--;
+
+		/* keep address of the very last free slot of current page */
+		lk = page->vbase + page->offset;
+
+		/* next, move on a new free page */
+		priv->tx_page_index = (priv->tx_page_index + 1) %
+				      PCIEFD_TX_PAGE_COUNT;
+		page = priv->tx_pages + priv->tx_page_index;
+
+		/* put link record to this new page at the end of prev one */
+		lk->size = cpu_to_le16(sizeof(*lk));
+		lk->type = cpu_to_le16(CANFD_MSG_LNK_TX);
+		lk->laddr_lo = cpu_to_le32(page->lbase);
+
+#ifdef CONFIG_ARCH_DMA_ADDR_T_64BIT
+		lk->laddr_hi = cpu_to_le32(page->lbase >> 32);
+#else
+		lk->laddr_hi = 0;
+#endif
+		/* next msgs will be put from the begininng of this new page */
+		page->offset = 0;
+	}
+
+	*room_left = priv->tx_pages_free * page->size;
+
+	spin_unlock_irqrestore(&priv->tx_lock, flags);
+
+	msg = page->vbase + page->offset;
+
+	/* give back room left in the tx ring */
+	*room_left += page->size - (page->offset + msg_size);
+
+	return msg;
+}
+
+static int pciefd_write_tx_msg(struct peak_canfd_priv *ucan,
+			       struct pucan_tx_msg *msg)
+{
+	struct pciefd_can *priv = (struct pciefd_can *)ucan;
+	struct pciefd_page *page = priv->tx_pages + priv->tx_page_index;
+
+	/* this slot is now reserved for writing the frame */
+	page->offset += le16_to_cpu(msg->size);
+
+	/* tell the board a frame has been written in Tx DMA area */
+	pciefd_can_writereg(priv, 1, PCIEFD_REG_CAN_TX_REQ_ACC);
+
+	return 0;
+}
+
+/* probe for CAN-FD channel #pciefd_board->can_count */
+static int pciefd_can_probe(struct pciefd_board *pciefd)
+{
+	struct net_device *ndev;
+	struct pciefd_can *priv;
+	u32 clk;
+	int err;
+
+	/* allocate the candev object with default isize of echo skbs ring */
+	ndev = alloc_peak_canfd_dev(sizeof(*priv), pciefd->can_count,
+				    PCIEFD_ECHO_SKB_MAX);
+	if (!ndev) {
+		dev_err(&pciefd->pci_dev->dev,
+			"failed to alloc candev object\n");
+		goto failure;
+	}
+
+	priv = netdev_priv(ndev);
+
+	/* fill-in candev private object: */
+
+	/* setup PCIe-FD own callbacks */
+	priv->ucan.pre_cmd = pciefd_pre_cmd;
+	priv->ucan.write_cmd = pciefd_write_cmd;
+	priv->ucan.post_cmd = pciefd_post_cmd;
+	priv->ucan.enable_tx_path = pciefd_enable_tx_path;
+	priv->ucan.alloc_tx_msg = pciefd_alloc_tx_msg;
+	priv->ucan.write_tx_msg = pciefd_write_tx_msg;
+
+	/* setup PCIe-FD own command buffer */
+	priv->ucan.cmd_buffer = &priv->pucan_cmd;
+	priv->ucan.cmd_maxlen = sizeof(priv->pucan_cmd);
+
+	priv->board = pciefd;
+
+	/* CAN config regs block address */
+	priv->reg_base = pciefd->reg_base + PCIEFD_CANX_OFF(priv->ucan.index);
+
+	/* allocate non-cacheable DMA'able 4KB memory area for Rx */
+	priv->rx_dma_vaddr = dmam_alloc_coherent(&pciefd->pci_dev->dev,
+						 PCIEFD_RX_DMA_SIZE,
+						 &priv->rx_dma_laddr,
+						 GFP_KERNEL);
+	if (!priv->rx_dma_vaddr) {
+		dev_err(&pciefd->pci_dev->dev,
+			"Rx dmam_alloc_coherent(%u) failure\n",
+			PCIEFD_RX_DMA_SIZE);
+		goto err_free_candev;
+	}
+
+	/* allocate non-cacheable DMA'able 4KB memory area for Tx */
+	priv->tx_dma_vaddr = dmam_alloc_coherent(&pciefd->pci_dev->dev,
+						 PCIEFD_TX_DMA_SIZE,
+						 &priv->tx_dma_laddr,
+						 GFP_KERNEL);
+	if (!priv->tx_dma_vaddr) {
+		dev_err(&pciefd->pci_dev->dev,
+			"Tx dmam_alloc_coherent(%u) failure\n",
+			PCIEFD_TX_DMA_SIZE);
+		goto err_free_candev;
+	}
+
+	/* CAN clock in RST mode */
+	pciefd_can_writereg(priv, CANFD_MISC_TS_RST, PCIEFD_REG_CAN_MISC);
+
+	/* read current clock value */
+	clk = pciefd_can_readreg(priv, PCIEFD_REG_CAN_CLK_SEL);
+	switch (clk) {
+	case CANFD_CLK_SEL_20MHZ:
+		priv->ucan.can.clock.freq = 20 * 1000 * 1000;
+		break;
+	case CANFD_CLK_SEL_24MHZ:
+		priv->ucan.can.clock.freq = 24 * 1000 * 1000;
+		break;
+	case CANFD_CLK_SEL_30MHZ:
+		priv->ucan.can.clock.freq = 30 * 1000 * 1000;
+		break;
+	case CANFD_CLK_SEL_40MHZ:
+		priv->ucan.can.clock.freq = 40 * 1000 * 1000;
+		break;
+	case CANFD_CLK_SEL_60MHZ:
+		priv->ucan.can.clock.freq = 60 * 1000 * 1000;
+		break;
+	default:
+		pciefd_can_writereg(priv, CANFD_CLK_SEL_80MHZ,
+				    PCIEFD_REG_CAN_CLK_SEL);
+
+		fallthrough;
+	case CANFD_CLK_SEL_80MHZ:
+		priv->ucan.can.clock.freq = 80 * 1000 * 1000;
+		break;
+	}
+
+	ndev->irq = pciefd->pci_dev->irq;
+
+	SET_NETDEV_DEV(ndev, &pciefd->pci_dev->dev);
+
+	err = register_candev(ndev);
+	if (err) {
+		dev_err(&pciefd->pci_dev->dev,
+			"couldn't register CAN device: %d\n", err);
+		goto err_free_candev;
+	}
+
+	spin_lock_init(&priv->tx_lock);
+
+	/* save the object address in the board structure */
+	pciefd->can[pciefd->can_count] = priv;
+
+	dev_info(&pciefd->pci_dev->dev, "%s at reg_base=0x%p irq=%d\n",
+		 ndev->name, priv->reg_base, ndev->irq);
+
+	return 0;
+
+err_free_candev:
+	free_candev(ndev);
+
+failure:
+	return -ENOMEM;
+}
+
+/* remove a CAN-FD channel by releasing all of its resources */
+static void pciefd_can_remove(struct pciefd_can *priv)
+{
+	/* unregister (close) the can device to go back to RST mode first */
+	unregister_candev(priv->ucan.ndev);
+
+	/* finally, free the candev object */
+	free_candev(priv->ucan.ndev);
+}
+
+/* remove all CAN-FD channels by releasing their own resources */
+static void pciefd_can_remove_all(struct pciefd_board *pciefd)
+{
+	while (pciefd->can_count > 0)
+		pciefd_can_remove(pciefd->can[--pciefd->can_count]);
+}
+
+/* probe for the entire device */
+static int peak_pciefd_probe(struct pci_dev *pdev,
+			     const struct pci_device_id *ent)
+{
+	struct pciefd_board *pciefd;
+	int err, can_count;
+	u16 sub_sys_id;
+	u8 hw_ver_major;
+	u8 hw_ver_minor;
+	u8 hw_ver_sub;
+	u32 v2;
+
+	err = pci_enable_device(pdev);
+	if (err)
+		return err;
+	err = pci_request_regions(pdev, PCIEFD_DRV_NAME);
+	if (err)
+		goto err_disable_pci;
+
+	/* the number of channels depends on sub-system id */
+	err = pci_read_config_word(pdev, PCI_SUBSYSTEM_ID, &sub_sys_id);
+	if (err)
+		goto err_release_regions;
+
+	dev_dbg(&pdev->dev, "probing device %04x:%04x:%04x\n",
+		pdev->vendor, pdev->device, sub_sys_id);
+
+	if (sub_sys_id >= 0x0012)
+		can_count = 4;
+	else if (sub_sys_id >= 0x0010)
+		can_count = 3;
+	else if (sub_sys_id >= 0x0004)
+		can_count = 2;
+	else
+		can_count = 1;
+
+	/* allocate board structure object */
+	pciefd = devm_kzalloc(&pdev->dev, struct_size(pciefd, can, can_count),
+			      GFP_KERNEL);
+	if (!pciefd) {
+		err = -ENOMEM;
+		goto err_release_regions;
+	}
+
+	/* initialize the board structure */
+	pciefd->pci_dev = pdev;
+	spin_lock_init(&pciefd->cmd_lock);
+
+	/* save the PCI BAR0 virtual address for further system regs access */
+	pciefd->reg_base = pci_iomap(pdev, 0, PCIEFD_BAR0_SIZE);
+	if (!pciefd->reg_base) {
+		dev_err(&pdev->dev, "failed to map PCI resource #0\n");
+		err = -ENOMEM;
+		goto err_release_regions;
+	}
+
+	/* read the firmware version number */
+	v2 = pciefd_sys_readreg(pciefd, PCIEFD_REG_SYS_VER2);
+
+	hw_ver_major = (v2 & 0x0000f000) >> 12;
+	hw_ver_minor = (v2 & 0x00000f00) >> 8;
+	hw_ver_sub = (v2 & 0x000000f0) >> 4;
+
+	dev_info(&pdev->dev,
+		 "%ux CAN-FD PCAN-PCIe FPGA v%u.%u.%u:\n", can_count,
+		 hw_ver_major, hw_ver_minor, hw_ver_sub);
+
+#ifdef CONFIG_ARCH_DMA_ADDR_T_64BIT
+	/* FW < v3.3.0 DMA logic doesn't handle correctly the mix of 32-bit and
+	 * 64-bit logical addresses: this workaround forces usage of 32-bit
+	 * DMA addresses only when such a fw is detected.
+	 */
+	if (PCIEFD_FW_VERSION(hw_ver_major, hw_ver_minor, hw_ver_sub) <
+	    PCIEFD_FW_VERSION(3, 3, 0)) {
+		err = dma_set_mask_and_coherent(&pdev->dev, DMA_BIT_MASK(32));
+		if (err)
+			dev_warn(&pdev->dev,
+				 "warning: can't set DMA mask %llxh (err %d)\n",
+				 DMA_BIT_MASK(32), err);
+	}
+#endif
+
+	/* stop system clock */
+	pciefd_sys_writereg(pciefd, PCIEFD_SYS_CTL_CLK_EN,
+			    PCIEFD_REG_SYS_CTL_CLR);
+
+	pci_set_master(pdev);
+
+	/* create now the corresponding channels objects */
+	while (pciefd->can_count < can_count) {
+		err = pciefd_can_probe(pciefd);
+		if (err)
+			goto err_free_canfd;
+
+		pciefd->can_count++;
+	}
+
+	/* set system timestamps counter in RST mode */
+	pciefd_sys_writereg(pciefd, PCIEFD_SYS_CTL_TS_RST,
+			    PCIEFD_REG_SYS_CTL_SET);
+
+	/* wait a bit (read cycle) */
+	(void)pciefd_sys_readreg(pciefd, PCIEFD_REG_SYS_VER1);
+
+	/* free all clocks */
+	pciefd_sys_writereg(pciefd, PCIEFD_SYS_CTL_TS_RST,
+			    PCIEFD_REG_SYS_CTL_CLR);
+
+	/* start system clock */
+	pciefd_sys_writereg(pciefd, PCIEFD_SYS_CTL_CLK_EN,
+			    PCIEFD_REG_SYS_CTL_SET);
+
+	/* remember the board structure address in the device user data */
+	pci_set_drvdata(pdev, pciefd);
+
+	return 0;
+
+err_free_canfd:
+	pciefd_can_remove_all(pciefd);
+
+	pci_iounmap(pdev, pciefd->reg_base);
+
+err_release_regions:
+	pci_release_regions(pdev);
+
+err_disable_pci:
+	pci_disable_device(pdev);
+
+	/* pci_xxx_config_word() return positive PCIBIOS_xxx error codes while
+	 * the probe() function must return a negative errno in case of failure
+	 * (err is unchanged if negative)
+	 */
+	return pcibios_err_to_errno(err);
+}
+
+/* free the board structure object, as well as its resources: */
+static void peak_pciefd_remove(struct pci_dev *pdev)
+{
+	struct pciefd_board *pciefd = pci_get_drvdata(pdev);
+
+	/* release CAN-FD channels resources */
+	pciefd_can_remove_all(pciefd);
+
+	pci_iounmap(pdev, pciefd->reg_base);
+
+	pci_release_regions(pdev);
+	pci_disable_device(pdev);
+}
+
+static struct pci_driver peak_pciefd_driver = {
+	.name = PCIEFD_DRV_NAME,
+	.id_table = peak_pciefd_tbl,
+	.probe = peak_pciefd_probe,
+	.remove = peak_pciefd_remove,
+};
+
+module_pci_driver(peak_pciefd_driver);

@@ -1,3 +1,5 @@
-nclude/config/GENERIC_ATOMIC64) \
-  include/linux/atomic/atomic-long.h \
-  include/linux/atomic/atomic-instrumented.h \
+// SPDX-License-Identifier: GPL-2.0-or-later
+/*
+ * Driver for Silicon Labs C8051F300 microcontroller.
+ *
+ * It is used 

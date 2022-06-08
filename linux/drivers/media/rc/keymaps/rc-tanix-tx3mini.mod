@@ -1,2 +1,1 @@
-drivers/media/rc/keymaps/rc-tanix-tx3mini.o
-
+// SPDX-License-Identifier: GPL-2.0-or-later

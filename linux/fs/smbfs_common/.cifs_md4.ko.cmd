@@ -1,7 +1,8 @@
-nux/sched.h \
-  include/linux/pid.h \
-  include/linux/rculist.h \
-    $(wildcard include/config/PROVE_RCU_LIST) \
-  include/linux/sem.h \
-  include/uapi/linux/sem.h \
-  include/linux/ipc.h
+// SPDX-License-Identifier: GPL-2.0-or-later
+/*
+ * netup-init.c
+ *
+ * NetUP Dual DVB-S2 CI driver
+ *
+ * Copyright (C) 2009 NetUP Inc.
+ * Copyright (C) 2009 Igor M. Liplianin <liplianin@net

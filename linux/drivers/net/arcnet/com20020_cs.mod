@@ -1,1 +1,2 @@
-    $(wildcard include/config/HAVE
+drivers/net/arcnet/com20020_cs.o
+

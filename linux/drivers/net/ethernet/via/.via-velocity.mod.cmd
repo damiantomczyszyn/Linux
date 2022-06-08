@@ -1,4 +1,9 @@
-_BITS) \
-    $(wildcard include/config/HAVE_ARCH_MMAP_RND_COMPAT_BITS) \
-    $(wildcard include/config/ARCH_USES_HIGH_VMA_FLAGS) \
-    $(wildcard inclu
+gister(port);
+	if (err != 0)
+		pr_err("%s() dvb_register failed err = %d\n",
+		       __func__, err);
+
+	return err;
+}
+
+int cx23885_dvb_unregister(struc

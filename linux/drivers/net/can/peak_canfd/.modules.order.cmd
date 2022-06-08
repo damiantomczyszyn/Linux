@@ -1,5 +1,1 @@
-I2C) \
-    $(wildcard include/config/I2C_SLAVE) \
-    $(wildcard include/config/I2C_BOARDINFO) \
-    $(wildcard include/config/I2C_MUX) \
-    $(wildcard include/config/
+cmd_drivers/net/can/peak_canfd/modules.order := {   echo drivers/net/can/peak_canfd/peak_pciefd.ko; :; } | awk '!x[$$0]++' - > drivers/net/can/peak_canfd/modules.order

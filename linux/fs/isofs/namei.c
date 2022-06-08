@@ -1,101 +1,151 @@
-LUB) \
-    $(wildcard include/config/SLOB) \
-  include/linux/overflow.h \
-  include/linux/percpu-refcount.h \
-  include/linux/kasan.h \
-    $(wildcard include/config/KASAN_STACK) \
-    $(wildcard include/config/KASAN_VMALLOC) \
-    $(wildcard include/config/KASAN_INLINE) \
-  include/linux/kasan-enabled.h \
-  include/linux/device.h \
-    $(wildcard include/config/GENERIC_MSI_IRQ_DOMAIN) \
-    $(wildcard include/config/GENERIC_MSI_IRQ) \
-    $(wildcard include/config/ENERGY_MODEL) \
-    $(wildcard include/config/PINCTRL) \
-    $(wildcard include/config/DMA_OPS) \
-    $(wildcard include/config/DMA_DECLARE_COHERENT) \
-    $(wildcard include/config/DMA_CMA) \
-    $(wildcard include/config/SWIOTLB) \
-    $(wildcard include/config/ARCH_HAS_SYNC_DMA_FOR_DEVICE) \
-    $(wildcard include/config/ARCH_HAS_SYNC_DMA_FOR_CPU) \
-    $(wildcard include/config/ARCH_HAS_SYNC_DMA_FOR_CPU_ALL) \
-    $(wildcard include/config/DMA_OPS_BYPASS) \
-    $(wildcard include/config/DEVTMPFS) \
-    $(wildcard include/config/SYSFS_DEPRECATED) \
-  include/linux/dev_printk.h \
-  include/linux/ratelimit.h \
-  include/linux/sched.h \
-    $(wildcard include/config/VIRT_CPU_ACCOUNTING_NATIVE) \
-    $(wildcard include/config/SCHED_INFO) \
-    $(wildcard include/config/SCHEDSTATS) \
-    $(wildcard include/config/SCHED_CORE) \
-    $(wildcard include/config/FAIR_GROUP_SCHED) \
-    $(wildcard include/config/RT_GROUP_SCHED) \
-    $(wildcard include/config/RT_MUTEXES) \
-    $(wildcard include/config/UCLAMP_TASK) \
-    $(wildcard include/config/UCLAMP_BUCKETS_COUNT) \
-    $(wildcard include/config/CGROUP_SCHED) \
-    $(wildcard include/config/BLK_DEV_IO_TRACE) \
-    $(wildcard include/config/PSI) \
-    $(wildcard include/config/COMPAT_BRK) \
-    $(wildcard include/config/CGROUPS) \
-    $(wildcard include/config/BLK_CGROUP) \
-    $(wildcard include/config/PAGE_OWNER) \
-    $(wildcard include/config/EVENTFD) \
-    $(wildcard include/config/ARCH_HAS_SCALED_CPUTIME) \
-    $(wildcard include/config/VIRT_CPU_ACCOUNTING_GEN) \
-    $(wildcard include/config/POSIX_CPUTIMERS) \
-    $(wildcard include/config/POSIX_CPU_TIMERS_TASK_WORK) \
-    $(wildcard include/config/KEYS) \
-    $(wildcard include/config/SYSVIPC) \
-    $(wildcard include/config/DETECT_HUNG_TASK) \
-    $(wildcard include/config/IO_URING) \
-    $(wildcard include/config/AUDIT) \
-    $(wildcard include/config/AUDITSYSCALL) \
-    $(wildcard include/config/UBSAN) \
-    $(wildcard include/config/UBSAN_TRAP) \
-    $(wildcard include/config/TASK_XACCT) \
-    $(wildcard include/config/CPUSETS) \
-    $(wildcard include/config/X86_CPU_RESCTRL) \
-    $(wildcard include/config/FUTEX) \
-    $(wildcard include/config/PERF_EVENTS) \
-    $(wildcard include/config/RSEQ) \
-    $(wildcard include/config/TASK_DELAY_ACCT) \
-    $(wildcard include/config/FAULT_INJECTION) \
-    $(wildcard include/config/LATENCYTOP) \
-    $(wildcard include/config/KUNIT) \
-    $(wildcard include/config/FUNCTION_GRAPH_TRACER) \
-    $(wildcard include/config/BCACHE) \
-    $(wildcard include/config/VMAP_STACK) \
-    $(wildcard include/config/SECURITY) \
-    $(wildcard include/config/BPF_SYSCALL) \
-    $(wildcard include/config/GCC_PLUGIN_STACKLEAK) \
-    $(wildcard include/config/X86_MCE) \
-    $(wildcard include/config/KRETPROBES) \
-    $(wildcard include/config/RETHOOK) \
-    $(wildcard include/config/ARCH_HAS_PARANOID_L1D_FLUSH) \
-    $(wildcard include/config/ARCH_TASK_STRUCT_ON_STACK) \
-    $(wildcard include/config/DEBUG_RSEQ) \
-  include/uapi/linux/sched.h \
-  include/linux/pid.h \
-  include/linux/rculist.h \
-    $(wildcard include/config/PROVE_RCU_LIST) \
-  include/linux/sem.h \
-  include/uapi/linux/sem.h \
-  include/linux/ipc.h \
-  include/linux/rhashtable-types.h \
-  include/uapi/linux/ipc.h \
-  arch/x86/include/generated/uapi/asm/ipcbuf.h \
-  include/uapi/asm-generic/ipcbuf.h \
-  arch/x86/include/uapi/asm/sembuf.h \
-  include/linux/shm.h \
-  include/uapi/linux/shm.h \
-  include/uapi/asm-generic/hugetlb_encode.h \
-  arch/x86/include/uapi/asm/shmbuf.h \
-  include/uapi/asm-generic/shmbuf.h \
-  arch/x86/include/asm/shmparam.h \
-  include/linux/plist.h \
-    $(wildcard include/config/DEBUG_PLIST) \
-  include/linux/hrtimer.h \
-    $(wildcard include/config/HIGH_RES_TIMERS) \
-    $(wildcard include/conf
+/* SPDX-License-Identifier: GPL-2.0-or-later */
+/*
+ *  Driver for the Conexant CX23885 PCIe bridge
+ *
+ *  Copyright (c) 2006 Steven Toth <stoth@linuxtv.org>
+ */
+
+#ifndef _CX23885_REG_H_
+#define _CX23885_REG_H_
+
+/*
+Address Map
+0x00000000 -> 0x00009000   TX SRAM  (Fifos)
+0x00010000 -> 0x00013c00   RX SRAM  CMDS + CDT
+
+EACH CMDS struct is 0x80 bytes long
+
+DMAx_PTR1 = 0x03040 address of first cluster
+DMAx_PTR2 = 0x10600 address of the CDT
+DMAx_CNT1 = cluster size in (bytes >> 4) -1
+DMAx_CNT2 = total cdt size for all entries >> 3
+
+Cluster Descriptor entry = 4 DWORDS
+ DWORD 0 -> ptr to cluster
+ DWORD 1 Reserved
+ DWORD 2 Reserved
+ DWORD 3 Reserved
+
+Channel manager Data Structure entry = 20 DWORD
+  0  IntialProgramCounterLow
+  1  IntialProgramCounterHigh
+  2  ClusterDescriptorTableBase
+  3  ClusterDescriptorTableSize
+  4  InstructionQueueBase
+  5  InstructionQueueSize
+...  Reserved
+ 19  Reserved
+*/
+
+/* Risc Instructions */
+#define RISC_CNT_INC		 0x00010000
+#define RISC_CNT_RESET		 0x00030000
+#define RISC_IRQ1		 0x01000000
+#define RISC_IRQ2		 0x02000000
+#define RISC_EOL		 0x04000000
+#define RISC_SOL		 0x08000000
+#define RISC_WRITE		 0x10000000
+#define RISC_SKIP		 0x20000000
+#define RISC_JUMP		 0x70000000
+#define RISC_SYNC		 0x80000000
+#define RISC_RESYNC		 0x80008000
+#define RISC_READ		 0x90000000
+#define RISC_WRITERM		 0xB0000000
+#define RISC_WRITECM		 0xC0000000
+#define RISC_WRITECR		 0xD0000000
+#define RISC_WRITEC		 0x50000000
+#define RISC_READC		 0xA0000000
+
+
+/* Audio and Video Core */
+#define HOST_REG1		0x00000000
+#define HOST_REG2		0x00000001
+#define HOST_REG3		0x00000002
+
+/* Chip Configuration Registers */
+#define CHIP_CTRL		0x00000100
+#define AFE_CTRL		0x00000104
+#define VID_PLL_INT_POST	0x00000108
+#define VID_PLL_FRAC		0x0000010C
+#define AUX_PLL_INT_POST	0x00000110
+#define AUX_PLL_FRAC		0x00000114
+#define SYS_PLL_INT_POST	0x00000118
+#define SYS_PLL_FRAC		0x0000011C
+#define PIN_CTRL		0x00000120
+#define AUD_IO_CTRL		0x00000124
+#define AUD_LOCK1		0x00000128
+#define AUD_LOCK2		0x0000012C
+#define POWER_CTRL		0x00000130
+#define AFE_DIAG_CTRL1		0x00000134
+#define AFE_DIAG_CTRL3		0x0000013C
+#define PLL_DIAG_CTRL		0x00000140
+#define AFE_CLK_OUT_CTRL	0x00000144
+#define DLL1_DIAG_CTRL		0x0000015C
+
+/* GPIO[23:19] Output Enable */
+#define GPIO2_OUT_EN_REG	0x00000160
+/* GPIO[23:19] Data Registers */
+#define GPIO2			0x00000164
+
+#define IFADC_CTRL		0x00000180
+
+/* Infrared Remote Registers */
+#define IR_CNTRL_REG	0x00000200
+#define IR_TXCLK_REG	0x00000204
+#define IR_RXCLK_REG	0x00000208
+#define IR_CDUTY_REG	0x0000020C
+#define IR_STAT_REG	0x00000210
+#define IR_IRQEN_REG	0x00000214
+#define IR_FILTR_REG	0x00000218
+#define IR_FIFO_REG	0x0000023C
+
+/* Video Decoder Registers */
+#define MODE_CTRL		0x00000400
+#define OUT_CTRL1		0x00000404
+#define OUT_CTRL2		0x00000408
+#define GEN_STAT		0x0000040C
+#define INT_STAT_MASK		0x00000410
+#define LUMA_CTRL		0x00000414
+#define HSCALE_CTRL		0x00000418
+#define VSCALE_CTRL		0x0000041C
+#define CHROMA_CTRL		0x00000420
+#define VBI_LINE_CTRL1		0x00000424
+#define VBI_LINE_CTRL2		0x00000428
+#define VBI_LINE_CTRL3		0x0000042C
+#define VBI_LINE_CTRL4		0x00000430
+#define VBI_LINE_CTRL5		0x00000434
+#define VBI_FC_CFG		0x00000438
+#define VBI_MISC_CFG1		0x0000043C
+#define VBI_MISC_CFG2		0x00000440
+#define VBI_PAY1		0x00000444
+#define VBI_PAY2		0x00000448
+#define VBI_CUST1_CFG1		0x0000044C
+#define VBI_CUST1_CFG2		0x00000450
+#define VBI_CUST1_CFG3		0x00000454
+#define VBI_CUST2_CFG1		0x00000458
+#define VBI_CUST2_CFG2		0x0000045C
+#define VBI_CUST2_CFG3		0x00000460
+#define VBI_CUST3_CFG1		0x00000464
+#define VBI_CUST3_CFG2		0x00000468
+#define VBI_CUST3_CFG3		0x0000046C
+#define HORIZ_TIM_CTRL		0x00000470
+#define VERT_TIM_CTRL		0x00000474
+#define SRC_COMB_CFG		0x00000478
+#define CHROMA_VBIOFF_CFG	0x0000047C
+#define FIELD_COUNT		0x00000480
+#define MISC_TIM_CTRL		0x00000484
+#define DFE_CTRL1		0x00000488
+#define DFE_CTRL2		0x0000048C
+#define DFE_CTRL3		0x00000490
+#define PLL_CTRL		0x00000494
+#define HTL_CTRL		0x00000498
+#define COMB_CTRL		0x0000049C
+#define CRUSH_CTRL		0x000004A0
+#define SOFT_RST_CTRL		0x000004A4
+#define CX885_VERSION		0x000004B4
+#define VBI_PASS_CTRL		0x000004BC
+
+/* Audio Decoder Registers */
+/* 8051 Configuration */
+#define DL_CTL		0x00000800
+#define STD_DET_STATUS

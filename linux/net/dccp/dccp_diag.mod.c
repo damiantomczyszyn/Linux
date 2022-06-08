@@ -1,27 +1,21 @@
-_lock_class(lock, 0);
+uted by a highprio stopper thread
+ * and performs thread migration by bumping thread off CPU then
+ * 'pushing' onto another runqueue.
+ */
+static int migration_cpu_stop(void *data)
+{
+	struct migration_arg *arg = data;
+	struct set_affinity_pending *pending = arg->pending;
+	struct task_struct *p = arg->task;
+	struct rq *rq = this_rq();
+	bool complete = false;
+	struct rq_flags rf;
 
-		/*
-		 * If look_up_lock_class() failed to find a class, we're trying
-		 * to test if we hold a lock that has never yet been acquired.
-		 * Clearly if the lock hasn't been acquired _ever_, we're not
-		 * holding it either, so report failure.
-		 */
-		if (!class)
-			return 0;
-
-		/*
-		 * References, but not a lock we're actually ref-counting?
-		 * State got messed up, follow the sites that change ->references
-		 * and try to make sense of it.
-		 */
-		if (DEBUG_LOCKS_WARN_ON(!hlock->nest_lock))
-			return 0;
-
-		if (hlock->class_idx == class - lock_classes)
-			return 1;
-	}
-
-	return 0;
-}
-
-/* @depth
+	/*
+	 * The original target CPU might have gone down and we might
+	 * be on another CPU but it doesn't matter.
+	 */
+	local_irq_save(rf.flags);
+	/*
+	 * We need to explicitly wake pending tasks before running
+	 * __migrate_task() such that we 

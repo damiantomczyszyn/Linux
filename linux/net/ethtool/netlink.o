@@ -1,764 +1,477 @@
-/*
-	 * I took it apart and put it back together again, except now I have
-	 * these 'spare' parts.. where shall I put them.
-	 */
-	if (DEBUG_LOCKS_WARN_ON(curr->lockdep_depth != depth))
-		return 0;
+nable(dev, p->modulation);
+	o->modulation = p->modulation;
 
-	return 1;
-}
+	if (p->modulation) {
+		p->carrier_freq = rxclk_rx_s_carrier(dev, p->carrier_freq,
+						     &rxclk_divider);
 
-/*
- * Remove the lock from the list of currently held locks - this gets
- * called on mutex_unlock()/spin_unlock*() (or on a failed
- * mutex_lock_interruptible()).
- */
-static int
-__lock_release(struct lockdep_map *lock, unsigned long ip)
-{
-	struct task_struct *curr = current;
-	unsigned int depth, merged = 1;
-	struct held_lock *hlock;
-	int i;
+		o->carrier_freq = p->carrier_freq;
 
-	if (unlikely(!debug_locks))
-		return 0;
+		o->duty_cycle = p->duty_cycle = 50;
 
-	depth = curr->lockdep_depth;
-	/*
-	 * So we're all set to release this lock.. wait what lock? We don't
-	 * own any locks, you've been drinking again?
-	 */
-	if (depth <= 0) {
-		print_unlock_imbalance_bug(curr, lock, ip);
-		return 0;
+		control_rx_s_carrier_window(dev, p->carrier_freq,
+					    &p->carrier_range_lower,
+					    &p->carrier_range_upper);
+		o->carrier_range_lower = p->carrier_range_lower;
+		o->carrier_range_upper = p->carrier_range_upper;
+
+		p->max_pulse_width =
+			(u32) pulse_width_count_to_ns(FIFO_RXTX, rxclk_divider);
+	} else {
+		p->max_pulse_width =
+			    rxclk_rx_s_max_pulse_width(dev, p->max_pulse_width,
+						       &rxclk_divider);
+	}
+	o->max_pulse_width = p->max_pulse_width;
+	atomic_set(&state->rxclk_divider, rxclk_divider);
+
+	p->noise_filter_min_width =
+			  filter_rx_s_min_width(dev, p->noise_filter_min_width);
+	o->noise_filter_min_width = p->noise_filter_min_width;
+
+	p->resolution = clock_divider_to_resolution(rxclk_divider);
+	o->resolution = p->resolution;
+
+	/* FIXME - make this dependent on resolution for better performance */
+	control_rx_irq_watermark(dev, RX_FIFO_HALF_FULL);
+
+	control_rx_s_edge_detection(dev, CNTRL_EDG_BOTH);
+
+	o->invert_level = p->invert_level;
+	atomic_set(&state->rx_invert, p->invert_level);
+
+	o->interrupt_enable = p->interrupt_enable;
+	o->enable = p->enable;
+	if (p->enable) {
+		unsigned long flags;
+
+		spin_lock_irqsave(&state->rx_kfifo_lock, flags);
+		kfifo_reset(&state->rx_kfifo);
+		/* reset tx_fifo too if there is one... */
+		spin_unlock_irqrestore(&state->rx_kfifo_lock, flags);
+		if (p->interrupt_enable)
+			irqenable_rx(dev, IRQEN_RSE | IRQEN_RTE | IRQEN_ROE);
+		control_rx_enable(dev, p->enable);
 	}
 
-	/*
-	 * Check whether the lock exists in the current stack
-	 * of held locks:
-	 */
-	hlock = find_held_lock(curr, lock, depth, &i);
-	if (!hlock) {
-		print_unlock_imbalance_bug(curr, lock, ip);
-		return 0;
-	}
-
-	if (hlock->instance == lock)
-		lock_release_holdtime(hlock);
-
-	WARN(hlock->pin_count, "releasing a pinned lock\n");
-
-	if (hlock->references) {
-		hlock->references--;
-		if (hlock->references) {
-			/*
-			 * We had, and after removing one, still have
-			 * references, the current lock stack is still
-			 * valid. We're done!
-			 */
-			return 1;
-		}
-	}
-
-	/*
-	 * We have the right lock to unlock, 'hlock' points to it.
-	 * Now we remove it from the stack, and add back the other
-	 * entries (if any), recalculating the hash along the way:
-	 */
-
-	curr->lockdep_depth = i;
-	curr->curr_chain_key = hlock->prev_chain_key;
-
-	/*
-	 * The most likely case is when the unlock is on the innermost
-	 * lock. In this case, we are done!
-	 */
-	if (i == depth-1)
-		return 1;
-
-	if (reacquire_held_locks(curr, depth, i + 1, &merged))
-		return 0;
-
-	/*
-	 * We had N bottles of beer on the wall, we drank one, but now
-	 * there's not N-1 bottles of beer left on the wall...
-	 * Pouring two of the bottles together is acceptable.
-	 */
-	DEBUG_LOCKS_WARN_ON(curr->lockdep_depth != depth - merged);
-
-	/*
-	 * Since reacquire_held_locks() would have called check_chain_key()
-	 * indirectly via __lock_acquire(), we don't need to do it again
-	 * on return.
-	 */
+	mutex_unlock(&state->rx_params_lock);
 	return 0;
 }
 
-static __always_inline
-int __lock_is_held(const struct lockdep_map *lock, int read)
+/* Transmitter */
+static int cx23888_ir_tx_write(struct v4l2_subdev *sd, u8 *buf, size_t count,
+			       ssize_t *num)
 {
-	struct task_struct *curr = current;
-	int i;
-
-	for (i = 0; i < curr->lockdep_depth; i++) {
-		struct held_lock *hlock = curr->held_locks + i;
-
-		if (match_held_lock(hlock, lock)) {
-			if (read == -1 || !!hlock->read == read)
-				return LOCK_STATE_HELD;
-
-			return LOCK_STATE_NOT_HELD;
-		}
-	}
-
-	return LOCK_STATE_NOT_HELD;
+	struct cx23888_ir_state *state = to_state(sd);
+	struct cx23885_dev *dev = state->dev;
+	/* For now enable the Tx FIFO Service interrupt & pretend we did work */
+	irqenable_tx(dev, IRQEN_TSE);
+	*num = count;
+	return 0;
 }
 
-static struct pin_cookie __lock_pin_lock(struct lockdep_map *lock)
+static int cx23888_ir_tx_g_parameters(struct v4l2_subdev *sd,
+				      struct v4l2_subdev_ir_parameters *p)
 {
-	struct pin_cookie cookie = NIL_COOKIE;
-	struct task_struct *curr = current;
-	int i;
-
-	if (unlikely(!debug_locks))
-		return cookie;
-
-	for (i = 0; i < curr->lockdep_depth; i++) {
-		struct held_lock *hlock = curr->held_locks + i;
-
-		if (match_held_lock(hlock, lock)) {
-			/*
-			 * Grab 16bits of randomness; this is sufficient to not
-			 * be guessable and still allows some pin nesting in
-			 * our u32 pin_count.
-			 */
-			cookie.val = 1 + (prandom_u32() >> 16);
-			hlock->pin_count += cookie.val;
-			return cookie;
-		}
-	}
-
-	WARN(1, "pinning an unheld lock\n");
-	return cookie;
+	struct cx23888_ir_state *state = to_state(sd);
+	mutex_lock(&state->tx_params_lock);
+	memcpy(p, &state->tx_params, sizeof(struct v4l2_subdev_ir_parameters));
+	mutex_unlock(&state->tx_params_lock);
+	return 0;
 }
 
-static void __lock_repin_lock(struct lockdep_map *lock, struct pin_cookie cookie)
+static int cx23888_ir_tx_shutdown(struct v4l2_subdev *sd)
 {
-	struct task_struct *curr = current;
-	int i;
+	struct cx23888_ir_state *state = to_state(sd);
+	struct cx23885_dev *dev = state->dev;
 
-	if (unlikely(!debug_locks))
-		return;
+	mutex_lock(&state->tx_params_lock);
 
-	for (i = 0; i < curr->lockdep_depth; i++) {
-		struct held_lock *hlock = curr->held_locks + i;
+	/* Disable or slow down all IR Tx circuits and counters */
+	irqenable_tx(dev, 0);
+	control_tx_enable(dev, false);
+	control_tx_modulation_enable(dev, false);
+	cx23888_ir_write4(dev, CX23888_IR_TXCLK_REG, TXCLK_TCD);
 
-		if (match_held_lock(hlock, lock)) {
-			hlock->pin_count += cookie.val;
-			return;
-		}
-	}
+	state->tx_params.shutdown = true;
 
-	WARN(1, "pinning an unheld lock\n");
+	mutex_unlock(&state->tx_params_lock);
+	return 0;
 }
 
-static void __lock_unpin_lock(struct lockdep_map *lock, struct pin_cookie cookie)
+static int cx23888_ir_tx_s_parameters(struct v4l2_subdev *sd,
+				      struct v4l2_subdev_ir_parameters *p)
 {
-	struct task_struct *curr = current;
-	int i;
+	struct cx23888_ir_state *state = to_state(sd);
+	struct cx23885_dev *dev = state->dev;
+	struct v4l2_subdev_ir_parameters *o = &state->tx_params;
+	u16 txclk_divider;
 
-	if (unlikely(!debug_locks))
-		return;
+	if (p->shutdown)
+		return cx23888_ir_tx_shutdown(sd);
 
-	for (i = 0; i < curr->lockdep_depth; i++) {
-		struct held_lock *hlock = curr->held_locks + i;
+	if (p->mode != V4L2_SUBDEV_IR_MODE_PULSE_WIDTH)
+		return -ENOSYS;
 
-		if (match_held_lock(hlock, lock)) {
-			if (WARN(!hlock->pin_count, "unpinning an unpinned lock\n"))
-				return;
+	mutex_lock(&state->tx_params_lock);
 
-			hlock->pin_count -= cookie.val;
+	o->shutdown = p->shutdown;
 
-			if (WARN((int)hlock->pin_count < 0, "pin count corrupted\n"))
-				hlock->pin_count = 0;
+	o->mode = p->mode = V4L2_SUBDEV_IR_MODE_PULSE_WIDTH;
 
-			return;
-		}
-	}
+	o->bytes_per_data_element = p->bytes_per_data_element
+				  = sizeof(union cx23888_ir_fifo_rec);
 
-	WARN(1, "unpinning an unheld lock\n");
-}
+	/* Before we tweak the hardware, we have to disable the transmitter */
+	irqenable_tx(dev, 0);
+	control_tx_enable(dev, false);
 
-/*
- * Check whether we follow the irq-flags state precisely:
- */
-static noinstr void check_flags(unsigned long flags)
-{
-#if defined(CONFIG_PROVE_LOCKING) && defined(CONFIG_DEBUG_LOCKDEP)
-	if (!debug_locks)
-		return;
+	control_tx_modulation_enable(dev, p->modulation);
+	o->modulation = p->modulation;
 
-	/* Get the warning out..  */
-	instrumentation_begin();
+	if (p->modulation) {
+		p->carrier_freq = txclk_tx_s_carrier(dev, p->carrier_freq,
+						     &txclk_divider);
+		o->carrier_freq = p->carrier_freq;
 
-	if (irqs_disabled_flags(flags)) {
-		if (DEBUG_LOCKS_WARN_ON(lockdep_hardirqs_enabled())) {
-			printk("possible reason: unannotated irqs-off.\n");
-		}
+		p->duty_cycle = cduty_tx_s_duty_cycle(dev, p->duty_cycle);
+		o->duty_cycle = p->duty_cycle;
+
+		p->max_pulse_width =
+			(u32) pulse_width_count_to_ns(FIFO_RXTX, txclk_divider);
 	} else {
-		if (DEBUG_LOCKS_WARN_ON(!lockdep_hardirqs_enabled())) {
-			printk("possible reason: unannotated irqs-on.\n");
-		}
+		p->max_pulse_width =
+			    txclk_tx_s_max_pulse_width(dev, p->max_pulse_width,
+						       &txclk_divider);
+	}
+	o->max_pulse_width = p->max_pulse_width;
+	atomic_set(&state->txclk_divider, txclk_divider);
+
+	p->resolution = clock_divider_to_resolution(txclk_divider);
+	o->resolution = p->resolution;
+
+	/* FIXME - make this dependent on resolution for better performance */
+	control_tx_irq_watermark(dev, TX_FIFO_HALF_EMPTY);
+
+	control_tx_polarity_invert(dev, p->invert_carrier_sense);
+	o->invert_carrier_sense = p->invert_carrier_sense;
+
+	control_tx_level_invert(dev, p->invert_level);
+	o->invert_level = p->invert_level;
+
+	o->interrupt_enable = p->interrupt_enable;
+	o->enable = p->enable;
+	if (p->enable) {
+		if (p->interrupt_enable)
+			irqenable_tx(dev, IRQEN_TSE);
+		control_tx_enable(dev, p->enable);
 	}
 
-#ifndef CONFIG_PREEMPT_RT
-	/*
-	 * We dont accurately track softirq state in e.g.
-	 * hardirq contexts (such as on 4KSTACKS), so only
-	 * check if not in hardirq contexts:
-	 */
-	if (!hardirq_count()) {
-		if (softirq_count()) {
-			/* like the above, but with softirqs */
-			DEBUG_LOCKS_WARN_ON(current->softirqs_enabled);
-		} else {
-			/* lick the above, does it taste good? */
-			DEBUG_LOCKS_WARN_ON(!current->softirqs_enabled);
-		}
-	}
-#endif
-
-	if (!debug_locks)
-		print_irqtrace_events(current);
-
-	instrumentation_end();
-#endif
+	mutex_unlock(&state->tx_params_lock);
+	return 0;
 }
 
-void lock_set_class(struct lockdep_map *lock, const char *name,
-		    struct lock_class_key *key, unsigned int subclass,
-		    unsigned long ip)
-{
-	unsigned long flags;
-
-	if (unlikely(!lockdep_enabled()))
-		return;
-
-	raw_local_irq_save(flags);
-	lockdep_recursion_inc();
-	check_flags(flags);
-	if (__lock_set_class(lock, name, key, subclass, ip))
-		check_chain_key(current);
-	lockdep_recursion_finish();
-	raw_local_irq_restore(flags);
-}
-EXPORT_SYMBOL_GPL(lock_set_class);
-
-void lock_downgrade(struct lockdep_map *lock, unsigned long ip)
-{
-	unsigned long flags;
-
-	if (unlikely(!lockdep_enabled()))
-		return;
-
-	raw_local_irq_save(flags);
-	lockdep_recursion_inc();
-	check_flags(flags);
-	if (__lock_downgrade(lock, ip))
-		check_chain_key(current);
-	lockdep_recursion_finish();
-	raw_local_irq_restore(flags);
-}
-EXPORT_SYMBOL_GPL(lock_downgrade);
-
-/* NMI context !!! */
-static void verify_lock_unused(struct lockdep_map *lock, struct held_lock *hlock, int subclass)
-{
-#ifdef CONFIG_PROVE_LOCKING
-	struct lock_class *class = look_up_lock_class(lock, subclass);
-	unsigned long mask = LOCKF_USED;
-
-	/* if it doesn't have a class (yet), it certainly hasn't been used yet */
-	if (!class)
-		return;
-
-	/*
-	 * READ locks only conflict with USED, such that if we only ever use
-	 * READ locks, there is no deadlock possible -- RCU.
-	 */
-	if (!hlock->read)
-		mask |= LOCKF_USED_READ;
-
-	if (!(class->usage_mask & mask))
-		return;
-
-	hlock->class_idx = class - lock_classes;
-
-	print_usage_bug(current, hlock, LOCK_USED, LOCK_USAGE_STATES);
-#endif
-}
-
-static bool lockdep_nmi(void)
-{
-	if (raw_cpu_read(lockdep_recursion))
-		return false;
-
-	if (!in_nmi())
-		return false;
-
-	return true;
-}
 
 /*
- * read_lock() is recursive if:
- * 1. We force lockdep think this way in selftests or
- * 2. The implementation is not queued read/write lock or
- * 3. The locker is at an in_interrupt() context.
+ * V4L2 Subdevice Core Ops
  */
-bool read_lock_is_recursive(void)
+static int cx23888_ir_log_status(struct v4l2_subdev *sd)
 {
-	return force_read_lock_recursive ||
-	       !IS_ENABLED(CONFIG_QUEUED_RWLOCKS) ||
-	       in_interrupt();
-}
-EXPORT_SYMBOL_GPL(read_lock_is_recursive);
+	struct cx23888_ir_state *state = to_state(sd);
+	struct cx23885_dev *dev = state->dev;
+	char *s;
+	int i, j;
 
-/*
- * We are not always called with irqs disabled - do that here,
- * and also avoid lockdep recursion:
- */
-void lock_acquire(struct lockdep_map *lock, unsigned int subclass,
-			  int trylock, int read, int check,
-			  struct lockdep_map *nest_lock, unsigned long ip)
-{
-	unsigned long flags;
+	u32 cntrl = cx23888_ir_read4(dev, CX23888_IR_CNTRL_REG);
+	u32 txclk = cx23888_ir_read4(dev, CX23888_IR_TXCLK_REG) & TXCLK_TCD;
+	u32 rxclk = cx23888_ir_read4(dev, CX23888_IR_RXCLK_REG) & RXCLK_RCD;
+	u32 cduty = cx23888_ir_read4(dev, CX23888_IR_CDUTY_REG) & CDUTY_CDC;
+	u32 stats = cx23888_ir_read4(dev, CX23888_IR_STATS_REG);
+	u32 irqen = cx23888_ir_read4(dev, CX23888_IR_IRQEN_REG);
+	u32 filtr = cx23888_ir_read4(dev, CX23888_IR_FILTR_REG) & FILTR_LPF;
 
-	trace_lock_acquire(lock, subclass, trylock, read, check, nest_lock, ip);
-
-	if (!debug_locks)
-		return;
-
-	if (unlikely(!lockdep_enabled())) {
-		/* XXX allow trylock from NMI ?!? */
-		if (lockdep_nmi() && !trylock) {
-			struct held_lock hlock;
-
-			hlock.acquire_ip = ip;
-			hlock.instance = lock;
-			hlock.nest_lock = nest_lock;
-			hlock.irq_context = 2; // XXX
-			hlock.trylock = trylock;
-			hlock.read = read;
-			hlock.check = check;
-			hlock.hardirqs_off = true;
-			hlock.references = 0;
-
-			verify_lock_unused(lock, &hlock, subclass);
+	v4l2_info(sd, "IR Receiver:\n");
+	v4l2_info(sd, "\tEnabled:                           %s\n",
+		  cntrl & CNTRL_RXE ? "yes" : "no");
+	v4l2_info(sd, "\tDemodulation from a carrier:       %s\n",
+		  cntrl & CNTRL_DMD ? "enabled" : "disabled");
+	v4l2_info(sd, "\tFIFO:                              %s\n",
+		  cntrl & CNTRL_RFE ? "enabled" : "disabled");
+	switch (cntrl & CNTRL_EDG) {
+	case CNTRL_EDG_NONE:
+		s = "disabled";
+		break;
+	case CNTRL_EDG_FALL:
+		s = "falling edge";
+		break;
+	case CNTRL_EDG_RISE:
+		s = "rising edge";
+		break;
+	case CNTRL_EDG_BOTH:
+		s = "rising & falling edges";
+		break;
+	default:
+		s = "??? edge";
+		break;
+	}
+	v4l2_info(sd, "\tPulse timers' start/stop trigger:  %s\n", s);
+	v4l2_info(sd, "\tFIFO data on pulse timer overflow: %s\n",
+		  cntrl & CNTRL_R ? "not loaded" : "overflow marker");
+	v4l2_info(sd, "\tFIFO interrupt watermark:          %s\n",
+		  cntrl & CNTRL_RIC ? "not empty" : "half full or greater");
+	v4l2_info(sd, "\tLoopback mode:                     %s\n",
+		  cntrl & CNTRL_LBM ? "loopback active" : "normal receive");
+	if (cntrl & CNTRL_DMD) {
+		v4l2_info(sd, "\tExpected carrier (16 clocks):      %u Hz\n",
+			  clock_divider_to_carrier_freq(rxclk));
+		switch (cntrl & CNTRL_WIN) {
+		case CNTRL_WIN_3_3:
+			i = 3;
+			j = 3;
+			break;
+		case CNTRL_WIN_4_3:
+			i = 4;
+			j = 3;
+			break;
+		case CNTRL_WIN_3_4:
+			i = 3;
+			j = 4;
+			break;
+		case CNTRL_WIN_4_4:
+			i = 4;
+			j = 4;
+			break;
+		default:
+			i = 0;
+			j = 0;
+			break;
 		}
-		return;
+		v4l2_info(sd, "\tNext carrier edge window:	    16 clocks -%1d/+%1d, %u to %u Hz\n",
+			  i, j,
+			  clock_divider_to_freq(rxclk, 16 + j),
+			  clock_divider_to_freq(rxclk, 16 - i));
+	}
+	v4l2_info(sd, "\tMax measurable pulse width:        %u us, %llu ns\n",
+		  pulse_width_count_to_us(FIFO_RXTX, rxclk),
+		  pulse_width_count_to_ns(FIFO_RXTX, rxclk));
+	v4l2_info(sd, "\tLow pass filter:                   %s\n",
+		  filtr ? "enabled" : "disabled");
+	if (filtr)
+		v4l2_info(sd, "\tMin acceptable pulse width (LPF):  %u us, %u ns\n",
+			  lpf_count_to_us(filtr),
+			  lpf_count_to_ns(filtr));
+	v4l2_info(sd, "\tPulse width timer timed-out:       %s\n",
+		  stats & STATS_RTO ? "yes" : "no");
+	v4l2_info(sd, "\tPulse width timer time-out intr:   %s\n",
+		  irqen & IRQEN_RTE ? "enabled" : "disabled");
+	v4l2_info(sd, "\tFIFO overrun:                      %s\n",
+		  stats & STATS_ROR ? "yes" : "no");
+	v4l2_info(sd, "\tFIFO overrun interrupt:            %s\n",
+		  irqen & IRQEN_ROE ? "enabled" : "disabled");
+	v4l2_info(sd, "\tBusy:                              %s\n",
+		  stats & STATS_RBY ? "yes" : "no");
+	v4l2_info(sd, "\tFIFO service requested:            %s\n",
+		  stats & STATS_RSR ? "yes" : "no");
+	v4l2_info(sd, "\tFIFO service request interrupt:    %s\n",
+		  irqen & IRQEN_RSE ? "enabled" : "disabled");
+
+	v4l2_info(sd, "IR Transmitter:\n");
+	v4l2_info(sd, "\tEnabled:                           %s\n",
+		  cntrl & CNTRL_TXE ? "yes" : "no");
+	v4l2_info(sd, "\tModulation onto a carrier:         %s\n",
+		  cntrl & CNTRL_MOD ? "enabled" : "disabled");
+	v4l2_info(sd, "\tFIFO:                              %s\n",
+		  cntrl & CNTRL_TFE ? "enabled" : "disabled");
+	v4l2_info(sd, "\tFIFO interrupt watermark:          %s\n",
+		  cntrl & CNTRL_TIC ? "not empty" : "half full or less");
+	v4l2_info(sd, "\tOutput pin level inversion         %s\n",
+		  cntrl & CNTRL_IVO ? "yes" : "no");
+	v4l2_info(sd, "\tCarrier polarity:                  %s\n",
+		  cntrl & CNTRL_CPL ? "space:burst mark:noburst"
+				    : "space:noburst mark:burst");
+	if (cntrl & CNTRL_MOD) {
+		v4l2_info(sd, "\tCarrier (16 clocks):               %u Hz\n",
+			  clock_divider_to_carrier_freq(txclk));
+		v4l2_info(sd, "\tCarrier duty cycle:                %2u/16\n",
+			  cduty + 1);
+	}
+	v4l2_info(sd, "\tMax pulse width:                   %u us, %llu ns\n",
+		  pulse_width_count_to_us(FIFO_RXTX, txclk),
+		  pulse_width_count_to_ns(FIFO_RXTX, txclk));
+	v4l2_info(sd, "\tBusy:                              %s\n",
+		  stats & STATS_TBY ? "yes" : "no");
+	v4l2_info(sd, "\tFIFO service requested:            %s\n",
+		  stats & STATS_TSR ? "yes" : "no");
+	v4l2_info(sd, "\tFIFO service request interrupt:    %s\n",
+		  irqen & IRQEN_TSE ? "enabled" : "disabled");
+
+	return 0;
+}
+
+#ifdef CONFIG_VIDEO_ADV_DEBUG
+static int cx23888_ir_g_register(struct v4l2_subdev *sd,
+				 struct v4l2_dbg_register *reg)
+{
+	struct cx23888_ir_state *state = to_state(sd);
+	u32 addr = CX23888_IR_REG_BASE + (u32) reg->reg;
+
+	if ((addr & 0x3) != 0)
+		return -EINVAL;
+	if (addr < CX23888_IR_CNTRL_REG || addr > CX23888_IR_LEARN_REG)
+		return -EINVAL;
+	reg->size = 4;
+	reg->val = cx23888_ir_read4(state->dev, addr);
+	return 0;
+}
+
+static int cx23888_ir_s_register(struct v4l2_subdev *sd,
+				 const struct v4l2_dbg_register *reg)
+{
+	struct cx23888_ir_state *state = to_state(sd);
+	u32 addr = CX23888_IR_REG_BASE + (u32) reg->reg;
+
+	if ((addr & 0x3) != 0)
+		return -EINVAL;
+	if (addr < CX23888_IR_CNTRL_REG || addr > CX23888_IR_LEARN_REG)
+		return -EINVAL;
+	cx23888_ir_write4(state->dev, addr, reg->val);
+	return 0;
+}
+#endif
+
+static const struct v4l2_subdev_core_ops cx23888_ir_core_ops = {
+	.log_status = cx23888_ir_log_status,
+#ifdef CONFIG_VIDEO_ADV_DEBUG
+	.g_register = cx23888_ir_g_register,
+	.s_register = cx23888_ir_s_register,
+#endif
+	.interrupt_service_routine = cx23888_ir_irq_handler,
+};
+
+static const struct v4l2_subdev_ir_ops cx23888_ir_ir_ops = {
+	.rx_read = cx23888_ir_rx_read,
+	.rx_g_parameters = cx23888_ir_rx_g_parameters,
+	.rx_s_parameters = cx23888_ir_rx_s_parameters,
+
+	.tx_write = cx23888_ir_tx_write,
+	.tx_g_parameters = cx23888_ir_tx_g_parameters,
+	.tx_s_parameters = cx23888_ir_tx_s_parameters,
+};
+
+static const struct v4l2_subdev_ops cx23888_ir_controller_ops = {
+	.core = &cx23888_ir_core_ops,
+	.ir = &cx23888_ir_ir_ops,
+};
+
+static const struct v4l2_subdev_ir_parameters default_rx_params = {
+	.bytes_per_data_element = sizeof(union cx23888_ir_fifo_rec),
+	.mode = V4L2_SUBDEV_IR_MODE_PULSE_WIDTH,
+
+	.enable = false,
+	.interrupt_enable = false,
+	.shutdown = true,
+
+	.modulation = true,
+	.carrier_freq = 36000, /* 36 kHz - RC-5, RC-6, and RC-6A carrier */
+
+	/* RC-5:    666,667 ns = 1/36 kHz * 32 cycles * 1 mark * 0.75 */
+	/* RC-6A:   333,333 ns = 1/36 kHz * 16 cycles * 1 mark * 0.75 */
+	.noise_filter_min_width = 333333, /* ns */
+	.carrier_range_lower = 35000,
+	.carrier_range_upper = 37000,
+	.invert_level = false,
+};
+
+static const struct v4l2_subdev_ir_parameters default_tx_params = {
+	.bytes_per_data_element = sizeof(union cx23888_ir_fifo_rec),
+	.mode = V4L2_SUBDEV_IR_MODE_PULSE_WIDTH,
+
+	.enable = false,
+	.interrupt_enable = false,
+	.shutdown = true,
+
+	.modulation = true,
+	.carrier_freq = 36000, /* 36 kHz - RC-5 carrier */
+	.duty_cycle = 25,      /* 25 %   - RC-5 carrier */
+	.invert_level = false,
+	.invert_carrier_sense = false,
+};
+
+int cx23888_ir_probe(struct cx23885_dev *dev)
+{
+	struct cx23888_ir_state *state;
+	struct v4l2_subdev *sd;
+	struct v4l2_subdev_ir_parameters default_params;
+	int ret;
+
+	state = kzalloc(sizeof(struct cx23888_ir_state), GFP_KERNEL);
+	if (state == NULL)
+		return -ENOMEM;
+
+	spin_lock_init(&state->rx_kfifo_lock);
+	if (kfifo_alloc(&state->rx_kfifo, CX23888_IR_RX_KFIFO_SIZE,
+			GFP_KERNEL)) {
+		kfree(state);
+		return -ENOMEM;
 	}
 
-	raw_local_irq_save(flags);
-	check_flags(flags);
+	state->dev = dev;
+	sd = &state->sd;
 
-	lockdep_recursion_inc();
-	__lock_acquire(lock, subclass, trylock, read, check,
-		       irqs_disabled_flags(flags), nest_lock, ip, 0, 0);
-	lockdep_recursion_finish();
-	raw_local_irq_restore(flags);
-}
-EXPORT_SYMBOL_GPL(lock_acquire);
+	v4l2_subdev_init(sd, &cx23888_ir_controller_ops);
+	v4l2_set_subdevdata(sd, state);
+	/* FIXME - fix the formatting of dev->v4l2_dev.name and use it */
+	snprintf(sd->name, sizeof(sd->name), "%s/888-ir", dev->name);
+	sd->grp_id = CX23885_HW_888_IR;
 
-void lock_release(struct lockdep_map *lock, unsigned long ip)
-{
-	unsigned long flags;
+	ret = v4l2_device_register_subdev(&dev->v4l2_dev, sd);
+	if (ret == 0) {
+		/*
+		 * Ensure no interrupts arrive from '888 specific conditions,
+		 * since we ignore them in this driver to have commonality with
+		 * similar IR controller cores.
+		 */
+		cx23888_ir_write4(dev, CX23888_IR_IRQEN_REG, 0);
 
-	trace_lock_release(lock, ip);
+		mutex_init(&state->rx_params_lock);
+		default_params = default_rx_params;
+		v4l2_subdev_call(sd, ir, rx_s_parameters, &default_params);
 
-	if (unlikely(!lockdep_enabled()))
-		return;
-
-	raw_local_irq_save(flags);
-	check_flags(flags);
-
-	lockdep_recursion_inc();
-	if (__lock_release(lock, ip))
-		check_chain_key(current);
-	lockdep_recursion_finish();
-	raw_local_irq_restore(flags);
-}
-EXPORT_SYMBOL_GPL(lock_release);
-
-noinstr int lock_is_held_type(const struct lockdep_map *lock, int read)
-{
-	unsigned long flags;
-	int ret = LOCK_STATE_NOT_HELD;
-
-	/*
-	 * Avoid false negative lockdep_assert_held() and
-	 * lockdep_assert_not_held().
-	 */
-	if (unlikely(!lockdep_enabled()))
-		return LOCK_STATE_UNKNOWN;
-
-	raw_local_irq_save(flags);
-	check_flags(flags);
-
-	lockdep_recursion_inc();
-	ret = __lock_is_held(lock, read);
-	lockdep_recursion_finish();
-	raw_local_irq_restore(flags);
-
+		mutex_init(&state->tx_params_lock);
+		default_params = default_tx_params;
+		v4l2_subdev_call(sd, ir, tx_s_parameters, &default_params);
+	} else {
+		kfifo_free(&state->rx_kfifo);
+	}
 	return ret;
 }
-EXPORT_SYMBOL_GPL(lock_is_held_type);
-NOKPROBE_SYMBOL(lock_is_held_type);
 
-struct pin_cookie lock_pin_lock(struct lockdep_map *lock)
+int cx23888_ir_remove(struct cx23885_dev *dev)
 {
-	struct pin_cookie cookie = NIL_COOKIE;
-	unsigned long flags;
+	struct v4l2_subdev *sd;
+	struct cx23888_ir_state *state;
 
-	if (unlikely(!lockdep_enabled()))
-		return cookie;
+	sd = cx23885_find_hw(dev, CX23885_HW_888_IR);
+	if (sd == NULL)
+		return -ENODEV;
 
-	raw_local_irq_save(flags);
-	check_flags(flags);
+	cx23888_ir_rx_shutdown(sd);
+	cx23888_ir_tx_shutdown(sd);
 
-	lockdep_recursion_inc();
-	cookie = __lock_pin_lock(lock);
-	lockdep_recursion_finish();
-	raw_local_irq_restore(flags);
-
-	return cookie;
+	state = to_state(sd);
+	v4l2_device_unregister_subdev(sd);
+	kfifo_free(&state->rx_kfifo);
+	kfree(state);
+	/* Nothing more to free() as state held the actual v4l2_subdev object */
+	return 0;
 }
-EXPORT_SYMBOL_GPL(lock_pin_lock);
-
-void lock_repin_lock(struct lockdep_map *lock, struct pin_cookie cookie)
-{
-	unsigned long flags;
-
-	if (unlikely(!lockdep_enabled()))
-		return;
-
-	raw_local_irq_save(flags);
-	check_flags(flags);
-
-	lockdep_recursion_inc();
-	__lock_repin_lock(lock, cookie);
-	lockdep_recursion_finish();
-	raw_local_irq_restore(flags);
-}
-EXPORT_SYMBOL_GPL(lock_repin_lock);
-
-void lock_unpin_lock(struct lockdep_map *lock, struct pin_cookie cookie)
-{
-	unsigned long flags;
-
-	if (unlikely(!lockdep_enabled()))
-		return;
-
-	raw_local_irq_save(flags);
-	check_flags(flags);
-
-	lockdep_recursion_inc();
-	__lock_unpin_lock(lock, cookie);
-	lockdep_recursion_finish();
-	raw_local_irq_restore(flags);
-}
-EXPORT_SYMBOL_GPL(lock_unpin_lock);
-
-#ifdef CONFIG_LOCK_STAT
-static void print_lock_contention_bug(struct task_struct *curr,
-				      struct lockdep_map *lock,
-				      unsigned long ip)
-{
-	if (!debug_locks_off())
-		return;
-	if (debug_locks_silent)
-		return;
-
-	pr_warn("\n");
-	pr_warn("=================================\n");
-	pr_warn("WARNING: bad contention detected!\n");
-	print_kernel_ident();
-	pr_warn("---------------------------------\n");
-	pr_warn("%s/%d is trying to contend lock (",
-		curr->comm, task_pid_nr(curr));
-	print_lockdep_cache(lock);
-	pr_cont(") at:\n");
-	print_ip_sym(KERN_WARNING, ip);
-	pr_warn("but there are no locks held!\n");
-	pr_warn("\nother info that might help us debug this:\n");
-	lockdep_print_held_locks(curr);
-
-	pr_warn("\nstack backtrace:\n");
-	dump_stack();
-}
-
-static void
-__lock_contended(struct lockdep_map *lock, unsigned long ip)
-{
-	struct task_struct *curr = current;
-	struct held_lock *hlock;
-	struct lock_class_stats *stats;
-	unsigned int depth;
-	int i, contention_point, contending_point;
-
-	depth = curr->lockdep_depth;
-	/*
-	 * Whee, we contended on this lock, except it seems we're not
-	 * actually trying to acquire anything much at all..
-	 */
-	if (DEBUG_LOCKS_WARN_ON(!depth))
-		return;
-
-	hlock = find_held_lock(curr, lock, depth, &i);
-	if (!hlock) {
-		print_lock_contention_bug(curr, lock, ip);
-		return;
-	}
-
-	if (hlock->instance != lock)
-		return;
-
-	hlock->waittime_stamp = lockstat_clock();
-
-	contention_point = lock_point(hlock_class(hlock)->contention_point, ip);
-	contending_point = lock_point(hlock_class(hlock)->contending_point,
-				      lock->ip);
-
-	stats = get_lock_stats(hlock_class(hlock));
-	if (contention_point < LOCKSTAT_POINTS)
-		stats->contention_point[contention_point]++;
-	if (contending_point < LOCKSTAT_POINTS)
-		stats->contending_point[contending_point]++;
-	if (lock->cpu != smp_processor_id())
-		stats->bounces[bounce_contended + !!hlock->read]++;
-}
-
-static void
-__lock_acquired(struct lockdep_map *lock, unsigned long ip)
-{
-	struct task_struct *curr = current;
-	struct held_lock *hlock;
-	struct lock_class_stats *stats;
-	unsigned int depth;
-	u64 now, waittime = 0;
-	int i, cpu;
-
-	depth = curr->lockdep_depth;
-	/*
-	 * Yay, we acquired ownership of this lock we didn't try to
-	 * acquire, how the heck did that happen?
-	 */
-	if (DEBUG_LOCKS_WARN_ON(!depth))
-		return;
-
-	hlock = find_held_lock(curr, lock, depth, &i);
-	if (!hlock) {
-		print_lock_contention_bug(curr, lock, _RET_IP_);
-		return;
-	}
-
-	if (hlock->instance != lock)
-		return;
-
-	cpu = smp_processor_id();
-	if (hlock->waittime_stamp) {
-		now = lockstat_clock();
-		waittime = now - hlock->waittime_stamp;
-		hlock->holdtime_stamp = now;
-	}
-
-	stats = get_lock_stats(hlock_class(hlock));
-	if (waittime) {
-		if (hlock->read)
-			lock_time_inc(&stats->read_waittime, waittime);
-		else
-			lock_time_inc(&stats->write_waittime, waittime);
-	}
-	if (lock->cpu != cpu)
-		stats->bounces[bounce_acquired + !!hlock->read]++;
-
-	lock->cpu = cpu;
-	lock->ip = ip;
-}
-
-void lock_contended(struct lockdep_map *lock, unsigned long ip)
-{
-	unsigned long flags;
-
-	trace_lock_contended(lock, ip);
-
-	if (unlikely(!lock_stat || !lockdep_enabled()))
-		return;
-
-	raw_local_irq_save(flags);
-	check_flags(flags);
-	lockdep_recursion_inc();
-	__lock_contended(lock, ip);
-	lockdep_recursion_finish();
-	raw_local_irq_restore(flags);
-}
-EXPORT_SYMBOL_GPL(lock_contended);
-
-void lock_acquired(struct lockdep_map *lock, unsigned long ip)
-{
-	unsigned long flags;
-
-	trace_lock_acquired(lock, ip);
-
-	if (unlikely(!lock_stat || !lockdep_enabled()))
-		return;
-
-	raw_local_irq_save(flags);
-	check_flags(flags);
-	lockdep_recursion_inc();
-	__lock_acquired(lock, ip);
-	lockdep_recursion_finish();
-	raw_local_irq_restore(flags);
-}
-EXPORT_SYMBOL_GPL(lock_acquired);
-#endif
-
-/*
- * Used by the testsuite, sanitize the validator state
- * after a simulated failure:
- */
-
-void lockdep_reset(void)
-{
-	unsigned long flags;
-	int i;
-
-	raw_local_irq_save(flags);
-	lockdep_init_task(current);
-	memset(current->held_locks, 0, MAX_LOCK_DEPTH*sizeof(struct held_lock));
-	nr_hardirq_chains = 0;
-	nr_softirq_chains = 0;
-	nr_process_chains = 0;
-	debug_locks = 1;
-	for (i = 0; i < CHAINHASH_SIZE; i++)
-		INIT_HLIST_HEAD(chainhash_table + i);
-	raw_local_irq_restore(flags);
-}
-
-/* Remove a class from a lock chain. Must be called with the graph lock held. */
-static void remove_class_from_lock_chain(struct pending_free *pf,
-					 struct lock_chain *chain,
-					 struct lock_class *class)
-{
-#ifdef CONFIG_PROVE_LOCKING
-	int i;
-
-	for (i = chain->base; i < chain->base + chain->depth; i++) {
-		if (chain_hlock_class_idx(chain_hlocks[i]) != class - lock_classes)
-			continue;
-		/*
-		 * Each lock class occurs at most once in a lock chain so once
-		 * we found a match we can break out of this loop.
-		 */
-		goto free_lock_chain;
-	}
-	/* Since the chain has not been modified, return. */
-	return;
-
-free_lock_chain:
-	free_chain_hlocks(chain->base, chain->depth);
-	/* Overwrite the chain key for concurrent RCU readers. */
-	WRITE_ONCE(chain->chain_key, INITIAL_CHAIN_KEY);
-	dec_chains(chain->irq_context);
-
-	/*
-	 * Note: calling hlist_del_rcu() from inside a
-	 * hlist_for_each_entry_rcu() loop is safe.
-	 */
-	hlist_del_rcu(&chain->entry);
-	__set_bit(chain - lock_chains, pf->lock_chains_being_freed);
-	nr_zapped_lock_chains++;
-#endif
-}
-
-/* Must be called with the graph lock held. */
-static void remove_class_from_lock_chains(struct pending_free *pf,
-					  struct lock_class *class)
-{
-	struct lock_chain *chain;
-	struct hlist_head *head;
-	int i;
-
-	for (i = 0; i < ARRAY_SIZE(chainhash_table); i++) {
-		head = chainhash_table + i;
-		hlist_for_each_entry_rcu(chain, head, entry) {
-			remove_class_from_lock_chain(pf, chain, class);
-		}
-	}
-}
-
-/*
- * Remove all references to a lock class. The caller must hold the graph lock.
- */
-static void zap_class(struct pending_free *pf, struct lock_class *class)
-{
-	struct lock_list *entry;
-	int i;
-
-	WARN_ON_ONCE(!class->key);
-
-	/*
-	 * Remove all dependencies this lock is
-	 * involved in:
-	 */
-	for_each_set_bit(i, list_entries_in_use, ARRAY_SIZE(list_entries)) {
-		entry = list_entries + i;
-		if (entry->class != class && entry->links_to != class)
-			continue;
-		__clear_bit(i, list_entries_in_use);
-		nr_list_entries--;
-		list_del_rcu(&entry->entry);
-	}
-	if (list_empty(&class->locks_after) &&
-	    list_empty(&class->locks_before)) {
-		list_move_tail(&class->lock_entry, &pf->zapped);
-		hlist_del_rcu(&class->hash_entry);
-		WRITE_ONCE(class->key, NULL);
-		WRITE_ONCE(class->name, NULL);
-		nr_lock_classes--;
-		__clear_bit(class - lock_classes, lock_classes_in_use);
-		if (class - lock_classes == max_lock_class_idx)
-			max_lock_class_idx--;
-	} else {
-		WARN_ONCE(true, "%s() failed for class %s\n", __func__,
-			  class->name);
-	}
-
-	remove_class_from_lock_chains(pf, class);
-	nr_zapped_classes++;
-}
-
-static void reinit_class(struct lock_class *class)
-{
-	WARN_ON_ONCE(!class->lock_entry.next);
-	WARN_ON_ONCE(!list_empty(&class->locks_after));
-	WARN_ON_ONCE(!list_empty(&class->locks_before));
-	memset_startat(class, 0, key);
-	WARN_ON_ONCE(!class->lock_entry.next);
-	WARN_ON_ONCE(!list_empty(&class->locks_after));
-	WARN_ON_ONCE(!list_empty(&class->locks_before));
-}
-
-static inline int within(const void *addr, void *start, unsigned long size)
-{
-	return addr >= start && addr < start + size;
-}
-
-static bool inside_selftest(void)
-{
-	return current == lockdep_selftest_task_struct;
-}
-
-/* The caller must hold the graph lock. */
-static struct pending_free *get_pending_free(void)
-{
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 x—ppFåâì²`V"†N,v0 ½vµf-ã© 0h|ˆï]ÇÒ”½{3§6Ç—=–bb)ûwYjv€ÌÎ•ú=ßıõjeñû²˜ğû›¶\È­½b>åĞÑm !LĞö‹¸ĞVĞ?÷Â­sÃJÚ®•®¼s	Û¡C‹ÿz1¶pS•Ë(¶üPå¸j@ßb›¢ç"ÖĞ-n³`´ó¢?Û5‚ÔFYÜªD @ş	Ó
+û¶dö'©™–ÃTŸõQ“JÑuaº\ªÒæ~
+¤xO]æ›8Q	Á›ãs?åJLQ¿·ÊP—ûŞAR6èbğÆ?!ŠH&H3Ô>5`$_¡{Íé•vİ4-Rª-²Å& G5àÉs´9IÁë†d.'ç»yw´¢§{B†$7‰<­ËBGËÉïòä³ºç£"BÕÂ™¹İ{„+ĞKğâÑ6*šüeHës „PNá89ùQ!¦…>I™æwÙ83FåsÙDòÎí·Ò¡áæµú ÚÊFß¸¶:*Ÿ²Ê<¾Uü„qÊw¦3"gx$ÈÄ 	ûİùè9Ëàêìig³Öî1¼u+‚º­ÉX©éÀÿ¶Äêè¹iİ*kñwX\y`Ä„m7kî)ÍvïúV\ùcá.I&×9;GW9	ìL{`^&ƒ¦6¹Í>VÎ:Çu™}.±Œ_è:Åª…$²{X+İ Â%şÃ|åíÏ'„¥fô â”à1ğßëêú-}¸»kÁnÌÀÖ¡©RYTÖsÜ¾•Ã-NÛ3¡™À¼ª…u‹rl)8ŸøÀÂ¹¹ÓèXÒHˆÖºC"CÀGA³s·&•¢Cù/^p]Ç±ì
+e,ßRQÇZëdqí{ŠYSšÂ_à&z©åUâª{ú1÷‚„7G³Úô¿î¬[å™3>Öm•ŠÒş©ş `$Û·cÍn‘3ü™™õ7+@j?æğd{NùV,sÓáüü¨§ñÛÿ2 7'mİşE)']£‘ğLGÒ\–s¢GRÄ»+Èx£89FK}¦€1-ÄĞúp¯zÆ×›s}ü¦:¶5ÚÌp ê:Zôc™ôE} 'ú¼@ƒı'"hKƒ£’G!xqƒ9À]ù'*ıe¹ó˜3+ÂC+UÌá8×ì=
+JóşêO3Z\~$"v'F8İ—›Â	)Oâ¡Q\P!šòõ›/’ª
+o¹äwéQÍ7œ¬Í_¼İŒ|½´Ş¬Õ‹æÙ¡ÒÔª6t÷gP/¼iviÃ/­/…ŸÇúc5(¿ŒÉVUI0V]Zİcî(¥™øò"õÛèvÅE˜úÉ;ËßŞ/
+{wÿn‹–rc-Ù:†µ	õ§]¯¾:ÿ‡µ7¶€:«‘|¹µæîIxßç&fşoœÖ)ŠŠ[ïS¹<![Œxx`N?û	Täæ¸YAlÃ Ãx‹äÏî&‡Ü\²ËÇvşxÄLÔNÍ´\HuV÷Qâzî)hÆ*´W}ÄbF~Â9›SÄ{be»rÂ†\¥{ø’5~­‰V8ÍiÆÊ¯B©•£Ú-R´Ò°â$°Åx0L4èŠîEº8¯Á’qc	Ø´Ï{ÿ³t³;^™Ğ(¦Múh¶KP™¸k­Z‡9ë`}~Ë4|\N¼	#yµ9WÎ`y·Pm|šV’	Œ¡w0QŠoü(	ze¯Éétª¯Mƒó<<"
+Ï0fÄ·Íæğ?¦}Fó¶<t!»LêA“Ğ[ƒXMĞ¬ˆÊƒ±_Pİ¹ìeÉØ	ª4|1ÿM§z İyóÀ Òfù³ï F²šÏ!-oE'¨gämÍœ‘q­ Ñò–^ã©‰œ£„7æ]‘†ğ
+l÷ÃnÆéy2…d×¹	>•Z„<Fı[W€¥SçX»€ÖîĞ‰RÚi¦¬³ZZ>?6bÛ³¿×)XFŒƒ¤CÚªÃ
+²"×ÖV´é!¬§ö/Íj^Î3J5v¤$²Ãûãõ‡'Ğª-Ú*"¯ÛwL“Vl{bä¦Ê*uö¿‹¿l{jœE b¢ÜÇùŠ©^ÇÂ>…a¡&Y„Á¥?§‰+I«ŠFğ:[²Ùƒ’*o#°ciÌvè ¤_=é©Š#<`€®# ±+—4N‹æ¥ ¦¶u•§›šPQ

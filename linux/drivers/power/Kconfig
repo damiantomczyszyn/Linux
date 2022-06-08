@@ -1,4 +1,3 @@
-86/include/asm/qrwlock.h \
-  include/asm-generic/qrwlock.h \
-  include/linux/rwlock.h \
-    $(wildcard include/conf
+cx23885-cards.c                                             */
+extern struct cx23885_board cx23885_boards[];
+extern

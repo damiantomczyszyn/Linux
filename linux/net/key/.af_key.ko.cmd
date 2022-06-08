@@ -1,8 +1,6 @@
-m, char c, int offset, int length)
+atic void sched_core_unlock(int cpu, unsigned long *flags)
 {
-	int i;
+	const struct cpumask *smt_mask = cpu_smt_mask(cpu);
+	int t;
 
-	for (i = 0; i < offset; i++)
-		seq_puts(m, " ");
-	for (i = 0; i < length; i++)
-		seq_printf(m, "%c", 
+	for_each_cpu(t, smt_mask

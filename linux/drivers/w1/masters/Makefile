@@ -1,11 +1,19 @@
-RCOPY) \
-  arch/x86/include/asm/uaccess.h \
-    $(wildcard include/config/CC_HAS_ASM_GOTO_OUTPUT) \
-    $(wildcard include/config/CC_HAS_ASM_GOTO_TIED_OUTPUT) \
-    $(wildcard include/config/ARCH_HAS_COPY_MC) \
-    $(wildcard include/config/X86_INTEL_USERCOPY) \
-  arch/x86/include/asm/smap.h \
-  arch/x86/include/asm/extable.h \
-    $(wildcard include/config/BPF_JIT) \
-  include/asm-generic/access_ok.h \
-    $(wildcard include/
+cx23885_irq_add_enable(dev, PCI_MSK_GPIO0);
+		break;
+	}
+
+	/*
+	 * The CX2388[58] IR controller can start firing interrupts when
+	 * enabled, so these have to take place after the cx23885_irq() handler
+	 * is hooked up by the call to request_irq() above.
+	 */
+	cx23885_ir_pci_int_enable(dev);
+	cx23885_input_init(dev);
+
+	return 0;
+
+fail_irq:
+	cx23885_dev_unregister(dev);
+fail_ctrl:
+	v4l2_ctrl_handler_free(hdl);
+	v4l2_device_unregi

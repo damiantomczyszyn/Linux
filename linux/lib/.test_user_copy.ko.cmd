@@ -1,5 +1,7 @@
-nclude/linux/page-flags-layout.h \
-    $(wildcard include/config/KASAN_HW_TAGS) \
-  include/linux/numa.h \
-    $(wildcard include/config/NODES_SHIFT) \
-    $(wildca
+// SPDX-License-Identifier: GPL-2.0-only
+/*
+ *  kernel/sched/core.c
+ *
+ *  Core kernel scheduler code and related syscalls
+ *
+ *  Copyright (C) 1991-2002  Linus Tor

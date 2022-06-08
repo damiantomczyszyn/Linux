@@ -1,157 +1,193 @@
-nclude/config/GENERIC_ATOMIC64) \
-  include/linux/atomic/atomic-long.h \
-  include/linux/atomic/atomic-instrumented.h \
-  include/linux/bug.h \
-    $(wildcard include/config/BUG_ON_DATA_CORRUPTION) \
-  arch/x86/include/asm/bug.h \
-    $(wildcard include/config/DEBUG_BUGVERBOSE) \
-  include/linux/instrumentation.h \
-    $(wildcard include/config/DEBUG_ENTRY) \
-  include/asm-generic/bug.h \
-    $(wildcard include/config/BUG) \
-    $(wildcard include/config/GENERIC_BUG_RELATIVE_POINTERS) \
-  arch/x86/include/uapi/asm/msr.h \
-  include/linux/tracepoint-defs.h \
-  arch/x86/include/asm/special_insns.h \
-  include/linux/irqflags.h \
-    $(wildcard include/config/TRACE_IRQFLAGS) \
-    $(wildcard include/config/PREEMPT_RT) \
-    $(wildcard include/config/IRQSOFF_TRACER) \
-    $(wildcard include/config/PREEMPT_TRACER) \
-    $(wildcard include/config/DEBUG_IRQFLAGS) \
-    $(wildcard include/config/TRACE_IRQFLAGS_SUPPORT) \
-  arch/x86/include/asm/irqflags.h \
-  arch/x86/include/asm/fpu/types.h \
-  arch/x86/include/asm/vmxfeatures.h \
-  arch/x86/include/asm/vdso/processor.h \
-  include/linux/personality.h \
-  include/uapi/linux/personality.h \
-  arch/x86/include/asm/tsc.h \
-  arch/x86/include/asm/cpufeature.h \
-    $(wildcard include/config/X86_FEATURE_NAMES) \
-  include/vdso/time32.h \
-  include/vdso/time.h \
-  include/linux/uidgid.h \
-    $(wildcard include/config/MULTIUSER) \
-    $(wildcard include/config/USER_NS) \
-  include/linux/highuid.h \
-  include/linux/buildid.h \
-    $(wildcard include/config/CRASH_CORE) \
-  include/linux/mm_types.h \
-    $(wildcard include/config/HAVE_ALIGNED_STRUCT_PAGE) \
-    $(wildcard include/config/MEMCG) \
-    $(wildcard include/config/USERFAULTFD) \
-    $(wildcard include/config/SWAP) \
-    $(wildcard include/config/NUMA) \
-    $(wildcard include/config/HAVE_ARCH_COMPAT_MMAP_BASES) \
-    $(wildcard include/config/MEMBARRIER) \
-    $(wildcard include/config/AIO) \
-    $(wildcard include/config/MMU_NOTIFIER) \
-    $(wildcard include/config/TRANSPARENT_HUGEPAGE) \
-    $(wildcard include/config/NUMA_BALANCING) \
-    $(wildcard include/config/ARCH_WANT_BATCHED_UNMAP_TLB_FLUSH) \
-    $(wildcard include/config/HUGETLB_PAGE) \
-    $(wildcard include/config/IOMMU_SVA) \
-  include/linux/mm_types_task.h \
-    $(wildcard include/config/SPLIT_PTLOCK_CPUS) \
-    $(wildcard include/config/ARCH_ENABLE_SPLIT_PMD_PTLOCK) \
-  arch/x86/include/asm/tlbbatch.h \
-  include/linux/auxvec.h \
-  include/uapi/linux/auxvec.h \
-  arch/x86/include/uapi/asm/auxvec.h \
-  include/linux/kref.h \
-  include/linux/spinlock.h \
-    $(wildcard include/config/PREEMPTION) \
-  include/linux/preempt.h \
-    $(wildcard include/config/PREEMPT_COUNT) \
-    $(wildcard include/config/TRACE_PREEMPT_TOGGLE) \
-    $(wildcard include/config/PREEMPT_NOTIFIERS) \
-  arch/x86/include/asm/preempt.h \
-  include/linux/thread_info.h \
-    $(wildcard include/config/THREAD_INFO_IN_TASK) \
-    $(wildcard include/config/GENERIC_ENTRY) \
-    $(wildcard include/config/HAVE_ARCH_WITHIN_STACK_FRAMES) \
-    $(wildcard include/config/HARDENED_USERCOPY) \
-  include/linux/restart_block.h \
-  arch/x86/include/asm/thread_info.h \
-    $(wildcard include/config/COMPAT) \
-  include/linux/bottom_half.h \
-  include/linux/lockdep.h \
-    $(wildcard include/config/DEBUG_LOCKING_API_SELFTESTS) \
-  include/linux/smp.h \
-    $(wildcard include/config/UP_LATE_INIT) \
-  include/linux/smp_types.h \
-  include/linux/llist.h \
-    $(wildcard include/config/ARCH_HAVE_NMI_SAFE_CMPXCHG) \
-  arch/x86/include/asm/smp.h \
-    $(wildcard include/config/X86_LOCAL_APIC) \
-    $(wildcard include/config/DEBUG_NMI_SELFTEST) \
-  arch/x86/include/generated/asm/mmiowb.h \
-  include/asm-generic/mmiowb.h \
-    $(wildcard include/config/MMIOWB) \
-  include/linux/spinlock_types.h \
-  include/linux/rwlock_types.h \
-  arch/x86/include/asm/spinlock.h \
-  arch/x86/include/asm/paravirt.h \
-    $(wildcard include/config/PARAVIRT_SPINLOCKS) \
-  arch/x86/include/asm/frame.h \
-  arch/x86/include/asm/qspinlock.h \
-  include/asm-generic/qspinlock.h \
-  arch/x86/include/asm/qrwlock.h \
-  include/asm-generic/qrwlock.h \
-  include/linux/rwlock.h \
-    $(wildcard include/config/PREEMPT) \
-  include/linux/spinlock_api_smp.h \
-    $(wildcard include/config/INLINE_SPIN_LOCK) \
-    $(wildcard include/config/INLINE_SPIN_LOCK_BH) \
-    $(wildcard include/config/INLINE_SPIN_LOCK_IRQ) \
-    $(wildcard include/config/INLINE_SPIN_LOCK_IRQSAVE) \
-    $(wildcard include/config/INLINE_SPIN_TRYLOCK) \
-    $(wildcard include/config/INLINE_SPIN_TRYLOCK_BH) \
-    $(wildcard include/config/UNINLINE_SPIN_UNLOCK) \
-    $(wildcard include/config/INLINE_SPIN_UNLOCK_BH) \
-    $(wildcard include/config/INLINE_SPIN_UNLOCK_IRQ) \
-    $(wildcard include/config/INLINE_SPIN_UNLOCK_IRQRESTORE) \
-    $(wildcard include/config/GENERIC_LOCKBREAK) \
-  include/linux/rwlock_api_smp.h \
-    $(wildcard include/config/INLINE_READ_LOCK) \
-    $(wildcard include/config/INLINE_WRITE_LOCK) \
-    $(wildcard include/config/INLINE_READ_LOCK_BH) \
-    $(wildcard include/config/INLINE_WRITE_LOCK_BH) \
-    $(wildcard include/config/INLINE_READ_LOCK_IRQ) \
-    $(wildcard include/config/INLINE_WRITE_LOCK_IRQ) \
-    $(wildcard include/config/INLINE_READ_LOCK_IRQSAVE) \
-    $(wildcard include/config/INLINE_WRITE_LOCK_IRQSAVE) \
-    $(wildcard include/config/INLINE_READ_TRYLOCK) \
-    $(wildcard include/config/INLINE_WRITE_TRYLOCK) \
-    $(wildcard include/config/INLINE_READ_UNLOCK) \
-    $(wildcard include/config/INLINE_WRITE_UNLOCK) \
-    $(wildcard include/config/INLINE_READ_UNLOCK_BH) \
-    $(wildcard include/config/INLINE_WRITE_UNLOCK_BH) \
-    $(wildcard include/config/INLINE_READ_UNLOCK_IRQ) \
-    $(wildcard include/config/INLINE_WRITE_UNLOCK_IRQ) \
-    $(wildcard include/config/INLINE_READ_UNLOCK_IRQRESTORE) \
-    $(wildcard include/config/INLINE_WRITE_UNLOCK_IRQRESTORE) \
-  include/linux/refcount.h \
-  include/linux/rbtree.h \
-  include/linux/rbtree_types.h \
-  include/linux/rcupdate.h \
-    $(wildcard include/config/PREEMPT_RCU) \
-    $(wildcard include/config/TINY_RCU) \
-    $(wildcard include/config/RCU_STRICT_GRACE_PERIOD) \
-    $(wildcard include/config/TASKS_RCU_GENERIC) \
-    $(wildcard include/config/RCU_STALL_COMMON) \
-    $(wildcard include/config/NO_HZ_FULL) \
-    $(wildcard include/config/RCU_NOCB_CPU) \
-    $(wildcard include/config/TASKS_RCU) \
-    $(wildcard include/config/TASKS_TRACE_RCU) \
-    $(wildcard include/config/TASKS_RUDE_RCU) \
-    $(wildcard include/config/TREE_RCU) \
-    $(wildcard include/config/DEBUG_OBJECTS_RCU_HEAD) \
-    $(wildcard include/config/PROVE_RCU) \
-    $(wildcard include/config/ARCH_WEAK_RELEASE_ACQUIRE) \
-  include/linux/rcutree.h \
-  include/linux/rwsem.h \
-    $(wildcard include/config/RWSEM_SPIN_ON_OWNER) \
-    $(wildcard include/config/DEBUG_RWSEMS) \
-  include
+# SPDX-License-Identifier: GPL-2.0-only
+menu "CAN Device Drivers"
+
+config CAN_VCAN
+	tristate "Virtual Local CAN Interface (vcan)"
+	help
+	  Similar to the network loopback devices, vcan offers a
+	  virtual local CAN interface.
+
+	  This driver can also be built as a module.  If so, the module
+	  will be called vcan.
+
+config CAN_VXCAN
+	tristate "Virtual CAN Tunnel (vxcan)"
+	help
+	  Similar to the virtual ethernet driver veth, vxcan implements a
+	  local CAN traffic tunnel between two virtual CAN network devices.
+	  When creating a vxcan, two vxcan devices are created as pair.
+	  When one end receives the packet it appears on its pair and vice
+	  versa. The vxcan can be used for cross namespace communication.
+
+	  In opposite to vcan loopback devices the vxcan only forwards CAN
+	  frames to its pair and does *not* provide a local echo of sent
+	  CAN frames. To disable a potential echo in af_can.c the vxcan driver
+	  announces IFF_ECHO in the interface flags. To have a clean start
+	  in each namespace the CAN GW hop counter is set to zero.
+
+	  This driver can also be built as a module.  If so, the module
+	  will be called vxcan.
+
+config CAN_SLCAN
+	tristate "Serial / USB serial CAN Adaptors (slcan)"
+	depends on TTY
+	help
+	  CAN driver for several 'low cost' CAN interfaces that are attached
+	  via serial lines or via USB-to-serial adapters using the LAWICEL
+	  ASCII protocol. The driver implements the tty linediscipline N_SLCAN.
+
+	  As only the sending and receiving of CAN frames is implemented, this
+	  driver should work with the (serial/USB) CAN hardware from:
+	  www.canusb.com / www.can232.com / www.mictronics.de / www.canhack.de
+
+	  Userspace tools to attach the SLCAN line discipline (slcan_attach,
+	  slcand) can be found in the can-utils at the linux-can project, see
+	  https://github.com/linux-can/can-utils for details.
+
+	  The slcan driver supports up to 10 CAN netdevices by default which
+	  can be changed by the 'maxdev=xx' module option. This driver can
+	  also be built as a module. If so, the module will be called slcan.
+
+config CAN_DEV
+	tristate "Platform CAN drivers with Netlink support"
+	default y
+	help
+	  Enables the common framework for platform CAN drivers with Netlink
+	  support. This is the standard library for CAN drivers.
+	  If unsure, say Y.
+
+if CAN_DEV
+
+config CAN_CALC_BITTIMING
+	bool "CAN bit-timing calculation"
+	default y
+	help
+	  If enabled, CAN bit-timing parameters will be calculated for the
+	  bit-rate specified via Netlink argument "bitrate" when the device
+	  get started. This works fine for the most common CAN controllers
+	  with standard bit-rates but may fail for exotic bit-rates or CAN
+	  source clock frequencies. Disabling saves some space, but then the
+	  bit-timing parameters must be specified directly using the Netlink
+	  arguments "tq", "prop_seg", "phase_seg1", "phase_seg2" and "sjw".
+	  If unsure, say Y.
+
+config CAN_LEDS
+	bool "Enable LED triggers for Netlink based drivers"
+	depends on LEDS_CLASS
+	# The netdev trigger (LEDS_TRIGGER_NETDEV) should be able to do
+	# everything that this driver is doing. This is marked as broken
+	# because it uses stuff that is intended to be changed or removed.
+	# Please consider switching to the netdev trigger and confirm it
+	# fulfills your needs instead of fixing this driver.
+	depends on BROKEN
+	select LEDS_TRIGGERS
+	help
+	  This option adds two LED triggers for packet receive and transmit
+	  events on each supported CAN device.
+
+	  Say Y here if you are working on a system with led-class supported
+	  LEDs and you want to use them as canbus activity indicators.
+
+config CAN_AT91
+	tristate "Atmel AT91 onchip CAN controller"
+	depends on (ARCH_AT91 || COMPILE_TEST) && HAS_IOMEM
+	help
+	  This is a driver for the SoC CAN controller in Atmel's AT91SAM9263
+	  and AT91SAM9X5 processors.
+
+config CAN_FLEXCAN
+	tristate "Support for Freescale FLEXCAN based chips"
+	depends on OF || COLDFIRE || COMPILE_TEST
+	depends on HAS_IOMEM
+	help
+	  Say Y here if you want to support for Freescale FlexCAN.
+
+config CAN_GRCAN
+	tristate "Aeroflex Gaisler GRCAN and GRHCAN CAN devices"
+	depends on OF && HAS_DMA && HAS_IOMEM
+	help
+	  Say Y here if you want to use Aeroflex Gaisler GRCAN or GRHCAN.
+	  Note that the driver supports little endian, even though little
+	  endian syntheses of the cores would need some modifications on
+	  the hardware level to work.
+
+config CAN_JANZ_ICAN3
+	tristate "Janz VMOD-ICAN3 Intelligent CAN controller"
+	depends on MFD_JANZ_CMODIO
+	help
+	  Driver for Janz VMOD-ICAN3 Intelligent CAN controller module, which
+	  connects to a MODULbus carrier board.
+
+	  This driver can also be built as a module. If so, the module will be
+	  called janz-ican3.ko.
+
+config CAN_KVASER_PCIEFD
+	depends on PCI
+	tristate "Kvaser PCIe FD cards"
+	select CRC32
+	  help
+	  This is a driver for the Kvaser PCI Express CAN FD family.
+
+	  Supported devices:
+	    Kvaser PCIEcan 4xHS
+	    Kvaser PCIEcan 2xHS v2
+	    Kvaser PCIEcan HS v2
+	    Kvaser Mini PCI Express HS v2
+	    Kvaser Mini PCI Express 2xHS v2
+
+config CAN_SUN4I
+	tristate "Allwinner A10 CAN controller"
+	depends on MACH_SUN4I || MACH_SUN7I || COMPILE_TEST
+	help
+	  Say Y here if you want to use CAN controller found on Allwinner
+	  A10/A20 SoCs.
+
+	  To compile this driver as a module, choose M here: the module will
+	  be called sun4i_can.
+
+config CAN_TI_HECC
+	depends on ARM
+	tristate "TI High End CAN Controller"
+	help
+	  Driver for TI HECC (High End CAN Controller) module found on many
+	  TI devices. The device specifications are available from www.ti.com
+
+config CAN_XILINXCAN
+	tristate "Xilinx CAN"
+	depends on ARCH_ZYNQ || ARM64 || MICROBLAZE || COMPILE_TEST
+	depends on COMMON_CLK && HAS_IOMEM
+	help
+	  Xilinx CAN driver. This driver supports both soft AXI CAN IP and
+	  Zynq CANPS IP.
+
+config PCH_CAN
+	tristate "Intel EG20T PCH CAN controller"
+	depends on PCI && (X86_32 || COMPILE_TEST)
+	help
+	  This driver is for PCH CAN of Topcliff (Intel EG20T PCH) which
+	  is an IOH for x86 embedded processor (Intel Atom E6xx series).
+	  This driver can access CAN bus.
+
+source "drivers/net/can/c_can/Kconfig"
+source "drivers/net/can/cc770/Kconfig"
+source "drivers/net/can/ifi_canfd/Kconfig"
+source "drivers/net/can/m_can/Kconfig"
+source "drivers/net/can/mscan/Kconfig"
+source "drivers/net/can/peak_canfd/Kconfig"
+source "drivers/net/can/rcar/Kconfig"
+source "drivers/net/can/sja1000/Kconfig"
+source "drivers/net/can/softing/Kconfig"
+source "drivers/net/can/spi/Kconfig"
+source "drivers/net/can/usb/Kconfig"
+
+endif
+
+config CAN_DEBUG_DEVICES
+	bool "CAN devices debugging messages"
+	help
+	  Say Y here if you want the CAN device drivers to produce a bunch of
+	  debug messages to the system log.  Select this if you are having
+	  a problem with CAN support and want to see more of what is going
+	  on.
+
+endmenu

@@ -1,2 +1,1 @@
-drivers/media/rc/keymaps/rc-su3000.o
-
+!try_module_get(client_tuner->dev.driv

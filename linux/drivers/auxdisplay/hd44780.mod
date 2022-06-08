@@ -1,2 +1,3 @@
-pes.h \
-  include/asm-generic/
+-T/C/S2, IR) */
+	}, {
+		.subve

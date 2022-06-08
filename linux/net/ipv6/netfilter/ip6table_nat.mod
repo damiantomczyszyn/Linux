@@ -1,2 +1,3 @@
-
-			       &hlock_class(prev)->lock
+amux   = CX25840_AUDIO8,
+		}, {
+			

@@ -1,3 +1,4 @@
-IC_IOREMAP) \
-    $(wildcard include/config/VIRT_TO_BUS) \
-    $(wildcard include/config/GENERIC_DEVM
+C417_RWD, regval);
+
+	/* Wait for the trans to complete (MC417_MIRDY asserted). */
+	retval = mc417_wai

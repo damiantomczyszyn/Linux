@@ -1,196 +1,223 @@
-g nr_stack_trace_entries;
-
-#ifdef CONFIG_PROVE_LOCKING
-/**
- * struct lock_trace - single stack backtrace
- * @hash_entry:	Entry in a stack_trace_hash[] list.
- * @hash:	jhash() of @entries.
- * @nr_entries:	Number of entries in @entries.
- * @entries:	Actual stack backtrace.
- */
-struct lock_trace {
-	struct hlist_node	hash_entry;
-	u32			hash;
-	u32			nr_entries;
-	unsigned long		entries[] __aligned(sizeof(unsigned long));
-};
-#define LOCK_TRACE_SIZE_IN_LONGS				\
-	(sizeof(struct lock_trace) / sizeof(unsigned long))
-/*
- * Stack-trace: sequence of lock_trace structures. Protected by the graph_lock.
- */
-static unsigned long stack_trace[MAX_STACK_TRACE_ENTRIES];
-static struct hlist_head stack_trace_hash[STACK_TRACE_HASH_SIZE];
-
-static bool traces_identical(struct lock_trace *t1, struct lock_trace *t2)
-{
-	return t1->hash == t2->hash && t1->nr_entries == t2->nr_entries &&
-		memcmp(t1->entries, t2->entries,
-		       t1->nr_entries * sizeof(t1->entries[0])) == 0;
-}
-
-static struct lock_trace *save_trace(void)
-{
-	struct lock_trace *trace, *t2;
-	struct hlist_head *hash_head;
-	u32 hash;
-	int max_entries;
-
-	BUILD_BUG_ON_NOT_POWER_OF_2(STACK_TRACE_HASH_SIZE);
-	BUILD_BUG_ON(LOCK_TRACE_SIZE_IN_LONGS >= MAX_STACK_TRACE_ENTRIES);
-
-	trace = (struct lock_trace *)(stack_trace + nr_stack_trace_entries);
-	max_entries = MAX_STACK_TRACE_ENTRIES - nr_stack_trace_entries -
-		LOCK_TRACE_SIZE_IN_LONGS;
-
-	if (max_entries <= 0) {
-		if (!debug_locks_off_graph_unlock())
-			return NULL;
-
-		print_lockdep_off("BUG: MAX_STACK_TRACE_ENTRIES too low!");
-		dump_stack();
-
-		return NULL;
-	}
-	trace->nr_entries = stack_trace_save(trace->entries, max_entries, 3);
-
-	hash = jhash(trace->entries, trace->nr_entries *
-		     sizeof(trace->entries[0]), 0);
-	trace->hash = hash;
-	hash_head = stack_trace_hash + (hash & (STACK_TRACE_HASH_SIZE - 1));
-	hlist_for_each_entry(t2, hash_head, hash_entry) {
-		if (traces_identical(trace, t2))
-			return t2;
-	}
-	nr_stack_trace_entries += LOCK_TRACE_SIZE_IN_LONGS + trace->nr_entries;
-	hlist_add_head(&trace->hash_entry, hash_head);
-
-	return trace;
-}
-
-/* Return the number of stack traces in the stack_trace[] array. */
-u64 lockdep_stack_trace_count(void)
-{
-	struct lock_trace *trace;
-	u64 c = 0;
-	int i;
-
-	for (i = 0; i < ARRAY_SIZE(stack_trace_hash); i++) {
-		hlist_for_each_entry(trace, &stack_trace_hash[i], hash_entry) {
-			c++;
+_wake_remote);
+				break;
+			}
 		}
+		rcu_read_unlock();
 	}
 
-	return c;
+	if (wake_flags & WF_MIGRATED)
+		__schedstat_inc(p->stats.nr_wakeups_migrate);
+#endif /* CONFIG_SMP */
+
+	__schedstat_inc(rq->ttwu_count);
+	__schedstat_inc(p->stats.nr_wakeups);
+
+	if (wake_flags & WF_SYNC)
+		__schedstat_inc(p->stats.nr_wakeups_sync);
 }
 
-/* Return the number of stack hash chains that have at least one stack trace. */
-u64 lockdep_stack_hash_count(void)
-{
-	u64 c = 0;
-	int i;
-
-	for (i = 0; i < ARRAY_SIZE(stack_trace_hash); i++)
-		if (!hlist_empty(&stack_trace_hash[i]))
-			c++;
-
-	return c;
-}
-#endif
-
-unsigned int nr_hardirq_chains;
-unsigned int nr_softirq_chains;
-unsigned int nr_process_chains;
-unsigned int max_lockdep_depth;
-
-#ifdef CONFIG_DEBUG_LOCKDEP
 /*
- * Various lockdep statistics:
+ * Mark the task runnable and perform wakeup-preemption.
  */
-DEFINE_PER_CPU(struct lockdep_stats, lockdep_stats);
-#endif
+static void ttwu_do_wakeup(struct rq *rq, struct task_struct *p, int wake_flags,
+			   struct rq_flags *rf)
+{
+	check_preempt_curr(rq, p, wake_flags);
+	WRITE_ONCE(p->__state, TASK_RUNNING);
+	trace_sched_wakeup(p);
 
-#ifdef CONFIG_PROVE_LOCKING
+#ifdef CONFIG_SMP
+	if (p->sched_class->task_woken) {
+		/*
+		 * Our task @p is fully woken up and running; so it's safe to
+		 * drop the rq->lock, hereafter rq is only used for statistics.
+		 */
+		rq_unpin_lock(rq, rf);
+		p->sched_class->task_woken(rq, p);
+		rq_repin_lock(rq, rf);
+	}
+
+	if (rq->idle_stamp) {
+		u64 delta = rq_clock(rq) - rq->idle_stamp;
+		u64 max = 2*rq->max_idle_balance_cost;
+
+		update_avg(&rq->avg_idle, delta);
+
+		if (rq->avg_idle > max)
+			rq->avg_idle = max;
+
+		rq->wake_stamp = jiffies;
+		rq->wake_avg_idle = rq->avg_idle / 2;
+
+		rq->idle_stamp = 0;
+	}
+#endif
+}
+
+static void
+ttwu_do_activate(struct rq *rq, struct task_struct *p, int wake_flags,
+		 struct rq_flags *rf)
+{
+	int en_flags = ENQUEUE_WAKEUP | ENQUEUE_NOCLOCK;
+
+	lockdep_assert_rq_held(rq);
+
+	if (p->sched_contributes_to_load)
+		rq->nr_uninterruptible--;
+
+#ifdef CONFIG_SMP
+	if (wake_flags & WF_MIGRATED)
+		en_flags |= ENQUEUE_MIGRATED;
+	else
+#endif
+	if (p->in_iowait) {
+		delayacct_blkio_end(p);
+		atomic_dec(&task_rq(p)->nr_iowait);
+	}
+
+	activate_task(rq, p, en_flags);
+	ttwu_do_wakeup(rq, p, wake_flags, rf);
+}
+
 /*
- * Locking printouts:
+ * Consider @p being inside a wait loop:
+ *
+ *   for (;;) {
+ *      set_current_state(TASK_UNINTERRUPTIBLE);
+ *
+ *      if (CONDITION)
+ *         break;
+ *
+ *      schedule();
+ *   }
+ *   __set_current_state(TASK_RUNNING);
+ *
+ * between set_current_state() and schedule(). In this case @p is still
+ * runnable, so all that needs doing is change p->state back to TASK_RUNNING in
+ * an atomic manner.
+ *
+ * By taking task_rq(p)->lock we serialize against schedule(), if @p->on_rq
+ * then schedule() must still happen and p->state can be changed to
+ * TASK_RUNNING. Otherwise we lost the race, schedule() has happened, and we
+ * need to do a full wakeup with enqueue.
+ *
+ * Returns: %true when the wakeup is done,
+ *          %false otherwise.
  */
-
-#define __USAGE(__STATE)						\
-	[LOCK_USED_IN_##__STATE] = "IN-"__stringify(__STATE)"-W",	\
-	[LOCK_ENABLED_##__STATE] = __stringify(__STATE)"-ON-W",		\
-	[LOCK_USED_IN_##__STATE##_READ] = "IN-"__stringify(__STATE)"-R",\
-	[LOCK_ENABLED_##__STATE##_READ] = __stringify(__STATE)"-ON-R",
-
-static const char *usage_str[] =
+static int ttwu_runnable(struct task_struct *p, int wake_flags)
 {
-#define LOCKDEP_STATE(__STATE) __USAGE(__STATE)
-#include "lockdep_states.h"
-#undef LOCKDEP_STATE
-	[LOCK_USED] = "INITIAL USE",
-	[LOCK_USED_READ] = "INITIAL READ USE",
-	/* abused as string storage for verify_lock_unused() */
-	[LOCK_USAGE_STATES] = "IN-NMI",
-};
-#endif
+	struct rq_flags rf;
+	struct rq *rq;
+	int ret = 0;
 
-const char *__get_key_name(const struct lockdep_subclass_key *key, char *str)
-{
-	return kallsyms_lookup((unsigned long)key, NULL, NULL, NULL, str);
+	rq = __task_rq_lock(p, &rf);
+	if (task_on_rq_queued(p)) {
+		/* check_preempt_curr() may use rq clock */
+		update_rq_clock(rq);
+		ttwu_do_wakeup(rq, p, wake_flags, &rf);
+		ret = 1;
+	}
+	__task_rq_unlock(rq, &rf);
+
+	return ret;
 }
 
-static inline unsigned long lock_flag(enum lock_usage_bit bit)
+#ifdef CONFIG_SMP
+void sched_ttwu_pending(void *arg)
 {
-	return 1UL << bit;
+	struct llist_node *llist = arg;
+	struct rq *rq = this_rq();
+	struct task_struct *p, *t;
+	struct rq_flags rf;
+
+	if (!llist)
+		return;
+
+	/*
+	 * rq::ttwu_pending racy indication of out-standing wakeups.
+	 * Races such that false-negatives are possible, since they
+	 * are shorter lived that false-positives would be.
+	 */
+	WRITE_ONCE(rq->ttwu_pending, 0);
+
+	rq_lock_irqsave(rq, &rf);
+	update_rq_clock(rq);
+
+	llist_for_each_entry_safe(p, t, llist, wake_entry.llist) {
+		if (WARN_ON_ONCE(p->on_cpu))
+			smp_cond_load_acquire(&p->on_cpu, !VAL);
+
+		if (WARN_ON_ONCE(task_cpu(p) != cpu_of(rq)))
+			set_task_cpu(p, cpu_of(rq));
+
+		ttwu_do_activate(rq, p, p->sched_remote_wakeup ? WF_MIGRATED : 0, &rf);
+	}
+
+	rq_unlock_irqrestore(rq, &rf);
 }
 
-static char get_usage_char(struct lock_class *class, enum lock_usage_bit bit)
+void send_call_function_single_ipi(int cpu)
+{
+	struct rq *rq = cpu_rq(cpu);
+
+	if (!set_nr_if_polling(rq->idle))
+		arch_send_call_function_single_ipi(cpu);
+	else
+		trace_sched_wake_idle_without_ipi(cpu);
+}
+
+/*
+ * Queue a task on the target CPUs wake_list and wake the CPU via IPI if
+ * necessary. The wakee CPU on receipt of the IPI will queue the task
+ * via sched_ttwu_wakeup() for activation so the wakee incurs the cost
+ * of the wakeup instead of the waker.
+ */
+static void __ttwu_queue_wakelist(struct task_struct *p, int cpu, int wake_flags)
+{
+	struct rq *rq = cpu_rq(cpu);
+
+	p->sched_remote_wakeup = !!(wake_flags & WF_MIGRATED);
+
+	WRITE_ONCE(rq->ttwu_pending, 1);
+	__smp_call_single_queue(cpu, &p->wake_entry.llist);
+}
+
+void wake_up_if_idle(int cpu)
+{
+	struct rq *rq = cpu_rq(cpu);
+	struct rq_flags rf;
+
+	rcu_read_lock();
+
+	if (!is_idle_task(rcu_dereference(rq->curr)))
+		goto out;
+
+	rq_lock_irqsave(rq, &rf);
+	if (is_idle_task(rq->curr))
+		resched_curr(rq);
+	/* Else CPU is not idle, do nothing here: */
+	rq_unlock_irqrestore(rq, &rf);
+
+out:
+	rcu_read_unlock();
+}
+
+bool cpus_share_cache(int this_cpu, int that_cpu)
+{
+	if (this_cpu == that_cpu)
+		return true;
+
+	return per_cpu(sd_llc_id, this_cpu) == per_cpu(sd_llc_id, that_cpu);
+}
+
+static inline bool ttwu_queue_cond(int cpu, int wake_flags)
 {
 	/*
-	 * The usage character defaults to '.' (i.e., irqs disabled and not in
-	 * irq context), which is the safest usage category.
+	 * Do not complicate things with the async wake_list while the CPU is
+	 * in hotplug state.
 	 */
-	char c = '.';
+	if (!cpu_active(cpu))
+		return false;
 
 	/*
-	 * The order of the following usage checks matters, which will
-	 * result in the outcome character as follows:
-	 *
-	 * - '+': irq is enabled and not in irq context
-	 * - '-': in irq context and irq is disabled
-	 * - '?': in irq context and irq is enabled
-	 */
-	if (class->usage_mask & lock_flag(bit + LOCK_USAGE_DIR_MASK)) {
-		c = '+';
-		if (class->usage_mask & lock_flag(bit))
-			c = '?';
-	} else if (class->usage_mask & lock_flag(bit))
-		c = '-';
-
-	return c;
-}
-
-void get_usage_chars(struct lock_class *class, char usage[LOCK_USAGE_CHARS])
-{
-	int i = 0;
-
-#define LOCKDEP_STATE(__STATE) 						\
-	usage[i++] = get_usage_char(class, LOCK_USED_IN_##__STATE);	\
-	usage[i++] = get_usage_char(class, LOCK_USED_IN_##__STATE##_READ);
-#include "lockdep_states.h"
-#undef LOCKDEP_STATE
-
-	usage[i] = '\0';
-}
-
-static void __print_lock_name(struct lock_class *class)
-{
-	char str[KSYM_NAME_LEN];
-	const char *name;
-
-	name = class->name;
-	if (!name) {
-		name = __get_key_name(class->key, str);
-		printk(KERN_CONT "%s", name);
-	} else {
-		printk(KERN_CONT "%s", name);
-		if (class->name_version 
+	 * If the CPU does not share cache, then queue the task on 

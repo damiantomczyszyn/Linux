@@ -1,4 +1,5 @@
-dcard include/config/INLINE_WRITE_UNLOCK_IRQRESTORE) \
-  include/linux/irqhandler.h \
-  include/linux/irqreturn.h \
-  include/linux/irqnr
+s);
+
+/**
+ * struct pending_free - information about data structures about to be freed
+ * @zapped: Head of a list with struct lock_class e

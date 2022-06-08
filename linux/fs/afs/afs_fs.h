@@ -1,72 +1,107 @@
-.h \
-  include/uapi/asm-generic/bitsperlong.h \
-  include/uapi/linux/posix_types.h \
-  include/linux/stddef.h \
-  include/uapi/linux/stddef.h \
-  arch/x86/include/asm/posix_types.h \
-    $(wildcard include/config/X86_32) \
-  arch/x86/include/uapi/asm/posix_types_32.h \
-  include/uapi/asm-generic/posix_types.h \
-  include/linux/kcsan-checks.h \
-    $(wildcard include/config/KCSAN) \
-    $(wildcard include/config/KCSAN_WEAK_MEMORY) \
-    $(wildcard include/config/KCSAN_IGNORE_ATOMICS) \
-  arch/x86/include/generated/uapi/asm/errno.h \
-  include/uapi/asm-generic/errno.h \
-  include/uapi/asm-generic/errno-base.h \
-  include/linux/kernel.h \
-    $(wildcard include/config/PREEMPT_VOLUNTARY_BUILD) \
-    $(wildcard include/config/PREEMPT_DYNAMIC) \
-    $(wildcard include/config/HAVE_PREEMPT_DYNAMIC_CALL) \
-    $(wildcard include/config/HAVE_PREEMPT_DYNAMIC_KEY) \
-    $(wildcard include/config/PREEMPT_) \
-    $(wildcard include/config/DEBUG_ATOMIC_SLEEP) \
-    $(wildcard include/config/SMP) \
-    $(wildcard include/config/MMU) \
-    $(wildcard include/config/PROVE_LOCKING) \
-    $(wildcard include/config/TRACING) \
-    $(wildcard include/config/FTRACE_MCOUNT_RECORD) \
-  include/linux/stdarg.h \
-  include/linux/align.h \
-  include/linux/const.h \
-  include/vdso/const.h \
-  include/uapi/linux/const.h \
-  include/linux/limits.h \
-  include/uapi/linux/limits.h \
-  include/vdso/limits.h \
-  include/linux/linkage.h \
-    $(wildcard include/config/ARCH_USE_SYM_ANNOTATIONS) \
-  include/linux/stringify.h \
-  include/linux/export.h \
-    $(wildcard include/config/MODVERSIONS) \
-    $(wildcard include/config/MODULE_REL_CRCS) \
-    $(wildcard include/config/HAVE_ARCH_PREL32_RELOCATIONS) \
-    $(wildcard include/config/MODULES) \
-    $(wildcard include/config/TRIM_UNUSED_KSYMS) \
-  arch/x86/include/asm/linkage.h \
-    $(wildcard include/config/X86_64) \
-    $(wildcard include/config/X86_ALIGNMENT_16) \
-    $(wildcard include/config/SLS) \
-  arch/x86/include/asm/ibt.h \
-    $(wildcard include/config/X86_KERNEL_IBT) \
-  include/linux/container_of.h \
-  include/linux/build_bug.h \
-  include/linux/bitops.h \
-  include/linux/bits.h \
-  include/vdso/bits.h \
-  include/linux/typecheck.h \
-  include/uapi/linux/kernel.h \
-  include/uapi/linux/sysinfo.h \
-  arch/x86/include/asm/bitops.h \
-    $(wildcard include/config/X86_CMOV) \
-  arch/x86/include/asm/alternative.h \
-  arch/x86/include/asm/asm.h \
-    $(wildcard include/config/KPROBES) \
-  arch/x86/include/asm/extable_fixup_types.h \
-  arch/x86/include/asm/rmwcc.h \
-    $(wildcard include/config/CC_HAS_ASM_GOTO) \
-  arch/x86/include/asm/barrier.h \
-  arch/x86/include/asm/nops.h \
-  include/asm-generic/barrier.h \
-  include/asm-generic/bitops/fls64.h \
-  include/asm-gene
+h->cmds_start + i, 0);
+
+	/* fill registers */
+	cx_write(ch->ptr1_reg, ch->fifo_start);
+	cx_write(ch->ptr2_reg, cdt);
+	cx_write(ch->cnt2_reg, (lines*16) >> 3);
+	cx_write(ch->cnt1_reg, (bpl >> 3) - 1);
+
+	dprintk(2, "[bridge %d] sram setup %s: bpl=%d lines=%d\n",
+		dev->bridge,
+		ch->name,
+		bpl,
+		lines);
+
+	return 0;
+}
+
+void cx23885_sram_channel_dump(struct cx23885_dev *dev,
+				      struct sram_channel *ch)
+{
+	static char *name[] = {
+		"init risc lo",
+		"init risc hi",
+		"cdt base",
+		"cdt size",
+		"iq base",
+		"iq size",
+		"risc pc lo",
+		"risc pc hi",
+		"iq wr ptr",
+		"iq rd ptr",
+		"cdt current",
+		"pci target lo",
+		"pci target hi",
+		"line / byte",
+	};
+	u32 risc;
+	unsigned int i, j, n;
+
+	pr_warn("%s: %s - dma channel status dump\n",
+		dev->name, ch->name);
+	for (i = 0; i < ARRAY_SIZE(name); i++)
+		pr_warn("%s:   cmds: %-15s: 0x%08x\n",
+			dev->name, name[i],
+			cx_read(ch->cmds_start + 4*i));
+
+	for (i = 0; i < 4; i++) {
+		risc = cx_read(ch->cmds_start + 4 * (i + 14));
+		pr_warn("%s:   risc%d: ", dev->name, i);
+		cx23885_risc_decode(risc);
+	}
+	for (i = 0; i < (64 >> 2); i += n) {
+		risc = cx_read(ch->ctrl_start + 4 * i);
+		/* No consideration for bits 63-32 */
+
+		pr_warn("%s:   (0x%08x) iq %x: ", dev->name,
+			ch->ctrl_start + 4 * i, i);
+		n = cx23885_risc_decode(risc);
+		for (j = 1; j < n; j++) {
+			risc = cx_read(ch->ctrl_start + 4 * (i + j));
+			pr_warn("%s:   iq %x: 0x%08x [ arg #%d ]\n",
+				dev->name, i+j, risc, j);
+		}
+	}
+
+	pr_warn("%s: fifo: 0x%08x -> 0x%x\n",
+		dev->name, ch->fifo_start, ch->fifo_start+ch->fifo_size);
+	pr_warn("%s: ctrl: 0x%08x -> 0x%x\n",
+		dev->name, ch->ctrl_start, ch->ctrl_start + 6*16);
+	pr_warn("%s:   ptr1_reg: 0x%08x\n",
+		dev->name, cx_read(ch->ptr1_reg));
+	pr_warn("%s:   ptr2_reg: 0x%08x\n",
+		dev->name, cx_read(ch->ptr2_reg));
+	pr_warn("%s:   cnt1_reg: 0x%08x\n",
+		dev->name, cx_read(ch->cnt1_reg));
+	pr_warn("%s:   cnt2_reg: 0x%08x\n",
+		dev->name, cx_read(ch->cnt2_reg));
+}
+
+static void cx23885_risc_disasm(struct cx23885_tsport *port,
+				struct cx23885_riscmem *risc)
+{
+	struct cx23885_dev *dev = port->dev;
+	unsigned int i, j, n;
+
+	pr_info("%s: risc disasm: %p [dma=0x%08lx]\n",
+	       dev->name, risc->cpu, (unsigned long)risc->dma);
+	for (i = 0; i < (risc->size >> 2); i += n) {
+		pr_info("%s:   %04d: ", dev->name, i);
+		n = cx23885_risc_decode(le32_to_cpu(risc->cpu[i]));
+		for (j = 1; j < n; j++)
+			pr_info("%s:   %04d: 0x%08x [ arg #%d ]\n",
+				dev->name, i + j, risc->cpu[i + j], j);
+		if (risc->cpu[i] == cpu_to_le32(RISC_JUMP))
+			break;
+	}
+}
+
+static void cx23885_clear_bridge_error(struct cx23885_dev *dev)
+{
+	uint32_t reg1_val, reg2_val;
+
+	if (!dev->need_dma_reset)
+		return;
+
+	reg1_val = cx_read(TC_REQ); /* read-only */
+	reg2_val = cx_read(TC_RE

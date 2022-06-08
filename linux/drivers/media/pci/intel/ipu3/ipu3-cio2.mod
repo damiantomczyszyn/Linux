@@ -1,3 +1,1 @@
-ux/module.h \
-    $(wildcard include/config/MODULES_TREE_LOOKUP) \
-    $(wildcard include/
+cmd_drivers/media/pci/cx18/cx18-alsa.o := ld -m elf_i386   -r -o drivers/media/pci/cx18/cx

@@ -1,1 +1,2 @@
-dcard include/config/PARAVI
+gister(port);
+	if (err != 0

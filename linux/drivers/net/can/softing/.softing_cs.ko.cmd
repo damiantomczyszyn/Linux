@@ -1,1 +1,1 @@
-cmd_drivers/media/i2c/tw9903.o := gcc -Wp,-MMD,drivers/media/i2c/.tw9903.o.d -nostdinc -I./arch/x86/include -I./arch/x86/include/generated  -I./include -I./arch/x86/include/uapi -I./arch/x86/include/generated/uapi -I./include/ua
+cmd_drivers/net/can/softing/softing_cs.ko := ld -r -m elf_i386 --build-id=sha1  -T scripts/module.lds -o drivers/net/can/softing/softing_cs.ko drivers/net/can/softing/softing_cs.o drivers/net/can/softing/softing_cs.mod.o;  true

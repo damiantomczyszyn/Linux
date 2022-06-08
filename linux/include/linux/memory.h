@@ -1,160 +1,243 @@
-nclude/asm/atomic64_32.h \
-  include/linux/atomic/atomic-arch-fallback.h \
-    $(wildcard include/config/GENERIC_ATOMIC64) \
-  include/linux/atomic/atomic-long.h \
-  include/linux/atomic/atomic-instrumented.h \
-  include/linux/bug.h \
-    $(wildcard include/config/GENERIC_BUG) \
-    $(wildcard include/config/BUG_ON_DATA_CORRUPTION) \
-  arch/x86/include/asm/bug.h \
-    $(wildcard include/config/DEBUG_BUGVERBOSE) \
-  include/linux/instrumentation.h \
-    $(wildcard include/config/DEBUG_ENTRY) \
-  include/linux/objtool.h \
-    $(wildcard include/config/FRAME_POINTER) \
-  include/asm-generic/bug.h \
-    $(wildcard include/config/BUG) \
-    $(wildcard include/config/GENERIC_BUG_RELATIVE_POINTERS) \
-  include/linux/smp_types.h \
-  include/linux/llist.h \
-    $(wildcard include/config/ARCH_HAVE_NMI_SAFE_CMPXCHG) \
-  include/linux/preempt.h \
-    $(wildcard include/config/TRACE_PREEMPT_TOGGLE) \
-    $(wildcard include/config/PREEMPTION) \
-    $(wildcard include/config/PREEMPT_NOTIFIERS) \
-  arch/x86/include/asm/preempt.h \
-  include/linux/thread_info.h \
-    $(wildcard include/config/THREAD_INFO_IN_TASK) \
-    $(wildcard include/config/GENERIC_ENTRY) \
-    $(wildcard include/config/HAVE_ARCH_WITHIN_STACK_FRAMES) \
-    $(wildcard include/config/HARDENED_USERCOPY) \
-  include/linux/restart_block.h \
-  include/linux/time64.h \
-  include/linux/math64.h \
-    $(wildcard include/config/ARCH_SUPPORTS_INT128) \
-  include/vdso/math64.h \
-  include/vdso/time64.h \
-  include/uapi/linux/time.h \
-  include/uapi/linux/time_types.h \
-  arch/x86/include/asm/thread_info.h \
-    $(wildcard include/config/VM86) \
-    $(wildcard include/config/X86_IOPL_IOPERM) \
-    $(wildcard include/config/COMPAT) \
-    $(wildcard include/config/IA32_EMULATION) \
-  arch/x86/include/asm/page.h \
-  arch/x86/include/asm/page_types.h \
-    $(wildcard include/config/PHYSICAL_START) \
-    $(wildcard include/config/PHYSICAL_ALIGN) \
-    $(wildcard include/config/DYNAMIC_PHYSICAL_MASK) \
-  include/linux/mem_encrypt.h \
-    $(wildcard include/config/ARCH_HAS_MEM_ENCRYPT) \
-  arch/x86/include/asm/mem_encrypt.h \
-  include/linux/cc_platform.h \
-    $(wildcard include/config/ARCH_HAS_CC_PLATFORM) \
-  arch/x86/include/uapi/asm/bootparam.h \
-  include/linux/screen_info.h \
-  include/uapi/linux/screen_info.h \
-  include/linux/apm_bios.h \
-  include/uapi/linux/apm_bios.h \
-  include/uapi/linux/ioctl.h \
-  arch/x86/include/generated/uapi/asm/ioctl.h \
-  include/asm-generic/ioctl.h \
-  include/uapi/asm-generic/ioctl.h \
-  include/linux/edd.h \
-  include/uapi/linux/edd.h \
-  arch/x86/include/asm/ist.h \
-  arch/x86/include/uapi/asm/ist.h \
-  include/video/edid.h \
-    $(wildcard include/config/X86) \
-  include/uapi/video/edid.h \
-  arch/x86/include/asm/page_32_types.h \
-    $(wildcard include/config/HIGHMEM4G) \
-    $(wildcard include/config/HIGHMEM64G) \
-    $(wildcard include/config/PAGE_OFFSET) \
-  arch/x86/include/asm/page_32.h \
-    $(wildcard include/config/DEBUG_VIRTUAL) \
-    $(wildcard include/config/FLATMEM) \
-  include/linux/range.h \
-  include/asm-generic/memory_model.h \
-    $(wildcard include/config/SPARSEMEM_VMEMMAP) \
-    $(wildcard include/config/SPARSEMEM) \
-  include/linux/pfn.h \
-  include/asm-generic/getorder.h \
-  arch/x86/include/asm/cpufeature.h \
-    $(wildcard include/config/X86_FEATURE_NAMES) \
-  arch/x86/include/asm/processor.h \
-    $(wildcard include/config/X86_VMX_FEATURE_NAMES) \
-    $(wildcard include/config/STACKPROTECTOR) \
-    $(wildcard include/config/X86_DEBUGCTLMSR) \
-    $(wildcard include/config/CPU_SUP_AMD) \
-    $(wildcard include/config/XEN) \
-  arch/x86/include/asm/processor-flags.h \
-  arch/x86/include/uapi/asm/processor-flags.h \
-  arch/x86/include/asm/math_emu.h \
-  arch/x86/include/asm/ptrace.h \
-    $(wildcard include/config/PARAVIRT) \
-  arch/x86/include/asm/segment.h \
-    $(wildcard include/config/XEN_PV) \
-  arch/x86/include/uapi/asm/ptrace.h \
-  arch/x86/include/uapi/asm/ptrace-abi.h \
-  arch/x86/include/asm/paravirt_types.h \
-    $(wildcard include/config/PGTABLE_LEVELS) \
-    $(wildcard include/config/PARAVIRT_DEBUG) \
-  arch/x86/include/asm/desc_defs.h \
-  arch/x86/include/asm/pgtable_types.h \
-    $(wildcard include/config/MEM_SOFT_DIRTY) \
-    $(wildcard include/config/HAVE_ARCH_USERFAULTFD_WP) \
-    $(wildcard include/config/PROC_FS) \
-  arch/x86/include/asm/pgtable_32_types.h \
-  arch/x86/include/asm/pgtable-3level_types.h \
-  include/asm-generic/pgtable-nop4d.h \
-  include/asm-generic/pgtable-nopud.h \
-  arch/x86/include/asm/nospec-branch.h \
-  include/linux/static_key.h \
-  include/linux/jump_label.h \
-    $(wildcard include/config/JUMP_LABEL) \
-    $(wildcard include/config/HAVE_ARCH_JUMP_LABEL_RELATIVE) \
-  arch/x86/include/asm/jump_label.h \
-  arch/x86/include/asm/msr-index.h \
-  arch/x86/include/asm/unwind_hints.h \
-  arch/x86/include/asm/orc_types.h \
-  arch/x86/include/asm/GEN-for-each-reg.h \
-  arch/x86/include/asm/proto.h \
-  arch/x86/include/uapi/asm/ldt.h \
-  arch/x86/include/uapi/asm/sigcontext.h \
-  arch/x86/include/asm/msr.h \
-    $(wildcard include/config/TRACEPOINTS) \
-  arch/x86/include/asm/msr-index.h \
-  arch/x86/include/asm/cpumask.h \
-  arch/x86/include/uapi/asm/msr.h \
-  include/linux/tracepoint-defs.h \
-  arch/x86/include/asm/special_insns.h \
-  include/linux/irqflags.h \
-    $(wildcard include/config/TRACE_IRQFLAGS) \
-    $(wildcard include/config/IRQSOFF_TRACER) \
-    $(wildcard include/config/PREEMPT_TRACER) \
-    $(wildcard include/config/DEBUG_IRQFLAGS) \
-    $(wildcard include/config/TRACE_IRQFLAGS_SUPPORT) \
-  arch/x86/include/asm/irqflags.h \
-  arch/x86/include/asm/fpu/types.h \
-  arch/x86/include/asm/vmxfeatures.h \
-  arch/x86/include/asm/vdso/processor.h \
-  include/linux/personality.h \
-  include/uapi/linux/personality.h \
-  arch/x86/include/asm/smp.h \
-    $(wildcard include/config/X86_LOCAL_APIC) \
-    $(wildcard include/config/DEBUG_NMI_SELFTEST) \
-  include/linux/osq_lock.h \
-  include/linux/debug_locks.h \
-  include/linux/rwsem.h \
-    $(wildcard include/config/RWSEM_SPIN_ON_OWNER) \
-    $(wildcard include/config/DEBUG_RWSEMS) \
-  include/linux/spinlock.h \
-  include/linux/bottom_half.h \
-  arch/x86/include/generated/asm/mmiowb.h \
-  include/asm-generic/mmiowb.h \
-    $(wildcard include/config/MMIOWB) \
-  arch/x86/include/asm/spinlock.h \
-  arch/x86/include/asm/paravirt.h \
-    $(wildcard include/config/PARAVIRT_SPINLOCKS) \
-  arch/x86/include/asm/fram
+ine void cx23885_irq_disable_all(struct cx23885_dev *dev)
+{
+	cx23885_irq_disable(dev, 0xffffffff);
+}
+
+void cx23885_irq_remove(struct cx23885_dev *dev, u32 mask)
+{
+	unsigned long flags;
+	spin_lock_irqsave(&dev->pci_irqmask_lock, flags);
+
+	dev->pci_irqmask &= ~mask;
+	cx_clear(PCI_INT_MSK, mask);
+
+	spin_unlock_irqrestore(&dev->pci_irqmask_lock, flags);
+}
+
+static u32 cx23885_irq_get_mask(struct cx23885_dev *dev)
+{
+	u32 v;
+	unsigned long flags;
+	spin_lock_irqsave(&dev->pci_irqmask_lock, flags);
+
+	v = cx_read(PCI_INT_MSK);
+
+	spin_unlock_irqrestore(&dev->pci_irqmask_lock, flags);
+	return v;
+}
+
+static int cx23885_risc_decode(u32 risc)
+{
+	static char *instr[16] = {
+		[RISC_SYNC    >> 28] = "sync",
+		[RISC_WRITE   >> 28] = "write",
+		[RISC_WRITEC  >> 28] = "writec",
+		[RISC_READ    >> 28] = "read",
+		[RISC_READC   >> 28] = "readc",
+		[RISC_JUMP    >> 28] = "jump",
+		[RISC_SKIP    >> 28] = "skip",
+		[RISC_WRITERM >> 28] = "writerm",
+		[RISC_WRITECM >> 28] = "writecm",
+		[RISC_WRITECR >> 28] = "writecr",
+	};
+	static int incr[16] = {
+		[RISC_WRITE   >> 28] = 3,
+		[RISC_JUMP    >> 28] = 3,
+		[RISC_SKIP    >> 28] = 1,
+		[RISC_SYNC    >> 28] = 1,
+		[RISC_WRITERM >> 28] = 3,
+		[RISC_WRITECM >> 28] = 3,
+		[RISC_WRITECR >> 28] = 4,
+	};
+	static char *bits[] = {
+		"12",   "13",   "14",   "resync",
+		"cnt0", "cnt1", "18",   "19",
+		"20",   "21",   "22",   "23",
+		"irq1", "irq2", "eol",  "sol",
+	};
+	int i;
+
+	printk(KERN_DEBUG "0x%08x [ %s", risc,
+	       instr[risc >> 28] ? instr[risc >> 28] : "INVALID");
+	for (i = ARRAY_SIZE(bits) - 1; i >= 0; i--)
+		if (risc & (1 << (i + 12)))
+			pr_cont(" %s", bits[i]);
+	pr_cont(" count=%d ]\n", risc & 0xfff);
+	return incr[risc >> 28] ? incr[risc >> 28] : 1;
+}
+
+static void cx23885_wakeup(struct cx23885_tsport *port,
+			   struct cx23885_dmaqueue *q, u32 count)
+{
+	struct cx23885_buffer *buf;
+	int count_delta;
+	int max_buf_done = 5; /* service maximum five buffers */
+
+	do {
+		if (list_empty(&q->active))
+			return;
+		buf = list_entry(q->active.next,
+				 struct cx23885_buffer, queue);
+
+		buf->vb.vb2_buf.timestamp = ktime_get_ns();
+		buf->vb.sequence = q->count++;
+		if (count != (q->count % 65536)) {
+			dprintk(1, "[%p/%d] wakeup reg=%d buf=%d\n", buf,
+				buf->vb.vb2_buf.index, count, q->count);
+		} else {
+			dprintk(7, "[%p/%d] wakeup reg=%d buf=%d\n", buf,
+				buf->vb.vb2_buf.index, count, q->count);
+		}
+		list_del(&buf->queue);
+		vb2_buffer_done(&buf->vb.vb2_buf, VB2_BUF_STATE_DONE);
+		max_buf_done--;
+		/* count register is 16 bits so apply modulo appropriately */
+		count_delta = ((int)count - (int)(q->count % 65536));
+	} while ((count_delta > 0) && (max_buf_done > 0));
+}
+
+int cx23885_sram_channel_setup(struct cx23885_dev *dev,
+				      struct sram_channel *ch,
+				      unsigned int bpl, u32 risc)
+{
+	unsigned int i, lines;
+	u32 cdt;
+
+	if (ch->cmds_start == 0) {
+		dprintk(1, "%s() Erasing channel [%s]\n", __func__,
+			ch->name);
+		cx_write(ch->ptr1_reg, 0);
+		cx_write(ch->ptr2_reg, 0);
+		cx_write(ch->cnt2_reg, 0);
+		cx_write(ch->cnt1_reg, 0);
+		return 0;
+	} else {
+		dprintk(1, "%s() Configuring channel [%s]\n", __func__,
+			ch->name);
+	}
+
+	bpl   = (bpl + 7) & ~7; /* alignment */
+	cdt   = ch->cdt;
+	lines = ch->fifo_size / bpl;
+	if (lines > 6)
+		lines = 6;
+	BUG_ON(lines < 2);
+
+	cx_write(8 + 0, RISC_JUMP | RISC_CNT_RESET);
+	cx_write(8 + 4, 12);
+	cx_write(8 + 8, 0);
+
+	/* write CDT */
+	for (i = 0; i < lines; i++) {
+		dprintk(2, "%s() 0x%08x <- 0x%08x\n", __func__, cdt + 16*i,
+			ch->fifo_start + bpl*i);
+		cx_write(cdt + 16*i, ch->fifo_start + bpl*i);
+		cx_write(cdt + 16*i +  4, 0);
+		cx_write(cdt + 16*i +  8, 0);
+		cx_write(cdt + 16*i + 12, 0);
+	}
+
+	/* write CMDS */
+	if (ch->jumponly)
+		cx_write(ch->cmds_start + 0, 8);
+	else
+		cx_write(ch->cmds_start + 0, risc);
+	cx_write(ch->cmds_start +  4, 0); /* 64 bits 63-32 */
+	cx_write(ch->cmds_start +  8, cdt);
+	cx_write(ch->cmds_start + 12, (lines*16) >> 3);
+	cx_write(ch->cmds_start + 16, ch->ctrl_start);
+	if (ch->jumponly)
+		cx_write(ch->cmds_start + 20, 0x80000000 | (64 >> 2));
+	else
+		cx_write(ch->cmds_start + 20, 64 >> 2);
+	for (i = 24; i < 80; i += 4)
+		cx_write(ch->cmds_start + i, 0);
+
+	/* fill registers */
+	cx_write(ch->ptr1_reg, ch->fifo_start);
+	cx_write(ch->ptr2_reg, cdt);
+	cx_write(ch->cnt2_reg, (lines*16) >> 3);
+	cx_write(ch->cnt1_reg, (bpl >> 3) - 1);
+
+	dprintk(2, "[bridge %d] sram setup %s: bpl=%d lines=%d\n",
+		dev->bridge,
+		ch->name,
+		bpl,
+		lines);
+
+	return 0;
+}
+
+void cx23885_sram_channel_dump(struct cx23885_dev *dev,
+				      struct sram_channel *ch)
+{
+	static char *name[] = {
+		"init risc lo",
+		"init risc hi",
+		"cdt base",
+		"cdt size",
+		"iq base",
+		"iq size",
+		"risc pc lo",
+		"risc pc hi",
+		"iq wr ptr",
+		"iq rd ptr",
+		"cdt current",
+		"pci target lo",
+		"pci target hi",
+		"line / byte",
+	};
+	u32 risc;
+	unsigned int i, j, n;
+
+	pr_warn("%s: %s - dma channel status dump\n",
+		dev->name, ch->name);
+	for (i = 0; i < ARRAY_SIZE(name); i++)
+		pr_warn("%s:   cmds: %-15s: 0x%08x\n",
+			dev->name, name[i],
+			cx_read(ch->cmds_start + 4*i));
+
+	for (i = 0; i < 4; i++) {
+		risc = cx_read(ch->cmds_start + 4 * (i + 14));
+		pr_warn("%s:   risc%d: ", dev->name, i);
+		cx23885_risc_decode(risc);
+	}
+	for (i = 0; i < (64 >> 2); i += n) {
+		risc = cx_read(ch->ctrl_start + 4 * i);
+		/* No consideration for bits 63-32 */
+
+		pr_warn("%s:   (0x%08x) iq %x: ", dev->name,
+			ch->ctrl_start + 4 * i, i);
+		n = cx23885_risc_decode(risc);
+		for (j = 1; j < n; j++) {
+			risc = cx_read(ch->ctrl_start + 4 * (i + j));
+			pr_warn("%s:   iq %x: 0x%08x [ arg #%d ]\n",
+				dev->name, i+j, risc, j);
+		}
+	}
+
+	pr_warn("%s: fifo: 0x%08x -> 0x%x\n",
+		dev->name, ch->fifo_start, ch->fifo_start+ch->fifo_size);
+	pr_warn("%s: ctrl: 0x%08x -> 0x%x\n",
+		dev->name, ch->ctrl_start, ch->ctrl_start + 6*16);
+	pr_warn("%s:   ptr1_reg: 0x%08x\n",
+		dev->name, cx_read(ch->ptr1_reg));
+	pr_warn("%s:   ptr2_reg: 0x%08x\n",
+		dev->name, cx_read(ch->ptr2_reg));
+	pr_warn("%s:   cnt1_reg: 0x%08x\n",
+		dev->name, cx_read(ch->cnt1_reg));
+	pr_warn("%s:   cnt2_reg: 0x%08x\n",
+		dev->name, cx_read(ch->cnt2_reg));
+}
+
+static void cx23885_risc_disasm(struct cx23885_tsport *port,
+				struct cx23885_riscmem *risc)
+{
+	struct cx23885_dev *dev = port->dev;
+	unsigned int i, j, n;
+
+	pr_info("%s: risc disasm: %p [dma=0x%08lx]\n",
+	       dev->name, risc->cpu, (unsigned long)risc->dma);
+	for (i = 0; i < (risc->size >> 2); i += n) {
+		pr_info("%s:   %04d: ", dev->name, i);
+		n = cx23885_ri

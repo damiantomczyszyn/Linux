@@ -1,4 +1,6 @@
-t.h \
-    $(wildcard include/config/DEBUG_PLIST) \
-  include/linux/hrtimer.h \
-    $(wildcard include/config/HIG
+00140140
+#define AUD_EXT_LNGTH		0x00140150
+#define AUD_EXT_A_MODE		0x00140158
+
+/* I2C Bus 1 */
+#define I2C1_ADDR

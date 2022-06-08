@@ -1,1 +1,1 @@
-lude/linux/atomic/atomic
+nput)->amux == CX25840_A

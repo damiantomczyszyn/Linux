@@ -1,89 +1,104 @@
-    $(wildcard include/config/HIGH_RES_TIMERS) \
-    $(wildcard include/config/TIME_LOW_RES) \
-    $(wildcard include/config/TIMERFD) \
-  include/linux/hrtimer_defs.h \
-  include/linux/timerqueue.h \
-  include/linux/seccomp.h \
-    $(wildcard include/config/SECCOMP) \
-    $(wildcard include/config/HAVE_ARCH_SECCOMP_FILTER) \
-    $(wildcard include/config/SECCOMP_FILTER) \
-    $(wildcard include/config/CHECKPOINT_RESTORE) \
-    $(wildcard include/config/SECCOMP_CACHE_DEBUG) \
-  include/uapi/linux/seccomp.h \
-  arch/x86/include/asm/seccomp.h \
-  arch/x86/include/asm/unistd.h \
-  arch/x86/include/uapi/asm/unistd.h \
-  arch/x86/include/generated/uapi/asm/unistd_32.h \
-  include/asm-generic/seccomp.h \
-  include/uapi/linux/unistd.h \
-  include/linux/resource.h \
-  include/uapi/linux/resource.h \
-  arch/x86/include/generated/uapi/asm/resource.h \
-  include/asm-generic/resource.h \
-  include/uapi/asm-generic/resource.h \
-  include/linux/latencytop.h \
-  include/linux/sched/prio.h \
-  include/linux/sched/types.h \
-  include/linux/signal_types.h \
-    $(wildcard include/config/OLD_SIGACTION) \
-  include/uapi/linux/signal.h \
-  arch/x86/include/asm/signal.h \
-  arch/x86/include/uapi/asm/signal.h \
-  include/uapi/asm-generic/signal-defs.h \
-  arch/x86/include/uapi/asm/siginfo.h \
-  include/uapi/asm-generic/siginfo.h \
-  include/linux/syscall_user_dispatch.h \
-  include/linux/task_io_accounting.h \
-    $(wildcard include/config/TASK_IO_ACCOUNTING) \
-  include/linux/posix-timers.h \
-  include/linux/alarmtimer.h \
-    $(wildcard include/config/RTC_CLASS) \
-  include/uapi/linux/rseq.h \
-  include/linux/kcsan.h \
-  include/linux/energy_model.h \
-  include/linux/sched/cpufreq.h \
-    $(wildcard include/config/CPU_FREQ) \
-  include/linux/sched/topology.h \
-    $(wildcard include/config/SCHED_DEBUG) \
-    $(wildcard include/config/SCHED_MC) \
-    $(wildcard include/config/CPU_FREQ_GOV_SCHEDUTIL) \
-  include/linux/sched/idle.h \
-  include/linux/sched/sd_flags.h \
-  include/linux/klist.h \
-  include/linux/pm.h \
-    $(wildcard include/config/VT_CONSOLE_SLEEP) \
-    $(wildcard include/config/PM_CLK) \
-    $(wildcard include/config/PM_GENERIC_DOMAINS) \
-  include/linux/device/bus.h \
-  include/linux/device/class.h \
-  include/linux/device/driver.h \
-  arch/x86/include/asm/device.h \
-  include/linux/pm_wakeup.h \
-  include/acpi/acpi.h \
-  include/acpi/platform/acenv.h \
-  include/acpi/platform/acgcc.h \
-  include/acpi/platform/aclinux.h \
-    $(wildcard include/config/ACPI_REDUCED_HARDWARE_ONLY) \
-    $(wildcard include/config/ACPI_DEBUG) \
-  include/linux/ctype.h \
-  arch/x86/include/asm/acenv.h \
-  include/acpi/acnames.h \
-  include/acpi/actypes.h \
-  include/acpi/acexcep.h \
-  include/acpi/actbl.h \
-  include/acpi/actbl1.h \
-  include/acpi/actbl2.h \
-  include/acpi/actbl3.h \
-  include/acpi/acrestyp.h \
-  include/acpi/platform/acenvex.h \
-  include/acpi/platform/aclinuxex.h \
-  include/acpi/platform/acgccex.h \
-  include/acpi/acoutput.h \
-  include/acpi/acpiosxf.h \
-  include/acpi/acpixf.h \
-  include/acpi/acconfig.h \
-  include/acpi/acbuffer.h \
-  include/linux/dynamic_debug.h \
-  include/acpi/acpi_bus.h \
-    $(wildcard include/config/X86_ANDROID_TABLETS) \
-    $(wildc
+DING,
+};
+enum cx23885_copyright {
+	CX23885_COPYRIGHT_OFF,
+	CX23885_COPYRIGHT_ON,
+};
+enum cx23885_notification_type {
+	CX23885_NOTIFICATION_REFRESH,
+};
+enum cx23885_notification_status {
+	CX23885_NOTIFICATION_OFF,
+	CX23885_NOTIFICATION_ON,
+};
+enum cx23885_notification_mailbox {
+	CX23885_NOTIFICATION_NO_MAILBOX = -1,
+};
+enum cx23885_field1_lines {
+	CX23885_FIELD1_SAA7114 = 0x00EF, /* 239 */
+	CX23885_FIELD1_SAA7115 = 0x00F0, /* 240 */
+	CX23885_FIELD1_MICRONAS = 0x0105, /* 261 */
+};
+enum cx23885_field2_lines {
+	CX23885_FIELD2_SAA7114 = 0x00EF, /* 239 */
+	CX23885_FIELD2_SAA7115 = 0x00F0, /* 240 */
+	CX23885_FIELD2_MICRONAS = 0x0106, /* 262 */
+};
+enum cx23885_custom_data_type {
+	CX23885_CUSTOM_EXTENSION_USR_DATA,
+	CX23885_CUSTOM_PRIVATE_PACKET,
+};
+enum cx23885_mute {
+	CX23885_UNMUTE,
+	CX23885_MUTE,
+};
+enum cx23885_mute_video_mask {
+	CX23885_MUTE_VIDEO_V_MASK = 0x0000FF00,
+	CX23885_MUTE_VIDEO_U_MASK = 0x00FF0000,
+	CX23885_MUTE_VIDEO_Y_MASK = 0xFF000000,
+};
+enum cx23885_mute_video_shift {
+	CX23885_MUTE_VIDEO_V_SHIFT = 8,
+	CX23885_MUTE_VIDEO_U_SHIFT = 16,
+	CX23885_MUTE_VIDEO_Y_SHIFT = 24,
+};
+
+/* defines below are from ivtv-driver.h */
+#define IVTV_CMD_HW_BLOCKS_RST 0xFFFFFFFF
+
+/* Firmware API commands */
+#define IVTV_API_STD_TIMEOUT 500
+
+/* Registers */
+/* IVTV_REG_OFFSET */
+#define IVTV_REG_ENC_SDRAM_REFRESH (0x07F8)
+#define IVTV_REG_ENC_SDRAM_PRECHARGE (0x07FC)
+#define IVTV_REG_SPU (0x9050)
+#define IVTV_REG_HW_BLOCKS (0x9054)
+#define IVTV_REG_VPU (0x9058)
+#define IVTV_REG_APU (0xA064)
+
+/**** Bit definitions for MC417_RWD and MC417_OEN registers  ***
+  bits 31-16
++-----------+
+| Reserved  |
++-----------+
+  bit 15  bit 14  bit 13 bit 12  bit 11  bit 10  bit 9   bit 8
++-------+-------+-------+-------+-------+-------+-------+-------+
+| MIWR# | MIRD# | MICS# |MIRDY# |MIADDR3|MIADDR2|MIADDR1|MIADDR0|
++-------+-------+-------+-------+-------+-------+-------+-------+
+ bit 7   bit 6   bit 5   bit 4   bit 3   bit 2   bit 1   bit 0
++-------+-------+-------+-------+-------+-------+-------+-------+
+|MIDATA7|MIDATA6|MIDATA5|MIDATA4|MIDATA3|MIDATA2|MIDATA1|MIDATA0|
++-------+-------+-------+-------+-------+-------+-------+-------+
+***/
+#define MC417_MIWR	0x8000
+#define MC417_MIRD	0x4000
+#define MC417_MICS	0x2000
+#define MC417_MIRDY	0x1000
+#define MC417_MIADDR	0x0F00
+#define MC417_MIDATA	0x00FF
+
+/* MIADDR* nibble definitions */
+#define  MCI_MEMORY_DATA_BYTE0          0x000
+#define  MCI_MEMORY_DATA_BYTE1          0x100
+#define  MCI_MEMORY_DATA_BYTE2          0x200
+#define  MCI_MEMORY_DATA_BYTE3          0x300
+#define  MCI_MEMORY_ADDRESS_BYTE2       0x400
+#define  MCI_MEMORY_ADDRESS_BYTE1       0x500
+#define  MCI_MEMORY_ADDRESS_BYTE0       0x600
+#define  MCI_REGISTER_DATA_BYTE0        0x800
+#define  MCI_REGISTER_DATA_BYTE1        0x900
+#define  MCI_REGISTER_DATA_BYTE2        0xA00
+#define  MCI_REGISTER_DATA_BYTE3        0xB00
+#define  MCI_REGISTER_ADDRESS_BYTE0     0xC00
+#define  MCI_REGISTER_ADDRESS_BYTE1     0xD00
+#define  MCI_REGISTER_MODE              0xE00
+
+/* Read and write modes */
+#define  MCI_MODE_REGISTER_READ         0
+#define  MCI_MODE_REGISTER_WRITE        1
+#define  MCI_MODE_MEMORY_READ           0
+#define  MCI_MODE_MEMORY_WRITE          0x40
+
+/*** Bit definition

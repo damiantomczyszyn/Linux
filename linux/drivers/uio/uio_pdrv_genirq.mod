@@ -1,2 +1,2 @@
-clude/linux/build_bug.h \
-  inc
+] IR controller */
+		allowed_pr

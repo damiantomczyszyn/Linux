@@ -1,32 +1,25 @@
-*pf;
-	unsigned long flags;
-	bool found = false;
-
-	might_sleep();
-
-	if (WARN_ON_ONCE(static_obj(key)))
-		return;
-
-	raw_local_irq_save(flags);
-	lockdep_lock();
-
-	hlist_for_each_entry_rcu(k, hash_head, hash_entry) {
-		if (k == key) {
-			hlist_del_rcu(&k->hash_entry);
-			found = true;
-			break;
-		}
+*
+	 * Forcefully restricting the affinity of a deadline task is
+	 * likely to cause problems, so fail and noisily override the
+	 * mask entirely.
+	 */
+	if (task_has_dl_policy(p) && dl_bandwidth_enabled()) {
+		err = -EPERM;
+		goto err_unlock;
 	}
-	WARN_ON_ONCE(!found && debug_locks);
-	if (found) {
-		pf = get_pending_free();
-		__lockdep_free_key_range(pf, key, 1);
-		call_rcu_zapped(pf);
-	}
-	lockdep_unlock();
-	raw_local_irq_restore(flags);
 
-	/* Wait until is_dynamic_key() has finished accessing k->hash_entry. */
-	synchronize_rcu();
-}
-EXPORT_SYMBOL_GPL(
+	if (!cpumask_and(new_mask, &p->cpus_mask, subset_mask)) {
+		err = -EINVAL;
+		goto err_unlock;
+	}
+
+	/*
+	 * We're about to butcher the task affinity, so keep track of what
+	 * the user asked for in case we're able to restore it later on.
+	 */
+	if (user_mask) {
+		cpumask_copy(user_mask, p->cpus_ptr);
+		p->user_cpus_ptr = user_mask;
+	}
+
+	return __set_cpus_allowed

@@ -1,1 +1,1 @@
-nfig/GENERIC_IOREMAP)
+IO moving on encoder 

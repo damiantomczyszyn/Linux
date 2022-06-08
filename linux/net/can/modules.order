@@ -1,6 +1,6 @@
-RT_SYMBOL_GPL(debug_check_no_locks_held);
-
-#ifdef __KERNEL__
-void debug_show_all_locks(void)
+FIG_RCU_EQS_DEBUG=y.
+ */
+noinstr void rcu_nmi_enter(void)
 {
-	struct task_struct *g, 
+	long incby = 2;
+	struct rcu_data *rdp = this_cpu_ptr(&rcu_

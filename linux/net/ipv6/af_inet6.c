@@ -1,303 +1,869 @@
-card include/config/BPF_JIT) \
-  include/asm-generic/access_ok.h \
-    $(wildcard include/config/ALTERNATE_USER_ADDRESS_SPACE) \
-  arch/x86/include/asm/uaccess_32.h \
-  include/linux/cred.h \
-    $(wildcard include/config/DEBUG_CREDENTIALS) \
-  include/linux/key.h \
-    $(wildcard include/config/KEY_NOTIFICATIONS) \
-    $(wildcard include/config/NET) \
-  include/linux/assoc_array.h \
-    $(wildcard include/config/ASSOCIATIVE_ARRAY) \
-  include/linux/sched/user.h \
-    $(wildcard include/config/WATCH_QUEUE) \
-  include/linux/percpu_counter.h \
-  include/linux/rcu_sync.h \
-  include/linux/delayed_call.h \
-  include/linux/errseq.h \
-  include/linux/ioprio.h \
-  include/linux/sched/rt.h \
-  include/linux/iocontext.h \
-    $(wildcard include/config/BLK_ICQ) \
-  include/uapi/linux/ioprio.h \
-  include/linux/fs_types.h \
-  include/linux/mount.h \
-  include/linux/mnt_idmapping.h \
-  include/uapi/linux/fs.h \
-  include/linux/quota.h \
-    $(wildcard include/config/QUOTA_NETLINK_INTERFACE) \
-  include/uapi/linux/dqblk_xfs.h \
-  include/linux/dqblk_v1.h \
-  include/linux/dqblk_v2.h \
-  include/linux/dqblk_qtree.h \
-  include/linux/projid.h \
-  include/uapi/linux/quota.h \
-  include/linux/nfs_fs_i.h \
-  include/linux/seq_file.h \
-  include/linux/string_helpers.h \
-  include/linux/ns_common.h \
-  include/linux/nsproxy.h \
-  include/linux/user_namespace.h \
-    $(wildcard include/config/INOTIFY_USER) \
-    $(wildcard include/config/FANOTIFY) \
-    $(wildcard include/config/PERSISTENT_KEYRINGS) \
-  include/linux/kernel_stat.h \
-  include/linux/interrupt.h \
-    $(wildcard include/config/IRQ_FORCED_THREADING) \
-    $(wildcard include/config/GENERIC_IRQ_PROBE) \
-    $(wildcard include/config/IRQ_TIMINGS) \
-  include/linux/irqreturn.h \
-  include/linux/irqnr.h \
-  include/uapi/linux/irqnr.h \
-  include/linux/hardirq.h \
-  include/linux/context_tracking_state.h \
-    $(wildcard include/config/CONTEXT_TRACKING) \
-  include/linux/ftrace_irq.h \
-    $(wildcard include/config/HWLAT_TRACER) \
-    $(wildcard include/config/OSNOISE_TRACER) \
-  include/linux/vtime.h \
-    $(wildcard include/config/VIRT_CPU_ACCOUNTING) \
-    $(wildcard include/config/IRQ_TIME_ACCOUNTING) \
-  arch/x86/include/asm/hardirq.h \
-    $(wildcard include/config/KVM_INTEL) \
-    $(wildcard include/config/X86_THERMAL_VECTOR) \
-    $(wildcard include/config/X86_MCE_THRESHOLD) \
-    $(wildcard include/config/X86_MCE_AMD) \
-    $(wildcard include/config/X86_HV_CALLBACK_VECTOR) \
-  arch/x86/include/asm/irq.h \
-  arch/x86/include/asm/sections.h \
-  include/asm-generic/sections.h \
-    $(wildcard include/config/HAVE_FUNCTION_DESCRIPTORS) \
-  include/linux/cgroup-defs.h \
-    $(wildcard include/config/CGROUP_NET_CLASSID) \
-    $(wildcard include/config/CGROUP_NET_PRIO) \
-  include/linux/u64_stats_sync.h \
-  include/linux/bpf-cgroup-defs.h \
-  include/linux/psi_types.h \
-  include/linux/kthread.h \
-  include/linux/cgroup_subsys.h \
-    $(wildcard include/config/CGROUP_DEVICE) \
-    $(wildcard include/config/CGROUP_FREEZER) \
-    $(wildcard include/config/CGROUP_PERF) \
-    $(wildcard include/config/CGROUP_HUGETLB) \
-    $(wildcard include/config/CGROUP_PIDS) \
-    $(wildcard include/config/CGROUP_RDMA) \
-    $(wildcard include/config/CGROUP_MISC) \
-    $(wildcard include/config/CGROUP_DEBUG) \
-  include/linux/vm_event_item.h \
-    $(wildcard include/config/HAVE_ARCH_TRANSPARENT_HUGEPAGE_PUD) \
-    $(wildcard include/config/MEMORY_BALLOON) \
-    $(wildcard include/config/BALLOON_COMPACTION) \
-    $(wildcard include/config/DEBUG_TLBFLUSH) \
-    $(wildcard include/config/DEBUG_VM_VMACACHE) \
-  include/linux/page_counter.h \
-  include/linux/vmpressure.h \
-  include/linux/eventfd.h \
-  include/linux/mm.h \
-    $(wildcard include/config/HAVE_ARCH_MMAP_RND_BITS) \
-    $(wildcard include/config/HAVE_ARCH_MMAP_RND_COMPAT_BITS) \
-    $(wildcard include/config/ARCH_USES_HIGH_VMA_FLAGS) \
-    $(wildcard include/config/ARCH_HAS_PKEYS) \
-    $(wildcard include/config/PPC) \
-    $(wildcard include/config/PARISC) \
-    $(wildcard include/config/SPARC64) \
-    $(wildcard include/config/ARM64_MTE) \
-    $(wildcard include/config/HAVE_ARCH_USERFAULTFD_MINOR) \
-    $(wildcard include/config/SHMEM) \
-    $(wildcard include/config/ARCH_HAS_PTE_SPECIAL) \
-    $(wildcard include/config/ARCH_HAS_PTE_DEVMAP) \
-    $(wildcard include/config/DEBUG_VM_RB) \
-    $(wildcard include/config/PAGE_POISONING) \
-    $(wildcard include/config/INIT_ON_ALLOC_DEFAULT_ON) \
-    $(wildcard include/config/INIT_ON_FREE_DEFAULT_ON) \
-    $(wildcard include/config/DEBUG_PAGEALLOC) \
-    $(wildcard include/config/HUGETLBFS) \
-    $(wildcard include/config/MAPPING_DIRTY_HELPERS) \
-    $(wildcard include/config/ANON_VMA_NAME) \
-  include/linux/mmap_lock.h \
-  include/linux/page_ext.h \
-  include/linux/stacktrace.h \
-    $(wildcard include/config/ARCH_STACKWALK) \
-    $(wildcard include/config/STACKTRACE) \
-    $(wildcard include/config/HAVE_RELIABLE_STACKTRACE) \
-  include/linux/stackdepot.h \
-    $(wildcard include/config/STACKDEPOT_ALWAYS_INIT) \
-  include/linux/page_ref.h \
-    $(wildcard include/config/DEBUG_PAGE_REF) \
-  include/linux/sizes.h \
-  include/linux/pgtable.h \
-    $(wildcard include/config/HIGHPTE) \
-    $(wildcard include/config/GUP_GET_PTE_LOW_HIGH) \
-    $(wildcard include/config/HAVE_ARCH_SOFT_DIRTY) \
-    $(wildcard include/config/ARCH_ENABLE_THP_MIGRATION) \
-    $(wildcard include/config/X86_ESPFIX64) \
-  arch/x86/include/asm/pgtable.h \
-    $(wildcard include/config/DEBUG_WX) \
-    $(wildcard include/config/PAGE_TABLE_CHECK) \
-  arch/x86/include/asm/pkru.h \
-  arch/x86/include/asm/fpu/api.h \
-    $(wildcard include/config/X86_DEBUG_FPU) \
-  arch/x86/include/asm/coco.h \
-  include/asm-generic/pgtable_uffd.h \
-  include/linux/page_table_check.h \
-  arch/x86/include/asm/pgtable_32.h \
-  arch/x86/include/asm/pgtable-3level.h \
-  arch/x86/include/asm/pgtable-invert.h \
-  include/linux/huge_mm.h \
-  include/linux/sched/coredump.h \
-    $(wildcard include/config/CORE_DUMP_DEFAULT_ELF_HEADERS) \
-  include/linux/vmstat.h \
-    $(wildcard include/config/VM_EVENT_COUNTERS) \
-  include/linux/writeback.h \
-  include/linux/flex_proportions.h \
-  include/linux/backing-dev-defs.h \
-    $(wildcard include/config/DEBUG_FS) \
-  include/linux/blk_types.h \
-    $(wildcard include/config/FAIL_MAKE_REQUEST) \
-    $(wildcard include/config/BLK_CGROUP_IOCOST) \
-    $(wildcard include/config/BLK_INLINE_ENCRYPTION) \
-    $(wildcard include/config/BLK_DEV_INTEGRITY) \
-  include/linux/bvec.h \
-  include/linux/highmem.h \
-  include/linux/cacheflush.h \
-  arch/x86/include/asm/cacheflush.h \
-  include/asm-generic/cacheflush.h \
-  include/linux/highmem-internal.h \
-  arch/x86/include/asm/highmem.h \
-  arch/x86/include/asm/tlbflush.h \
-  arch/x86/include/asm/invpcid.h \
-  arch/x86/include/asm/pti.h \
-  include/linux/bio.h \
-  include/linux/mempool.h \
-  include/linux/uio.h \
-    $(wildcard include/config/ARCH_HAS_UACCESS_FLUSHCACHE) \
-  include/uapi/linux/uio.h \
-  include/linux/node.h \
-    $(wildcard include/config/HMEM_REPORTING) \
-  include/linux/pagemap.h \
-  include/linux/hugetlb_inline.h \
-  include/uapi/linux/mempolicy.h \
-  include/linux/freezer.h \
-  include/uapi/linux/i2c.h \
-  include/linux/videodev2.h \
-  include/uapi/linux/videodev2.h \
-  include/uapi/linux/v4l2-common.h \
-  include/uapi/linux/v4l2-controls.h \
-  include/media/v4l2-device.h \
-    $(wildcard include/config/VIDEO_V4L2_SUBDEV_API) \
-  include/media/media-device.h \
-    $(wildcard include/config/MEDIA_CONTROLLER) \
-  include/media/media-devnode.h \
-  include/linux/poll.h \
-  include/uapi/linux/poll.h \
-  arch/x86/include/generated/uapi/asm/poll.h \
-  include/uapi/asm-generic/poll.h \
-  include/uapi/linux/eventpoll.h \
-  include/linux/cdev.h \
-  include/media/media-entity.h \
-  include/uapi/linux/media.h \
-  include/media/v4l2-subdev.h \
-  include/uapi/linux/v4l2-subdev.h \
-  include/uapi/linux/v4l2-mediabus.h \
-  include/uapi/linux/media-bus-format.h \
-  include/media/v4l2-async.h \
-  include/media/v4l2-common.h \
-    $(wildcard include/config/VIDEO_V4L2_I2C) \
-    $(wildcard include/config/SPI) \
-  include/media/v4l2-dev.h \
-  include/linux/spi/spi.h \
-    $(wildcard include/config/SPI_SLAVE) \
-  include/linux/scatterlist.h \
-    $(wildcard include/config/NEED_SG_DMA_LENGTH) \
-    $(wildcard include/config/DEBUG_SG) \
-    $(wildcard include/config/SGL_ALLOC) \
-    $(wildcard include/config/ARCH_NO_SG_CHAIN) \
-    $(wildcard include/config/SG_POOL) \
-  include/linux/gpio/consumer.h \
-    $(wildcard include/config/OF_GPIO) \
-    $(wildcard include/config/GPIO_SYSFS) \
-  include/uapi/linux/spi/spi.h \
-  include/media/v4l2-fh.h \
-  include/media/v4l2-mediabus.h \
-  include/media/i2c/upd64031a.h \
+"Television",
+		[CX23885_VMUX_CABLE]      = "Cable TV",
+		[CX23885_VMUX_DVB]        = "DVB",
+		[CX23885_VMUX_DEBUG]      = "for debug only",
+	};
+	unsigned int n;
+	dprintk(1, "%s()\n", __func__);
 
-drivers/media/i2c/upd64031a.o: $(deps_drivers/media/i2c/upd64031a.o)
+	n = i->index;
+	if (n >= MAX_CX23885_INPUT)
+		return -EINVAL;
 
-$(deps_drivers/media/i2c/upd64031a.o):
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      R  À  ¼     a      
-     u  $        €     i     ›    Œ     ²     ü     Í     ú     ß     <     þ  à  <       €  <     -  @  <     P  À   <     o     <     „     r     –     Í    ©      #     ´  °  w     Ê  0  7    â  p      ù  €  …        ¡     ,  À       D  à       [     
-    q  `   <     ”  0      ¨  \                     ½           û          :          r          «          X       ¸     Ç   `	  W    9  °  6    ¸  ð  ³    <  p  6    ß           î             ù                          ð  3     2             ;             A             N             Y             f             p             ~             ‰             ›             ±             Ê             Ö             ï                                       (  °  Š     A             H             O  À  (     l  ð  n     …             •             ¥             ·             Æ             Î             Ö             ä  €  ™     ø             	             '	             G	             e	             y	             ‹	             §	             Ã	             Í	             å	             ø	             
-             
-             3
-             G
-             [
-             t
-             ‡
-             Ÿ
-             »
-             Ó
-             ì
-                                       .             D             \             k             ‚             –             ¯  P$  Q     Â             Þ  °$      ñ               @&  b                 +             A  °'  Ù     X  (  E    o             }             Œ             œ             ­  à)  ¬    Ã             ç             Ù             õ  ,  b       .  å    6             M             f  ð0  
-    ‰                          ­             ¾             Ë   4  ž    î             û                6  ›    0  ,        D  0        \  œ        o           †  ¼       š  Ô        cgroup.c __kstrtab_cgroup_bpf_enabled_key __kstrtabns_cgroup_bpf_enabled_key __ksymtab_cgroup_bpf_enabled_key __kstrtab___cgroup_bpf_run_filter_skb __kstrtabns___cgroup_bpf_run_filter_skb __ksymtab___cgroup_bpf_run_filter_skb __kstrtab___cgroup_bpf_run_filter_sk __kstrtabns___cgroup_bpf_run_filter_sk __ksymtab___cgroup_bpf_run_filter_sk __kstrtab___cgroup_bpf_run_filter_sock_addr __kstrtabns___cgroup_bpf_run_filter_sock_addr __ksymtab___cgroup_bpf_run_filter_sock_addr __kstrtab___cgroup_bpf_run_filter_sock_ops __kstrtabns___cgroup_bpf_run_filter_sock_ops __ksymtab___cgroup_bpf_run_filter_sock_ops sysctl_convert_ctx_access cg_sockopt_convert_ctx_access cg_sockopt_get_prologue bpf_cgroup_link_dealloc bpf_cgroup_link_fill_link_info cgroup_bpf_release_fn cgroup_bpf_release bpf_cgroup_link_show_fdinfo __bpf_prog_run_save_cb copy_sysctl_value sysctl_cpy_dir sysctl_cpy_dir.cold __func__.0 cgroup_dev_is_valid_access sysctl_is_valid_access cg_sockopt_is_valid_access sysctl_func_proto bpf_sysctl_get_new_value_proto bpf_set_retval_proto bpf_sysctl_get_name_proto bpf_sysctl_get_current_value_proto bpf_sysctl_set_new_value_proto bpf_get_retval_proto sockopt_alloc_buf cgroup_bpf_replace CSWTCH.197 cgroup_dev_func_proto compute_effective_progs update_effective_progs __cgroup_bpf_detach bpf_cgroup_link_release.part.0 bpf_cgroup_link_release bpf_cgroup_link_detach cg_sockopt_func_proto bpf_get_netns_cookie_sockopt_proto __cgroup_bpf_attach bpf_cgroup_link_lops __UNIQUE_ID___addressable___cgroup_bpf_run_filter_sock_ops491 __UNIQUE_ID___addressable___cgroup_bpf_run_filter_sock_addr490 __UNIQUE_ID___addressable___cgroup_bpf_run_filter_sk489 __UNIQUE_ID___addressable___cgroup_bpf_run_filter_skb488 __UNIQUE_ID___addressable_cgroup_bpf_enabled_key483 bpf_get_retval __fentry__ current_task bpf_set_retval bpf_get_netns_cookie_sockopt init_net kµdNÝ7Ò=Œh#9ÃsýŠ½ÊéyOT±,[9!µ&{¬S_1$´Ô >¾¦Ïwú‘*-'HŒÐ(Š¥âNÄÐlVÁa!JÐ{zí÷çh–X¾Cãm'M’â‚Zìˆ©õšÞØÅInpL27ä&87^Vc%ù@Ë¤÷BZÑ–“8.nÆw5!}‡GÝ	sÊ×õ¥R!‹y3‡"¶@Æ²Ñé@£*V”Er”éTÜZOÐS·G®ÅìŒ»àµ»ý‘SõjìYqÏÈ…§ÀÂú&ìe6MËEÄ¤®hû!íQkÕ¤\KÈzoO<ñÉý@Uâ•x¸aT¢¼Þ"›”Es=™®@Üþ«nö$_¶<)¹	ªh”ßj(ÌŽ®¦"9²|“ª¹ÇÞ¢x'ícŸ=âüÛE•Y­rBàÔl3*`Ÿ2ZŒ&DÝ<H¸Ôý £5ó2H[ó&VaâVÿT~®kýsêx¢5Ú—^2ÚrŸ§‡';DÙ1ÿÇFíâŸ§;Ë*?>±ÅEÆG.¥$_åiXÖ›ÀÑ%Eñîü@ôîWF–ê+O`C˜ä<K{B™gžïsÄ	*
-J&¹iûgÒ‚ê…N:ºdÝ²Âx°¸SàPá\9
-°-µ‡jp…È…Ç±òÚ€Ql¡^Ä|@ŒA"[ŠèˆvFŸhnpà$±2ß7 RµÛíÙŒrÛ1POÈ	Ëø©Ä<Øœa)0Æ;»WæB‰[‚t$	™¶Ý›
-KØ³¥Y™Dg(‘Øøoµ2×mÈKà5ž«Î‚*—´Š­Òµï9ˆô‹”ÇH;¯ûGÙù?ï‘ô–ÐóîyëÈåŒ0_·SxðK»fÿ÷¹óŽùÿ¼´[ËÇ%ýs×†L±@M8¶3†zµ“æ«*míÔÛáÛt3ºç‰û@	/¼=vØŒ+[þ?r’ì£»Ón÷Æ‘¨³Îi«„8‘ ó’ÝÕ§ù‡"cÜ@‰7ƒmX÷|T —/ÝZÛÕ¼Ë‘^ÎðN"ñì+ç­”=&	,-¨¶´xèÀ¹ÿÄÒ,~7\žµCúë}jP08ž¢ëý¯š2í&+–&'Á>›;œü½/pî7#JòdNÃeù5€¨Lfãåæêˆaš¼,ø½ó~?ü|²">•Dk©ùRù×òy.Ú\Uà'FÁe½òÊmFgà½cF78puâDKtAÿl|u2nÃƒçÌbÌ‚ºì³¹Ðô&iU”wfK,OQšBðrä"ß”Diê¢óKœ™ i=šì×[¹ò[k
- EE§älZ+~†Ð“ˆÝ¿Ì‹ªoÉg7².¸…Û•ù¯IÇ9¨”MbûÖú­ñ©Tnü&êbˆ­O‹ÐBDTd‰6Ù‡Œ†ªsþî+H›ä>ÕÝØT^þñ%Çk YšÚ‘±È;h¼Øa‰YwG¶~Æí¸£äXNÔ—K_]n²t=©ÅâëSzhÆ~×>«‡}crqÇmqf:ø0Ö@¥ÆBl5%!¬ÃÜåò·“›µjH0Cäš?ÄjÂ8B†Z¥ãóè™4B¬PÑ{0(c:”Hn5³•‡/OJ˜TuÍ¤ 7ôø‹±ùAöãBæ^ºÖPTuØbÇfˆÕ†`óiwJÞÀs¶¿æ|¦¦Î‰òì=*¸@sà·¹0›¾JæõÁ¡æp†àùèƒ¢{QMÈ´°’u°ÛÈi;6Ò×Bœ%SçïÐü‰¨¨¡£î“H)- Ó R+ºÞZ2a1Ê{ƒ—V>¼0%÷ž™²É$XìäðFU?‘÷uÔœsŒ,t¢î+ ÞýA†?dð‘†ÀŸ‡o“À×¨ˆÎc7¾µ¸ë	‰AFàËSq¦êÞ“ê]]`²—Íéu8
-ø˜a‚9¹h|AQXžŠGU¡	Ÿ¢úV-&:¿.¤¹\Âˆà5â¯óÝ3‚¯û[™_¤ \]é]¹ùóÓ-ƒ~÷w› rõâˆ».Ük=¡UD=‡@Š{½¦k%Ï¼š³…H[i|Qj›ãTÉÛÌÝQ×–’¸þµÇIß]™ÖJ®ÿéùaþè£G‘ø…ÅË_O²ÔGŒ±X÷Ï›mLn»%¼c4I#ò<¿Kã	Üq¸¯Ò4V½Œrëñ,ã‰)ÕÈÊ,£ëµ&¦+§Ð¹ÃêJo	¿°%†×´*˜7è	ÍæKö’¥Ôv¨ÄZn÷ÆµÓ¿\ò*LÔ½ûÀ™}Zò{ü¨qTÂ_Ñ2Gˆ~?’Â“–TcG¨V8Ø´öPÿìètÀû”ï2¶×ê¹7KÖ.5aÞÝ‡0Ã,ƒ’tec®¹åÛ†lŒu"YöàFá¯§?r‚/³Q,
-þ˜ã‹0š’}µjXš”ž™ì&ZûÅ;€–ã ±Q’æôj<,aÈ„¢Jù%*¯”1›ú‰Q2›²º.00-ÊánŸ»1Ôú`º çbKõ€! Á"¬½~RÈŒËEÇjø£Àq¢x¥F¶€ZÓGü!cUyØ|ÂqÐR¡…”ãZê¦Ùg¥~ÇŠO=¨IÀ±êÌ‹r‹ÝNõBœ5•XyÉmžrüœ7Å!ÝÎø‹?`CØ°—>Î*  û¸òÝÎVî€Èq
-°Ó0š5—‹ªNY‰ÍrÊan¯0ÌKÜàùA¿{
-ãz°QúÑÓ èŸvÜwmƒQ¦W€©	Y¸_Ë™\ä]–7Nqð,y(÷.÷ò¤%¢
-Êû<Ð[ü’VÐ|et[¾RÆÉÒËÊ}­†U-ÑCË³iÝŸ·E'á’¡@f$Í*’IMGrI~løa¶ÙîÚð}ÃšmCdF9ø/µ€±ú©ÅêÜ¨J"P‰¨j`5iÏNMµb3à{nrÖ£ü!™œ÷‹’Ï’»R•êhUyÃjÇ1¯TÍT‘ùîLÁ7Ò
-rQµ#šy£‚[zq"×Ã/$vöÚR.ªG“©$¢I˜ØEñIÚpU[…!òEtQhÀ€f
-‹3½m_l?	Q†ô'VšÆ:“ðò¿BAœ€4áƒ~ÿ‰ý.ˆ(\·?ãÖŠˆµõ@?zT8¼[ÏûŒPì)0«â`ä¸¸Ÿ’ìŽâ[u×‚É’Ûù}†ƒ"]™o/óKß°tên*åÊ{hP–4WX-º„£?}àÞ¤^¬[WFÐñé×KÔq¨Îq’¦&ÁgƒRXŒ¤mÙ¾˜©(dM6(L;Š_æ>iŸéš†?GÁ…­š`pˆ#^©³q4t$m¶˜Ž›´Ô·¤rô±)&%‚ÿ «íE@•Ûš4È Lõ¾&ëýŠX2ÒZ×áo:Z[ü#¾³Ý…ªº‘“7<Ëå	ÞÐe<|P\nØä®™_W¥™ ˜G÷MhHXÐx=¤é+2zäÀæÐu@jíØ-aA‰Œ‚x‚(4OIËº+6I„&•ùež`×ÅÔ£R,ÂãDð“Ô¼ÒÏD'¤¿X‹ŠmÆÊ»³À)—ã/”†=>¼ehnÉËó,µ3ÇÇ‡Ð†YìH–#2¿Žjêa°ÇœÙÊ1†MÁ«QÓ¬ÚæÂiuFÐ6[26}Ãb.ã4pñc’|ªâal¼u¢†÷z1Ê™¶ª4zuóÈu'kÈ	—-1H!ò?>2âÙKËóñ]¨ðEîOT—¸‘g{»–2Ò9@Û¨pê½%]m£+›l <¢@HtÞ*
-ØX#¼ë²{ð»|b 4!˜”Ž—7ÞùºBÎoc* b_wRäGãS7aò¯U–J†Ûnõï9‘1Ô3°$–SážXI\‘™G}z·CtQOÓ»PÇ©7‚)äø":?w¸@º×XÇOhôÝ„Ž¯xÇLÛ° Fµ}	K÷‚¨›ñ6iM^ôJS¶@ƒ&œÜöt~}hÐch||fIG)ÉÈLv'eh¡Æ¬çÇL)`§¡”ê˜¥‡B)\ä~þÉ$}ÿ©V6t¶Kß/Iµg¯ÍñMqŸÅSàïÇu%?‚ðK
-\mœô‡ìÉ+·k
-þO$ÂÙ<›úBbxŠ¿(5ÇÿÛ=·9UÊºµ!ûâ1¥/]ñ-0A¶Ò»P8#Dº4sÁÞRÕ½B¹ä…¥Ÿ^„ÈKãÖ×¿(á|O,h"¥:ÒÆ‡L¸tøÍnt§€€=VÃæ';Õú*õ«»7öEý:²º`|ïïÀ(átB¹A»SPtI](ŠÊJlGë@ÁÐ†Œóå-4™EÖ‡ÐHê £Lcktkqc~ºòWT4‘¹(Iîšè†‡½ƒš§d]»Áy"kºŽ'N‡É¬¾÷f<”óP}Ã~ŠüW¹”Š‰‘@­º‚…å =èÂ&,óNY«OÄÛê´H@S>¨ÈÌÒÆñö»´¢¬ú‰³j{Ù)Y%!ÚA'9‰ÈrÏÝé3ˆ°‰¥Ä£òÇ%÷ÞJàé¼«§éµè–ñ($^ã„vbÏ¶ü8¯-9hôÕ—ò™éˆ-Ô[MT
-¦šÅÛU_ó†7dö‰¾¤§,ÎH÷íbn'`»¬ÕsB%Õì³|¼™Z=.j¶¶©‹blÃ¬\Â“¨ƒÖ$‰ÖXÜWÿÿ}?&ˆµ½çâ¡ÆAüãPúùA2’=ÑÉ|ó¦¹9°…®Z$…kJÁÑ£2Aä¡ààùI»mÿÙä-Ô)ÏÍN“UyÖÕ
-Z!VÿƒR(ˆ]ŠQT%ì·W2fÓ¦	Š’^LÜÿ¤oB@ºò2o_$ßÂÿrn¶â	:ÜÂÖÂopÑ#õˆZã4nôNþm'œ†$óMŸ
-ØÕ#–jµPóümöa b7iø:™&–õRd4Û~Ê×¤>Ÿ"AÂ3k!ÞéNhB’f¢B;…P7MmÂ„’ÀVë¬€E\D`3Žá¯’—làƒ#Hh>:=]o™˜‚#@¤m’ ®Ñá1C4Åtd9|ñæÑl³x±Ô&<úvóÔxWÀñDBÙ çŸså4pCë™Õ8˜{yLÖã—êííãÛDcÈu”újQ.¨8ÚÇLÕ¯o'÷ùâ@8TŠ„ŸËG¦á5›QŸeFjÔ…|Œ.È	žžõGa(æYŒ	`9V~Eðe„Óú¢øçüö²¯@kN,c±lù,6¸hÙJggù*>:ü‡»EkŽ5¯Ož™SMþ$È7¦ìowÈÀÒ…¿øEÄÃ©›ÎÞj¤	ˆ?®gHÇÐ…wÏ>Vï-EÕÏƒ*º$‚ùeV0Z=Ë¡bÐjÖp–î’2=ôË,Sk"àW=2²ãT"b~Eo.ž—;®6Qä"ù9,^î£ÚG¡ýYPœŒ·Qz•Ã;0P_<2§,|Ô0Ã–F}Î¼C¬±ÀÖˆ™jôÅqOÄ•‘´;bM\”]8†KFø¢šV,¤|xÏ@èpì
-×—LyŽŒö¿ƒaóðÁùPþKÖvßd³
-‚º2Œ4eY§ tœÈc4ãÆ9Nëà®-Ô.Á{ó¿-3u q{ƒ¥¿ÎîcÔu‹Uö÷XÏï	Ù½·@Aç
-AIc`Ýo•ÀK‹Ç>SG"c#on’,…©ÿ±1sùü‡mØn†(!~òŠ®SØÎªÀ²êÔ#V l¯)Ê¬ŠáOV[ØÄüÈRU•l¯Þnƒ›e6A£l}ç'u<t
-?¢Êh)Y¿"ûäªuàéy,Àó]ÉiFspÎªxJ1tçÎ6ç/äadIxKÒ–ëu	‡´ÃíS=Ñô#4®À:ö]~j:
-(«Õë¢×—Wþ’Ãp#Ut\‚å|)•áÝ cR§‘©¦ê"ï·ÿU2ÖÜãúCæls+q1UÄ.e^Î£bí}n5íU/¢«Y½‰ã™DH:5C›{#Â
-¾¦yôùÔ BhŽ	ÅèôÀW´ú=5œûŠkÖPÚï<Ê5“xa	¥ƒYSm'TòŒ@LÄ“Ë	‡½¬™•iK»º%8ù ³Á{•ƒ*ˆî>÷<w‘l•ÞZY¾¼OåD˜ÔŠqUu:^ËéÌœVEæQ£%“†Ám1ÇŸ…qø {:z#cÏTiUÏ}) ç<M”.B_ž 3JÖBÿ½xµËÞø˜¶i¯PlÀCM½;²pé¢XH‚JéøF&ý^eíXS1)ú±Î–³a¹nÀ[y\´¤ÇlNÃ¼.¸)dqÐu¦1Þ`¨ÄAÃ¿ÛÛ<0‚@åP/€:·Ïp¶¯Þ­E«ýÝ æiý„33ƒŽwk¸8¶Õ"Š]XÕ¢ëÞ$¹Ì ßÐ}d 7€e¡aÊœ°alº¯Ÿ¼ÆO´¢ªók×«go32jn ¾ØA‰¬s—z(¥[a”7Ñ°•cW6ÓYÏì]ˆ¯Y˜},:u÷RN·³)ü·p²B	ÎWž›‚*g©YÉ˜µéW€D¦²RÔØÕ]D,nŠJÊÀq—5–¹ÙOåÉ×UB`#Ç&Ibm<l8ÍûZ×ÜJ/L)g;Í§Zë¦/MÆ+N·K%qb?×-Rn»¡k‘\#<”E®ìhõ±åùeŸà=â‘óTf-€vÃª~C=m2ªn)Ðc¤_ÜÎY K¥ršomÀU»£:±Fû®ñ–ýÌÔ«+¤àí™A[=¹ö/×<# D9"µDtÒU+/ÈÒ7Øjk’[×9Xàƒ|Ô[<ßôëiëÇ	™ñØ9Ò	o€
-j]•fzÚ©FÄv¾*ú IQˆÅÜ)\ÃœGD!Šãê;4ôažA«Äe©ù³¾YóX[°÷ÚÜåR5†sVÍãéºÒV%­›[o|yžñ¾š–gø^jÝžžµ$|™Ðó¼Ä³*¬¿y2¢ƒ¤3^SÀ¸fÍIˆ¿$•üà×›¢*e„ÄèzÚŸK^ÐTÚÏ²Z¦ÿú–0÷üP¦—ú¨ÛÿbLJõE"P'šcç®«¦<Æë´û;t*ØÆïÌfïÍö6‚â—È†ívÏ”öÄ³0øs³ÿoÞWáóP³³‡a0ðöîŸ+[ˆ`VmO‰ö¾F‘IÆðvðb%;¯T·fg†®a~Â¯»ÑÌòƒ¬®pï@wÃ¨7$¸èz–#Å‰zqcômL}üð"æ[£Ôs›’qæßm˜H±ð±ø“é¶g)G9®¾Û)¾þ²Á˜ÑˆÉÙ€äCñp¸©cêñfØ?!Â‰¹M]ÿ\¥Ê¼0aœ¸˜p³š§W¾oâ¸ÿrØZ£2$<öá%mË¿òê„w# {…DÅ£Ê2ooCºW¾¦k”±)/—­I:¶Ê¤¢\Æ’’Âlr¶mÒ”‰ÙAyvŒ(f²î@èÁÝü #%mu,^*ß=2(…ôõòOÎËhŸ•¡ü" Çúå^Kßïø>xq=ûßãhd8c€õA@ÅöŸ°v¸­­9\ðñê(mý5;[€röÛn!Ío3`àÕè1R×Ï«)Q3!…3Ó»EU„ÜOaÒCë¿)FÈAëC5ì_@S 1–7eDMî¦Â~)ÐU¶ŸHƒ™H:®R¦7#¬Áðgcêé›ïå…˜¸ßÄ¢k¥ù‡Vñ¬0w>¶]VãsêyÉ*ßÞÃ}1>A$š@1ÌzºÉD']¦ë³’k·-hK§çÂI`‹ÐYM/]]
-hÚäÒL¹=lƒ-–â÷Ý@ñj¼ñ½ù8ªÇôíë4qnwçé#9Ë4É7Ó:ÿâ¬ê#}‘Ö%IÚgˆ`¯ Så´G"°M­•X¦ÃƒFvgK^ò³š„<rWRúÿhIÒ7¸Ö½–[ªJ6WÂÂ=—ÏÖÛ¦Ì™)ÆŠ3ÃóŽ’+#¸c!¾ÒÛSSŸ¼òHñ²I73œjqÌú>¾^«¢_·åùb)"=ƒO¿umðµ*ï
-OÙþXXâ¢áuÑ¹ÏyKvðkí9ð¼ê®£¥5ÐGózújfRÿîÂsI™‰ý"Þ:¯»,ÙŒñ¿äÇ ÄA!B—žÁøáK|ÈU6àÙ¡œ£G#˜Ëj¢ ‘L$ŠÍ­‚24hûÅÚÁžB3¯›ªÓÖé…)4Ý»>Í':ÈóÖú"£4¾ G­flwŽú…©Ÿ6 ¦ú*ékµ§sŠºpÿû+èfoû`g¡o5caxd–gZ$Þ;ŸgDêÁH3cbÓËºÞÑþ·„ÊüÀÊ¸i–ÑN6Ž%IfˆšdŒ	ls;.;ð<!@¦*µAß‰ÀÐÌ±w¡ïÐ6)?w‰Æ2îIwPôYAÌÞ°µ®V8¤õá-5¾è–Þ*í!‡V˜¶–Ù •p$[‚!b¥m%”„© èOZ’	|¥lÞ­û’ÙzýÜ}Ï…» $0ÉÅ}k‹ôqxp¨¨TÏfä»Ïõ6‡-BN›(sÁáââ%°†ùùÐ¸G%p;9¥hMâ((ÍF(¨,Ÿ³…+|,BkDÿ Ï7ì¬ê"aÂûžjIîÿï4Ê «¤>{c´ŠE¦÷R=iÙôb¸ŒÜ…[Þ/È@°P_Ÿ}¢°J{h†i1x¤xÎ¬
-]CLõó°±®³V/l,ŽLe¹™µ¬ÏH:ØšÏsŸR¾m-a1; ËC¸º+zô½{’XCö_®ðcÞ©™o®¼%®|§«4mvþ‹žjðoÇ¥“ÜåœìiHÚšz²ž•¬•zº`6˜yqR/
-ð<¼¬Z·™Ä¦¡3£gðœTmº­ÃFfªÈÏÏÈl@(FxcQÑ»±n‡°qç
-IÇ•ÿ‚‚¼)–f×§‡GÜÏ‡U± ÎG¸=éT)e˜&èÑÿ…Åmg[5„°¿'-º7&yVë)Ù3qm°>–úŸ û]ÒI·òjŽ7á€7²‚”ètSôÛ¿Q’IÑ¯åî"B·E†Ü„½I®,,#E‡0Ï‰¤Ìò,²Yá¼OýývÅ=ÄµÓë†© oúKðüŒB:k¬”Ù(wt¾b“€*€c
-›Ûºy@]Iž¡î4#ÇKZ¶Õ—±ÍðÑ›IChî…EL]ŽØðòn‡f5kÎýÃ]Çœi¯dsb&Rÿ¥òDìñ@‰¤å$tQýæ«X×£BÁ	â¼Î‡s<\?™Ö(»c U4CØmm&Ëû§»½òV{,5ÍïEalÆqYVÓ²¥‹ÌƒË_ïØÜ»Ô†•ñÇõ2JÇ_ë$Ù_ÉwðØmD0U/›aÑ“IÍ
-Gƒ‚\ÂEKb´K«¯•Ø<nîÞÊU4íFuM Éù§:ÿ›…4þ4SRç¯ô€=ó?¸ERÏ>º´ÑçöÃm™Ý0ÿF„—+EZÙ¥`Mr¹…+„Ž<(ºœ¢†±Qszÿk“\Àó‘é˜Ù</~9*?i:÷-òln\yIìÜyI¡@¯Óà¹ùT&4=R(Å~aÈÓL–ò­A«](©#©¦ÒÜøÑûjCP£2lXùÐÉ=tíg’ÐùëáEåEË0½L1L%­Ü‹É‰u=£-íF1UyÒ¨;¦®Î.À«&?N	ñö®®.Ç3W~X”nL:[eÅ?ßæY@ß3R¬hƒ¿ q}8g oò.(æ_\ öå‚_*šßhFœ* :©8’"Ë7&ÏjÖžaD¢†ö)e05­ÂÚð÷ü?¯cIÿ1Ü7n‘'vaN_' 
-êz+u„"=r°ît˜•'ÎñžW$†â	üáUºPq+õÏ€Õê©W¨S€¦U@­/…ÇAúòªd3¢Šø Zéxì@Ë½ñØ{7b¬{¥DKÿ¹ïý®]–c\g8Ža½#‚ƒ«ŸŒ;#ÃàìÚð&{Ç‰Á˜Nù‘’\¤]+€[a¶wÓWþN‘!8WÈôýÚì{B;ìF¿[¤5>¼ã5çšüˆˆ-¬Æ’ «´¿ÕéÌ•s\±[_wÝ;Ô8²iB"ðÑ——¯bvÕAœ?ÝÃÝµ‚Gò
-Ø >J¥”ê¬ÙµwxíDšVd,ÖóI˜=°±´òpŠ­Ä—x%þGÓ/X7U7¥¥UÌÅlz4¯¡"fÃ%ÿ%£jLÄ€×ÍeUf¹FR5‹åVÑ/5o7¿©@ØEØÖ±‚§)œ~ëv‚R”…6Jé
-öo[-¹bÎP;.¨ÑPöt¦|<k¢	ñLo³RÃ\m>ÕÔTÄ8ßÞöL“¦	àÑŒø_eÑÈ˜[S¸ª³^Fsû“ÏÐ×1Ð1zFLk3Þ®¡U™j8/Ykååàë“LQûJ\¢]U#ÓžS>i’¡aI» õ·Ì_hü!1ZÉ’@Wj¯Õ"<Ã`E0Ó›$°õ9›g„jôr ÁO­æfÅ§t¯Ô(HSÀõ¸n8ˆ*óE¨hu :Â¡7©cÚú4€¥H+Ö‡Á"Æ¡6p©
-Úe ƒÀv3‹øi6÷ô’¢!¹Îî¢ç^ö§eŠN8‘>ÙJî´~d©E4o‘Ã­Ÿ¨/.úƒåüÒ)°8õýD7ÕüD`HÆúGç«®Ø'ùcêS¦üØ<ÐåèÖ¾o»²5*•Ø.J¾R©hórPÕ%¬¿¹Rk¤|îhƒë{ëê›õúÚ,/øI {Lªc‰/b·gwIÃßµ\¶Ešn8:§·vÙ0îŠ?/î›ð¦ð€Qld7øÔ„…§v“›ž£¡Oû56'ƒ9x1B•.†ÐÑ/¦†eBHeëiÌÎb+Pà—½ÿ<Ú‘$ÞÁû_2xY)¤µcÂ½êÝ«3ØÒ„GYL%ÓYrŠU‡„Ñðe-Ìó'6¥ª']sÇIŽ_˜õ+:øÍ¥>Ï¢7†ýÖàËGD6ú=Ö”w‡{OA§½ïüª{ÃÒ™€‰s5¯ß…Øä$3û§t&‚Ò7Ù
-ÅBö`ZœÁr>‚EïMQÝ3Ç›ñÖô5cŽ‰–ÿ&v?Ä=`ò>tÑÍFO®gì–ó¹?¸DÆZ¿r»UYäé­ zŽ!Ð%	-l«Ês•Ž÷Þ1¦ã
-ûyä—òŒ‚þs¥$L¢§à¼áïÐ4Ú±ù¶è)œ÷£¸¤êÏŸÖcü^ÜþÓÝFw‡Ãg¯XhU©>“¼	*Q$‹&¨1l†  4Ó])Û—nå|KwÿÅ	+¾ÂÔ,Ô/Ã\^1ˆõ£ë?dƒ.Æþ2au*C¤ð:ëó”KWÛËcCeçø‚ÅÖo_ÚDlrð>RŸqE¾–>Õ¥Fd0ÉÙE‹Ã—U²uˆ^’®XKœ—µí_-Ü>ÉùÐs7l¼‚áÞ‘î9d“Ë3`\+qðÑ¼¿r€0zõú ’í”Læ$&ÐçRŸ¾Rsc•¬ÎôÇÇöíVxoŽ†LÌ|  Ì <->ªÕÊ Ìâëé„ôÃsø
-Çô2¼öhb¡ ¾•ÄÄä]šiR,h?aõLíó’‹ZVQØ8Ã¸ûgJÉ¢é&Iãfƒƒ½Yàˆž©Ò;4 ”¥Œ–V¡
-ôQ†á¢”@¡Ö½èŒìäÜáå0sÙ),d»91;}7µx^zÏjÇ"v«îƒíèi«LÇ»cñÆ™fþåc1_èîK4¿vOÔv§þÕ¥Ùµû8s«4zzUáiè«vÀàŽÈÂò¥GÏß¡úÅ6Íux4ÓCŒûHž"?\Æf•(IÔKüôW`Â‡Üi·"+CÇxïw×ÃÖ²µ"ÔÂ¸û|öü!°ÌCúëáw'tC9s¯çÒì‚âS±¤—§ Ç'îË ã(›ùôÉt‚+zó>Í N`·ˆ”äŽ3fê9ušÔ=žc—f_ÏÔøÃ;,døú”uE<ç­¿x-2‰ê§TÔ†ÕW
-ðœˆB¶¦­,èn%S!:jiàaÊö`ç™WÀÓÏ"GA^)u±¡Ð0ëk¯‡]u­gbƒñ°ÿ LêÌÔ:Z~è¸Nû[=éêäO°˜´"³Z0U²	Ò.ÿX|¾¹æ»&ˆ8d©9bÚ´œøÈJc|Ÿ‡PL0ŽØ4&V6‡?f	×¹üÇõuÌ¢ú¯×#ˆ1Ž²„DÚÁöÌŸ«5±/XEöbvüÂBëZ˜BLžÀ·ákp¶1ˆìžÆà«PTþ-Õóàƒi°kU|©€Á‹fÇõæ2v…öñêô!ÃhåáØ†éA
-T6ÈÜRÑ¶Žêrá~hÛu3Haïœ_ðÌËêõ†wG{2.(M­ofv”íÜhM¼%(h$1¢á– þ5VéÁd35JÿZÃ<Þ\»¾jðü¦ã—žtü©’	¶­‚¡LêÇKÌÍbXQ@ú„‰ÅÛŸ¸\íu@š¸…Ç¬÷Bôàú!
-K•oþågºÄBFAgÙ\W0Tz…H›óŒ6çk³mÜ\¥Ñ×ÖGò8ù„»ò—nì7eý½ZràÉk`Ç„É¡hÇjÁARðý»~åmëöý¥ŒSCüCÑýœ‰Kd5ªŒ˜H³Õ™Æ‹ÍùŽ‹è/úadðæû²0NbŽ2ÝÝ9„…®z«Ë7v[šá{ïƒÏYx¡ÕÆ*Gâu£øwo<žyúÆ~×{›Cr”ôãqÑheËü2û{H$
-3(oAE†í}Üù¿¸Sõ/95Å|›Y0.¾ªe{Gr:O÷;O"‚™ºsÒ!‰Gc¥’¬#;[ÿÖP†%ÿ‰“®‰ÿg<ã›|Žäž!ÅÄ»§Íüò†êƒ+ÈV†n½Z"•×ÿr;=õkA*á2Tü»ÐIqíŽôçÙ¾m²¾ø¸Îj¡D=ç1‘Qz'LR8žhZöJ°%‡>Ø€0o“öïaB'¨G`¡.?Q”…˜À©’H5ÂJ#àÆˆ 5ã£ˆSÂn„U àüVV˜‹ˆ
-M5ÖUO¤öå²[†}™;Œëãë ŒZ!Â?²Ðc-XïŽÿ!tÊ‘…O¿H¤#Õt+î÷‘FH“­næÇ&ô_Ø°&Þc$¢Ìv:ÎL+ýƒ>ô„(Jo56ÝâÿÆÆ¡Æl/åà–|`¬†L¾KŸqÉ÷ÅæŽç˜Ø€¨û€å+vt5]1ÈjØ>·ÂQní’÷#ùƒÑ,K'£÷”_7‘‡ÓRFŒF¥œXRÃØ@åÖš¯4©š>©Ð•ÒC\²Zv©]ø²P¶%ïN9í÷ï„ÐÓ€8ÇÂ—UÐJì®‘ÜÕ0ü»¤4µR•Mü`—ÍGHøù4ÔA“£’Ò1jbOX(±!Ù)¦R¬‚©''ÖÎìù¾úº®bzK§-&TÉÛª~ÃA$8l:#PÏòoÕŒ/ÚrÔÛˆŽºî:aŸªMÂN!¦TV(‘CË†4·E'áìç%ñ½ñIü-:+íáz•f Ò7gF»Â¡<ÍJhO\Ö“É ò%ÚB¸¾*	O»Æêfå}oõbóP„|æÝÐê…E. tîzrºâ î¿ÐbGÖ V8£…¶hL<>ÈNþâµÏ&¨×¸¬4fð%›Ôëåô'`ƒÅ¸»ÿc¦ •Yrèþy)˜þÍ+ùÀ–1G«7£%8ðàNŽgÔ«°çìØ5HŠE
-‡·Í¦¶\úÅ dÏÅÔ‰¢ïÌŒr¬VéÃxUôÞ«Q£~ôšED™‘XePÏ`¹k òAÊfàÆï5”¬ò1»“,ô>Í£<¨º­f6á£Ÿÿz¿JëÉFÏrÚÔKA1@n	›d…ÄuÝª#d.ÛW»2€"N•*<ðÈú•Ü”Ð6ô­‡¶çÞÄ©YÏ<™Ëú2¶ãjøqà=0B2¶í®²ÁáUìpuâQ/@Ó»°8œïº<vÅ^íd&Õv²ðƒ~U±¶k¥ÀêW0Ð…2‰½©Ži#Œ!I?íÃ/™‹‚T-1Á£ˆ—m«²ø‹6 ›¯ÿÆq‰ß°cégƒ±ZØr›&jÊâ¨Uj—`,Áê<m/£µ“Ží¨sN‹Lòä¥Ø×¼EÌT¥.lþWöfB¼¾ßoð~¶*vÅLÏß0¥%(À ®Z–¨ë3Q¡œË4ŽÃw>½ƒ¸¡Në)×bä_YJ§ªÈ’	lBz±ßò^‹Úç…ÉàQ_*|éêàº'eèÆêõÐ}uõtÂ%ø±kLÜ"ú:.mënõ‰Ã§Åm©0µö™ž«ì»ãÇùcÊ+³ gªª;¿¨@~Ù<´f…iÂÍˆè]ð#TrÏd$7ìÚ“Y½’&†.ê¨$áŠpSÃCÊý)õ¾¸´ /Îµ´ýÜ%p0_Î÷záØåtÌ¤å˜ýg,ñQ¹Uª2'j2Gzµy{·Þ?(¾Èk§RPÒî“öÜ¬ÖÇW{l’¢xS&|RÛ“*_h ëøcMƒqÇMfzŸ­5ß|`–ò÷‰úâ×U–lhHÿ‡‹x€2rd']c§ÑtH*µgÅ~Eö”§Q[Ý¨DC/vÌ(O_‘ß¼ wkz6ªùtf;'·Gqã-¤fŒ«Fn/ƒ*p_&GáO¬D}ªÆs(’ÐñÂW€Œª€v×ó^“FÔ;F	«è°ƒû ü˜lÎèÌàt­ƒ¼UÇ/WÂ˜@ÎÈ› Ž­g*¬å¨8øvâ“'Î(î65Èmó^t«¡N.Ñ©aÇjÚ´,±|½€­-!ðnòÃùZn”?mËTéQ€.Pß$ò&ÑVÅ7ý=†QGoÊñ1xÝH‰®EØøú3—ØAäži/Úø”EâE~tB¨Ç¼Oôó°ÇD(©µ²D>$YöåÉ–õˆ£Ðf[´Åˆü7K«úFÌ¬ª²Z[s‘ÏåŽÙ·¶cNRpù Ïqwm?äÏ™'nmZ	t¸Ñ¡ô¾/‘b›M'ýš¤Ô-÷&ê9‹´k°Ç5‰. ‹C‰³¢\ñTêw†¦‰]¡¯x	
-I d|5NHÄªµãn ­ÜÕ(JK(„¦§V•…DŒ4ÌÅXÀV,±>™æ–Â(ý×[¥Þí©ÅGgß
-å–n¼8°q/5‘ãv=á}¾w^Íd³ÎÕ=§æÉ˜Ø×eÌn¢Û‡Gð'mcE™®d¢¯÷5Zy)9Òxa;A\v+‘…òRCRRá&9‹yjH‹íB\h:¨aófª‘zó0Ý)åesäögÁ[—P£JZ•0ê]j"¹CS<ÑÓâÛ€”æ3ÍÖë(Î},pÃ²%£¢=¹&ûx»!ÁÞ£,zòNdÜÚï³ÿ¨Xÿ–v€UÓµÝv¸ðh ÙÑ´âçBœ}^=*rø@Þ|²]z!EÃÝ¢î4+Uoý²ââH|c±—ïU|+é¿•år‘J…Jþh1«ÿ«Æ^R¥6,“˜ý˜}’ýK¦ÝHvíq,ôeÅÒlÃM€s´$:~jÀkMû&ÐSM9xœOŠ‚îý p38›Ip?üøíZ†ªbÇk‰È²¾$ðÖ‹¡S!ÎJÛ ð±™ÛÙ¬®Wj4–K‡'ÆºJ‘˜ð…dŽQBÈæ;Y {NeÓ»‹ˆ"Y`7ËâÛM‰ž© r0S6¸)h®3U=•B´â]b›Gêæ4{LdïÛÎí’*¥™F«vôÊ_QÆP¦®óÌ·Àœ‰ÒIõœ.g¦PAØ°^Ùk"ŠðÞšëÊÌ¦”<ñ\ôB^<žZÁå9õ6	IùŠåKÙø®ðQüÚl›û£šµß±ÊÅ÷^±E	I9’Uh §H„GRú–-qùÉë•pØ•kÇ¦¹ÛV	 ÏñP¨Wi¯Eíá2ó}YJüÛNÒƒ–—cª‘gL¨:Ë‹n†ÀN:º»³¿áŒ¬÷¡SíŒ8ÒR3ÈúõF¦ôär9åOoó)ø‘¤þ­ UŒ=¶ôxg%yºð«²Úþf††½O&á²˜-{»XCù'+s"šþv‘›(àõ…8³$n¤~#Q‰hîÅå› J_üc^/IF›ÀHi½‰ºyz³ü9šËy	´H_DôÓ¶§ ?ßåÞßnf­‰.’„VÝkWnDòäÇ.EvhN¿2íîg»¹”`µå>ÛRÉàù…#a´ÒËÀò4&
-©ízÙ™K‡8PH;ûŸŠøQÐ€uS¯nä
-y—¹kN}¾:“oN””@úŠŠÚìÕ^A™“èvÀá™7ØDªóq˜ÕÞiSVqLb0u³D0á2[	º<·qÉŸæ,‡Ã\³#…\0O:ßàšœx!ðò¥+y\~Ó™õD’sî‡¶œðâz/ºINðñYô@6%"2¸N¬.¹Ÿ­Y×G…þNF¸a9Ø6|w<“£[ ¤±_	
-ƒ[-âEœö»Œc,ìß8ö%´É¤yw¥³nUøo!]Å_¬çi’è•:U¢fAJˆYÉrÅy3JRÝfð®ãÝ+Ùd$‹ráþ$ò„øVaÀÊ?èjõU £?Í0ˆDçcdéêƒc3­9WÉ
-å^qÊ·77&Tcºú‡_2~+Wð!ª±jéKÔ:Ô…sÏø¶¢Åß45mbßl´â4&hZ®x¤|Œ¤ŽCuyGŒ†<®«`TNÊ<'\'ßä!ó"9²YÿgJX&,;½`Û¾ø‡„Ê1šßÁ´(#â×Ahs€Ý¾&úeYÕ4ý¨vì2$£ñú¸é\pv,ëž^ÆôÆyð	Ÿ‰/uÍ{›úí‚ÁÎUß%»«"NÇË»³Æ§Ì	vllÞÕÏ˜0H¤.8ä+vÝÚS‚ ù§¹0Ð'¢Ì¢8A'´âêv¢·jeá»®ÐÔ—|£¦¨“Þ˜_N1£‹sIåÂvÈˆnÛuà²LE¢Ì->úpXµ‘ðH	„H(ÄEu`6Ï°Ã…¦|òæÑç"¿ T	ÌD.Ð5|Ì²©(óã€g+ëó¦ut§løv
-þPý5„z°“Ì¹Ž³šš3ý5dë ñÒ¨=8ŠÃ¾—úªlJMSJÌÙA6È? p™xV#zaõÒ{ïòP¶n-è‡¢˜<Õ³[‹Åà±g¬jç•Uóù¬$Áá g¯ÃnX¸¡‰Œsl•ðßÄÄYâ’)D»žñ"[ÏìFG¥IÀ×{z·T× Í×·ùßUOyzr¸!ÕEˆn-9]/ÉOwÎïzI>íDF™:³qmÀBû t(ðð½	îùã~ÛÉj—gÊ%K’iXNÅ°‚ NZÈÈÉIÃ­k“»vÖYsI»’)?>ýIÂ]ä•g\¬áUl`
-ÃŠ¾‘ØŸ´Ò@_( õo™ÂìË-©$ùPNT3Ž¿;™ê‹k*K«e-Î³KäÇ>Z7Ò v²Ä¨mœð+þÉ–z±õ“WÝà€Û¨þ]®Q0WFj/Êš‘Ù?ÎPD×2UCo0fÊq²NõPˆï€aÃ×_ÜÄ%ºMT
-—(VÕQc»º(›ìÎÇìp1àV…\ÍÖ›õhÒ°koö®n‰ååßwŽÑ1}!Ò_ÉÁ<[5sð™€ø*ó‰úˆÞ.|èÇY8§âÕ‚ ®ºU˜	ä‘ à¦QãWŠñn"ìB‚¡çËlZr„š¤‘º:î^Ñ®ùÓ%EÔ“ÅhŸ·;vE›\ˆ¦sZÛuÙ÷ÔH<Ý@á1R.å’TÊdJðRf_M(ÏéÉOUf¤±7Ö7 Sf„<`(1p¡˜ÿ(Ùç¿¦äcßXë©T™Ç¤ÂcdÜ‰òš<]¯¸#0òÂùä²bÅ³"…"ÈáÁûyÕ»)mþ«•hIl*pï½sÇÓ›•®·™5cj—DOç˜k7)÷þw[Ë¸ÄCï+ä˜~Üf&%AœSX
-ý¨¶Ó=ÕÃµ§YE­Ëa/±µ¡NK“þ¦è›¯5–VvŸµ¸Às£H3°ãxž(²*ÔP+ÝÒf&¢KhP{Ð8¹­ü w•æQ…Ð8#–­±FHì¬;¬’ÿ&KR“·$Î+D~‡|ù¡¨`PI‘c6²¼vpþj—Bv&ùž„_¡Â3U•§aÏ~ï§>J·öÞ€FŠý$º5âxòŠaYöÈ½}gä’	»Àgž[Ÿe<|kQ>ŽÄ¹šª›J¬?¯è"ðÕe$é¸ú´Gbc5²MrQ†Pƒ—‘?~ÑUÃ¤Õr:K[q‡¨ÎA(K¬s2]§Í‚ÀùJÏèç+ÚpJZçaŒëü™àï†–-5Q3UANkñ—¹ZŠ’!Tý[OK°ó n4v6ú˜/ªÈCê¸õAâ/{’ å~…vV¡70!*@Ì¹ðrŒ¸ˆâzÅj?/÷æ:šÌOÒèŠÅ.ªÅÙ˜ÇÖí¨ÏGÙ5Žc6E¾£2Q•”Ä¤-+À+t^Pd“Ö³3/#Ãc¢©†{¿Øbµ¡7{_“ê×$â›E«—(´(áÇ´JP¬&&\%g›7(ºÙBóáõ(ËuR^~þHéöÓ£öÂ1£F©8]wÒÉ‰3©êFÌ°Ç„ ›ý7-xhÕ5ÖðçúóoaFŒØ–Väb0ä=Ó±º‘Ú€‹ÂNZÂ
-­6ÇÖ’‡º«Ç™þ/$Æ«W¢:œ´wör’7Î­…ˆ¤ºÕK†Û%Ü¶Þ9÷¹rÛ…¾è?ÇH4{à AyTlf]U`ÇÏÛÀCX±^„Ç¯â³ÛÚÏ³øäƒz\±ˆfÊ‹§[ÏE#Æÿ˜ï¹½é„D3îê$¸_ýjÊczè4é‹«Ãù»Ñö`Žþ2ÆŠóEÔw[9`èçd‰ô/ŒÛUF†¿óÞ_‰õèug9n¢ù¥ŽWÌxú5ˆi¸³vúÜóó®À†Ðù¡‡rÕ
-iE½§Uì:¸”Í@Mï	€¶z™ ²UI²/uµ gÎ©÷zUqI¨çdjEf¸(1KÀÖ¨rÐì+rüxRHÈ°û4‚-nå˜úÜšqÈÖ’xlÁ7Ÿã­Ë˜7üZê('ƒËÉKs#¥ìæª÷Ù5;+'ÃG—Š×Îlø"£:"¥¼…zá•Å_6ÚKÊù³X\ð±ÁÔPƒ	A‹ÂÜÁàeªœ—þï*5\k…ˆÏ>¥ +Ša~Ì,;-ÃxX&IÊs~;Ùñ{tÜ_ö’l‡j†G€.²³ÆÝOãù—a"ab.ÌiËQÈ. Þ”]=MYF–•ªÌ†Š§jBi@B¸—)Ð½e*`„ÿ†p‰z=^®$1H5:µv6>U ç‚)ž}%‡ä½³Ê4;dÚÙ˜÷hp#ÔMŽÄ(#:9«ÚNÅ­qÌæaè¦OKHï§²HEpi¨œ+½´òlÑÂîó¯,*•PÉ9‰dÊ+è-Ë„25V,¶'åk•rïZ>vèü¬OêêZ¯[{'ÎÁ_j‚lMujvÚqNOê2ÚM­	v[Hý
-<Ã<µW©³^©5>ŽGg4¿2 *[ªèÇ Ü:”›h«Uã}Ö³)o!ÊIyJ”Ê6&¸zPv¿õ¼Žž@9Éøé”Åñ óß	»ˆZè”¼ÆÉgn!.—ÎÂ›»_¬|¬H5ñˆÂ³‡ÁÛ…™•^?·÷™çÞ§%¶ñ%Ä±u~,¸xÄ	ßm›µö½þš|.›õ†?b@Òûãšƒ‘i6ð%6"bB¢“êübtp–,àM/¶—cQãÙ¿¢ë÷!$·Í’2=œð'ðK«8!sÅi™ZÁÅ	bdÒ±+úª:ÐãK«q'®é”ø7Ó›bÃƒ‹Lfve—FhÈvôØ2«_ÿ1ð;Øsï /‚oK¥£*l~²¤e´Ïó—»8‡ž
-‡Q‡â:Ùý–+èå:ew(YõæC„æ‰N
-¥þ3Kº¬“VEéDr—ûF`È>5'~Í×2ÝN¹½-zåù·êtÙ<ÁnWT]53í!žÅ~<àLÖ	E^ø*
-Í}@H‚ËSÆó¢­¬Åµ˜„2Tý©wJ‡TqšÞóò¢ü‰(B¢æ£^/}À¡F¿#CaìåJƒ³¼Dœý"¹h	¿¯yØYo)¡…ÉŽêcØ&­À©ÌOOR
-g€’wß¾‹ãAŽ§ÖQ}íW	½€ÓYpÉÊ@xöÕžÒSnáO.YPßt)óÄ£»h©ÐôÄºôp¢ÎÑ4,3îðE•—4öPt\É s¼¦ªÄm#ê8QàÄ9ø65–¢™„ø89hTîä•ÏKXf¿c½W ¾³[átZ¹zò½¤DP)°ùí6yšævêÐµúžÉ?èk™së²®ÐŸz#>ó˜:àçe§~‡`rD¶6Ë‹†¶%oYi“´íI§ÀñX¤G#en@C“‰³Q4ôûÍúêdì >öË
+	if (0 == INPUT(n)->type)
+		return -EINVAL;
+
+	i->index = n;
+	i->type  = V4L2_INPUT_TYPE_CAMERA;
+	strscpy(i->name, iname[INPUT(n)->type], sizeof(i->name));
+	i->std = CX23885_NORMS;
+	if ((CX23885_VMUX_TELEVISION == INPUT(n)->type) ||
+		(CX23885_VMUX_CABLE == INPUT(n)->type)) {
+		i->type = V4L2_INPUT_TYPE_TUNER;
+		i->audioset = 4;
+	} else {
+		/* Two selectable audio inputs for non-tv inputs */
+		i->audioset = 3;
+	}
+
+	if (dev->input == n) {
+		/* enum'd input matches our configured input.
+		 * Ask the video decoder to process the call
+		 * and give it an oppertunity to update the
+		 * status field.
+		 */
+		call_all(dev, video, g_input_status, &i->status);
+	}
+
+	return 0;
+}
+
+static int vidioc_enum_input(struct file *file, void *priv,
+				struct v4l2_input *i)
+{
+	struct cx23885_dev *dev = video_drvdata(file);
+	dprintk(1, "%s()\n", __func__);
+	return cx23885_enum_input(dev, i);
+}
+
+int cx23885_get_input(struct file *file, void *priv, unsigned int *i)
+{
+	struct cx23885_dev *dev = video_drvdata(file);
+
+	*i = dev->input;
+	dprintk(1, "%s() returns %d\n", __func__, *i);
+	return 0;
+}
+
+static int vidioc_g_input(struct file *file, void *priv, unsigned int *i)
+{
+	return cx23885_get_input(file, priv, i);
+}
+
+int cx23885_set_input(struct file *file, void *priv, unsigned int i)
+{
+	struct cx23885_dev *dev = video_drvdata(file);
+
+	dprintk(1, "%s(%d)\n", __func__, i);
+
+	if (i >= MAX_CX23885_INPUT) {
+		dprintk(1, "%s() -EINVAL\n", __func__);
+		return -EINVAL;
+	}
+
+	if (INPUT(i)->type == 0)
+		return -EINVAL;
+
+	cx23885_video_mux(dev, i);
+
+	/* By default establish the default audio input for the card also */
+	/* Caller is free to use VIDIOC_S_AUDIO to override afterwards */
+	cx23885_audio_mux(dev, i);
+	return 0;
+}
+
+static int vidioc_s_input(struct file *file, void *priv, unsigned int i)
+{
+	return cx23885_set_input(file, priv, i);
+}
+
+static int vidioc_log_status(struct file *file, void *priv)
+{
+	struct cx23885_dev *dev = video_drvdata(file);
+
+	call_all(dev, core, log_status);
+	return 0;
+}
+
+static int cx23885_query_audinput(struct file *file, void *priv,
+	struct v4l2_audio *i)
+{
+	static const char *iname[] = {
+		[0] = "Baseband L/R 1",
+		[1] = "Baseband L/R 2",
+		[2] = "TV",
+	};
+	unsigned int n;
+	dprintk(1, "%s()\n", __func__);
+
+	n = i->index;
+	if (n >= 3)
+		return -EINVAL;
+
+	memset(i, 0, sizeof(*i));
+	i->index = n;
+	strscpy(i->name, iname[n], sizeof(i->name));
+	i->capability = V4L2_AUDCAP_STEREO;
+	return 0;
+
+}
+
+static int vidioc_enum_audinput(struct file *file, void *priv,
+				struct v4l2_audio *i)
+{
+	return cx23885_query_audinput(file, priv, i);
+}
+
+static int vidioc_g_audinput(struct file *file, void *priv,
+	struct v4l2_audio *i)
+{
+	struct cx23885_dev *dev = video_drvdata(file);
+
+	if ((CX23885_VMUX_TELEVISION == INPUT(dev->input)->type) ||
+		(CX23885_VMUX_CABLE == INPUT(dev->input)->type))
+		i->index = 2;
+	else
+		i->index = dev->audinput;
+	dprintk(1, "%s(input=%d)\n", __func__, i->index);
+
+	return cx23885_query_audinput(file, priv, i);
+}
+
+static int vidioc_s_audinput(struct file *file, void *priv,
+	const struct v4l2_audio *i)
+{
+	struct cx23885_dev *dev = video_drvdata(file);
+
+	if ((CX23885_VMUX_TELEVISION == INPUT(dev->input)->type) ||
+		(CX23885_VMUX_CABLE == INPUT(dev->input)->type)) {
+		return i->index != 2 ? -EINVAL : 0;
+	}
+	if (i->index > 1)
+		return -EINVAL;
+
+	dprintk(1, "%s(%d)\n", __func__, i->index);
+
+	dev->audinput = i->index;
+
+	/* Skip the audio defaults from the cards struct, caller wants
+	 * directly touch the audio mux hardware. */
+	cx23885_flatiron_mux(dev, dev->audinput + 1);
+	return 0;
+}
+
+static int vidioc_g_tuner(struct file *file, void *priv,
+				struct v4l2_tuner *t)
+{
+	struct cx23885_dev *dev = video_drvdata(file);
+
+	switch (dev->board) { /* i2c device tuners */
+	case CX23885_BOARD_HAUPPAUGE_HVR1265_K4:
+	case CX23885_BOARD_HAUPPAUGE_HVR5525:
+	case CX23885_BOARD_HAUPPAUGE_QUADHD_DVB:
+	case CX23885_BOARD_HAUPPAUGE_QUADHD_ATSC:
+		break;
+	default:
+		if (dev->tuner_type == TUNER_ABSENT)
+			return -EINVAL;
+		break;
+	}
+	if (0 != t->index)
+		return -EINVAL;
+
+	strscpy(t->name, "Television", sizeof(t->name));
+
+	call_all(dev, tuner, g_tuner, t);
+	return 0;
+}
+
+static int vidioc_s_tuner(struct file *file, void *priv,
+				const struct v4l2_tuner *t)
+{
+	struct cx23885_dev *dev = video_drvdata(file);
+
+	switch (dev->board) { /* i2c device tuners */
+	case CX23885_BOARD_HAUPPAUGE_HVR1265_K4:
+	case CX23885_BOARD_HAUPPAUGE_HVR5525:
+	case CX23885_BOARD_HAUPPAUGE_QUADHD_DVB:
+	case CX23885_BOARD_HAUPPAUGE_QUADHD_ATSC:
+		break;
+	default:
+		if (dev->tuner_type == TUNER_ABSENT)
+			return -EINVAL;
+		break;
+	}
+	if (0 != t->index)
+		return -EINVAL;
+	/* Update the A/V core */
+	call_all(dev, tuner, s_tuner, t);
+
+	return 0;
+}
+
+static int vidioc_g_frequency(struct file *file, void *priv,
+				struct v4l2_frequency *f)
+{
+	struct cx23885_dev *dev = video_drvdata(file);
+
+	switch (dev->board) { /* i2c device tuners */
+	case CX23885_BOARD_HAUPPAUGE_HVR1265_K4:
+	case CX23885_BOARD_HAUPPAUGE_HVR5525:
+	case CX23885_BOARD_HAUPPAUGE_QUADHD_DVB:
+	case CX23885_BOARD_HAUPPAUGE_QUADHD_ATSC:
+		break;
+	default:
+		if (dev->tuner_type == TUNER_ABSENT)
+			return -EINVAL;
+		break;
+	}
+	f->type = V4L2_TUNER_ANALOG_TV;
+	f->frequency = dev->freq;
+
+	call_all(dev, tuner, g_frequency, f);
+
+	return 0;
+}
+
+static int cx23885_set_freq(struct cx23885_dev *dev, const struct v4l2_frequency *f)
+{
+	struct v4l2_ctrl *mute;
+	int old_mute_val = 1;
+
+	switch (dev->board) { /* i2c device tuners */
+	case CX23885_BOARD_HAUPPAUGE_HVR1265_K4:
+	case CX23885_BOARD_HAUPPAUGE_HVR5525:
+	case CX23885_BOARD_HAUPPAUGE_QUADHD_DVB:
+	case CX23885_BOARD_HAUPPAUGE_QUADHD_ATSC:
+		break;
+	default:
+		if (dev->tuner_type == TUNER_ABSENT)
+			return -EINVAL;
+		break;
+	}
+	if (unlikely(f->tuner != 0))
+		return -EINVAL;
+
+	dev->freq = f->frequency;
+
+	/* I need to mute audio here */
+	mute = v4l2_ctrl_find(&dev->ctrl_handler, V4L2_CID_AUDIO_MUTE);
+	if (mute) {
+		old_mute_val = v4l2_ctrl_g_ctrl(mute);
+		if (!old_mute_val)
+			v4l2_ctrl_s_ctrl(mute, 1);
+	}
+
+	call_all(dev, tuner, s_frequency, f);
+
+	/* When changing channels it is required to reset TVAUDIO */
+	msleep(100);
+
+	/* I need to unmute audio here */
+	if (old_mute_val == 0)
+		v4l2_ctrl_s_ctrl(mute, old_mute_val);
+
+	return 0;
+}
+
+static int cx23885_set_freq_via_ops(struct cx23885_dev *dev,
+	const struct v4l2_frequency *f)
+{
+	struct v4l2_ctrl *mute;
+	int old_mute_val = 1;
+	struct vb2_dvb_frontend *vfe;
+	struct dvb_frontend *fe;
+
+	struct analog_parameters params = {
+		.mode      = V4L2_TUNER_ANALOG_TV,
+		.audmode   = V4L2_TUNER_MODE_STEREO,
+		.std       = dev->tvnorm,
+		.frequency = f->frequency
+	};
+
+	dev->freq = f->frequency;
+
+	/* I need to mute audio here */
+	mute = v4l2_ctrl_find(&dev->ctrl_handler, V4L2_CID_AUDIO_MUTE);
+	if (mute) {
+		old_mute_val = v4l2_ctrl_g_ctrl(mute);
+		if (!old_mute_val)
+			v4l2_ctrl_s_ctrl(mute, 1);
+	}
+
+	/* If HVR1850 */
+	dprintk(1, "%s() frequency=%d tuner=%d std=0x%llx\n", __func__,
+		params.frequency, f->tuner, params.std);
+
+	vfe = vb2_dvb_get_frontend(&dev->ts2.frontends, 1);
+	if (!vfe) {
+		return -EINVAL;
+	}
+
+	fe = vfe->dvb.frontend;
+
+	if ((dev->board == CX23885_BOARD_HAUPPAUGE_HVR1850) ||
+	    (dev->board == CX23885_BOARD_HAUPPAUGE_HVR1255) ||
+	    (dev->board == CX23885_BOARD_HAUPPAUGE_HVR1255_22111) ||
+	    (dev->board == CX23885_BOARD_HAUPPAUGE_HVR1265_K4) ||
+	    (dev->board == CX23885_BOARD_HAUPPAUGE_HVR5525) ||
+	    (dev->board == CX23885_BOARD_HAUPPAUGE_QUADHD_DVB) ||
+	    (dev->board == CX23885_BOARD_HAUPPAUGE_QUADHD_ATSC))
+		fe = &dev->ts1.analog_fe;
+
+	if (fe && fe->ops.tuner_ops.set_analog_params) {
+		call_all(dev, video, s_std, dev->tvnorm);
+		fe->ops.tuner_ops.set_analog_params(fe, &params);
+	}
+	else
+		pr_err("%s() No analog tuner, aborting\n", __func__);
+
+	/* When changing channels it is required to reset TVAUDIO */
+	msleep(100);
+
+	/* I need to unmute audio here */
+	if (old_mute_val == 0)
+		v4l2_ctrl_s_ctrl(mute, old_mute_val);
+
+	return 0;
+}
+
+int cx23885_set_frequency(struct file *file, void *priv,
+	const struct v4l2_frequency *f)
+{
+	struct cx23885_dev *dev = video_drvdata(file);
+	int ret;
+
+	switch (dev->board) {
+	case CX23885_BOARD_HAUPPAUGE_HVR1255:
+	case CX23885_BOARD_HAUPPAUGE_HVR1255_22111:
+	case CX23885_BOARD_HAUPPAUGE_HVR1265_K4:
+	case CX23885_BOARD_HAUPPAUGE_HVR1850:
+	case CX23885_BOARD_HAUPPAUGE_HVR5525:
+	case CX23885_BOARD_HAUPPAUGE_QUADHD_DVB:
+	case CX23885_BOARD_HAUPPAUGE_QUADHD_ATSC:
+		ret = cx23885_set_freq_via_ops(dev, f);
+		break;
+	default:
+		ret = cx23885_set_freq(dev, f);
+	}
+
+	return ret;
+}
+
+static int vidioc_s_frequency(struct file *file, void *priv,
+	const struct v4l2_frequency *f)
+{
+	return cx23885_set_frequency(file, priv, f);
+}
+
+/* ----------------------------------------------------------- */
+
+int cx23885_video_irq(struct cx23885_dev *dev, u32 status)
+{
+	u32 mask, count;
+	int handled = 0;
+
+	mask   = cx_read(VID_A_INT_MSK);
+	if (0 == (status & mask))
+		return handled;
+
+	cx_write(VID_A_INT_STAT, status);
+
+	/* risc op code error, fifo overflow or line sync detection error */
+	if ((status & VID_BC_MSK_OPC_ERR) ||
+		(status & VID_BC_MSK_SYNC) ||
+		(status & VID_BC_MSK_OF)) {
+
+		if (status & VID_BC_MSK_OPC_ERR) {
+			dprintk(7, " (VID_BC_MSK_OPC_ERR 0x%08x)\n",
+				VID_BC_MSK_OPC_ERR);
+			pr_warn("%s: video risc op code error\n",
+				dev->name);
+			cx23885_sram_channel_dump(dev,
+				&dev->sram_channels[SRAM_CH01]);
+		}
+
+		if (status & VID_BC_MSK_SYNC)
+			dprintk(7, " (VID_BC_MSK_SYNC 0x%08x) video lines miss-match\n",
+				VID_BC_MSK_SYNC);
+
+		if (status & VID_BC_MSK_OF)
+			dprintk(7, " (VID_BC_MSK_OF 0x%08x) fifo overflow\n",
+				VID_BC_MSK_OF);
+
+	}
+
+	/* Video */
+	if (status & VID_BC_MSK_RISCI1) {
+		spin_lock(&dev->slock);
+		count = cx_read(VID_A_GPCNT);
+		cx23885_video_wakeup(dev, &dev->vidq, count);
+		spin_unlock(&dev->slock);
+		handled++;
+	}
+
+	/* Allow the VBI framework to process it's payload */
+	handled += cx23885_vbi_irq(dev, status);
+
+	return handled;
+}
+
+/* ----------------------------------------------------------- */
+/* exported stuff                                              */
+
+static const struct v4l2_file_operations video_fops = {
+	.owner	       = THIS_MODULE,
+	.open           = v4l2_fh_open,
+	.release        = vb2_fop_release,
+	.read           = vb2_fop_read,
+	.poll		= vb2_fop_poll,
+	.unlocked_ioctl = video_ioctl2,
+	.mmap           = vb2_fop_mmap,
+};
+
+static const struct v4l2_ioctl_ops video_ioctl_ops = {
+	.vidioc_querycap      = vidioc_querycap,
+	.vidioc_enum_fmt_vid_cap  = vidioc_enum_fmt_vid_cap,
+	.vidioc_g_fmt_vid_cap     = vidioc_g_fmt_vid_cap,
+	.vidioc_try_fmt_vid_cap   = vidioc_try_fmt_vid_cap,
+	.vidioc_s_fmt_vid_cap     = vidioc_s_fmt_vid_cap,
+	.vidioc_g_fmt_vbi_cap     = cx23885_vbi_fmt,
+	.vidioc_try_fmt_vbi_cap   = cx23885_vbi_fmt,
+	.vidioc_s_fmt_vbi_cap     = cx23885_vbi_fmt,
+	.vidioc_reqbufs       = vb2_ioctl_reqbufs,
+	.vidioc_prepare_buf   = vb2_ioctl_prepare_buf,
+	.vidioc_querybuf      = vb2_ioctl_querybuf,
+	.vidioc_qbuf          = vb2_ioctl_qbuf,
+	.vidioc_dqbuf         = vb2_ioctl_dqbuf,
+	.vidioc_streamon      = vb2_ioctl_streamon,
+	.vidioc_streamoff     = vb2_ioctl_streamoff,
+	.vidioc_g_pixelaspect = vidioc_g_pixelaspect,
+	.vidioc_g_selection   = vidioc_g_selection,
+	.vidioc_s_std         = vidioc_s_std,
+	.vidioc_g_std         = vidioc_g_std,
+	.vidioc_enum_input    = vidioc_enum_input,
+	.vidioc_g_input       = vidioc_g_input,
+	.vidioc_s_input       = vidioc_s_input,
+	.vidioc_log_status    = vidioc_log_status,
+	.vidioc_g_tuner       = vidioc_g_tuner,
+	.vidioc_s_tuner       = vidioc_s_tuner,
+	.vidioc_g_frequency   = vidioc_g_frequency,
+	.vidioc_s_frequency   = vidioc_s_frequency,
+#ifdef CONFIG_VIDEO_ADV_DEBUG
+	.vidioc_g_chip_info   = cx23885_g_chip_info,
+	.vidioc_g_register    = cx23885_g_register,
+	.vidioc_s_register    = cx23885_s_register,
+#endif
+	.vidioc_enumaudio     = vidioc_enum_audinput,
+	.vidioc_g_audio       = vidioc_g_audinput,
+	.vidioc_s_audio       = vidioc_s_audinput,
+	.vidioc_subscribe_event = v4l2_ctrl_subscribe_event,
+	.vidioc_unsubscribe_event = v4l2_event_unsubscribe,
+};
+
+static struct video_device cx23885_vbi_template;
+static struct video_device cx23885_video_template = {
+	.name                 = "cx23885-video",
+	.fops                 = &video_fops,
+	.ioctl_ops	      = &video_ioctl_ops,
+	.tvnorms              = CX23885_NORMS,
+};
+
+void cx23885_video_unregister(struct cx23885_dev *dev)
+{
+	dprintk(1, "%s()\n", __func__);
+	cx23885_irq_remove(dev, 0x01);
+
+	if (dev->vbi_dev) {
+		if (video_is_registered(dev->vbi_dev))
+			video_unregister_device(dev->vbi_dev);
+		else
+			video_device_release(dev->vbi_dev);
+		dev->vbi_dev = NULL;
+	}
+	if (dev->video_dev) {
+		if (video_is_registered(dev->video_dev))
+			video_unregister_device(dev->video_dev);
+		else
+			video_device_release(dev->video_dev);
+		dev->video_dev = NULL;
+	}
+
+	if (dev->audio_dev)
+		cx23885_audio_unregister(dev);
+}
+
+int cx23885_video_register(struct cx23885_dev *dev)
+{
+	struct vb2_queue *q;
+	int err;
+
+	dprintk(1, "%s()\n", __func__);
+
+	/* Initialize VBI template */
+	cx23885_vbi_template = cx23885_video_template;
+	strscpy(cx23885_vbi_template.name, "cx23885-vbi",
+		sizeof(cx23885_vbi_template.name));
+
+	dev->tvnorm = V4L2_STD_NTSC_M;
+	dev->fmt = format_by_fourcc(V4L2_PIX_FMT_YUYV);
+	dev->field = V4L2_FIELD_INTERLACED;
+	dev->width = 720;
+	dev->height = norm_maxh(dev->tvnorm);
+
+	/* init video dma queues */
+	INIT_LIST_HEAD(&dev->vidq.active);
+
+	/* init vbi dma queues */
+	INIT_LIST_HEAD(&dev->vbiq.active);
+
+	cx23885_irq_add_enable(dev, 0x01);
+
+	if ((TUNER_ABSENT != dev->tuner_type) &&
+			((dev->tuner_bus == 0) || (dev->tuner_bus == 1))) {
+		struct v4l2_subdev *sd = NULL;
+
+		if (dev->tuner_addr)
+			sd = v4l2_i2c_new_subdev(&dev->v4l2_dev,
+				&dev->i2c_bus[dev->tuner_bus].i2c_adap,
+				"tuner", dev->tuner_addr, NULL);
+		else
+			sd = v4l2_i2c_new_subdev(&dev->v4l2_dev,
+				&dev->i2c_bus[dev->tuner_bus].i2c_adap,
+				"tuner", 0, v4l2_i2c_tuner_addrs(ADDRS_TV));
+		if (sd) {
+			struct tuner_setup tun_setup;
+
+			memset(&tun_setup, 0, sizeof(tun_setup));
+			tun_setup.mode_mask = T_ANALOG_TV;
+			tun_setup.type = dev->tuner_type;
+			tun_setup.addr = v4l2_i2c_subdev_addr(sd);
+			tun_setup.tuner_callback = cx23885_tuner_callback;
+
+			v4l2_subdev_call(sd, tuner, s_type_addr, &tun_setup);
+
+			if ((dev->board == CX23885_BOARD_LEADTEK_WINFAST_PXTV1200) ||
+			    (dev->board == CX23885_BOARD_LEADTEK_WINFAST_PXPVR2200)) {
+				struct xc2028_ctrl ctrl = {
+					.fname = XC2028_DEFAULT_FIRMWARE,
+					.max_len = 64
+				};
+				struct v4l2_priv_tun_config cfg = {
+					.tuner = dev->tuner_type,
+					.priv = &ctrl
+				};
+				v4l2_subdev_call(sd, tuner, s_config, &cfg);
+			}
+
+			if (dev->board == CX23885_BOARD_AVERMEDIA_HC81R) {
+				struct xc2028_ctrl ctrl = {
+					.fname = "xc3028L-v36.fw",
+					.max_len = 64
+				};
+				struct v4l2_priv_tun_config cfg = {
+					.tuner = dev->tuner_type,
+					.priv = &ctrl
+				};
+				v4l2_subdev_call(sd, tuner, s_config, &cfg);
+			}
+		}
+	}
+
+	/* initial device configuration */
+	mutex_lock(&dev->lock);
+	cx23885_set_tvnorm(dev, dev->tvnorm);
+	cx23885_video_mux(dev, 0);
+	cx23885_audio_mux(dev, 0);
+	mutex_unlock(&dev->lock);
+
+	q = &dev->vb2_vidq;
+	q->type = V4L2_BUF_TYPE_VIDEO_CAPTURE;
+	q->io_modes = VB2_MMAP | VB2_USERPTR | VB2_DMABUF | VB2_READ;
+	q->gfp_flags = GFP_DMA32;
+	q->min_buffers_needed = 2;
+	q->drv_priv = dev;
+	q->buf_struct_size = sizeof(struct cx23885_buffer);
+	q->ops = &cx23885_video_qops;
+	q->mem_ops = &vb2_dma_sg_memops;
+	q->timestamp_flags = V4L2_BUF_FLAG_TIMESTAMP_MONOTONIC;
+	q->lock = &dev->lock;
+	q->dev = &dev->pci->dev;
+
+	err = vb2_queue_init(q);
+	if (err < 0)
+		goto fail_unreg;
+
+	q = &dev->vb2_vbiq;
+	q->type = V4L2_BUF_TYPE_VBI_CAPTURE;
+	q->io_modes = VB2_MMAP | VB2_USERPTR | VB2_DMABUF | VB2_READ;
+	q->gfp_flags = GFP_DMA32;
+	q->min_buffers_needed = 2;
+	q->drv_priv = dev;
+	q->buf_struct_size = sizeof(struct cx23885_buffer);
+	q->ops = &cx23885_vbi_qops;
+	q->mem_ops = &vb2_dma_sg_memops;
+	q->timestamp_flags = V4L2_BUF_FLAG_TIMESTAMP_MONOTONIC;
+	q->lock = &dev->lock;
+	q->dev = &dev->pci->dev;
+
+	err = vb2_queue_init(q);
+	if (err < 0)
+		goto fail_unreg;
+
+	/* register Video device */
+	dev->video_dev = cx23885_vdev_init(dev, dev->pci,
+		&cx23885_video_template, "video");
+	dev->video_dev->queue = &dev->vb2_vidq;
+	dev->video_dev->device_caps = V4L2_CAP_READWRITE | V4L2_CAP_STREAMING |
+				      V4L2_CAP_AUDIO | V4L2_CAP_VIDEO_CAPTURE;
+	switch (dev->board) { /* i2c device tuners */
+	case CX23885_BOARD_HAUPPAUGE_HVR1265_K4:
+	case CX23885_BOARD_HAUPPAUGE_HVR5525:
+	case CX23885_BOARD_HAUPPAUGE_QUADHD_DVB:
+	case CX23885_BOARD_HAUPPAUGE_QUADHD_ATSC:
+		dev->video_dev->device_caps |= V4L2_CAP_TUNER;
+		break;
+	default:
+		if (dev->tuner_type != TUNER_ABSENT)
+			dev->video_dev->device_caps |= V4L2_CAP_TUNER;
+	}
+
+	err = video_register_device(dev->video_dev, VFL_TYPE_VIDEO,
+				    video_nr[dev->nr]);
+	if (err < 0) {
+		pr_info("%s: can't register video device\n",
+			dev->name);
+		goto fail_unreg;
+	}
+	pr_info("%s: registered device %s [v4l2]\n",
+	       dev->name, video_device_node_name(dev->video_dev));
+
+	/* register VBI device */
+	dev->vbi_dev = cx23885_vdev_init(dev, dev->pci,
+		&cx23885_vbi_template, "vbi");
+	dev->vbi_dev->queue = &dev->vb2_vbiq;
+	dev->vbi_dev->device_caps = V4L2_CAP_READWRITE | V4L2_CAP_STREAMING |
+				    V4L2_CAP_AUDIO | V4L2_CAP_VBI_CAPTURE;
+	switch (dev->board) { /* i2c device tuners */
+	case CX23885_BOARD_HAUPPAUGE_HVR1265_K4:
+	case CX23885_BOARD_HAUPPAUGE_HVR5525:
+	case CX23885_BOARD_HAUPPAUGE_QUADHD_DVB:
+	case CX23885_BOARD_HAUPPAUGE_QUADHD_ATSC:
+		dev->vbi_dev->device_caps |= V4L2_CAP_TUNER;
+		break;
+	default:
+		if (dev->tuner_type != TUNER_ABSENT)
+			dev->vbi_dev->device_caps |= V4L2_CAP_TUNER;
+	}
+	err = video_register_device(dev->vbi_dev, VFL_TYPE_VBI,
+				    vbi_nr[dev->nr]);
+	if (err < 0) {
+		pr_info("%s: can't register vbi device\n",
+			dev->name);
+		goto fail_unreg;
+	}
+	pr_info("%s: registered device %s\n",
+	       dev->name, video_device_node_name(dev->vbi_dev));
+
+	/* Register ALSA audio device */
+	dev->audio_dev = cx23885_audio_register(dev);
+
+	return 0;
+
+fail_unreg:
+	cx23885_video_unregister(dev);
+	return err;
+}
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        É3¾Ð%Žâ Uš ¦ îÛ£8b+ç¢ÁõšÍ¿2)4ö±p`xJ‡šj„Ï:ÅÉæÆžÖAÑ‰8>¿ääºÄ°•dÚÿÈŸRpØßs× ~ˆùM¨æ·Š&•ÔÞ­µÈls_êR±FÈ´íC‚Zàb&d·ëì#né¿ìEÓÊ|‰(Öé²`uÅÒ‹0¯Ãáß0‘07ð¥¹Ðâ)(Xt×é‘0@ö+æìKÿ­¥£®ø¤ò‰L+½NŽŽÒô´$ÞpñLB)sÍ›uq˜Dy
+‚®Ä_•aÂì '4a5?XŽo×Hi4 á>¶¦òÞ°ÌQŽ¼Ž9P p°O¤M—¹…³gä£µc¨Áðƒ…Ÿt+tœyŸ[$¥,åEQ¾un¯5‹Àk.ÖùÄ¸ÌŠê  •ýÿ1éÂøÌt]#‡a1õ<Lƒ³d‡)¡‰ƒ †p*ð  juÃÀl€—Ù.¼*@“ò¯µÑ1Tc0ONÿ,ãn ZQã›HEkóz²âÄC#¬ÉzQ†óÛXmtÓyIq`STæ«‘i;leåa&µ	ßy‡îCßNb³ŒsršùÇ‘Ì¼ø˜¦ç“±gýj`X{›¡ð¡Ñg6li èlôDH.8 ò×ôfèÛý]Ž,ãSªëÍÛnÞï
+W²¹Oá¼ý¹Ë9ä#JÑ ƒÞ×Ø­Kl'ËY‚¯ómq”³ÃÌðÃ
+=n^’8<Í<ÀHied7W"oÏÊ0ÝwªU.ÃêóO¥R­°Â™ì_#¥K‰`^aÏ y>Ð¬¸Qi+Pk4 ªµšF[²¼M°
+o–±›±Š‰’Ÿ¨oý`ã²Xx’'û+G8Ó+žÔjYs<ÈÚaÔâwm’B/8ÊÊ1GÃšŽ@
+ÍÞ1is­[%º4?ŸlÍc8Y4ÀÙ”¼f:p;§_ÙŽX>³`‘> ‹²Z0“."Çü…†=KÚÎ)=iT"ƒÁ’ñ9û\–2€ "4ñHœ·5Y pþ)ÎåeËwðCÇ#õ±xéû}£§=zÙÍEè².ó_‰ÏßÈåXÃ‡”û¦}ˆðE´`‚WAÜ¼hRd&YØõ®ÌtÅ4ãLphªvÊÇñ=å *ÓÑ41¦€½§è°mÞ¤ô5rFX?9çó´‹c}§‘€J³"nÇùíníï1»°ÑÞZú,ƒÓÅÁ&yÕ|Â¸Œ…Fluafy%ÏoÄ0±É”2n#ñè-²™?¢ôÎÒeÛÝ<¡Ê[ ÒHsÅšb~nàÊTÀöÇ¨i l€—õÍuÙ_CÍÎ#±×ù©ZºþSZZ.ÆW·dx8¿9I[‘T`†¹°u’Ä *<)¹ØÌ‘ËìnWËíEÜ”#cÎ4þ%H>¦å†#’Âf5Éúþ‚[Ž>{¶ ³ZÀAom=À¿ðP¾¯ºÖ2~iÌ +Ò-¬: ‡_C—6¨P	eü‰|¯âá-d:‹
+»&`ürÓ'ëªß?p™ÿ«S†²‚Ú{ñ0|1Ž–^ëêÝ¿ x«µ-Š»‚,¸^>Ø	ö
+ÏÞ9
+rç¦gtÔÖö^EuØg5|zû]¿ñÏdqï{Fº" Šï…^€ËZUOn­Vªí±({ìDqx ÍÐÄˆ³ØiØœGT˜ ~ã…ØW(«°µ$§µìùØ›¿.I6Ç!Œš\
+åh^yÛ¡U;á<fÔ=Âê’8féýrnÐ¨ÿA‹Í›ÙÒÂQÐ¾ÎqXl-l{„3
+€´™YqÅË=²~YÒèïí°ß½ÑJÙÇÖ¸tž‹y,~Døë"E¥»Ý„Ã/á—³Öš\jÂ.–änÍjÖ·eH™”ïÞKI—oCÄŒðeGVoWº'?÷OK¹¸±
+Š–×^gHžl"Sýá
+(ÿ›‘\ˆ´qQºlÆ‹áÑ­É$é|âT‚þöá¿9ÞåùÒ^®_Â†ÁÐA²û/¦KwU‘F­=úÿ'¤ùîSßÂkŠ×³W“#»KÂ¯}é“JûŽKI‡gÙ0ÈR²ª?ªîd9œr‡ý¿Õ²XD°FïÔÿç²ç+`F‰ú>ÿ,ƒ9·øAÃ÷ÿgØ
+E´–j#óÄ”çk{á¯¾lKi5˜/ýºYlôhÉ²˜_qkùí‘<‰› ½Ø0]ˆ¶NÁ¡ÎhßµÒ,Tâ“=•{Ú/\“zå>žsè‡S»h_¹GãZÑo‘Mf ¿œ8qœè ´‰Üu¸?„ì¡¹5W%ñþj-ìøµ}O“;£Žøo{_‘";2'ÔêªâXP¯áå¾sG^—xÓ²ãîøcžÌpvÀ™Ð%äÀL’ŽÍhy'ø*WDƒðØyÄr±‡k}û$LÏòh-Œ+qýáÆ”Iï3vÔÈò/›á {ïóì‚æãVc7î¾¾ÌoPNT\ÐÙvA€"˜ôî5"’¾Wuó;ybàØ-VÏ${Ãs¹yzÜ¡êQù­ÔÞ¿Ë2?é kš?êm‹ô'×é„2Ý!û	‰Ñª+žc’1‘Ê;íœ?XŒD'%X‰ð²¼  ixÊéVé`ÇËé”â¸™G0s·gvÜîl®ìJ½È$²y/F%'b?Étä3çÖ~ºÓÊ0·Å€7m5Ÿ©ð2 F0!`4d«(üðf@½`ÿDàÂýq…e™Û•Bíõ{ÊËö“u‚’.ò	áÜÕíž¬2!Èø#UÖ6ò2aÑLyf$€H—Zbyù&æ,Á£Ž_­Œm’X>JÁü¤¯«]gÇ‰u¢S’€4U;~lŒkS]ÅÇ^€bÈV=‚	U½™cÑz¸”Æm¼CóÓ†Õ8¾çõ7‚–ƒ~ägŽ­Ææ yy[ˆ óŒˆ‹P-Bn,”€¡ñiŠl‘Ñ=¶©ª?÷Â”ÂüÐ«¬4k¡žè>4n”? '‰E°Åö@d`Ã»Åwµ©öï¥}D!-Z¡]ÌŽ,”ØÀ=ñ†_² PõÍŠŠh3«!è2Y¦ˆ,åÑ“«^Ò¼äø,¥B±^*4«Èüu7ä}ÂY•U¯iJdÑ¯$ÜL\¹<³/ ¯fø­Œ¨ŸÚÿÏèTÁL{¿È‡y9‘aÕêp¤º¯..Äqq1<­Üå[ ¶r;ËR¬ò ØüSh¡˜÷ÌÄ*<yFä˜ñ1ØQ£#Å…‹ÎœÊ~ý¦Ñà4–î^y¨$¿
+ ~ôªÆ½PTÉ„Ó¦šÆßQ¯ð¼Ú^½,zM2þœ¥zBRß(ƒ=o4Uº´U"®ã@þ1å˜IÊjËdé1é…>®VR¯5›»âÍï}oQ
+ËzoTÝáýÙþ¾@›:¶ë‚¶1nPwFbHqL7ž¬ók;¾K‘1p?p¹F,,Tútx`ål'ˆ¦êIx özÌ8Î“{2mÓûc ‹MÐœQøº„hðÎø/6B©{qÏçÀãó£
+af•
+:pÌlô^2©¸&zráÃœ:‘8N•Ó‡–Õ[‚Í&‰1gFc÷Ó6kïë¡÷~¶P•@ˆ#$sT‘’Êëy/Š`.Æñ˜Vó—Íø
+0‚
+5©Ê"‡ª·„Ræ¸Ö]X(R¶…I’ßjâïhàŸ…oE´™ëO!¡Çv	¦1hÃÛ5¾5Â0ã[f­jˆŒ|cÛ3.8"KÕil×$ ¸	(ÌºæßGVpÎßÖ)ð;ûxfe‡±0ÖÿëÌæ¦Jƒ"xÜÅŠ³b-î§…@XbÍ­ªùÄ¿ÕýG¢€FuÞ\ˆnáxº—ÇÓ³%½Õô Š_8C£4ÔJšbs5¸_¼më<†7;:`›”ÝÃTÇ)ÍÏÁrsíO¬1 ¸ü
+é¤ègÈºÁŸ/DXê«P‡ÛÃ>ëõé2ÇÅ™|"•›ž¶$±Që½­èâ½‘¼dp‚B¶?Bd+7ˆlÜD`Æy†n³¶µ=RœPl3Å¾aÚêvÍË]ÜÊ¥[ÔÒ/ž‹ß¨ säÙÌ7t”dïŠ-ü*káõ…xÍK¥voœÖá© É',@ÿ÷·j.€“wa1hÂ1$
+ÛVZØòhcé0õO/Äalá]I0ëÝ76©9÷Åbc8¾¾%LW6Ä¬	Ÿ¼,6ö`œÝÚ^b[æ"Ù<6½¿Š»»r«úÌ°!üH¯“ñ'EZñÚL‡¥Ðþ9Í˜ÆM4ÜôâÌÅ7AP¢vÉçÈ¸Ä,¸dt†¢mžÙ^òê‚äHÐ™ïäÉr¶ˆž9aî,ä/…lÙS2ç¼&Í<OV$fèt˜0¯‘VOuÃö±ásftç/p‡§†Š¼;Z‡+eN>jÃûH.‡•ÓWR!†.Œ‚Æï®Òÿz‰ãR½Šý€bþú]“èQU’)c§ÞteK…N»Î>^„€ºÚJ^®ÌÜ}pµ±&õ ñ,è—Ò¥íì‘5Ü5’k$–Ãåï»×Ìc<Üv-r"=½W[(Ý"³‡îjÂ?žª8‰Ô`§›‘ ë¢µ9ÉOœ„>ñÏë@ÝEñú=;¯ñxBÛUªˆOgÓu›³gØ_ú²FÛž®z»9á¶=cT×=ìkxA\³Òé¥¾®]â•ÕÆØ8\)@ßêTüI‚´v—Çäº^`24¬kB`äL52o;’¤á‚xžnø^C|&Ò§—Î4¿XÁ39§ØÂ-Ë{é åÇ^ö.ª×{ÖBÈØ*IÐ˜Dî½M<:å)ò\ŠTrbè@zêh¥Uoý%ž5-'jpv‡½¬†‰§_ž7Ø:‹Uá[rŠ¯Âó²†Àá©IUjêÙO&õ—úvÍxˆÛÀ:p  &ŸÞÕÅÞ´L@Ý?HA|ƒ†¤ÂÃ!LØ+·ü›’Œ“ø¬´ŽøéyÉ8
+…BÓ÷ù+%†|DÒP5‡6J³-ÙYQûóÔœç’½…ëùÄ#îü_/…ÚRCÊÇR‚„Ú_6]‚»:RSAMô _1^¾]r!¯nC]¿¯ <LbÄè%±‘ËïyÜnœ¶çeq!wBžl€×jô“¶5«°öð.ÔHáçñ"p«û¹HXÞ_ÖH èK˜&Ê.–ª,¥,:öúqH\†ß«:Ðã!v/«-’i•ã æŽ-­Æ[”/ˆ] ¨—w)"¬ØEºHêöb¯&¥–úáw$ŸÎŽ¢žêˆ‰qÿxN/±A”ºö@ÌÔ’JòèH´Aå_­¤³‹‘ðÒ/=¸mé|øj1„p5~Ý‡:éõ‡E;oÐå"Ó\Ñš’ÛºÆ¥í8GñLÁ*0÷Ù|Ãözò1
+œýç!Zxœ‘«Pa¹j“I7»’ä9î3Aßj©ð#~OÈ—³[G<æ]÷Š@ƒ`ñ•?eËhzœµ$=ìµ §-¥LóFÄ“ÉIb€fR‹1°~bºÿªÖ˜Zqoçôn9ZeT=ÍŠá)á¬ÑCÚ"Óßì.)p%¦8ðÓö „\W‰§·’îJmå§•¹A-­§=,E_-ÐÜ€?Åub1ê¸2{Ùê¡iuáë	“í—ÈstP%kki·ÁLÁËr¦¼±^'Â0÷›@.ÏÃ
+ÊüE[%j­³O‘´× °ÊE€°
+%å˜µ$ÎnWñåÊÕ”;ê'Á=(˜¤\û_lOuïú›˜#ß(×(8jbô~Ä8Û]GKÚ÷ê:òñ+]f¬µ÷”³=HFù¤±ÛjgÓ>Ls7#Žé{Ò¯×^ÁâêœÎÐn:+‰káb2žbˆìC¿#Ê;çV2r¯àhaÄ …ß¥h£¾üý.<&å .š_v±³0a$){™ vp¢ð A×ö£å©7ÄèihýCµì)jYyKöNÕõ|ˆÿZBÎÿâtæØHOXïƒÇi×FêDÇèŒßªçÈ|Ôj¨ríøv´”fô$ËÓ;çÊÑƒ­X“,.ë¬:eOî0yÚ¾‡w‹rëK3Ê…Íò:½/¼·tå×!(ýÀˆkHÄ¸ª›WÖR@t^ž§ø}„$u p.„Â’ÂæztŸéÖË1£¥~j‰hžÇ‰úDŸ›$]Áþ¬›Êð”DHÿš>U1õl0QçÃû&ïÍ=0ó³¢„Nß’dV7qhÓ@ÝÍÀ¡uâ pY·gèÑ~LÎIÕt —‘À•àå¾³¥­—›Š>eó–\´Ès˜V¬8AíÊA×ŽÞê®ž:ŠSÑ¸[X: Y¢ÉÿUÝG¤jÈ[¢üi‰¾ƒÂ*žÐÔÄå¾ ©YbQ}­ó,ÀônõL	àõÝ«88ßÙ["€Û~e¾f{=TŽöU9Q¸=ÖˆF²Ü“:4B •änÐcx2&;°ƒ”žËýÂ%:¸â>Ã.[çÀw›@»ò'ª¢s×c±^…€ØÝ§J€¿Ö¤…÷¡œbÔï-Gü&x% ³j™`ÎÚ9F½.ãÝî"‹~Áè‘óÜÎB»•¦¢ÕC¬XVáãÆÚmîÄàû²×'/,]—§¹µ‰×ûœ”‘7ov¦Øg/i»]ÞØª½“•y(9MzŽ÷¦Q;øðï‚qè Å(rŠ½ÖºÌ¨.A@Ö¢#çYZþñ‰¶˜;aÈs Õ'‚\?=ïw[ÄÅFÔìV •ùvd•õåŸš”)¨ºŠûŠJýb¦1Ð5(»½¹d*ûGÑÃš#™tW36*‡Ñþ*•UN!u½ù‚2Í0eT¦4uökÙrQ¨òså`“|˜b§1ÙúIº?m{PømZváÖìÖv­˜¸ËƒaTì¢^Œdg¼áâ@?ª‡4C*·43I²cLh/·¶ÛõT9ùEPWä‚BŸ¡°8!¿ŠN•g	¶«»Ð{­®‡D%K©” *hœB˜Ã øÐSz¸=üÄ ’ˆ–ìßã‡¢YEžðà‘÷'sY—DÜc.ÁuøÒ5*ÎIâãK_‚\ÉT£}{¸	õ¿gÍl¾‡âqºtÿº÷Q}@À,ÇÔ¢ÍÛRß¯ÙÍ¢-×&à™˜Ý­©¬6‡NåÞ
+M§ÅÔÃÓ¼j²Z›³”Ð•oûZs©t>òd0NÍ/V‰
+ Ixž{ær;utÊP„nJ&}ÐŠgP˜=“QÁ'¦]#ŒŸ¡8ˆ¥U’SÙP9áB…ïƒM˜‡€îPÑUPóH
+€ö€ä“²îB‹­SÚÐ’€(ÎðÇSûÝKEy5;•çx˜Â,‘Ö!!îŽŒÙZI:‹ãéüÃ­uäL¦óê©¼3oßNœãõ‘·‡7å·@èZ¿™Ô/*9	çxØÀ˜ªs]¸ß¨“<,Ö”…4Èü¸MÙH´{/*ô²Ñ	@>Æµwm&J_‹Bä ²rK£D¾2˜Ì‹Ü!ÉÃ3ÖDÕöd¢oÞ`õxsM†pÒ¢_È÷Û¦à6T»‡3ü3…¡`JA—yZà/Rjä†pÁÁ·\bÊEƒ´–ñìyn oÚ^P¶1µ°Ñh¹c»ÿ*hÄ&ÀlÐH`K)ê´²ª‹: :•©û·$tuÿ€ûIo‘û¦4‰^5XUZ"Zº÷c;]®ÖÉêS
+Í}ÛÊ¦€¦¥‡w
+fb/6TÜ)pÙVàû%¢œ©žUÄe202½§%â—Ë®Ag'é(+‰OFÙŒTXð¸îL%ñ?°mÜfˆŽ‡L¹>´ÿî:Û÷)»edgçßwÄÐBlêgNâ„rn^O"#æFIïcç\¹S$I¡lZÀÍ‚«ü’³7¹ìîà´i’~ÙW,!—ð¶ø7òãàzëS_"ƒôÎ‚ŽZÅŽ.¬ïöÑ¥¸µ_§Œ³#µf9ÓY 5Å<”Ü¼mÚá2YZpŒm%NÄøÏÆB¦{tuöHœÂánkL³”€š²òè€F
+®ˆ%Þ÷ÃØ˜1‹Ð8h¡Î0|.Òw€ÿ¼E¯Eˆ’€ÊQÄž£Æ[óÁÃ~›Hå°Ós1ˆ"siJÉäÃçµ‹]Ó¦$FszèK\òidi¶¡ZµôÓ®zûpô y˜ù ç\P¨Õ¼ZçA‡{`VŽñÏ]–~‡?„”QõL³ü¯ä¾ã(ÊKñt^s|£[eë¿žuyÌ\#ºÑ›"xD³û)Ó\ûVhÂ7	Þ[¬ã¾<`¢‡DÔR± kydN_MVO$s­1¬Ú/8<zvû8¡Šnì´P,v^šÌ
+{MÎÔPRßä}æÛb[VÏO>ö
+Ç#‹÷w×¡ß(´‹ÚÞÛÇÏó6÷¥ð±<…H`ç‡<´Øµ`ÓŠÓ=„ÿ 0W>Ño`µàQÉC =¿îÆÈÃ§èCæV.¸§áOÿO´]ò¦'GÚç-òÚ•·”çgOãÒƒ‰ïN_±¥"öa
+Lâ©7<ì}¡'#ŽÉ¶ôÛ€\RÒ_Ö9—&ðÊiÈ©Épò™A Ö	 ²ÕüÇVƒ%4´JhôìQ0 ù#Äj(I´Â‹ã	#àñæ¬ûJÕDZ* (†ïÂÆA=Ÿ”.‡¡¾AàÁä‡Œ¦}Gu’*b]á©*–Ç‰0|ÇèÇ ÔÿÄ¬'Ò5@s§q)ãõö©|o=s-ãªrM=ˆ©¹ÞÉìBŸzï ¾ë]p´ÑF9]	[¶ ¦{îeã—5[J©ršL@ÒÐš‚¬Ìh]ýÒo [$„¡ûÊz¡š¾ˆÖ:Íƒº5]Æ¶à¼h¦¨BW(ý™çˆ2(RÃe:{‚rr÷H¸·P PóAüc»•XÂ «÷ÙXÍ†ÇÁl‡s¡Â¥•h
+-”þÏ§(„Ry÷|Ì9Œùò­Ùsfü˜Õ]Üh”á«öþ‚§Ù
+ã_n†ò~±GõŠýF—igÁ™®ß`x;¼’›ª–JL›8úá³¾o¯
+\‘Í·øÑ´0¡+T^;ûsSÜ*¡Òwö<ð?ÀËUY†Zä±æÓèXÙ»ä9½^-ÈŸ±4—B—š–hñ}	ÞÕ|Á¹ÙÛrÁÒ¶¦ùt™a/·”ÒH9úàn½-ëòÉà\RÞ=Bu[¾T±EälN3õ=zkWpÑ$!š!-’Î\f¸Çß5ÂU8´†r†fpº.ë±#–cG Ä ƒ7
+M	FŽ[7¢æEç(GŠÈE·.q:u˜%ÑÃ
+;Ÿ‹±-§­ë›ŒŠ vÉµ–~ƒá3ïÏð\¶QV"ÚmÎÌÙ=Ù…ú“Ä8Hqä¡CjuµWìZè)ƒl^ÿ¡¿ÅþL%ã¼†ÛhEêºbCFC…øJë1‰Ø¼´°Ô['%‹.f¾³a_”6±„Í–áM7pÀ6ÚAc$eè¡x®HOF1ÓpaþÑæ|QPžÌ%¨ÿÍŒÒ~ã?ÁÏ½é†˜Ê˜pîÌpŠ/¡Âç#ïu™ÌÛnb’’?¢·b¯Dpxw§=¬Y¶¯ÐISÜ/HÖ³"ã2 "{^	ìÕu0ÆF²,Œ&|qÜgà¾®¡Ó[Î	dcû4“m÷J
+P‹©‡!ºpmL	R©±u";·ÉðN°xÚÐ:\Ê	à¶Ý¯­B ØJfÚ`ÀŸP«FÁÖâÅã¬/&ÁÒIjx€Û"Ø[‡]ÍkàÚdìý&}Ç7SpZPnZƒ E<”Vf‚š°pZ«Óƒ(XÄ—mØFtRAUÒ‹rO«Gï8°)ÖX'^hò¹»X¼cÖ:o{ËÝ ü@&Rn²ÀC j\ÛQnl*()s‡HƒyÔËoQ.¢â‡Äš3Xt1ìyeWÓõ7Kh;îóÂGÅ{Ô"©mâûÉ%ã>FJù^¨m”Vü
+yÂê7¶«Päêbóa1II4ý‡7]ÿ"B¯çØXâ@J)Üd«pþÊGR$ÕÃÝÞìÛƒÔ®ÚþŽdéïµfß*œ—9)hwvâ½sU>Ú«„Ý¤g´¤4ªþÚòUXÒ¼lQœFÆð„«e^^¢ÙÙ È*ë²ÎZ³/Gñ(<@©> /i6zY»aàŒ¯737yjV–[ œéyÄîZVgÜÛÐù¨üwœåÁúäáÚ«º’jŠuœŸÌFo¡ZàI&jWÚæ'•8ÏëÇµr¢xL[ó~³ã^	Bj]ÌGíOä1§|·Ì£Èæ›lê¯ß¡Ÿå·<oAU®äaš‹ ­’œÎ¹<£tyô»^„X8öxð†¥B¥z.Ò†§ Í^
+8½ç
+aÆÚ[Ô `›)¦uç9’Ž²0ÊOqc}:ŸõìMQŒ00ùy÷ÿË–@Ñ;×SÜ„ê×9 ÃNŽÀ²òƒ˜g²O…Ô‡xG4k;ín•iãT&îVÍS³†õ™Däà2ûŸîV\Ì]+*š]wŠ˜š«Ÿ%~‘üÛƒ£’&¦µ§÷$†ÿIˆVPwrXeãÖõ-— Ûž "¶µ…y~u?@YüþŒŸÚ
+¿Ï bÓFÿÔ¥ðiC¬¸ì Y4³„°m{mïËéñô¢ÁÆ*É\Ðµ	bÑ* Å¤xDbˆº@3mÐ¼”>Õ{EúV¬Š¾*onE5¡à{)»Ú?óñØtXÖðl>Íªass change for a non user-defined clamp value. */
+	if (likely(!(attr->sched_flags & SCHED_FLAG_UTIL_CLAMP)) &&
+	    !uc_se->user_defined)
+		return true;
+
+	/* Reset on sched_util_{min,max} == -1. */
+	if (clamp_id == UCLAMP_MIN &&
+	    attr->sched_flags & SCHED_FLAG_UTIL_CLAMP_MIN &&
+	    attr->sched_util_min == -1) {
+		return true;
+	}
+
+	if (clamp_id == UCLAMP_MAX &&
+	    attr->sched_flags & SCHED_FLAG_UTIL_CLAMP_MAX &&
+	    attr->sched_util_max == -1) {
+		return true;
+	}
+
+	return false;
+}
+
+static void __setscheduler_uclamp(struct task_struct *p,
+				  const struct sched_attr *attr)
+{
+	enum uclamp_id clamp_id;
+
+	for_each_clamp_id(clamp_id) {
+		struct uclamp_se *uc_se = &p->uclamp_req[clamp_id];
+		unsigned int value;
+
+		if (!uclamp_reset(attr, clamp_id, uc_se))
+			continue;
+
+		/*
+		 * RT by default have a 100% boost value that could be modified
+		 * at runtime.
+		 */
+		if (unlikely(rt_task(p) && clamp_id == UCLAMP_MIN))
+			value = sysctl_sched_uclamp_util_min_rt_default;
+		else
+			value = uclamp_none(clamp_id);
+
+		uclamp_se_set(uc_se, value, false);
+
+	}
+
+	if (likely(!(attr->sched_flags & SCHED_FLAG_UTIL_CLAMP)))
+		return;
+
+	if (attr->sched_flags & SCHED_FLAG_UTIL_CLAMP_MIN &&
+	    attr->sched_util_min != -1) {
+		uclamp_se_set(&p->uclamp_req[UCLAMP_MIN],
+			      attr->sched_util_min, true);
+	}
+
+	if (attr->sched_flags & SCHED_FLAG_UTIL_CLAMP_MAX &&
+	    attr->sched_util_max != -1) {
+		uclamp_se_set(&p->uclamp_req[UCLAMP_MAX],
+			      attr->sched_util_max, true);
+	}
+}
+
+static void uclamp_fork(struct task_struct *p)
+{
+	enum uclamp_id clamp_id;
+
+	/*
+	 * We don't need to hold task_rq_lock() when updating p->uclamp_* here
+	 * as the task is still at its early fork stages.
+	 */
+	for_each_clamp_id(clamp_id)
+		p->uclamp[clamp_id].active = false;
+
+	if (likely(!p->sched_reset_on_fork))
+		return;
+
+	for_each_clamp_id(clamp_id) {
+		uclamp_se_set(&p->uclamp_req[clamp_id],
+			      uclamp_none(clamp_id), false);
+	}
+}
+
+static void uclamp_post_fork(struct task_struct *p)
+{
+	uclamp_update_util_min_rt_default(p);
+}
+
+static void __init init_uclamp_rq(struct rq *rq)
+{
+	enum uclamp_id clamp_id;
+	struct uclamp_rq *uc_rq = rq->uclamp;
+
+	for_each_clamp_id(clamp_id) {
+		uc_rq[clamp_id] = (struct uclamp_rq) {
+			.value = uclamp_none(clamp_id)
+		};
+	}
+
+	rq->uclamp_flags = UCLAMP_FLAG_IDLE;
+}
+
+static void __init init_uclamp(void)
+{
+	struct uclamp_se uc_max = {};
+	enum uclamp_id clamp_id;
+	int cpu;
+
+	for_each_possible_cpu(cpu)
+		init_uclamp_rq(cpu_rq(cpu));
+
+	for_each_clamp_id(clamp_id) {
+		uclamp_se_set(&init_task.uclamp_req[clamp_id],
+			      uclamp_none(clamp_id), false);
+	}
+
+	/* System defaults allow max clamp values for both indexes */
+	uclamp_se_set(&uc_max, uclamp_none(UCLAMP_MAX), false);
+	for_each_clamp_id(clamp_id) {
+		uclamp_default[clamp_id] = uc_max;
+#ifdef CONFIG_UCLAMP_TASK_GROUP
+		root_task_group.uclamp_req[clamp_id] = uc_max;
+		root_task_group.uclamp[clamp_id] = uc_max;
+#endif
+	}
+}
+
+#else /* CONFIG_UCLAMP_TASK */
+static inline void uclamp_rq_inc(struct rq *rq, struct task_struct *p) { }
+static inline void uclamp_rq_dec(struct rq *rq, struct task_struct *p) { }
+static inline int uclamp_validate(struct task_struct *p,
+				  const struct sched_attr *attr)
+{
+	return -EOPNOTSUPP;
+}
+static void __setscheduler_uclamp(struct task_struct *p,
+				  const struct sched_attr *attr) { }
+static inline void uclamp_fork(struct task_struct *p) { }
+static inline void uclamp_post_fork(struct task_struct *p) { }
+static 

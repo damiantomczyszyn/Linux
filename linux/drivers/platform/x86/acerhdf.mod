@@ -1,1 +1,1 @@
- $(wildcard include/config/PARIS
+/* SPDX-License-Identifier: GPL-

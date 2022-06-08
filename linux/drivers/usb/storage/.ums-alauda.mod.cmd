@@ -1,4 +1,6 @@
-rd include/config/ALTERNATE_USER_ADDRESS_SPACE) \
-  arch/x86/include/asm/uaccess_32.h \
-  include/linux/cred.h \
-    $(wildcar
+C417_RWD, regval);
+
+	/* Wait for the trans to complete (MC417_MIRDY asserted). */
+	retval = mc417_wait_ready(dev);
+
+	/* switch

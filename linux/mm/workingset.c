@@ -1,640 +1,861 @@
-(int offset, int next, int bucket, int size)
-{
-	chain_hlocks[offset] = (next >> 16) | CHAIN_BLK_FLAG;
-	chain_hlocks[offset + 1] = (u16)next;
+ *rq_i;
+	bool need_sync;
 
-	if (size && !bucket) {
-		chain_hlocks[offset + 2] = size >> 16;
-		chain_hlocks[offset + 3] = (u16)size;
-	}
-}
+	if (!sched_core_enabled(rq))
+		return __pick_next_task(rq, prev, rf);
 
-static inline void add_chain_block(int offset, int size)
-{
-	int bucket = size_to_bucket(size);
-	int next = chain_block_buckets[bucket];
-	int prev, curr;
+	cpu = cpu_of(rq);
 
-	if (unlikely(size < 2)) {
+	/* Stopper task is switching into idle, no need core-wide selection. */
+	if (cpu_is_offline(cpu)) {
 		/*
-		 * We can't store single entries on the freelist. Leak them.
-		 *
-		 * One possible way out would be to uniquely mark them, other
-		 * than with CHAIN_BLK_FLAG, such that we can recover them when
-		 * the block before it is re-added.
+		 * Reset core_pick so that we don't enter the fastpath when
+		 * coming online. core_pick would already be migrated to
+		 * another cpu during offline.
 		 */
-		if (size)
-			nr_lost_chain_hlocks++;
-		return;
+		rq->core_pick = NULL;
+		return __pick_next_task(rq, prev, rf);
 	}
 
-	nr_free_chain_hlocks += size;
-	if (!bucket) {
-		nr_large_chain_blocks++;
+	/*
+	 * If there were no {en,de}queues since we picked (IOW, the task
+	 * pointers are all still valid), and we haven't scheduled the last
+	 * pick yet, do so now.
+	 *
+	 * rq->core_pick can be NULL if no selection was made for a CPU because
+	 * it was either offline or went offline during a sibling's core-wide
+	 * selection. In this case, do a core-wide selection.
+	 */
+	if (rq->core->core_pick_seq == rq->core->core_task_seq &&
+	    rq->core->core_pick_seq != rq->core_sched_seq &&
+	    rq->core_pick) {
+		WRITE_ONCE(rq->core_sched_seq, rq->core->core_pick_seq);
+
+		next = rq->core_pick;
+		if (next != prev) {
+			put_prev_task(rq, prev);
+			set_next_task(rq, next);
+		}
+
+		rq->core_pick = NULL;
+		goto out;
+	}
+
+	put_prev_task_balance(rq, prev, rf);
+
+	smt_mask = cpu_smt_mask(cpu);
+	need_sync = !!rq->core->core_cookie;
+
+	/* reset state */
+	rq->core->core_cookie = 0UL;
+	if (rq->core->core_forceidle_count) {
+		if (!core_clock_updated) {
+			update_rq_clock(rq->core);
+			core_clock_updated = true;
+		}
+		sched_core_account_forceidle(rq);
+		/* reset after accounting force idle */
+		rq->core->core_forceidle_start = 0;
+		rq->core->core_forceidle_count = 0;
+		rq->core->core_forceidle_occupation = 0;
+		need_sync = true;
+		fi_before = true;
+	}
+
+	/*
+	 * core->core_task_seq, core->core_pick_seq, rq->core_sched_seq
+	 *
+	 * @task_seq guards the task state ({en,de}queues)
+	 * @pick_seq is the @task_seq we did a selection on
+	 * @sched_seq is the @pick_seq we scheduled
+	 *
+	 * However, preemptions can cause multiple picks on the same task set.
+	 * 'Fix' this by also increasing @task_seq for every pick.
+	 */
+	rq->core->core_task_seq++;
+
+	/*
+	 * Optimize for common case where this CPU has no cookies
+	 * and there are no cookied tasks running on siblings.
+	 */
+	if (!need_sync) {
+		next = pick_task(rq);
+		if (!next->core_cookie) {
+			rq->core_pick = NULL;
+			/*
+			 * For robustness, update the min_vruntime_fi for
+			 * unconstrained picks as well.
+			 */
+			WARN_ON_ONCE(fi_before);
+			task_vruntime_update(rq, next, false);
+			goto out_set_next;
+		}
+	}
+
+	/*
+	 * For each thread: do the regular task pick and find the max prio task
+	 * amongst them.
+	 *
+	 * Tie-break prio towards the current CPU
+	 */
+	for_each_cpu_wrap(i, smt_mask, cpu) {
+		rq_i = cpu_rq(i);
 
 		/*
-		 * Variable sized, sort large to small.
+		 * Current cpu always has its clock updated on entrance to
+		 * pick_next_task(). If the current cpu is not the core,
+		 * the core may also have been updated above.
 		 */
-		for_each_chain_block(0, prev, curr) {
-			if (size >= chain_block_size(curr))
-				break;
-		}
-		init_chain_block(offset, curr, 0, size);
-		if (prev < 0)
-			chain_block_buckets[0] = offset;
-		else
-			init_chain_block(prev, offset, 0, 0);
-		return;
-	}
-	/*
-	 * Fixed size, add to head.
-	 */
-	init_chain_block(offset, next, bucket, size);
-	chain_block_buckets[bucket] = offset;
-}
+		if (i != cpu && (rq_i != rq->core || !core_clock_updated))
+			update_rq_clock(rq_i);
 
-/*
- * Only the first block in the list can be deleted.
- *
- * For the variable size bucket[0], the first block (the largest one) is
- * returned, broken up and put back into the pool. So if a chain block of
- * length > MAX_CHAIN_BUCKETS is ever used and zapped, it will just be
- * queued up after the primordial chain block and never be used until the
- * hlock entries in the primordial chain block is almost used up. That
- * causes fragmentation and reduce allocation efficiency. That can be
- * monitored by looking at the "large chain blocks" number in lockdep_stats.
- */
-static inline void del_chain_block(int bucket, int size, int next)
-{
-	nr_free_chain_hlocks -= size;
-	chain_block_buckets[bucket] = next;
-
-	if (!bucket)
-		nr_large_chain_blocks--;
-}
-
-static void init_chain_block_buckets(void)
-{
-	int i;
-
-	for (i = 0; i < MAX_CHAIN_BUCKETS; i++)
-		chain_block_buckets[i] = -1;
-
-	add_chain_block(0, ARRAY_SIZE(chain_hlocks));
-}
-
-/*
- * Return offset of a chain block of the right size or -1 if not found.
- *
- * Fairly simple worst-fit allocator with the addition of a number of size
- * specific free lists.
- */
-static int alloc_chain_hlocks(int req)
-{
-	int bucket, curr, size;
-
-	/*
-	 * We rely on the MSB to act as an escape bit to denote freelist
-	 * pointers. Make sure this bit isn't set in 'normal' class_idx usage.
-	 */
-	BUILD_BUG_ON((MAX_LOCKDEP_KEYS-1) & CHAIN_BLK_FLAG);
-
-	init_data_structures_once();
-
-	if (nr_free_chain_hlocks < req)
-		return -1;
-
-	/*
-	 * We require a minimum of 2 (u16) entries to encode a freelist
-	 * 'pointer'.
-	 */
-	req = max(req, 2);
-	bucket = size_to_bucket(req);
-	curr = chain_block_buckets[bucket];
-
-	if (bucket) {
-		if (curr >= 0) {
-			del_chain_block(bucket, req, chain_block_next(curr));
-			return curr;
-		}
-		/* Try bucket 0 */
-		curr = chain_block_buckets[0];
+		p = rq_i->core_pick = pick_task(rq_i);
+		if (!max || prio_less(max, p, fi_before))
+			max = p;
 	}
 
+	cookie = rq->core->core_cookie = max->core_cookie;
+
 	/*
-	 * The variable sized freelist is sorted by size; the first entry is
-	 * the largest. Use it if it fits.
+	 * For each thread: try and find a runnable task that matches @max or
+	 * force idle.
 	 */
-	if (curr >= 0) {
-		size = chain_block_size(curr);
-		if (likely(size >= req)) {
-			del_chain_block(0, size, chain_block_next(curr));
-			add_chain_block(curr + req, size - req);
-			return curr;
+	for_each_cpu(i, smt_mask) {
+		rq_i = cpu_rq(i);
+		p = rq_i->core_pick;
+
+		if (!cookie_equals(p, cookie)) {
+			p = NULL;
+			if (cookie)
+				p = sched_core_find(rq_i, cookie);
+			if (!p)
+				p = idle_sched_class.pick_task(rq_i);
+		}
+
+		rq_i->core_pick = p;
+
+		if (p == rq_i->idle) {
+			if (rq_i->nr_running) {
+				rq->core->core_forceidle_count++;
+				if (!fi_before)
+					rq->core->core_forceidle_seq++;
+			}
+		} else {
+			occ++;
 		}
 	}
 
+	if (schedstat_enabled() && rq->core->core_forceidle_count) {
+		rq->core->core_forceidle_start = rq_clock(rq->core);
+		rq->core->core_forceidle_occupation = occ;
+	}
+
+	rq->core->core_pick_seq = rq->core->core_task_seq;
+	next = rq->core_pick;
+	rq->core_sched_seq = rq->core->core_pick_seq;
+
+	/* Something should have been selected for current CPU */
+	WARN_ON_ONCE(!next);
+
 	/*
-	 * Last resort, split a block in a larger sized bucket.
+	 * Reschedule siblings
+	 *
+	 * NOTE: L1TF -- at this point we're no longer running the old task and
+	 * sending an IPI (below) ensures the sibling will no longer be running
+	 * their task. This ensures there is no inter-sibling overlap between
+	 * non-matching user state.
 	 */
-	for (size = MAX_CHAIN_BUCKETS; size > req; size--) {
-		bucket = size_to_bucket(size);
-		curr = chain_block_buckets[bucket];
-		if (curr < 0)
+	for_each_cpu(i, smt_mask) {
+		rq_i = cpu_rq(i);
+
+		/*
+		 * An online sibling might have gone offline before a task
+		 * could be picked for it, or it might be offline but later
+		 * happen to come online, but its too late and nothing was
+		 * picked for it.  That's Ok - it will pick tasks for itself,
+		 * so ignore it.
+		 */
+		if (!rq_i->core_pick)
 			continue;
 
-		del_chain_block(bucket, size, chain_block_next(curr));
-		add_chain_block(curr + req, size - req);
-		return curr;
+		/*
+		 * Update for new !FI->FI transitions, or if continuing to be in !FI:
+		 * fi_before     fi      update?
+		 *  0            0       1
+		 *  0            1       1
+		 *  1            0       1
+		 *  1            1       0
+		 */
+		if (!(fi_before && rq->core->core_forceidle_count))
+			task_vruntime_update(rq_i, rq_i->core_pick, !!rq->core->core_forceidle_count);
+
+		rq_i->core_pick->core_occupation = occ;
+
+		if (i == cpu) {
+			rq_i->core_pick = NULL;
+			continue;
+		}
+
+		/* Did we break L1TF mitigation requirements? */
+		WARN_ON_ONCE(!cookie_match(next, rq_i->core_pick));
+
+		if (rq_i->curr == rq_i->core_pick) {
+			rq_i->core_pick = NULL;
+			continue;
+		}
+
+		resched_curr(rq_i);
 	}
 
-	return -1;
+out_set_next:
+	set_next_task(rq, next);
+out:
+	if (rq->core->core_forceidle_count && next == rq->idle)
+		queue_core_balance(rq);
+
+	return next;
 }
 
-static inline void free_chain_hlocks(int base, int size)
+static bool try_steal_cookie(int this, int that)
 {
-	add_chain_block(base, max(size, 2));
+	struct rq *dst = cpu_rq(this), *src = cpu_rq(that);
+	struct task_struct *p;
+	unsigned long cookie;
+	bool success = false;
+
+	local_irq_disable();
+	double_rq_lock(dst, src);
+
+	cookie = dst->core->core_cookie;
+	if (!cookie)
+		goto unlock;
+
+	if (dst->curr != dst->idle)
+		goto unlock;
+
+	p = sched_core_find(src, cookie);
+	if (p == src->idle)
+		goto unlock;
+
+	do {
+		if (p == src->core_pick || p == src->curr)
+			goto next;
+
+		if (!is_cpu_allowed(p, this))
+			goto next;
+
+		if (p->core_occupation > dst->idle->core_occupation)
+			goto next;
+
+		deactivate_task(src, p, 0);
+		set_task_cpu(p, this);
+		activate_task(dst, p, 0);
+
+		resched_curr(dst);
+
+		success = true;
+		break;
+
+next:
+		p = sched_core_next(p, cookie);
+	} while (p);
+
+unlock:
+	double_rq_unlock(dst, src);
+	local_irq_enable();
+
+	return success;
 }
 
-struct lock_class *lock_chain_get_class(struct lock_chain *chain, int i)
-{
-	u16 chain_hlock = chain_hlocks[chain->base + i];
-	unsigned int class_idx = chain_hlock_class_idx(chain_hlock);
-
-	return lock_classes + class_idx;
-}
-
-/*
- * Returns the index of the first held_lock of the current chain
- */
-static inline int get_first_held_lock(struct task_struct *curr,
-					struct held_lock *hlock)
+static bool steal_cookie_task(int cpu, struct sched_domain *sd)
 {
 	int i;
-	struct held_lock *hlock_curr;
 
-	for (i = curr->lockdep_depth - 1; i >= 0; i--) {
-		hlock_curr = curr->held_locks + i;
-		if (hlock_curr->irq_context != hlock->irq_context)
+	for_each_cpu_wrap(i, sched_domain_span(sd), cpu) {
+		if (i == cpu)
+			continue;
+
+		if (need_resched())
 			break;
 
+		if (try_steal_cookie(cpu, i))
+			return true;
 	}
 
-	return ++i;
+	return false;
 }
 
-#ifdef CONFIG_DEBUG_LOCKDEP
-/*
- * Returns the next chain_key iteration
- */
-static u64 print_chain_key_iteration(u16 hlock_id, u64 chain_key)
+static void sched_core_balance(struct rq *rq)
 {
-	u64 new_chain_key = iterate_chain_key(chain_key, hlock_id);
+	struct sched_domain *sd;
+	int cpu = cpu_of(rq);
 
-	printk(" hlock_id:%d -> chain_key:%016Lx",
-		(unsigned int)hlock_id,
-		(unsigned long long)new_chain_key);
-	return new_chain_key;
-}
+	preempt_disable();
+	rcu_read_lock();
+	raw_spin_rq_unlock_irq(rq);
+	for_each_domain(cpu, sd) {
+		if (need_resched())
+			break;
 
-static void
-print_chain_keys_held_locks(struct task_struct *curr, struct held_lock *hlock_next)
-{
-	struct held_lock *hlock;
-	u64 chain_key = INITIAL_CHAIN_KEY;
-	int depth = curr->lockdep_depth;
-	int i = get_first_held_lock(curr, hlock_next);
-
-	printk("depth: %u (irq_context %u)\n", depth - i + 1,
-		hlock_next->irq_context);
-	for (; i < depth; i++) {
-		hlock = curr->held_locks + i;
-		chain_key = print_chain_key_iteration(hlock_id(hlock), chain_key);
-
-		print_lock(hlock);
+		if (steal_cookie_task(cpu, sd))
+			break;
 	}
-
-	print_chain_key_iteration(hlock_id(hlock_next), chain_key);
-	print_lock(hlock_next);
+	raw_spin_rq_lock_irq(rq);
+	rcu_read_unlock();
+	preempt_enable();
 }
 
-static void print_chain_keys_chain(struct lock_chain *chain)
+static DEFINE_PER_CPU(struct callback_head, core_balance_head);
+
+static void queue_core_balance(struct rq *rq)
 {
-	int i;
-	u64 chain_key = INITIAL_CHAIN_KEY;
-	u16 hlock_id;
-
-	printk("depth: %u\n", chain->depth);
-	for (i = 0; i < chain->depth; i++) {
-		hlock_id = chain_hlocks[chain->base + i];
-		chain_key = print_chain_key_iteration(hlock_id, chain_key);
-
-		print_lock_name(lock_classes + chain_hlock_class_idx(hlock_id));
-		printk("\n");
-	}
-}
-
-static void print_collision(struct task_struct *curr,
-			struct held_lock *hlock_next,
-			struct lock_chain *chain)
-{
-	pr_warn("\n");
-	pr_warn("============================\n");
-	pr_warn("WARNING: chain_key collision\n");
-	print_kernel_ident();
-	pr_warn("----------------------------\n");
-	pr_warn("%s/%d: ", current->comm, task_pid_nr(current));
-	pr_warn("Hash chain already cached but the contents don't match!\n");
-
-	pr_warn("Held locks:");
-	print_chain_keys_held_locks(curr, hlock_next);
-
-	pr_warn("Locks in cached chain:");
-	print_chain_keys_chain(chain);
-
-	pr_warn("\nstack backtrace:\n");
-	dump_stack();
-}
-#endif
-
-/*
- * Checks whether the chain and the current held locks are consistent
- * in depth and also in content. If they are not it most likely means
- * that there was a collision during the calculation of the chain_key.
- * Returns: 0 not passed, 1 passed
- */
-static int check_no_collision(struct task_struct *curr,
-			struct held_lock *hlock,
-			struct lock_chain *chain)
-{
-#ifdef CONFIG_DEBUG_LOCKDEP
-	int i, j, id;
-
-	i = get_first_held_lock(curr, hlock);
-
-	if (DEBUG_LOCKS_WARN_ON(chain->depth != curr->lockdep_depth - (i - 1))) {
-		print_collision(curr, hlock, chain);
-		return 0;
-	}
-
-	for (j = 0; j < chain->depth - 1; j++, i++) {
-		id = hlock_id(&curr->held_locks[i]);
-
-		if (DEBUG_LOCKS_WARN_ON(chain_hlocks[chain->base + j] != id)) {
-			print_collision(curr, hlock, chain);
-			return 0;
-		}
-	}
-#endif
-	return 1;
-}
-
-/*
- * Given an index that is >= -1, return the index of the next lock chain.
- * Return -2 if there is no next lock chain.
- */
-long lockdep_next_lockchain(long i)
-{
-	i = find_next_bit(lock_chains_in_use, ARRAY_SIZE(lock_chains), i + 1);
-	return i < ARRAY_SIZE(lock_chains) ? i : -2;
-}
-
-unsigned long lock_chain_count(void)
-{
-	return bitmap_weight(lock_chains_in_use, ARRAY_SIZE(lock_chains));
-}
-
-/* Must be called with the graph lock held. */
-static struct lock_chain *alloc_lock_chain(void)
-{
-	int idx = find_first_zero_bit(lock_chains_in_use,
-				      ARRAY_SIZE(lock_chains));
-
-	if (unlikely(idx >= ARRAY_SIZE(lock_chains)))
-		return NULL;
-	__set_bit(idx, lock_chains_in_use);
-	return lock_chains + idx;
-}
-
-/*
- * Adds a dependency chain into chain hashtable. And must be called with
- * graph_lock held.
- *
- * Return 0 if fail, and graph_lock is released.
- * Return 1 if succeed, with graph_lock held.
- */
-static inline int add_chain_cache(struct task_struct *curr,
-				  struct held_lock *hlock,
-				  u64 chain_key)
-{
-	struct hlist_head *hash_head = chainhashentry(chain_key);
-	struct lock_chain *chain;
-	int i, j;
-
-	/*
-	 * The caller must hold the graph lock, ensure we've got IRQs
-	 * disabled to make this an IRQ-safe lock.. for recursion reasons
-	 * lockdep won't complain about its own locking errors.
-	 */
-	if (lockdep_assert_locked())
-		return 0;
-
-	chain = alloc_lock_chain();
-	if (!chain) {
-		if (!debug_locks_off_graph_unlock())
-			return 0;
-
-		print_lockdep_off("BUG: MAX_LOCKDEP_CHAINS too low!");
-		dump_stack();
-		return 0;
-	}
-	chain->chain_key = chain_key;
-	chain->irq_context = hlock->irq_context;
-	i = get_first_held_lock(curr, hlock);
-	chain->depth = curr->lockdep_depth + 1 - i;
-
-	BUILD_BUG_ON((1UL << 24) <= ARRAY_SIZE(chain_hlocks));
-	BUILD_BUG_ON((1UL << 6)  <= ARRAY_SIZE(curr->held_locks));
-	BUILD_BUG_ON((1UL << 8*sizeof(chain_hlocks[0])) <= ARRAY_SIZE(lock_classes));
-
-	j = alloc_chain_hlocks(chain->depth);
-	if (j < 0) {
-		if (!debug_locks_off_graph_unlock())
-			return 0;
-
-		print_lockdep_off("BUG: MAX_LOCKDEP_CHAIN_HLOCKS too low!");
-		dump_stack();
-		return 0;
-	}
-
-	chain->base = j;
-	for (j = 0; j < chain->depth - 1; j++, i++) {
-		int lock_id = hlock_id(curr->held_locks + i);
-
-		chain_hlocks[chain->base + j] = lock_id;
-	}
-	chain_hlocks[chain->base + j] = hlock_id(hlock);
-	hlist_add_head_rcu(&chain->entry, hash_head);
-	debug_atomic_inc(chain_lookup_misses);
-	inc_chains(chain->irq_context);
-
-	return 1;
-}
-
-/*
- * Look up a dependency chain. Must be called with either the graph lock or
- * the RCU read lock held.
- */
-static inline struct lock_chain *lookup_chain_cache(u64 chain_key)
-{
-	struct hlist_head *hash_head = chainhashentry(chain_key);
-	struct lock_chain *chain;
-
-	hlist_for_each_entry_rcu(chain, hash_head, entry) {
-		if (READ_ONCE(chain->chain_key) == chain_key) {
-			debug_atomic_inc(chain_lookup_hits);
-			return chain;
-		}
-	}
-	return NULL;
-}
-
-/*
- * If the key is not present yet in dependency chain cache then
- * add it and return 1 - in this case the new dependency chain is
- * validated. If the key is already hashed, return 0.
- * (On return with 1 graph_lock is held.)
- */
-static inline int lookup_chain_cache_add(struct task_struct *curr,
-					 struct held_lock *hlock,
-					 u64 chain_key)
-{
-	struct lock_class *class = hlock_class(hlock);
-	struct lock_chain *chain = lookup_chain_cache(chain_key);
-
-	if (chain) {
-cache_hit:
-		if (!check_no_collision(curr, hlock, chain))
-			return 0;
-
-		if (very_verbose(class)) {
-			printk("\nhash chain already cached, key: "
-					"%016Lx tail class: [%px] %s\n",
-					(unsigned long long)chain_key,
-					class->key, class->name);
-		}
-
-		return 0;
-	}
-
-	if (very_verbose(class)) {
-		printk("\nnew hash chain, key: %016Lx tail class: [%px] %s\n",
-			(unsigned long long)chain_key, class->key, class->name);
-	}
-
-	if (!graph_lock())
-		return 0;
-
-	/*
-	 * We have to walk the chain again locked - to avoid duplicates:
-	 */
-	chain = lookup_chain_cache(chain_key);
-	if (chain) {
-		graph_unlock();
-		goto cache_hit;
-	}
-
-	if (!add_chain_cache(curr, hlock, chain_key))
-		return 0;
-
-	return 1;
-}
-
-static int validate_chain(struct task_struct *curr,
-			  struct held_lock *hlock,
-			  int chain_head, u64 chain_key)
-{
-	/*
-	 * Trylock needs to maintain the stack of held locks, but it
-	 * does not add new dependencies, because trylock can be done
-	 * in any order.
-	 *
-	 * We look up the chain_key and do the O(N^2) check and update of
-	 * the dependencies only if this is a new dependency chain.
-	 * (If lookup_chain_cache_add() return with 1 it acquires
-	 * graph_lock for us)
-	 */
-	if (!hlock->trylock && hlock->check &&
-	    lookup_chain_cache_add(curr, hlock, chain_key)) {
-		/*
-		 * Check whether last held lock:
-		 *
-		 * - is irq-safe, if this lock is irq-unsafe
-		 * - is softirq-safe, if this lock is hardirq-unsafe
-		 *
-		 * And check whether the new lock's dependency graph
-		 * could lead back to the previous lock:
-		 *
-		 * - within the current held-lock stack
-		 * - across our accumulated lock dependency records
-		 *
-		 * any of these scenarios could lead to a deadlock.
-		 */
-		/*
-		 * The simple case: does the current hold the same lock
-		 * already?
-		 */
-		int ret = check_deadlock(curr, hlock);
-
-		if (!ret)
-			return 0;
-		/*
-		 * Add dependency only if this lock is not the head
-		 * of the chain, and if the new lock introduces no more
-		 * lock dependency (because we already hold a lock with the
-		 * same lock class) nor deadlock (because the nest_lock
-		 * serializes nesting locks), see the comments for
-		 * check_deadlock().
-		 */
-		if (!chain_head && ret != 2) {
-			if (!check_prevs_add(curr, hlock))
-				return 0;
-		}
-
-		graph_unlock();
-	} else {
-		/* after lookup_chain_cache_add(): */
-		if (unlikely(!debug_locks))
-			return 0;
-	}
-
-	return 1;
-}
-#else
-static inline int validate_chain(struct task_struct *curr,
-				 struct held_lock *hlock,
-				 int chain_head, u64 chain_key)
-{
-	return 1;
-}
-
-static void init_chain_block_buckets(void)	{ }
-#endif /* CONFIG_PROVE_LOCKING */
-
-/*
- * We are building curr_chain_key incrementally, so double-check
- * it from scratch, to make sure that it's done correctly:
- */
-static void check_chain_key(struct task_struct *curr)
-{
-#ifdef CONFIG_DEBUG_LOCKDEP
-	struct held_lock *hlock, *prev_hlock = NULL;
-	unsigned int i;
-	u64 chain_key = INITIAL_CHAIN_KEY;
-
-	for (i = 0; i < curr->lockdep_depth; i++) {
-		hlock = curr->held_locks + i;
-		if (chain_key != hlock->prev_chain_key) {
-			debug_locks_off();
-			/*
-			 * We got mighty confused, our chain keys don't match
-			 * with what we expect, someone trample on our task state?
-			 */
-			WARN(1, "hm#1, depth: %u [%u], %016Lx != %016Lx\n",
-				curr->lockdep_depth, i,
-				(unsigned long long)chain_key,
-				(unsigned long long)hlock->prev_chain_key);
-			return;
-		}
-
-		/*
-		 * hlock->class_idx can't go beyond MAX_LOCKDEP_KEYS, but is
-		 * it registered lock class index?
-		 */
-		if (DEBUG_LOCKS_WARN_ON(!test_bit(hlock->class_idx, lock_classes_in_use)))
-			return;
-
-		if (prev_hlock && (prev_hlock->irq_context !=
-							hlock->irq_context))
-			chain_key = INITIAL_CHAIN_KEY;
-		chain_key = iterate_chain_key(chain_key, hlock_id(hlock));
-		prev_hlock = hlock;
-	}
-	if (chain_key != curr->curr_chain_key) {
-		debug_locks_off();
-		/*
-		 * More smoking hash instead of calculating it, damn see these
-		 * numbers float.. I bet that a pink elephant stepped on my memory.
-		 */
-		WARN(1, "hm#2, depth: %u [%u], %016Lx != %016Lx\n",
-			curr->lockdep_depth, i,
-			(unsigned long long)chain_key,
-			(unsigned long long)curr->curr_chain_key);
-	}
-#endif
-}
-
-#ifdef CONFIG_PROVE_LOCKING
-static int mark_lock(struct task_struct *curr, struct held_lock *this,
-		     enum lock_usage_bit new_bit);
-
-static void print_usage_bug_scenario(struct held_lock *lock)
-{
-	struct lock_class *class = hlock_class(lock);
-
-	printk(" Possible unsafe locking scenario:\n\n");
-	printk("       CPU0\n");
-	printk("       ----\n");
-	printk("  lock(");
-	__print_lock_name(class);
-	printk(KERN_CONT ");\n");
-	printk("  <Interrupt>\n");
-	printk("    lock(");
-	__print_lock_name(class);
-	printk(KERN_CONT ");\n");
-	printk("\n *** DEADLOCK ***\n\n");
-}
-
-static void
-print_usage_bug(struct task_struct *curr, struct held_lock *this,
-		enum lock_usage_bit prev_bit, enum lock_usage_bit new_bit)
-{
-	if (!debug_locks_off() || debug_locks_silent)
+	if (!sched_core_enabled(rq))
 		return;
 
-	pr_warn("\n");
-	pr_warn("================================\n");
-	pr_warn("WARNING: inconsistent lock state\n");
-	print_kernel_ident();
-	pr_warn("--------------------------------\n");
+	if (!rq->core->core_cookie)
+		return;
 
-	pr_warn("inconsistent {%s} -> {%s} usage.\n",
-		usage_str[prev_bit], usage_str[new_bit]);
+	if (!rq->nr_running) /* not forced idle */
+		return;
 
-	pr_warn("%s/%d [HC%u[%lu]:SC%u[%lu]:HE%u:SE%u] takes:\n",
-		curr->comm, task_pid_nr(curr),
-		lockdep_hardirq_context(), hardirq_count() >> HARDIRQ_SHIFT,
-		lockdep_softirq_context(curr), softirq_count() >> SOFTIRQ_SHIFT,
-		lockdep_hardirqs_enabled(),
-		lockdep_softirqs_enabled(curr));
-	print_lock(this);
+	queue_balance_callback(rq, &per_cpu(core_balance_head, rq->cpu), sched_core_balance);
+}
 
-	pr_warn("{%s} state was registered at:\n", usage_str[prev_bit]);
-	print_lock_trace(hlock_class(this)->usage_traces[prev_bit], 1);
+static void sched_core_cpu_starting(unsigned int cpu)
+{
+	const struct cpumask *smt_mask = cpu_smt_mask(cpu);
+	struct rq *rq = cpu_rq(cpu), *core_rq = NULL;
+	unsigned long flags;
+	int t;
 
-	print_irqtrace_events(curr);
-	pr_warn("\nother info that might help us debug this:\n");
-	print_usage_bug_scenario(this);
+	sched_core_lock(cpu, &flags);
 
-	lockdep_print_held_locks(curr);
+	WARN_ON_ONCE(rq->core != rq);
 
-	pr_warn("\nstack backtrace:\n");
-	dump_stackÉ'  w  ú'  w  ±'  F  ø'  ã  ‘'  å  ﬁ'  L  Î'  M  ˛'  L  (  N  (  r  !(  `  0(  a  Q(  M  d(  L  i(  N  É(  w  ë(  F  £(  R  ª(  ã  Õ(  Ç  ‹(  É  Ï(  :  ˆ(  è  
-)  ê  )  L  )  M  4)  L  9)  N  G)  ë  T)  R  k)  K  v)  `  Ö)  a  ë)  í  √)  w  —)  Y  ·)  F  Ú)  R  ˝)  ã  *  L  *  M  .*  :  w*  î  å*  ï  •*  ï  &+  ï  h+  L  m+  N  ~+  R  ô+  `  ¨+  a  g,  w  {,  ñ  à,  Y  ë,  F  £,  R  ∆,  G  À,  `  Ï,  _  Ò,  `  ,-  T  X-  G  c-  a  h-  b  q-  a  |-  R  ë-  U  ¢-  V  ¨-  W  ≥-  X  »-  U  Ó-  Y  .  F  -.  R  t.  ô  ò.  ö  √.  `  Œ.  G  Î.  _  .  `  ,/  T  X/  G  c/  a  h/  b  q/  a  z/  K  î/  K  ü/  R  …/  U  ⁄/  V  ‰/  W  Î/  X   0  U  /0  K  _0  ô  ·0  Y  Ò0  F  11  R  ∂1  ú  ¡1  ù  ‚1  K  Ì1  R  2  û  "2  _  *2  `  02  G  d2  T  ê2  G  õ2  a  †2  b  ≠2  ü  !3  U  23  V  <3  W  C3  X  X3  U  ∫3  o  Õ3  [  Â3  Y  4  F  64  R  r4  G  •4  °  ”4  ú  ‡4  ù  Û4  û  5  _  
-5  `  5  G  D5  T  p5  G  {5  a  Ä5  b  ç5  ü  º5  ú   5  ï  €5  ¢  5  K  ˚5  R  16  U  B6  V  L6  W  S6  X  h6  U  ö6  Y  °6  F  ø6  R  7  G  7  _  7  `  T7  T  Ä7  G  ã7  a  ê7  b  ∑7  R  …7  U  ⁄7  V  ‰7  W  Î7  X   8  U  78  Y  f  K  ˚  P  (    ≥  k  ˚  k  r  a  à  N  …  k  ‘  a  h$  á  é$  á      @                A                B     	     
-      C                D                                                           $     (     ,     0     4     8     <     @     D     H     L     P     T     X     \     `     d     h     l     p     t     x     |     Ä     Ñ     à     å     ê     î     ò     ú     †     §     ®     ¨     ∞     ¥     ∏                   S               S                S  $     (     ,   S  0     4     8   S  <     @     D   S  H     L     P   S  T     X     \   S  `     d     h   S                                 $     (     0     4        :     e                                                 $     (     ,     0     4     8     @     `   I  †     §     ∞     ¿   Z     ^  @  ]  Ä  f  º    ¿    ‡  H     E  \    `    d    h    l    p        D     C     B     A     @   .symtab .strtab .shstrtab .rel.text .data .bss __ksymtab_strings .rel___ksymtab+cgroup_bpf_enabled_key .rel___ksymtab+__cgroup_bpf_run_filter_skb .rel___ksymtab+__cgroup_bpf_run_filter_sk .rel___ksymtab+__cgroup_bpf_run_filter_sock_addr .rel___ksymtab+__cgroup_bpf_run_filter_sock_ops .rel__mcount_loc .rodata.str1.4 .rel__jump_table .rodata.str1.1 .rel__bug_table .rel.text.unlikely .rel.smp_locks .rel.rodata .rel.discard.addressable .comment .note.GNU-stack .note.gnu.property                                                         @   ;8                    	   @       pW    #            %             {8                     +             Ä8  ∏                   0      2       Ä8  ñ                 F             9                    B   	   @       `e     #            l             $9                    h   	   @       xe     #            ó             09                    ì   	   @       êe     #   
-         ¡             <9                    Ω   	   @       ®e     #            Ú             H9                    Ó   	   @       ¿e     #            "            T9  º                    	   @       ÿe  x  #            /     2       :  !                 B            4:  l                  >  	   @       Pg  ÿ   #            O     2       †:  I                 b            È:  <                  ^  	   @       (h  P   #            r            %;  
-                  n  	   @       xh     #            Ö            0;  0                  Å  	   @       àh  `   #         ELF                      "      4     (               Ë¸ˇˇˇSãX\âÿË¸ˇˇˇçÉ¿   Ë¸ˇˇˇ1¿[√êË¸ˇˇˇWVâ∆Sª
-   dã=    ç¥&    çv ãÜî   ∫)   Ë¸ˇˇˇÉ‡t∏∆ß  Ë¸ˇˇˇã®uÉÎu÷∏ˇˇˇˇ[^_√çt& êË¸ˇˇˇÎÊêË¸ˇˇˇVf¡¬Sã∞î   â√∑ ∫&   âË¸ˇˇˇÉ¯ˇt)âÿËrˇˇˇÖ¿x+∫(   âË¸ˇˇˇfÉ¯ˇtf¡¿∑¿[^√fê°    Ö¿è¸ˇˇˇ∏ˇˇˇˇÎÁç¥&    çt& êË¸ˇˇˇUWâ«Vâ÷SâÀÉÏÖ…Ññ   ãAã)â$∫Û   â¯Ëbˇˇˇâ¡°    Ö¿è   Ö…x)â»É‡ t0«$    1Ì∏   Ö€tã<$â+â{1…ÖˆtâÉƒâ»[^_]√çt& É·∫   ”‚˜¬ uVÅ‚  u6É˘uø«$    ÅÂ  ˇ Î∞ç¥&    çv «$    Ωˇˇˇ Èaˇˇˇç¥&    «$    ÅÂ ∞  È|ˇˇˇç∂    âÍ«$    ∂ÍÈeˇˇˇç¥&    ç¥&    êË¸ˇˇˇSâ√ÉÏã    Ö…è9   Éƒâÿ1…[È⁄˛ˇˇç¥&    çv Ë¸ˇˇˇSâ√â—ÉÏ°    Ö¿èT   Éƒâÿ1“[È©˛ˇˇç¥&    fêË¸ˇˇˇWf¡¬Vâ∆Sã∏î   âÀâ—Å· ˇ  ∫'   â¯Ë¸ˇˇˇÉ¯ˇt1âËö˝ˇˇÖ¿xf¡√∫(   â¯∑ÀË¸ˇˇˇÉ¯ˇt[^_√ç¥&    çv °    Ö¿èo   Î„êË¸ˇˇˇVâ∆â—SÉÏ°    Ö¿èä   1€Ö…t
-ª   π   ãÜî   ãP\àö"  ∫Ú   Ë¸ˇˇˇ1¿Éƒ[^√çt& Ë¸ˇˇˇÉ˙wvVâ÷Sâ√°    Ö¿è∑   ãÉî   ãı    ãP\àäc  ∫3   ∂…Ë¸ˇˇˇ∫Ú   âÿË$˝ˇˇÉ‡ﬂx*ãı   ∫Ú   ¡·	¡âÿÉ…∑…Ë—˛ˇˇ∏∆ß  Ë¸ˇˇˇ1¿[^√fê∏Íˇˇˇ√ç¥&    çv Ë¸ˇˇˇVSãXãP(ç≥@ˇˇˇÅ˙	ò Ñâ   w7Å˙ 	ò tWÅ˙	ò uGãH|ãC‘ãP\ÉÈ@àä  ∂…∫Á   Ë¸ˇˇˇ1¿[^√çv Å˙	ò u∑H|∫   âË@˛ˇˇ1¿[^√çv ∏Íˇˇˇ[^√ãH|ãC‘ãP\àä  ∂…∫Ê   Ë¸ˇˇˇ1¿[^√ç¥&    ∑H|∫†   âË¯˝ˇˇ1¿[^√çv Ë¸ˇˇˇUâÕWâ◊∫Ú   Vâ∆SÉÏË¸ˇˇã    â$Ö€è  â¯% ∞  Öﬁ   â¯Ñ¿Öå   â¯%  ˇ Ñ  ∏   ∫à   ª‡  ∑»Î
-çv ∑∑KÉ√∂“âËt˝ˇˇÅ˚  u‰ã    Ö…è‘   âæ0  ∑<$∫Ú   ââÆ4  Éœ∑œË<˝ˇˇ∏∆ß  Ë¸ˇˇˇ1¿Éƒ[^_]√ç¥&    ê∏   ∫à   ª   ∑»Îçt& ∑∑KÉ√∂“âËÙ¸ˇˇÅ˚H  u‰°    Ö¿~ÖÈÈ   ç∂    1…∫   ª`  Îç¥&    çv ∑∑KÉ√∂“âË¨¸ˇˇÅ˚å  u‰ã    Ö…é8ˇˇˇÈ˛   ê∏ÍˇˇˇÈVˇˇˇç∂    Ë¸ˇˇˇW1…∫Ú   Vâ∆Sª†  Îç¥&    ê∂∂KãÜî   É√ãx\àå0  Ë¸ˇˇˇÖ¿xÅ˚ƒ  u’1…∫Y   ª`  Îç¥&    ∑∑KÉ√∂“âË¸ˇˇÅ˚à  u‰ãÜ0  ˆƒ∞Ö}   π   ∫à   Ñ¿u?©  ˇ Ñ§   ª‡  Îçt& ê∑∑KÉ√∂“âËº˚ˇˇÅ˚  u‰[1¿^_√ç∂    ª   Îê∑∑KÉ√∂“âËå˚ˇˇÅ˚H  u‰[1¿^_√ç∂    1…∫   ª`  Îç¥&    çv
+	/* if we're the first, we'll be our own leader */
+	if (cpumask_weight(smt_mask) == 1)
+		goto unlock;
+
+	/* find the leader */
+	for_each_cpu(t, smt_mask) {
+		if (t == cpu)
+			continue;
+		rq = cpu_rq(t);
+		if (rq->core == rq) {
+			core_rq = rq;
+			break;
+		}
+	}
+
+	if (WARN_ON_ONCE(!core_rq)) /* whoopsie */
+		goto unlock;
+
+	/* install and validate core_rq */
+	for_each_cpu(t, smt_mask) {
+		rq = cpu_rq(t);
+
+		if (t == cpu)
+			rq->core = core_rq;
+
+		WARN_ON_ONCE(rq->core != core_rq);
+	}
+
+unlock:
+	sched_core_unlock(cpu, &flags);
+}
+
+static void sched_core_cpu_deactivate(unsigned int cpu)
+{
+	const struct cpumask *smt_mask = cpu_smt_mask(cpu);
+	struct rq *rq = cpu_rq(cpu), *core_rq = NULL;
+	unsigned long flags;
+	int t;
+
+	sched_core_lock(cpu, &flags);
+
+	/* if we're the last man standing, nothing to do */
+	if (cpumask_weight(smt_mask) == 1) {
+		WARN_ON_ONCE(rq->core != rq);
+		goto unlock;
+	}
+
+	/* if we're not the leader, nothing to do */
+	if (rq->core != rq)
+		goto unlock;
+
+	/* find a new leader */
+	for_each_cpu(t, smt_mask) {
+		if (t == cpu)
+			continue;
+		core_rq = cpu_rq(t);
+		break;
+	}
+
+	if (WARN_ON_ONCE(!core_rq)) /* impossible */
+		goto unlock;
+
+	/* copy the shared state to the new leader */
+	core_rq->core_task_seq             = rq->core_task_seq;
+	core_rq->core_pick_seq             = rq->core_pick_seq;
+	core_rq->core_cookie               = rq->core_cookie;
+	core_rq->core_forceidle_count      = rq->core_forceidle_count;
+	core_rq->core_forceidle_seq        = rq->core_forceidle_seq;
+	core_rq->core_forceidle_occupation = rq->core_forceidle_occupation;
+
+	/*
+	 * Accounting edge for forced idle is handled in pick_next_task().
+	 * Don't need another one here, since the hotplug thread shouldn't
+	 * have a cookie.
+	 */
+	core_rq->core_forceidle_start = 0;
+
+	/* install new leader */
+	for_each_cpu(t, smt_mask) {
+		rq = cpu_rq(t);
+		rq->core = core_rq;
+	}
+
+unlock:
+	sched_core_unlock(cpu, &flags);
+}
+
+static inline void sched_core_cpu_dying(unsigned int cpu)
+{
+	struct rq *rq = cpu_rq(cpu);
+
+	if (rq->core != rq)
+		rq->core = rq;
+}
+
+#else /* !CONFIG_SCHED_CORE */
+
+static inline void sched_core_cpu_starting(unsigned int cpu) {}
+static inline void sched_core_cpu_deactivate(unsigned int cpu) {}
+static inline void sched_core_cpu_dying(unsigned int cpu) {}
+
+static struct task_struct *
+pick_next_task(struct rq *rq, struct task_struct *prev, struct rq_flags *rf)
+{
+	return __pick_next_task(rq, prev, rf);
+}
+
+#endif /* CONFIG_SCHED_CORE */
+
+/*
+ * Constants for the sched_mode argument of __schedule().
+ *
+ * The mode argument allows RT enabled kernels to differentiate a
+ * preemption from blocking on an 'sleeping' spin/rwlock. Note that
+ * SM_MASK_PREEMPT for !RT has all bits set, which allows the compiler to
+ * optimize the AND operation out and just check for zero.
+ */
+#define SM_NONE			0x0
+#define SM_PREEMPT		0x1
+#define SM_RTLOCK_WAIT		0x2
+
+#ifndef CONFIG_PREEMPT_RT
+# define SM_MASK_PREEMPT	(~0U)
+#else
+# define SM_MASK_PREEMPT	SM_PREEMPT
+#endif
+
+/*
+ * __schedule() is the main scheduler function.
+ *
+ * The main means of driving the scheduler and thus entering this function are:
+ *
+ *   1. Explicit blocking: mutex, semaphore, waitqueue, etc.
+ *
+ *   2. TIF_NEED_RESCHED flag is checked on interrupt and userspace return
+ *      paths. For example, see arch/x86/entry_64.S.
+ *
+ *      To drive preemption between tasks, the scheduler sets the flag in timer
+ *      interrupt handler scheduler_tick().
+ *
+ *   3. Wakeups don't really cause entry into schedule(). They add a
+ *      task to the run-queue and that's it.
+ *
+ *      Now, if the new task added to the run-queue preempts the current
+ *      task, then the wakeup sets TIF_NEED_RESCHED and schedule() gets
+ *      called on the nearest possible occasion:
+ *
+ *       - If the kernel is preemptible (CONFIG_PREEMPTION=y):
+ *
+ *         - in syscall or exception context, at the next outmost
+ *           preempt_enable(). (this might be as soon as the wake_up()'s
+ *           spin_unlock()!)
+ *
+ *         - in IRQ context, return from interrupt-handler to
+ *           preemptible context
+ *
+ *       - If the kernel is not preemptible (CONFIG_PREEMPTION is not set)
+ *         then at the next:
+ *
+ *          - cond_resched() call
+ *          - explicit schedule() call
+ *          - return from syscall or exception to user-space
+ *          - return from interrupt-handler to user-space
+ *
+ * WARNING: must be called with preemption disabled!
+ */
+static void __sched notrace __schedule(unsigned int sched_mode)
+{
+	struct task_struct *prev, *next;
+	unsigned long *switch_count;
+	unsigned long prev_state;
+	struct rq_flags rf;
+	struct rq *rq;
+	int cpu;
+
+	cpu = smp_processor_id();
+	rq = cpu_rq(cpu);
+	prev = rq->curr;
+
+	schedule_debug(prev, !!sched_mode);
+
+	if (sched_feat(HRTICK) || sched_feat(HRTICK_DL))
+		hrtick_clear(rq);
+
+	local_irq_disable();
+	rcu_note_context_switch(!!sched_mode);
+
+	/*
+	 * Make sure that signal_pending_state()->signal_pending() below
+	 * can't be reordered with __set_current_state(TASK_INTERRUPTIBLE)
+	 * done by the caller to avoid the race with signal_wake_up():
+	 *
+	 * __set_current_state(@state)		signal_wake_up()
+	 * schedule()				  set_tsk_thread_flag(p, TIF_SIGPENDING)
+	 *					  wake_up_state(p, state)
+	 *   LOCK rq->lock			    LOCK p->pi_state
+	 *   smp_mb__after_spinlock()		    smp_mb__after_spinlock()
+	 *     if (signal_pending_state())	    if (p->state & @state)
+	 *
+	 * Also, the membarrier system call requires a full memory barrier
+	 * after coming from user-space, before storing to rq->curr.
+	 */
+	rq_lock(rq, &rf);
+	smp_mb__after_spinlock();
+
+	/* Promote REQ to ACT */
+	rq->clock_update_flags <<= 1;
+	update_rq_clock(rq);
+
+	switch_count = &prev->nivcsw;
+
+	/*
+	 * We must load prev->state once (task_struct::state is volatile), such
+	 * that:
+	 *
+	 *  - we form a control dependency vs deactivate_task() below.
+	 *  - ptrace_{,un}freeze_traced() can change ->state underneath us.
+	 */
+	prev_state = READ_ONCE(prev->__state);
+	if (!(sched_mode & SM_MASK_PREEMPT) && prev_state) {
+		if (signal_pending_state(prev_state, prev)) {
+			WRITE_ONCE(prev->__state, TASK_RUNNING);
+		} else {
+			prev->sched_contributes_to_load =
+				(prev_state & TASK_UNINTERRUPTIBLE) &&
+				!(prev_state & TASK_NOLOAD) &&
+				!(prev->flags & PF_FROZEN);
+
+			if (prev->sched_contributes_to_load)
+				rq->nr_uninterruptible++;
+
+			/*
+			 * __schedule()			ttwu()
+			 *   prev_state = prev->state;    if (p->on_rq && ...)
+			 *   if (prev_state)		    goto out;
+			 *     p->on_rq = 0;		  smp_acquire__after_ctrl_dep();
+			 *				  p->state = TASK_WAKING
+			 *
+			 * Where __schedule() and ttwu() have matching control dependencies.
+			 *
+			 * After this, schedule() must not care about p->state any more.
+			 */
+			deactivate_task(rq, prev, DEQUEUE_SLEEP | DEQUEUE_NOCLOCK);
+
+			if (prev->in_iowait) {
+				atomic_inc(&rq->nr_iowait);
+				delayacct_blkio_start();
+			}
+		}
+		switch_count = &prev->nvcsw;
+	}
+
+	next = pick_next_task(rq, prev, &rf);
+	clear_tsk_need_resched(prev);
+	clear_preempt_need_resched();
+#ifdef CONFIG_SCHED_DEBUG
+	rq->last_seen_need_resched_ns = 0;
+#endif
+
+	if (likely(prev != next)) {
+		rq->nr_switches++;
+		/*
+		 * RCU users of rcu_dereference(rq->curr) may not see
+		 * changes to task_struct made by pick_next_task().
+		 */
+		RCU_INIT_POINTER(rq->curr, next);
+		/*
+		 * The membarrier system call requires each architecture
+		 * to have a full memory barrier after updating
+		 * rq->curr, before returning to user-space.
+		 *
+		 * Here are the schemes providing that barrier on the
+		 * various architectures:
+		 * - mm ? switch_mm() : mmdrop() for x86, s390, sparc, PowerPC.
+		 *   switch_mm() rely on membarrier_arch_switch_mm() on PowerPC.
+		 * - finish_lock_switch() for weakly-ordered
+		 *   architectures where spin_unlock is a full barrier,
+		 * - switch_to() for arm64 (weakly-ordered, spin_unlock
+		 *   is a RELEASE barrier),
+		 */
+		++*switch_count;
+
+		migrate_disable_switch(rq, prev);
+		psi_sched_switch(prev, next, !task_on_rq_queued(prev));
+
+		trace_sched_switch(sched_mode & SM_MASK_PREEMPT, prev, next, prev_state);
+
+		/* Also unlocks the rq: */
+		rq = context_switch(rq, prev, next, &rf);
+	} else {
+		rq->clock_update_flags &= ~(RQCF_ACT_SKIP|RQCF_REQ_SKIP);
+
+		rq_unpin_lock(rq, &rf);
+		__balance_callbacks(rq);
+		raw_spin_rq_unlock_irq(rq);
+	}
+}
+
+void __noreturn do_task_dead(void)
+{
+	/* Causes final put_task_struct in finish_task_switch(): */
+	set_special_state(TASK_DEAD);
+
+	/* Tell freezer to ignore us: */
+	current->flags |= PF_NOFREEZE;
+
+	__schedule(SM_NONE);
+	BUG();
+
+	/* Avoid "noreturn function does return" - but don't continue if BUG() is a NOP: */
+	for (;;)
+		cpu_relax();
+}
+
+static inline void sched_submit_work(struct task_struct *tsk)
+{
+	unsigned int task_flags;
+
+	if (task_is_running(tsk))
+		return;
+
+	task_flags = tsk->flags;
+	/*
+	 * If a worker goes to sleep, notify and ask workqueue whether it
+	 * wants to wake up a task to maintain concurrency.
+	 */
+	if (task_flags & (PF_WQ_WORKER | PF_IO_WORKER)) {
+		if (task_flags & PF_WQ_WORKER)
+			wq_worker_sleeping(tsk);
+		else
+			io_wq_worker_sleeping(tsk);
+	}
+
+	if (tsk_is_pi_blocked(tsk))
+		return;
+
+	/*
+	 * If we are going to sleep and we have plugged IO queued,
+	 * make sure to submit it to avoid deadlocks.
+	 */
+	blk_flush_plug(tsk->plug, true);
+}
+
+static void sched_update_worker(struct task_struct *tsk)
+{
+	if (tsk->flags & (PF_WQ_WORKER | PF_IO_WORKER)) {
+		if (tsk->flags & PF_WQ_WORKER)
+			wq_worker_running(tsk);
+		else
+			io_wq_worker_running(tsk);
+	}
+}
+
+asmlinkage __visible void __sched schedule(void)
+{
+	struct task_struct *tsk = current;
+
+	sched_submit_work(tsk);
+	do {
+		preempt_disable();
+		__schedule(SM_NONE);
+		sched_preempt_enable_no_resched();
+	} while (need_resched());
+	sched_update_worker(tsk);
+}
+EXPORT_SYMBOL(schedule);
+
+/*
+ * synchronize_rcu_tasks() makes sure that no task is stuck in preempted
+ * state (have scheduled out non-voluntarily) by making sure that all
+ * tasks have either left the run queue or have gone into user space.
+ * As idle tasks do not do either, they must not ever be preempted
+ * (schedule out non-voluntarily).
+ *
+ * schedule_idle() is similar to schedule_preempt_disable() except that it
+ * never enables preemption because it does not call sched_submit_work().
+ */
+void __sched schedule_idle(void)
+{
+	/*
+	 * As this skips calling sched_submit_work(), which the idle task does
+	 * regardless because that function is a nop when the task is in a
+	 * TASK_RUNNING state, make sure this isn't used someplace that the
+	 * current task can be in any other state. Note, idle is always in the
+	 * TASK_RUNNING state.
+	 */
+	WARN_ON_ONCE(current->__state);
+	do {
+		__schedule(SM_NONE);
+	} while (need_resched());
+}
+
+#if defined(CONFIG_CONTEXT_TRACKING) && !defined(CONFIG_HAVE_CONTEXT_TRACKING_OFFSTACK)
+asmlinkage __visible void __sched schedule_user(void)
+{
+	/*
+	 * If we come here after a random call to set_need_resched(),
+	 * or we have been woken up remotely but the IPI has not yet arrived,
+	 * we haven't yet exited the RCU idle mode. Do it here manually until
+	 * we find a better solution.
+	 *
+	 * NB: There are buggy callers of this function.  Ideally we
+	 * should warn if prev_state != CONTEXT_USER, but that will trigger
+	 * too frequently to make sense yet.
+	 */
+	enum ctx_state prev_state = exception_enter();
+	schedule();
+	exception_exit(prev_state);
+}
+#endif
+
+/**
+ * schedule_preempt_disabled - called with preemption disabled
+ *
+ * Returns with preemption disabled. Note: preempt_count must be 1
+ */
+void __sched schedule_preempt_disabled(void)
+{
+	sched_preempt_enable_no_resched();
+	schedule();
+	preempt_disable();
+}
+
+#ifdef CONFIG_PREEMPT_RT
+void __sched notrace schedule_rtlock(void)
+{
+	do {
+		preempt_disable();
+		__schedule(SM_RTLOCK_WAIT);
+		sched_preempt_enable_no_resched();
+	} while (need_resched());
+}
+NOKPROBE_SYMBOL(schedule_rtlock);
+#endif
+
+static void __sched notrace preempt_schedule_common(void)
+{
+	do {
+		/*
+		 * Because the function tracer can trace preempt_count_sub()
+		 * and it also uses preempt_enable/disable_notrace(), if
+		 * NEED_RESCHED is set, the preempt_enable_notrace() called
+		 * by the function tracer will call this function again and
+		 * cause infinite recursion.
+		 *
+		 * Preemption must be disabled here before the function
+		 * tracer can trace. Break up preempt_disable() into two
+		 * calls. One to disable preemption without fear of being
+		 * traced. The other to still record the preemption latency,
+		 * which can also be traced by the function tracer.
+		 */
+		preempt_disable_notrace();
+		preempt_latency_start(1);
+		__schedule(SM_PREEMPT);
+		preempt_latency_stop(1);
+		preempt_enable_no_resched_notrace();
+
+		/*
+		 * Check again in case we missed a preemption opportunity
+		 * between schedule and now.
+		 */
+	} while (need_resched());
+}
+
+#ifdef CONFIG_PREEMPTION
+/*
+ * This is the entry point to schedule() from in-kernel preemption
+ * off of preempt_enable.
+ */
+asmlinkage __visible void __sched notrace preempt_schedule(void)
+{
+	/*
+	 * If there is a non-zero preempt_count or interrupts are disabled,
+	 * we do not want to preempt the current task. Just return..
+	 */
+	if (likely(!preemptible()))
+		return;
+	preempt_schedule_common();
+}
+NOKPROBE_SYMBOL(preempt_schedule);
+EXPORT_SYMBOL(preempt_schedule);
+
+#ifdef CONFIG_PREEMPT_DYNAMIC
+#if defined(CONFIG_HAVE_PREEMPT_DYNAMIC_CALL)
+#ifndef preempt_schedule_dynamic_enabled
+#define preempt_schedule_dynamic_enabled	preempt_schedule
+#define preempt_schedule_dynamic_disabled	NULL
+#endif
+DEFINE_STATIC_CALL(preempt_schedule, preempt_schedule_dynamic_enabled);
+EXPORT_STATIC_CALL_TRAMP(preempt_schedule);
+#elif defined(CONFIG_HAVE_PREEMPT_DYNAMIC_KEY)
+static DEFINE_STATIC_KEY_TRUE(sk_dynamic_preempt_schedule);
+void __sched notrace dynamic_preempt_schedule(void)
+{
+	if (!static_branch_unlikely(&sk_dynamic_preempt_schedule))
+		return;
+	preempt_schedule();
+}
+NOKPROBE_SYMBOL(dynamic_preempt_schedule);
+EXPORT_SYMBOL(dynamic_preempt_schedule);
+#endif
+#endif
+
+/**
+ * preempt_schedule_notrace - preempt_schedule called by tracing
+ *
+ * The tracing infrastructure uses preempt_enable_notrace to prevent
+ * recursion and tracing preempt enabling caused by the tracing
+ * infrastructure itself. But as tracing can happen in areas coming
+ * from userspace or just about to enter userspace, a preempt enable
+ * can occur before user_exit() is called. This will cause the scheduler
+ * to be called when the system is still in usermode.
+ *
+ * To prevent this, the preempt_enable_notrace will use this function
+ * instead of preempt_schedule() to exit user context if needed before
+ * calling the scheduler.
+ */
+asmlinkage __visible void __sched notrace preempt_schedule_notrace(void)
+{
+	enum ctx_state prev_ctx;
+
+	if (likely(!preemptible()))
+		return;
+
+	do {
+		/*
+	

@@ -1,2 +1,1 @@
-drivers/media/rc/keymaps/rc-fusionhdtv-mce.o
-
+truct cx23885_audio_dev *chip = snd_pcm_substr

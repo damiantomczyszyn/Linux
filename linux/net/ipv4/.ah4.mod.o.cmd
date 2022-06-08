@@ -1,320 +1,1207 @@
-e for the next lock_list
-		 * entry, see the comments for the function.
-		 */
-		trace = entry->trace;
+nd_load_acquire(&p->on_cpu, !VAL);
 
-		if (depth == 0 && (entry != root)) {
-			printk("lockdep:%s bad path found in chain graph\n", __func__);
-			break;
+	cpu = select_task_rq(p, p->wake_cpu, wake_flags | WF_TTWU);
+	if (task_cpu(p) != cpu) {
+		if (p->in_iowait) {
+			delayacct_blkio_end(p);
+			atomic_dec(&task_rq(p)->nr_iowait);
 		}
 
-		entry = get_lock_parent(entry);
-		depth--;
-	} while (entry && (depth >= 0));
+		wake_flags |= WF_MIGRATED;
+		psi_ttwu_dequeue(p);
+		set_task_cpu(p, cpu);
+	}
+#else
+	cpu = task_cpu(p);
+#endif /* CONFIG_SMP */
+
+	ttwu_queue(p, cpu, wake_flags);
+unlock:
+	raw_spin_unlock_irqrestore(&p->pi_lock, flags);
+out:
+	if (success)
+		ttwu_stat(p, task_cpu(p), wake_flags);
+	preempt_enable();
+
+	return success;
 }
 
-static void
-print_irq_lock_scenario(struct lock_list *safe_entry,
-			struct lock_list *unsafe_entry,
-			struct lock_class *prev_class,
-			struct lock_class *next_class)
+/**
+ * task_call_func - Invoke a function on task in fixed state
+ * @p: Process for which the function is to be invoked, can be @current.
+ * @func: Function to invoke.
+ * @arg: Argument to function.
+ *
+ * Fix the task in it's current state by avoiding wakeups and or rq operations
+ * and call @func(@arg) on it.  This function can use ->on_rq and task_curr()
+ * to work out what the state is, if required.  Given that @func can be invoked
+ * with a runqueue lock held, it had better be quite lightweight.
+ *
+ * Returns:
+ *   Whatever @func returns
+ */
+int task_call_func(struct task_struct *p, task_call_f func, void *arg)
 {
-	struct lock_class *safe_class = safe_entry->class;
-	struct lock_class *unsafe_class = unsafe_entry->class;
-	struct lock_class *middle_class = prev_class;
+	struct rq *rq = NULL;
+	unsigned int state;
+	struct rq_flags rf;
+	int ret;
 
-	if (middle_class == safe_class)
-		middle_class = next_class;
+	raw_spin_lock_irqsave(&p->pi_lock, rf.flags);
+
+	state = READ_ONCE(p->__state);
 
 	/*
-	 * A direct locking problem where unsafe_class lock is taken
-	 * directly by safe_class lock, then all we need to show
-	 * is the deadlock scenario, as it is obvious that the
-	 * unsafe lock is taken under the safe lock.
+	 * Ensure we load p->on_rq after p->__state, otherwise it would be
+	 * possible to, falsely, observe p->on_rq == 0.
 	 *
-	 * But if there is a chain instead, where the safe lock takes
-	 * an intermediate lock (middle_class) where this lock is
-	 * not the same as the safe lock, then the lock chain is
-	 * used to describe the problem. Otherwise we would need
-	 * to show a different CPU case for each link in the chain
-	 * from the safe_class lock to the unsafe_class lock.
+	 * See try_to_wake_up() for a longer comment.
 	 */
-	if (middle_class != unsafe_class) {
-		printk("Chain exists of:\n  ");
-		__print_lock_name(safe_class);
-		printk(KERN_CONT " --> ");
-		__print_lock_name(middle_class);
-		printk(KERN_CONT " --> ");
-		__print_lock_name(unsafe_class);
-		printk(KERN_CONT "\n\n");
+	smp_rmb();
+
+	/*
+	 * Since pi->lock blocks try_to_wake_up(), we don't need rq->lock when
+	 * the task is blocked. Make sure to check @state since ttwu() can drop
+	 * locks at the end, see ttwu_queue_wakelist().
+	 */
+	if (state == TASK_RUNNING || state == TASK_WAKING || p->on_rq)
+		rq = __task_rq_lock(p, &rf);
+
+	/*
+	 * At this point the task is pinned; either:
+	 *  - blocked and we're holding off wakeups	 (pi->lock)
+	 *  - woken, and we're holding off enqueue	 (rq->lock)
+	 *  - queued, and we're holding off schedule	 (rq->lock)
+	 *  - running, and we're holding off de-schedule (rq->lock)
+	 *
+	 * The called function (@func) can use: task_curr(), p->on_rq and
+	 * p->__state to differentiate between these states.
+	 */
+	ret = func(p, arg);
+
+	if (rq)
+		rq_unlock(rq, &rf);
+
+	raw_spin_unlock_irqrestore(&p->pi_lock, rf.flags);
+	return ret;
+}
+
+/**
+ * wake_up_process - Wake up a specific process
+ * @p: The process to be woken up.
+ *
+ * Attempt to wake up the nominated process and move it to the set of runnable
+ * processes.
+ *
+ * Return: 1 if the process was woken up, 0 if it was already running.
+ *
+ * This function executes a full memory barrier before accessing the task state.
+ */
+int wake_up_process(struct task_struct *p)
+{
+	return try_to_wake_up(p, TASK_NORMAL, 0);
+}
+EXPORT_SYMBOL(wake_up_process);
+
+int wake_up_state(struct task_struct *p, unsigned int state)
+{
+	return try_to_wake_up(p, state, 0);
+}
+
+/*
+ * Perform scheduler related setup for a newly forked process p.
+ * p is forked by current.
+ *
+ * __sched_fork() is basic setup used by init_idle() too:
+ */
+static void __sched_fork(unsigned long clone_flags, struct task_struct *p)
+{
+	p->on_rq			= 0;
+
+	p->se.on_rq			= 0;
+	p->se.exec_start		= 0;
+	p->se.sum_exec_runtime		= 0;
+	p->se.prev_sum_exec_runtime	= 0;
+	p->se.nr_migrations		= 0;
+	p->se.vruntime			= 0;
+	INIT_LIST_HEAD(&p->se.group_node);
+
+#ifdef CONFIG_FAIR_GROUP_SCHED
+	p->se.cfs_rq			= NULL;
+#endif
+
+#ifdef CONFIG_SCHEDSTATS
+	/* Even if schedstat is disabled, there should not be garbage */
+	memset(&p->stats, 0, sizeof(p->stats));
+#endif
+
+	RB_CLEAR_NODE(&p->dl.rb_node);
+	init_dl_task_timer(&p->dl);
+	init_dl_inactive_task_timer(&p->dl);
+	__dl_clear_params(p);
+
+	INIT_LIST_HEAD(&p->rt.run_list);
+	p->rt.timeout		= 0;
+	p->rt.time_slice	= sched_rr_timeslice;
+	p->rt.on_rq		= 0;
+	p->rt.on_list		= 0;
+
+#ifdef CONFIG_PREEMPT_NOTIFIERS
+	INIT_HLIST_HEAD(&p->preempt_notifiers);
+#endif
+
+#ifdef CONFIG_COMPACTION
+	p->capture_control = NULL;
+#endif
+	init_numa_balancing(clone_flags, p);
+#ifdef CONFIG_SMP
+	p->wake_entry.u_flags = CSD_TYPE_TTWU;
+	p->migration_pending = NULL;
+#endq;
+
+	for (;;) {
+		raw_spin_lock_irqsave(&p->pi_lock, rf->flags);
+		rq = task_rq(p);
+		raw_spin_rq_lock(rq);
+		/*
+		 *	move_queued_task()		task_rq_lock()
+		 *
+		 *	ACQUIRE (rq->lock)
+		 *	[S] ->on_rq = MIGRATING		[L] rq = task_rq()
+		 *	WMB (__set_task_cpu())		ACQUIRE (rq->lock);
+		 *	[S] ->cpu = new_cpu		[L] task_rq()
+		 *					[L] ->on_rq
+		 *	RELEASE (rq->lock)
+		 *
+		 * If we observe the old CPU in task_rq_lock(), the acquire of
+		 * the old rq->lock will fully serialize against the stores.
+		 *
+		 * If we observe the new CPU in task_rq_lock(), the address
+		 * dependency headed by '[L] rq = task_rq()' and the acquire
+		 * will pair with the WMB to ensure we then also see migrating.
+		 */
+		if (likely(rq == task_rq(p) && !task_on_rq_migrating(p))) {
+			rq_pin_lock(rq, rf);
+			return rq;
+		}
+		raw_spin_rq_unlock(rq);
+		raw_spin_unlock_irqrestore(&p->pi_lock, rf->flags);
+
+		while (unlikely(task_on_rq_migrating(p)))
+			cpu_relax();
+	}
+}
+
+/*
+ * RQ-clock updating methods:
+ */
+
+static void update_rq_clock_task(struct rq *rq, s64 delta)
+{
+/*
+ * In theory, the compile should just see 0 here, and optimize out the call
+ * to sched_rt_avg_update. But I don't trust it...
+ */
+	s64 __maybe_unused steal = 0, irq_delta = 0;
+
+#ifdef CONFIG_IRQ_TIME_ACCOUNTING
+	irq_delta = irq_time_read(cpu_of(rq)) - rq->prev_irq_time;
+
+	/*
+	 * Since irq_time is only updated on {soft,}irq_exit, we might run into
+	 * this case when a previous update_rq_clock() happened inside a
+	 * {soft,}irq region.
+	 *
+	 * When this happens, we stop ->clock_task and only update the
+	 * prev_irq_time stamp to account for the part that fit, so that a next
+	 * update will consume the rest. This ensures ->clock_task is
+	 * monotonic.
+	 *
+	 * It does however cause some slight miss-attribution of {soft,}irq
+	 * time, a more accurate solution would be to update the irq_time using
+	 * the current rq->clock timestamp, except that would require using
+	 * atomic ops.
+	 */
+	if (irq_delta > delta)
+		irq_delta = delta;
+
+	rq->prev_irq_time += irq_delta;
+	delta -= irq_delta;
+#endif
+#ifdef CONFIG_PARAVIRT_TIME_ACCOUNTING
+	if (static_key_false((&paravirt_steal_rq_enabled))) {
+		steal = paravirt_steal_clock(cpu_of(rq));
+		steal -= rq->prev_steal_time_rq;
+
+		if (unlikely(steal > delta))
+			steal = delta;
+
+		rq->prev_steal_time_rq += steal;
+		delta -= steal;
+	}
+#endif
+
+	rq->clock_task += delta;
+
+#ifdef CONFIG_HAVE_SCHED_AVG_IRQ
+	if ((irq_delta + steal) && sched_feat(NONTASK_CAPACITY))
+		update_irq_load_avg(rq, irq_delta + steal);
+#endif
+	update_rq_clock_pelt(rq, delta);
+}
+
+void update_rq_clock(struct rq *rq)
+{
+	s64 delta;
+
+	lockdep_assert_rq_held(rq);
+
+	if (rq->clock_update_flags & RQCF_ACT_SKIP)
+		return;
+
+#ifdef CONFIG_SCHED_DEBUG
+	if (sched_feat(WARN_DOUBLE_CLOCK))
+		SCHED_WARN_ON(rq->clock_update_flags & RQCF_UPDATED);
+	rq->clock_update_flags |= RQCF_UPDATED;
+#endif
+
+	delta = sched_clock_cpu(cpu_of(rq)) - rq->clock;
+	if (delta < 0)
+		return;
+	rq->clock += delta;
+	update_rq_clock_task(rq, delta);
+}
+
+#ifdef CONFIG_SCHED_HRTICK
+/*
+ * Use HR-timers to deliver accurate preemption points.
+ */
+
+static void hrtick_clear(struct rq *rq)
+{
+	if (hrtimer_active(&rq->hrtick_timer))
+		hrtimer_cancel(&rq->hrtick_timer);
+}
+
+/*
+ * High-resolution timer tick.
+ * Runs from hardirq context with interrupts disabled.
+ */
+static enum hrtimer_restart hrtick(struct hrtimer *timer)
+{
+	struct rq *rq = container_of(timer, struct rq, hrtick_timer);
+	struct rq_flags rf;
+
+	WARN_ON_ONCE(cpu_of(rq) != smp_processor_id());
+
+	rq_lock(rq, &rf);
+	update_rq_clock(rq);
+	rq->curr->sched_class->task_tick(rq, rq->curr, 1);
+	rq_unlock(rq, &rf);
+
+	return HRTIMER_NORESTART;
+}
+
+#ifdef CONFIG_SMP
+
+static void __hrtick_restart(struct rq *rq)
+{
+	struct hrtimer *timer = &rq->hrtick_timer;
+	ktime_t time = rq->hrtick_time;
+
+	hrtimer_start(timer, time, HRTIMER_MODE_ABS_PINNED_HARD);
+}
+
+/*
+ * called from hardirq (IPI) context
+ */
+static void __hrtick_start(void *arg)
+{
+	struct rq *rq = arg;
+	struct rq_flags rf;
+
+	rq_lock(rq, &rf);
+	__hrtick_restart(rq);
+	rq_unlock(rq, &rf);
+}
+
+/*
+ * Called to set the hrtick timer state.
+ *
+ * called with rq->lock held and irqs disabled
+ */
+void hrtick_start(struct rq *rq, u64 delay)
+{
+	struct hrtimer *timer = &rq->hrtick_timer;
+	s64 delta;
+
+	/*
+	 * Don't schedule slices shorter than 10000ns, that just
+	 * doesn't make sense and can cause timer DoS.
+	 */
+	delta = max_t(s64, delay, 10000LL);
+	rq->hrtick_time = ktime_add_ns(timer->base->get_time(), delta);
+
+	if (rq == this_rq())
+		__hrtick_restart(rq);
+	else
+		smp_call_function_single_async(cpu_of(rq), &rq->hrtick_csd);
+}
+
+#else
+/*
+ * Called to set the hrtick timer state.
+ *
+ * called with rq->lock held and irqs disabled
+ */
+void hrtick_start(struct rq *rq, u64 delay)
+{
+	/*
+	 * Don't schedule slices shorter than 10000ns, that just
+	 * doesn't make sense. Rely on vruntime for fairness.
+	 */
+	delay = max_t(u64, delay, 10000LL);
+	hrtimer_start(&rq->hrtick_timer, ns_to_ktime(delay),
+		      HRTIMER_MODE_REL_PINNED_HARD);
+}
+
+#endif /* CONFIG_SMP */
+
+static void hrtick_rq_init(struct rq *rq)
+{
+#ifdef CONFIG_SMP
+	INIT_CSD(&rq->hrtick_csd, __hrtick_start, rq);
+#endif
+	hrtimer_init(&rq->hrtick_timer, CLOCK_MONOTONIC, HRTIMER_MODE_REL_HARD);
+	rq->hrtick_timer.function = hrtick;
+}
+#else	/* CONFIG_SCHED_HRTICK */
+static inline void hrtick_clear(struct rq *rq)
+{
+}
+
+static inline void hrtick_rq_init(struct rq *rq)
+{
+}
+#endif	/* CONFIG_SCHED_HRTICK */
+
+/*
+ * cmpxchg based fetch_or, macro so it works for different integer types
+ */
+#define fetch_or(ptr, mask)						\
+	({								\
+		typeof(ptr) _ptr = (ptr);				\
+		typeof(mask) _mask = (mask);				\
+		typeof(*_ptr) _old, _val = *_ptr;			\
+									\
+		for (;;) {						\
+			_old = cmpxchg(_ptr, _val, _val | _mask);	\
+			if (_old == _val)				\
+				break;					\
+			_val = _old;					\
+		}							\
+	_old;								\
+})
+
+#if defined(CONFIG_SMP) && defined(TIF_POLLING_NRFLAG)
+/*
+ * Atomically set TIF_NEED_RESCHED and test for TIF_POLLING_NRFLAG,
+ * this avoids any races wrt polling state changes and thereby avoids
+ * spurious IPIs.
+ */
+static bool set_nr_and_not_polling(struct task_struct *p)
+{
+	struct thread_info *ti = task_thread_info(p);
+	return !(fetch_or(&ti->flags, _TIF_NEED_RESCHED) & _TIF_POLLING_NRFLAG);
+}
+
+/*
+ * Atomically set TIF_NEED_RESCHED if TIF_POLLING_NRFLAG is set.
+ *
+ * If this returns true, then the idle task promises to call
+ * sched_ttwu_pending() and reschedule soon.
+ */
+static bool set_nr_if_polling(struct task_struct *p)
+{
+	struct thread_info *ti = task_thread_info(p);
+	typeof(ti->flags) old, val = READ_ONCE(ti->flags);
+
+	for (;;) {
+		if (!(val & _TIF_POLLING_NRFLAG))
+			return false;
+		if (val & _TIF_NEED_RESCHED)
+			return true;
+		old = cmpxchg(&ti->flags, val, val | _TIF_NEED_RESCHED);
+		if (old == val)
+			break;
+		val = old;
+	}
+	return true;
+}
+
+#else
+static bool set_nr_and_not_polling(struct task_struct *p)
+{
+	set_tsk_need_resched(p);
+	return true;
+}
+
+#ifdef CONFIG_SMP
+static bool set_nr_if_polling(struct task_struct *p)
+{
+	return false;
+}
+#endif
+#endif
+
+static bool __wake_q_add(struct wake_q_head *head, struct task_struct *task)
+{
+	struct wake_q_node *node = &task->wake_q;
+
+	/*
+	 * Atomically grab the task, if ->wake_q is !nil already it means
+	 * it's already queued (either by us or someone else) and will get the
+	 * wakeup due to that.
+	 *
+	 * In order to ensure that a pending wakeup will observe our pending
+	 * state, even in the failed case, an explicit smp_mb() must be used.
+	 */
+	smp_mb__before_atomic();
+	if (unlikely(cmpxchg_relaxed(&node->next, NULL, WAKE_Q_TAIL)))
+		return false;
+
+	/*
+	 * The head is context local, there can be no concurrency.
+	 */
+	*head->lastp = node;
+	head->lastp = &node->next;
+	return true;
+}
+
+/**
+ * wake_q_add() - queue a wakeup for 'later' waking.
+ * @head: the wake_q_head to add @task to
+ * @task: the task to queue for 'later' wakeup
+ *
+ * Queue a task for later wakeup, most likely by the wake_up_q() call in the
+ * same context, _HOWEVER_ this is not guaranteed, the wakeup can come
+ * instantly.
+ *
+ * This function must be used as-if it were wake_up_process(); IOW the task
+ * must be ready to be woken at this location.
+ */
+void wake_q_add(struct wake_q_head *head, struct task_struct *task)
+{
+	if (__wake_q_add(head, task))
+		get_task_struct(task);
+}
+
+/**
+ * wake_q_add_safe() - safely queue a wakeup for 'later' waking.
+ * @head: the wake_q_head to add @task to
+ * @task: the task to queue for 'later' wakeup
+ *
+ * Queue a task for later wakeup, most likely by the wake_up_q() call in the
+ * same context, _HOWEVER_ this is not guaranteed, the wakeup can come
+ * instantly.
+ *
+ * This function must be used as-if it were wake_up_process(); IOW the task
+ * must be ready to be woken at this location.
+ *
+ * This function is essentially a task-safe equivalent to wake_q_add(). Callers
+ * that already hold reference to @task can call the 'safe' version and trust
+ * wake_q to do the right thing depending whether or not the @task is already
+ * queued for wakeup.
+ */
+void wake_q_add_safe(struct wake_q_head *head, struct task_struct *task)
+{
+	if (!__wake_q_add(head, task))
+		put_task_struct(task);
+}
+
+void wake_up_q(struct wake_q_head *head)
+{
+	struct wake_q_node *node = head->first;
+
+	while (node != WAKE_Q_TAIL) {
+		struct task_struct *task;
+
+		task = container_of(node, struct task_struct, wake_q);
+		/* Task can safely be re-inserted now: */
+		node = node->next;
+		task->wake_q.next = NULL;
+
+		/*
+		 * wake_up_process() executes a full barrier, which pairs with
+		 * the queueing in wake_q_add() so as not to miss wakeups.
+		 */
+		wake_up_process(task);
+		put_task_struct(task);
+	}
+}
+
+/*
+ * resched_curr - mark rq's current task 'to be rescheduled now'.
+ *
+ * On UP this means the setting of the need_resched flag, on SMP it
+ * might also involve a cross-CPU call to trigger the scheduler on
+ * the target CPU.
+ */
+void resched_curr(struct rq *rq)
+{
+	struct task_struct *curr = rq->curr;
+	int cpu;
+
+	lockdep_assert_rq_held(rq);
+
+	if (test_tsk_need_resched(curr))
+		return;
+
+	cpu = cpu_of(rq);
+
+	if (cpu == smp_processor_id()) {
+		set_tsk_need_resched(curr);
+		set_preempt_need_resched();
+		return;
 	}
 
-	printk(" Possible interrupt unsafe locking scenario:\n\n");
-	printk("       CPU0                    CPU1\n");
-	printk("       ----                    ----\n");
-	printk("  lock(");
-	__print_lock_name(unsafe_class);
-	printk(KERN_CONT ");\n");
-	printk("                               local_irq_disable();\n");
-	printk("                               lock(");
-	__print_lock_name(safe_class);
-	printk(KERN_CONT ");\n");
-	printk("                               lock(");
-	__print_lock_name(middle_class);
-	printk(KERN_CONT ");\n");
-	printk("  <Interrupt>\n");
-	printk("    lock(");
-	__print_lock_name(safe_class);
-	printk(KERN_CONT ");\n");
-	printk("\n *** DEADLOCK ***\n\n");
-}
-
-static void
-print_bad_irq_dependency(struct task_struct *curr,
-			 struct lock_list *prev_root,
-			 struct lock_list *next_root,
-			 struct lock_list *backwards_entry,
-			 struct lock_list *forwards_entry,
-			 struct held_lock *prev,
-			 struct held_lock *next,
-			 enum lock_usage_bit bit1,
-			 enum lock_usage_bit bit2,
-			 const char *irqclass)
-{
-	if (!debug_locks_off_graph_unlock() || debug_locks_silent)
-		return;
-
-	pr_warn("\n");
-	pr_warn("=====================================================\n");
-	pr_warn("WARNING: %s-safe -> %s-unsafe lock order detected\n",
-		irqclass, irqclass);
-	print_kernel_ident();
-	pr_warn("-----------------------------------------------------\n");
-	pr_warn("%s/%d [HC%u[%lu]:SC%u[%lu]:HE%u:SE%u] is trying to acquire:\n",
-		curr->comm, task_pid_nr(curr),
-		lockdep_hardirq_context(), hardirq_count() >> HARDIRQ_SHIFT,
-		curr->softirq_context, softirq_count() >> SOFTIRQ_SHIFT,
-		lockdep_hardirqs_enabled(),
-		curr->softirqs_enabled);
-	print_lock(next);
-
-	pr_warn("\nand this task is already holding:\n");
-	print_lock(prev);
-	pr_warn("which would create a new lock dependency:\n");
-	print_lock_name(hlock_class(prev));
-	pr_cont(" ->");
-	print_lock_name(hlock_class(next));
-	pr_cont("\n");
-
-	pr_warn("\nbut this new dependency connects a %s-irq-safe lock:\n",
-		irqclass);
-	print_lock_name(backwards_entry->class);
-	pr_warn("\n... which became %s-irq-safe at:\n", irqclass);
-
-	print_lock_trace(backwards_entry->class->usage_traces[bit1], 1);
-
-	pr_warn("\nto a %s-irq-unsafe lock:\n", irqclass);
-	print_lock_name(forwards_entry->class);
-	pr_warn("\n... which became %s-irq-unsafe at:\n", irqclass);
-	pr_warn("...");
-
-	print_lock_trace(forwards_entry->class->usage_traces[bit2], 1);
-
-	pr_warn("\nother info that might help us debug this:\n\n");
-	print_irq_lock_scenario(backwards_entry, forwards_entry,
-				hlock_class(prev), hlock_class(next));
-
-	lockdep_print_held_locks(curr);
-
-	pr_warn("\nthe dependencies between %s-irq-safe lock and the holding lock:\n", irqclass);
-	print_shortest_lock_dependencies_backwards(backwards_entry, prev_root);
-
-	pr_warn("\nthe dependencies between the lock to be acquired");
-	pr_warn(" and %s-irq-unsafe lock:\n", irqclass);
-	next_root->trace = save_trace();
-	if (!next_root->trace)
-		return;
-	print_shortest_lock_dependencies(forwards_entry, next_root);
-
-	pr_warn("\nstack backtrace:\n");
-	dump_stack();
-}
-
-static const char *state_names[] = {
-#define LOCKDEP_STATE(__STATE) \
-	__stringify(__STATE),
-#include "lockdep_states.h"
-#undef LOCKDEP_STATE
-};
-
-static const char *state_rnames[] = {
-#define LOCKDEP_STATE(__STATE) \
-	__stringify(__STATE)"-READ",
-#include "lockdep_states.h"
-#undef LOCKDEP_STATE
-};
-
-static inline const char *state_name(enum lock_usage_bit bit)
-{
-	if (bit & LOCK_USAGE_READ_MASK)
-		return state_rnames[bit >> LOCK_USAGE_DIR_MASK];
+	if (set_nr_and_not_polling(curr))
+		smp_send_reschedule(cpu);
 	else
-		return state_names[bit >> LOCK_USAGE_DIR_MASK];
+		trace_sched_wake_idle_without_ipi(cpu);
+}
+
+void resched_cpu(int cpu)
+{
+	struct rq *rq = cpu_rq(cpu);
+	unsigned long flags;
+
+	raw_spin_rq_lock_irqsave(rq, flags);
+	if (cpu_online(cpu) || cpu == smp_processor_id())
+		resched_curr(rq);
+	raw_spin_rq_unlock_irqrestore(rq, flags);
+}
+
+#ifdef CONFIG_SMP
+#ifdef CONFIG_NO_HZ_COMMON
+/*
+ * In the semi idle case, use the nearest busy CPU for migrating timers
+ * from an idle CPU.  This is good for power-savings.
+ *
+ * We don't do similar optimization for completely idle system, as
+ * selecting an idle CPU will add more delays to the timers than intended
+ * (as that CPU's timer base may not be uptodate wrt jiffies etc).
+ */
+int get_nohz_timer_target(void)
+{
+	int i, cpu = smp_processor_id(), default_cpu = -1;
+	struct sched_domain *sd;
+	const struct cpumask *hk_mask;
+
+	if (housekeeping_cpu(cpu, HK_TYPE_TIMER)) {
+		if (!idle_cpu(cpu))
+			return cpu;
+		default_cpu = cpu;
+	}
+
+	hk_mask = housekeeping_cpumask(HK_TYPE_TIMER);
+
+	rcu_read_lock();
+	for_each_domain(cpu, sd) {
+		for_each_cpu_and(i, sched_domain_span(sd), hk_mask) {
+			if (cpu == i)
+				continue;
+
+			if (!idle_cpu(i)) {
+				cpu = i;
+				goto unlock;
+			}
+		}
+	}
+
+	if (default_cpu == -1)
+		default_cpu = housekeeping_any_cpu(HK_TYPE_TIMER);
+	cpu = default_cpu;
+unlock:
+	rcu_read_unlock();
+	return cpu;
 }
 
 /*
- * The bit number is encoded like:
- *
- *  bit0: 0 exclusive, 1 read lock
- *  bit1: 0 used in irq, 1 irq enabled
- *  bit2-n: state
+ * When add_timer_on() enqueues a timer into the timer wheel of an
+ * idle CPU then this timer might expire before the next timer event
+ * which is scheduled to wake up that CPU. In case of a completely
+ * idle system the next event might even be infinite time into the
+ * future. wake_up_idle_cpu() ensures that the CPU is woken up and
+ * leaves the inner idle loop so the newly added timer is taken into
+ * account when the CPU goes back to idle and evaluates the timer
+ * wheel for the next timer event.
  */
-static int exclusive_bit(int new_bit)
+static void wake_up_idle_cpu(int cpu)
 {
-	int state = new_bit & LOCK_USAGE_STATE_MASK;
-	int dir = new_bit & LOCK_USAGE_DIR_MASK;
+	struct rq *rq = cpu_rq(cpu);
+
+	if (cpu == smp_processor_id())
+		return;
+
+	if (set_nr_and_not_polling(rq->idle))
+		smp_send_reschedule(cpu);
+	else
+		trace_sched_wake_idle_without_ipi(cpu);
+}
+
+static bool wake_up_full_nohz_cpu(int cpu)
+{
+	/*
+	 * We just need the target to call irq_exit() and re-evaluate
+	 * the next tick. The nohz full kick at least implies that.
+	 * If needed we can still optimize that later with an
+	 * empty IRQ.
+	 */
+	if (cpu_is_offline(cpu))
+		return true;  /* Don't try to wake offline CPUs. */
+	if (tick_nohz_full_cpu(cpu)) {
+		if (cpu != smp_processor_id() ||
+		    tick_nohz_tick_stopped())
+			tick_nohz_full_kick_cpu(cpu);
+		return true;
+	}
+
+	return false;
+}
+
+/*
+ * Wake up the specified CPU.  If the CPU is going offline, it is the
+ * caller's responsibility to deal with the lost wakeup, for example,
+ * by hooking into the CPU_DEAD notifier like timers and hrtimers do.
+ */
+void wake_up_nohz_cpu(int cpu)
+{
+	if (!wake_up_full_nohz_cpu(cpu))
+		wake_up_idle_cpu(cpu);
+}
+
+static void nohz_csd_func(void *info)
+{
+	struct rq *rq = info;
+	int cpu = cpu_of(rq);
+	unsigned int flags;
 
 	/*
-	 * keep state, bit flip the direction and strip read.
+	 * Release the rq::nohz_csd.
 	 */
-	return state | (dir ^ LOCK_USAGE_DIR_MASK);
+	flags = atomic_fetch_andnot(NOHZ_KICK_MASK | NOHZ_NEWILB_KICK, nohz_flags(cpu));
+	WARN_ON(!(flags & NOHZ_KICK_MASK));
+
+	rq->idle_balance = idle_cpu(cpu);
+	if (rq->idle_balance && !need_resched()) {
+		rq->nohz_idle_balance = flags;
+		raise_softirq_irqoff(SCHED_SOFTIRQ);
+	}
+}
+
+#endif /* CONFIG_NO_HZ_COMMON */
+
+#ifdef CONFIG_NO_HZ_FULL
+bool sched_can_stop_tick(struct rq *rq)
+{
+	int fifo_nr_running;
+
+	/* Deadline tasks, even if single, need the tick */
+	if (rq->dl.dl_nr_running)
+		return false;
+
+	/*
+	 * If there are more than one RR tasks, we need the tick to affect the
+	 * actual RR behaviour.
+	 */
+	if (rq->rt.rr_nr_running) {
+		if (rq->rt.rr_nr_running == 1)
+			return true;
+		else
+			return false;
+	}
+
+	/*
+	 * If there's no RR tasks, but FIFO tasks, we can skip the tick, no
+	 * forced preemption between FIFO tasks.
+	 */
+	fifo_nr_running = rq->rt.rt_nr_running - rq->rt.rr_nr_running;
+	if (fifo_nr_running)
+		return true;
+
+	/*
+	 * If there are no DL,RR/FIFO tasks, there must only be CFS tasks left;
+	 * if there's more than one we need the tick for involuntary
+	 * preemption.
+	 */
+	if (rq->nr_running > 1)
+		return false;
+
+	return true;
+}
+#endif /* CONFIG_NO_HZ_FULL */
+#endif /* CONFIG_SMP */
+
+#if defined(CONFIG_RT_GROUP_SCHED) || (defined(CONFIG_FAIR_GROUP_SCHED) && \
+			(defined(CONFIG_SMP) || defined(CONFIG_CFS_BANDWIDTH)))
+/*
+ * Iterate task_group tree rooted at *from, calling @down when first entering a
+ * node and @up when leaving it for the final time.
+ *
+ * Caller must hold rcu_lock or sufficient equivalent.
+ */
+int walk_tg_tree_from(struct task_group *from,
+			     tg_visitor down, tg_visitor up, void *data)
+{
+	struct task_group *parent, *child;
+	int ret;
+
+	parent = from;
+
+down:
+	ret = (*down)(parent, data);
+	if (ret)
+		goto out;
+	list_for_each_entry_rcu(child, &parent->children, siblings) {
+		parent = child;
+		goto down;
+
+up:
+		continue;
+	}
+	ret = (*up)(parent, data);
+	if (ret || parent == from)
+		goto out;
+
+	child = parent;
+	parent = parent->parent;
+	if (parent)
+		goto up;
+out:
+	return ret;
+}
+
+int tg_nop(struct task_group *tg, void *data)
+{
+	return 0;
+}
+#endif
+
+static void set_load_weight(struct task_struct *p, bool update_load)
+{
+	int prio = p->static_prio - MAX_RT_PRIO;
+	struct load_weight *load = &p->se.load;
+
+	/*
+	 * SCHED_IDLE tasks get minimal weight:
+	 */
+	if (task_has_idle_policy(p)) {
+		load->weight = scale_load(WEIGHT_IDLEPRIO);
+		load->inv_weight = WMULT_IDLEPRIO;
+		return;
+	}
+
+	/*
+	 * SCHED_OTHER tasks have to update their load when changing their
+	 * weight
+	 */
+	if (update_load && p->sched_class == &fair_sched_class) {
+		reweight_task(p, prio);
+	} else {
+		load->weight = scale_load(sched_prio_to_weight[prio]);
+		load->inv_weight = sched_prio_to_wmult[prio];
+	}
+}
+
+#ifdef CONFIG_UCLAMP_TASK
+/*
+ * Serializes updates of utilization clamp values
+ *
+ * The (slow-path) user-space triggers utilization clamp value updates which
+ * can require updates on (fast-path) scheduler's data structures used to
+ * support enqueue/dequeue operations.
+ * While the per-CPU rq lock protects fast-path update operations, user-space
+ * requests are serialized using a mutex to reduce the risk of conflicting
+ * updates or API abuses.
+ */
+static DEFINE_MUTEX(uclamp_mutex);
+
+/* Max allowed minimum utilization */
+unsigned int sysctl_sched_uclamp_util_min = SCHED_CAPACITY_SCALE;
+
+/* Max allowed maximum utilization */
+unsigned int sysctl_sched_uclamp_util_max = SCHED_CAPACITY_SCALE;
+
+/*
+ * By default RT tasks run at the maximum performance point/capacity of the
+ * system. Uclamp enforces this by always setting UCLAMP_MIN of RT tasks to
+ * SCHED_CAPACITY_SCALE.
+ *
+ * This knob allows admins to change the default behavior when uclamp is being
+ * used. In battery powered devices, particularly, running at the maximum
+ * capacity and frequency will increase energy consumption and shorten the
+ * battery life.
+ *
+ * This knob only affects RT tasks that their uclamp_se->user_defined == false.
+ *
+ * This knob will not override the system default sched_util_clamp_min defined
+ * above.
+ */
+unsigned int sysctl_sched_uclamp_util_min_rt_default = SCHED_CAPACITY_SCALE;
+
+/* All clamps are required to be less or equal than these values */
+static struct uclamp_se uclamp_default[UCLAMP_CNT];
+
+/*
+ * This static key is used to reduce the uclamp overhead in the fast path. It
+ * primarily disables the call to uclamp_rq_{inc, dec}() in
+ * enqueue/dequeue_task().
+ *
+ * This allows users to continue to enable uclamp in their kernel config with
+ * minimum uclamp overhead in the fast path.
+ *
+ * As soon as userspace modifies any of the uclamp knobs, the static key is
+ * enabled, since we have an actual users that make use of uclamp
+ * functionality.
+ *
+ * The knobs that would enable this static key are:
+ *
+ *   * A task modifying its uclamp value with sched_setattr().
+ *   * An admin modifying the sysctl_sched_uclamp_{min, max} via procfs.
+ *   * An admin modifying the cgroup cpu.uclamp.{min, max}
+ */
+DEFINE_STATIC_KEY_FALSE(sched_uclamp_used);
+
+/* Integer rounded range for each bucket */
+#define UCLAMP_BUCKET_DELTA DIV_ROUND_CLOSEST(SCHED_CAPACITY_SCALE, UCLAMP_BUCKETS)
+
+#define for_each_clamp_id(clamp_id) \
+	for ((clamp_id) = 0; (clamp_id) < UCLAMP_CNT; (clamp_id)++)
+
+static inline unsigned int uclamp_bucket_id(unsigned int clamp_value)
+{
+	return min_t(unsigned int, clamp_value / UCLAMP_BUCKET_DELTA, UCLAMP_BUCKETS - 1);
+}
+
+static inline unsigned int uclamp_none(enum uclamp_id clamp_id)
+{
+	if (clamp_id == UCLAMP_MIN)
+		return 0;
+	return SCHED_CAPACITY_SCALE;
+}
+
+static inline void uclamp_se_set(struct uclamp_se *uc_se,
+				 unsigned int value, bool user_defined)
+{
+	uc_se->value = value;
+	uc_se->bucket_id = uclamp_bucket_id(value);
+	uc_se->user_defined = user_defined;
+}
+
+static inline unsigned int
+uclamp_idle_value(struct rq *rq, enum uclamp_id clamp_id,
+		  unsigned int clamp_value)
+{
+	/*
+	 * Avoid blocked utilization pushing up the frequency when we go
+	 * idle (which drops the max-clamp) by retaining the last known
+	 * max-clamp.
+	 */
+	if (clamp_id == UCLAMP_MAX) {
+		rq->uclamp_flags |= UCLAMP_FLAG_IDLE;
+		return clamp_value;
+	}
+
+	return uclamp_none(UCLAMP_MIN);
+}
+
+static inline void uclamp_idle_reset(struct rq *rq, enum uclamp_id clamp_id,
+				     unsigned int clamp_value)
+{
+	/* Reset max-clamp retention only on idle exit */
+	if (!(rq->uclamp_flags & UCLAMP_FLAG_IDLE))
+		return;
+
+	WRITE_ONCE(rq->uclamp[clamp_id].value, clamp_value);
+}
+
+static inline
+unsigned int uclamp_rq_max_value(struct rq *rq, enum uclamp_id clamp_id,
+				   unsigned int clamp_value)
+{
+	struct uclamp_bucket *bucket = rq->uclamp[clamp_id].bucket;
+	int bucket_id = UCLAMP_BUCKETS - 1;
+
+	/*
+	 * Since both min and max clamps are max aggregated, find the
+	 * top most bucket with tasks in.
+	 */
+	for ( ; bucket_id >= 0; bucket_id--) {
+		if (!bucket[bucket_id].tasks)
+			continue;
+		return bucket[bucket_id].value;
+	}
+
+	/* No tasks -- default clamp values */
+	return uclamp_idle_value(rq, clamp_id, clamp_value);
+}
+
+static void __uclamp_update_util_min_rt_default(struct task_struct *p)
+{
+	unsigned int default_util_min;
+	struct uclamp_se *uc_se;
+
+	lockdep_assert_held(&p->pi_lock);
+
+	uc_se = &p->uclamp_req[UCLAMP_MIN];
+
+	/* Only sync if user didn't override the default */
+	if (uc_se->user_defined)
+		return;
+
+	default_util_min = sysctl_sched_uclamp_util_min_rt_default;
+	uclamp_se_set(uc_se, default_util_min, false);
+}
+
+static void uclamp_update_util_min_rt_default(struct task_struct *p)
+{
+	struct rq_flags rf;
+	struct rq *rq;
+
+	if (!rt_task(p))
+		return;
+
+	/* Protect updates to p->uclamp_* */
+	rq = task_rq_lock(p, &rf);
+	__uclamp_update_util_min_rt_default(p);
+	task_rq_unlock(rq, p, &rf);
+}
+
+static void uclamp_sync_util_min_rt_default(void)
+{
+	struct task_struct *g, *p;
+
+	/*
+	 * copy_process()			sysctl_uclamp
+	 *					  uclamp_min_rt = X;
+	 *   write_lock(&tasklist_lock)		  read_lock(&tasklist_lock)
+	 *   // link thread			  smp_mb__after_spinlock()
+	 *   write_unlock(&tasklist_lock)	  read_unlock(&tasklist_lock);
+	 *   sched_post_fork()			  for_each_process_thread()
+	 *     __uclamp_sync_rt()		    __uclamp_sync_rt()
+	 *
+	 * Ensures that either sched_post_fork() will observe the new
+	 * uclamp_min_rt or for_each_process_thread() will observe the new
+	 * task.
+	 */
+	read_lock(&tasklist_lock);
+	smp_mb__after_spinlock();
+	read_unlock(&tasklist_lock);
+
+	rcu_read_lock();
+	for_each_process_thread(g, p)
+		uclamp_update_util_min_rt_default(p);
+	rcu_read_unlock();
+}
+
+static inline struct uclamp_se
+uclamp_tg_restrict(struct task_struct *p, enum uclamp_id clamp_id)
+{
+	/* Copy by value as we could modify it */
+	struct uclamp_se uc_req = p->uclamp_req[clamp_id];
+#ifdef CONFIG_UCLAMP_TASK_GROUP
+	unsigned int tg_min, tg_max, value;
+
+	/*
+	 * Tasks in autogroups or root task group will be
+	 * restricted by system defaults.
+	 */
+	if (task_group_is_autogroup(task_group(p)))
+		return uc_req;
+	if (task_group(p) == &root_task_group)
+		return uc_req;
+
+	tg_min = task_group(p)->uclamp[UCLAMP_MIN].value;
+	tg_max = task_group(p)->uclamp[UCLAMP_MAX].value;
+	value = uc_req.value;
+	value = clamp(value, tg_min, tg_max);
+	uclamp_se_set(&uc_req, value, false);
+#endif
+
+	return uc_req;
 }
 
 /*
- * Observe that when given a bitmask where each bitnr is encoded as above, a
- * right shift of the mask transforms the individual bitnrs as -1 and
- * conversely, a left shift transforms into +1 for the individual bitnrs.
- *
- * So for all bits whose number have LOCK_ENABLED_* set (bitnr1 == 1), we can
- * create the mask with those bit numbers using LOCK_USED_IN_* (bitnr1 == 0)
- * instead by subtracting the bit number by 2, or shifting the mask right by 2.
- *
- * Similarly, bitnr1 == 0 becomes bitnr1 == 1 by adding 2, or shifting left 2.
- *
- * So split the mask (note that LOCKF_ENABLED_IRQ_ALL|LOCKF_USED_IN_IRQ_ALL is
- * all bits set) and recompose with bitnr1 flipped.
+ * The effective clamp bucket index of a task depends on, by increasing
+ * priority:
+ * - the task specific clamp value, when explicitly requested from userspace
+ * - the task group effective clamp value, for tasks not either in the root
+ *   group or in an autogroup
+ * - the system default clamp value, defined by the sysadmin
  */
-static unsigned long invert_dir_mask(unsigned long mask)
+static inline struct uclamp_se
+uclamp_eff_get(struct task_struct *p, enum uclamp_id clamp_id)
 {
-	unsigned long excl = 0;
+	struct uclamp_se uc_req = uclamp_tg_restrict(p, clamp_id);
+	struct uclamp_se uc_max = uclamp_default[clamp_id];
 
-	/* Invert dir */
-	excl |= (mask & LOCKF_ENABLED_IRQ_ALL) >> LOCK_USAGE_DIR_MASK;
-	excl |= (mask & LOCKF_USED_IN_IRQ_ALL) << LOCK_USAGE_DIR_MASK;
+	/* System default restrictions always apply */
+	if (unlikely(uc_req.value > uc_max.value))
+		return uc_max;
 
-	return excl;
+	return uc_req;
+}
+
+unsigned long uclamp_eff_value(struct task_struct *p, enum uclamp_id clamp_id)
+{
+	struct uclamp_se uc_eff;
+
+	/* Task currently refcounted: use back-annotated (effective) value */
+	if (p->uclamp[clamp_id].active)
+		return (unsigned long)p->uclamp[clamp_id].value;
+
+	uc_eff = uclamp_eff_get(p, clamp_id);
+
+	return (unsigned long)uc_eff.value;
 }
 
 /*
- * Note that a LOCK_ENABLED_IRQ_*_READ usage and a LOCK_USED_IN_IRQ_*_READ
- * usage may cause deadlock too, for example:
+ * When a task is enqueued on a rq, the clamp bucket currently defined by the
+ * task's uclamp::bucket_id is refcounted on that rq. This also immediately
+ * updates the rq's clamp value if required.
  *
- * P1				P2
- * <irq disabled>
- * write_lock(l1);		<irq enabled>
- *				read_lock(l2);
- * write_lock(l2);
- * 				<in irq>
- * 				read_lock(l1);
- *
- * , in above case, l1 will be marked as LOCK_USED_IN_IRQ_HARDIRQ_READ and l2
- * will marked as LOCK_ENABLE_IRQ_HARDIRQ_READ, and this is a possible
- * deadlock.
- *
- * In fact, all of the following cases may cause deadlocks:
- *
- * 	 LOCK_USED_IN_IRQ_* -> LOCK_ENABLED_IRQ_*
- * 	 LOCK_USED_IN_IRQ_*_READ -> LOCK_ENABLED_IRQ_*
- * 	 LOCK_USED_IN_IRQ_* -> LOCK_ENABLED_IRQ_*_READ
- * 	 LOCK_USED_IN_IRQ_*_READ -> LOCK_ENABLED_IRQ_*_READ
- *
- * As a result, to calculate the "exclusive mask", first we invert the
- * direction (USED_IN/ENABLED) of the original mask, and 1) for all bits with
- * bitnr0 set (LOCK_*_READ), add those with bitnr0 cleared (LOCK_*). 2) for all
- * bits with bitnr0 cleared (LOCK_*_READ), add those with bitnr0 set (LOCK_*).
+ * Tasks can have a task-specific value requested from user-space, track
+ * within each bucket the maximum value for tasks refcounted in it.
+ * This "local max aggregation" allows to track the exact "requested" value
+ * for each bucket when all its RUNNABLE tasks require the same clamp.
  */
-static unsigned long exclusive_mask(unsigned long mask)
+static inline void uclamp_rq_inc_id(struct rq *rq, struct task_struct *p,
+				    enum uclamp_id clamp_id)
 {
-	unsigned long excl = invert_dir_mask(mask);
+	struct uclamp_rq *uc_rq = &rq->uclamp[clamp_id];
+	struct uclamp_se *uc_se = &p->uclamp[clamp_id];
+	struct uclamp_bucket *bucket;
 
-	excl |= (excl & LOCKF_IRQ_READ) >> LOCK_USAGE_READ_MASK;
-	excl |= (excl & LOCKF_IRQ) << LOCK_USAGE_READ_MASK;
+	lockdep_assert_rq_held(rq);
 
-	return excl;
+	/* Update task effective clamp */
+	p->uclamp[clamp_id] = uclamp_eff_get(p, clamp_id);
+
+	bucket = &uc_rq->bucket[uc_se->bucket_id];
+	bucket->tasks++;
+	uc_se->active = true;
+
+	uclamp_idle_reset(rq, clamp_id, uc_se->value);
+
+	/*
+	 * Local max aggregation: rq buckets always track the max
+	 * "requested" clamp value of its RUNNABLE tasks.
+	 */
+	if (bucket->tasks == 1 || uc_se->value > bucket->value)
+		bucket->value = uc_se->value;
+
+	if (uc_se->value > READ_ONCE(uc_rq->value))
+		WRITE_ONCE(uc_rq->value, uc_se->value);
 }
 
 /*
- * Retrieve the _possible_ original mask to which @mask is
- * exclusive. Ie: this is the opposite of exclusive_mask().
- * Note that 2 possible original bits can match an exclusive
- * bit: one has LOCK_USAGE_READ_MASK set, the other has it
- * cleared. So both are returned for each exclusive bit.
+ * When a task is dequeued from a rq, the clamp bucket refcounted by the task
+ * is released. If this is the last task reference counting the rq's max
+ * active clamp value, then the rq's clamp value is updated.
+ *
+ * Both refcounted tasks and rq's cached clamp values are expected to be
+ * always valid. If it's detected they are not, as defensive programming,
+ * enforce the expected state and warn.
  */
-static unsigned long original_mask(unsigned long mask)
+static inline void uclamp_rq_dec_id(struct rq *rq, struct task_struct *p,
+				    enum uclamp_id clamp_id)
 {
-	unsigned long excl = invert_dir_mask(mask);
+	struct uclamp_rq *uc_rq = &rq->uclamp[clamp_id];
+	struct uclamp_se *uc_se = &p->uclamp[clamp_id];
+	struct uclamp_bucket *bucket;
+	unsigned int bkt_clamp;
+	unsigned int rq_clamp;
 
-	/* Include read in existing usages */
-	excl |= (excl & LOCKF_IRQ_READ) >> LOCK_USAGE_READ_MASK;
-	excl |= (excl & LOCKF_  ƒ|$`"‡  ‹D$`Ύ€    ‰D$…ΐ  „   έ    ‰\$q‰L$$‰σ‰t$‹4$‰υ‹vhέ…φtz8  ‰l$ ‰D$‹D$‹l†‰κƒβuZ‹D$‹D$‹DΖ9Θuλ>΄&    ƒΒ‹ 9Αt‹X…Ϋuπ‹X…Ϋtμ‹[…Ϋuβ‹ 9Αuεt& ƒϊ‡'  „(  ‹vh…φu—‹l$ ‹4$‹\$ή‰D$‹€4  9Εt‹D$9„μ  …  ‹D$‹4  9έ„C  ‰Ψ1Òλt& ƒΒ‹ 9Εt‹p…φuπ‹H…Ιtμ‹I…Ιuβ‹ 9Εuεt& ƒϊ?‡1  φD$d„  ‹L$‹T$‰Ψ΄&    v …ÿt9xu9Ο…·   …Òt	;P„ª   ‹ 9Εuά‹T$‹D$…ÒuιΥ   v ‹9έ„ª  ;Cuρϋ πÿÿ‡Ξ  ‰ω…ÿ„λ  ‹$‰\$‰Λ1φ‹€”   ‹P@‹@<‰D$(‹D$`‰T$,‰D$0‹C(‹„°x  …ΐt1ΙT$(θόÿÿÿ‰D΄4…ΐ„w  ƒώtj‹C(Ύ   ‹„°x  …ΐuΡλζt& Ύκÿÿÿ‹D$Dd+    …>  ƒΔH‰π[^_]ΓφD$d…¬  t& ‹D$‹€4  9Ε…=ÿÿÿ1ΫιBÿÿÿ΄&    ‹\$…Ϋtu‹D$‹k‰{‹L$‹|$‰C‹D$4‰ϊ‰C‹D$8‰C‹$‰Έμ  θόυÿÿ‰Ζ…ΐ…ϊ   …ν„   ‰θθόÿÿÿ‹<$‹L$`1φ‹D$<‰ϊθόÿÿÿ‹L$`‹D$@‰ϊθόÿÿÿι8ÿÿÿ΅   Ή   Ίΐ  θόÿÿÿ‰Γ…ΐ„C  ‹t$‹L$‰+‹†8  ‰8  ‰C‰‹D$‰{‹|$‰C‹D$4‰ϊ‰C‹D$8‰C‹$‰Έμ  θUυÿÿ‰Ζ…ΐ…²   ‹D$$ΰϋÿÿθόÿÿÿιUÿÿÿ΄&    ‰ς‰Ψθόÿÿÿ‰D΄4= πÿÿ‡Ύ   ‰D΄<ιhώÿÿ΄&    ‹D$‹Hι	ώÿÿt& …νt[‰k‹D$<ΗC    θόÿÿÿ‹D$@θόÿÿÿιPώÿÿv ιΨόÿÿ‰θ‹l$ ¨…ΥόÿÿΎÿÿÿÿι.ώÿÿ‹D$Ύώÿÿÿ…ΐ…ώÿÿ1Ϋιύÿÿ‹D$<θόÿÿÿ‹D$@θόÿÿÿ‹C‹‰B‰‰ΨΗ   ΗC"  θόÿÿÿιαύÿÿΎώÿÿÿιΧύÿÿ‹D$<Ύτÿÿÿθόÿÿÿ‹D$@θόÿÿÿι»ύÿÿΎωÿÿÿι±ύÿÿθόÿÿÿ‰ήι¥ύÿÿ΄&    θόÿÿÿS‰Γφ@,tƒT  1Ò[ιόÿÿÿt& θόÿÿÿ‹C¨udÿ θόÿÿÿƒT  1Ò[ιόÿÿÿ¶    ‹Cπƒ λή΄&    ΄&    θόÿÿÿUΉ   ΊΠ  WV‰ΖSƒμdd΅    ‰D$`1ΐl$‰οσ«†T  ‰$hΐ  θόÿÿÿZ‰Η…ΐ…¶   ‹^h…Ϋt"θόÿÿÿ‹ƒT  ¨…μ   dÿ θόÿÿÿ‹[h…Ϋuή†4  μ  ‰ ‰@ƒΐ9Αuτ†H  ‰†H  ‰†L  λƒΗƒÿtxL½ ‰ϊ‰π‰λθΙρÿÿ…ΐtεl$`‹ƒΓθόÿÿÿ9λuς‹^h…Ϋtθόÿÿÿ‹ƒT  ¨u{dÿθόÿÿÿ‹[h…Ϋuβ‹$Ώτÿÿÿθόÿÿÿ‹D$`d+    u{ƒΔd‰ψ[^_]Γ΄&    f1Ϋ¶    ‹L ‹„Ψ  “τ   ƒΓ‰L–θόÿÿÿƒϋuή1ÿλ²f‹ƒX  πƒ ιÿÿÿ‹ƒX  πƒ(…xÿÿÿ‹“X  ƒT  ‹Rθόÿÿÿι_ÿÿÿθόÿÿÿv θόÿÿÿU‰ΥW‰ΟVS‰Γƒμ‹ θόÿÿÿ‰Ζ= πÿÿ‡Κ   ‹S‰ΠƒΰƒψtEΈ    ‹[‰$θόÿÿÿ‹$1Ι‰πR‰ϊSj θ›ψÿÿ‰ΓΈ    θόÿÿÿƒΔφF,thƒΔ‰Ψ[^_]Γt& ‹C‰κ1Ιθόÿÿÿ‰Ε= πÿÿws‹SΈ    ‹[‰$θόÿÿÿ‹$‰ι‰πR‰ϊSj θ>ψÿÿ‰ΓΈ    θόÿÿÿƒΔ…νt‰θθόÿÿÿφF,uθόÿÿÿ‹F¨uRdÿθόÿÿÿ‰ΨƒΔ[^_]ΓƒΔ‰Γ‰Ψ[^_]Γt& φF,t
-‰λι]ÿÿÿv θόÿÿÿ‹F¨u-dÿθόÿÿÿ‰λι?ÿÿÿt& ‹Fπƒ(u¨‹VF‹Rθόÿÿÿλ‹Fπƒ(uΝ‹VF‹Rθόÿÿÿλ½΄&    ΄&    θόÿÿÿW‰ΧV‰ΖS‹ θόÿÿÿ‰Γ= πÿÿwt‹F‰ϊ1Ιθόÿÿÿ‹v‰ΗΈ    ÿ πÿÿwfθόÿÿÿ‰ϊ1Ι‰ΨVθ…ρÿÿ‰ΖΈ    θόÿÿÿZ…ÿt‰ψθόÿÿÿφC,t‰π[^_Γθόÿÿÿ‹C¨uDdÿθόÿÿÿ‰π[^_Γ¶    ‰Ζ[‰π^_Γ΄&    θόÿÿÿ1Ι1Ò‰ΨVθρÿÿ‰ΖΈ    θόÿÿÿXλ£‹Cπƒ(u¶‹SC‹Rθόÿÿÿλ¦΄&    θόÿÿÿUWV‰ΖSƒμ‹Nd΅    ‰D$1ΐ…Ι…σ   ‹F‰Υθόÿÿÿ‰Η= πÿÿ‡Τ   ΅   Ή0   Ίΐ θόÿÿÿ‰Γ…ΐ„ί   UΉ\  Ί   θόÿÿÿ‹F‰{(T$‰C,‰Ψθόÿÿÿ‰ΖX…φuS‹s,Έ    θόÿÿÿ1Ι1Ò‰ψjVSθÿυÿÿ‰ΖΈ    θόÿÿÿƒΔ‰ΰ…φuJθόÿÿÿ‰Ζ‹D$d+    uvƒΔ‰π[^_]Γt& ‰ΨθόÿÿÿφG,uΨθόÿÿÿ‹G¨u/dÿθόÿÿÿλΒt& θόÿÿÿλΨ΄&    f‰Ζλ©t& Ύκÿÿÿλ‹Gπƒ(uΛ‹WG‹Rθόÿÿÿλ»Ύτÿÿÿλθόÿÿÿ΄&    t& θόÿÿÿUWV‰ΦS‰Γƒμ d΅    ‰D$‹θόÿÿÿ‰Η= πÿÿ‡ς  Έ    θόÿÿÿ‹CΗ$κÿÿÿƒψ"‡<  Ύ€    …ΐ-  „   ‹”‡μ  ‹k‰L$Η4  ‰L$‹‡Ψ  ‹C‰T$‰L$ƒΰ„D  ‰Θθόÿÿÿ‰D$Ή   FT$θόÿÿÿ…ΐ…¬  FΉ   T$θόÿÿÿ…ΐ…“  ‹C‰ξ…ΐ„Ά   …ν„   ‹L$‰$…Ι„’   9ΘƒC  ‰D$Η$δÿÿÿφC…~  ‹D$1ν‹\Η‹D$9Ψtc‰|$‰Ηλ@t& ‹@(Ή   T$‹@ ‰D$‰πθόÿÿÿ…ΐ…  ƒΕ;l$„Ρ   ‹ƒΖ9ί„Δ   ‹C…ΐu½‹C…ΐt¶‹@λ±Η$    Έ    θόÿÿÿφG,t!‹D$d+    …ÿ   ‹$ƒΔ [^_]Γt& θόÿÿÿ‹G¨…¨   dÿθόÿÿÿλΕ¶    ‹L$‹TΟ‹L$9Ρth‰$‰Λλ
-ƒΐ‹9Σt‹J…Ιuπ‹J…Ιtμ‹I…Ιuβλγ‹$ιƒώÿÿ΄&    ‰$ιoÿÿÿ΄&    ‹|$ιNÿÿÿ΄&    Η$    ιΌώÿÿt& 1ΐιDώÿÿ΄&    f‹|$Η$ςÿÿÿιÿÿÿ‹Gπƒ(…Nÿÿÿ‹WG‹Rθόÿÿÿι;ÿÿÿ‹L$‹D$‰κθόÿÿÿ‰$ιΰώÿÿθόÿÿÿt& θόÿÿÿUWVS‰ΓΏΫƒμ d΅    ‰D$1ΐΏD$4‰L$‰T$Αΰ	Ψ‰D$d‹    θόÿÿÿ‹ƒΘ  ‹T$8ΗD$    ‹@8‹΄Ψ  θόÿÿÿθόÿÿÿ‹ƒp  ‰D$D$‰ƒp  ‹^…ΫtB~t& ‰|$>t& ‹K$S0D$θόÿÿÿ‰Ζ…φu|$ πÿÿwΗD$ÿÿÿÿ‹_ƒΗ…ΫuΖ‹L$d΅    ‰p  θόÿÿÿθόÿÿÿ‹\$θόÿÿÿ‹D$d+    ukƒΔ ‰Ψ[^_]Γt& θόÿÿÿS0‹s$‰ΕD$θόÿÿÿ‹[‰Ζθόÿÿÿ…    $ϊƒCƒƒS θόÿÿÿ1Ò)θCSƒCχ$   „KÿÿÿϋιEÿÿÿθόÿÿÿ΄&    ΄&    θόÿÿÿU‰ΕWV‰ΞΉ	   S‰ΣƒμP‹D$d|$(‰D$‹D$h‰D$d΅    ‰D$L1ΐ‰T$$Ίΐ  ‰l$ ΗD$    ΗD$    σ«‹D$lΗD$,   ‰t$<‹L$`‰D$@Έ   θόÿÿÿ‰D$(…ΐ„4  ‰ΑD$1ÒPD$0P‰Ψ‹{θόÿÿÿ[_…ΐ…  …φt‹D$‹…Ιt‹D$‹…Ò…  θόÿÿÿ‹T$pd‹    ‹ƒΘ  ΗD$    ‹@8‹΄Ψ  θόÿÿÿθόÿÿÿ‹ƒp  ~‰D$D$‰ƒp  ‹^…Ϋt@¶    ‰|$>t& ‹K$S0D$ θόÿÿÿ‰Ζ…φu|$ πÿÿwΗD$ÿÿÿÿ‹_ƒΗ…ΫuΖ‹L$d΅    ‰p  θόÿÿÿθόÿÿÿ‹\$θόÿÿÿ‹D$(θόÿÿÿƒϋu‹D$8…ΐ…™   ‹D$0θόÿÿÿ‹D$Ld+    …7  ƒΔP‰Ψ[^_]Γt& ΗD$,    ELF                            4     (               θόÿÿÿΗ€ΐ      1ΐΓ΄&    ΄&    θόÿÿÿΗ€ΐ       1ΐΓ΄&    ΄&    θόÿÿÿ‹ΐ   …Ιu‹€Δ   ΗB(p   ΗB4   ‰B81ΐΓ΄&    θόÿÿÿ‹@\θόÿÿÿ1ΐΓθόÿÿÿV1Ι‰ΖS‰Σƒμd΅    ‰D$‹†”   f‰L$ΖD$ƒϊtAƒϊtLƒϊtGj Ή   T$θόÿÿÿYƒψ…-   ‰Δ   ‹D$d+    u!ƒΔ[^Γt& ΖD$λΒ΄&    fΖD$λ²θόÿÿÿt& θόÿÿÿ‹ΐ   …Ιt	1ΐΓ¶    ‹R8θPÿÿÿ1ΐΓ΄&    ¶    θόÿÿÿVS‰Γ‹@‹P‹Rθόÿÿÿ%   =   „B   Έϋÿÿÿ[^Γ                     @  p                   "                                                                                                           @   p       €     @       (Radio)  6%s: Audio Mode: %u%s
- vp27smpx θόÿÿÿƒΈΐ    Ή	   Ί    DΡƒΐpRÿpTPh
-   θόÿÿÿ1ΐƒΔΓƒΖpVh    θόÿÿÿXZιΥ   ‹S·C  Q QP‹CTÿ²   ÿ0h$   θόÿÿÿCΉΐ  ΊΘ   θόÿÿÿ‰ΖƒΔ…ΐu
-Έτÿÿÿιh  Ή@   ‰Ϊθόÿÿÿ‰πΊ   Η†Δ      θ|   1ΐιh   3%s: I/O error setting audmode
-    6%s %d-%04x: chip found @ 0x%x (%s)
- θόÿÿÿΊ    Έ    ιόÿÿÿΈ    ιόÿÿÿ            vp27smpx                                                           ΐ       `                                                                                                                                       @                                                                                         license=GPL author=Hans Verkuil description=vp27smpx driver  GCC: (GNU) 11.2.0           GNU  ΐ       ΐ                                  ρÿ                                                    ,   @   )     =   p                                   	 M       1    	               a   €        v   1       	      #     ΅   @  /     °   F   v    	 Δ   @                       Ρ            ζ       €     φ       
-           0                        0     )  ΐ   ,     <  `   P     O           f          |           —             Ά             ΐ             Θ             Ϊ             τ                                       +             @             N             b           n             }      
-           0      vp27smpx.c vp27smpx_s_radio vp27smpx_s_std vp27smpx_g_tuner vp27smpx_remove vp27smpx_log_status vp27smpx_set_audmode vp27smpx_set_audmode.cold vp27smpx_s_tuner vp27smpx_probe vp27smpx_probe.cold vp27smpx_ops vp27smpx_driver_init vp27smpx_driver vp27smpx_driver_exit vp27smpx_id vp27smpx_core_ops vp27smpx_tuner_ops vp27smpx_video_ops __UNIQUE_ID_license268 __UNIQUE_ID_author267 __UNIQUE_ID_description266 __fentry__ v4l2_device_unregister_subdev _printk __stack_chk_guard i2c_transfer_buffer_flags __stack_chk_fail __x86_indirect_thunk_edx devm_kmalloc v4l2_i2c_subdev_init __this_module i2c_register_driver init_module i2c_del_driver cleanup_module __mod_i2c__vp27smpx_id_device_table      !     A     q     y          ’   !  Ε   "  ΰ   !    #      A    S  $  Ο   	  c  	                 h                             	                                      "     '      6     ;      e     j      |   %  ”     ›   &  ±     B          Έ                  '     (          *  @     D     L     l     Δ     Τ     Ψ        	   .symtab .strtab .shstrtab .rel.text .rel.data .bss .rel__mcount_loc .rodata.str1.1 .rel.text.unlikely .rodata.str1.4 .rel.init.text .rel.exit.text .rel.rodata .modinfo .comment .note.GNU-stack .note.gnu.property                                                         @   o                    	   @       θ
-  x               )             ΐ  €                   %   	   @       `                  /             @                     8             @  $                  4   	   @       €  H               E      2       d  +                 X               Ό                  T   	   @       Θ  €      	         g      2       L  J                 z             –                    v   	   @       H                  ‰             ª  
-                  …   	   @       h                              ΐ  0                  ”   	   @       x  @                             π  <                  ©      0       ,                   ²              ?                     Β             @  (                                h  Π              	              8  °                               Έ  Υ                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          ιαώÿÿv θόÿÿÿS0‹s$‰ΕD$ θόÿÿÿ‹[‰Ζθόÿÿÿ…    $ϊƒCƒƒS θόÿÿÿ1Ò)θCSƒCχ$   „ÿÿÿϋιÿÿÿv ‹|$‹θόÿÿÿ‹D$0‹L$‰‹D$4‰ιPÿÿÿ΄&    ‹L$`Ίΐ  Έ   θόÿÿÿΉ   ‰D$0‰Β‹D$‹ 9ΘGΑ‰D$4…ÒtR‹L$‹1ƒψs$…ΐ„.ώÿÿ¶
-¨„!ώÿÿ·Lώf‰Lώιώÿÿ‹zƒηό‰
-‹Lό‰Lό)ϊ)ΦΑισ¥ιούÿÿΗD$4    ιβύÿÿθόÿÿÿ΄&    t& θόÿÿÿUWV‰ΖSƒμp‹¶δ  ‰D$‹„$   ‰T$‹$„   1Ò‰D$‹„$   ‰L$‰D$d΅    ‰D$l1ΐ‰TLƒΐƒψ rτ1Ò1ΐ‰T,ƒΐƒψ rτ‹D$‹|$L$L‰D$(‹D$‹‹ ‰D$4‹D$‹ ‰D$8Έ   9ΒLΠD$(θήÿÿ‰D$…ΐxN‹?‹l$,9Η‰|$<Oψ…ÿρ  ‰ϊ1Ι‰θθόÿÿÿ‰ω‰Ϊ‰θθόÿÿÿ‰Η…ÿt=‹l$,ΗD$ςÿÿÿD$L9Εt‰θθόÿÿÿ‹D$ld+    …ν  ‹D$ƒΔp[^_]Γt& ‹D$1Òθόÿÿÿ‹  ΗD$$    θόÿÿÿ{θόÿÿÿd΅    ‹p  ‰L$L$ ‰p  ‹[…Ϋt;‰|$ >t& ‹K$S0D$(θόÿÿÿ‰Ζ…φu|$$ πÿÿwΗD$$ÿÿÿÿ‹_ƒΗ…ΫuΖ‹L$d΅    ‰p  θόÿÿÿθόÿÿÿ‹\$$‹D$θόÿÿÿ…Ϋ…Η   ‹D$<‹l$,ƒψÿ„Ζ   ÿώÿÿ;D$υώÿÿ‹T$4‹L$‰‹T$8‹L$‰…ΐ„±   ‹L$‰L$L9Ν„¬   ‹D$ΗD$    ‰(ιΛώÿÿt& θόÿÿÿS0‹s$‰ΕD$(θόÿÿÿ‹[‰Ζθόÿÿÿ…    $ϊƒCƒƒS θόÿÿÿ1Ò)θCSƒCχ$   „σώÿÿϋινώÿÿv ‰\$‹l$,ιJώÿÿv ΗD$   ι:ώÿÿv ι ώÿÿΗD$    ι#ώÿÿΊΐ θόÿÿÿ‰Γ…ΐt%‹L$<‹T$,θόÿÿÿ‹D$ΗD$    ‰ιώÿÿθόÿÿÿΗD$τÿÿÿ‹l$,ιέύÿÿ¶    θόÿÿÿUWV‰ΖSƒμh‹δ  1φ‰D$‹D$|‹Ό$   ‰D$‹„$€   ‰D$d΅    ‰D$d1ΐ‰tDƒΐƒψ rτ1φ1ΐ‰t$ƒΐƒψ rτ‹D$‰T$,‰L$0L$D‰D$ d΅    ‰D$8‹„$„   ‰D$4‰ΒD$ θΫÿÿ‰D$…ΐX  …ÿuL‹D$θόÿÿÿ‰T$4…Òc  …ΐ…[  ‹D$‰Φ‹l$$9ΒOπ1Ι‰θ‰ςθόÿÿÿ‹T$‰ρ‰θθόÿÿÿ…ΐ…,  ‹D$1Òθόÿÿÿ‹›  ‰|$θόÿÿÿ{θόÿÿÿd΅    ‹p  ‰L$L$‰p  ‹[…Ϋt;‰|$>t& ‹K$S0D$ θόÿÿÿ‰Ζ…φu|$ πÿÿwΗD$ÿÿÿÿ‹_ƒΗ…ΫuΖ‹L$d΅    ‰p  θόÿÿÿθόÿÿÿ‹t$‹D$θόÿÿÿ…φχ   ‹\$4‹D$$;\$u…Ϋxq‰t$t6Ή   ‰Ϊ‰$θόÿÿÿ‹$‹D$‰Ωθόÿÿÿ…ΐuF‹D$4‹L$θόÿÿÿ…Ιu5‹D$$L$D9Θtθόÿÿÿ‹D$dd+    …”   ‹D$ƒΔh[^_]Γ΄&    ‹D$$ΗD$ςÿÿÿλΑ΄&    v θόÿÿÿS0‹s$‰ΕD$ θόÿÿÿ‹[‰Ζθόÿÿÿ…    $ϊƒCƒƒS θόÿÿÿ1Ò)θCSƒCχ$   „Γώÿÿϋι½ώÿÿv ‰t$ιJÿÿÿθόÿÿÿfθόÿÿÿUWV‰ΦS‰Γƒμ<‹|$T‹D$P‰|$d‹    ‰T$8‹“δ  ‰\$‹‰D$Ψ‰t$ ‰D$‹D$X‰L$$‰D$‹²  ‰\$(ΗD$0    d‹    ΗD$4    ‰\$,θόÿÿÿθόÿÿÿ‹ƒp  ‰D$D$‰ƒp  ‹^…ΫtC~¶    ‰|$>t& ‹K$S0D$θόÿÿÿ‰Ζ…φu|$ πÿÿwΗD$ÿÿÿÿ‹_ƒΗ…ΫuΖ‹L$d΅    ‰p  θόÿÿÿθόÿÿÿ‹D$…ΐx‹L$‹T$(;€   …Òux‹T$8d+    uyƒΔ<[^_]Γv θόÿÿÿS0‹s$‰ΕD$θόÿÿÿ‹[‰Ζθόÿÿÿ…    $ϊƒCƒƒS θόÿÿÿ1Ò)θCSƒCχ$   „;ÿÿÿϋι5ÿÿÿv ‰λ„Έςÿÿÿιzÿÿÿθόÿÿÿ     cgroup_bpf_enabled_key  __cgroup_bpf_run_filter_skb  __cgroup_bpf_run_filter_sk  __cgroup_bpf_run_filter_sock_addr  __cgroup_bpf_run_filter_sock_ops                                                                        @   π  0  P  `  p  Π     °  @  ΐ  π  `	  ΐ  €                   p  °  π  °  0  p  €    ΐ  ΰ       0  P$  °$  @&  °'  (  ΰ)  ,   .  π0   4   6  cgroup_id:	%llu
-attach_type:	%d
-      ΐ      Τ  @        €      ¤         -  -      /  Θ/      T2   3      45  06      D7  Θ7      include/linux/skbuff.h / kernel/bpf/cgroup.c include/linux/thread_info.h °      φ	  ­     @       ƒ	 #     Υ 	 3  -   ι 	Έ$   θόÿÿÿ ›  “  ή    ›$  &  &  s'  '  s(  ³)  S,   ÿÿÿ	
-ÿÿÿÿÿÿÿÿÿ strnlen           P      0                                          	                                                               @                           	                                                            	                                                             	                                                             	         
-                                   °                                             
-                                                                                                               ΐ  `  ΰ        p                       GCC: (GNU) 11.2.0           GNU  ΐ       ΐ                                  ρÿ              
-              +             N              o             •   4          ½              γ   5            P          /            
- T  Q          €  s          ®             Ϊ  t            •          2             ]  @   ª    w  0      •  P       ­  `  
-     Ε  p  V     δ  Π  /     ϊ                           V     )  `  E    @  @  y                                 R  ΐ  Ό     a      
-     u  $        €     i     ›         ²     ό     Ν     ϊ     ί     <     ώ  ΰ  <       €  <     -  @  <     P  ΐ   <     o     <     „     r     –     Ν    ©      #     ΄  °  w     Κ  0  7    β  p      ω  €  …        ΅     ,  ΐ       D  ΰ       [     
-    q  `   <     ”  0      ¨  \                     ½           ϋ          :          r          «          X       Έ     Η   `	  W    9  °  6    Έ  π  ³    <  p  6    ί           ξ             ω                          π  3     2             ;             A             N             Y             f             p             ~             ‰             ›             ±             Κ             Φ             ο                                       (  °       A             H             O  ΐ  (     l  π  n     …             •             ¥             ·             Ζ             Ξ             Φ             δ  €  ™     ψ             	             '	             G	             e	             y	             ‹	             §	             Γ	             Ν	             ε	             ψ	             
-             
-             3
-             G
-             [
-             t
-             ‡
-             
-             »
-             Σ
-             μ
-                                       .             D             \             k             ‚             –             ―  P$  Q     Β             ή  °$      ρ               @&  b                 +             A  °'  Ω     X  (  E    o             }                                       ­  ΰ)  ¬    Γ             η             Ω             υ  ,  b       .  ε    6             M             f  π0  
-    ‰                          ­             Ύ             Λ   4      ξ             ϋ                6  ›    0  ,        D  0        \          o           †  Ό         Τ        cgroup.c __kstrtab_cgroup_bpf_enabled_key __kstrtabns_cgroup_bpf_enabled_key __ksymtab_cgroup_bpf_enabled_key __kstrtab___cgroup_bpf_run_filter_skb __kstrtabns___cgroup_bpf_run_filter_skb __ksymtab___cgroup_bpf_run_filter_skb __kstrtab___cgroup_bpf_run_filter_sk __kstrtabns___cgroup_bpf_run_filter_sk __ksymtab___cgroup_bpf_run_filter_sk __kstrtab___cgroup_bpf_run_filter_sock_addr __kstrtabns___cgroup_bpf_run_filter_sock_addr __ksymtab___cgroup_bpf_run_filter_sock_addr __kstrtab___cgroup_bpf_run_filter_sock_ops __kstrtabns___cgroup_bpf_run_filter_sock_ops __ksymtab___cgroup_bpf_run_filter_sock_ops sysctl_convert_ctx_access cg_sockopt_convert_ctx_access cg_sockopt_get_prologue bpf_cgroup_link_dealloc bpf_cgroup_link_fill_link_info cgroup_bpf_release_fn cgroup_bpf_release bpf_cgroup_link_show_fdinfo __bpf_prog_run_save_cb copy_sysctl_value sysctl_cpy_dir sysctl_cpy_dir.cold __func__.0 cgroup_dev_is_valid_access sysctl_is_valid_access cg_sockopt_is_valid_access sysctl_func_proto bpf_sysctl_get_new_value_proto bpf_set_retval_proto bpf_sysctl_get_name_proto bpf_sysctl_get_current_value_proto bpf_sysctl_set_new_value_proto bpf_get_retval_proto sockopt_alloc_buf cgroup_bpf_replace CSWTCH.197 cgroup_dev_func_proto compute_effective_progs update_effective_progs __cgroup_bpf_detach bpf_cgroup_link_release.part.0 bpf_cgroup_link_release bpf_cgroup_link_detach cg_sockopt_func_proto bpf_get_netns_cookie_sockopt_proto __cgroup_bpf_attach bpf_cgroup_link_lops __UNIQUE_ID___addressable___cgroup_bpf_run_filter_sock_ops491 __UNIQUE_ID___addressable___cgroup_bpf_run_filter_sock_addr490 __UNIQUE_ID___addressable___cgroup_bpf_run_filter_sk489 __UNIQUE_ID___addressable___cgroup_bpf_run_filter_skb488 __UNIQUE_ID___addressable_cgroup_bpf_enabled_key483 bpf_get_retval __fentry__ current_task bpf_set_retval bpf_get_netns_cookie_sockopt init_net kcmd_drivers/media/i2c/vp27smpx.o := gcc -Wp,-MMD,drivers/media/i2c/.vp27smpx.o.d -nostdinc -I./arch/x86/include -I./arch/x86/include/generated  -I./include -I./arch/x86/include/uapi -I./arch/x86/include/generated/uapi -I./include/uapi -I./include/generated/uapi -include ./include/linux/compiler-version.h -include ./include/linux/kconfig.h -include ./include/linux/compiler_types.h -D__KERNEL__ -fmacro-prefix-map=./= -Wall -Wundef -Werror=strict-prototypes -Wno-trigraphs -fno-strict-aliasing -fno-common -fshort-wchar -fno-PIE -Werror=implicit-function-declaration -Werror=implicit-int -Werror=return-type -Wno-format-security -std=gnu11 -mno-sse -mno-mmx -mno-sse2 -mno-3dnow -mno-avx -fcf-protection=none -m32 -msoft-float -mregparm=3 -freg-struct-return -fno-pic -mpreferred-stack-boundary=2 -march=i686 -mtune=pentium3 -mtune=generic -Wa,-mtune=generic32 -ffreestanding -mstack-protector-guard-reg=fs -mstack-protector-guard-symbol=__stack_chk_guard -Wno-sign-compare -fno-asynchronous-unwind-tables -mindirect-branch=thunk-extern -mindirect-branch-register -fno-jump-tables -fno-delete-null-pointer-checks -Wno-frame-address -Wno-format-truncation -Wno-format-overflow -Wno-address-of-packed-member -O2 -fno-allow-store-data-races -fstack-protector-strong -Wimplicit-fallthrough=5 -Wno-main -Wno-unused-but-set-variable -Wno-unused-const-variable -fno-stack-clash-protection -pg -mrecord-mcount -mfentry -DCC_USING_FENTRY -Wdeclaration-after-statement -Wvla -Wno-pointer-sign -Wcast-function-type -Wno-stringop-truncation -Wno-stringop-overflow -Wno-restrict -Wno-maybe-uninitialized -Wno-alloc-size-larger-than -fno-strict-overflow -fno-stack-check -fconserve-stack -Werror=date-time -Werror=incompatible-pointer-types -Werror=designated-init -Wno-packed-not-aligned  -DMODULE  -DKBUILD_BASENAME='"vp27smpx"' -DKBUILD_MODNAME='"vp27smpx"' -D__KBUILD_MODNAME=kmod_vp27smpx -c -o drivers/media/i2c/vp27smpx.o drivers/media/i2c/vp27smpx.c 
+	lockdep_assert_rq_held(rq);
 
-source_drivers/media/i2c/vp27smpx.o := drivers/media/i2c/vp27smpx.c
+	/*
+	 * If sched_uclamp_used was enabled after task @p was enqueued,
+	 * we could end up with unbalanced call to uclamp_rq_dec_id().
+	 *
+	 * In this case the uc_se->active flag should be false since no uclamp
+	 * accounting was performed at enqueue time and we can just return
+	 * here.
+	 *
+	 * Need to be careful of the following enqueue/dequeue ordering
+	 * problem too
+	 *
+	 *	enqueue(taskA)
+	 *	// sched_uclamp_used gets enabled
+	 *	enqueue(taskB)
+	 *	dequeue(taskA)
+	 *	// Must not decrement bucket->tasks here
+	 *	dequeue(taskB)
+	 *
+	 * where we could end up with stale data in uc_se and
+	 * bucket[uc_se->bucket_id].
+	 *
+	 * The following check here eliminates the possibility of such race.
+	 */
+	if (unlikely(!uc_se->active))
+		return;
 
-deps_drivers/media/i2c/vp27smpx.o := \
-  include/linux/compiler-version.h \
-    $(wildcard include/config/CC_VERSION_TEXT) \
-  include/linux/kconfig.h \
-    $(wildcard include/config/CPU_BIG_ENDIAN) \
-    $(wildcard include/config/BOOGER) \
-    $(wildcard include/config/FOO) \
-  include/linux/compiler_types.h \
-    $(wildcard include/config/DEBUG_INFO_BTF) \
-    $(wildcard include/config/PAHOLE_HAS_BTF_TAG) \
-    $(wildcard include/config/HAVE_ARCH_COMPILER_H) \
-    $(wildcard include/config/CC_HAS_ASM_INLINE) \
-  include/linux/compiler_attributes.h \
-  include/linux/compiler-gcc.h \
-    $(wildcard include/config/RETPOLINE) \
-    $(wildcard include/config/ARCH_USE_BUILTIN_BSWAP) \
-    $(wildcard include/config/SHADOW_CALL_STACK) \
-    $(wildcard include/config/KCOV) \
-  include/linux/module.h \
-    $(wildcard include/config/MODULES) \
-    $(wildcard include/config/SYSFS) \
-    $(wildcard include/config/MODULES_TREE_LOOKUP) \
-    $(wildcard include/confi
+	bucket = &uc_rq->bucket[uc_se->bucket_id];
+
+	SCHED_WARN_ON(!bucket->tasks);
+	if (likely(bucket->tasks))
+		bucket->tasks--;
+
+	uc_se->active = false;
+
+	/*
+	 * Keep "local max aggregation" simple and accept to (possibly)
+	 * overboost some RUNNABLE tasks in the same bucket.
+	 * The rq clamp bucket value is reset to its base value whenever
+	 * there are no more RUNNABLE tasks refcounting it.
+	 */
+	if (likely(bucket->tasks))
+		return;
+
+	rq_clamp = READ_ONCE(uc_rq->value);
+	/*
+	 * Defensive programming: this should never happen. If it happens,
+	 * e.g. due to future modification, warn and fixup the expected value.
+	 */
+	SCHED_WARN_ON(bucket->value > rq_clamp);
+	if (bucket->value >= rq_clamp) {
+		bkt_clamp = uclamp_rq_max_value(rq, clamp_id, uc_se->value);
+		WRITE_ONCE(uc_rq->value, bkt_clamp);
+	}
+}
+
+static inline void uclamp_rq_inc(struct rq *rq, struct task_struct *p)
+{
+	enum uclamp_id clamp_id;
+
+	/*
+	 * Avoid any overhead until uclamp is actually used by the userspace.
+	 *
+	 * The condition is constructed such that a NOP is generated when
+	 * sched_uclamp_used is disabled.
+	 */
+	if (!static_branch_unlikely(&sched_uclamp_used))
+		return;
+
+	if (unlikely(!p->sched_class->uclamp_enabled))
+		return;
+
+	for_each_clamp_id(clamp_id)
+		uclamp_rq_inc_id(rq, p, clamp_id);
+
+	/* Reset clamp idle holding when there is one RUNNABLE task */
+	if (rq->uclamp_flags & UCLAMP_FLAG_IDLE)
+		rq->uclamp_flags &= ~UCLAMP_FLAG_IDLE;
+}
+
+static inline void 

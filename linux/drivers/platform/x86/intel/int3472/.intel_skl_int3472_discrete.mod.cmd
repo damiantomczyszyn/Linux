@@ -1,8 +1,13 @@
-_P6_NOP) \
-    $(wildcard include/config/MATOM) \
-    $(wildcard include/config/PARAVIRT_XXL) \
-  arch/x86/include/asm/disabled-features.h \
-    $(wildcard include/config/X86_SMAP) \
-    $(wildcard include/config/X86_UMIP) \
-    $(wildcard include/config/X86_INTEL_MEMORY_PROTECTION_KEYS) \
-    $(wildcar
+E310B         62
+
+#define GPIO_0 0x00000001
+#define GPIO_1 0x00000002
+#define GPIO_2 0x00000004
+#define GPIO_3 0x00000008
+#define GPIO_4 0x00000010
+#define GPIO_5 0x00000020
+#define GPIO_6 0x00000040
+#define GPIO_7 0x00000080
+#define GPIO_8 0x00000100
+#define GPIO_9 0x00000200
+#define GPIO_10 0x00000400

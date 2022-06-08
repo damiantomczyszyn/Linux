@@ -1,875 +1,594 @@
-k.hardirqs_off = true;
-			hlock.references = 0;
+// SPDX-License-Identifier: GPL-2.0-or-later
+/*
+ * cimax2.c
+ *
+ * CIMax2(R) SP2 driver in conjunction with NetUp Dual DVB-S2 CI card
+ *
+ * Copyright (C) 2009 NetUP Inc.
+ * Copyright (C) 2009 Igor M. Liplianin <liplianin@netup.ru>
+ * Copyright (C) 2009 Abylay Ospan <aospan@netup.ru>
+ */
 
-			verify_lock_unused(lock, &hlock, subclass);
+#include "cx23885.h"
+#include "cimax2.h"
+#include <media/dvb_ca_en50221.h>
+
+/* Max transfer size done by I2C transfer functions */
+#define MAX_XFER_SIZE  64
+
+/**** Bit definitions for MC417_RWD and MC417_OEN registers  ***
+  bits 31-16
++-----------+
+| Reserved  |
++-----------+
+  bit 15  bit 14  bit 13 bit 12  bit 11  bit 10  bit 9   bit 8
++-------+-------+-------+-------+-------+-------+-------+-------+
+|  WR#  |  RD#  |       |  ACK# |  ADHI |  ADLO |  CS1# |  CS0# |
++-------+-------+-------+-------+-------+-------+-------+-------+
+ bit 7   bit 6   bit 5   bit 4   bit 3   bit 2   bit 1   bit 0
++-------+-------+-------+-------+-------+-------+-------+-------+
+|  DATA7|  DATA6|  DATA5|  DATA4|  DATA3|  DATA2|  DATA1|  DATA0|
++-------+-------+-------+-------+-------+-------+-------+-------+
+***/
+/* MC417 */
+#define NETUP_DATA		0x000000ff
+#define NETUP_WR		0x00008000
+#define NETUP_RD		0x00004000
+#define NETUP_ACK		0x00001000
+#define NETUP_ADHI		0x00000800
+#define NETUP_ADLO		0x00000400
+#define NETUP_CS1		0x00000200
+#define NETUP_CS0		0x00000100
+#define NETUP_EN_ALL		0x00001000
+#define NETUP_CTRL_OFF		(NETUP_CS1 | NETUP_CS0 | NETUP_WR | NETUP_RD)
+#define NETUP_CI_CTL		0x04
+#define NETUP_CI_RD		1
+
+#define NETUP_IRQ_DETAM		0x1
+#define NETUP_IRQ_IRQAM		0x4
+
+static unsigned int ci_dbg;
+module_param(ci_dbg, int, 0644);
+MODULE_PARM_DESC(ci_dbg, "Enable CI debugging");
+
+static unsigned int ci_irq_enable;
+module_param(ci_irq_enable, int, 0644);
+MODULE_PARM_DESC(ci_irq_enable, "Enable IRQ from CAM");
+
+#define ci_dbg_print(fmt, args...) \
+	do { \
+		if (ci_dbg) \
+			printk(KERN_DEBUG pr_fmt("%s: " fmt), \
+			       __func__, ##args); \
+	} while (0)
+
+#define ci_irq_flags() (ci_irq_enable ? NETUP_IRQ_IRQAM : 0)
+
+/* stores all private variables for communication with CI */
+struct netup_ci_state {
+	struct dvb_ca_en50221 ca;
+	struct mutex ca_mutex;
+	struct i2c_adapter *i2c_adap;
+	u8 ci_i2c_addr;
+	int status;
+	struct work_struct work;
+	void *priv;
+	u8 current_irq_mode;
+	int current_ci_flag;
+	unsigned long next_status_checked_time;
+};
+
+
+static int netup_read_i2c(struct i2c_adapter *i2c_adap, u8 addr, u8 reg,
+						u8 *buf, int len)
+{
+	int ret;
+	struct i2c_msg msg[] = {
+		{
+			.addr	= addr,
+			.flags	= 0,
+			.buf	= &reg,
+			.len	= 1
+		}, {
+			.addr	= addr,
+			.flags	= I2C_M_RD,
+			.buf	= buf,
+			.len	= len
 		}
-		return;
+	};
+
+	ret = i2c_transfer(i2c_adap, msg, 2);
+
+	if (ret != 2) {
+		ci_dbg_print("%s: i2c read error, Reg = 0x%02x, Status = %d\n",
+						__func__, reg, ret);
+
+		return -1;
 	}
 
-	raw_local_irq_save(flags);
-	check_flags(flags);
+	ci_dbg_print("%s: i2c read Addr=0x%04x, Reg = 0x%02x, data = %02x\n",
+						__func__, addr, reg, buf[0]);
 
-	lockdep_recursion_inc();
-	__lock_acquire(lock, subclass, trylock, read, check,
-		       irqs_disabled_flags(flags), nest_lock, ip, 0, 0);
-	lockdep_recursion_finish();
-	raw_local_irq_restore(flags);
+	return 0;
 }
-EXPORT_SYMBOL_GPL(lock_acquire);
 
-void lock_release(struct lockdep_map *lock, unsigned long ip)
+static int netup_write_i2c(struct i2c_adapter *i2c_adap, u8 addr, u8 reg,
+						u8 *buf, int len)
 {
-	unsigned long flags;
+	int ret;
+	u8 buffer[MAX_XFER_SIZE];
 
-	trace_lock_release(lock, ip);
+	struct i2c_msg msg = {
+		.addr	= addr,
+		.flags	= 0,
+		.buf	= &buffer[0],
+		.len	= len + 1
+	};
 
-	if (unlikely(!lockdep_enabled()))
-		return;
+	if (1 + len > sizeof(buffer)) {
+		pr_warn("%s: i2c wr reg=%04x: len=%d is too big!\n",
+		       KBUILD_MODNAME, reg, len);
+		return -EINVAL;
+	}
 
-	raw_local_irq_save(flags);
-	check_flags(flags);
+	buffer[0] = reg;
+	memcpy(&buffer[1], buf, len);
 
-	lockdep_recursion_inc();
-	if (__lock_release(lock, ip))
-		check_chain_key(current);
-	lockdep_recursion_finish();
-	raw_local_irq_restore(flags);
+	ret = i2c_transfer(i2c_adap, &msg, 1);
+
+	if (ret != 1) {
+		ci_dbg_print("%s: i2c write error, Reg=[0x%02x], Status=%d\n",
+						__func__, reg, ret);
+		return -1;
+	}
+
+	return 0;
 }
-EXPORT_SYMBOL_GPL(lock_release);
 
-noinstr int lock_is_held_type(const struct lockdep_map *lock, int read)
+static int netup_ci_get_mem(struct cx23885_dev *dev)
 {
-	unsigned long flags;
-	int ret = LOCK_STATE_NOT_HELD;
+	int mem;
+	unsigned long timeout = jiffies + msecs_to_jiffies(1);
 
-	/*
-	 * Avoid false negative lockdep_assert_held() and
-	 * lockdep_assert_not_held().
-	 */
-	if (unlikely(!lockdep_enabled()))
-		return LOCK_STATE_UNKNOWN;
+	for (;;) {
+		mem = cx_read(MC417_RWD);
+		if ((mem & NETUP_ACK) == 0)
+			break;
+		if (time_after(jiffies, timeout))
+			break;
+		udelay(1);
+	}
 
-	raw_local_irq_save(flags);
-	check_flags(flags);
+	cx_set(MC417_RWD, NETUP_CTRL_OFF);
 
-	lockdep_recursion_inc();
-	ret = __lock_is_held(lock, read);
-	lockdep_recursion_finish();
-	raw_local_irq_restore(flags);
+	return mem & 0xff;
+}
 
+static int netup_ci_op_cam(struct dvb_ca_en50221 *en50221, int slot,
+				u8 flag, u8 read, int addr, u8 data)
+{
+	struct netup_ci_state *state = en50221->data;
+	struct cx23885_tsport *port = state->priv;
+	struct cx23885_dev *dev = port->dev;
+
+	u8 store;
+	int mem;
+	int ret;
+
+	if (0 != slot)
+		return -EINVAL;
+
+	if (state->current_ci_flag != flag) {
+		ret = netup_read_i2c(state->i2c_adap, state->ci_i2c_addr,
+				0, &store, 1);
+		if (ret != 0)
+			return ret;
+
+		store &= ~0x0c;
+		store |= flag;
+
+		ret = netup_write_i2c(state->i2c_adap, state->ci_i2c_addr,
+				0, &store, 1);
+		if (ret != 0)
+			return ret;
+	}
+	state->current_ci_flag = flag;
+
+	mutex_lock(&dev->gpio_lock);
+
+	/* write addr */
+	cx_write(MC417_OEN, NETUP_EN_ALL);
+	cx_write(MC417_RWD, NETUP_CTRL_OFF |
+				NETUP_ADLO | (0xff & addr));
+	cx_clear(MC417_RWD, NETUP_ADLO);
+	cx_write(MC417_RWD, NETUP_CTRL_OFF |
+				NETUP_ADHI | (0xff & (addr >> 8)));
+	cx_clear(MC417_RWD, NETUP_ADHI);
+
+	if (read) { /* data in */
+		cx_write(MC417_OEN, NETUP_EN_ALL | NETUP_DATA);
+	} else /* data out */
+		cx_write(MC417_RWD, NETUP_CTRL_OFF | data);
+
+	/* choose chip */
+	cx_clear(MC417_RWD,
+			(state->ci_i2c_addr == 0x40) ? NETUP_CS0 : NETUP_CS1);
+	/* read/write */
+	cx_clear(MC417_RWD, (read) ? NETUP_RD : NETUP_WR);
+	mem = netup_ci_get_mem(dev);
+
+	mutex_unlock(&dev->gpio_lock);
+
+	if (!read)
+		if (mem < 0)
+			return -EREMOTEIO;
+
+	ci_dbg_print("%s: %s: chipaddr=[0x%x] addr=[0x%02x], %s=%x\n", __func__,
+			(read) ? "read" : "write", state->ci_i2c_addr, addr,
+			(flag == NETUP_CI_CTL) ? "ctl" : "mem",
+			(read) ? mem : data);
+
+	if (read)
+		return mem;
+
+	return 0;
+}
+
+int netup_ci_read_attribute_mem(struct dvb_ca_en50221 *en50221,
+						int slot, int addr)
+{
+	return netup_ci_op_cam(en50221, slot, 0, NETUP_CI_RD, addr, 0);
+}
+
+int netup_ci_write_attribute_mem(struct dvb_ca_en50221 *en50221,
+						int slot, int addr, u8 data)
+{
+	return netup_ci_op_cam(en50221, slot, 0, 0, addr, data);
+}
+
+int netup_ci_read_cam_ctl(struct dvb_ca_en50221 *en50221, int slot,
+				 u8 addr)
+{
+	return netup_ci_op_cam(en50221, slot, NETUP_CI_CTL,
+							NETUP_CI_RD, addr, 0);
+}
+
+int netup_ci_write_cam_ctl(struct dvb_ca_en50221 *en50221, int slot,
+							u8 addr, u8 data)
+{
+	return netup_ci_op_cam(en50221, slot, NETUP_CI_CTL, 0, addr, data);
+}
+
+int netup_ci_slot_reset(struct dvb_ca_en50221 *en50221, int slot)
+{
+	struct netup_ci_state *state = en50221->data;
+	u8 buf =  0x80;
+	int ret;
+
+	if (0 != slot)
+		return -EINVAL;
+
+	udelay(500);
+	ret = netup_write_i2c(state->i2c_adap, state->ci_i2c_addr,
+							0, &buf, 1);
+
+	if (ret != 0)
+		return ret;
+
+	udelay(500);
+
+	buf = 0x00;
+	ret = netup_write_i2c(state->i2c_adap, state->ci_i2c_addr,
+							0, &buf, 1);
+
+	msleep(1000);
+	dvb_ca_en50221_camready_irq(&state->ca, 0);
+
+	return 0;
+
+}
+
+int netup_ci_slot_shutdown(struct dvb_ca_en50221 *en50221, int slot)
+{
+	/* not implemented */
+	return 0;
+}
+
+static int netup_ci_set_irq(struct dvb_ca_en50221 *en50221, u8 irq_mode)
+{
+	struct netup_ci_state *state = en50221->data;
+	int ret;
+
+	if (irq_mode == state->current_irq_mode)
+		return 0;
+
+	ci_dbg_print("%s: chipaddr=[0x%x] setting ci IRQ to [0x%x] \n",
+			__func__, state->ci_i2c_addr, irq_mode);
+	ret = netup_write_i2c(state->i2c_adap, state->ci_i2c_addr,
+							0x1b, &irq_mode, 1);
+
+	if (ret != 0)
+		return ret;
+
+	state->current_irq_mode = irq_mode;
+
+	return 0;
+}
+
+int netup_ci_slot_ts_ctl(struct dvb_ca_en50221 *en50221, int slot)
+{
+	struct netup_ci_state *state = en50221->data;
+	u8 buf;
+
+	if (0 != slot)
+		return -EINVAL;
+
+	netup_read_i2c(state->i2c_adap, state->ci_i2c_addr,
+			0, &buf, 1);
+	buf |= 0x60;
+
+	return netup_write_i2c(state->i2c_adap, state->ci_i2c_addr,
+							0, &buf, 1);
+}
+
+/* work handler */
+static void netup_read_ci_status(struct work_struct *work)
+{
+	struct netup_ci_state *state =
+			container_of(work, struct netup_ci_state, work);
+	u8 buf[33];
+	int ret;
+
+	/* CAM module IRQ processing. fast operation */
+	dvb_ca_en50221_frda_irq(&state->ca, 0);
+
+	/* CAM module INSERT/REMOVE processing. slow operation because of i2c
+	 * transfers */
+	if (time_after(jiffies, state->next_status_checked_time)
+			|| !state->status) {
+		ret = netup_read_i2c(state->i2c_adap, state->ci_i2c_addr,
+				0, &buf[0], 33);
+
+		state->next_status_checked_time = jiffies
+			+ msecs_to_jiffies(1000);
+
+		if (ret != 0)
+			return;
+
+		ci_dbg_print("%s: Slot Status Addr=[0x%04x], Reg=[0x%02x], data=%02x, TS config = %02x\n",
+			     __func__,	state->ci_i2c_addr, 0, buf[0], buf[0]);
+
+
+		if (buf[0] & 1)
+			state->status = DVB_CA_EN50221_POLL_CAM_PRESENT |
+				DVB_CA_EN50221_POLL_CAM_READY;
+		else
+			state->status = 0;
+	}
+}
+
+/* CI irq handler */
+int netup_ci_slot_status(struct cx23885_dev *dev, u32 pci_status)
+{
+	struct cx23885_tsport *port = NULL;
+	struct netup_ci_state *state = NULL;
+
+	ci_dbg_print("%s:\n", __func__);
+
+	if (0 == (pci_status & (PCI_MSK_GPIO0 | PCI_MSK_GPIO1)))
+		return 0;
+
+	if (pci_status & PCI_MSK_GPIO0) {
+		port = &dev->ts1;
+		state = port->port_priv;
+		schedule_work(&state->work);
+		ci_dbg_print("%s: Wakeup CI0\n", __func__);
+	}
+
+	if (pci_status & PCI_MSK_GPIO1) {
+		port = &dev->ts2;
+		state = port->port_priv;
+		schedule_work(&state->work);
+		ci_dbg_print("%s: Wakeup CI1\n", __func__);
+	}
+
+	return 1;
+}
+
+int netup_poll_ci_slot_status(struct dvb_ca_en50221 *en50221,
+				     int slot, int open)
+{
+	struct netup_ci_state *state = en50221->data;
+
+	if (0 != slot)
+		return -EINVAL;
+
+	netup_ci_set_irq(en50221, open ? (NETUP_IRQ_DETAM | ci_irq_flags())
+			: NETUP_IRQ_DETAM);
+
+	return state->status;
+}
+
+int netup_ci_init(struct cx23885_tsport *port)
+{
+	struct netup_ci_state *state;
+	u8 cimax_init[34] = {
+		0x00, /* module A control*/
+		0x00, /* auto select mask high A */
+		0x00, /* auto select mask low A */
+		0x00, /* auto select pattern high A */
+		0x00, /* auto select pattern low A */
+		0x44, /* memory access time A */
+		0x00, /* invert input A */
+		0x00, /* RFU */
+		0x00, /* RFU */
+		0x00, /* module B control*/
+		0x00, /* auto select mask high B */
+		0x00, /* auto select mask low B */
+		0x00, /* auto select pattern high B */
+		0x00, /* auto select pattern low B */
+		0x44, /* memory access time B */
+		0x00, /* invert input B */
+		0x00, /* RFU */
+		0x00, /* RFU */
+		0x00, /* auto select mask high Ext */
+		0x00, /* auto select mask low Ext */
+		0x00, /* auto select pattern high Ext */
+		0x00, /* auto select pattern low Ext */
+		0x00, /* RFU */
+		0x02, /* destination - module A */
+		0x01, /* power on (use it like store place) */
+		0x00, /* RFU */
+		0x00, /* int status read only */
+		ci_irq_flags() | NETUP_IRQ_DETAM, /* DETAM, IRQAM unmasked */
+		0x05, /* EXTINT=active-high, INT=push-pull */
+		0x00, /* USCG1 */
+		0x04, /* ack active low */
+		0x00, /* LOCK = 0 */
+		0x33, /* serial mode, rising in, rising out, MSB first*/
+		0x31, /* synchronization */
+	};
+	int ret;
+
+	ci_dbg_print("%s\n", __func__);
+	state = kzalloc(sizeof(struct netup_ci_state), GFP_KERNEL);
+	if (!state) {
+		ci_dbg_print("%s: Unable create CI structure!\n", __func__);
+		ret = -ENOMEM;
+		goto err;
+	}
+
+	port->port_priv = state;
+
+	switch (port->nr) {
+	case 1:
+		state->ci_i2c_addr = 0x40;
+		break;
+	case 2:
+		state->ci_i2c_addr = 0x41;
+		break;
+	}
+
+	state->i2c_adap = &port->dev->i2c_bus[0].i2c_adap;
+	state->ca.owner = THIS_MODULE;
+	state->ca.read_attribute_mem = netup_ci_read_attribute_mem;
+	state->ca.write_attribute_mem = netup_ci_write_attribute_mem;
+	state->ca.read_cam_control = netup_ci_read_cam_ctl;
+	state->ca.write_cam_control = netup_ci_write_cam_ctl;
+	state->ca.slot_reset = netup_ci_slot_reset;
+	state->ca.slot_shutdown = netup_ci_slot_shutdown;
+	state->ca.slot_ts_enable = netup_ci_slot_ts_ctl;
+	state->ca.poll_slot_status = netup_poll_ci_slot_status;
+	state->ca.data = state;
+	state->priv = port;
+	state->current_irq_mode = ci_irq_flags() | NETUP_IRQ_DETAM;
+
+	ret = netup_write_i2c(state->i2c_adap, state->ci_i2c_addr,
+						0, &cimax_init[0], 34);
+	/* lock registers */
+	ret |= netup_write_i2c(state->i2c_adap, state->ci_i2c_addr,
+						0x1f, &cimax_init[0x18], 1);
+	/* power on slots */
+	ret |= netup_write_i2c(state->i2c_adap, state->ci_i2c_addr,
+						0x18, &cimax_init[0x18], 1);
+
+	if (0 != ret)
+		goto err;
+
+	ret = dvb_ca_en50221_init(&port->frontends.adapter,
+				   &state->ca,
+				   /* flags */ 0,
+				   /* n_slots */ 1);
+	if (0 != ret)
+		goto err;
+
+	INIT_WORK(&state->work, netup_read_ci_status);
+	schedule_work(&state->work);
+
+	ci_dbg_print("%s: CI initialized!\n", __func__);
+
+	return 0;
+err:
+	ci_dbg_print("%s: Cannot initialize CI: Error %d.\n", __func__, ret);
+	kfree(state);
 	return ret;
 }
-EXPORT_SYMBOL_GPL(lock_is_held_type);
-NOKPROBE_SYMBOL(lock_is_held_type);
 
-struct pin_cookie lock_pin_lock(struct lockdep_map *lock)
+void netup_ci_exit(struct cx23885_tsport *port)
 {
-	struct pin_cookie cookie = NIL_COOKIE;
-	unsigned long flags;
+	struct netup_ci_state *state;
 
-	if (unlikely(!lockdep_enabled()))
-		return cookie;
-
-	raw_local_irq_save(flags);
-	check_flags(flags);
-
-	lockdep_recursion_inc();
-	cookie = __lock_pin_lock(lock);
-	lockdep_recursion_finish();
-	raw_local_irq_restore(flags);
-
-	return cookie;
-}
-EXPORT_SYMBOL_GPL(lock_pin_lock);
-
-void lock_repin_lock(struct lockdep_map *lock, struct pin_cookie cookie)
-{
-	unsigned long flags;
-
-	if (unlikely(!lockdep_enabled()))
+	if (NULL == port)
 		return;
 
-	raw_local_irq_save(flags);
-	check_flags(flags);
-
-	lockdep_recursion_inc();
-	__lock_repin_lock(lock, cookie);
-	lockdep_recursion_finish();
-	raw_local_irq_restore(flags);
-}
-EXPORT_SYMBOL_GPL(lock_repin_lock);
-
-void lock_unpin_lock(struct lockdep_map *lock, struct pin_cookie cookie)
-{
-	unsigned long flags;
-
-	if (unlikely(!lockdep_enabled()))
+	state = (struct netup_ci_state *)port->port_priv;
+	if (NULL == state)
 		return;
 
-	raw_local_irq_save(flags);
-	check_flags(flags);
-
-	lockdep_recursion_inc();
-	__lock_unpin_lock(lock, cookie);
-	lockdep_recursion_finish();
-	raw_local_irq_restore(flags);
-}
-EXPORT_SYMBOL_GPL(lock_unpin_lock);
-
-#ifdef CONFIG_LOCK_STAT
-static void print_lock_contention_bug(struct task_struct *curr,
-				      struct lockdep_map *lock,
-				      unsigned long ip)
-{
-	if (!debug_locks_off())
-		return;
-	if (debug_locks_silent)
+	if (NULL == state->ca.data)
 		return;
 
-	pr_warn("\n");
-	pr_warn("=================================\n");
-	pr_warn("WARNING: bad contention detected!\n");
-	print_kernel_ident();
-	pr_warn("---------------------------------\n");
-	pr_warn("%s/%d is trying to contend lock (",
-		curr->comm, task_pid_nr(curr));
-	print_lockdep_cache(lock);
-	pr_cont(") at:\n");
-	print_ip_sym(KERN_WARNING, ip);
-	pr_warn("but there are no locks held!\n");
-	pr_warn("\nother info that might help us debug this:\n");
-	lockdep_print_held_locks(curr);
-
-	pr_warn("\nstack backtrace:\n");
-	dump_stack();
+	dvb_ca_en50221_release(&state->ca);
+	kfree(state);
 }
-
-static void
-__lock_contended(struct lockdep_map *lock, unsigned long ip)
-{
-	struct task_struct *curr = current;
-	struct held_lock *hlock;
-	struct lock_class_stats *stats;
-	unsigned int depth;
-	int i, contention_point, contending_point;
-
-	depth = curr->lockdep_depth;
-	/*
-	 * Whee, we contended on this lock, except it seems we're not
-	 * actually trying to acquire anything much at all..
-	 */
-	if (DEBUG_LOCKS_WARN_ON(!depth))
-		return;
-
-	hlock = find_held_lock(curr, lock, depth, &i);
-	if (!hlock) {
-		print_lock_contention_bug(curr, lock, ip);
-		return;
-	}
-
-	if (hlock->instance != lock)
-		return;
-
-	hlock->waittime_stamp = lockstat_clock();
-
-	contention_point = lock_point(hlock_class(hlock)->contention_point, ip);
-	contending_point = lock_point(hlock_class(hlock)->contending_point,
-				      lock->ip);
-
-	stats = get_lock_stats(hlock_class(hlock));
-	if (contention_point < LOCKSTAT_POINTS)
-		stats->contention_point[contention_point]++;
-	if (contending_point < LOCKSTAT_POINTS)
-		stats->contending_point[contending_point]++;
-	if (lock->cpu != smp_processor_id())
-		stats->bounces[bounce_contended + !!hlock->read]++;
-}
-
-static void
-__lock_acquired(struct lockdep_map *lock, unsigned long ip)
-{
-	struct task_struct *curr = current;
-	struct held_lock *hlock;
-	struct lock_class_stats *stats;
-	unsigned int depth;
-	u64 now, waittime = 0;
-	int i, cpu;
-
-	depth = curr->lockdep_depth;
-	/*
-	 * Yay, we acquired ownership of this lock we didn't try to
-	 * acquire, how the heck did that happen?
-	 */
-	if (DEBUG_LOCKS_WARN_ON(!depth))
-		return;
-
-	hlock = find_held_lock(curr, lock, depth, &i);
-	if (!hlock) {
-		print_lock_contention_bug(curr, lock, _RET_IP_);
-		return;
-	}
-
-	if (hlock->instance != lock)
-		return;
-
-	cpu = smp_processor_id();
-	if (hlock->waittime_stamp) {
-		now = lockstat_clock();
-		waittime = now - hlock->waittime_stamp;
-		hlock->holdtime_stamp = now;
-	}
-
-	stats = get_lock_stats(hlock_class(hlock));
-	if (waittime) {
-		if (hlock->read)
-			lock_time_inc(&stats->read_waittime, waittime);
-		else
-			lock_time_inc(&stats->write_waittime, waittime);
-	}
-	if (lock->cpu != cpu)
-		stats->bounces[bounce_acquired + !!hlock->read]++;
-
-	lock->cpu = cpu;
-	lock->ip = ip;
-}
-
-void lock_contended(struct lockdep_map *lock, unsigned long ip)
-{
-	unsigned long flags;
-
-	trace_lock_contended(lock, ip);
-
-	if (unlikely(!lock_stat || !lockdep_enabled()))
-		return;
-
-	raw_local_irq_save(flags);
-	check_flags(flags);
-	lockdep_recursion_inc();
-	__lock_contended(lock, ip);
-	lockdep_recursion_finish();
-	raw_local_irq_restore(flags);
-}
-EXPORT_SYMBOL_GPL(lock_contended);
-
-void lock_acquired(struct lockdep_map *lock, unsigned long ip)
-{
-	unsigned long flags;
-
-	trace_lock_acquired(lock, ip);
-
-	if (unlikely(!lock_stat || !lockdep_enabled()))
-		return;
-
-	raw_local_irq_save(flags);
-	check_flags(flags);
-	lockdep_recursion_inc();
-	__lock_acquired(lock, ip);
-	lockdep_recursion_finish();
-	raw_local_irq_restore(flags);
-}
-EXPORT_SYMBOL_GPL(lock_acquired);
-#endif
-
-/*
- * Used by the testsuite, sanitize the validator state
- * after a simulated failure:
- */
-
-void lockdep_reset(void)
-{
-	unsigned long flags;
-	int i;
-
-	raw_local_irq_save(flags);
-	lockdep_init_task(current);
-	memset(current->held_locks, 0, MAX_LOCK_DEPTH*sizeof(struct held_lock));
-	nr_hardirq_chains = 0;
-	nr_softirq_chains = 0;
-	nr_process_chains = 0;
-	debug_locks = 1;
-	for (i = 0; i < CHAINHASH_SIZE; i++)
-		INIT_HLIST_HEAD(chainhash_table + i);
-	raw_local_irq_restore(flags);
-}
-
-/* Remove a class from a lock chain. Must be called with the graph lock held. */
-static void remove_class_from_lock_chain(struct pending_free *pf,
-					 struct lock_chain *chain,
-					 struct lock_class *class)
-{
-#ifdef CONFIG_PROVE_LOCKING
-	int i;
-
-	for (i = chain->base; i < chain->base + chain->depth; i++) {
-		if (chain_hlock_class_idx(chain_hlocks[i]) != class - lock_classes)
-			continue;
-		/*
-		 * Each lock class occurs at most once in a lock chain so once
-		 * we found a match we can break out of this loop.
-		 */
-		goto free_lock_chain;
-	}
-	/* Since the chain has not been modified, return. */
-	return;
-
-free_lock_chain:
-	free_chain_hlocks(chain->base, chain->depth);
-	/* Overwrite the chain key for concurrent RCU readers. */
-	WRITE_ONCE(chain->chain_key, INITIAL_CHAIN_KEY);
-	dec_chains(chain->irq_context);
-
-	/*
-	 * Note: calling hlist_del_rcu() from inside a
-	 * hlist_for_each_entry_rcu() loop is safe.
-	 */
-	hlist_del_rcu(&chain->entry);
-	__set_bit(chain - lock_chains, pf->lock_chains_being_freed);
-	nr_zapped_lock_chains++;
-#endif
-}
-
-/* Must be called with the graph lock held. */
-static void remove_class_from_lock_chains(struct pending_free *pf,
-					  struct lock_class *class)
-{
-	struct lock_chain *chain;
-	struct hlist_head *head;
-	int i;
-
-	for (i = 0; i < ARRAY_SIZE(chainhash_table); i++) {
-		head = chainhash_table + i;
-		hlist_for_each_entry_rcu(chain, head, entry) {
-			remove_class_from_lock_chain(pf, chain, class);
-		}
-	}
-}
-
-/*
- * Remove all references to a lock class. The caller must hold the graph lock.
- */
-static void zap_class(struct pending_free *pf, struct lock_class *class)
-{
-	struct lock_list *entry;
-	int i;
-
-	WARN_ON_ONCE(!class->key);
-
-	/*
-	 * Remove all dependencies this lock is
-	 * involved in:
-	 */
-	for_each_set_bit(i, list_entries_in_use, ARRAY_SIZE(list_entries)) {
-		entry = list_entries + i;
-		if (entry->class != class && entry->links_to != class)
-			continue;
-		__clear_bit(i, list_entries_in_use);
-		nr_list_entries--;
-		list_del_rcu(&entry->entry);
-	}
-	if (list_empty(&class->locks_after) &&
-	    list_empty(&class->locks_before)) {
-		list_move_tail(&class->lock_entry, &pf->zapped);
-		hlist_del_rcu(&class->hash_entry);
-		WRITE_ONCE(class->key, NULL);
-		WRITE_ONCE(class->name, NULL);
-		nr_lock_classes--;
-		__clear_bit(class - lock_classes, lock_classes_in_use);
-		if (class - lock_classes == max_lock_class_idx)
-			max_lock_class_idx--;
-	} else {
-		WARN_ONCE(true, "%s() failed for class %s\n", __func__,
-			  class->name);
-	}
-
-	remove_class_from_lock_chains(pf, class);
-	nr_zapped_classes++;
-}
-
-static void reinit_class(struct lock_class *class)
-{
-	WARN_ON_ONCE(!class->lock_entry.next);
-	WARN_ON_ONCE(!list_empty(&class->locks_after));
-	WARN_ON_ONCE(!list_empty(&class->locks_before));
-	memset_startat(class, 0, key);
-	WARN_ON_ONCE(!class->lock_entry.next);
-	WARN_ON_ONCE(!list_empty(&class->locks_after));
-	WARN_ON_ONCE(!list_empty(&class->locks_before));
-}
-
-static inline int within(const void *addr, void *start, unsigned long size)
-{
-	return addr >= start && addr < start + size;
-}
-
-static bool inside_selftest(void)
-{
-	return current == lockdep_selftest_task_struct;
-}
-
-/* The caller must hold the graph lock. */
-static struct pending_free *get_pending_free(void)
-{
-	return delayed_free.pf + delayed_free.index;
-}
-
-static void free_zapped_rcu(struct rcu_head *cb);
-
-/*
- * Schedule an RCU callback if no RCU callback is pending. Must be called with
- * the graph lock held.
- */
-static void call_rcu_zapped(struct pending_free *pf)
-{
-	WARN_ON_ONCE(inside_selftest());
-
-	if (list_empty(&pf->zapped))
-		return;
-
-	if (delayed_free.scheduled)
-		return;
-
-	delayed_free.scheduled = true;
-
-	WARN_ON_ONCE(delayed_free.pf + delayed_free.index != pf);
-	delayed_free.index ^= 1;
-
-	call_rcu(&delayed_free.rcu_head, free_zapped_rcu);
-}
-
-/* The caller must hold the graph lock. May be called from RCU context. */
-static void __free_zapped_classes(struct pending_free *pf)
-{
-	struct lock_class *class;
-
-	check_data_structures();
-
-	list_for_each_entry(class, &pf->zapped, lock_entry)
-		reinit_class(class);
-
-	list_splice_init(&pf->zapped, &free_lock_classes);
-
-#ifdef CONFIG_PROVE_LOCKING
-	bitmap_andnot(lock_chains_in_use, lock_chains_in_use,
-		      pf->lock_chains_being_freed, ARRAY_SIZE(lock_chains));
-	bitmap_clear(pf->lock_chains_being_freed, 0, ARRAY_SIZE(lock_chains));
-#endif
-}
-
-static void free_zapped_rcu(struct rcu_head *ch)
-{
-	struct pending_free *pf;
-	unsigned long flags;
-
-	if (WARN_ON_ONCE(ch != &delayed_free.rcu_head))
-		return;
-
-	raw_local_irq_save(flags);
-	lockdep_lock();
-
-	/* closed head */
-	pf = delayed_free.pf + (delayed_free.index ^ 1);
-	__free_zapped_classes(pf);
-	delayed_free.scheduled = false;
-
-	/*
-	 * If there's anything on the open list, close and start a new callback.
-	 */
-	call_rcu_zapped(delayed_free.pf + delayed_free.index);
-
-	lockdep_unlock();
-	raw_local_irq_restore(flags);
-}
-
-/*
- * Remove all lock classes from the class hash table and from the
- * all_lock_classes list whose key or name is in the address range [start,
- * start + size). Move these lock classes to the zapped_classes list. Must
- * be called with the graph lock held.
- */
-static void __lockdep_free_key_range(struct pending_free *pf, void *start,
-				     unsigned long size)
-{
-	struct lock_class *class;
-	struct hlist_head *head;
-	int i;
-
-	/* Unhash all classes that were created by a module. */
-	for (i = 0; i < CLASSHASH_SIZE; i++) {
-		head = classhash_table + i;
-		hlist_for_each_entry_rcu(class, head, hash_entry) {
-			if (!within(class->key, start, size) &&
-			    !within(class->name, start, size))
-				continue;
-			zap_class(pf, class);
-		}
-	}
-}
-
-/*
- * Used in module.c to remove lock classes from memory that is going to be
- * freed; and possibly re-used by other modules.
- *
- * We will have had one synchronize_rcu() before getting here, so we're
- * guaranteed nobody will look up these exact classes -- they're properly dead
- * but still allocated.
- */
-static void lockdep_free_key_range_reg(void *start, unsigned long size)
-{
-	struct pending_free *pf;
-	unsigned long flags;
-
-	init_data_structures_once();
-
-	raw_local_irq_save(flags);
-	lockdep_lock();
-	pf = get_pending_free();
-	__lockdep_free_key_range(pf, start, size);
-	call_rcu_zapped(pf);
-	lockdep_unlock();
-	raw_local_irq_restore(flags);
-
-	/*
-	 * Wait for any possible iterators from look_up_lock_class() to pass
-	 * before continuing to free the memory they refer to.
-	 */
-	synchronize_rcu();
-}
-
-/*
- * Free all lockdep keys in the range [start, start+size). Does not sleep.
- * Ignores debug_locks. Must only be used by the lockdep selftests.
- */
-static void lockdep_free_key_range_imm(void *start, unsigned long size)
-{
-	struct pending_free *pf = delayed_free.pf;
-	unsigned long flags;
-
-	init_data_structures_once();
-
-	raw_local_irq_save(flags);
-	lockdep_lock();
-	__lockdep_free_key_range(pf, start, size);
-	__free_zapped_classes(pf);
-	lockdep_unlock();
-	raw_local_irq_restore(flags);
-}
-
-void lockdep_free_key_range(void *start, unsigned long size)
-{
-	init_data_structures_once();
-
-	if (inside_selftest())
-		lockdep_free_key_range_imm(start, size);
-	else
-		lockdep_free_key_range_reg(start, size);
-}
-
-/*
- * Check whether any element of the @lock->class_cache[] array refers to a
- * registered lock class. The caller must hold either the graph lock or the
- * RCU read lock.
- */
-static bool lock_class_cache_is_registered(struct lockdep_map *lock)
-{
-	struct lock_class *class;
-	struct hlist_head *head;
-	int i, j;
-
-	for (i = 0; i < CLASSHASH_SIZE; i++) {
-		head = classhash_table + i;
-		hlist_for_each_entry_rcu(class, head, hash_entry) {
-			for (j = 0; j < NR_LOCKDEP_CACHING_CLASSES; j++)
-				if (lock->class_cache[j] == class)
-					return true;
-		}
-	}
-	return false;
-}
-
-/* The caller must hold the graph lock. Does not sleep. */
-static void __lockdep_reset_lock(struct pending_free *pf,
-				 struct lockdep_map *lock)
-{
-	struct lock_class *class;
-	int j;
-
-	/*
-	 * Remove all classes this lock might have:
-	 */
-	for (j = 0; j < MAX_LOCKDEP_SUBCLASSES; j++) {
-		/*
-		 * If the class exists we look it up and zap it:
-		 */
-		class = look_up_lock_class(lock, j);
-		if (class)
-			zap_class(pf, class);
-	}
-	/*
-	 * Debug check: in the end all mapped classes should
-	 * be gone.
-	 */
-	if (WARN_ON_ONCE(lock_class_cache_is_registered(lock)))
-		debug_locks_off();
-}
-
-/*
- * Remove all information lockdep has about a lock if debug_locks == 1. Free
- * released data structures from RCU context.
- */
-static void lockdep_reset_lock_reg(struct lockdep_map *lock)
-{
-	struct pending_free *pf;
-	unsigned long flags;
-	int locked;
-
-	raw_local_irq_save(flags);
-	locked = graph_lock();
-	if (!locked)
-		goto out_irq;
-
-	pf = get_pending_free();
-	__lockdep_reset_lock(pf, lock);
-	call_rcu_zapped(pf);
-
-	graph_unlock();
-out_irq:
-	raw_local_irq_restore(flags);
-}
-
-/*
- * Reset a lock. Does not sleep. Ignores debug_locks. Must only be used by the
- * lockdep selftests.
- */
-static void lockdep_reset_lock_imm(struct lockdep_map *lock)
-{
-	struct pending_free *pf = delayed_free.pf;
-	unsigned long flags;
-
-	raw_local_irq_save(flags);
-	lockdep_lock();
-	__lockdep_reset_lock(pf, lock);
-	__free_zapped_classes(pf);
-	lockdep_unlock();
-	raw_local_irq_restore(flags);
-}
-
-void lockdep_reset_lock(struct lockdep_map *lock)
-{
-	init_data_structures_once();
-
-	if (inside_selftest())
-		lockdep_reset_lock_imm(lock);
-	else
-		lockdep_reset_lock_reg(lock);
-}
-
-/*
- * Unregister a dynamically allocated key.
- *
- * Unlike lockdep_register_key(), a search is always done to find a matching
- * key irrespective of debug_locks to avoid potential invalid access to freed
- * memory in lock_class entry.
- */
-void lockdep_unregister_key(struct lock_class_key *key)
-{
-	struct hlist_head *hash_head = keyhashentry(key);
-	struct lock_class_key *k;
-	struct pending_free /x86/include/uapi/asm/bitsperlong.h \
-  include/asm-generic/bitsperlong.h \
-  include/uapi/asm-generic/bitsperlong.h \
-  include/uapi/linux/posix_types.h \
-  include/linux/stddef.h \
-  include/uapi/linux/stddef.h \
-  include/linux/compiler_types.h \
-  arch/x86/include/asm/posix_types.h \
-    $(wildcard include/config/X86_32) \
-  arch/x86/include/uapi/asm/posix_types_32.h \
-  include/uapi/asm-generic/posix_types.h \
-  include/vdso/limits.h \
-  include/linux/linkage.h \
-    $(wildcard include/config/ARCH_USE_SYM_ANNOTATIONS) \
-  include/linux/stringify.h \
-  include/linux/export.h \
-    $(wildcard include/config/MODVERSIONS) \
-    $(wildcard include/config/MODULE_REL_CRCS) \
-    $(wildcard include/config/HAVE_ARCH_PREL32_RELOCATIONS) \
-    $(wildcard include/config/MODULES) \
-    $(wildcard include/config/TRIM_UNUSED_KSYMS) \
-  include/linux/compiler.h \
-    $(wildcard include/config/TRACE_BRANCH_PROFILING) \
-    $(wildcard include/config/PROFILE_ALL_BRANCHES) \
-    $(wildcard include/config/STACK_VALIDATION) \
-    $(wildcard include/config/CFI_CLANG) \
-  arch/x86/include/generated/asm/rwonce.h \
-  include/asm-generic/rwonce.h \
-  include/linux/kasan-checks.h \
-    $(wildcard include/config/KASAN_GENERIC) \
-    $(wildcard include/config/KASAN_SW_TAGS) \
-  include/linux/kcsan-checks.h \
-    $(wildcard include/config/KCSAN) \
-    $(wildcard include/config/KCSAN_WEAK_MEMORY) \
-    $(wildcard include/config/KCSAN_IGNORE_ATOMICS) \
-  arch/x86/include/asm/linkage.h \
-    $(wildcard include/config/X86_64) \
-    $(wildcard include/config/X86_ALIGNMENT_16) \
-    $(wildcard include/config/SLS) \
-  arch/x86/include/asm/ibt.h \
-    $(wildcard include/config/X86_KERNEL_IBT) \
-  include/linux/container_of.h \
-  include/linux/build_bug.h \
-  include/linux/err.h \
-  arch/x86/include/generated/uapi/asm/errno.h \
-  include/uapi/asm-generic/errno.h \
-  include/uapi/asm-generic/errno-base.h \
-  include/linux/bitops.h \
-  include/linux/bits.h \
-  include/vdso/bits.h \
-  include/linux/typecheck.h \
-  include/uapi/linux/kernel.h \
-  include/uapi/linux/sysinfo.h \
-  arch/x86/include/asm/bitops.h \
-    $(wildcard include/config/X86_CMOV) \
-  arch/x86/include/asm/alternative.h \
-  arch/x86/include/asm/asm.h \
-    $(wildcard include/config/KPROBES) \
-  arch/x86/include/asm/extable_fixup_types.h \
-  arch/x86/include/asm/rmwcc.h \
-    $(wildcard include/config/CC_HAS_ASM_GOTO) \
-  arch/x86/include/asm/barrier.h \
-  arch/x86/include/asm/nops.h \
-  include/asm-generic/barrier.h \
-  include/asm-generic/bitops/fls64.h \
-  include/asm-generic/bitops/sched.h \
-  arch/x86/include/asm/arch_hweight.h \
-  arch/x86/include/asm/cpufeatures.h \
-  arch/x86/include/asm/required-features.h \
-    $(wildcard include/config/X86_MINIMUM_CPU_FAMILY) \
-    $(wildcard include/config/MATH_EMULATION) \
-    $(wildcard include/config/X86_PAE) \
-    $(wildcard include/config/X86_CMPXCHG64) \
-    $(wildcard include/config/X86_P6_NOP) \
-    $(wildcard include/config/MATOM) \
-    $(wildcard include/config/PARAVIRT_XXL) \
-  arch/x86/include/asm/disabled-features.h \
-    $(wildcard include/config/X86_SMAP) \
-    $(wildcard include/config/X86_UMIP) \
-    $(wildcard include/config/X86_INTEL_MEMORY_PROTECTION_KEYS) \
-    $(wildcard include/config/X86_5LEVEL) \
-    $(wildcard include/config/PAGE_TABLE_ISOLATION) \
-    $(wildcard include/config/INTEL_IOMMU_SVM) \
-    $(wildcard include/config/X86_SGX) \
-  include/asm-generic/bitops/const_hweight.h \
-  include/asm-generic/bitops/instrumented-atomic.h \
-  include/linux/instrumented.h \
-  include/asm-generic/bitops/instrumented-non-atomic.h \
-    $(wildcard include/config/KCSAN_ASSUME_PLAIN_WRITES_ATOMIC) \
-  include/asm-generic/bitops/instrumented-lock.h \
-  include/asm-generic/bitops/le.h \
-  arch/x86/include/uapi/asm/byteorder.h \
-  include/linux/byteorder/little_endian.h \
-  include/uapi/linux/byteorder/little_endian.h \
-  include/linux/swab.h \
-  include/uapi/linux/swab.h \
-  arch/x86/include/uapi/asm/swab.h \
-  include/linux/byteorder/generic.h \
-  include/asm-generic/bitops/ext2-atomic-setbit.h \
-  include/linux/kstrtox.h \
-  include/ELF                      0      4     (               èüÿÿÿS‹X\‰ØèüÿÿÿƒÀ   èüÿÿÿ1À[ÃèüÿÿÿS‰Ã‹@‹HÔ‹C(=	˜ tHw&=	˜ tW=	˜ uº>   ‰Èèüÿÿÿ‰C|1À[Ãt& =$	˜ uğº=   ‰Èèüÿÿÿ‰C|1À[Ã¶    º<   ‰Èèüÿÿÿ‰C|1À[Ãt& º?   ‰Èèüÿÿÿ‰C|1À[Ãt& èüÿÿÿWVS‰Ã‹p‹@(‹~Ô=	˜ „R  wp=	˜ „U  v3=	˜ „`  =	˜ …   ¶K|º?   [‰ø^_éüÿÿÿ´&    v = 	˜ ty=	˜ ub¶Vp¶K|ÁâƒÊ[‰ø^¶Ò_éüÿÿÿ´&    =	˜ tYv=$	˜ u0¶K|º=   ë¡t& =	˜ ty=	˜ u¶K|º<   ëƒ´&    ¸êÿÿÿ[^_Ã´&    ¶Vp¶K|ÁâƒÊëŒ¶Vp‰øÁâƒÊ¶Òèüÿÿÿ…ÀxÍƒ{|º   ƒÚÿ%ü   	Ğ¶Vp‰ÁÁâƒÊéPÿÿÿt& ¶Vp‰øÁâƒÊ¶Òèüÿÿÿ…Àx‹S|‰Á€É€…Òu$‰Á¶Vp¶ÉÁâƒÊéÿÿÿ¶    ¶K|º>   éÎşÿÿf¶Vp¶K|ÁâƒÊééşÿÿt& ¶Vp¶K|ÁâƒÊéÑşÿÿt& èüÿÿÿW‰ÇVS‹@‹P‹Rèüÿÿÿ%   =   …0  G¹À  º8  èüÿÿÿ‰Æ…À„  ¹@   ‰úÀ   èüÿÿÿ€0  1É‰ØÇ†4   °  º
-   j èüÿÿÿ¹ 	˜ ºğ   ‰Øj h€   j jj hÿ   j j èüÿÿÿ¹	˜ ºğ   ‰ØƒÄ$j h€   j jj hÿ   j j èüÿÿÿ¹	˜ ºğ   ‰ØƒÄ j h€   j jj hÿ   j j èüÿÿÿ¹	˜ ºğ   ‰ØƒÄ j h€   j jj hÿ   j j èüÿÿÿ¹	˜ ºğ   ‰ØƒÄ j j j jj jj j èüÿÿÿ¹	˜ ºğ   ‰ØƒÄ j j j jj jj j èüÿÿÿ¹	˜ ºğ   ‰ØƒÄ j h€   j jj hÿ   j j èüÿÿÿƒÄ …ÀtHt€   j ¹$	˜ ºğ   ‰Øh€   j jj hÿ   j j èüÿÿÿƒÄ …ÀtHt€   j ¹	˜ ºğ   ‰Øjzj jj hÿ   j j èüÿÿÿƒÄ …ÀtHt€   j ¹	˜ ºğ   ‰Øjzj jj hÿ   j j èüÿÿÿƒÄ …ÀtHt€   ‰^l‹¶ü   …ö„d   ‰Øèüÿÿÿ‰ğ[^_Ãt& ¾íÿÿÿëî¾ôÿÿÿëç´&    v èüÿÿÿUWV‰ÆSƒì(‰T$d¡    ‰D$$‹†”   ÆD$ÆD$	ÆD$
-ÆD$ÆD$ÆD$‰$‰Ğ% ù  ÆD$ƒøÆD$íÆD$ ƒåÀÆD$ !ƒí<ƒøÉƒáıƒÁƒøÒˆL$ƒâ0ˆL$ƒêƒøÿˆT$ƒç
-ˆT$ƒÇ@ƒøÛƒã@ƒøÀˆ\$‰ë¶L$ƒàˆ\$‰û|$ƒÀˆ\$ˆD$ˆD$!¸ÿÿÿÿˆL$ˆL$f‰D$"‹$¸   ¶®0  Áåët& ¶GƒÇ<ÿt	è¶¶Ğ‰Øèüÿÿÿ…Àyâ‹D$‰†4  ‹D$$d+    u
-ƒÄ(1À[^_]Ãèüÿÿÿt& èüÿÿÿUW‰ÇV‰ÖSƒì‹¯”   ‹D$…Àtz¶—0  Xÿ‰Ñƒá9Ëtgƒø‡®   ƒèƒâüƒà	Âˆ—0  ƒâ…Ö   1Ûº9   ëv ¶“r  ƒÃ€úÿ„­   ¶‹q  ‰èèüÿÿÿ…ÀyÛé”   ¶    ‹4$t& ƒş‡Í   ¶—0  1À‰ÑÀéƒá9ñt[Áâ‰èƒÊ"¶Òèüÿÿÿ…ÀxG‰ÂƒÈƒâû…ö‰Ñ¶—0  EÈ‰èÁâƒÊ"¶É¶Òèüÿÿÿ…Àx¶‡0  ƒæÁæƒàû	ğˆ‡0  1ÀƒÄ[^_]Ã´&    ¶‡0  ƒà‰Á‰4$1Û¸   Áá‰Îëv ¶ƒ  ƒÃ<ÿ„>ÿÿÿ	ğ¶‹  ¶Ğ‰èèüÿÿÿ…Ày×éÊ   ¸êÿÿÿëœ                               `                      D                                                                                                           °       `  Ğ        60 Hz 50 Hz 6%s: Standard: %s
- 6%s: Channel: %d
- 6%s: Input: %d
- tw2804 èüÿÿÿVº   S‰Ã÷€4   ù  ¸    DÂspPVh   èüÿÿÿŠƒ0  ƒàPVh    èüÿÿÿŠƒ0  ÀèƒàPVh3   èüÿÿÿ‰ØƒÄ$[^éüÿÿÿ‹W·GŠ  Q QP‹GTÿ²   ÿ0h    èüÿÿÿƒÄé©  ƒÅht   UèüÿÿÿX¸ûÿÿÿZé  ƒÅPh(   Uèüÿÿÿ¸êÿÿÿƒÄé  ¶‡0  ƒÅƒàPhL   Uèüÿÿÿ¸ûÿÿÿƒÄé   6%s %d-%04x: chip found @ 0x%02x (%s)
- channel %d is not between 1 and 4!
- error initializing TW2804 channel %d
-   error initializing TW2804 global registers
- èüÿÿÿº    ¸    éüÿÿÿ¸    éüÿÿÿauthor=Micronas USA Inc description=TW2804/TW2802 V4L2 i2c driver license=GPL v2                  tw2804                                                          `                                                                                                         Ğ                                                                          °       Ä¥ Ğ Ğˆ 	
-ğğ@Ò€€€€    ÿÿÿÿÿÿÿÿ !" #‘$Q%& ' ( ) * + , - . / 0 1 2 3 4 5 6 7 ÿÿ9 :ÿ;„<€=€>‚?‚x ÿÿ GCC: (GNU) 11.2.0             GNU  À       À                                  ñÿ                            
-                   ‹     /   °   «                               	 =       h    	               O   `  f    \   @         g   ğ        w   h   0    	 ‰   Ğ  <    –     u    ­   p       ¾      p     Ğ   ˜   \    	               ì            ÿ       €           
-                 6     *     Q  B        h      0                   r  `   0     ‚      P     “                          ¼             Ó             ì                                       *             C             P             e             ‚             ”             ¦             ·             À             Î             â           î             ı      
-           0      tw2804.c tw2804_remove tw2804_g_volatile_ctrl tw2804_s_ctrl tw2804_log_status tw2804_probe tw2804_ops tw2804_ctrl_ops tw2804_probe.cold tw2804_s_std tw2804_s_video_routing global_registers channel_registers tw2804_s_video_routing.cold tw2804_driver_init tw2804_driver tw2804_driver_exit __UNIQUE_ID_author268 __UNIQUE_ID_description267 __UNIQUE_ID_license266 tw2804_id tw2804_core_ops tw2804_video_ops __fentry__ v4l2_device_unregister_subdev v4l2_ctrl_handler_free i2c_smbus_read_byte_data i2c_smbus_write_byte_data _printk v4l2_ctrl_subdev_log_status __x86_indirect_thunk_edx devm_kmalloc v4l2_i2c_subdev_init v4l2_ctrl_handler_init_class v4l2_ctrl_new_std __stack_chk_guard __stack_chk_fail _dev_err __this_module i2c_register_driver init_module i2c_del_driver cleanup_module __mod_i2c__tw2804_id_device_table                 !  !     P   "  o   "  ˆ   "      "  ±     °  "  ğ  "  a    t  &  –  '  ¥    ²  (  Ó  )  İ    ú  *      $  *  .    N  *  X    x  *  ‚    œ  *  ¦    À  *  Ê    ê  *        *  9    Q  *  k    ƒ  *  ©  !  Ñ    ä  +  Ş  #  ÷  +    ,      s    †      #  Ò  "  ÿ  #  S    g    q  #    #  5  #  ¢    F    –    z                   h                                                             &     +   $  ;     @   $  S     X   $  ‡   
-  Œ   $  œ   
-  ¢   -  ·   
-  ½   -  İ   
-  ã   -  d   %  ”     ®     Ê     ğ                  .     /          1  @     L     `           ¬     ğ     ø      .symtab .strtab .shstrtab .rel.text .rel.data .bss .rel__mcount_loc .rodata.str1.1 .rel.text.unlikely .rodata.str1.4 .rel.init.text .rel.exit.text .modinfo .rel.rodata .comment .note.GNU-stack .note.gnu.property                                                         @   …                    	   @         Ğ              )             à  €                   %   	   @       à                  /             `                     8             `                     4   	   @          @               E      2       €  K                 X             Ë  ô                  T   	   @       @  °      	         g      2       À	                    z             `
-                    v   	   @       ğ                  ‰             t
-  
-                  …   	   @                        ”             ~
-  Q                  ¡             à
-  ‚                     	   @          8               ©      0       b                   ²              u                     Â             x  (                                   @              	              à  .                               X  Õ                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          linux/log2.h \
-    $(wildcard include/config/ARCH_HAS_ILOG2_U32) \
-    $(wildcard include/config/ARCH_HAS_ILOG2_U64) \
-  include/linux/math.h \
-  arch/x86/include/asm/div64.h \
-  include/linux/minmax.h \
-  include/linux/panic.h \
-    $(wildcard include/config/PANIC_TIMEOUT) \
-  include/linux/printk.h \
-    $(wildcard include/config/MESSAGE_LOGLEVEL_DEFAULT) \
-    $(wildcard include/config/CONSOLE_LOGLEVEL_DEFAULT) \
-    $(wildcard include/config/CONSOLE_LOGLEVEL_QUIET) \
-    $(wildcard include/config/EARLY_PRINTK) \
-    $(wildcard include/config/PRINTK) \
-    $(wildcard include/config/PRINTK_INDEX) \
-    $(wildcard include/config/DYNAMIC_DEBUG) \
-    $(wildcard include/config/DYNAMIC_DEBUG_CORE) \
-  include/linux/init.h \
-    $(wildcard include/config/STRICT_KERNEL_RWX) \
-    $(wildcard include/config/STRICT_MODULE_RWX) \
-    $(wildcard include/config/LTO_CLANG) \
-  include/linux/kern_levels.h \
-  include/linux/cache.h \
-    $(wildcard include/config/ARCH_HAS_CACHE_LINE_SIZE) \
-  arch/x86/include/asm/cache.h \
-    $(wildcard include/config/X86_L1_CACHE_SHIFT) \
-    $(wildcard include/config/X86_INTERNODE_CACHE_SHIFT) \
-    $(wildcard include/config/X86_VSMP) \
-  include/linux/ratelimit_types.h \
-  include/uapi/linux/param.h \
-  arch/x86/include/generated/uapi/asm/param.h \
-  include/asm-generic/param.h \
-    $(wildcard include/config/HZ) \
-  include/uapi/asm-generic/param.h \
-  include/linux/spinlock_types_raw.h \
-    $(wildcard include/config/DEBUG_SPINLOCK) \
-    $(wildcard include/config/DEBUG_LOCK_ALLOC) \
-  arch/x86/include/asm/spinlock_types.h \
-  include/asm-generic/qspinlock_types.h \
-    $(wildcard include/config/NR_CPUS) \
-  include/asm-generic/qrwlock_types.h \
-  include/linux/lockdep_types.h \
-    $(wildcard include/config/PROVE_RAW_LOCK_NESTING) \
-    $(wildcard include/config/LOCKDEP) \
-    $(wildcard include/config/LOCK_STAT) \
-  include/linux/once_lite.h \
-  include/linux/static_call_types.h \
-    $(wildcard include/config/HAVE_STATIC_CALL) \
-    $(wildcard include/config/HAVE_STATIC_CALL_INLINE) \
-  include/linux/instruction_pointer.h \
-  include/linux/atomic.h \
-  arch/x86/include/asm/atomic.h \
-  arch/x86/include/asm/cmpxchg.h \
-  arch/x86/include/asm/cmpxchg_32.h \
-  arch/x86/include/asm/atomic64_32.h \
-  include/linux/atomic/atomic-arch-fallback.h \
-    $(wildcard include/config/GENERIC_ATOMIC64) \
-  include/linux/atomic/atomic-long.h \
-  include/linux/atomic/atomic-instrumented.h \
-  include/linux/cgroup.h \
-    $(wildcard include/config/CGROUPS) \
-    $(wildcard include/config/PROVE_RCU) \
-    $(wildcard include/config/CGROUP_CPUACCT) \
-    $(wildcard include/config/SOCK_CGROUP_DATA) \
-    $(wildcard include/config/CGROUP_DATA) \
-    $(wildcard include/config/CGROUP_BPF) \
-  include/linux/sched.h \
-    $(wildcard include/config/PREEMPT_RT) \
-    $(wildcard include/config/VIRT_CPU_ACCOUNTING_NATIVE) \
-    $(wildcard include/config/SCHED_INFO) \
-    $(wildcard include/config/SCHEDSTATS) \
-    $(wildcard include/config/SCHED_CORE) \
-    $(wildcard include/config/FAIR_GROUP_SCHED) \
-    $(wildcard include/config/RT_GROUP_SCHED) \
-    $(wildcard include/config/RT
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       |1(JŸN­ÙÊƒÀ`«k)öf­ü€ğö×–<èRçÈúOx€¡VÒ€²ì_… @ŞâŞîõò#â­Ó¸aĞø«$8
+È?–†ßé|-;İfåóxûdî9?À€‘½ıÌù>Z©kÌà;í
+É%õ¦·ÄÔæµ“@)\­2ßW£°IŠ©YÚ'Kˆº=<O¼ß‘(ºí²@6ãåáØöÍ/a¡ÎE_µõñ7FùGúçıÄ0_Ü™Î6H•ïğLU¥ÛÄ˜E³ÄRİæ-ä›È°ƒ²îŞø–{æò‰QìmšäZ’Ã¥›Ö¶’K~?_ŠÍoÃ!t8[tÜ¸MÜõçé,%V­vşŒ-Ef$¼X9ÃAQÇû\}ËÆ$×/LH?P“YêIöYíMè‰ÿ‚²7ôZGSîî^ir?­Ã ÊTìğŞE
+G)nŠeq5øÌX”b•&A¿¦6ÑìÍ–ÁÉ£HBğ¦0E` ÜÕ¶Øk’‚y €W¨ñşñ@VŸ×bİ_ †w×ÒqÍ±fnÊ ‡B²ïş ¡ÂÒí¦pcqë·%í£?yÎk4 Ã7Qó)“¥ıüñUuM’Ä~L£­Å²åVz³m%º^´ÿãÓe&v“ØäBÀxÄ¹õÒİe¤¶3˜—Í_AëğFåÙ;}JŒ<œù  )Ğœ:k'Ù¿Ã`gè|v¨|‘ñIã4?†óMÁlddºñ}J4ş?1XºÚ„¦”!Ù‹8ÊÅWÿ—ÛËÀ˜o­gõÂ½}¡ íDó?iÑ†bHõ*ìOÛŒ°]hêzßì"DR¨|J	ıàãZ–§_˜†^¡Õ”&ˆiğÍ¢
+”;#Ds‹›’{·¥È`g¡åâs-¶‡”-ó÷@;vË1»“lÿ,UÓ'vp~­¢q³.¿®+>½G¯ÊîLèß|ö>mıX#©Úã=¶ğIP]·˜‹4UêÁè%£ğlh-ıs­¶šWiqüÓ	Š¯Nrq]A-4”¹È 2òz¾À`Bé9pgàıyı~Óe*ÿïÀûTÙ’m¡„Bòêa‘7ä©Íá†[¨n ßÜ
+{â¾àï³óÀ^/F´Ú1't®*ä7Ò¦êåƒ'VÍŒ)¾ˆô¯š•èâãÛ¥¯ù#TGˆÎ"ğƒÊH#Ëş¬<t²¡õM<‚ó^öo®51Ôƒ€ÓêÍÑ™QDİ§[®TŞÈ.¾fá!XbxŠ$.o:“\§Á„…zâ @FÃ£İ1âwµĞWùŠÚ8uè“Xq~°'#¹~™šZÔ•L£´xÜÀ¹wÔ©ä¿ş\Zh`K$uT‡(§ò½HPâØ3|b´ûÕÄª7DC`œèìœ‰¦ªéÉ2†”¤‘ƒã/h§"·¦KÄ=½WğI-bNWuäÓÑjx˜ôD¶÷/³ï”q8F±×\,DEë"tà¦ëÍ>Ik;`|È<ôş£Ì pÜnwåw¹ãİÒ	g(í@+¦(D:ÿ«. ÀÉW§4}OF†µÒnNv-.Šäb±óV ÕL
+cöŸpüêtÇ¬Æ„°£ä¥F÷yf^WgæAé:€¨wñÔ³í0şÙ>#23¬éq\æ˜æ¥/wjŒ‚>ûôŞÚ“IFGŠ:t9Å;K_ŠnÓç0-Òc…¬ë+å}™3¤ëĞ¤X” ¥”—üƒ–B¶üm%gjªÚ'ß¾Í÷¥b÷ÓÈh(¢´ÈñíÛq‚ù¦?Ë¥"M–tûÔDõè¯·†‚‡ÊB’»ÙÆ G™7€ò‚Àèq³f4°ÓŒ^ÇGûjç­+ª¬÷‰#ôœââì
+:-;‡»9™ÖëåÛœhP¨‰§0hRágÓ®‡$­´ä»’Ô#á{œıµ¦òÍLÅOöfÉEôìÎ "Oš»È¾1Ò"0¥=XZï_Å	œ[Å¼½UC­I'­™çYbÇ~2°ŒğõTø±;uîª©tãÅSEşòmÏ6òŒóéÆWŞŞÛ3_œA¹–’ì.3º{Yeá/bFŒÁà2wd¿Ï*«äÔğVµ¹Ñ¥¡ƒ¥†ÀŒŸYí®k‚™› L§­¢+—
+eş§è\ßgk:'ÔS†¹³÷³X$ö¶k }²a?á#uÔaj@Lğ]ÊE¨×, óòŠ¸RÄAp²ş`iİÿcĞ±AŠ\T„]›çÔù¶%l³±
+—<ÅeÈŒ$:äàJ%ÿ¯ÏEfáòz’Å`:G	ñ®]  Æ+İé	ä(òæ1:©0Ev|ù<nÈ]êæß²9Y7ZÏªG»*§…ğ^—ËA¬¨—ø&!¬X #véÆRE#T_ø§.C}\<YmÓ{Ytr Fï`øänÆ¼Ë«	úO]¬àÄ’Íƒ/±’1Ø—û[˜Ôƒ`Ä#ñN¾–ïŠ~(Jî2’Ÿ;–W=aš4oh”AwÓÇĞ½#Š½#T·i¦
+57¢õ €ğr©c³}QÑLoó#èõ’®RÅtATËq‡Áv¦KééÃufè0Œ¹ÖãÖêtJñé«äğ£Ú-LtÍ ½¦Wmàs&drn·¼À>tc4.óæPL%zş2ãGOŸNÜV‰R¸Í^Diç¬o"³‡ÿ=?¡¥Íõ™ü<İ‹õµ½ªaa¶ %;jÇÃ@“’ä½§Ó
+!ÎÑuÚÈ°· 6=@ù[Ís›Ò’åÓçŠ…åÔ´«^tT)ìgĞ¬qJF:oø(ÄA£õ¤K³À°;%±«dıáK</¯´`×Z¬6û§£+¥¡•·C¿˜lâ­³ÌĞ¼¶T rmĞ½Ø[ËÕsœˆ
+j09–A\„Ÿ™;huwòËAü‘Ñø«7ƒ˜@0ÓŒ¾•€Ãoo&1Ïhàj:-Ş>~L¿—dâÿJw	öyF!ãQN^ÉçáèÏ¨GD^ØªŸhH¨úÑ<²B	¿Óe‰+;f¢İOr½A pƒ½pÄ[	ä]
+u“¸ÊË®›=0©á Ì?”Š¥à'Şc³›-µæ•bÖW²2C©±ñ”‰>>J›ƒÆh¸£ĞÊ¸aæ·Úï¸.M¿ªsq}‹E#0¢’Şæ^°à¶Üù¼@q¡µÁSíä5Bÿ‚*r³e:®­^¹¨Ê¹ÿiQÈ!ÃŒáÀ†‹X`}ÖINÜ.µéÂØãäÓ§D'¯÷êştÜÊ[ Ş¯ÇÜd—Òé*—¦z³¾#üÙÎ¯ÌlƒºÒEƒ=¡lAÍÜ½š˜nÎ¿¢ÆœÊñ¼‹éâ´¯â÷O':àD×$!Ÿğ~>Áå†ÌEº1XÕ Õó„¦ƒ<Ô Î[wÀdÏS@kH4!{ú{S²Ì ‹ÆÆ™ò`û//¹GÄ®¡¼ÙÇ’ËëÊ;¢íŒ˜gôÂ’ÊToœl¤7Ğ­¡¢Õw€p!›, ìûÍjÆLŞ›˜mK‹lÙĞ§—ªŠXáßÅjçs"89æ¶¡6WÌä…í9oEdÆÏxû© 2Ã®HDËq‡?Y[k\’@ü8Â|ú|¾Ùå“ñ`ºsÂgÖ[ÿÅöşfI#*¨êËûl×$'0ÕïŠäÑFS¡ü®9ëGÃ‹z–ÀÛ.İ°u¹!†øÕU_¢ÂoZß¨cıØí{¸R@FQ‚Iw Jv-eÉ9*ÍdÔQ‹€Ò¸ña[¹‹ã¯Ì· iKo‘ŠK€ÿõ°6ÆLØ½ùÊòôÂ¬fâËj×C²ò¦Ö·‚Q…¡¶1Cã‘zi×ı]W“a_ÔY6·r©}•şÆ‚	Ôôxˆn3^ a7ª§s¬œ†'û5ƒğX‹q0¼Wiú]q_Ñ´èÄ3­ÉãªqØ€¤ôDq4:,ò~ôıœfÉÊ”ud—h}N,{eıÙZ¤µgVUµ“ƒQ·‡‡	x@#Û¥dY­‡=Ë
+½=„¾n“ÄÇ
+ÌÛ·(@Ÿ¿Ô•FØ|ù±ö}¶¤£[x¯À*TÄğDt£­„ñê¹òæm„5»ìyM+åÚ7À½üJ> ëÅñŞ¥He|cÿ”LH‘Š(ÌœİÉ(£†6-Ÿ çÁT$/wOP@úˆ›l\
+;˜'Ë¾¾ÎH2	2ö-÷­Ä\Q8×ëæ®‡zÌ£Ò`¢U ¢ä ºö©İ|FÛIŞI#.Bäö	$óã,S§²¤††ÚMlÊ’>á³-{‹"Ñ*»à¦ºá‡Ğ»¦QÕÛ:ëUÿÃ"º1åğóšŒ¾¡¥Ä›µ¤øˆBˆ“!¬j“rÔd$‚ÜúcÍçé‰œó;xä-@_‰Ò­ögYë5ñA² ­%Íşî„Eä]TèyÎÚßuß•“Ë
+¥”Fq=€OŠrwĞ‹A§^¹t01sd.¶¥bíÔ\ î’29,xcŠ¬NËªusİOï„Ã-gkë?®ªzÄš¨R,Ìµ§Ê—¸~7¥¦è¬zDŸ•y×	š1Æ¤Übì½eŞe7ñöìœ¤
+BÉ‚ŞK	¤P®óc†çï»˜1ÏP aîó¢ı”‡*£x9ºBxÏ™&ˆ´¶íuŸo\ôN™ÿ[^j°Ë£öË\a#Û\ˆ´‰6PoÎjÿÅÚG<†­ú‡†)ŞUù·è¸¥•¢&ºƒ“µvÖYhÍèâÃZ‚¬ftAìl´`Cd˜w/IŸ÷E 4°V_/TÛF¤N/Ñç–D…İú¯Ã¯¦w—J53­"Dƒkõë…x¯e&—´ı¹(—ó÷w:ü²ß&@5IøkÃ|¢åó­*×É±D„‚qŸÈ®I_‚Uh‹YyÎg@‰\cT-ä{º²Şw\Ãi=Ö…kÎ£<,‚a%–¶Å­®×l"™’`M»c/kô’ ®R3¸ê÷e¯ßóÄ“S•í/ÿ1È²„Ú§L)"w8Ó£–«Õ¤‹Â†™¾4GPDCO7bc‡)ÁÇXäsXÿ&BÅ× fTæ…¬ §örŒ[¥Tùù0ÆûPo^Ù ­gş~Kh(íÏhÃ½«mÊF…IÍ^Vìº»”æãˆ5`ñ„''Úy¦(¯Å\íŠ2…¸[ê(ƒ:ijºäè®¦[+Ór7+hBƒ_qA¬;±¿ø(æ„8·Yã)8e¤£V¯kKõV‘yæö“ SpØÌÍT5íX^É}«4páæıB¸ëšØ‚w1×=Ñı³Ç®¨¡l¾Şp«Ş÷ó:*ƒ?É@O?	PÑ„˜}Ümÿ&iê"q¯üÈO	.ÇÔ.ãÅ¼ e3§,65Ÿ;šùÓ^†%H°Biñ­{sĞ@øa$Cƒq`›‚-œá°›îš$™HYõw*.FöKÙÑeWÉyO•²ÿ$:;t§Z]Q’:~ÌUta’V¸o–!?å0y^!YåŠùàáMkP2µ:º…É½ŒtüH(â­}iè–Úîü?y2ÖŸ§ËÍji¼ë/k¸Áè%—ØÈJk× 1Ş«iG›IÍ]Q­·b3äoÙ¶®ù}„ŒAÃ h¸CÁyAóõYö‡ú”ÂT5æÄ€JÄˆhm*ö•ù¥öAï£s˜”kj	D³,b™ª+`…şÚXŠÍô÷(`óİÜûÁ'£ÒCöü{r2²úXöËAëŠÔ%‚.EvŞŸ.ÁùXç2#¢«-TDt•8)"¦µ¥¬UĞ¸ly5l˜üpS_Ñ8©,S·Â¡€úÖvvè­7)7.®Çr™:CR‡‹økç~"WEô´òkj“Òn\D½g¤¶®Ô }Ïèœ¹¢“uş*Ÿˆ!wB½¾Cò&ØÌ{ÌàÀNÈO…N©Ü6\0­2[K»ÇŠôæ‰Œ)o|ãßtÉá¹çËF¹Àşö£½MFª<ôøyV¼gÍ4¦=İ¼Ş
+ı¸ÓÃ$ìÁOí¶f:UxH¨,\6	iÓØÁ)j"¶ú‰Ì#G©ò'GÒŠ&$‘¨Ú>MÆÙ ×¨OR³Õöë÷ƒğÒfÅßI—FÛå7N$öH”Z9ûWP}h”ÂÑpÂãLš™({Á¬ÃQ‰¬xr7M=û~m@x{pL3ªVrfòÊ×K¢û4&ßDã©¼«/#¼Êì’±¢tøÀ(ô
+Àš©ˆœ7.|{×^?¼nºç ¨Î¡Èon´>sâˆ
+åO1u²,¾Çm·¬¿Bˆ²ùæÌô‹#Ÿ^„C”©­¨HşÔÙ¾gW„z]ğRÉ½)x˜ú°wQÍıø#l}<›ùv0†’40¹——e”…'95Â¡2ú€à~Tñ¬h§ºm¹1©Û1î#J~ğ¢"ÁÓÿÂ°<¦riv&áe^İ¦‚Úå%NvÒGÓºÂ×ƒš[vOi}ãö/-—o#¡Ã7jËœótïi—çôâ¦‘Ù­ç\®b“›Cv³Î%†‹aôc@LÙÄT0íÕÑD‰/Ê}ï·×—g[òÅèuÖ%â9\}ñ°Bèê@Dòİ~%÷{äéÌnÇº	?¾2 Æ A)½nyQ²ëîöæ<—Ôœ¬L—¿y¿ÙùE}»%Ô©‹?„(ı’ ù¯— .Ñ˜aoq	Eéöio ›†„fé+|ƒ@Î]"j§(c ö”PgõC®´ñáå:ÃaĞdDìøf¶©EÚ—gP˜Ùœ°2ÈÕİ6İÒGÅkÉ+WˆØˆ¸)S¡fÉ$Â1Ùã³má­‡\zc*·½^åDé|£‡7§áÜ.–’%’ÒZ"ËQĞä¨åå ù&£Ï÷.¯,Óõb‚úD“d%ÜEß	m3á¤tœü'í>Ù÷~GÁóŒ±Trw†(9[”šC¾ ¾àÚÿ·lŒ®ó<t3¶2{ÔqËÍ¥vkŞ}£xËrúá˜,Î(¿ÉÀÚMÔ<ò^kµÆÈÅ	U¾İLğ‰¤Cş­±Âr¾6W`‘·{À—";š…ì©XÎ]½6#ƒu€îU`3MÿİmTæÖ©1(˜ië”@‰ö+nÔ|M<@.÷\pSŞEªÌ@\9ï>U6ÔÂ&—ñ½¶­aS0úQ›şö&IÒö#²®yNŠ+[>åñ àö¶°.¢è“N‘³ig­‹§J£’ŞƒòÅën¹ğ°v£«G:.&1Û‰oÖh ²$6¹ÿ­}ø3ÄßªuAÈÆ£!æS’=áPÛEŒE¤fŸqå7GôL 8/„Ïuñ¿‚ĞNC-DÖzÏd(àœ)¾]‰ÏìğÈ¢f_³úÆcÎ’ğ/¿d”ûnÌ^ßR Ö3Ç™d(ÁI'Ê@ô5<UË¦Ôqì­e¨da·áåG¯Z¢Ò¦NÍJ¿ƒ[¨b2t¾Ï¼A¶»XÙ€ û(K8»tH…†õW¿àsêr„?ü3k´´»»züónÙßÆJá[¦w…¶Tz>®ua7{QêGC‘AÀN¸I0Suaı}`ØVÆe%“ÀX !fX%ê©Ğè½Ãr%#.$‡RBÖMİıŸ['{ 5XRşmÅëór:0ßko†³<Ö_Ñ5IÜVàzòÕ ©ªŠ“ºşvP¼çí­Œ8JÄ{pîòÃâ=íÅpŸ<Èœ&…Í}J$cé'ò-E€IÅ:^½g h®;2–¡=.Ùhc%ù6ÊrÏn˜jpŞûæ© 0¢è * 9½'»?ªEÓJ}²ùÏhí¥†’zûãS	Ü¡ÛòŒd
+áP·§r0¹¦3óqŒTîk3l/Œ‰‰‹”ò±ôKQŒúbw”Ñ=ã‰L¾vİ™=qC¶bùŸÑğzDí€HsTÓKƒßi|.ÑogáÿJ¢éyÜe^Ã×rÒãŞ$Á{c9<Ğ—õ©½÷şóFWòxS8zš%EJÇ”ûlP·e"á;«¹8ÖìÄşu\c _d UEÆˆJñIßÀu[×2ùNñÙá¾é¹8m4†ô±È8¿[¹]éÙT]CPƒ:¾“÷Ñ#qÚÊù‹Y^yúÖûzçÕdØ¶¬‚-)™´¾Ğ}Ã[½¶IĞç&úŞ%Q¸ô.ÊbûÌfœÏB{-‰“ëZ­ÈQìuL<İšÇ„•B'âåƒ5]–ûzÃ?XùR±}
+ƒsáŒKÄ‘Å4‘íµÜ¬ññ¤ùjìÎ=ÈğË+ì¾-	î®üàrÖB`.b•·Ğq¯ALU˜t|úN…’%7•¥Îøª²d¢SFÚ!Ô}EŸ¯Ì^µŸ_ÆääÇ’P'¯Å.ÜîfĞJy²D~ÿÒ/³±.’m›ğ	-JŞ"Di˜36=V¯*#óUå	'-³õË†YYéW!’(_$mü)Î-á¤ú†’f[çŞè5/£Ú;t;Å’aõ“°S…p'h‘Š.ëjÇä{1vÎò†, ²8÷™vUİüîÚ³wŠñ¾.ÎŸ?©Íf˜wˆ1V
+M#aï½6
+ö"Ë¥@RÇ1-%½%PlµKWĞšÙÅğ»m¤ßÜ_!8ÚÖª›ÿ$ëXÕ¤–’Kp]A<×•3 =NSÅf{ã!a¥ÁöÛfªz†`KÉ[’Ç´.QÕ‚4Œm@yÏL)ûlãH‚ Š#L(1dLé²G`Ål‚D{bcú§âù Ñ†oÇùšX$û#İÕÊ“Gƒä-¾°Weg’"`­Ã—äÈ.÷¼p6˜©M€ğæ§’±æ™k‚¡(–UQ¦Ó’KÎfÛ¿Î×ôŞ³ÏÌw³ÔÓá{ÍĞ?øËt$Ûa_}DH÷ãkŞ5§à—şPšj›Ö8§ÊÎ0thIKhjI·Ò®µ¿ÿıëÙpÔ€²½;şØå¶èº—QÒ³Â:ŞpœªTˆ\V$¶l(Fí™)é1ª^99èMˆXä$$œZ-ãÇÏÕ.fê›ß¾>Û¤uŞ¯Sj]€àvH˜t³YŠ]ƒ.9µ?ßĞ›¸¢jÒ3ÀZPL</02¿ûEsP‘ü™¹ÒhäNã˜òL!Õ«½„K»¨d¦t†š©C°«X¬&kÃ7Ë­ë´˜)>¿&q³qh 2Ä³éÚPDÍ|!¦r‚pde™“i‹Úà¢Ï4m.Y1­’ÖÄı;—¤¹…Æ¾t1³(û!å;ZäZMµ.\¥«PßBZ²*”HS”¾”Nğ0Ã°ñû®ãlüÀ£±œV‡ eV¡¤+Å‹š^‹ïŠ!{9ÿˆ@…lÁ7Ö”‚9×2Px÷ù²iˆLôÛ[6H}}òc•ùÉ2Rÿ»­5šø½{Ğd@™B{[5V!Æªaûä¿•lX7†S[“išÇGûÅ¸™Lg^PiŠíÈqZ`hÆÏTŠ¹!ÄsÚZ”Ş-º­j¯¶Vs»Msk€¤×7tZíşNvâ•ñtü|c"öëWÉ“p¨8øzP×¢@Ù´#6 ´²V~»”k#löœ»«Ü/¥Éñó/(áW%ü$J+ 2õ+%rfw	ˆ"ËaPÖÕ9êÎøĞâî[Ğç§C ÛâñïĞH€}H`jƒâöÔ#tY³ê§ûäf Â|>nR •Û§WXtÿÀ*d æÂ“(¸P×^]cÜ¥|5ÉPb¿ŞœbKlI^h³ëNÊJ±_âšrôOiU\@ÁşÑŒis˜-/Û¶ÕØÕk4lß¢´ŠiÓvf@ÏSn;·&ÀÃä
+¼3Şö=É¥}”9qªÏPÉÅêĞºò¾éR-%3Ú‹Óï T*mC·øïTäõ©ÿßpÕ`Q‹«ïî2vø'FEçÎ¶$áåF¯xæêÅªÀ•ı7k™°sã!Æ†şR7àä{º ëeûQŸi»:2(šÉDĞ¡›…0¹)w«ı€MO+!Ëû^ºëç2­)-¸§ò“Ö
+²õm5Ê8Ì^JLºGşy¹S@›Ü8'nU>©«ËŠY„6tô€lA÷¹ç„åÀÀÿŠ9Õà0šŒz(6Ê¤U$—}ù7Bè²›…9ßÕâ¢elB:7eï}(ÍÓ[ÉüpÙÈéY•…Já-Ï×z²‡#´hÿ~gÙ·‰ØöUñomZ›
+´£+y¨ìâ¡êf¡İTÂûáiHKãF7²ÇşîCOıí¡r
+‹>D}$^SË&'
+MN»YÃÂ.Z•H<E(e#¥t­­WáİZÑH¸ñeB[¢ÁovkÚ¢¬‰ÕôiÁ¯
+ê—¬Y+bñÑJ÷gÅİ 5şûŸ?p%XpdœğµFÿÛ‹ôªNÒ=˜ğRâ÷¹4;½S ›ëEwä;»Ï	ı03“{¼Ç¨‰Ú®ûz•Ë‘'nÒŞüÌ² ç¿‰
+‚ª²Üí?–ßô&« @DLsãhÔtkåq\ÌN–ç.«ÅÊ9 Ë7*Õsëôb[;ƒí¨¸³cjÛ¸æABaÌ»·¤üìÖ_§Ä¼¿5«d`_²ï_1úè“)À|v%¥±ã9ªæºw:F@!q"Ç¾7ìÆÚìò_ :T’™cïd
+Ö+Fà_/Ö»§hİ]Ø&§‚CÓv¥8C·¸ú³ñ‚Ô_!HŞ$5®i¿ñá}şJ£C™ÓµÇYŸlûÔ¸ô>xF2ı!˜îKÎo)•Óö)å±ÄÏ7NÀ–‡ã”HPxYë‚Qµ^ôÃì-vš¢íW{·5Ì8î)W“öBdJI“,MóÃ?‹AÍ“TÕ1³i´ñFtøÄ©}AD°*oFÕJirC'¾4É³ù«×ø ß~N°Oı°rUu—ø@ú§áoYkÉP·õäöD’2Ğ²˜Pª©_Ş³ A,y† 2ÅSOJò{]ÑC0ŒÅúğ*U‹’Eø¬Îo6Å*î\Fò—™1.øÎ\§Sy\‚s2;4¬öJ˜Ôméë#©#À¹ŒˆOÇh?G[§­®oT-Š¶Ç¢á¬¢ÑÖG.í#OiÈ¡ú’r…å¶NNbĞ(n™À.’Ü0ÅAB&t	¦Ÿ‰C~¿İseõ_¶Ø-d\˜ØOš¬	 ¬˜Ä ûÙ(7(>zß#."ü¡ù—#/;¡«<>°QhV{ÛÎWVi‡É hqd·MìGíçö´”=LÅı±{ãd Hª-¿  òlåÕ­QQ+¼ô-xĞ2ŠÛÕç1Š	#ˆ¡>.7…{:}/aÑINå+Ô<%I"ˆbbtşØ3=Â<–jE!‘¦»¾Ca¥W¤\´EÁU:<ñ³šŒXº«PÿÜòÍŸÄ7O9×jÊ¨±!ÊÏ™#º¼ºƒ}‡¨Ù@âl7iÕM/¸ì«¼©¥¿2Ãdü"ÿ§*ÂR´³”vN%šú$ omØ¢‹ôT$±fˆ ŞîıOŸ¡ıš›äh›G•IíAÛl1ıOQê~GwV=ZñùñŠ.>öà¾0•ò¨ ìO`OT® ¾9Š¸Šã6ŸÌı£›2ì÷íìy;]ÈæQxÌ^©îÁt-È»|kÆæà\’†‚¿x-f•¡U5yıE`é5Ì§R]Õ’²úzn;ô|´û÷ ¢ 9›&KmÂ©»•Í’§]½š1/Ö7›m¹6}Û¢Ô²-ã8ªn-ºxFÌYĞÿ¢Ï#ºÚŒs‡èW4ÅÑ%£_<õŠ{ink‰ªs­è…èöNË•Í~Åp%¥(¾h\I™š¨Ôë†,\Nu<wbà_\’á&~ˆ•>&è/nÔzh|Ï•?H±Ø¸P(%ç°NOdÔÙY»ó…8çÔHğÛûí8Y¢`“=ÒOéõCUÙw·:ÂHq˜Š£Š…õÈ÷naáğã(ÁÛãt·¥1 ÂÉvYÃĞp›«¹xÆw¯lßG§*}ÿºT°zŞ6«P¿¢^2E„“fÓ¶ëŸ(=ÒåpeäVÖÄÑ9¹r(7Â•¦­Õ(Ãü,º¯’%”XÔ5ÀBƒÇ$·cÕr"/	Ÿù®?+¸Ë; 'Iÿ	Vç¢èV“™Ê( Hî¬4£ò 5·„4`|ã(£íi>øì_ŠïËù¢SYH"…H4Ä:h½0™p 7ê>ÚƒNŠ~Á–À+y©nŒ™…uõÊØSK/¶q)Wßİ8ªÏ±ª½?şä`ZpºY+7ï­l(¡‰Ãÿc0Ø&ß[yƒœ€ÿ»ë¨ÎbRJâ-KÏyÙó·2«­í³³S;Rı’ÅçéÛÚWä¢~Ã±mYùoáÓ:•|Ò³úkß
+Ù¶•!e«‚‡c­Şä/]Ğ­^l)‚gÈ‡áØ.åÂÅòÄÛó)ƒ|éq šËÍv¤±‚ÂŒàér("”5§`	(£ú•»¨ßYè¦Ëu¼zº}6–-™\:"­íé7 Î¡4qigÜBøãLeŒ|@±@¸:#‘¤‚ ˆş6©­†c[ĞR„ş¤Ëõ³O ¦ î†dƒ)‘^]wö*ş(^;o¾GôÓ­w°ËÔT¯”â˜Ò"†ŠÁÄb;FLZ£ïæXÆÑÀÁIéÊÍ9 ²˜hÑ'ìCş‡k[FùÃOõ)×í‘ÏX^B¦Ù÷ò°nìÖDúOYS:ÛàY&~¢)È6,6¦‰ÓP~LTrC×ì[{íNF8Œ²P¡›-çu:NóB©àµH\
+AÑùÅ§ÃFJĞ×‡)×¬ÛP˜˜˜®"´ÏŒ°r¨lMÆ®m¢ââåŞX\5}íÿ‡İFx—­È@µÀáx[İ:P<aíj6%
+iµ(ÃD³U¤a*?k¡aZ–²¯ØüÁìŸ®–àVÆ‹ê”óYzê£‡¡?33,šz2§Ç‘êªyØÒú÷>ï-]*=ıã–ã•ÿ—ÚîGP­aĞQ:ã‹†Õ×ş@-8ë¾p”òj”[™º{™T³oEÎF@#âÇ)Ò’¨G­;ôû‘UÎg&­‰CÖÁı?qŒõµÂÆpÿÍùå™Ì$mØ »T&Fu¶<*Â¨P[6Î¯cÏÒˆ’&ÏşãPãƒm“ä/Æ›İYùêˆëÈtÑÿ£‹È`2 O×GŸ=¾*tŸ&Q‚¨¶xäİ¿P(Ç€ÈÕ	5N«Jé—Ônpd¾ö·”5gqñ(z>I44”“£Îv "Ë?ˆj¿,=QÚóß]úÜ‹/uSD> iö€¤æäkío„‘ùJ+_#&‘óLuş«ß^š–…€b\U¢m––õ^¨Ûj#a>¼eÔµVu­Ü†”n±ïè!j¶—@"•o lvWÇîİ€wË¼z,u³6jÏ»)9í)›Õ$‘8êÊ@W¿àmr€xM“Ø×àÁFMöğ7€£ïIô9õ[ÿ—~¤Xq(şµ17Ìé‰s
+Ü~œä1}	kÔ|ƒ’Øâ	!yÅn²$yˆ™E¦ &]®Û-™íG3weCÀ–ÊA”kÂ¿,mC½Y ÌÜ½dÑÏFÙ”b›ˆ[`ÿ2aÙ¸Ø#€a^9[<4*'-(¨ÇmµÇÿõ÷xèöèŠàŸMl%uI–ÅÛ³ıÎ¾rà¾ƒAØ€¸RJ–›!¿‚BÆDF5¹œ
+òº¡•59’vØ3Pyg›í,	@"4Åh»So‚.dwÂ/ÄÚÇe+}sşâIiÿİ
+jÀLì¹úÒ´Ia‰_ÃG#´Ìs¼ë44 Á*ó>21_‹ ƒ¾«_g NvhæÎÊjEì±x¯û.\.¯NZ°gÌË‹i‰„ªyÀ9¦IµZ[G;‰.‡¨I)íÖ=ßš¶®Wãgq¿óÂbÊ™Ewµ°#hUâ7hq·nOñ:õúò^ğëàğª¬_[
+£m²mÒ³[èVs« ^Í‰=#?ÊuË“C©a{lË|pÇ]Ü`*TÛL]!ä Ëõ"Q=\«sêT«¨ÚN8OaàÿÚ‹,Oîá	¶^È<#{o^j5&™×ißaü@	Ê¡ŒùÍ0tZ}-®í;=/ÅšLY`š¬ç*Bv@Œ@¥aç~—ÍEÔ†dö/ß©©İ×Ïâòš_TB €6ıÅtjñícšÆ¶­SòlêR¿ÜtÃ,‡vs…8ÁÁæ©ıBÑ‹wH¶lôëì ó†ÀÙFlÁ<¼èæ$
+œËŠµ¾BT!"SÅğÓ«uò™È««—QË°¹OT8úÑ“Å6s{D”aá®ïPü±Äc3
+†D¬c.ö<—Éëo½¡X9gLm«_v•ª&ÁS<°X2û -‰D¬ŒLOXñT’b?ú"€9÷{A—ë€‘u2úq44†
+—÷—çÀĞ×<ötÖôÕU.Yï~µPìl-@ÆÙÉ‚Ñq )0«ãÄgáE°ãÓÈñ«L•;&4ünÒ¯Uó‘œ¹­³›3tP…:òšA¢õ¬<
+Õ6&]&–]d2,÷€J‹„&+şä¢@À&(¥w¡J´#ÆBDìA×Ê–/Û[®÷YöÇ÷¸p+ZƒD	L(?g´ù®Ğå[WäÑdLäóró$È #ª nšÏ:'½ËçSÁ-ÇU#{¼ò€Q¨ƒ¢ÿ±g/Ùü‹LVÛvÜª¤	¤2ü’%tlÒ­¯,ã%½@H4ï‰r#¢Ø²¥®ş[şÒœ-/jôvVú2àPn'œë;Ü%Hÿ>MQ3¾@‰ÿÒ:)>ôÊâ}1uû;¨Uô´’:ç¼™®uËFæFYGàÊhµøŠi$>_w³Yê»Èç-ô=@á©·îcÆ•YxAª°èlé–Lòj@ê"^6†—0<­7Vqõ¿W°b d—Ò$¨Æe6®ji©Ğœp (-”8o§£µõm¡x½kû¸ÔòÒş	­NW&#rÎ‰¡\y$™!5NJrnªZœ(–LÖ´İ«J$ïŸ©QµBBúE7Çƒ3’%]Ô²¥\©Š·#1.ĞŒÏ¯Ú|Ì œÿö$k>å\¹&MŞA,“ÁQJbaƒŞÆ¾zøõÏqĞøÇÚÒ1?õĞAÊ'X‡®’ã¤ğ¼\®ÊgE³˜ç›õ5li–àR´Ú<AÚ2ù åšœ¸9«‰E(Ñ¨QÀ¾°å:;.ßŸbß¾´†ò §«›XÈ©şæ@»'Äyœ}úÜ’«eâÊ‡\’3…Cl ù9ÕğLŸø§ [œçfÃ÷~¥ 	‡×VïÇåƒ”L³¾˜£§0‰òû{+rh{šïº(À¤'1$eÄ³İâQ3¾ÇM“m›{!™"ëÒùr‘¿<›ˆ°ªv¥ƒíø_z¥Aª¦\ÈäAÛ9¬[<ØEsMd¼z¹lè©yİZµG¸LÉäKn«5².´[³†sØ¾è~â”Ÿºbò«4Äÿ,1_Ÿ1»']&FÛ	à”Î¸‡‰£“à_VøÇ_¬lƒ÷Ô»íÅf%£t`_¹|õCyæÃÀ§kØû\‹”¯	øtE.½åê²aØóÕ±Í*ğ'Ë¼Z_ì9X÷°ræâhnÆ
+S7]˜6Û£“òª#xI	gs~hMUpãõÉrj“)ƒ9G¿Ÿ¹¿çv8=â_©¡àJß>…¼ı¥R€ª&ä 0±ø/º,.rºNÔmĞœÊ¬Nc„5µ…Î,]›Óõ™š`üjßıQ5ò·jÔ¿§bÏ ×/ÑŠJ4‘+À®ƒ{hQôÈ²€Ôâ–3®ş[ØNÆ ~GòÓóggùv	½:?ÚwK^¥Å­	.I¯¶Y¼ª$.%¨w°ûˆw±çXµ´v±fjG“Y#<Ä?Â8õ9{,ÿÙŠv­zû#ªDùÆáÜâ@{‡ ½jîŞ(Õh´‰zq¿|dî¹€»®±ÃßwŠ=B#’ÓKU'ohAxÔò|y™újìÂ'²+Ó†~tà!7‰Ø5X)vK®Åø¶²…Ï…¦R3÷ï†çT<ßXöÜÍ9¨v<Ä`&Ç¨Âë[å¡Rnªv\5ò³v˜Šù/Guc¨Á»Â~‡ÛÑˆi\pHHğ¾ÕU¢ØÉT,Ë×Å§<µØ9+\hÉš9Åq,òÀÉ~˜ÊşwƒË gÁòE„t¿ÚeäôsŸ:kªW)ÂîPçz®¼ãf4v¾ŸGñÎ6”¹Æ¢"ÖK5˜Ÿ%–®âÉÄW£vºô¦µùJÛŞ¬l)o·BçŠ¸:œ>N¦·@4uâgÿ/%,ïğ—©F}ÛFé¡È¹cÏ³Zãç°g«)ë¥ÀH.¿±Û¢
+Ôq¬
+b »‰¾d‹õRz×?kL†\ùA3ãªUÆp)³;%—3ÎŸ„7 [JPK¾¾@¹w›
+†ø3¢/ÿq8lUŞ@È!ô@Ìß¬…‚Ë–=\J¢-h‡ëÛo`Ñ’:–˜ màÑ9àÚÁ®&‚ğº<+?MŠS—[Z9!jÏ÷¼ˆ†e÷ØLÄ×¹ÖÅK$£Ë õá‚^G´
+l1;İ¡-©™²Ï/‘)ğÉ+ÛC?½ÿ¸ñ›¿¾àù6”eôÌ7*j¢°†ô€íâšğ]¥dı"#§İîşBÇÄ.îÁôYâƒª$¨¤İgßğæ4Is©x· usíÿ!á˜4KqèËD²~³x†ª>ç@Ğñ÷C a,æ|ÛÍºiHxJ§Fé{¼ASÀş„‘¼2eoÁhbæJı’hs½5k½^M´wuŸ2-xÖk‰ğz,IÖSë³´Nú®=®ä9’+ÖÃ—İ}h¦ôbŒ\Ø“¤üQ=ıvï9ü”[×8U‚M$¥7yûáéPz/á çÚ×>M…‡P'ˆÙ‚ùq™ÕázµpOÛ›’Êhë„‚yÀ10­iáñ¦MàÕhã€ºhtna$¬Úk¦r´îp±ïïàO
+èuºø©i$
+Ë¨³:P°TÊh¸ØIõ¥K_‚,‹ X4)Òfp˜+HsvšßM“±O|®m&àÄ)(X×‚©VîQ5¤Ê£Ìä¢qqù˜3 ã/Ø+¬7ïDîÃ±svÄ°›awn£†£?L÷ş¸€ŸÏrã5oÏÏÏ”‘`Ğ#OCh,ŞuÃÂ=@Oƒ‰¦²K1|ØúJ‡pFm‘$_!Àª†¼}ÂšõµMËßïmÊhï·ÚK°S)S*-Ÿ
+[" üñ¨´
+^ıØj+¾ì®hSŞqÜæÛdËƒ ‡¥#fµ¿8á¯§À}ôşé¾·rloÑÕ¥ö†Á.»èm¨‘$:‡Ëxëêqé-gÆ˜Ò×Ç“ë9:h>Ê¼9>äLEŞZO]›ö 3i¯©ŞX56Fz;THšÙÁçéOĞê~¤oÉ­cM?j„ å’²ô˜å´ö!¥?>M³Éç8ú¸øé~¾¨ì(~\ŒÜø.7ÿçæ^˜üğ]áPçñCÌ
+OŠ^}v’ğÌlÿY<ªZd,¨r9!—:»aS}éú/W{Aì®Î:~Ë—¨ì®öqr‰ZyôÀë}ÔÃ[à ÕÉ¸<ÿÀıp"ÒÙynòQUàÑ2!¯Şo}›—-˜uH²ø7‹r×0LıNZ³#ÑÂ§¢	K¬bºi$[•ÛQüÛe…3$Öl†zªuj¨b ú&+ísÂôFNZfDnß+™ä~s>¶±Ò*e–‹#‘|Ô6msÄdÎRK½°2&“Ÿß«=íÊg¨#³ßkäæ<nO6ªæŒÔäfM““ò3ö·ä AAø±o¿#;Ê•›Íç-.+5PµTâšV×±ğÈêˆ¶C¯M‡=g“<ÒúŞµ)f¤ÍEciôdÊŒ—œg©¸ç¨<["¼ö,ÿ8³n/æ§ƒrº·AJ¼"ê‚¼„4µ½*~a÷E·cHt:Ô¶ÙøĞU½Ö!ÔÂ²òí—T¨8])†—ƒBËkp÷—8&Uè€«H“6Xs<sİ¿–dnÆm¥r´/ûÁ±¦É™¿ú¼¨î´W;bPX2ù…Û;Œ,B©&gÃÌ:g-ƒŒÏcÒN(ç ›¾X¹6òÇ7,Qd©}›1ïú“Õaè
+'ÇŸ¬%×«=GÈ›¡mË·©.-ĞÇŞ^i}›R%IeM/R?àÂ| ¿<¯¿$
+š†E'ÇKÑ	(2nĞ[ºjAiYgrw³kPÂRÊVíCqL­KzÍz¨x$êG¯H¹I'˜ƒèÃ)ó•ÜQ„èÙ SöMïÒgáÅÁ[`ø|5‘ƒŒâ 'Ğ(æx•7µ€vÒ{vT×õ!ÇÃsİn8Øÿ%ğrn:§ûÛ¼ŒÌqÓ5â(­cŒÔDû^ÅsøªqÄì¿®™é×¡ÁïS
+n¾ÄTş»»òg¨k é7µV¾ â}ZŠY«œåS”FšnTC•‡¬‘;ö…tıLrÓ9ı˜åè‡öœ›é
+®UxEÖ›wØ\$Œ;¯?)‘âÎ>ÁyWàÍí~s™óozç±Ÿu0!‹?
+@'¯3Yl3ØeÅëĞ”¾Ãì€<½ À›MÛQ½IÌe„.Öƒ¿Ô“˜óÒ–éaªï\1ÀS~CjŠì—
+¡‡ñÖ¹—!EÏæèÜ)Î$7§N‘Ø^QIö÷›E	å€¶¿msvr”ÙƒX‚8f$æ™A<|¾çvˆ»“¬z#(Åè©rYŞuR¼×™ğ„3SMösæNäO.«¬H“ìMBŞª¾LÂnË¨Bƒ|ÔşE¨+÷N'NÆp“‘©›RáizwHÌoµ‡‚åvó€ÁÿÑ[œEZxàVu}ó«õğA=×¶¨è¦öªê':~õ{Ônák` ¸?pL2¾’ä%£7K0ìÁ\5\:G±ü–B“Ş?ìpÂ ¦t"dèIõ~×åQÈàVM-«]¢ı'ê'­Š§—I#Lµí©,šÌSY†şf	)š":´Ñõç°°T˜#ÏAóålp2©ê;`9I¬Á^T*ëÃ®èö87¬³a¸VcÖ	Ş)ïõZ8‰üÕQú¶i}–IXÊ·¼#ÔÑ¢®)ŸşÍpnàŸ²Qqátº™ukØMU~ƒ`ÎØçñ{Ö31öÕçsŒŞÇz@`±$.êåç ¾,!Dğşqo¹:yæõÈ”‚–›ÍãÆ„,l<}8ş´b$ç¾B7­0M9)Âü16Ô;A¼^¾‡nÁxøˆlÏâŠPK¶h{h!˜s›wôW¿(nßû-2ÆPÑ@¾,úp÷J_—9œn¯än:d¡P*ß5ÓoJòYİf5N’¼u¢‘éf*:ÑMˆ­U÷„¯›ÑCB8[˜ÀÄ¬‘k­8og´Gg’šJD h«Ò½”jwT•<?•{½è2fòê¾1ŞåÅÉRñ	ö8FŸ˜Va€wûÍğ¢DßC•şÙAàÛµ:ej‡“3¢cŞ„×àN<íT‘›JŒ¶Ór›U8wQÀŸ£0Vş=‚ÿ0g¿L¤ÅĞöXÉ|é„‡ÑıLà«T£rÏCÒÏ;¦CâÃ3b»Ò}g>âğ¸KÀÃ’¯0ˆÏaÆ¢27·Aƒl?sŸ¤šL|RÂ bQ £Íš6Õïˆ-™éÌ%(øğ\(?Úpí„Z0[0¹í¡Ï“ÿÊ#td„nµr¨N¥}u_õŸOãŸ	®YS-æ¼K::ÿ†ÌÍ~’\Cø¼ù|”_YML)À÷«.Ä¼Ñ!/º…2°ò"Íˆ*ã„K ¿À,zMÖ¦Š|®Úğ!´Cáíñ‡,¸!§ûÁ[öØ€Ğ+µ	Û¶è>íê‡mŞ­lJ8Ùöo¬³÷4—‘Iâ'”)'=;8.¯–bxM

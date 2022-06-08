@@ -1,2 +1,1 @@
-h \
-    $(wildcard include/config/VIDEO_V4
+x], Reg=[0x%02x], data=%02x, TS config = %

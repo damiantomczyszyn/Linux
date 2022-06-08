@@ -1,1 +1,16 @@
-cmd_drivers/media/i2c/tw9903.o := gcc -Wp,-MMD,drivers/media/i2c/.tw9903.o.d -nostdinc -I./arch/x86/include -I./arch/x86/include/generated  -I./include -I./arch/x86/include/uapi -I./arch/x86/include/generated/uapi -I./include/uapi -I./include/generated/uapi -include ./include/linux/compiler-version.h -include ./include/linux/kconfig.h -include ./include/linux/compiler_types.h -D__KERNEL__ -fmacro-prefix-map=./= -Wall -Wundef -Werror=strict-prototypes -Wno-trigraphs -fno-strict-aliasing -fno-common -fshort-wchar -fno-PIE -Werror=implicit-function-declaration -
+# SPDX-License-Identifier: GPL-2.0
+#
+#  Makefile for the SJA1000 CAN controller drivers.
+#
+
+obj-$(CONFIG_CAN_EMS_PCI) += ems_pci.o
+obj-$(CONFIG_CAN_EMS_PCMCIA) += ems_pcmcia.o
+obj-$(CONFIG_CAN_F81601) += f81601.o
+obj-$(CONFIG_CAN_KVASER_PCI) += kvaser_pci.o
+obj-$(CONFIG_CAN_PEAK_PCI) += peak_pci.o
+obj-$(CONFIG_CAN_PEAK_PCMCIA) += peak_pcmcia.o
+obj-$(CONFIG_CAN_PLX_PCI) += plx_pci.o
+obj-$(CONFIG_CAN_SJA1000) += sja1000.o
+obj-$(CONFIG_CAN_SJA1000_ISA) += sja1000_isa.o
+obj-$(CONFIG_CAN_SJA1000_PLATFORM) += sja1000_platform.o
+obj-$(CONFIG_CAN_TSCAN1) += tscan1.o

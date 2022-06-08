@@ -1,8 +1,12 @@
-e/linux/rwlock.h \
-    $(wildcard include/config/PREEMPT) \
-  include/linux/spinlock_api_smp.h \
-    $(wildcard include/config/INLINE_SPIN_LOCK) \
-    $(wildcard include/config/INLINE_SPIN_LOCK_BH) \
-    $(wildcard include/config/INLINE_SPIN_LOCK_IRQ) \
-    $(wildcard include/config/INLINE_SPIN_LOCK_IRQSAVE) \
-    $(wildca
+egval = MC417_SPD_CTL(MC417_SPD_CTL_FAST)	|
+		 MC417_GPIO_SEL(MC417_GPIO_SEL_GPIO3)	|
+		 MC417_UART_GPIO_EN;
+	cx_write(MC417_CTL, regval);
+
+	/* Configure MC417_OEN to defaults. */
+	regval = MC417_MIRDY;
+	cx_write(MC417_OEN, regval);
+
+	/* Configure MC417_RWD to defaults. */
+	regval = MC417_MIWR | MC417_MIRD | MC417_MICS;
+	c

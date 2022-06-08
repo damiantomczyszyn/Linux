@@ -1,72 +1,66 @@
-move lock classes from memory that is going to be
- * freed; and possibly re-used by other modules.
- *
- * We will have had one synchronize_rcu() before getting here, so we're
- * guaranteed nobody will look up these exact classes -- they're properly dead
- * but still allocated.
- */
-static void lockdep_free_key_range_reg(void *start, unsigned long size)
-{
-	struct pending_free *pf;
-	unsigned long flags;
-
-	init_data_structures_once();
-
-	raw_local_irq_save(flags);
-	lockdep_lock();
-	pf = get_pending_free();
-	__lockdep_free_key_range(pf, start, size);
-	call_rcu_zapped(pf);
-	lockdep_unlock();
-	raw_local_irq_restore(flags);
-
-	/*
-	 * Wait for any possible iterators from look_up_lock_class() to pass
-	 * before continuing to free the memory they refer to.
-	 */
-	synchronize_rcu();
+ET_SEQ_END:
+		return  "GET_SEQ_END";
+	case CX2341X_ENC_SET_PGM_INDEX_INFO:
+		return  "SET_PGM_INDEX_INFO";
+	case CX2341X_ENC_SET_VBI_CONFIG:
+		return  "SET_VBI_CONFIG";
+	case CX2341X_ENC_SET_DMA_BLOCK_SIZE:
+		return  "SET_DMA_BLOCK_SIZE";
+	case CX2341X_ENC_GET_PREV_DMA_INFO_MB_10:
+		return  "GET_PREV_DMA_INFO_MB_10";
+	case CX2341X_ENC_GET_PREV_DMA_INFO_MB_9:
+		return  "GET_PREV_DMA_INFO_MB_9";
+	case CX2341X_ENC_SCHED_DMA_TO_HOST:
+		return  "SCHED_DMA_TO_HOST";
+	case CX2341X_ENC_INITIALIZE_INPUT:
+		return  "INITIALIZE_INPUT";
+	case CX2341X_ENC_SET_FRAME_DROP_RATE:
+		return  "SET_FRAME_DROP_RATE";
+	case CX2341X_ENC_PAUSE_ENCODER:
+		return  "PAUSE_ENCODER";
+	case CX2341X_ENC_REFRESH_INPUT:
+		return  "REFRESH_INPUT";
+	case CX2341X_ENC_SET_COPYRIGHT:
+		return  "SET_COPYRIGHT";
+	case CX2341X_ENC_SET_EVENT_NOTIFICATION:
+		return  "SET_EVENT_NOTIFICATION";
+	case CX2341X_ENC_SET_NUM_VSYNC_LINES:
+		return  "SET_NUM_VSYNC_LINES";
+	case CX2341X_ENC_SET_PLACEHOLDER:
+		return  "SET_PLACEHOLDER";
+	case CX2341X_ENC_MUTE_VIDEO:
+		return  "MUTE_VIDEO";
+	case CX2341X_ENC_MUTE_AUDIO:
+		return  "MUTE_AUDIO";
+	case CX2341X_ENC_MISC:
+		return  "MISC";
+	default:
+		return "UNKNOWN";
+	}
 }
 
-/*
- * Free all lockdep keys in the range [start, start+size). Does not sleep.
- * Ignores debug_locks. Must only be used by the lockdep selftests.
- */
-static void lockdep_free_key_range_imm(void *start, unsigned long size)
+static int cx23885_mbox_func(void *priv,
+			     u32 command,
+			     int in,
+			     int out,
+			     u32 data[CX2341X_MBOX_MAX_DATA])
 {
-	struct pending_free *pf = delayed_free.pf;
-	unsigned long flags;
+	struct cx23885_dev *dev = priv;
+	unsigned long timeout;
+	u32 value, flag, retval = 0;
+	int i;
 
-	init_data_structures_once();
+	dprintk(3, "%s: command(0x%X) = %s\n", __func__, command,
+		cmd_to_str(command));
 
-	raw_local_irq_save(flags);
-	lockdep_lock();
-	__lockdep_free_key_range(pf, start, size);
-	__free_zapped_classes(pf);
-	lockdep_unlock();
-	raw_local_irq_restore(flags);
-}
+	/* this may not be 100% safe if we can't read any memory location
+	   without side effects */
+	mc417_memory_read(dev, dev->cx23417_mailbox - 4, &value);
+	if (value != 0x12345678) {
+		pr_err("Firmware and/or mailbox pointer not initialized or corrupted, signature = 0x%x, cmd = %s\n",
+			value, cmd_to_str(command));
+		return -1;
+	}
 
-void lockdep_free_key_range(void *start, unsigned long size)
-{
-	init_data_structures_once();
-
-	if (inside_selftest())
-		lockdep_free_key_range_imm(start, size);
-	else
-		lockdep_free_key_range_reg(start, size);
-}
-
-/*
- * Check whether any element of the @lock->class_cache[] array refers to a
- * registered lock class. The caller must hold either the graph lock or the
- * RCU read lock.
- */
-static bool lock_class_cache_is_registered(struct lockdep_map *lock)
-{
-	struct lock_class *class;
-	struct hlist_head *head;
-	int i, j;
-
-	for (i = 0; i < CLASSHASH_SIZE; i++) {
-		head = classhash_table + i;
-		hlist_for_each_entry_rcu(class, he
+	/* This read looks at 32 bits, but flag is only 8 bits.
+	 * Seems we

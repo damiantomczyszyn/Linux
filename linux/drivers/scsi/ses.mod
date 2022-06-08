@@ -1,1 +1,2 @@
-nclude/config/GENERI
+= 1,
+	.agc = &xc3028

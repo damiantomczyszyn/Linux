@@ -1,2 +1,1 @@
-pes.h \
-  include/asm-generic/pgtab
+// SPDX-License-Identifier: GPL-2.0

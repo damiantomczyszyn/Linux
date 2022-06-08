@@ -1,7 +1,4 @@
-ip)
-{
-	if (unlikely(!debug_locks))
-		return;
-
-	/*
-	 * NMIs do not (and 
+nt_modules();
+	if (irqs_disabled())
+		print_irqtrace_events(prev);
+	if 

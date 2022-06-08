@@ -1,1 +1,1 @@
-de/config/INLINE_REA
+_read(ALT_PIN_OUT_SE

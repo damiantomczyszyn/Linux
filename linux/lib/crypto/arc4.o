@@ -1,60 +1,47 @@
-6/include/asm/cpu_entry_area.h \
-  arch/x86/include/asm/intel_ds.h \
-  include/linux/slab.h \
-    $(wildcard include/config/DEBUG_SLAB) \
-    $(wildcard include/config/FAILSLAB) \
-    $(wildcard include/config/MEMCG_KMEM) \
-    $(wildcard include/config/KASAN) \
-    $(wildcard include/config/SLAB) \
-    $(wildcard include/config/SLUB) \
-    $(wildcard include/config/SLOB) \
-  include/linux/gfp.h \
-    $(wildcard include/config/PM_SLEEP) \
-    $(wildcard include/config/CONTIG_ALLOC) \
-  include/linux/percpu-refcount.h \
-  include/linux/kasan.h \
-    $(wildcard include/config/KASAN_STACK) \
-    $(wildcard include/config/KASAN_INLINE) \
-  include/linux/kasan-enabled.h \
-  arch/x86/include/asm/irq.h \
-    $(wildcard include/config/HAVE_KVM) \
-  arch/x86/include/asm/irq_vectors.h \
-    $(wildcard include/config/HYPERV) \
-    $(wildcard include/config/X86_IO_APIC) \
-    $(wildcard include/config/PCI_MSI) \
-  arch/x86/include/generated/asm/irq_regs.h \
-  include/asm-generic/irq_regs.h \
-  include/linux/irqdesc.h \
-    $(wildcard include/config/GENERIC_IRQ_DEBUGFS) \
-    $(wildcard include/config/SPARSE_IRQ) \
-    $(wildcard include/config/IRQ_DOMAIN) \
-  include/linux/kobject.h \
-    $(wildcard include/config/UEVENT_HELPER) \
-    $(wildcard include/config/DEBUG_KOBJECT_RELEASE) \
-  include/linux/sysfs.h \
-  include/linux/kernfs.h \
-    $(wildcard include/config/KERNFS) \
-  include/linux/idr.h \
-  include/linux/radix-tree.h \
-  include/linux/xarray.h \
-    $(wildcard include/config/XARRAY_MULTI) \
-  include/linux/kconfig.h \
-  include/linux/uidgid.h \
-    $(wildcard include/config/MULTIUSER) \
-    $(wildcard include/config/USER_NS) \
-  include/linux/highuid.h \
-  include/linux/kobject_ns.h \
-  include/linux/stat.h \
-  arch/x86/include/uapi/asm/stat.h \
-  include/uapi/linux/stat.h \
-  arch/x86/include/asm/hw_irq.h \
-  include/linux/profile.h \
-    $(wildcard include/config/PROFILING) \
-  arch/x86/include/asm/sections.h \
-  include/asm-generic/sections.h \
-    $(wildcard include/config/HAVE_FUNCTION_DESCRIPTORS) \
-  arch/x86/include/asm/extable.h \
-    $(wildcard include/config/X86_MCE) \
-    $(wildcard include/config/BPF_JIT) \
-  include/linux/interrupt.h \
-    $(wildcard include/config/IRQ_FORCED_
+cx23885-cards.c                                             */
+extern struct cx23885_board cx23885_boards[];
+extern const unsigned int cx23885_bcount;
+
+extern struct cx23885_subid cx23885_subids[];
+extern const unsigned int cx23885_idcount;
+
+extern int cx23885_tuner_callback(void *priv, int component,
+	int command, int arg);
+extern void cx23885_card_list(struct cx23885_dev *dev);
+extern int  cx23885_ir_init(struct cx23885_dev *dev);
+extern void cx23885_ir_pci_int_enable(struct cx23885_dev *dev);
+extern void cx23885_ir_fini(struct cx23885_dev *dev);
+extern void cx23885_gpio_setup(struct cx23885_dev *dev);
+extern void cx23885_card_setup(struct cx23885_dev *dev);
+extern void cx23885_card_setup_pre_i2c(struct cx23885_dev *dev);
+
+extern int cx23885_dvb_register(struct cx23885_tsport *port);
+extern int cx23885_dvb_unregister(struct cx23885_tsport *port);
+
+extern int cx23885_buf_prepare(struct cx23885_buffer *buf,
+			       struct cx23885_tsport *port);
+extern void cx23885_buf_queue(struct cx23885_tsport *port,
+			      struct cx23885_buffer *buf);
+extern void cx23885_free_buffer(struct cx23885_dev *dev,
+				struct cx23885_buffer *buf);
+
+/* ----------------------------------------------------------- */
+/* cx23885-video.c                                             */
+/* Video */
+extern int cx23885_video_register(struct cx23885_dev *dev);
+extern void cx23885_video_unregister(struct cx23885_dev *dev);
+extern int cx23885_video_irq(struct cx23885_dev *dev, u32 status);
+extern void cx23885_video_wakeup(struct cx23885_dev *dev,
+	struct cx23885_dmaqueue *q, u32 count);
+int cx23885_enum_input(struct cx23885_dev *dev, struct v4l2_input *i);
+int cx23885_set_input(struct file *file, void *priv, unsigned int i);
+int cx23885_get_input(struct file *file, void *priv, unsigned int *i);
+int cx23885_set_frequency(struct file *file, void *priv, const struct v4l2_frequency *f);
+int cx23885_set_tvnorm(struct cx23885_dev *dev, v4l2_std_id norm);
+
+/* ----------------------------------------------------------- */
+/* cx23885-vbi.c                                               */
+extern int cx23885_vbi_fmt(struct file *file, void *priv,
+	struct v4l2_format *f);
+extern void cx23885_vbi_timeout(unsigned long data);
+extern c

@@ -1,1525 +1,1541 @@
-nfig/GENERIC_IOREMAP) \
-    $(wildcard include/config/VIRT_TO_BUS) \
-    $(wildcard include/config/GENERIC_DEVMEM_IS_ALLOWED) \
-  include/linux/logic_pio.h \
-    $(wildcard include/config/INDIRECT_PIO) \
-  include/linux/vmalloc.h \
-    $(wildcard include/config/HAVE_ARCH_HUGE_VMALLOC) \
-  arch/x86/include/asm/vmalloc.h \
-    $(wildcard include/config/HAVE_ARCH_HUGE_VMAP) \
-  arch/x86/include/asm/acpi.h \
-    $(wildcard include/config/ACPI_APEI) \
-  include/acpi/pdc_intel.h \
-  arch/x86/include/asm/numa.h \
-    $(wildcard include/config/NUMA_EMU) \
-  arch/x86/include/asm/numa_32.h \
-  include/linux/regulator/consumer.h \
-    $(wildcard include/config/REGULATOR) \
-  include/linux/suspend.h \
-    $(wildcard include/config/VT) \
-    $(wildcard include/config/SUSPEND) \
-    $(wildcard include/config/HIBERNATION_SNAPSHOT_DEV) \
-    $(wildcard include/config/PM_SLEEP_DEBUG) \
-    $(wildcard include/config/PM_AUTOSLEEP) \
-  include/linux/swap.h \
-    $(wildcard include/config/DEVICE_PRIVATE) \
-    $(wildcard include/config/MIGRATION) \
-    $(wildcard include/config/FRONTSWAP) \
-    $(wildcard include/config/THP_SWAP) \
-    $(wildcard include/config/MEMCG_SWAP) \
-  include/linux/memcontrol.h \
-    $(wildcard include/config/CGROUP_WRITEBACK) \
-  include/linux/cgroup.h \
-    $(wildcard include/config/CGROUP_CPUACCT) \
-    $(wildcard include/config/SOCK_CGROUP_DATA) \
-    $(wildcard include/config/CGROUP_DATA) \
-    $(wildcard include/config/CGROUP_BPF) \
-  include/uapi/linux/cgroupstats.h \
-  include/uapi/linux/taskstats.h \
-  include/linux/fs.h \
-    $(wildcard include/config/READ_ONLY_THP_FOR_FS) \
-    $(wildcard include/config/FS_POSIX_ACL) \
-    $(wildcard include/config/IMA) \
-    $(wildcard include/config/FILE_LOCKING) \
-    $(wildcard include/config/FSNOTIFY) \
-    $(wildcard include/config/FS_ENCRYPTION) \
-    $(wildcard include/config/FS_VERITY) \
-    $(wildcard include/config/EPOLL) \
-    $(wildcard include/config/UNICODE) \
-    $(wildcard include/config/QUOTA) \
-    $(wildcard include/config/FS_DAX) \
-    $(wildcard include/config/BLOCK) \
-  include/linux/wait_bit.h \
-  include/linux/kdev_t.h \
-  include/uapi/linux/kdev_t.h \
-  include/linux/dcache.h \
-  include/linux/rculist_bl.h \
-  include/linux/list_bl.h \
-  include/linux/bit_spinlock.h \
-  include/linux/lockref.h \
-    $(wildcard include/config/ARCH_USE_CMPXCHG_LOCKREF) \
-  include/linux/stringhash.h \
-    $(wildcard include/config/DCACHE_WORD_ACCESS) \
-  include/linux/hash.h \
-    $(wildcard include/config/HAVE_ARCH_HASH) \
-  include/linux/path.h \
-  include/linux/list_lru.h \
-  include/linux/shrinker.h \
-  include/linux/capability.h \
-  include/uapi/linux/capability.h \
-  include/linux/semaphore.h \
-  include/linux/fcntl.h \
-    $(wildcard include/config/ARCH_32BIT_OFF_T) \
-  include/uapi/linux/fcntl.h \
-  arch/x86/include/generated/uapi/asm/fcntl.h \
-  include/uapi/asm-generic/fcntl.h \
-  include/uapi/linux/openat2.h \
-  include/linux/migrate_mode.h \
-  include/linux/percpu-rwsem.h \
-  include/linux/rcuwait.h \
-  include/linux/sched/signal.h \
-    $(wildcard include/config/SCHED_AUTOGROUP) \
-    $(wildcard include/config/BSD_PROCESS_ACCT) \
-    $(wildcard include/config/TASKSTATS) \
-    $(wildcard include/config/STACK_GROWSUP) \
-  include/linux/signal.h \
-    $(wildcard include/config/DYNAMIC_SIGFRAME) \
-  include/linux/sched/jobctl.h \
-  include/linux/sched/task.h \
-    $(wildcard include/config/HAVE_EXIT_THREAD) \
-    $(wildcard include/config/ARCH_WANTS_DYNAMIC_TASK_STRUCT) \
-    $(wildcard include/config/HAVE_ARCH_THREAD_STRUCT_WHITELIST) \
-  include/linux/uaccess.h \
-  include/linux/fault-inject-usercopy.h \
-    $(wildcard include/config/FAULT_INJECTION_USERCOPY) \
-  arch/x86/include/asm/uaccess.h \
-    $(wildcard include/config/CC_HAS_ASM_GOTO_OUTPUT) \
-    $(wildcard include/config/CC_HAS_ASM_GOTO_TIED_OUTPUT) \
-    $(wildcard include/config/ARCH_HAS_COPY_MC) \
-    $(wildcard include/config/X86_INTEL_USERCOPY) \
-  arch/x86/include/asm/smap.h \
-  arch/x86/include/asm/extable.h \
-    $(wildcard include/config/BPF_JIT) \
-  include/asm-generic/access_ok.h \
-    $(wildcard include/config/ALTERNATE_USER_ADDRESS_SPACE) \
-  arch/x86/include/asm/uaccess_32.h \
-  include/linux/cred.h \
-    $(wildcard include/config/DEBUG_CREDENTIALS) \
-  include/linux/key.h \
-    $(wildcard include/config/KEY_NOTIFICATIONS) \
-    $(wildcard include/config/NET) \
-  include/linux/assoc_array.h \
-    $(wildcard include/config/ASSOCIATIVE_ARRAY) \
-  include/linux/sched/user.h \
-    $(wildcard include/config/WATCH_QUEUE) \
-  include/linux/percpu_counter.h \
-  include/linux/rcu_sync.h \
-  include/linux/delayed_call.h \
-  include/linux/errseq.h \
-  include/linux/ioprio.h \
-  include/linux/sched/rt.h \
-  include/linux/iocontext.h \
-    $(wildcard include/config/BLK_ICQ) \
-  include/uapi/linux/ioprio.h \
-  include/linux/fs_types.h \
-  include/linux/mount.h \
-  include/linux/mnt_idmapping.h \
-  include/uapi/linux/fs.h \
-  include/linux/quota.h \
-    $(wildcard include/config/QUOTA_NETLINK_INTERFACE) \
-  include/uapi/linux/dqblk_xfs.h \
-  include/linux/dqblk_v1.h \
-  include/linux/dqblk_v2.h \
-  include/linux/dqblk_qtree.h \
-  include/linux/projid.h \
-  include/uapi/linux/quota.h \
-  include/linux/nfs_fs_i.h \
-  include/linux/seq_file.h \
-  include/linux/string_helpers.h \
-  include/linux/ns_common.h \
-  include/linux/nsproxy.h \
-  include/linux/user_namespace.h \
-    $(wildcard include/config/INOTIFY_USER) \
-    $(wildcard include/config/FANOTIFY) \
-    $(wildcard include/config/PERSISTENT_KEYRINGS) \
-  include/linux/kernel_stat.h \
-  include/linux/interrupt.h \
-    $(wildcard include/config/IRQ_FORCED_THREADING) \
-    $(wildcard include/config/GENERIC_IRQ_PROBE) \
-    $(wildcard include/config/IRQ_TIMINGS) \
-  include/linux/irqreturn.h \
-  include/linux/irqnr.h \
-  include/uapi/linux/irqnr.h \
-  include/linux/hardirq.h \
-  include/linux/context_tracking_state.h \
-    $(wildcard include/config/CONTEXT_TRACKING) \
-  include/linux/ftrace_irq.h \
-    $(wildcard include/config/HWLAT_TRACER) \
-    $(wildcard include/config/OSNOISE_TRACER) \
-  include/linux/vtime.h \
-    $(wildcard include/config/VIRT_CPU_ACCOUNTING) \
-    $(wildcard include/config/IRQ_TIME_ACCOUNTING) \
-  arch/x86/include/asm/hardirq.h \
-    $(wildcard include/config/KVM_INTEL) \
-    $(wildcard include/config/X86_THERMAL_VECTOR) \
-    $(wildcard include/config/X86_MCE_THRESHOLD) \
-    $(wildcard include/config/X86_MCE_AMD) \
-    $(wildcard include/config/X86_HV_CALLBACK_VECTOR) \
-  arch/x86/include/asm/irq.h \
-  arch/x86/include/asm/sections.h \
-  include/asm-generic/sections.h \
-    $(wildcard include/config/HAVE_FUNCTION_DESCRIPTORS) \
-  include/linux/cgroup-defs.h \
-    $(wildcard include/config/CGROUP_NET_CLASSID) \
-    $(wildcard include/config/CGROUP_NET_PRIO) \
-  include/linux/u64_stats_sync.h \
-  include/linux/bpf-cgroup-defs.h \
-  include/linux/psi_types.h \
-  include/linux/kthread.h \
-  include/linux/cgroup_subsys.h \
-    $(wildcard include/config/CGROUP_DEVICE) \
-    $(wildcard include/config/CGROUP_FREEZER) \
-    $(wildcard include/config/CGROUP_PERF) \
-    $(wildcard include/config/CGROUP_HUGETLB) \
-    $(wildcard include/config/CGROUP_PIDS) \
-    $(wildcard include/config/CGROUP_RDMA) \
-    $(wildcard include/config/CGROUP_MISC) \
-    $(wildcard include/config/CGROUP_DEBUG) \
-  include/linux/vm_event_item.h \
-    $(wildcard include/config/HAVE_ARCH_TRANSPARENT_HUGEPAGE_PUD) \
-    $(wildcard include/config/MEMORY_BALLOON) \
-    $(wildcard include/config/BALLOON_COMPACTION) \
-    $(wildcard include/config/DEBUG_TLBFLUSH) \
-    $(wildcard include/config/DEBUG_VM_VMACACHE) \
-  include/linux/page_counter.h \
-  include/linux/vmpressure.h \
-  include/linux/eventfd.h \
-  include/linux/mm.h \
-    $(wildcard include/config/HAVE_ARCH_MMAP_RND_BITS) \
-    $(wildcard include/config/HAVE_ARCH_MMAP_RND_COMPAT_BITS) \
-    $(wildcard include/config/ARCH_USES_HIGH_VMA_FLAGS) \
-    $(wildcard include/config/ARCH_HAS_PKEYS) \
-    $(wildcard include/config/PPC) \
-    $(wildcard include/config/PARISC) \
-    $(wildcard include/config/SPARC64) \
-    $(wildcard include/config/ARM64_MTE) \
-    $(wildcard include/config/HAVE_ARCH_USERFAULTFD_MINOR) \
-    $(wildcard include/config/SHMEM) \
-    $(wildcard include/config/ARCH_HAS_PTE_SPECIAL) \
-    $(wildcard include/config/ARCH_HAS_PTE_DEVMAP) \
-    $(wildcard include/config/DEBUG_VM_RB) \
-    $(wildcard include/config/PAGE_POISONING) \
-    $(wildcard include/config/INIT_ON_ALLOC_DEFAULT_ON) \
-    $(wildcard include/config/INIT_ON_FREE_DEFAULT_ON) \
-    $(wildcard include/config/DEBUG_PAGEALLOC) \
-    $(wildcard include/config/HUGETLBFS) \
-    $(wildcard include/config/MAPPING_DIRTY_HELPERS) \
-    $(wildcard include/config/ANON_VMA_NAME) \
-  include/linux/mmap_lock.h \
-  include/linux/page_ext.h \
-  include/linux/stacktrace.h \
-    $(wildcard include/config/ARCH_STACKWALK) \
-    $(wildcard include/config/STACKTRACE) \
-    $(wildcard include/config/HAVE_RELIABLE_STACKTRACE) \
-  include/linux/stackdepot.h \
-    $(wildcard include/config/STACKDEPOT_ALWAYS_INIT) \
-  include/linux/page_ref.h \
-    $(wildcard include/config/DEBUG_PAGE_REF) \
-  include/linux/sizes.h \
-  include/linux/pgtable.h \
-    $(wildcard include/config/HIGHPTE) \
-    $(wildcard include/config/GUP_GET_PTE_LOW_HIGH) \
-    $(wildcard include/config/HAVE_ARCH_SOFT_DIRTY) \
-    $(wildcard include/config/ARCH_ENABLE_THP_MIGRATION) \
-    $(wildcard include/config/X86_ESPFIX64) \
-  arch/x86/include/asm/pgtable.h \
-    $(wildcard include/config/DEBUG_WX) \
-    $(wildcard include/config/PAGE_TABLE_CHECK) \
-  arch/x86/include/asm/pkru.h \
-  arch/x86/include/asm/fpu/api.h \
-    $(wildcard include/config/X86_DEBUG_FPU) \
-  arch/x86/include/asm/coco.h \
-  include/asm-generic/pgtable_uffd.h \
-  include/linux/page_table_check.h \
-  arch/x86/include/asm/pgtable_32.h \
-  arch/x86/include/asm/pgtable-3level.h \
-  arch/x86/include/asm/pgtable-invert.h \
-  include/linux/huge_mm.h \
-  include/linux/sched/coredump.h \
-    $(wildcard include/config/CORE_DUMP_DEFAULT_ELF_HEADERS) \
-  include/linux/vmstat.h \
-    $(wildcard include/config/VM_EVENT_COUNTERS) \
-  include/linux/writeback.h \
-  include/linux/flex_proportions.h \
-  include/linux/backing-dev-defs.h \
-    $(wildcard include/config/DEBUG_FS) \
-  include/linux/blk_types.h \
-    $(wildcard include/config/FAIL_MAKE_REQUEST) \
-    $(wildcard include/config/BLK_CGROUP_IOCOST) \
-    $(wildcard include/config/BLK_INLINE_ENCRYPTION) \
-    $(wildcard include/config/BLK_DEV_INTEGRITY) \
-  include/linux/bvec.h \
-  include/linux/highmem.h \
-  include/linux/cacheflush.h \
-  arch/x86/include/asm/cacheflush.h \
-  include/asm-generic/cacheflush.h \
-  include/linux/highmem-internal.h \
-  arch/x86/include/asm/highmem.h \
-  arch/x86/include/asm/tlbflush.h \
-  arch/x86/include/asm/invpcid.h \
-  arch/x86/include/asm/pti.h \
-  include/linux/bio.h \
-  include/linux/mempool.h \
-  include/linux/uio.h \
-    $(wildcard include/config/ARCH_HAS_UACCESS_FLUSHCACHE) \
-  include/uapi/linux/uio.h \
-  include/linux/node.h \
-    $(wildcard include/config/HMEM_REPORTING) \
-  include/linux/pagemap.h \
-  include/linux/hugetlb_inline.h \
-  include/uapi/linux/mempolicy.h \
-  include/linux/freezer.h \
-  include/uapi/linux/i2c.h \
-  include/linux/videodev2.h \
-  include/uapi/linux/videodev2.h \
-    $(wildcard include/config/VIDEO_ADV_DEBUG) \
-  include/uapi/linux/v4l2-common.h \
-  include/uapi/linux/v4l2-controls.h \
-  include/media/v4l2-device.h \
-    $(wildcard include/config/VIDEO_V4L2_SUBDEV_API) \
-  include/media/media-device.h \
-    $(wildcard include/config/MEDIA_CONTROLLER) \
-  include/media/media-devnode.h \
-  include/linux/poll.h \
-  include/uapi/linux/poll.h \
-  arch/x86/include/generated/uapi/asm/poll.h \
-  include/uapi/asm-generic/poll.h \
-  include/uapi/linux/eventpoll.h \
-  include/linux/cdev.h \
-  include/media/media-entity.h \
-  include/uapi/linux/media.h \
-  include/media/v4l2-subdev.h \
-  include/uapi/linux/v4l2-subdev.h \
-  include/uapi/linux/v4l2-mediabus.h \
-  include/uapi/linux/media-bus-format.h \
-  include/media/v4l2-async.h \
-  include/media/v4l2-common.h \
-    $(wildcard include/config/VIDEO_V4L2_I2C) \
-    $(wildcard include/config/SPI) \
-  include/media/v4l2-dev.h \
-  include/linux/spi/spi.h \
-    $(wildcard include/config/SPI_SLAVE) \
-  include/linux/scatterlist.h \
-    $(wildcard include/config/NEED_SG_DMA_LENGTH) \
-    $(wildcard include/config/DEBUG_SG) \
-    $(wildcard include/config/SGL_ALLOC) \
-    $(wildcard include/config/ARCH_NO_SG_CHAIN) \
-    $(wildcard include/config/SG_POOL) \
-  include/linux/gpio/consumer.h \
-    $(wildcard include/config/OF_GPIO) \
-    $(wildcard include/config/GPIO_SYSFS) \
-  include/uapi/linux/spi/spi.h \
-  include/media/v4l2-fh.h \
-  include/media/v4l2-mediabus.h \
-  include/media/i2c/uda1342.h \
-
-drivers/media/i2c/uda1342.o: $(deps_drivers/media/i2c/uda1342.o)
-
-$(deps_drivers/media/i2c/uda1342.o):
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  ude/asm-generic/ioctl.h \
-  include/uapi/asm-generic/ioctl.h \
-  include/linux/edd.h \
-  include/uapi/linux/edd.h \
-  arch/x86/include/asm/ist.h \
-  arch/x86/include/uapi/asm/ist.h \
-  include/video/edid.h \
-    $(wildcard include/config/X86) \
-  include/uapi/video/edid.h \
-  arch/x86/include/asm/nospec-branch.h \
-  include/linux/static_key.h \
-  include/linux/jump_label.h \
-    $(wildcard include/config/JUMP_LABEL) \
-    $(wildcard include/config/HAVE_ARCH_JUMP_LABEL_RELATIVE) \
-  arch/x86/include/asm/jump_label.h \
-  include/linux/objtool.h \
-    $(wildcard include/config/FRAME_POINTER) \
-  arch/x86/include/asm/msr-index.h \
-  arch/x86/include/asm/unwind_hints.h \
-  arch/x86/include/asm/orc_types.h \
-  arch/x86/include/asm/GEN-for-each-reg.h \
-  arch/x86/include/asm/segment.h \
-  include/linux/preempt.h \
-    $(wildcard include/config/PREEMPT_COUNT) \
-    $(wildcard include/config/TRACE_PREEMPT_TOGGLE) \
-  arch/x86/include/asm/preempt.h \
-  include/linux/thread_info.h \
-    $(wildcard include/config/GENERIC_ENTRY) \
-    $(wildcard include/config/HAVE_ARCH_WITHIN_STACK_FRAMES) \
-    $(wildcard include/config/HARDENED_USERCOPY) \
-    $(wildcard include/config/BUG) \
-  include/linux/bug.h \
-    $(wildcard include/config/GENERIC_BUG) \
-    $(wildcard include/config/BUG_ON_DATA_CORRUPTION) \
-  arch/x86/include/asm/bug.h \
-    $(wildcard include/config/DEBUG_BUGVERBOSE) \
-  include/linux/instrumentation.h \
-  include/asm-generic/bug.h \
-    $(wildcard include/config/GENERIC_BUG_RELATIVE_POINTERS) \
-  include/linux/restart_block.h \
-  include/linux/time64.h \
-  include/linux/math64.h \
-    $(wildcard include/config/ARCH_SUPPORTS_INT128) \
-  include/vdso/math64.h \
-  include/vdso/time64.h \
-  include/uapi/linux/time.h \
-  include/uapi/linux/time_types.h \
-  include/linux/errno.h \
-  include/uapi/linux/errno.h \
-  arch/x86/include/asm/thread_info.h \
-    $(wildcard include/config/X86_IOPL_IOPERM) \
-    $(wildcard include/config/IA32_EMULATION) \
-  arch/x86/include/asm/page.h \
-  arch/x86/include/asm/page_types.h \
-    $(wildcard include/config/PHYSICAL_START) \
-    $(wildcard include/config/PHYSICAL_ALIGN) \
-    $(wildcard include/config/DYNAMIC_PHYSICAL_MASK) \
-  arch/x86/include/asm/page_32_types.h \
-    $(wildcard include/config/HIGHMEM4G) \
-    $(wildcard include/config/HIGHMEM64G) \
-    $(wildcard include/config/PAGE_OFFSET) \
-  arch/x86/include/asm/page_32.h \
-    $(wildcard include/config/DEBUG_VIRTUAL) \
-    $(wildcard include/config/FLATMEM) \
-  include/linux/string.h \
-    $(wildcard include/config/BINARY_PRINTF) \
-    $(wildcard include/config/FORTIFY_SOURCE) \
-  include/uapi/linux/string.h \
-  arch/x86/include/asm/string.h \
-  arch/x86/include/asm/string_32.h \
-  include/linux/fortify-string.h \
-  include/linux/range.h \
-  include/asm-generic/memory_model.h \
-    $(wildcard include/config/SPARSEMEM_VMEMMAP) \
-    $(wildcard include/config/SPARSEMEM) \
-  include/linux/pfn.h \
-  include/asm-generic/getorder.h \
-  arch/x86/include/asm/cpufeature.h \
-    $(wildcard include/config/X86_FEATURE_NAMES) \
-  arch/x86/include/asm/processor.h \
-    $(wildcard include/config/X86_VMX_FEATURE_NAMES) \
-    $(wildcard include/config/X86_DEBUGCTLMSR) \
-    $(wildcard include/config/CPU_SUP_AMD) \
-    $(wildcard include/config/XEN) \
-  arch/x86/include/asm/math_emu.h \
-  arch/x86/include/asm/ptrace.h \
-    $(wildcard include/config/PARAVIRT) \
-  arch/x86/include/uapi/asm/ptrace.h \
-  arch/x86/include/uapi/asm/ptrace-abi.h \
-  arch/x86/include/asm/paravirt_types.h \
-    $(wildcard include/config/PGTABLE_LEVELS) \
-    $(wildcard include/config/PARAVIRT_DEBUG) \
-  arch/x86/include/asm/desc_defs.h \
-  arch/x86/include/asm/pgtable_types.h \
-    $(wildcard include/config/MEM_SOFT_DIRTY) \
-    $(wildcard include/config/HAVE_ARCH_USERFAULTFD_WP) \
-    $(wildcard include/config/PROC_FS) \
-  arch/x86/include/asm/pgtable_32_types.h \
-  arch/x86/include/asm/pgtable-3level_types.h \
-  include/asm-generic/pgtable-nop4d.h \
-  include/asm-generic/pgtable-nopud.h \
-  arch/x86/include/asm/proto.h \
-  arch/x86/include/uapi/asm/ldt.h \
-  arch/x86/includeJ ¬aèŒ|Q¥éG1D„¬)öñUŸA66èï’şvy–7û¥¡ärU¯(fñ¶«ä—Û6±Nmÿ)Úã$4œX°åÏCìœYÚ+ŠÖ…hhúè°µÏ Š@»€^´‹¯7ö÷-·êOg×ŠP½VIçe	¡;º%[N=r\(ÎÒU`àïÁ¦ø}¤0¾ÂNmfÓ2À%®À:şÀd_lÀ&˜İ§Ôv*^æó0&?ği—†nA-ÑR`ÌnËğçà};S"ŞÆ—º:èS­à*‹
-·‹¦îu¹µ¨»Äk"Xä?ÓúmtÙå¥Œ{PHÌˆiÅ¸G«lı˜Ï¨ÄRÙ4Qª…®Jq½`5ªO€~dû“®¤Å>dÙ?s&6Ê~K 0áï’˜¿ƒ¢'xI¡nf'Œú–­Éğº9}ğ‹¶çCò¤Í!£å¾²öÆEve]Äq¾àLGeméa8f P«S&;ÄM•1À$-öl l t˜H¦wAĞ4¥9…#•Ù•µîŸTÜöÔîb÷D¨ŸZ‚GaŠ0e5­ı1"–ˆı5_]¥ß§®é—,^iÍ\ÀÈ¼¾Fı˜NÙbÇ`fÌÚô¼¿4Ú‰Q=2ÃYêáÅ%AaÓñ†>³½)v]Vd^Í)¿€8¾)){˜ùÁÜìíœ, b½"wØGfãñ:Bµ9ÊÉ…e‚3§Néñ¸‡´¨J“­NCöğËHÓy|M£-İáŸİiÍ<Ù !±\òÙÉ×İÃª*UpcÄ‚
-TÇ•Ìıg(Í`Ø2I9ıHe½´@NŒ]ûÍæ\Hjz×à«µ3œ”:	†ĞãúĞ€^ÕJÎ+Myh Ç:Ş{ÕnºoºŠgö1Llvr;›ıõÈş¬-¡·]Œ‘¯2İÎº§Âã©ÏÖ/.æ´IÂş-ÊRá!‚‘¢1ğ³•ìŠÁ›é;å–çŠ›³™#­Ùh×{æ–Vçøæ?l7IpÁB®{8†P +X³Lõõ‡J8ªTîœÜˆİ63ç–ÇÓã3¸”+¸æ»ñÛÂµ¡œšÓ:=:cá;-Ét»¯Ÿj]$Iº© $Éâ!OËOB‚¡vòs-¡ªa¢©Î@t^’™	-æZ%èTÈü·ttˆºP^˜Õx¶?B¨/{ÕÛcê8Åfı’jmŞ˜eˆ#²&ì‰´sO£Î$Ó–—ïv/9<áµ’gª€æmâ¦ĞŠ÷Ê4,9ís4•„?V	Èçv˜ij°#ˆºéf;*LPUv‘n§ïe}í¥öâD—ŸD.8å!vÓ=ÅZ_8ˆ2õÉ<	Z*cyÜTÈä÷8àÑ¬ãtE^™k ÿ­€+ä´ñ_h'²Ònkæ…U²£nm˜ôÄ©ÛWÍ¥¤zÒê™íåc‰²ºúÏl¨ŞbóhJ=V#ÀŠõ3Ñp’Œ÷^¸$\î‰hpUÒIW$.=Úé0—ˆ™ø^ñRÖK&ÃbúıÂ¯^ÇZ0˜\@ûÒ±œşÇ¼†Ë*5œ-@Üğ×œì7š¬~¥÷ÌG1¤Ğ*Îğ§ÿjBı‡İ_X¯˜‘ô`L{TÃŒ^áL¸}E™mÕL*òB¿Úï“ûÌ^áò½sPÿ.mÆå„x³Rtf.ƒê„ÀŸî_D¦	&r>íÿ²š:rñ\×­®í2[&†RB“qå´;t4æÚKZÑ”pø^©ulf^LCÓ~şU ?k $>X‹\˜G£ “K©e§ÎzşLB=.B×`zhƒ^¢¸½k¨?â7YmùPBeOÈ”˜—z>UŠZÜ²$úˆo~cTG/·Ü½ç<v8›—÷DbÿãÄC	ûÄdùg¼í…Ú*§½«Àˆê¥»±W>jcSìÊÄ„XhmE†åïÙ®ìóÛd¤ òw>B[ß%…!m¢Ğ‘²œIk‡±ŞèÆF¨şL”_Ê¨û§¬³KîçyîH´W¤;àBË—“Ô]Oœ‘€’’RV1)Ü":TÙÃáÿïRšKô[gûH*ì¼Ñm¥¼ÂÅëW‡PÑWpÍñ¨o‡¿[n20"&™İYö²õ˜°¤FHƒÜÏ:b°Û¼ùÔ<´1Qøçñ(|Ål.oN»Í5…¬§Š€ıEëà—ÊêÀDA‹ä3‹¤È$v_BøL½B%D—Q‘v`ÇJ@†FÆ¥Âåà¬£Š T“äg=&çàyÑŸC¡_‡t:tëF×Ÿ“xXÎÖ÷QØ=²)!·LËJS £ÿ^8rÍ˜Cp›Úô ß¾RtyhL`fíh¥±öp+"™—Ÿw-Kã@D9l•+
-Î£ÔœÅ£H²eôø½¹üº3(I}@e[OØz‡MŸTsÁjÎá»ßKÕ¤–ßa5n=¡<=iöòƒDXòRy%®²ı¹·Ïİåiló°tÂ„äqR0Çø2S™†$®s~#§Ö'”ş?¥™sî5ä·}Cp^R£y²„O¾c-3#°¤â÷Ñ…yXzmqØdÎTX·UÃXb$VSq¹Ô ¨gk_LOÀ­Ô¶—ùX³i!oGÂíuBªX†¨÷Ú¨5’f’uõê…M¥“ÀT[f´ĞmPu2½•'êÎf@L|E³‚°d¨ÃX€i—wU‹wÆ}9*Y'ùU]Ñ¦ıÌ‰Şv>nÏTÆá^ŠKJÃ¿ø°üH I¹úb×ZÇ<(¸NRñA]Ì¸S,År)ŸÅ³PêTš'Ç†à½³Ü?‹äÕî.ˆ°QQV–dKò©k…b€İšaåµœã—5Ë†DıSãˆ±—Y…Các.ó°Û€Bƒ&u*Ñÿ& ¿%Z3§S(Á\ÃÜ±`,ÎZÛÆïÚÍ£êTg#Úb¯á¥Ö=
-›#ÑÄstÏº‡fv$Ägj³TNm9²7¬n¡48'wrø |Š=yº_ÇÍtº2úYrË8(Ÿ o[ÇIC/ pVøú¡_î¥Ê/ßjLqwğ›àGüÄ
-Š6XnèäÃ°o´ˆhÒŠìÙÂ©n(/H6ÃïÄf	ŸF­_nV€ ”/x‡~
-úsàa,IÓqùÛšõôæµoüÒ)ÓECo6UİÒ=©ÈKŒ—*F~q­Âhúk™€U¥°ØÉ€SıUz{8±‚êšc>Xfvíb—gßVˆ*¼@Ïu–åM´Væ¦õŸw^‰Q&²'Ğ»Ì©Uhd	"á‘Õe˜3v£# ¥Ìop_Ó wG#§Îi”·ööù H‰Á†hà)<Bì®F‹ Ü¶Y{¤{o}ÄğêöÏØoôˆ(„†ø$ŒõüÓ1Z¨nX§–ÄÆ=Vß8˜€Ú¼]¿ı$»B|ìT&«èÇk}¹ÿO\ç0Ğ&|­0¾»—c)ÈPÈoJ•î¥0P‡|ø•ÕXC S«i…H¾¥Wàæ¦ğ$¦óôIû­·°+Ä‚sb–¡nÈóøí?ÏZı°*·U+í…°y§ş½ñÓ¬™÷»¿DK®Å=§Ubïµ=,ıôO)¶Ş›
-l±µ@­¡~³ê‰ó¯K¤¬9NÌÖçnHŞnËñ"ú„Çà›ÌƒO âx/„*ƒ/÷¡iûO‘ş£…¼®Zâ·ÊèdîÛnªQ’G˜Z–›=¢a÷†‚sÕR½¯Š®öâ p´ù$5n«û YŸ¯u›6ÉÖ©ïª"ûËÜ„Ñ“ª]ã]—½±¤×Ïÿ…ªq"bvZúÌ°G[±)W9¬ˆa€×i:Æz%ñ¯È•Z«åL`çe–¥;W>¯² lj¬¹” y5£O²¼XÔH÷Û<Ó2Œ¶ gsşÊ:xÕ„H‚ŞÄĞ]“8}¥‡pØ/¹¾{˜œæUîÇå¾tñ«”&+KY³…A©M•{ú¯ú&˜½aØJmhàê>ô¾‘¥Œ0oKÉl)½<ùĞì­ü¿\R£@ĞZŸ†9Ÿm@=ÛO}ŸqÃéqà(ş_X¥2î§*[wÄ´ŞI×äÍwäÁX ªtt‚í\¾ATDÁñnŠ2{«ïĞâ²ÎRH!ëM˜!ş2Ô3“”Óƒ9†ğ§í gé-JlÏ´Œó€wÔâk³×¼-Ó x ìğle„…#®¡`‹
-q‰[‹ƒİÓÇ°€gesæâ±“JîÍ­Ãn9±™E!¼æ\i¼©$(øÉNúlÁGÔNI‡ŸúWß^#ÈôÖf}Â Qzë€„ÇüYrtÏmæF9ğtŞ‚—ù–WéIƒöùièKj?!µø)Ho×k!—0Ãœ«æA˜E®Z|Ï§Ìg¯?sfQ±ì—mâsOmÉ	/ÃÄ’)fËuqqEƒq:XÁ'ÇTŠWoÅ×Ù[úÂØÌ|Ü}¨½Ç
-’AŒMÆ¼’Î–3k¦Ü†Èûò'
-{“H9}c+ô*#Ã¹_ß3Œœ„5à­¬u~¸1‡è•–Ø{ü0NÒ¶¯ıa¯ï?‹ã=UœxH™½`åà:ÂÜñ­ÁHäÖÍüwË­õ#.½ÎC(¿ôo–1»W´€ì£”iÓ¦Cªnªjiš·èÃ*¦#×ıñÂ´êõHı©rYÔ$tíÀ/l½²¬Dö1Pp@£Êsf
-Ô%íl[*üâæ€XFUGUˆsP+Óçe/#é³m23@vt›î´¼ ØôÙÂÄşÙ:aHÛÎŞÈ¨µt’>=¾ ®Ã·Ç]o‡†÷û]ño—(Ã/"99³iãœ5©$¹CÌ‘Ü(ç¼±ŸÌpßPxÏÑâ÷ÊFM-‚áWPŒj‡K¯“àó)ÂUé‹eOz­£ÂŸ·€·v¼M³Y®uŒdÜh5ÅG²ÊUëááÿJúä()–ú…ØÓpPy$+F‹IWSß¦ÑĞ]s^€ë>>ŸŞé FíVCë•rm,Iºabİôúb&™/"Ë¯U|gµë"³İÆ£Bò‡c%Ó
-Q›²¾„]åŞ[Qúİ	ìÔİ@üR“€ˆ$«'ÀD³¹ÙIÎ¼ HÎ«{÷áø7Ğ±É<AÉ½: Ï¹Ø6Äõäàf6{è°­­Ÿ4¼c±‰'¸‘{Rßm’DhöÕ•I|vÎªé]	?™ª‹Sµ§mìqÁh¿¿E|ş½â÷é.UäîÆ”±/r&_,
-Á•…êÉßwÃ¾D-å†è6k<e™HüÂ#rx^nı“÷š³İ£eÉ•X­V‚%JÆ‰áÇæ%ÃtÚ6[ŠaÅ…úP3×Šæãç6t¬Íî$Ê^ŞÍ>kÖE<ÒØi6¢7ãl—O9GGëí ^å¿¦~ô<ÊX «èj¼ç•ªäl?…öQ³ş\?BõßI8vJ–gTMmSZz@ôc™Ÿ}r„r´)6‚¾œI#_UÜI«Œ*˜6ë¯ú›
-'Ÿ½Ÿ\ÍQ‹Õ+<í•øh=y$ëÌ?~âG}af¾ìm 2ƒU[tU1W#cƒf7*Îª‡³¹†ã¿ë¾äélA³\6?x%mòB¾U\Š‡1ÿé'—¢ğ«JºQÔzûG%yŒ÷¥çİ|‰7ø¸É9£¯â Ô=çDÕ¦±†òƒ¤˜½oœá2¿°(ñ\ÙÒ·g. µj›Ò;Öğ´_~¶7<O†f]ÿÑ°l—jG×ıpYìV~BdÒ*›×<ªÄã$–ÕÀw`âğ}ÍwË–öÂiV½£IÇYâò±~Fm‘$8š­!ï‹°»K°„VGù2İN^¥=Š	çÄ9Õë4Î7»§K°Æ™ÜY`ÙŠŞ ¦<ªDÇâĞ2KèI‹Ï
-z³#ûöoÛ‹†ÄÃ´{fè¹y½öR¶İÿF¬æ°qRóI§i'³ÁîdÁ*1èh·}ÚCõ`zÚ(Ta²wP+@<ìÁ>ĞKá0Ä“M‹±r1£cü;l’©Èß,óUYèD<ğ@RÕWtıBhsDjË92Ê~”•!sÅÿèÏ&tùä œ˜.¸0çvkVŒibG têüá´oİ‡+³Z/ Â,«Pó]Ä ¬åÕr­[{dY?Â)*ö©œç¬3Sˆánš°ø&yb(Ôò§ám¨Åe¯áû?³i_ü˜Û$õë´2€®;è»©÷d–@äÏŸ©äi3·b[1T?ØÂèTÈ„ìõgP´_$FG…pİºaß`"¤õè•¦îÂQÀ!‚ùÌ€vÎ(i1Ÿ
-;¹‡‡0ÊÅk½´P*ñ½§Ny‰È4‘D€.Û½
-SıxÔ®ß[&„¤sHİM"ÆhÊÌm Ş°f×%sYÙN¨Îõ6ÿ9Šıı¨èhnA¥¿q&.¦ÿ_|)şy<b+ªT4Ä&n€–è?n ±R¤ß@‚U¸A3ì­B%´xk/7€'/í» H¥& ÂJ?aãXÑËL»G¥ÿ‚ïÏO‰Á´T´=7µ‹ñËo»Êß«„N¶ØƒsÕrÏ)?ô³^82º«d6vt@Ş•¶D!’zyn¶Æ-GÏGŠÅ&å"U	¾,at™0¾â¡“wƒ§Œ)ñaßFµYŞŞËXuÈÿÂfqZviı±IrÖæ³ÓÜ¤Ö"å*½ƒ›çÔô
-úš£lŠ}ê¶ñ.šÇnÒÔ£A…·%®ä@±ä½°¤^ñ0ğš¿!ÅÉf™şñòÛLw‡ÔsÇ;Tşñ>\ëDpV’+İ¬Oï}vìj´Ú´ñ¡›Àr"x²Ûc\í^–ÆÒ|Õş‹Ú)XÍ1íïã»áî¼I…æVŸ½F“Şİ„!í|ºÈœ¸¿u¶°IÇIæ,õV‰ošFÛ²ói~ÿXº{×P€¶/J×ò,–:ğ0Ìs@ykk²²K|‡°÷C¢éÛßDvô´U¨ —„TRşw)
-’ ¶kŞ/HÈ9²!Å1¼._KN¬“‹b2À`Ø_)8`Ó)YIêvh8ãÂ$ÿ4ßæA,–Q‰«ô [ ;×ƒ	Nyá¤Ñ“e³|0XyÙnÂª )œ úqy¿X™gªqÀÆÀòvwËØä´N¬h1ÿ„øø€»~jhø¥gßâ¥³nüØ²Û0Çlé%‹¦•²óß(ïuàÎ6^jç¯Šºt2´“C™£ÙšJm.®5ì®Ì.ëH÷Ø±F­ôkİ~´1`ŒXNúmÈt35z^ù™SM$…D~|ş‹?ÂäGq¨bi{1B<½ãlo&Ü§#˜­øó@c8`_eõß’vocØÌË|‚ K{Ã/ˆ3:Ôÿ1'U&é<È-‹te„ôß]9Šå$+Ãfó›}±ˆüÏg\WZx¿¼Zªï¡-rr«Ø­bÃÀ®½ceeˆÂ.PuÙa‚Ì,§6l«’®JûV?<ÆMJô><"8#¸_l¿O«¡Aá™ÀzÅÏw(ĞZ«¨İç!"KAi/àu{i"$Íeê2¿07«õCÎ‡|t~ÏÆTLoU–ÔÉTÛ”İÅJÔ¾ºŞ‚ ¾ÿ”Y-ƒë^]f›U/İ5x(V‹Ì'¼”Ì÷Œë<KØKc/2ùqWÄËÉ‰^ÎÛ˜:='Ò(De[xòˆBÙ?ı{Ì2áŸœ¨ÃZ·í*<¸ PªîVö˜…5ë5lÚ(gøãU|«¹Ï™Bök…aäe€»V+}•O1.ÄœƒŞİÍ%±ÉP„¯a_„WŒÑmßÊW*gœÌşf»&7íÎy9‹qİ×Ğ—Éû¼¯¦¼İK»d?Êèë´¬ÒœÏÅ9¯Ú)»g<ÚƒÊ¼}~óï´Ç›»7Q9=‡ŒSÕ{ñYº«:7á¬#Z‘˜fj*VáµÂ¶ck+§_G–#&²ój„ılÆY$Ş|~úÊXï§uì:±»Ú€ñµOÃKislA ™gÍ­½(	˜t×ÂAçWç‹ù³ÇXÇ¡WkÃÇ&&æwÕôˆÕ¿{+”êÊÄ½IÌCÆ»'˜ñCÍï›BN!-41¤_ULÄö&7t/¶ù½1oH—aËÿ©Yùhb*CZê|ÕüèËZïï¦
-xÍ×/v‡ÌEé½r*gbn”Äˆc)»iiñ)5z o32jßúÚ·€Nb‹ùmŞs)K>1M	÷üLÊäw¤“íÇÆGÜ‘º9Ùú}7üUOj]‹ ¯‰FpHşw[:£o„ğÖ‚+¢ã‘j6\°?èj^ÚqİY¹ª³eôüuyÄm.0ŸÛ´i«kl0ÍÆ±ä{“%–Î4Œß_füOÔ|ËÅSı-J 5á•lÍ‡èª–»SâÔñR½LYİÿÜşº[[Ï«-(Ï¸ËrDßn"GSÃ¾Sv–è?c[½^Ğu_L/~‰¯+Ú …“tÔB“4†1K"‰Ğp”¿õ0û'õÖö|¡{Ê—Üî5s—ª,¡YÂN0Šòıx}¨tlèJñê<åÄ\W›™y¶
-5¡ı`eÏ ™8Ù®s(§µæ|ËÆŒí&Ál»ÌøWÆ®T—·u˜>¯º bƒÎÙœÎ-èT§ß§ë†Û…e9»
-çG§£ï>SwSj¤îÚ/nÊ•İ@íıph‡M¿Ú†v ÔÊdşÏû ŸB‹ß5»^¯F#¾ÒÜi,='…dÆ¯yAå;ŞÕEº×pÂ1ªÎh	u<‘-à« 3_wxĞL.•¨Æ’×VË+}ÑÍ­7ÏaÕ`İ,«=pH@}urU;Ú¡«JÕÇQh}Š„½İ@¡/è3>ªvÎ`ßsÛ‘©˜Ù#Âõ¬å{~ñe~ĞOÃ(¦Îî…Rã´Èòj’WNRq‡ÙÚÖ¿,¨(Âüêòîpˆ.Q´àiì†RÊ¶6Ç%ƒ¬RtÑÏí=Z,¿a}i? 3xÏØRvR-Qe¢õeL‰ÊlfÂŠ—ù3Š]3
-„Œ£ ~÷ßáz_Îk~“J±ùg0‘-=‚$·«b‡Vzõ¾`˜ÍApRz—¢|&fOC+Šv§ªĞ‚”âp­¨‘L$u_Û ÂÊúoZ¿N¬uN—)ŞuÄ7±~Dy_«Åq
-0’šåUÙú.¿™“R}2[ÎImú<‹óŠPvæÈŸÏj^<PÙê~°†Tåi»®‘d†h ÀŒ¤«moZUw7ƒÓ“×6SÂÅ¬û4EWe‚¹.|q¸à‘ ^ÑºMù,šP³ÜSå¾$>*ScZ%é:¢ÎQçşƒ˜^d§×*{ •çãüŞf&@¥rˆ:¶ê 4L
-¦N¢d#éÖG=AÑ ³Vœ(Ëm
-Ï’s¯ãƒ¶ÒëK$í¾DÇ€Ñ­mc$PÆÅNì±ì	}ù}2Ï$54€H¹›6İQ:@z—ÊDš·#zf:a²Õ)¢S…S\ µPèÄ¥ˆ“ÎW)HOÚLS»îæ¤.C%É[®ÆºtO\9Såaqå]ı¤©fº‡<¨‚JïÁ,–¤”¬ÌèÒm=«1Jí¦E/*”^e<zeZ‹¬%CÊ7ydÎó†¥9Ó0N\¢ÜŒ~ÅFÈºy¹?³t:PêcÑÿ ôÏ^ƒ%ù7$ƒoySVT™úq8-v0õÚêÃ!<½÷ëÓÖì²¹u_#şŒy­“'è¶ ÷,TƒSˆµY–j¬’÷“YiÓ¸¯GJ,	J,F[g+ùˆMVÀ@õÜ °ıGyÚo\®ÄĞéb¾hàyMÀ²P„œH¹¦ıá§˜ïòÇ©Îß¤k¹²É¬U è¼»Rà‘ÌäwZÅkräQ‡áw~€4äDôh”	,Ó&œ›õ’ÖÙAMG!½$`!0Ş½£İBÍ«ˆ<‰¹êD¢¥9º/€Î]3í‚ÔçŠ £µÒÒ=uärIx#‰?©ĞJí¸0¿a3–…ºúİxü—´è	îï–:b¥&"æ`Tù<†úÅÆiê&ÁSùéŠ:•Ç3ö=½Ö´óZÖS¾Ú‘”qwvF?¨–Ê*‘&İ¥ïÌ£Âš¼çIùÌ¾Äj©mO–*ç:¸¾.ZDÛÁ‹²ç¶ÆÍ½fŸ
-ŠÜ-“Ñ‰ÙB0XFÖp–e%sR:O¸6Ê×SVËĞwĞ¾'±ÀÅj°¶öàÂ/# t»HºÜRc}éHş#X’\dC„ìÔmÔ¶¦®{¤Œ œ¼Š†ıvw+×]À¢%ïÉ‘–´öÖFğè4Få—»š©ÑÜ§ÿ¬^8BÇigˆ]p L÷ÑÒ°HdóÍ¬CiÉló!¦SÙ®-
-¬åb¨ÎPo¥ZªŒÅÓ]ªPİ
-'¯Ptø
-¦µ±6)ş-\(f°ıF:ŒaÎ(™FÏb¡øº[Ó ­vşıY¦“"À§æš7ZH©Öjªv2Ó®–íaNTOÎÀ<ÿYa r –A°¹ë‡w¬A0\ê1ÉÛ4Ÿ×z &PCMsOvULŞŞyÕ_#ËŞ½[ÃJ*$Û´úŒb…”nÃÔA=ñé¿~Ø &+uÏš5J
-OqŸQoòí`õ=Ó‰y¸J/ÒXh®šÈˆ°ËİŠW/şßº‘_bôØÕUH¹ƒß ‡»Wïÿ HÚ‘"ŸqÃAk2M0ÅZ"ß¡ĞP³9İä‹:p:Î[H'
-T— X$W¶LÊÉásñ¦!.ÿó‹ÁËÑç[Ş­v:›ÀÀ¿ûµ˜O,²F‚b@Ò”#"]»Ü87q
-I“£@I1Ìé¸¿6Çp×u°‘
-sşR®Š
-[u³9ÛB'‡K`¨è¨!ïÂ±‘R×e±£Jî™êlw½¬ƒıR°ƒt/{ş‹«6ËR,púÀé‰¯å®¾1:´6F”ñ%C|‚æçĞ[L_¡–|à#´IOy\H¦JÒ^dTù Ç|_±Ze/_¯Wü Ñkù—”f)3!Ïë+7T¨ÂÁ–o»Cı}mÈR|H¶9ŸƒP´ˆWM}To^cÉz\Ú$àUù2ME!˜*tk~…:	«â,ï	ÈW‰M:tÀSë@¥1şğĞ
-¹éûg`ŸM¼¸ù_lã@‡(SA	/m#eá4şë–hkQs&ôİtÈ? Ú—)5Ş 	–s¡¯7¶ëÌ9È²!ËPySû_¢Š-•1“%ÉjŞ×uÈ·Ğßºl­z3ğ¦È2ûDÿgë/dk.Î»Ô¸A
-(ß¦€K¼ñkıOõTó©ô5¿>Ogü¶8ş­§Cûj7¸¶İ[;9µÌ3 .Í#c¥cş,…Û'/Şó7I+Œæå;Pb4Â×÷¢†¸_pCü–Ôˆ¹ñ»!øS½Ëfâ
->°¥À„RÁC5É*İÅ‘“ğb¸G€ócQ†ã[¶i.ÒK%à°\–¼M sœRı¿µZ7V~à‘¦§ÿ¼¨Ù©1£ïZ{¬!ú+á  Íj$İu;âÂd,Ìâc^)liiN#f
-à GààÄ:K×µs¦˜Œõ‘„&|8¿h&æ¶‹Óó®¯»Ñxdwé¦Lß¬ßªmô+_œrŒâ±îaKafĞ%7@ÚÉŠ4Tñ§Q…·Ğ­ğ|î'ˆ“ô‹‚}º	pšHã¾Èçã!ès’«I$\È¦+®Ÿ PLú"àºmwÄõké5ÉsÏç´ÁÙ2û!ŞÎ§ÇYÊ$—ºùC{™=¶ÁÉ!˜ˆş$ı¢§'¢›Hƒª8µocÑ±±½¾ŒÌ¨5ÒS,Sä=„˜ÌM #¢ ıÇì„fáu*JM§„à
-û¼>¥®#Å¾º9¸JuŞ=,ø@„ŸnÌ¥ü¹¡â‹«<ÎİÙ*=òl%×#-¿¼w}¿ hûyxß½\i™J3páuCçŞ®î­ä~¥¦”×e/eø-ÓÜ9G_‡æQ¢NŞ'nyrŠ†«Uxr”ox@™BÒ¢‰'rEÌÍZS S“ûí|—îjhú„mĞ[+ğÖxók·ÓıPºZJ[J6lP£]®ÍÎÖ*ß&Ûá¤P’Ğ¥?]DÓÔÂœºÕÅ´|ÖâqŒ÷3‡`Ë—–´¥Aùç]gÆRu?¾4\6Ò€ıtŒşİªœ#¨¹%·h½õ­š¸Hö<ºáßQ£¾âI4ùÄÜÖu!¶BÒi'E4ñ*´¸„ı¨
-"HFÔ{
-±h¤ ü+mRGNíëæ9ÂT×§g@i` cZ‚>$’İ[®ÇÇ)Ù·"|8`[lé|@µµê¢då]·¢nµâFsN¿şè˜6ğÃ¯¶‡
-•XZº2³„¿VCSh(Âôf…”)´!âµçûÃ¡±ÖJAA™RIËÉf½qh4Æ·H·ªşmB¬e”Î#ÏC=òx—KGÈ¦iTgÂ.VJ$7®ñb¸70÷fp:²ˆÒ‡¸ú ÉÃgè PlÆĞ[R(-m7îñl†Â}&WÔ*¿„ş» w0lİ7íY½ñÏ”wî‘tºT›ê“?V¬™¶ï¡EÀÃ†É–Ñy“© Õ…Ãr÷÷Ö‘¿Y‚±¥hûwnQ¬Ädê{­ò²¹ŞÉ”C2+—†ı-r7~Ü½Å_\G£Ñ:m ŞPı¡‡õ ÑÆÒ§óöÈ¸3†j)DÂŠm%â*é·@U[ÓM¡ş€©“,µÒ´%¦¼[ù¨ÿn?T§ÑL™_¡ü?k«¹¦å®3?ŸBoÌ<ÂßÕã‡‡XıäÍÛm›òab®Srbkh?ı×H*X?iQL’Ô»—{‘n?òåôOê ùKsô5\Â$sÖ¿šH£ÔQò$UÅsÈ1Èq¾ù¾Ã~ûYAAuÌ…‘¸%ÃnqKÏd˜ìŸ“ícnÅ±]=‚-©áñtpò˜•f·ÅFOe®†Ÿ"Khœ(~â^3åd>kÛpØJ©í©–€fJ  êù{… ©:Í>÷¿Í *%SOA2&‡AÊ±îøŸõtç9È‘$3¢”ØTÌƒµÇóa¾ÆA—ş“t‚QØ6^•xòÚØËÑŠş-a°¨t¦]Ë‡›¯öJ¯k5†­Ê´(M˜…7<d(şÙ~s_§jbvÙN\Ó¢—‹ €DÉlz¸r½"i«/}¬w³Q(Æn…p€_AÅ_°‹‹ŒÃR­k«[ÌU)Q†Ú‚êº_ë:\§¨DD#ôkSÄt¥ ~§Q%/fdR?n˜s>hTx†4I–8|p›	ƒ³‘(áº9qÈvl¸¶²Û[üòpQNñ,×ÀU¢˜ä‡•CJ1g=şÈ@T œ KõÙAÔòÂRxÍƒŠ¤o!¢Ø¿XC‰Æ¦ñeijÔˆDDGÁ'ı3[çAô_;8Øë§~Ò˜1b¤æÓø¬BMLê’¶=àá ÎÍ#ğ«ÎõP¥ QBÉŸÜ|Ğ˜0Bz!&è†K€m’tÈ«÷ÉË#vIÁI0ÙÌ‚5»!:^gôÌ u‰J'GsO‰zöËÃ0ËKOg¦‘°íPm•cˆ7¤ÅŒœÂ9-'×Lf™“¥;
-¨ Š·`xÛ7è4Óöo›¥6¥ÃFÂIqVÍqª[	ëhitÙ»?æn/B»•€gfüû¥ı]±AÇšQ¦e^1Ë‰a‹ËCõÎÁb©M[7ô°5ïÍ-öWP…,‹¸Ø6n¶"™¡©lsXN nÒÁ|d>Êµ2ƒ\Â‚%í³#j§:›ÕrImDŠM-[~ZHƒO´OfŸ@å 'ÊÍ>ÜñOJ}++Ì(ÒU9¥}¸‚.škfÑx­
-ß½üQFóU°*«Í?qòP|›f?SQÿ@1ÁGC|hç'n.æHş?ÂDy	J,ŠÄ_Åy)hÌ÷yÖÆó‡•?|b^¿;Ó±î‰õW-Úâ31¿Jc¤=£'úòÈaYˆ€Ò‰Kõ!ó~<DïŠq.ßª—0–"i"î™hH}±@×>X+ù‡¶3)
-m±$´"N;zÈÌêƒ¥¯»ò#’Z±Ô.Æ;öyô Ş¯Œ3î¸*
-›a¡ç?Éºs'Øz-jÁß­Ü&‡­;U¬Üœ¦!QÄıç¨~‰F?5Å9WõÛ.AçE†SGÕ–¶óãµ¢ùp™{¬İ.€„ÑîyİÇš'	¢×¤4Šã…ó‘Åt÷ØCĞ®y†f Ã½mMØèÉ^	×-°ßæšÂŸ"*¨Me<ª+ó–jÖÍİã-/œ|’Ùœa/Ùü(€ĞÍ4Yõ cãûm
-¢Vãô©+P#+Mi†f™z*nĞÌQêIöDıåËKx´º3¾9&€l¦$Çô‹4µôšh¡øç 7æß”A¯rÿÒƒ½NÛÀô„.Fµ=9m”ETÀrÌqØ
-²ô]&°ön	hÚÑSÒÌ9ÏhVMådyºPôÁ„m¢üë÷ÁA/ÈÿÙb³NÙBH}øã‘º˜~¾.`¹·–º‹ØÓDÅ€—/-®Úş"Š4ãÿQ#w[s$¬{­ğ X.ÜvƒÑŒ%™~Ü ÀÙ€ke?7ŸÛ®
-Iß*Éázr›HĞkiÂÜ	6zjA22á]‹5ç€´Dåºb–~¬åÎN’9î¤Î¶ Elp›Õ´¶ƒğ=™Xï•ºD·¬õ³„ÉY·^^w>=áèxÇPŸ,rIK¶”ğæÀ¾4¼­G!ƒ~¸
-\d¶À7/QY'ÙÊ«nø-Û/)\{*³&‰™œ#gˆn4Ö;¬ò±À:¼¬âz§õßåéŸºAàbu’¯´NÎó#cğ…‚ÈÉdkã›ï¶ÍREøiÏió6V1Pió~r¾blÕIµ9æøØX:‚Îœ/¦*ˆñ±(İùU×òäµ¼-†%ùÇyU~Lt¼¦M+Œ…OAÉú3™qzÑ#™êòÂÑ¡jÁğqâÍA;Wê>üAÇ¬ò„äÛŸLÕ{²ËşƒFbÀG="·È¶G‹µKWÈ»qÒ÷Ÿb<-â
-•]ãdp«‹qBT´êªNú…/ıÓy¬ëñİ¤l›²­ó5g"“£…ß´Ø˜·'EÍûÍÿ«@E)3—Jf2W‰ ĞÂàdzdÅ{ÚŠû–,ùé*ôA.™ ²ó¶&‹ª=Ş(C+Å\íÖÎŞKÁl|ı®•šç¶–IÛ´PW…-.g.©ô	”f”J5ZéÓßò˜–Ô‡‘àãıÄZ°6^H¹ØšYÊ×Dä´Ø/tòVVª»š¢<€C¨ó#?2$b»bìé'–P ·Õ}N-‚ĞMË@øxıe[4ETJ5–ñ]\5MûÆ0ş Ù^®,@î<¸/­VŸğD‚w4¸l£|õn¶©”¨Qy‘§ÆëÌ$Ñb¸ú¢\î(_ñp¨YÔá;s~¾­%¤mÁs|]Ë†GÏ®RHFÂüHd0Z†s ÷F!¿­Qh“ã	½æB8û§s½<ãÿÜ¨„#ÿó•Âg+6Ç^õ°;ÂÕI€Àñ JÒÎ¿qîÅ2Æ¨õH$2 ²`VÌî5R£Ó*PmÓ“«İ^§w¢ú`€1 İQÍ>õ.1†Œrş›
-Â|"4Ø´&”Ñ>òu‡Böa¯MÑ>A'mö	mÑéU¹lYô¿´šS¢N¤ƒ¦·ína‚íÜÀÊoËO­É.ûæŸh­›:¢Ã<°ùmBĞu`´¶+ÏÈ~|–tU¼ãGƒPL¾ç†vó|µöÏ6º5®-°¨ƒá!á0 $ŒIgj[jƒ>k­ªø1J³&'`\ínjáî¨7ƒy«•ïÔ[Ö¤Éÿ}±iÇ¬Os3—nOŠÔğÜÔãë!‘pÅŸ¨Õk¬t\m2”ÜîÉC@,¤œúLV–m|ÍmôÃW½À<™!+åÌï?Æú·j‡ÕnõI¾/öÒHØàâšo‹ÛÃÁÃÇ§—×ñ<‹âjF‘¯÷ÎögO-2‚‰ôu©
-b®ÔïõL
-&sb?èNÒ¨ı¤Æ²üØu®‘¹è~iòõWZœ&"K:ş2ÅFĞº0¼Ñ{£ÅÄsÛ0fıĞ¢g9\G³@äÃá“°Ş×é`³Å±Êbè\™ì%ÒMí¾Ç¤0İÏGÈÇ%ô`=\gYşê™ô°u!¥Æ¹–<?“Ù¦¹ì"¨ydw"£çåo¸>²è‰¡Ÿ(³Š*“§ë9(<T©jiˆnmÀ‹Ş«qùgu¬µB»÷Ñ¹[O2ª™Css\°ùÙSˆû”–ÀaµŸİ1‹P!·5i¥°Õ?aƒn•Pùğ&6Û¦âì¡–d1ø#6ó• =³	êÛØÊş†÷69¿Ø˜qî Áh…YğÒ?³÷hzÕ‡Z‘•ƒ@pÔÓÇ ¾FRĞqõğÚÙjwn%äC¾©Äg³UŞ5&'…'›ø&Épx”mÈ *.aN¹D—Pæ4íÿPÊ@0š"¨ñÄ×Ò°é¹œ¤«
-Ì	¨r†¬:/Ó“?w¦›¥şá`pNzıœ~Õ.À\O¿ÌGªqn$Adµ:mÛãB½Jtß<•2#2Æ¨êsŞ¤âòÊû	ü·?×Ğë=Ï\{ş ŠAlØğ¾ùÎhÉ³’úD<¿ù{úï9å°hi¡ID)ÜÏb£FÃ5ş:ÍN8>z¬A;hà’ä„ñš2¬Í})WA ÎQÕ‘›ã|İíˆÕaËèL„lœX¨S¸àØ;hˆåÒ~ßŸT!àÒrw$™íçÃ§î¥lİ”Kì%ÄÑ¿)ÑçêšDo¶ÿZu[±´şğf>(›6	Ü‰“{¿šXÅ:ó„"öŞOPÃî\¯õ ·‚‹xpÔkò{ù”4~iå—VñYÏsõŒ*ÅE®.‡¦Äœr³.™'ùŒÕB"¿ •*µ!çjå	ÂC8-9vvpLªÈ%ã­.ãUDÍA$Û»6{¨;ë˜ã%ı„£,Ô^Mõ×,N·ºh 0—üa*IT‰	L†çLt'?}RıuÆ~³Äd_óô€]NTváEL¡VªwèØÒüeuúMYO5¢¦ùCïW§¹_¿£o^èµ$ÎIÕnË°L•çugæTë;p,µçl®,³ñdE´ıIu¶ºí{¸{gî‘Íg°i3Aîn%’°—Ôúƒ
-pfVÊ?t’@(%à;Ã¶Æ{ë8úéí”RŒ&©êáÛw|–q¿uMk\]
-Ä^¸§ıë%³o¬åŸ&÷«Ş+JÕ‹	GÒ”Æ_¼®şˆ  I´ïp5©‘Ş‘Äµ»: €ß	®¹íX´†2ú‡ö”)+P?VœW-v/I7-k?&ç@€"qIg¯œå$àä r ¥¯õC‘[nü6ÑFLjáú•ÙÑ<qx†?	ú ŠbQqİt1+ò ®T®0¤\Rs…ÇZZ¿ÙCXõÇD(0è¥÷íÇ+ÑS[°Àò†É†¶Jâ’Ÿb´S£=›¨Ëİúm‚tÇê7 Â Èû`Q»^y	ÁÌKƒ!gVlÏüúÈı»¼»2² 7`?µ'vÙ–çå/Öén’›¬Zéİ&è­ëq}şºŒÍõİ¼Ékş¢ßÚŠ<ØgÔRe÷éywî$q÷Ğò ÿ}4r´'Ïïvş"¢^´f·Øë°æóQÔS“jrF”Ö€ğ±æ1=t²ÆŞ'êâ.éÕÙ DÅE_ßÃ¯Öó¢wæ²&±@¹Á|ª©^ƒÚI°+×`ƒI¥4Bï"Â—Kùêù‚¸‘Y+—ïJó*t·æ€ç·\rChJò$E:ÜsªüE¬ƒw”vŠáôÈwÒîÖ?/«qeFx ©Ú¸WË0šXçıAàWé|ãûìÏkHŸ'/¿ñT ˆw<Î˜ÂÚ-³ó¨Ï"JÔ–` v·®£Ç­'Y’Ç‡Uxöq¶[¬ÊXMlÃ{aË@\ŠM1ô£È"Tn²J—oÔÑ‰±Z9z´ì"—îş9]d¬lØ+>ÓÕ4ĞF¸Â>-»ßãe¢ë!¹„A­·Ó›à‘¼¯×vd/eJ:¶Ñ¬Ê¯¬¤BÈ’ËëÕÙO¾¼öõÏ{ŞG{eTÄãÿÕ•ˆHÚ…v"^ÙA¸Ì%(exó u%#_ÌÜùl ôéò8AœÙÔl–¨3½ID—ş„<¾	•”ÖgÜœ	ÃÑ1\p›,kÏÀ?7_3Æ)½Z2`ÑÒ‚Ó¬·LÀŞøìœã ¥í¢f7Óï‰É<ÖoôØğ¾V!•ï…÷ÒqŒ0Ù‚‘C¼ºy?m²qİÖ{&oĞş®$–Qª5ã7›ÊÈ‰Ä%rµ,dšaX®Üg^ 0gñŠ„ĞTo}ÑÈÁŒı„lßšµP[u ÁıİåÎÖ0Á›Š }Ô¾»Õ¾DZ«VŞÜàUpôÛ_D_T”âĞK¬M‘Ôßšp*Ì@r­¾u‡"!V$ÅFÑpB»€¨~öµc{½”ÁT\8Le>³;‰ˆí°	ƒ­øb(ôÚå´VtQ-Å+›È@>©.²ÛÔ4‘.¿	÷ì¦©"Ò
-ú@|×ŒŸŞ3Hñ¾Fæa@†|hÇ‘‰£ñGe7!MGĞĞïŠÂ÷ÓtëÖ÷°(şÃ~ıYf)ôØn¯¸Ú
-< Ë°x„Q$a•
-ç¹|™«¦É'>£Ÿ?½
-3;#¦í÷Œ_Aß7‚†“âQ2ùï«Âî <Å¸µPÒ´O>¼æ÷[%®ÒÇoÔ†òíûé0Œdae_*
-Gà„ lºÿu$¬†èòü½'Ü-p¬{‘]Æ‰c8YÏŒ|Ê.æ†f/tœbB"ãJ†ô£ß’êçïó=%¾x¬«ÛUGbMÀÄı×Ì~ô©—Şf¶Àdp0¬#ïYÑP†‡ÇcáÎ1îj1
-KùŠEéÀ©ÑĞ«lĞ*4øRğ¶®ù
-Èê¤¿¸4j8¥R¾Â„&R±É?¾!i÷L[yÊ3D×~Í~d8EÀªo0°&~J#w	,bWì0wÁ4KëP£h‚æ§¢Pq|û#/[ı³"öÍZx[ÀT8êw#‚Ş|G	óá5—Ø-Ì%ıã¤,­q1ä5Ô6Í¥C‡Åö¹MyåBã¢Ã}Úm|BS¶ÄVÜí¸@T¸rŸšXCQğåıbç`ÔBiU—ı%äb]Ï6[cæ!?¨ƒ¢WË¼³Ææ§ÎÌğ;òâKN”€™€iæãc]¥ûXN±}*BeXÕ?£²Æ NGwÌ_Š0Ûpñ§1”0ÍŸnŠ 	6•{ë`dó;.ÒÑ’VMÁTÒÃĞÄÁ»<õÌÄ9ú+V.,jQ.ÍÌ€ àş&S2¤=]úŞéÇ40pú¥çcUæ€ß!ÎRr½‹urÎƒ êjÔ§êïñùª”»®ŸğçŸ;È(ùšM½ìù)’®øŞß\¼¨úéÚ¡Û§é™¿leIĞĞúY‚„ŞÍ‘Şó·G7Ú™nó»²0D/ßÍJßâeîÚ{>zR-—–¡>Vö¹Gƒ/äï¸°
-EDÃÿ–İP-,\ßrï^·üQ?ÿŒ”<t46 ŠT©rÑÙ±Sı‹Í²ÆCU9í1%/Zbâ–³ÑØr¶Ê†ç+j@¤øªá¾­0%Z&N‡ttEÏ‚ºøü”k¥¦S2±,¿Ÿœâ·‘şXùõK¦@˜üwşº¢ct7;„=ic¾rˆõ`ÖéH<Ñ
-noÛÏ.V±ö&İÚ‡úPÙg›”AŠmAöŒFsàU¡zÕª’$ZçÖ<eşœ)8 ûDÌØ¢€ô~¥ì˜y“’ì¶Ja7)€¶=—l½9Ö(~í7ğa«ıÄŠ1Á cÏ‘: ùŸ÷$ê©œ€şQGífĞt*÷ƒ¹6¤°É¯éRìjH•`DWd–ac¼¿µ×QÄ†ƒúÀ˜E|û«¨¤7Pk«,?ÁVˆã’1f;È÷“NÅ±c…½ïõº)gj}Wã£‘j“Ë8'Š	H?ãUÙÖ¿`\zïeaæn&E~ -	‚ÚÃÉÖ2¾.Ï¯,eHôÑ†µ
-³6,sVX§Æ©2@ài/ƒÿ;cë±r’*‘K­õl™‡—˜¨AXïŞ8ê=¡7r¢V×ğÙeO£ĞYÀ)ê}³2AÚ«/6
-{nåüŠôB [ymèÜigi75)
-Ùø
-, ³(üÔÃ`½]Ûğ­ÿœ æ-ŸZéŒ/^9È.ß®€¸®Ú€ÏY=Óé~[6´puº±gó!‘ÜNê&pVboNât&ë›ÜÀë¥ÎTÄKÜ¬9z§–ªš…ï=Õ.Ùı»ğ«€bßNA¹aâ ²›j¾áÎùÿ¨M¢@H#ÙU‰c3† !;¹jÃU©D²¨(ÜÂˆUã1üLÓ*T`£8ßyë´T‹…ÌÇ=¦$Ğ¤ƒãY7OmØ¡’W”Óÿ_emÁB‚|Gå¤âk­´ÿ›zn§cÕ">á³î¥â«-ó$õ£Udv€nÉ¯ù3ò½ê8*=µ¨ú`;ôFĞ/¦]‹
-Ï­¬æ%Òä•†në§Ë±œíD‹aã¯\`#IvİeŠ¬EÊ´ã*Zæ,.¢»rûOX¬:f×?UQ õQ¹ió)³QóÄè_›Ÿ–¤8¥~Mo…ÉÓ¤š‚EJöÚ¸—Öì¶¦EÂNÆà#§—Ì°ò¤|´ËDäÃ|¯E´ÀÎÙ_ı	‡˜ÏšœĞSDm„¤©¯OìTis¬txè#™æ<Âv>hHéšO´Œpï¼ÃÃN;Àîgl––öín.L†ÏR`¾İ„:;ÓZw¯ê·Qê³ª2°ı¨Aæh¥Œ6M!ZÙAœq•­İhÊ¥c²EdyÁÇ™O>¸‰VyÇ)v×X˜Ï½<Än`z÷6 ÏÈlíô‘|~Cï7>åãWûåĞÏeú2‚§Rd‚wHó*™XUàâBŒäJw†¥ùQlz l£Éëç´$Ç¥½0Éº…•õ+!Å¾yGˆLÕEşå`k°”ÿ#();
-}
-
-/*
- * Print out an error if an invalid bit is set:
- */
-static inline int
-valid_state(struct task_struct *curr, struct held_lock *this,
-	    enum lock_usage_bit new_bit, enum lock_usage_bit bad_bit)
-{
-	if (unlikely(hlock_class(this)->usage_mask & (1 << bad_bit))) {
-		graph_unlock();
-		print_usage_bug(curr, this, bad_bit, new_bit);
-		return 0;
+irqsave(&p->pi_lock, flags);
+#ifdef CONFIG_CGROUP_SCHED
+	if (1) {
+		struct task_group *tg;
+		tg = container_of(kargs->cset->subsys[cpu_cgrp_id],
+				  struct task_group, css);
+		tg = autogroup_task_group(p, tg);
+		p->sched_task_group = tg;
 	}
-	return 1;
+#endif
+	rseq_migrate(p);
+	/*
+	 * We're setting the CPU for the first time, we don't migrate,
+	 * so use __set_task_cpu().
+	 */
+	__set_task_cpu(p, smp_processor_id());
+	if (p->sched_class->task_fork)
+		p->sched_class->task_fork(p);
+	raw_spin_unlock_irqrestore(&p->pi_lock, flags);
 }
 
+void sched_post_fork(struct task_struct *p)
+{
+	uclamp_post_fork(p);
+}
+
+unsigned long to_ratio(u64 period, u64 runtime)
+{
+	if (runtime == RUNTIME_INF)
+		return BW_UNIT;
+
+	/*
+	 * Doing this here saves a lot of checks in all
+	 * the calling paths, and returning zero seems
+	 * safe for them anyway.
+	 */
+	if (period == 0)
+		return 0;
+
+	return div64_u64(runtime << BW_SHIFT, period);
+}
 
 /*
- * print irq inversion bug:
+ * wake_up_new_task - wake up a newly created task for the first time.
+ *
+ * This function will do some initial scheduler statistics housekeeping
+ * that must be done for every newly created context, then puts the task
+ * on the runqueue and wakes it.
  */
+void wake_up_new_task(struct task_struct *p)
+{
+	struct rq_flags rf;
+	struct rq *rq;
+
+	raw_spin_lock_irqsave(&p->pi_lock, rf.flags);
+	WRITE_ONCE(p->__state, TASK_RUNNING);
+#ifdef CONFIG_SMP
+	/*
+	 * Fork balancing, do it here and not earlier because:
+	 *  - cpus_ptr can change in the fork path
+	 *  - any previously selected CPU might disappear through hotplug
+	 *
+	 * Use __set_task_cpu() to avoid calling sched_class::migrate_task_rq,
+	 * as we're not fully set-up yet.
+	 */
+	p->recent_used_cpu = task_cpu(p);
+	rseq_migrate(p);
+	__set_task_cpu(p, select_task_rq(p, task_cpu(p), WF_FORK));
+#endif
+	rq = __task_rq_lock(p, &rf);
+	update_rq_clock(rq);
+	post_init_entity_util_avg(p);
+
+	activate_task(rq, p, ENQUEUE_NOCLOCK);
+	trace_sched_wakeup_new(p);
+	check_preempt_curr(rq, p, WF_FORK);
+#ifdef CONFIG_SMP
+	if (p->sched_class->task_woken) {
+		/*
+		 * Nothing relies on rq->lock after this, so it's fine to
+		 * drop it.
+		 */
+		rq_unpin_lock(rq, &rf);
+		p->sched_class->task_woken(rq, p);
+		rq_repin_lock(rq, &rf);
+	}
+#endif
+	task_rq_unlock(rq, p, &rf);
+}
+
+#ifdef CONFIG_PREEMPT_NOTIFIERS
+
+static DEFINE_STATIC_KEY_FALSE(preempt_notifier_key);
+
+void preempt_notifier_inc(void)
+{
+	static_branch_inc(&preempt_notifier_key);
+}
+EXPORT_SYMBOL_GPL(preempt_notifier_inc);
+
+void preempt_notifier_dec(void)
+{
+	static_branch_dec(&preempt_notifier_key);
+}
+EXPORT_SYMBOL_GPL(preempt_notifier_dec);
+
+/**
+ * preempt_notifier_register - tell me when current is being preempted & rescheduled
+ * @notifier: notifier struct to register
+ */
+void preempt_notifier_register(struct preempt_notifier *notifier)
+{
+	if (!static_branch_unlikely(&preempt_notifier_key))
+		WARN(1, "registering preempt_notifier while notifiers disabled\n");
+
+	hlist_add_head(&notifier->link, &current->preempt_notifiers);
+}
+EXPORT_SYMBOL_GPL(preempt_notifier_register);
+
+/**
+ * preempt_notifier_unregister - no longer interested in preemption notifications
+ * @notifier: notifier struct to unregister
+ *
+ * This is *not* safe to call from within a preemption notifier.
+ */
+void preempt_notifier_unregister(struct preempt_notifier *notifier)
+{
+	hlist_del(&notifier->link);
+}
+EXPORT_SYMBOL_GPL(preempt_notifier_unregister);
+
+static void __fire_sched_in_preempt_notifiers(struct task_struct *curr)
+{
+	struct preempt_notifier *notifier;
+
+	hlist_for_each_entry(notifier, &curr->preempt_notifiers, link)
+		notifier->ops->sched_in(notifier, raw_smp_processor_id());
+}
+
+static __always_inline void fire_sched_in_preempt_notifiers(struct task_struct *curr)
+{
+	if (static_branch_unlikely(&preempt_notifier_key))
+		__fire_sched_in_preempt_notifiers(curr);
+}
+
 static void
-print_irq_inversion_bug(struct task_struct *curr,
-			struct lock_list *root, struct lock_list *other,
-			struct held_lock *this, int forwards,
-			const char *irqclass)
+__fire_sched_out_preempt_notifiers(struct task_struct *curr,
+				   struct task_struct *next)
 {
-	struct lock_list *entry = other;
-	struct lock_list *middle = NULL;
-	int depth;
+	struct preempt_notifier *notifier;
 
-	if (!debug_locks_off_graph_unlock() || debug_locks_silent)
-		return;
-
-	pr_warn("\n");
-	pr_warn("========================================================\n");
-	pr_warn("WARNING: possible irq lock inversion dependency detected\n");
-	print_kernel_ident();
-	pr_warn("--------------------------------------------------------\n");
-	pr_warn("%s/%d just changed the state of lock:\n",
-		curr->comm, task_pid_nr(curr));
-	print_lock(this);
-	if (forwards)
-		pr_warn("but this lock took another, %s-unsafe lock in the past:\n", irqclass);
-	else
-		pr_warn("but this lock was taken by another, %s-safe lock in the past:\n", irqclass);
-	print_lock_name(other->class);
-	pr_warn("\n\nand interrupts could create inverse lock ordering between them.\n\n");
-
-	pr_warn("\nother info that might help us debug this:\n");
-
-	/* Find a middle lock (if one exists) */
-	depth = get_lock_depth(other);
-	do {
-		if (depth == 0 && (entry != root)) {
-			pr_warn("lockdep:%s bad path found in chain graph\n", __func__);
-			break;
-		}
-		middle = entry;
-		entry = get_lock_parent(entry);
-		depth--;
-	} while (entry && entry != root && (depth >= 0));
-	if (forwards)
-		print_irq_lock_scenario(root, other,
-			middle ? middle->class : root->class, other->class);
-	else
-		print_irq_lock_scenario(other, root,
-			middle ? middle->class : other->class, root->class);
-
-	lockdep_print_held_locks(curr);
-
-	pr_warn("\nthe shortest dependencies between 2nd lock and 1st lock:\n");
-	root->trace = save_trace();
-	if (!root->trace)
-		return;
-	print_shortest_lock_dependencies(other, root);
-
-	pr_warn("\nstack backtrace:\n");
-	dump_stack();
+	hlist_for_each_entry(notifier, &curr->preempt_notifiers, link)
+		notifier->ops->sched_out(notifier, next);
 }
 
-/*
- * Prove that in the forwards-direction subgraph starting at <this>
- * there is no lock matching <mask>:
- */
-static int
-check_usage_forwards(struct task_struct *curr, struct held_lock *this,
-		     enum lock_usage_bit bit)
+static __always_inline void
+fire_sched_out_preempt_notifiers(struct task_struct *curr,
+				 struct task_struct *next)
 {
-	enum bfs_result ret;
-	struct lock_list root;
-	struct lock_list *target_entry;
-	enum lock_usage_bit read_bit = bit + LOCK_USAGE_READ_MASK;
-	unsigned usage_mask = lock_flag(bit) | lock_flag(read_bit);
-
-	bfs_init_root(&root, this);
-	ret = find_usage_forwards(&root, usage_mask, &target_entry);
-	if (bfs_error(ret)) {
-		print_bfs_bug(ret);
-		return 0;
-	}
-	if (ret == BFS_RNOMATCH)
-		return 1;
-
-	/* Check whether write or read usage is the match */
-	if (target_entry->class->usage_mask & lock_flag(bit)) {
-		print_irq_inversion_bug(curr, &root, target_entry,
-					this, 1, state_name(bit));
-	} else {
-		print_irq_inversion_bug(curr, &root, target_entry,
-					this, 1, state_name(read_bit));
-	}
-
-	return 0;
+	if (static_branch_unlikely(&preempt_notifier_key))
+		__fire_sched_out_preempt_notifiers(curr, next);
 }
 
-/*
- * Prove that in the backwards-direction subgraph starting at <this>
- * there is no lock matching <mask>:
- */
-static int
-check_usage_backwards(struct task_struct *curr, struct held_lock *this,
-		      enum lock_usage_bit bit)
+#else /* !CONFIG_PREEMPT_NOTIFIERS */
+
+static inline void fire_sched_in_preempt_notifiers(struct task_struct *curr)
 {
-	enum bfs_result ret;
-	struct lock_list root;
-	struct lock_list *target_entry;
-	enum lock_usage_bit read_bit = bit + LOCK_USAGE_READ_MASK;
-	unsigned usage_mask = lock_flag(bit) | lock_flag(read_bit);
-
-	bfs_init_rootb(&root, this);
-	ret = find_usage_backwards(&root, usage_mask, &target_entry);
-	if (bfs_error(ret)) {
-		print_bfs_bug(ret);
-		return 0;
-	}
-	if (ret == BFS_RNOMATCH)
-		return 1;
-
-	/* Check whether write or read usage is the match */
-	if (target_entry->class->usage_mask & lock_flag(bit)) {
-		print_irq_inversion_bug(curr, &root, target_entry,
-					this, 0, state_name(bit));
-	} else {
-		print_irq_inversion_bug(curr, &root, target_entry,
-					this, 0, state_name(read_bit));
-	}
-
-	return 0;
 }
 
-void print_irqtrace_events(struct task_struct *curr)
+static inline void
+fire_sched_out_preempt_notifiers(struct task_struct *curr,
+				 struct task_struct *next)
 {
-	const struct irqtrace_events *trace = &curr->irqtrace;
-
-	printk("irq event stamp: %u\n", trace->irq_events);
-	printk("hardirqs last  enabled at (%u): [<%px>] %pS\n",
-		trace->hardirq_enable_event, (void *)trace->hardirq_enable_ip,
-		(void *)trace->hardirq_enable_ip);
-	printk("hardirqs last disabled at (%u): [<%px>] %pS\n",
-		trace->hardirq_disable_event, (void *)trace->hardirq_disable_ip,
-		(void *)trace->hardirq_disable_ip);
-	printk("softirqs last  enabled at (%u): [<%px>] %pS\n",
-		trace->softirq_enable_event, (void *)trace->softirq_enable_ip,
-		(void *)trace->softirq_enable_ip);
-	printk("softirqs last disabled at (%u): [<%px>] %pS\n",
-		trace->softirq_disable_event, (void *)trace->softirq_disable_ip,
-		(void *)trace->softirq_disable_ip);
 }
 
-static int HARDIRQ_verbose(struct lock_class *class)
+#endif /* CONFIG_PREEMPT_NOTIFIERS */
+
+static inline void prepare_task(struct task_struct *next)
 {
-#if HARDIRQ_VERBOSE
-	return class_filter(class);
+#ifdef CONFIG_SMP
+	/*
+	 * Claim the task as running, we do this before switching to it
+	 * such that any running task will have this set.
+	 *
+	 * See the ttwu() WF_ON_CPU case and its ordering comment.
+	 */
+	WRITE_ONCE(next->on_cpu, 1);
 #endif
-	return 0;
 }
 
-static int SOFTIRQ_verbose(struct lock_class *class)
+static inline void finish_task(struct task_struct *prev)
 {
-#if SOFTIRQ_VERBOSE
-	return class_filter(class);
+#ifdef CONFIG_SMP
+	/*
+	 * This must be the very last reference to @prev from this CPU. After
+	 * p->on_cpu is cleared, the task can be moved to a different CPU. We
+	 * must ensure this doesn't happen until the switch is completely
+	 * finished.
+	 *
+	 * In particular, the load of prev->state in finish_task_switch() must
+	 * happen before this.
+	 *
+	 * Pairs with the smp_cond_load_acquire() in try_to_wake_up().
+	 */
+	smp_store_release(&prev->on_cpu, 0);
 #endif
-	return 0;
 }
 
-static int (*state_verbose_f[])(struct lock_class *class) = {
-#define LOCKDEP_STATE(__STATE) \
-	__STATE##_verbose,
-#include "lockdep_states.h"
-#undef LOCKDEP_STATE
+#ifdef CONFIG_SMP
+
+static void do_balance_callbacks(struct rq *rq, struct callback_head *head)
+{
+	void (*func)(struct rq *rq);
+	struct callback_head *next;
+
+	lockdep_assert_rq_held(rq);
+
+	while (head) {
+		func = (void (*)(struct rq *))head->func;
+		next = head->next;
+		head->next = NULL;
+		head = next;
+
+		func(rq);
+	}
+}
+
+static void balance_push(struct rq *rq);
+
+struct callback_head balance_push_callback = {
+	.next = NULL,
+	.func = (void (*)(struct callback_head *))balance_push,
 };
 
-static inline int state_verbose(enum lock_usage_bit bit,
-				struct lock_class *class)
+static inline struct callback_head *splice_balance_callbacks(struct rq *rq)
 {
-	return state_verbose_f[bit >> LOCK_USAGE_DIR_MASK](class);
+	struct callback_head *head = rq->balance_callback;
+
+	lockdep_assert_rq_held(rq);
+	if (head)
+		rq->balance_callback = NULL;
+
+	return head;
 }
 
-typedef int (*check_usage_f)(struct task_struct *, struct held_lock *,
-			     enum lock_usage_bit bit, const char *name);
-
-static int
-mark_lock_irq(struct task_struct *curr, struct held_lock *this,
-		enum lock_usage_bit new_bit)
+static void __balance_callbacks(struct rq *rq)
 {
-	int excl_bit = exclusive_bit(new_bit);
-	int read = new_bit & LOCK_USAGE_READ_MASK;
-	int dir = new_bit & LOCK_USAGE_DIR_MASK;
+	do_balance_callbacks(rq, splice_balance_callbacks(rq));
+}
 
-	/*
-	 * Validate that this particular lock does not have conflicting
-	 * usage states.
-	 */
-	if (!valid_state(curr, this, new_bit, excl_bit))
-		return 0;
+static inline void balance_callbacks(struct rq *rq, struct callback_head *head)
+{
+	unsigned long flags;
 
-	/*
-	 * Check for read in write conflicts
-	 */
-	if (!read && !valid_state(curr, this, new_bit,
-				  excl_bit + LOCK_USAGE_READ_MASK))
-		return 0;
-
-
-	/*
-	 * Validate that the lock dependencies don't have conflicting usage
-	 * states.
-	 */
-	if (dir) {
-		/*
-		 * mark ENABLED has to look backwards -- to ensure no dependee
-		 * has USED_IN state, which, again, would allow  recursion deadlocks.
-		 */
-		if (!check_usage_backwards(curr, this, excl_bit))
-			return 0;
-	} else {
-		/*
-		 * mark USED_IN has to look forwards -- to ensure no dependency
-		 * has ENABLED state, which would allow recursion deadlocks.
-		 */
-		if (!check_usage_forwards(curr, this, excl_bit))
-			return 0;
+	if (unlikely(head)) {
+		raw_spin_rq_lock_irqsave(rq, flags);
+		do_balance_callbacks(rq, head);
+		raw_spin_rq_unlock_irqrestore(rq, flags);
 	}
+}
 
-	if (state_verbose(new_bit, hlock_class(this)))
-		return 2;
+#else
 
-	return 1;
+static inline void __balance_callbacks(struct rq *rq)
+{
+}
+
+static inline struct callback_head *splice_balance_callbacks(struct rq *rq)
+{
+	return NULL;
+}
+
+static inline void balance_callbacks(struct rq *rq, struct callback_head *head)
+{
+}
+
+#endif
+
+static inline void
+prepare_lock_switch(struct rq *rq, struct task_struct *next, struct rq_flags *rf)
+{
+	/*
+	 * Since the runqueue lock will be released by the next
+	 * task (which is an invalid locking op but in the case
+	 * of the scheduler it's an obvious special-case), so we
+	 * do an early lockdep release here:
+	 */
+	rq_unpin_lock(rq, rf);
+	spin_release(&__rq_lockp(rq)->dep_map, _THIS_IP_);
+#ifdef CONFIG_DEBUG_SPINLOCK
+	/* this is a valid case when another task releases the spinlock */
+	rq_lockp(rq)->owner = next;
+#endif
+}
+
+static inline void finish_lock_switch(struct rq *rq)
+{
+	/*
+	 * If we are tracking spinlock dependencies then we have to
+	 * fix up the runqueue lock - which gets 'carried over' from
+	 * prev into current:
+	 */
+	spin_acquire(&__rq_lockp(rq)->dep_map, 0, 0, _THIS_IP_);
+	__balance_callbacks(rq);
+	raw_spin_rq_unlock_irq(rq);
 }
 
 /*
- * Mark all held locks with a usage bit:
+ * NOP if the arch has not defined these:
  */
-static int
-mark_held_locks(struct task_struct *curr, enum lock_usage_bit base_bit)
+
+#ifndef prepare_arch_switch
+# define prepare_arch_switch(next)	do { } while (0)
+#endif
+
+#ifndef finish_arch_post_lock_switch
+# define finish_arch_post_lock_switch()	do { } while (0)
+#endif
+
+static inline void kmap_local_sched_out(void)
 {
-	struct held_lock *hlock;
-	int i;
-
-	for (i = 0; i < curr->lockdep_depth; i++) {
-		enum lock_usage_bit hlock_bit = base_bit;
-		hlock = curr->held_locks + i;
-
-		if (hlock->read)
-			hlock_bit += LOCK_USAGE_READ_MASK;
-
-		BUG_ON(hlock_bit >= LOCK_USAGE_STATES);
-
-		if (!hlock->check)
-			continue;
-
-		if (!mark_lock(curr, hlock, hlock_bit))
-			return 0;
-	}
-
-	return 1;
+#ifdef CONFIG_KMAP_LOCAL
+	if (unlikely(current->kmap_ctrl.idx))
+		__kmap_local_sched_out();
+#endif
 }
 
-/*
- * Hardirqs will be enabled:
- */
-static void __trace_hardirqs_on_caller(void)
+static inline void kmap_local_sched_in(void)
 {
-	struct task_struct *curr = current;
-
-	/*
-	 * We are going to turn hardirqs on, so set the
-	 * usage bit for all held locks:
-	 */
-	if (!mark_held_locks(curr, LOCK_ENABLED_HARDIRQ))
-		return;
-	/*
-	 * If we have softirqs enabled, then set the usage
-	 * bit for all held locks. (disabled hardirqs prevented
-	 * this bit from being set before)
-	 */
-	if (curr->softirqs_enabled)
-		mark_held_locks(curr, LOCK_ENABLED_SOFTIRQ);
+#ifdef CONFIG_KMAP_LOCAL
+	if (unlikely(current->kmap_ctrl.idx))
+		__kmap_local_sched_in();
+#endif
 }
 
 /**
- * lockdep_hardirqs_on_prepare - Prepare for enabling interrupts
- * @ip:		Caller address
+ * prepare_task_switch - prepare to switch tasks
+ * @rq: the runqueue preparing to switch
+ * @prev: the current task that is being switched out
+ * @next: the task we are going to switch to.
  *
- * Invoked before a possible transition to RCU idle from exit to user or
- * guest mode. This ensures that all RCU operations are done before RCU
- * stops watching. After the RCU transition lockdep_hardirqs_on() has to be
- * invoked to set the final state.
+ * This is called with the rq lock held and interrupts off. It must
+ * be paired with a subsequent finish_task_switch after the context
+ * switch.
+ *
+ * prepare_task_switch sets up locking and calls architecture specific
+ * hooks.
  */
-void lockdep_hardirqs_on_prepare(unsigned long ip)
+static inline void
+prepare_task_switch(struct rq *rq, struct task_struct *prev,
+		    struct task_struct *next)
 {
-	if (unlikely(!debug_locks))
-		return;
-
-	/*
-	 * NMIs do not (and cannot) track lock dependencies, nothing to do.
-	 */
-	if (unlikely(in_nmi()))
-		return;
-
-	if (unlikely(this_cpu_read(lockdep_recursion)))
-		return;
-
-	if (unlikely(lockdep_hardirqs_enabled())) {
-		/*
-		 * Neither irq nor preemption are disabled here
-		 * so this is racy by nature but losing one hit
-		 * in a stat is not a big deal.
-		 */
-		__debug_atomic_inc(redundant_hardirqs_on);
-		return;
-	}
-
-	/*
-	 * We're enabling irqs and according to our state above irqs weren't
-	 * already enabled, yet we find the hardware thinks they are in fact
-	 * enabled.. someone messed up their IRQ state tracing.
-	 */
-	if (DEBUG_LOCKS_WARN_ON(!irqs_disabled()))
-		return;
-
-	/*
-	 * See the fine text that goes along with this variable definition.
-	 */
-	if (DEBUG_LOCKS_WARN_ON(early_boot_irqs_disabled))
-		return;
-
-	/*
-	 * Can't allow enabling interrupts while in an interrupt handler,
-	 * that's general bad form and such. Recursion, limited stack etc..
-	 */
-	if (DEBUG_LOCKS_WARN_ON(lockdep_hardirq_context()))
-		return;
-
-	current->hardirq_chain_key = current->curr_chain_key;
-
-	lockdep_recursion_inc();
-	__trace_hardirqs_on_caller();
-	lockdep_recursion_finish();
+	kcov_prepare_switch(prev);
+	sched_info_switch(rq, prev, next);
+	perf_event_task_sched_out(prev, next);
+	rseq_preempt(prev);
+	fire_sched_out_preempt_notifiers(prev, next);
+	kmap_local_sched_out();
+	prepare_task(next);
+	prepare_arch_switch(next);
 }
-EXPORT_SYMBOL_GPL(lockdep_hardirqs_on_prepare);
 
-void noinstr lockdep_hardirqs_on(unsigned long ip)
+/**
+ * finish_task_switch - clean up after a task-switch
+ * @prev: the thread we just switched away from.
+ *
+ * finish_task_switch must be called after the context switch, paired
+ * with a prepare_task_switch call before the context switch.
+ * finish_task_switch will reconcile locking set up by prepare_task_switch,
+ * and do any other architecture-specific cleanup actions.
+ *
+ * Note that we may have delayed dropping an mm in context_switch(). If
+ * so, we finish that here outside of the runqueue lock. (Doing it
+ * with the lock held can cause deadlocks; see schedule() for
+ * details.)
+ *
+ * The context switch have flipped the stack from under us and restored the
+ * local variables which were saved when this task called schedule() in the
+ * past. prev == current is still correct but we need to recalculate this_rq
+ * because prev may have moved to another CPU.
+ */
+static struct rq *finish_task_switch(struct task_struct *prev)
+	__releases(rq->lock)
 {
-	struct irqtrace_events *trace = &current->irqtrace;
-
-	if (unlikely(!debug_locks))
-		return;
+	struct rq *rq = this_rq();
+	struct mm_struct *mm = rq->prev_mm;
+	unsigned int prev_state;
 
 	/*
-	 * NMIs can happen in the middle of local_irq_{en,dis}able() where the
-	 * tracking state and hardware state are out of sync.
+	 * The previous task will have left us with a preempt_count of 2
+	 * because it left us after:
 	 *
-	 * NMIs must save lockdep_hardirqs_enabled() to restore IRQ state from,
-	 * and not rely on hardware state like normal interrupts.
+	 *	schedule()
+	 *	  preempt_disable();			// 1
+	 *	  __schedule()
+	 *	    raw_spin_lock_irq(&rq->lock)	// 2
+	 *
+	 * Also, see FORK_PREEMPT_COUNT.
 	 */
-	if (unlikely(in_nmi())) {
-		if (!IS_ENABLED(CONFIG_TRACE_IRQFLAGS_NMI))
-			return;
+	if (WARN_ONCE(preempt_count() != 2*PREEMPT_DISABLE_OFFSET,
+		      "corrupted preempt_count: %s/%d/0x%x\n",
+		      current->comm, current->pid, preempt_count()))
+		preempt_count_set(FORK_PREEMPT_COUNT);
 
-		/*
-		 * Skip:
-		 *  - recursion check, because NMI can hit lockdep;
-		 *  - hardware state check, because above;
-		 *  - chain_key check, see lockdep_hardirqs_on_prepare().
-		 */
-		goto skip_checks;
-	}
-
-	if (unlikely(this_cpu_read(lockdep_recursion)))
-		return;
-
-	if (lockdep_hardirqs_enabled()) {
-		/*
-		 * Neither irq nor preemption are disabled here
-		 * so this is racy by nature but losing one hit
-		 * in a stat is not a big deal.
-		 */
-		__debug_atomic_inc(redundant_hardirqs_on);
-		return;
-	}
+	rq->prev_mm = NULL;
 
 	/*
-	 * We're enabling irqs and according to our state above irqs weren't
-	 * already enabled, yet we find the hardware thinks they are in fact
-	 * enabled.. someone messed up their IRQ state tracing.
+	 * A task struct has one reference for the use as "current".
+	 * If a task dies, then it sets TASK_DEAD in tsk->state and calls
+	 * schedule one last time. The schedule call will never return, and
+	 * the scheduled task must drop that reference.
+	 *
+	 * We must observe prev->state before clearing prev->on_cpu (in
+	 * finish_task), otherwise a concurrent wakeup can get prev
+	 * running on another CPU and we could rave with its RUNNING -> DEAD
+	 * transition, resulting in a double drop.
 	 */
-	if (DEBUG_LOCKS_WARN_ON(!irqs_disabled()))
-		return;
-
+	prev_state = READ_ONCE(prev->__state);
+	vtime_task_switch(prev);
+	perf_event_task_sched_in(prev, current);
+	finish_task(prev);
+	tick_nohz_task_switch();
+	finish_lock_switch(rq);
+	finish_arch_post_lock_switch();
+	kcov_finish_switch(current);
 	/*
-	 * Ensure the lock stack remained unchanged between
-	 * lockdep_hardirqs_on_prepare() and lockdep_hardirqs_on().
+	 * kmap_local_sched_out() is invoked with rq::lock held and
+	 * interrupts disabled. There is no requirement for that, but the
+	 * sched out code does not have an interrupt enabled section.
+	 * Restoring the maps on sched in does not require interrupts being
+	 * disabled either.
 	 */
-	DEBUG_LOCKS_WARN_ON(current->hardirq_chain_key !=
-			    current->curr_chain_key);
+	kmap_local_sched_in();
 
-skip_checks:
-	/* we'll do an OFF -> ON transition: */
-	__this_cpu_write(hardirqs_enabled, 1);
-	trace->hardirq_enable_ip = ip;
-	trace->hardirq_enable_event = ++trace->irq_events;
-	debug_atomic_inc(hardirqs_on_events);
+	fire_sched_in_preempt_notifiers(current);
+	/*
+	 * When switching through a kernel thread, the loop in
+	 * membarrier_{private,global}_expedited() may have observed that
+	 * kernel thread and not issued an IPI. It is therefore possible to
+	 * schedule between user->kernel->user threads without passing though
+	 * switch_mm(). Membarrier requires a barrier after storing to
+	 * rq->curr, before returning to userspace, so provide them here:
+	 *
+	 * - a full memory barrier for {PRIVATE,GLOBAL}_EXPEDITED, implicitly
+	 *   provided by mmdrop(),
+	 * - a sync_core for SYNC_CORE.
+	 */
+	if (mm) {
+		membarrier_mm_sync_core_before_usermode(mm);
+		mmdrop_sched(mm);
+	}
+	if (unlikely(prev_state == TASK_DEAD)) {
+		if (prev->sched_class->task_dead)
+			prev->sched_class->task_dead(prev);
+
+		/* Task is done with its stack. */
+		put_task_stack(prev);
+
+		put_task_struct_rcu_user(prev);
+	}
+
+	return rq;
 }
-EXPORT_SYMBOL_GPL(lockdep_hardirqs_on);
 
-/*
- * Hardirqs were disabled:
+/**
+ * schedule_tail - first thing a freshly forked thread must call.
+ * @prev: the thread we just switched away from.
  */
-void noinstr lockdep_hardirqs_off(unsigned long ip)
+asmlinkage __visible void schedule_tail(struct task_struct *prev)
+	__releases(rq->lock)
 {
-	if (unlikely(!debug_locks))
-		return;
-
 	/*
-	 * Matching lockdep_hardirqs_on(), allow NMIs in the middle of lockdep;
-	 * they will restore the software state. This ensures the software
-	 * state is consistent inside NMIs as well.
+	 * New tasks start with FORK_PREEMPT_COUNT, see there and
+	 * finish_task_switch() for details.
+	 *
+	 * finish_task_switch() will drop rq->lock() and lower preempt_count
+	 * and the preempt_enable() will end up enabling preemption (on
+	 * PREEMPT_COUNT kernels).
 	 */
-	if (in_nmi()) {
-		if (!IS_ENABLED(CONFIG_TRACE_IRQFLAGS_NMI))
-			return;
-	} else if (__this_cpu_read(lockdep_recursion))
-		return;
 
-	/*
-	 * So we're supposed to get called after you mask local IRQs, but for
-	 * some reason the hardware doesn't quite think you did a proper job.
-	 */
-	if (DEBUG_LOCKS_WARN_ON(!irqs_disabled()))
-		return;
+	finish_task_switch(prev);
+	preempt_enable();
 
-	if (lockdep_hardirqs_enabled()) {
-		struct irqtrace_events *trace = &current->irqtrace;
+	if (current->set_child_tid)
+		put_user(task_pid_vnr(current), current->set_child_tid);
 
-		/*
-		 * We have done an ON -> OFF transition:
-		 */
-		__this_cpu_write(hardirqs_enabled, 0);
-		trace->hardirq_disable_ip = ip;
-		trace->hardirq_disable_event = ++trace->irq_events;
-		debug_atomic_inc(hardirqs_off_events);
-	} else {
-		debug_atomic_inc(redundant_hardirqs_off);
-	}
-}
-EXPORT_SYMBOL_GPL(lockdep_hardirqs_off);
-
-/*
- * Softirqs will be enabled:
- */
-void lockdep_softirqs_on(unsigned long ip)
-{
-	struct irqtrace_events *trace = &current->irqtrace;
-
-	if (unlikely(!lockdep_enabled()))
-		return;
-
-	/*
-	 * We fancy IRQs being disabled here, see softirq.c, avoids
-	 * funny state and nesting things.
-	 */
-	if (DEBUG_LOCKS_WARN_ON(!irqs_disabled()))
-		return;
-
-	if (current->softirqs_enabled) {
-		debug_atomic_inc(redundant_softirqs_on);
-		return;
-	}
-
-	lockdep_recursion_inc();
-	/*
-	 * We'll do an OFF -> ON transition:
-	 */
-	current->softirqs_enabled = 1;
-	trace->softirq_enable_ip = ip;
-	trace->softirq_enable_event = ++trace->irq_events;
-	debug_atomic_inc(softirqs_on_events);
-	/*
-	 * We are going to turn softirqs on, so set the
-	 * usage bit for all held locks, if hardirqs are
-	 * enabled too:
-	 */
-	if (lockdep_hardirqs_enabled())
-		mark_held_locks(current, LOCK_ENABLED_SOFTIRQ);
-	lockdep_recursion_finish();
+	calculate_sigpending();
 }
 
 /*
- * Softirqs were disabled:
+ * context_switch - switch to the new MM and the new thread's register state.
  */
-void lockdep_softirqs_off(unsigned long ip)
+static __always_inline struct rq *
+context_switch(struct rq *rq, struct task_struct *prev,
+	       struct task_struct *next, struct rq_flags *rf)
 {
-	if (unlikely(!lockdep_enabled()))
-		return;
+	prepare_task_switch(rq, prev, next);
 
 	/*
-	 * We fancy IRQs being disabled here, see softirq.c
+	 * For paravirt, this is coupled with an exit in switch_to to
+	 * combine the page table reload and the switch backend into
+	 * one hypercall.
 	 */
-	if (DEBUG_LOCKS_WARN_ON(!irqs_disabled()))
-		return;
-
-	if (current->softirqs_enabled) {
-		struct irqtrace_events *trace = &current->irqtrace;
-
-		/*
-		 * We have done an ON -> OFF transition:
-		 */
-		current->softirqs_enabled = 0;
-		trace->softirq_disable_ip = ip;
-		trace->softirq_disable_event = ++trace->irq_events;
-		debug_atomic_inc(softirqs_off_events);
-		/*
-		 * Whoops, we wanted softirqs off, so why aren't they?
-		 */
-		DEBUG_LOCKS_WARN_ON(!softirq_count());
-	} else
-		debug_atomic_inc(redundant_softirqs_off);
-}
-
-static int
-mark_usage(struct task_struct *curr, struct held_lock *hlock, int check)
-{
-	if (!check)
-		goto lock_used;
+	arch_start_context_switch(prev);
 
 	/*
-	 * If non-trylock use in a hardirq or softirq context, then
-	 * mark the lock as used in these contexts:
+	 * kernel -> kernel   lazy + transfer active
+	 *   user -> kernel   lazy + mmgrab() active
+	 *
+	 * kernel ->   user   switch + mmdrop() active
+	 *   user ->   user   switch
 	 */
-	if (!hlock->trylock) {
-		if (hlock->read) {
-			if (lockdep_hardirq_context())
-				if (!mark_lock(curr, hlock,
-						LOCK_USED_IN_HARDIRQ_READ))
-					return 0;
-			if (curr->softirq_context)
-				if (!mark_lock(curr, hlock,
-						LOCK_USED_IN_SOFTIRQ_READ))
-					return 0;
-		} else {
-			if (lockdep_hardirq_context())
-				if (!mark_lock(curr, hlock, LOCK_USED_IN_HARDIRQ))
-					return 0;
-			if (curr->softirq_context)
-				if (!mark_lock(curr, hlock, LOCK_USED_IN_SOFTIRQ))
-					return 0;
-		}
-	}
-	if (!hlock->hardirqs_off) {
-		if (hlock->read) {
-			if (!mark_lock(curr, hlock,
-					LOCK_ENABLED_HARDIRQ_READ))
-				return 0;
-			if (curr->softirqs_enabled)
-				if (!mark_lock(curr, hlock,
-						LOCK_ENABLED_SOFTIRQ_READ))
-					return 0;
-		} else {
-			if (!mark_lock(curr, hlock,
-					LOCK_ENABLED_HARDIRQ))
-				return 0;
-			if (curr->softirqs_enabled)
-				if (!mark_lock(curr, hlock,
-						LOCK_ENABLED_SOFTIRQ))
-					return 0;
+	if (!next->mm) {                                // to kernel
+		enter_lazy_tlb(prev->active_mm, next);
+
+		next->active_mm = prev->active_mm;
+		if (prev->mm)                           // from user
+			mmgrab(prev->active_mm);
+		else
+			prev->active_mm = NULL;
+	} else {                                        // to user
+		membarrier_switch_mm(rq, prev->active_mm, next->mm);
+		/*
+		 * sys_membarrier() requires an smp_mb() between setting
+		 * rq->curr / membarrier_switch_mm() and returning to userspace.
+		 *
+		 * The below provides this either through switch_mm(), or in
+		 * case 'prev->active_mm == next->mm' through
+		 * finish_task_switch()'s mmdrop().
+		 */
+		switch_mm_irqs_off(prev->active_mm, next->mm, next);
+
+		if (!prev->mm) {                        // from kernel
+			/* will mmdrop() in finish_task_switch(). */
+			rq->prev_mm = prev->active_mm;
+			prev->active_mm = NULL;
 		}
 	}
 
-lock_used:
-	/* mark it as used: */
-	if (!mark_lock(curr, hlock, LOCK_USED))
-		return 0;
+	rq->clock_update_flags &= ~(RQCF_ACT_SKIP|RQCF_REQ_SKIP);
 
-	return 1;
-}
+	prepare_lock_switch(rq, next, rf);
 
-static inline unsigned int task_irq_context(struct task_struct *task)
-{
-	return LOCK_CHAIN_HARDIRQ_CONTEXT * !!lockdep_hardirq_context() +
-	       LOCK_CHAIN_SOFTIRQ_CONTEXT * !!task->softirq_context;
-}
+	/* Here we just switch the register state and the stack. */
+	switch_to(prev, next, prev);
+	barrier();
 
-static int separate_irq_context(struct task_struct *curr,
-		struct held_lock *hlock)
-{
-	unsigned int depth = curr->lockdep_depth;
-
-	/*
-	 * Keep track of points where we cross into an interrupt context:
-	 */
-	if (depth) {
-		struct held_lock *prev_hlock;
-
-		prev_hlock = curr->held_locks + depth-1;
-		/*
-		 * If we cross into another context, reset the
-		 * hash key (this also prevents the checking and the
-		 * adding of the dependency to 'prev'):
-		 */
-		if (prev_hlock->irq_context != hlock->irq_context)
-			return 1;
-	}
-	return 0;
+	return finish_task_switch(prev);
 }
 
 /*
- * Mark a lock with a usage bit, and validate the state transition:
+ * nr_running and nr_context_switches:
+ *
+ * externally visible scheduler statistics: current number of runnable
+ * threads, total number of context switches performed since bootup.
  */
-static int mark_lock(struct task_struct *curr, struct held_lock *this,
-			     enum lock_usage_bit new_bit)
+unsigned int nr_running(void)
 {
-	unsigned int new_mask, ret = 1;
+	unsigned int i, sum = 0;
 
-	if (new_bit >= LOCK_USAGE_STATES) {
-		DEBUG_LOCKS_WARN_ON(1);
-		return 0;
-	}
+	for_each_online_cpu(i)
+		sum += cpu_rq(i)->nr_running;
 
-	if (new_bit == LOCK_USED && this->read)
-		new_bit = LOCK_USED_READ;
-
-	new_mask = 1 << new_bit;
-
-	/*
-	 * If already set then do not dirty the cacheline,
-	 * nor do any checks:
-	 */
-	if (likely(hlock_class(this)->usage_mask & new_mask))
-		return 1;
-
-	if (!graph_lock())
-		return 0;
-	/*
-	 * Make sure we didn't race:
-	 */
-	if (unlikely(hlock_class(this)->usage_mask & new_mask))
-		goto unlock;
-
-	if (!hlock_class(this)->usage_mask)
-		debug_atomic_dec(nr_unused_locks);
-
-	hlock_class(this)->usage_mask |= new_mask;
-
-	if (new_bit < LOCK_TRACE_STATES) {
-		if (!(hlock_class(this)->usage_traces[new_bit] = save_trace()))
-			return 0;
-	}
-
-	if (new_bit < LOCK_USED) {
-		ret = mark_lock_irq(curr, this, new_bit);
-		if (!ret)
-			return 0;
-	}
-
-unlock:
-	graph_unlock();
-
-	/*
-	 * We must printk outside of the graph_lock:
-	 */
-	if (ret == 2) {
-		printk("\nmarked lock as {%s}:\n", usage_str[new_bit]);
-		print_lock(this);
-		print_irqtrace_events(curr);
-		dump_stack();
-	}
-
-	return ret;
-}
-
-static inline short task_wait_context(struct task_struct *curr)
-{
-	/*
-	 * Set appropriate wait type for the context; for IRQs we have to take
-	 * into account force_irqthread as that is implied by PREEMPT_RT.
-	 */
-	if (lockdep_hardirq_context()) {
-		/*
-		 * Check if force_irqthreads will run us threaded.
-		 */
-		if (curr->hardirq_threaded || curr->irq_config)
-			return LD_WAIT_CONFIG;
-
-		return LD_WAIT_SPIN;
-	} else if (curr->softirq_context) {
-		/*
-		 * Softirqs are always threaded.
-		 */
-		return LD_WAIT_CONFIG;
-	}
-
-	return LD_WAIT_MAX;
-}
-
-static int
-print_lock_invalid_wait_context(struct task_struct *curr,
-				struct held_lock *hlock)
-{
-	short curr_inner;
-
-	if (!debug_locks_off())
-		return 0;
-	if (debug_locks_silent)
-		return 0;
-
-	pr_warn("\n");
-	pr_warn("=============================\n");
-	pr_warn("[ BUG: Invalid wait context ]\n");
-	print_kernel_ident();
-	pr_warn("-----------------------------\n");
-
-	pr_warn("%s/%d is trying to lock:\n", curr->comm, task_pid_nr(curr));
-	print_lock(hlock);
-
-	pr_warn("other info that might help us debug this:\n");
-
-	curr_inner = task_wait_context(curr);
-	pr_warn("context-{%d:%d}\n", curr_inner, curr_inner);
-
-	lockdep_print_held_locks(curr);
-
-	pr_warn("stack backtrace:\n");
-	dump_stack();
-
-	return 0;
+	return sum;
 }
 
 /*
- * Verify the wait_type context.
+ * Check if only the current task is running on the CPU.
  *
- * This check validates we take locks in the right wait-type order; that is it
- * ensures that we do not take mutexes inside spinlocks and do not attempt to
- * acquire spinlocks inside raw_spinlocks and the sort.
+ * Caution: this function does not check that the caller has disabled
+ * preemption, thus the result might have a time-of-check-to-time-of-use
+ * race.  The caller is responsible to use it correctly, for example:
  *
- * The entire thing is slightly more complex because of RCU, RCU is a lock that
- * can be taken from (pretty much) any context but also has constraints.
- * However when taken in a stricter environment the RCU lock does not loosen
- * the constraints.
+ * - from a non-preemptible section (of course)
  *
- * Therefore we must look for the strictest environment in the lock stack and
- * compare that to the lock we're trying to acquire.
+ * - from a thread that is bound to a single CPU
+ *
+ * - in a loop with very short iterations (e.g. a polling loop)
  */
-static int check_wait_context(struct task_struct *curr, struct held_lock *next)
+bool single_task_running(void)
 {
-	u8 next_inner = hlock_class(next)->wait_type_inner;
-	u8 next_outer = hlock_class(next)->wait_type_outer;
-	u8 curr_inner;
-	int depth;
-
-	if (!next_inner || next->trylock)
-		return 0;
-
-	if (!next_outer)
-		next_outer = next_inner;
-
-	/*
-	 * Find start of current irq_context..
-	 */
-	for (depth = curr->lockdep_depth - 1; depth >= 0; depth--) {
-		struct held_lock *prev = curr->held_locks + depth;
-		if (prev->irq_context != next->irq_context)
-			break;
-	}
-	depth++;
-
-	curr_inner = task_wait_context(curr);
-
-	for (; depth < curr->lockdep_depth; depth++) {
-		struct held_lock *prev = curr->held_locks + depth;
-		u8 prev_inner = hlock_class(prev)->wait_type_inner;
-
-		if (prev_inner) {
-			/*
-			 * We can have a bigger inner than a previous one
-			 * when outer is smaller than inner, as with RCU.
-			 *
-			 * Also due to trylocks.
-			 */
-			curr_inner = min(curr_inner, prev_inner);
-		}
-	}
-
-	if (next_outer > curr_inner)
-		return print_lock_invalid_wait_context(curr, next);
-
-	return 0;
+	return raw_rq()->nr_running == 1;
 }
+EXPORT_SYMBOL(single_task_running);
 
-#else /* CONFIG_PROVE_LOCKING */
-
-static inline int
-mark_usage(struct task_struct *curr, struct held_lock *hlock, int check)
-{
-	return 1;
-}
-
-static inline unsigned int task_irq_context(struct task_struct *task)
-{
-	return 0;
-}
-
-static inline int separate_irq_context(struct task_struct *curr,
-		struct held_lock *hlock)
-{
-	return 0;
-}
-
-static inline int check_wait_context(struct task_struct *curr,
-				     struct held_lock *next)
-{
-	return 0;
-}
-
-#endif /* CONFIG_PROVE_LOCKING */
-
-/*
- * Initialize a lock instance's lock-class mapping info:
- */
-void lockdep_init_map_type(struct lockdep_map *lock, const char *name,
-			    struct lock_class_key *key, int subclass,
-			    u8 inner, u8 outer, u8 lock_type)
+unsigned long long nr_context_switches(void)
 {
 	int i;
+	unsigned long long sum = 0;
 
-	for (i = 0; i < NR_LOCKDEP_CACHING_CLASSES; i++)
-		lock->class_cache[i] = NULL;
+	for_each_possible_cpu(i)
+		sum += cpu_rq(i)->nr_switches;
 
-#ifdef CONFIG_LOCK_STAT
-	lock->cpu = raw_smp_processor_id();
-#endif
-
-	/*
-	 * Can't be having no nameless bastards around this place!
-	 */
-	if (DEBUG_LOCKS_WARN_ON(!name)) {
-		lock->name = "NULL";
-		return;
-	}
-
-	lock->name = name;
-
-	lock->wait_type_outer = outer;
-	lock->wait_type_inner = inner;
-	lock->lock_type = lock_type;
-
-	/*
-	 * No key, no joy, we need to hash something.
-	 */
-	if (DEBUG_LOCKS_WARN_ON(!key))
-		return;
-	/*
-	 * Sanity check, the lock-class key must either have been allocated
-	 * statically or must have been registered as a dynamic key.
-	 */
-	if (!static_obj(key) && !is_dynamic_key(key)) {
-		if (debug_locks)
-			printk(KERN_ERR "BUG: key %px has not been registered!\n", key);
-		DEBUG_LOCKS_WARN_ON(1);
-		return;
-	}
-	lock->key = key;
-
-	if (unlikely(!debug_locks))
-		return;
-
-	if (subclass) {
-		unsigned long flags;
-
-		if (DEBUG_LOCKS_WARN_ON(!lockdep_enabled()))
-			return;
-
-		raw_local_irq_save(flags);
-		lockdep_recursion_inc();
-		register_lock_class(lock, subclass, 1);
-		lockdep_recursion_finish();
-		raw_local_irq_restore(flags);
-	}
+	return sum;
 }
-EXPORT_SYMBOL_GPL(lockdep_init_map_type);
-
-struct lock_class_key __lockdep_no_validate__;
-EXPORT_SYMBOL_GPL(__lockdep_no_validate__);
-
-static void
-print_lock_nested_lock_not_held(struct task_struct *curr,
-				struct held_lock *hlock,
-				unsigned long ip)
-{
-	if (!debug_locks_off())
-		return;
-	if (debug_locks_silent)
-		return;
-
-	pr_warn("\n");
-	pr_warn("==================================\n");
-	pr_warn("WARNING: Nested lock was not taken\n");
-	print_kernel_ident();
-	pr_warn("----------------------------------\n");
-
-	pr_warn("%s/%d is trying to lock:\n", curr->comm, task_pid_nr(curr));
-	print_lock(hlock);
-
-	pr_warn("\nbut this task is not holding:\n");
-	pr_warn("%s\n", hlock->nest_lock->name);
-
-	pr_warn("\nstack backtrace:\n");
-	dump_stack();
-
-	pr_warn("\nother info that might help us debug this:\n");
-	lockdep_print_held_locks(curr);
-
-	pr_warn("\nstack backtrace:\n");
-	dump_stack();
-}
-
-static int __lock_is_held(const struct lockdep_map *lock, int read);
 
 /*
- * This gets called for every mutex_lock*()/spin_lock*() operation.
- * We maintain the dependency maps and validate the locking attempt:
- *
- * The callers must make sure that IRQs are disabled before calling it,
- * otherwise we could get an interrupt which would want to take locks,
- * which would end up in lockdep again.
+ * Consumers of these two interfaces, like for example the cpuidle menu
+ * governor, are using nonsensical data. Preferring shallow idle state selection
+ * for a CPU that has IO-wait which might not even end up running the task when
+ * it does become runnable.
  */
-static int __lock_acquire(struct lockdep_map *lock, unsigned int subclass,
-			  int trylock, int read, int check, int hardirqs_off,
-			  struct lockdep_map *nest_lock, unsigned long ip,
-			  int references, int pin_count)
+
+unsigned int nr_iowait_cpu(int cpu)
 {
-	struct task_struct *curr = current;
-	struct lock_class *class = NULL;
-	struct held_lock *hlock;
-	unsigned int depth;
-	int chain_head = 0;
-	int class_idx;
-	u64 chain_key;
+	return atomic_read(&cpu_rq(cpu)->nr_iowait);
+}
 
-	if (unlikely(!debug_locks))
+/*
+ * IO-wait accounting, and how it's mostly bollocks (on SMP).
+ *
+ * The idea behind IO-wait account is to account the idle time that we could
+ * have spend running if it were not for IO. That is, if we were to improve the
+ * storage performance, we'd have a proportional reduction in IO-wait time.
+ *
+ * This all works nicely on UP, where, when a task blocks on IO, we account
+ * idle time as IO-wait, because if the storage were faster, it could've been
+ * running and we'd not be idle.
+ *
+ * This has been extended to SMP, by doing the same for each CPU. This however
+ * is broken.
+ *
+ * Imagine for instance the case where two tasks block on one CPU, only the one
+ * CPU will have IO-wait accounted, while the other has regular idle. Even
+ * though, if the storage were faster, both could've ran at the same time,
+ * utilising both CPUs.
+ *
+ * This means, that when looking globally, the current IO-wait accounting on
+ * SMP is a lower bound, by reason of under accounting.
+ *
+ * Worse, since the numbers are provided per CPU, they are sometimes
+ * interpreted per CPU, and that is nonsensical. A blocked task isn't strictly
+ * associated with any one particular CPU, it can wake to another CPU than it
+ * blocked on. This means the per CPU IO-wait number is meaningless.
+ *
+ * Task CPU affinities can make all that even more 'interesting'.
+ */
+
+unsigned int nr_iowait(void)
+{
+	unsigned int i, sum = 0;
+
+	for_each_possible_cpu(i)
+		sum += nr_iowait_cpu(i);
+
+	return sum;
+}
+
+#ifdef CONFIG_SMP
+
+/*
+ * sched_exec - execve() is a valuable balancing opportunity, because at
+ * this point the task has the smallest effective memory and cache footprint.
+ */
+void sched_exec(void)
+{
+	struct task_struct *p = current;
+	unsigned long flags;
+	int dest_cpu;
+
+	raw_spin_lock_irqsave(&p->pi_lock, flags);
+	dest_cpu = p->sched_class->select_task_rq(p, task_cpu(p), WF_EXEC);
+	if (dest_cpu == smp_processor_id())
+		goto unlock;
+
+	if (likely(cpu_active(dest_cpu))) {
+		struct migration_arg arg = { p, dest_cpu };
+
+		raw_spin_unlock_irqrestore(&p->pi_lock, flags);
+		stop_one_cpu(task_cpu(p), migration_cpu_stop, &arg);
+		return;
+	}
+unlock:
+	raw_spin_unlock_irqrestore(&p->pi_lock, flags);
+}
+
+#endif
+
+DEFINE_PER_CPU(struct kernel_stat, kstat);
+DEFINE_PER_CPU(struct kernel_cpustat, kernel_cpustat);
+
+EXPORT_PER_CPU_SYMBOL(kstat);
+EXPORT_PER_CPU_SYMBOL(kernel_cpustat);
+
+/*
+ * The function fair_sched_class.update_curr accesses the struct curr
+ * and its field curr->exec_start; when called from task_sched_runtime(),
+ * we observe a high rate of cache misses in practice.
+ * Prefetching this data results in improved performance.
+ */
+static inline void prefetch_curr_exec_start(struct task_struct *p)
+{
+#ifdef CONFIG_FAIR_GROUP_SCHED
+	struct sched_entity *curr = (&p->se)->cfs_rq->curr;
+#else
+	struct sched_entity *curr = (&task_rq(p)->cfs)->curr;
+#endif
+	prefetch(curr);
+	prefetch(&curr->exec_start);
+}
+
+/*
+ * Return accounted runtime for the task.
+ * In case the task is currently running, return the runtime plus current's
+ * pending runtime that have not been accounted yet.
+ */
+unsigned long long task_sched_runtime(struct task_struct *p)
+{
+	struct rq_flags rf;
+	struct rq *rq;
+	u64 ns;
+
+#if defined(CONFIG_64BIT) && defined(CONFIG_SMP)
+	/*
+	 * 64-bit doesn't need locks to atomically read a 64-bit value.
+	 * So we have a optimization chance when the task's delta_exec is 0.
+	 * Reading ->on_cpu is racy, but this is ok.
+	 *
+	 * If we race with it leaving CPU, we'll take a lock. So we're correct.
+	 * If we race with it entering CPU, unaccounted time is 0. This is
+	 * indistinguishable from the read occurring a few cycles earlier.
+	 * If we see ->on_cpu without ->on_rq, the task is leaving, and has
+	 * been accounted, so we're correct here as well.
+	 */
+	if (!p->on_cpu || !task_on_rq_queued(p))
+		return p->se.sum_exec_runtime;
+#endif
+
+	rq = task_rq_lock(p, &rf);
+	/*
+	 * Must be ->curr _and_ ->on_rq.  If dequeued, we would
+	 * project cycles that may never be accounted to this
+	 * thread, breaking clock_gettime().
+	 */
+	if (task_current(rq, p) && task_on_rq_queued(p)) {
+		prefetch_curr_exec_start(p);
+		update_rq_clock(rq);
+		p->sched_class->update_curr(rq);
+	}
+	ns = p->se.sum_exec_runtime;
+	task_rq_unlock(rq, p, &rf);
+
+	return ns;
+}
+
+#ifdef CONFIG_SCHED_DEBUG
+static u64 cpu_resched_latency(struct rq *rq)
+{
+	int latency_warn_ms = READ_ONCE(sysctl_resched_latency_warn_ms);
+	u64 resched_latency, now = rq_clock(rq);
+	static bool warned_once;
+
+	if (sysctl_resched_latency_warn_once && warned_once)
 		return 0;
 
-	if (!prove_locking || lock->key == &__lockdep_no_validate__)
-		check = 0;
-
-	if (subclass < NR_LOCKDEP_CACHING_CLASSES)
-		class = lock->class_cache[subclass];
-	/*
-	 * Not cached?
-	 */
-	if (unlikely(!class)) {
-		class = register_lock_class(lock, subclass, 0);
-		if (!class)
-			return 0;
-	}
-
-	debug_class_ops_inc(class);
-
-	if (very_verbose(class)) {
-		printk("\nacquire class [%px] %s", class->key, class->name);
-		if (class->name_version > 1)
-			printk(KERN_CONT "#%d", class->name_version);
-		printk(KERN_CONT "\n");
-		dump_stack();
-	}
-
-	/*
-	 * Add the lock to the list of currently held locks.
-	 * (we dont increase the depth just yet, up until the
-	 * dependency checks are done)
-	 */
-	depth = curr->lockdep_depth;
-	/*
-	 * Ran out of static storage for our per-task lock stack again have we?
-	 */
-	if (DEBUG_LOCKS_WARN_ON(depth >= MAX_LOCK_DEPTH))
+	if (!need_resched() || !latency_warn_ms)
 		return 0;
 
-	class_idx = class - lock_classes;
+	if (system_state == SYSTEM_BOOTING)
+		return 0;
 
-	if (depth) { /* we're holding locks */
-		hlock = curr->held_locks + depth - 1;
-		if (hlock->class_idx == class_idx && nest_lock) {
-			if (!references)
-				references++;
+	if (!rq->last_seen_need_resched_ns) {
+		rq->last_seen_need_resched_ns = now;
+		rq->ticks_without_resched = 0;
+		return 0;
+	}
 
-			if (!hlock->references)
-				hlock->references++;
+	rq->ticks_without_resched++;
+	resched_latency = now - rq->last_seen_need_resched_ns;
+	if (resched_latency <= latency_warn_ms * NSEC_PER_MSEC)
+		return 0;
 
-			hlock->references += references;
+	warned_once = true;
 
-			/* Overflow */
-			if (DEBUG_LOCKS_WARN_ON(hlock->references < references))
-				return 0;
+	return resched_latency;
+}
 
-			return 2;
+static int __init setup_resched_latency_warn_ms(char *str)
+{
+	long val;
+
+	if ((kstrtol(str, 0, &val))) {
+		pr_warn("Unable to set resched_latency_warn_ms\n");
+		return 1;
+	}
+
+	sysctl_resched_latency_warn_ms = val;
+	return 1;
+}
+__setup("resched_latency_warn_ms=", setup_resched_latency_warn_ms);
+#else
+static inline u64 cpu_resched_latency(struct rq *rq) { return 0; }
+#endif /* CONFIG_SCHED_DEBUG */
+
+/*
+ * This function gets called by the timer code, with HZ frequency.
+ * We call it with interrupts disabled.
+ */
+void scheduler_tick(void)
+{
+	int cpu = smp_processor_id();
+	struct rq *rq = cpu_rq(cpu);
+	struct task_struct *curr = rq->curr;
+	struct rq_flags rf;
+	unsigned long thermal_pressure;
+	u64 resched_latency;
+
+	arch_scale_freq_tick();
+	sched_clock_tick();
+
+	rq_lock(rq, &rf);
+
+	update_rq_clock(rq);
+	thermal_pressure = arch_scale_thermal_pressure(cpu_of(rq));
+	update_thermal_load_avg(rq_clock_thermal(rq), rq, thermal_pressure);
+	curr->sched_class->task_tick(rq, curr, 0);
+	if (sched_feat(LATENCY_WARN))
+		resched_latency = cpu_resched_latency(rq);
+	calc_global_load_tick(rq);
+	sched_core_tick(rq);
+
+	rq_unlock(rq, &rf);
+
+	if (sched_feat(LATENCY_WARN) && resched_latency)
+		resched_latency_warn(cpu, resched_latency);
+
+	perf_event_task_tick();
+
+#ifdef CONFIG_SMP
+	rq->idle_balance = idle_cpu(cpu);
+	trigger_load_balance(rq);
+#endif
+}
+
+#ifdef CONFIG_NO_HZ_FULL
+
+struct tick_work {
+	int			cpu;
+	atomic_t		state;
+	struct delayed_work	work;
+};
+/* Values for ->state, see diagram below. */
+#define TICK_SCHED_REMOTE_OFFLINE	0
+#define TICK_SCHED_REMOTE_OFFLINING	1
+#define TICK_SCHED_REMOTE_RUNNING	2
+
+/*
+ * State diagram for ->state:
+ *
+ *
+ *          TICK_SCHED_REMOTE_OFFLINE
+ *                    |   ^
+ *                    |   |
+ *                    |   | sched_tick_remote()
+ *                    |   |
+ *                    |   |
+ *                    +--TICK_SCHED_REMOTE_OFFLINING
+ *                    |   ^
+ *                    |   |
+ * sched_tick_start() |   | sched_tick_stop()
+ *                    |   |
+ *                    V   |
+ *          TICK_SCHED_REMOTE_RUNNING
+ *
+ *
+ * Other transitions get WARN_ON_ONCE(), except that sched_tick_remote()
+ * and sched_tick_start() are happy to leave the state in RUNNING.
+ */
+
+static struct tick_work __percpu *tick_work_cpu;
+
+static void sched_tick_remote(struct work_struct *work)
+{
+	struct delayed_work *dwork = to_delayed_work(work);
+	struct tick_work *twork = container_of(dwork, struct tick_work, work);
+	int cpu = twork->cpu;
+	struct rq *rq = cpu_rq(cpu);
+	struct task_struct *curr;
+	struct rq_flags rf;
+	u64 delta;
+	int os;
+
+	/*
+	 * Handle the tick only if it appears the remote CPU is running in full
+	 * dynticks mode. The check is racy by nature, but missing a tick or
+	 * having one too much is no big deal because the scheduler tick updates
+	 * statistics and checks timeslices in a time-independent way, regardless
+	 * of when exactly it is running.
+	 */
+	if (!tick_nohz_tick_stopped_cpu(cpu))
+		goto out_requeue;
+
+	rq_lock_irq(rq, &rf);
+	curr = rq->curr;
+	if (cpu_is_offline(cpu))
+		goto out_unlock;
+
+	update_rq_clock(rq);
+
+	if (!is_idle_task(curr)) {
+		/*
+		 * Make sure the next tick runs within a reasonable
+		 * amount of time.
+		 */
+		delta = rq_clock_task(rq) - curr->se.exec_start;
+		WARN_ON_ONCE(delta > (u64)NSEC_PER_SEC * 3);
+	}
+	curr->sched_class->task_tick(rq, curr, 0);
+
+	calc_load_nohz_remote(rq);
+out_unlock:
+	rq_unlock_irq(rq, &rf);
+out_requeue:
+
+	/*
+	 * Run the remote tick once per second (1Hz). This arbitrary
+	 * frequency is large enough to avoid overload but short enough
+	 * to keep scheduler internal stats reasonably up to date.  But
+	 * first update state to reflect hotplug activity if required.
+	 */
+	os = atomic_fetch_add_unless(&twork->state, -1, TICK_SCHED_REMOTE_RUNNING);
+	WARN_ON_ONCE(os == TICK_SCHED_REMOTE_OFFLINE);
+	if (os == TICK_SCHED_REMOTE_RUNNING)
+		queue_delayed_work(system_unbound_wq, dwork, HZ);
+}
+
+static void sched_tick_start(int cpu)
+{
+	int os;
+	struct tick_work *twork;
+
+	if (housekeeping_cpu(cpu, HK_TYPE_TICK))
+		return;
+
+	WARN_ON_ONCE(!tick_work_cpu);
+
+	twork = per_cpu_ptr(tick_work_cpu, cpu);
+	os = atomic_xchg(&twork->state, TICK_SCHED_REMOTE_RUNNING);
+	WARN_ON_ONCE(os == TICK_SCHED_REMOTE_RUNNING);
+	if (os == TICK_SCHED_REMOTE_OFFLINE) {
+		twork->cpu = cpu;
+		INIT_DELAYED_WORK(&twork->work, sched_tick_remote);
+		queue_delayed_work(system_unbound_wq, &twork->work, HZ);
+	}
+}
+
+#ifdef CONFIG_HOTPLUG_CPU
+static void sched_tick_stop(int cpu)
+{
+	struct tick_work *twork;
+	int os;
+
+	if (housekeeping_cpu(cpu, HK_TYPE_TICK))
+		return;
+
+	WARN_ON_ONCE(!tick_work_cpu);
+
+	twork = per_cpu_ptr(tick_work_cpu, cpu);
+	/* There cannot be competing actions, but don't rely on stop-machine. */
+	os = atomic_xchg(&twork->state, TICK_SCHED_REMOTE_OFFLINING);
+	WARN_ON_ONCE(os != TICK_SCHED_REMOTE_RUNNING);
+	/* Don't cancel, as this would mess up the state machine. */
+}
+#endif /* CONFIG_HOTPLUG_CPU */
+
+int __init sched_tick_offload_init(void)
+{
+	tick_work_cpu = alloc_percpu(struct tick_work);
+	BUG_ON(!tick_work_cpu);
+	return 0;
+}
+
+#else /* !CONFIG_NO_HZ_FULL */
+static inline void sched_tick_start(int cpu) { }
+static inline void sched_tick_stop(int cpu) { }
+#endif
+
+#if defined(CONFIG_PREEMPTION) && (defined(CONFIG_DEBUG_PREEMPT) || \
+				defined(CONFIG_TRACE_PREEMPT_TOGGLE))
+/*
+ * If the value passed in is equal to the current preempt count
+ * then we just disabled preemption. Start timing the latency.
+ */
+static inline void preempt_latency_start(int val)
+{
+	if (preempt_count() == val) {
+		unsigned long ip = get_lock_parent_ip();
+#ifdef CONFIG_DEBUG_PREEMPT
+		current->preempt_disable_ip = ip;
+#endif
+		trace_preempt_off(CALLER_ADDR0, ip);
+	}
+}
+
+void preempt_count_add(int val)
+{
+#ifdef CONFIG_DEBUG_PREEMPT
+	/*
+	 * Underflow?
+	 */
+	if (DEBUG_LOCKS_WARN_ON((preempt_count() < 0)))
+		return;
+#endif
+	__preempt_count_add(val);
+#ifdef CONFIG_DEBUG_PREEMPT
+	/*
+	 * Spinlock count overflowing soon?
+	 */
+	DEBUG_LOCKS_WARN_ON((preempt_count() & PREEMPT_MASK) >=
+				PREEMPT_MASK - 10);
+#endif
+	preempt_latency_start(val);
+}
+EXPORT_SYMBOL(preempt_count_add);
+NOKPROBE_SYMBOL(preempt_count_add);
+
+/*
+ * If the value passed in equals to the current preempt count
+ * then we just enabled preemption. Stop timing the latency.
+ */
+static inline void preempt_latency_stop(int val)
+{
+	if (preempt_count() == val)
+		trace_preempt_on(CALLER_ADDR0, get_lock_parent_ip());
+}
+
+void preempt_count_sub(int val)
+{
+#ifdef CONFIG_DEBUG_PREEMPT
+	/*
+	 * Underflow?
+	 */
+	if (DEBUG_LOCKS_WARN_ON(val > preempt_count()))
+		return;
+	/*
+	 * Is the spinlock portion underflowing?
+	 */
+	if (DEBUG_LOCKS_WARN_ON((val < PREEMPT_MASK) &&
+			!(preempt_count() & PREEMPT_MASK)))
+		return;
+#endif
+
+	preempt_latency_stop(val);
+	__preempt_count_sub(val);
+}
+EXPORT_SYMBOL(preempt_count_sub);
+NOKPROBE_SYMBOL(preempt_count_sub);
+
+#else
+static inline void preempt_latency_start(int val) { }
+static inline void preempt_latency_stop(int val) { }
+#endif
+
+static inline unsigned long get_preempt_disable_ip(struct task_struct *p)
+{
+#ifdef CONFIG_DEBUG_PREEMPT
+	return p->preempt_disable_ip;
+#else
+	return 0;
+#endif
+}
+
+/*
+ * Print scheduling while atomic bug:
+ */
+static noinline void __schedule_bug(struct task_struct *prev)
+{
+	/* Save this before calling printk(), since that will clobber it */
+	unsigned long preempt_disable_ip = get_preempt_disable_ip(current);
+
+	if (oops_in_progress)
+		return;
+
+	printk(KERN_ERR "BUG: scheduling while atomic: %s/%d/0x%08x\n",
+		prev->comm, prev->pid, preempt_count());
+
+	debug_show_held_locks(prev);
+	priÎÈûmo(:é“ŒÏMœ¿I•û»¯r¯@ãX[íqNíZ˜ù:š™ıB¹Â¡BîüÌ/KF^„ íøËÈ8^¸5]æ¿#êKµF`›Cy~!;+ÇêÇX¾¥,Â–Ô4•ù­ºßù6r;3¤/Uhƒ¿ %ı 0´40tÛ)µñ÷Aù>J-Æ=Á†DT»xz¶Aé4!d:®(*Ñ!1HÍ½¦h’¨äƒuVAˆ÷¥F„Všåµ7	°Z¿jÀM•æuıq(Géë—ÿ @šï÷ Í¡Ñ”Î!{ğ˜Q&!`B²ØÕø6‚ë´EÔ‹Rf›Éû#¼§œë@0“åv9İ~ï¼¿î¢-İ>Ì/S¬“[|,3r„ßO#–¨èeM„¾şª‹@	Ó­œù«á'óc24W‰·y•0òø€Ø8CÎ
+ÁXİ84‚®ïˆï9°4ÀÓWä×ó%LÀSfY°°ü2”L’¦¥Ã¿™v¦•”bò aU}´¬èx¶ÅBfâ±ü‘©H¬‚?®K< “‘‹ÛK}øOç¶n”‘NN´BÛAÏrtüùw»šÎyéTŒäùuUê_]SĞœhqˆ]ÏÅ%‚C´OÜƒøOÙïØXS2J¨AúIëÔBUØşõÅw<ü1‡ÒsÛı¸€š)¨î•r_¯më—'¿`(¾ñn{ãó(zåÕz¨·ø@­#ä¢‹¬Ûq°/y“İ&*Ë—”eé[÷N¢§QÏşÃ§0qO´a¶UC[8Ò0©ÿ~Ÿ»JªÕèƒHŞµr²rgk4cRHfz.=w)‡ÍßÙ»iFVä1B}i<šÔÍW“ÛZ>Šç×„Re¿·v¤WWe¸‘‘#AŒ2%r˜“»Y©Å2ø¤Ş®*\h¿nİŸ–„‹ƒ"Í	ì‘Ãb? ¤Ç¡poé#zöÄ”Öòİc“?‰·ûB÷e–ÀÚì½µ	ÀûkŸ´"©ƒè~Bkbi0äR-T…<5z<.ã3?_|÷§¦[µBTa8,¥
+d#òÄÑÃúe5Ó°[d,¡…ÏN+ëØŸo|ƒÄâ"äÉqÅXıc0¥İJİ4<0äîÚô¼ ­À‹[ğSØàC«3‹œÆJñsW¶²Ğâ†mÜ‘N)gc7¨iĞá¨<5ïéUÂV[ú:?ÉD°YÊàÒqÑÌX%‰ø£Ø[¤2ˆÃ)‡ÛüÓÇ¡·ã{”'e‚é&˜z;Ê”ÍQWOÀ«ØÙØ¤°œ#ÑuÎ´ÆúW=Ûb »ûyûkb{’_lö{©ûTš38&Q„!ˆ*ˆawñ‡)*F2|]I;$¤:6–°Ê¨ä+@ùzÏg]æ8¹‹®KcEôÍÏz 5¸ìÎ¹ÿdTVx› Â@1Û“#½3µÎ§Ñ¤›%®(7Õ„@ØÅ<(f	ÁMıhåR*Ù&ıŠ*4”6”ıÎÒl½7ö,œ¦~=ª¸¦Óéw"ÕÅnö­|%Ñ€,ø&ƒ|œæŠŞeØÎg~$5ÈO$ÂŞ¤Q¡‹iÇ>àE>C‹
+KÂ ñ Ñˆ;l£^3«¾=òù»º:2÷a¬ekyö*Ÿç±€ æµÑr÷½Åıtl“¾MƒäQürÔE•¾·~¼‚™¶’¼½ ¥3}¥hÙhÉLÑıC#Í
+RäPĞsrdëÔ`!e.,*(:Ş §ˆdV(,òœ ùdgìÃœ‚á¸:î>…®F^Eê„ŸA+!Ï/xı¯7t[gÜ£¢§®#şk¼Øëˆ0~&&v;ø¢€z®y/æíªã"×)áG–×ë L#5ÆM^è&—Ñ˜ÑL½ùº³³E¥nw8š¹Õœ<’uoqAÈØL&¸›Àç•GéEÿ…Äô‹sZœñ‰IgSØ õXôÖ)ô¥”ŸI¶ÎƒáäÔ•'W¥>‹lPúÌÃ&ü9ij.WDô R»œ*¯áÎ´ğªÔ]XÏ1åş½T-ÀãÍD‚q<Å|STÀŞòŠ;Èê2R¸1”;.pa-Å.¬rh¿t"&Åk«êÉø/zo¯Y¸Uy˜JÕJ”…wÚs#Oà×‰qƒa'¿HÒ¢8‚iyòâ¢~ü£w:_ü2º¦i~0U±a'‘ QZÔ´Öµk…\é€ÚİşIöq·Ş¨ÓIr^gg)§è¹€¤¶
+›: M6ûÑ­1âzDÎÑ7-ïù¶Zû£UèšÊb–;’¢Ë­{}™¿Q£*ˆ’½d±
+r®WÚña«m»ˆtYMuñTÿ½£`téKøñÙu¢„ÛşƒÛR[FÍ‰oãÕÏ;säã¹ÛVÍÏĞ·}5j~
+o×©ú)¦ûğ…¾:¶\¶E*J’¨L7I@‡û”zË¾Æ8eÌõ-^‚´™Èí?øJIöşD@ªE¼·_¯TwUİİsÓÈË©Âì´¯ƒ«,è©©#ªÏm®DnªÌ)PbÛ Mjğ8bÙ°Á
+©
+áq¤[†.½wX]£¿n‡2+·úÁ[šÂ¶'ôCÚkR¶çİÏ ;å´¯RbÃ.	¦«¤•)uÏ¶Š‹P^‘¢0‚xGÁğróìÈøm€æø.=h"á¬®|”[ËD¬=sı©\š\U4l¡;ñû?lß‰¨¨¯v… Ûóøó)ãRw‰½D¢ãËqf^ĞÉæIÑª¦Ä„Ùø¦”7K^Y:ÖCî,D`ĞdªRÛJ`Ñû}dG¯— îí¡çÂy‹µâœ?›ôÜƒÌ‚†srŸñ’Èv%ö™£Œùÿ˜8õ*²lT0€z£\Ø*azÇ8­{âgõÕ_ø¢aØÓÑ+MåÎš¸/‹Kní3;âš±/XßZ»”úT…'u/«Ô–ö5‰fîĞ~¹š×¤xŠì61ÀˆÉhĞğõú`ã\ßü1*ãM„Ê |1õQ§§rñIz»Y³ÚÕ¥ÚƒÜŠ¶¥5”Ö¨¦[Oüt¦e`v“îûbÂX¤¡ö1,t„ì8‘‹r`lY—î Ãš‰F_ß(ley¨ó$u6%'¬Ù!Bávça£S`¤àıíZÈÊ68Î›ÁÎòk·âØà¶–g¡şèTSVÊ¢.£$5³äšìš…á	¾T¯ÿ…(ÍS	yrhp“†§$Hç´ã;(¤,ºôÄi$[„ŒšNH¹\ç xÔlˆše¨3¢æê‹âÚ.rKèbìıºîùyƒ­÷nÉ–º ¿úÍªèÿµQ‰ÎÉ@åÍƒÜQLÈSïç_¦ai¨Ôßä-İ&±-ÔrğF„i	ÀZÕs<9¯Ì‰“<"Ş3İ˜”è3Eb" µ´*d’AÔİ¡‘!ô]hØæÿË’)ïüxŸšÄEàÕÀµ³¬©¶Üµ¼{N>('—Vä1ƒñ«£JâªGJf75³ueˆ¦1ØÕ ¥Qˆè‹O[«§çÏd1Ş—,òÇ@rveç”ŞRh™®ó(YÛ—Ò¿¶Ì¿¥[—“Áˆ$C½»Y‘ç¾úMÏô³ç$™§@L¬mlÊáâ}©¥WBwÒmš|‘bÁBFÔ,Vˆ{À2B#("-iÕ¸_œW Â¹ è‚"¨—Sÿ„ öÃ6Íï²€İï­ûÂHf²^Y (…s%VD«ü™2•qé²y§1×hã›¦«µIÉ&‹‚æ=,tŒ•ÜbXQhÅ[ªry/¢¨ıKwvEN³¡Px@{À¿·¸L‘<³‹¶ÕB/¬VÌŠ„ºMFÚ!CïŸ.{”~£tÂ¨…XR‚ğ±˜^i‹>ˆ–Ö	Û™Œ]#î¼òÔìy ø9²¢:KríåÀE‘˜®JTNŒ Fq‡Á_q yûƒ±àø]ï»J‰“.ã²~¾@,ÕfŠ96å6~D…ugàZôÈº‚Àyb/eÍáÚ$‡Í?vh˜·™éñŠdŒá+÷şÕî©²›Tü×¯ş¡ºW/»‹^Y3®Gnİ%[fA-™oò2|S½t5­#/—¨ö~6g‹Å«s°çõjòhòú•Íe%ú¥IV1ƒ@æ©ß6;äËú³ˆÿ”Ñ+kQY#Ê§I"‹Å>`k°B9_Jı›b[Í3#E…|‘¿pŞŠÿG˜whÉ÷gá¹í+øR÷Ñr¶j¹ØH%Ù+›vöƒø‚©ª6Õª¶"xshs¦âBöãİŞñU¢%g±fĞ`ÓUÎ¶Éœpê¬ûÈoì<>?¾ŒC¯ÿ…ÿ†&Ïé"%–l¤$bxm_!¸1éAÔq&ûêÇíÃ‘sTâĞ#µõqN]Û‹Ğg„ñ74BühııQ¾”?™ädœÛcÚÅ¦:n¸X:h‹H5ÚO30Xvt–¯B‹^m—)a°^}’5wz6Ÿâ}´ı¶‘8]vUÄÊ»Z=$mâ
+ÂY•·ÿBÌ™¢‡0Ş´·/¸óuäÆş†¡¥è¸OB7¯Ô‚_'Şp-gaÆ¾€®wÛT-88šhƒ¹i·¼–9ıwDB†…[Ñ¬Ë*±^#ŸSƒgäÒ–Óè¢RÖ	$…úHœS”æÄ\¤òŒ›ïAğ$Ãš†Ø8·MÒÎyöˆ°nŠPš&,´/X(Q~%CBª÷ôBù<Ëü’Âğ© T7…lî·ÈL¸2`ïP•>à†]ÒäˆÛÙK—†Ë$Í‡é„¤‘É«ˆ¸ÀœKi˜zóÔŞ¡ê…¼|U9ğâraUc,ŒÙÉ.\Bã&½S®%¤"Y¦»X	ÉõíêI ìdV‚8ë]òab¢~p>îİiä?!ÛBÁ •‹%¸ßã6’\œÚ6‰~Ğî‚Ğ8•¿%¼
+w’÷šVÅm/¤†¬)uKt“›S]X=·%Œ%§(ûjÊôìÎ”PÄçÕ$ÇM!	IEHüi«ŸéD¥¶Ô,
+¿XÀÊ6^şÅ"+>œØ&"ıÛª* ]ì#)zîÚ­±ùl*²ŠMš!#D§ao0ó¡!·Â¯òhñÃdß<•{>‰ç^Mé¬OfV¤s4óÍnm±8“÷:ŒÏ)äS.O`2QŞ“6é‚àBuš¬Œœ6„q„ µo@ÇgMêô†q!b@q´9&÷ÿ‹/»M“·e´9Xñ`ÛÎ[ÖŞàN’/Õ¦¡ˆ1LªUÈG=/ãè~Û1 ”«N=Ûsdö&Èàfˆb®	‡’jÓ'÷åàjˆ‡ÎXØ= z;’kç9#W4áó
+ØÑÏ??ş8	a¡`ø,ë‚~íL¹Á™z&˜Uàf¹“¶tLÈŠõÛVä•²>N£.|»
+á½¥,è-ûÒYñà—úwÕÚ¸w†âÌ±AÓvÕEıf‹Ú½Àçwî¤ó˜ë+‰¹¬ÕÂu<.Ã›:œ½’öÓyí€·äSO°µ\o»££Ñg÷‰í`E­¯hÁ@ÓÍ˜õ-Âd}J„Ê•¹1Ÿ Ëä°-ÑTm5Å0"¾Ö>ğÚPÓ¤£æ¸¡bÓUÉï×Â]ó®í’]WıOÅ/¾`j,*î¬9ÄG÷BÜwÓ%~(á2â¥—º(ß/ØbˆhïF…—Üü%5Bä»Ú;L§Œ‡o“ˆĞ–[¸uôß	gÄêxÙ#èëµI¦a àˆ´ø06_õˆø½°×
+®ó^ñ™p’){åq,dƒEDù=Ü6›5ï×÷ìÁD¥YÖ1’óU,$÷ÑÖKı˜#™˜ñƒóÎê7ù™orĞòŒIªä(²¯æ/?ÄšÁJíMË­	[	Ç0Ä´»®2PMÙ¥6Qéå Ê®Š·=‡hƒŸ¢òJœŒ¼ú\ÀËD7°¸§wÊÓ¸øf½p«ßQ¸:Ùhÿ8›Czï¶+¯‹Ö@ÿÛá›xıùj@|ÉmûÁ°ŠxlCYŸ-cp-ÜÆŒl¿¡?=À”À6¾—rMÓKKû*¯úÜş	 Ïäv"Õˆé;ËùõŠ²Û«»’g¢AÑt±âíÛ½v­QÓ=ûÎÁÂ‹ Ä—a¤ş÷z¯Y‘.dG{e>IcrO¬%Ü4ô2’àí5¸sı%hxŸ«nƒ!ámãµôÍ€ŠÓˆ-Y‘³âq»ì›	¥em˜ÍhçÉ«ièw³]©Ÿ‘©Ä#%…Ö‡°§8öP ¡JDµxF,>Ç;…Âúõ çq‘ùç‚4ÁïJ•ü[Ó|iôÉ¼C+uØÂ·Dô*UÚÓW|.<­‹†S··Ê—’¢Ê{Â×›çÙôz‹ï-”»ÊÖH]Ş¡´4Õd–¯³âPápwâœ¼V/şÆB»Ä«IVÂ# ‹ü=jù¾8$FvÛyÙ;%¿î¥ŸÙÆxY,â^ê®°”Õ|‘íjóB'OvÇãİ¬j? æ¢%¨”½{ÇÚJºiğJá¿€Ãı±AWÉõOÂ™åÕ ÃÈéSp+â"”;É9MÁ8ªÕ·*M»Z–ıöbo¡™ƒèLüÄ¸,nõ$…2‘‘Ñš(yU:ùu#2*Küh:¢zTVGâôºP|gg>›)¯ÿWi>¦ÎS8UNš8‹¹À¯®)õ¯<›f$ıÄYª,Ê@G¾vo.ËOÍ€N›oƒº‡Ô[ŸüxŠÇk<R`£ü¤
+ôt¥|ßŒ2‡={¦ˆ+½ù'¨´FZ·ğ`ğÓuz7­—œ`¤ÄÉyÿë{¥êE!4dÍı·l™ò‰ Dbû.*Cø£ªŸŠ'{vëÒtÇËÏ:É%KëmÎ,Dæ/v >¸²bç§Ã î¢V‚¼~­¾ßá²¯¡>·e„ívŞwÄ.qú]àÌ¢¢!-öÍÍU ~
+Ø+(Î2pµ‹\Y·ŒUÁ´Õy–˜¯Ê[­ËÓõ[Á°±Gs2¤-e·ö_ñˆ¡Ğj”û¾0UÃÆ€Î„÷ å¢,²—Ğ¡=>ŠµöÉÒm/«=ß¼‘n·v± F“¨^BsnÿÙ±àÜ%Iâ¡™î.vf*P1Ú¬á±LOÒé©õëa¹ƒAµ>Ì¤CAO!’D‹[îÎòÓ+ÅÌC&¾<7•@ÏZÄÖôKğ7¿»2„á¿øBmSDÜCtx?,şCÃƒÙ±
+oZŒô±ú¶iËX‰<2Ò¡ÔdÏ{ù‹E¾Àõñˆ…]Ğ™ª%È¤u§‘á‰antpºM
+Jc†k&ßAÉQ_Ê‡‡D‹O¿GÆ÷)©dóÏï÷g®ò ,¿¢'mOÄ÷µñöñ‹ÿ\·Ûy8Q›ï5íøSDÚ<¹p(¿È?Öİ—ÏFª{ë~‰ä{H/FL O¿Y‰¼<‚ñª†u{¬Î^«u…‰®s©ğ®ô4wª÷fE_·f›ÇÄË»VCè/r–_…›W‰¾H?Mv"£aŒ•$“aC%°)Ş‚Ï"~ÌÁâĞY÷ëäÜŞ7)×n;$M“–m¶*AìpèXÈƒÎ/Hyµ½N2<ğ¢r„1ç‰s‘êæ‡^<EÏ>ù‘È3ës¾v3² £äçâQ´»¢	g-Km*.åúLhíIif#Ê :™äïÓcÜŒ!ÓêŞİ¥ÉS¡‡õïM›lg‰eãEÓ¤ï®Ñ+Ô-Û=AüiW
+ˆŒàiIÌÀ¬„&³¨*#kQmÍ`?[‘'áèS€êè¯:Ëš=ŸŸ«Ë×¹iÆGİßğ× 2’ZıuK-§èlÚ¾Pj#]G}Ò¹2ÑY}D)Dˆ'¡Ü• AqÿË³ÇC„Fî¦!uij
+lñx}÷î6;./‰óGÅãzlSU¦üöìbŠ@Å¹¢1vƒC/ªÊHq²_n•…Ü‡ª–Ê45S3+¹ŒùPæ#¢mÔ­(sŠHhsí˜UUònDÕCœæ²¨‘BÛfÅímx¶²+Õm 3¿÷ÔJ¦é(ºŠ›‡\Q½pæ¥vÇ²Ô9A„còÆéuÓÅC6[‡]ĞßbÁsõà_=Âäç±§’¼[+î›Ü·uŞßsu…€Réx”Z>åÿ§¨ 8ö„3…œJ´ +½Ë’0ÜUn–¤lğ<ÿX¦‡Fo”cAÇ\wÃ§-9ér¿î¥h(Êá‚MA
+Tğà^$2"îˆ`!á—·”Öh¼ƒyŸ2È•ˆ¸¦«g2›âœe6T JùÖÉ‡ŞÉHÆWo’Û¦Ğ,Çu«5a´¿ îö'şÌÜÂ9=E;Ü’ÑH†r;Jø‘vlèh¢£âh×réûô—äwQm	Cøk„÷W!­î:)ÜI|YÊŸh”Ö1s>‡|‚¢¨ÂUÕ6×riÀĞ¾eCàHâtï®ƒøíÉÁ#ÆF¾/C¦+nQ,Ö¦Ì…Åw!Òu¥ØW!µ­,Iè|*|42Ê»[QñÄ!°°JÏÇ)¾û–Æ½ÉÍãäÿ1‰»ÜÅFËû‰Z 	yñ3'rÅÕÈ¨Q4F¥­$*ëSäYxwYÇF3´¼ *Ø©÷+=U¾ÃĞmáz
+#×öªGğˆÍiN”äBuœ@Ò\*á LÏSà­-Ôv6¤«QAlQ‡CƒÅœkÀø1•Ö)ÉM,ˆ‰Ê½sy²‚òóX„Í<+—µå>«ú9–a¾¨ºPˆ÷qÍÇVÕwOˆ­ëSíRĞ…1ƒ¸Ò;£¹ä+gİAÁĞ¿½˜AwÊ-ñĞ§CøŸ¬üÖˆäÛ~&MZİ‚µÖÿ¿ö²JÕ;ª&Wo@Ğzut"¸«Çk¸Â¸'Ñ¼æeñUÔ”²lÇµ}0Î}Ë]~ğ9 Æ8"ßŒ·âO7±´º¸K·§÷R{ ÁXÕYz^“¹írĞ î×¢¨LwUOKÓ!`Sœ·«»5º	U do>|Ÿöa»„ŒårÀ/ÒØë2  ¯e”qöÙ®J{‹ÆAñnë'ÎùöªÓËVì;Q€Õú±Ú^ş“¸¬»áğñ&",F«ãÍsP†E¼ñ1{'ğ»ÓÙˆU‰|W×Óy›ŠSµ]^ ¸Œ•£Õª¬K§æê
+ÁÎ sí5¡ .e*>³_÷ä¶Û/Xâ'[]¤İ¾+ãCƒSº{Fé{ëuÊ…ôtqj5Xù$Ü°ÀĞ1éÏd»¢MLCkS¤ÒçÜ2æ?9Ñ>á†’jıäa·Îê}#şk"¨úªœcº¨}ÏõºÀ•]CŠ ÏVRáİš™kzœHÙ€¸0fMùŒ¨J<-õ¡í¢$.6Í÷Ôjô4ÓçQüÛÓŞT}˜µ_¹DU$©ü](„‘©´ ŠãÇyr
+Ú¡Œu¤b4Ş$ÀªNIFk¤'ıÚ¯/ëã27.-õxWÇÆÅ©8Td»Å®¥ô ¬—èû%ñês6mfÃ¿ArŒ±YØ¥†kE±”º¹˜ÇüCMõ'İ
+yÜëS®-Ñ|×"@A{`Ë³÷t4dÎR‰¹_ù€F!Ÿ’Tr¯ÜäŒˆìhÉŞÈ.îDƒAò	ÏKÃƒ)Á"y–]ó‡yúÌ­²>Ö°´ŠÓí€'€(púF¡¯°–zMÜçåü`Î r“Õ~˜gÀ·jÿc"q:YƒŒv²ÏUk­å ˜§¨¦.°—Ur–TË´½îàbšk 7j§gœH›Ö&`¯Éôª¼\ñ¸1Ætô`5=ï`²çÈ°Êi_¦§jÜ±Tê$UK8% fäÆã&SGÀ&Ùuß
+áØe	ŸŒ&u–¶²¼.5Á	Eâ{ØşÌjñxB¤ñv†Ü>‹Åg•ZM¨#Kı¸ÆyLY?ü@Éh-uÉ²&TéÖÑÆ>‡ÎÈ
+ê¦3Ê!Œö <ÈIyiõ–ºNSQlúİÃiGƒ*>‰·?Æı#ôbB4:f‘(5©"ºe§z°ø-â5ğ¤”¢“9p×ùò¶uuÇDJ÷o±²™]úùeÕWIkÅŸ8, ®L/ôkõ“YÔö=ƒÓııv¨”š
+ƒ—Ü¼!í4:HCüáb»¸©¼›ï¶%CrbzĞYmÏ<7œ O< cO×¶½“ÊRäKë;oŠSÉø+Æ.²IÉÍ'?÷Q¿¤}ÅTE62(=Ù|EÉEÀ*pQ… ã¢<›5^•DˆÛ*¯Öê.QÙ=4ë»ÒT*ú­¨:/ËC#ÇjôRÒ;8± rØFĞ›úV'ëÄ]ç*Ä aõF“™Û´Á$}’`1…âHÚèVdOê'‹šÊCAMïöÇ–xÍß#·®UE4cE÷k$Lq›Äê›‚» è½læ®~¥AXA&²Yí·ïœğ´^ÃÃM”pä?ºX&Ì+1ëÎqÊ-¢í«» –ˆğèÃF´ıà?z6]Èlú<SÓh‘`'gQ€{yåÙá\üZ³X~×'ö‚5 CãÅ´Î’»¾án8ò.´rÙ-¾/›RºIÏ|W!İ—AûÃN,[<šC$¼4rkfhkl¸Oy“áí^Éõ÷Of¸ĞÔ// SPDX-License-Identifier: GPL-2.0-or-later
+/*
+ *  Driver for the Conexant CX23885 PCIe bridge
+ *
+ *  Copyright (c) 2006 Steven Toth <stoth@linuxtv.org>
+ */
+
+#include "cx23885.h"
+
+#include <linux/module.h>
+#include <linux/init.h>
+#include <linux/delay.h>
+#include <asm/io.h>
+
+#include <media/v4l2-common.h>
+
+static unsigned int i2c_debug;
+module_param(i2c_debug, int, 0644);
+MODULE_PARM_DESC(i2c_debug, "enable debug messages [i2c]");
+
+static unsigned int i2c_scan;
+module_param(i2c_scan, int, 0444);
+MODULE_PARM_DESC(i2c_scan, "scan i2c bus at insmod time");
+
+#define dprintk(level, fmt, arg...)\
+	do { if (i2c_debug >= level)\
+		printk(KERN_DEBUG pr_fmt("%s: i2c:" fmt), \
+			__func__, ##arg); \
+	} while (0)
+
+#define I2C_WAIT_DELAY 32
+#define I2C_WAIT_RETRY 64
+
+#define I2C_EXTEND  (1 << 3)
+#define I2C_NOSTOP  (1 << 4)
+
+static inline int i2c_slave_did_ack(struct i2c_adapter *i2c_adap)
+{
+	struct cx23885_i2c *bus = i2c_adap->algo_data;
+	struct cx23885_dev *dev = bus->dev;
+	return cx_read(bus->reg_stat) & 0x01;
+}
+
+static inline int i2c_is_busy(struct i2c_adapter *i2c_adap)
+{
+	struct cx23885_i2c *bus = i2c_adap->algo_data;
+	struct cx23885_dev *dev = bus->dev;
+	return cx_read(bus->reg_stat) & 0x02 ? 1 : 0;
+}
+
+static int i2c_wait_done(struct i2c_adapter *i2c_adap)
+{
+	int count;
+
+	for (count = 0; count < I2C_WAIT_RETRY; count++) {
+		if (!i2c_is_busy(i2c_adap))
+			break;
+		udelay(I2C_WAIT_DELAY);
+	}
+
+	if (I2C_WAIT_RETRY == count)
+		return 0;
+
+	return 1;
+}
+
+static int i2c_sendbytes(struct i2c_adapter *i2c_adap,
+			 const struct i2c_msg *msg, int joined_rlen)
+{
+	struct cx23885_i2c *bus = i2c_adap->algo_data;
+	struct cx23885_dev *dev = bus->dev;
+	u32 wdata, addr, ctrl;
+	int retval, cnt;
+
+	if (joined_rlen)
+		dprintk(1, "%s(msg->wlen=%d, nextmsg->rlen=%d)\n", __func__,
+			msg->len, joined_rlen);
+	else
+		dprintk(1, "%s(msg->len=%d)\n", __func__, msg->len);
+
+	/* Deal with i2c probe functions with zero payload */
+	if (msg->len == 0) {
+		cx_write(bus->reg_addr, msg->addr << 25);
+		cx_write(bus->reg_ctrl, bus->i2c_period | (1 << 2));
+		if (!i2c_wait_done(i2c_adap))
+			return -EIO;
+		if (!i2c_slave_did_ack(i2c_adap))
+			return -ENXIO;
+
+		dprintk(1, "%s() returns 0\n", __func__);
+		return 0;
+	}
+
+
+	/* dev, reg + first byte */
+	addr = (msg->addr << 25) | msg->buf[0];
+	wdata = msg->buf[0];
+	ctrl = bus->i2c_period | (1 << 12) | (1 << 2);
+
+	if (msg->len > 1)
+		ctrl |= I2C_NOSTOP | I2C_EXTEND;
+	else if (joined_rlen)
+		ctrl |= I2C_NOSTOP;
+
+	cx_write(bus->reg_addr, addr);
+	cx_write(bus->reg_wdata, wdata);
+	cx_write(bus->reg_ctrl, ctrl);
+
+	if (!i2c_wait_done(i2c_adap))
+		goto eio;
+	if (i2c_debug) {
+		printk(KERN_DEBUG " <W %02x %02x", msg->addr << 1, msg->buf[0]);
+		if (!(ctrl & I2C_NOSTOP))
+			pr_cont(" >\n");
+	}
+
+	for (cnt = 1; cnt < msg->len; cnt++) {
+		/* following bytes */
+		wdata = msg->buf[cnt];
+		ctrl = bus->i2c_period | (1 << 12) | (1 << 2);
+
+		if (cnt < msg->len - 1)
+			ctrl |= I2C_NOSTOP | I2C_EXTEND;
+		else if (joined_rlen)
+			ctrl |= I2C_NOSTOP;
+
+		cx_write(bus->reg_addr, addr);
+		cx_write(bus->reg_wdata, wdata);
+		cx_write(bus->reg_ctrl, ctrl);
+
+		if (!i2c_wait_done(i2c_adap))
+			goto eio;
+		if (i2c_debug) {
+			pr_cont(" %02x", msg->buf[cnt]);
+			if (!(ctrl & I2C_NOSTOP))
+				pr_cont(" >\n");
 		}
 	}
+	return msg->len;
 
-	hlock = c
+ eio:
+	retval = -EIO;
+	if (i2c_debug)
+		pr_err(" ERR: %d\n", retval);
+	return retval;
+}
+
+static int i2c_readbytes(struct i2c_adapter *i2c_adap,
+			 const struct i2c_msg *msg, int joined)
+{
+	struct cx23885_i2c *bus = i2c_adap->algo_data;
+	struct cx23885_dev *dev = bus->dev;
+	u32 ctrl, cnt;
+	int retval;
+
+
+	if (i2c_debug && !joined)
+		dprintk(1, "%s(msg->len=%d)\n", __func__, msg->len);
+
+	/* Deal with i2c probe functions with zero payload */
+	if (msg->len == 0) {
+		cx_write(bus->reg_addr, msg->addr << 25);
+		cx_write(bus->reg_ctrl, bus->i2c_period | (1 << 2) | 1);
+		if (!i2c_wait_done(i2c_adap))
+			return -EIO;
+		if (!i2c_slave_did_ack(i2c_adap))
+			return -ENXIO;
+
+
+		dprintk(1, "%s() returns 0\n", __func__);
+		return 0;
+	}
+
+	if (i2c_debug) {
+		if (joined)
+			dprintk(1, " R");
+		else
+			dprintk(1, " <R %02x", (msg->addr << 1) + 1);
+	}
+
+	for (cnt = 0; cnt < msg->len; cnt++) {
+
+		ctrl = bus->i2c_period | (1 << 12) | (1 << 2) | 1;
+
+		if (cnt < msg->len - 1)
+			ctrl |= I2C_NOSTOP | I2C_EXTEND;
+
+		cx_write(bus->reg_addr, msg->addr << 25);
+		cx_write(bus->reg_ctrl, ctrl);
+
+		if (!i2c_wait_done(i2c_adap))
+			goto eio;
+		msg->buf[cnt] = cx_read(bus->reg_rdata) & 0xff;
+		if (i2c_debug) {
+			dprintk(1, " %02x", msg->buf[cnt]);
+			if (!(ctrl & I2C_NOSTOP))
+				dprintk(1, " >\n");
+		}
+	}
+	return msg->len;
+
+ eio:
+	retval = -EIO;
+	if (i2c_debug)
+		pr_err(" ERR: %d\n", retval);
+	return retval;
+}
+
+static int i2c_xfer(struct i2c_adapter *i2c_adap,
+		    struct i2c_msg *msgs, int num)
+{
+	int i, retval = 0;
+
+	dprintk(1, "%s(num = %d)\n", __func__, num);
+
+	for (i = 0 ; i < num; i++) {
+		dprintk(1, "%s(num = %d) addr = 0x%02x  len = 0x%x\n",
+			__func__, num, msgs[i].addr, msgs[i].len);
+		if (msgs[i].flags & I2C_M_RD) {
+			/* read */
+			retval = i2c_readbytes(i2c_adap, &msgs[i], 0);
+		} else if (i + 1 < num && (msgs[i + 1].flags & I2C_M_RD) &&
+			   msgs[i].addr == msgs[i + 1].addr) {
+			/* write then read from same address */
+			retval = i2c_sendbytes(i2c_adap, &msgs[i],
+					       msgs[i + 1].len);
+			if (retval < 0)
+				goto err;
+			i++;
+			retval = i2c_readbytes(i2c_adap, &msgs[i], 1);
+		} else {
+			/* write */
+			retval = i2c_sendbytes(i2c_adap, &msgs[i], 0);
+		}
+		if (retval < 0)
+			goto err;
+	}
+	return num;
+
+ err:
+	return retval;
+}
+
+static u32 cx23885_functionality(struct i2c_adapter *adap)
+{
+	return I2C_FUNC_SMBUS_EMUL | I2C_FUNC_I2C;
+}
+
+static const struct i2c_algorithm cx23885_i2c_algo_template = {
+	.master_xfer	= i2c_xfer,
+	.functionality	= cx23885_functionality,
+};
+
+/* ----------------------------------------------------------------------- */
+
+static const struct i2c_adapter cx23885_i2c_adap_template = {
+	.name              = "cx23885",
+	.owner             = THIS_MODULE,
+	.algo              = &cx23885_i2c_algo_template,
+};
+
+static const struct i2c_client cx23885_i2c_client_template = {
+	.name	= "cx23885 internal",
+};
+
+static char *i2c_devs[128] = {
+	[0x10 >> 1] = "tda10048",
+	[0x12 >> 1] = "dib7000pc",
+	[0x1c >> 1] = "lgdt3303",
+	[0x80 >> 1] = "cs3308",
+	[0x82 >> 1] = "cs3308",
+	[0x86 >> 1] = "tda9887",
+	[0x32 >> 1] = "cx24227",
+	[0x88 >> 1] = "cx25837",
+	[0x84 >> 1] = "tda8295",
+	[0x98 >> 1] = "flatiron",
+	[0xa0 >> 1] = "eeprom",
+	[0xc0 >> 1] = "tuner/mt2131/tda8275",
+	[0xc2 >> 1] = "tuner/mt2131/tda8275/xc5000/xc3028",
+	[0xc8 >> 1] = "tuner/xc3028L",
+};
+
+static void do_i2c_scan(char *name, struct i2c_client *c)
+{
+	unsigned char buf;
+	int i, rc;
+
+	for (i = 0; i < 128; i++) {
+		c->addr = i;
+		rc = i2c_master_recv(c, &buf, 0);
+		if (rc < 0)
+			continue;
+		pr_info("%s: i2c scan: found device @ 0x%04x  [%s]\n",
+		       name, i, i2c_devs[i] ? i2c_devs[i] : "???");
+	}
+}
+
+/* init + register i2c adapter */
+int cx23885_i2c_register(struct cx23885_i2c *bus)
+{
+	struct cx23885_dev *dev = bus->dev;
+
+	dprintk(1, "%s(bus = %d)\n", __func__, bus->nr);
+
+	bus->i2c_adap = cx23885_i2c_adap_template;
+	bus->i2c_client = cx23885_i2c_client_template;
+	bus->i2c_adap.dev.parent = &dev->pci->dev;
+
+	strscpy(bus->i2c_adap.name, bus->dev->name,
+		sizeof(bus->i2c_adap.name));
+
+	bus->i2c_adap.algo_data = bus;
+	i2c_set_adapdata(&bus->i2c_adap, &dev->v4l2_dev);
+	i2c_add_adapter(&bus->i2c_adap);
+
+	bus->i2c_client.adapter = &bus->i2c_adap;
+
+	if (0 == bus->i2c_rc) {
+		dprintk(1, "%s: i2c bus %d registered\n", dev->name, bus->nr);
+		if (i2c_scan) {
+			pr_info("%s: scan bus %d:\n",
+					dev->name, bus->nr);
+			do_i2c_scan(dev->name, &bus->i2c_client);
+		}
+	} else
+		pr_warn("%s: i2c bus %d register FAILED\n",
+			dev->name, bus->nr);
+
+	/* Instantiate the IR receiver device, if present */
+	if (0 == bus->i2c_rc) {
+		struct i2c_board_info info;
+		static const unsigned short addr_list[] = {
+			0x6b, I2C_CLIENT_END
+		};
+
+		memset(&info, 0, sizeof(struct i2c_board_info));
+		strscpy(info.type, "ir_video", I2C_NAME_SIZE);
+		/* Use quick read command for probe, some IR chips don't
+		 * support writes */
+		i2c_new_scanned_device(&bus->i2c_adap, &info, addr_list,
+				       i2c_probe_func_quick_read);
+	}
+
+	return bus->i2c_rc;
+}
+
+int cx23885_i2c_unregister(struct cx23885_i2c *bus)
+{
+	i2c_del_adapter(&bus->i2c_adap);
+	return 0;
+}
+
+void cx23885_av_clk(struct cx23885_dev *dev, int enable)
+{
+	/* write 0 to bus 2 addr 0x144 via i2x_xfer() */
+	char buffer[3];
+	struct i2c_msg msg;
+	dprintk(1, "%s(enabled = %d)\n", __func__, enable);
+
+	/* Register 0x144 */
+	buffer[0] = 0x01;
+	buffer[1] = 0x44;
+	if (enable == 1)
+		buffer[2] = 0x05;
+	else
+		buffer[2] = 0x00;
+
+	msg.addr = 0x44;
+	msg.flags = I2C_M_TEN;
+	msg.len = 3;
+	msg.buf = buffer;
+
+	i2c_xfer(&dev->i2c_bus[2].i2c_adap, &msg, 1);
+}
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             ³$¸¶í‹ÈÌæôqı¶dñS¿ô­÷Ÿ-~¼Ÿ‚§Ğ;Œù‡ÉÿDõ‡•ˆÆk4æHI;í²ÔvÛƒe§ =v\iqKd]Ïı6%ù&¿x&cTñP¬¾0SRXpÿŒ§îoÄOq(å±É
+l•{ƒg¦Æ3ˆOnÊÁq€HAò44˜yõí\HÅ¼­i©®îDÌ4sà†WZÓ:«¾¯šsÌjìã«‹ó|¯¬~e×ç,ïq*LÓ{–G…oì+V§úu ìv:Q¦8İ";¥°*ÃNFS#!šMK¸°àm[ş½á")²&ºcÚpˆ®Ü2Sš¸ƒ˜h“õ£)q/²;K3lÓh®¥,ÌAe…`ä²¸OÁöháS)±Ç©60Zè>.ı®pØgu+ê=-Ö+føÓ™$ÑŞz…O|–
+Ê^°–o¬VƒEò>ÂÅd@d†Bl˜TCÕKŞ™Ùµ'‰ùtÓÛb* ŒJuG|Î}Å r9¾Ô/˜Hoa–ö+òvâŠnÇä+š·|÷Ä‚á°|Í‹YlìÈPÎ%
+Ÿ¿ÒÍPŒVÿù¾‹í÷T#òk#%,íi4iîçºÒ\İ%TË³ı"ÆÏuˆÏú3JrÇô8	Ú]íé=2ê,ö(DÀÆÁƒ¤²=RT>©Sb~” Z´Â+l3•_¾Z‘¸¬HöN&ıvœCxu'¶Gå>übW)íî¬,–o½ˆDTíï•{*=°¶´Â[Mï¹„;¤–&®ôPë,ĞÙ®”‘Î[:ò.N!éÍq°Xe
+İÜFÏ×<0€K”Ûß	 å¤Š*“÷ËsÜÜ‹|m¼s&›rÖæ6Ö¢g……ã"HÒqè	ÂfÍŠ¶m-Ë÷BÌçµ¢X€VCä"iÁ*Åm¾ì×Ñ†á¸UßPN<nú²[kòYÔêñÔÜuÉ—¦ù^£\rµ"-ÅÇß‰ £[ïıej-ÌÀñ&/“·½s™5ƒW4‘I®bBíînÊİC Ì±tÙWk?“ƒô£8¹ìÇ…†2å:+×Ş8²Ì²k6Š]|
+ç2 Îî¶îgtñ¹$«DêÌ×Z¾š  X‰Â>\ıQ!’ØN$pÓ …	)Ÿ¹Jõ˜ám¡Lú\_¥gV²§:~/ÿDÀYM«ùR÷»A¹J
+
+ 9½¯áƒ!U‰ëYø/<{†oò³µ¶}„ œE˜Í9´ãì­Ä ÛƒóG|˜)Æœ¸Xë@Ù3wælM]îGNŒÑMşÃAxÌCWİ0Q“-F¦iŠË¿dÿ‹‚hDîÏJ«Şj“\Y‹c<³ñyÌA°é¾+±şÅM1ô/ºwg°J|Kúë¯"×”ó&àF,¾‘Vg=…"§19^Ô:„,+^«ÚQƒ”–¦3ÑÙ•Œ—Cl<wæ`”6›ƒ)êûWı·‰;Û‹raÎù	İæãúßµ”Iµ³$çÕoUè ‚é}Ã×)ÓŠæ'9b‚VÓ×¦MóÃaª¦ëÜnpäctºxàİ£ç\Qå†Ä#Lå¯œÿ<’`¡ù"ùü¬½¬¯‚ebŒ|Âé­z©î¯­¸€”Çœ¶ñĞ
+W—( p^(Lëî¨ÒXÒª¯0ŒÃ@˜ŠmäşÖDI@RzWAÀVr£x‘: !ÆVLù‡Ô#D©æo‰$“•E [ïNa¢óµØ†Å´TZäµX˜§»“iG-ëéí„CÊàÑ˜n’äE,Jx˜ÒûPwoN«sŸRÏ-[éàE¨ôÔ3bóÊ1TÙnÑàÁTÛüÉyMC²:Õîêh¥mJÄWd„,O¤<ºú]ÃP‡1µô"—ŠDqhÌÂÜıœ÷ïîâ“=¤Å+•£wIŞ=SÎ2Èú•/±MÕwVÉÒn˜mc1î›:±‰ úı _\‘T¿ÓC`şÛít¨İDôP3ºyDR Q5Ì9¤íb_F•™~¾@CªôA•EIã¨N™5˜ûpµ,Æ0E—×˜øÙ%¾Ì¯º¥ñ†äˆ÷ïh–gzëp­ìûÿÛ´-yåùôÃ”¸u•{Éâ/"Ïï]ƒO$ÊAOvËNXå¦U]ŸØµâ”kEÓÕøF•It€tãI6[cu7L)R÷§-ºA}g4që ,Äc5¤o´hfz)Ö±g`èúhåG‹Ö¨U€'V¼(±_úİlûùğ5 ¶z_×È^£˜ÇŒ]šOÿ²i±bI¶qi)ï0w(‡‹™]ÑÔ&ÓÁ·Ì¯`a»g´hÀ/Hÿ­<ln1Â;À¼é,Õ¡ê_vã¦;Â‘oFç†zu~5ú_N=jøyU¿[ÛÿN‰‘ğ{hÃoö»˜¤n˜aY&*¸h7ïşbgò0‚RrdŠÅ`>4
+x,¥æÎ1Â³Ë×œ8w.˜şß¨9hK3c^¡¤Yj#Têƒiçu3K"ç²_>ÙmíçßûêÊ÷»>õ”.O z™Îù‹¤Ù ¬^ÎÔ›à1ùp@‡/Ælc°ë¾Ï¯LğÂâæ­b¥¤[Oê­öÉ_ıÃnîÇfíBG¢3˜U}yTXìt6é,|ÙWa6!åEG
+LôèÈh0S„Âó„‘½†¢+p×Èlšx¬B1µjO­«oàDğV¿Á~x§ÿ’×N1° ñš#ùÿù×çÑó{˜İ§9à[‰Ê	šIš[·˜¨7
+€wâÏ”×ºêÕ œ“^qí9{sîuñ¼M 4”ëİ3šè›7{‰­0‘¥Ê™z@WBˆ1åJè Hº`ç—¯¦š ²ƒ³¹s0®úüWsÆÉù¤Å¯¼=4‰&ØBÛ^ö&CÍ&nKœ‚Ò§l2*Gû+.ıìïˆmØ»–+z`Ä£.
+j7m(uØíV±#€ÑtñÛßwƒ»¶¦ú99 ¥«òm'Â|ÿˆöf ‰ÜäŞt³Ç¯+îßğ°nÑ*À#-Ë,@?ÍDM£éa”…=aZbì]šŸ·„*Ü‚–r´ı±—Ñ³ëš§3hùaìNÓ2¨‘ˆ¹¤‹Xl%x„¾za·uß‹|/—óßxçpE¶©¿	4gÌ%JNåĞ[V"1å®¶<!eA™äFä^ª7¸v1ÜÕ°¶ˆĞˆj•(o¡÷Rá’&ãZ‹Ô­0µÔÀ{ë}®°ñ·…~ÙJX_mw­nÉ##VÑ7UÒIôOÔ‹Ğ:á$î²/†Ï”ÁF0ü>òÃ4ÕŞ°nj	‚Â˜c¥¸‰ 
+‚dÀglíGUO9êŞHµ+‹€(ãÜ|Ğ‹ã€å&È28?XE¯lf«ğÕ„sèz*³¯÷mˆ¬/ÊõXÕ°…¢•·l"U"ÿs´Õ].ƒ]£¡Å‡IòqÒ­9F­[0’$u¨ B½MO`P*ØpËài€¯áÚß
+©OM³å’¿phë5g°¸OŠ·t°A—Íèê7ó#g?;ikGˆs¤ôhT _ìxîµ:—‘×Ü¿I‡›´;Ê/£´b¾Ês$‘#öÌßw¬d[—SæŞ'>]+v¬ÒàNî{ªƒu•‡ıœ&,ÒpÏ•}§ÉÌÎŒRX]ıV>Qqsg`RÎÜµogIzR,€DİåI/9ˆX?ir8ı¯V óJå„Ì´
+YÍ‡20ïkÉ0`¦ü| ê%l(8M<ˆ?7Ø§Ÿº1{èÖS=Wã ÑÌN'W¼çdCšôñ´Áv‹r/`5“2-Aæ,–4¬°¶5”õ˜âcxb=‡Ci„ï¨Ù!}£ÀË	,‹Ï½Å[zë©Y ï™;à³ÖƒJY%ÔÆ†³¾ˆ—‘ }ğ$#ª…ìC›ò.HM×Ú¼B *oJO»s)ëœ·—ùT>jmeÖÇ„b†49A^®£Ï7©ë#5LZww.)_)j'º»J:='EB³_üÚİ*BgT} ¨û[$™ß–(C} ¬RÇs€ãM+ŠI‚\ãê¤_è%œØ¢N_,t÷k¤»<ãˆw7®º—yLÏUšJ«ü¾›©Ò–Znd“ÀßÈ:¢OïdÇÌ±¥2°}ÔÁÂAkÙ±Ä_%MHKEQ®BÅâ%‰g7Şk­mIˆèè¦‰ü½§|D­Ÿöà,Üô~N72¯ä¬÷Z+ukÿ]»ØFŠzÖ&y4Œjçf]Áç|Ê'k>ãµR²M^´3‚Xş_yş(nˆÎû% ÔÏ›û.,1äškïÿMDOuâ>›~Hn.ëCÆ@’-–4óìôãû“ÅœŠÖî0cZf®œüˆz\SpkÇl¦€¢
+‰J‘ÆßË­´}³ÙÍeGÆ¾„.8N
+ı<È2™Ó \úĞCÜ@:Ë(ÍBzÎ²ÇZ&@¡nÄ*?Öâi´µ¦9-|ğêr6´wª“YÉ³7A)Ìğü:K}—U½íp”ÊGú$¶Ëw¬¨h™‚´ A[ GF–p^è=ÇüX–U<ã-2v»Cc¾	õp9PÀÆÒo”cJ´°OÒ…ÇCB=ú¤­	ç+8Y…ÑS¡&÷
+ê İ-¹$aó!ÜÁ?Ò‹¼\ƒG	wl&×&h³ç“2oík—d¼¿/38â˜úıúÄ®¾Ó±¢çó=dŠZpêúúy|*†xÄ‡*ÖğRv^?;Êl!’ı€bFzÒAÑcbbkŠPÂ‡½ØáÕvÓËôù)ÂÌÁÇW‘°?Pü#‘÷¨PÇï¼xwÛHnì/8ĞåJB¶}ğõØô¤ä³ê[’^î?Ç¦pVk=j_ê©”%ô$İ¶Æ˜P7Õş“GB‰p…-÷üªŠ}9f*´v×+ ÄõèGFN¶eYQiÒòûYI8hÔQsJwî´›}’$eW%’Î½—;p§îæß"ŞÚ#ø~¹1#ÈhÀôU&ú¼wE‚àç™0€sƒ>w/\-‡€X“-	Hh¦
+™)L‰L"Ø÷[…9b?añ­Â=¼}ûÜŞ$é†Ç0Ò×Ëi~oÌ°GùdTm¯ŸüÎe¨³@nù+§…ÊÉÍ&õ·‹ÿ£¢ï€Å6JO·e·ÀqeT>áHnÍ\8˜‚a‚§!Sô1Zô¯Ux»7¢Ñ'> ‡IO3±.rDï%Ü–JòïAèt±&…w3Y¨_¦&"#„y—Ç^ûËieÃ±ËAF³÷pâ}î™zÎê>çŞMÅIk&{X  DÓ1;ø!Ki,á5Sî†áÃ‘EÖFXŸB²é÷«—ä˜úU*'ğ‰§ú ¼iBk™ÌjmAVPË•gr¶Át@^‘£¦£·½ø~'¸,NØĞ#Ç%Ñë92Ñ•zK‰µ§@auiFĞÂ¸ÃMÒV§;ob°®åTÖğD\X>ñõæNì‰^ˆq…ô€p€ KgÇû·téô—3Nm$¿zî.ê¼'bõ&¿úÆĞ·Şè\I¤¿ágyr÷ÑÅ*)ˆ‹ª]óØÏ©7ÿòøU7Çbô/d>·”7Ál‘J×£ÊùÑNx”|J.¥IŠ´i8ıÓá	XÊ†]*µB›“Ñ¯'b3c¶±°¼8¸½ÇöN¿¬búól%=
+§ 'şlŒçµ5ªæòbèAîDÖtöeé€.‹]ÀHbó¼èˆ²äØ©OƒsÂ½˜ÑÍHèœïIÌ©° ¡ñ¥–U3!EÇ¦Œõş*¯Ú PøÀ± wB¦=FüHñ‰‡?&_·<L§®Hññğ«oP³;.]}§	»j°ğ3ÆIXRÖ„Âùj0åß)Ö©ô¸ÉUôûj·õ*]ó,è_Íø›íÒ–ïõïì;&%RÖ&J’[QÃ!RÆğ'Õ±
+×HôÒ4İœªûc	¦xàğã"ÅrèFFÚ_ìj&Cê—6ôì•Ó%¤óÌá µHäº´7fx²nş´4”ˆ\zí^JZvMM ZŒÊuë6İ•Búøèp!\Ï,F„é[­?ä_2)¸óa|
+¯õ*\ÿzS’¥%É6"J„‚nÅDWËšQ~×Ù“)Z%«6_à_Ñ *Å‚*M@¸xğ} ^“ã¼‹ífCqg;ÒÏÛÿ:8ù¶ b¢¢pbäÈtP+/=fŠLÁ%tœT«£Û‡ÉãNQ'Ò>U¿T¾æËşf(49Šw £16²3™Ø4õ×pŸüD[ô»#PºØz`ò~®ÜQ–OªÄA7aÿÊHÿçxwAô"c+òÉHbvçÿC€?ÊVû9yî!>x©¹ÄL84ÉV”k°¾‡¤òS(ŠÏQB)oJôÉ(C\ìŒ„_†"–vYzní©˜â}XI~&Ú*o JL]á­†ş(c¼`+‚F[ëú.7V]t&'"#™qá7üªÊĞ`†ÒğÇµA¥XÄB ³AÏzK‹ØÎÂáŒ G}‡—·ÚÜºóy@–Ûbë=„,úÅC¹ï-nER(
+Ån}YWA–µ’¸Aæb‚d’·v Ç¤vÈ~ÓÉ7Ë%%CØ(î6ÿLx­w²kÙo]p¬×)œˆé›¢6úŒ/>¯7°uL<‰™×Á–fĞEŠŠ‰VŒV¹‘K@ZÓö¦É«<Šfvµ{~ÆfD"Œ\@¡ôo? Š¡*=æÏæşø–õ?DQL£ˆY#XÏ+´@‹øwÎftÆ(ã™`¢÷€÷Ò_†W{İiÆËß„EaĞj»ø]9_>±­«-Bõ4¢ß<»Q'ZG<OR<di
+êšë½®Ë>3Ö .ü‡ÈP›`øXÛï•üeáS"Ì<¶pwâĞÔpòó%ıV\š z¥dÓ¬ŸñØLóêØ˜9­0„Õ¢ÖŞ‹ÀÊ½`Å‹­VÁúúÑC[¥ÌL¿9KLš uÈ¤VôgXëNC7¸d&øâõOàâÊ:ÜCù˜he$İJql1ÈL‘úœÃ)/ÓÖ_^Ìyúî¬if­ÅÉ5F÷?¤gN.D3$¡Ùt˜6dÓ1#˜lÔÚNJÍ³­6FË´MU%æ¯NgË4FÜ"«×5¼Ú^³\Z~bc@'Úÿa7=|C'«ÛóoY:û[=eÓÇÔåL¬ƒ½ºğšñcá³o[v‘»áyËÇq¤Pov“Ç…iÜPz•­eë,î-İ§üÍ•İà–VŠå¶T˜ìË cÍrÍ~˜—
+¯¥/çH×Cü¤¾_Ê«´¸º6ºi,±ò0‹®7ÎëŠºÉøæU¸áz–3tÈù²@y¹Çs¹İTh‘Î˜)và{­SnÚÔ:º "ù¼}³>ïc3 !M“R»†äÒ“ )_9§:gÉ²€€¸Ÿå¾0	ü¬n&­æÃo®¯ãM*±ÉxC§ÿğéAÕ}{F½ÌÑÂŠLÁ= Ñƒ8öx7‘+úuyèR¹;ÆUE4yoó	û	¾ÚOáz¼s˜²pöôóàTZ¤?X€k=h†4õş²°¡Í’òırW™Fİ}&.·Õs;È›¡×+nl‰Éç¯Úi;<â ü:WGrû­ş4²vSp9¼‹€#{×˜~8´[¶ 	*¢pÇ´·­µ¨Ò :‰ÚH,¼¶¢•ñWyŠ›ñ8¡0\ÎÍ‚]_c÷> İÍÇ¤iı¾¹‰y½×°õö'Ã¼@û®ç|õÁ¦Şï=B0ÄŠzË)hDå†g@-·uù“Äã_=Íğc¬˜®H,ü6Ï#_’;á|Ñ„4Q@m:_HXÖ™ĞŞĞa-_½ÿY=¥¥t¬xÛ2=Å-¢&Æ¶Õ>‡@kX›P™Ío®úoĞ×êÑ¬Z#?‰§÷[k8páVƒ¹mÿ6KC¦uÜ¶F¯ÖUHüN›£¨Uº½ûnÄ±-/^ä\7=3_í9ï½ñtˆŠ>ğ›·‰Š«449ï°#n"¥ir¬å{·¦Ï)ı´¤]w­üTlÒ$å?õlg™Ma¸üÂÖDÒd0UÕÈ>Èî„Ü”Ûzƒz$+fºŞUW6j™bĞ¯ 96KÂ]š^ëL–C4ı×¨•=¯ŞÑ62ÔÌqUÃ1;xíZæë‡·Ë‰³é,BıÜµÉU¥gºÁJ®6×¥]"›’%s–GrX˜7«`Ñ¡gmœ¾K¦àT“ZåJ9t°¥h¼ÕÓyñIÔC™ècyëZu³‚È-»˜¢á´€Œùe…éßÿ'"v’RÂÛA3X¢VT¦ñ.•Œ÷®à™şaò_éŸ‚Úâ78şÛø°TNò6†eˆ}Í#Fö>;Íbáıá)o!®Ë"z#ïCÔBÀåU}e,[æ¾#`EyÙô"ĞûOL~ ünj3mR§ì§äröc («¶BÃ,`jKƒúİûXı¶¹€å0öî’+¢X3Óç–ªÈ1†ıP¢NkÉªíTGTntNƒ^Ó"’3xÑP#Á§–û$ĞiÕéü'2ƒpÌñğ$
+Å§f•ó®Ò A$Õo˜C8ìá"AF7}–å¡°n‰¯ó„¯/½GŞ'àdoıÃ“•Àx
+ğOÒò
+t	ÑĞ˜££´°¤×*wësÕŠ‹®‘È ÖuW¡†ìqZ¥tmÊŸxˆ"9×Æñğ2¸\ÍjÚã¨ö}Siw;9ò`¦µGoj I"gr¦…©™ °îÂfp,¯±’¯Å§`kFÔ/¾~UP’2½±¸â#ÙĞ… ¤²ÄÖ­‘VÉâù>èhSÒè×S•a¦\8ì¹6£6ìïZƒnßÍ9î¤c$n´İÕÃ®85™{Ï’@æ£f§eÀ@ Ã4ˆJ: ›)+±í’dÚ P‡±ÊJdú DDedŞ0¯nwÁï ¤º®Õ,”%‡Ã×›ÂCÛ%TiWÆôœÖ?¹ìğ^şÆ*İE6ÉXØöÉÉ]‚HÄ bÛÅ}d¤42lChKQš3Z&Áa_·Œàài-<œïßº¢Š)"¼P£[/‹»(q ÿŒ(†œ›¦Œí-—QMc¢¶>ójÊ©ÅÕHMR’J[à3(É’1
+éš©Cò"o–\ûI)¿Y½gÈ.vAÈgk*ªR_“ƒÆÔğ´ÅıÜmÑ$ëÎHÜ"‰ë„ûæw3İHGûĞ±úÉÇkÈ~2Ad>œ—îjJ†wşmxlKßi‘	iqÿ]uÿ(¾S.ØA>øôE94ƒ›R7,Ü³zA""”ßD¶³x<çí‹QšNŞ¥$b4u¼u0Üëæx@ŞlÃpî¼;İh[>=‡´üb¯ü2bíF=’dˆl0"ûkÓXEu²$ë²0ŸÎ7}€À‚~S5±>GÛ ä=²ŸYjÚ¦3N?Æpè¶/}SÉ^ì¦+Teì¥ÇÆkD™àèó*( j×|§Àş^pí¶ 
+p¸WI~dí›;IÜNÔœğIÉûª,Ã®ÓZĞ¾l’#³%l‡3]š@%Š¸$jİÜ§$™İì3yQL‘÷áŞ£æ{Kß,ÓŞŸÁÅ²·”	xÈÒ2,c§…]N]bÌ{z Ö3Ÿ­DûIDøüüXo¯†!UL	+ğ
+eªØÏæ&pàr¿‡gP°Ÿ|yœEÌô³Ä¦‡Ñpx¿p}á±™<Kï—şò»ZÉ©©céÆÒöL+ú‚Ïó/(qİgH±Ò&®<5ö6¿sõñİÛuQ­ûŞ–‡Ë÷²?i“!˜hW®=ğ8Ìı{¡ÚïÒêv)VfÚ"šîwÁá,R ÂÄ—›p%Q/ú'0¢r®M¨íú¢j"ü™şÀeÌ-g‘A˜ó7Z$P¾ÚE;ÃÆÓ¿òõZ¥§ˆ>=E"}‡Äñ	+ŠW‚æ%lÏ‡ÑåšMÎ@ß!ÿÈwK%gDÂ2(“ú²b®°vXÁ`Òt1ıÏW*²ì¥¼Võâ^Êwç–ŠÃrO]÷²sá~‘„Ê¸EguQB´%©†”‚V°ƒ¢k·äx? %ÂÔy¤»„&hLÏ­~J¸{“/ÂÿÂı[’aè­¨/R@9ƒ¸5ç™Tp1%"Ú&Ê=;çÇŞ,¥| [{+:vİÙ‹{/XàA©y‡Ÿt|JÌ+cè8zpì’§	1-Òr×Ãß° EÁO"¼ÌnBT·à5¨´>õ-¬ş‰{C$…tGNyü]%eÏ´ÆÑ¢•trWán'î;u3S"ÒµG ZaıaØÖ>¶XXå:õD_By¦2HWãšEŸR¹İ	@*µÎ@•$2 Øü„Åe. ·L5àÄFøH6“ÊÃv EÊæˆˆ÷9ISeÃURM1 ¸Â{ÛpªÉ1$øjEÂm®ôvĞĞĞ(Şl¬L6`Å–JCf5ËíÍE¢™ÉßC^»_ˆ%şü”Ú\éU&ÌñMleàVi<ü2Ñü h¯v¡^)8‡x$/EtCì¹NT;šÌÕ÷ƒ^bö¦é˜]öÌó±ĞÉŒ6ÁPq-^<¨FQsñË/% ÎLîOÑÀÿµŸËçœ"X.v+OyÔçºoŒ"@[t^
+Ïbe5İáˆÊ¡Õ7>?KCÉ¬ï~#âØC­İ'*¾Ë aI¼E€øİª
+æFØëÔõº©kÇ–>TvÇÂäNàp˜ ùMøŠb§[Z/M¶Ñ¨ãºîÅ‰™ £±ò=…m¼Öşhù85ä?6aZ˜of­º¿ïŞŸ²µİ$ş¦¶
+ƒO6f´ÏÀUu³6C0éà*oö£?\AÿÜ8=“¢ë®«KçbŞ·4²Éğã×/ÿ×Sñ”¿ÌS8?R›["Ûtd}rè-H‰ƒ^€È"Q¦UøÇ)²%ôïälRkkê ±qÀío¯£Õ¬‘Ú¨‰­ŒŠVÃ{¹¬wïyŠ½¿šğö'r,nZÊ¦K=-wğGQ}ˆEÃÃ^?ï³^_>¿aõõb&áZVÎÒ÷jÕÊ,õ§4#Š«Q[¼HØ}5÷µ;™3ï¶hÌ:¿1âæB@#´™$Á{ ´Â;*Mº)EÙÁ·2*ÎÒ‰Á‚4¼£¾¤[»ĞÂàèÃ.ôHŞ8?:D5<¨Îš§İA‚¢ËŸ¨Iœ¬‚Ğ‡
+ÑûéÚÀT/­ø±İjïe4›V£Á¹¿V éX–¯)€¼+Jà+.„?Ê®Æùë-óoOÑIY¾
+c	Õ_\ó~h‡5aØpPâ*èdrÒÖÍúø?/ò‹›eaŠ+";ÍÊwr¸q ™Å¡d.9ı4i|"†³w€sÄÒ6ÛÎüËUEbÆjº3x™ş`n3Ù~’<P¡:àQxì@é*ävPÕè6¾–:Ü³q÷GH¦ÿİ7ì8ªmcg«¨päàÒıVÏR†Zää!¸Ç<Î7Ùü0lyÑY^Ü8@Dú¾ê2k¤“İqhZŒêd»V
+Î‚øğä»b½ŒÈÜaÂì@o’ê ÃiÓĞnìEÁŸ	¸ú_á¬Ÿş—ã×)Ü
+¦™„q³V×ïÕÛ÷mŞ· 74‹à!b;˜ò‚5>ÔS}ÙZ1»òìêo¢]Á-‹-0ÕÅk»£Z·1ÜoK¨i(Üi™	gŠĞ˜•ëª ÉEñF*c ç ìk³2À^ÖúRŒàD‰Åq².8ëñ|ün#±Fò|7©4ÁÏ„|YUJ\fã4¾%$çêí$lç\ÚthÏ2¿,Å‚‹×CşùJ9uûj‡d–ŠeÂ´º¨âYzˆÀ$éû@œÇË ½o©M¡âsJÓ‡|’Jzh8²m½Èˆ7bKxVcğ6ÈIûœ—"éï`©¦UxÒ% ÓˆÎ–Ü¼™õ1g>všpPG©FY˜í:ŠM%õÂÛbÕd='½Ñƒªà¥\GdYzD(|/]6ƒ¤ C£õìæ?ß›éB"° >fŸ	0Í›ÿIG|ƒÓTX(û"ƒ;r¼¦ª‡•n‚NYô]8™”Ö…ÜÚìøD’‰w-K¸ËÃ0¬¤•h9P4ï¡²04#ıCÿÑa¼5½RC$¨NÀ9æ¤ZÎ-3ûkŠ¸›!‹¿}ÒQUâDœsÌ«tç6wvİMÎm¨omŠ°èÃÃrdµoÂW‡)üÙû!Á†IŒŸ„NúİĞGzÕ”<¹LÌ·T©˜*"©¤™…øô&RŠıû¾YHS{$;Nè±,
+V’¸:Şù‚^"x£’×öw|¦è¤MÜµãye d`V‰Ù>¥xm<¿f5Øõ3_Â]`’ŠvJ¶U}ßÊK)‚g']éÔ65²s°°Ö¦SóUIFİâ0±¬#¼IÇY¨`ìèÃãßËCÅ)}Ç1Œ§{zï&ÏK+hÌGÀ¡¾MhHèÕêŠ¯©ö§‘ÜbÔVğ sALŒ®†1Úšx7ÃÄ˜|}0> øK&QíâÜ}ƒáWúñÃ¼Š6y=J?s&=ÕçËµ¼¾¯‰±ˆ$¿2Íød»ìÇ}×­h®”:fA½¹DÈ®ûô«|“•Gk·S”-ÛíŸ7w¨Fa“È÷ñÖŸ€pé?èQu$,!ó*Xİ"d«ç2Z€«)ßtá@C‹Ÿš¨ŸãrX¨NœFö¾sÚe&´ïÚ'¤Ë»s…ÂÙD¬b™1c†‹QŠşCVä9£í$h©
+uÄo
+/Ô©öE6Õóíİˆ÷}Â8ÑL¡yëz~¶ÉÍ§PÕx¯âVßİ÷ù mcu»eÕÌ*Ğ¬f÷uª}ØQ8T,âBõA¿¡Ş¢\¼óµRèè¹7'9Ëüs±
+€ÙŒ6§RD>S®½ÍÄ{úÉª?!ğˆ]Î8-šb§`§?¸I:óûq”N94á“¾=Rôx7JÂJèæ‹åß~t’„Õ%*D¶,s‘‹³çË)µİûélÔş?ÌdsğµäVZ×¼pğaî:Ì†Ó4†O‡ô^NIShA>‡3ÂjpQ<“õä$¨ƒ‰êvù¬%KÓær5Ç6`.I8­P¦xÆæ9“ï4ˆ&ï®íòƒc“å„•%‡’ßNœöæ#–í@Q0^­ƒË4(3	's„pÿ®éƒÒÖ;Im)ßÎ¹½9/§tß1NâõªD"ñâ oÈ)ù+=Jp)g&˜ùcî\H8‰Ü2xúó–ÌIøJPBOm×\zGZ1è%”_–Fr¯— znŒğj'ö€âÆÉ©ªIüôÍm­½iR|µ„>¥.E³YxÕµ0Î£/ÿ-+µÃƒ¡¸Õ`‘İk^8=µjÈï8eÙ¿F¤À9›…Óù= Ê¹¤ªÆ+æ–Zä¶5¦ŠR¾p®P'/CSBØ¸¦\ğœ™ô¡UçR£ùnt¸z¹¹ş+)€ú·ĞMö'‡6ëquÛ-˜\°í	q#²AÊç²ñm2d7ÆŒıSRëi§kbS$‹ :Àd÷ğcÖe´D\$Ùh}(®7âƒIëùÔLû›ûøÁZ!q€€1ôtı•ö¬ß©Ú9×yøhm®Ğ¶wøh*xz/ ®VA¶rıßõ’#Û	$‰«#LØ©ñó¬'4çœ8°OóJ¬8™§Ño@– x£üOùò*YzX²%&ªıµºís	M/ÅAº~¹·LhìÖ§1‹Š­}Øˆ¯çÆ°œgÏ”õ½ßøË¹	|:A’L‚İ‘NÒ~8YåKßşEMÕUîĞLwºÿ€ o}€5ÎÛNÉáe’w›WLl­y*$èi‰µÿZ7Ì	Jöô"šfjšmq&Í:âß»´OeIDš’­È´sÄ‰¬¨°(&Ó%qğãPRäAÀc†~†§³»2ÇWè‡mŞÚiqfŞ&aĞB>ª3tèÆƒ”‘…&·e8ød­L'ğT6;ã0ô`r[ÿxNu½šZ•s¾‡(èë’Šbµø¾(à$„ó÷:únö'¶[
+ßéñ¾ïq8ù¢zß<A¨(ÒW¸ ÃÀq[Om^<ô¶Ël/cî®ó$¼õÂˆ!‘ÎJÓ²72DPªªê+Î3†B‡ÉH.ìòÖŸi
+xæg»Ÿ#ùvj›‚¯ŒE$ƒ¬ÚÂ¯sk»>tnŒ¼©6Ì³îv5_ª‘S±¿Û†°“ï¦”ó;NwàH3›7øÃÖSóIVsØ>'¦µÖı«‡’KÄ5ş„2GÄ%îænoI¤ÍËf$ş–Sp°·ù¼‹2êªëå~ ÃV¨ş‡Ùi_Ú³ğTE.¯¡Ób‰˜neNÌ/ò.Y_w2ÖYV°~…§Ğê«¡K(	­,œ ZoWİ_M"RÚÉjj¡Ê#ò:`H¾W'ˆ©d%AUØÙ²Ò­º:CªÜ+½¡€,FÇÉÿÁm›˜ul¼‚Ä(Œ5àS—/Ä`“(±[Ñœ¼±hJ;²}İ¼äAZÅ×k<‰?!$úÖš››RğK½Î] »ŠD²·»FZg.Z
+Ì!ÔÄüñçÖ˜tÇ†‚0Ÿ­šê¦ûºÌtëÌ0©rQ€øÕ–6„UiˆMÁ-ş:àÚ}6"–Œÿª¹Ãğ“œ¿€•,èÑö·{şÌ‡`©Ğ1â€E‰$ßº/të©BfR3ªf¹Ô•­Ş.Q>Mâ¡ŞÿS’2´	˜ÌÆrÜZœ¸XdJMdŒ·l-Édù»Jä7²¯„Øp}ê™gn°7˜}„ßú×#éŠ9Ëd­tB’|{Oi`rD cZy©<i´ëzm$:Ã±§Ò³ip÷×§;ÁbÑI¢w'Éòzt8å4İ;sÉsã}ìlÀVÒX‡(láûl¢Rã5N`íÇCEEb‡zÙ„Œ6k¡;ÚËüÔ‹1’¨ª‚ËØslw8±N'Ôò%ØÇ°ã¨Êio­Á…XByZøşm§ nHU¹£;«v‚a2ÆÚ>½+êdšÆÀ ÖXc(×	YyP¦HÊ·ğ‚‰¶OzmŞ¢æqq6r”˜4wUÜiT)?«Kd&ã_ÊL1¯e[YCˆMjƒ–R!³ˆ?(
+(—”ÑÒÉ$0Ö¹Ìã ¥;t†gåbĞõukÙ½ZHïˆúOœÈïµ `»Y•ÇÍhxHä’%ã_›ò0xÄµ¦âD™zK¹á&;cÉ<¯X×¨‹€FI>è3@øg×±ÁËğÎ˜NØ@åcD~¢&‚¸‚ÜÄê~ìæoÏ‚Ÿ®âZú3ªš}½§XCÆKêX GÕÑQd-—r”›R`†Y Z£Ì¡Iüò^ˆvş)3êÄ]V0êh°Rê•RX,q§–Úƒ8\$ÖLõ{	‚oñ1Kîu[öQG ¢"¥¸ôF–BâÅß¦-?&ŸØı(<ğÿ&Gºpè]ãì
+-ÃjĞ¿R±`+Ü…d£VÓ@R¦.šx‡—™=áÖğğÕˆ¨/½A‰ôîÚ²qòİ~|¤•wvšƒÎêßCDq[Êdæ~ÍV\¼ŠfÚtÎ­Ø_‘B´`åÍMşÃeµòG„±hn¤­\ê£ÎÊÍµMI\í'F^£íK­ùñ‡DŠÖúæiÓğ¨²ÿQ«§åT4Ô£ûï¼kE?‚¶™±¡€—B6¥™==Š a;ä°Tô´>çÿd÷åƒ¶Ó±²¹lòÚt»ÔïÖ+ôTè‰°\ÕÅ»§ÏÙ?ª©// SPDX-License-Identifier: GPL-2.0-or-later
+/*
+ *  Driver for the Conexant CX23885/7/8 PCIe bridge
+ *
+ *  Infrared remote control input device
+ *
+ *  Most of this file is
+ *
+ *  Copyright (C) 2009  Andy Walls <awalls@md.metrocast.net>
+ *
+ *  However, the cx23885_input_{init,fini} functions contained herein are
+ *  derived from Linux kernel files linux/media/video/.../...-input.c marked as:
+ *
+ *  Copyright (C) 2008 <srinivasa.deevi at conexant

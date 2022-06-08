@@ -1,1069 +1,1651 @@
-TION) \
-  arch/x86/include/asm/page.h \
-  arch/x86/include/asm/page_types.h \
-    $(wildcard include/config/PHYSICAL_START) \
-    $(wildcard include/config/PHYSICAL_ALIGN) \
-    $(wildcard include/config/DYNAMIC_PHYSICAL_MASK) \
-  include/linux/mem_encrypt.h \
-    $(wildcard include/config/ARCH_HAS_MEM_ENCRYPT) \
-  arch/x86/include/asm/mem_encrypt.h \
-  include/linux/cc_platform.h \
-    $(wildcard include/config/ARCH_HAS_CC_PLATFORM) \
-  arch/x86/include/uapi/asm/bootparam.h \
-  include/linux/screen_info.h \
-  include/uapi/linux/screen_info.h \
-  include/linux/apm_bios.h \
-  include/uapi/linux/apm_bios.h \
-  include/uapi/linux/ioctl.h \
-  arch/x86/include/generated/uapi/asm/ioctl.h \
-  include/asm-generic/ioctl.h \
-  include/uapi/asm-generic/ioctl.h \
-  include/linux/edd.h \
-  include/uapi/linux/edd.h \
-  arch/x86/include/asm/ist.h \
-  arch/x86/include/uapi/asm/ist.h \
-  include/video/edid.h \
-  include/uapi/video/edid.h \
-  arch/x86/include/asm/page_32_types.h \
-    $(wildcard include/config/HIGHMEM4G) \
-    $(wildcard include/config/HIGHMEM64G) \
-    $(wildcard include/config/PAGE_OFFSET) \
-  arch/x86/include/asm/page_32.h \
-    $(wildcard include/config/DEBUG_VIRTUAL) \
-    $(wildcard include/config/FLATMEM) \
-  include/linux/range.h \
-  include/asm-generic/memory_model.h \
-    $(wildcard include/config/SPARSEMEM_VMEMMAP) \
-    $(wildcard include/config/SPARSEMEM) \
-  include/linux/pfn.h \
-  include/asm-generic/getorder.h \
-  arch/x86/include/asm/cpufeature.h \
-    $(wildcard include/config/X86_FEATURE_NAMES) \
-  arch/x86/include/asm/processor.h \
-    $(wildcard include/config/X86_VMX_FEATURE_NAMES) \
-    $(wildcard include/config/STACKPROTECTOR) \
-    $(wildcard include/config/X86_DEBUGCTLMSR) \
-    $(wildcard include/config/CPU_SUP_AMD) \
-    $(wildcard include/config/XEN) \
-  arch/x86/include/asm/processor-flags.h \
-  arch/x86/include/uapi/asm/processor-flags.h \
-  arch/x86/include/asm/math_emu.h \
-  arch/x86/include/asm/ptrace.h \
-    $(wildcard include/config/PARAVIRT) \
-  arch/x86/include/asm/segment.h \
-    $(wildcard include/config/XEN_PV) \
-  arch/x86/include/uapi/asm/ptrace.h \
-  arch/x86/include/uapi/asm/ptrace-abi.h \
-  arch/x86/include/asm/paravirt_types.h \
-    $(wildcard include/config/PGTABLE_LEVELS) \
-    $(wildcard include/config/PARAVIRT_DEBUG) \
-  arch/x86/include/asm/desc_defs.h \
-  arch/x86/include/asm/pgtable_types.h \
-    $(wildcard include/config/MEM_SOFT_DIRTY) \
-    $(wildcard include/config/HAVE_ARCH_USERFAULTFD_WP) \
-    $(wildcard include/config/PROC_FS) \
-  arch/x86/include/asm/pgtable_32_types.h \
-  arch/x86/include/asm/pgtable-3level_types.h \
-  include/asm-generic/pgtable-nop4d.h \
-  include/asm-generic/pgtable-nopud.h \
-  arch/x86/include/asm/nospec-branch.h \
-  include/linux/static_key.h \
-  include/linux/jump_label.h \
-    $(wildcard include/config/JUMP_LABEL) \
-    $(wildcard include/config/HAVE_ARCH_JUMP_LABEL_RELATIVE) \
-  arch/x86/include/asm/jump_label.h \
-  arch/x86/include/asm/msr-index.h \
-  arch/x86/include/asm/unwind_hints.h \
-  arch/x86/include/asm/orc_types.h \
-  arch/x86/include/asm/GEN-for-each-reg.h \
-  arch/x86/include/asm/proto.h \
-  arch/x86/include/uapi/asm/ldt.h \
-  arch/x86/include/uapi/asm/sigcontext.h \
-  arch/x86/include/asm/msr.h \
-    $(wildcard include/config/TRACEPOINTS) \
-  arch/x86/include/asm/msr-index.h \
-  arch/x86/include/asm/cpumask.h \
-  arch/x86/include/uapi/asm/msr.h \
-  include/linux/tracepoint-defs.h \
-  arch/x86/include/asm/special_insns.h \
-  include/linux/irqflags.h \
-    $(wildcard include/config/TRACE_IRQFLAGS) \
-    $(wildcard include/config/IRQSOFF_TRACER) \
-    $(wildcard include/config/PREEMPT_TRACER) \
-    $(wildcard include/config/DEBUG_IRQFLAGS) \
-    $(wildcard include/config/TRACE_IRQFLAGS_SUPPORT) \
-  arch/x86/include/asm/irqflags.h \
-  arch/x86/include/asm/fpu/types.h \
-  arch/x86/include/asm/vmxfeatures.h \
-  arch/x86/include/asm/vdso/processor.h \
-  include/linux/personality.h \
-  include/uapi/linux/personality.h \
-  arch/x86/include/asm/smp.h \
-    $(wildcard include/config/X86_LOCAL_APIC) \
-    $(wildcard include/config/DEBUG_NMI_SELFTEST) \
-  include/linux/osq_lock.h \
-  include/linux/debug_locks.h \
-  include/linux/idr.h \
-  include/linux/radix-tree.h \
-  include/linux/gfp.h \
-    $(wildcard include/config/KASAN_HW_TAGS) \
-    $(wildcard include/config/HIGHMEM) \
-    $(wildcard include/config/ZONE_DMA) \
-    $(wildcard include/config/ZONE_DMA32) \
-    $(wildcard include/config/ZONE_DEVICE) \
-    $(wildcard include/config/CONTIG_ALLOC) \
-    $(wildcard include/config/CMA) \
-  include/linux/mmdebug.h \
-    $(wildcard include/config/DEBUG_VM) \
-    $(wildcard include/config/DEBUG_VM_PGFLAGS) \
-  include/linux/mmzone.h \
-    $(wildcard include/config/FORCE_MAX_ZONEORDER) \
-    $(wildcard include/config/MEMORY_ISOLATION) \
-    $(wildcard include/config/ZSMALLOC) \
-    $(wildcard include/config/SWAP) \
-    $(wildcard include/config/NUMA_BALANCING) \
-    $(wildcard include/config/TRANSPARENT_HUGEPAGE) \
-    $(wildcard include/config/MEMCG) \
-    $(wildcard include/config/COMPACTION) \
-    $(wildcard include/config/PAGE_EXTENSION) \
-    $(wildcard include/config/DEFERRED_STRUCT_PAGE_INIT) \
-    $(wildcard include/config/HAVE_MEMORYLESS_NODES) \
-    $(wildcard include/config/SPARSEMEM_EXTREME) \
-    $(wildcard include/config/HAVE_ARCH_PFN_VALID) \
-  include/linux/spinlock.h \
-  include/linux/bottom_half.h \
-  arch/x86/include/generated/asm/mmiowb.h \
-  include/asm-generic/mmiowb.h \
-    $(wildcard include/config/MMIOWB) \
-  arch/x86/include/asm/spinlock.h \
-  arch/x86/include/asm/paravirt.h \
-    $(wildcard include/config/PARAVIRT_SPINLOCKS) \
-  arch/x86/include/asm/frame.h \
-  arch/x86/include/asm/qspinlock.h \
-  include/asm-generic/qspinlock.h \
-  arch/x86/include/asm/qrwlock.h \
-  include/asm-generic/qrwlock.h \
-  include/linux/rwlock.h \
-    $(wildcard include/config/PREEMPT) \
-  include/linux/spinlock_api_smp.h \
-    $(wildcard include/config/INLINE_SPIN_LOCK) \
-    $(wildcard include/config/INLINE_SPIN_LOCK_BH) \
-    $(wildcard include/config/INLINE_SPIN_LOCK_IRQ) \
-    $(wildcard include/config/INLINE_SPIN_LOCK_IRQSAVE) \
-    $(wildcard include/config/INLINE_SPIN_TRYLOCK) \
-    $(wildcard include/config/INLINE_SPIN_TRYLOCK_BH) \
-    $(wildcard include/config/UNINLINE_SPIN_UNLOCK) \
-    $(wildcard include/config/INLINE_SPIN_UNLOCK_BH) \
-    $(wildcard include/config/INLINE_SPIN_UNLOCK_IRQ) \
-    $(wildcard include/config/INLINE_SPIN_UNLOCK_IRQRESTORE) \
-    $(wildcard include/config/GENERIC_LOCKBREAK) \
-  include/linux/rwlock_api_smp.h \
-    $(wildcard include/config/INLINE_READ_LOCK) \
-    $(wildcard include/config/INLINE_WRITE_LOCK) \
-    $(wildcard include/config/INLINE_READ_LOCK_BH) \
-    $(wildcard include/config/INLINE_WRITE_LOCK_BH) \
-    $(wildcard include/config/INLINE_READ_LOCK_IRQ) \
-    $(wildcard include/config/INLINE_WRITE_LOCK_IRQ) \
-    $(wildcard include/config/INLINE_READ_LOCK_IRQSAVE) \
-    $(wildcard include/config/INLINE_WRITE_LOCK_IRQSAVE) \
-    $(wildcard include/config/INLINE_READ_TRYLOCK) \
-    $(wildcard include/config/INLINE_WRITE_TRYLOCK) \
-    $(wildcard include/config/INLINE_READ_UNLOCK) \
-    $(wildcard include/config/INLINE_WRITE_UNLOCK) \
-    $(wildcard include/config/INLINE_READ_UNLOCK_BH) \
-    $(wildcard include/config/INLINE_WRITE_UNLOCK_BH) \
-    $(wildcard include/config/INLINE_READ_UNLOCK_IRQ) \
-    $(wildcard include/config/INLINE_WRITE_UNLOCK_IRQ) \
-    $(wildcard include/config/INLINE_READ_UNLOCK_IRQRESTORE) \
-    $(wildcard include/config/INLINE_WRITE_UNLOCK_IRQRESTORE) \
-  include/linux/wait.h \
-  include/uapi/linux/wait.h \
-  include/linux/numa.h \
-    $(wildcard include/config/NODES_SHIFT) \
-    $(wildcard include/config/NUMA_KEEP_MEMINFO) \
-    $(wildcard include/config/HAVE_ARCH_NODE_DEV_GROUP) \
-  arch/x86/include/asm/sparsemem.h \
-  include/linux/seqlock.h \
-  include/linux/ww_mutex.h \
-    $(wildcard include/config/DEBUG_RT_MUTEXES) \
-    $(wildcard include/config/DEBUG_WW_MUTEX_SLOWPATH) \
-  include/linux/rtmutex.h \
-  include/linux/rbtree_types.h \
-  include/linux/nodemask.h \
-  include/linux/pageblock-flags.h \
-    $(wildcard include/config/HUGETLB_PAGE) \
-    $(wildcard include/config/HUGETLB_PAGE_SIZE_VARIABLE) \
-  include/linux/page-flags-layout.h \
-  include/generated/bounds.h \
-  include/linux/mm_types.h \
-    $(wildcard include/config/HAVE_ALIGNED_STRUCT_PAGE) \
-    $(wildcard include/config/USERFAULTFD) \
-    $(wildcard include/config/HAVE_ARCH_COMPAT_MMAP_BASES) \
-    $(wildcard include/config/MEMBARRIER) \
-    $(wildcard include/config/AIO) \
-    $(wildcard include/config/MMU_NOTIFIER) \
-    $(wildcard include/config/ARCH_WANT_BATCHED_UNMAP_TLB_FLUSH) \
-    $(wildcard include/config/IOMMU_SVA) \
-  include/linux/mm_types_task.h \
-    $(wildcard include/config/SPLIT_PTLOCK_CPUS) \
-    $(wildcard include/config/ARCH_ENABLE_SPLIT_PMD_PTLOCK) \
-  arch/x86/include/asm/tlbbatch.h \
-  include/linux/auxvec.h \
-  include/uapi/linux/auxvec.h \
-  arch/x86/include/uapi/asm/auxvec.h \
-  include/linux/kref.h \
-  include/linux/refcount.h \
-  include/linux/rbtree.h \
-  include/linux/rcupdate.h \
-    $(wildcard include/config/PREEMPT_RCU) \
-    $(wildcard include/config/TINY_RCU) \
-    $(wildcard include/config/RCU_STRICT_GRACE_PERIOD) \
-    $(wildcard include/config/TASKS_RCU_GENERIC) \
-    $(wildcard include/config/RCU_STALL_COMMON) \
-    $(wildcard include/config/NO_HZ_FULL) \
-    $(wildcard include/config/RCU_NOCB_CPU) \
-    $(wildcard include/config/TASKS_RCU) \
-    $(wildcard include/config/TASKS_TRACE_RCU) \
-    $(wildcard include/config/TASKS_RUDE_RCU) \
-    $(wildcard include/config/TREE_RCU) \
-    $(wildcard include/config/DEBUG_OBJECTS_RCU_HEAD) \
-    $(wildcard include/config/PROVE_RCU) \
-    $(wildcard include/config/ARCH_WEAK_RELEASE_ACQUIRE) \
-  include/linux/rcutree.h \
-  include/linux/rwsem.h \
-    $(wildcard include/config/RWSEM_SPIN_ON_OWNER) \
-    $(wildcard include/config/DEBUG_RWSEMS) \
-  include/linux/completion.h \
-  include/linux/swait.h \
-  include/linux/uprobes.h \
-    $(wildcard include/config/UPROBES) \
-  arch/x86/include/asm/uprobes.h \
-  include/linux/notifier.h \
-    $(wildcard include/config/TREE_SRCU) \
-  include/linux/srcu.h \
-    $(wildcard include/config/TINY_SRCU) \
-    $(wildcard include/config/SRCU) \
-  include/linux/workqueue.h \
-    $(wildcard include/config/DEBUG_OBJECTS_WORK) \
-    $(wildcard include/config/FREEZER) \
-    $(wildcard include/config/WQ_WATCHDOG) \
-  include/linux/timer.h \
-    $(wildcard include/config/DEBUG_OBJECTS_TIMERS) \
-    $(wildcard include/config/NO_HZ_COMMON) \
-  include/linux/ktime.h \
-  include/linux/time.h \
-    $(wildcard include/config/POSIX_TIMERS) \
-  include/linux/time32.h \
-  include/linux/timex.h \
-  include/uapi/linux/timex.h \
-  arch/x86/include/asm/timex.h \
-    $(wildcard include/config/X86_TSC) \
-  arch/x86/include/asm/tsc.h \
-  include/vdso/time32.h \
-  include/vdso/time.h \
-  include/linux/jiffies.h \
-  include/vdso/jiffies.h \
-  include/generated/timeconst.h \
-  include/vdso/ktime.h \
-  include/linux/timekeeping.h \
-    $(wildcard include/config/GENERIC_CMOS_UPDATE) \
-  include/linux/clocksource_ids.h \
-  include/linux/debugobjects.h \
-    $(wildcard include/config/DEBUG_OBJECTS) \
-    $(wildcard include/config/DEBUG_OBJECTS_FREE) \
-  include/linux/rcu_segcblist.h \
-  include/linux/srcutree.h \
-  include/linux/rcu_node_tree.h \
-    $(wildcard include/config/RCU_FANOUT) \
-    $(wildcard include/config/RCU_FANOUT_LEAF) \
-  arch/x86/include/asm/mmu.h \
-    $(wildcard include/config/MODIFY_LDT_SYSCALL) \
-  include/linux/page-flags.h \
-    $(wildcard include/config/ARCH_USES_PG_UNCACHED) \
-    $(wildcard include/config/MEMORY_FAILURE) \
-    $(wildcard include/config/PAGE_IDLE_FLAG) \
-    $(wildcard include/config/HUGETLB_PAGE_FREE_VMEMMAP) \
-    $(wildcard include/config/HUGETLB_PAGE_FREE_VMEMMAP_DEFAULT_ON) \
-    $(wildcard include/config/KSM) \
-  include/linux/local_lock.h \
-  include/linux/local_lock_internal.h \
-  include/linux/memory_hotplug.h \
-    $(wildcard include/config/HAVE_ARCH_NODEDATA_EXTENSION) \
-    $(wildcard include/config/ARCH_HAS_ADD_PAGES) \
-  arch/x86/include/asm/mmzone.h \
-  arch/x86/include/asm/mmzone_32.h \
-  include/linux/topology.h \
-    $(wildcard include/config/USE_PERCPU_NUMA_NODE_ID) \
-    $(wildcard include/config/SCHED_SMT) \
-    $(wildcard include/config/SCHED_CLUSTER) \
-  include/linux/arch_topology.h \
-    $(wildcard include/config/ACPI_CPPC_LIB) \
-    $(wildcard include/config/GENERIC_ARCH_TOPOLOGY) \
-  include/linux/percpu.h \
-    $(wildcard include/config/NEED_PER_CPU_EMBED_FIRST_CHUNK) \
-    $(wildcard include/config/NEED_PER_CPU_PAGE_FIRST_CHUNK) \
-  arch/x86/include/asm/topology.h \
-    $(wildcard include/config/SCHED_MC_PRIO) \
-  arch/x86/include/asm/mpspec.h \
-    $(wildcard include/config/EISA) \
-    $(wildcard include/config/X86_MPPARSE) \
-  arch/x86/include/asm/mpspec_def.h \
-  arch/x86/include/asm/x86_init.h \
-  arch/x86/include/asm/apicdef.h \
-  include/asm-generic/topology.h \
-  include/linux/xarray.h \
-    $(wildcard include/config/XARRAY_MULTI) \
-  include/linux/kconfig.h \
-  include/linux/uidgid.h \
-    $(wildcard include/config/MULTIUSER) \
-    $(wildcard include/config/USER_NS) \
-  include/linux/highuid.h \
-  include/linux/kobject_ns.h \
-  include/linux/stat.h \
-  arch/x86/include/uapi/asm/stat.h \
-  include/uapi/linux/stat.h \
-  include/linux/mod_devicetable.h \
-  include/linux/uuid.h \
-  include/uapi/linux/uuid.h \
-  include/linux/property.h \
-  include/linux/fwnode.h \
-  include/linux/resource_ext.h \
-  include/linux/slab.h \
-    $(wildcard include/config/DEBUG_SLAB) \
-    $(wildcard include/config/FAILSLAB) \
-    $(wildcard include/config/MEMCG_KMEM) \
-    $(wildcard include/config/KASAN) \
-    $(wildcard include/config/SLAB) \
-    $(wildcard include/config/SLUB) \
-    $(wildcard include/config/SLOB) \
-  include/linux/overflow.h \
-  include/linux/percpu-refcount.h \
-  include/linux/kasan.h \
-    $(wildcard include/config/KASAN_STACK) \
-    $(wildcard include/config/KASAN_VMALLOC) \
-    $(wildcard include/config/KASAN_INLINE) \
-  include/linux/kasan-enabled.h \
-  include/linux/device.h \
-    $(wildcard include/config/GENERIC_MSI_IRQ_DOMAIN) \
-    $(wildcard include/config/GENERIC_MSI_IRQ) \
-    $(wildcard include/config/ENERGY_MODEL) \
-    $(wildcard include/config/PINCTRL) \
-    $(wildcard include/config/DMA_OPS) \
-    $(wildcard include/config/DMA_DECLARE_COHERENT) \
-    $(wildcard include/config/DMA_CMA) \
-    $(wildcard include/config/SWIOTLB) \
-    $(wildcard include/config/ARCH_HAS_SYNC_DMA_FOR_DEVICE) \
-    $(wildcard include/config/ARCH_HAS_SYNC_DMA_FOR_CPU) \
-    $(wildcard include/config/ARCH_HAS_SYNC_DMA_FOR_CPU_ALL) \
-    $(wildcard include/config/DMA_OPS_BYPASS) \
-    $(wildcard include/config/DEVTMPFS) \
-    $(wildcard include/config/SYSFS_DEPRECATED) \
-  include/linux/dev_printk.h \
-  include/linux/ratelimit.h \
-  include/linux/sched.h \
-    $(wildcard include/config/VIRT_CPU_ACCOUNTING_NATIVE) \
-    $(wildcard include/config/SCHED_INFO) \
-    $(wildcard include/config/SCHEDSTATS) \
-    $(wildcard include/config/SCHED_CORE) \
-    $(wildcard include/config/FAIR_GROUP_SCHED) \
-    $(wildcard include/config/RT_GROUP_SCHED) \
-    $(wildcard include/config/RT_MUTEXES) \
-    $(wildcard include/config/UCLAMP_TASK) \
-    $(wildcard include/config/UCLAMP_BUCKETS_COUNT) \
-    $(wildcard include/config/KMAP_LOCAL) \
-    $(wildcard include/config/CGROUP_SCHED) \
-    $(wildcard include/config/BLK_DEV_IO_TRACE) \
-    $(wildcard include/config/PSI) \
-    $(wildcard include/config/COMPAT_BRK) \
-    $(wildcard include/config/CGROUPS) \
-    $(wildcard include/config/BLK_CGROUP) \
-    $(wildcard include/config/PAGE_OWNER) \
-    $(wildcard include/config/EVENTFD) \
-    $(wildcard include/config/ARCH_HAS_SCALED_CPUTIME) \
-    $(wildcard include/config/VIRT_CPU_ACCOUNTING_GEN) \
-    $(wildcard include/config/POSIX_CPUTIMERS) \
-    $(wildcard include/config/POSIX_CPU_TIMERS_TASK_WORK) \
-    $(wildcard include/config/KEYS) \
-    $(wildcard include/config/SYSVIPC) \
-    $(wildcard include/config/DETECT_HUNG_TASK) \
-    $(wildcard include/config/IO_URING) \
-    $(wildcard include/config/AUDIT) \
-    $(wildcard include/config/AUDITSYSCALL) \
-    $(wildcard include/config/UBSAN) \
-    $(wildcard include/config/UBSAN_TRAP) \
-    $(wildcard include/config/TASK_XACCT) \
-    $(wildcard include/config/CPUSETS) \
-    $(wildcard include/config/X86_CPU_RESCTRL) \
-    $(wildcard include/config/FUTEX) \
-    $(wildcard include/config/PERF_EVENTS) \
-    $(wildcard include/config/RSEQ) \
-    $(wildcard include/config/TASK_DELAY_ACCT) \
-    $(wildcard include/config/FAULT_INJECTION) \
-    $(wildcard include/config/LATENCYTOP) \
-    $(wildcard include/config/KUNIT) \
-    $(wildcard include/config/FUNCTION_GRAPH_TRACER) \
-    $(wildcard include/config/BCACHE) \
-    $(wildcard include/config/VMAP_STACK) \
-    $(wildcard include/config/LIVEPATCH) \
-    $(wildcard include/config/SECURITY) \
-    $(wildcard include/config/BPF_SYSCALL) \
-    $(wildcard include/config/GCC_PLUGIN_STACKLEAK) \
-    $(wildcard include/config/X86_MCE) \
-    $(wildcard include/config/KRETPROBES) \
-    $(wildcard include/config/RETHOOK) \
-    $(wildcard include/config/ARCH_HAS_PARANOID_L1D_FLUSH) \
-    $(wildcard include/config/ARCH_TASK_STRUCT_ON_STACK) \
-    $(wildcard include/config/DEBUG_RSEQ) \
-  include/uapi/linux/sched.h \
-  include/linux/pid.h \
-  include/linux/rculist.h \
-    $(wildcard include/config/PROVE_RCU_LIST) \
-  include/linux/sem.h \
-  include/uapi/linux/sem.h \
-  include/linux/ipc.h \
-  include/linux/rhashtable-types.h \
-  include/uapi/linux/ipc.h \
-  arch/x86/include/generated/uapi/asm/ipcbuf.h \
-  include/uapi/asm-generic/ipcbuf.h \
-  arch/x86/include/uapi/asm/sembuf.h \
-  include/linux/shm.h \
-  include/uapi/linux/shm.h \
-  include/uapi/asm-generic/hugetlb_encode.h \
-  arch/x86/include/uapi/asm/shmbuf.h \
-  include/uapi/asm-generic/shmbuf.h \
-  arch/x86/include/asm/shmparam.h \
-  include/linux/plist.h \
-    $(wildcard include/config/DEBUG_PLIST) \
-  include/linux/hrtimer.h \
-    $(wildcard include/config/HIGH_RES_TIMERS) \
-    $(wildcard include/config/TIME_LOW_RES) \
-    $(wildcard include/config/TIMERFD) \
-  include/linux/hrtimer_defs.h \
-  include/linux/timerqueue.h \
-  include/linux/seccomp.h \
-    $(wildcard include/config/SECCOMP) \
-    $(wildcard include/config/HAVE_ARCH_SECCOMP_FILTER) \
-    $(wildcard include/config/SECCOMP_FILTER) \
-    $(wildcard include/config/CHECKPOINT_RESTORE) \
-    $(wildcard include/config/SECCOMP_CACHE_DEBUG) \
-  include/uapi/linux/seccomp.h \
-  arch/x86/include/asm/seccomp.h \
-  arch/x86/include/asm/unistd.h \
-  arch/x86/include/uapi/asm/unistd.h \
-  arch/x86/include/generated/uapi/asm/unistd_32.h \
-  include/asm-generic/seccomp.h \
-  include/uapi/linux/unistd.h \
-  include/linux/resource.h \
-  include/uapi/linux/resource.h \
-  arch/x86/include/generated/uapi/asm/resource.h \
-  include/asm-generic/resource.h \
-  include/uapi/asm-generic/resource.h \
-  include/linux/latencytop.h \
-  include/linux/sched/prio.h \
-  include/linux/sched/types.h \
-  include/linux/signal_types.h \
-    $(wildcard include/config/OLD_SIGACTION) \
-  include/uapi/linux/signal.h \
-  arch/x86/include/asm/signal.h \
-  arch/x86/include/uapi/asm/signal.h \
-  include/uapi/asm-generic/signal-defs.h \
-  arch/x86/include/uapi/asm/siginfo.h \
-  include/uapi/asm-generic/siginfo.h \
-  include/linux/syscall_user_dispatch.h \
-  include/linux/task_io_accounting.h \
-    $(wildcard include/config/TASK_IO_ACCOUNTING) \
-  include/linux/posix-timers.h \
-  include/linux/alarmtimer.h \
-    $(wildcard include/config/RTC_CLASS) \
-  include/uapi/linux/rseq.h \
-  include/linux/kcsan.h \
-  arch/x86/include/generated/asm/kmap_size.h \
-  include/asm-generic/kmap_size.h \
-    $(wildcard include/config/DEBUG_KMAP_LOCAL) \
-  include/linux/energy_model.h \
-  include/linux/sched/cpufreq.h \
-    $(wildcard include/config/CPU_FREQ) \
-  include/linux/sched/topology.h \
-    $(wildcard include/config/SCHED_DEBUG) \
-    $(wildcard include/config/SCHED_MC) \
-    $(wildcard include/config/CPU_FREQ_GOV_SCHEDUTIL) \
-  include/linux/sched/idle.h \
-  include/linux/sched/sd_flags.h \
-  include/linux/klist.h \
-  include/linux/pm.h \
-    $(wildcard include/config/VT_CONSOLE_SLEEP) \
-    $(wildcard include/config/PM_CLK) \
-    $(wildcard include/config/PM_GENERIC_DOMAINS) \
-  include/linux/device/bus.h \
-  include/linux/device/class.h \
-  include/linux/device/driver.h \
-  include/linux/module.h \
-    $(wildcard include/config/MODULES_TREE_LOOKUP) \
-    $(wildcard include/config/STACKTRACE_BUILD_ID) \
-    $(wildcard include/config/MODULE_SIG) \
-    $(wildcard include/config/KALLSYMS) \
-    $(wildcard include/config/BPF_EVENTS) \
-    $(wildcard include/config/DEBUG_INFO_BTF_MODULES) \
-    $(wildcard include/config/EVENT_TRACING) \
-    $(wildcard include/config/MODULE_UNLOAD) \
-    $(wildcard include/config/CONSTRUCTORS) \
-    $(wildcard include/config/FUNCTION_ERROR_INJECTION) \
-  include/linux/buildid.h \
-    $(wildcard include/config/CRASH_CORE) \
-  include/linux/kmod.h \
-  include/linux/umh.h \
-  include/linux/sysctl.h \
-    $(wildcard include/config/SYSCTL) \
-  include/uapi/linux/sysctl.h \
-  include/linux/elf.h \
-    $(wildcard include/config/ARCH_USE_GNU_PROPERTY) \
-    $(wildcard include/config/ARCH_HAVE_ELF_PROT) \
-  arch/x86/include/asm/elf.h \
-    $(wildcard include/config/X86_X32_ABI) \
-  arch/x86/include/asm/user.h \
-  arch/x86/include/asm/user_32.h \
-  arch/x86/include/asm/fsgsbase.h \
-  arch/x86/include/asm/vdso.h \
-  arch/x86/include/asm/desc.h \
-  arch/x86/include/asm/fixmap.h \
-    $(wildcard include/config/DEBUG_KMAP_LOCAL_FORCE_MAP) \
-    $(wildcard include/config/X86_VSYSCALL_EMULATION) \
-    $(wildcard include/config/PROVIDE_OHCI1394_DMA_INIT) \
-    $(wildcard include/config/PCI_MMCONFIG) \
-    $(wildcard include/config/ACPI_APEI_GHES) \
-    $(wildcard include/config/INTEL_TXT) \
-  include/asm-generic/fixmap.h \
-  arch/x86/include/asm/irq_vectors.h \
-    $(wildcard include/config/HAVE_KVM) \
-    $(wildcard include/config/HYPERV) \
-    $(wildcard include/config/PCI_MSI) \
-  arch/x86/include/asm/cpu_entry_area.h \
-  arch/x86/include/asm/intel_ds.h \
-  arch/x86/include/asm/pgtable_areas.h \
-  arch/x86/include/asm/pgtable_32_areas.h \
-  include/uapi/linux/elf.h \
-  include/uapi/linux/elf-em.h \
-  include/linux/moduleparam.h \
-    $(wildcard include/config/ALPHA) \
-    $(wildcard include/config/PPC64) \
-  include/linux/rbtree_latch.h \
-  include/linux/error-injection.h \
-  include/asm-generic/error-injection.h \
-  include/linux/cfi.h \
-    $(wildcard include/config/CFI_CLANG_SHADOW) \
-  arch/x86/include/asm/module.h \
-    $(wildcard include/config/UNWINDER_ORC) \
-  include/asm-generic/module.h \
-    $(wildcard include/config/HAVE_MOD_ARCH_SPECIFIC) \
-    $(wildcard include/config/MODULES_USE_ELF_REL) \
-    $(wildcard include/config/MODULES_USE_ELF_RELA) \
-  arch/x86/include/asm/orc_types.h \
-  arch/x86/include/asm/device.h \
-  include/linux/pm_wakeup.h \
-  include/acpi/acpi.h \
-  include/acpi/platform/acenv.h \
-  include/acpi/platform/acgcc.h \
-  include/acpi/platform/aclinux.h \
-    $(wildcard include/config/ACPI_REDUCED_HARDWARE_ONLY) \
-    $(wildcard include/config/ACPI_DEBUG) \
-  include/linux/ctype.h \
-  arch/x86/include/asm/acenv.h \
-  include/acpi/acnames.h \
-  include/acpi/actypes.h \
-  include/acpi/acexcep.h \
-  include/acpi/actbl.h \
-  include/acpi/actbl1.h \
-  include/acpi/actbl2.h \
-  include/acpi/actbl3.h \
-  include/acpi/acrestyp.h \
-  include/acpi/platform/acenvex.h \
-  include/acpi/platform/aclinuxex.h \
-  include/acpi/platform/acgccex.h \
-  include/acpi/acoutput.h \
-  include/acpi/acpiosxf.h \
-  include/acpi/acpixf.h \
-  include/acpi/acconfig.h \
-  include/acpi/acbuffer.h \
-  include/linux/dynamic_debug.h \
-  include/acpi/acpi_bus.h \
-    $(wildcard include/config/X86_ANDROID_TABLETS) \
-    $(wildcard include/config/ACPI_SYSTEM_POWER_STATES_SUPPORT) \
-    $(wildcard include/config/ACPI_SLEEP) \
-  include/acpi/acpi_drivers.h \
-    $(wildcard include/config/ACPI_DOCK) \
-  include/acpi/acpi_numa.h \
-    $(wildcard include/config/ACPI_HMAT) \
-  include/acpi/acpi_io.h \
-  include/linux/io.h \
-    $(wildcard include/config/HAS_IOPORT_MAP) \
-  arch/x86/include/asm/io.h \
-    $(wildcard include/config/MTRR) \
-    $(wildcard include/config/X86_PAT) \
-  arch/x86/include/generated/asm/early_ioremap.h \
-  include/asm-generic/early_ioremap.h \
-    $(wildcard include/config/GENERIC_EARLY_IOREMAP) \
-  include/asm-generic/iomap.h \
-  include/asm-generic/pci_iomap.h \
-    $(wildcard include/config/NO_GENERIC_PCI_IOPORT_MAP) \
-    $(wildcard include/config/GENERIC_PCI_IOMAP) \
-  include/asm-generic/io.h \
-    $(wildcard include/config/GENERIC_IOMAP) \
-    $(wildcard include/config/GENERIC_IOREMAP) \
-    $(wildcard include/config/VIRT_TO_BUS) \
-    $(wildcard include/config/GENERIC_DEVMEM_IS_ALLOWED) \
-  include/linux/logic_pio.h \
-    $(wildcard include/config/INDIRECT_PIO) \
-  include/linux/vmalloc.h \
-    $(wildcard include/config/HAVE_ARCH_HUGE_VMALLOC) \
-  arch/x86/include/asm/vmalloc.h \
-    $(wildcard include/config/HAVE_ARCH_HUGE_VMAP) \
-  arch/x86/include/asm/acpi.h \
-    $(wildcard include/config/ACPI_APEI) \
-  include/acpi/pdc_intel.h \
-  arch/x86/include/asm/numa.h \
-    $(wildcard include/config/NUMA_EMU) \
-  arch/x86/include/asm/numa_32.h \
-  include/linux/regulator/consumer.h \
-    $(wildcard include/config/REGULATOR) \
-  include/linux/suspend.h \
-    $(wildcard include/config/VT) \
-    $(wildcard include/config/SUSPEND) \
-    $(wildcard include/config/HIBERNATION_SNAPSHOT_DEV) \
-    $(wildcard include/config/PM_SLEEP_DEBUG) \
-    $(wildcard include/config/PM_AUTOSLEEP) \
-  include/linux/swap.h \
-    $(wildcard include/config/DEVICE_PRIVATE) \
-    $(wildcard include/config/MIGRATION) \
-    $(wildcard include/config/FRONTSWAP) \
-    $(wildcard include/config/THP_SWAP) \
-    $(wildcard include/config/MEMCG_SWAP) \
-  include/linux/memcontrol.h \
-    $(wildcard include/config/CGROUP_WRITEBACK) \
-  include/linux/cgroup.h \
-    $(wildcard include/config/CGROUP_CPUACCT) \
-    $(wildcard include/config/SOCK_CGROUP_DATA) \
-    $(wildcard include/config/CGROUP_DATA) \
-    $(wildcard include/config/CGROUP_BPF) \
-  include/uapi/linux/cgroupstats.h \
-  include/uapi/linux/taskstats.h \
-  include/linux/fs.h \
-    $(wildcard include/config/READ_ONLY_THP_FOR_FS) \
-    $(wildcard include/config/FS_POSIX_ACL) \
-    $(wildcard include/config/IMA) \
-    $(wildcard include/config/FILE_LOCKING) \
-    $(wildcard include/config/FSNOTIFY) \
-    $(wildcard include/config/FS_ENCRYPTION) \
-    $(wildcard include/config/FS_VERITY) \
-    $(wildcard include/config/EPOLL) \
-    $(wildcard include/config/UNICODE) \
-    $(wildcard include/config/QUOTA) \
-    $(wildcard include/config/FS_DAX) \
-    $(wildcard include/config/BLOCK) \
-  include/linux/wait_bit.h \
-  include/linux/kdev_t.h \
-  include/uapi/linux/kdev_t.h \
-  include/linux/dcache.h \
-  include/linux/rculist_bl.h \
-  include/linux/list_bl.h \
-  include/linux/bit_spinlock.h \
-  include/linux/lockref.h \
-    $(wildcard include/config/ARCH_USE_CMPXCHG_LOCKREF) \
-  include/linux/stringhash.h \
-    $(wildcard include/config/DCACHE_WORD_ACCESS) \
-  include/linux/hash.h \
-    $(wildcard include/config/HAVE_ARCH_HASH) \
-  include/linux/path.h \
-  include/linux/list_lru.h \
-  include/linux/shrinker.h \
-  include/linux/capability.h \
-  include/uapi/linux/capability.h \
-  include/linux/semaphore.h \
-  include/linux/fcntl.h \
-    $(wildcard include/config/ARCH_32BIT_OFF_T) \
-  include/uapi/linux/fcntl.h \
-  arch/x86/include/generated/uapi/asm/fcntl.h \
-  include/uapi/asm-generic/fcntl.h \
-  include/uapi/linux/openat2.h \
-  include/linux/migrate_mode.h \
-  include/linux/percpu-rwsem.h \
-  include/linux/rcuwait.h \
-  include/linux/sched/signal.h \
-    $(wildcard include/config/SCHED_AUTOGROUP) \
-    $(wildcard include/config/BSD_PROCESS_ACCT) \
-    $(wildcard include/config/TASKSTATS) \
-    $(wildcard include/config/STACK_GROWSUP) \
-  include/linux/signal.h \
-    $(wildcard include/config/DYNAMIC_SIGFRAME) \
-  include/linux/sched/jobctl.h \
-  include/linux/sched/task.h \
-    $(wildcard include/config/HAVE_EXIT_THREAD) \
-    $(wildcard include/config/ARCH_WANTS_DYNAMIC_TASK_STRUCT) \
-    $(wildcard include/config/HAVE_ARCH_THREAD_STRUCT_WHITELIST) \
-  include/linux/uaccess.h \
-  include/linux/fault-inject-usercopy.h \
-    $(wildcard include/config/FAULT_INJECTION_USERCOPY) \
-  arch/x86/include/asm/uaccess.h \
-    $(wildcard include/config/CC_HAS_ASM_GOTO_OUTPUT) \
-    $(wildcard include/config/CC_HAS_ASM_GOTO_TIED_OUTPUT) \
-    $(wildcard include/config/ARCH_HAS_COPY_MC) \
-    $(wildcard include/config/X86_INTEL_USERCOPY) \
-  arch/x86/include/asm/smap.h \
-  arch/x86/include/asm/extable.h \
-    $(wildcard include/config/BPF_JIT) \
-  include/asm-generic/access_ok.h \
-    $(wildcard include/config/ALTERNATE_USER_ADDRESS_SPACE) \
-  arch/x86/include/asm/uaccess_32.h \
-  include/linux/cred.h \
-    $(wildcard include/config/DEBUG_CREDENTIALS) \
-  include/linux/key.h \
-    $(wildcard include/config/KEY_NOTIFICATIONS) \
-    $(wildcard include/config/NET) \
-  include/linux/assoc_array.h \
-    $(wildcard include/config/ASSOCIATIVE_ARRAY) \
-  include/linux/sched/user.h \
-    $(wildcard include/config/WATCH_QUEUE) \
-  include/linux/percpu_counter.h \
-  include/linux/rcu_sync.h \
-  include/linux/delayed_call.h \
-  include/linux/errseq.h \
-  include/linux/ioprio.h \
-  include/linux/sched/rt.h \
-  include/linux/iocontext.h \
-    $(wildcard include/config/BLK_ICQ) \
-  include/uapi/linux/ioprio.h \
-  include/linux/fs_types.h \
-  include/linux/mount.h \
-  include/linux/mnt_idmapping.h \
-  include/uapi/linux/fs.h \
-  include/linux/quota.h \
-    $(wildcard include/config/QUOTA_NETLINK_INTERFACE) \
-  include/uapi/linux/dqblk_xfs.h \
-  include/linux/dqblk_v1.h \
-  include/linux/dqblk_v2.h \
-  include/linux/dqblk_qtree.h \
-  include/linux/projid.h \
-  include/uapi/linux/quota.h \
-  include/linux/nfs_fs_i.h \
-  include/linux/seq_file.h \
-  include/linux/string_helpers.h \
-  include/linux/ns_common.h \
-  include/linux/nsproxy.h \
-  include/linux/user_namespace.h \
-    $(wildcard include/config/INOTIFY_USER) \
-    $(wildcard include/config/FANOTIFY) \
-    $(wildcard include/config/PERSISTENT_KEYRINGS) \
-  include/linux/kernel_stat.h \
-  include/linux/interrupt.h \
-    $(wildcard include/config/IRQ_FORCED_THREADING) \
-    $(wildcard include/config/GENERIC_IRQ_PROBE) \
-    $(wildcard include/config/IRQ_TIMINGS) \
-  include/linux/irqreturn.h \
-  include/linux/irqnr.h \
-  include/uapi/linux/irqnr.h \
-  include/linux/hardirq.h \
-  include/linux/context_tracking_state.h \
-    $(wildcard include/config/CONTEXT_TRACKING) \
-  include/linux/ftrace_irq.h \
-    $(wildcard include/config/HWLAT_TRACER) \
-    $(wildcard include/config/OSNOISE_TRACER) \
-  include/linux/vtime.h \
-    $(wildcard include/config/VIRT_CPU_ACCOUNTING) \
-    $(wildcard include/config/IRQ_TIME_ACCOUNTING) \
-  arch/x86/include/asm/hardirq.h \
-    $(wildcard include/config/KVM_INTEL) \
-    $(wildcard include/config/X86_THERMAL_VECTOR) \
-    $(wildcard include/config/X86_MCE_THRESHOLD) \
-    $(wildcard include/config/X86_MCE_AMD) \
-    $(wildcard include/config/X86_HV_CALLBACK_VECTOR) \
-  arch/x86/include/asm/irq.h \
-  arch/x86/include/asm/sections.h \
-  include/asm-generic/sections.h \
-    $(wildcard include/config/HAVE_FUNCTION_DESCRIPTORS) \
-  include/linux/cgroup-defs.h \
-    $(wildcard include/config/CGROUP_NET_CLASSID) \
-    $(wildcard include/config/CGROUP_NET_PRIO) \
-  include/linux/u64_stats_sync.h \
-  include/linux/bpf-cgroup-defs.h \
-  include/linux/psi_types.h \
-  include/linux/kthread.h \
-  include/linux/cgroup_subsys.h \
-    $(wildcard include/config/CGROUP_DEVICE) \
-    $(wildcard include/config/CGROUP_FREEZER) \
-    $(wildcard include/config/CGROUP_PERF) \
-    $(wildcard include/config/CGROUP_HUGETLB) \
-    $(wildcard include/config/CGROUP_PIDS) \
-    $(wildcard include/config/CGROUP_RDMA) \
-    $(wildcard include/config/CGROUP_MISC) \
-    $(wildcard include/config/CGROUP_DEBUG) \
-  include/linux/vm_event_item.h \
-    $(wildcard include/config/HAVE_ARCH_TRANSPARENT_HUGEPAGE_PUD) \
-    $(wildcard include/config/MEMORY_BALLOON) \
-    $(wildcard include/config/BALLOON_COMPACTION) \
-    $(wildcard include/config/DEBUG_TLBFLUSH) \
-    $(wildcard include/config/DEBUG_VM_VMACACHE) \
-  include/linux/page_counter.h \
-  include/linux/vmpressure.h \
-  include/linux/eventfd.h \
-  include/linux/mm.h \
-    $(wildcard include/config/HAVE_ARCH_MMAP_RND_BITS) \
-    $(wildcard include/config/HAVE_ARCH_MMAP_RND_COMPAT_BITS) \
-    $(wildcard include/config/ARCH_USES_HIGH_VMA_FLAGS) \
-    $(wildcard include/config/ARCH_HAS_PKEYS) \
-    $(wildcard include/config/PPC) \
-    $(wildcard include/config/PARISC) \
-    $(wildcard include/config/SPARC64) \
-    $(wildcard include/config/ARM64_MTE) \
-    $(wildcard include/config/HAVE_ARCH_USERFAULTFD_MINOR) \
-    $(wildcard include/config/SHMEM) \
-    $(wildcard include/config/ARCH_HAS_PTE_SPECIAL) \
-    $(wildcard include/config/ARCH_HAS_PTE_DEVMAP) \
-    $(wildcard include/config/DEBUG_VM_RB) \
-    $(wildcard include/config/PAGE_POISONING) \
-    $(wildcard include/config/INIT_ON_ALLOC_DEFAULT_ON) \
-    $(wildcard include/config/INIT_ON_FREE_DEFAULT_ON) \
-    $(wildcard include/config/DEBUG_PAGEALLOC) \
-    $(wildcard include/config/HUGETLBFS) \
-    $(wildcard include/config/MAPPING_DIRTY_HELPERS) \
-    $(wildcard include/config/ANON_VMA_NAME) \
-  include/linux/mmap_lock.h \
-  include/linux/page_ext.h \
-  include/linux/stacktrace.h \
-    $(wildcard include/config/ARCH_STACKWALK) \
-    $(wildcard include/config/STACKTRACE) \
-    $(wildcard include/config/HAVE_RELIABLE_STACKTRACE) \
-  include/linux/stackdepot.h \
-    $(wildcard include/config/STACKDEPOT_ALWAYS_INIT) \
-  include/linux/page_ref.h \
-    $(wildcard include/config/DEBUG_PAGE_REF) \
-  include/linux/sizes.h \
-  include/linux/pgtable.h \
-    $(wildcard include/config/HIGHPTE) \
-    $(wildcard include/config/GUP_GET_PTE_LOW_HIGH) \
-    $(wildcard include/config/HAVE_ARCH_SOFT_DIRTY) \
-    $(wildcard include/config/ARCH_ENABLE_THP_MIGRATION) \
-    $(wildcard include/config/X86_ESPFIX64) \
-  arch/x86/include/asm/pgtable.h \
-    $(wildcard include/config/DEBUG_WX) \
-    $(wildcard include/config/PAGE_TABLE_CHECK) \
-  arch/x86/include/asm/pkru.h \
-  arch/x86/include/asm/fpu/api.h \
-    $(wildcard include/config/X86_DEBUG_FPU) \
-  arch/x86/include/asm/coco.h \
-  include/asm-generic/pgtable_uffd.h \
-  include/linux/page_table_check.h \
-  arch/x86/include/asm/pgtable_32.h \
-  arch/x86/include/asm/pgtable-3level.h \
-  arch/x86/include/asm/pgtable-invert.h \
-  include/linux/huge_mm.h \
-  include/linux/sched/coredump.h \
-    $(wildcard include/config/CORE_DUMP_DEFAULT_ELF_HEADERS) \
-  include/linux/vmstat.h \
-    $(wildcard include/config/VM_EVENT_COUNTERS) \
-  include/linux/writeback.h \
-  include/linux/flex_proportions.h \
-  include/linux/backing-dev-defs.h \
-    $(wildcard include/config/DEBUG_FS) \
-  include/linux/blk_types.h \
-    $(wildcard include/config/FAIL_MAKE_REQUEST) \
-    $(wildcard include/config/BLK_CGROUP_IOCOST) \
-    $(wildcard include/config/BLK_INLINE_ENCRYPTION) \
-    $(wildcard include/config/BLK_DEV_INTEGRITY) \
-  include/linux/bvec.h \
-  include/linux/highmem.h \
-  include/linux/cacheflush.h \
-  arch/x86/include/asm/cacheflush.h \
-  include/asm-generic/cacheflush.h \
-  include/linux/highmem-internal.h \
-  arch/x86/include/asm/highmem.h \
-  arch/x86/include/asm/tlbflush.h \
-  arch/x86/include/asm/invpcid.h \
-  arch/x86/include/asm/pti.h \
-  include/linux/bio.h \
-  include/linux/mempool.h \
-  include/linux/uio.h \
-    $(wildcard include/config/ARCH_HAS_UACCESS_FLUSHCACHE) \
-  include/uapi/linux/uio.h \
-  include/linux/node.h \
-    $(wildcard include/config/HMEM_REPORTING) \
-  include/linux/pagemap.h \
-  include/linux/hugetlb_inline.h \
-  include/uapi/linux/mempolicy.h \
-  include/linux/freezer.h \
-  include/uapi/linux/i2c.h \
-  include/linux/videodev2.h \
-  include/uapi/linux/videodev2.h \
-  include/uapi/linux/v4l2-common.h \
-  include/uapi/linux/v4l2-controls.h \
-  include/linux/delay.h \
-  arch/x86/include/asm/delay.h \
-  include/asm-generic/delay.h \
-  include/linux/gpio/consumer.h \
-    $(wildcard include/config/OF_GPIO) \
-    $(wildcard include/config/GPIO_SYSFS) \
-  include/linux/of_graph.h \
-  include/linux/pm_runtime.h \
-  include/linux/regmap.h \
-    $(wildcard include/config/REGMAP) \
-  include/linux/iopoll.h \
-  include/media/v4l2-async.h \
-  include/media/v4l2-device.h \
-  include/media/media-device.h \
-  include/media/media-devnode.h \
-  include/linux/poll.h \
-  include/uapi/linux/poll.h \
-  arch/x86/include/generated/uapi/asm/poll.h \
-  include/uapi/asm-generic/poll.h \
-  include/uapi/linux/eventpoll.h \
-  include/linux/cdev.h \
-  include/media/media-entity.h \
-  include/uapi/linux/media.h \
-  include/media/v4l2-subdev.h \
-  include/uapi/linux/v4l2-subdev.h \
-  include/uapi/linux/v4l2-mediabus.h \
-  include/uapi/linux/media-bus-format.h \
-  include/media/v4l2-common.h \
-    $(wildcard include/config/VIDEO_V4L2_I2C) \
-    $(wildcard include/config/SPI) \
-  include/media/v4l2-dev.h \
-  include/linux/spi/spi.h \
-    $(wildcard include/config/SPI_SLAVE) \
-  include/linux/scatterlist.h \
-    $(wildcard include/config/NEED_SG_DMA_LENGTH) \
-    $(wildcard include/config/DEBUG_SG) \
-    $(wildcard include/config/SGL_ALLOC) \
-    $(wildcard include/config/ARCH_NO_SG_CHAIN) \
-    $(wildcard include/config/SG_POOL) \
-  include/uapi/linux/spi/spi.h \
-  include/media/v4l2-fh.h \
-  include/media/v4l2-mediabus.h \
-  include/media/v4l2-event.h \
-  include/media/v4l2-ctrls.h \
-  include/media/media-request.h \
-  include/media/hevc-ctrls.h \
-  include/media/v4l2-fwnode.h \
-  include/media/v4l2-mc.h \
-  include/media/v4l2-rect.h \
-  drivers/media/i2c/tvp5150_reg.h \
+// SPDX-License-Identifier: GPL-2.0-or-later
+/*
+ * drivers/net/bond/bond_options.c - bonding options
+ * Copyright (c) 2013 Jiri Pirko <jiri@resnulli.us>
+ * Copyright (c) 2013 Scott Feldman <sfeldma@cumulusnetworks.com>
+ */
 
-drivers/media/i2c/tvp5150.o: $(deps_drivers/media/i2c/tvp5150.o)
+#include <linux/errno.h>
+#include <linux/if.h>
+#include <linux/netdevice.h>
+#include <linux/spinlock.h>
+#include <linux/rcupdate.h>
+#include <linux/ctype.h>
+#include <linux/inet.h>
+#include <linux/sched/signal.h>
 
-$(deps_drivers/media/i2c/tvp5150.o):
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        cmd_drivers/media/i2c/tvp5150.o := gcc -Wp,-MMD,drivers/media/i2c/.tvp5150.o.d -nostdinc -I./arch/x86/include -I./arch/x86/include/generated  -I./include -I./arch/x86/include/uapi -I./arch/x86/include/generated/uapi -I./include/uapi -I./include/generated/uapi -include ./include/linux/compiler-version.h -include ./include/linux/kconfig.h -include ./include/linux/compiler_types.h -D__KERNEL__ -fmacro-prefix-map=./= -Wall -Wundef -Werror=strict-prototypes -Wno-trigraphs -fno-strict-aliasing -fno-common -fshort-wchar -fno-PIE -Werror=implicit-function-declaration -Werror=implicit-int -Werror=return-type -Wno-format-security -std=gnu11 -mno-sse -mno-mmx -mno-sse2 -mno-3dnow -mno-avx -fcf-protection=none -m32 -msoft-float -mregparm=3 -freg-struct-return -fno-pic -mpreferred-stack-boundary=2 -march=i686 -mtune=pentium3 -mtune=generic -Wa,-mtune=generic32 -ffreestanding -mstack-protector-guard-reg=fs -mstack-protector-guard-symbol=__stack_chk_guard -Wno-sign-compare -fno-asynchronous-unwind-tables -mindirect-branch=thunk-extern -mindirect-branch-register -fno-jump-tables -fno-delete-null-pointer-checks -Wno-frame-address -Wno-format-truncation -Wno-format-overflow -Wno-address-of-packed-member -O2 -fno-allow-store-data-races -fstack-protector-strong -Wimplicit-fallthrough=5 -Wno-main -Wno-unused-but-set-variable -Wno-unused-const-variable -fno-stack-clash-protection -pg -mrecord-mcount -mfentry -DCC_USING_FENTRY -Wdeclaration-after-statement -Wvla -Wno-pointer-sign -Wcast-function-type -Wno-stringop-truncation -Wno-stringop-overflow -Wno-restrict -Wno-maybe-uninitialized -Wno-alloc-size-larger-than -fno-strict-overflow -fno-stack-check -fconserve-stack -Werror=date-time -Werror=incompatible-pointer-types -Werror=designated-init -Wno-packed-not-aligned  -DMODULE  -DKBUILD_BASENAME='"tvp5150"' -DKBUILD_MODNAME='"tvp5150"' -D__KBUILD_MODNAME=kmod_tvp5150 -c -o drivers/media/i2c/tvp5150.o drivers/media/i2c/tvp5150.c 
+#include <net/bonding.h>
 
-source_drivers/media/i2c/tvp5150.o := drivers/media/i2c/tvp5150.c
+static int bond_option_active_slave_set(struct bonding *bond,
+					const struct bond_opt_value *newval);
+static int bond_option_miimon_set(struct bonding *bond,
+				  const struct bond_opt_value *newval);
+static int bond_option_updelay_set(struct bonding *bond,
+				   const struct bond_opt_value *newval);
+static int bond_option_downdelay_set(struct bonding *bond,
+				     const struct bond_opt_value *newval);
+static int bond_option_peer_notif_delay_set(struct bonding *bond,
+					    const struct bond_opt_value *newval);
+static int bond_option_use_carrier_set(struct bonding *bond,
+				       const struct bond_opt_value *newval);
+static int bond_option_arp_interval_set(struct bonding *bond,
+					const struct bond_opt_value *newval);
+static int bond_option_arp_ip_target_add(struct bonding *bond, __be32 target);
+static int bond_option_arp_ip_target_rem(struct bonding *bond, __be32 target);
+static int bond_option_arp_ip_targets_set(struct bonding *bond,
+					  const struct bond_opt_value *newval);
+#if IS_ENABLED(CONFIG_IPV6)
+static int bond_option_ns_ip6_targets_set(struct bonding *bond,
+					  const struct bond_opt_value *newval);
+#endif
+static int bond_option_arp_validate_set(struct bonding *bond,
+					const struct bond_opt_value *newval);
+static int bond_option_arp_all_targets_set(struct bonding *bond,
+					   const struct bond_opt_value *newval);
+static int bond_option_primary_set(struct bonding *bond,
+				   const struct bond_opt_value *newval);
+static int bond_option_primary_reselect_set(struct bonding *bond,
+					    const struct bond_opt_value *newval);
+static int bond_option_fail_over_mac_set(struct bonding *bond,
+					 const struct bond_opt_value *newval);
+static int bond_option_xmit_hash_policy_set(struct bonding *bond,
+					    const struct bond_opt_value *newval);
+static int bond_option_resend_igmp_set(struct bonding *bond,
+				       const struct bond_opt_value *newval);
+static int bond_option_num_peer_notif_set(struct bonding *bond,
+					  const struct bond_opt_value *newval);
+static int bond_option_all_slaves_active_set(struct bonding *bond,
+					     const struct bond_opt_value *newval);
+static int bond_option_min_links_set(struct bonding *bond,
+				     const struct bond_opt_value *newval);
+static int bond_option_lp_interval_set(struct bonding *bond,
+				       const struct bond_opt_value *newval);
+static int bond_option_pps_set(struct bonding *bond,
+			       const struct bond_opt_value *newval);
+static int bond_option_lacp_active_set(struct bonding *bond,
+				       const struct bond_opt_value *newval);
+static int bond_option_lacp_rate_set(struct bonding *bond,
+				     const struct bond_opt_value *newval);
+static int bond_option_ad_select_set(struct bonding *bond,
+				     const struct bond_opt_value *newval);
+static int bond_option_queue_id_set(struct bonding *bond,
+				    const struct bond_opt_value *newval);
+static int bond_option_mode_set(struct bonding *bond,
+				const struct bond_opt_value *newval);
+static int bond_option_slaves_set(struct bonding *bond,
+				  const struct bond_opt_value *newval);
+static int bond_option_tlb_dynamic_lb_set(struct bonding *bond,
+				  const struct bond_opt_value *newval);
+static int bond_option_ad_actor_sys_prio_set(struct bonding *bond,
+					     const struct bond_opt_value *newval);
+static int bond_option_ad_actor_system_set(struct bonding *bond,
+					   const struct bond_opt_value *newval);
+static int bond_option_ad_user_port_key_set(struct bonding *bond,
+					    const struct bond_opt_value *newval);
+static int bond_option_missed_max_set(struct bonding *bond,
+				      const struct bond_opt_value *newval);
 
-deps_drivers/media/i2c/tvp5150.o := \
-    $(wildcard include/config/VIDEO_V4L2_SUBDEV_API) \
-    $(wildcard include/config/MEDIA_CONTROLLER) \
-    $(wildcard include/config/VIDEO_ADV_DEBUG) \
-    $(wildcard include/config/OF) \
-  include/linux/compiler-version.h \
-    $(wildcard include/config/CC_VERSION_TEXT) \
-  include/linux/kconfig.h \
-    $(wildcard include/config/CPU_BIG_ENDIAN) \
-    $(wildcard include/config/BOOGER) \
-    $(wildcard include/config/FOO) \
-  include/linux/compiler_types.h \
-    $(wildcard include/config/DEBUG_INFO_BTF) \
-    $(wildcard include/config/PAHOLE_HAS_BTF_TAG) \
-    $(wildcard include/config/HAVE_ARCH_COMPILER_H) \
-    $(wildcard include/config/CC_HAS_ASM_INLINE) \
-  include/linux/compiler_attributes.h \
-  include/linux/compiler-gcc.h \
-    $(wildcard include/config/RETPOLINE) \
-    $(wildcard include/config/ARCH_USE_BUILTIN_BSWAP) \
-    $(wildcard include/config/SHADOW_CALL_STACK) \
-    $(wildcard include/config/KCOV) \
-  include/dt-bindings/media/tvp5150.h \
-  include/linux/i2c.h \
-    $(wildcard include/config/I2C) \
-    $(wildcard include/config/I2C_SLAVE) \
-    $(wildcard include/config/I2C_BOARDINFO) \
-    $(wildcard include/config/I2C_MUX) \
-    $(wildcard include/config/ACPI) \
-  include/linux/acpi.h \
-    $(wildcard include/config/ACPI_DEBUGGER) \
-    $(wildcard include/config/ACPI_TABLE_LIB) \
-    $(wildcard include/config/X86) \
-    $(wildcard include/config/IA64) \
-    $(wildcard include/config/LOONGARCH) \
-    $(wildcard include/config/ARM64) \
-    $(wildcard include/config/ACPI_PROCESSOR_CSTATE) \
-    $(wildcard include/config/ACPI_HOTPLUG_CPU) \
-    $(wildcard include/config/ACPI_HOTPLUG_IOAPIC) \
-    $(wildcard include/config/X86_IO_APIC) \
-    $(wildcard include/config/PCI) \
-    $(wildcard include/config/ACPI_WMI) \
-    $(wildcard include/config/ACPI_NUMA) \
-    $(wildcard include/config/HIBERNATION) \
-    $(wildcard include/config/PM_SLEEP) \
-    $(wildcard include/config/ACPI_HOTPLUG_MEMORY) \
-    $(wildcard include/config/ACPI_CONTAINER) \
-    $(wildcard include/config/ACPI_GTDT) \
-    $(wildcard include/config/PM) \
-    $(wildcard include/config/DYNAMIC_DEBUG) \
-    $(wildcard include/config/GPIOLIB) \
-    $(wildcard include/config/ACPI_TABLE_UPGRADE) \
-    $(wildcard include/config/ACPI_WATCHDOG) \
-    $(wildcard include/config/ACPI_SPCR_TABLE) \
-    $(wildcard include/config/ACPI_GENERIC_GSI) \
-    $(wildcard include/config/ACPI_LPIT) \
-    $(wildcard include/config/ACPI_PPTT) \
-    $(wildcard include/config/ACPI_PCC) \
-  include/linux/errno.h \
-  include/uapi/linux/errno.h \
-  arch/x86/include/generated/uapi/asm/errno.h \
-  include/uapi/asm-generic/errno.h \
-  include/uapi/asm-generic/errno-base.h \
-  include/linux/ioport.h \
-    $(wildcard include/config/MEMORY_HOTREMOVE) \
-    $(wildcard include/config/MEMORY_HOTPLUG) \
-  include/linux/bits.h \
-  include/linux/const.h \
-  include/vdso/const.h \
-  include/uapi/linux/const.h \
-  include/vdso/bits.h \
-  arch/x86/include/uapi/asm/bitsperlong.h \
-  include/asm-generic/bitsperlong.h \
-    $(wildcard include/config/64BIT) \
-  include/uapi/asm-generic/bitsperlong.h \
-  include/linux/build_bug.h \
-  include/linux/compiler.h \
-    $(wildcard include/config/TRACE_BRANCH_PROFILING) \
-    $(wildcard include/config/PROFILE_ALL_BRANCHES) \
-    $(wildcard include/config/STACK_VALIDATION) \
-    $(wildcard include/config/CFI_CLANG) \
-  include/linux/compiler_types.h \
-  arch/x86/include/generated/asm/rwonce.h \
-  include/asm-generic/rwonce.h \
-  include/linux/kasan-checks.h \
-    $(wildcard include/config/KASAN_GENERIC) \
-    $(wildcard include/config/KASAN_SW_TAGS) \
-  include/linux/types.h \
-    $(wildcard include/config/HAVE_UID16) \
-    $(wildcard include/config/UID16) \
-    $(wildcard include/config/ARCH_DMA_ADDR_T_64BIT) \
-    $(wildcard include/config/PHYS_ADDR_T_64BIT) \
-    $(wildcard include/config/ARCH_32BIT_USTAT_F_TINODE) \
-  include/uapi/linux/types.h \
-  arch/x86/include/generated/uapi/asm/types.h \
-  include/uapi/asm-generic/types.h \
-  include/asm-generic/int-ll64.h \
-  include/uapi/asm-generic/int-ll64.h \
-  include/uapi/linux/posix_types.h \
-  include/linux/stddef.h \
-  include/uapi/linux/stddef.h \
-  arch/x86/include/asm/posix_types.h \
-    $(wildcard include/config/X86_32) \
-  arch/x86/include/uapi/asm/posix_types_32.h \
-  include/uapi/asm-generic/posix_types.h \
-  include/linux/kcsan-checks.h \
-    $(wildcard include/config/KCSAN) \
-    $(wildcard include/config/KCSAN_WEAK_MEMORY) \
-    $(wildcard include/config/KCSAN_IGNORE_ATOMICS) \
-  include/linux/minmax.h \
-  include/linux/irqdomain.h \
-    $(wildcard include/config/IRQ_DOMAIN_HIERARCHY) \
-    $(wildcard include/config/GENERIC_IRQ_DEBUGFS) \
-    $(wildcard include/config/IRQ_DOMAIN) \
-    $(wildcard include/config/IRQ_DOMAIN_NOMAP) \
+
+static const struct bond_opt_value bond_mode_tbl[] = {
+	{ "balance-rr",    BOND_MODE_ROUNDROBIN,   BOND_VALFLAG_DEFAULT},
+	{ "active-backup", BOND_MODE_ACTIVEBACKUP, 0},
+	{ "balance-xor",   BOND_MODE_XOR,          0},
+	{ "broadcast",     BOND_MODE_BROADCAST,    0},
+	{ "802.3ad",       BOND_MODE_8023AD,       0},
+	{ "balance-tlb",   BOND_MODE_TLB,          0},
+	{ "balance-alb",   BOND_MODE_ALB,          0},
+	{ NULL,            -1,                     0},
+};
+
+static const struct bond_opt_value bond_pps_tbl[] = {
+	{ "default", 1,         BOND_VALFLAG_DEFAULT},
+	{ "maxval",  USHRT_MAX, BOND_VALFLAG_MAX},
+	{ NULL,      -1,        0},
+};
+
+static const struct bond_opt_value bond_xmit_hashtype_tbl[] = {
+	{ "layer2",      BOND_XMIT_POLICY_LAYER2,      BOND_VALFLAG_DEFAULT},
+	{ "layer3+4",    BOND_XMIT_POLICY_LAYER34,     0},
+	{ "layer2+3",    BOND_XMIT_POLICY_LAYER23,     0},
+	{ "encap2+3",    BOND_XMIT_POLICY_ENCAP23,     0},
+	{ "encap3+4",    BOND_XMIT_POLICY_ENCAP34,     0},
+	{ "vlan+srcmac", BOND_XMIT_POLICY_VLAN_SRCMAC, 0},
+	{ NULL,          -1,                           0},
+};
+
+static const struct bond_opt_value bond_arp_validate_tbl[] = {
+	{ "none",		BOND_ARP_VALIDATE_NONE,		BOND_VALFLAG_DEFAULT},
+	{ "active",		BOND_ARP_VALIDATE_ACTIVE,	0},
+	{ "backup",		BOND_ARP_VALIDATE_BACKUP,	0},
+	{ "all",		BOND_ARP_VALIDATE_ALL,		0},
+	{ "filter",		BOND_ARP_FILTER,		0},
+	{ "filter_active",	BOND_ARP_FILTER_ACTIVE,		0},
+	{ "filter_backup",	BOND_ARP_FILTER_BACKUP,		0},
+	{ NULL,			-1,				0},
+};
+
+static const struct bond_opt_value bond_arp_all_targets_tbl[] = {
+	{ "any", BOND_ARP_TARGETS_ANY, BOND_VALFLAG_DEFAULT},
+	{ "all", BOND_ARP_TARGETS_ALL, 0},
+	{ NULL,  -1,                   0},
+};
+
+static const struct bond_opt_value bond_fail_over_mac_tbl[] = {
+	{ "none",   BOND_FOM_NONE,   BOND_VALFLAG_DEFAULT},
+	{ "active", BOND_FOM_ACTIVE, 0},
+	{ "follow", BOND_FOM_FOLLOW, 0},
+	{ NULL,     -1,              0},
+};
+
+static const struct bond_opt_value bond_intmax_tbl[] = {
+	{ "off",     0,       BOND_VALFLAG_DEFAULT},
+	{ "maxval",  INT_MAX, BOND_VALFLAG_MAX},
+	{ NULL,      -1,      0}
+};
+
+static const struct bond_opt_value bond_lacp_active[] = {
+	{ "off", 0,  0},
+	{ "on",  1,  BOND_VALFLAG_DEFAULT},
+	{ NULL,  -1, 0}
+};
+
+static const struct bond_opt_value bond_lacp_rate_tbl[] = {
+	{ "slow", AD_LACP_SLOW, 0},
+	{ "fast", AD_LACP_FAST, 0},
+	{ NULL,   -1,           0},
+};
+
+static const struct bond_opt_value bond_ad_select_tbl[] = {
+	{ "stable",    BOND_AD_STABLE,    BOND_VALFLAG_DEFAULT},
+	{ "bandwidth", BOND_AD_BANDWIDTH, 0},
+	{ "count",     BOND_AD_COUNT,     0},
+	{ NULL,        -1,                0},
+};
+
+static const struct bond_opt_value bond_num_peer_notif_tbl[] = {
+	{ "off",     0,   0},
+	{ "maxval",  255, BOND_VALFLAG_MAX},
+	{ "default", 1,   BOND_VALFLAG_DEFAULT},
+	{ NULL,      -1,  0}
+};
+
+static const struct bond_opt_value bond_primary_reselect_tbl[] = {
+	{ "always",  BOND_PRI_RESELECT_ALWAYS,  BOND_VALFLAG_DEFAULT},
+	{ "better",  BOND_PRI_RESELECT_BETTER,  0},
+	{ "failure", BOND_PRI_RESELECT_FAILURE, 0},
+	{ NULL,      -1},
+};
+
+static const struct bond_opt_value bond_use_carrier_tbl[] = {
+	{ "off", 0,  0},
+	{ "on",  1,  BOND_VALFLAG_DEFAULT},
+	{ NULL,  -1, 0}
+};
+
+static const struct bond_opt_value bond_all_slaves_active_tbl[] = {
+	{ "off", 0,  BOND_VALFLAG_DEFAULT},
+	{ "on",  1,  0},
+	{ NULL,  -1, 0}
+};
+
+static const struct bond_opt_value bond_resend_igmp_tbl[] = {
+	{ "off",     0,   0},
+	{ "maxval",  255, BOND_VALFLAG_MAX},
+	{ "default", 1,   BOND_VALFLAG_DEFAULT},
+	{ NULL,      -1,  0}
+};
+
+static const struct bond_opt_value bond_lp_interval_tbl[] = {
+	{ "minval",  1,       BOND_VALFLAG_MIN | BOND_VALFLAG_DEFAULT},
+	{ "maxval",  INT_MAX, BOND_VALFLAG_MAX},
+	{ NULL,      -1,      0},
+};
+
+static const struct bond_opt_value bond_tlb_dynamic_lb_tbl[] = {
+	{ "off", 0,  0},
+	{ "on",  1,  BOND_VALFLAG_DEFAULT},
+	{ NULL,  -1, 0}
+};
+
+static const struct bond_opt_value bond_ad_actor_sys_prio_tbl[] = {
+	{ "minval",  1,     BOND_VALFLAG_MIN},
+	{ "maxval",  65535, BOND_VALFLAG_MAX | BOND_VALFLAG_DEFAULT},
+	{ NULL,      -1,    0},
+};
+
+static const struct bond_opt_value bond_ad_user_port_key_tbl[] = {
+	{ "minval",  0,     BOND_VALFLAG_MIN | BOND_VALFLAG_DEFAULT},
+	{ "maxval",  1023,  BOND_VALFLAG_MAX},
+	{ NULL,      -1,    0},
+};
+
+static const struct bond_opt_value bond_missed_max_tbl[] = {
+	{ "minval",	1,	BOND_VALFLAG_MIN},
+	{ "maxval",	255,	BOND_VALFLAG_MAX},
+	{ "default",	2,	BOND_VALFLAG_DEFAULT},
+	{ NULL,		-1,	0},
+};
+
+static const struct bond_option bond_opts[BOND_OPT_LAST] = {
+	[BOND_OPT_MODE] = {
+		.id = BOND_OPT_MODE,
+		.name = "mode",
+		.desc = "bond device mode",
+		.flags = BOND_OPTFLAG_NOSLAVES | BOND_OPTFLAG_IFDOWN,
+		.values = bond_mode_tbl,
+		.set = bond_option_mode_set
+	},
+	[BOND_OPT_PACKETS_PER_SLAVE] = {
+		.id = BOND_OPT_PACKETS_PER_SLAVE,
+		.name = "packets_per_slave",
+		.desc = "Packets to send per slave in RR mode",
+		.unsuppmodes = BOND_MODE_ALL_EX(BIT(BOND_MODE_ROUNDROBIN)),
+		.values = bond_pps_tbl,
+		.set = bond_option_pps_set
+	},
+	[BOND_OPT_XMIT_HASH] = {
+		.id = BOND_OPT_XMIT_HASH,
+		.name = "xmit_hash_policy",
+		.desc = "balance-xor, 802.3ad, and tlb hashing method",
+		.values = bond_xmit_hashtype_tbl,
+		.set = bond_option_xmit_hash_policy_set
+	},
+	[BOND_OPT_ARP_VALIDATE] = {
+		.id = BOND_OPT_ARP_VALIDATE,
+		.name = "arp_validate",
+		.desc = "validate src/dst of ARP probes",
+		.unsuppmodes = BIT(BOND_MODE_8023AD) | BIT(BOND_MODE_TLB) |
+			       BIT(BOND_MODE_ALB),
+		.values = bond_arp_validate_tbl,
+		.set = bond_option_arp_validate_set
+	},
+	[BOND_OPT_ARP_ALL_TARGETS] = {
+		.id = BOND_OPT_ARP_ALL_TARGETS,
+		.name = "arp_all_targets",
+		.desc = "fail on any/all arp targets timeout",
+		.values = bond_arp_all_targets_tbl,
+		.set = bond_option_arp_all_targets_set
+	},
+	[BOND_OPT_FAIL_OVER_MAC] = {
+		.id = BOND_OPT_FAIL_OVER_MAC,
+		.name = "fail_over_mac",
+		.desc = "For active-backup, do not set all slaves to the same MAC",
+		.flags = BOND_OPTFLAG_NOSLAVES,
+		.values = bond_fail_over_mac_tbl,
+		.set = bond_option_fail_over_mac_set
+	},
+	[BOND_OPT_ARP_INTERVAL] = {
+		.id = BOND_OPT_ARP_INTERVAL,
+		.name = "arp_interval",
+		.desc = "arp interval in milliseconds",
+		.unsuppmodes = BIT(BOND_MODE_8023AD) | BIT(BOND_MODE_TLB) |
+			       BIT(BOND_MODE_ALB),
+		.values = bond_intmax_tbl,
+		.set = bond_option_arp_interval_set
+	},
+	[BOND_OPT_MISSED_MAX] = {
+		.id = BOND_OPT_MISSED_MAX,
+		.name = "arp_missed_max",
+		.desc = "Maximum number of missed ARP interval",
+		.unsuppmodes = BIT(BOND_MODE_8023AD) | BIT(BOND_MODE_TLB) |
+			       BIT(BOND_MODE_ALB),
+		.values = bond_missed_max_tbl,
+		.set = bond_option_missed_max_set
+	},
+	[BOND_OPT_ARP_TARGETS] = {
+		.id = BOND_OPT_ARP_TARGETS,
+		.name = "arp_ip_target",
+		.desc = "arp targets in n.n.n.n form",
+		.flags = BOND_OPTFLAG_RAWVAL,
+		.set = bond_option_arp_ip_targets_set
+	},
+#if IS_ENABLED(CONFIG_IPV6)
+	[BOND_OPT_NS_TARGETS] = {
+		.id = BOND_OPT_NS_TARGETS,
+		.name = "ns_ip6_target",
+		.desc = "NS targets in ffff:ffff::ffff:ffff form",
+		.flags = BOND_OPTFLAG_RAWVAL,
+		.set = bond_option_ns_ip6_targets_set
+	},
+#endif
+	[BOND_OPT_DOWNDELAY] = {
+		.id = BOND_OPT_DOWNDELAY,
+		.name = "downdelay",
+		.desc = "Delay before considering link down, in milliseconds",
+		.values = bond_intmax_tbl,
+		.set = bond_option_downdelay_set
+	},
+	[BOND_OPT_UPDELAY] = {
+		.id = BOND_OPT_UPDELAY,
+		.name = "updelay",
+		.desc = "Delay before considering link up, in milliseconds",
+		.values = bond_intmax_tbl,
+		.set = bond_option_updelay_set
+	},
+	[BOND_OPT_LACP_ACTIVE] = {
+		.id = BOND_OPT_LACP_ACTIVE,
+		.name = "lacp_active",
+		.desc = "Send LACPDU frames with configured lacp rate or acts as speak when spoken to",
+		.flags = BOND_OPTFLAG_IFDOWN,
+		.unsuppmodes = BOND_MODE_ALL_EX(BIT(BOND_MODE_8023AD)),
+		.values = bond_lacp_active,
+		.set = bond_option_lacp_active_set
+	},
+	[BOND_OPT_LACP_RATE] = {
+		.id = BOND_OPT_LACP_RATE,
+		.name = "lacp_rate",
+		.desc = "LACPDU tx rate to request from 802.3ad partner",
+		.flags = BOND_OPTFLAG_IFDOWN,
+		.unsuppmodes = BOND_MODE_ALL_EX(BIT(BOND_MODE_8023AD)),
+		.values = bond_lacp_rate_tbl,
+		.set = bond_option_lacp_rate_set
+	},
+	[BOND_OPT_MINLINKS] = {
+		.id = BOND_OPT_MINLINKS,
+		.name = "min_links",
+		.desc = "Minimum number of available links before turning on carrier",
+		.values = bond_intmax_tbl,
+		.set = bond_option_min_links_set
+	},
+	[BOND_OPT_AD_SELECT] = {
+		.id = BOND_OPT_AD_SELECT,
+		.name = "ad_select",
+		.desc = "803.ad aggregation selection logic",
+		.flags = BOND_OPTFLAG_IFDOWN,
+		.values = bond_ad_select_tbl,
+		.set = bond_option_ad_select_set
+	},
+	[BOND_OPT_NUM_PEER_NOTIF] = {
+		.id = BOND_OPT_NUM_PEER_NOTIF,
+		.name = "num_unsol_na",
+		.desc = "Number of peer notifications to send on failover event",
+		.values = bond_num_peer_notif_tbl,
+		.set = bond_option_num_peer_notif_set
+	},
+	[BOND_OPT_MIIMON] = {
+		.id = BOND_OPT_MIIMON,
+		.name = "miimon",
+		.desc = "Link check interval in milliseconds",
+		.values = bond_intmax_tbl,
+		.set = bond_option_miimon_set
+	},
+	[BOND_OPT_PRIMARY] = {
+		.id = BOND_OPT_PRIMARY,
+		.name = "primary",
+		.desc = "Primary network device to use",
+		.flags = BOND_OPTFLAG_RAWVAL,
+		.unsuppmodes = BOND_MODE_ALL_EX(BIT(BOND_MODE_ACTIVEBACKUP) |
+						BIT(BOND_MODE_TLB) |
+						BIT(BOND_MODE_ALB)),
+		.set = bond_option_primary_set
+	},
+	[BOND_OPT_PRIMARY_RESELECT] = {
+		.id = BOND_OPT_PRIMARY_RESELECT,
+		.name = "primary_reselect",
+		.desc = "Reselect primary slave once it comes up",
+		.values = bond_primary_reselect_tbl,
+		.set = bond_option_primary_reselect_set
+	},
+	[BOND_OPT_USE_CARRIER] = {
+		.id = BOND_OPT_USE_CARRIER,
+		.name = "use_carrier",
+		.desc = "Use netif_carrier_ok (vs MII ioctls) in miimon",
+		.values = bond_use_carrier_tbl,
+		.set = bond_option_use_carrier_set
+	},
+	[BOND_OPT_ACTIVE_SLAVE] = {
+		.id = BOND_OPT_ACTIVE_SLAVE,
+		.name = "active_slave",
+		.desc = "Currently active slave",
+		.flags = BOND_OPTFLAG_RAWVAL,
+		.unsuppmodes = BOND_MODE_ALL_EX(BIT(BOND_MODE_ACTIVEBACKUP) |
+						BIT(BOND_MODE_TLB) |
+						BIT(BOND_MODE_ALB)),
+		.set = bond_option_active_slave_set
+	},
+	[BOND_OPT_QUEUE_ID] = {
+		.id = BOND_OPT_QUEUE_ID,
+		.name = "queue_id",
+		.desc = "Set queue id of a slave",
+		.flags = BOND_OPTFLAG_RAWVAL,
+		.set = bond_option_queue_id_set
+	},
+	[BOND_OPT_ALL_SLAVES_ACTIVE] = {
+		.id = BOND_OPT_ALL_SLAVES_ACTIVE,
+		.name = "all_slaves_active",
+		.desc = "Keep all frames received on an interface by setting active flag for all slaves",
+		.values = bond_all_slaves_active_tbl,
+		.set = bond_option_all_slaves_active_set
+	},
+	[BOND_OPT_RESEND_IGMP] = {
+		.id = BOND_OPT_RESEND_IGMP,
+		.name = "resend_igmp",
+		.desc = "Number of IGMP membership reports to send on link failure",
+		.values = bond_resend_igmp_tbl,
+		.set = bond_option_resend_igmp_set
+	},
+	[BOND_OPT_LP_INTERVAL] = {
+		.id = BOND_OPT_LP_INTERVAL,
+		.name = "lp_interval",
+		.desc = "The number of seconds between instances where the bonding driver sends learning packets to each slave's peer switch",
+		.values = bond_lp_interval_tbl,
+		.set = bond_option_lp_interval_set
+	},
+	[BOND_OPT_SLAVES] = {
+		.id = BOND_OPT_SLAVES,
+		.name = "slaves",
+		.desc = "Slave membership management",
+		.flags = BOND_OPTFLAG_RAWVAL,
+		.set = bond_option_slaves_set
+	},
+	[BOND_OPT_TLB_DYNAMIC_LB] = {
+		.id = BOND_OPT_TLB_DYNAMIC_LB,
+		.name = "tlb_dynamic_lb",
+		.desc = "Enable dynamic flow shuffling",
+		.unsuppmodes = BOND_MODE_ALL_EX(BIT(BOND_MODE_TLB) | BIT(BOND_MODE_ALB)),
+		.values = bond_tlb_dynamic_lb_tbl,
+		.flags = BOND_OPTFLAG_IFDOWN,
+		.set = bond_option_tlb_dynamic_lb_set,
+	},
+	[BOND_OPT_AD_ACTOR_SYS_PRIO] = {
+		.id = BOND_OPT_AD_ACTOR_SYS_PRIO,
+		.name = "ad_actor_sys_prio",
+		.unsuppmodes = BOND_MODE_ALL_EX(BIT(BOND_MODE_8023AD)),
+		.values = bond_ad_actor_sys_prio_tbl,
+		.set = bond_option_ad_actor_sys_prio_set,
+	},
+	[BOND_OPT_AD_ACTOR_SYSTEM] = {
+		.id = BOND_OPT_AD_ACTOR_SYSTEM,
+		.name = "ad_actor_system",
+		.unsuppmodes = BOND_MODE_ALL_EX(BIT(BOND_MODE_8023AD)),
+		.flags = BOND_OPTFLAG_RAWVAL,
+		.set = bond_option_ad_actor_system_set,
+	},
+	[BOND_OPT_AD_USER_PORT_KEY] = {
+		.id = BOND_OPT_AD_USER_PORT_KEY,
+		.name = "ad_user_port_key",
+		.unsuppmodes = BOND_MODE_ALL_EX(BIT(BOND_MODE_8023AD)),
+		.flags = BOND_OPTFLAG_IFDOWN,
+		.values = bond_ad_user_port_key_tbl,
+		.set = bond_option_ad_user_port_key_set,
+	},
+	[BOND_OPT_NUM_PEER_NOTIF_ALIAS] = {
+		.id = BOND_OPT_NUM_PEER_NOTIF_ALIAS,
+		.name = "num_grat_arp",
+		.desc = "Number of peer notifications to send on failover event",
+		.values = bond_num_peer_notif_tbl,
+		.set = bond_option_num_peer_notif_set
+	},
+	[BOND_OPT_PEER_NOTIF_DELAY] = {
+		.id = BOND_OPT_PEER_NOTIF_DELAY,
+		.name = "peer_notif_delay",
+		.desc = "Delay between each peer notification on failover event, in milliseconds",
+		.values = bond_intmax_tbl,
+		.set = bond_option_peer_notif_delay_set
+	}
+};
+
+/* Searches for an option by name */
+const struct bond_option *bond_opt_get_by_name(const char *name)
+{
+	const struct bond_option *opt;
+	int option;
+
+	for (option = 0; option < BOND_OPT_LAST; option++) {
+		opt = bond_opt_get(option);
+		if (opt && !strcmp(opt->name, name))
+			return opt;
+	}
+
+	return NULL;
+}
+
+/* Searches for a value in opt's values[] table */
+const struct bond_opt_value *bond_opt_get_val(unsigned int option, u64 val)
+{
+	const struct bond_option *opt;
+	int i;
+
+	opt = bond_opt_get(option);
+	if (WARN_ON(!opt))
+		return NULL;
+	for (i = 0; opt->values && opt->values[i].string; i++)
+		if (opt->values[i].value == val)
+			return &opt->values[i];
+
+	return NULL;
+}
+
+/* Searches for a value in opt's values[] table which matches the flagmask */
+static const struct bond_opt_value *bond_opt_get_flags(const struct bond_option *opt,
+						       u32 flagmask)
+{
+	int i;
+
+	for (i = 0; opt->values && opt->values[i].string; i++)
+		if (opt->values[i].flags & flagmask)
+			return &opt->values[i];
+
+	return NULL;
+}
+
+/* If maxval is missing then there's no range to check. In case minval is
+ * missing then it's considered to be 0.
+ */
+static bool bond_opt_check_range(const struct bond_option *opt, u64 val)
+{
+	const struct bond_opt_value *minval, *maxval;
+
+	minval = bond_opt_get_flags(opt, BOND_VALFLAG_MIN);
+	maxval = bond_opt_get_flags(opt, BOND_VALFLAG_MAX);
+	if (!maxval || (minval && val < minval->value) || val > maxval->value)
+		return false;
+
+	return true;
+}
+
+/**
+ * bond_opt_parse - parse option value
+ * @opt: the option to parse against
+ * @val: value to parse
+ *
+ * This function tries to extract the value from @val and check if it's
+ * a possible match for the option and returns NULL if a match isn't found,
+ * or the struct_opt_value that matched. It also strips the new line from
+ * @val->string if it's present.
+ */
+const struct bond_opt_value *bond_opt_parse(const struct bond_option *opt,
+					    struct bond_opt_value *val)
+{
+	char *p, valstr[BOND_OPT_MAX_NAMELEN + 1] = { 0, };
+	const struct bond_opt_value *tbl;
+	const struct bond_opt_value *ret = NULL;
+	bool checkval;
+	int i, rv;
+
+	/* No parsing if the option wants a raw val */
+	if (opt->flags & BOND_OPTFLAG_RAWVAL)
+		return val;
+
+	tbl = opt->values;
+	if (!tbl)
+		goto out;
+
+	/* ULLONG_MAX is used to bypass string processing */
+	checkval = val->value != ULLONG_MAX;
+	if (!checkval) {
+		if (!val->string)
+			goto out;
+		p = strchr(val->string, '\n');
+		if (p)
+			*p = '\0';
+		for (p = val->string; *p; p++)
+			if (!(isdigit(*p) || isspace(*p)))
+				break;
+		/* The following code extracts the string to match or the value
+		 * and sets checkval appropriately
+		 */
+		if (*p) {
+			rv = sscanf(val->string, "%32s", valstr);
+		} else {
+			rv = sscanf(val->string, "%llu", &val->value);
+			checkval = true;
+		}
+		if (!rv)
+			goto out;
+	}
+
+	for (i = 0; tbl[i].string; i++) {
+		/* Check for exact match */
+		if (checkval) {
+			if (val->value == tbl[i].value)
+				ret = &tbl[i];
+		} else {
+			if (!strcmp(valstr, "default") &&
+			    (tbl[i].flags & BOND_VALFLAG_DEFAULT))
+				ret = &tbl[i];
+
+			if (!strcmp(valstr, tbl[i].string))
+				ret = &tbl[i];
+		}
+		/* Found an exact match */
+		if (ret)
+			goto out;
+	}
+	/* Possible range match */
+	if (checkval && bond_opt_check_range(opt, val->value))
+		ret = val;
+out:
+	return ret;
+}
+
+/* Check opt's dependencies against bond mode and currently set options */
+static int bond_opt_check_deps(struct bonding *bond,
+			       const struct bond_option *opt)
+{
+	struct bond_params *params = &bond->params;
+
+	if (test_bit(params->mode, &opt->unsuppmodes))
+		return -EACCES;
+	if ((opt->flags & BOND_OPTFLAG_NOSLAVES) && bond_has_slaves(bond))
+		return -ENOTEMPTY;
+	if ((opt->flags & BOND_OPTFLAG_IFDOWN) && (bond->dev->flags & IFF_UP))
+		return -EBUSY;
+
+	return 0;
+}
+
+static void bond_opt_dep_print(struct bonding *bond,
+			       const struct bond_option *opt)
+{
+	const struct bond_opt_value *modeval;
+	struct bond_params *params;
+
+	params = &bond->params;
+	modeval = bond_opt_get_val(BOND_OPT_MODE, params->mode);
+	if (test_bit(params->mode, &opt->unsuppmodes))
+		netdev_err(bond->dev, "option %s: mode dependency failed, not supported in mode %s(%llu)\n",
+			   opt->name, modeval->string, modeval->value);
+}
+
+static void bond_opt_error_interpret(struct bonding *bond,
+				     const struct bond_option *opt,
+				     int error, const struct bond_opt_value *val)
+{
+	const struct bond_opt_value *minval, *maxval;
+	char *p;
+
+	switch (error) {
+	case -EINVAL:
+		if (val) {
+			if (val->string) {
+				/* sometimes RAWVAL opts may have new lines */
+				p = strchr(val->string, '\n');
+				if (p)
+					*p = '\0';
+				netdev_err(bond->dev, "option %s: invalid value (%s)\n",
+					   opt->name, val->string);
+			} else {
+				netdev_err(bond->dev, "option %s: invalid value (%llu)\n",
+					   opt->name, val->value);
+			}
+		}
+		minval = bond_opt_get_flags(opt, BOND_VALFLAG_MIN);
+		maxval = bond_opt_get_flags(opt, BOND_VALFLAG_MAX);
+		if (!maxval)
+			break;
+		netdev_err(bond->dev, "option %s: allowed values %llu - %llu\n",
+			   opt->name, minval ? minval->value : 0, maxval->value);
+		break;
+	case -EACCES:
+		bond_opt_dep_print(bond, opt);
+		break;
+	case -ENOTEMPTY:
+		netdev_err(bond->dev, "option %s: unable to set because the bond device has slaves\n",
+			   opt->name);
+		break;
+	case -EBUSY:
+		netdev_err(bond->dev, "option %s: unable to set because the bond device is up\n",
+			   opt->name);
+		break;
+	case -ENODEV:
+		if (val && val->string) {
+			p = strchr(val->string, '\n');
+			if (p)
+				*p = '\0';
+			netdev_err(bond->dev, "option %s: interface %s does not exist!\n",
+				   opt->name, val->string);
+		}
+		break;
+	default:
+		break;
+	}
+}
+
+/**
+ * __bond_opt_set - set a bonding option
+ * @bond: target bond device
+ * @option: option to set
+ * @val: value to set it to
+ *
+ * This function is used to change the bond's option value, it can be
+ * used for both enabling/changing an option and for disabling it. RTNL lock
+ * must be obtained before calling this function.
+ */
+int __bond_opt_set(struct bonding *bond,
+		   unsigned int option, struct bond_opt_value *val)
+{
+	const struct bond_opt_value *retval = NULL;
+	const struct bond_option *opt;
+	int ret = -ENOENT;
+
+	ASSERT_RTNL();
+
+	opt = bond_opt_get(option);
+	if (WARN_ON(!val) || WARN_ON(!opt))
+		goto out;
+	ret = bond_opt_check_deps(bond, opt);
+	if (ret)
+		goto out;
+	retval = bond_opt_parse(opt, val);
+	if (!retval) {
+		ret = -EINVAL;
+		goto out;
+	}
+	ret = opt->set(bond, retval);
+out:
+	if (ret)
+		bond_opt_error_interpret(bond, opt, ret, val);
+
+	return ret;
+}
+/**
+ * __bond_opt_set_notify - set a bonding option
+ * @bond: target bond device
+ * @option: option to set
+ * @val: value to set it to
+ *
+ * This function is used to change the bond's option value and trigger
+ * a notification to user sapce. It can be used for both enabling/changing
+ * an option and for disabling it. RTNL lock must be obtained before calling
+ * this function.
+ */
+int __bond_opt_set_notify(struct bonding *bond,
+			  unsigned int option, struct bond_opt_value *val)
+{
+	int ret;
+
+	ASSERT_RTNL();
+
+	ret = __bond_opt_set(bond, option, val);
+
+	if (!ret && (bond->dev->reg_state == NETREG_REGISTERED))
+		call_netdevice_notifiers(NETDEV_CHANGEINFODATA, bond->dev);
+
+	return ret;
+}
+
+/**
+ * bond_opt_tryset_rtnl - try to acquire rtnl and call __bond_opt_set
+ * @bond: target bond device
+ * @option: option to set
+ * @buf: value to set it to
+ *
+ * This function tries to acquire RTNL without blocking and if successful
+ * calls __bond_opt_set. It is mainly used for sysfs option manipulation.
+ */
+int bond_opt_tryset_rtnl(struct bonding *bond, unsigned int option, char *buf)
+{
+	struct bond_opt_value optval;
+	int ret;
+
+	if (!rtnl_trylock())
+		return restart_syscall();
+	bond_opt_initstr(&optval, buf);
+	ret = __bond_opt_set_notify(bond, option, &optval);
+	rtnl_unlock();
+
+	return ret;
+}
+
+/**
+ * bond_opt_get - get a pointer to an option
+ * @option: option for which to return a pointer
+ *
+ * This function checks if option is valid and if so returns a pointer
+ * to its entry in the bond_opts[] option array.
+ */
+const struct bond_option *bond_opt_get(unsigned int option)
+{
+	if (!BOND_OPT_VALID(option))
+		return NULL;
+
+	return &bond_opts[option];
+}
+
+static bool bond_set_xfrm_features(struct bonding *bond)
+{
+	if (!IS_ENABLED(CONFIG_XFRM_OFFLOAD))
+		return false;
+
+	if (BOND_MODE(bond) == BOND_MODE_ACTIVEBACKUP)
+		bond->dev->wanted_features |= BOND_XFRM_FEATURES;
+	else
+		bond->dev->wanted_features &= ~BOND_XFRM_FEATURES;
+
+	return true;
+}
+
+static bool bond_set_tls_features(struct bonding *bond)
+{
+	if (!IS_ENABLED(CONFIG_TLS_DEVICE))
+		return false;
+
+	if (bond_sk_check(bond))
+		bond->dev->wanted_features |= BOND_TLS_FEATURES;
+	else
+		bond->dev->wanted_features &= ~BOND_TLS_FEATURES;
+
+	return true;
+}
+
+static int bond_option_mode_set(struct bonding *bond,
+				const struct bond_opt_value *newval)
+{
+	if (!bond_mode_uses_arp(newval->value)) {
+		if (bond->params.arp_interval) {
+			netdev_dbg(bond->dev, "%s mode is incompatible with arp monitoring, start mii monitoring\n",
+				   newval->string);
+			/* disable arp monitoring */
+			bond->params.arp_interval = 0;
+		}
+
+		if (!bond->params.miimon) {
+			/* set miimon to default value */
+			bond->params.miimon = BOND_DEFAULT_MIIMON;
+			netdev_dbg(bond->dev, "Setting MII monitoring interval to %d\n",
+				   bond->params.miimon);
+		}
+	}
+
+	if (newval->value == BOND_MODE_ALB)
+		bond->params.tlb_dynamic_lb = 1;
+
+	/* don't cache arp_validate between modes */
+	bond->params.arp_validate = BOND_ARP_VALIDATE_NONE;
+	bond->params.mode = newval->value;
+
+	if (bond->dev->reg_state == NETREG_REGISTERED) {
+		bool update = false;
+
+		update |= bond_set_xfrm_features(bond);
+		update |= bond_set_tls_features(bond);
+
+		if (update)
+			netdev_update_features(bond->dev);
+	}
+
+	return 0;
+}
+
+static int bond_option_active_slave_set(struct bonding *bond,
+					const struct bond_opt_value *newval)
+{
+	char ifname[IFNAMSIZ] = { 0, };
+	struct net_device *slave_dev;
+	int ret = 0;
+
+	sscanf(newval->string, "%15s", ifname); /* IFNAMSIZ */
+	if (!strlen(ifname) || newval->string[0] == '\n') {
+		slave_dev = NULL;
+	} else {
+		slave_dev = __dev_get_by_name(dev_net(bond->dev), ifname);
+		if (!slave_dev)
+			return -ENODEV;
+	}
+
+	if (slave_dev) {
+		if (!netif_is_bond_slave(slave_dev)) {
+			slave_err(bond->dev, slave_dev, "Device is not bonding slave\n");
+			return -EINVAL;
+		}
+
+		if (bond->dev != netdev_master_upper_dev_get(slave_dev)) {
+			slave_err(bond->dev, slave_dev, "Device is not our slave\n");
+			return -EINVAL;
+		}
+	}
+
+	block_netpoll_tx();
+	/* check to see if we are clearing active */
+	if (!slave_dev) {
+		netdev_dbg(bond->dev, "Clearing current active slave\n");
+		RCU_INIT_POINTER(bond->curr_active_slave, NULL);
+		bond_select_active_slave(bond);
+	} else {
+		struct slave *old_active = rtnl_dereference(bond->curr_active_slave);
+		struct slave *new_active = bond_slave_get_rtnl(slave_dev);
+
+		BUG_ON(!new_active);
+
+		if (new_active == old_active) {
+			/* do nothing */
+			slave_dbg(bond->dev, new_active->dev, "is already the current active slave\n");
+		} else {
+			if (old_active && (new_active->link == BOND_LINK_UP) &&
+			    bond_slave_is_up(new_active)) {
+				slave_dbg(bond->dev, new_active->dev, "Setting as active slave\n");
+				bond_change_active_slave(bond, new_active);
+			} else {
+				slave_err(bond->dev, new_active->dev, "Could not set as active slave; either %s is down or the link is down\n",
+					  new_active->dev->name);
+				ret = -EINVAL;
+			}
+		}
+	}
+	unblock_netpoll_tx();
+
+	return ret;
+}
+
+/* There are two tricky bits here.  First, if MII monitoring is activated, then
+ * we must disable ARP monitoring.  Second, if the timer isn't running, we must
+ * start it.
+ */
+static int bond_option_miimon_set(struct bonding *bond,
+				  const struct bond_opt_value *newval)
+{
+	netdev_dbg(bond->dev, "Setting MII monitoring interval to %llu\n",
+		   newval->value);
+	bond->params.miimon = newval->value;
+	if (bond->params.updelay)
+		netdev_dbg(bond->dev, "Note: Updating updelay (to %d) since it is a multiple of the miimon value\n",
+			   bond->params.updelay * bond->params.miimon);
+	if (bond->params.downdelay)
+		netdev_dbg(bond->dev, "Note: Updating downdelay (to %d) since it is a multiple of the miimon value\n",
+			   bond->params.downdelay * bond->params.miimon);
+	if (bond->params.peer_notif_delay)
+		netdev_dbg(bond->dev, "Note: Updating peer_notif_delay (to %d) since it is a multiple of the miimon value\n",
+			   bond->params.peer_notif_delay * bond->params.miimon);
+	if (newval->value && bond->params.arp_interval) {
+		netdev_dbg(bond->dev, "MII monitoring cannot be used with ARP monitoring - disabling ARP monitoring...\n");
+		bond->params.arp_interval = 0;
+		if (bond->params.arp_validate)
+			bond->params.arp_validate = BOND_ARP_VALIDATE_NONE;
+	}
+	if (bond->dev->flags & IFF_UP) {
+		/* If the interface is up, we may need to fire off
+		 * the MII timer. If the interface is down, the
+		 * timer will get fired off when the open function
+		 * is called.
+		 */
+		if (!newval->value) {
+			cancel_delayed_work_sync(&bond->mii_work);
+		} else {
+			cancel_delayed_work_sync(&bond->arp_work);
+			queue_delayed_work(bond->wq, &bond->mii_work, 0);
+		}
+	}
+
+	return 0;
+}
+
+/* Set up, down and peer notification delays. These must be multiples
+ * of the MII monitoring value, and are stored internally as the
+ * multiplier. Thus, we must translate to MS for the real world.
+ */
+static int _bond_option_delay_set(struct bonding *bond,
+				  const struct bond_opt_value *newval,
+				  const char *name,
+				  int *target)
+{
+	int value = newval->value;
+
+	if (!bond->params.miimon) {
+		netdev_err(bond->dev, "Unable to set %s as MII monitoring is disabled\n",
+			   name);
+		return -EPERM;
+	}
+	if ((value % bond->params.miimon) != 0) {
+		netdev_warn(bond->dev,
+			    "%s (%d) is not a multiple of miimon (%d), value rounded to %d ms\n",
+			    name,
+			    value, bond->params.miimon,
+			    (value / bond->params.miimon) *
+			    bond->params.miimon);
+	}
+	*target = value / bond->params.miimon;
+	netdev_dbg(bond->dev, "Setting %s to %d\n",
+		   name,
+		   *target * bond->params.miimon);
+
+	return 0;
+}
+
+static int bond_option_updelay_set(struct bonding *bond,
+				   const struct bond_opt_value *newval)
+{
+	return _bond_option_delay_set(bond, newval, "up delay",
+				      &bond->params.updelay);
+}
+
+static int bond_option_downdelay_set(struct bonding *bond,
+				     const struct bond_opt_value *newval)
+{
+	return _bond_option_delay_set(bond, newval, "down delay",
+				      &bond->params.downdelay);
+}
+
+static int bond_option_peer_notif_delay_set(struct bonding *bond,
+					    const struct bond_opt_value *newval)
+{
+	int ret = _bond_option_delay_set(bond, newval,
+					 "peer notification delay",
+					 &bond->params.peer_notif_delay);
+	return ret;
+}
+
+static int bond_option_use_carrier_set(struct bonding *bond,
+				       const struct bond_opt_value *newval)
+{
+	netdev_dbg(bond->dev, "Setting use_carrier to %llu\n",
+		   newval->value);
+	bond->params.use_carrier = newval->value;
+
+	return 0;
+}
+
+/* There are two tricky bits here.  First, if ARP monitoring is activated, then
+ * we must disable MII monitoring.  Second, if the ARP timer isn't running,
+ * we must start it.
+ */
+static int bond_option_arp_interval_set(struct bonding *bond,
+					const struct bond_opt_value *newval)
+{
+	netdev_dbg(bond->dev, "Setting ARP monitoring interval to %llu\n",
+		   newval->value);
+	bond->params.arp_interval = newval->value;
+	if (newval->value) {
+		if (bond->params.miimon) {
+			netdev_dbg(bond->dev, "ARP monitoring cannot be used with MII monitoring. Disabling MII monitoring\n");
+			bond->params.miimon = 0;
+		}
+		if (!bond->params.arp_targets[0])
+			netdev_dbg(bond->dev, "ARP monitoring has been set up, but no ARP targets have been specified\n");
+	}
+	if (bond->dev->flags & IFF_UP) {
+		/* If the interface is up, we may need to fire off
+		 * the ARP timer.  If the interface is down, the
+		 * timer will get fired off when the open function
+		 * is called.
+		 */
+		if (!newval->value) {
+			if (bond->params.arp_validate)
+				bond->recv_probe = NULL;
+			cancel_delayed_work_sync(&bond->arp_work);
+		} else {
+			/* arp_validate can be set only in active-backup mode */
+			bond->recv_probe = bond_rcv_validate;
+			cancel_delayed_work_sync(&bond->mii_work);
+			queue_delayed_work(bond->wq, &bond->arp_work, 0);
+		}
+	}
+
+	return 0;
+}
+
+static void _bond_options_arp_ip_target_set(struct bonding *bond, int slot,
+					    __be32 target,
+					    unsigned long last_rx)
+{
+	__be32 *targets = bond->params.arp_targets;
+	struct list_head *iter;
+	struct slave *slave;
+
+	if (slot >= 0 && slot < BOND_MAX_ARP_TARGETS) {
+		bond_for_each_slave(bond, slave, iter)
+			slave->target_last_arp_rx[slot] = last_rx;
+		targets[slot] = target;
+	}
+}
+
+static int _bond_option_arp_ip_target_add(struct bonding *bond, __be32 target)
+{
+	__be32 *targets = bond->params.arp_targets;
+	int ind;
+
+	if (!bond_is_ip_target_ok(target)) {
+		netdev_err(bond->dev, "invalid ARP target %pI4 specified for addition\n",
+			   &target);
+		return -EINVAL;
+	}
+
+	if (bond_get_targets_ip(targets, target) != -1) { /* dup */
+		netdev_err(bond->dev, "ARP target %pI4 is already present\n",
+			   &target);
+		return -EINVAL;
+	}
+
+	ind = bond_get_targets_ip(targets, 0); /* first free slot */
+	if (ind == -1) {
+		netdev_err(bond->dev, "ARP target table is full!\n");
+		return -EINVAL;
+	}
+
+	netdev_dbg(bond->dev, "Adding ARP target %pI4\n", &target);
+
+	_bond_options_arp_ip_target_set(bond, ind, target, jiffies);
+
+	return 0;
+}
+
+static int bond_option_arp_ip_target_add(struct bonding *bond, __be32 target)
+{
+	return _bond_option_arp_ip_target_add(bond, target);
+}
+
+static int bond_option_arp_ip_target_rem(struct bonding *bond, __be32 target)
+{
+	__be32 *targets = bond->params.arp_targets;
+	struct list_head *iter;
+	struct slave *slave;
+	unsigned long *targets_rx;
+	int ind, i;
+
+	if (!bond_is_ip_target_ok(target)) {
+		netdev_err(bond->dev, "invalid ARP target %pI4 specified for removal\n",
+			   &target);
+		return -EINVAL;
+	}
+
+	ind = bond_get_targets_ip(targets, target);
+	if (ind == -1) {
+		netdev_err(bond->dev, "unable to remove nonexistent ARP target %pI4\n",
+			   &target);
+		return -EINVAL;
+	}
+
+	if (ind == 0 && !targets[1] && bond->params.arp_interval)
+		netdev_warn(bond->dev, "Removing last arp target with arp_interval on\n");
+
+	netdev_dbg(bond->dev, "Removing ARP target %pI4\n", &target);
+
+	bond_for_each_slave(bond, slave, iter) {
+		targets_rx = slave->target_last_arp_rx;
+		for (i = ind; (i < BOND_MAX_ARP_TARGETS-1) && targets[i+1]; i++)
+			targets_rx[i] = targets_rx[i+1];
+		targets_rx[i] = 0;
+	}
+	for (i = ind; (i < BOND_MAX_ARP_TARGETS-1) && targets[i+1]; i++)
+		targets[i] = targets[i+1];
+	targets[i] = 0;
+
+	return 0;
+}
+
+void bond_option_arp_ip_targets_clear(struct bonding *bond)
+{
+	int i;
+
+	for (i = 0; i < BOND_MAX_ARP_TARGETS; i++)
+		_bond_options_arp_ip_target_set(bond, i, 0, 0);
+}
+
+static int bond_option_arp_ip_targets_set(struct bonding *bond,
+					  const struct bond_opt_value *newval)
+{
+	int ret = -EPERM;
+	__be32 target;
+
+	if (newval->string) {
+		if (!in4_pton(newval->string+1, -1, (u8 *)&target, -1, NULL)) {
+			netdev_err(bond->dev, "invalid ARP target %pI4 specified\n",
+				   &target);
+			return ret;
+		}
+		if (newval->string[0] == '+')
+			ret = bond_option_arp_ip_target_add(bond, target);
+		else if (newval->string[0] == '-')
+			ret = bond_option_arp_ip_target_rem(bond, target);
+		else
+			netdev_err(bond->dev, "no command found in arp_ip_targets file - use +<addr> or -<addr>\n");
+	} else {
+		target = newval->value;
+		ret = bond_option_arp_ip_target_add(bond, target);
+	}
+
+	return ret;
+}
+
+#if IS_ENABLED(CONFIG_IPV6)
+static void _bond_options_ns_ip6_target_set(struct bonding *bond, int slot,
+					    struct in6_addr *target,
+					    unsigned long last_rx)
+{
+	struct in6_addr *targets = bond->params.ns_targets;
+	struct list_head *iter;
+	struct slave *slave;
+
+	if (slot >= 0 && slot < BOND_MAX_NS_TARGETS) {
+		bond_for_each_slave(bond, slave, iter)
+			slave->target_last_arp_rx[slot] = last_rx;
+		targets[slot] = *target;
+	}
+}
+
+void bond_option_ns_ip6_targets_clear(struct bonding *bond)
+{
+	struct in6_addr addr_any = in6addr_any;
+	int i;
+
+	for (i = 0; i < BOND_MAX_NS_TARGETS; i++)
+		_bond_options_ns_ip6_target_set(bond, i, &addr_any, 0);
+}
+
+static int bond_option_ns_ip6_targets_set(struct bonding *bond,
+					  const struct bond_opt_value *newval)
+{
+	struct in6_addr *target = (struct in6_addr *)newval->extra;
+	struct in6_addr *targets = bond->params.ns_targets;
+	struct in6_addr addr_any = in6addr_any;
+	int index;
+
+	if (!bond_is_ip6_target_ok(target)) {
+		netdev_err(bond->dev, "invalid NS target %pI6c specified for addition\n",
+			   target);
+		return -EINVAL;
+	}
+
+	if (bond_get_targets_ip6(targets, target) != -1) { /* dup */
+		netdev_err(bond->dev, "NS target %pI6c is already present\n",
+			   target);
+		return -EINVAL;
+	}
+
+	index = bond_get_targets_ip6(targets, &addr_any); /* first free slot */
+	if (index == -1) {
+		netdev_err(bond->dev, "NS target table is full!\n");
+		return -EINVAL;
+	}
+
+	netdev_dbg(bond->dev, "Adding NS target %pI6c\n", target);
+
+	_bond_options_ns_ip6_target_set(bond, index, target, jiffies);
+
+	return 0;
+}
+#endif
+
+static int bond_option_arp_validate_set(struct bonding *bond,
+					const struct bond_opt_value *newval)
+{
+	netdev_dbg(bond->dev, "Setting arp_validate to %s (%llu)\n",
+		   newval->string, newval->value);
+	bond->params.arp_validate = newval->value;
+
+	return 0;
+}
+
+static int bond_option_arp_all_targets_set(struct bonding *bond,
+					   const struct bond_opt_value *newval)
+{
+	netdev_dbg(bond->dev, "Setting arp_all_targets to %s (%llu)\n",
+		   newval->string, newval->value);
+	bond->params.arp_all_targets = newval->value;
+
+	return 0;
+}
+
+static int bond_option_missed_max_set(struct bonding *bond,
+				      const struct bond_opt_value *newval)
+{
+	netdev_dbg(bond->dev, "Setting missed max to %s (%llu)\n",
+		   newval->string, newval->value);
+	bond->params.missed_max = newval->value;
+
+	return 0;
+}
+
+static int bond_option_primary_set(struct bonding *bond,
+				   const struct bond_opt_value *newval)
+{
+	char *p, *primary = newval->string;
+	struct list_head *iter;
+	struct slave *slave;
+
+	block_netpoll_tx();
+
+	p = strchr(primary, '\n');
+	if (p)
+		*p = '\0';
+	/* check to see if we are clearing primary */
+	if (!strlen(primary)) {
+		netdev_dbg(bond->dev, "Setting primary slave to None\n");
+		RCU_INIT_POINTER(bond->primary_slave, NULL);
+		memset(bond->params.primary, 0, sizeof(bond->params.primary));
+		bond_select_active_slave(bond);
+		goto out;
+	}
+
+	bond_for_each_slave(bond, slave, iter) {
+		if (strncmp(slave->dev->name, primary, IFNAMSIZ) == 0) {
+			slave_dbg(bond->dev, slave->dev, "Setting as primary slave\n");
+			rcu_assign_pointer(bond->primary_slave, slave);
+			strcpy(bond->params.primary, slave->dev->name);
+			bond->force_primary = true;
+			bond_select_active_slave(bond);
+			goto out;
+		}
+	}
+
+	if (rtnl_dereference(bond->primary_slave)) {
+		netdev_dbg(bond->dev, "Setting primary slave to None\n");
+		RCU_INIT_POINTER(bond->primary_slave, NULL);
+		bond_select_active_slave(bond);
+	}
+	strscpy_pad(bond->params.primary, primary, IFNAMSIZ);
+
+	netdev_dbg(bond->dev, "Recording %s as primary, but it has not been enslaved yet\n",
+		   primary);
+
+out:
+	unblock_netpoll_tx();
+
+	return 0;
+}
+
+static int bond_option_primary_reselect_set(struct bonding *bond,
+					    const struct bond_opt_value *newval)
+{
+	netdev_dbg(bond->dev, "Setting primary_reselect to %s (%llu)\n",
+		   newval->string, newval->value);
+	bond->params.primary_reselect = newval->value;
+
+	block_netpoll_tx();
+	bond_select_active_slave(bond);
+	unblock_netpoll_tx();
+
+	return 0;
+}
+
+static int bond_option_fail_over_mac_set(struct bonding *bond,
+					 const struct bond_opt_value *newval)
+{
+	netdev_dbg(bond->dev, "Setting fail_over_mac to %s (%llu)\n",
+		   newval->string, newval->value);
+	bond->params.fail_over_mac = newval->value;
+
+	return 0;
+}
+
+static int bond_option_xmit_hash_policy_set(struct bonding *bond,
+					    const struct bond_opt_value *newval)
+{
+	netdev_dbg(bond->dev, "Setting xmit hash policy to %s (%llu)\n",
+		   newval->string, newval->value);
+	bond->params.xmit_policy = newval->value;
+
+	if (bond->dev->reg_state == NETREG_REGISTERED)
+		if (bond_set_tls_features(bond))
+			netdev_update_features(bond->dev);
+
+	return 0;
+}
+
+static int bond_option_resend_igmp_set(struct bonding *bond,
+				       const struct bond_opt_value *newval)
+{
+	netdev_dbg(bond->dev, "Setting resend_igmp to %llu\n",
+		   newval->value);
+	bond->params.resend_igmp = newval->value;
+
+	return 0;
+}
+
+static int bond_option_num_peer_notif_set(struct bonding *bond,
+				   const struct bond_opt_value *newval)
+{
+	bond->params.num_peer_notif = newval->value;
+
+	return 0;
+}
+
+static int bond_option_all_slaves_active_set(struct bonding *bond,
+					     const struct bond_opt_value *newval)
+{
+	struct list_head *iter;
+	struct slave *slave;
+
+	if (newval->value == bond->params.all_slaves_active)
+		return 0;
+	bond->params.all_slaves_active = newval->value;
+	bond_for_each_slave(bond, slave, iter) {
+		if (!bond_is_active_slave(slave)) {
+			if (newval->value)
+				slave->inactive = 0;
+			else
+				slave->inactive = 1;
+		}
+	}
+
+	return 0;
+}
+
+static int bond_option_min_links_set(struct bonding *bond,
+				     const struct bond_opt_value *newval)
+{
+	netdev_dbg(bond->dev, "Setting min links value to %llu\n",
+		   newval->value);
+	bond->params.min_links = newval->value;
+	bond_set_carrier(bond);
+
+	return 0;
+}
+
+static int bond_option_lp_interval_set(struct bonding *bond,
+				       const struct bond_opt_value *newval)
+{
+	bond->params.lp_interval = newval->value;
+
+	return 0;
+}
+
+static int bond_option_pps_set(struct bonding *bond,
+			       const struct bond_opt_value *newval)
+{
+	netdev_dbg(bond->dev, "Setting packets per slave to %llu\n",
+		   newval->value);
+	bond->params.packets_per_slave = newval->value;
+	if (newval->value > 0) {
+		bond->params.reciprocal_packets_per_slave =
+			reciprocal_value(newval->value);
+	} else {
+		/* reciprocal_packets_per_slave is unused if
+		 * packets_per_slave is 0 or 1, just initialize it
+		 */
+		bond->params.reciprocal_packets_per_slave =
+			(struct reciprocal_value) { 0 };
+	}
+
+	return 0;
+}
+
+static int bond_option_lacp_active_set(struct bonding *bond,
+				       const struct bond_opt_value *newval)
+{
+	netdev_dbg(bond->dev, "Setting LACP active to %s (%llu)\n",
+		   newval->string, newval->value);
+	bond->params.lacp_active = newval->value;
+
+	return 0;
+}
+
+static int bond_option_lacp_rate_set(struct bonding *bond,
+				     const struct bond_opt_value *newval)
+{
+	netdev_dbg(bond->dev, "Setting LACP rate to %s (%llu)\n",
+		   newval->string, newval->value);
+	bond->params.lacp_fast = newval->value;
+	bond_3ad_update_lacp_rate(bond);
+
+	return 0;
+}
+
+static int bond_option_ad_select_set(struct bonding *bond,
+				     const struct bond_opt_value *newval)
+{
+	netdev_dbg(bond->dev, "Setting ad_select to %s (%llu)\n",
+		   newval->string, newval->value);
+	bond->params.ad_select = newval->value;
+
+	return 0;
+}
+
+static int bond_option_queue_id_set(struct bonding *bond,
+				    const struct bond_opt_value *newval)
+{
+	struct slave *slave, *update_slave;
+	struct net_device *sdev;
+	struct list_head *iter;
+	char *delim;
+	int ret = 0;
+	u16 qid;
+
+	/* delim will point to queue id if successful */
+	delim = strchr(newval->string, ':');
+	if (!delim)
+		goto err_no_cmd;
+
+	/* Terminate string that points to device name and bump it
+	 * up one, so we can read the queue id there.
+	 */
+	*delim = '\0';
+	if (sscanf(++delim, "%hd\n", &qid) != 1)
+		goto err_no_cmd;
+
+	/* Check buffer length, valid ifname and queue id */
+	if (!dev_valid_name(newval->string) ||
+	    qid > bond->dev->real_num_tx_queues)
+		goto err_no_cmd;
+
+	/* Get the pointer to that interface if it exists */
+	sdev = __dev_get_by_name(dev_net(bond->dev), newval->string);
+	if (!sdev)
+		goto err_no_cmd;
+
+	/* Search for thes slave and check for duplicate qids */
+	update_slave = NULL;
+	bond_for_each_slave(bond, slave, iter) {
+		if (sdev == slave->dev)
+			/* We don't need to check the matching
+			 * slave for dups, since we're overwriting it
+			 */
+			update_slave = slave;
+		else if (qid && qid == slave->queue_id) {
+			goto err_no_cmd;
+		}
+	}
+
+	if (!update_slave)
+		goto err_no_cmd;
+
+	/* Actually set the qids for the slave */
+	update_slave->queue_id = qid;
+
+out:
+	return ret;
+
+err_no_cmd:
+	netdev_dbg(bond->dev, "invalid input for queue_id set\n");
+	ret = -EPERM;
+	goto out;
+
+}
+
+static int bond_option_slaves_set(struct bonding *bond,
+				  const struct bond_opt_value *newval)
+{
+	char command[IFNAMSIZ + 1] = { 0, };
+	struct net_device *dev;
+	char *ifname;
+	int ret;
+
+	sscanf(newval->string, "%16s", command); /* IFNAMSIZ*/
+	ifname = command + 1;
+	if ((strlen(command) <= 1) ||
+	    (command[0] != '+' && command[0] != '-') ||
+	    !dev_valid_name(ifname))
+		goto err_no_cmd;
+
+	dev = __dev_get_by_name(dev_net(bond->dev), ifname);
+	if (!dev) {
+		netdev_dbg(bond->dev, "interface %s does not exist!\n",
+			   ifname);
+		ret = -ENODEV;
+		goto out;
+	}
+
+	switch (command[0]) {
+	case '+':
+		slave_dbg(bond->dev, dev, "Enslaving interface\n");
+		ret = bond_enslave(bond->dev, dev, NULL);
+		break;
+
+	case '-':
+		slave_dbg(bond->dev, dev, "Releasing interface\n");
+		ret = bond_release(bond->dev, dev);
+		break;
+
+	default:
+		/* should not run here. */
+		goto err_no_cmd;
+	}
+
+out:
+	return ret;
+
+err_no_cmd:
+	netdev_err(bond->dev, "no command found in slaves file - use +ifname or -ifname\n");
+	ret = -EPERM;
+	goto out;
+}
+
+static int bond_option_tlb_dynamic_lb_set(struct bonding *bond,
+					  const struct bond_opt_value *newval)
+{
+	netdev_dbg(bond->dev, "Setting dynamic-lb to %s (%llu)\n",
+		   newval->string, newval->value);
+	bond->params.tlb_dynamic_lb = newval->value;
+
+	return 0;
+}
+
+static int bond_option_ad_actor_sys_prio_set(struct bonding *bond,
+					     const struct bond_opt_value *newval)
+{
+	netdev_dbg(bond->dev, "Setting ad_actor_sys_prio to %llu\n",
+		   newval->value);
+
+	bond->params.ad_actor_sys_prio = newval->value;
+	bond_3ad_update_ad_actor_settings(bond);
+
+	return 0;
+}
+
+static int bond_option_ad_actor_system_set(struct bonding *bond,
+					   const struct bond_opt_value *newval)
+{
+	u8 macaddr[ETH_ALEN];
+	u8 *mac;
+
+	if (newval->string) {
+		if (!mac_pton(newval->string, macaddr))
+			goto err;
+		mac = macaddr;
+	} else {
+		mac = (u8 *)&newval->value;
+	}
+
+	if (is_multicast_ether_addr(mac))
+		goto err;
+
+	netdev_dbg(bond->dev, "Setting ad_actor_system to %pM\n", mac);
+	ether_addr_copy(bond->params.ad_actor_system, mac);
+	bond_3ad_update_ad_actor_settings(bond);
+
+	return 0;
+
+err:
+	netdev_err(bond->dev, "Invalid ad_actor_system MAC address.\n");
+	return -EINVAL;
+}
+
+static int bond_option_ad_user_port_key_set(struct bonding *bond,
+					    const struct bond_opt_value *newval)
+{
+	netdev_dbg(bond->dev, "Setting ad_user_port_key to %llu\n",
+		   newval->value);
+
+	bond->params.ad_user_port_key = newval->value;
+	return 0;
+}

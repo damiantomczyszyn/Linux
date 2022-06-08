@@ -1,1 +1,2 @@
-cmd_drivers/media/i2c/tw9910.o :=
+  = 0x61,
+	.if_khz           = 53

@@ -1,2 +1,6 @@
-drivers/media/rc/keymaps/rc-dvbsky.o
+args);
 
+	return err;
+}
+
+static int cx2

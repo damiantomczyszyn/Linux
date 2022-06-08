@@ -1,2 +1,3 @@
-drivers/media/rc/keymaps/rc-kworld-plus-tv-analog.o
-
+// SPDX-License-Identifier: GPL-2.0-or-later
+/*
+ *  D

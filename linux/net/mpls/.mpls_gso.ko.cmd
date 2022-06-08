@@ -1,13 +1,7 @@
-*pf;
-	unsigned long flags;
-	bool found = false;
+_cpus_allowed(struct task_struct *p, const struct cpumask *new_mask, u32 flags)
+{
+	struct rq *rq = task_rq(p);
+	bool queued, running;
 
-	might_sleep();
-
-	if (WARN_ON_ONCE(static_obj(key)))
-		return;
-
-	raw_local_irq_save(flags);
-	lockdep_lock();
-
-	
+	/*
+	 * This here violate

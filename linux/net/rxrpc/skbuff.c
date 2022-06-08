@@ -1,67 +1,96 @@
-lude/config/PHYSICAL_ALIGN) \
-    $(wildcard include/config/DYNAMIC_PHYSICAL_MASK) \
-  include/linux/mem_encrypt.h \
-    $(wildcard include/config/ARCH_HAS_MEM_ENCRYPT) \
-  arch/x86/include/asm/mem_encrypt.h \
-  include/linux/cc_platform.h \
-    $(wildcard include/config/ARCH_HAS_CC_PLATFORM) \
-  arch/x86/include/uapi/asm/bootparam.h \
-  include/linux/screen_info.h \
-  include/uapi/linux/screen_info.h \
-  include/linux/apm_bios.h \
-  include/uapi/linux/apm_bios.h \
-  include/uapi/linux/ioctl.h \
-  arch/x86/include/generated/uapi/asm/ioctl.h \
-  include/asm-generic/ioctl.h \
-  include/uapi/asm-generic/ioctl.h \
-  include/linux/edd.h \
-  include/uapi/linux/edd.h \
-  arch/x86/include/asm/ist.h \
-  arch/x86/include/uapi/asm/ist.h \
-  include/video/edid.h \
-  include/uapi/video/edid.h \
-  arch/x86/include/asm/page_32_types.h \
-    $(wildcard include/config/HIGHMEM4G) \
-    $(wildcard include/config/HIGHMEM64G) \
-    $(wildcard include/config/PAGE_OFFSET) \
-  arch/x86/include/asm/page_32.h \
-    $(wildcard include/config/DEBUG_VIRTUAL) \
-    $(wildcard include/config/FLATMEM) \
-  include/linux/range.h \
-  include/asm-generic/memory_model.h \
-    $(wildcard include/config/SPARSEMEM_VMEMMAP) \
-    $(wildcard include/config/SPARSEMEM) \
-  include/linux/pfn.h \
-  include/asm-generic/getorder.h \
-  arch/x86/include/asm/cpufeature.h \
-    $(wildcard include/config/X86_FEATURE_NAMES) \
-  arch/x86/include/asm/processor.h \
-    $(wildcard include/config/X86_VMX_FEATURE_NAMES) \
-    $(wildcard include/config/STACKPROTECTOR) \
-    $(wildcard include/config/X86_DEBUGCTLMSR) \
-    $(wildcard include/config/CPU_SUP_AMD) \
-    $(wildcard include/config/XEN) \
-  arch/x86/include/asm/processor-flags.h \
-  arch/x86/include/uapi/asm/processor-flags.h \
-  arch/x86/include/asm/math_emu.h \
-  arch/x86/include/asm/ptrace.h \
-    $(wildcard include/config/PARAVIRT) \
-  arch/x86/include/asm/segment.h \
-    $(wildcard include/config/XEN_PV) \
-  arch/x86/include/uapi/asm/ptrace.h \
-  arch/x86/include/uapi/asm/ptrace-abi.h \
-  arch/x86/include/asm/paravirt_types.h \
-    $(wildcard include/config/PGTABLE_LEVELS) \
-    $(wildcard include/config/PARAVIRT_DEBUG) \
-  arch/x86/include/asm/desc_defs.h \
-  arch/x86/include/asm/pgtable_types.h \
-    $(wildcard include/config/MEM_SOFT_DIRTY) \
-    $(wildcard include/config/HAVE_ARCH_USERFAULTFD_WP) \
-    $(wildcard include/config/PROC_FS) \
-  arch/x86/include/asm/pgtable_32_types.h \
-  arch/x86/include/asm/pgtable-3level_types.h \
-  include/asm-generic/pgtable-nop4d.h \
-  include/asm-generic/pgtable-nopud.h \
-  arch/x86/include/asm/nospec-branch.h \
-  include/linux/static_key.h \
-  inclu
+/* SPDX-License-Identifier: GPL-2.0 */
+/*
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * Authors: Waiman Long <waiman.long@hpe.com>
+ */
+
+/*
+ * Collect locking event counts
+ */
+#include <linux/debugfs.h>
+#include <linux/sched.h>
+#include <linux/sched/clock.h>
+#include <linux/fs.h>
+
+#include "lock_events.h"
+
+#undef  LOCK_EVENT
+#define LOCK_EVENT(name)	[LOCKEVENT_ ## name] = #name,
+
+#define LOCK_EVENTS_DIR		"lock_event_counts"
+
+/*
+ * When CONFIG_LOCK_EVENT_COUNTS is enabled, event counts of different
+ * types of locks will be reported under the <debugfs>/lock_event_counts/
+ * directory. See lock_events_list.h for the list of available locking
+ * events.
+ *
+ * Writing to the special ".reset_counts" file will reset all the above
+ * locking event counts. This is a very slow operation and so should not
+ * be done frequently.
+ *
+ * These event counts are implemented as per-cpu variables which are
+ * summed and computed whenever the corresponding debugfs files are read. This
+ * minimizes added overhead making the counts usable even in a production
+ * environment.
+ */
+static const char * const lockevent_names[lockevent_num + 1] = {
+
+#include "lock_events_list.h"
+
+	[LOCKEVENT_reset_cnts] = ".reset_counts",
+};
+
+/*
+ * Per-cpu counts
+ */
+DEFINE_PER_CPU(unsigned long, lockevents[lockevent_num]);
+
+/*
+ * The lockevent_read() function can be overridden.
+ */
+ssize_t __weak lockevent_read(struct file *file, char __user *user_buf,
+			      size_t count, loff_t *ppos)
+{
+	char buf[64];
+	int cpu, id, len;
+	u64 sum = 0;
+
+	/*
+	 * Get the counter ID stored in file->f_inode->i_private
+	 */
+	id = (long)file_inode(file)->i_private;
+
+	if (id >= lockevent_num)
+		return -EBADF;
+
+	for_each_possible_cpu(cpu)
+		sum += per_cpu(lockevents[id], cpu);
+	len = snprintf(buf, sizeof(buf) - 1, "%llu\n", sum);
+
+	return simple_read_from_buffer(user_buf, count, ppos, buf, len);
+}
+
+/*
+ * Function to handle write request
+ *
+ * When idx = reset_cnts, reset all the counts.
+ */
+static ssize_t lockevent_write(struct file *file, const char __user *user_buf,
+			   size_t count, loff_t *ppos)
+{
+	int cpu;
+
+	/*
+	 * Get the counter ID stored in file->f_inode->i_private
+	 */
+	if ((long)file_inode(file)-

@@ -1,556 +1,500 @@
-		seq_printf(m, "[%p] ", class->key);
-		print_name(m, class);
-		seq_puts(m, "\n");
-	}
-	seq_puts(m, "\n");
+rity,
+ *				p->dl.dl_{runtime, deadline, period, flags, bw, density}
+ *  - sched_setnuma():		p->numa_preferred_nid
+ *  - sched_move_task()/
+ *    cpu_cgroup_fork():	p->sched_task_group
+ *  - uclamp_update_active()	p->uclamp*
+ *
+ * p->state <- TASK_*:
+ *
+ *   is changed locklessly using set_current_state(), __set_current_state() or
+ *   set_special_state(), see their respective comments, or by
+ *   try_to_wake_up(). This latter uses p->pi_lock to serialize against
+ *   concurrent self.
+ *
+ * p->on_rq <- { 0, 1 = TASK_ON_RQ_QUEUED, 2 = TASK_ON_RQ_MIGRATING }:
+ *
+ *   is set by activate_task() and cleared by deactivate_task(), under
+ *   rq->lock. Non-zero indicates the task is runnable, the special
+ *   ON_RQ_MIGRATING state is used for migration without holding both
+ *   rq->locks. It indicates task_cpu() is not stable, see task_rq_lock().
+ *
+ * p->on_cpu <- { 0, 1 }:
+ *
+ *   is set by prepare_task() and cleared by finish_task() such that it will be
+ *   set before p is scheduled-in and cleared after p is scheduled-out, both
+ *   under rq->lock. Non-zero indicates the task is running on its CPU.
+ *
+ *   [ The astute reader will observe that it is possible for two tasks on one
+ *     CPU to have ->on_cpu = 1 at the same time. ]
+ *
+ * task_cpu(p): is changed by set_task_cpu(), the rules are:
+ *
+ *  - Don't call set_task_cpu() on a blocked task:
+ *
+ *    We don't care what CPU we're not running on, this simplifies hotplug,
+ *    the CPU assignment of blocked tasks isn't required to be valid.
+ *
+ *  - for try_to_wake_up(), called under p->pi_lock:
+ *
+ *    This allows try_to_wake_up() to only take one rq->lock, see its comment.
+ *
+ *  - for migration called under rq->lock:
+ *    [ see task_on_rq_migrating() in task_rq_lock() ]
+ *
+ *    o move_queued_task()
+ *    o detach_task()
+ *
+ *  - for migration called under double_rq_lock():
+ *
+ *    o __migrate_swap_task()
+ *    o push_rt_task() / pull_rt_task()
+ *    o push_dl_task() / pull_dl_task()
+ *    o dl_task_offline_migration()
+ *
+ */
 
-	return 0;
-}
-
-static const struct seq_operations lockdep_chains_ops = {
-	.start	= lc_start,
-	.next	= lc_next,
-	.stop	= lc_stop,
-	.show	= lc_show,
-};
-#endif /* CONFIG_PROVE_LOCKING */
-
-static void lockdep_stats_debug_show(struct seq_file *m)
+void raw_spin_rq_lock_nested(struct rq *rq, int subclass)
 {
-#ifdef CONFIG_DEBUG_LOCKDEP
-	unsigned long long hi1 = debug_atomic_read(hardirqs_on_events),
-			   hi2 = debug_atomic_read(hardirqs_off_events),
-			   hr1 = debug_atomic_read(redundant_hardirqs_on),
-			   hr2 = debug_atomic_read(redundant_hardirqs_off),
-			   si1 = debug_atomic_read(softirqs_on_events),
-			   si2 = debug_atomic_read(softirqs_off_events),
-			   sr1 = debug_atomic_read(redundant_softirqs_on),
-			   sr2 = debug_atomic_read(redundant_softirqs_off);
+	raw_spinlock_t *lock;
 
-	seq_printf(m, " chain lookup misses:           %11llu\n",
-		debug_atomic_read(chain_lookup_misses));
-	seq_printf(m, " chain lookup hits:             %11llu\n",
-		debug_atomic_read(chain_lookup_hits));
-	seq_printf(m, " cyclic checks:                 %11llu\n",
-		debug_atomic_read(nr_cyclic_checks));
-	seq_printf(m, " redundant checks:              %11llu\n",
-		debug_atomic_read(nr_redundant_checks));
-	seq_printf(m, " redundant links:               %11llu\n",
-		debug_atomic_read(nr_redundant));
-	seq_printf(m, " find-mask forwards checks:     %11llu\n",
-		debug_atomic_read(nr_find_usage_forwards_checks));
-	seq_printf(m, " find-mask backwards checks:    %11llu\n",
-		debug_atomic_read(nr_find_usage_backwards_checks));
-
-	seq_printf(m, " hardirq on events:             %11llu\n", hi1);
-	seq_printf(m, " hardirq off events:            %11llu\n", hi2);
-	seq_printf(m, " redundant hardirq ons:         %11llu\n", hr1);
-	seq_printf(m, " redundant hardirq offs:        %11llu\n", hr2);
-	seq_printf(m, " softirq on events:             %11llu\n", si1);
-	seq_printf(m, " softirq off events:            %11llu\n", si2);
-	seq_printf(m, " redundant softirq ons:         %11llu\n", sr1);
-	seq_printf(m, " redundant softirq offs:        %11llu\n", sr2);
-#endif
-}
-
-static int lockdep_stats_show(struct seq_file *m, void *v)
-{
-	unsigned long nr_unused = 0, nr_uncategorized = 0,
-		      nr_irq_safe = 0, nr_irq_unsafe = 0,
-		      nr_softirq_safe = 0, nr_softirq_unsafe = 0,
-		      nr_hardirq_safe = 0, nr_hardirq_unsafe = 0,
-		      nr_irq_read_safe = 0, nr_irq_read_unsafe = 0,
-		      nr_softirq_read_safe = 0, nr_softirq_read_unsafe = 0,
-		      nr_hardirq_read_safe = 0, nr_hardirq_read_unsafe = 0,
-		      sum_forward_deps = 0;
-
-#ifdef CONFIG_PROVE_LOCKING
-	struct lock_class *class;
-	unsigned long idx;
-
-	iterate_lock_classes(idx, class) {
-		if (!test_bit(idx, lock_classes_in_use))
-			continue;
-
-		if (class->usage_mask == 0)
-			nr_unused++;
-		if (class->usage_mask == LOCKF_USED)
-			nr_uncategorized++;
-		if (class->usage_mask & LOCKF_USED_IN_IRQ)
-			nr_irq_safe++;
-		if (class->usage_mask & LOCKF_ENABLED_IRQ)
-			nr_irq_unsafe++;
-		if (class->usage_mask & LOCKF_USED_IN_SOFTIRQ)
-			nr_softirq_safe++;
-		if (class->usage_mask & LOCKF_ENABLED_SOFTIRQ)
-			nr_softirq_unsafe++;
-		if (class->usage_mask & LOCKF_USED_IN_HARDIRQ)
-			nr_hardirq_safe++;
-		if (class->usage_mask & LOCKF_ENABLED_HARDIRQ)
-			nr_hardirq_unsafe++;
-		if (class->usage_mask & LOCKF_USED_IN_IRQ_READ)
-			nr_irq_read_safe++;
-		if (class->usage_mask & LOCKF_ENABLED_IRQ_READ)
-			nr_irq_read_unsafe++;
-		if (class->usage_mask & LOCKF_USED_IN_SOFTIRQ_READ)
-			nr_softirq_read_safe++;
-		if (class->usage_mask & LOCKF_ENABLED_SOFTIRQ_READ)
-			nr_softirq_read_unsafe++;
-		if (class->usage_mask & LOCKF_USED_IN_HARDIRQ_READ)
-			nr_hardirq_read_safe++;
-		if (class->usage_mask & LOCKF_ENABLED_HARDIRQ_READ)
-			nr_hardirq_read_unsafe++;
-
-		sum_forward_deps += lockdep_count_forward_deps(class);
+	/* Matches synchronize_rcu() in __sched_core_enable() */
+	preempt_disable();
+	if (sched_core_disabled()) {
+		raw_spin_lock_nested(&rq->__lock, subclass);
+		/* preempt_count *MUST* be > 1 */
+		preempt_enable_no_resched();
+		return;
 	}
 
-#ifdef CONFIG_DEBUG_LOCKDEP
-	DEBUG_LOCKS_WARN_ON(debug_atomic_read(nr_unused_locks) != nr_unused);
-#endif
-
-#endif
-	seq_printf(m, " lock-classes:                  %11lu [max: %lu]\n",
-			nr_lock_classes, MAX_LOCKDEP_KEYS);
-	seq_printf(m, " direct dependencies:           %11lu [max: %lu]\n",
-			nr_list_entries, MAX_LOCKDEP_ENTRIES);
-	seq_printf(m, " indirect dependencies:         %11lu\n",
-			sum_forward_deps);
-
-	/*
-	 * Total number of dependencies:
-	 *
-	 * All irq-safe locks may nest inside irq-unsafe locks,
-	 * plus all the other known dependencies:
-	 */
-	seq_printf(m, " all direct dependencies:       %11lu\n",
-			nr_irq_unsafe * nr_irq_safe +
-			nr_hardirq_unsafe * nr_hardirq_safe +
-			nr_list_entries);
-
-#ifdef CONFIG_PROVE_LOCKING
-	seq_printf(m, " dependency chains:             %11lu [max: %lu]\n",
-			lock_chain_count(), MAX_LOCKDEP_CHAINS);
-	seq_printf(m, " dependency chain hlocks used:  %11lu [max: %lu]\n",
-			MAX_LOCKDEP_CHAIN_HLOCKS -
-			(nr_free_chain_hlocks + nr_lost_chain_hlocks),
-			MAX_LOCKDEP_CHAIN_HLOCKS);
-	seq_printf(m, " dependency chain hlocks lost:  %11u\n",
-			nr_lost_chain_hlocks);
-#endif
-
-#ifdef CONFIG_TRACE_IRQFLAGS
-	seq_printf(m, " in-hardirq chains:             %11u\n",
-			nr_hardirq_chains);
-	seq_printf(m, " in-softirq chains:             %11u\n",
-			nr_softirq_chains);
-#endif
-	seq_printf(m, " in-process chains:             %11u\n",
-			nr_process_chains);
-	seq_printf(m, " stack-trace entries:           %11lu [max: %lu]\n",
-			nr_stack_trace_entries, MAX_STACK_TRACE_ENTRIES);
-#if defined(CONFIG_TRACE_IRQFLAGS) && defined(CONFIG_PROVE_LOCKING)
-	seq_printf(m, " number of stack traces:        %11llu\n",
-		   lockdep_stack_trace_count());
-	seq_printf(m, " number of stack hash chains:   %11llu\n",
-		   lockdep_stack_hash_count());
-#endif
-	seq_printf(m, " combined max dependencies:     %11u\n",
-			(nr_hardirq_chains + 1) *
-			(nr_softirq_chains + 1) *
-			(nr_process_chains + 1)
-	);
-	seq_printf(m, " hardirq-safe locks:            %11lu\n",
-			nr_hardirq_safe);
-	seq_printf(m, " hardirq-unsafe locks:          %11lu\n",
-			nr_hardirq_unsafe);
-	seq_printf(m, " softirq-safe locks:            %11lu\n",
-			nr_softirq_safe);
-	seq_printf(m, " softirq-unsafe locks:          %11lu\n",
-			nr_softirq_unsafe);
-	seq_printf(m, " irq-safe locks:                %11lu\n",
-			nr_irq_safe);
-	seq_printf(m, " irq-unsafe locks:              %11lu\n",
-			nr_irq_unsafe);
-
-	seq_printf(m, " hardirq-read-safe locks:       %11lu\n",
-			nr_hardirq_read_safe);
-	seq_printf(m, " hardirq-read-unsafe locks:     %11lu\n",
-			nr_hardirq_read_unsafe);
-	seq_printf(m, " softirq-read-safe locks:       %11lu\n",
-			nr_softirq_read_safe);
-	seq_printf(m, " softirq-read-unsafe locks:     %11lu\n",
-			nr_softirq_read_unsafe);
-	seq_printf(m, " irq-read-safe locks:           %11lu\n",
-			nr_irq_read_safe);
-	seq_printf(m, " irq-read-unsafe locks:         %11lu\n",
-			nr_irq_read_unsafe);
-
-	seq_printf(m, " uncategorized locks:           %11lu\n",
-			nr_uncategorized);
-	seq_printf(m, " unused locks:                  %11lu\n",
-			nr_unused);
-	seq_printf(m, " max locking depth:             %11u\n",
-			max_lockdep_depth);
-#ifdef CONFIG_PROVE_LOCKING
-	seq_printf(m, " max bfs queue depth:           %11u\n",
-			max_bfs_queue_depth);
-#endif
-	seq_printf(m, " max lock class index:          %11lu\n",
-			max_lock_class_idx);
-	lockdep_stats_debug_show(m);
-	seq_printf(m, " debug_locks:                   %11u\n",
-			debug_locks);
-
-	/*
-	 * Zapped classes and lockdep data buffers reuse statistics.
-	 */
-	seq_puts(m, "\n");
-	seq_printf(m, " zapped classes:                %11lu\n",
-			nr_zapped_classes);
-#ifdef CONFIG_PROVE_LOCKING
-	seq_printf(m, " zapped lock chains:            %11lu\n",
-			nr_zapped_lock_chains);
-	seq_printf(m, " large chain blocks:            %11u\n",
-			nr_large_chain_blocks);
-#endif
-	return 0;
+	for (;;) {
+		lock = __rq_lockp(rq);
+		raw_spin_lock_nested(lock, subclass);
+		if (likely(lock == __rq_lockp(rq))) {
+			/* preempt_count *MUST* be > 1 */
+			preempt_enable_no_resched();
+			return;
+		}
+		raw_spin_unlock(lock);
+	}
 }
 
-#ifdef CONFIG_LOCK_STAT
+bool raw_spin_rq_trylock(struct rq *rq)
+{
+	raw_spinlock_t *lock;
+	bool ret;
 
-struct lock_stat_data {
-	struct lock_class *class;
-	struct lock_class_stats stats;
-};
+	/* Matches synchronize_rcu() in __sched_core_enable() */
+	preempt_disable();
+	if (sched_core_disabled()) {
+		ret = raw_spin_trylock(&rq->__lock);
+		preempt_enable();
+		return ret;
+	}
 
-struct lock_stat_seq {
-	struct lock_stat_data *iter_end;
-	struct lock_stat_data stats[MAX_LOCKDEP_KEYS];
-};
+	for (;;) {
+		lock = __rq_lockp(rq);
+		ret = raw_spin_trylock(lock);
+		if (!ret || (likely(lock == __rq_lockp(rq)))) {
+			preempt_enable();
+			return ret;
+		}
+		raw_spin_unlock(lock);
+	}
+}
+
+void raw_spin_rq_unlock(struct rq *rq)
+{
+	raw_spin_unlock(rq_lockp(rq));
+}
+
+#ifdef CONFIG_SMP
+/*
+ * double_rq_lock - safely lock two runqueues
+ */
+void double_rq_lock(struct rq *rq1, struct rq *rq2)
+{
+	lockdep_assert_irqs_disabled();
+
+	if (rq_order_less(rq2, rq1))
+		swap(rq1, rq2);
+
+	raw_spin_rq_lock(rq1);
+	if (__rq_lockp(rq1) == __rq_lockp(rq2))
+		return;
+
+	raw_spin_rq_lock_nested(rq2, SINGLE_DEPTH_NESTING);
+}
+#endif
 
 /*
- * sort on absolute number of contentions
+ * __task_rq_lock - lock the rq @p resides on.
  */
-static int lock_stat_cmp(const void *l, const void *r)
+struct rq *__task_rq_lock(struct task_struct *p, struct rq_flags *rf)
+	__acquires(rq->lock)
 {
-	const struct lock_stat_data *dl = l, *dr = r;
-	unsigned long nl, nr;
+	struct rq *rq;
 
-	nl = dl->stats.read_waittime.nr + dl->stats.write_waittime.nr;
-	nr = dr->stats.read_waittime.nr + dr->stats.write_waittime.nr;
+	lockdep_assert_held(&p->pi_lock);
 
-	return nr - nl;
+	for (;;) {
+		rq = task_rq(p);
+		raw_spin_rq_lock(rq);
+		if (likely(rq == task_rq(p) && !task_on_rq_migrating(p))) {
+			rq_pin_lock(rq, rf);
+			return rq;
+		}
+		raw_spin_rq_unlock(rq);
+
+		while (unlikely(task_on_rq_migrating(p)))
+			cpu_relax();
+	}
 }
 
-static void seq_line(struct seq_file *m, char c, int offset, int length)
+/*
+ * task_rq_lock - lock p->pi_lock and lock the rq @p resides on.
+ */
+struct rq *task_rq_lock(struct task_struct *p, struct rq_flags *rf)
+	__acquires(p->pi_lock)
+	__acquires(rq->lock)
 {
-	int i;
+	struct rq *rq;
 
-	for (i = 0; i < offset; i++)
-		seq_puts(m, " ");
-	for (i = 0; i < length; i++)
-		seq_printf(m, "%c", c);
-	seq_puts(m, "\n");
+	for (;;) {
+		raw_spin_lock_irqsave(&p->pi_lock, rf->flags);
+		rq = task_rq(p);
+		raw_spin_rq_lock(rq);
+		/*
+		 *	move_queued_task()		task_rq_lock()
+		 *
+		 *	ACQUIRE (rq->lock)
+		 *	[S] ->on_rq = MIGRATING		[L] rq = task_rq()
+		 *	WMB (__set_task_cpu())		ACQUIRE (rq->lock);
+		 *	[S] ->cpu = new_cpu		[L] task_rq()
+		 *					[L] ->on_rq
+		 *	RELEASE (rq->lock)
+		 *
+		 * If we observe the old CPU in task_rq_lock(), the acquire of
+		 * the old rq->lock will fully serialize against the stores.
+		 *
+		 * If we observe the new CPU in task_rq_lock(), the address
+		 * dependency headed by '[L] rq = task_rq()' and the acquire
+		 * will pair with the WMB to ensure we then also see migrating.
+		 */
+		if (likely(rq == task_rq(p) && !task_on_rq_migrating(p))) {
+			rq_pin_lock(rq, rf);
+			return rq;
+		}
+		raw_spin_rq_unlock(rq);
+		raw_spin_unlock_irqrestore(&p->pi_lock, rf->flags);
+
+		while (unlikely(task_on_rq_migrating(p)))
+			cpu_relax();
+	}
 }
 
-static void snprint_time(char *buf, size_t bufsiz, s64 nr)
-{
-	s64 div;
-	s32 rem;
+/*
+ * RQ-clock updating methods:
+ */
 
-	nr += 5; /* for display rounding */
-	div = div_s64_rem(nr, 1000, &rem);
-	snprintf(buf, bufsiz, "%lld.%02d", (long long)div, (int)rem/10);
+static void update_rq_clock_task(struct rq *rq, s64 delta)
+{
+/*
+ * In theory, the compile should just see 0 here, and optimize out the call
+ * to sched_rt_avg_update. But I don't trust it...
+ */
+	s64 __maybe_unused steal = 0, irq_delta = 0;
+
+#ifdef CONFIG_IRQ_TIME_ACCOUNTING
+	irq_delta = irq_time_read(cpu_of(rq)) - rq->prev_irq_time;
+
+	/*
+	 * Since irq_time is only updated on {soft,}irq_exit, we might run into
+	 * this case when a previous update_rq_clock() happened inside a
+	 * {soft,}irq region.
+	 *
+	 * When this happens, we stop ->clock_task and only update the
+	 * prev_irq_time stamp to account for the part that fit, so that a next
+	 * update will consume the rest. This ensures ->clock_task is
+	 * monotonic.
+	 *
+	 * It does however cause some slight miss-attribution of {soft,}irq
+	 * time, a more accurate solution would be to update the irq_time using
+	 * the current rq->clock timestamp, except that would require using
+	 * atomic ops.
+	 */
+	if (irq_delta > delta)
+		irq_delta = delta;
+
+	rq->prev_irq_time += irq_delta;
+	delta -= irq_delta;
+#endif
+#ifdef CONFIG_PARAVIRT_TIME_ACCOUNTING
+	if (static_key_false((&paravirt_steal_rq_enabled))) {
+		steal = paravirt_steal_clock(cpu_of(rq));
+		steal -= rq->prev_steal_time_rq;
+
+		if (unlikely(steal > delta))
+			steal = delta;
+
+		rq->prev_steal_time_rq += steal;
+		delta -= steal;
+	}
+#endif
+
+	rq->clock_task += delta;
+
+#ifdef CONFIG_HAVE_SCHED_AVG_IRQ
+	if ((irq_delta + steal) && sched_feat(NONTASK_CAPACITY))
+		update_irq_load_avg(rq, irq_delta + steal);
+#endif
+	update_rq_clock_pelt(rq, delta);
 }
 
-static void seq_time(struct seq_file *m, s64 time)
+void update_rq_clock(struct rq *rq)
 {
-	char num[15];
+	s64 delta;
 
-	snprint_time(num, sizeof(num), time);
-	seq_printf(m, " %14s", num);
-}
+	lockdep_assert_rq_held(rq);
 
-static void seq_lock_time(struct seq_file *m, struct lock_time *lt)
-{
-	seq_printf(m, "%14lu", lt->nr);
-	seq_time(m, lt->min);
-	seq_time(m, lt->max);
-	seq_time(m, lt->total);
-	seq_time(m, lt->nr ? div64_u64(lt->total, lt->nr) : 0);
-}
-
-static void seq_stats(struct seq_file *m, struct lock_stat_data *data)
-{
-	const struct lockdep_subclass_key *ckey;
-	struct lock_class_stats *stats;
-	struct lock_class *class;
-	const char *cname;
-	int i, namelen;
-	char name[39];
-
-	class = data->class;
-	stats = &data->stats;
-
-	namelen = 38;
-	if (class->name_version > 1)
-		namelen -= 2; /* XXX truncates versions > 9 */
-	if (class->subclass)
-		namelen -= 2;
-
-	rcu_read_lock_sched();
-	cname = rcu_dereference_sched(class->name);
-	ckey  = rcu_dereference_sched(class->key);
-
-	if (!cname && !ckey) {
-		rcu_read_unlock_sched();
+	if (rq->clock_update_flags & RQCF_ACT_SKIP)
 		return;
 
-	} else if (!cname) {
-		char str[KSYM_NAME_LEN];
-		const char *key_name;
+#ifdef CONFIG_SCHED_DEBUG
+	if (sched_feat(WARN_DOUBLE_CLOCK))
+		SCHED_WARN_ON(rq->clock_update_flags & RQCF_UPDATED);
+	rq->clock_update_flags |= RQCF_UPDATED;
+#endif
 
-		key_name = __get_key_name(ckey, str);
-		snprintf(name, namelen, "%s", key_name);
-	} else {
-		snprintf(name, namelen, "%s", cname);
-	}
-	rcu_read_unlock_sched();
-
-	namelen = strlen(name);
-	if (class->name_version > 1) {
-		snprintf(name+namelen, 3, "#%d", class->name_version);
-		namelen += 2;
-	}
-	if (class->subclass) {
-		snprintf(name+namelen, 3, "/%d", class->subclass);
-		namelen += 2;
-	}
-
-	if (stats->write_holdtime.nr) {
-		if (stats->read_holdtime.nr)
-			seq_printf(m, "%38s-W:", name);
-		else
-			seq_printf(m, "%40s:", name);
-
-		seq_printf(m, "%14lu ", stats->bounces[bounce_contended_write]);
-		seq_lock_time(m, &stats->write_waittime);
-		seq_printf(m, " %14lu ", stats->bounces[bounce_acquired_write]);
-		seq_lock_time(m, &stats->write_holdtime);
-		seq_puts(m, "\n");
-	}
-
-	if (stats->read_holdtime.nr) {
-		seq_printf(m, "%38s-R:", name);
-		seq_printf(m, "%14lu ", stats->bounces[bounce_contended_read]);
-		seq_lock_time(m, &stats->read_waittime);
-		seq_printf(m, " %14lu ", stats->bounces[bounce_acquired_read]);
-		seq_lock_time(m, &stats->read_holdtime);
-		seq_puts(m, "\n");
-	}
-
-	if (stats->read_waittime.nr + stats->write_waittime.nr == 0)
+	delta = sched_clock_cpu(cpu_of(rq)) - rq->clock;
+	if (delta < 0)
 		return;
-
-	if (stats->read_holdtime.nr)
-		namelen += 2;
-
-	for (i = 0; i < LOCKSTAT_POINTS; i++) {
-		char ip[32];
-
-		if (class->contention_point[i] == 0)
-			break;
-
-		if (!i)
-			seq_line(m, '-', 40-namelen, namelen);
-
-		snprintf(ip, sizeof(ip), "[<%p>]",
-				(void *)class->contention_point[i]);
-		seq_printf(m, "%40s %14lu %29s %pS\n",
-			   name, stats->contention_point[i],
-			   ip, (void *)class->contention_point[i]);
-	}
-	for (i = 0; i < LOCKSTAT_POINTS; i++) {
-		char ip[32];
-
-		if (class->contending_point[i] == 0)
-			break;
-
-		if (!i)
-			seq_line(m, '-', 40-namelen, namelen);
-
-		snprintf(ip, sizeof(ip), "[<%p>]",
-				(void *)class->contending_point[i]);
-		seq_printf(m, "%40s %14lu %29s %pS\n",
-			   name, stats->contending_point[i],
-			   ip, (void *)class->contending_point[i]);
-	}
-	if (i) {
-		seq_puts(m, "\n");
-		seq_line(m, '.', 0, 40 + 1 + 12 * (14 + 1));
-		seq_puts(m, "\n");
-	}
+	rq->clock += delta;
+	update_rq_clock_task(rq, delta);
 }
 
-static void seq_header(struct seq_file *m)
+#ifdef CONFIG_SCHED_HRTICK
+/*
+ * Use HR-timers to deliver accurate preemption points.
+ */
+
+static void hrtick_clear(struct rq *rq)
 {
-	seq_puts(m, "lock_stat version 0.4\n");
-
-	if (unlikely(!debug_locks))
-		seq_printf(m, "*WARNING* lock debugging disabled!! - possibly due to a lockdep warning\n");
-
-	seq_line(m, '-', 0, 40 + 1 + 12 * (14 + 1));
-	seq_printf(m, "%40s %14s %14s %14s %14s %14s %14s %14s %14s %14s %14s "
-			"%14s %14s\n",
-			"class name",
-			"con-bounces",
-			"contentions",
-			"waittime-min",
-			"waittime-max",
-			"waittime-total",
-			"waittime-avg",
-			"acq-bounces",
-			"acquisitions",
-			"holdtime-min",
-			"holdtime-max",
-			"holdtime-total",
-			"holdtime-avg");
-	seq_line(m, '-', 0, 40 + 1 + 12 * (14 + 1));
-	seq_printf(m, "\n");
+	if (hrtimer_active(&rq->hrtick_timer))
+		hrtimer_cancel(&rq->hrtick_timer);
 }
 
-static void *ls_start(struct seq_file *m, loff_t *pos)
+/*
+ * High-resolution timer tick.
+ * Runs from hardirq context with interrupts disabled.
+ */
+static enum hrtimer_restart hrtick(struct hrtimer *timer)
 {
-	struct lock_stat_seq *data = m->private;
-	struct lock_stat_data *iter;
+	struct rq *rq = container_of(timer, struct rq, hrtick_timer);
+	struct rq_flags rf;
 
-	if (*pos == 0)
-		return SEQ_START_TOKEN;
+	WARN_ON_ONCE(cpu_of(rq) != smp_processor_id());
 
-	iter = data->stats + (*pos - 1);
-	if (iter >= data->iter_end)
-		iter = NULL;
+	rq_lock(rq, &rf);
+	update_rq_clock(rq);
+	rq->curr->sched_class->task_tick(rq, rq->curr, 1);
+	rq_unlock(rq, &rf);
 
-	return iter;
+	return HRTIMER_NORESTART;
 }
 
-static void *ls_next(struct seq_file *m, void *v, loff_t *pos)
+#ifdef CONFIG_SMP
+
+static void __hrtick_restart(struct rq *rq)
 {
-	(*pos)++;
-	return ls_start(m, pos);
+	struct hrtimer *timer = &rq->hrtick_timer;
+	ktime_t time = rq->hrtick_time;
+
+	hrtimer_start(timer, time, HRTIMER_MODE_ABS_PINNED_HARD);
 }
 
-static void ls_stop(struct seq_file *m, void *v)
+/*
+ * called from hardirq (IPI) context
+ */
+static void __hrtick_start(void *arg)
 {
+	struct rq *rq = arg;
+	struct rq_flags rf;
+
+	rq_lock(rq, &rf);
+	__hrtick_restart(rq);
+	rq_unlock(rq, &rf);
 }
 
-static int ls_show(struct seq_file *m, void *v)
+/*
+ * Called to set the hrtick timer state.
+ *
+ * called with rq->lock held and irqs disabled
+ */
+void hrtick_start(struct rq *rq, u64 delay)
 {
-	if (v == SEQ_START_TOKEN)
-		seq_header(m);
+	struct hrtimer *timer = &rq->hrtick_timer;
+	s64 delta;
+
+	/*
+	 * Don't schedule slices shorter than 10000ns, that just
+	 * doesn't make sense and can cause timer DoS.
+	 */
+	delta = max_t(s64, delay, 10000LL);
+	rq->hrtick_time = ktime_add_ns(timer->base->get_time(), delta);
+
+	if (rq == this_rq())
+		__hrtick_restart(rq);
 	else
-		seq_stats(m, v);
-
-	return 0;
+		smp_call_function_single_async(cpu_of(rq), &rq->hrtick_csd);
 }
 
-static const struct seq_operations lockstat_ops = {
-	.start	= ls_start,
-	.next	= ls_next,
-	.stop	= ls_stop,
-	.show	= ls_show,
-};
-
-static int lock_stat_open(struct inode *inode, struct file *file)
+#else
+/*
+ * Called to set the hrtick timer state.
+ *
+ * called with rq->lock held and irqs disabled
+ */
+void hrtick_start(struct rq *rq, u64 delay)
 {
-	int res;
-	struct lock_class *class;
-	struct lock_stat_seq *data = vmalloc(sizeof(struct lock_stat_seq));
-
-	if (!data)
-		return -ENOMEM;
-
-	res = seq_open(file, &lockstat_ops);
-	if (!res) {
-		struct lock_stat_data *iter = data->stats;
-		struct seq_file *m = file->private_data;
-		unsigned long idx;
-
-		iterate_lock_classes(idx, class) {
-			if (!test_bit(idx, lock_classes_in_use))
-				continue;
-			iter->class = class;
-			iter->stats = lock_stats(class);
-			iter++;
-		}
-
-		data->iter_end = iter;
-
-		sort(data->stats, data->iter_end - data->stats,
-				sizeof(struct lock_stat_data),
-				lock_stat_cmp, NULL);
-
-		m->private = data;
-	} else
-		vfree(data);
-
-	return res;
+	/*
+	 * Don't schedule slices shorter than 10000ns, that just
+	 * doesn't make sense. Rely on vruntime for fairness.
+	 */
+	delay = max_t(u64, delay, 10000LL);
+	hrtimer_start(&rq->hrtick_timer, ns_to_ktime(delay),
+		      HRTIMER_MODE_REL_PINNED_HARD);
 }
 
-static ssize_t lock_stat_write(struct file *file, const char __user *buf,
-			       size_t count, loff_t *ppos)
+#endif /* CONFIG_SMP */
+
+static void hrtick_rq_init(struct rq *rq)
 {
-	struct lock_class *class;
-	unsigned long idx;
-	char c;
+#ifdef CONFIG_SMP
+	INIT_CSD(&rq->hrtick_csd, __hrtick_start, rq);
+#endif
+	hrtimer_init(&rq->hrtick_timer, CLOCK_MONOTONIC, HRTIMER_MODE_REL_HARD);
+	rq->hrtick_timer.function = hrtick;
+}
+#else	/* CONFIG_SCHED_HRTICK */
+static inline void hrtick_clear(struct rq *rq)
+{
+}
 
-	if (count) {
-		if (get_user(c, buf))
-			return -EFAULT;
+static inline void hrtick_rq_init(struct rq *rq)
+{
+}
+#endif	/* CONFIG_SCHED_HRTICK */
 
-		if (c != '0')
-			return count;
+/*
+ * cmpxchg based fetch_or, macro so it works for different integer types
+ */
+#define fetch_or(ptr, mask)						\
+	({								\
+		typeof(ptr) _ptr = (ptr);				\
+		typeof(mask) _mask = (mask);				\
+		typeof(*_ptr) _old, _val = *_ptr;			\
+									\
+		for (;;) {						\
+			_old = cmpxchg(_ptr, _val, _val | _mask);	\
+			if (_old == _val)				\
+				break;					\
+			_val = _old;					\
+		}							\
+	_old;								\
+})
 
-		iterate_lock_classes(idx, class) {
-			if (!test_bit(idx, lock_classes_in_use))
-				continue;
-			clear_lock_stats(class);
-		}
+#if defined(CONFIG_SMP) && defined(TIF_POLLING_NRFLAG)
+/*
+ * Atomically set TIF_NEED_RESCHED and test for TIF_POLLING_NRFLAG,
+ * this avoids any races wrt polling state changes and thereby avoids
+ * spurious IPIs.
+ */
+static bool set_nr_and_not_polling(struct task_struct *p)
+{
+	struct thread_info *ti = task_thread_info(p);
+	return !(fetch_or(&ti->flags, _TIF_NEED_RESCHED) & _TIF_POLLING_NRFLAG);
+}
+
+/*
+ * Atomically set TIF_NEED_RESCHED if TIF_POLLING_NRFLAG is set.
+ *
+ * If this returns true, then the idle task promises to call
+ * sched_ttwu_pending() and reschedule soon.
+ */
+static bool set_nr_if_polling(struct task_struct *p)
+{
+	struct thread_info *ti = task_thread_info(p);
+	typeof(ti->flags) old, val = READ_ONCE(ti->flags);
+
+	for (;;) {
+		if (!(val & _TIF_POLLING_NRFLAG))
+			return false;
+		if (val & _TIF_NEED_RESCHED)
+			return true;
+		old = cmpxchg(&ti->flags, val, val | _TIF_NEED_RESCHED);
+		if (old == val)
+			break;
+		val = old;
 	}
-	return count;
+	return true;
 }
 
-static int lock_stat_release(struct inode *inode, struct file *file)
+#else
+static bool set_nr_and_not_polling(struct task_struct *p)
 {
-	struct seq_file *seq = file->private_data;
-
-	vfree(seq->private);
-	return seq_release(inode, file);
+	set_tsk_need_resched(p);
+	return true;
 }
 
-static const struct proc_ops lock_stat_proc_ops = {
-	.proc_open	= lock_stat_open,
-	.proc_write	= lock_stat_write,
-	.proc_read	= seq_read,
-	.proc_lseek	= seq_lseek,
-	.proc_release	= lock_stat_release,
-};
-#endif /* CONFIG_LOCK_STAT */
-
-static int __init lockdep_proc_init(void)
+#ifdef CONFIG_SMP
+static bool set_nr_if_polling(struct task_struct *p)
 {
-	proc_create_seq("lockdep", S_IRUSR, NULL, &lockdep_ops);
-#ifdef CONFIG_PROVE_LOCKING
-	proc_create_seq("lockdep_chains", S_IRUSR, NULL, &lockdep_chains_ops);
+	return false;
+}
 #endif
-	proc_create_single("lockdep_stats", S_IRUSR, NULL, lockdep_stats_show);
-#ifdef CONFIG_LOCK_STAT
-	proc_create("lock_stat", S_IRUSR | S_IWUSR, NULL, &lock_stat_proc_ops);
 #endif
 
-	return 0;
+static bool __wake_q_add(struct wake_q_head *head, struct task_struct *task)
+{
+	struct wake_q_node *node = &task->wake_q;
+
+	/*
+	 * Atomically grab the task, if ->wake_q is !nil already it means
+	 * it's already queued (either by us or someone else) and will get the
+	 * wakeup due to that.
+	 *
+	 * In order to ensure that a pending wakeup will observe our pending
+	 * state, even in the failed case, an explicit smp_mb() must be used.
+	 */
+	smp_mb__before_atomic();
+	if (unlikely(cmpxchg_relaxed(&node->next, NULL, WAKE_Q_TAIL)))
+		return false;
+
+	/*
+	 * The head is context local, there can be no concurrency.
+	 */
+	*head->lastp = node;
+	head->lastp = &node->next;
+	return true;
 }
 
-__initcall(lockdep_proc_init);
-
-                                                                                                                                                                                               
+/**
+ * wake_q_add() - queue a wakeup for 'later' waking.
+ * @head: the wake_q_head to add @task to
+ * @task: the task to queue for 'later' wakeup
+ *
+ * Queue a task for later wakeup, most likely by the wake_up_q() call in the
+ * same context, _HOWEVER_ this is not guaranteed, the wakeup can come
+ * instantly.
+ *
+ * This function must be used as-if it were wake_up_process(); IOW the task
+ * must be ready to be woken at this location.
+ */
+void wake_q_add(struct wake_q_head *head, struct task_struct *task)
+{
+	θόÿÿÿΓ΄&    v θόÿÿÿS‰Σθόÿÿÿ‰ΨΊ    [ιόÿÿÿfffθόÿÿÿ1ΐΉÿ  ;
+‰ΑJMΒΓ΄&    fθόÿÿÿV‰ΘΎÿ  S‹	‹XƒΑƒΣ 1Ò9Ξ‰‰Φ‰Xή[^LΒΓt& θόÿÿÿΓ΄&    v θόÿÿÿSƒμ‹ϋÿ  …ΫtI‰Ϊθόÿÿÿ1ΐƒΔ[Γv λ   t‰ΪθόÿÿÿƒΔ1ΐ[ΓfΊKΧ ‰$θόÿÿÿ‹$‰Ϊθόÿÿÿλή΄&    Ί7Χ ‰$θόÿÿÿ‹$λ¥fffffffθόÿÿÿ‰Π‹    S‰ΣΑϋ;Ί    XLΒ[Γ΄&    ΄&    θόÿÿÿW‰ΘVS‹	‹XƒΑ‰‹    ƒΣ ‰X‰ΧΑÿ9ΚΊ    ί[^LΒ_Γ΄&    t& θόÿÿÿΓfffffθόÿÿÿU1ΙΊ
+   WVS‰Γƒμd΅    ‰D$1ΐ‰ΰθόÿÿÿd΅    θόÿÿÿ‹-    ‹pθόÿÿÿ‹|$‹L$ƒξ‹$VUP‰ψΑο%ÿ  kΐdΑθP‰ΘΑι%ÿ  WkΐdΑθP‰ΠΑκ%ÿ  QkΐdΑθPRh$u SθόÿÿÿƒΔ,‹D$d+    u
+ƒΔ1ΐ[^_]ΓθόÿÿÿfffffffθόÿÿÿΓ΄&    v θόÿÿÿUWVS‰Γƒμhd΅    ‰D$d1ΐD$$θόÿÿÿD$$θόÿÿÿθόÿÿÿ‹5L   1Ò‰D$΅   …φHς+t$@…ΐHΒ)ΖΈ    Hπ‹    1Ι…ÒHΡ‰Tƒΐƒψuηθόÿÿÿ1Ò‰Η΅   …ΐIΠ΅   ‰Υ1Ò…ΐIΠΑζ‰T$1Òj‹D$8RΊwΧ ΑΰP‰ΨθόÿÿÿΉ   ΊΧ ‰Ψθόÿÿÿ1Òj‹D$HRΊΧ ΑΰP‰ΨθόÿÿÿΉ   ΊΧ ‰Ψθόÿÿÿ½    1Ò1ÿjRΊΧ P‰ΨθόÿÿÿΉ   ΊΧ ‰ΨƒΔ$θόÿÿÿ1Òj‹D$DRΊ―Χ ΑΰP‰ΨθόÿÿÿΉ   ΊΧ ‰ΨθόÿÿÿΊΐΧ ‰ΨjWVθόÿÿÿΉ   ΊΧ ‰Ψθόÿÿÿ΅   1Òj…ΐHΒ1ÒRΊΡΧ ΑΰP‰ΨθόÿÿÿΉ   ΊΧ ‰ΨƒΔ$θόÿÿÿ‹t$‹D$1Òj‰D$πΑΰ‰t$RΊβΧ P‰ΨθόÿÿÿΉ   ΊΧ ‰Ψθόÿÿÿ‹|$‹t$$1Òj7RΊσΧ ΑζΑΰP‰ΨθόÿÿÿΉ   ΊΧ ‰Ψθόÿÿÿ1Òj‹D$ RΊΨ ΑΰP‰ΨθόÿÿÿΉ   ΊΧ ‰ΨƒΔ$θόÿÿÿ½    1Ò1ÿjRΊΨ P‰ΨθόÿÿÿΉ   ΊΧ ‰Ψθόÿÿÿ1Òj‹D$RΊ&Ψ ΑΰP‰ΨθόÿÿÿΉ   ΊΧ ‰ΨθόÿÿÿΊ7Ψ ‰ΨjWVθόÿÿÿΉ   ΊΧ ‰ΨƒΔ$θόÿÿÿj‹D$$Αΰ1ÒRΊHΨ P‰ΨθόÿÿÿΉ   ΊΧ ‰Ψθόÿÿÿ΅   1Òj…ΐHΒ1ÒRΊYΨ ΑΰP‰ΨθόÿÿÿΉ   ΊΧ ‰Ψθόÿÿÿ1Òj‹D$lRΊjΨ ΑΰP‰ΨθόÿÿÿΉ   ΊΧ ‰ΨƒΔ$θόÿÿÿ1Òj‹D$XRΊ{Ψ ΑΰP‰ΨθόÿÿÿΉ   ΊΧ ‰Ψθόÿÿÿ1Òj‹D$D+D$`RΊΨ ΑΰP‰ΨθόÿÿÿΉ   ΊΧ ‰Ψθόÿÿÿ1Òj‹D$T+D$pRΊΨ ΑΰP‰ΨθόÿÿÿΉ   ΊΧ ‰ΨƒΔ$θόÿÿÿ1Òj‹D$HRΊ®Ψ ΑΰP‰ΨθόÿÿÿΉ   ΊΧ ‰Ψθόÿÿÿ1Òj‹D$XRΊΏΨ ΑΰP‰ΨθόÿÿÿΉ   ΊΧ ‰Ψθόÿÿÿ΅P   1Òj…ΐHΒ1ÒRΊΠΨ ΑΰP‰ΨθόÿÿÿΉ   ΊΧ ‰ΨƒΔ$θόÿÿÿ΅T   1Òj…ΐHΒ1ÒRΊαΨ ΑΰP‰ΨθόÿÿÿΉ   ΊΧ ‰Ψθόÿÿÿ΅D   1Òj…ΐHΒ1ÒRΊςΨ ΑΰP‰ΨθόÿÿÿΉ   ΊΧ ‰Ψθόÿÿÿ΅H   1Òj…ΐHΒ1ÒRΊΩ ΑΰP‰ΨθόÿÿÿΉ   ΊΧ ‰ΨƒΔ$θόÿÿÿ1Òj‹D$@RΊΩ ΑΰP‰ΨθόÿÿÿΉ   ΊΧ ‰Ψθόÿÿÿ΅   1Òj…ΐHΒ1ÒRΊ%Ω θΑΰP‰ΨθόÿÿÿΉ   ΊΧ ‰Ψθόÿÿÿ1Òj‹|$(RΊ6Ω /ΑΰP‰ΨθόÿÿÿΉ   ΊΧ ‰ΨƒΔ$θόÿÿÿ1Ò­    jRΊGΩ P‰ΨθόÿÿÿΉ   ΊΧ ‰Ψθόÿÿÿ1Ò½    jRΊXΩ P‰ΨθόÿÿÿΉ   ΊΧ ‰Ψθόÿÿÿ΅”   1Ò…ΐHΒPhiΩ Sθόÿÿÿ΅   1ÒƒΔ$…ΐjHΒ1ÒRΊ‚Ω ΑΰP‰ΨθόÿÿÿΉ   ΊΧ ‰ΨθόÿÿÿΊ“Ω ‰Ψjj j θόÿÿÿΉ   ΊΧ ‰Ψθόÿÿÿ΅    1Òj…ΐHΒ1ÒRΊ¤Ω ΑΰP‰ΨθόÿÿÿΉ   ΊΧ ‰ΨƒΔ$θόÿÿÿ΅X   1Òj…ΐHΒ1ÒRΊµΩ ΑΰP‰ΨθόÿÿÿΉ   ΊΧ ‰Ψθόÿÿÿθόÿÿÿ1ÒΑΰjRΊΖΩ P‰ΨθόÿÿÿΉ   ΊΧ ‰Ψθόÿÿÿ1Òj‹D$$RΊΧΩ ΑΰP‰ΨθόÿÿÿΉ   ΊΧ ‰ΨƒΔ$θόÿÿÿ΅    -  ¶ %  ΰÿ+    -  ΐ Αθ
+PhθΩ Sθόÿÿÿθόÿÿÿ1ÒΑΰjRΊΪ P‰ΨθόÿÿÿΉ   ΊΧ ‰ΨθόÿÿÿΊΪ ‰Ψjj j θόÿÿÿΉ   ΊΧ ‰ΨƒΔ$θόÿÿÿθόÿÿÿ1ÒΑΰjRΊ#Ϊ P‰ΨθόÿÿÿΉ   ΊΧ ‰Ψθόÿÿÿ΅p   1Òj…ΐHΒ1ÒRΊ4Ϊ ΑΰP‰ΨθόÿÿÿΉ   ΊΧ ‰Ψθόÿÿÿ΅`   1Òj…ΐHΒ1ÒRΊEΪ ΑΰP‰ΨθόÿÿÿΉ   ΊΧ ‰ΨƒΔ$θόÿÿÿ΅d   1Òj…ΐHΒ1ÒRΊVΪ ΑΰP‰ΨθόÿÿÿΉ   ΊΧ ‰Ψθόÿÿÿ΅h   1Òj…ΐHΒ1ÒRΊgΪ ΑΰP‰ΨθόÿÿÿΉ   ΊΧ ‰Ψθόÿÿÿ΅l   1Òj…ΐHΒ1ÒRΊxΪ ΑΰP‰ΨθόÿÿÿΉ   ΊΧ ‰ΨƒΔ$θόÿÿÿ΅    1ÒjΑΰRΊ‰Ϊ P‰ΨθόÿÿÿΉ   ΊΧ ‰Ψθόÿÿÿ΅(   1Òj…ΐHΒ1ÒRΊΪ ΑΰP‰ΨθόÿÿÿΉ   ΊΧ ‰Ψθόÿÿÿ‰Ψθόÿÿÿ‰ΨθόÿÿÿƒΔ‹D$dd+

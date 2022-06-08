@@ -1,5 +1,8 @@
- $(wildcard include/config/SLOB) \
-  include/linux/overflow.h \
-  include/linux/percpu-refcount.h \
-  include/linux/kasan.h \
-    $(wildcard include/config/KASAN_STACK) 
+onst struct v4l2_frequency *f)
+{
+	struct cx23885_dev *dev = video_drvdata(file);
+	int ret;
+
+	switch (dev->board) {
+	case CX23885_BOARD_HAUPPAUGE_HVR1255:
+	case CX23885_B

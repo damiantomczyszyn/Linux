@@ -1,30 +1,45 @@
-drivers/media/radio/radio-aztech.ko
-drivers/media/radio/radio-cadet.ko
-drivers/media/radio/radio-gemtek.ko
-drivers/media/radio/radio-isa.ko
-drivers/media/radio/radio-maxiradio.ko
-drivers/media/radio/radio-miropcm20.ko
-drivers/media/radio/radio-aimslab.ko
-drivers/media/radio/saa7706h.ko
-drivers/media/radio/radio-sf16fmi.ko
-drivers/media/radio/radio-sf16fmr2.ko
-drivers/media/radio/shark2.ko
-drivers/media/radio/radio-shark.ko
-drivers/media/radio/si4713/si4713.ko
-drivers/media/radio/si4713/radio-usb-si4713.ko
-drivers/media/radio/si4713/radio-platform-si4713.ko
-drivers/media/radio/tea575x.ko
-drivers/media/radio/radio-tea5764.ko
-drivers/media/radio/tef6862.ko
-drivers/media/radio/radio-terratec.ko
-drivers/media/radio/radio-timb.ko
-drivers/media/radio/radio-trust.ko
-drivers/media/radio/radio-typhoon.ko
-drivers/media/radio/radio-wl1273.ko
-drivers/media/radio/wl128x/fm_drv.ko
-drivers/media/radio/radio-zoltrix.ko
-drivers/media/radio/dsbr100.ko
-drivers/media/radio/radio-keene.ko
-drivers/media/radio/radio-ma901.ko
-drivers/media/radio/radio-mr800.ko
-drivers/media/radio/radio-raremono.ko
+ine void cx23885_irq_disable_all(struct cx23885_dev *dev)
+{
+	cx23885_irq_disable(dev, 0xffffffff);
+}
+
+void cx23885_irq_remove(struct cx23885_dev *dev, u32 mask)
+{
+	unsigned long flags;
+	spin_lock_irqsave(&dev->pci_irqmask_lock, flags);
+
+	dev->pci_irqmask &= ~mask;
+	cx_clear(PCI_INT_MSK, mask);
+
+	spin_unlock_irqrestore(&dev->pci_irqmask_lock, flags);
+}
+
+static u32 cx23885_irq_get_mask(struct cx23885_dev *dev)
+{
+	u32 v;
+	unsigned long flags;
+	spin_lock_irqsave(&dev->pci_irqmask_lock, flags);
+
+	v = cx_read(PCI_INT_MSK);
+
+	spin_unlock_irqrestore(&dev->pci_irqmask_lock, flags);
+	return v;
+}
+
+static int cx23885_risc_decode(u32 risc)
+{
+	static char *instr[16] = {
+		[RISC_SYNC    >> 28] = "sync",
+		[RISC_WRITE   >> 28] = "write",
+		[RISC_WRITEC  >> 28] = "writec",
+		[RISC_READ    >> 28] = "read",
+		[RISC_READC   >> 28] = "readc",
+		[RISC_JUMP    >> 28] = "jump",
+		[RISC_SKIP    >> 28] = "skip",
+		[RISC_WRITERM >> 28] = "writerm",
+		[RISC_WRITECM >> 28] = "writecm",
+		[RISC_WRITECR >> 28] = "writecr",
+	};
+	static int incr[16] = {
+		[RISC_WRITE   >> 28] = 3,
+		[RISC_JUMP    >> 28] = 

@@ -1,54 +1,54 @@
-de/linux/bits.h \
-  include/linux/const.h \
-  include/vdso/const.h \
-  include/uapi/linux/const.h \
-  include/vdso/bits.h \
-  include/linux/build_bug.h \
-  include/linux/compiler.h \
-    $(wildcard include/config/TRACE_BRANCH_PROFILING) \
-    $(wildcard include/config/PROFILE_ALL_BRANCHES) \
-    $(wildcard include/config/STACK_VALIDATION) \
-    $(wildcard include/config/CFI_CLANG) \
-  arch/x86/include/generated/asm/rwonce.h \
-  include/asm-generic/rwonce.h \
-  include/linux/kasan-checks.h \
-    $(wildcard include/config/KASAN_GENERIC) \
-    $(wildcard include/config/KASAN_SW_TAGS) \
-  include/linux/kcsan-checks.h \
-    $(wildcard include/config/KCSAN) \
-    $(wildcard include/config/KCSAN_WEAK_MEMORY) \
-    $(wildcard include/config/KCSAN_IGNORE_ATOMICS) \
-  include/linux/typecheck.h \
-  include/uapi/linux/kernel.h \
-  include/uapi/linux/sysinfo.h \
-  arch/x86/include/asm/bitops.h \
-    $(wildcard include/config/X86_64) \
-    $(wildcard include/config/X86_CMOV) \
-  arch/x86/include/asm/alternative.h \
-    $(wildcard include/config/SMP) \
-  include/linux/stringify.h \
-  arch/x86/include/asm/asm.h \
-    $(wildcard include/config/KPROBES) \
-  arch/x86/include/asm/extable_fixup_types.h \
-  arch/x86/include/asm/rmwcc.h \
-    $(wildcard include/config/CC_HAS_ASM_GOTO) \
-  arch/x86/include/asm/barrier.h \
-  arch/x86/include/asm/nops.h \
-  include/asm-generic/barrier.h \
-  include/asm-generic/bitops/fls64.h \
-  include/asm-generic/bitops/sched.h \
-  arch/x86/include/asm/arch_hweight.h \
-  arch/x86/include/asm/cpufeatures.h \
-  arch/x86/include/asm/required-features.h \
-    $(wildcard include/config/X86_MINIMUM_CPU_FAMILY) \
-    $(wildcard include/config/MATH_EMULATION) \
-    $(wildcard include/config/X86_PAE) \
-    $(wildcard include/config/X86_CMPXCHG64) \
-    $(wildcard include/config/X86_P6_NOP) \
-    $(wildcard include/config/MATOM) \
-    $(wildcard include/config/PARAVIRT_XXL) \
-  arch/x86/include/asm/disabled-features.h \
-    $(wildcard include/config/X86_SMAP) \
-    $(wildcard include/config/X86_UMIP) \
-    $(wildcard include/config/X86_INTEL_MEMORY_PROTECTION_KEYS) \
-    $(wildcard include/config/X86_5LEVEL) \
+# SPDX-License-Identifier: GPL-2.0-only
+config VIDEO_CX23885
+	tristate "Conexant cx23885 (2388x successor) support"
+	depends on DVB_CORE && VIDEO_DEV && PCI && I2C && INPUT && SND
+	select SND_PCM
+	select I2C_ALGOBIT
+	select VIDEO_TUNER
+	select VIDEO_TVEEPROM
+	depends on RC_CORE
+	select VIDEOBUF2_DVB
+	select VIDEOBUF2_DMA_SG
+	select VIDEO_CX25840
+	select VIDEO_CX2341X
+	select VIDEO_CS3308
+	select DVB_DIB7000P if MEDIA_SUBDRV_AUTOSELECT
+	select DVB_DRXK if MEDIA_SUBDRV_AUTOSELECT
+	select DVB_S5H1409 if MEDIA_SUBDRV_AUTOSELECT
+	select DVB_S5H1411 if MEDIA_SUBDRV_AUTOSELECT
+	select DVB_LGDT330X if MEDIA_SUBDRV_AUTOSELECT
+	select DVB_ZL10353 if MEDIA_SUBDRV_AUTOSELECT
+	select DVB_TDA10048 if MEDIA_SUBDRV_AUTOSELECT
+	select DVB_LNBP21 if MEDIA_SUBDRV_AUTOSELECT
+	select DVB_STV090x if MEDIA_SUBDRV_AUTOSELECT
+	select DVB_STB6100 if MEDIA_SUBDRV_AUTOSELECT
+	select DVB_STV6110 if MEDIA_SUBDRV_AUTOSELECT
+	select DVB_CX24116 if MEDIA_SUBDRV_AUTOSELECT
+	select DVB_CX24117 if MEDIA_SUBDRV_AUTOSELECT
+	select DVB_STV0900 if MEDIA_SUBDRV_AUTOSELECT
+	select DVB_DS3000 if MEDIA_SUBDRV_AUTOSELECT
+	select DVB_TS2020 if MEDIA_SUBDRV_AUTOSELECT
+	select DVB_STV0367 if MEDIA_SUBDRV_AUTOSELECT
+	select DVB_TDA10071 if MEDIA_SUBDRV_AUTOSELECT
+	select DVB_A8293 if MEDIA_SUBDRV_AUTOSELECT
+	select DVB_MB86A20S if MEDIA_SUBDRV_AUTOSELECT
+	select DVB_SI2165 if MEDIA_SUBDRV_AUTOSELECT
+	select DVB_SI2168 if MEDIA_SUBDRV_AUTOSELECT
+	select DVB_M88DS3103 if MEDIA_SUBDRV_AUTOSELECT
+	select MEDIA_TUNER_MT2063 if MEDIA_SUBDRV_AUTOSELECT
+	select MEDIA_TUNER_MT2131 if MEDIA_SUBDRV_AUTOSELECT
+	select MEDIA_TUNER_XC2028 if MEDIA_SUBDRV_AUTOSELECT
+	select MEDIA_TUNER_TDA8290 if MEDIA_SUBDRV_AUTOSELECT
+	select MEDIA_TUNER_TDA18271 if MEDIA_SUBDRV_AUTOSELECT
+	select MEDIA_TUNER_XC5000 if MEDIA_SUBDRV_AUTOSELECT
+	select MEDIA_TUNER_SI2157 if MEDIA_SUBDRV_AUTOSELECT
+	select MEDIA_TUNER_M88RS6000T if MEDIA_SUBDRV_AUTOSELECT
+	select DVB_TUNER_DIB0070 if MEDIA_SUBDRV_AUTOSELECT
+	help
+	  This is a video4linux driver for Conexant 23885 based
+	  TV cards.
+
+	  To compile this driver as a module, choose M here: the
+	  module will be called cx23885
+
+config MEDIA_ALTER

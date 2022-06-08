@@ -1,12 +1,9 @@
-RT_SYMBOL_GPL(debug_check_no_locks_held);
+}
 
-#ifdef __KERNEL__
-void debug_show_all_locks(void)
-{
-	struct task_struct *g, *p;
-
-	if (unlikely(!debug_locks)) {
-		pr_warn("INFO: lockdep is turned off.\n");
-		return;
-	}
-	pr_war
+static const struct vb2_ops dvb_qops = {
+	.queue_setup    = queue_setup,
+	.buf_prepare  = buffer_prepare,
+	.buf_finish = buffer_finish,
+	.buf_queue    = buffer_queue,
+	.wait_prepare = vb2_ops_wait_prepare,
+	.wait_fini

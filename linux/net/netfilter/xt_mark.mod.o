@@ -1,68 +1,49 @@
-(&torture_ww_mutex_0);
-	ww_mutex_unlock(&torture_ww_mutex_1);
-	ww_mutex_unlock(&torture_ww_mutex_2);
-	ww_acquire_fini(ctx);
-}
-
-static struct lock_torture_ops ww_mutex_lock_ops = {
-	.init		= torture_ww_mutex_init,
-	.exit		= torture_ww_mutex_exit,
-	.writelock	= torture_ww_mutex_lock,
-	.write_delay	= torture_mutex_delay,
-	.task_boost     = torture_boost_dummy,
-	.writeunlock	= torture_ww_mutex_unlock,
-	.readlock       = NULL,
-	.read_delay     = NULL,
-	.readunlock     = NULL,
-	.name		= "ww_mutex_lock"
-};
-
-#ifdef CONFIG_RT_MUTEXES
-static DEFINE_RT_MUTEX(torture_rtmutex);
-
-static int torture_rtmutex_lock(int tid __maybe_unused)
-__acquires(torture_rtmutex)
-{
-	rt_mutex_lock(&torture_rtmutex);
-	return 0;
-}
-
-static void torture_rtmutex_boost(struct torture_random_state *trsp)
-{
-	const unsigned int factor = 50000; /* yes, quite arbitrary */
-
-	if (!rt_task(current)) {
-		/*
-		 * Boost priority once every ~50k operations. When the
-		 * task tries to take the lock, the rtmutex it will account
-		 * for the new priority, and do any corresponding pi-dance.
-		 */
-		if (trsp && !(torture_random(trsp) %
-			      (cxt.nrealwriters_stress * factor))) {
-			sched_set_fifo(current);
-		} else /* common case, do nothing */
-			return;
-	} else {
-		/*
-		 * The task will remain boosted for another ~500k operations,
-		 * then restored back to its original prio, and so forth.
-		 *
-		 * When @trsp is nil, we want to force-reset the task for
-		 * stopping the kthread.
-		 */
-		if (!trsp || !(torture_random(trsp) %
-			       (cxt.nrealwriters_stress * factor * 2))) {
-			sched_set_normal(current, 0);
-		} else /* common case, do nothing */
-			return;
-	}
-}
-
-static void torture_rtmutex_delay(struct torture_random_state *trsp)
-{
-	const unsigned long shortdelay_us = 2;
-	const unsigned long longdelay_ms = 100;
-
-	/*
-	 * We want a short delay mostly to emulate likely code, and
-	 * we want a long delay occasionally to f
+er_of.h \
+  include/linux/build_bug.h \
+  include/linux/compiler.h \
+    $(wildcard include/config/TRACE_BRANCH_PROFILING) \
+    $(wildcard include/config/PROFILE_ALL_BRANCHES) \
+    $(wildcard include/config/STACK_VALIDATION) \
+  include/linux/compiler_types.h \
+  arch/x86/include/generated/asm/rwonce.h \
+  include/asm-generic/rwonce.h \
+  include/linux/kasan-checks.h \
+    $(wildcard include/config/KASAN_GENERIC) \
+    $(wildcard include/config/KASAN_SW_TAGS) \
+  include/linux/types.h \
+    $(wildcard include/config/HAVE_UID16) \
+    $(wildcard include/config/UID16) \
+    $(wildcard include/config/ARCH_DMA_ADDR_T_64BIT) \
+    $(wildcard include/config/PHYS_ADDR_T_64BIT) \
+    $(wildcard include/config/64BIT) \
+    $(wildcard include/config/ARCH_32BIT_USTAT_F_TINODE) \
+  include/uapi/linux/types.h \
+  arch/x86/include/generated/uapi/asm/types.h \
+  include/uapi/asm-generic/types.h \
+  include/asm-generic/int-ll64.h \
+  include/uapi/asm-generic/int-ll64.h \
+  arch/x86/include/uapi/asm/bitsperlong.h \
+  include/asm-generic/bitsperlong.h \
+  include/uapi/asm-generic/bitsperlong.h \
+  include/uapi/linux/posix_types.h \
+  include/linux/stddef.h \
+  include/uapi/linux/stddef.h \
+  arch/x86/include/asm/posix_types.h \
+    $(wildcard include/config/X86_32) \
+  arch/x86/include/uapi/asm/posix_types_32.h \
+  include/uapi/asm-generic/posix_types.h \
+  include/linux/kcsan-checks.h \
+    $(wildcard include/config/KCSAN) \
+    $(wildcard include/config/KCSAN_WEAK_MEMORY) \
+    $(wildcard include/config/KCSAN_IGNORE_ATOMICS) \
+  include/linux/err.h \
+  arch/x86/include/generated/uapi/asm/errno.h \
+  include/uapi/asm-generic/errno.h \
+  include/uapi/asm-generic/errno-base.h \
+  include/linux/poison.h \
+    $(wildcard include/config/ILLEGAL_POINTER_VALUE) \
+  include/linux/const.h \
+  include/vdso/const.h \
+  include/uapi/linux/const.h \
+  arch/x86/include/asm/barrier.h \
+  arch/x86/incl

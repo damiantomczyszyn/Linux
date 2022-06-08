@@ -1,3 +1,5 @@
-ude/config/PARAVIRT_XXL) \
-  arch/x86/include/asm/disabled-features.h \
-    $(wildcard include/config/X86_SMAP) 
+/* SPDX-License-Identifier: GPL-2.0-or-later */
+/*
+ * cimax2.h
+ *
+ * CIMax(R) SP2 driver in conjunction with Net

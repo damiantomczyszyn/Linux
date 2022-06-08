@@ -1,2 +1,1 @@
-lude/linux/percpu-refcount.h \
-  include
+->src_sel_val     = CX23885_SRC_SEL_PARA

@@ -1,4 +1,4 @@
-nclude/linux/page-flags-layout.h \
-    $(wildcard include/config/KASAN_HW_TAGS) \
-  include/linux/numa.h \
-    $(wildc
+taval = tempval & 0x000000FF;
+
+	/* Bring CS and RD high. */
+	regval = MC417_MIWR | MC417_MIRD | MC417_MICS | MC417_MIR

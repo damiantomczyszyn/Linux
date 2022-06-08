@@ -1,1 +1,1 @@
-de/generated/asm/early_io
+cx23885_irq_add_enable(de

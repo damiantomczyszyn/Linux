@@ -1,13 +1,23 @@
-    $(wildcard include/config/HIGH_RES_TIMERS) \
-    $(wildcard include/config/TIME_LOW_RES) \
-    $(wildcard include/config/TIMERFD) \
-  include/linux/hrtimer_defs.h \
-  include/linux/timerqueue.h \
-  include/linux/seccomp.h \
-    $(wildcard include/config/SECCOMP) \
-    $(wildcard include/config/HAVE_ARCH_SECCOMP_FILTER) \
-    $(wildcard include/config/SECCOMP_FILTER) \
-    $(wildcard include/config/CHECKPOINT_RESTORE) \
-    $(wildcard include/config/SECCOMP_CACHE_DEBUG) \
-  include/uapi/linux/seccomp.h \
-  arch/x86/in
+00);
+		break;
+	}
+}
+
+int cx23885_ir_init(struct cx23885_dev *dev)
+{
+	static struct v4l2_subdev_io_pin_config ir_rxtx_pin_cfg[] = {
+		{
+			.flags	  = BIT(V4L2_SUBDEV_IO_PIN_INPUT),
+			.pin	  = CX23885_PIN_IR_RX_GPIO19,
+			.function = CX23885_PAD_IR_RX,
+			.value	  = 0,
+			.strength = CX25840_PIN_DRIVE_MEDIUM,
+		}, {
+			.flags	  = BIT(V4L2_SUBDEV_IO_PIN_OUTPUT),
+			.pin	  = CX23885_PIN_IR_TX_GPIO20,
+			.function = CX23885_PAD_IR_TX,
+			.value	  = 0,
+			.strength = CX25840_PIN_DRIVE_MEDIUM,
+		}
+	};
+	const size_t ir_rxtx_pin_

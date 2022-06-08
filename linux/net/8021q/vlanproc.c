@@ -1,258 +1,273 @@
-atic inline int check_wait_context(struct task_struct *curr,
-				     struct held_lock *next)
+TV-HVR1700 (PCIe, OEM, No IR, full height)
+		 * DVB-T and MPEG2 HW Encoder */
+		break;
+	case 85021:
+		/* WinTV-HVR1850 (PCIe, Retail, 3.5mm in, IR, FM,
+			Dual channel ATSC and MPEG2 HW Encoder */
+		break;
+	case 85721:
+		/* WinTV-HVR1290 (PCIe, OEM, RCA in, IR,
+			Dual channel ATSC and Basic analog */
+	case 121019:
+		/* WinTV-HVR4400 (PCIe, DVB-S2, DVB-C/T) */
+		break;
+	case 121029:
+		/* WinTV-HVR5500 (PCIe, DVB-S2, DVB-C/T) */
+		break;
+	case 150329:
+		/* WinTV-HVR5525 (PCIe, DVB-S/S2, DVB-T/T2/C) */
+		break;
+	case 161111:
+		/* WinTV-HVR-1265 K4 (PCIe, Analog/ATSC/QAM-B) */
+		break;
+	case 166100: /* 888 version, hybrid */
+	case 166200: /* 885 version, DVB only */
+		/* WinTV-QuadHD (DVB) Tuner Pair 1 (PCIe, IR, half height,
+		   DVB-T/T2/C, DVB-T/T2/C */
+		break;
+	case 166101: /* 888 version, hybrid */
+	case 166201: /* 885 version, DVB only */
+		/* WinTV-QuadHD (DVB) Tuner Pair 2 (PCIe, IR, half height,
+		   DVB-T/T2/C, DVB-T/T2/C */
+		break;
+	case 165100: /* 888 version, hybrid */
+	case 165200: /* 885 version, digital only */
+		/* WinTV-QuadHD (ATSC) Tuner Pair 1 (PCIe, IR, half height,
+		 * ATSC/QAM-B, ATSC/QAM-B */
+		break;
+	case 165101: /* 888 version, hybrid */
+	case 165201: /* 885 version, digital only */
+		/* WinTV-QuadHD (ATSC) Tuner Pair 2 (PCIe, IR, half height,
+		 * ATSC/QAM-B, ATSC/QAM-B */
+		break;
+	default:
+		pr_warn("%s: warning: unknown hauppauge model #%d\n",
+			dev->name, tv.model);
+		break;
+	}
+
+	pr_info("%s: hauppauge eeprom: model=%d\n",
+		dev->name, tv.model);
+}
+
+/* Some TBS cards require initing a chip using a bitbanged SPI attached
+   to the cx23885 gpio's. If this chip doesn't get init'ed the demod
+   doesn't respond to any command. */
+static void tbs_card_init(struct cx23885_dev *dev)
 {
+	int i;
+	static const u8 buf[] = {
+		0xe0, 0x06, 0x66, 0x33, 0x65,
+		0x01, 0x17, 0x06, 0xde};
+
+	switch (dev->board) {
+	case CX23885_BOARD_TBS_6980:
+	case CX23885_BOARD_TBS_6981:
+		cx_set(GP0_IO, 0x00070007);
+		usleep_range(1000, 10000);
+		cx_clear(GP0_IO, 2);
+		usleep_range(1000, 10000);
+		for (i = 0; i < 9 * 8; i++) {
+			cx_clear(GP0_IO, 7);
+			usleep_range(1000, 10000);
+			cx_set(GP0_IO,
+				((buf[i >> 3] >> (7 - (i & 7))) & 1) | 4);
+			usleep_range(1000, 10000);
+		}
+		cx_set(GP0_IO, 7);
+		break;
+	}
+}
+
+int cx23885_tuner_callback(void *priv, int component, int command, int arg)
+{
+	struct cx23885_tsport *port = priv;
+	struct cx23885_dev *dev = port->dev;
+	u32 bitmask = 0;
+
+	if ((command == XC2028_RESET_CLK) || (command == XC2028_I2C_FLUSH))
+		return 0;
+
+	if (command != 0) {
+		pr_err("%s(): Unknown command 0x%x.\n",
+		       __func__, command);
+		return -EINVAL;
+	}
+
+	switch (dev->board) {
+	case CX23885_BOARD_HAUPPAUGE_HVR1400:
+	case CX23885_BOARD_HAUPPAUGE_HVR1500:
+	case CX23885_BOARD_HAUPPAUGE_HVR1500Q:
+	case CX23885_BOARD_LEADTEK_WINFAST_PXDVR3200_H:
+	case CX23885_BOARD_LEADTEK_WINFAST_PXPVR2200:
+	case CX23885_BOARD_LEADTEK_WINFAST_PXDVR3200_H_XC4000:
+	case CX23885_BOARD_COMPRO_VIDEOMATE_E650F:
+	case CX23885_BOARD_COMPRO_VIDEOMATE_E800:
+	case CX23885_BOARD_LEADTEK_WINFAST_PXTV1200:
+		/* Tuner Reset Command */
+		bitmask = 0x04;
+		break;
+	case CX23885_BOARD_DVICO_FUSIONHDTV_7_DUAL_EXP:
+	case CX23885_BOARD_DVICO_FUSIONHDTV_DVB_T_DUAL_EXP:
+	case CX23885_BOARD_DVICO_FUSIONHDTV_DVB_T_DUAL_EXP2:
+		/* Two identical tuners on two different i2c buses,
+		 * we need to reset the correct gpio. */
+		if (port->nr == 1)
+			bitmask = 0x01;
+		else if (port->nr == 2)
+			bitmask = 0x04;
+		break;
+	case CX23885_BOARD_GOTVIEW_X5_3D_HYBRID:
+		/* Tuner Reset Command */
+		bitmask = 0x02;
+		break;
+	case CX23885_BOARD_NETUP_DUAL_DVB_T_C_CI_RF:
+		altera_ci_tuner_reset(dev, port->nr);
+		break;
+	case CX23885_BOARD_AVERMEDIA_HC81R:
+		/* XC3028L Reset Command */
+		bitmask = 1 << 2;
+		break;
+	}
+
+	if (bitmask) {
+		/* Drive the tuner into reset and back out */
+		cx_clear(GP0_IO, bitmask);
+		mdelay(200);
+		cx_set(GP0_IO, bitmask);
+	}
+
 	return 0;
 }
 
-#endif /* CONFIG_PROVE_LOCKING */
-
-/*
- * Initialize a lock instance's lock-class mapping info:
- */
-void lockdep_init_map_type(struct lockdep_map *lock, const char *name,
-			    struct lock_class_key *key, int subclass,
-			    u8 inner, u8 outer, u8 lock_type)
+void cx23885_gpio_setup(struct cx23885_dev *dev)
 {
-	int i;
+	switch (dev->board) {
+	case CX23885_BOARD_HAUPPAUGE_HVR1250:
+		/* GPIO-0 cx24227 demodulator reset */
+		cx_set(GP0_IO, 0x00010001); /* Bring the part out of reset */
+		break;
+	case CX23885_BOARD_HAUPPAUGE_HVR1500:
+		/* GPIO-0 cx24227 demodulator */
+		/* GPIO-2 xc3028 tuner */
 
-	for (i = 0; i < NR_LOCKDEP_CACHING_CLASSES; i++)
-		lock->class_cache[i] = NULL;
+		/* Put the parts into reset */
+		cx_set(GP0_IO, 0x00050000);
+		cx_clear(GP0_IO, 0x00000005);
+		msleep(5);
 
-#ifdef CONFIG_LOCK_STAT
-	lock->cpu = raw_smp_processor_id();
-#endif
+		/* Bring the parts out of reset */
+		cx_set(GP0_IO, 0x00050005);
+		break;
+	case CX23885_BOARD_HAUPPAUGE_HVR1500Q:
+		/* GPIO-0 cx24227 demodulator reset */
+		/* GPIO-2 xc5000 tuner reset */
+		cx_set(GP0_IO, 0x00050005); /* Bring the part out of reset */
+		break;
+	case CX23885_BOARD_HAUPPAUGE_HVR1800:
+		/* GPIO-0 656_CLK */
+		/* GPIO-1 656_D0 */
+		/* GPIO-2 8295A Reset */
+		/* GPIO-3-10 cx23417 data0-7 */
+		/* GPIO-11-14 cx23417 addr0-3 */
+		/* GPIO-15-18 cx23417 READY, CS, RD, WR */
+		/* GPIO-19 IR_RX */
 
-	/*
-	 * Can't be having no nameless bastards around this place!
-	 */
-	if (DEBUG_LOCKS_WARN_ON(!name)) {
-		lock->name = "NULL";
-		return;
-	}
+		/* CX23417 GPIO's */
+		/* EIO15 Zilog Reset */
+		/* EIO14 S5H1409/CX24227 Reset */
+		mc417_gpio_enable(dev, GPIO_15 | GPIO_14, 1);
 
-	lock->name = name;
+		/* Put the demod into reset and protect the eeprom */
+		mc417_gpio_clear(dev, GPIO_15 | GPIO_14);
+		msleep(100);
 
-	lock->wait_type_outer = outer;
-	lock->wait_type_inner = inner;
-	lock->lock_type = lock_type;
+		/* Bring the demod and blaster out of reset */
+		mc417_gpio_set(dev, GPIO_15 | GPIO_14);
+		msleep(100);
 
-	/*
-	 * No key, no joy, we need to hash something.
-	 */
-	if (DEBUG_LOCKS_WARN_ON(!key))
-		return;
-	/*
-	 * Sanity check, the lock-class key must either have been allocated
-	 * statically or must have been registered as a dynamic key.
-	 */
-	if (!static_obj(key) && !is_dynamic_key(key)) {
-		if (debug_locks)
-			printk(KERN_ERR "BUG: key %px has not been registered!\n", key);
-		DEBUG_LOCKS_WARN_ON(1);
-		return;
-	}
-	lock->key = key;
+		/* Force the TDA8295A into reset and back */
+		cx23885_gpio_enable(dev, GPIO_2, 1);
+		cx23885_gpio_set(dev, GPIO_2);
+		msleep(20);
+		cx23885_gpio_clear(dev, GPIO_2);
+		msleep(20);
+		cx23885_gpio_set(dev, GPIO_2);
+		msleep(20);
+		break;
+	case CX23885_BOARD_HAUPPAUGE_HVR1200:
+		/* GPIO-0 tda10048 demodulator reset */
+		/* GPIO-2 tda18271 tuner reset */
 
-	if (unlikely(!debug_locks))
-		return;
+		/* Put the parts into reset and back */
+		cx_set(GP0_IO, 0x00050000);
+		msleep(20);
+		cx_clear(GP0_IO, 0x00000005);
+		msleep(20);
+		cx_set(GP0_IO, 0x00050005);
+		break;
+	case CX23885_BOARD_HAUPPAUGE_HVR1700:
+		/* GPIO-0 TDA10048 demodulator reset */
+		/* GPIO-2 TDA8295A Reset */
+		/* GPIO-3-10 cx23417 data0-7 */
+		/* GPIO-11-14 cx23417 addr0-3 */
+		/* GPIO-15-18 cx23417 READY, CS, RD, WR */
 
-	if (subclass) {
-		unsigned long flags;
+		/* The following GPIO's are on the interna AVCore (cx25840) */
+		/* GPIO-19 IR_RX */
+		/* GPIO-20 IR_TX 416/DVBT Select */
+		/* GPIO-21 IIS DAT */
+		/* GPIO-22 IIS WCLK */
+		/* GPIO-23 IIS BCLK */
 
-		if (DEBUG_LOCKS_WARN_ON(!lockdep_enabled()))
-			return;
+		/* Put the parts into reset and back */
+		cx_set(GP0_IO, 0x00050000);
+		msleep(20);
+		cx_clear(GP0_IO, 0x00000005);
+		msleep(20);
+		cx_set(GP0_IO, 0x00050005);
+		break;
+	case CX23885_BOARD_HAUPPAUGE_HVR1400:
+		/* GPIO-0  Dibcom7000p demodulator reset */
+		/* GPIO-2  xc3028L tuner reset */
+		/* GPIO-13 LED */
 
-		raw_local_irq_save(flags);
-		lockdep_recursion_inc();
-		register_lock_class(lock, subclass, 1);
-		lockdep_recursion_finish();
-		raw_local_irq_restore(flags);
-	}
-}
-EXPORT_SYMBOL_GPL(lockdep_init_map_type);
+		/* Put the parts into reset and back */
+		cx_set(GP0_IO, 0x00050000);
+		msleep(20);
+		cx_clear(GP0_IO, 0x00000005);
+		msleep(20);
+		cx_set(GP0_IO, 0x00050005);
+		break;
+	case CX23885_BOARD_DVICO_FUSIONHDTV_7_DUAL_EXP:
+		/* GPIO-0 xc5000 tuner reset i2c bus 0 */
+		/* GPIO-1 s5h1409 demod reset i2c bus 0 */
+		/* GPIO-2 xc5000 tuner reset i2c bus 1 */
+		/* GPIO-3 s5h1409 demod reset i2c bus 0 */
 
-struct lock_class_key __lockdep_no_validate__;
-EXPORT_SYMBOL_GPL(__lockdep_no_validate__);
+		/* Put the parts into reset and back */
+		cx_set(GP0_IO, 0x000f0000);
+		msleep(20);
+		cx_clear(GP0_IO, 0x0000000f);
+		msleep(20);
+		cx_set(GP0_IO, 0x000f000f);
+		break;
+	case CX23885_BOARD_DVICO_FUSIONHDTV_DVB_T_DUAL_EXP:
+	case CX23885_BOARD_DVICO_FUSIONHDTV_DVB_T_DUAL_EXP2:
+		/* GPIO-0 portb xc3028 reset */
+		/* GPIO-1 portb zl10353 reset */
+		/* GPIO-2 portc xc3028 reset */
+		/* GPIO-3 portc zl10353 reset */
 
-static void
-print_lock_nested_lock_not_held(struct task_struct *curr,
-				struct held_lock *hlock,
-				unsigned long ip)
-{
-	if (!debug_locks_off())
-		return;
-	if (debug_locks_silent)
-		return;
-
-	pr_warn("\n");
-	pr_warn("==================================\n");
-	pr_warn("WARNING: Nested lock was not taken\n");
-	print_kernel_ident();
-	pr_warn("----------------------------------\n");
-
-	pr_warn("%s/%d is trying to lock:\n", curr->comm, task_pid_nr(curr));
-	print_lock(hlock);
-
-	pr_warn("\nbut this task is not holding:\n");
-	pr_warn("%s\n", hlock->nest_lock->name);
-
-	pr_warn("\nstack backtrace:\n");
-	dump_stack();
-
-	pr_warn("\nother info that might help us debug this:\n");
-	lockdep_print_held_locks(curr);
-
-	pr_warn("\nstack backtrace:\n");
-	dump_stack();
-}
-
-static int __lock_is_held(const struct lockdep_map *lock, int read);
-
-/*
- * This gets called for every mutex_lock*()/spin_lock*() operation.
- * We maintain the dependency maps and validate the locking attempt:
- *
- * The callers must make sure that IRQs are disabled before calling it,
- * otherwise we could get an interrupt which would want to take locks,
- * which would end up in lockdep again.
- */
-static int __lock_acquire(struct lockdep_map *lock, unsigned int subclass,
-			  int trylock, int read, int check, int hardirqs_off,
-			  struct lockdep_map *nest_lock, unsigned long ip,
-			  int references, int pin_count)
-{
-	struct task_struct *curr = current;
-	struct lock_class *class = NULL;
-	struct held_lock *hlock;
-	unsigned int depth;
-	int chain_head = 0;
-	int class_idx;
-	u64 chain_key;
-
-	if (unlikely(!debug_locks))
-		return 0;
-
-	if (!prove_locking || lock->key == &__lockdep_no_validate__)
-		check = 0;
-
-	if (subclass < NR_LOCKDEP_CACHING_CLASSES)
-		class = lock->class_cache[subclass];
-	/*
-	 * Not cached?
-	 */
-	if (unlikely(!class)) {
-		class = register_lock_class(lock, subclass, 0);
-		if (!class)
-			return 0;
-	}
-
-	debug_class_ops_inc(class);
-
-	if (very_verbose(class)) {
-		printk("\nacquire class [%px] %s", class->key, class->name);
-		if (class->name_version > 1)
-			printk(KERN_CONT "#%d", class->name_version);
-		printk(KERN_CONT "\n");
-		dump_stack();
-	}
-
-	/*
-	 * Add the lock to the list of currently held locks.
-	 * (we dont increase the depth just yet, up until the
-	 * dependency checks are done)
-	 */
-	depth = curr->lockdep_depth;
-	/*
-	 * Ran out of static storage for our per-task lock stack again have we?
-	 */
-	if (DEBUG_LOCKS_WARN_ON(depth >= MAX/dqblk_xfs.h \
-  include/linux/dqblk_v1.h \
-  include/linux/dqblk_v2.h \
-  include/linux/dqblk_qtree.h \
-  include/linux/projid.h \
-  include/uapi/linux/quota.h \
-  include/linux/nfs_fs_i.h \
-  include/linux/seq_file.h \
-  include/linux/string_helpers.h \
-  include/linux/ctype.h \
-  include/linux/kernfs.h \
-    $(wildcard include/config/KERNFS) \
-  include/linux/idr.h \
-  include/linux/ns_common.h \
-  include/linux/nsproxy.h \
-  include/linux/user_namespace.h \
-    $(wildcard include/config/INOTIFY_USER) \
-    $(wildcard include/config/FANOTIFY) \
-    $(wildcard include/config/PERSISTENT_KEYRINGS) \
-  include/linux/kernel_stat.h \
-  include/linux/interrupt.h \
-    $(wildcard include/config/IRQ_FORCED_THREADING) \
-    $(wildcard include/config/GENERIC_IRQ_PROBE) \
-    $(wildcard include/config/IRQ_TIMINGS) \
-  include/linux/irqreturn.h \
-  include/linux/irqnr.h \
-  include/uapi/linux/irqnr.h \
-  include/linux/hardirq.h \
-  include/linux/context_tracking_state.h \
-    $(wildcard include/config/CONTEXT_TRACKING) \
-  include/linux/ftrace_irq.h \
-    $(wildcard include/config/HWLAT_TRACER) \
-    $(wildcard include/config/OSNOISE_TRACER) \
-  include/linux/vtime.h \
-    $(wildcard include/config/VIRT_CPU_ACCOUNTING) \
-    $(wildcard include/config/IRQ_TIME_ACCOUNTING) \
-  arch/x86/include/asm/hardirq.h \
-    $(wildcard include/config/KVM_INTEL) \
-    $(wildcard include/config/HAVE_KVM) \
-    $(wildcard include/config/X86_THERMAL_VECTOR) \
-    $(wildcard include/config/X86_MCE_THRESHOLD) \
-    $(wildcard include/config/X86_MCE_AMD) \
-    $(wildcard include/config/X86_HV_CALLBACK_VECTOR) \
-    $(wildcard include/config/HYPERV) \
-  arch/x86/include/asm/irq.h \
-  arch/x86/include/asm/irq_vectors.h \
-    $(wildcard include/config/X86_IO_APIC) \
-    $(wildcard include/config/PCI_MSI) \
-  arch/x86/include/asm/sections.h \
-  include/asm-generic/sections.h \
-    $(wildcard include/config/HAVE_FUNCTION_DESCRIPTORS) \
-  include/linux/cgroup-defs.h \
-    $(wildcard include/config/CGROUP_NET_CLASSID) \
-    $(wildcard include/config/CGROUP_NET_PRIO) \
-  include/linux/u64_stats_sync.h \
-  include/linux/bpf-cgroup-defs.h \
-  include/linux/psi_types.h \
-  include/linux/kthread.h \
-  include/linux/cgroup_subsys.h \
-    $(wildcard include/config/CGROUP_DEVICE) \
-    $(wildcard include/config/CGROUP_FREEZER) \
-    $(wildcard include/config/CGROUP_PERF) \
-    $(wildcard include/config/CGROUP_HUGETLB) \
-    $(wildcard include/config/CGROUP_PIDS) \
-    $(wildcard include/config/CGROUP_RDMA) \
-    $(wildcard include/config/CGROUP_MISC) \
-    $(wildcard include/config/CGROUP_DEBUG) \
-  include/linux/filter.h \
-    $(wildcard include/config/BPF_JIT_ALWAYS_ON) \
-    $(wildcard include/config/HAVE_EBPF_JIT) \
-    $(wildcard include/config/IPV6) \
-  include/linux/bpf.h \
-  include/uapi/linux/bpf.h \
-    $(wildcard include/config/BPF_LIRC_MODE2) \
-    $(wildcard include/config/EFFICIENT_UNALIGNED_ACCESS) \
-    $(wildcard include/config/IP_ROUTE_CLASSID) \
-    $(wildcard include/config/BPF_KPROBE_OVERRIDE) \
-    $(wildcard include/config/FUNCTION_ERROR_INJECTION) \
-    $(wildcard include/config/XFRM) \
-  include/uapi/linux/bpf_common.h \
-  include/linux/file.h \
-  include/linux/rbtree_latch.h \
-  include/linux/module.h \
-    $(wildcard include/config/MODULES_TREE_LOOKUP) \
-    $(wildcard include/config/STACKTRACE_BUILD_ID) \
-    $(wildcard include/config/MODULE_SIG) \
-    $(wildcard include/config/KALLSYMS) \
-    $(wildcard include/config/BPF_EVENTS) \
-    $(wildcard include/config/DEBUG_INFO_BTF_MODULES) \
-    $(wildcard include/config/EVENT_TRACING) \
-    $(wil
+		/* Put the parts into reset and back */
+		cx_set(GP0_IO, 0x000f0000);
+		msleep(20);
+		cx_clear(GP0_IO, 0x0000000f);
+		msleep(20);
+		cx_set(GP0_IO, 0x000f000f);
+		break;
+	case CX23885_BOARD_LEADTEK_WINFAST_PXDVR3200_H:
+	case CX23885_BOARD_LEADTEK_WINFAST_PXPVR2200:
+	case CX23885_BOARD_LEADTEK_WINFAST_PXDVR3200_H_XC4000:
+	case CX23885_BOARD_COMPRO_VIDEOMATE_E650F:
+	case CX23885_BOARD_COMPRO_VIDEOMATE_E8

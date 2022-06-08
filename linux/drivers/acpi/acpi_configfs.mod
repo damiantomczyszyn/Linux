@@ -1,1 +1,1 @@
- $(wildcard include/config/GEN
+// SPDX-License-Identifier: GP

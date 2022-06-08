@@ -1,2 +1,1 @@
-U_FANOUT_LEAF) \
-  include/linux/page-flags-lay
+.duty_cycle = 25,      /* 25 %   - RC-5 carrier

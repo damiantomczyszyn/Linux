@@ -1,147 +1,146 @@
-IRQ) << LOCK_USAGE_READ_MASK;
-
-	return excl;
-}
-
-/*
- * Find the first pair of bit match between an original
- * usage mask and an exclusive usage mask.
- */
-static int find_exclusive_match(unsigned long mask,
-				unsigned long excl_mask,
-				enum lock_usage_bit *bitp,
-				enum lock_usage_bit *excl_bitp)
-{
-	int bit, excl, excl_read;
-
-	for_each_set_bit(bit, &mask, LOCK_USED) {
-		/*
-		 * exclusive_bit() strips the read bit, however,
-		 * LOCK_ENABLED_IRQ_*_READ may cause deadlocks too, so we need
-		 * to search excl | LOCK_USAGE_READ_MASK as well.
-		 */
-		excl = exclusive_bit(bit);
-		excl_read = excl | LOCK_USAGE_READ_MASK;
-		if (excl_mask & lock_flag(excl)) {
-			*bitp = bit;
-			*excl_bitp = excl;
-			return 0;
-		} else if (excl_mask & lock_flag(excl_read)) {
-			*bitp = bit;
-			*excl_bitp = excl_read;
-			return 0;
-		}
-	}
-	return -1;
-}
-
-/*
- * Prove that the new dependency does not connect a hardirq-safe(-read)
- * lock with a hardirq-unsafe lock - to achieve this we search
- * the backwards-subgraph starting at <prev>, and the
- * forwards-subgraph starting at <next>:
- */
-static int check_irq_usage(struct task_struct *curr, struct held_lock *prev,
-			   struct held_lock *next)
-{
-	unsigned long usage_mask = 0, forward_mask, backward_mask;
-	enum lock_usage_bit forward_bit = 0, backward_bit = 0;
-	struct lock_list *target_entry1;
-	struct lock_list *target_entry;
-	struct lock_list this, that;
-	enum bfs_result ret;
-
-	/*
-	 * Step 1: gather all hard/soft IRQs usages backward in an
-	 * accumulated usage mask.
-	 */
-	bfs_init_rootb(&this, prev);
-
-	ret = __bfs_backwards(&this, &usage_mask, usage_accumulate, usage_skip, NULL);
-	if (bfs_error(ret)) {
-		print_bfs_bug(ret);
-		return 0;
-	}
-
-	usage_mask &= LOCKF_USED_IN_IRQ_ALL;
-	if (!usage_mask)
-		return 1;
-
-	/*
-	 * Step 2: find exclusive uses forward that match the previous
-	 * backward accumulated mask.
-	 */
-	forward_mask = exclusive_mask(usage_mask);
-
-	bfs_init_root(&that, next);
-
-	ret = find_usage_forwards(&that, forward_mask, &target_entry1);
-	if (bfs_error(ret)) {
-		print_bfs_bug(ret);
-		return 0;
-	}
-	if (ret == BFS_RNOMATCH)
-		return 1;
-
-	/*
-	 * Step 3: we found a bad match! Now retrieve a lock from the backward
-	 * list whose usage mask matches the exclusive usage mask from the
-	 * lock found on the forward list.
-	 *
-	 * Note, we should only keep the LOCKF_ENABLED_IRQ_ALL bits, considering
-	 * the follow case:
-	 *
-	 * When trying to add A -> B to the graph, we find that there is a
-	 * hardirq-safe L, that L -> ... -> A, and another hardirq-unsafe M,
-	 * that B -> ... -> M. However M is **softirq-safe**, if we use exact
-	 * invert bits of M's usage_mask, we will find another lock N that is
-	 * **softirq-unsafe** and N -> ... -> A, however N -> .. -> M will not
-	 * cause a inversion deadlock.
-	 */
-	backward_mask = original_mask(target_entry1->class->usage_mask & LOCKF_ENABLED_IRQ_ALL);
-
-	ret = find_usage_backwards(&this, backward_mask, &target_entry);
-	if (bfs_error(ret)) {
-		print_bfs_bug(ret);
-		return 0;
-	}
-	if (DEBUG_LOCKS_WARN_ON(ret == BFS_RNOMATCH))
-		return 1;
-
-	/*
-	 * Step 4: narrow down to a pair of incompatible usage bits
-	 * and report it.
-	 */
-	ret = find_exclusive_match(target_entry->class->usage_mask,
-				   target_entry1->class->usage_mask,
-				   &backward_bit, &forward_bit);
-	if (DEBUG_LOCKS_WARN_ON(ret == -1))
-		return 1;
-
-	print_bad_irq_dependency(curr, &this, &that,
-				 target_entry, target_entry1,
-				 prev, next,
-				 backward_bit, forward_bit,
-				 state_name(backward_bit));
-
-	return 0;
-}
-
-#else
-
-static inline int check_irq_usage(struct task_struct *curr,
-				  struct held_lock *prev, struct held_lock *next)
-{
-	return 1;
-}
-
-static inline bool usage_skip(struct lock_list *entry, void *mask)
-{
-	return false;
-}
-
-#endif /* CONFIG_TRACE_IRQFLAGS */
-
-#ifdef CONFIG_LOCKDEP_SMALL
-/*
- * Check that the 
+] = {
+		.name		= "Hauppauge WinTV-HVR1500Q",
+		.portc		= CX23885_MPEG_DVB,
+	},
+	[CX23885_BOARD_HAUPPAUGE_HVR1500] = {
+		.name		= "Hauppauge WinTV-HVR1500",
+		.porta		= CX23885_ANALOG_VIDEO,
+		.portc		= CX23885_MPEG_DVB,
+		.tuner_type	= TUNER_XC2028,
+		.tuner_addr	= 0x61, /* 0xc2 >> 1 */
+		.input          = {{
+			.type   = CX23885_VMUX_TELEVISION,
+			.vmux   =	CX25840_VIN7_CH3 |
+					CX25840_VIN5_CH2 |
+					CX25840_VIN2_CH1,
+			.gpio0  = 0,
+		}, {
+			.type   = CX23885_VMUX_COMPOSITE1,
+			.vmux   =	CX25840_VIN7_CH3 |
+					CX25840_VIN4_CH2 |
+					CX25840_VIN6_CH1,
+			.gpio0  = 0,
+		}, {
+			.type   = CX23885_VMUX_SVIDEO,
+			.vmux   =	CX25840_VIN7_CH3 |
+					CX25840_VIN4_CH2 |
+					CX25840_VIN8_CH1 |
+					CX25840_SVIDEO_ON,
+			.gpio0  = 0,
+		} },
+	},
+	[CX23885_BOARD_HAUPPAUGE_HVR1200] = {
+		.name		= "Hauppauge WinTV-HVR1200",
+		.portc		= CX23885_MPEG_DVB,
+	},
+	[CX23885_BOARD_HAUPPAUGE_HVR1700] = {
+		.name		= "Hauppauge WinTV-HVR1700",
+		.portc		= CX23885_MPEG_DVB,
+	},
+	[CX23885_BOARD_HAUPPAUGE_HVR1400] = {
+		.name		= "Hauppauge WinTV-HVR1400",
+		.portc		= CX23885_MPEG_DVB,
+	},
+	[CX23885_BOARD_DVICO_FUSIONHDTV_7_DUAL_EXP] = {
+		.name		= "DViCO FusionHDTV7 Dual Express",
+		.portb		= CX23885_MPEG_DVB,
+		.portc		= CX23885_MPEG_DVB,
+	},
+	[CX23885_BOARD_DVICO_FUSIONHDTV_DVB_T_DUAL_EXP] = {
+		.name		= "DViCO FusionHDTV DVB-T Dual Express",
+		.portb		= CX23885_MPEG_DVB,
+		.portc		= CX23885_MPEG_DVB,
+	},
+	[CX23885_BOARD_LEADTEK_WINFAST_PXDVR3200_H] = {
+		.name		= "Leadtek Winfast PxDVR3200 H",
+		.portc		= CX23885_MPEG_DVB,
+	},
+	[CX23885_BOARD_LEADTEK_WINFAST_PXPVR2200] = {
+		.name		= "Leadtek Winfast PxPVR2200",
+		.porta		= CX23885_ANALOG_VIDEO,
+		.tuner_type	= TUNER_XC2028,
+		.tuner_addr	= 0x61,
+		.tuner_bus	= 1,
+		.input		= {{
+			.type	= CX23885_VMUX_TELEVISION,
+			.vmux	= CX25840_VIN2_CH1 |
+				  CX25840_VIN5_CH2,
+			.amux	= CX25840_AUDIO8,
+			.gpio0	= 0x704040,
+		}, {
+			.type	= CX23885_VMUX_COMPOSITE1,
+			.vmux	= CX25840_COMPOSITE1,
+			.amux	= CX25840_AUDIO7,
+			.gpio0	= 0x704040,
+		}, {
+			.type	= CX23885_VMUX_SVIDEO,
+			.vmux	= CX25840_SVIDEO_LUMA3 |
+				  CX25840_SVIDEO_CHROMA4,
+			.amux	= CX25840_AUDIO7,
+			.gpio0	= 0x704040,
+		}, {
+			.type	= CX23885_VMUX_COMPONENT,
+			.vmux	= CX25840_VIN7_CH1 |
+				  CX25840_VIN6_CH2 |
+				  CX25840_VIN8_CH3 |
+				  CX25840_COMPONENT_ON,
+			.amux	= CX25840_AUDIO7,
+			.gpio0	= 0x704040,
+		} },
+	},
+	[CX23885_BOARD_LEADTEK_WINFAST_PXDVR3200_H_XC4000] = {
+		.name		= "Leadtek Winfast PxDVR3200 H XC4000",
+		.porta		= CX23885_ANALOG_VIDEO,
+		.portc		= CX23885_MPEG_DVB,
+		.tuner_type	= TUNER_XC4000,
+		.tuner_addr	= 0x61,
+		.radio_type	= UNSET,
+		.radio_addr	= ADDR_UNSET,
+		.input		= {{
+			.type	= CX23885_VMUX_TELEVISION,
+			.vmux	= CX25840_VIN2_CH1 |
+				  CX25840_VIN5_CH2 |
+				  CX25840_NONE0_CH3,
+		}, {
+			.type	= CX23885_VMUX_COMPOSITE1,
+			.vmux	= CX25840_COMPOSITE1,
+		}, {
+			.type	= CX23885_VMUX_SVIDEO,
+			.vmux	= CX25840_SVIDEO_LUMA3 |
+				  CX25840_SVIDEO_CHROMA4,
+		}, {
+			.type	= CX23885_VMUX_COMPONENT,
+			.vmux	= CX25840_VIN7_CH1 |
+				  CX25840_VIN6_CH2 |
+				  CX25840_VIN8_CH3 |
+				  CX25840_COMPONENT_ON,
+		} },
+	},
+	[CX23885_BOARD_COMPRO_VIDEOMATE_E650F] = {
+		.name		= "Compro VideoMate E650F",
+		.portc		= CX23885_MPEG_DVB,
+	},
+	[CX23885_BOARD_TBS_6920] = {
+		.name		= "TurboSight TBS 6920",
+		.portb		= CX23885_MPEG_DVB,
+	},
+	[CX23885_BOARD_TBS_6980] = {
+		.name		= "TurboSight TBS 6980",
+		.portb		= CX23885_MPEG_DVB,
+		.portc		= CX23885_MPEG_DVB,
+	},
+	[CX23885_BOARD_TBS_6981] = {
+		.name		= "TurboSight TBS 6981",
+		.portb		= CX23885_MPEG_DVB,
+		.portc		= CX23885_MPEG_DVB,
+	},
+	[CX23885_BOARD_TEVII_S470] = {
+		.name		= "TeVii S470",
+		.portb		= CX23885_MPEG_DVB,
+	},
+	[CX23885_BOARD_DVBWORLD_2005] = {
+		.name		= "DVBWorld DVB-S2 2005",
+		.portb		= CX23885_MPEG_DVB,
+	},
+	[CX23885_BOARD_NETUP_DUAL_DVBS2_CI] = {
+	

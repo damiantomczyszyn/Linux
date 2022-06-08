@@ -1,2 +1,4 @@
-pes.h \
-  include/asm-generic/pgtable-nop4d
+DING,
+};
+enum cx23885_copyright {
+	CX23885_

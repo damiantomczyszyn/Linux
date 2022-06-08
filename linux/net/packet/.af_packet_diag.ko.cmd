@@ -1,8 +1,5 @@
-s[0]),
-				       GFP_KERNEL);
-		if (reader_tasks == NULL) {
-			TOROUT_ERRSTRING("reader_tasks: Out of memory");
-			kfree(writer_tasks);
-			writer_tasks = NULL;
-			firsterr = -ENOMEM;
-			goto 
+/* SPDX-License-Identifier: GPL-2.0 */
+/*
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the

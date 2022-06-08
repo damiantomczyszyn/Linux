@@ -1,17 +1,16 @@
-ount_matching_names(class);
-	class->wait_type_inner = lock->wait_type_inner;
-	class->wait_type_outer = lock->wait_type_outer;
-	class->lock_type = lock->lock_type;
-	/*
-	 * We use RCU's safe list-add method to make
-	 * parallel walking of the hash-list safe:
-	 */
-	hlist_add_head_rcu(&class->hash_entry, hash_head);
-	/*
-	 * Remove the class from the free list and add it to the global list
-	 * of classes.
-	 */
-	list_move_tail(&class->lock_entry, &all_lock_classes);
-	idx = class - lock_classes;
-	if (idx > max_lock_class_idx)
-	
+(of runnable tasks) this is provided by the following means:
+ *
+ *  A) UNLOCK of the rq(c0)->lock scheduling out task t
+ *  B) migration for t is required to synchronize *both* rq(c0)->lock and
+ *     rq(c1)->lock (if not at the same time, then in that order).
+ *  C) LOCK of the rq(c1)->lock scheduling in task
+ *
+ * Release/acquire chaining guarantees that B happens after A and C after B.
+ * Note: the CPU doing B need not be c0 or c1
+ *
+ * Example:
+ *
+ *   CPU0            CPU1            CPU2
+ *
+ *   LOCK rq(0)->lock
+ * 

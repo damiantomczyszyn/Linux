@@ -1,63 +1,74 @@
-rd include/config/ALTERNATE_USER_ADDRESS_SPACE) \
-  arch/x86/include/asm/uaccess_32.h \
-  include/linux/cred.h \
-    $(wildcard include/config/DEBUG_CREDENTIALS) \
-  include/linux/key.h \
-    $(wildcard include/config/KEY_NOTIFICATIONS) \
-    $(wildcard include/config/NET) \
-  include/linux/assoc_array.h \
-    $(wildcard include/config/ASSOCIATIVE_ARRAY) \
-  include/linux/sched/user.h \
-    $(wildcard include/config/WATCH_QUEUE) \
-  include/linux/percpu_counter.h \
-  include/linux/rcu_sync.h \
-  include/linux/delayed_call.h \
-  include/linux/errseq.h \
-  include/linux/ioprio.h \
-  include/linux/sched/rt.h \
-  include/linux/iocontext.h \
-    $(wildcard include/config/BLK_ICQ) \
-  include/uapi/linux/ioprio.h \
-  include/linux/fs_types.h \
-  include/linux/mount.h \
-  include/linux/mnt_idmapping.h \
-  include/uapi/linux/fs.h \
-  include/linux/quota.h \
-    $(wildcard include/config/QUOTA_NETLINK_INTERFACE) \
-  include/uapi/linux/dqblk_xfs.h \
-  include/linux/dqblk_v1.h \
-  include/linux/dqblk_v2.h \
-  include/linux/dqblk_qtree.h \
-  include/linux/projid.h \
-  include/uapi/linux/quota.h \
-  include/linux/nfs_fs_i.h \
-  include/linux/seq_file.h \
-  include/linux/string_helpers.h \
-  include/linux/ns_common.h \
-  include/linux/nsproxy.h \
-  include/linux/user_namespace.h \
-    $(wildcard include/config/INOTIFY_USER) \
-    $(wildcard include/config/FANOTIFY) \
-    $(wildcard include/config/PERSISTENT_KEYRINGS) \
-  include/linux/kernel_stat.h \
-  include/linux/interrupt.h \
-    $(wildcard include/config/IRQ_FORCED_THREADING) \
-    $(wildcard include/config/GENERIC_IRQ_PROBE) \
-    $(wildcard include/config/IRQ_TIMINGS) \
-  include/linux/irqreturn.h \
-  include/linux/irqnr.h \
-  include/uapi/linux/irqnr.h \
-  include/linux/hardirq.h \
-  include/linux/context_tracking_state.h \
-    $(wildcard include/config/CONTEXT_TRACKING) \
-  include/linux/ftrace_irq.h \
-    $(wildcard include/config/HWLAT_TRACER) \
-    $(wildcard include/config/OSNOISE_TRACER) \
-  include/linux/vtime.h \
-    $(wildcard include/config/VIRT_CPU_ACCOUNTING) \
-    $(wildcard include/config/IRQ_TIME_ACCOUNTING) \
-  arch/x86/include/asm/hardirq.h \
-    $(wildcard include/config/KVM_INTEL) \
-    $(wildcard include/config/X86_THERMAL_VECTOR) \
-    $(wildcard include/config/X86_MCE_THRESHOLD) \
-    $(w
+// SPDX-License-Identifier: GPL-2.0-or-later
+/*
+ *
+ *  Support for CX23885 analog audio capture
+ *
+ *    (c) 2008 Mijhail Moreyra <mijhail.moreyra@gmail.com>
+ *    Adapted from cx88-alsa.c
+ *    (c) 2009 Steven Toth <stoth@kernellabs.com>
+ */
+
+#include "cx23885.h"
+#include "cx23885-reg.h"
+
+#include <linux/module.h>
+#include <linux/init.h>
+#include <linux/device.h>
+#include <linux/interrupt.h>
+#include <linux/vmalloc.h>
+#include <linux/dma-mapping.h>
+#include <linux/pci.h>
+
+#include <asm/delay.h>
+
+#include <sound/core.h>
+#include <sound/pcm.h>
+#include <sound/pcm_params.h>
+#include <sound/control.h>
+#include <sound/initval.h>
+
+#include <sound/tlv.h>
+
+#define AUDIO_SRAM_CHANNEL	SRAM_CH07
+
+#define dprintk(level, fmt, arg...) do {				\
+	if (audio_debug + 1 > level)					\
+		printk(KERN_DEBUG pr_fmt("%s: alsa: " fmt), \
+			chip->dev->name, ##arg); \
+} while(0)
+
+/****************************************************************************
+			Module global static vars
+ ****************************************************************************/
+
+static unsigned int disable_analog_audio;
+module_param(disable_analog_audio, int, 0644);
+MODULE_PARM_DESC(disable_analog_audio, "disable analog audio ALSA driver");
+
+static unsigned int audio_debug;
+module_param(audio_debug, int, 0644);
+MODULE_PARM_DESC(audio_debug, "enable debug messages [analog audio]");
+
+/****************************************************************************
+			Board specific functions
+ ****************************************************************************/
+
+/* Constants taken from cx88-reg.h */
+#define AUD_INT_DN_RISCI1       (1 <<  0)
+#define AUD_INT_UP_RISCI1       (1 <<  1)
+#define AUD_INT_RDS_DN_RISCI1   (1 <<  2)
+#define AUD_INT_DN_RISCI2       (1 <<  4) /* yes, 3 is skipped */
+#define AUD_INT_UP_RISCI2       (1 <<  5)
+#define AUD_INT_RDS_DN_RISCI2   (1 <<  6)
+#define AUD_INT_DN_SYNC         (1 << 12)
+#define AUD_INT_UP_SYNC         (1 << 13)
+#define AUD_INT_RDS_DN_SYNC     (1 << 14)
+#define AUD_INT_OPC_ERR         (1 << 16)
+#define AUD_INT_BER_IRQ         (1 << 20)
+#define AUD_INT_MCHG_IRQ        (1 << 21)
+#define GP_COUNT_CONTROL_RESET	0x3
+
+static int cx23885_alsa_dma_init(struct cx23885_audio_dev *chip,
+				 unsigned long nr_pages)
+{
+	struct cx23885_audio_buffer *buf = chip->buf

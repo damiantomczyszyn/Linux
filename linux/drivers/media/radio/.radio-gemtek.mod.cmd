@@ -1,1 +1,4 @@
-cmd_drivers/media/radio/radio-gemtek.mod := { echo  drivers/media/radio/radio-gemtek.o;  echo; } > drivers/media/radio/radio-gemtek.mod
+# SPDX-License-Identifier: GPL-2.0-only
+config VIDEO_CX23885
+	tristate "Conexant cx23885 (2388x successor) support"
+	depends on DVB_CORE

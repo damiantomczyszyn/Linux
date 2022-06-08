@@ -1,4 +1,6 @@
-U_FANOUT_LEAF) \
-  include/linux/page-flags-layout.h \
-    $(wildcard include/config/KASAN_HW_TAGS) \
-  include/lin
+// SPDX-License-Identifier: GPL-2.0-or-later
+
+/*
+ * netup-eeprom.c
+ *
+ * 24LC02 EEPROM driver in conjunction with N

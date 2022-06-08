@@ -1,1 +1,1 @@
-sm/pgtable-3level_types
+.duty_cycle = 25,      

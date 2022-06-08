@@ -1,12 +1,1 @@
-clude/linux/build_bug.h \
-  include/linux/compiler.h \
-    $(wildcard include/config/TRACE_BRANCH_PROFILING) \
-    $(wildcard include/config/PROFILE_ALL_BRANCHES) \
-    $(wildcard include/config/STACK_VALIDATION) \
-  include/linux/compiler_types.h \
-  arch/x86/include/generated/asm/rwonce.h \
-  include/asm-generic/rwonce.h \
-  include/linux/kasan-checks.h \
-    $(wildcard include/config/KASAN_GENERIC) \
-    $(wildcard include/config/KASAN_SW_TAGS) \
- 
+cmd_drivers/net/can/usb/modules.order := {   echo drivers/net/can/usb/usb_8dev.ko;   echo drivers/net/can/usb/ems_usb.ko;   echo drivers/net/can/usb/esd_usb2.ko;   cat drivers/net/can/usb/etas_es58x/modules.order;   echo drivers/net/can/usb/gs_usb.ko;   cat drivers/net/can/usb/kvaser_usb/modules.order;   echo drivers/net/can/usb/mcba_usb.ko;   cat drivers/net/can/usb/peak_usb/modules.order; :; } | awk '!x[$$0]++' - > drivers/net/can/usb/modules.order

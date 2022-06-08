@@ -1,1 +1,3 @@
-cmd_drivers/media/i2c/uda1342.o := gcc -Wp,-MMD,dri
+= 1,
+	.agc = &xc3028_agc_config,
+	.bw  = &xc3028_bw

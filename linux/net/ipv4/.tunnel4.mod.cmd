@@ -1,4 +1,2 @@
-ude/asm-generic/ioctl.h \
-  include/uapi/asm-generic/ioctl.h \
-  include/linux/edd.h \
- 
+cpu() more frequently to try to loosen things up a bit.
+	 * Also check to see if the CPU

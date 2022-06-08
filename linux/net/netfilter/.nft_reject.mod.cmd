@@ -1,4 +1,5 @@
-_BITMAP(list_entries_in_use, MAX_LOCKDEP_ENTRIES);
+_MSK_GPIO0)
+			dprintk(7, " (PCI_MSK_GPIO0     0x%08x)\n",
+				PCI_MSK_GPIO0);
 
-/*
- * All data structures here are protected by the global d
+		if (pci_status & PCI_MSK_GPIO1

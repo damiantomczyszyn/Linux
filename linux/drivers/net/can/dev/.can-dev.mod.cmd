@@ -1,1 +1,1 @@
-cmd_drivers/media/i2c/upd64031a.o := gcc -Wp,-MMD,drivers/media/i2c/.upd64031a.o.d -nostdinc -I./arch/x86/include -I./arch/x86/include/generated  -I./include -I./arch/x86/include/uapi -I./arch/x86/include/generated/uapi -I./include/uapi -I./include/generated/uapi -in
+cmd_drivers/net/can/dev/can-dev.mod := { echo  drivers/net/can/dev/bittiming.o drivers/net/can/dev/dev.o drivers/net/can/dev/length.o drivers/net/can/dev/netlink.o drivers/net/can/dev/rx-offload.o drivers/net/can/dev/skb.o;  echo; } > drivers/net/can/dev/can-dev.mod

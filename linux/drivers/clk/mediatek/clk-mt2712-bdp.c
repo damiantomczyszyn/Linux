@@ -1,31 +1,124 @@
-cmd_drivers/media/i2c/tw9903.o := gcc -Wp,-MMD,drivers/media/i2c/.tw9903.o.d -nostdinc -I./arch/x86/include -I./arch/x86/include/generated  -I./include -I./arch/x86/include/uapi -I./arch/x86/include/generated/uapi -I./include/uapi -I./include/generated/uapi -include ./include/linux/compiler-version.h -include ./include/linux/kconfig.h -include ./include/linux/compiler_types.h -D__KERNEL__ -fmacro-prefix-map=./= -Wall -Wundef -Werror=strict-prototypes -Wno-trigraphs -fno-strict-aliasing -fno-common -fshort-wchar -fno-PIE -Werror=implicit-function-declaration -Werror=implicit-int -Werror=return-type -Wno-format-security -std=gnu11 -mno-sse -mno-mmx -mno-sse2 -mno-3dnow -mno-avx -fcf-protection=none -m32 -msoft-float -mregparm=3 -freg-struct-return -fno-pic -mpreferred-stack-boundary=2 -march=i686 -mtune=pentium3 -mtune=generic -Wa,-mtune=generic32 -ffreestanding -mstack-protector-guard-reg=fs -mstack-protector-guard-symbol=__stack_chk_guard -Wno-sign-compare -fno-asynchronous-unwind-tables -mindirect-branch=thunk-extern -mindirect-branch-register -fno-jump-tables -fno-delete-null-pointer-checks -Wno-frame-address -Wno-format-truncation -Wno-format-overflow -Wno-address-of-packed-member -O2 -fno-allow-store-data-races -fstack-protector-strong -Wimplicit-fallthrough=5 -Wno-main -Wno-unused-but-set-variable -Wno-unused-const-variable -fno-stack-clash-protection -pg -mrecord-mcount -mfentry -DCC_USING_FENTRY -Wdeclaration-after-statement -Wvla -Wno-pointer-sign -Wcast-function-type -Wno-stringop-truncation -Wno-stringop-overflow -Wno-restrict -Wno-maybe-uninitialized -Wno-alloc-size-larger-than -fno-strict-overflow -fno-stack-check -fconserve-stack -Werror=date-time -Werror=incompatible-pointer-types -Werror=designated-init -Wno-packed-not-aligned  -DMODULE  -DKBUILD_BASENAME='"tw9903"' -DKBUILD_MODNAME='"tw9903"' -D__KBUILD_MODNAME=kmod_tw9903 -c -o drivers/media/i2c/tw9903.o drivers/media/i2c/tw9903.c 
+nnel *audio_ch =
+		&dev->sram_channels[AUDIO_SRAM_CHANNEL];
 
-source_drivers/media/i2c/tw9903.o := drivers/media/i2c/tw9903.c
+	dprintk(1, "%s()\n", __func__);
 
-deps_drivers/media/i2c/tw9903.o := \
-  include/linux/compiler-version.h \
-    $(wildcard include/config/CC_VERSION_TEXT) \
-  include/linux/kconfig.h \
-    $(wildcard include/config/CPU_BIG_ENDIAN) \
-    $(wildcard include/config/BOOGER) \
-    $(wildcard include/config/FOO) \
-  include/linux/compiler_types.h \
-    $(wildcard include/config/DEBUG_INFO_BTF) \
-    $(wildcard include/config/PAHOLE_HAS_BTF_TAG) \
-    $(wildcard include/config/HAVE_ARCH_COMPILER_H) \
-    $(wildcard include/config/CC_HAS_ASM_INLINE) \
-  include/linux/compiler_attributes.h \
-  include/linux/compiler-gcc.h \
-    $(wildcard include/config/RETPOLINE) \
-    $(wildcard include/config/ARCH_USE_BUILTIN_BSWAP) \
-    $(wildcard include/config/SHADOW_CALL_STACK) \
-    $(wildcard include/config/KCOV) \
-  include/linux/module.h \
-    $(wildcard include/config/MODULES) \
-    $(wildcard include/config/SYSFS) \
-    $(wildcard include/config/MODULES_TREE_LOOKUP) \
-    $(wildcard include/config/LIVEPATCH) \
-    $(wildcard include/config/STACKTRACE_BUILD_ID) \
-    $(wildcard include/config/CFI_CLANG) \
-    $(wildcard include/config/MODULE_SIG) \
-    $(wildcard include/config
+	/* Make sure RISC/FIFO are off before changing FIFO/RISC settings */
+	cx_clear(AUD_INT_DMA_CTL, 0x11);
+
+	/* setup fifo + format - out channel */
+	cx23885_sram_channel_setup(chip->dev, audio_ch, buf->bpl,
+		buf->risc.dma);
+
+	/* sets bpl size */
+	cx_write(AUD_INT_A_LNGTH, buf->bpl);
+
+	/* This is required to get good audio (1 seems to be ok) */
+	cx_write(AUD_INT_A_MODE, 1);
+
+	/* reset counter */
+	cx_write(AUD_INT_A_GPCNT_CTL, GP_COUNT_CONTROL_RESET);
+	atomic_set(&chip->count, 0);
+
+	dprintk(1, "Start audio DMA, %d B/line, %d lines/FIFO, %d periods, %d byte buffer\n",
+		buf->bpl, cx_read(audio_ch->cmds_start+12)>>1,
+		chip->num_periods, buf->bpl * chip->num_periods);
+
+	/* Enables corresponding bits at AUD_INT_STAT */
+	cx_write(AUDIO_INT_INT_MSK, AUD_INT_OPC_ERR | AUD_INT_DN_SYNC |
+				    AUD_INT_DN_RISCI1);
+
+	/* Clean any pending interrupt bits already set */
+	cx_write(AUDIO_INT_INT_STAT, ~0);
+
+	/* enable audio irqs */
+	cx_set(PCI_INT_MSK, chip->dev->pci_irqmask | PCI_MSK_AUD_INT);
+
+	/* start dma */
+	cx_set(DEV_CNTRL2, (1<<5)); /* Enables Risc Processor */
+	cx_set(AUD_INT_DMA_CTL, 0x11); /* audio downstream FIFO and
+					  RISC enable */
+	if (audio_debug)
+		cx23885_sram_channel_dump(chip->dev, audio_ch);
+
+	return 0;
+}
+
+/*
+ * BOARD Specific: Resets audio DMA
+ */
+static int cx23885_stop_audio_dma(struct cx23885_audio_dev *chip)
+{
+	struct cx23885_dev *dev = chip->dev;
+	dprintk(1, "Stopping audio DMA\n");
+
+	/* stop dma */
+	cx_clear(AUD_INT_DMA_CTL, 0x11);
+
+	/* disable irqs */
+	cx_clear(PCI_INT_MSK, PCI_MSK_AUD_INT);
+	cx_clear(AUDIO_INT_INT_MSK, AUD_INT_OPC_ERR | AUD_INT_DN_SYNC |
+				    AUD_INT_DN_RISCI1);
+
+	if (audio_debug)
+		cx23885_sram_channel_dump(chip->dev,
+			&dev->sram_channels[AUDIO_SRAM_CHANNEL]);
+
+	return 0;
+}
+
+/*
+ * BOARD Specific: Handles audio IRQ
+ */
+int cx23885_audio_irq(struct cx23885_dev *dev, u32 status, u32 mask)
+{
+	struct cx23885_audio_dev *chip = dev->audio_dev;
+
+	if (0 == (status & mask))
+		return 0;
+
+	cx_write(AUDIO_INT_INT_STAT, status);
+
+	/* risc op code error */
+	if (status & AUD_INT_OPC_ERR) {
+		pr_warn("%s/1: Audio risc op code error\n",
+			dev->name);
+		cx_clear(AUD_INT_DMA_CTL, 0x11);
+		cx23885_sram_channel_dump(dev,
+			&dev->sram_channels[AUDIO_SRAM_CHANNEL]);
+	}
+	if (status & AUD_INT_DN_SYNC) {
+		dprintk(1, "Downstream sync error\n");
+		cx_write(AUD_INT_A_GPCNT_CTL, GP_COUNT_CONTROL_RESET);
+		return 1;
+	}
+	/* risc1 downstream */
+	if (status & AUD_INT_DN_RISCI1) {
+		atomic_set(&chip->count, cx_read(AUD_INT_A_GPCNT));
+		snd_pcm_period_elapsed(chip->substream);
+	}
+	/* FIXME: Any other status should deserve a special handling? */
+
+	return 1;
+}
+
+static int dsp_buffer_free(struct cx23885_audio_dev *chip)
+{
+	struct cx23885_riscmem *risc;
+
+	BUG_ON(!chip->dma_size);
+
+	dprintk(2, "Freeing buffer\n");
+	cx23885_alsa_dma_unmap(chip);
+	cx23885_alsa_dma_free(chip->buf);
+	risc = &chip->buf->risc;
+	dma_free_coherent(&chip->pci->dev, risc->size, risc->cpu, risc->dma);
+	kfree(chip->buf);
+
+	chip->buf = NULL;
+	chip->dma_size = 0;
+
+	return 0;
+}
+
+/**********************************************

@@ -1,18 +1,24 @@
-e/linux/rwlock.h \
-    $(wildcard include/config/PREEMPT) \
-  include/linux/spinlock_api_smp.h \
-    $(wildcard include/config/INLINE_SPIN_LOCK) \
-    $(wildcard include/config/INLINE_SPIN_LOCK_BH) \
-    $(wildcard include/config/INLINE_SPIN_LOCK_IRQ) \
-    $(wildcard include/config/INLINE_SPIN_LOCK_IRQSAVE) \
-    $(wildcard include/config/INLINE_SPIN_TRYLOCK) \
-    $(wildcard include/config/INLINE_SPIN_TRYLOCK_BH) \
-    $(wildcard include/config/UNINLINE_SPIN_UNLOCK) \
-    $(wildcard include/config/INLINE_SPIN_UNLOCK_BH) \
-    $(wildcard include/config/INLINE_SPIN_UNLOCK_IRQ) \
-    $(wildcard include/config/INLINE_SPIN_UNLOCK_IRQRESTORE) \
-    $(wildcard include/config/GENERIC_LOCKBREAK) \
-  include/linux/rwlock_api_smp.h \
-    $(wildcard include/config/INLINE_READ_LOCK) \
-    $(wildcard include/config/INLINE_WRITE_LOCK) \
-    $(wildcard include/config/INLINE_READ_LOCK_BH) \
+\
+    $(wildcard include/config/HAVE_EFFICIENT_UNALIGNED_ACCESS) \
+  include/uapi/linux/if_ether.h \
+  include/net/netns/core.h \
+  include/net/netns/mib.h \
+    $(wildcard include/config/XFRM_STATISTICS) \
+    $(wildcard include/config/TLS) \
+    $(wildcard include/config/MPTCP) \
+  include/net/snmp.h \
+  include/uapi/linux/snmp.h \
+  include/net/netns/unix.h \
+  include/net/netns/packet.h \
+  include/net/netns/ipv4.h \
+    $(wildcard include/config/IP_MULTIPLE_TABLES) \
+    $(wildcard include/config/IP_ROUTE_CLASSID) \
+    $(wildcard include/config/IP_MROUTE) \
+    $(wildcard include/config/IP_MROUTE_MULTIPLE_TABLES) \
+    $(wildcard include/config/IP_ROUTE_MULTIPATH) \
+  include/net/inet_frag.h \
+  include/net/netns/ipv6.h \
+    $(wildcard include/config/IPV6_MULTIPLE_TABLES) \
+    $(wildcard include/config/IPV6_SUBTREES) \
+    $(wildcard include/config/IPV6_MROUTE) \
+    $

@@ -1,4 +1,6 @@
-    $(wildcard include/config/HIGH_RES_TIMERS) \
-    $(wildcard include/config/TIME_LOW_RES) \
-    $(wildcard include/config/TIMERFD) \
-  incl
+C417_RWD, regval);
+
+	/* Wait for the trans to complete (MC417_MIRDY asserted). */
+	retval = mc417_wait_ready(dev);
+
+	/* switch the DAT0-7 GPIO

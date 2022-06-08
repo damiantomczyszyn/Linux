@@ -1,21 +1,28 @@
-/x86/include/asm/highmem.h \
-  arch/x86/include/asm/tlbflush.h \
-  arch/x86/include/asm/invpcid.h \
-  arch/x86/include/asm/pti.h \
-  include/linux/bio.h \
-  include/linux/mempool.h \
-  include/linux/uio.h \
-    $(wildcard include/config/ARCH_HAS_UACCESS_FLUSHCACHE) \
-  include/uapi/linux/uio.h \
-  include/linux/node.h \
-    $(wildcard include/config/HMEM_REPORTING) \
-  include/linux/pagemap.h \
-  include/linux/hugetlb_inline.h \
-  include/uapi/linux/mempolicy.h \
-  include/linux/freezer.h \
-  include/uapi/linux/i2c.h \
-  include/linux/videodev2.h \
-  include/uapi/linux/videodev2.h \
-  include/uapi/linux/v4l2-common.h \
-  include/uapi/linux/v4l2-controls.h \
-  inclu
+/* SPDX-License-Identifier: GPL-2.0 */
+/*
+ *	ipddp.h: Header for IP-over-DDP driver for Linux.
+ */
+
+#ifndef __LINUX_IPDDP_H
+#define __LINUX_IPDDP_H
+
+#ifdef __KERNEL__
+
+#define SIOCADDIPDDPRT   (SIOCDEVPRIVATE)
+#define SIOCDELIPDDPRT   (SIOCDEVPRIVATE+1)
+#define SIOCFINDIPDDPRT  (SIOCDEVPRIVATE+2)
+
+struct ipddp_route
+{
+        struct net_device *dev;             /* Carrier device */
+        __be32 ip;                       /* IP address */
+        struct atalk_addr at;              /* Gateway appletalk address */
+        int flags;
+        struct ipddp_route *next;
+};
+
+#define IPDDP_ENCAP	1
+#define IPDDP_DECAP	2
+
+#endif	/* __KERNEL__ */
+#endif	/* __LINUX_IPDDP_H */

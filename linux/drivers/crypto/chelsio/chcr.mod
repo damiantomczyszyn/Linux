@@ -1,3 +1,1 @@
-e/config/ACPI_APEI_GHES) \
-    $(wildcard include/config/INTEL_TXT) \
- 
+cmd_drivers/media/pci/cx18/modules.order := {   echo drivers/media/pci/

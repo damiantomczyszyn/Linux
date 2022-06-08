@@ -1,1 +1,5 @@
-¾R©hórPÕ%¬¿¹Rk¤|îhƒë{ëê›õúÚ,/øI {Lªc‰/b·gwIÃßµ\¶Ešn8:§·vÙ0îŠ?/î›ğ¦ğ€Qld7øÔ„…§v“›£¡Oû56'ƒ9x1B•.†ĞÑ
+// SPDX-License-Identifier: GPL-2.0-or-later
+/*
+ *  Driver for the Conexant CX23885 PCIe bridge
+ *
+ *  Copyright

@@ -1,2 +1,2 @@
-e/linux/rwlock.h \
-    $(wildca
+\
+  include/uapi/asm-generic/in

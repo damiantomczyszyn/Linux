@@ -1,7 +1,10 @@
-config/ACPI_HOTPLUG_IOAPIC) \
-    $(wildcard include/config/PCI) \
-    $(wildcard include/config/ACPI_WMI) \
-    $(wildcard include/config/ACPI_NUMA) \
-    $(wildcard include/config/HIBERNATION) \
-    $(wildcard include/config/ACPI_HOTPLUG_MEMORY) \
-    $(wildcard include/config/ACPI_
+i/cx18/cx18-av-core.h \
+  include/media/v4l2-ctrls.h \
+  include/media/media-request.h \
+  include/media/hevc-ctrls.h \
+  drivers/media/pci/cx18/cx23418.h \
+  include/media/drv-intf/cx2341x.h \
+  include/media/demux.h \
+  include/uapi/linux/dvb/dmx.h \
+  include/media/dmxdev.h \
+  inc

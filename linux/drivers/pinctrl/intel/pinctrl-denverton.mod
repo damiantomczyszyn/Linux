@@ -1,2 +1,1 @@
-pes.h \
-  include/asm-generic/pgtable-nop4d
+/* SPDX-License-Identifier: GPL-2.0-or-late

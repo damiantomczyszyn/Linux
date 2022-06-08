@@ -1,3 +1,1 @@
-ldcard include/config/SHMEM) \
-    $(wildcard include/config/ARCH_HAS_PTE_SPECIAL) \
-    $(wildcard include/config/ARCH_HAS_PTE_DE
+cmd_drivers/net/arcnet/arc-rawmode.mod := { echo  drivers/net/arcnet/arc-rawmode.o;  echo; } > drivers/net/arcnet/arc-rawmode.mod

@@ -1,3 +1,1 @@
-nux/ktime.h \
-  include/linux/time.h \
-   
+drivers/net/can/peak_canfd/peak_pciefd.ko

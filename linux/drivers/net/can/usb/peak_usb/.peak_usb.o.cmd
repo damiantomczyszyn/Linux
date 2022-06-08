@@ -1,7 +1,1 @@
-lude/config/SHMEM) \
-    $(wildcard include/config/ARCH_HAS_PTE_SPECIAL) \
-    $(wildcard include/config/ARCH_HAS_PTE_DEVMAP) \
-    $(wildcard include/config/DEBUG_VM_RB) \
-    $(wildcard include/config/PAGE_POISONING) \
-    $(wildcard include/config/INIT_ON_ALLOC_DEFAULT_ON) \
-   
+cmd_drivers/net/can/usb/peak_usb/peak_usb.o := ld -m elf_i386   -r -o drivers/net/can/usb/peak_usb/peak_usb.o drivers/net/can/usb/peak_usb/pcan_usb_core.o drivers/net/can/usb/peak_usb/pcan_usb.o drivers/net/can/usb/peak_usb/pcan_usb_pro.o drivers/net/can/usb/peak_usb/pcan_usb_fd.o

@@ -1,36 +1,46 @@
-BUG_NMI_SELFTEST) \
-  include/linux/osq_lock.h \
-  include/linux/debug_locks.h \
-  include/linux/idr.h \
-  include/linux/radix-tree.h \
-  include/linux/gfp.h \
-    $(wildcard include/config/KASAN_HW_TAGS) \
-    $(wildcard include/config/HIGHMEM) \
-    $(wildcard include/config/ZONE_DMA) \
-    $(wildcard include/config/ZONE_DMA32) \
-    $(wildcard include/config/ZONE_DEVICE) \
-    $(wildcard include/config/CONTIG_ALLOC) \
-    $(wildcard include/config/CMA) \
-  include/linux/mmdebug.h \
-    $(wildcard include/config/DEBUG_VM) \
-    $(wildcard include/config/DEBUG_VM_PGFLAGS) \
-  include/linux/mmzone.h \
-    $(wildcard include/config/FORCE_MAX_ZONEORDER) \
-    $(wildcard include/config/MEMORY_ISOLATION) \
-    $(wildcard include/config/ZSMALLOC) \
-    $(wildcard include/config/SWAP) \
-    $(wildcard include/config/NUMA_BALANCING) \
-    $(wildcard include/config/TRANSPARENT_HUGEPAGE) \
-    $(wildcard include/config/MEMCG) \
-    $(wildcard include/config/COMPACTION) \
-    $(wildcard include/config/PAGE_EXTENSION) \
-    $(wildcard include/config/DEFERRED_STRUCT_PAGE_INIT) \
-    $(wildcard include/config/HAVE_MEMORYLESS_NODES) \
-    $(wildcard include/config/SPARSEMEM_EXTREME) \
-    $(wildcard include/config/HAVE_ARCH_PFN_VALID) \
-  include/linux/spinlock.h \
-  include/linux/bottom_half.h \
-  arch/x86/include/generated/asm/mmiowb.h \
-  include/asm-generic/mmiowb.h \
-    $(wildcard include/config/MMIOWB) \
-  arc
+/* SPDX-License-Identifier: GPL-2.0-only */
+/* CAN driver for PEAK System micro-CAN based adapters
+ *
+ * Copyright (C) 2003-2011 PEAK System-Technik GmbH
+ * Copyright (C) 2011-2013 Stephane Grosjean <s.grosjean@peak-system.com>
+ */
+#ifndef PEAK_CANFD_USER_H
+#define PEAK_CANFD_USER_H
+
+#include <linux/can/dev/peak_canfd.h>
+
+#define PCANFD_ECHO_SKB_DEF		-1
+
+/* data structure private to each uCAN interface */
+struct peak_canfd_priv {
+	struct can_priv can;		/* socket-can private data */
+	struct net_device *ndev;	/* network device */
+	int index;			/* channel index */
+
+	struct can_berr_counter bec;	/* rx/tx err counters */
+
+	int echo_idx;			/* echo skb free slot index */
+	spinlock_t echo_lock;
+
+	int cmd_len;
+	void *cmd_buffer;
+	int cmd_maxlen;
+
+	int (*pre_cmd)(struct peak_canfd_priv *priv);
+	int (*write_cmd)(struct peak_canfd_priv *priv);
+	int (*post_cmd)(struct peak_canfd_priv *priv);
+
+	int (*enable_tx_path)(struct peak_canfd_priv *priv);
+	void *(*alloc_tx_msg)(struct peak_canfd_priv *priv, u16 msg_size,
+			      int *room_left);
+	int (*write_tx_msg)(struct peak_canfd_priv *priv,
+			    struct pucan_tx_msg *msg);
+};
+
+struct net_device *alloc_peak_canfd_dev(int sizeof_priv, int index,
+					int echo_skb_max);
+int peak_canfd_handle_msg(struct peak_canfd_priv *priv,
+			  struct pucan_rx_msg *msg);
+int peak_canfd_handle_msgs_list(struct peak_canfd_priv *priv,
+				struct pucan_rx_msg *rx_msg, int rx_count);
+#endif

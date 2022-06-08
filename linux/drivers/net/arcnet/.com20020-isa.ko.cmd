@@ -1,5 +1,1 @@
-ude/config/PARAVIRT_XXL) \
-  arch/x86/include/asm/disabled-features.h \
-    $(wildcard include/config/X86_SMAP) \
-    $(wildcard include/config/X86_UMIP) \
-    $(wildcard include/config/X86_INTEL_MEMORY_PROTECTION_KE
+cmd_drivers/net/arcnet/com20020-isa.ko := ld -r -m elf_i386 --build-id=sha1  -T scripts/module.lds -o drivers/net/arcnet/com20020-isa.ko drivers/net/arcnet/com20020-isa.o drivers/net/arcnet/com20020-isa.mod.o;  true

@@ -1,1 +1,2 @@
-ard include/config/ACPI_APEI
+nable(dev, p->modulation);
+	

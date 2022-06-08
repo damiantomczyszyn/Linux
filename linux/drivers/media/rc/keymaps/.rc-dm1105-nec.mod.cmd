@@ -1,1 +1,7 @@
-cmd_drivers/media/rc/keymaps/rc-dm1105-nec.mod := { echo  drivers/media/rc/keymaps/rc-dm1105-nec.o;  echo; } > drivers/media/rc/keymaps/rc-dm1105-nec.mod
+/* SPDX-License-Identifier: GPL-2.0-or-later */
+/*
+ * cimax2.h
+ *
+ * CIMax(R) SP2 driver in conjunction with NetUp Dual DVB-S2 CI card
+ *
+ * Copyright (C)

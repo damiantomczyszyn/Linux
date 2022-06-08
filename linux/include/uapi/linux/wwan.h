@@ -1,11 +1,15 @@
-nux/sched.h \
-  include/linux/pid.h \
-  include/linux/rculist.h \
-    $(wildcard include/config/PROVE_RCU_LIST) \
-  include/linux/sem.h \
-  include/uapi/linux/sem.h \
-  include/linux/ipc.h \
-  include/linux/rhashtable-types.h \
-  include/uapi/linux/ipc.h \
-  arch/x86/include/generated/uapi/asm/ipcbuf.h \
-  in
+/* SPDX-License-Identifier: GPL-2.0-or-later */
+/*
+ * netup-eeprom.h
+ *
+ * 24LC02 EEPROM driver in conjunction with NetUP Dual DVB-S2 CI card
+ *
+ * Copyright (C) 2009 NetUP Inc.
+ * Copyright (C) 2009 Abylay Ospan <aospan@netup.ru>
+ */
+
+#ifndef NETUP_EEPROM_H
+#define NETUP_EEPROM_H
+
+struct netup_port_info {
+	u

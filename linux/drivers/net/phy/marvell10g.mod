@@ -1,2 +1,1 @@
-ask.h \
-    $(wildcard include
+atus: 0x%08x audint_mask: 0x%0

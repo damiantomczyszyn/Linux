@@ -1,1 +1,4 @@
-¦ÐÄm"bÏŸ ìÓœ;ÑEöÔC6‰!æ=eÄÄÙ‡îFˆ¿ù	‹|&B¢_qÁ„Ê<peK?Šo*üÖƒÎÚU²G€bAçmŠä@ž«Îýï—°p“}L‰Ho¸”O¬•
+3885_BOARD_DVBSKY_T980C:
+	case CX23885_BOARD_DVBSKY_S950C:
+	case CX23885_BOARD_TT_CT2_4500_CI:
+	

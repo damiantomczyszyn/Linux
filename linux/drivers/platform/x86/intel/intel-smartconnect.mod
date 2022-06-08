@@ -1,2 +1,1 @@
-LE_SLEEP) \
-    $(wildcard include/config/P
+// SPDX-License-Identifier: GPL-2.0-or-late

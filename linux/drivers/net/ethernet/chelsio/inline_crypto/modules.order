@@ -1,2 +1,4 @@
-lude/config/SHMEM) \
-    $(wildcard include/config/ARCH_HAS_PTE_
+ity *cap)
+{
+	struct cx23885_dev *dev = video_drvdata(file);
+	str

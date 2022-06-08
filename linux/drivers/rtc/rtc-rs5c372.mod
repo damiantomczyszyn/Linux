@@ -1,2 +1,2 @@
-pes.h \
-  include/asm-gener
+de/linux/ptr_ring.h \
+  inc

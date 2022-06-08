@@ -1,2 +1,1 @@
-x/scatterlist.h \
-    $(wildcard in
+// SPDX-License-Identifier: GPL-2.0

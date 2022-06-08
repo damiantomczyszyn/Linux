@@ -1,364 +1,243 @@
-_percpu_address(addr))
-		return 1;
-
-	/*
-	 * module static or percpu var?
-	 */
-	return is_module_address(addr) || is_module_percpu_address(addr);
-}
-#endif
-
-/*
- * To make lock name printouts unique, we calculate a unique
- * class->name_version generation counter. The caller must hold the graph
- * lock.
- */
-static int count_matching_names(struct lock_class *new_class)
-{
-	struct lock_class *class;
-	int count = 0;
-
-	if (!new_class->name)
-		return 0;
-
-	list_for_each_entry(class, &all_lock_classes, lock_entry) {
-		if (new_class->key - new_class->subclass == class->key)
-			return class->name_version;
-		if (class->name && !strcmp(class->name, new_class->name))
-			count = max(count, class->name_version);
-	}
-
-	return count + 1;
-}
-
-/* used from NMI context -- must be lockless */
-static noinstr struct lock_class *
-look_up_lock_class(const struct lockdep_map *lock, unsigned int subclass)
-{
-	struct lockdep_subclass_key *key;
-	struct hlist_head *hash_head;
-	struct lock_class *class;
-
-	if (unlikely(subclass >= MAX_LOCKDEP_SUBCLASSES)) {
-		instrumentation_begin();
-		debug_locks_off();
-		printk(KERN_ERR
-			"BUG: looking up invalid subclass: %u\n", subclass);
-		printk(KERN_ERR
-			"turning off the locking correctness validator.\n");
-		dump_stack();
-		instrumentation_end();
-		return NULL;
-	}
-
-	/*
-	 * If it is not initialised then it has never been locked,
-	 * so it won't be present in the hash table.
-	 */
-	if (unlikely(!lock->key))
-		return NULL;
-
-	/*
-	 * NOTE: the class-key must be unique. For dynamic locks, a static
-	 * lock_class_key variable is passed in through the mutex_init()
-	 * (or spin_lock_init()) call - which acts as the key. For static
-	 * locks we use the lock object itself as the key.
-	 */
-	BUILD_BUG_ON(sizeof(struct lock_class_key) >
-			sizeof(struct lockdep_map));
-
-	key = lock->key->subkeys + subclass;
-
-	hash_head = classhashentry(key);
-
-	/*
-	 * We do an RCU walk of the hash, see lockdep_free_key_range().
-	 */
-	if (DEBUG_LOCKS_WARN_ON(!irqs_disabled()))
-		return NULL;
-
-	hlist_for_each_entry_rcu_notrace(class, hash_head, hash_entry) {
-		if (class->key == key) {
-			/*
-			 * Huh! same key, different name? Did someone trample
-			 * on some memory? We're most confused.
-			 */
-			WARN_ON_ONCE(class->name != lock->name &&
-				     lock->key != &__lockdep_no_validate__);
-			return class;
-		}
-	}
-
-	return NULL;
-}
-
-/*
- * Static locks do not have their class-keys yet - for them the key is
- * the lock object itself. If the lock is in the per cpu area, the
- * canonical address of the lock (per cpu offset removed) is used.
- */
-static bool assign_lock_key(struct lockdep_map *lock)
-{
-	unsigned long can_addr, addr = (unsigned long)lock;
-
-#ifdef __KERNEL__
-	/*
-	 * lockdep_free_key_range() assumes that struct lock_class_key
-	 * objects do not overlap. Since we use the address of lock
-	 * objects as class key for static objects, check whether the
-	 * size of lock_class_key objects does not exceed the size of
-	 * the smallest lock object.
-	 */
-	BUILD_BUG_ON(sizeof(struct lock_class_key) > sizeof(raw_spinlock_t));
-#endif
-
-	if (__is_kernel_percpu_address(addr, &can_addr))
-		lock->key = (void *)can_addr;
-	else if (__is_module_percpu_address(addr, &can_addr))
-		lock->key = (void *)can_addr;
-	else if (static_obj(lock))
-		lock->key = (void *)lock;
-	else {
-		/* Debug-check: all keys must be persistent! */
-		debug_locks_off();
-		pr_err("INFO: trying to register non-static key.\n");
-		pr_err("The code is fine but needs lockdep annotation, or maybe\n");
-		pr_err("you didn't initialize this object before use?\n");
-		pr_err("turning off the locking correctness validator.\n");
-		dump_stack();
-		return false;
-	}
-
-	return true;
-}
-
-#ifdef CONFIG_DEBUG_LOCKDEP
-
-/* Check whether element @e occurs in list @h */
-static bool in_list(struct list_head *e, struct list_head *h)
-{
-	struct list_head *f;
-
-	list_for_each(f, h) {
-		if (e == f)
-			return true;
-	}
-
-	return false;
-}
-
-/*
- * Check whether entry @e occurs in any of the locks_after or locks_before
- * lists.
- */
-static bool in_any_class_list(struct list_head *e)
-{
-	struct lock_class *class;
-	int i;
-
-	for (i = 0; i < ARRAY_SIZE(lock_classes); i++) {
-		class = &lock_classes[i];
-		if (in_list(e, &class->locks_after) ||
-		    in_list(e, &class->locks_before))
-			return true;
-	}
-	return false;
-}
-
-static bool class_lock_list_valid(struct lock_class *c, struct list_head *h)
-{
-	struct lock_list *e;
-
-	list_for_each_entry(e, h, entry) {
-		if (e->links_to != c) {
-			printk(KERN_INFO "class %s: mismatch for lock entry %ld; class %s <> %s",
-			       c->name ? : "(?)",
-			       (unsigned long)(e - list_entries),
-			       e->links_to && e->links_to->name ?
-			       e->links_to->name : "(?)",
-			       e->class && e->class->name ? e->class->name :
-			       "(?)");
-			return false;
-		}
-	}
-	return true;
-}
-
-#ifdef CONFIG_PROVE_LOCKING
-static u16 chain_hlocks[MAX_LOCKDEP_CHAIN_HLOCKS];
-#endif
-
-static bool check_lock_chain_key(struct lock_chain *chain)
-{
-#ifdef CONFIG_PROVE_LOCKING
-	u64 chain_key = INITIAL_CHAIN_KEY;
-	int i;
-
-	for (i = chain->base; i < chain->base + chain->depth; i++)
-		chain_key = iterate_chain_key(chain_key, chain_hlocks[i]);
-	/*
-	 * The 'unsigned long long' casts avoid that a compiler warning
-	 * is reported when building tools/lib/lockdep.
-	 */
-	if (chain->chain_key != chain_key) {
-		printk(KERN_INFO "chain %lld: key %#llx <> %#llx\n",
-		       (unsigned long long)(chain - lock_chains),
-		       (unsigned long long)chain->chain_key,
-		       (unsigned long long)chain_key);
-		return false;
-	}
-#endif
-	return true;
-}
-
-static bool in_any_zapped_class_list(struct lock_class *class)
-{
-	struct pending_free *pf;
-	int i;
-
-	for (i = 0, pf = delayed_free.pf; i < ARRAY_SIZE(delayed_free.pf); i++, pf++) {
-		if (in_list(&class->lock_entry, &pf->zapped))
-			return true;
-	}
-
-	return false;
-}
-
-static bool __check_data_structures(void)
-{
-	struct lock_class *class;
-	struct lock_chain *chain;
-	struct hlist_head *head;
-	struct lock_list *e;
-	int i;
-
-	/* Check whether all classes occur in a lock list. */
-	for (i = 0; i < ARRAY_SIZE(lock_classes); i++) {
-		class = &lock_classes[i];
-		if (!in_list(&class->lock_entry, &all_lock_classes) &&
-		    !in_list(&class->lock_entry, &free_lock_classes) &&
-		    !in_any_zapped_class_list(class)) {
-			printk(KERN_INFO "class %px/%s is not in any class list\n",
-			       class, class->name ? : "(?)");
-			return false;
-		}
-	}
-
-	/* Check whether all classes have valid lock lists. */
-	for (i = 0; i < ARRAY_SIZE(lock_classes); i++) {
-		class = &lock_classes[i];
-		if (!class_lock_list_valid(class, &class->locks_before))
-			return false;
-		if (!class_lock_list_valid(class, &class->locks_after))
-			return false;
-	}
-
-	/* Check the chain_key of all lock chains. */
-	for (i = 0; i < ARRAY_SIZE(chainhash_table); i++) {
-		head = chainhash_table + i;
-		hlist_for_each_entry_rcu(chain, head, entry) {
-			if (!check_lock_chain_key(chain))
-				return false;
-		}
-	}
-
-	/*
-	 * Check whether all list entries that are in use occur in a class
-	 * lock list.
-	 */
-	for_each_set_bit(i, list_entries_in_use, ARRAY_SIZE(list_entries)) {
-		e = list_entries + i;
-		if (!in_any_class_list(&e->entry)) {
-			printk(KERN_INFO "list entry %d is not in any class list; class %s <> %s\n",
-			       (unsigned int)(e - list_entries),
-			       e->class->name ? : "(?)",
-			       e->links_to->name ? : "(?)");
-			return false;
-		}
-	}
-
-	/*
-	 * Check whether all list entries that are not in use do not occur in
-	 * a class lock list.
-	 */
-	for_each_clear_bit(i, list_entries_in_use, ARRAY_SIZE(list_entries)) {
-		e = list_entries + i;
-		if (in_any_class_list(&e->entry)) {
-			printk(KERN_INFO "list entry %d occurs in a class list; class %s <> %s\n",
-			       (unsigned int)(e - list_entries),
-			       e->class && e->class->name ? e->class->name :
-			       "(?)",
-			       e->links_to && e->links_to->name ?
-			       e->links_to->name : "(?)");
-			return false;
-		}
-	}
-
-	return true;
-}
-
-int check_consistency = 0;
-module_param(check_consistency, int, 0644);
-
-static void check_data_structures(void)
-{
-	static bool once = false;
-
-	if (check_consistency && !once) {
-		if (!__check_data_structures()) {
-			once = true;
-			WARN_ON(once);
-		}
-	}
-}
-
-#else /* CONFIG_DEBUG_LOCKDEP */
-
-static inline void check_data_structures(void) { }
-
-#endif /* CONFIG_DEBUG_LOCKDEP */
-
-static void init_chain_block_buckets(void);
-
-/*
- * Initialize the lock_classes[] array elements, the free_lock_classes list
- * and also the delayed_free structure.
- */
-static void init_data_structures_once(void)
-{
-	static bool __read_mostly ds_initialized, rcu_head_initialized;
-	int i;
-
-	if (likely(rcu_head_initialized))
-		return;
-
-	if (system_state >= SYSTEM_SCHEDULING) {
-		init_rcu_head(&delayed_free.rcu_head);
-		rcu_head_initialized = true;
-	}
-
-	if (ds_initialized)
-		return;
-
-	ds_initialized = true;
-
-	INIT_LIST_HEAD(&delayed_free.pf[0].zapped);
-	INIT_LIST_HEAD(&delayed_free.pf[1].zapped);
-
-	for (i = 0; i < ARRAY_SIZE(lock_classes); i++) {
-		list_add_tail(&lock_classes[i].lock_entry, &free_lock_classes);
-		INIT_LIST_HEAD(&lock_classes[i].locks_after);
-		INIT_LIST_HEAD(&lock_classes[i].locks_before);
-	}
-	init_chain_block_buckets();
-}
-
-static inline struct hlist_head *keyhashentry(const struct lock_class_key *key)
-{
-	unsigned long hash = hash_long((uintptr_t)key, KEYHASH_BITS);
-
-	return lock_keys_hash + hash;
-}
-
-/* Register a dynamically allocated key. */
-void lockdep_register_k
+.h \
+  include/uapi/linux/shm.h \
+  include/uapi/asm-generic/hugetlb_encode.h \
+  arch/x86/include/uapi/asm/shmbuf.h \
+  include/uapi/asm-generic/shmbuf.h \
+  arch/x86/include/asm/shmparam.h \
+  include/linux/plist.h \
+    $(wildcard include/config/DEBUG_PLIST) \
+  include/linux/hrtimer.h \
+    $(wildcard include/config/HIGH_RES_TIMERS) \
+    $(wildcard include/config/TIME_LOW_RES) \
+    $(wildcard include/config/TIMERFD) \
+  include/linux/hrtimer_defs.h \
+  include/linux/timerqueue.h \
+  include/linux/seccomp.h \
+    $(wildcard include/config/SECCOMP) \
+    $(wildcard include/config/HAVE_ARCH_SECCOMP_FILTER) \
+    $(wildcard include/config/SECCOMP_FILTER) \
+    $(wildcard include/config/CHECKPOINT_RESTORE) \
+    $(wildcard include/config/SECCOMP_CACHE_DEBUG) \
+  include/uapi/linux/seccomp.h \
+  arch/x86/include/asm/seccomp.h \
+  arch/x86/include/asm/unistd.h \
+  arch/x86/include/uapi/asm/unistd.h \
+  arch/x86/include/generated/uapi/asm/unistd_32.h \
+  include/asm-generic/seccomp.h \
+  include/uapi/linux/unistd.h \
+  include/linux/resource.h \
+  include/uapi/linux/resource.h \
+  arch/x86/include/generated/uapi/asm/resource.h \
+  include/asm-generic/resource.h \
+  include/uapi/asm-generic/resource.h \
+  include/linux/latencytop.h \
+  include/linux/sched/prio.h \
+  include/linux/sched/types.h \
+  include/linux/syscall_user_dispatch.h \
+  include/linux/task_io_accounting.h \
+    $(wildcard include/config/TASK_IO_ACCOUNTING) \
+  include/linux/posix-timers.h \
+  include/linux/alarmtimer.h \
+    $(wildcard include/config/RTC_CLASS) \
+  include/uapi/linux/rseq.h \
+  include/linux/kcsan.h \
+  arch/x86/include/generated/asm/kmap_size.h \
+  include/asm-generic/kmap_size.h \
+    $(wildcard include/config/DEBUG_KMAP_LOCAL) \
+  include/linux/sched/jobctl.h \
+  include/linux/sched/task.h \
+    $(wildcard include/config/HAVE_EXIT_THREAD) \
+    $(wildcard include/config/ARCH_WANTS_DYNAMIC_TASK_STRUCT) \
+    $(wildcard include/config/HAVE_ARCH_THREAD_STRUCT_WHITELIST) \
+  include/linux/uaccess.h \
+  include/linux/fault-inject-usercopy.h \
+    $(wildcard include/config/FAULT_INJECTION_USERCOPY) \
+  arch/x86/include/asm/uaccess.h \
+    $(wildcard include/config/CC_HAS_ASM_GOTO_OUTPUT) \
+    $(wildcard include/config/CC_HAS_ASM_GOTO_TIED_OUTPUT) \
+    $(wildcard include/config/ARCH_HAS_COPY_MC) \
+    $(wildcard include/config/X86_INTEL_USERCOPY) \
+  arch/x86/include/asm/smap.h \
+  arch/x86/include/asm/extable.h \
+    $(wildcard include/config/BPF_JIT) \
+  include/asm-generic/access_ok.h \
+    $(wildcard include/config/ALTERNATE_USER_ADDRESS_SPACE) \
+  arch/x86/include/asm/uaccess_32.h \
+  include/linux/cred.h \
+    $(wildcard include/config/DEBUG_CREDENTIALS) \
+  include/linux/key.h \
+    $(wildcard include/config/KEY_NOTIFICATIONS) \
+    $(wildcard include/config/NET) \
+    $(wildcard include/config/SYSCTL) \
+  include/linux/sysctl.h \
+  include/uapi/linux/sysctl.h \
+  include/linux/assoc_array.h \
+    $(wildcard include/config/ASSOCIATIVE_ARRAY) \
+  include/linux/sched/user.h \
+    $(wildcard include/config/WATCH_QUEUE) \
+  include/linux/percpu_counter.h \
+  include/linux/ratelimit.h \
+  include/linux/rcu_sync.h \
+  include/linux/delayed_call.h \
+  include/linux/uuid.h \
+  include/uapi/linux/uuid.h \
+  include/linux/errseq.h \
+  include/linux/ioprio.h \
+  include/linux/sched/rt.h \
+  include/linux/iocontext.h \
+    $(wildcard include/config/BLK_ICQ) \
+  include/uapi/linux/ioprio.h \
+  include/linux/fs_types.h \
+  include/linux/mount.h \
+  include/linux/mnt_idmapping.h \
+  include/linux/slab.h \
+    $(wildcard include/config/DEBUG_SLAB) \
+    $(wildcard include/config/FAILSLAB) \
+    $(wildcard include/config/KASAN) \
+    $(wildcard include/config/SLAB) \
+    $(wildcard include/config/SLUB) \
+    $(wildcard include/config/SLOB) \
+  include/linux/overflow.h \
+  include/linux/percpu-refcount.h \
+  include/linux/kasan.h \
+    $(wildcard include/config/KASAN_STACK) \
+    $(wildcard include/config/KASAN_VMALLOC) \
+    $(wildcard include/config/KASAN_INLINE) \
+  include/linux/kasan-enabled.h \
+  include/uapi/linux/fs.h \
+  include/linux/quota.h \
+    $(wildcard include/config/QUOTA_NETLINK_INTERFACE) \
+  include/uapi/linux/dqblk_xfs.h \
+  include/linux/dqblk_v1.h \
+  include/linux/dqblk_v2.h \
+  include/linux/dqblk_qtree.h \
+  include/linux/projid.h \
+  include/uapi/linux/quota.h \
+  include/linux/nfs_fs_i.h \
+  include/uapi/linux/poll.h \
+  arch/x86/include/generated/uapi/asm/poll.h \
+  include/uapi/asm-generic/poll.h \
+  include/uapi/linux/eventpoll.h \
+  include/linux/device.h \
+    $(wildcard include/config/GENERIC_MSI_IRQ_DOMAIN) \
+    $(wildcard include/config/GENERIC_MSI_IRQ) \
+    $(wildcard include/config/ENERGY_MODEL) \
+    $(wildcard include/config/PINCTRL) \
+    $(wildcard include/config/DMA_OPS) \
+    $(wildcard include/config/DMA_DECLARE_COHERENT) \
+    $(wildcard include/config/DMA_CMA) \
+    $(wildcard include/config/SWIOTLB) \
+    $(wildcard include/config/ARCH_HAS_SYNC_DMA_FOR_DEVICE) \
+    $(wildcard include/config/ARCH_HAS_SYNC_DMA_FOR_CPU) \
+    $(wildcard include/config/ARCH_HAS_SYNC_DMA_FOR_CPU_ALL) \
+    $(wildcard include/config/DMA_OPS_BYPASS) \
+    $(wildcard include/config/OF) \
+    $(wildcard include/config/DEVTMPFS) \
+    $(wildcard include/config/SYSFS_DEPRECATED) \
+  include/linux/dev_printk.h \
+  include/linux/energy_model.h \
+  include/linux/kobject.h \
+    $(wildcard include/config/UEVENT_HELPER) \
+    $(wildcard include/config/DEBUG_KOBJECT_RELEASE) \
+  include/linux/sysfs.h \
+  include/linux/kernfs.h \
+    $(wildcard include/config/KERNFS) \
+  include/linux/idr.h \
+  include/linux/kobject_ns.h \
+  include/linux/sched/cpufreq.h \
+    $(wildcard include/config/CPU_FREQ) \
+  include/linux/sched/topology.h \
+    $(wildcard include/config/SCHED_DEBUG) \
+    $(wildcard include/config/SCHED_MC) \
+    $(wildcard include/config/CPU_FREQ_GOV_SCHEDUTIL) \
+  include/linux/sched/idle.h \
+  include/linux/sched/sd_flags.h \
+  include/linux/ioport.h \
+  include/linux/klist.h \
+  include/linux/pm.h \
+    $(wildcard include/config/VT_CONSOLE_SLEEP) \
+    $(wildcard include/config/PM) \
+    $(wildcard include/config/PM_CLK) \
+    $(wildcard include/config/PM_GENERIC_DOMAINS) \
+  include/linux/device/bus.h \
+    $(wildcard include/config/ACPI) \
+  include/linux/device/class.h \
+  include/linux/device/driver.h \
+  include/linux/module.h \
+    $(wildcard include/config/MODULES_TREE_LOOKUP) \
+    $(wildcard include/config/STACKTRACE_BUILD_ID) \
+    $(wildcard include/config/MODULE_SIG) \
+    $(wildcard include/config/KALLSYMS) \
+    $(wildcard include/config/BPF_EVENTS) \
+    $(wildcard include/config/DEBUG_INFO_BTF_MODULES) \
+    $(wildcard include/config/EVENT_TRACING) \
+    $(wildcard include/config/MODULE_UNLOAD) \
+    $(wildcard include/config/CONSTRUCTORS) \
+    $(wildcard include/config/FUNCTION_ERROR_INJECTION) \
+  include/linux/buildid.h \
+    $(wildcard include/config/CRASH_CORE) \
+  include/linux/kmod.h \
+  include/linux/umh.h \
+  include/linux/elf.h \
+    $(wildcard include/config/ARCH_USE_GNU_PROPERTY) \
+    $(wildcard include/config/ARCH_HAVE_ELF_PROT) \
+  arch/x86/include/asm/elf.h \
+    $(wildcard include/config/X86_X32_ABI) \
+  arch/x86/include/asm/user.h \
+  arch/x86/include/asm/user_32.h \
+  arch/x86/include/asm/fsgsbase.h \
+  arch/x86/include/asm/vdso.h \
+  arch/x86/include/asm/desc.h \
+  arch/x86/include/asm/fixmap.h \
+    $(wildcard include/config/DEBUG_KMAP_LOCAL_FORCE_MAP) \
+    $(wildcard include/config/X86_VSYSCALL_EMULATION) \
+    $(wildcard include/config/PROVIDE_OHCI1394_DMA_INIT) \
+    $(wildcard include/config/X86_IO_APIC) \
+    $(wildcard include/config/PCI_MMCONFIG) \
+    $(wildcard include/config/ACPI_APEI_GHES) \
+    $(wildcard include/config/INTEL_TXT) \
+  include/asm-generic/fixmap.h \
+  arch/x86/include/asm/irq_vectors.h \
+    $(wildcard include/config/HAVE_KVM) \
+    $(wildcard include/config/HYPERV) \
+    $(wildcard include/config/PCI_MSI) \
+  arch/x86/include/asm/cpu_entry_area.h \
+  arch/x86/include/asm/intel_ds.h \
+  arch/x86/include/asm/pgtable_areas.h \
+  arch/x86/include/asm/pgtable_32_areas.h \
+  include/uapi/linux/elf.h \
+  include/uapi/linux/elf-em.h \
+  include/linux/moduleparam.h \
+    $(wildcard include/config/ALPHA) \
+    $(wildcard include/config/IA64) \
+    $(wildcard include/config/PPC64) \
+  include/linux/rbtree_latch.h \
+  include/linux/error-injection.h \
+  include/asm-generic/error-injection.h \
+  include/linux/cfi.h \
+    $(wildcard include/config/CFI_CLANG_SHADOW) \
+  arch/x86/include/asm/module.h \
+    $(wildcard include/config/UNWINDER_ORC) \
+  include/asm-generic/module.h \
+    $(wildcard include/config/HAVE_MOD_ARCH_SPECIFIC) \
+    $(wildcard include/config/MODULES_USE_ELF_REL) \
+    $(wildcard include/config/MODULES_USE_ELF_RELA) \
+  arch/x86/include/asm/orc_types.h \
+  arch/x86/include/asm/device.h \
+  include/linux/pm_wakeup.h \
+  include/linux/cdev.h \
+  include/media/media-entity.h \
+  include/linux/fwnode.h \
+  include/uapi/linux/media.h \
+  include/media/v4l2-subdev.h \
+    $(wildcard include/config/VIDEO_ADV_DEBUG) \
+  include/uapi/linux/v4l2-subdev.h \
+  include/uapi/linux/v4l2-common.h \
+  include/uapi/linux/v4l2-mediabus.h \
+  include/uapi/linux/media-bus-format.h \
+  include/linux/videodev2.h \
+  include/uapi/linux/videodev2.h \
+  include/uapi/linux/v4l2-controls.h \
+  include/media/v4l2-async.h \
+  include/media/v4l2-common.h \
+    $

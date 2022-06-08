@@ -1,1 +1,4 @@
-ard include/config/ACPI_APEI_GHES)
+return cx_read(addr);
+}
+
+static in

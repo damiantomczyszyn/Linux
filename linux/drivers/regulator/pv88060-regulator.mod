@@ -1,2 +1,3 @@
-CPI_APEI_GHES) \
-    $(wildcard include
+taval = tempval & 0x000000FF;
+
+	/* Brin

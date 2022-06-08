@@ -1,1 +1,7 @@
-cmd_drivers/media/i2c/wm8739.o := gcc -Wp,-MMD,drivers/media/i2c/.wm8739.o.d -nostdinc -I./arch/x86/include -I./arch/x86/include/generated  -I./include -I./arch/x86/include/uapi -I./arch/x86/include/generated/ua
+mempolicy.h \
+  include/linux/freezer.h \
+  include/uapi/linux/i2c.h \
+  include/linux/spi/spi.h \
+    $(wildcard include/config/SPI_SLAVE) \
+  include/linux/scatterlist.h \
+    $(wildcard include/config/NEED_SG

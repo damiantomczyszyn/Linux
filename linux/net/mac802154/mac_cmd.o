@@ -1,220 +1,208 @@
-atic void torture_rwsem_up_read(int tid __maybe_unused)
-__releases(torture_rwsem)
-{
-	up_read(&torture_rwsem);
-}
-
-static struct lock_torture_ops rwsem_lock_ops = {
-	.writelock	= torture_rwsem_down_write,
-	.write_delay	= torture_rwsem_write_delay,
-	.task_boost     = torture_boost_dummy,
-	.writeunlock	= torture_rwsem_up_write,
-	.readlock       = torture_rwsem_down_read,
-	.read_delay     = torture_rwsem_read_delay,
-	.readunlock     = torture_rwsem_up_read,
-	.name		= "rwsem_lock"
-};
-
-#include <linux/percpu-rwsem.h>
-static struct percpu_rw_semaphore pcpu_rwsem;
-
-static void torture_percpu_rwsem_init(void)
-{
-	BUG_ON(percpu_init_rwsem(&pcpu_rwsem));
-}
-
-static void torture_percpu_rwsem_exit(void)
-{
-	percpu_free_rwsem(&pcpu_rwsem);
-}
-
-static int torture_percpu_rwsem_down_write(int tid __maybe_unused)
-__acquires(pcpu_rwsem)
-{
-	percpu_down_write(&pcpu_rwsem);
-	return 0;
-}
-
-static void torture_percpu_rwsem_up_write(int tid __maybe_unused)
-__releases(pcpu_rwsem)
-{
-	percpu_up_write(&pcpu_rwsem);
-}
-
-static int torture_percpu_rwsem_down_read(int tid __maybe_unused)
-__acquires(pcpu_rwsem)
-{
-	percpu_down_read(&pcpu_rwsem);
-	return 0;
-}
-
-static void torture_percpu_rwsem_up_read(int tid __maybe_unused)
-__releases(pcpu_rwsem)
-{
-	percpu_up_read(&pcpu_rwsem);
-}
-
-static struct lock_torture_ops percpu_rwsem_lock_ops = {
-	.init		= torture_percpu_rwsem_init,
-	.exit		= torture_percpu_rwsem_exit,
-	.writelock	= torture_percpu_rwsem_down_write,
-	.write_delay	= torture_rwsem_write_delay,
-	.task_boost     = torture_boost_dummy,
-	.writeunlock	= torture_percpu_rwsem_up_write,
-	.readlock       = torture_percpu_rwsem_down_read,
-	.read_delay     = torture_rwsem_read_delay,
-	.readunlock     = torture_percpu_rwsem_up_read,
-	.name		= "percpu_rwsem_lock"
-};
-
-/*
- * Lock torture writer kthread.  Repeatedly acquires and releases
- * the lock, checking for duplicate acquisitions.
- */
-static int lock_torture_writer(void *arg)
-{
-	struct lock_stress_stats *lwsp = arg;
-	int tid = lwsp - cxt.lwsa;
-	DEFINE_TORTURE_RANDOM(rand);
-
-	VERBOSE_TOROUT_STRING("lock_torture_writer task started");
-	set_user_nice(current, MAX_NICE);
-
-	do {
-		if ((torture_random(&rand) & 0xfffff) == 0)
-			schedule_timeout_uninterruptible(1);
-
-		cxt.cur_ops->task_boost(&rand);
-		cxt.cur_ops->writelock(tid);
-		if (WARN_ON_ONCE(lock_is_write_held))
-			lwsp->n_lock_fail++;
-		lock_is_write_held = true;
-		if (WARN_ON_ONCE(atomic_read(&lock_is_read_held)))
-			lwsp->n_lock_fail++; /* rare, but... */
-
-		lwsp->n_lock_acquired++;
-		cxt.cur_ops->write_delay(&rand);
-		lock_is_write_held = false;
-		WRITE_ONCE(last_lock_release, jiffies);
-		cxt.cur_ops->writeunlock(tid);
-
-		stutter_wait("lock_torture_writer");
-	} while (!torture_must_stop());
-
-	cxt.cur_ops->task_boost(NULL); /* reset prio */
-	torture_kthread_stopping("lock_torture_writer");
-	return 0;
+E(uc_rq->value))
+		WRITE_ONCE(uc_rq->value, uc_se->value);
 }
 
 /*
- * Lock torture reader kthread.  Repeatedly acquires and releases
- * the reader lock.
- */
-static int lock_torture_reader(void *arg)
-{
-	struct lock_stress_stats *lrsp = arg;
-	int tid = lrsp - cxt.lrsa;
-	DEFINE_TORTURE_RANDOM(rand);
-
-	VERBOSE_TOROUT_STRING("lock_torture_reader task started");
-	set_user_nice(current, MAX_NICE);
-
-	do {
-		if ((torture_random(&rand) & 0xfffff) == 0)
-			schedule_timeout_uninterruptible(1);
-
-		cxt.cur_ops->readlock(tid);
-		atomic_inc(&lock_is_read_held);
-		if (WARN_ON_ONCE(lock_is_write_held))
-			lrsp->n_lock_fail++; /* rare, but... */
-
-		lrsp->n_lock_acquired++;
-		cxt.cur_ops->read_delay(&rand);
-		atomic_dec(&lock_is_read_held);
-		cxt.cur_ops->readunlock(tid);
-
-		stutter_wait("lock_torture_reader");
-	} while (!torture_must_stop());
-	torture_kthread_stopping("lock_torture_reader");
-	return 0;
-}
-
-/*
- * Create an lock-torture-statistics message in the specified buffer.
- */
-static void __torture_print_stats(char *page,
-				  struct lock_stress_stats *statp, bool write)
-{
-	long cur;
-	bool fail = false;
-	int i, n_stress;
-	long max = 0, min = statp ? data_race(statp[0].n_lock_acquired) : 0;
-	long long sum = 0;
-
-	n_stress = write ? cxt.nrealwriters_stress : cxt.nrealreaders_stress;
-	for (i = 0; i < n_stress; i++) {
-		if (data_race(statp[i].n_lock_fail))
-			fail = true;
-		cur = data_race(statp[i].n_lock_acquired);
-		sum += cur;
-		if (max < cur)
-			max = cur;
-		if (min > cur)
-			min = cur;
-	}
-	page += sprintf(page,
-			"%s:  Total: %lld  Max/Min: %ld/%ld %s  Fail: %d %s\n",
-			write ? "Writes" : "Reads ",
-			sum, max, min,
-			!onoff_interval && max / 2 > min ? "???" : "",
-			fail, fail ? "!!!" : "");
-	if (fail)
-		atomic_inc(&cxt.n_lock_torture_errors);
-}
-
-/*
- * Print torture statistics.  Caller must ensure that there is only one
- * call to this function at a given time!!!  This is normally accomplished
- * by relying on the module system to only have one copy of the module
- * loaded, and then by giving the lock_torture_stats kthread full control
- * (or the init/cleanup functions when lock_torture_stats thread is not
- * running).
- */
-static void lock_torture_stats_print(void)
-{
-	int size = cxt.nrealwriters_stress * 200 + 8192;
-	char *buf;
-
-	if (cxt.cur_ops->readlock)
-		size += cxt.nrealreaders_stress * 200 + 8192;
-
-	buf = kmalloc(size, GFP_KERNEL);
-	if (!buf) {
-		pr_err("lock_torture_stats_print: Out of memory, need: %d",
-		       size);
-		return;
-	}
-
-	__torture_print_stats(buf, cxt.lwsa, true);
-	pr_alert("%s", buf);
-	kfree(buf);
-
-	if (cxt.cur_ops->readlock) {
-		buf = kmalloc(size, GFP_KERNEL);
-		if (!buf) {
-			pr_err("lock_torture_stats_print: Out of memory, need: %d",
-			       size);
-			return;
-		}
-
-		__torture_print_stats(buf, cxt.lrsa, false);
-		pr_alert("%s", buf);
-		kfree(buf);
-	}
-}
-
-/*
- * Periodically prints torture statistics, if periodic statistics printing
- * was specified via the stat_interval module parameter.
+ * When a task is dequeued from a rq, the clamp bucket refcounted by the task
+ * is released. If this is the last task reference counting the rq's max
+ * active clamp value, then the rq's clamp value is updated.
  *
- * No need to wo
+ * Both refcounted tasks and rq's cached clamp values are expected to be
+ * always valid. If it's detected they are not, as defensive programming,
+ * enforce the expected state and warn.
+ */
+static inline void uclamp_rq_dec_id(struct rq *rq, struct task_struct *p,
+				    enum uclamp_id clamp_id)
+{
+	struct uclamp_rq *uc_rq = &rq->uclamp[clamp_id];
+	struct uclamp_se *uc_se = &p->uclamp[clamp_id];
+	struct uclamp_bucket *bucket;
+	unsigned int bkt_clamp;
+	unsigned int rq_clamp;
+
+	lockdep_assert_rq_held(rq);
+
+	/*
+	 * If sched_uclamp_used was enabled after task @p was enqueued,
+	 * we could end up with unbalanced call to uclamp_rq_dec_id().
+	 *
+	 * In this case the uc_se->active flag should be false since no uclamp
+	 * accounting was performed at enqueue time and we can just return
+	 * here.
+	 *
+	 * Need to be careful of the following enqueue/dequeue ordering
+	 * problem too
+	 *
+	 *	enqueue(taskA)
+	 *	// sched_uclamp_used gets enabled
+	 *	enqueue(taskB)
+	 *	dequeue(taskA)
+	 *	// Must not decrement bucket->tasks here
+	 *	dequeue(taskB)
+	 *
+	 * where we could end up with stale data in uc_se and
+	 * bucket[uc_se->bucket_id].
+	 *
+	 * The following check here eliminates the possibility of such race.
+	 */
+	if (unlikely(!uc_se->active))
+		return;
+
+	bucket = &uc_rq->bucket[uc_se->bucket_id];
+
+	SCHED_WARN_ON(!bucket->tasks);
+	if (likely(bucket->tasks))
+		bucket->tasks--;
+
+	uc_se->active = false;
+
+	/*
+	 * Keep "local max aggregation" simple and accept to (possibly)
+	 * overboost some RUNNABLE tasks in the same bucket.
+	 * The rq clamp bucket value is reset to its base value whenever
+	 * there are no more RUNNABLE tasks refcounting it.
+	 */
+	if (likely(bucket->tasks))
+		return;
+
+	rq_clamp = READ_ONCE(uc_rq->value);
+	/*
+	 * Defensive programming: this should never happen. If it happens,
+	 * e.g. due to future modification, warn and fixup the expected value.
+	 */
+	SCHED_WARN_ON(bucket->value > rq_clamp);
+	if (bucket->value >= rq_clamp) {
+		bkt_clamp = uclamp_rq_max_value(rq, clamp_id, uc_se->value);
+		WRITE_ONCE(uc_rq->value, bkt_clamp);
+	}
+}
+
+static inline void uclamp_rq_inc(struct rq *rq, struct task_struct *p)
+{
+	enum uclamp_id clamp_id;
+
+	/*
+	 * Avoid any overhead until uclamp is actually used by the userspace.
+	 *
+	 * The condition is constructed such that a NOP is generated when
+	 * sched_uclamp_used is disabled.
+	 */
+	if (!static_branch_unlikely(&sched_uclamp_used))
+		return;
+
+	if (unlikely(!p->sched_class->uclamp_enabled))
+		return;
+
+	for_each_clamp_id(clamp_id)
+		uclamp_rq_inc_id(rq, p, clamp_id);
+
+	/* Reset clamp idle holding when there is one RUNNABLE task */
+	if (rq->uclamp_flags & UCLAMP_FLAG_IDLE)
+		rq->uclamp_flags &= ~UCLAMP_FLAG_IDLE;
+}
+
+static inline void uclamp_rq_dec(struct rq *rq, struct task_struct *p)
+{
+	enum uclamp_id clamp_id;
+
+	/*
+	 * Avoid any overhead until uclamp is actually used by the userspace.
+	 *
+	 * The condition is constructed such that a NOP is generated when
+	 * sched_uclamp_used is disabled.
+	 */
+	if (!static_branch_unlikely(&sched_uclamp_used))
+		return;
+
+	if (unlikely(!p->sched_class->uclamp_enabled))
+		return;
+
+	for_each_clamp_id(clamp_id)
+		uclamp_rq_dec_id(rq, p, clamp_id);
+}
+
+static inline void uclamp_rq_reinc_id(struct rq *rq, struct task_struct *p,
+				      enum uclamp_id clamp_id)
+{
+	if (!p->uclamp[clamp_id].active)
+		return;
+
+	uclamp_rq_dec_id(rq, p, clamp_id);
+	uclamp_rq_inc_id(rq, p, clamp_id);
+
+	/*
+	 * Make sure to clear the idle flag if we've transiently reached 0
+	 * active tasks on rq.
+	 */
+	if (clamp_id == UCLAMP_MAX && (rq->uclamp_flags & UCLAMP_FLAG_IDLE))
+		rq->uclamp_flags &= ~UCLAMP_FLAG_IDLE;
+}
+
+static inline void
+uclamp_update_active(struct task_struct *p)
+{
+	enum uclamp_id clamp_id;
+	struct rq_flags rf;
+	struct rq *rq;
+
+	/*
+	 * Lock the task and the rq where the task is (or was) queued.
+	 *
+	 * We might lock the (previous) rq of a !RUNNABLE task, but that's the
+	 * price to pay to safely serialize util_{min,max} updates with
+	 * enqueues, dequeues and migration operations.
+	 * This is the same locking schema used by __set_cpus_allowed_ptr().
+	 */
+	rq = task_rq_lock(p, &rf);
+
+	/*
+	 * Setting the clamp bucket is serialized by task_rq_lock().
+	 * If the task is not yet RUNNABLE and its task_struct is not
+	 * affecting a valid clamp bucket, the next time it's enqueued,
+	 * it will already see the updated clamp bucket value.
+	 */
+	for_each_clamp_id(clamp_id)
+		uclamp_rq_reinc_id(rq, p, clamp_id);
+
+	task_rq_unlock(rq, p, &rf);
+}
+
+#ifdef CONFIG_UCLAMP_TASK_GROUP
+static inline void
+uclamp_update_active_tasks(struct cgroup_subsys_state *css)
+{
+	struct css_task_iter it;
+	struct task_struct *p;
+
+	css_task_iter_start(css, 0, &it);
+	while ((p = css_task_iter_next(&it)))
+		uclamp_update_active(p);
+	css_task_iter_end(&it);
+}
+
+static void cpu_util_update_eff(struct cgroup_subsys_state *css);
+static void uclamp_update_root_tg(void)
+{
+	struct task_group *tg = &root_task_group;
+
+	uclamp_se_set(&tg->uclamp_req[UCLAMP_MIN],
+		      sysctl_sched_uclamp_util_min, false);
+	uclamp_se_set(&tg->uclamp_req[UCLAMP_MAX],
+		      sysctl_sched_uclamp_util_max, false);
+
+	rcu_read_lock();
+	cpu_util_update_eff(&root_task_group.css);
+	rcu_read_unlock();
+}
+#else
+static void uclamp_update_root_tg(void) { }
+#endif
+
+int sysctl_sched_uclamp_handler(struct ctl_table *table, int write,
+				void *buffer, size_t *lenp, loff_t *ppos)
+{
+	bool update_root_tg = false;
+	int old_min, old_max, old_min_rt;
+	int result;
+
+	mutex_lock(&uclamp_mutex

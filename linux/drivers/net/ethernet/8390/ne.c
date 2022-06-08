@@ -1,637 +1,994 @@
-nfig/FILE_LOCKING) \
-    $(wildcard include/config/FSNOTIFY) \
-    $(wildcard include/config/FS_ENCRYPTION) \
-    $(wildcard include/config/FS_VERITY) \
-    $(wildcard include/config/EPOLL) \
-    $(wildcard include/config/UNICODE) \
-    $(wildcard include/config/QUOTA) \
-    $(wildcard include/config/FS_DAX) \
-    $(wildcard include/config/BLOCK) \
-    $(wildcard include/config/MIGRATION) \
-  include/linux/wait_bit.h \
-  include/linux/kdev_t.h \
-  include/uapi/linux/kdev_t.h \
-  include/linux/dcache.h \
-  include/linux/rculist_bl.h \
-  include/linux/list_bl.h \
-  include/linux/bit_spinlock.h \
-  include/linux/lockref.h \
-    $(wildcard include/config/ARCH_USE_CMPXCHG_LOCKREF) \
-  include/linux/stringhash.h \
-    $(wildcard include/config/DCACHE_WORD_ACCESS) \
-  include/linux/hash.h \
-    $(wildcard include/config/HAVE_ARCH_HASH) \
-  include/linux/path.h \
-  include/linux/list_lru.h \
-  include/linux/shrinker.h \
-  include/linux/capability.h \
-  include/uapi/linux/capability.h \
-  include/linux/semaphore.h \
-  include/linux/fcntl.h \
-    $(wildcard include/config/ARCH_32BIT_OFF_T) \
-  include/uapi/linux/fcntl.h \
-  arch/x86/include/generated/uapi/asm/fcntl.h \
-  include/uapi/asm-generic/fcntl.h \
-  include/uapi/linux/openat2.h \
-  include/linux/migrate_mode.h \
-  include/linux/percpu-rwsem.h \
-  include/linux/rcuwait.h \
-  include/linux/sched/signal.h \
-    $(wildcard include/config/SCHED_AUTOGROUP) \
-    $(wildcard include/config/BSD_PROCESS_ACCT) \
-    $(wildcard include/config/TASKSTATS) \
-    $(wildcard include/config/STACK_GROWSUP) \
-  include/linux/signal.h \
-    $(wildcard include/config/DYNAMIC_SIGFRAME) \
-  include/linux/sched/jobctl.h \
-  include/linux/sched/task.h \
-    $(wildcard include/config/HAVE_EXIT_THREAD) \
-    $(wildcard include/config/ARCH_WANTS_DYNAMIC_TASK_STRUCT) \
-    $(wildcard include/config/HAVE_ARCH_THREAD_STRUCT_WHITELIST) \
-  include/linux/uaccess.h \
-  include/linux/fault-inject-usercopy.h \
-    $(wildcard include/config/FAULT_INJECTION_USERCOPY) \
-  arch/x86/include/asm/uaccess.h \
-    $(wildcard include/config/CC_HAS_ASM_GOTO_OUTPUT) \
-    $(wildcard include/config/CC_HAS_ASM_GOTO_TIED_OUTPUT) \
-    $(wildcard include/config/ARCH_HAS_COPY_MC) \
-    $(wildcard include/config/X86_INTEL_USERCOPY) \
-  arch/x86/include/asm/smap.h \
-  include/asm-generic/access_ok.h \
-    $(wildcard include/config/ALTERNATE_USER_ADDRESS_SPACE) \
-  arch/x86/include/asm/uaccess_32.h \
-  include/linux/cred.h \
-    $(wildcard include/config/DEBUG_CREDENTIALS) \
-  include/linux/key.h \
-    $(wildcard include/config/KEY_NOTIFICATIONS) \
-    $(wildcard include/config/NET) \
-  include/linux/assoc_array.h \
-    $(wildcard include/config/ASSOCIATIVE_ARRAY) \
-  include/linux/sched/user.h \
-    $(wildcard include/config/WATCH_QUEUE) \
-  include/linux/percpu_counter.h \
-  include/linux/rcu_sync.h \
-  include/linux/delayed_call.h \
-  include/linux/errseq.h \
-  include/linux/ioprio.h \
-  include/linux/sched/rt.h \
-  include/linux/iocontext.h \
-    $(wildcard include/config/BLK_ICQ) \
-  include/uapi/linux/ioprio.h \
-  include/linux/fs_types.h \
-  include/linux/mount.h \
-  include/linux/mnt_idmapping.h \
-  include/uapi/linux/fs.h \
-  include/linux/quota.h \
-    $(wildcard include/config/QUOTA_NETLINK_INTERFACE) \
-  include/uapi/linux/dqblk_xfs.h \
-  include/linux/dqblk_v1.h \
-  include/linux/dqblk_v2.h \
-  include/linux/dqblk_qtree.h \
-  include/linux/projid.h \
-  include/uapi/linux/quota.h \
-  include/linux/nfs_fs_i.h \
-  include/linux/pinctrl/pinctrl-state.h \
-  include/linux/pinctrl/devinfo.h \
-  include/linux/pinctrl/consumer.h \
-  include/linux/pinctrl/pinconf-generic.h \
-  include/linux/pinctrl/machine.h \
-  include/linux/gpio/consumer.h \
-    $(wildcard include/config/GPIO_SYSFS) \
-  include/linux/i2c.h \
-    $(wildcard include/config/I2C) \
-    $(wildcard include/config/I2C_SLAVE) \
-    $(wildcard include/config/I2C_BOARDINFO) \
-    $(wildcard include/config/I2C_MUX) \
-  include/linux/acpi.h \
-    $(wildcard include/config/ACPI_DEBUGGER) \
-    $(wildcard include/config/ACPI_TABLE_LIB) \
-    $(wildcard include/config/LOONGARCH) \
-    $(wildcard include/config/ARM64) \
-    $(wildcard include/config/ACPI_PROCESSOR_CSTATE) \
-    $(wildcard include/config/ACPI_HOTPLUG_CPU) \
-    $(wildcard include/config/ACPI_HOTPLUG_IOAPIC) \
-    $(wildcard include/config/ACPI_WMI) \
-    $(wildcard include/config/ACPI_NUMA) \
-    $(wildcard include/config/HIBERNATION) \
-    $(wildcard include/config/ACPI_HOTPLUG_MEMORY) \
-    $(wildcard include/config/ACPI_CONTAINER) \
-    $(wildcard include/config/ACPI_GTDT) \
-    $(wildcard include/config/ACPI_TABLE_UPGRADE) \
-    $(wildcard include/config/ACPI_WATCHDOG) \
-    $(wildcard include/config/ACPI_SPCR_TABLE) \
-    $(wildcard include/config/ACPI_GENERIC_GSI) \
-    $(wildcard include/config/ACPI_LPIT) \
-    $(wildcard include/config/ACPI_PPTT) \
-    $(wildcard include/config/ACPI_PCC) \
-  include/linux/resource_ext.h \
-  include/acpi/acpi.h \
-  include/acpi/platform/acenv.h \
-  include/acpi/platform/acgcc.h \
-  include/acpi/platform/aclinux.h \
-    $(wildcard include/config/ACPI_REDUCED_HARDWARE_ONLY) \
-    $(wildcard include/config/ACPI_DEBUG) \
-  arch/x86/include/asm/acenv.h \
-  include/acpi/acnames.h \
-  include/acpi/actypes.h \
-  include/acpi/acexcep.h \
-  include/acpi/actbl.h \
-  include/acpi/actbl1.h \
-  include/acpi/actbl2.h \
-  include/acpi/actbl3.h \
-  include/acpi/acrestyp.h \
-  include/acpi/platform/acenvex.h \
-  include/acpi/platform/aclinuxex.h \
-  include/acpi/platform/acgccex.h \
-  include/acpi/acoutput.h \
-  include/acpi/acpiosxf.h \
-  include/acpi/acpixf.h \
-  include/acpi/acconfig.h \
-  include/acpi/acbuffer.h \
-  include/linux/dynamic_debug.h \
-  include/acpi/acpi_bus.h \
-    $(wildcard include/config/X86_ANDROID_TABLETS) \
-    $(wildcard include/config/ACPI_SYSTEM_POWER_STATES_SUPPORT) \
-    $(wildcard include/config/ACPI_SLEEP) \
-  include/acpi/acpi_drivers.h \
-    $(wildcard include/config/ACPI_DOCK) \
-  include/acpi/acpi_numa.h \
-    $(wildcard include/config/ACPI_HMAT) \
-  include/acpi/acpi_io.h \
-  arch/x86/include/asm/acpi.h \
-    $(wildcard include/config/ACPI_APEI) \
-  include/acpi/pdc_intel.h \
-  arch/x86/include/asm/numa.h \
-    $(wildcard include/config/NUMA_EMU) \
-  arch/x86/include/asm/numa_32.h \
-  include/linux/regulator/consumer.h \
-    $(wildcard include/config/REGULATOR) \
-  include/linux/suspend.h \
-    $(wildcard include/config/VT) \
-    $(wildcard include/config/SUSPEND) \
-    $(wildcard include/config/HIBERNATION_SNAPSHOT_DEV) \
-    $(wildcard include/config/PM_SLEEP_DEBUG) \
-    $(wildcard include/config/PM_AUTOSLEEP) \
-  include/linux/swap.h \
-    $(wildcard include/config/DEVICE_PRIVATE) \
-    $(wildcard include/config/FRONTSWAP) \
-    $(wildcard include/config/THP_SWAP) \
-    $(wildcard include/config/MEMCG_SWAP) \
-  include/linux/memcontrol.h \
-  include/linux/cgroup.h \
-    $(wildcard include/config/CGROUP_CPUACCT) \
-    $(wildcard include/config/SOCK_CGROUP_DATA) \
-    $(wildcard include/config/CGROUP_DATA) \
-    $(wildcard include/config/CGROUP_BPF) \
-  include/uapi/linux/cgroupstats.h \
-  include/uapi/linux/taskstats.h \
-  include/linux/ns_common.h \
-  include/linux/nsproxy.h \
-  include/linux/user_namespace.h \
-    $(wildcard include/config/INOTIFY_USER) \
-    $(wildcard include/config/FANOTIFY) \
-    $(wildcard include/config/PERSISTENT_KEYRINGS) \
-  include/linux/kernel_stat.h \
-  include/linux/interrupt.h \
-    $(wildcard include/config/IRQ_FORCED_THREADING) \
-    $(wildcard include/config/GENERIC_IRQ_PROBE) \
-    $(wildcard include/config/IRQ_TIMINGS) \
-  include/linux/hardirq.h \
-  include/linux/context_tracking_state.h \
-    $(wildcard include/config/CONTEXT_TRACKING) \
-  include/linux/ftrace_irq.h \
-    $(wildcard include/config/HWLAT_TRACER) \
-    $(wildcard include/config/OSNOISE_TRACER) \
-  include/linux/vtime.h \
-    $(wildcard include/config/VIRT_CPU_ACCOUNTING) \
-    $(wildcard include/config/IRQ_TIME_ACCOUNTING) \
-  arch/x86/include/asm/hardirq.h \
-    $(wildcard include/config/KVM_INTEL) \
-    $(wildcard include/config/X86_THERMAL_VECTOR) \
-    $(wildcard include/config/X86_MCE_THRESHOLD) \
-    $(wildcard include/config/X86_MCE_AMD) \
-    $(wildcard include/config/X86_HV_CALLBACK_VECTOR) \
-  include/linux/cgroup-defs.h \
-    $(wildcard include/config/CGROUP_NET_CLASSID) \
-    $(wildcard include/config/CGROUP_NET_PRIO) \
-  include/linux/u64_stats_sync.h \
-  include/linux/bpf-cgroup-defs.h \
-  include/linux/psi_types.h \
-  include/linux/kthread.h \
-  include/linux/cgroup_subsys.h \
-    $(wildcard include/config/CGROUP_DEVICE) \
-    $(wildcard include/config/CGROUP_FREEZER) \
-    $(wildcard include/config/CGROUP_PERF) \
-    $(wildcard include/config/CGROUP_HUGETLB) \
-    $(wildcard include/config/CGROUP_PIDS) \
-    $(wildcard include/config/CGROUP_RDMA) \
-    $(wildcard include/config/CGROUP_MISC) \
-    $(wildcard include/config/CGROUP_DEBUG) \
-  include/linux/vm_event_item.h \
-    $(wildcard include/config/HAVE_ARCH_TRANSPARENT_HUGEPAGE_PUD) \
-    $(wildcard include/config/MEMORY_BALLOON) \
-    $(wildcard include/config/BALLOON_COMPACTION) \
-    $(wildcard include/config/DEBUG_TLBFLUSH) \
-    $(wildcard include/config/DEBUG_VM_VMACACHE) \
-  include/linux/page_counter.h \
-  include/linux/vmpressure.h \
-  include/linux/eventfd.h \
-  include/linux/mm.h \
-    $(wildcard include/config/HAVE_ARCH_MMAP_RND_BITS) \
-    $(wildcard include/config/HAVE_ARCH_MMAP_RND_COMPAT_BITS) \
-    $(wildcard include/config/ARCH_USES_HIGH_VMA_FLAGS) \
-    $(wildcard include/config/ARCH_HAS_PKEYS) \
-    $(wildcard include/config/PPC) \
-    $(wildcard include/config/PARISC) \
-    $(wildcard include/config/SPARC64) \
-    $(wildcard include/config/ARM64_MTE) \
-    $(wildcard include/config/HAVE_ARCH_USERFAULTFD_MINOR) \
-    $(wildcard include/config/SHMEM) \
-    $(wildcard include/config/ARCH_HAS_PTE_SPECIAL) \
-    $(wildcard include/config/ARCH_HAS_PTE_DEVMAP) \
-    $(wildcard include/config/DEBUG_VM_RB) \
-    $(wildcard include/config/PAGE_POISONING) \
-    $(wildcard include/config/INIT_ON_ALLOC_DEFAULT_ON) \
-    $(wildcard include/config/INIT_ON_FREE_DEFAULT_ON) \
-    $(wildcard include/config/DEBUG_PAGEALLOC) \
-    $(wildcard include/config/HUGETLBFS) \
-    $(wildcard include/config/MAPPING_DIRTY_HELPERS) \
-    $(wildcard include/config/ANON_VMA_NAME) \
-  include/linux/mmap_lock.h \
-  include/linux/page_ext.h \
-  include/linux/stacktrace.h \
-    $(wildcard include/config/ARCH_STACKWALK) \
-    $(wildcard include/config/STACKTRACE) \
-    $(wildcard include/config/HAVE_RELIABLE_STACKTRACE) \
-  include/linux/stackdepot.h \
-    $(wildcard include/config/STACKDEPOT_ALWAYS_INIT) \
-  include/linux/page_ref.h \
-    $(wildcard include/config/DEBUG_PAGE_REF) \
-  include/linux/sizes.h \
-  include/linux/pgtable.h \
-    $(wildcard include/config/HIGHPTE) \
-    $(wildcard include/config/GUP_GET_PTE_LOW_HIGH) \
-    $(wildcard include/config/HAVE_ARCH_SOFT_DIRTY) \
-    $(wildcard include/config/ARCH_ENABLE_THP_MIGRATION) \
-    $(wildcard include/config/X86_ESPFIX64) \
-  arch/x86/include/asm/pgtable.h \
-    $(wildcard include/config/DEBUG_WX) \
-    $(wildcard include/config/PAGE_TABLE_CHECK) \
-  arch/x86/include/asm/pkru.h \
-  arch/x86/include/asm/fpu/api.h \
-    $(wildcard include/config/X86_DEBUG_FPU) \
-  arch/x86/include/asm/coco.h \
-  include/asm-generic/pgtable_uffd.h \
-  include/linux/page_table_check.h \
-  arch/x86/include/asm/pgtable_32.h \
-  arch/x86/include/asm/pgtable-3level.h \
-  arch/x86/include/asm/pgtable-invert.h \
-  include/linux/huge_mm.h \
-  include/linux/sched/coredump.h \
-    $(wildcard include/config/CORE_DUMP_DEFAULT_ELF_HEADERS) \
-  include/linux/vmstat.h \
-    $(wildcard include/config/VM_EVENT_COUNTERS) \
-  include/linux/writeback.h \
-  include/linux/flex_proportions.h \
-  include/linux/backing-dev-defs.h \
-    $(wildcard include/config/DEBUG_FS) \
-  include/linux/blk_types.h \
-    $(wildcard include/config/FAIL_MAKE_REQUEST) \
-    $(wildcard include/config/BLK_CGROUP_IOCOST) \
-    $(wildcard include/config/BLK_INLINE_ENCRYPTION) \
-    $(wildcard include/config/BLK_DEV_INTEGRITY) \
-  include/linux/bvec.h \
-  include/linux/highmem.h \
-  include/linux/cacheflush.h \
-  arch/x86/include/asm/cacheflush.h \
-  include/asm-generic/cacheflush.h \
-  include/linux/highmem-internal.h \
-  arch/x86/include/asm/highmem.h \
-  arch/x86/include/asm/tlbflush.h \
-  arch/x86/include/asm/invpcid.h \
-  arch/x86/include/asm/pti.h \
-  include/linux/bio.h \
-  include/linux/mempool.h \
-  include/linux/uio.h \
-    $(wildcard include/config/ARCH_HAS_UACCESS_FLUSHCACHE) \
-  include/uapi/linux/uio.h \
-  include/linux/node.h \
-    $(wildcard include/config/HMEM_REPORTING) \
-  include/linux/pagemap.h \
-  include/linux/hugetlb_inline.h \
-  include/uapi/linux/mempolicy.h \
-  include/linux/freezer.h \
-  include/uapi/linux/i2c.h \
-  include/linux/videodev2.h \
-  include/uapi/linux/videodev2.h \
-  include/uapi/linux/v4l2-common.h \
-  include/uapi/linux/v4l2-controls.h \
-  include/media/v4l2-ctrls.h \
-  include/media/media-request.h \
-    $(wildcard include/config/MEDIA_CONTROLLER) \
-  include/media/media-device.h \
-  include/media/media-devnode.h \
-  include/linux/poll.h \
-  include/uapi/linux/poll.h \
-  arch/x86/include/generated/uapi/asm/poll.h \
-  include/uapi/asm-generic/poll.h \
-  include/uapi/linux/eventpoll.h \
-  include/linux/cdev.h \
-  include/media/media-entity.h \
-  include/uapi/linux/media.h \
-  include/media/hevc-ctrls.h \
-  include/media/v4l2-device.h \
-    $(wildcard include/config/VIDEO_V4L2_SUBDEV_API) \
-  include/media/v4l2-subdev.h \
-  include/uapi/linux/v4l2-subdev.h \
-  include/uapi/linux/v4l2-mediabus.h \
-  include/uapi/linux/media-bus-format.h \
-  include/media/v4l2-async.h \
-  include/media/v4l2-common.h \
-    $(wildcard include/config/VIDEO_V4L2_I2C) \
-    $(wildcard include/config/SPI) \
-  include/media/v4l2-dev.h \
-  include/linux/spi/spi.h \
-    $(wildcard include/config/SPI_SLAVE) \
-  include/linux/scatterlist.h \
-    $(wildcard include/config/NEED_SG_DMA_LENGTH) \
-    $(wildcard include/config/DEBUG_SG) \
-    $(wildcard include/config/SGL_ALLOC) \
-    $(wildcard include/config/ARCH_NO_SG_CHAIN) \
-    $(wildcard include/config/SG_POOL) \
-  include/uapi/linux/spi/spi.h \
-  include/media/v4l2-fh.h \
-  include/media/v4l2-mediabus.h \
-  include/media/v4l2-image-sizes.h \
-  drivers/media/i2c/vs6624_regs.h \
+/* ne.c: A general non-shared-memory NS8390 ethernet driver for linux. */
+/*
+    Written 1992-94 by Donald Becker.
 
-drivers/media/i2c/vs6624.o: $(deps_drivers/media/i2c/vs6624.o)
+    Copyright 1993 United States Government as represented by the
+    Director, National Security Agency.
 
-$(deps_drivers/media/i2c/vs6624.o):
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     cmd_drivers/media/i2c/vs6624.o := gcc -Wp,-MMD,drivers/media/i2c/.vs6624.o.d -nostdinc -I./arch/x86/include -I./arch/x86/include/generated  -I./include -I./arch/x86/include/uapi -I./arch/x86/include/generated/uapi -I./include/uapi -I./include/generated/uapi -include ./include/linux/compiler-version.h -include ./include/linux/kconfig.h -include ./include/linux/compiler_types.h -D__KERNEL__ -fmacro-prefix-map=./= -Wall -Wundef -Werror=strict-prototypes -Wno-trigraphs -fno-strict-aliasing -fno-common -fshort-wchar -fno-PIE -Werror=implicit-function-declaration -Werror=implicit-int -Werror=return-type -Wno-format-security -std=gnu11 -mno-sse -mno-mmx -mno-sse2 -mno-3dnow -mno-avx -fcf-protection=none -m32 -msoft-float -mregparm=3 -freg-struct-return -fno-pic -mpreferred-stack-boundary=2 -march=i686 -mtune=pentium3 -mtune=generic -Wa,-mtune=generic32 -ffreestanding -mstack-protector-guard-reg=fs -mstack-protector-guard-symbol=__stack_chk_guard -Wno-sign-compare -fno-asynchronous-unwind-tables -mindirect-branch=thunk-extern -mindirect-branch-register -fno-jump-tables -fno-delete-null-pointer-checks -Wno-frame-address -Wno-format-truncation -Wno-format-overflow -Wno-address-of-packed-member -O2 -fno-allow-store-data-races -fstack-protector-strong -Wimplicit-fallthrough=5 -Wno-main -Wno-unused-but-set-variable -Wno-unused-const-variable -fno-stack-clash-protection -pg -mrecord-mcount -mfentry -DCC_USING_FENTRY -Wdeclaration-after-statement -Wvla -Wno-pointer-sign -Wcast-function-type -Wno-stringop-truncation -Wno-stringop-overflow -Wno-restrict -Wno-maybe-uninitialized -Wno-alloc-size-larger-than -fno-strict-overflow -fno-stack-check -fconserve-stack -Werror=date-time -Werror=incompatible-pointer-types -Werror=designated-init -Wno-packed-not-aligned  -DMODULE  -DKBUILD_BASENAME='"vs6624"' -DKBUILD_MODNAME='"vs6624"' -D__KBUILD_MODNAME=kmod_vs6624 -c -o drivers/media/i2c/vs6624.o drivers/media/i2c/vs6624.c 
+    This software may be used and distributed according to the terms
+    of the GNU General Public License, incorporated herein by reference.
 
-source_drivers/media/i2c/vs6624.o := drivers/media/i2c/vs6624.c
+    The author may be reached as becker@scyld.com, or C/O
+    Scyld Computing Corporation, 410 Severn Ave., Suite 210, Annapolis MD 21403
 
-deps_drivers/media/i2c/vs6624.o := \
-    $(wildcard include/config/VIDEO_ADV_DEBUG) \
-  include/linux/compiler-version.h \
-    $(wildcard include/config/CC_VERSION_TEXT) \
-  include/linux/kconfig.h \
-    $(wildcard include/config/CPU_BIG_ENDIAN) \
-    $(wildcard include/config/BOOGER) \
-    $(wildcard include/config/FOO) \
-  include/linux/compiler_types.h \
-    $(wildcard include/config/DEBUG_INFO_BTF) \
-    $(wildcard include/config/PAHOLE_HAS_BTF_TAG) \
-    $(wildcard include/config/HAVE_ARCH_COMPILER_H) \
-    $(wildcard include/config/CC_HAS_ASM_INLINE) \
-  include/linux/compiler_attributes.h \
-  include/linux/compiler-gcc.h \
-    $(wildcard include/config/RETPOLINE) \
-    $(wildcard include/config/ARCH_USE_BUILTIN_BSWAP) \
-    $(wildcard include/config/SHADOW_CALL_STACK) \
-    $(wildcard include/config/KCOV) \
-  include/linux/delay.h \
-  include/linux/math.h \
-  include/linux/types.h \
-    $(wildcard include/config/HAVE_UID16) \
-    $(wildcard include/config/UID16) \
-    $(wildcard include/config/ARCH_DMA_ADDR_T_64BIT) \
-    $(wildcard include/config/PHYS_ADDR_T_64BIT) \
-    $(wildcard include/config/64BIT) \
-    $(wildcard include/config/ARCH_32BIT_USTAT_F_TINODE) \
-  include/uapi/linux/types.h \
-  arch/x86/include/generated/uapi/asm/types.h \
-  include/uapi/asm-generic/types.h \
-  include/asm-generic/int-ll64.h \
-  include/uapi/asm-generic/int-ll64.h \
-  arch/x86/include/uapi/asm/bitsperlong.h \
-  include/asm-generic/bitsperlong.h \
-  include/uapi/asm-generic/bitsperlong.h \
-  include/uapi/linux/posix_types.h \
-  include/linux/stddef.h \
-  include/uapi/linux/stddef.h \
-  include/linux/compiler_types.h \
-  arch/x86/include/asm/posix_types.h \
-    $(wildcard include/config/X86_32) \
-  arch/x86/include/uapi/asm/posix_types_32.h \
-  include/uapi/asm-generic/posix_types.h \
-  arch/x86/include/asm/div64.h \
-  include/linux/log2.h \
-    $(wildcard include/config/ARCH_HAS_ILOG2_U32) \
-    $(wildcard include/config/ARCH_HAS_ILOG2_U64) \
-  include/linux/bitops.h \
-  include/linux/bits.h \
-  include/linux/const.h \
-  include/vdso/const.h \
-  include/uapi/linux/const.h \
-  include/vdso/bits.h \
-  include/linux/build_bug.h \
-  include/linux/compiler.h \
-    $(wildcard include/config/TRACE_BRANCH_PROFILING) \
-    $(wildcard include/config/PROFILE_ALL_BRANCHES) \
-    $(wildcard include/config/STACK_VALIDATION) \
-    $(wildcard include/config/CFI_CLANG) \
-  arch/x86/include/generated/asm/rwonce.h \
-  include/asm-generic/rwonce.h \
-  include/linux/kasan-checks.h \
-    $(wildcard include/config/KASAN_GENERIC) \
-    $(wildcard include/config/KASAN_SW_TAGS) \
-  include/linux/kcsan-checks.h \
-    $(wildcard include/config/KCSAN) \
-    $(wildcard include/config/KCSAN_WEAK_MEMORY) \
-    $(wildcard include/config/KCSAN_IGNORE_ATOMICS) \
-  include/linux/typecheck.h \
-  include/uapi/linux/kernel.h \
-  include/uapi/linux/sysinfo.h \
-  arch/x86/include/asm/bitops.h \
-    $(wildcard include/config/X86_64) \
-    $(wildcard include/config/X86_CMOV) \
-  arch/x86/include/asm/alternative.h \
-    $(wildcard include/config/SMP) \
-  include/linux/stringify.h \
-  arch/x86/include/asm/asm.h \
-    $(wildcard include/config/KPROBES) \
-  arch/x86/include/asm/extable_fixup_types.h \
-  arch/x86/include/asm/rmwcc.h \
-    $(wildcard include/config/CC_HAS_ASM_GOTO) \
-  arch/x86/include/asm/barrier.h \
-  arch/x86/include/asm/nops.h \
-  include/asm-generic/barrier.h \
-  include/asm-generic/bitops/fls64.h \
-  include/asm-generic/bitops/sched.h \
-  arch/x86/include/asm/arch_hweight.h \
-  arch/x86/include/asm/cpufeatures.h \
-  arch/x86/include/asm/required-features.h \
-    $(wildcard include/config/X86_MINIMUM_CPU_FAMILY) \
-    $(wildcard include/config/MATH_EMULATION) \
-    $(wildcard include/config/X86_PAE) \
-    $(wildcard include/config/X86_CMPXCHG64) \
-    $(wildcard include/config/X86_P6_NOP) \
-    $(wildcard include/config/MATOM) \
-    $(wildcard include/config/PARAVIRT_XXL) \
-  arch/x86/include/asm/disabled-features.h \
-    $(wildcard include/config/X86_SMAP) \
-    $(wildcard include/config/X86_UMIP) \
-    $(wildcard include/config/X86_INTEL_MEMORY_PROTECTION_KEYS) \
-    $(wildcard include/config/X86_5LEVEL) \
-    $(wildcard include/config/PAGE_TABLE_ISOLATION) \
-    $(wildcard include/config/INTEL_IOMMU_SVM) \
-    $(wildcard include/config/X86_SGX) \
-  include/asm-generic/bitops/const_hweight.h \
-  include/asm-generic/bitops/instrumented-atomic.h \
-  include/linux/instrumented.h \
-  include/asm-generic/bitops/instrumented-non-atomic.h \
-    $(wildcard include/config/KCSAN_ASSUME_PLAIN_WRITES_ATOMIC) \
-  include/asm-generic/bitops/instrumented-lock.h \
-  include/asm-generic/bitops/le.h \
-  arch/x86/include/uapi/asm/byteorder.h \
-  include/linux/byteorder/little_endian.h \
-  include/uapi/linux/byteorder/little_endian.h \
-  include/linux/swab.h \
-  include/uapi/linux/swab.h \
-  arch/x86/include/uapi/asm/swab.h \
-  include/linux/byteorder/generic.h \
-  include/asm-generic/bitops/ext2-atomic-setbit.h \
-  include/linux/sched.h \
-    $(wildcard include/config/DEBUG_ATOMIC_SLEEP) \
-    $(wildcard include/config/PREEMPT_RT) \
-    $(wildcard include/config/VIRT_CPU_ACCOUNTING_NATIVE) \
-    $(wildcard include/config/SCHED_INFO) \
-    $(wildcard include/config/SCHEDSTATS) \
-    $(wildcard include/config/SCHED_CORE) \
-    $(wildcard include/config/FAIR_GROUP_SCHED) \
-    $(wildcard include/config/RT_GROUP_SCHED) \
-    $(wildcard include/config/RT_MUTEXES) \
-    $(wildcard include/config/UCLAMP_TASK) \
-    $(wildcard include/config/UCLAMP_BUCKETS_COUNT) \
-    $(wildcard include/config/KMAP_LOCAL) \
-    $(wildcard include/config/THREAD_INFO_IN_TASK) \
-    $(wildcard include/config/CGROUP_SCHED) \
-    $(wildcard include/config/PREEMPT_NOTIFIERS) \
-    $(wildcard include/config/BLK_DEV_IO_TRACE) \
-    $(wildcard include/config/PREEMPT_RCU) \
-    $(wildcard include/config/TASKS_RCU) \
-    $(wildcard include/config/TASKS_TRACE_RCU) \
-    $(wildcard include/config/PSI) \
-    $(wildcard include/config/MEMCG) \
-    $(wildcard include/config/COMPAT_BRK) \
-    $(wildcard include/config/CGROUPS) \
-    $(wildcard include/config/BLK_CGROUP) \
-    $(wildcard include/config/PAGE_OWNER) \
-    $(wildcard include/config/EVENTFD) \
-    $(wildcard include/config/IOMMU_SVA) \
-    $(wildcard include/config/STACKPROTECTOR) \
-    $(wildcard include/config/ARCH_HAS_SCALED_CPUTIME) \
-    $(wildcard include/config/VIRT_CPU_ACCOUNTING_GEN) \
-    $(wildcard include/config/NO_HZ_FULL) \
-    $(wildcard include/config/POSIX_CPUTIMERS) \
-    $(wildcard include/config/POSIX_CPU_TIMERS_TASK_WORK) \
-    $(wildcard include/config/KEYS) \
-    $(wildcard include/config/SYSVIPC) \
-    $(wildcard include/config/DETECT_HUNG_TASK) \
-    $(wildcard include/config/IO_URING) \
-    $(wildcard include/config/AUDIT) \
-    $(wildcard include/config/AUDITSYSCALL) \
-    $(wildcard include/config/DEBUG_MUTEXES) \
-    $(wildcard include/config/TRACE_IRQFLAGS) \
-    $(wildcard include/config/LOCKDEP) \
-    $(wildcard include/config/UBSAN) \
-    $(wildcard include/config/UBSAN_TRAP) \
-    $(wildcard include/config/COMPACTION) \
-    $(wildcard include/config/TASK_XACCT) \
-    $(wildcard include/config/CPUSETS) \
-    $(wildcard include/config/X86_CPU_RESCTRL) \
-    $(wildcard include/config/FUTEX) \
-    $(wildcard include/config/COMPAT) \
-    $(wildcard include/config/PERF_EVENTS) \
-    $(wildcard include/config/DEBUG_PREEMPT) \
-    $(wildcard include/config/NUMA) \
-    $(wildcard include/config/NUMA_BALANCING) \
-    $(wildcard include/config/RSEQ) \
-    $(wildcard include/config/TASK_DELAY_ACCT) \
-    $(wildcard include/config/FAULT_INJECTION) \
-    $(wildcard include/config/LATENCYTOP) \
-    $(wildcard include/config/KUNIT) \
-    $(wildcard include/config/FUNCTION_GRAPH_TRACER) \
-    $(wildcard include/config/TRACING) \
-    $(wildcard include/config/UPROBES) \
-    $(wildcard include/config/BCACHE) \
-    $(wildcard include/config/MMU) \
-    $(wildcard include/config/VMAP_STACK) \
-    $(wildcard include/config/LIVEPATCH) \
-    $(wildcard include/config/SECURITY) \
-    $(wildcard include/config/BPF_SYSCALL) \
-    $(wildcard include/config/GCC_PLUGIN_STACKLEAK) \
-    $(wildcard include/config/X86_MCE) \
-    $(wildcard include/config/KRETPROBES) \
-    $(wildcard include/config/RETHOOK) \
-    $(wildcard include/config/ARCH_HAS_PARANOID_L1D_FLUSH) \
-    $(wildcard include/config/ARCH_TASK_STRUCT_ON_STACK) \
-    $(wildcard include/config/PREEMPTION) \
-    $(wildcard include/config/PREEMPT_DYNAMIC) \
-    $(wildcard include/config/HAVE_PREEMPT_DYNAMIC_CALL) \
-    $(wildcard include/config/HAVE_PREEMPT_DYNAMIC_KEY) \
-    $(wildcard include/config/DEBUG_RSEQ) \
-  include/uapi/linux/sched.h \
-  arch/x86/include/asm/current.h \
-  arch/x86/include/asm/percpu.h \
-    $(wildcard include/config/X86_64_SMP) \
-  include/linux/kernel.h \
-    $(wildcard include/config/PREEMPT_VOLUNTARY_BUILD) \
-    $(wildcard include/config/PREEMPT_) \
-    $(wildcard include/config/PROVE_LOCKING) \
-    $(wildcard include/config/FTRACE_MCOUNT_RECORD) \
-  include/linux/stdarg.h \
-  include/linux/align.h \
-  include/linux/limits.h \
-  include/uapi/linux/limits.h \
-  include/vdso/limits.h \
-  include/linux/linkage.h \
-    $(wildcard include/config/ARCH_USE_SYM_ANNOTATIONS) \
-  include/linux/export.h \
-    $(wildcard include/config/MODVERSIONS) \
-    $(wildcard include/config/MODULE_REL_CRCS) \
-    $(wildcard include/config/HAVE_ARCH_PREL32_RELOCATIONS) \
-    $(wildcard include/config/MODULES) \
-    $(wildcard include/config/TRIM_UNUSED_KSYMS) \
-  arch/x86/include/asm/linkage.h \
-    $(wildcard include/config/X86_ALIGNMENT_16) \
-    $(wildcard include/config/SLS) \
-  arch/x86/include/asm/ibt.h \
-    $(wildcard include/config/X86_KERNEL_IBT) \
-  include/linux/container_of.h \
-  include/linux/err.h \
-  arch/x86/include/generated/uapi/asm/errno.h \
-  include/uapi/asm-generic/errno.h \
-  include/uapi/asm-generic/errno-base.h \
-  include/linux/kstrtox.h \
-  include/linux/minmax.h \
-  include/linux/panic.h \
-    $(wildcard include/config/PANIC_TIMEOUT) \
-  include/linux/printk.h \
-    $(wildcard include/config/MESSAGE_LOGLEVEL_DEFAULT) \
-    $(wildcard include/config/CONSOLE_LOGLEVEL_DEFAULT) \
-    $(wildcard include/config/CONSOLE_LOGLEVEL_QUIET) \
-    $(wildcard include/config/EARLY_PRINTK) \
-    $(wildcard include/config/PRINTK) \
-    $(wildcard include/config/PRINTK_INDEX) \
-    $(wildcard include/config/DYNAMIC_DEBUG) \
-    $(wildcard include/config/DYNAMIC_DEBUG_CORE) \
-  include/linux/init.h \
-    $(wildcard include/config/STRICT_KERNEL_RWX) \
-    $(wildcard include/config/STRICT_MODULE_RWX) \
-    $(wildcard include/config/LTO_CLANG) \
-  include/linux/kern_levels.h \
-  include/linux/cache.h \
-    $(wildcard include/config/ARCH_HAS_CACHE_LINE_SIZE) \
-  arch/x86/include/asm/cache.h \
-    $(wildcard include/config/X86_L1_CACHE_SHIFT) \
-    $(wildcard include/config/X86_INTERNODE_CACHE_SHIFT) \
-    $(wildcard include/config/X86_VSMP) \
-  include/linux/ratelimit_types.h \
-  include/uapi/linux/param.h \
-  arch/x86/include/generated/uapi/asm/param.h \
-  include/asm-generic/param.h \
-    $(wildcard include/config/HZ) \
-  include/uapi/asm
+    This driver should work with many programmed-I/O 8390-based ethernet
+    boards.  Currently it supports the NE1000, NE2000, many clones,
+    and some Cabletron products.
+
+    Changelog:
+
+    Paul Gortmaker	: use ENISR_RDC to monitor Tx PIO uploads, made
+			  sanity checks and bad clone support optional.
+    Paul Gortmaker	: new reset code, reset card after probe at boot.
+    Paul Gortmaker	: multiple card support for module users.
+    Paul Gortmaker	: Support for PCI ne2k clones, similar to lance.c
+    Paul Gortmaker	: Allow users with bad cards to avoid full probe.
+    Paul Gortmaker	: PCI probe changes, more PCI cards supported.
+    rjohnson@analogic.com : Changed init order so an interrupt will only
+    occur after memory is allocated for dev->priv. Deallocated memory
+    last in cleanup_modue()
+    Richard Guenther    : Added support for ISAPnP cards
+    Paul Gortmaker	: Discontinued PCI support - use ne2k-pci.c instead.
+    Hayato Fujiwara	: Add m32r support.
+
+*/
+
+/* Routines for the NatSemi-based designs (NE[12]000). */
+
+static const char version1[] =
+"ne.c:v1.10 9/23/94 Donald Becker (becker@scyld.com)\n";
+static const char version2[] =
+"Last modified Nov 1, 2000 by Paul Gortmaker\n";
+
+
+#include <linux/module.h>
+#include <linux/kernel.h>
+#include <linux/errno.h>
+#include <linux/isapnp.h>
+#include <linux/init.h>
+#include <linux/interrupt.h>
+#include <linux/delay.h>
+#include <linux/netdevice.h>
+#include <linux/etherdevice.h>
+#include <linux/jiffies.h>
+#include <linux/platform_device.h>
+
+#include <asm/io.h>
+
+#include "8390.h"
+
+#define DRV_NAME "ne"
+
+/* Some defines that people can play with if so inclined. */
+
+/* Do we support clones that don't adhere to 14,15 of the SAprom ? */
+#define SUPPORT_NE_BAD_CLONES
+/* 0xbad = bad sig or no reset ack */
+#define BAD 0xbad
+
+#define MAX_NE_CARDS	4	/* Max number of NE cards per module */
+static struct platform_device *pdev_ne[MAX_NE_CARDS];
+static int io[MAX_NE_CARDS];
+static int irq[MAX_NE_CARDS];
+static int bad[MAX_NE_CARDS];
+static u32 ne_msg_enable;
+
+#ifdef MODULE
+module_param_hw_array(io, int, ioport, NULL, 0);
+module_param_hw_array(irq, int, irq, NULL, 0);
+module_param_array(bad, int, NULL, 0);
+module_param_named(msg_enable, ne_msg_enable, uint, 0444);
+MODULE_PARM_DESC(io, "I/O base address(es),required");
+MODULE_PARM_DESC(irq, "IRQ number(s)");
+MODULE_PARM_DESC(bad, "Accept card(s) with bad signatures");
+MODULE_PARM_DESC(msg_enable, "Debug message level (see linux/netdevice.h for bitmap)");
+MODULE_DESCRIPTION("NE1000/NE2000 ISA/PnP Ethernet driver");
+MODULE_LICENSE("GPL");
+#endif /* MODULE */
+
+/* Do we perform extra sanity checks on stuff ? */
+/* #define NE_SANITY_CHECK */
+
+/* Do we implement the read before write bugfix ? */
+/* #define NE_RW_BUGFIX */
+
+/* Do we have a non std. amount of memory? (in units of 256 byte pages) */
+/* #define PACKETBUF_MEMSIZE	0x40 */
+
+/* This is set up so that no ISA autoprobe takes place. We can't guarantee
+that the ne2k probe is the last 8390 based probe to take place (as it
+is at boot) and so the probe will get confused by any other 8390 cards.
+ISA device autoprobes on a running machine are not recommended anyway. */
+#if !defined(MODULE) && defined(CONFIG_ISA)
+/* Do we need a portlist for the ISA auto-probe ? */
+#define NEEDS_PORTLIST
+#endif
+
+/* A zero-terminated list of I/O addresses to be probed at boot. */
+#ifdef NEEDS_PORTLIST
+static unsigned int netcard_portlist[] __initdata = {
+	0x300, 0x280, 0x320, 0x340, 0x360, 0x380, 0
+};
+#endif
+
+static struct isapnp_device_id isapnp_clone_list[] __initdata = {
+	{	ISAPNP_CARD_ID('A','X','E',0x2011),
+		ISAPNP_VENDOR('A','X','E'), ISAPNP_FUNCTION(0x2011),
+		(long) "NetGear EA201" },
+	{	ISAPNP_ANY_ID, ISAPNP_ANY_ID,
+		ISAPNP_VENDOR('E','D','I'), ISAPNP_FUNCTION(0x0216),
+		(long) "NN NE2000" },
+	{	ISAPNP_ANY_ID, ISAPNP_ANY_ID,
+		ISAPNP_VENDOR('P','N','P'), ISAPNP_FUNCTION(0x80d6),
+		(long) "Generic PNP" },
+	{ }	/* terminate list */
+};
+
+MODULE_DEVICE_TABLE(isapnp, isapnp_clone_list);
+
+#ifdef SUPPORT_NE_BAD_CLONES
+/* A list of bad clones that we none-the-less recognize. */
+static struct { const char *name8, *name16; unsigned char SAprefix[4];}
+bad_clone_list[] __initdata = {
+    {"DE100", "DE200", {0x00, 0xDE, 0x01,}},
+    {"DE120", "DE220", {0x00, 0x80, 0xc8,}},
+    {"DFI1000", "DFI2000", {'D', 'F', 'I',}}, /* Original, eh?  */
+    {"EtherNext UTP8", "EtherNext UTP16", {0x00, 0x00, 0x79}},
+    {"NE1000","NE2000-invalid", {0x00, 0x00, 0xd8}}, /* Ancient real NE1000. */
+    {"NN1000", "NN2000",  {0x08, 0x03, 0x08}}, /* Outlaw no-name clone. */
+    {"4-DIM8","4-DIM16", {0x00,0x00,0x4d,}},  /* Outlaw 4-Dimension cards. */
+    {"Con-Intl_8", "Con-Intl_16", {0x00, 0x00, 0x24}}, /* Connect Int'nl */
+    {"ET-100","ET-200", {0x00, 0x45, 0x54}}, /* YANG and YA clone */
+    {"COMPEX","COMPEX16",{0x00,0x80,0x48}}, /* Broken ISA Compex cards */
+    {"E-LAN100", "E-LAN200", {0x00, 0x00, 0x5d}}, /* Broken ne1000 clones */
+    {"PCM-4823", "PCM-4823", {0x00, 0xc0, 0x6c}}, /* Broken Advantech MoBo */
+    {"REALTEK", "RTL8019", {0x00, 0x00, 0xe8}}, /* no-name with Realtek chip */
+#ifdef CONFIG_MACH_TX49XX
+    {"RBHMA4X00-RTL8019", "RBHMA4X00-RTL8019", {0x00, 0x60, 0x0a}},  /* Toshiba built-in */
+#endif
+    {"LCS-8834", "LCS-8836", {0x04, 0x04, 0x37}}, /* ShinyNet (SET) */
+    {NULL,}
+};
+#endif
+
+/* ---- No user-serviceable parts below ---- */
+
+#define NE_BASE	 (dev->base_addr)
+#define NE_CMD	 	0x00
+#define NE_DATAPORT	0x10	/* NatSemi-defined port window offset. */
+#define NE_RESET	0x1f	/* Issue a read to reset, a write to clear. */
+#define NE_IO_EXTENT	0x20
+
+#define NE1SM_START_PG	0x20	/* First page of TX buffer */
+#define NE1SM_STOP_PG 	0x40	/* Last page +1 of RX ring */
+#define NESM_START_PG	0x40	/* First page of TX buffer */
+#define NESM_STOP_PG	0x80	/* Last page +1 of RX ring */
+
+#if defined(CONFIG_MACH_TX49XX)
+#  define DCR_VAL 0x48		/* 8-bit mode */
+#elif defined(CONFIG_ATARI)	/* 8-bit mode on Atari, normal on Q40 */
+#  define DCR_VAL (MACH_IS_ATARI ? 0x48 : 0x49)
+#else
+#  define DCR_VAL 0x49
+#endif
+
+static int ne_probe1(struct net_device *dev, unsigned long ioaddr);
+static int ne_probe_isapnp(struct net_device *dev);
+
+static void ne_reset_8390(struct net_device *dev);
+static void ne_get_8390_hdr(struct net_device *dev, struct e8390_pkt_hdr *hdr,
+			  int ring_page);
+static void ne_block_input(struct net_device *dev, int count,
+			  struct sk_buff *skb, int ring_offset);
+static void ne_block_output(struct net_device *dev, const int count,
+		const unsigned char *buf, const int start_page);
+
+
+/*  Probe for various non-shared-memory ethercards.
+
+   NEx000-clone boards have a Station Address PROM (SAPROM) in the packet
+   buffer memory space.  NE2000 clones have 0x57,0x57 in bytes 0x0e,0x0f of
+   the SAPROM, while other supposed NE2000 clones must be detected by their
+   SA prefix.
+
+   Reading the SAPROM from a word-wide card with the 8390 set in byte-wide
+   mode results in doubled values, which can be detected and compensated for.
+
+   The probe is also responsible for initializing the card and filling
+   in the 'dev' and 'ei_status' structures.
+
+   We use the minimum memory size for some ethercard product lines, iff we can't
+   distinguish models.  You can increase the packet buffer size by setting
+   PACKETBUF_MEMSIZE.  Reported Cabletron packet buffer locations are:
+	E1010   starts at 0x100 and ends at 0x2000.
+	E1010-x starts at 0x100 and ends at 0x8000. ("-x" means "more memory")
+	E2010	 starts at 0x100 and ends at 0x4000.
+	E2010-x starts at 0x100 and ends at 0xffff.  */
+
+static int __init do_ne_probe(struct net_device *dev)
+{
+	unsigned long base_addr = dev->base_addr;
+#ifdef NEEDS_PORTLIST
+	int orig_irq = dev->irq;
+#endif
+
+	/* First check any supplied i/o locations. User knows best. <cough> */
+	if (base_addr > 0x1ff) {	/* Check a single specified location. */
+		int ret = ne_probe1(dev, base_addr);
+		if (ret)
+			netdev_warn(dev, "ne.c: No NE*000 card found at "
+				    "i/o = %#lx\n", base_addr);
+		return ret;
+	}
+	else if (base_addr != 0)	/* Don't probe at all. */
+		return -ENXIO;
+
+	/* Then look for any installed ISAPnP clones */
+	if (isapnp_present() && (ne_probe_isapnp(dev) == 0))
+		return 0;
+
+#ifdef NEEDS_PORTLIST
+	/* Last resort. The semi-risky ISA auto-probe. */
+	for (base_addr = 0; netcard_portlist[base_addr] != 0; base_addr++) {
+		int ioaddr = netcard_portlist[base_addr];
+		dev->irq = orig_irq;
+		if (ne_probe1(dev, ioaddr) == 0)
+			return 0;
+	}
+#endif
+
+	return -ENODEV;
+}
+
+static int __init ne_probe_isapnp(struct net_device *dev)
+{
+	int i;
+
+	for (i = 0; isapnp_clone_list[i].vendor != 0; i++) {
+		struct pnp_dev *idev = NULL;
+
+		while ((idev = pnp_find_dev(NULL,
+					    isapnp_clone_list[i].vendor,
+					    isapnp_clone_list[i].function,
+					    idev))) {
+			/* Avoid already found cards from previous calls */
+			if (pnp_device_attach(idev) < 0)
+				continue;
+			if (pnp_activate_dev(idev) < 0) {
+			      	pnp_device_detach(idev);
+			      	continue;
+			}
+			/* if no io and irq, search for next */
+			if (!pnp_port_valid(idev, 0) || !pnp_irq_valid(idev, 0)) {
+				pnp_device_detach(idev);
+				continue;
+			}
+			/* found it */
+			dev->base_addr = pnp_port_start(idev, 0);
+			dev->irq = pnp_irq(idev, 0);
+			netdev_info(dev,
+				    "ne.c: ISAPnP reports %s at i/o %#lx, irq %d.\n",
+				    (char *) isapnp_clone_list[i].driver_data,
+				    dev->base_addr, dev->irq);
+			if (ne_probe1(dev, dev->base_addr) != 0) {	/* Shouldn't happen. */
+				netdev_err(dev,
+					   "ne.c: Probe of ISAPnP card at %#lx failed.\n",
+					   dev->base_addr);
+				pnp_device_detach(idev);
+				return -ENXIO;
+			}
+			ei_status.priv = (unsigned long)idev;
+			break;
+		}
+		if (!idev)
+			continue;
+		return 0;
+	}
+
+	return -ENODEV;
+}
+
+static int __init ne_probe1(struct net_device *dev, unsigned long ioaddr)
+{
+	int i;
+	unsigned char SA_prom[32];
+	int wordlength = 2;
+	const char *name = NULL;
+	int start_page, stop_page;
+	int neX000, ctron, copam, bad_card;
+	int reg0, ret;
+	static unsigned version_printed;
+	struct ei_device *ei_local = netdev_priv(dev);
+
+	if (!request_region(ioaddr, NE_IO_EXTENT, DRV_NAME))
+		return -EBUSY;
+
+	reg0 = inb_p(ioaddr);
+	if (reg0 == 0xFF) {
+		ret = -ENODEV;
+		goto err_out;
+	}
+
+	/* Do a preliminary verification that we have a 8390. */
+	{
+		int regd;
+		outb_p(E8390_NODMA+E8390_PAGE1+E8390_STOP, ioaddr + E8390_CMD);
+		regd = inb_p(ioaddr + 0x0d);
+		outb_p(0xff, ioaddr + 0x0d);
+		outb_p(E8390_NODMA+E8390_PAGE0, ioaddr + E8390_CMD);
+		inb_p(ioaddr + EN0_COUNTER0); /* Clear the counter by reading. */
+		if (inb_p(ioaddr + EN0_COUNTER0) != 0) {
+			outb_p(reg0, ioaddr);
+			outb_p(regd, ioaddr + 0x0d);	/* Restore the old values. */
+			ret = -ENODEV;
+			goto err_out;
+		}
+	}
+
+	if ((ne_msg_enable & NETIF_MSG_DRV) && (version_printed++ == 0))
+		netdev_info(dev, "%s%s", version1, version2);
+
+	netdev_info(dev, "NE*000 ethercard probe at %#3lx:", ioaddr);
+
+	/* A user with a poor card that fails to ack the reset, or that
+	   does not have a valid 0x57,0x57 signature can still use this
+	   without having to recompile. Specifying an i/o address along
+	   with an otherwise unused dev->mem_end value of "0xBAD" will
+	   cause the driver to skip these parts of the probe. */
+
+	bad_card = ((dev->base_addr != 0) && (dev->mem_end == BAD));
+
+	/* Reset card. Who knows what dain-bramaged state it was left in. */
+
+	{
+		unsigned long reset_start_time = jiffies;
+
+		/* DON'T change these to inb_p/outb_p or reset will fail on clones. */
+		outb(inb(ioaddr + NE_RESET), ioaddr + NE_RESET);
+
+		while ((inb_p(ioaddr + EN0_ISR) & ENISR_RESET) == 0)
+		if (time_after(jiffies, reset_start_time + 2*HZ/100)) {
+			if (bad_card) {
+				pr_cont(" (warning: no reset ack)");
+				break;
+			} else {
+				pr_cont(" not found (no reset ack).\n");
+				ret = -ENODEV;
+				goto err_out;
+			}
+		}
+
+		outb_p(0xff, ioaddr + EN0_ISR);		/* Ack all intr. */
+	}
+
+	/* Read the 16 bytes of station address PROM.
+	   We must first initialize registers, similar to NS8390p_init(eifdev, 0).
+	   We can't reliably read the SAPROM address without this.
+	   (I learned the hard way!). */
+	{
+		struct {unsigned char value, offset; } program_seq[] =
+		{
+			{E8390_NODMA+E8390_PAGE0+E8390_STOP, E8390_CMD}, /* Select page 0*/
+			{0x48,	EN0_DCFG},	/* Set byte-wide (0x48) access. */
+			{0x00,	EN0_RCNTLO},	/* Clear the count regs. */
+			{0x00,	EN0_RCNTHI},
+			{0x00,	EN0_IMR},	/* Mask completion irq. */
+			{0xFF,	EN0_ISR},
+			{E8390_RXOFF, EN0_RXCR},	/* 0x20  Set to monitor */
+			{E8390_TXOFF, EN0_TXCR},	/* 0x02  and loopback mode. */
+			{32,	EN0_RCNTLO},
+			{0x00,	EN0_RCNTHI},
+			{0x00,	EN0_RSARLO},	/* DMA starting at 0x0000. */
+			{0x00,	EN0_RSARHI},
+			{E8390_RREAD+E8390_START, E8390_CMD},
+		};
+
+		for (i = 0; i < ARRAY_SIZE(program_seq); i++)
+			outb_p(program_seq[i].value, ioaddr + program_seq[i].offset);
+
+	}
+	for(i = 0; i < 32 /*sizeof(SA_prom)*/; i+=2) {
+		SA_prom[i] = inb(ioaddr + NE_DATAPORT);
+		SA_prom[i+1] = inb(ioaddr + NE_DATAPORT);
+		if (SA_prom[i] != SA_prom[i+1])
+			wordlength = 1;
+	}
+
+	if (wordlength == 2)
+	{
+		for (i = 0; i < 16; i++)
+			SA_prom[i] = SA_prom[i+i];
+		/* We must set the 8390 for word mode. */
+		outb_p(DCR_VAL, ioaddr + EN0_DCFG);
+		start_page = NESM_START_PG;
+
+		/*
+		 * Realtek RTL8019AS datasheet says that the PSTOP register
+		 * shouldn't exceed 0x60 in 8-bit mode.
+		 * This chip can be identified by reading the signature from
+		 * the  remote byte count registers (otherwise write-only)...
+		 */
+		if ((DCR_VAL & 0x01) == 0 &&		/* 8-bit mode */
+		    inb(ioaddr + EN0_RCNTLO) == 0x50 &&
+		    inb(ioaddr + EN0_RCNTHI) == 0x70)
+			stop_page = 0x60;
+		else
+			stop_page = NESM_STOP_PG;
+	} else {
+		start_page = NE1SM_START_PG;
+		stop_page  = NE1SM_STOP_PG;
+	}
+
+	neX000 = (SA_prom[14] == 0x57  &&  SA_prom[15] == 0x57);
+	ctron =  (SA_prom[0] == 0x00 && SA_prom[1] == 0x00 && SA_prom[2] == 0x1d);
+	copam =  (SA_prom[14] == 0x49 && SA_prom[15] == 0x00);
+
+	/* Set up the rest of the parameters. */
+	if (neX000 || bad_card || copam) {
+		name = (wordlength == 2) ? "NE2000" : "NE1000";
+	}
+	else if (ctron)
+	{
+		name = (wordlength == 2) ? "Ctron-8" : "Ctron-16";
+		start_page = 0x01;
+		stop_page = (wordlength == 2) ? 0x40 : 0x20;
+	}
+	else
+	{
+#ifdef SUPPORT_NE_BAD_CLONES
+		/* Ack!  Well, there might be a *bad* NE*000 clone there.
+		   Check for total bogus addresses. */
+		for (i = 0; bad_clone_list[i].name8; i++)
+		{
+			if (SA_prom[0] == bad_clone_list[i].SAprefix[0] &&
+				SA_prom[1] == bad_clone_list[i].SAprefix[1] &&
+				SA_prom[2] == bad_clone_list[i].SAprefix[2])
+			{
+				if (wordlength == 2)
+				{
+					name = bad_clone_list[i].name16;
+				} else {
+					name = bad_clone_list[i].name8;
+				}
+				break;
+			}
+		}
+		if (bad_clone_list[i].name8 == NULL)
+		{
+			pr_cont(" not found (invalid signature %2.2x %2.2x).\n",
+				SA_prom[14], SA_prom[15]);
+			ret = -ENXIO;
+			goto err_out;
+		}
+#else
+		pr_cont(" not found.\n");
+		ret = -ENXIO;
+		goto err_out;
+#endif
+	}
+
+	if (dev->irq < 2)
+	{
+		unsigned long cookie = probe_irq_on();
+		outb_p(0x50, ioaddr + EN0_IMR);	/* Enable one interrupt. */
+		outb_p(0x00, ioaddr + EN0_RCNTLO);
+		outb_p(0x00, ioaddr + EN0_RCNTHI);
+		outb_p(E8390_RREAD+E8390_START, ioaddr); /* Trigger it... */
+		mdelay(10);		/* wait 10ms for interrupt to propagate */
+		outb_p(0x00, ioaddr + EN0_IMR); 		/* Mask it again. */
+		dev->irq = probe_irq_off(cookie);
+		if (ne_msg_enable & NETIF_MSG_PROBE)
+			pr_cont(" autoirq is %d", dev->irq);
+	} else if (dev->irq == 2)
+		/* Fixup for users that don't know that IRQ 2 is really IRQ 9,
+		   or don't know which one to set. */
+		dev->irq = 9;
+
+	if (! dev->irq) {
+		pr_cont(" failed to detect IRQ line.\n");
+		ret = -EAGAIN;
+		goto err_out;
+	}
+
+	/* Snarf the interrupt now.  There's no point in waiting since we cannot
+	   share and the board will usually be enabled. */
+	ret = request_irq(dev->irq, eip_interrupt, 0, name, dev);
+	if (ret) {
+		pr_cont(" unable to get IRQ %d (errno=%d).\n", dev->irq, ret);
+		goto err_out;
+	}
+
+	dev->base_addr = ioaddr;
+
+	eth_hw_addr_set(dev, SA_prom);
+
+	pr_cont("%pM\n", dev->dev_addr);
+
+	ei_status.name = name;
+	ei_status.tx_start_page = start_page;
+	ei_status.stop_page = stop_page;
+
+	/* Use 16-bit mode only if this wasn't overridden by DCR_VAL */
+	ei_status.word16 = (wordlength == 2 && (DCR_VAL & 0x01));
+
+	ei_status.rx_start_page = start_page + TX_PAGES;
+#ifdef PACKETBUF_MEMSIZE
+	 /* Allow the packet buffer size to be overridden by know-it-alls. */
+	ei_status.stop_page = ei_status.tx_start_page + PACKETBUF_MEMSIZE;
+#endif
+
+	ei_status.reset_8390 = &ne_reset_8390;
+	ei_status.block_input = &ne_block_input;
+	ei_status.block_output = &ne_block_output;
+	ei_status.get_8390_hdr = &ne_get_8390_hdr;
+	ei_status.priv = 0;
+
+	dev->netdev_ops = &eip_netdev_ops;
+	NS8390p_init(dev, 0);
+
+	ei_local->msg_enable = ne_msg_enable;
+	ret = register_netdev(dev);
+	if (ret)
+		goto out_irq;
+	netdev_info(dev, "%s found at %#lx, using IRQ %d.\n",
+		    name, ioaddr, dev->irq);
+	return 0;
+
+out_irq:
+	free_irq(dev->irq, dev);
+err_out:
+	release_region(ioaddr, NE_IO_EXTENT);
+	return ret;
+}
+
+/* Hard reset the card.  This used to pause for the same period that a
+   8390 reset command required, but that shouldn't be necessary. */
+
+static void ne_reset_8390(struct net_device *dev)
+{
+	unsigned long reset_start_time = jiffies;
+	struct ei_device *ei_local = netdev_priv(dev);
+
+	netif_dbg(ei_local, hw, dev, "resetting the 8390 t=%ld...\n", jiffies);
+
+	/* DON'T change these to inb_p/outb_p or reset will fail on clones. */
+	outb(inb(NE_BASE + NE_RESET), NE_BASE + NE_RESET);
+
+	ei_status.txing = 0;
+	ei_status.dmaing = 0;
+
+	/* This check _should_not_ be necessary, omit eventually. */
+	while ((inb_p(NE_BASE+EN0_ISR) & ENISR_RESET) == 0)
+		if (time_after(jiffies, reset_start_time + 2*HZ/100)) {
+			netdev_err(dev, "ne_reset_8390() did not complete.\n");
+			break;
+		}
+	outb_p(ENISR_RESET, NE_BASE + EN0_ISR);	/* Ack intr. */
+}
+
+/* Grab the 8390 specific header. Similar to the block_input routine, but
+   we don't need to be concerned with ring wrap as the header will be at
+   the start of a page, so we optimize accordingly. */
+
+static void ne_get_8390_hdr(struct net_device *dev, struct e8390_pkt_hdr *hdr, int ring_page)
+{
+	int nic_base = dev->base_addr;
+
+	/* This *shouldn't* happen. If it does, it's the last thing you'll see */
+
+	if (ei_status.dmaing)
+	{
+		netdev_err(dev, "DMAing conflict in ne_get_8390_hdr "
+			   "[DMAstat:%d][irqlock:%d].\n",
+			   ei_status.dmaing, ei_status.irqlock);
+		return;
+	}
+
+	ei_status.dmaing |= 0x01;
+	outb_p(E8390_NODMA+E8390_PAGE0+E8390_START, nic_base+ NE_CMD);
+	outb_p(sizeof(struct e8390_pkt_hdr), nic_base + EN0_RCNTLO);
+	outb_p(0, nic_base + EN0_RCNTHI);
+	outb_p(0, nic_base + EN0_RSARLO);		/* On page boundary */
+	outb_p(ring_page, nic_base + EN0_RSARHI);
+	outb_p(E8390_RREAD+E8390_START, nic_base + NE_CMD);
+
+	if (ei_status.word16)
+		insw(NE_BASE + NE_DATAPORT, hdr, sizeof(struct e8390_pkt_hdr)>>1);
+	else
+		insb(NE_BASE + NE_DATAPORT, hdr, sizeof(struct e8390_pkt_hdr));
+
+	outb_p(ENISR_RDC, nic_base + EN0_ISR);	/* Ack intr. */
+	ei_status.dmaing &= ~0x01;
+
+	le16_to_cpus(&hdr->count);
+}
+
+/* Block input and output, similar to the Crynwr packet driver.  If you
+   are porting to a new ethercard, look at the packet driver source for hints.
+   The NEx000 doesn't share the on-board packet memory -- you have to put
+   the packet out through the "remote DMA" dataport using outb. */
+
+static void ne_block_input(struct net_device *dev, int count, struct sk_buff *skb, int ring_offset)
+{
+#ifdef NE_SANITY_CHECK
+	int xfer_count = count;
+	struct ei_device *ei_local = netdev_priv(dev);
+#endif
+	int nic_base = dev->base_addr;
+	char *buf = skb->data;
+
+	/* This *shouldn't* happen. If it does, it's the last thing you'll see */
+	if (ei_status.dmaing)
+	{
+		netdev_err(dev, "DMAing conflict in ne_block_input "
+			   "[DMAstat:%d][irqlock:%d].\n",
+			   ei_status.dmaing, ei_status.irqlock);
+		return;
+	}
+	ei_status.dmaing |= 0x01;
+	outb_p(E8390_NODMA+E8390_PAGE0+E8390_START, nic_base+ NE_CMD);
+	outb_p(count & 0xff, nic_base + EN0_RCNTLO);
+	outb_p(count >> 8, nic_base + EN0_RCNTHI);
+	outb_p(ring_offset & 0xff, nic_base + EN0_RSARLO);
+	outb_p(ring_offset >> 8, nic_base + EN0_RSARHI);
+	outb_p(E8390_RREAD+E8390_START, nic_base + NE_CMD);
+	if (ei_status.word16)
+	{
+		insw(NE_BASE + NE_DATAPORT,buf,count>>1);
+		if (count & 0x01)
+		{
+			buf[count-1] = inb(NE_BASE + NE_DATAPORT);
+#ifdef NE_SANITY_CHECK
+			xfer_count++;
+#endif
+		}
+	} else {
+		insb(NE_BASE + NE_DATAPORT, buf, count);
+	}
+
+#ifdef NE_SANITY_CHECK
+	/* This was for the ALPHA version only, but enough people have
+	   been encountering problems so it is still here.  If you see
+	   this message you either 1) have a slightly incompatible clone
+	   or 2) have noise/speed problems with your bus. */
+
+	if (netif_msg_rx_status(ei_local))
+	{
+		/* DMA termination address check... */
+		int addr, tries = 20;
+		do {
+			/* DON'T check for 'inb_p(EN0_ISR) & ENISR_RDC' here
+			   -- it's broken for Rx on some cards! */
+			int high = inb_p(nic_base + EN0_RSARHI);
+			int low = inb_p(nic_base + EN0_RSARLO);
+			addr = (high << 8) + low;
+			if (((ring_offset + xfer_count) & 0xff) == low)
+				break;
+		} while (--tries > 0);
+	 	if (tries <= 0)
+			netdev_warn(dev, "RX transfer address mismatch,"
+				    "%#4.4x (expected) vs. %#4.4x (actual).\n",
+				    ring_offset + xfer_count, addr);
+	}
+#endif
+	outb_p(ENISR_RDC, nic_base + EN0_ISR);	/* Ack intr. */
+	ei_status.dmaing &= ~0x01;
+}
+
+static void ne_block_output(struct net_device *dev, int count,
+		const unsigned char *buf, const int start_page)
+{
+	int nic_base = NE_BASE;
+	unsigned long dma_start;
+#ifdef NE_SANITY_CHECK
+	int retries = 0;
+	struct ei_device *ei_local = netdev_priv(dev);
+#endif
+
+	/* Round the count up for word writes.  Do we need to do this?
+	   What effect will an odd byte count have on the 8390?
+	   I should check someday. */
+
+	if (ei_status.word16 && (count & 0x01))
+		count++;
+
+	/* This *shouldn't* happen. If it does, it's the last thing you'll see */
+	if (ei_status.dmaing)
+	{
+		netdev_err(dev, "DMAing conflict in ne_block_output."
+			   "[DMAstat:%d][irqlock:%d]\n",
+			   ei_status.dmaing, ei_status.irqlock);
+		return;
+	}
+	ei_status.dmaing |= 0x01;
+	/* We should already be in page 0, but to be safe... */
+	outb_p(E8390_PAGE0+E8390_START+E8390_NODMA, nic_base + NE_CMD);
+
+#ifdef NE_SANITY_CHECK
+retry:
+#endif
+
+#ifdef NE_RW_BUGFIX
+	/* Handle the read-before-write bug the same way as the
+	   Crynwr packet driver -- the NatSemi method doesn't work.
+	   Actually this doesn't always work either, but if you have
+	   problems with your NEx000 this is better than nothing! */
+
+	outb_p(0x42, nic_base + EN0_RCNTLO);
+	outb_p(0x00,   nic_base + EN0_RCNTHI);
+	outb_p(0x42, nic_base + EN0_RSARLO);
+	outb_p(0x00, nic_base + EN0_RSARHI);
+	outb_p(E8390_RREAD+E8390_START, nic_base + NE_CMD);
+	/* Make certain that the dummy read has occurred. */
+	udelay(6);
+#endif
+
+	outb_p(ENISR_RDC, nic_base + EN0_ISR);
+
+	/* Now the normal output. */
+	outb_p(count & 0xff, nic_base + EN0_RCNTLO);
+	outb_p(count >> 8,   nic_base + EN0_RCNTHI);
+	outb_p(0x00, nic_base + EN0_RSARLO);
+	outb_p(start_page, nic_base + EN0_RSARHI);
+
+	outb_p(E8390_RWRITE+E8390_START, nic_base + NE_CMD);
+	if (ei_status.word16) {
+		outsw(NE_BASE + NE_DATAPORT, buf, count>>1);
+	} else {
+		outsb(NE_BASE + NE_DATAPORT, buf, count);
+	}
+
+	dma_start = jiffies;
+
+#ifdef NE_SANITY_CHECK
+	/* This was for the ALPHA version only, but enough people have
+	   been encountering problems so it is still here. */
+
+	if (netif_msg_tx_queued(ei_local))
+	{
+		/* DMA termination address check... */
+		int addr, tries = 20;
+		do {
+			int high = inb_p(nic_base + EN0_RSARHI);
+			int low = inb_p(nic_base + EN0_RSARLO);
+			addr = (high << 8) + low;
+			if ((start_page << 8) + count == addr)
+				break;
+		} while (--tries > 0);
+
+		if (tries <= 0)
+		{
+			netdev_warn(dev, "Tx packet transfer address mismatch,"
+				    "%#4.4x (expected) vs. %#4.4x (actual).\n",
+				    (start_page << 8) + count, addr);
+			if (retries++ == 0)
+				goto retry;
+		}
+	}
+#endif
+
+	while ((inb_p(nic_base + EN0_ISR) & ENISR_RDC) == 0)
+		if (time_after(jiffies, dma_start + 2*HZ/100)) {		/* 20ms */
+			netdev_warn(dev, "timeout waiting for Tx RDC.\n");
+			ne_reset_8390(dev);
+			NS8390p_init(dev, 1);
+			break;
+		}
+
+	outb_p(ENISR_RDC, nic_base + EN0_ISR);	/* Ack intr. */
+	ei_status.dmaing &= ~0x01;
+}
+
+static int __init ne_drv_probe(struct platform_device *pdev)
+{
+	struct net_device *dev;
+	int err, this_dev = pdev->id;
+	struct resource *res;
+
+	dev = alloc_eip_netdev();
+	if (!dev)
+		return -ENOMEM;
+
+	/* ne.c doesn't populate resources in platform_device, but
+	 * rbtx4927_ne_init and rbtx4938_ne_init do register devices
+	 * with resources.
+	 */
+	res = platform_get_resource(pdev, IORESOURCE_IO, 0);
+	if (res) {
+		dev->base_addr = res->start;
+		dev->irq = platform_get_irq(pdev, 0);
+	} else {
+		if (this_dev < 0 || this_dev >= MAX_NE_CARDS) {
+			free_netdev(dev);
+			return -EINVAL;
+		}
+		dev->base_addr = io[this_dev];
+		dev->irq = irq[this_dev];
+		dev->mem_end = bad[this_dev];
+	}
+	SET_NETDEV_DEV(dev, &pdev->dev);
+	err = do_ne_probe(dev);
+	if (err) {
+		free_netdev(dev);
+		return err;
+	}
+	platform_set_drvdata(pdev, dev);
+
+	/* Update with any values found by probing, don't update if
+	 * resources were specified.
+	 */
+	if (!res) {
+		io[this_dev] = dev->base_addr;
+		irq[this_dev] = dev->irq;
+	}
+	return 0;
+}
+
+static int ne_drv_remove(struct platform_device *pdev)
+{
+	struct net_device *dev = platform_get_drvdata(pdev);
+
+	if (dev) {
+		struct pnp_dev *idev = (struct pnp_dev *)ei_status.priv;
+		netif_device_detach(dev);
+		unregister_netdev(dev);
+		if (idev)
+			pnp_device_detach(idev);
+		/* Careful ne_drv_remove can be called twice, once from
+		 * the platform_driver.remove and again when the
+		 * platform_device is being removed.
+		 */
+		ei_status.priv = 0;
+		free_irq(dev->irq, dev);
+		release_region(dev->base_addr, NE_IO_EXTENT);
+		free_netdev(dev);
+	}
+	return 0;
+}
+
+/* Remove unused devices or all if true. */
+static void ne_loop_rm_unreg(int all)
+{
+	int this_dev;
+	struct platform_device *pdev;
+	for (this_dev = 0; this_dev < MAX_NE_CARDS; this_dev++) {
+		pdev = pdev_ne[this_dev];
+		/* No network device == unused */
+		if (pdev && (!platform_get_drvdata(pdev) || all)) {
+			ne_drv_remove(pdev);
+			platform_device_unregister(pdev);
+			pdev_ne[this_dev] = NULL;
+		}
+	}
+}
+
+#ifdef CONFIG_PM
+static int ne_drv_suspend(struct platform_device *pdev, pm_message_t state)
+{
+	struct net_device *dev = platform_get_drvdata(pdev);
+
+	if (netif_running(dev)) {
+		struct pnp_dev *idev = (struct pnp_dev *)ei_status.priv;
+		netif_device_detach(dev);
+		if (idev)
+			pnp_stop_dev(idev);
+	}
+	return 0;
+}
+
+static int ne_drv_resume(struct platform_device *pdev)
+{
+	struct net_device *dev = platform_get_drvdata(pdev);
+
+	if (netif_running(dev)) {
+		struct pnp_dev *idev = (struct pnp_dev *)ei_status.priv;
+		if (idev)
+			pnp_start_dev(idev);
+		ne_reset_8390(dev);
+		NS8390p_init(dev, 1);
+		netif_device_attach(dev);
+	}
+	return 0;
+}
+#else
+#define ne_drv_suspend NULL
+#define ne_drv_resume NULL
+#endif
+
+static struct platform_driver ne_driver = {
+	.remove		= ne_drv_remove,
+	.suspend	= ne_drv_suspend,
+	.resume		= ne_drv_resume,
+	.driver		= {
+		.name	= DRV_NAME,
+	},
+};
+
+static void __init ne_add_devices(void)
+{
+	int this_dev;
+	struct platform_device *pdev;
+
+	for (this_dev = 0; this_dev < MAX_NE_CARDS; this_dev++) {
+		if (pdev_ne[this_dev])
+			continue;
+		pdev = platform_device_register_simple(
+			DRV_NAME, this_dev, NULL, 0);
+		if (IS_ERR(pdev))
+			continue;
+		pdev_ne[this_dev] = pdev;
+	}
+}
+
+static int __init ne_init(void)
+{
+	int retval;
+
+	if (IS_MODULE(CONFIG_NE2000))
+		ne_add_devices();
+
+	retval = platform_driver_probe(&ne_driver, ne_drv_probe);
+
+	if (IS_MODULE(CONFIG_NE2000) && retval) {
+		if (io[0] == 0)
+			pr_notice("ne.c: You must supply \"io=0xNNN\""
+			       " value(s) for ISA cards.\n");
+		ne_loop_rm_unreg(1);
+		return retval;
+	}
+
+	/* Unregister unused platform_devices. */
+	ne_loop_rm_unreg(0);
+	return retval;
+}
+module_init(ne_init);
+
+#if !defined(MODULE) && defined(CONFIG_NETDEV_LEGACY_INIT)
+struct net_device * __init ne_probe(int unit)
+{
+	int this_dev;
+	struct net_device *dev;
+
+	/* Find an empty slot, that is no net_device and zero io port. */
+	this_dev = 0;
+	while ((pdev_ne[this_dev] && platform_get_drvdata(pdev_ne[this_dev])) ||
+		io[this_dev]) {
+		if (++this_dev == MAX_NE_CARDS)
+			return ERR_PTR(-ENOMEM);
+	}
+
+	/* Get irq, io from kernel command line */
+	dev = alloc_eip_netdev();
+	if (!dev)
+		return ERR_PTR(-ENOMEM);
+
+	sprintf(dev->name, "eth%d", unit);
+	netdev_boot_setup_check(dev);
+
+	io[this_dev] = dev->base_addr;
+	irq[this_dev] = dev->irq;
+	bad[this_dev] = dev->mem_end;
+
+	free_netdev(dev);
+
+	ne_add_devices();
+
+	/* return the first device found */
+	for (this_dev = 0; this_dev < MAX_NE_CARDS; this_dev++) {
+		if (pdev_ne[this_dev]) {
+			dev = platform_get_drvdata(pdev_ne[this_dev]);
+			if (dev)
+				return dev;
+		}
+	}
+
+	return ERR_PTR(-ENODEV);
+}
+#endif
+
+static void __exit ne_exit(void)
+{
+	platform_driver_unregister(&ne_driver);
+	ne_loop_rm_unreg(1);
+}
+module_exit(ne_exit);

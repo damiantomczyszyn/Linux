@@ -1,2 +1,1 @@
-drivers/media/rc/keymaps/rc-pinnacle-grey.o
-
+dev->board == CX23885_BOARD_HAUPPAUGE_HVR1275

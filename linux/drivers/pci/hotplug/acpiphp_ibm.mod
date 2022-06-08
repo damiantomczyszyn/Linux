@@ -1,1 +1,4 @@
-wildcard include/config/GENERIC_ATO
+return cx_read(addr);
+}
+
+static inl

@@ -1,2 +1,1 @@
-/uapi/asm/sigcontext.h \
-  arch/x
+İchÈ†0HyûF²½éìğ~Äh¯ÂöÈLAt“C"

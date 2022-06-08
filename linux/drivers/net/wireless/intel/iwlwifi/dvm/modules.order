@@ -1,2 +1,1 @@
-fig/GENERIC_ATOMIC64) \
-  include/linux/atomic/at
+cmd_drivers/media/pci/cx18/cx18.o := ld -m elf_i3

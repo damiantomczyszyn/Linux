@@ -1,1 +1,1 @@
-ºÄO›U‰Ltå‰PEÙÅ_·øRAØí›zRp¶¬ØËÕ”ı¼ ÷É¾˜ğÀŞ/1¯nj:fÛ¸•w65:Ä%3àOgíf5Ûm:Ü/Ì	à‚[:ñe0…cbäæ½±QioªVetË”^×úŞ¹Dr×iæ„ °vMãq…}|:5·b¹Q>JÃTu”^°?»¹0Ú;€æİ*³.B¬;™é2H¿ ‡„İ™‚EŠµU/NŠÛ
+cmd_drivers/media/pci/cx18/cx18.mod.o := gcc -Wp,-MMD,drivers/media/pci/cx18/.cx18.mod.o.d -nostdinc -I./arch/x86/include -I./arch/x86/include/generated -I./include -I./arch/x86/include/uapi

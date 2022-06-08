@@ -1,1 +1,2 @@
-lude/linux/atomic/atomic-arch-fallb
+D_DVB:
+	case CX23885_BOARD_HAUPPAUG

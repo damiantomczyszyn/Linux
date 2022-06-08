@@ -1,1 +1,2 @@
-cmd_drivers/media/i2c/upd64083
+8GñLÁ*0÷Ù|Ãözò1
+œıç!Zxœ‘«

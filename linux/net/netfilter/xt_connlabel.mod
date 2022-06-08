@@ -1,1 +1,3 @@
-card include/config/HAVE_ARCH_
+E310B         62
+
+#define GPIO

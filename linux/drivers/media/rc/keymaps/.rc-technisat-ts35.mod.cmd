@@ -1,1 +1,8 @@
-cmd_drivers/media/rc/keymaps/rc-technisat-ts35.mod := { echo  drivers/media/rc/keymaps/rc-technisat-ts35.o;  echo; } > drivers/media/rc/keymaps/rc-technisat-ts35.mod
+// SPDX-License-Identifier: GPL-2.0-or-later
+/*
+ *  Driver for the Conexant CX23885 PCIe bridge
+ *
+ *  Copyright (c) 2006 Steven Toth <stoth@linuxtv.org>
+ */
+
+#includ

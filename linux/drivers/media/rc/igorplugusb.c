@@ -1,262 +1,185 @@
-// SPDX-License-Identifier: GPL-2.0-or-later
-/*
- * IgorPlug-USB IR Receiver
- *
- * Copyright (C) 2014 Sean Young <sean@mess.org>
- *
- * Supports the standard homebrew IgorPlugUSB receiver with Igor's firmware.
- * See http://www.cesko.host.sk/IgorPlugUSB/IgorPlug-USB%20(AVR)_eng.htm
- *
- * Based on the lirc_igorplugusb.c driver:
- *	Copyright (C) 2004 Jan M. Hochstein
- *	<hochstein@algo.informatik.tu-darmstadt.de>
- */
-#include <linux/device.h>
-#include <linux/kernel.h>
-#include <linux/module.h>
-#include <linux/usb.h>
-#include <linux/usb/input.h>
-#include <media/rc-core.h>
-
-#define DRIVER_DESC		"IgorPlug-USB IR Receiver"
-#define DRIVER_NAME		"igorplugusb"
-
-#define HEADERLEN		3
-#define BUFLEN			36
-#define MAX_PACKET		(HEADERLEN + BUFLEN)
-
-#define SET_INFRABUFFER_EMPTY	1
-#define GET_INFRACODE		2
-
-
-struct igorplugusb {
-	struct rc_dev *rc;
-	struct device *dev;
-
-	struct urb *urb;
-	struct usb_ctrlrequest request;
-
-	struct timer_list timer;
-
-	uint8_t buf_in[MAX_PACKET];
-
-	char phys[64];
-};
-
-static void igorplugusb_cmd(struct igorplugusb *ir, int cmd);
-
-static void igorplugusb_irdata(struct igorplugusb *ir, unsigned len)
-{
-	struct ir_raw_event rawir = {};
-	unsigned i, start, overflow;
-
-	dev_dbg(ir->dev, "irdata: %*ph (len=%u)", len, ir->buf_in, len);
-
-	/*
-	 * If more than 36 pulses and spaces follow each other, the igorplugusb
-	 * overwrites its buffer from the beginning. The overflow value is the
-	 * last offset which was not overwritten. Everything from this offset
-	 * onwards occurred before everything until this offset.
-	 */
-	overflow = ir->buf_in[2];
-	i = start = overflow + HEADERLEN;
-
-	if (start >= len) {
-		dev_err(ir->dev, "receive overflow invalid: %u", overflow);
-	} else {
-		if (overflow > 0) {
-			dev_warn(ir->dev, "receive overflow, at least %u lost",
-								overflow);
-			ir_raw_event_overflow(ir->rc);
+ient_demod))
+			goto frontend_detach;
+		if (!try_module_get(client_demod->dev.driver->owner)) {
+			i2c_unregister_device(client_demod);
+			goto frontend_detach;
 		}
+		port->i2c_client_demod = client_demod;
 
-		do {
-			rawir.duration = ir->buf_in[i] * 85;
-			rawir.pulse = i & 1;
-
-			ir_raw_event_store_with_filter(ir->rc, &rawir);
-
-			if (++i == len)
-				i = HEADERLEN;
-		} while (i != start);
-
-		/* add a trailing space */
-		rawir.duration = ir->rc->timeout;
-		rawir.pulse = false;
-		ir_raw_event_store_with_filter(ir->rc, &rawir);
-
-		ir_raw_event_handle(ir->rc);
-	}
-
-	igorplugusb_cmd(ir, SET_INFRABUFFER_EMPTY);
-}
-
-static void igorplugusb_callback(struct urb *urb)
-{
-	struct usb_ctrlrequest *req;
-	struct igorplugusb *ir = urb->context;
-
-	req = (struct usb_ctrlrequest *)urb->setup_packet;
-
-	switch (urb->status) {
-	case 0:
-		if (req->bRequest == GET_INFRACODE &&
-					urb->actual_length > HEADERLEN)
-			igorplugusb_irdata(ir, urb->actual_length);
-		else /* request IR */
-			mod_timer(&ir->timer, jiffies + msecs_to_jiffies(50));
+		/* attach tuner */
+		memset(&si2157_config, 0, sizeof(si2157_config));
+		si2157_config.fe = fe0->dvb.frontend;
+		si2157_config.if_port = 1;
+		memset(&info, 0, sizeof(struct i2c_board_info));
+		strscpy(info.type, "si2157", I2C_NAME_SIZE);
+		info.addr = 0x60;
+		info.platform_data = &si2157_config;
+		request_module(info.type);
+		client_tuner = i2c_new_client_device(adapter, &info);
+		if (!i2c_client_has_driver(client_tuner))
+			goto frontend_detach;
+		if (!try_module_get(client_tuner->dev.driver->owner)) {
+			i2c_unregister_device(client_tuner);
+			goto frontend_detach;
+		}
+		port->i2c_client_tuner = client_tuner;
 		break;
-	case -EPROTO:
-	case -ECONNRESET:
-	case -ENOENT:
-	case -ESHUTDOWN:
-		usb_unlink_urb(urb);
-		return;
-	default:
-		dev_warn(ir->dev, "Error: urb status = %d\n", urb->status);
-		igorplugusb_cmd(ir, SET_INFRABUFFER_EMPTY);
+	case CX23885_BOARD_HAUPPAUGE_STARBURST2:
+	case CX23885_BOARD_HAUPPAUGE_HVR5525:
+		i2c_bus = &dev->i2c_bus[0];
+		i2c_bus2 = &dev->i2c_bus[1];
+
+		switch (port->nr) {
+
+		/* port b - satellite */
+		case 1:
+			/* attach frontend */
+			fe0->dvb.frontend = dvb_attach(m88ds3103_attach,
+					&hauppauge_hvr5525_m88ds3103_config,
+					&i2c_bus->i2c_adap, &adapter);
+			if (fe0->dvb.frontend == NULL)
+				break;
+
+			/* attach SEC */
+			a8293_pdata.dvb_frontend = fe0->dvb.frontend;
+			memset(&info, 0, sizeof(info));
+			strscpy(info.type, "a8293", I2C_NAME_SIZE);
+			info.addr = 0x0b;
+			info.platform_data = &a8293_pdata;
+			request_module("a8293");
+			client_sec = i2c_new_client_device(&i2c_bus->i2c_adap, &info);
+			if (!i2c_client_has_driver(client_sec))
+				goto frontend_detach;
+			if (!try_module_get(client_sec->dev.driver->owner)) {
+				i2c_unregister_device(client_sec);
+				goto frontend_detach;
+			}
+			port->i2c_client_sec = client_sec;
+
+			/* attach tuner */
+			memset(&m88rs6000t_config, 0, sizeof(m88rs6000t_config));
+			m88rs6000t_config.fe = fe0->dvb.frontend;
+			memset(&info, 0, sizeof(struct i2c_board_info));
+			strscpy(info.type, "m88rs6000t", I2C_NAME_SIZE);
+			info.addr = 0x21;
+			info.platform_data = &m88rs6000t_config;
+			request_module("%s", info.type);
+			client_tuner = i2c_new_client_device(adapter, &info);
+			if (!i2c_client_has_driver(client_tuner))
+				goto frontend_detach;
+			if (!try_module_get(client_tuner->dev.driver->owner)) {
+				i2c_unregister_device(client_tuner);
+				goto frontend_detach;
+			}
+			port->i2c_client_tuner = client_tuner;
+
+			/* delegate signal strength measurement to tuner */
+			fe0->dvb.frontend->ops.read_signal_strength =
+				fe0->dvb.frontend->ops.tuner_ops.get_rf_strength;
+			break;
+		/* port c - terrestrial/cable */
+		case 2:
+			/* attach frontend */
+			memset(&si2168_config, 0, sizeof(si2168_config));
+			si2168_config.i2c_adapter = &adapter;
+			si2168_config.fe = &fe0->dvb.frontend;
+			si2168_config.ts_mode = SI2168_TS_SERIAL;
+			memset(&info, 0, sizeof(struct i2c_board_info));
+			strscpy(info.type, "si2168", I2C_NAME_SIZE);
+			info.addr = 0x64;
+			info.platform_data = &si2168_config;
+			request_module("%s", info.type);
+			client_demod = i2c_new_client_device(&i2c_bus->i2c_adap, &info);
+			if (!i2c_client_has_driver(client_demod))
+				goto frontend_detach;
+			if (!try_module_get(client_demod->dev.driver->owner)) {
+				i2c_unregister_device(client_demod);
+				goto frontend_detach;
+			}
+			port->i2c_client_demod = client_demod;
+
+			/* attach tuner */
+			memset(&si2157_config, 0, sizeof(si2157_config));
+			si2157_config.fe = fe0->dvb.frontend;
+			si2157_config.if_port = 1;
+			memset(&info, 0, sizeof(struct i2c_board_info));
+			strscpy(info.type, "si2157", I2C_NAME_SIZE);
+			info.addr = 0x60;
+			info.platform_data = &si2157_config;
+			request_module("%s", info.type);
+			client_tuner = i2c_new_client_device(&i2c_bus2->i2c_adap, &info);
+			if (!i2c_client_has_driver(client_tuner)) {
+				module_put(client_demod->dev.driver->owner);
+				i2c_unregister_device(client_demod);
+				port->i2c_client_demod = NULL;
+				goto frontend_detach;
+			}
+			if (!try_module_get(client_tuner->dev.driver->owner)) {
+				i2c_unregister_device(client_tuner);
+				module_put(client_demod->dev.driver->owner);
+				i2c_unregister_device(client_demod);
+				port->i2c_client_demod = NULL;
+				goto frontend_detach;
+			}
+			port->i2c_client_tuner = client_tuner;
+
+			dev->ts1.analog_fe.tuner_priv = client_tuner;
+			memcpy(&dev->ts1.analog_fe.ops.tuner_ops,
+			       &fe0->dvb.frontend->ops.tuner_ops,
+			       sizeof(struct dvb_tuner_ops));
+
+			break;
+		}
 		break;
-	}
-}
+	case CX23885_BOARD_HAUPPAUGE_QUADHD_DVB:
+	case CX23885_BOARD_HAUPPAUGE_QUADHD_DVB_885:
+		pr_info("%s(): board=%d port=%d\n", __func__,
+			dev->board, port->nr);
+		switch (port->nr) {
+		/* port b - Terrestrial/cable */
+		case 1:
+			/* attach frontend */
+			memset(&si2168_config, 0, sizeof(si2168_config));
+			si2168_config.i2c_adapter = &adapter;
+			si2168_config.fe = &fe0->dvb.frontend;
+			si2168_config.ts_mode = SI2168_TS_SERIAL;
+			memset(&info, 0, sizeof(struct i2c_board_info));
+			strscpy(info.type, "si2168", I2C_NAME_SIZE);
+			info.addr = 0x64;
+			info.platform_data = &si2168_config;
+			request_module("%s", info.type);
+			client_demod = i2c_new_client_device(&dev->i2c_bus[0].i2c_adap, &info);
+			if (!i2c_client_has_driver(client_demod))
+				goto frontend_detach;
+			if (!try_module_get(client_demod->dev.driver->owner)) {
+				i2c_unregister_device(client_demod);
+				goto frontend_detach;
+			}
+			port->i2c_client_demod = client_demod;
 
-static void igorplugusb_cmd(struct igorplugusb *ir, int cmd)
-{
-	int ret;
+			/* attach tuner */
+			memset(&si2157_config, 0, sizeof(si2157_config));
+			si2157_config.fe = fe0->dvb.frontend;
+			si2157_config.if_port = 1;
+			memset(&info, 0, sizeof(struct i2c_board_info));
+			strscpy(info.type, "si2157", I2C_NAME_SIZE);
+			info.addr = 0x60;
+			info.platform_data = &si2157_config;
+			request_module("%s", info.type);
+			client_tuner = i2c_new_client_device(&dev->i2c_bus[1].i2c_adap, &info);
+			if (!i2c_client_has_driver(client_tuner)) {
+				module_put(client_demod->dev.driver->owner);
+				i2c_unregister_device(client_demod);
+				port->i2c_client_demod = NULL;
+				goto frontend_detach;
+			}
+			if (!try_module_get(client_tuner->dev.driver->owner)) {
+				i2c_unregister_device(client_tuner);
+				module_put(client_demod->dev.driver->owner);
+				i2c_unregister_device(client_demod);
+				port->i2c_client_demod = NULL;
+				goto frontend_detach;
+			}
+			port->i2c_client_tuner = client_tuner;
 
-	ir->request.bRequest = cmd;
-	ir->urb->transfer_flags = 0;
-	ret = usb_submit_urb(ir->urb, GFP_ATOMIC);
-	if (ret)
-		dev_err(ir->dev, "submit urb failed: %d", ret);
-}
-
-static void igorplugusb_timer(struct timer_list *t)
-{
-	struct igorplugusb *ir = from_timer(ir, t, timer);
-
-	igorplugusb_cmd(ir, GET_INFRACODE);
-}
-
-static int igorplugusb_probe(struct usb_interface *intf,
-					const struct usb_device_id *id)
-{
-	struct usb_device *udev;
-	struct usb_host_interface *idesc;
-	struct usb_endpoint_descriptor *ep;
-	struct igorplugusb *ir;
-	struct rc_dev *rc;
-	int ret = -ENOMEM;
-
-	udev = interface_to_usbdev(intf);
-	idesc = intf->cur_altsetting;
-
-	if (idesc->desc.bNumEndpoints != 1) {
-		dev_err(&intf->dev, "incorrect number of endpoints");
-		return -ENODEV;
-	}
-
-	ep = &idesc->endpoint[0].desc;
-	if (!usb_endpoint_dir_in(ep) || !usb_endpoint_xfer_control(ep)) {
-		dev_err(&intf->dev, "endpoint incorrect");
-		return -ENODEV;
-	}
-
-	ir = devm_kzalloc(&intf->dev, sizeof(*ir), GFP_KERNEL);
-	if (!ir)
-		return -ENOMEM;
-
-	ir->dev = &intf->dev;
-
-	timer_setup(&ir->timer, igorplugusb_timer, 0);
-
-	ir->request.bRequest = GET_INFRACODE;
-	ir->request.bRequestType = USB_TYPE_VENDOR | USB_DIR_IN;
-	ir->request.wLength = cpu_to_le16(sizeof(ir->buf_in));
-
-	ir->urb = usb_alloc_urb(0, GFP_KERNEL);
-	if (!ir->urb)
-		goto fail;
-
-	usb_fill_control_urb(ir->urb, udev,
-		usb_rcvctrlpipe(udev, 0), (uint8_t *)&ir->request,
-		ir->buf_in, sizeof(ir->buf_in), igorplugusb_callback, ir);
-
-	usb_make_path(udev, ir->phys, sizeof(ir->phys));
-
-	rc = rc_allocate_device(RC_DRIVER_IR_RAW);
-	if (!rc)
-		goto fail;
-
-	rc->device_name = DRIVER_DESC;
-	rc->input_phys = ir->phys;
-	usb_to_input_id(udev, &rc->input_id);
-	rc->dev.parent = &intf->dev;
-	/*
-	 * This device can only store 36 pulses + spaces, which is not enough
-	 * for the NEC protocol and many others.
-	 */
-	rc->allowed_protocols = RC_PROTO_BIT_ALL_IR_DECODER &
-		~(RC_PROTO_BIT_NEC | RC_PROTO_BIT_NECX | RC_PROTO_BIT_NEC32 |
-		  RC_PROTO_BIT_RC6_6A_20 | RC_PROTO_BIT_RC6_6A_24 |
-		  RC_PROTO_BIT_RC6_6A_32 | RC_PROTO_BIT_RC6_MCE |
-		  RC_PROTO_BIT_SONY20 | RC_PROTO_BIT_SANYO);
-
-	rc->priv = ir;
-	rc->driver_name = DRIVER_NAME;
-	rc->map_name = RC_MAP_HAUPPAUGE;
-	rc->timeout = MS_TO_US(100);
-	rc->rx_resolution = 85;
-
-	ir->rc = rc;
-	ret = rc_register_device(rc);
-	if (ret) {
-		dev_err(&intf->dev, "failed to register rc device: %d", ret);
-		goto fail;
-	}
-
-	usb_set_intfdata(intf, ir);
-
-	igorplugusb_cmd(ir, SET_INFRABUFFER_EMPTY);
-
-	return 0;
-fail:
-	rc_free_device(ir->rc);
-	usb_free_urb(ir->urb);
-	del_timer(&ir->timer);
-
-	return ret;
-}
-
-static void igorplugusb_disconnect(struct usb_interface *intf)
-{
-	struct igorplugusb *ir = usb_get_intfdata(intf);
-
-	rc_unregister_device(ir->rc);
-	del_timer_sync(&ir->timer);
-	usb_set_intfdata(intf, NULL);
-	usb_kill_urb(ir->urb);
-	usb_free_urb(ir->urb);
-}
-
-static const struct usb_device_id igorplugusb_table[] = {
-	/* Igor Plug USB (Atmel's Manufact. ID) */
-	{ USB_DEVICE(0x03eb, 0x0002) },
-	/* Fit PC2 Infrared Adapter */
-	{ USB_DEVICE(0x03eb, 0x21fe) },
-	/* Terminating entry */
-	{ }
-};
-
-static struct usb_driver igorplugusb_driver = {
-	.name =	DRIVER_NAME,
-	.probe = igorplugusb_probe,
-	.disconnect = igorplugusb_disconnect,
-	.id_table = igorplugusb_table
-};
-
-module_usb_driver(igorplugusb_driver);
-
-MODULE_DESCRIPTION(DRIVER_DESC);
-MODULE_AUTHOR("Sean Young <sean@mess.org>");
-MODULE_LICENSE("GPL");
-MODULE_DEVICE_TABLE(usb, igorplugusb_table);
+			/* we only attach tuner for analog on the 888 vers

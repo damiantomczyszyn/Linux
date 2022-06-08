@@ -1,2 +1,2 @@
-drivers/media/rc/keymaps/rc-medion-x10-or2x.o
-
+us & VID_BC_MSK_SYNC) ||
+		(status & VID_BC_MSK

@@ -1,362 +1,363 @@
-enum bfs_result
-check_redundant(struct held_lock *src, struct held_lock *target)
-{
-	enum bfs_result ret;
-	struct lock_list *target_entry;
-	struct lock_list src_entry;
+C417_RWD, regval);
 
-	bfs_init_root(&src_entry, src);
-	/*
-	 * Special setup for check_redundant().
-	 *
-	 * To report redundant, we need to find a strong dependency path that
-	 * is equal to or stronger than <src> -> <target>. So if <src> is E,
-	 * we need to let __bfs() only search for a path starting at a -(E*)->,
-	 * we achieve this by setting the initial node's ->only_xr to true in
-	 * that case. And if <prev> is S, we set initial ->only_xr to false
-	 * because both -(S*)-> (equal) and -(E*)-> (stronger) are redundant.
-	 */
-	src_entry.only_xr = src->read == 0;
+	/* Wait for the trans to complete (MC417_MIRDY asserted). */
+	retval = mc417_wait_ready(dev);
 
-	debug_atomic_inc(nr_redundant_checks);
+	/* switch the DAT0-7 GPIO[10:3] to input mode */
+	cx_write(MC417_OEN, MC417_MIRDY | MC417_MIDATA);
 
-	/*
-	 * Note: we skip local_lock() for redundant check, because as the
-	 * comment in usage_skip(), A -> local_lock() -> B and A -> B are not
-	 * the same.
-	 */
-	ret = check_path(target, &src_entry, hlock_equal, usage_skip, &target_entry);
+	/* Read data byte 3 */
+	regval = MC417_MIRD | MC417_MIRDY | MCI_MEMORY_DATA_BYTE3;
+	cx_write(MC417_RWD, regval);
 
-	if (ret == BFS_RMATCH)
-		debug_atomic_inc(nr_redundant);
+	/* Transition RD to effect read transaction across bus. */
+	regval = MC417_MIWR | MC417_MIRDY | MCI_MEMORY_DATA_BYTE3;
+	cx_write(MC417_RWD, regval);
 
-	return ret;
+	/* Collect byte */
+	tempval = cx_read(MC417_RWD);
+	dataval = ((tempval & 0x000000FF) << 24);
+
+	/* Bring CS and RD high. */
+	regval = MC417_MIWR | MC417_MIRD | MC417_MICS | MC417_MIRDY;
+	cx_write(MC417_RWD, regval);
+
+	/* Read data byte 2 */
+	regval = MC417_MIRD | MC417_MIRDY | MCI_MEMORY_DATA_BYTE2;
+	cx_write(MC417_RWD, regval);
+	regval = MC417_MIWR | MC417_MIRDY | MCI_MEMORY_DATA_BYTE2;
+	cx_write(MC417_RWD, regval);
+	tempval = cx_read(MC417_RWD);
+	dataval |= ((tempval & 0x000000FF) << 16);
+	regval = MC417_MIWR | MC417_MIRD | MC417_MICS | MC417_MIRDY;
+	cx_write(MC417_RWD, regval);
+
+	/* Read data byte 1 */
+	regval = MC417_MIRD | MC417_MIRDY | MCI_MEMORY_DATA_BYTE1;
+	cx_write(MC417_RWD, regval);
+	regval = MC417_MIWR | MC417_MIRDY | MCI_MEMORY_DATA_BYTE1;
+	cx_write(MC417_RWD, regval);
+	tempval = cx_read(MC417_RWD);
+	dataval |= ((tempval & 0x000000FF) << 8);
+	regval = MC417_MIWR | MC417_MIRD | MC417_MICS | MC417_MIRDY;
+	cx_write(MC417_RWD, regval);
+
+	/* Read data byte 0 */
+	regval = MC417_MIRD | MC417_MIRDY | MCI_MEMORY_DATA_BYTE0;
+	cx_write(MC417_RWD, regval);
+	regval = MC417_MIWR | MC417_MIRDY | MCI_MEMORY_DATA_BYTE0;
+	cx_write(MC417_RWD, regval);
+	tempval = cx_read(MC417_RWD);
+	dataval |= (tempval & 0x000000FF);
+	regval = MC417_MIWR | MC417_MIRD | MC417_MICS | MC417_MIRDY;
+	cx_write(MC417_RWD, regval);
+
+	*value  = dataval;
+
+	return retval;
 }
 
-#else
-
-static inline enum bfs_result
-check_redundant(struct held_lock *src, struct held_lock *target)
+void mc417_gpio_set(struct cx23885_dev *dev, u32 mask)
 {
-	return BFS_RNOMATCH;
+	u32 val;
+
+	/* Set the gpio value */
+	mc417_register_read(dev, 0x900C, &val);
+	val |= (mask & 0x000ffff);
+	mc417_register_write(dev, 0x900C, val);
 }
 
-#endif
-
-static void inc_chains(int irq_context)
+void mc417_gpio_clear(struct cx23885_dev *dev, u32 mask)
 {
-	if (irq_context & LOCK_CHAIN_HARDIRQ_CONTEXT)
-		nr_hardirq_chains++;
-	else if (irq_context & LOCK_CHAIN_SOFTIRQ_CONTEXT)
-		nr_softirq_chains++;
+	u32 val;
+
+	/* Clear the gpio value */
+	mc417_register_read(dev, 0x900C, &val);
+	val &= ~(mask & 0x0000ffff);
+	mc417_register_write(dev, 0x900C, val);
+}
+
+void mc417_gpio_enable(struct cx23885_dev *dev, u32 mask, int asoutput)
+{
+	u32 val;
+
+	/* Enable GPIO direction bits */
+	mc417_register_read(dev, 0x9020, &val);
+	if (asoutput)
+		val |= (mask & 0x0000ffff);
 	else
-		nr_process_chains++;
+		val &= ~(mask & 0x0000ffff);
+
+	mc417_register_write(dev, 0x9020, val);
+}
+/* ------------------------------------------------------------------ */
+
+/* MPEG encoder API */
+static char *cmd_to_str(int cmd)
+{
+	switch (cmd) {
+	case CX2341X_ENC_PING_FW:
+		return  "PING_FW";
+	case CX2341X_ENC_START_CAPTURE:
+		return  "START_CAPTURE";
+	case CX2341X_ENC_STOP_CAPTURE:
+		return  "STOP_CAPTURE";
+	case CX2341X_ENC_SET_AUDIO_ID:
+		return  "SET_AUDIO_ID";
+	case CX2341X_ENC_SET_VIDEO_ID:
+		return  "SET_VIDEO_ID";
+	case CX2341X_ENC_SET_PCR_ID:
+		return  "SET_PCR_ID";
+	case CX2341X_ENC_SET_FRAME_RATE:
+		return  "SET_FRAME_RATE";
+	case CX2341X_ENC_SET_FRAME_SIZE:
+		return  "SET_FRAME_SIZE";
+	case CX2341X_ENC_SET_BIT_RATE:
+		return  "SET_BIT_RATE";
+	case CX2341X_ENC_SET_GOP_PROPERTIES:
+		return  "SET_GOP_PROPERTIES";
+	case CX2341X_ENC_SET_ASPECT_RATIO:
+		return  "SET_ASPECT_RATIO";
+	case CX2341X_ENC_SET_DNR_FILTER_MODE:
+		return  "SET_DNR_FILTER_MODE";
+	case CX2341X_ENC_SET_DNR_FILTER_PROPS:
+		return  "SET_DNR_FILTER_PROPS";
+	case CX2341X_ENC_SET_CORING_LEVELS:
+		return  "SET_CORING_LEVELS";
+	case CX2341X_ENC_SET_SPATIAL_FILTER_TYPE:
+		return  "SET_SPATIAL_FILTER_TYPE";
+	case CX2341X_ENC_SET_VBI_LINE:
+		return  "SET_VBI_LINE";
+	case CX2341X_ENC_SET_STREAM_TYPE:
+		return  "SET_STREAM_TYPE";
+	case CX2341X_ENC_SET_OUTPUT_PORT:
+		return  "SET_OUTPUT_PORT";
+	case CX2341X_ENC_SET_AUDIO_PROPERTIES:
+		return  "SET_AUDIO_PROPERTIES";
+	case CX2341X_ENC_HALT_FW:
+		return  "HALT_FW";
+	case CX2341X_ENC_GET_VERSION:
+		return  "GET_VERSION";
+	case CX2341X_ENC_SET_GOP_CLOSURE:
+		return  "SET_GOP_CLOSURE";
+	case CX2341X_ENC_GET_SEQ_END:
+		return  "GET_SEQ_END";
+	case CX2341X_ENC_SET_PGM_INDEX_INFO:
+		return  "SET_PGM_INDEX_INFO";
+	case CX2341X_ENC_SET_VBI_CONFIG:
+		return  "SET_VBI_CONFIG";
+	case CX2341X_ENC_SET_DMA_BLOCK_SIZE:
+		return  "SET_DMA_BLOCK_SIZE";
+	case CX2341X_ENC_GET_PREV_DMA_INFO_MB_10:
+		return  "GET_PREV_DMA_INFO_MB_10";
+	case CX2341X_ENC_GET_PREV_DMA_INFO_MB_9:
+		return  "GET_PREV_DMA_INFO_MB_9";
+	case CX2341X_ENC_SCHED_DMA_TO_HOST:
+		return  "SCHED_DMA_TO_HOST";
+	case CX2341X_ENC_INITIALIZE_INPUT:
+		return  "INITIALIZE_INPUT";
+	case CX2341X_ENC_SET_FRAME_DROP_RATE:
+		return  "SET_FRAME_DROP_RATE";
+	case CX2341X_ENC_PAUSE_ENCODER:
+		return  "PAUSE_ENCODER";
+	case CX2341X_ENC_REFRESH_INPUT:
+		return  "REFRESH_INPUT";
+	case CX2341X_ENC_SET_COPYRIGHT:
+		return  "SET_COPYRIGHT";
+	case CX2341X_ENC_SET_EVENT_NOTIFICATION:
+		return  "SET_EVENT_NOTIFICATION";
+	case CX2341X_ENC_SET_NUM_VSYNC_LINES:
+		return  "SET_NUM_VSYNC_LINES";
+	case CX2341X_ENC_SET_PLACEHOLDER:
+		return  "SET_PLACEHOLDER";
+	case CX2341X_ENC_MUTE_VIDEO:
+		return  "MUTE_VIDEO";
+	case CX2341X_ENC_MUTE_AUDIO:
+		return  "MUTE_AUDIO";
+	case CX2341X_ENC_MISC:
+		return  "MISC";
+	default:
+		return "UNKNOWN";
+	}
 }
 
-static void dec_chains(int irq_context)
+static int cx23885_mbox_func(void *priv,
+			     u32 command,
+			     int in,
+			     int out,
+			     u32 data[CX2341X_MBOX_MAX_DATA])
 {
-	if (irq_context & LOCK_CHAIN_HARDIRQ_CONTEXT)
-		nr_hardirq_chains--;
-	else if (irq_context & LOCK_CHAIN_SOFTIRQ_CONTEXT)
-		nr_softirq_chains--;
-	else
-		nr_process_chains--;
-}
-
-static void
-print_deadlock_scenario(struct held_lock *nxt, struct held_lock *prv)
-{
-	struct lock_class *next = hlock_class(nxt);
-	struct lock_class *prev = hlock_class(prv);
-
-	printk(" Possible unsafe locking scenario:\n\n");
-	printk("       CPU0\n");
-	printk("       ----\n");
-	printk("  lock(");
-	__print_lock_name(prev);
-	printk(KERN_CONT ");\n");
-	printk("  lock(");
-	__print_lock_name(next);
-	printk(KERN_CONT ");\n");
-	printk("\n *** DEADLOCK ***\n\n");
-	printk(" May be due to missing lock nesting notation\n\n");
-}
-
-static void
-print_deadlock_bug(struct task_struct *curr, struct held_lock *prev,
-		   struct held_lock *next)
-{
-	if (!debug_locks_off_graph_unlock() || debug_locks_silent)
-		return;
-
-	pr_warn("\n");
-	pr_warn("============================================\n");
-	pr_warn("WARNING: possible recursive locking detected\n");
-	print_kernel_ident();
-	pr_warn("--------------------------------------------\n");
-	pr_warn("%s/%d is trying to acquire lock:\n",
-		curr->comm, task_pid_nr(curr));
-	print_lock(next);
-	pr_warn("\nbut task is already holding lock:\n");
-	print_lock(prev);
-
-	pr_warn("\nother info that might help us debug this:\n");
-	print_deadlock_scenario(next, prev);
-	lockdep_print_held_locks(curr);
-
-	pr_warn("\nstack backtrace:\n");
-	dump_stack();
-}
-
-/*
- * Check whether we are holding such a class already.
- *
- * (Note that this has to be done separately, because the graph cannot
- * detect such classes of deadlocks.)
- *
- * Returns: 0 on deadlock detected, 1 on OK, 2 if another lock with the same
- * lock class is held but nest_lock is also held, i.e. we rely on the
- * nest_lock to avoid the deadlock.
- */
-static int
-check_deadlock(struct task_struct *curr, struct held_lock *next)
-{
-	struct held_lock *prev;
-	struct held_lock *nest = NULL;
+	struct cx23885_dev *dev = priv;
+	unsigned long timeout;
+	u32 value, flag, retval = 0;
 	int i;
 
-	for (i = 0; i < curr->lockdep_depth; i++) {
-		prev = curr->held_locks + i;
+	dprintk(3, "%s: command(0x%X) = %s\n", __func__, command,
+		cmd_to_str(command));
 
-		if (prev->instance == next->nest_lock)
-			nest = prev;
-
-		if (hlock_class(prev) != hlock_class(next))
-			continue;
-
-		/*
-		 * Allow read-after-read recursion of the same
-		 * lock class (i.e. read_lock(lock)+read_lock(lock)):
-		 */
-		if ((next->read == 2) && prev->read)
-			continue;
-
-		/*
-		 * We're holding the nest_lock, which serializes this lock's
-		 * nesting behaviour.
-		 */
-		if (nest)
-			return 2;
-
-		print_deadlock_bug(curr, prev, next);
-		return 0;
-	}
-	return 1;
-}
-
-/*
- * There was a chain-cache miss, and we are about to add a new dependency
- * to a previous lock. We validate the following rules:
- *
- *  - would the adding of the <prev> -> <next> dependency create a
- *    circular dependency in the graph? [== circular deadlock]
- *
- *  - does the new prev->next dependency connect any hardirq-safe lock
- *    (in the full backwards-subgraph starting at <prev>) with any
- *    hardirq-unsafe lock (in the full forwards-subgraph starting at
- *    <next>)? [== illegal lock inversion with hardirq contexts]
- *
- *  - does the new prev->next dependency connect any softirq-safe lock
- *    (in the full backwards-subgraph starting at <prev>) with any
- *    softirq-unsafe lock (in the full forwards-subgraph starting at
- *    <next>)? [== illegal lock inversion with softirq contexts]
- *
- * any of these scenarios could lead to a deadlock.
- *
- * Then if all the validations pass, we add the forwards and backwards
- * dependency.
- */
-static int
-check_prev_add(struct task_struct *curr, struct held_lock *prev,
-	       struct held_lock *next, u16 distance,
-	       struct lock_trace **const trace)
-{
-	struct lock_list *entry;
-	enum bfs_result ret;
-
-	if (!hlock_class(prev)->key || !hlock_class(next)->key) {
-		/*
-		 * The warning statements below may trigger a use-after-free
-		 * of the class name. It is better to trigger a use-after free
-		 * and to have the class name most of the time instead of not
-		 * having the class name available.
-		 */
-		WARN_ONCE(!debug_locks_silent && !hlock_class(prev)->key,
-			  "Detected use-after-free of lock class %px/%s\n",
-			  hlock_class(prev),
-			  hlock_class(prev)->name);
-		WARN_ONCE(!debug_locks_silent && !hlock_class(next)->key,
-			  "Detected use-after-free of lock class %px/%s\n",
-			  hlock_class(next),
-			  hlock_class(next)->name);
-		return 2;
+	/* this may not be 100% safe if we can't read any memory location
+	   without side effects */
+	mc417_memory_read(dev, dev->cx23417_mailbox - 4, &value);
+	if (value != 0x12345678) {
+		pr_err("Firmware and/or mailbox pointer not initialized or corrupted, signature = 0x%x, cmd = %s\n",
+			value, cmd_to_str(command));
+		return -1;
 	}
 
-	/*
-	 * Prove that the new <prev> -> <next> dependency would not
-	 * create a circular dependency in the graph. (We do this by
-	 * a breadth-first search into the graph starting at <next>,
-	 * and check whether we can reach <prev>.)
-	 *
-	 * The search is limited by the size of the circular queue (i.e.,
-	 * MAX_CIRCULAR_QUEUE_SIZE) which keeps track of a breadth of nodes
-	 * in the graph whose neighbours are to be checked.
+	/* This read looks at 32 bits, but flag is only 8 bits.
+	 * Seems we also bail if CMD or TIMEOUT bytes are set???
 	 */
-	ret = check_noncircular(next, prev, trace);
-	if (unlikely(bfs_error(ret) || ret == BFS_RMATCH))
-		return 0;
-
-	if (!check_irq_usage(curr, prev, next))
-		return 0;
-
-	/*
-	 * Is the <prev> -> <next> dependency already present?
-	 *
-	 * (this may occur even though this is a new chain: consider
-	 *  e.g. the L1 -> L2 -> L3 -> L4 and the L5 -> L1 -> L2 -> L3
-	 *  chains - the second one will be new, but L1 already has
-	 *  L2 added to its dependency list, due to the first chain.)
-	 */
-	list_for_each_entry(entry, &hlock_class(prev)->locks_after, entry) {
-		if (entry->class == hlock_class(next)) {
-			if (distance == 1)
-				entry->distance = 1;
-			entry->dep |= calc_dep(prev, next);
-
-			/*
-			 * Also, update the reverse dependency in @next's
-			 * ->locks_before list.
-			 *
-			 *  Here we reuse @entry as the cursor, which is fine
-			 *  because we won't go to the next iteration of the
-			 *  outer loop:
-			 *
-			 *  For normal cases, we return in the inner loop.
-			 *
-			 *  If we fail to return, we have inconsistency, i.e.
-			 *  <prev>::locks_after contains <next> while
-			 *  <next>::locks_before doesn't contain <prev>. In
-			 *  that case, we return after the inner and indicate
-			 *  something is wrong.
-			 */
-			list_for_each_entry(entry, &hlock_class(next)->locks_before, entry) {
-				if (entry->class == hlock_class(prev)) {
-					if (distance == 1)
-						entry->distance = 1;
-					entry->dep |= calc_depb(prev, next);
-					return 1;
-				}
-			}
-
-			/* <prev> is not found in <next>::locks_before */
-			return 0;
-		}
+	mc417_memory_read(dev, dev->cx23417_mailbox, &flag);
+	if (flag) {
+		pr_err("ERROR: Mailbox appears to be in use (%x), cmd = %s\n",
+		       flag, cmd_to_str(command));
+		return -1;
 	}
 
-	/*
-	 * Is the <prev> -> <next> link redundant?
-	 */
-	ret = check_redundant(prev, next);
-	if (bfs_error(ret))
-		return 0;
-	else if (ret == BFS_RMATCH)
-		return 2;
+	flag |= 1; /* tell 'em we're working on it */
+	mc417_memory_write(dev, dev->cx23417_mailbox, flag);
 
-	if (!*trace) {
-		*trace = save_trace();
-		if (!*trace)
-			return 0;
+	/* write command + args + fill remaining with zeros */
+	/* command code */
+	mc417_memory_write(dev, dev->cx23417_mailbox + 1, command);
+	mc417_memory_write(dev, dev->cx23417_mailbox + 3,
+		IVTV_API_STD_TIMEOUT); /* timeout */
+	for (i = 0; i < in; i++) {
+		mc417_memory_write(dev, dev->cx23417_mailbox + 4 + i, data[i]);
+		dprintk(3, "API Input %d = %d\n", i, data[i]);
 	}
+	for (; i < CX2341X_MBOX_MAX_DATA; i++)
+		mc417_memory_write(dev, dev->cx23417_mailbox + 4 + i, 0);
 
-	/*
-	 * Ok, all validations passed, add the new lock
-	 * to the previous lock's dependency list:
-	 */
-	ret = add_lock_to_list(hlock_class(next), hlock_class(prev),
-			       &hlock_class(prev)->locks_after,
-			       next->acquire_ip, distance,
-			       calc_dep(prev, next),
-			       *trace);
+	flag |= 3; /* tell 'em we're done writing */
+	mc417_memory_write(dev, dev->cx23417_mailbox, flag);
 
-	if (!ret)
-		return 0;
-
-	ret = add_lock_to_list(hlock_class(prev), hlock_class(next),
-			       &hlock_class(next)->locks_before,
-			       next->acquire_ip, distance,
-			       calc_depb(prev, next),
-			       *trace);
-	if (!ret)
-		return 0;
-
-	return 2;
-}
-
-/*
- * Add the dependency to all directly-previous locks that are 'relevant'.
- * The ones that are relevant are (in increasing distance from curr):
- * all consecutive trylock entries and the final non-trylock entry - or
- * the end of this context's lock-chain - whichever comes first.
- */
-static int
-check_prevs_add(struct task_struct *curr, struct held_lock *next)
-{
-	struct lock_trace *trace = NULL;
-	int depth = curr->lockdep_depth;
-	struct held_lock *hlock;
-
-	/*
-	 * Debugging checks.
-	 *
-	 * Depth must not be zero for a non-head lock:
-	 */
-	if (!depth)
-		goto out_bug;
-	/*
-	 * At least two relevant locks must exist for this
-	 * to be a head:
-	 */
-	if (curr->held_locks[depth].irq_context !=
-			curr->held_locks[depth-1].irq_context)
-		goto out_bug;
-
+	/* wait for firmware to handle the API command */
+	timeout = jiffies + msecs_to_jiffies(10);
 	for (;;) {
-		u16 distance = curr->lockdep_depth - depth + 1;
-		hlock = curr->held_locks + depth - 1;
-
-		if (hlock->check) {
-			int ret = check_prev_add(curr, hlock, next, distance, &trace);
-			if (!ret)
-				return 0;
-
-			/*
-			 * Stop after the first non-trylock entry,
-			 * as non-trylock entries have added their
-			 * own direct dependencies already, so this
-			 * lock is connected to them indirectly:
-			 */
-			if (!hlock->trylock)
-				break;
-		}
-
-		depth--;
-		/*
-		 * End of lock-stack?
-		 */
-		if (!depth)
+		mc417_memory_read(dev, dev->cx23417_mailbox, &flag);
+		if (0 != (flag & 4))
 			break;
-		/*
-		 * Stop the search if we cross into another context:
-		 */
-		if (curr->held_locks[depth].irq_context !=
-				curr->held_locks[dep
+		if (time_after(jiffies, timeout)) {
+			pr_err("ERROR: API Mailbox timeout\n");
+			return -1;
+		}
+		udelay(10);
+	}
+
+	/* read output values */
+	for (i = 0; i < out; i++) {
+		mc417_memory_read(dev, dev->cx23417_mailbox + 4 + i, data + i);
+		dprintk(3, "API Output %d = %d\n", i, data[i]);
+	}
+
+	mc417_memory_read(dev, dev->cx23417_mailbox + 2, &retval);
+	dprintk(3, "API result = %d\n", retval);
+
+	flag = 0;
+	mc417_memory_write(dev, dev->cx23417_mailbox, flag);
+
+	return retval;
+}
+
+/* We don't need to call the API often, so using just one
+ * mailbox will probably suffice
+ */
+static int cx23885_api_cmd(struct cx23885_dev *dev,
+			   u32 command,
+			   u32 inputcnt,
+			   u32 outputcnt,
+			   ...)
+{
+	u32 data[CX2341X_MBOX_MAX_DATA];
+	va_list vargs;
+	int i, err;
+
+	dprintk(3, "%s() cmds = 0x%08x\n", __func__, command);
+
+	va_start(vargs, outputcnt);
+	for (i = 0; i < inputcnt; i++)
+		data[i] = va_arg(vargs, int);
+
+	err = cx23885_mbox_func(dev, command, inputcnt, outputcnt, data);
+	for (i = 0; i < outputcnt; i++) {
+		int *vptr = va_arg(vargs, int *);
+		*vptr = data[i];
+	}
+	va_end(vargs);
+
+	return err;
+}
+
+static int cx23885_api_func(void *priv, u32 cmd, int in, int out, u32 data[CX2341X_MBOX_MAX_DATA])
+{
+	return cx23885_mbox_func(priv, cmd, in, out, data);
+}
+
+static int cx23885_find_mailbox(struct cx23885_dev *dev)
+{
+	u32 signature[4] = {
+		0x12345678, 0x34567812, 0x56781234, 0x78123456
+	};
+	int signaturecnt = 0;
+	u32 value;
+	int i;
+
+	dprintk(2, "%s()\n", __func__);
+
+	for (i = 0; i < CX23885_FIRM_IMAGE_SIZE; i++) {
+		mc417_memory_read(dev, i, &value);
+		if (value == signature[signaturecnt])
+			signaturecnt++;
+		else
+			signaturecnt = 0;
+		if (4 == signaturecnt) {
+			dprintk(1, "Mailbox signature found at 0x%x\n", i+1);
+			return i+1;
+		}
+	}
+	pr_err("Mailbox signature values not found!\n");
+	return -1;
+}
+
+static int cx23885_load_firmware(struct cx23885_dev *dev)
+{
+	static const unsigned char magic[8] = {
+		0xa7, 0x0d, 0x00, 0x00, 0x66, 0xbb, 0x55, 0xaa
+	};
+	const struct firmware *firmware;
+	int i, retval = 0;
+	u32 value = 0;
+	u32 gpio_output = 0;
+	u32 gpio_value;
+	u32 checksum = 0;
+	u32 *dataptr;
+
+	dprintk(2, "%s()\n", __func__);
+
+	/* Save GPIO settings before reset of APU */
+	retval |= mc417_memory_read(dev, 0x9020, &gpio_output);
+	retval |= mc417_memory_read(dev, 0x900C, &gpio_value);
+
+	retval  = mc417_register_write(dev,
+		IVTV_REG_VPU, 0xFFFFFFED);
+	retval |= mc417_register_write(dev,
+		IVTV_REG_HW_BLOCKS, IVTV_CMD_HW_BLOCKS_RST);
+	retval |= mc417_register_write(dev,
+		IVTV_REG_ENC_SDRAM_REFRESH, 0x80000800);
+	retval |= mc417_register_write(dev,
+		IVTV_REG_ENC_SDRAM_PRECHARGE, 0x1A);
+	retval |= mc417_register_write(dev,
+		IVTV_REG_APU, 0);
+
+	if (retval != 0) {
+		pr_err("%s: Error with mc417_register_write\n",
+			__func__);
+		return -1;
+	}
+
+	retval = request_firmware(&firmware, CX23885_FIRM_IMAGE_NAME,
+				  &dev->pci->dev);
+
+	if (retval != 0) {
+		pr_er

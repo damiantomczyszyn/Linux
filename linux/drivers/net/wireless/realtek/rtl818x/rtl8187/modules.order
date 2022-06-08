@@ -1,2 +1,2 @@
-e/linux/rwlock.h \
-    $(wildcard include/config/PREEMPT
+NE_READ_LOCK_IRQSAVE) \
+    $(wildcard include/config/IN

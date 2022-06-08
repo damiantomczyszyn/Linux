@@ -1,6 +1,2 @@
-RT_SYMBOL_GPL(debug_check_no_locks_held);
-
-#ifdef __KERNEL__
-void debug_show_all_locks(void)
-{
-	s
+cpu() more frequently to try to loosen things up a bit.
+	 * Also check to see if the CPU is getti

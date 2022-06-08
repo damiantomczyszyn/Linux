@@ -1,2 +1,1 @@
-e/linux/rwlock.h \
-    $(wildcard include
+cmd_drivers/media/pci/cx18/cx18.o := ld -

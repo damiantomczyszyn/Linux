@@ -1,1 +1,51 @@
-cmd_drivers/media/i2c/tw9906.o := gcc -Wp,-MMD,drivers/media/i2c/.tw9906.o.d -nostdinc -I./arch/x86/include -I./arch/x86/include/generated  -I./include -I./arch/x86/include/uapi -I./arch/x86/include/generated/uapi -I./include/uapi -I./include/generated/uapi -include ./include/linux/compiler-version.h -include ./include/linux/kconfig.h -include ./include/linux/compiler_types.h -D__KERNEL__ -fmacro-prefix-map=./= -Wall -Wundef -Werror=strict-prototypes -Wno-trigraphs -fno-strict-aliasing -fno-common -fshort-wchar -fno-PIE -Werror=implicit-function-declaration -Werror=implicit-int -Werror=return-type -Wno-format-security -std=gnu11 -mno-sse -mno-mmx -mno-sse2 -mno-3dnow -mno-avx -fcf-protection=none -m32 -msoft-float -mregparm=3 -freg-struct-return -fno-pic -mpreferred-stack-boundary=2 -march=i686 -mtune=pentium3 -mtune=generic -Wa,-mtune=generic32 -ffreestanding -mstack-protector-guard-reg=fs -mstack-protector-guard-symbol=__stack_chk_guard -Wno-sign-compare -fno-asynchronous-unwind-tables -mindirect-branch=thunk-extern -mindirect-branch-register -fno-jump-tables -fno-delete-null-pointer-checks -Wno-frame-address -Wno-format-truncation -Wno-format-overflow -Wno-address-o
+         = &mpeg_fops,
+	.ioctl_ops     = &mpeg_ioctl_ops,
+	.tvnorms       = CX23885_NORMS,
+};
+
+void cx23885_417_unregister(struct cx23885_dev *dev)
+{
+	dprintk(1, "%s()\n", __func__);
+
+	if (dev->v4l_device) {
+		if (video_is_registered(dev->v4l_device))
+			video_unregister_device(dev->v4l_device);
+		else
+			video_device_release(dev->v4l_device);
+		v4l2_ctrl_handler_free(&dev->cxhdl.hdl);
+		dev->v4l_device = NULL;
+	}
+}
+
+static struct video_device *cx23885_video_dev_alloc(
+	struct cx23885_tsport *tsport,
+	struct pci_dev *pci,
+	struct video_device *template,
+	char *type)
+{
+	struct video_device *vfd;
+	struct cx23885_dev *dev = tsport->dev;
+
+	dprintk(1, "%s()\n", __func__);
+
+	vfd = video_device_alloc();
+	if (NULL == vfd)
+		return NULL;
+	*vfd = *template;
+	snprintf(vfd->name, sizeof(vfd->name), "%s (%s)",
+		cx23885_boards[tsport->dev->board].name, type);
+	vfd->v4l2_dev = &dev->v4l2_dev;
+	vfd->release = video_device_release;
+	return vfd;
+}
+
+int cx23885_417_register(struct cx23885_dev *dev)
+{
+	/* FIXME: Port1 hardcoded here */
+	int err = -ENODEV;
+	struct cx23885_tsport *tsport = &dev->ts1;
+	struct vb2_queue *q;
+
+	dprintk(1, "%s()\n", __func__);
+
+	if (cx23885_boards[dev->board].p

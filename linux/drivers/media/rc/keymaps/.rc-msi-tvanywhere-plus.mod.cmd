@@ -1,1 +1,7 @@
-cmd_drivers/media/rc/keymaps/rc-msi-tvanywhere-plus.mod := { echo  drivers/media/rc/keymaps/rc-msi-tvanywhere-plus.o;  echo; } > drivers/media/rc/keymaps/rc-msi-tvanywhere-plus.mod
+< 0) {
+			pr_err("%s() Failed to register dvb on VID_C\n",
+			       __func__);
+		}
+	} else
+	if (cx23885_boards[dev->board].portc == CX23885_MPEG_ENCODER) {
+		if (cx23885_417_regist

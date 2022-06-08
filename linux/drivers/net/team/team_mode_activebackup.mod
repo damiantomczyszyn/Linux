@@ -1,2 +1,1 @@
-\
-    $(wildcard include/config/PCI_MMCONFI
+// SPDX-License-Identifier: GPL-2.0-or-late

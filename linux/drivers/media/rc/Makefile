@@ -1,57 +1,76 @@
-# SPDX-License-Identifier: GPL-2.0
+// SPDX-License-Identifier: GPL-2.0-or-later
+/*
+ *  Driver for the Conexant CX23885 PCIe bridge
+ *
+ *  Copyright (c) 2006 Steven Toth <stoth@linuxtv.org>
+ */
 
-obj-y += keymaps/
+#include "cx23885.h"
 
-rc-core-y := rc-main.o rc-ir-raw.o
-rc-core-$(CONFIG_LIRC) += lirc_dev.o
-rc-core-$(CONFIG_MEDIA_CEC_RC) += keymaps/rc-cec.o
-rc-core-$(CONFIG_BPF_LIRC_MODE2) += bpf-lirc.o
+#include <linux/init.h>
+#include <linux/list.h>
+#include <linux/module.h>
+#include <linux/moduleparam.h>
+#include <linux/kmod.h>
+#include <linux/kernel.h>
+#include <linux/pci.h>
+#include <linux/slab.h>
+#include <linux/interrupt.h>
+#include <linux/delay.h>
+#include <asm/div64.h>
+#include <linux/firmware.h>
 
-obj-$(CONFIG_RC_CORE) += rc-core.o
+#include "cimax2.h"
+#include "altera-ci.h"
+#include "cx23888-ir.h"
+#include "cx23885-ir.h"
+#include "cx23885-av.h"
+#include "cx23885-input.h"
 
-# IR decoders - please keep it alphabetically sorted by Kconfig name
-# (e. g. LC_ALL=C sort Makefile)
-obj-$(CONFIG_IR_IMON_DECODER) += ir-imon-decoder.o
-obj-$(CONFIG_IR_JVC_DECODER) += ir-jvc-decoder.o
-obj-$(CONFIG_IR_MCE_KBD_DECODER) += ir-mce_kbd-decoder.o
-obj-$(CONFIG_IR_NEC_DECODER) += ir-nec-decoder.o
-obj-$(CONFIG_IR_RC5_DECODER) += ir-rc5-decoder.o
-obj-$(CONFIG_IR_RC6_DECODER) += ir-rc6-decoder.o
-obj-$(CONFIG_IR_RCMM_DECODER) += ir-rcmm-decoder.o
-obj-$(CONFIG_IR_SANYO_DECODER) += ir-sanyo-decoder.o
-obj-$(CONFIG_IR_SHARP_DECODER) += ir-sharp-decoder.o
-obj-$(CONFIG_IR_SONY_DECODER) += ir-sony-decoder.o
-obj-$(CONFIG_IR_XMP_DECODER) += ir-xmp-decoder.o
+MODULE_DESCRIPTION("Driver for cx23885 based TV cards");
+MODULE_AUTHOR("Steven Toth <stoth@linuxtv.org>");
+MODULE_LICENSE("GPL");
+MODULE_VERSION(CX23885_VERSION);
 
-# stand-alone IR receivers/transmitters  - please keep it alphabetically
-# sorted by Kconfig name (e. g. LC_ALL=C sort Makefile)
-obj-$(CONFIG_IR_ENE) += ene_ir.o
-obj-$(CONFIG_IR_FINTEK) += fintek-cir.o
-obj-$(CONFIG_IR_GPIO_CIR) += gpio-ir-recv.o
-obj-$(CONFIG_IR_GPIO_TX) += gpio-ir-tx.o
-obj-$(CONFIG_IR_HIX5HD2) += ir-hix5hd2.o
-obj-$(CONFIG_IR_IGORPLUGUSB) += igorplugusb.o
-obj-$(CONFIG_IR_IGUANA) += iguanair.o
-obj-$(CONFIG_IR_IMG) += img-ir/
-obj-$(CONFIG_IR_IMON) += imon.o
-obj-$(CONFIG_IR_IMON_RAW) += imon_raw.o
-obj-$(CONFIG_IR_ITE_CIR) += ite-cir.o
-obj-$(CONFIG_IR_MCEUSB) += mceusb.o
-obj-$(CONFIG_IR_MESON) += meson-ir.o
-obj-$(CONFIG_IR_MESON_TX) += meson-ir-tx.o
-obj-$(CONFIG_IR_MTK) += mtk-cir.o
-obj-$(CONFIG_IR_NUVOTON) += nuvoton-cir.o
-obj-$(CONFIG_IR_PWM_TX) += pwm-ir-tx.o
-obj-$(CONFIG_IR_REDRAT3) += redrat3.o
-obj-$(CONFIG_IR_RX51) += ir-rx51.o
-obj-$(CONFIG_IR_SERIAL) += serial_ir.o
-obj-$(CONFIG_IR_SPI) += ir-spi.o
-obj-$(CONFIG_IR_STREAMZAP) += streamzap.o
-obj-$(CONFIG_IR_SUNXI) += sunxi-cir.o
-obj-$(CONFIG_IR_TOY) += ir_toy.o
-obj-$(CONFIG_IR_TTUSBIR) += ttusbir.o
-obj-$(CONFIG_IR_WINBOND_CIR) += winbond-cir.o
-obj-$(CONFIG_RC_ATI_REMOTE) += ati_remote.o
-obj-$(CONFIG_RC_LOOPBACK) += rc-loopback.o
-obj-$(CONFIG_RC_ST) += st_rc.o
-obj-$(CONFIG_RC_XBOX_DVD) += xbox_remote.o
+/*
+ * Some platforms have been found to require periodic resetting of the DMA
+ * engine. Ryzen and XEON platforms are known to be affected. The symptom
+ * encountered is "mpeg risc op code error". Only Ryzen platforms employ
+ * this workaround if the option equals 1. The workaround can be explicitly
+ * disabled for all platforms by setting to 0, the workaround can be forced
+ * on for any platform by setting to 2.
+ */
+static unsigned int dma_reset_workaround = 1;
+module_param(dma_reset_workaround, int, 0644);
+MODULE_PARM_DESC(dma_reset_workaround, "periodic RiSC dma engine reset; 0-force disable, 1-driver detect (default), 2-force enable");
+
+static unsigned int debug;
+module_param(debug, int, 0644);
+MODULE_PARM_DESC(debug, "enable debug messages");
+
+static unsigned int card[]  = {[0 ... (CX23885_MAXBOARDS - 1)] = UNSET };
+module_param_array(card,  int, NULL, 0444);
+MODULE_PARM_DESC(card, "card type");
+
+#define dprintk(level, fmt, arg...)\
+	do { if (debug >= level)\
+		printk(KERN_DEBUG pr_fmt("%s: " fmt), \
+		       __func__, ##arg); \
+	} while (0)
+
+static unsigned int cx23885_devcount;
+
+#define NO_SYNC_LINE (-1U)
+
+/* FIXME, these allocations will change when
+ * analog arrives. The be reviewed.
+ * CX23887 Assumptions
+ * 1 line = 16 bytes of CDT
+ * cmds size = 80
+ * cdt size = 16 * linesize
+ * iqsize = 64
+ * maxlines = 6
+ *
+ * Address Space:
+ * 0x00000000 0x00008fff FIFO clusters
+ * 0x00010000 0x00

@@ -1,1 +1,2 @@
-dcard include/confi
+ient_demod))
+			got

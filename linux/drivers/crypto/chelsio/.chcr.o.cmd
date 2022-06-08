@@ -1,5 +1,1 @@
-EAF) \
-  include/linux/page-flags-layout.h \
-    $(wildcard include/config/KASAN_HW_TAGS) \
-  include/linux/numa.h \
-    $(wildcard include/config/NODES_SHIFT) 
+cmd_drivers/media/pci/cx18/modules.order := {   echo drivers/media/pci/cx18/cx18.ko;   echo drivers/media/pci/cx18/cx18-alsa.ko; :; } | awk '!x[$$0]++' - > driv

@@ -1,2 +1,2 @@
-drivers/media/radio/radio-wl1273.o
-
+.prepare = snd_cx23885_prepare,
+	.tr

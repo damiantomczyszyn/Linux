@@ -1,1 +1,6 @@
-cmd_drivers/media/rc/keymaps/rc-eztv.mod := { echo  drivers/media/rc/keymaps/rc-eztv.o;  echo; } > drivers/media/rc/keymaps/rc-eztv.mod
+nnel *audio_ch =
+		&dev->sram_channels[AUDIO_SRAM_CHANNEL];
+
+	dprintk(1, "%s()\n", __func__);
+
+	/* Make sure RISC/FIFO are off before ch

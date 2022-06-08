@@ -1,22 +1,25 @@
-) \
-  include/acpi/acpi_io.h \
-  include/linux/io.h \
-    $(wildcard include/config/HAS_IOPORT_MAP) \
-  arch/x86/include/asm/io.h \
-    $(wildcard include/config/MTRR) \
-    $(wildcard include/config/X86_PAT) \
-  arch/x86/include/generated/asm/early_ioremap.h \
-  include/asm-generic/early_ioremap.h \
-    $(wildcard include/config/GENERIC_EARLY_IOREMAP) \
-  include/asm-generic/iomap.h \
-  include/asm-generic/pci_iomap.h \
-    $(wildcard include/config/NO_GENERIC_PCI_IOPORT_MAP) \
-    $(wildcard include/config/GENERIC_PCI_IOMAP) \
-  include/asm-generic/io.h \
-    $(wildcard include/config/GENERIC_IOMAP) \
-    $(wildcard include/config/GENERIC_IOREMAP) \
-    $(wildcard include/config/VIRT_TO_BUS) \
-    $(wildcard include/config/GENERIC_DEVMEM_IS_ALLOWED) \
-  include/linux/logic_pio.h \
-    $(wildcard include/config/INDIRECT_PIO) \
-  include/linux/vmalloc.h \
+drivers/net/dsa/b53/b53_common.ko
+drivers/net/dsa/b53/b53_mdio.ko
+drivers/net/dsa/b53/b53_mmap.ko
+drivers/net/dsa/b53/b53_srab.ko
+drivers/net/dsa/b53/b53_serdes.ko
+drivers/net/dsa/hirschmann/hellcreek_sw.ko
+drivers/net/dsa/microchip/ksz_common.ko
+drivers/net/dsa/microchip/ksz9477.ko
+drivers/net/dsa/microchip/ksz9477_i2c.ko
+drivers/net/dsa/mv88e6xxx/mv88e6xxx.ko
+drivers/net/dsa/qca/ar9331.ko
+drivers/net/dsa/xrs700x/xrs700x.ko
+drivers/net/dsa/xrs700x/xrs700x_i2c.ko
+drivers/net/dsa/xrs700x/xrs700x_mdio.ko
+drivers/net/dsa/bcm-sf2.ko
+drivers/net/dsa/dsa_loop.ko
+drivers/net/dsa/dsa_loop_bdinfo.ko
+drivers/net/dsa/mt7530.ko
+drivers/net/dsa/qca8k.ko
+drivers/net/dsa/lan9303-core.ko
+drivers/net/dsa/lan9303_i2c.ko
+drivers/net/dsa/lan9303_mdio.ko
+drivers/net/dsa/vitesse-vsc73xx-core.ko
+drivers/net/dsa/vitesse-vsc73xx-platform.ko
+drivers/net/dsa/vitesse-vsc73xx-spi.ko

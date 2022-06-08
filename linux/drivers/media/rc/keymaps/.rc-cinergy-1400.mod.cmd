@@ -1,1 +1,11 @@
-cmd_drivers/media/rc/keymaps/rc-cinergy-1400.mod := { echo  drivers/media/rc/keymaps/rc-cinergy-1400.o;  echo; } > drivers/media/rc/keymaps/rc-cinergy-1400.mod
+tate);
+		}
+	}
+
+}
+EXPORT_SYMBOL(altera_ci_release);
+
+static void altera_pid_control(struct netup_hw_pid_filter *pid_filt,
+		u16 pid, int onoff)
+{
+	struct fpga_in

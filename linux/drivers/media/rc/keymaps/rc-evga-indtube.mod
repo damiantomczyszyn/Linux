@@ -1,2 +1,3 @@
-drivers/media/rc/keymaps/rc-evga-indtube.o
-
+ity *cap)
+{
+	struct cx23885_dev *dev = video

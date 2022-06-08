@@ -1,9 +1,12 @@
-atic void torture_rwsem_up_read(int tid __maybe_unused)
-__releases(torture_rwsem)
+k_struct *p, int flags)
 {
-	up_read(&torture_rwsem);
-}
+	if (!(flags & ENQUEUE_NOCLOCK))
+		update_rq_clock(rq);
 
-static struct lock_torture_ops rwsem_lock_ops = {
-	.writelock	= torture_rwsem_down_write,
-	.write_delay	= torture_r
+	if (!(flags & ENQUEUE_RESTORE)) {
+		sched_info_enqueue(rq, p);
+		psi_enqueue(p, flags & ENQUEUE_WAKEUP);
+	}
+
+	uclamp_rq_inc(rq, p);
+	p->sched_cl

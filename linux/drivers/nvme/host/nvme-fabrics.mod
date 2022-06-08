@@ -1,1 +1,2 @@
-cmd_drivers/media/i2c/upd6408
+885_video_template = {
+	.name

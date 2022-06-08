@@ -1,18 +1,20 @@
- -> @hlock and @hlock -> <whatever __bfs() found> is not -(*R)->
- * and -(S*)->.
- */
-static inline void bfs_init_root(struct lock_list *lock,
-				 struct held_lock *hlock)
-{
-	__bfs_init_root(lock, hlock_class(hlock));
-	lock->only_xr = (hlock->read == 2);
-}
+g
+		 * any task-queue locks at all. We'll only try to get
+		 * the runqueue lock when things look like they will
+		 * work out!
+		 */
+		rq = task_rq(p);
 
-/*
- * Similar to bfs_init_root() but initialize the root for backwards BFS.
- *
- * ->only_xr of the initial lock node is set to @hlock->read != 0, to make sure
- * that <next> -> @hlock and @hlock -> <whatever backwards BFS found> is not
- * -(*S)-> and -(R*)-> (reverse order of -(*R)-> and -(S*)->).
- */
-static inline void bfs_init_rootb(struct lock_l
+		/*
+		 * If the task is actively running on another CPU
+		 * still, just relax and busy-wait without holding
+		 * any locks.
+		 *
+		 * NOTE! Since we don't hold any locks, it's not
+		 * even sure that "rq" stays as the right runqueue!
+		 * But we don't care, since "task_running()" will
+		 * return false if the runqueue has changed and p
+		 * is actually now running somewhere else!
+		 */
+		while (task_running(rq, p)) {
+			if (match_state && unlikely(

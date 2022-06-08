@@ -1,95 +1,135 @@
-h \
-    $(wildcard include/config/ARCH_NR_GPIO) \
-  include/linux/gpio/driver.h \
-    $(wildcard include/config/IRQ_DOMAIN_HIERARCHY) \
-    $(wildcard include/config/GPIO_GENERIC) \
-    $(wildcard include/config/GPIOLIB_IRQCHIP) \
-    $(wildcard include/config/OF_GPIO) \
-    $(wildcard include/config/PINCTRL) \
-  include/linux/device.h \
-    $(wildcard include/config/GENERIC_MSI_IRQ_DOMAIN) \
-    $(wildcard include/config/GENERIC_MSI_IRQ) \
-    $(wildcard include/config/ENERGY_MODEL) \
-    $(wildcard include/config/DMA_OPS) \
-    $(wildcard include/config/DMA_DECLARE_COHERENT) \
-    $(wildcard include/config/DMA_CMA) \
-    $(wildcard include/config/SWIOTLB) \
-    $(wildcard include/config/ARCH_HAS_SYNC_DMA_FOR_DEVICE) \
-    $(wildcard include/config/ARCH_HAS_SYNC_DMA_FOR_CPU) \
-    $(wildcard include/config/ARCH_HAS_SYNC_DMA_FOR_CPU_ALL) \
-    $(wildcard include/config/DMA_OPS_BYPASS) \
-    $(wildcard include/config/PM_SLEEP) \
-    $(wildcard include/config/OF) \
-    $(wildcard include/config/DEVTMPFS) \
-    $(wildcard include/config/SYSFS_DEPRECATED) \
-  include/linux/dev_printk.h \
-  include/linux/ratelimit.h \
-  include/linux/energy_model.h \
-  include/linux/kobject.h \
-    $(wildcard include/config/UEVENT_HELPER) \
-    $(wildcard include/config/DEBUG_KOBJECT_RELEASE) \
-  include/linux/sysfs.h \
-  include/linux/kernfs.h \
-    $(wildcard include/config/KERNFS) \
-  include/linux/idr.h \
-  include/linux/radix-tree.h \
-  include/linux/gfp.h \
-    $(wildcard include/config/KASAN_HW_TAGS) \
-    $(wildcard include/config/ZONE_DMA) \
-    $(wildcard include/config/ZONE_DMA32) \
-    $(wildcard include/config/ZONE_DEVICE) \
-    $(wildcard include/config/CONTIG_ALLOC) \
-    $(wildcard include/config/CMA) \
-  include/linux/mmzone.h \
-    $(wildcard include/config/FORCE_MAX_ZONEORDER) \
-    $(wildcard include/config/MEMORY_ISOLATION) \
-    $(wildcard include/config/ZSMALLOC) \
-    $(wildcard include/config/SWAP) \
-    $(wildcard include/config/TRANSPARENT_HUGEPAGE) \
-    $(wildcard include/config/MEMORY_HOTPLUG) \
-    $(wildcard include/config/PAGE_EXTENSION) \
-    $(wildcard include/config/DEFERRED_STRUCT_PAGE_INIT) \
-    $(wildcard include/config/HAVE_MEMORYLESS_NODES) \
-    $(wildcard include/config/SPARSEMEM_EXTREME) \
-    $(wildcard include/config/HAVE_ARCH_PFN_VALID) \
-  include/linux/pageblock-flags.h \
-    $(wildcard include/config/HUGETLB_PAGE) \
-    $(wildcard include/config/HUGETLB_PAGE_SIZE_VARIABLE) \
-  include/linux/page-flags-layout.h \
-  include/generated/bounds.h \
-  include/linux/mm_types.h \
-    $(wildcard include/config/HAVE_ALIGNED_STRUCT_PAGE) \
-    $(wildcard include/config/USERFAULTFD) \
-    $(wildcard include/config/HAVE_ARCH_COMPAT_MMAP_BASES) \
-    $(wildcard include/config/MEMBARRIER) \
-    $(wildcard include/config/AIO) \
-    $(wildcard include/config/MMU_NOTIFIER) \
-  include/linux/auxvec.h \
-  include/uapi/linux/auxvec.h \
-  arch/x86/include/uapi/asm/auxvec.h \
-  include/linux/kref.h \
-  include/linux/rwsem.h \
-    $(wildcard include/config/RWSEM_SPIN_ON_OWNER) \
-    $(wildcard include/config/DEBUG_RWSEMS) \
-  include/linux/completion.h \
-  include/linux/swait.h \
-  include/linux/uprobes.h \
-  arch/x86/include/asm/uprobes.h \
-  include/linux/notifier.h \
-    $(wildcard include/config/TREE_SRCU) \
-  include/linux/srcu.h \
-    $(wildcard include/config/TINY_SRCU) \
-    $(wildcard include/config/SRCU) \
-  include/linux/rcu_segcblist.h \
-  include/linux/srcutree.h \
-  include/linux/rcu_node_tree.h \
-    $(wildcard include/config/RCU_FANOUT) \
-    $(wildcard include/config/RCU_FANOUT_LEAF) \
-  arch/x86/include/asm/mmu.h \
-    $(wildcard include/config/MODIFY_LDT_SYSCALL) \
-  include/linux/page-flags.h \
-    $(wildcard include/config/ARCH_USES_PG_UNCACHED) \
-    $(wildcard include/config/MEMORY_FAILURE) \
-    $(wildcard include/config/PAGE_IDLE_FLAG) \
-    $(wildcard include/config/HUGETLB_PAGE_FREE_VMEMMAP) \
-    $(w
+// SPDX-License-Identifier: GPL-2.0
+//
+// tcan4x5x - Texas Instruments TCAN4x5x Family CAN controller driver
+//
+// Copyright (c) 2020 Pengutronix,
+//                    Marc Kleine-Budde <kernel@pengutronix.de>
+// Copyright (c) 2018-2019 Texas Instruments Incorporated
+//                    http://www.ti.com/
+
+#include "tcan4x5x.h"
+
+#define TCAN4X5X_SPI_INSTRUCTION_WRITE (0x61 << 24)
+#define TCAN4X5X_SPI_INSTRUCTION_READ (0x41 << 24)
+
+#define TCAN4X5X_MAX_REGISTER 0x87fc
+
+static int tcan4x5x_regmap_gather_write(void *context,
+					const void *reg, size_t reg_len,
+					const void *val, size_t val_len)
+{
+	struct spi_device *spi = context;
+	struct tcan4x5x_priv *priv = spi_get_drvdata(spi);
+	struct tcan4x5x_map_buf *buf_tx = &priv->map_buf_tx;
+	struct spi_transfer xfer[] = {
+		{
+			.tx_buf = buf_tx,
+			.len = sizeof(buf_tx->cmd) + val_len,
+		},
+	};
+
+	memcpy(&buf_tx->cmd, reg, sizeof(buf_tx->cmd.cmd) +
+	       sizeof(buf_tx->cmd.addr));
+	tcan4x5x_spi_cmd_set_len(&buf_tx->cmd, val_len);
+	memcpy(buf_tx->data, val, val_len);
+
+	return spi_sync_transfer(spi, xfer, ARRAY_SIZE(xfer));
+}
+
+static int tcan4x5x_regmap_write(void *context, const void *data, size_t count)
+{
+	return tcan4x5x_regmap_gather_write(context, data, sizeof(__be32),
+					    data + sizeof(__be32),
+					    count - sizeof(__be32));
+}
+
+static int tcan4x5x_regmap_read(void *context,
+				const void *reg_buf, size_t reg_len,
+				void *val_buf, size_t val_len)
+{
+	struct spi_device *spi = context;
+	struct tcan4x5x_priv *priv = spi_get_drvdata(spi);
+	struct tcan4x5x_map_buf *buf_rx = &priv->map_buf_rx;
+	struct tcan4x5x_map_buf *buf_tx = &priv->map_buf_tx;
+	struct spi_transfer xfer[2] = {
+		{
+			.tx_buf = buf_tx,
+		}
+	};
+	struct spi_message msg;
+	int err;
+
+	spi_message_init(&msg);
+	spi_message_add_tail(&xfer[0], &msg);
+
+	memcpy(&buf_tx->cmd, reg_buf, sizeof(buf_tx->cmd.cmd) +
+	       sizeof(buf_tx->cmd.addr));
+	tcan4x5x_spi_cmd_set_len(&buf_tx->cmd, val_len);
+
+	if (spi->controller->flags & SPI_CONTROLLER_HALF_DUPLEX) {
+		xfer[0].len = sizeof(buf_tx->cmd);
+
+		xfer[1].rx_buf = val_buf;
+		xfer[1].len = val_len;
+		spi_message_add_tail(&xfer[1], &msg);
+	} else {
+		xfer[0].rx_buf = buf_rx;
+		xfer[0].len = sizeof(buf_tx->cmd) + val_len;
+
+		if (TCAN4X5X_SANITIZE_SPI)
+			memset(buf_tx->data, 0x0, val_len);
+	}
+
+	err = spi_sync(spi, &msg);
+	if (err)
+		return err;
+
+	if (!(spi->controller->flags & SPI_CONTROLLER_HALF_DUPLEX))
+		memcpy(val_buf, buf_rx->data, val_len);
+
+	return 0;
+}
+
+static const struct regmap_range tcan4x5x_reg_table_yes_range[] = {
+	regmap_reg_range(0x0000, 0x002c),	/* Device ID and SPI Registers */
+	regmap_reg_range(0x0800, 0x083c),	/* Device configuration registers and Interrupt Flags*/
+	regmap_reg_range(0x1000, 0x10fc),	/* M_CAN */
+	regmap_reg_range(0x8000, 0x87fc),	/* MRAM */
+};
+
+static const struct regmap_access_table tcan4x5x_reg_table = {
+	.yes_ranges = tcan4x5x_reg_table_yes_range,
+	.n_yes_ranges = ARRAY_SIZE(tcan4x5x_reg_table_yes_range),
+};
+
+static const struct regmap_config tcan4x5x_regmap = {
+	.reg_bits = 24,
+	.reg_stride = 4,
+	.pad_bits = 8,
+	.val_bits = 32,
+	.wr_table = &tcan4x5x_reg_table,
+	.rd_table = &tcan4x5x_reg_table,
+	.max_register = TCAN4X5X_MAX_REGISTER,
+	.cache_type = REGCACHE_NONE,
+	.read_flag_mask = (__force unsigned long)
+		cpu_to_be32(TCAN4X5X_SPI_INSTRUCTION_READ),
+	.write_flag_mask = (__force unsigned long)
+		cpu_to_be32(TCAN4X5X_SPI_INSTRUCTION_WRITE),
+};
+
+static const struct regmap_bus tcan4x5x_bus = {
+	.write = tcan4x5x_regmap_write,
+	.gather_write = tcan4x5x_regmap_gather_write,
+	.read = tcan4x5x_regmap_read,
+	.reg_format_endian_default = REGMAP_ENDIAN_BIG,
+	.val_format_endian_default = REGMAP_ENDIAN_BIG,
+	.max_raw_read = 256,
+	.max_raw_write = 256,
+};
+
+int tcan4x5x_regmap_init(struct tcan4x5x_priv *priv)
+{
+	priv->regmap = devm_regmap_init(&priv->spi->dev, &tcan4x5x_bus,
+					priv->spi, &tcan4x5x_regmap);
+	return PTR_ERR_OR_ZERO(priv->regmap);
+}

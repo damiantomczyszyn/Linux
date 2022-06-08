@@ -1,2 +1,1 @@
-drivers/media/rc/keymaps/rc-eztv.o
-
+// SPDX-License-Identifier: GPL-2.0-

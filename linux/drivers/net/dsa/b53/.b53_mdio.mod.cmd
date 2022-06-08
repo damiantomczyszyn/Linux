@@ -1,4 +1,1 @@
-UMA) \
-    $(wildcard include/config/NUMA_BALANCING) \
-    $(wildcard include/config/RSEQ) \
-    $(wildcard include/config/T
+cmd_drivers/net/dsa/b53/b53_mdio.mod := { echo  drivers/net/dsa/b53/b53_mdio.o;  echo; } > drivers/net/dsa/b53/b53_mdio.mod

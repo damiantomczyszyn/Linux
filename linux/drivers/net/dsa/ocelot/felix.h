@@ -1,66 +1,80 @@
-de/uapi/linux/swab.h \
-  arch/x86/include/uapi/asm/swab.h \
-  include/linux/byteorder/generic.h \
-  include/asm-generic/bitops/ext2-atomic-setbit.h \
-  include/linux/kstrtox.h \
-  include/linux/log2.h \
-    $(wildcard include/config/ARCH_HAS_ILOG2_U32) \
-    $(wildcard include/config/ARCH_HAS_ILOG2_U64) \
-  include/linux/math.h \
-  arch/x86/include/asm/div64.h \
-  include/linux/minmax.h \
-  include/linux/panic.h \
-    $(wildcard include/config/PANIC_TIMEOUT) \
-  include/linux/printk.h \
-    $(wildcard include/config/MESSAGE_LOGLEVEL_DEFAULT) \
-    $(wildcard include/config/CONSOLE_LOGLEVEL_DEFAULT) \
-    $(wildcard include/config/CONSOLE_LOGLEVEL_QUIET) \
-    $(wildcard include/config/EARLY_PRINTK) \
-    $(wildcard include/config/PRINTK) \
-    $(wildcard include/config/PRINTK_INDEX) \
-    $(wildcard include/config/DYNAMIC_DEBUG) \
-    $(wildcard include/config/DYNAMIC_DEBUG_CORE) \
-  include/linux/init.h \
-    $(wildcard include/config/STRICT_KERNEL_RWX) \
-    $(wildcard include/config/STRICT_MODULE_RWX) \
-    $(wildcard include/config/LTO_CLANG) \
-  include/linux/kern_levels.h \
-  include/linux/cache.h \
-    $(wildcard include/config/ARCH_HAS_CACHE_LINE_SIZE) \
-  arch/x86/include/asm/cache.h \
-    $(wildcard include/config/X86_L1_CACHE_SHIFT) \
-    $(wildcard include/config/X86_INTERNODE_CACHE_SHIFT) \
-    $(wildcard include/config/X86_VSMP) \
-  include/linux/ratelimit_types.h \
-  include/uapi/linux/param.h \
-  arch/x86/include/generated/uapi/asm/param.h \
-  include/asm-generic/param.h \
-    $(wildcard include/config/HZ) \
-  include/uapi/asm-generic/param.h \
-  include/linux/spinlock_types_raw.h \
-    $(wildcard include/config/DEBUG_SPINLOCK) \
-    $(wildcard include/config/DEBUG_LOCK_ALLOC) \
-  arch/x86/include/asm/spinlock_types.h \
-  include/asm-generic/qspinlock_types.h \
-    $(wildcard include/config/NR_CPUS) \
-  include/asm-generic/qrwlock_types.h \
-  include/linux/lockdep_types.h \
-    $(wildcard include/config/PROVE_RAW_LOCK_NESTING) \
-    $(wildcard include/config/LOCKDEP) \
-    $(wildcard include/config/LOCK_STAT) \
-  include/linux/once_lite.h \
-  include/linux/static_call_types.h \
-    $(wildcard include/config/HAVE_STATIC_CALL) \
-    $(wildcard include/config/HAVE_STATIC_CALL_INLINE) \
-  include/linux/instruction_pointer.h \
-  include/linux/notifier.h \
-    $(wildcard include/config/TREE_SRCU) \
-  include/linux/errno.h \
-  include/uapi/linux/errno.h \
-  include/linux/mutex.h \
-    $(wildcard include/config/PREEMPT_RT) \
-    $(wildcard include/config/MUTEX_SPIN_ON_OWNER) \
-    $(wildcard include/config/DEBUG_MUTEXES) \
-  arch/x86/include/asm/current.h \
-  arch/x86/include/asm/percpu.h \
-    $(wildcard include/config/X86_64_
+/* SPDX-License-Identifier: GPL-2.0 */
+/* Copyright 2019 NXP
+ */
+#ifndef _MSCC_FELIX_H
+#define _MSCC_FELIX_H
+
+#define ocelot_to_felix(o)		container_of((o), struct felix, ocelot)
+#define FELIX_MAC_QUIRKS		OCELOT_QUIRK_PCS_PERFORMS_RATE_ADAPTATION
+
+#define OCELOT_PORT_MODE_INTERNAL	BIT(0)
+#define OCELOT_PORT_MODE_SGMII		BIT(1)
+#define OCELOT_PORT_MODE_QSGMII		BIT(2)
+#define OCELOT_PORT_MODE_2500BASEX	BIT(3)
+#define OCELOT_PORT_MODE_USXGMII	BIT(4)
+
+/* Platform-specific information */
+struct felix_info {
+	const struct resource		*target_io_res;
+	const struct resource		*port_io_res;
+	const struct resource		*imdio_res;
+	const struct reg_field		*regfields;
+	const u32 *const		*map;
+	const struct ocelot_ops		*ops;
+	const u32			*port_modes;
+	int				num_mact_rows;
+	const struct ocelot_stat_layout	*stats_layout;
+	unsigned int			num_stats;
+	int				num_ports;
+	int				num_tx_queues;
+	struct vcap_props		*vcap;
+	u16				vcap_pol_base;
+	u16				vcap_pol_max;
+	u16				vcap_pol_base2;
+	u16				vcap_pol_max2;
+	const struct ptp_clock_info	*ptp_caps;
+
+	/* Some Ocelot switches are integrated into the SoC without the
+	 * extraction IRQ line connected to the ARM GIC. By enabling this
+	 * workaround, the few packets that are delivered to the CPU port
+	 * module (currently only PTP) are copied not only to the hardware CPU
+	 * port module, but also to the 802.1Q Ethernet CPU port, and polling
+	 * the extraction registers is triggered once the DSA tagger sees a PTP
+	 * frame. The Ethernet frame is only used as a notification: it is
+	 * dropped, and the original frame is extracted over MMIO and annotated
+	 * with the RX timestamp.
+	 */
+	bool				quirk_no_xtr_irq;
+
+	int	(*mdio_bus_alloc)(struct ocelot *ocelot);
+	void	(*mdio_bus_free)(struct ocelot *ocelot);
+	void	(*phylink_validate)(struct ocelot *ocelot, int port,
+				    unsigned long *supported,
+				    struct phylink_link_state *state);
+	int	(*port_setup_tc)(struct dsa_switch *ds, int port,
+				 enum tc_setup_type type, void *type_data);
+	void	(*port_sched_speed_set)(struct ocelot *ocelot, int port,
+					u32 speed);
+	struct regmap *(*init_regmap)(struct ocelot *ocelot,
+				      struct resource *res);
+};
+
+extern const struct dsa_switch_ops felix_switch_ops;
+
+/* DSA glue / front-end for struct ocelot */
+struct felix {
+	struct dsa_switch		*ds;
+	const struct felix_info		*info;
+	struct ocelot			ocelot;
+	struct mii_bus			*imdio;
+	struct phylink_pcs		**pcs;
+	resource_size_t			switch_base;
+	resource_size_t			imdio_base;
+	enum dsa_tag_protocol		tag_proto;
+	struct kthread_worker		*xmit_worker;
+};
+
+struct net_device *felix_port_to_netdev(struct ocelot *ocelot, int port);
+int felix_netdev_to_port(struct net_device *dev);
+
+#endif

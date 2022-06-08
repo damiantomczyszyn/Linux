@@ -1,1 +1,6 @@
-cmd_drivers/media/radio/radio-tea5764.ko := ld -r -m elf_i386 --build-id=sha1  -T scripts/module.lds -o drivers/media/radio/radio-tea5764.ko drivers/media/radio/radio-tea5764.o drivers/media/radio/radio-tea5764.mod.o;  true
+dcard include/config/RCU_FANOUT_LEAF) \
+  include/linux/page-flags-layout.h \
+    $(wildcard include/config/KASAN_HW_TAGS) \
+  include/linux/numa.h \
+    $(wildcard include/config/NODES_SHIFT) \
+    $(wildcard include/config

@@ -1,19 +1,36 @@
-    $(wildcard include/config/HAVE_ARCH_USERFAULTFD_MINOR) \
-    $(wildcard include/config/SHMEM) \
-    $(wildcard include/config/ARCH_HAS_PTE_SPECIAL) \
-    $(wildcard include/config/ARCH_HAS_PTE_DEVMAP) \
-    $(wildcard include/config/DEBUG_VM_RB) \
-    $(wildcard include/config/PAGE_POISONING) \
-    $(wildcard include/config/INIT_ON_ALLOC_DEFAULT_ON) \
-    $(wildcard include/config/INIT_ON_FREE_DEFAULT_ON) \
-    $(wildcard include/config/DEBUG_PAGEALLOC) \
-    $(wildcard include/config/HUGETLBFS) \
-    $(wildcard include/config/MAPPING_DIRTY_HELPERS) \
-    $(wildcard include/config/ANON_VMA_NAME) \
-  include/linux/mmap_lock.h \
-  include/linux/page_ext.h \
-  include/linux/stacktrace.h \
-    $(wildcard include/config/ARCH_STACKWALK) \
-    $(wildcard include/config/STACKTRACE) \
-    $(wildcard include/config/HAVE_RELIABLE_STACKTRACE) \
-  include/li
+// SPDX-License-Identifier: GPL-2.0-or-later
+/*
+ * Driver for Silicon Labs C8051F300 microcontroller.
+ *
+ * It is used for LNB power control in TeVii S470,
+ * TBS 6920 PCIe DVB-S2 cards.
+ *
+ * Microcontroller connected to cx23885 GPIO pins:
+ * GPIO0 - data		- P0.3 F300
+ * GPIO1 - reset	- P0.2 F300
+ * GPIO2 - clk		- P0.1 F300
+ * GPIO3 - busy		- P0.0 F300
+ *
+ * Copyright (C) 2009 Igor M. Liplianin <liplianin@me.by>
+ */
+
+#include "cx23885.h"
+#include "cx23885-f300.h"
+
+#define F300_DATA	GPIO_0
+#define F300_RESET	GPIO_1
+#define F300_CLK	GPIO_2
+#define F300_BUSY	GPIO_3
+
+static void f300_set_line(struct cx23885_dev *dev, u32 line, u8 lvl)
+{
+	cx23885_gpio_enable(dev, line, 1);
+	if (lvl == 1)
+		cx23885_gpio_set(dev, line);
+	else
+		cx23885_gpio_clear(dev, line);
+}
+
+static u8 f300_get_line(struct cx23885_dev *dev, u32 line)
+{
+	cx23885_gpio_enable(dev, line, 0)

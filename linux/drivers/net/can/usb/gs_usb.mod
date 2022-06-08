@@ -1,2 +1,2 @@
-.h \
-  include/linux/percpu-re
+drivers/net/can/usb/gs_usb.o
+

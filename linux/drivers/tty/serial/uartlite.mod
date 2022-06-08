@@ -1,1 +1,2 @@
-    $(wildcard include/config/H
+ET_SEQ_END:
+		return  "GET_SEQ_

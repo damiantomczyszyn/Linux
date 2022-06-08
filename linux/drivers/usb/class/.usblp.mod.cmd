@@ -1,4 +1,7 @@
-INJECTION) \
-    $(wildcard include/config/LATENCYTOP) \
-    $(wildcard include/config/KUNIT) \
-    $(wildcar
+// SPDX-License-Identifier: GPL-2.0-or-later
+/*
+ * netup-init.c
+ *
+ * NetUP Dual DVB-S2 CI driver
+ *
+ * Copyr

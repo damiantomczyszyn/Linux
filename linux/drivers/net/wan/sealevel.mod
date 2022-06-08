@@ -1,2 +1,2 @@
-/DEBUG_SG) \
-    $(wildcard 
+         = &mpeg_fops,
+	.ioc

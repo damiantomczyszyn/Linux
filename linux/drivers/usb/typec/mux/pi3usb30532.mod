@@ -1,2 +1,1 @@
-/config/GENERIC_IOMAP) \
-    $(wildca
+cmd_drivers/media/pci/cx18/cx18-alsa.

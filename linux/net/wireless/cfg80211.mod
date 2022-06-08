@@ -1,15 +1,17 @@
-/dqblk_xfs.h \
-  include/linux/dqblk_v1.h \
-  include/linux/dqblk_v2.h \
-  include/linux/dqblk_qtree.h \
-  include/linux/projid.h \
-  include/uapi/linux/quota.h \
-  include/linux/nfs_fs_i.h \
-  include/linux/seq_file.h \
-  include/linux/string_helpers.h \
-  include/linux/ctype.h \
-  include/linux/kernfs.h \
-    $(wildcard include/config/KERNFS) \
-  include/linux/idr.h \
-  include/linux/ns_common.h \
-  include/linux/nsproxy.h
+// SPDX-License-Identifier: GPL-2.0-only
+/*
+ *  kernel/sched/core.c
+ *
+ *  Core kernel scheduler code and related syscalls
+ *
+ *  Copyright (C) 1991-2002  Linus Torvalds
+ */
+#include <linux/highmem.h>
+#include <linux/hrtimer_api.h>
+#include <linux/ktime_api.h>
+#include <linux/sched/signal.h>
+#include <linux/syscalls_api.h>
+#include <linux/debug_locks.h>
+#include <linux/prefetch.h>
+#include <linux/capability.h>
+#include <linu

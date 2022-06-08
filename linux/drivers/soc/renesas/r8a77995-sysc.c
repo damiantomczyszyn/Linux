@@ -1,18 +1,26 @@
-U_FANOUT_LEAF) \
-  include/linux/page-flags-layout.h \
-    $(wildcard include/config/KASAN_HW_TAGS) \
-  include/linux/numa.h \
-    $(wildcard include/config/NODES_SHIFT) \
-    $(wildcard include/config/NUMA_KEEP_MEMINFO) \
-    $(wildcard include/config/HAVE_ARCH_NODE_DEV_GROUP) \
-  arch/x86/include/asm/sparsemem.h \
-  include/generated/bounds.h \
-  include/linux/seqlock.h \
-  include/linux/ww_mutex.h \
-    $(wildcard include/config/DEBUG_RT_MUTEXES) \
-    $(wildcard include/config/DEBUG_WW_MUTEX_SLOWPATH) \
-  include/linux/rtmutex.h \
-  arch/x86/include/asm/mmu.h \
-    $(wildcard include/config/MODIFY_LDT_SYSCALL) \
-  include/linux/kmod.h \
-  include/linux/u
+/* SPDX-License-Identifier: GPL-2.0-or-later */
+/*
+ * netup-eeprom.h
+ *
+ * 24LC02 EEPROM driver in conjunction with NetUP Dual DVB-S2 CI card
+ *
+ * Copyright (C) 2009 NetUP Inc.
+ * Copyright (C) 2009 Abylay Ospan <aospan@netup.ru>
+ */
+
+#ifndef NETUP_EEPROM_H
+#define NETUP_EEPROM_H
+
+struct netup_port_info {
+	u8 mac[6];/* card MAC address */
+};
+
+struct netup_card_info {
+	struct netup_port_info port[2];/* ports - 1,2 */
+	u8 rev;/* card revision */
+};
+
+extern int netup_eeprom_read(struct i2c_adapter *i2c_adap, u8 addr);
+extern int netup_eeprom_write(struct i2c_adapter *i2c_adap, u8 addr, u8 data);
+extern void netup_get_card_info(struct i2c_adapter *i2c_adap,
+			

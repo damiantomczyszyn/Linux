@@ -1,190 +1,178 @@
-		seq_printf(m, "[%p] ", class->key);
-		print_name(m, class);
-		seq_puts(m, "\n");
-	}
-	seq_puts(m, "\n");
+e if RCU thinks that the current CPU is not idle
+ *
+ * Return true if RCU is watching the running CPU, which means that this
+ * CPU can safely enter RCU read-side critical sections.  In other words,
+ * if the current CPU is not in its idle loop or is in an interrupt or
+ * NMI handler, return true.
+ *
+ * Make notrace because it can be called by the internal functions of
+ * ftrace, and making this notrace removes unnecessary recursion calls.
+ */
+notrace bool rcu_is_watching(void)
+{
+	bool ret;
 
+	preempt_disable_notrace();
+	ret = !rcu_dynticks_curr_cpu_in_eqs();
+	preempt_enable_notrace();
+	return ret;
+}
+EXPORT_SYMBOL_GPL(rcu_is_watching);
+
+/*
+ * If a holdout task is actually running, request an urgent quiescent
+ * state from its CPU.  This is unsynchronized, so migrations can cause
+ * the request to go to the wrong CPU.  Which is OK, all that will happen
+ * is that the CPU's next context switch will be a bit slower and next
+ * time around this task will generate another request.
+ */
+void rcu_request_urgent_qs_task(struct task_struct *t)
+{
+	int cpu;
+
+	barrier();
+	cpu = task_cpu(t);
+	if (!task_curr(t))
+		return; /* This task is not running on that CPU. */
+	smp_store_release(per_cpu_ptr(&rcu_data.rcu_urgent_qs, cpu), true);
+}
+
+#if defined(CONFIG_PROVE_RCU) && defined(CONFIG_HOTPLUG_CPU)
+
+/*
+ * Is the current CPU online as far as RCU is concerned?
+ *
+ * Disable preemption to avoid false positives that could otherwise
+ * happen due to the current CPU number being sampled, this task being
+ * preempted, its old CPU being taken offline, resuming on some other CPU,
+ * then determining that its old CPU is now offline.
+ *
+ * Disable checking if in an NMI handler because we cannot safely
+ * report errors from NMI handlers anyway.  In addition, it is OK to use
+ * RCU on an offline processor during initial boot, hence the check for
+ * rcu_scheduler_fully_active.
+ */
+bool rcu_lockdep_current_cpu_online(void)
+{
+	struct rcu_data *rdp;
+	bool ret = false;
+
+	if (in_nmi() || !rcu_scheduler_fully_active)
+		return true;
+	preempt_disable_notrace();
+	rdp = this_cpu_ptr(&rcu_data);
+	/*
+	 * Strictly, we care here about the case where the current CPU is
+	 * in rcu_cpu_starting() and thus has an excuse for rdp->grpmask
+	 * not being up to date. So arch_spin_is_locked() might have a
+	 * false positive if it's held by some *other* CPU, but that's
+	 * OK because that just means a false *negative* on the warning.
+	 */
+	if (rcu_rdp_cpu_online(rdp) || arch_spin_is_locked(&rcu_state.ofl_lock))
+		ret = true;
+	preempt_enable_notrace();
+	return ret;
+}
+EXPORT_SYMBOL_GPL(rcu_lockdep_current_cpu_online);
+
+#endif /* #if defined(CONFIG_PROVE_RCU) && defined(CONFIG_HOTPLUG_CPU) */
+
+/*
+ * When trying to report a quiescent state on behalf of some other CPU,
+ * it is our responsibility to check for and handle potential overflow
+ * of the rcu_node ->gp_seq counter with respect to the rcu_data counters.
+ * After all, the CPU might be in deep idle state, and thus executing no
+ * code whatsoever.
+ */
+static void rcu_gpnum_ovf(struct rcu_node *rnp, struct rcu_data *rdp)
+{
+	raw_lockdep_assert_held_rcu_node(rnp);
+	if (ULONG_CMP_LT(rcu_seq_current(&rdp->gp_seq) + ULONG_MAX / 4,
+			 rnp->gp_seq))
+		WRITE_ONCE(rdp->gpwrap, true);
+	if (ULONG_CMP_LT(rdp->rcu_iw_gp_seq + ULONG_MAX / 4, rnp->gp_seq))
+		rdp->rcu_iw_gp_seq = rnp->gp_seq + ULONG_MAX / 4;
+}
+
+/*
+ * Snapshot the specified CPU's dynticks counter so that we can later
+ * credit them with an implicit quiescent state.  Return 1 if this CPU
+ * is in dynticks idle mode, which is an extended quiescent state.
+ */
+static int dyntick_save_progress_counter(struct rcu_data *rdp)
+{
+	rdp->dynticks_snap = rcu_dynticks_snap(rdp);
+	if (rcu_dynticks_in_eqs(rdp->dynticks_snap)) {
+		trace_rcu_fqs(rcu_state.name, rdp->gp_seq, rdp->cpu, TPS("dti"));
+		rcu_gpnum_ovf(rdp->mynode, rdp);
+		return 1;
+	}
 	return 0;
 }
 
-static const struct seq_operations lockdep_chains_ops = {
-	.start	= lc_start,
-	.next	= lc_next,
-	.stop	= lc_stop,
-	.show	= lc_show,
-};
-#endif /* CONFIG_PROVE_LOCKING */
-
-static void lockdep_stats_debug_show(struct seq_file *m)
+/*
+ * Return true if the specified CPU has passed through a quiescent
+ * state by virtue of being in or having passed through an dynticks
+ * idle state since the last call to dyntick_save_progress_counter()
+ * for this same CPU, or by virtue of having been offline.
+ */
+static int rcu_implicit_dynticks_qs(struct rcu_data *rdp)
 {
-#ifdef CONFIG_DEBUG_LOCKDEP
-	unsigned long long hi1 = debug_atomic_read(hardirqs_on_events),
-			   hi2 = debug_atomic_read(hardirqs_off_events),
-			   hr1 = debug_atomic_read(redundant_hardirqs_on),
-			   hr2 = debug_atomic_read(redundant_hardirqs_off),
-			   si1 = debug_atomic_read(softirqs_on_events),
-			   si2 = debug_atomic_read(softirqs_off_events),
-			   sr1 = debug_atomic_read(redundant_softirqs_on),
-			   sr2 = debug_atomic_read(redundant_softirqs_off);
-
-	seq_printf(m, " chain lookup misses:           %11llu\n",
-		debug_atomic_read(chain_lookup_misses));
-	seq_printf(m, " chain lookup hits:             %11llu\n",
-		debug_atomic_read(chain_lookup_hits));
-	seq_printf(m, " cyclic checks:                 %11llu\n",
-		debug_atomic_read(nr_cyclic_checks));
-	seq_printf(m, " redundant checks:              %11llu\n",
-		debug_atomic_read(nr_redundant_checks));
-	seq_printf(m, " redundant links:               %11llu\n",
-		debug_atomic_read(nr_redundant));
-	seq_printf(m, " find-mask forwards checks:     %11llu\n",
-		debug_atomic_read(nr_find_usage_forwards_checks));
-	seq_printf(m, " find-mask backwards checks:    %11llu\n",
-		debug_atomic_read(nr_find_usage_backwards_checks));
-
-	seq_printf(m, " hardirq on events:             %11llu\n", hi1);
-	seq_printf(m, " hardirq off events:            %11llu\n", hi2);
-	seq_printf(m, " redundant hardirq ons:         %11llu\n", hr1);
-	seq_printf(m, " redundant hardirq offs:        %11llu\n", hr2);
-	seq_printf(m, " softirq on events:             %11llu\n", si1);
-	seq_printf(m, " softirq off events:            %11llu\n", si2);
-	seq_printf(m, " redundant softirq ons:         %11llu\n", sr1);
-	seq_printf(m, " redundant softirq offs:        %11llu\n", sr2);
-#endif
-}
-
-static int lockdep_stats_show(struct seq_file *m, void *v)
-{
-	unsigned long nr_unused = 0, nr_uncategorized = 0,
-		      nr_irq_safe = 0, nr_irq_unsafe = 0,
-		      nr_softirq_safe = 0, nr_softirq_unsafe = 0,
-		      nr_hardirq_safe = 0, nr_hardirq_unsafe = 0,
-		      nr_irq_read_safe = 0, nr_irq_read_unsafe = 0,
-		      nr_softirq_read_safe = 0, nr_softirq_read_unsafe = 0,
-		      nr_hardirq_read_safe = 0, nr_hardirq_read_unsafe = 0,
-		      sum_forward_deps = 0;
-
-#ifdef CONFIG_PROVE_LOCKING
-	struct lock_class *class;
-	unsigned long idx;
-
-	iterate_lock_classes(idx, class) {
-		if (!test_bit(idx, lock_classes_in_use))
-			continue;
-
-		if (class->usage_mask == 0)
-			nr_unused++;
-		if (class->usage_mask == LOCKF_USED)
-			nr_uncategorized++;
-		if (class->usage_mask & LOCKF_USED_IN_IRQ)
-			nr_irq_safe++;
-		if (class->usage_mask & LOCKF_ENABLED_IRQ)
-			nr_irq_unsafe++;
-		if (class->usage_mask & LOCKF_USED_IN_SOFTIRQ)
-			nr_softirq_safe++;
-		if (class->usage_mask & LOCKF_ENABLED_SOFTIRQ)
-			nr_softirq_unsafe++;
-		if (class->usage_mask & LOCKF_USED_IN_HARDIRQ)
-			nr_hardirq_safe++;
-		if (class->usage_mask & LOCKF_ENABLED_HARDIRQ)
-			nr_hardirq_unsafe++;
-		if (class->usage_mask & LOCKF_USED_IN_IRQ_READ)
-			nr_irq_read_safe++;
-		if (class->usage_mask & LOCKF_ENABLED_IRQ_READ)
-			nr_irq_read_unsafe++;
-		if (class->usage_mask & LOCKF_USED_IN_SOFTIRQ_READ)
-			nr_softirq_read_safe++;
-		if (class->usage_mask & LOCKF_ENABLED_SOFTIRQ_READ)
-			nr_softirq_read_unsafe++;
-		if (class->usage_mask & LOCKF_USED_IN_HARDIRQ_READ)
-			nr_hardirq_read_safe++;
-		if (class->usage_mask & LOCKF_ENABLED_HARDIRQ_READ)
-			nr_hardirq_read_unsafe++;
-
-		sum_forward_deps += lockdep_count_forward_deps(class);
-	}
-
-#ifdef CONFIG_DEBUG_LOCKDEP
-	DEBUG_LOCKS_WARN_ON(debug_atomic_read(nr_unused_locks) != nr_unused);
-#endif
-
-#endif
-	seq_printf(m, " lock-classes:                  %11lu [max: %lu]\n",
-			nr_lock_classes, MAX_LOCKDEP_KEYS);
-	seq_printf(m, " direct dependencies:           %11lu [max: %lu]\n",
-			nr_list_entries, MAX_LOCKDEP_ENTRIES);
-	seq_printf(m, " indirect dependencies:         %11lu\n",
-			sum_forward_deps);
+	unsigned long jtsq;
+	struct rcu_node *rnp = rdp->mynode;
 
 	/*
-	 * Total number of dependencies:
-	 *
-	 * All irq-safe locks may nest inside irq-unsafe locks,
-	 * plus all the other known dependencies:
+	 * If the CPU passed through or entered a dynticks idle phase with
+	 * no active irq/NMI handlers, then we can safely pretend that the CPU
+	 * already acknowledged the request to pass through a quiescent
+	 * state.  Either way, that CPU cannot possibly be in an RCU
+	 * read-side critical section that started before the beginning
+	 * of the current RCU grace period.
 	 */
-	seq_printf(m, " all direct dependencies:       %11lu\n",
-			nr_irq_unsafe * nr_irq_safe +
-			nr_hardirq_unsafe * nr_hardirq_safe +
-			nr_list_entries);
+	if (rcu_dynticks_in_eqs_since(rdp, rdp->dynticks_snap)) {
+		trace_rcu_fqs(rcu_state.name, rdp->gp_seq, rdp->cpu, TPS("dti"));
+		rcu_gpnum_ovf(rnp, rdp);
+		return 1;
+	}
 
-#ifdef CONFIG_PROVE_LOCKING
-	seq_printf(m, " dependency chains:             %11lu [max: %lu]\n",
-			lock_chain_count(), MAX_LOCKDEP_CHAINS);
-	seq_printf(m, " dependency chain hlocks used:  %11lu [max: %lu]\n",
-			MAX_LOCKDEP_CHAIN_HLOCKS -
-			(nr_free_chain_hlocks + nr_lost_chain_hlocks),
-			MAX_LOCKDEP_CHAIN_HLOCKS);
-	seq_printf(m, " dependency chain hlocks lost:  %11u\n",
-			nr_lost_chain_hlocks);
-#endif
+	/*
+	 * Complain if a CPU that is considered to be offline from RCU's
+	 * perspective has not yet reported a quiescent state.  After all,
+	 * the offline CPU should have reported a quiescent state during
+	 * the CPU-offline process, or, failing that, by rcu_gp_init()
+	 * if it ran concurrently with either the CPU going offline or the
+	 * last task on a leaf rcu_node structure exiting its RCU read-side
+	 * critical section while all CPUs corresponding to that structure
+	 * are offline.  This added warning detects bugs in any of these
+	 * code paths.
+	 *
+	 * The rcu_node structure's ->lock is held here, which excludes
+	 * the relevant portions the CPU-hotplug code, the grace-period
+	 * initialization code, and the rcu_read_unlock() code paths.
+	 *
+	 * For more detail, please refer to the "Hotplug CPU" section
+	 * of RCU's Requirements documentation.
+	 */
+	if (WARN_ON_ONCE(!rcu_rdp_cpu_online(rdp))) {
+		struct rcu_node *rnp1;
 
-#ifdef CONFIG_TRACE_IRQFLAGS
-	seq_printf(m, " in-hardirq chains:             %11u\n",
-			nr_hardirq_chains);
-	seq_printf(m, " in-softirq chains:             %11u\n",
-			nr_softirq_chains);
-#endif
-	seq_printf(m, " in-process chains:             %11u\n",
-			nr_process_chains);
-	seq_printf(m, " stack-trace entries:           %11lu [max: %lu]\n",
-			nr_stack_trace_entries, MAX_STACK_TRACE_ENTRIES);
-#if defined(CONFIG_TRACE_IRQFLAGS) && defined(CONFIG_PROVE_LOCKING)
-	seq_printf(m, " number of stack traces:        %11llu\n",
-		   lockdep_stack_trace_count());
-	seq_printf(m, " number of stack hash chains:   %11llu\n",
-		   lockdep_stack_hash_count());
-#endif
-	seq_printf(m, " combined max dependencies:     %11u\n",
-			(nr_hardirq_chains + 1) *
-			(nr_softirq_chains + 1) *
-			(nr_process_chains + 1)
-	);
-	seq_printf(m, " hardirq-safe locks:            %11lu\n",
-			nr_hardirq_safe);
-	seq_printf(m, " hardirq-unsafe locks:          %11lu\n",
-			nr_hardirq_unsafe);
-	seq_printf(m, " softirq-safe locks:            %11lu\n",
-			nr_softirq_safe);
-	seq_printf(m, " softirq-unsafe locks:          %11lu\n",
-			nr_softirq_unsafe);
-	seq_printf(m, " irq-safe locks:                %11lu\n",
-			nr_irq_safe);
-	seq_printf(m, " irq-unsafe locks:              %11lu\n",
-			nr_irq_unsafe);
+		pr_info("%s: grp: %d-%d level: %d ->gp_seq %ld ->completedqs %ld\n",
+			__func__, rnp->grplo, rnp->grphi, rnp->level,
+			(long)rnp->gp_seq, (long)rnp->completedqs);
+		for (rnp1 = rnp; rnp1; rnp1 = rnp1->parent)
+			pr_info("%s: %d:%d ->qsmask %#lx ->qsmaskinit %#lx ->qsmaskinitnext %#lx ->rcu_gp_init_mask %#lx\n",
+				__func__, rnp1->grplo, rnp1->grphi, rnp1->qsmask, rnp1->qsmaskinit, rnp1->qsmaskinitnext, rnp1->rcu_gp_init_mask);
+		pr_info("%s %d: %c online: %ld(%d) offline: %ld(%d)\n",
+			__func__, rdp->cpu, ".o"[rcu_rdp_cpu_online(rdp)],
+			(long)rdp->rcu_onl_gp_seq, rdp->rcu_onl_gp_flags,
+			(long)rdp->rcu_ofl_gp_seq, rdp->rcu_ofl_gp_flags);
+		return 1; /* Break things loose after complaining. */
+	}
 
-	seq_printf(m, " hardirq-read-safe locks:       %11lu\n",
-			nr_hardirq_read_safe);
-	seq_printf(m, " hardirq-read-unsafe locks:     %11lu\n",
-			nr_hardirq_read_unsafe);
-	seq_printf(m, " softirq-read-safe locks:       %11lu\n",
-			nr_softirq_read_safe);
-	seq_printf(m, " softirq-read-unsafe locks:     %11lu\n",
-			nr_softirq_read_unsafe);
-	seq_printf(m, " irq-read-safe locks:           %11lu\n",
-			nr_irq_read_safe);
-	seq_printf(m, " irq-read-unsafe locks:         %11lu\n",
-			nr_irq_read_unsafe);
-
-	seq_printf(m, " uncategorized locks:           %11lu\n",
-			nr_uncategorized);
-	seq
+	/*
+	 * A CPU running for an extended time within the kernel can
+	 * delay RCU grace periods: (1) At age jiffies_to_sched_qs,
+	 * set .rcu_urgent_qs, (2) At age 2*jiffies_to_sched_qs, set
+	 * both .rcu_need_heavy_qs and .rcu_urgent_qs.  Note that the
+	 * unsynchronized assignments to the per-CPU rcu_need_heavy_qs
+	 

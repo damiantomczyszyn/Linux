@@ -1,437 +1,329 @@
-move lock classes from memory that is going to be
- * freed; and possibly re-used by other modules.
- *
- * We will have had one synchronize_rcu() before getting here, so we're
- * guaranteed nobody will look up these exact classes -- they're properly dead
- * but still allocated.
- */
-static void lockdep_free_key_range_reg(void *start, unsigned long size)
-{
-	struct pending_free *pf;
-	unsigned long flags;
+r_completion(&pending->done);
 
-	init_data_structures_once();
-
-	raw_local_irq_save(flags);
-	lockdep_lock();
-	pf = get_pending_free();
-	__lockdep_free_key_range(pf, start, size);
-	call_rcu_zapped(pf);
-	lockdep_unlock();
-	raw_local_irq_restore(flags);
+	if (refcount_dec_and_test(&pending->refs))
+		wake_up_var(&pending->refs); /* No UaF, just an address */
 
 	/*
-	 * Wait for any possible iterators from look_up_lock_class() to pass
-	 * before continuing to free the memory they refer to.
+	 * Block the original owner of &pending until all subsequent callers
+	 * have seen the completion and decremented the refcount
 	 */
-	synchronize_rcu();
+	wait_var_event(&my_pending.refs, !refcount_read(&my_pending.refs));
+
+	/* ARGH */
+	WARN_ON_ONCE(my_pending.stop_pending);
+
+	return 0;
 }
 
 /*
- * Free all lockdep keys in the range [start, start+size). Does not sleep.
- * Ignores debug_locks. Must only be used by the lockdep selftests.
+ * Called with both p->pi_lock and rq->lock held; drops both before returning.
  */
-static void lockdep_free_key_range_imm(void *start, unsigned long size)
+static int __set_cpus_allowed_ptr_locked(struct task_struct *p,
+					 const struct cpumask *new_mask,
+					 u32 flags,
+					 struct rq *rq,
+					 struct rq_flags *rf)
+	__releases(rq->lock)
+	__releases(p->pi_lock)
 {
-	struct pending_free *pf = delayed_free.pf;
-	unsigned long flags;
+	const struct cpumask *cpu_allowed_mask = task_cpu_possible_mask(p);
+	const struct cpumask *cpu_valid_mask = cpu_active_mask;
+	bool kthread = p->flags & PF_KTHREAD;
+	struct cpumask *user_mask = NULL;
+	unsigned int dest_cpu;
+	int ret = 0;
 
-	init_data_structures_once();
+	update_rq_clock(rq);
 
-	raw_local_irq_save(flags);
-	lockdep_lock();
-	__lockdep_free_key_range(pf, start, size);
-	__free_zapped_classes(pf);
-	lockdep_unlock();
-	raw_local_irq_restore(flags);
-}
-
-void lockdep_free_key_range(void *start, unsigned long size)
-{
-	init_data_structures_once();
-
-	if (inside_selftest())
-		lockdep_free_key_range_imm(start, size);
-	else
-		lockdep_free_key_range_reg(start, size);
-}
-
-/*
- * Check whether any element of the @lock->class_cache[] array refers to a
- * registered lock class. The caller must hold either the graph lock or the
- * RCU read lock.
- */
-static bool lock_class_cache_is_registered(struct lockdep_map *lock)
-{
-	struct lock_class *class;
-	struct hlist_head *head;
-	int i, j;
-
-	for (i = 0; i < CLASSHASH_SIZE; i++) {
-		head = classhash_table + i;
-		hlist_for_each_entry_rcu(class, head, hash_entry) {
-			for (j = 0; j < NR_LOCKDEP_CACHING_CLASSES; j++)
-				if (lock->class_cache[j] == class)
-					return true;
-		}
-	}
-	return false;
-}
-
-/* The caller must hold the graph lock. Does not sleep. */
-static void __lockdep_reset_lock(struct pending_free *pf,
-				 struct lockdep_map *lock)
-{
-	struct lock_class *class;
-	int j;
-
-	/*
-	 * Remove all classes this lock might have:
-	 */
-	for (j = 0; j < MAX_LOCKDEP_SUBCLASSES; j++) {
+	if (kthread || is_migration_disabled(p)) {
 		/*
-		 * If the class exists we look it up and zap it:
+		 * Kernel threads are allowed on online && !active CPUs,
+		 * however, during cpu-hot-unplug, even these might get pushed
+		 * away if not KTHREAD_IS_PER_CPU.
+		 *
+		 * Specifically, migration_disabled() tasks must not fail the
+		 * cpumask_any_and_distribute() pick below, esp. so on
+		 * SCA_MIGRATE_ENABLE, otherwise we'll not call
+		 * set_cpus_allowed_common() and actually reset p->cpus_ptr.
 		 */
-		class = look_up_lock_class(lock, j);
-		if (class)
-			zap_class(pf, class);
+		cpu_valid_mask = cpu_online_mask;
 	}
+
+	if (!kthread && !cpumask_subset(new_mask, cpu_allowed_mask)) {
+		ret = -EINVAL;
+		goto out;
+	}
+
 	/*
-	 * Debug check: in the end all mapped classes should
-	 * be gone.
+	 * Must re-check here, to close a race against __kthread_bind(),
+	 * sched_setaffinity() is not guaranteed to observe the flag.
 	 */
-	if (WARN_ON_ONCE(lock_class_cache_is_registered(lock)))
-		debug_locks_off();
-}
+	if ((flags & SCA_CHECK) && (p->flags & PF_NO_SETAFFINITY)) {
+		ret = -EINVAL;
+		goto out;
+	}
 
-/*
- * Remove all information lockdep has about a lock if debug_locks == 1. Free
- * released data structures from RCU context.
- */
-static void lockdep_reset_lock_reg(struct lockdep_map *lock)
-{
-	struct pending_free *pf;
-	unsigned long flags;
-	int locked;
+	if (!(flags & SCA_MIGRATE_ENABLE)) {
+		if (cpumask_equal(&p->cpus_mask, new_mask))
+			goto out;
 
-	raw_local_irq_save(flags);
-	locked = graph_lock();
-	if (!locked)
-		goto out_irq;
-
-	pf = get_pending_free();
-	__lockdep_reset_lock(pf, lock);
-	call_rcu_zapped(pf);
-
-	graph_unlock();
-out_irq:
-	raw_local_irq_restore(flags);
-}
-
-/*
- * Reset a lock. Does not sleep. Ignores debug_locks. Must only be used by the
- * lockdep selftests.
- */
-static void lockdep_reset_lock_imm(struct lockdep_map *lock)
-{
-	struct pending_free *pf = delayed_free.pf;
-	unsigned long flags;
-
-	raw_local_irq_save(flags);
-	lockdep_lock();
-	__lockdep_reset_lock(pf, lock);
-	__free_zapped_classes(pf);
-	lockdep_unlock();
-	raw_local_irq_restore(flags);
-}
-
-void lockdep_reset_lock(struct lockdep_map *lock)
-{
-	init_data_structures_once();
-
-	if (inside_selftest())
-		lockdep_reset_lock_imm(lock);
-	else
-		lockdep_reset_lock_reg(lock);
-}
-
-/*
- * Unregister a dynamically allocated key.
- *
- * Unlike lockdep_register_key(), a search is always done to find a matching
- * key irrespective of debug_locks to avoid potential invalid access to freed
- * memory in lock_class entry.
- */
-void lockdep_unregister_key(struct lock_class_key *key)
-{
-	struct hlist_head *hash_head = keyhashentry(key);
-	struct lock_class_key *k;
-	struct pending_free *pf;
-	unsigned long flags;
-	bool found = false;
-
-	might_sleep();
-
-	if (WARN_ON_ONCE(static_obj(key)))
-		return;
-
-	raw_local_irq_save(flags);
-	lockdep_lock();
-
-	hlist_for_each_entry_rcu(k, hash_head, hash_entry) {
-		if (k == key) {
-			hlist_del_rcu(&k->hash_entry);
-			found = true;
-			break;
+		if (WARN_ON_ONCE(p == current &&
+				 is_migration_disabled(p) &&
+				 !cpumask_test_cpu(task_cpu(p), new_mask))) {
+			ret = -EBUSY;
+			goto out;
 		}
 	}
-	WARN_ON_ONCE(!found && debug_locks);
-	if (found) {
-		pf = get_pending_free();
-		__lockdep_free_key_range(pf, key, 1);
-		call_rcu_zapped(pf);
+
+	/*
+	 * Picking a ~random cpu helps in cases where we are changing affinity
+	 * for groups of tasks (ie. cpuset), so that load balancing is not
+	 * immediately required to distribute the tasks within their new mask.
+	 */
+	dest_cpu = cpumask_any_and_distribute(cpu_valid_mask, new_mask);
+	if (dest_cpu >= nr_cpu_ids) {
+		ret = -EINVAL;
+		goto out;
 	}
-	lockdep_unlock();
-	raw_local_irq_restore(flags);
 
-	/* Wait until is_dynamic_key() has finished accessing k->hash_entry. */
-	synchronize_rcu();
-}
-EXPORT_SYMBOL_GPL(lockdep_unregister_key);
+	__do_set_cpus_allowed(p, new_mask, flags);
 
-void __init lockdep_init(void)
-{
-	printk("Lock dependency validator: Copyright (c) 2006 Red Hat, Inc., Ingo Molnar\n");
+	if (flags & SCA_USER)
+		user_mask = clear_user_cpus_ptr(p);
 
-	printk("... MAX_LOCKDEP_SUBCLASSES:  %lu\n", MAX_LOCKDEP_SUBCLASSES);
-	printk("... MAX_LOCK_DEPTH:          %lu\n", MAX_LOCK_DEPTH);
-	printk("... MAX_LOCKDEP_KEYS:        %lu\n", MAX_LOCKDEP_KEYS);
-	printk("... CLASSHASH_SIZE:          %lu\n", CLASSHASH_SIZE);
-	printk("... MAX_LOCKDEP_ENTRIES:     %lu\n", MAX_LOCKDEP_ENTRIES);
-	printk("... MAX_LOCKDEP_CHAINS:      %lu\n", MAX_LOCKDEP_CHAINS);
-	printk("... CHAINHASH_SIZE:          %lu\n", CHAINHASH_SIZE);
+	ret = affine_move_task(rq, p, rf, dest_cpu, flags);
 
-	printk(" memory used by lock dependency info: %zu kB\n",
-	       (sizeof(lock_classes) +
-		sizeof(lock_classes_in_use) +
-		sizeof(classhash_table) +
-		sizeof(list_entries) +
-		sizeof(list_entries_in_use) +
-		sizeof(chainhash_table) +
-		sizeof(delayed_free)
-#ifdef CONFIG_PROVE_LOCKING
-		+ sizeof(lock_cq)
-		+ sizeof(lock_chains)
-		+ sizeof(lock_chains_in_use)
-		+ sizeof(chain_hlocks)
-#endif
-		) / 1024
-		);
+	kfree(user_mask);
 
-#if defined(CONFIG_TRACE_IRQFLAGS) && defined(CONFIG_PROVE_LOCKING)
-	printk(" memory used for stack traces: %zu kB\n",
-	       (sizeof(stack_trace) + sizeof(stack_trace_hash)) / 1024
-	       );
-#endif
+	return ret;
 
-	printk(" per task-struct memory footprint: %zu bytes\n",
-	       sizeof(((struct task_struct *)NULL)->held_locks));
-}
+out:
+	task_rq_unlock(rq, p, rf);
 
-static void
-print_freed_lock_bug(struct task_struct *curr, const void *mem_from,
-		     const void *mem_to, struct held_lock *hlock)
-{
-	if (!debug_locks_off())
-		return;
-	if (debug_locks_silent)
-		return;
-
-	pr_warn("\n");
-	pr_warn("=========================\n");
-	pr_warn("WARNING: held lock freed!\n");
-	print_kernel_ident();
-	pr_warn("-------------------------\n");
-	pr_warn("%s/%d is freeing memory %px-%px, with a lock still held there!\n",
-		curr->comm, task_pid_nr(curr), mem_from, mem_to-1);
-	print_lock(hlock);
-	lockdep_print_held_locks(curr);
-
-	pr_warn("\nstack backtrace:\n");
-	dump_stack();
-}
-
-static inline int not_in_range(const void* mem_from, unsigned long mem_len,
-				const void* lock_from, unsigned long lock_len)
-{
-	return lock_from + lock_len <= mem_from ||
-		mem_from + mem_len <= lock_from;
+	return ret;
 }
 
 /*
- * Called when kernel memory is freed (or unmapped), or if a lock
- * is destroyed or reinitialized - this code checks whether there is
- * any held lock in the memory range of <from> to <to>:
+ * Change a given task's CPU affinity. Migrate the thread to a
+ * proper CPU and schedule it away if the CPU it's executing on
+ * is removed from the allowed bitmask.
+ *
+ * NOTE: the caller must have a valid reference to the task, the
+ * task must not exit() & deallocate itself prematurely. The
+ * call is not atomic; no spinlocks may be held.
  */
-void debug_check_no_locks_freed(const void *mem_from, unsigned long mem_len)
+static int __set_cpus_allowed_ptr(struct task_struct *p,
+				  const struct cpumask *new_mask, u32 flags)
 {
-	struct task_struct *curr = current;
-	struct held_lock *hlock;
+	struct rq_flags rf;
+	struct rq *rq;
+
+	rq = task_rq_lock(p, &rf);
+	return __set_cpus_allowed_ptr_locked(p, new_mask, flags, rq, &rf);
+}
+
+int set_cpus_allowed_ptr(struct task_struct *p, const struct cpumask *new_mask)
+{
+	return __set_cpus_allowed_ptr(p, new_mask, 0);
+}
+EXPORT_SYMBOL_GPL(set_cpus_allowed_ptr);
+
+/*
+ * Change a given task's CPU affinity to the intersection of its current
+ * affinity mask and @subset_mask, writing the resulting mask to @new_mask
+ * and pointing @p->user_cpus_ptr to a copy of the old mask.
+ * If the resulting mask is empty, leave the affinity unchanged and return
+ * -EINVAL.
+ */
+static int restrict_cpus_allowed_ptr(struct task_struct *p,
+				     struct cpumask *new_mask,
+				     const struct cpumask *subset_mask)
+{
+	struct cpumask *user_mask = NULL;
+	struct rq_flags rf;
+	struct rq *rq;
+	int err;
+
+	if (!p->user_cpus_ptr) {
+		user_mask = kmalloc(cpumask_size(), GFP_KERNEL);
+		if (!user_mask)
+			return -ENOMEM;
+	}
+
+	rq = task_rq_lock(p, &rf);
+
+	/*
+	 * Forcefully restricting the affinity of a deadline task is
+	 * likely to cause problems, so fail and noisily override the
+	 * mask entirely.
+	 */
+	if (task_has_dl_policy(p) && dl_bandwidth_enabled()) {
+		err = -EPERM;
+		goto err_unlock;
+	}
+
+	if (!cpumask_and(new_mask, &p->cpus_mask, subset_mask)) {
+		err = -EINVAL;
+		goto err_unlock;
+	}
+
+	/*
+	 * We're about to butcher the task affinity, so keep track of what
+	 * the user asked for in case we're able to restore it later on.
+	 */
+	if (user_mask) {
+		cpumask_copy(user_mask, p->cpus_ptr);
+		p->user_cpus_ptr = user_mask;
+	}
+
+	return __set_cpus_allowed_ptr_locked(p, new_mask, 0, rq, &rf);
+
+err_unlock:
+	task_rq_unlock(rq, p, &rf);
+	kfree(user_mask);
+	return err;
+}
+
+/*
+ * Restrict the CPU affinity of task @p so that it is a subset of
+ * task_cpu_possible_mask() and point @p->user_cpu_ptr to a copy of the
+ * old affinity mask. If the resulting mask is empty, we warn and walk
+ * up the cpuset hierarchy until we find a suitable mask.
+ */
+void force_compatible_cpus_allowed_ptr(struct task_struct *p)
+{
+	cpumask_var_t new_mask;
+	const struct cpumask *override_mask = task_cpu_possible_mask(p);
+
+	alloc_cpumask_var(&new_mask, GFP_KERNEL);
+
+	/*
+	 * __migrate_task() can fail silently in the face of concurrent
+	 * offlining of the chosen destination CPU, so take the hotplug
+	 * lock to ensure that the migration succeeds.
+	 */
+	cpus_read_lock();
+	if (!cpumask_available(new_mask))
+		goto out_set_mask;
+
+	if (!restrict_cpus_allowed_ptr(p, new_mask, override_mask))
+		goto out_free_mask;
+
+	/*
+	 * We failed to find a valid subset of the affinity mask for the
+	 * task, so override it based on its cpuset hierarchy.
+	 */
+	cpuset_cpus_allowed(p, new_mask);
+	override_mask = new_mask;
+
+out_set_mask:
+	if (printk_ratelimit()) {
+		printk_deferred("Overriding affinity for process %d (%s) to CPUs %*pbl\n",
+				task_pid_nr(p), p->comm,
+				cpumask_pr_args(override_mask));
+	}
+
+	WARN_ON(set_cpus_allowed_ptr(p, override_mask));
+out_free_mask:
+	cpus_read_unlock();
+	free_cpumask_var(new_mask);
+}
+
+static int
+__sched_setaffinity(struct task_struct *p, const struct cpumask *mask);
+
+/*
+ * Restore the affinity of a task @p which was previously restricted by a
+ * call to force_compatible_cpus_allowed_ptr(). This will clear (and free)
+ * @p->user_cpus_ptr.
+ *
+ * It is the caller's responsibility to serialise this with any calls to
+ * force_compatible_cpus_allowed_ptr(@p).
+ */
+void relax_compatible_cpus_allowed_ptr(struct task_struct *p)
+{
+	struct cpumask *user_mask = p->user_cpus_ptr;
 	unsigned long flags;
-	int i;
-
-	if (unlikely(!debug_locks))
-		return;
-
-	raw_local_irq_save(flags);
-	for (i = 0; i < curr->lockdep_depth; i++) {
-		hlock = curr->held_locks + i;
-
-		if (not_in_range(mem_from, mem_len, hlock->instance,
-					sizeof(*hlock->instance)))
-			continue;
-
-		print_freed_lock_bug(curr, mem_from, mem_from + mem_len, hlock);
-		break;
-	}
-	raw_local_irq_restore(flags);
-}
-EXPORT_SYMBOL_GPL(debug_check_no_locks_freed);
-
-static void print_held_locks_bug(void)
-{
-	if (!debug_locks_off())
-		return;
-	if (debug_locks_silent)
-		return;
-
-	pr_warn("\n");
-	pr_warn("====================================\n");
-	pr_warn("WARNING: %s/%d still has locks held!\n",
-	       current->comm, task_pid_nr(current));
-	print_kernel_ident();
-	pr_warn("------------------------------------\n");
-	lockdep_print_held_locks(current);
-	pr_warn("\nstack backtrace:\n");
-	dump_stack();
-}
-
-void debug_check_no_locks_held(void)
-{
-	if (unlikely(current->lockdep_depth > 0))
-		print_held_locks_bug();
-}
-EXPORT_SYMBOL_GPL(debug_check_no_locks_held);
-
-#ifdef __KERNEL__
-void debug_show_all_locks(void)
-{
-	struct task_struct *g, *p;
-
-	if (unlikely(!debug_locks)) {
-		pr_warn("INFO: lockdep is turned off.\n");
-		return;
-	}
-	pr_warn("\nShowing all locks held in the system:\n");
-
-	rcu_read_lock();
-	for_each_process_thread(g, p) {
-		if (!p->lockdep_depth)
-			continue;
-		lockdep_print_held_locks(p);
-		touch_nmi_watchdog();
-		touch_all_softlockup_watchdogs();
-	}
-	rcu_read_unlock();
-
-	pr_warn("\n");
-	pr_warn("=============================================\n\n");
-}
-EXPORT_SYMBOL_GPL(debug_show_all_locks);
-#endif
-
-/*
- * Careful: only use this function if you are sure that
- * the task cannot run in parallel!
- */
-void debug_show_held_locks(struct task_struct *task)
-{
-	if (unlikely(!debug_locks)) {
-		printk("INFO: lockdep is turned off.\n");
-		return;
-	}
-	lockdep_print_held_locks(task);
-}
-EXPORT_SYMBOL_GPL(debug_show_held_locks);
-
-asmlinkage __visible void lockdep_sys_exit(void)
-{
-	struct task_struct *curr = current;
-
-	if (unlikely(curr->lockdep_depth)) {
-		if (!debug_locks_off())
-			return;
-		pr_warn("\n");
-		pr_warn("================================================\n");
-		pr_warn("WARNING: lock held when returning to user space!\n");
-		print_kernel_ident();
-		pr_warn("------------------------------------------------\n");
-		pr_warn("%s/%d is leaving the kernel with locks still held!\n",
-				curr->comm, curr->pid);
-		lockdep_print_held_locks(curr);
-	}
 
 	/*
-	 * The lock history for each syscall should be independent. So wipe the
-	 * slate clean on return to userspace.
+	 * Try to restore the old affinity mask. If this fails, then
+	 * we free the mask explicitly to avoid it being inherited across
+	 * a subsequent fork().
 	 */
-	lockdep_invariant_state(false);
+	if (!user_mask || !__sched_setaffinity(p, user_mask))
+		return;
+
+	raw_spin_lock_irqsave(&p->pi_lock, flags);
+	user_mask = clear_user_cpus_ptr(p);
+	raw_spin_unlock_irqrestore(&p->pi_lock, flags);
+
+	kfree(user_mask);
 }
 
-void lockdep_rcu_suspicious(const char *file, const int line, const char *s)
+void set_task_cpu(struct task_struct *p, unsigned int new_cpu)
 {
-	struct task_struct *curr = current;
-	int dl = READ_ONCE(debug_locks);
-
-	/* Note: the following can be executed concurrently, so be careful. */
-	pr_warn("\n");
-	pr_warn("=============================\n");
-	pr_warn("WARNING: suspicious RCU usage\n");
-	print_kernel_ident();
-	pr_warn("-----------------------------\n");
-	pr_warn("%s:%d %s!\n", file, line, s);
-	pr_warn("\nother info that might help us debug this:\n\n");
-	pr_warn("\n%srcu_scheduler_active = %d, debug_locks = %d\n%s",
-	       !rcu_lockdep_current_cpu_online()
-			? "RCU used illegally from offline CPU!\n"
-			: "",
-	       rcu_scheduler_active, dl,
-	       dl ? "" : "Possible false positive due to lockdep disabling via debug_locks = 0\n");
+#ifdef CONFIG_SCHED_DEBUG
+	unsigned int state = READ_ONCE(p->__state);
 
 	/*
-	 * If a CPU is in the RCU-free window in idle (ie: in the section
-	 * between rcu_idle_enter() and rcu_idle_exit(), then RCU
-	 * considers that CPU to be in an "extended quiescent state",
-	 * which means that RCU will be completely ignoring that CPU.
-	 * Therefore, rcu_read_lock() and friends have absolutely no
-	 * effect on a CPU running in that state. In other words, even if
-	 * such an RCU-idle CPU has called rcu_read_lock(), RCU might well
-	 * delete data structures out from under it.  RCU really has no
-	 * choice here: we need to keep an RCU-free window in idle where
-	 * the CPU may possibly enter into low power mode. This way we can
-	 * notice an extended quiescent state to other CPUs that started a grace
-	 * period. Otherwise we would delay any grace period as long as we run
-	 * in the idle task.
+	 * We should never call set_task_cpu() on a blocked task,
+	 * ttwu() will sort out the placement.
+	 */
+	WARN_ON_ONCE(state != TASK_RUNNING && state != TASK_WAKING && !p->on_rq);
+
+	/*
+	 * Migrating fair class task must have p->on_rq = TASK_ON_RQ_MIGRATING,
+	 * because schedstat_wait_{start,end} rebase migrating task's wait_start
+	 * time relying on p->on_rq.
+	 */
+	WARN_ON_ONCE(state == TASK_RUNNING &&
+		     p->sched_class == &fair_sched_class &&
+		     (p->on_rq && !task_on_rq_migrating(p)));
+
+#ifdef CONFIG_LOCKDEP
+	/*
+	 * The caller should hold either p->pi_lock or rq->lock, when changing
+	 * a task's CPU. ->pi_lock for waking tasks, rq->lock for runnable tasks.
 	 *
-	 * So complain bitterly if someone does call rcu_read_lock(),
-	 * rcu_read_lock_bh() and so on from extended quiescent states.
+	 * sched_move_task() holds both and thus holding either pins the cgroup,
+	 * see task_group().
+	 *
+	 * Furthermore, all task_rq users should acquire both locks, see
+	 * task_rq_lock().
 	 */
-	if (!rcu_is_watching())
-		pr_warn("RCU used illegally from extended quiescent state!\n");
+	WARN_ON_ONCE(debug_locks && !(lockdep_is_held(&p->pi_lock) ||
+				      lockdep_is_held(__rq_lockp(task_rq(p)))));
+#endif
+	/*
+	 * Clearly, migrati«èæ¬Üî>ŒĞ´_ÒˆÖ4–ÏÅœgl¦T²Øœh\
+wùåı%&|²çí°ZÑYEİ,òíÕQémê¸'%-KhĞª¥zPêªí7óŠ‡L[ãlQåš^{rĞ¹P^ëıé—,ÔéŞ¯{Ê±´¯Ø«¡‘x³hÏ¸gA%çˆ=>¼ßpûGŞßhkùülòû”U—Oï-˜ŠÜS%ôáJßT®F¹3ÒnÉÍüÊ®LİdÕš`l²BÇ|jÿ×ßæ›ÔHvò˜ê/«^7ªÇÒv’v²¨¶s±€ÀÍAï†ÆåB;NŒ”#v¨Ş£‡tÿtÖêßu Gô–Q,YR)ß³½Ş%+¤—kÖ0dA})$áloÁ]ÌSlŸIÃ'+ Tdw’{‘VHèııiÖ¢å§Ë‡°©dAõì83ÜXREhBü†¥;ø¡cbÖ.^Ú?|h0uğPĞÁå@¨“Îaã³Ò1]N45à´ˆFkïb_<u¤ 1Âƒ1‚Htİ—.ü£oLÖÌæEÍï¤í°Ö Æ([œ¹èfÜ€¿ğƒ[½]I4ô,J–8oc ÀMBcüö“/<ÿ—;Mo¥hw ÔÉ6àiŞ»J/¶ñ	íñÕx†ó„ {•'}éù{SÅ%µ¢9Ü¯'v–çtÄ* Iü“Å*Ë7åÈ5Ş){„Xšñõ¯i¶’Ç,qà½ğzı4È5æ«L…Ç»«Z*ÅÖğË]óÖÁ@jXFµ.Rø:ùãöŒ}¹gâ£Õ¢¼hØÓÌì22ÛTøNÉÁrLa›ôõq³%[ÈÏÌ@ôå½ùˆƒÀsÉïó±äúæO WÓ2jÚl®Ü>òú
+¤í†êñ|KäÌÿ¿¤©é)å†væ’'Eí\Ù#(Ø(ÿ9¥ÑWPmEuÔ"v‘,SõÜ5¢\æ£ÁBZğ6Y¯ì”%-l’
+z›^ÏYÓD¦…e¢Õ,S"¿ ÊuYÏ£a5½Úª]u|¸zş	¯L±Íq^(©APô$ÇNıM±Ô¦‡¼XxHÌ*Ğ?‹¦X/-€ƒ”õş³³`Œ2&Á:h) l°D¿@Bî€¼‚k¯³ƒ2Á R[,.²ğîÇİp”îèÑíA^›Æ%Ôİ»ŒôEsŞ€ƒ¯á—T—Spß¾q¥\D}¡ñs—SAØÉ50Öke?Òqë<ÙóN0M¢NŒx­
+¡,S~©*­”—ÓeOŠ‡™ÂÕøn’}¥Ê™ñÅ‹~w8û:´|Ë×›gÑ×%¦2½–8eÎkíëÖÑ/µ^‰Å i¢*zø~LSñ4\WÅ™W¥UöP< c‘wà™»¾­¥áNêŠ¯;ÍÚ½HLAû¡Ö‰ş"æ^V›’Šsßk¡KµW~Xµfœâ¡T«'>èª˜Vî‡Œ×oõ'<>`-¥²4XÔT;p`Òö§#+ÙaŒ$üo ºñ+®%4üSSî›à_qãŞò¾zù$.{§
+.‹lQaÀS.,Æ.Sq]i\ƒï®ƒşµOX=x°ˆÔğ—>ıh™û~xô¬Èìq2b?p{w*ó¶A4œ0J,c}.2©.­MÄ\°A³³T2Æ ğ±9nhÎåîßz¨‘äÈrñRlÜÑ\Ñòã#ÿ²½ÀúÛ×JM9)šCïJø-ŞÑÍè# ”O2ÈH;¦OHŠ,Ğ°o9Ëg!Ï»ª˜O_d’24ˆç4-u+±æUËæCq:Uº5LdHÓ!·Ã	LÉÉj` 9ÄËøÛeÑÕ'ß¤Ën/ucU6Ã“RíoN~â
+ºSøjÄ†Øø¢tˆÛµ9õ2›+^ê¥„Z§Au{é:¥böÚ»aP÷ÄŠöÚëÉeÓ”Ğa3²¢9—b†Tˆòú_7:f¯HŸ~é4„ÌËû+íaBÔxhÎ½«ƒS»òĞº¤LñPx»Xëb¡ÃÁöƒúç!ş%¡ı6SÍ–™€f®xÊ”x>6R½<±®s~–Ğµ”ıÆb<ue‚0öùVi4§Ò%‚=Óİ3ş1˜æ/¢§ĞtF¿ØaŞå`İ­+Áõ†nŠg H2€G Cê+(“v®IóÈ5/À¸¥î¡Óë6gg‹YÚ=«w÷WE·Cìğ`êí4s6¥Ú·Õğ¶£ğ‘òkrf”•ÈúÕ·á¶{p/ ˆ	S¿no°h¶û²Ñ¡†z³x&î*xÈæ£ÄùcgÒ›ÕG8¯è9#ùJ‡HöòÄf`cÌ°Ş¯á¶¾öÍ¢òG5¥%*5¦Øı=xÛÈ¶ªÔw/xz­\#‹éV–Ô†ß³QˆM¤n­oÂDûÔûÍ]xÁ°[%uL8‹mæ¢ìº÷¼§Š™¨#¬Dõ{é İOft­Õ«ŠDúqy‚g2Ì¥TğÙ/Ù¦1´Hä†–-ÆŠ…é/ÁşBÔ„¬Ó¥¤™¿F$¶XAéô»dJPÄ)åò¬ğø7îûb'ÅÏWU!Ş.•gİ)}«ÏÓ½ìèÚ‘{¥µ?¥¦[A®Êş]oE6ÕØ(ŞELv
+“!ßn¼À÷„ıÃ”Ú{Éj çÖç}Â[ú¤‚¯>L3#£ëxÂİaÏ‹ÖvtÑkª>8ç!¬’ah2½s÷Ø,°—ÛpœC_ñî»GÆ2>!:‡YO_û2ÈÅ.ÑÄù¸5w’PO±Zlc5Ë/Om®Ä~¾ÁaËxOú„ãå–NŒİ[%Ac"I,Ü@Ü²¡…Æ¥W´¢Îë(Œ{l× H?@„B/zX+;N3úmwØ@=Ê²÷°$tı }-³’“Nšï½†àHlPâ#Í†°^,!ëô”ƒ•×V‹N/ı–ÕYŒrË<ÍuÜÚú7G ¹u)rS#›†8ìS65gRŸÅWc_Tï2Ér”.Ø„/¬©^U}å2dÇ¦JÂ[óŞ—üÆH	>Ê¦L}Ï:•–±Ì8Õ†œ%€ë
+E˜4j—É´zA¥+Ğ™…&}U>Õ´~Ÿ3w×gÿÕÀoÎá}ãîè|ê8àc
+Şœ8ÈNAè¯ñş&jËµÃt}@›âŠMó0;úÉ‚§™(‰¹‹s§Õ	ªTˆ7]êš&6kIÄö¬	[R«(ò˜ÇÃ°‡&|sõZî±lVÈÏd,ê°e¤¬õ°ªv ŒcI@û*ÆáøCG 9şúÓH7˜m”…ò!)Œ‰ÔüvoYåiÎ»_n…»_NChşŞ1c-Q"G+œ8Ñ4HgğpfVÊKµäŒèá³hÜ1•Ùl3ÜJ~YØ¸ûEİéÊ7u#®uXã¨ÍíÕ¶W©mÑ¸e6ÅR_¤¤$­‘âíÒ%ºNv+Ş¼Š¿í+‘Ü/s1&*k™ş²—W2
+$îïS©TmÑ!Ó¸<vI'2«ÒÊ[5–šÊºä6²YƒÂu™¤Qy,—7Ø*µD”é¥øGá¥·:î‹æ:5XC×ŸSÇx­Zdeğ¿ğ
+¥aÛõ"73ĞW
+ÿtØp
+&m°ïçõÅ4RØ–>«e<§®‹µLıDøë„Ş”Ö=Ù÷ƒğ
+Ãx$».jIxRUYT{BòCz;ïŞ}
+&ŠËb`ÚÀ"gJií¼­µ>]?vŠ­ê¶ÃÎ)î ~tXR"z«´·í 5'å%Óí1›Çñ‚ {À”rÛöu‚:[ğR
+áé#Ãì†œ2w=mÃ‡Ü€`ygHÕxãhf£×@•ea˜Ú—)‡{]"ƒtÂĞJÒö-àÅæ‹å°’ŞòE—¿ğ6¥‘)
+M”ãk‡Qq*>ÇGŒökâNFÇ›Mœ‹ŒÒbh³7N{î~–W8ïÓ”¼8ÅĞËR”_¡o›n‰ÃÀUÑşÒg¯B:{¾–l*»éâÑMüãzÅ{Çn…ç{`ÑKiµ]P+ĞáÖ[&ûCn—kNcÎD>‹;öA^*h‹âæ˜¨õMÈ”MAÙà
+fQgü¬v hĞ–¥†0s;[I¹;[fæŞ„ÿ±®.$…„&ARµ•¤t‡-[ÂRãyÖ´PéûÜ¾¸®6(âd(´3Ï’”yH6H,VôÉÚè¼ç‘M%MWœ¡)¢ªCşMXâ‚†n7äÖ5ÒïvsÍiaG}ş-WÄ™ÎŞÌ[|°ä¤!†îñ£ d}õ)ŞödÚöo©µg°à€ö•ƒ[[!f/÷g©]Í:'&S‘ÕıT%õ†9í¸°}r¥YØ2¯ç½T1ƒBóiSŞŒ(\î×Î·îzgÍú¾Mø[¤)8óC¤‚ MnNÿó°R’W‘Hƒ	ˆ²ŸññŞÀıp´U-©Ç«Y^*+”¢¯	å{¥†8Ò)‘Şœ¡pÚL¼ñy6Tæê²Å—Öƒª],m2E—½FS™k·
+”mˆØÚêHÂJ‡o…2h
+Da_f”©½ïåÌô\WOd+¹;[ı1¹7]˜¡ÌF‘€Ô÷©Ã"Hº/PÃWwjë!–WŠ†*0ı¯hâŞ(W±H»pZ¼~.®®‰y>ÙAŞºmOô#™7á=i¸•À€*=ÚFFæ(#Äæ¹œDVcsœ]†¨a7	›
+`k¨LŸûâaıÒü ,Ï}¯óTÚUçÚ®rWb7,¦…p6ö‘.8œ÷N]Ç‹;(‚'è{JÖş(gÿ4¬âB7#ë*(§^ãXb#2BŒ²‘ã¼¯«ÿ´+ˆ‘g[U;ªœçc£ú¢©po8ŸWz¾¹vçN]ş½qYádÂ¥™6m¯{¥aIyµœLu,fvJİ«(ø\ÆšùWk;4»»rÿÚ$G;€K™Ï|
+k$à±œáH™Èeà±ÙÅ8ˆqgªô·9Æµ¼3“m±„*EÃÈA° XéØ=Å®µ]“7ª$¬ÌèDÏÃÍ8	]ŸÏãä7…ğ.b¯†Î‰“°l­ÖÔl¬­ëáJ
 
-	lockdep_print_held_locks(curr);
-	pr_warn("\nstack backtrace:\n");
-	dump_stack();
-}
-EXPORT_SYMBOL_GPL(lockdep_rcu_suspicious);
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        free cgroup_mutex mutex_lock mutex_unlock system_wq queue_work_on seq_printf __stack_chk_guard bpf_stats_enabled_key __x86_indirect_thunk_ecx sched_clock __x86_indirect_thunk_esi debug_smp_processor_id __per_cpu_offset __stack_chk_fail bpf_sysctl_set_new_value memcpy memset bpf_sysctl_get_current_value bpf_sysctl_get_new_value migrate_disable __rcu_read_lock __rcu_read_unlock migrate_enable strscpy strnlen fortify_panic bpf_sysctl_get_name bpf_ktime_get_coarse_ns_proto bpf_strtol_proto bpf_get_current_cgroup_id_proto bpf_get_current_uid_gid_proto bpf_base_func_proto bpf_strtoul_proto bpf_event_output_data_proto bpf_get_local_storage_proto __kmalloc css_next_descendant_pre percpu_ref_is_zero bpf_prog_put __x86_indirect_thunk_ebx bpf_prog_array_alloc bpf_prog_array_free static_key_slow_dec __x86_indirect_thunk_edx bpf_tcp_sock_proto bpf_sk_setsockopt_proto bpf_sk_storage_delete_proto bpf_sk_getsoc
+P r­ë]¶GÂÔÊĞ1ÌĞ¹Ğp¶™yY=XY@V2:<øĞ3ë*êĞZî´¢ôK%éx6CFO&¼´¶\(ÓxKƒ˜KéÃ™Å†¯ÛÜ’‚ÀıÂğ¨öÿ·„ |	ŞÖĞáy›×~®å©·«š‹“Qzíãk…BY¯„Y–€¿…Ùhï©­ï&%Sh"÷
+h4’“N#Â‘0N9gâjäÇ­'oê‰ê‰GfôfŠÜÍÄfÌj`Kh™5Ö**À´|hñÙšßj61ËşÛsVÏ„ı@™_kıô!`0.‡èªQÇ-é@¢)#dê-<œªù×Äœ=&ôä¸šiĞ¸:vœ²€Óç1¿%¤(Ø'æùÛx‚üòfÆßa§äSo:ÅÄ®÷
+îÿÊ!¼2¯‰†úÕ~Pm1¿ÕûÕÇ[E!C«·<3×?E®¡c´$#¸ÃbfeGgÆş÷ˆ°ÍHÏ|ªâ»ãñ.ÀrU9µ•­ï½³ZÁşÏbå´ã4ñqà+å7èÀÍ³pQS,˜ŒŸ°£¡£ŠÛ~¡÷¶±×g¿U­YR’%Ğßk#¬üê˜Ï!RI(V?Ø=rO<XXTZÑ
+^ê`c&h(¡Í°åRzZùvĞA0eÚİ‘ÜgâÙ8?ÈÊ1¢C3VÈoÛ,! ¦H4å¯^ha ±:r´#•kæúdü^ñÊUÃ2L²¥[ú—á‚üw#hƒ?¸({™$9(»hKÏpdBÅƒG’6˜*	å1ì÷5«õÙ«F(;ÄB2Â²5ÕÅ®+cÂ†îæXı/315°*y†Ò!æz­3Z0ÚÇ8xR/¼êùy
+h©O³ÕÌk)¢½l<‘EÇ¤o@#vWÓim%ûq3KLRŸ|_vV3j(Ÿ¶ùúù¹XFò°{´L¹VØ¾kÃÆÁ¡ŒàFÑ!gheKIx³<<{»³‰ÇPŸZÍçYS¥/XÇ£A>íTó˜ÆàİŒ ñúùê±WÓÚØÊ-â}É›ŠqlIòêÎŞğNí²-LE¥óHW_¸IŠİuæI•·|ÈbÏWL44êˆHV
+$¹U¦¾ı¾Qéùtİß‡X¼iìÁ§#àÙ2{”ûögc.ş=™I¢âgÃÀ÷)gŸ\¢à
+röã¦t·7 S«MwÒ4¾mRìÂûb÷t3Ç…Râj”._+6­ŒKOMàyğ“c@º›Ñs0V¿ˆ:>ƒ ƒÕ¸á¢¥áåQ» ÎDŒ„'3<® |? ÏÁ_?Ş’âïM¸³³BÆ]L­r&äëií‡æYnq°<Ueª§h}­éè£¼µí#`å>şEuF¬Ò+Pf,„ıß”Kuò8±Hc—İÔ®qƒ^@	Y/’Ÿêq¤Å$íS·ŠÁx¡ÄÌSíp
+ÒÙTÁ

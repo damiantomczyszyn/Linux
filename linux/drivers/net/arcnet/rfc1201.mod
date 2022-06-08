@@ -1,2 +1,2 @@
-e/config/ACPI_APEI_GHES) \
-   
+drivers/net/arcnet/rfc1201.o
+

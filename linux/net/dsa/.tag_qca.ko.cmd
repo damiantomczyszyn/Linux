@@ -1,10 +1,11 @@
-		seq_printf(m, "[%p] ", class->key);
-		print_name(m, class);
-		seq_puts(m, "\n");
-	}
-	seq_puts(m, "\n");
+push_set(smp_processor_id(), false);
+#endif
+	init_sched_fair_class();
 
-	return 0;
-}
+	psi_init();
 
-static const struct seq_operati
+	init_uclamp();
+
+	preempt_dynamic_init();
+
+	scheduler_running = 1;

@@ -1,1 +1,4 @@
-cmd_drivers/media/i2c/vp27smpx.
+return cx_read(addr);
+}
+
+static

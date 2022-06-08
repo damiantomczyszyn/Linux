@@ -1,3 +1,6 @@
-ig/SPI_SLAVE) \
-  include/linux/scatterlist.h \
-    $(wildcard include/config/NEED_SG_DMA_LENGTH) \
+00140140
+#define AUD_EXT_LNGTH		0x00140150
+#define AUD_EXT_A_MODE		0x00140158
+
+/* I2C Bus 1 */
+#defi

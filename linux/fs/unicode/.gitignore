@@ -1,2 +1,2 @@
-$(wildcard include/config/RSEQ) \
-    $(wildcard include/config/
+sm/atomic64_32.h \
+  include/linux/atomic/atomic-arch-fallback.h

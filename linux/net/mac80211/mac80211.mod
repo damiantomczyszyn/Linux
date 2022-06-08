@@ -1,24 +1,30 @@
-lude/linux/percpu-refcount.h \
-  include/linux/kasan.h \
-    $(wildcard include/config/KASAN_STACK) \
-    $(wildcard include/config/KASAN_VMALLOC) \
-    $(wildcard include/config/KASAN_INLINE) \
-  include/linux/kasan-enabled.h \
-  include/linux/device.h \
-    $(wildcard include/config/GENERIC_MSI_IRQ_DOMAIN) \
-    $(wildcard include/config/GENERIC_MSI_IRQ) \
-    $(wildcard include/config/ENERGY_MODEL) \
-    $(wildcard include/config/PINCTRL) \
-    $(wildcard include/config/DMA_OPS) \
-    $(wildcard include/config/DMA_DECLARE_COHERENT) \
-    $(wildcard include/config/DMA_CMA) \
-    $(wildcard include/config/SWIOTLB) \
-    $(wildcard include/config/ARCH_HAS_SYNC_DMA_FOR_DEVICE) \
-    $(wildcard include/config/ARCH_HAS_SYNC_DMA_FOR_CPU) \
-    $(wildcard include/config/ARCH_HAS_SYNC_DMA_FOR_CPU_ALL) \
-    $(wildcard include/config/DMA_OPS_BYPASS) \
-    $(wildcard include/config/DEVTMPFS) \
-    $(wildcard include/config/SYSFS_DEPRECATED) \
-  include/linux/dev_printk.h \
-  include/linux/ratelimit.h \
-  includ
+# SPDX-License-Identifier: GPL-2.0
+# Any varying coverage in these files is non-deterministic
+# and is generally not a function of system call inputs.
+KCOV_INSTRUMENT		:= n
+
+obj-y += mutex.o semaphore.o rwsem.o percpu-rwsem.o
+
+# Avoid recursion lockdep -> KCSAN -> ... -> lockdep.
+KCSAN_SANITIZE_lockdep.o := n
+
+ifdef CONFIG_FUNCTION_TRACER
+CFLAGS_REMOVE_lockdep.o = $(CC_FLAGS_FTRACE)
+CFLAGS_REMOVE_lockdep_proc.o = $(CC_FLAGS_FTRACE)
+CFLAGS_REMOVE_mutex-debug.o = $(CC_FLAGS_FTRACE)
+endif
+
+obj-$(CONFIG_DEBUG_IRQFLAGS) += irqflag-debug.o
+obj-$(CONFIG_DEBUG_MUTEXES) += mutex-debug.o
+obj-$(CONFIG_LOCKDEP) += lockdep.o
+ifeq ($(CONFIG_PROC_FS),y)
+obj-$(CONFIG_LOCKDEP) += lockdep_proc.o
+endif
+obj-$(CONFIG_SMP) += spinlock.o
+obj-$(CONFIG_LOCK_SPIN_ON_OWNER) += osq_lock.o
+obj-$(CONFIG_PROVE_LOCKING) += spinlock.o
+obj-$(CONFIG_QUEUED_SPINLOCKS) += qspinlock.o
+obj-$(CONFIG_RT_MUTEXES) += rtmutex_api.o
+obj-$(CONFIG_PREEMPT_RT) += spinlock_rt.o ww_rt_mutex.o
+obj-$(CONFIG_DEBUG_SPINLOCK) += spinlock.o
+obj-$(CONFIG_DEBU

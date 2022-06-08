@@ -1,2 +1,4 @@
-timer.h \
-    $(wildcard i
+if
+}
+
+DEFINE_STATIC_KEY_FA

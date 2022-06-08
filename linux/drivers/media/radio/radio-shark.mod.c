@@ -1,32 +1,32 @@
-#include <linux/module.h>
-#define INCLUDE_VERMAGIC
-#include <linux/build-salt.h>
-#include <linux/elfnote-lto.h>
-#include <linux/vermagic.h>
-#include <linux/compiler.h>
+ine void cx23885_irq_disable_all(struct cx23885_dev *dev)
+{
+	cx23885_irq_disable(dev, 0xffffffff);
+}
 
-BUILD_SALT;
-BUILD_LTO_INFO;
+void cx23885_irq_remove(struct cx23885_dev *dev, u32 mask)
+{
+	unsigned long flags;
+	spin_lock_irqsave(&dev->pci_irqmask_lock, flags);
 
-MODULE_INFO(vermagic, VERMAGIC_STRING);
-MODULE_INFO(name, KBUILD_MODNAME);
+	dev->pci_irqmask &= ~mask;
+	cx_clear(PCI_INT_MSK, mask);
 
-__visible struct module __this_module
-__section(".gnu.linkonce.this_module") = {
-	.name = KBUILD_MODNAME,
-	.init = init_module,
-#ifdef CONFIG_MODULE_UNLOAD
-	.exit = cleanup_module,
-#endif
-	.arch = MODULE_ARCH_INIT,
-};
+	spin_unlock_irqrestore(&dev->pci_irqmask_lock, flags);
+}
 
-MODULE_INFO(intree, "Y");
+static u32 cx23885_irq_get_mask(struct cx23885_dev *dev)
+{
+	u32 v;
+	unsigned long flags;
+	spin_lock_irqsave(&dev->pci_irqmask_lock, flags);
 
-#ifdef CONFIG_RETPOLINE
-MODULE_INFO(retpoline, "Y");
-#endif
+	v = cx_read(PCI_INT_MSK);
 
-MODULE_INFO(depends, "videodev,tea575x");
+	spin_unlock_irqrestore(&dev->pci_irqmask_lock, flags);
+	return v;
+}
 
-MODULE_ALIAS("usb:v077Dp627Ad0001dc*dsc*dp*ic03isc*ip*in*");
+static int cx23885_risc_decode(u32 risc)
+{
+	static char *instr[16] = {
+		[RISC_SYNC    >> 2

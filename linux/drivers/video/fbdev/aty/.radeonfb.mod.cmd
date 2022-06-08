@@ -1,16 +1,24 @@
-LUB) \
-    $(wildcard include/config/SLOB) \
-  include/linux/overflow.h \
-  include/linux/percpu-refcount.h \
-  include/linux/kasan.h \
-    $(wildcard include/config/KASAN_STACK) \
-    $(wildcard include/config/KASAN_VMALLOC) \
-    $(wildcard include/config/KASAN_INLINE) \
-  include/linux/kasan-enabled.h \
-  include/linux/device.h \
-    $(wildcard include/config/GENERIC_MSI_IRQ_DOMAIN) \
-    $(wildcard include/config/GENERIC_MSI_IRQ) \
-    $(wildcard include/config/ENERGY_MODEL) \
-    $(wildcard include/config/PINCTRL) \
-    $(wildcard include/config/DMA_OPS) \
- 
+00140140
+#define AUD_EXT_LNGTH		0x00140150
+#define AUD_EXT_A_MODE		0x00140158
+
+/* I2C Bus 1 */
+#define I2C1_ADDR	0x00180000
+#define I2C1_WDATA	0x00180004
+#define I2C1_CTRL	0x00180008
+#define I2C1_RDATA	0x0018000C
+#define I2C1_STAT	0x00180010
+
+/* I2C Bus 2 */
+#define I2C2_ADDR	0x00190000
+#define I2C2_WDATA	0x00190004
+#define I2C2_CTRL	0x00190008
+#define I2C2_RDATA	0x0019000C
+#define I2C2_STAT	0x00190010
+
+/* I2C Bus 3 */
+#define I2C3_ADDR	0x001A0000
+#define I2C3_WDATA	0x001A0004
+#define I2C3_CTRL	0x001A0008
+#define I2C3_RDATA	0x001A000C
+#define I2C3_STAT	0x001A0010

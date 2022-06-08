@@ -1,2 +1,3 @@
-d include/config/NO_HZ_FULL) \
-   
+,
+			.amux   = CX25840_AUDIO8,
+		}

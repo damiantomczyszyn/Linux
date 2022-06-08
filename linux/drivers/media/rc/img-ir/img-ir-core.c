@@ -1,192 +1,185 @@
-// SPDX-License-Identifier: GPL-2.0-or-later
-/*
- * ImgTec IR Decoder found in PowerDown Controller.
- *
- * Copyright 2010-2014 Imagination Technologies Ltd.
- *
- * This contains core img-ir code for setting up the driver. The two interfaces
- * (raw and hardware decode) are handled separately.
- */
+= 1,
+	.agc = &xc3028_agc_config,
+	.bw  = &xc3028_bw_config,
 
-#include <linux/clk.h>
-#include <linux/init.h>
-#include <linux/interrupt.h>
-#include <linux/io.h>
-#include <linux/module.h>
-#include <linux/platform_device.h>
-#include <linux/slab.h>
-#include <linux/spinlock.h>
-#include "img-ir.h"
+	.gpio_dir = DIB7000P_GPIO_DEFAULT_DIRECTIONS,
+	.gpio_val = DIB7000P_GPIO_DEFAULT_VALUES,
+	.gpio_pwm_pos = DIB7000P_GPIO_DEFAULT_PWM_POS,
 
-static irqreturn_t img_ir_isr(int irq, void *dev_id)
-{
-	struct img_ir_priv *priv = dev_id;
-	u32 irq_status;
+	.pwm_freq_div = 0,
+	.agc_control  = NULL,
+	.spur_protect = 0,
 
-	spin_lock(&priv->lock);
-	/* we have to clear irqs before reading */
-	irq_status = img_ir_read(priv, IMG_IR_IRQ_STATUS);
-	img_ir_write(priv, IMG_IR_IRQ_CLEAR, irq_status);
-
-	/* don't handle valid data irqs if we're only interested in matches */
-	irq_status &= img_ir_read(priv, IMG_IR_IRQ_ENABLE);
-
-	/* hand off edge interrupts to raw decode handler */
-	if (irq_status & IMG_IR_IRQ_EDGE && img_ir_raw_enabled(&priv->raw))
-		img_ir_isr_raw(priv, irq_status);
-
-	/* hand off hardware match interrupts to hardware decode handler */
-	if (irq_status & (IMG_IR_IRQ_DATA_MATCH |
-			  IMG_IR_IRQ_DATA_VALID |
-			  IMG_IR_IRQ_DATA2_VALID) &&
-	    img_ir_hw_enabled(&priv->hw))
-		img_ir_isr_hw(priv, irq_status);
-
-	spin_unlock(&priv->lock);
-	return IRQ_HANDLED;
-}
-
-static void img_ir_setup(struct img_ir_priv *priv)
-{
-	/* start off with interrupts disabled */
-	img_ir_write(priv, IMG_IR_IRQ_ENABLE, 0);
-
-	img_ir_setup_raw(priv);
-	img_ir_setup_hw(priv);
-
-	if (!IS_ERR(priv->clk))
-		clk_prepare_enable(priv->clk);
-}
-
-static void img_ir_ident(struct img_ir_priv *priv)
-{
-	u32 core_rev = img_ir_read(priv, IMG_IR_CORE_REV);
-
-	dev_info(priv->dev,
-		 "IMG IR Decoder (%d.%d.%d.%d) probed successfully\n",
-		 (core_rev & IMG_IR_DESIGNER) >> IMG_IR_DESIGNER_SHIFT,
-		 (core_rev & IMG_IR_MAJOR_REV) >> IMG_IR_MAJOR_REV_SHIFT,
-		 (core_rev & IMG_IR_MINOR_REV) >> IMG_IR_MINOR_REV_SHIFT,
-		 (core_rev & IMG_IR_MAINT_REV) >> IMG_IR_MAINT_REV_SHIFT);
-	dev_info(priv->dev, "Modes:%s%s\n",
-		 img_ir_hw_enabled(&priv->hw) ? " hardware" : "",
-		 img_ir_raw_enabled(&priv->raw) ? " raw" : "");
-}
-
-static int img_ir_probe(struct platform_device *pdev)
-{
-	struct img_ir_priv *priv;
-	int irq, error, error2;
-
-	/* Get resources from platform device */
-	irq = platform_get_irq(pdev, 0);
-	if (irq < 0)
-		return irq;
-
-	/* Private driver data */
-	priv = devm_kzalloc(&pdev->dev, sizeof(*priv), GFP_KERNEL);
-	if (!priv)
-		return -ENOMEM;
-
-	platform_set_drvdata(pdev, priv);
-	priv->dev = &pdev->dev;
-	spin_lock_init(&priv->lock);
-
-	/* Ioremap the registers */
-	priv->reg_base = devm_platform_ioremap_resource(pdev, 0);
-	if (IS_ERR(priv->reg_base))
-		return PTR_ERR(priv->reg_base);
-
-	/* Get core clock */
-	priv->clk = devm_clk_get(&pdev->dev, "core");
-	if (IS_ERR(priv->clk))
-		dev_warn(&pdev->dev, "cannot get core clock resource\n");
-
-	/* Get sys clock */
-	priv->sys_clk = devm_clk_get(&pdev->dev, "sys");
-	if (IS_ERR(priv->sys_clk))
-		dev_warn(&pdev->dev, "cannot get sys clock resource\n");
-	/*
-	 * Enabling the system clock before the register interface is
-	 * accessed. ISR shouldn't get called with Sys Clock disabled,
-	 * hence exiting probe with an error.
-	 */
-	if (!IS_ERR(priv->sys_clk)) {
-		error = clk_prepare_enable(priv->sys_clk);
-		if (error) {
-			dev_err(&pdev->dev, "cannot enable sys clock\n");
-			return error;
-		}
-	}
-
-	/* Set up raw & hw decoder */
-	error = img_ir_probe_raw(priv);
-	error2 = img_ir_probe_hw(priv);
-	if (error && error2) {
-		if (error == -ENODEV)
-			error = error2;
-		goto err_probe;
-	}
-
-	/* Get the IRQ */
-	priv->irq = irq;
-	error = request_irq(priv->irq, img_ir_isr, 0, "img-ir", priv);
-	if (error) {
-		dev_err(&pdev->dev, "cannot register IRQ %u\n",
-			priv->irq);
-		error = -EIO;
-		goto err_irq;
-	}
-
-	img_ir_ident(priv);
-	img_ir_setup(priv);
-
-	return 0;
-
-err_irq:
-	img_ir_remove_hw(priv);
-	img_ir_remove_raw(priv);
-err_probe:
-	if (!IS_ERR(priv->sys_clk))
-		clk_disable_unprepare(priv->sys_clk);
-	return error;
-}
-
-static int img_ir_remove(struct platform_device *pdev)
-{
-	struct img_ir_priv *priv = platform_get_drvdata(pdev);
-
-	free_irq(priv->irq, priv);
-	img_ir_remove_hw(priv);
-	img_ir_remove_raw(priv);
-
-	if (!IS_ERR(priv->clk))
-		clk_disable_unprepare(priv->clk);
-	if (!IS_ERR(priv->sys_clk))
-		clk_disable_unprepare(priv->sys_clk);
-	return 0;
-}
-
-static SIMPLE_DEV_PM_OPS(img_ir_pmops, img_ir_suspend, img_ir_resume);
-
-static const struct of_device_id img_ir_match[] = {
-	{ .compatible = "img,ir-rev1" },
-	{}
-};
-MODULE_DEVICE_TABLE(of, img_ir_match);
-
-static struct platform_driver img_ir_driver = {
-	.driver = {
-		.name = "img-ir",
-		.of_match_table	= img_ir_match,
-		.pm = &img_ir_pmops,
-	},
-	.probe = img_ir_probe,
-	.remove = img_ir_remove,
+	.output_mode = OUTMODE_MPEG2_SERIAL,
 };
 
-module_platform_driver(img_ir_driver);
+static struct zl10353_config dvico_fusionhdtv_xc3028 = {
+	.demod_address = 0x0f,
+	.if2           = 45600,
+	.no_tuner      = 1,
+	.disable_i2c_gate_ctrl = 1,
+};
 
-MODULE_AUTHOR("Imagination Technologies Ltd.");
-MODULE_DESCRIPTION("ImgTec IR");
-MODULE_LICENSE("GPL");
+static struct stv0900_reg stv0900_ts_regs[] = {
+	{ R0900_TSGENERAL, 0x00 },
+	{ R0900_P1_TSSPEED, 0x40 },
+	{ R0900_P2_TSSPEED, 0x40 },
+	{ R0900_P1_TSCFGM, 0xc0 },
+	{ R0900_P2_TSCFGM, 0xc0 },
+	{ R0900_P1_TSCFGH, 0xe0 },
+	{ R0900_P2_TSCFGH, 0xe0 },
+	{ R0900_P1_TSCFGL, 0x20 },
+	{ R0900_P2_TSCFGL, 0x20 },
+	{ 0xffff, 0xff }, /* terminate */
+};
+
+static struct stv0900_config netup_stv0900_config = {
+	.demod_address = 0x68,
+	.demod_mode = 1, /* dual */
+	.xtal = 8000000,
+	.clkmode = 3,/* 0-CLKI, 2-XTALI, else AUTO */
+	.diseqc_mode = 2,/* 2/3 PWM */
+	.ts_config_regs = stv0900_ts_regs,
+	.tun1_maddress = 0,/* 0x60 */
+	.tun2_maddress = 3,/* 0x63 */
+	.tun1_adc = 1,/* 1 Vpp */
+	.tun2_adc = 1,/* 1 Vpp */
+};
+
+static struct stv6110_config netup_stv6110_tunerconfig_a = {
+	.i2c_address = 0x60,
+	.mclk = 16000000,
+	.clk_div = 1,
+	.gain = 8, /* +16 dB  - maximum gain */
+};
+
+static struct stv6110_config netup_stv6110_tunerconfig_b = {
+	.i2c_address = 0x63,
+	.mclk = 16000000,
+	.clk_div = 1,
+	.gain = 8, /* +16 dB  - maximum gain */
+};
+
+static struct cx24116_config tbs_cx24116_config = {
+	.demod_address = 0x55,
+};
+
+static struct cx24117_config tbs_cx24117_config = {
+	.demod_address = 0x55,
+};
+
+static struct ds3000_config tevii_ds3000_config = {
+	.demod_address = 0x68,
+};
+
+static struct ts2020_config tevii_ts2020_config  = {
+	.tuner_address = 0x60,
+	.clk_out_div = 1,
+	.frequency_div = 1146000,
+};
+
+static struct cx24116_config dvbworld_cx24116_config = {
+	.demod_address = 0x05,
+};
+
+static struct lgs8gxx_config mygica_x8506_lgs8gl5_config = {
+	.prod = LGS8GXX_PROD_LGS8GL5,
+	.demod_address = 0x19,
+	.serial_ts = 0,
+	.ts_clk_pol = 1,
+	.ts_clk_gated = 1,
+	.if_clk_freq = 30400, /* 30.4 MHz */
+	.if_freq = 5380, /* 5.38 MHz */
+	.if_neg_center = 1,
+	.ext_adc = 0,
+	.adc_signed = 0,
+	.if_neg_edge = 0,
+};
+
+static struct xc5000_config mygica_x8506_xc5000_config = {
+	.i2c_address = 0x61,
+	.if_khz = 5380,
+};
+
+static struct mb86a20s_config mygica_x8507_mb86a20s_config = {
+	.demod_address = 0x10,
+};
+
+static struct xc5000_config mygica_x8507_xc5000_config = {
+	.i2c_address = 0x61,
+	.if_khz = 4000,
+};
+
+static struct stv090x_config prof_8000_stv090x_config = {
+	.device                 = STV0903,
+	.demod_mode             = STV090x_SINGLE,
+	.clk_mode               = STV090x_CLK_EXT,
+	.xtal                   = 27000000,
+	.address                = 0x6A,
+	.ts1_mode               = STV090x_TSMODE_PARALLEL_PUNCTURED,
+	.repeater_level         = STV090x_RPTLEVEL_64,
+	.adc1_range             = STV090x_ADC_2Vpp,
+	.diseqc_envelope_mode   = false,
+
+	.tuner_get_frequency    = stb6100_get_frequency,
+	.tuner_set_frequency    = stb6100_set_frequency,
+	.tuner_set_bandwidth    = stb6100_set_bandwidth,
+	.tuner_get_bandwidth    = stb6100_get_bandwidth,
+};
+
+static struct stb6100_config prof_8000_stb6100_config = {
+	.tuner_address = 0x60,
+	.refclock = 27000000,
+};
+
+static struct lgdt3306a_config hauppauge_quadHD_ATSC_a_config = {
+	.i2c_addr               = 0x59,
+	.qam_if_khz             = 4000,
+	.vsb_if_khz             = 3250,
+	.deny_i2c_rptr          = 1, /* Disabled */
+	.spectral_inversion     = 0, /* Disabled */
+	.mpeg_mode              = LGDT3306A_MPEG_SERIAL,
+	.tpclk_edge             = LGDT3306A_TPCLK_RISING_EDGE,
+	.tpvalid_polarity       = LGDT3306A_TP_VALID_HIGH,
+	.xtalMHz                = 25, /* 24 or 25 */
+};
+
+static struct lgdt3306a_config hauppauge_quadHD_ATSC_b_config = {
+	.i2c_addr               = 0x0e,
+	.qam_if_khz             = 4000,
+	.vsb_if_khz             = 3250,
+	.deny_i2c_rptr          = 1, /* Disabled */
+	.spectral_inversion     = 0, /* Disabled */
+	.mpeg_mode              = LGDT3306A_MPEG_SERIAL,
+	.tpclk_edge             = LGDT3306A_TPCLK_RISING_EDGE,
+	.tpvalid_polarity       = LGDT3306A_TP_VALID_HIGH,
+	.xtalMHz                = 25, /* 24 or 25 */
+};
+
+static int p8000_set_voltage(struct dvb_frontend *fe,
+			     enum fe_sec_voltage voltage)
+{
+	struct cx23885_tsport *port = fe->dvb->priv;
+	struct cx23885_dev *dev = port->dev;
+
+	if (voltage == SEC_VOLTAGE_18)
+		cx_write(MC417_RWD, 0x00001e00);
+	else if (voltage == SEC_VOLTAGE_13)
+		cx_write(MC417_RWD, 0x00001a00);
+	else
+		cx_write(MC417_RWD, 0x00001800);
+	return 0;
+}
+
+static int dvbsky_t9580_set_voltage(struct dvb_frontend *fe,
+					enum fe_sec_voltage voltage)
+{
+	struct cx23885_tsport *port = fe->dvb->priv;
+	struct cx23885_dev *dev = port->dev;
+
+	cx23885_gpio_enable(dev, GPIO_0 | GPIO_1, 1);
+
+	switch (voltage) {
+	case SEC_VOLTAGE_13:
+		cx23885_gpio_set(dev, GPIO_1);
+		cx23885_gpio_clear(de

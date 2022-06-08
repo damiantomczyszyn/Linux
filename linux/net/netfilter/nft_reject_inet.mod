@@ -1,4 +1,2 @@
-s);
-
-/**
- * struct pending_free -
+IO moving on encoder ports\n",
+		

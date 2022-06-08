@@ -1,2 +1,2 @@
-CPI_APEI_GHES) \
-    $(wildcard include
+drivers/net/ethernet/8390/smc-ultra.o
+

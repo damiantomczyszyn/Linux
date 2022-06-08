@@ -1,43 +1,63 @@
-.h \
-  include/linux/atomic/atomic-arch-fallback.h \
-    $(wildcard include/config/GENERIC_ATOMIC64) \
-  include/linux/atomic/atomic-long.h \
-  include/linux/atomic/atomic-instrumented.h \
-  include/linux/bug.h \
-    $(wildcard include/config/BUG_ON_DATA_CORRUPTION) \
-  arch/x86/include/asm/bug.h \
-    $(wildcard include/config/DEBUG_BUGVERBOSE) \
-  include/linux/instrumentation.h \
-    $(wildcard include/config/DEBUG_ENTRY) \
-  include/asm-generic/bug.h \
-    $(wildcard include/config/BUG) \
-    $(wildcard include/config/GENERIC_BUG_RELATIVE_POINTERS) \
-  arch/x86/include/uapi/asm/msr.h \
-  include/linux/tracepoint-defs.h \
-  arch/x86/include/asm/special_insns.h \
-  include/linux/irqflags.h \
-    $(wildcard include/config/TRACE_IRQFLAGS) \
-    $(wildcard include/config/PREEMPT_RT) \
-    $(wildcard include/config/IRQSOFF_TRACER) \
-    $(wildcard include/config/PREEMPT_TRACER) \
-    $(wildcard include/config/DEBUG_IRQFLAGS) \
-    $(wildcard include/config/TRACE_IRQFLAGS_SUPPORT) \
-  arch/x86/include/asm/irqflags.h \
-  arch/x86/include/asm/fpu/types.h \
-  arch/x86/include/asm/vmxfeatures.h \
-  arch/x86/include/asm/vdso/processor.h \
-  include/linux/personality.h \
-  include/uapi/linux/personality.h \
-  arch/x86/include/asm/tsc.h \
-  arch/x86/include/asm/cpufeature.h \
-    $(wildcard include/config/X86_FEATURE_NAMES) \
-  include/vdso/time32.h \
-  include/vdso/time.h \
-  include/linux/uidgid.h \
-    $(wildcard include/config/MULTIUSER) \
-    $(wildcard include/config/USER_NS) \
-  include/linux/highuid.h \
-  include/linux/buildid.h \
-    $(wildcard include/config/CRASH_CORE) \
-  include/linux/mm_types.h \
-    $(wildcard include/c
+// SPDX-License-Identifier: GPL-2.0-or-later
+/*
+ *  Driver for the Conexant CX23885/7/8 PCIe bridge
+ *
+ *  Infrared remote control input device
+ *
+ *  Most of this file is
+ *
+ *  Copyright (C) 2009  Andy Walls <awalls@md.metrocast.net>
+ *
+ *  However, the cx23885_input_{init,fini} functions contained herein are
+ *  derived from Linux kernel files linux/media/video/.../...-input.c marked as:
+ *
+ *  Copyright (C) 2008 <srinivasa.deevi at conexant dot com>
+ *  Copyright (C) 2005 Ludovico Cavedon <cavedon@sssup.it>
+ *		       Markus Rechberger <mrechberger@gmail.com>
+ *		       Mauro Carvalho Chehab <mchehab@kernel.org>
+ *		       Sascha Sommer <saschasommer@freenet.de>
+ *  Copyright (C) 2004, 2005 Chris Pascoe
+ *  Copyright (C) 2003, 2004 Gerd Knorr
+ *  Copyright (C) 2003 Pavel Machek
+ */
+
+#include "cx23885.h"
+#include "cx23885-input.h"
+
+#include <linux/slab.h>
+#include <media/rc-core.h>
+#include <media/v4l2-subdev.h>
+
+#define MODULE_NAME "cx23885"
+
+static void cx23885_input_process_measurements(struct cx23885_dev *dev,
+					       bool overrun)
+{
+	struct cx23885_kernel_ir *kernel_ir = dev->kernel_ir;
+
+	ssize_t num;
+	int count, i;
+	bool handle = false;
+	struct ir_raw_event ir_core_event[64];
+
+	do {
+		num = 0;
+		v4l2_subdev_call(dev->sd_ir, ir, rx_read, (u8 *) ir_core_event,
+				 sizeof(ir_core_event), &num);
+
+		count = num / sizeof(struct ir_raw_event);
+
+		for (i = 0; i < count; i++) {
+			ir_raw_event_store(kernel_ir->rc,
+					   &ir_core_event[i]);
+			handle = true;
+		}
+	} while (num != 0);
+
+	if (overrun)
+		ir_raw_event_overflow(kernel_ir->rc);
+	else if (handle)
+		ir_raw_event_handle(kernel_ir->rc);
+}
+
+void cx23885_input_rx_wo

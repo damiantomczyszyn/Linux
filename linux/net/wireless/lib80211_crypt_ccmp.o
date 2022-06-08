@@ -1,238 +1,208 @@
-atic inline int check_wait_context(struct task_struct *curr,
-				     struct held_lock *next)
-{
-	return 0;
-}
-
-#endif /* CONFIG_PROVE_LOCKING */
-
-/*
- * Initialize a lock instance's lock-class mapping info:
- */
-void lockdep_init_map_type(struct lockdep_map *lock, const char *name,
-			    struct lock_class_key *key, int subclass,
-			    u8 inner, u8 outer, u8 lock_type)
-{
-	int i;
-
-	for (i = 0; i < NR_LOCKDEP_CACHING_CLASSES; i++)
-		lock->class_cache[i] = NULL;
-
-#ifdef CONFIG_LOCK_STAT
-	lock->cpu = raw_smp_processor_id();
-#endif
-
-	/*
-	 * Can't be having no nameless bastards around this place!
-	 */
-	if (DEBUG_LOCKS_WARN_ON(!name)) {
-		lock->name = "NULL";
-		return;
-	}
-
-	lock->name = name;
-
-	lock->wait_type_outer = outer;
-	lock->wait_type_inner = inner;
-	lock->lock_type = lock_type;
-
-	/*
-	 * No key, no joy, we need to hash something.
-	 */
-	if (DEBUG_LOCKS_WARN_ON(!key))
-		return;
-	/*
-	 * Sanity check, the lock-class key must either have been allocated
-	 * statically or must have been registered as a dynamic key.
-	 */
-	if (!static_obj(key) && !is_dynamic_key(key)) {
-		if (debug_locks)
-			printk(KERN_ERR "BUG: key %px has not been registered!\n", key);
-		DEBUG_LOCKS_WARN_ON(1);
-		return;
-	}
-	lock->key = key;
-
-	if (unlikely(!debug_locks))
-		return;
-
-	if (subclass) {
-		unsigned long flags;
-
-		if (DEBUG_LOCKS_WARN_ON(!lockdep_enabled()))
-			return;
-
-		raw_local_irq_save(flags);
-		lockdep_recursion_inc();
-		register_lock_class(lock, subclass, 1);
-		lockdep_recursion_finish();
-		raw_local_irq_restore(flags);
-	}
-}
-EXPORT_SYMBOL_GPL(lockdep_init_map_type);
-
-struct lock_class_key __lockdep_no_validate__;
-EXPORT_SYMBOL_GPL(__lockdep_no_validate__);
-
-static void
-print_lock_nested_lock_not_held(struct task_struct *curr,
-				struct held_lock *hlock,
-				unsigned long ip)
-{
-	if (!debug_locks_off())
-		return;
-	if (debug_locks_silent)
-		return;
-
-	pr_warn("\n");
-	pr_warn("==================================\n");
-	pr_warn("WARNING: Nested lock was not taken\n");
-	print_kernel_ident();
-	pr_warn("----------------------------------\n");
-
-	pr_warn("%s/%d is trying to lock:\n", curr->comm, task_pid_nr(curr));
-	print_lock(hlock);
-
-	pr_warn("\nbut this task is not holding:\n");
-	pr_warn("%s\n", hlock->nest_lock->name);
-
-	pr_warn("\nstack backtrace:\n");
-	dump_stack();
-
-	pr_warn("\nother info that might help us debug this:\n");
-	lockdep_print_held_locks(curr);
-
-	pr_warn("\nstack backtrace:\n");
-	dump_stack();
-}
-
-static int __lock_is_held(const struct lockdep_map *lock, int read);
-
-/*
- * This gets called for every mutex_lock*()/spin_lock*() operation.
- * We maintain the dependency maps and validate the locking attempt:
+ we were to improve the
+ * storage performance, we'd have a proportional reduction in IO-wait time.
  *
- * The callers must make sure that IRQs are disabled before calling it,
- * otherwise we could get an interrupt which would want to take locks,
- * which would end up in lockdep again.
+ * This all works nicely on UP, where, when a task blocks on IO, we account
+ * idle time as IO-wait, because if the storage were faster, it could've been
+ * running and we'd not be idle.
+ *
+ * This has been extended to SMP, by doing the same for each CPU. This however
+ * is broken.
+ *
+ * Imagine for instance the case where two tasks block on one CPU, only the one
+ * CPU will have IO-wait accounted, while the other has regular idle. Even
+ * though, if the storage were faster, both could've ran at the same time,
+ * utilising both CPUs.
+ *
+ * This means, that when looking globally, the current IO-wait accounting on
+ * SMP is a lower bound, by reason of under accounting.
+ *
+ * Worse, since the numbers are provided per CPU, they are sometimes
+ * interpreted per CPU, and that is nonsensical. A blocked task isn't strictly
+ * associated with any one particular CPU, it can wake to another CPU than it
+ * blocked on. This means the per CPU IO-wait number is meaningless.
+ *
+ * Task CPU affinities can make all that even more 'interesting'.
  */
-static int __lock_acquire(struct lockdep_map *lock, unsigned int subclass,
-			  int trylock, int read, int check, int hardirqs_off,
-			  struct lockdep_map *nest_lock, unsigned long ip,
-			  int references, int pin_count)
+
+unsigned int nr_iowait(void)
 {
-	struct task_struct *curr = current;
-	struct lock_class *class = NULL;
-	struct held_lock *hlock;
-	unsigned int depth;
-	int chain_head = 0;
-	int class_idx;
-	u64 chain_key;
+	unsigned int i, sum = 0;
 
-	if (unlikely(!debug_locks))
-		return 0;
+	for_each_possible_cpu(i)
+		sum += nr_iowait_cpu(i);
 
-	if (!prove_locking || lock->key == &__lockdep_no_validate__)
-		check = 0;
+	return sum;
+}
 
-	if (subclass < NR_LOCKDEP_CACHING_CLASSES)
-		class = lock->class_cache[subclass];
-	/*
-	 * Not cached?
-	 */
-	if (unlikely(!class)) {
-		class = register_lock_class(lock, subclass, 0);
-		if (!class)
-			return 0;
+#ifdef CONFIG_SMP
+
+/*
+ * sched_exec - execve() is a valuable balancing opportunity, because at
+ * this point the task has the smallest effective memory and cache footprint.
+ */
+void sched_exec(void)
+{
+	struct task_struct *p = current;
+	unsigned long flags;
+	int dest_cpu;
+
+	raw_spin_lock_irqsave(&p->pi_lock, flags);
+	dest_cpu = p->sched_class->select_task_rq(p, task_cpu(p), WF_EXEC);
+	if (dest_cpu == smp_processor_id())
+		goto unlock;
+
+	if (likely(cpu_active(dest_cpu))) {
+		struct migration_arg arg = { p, dest_cpu };
+
+		raw_spin_unlock_irqrestore(&p->pi_lock, flags);
+		stop_one_cpu(task_cpu(p), migration_cpu_stop, &arg);
+		return;
 	}
+unlock:
+	raw_spin_unlock_irqrestore(&p->pi_lock, flags);
+}
 
-	debug_class_ops_inc(class);
-
-	if (very_verbose(class)) {
-		printk("\nacquire class [%px] %s", class->key, class->name);
-		if (class->name_version > 1)
-			printk(KERN_CONT "#%d", class->name_version);
-		printk(KERN_CONT "\n");
-		dump_stack();
-	}
-
-	/*
-	 * Add the lock to the list of currently held locks.
-	 * (we dont increase the depth just yet, up until the
-	 * dependency checks are done)
-	 */
-	depth = curr->lockdep_depth;
-	/*
-	 * Ran out of static storage for our per-task lock stack again have we?
-	 */
-	if (DEBUG_LOCKS_WARN_ON(depth >= MAX_LOCK_DEPTH))
-		return 0;
-
-	class_idx = class - lock_classes;
-
-	if (depth) { /* we're holding locks */
-		hlock = curr->held_locks + depth - 1;
-		if (hlock->class_idx == class_idx && nest_lock) {
-			if (!references)
-				references++;
-
-			if (!hlock->references)
-				hlock->references++;
-
-			hlock->references += references;
-
-			/* Overflow */
-			if (DEBUG_LOCKS_WARN_ON(hlock->references < references))
-				return 0;
-
-			return 2;
-		}
-	}
-
-	hlock = curr->held_locks + depth;
-	/*
-	 * Plain impossible, we just registered it and checked it weren't no
-	 * NULL like.. I bet this mushroom I ate was good!
-	 */
-	if (DEBUG_LOCKS_WARN_ON(!class))
-		return 0;
-	hlock->class_idx = class_idx;
-	hlock->acquire_ip = ip;
-	hlock->instance = lock;
-	hlock->nest_lock = nest_lock;
-	hlock->irq_context = task_irq_context(curr);
-	hlock->trylock = trylock;
-	hlock->read = read;
-	hlock->check = check;
-	hlock->hardirqs_off = !!hardirqs_off;
-	hlock->references = references;
-#ifdef CONFIG_LOCK_STAT
-	hlock->waittime_stamp = 0;
-	hlock->holdtime_stamp = lockstat_clock();
 #endif
-	hlock->pin_count = pin_count;
 
-	if (check_wait_context(curr, hlock))
-		return 0;
+DEFINE_PER_CPU(struct kernel_stat, kstat);
+DEFINE_PER_CPU(struct kernel_cpustat, kernel_cpustat);
 
-	/* Initialize the lock usage bit */
-	if (!mark_usage(curr, hlock, check))
-		return 0;
+EXPORT_PER_CPU_SYMBOL(kstat);
+EXPORT_PER_CPU_SYMBOL(kernel_cpustat);
 
+/*
+ * The function fair_sched_class.update_curr accesses the struct curr
+ * and its field curr->exec_start; when called from task_sched_runtime(),
+ * we observe a high rate of cache misses in practice.
+ * Prefetching this data results in improved performance.
+ */
+static inline void prefetch_curr_exec_start(struct task_struct *p)
+{
+#ifdef CONFIG_FAIR_GROUP_SCHED
+	struct sched_entity *curr = (&p->se)->cfs_rq->curr;
+#else
+	struct sched_entity *curr = (&task_rq(p)->cfs)->curr;
+#endif
+	prefetch(curr);
+	prefetch(&curr->exec_start);
+}
+
+/*
+ * Return accounted runtime for the task.
+ * In case the task is currently running, return the runtime plus current's
+ * pending runtime that have not been accounted yet.
+ */
+unsigned long long task_sched_runtime(struct task_struct *p)
+{
+	struct rq_flags rf;
+	struct rq *rq;
+	u64 ns;
+
+#if defined(CONFIG_64BIT) && defined(CONFIG_SMP)
 	/*
-	 * Calculate the chain hash: it's the combined hash of all the
-	 * lock keys along the dependency chain. We save the hash value
-	 * at every step so that we can get the current hash easily
-	 * after unlock. The chain hash is then used to cache dependency
-	 * results.
+	 * 64-bit doesn't need locks to atomically read a 64-bit value.
+	 * So we have a optimization chance when the task's delta_exec is 0.
+	 * Reading ->on_cpu is racy, but this is ok.
 	 *
-	 * The 'key ID' is what is the most compact key value to drive
-	 * the hash, not class->key.
+	 * If we race with it leaving CPU, we'll take a lock. So we're correct.
+	 * If we race with it entering CPU, unaccounted time is 0. This is
+	 * indistinguishable from the read occurring a few cycles earlier.
+	 * If we see ->on_cpu without ->on_rq, the task is leaving, and has
+	 * been accounted, so we're correct here as well.
 	 */
+	if (!p->on_cpu || !task_on_rq_queued(p))
+		return p->se.sum_exec_runtime;
+#endif
+
+	rq = task_rq_lock(p, &rf);
 	/*
-	 * Whoops, we did it again.. class_idx is invalid.
+	 * Must be ->curr _and_ ->on_rq.  If dequeued, we would
+	 * project cycles that may never be accounted to this
+	 * thread, breaking clock_gettime().
 	 */
-	if (DEBUG_LOCKS_WARN_ON(!test_bit(class_idx, lock_classes_in_use)))
+	if (task_current(rq, p) && task_on_rq_queued(p)) {
+		prefetch_curr_exec_start(p);
+		update_rq_clock(rq);
+		p->sched_class->update_curr(rq);
+	}
+	ns = p->se.sum_exec_runtime;
+	task_rq_unlock(rq, p, &rf);
+
+	return ns;
+}
+
+#ifdef CONFIG_SCHED_DEBUG
+static u64 cpu_resched_latency(struct rq *rq)
+{
+	int latency_warn_ms = READ_ONCE(sysctl_resched_latency_warn_ms);
+	u64 resched_latency, now = rq_clock(rq);
+	static bool warned_once;
+
+	if (sysctl_resched_latency_warn_once && warned_once)
 		return 0;
 
-	chain_key = curr->cu
+	if (!need_resched() || !latency_warn_ms)
+		return 0;
+
+	if (system_state == SYSTEM_BOOTING)
+		return 0;
+
+	if (!rq->last_seen_need_resched_ns) {
+		rq->last_seen_need_resched_ns = now;
+		rq->ticks_without_resched = 0;
+		return 0;
+	}
+
+	rq->ticks_without_resched++;
+	resched_latency = now - rq->last_seen_need_resched_ns;
+	if (resched_latency <= latency_warn_ms * NSEC_PER_MSEC)
+		return 0;
+
+	warned_once = true;
+
+	return resched_latency;
+}
+
+static int __init setup_resched_latency_warn_ms(char *str)
+{
+	long val;
+
+	if ((kstrtol(str, 0, &val))) {
+		pr_warn("Unable to set resched_latency_warn_ms\n");
+		return 1;
+	}
+
+	sysctl_resched_latency_warn_ms = val;
+	return 1;
+}
+__setup("resched_latency_warn_ms=", setup_resched_latency_warn_ms);
+#else
+static inline u64 cpu_resched_latency(struct rq *rq) { return 0; }
+#endif /* CONFIG_SCHED_DEBUG */
+
+/*
+ * This function gets called by the timer code, with HZ frequency.
+ * We call it with interrupts disabled.
+ */
+void scheduler_tick(void)
+{
+	int cpu = smp_processor_id();
+	struct rq *rq = cpu_rq(cpu);
+	struct task_struct *curr = rq->curr;
+	struct rq_flags rf;
+	unsigned long thermal_pressure;
+	u64 resched_latency;
+
+	arch_scale_freq_tick();
+	sched_clock_tick();
+
+	rq_lock(rq, &rf);
+
+	update_rq_clock(rq);
+	thermal_pressure = arch_scale_thermal_pressure(cpu_of(rq));
+	update_thermal_load_avg(rq_clock_thermal(rq), rq, thermal_pressure);
+	curr->sched_class->task_tick(rq, curr, 0);
+	if (sched_feat(LATENCY_WARN))
+		resched_latency = cpu_resched_latency(rq);
+	calc_global_load_tick(rq);
+	sched_core_tick(r

@@ -1,31 +1,22 @@
- */
+  = 0x61,
+	.if_khz           = 5380,
+};
 
-static inline void check_data_structures(void) { }
+static struct xc5000_config dvico_xc5000_tunerconfig = {
+	.i2c_address      = 0x64,
+	.if_khz           = 5380,
+};
 
-#endif /* CONFIG_DEBUG_LOCKDEP */
+static struct tda829x_config tda829x_no_probe = {
+	.probe_tuner = TDA829X_DONT_PROBE,
+};
 
-static void init_chain_block_buckets(void);
+static struct tda18271_std_map hauppauge_tda18271_std_map = {
+	.atsc_6   = { .if_freq = 5380, .agc_mode = 3, .std = 3,
+		      .if_lvl = 6, .rfagc_top = 0x37 },
+	.qam_6    = { .if_freq = 4000, .agc_mode = 3, .std = 0,
+		      .if_lvl = 6, .rfagc_top = 0x37 },
+};
 
-/*
- * Initialize the lock_classes[] array elements, the free_lock_classes list
- * and also the delayed_free structure.
- */
-static void init_data_structures_once(void)
-{
-	static bool __read_mostly ds_initialized, rcu_head_initialized;
-	int i;
-
-	if (likely(rcu_head_initialized))
-		return;
-
-	if (system_state >= SYSTEM_SCHEDULING) {
-		init_rcu_head(&delayed_free.rcu_head);
-		rcu_head_initialized = true;
-	}
-
-	if (ds_initialized)
-		return;
-
-	ds_initialized = true;
-
-	INIT_LIST_HEAD(&delayed_f
+static struct tda18271_std_map hauppauge_hvr1200_tda18271_std_map = {
+	.dvbt_6   = { .if_freq = 3300, .agc_mode = 3, 

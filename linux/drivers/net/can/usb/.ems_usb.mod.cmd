@@ -1,4 +1,1 @@
-e/config/ACPI_APEI_GHES) \
-    $(wildcard include/config/INTEL_TXT) \
-  arch/x86/include/generated/asm/kmap_size.h \
-  in
+cmd_drivers/net/can/usb/ems_usb.mod := { echo  drivers/net/can/usb/ems_usb.o;  echo; } > drivers/net/can/usb/ems_usb.mod

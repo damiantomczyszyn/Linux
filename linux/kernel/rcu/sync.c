@@ -1,239 +1,226 @@
-IRQ) << LOCK_USAGE_READ_MASK;
+us & VID_BC_MSK_SYNC) ||
+		(status & VID_BC_MSK_OF)) {
 
-	return excl;
-}
+		if (status & VID_BC_MSK_OPC_ERR)
+			dprintk(7, " (VID_BC_MSK_OPC_ERR 0x%08x)\n",
+				VID_BC_MSK_OPC_ERR);
 
-/*
- * Find the first pair of bit match between an original
- * usage mask and an exclusive usage mask.
- */
-static int find_exclusive_match(unsigned long mask,
-				unsigned long excl_mask,
-				enum lock_usage_bit *bitp,
-				enum lock_usage_bit *excl_bitp)
-{
-	int bit, excl, excl_read;
+		if (status & VID_BC_MSK_BAD_PKT)
+			dprintk(7, " (VID_BC_MSK_BAD_PKT 0x%08x)\n",
+				VID_BC_MSK_BAD_PKT);
 
-	for_each_set_bit(bit, &mask, LOCK_USED) {
-		/*
-		 * exclusive_bit() strips the read bit, however,
-		 * LOCK_ENABLED_IRQ_*_READ may cause deadlocks too, so we need
-		 * to search excl | LOCK_USAGE_READ_MASK as well.
-		 */
-		excl = exclusive_bit(bit);
-		excl_read = excl | LOCK_USAGE_READ_MASK;
-		if (excl_mask & lock_flag(excl)) {
-			*bitp = bit;
-			*excl_bitp = excl;
-			return 0;
-		} else if (excl_mask & lock_flag(excl_read)) {
-			*bitp = bit;
-			*excl_bitp = excl_read;
-			return 0;
-		}
+		if (status & VID_BC_MSK_SYNC)
+			dprintk(7, " (VID_BC_MSK_SYNC    0x%08x)\n",
+				VID_BC_MSK_SYNC);
+
+		if (status & VID_BC_MSK_OF)
+			dprintk(7, " (VID_BC_MSK_OF      0x%08x)\n",
+				VID_BC_MSK_OF);
+
+		pr_err("%s: mpeg risc op code error\n", dev->name);
+
+		cx_clear(port->reg_dma_ctl, port->dma_ctl_val);
+		cx23885_sram_channel_dump(dev,
+			&dev->sram_channels[port->sram_chno]);
+
+	} else if (status & VID_BC_MSK_RISCI1) {
+
+		dprintk(7, " (RISCI1            0x%08x)\n", VID_BC_MSK_RISCI1);
+
+		spin_lock(&port->slock);
+		count = cx_read(port->reg_gpcnt);
+		cx23885_wakeup(port, &port->mpegq, count);
+		spin_unlock(&port->slock);
+
 	}
-	return -1;
-}
-
-/*
- * Prove that the new dependency does not connect a hardirq-safe(-read)
- * lock with a hardirq-unsafe lock - to achieve this we search
- * the backwards-subgraph starting at <prev>, and the
- * forwards-subgraph starting at <next>:
- */
-static int check_irq_usage(struct task_struct *curr, struct held_lock *prev,
-			   struct held_lock *next)
-{
-	unsigned long usage_mask = 0, forward_mask, backward_mask;
-	enum lock_usage_bit forward_bit = 0, backward_bit = 0;
-	struct lock_list *target_entry1;
-	struct lock_list *target_entry;
-	struct lock_list this, that;
-	enum bfs_result ret;
-
-	/*
-	 * Step 1: gather all hard/soft IRQs usages backward in an
-	 * accumulated usage mask.
-	 */
-	bfs_init_rootb(&this, prev);
-
-	ret = __bfs_backwards(&this, &usage_mask, usage_accumulate, usage_skip, NULL);
-	if (bfs_error(ret)) {
-		print_bfs_bug(ret);
-		return 0;
+	if (status) {
+		cx_write(port->reg_ts_int_stat, status);
+		handled = 1;
 	}
 
-	usage_mask &= LOCKF_USED_IN_IRQ_ALL;
-	if (!usage_mask)
-		return 1;
+	return handled;
+}
 
-	/*
-	 * Step 2: find exclusive uses forward that match the previous
-	 * backward accumulated mask.
-	 */
-	forward_mask = exclusive_mask(usage_mask);
+static irqreturn_t cx23885_irq(int irq, void *dev_id)
+{
+	struct cx23885_dev *dev = dev_id;
+	struct cx23885_tsport *ts1 = &dev->ts1;
+	struct cx23885_tsport *ts2 = &dev->ts2;
+	u32 pci_status, pci_mask;
+	u32 vida_status, vida_mask;
+	u32 audint_status, audint_mask;
+	u32 ts1_status, ts1_mask;
+	u32 ts2_status, ts2_mask;
+	int vida_count = 0, ts1_count = 0, ts2_count = 0, handled = 0;
+	int audint_count = 0;
+	bool subdev_handled;
 
-	bfs_init_root(&that, next);
-
-	ret = find_usage_forwards(&that, forward_mask, &target_entry1);
-	if (bfs_error(ret)) {
-		print_bfs_bug(ret);
-		return 0;
+	pci_status = cx_read(PCI_INT_STAT);
+	pci_mask = cx23885_irq_get_mask(dev);
+	if ((pci_status & pci_mask) == 0) {
+		dprintk(7, "pci_status: 0x%08x  pci_mask: 0x%08x\n",
+			pci_status, pci_mask);
+		goto out;
 	}
-	if (ret == BFS_RNOMATCH)
-		return 1;
 
-	/*
-	 * Step 3: we found a bad match! Now retrieve a lock from the backward
-	 * list whose usage mask matches the exclusive usage mask from the
-	 * lock found on the forward list.
-	 *
-	 * Note, we should only keep the LOCKF_ENABLED_IRQ_ALL bits, considering
-	 * the follow case:
-	 *
-	 * When trying to add A -> B to the graph, we find that there is a
-	 * hardirq-safe L, that L -> ... -> A, and another hardirq-unsafe M,
-	 * that B -> ... -> M. However M is **softirq-safe**, if we use exact
-	 * invert bits of M's usage_mask, we will find another lock N that is
-	 * **softirq-unsafe** and N -> ... -> A, however N -> .. -> M will not
-	 * cause a inversion deadlock.
-	 */
-	backward_mask = original_mask(target_entry1->class->usage_mask & LOCKF_ENABLED_IRQ_ALL);
+	vida_status = cx_read(VID_A_INT_STAT);
+	vida_mask = cx_read(VID_A_INT_MSK);
+	audint_status = cx_read(AUDIO_INT_INT_STAT);
+	audint_mask = cx_read(AUDIO_INT_INT_MSK);
+	ts1_status = cx_read(VID_B_INT_STAT);
+	ts1_mask = cx_read(VID_B_INT_MSK);
+	ts2_status = cx_read(VID_C_INT_STAT);
+	ts2_mask = cx_read(VID_C_INT_MSK);
 
-	ret = find_usage_backwards(&this, backward_mask, &target_entry);
-	if (bfs_error(ret)) {
-		print_bfs_bug(ret);
-		return 0;
+	if (((pci_status & pci_mask) == 0) &&
+		((ts2_status & ts2_mask) == 0) &&
+		((ts1_status & ts1_mask) == 0))
+		goto out;
+
+	vida_count = cx_read(VID_A_GPCNT);
+	audint_count = cx_read(AUD_INT_A_GPCNT);
+	ts1_count = cx_read(ts1->reg_gpcnt);
+	ts2_count = cx_read(ts2->reg_gpcnt);
+	dprintk(7, "pci_status: 0x%08x  pci_mask: 0x%08x\n",
+		pci_status, pci_mask);
+	dprintk(7, "vida_status: 0x%08x vida_mask: 0x%08x count: 0x%x\n",
+		vida_status, vida_mask, vida_count);
+	dprintk(7, "audint_status: 0x%08x audint_mask: 0x%08x count: 0x%x\n",
+		audint_status, audint_mask, audint_count);
+	dprintk(7, "ts1_status: 0x%08x  ts1_mask: 0x%08x count: 0x%x\n",
+		ts1_status, ts1_mask, ts1_count);
+	dprintk(7, "ts2_status: 0x%08x  ts2_mask: 0x%08x count: 0x%x\n",
+		ts2_status, ts2_mask, ts2_count);
+
+	if (pci_status & (PCI_MSK_RISC_RD | PCI_MSK_RISC_WR |
+			  PCI_MSK_AL_RD   | PCI_MSK_AL_WR   | PCI_MSK_APB_DMA |
+			  PCI_MSK_VID_C   | PCI_MSK_VID_B   | PCI_MSK_VID_A   |
+			  PCI_MSK_AUD_INT | PCI_MSK_AUD_EXT |
+			  PCI_MSK_GPIO0   | PCI_MSK_GPIO1   |
+			  PCI_MSK_AV_CORE | PCI_MSK_IR)) {
+
+		if (pci_status & PCI_MSK_RISC_RD)
+			dprintk(7, " (PCI_MSK_RISC_RD   0x%08x)\n",
+				PCI_MSK_RISC_RD);
+
+		if (pci_status & PCI_MSK_RISC_WR)
+			dprintk(7, " (PCI_MSK_RISC_WR   0x%08x)\n",
+				PCI_MSK_RISC_WR);
+
+		if (pci_status & PCI_MSK_AL_RD)
+			dprintk(7, " (PCI_MSK_AL_RD     0x%08x)\n",
+				PCI_MSK_AL_RD);
+
+		if (pci_status & PCI_MSK_AL_WR)
+			dprintk(7, " (PCI_MSK_AL_WR     0x%08x)\n",
+				PCI_MSK_AL_WR);
+
+		if (pci_status & PCI_MSK_APB_DMA)
+			dprintk(7, " (PCI_MSK_APB_DMA   0x%08x)\n",
+				PCI_MSK_APB_DMA);
+
+		if (pci_status & PCI_MSK_VID_C)
+			dprintk(7, " (PCI_MSK_VID_C     0x%08x)\n",
+				PCI_MSK_VID_C);
+
+		if (pci_status & PCI_MSK_VID_B)
+			dprintk(7, " (PCI_MSK_VID_B     0x%08x)\n",
+				PCI_MSK_VID_B);
+
+		if (pci_status & PCI_MSK_VID_A)
+			dprintk(7, " (PCI_MSK_VID_A     0x%08x)\n",
+				PCI_MSK_VID_A);
+
+		if (pci_status & PCI_MSK_AUD_INT)
+			dprintk(7, " (PCI_MSK_AUD_INT   0x%08x)\n",
+				PCI_MSK_AUD_INT);
+
+		if (pci_status & PCI_MSK_AUD_EXT)
+			dprintk(7, " (PCI_MSK_AUD_EXT   0x%08x)\n",
+				PCI_MSK_AUD_EXT);
+
+		if (pci_status & PCI_MSK_GPIO0)
+			dprintk(7, " (PCI_MSK_GPIO0     0x%08x)\n",
+				PCI_MSK_GPIO0);
+
+		if (pci_status & PCI_MSK_GPIO1)
+			dprintk(7, " (PCI_MSK_GPIO1     0x%08x)\n",
+				PCI_MSK_GPIO1);
+
+		if (pci_status & PCI_MSK_AV_CORE)
+			dprintk(7, " (PCI_MSK_AV_CORE   0x%08x)\n",
+				PCI_MSK_AV_CORE);
+
+		if (pci_status & PCI_MSK_IR)
+			dprintk(7, " (PCI_MSK_IR        0x%08x)\n",
+				PCI_MSK_IR);
 	}
-	if (DEBUG_LOCKS_WARN_ON(ret == BFS_RNOMATCH))
-		return 1;
 
-	/*
-	 * Step 4: narrow down to a pair of incompatible usage bits
-	 * and report it.
-	 */
-	ret = find_exclusive_match(target_entry->class->usage_mask,
-				   target_entry1->class->usage_mask,
-				   &backward_bit, &forward_bit);
-	if (DEBUG_LOCKS_WARN_ON(ret == -1))
-		return 1;
+	if (cx23885_boards[dev->board].ci_type == 1 &&
+			(pci_status & (PCI_MSK_GPIO1 | PCI_MSK_GPIO0)))
+		handled += netup_ci_slot_status(dev, pci_status);
 
-	print_bad_irq_dependency(curr, &this, &that,
-				 target_entry, target_entry1,
-				 prev, next,
-				 backward_bit, forward_bit,
-				 state_name(backward_bit));
+	if (cx23885_boards[dev->board].ci_type == 2 &&
+			(pci_status & PCI_MSK_GPIO0))
+		handled += altera_ci_irq(dev);
 
-	return 0;
+	if (ts1_status) {
+		if (cx23885_boards[dev->board].portb == CX23885_MPEG_DVB)
+			handled += cx23885_irq_ts(ts1, ts1_status);
+		else
+		if (cx23885_boards[dev->board].portb == CX23885_MPEG_ENCODER)
+			handled += cx23885_irq_417(dev, ts1_status);
+	}
+
+	if (ts2_status) {
+		if (cx23885_boards[dev->board].portc == CX23885_MPEG_DVB)
+			handled += cx23885_irq_ts(ts2, ts2_status);
+		else
+		if (cx23885_boards[dev->board].portc == CX23885_MPEG_ENCODER)
+			handled += cx23885_irq_417(dev, ts2_status);
+	}
+
+	if (vida_status)
+		handled += cx23885_video_irq(dev, vida_status);
+
+	if (audint_status)
+		handled += cx23885_audio_irq(dev, audint_status, audint_mask);
+
+	if (pci_status & PCI_MSK_IR) {
+		subdev_handled = false;
+		v4l2_subdev_call(dev->sd_ir, core, interrupt_service_routine,
+				 pci_status, &subdev_handled);
+		if (subdev_handled)
+			handled++;
+	}
+
+	if ((pci_status & pci_mask) & PCI_MSK_AV_CORE) {
+		cx23885_irq_disable(dev, PCI_MSK_AV_CORE);
+		schedule_work(&dev->cx25840_work);
+		handled++;
+	}
+
+	if (handled)
+		cx_write(PCI_INT_STAT, pci_status & pci_mask);
+out:
+	return IRQ_RETVAL(handled);
 }
 
-#else
-
-static inline int check_irq_usage(struct task_struct *curr,
-				  struct held_lock *prev, struct held_lock *next)
+static void cx23885_v4l2_dev_notify(struct v4l2_subdev *sd,
+				    unsigned int notification, void *arg)
 {
-	return 1;
-}
+	struct cx23885_dev *dev;
 
-static inline bool usage_skip(struct lock_list *entry, void *mask)
-{
-	return false;
-}
+	if (sd == NULL)
+		return;
 
-#endif /* CONFIG_TRACE_IRQFLAGS */
+	dev = to_cx23885(sd->v4l2_dev);
 
-#ifdef CONFIG_LOCKDEP_SMALL
-/*
- * Check that the dependency graph starting at <src> can lead to
- * <target> or not. If it can, <src> -> <target> dependency is already
- * in the graph.
- *
- * Return BFS_RMATCH if it does, or BFS_RNOMATCH if it does not, return BFS_E* if
- * any error appears in the bfs search.
- */
-static noinline enum bfs_result
-check_redundant(struct held_lock *src, struct held_lock *target)
-{
-	enum bfs_result ret;
-	struct lock_list *target_entry;
-	struct lock_list src_entry;
-
-	bfs_init_root(&src_entry, src);
-	/*
-	 * Special setup for check_redundant().
-	 *
-	 * To report redundant, we need to find a strong dependency path that
-	 * is equal to or stronger than <src> -> <target>. So if <src> is E,
-	 * we need to let __bfs() only search for a path starting at a -(E*)->,
-	 * we achieve this by setting the initial node's ->only_xr to true in
-	 * that case. And if <prev> is S, we set initial ->only_xr to false
-	 * because both -(S*)-> (equal) and -(E*)-> (stronger) are redundant.
-	 */
-	src_entry.only_xr = src->read == 0;
-
-	debug_atomic_inc(nr_redundant_checks);
-
-	/*
-	 * Note: we skip local_lock() for redundant check, because as the
-	 * comment in usage_skip(), A -> local_lock() -> B and A -> B are not
-	 * the same.
-	 */
-	ret = check_path(target, &src_entry, hlock_equal, usage_skip, &target_entry);
-
-	if (ret == BFS_RMATCH)
-		debug_atomic_inc(nr_redundant);
-
-	return ret;
-}
-
-#else
-
-static inline enum bfs_result
-check_redundant(struct held_lock *src, struct held_lock *target)
-{
-	return BFS_RNOMATCH;
-}
-
-#endif
-
-static void inc_chains(int irq_context)
-{
-	if (irq_context & LOCK_CHAIN_HARDIRQ_CONTEXT)
-		nr_hardirq_chains++;
-	else if (irq_context & LOCK_CHAIN_SOFTIRQ_CONTEXT)
-		nr_softirq_chains++;
-	else
-		nr_process_chains++;
-}
-
-static void dec_chains(int irq_context)
-{
-	if (irq_context & LOCK_CHAIN_HARDIRQ_CONTEXT)
-		nr_hardirq_chains--;
-	else if (irq_context & LOCK_CHAIN_SOFTIRQ_CONTEXT)
-		nr_softirq_chains--;
-	else
-		nr_process_chains--;
-}
-
-static void
-print_deadlock_scenario(struct held_lock *nxt, struct held_lock *prv)
-{
-	struct lock_class *next = hlock_class(nxt);
-	struct lock_class *prev = hlock_class(prv);
-
-	printk(" Possible unsafe locking scenario:\n\n");
-	printk("       CPU0\n");
-	printk("       ----\n");
-	printk("  lock(");
-	__print_lock_name(prev);
-	printk(KERN_CONT ");\n");
-	printk("  lock(");
-	__print_lock_name(next);
-	printk(KERN_CONT ");\n");
-	printk("\n *** DEADLOCK ***\n\n");
-	printk(" May be due to missing lock nesting notation\n\n");
-}
-
-static void
-print_deadlock_bug(struct task_struct *curr, struct held_lock *pr
+	switch (notification) {
+	case V4L2_SUBDEV_IR_RX_NOTIFY: /* Possibly called in an IRQ context */
+		if (sd == dev->sd_ir)
+			cx23885_ir_rx_v4l2_dev_notify(sd, *(u32 *)arg);
+		break;
+	case V4L2_SUBDEV_IR_TX_NOTIFY: /* Possibly called in an IRQ context */
+		if (sd == dev->sd_ir)
+			cx23885_ir_tx_v4l2_de

@@ -1,90 +1,49 @@
-// SPDX-License-Identifier: GPL-2.0+
-// pinnacle-color.h - Keytable for pinnacle_color Remote Controller
-//
-// keymap imported from ir-keymaps.c
-//
-// Copyright (c) 2010 by Mauro Carvalho Chehab
-
-#include <media/rc-map.h>
-#include <linux/module.h>
-
-static struct rc_map_table pinnacle_color[] = {
-	{ 0x59, KEY_MUTE },
-	{ 0x4a, KEY_POWER },
-
-	{ 0x18, KEY_TEXT },
-	{ 0x26, KEY_TV },
-	{ 0x3d, KEY_PRINT },
-
-	{ 0x48, KEY_RED },
-	{ 0x04, KEY_GREEN },
-	{ 0x11, KEY_YELLOW },
-	{ 0x00, KEY_BLUE },
-
-	{ 0x2d, KEY_VOLUMEUP },
-	{ 0x1e, KEY_VOLUMEDOWN },
-
-	{ 0x49, KEY_MENU },
-
-	{ 0x16, KEY_CHANNELUP },
-	{ 0x17, KEY_CHANNELDOWN },
-
-	{ 0x20, KEY_UP },
-	{ 0x21, KEY_DOWN },
-	{ 0x22, KEY_LEFT },
-	{ 0x23, KEY_RIGHT },
-	{ 0x0d, KEY_SELECT },
-
-	{ 0x08, KEY_BACK },
-	{ 0x07, KEY_REFRESH },
-
-	{ 0x2f, KEY_ZOOM },
-	{ 0x29, KEY_RECORD },
-
-	{ 0x4b, KEY_PAUSE },
-	{ 0x4d, KEY_REWIND },
-	{ 0x2e, KEY_PLAY },
-	{ 0x4e, KEY_FORWARD },
-	{ 0x53, KEY_PREVIOUS },
-	{ 0x4c, KEY_STOP },
-	{ 0x54, KEY_NEXT },
-
-	{ 0x69, KEY_NUMERIC_0 },
-	{ 0x6a, KEY_NUMERIC_1 },
-	{ 0x6b, KEY_NUMERIC_2 },
-	{ 0x6c, KEY_NUMERIC_3 },
-	{ 0x6d, KEY_NUMERIC_4 },
-	{ 0x6e, KEY_NUMERIC_5 },
-	{ 0x6f, KEY_NUMERIC_6 },
-	{ 0x70, KEY_NUMERIC_7 },
-	{ 0x71, KEY_NUMERIC_8 },
-	{ 0x72, KEY_NUMERIC_9 },
-
-	{ 0x74, KEY_CHANNEL },
-	{ 0x0a, KEY_BACKSPACE },
-};
-
-static struct rc_map_list pinnacle_color_map = {
-	.map = {
-		.scan     = pinnacle_color,
-		.size     = ARRAY_SIZE(pinnacle_color),
-		.rc_proto = RC_PROTO_UNKNOWN,	/* Legacy IR type */
-		.name     = RC_MAP_PINNACLE_COLOR,
-	}
-};
-
-static int __init init_rc_map_pinnacle_color(void)
-{
-	return rc_map_register(&pinnacle_color_map);
-}
-
-static void __exit exit_rc_map_pinnacle_color(void)
-{
-	rc_map_unregister(&pinnacle_color_map);
-}
-
-module_init(init_rc_map_pinnacle_color)
-module_exit(exit_rc_map_pinnacle_color)
-
-MODULE_LICENSE("GPL");
-MODULE_AUTHOR("Mauro Carvalho Chehab");
+include/config/ALPHA) \
+    $(wildcard include/config/IA64) \
+    $(wildcard include/config/PPC64) \
+  include/linux/rbtree_latch.h \
+  include/linux/error-injection.h \
+  include/asm-generic/error-injection.h \
+  include/linux/cfi.h \
+    $(wildcard include/config/CFI_CLANG_SHADOW) \
+  arch/x86/include/asm/module.h \
+    $(wildcard include/config/UNWINDER_ORC) \
+  include/asm-generic/module.h \
+    $(wildcard include/config/HAVE_MOD_ARCH_SPECIFIC) \
+    $(wildcard include/config/MODULES_USE_ELF_REL) \
+    $(wildcard include/config/MODULES_USE_ELF_RELA) \
+  arch/x86/include/asm/orc_types.h \
+  arch/x86/include/asm/device.h \
+  include/linux/pm_wakeup.h \
+  include/linux/cdev.h \
+  include/media/media-entity.h \
+  include/linux/fwnode.h \
+  include/uapi/linux/media.h \
+  include/media/v4l2-subdev.h \
+    $(wildcard include/config/VIDEO_ADV_DEBUG) \
+  include/uapi/linux/v4l2-subdev.h \
+  include/uapi/linux/v4l2-common.h \
+  include/uapi/linux/v4l2-mediabus.h \
+  include/uapi/linux/media-bus-format.h \
+  include/linux/videodev2.h \
+  include/uapi/linux/videodev2.h \
+  include/uapi/linux/v4l2-controls.h \
+  include/media/v4l2-async.h \
+  include/media/v4l2-common.h \
+    $(wildcard include/config/VIDEO_V4L2_I2C) \
+    $(wildcard include/config/SPI) \
+  include/media/v4l2-dev.h \
+  include/linux/i2c.h \
+    $(wildcard include/config/I2C) \
+    $(wildcard include/config/I2C_SLAVE) \
+    $(wildcard include/config/I2C_BOARDINFO) \
+    $(wildcard include/config/I2C_MUX) \
+  include/linux/acpi.h \
+    $(wildcard include/config/ACPI_DEBUGGER) \
+    $(wildcard include/config/ACPI_TABLE_LIB) \
+    $(wildcard include/config/LOONGARCH) \
+    $(wildcard include/config/ARM64) \
+    $(wildcard include/config/ACPI_PROCESSOR_CSTATE) \
+    $(wildcard include/config/ACPI_HOTPLUG_CPU) \
+    $(wildcard include/config/ACPI_HOTPLUG_IOAPIC) \
+    $(wildcard i

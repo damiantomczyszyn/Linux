@@ -1,755 +1,1400 @@
-e/config/ACPI_APEI_GHES) \
-    $(wildcard include/config/INTEL_TXT) \
-  arch/x86/include/generated/asm/kmap_size.h \
-  include/asm-generic/kmap_size.h \
-    $(wildcard include/config/DEBUG_KMAP_LOCAL) \
-  include/asm-generic/fixmap.h \
-  arch/x86/include/asm/irq_vectors.h \
-    $(wildcard include/config/HAVE_KVM) \
-    $(wildcard include/config/HYPERV) \
-    $(wildcard include/config/PCI_MSI) \
-  arch/x86/include/asm/cpu_entry_area.h \
-  arch/x86/include/asm/intel_ds.h \
-  arch/x86/include/asm/pgtable_areas.h \
-  arch/x86/include/asm/pgtable_32_areas.h \
-  include/uapi/linux/elf.h \
-  include/uapi/linux/elf-em.h \
-  include/linux/kobject.h \
-    $(wildcard include/config/UEVENT_HELPER) \
-    $(wildcard include/config/DEBUG_KOBJECT_RELEASE) \
-  include/linux/sysfs.h \
-  include/linux/kernfs.h \
-    $(wildcard include/config/KERNFS) \
-  include/linux/idr.h \
-  include/linux/radix-tree.h \
-  include/linux/xarray.h \
-    $(wildcard include/config/XARRAY_MULTI) \
-  include/linux/kconfig.h \
-  include/linux/kobject_ns.h \
-  include/linux/moduleparam.h \
-    $(wildcard include/config/ALPHA) \
-    $(wildcard include/config/IA64) \
-    $(wildcard include/config/PPC64) \
-  include/linux/rbtree_latch.h \
-  include/linux/error-injection.h \
-  include/asm-generic/error-injection.h \
-  include/linux/cfi.h \
-    $(wildcard include/config/CFI_CLANG_SHADOW) \
-  arch/x86/include/asm/module.h \
-    $(wildcard include/config/UNWINDER_ORC) \
-  include/asm-generic/module.h \
-    $(wildcard include/config/HAVE_MOD_ARCH_SPECIFIC) \
-    $(wildcard include/config/MODULES_USE_ELF_REL) \
-    $(wildcard include/config/MODULES_USE_ELF_RELA) \
-  arch/x86/include/asm/orc_types.h \
-  include/linux/delay.h \
-  include/linux/sched.h \
-    $(wildcard include/config/VIRT_CPU_ACCOUNTING_NATIVE) \
-    $(wildcard include/config/SCHED_INFO) \
-    $(wildcard include/config/SCHEDSTATS) \
-    $(wildcard include/config/SCHED_CORE) \
-    $(wildcard include/config/FAIR_GROUP_SCHED) \
-    $(wildcard include/config/RT_GROUP_SCHED) \
-    $(wildcard include/config/RT_MUTEXES) \
-    $(wildcard include/config/UCLAMP_TASK) \
-    $(wildcard include/config/UCLAMP_BUCKETS_COUNT) \
-    $(wildcard include/config/CGROUP_SCHED) \
-    $(wildcard include/config/BLK_DEV_IO_TRACE) \
-    $(wildcard include/config/PSI) \
-    $(wildcard include/config/COMPAT_BRK) \
-    $(wildcard include/config/CGROUPS) \
-    $(wildcard include/config/BLK_CGROUP) \
-    $(wildcard include/config/PAGE_OWNER) \
-    $(wildcard include/config/EVENTFD) \
-    $(wildcard include/config/ARCH_HAS_SCALED_CPUTIME) \
-    $(wildcard include/config/VIRT_CPU_ACCOUNTING_GEN) \
-    $(wildcard include/config/POSIX_CPUTIMERS) \
-    $(wildcard include/config/POSIX_CPU_TIMERS_TASK_WORK) \
-    $(wildcard include/config/KEYS) \
-    $(wildcard include/config/SYSVIPC) \
-    $(wildcard include/config/DETECT_HUNG_TASK) \
-    $(wildcard include/config/IO_URING) \
-    $(wildcard include/config/AUDIT) \
-    $(wildcard include/config/AUDITSYSCALL) \
-    $(wildcard include/config/UBSAN) \
-    $(wildcard include/config/UBSAN_TRAP) \
-    $(wildcard include/config/TASK_XACCT) \
-    $(wildcard include/config/CPUSETS) \
-    $(wildcard include/config/X86_CPU_RESCTRL) \
-    $(wildcard include/config/FUTEX) \
-    $(wildcard include/config/PERF_EVENTS) \
-    $(wildcard include/config/RSEQ) \
-    $(wildcard include/config/TASK_DELAY_ACCT) \
-    $(wildcard include/config/FAULT_INJECTION) \
-    $(wildcard include/config/LATENCYTOP) \
-    $(wildcard include/config/KUNIT) \
-    $(wildcard include/config/FUNCTION_GRAPH_TRACER) \
-    $(wildcard include/config/BCACHE) \
-    $(wildcard include/config/VMAP_STACK) \
-    $(wildcard include/config/SECURITY) \
-    $(wildcard include/config/BPF_SYSCALL) \
-    $(wildcard include/config/GCC_PLUGIN_STACKLEAK) \
-    $(wildcard include/config/X86_MCE) \
-    $(wildcard include/config/KRETPROBES) \
-    $(wildcard include/config/RETHOOK) \
-    $(wildcard include/config/ARCH_HAS_PARANOID_L1D_FLUSH) \
-    $(wildcard include/config/ARCH_TASK_STRUCT_ON_STACK) \
-    $(wildcard include/config/DEBUG_RSEQ) \
-  include/uapi/linux/sched.h \
-  include/linux/pid.h \
-  include/linux/rculist.h \
-    $(wildcard include/config/PROVE_RCU_LIST) \
-  include/linux/sem.h \
-  include/uapi/linux/sem.h \
-  include/linux/ipc.h \
-  include/linux/rhashtable-types.h \
-  include/uapi/linux/ipc.h \
-  arch/x86/include/generated/uapi/asm/ipcbuf.h \
-  include/uapi/asm-generic/ipcbuf.h \
-  arch/x86/include/uapi/asm/sembuf.h \
-  include/linux/shm.h \
-  include/uapi/linux/shm.h \
-  include/uapi/asm-generic/hugetlb_encode.h \
-  arch/x86/include/uapi/asm/shmbuf.h \
-  include/uapi/asm-generic/shmbuf.h \
-  arch/x86/include/asm/shmparam.h \
-  include/linux/plist.h \
-    $(wildcard include/config/DEBUG_PLIST) \
-  include/linux/hrtimer.h \
-    $(wildcard include/config/HIGH_RES_TIMERS) \
-    $(wildcard include/config/TIME_LOW_RES) \
-    $(wildcard include/config/TIMERFD) \
-  include/linux/hrtimer_defs.h \
-  include/linux/timerqueue.h \
-  include/linux/seccomp.h \
-    $(wildcard include/config/SECCOMP) \
-    $(wildcard include/config/HAVE_ARCH_SECCOMP_FILTER) \
-    $(wildcard include/config/SECCOMP_FILTER) \
-    $(wildcard include/config/CHECKPOINT_RESTORE) \
-    $(wildcard include/config/SECCOMP_CACHE_DEBUG) \
-  include/uapi/linux/seccomp.h \
-  arch/x86/include/asm/seccomp.h \
-  arch/x86/include/asm/unistd.h \
-  arch/x86/include/uapi/asm/unistd.h \
-  arch/x86/include/generated/uapi/asm/unistd_32.h \
-  include/asm-generic/seccomp.h \
-  include/uapi/linux/unistd.h \
-  include/linux/resource.h \
-  include/uapi/linux/resource.h \
-  arch/x86/include/generated/uapi/asm/resource.h \
-  include/asm-generic/resource.h \
-  include/uapi/asm-generic/resource.h \
-  include/linux/latencytop.h \
-  include/linux/sched/prio.h \
-  include/linux/sched/types.h \
-  include/linux/signal_types.h \
-    $(wildcard include/config/OLD_SIGACTION) \
-  include/uapi/linux/signal.h \
-  arch/x86/include/asm/signal.h \
-  arch/x86/include/uapi/asm/signal.h \
-  include/uapi/asm-generic/signal-defs.h \
-  arch/x86/include/uapi/asm/siginfo.h \
-  include/uapi/asm-generic/siginfo.h \
-  include/linux/syscall_user_dispatch.h \
-  include/linux/task_io_accounting.h \
-    $(wildcard include/config/TASK_IO_ACCOUNTING) \
-  include/linux/posix-timers.h \
-  include/linux/alarmtimer.h \
-    $(wildcard include/config/RTC_CLASS) \
-  include/uapi/linux/rseq.h \
-  include/linux/kcsan.h \
-  arch/x86/include/asm/delay.h \
-  include/asm-generic/delay.h \
-  include/linux/slab.h \
-    $(wildcard include/config/DEBUG_SLAB) \
-    $(wildcard include/config/FAILSLAB) \
-    $(wildcard include/config/MEMCG_KMEM) \
-    $(wildcard include/config/KASAN) \
-    $(wildcard include/config/SLAB) \
-    $(wildcard include/config/SLUB) \
-    $(wildcard include/config/SLOB) \
-  include/linux/overflow.h \
-  include/linux/percpu-refcount.h \
-  include/linux/kasan.h \
-    $(wildcard include/config/KASAN_STACK) \
-    $(wildcard include/config/KASAN_VMALLOC) \
-    $(wildcard include/config/KASAN_INLINE) \
-  include/linux/kasan-enabled.h \
-  include/linux/uaccess.h \
-  include/linux/fault-inject-usercopy.h \
-    $(wildcard include/config/FAULT_INJECTION_USERCOPY) \
-  arch/x86/include/asm/uaccess.h \
-    $(wildcard include/config/CC_HAS_ASM_GOTO_OUTPUT) \
-    $(wildcard include/config/CC_HAS_ASM_GOTO_TIED_OUTPUT) \
-    $(wildcard include/config/ARCH_HAS_COPY_MC) \
-    $(wildcard include/config/X86_INTEL_USERCOPY) \
-  arch/x86/include/asm/smap.h \
-  arch/x86/include/asm/extable.h \
-    $(wildcard include/config/BPF_JIT) \
-  include/asm-generic/access_ok.h \
-    $(wildcard include/config/ALTERNATE_USER_ADDRESS_SPACE) \
-  arch/x86/include/asm/uaccess_32.h \
-  include/linux/i2c.h \
-    $(wildcard include/config/I2C) \
-    $(wildcard include/config/I2C_SLAVE) \
-    $(wildcard include/config/I2C_BOARDINFO) \
-    $(wildcard include/config/I2C_MUX) \
-    $(wildcard include/config/OF) \
-    $(wildcard include/config/ACPI) \
-  include/linux/acpi.h \
-    $(wildcard include/config/ACPI_DEBUGGER) \
-    $(wildcard include/config/ACPI_TABLE_LIB) \
-    $(wildcard include/config/LOONGARCH) \
-    $(wildcard include/config/ARM64) \
-    $(wildcard include/config/ACPI_PROCESSOR_CSTATE) \
-    $(wildcard include/config/ACPI_HOTPLUG_CPU) \
-    $(wildcard include/config/ACPI_HOTPLUG_IOAPIC) \
-    $(wildcard include/config/PCI) \
-    $(wildcard include/config/ACPI_WMI) \
-    $(wildcard include/config/ACPI_NUMA) \
-    $(wildcard include/config/HIBERNATION) \
-    $(wildcard include/config/ACPI_HOTPLUG_MEMORY) \
-    $(wildcard include/config/ACPI_CONTAINER) \
-    $(wildcard include/config/ACPI_GTDT) \
-    $(wildcard include/config/PM) \
-    $(wildcard include/config/GPIOLIB) \
-    $(wildcard include/config/ACPI_TABLE_UPGRADE) \
-    $(wildcard include/config/ACPI_WATCHDOG) \
-    $(wildcard include/config/ACPI_SPCR_TABLE) \
-    $(wildcard include/config/ACPI_GENERIC_GSI) \
-    $(wildcard include/config/ACPI_LPIT) \
-    $(wildcard include/config/ACPI_PPTT) \
-    $(wildcard include/config/ACPI_PCC) \
-  include/linux/ioport.h \
-  include/linux/irqdomain.h \
-    $(wildcard include/config/IRQ_DOMAIN_HIERARCHY) \
-    $(wildcard include/config/GENERIC_IRQ_DEBUGFS) \
-    $(wildcard include/config/IRQ_DOMAIN) \
-    $(wildcard include/config/IRQ_DOMAIN_NOMAP) \
-  include/linux/irqhandler.h \
-  include/linux/of.h \
-    $(wildcard include/config/OF_DYNAMIC) \
-    $(wildcard include/config/SPARC) \
-    $(wildcard include/config/OF_PROMTREE) \
-    $(wildcard include/config/OF_KOBJ) \
-    $(wildcard include/config/OF_NUMA) \
-    $(wildcard include/config/OF_OVERLAY) \
-  include/linux/mod_devicetable.h \
-  include/linux/uuid.h \
-  include/uapi/linux/uuid.h \
-  include/linux/property.h \
-  include/linux/fwnode.h \
-  include/linux/resource_ext.h \
-  include/linux/device.h \
-    $(wildcard include/config/GENERIC_MSI_IRQ_DOMAIN) \
-    $(wildcard include/config/GENERIC_MSI_IRQ) \
-    $(wildcard include/config/ENERGY_MODEL) \
-    $(wildcard include/config/PINCTRL) \
-    $(wildcard include/config/DMA_OPS) \
-    $(wildcard include/config/DMA_DECLARE_COHERENT) \
-    $(wildcard include/config/DMA_CMA) \
-    $(wildcard include/config/SWIOTLB) \
-    $(wildcard include/config/ARCH_HAS_SYNC_DMA_FOR_DEVICE) \
-    $(wildcard include/config/ARCH_HAS_SYNC_DMA_FOR_CPU) \
-    $(wildcard include/config/ARCH_HAS_SYNC_DMA_FOR_CPU_ALL) \
-    $(wildcard include/config/DMA_OPS_BYPASS) \
-    $(wildcard include/config/DEVTMPFS) \
-    $(wildcard include/config/SYSFS_DEPRECATED) \
-  include/linux/dev_printk.h \
-  include/linux/ratelimit.h \
-  include/linux/energy_model.h \
-  include/linux/sched/cpufreq.h \
-    $(wildcard include/config/CPU_FREQ) \
-  include/linux/sched/topology.h \
-    $(wildcard include/config/SCHED_DEBUG) \
-    $(wildcard include/config/SCHED_MC) \
-    $(wildcard include/config/CPU_FREQ_GOV_SCHEDUTIL) \
-  include/linux/sched/idle.h \
-  include/linux/sched/sd_flags.h \
-  include/linux/klist.h \
-  include/linux/pm.h \
-    $(wildcard include/config/VT_CONSOLE_SLEEP) \
-    $(wildcard include/config/PM_CLK) \
-    $(wildcard include/config/PM_GENERIC_DOMAINS) \
-  include/linux/device/bus.h \
-  include/linux/device/class.h \
-  include/linux/device/driver.h \
-  arch/x86/include/asm/device.h \
-  include/linux/pm_wakeup.h \
-  include/acpi/acpi.h \
-  include/acpi/platform/acenv.h \
-  include/acpi/platform/acgcc.h \
-  include/acpi/platform/aclinux.h \
-    $(wildcard include/config/ACPI_REDUCED_HARDWARE_ONLY) \
-    $(wildcard include/config/ACPI_DEBUG) \
-  include/linux/ctype.h \
-  arch/x86/include/asm/acenv.h \
-  include/acpi/acnames.h \
-  include/acpi/actypes.h \
-  include/acpi/acexcep.h \
-  include/acpi/actbl.h \
-  include/acpi/actbl1.h \
-  include/acpi/actbl2.h \
-  include/acpi/actbl3.h \
-  include/acpi/acrestyp.h \
-  include/acpi/platform/acenvex.h \
-  include/acpi/platform/aclinuxex.h \
-  include/acpi/platform/acgccex.h \
-  include/acpi/acoutput.h \
-  include/acpi/acpiosxf.h \
-  include/acpi/acpixf.h \
-  include/acpi/acconfig.h \
-  include/acpi/acbuffer.h \
-  include/linux/dynamic_debug.h \
-  include/acpi/acpi_bus.h \
-    $(wildcard include/config/X86_ANDROID_TABLETS) \
-    $(wildcard include/config/ACPI_SYSTEM_POWER_STATES_SUPPORT) \
-    $(wildcard include/config/ACPI_SLEEP) \
-  include/acpi/acpi_drivers.h \
-    $(wildcard include/config/ACPI_DOCK) \
-  include/acpi/acpi_numa.h \
-    $(wildcard include/config/ACPI_HMAT) \
-  include/acpi/acpi_io.h \
-  include/linux/io.h \
-    $(wildcard include/config/HAS_IOPORT_MAP) \
-  arch/x86/include/asm/io.h \
-    $(wildcard include/config/MTRR) \
-    $(wildcard include/config/X86_PAT) \
-  arch/x86/include/generated/asm/early_ioremap.h \
-  include/asm-generic/early_ioremap.h \
-    $(wildcard include/config/GENERIC_EARLY_IOREMAP) \
-  include/asm-generic/iomap.h \
-  include/asm-generic/pci_iomap.h \
-    $(wildcard include/config/NO_GENERIC_PCI_IOPORT_MAP) \
-    $(wildcard include/config/GENERIC_PCI_IOMAP) \
-  include/asm-generic/io.h \
-    $(wildcard include/config/GENERIC_IOMAP) \
-    $(wildcard include/config/GENERIC_IOREMAP) \
-    $(wildcard include/config/VIRT_TO_BUS) \
-    $(wildcard include/config/GENERIC_DEVMEM_IS_ALLOWED) \
-  include/linux/logic_pio.h \
-    $(wildcard include/config/INDIRECT_PIO) \
-  include/linux/vmalloc.h \
-    $(wildcard include/config/HAVE_ARCH_HUGE_VMALLOC) \
-  arch/x86/include/asm/vmalloc.h \
-    $(wildcard include/config/HAVE_ARCH_HUGE_VMAP) \
-  arch/x86/include/asm/acpi.h \
-    $(wildcard include/config/ACPI_APEI) \
-  include/acpi/pdc_intel.h \
-  arch/x86/include/asm/numa.h \
-    $(wildcard include/config/NUMA_EMU) \
-  arch/x86/include/asm/numa_32.h \
-  include/linux/regulator/consumer.h \
-    $(wildcard include/config/REGULATOR) \
-  include/linux/suspend.h \
-    $(wildcard include/config/VT) \
-    $(wildcard include/config/SUSPEND) \
-    $(wildcard include/config/HIBERNATION_SNAPSHOT_DEV) \
-    $(wildcard include/config/PM_SLEEP_DEBUG) \
-    $(wildcard include/config/PM_AUTOSLEEP) \
-  include/linux/swap.h \
-    $(wildcard include/config/DEVICE_PRIVATE) \
-    $(wildcard include/config/MIGRATION) \
-    $(wildcard include/config/FRONTSWAP) \
-    $(wildcard include/config/THP_SWAP) \
-    $(wildcard include/config/MEMCG_SWAP) \
-  include/linux/memcontrol.h \
-    $(wildcard include/config/CGROUP_WRITEBACK) \
-  include/linux/cgroup.h \
-    $(wildcard include/config/CGROUP_CPUACCT) \
-    $(wildcard include/config/SOCK_CGROUP_DATA) \
-    $(wildcard include/config/CGROUP_DATA) \
-    $(wildcard include/config/CGROUP_BPF) \
-  include/uapi/linux/cgroupstats.h \
-  include/uapi/linux/taskstats.h \
-  include/linux/fs.h \
-    $(wildcard include/config/READ_ONLY_THP_FOR_FS) \
-    $(wildcard include/config/FS_POSIX_ACL) \
-    $(wildcard include/config/IMA) \
-    $(wildcard include/config/FILE_LOCKING) \
-    $(wildcard include/config/FSNOTIFY) \
-    $(wildcard include/config/FS_ENCRYPTION) \
-    $(wildcard include/config/FS_VERITY) \
-    $(wildcard include/config/EPOLL) \
-    $(wildcard include/config/UNICODE) \
-    $(wildcard include/config/QUOTA) \
-    $(wildcard include/config/FS_DAX) \
-    $(wildcard include/config/BLOCK) \
-  include/linux/wait_bit.h \
-  include/linux/kdev_t.h \
-  include/uapi/linux/kdev_t.h \
-  include/linux/dcache.h \
-  include/linux/rculist_bl.h \
-  include/linux/list_bl.h \
-  include/linux/bit_spinlock.h \
-  include/linux/lockref.h \
-    $(wildcard include/config/ARCH_USE_CMPXCHG_LOCKREF) \
-  include/linux/stringhash.h \
-    $(wildcard include/config/DCACHE_WORD_ACCESS) \
-  include/linux/hash.h \
-    $(wildcard include/config/HAVE_ARCH_HASH) \
-  include/linux/path.h \
-  include/linux/list_lru.h \
-  include/linux/shrinker.h \
-  include/linux/capability.h \
-  include/uapi/linux/capability.h \
-  include/linux/semaphore.h \
-  include/linux/fcntl.h \
-    $(wildcard include/config/ARCH_32BIT_OFF_T) \
-  include/uapi/linux/fcntl.h \
-  arch/x86/include/generated/uapi/asm/fcntl.h \
-  include/uapi/asm-generic/fcntl.h \
-  include/uapi/linux/openat2.h \
-  include/linux/migrate_mode.h \
-  include/linux/percpu-rwsem.h \
-  include/linux/rcuwait.h \
-  include/linux/sched/signal.h \
-    $(wildcard include/config/SCHED_AUTOGROUP) \
-    $(wildcard include/config/BSD_PROCESS_ACCT) \
-    $(wildcard include/config/TASKSTATS) \
-    $(wildcard include/config/STACK_GROWSUP) \
-  include/linux/signal.h \
-    $(wildcard include/config/DYNAMIC_SIGFRAME) \
-  include/linux/sched/jobctl.h \
-  include/linux/sched/task.h \
-    $(wildcard include/config/HAVE_EXIT_THREAD) \
-    $(wildcard include/config/ARCH_WANTS_DYNAMIC_TASK_STRUCT) \
-    $(wildcard include/config/HAVE_ARCH_THREAD_STRUCT_WHITELIST) \
-  include/linux/cred.h \
-    $(wildcard include/config/DEBUG_CREDENTIALS) \
-  include/linux/key.h \
-    $(wildcard include/config/KEY_NOTIFICATIONS) \
-    $(wildcard include/config/NET) \
-  include/linux/assoc_array.h \
-    $(wildcard include/config/ASSOCIATIVE_ARRAY) \
-  include/linux/sched/user.h \
-    $(wildcard include/config/WATCH_QUEUE) \
-  include/linux/percpu_counter.h \
-  include/linux/rcu_sync.h \
-  include/linux/delayed_call.h \
-  include/linux/errseq.h \
-  include/linux/ioprio.h \
-  include/linux/sched/rt.h \
-  include/linux/iocontext.h \
-    $(wildcard include/config/BLK_ICQ) \
-  include/uapi/linux/ioprio.h \
-  include/linux/fs_types.h \
-  include/linux/mount.h \
-  include/linux/mnt_idmapping.h \
-  include/uapi/linux/fs.h \
-  include/linux/quota.h \
-    $(wildcard include/config/QUOTA_NETLINK_INTERFACE) \
-  include/uapi/linux/dqblk_xfs.h \
-  include/linux/dqblk_v1.h \
-  include/linux/dqblk_v2.h \
-  include/linux/dqblk_qtree.h \
-  include/linux/projid.h \
-  include/uapi/linux/quota.h \
-  include/linux/nfs_fs_i.h \
-  include/linux/seq_file.h \
-  include/linux/string_helpers.h \
-  include/linux/ns_common.h \
-  include/linux/nsproxy.h \
-  include/linux/user_namespace.h \
-    $(wildcard include/config/INOTIFY_USER) \
-    $(wildcard include/config/FANOTIFY) \
-    $(wildcard include/config/PERSISTENT_KEYRINGS) \
-  include/linux/kernel_stat.h \
-  include/linux/interrupt.h \
-    $(wildcard include/config/IRQ_FORCED_THREADING) \
-    $(wildcard include/config/GENERIC_IRQ_PROBE) \
-    $(wildcard include/config/IRQ_TIMINGS) \
-  include/linux/irqreturn.h \
-  include/linux/irqnr.h \
-  include/uapi/linux/irqnr.h \
-  include/linux/hardirq.h \
-  include/linux/context_tracking_state.h \
-    $(wildcard include/config/CONTEXT_TRACKING) \
-  include/linux/ftrace_irq.h \
-    $(wildcard include/config/HWLAT_TRACER) \
-    $(wildcard include/config/OSNOISE_TRACER) \
-  include/linux/vtime.h \
-    $(wildcard include/config/VIRT_CPU_ACCOUNTING) \
-    $(wildcard include/config/IRQ_TIME_ACCOUNTING) \
-  arch/x86/include/asm/hardirq.h \
-    $(wildcard include/config/KVM_INTEL) \
-    $(wildcard include/config/X86_THERMAL_VECTOR) \
-    $(wildcard include/config/X86_MCE_THRESHOLD) \
-    $(wildcard include/config/X86_MCE_AMD) \
-    $(wildcard include/config/X86_HV_CALLBACK_VECTOR) \
-  arch/x86/include/asm/irq.h \
-  arch/x86/include/asm/sections.h \
-  include/asm-generic/sections.h \
-    $(wildcard include/config/HAVE_FUNCTION_DESCRIPTORS) \
-  include/linux/cgroup-defs.h \
-    $(wildcard include/config/CGROUP_NET_CLASSID) \
-    $(wildcard include/config/CGROUP_NET_PRIO) \
-  include/linux/u64_stats_sync.h \
-  include/linux/bpf-cgroup-defs.h \
-  include/linux/psi_types.h \
-  include/linux/kthread.h \
-  include/linux/cgroup_subsys.h \
-    $(wildcard include/config/CGROUP_DEVICE) \
-    $(wildcard include/config/CGROUP_FREEZER) \
-    $(wildcard include/config/CGROUP_PERF) \
-    $(wildcard include/config/CGROUP_HUGETLB) \
-    $(wildcard include/config/CGROUP_PIDS) \
-    $(wildcard include/config/CGROUP_RDMA) \
-    $(wildcard include/config/CGROUP_MISC) \
-    $(wildcard include/config/CGROUP_DEBUG) \
-  include/linux/vm_event_item.h \
-    $(wildcard include/config/HAVE_ARCH_TRANSPARENT_HUGEPAGE_PUD) \
-    $(wildcard include/config/MEMORY_BALLOON) \
-    $(wildcard include/config/BALLOON_COMPACTION) \
-    $(wildcard include/config/DEBUG_TLBFLUSH) \
-    $(wildcard include/config/DEBUG_VM_VMACACHE) \
-  include/linux/page_counter.h \
-  include/linux/vmpressure.h \
-  include/linux/eventfd.h \
-  include/linux/mm.h \
-    $(wildcard include/config/HAVE_ARCH_MMAP_RND_BITS) \
-    $(wildcard include/config/HAVE_ARCH_MMAP_RND_COMPAT_BITS) \
-    $(wildcard include/config/ARCH_USES_HIGH_VMA_FLAGS) \
-    $(wildcard include/config/ARCH_HAS_PKEYS) \
-    $(wildcard include/config/PPC) \
-    $(wildcard include/config/PARISC) \
-    $(wildcard include/config/SPARC64) \
-    $(wildcard include/config/ARM64_MTE) \
-    $(wildcard include/config/HAVE_ARCH_USERFAULTFD_MINOR) \
-    $(wildcard include/config/SHMEM) \
-    $(wildcard include/config/ARCH_HAS_PTE_SPECIAL) \
-    $(wildcard include/config/ARCH_HAS_PTE_DEVMAP) \
-    $(wildcard include/config/DEBUG_VM_RB) \
-    $(wildcard include/config/PAGE_POISONING) \
-    $(wildcard include/config/INIT_ON_ALLOC_DEFAULT_ON) \
-    $(wildcard include/config/INIT_ON_FREE_DEFAULT_ON) \
-    $(wildcard include/config/DEBUG_PAGEALLOC) \
-    $(wildcard include/config/HUGETLBFS) \
-    $(wildcard include/config/MAPPING_DIRTY_HELPERS) \
-    $(wildcard include/config/ANON_VMA_NAME) \
-  include/linux/mmap_lock.h \
-  include/linux/page_ext.h \
-  include/linux/stacktrace.h \
-    $(wildcard include/config/ARCH_STACKWALK) \
-    $(wildcard include/config/STACKTRACE) \
-    $(wildcard include/config/HAVE_RELIABLE_STACKTRACE) \
-  include/linux/stackdepot.h \
-    $(wildcard include/config/STACKDEPOT_ALWAYS_INIT) \
-  include/linux/page_ref.h \
-    $(wildcard include/config/DEBUG_PAGE_REF) \
-  include/linux/sizes.h \
-  include/linux/pgtable.h \
-    $(wildcard include/config/HIGHPTE) \
-    $(wildcard include/config/GUP_GET_PTE_LOW_HIGH) \
-    $(wildcard include/config/HAVE_ARCH_SOFT_DIRTY) \
-    $(wildcard include/config/ARCH_ENABLE_THP_MIGRATION) \
-    $(wildcard include/config/X86_ESPFIX64) \
-  arch/x86/include/asm/pgtable.h \
-    $(wildcard include/config/DEBUG_WX) \
-    $(wildcard include/config/PAGE_TABLE_CHECK) \
-  arch/x86/include/asm/pkru.h \
-  arch/x86/include/asm/fpu/api.h \
-    $(wildcard include/config/X86_DEBUG_FPU) \
-  arch/x86/include/asm/coco.h \
-  include/asm-generic/pgtable_uffd.h \
-  include/linux/page_table_check.h \
-  arch/x86/include/asm/pgtable_32.h \
-  arch/x86/include/asm/pgtable-3level.h \
-  arch/x86/include/asm/pgtable-invert.h \
-  include/linux/huge_mm.h \
-  include/linux/sched/coredump.h \
-    $(wildcard include/config/CORE_DUMP_DEFAULT_ELF_HEADERS) \
-  include/linux/vmstat.h \
-    $(wildcard include/config/VM_EVENT_COUNTERS) \
-  include/linux/writeback.h \
-  include/linux/flex_proportions.h \
-  include/linux/backing-dev-defs.h \
-    $(wildcard include/config/DEBUG_FS) \
-  include/linux/blk_types.h \
-    $(wildcard include/config/FAIL_MAKE_REQUEST) \
-    $(wildcard include/config/BLK_CGROUP_IOCOST) \
-    $(wildcard include/config/BLK_INLINE_ENCRYPTION) \
-    $(wildcard include/config/BLK_DEV_INTEGRITY) \
-  include/linux/bvec.h \
-  include/linux/highmem.h \
-  include/linux/cacheflush.h \
-  arch/x86/include/asm/cacheflush.h \
-  include/asm-generic/cacheflush.h \
-  include/linux/highmem-internal.h \
-  arch/x86/include/asm/highmem.h \
-  arch/x86/include/asm/tlbflush.h \
-  arch/x86/include/asm/invpcid.h \
-  arch/x86/include/asm/pti.h \
-  include/linux/bio.h \
-  include/linux/mempool.h \
-  include/linux/uio.h \
-    $(wildcard include/config/ARCH_HAS_UACCESS_FLUSHCACHE) \
-  include/uapi/linux/uio.h \
-  include/linux/node.h \
-    $(wildcard include/config/HMEM_REPORTING) \
-  include/linux/pagemap.h \
-  include/linux/hugetlb_inline.h \
-  include/uapi/linux/mempolicy.h \
-  include/linux/freezer.h \
-  include/uapi/linux/i2c.h \
-  include/linux/videodev2.h \
-  include/uapi/linux/videodev2.h \
-    $(wildcard include/config/VIDEO_ADV_DEBUG) \
-  include/uapi/linux/v4l2-common.h \
-  include/uapi/linux/v4l2-controls.h \
-  include/media/v4l2-device.h \
-    $(wildcard include/config/VIDEO_V4L2_SUBDEV_API) \
-  include/media/media-device.h \
-    $(wildcard include/config/MEDIA_CONTROLLER) \
-  include/media/media-devnode.h \
-  include/linux/poll.h \
-  include/uapi/linux/poll.h \
-  arch/x86/include/generated/uapi/asm/poll.h \
-  include/uapi/asm-generic/poll.h \
-  include/uapi/linux/eventpoll.h \
-  include/linux/cdev.h \
-  include/media/media-entity.h \
-  include/uapi/linux/media.h \
-  include/media/v4l2-subdev.h \
-  include/uapi/linux/v4l2-subdev.h \
-  include/uapi/linux/v4l2-mediabus.h \
-  include/uapi/linux/media-bus-format.h \
-  include/media/v4l2-async.h \
-  include/media/v4l2-common.h \
-    $(wildcard include/config/VIDEO_V4L2_I2C) \
-    $(wildcard include/config/SPI) \
-  include/media/v4l2-dev.h \
-  include/linux/spi/spi.h \
-    $(wildcard include/config/SPI_SLAVE) \
-  include/linux/scatterlist.h \
-    $(wildcard include/config/NEED_SG_DMA_LENGTH) \
-    $(wildcard include/config/DEBUG_SG) \
-    $(wildcard include/config/SGL_ALLOC) \
-    $(wildcard include/config/ARCH_NO_SG_CHAIN) \
-    $(wildcard include/config/SG_POOL) \
-  include/linux/gpio/consumer.h \
-    $(wildcard include/config/OF_GPIO) \
-    $(wildcard include/config/GPIO_SYSFS) \
-  include/uapi/linux/spi/spi.h \
-  include/media/v4l2-fh.h \
-  include/media/v4l2-mediabus.h \
-  include/media/v4l2-ctrls.h \
-  include/media/media-request.h \
-  include/media/hevc-ctrls.h \
+// SPDX-License-Identifier: GPL-2.0-only
+/*
+ * at91_can.c - CAN network driver for AT91 SoC CAN controller
+ *
+ * (C) 2007 by Hans J. Koch <hjk@hansjkoch.de>
+ * (C) 2008, 2009, 2010, 2011 by Marc Kleine-Budde <kernel@pengutronix.de>
+ */
 
-drivers/media/i2c/vpx3220.o: $(deps_drivers/media/i2c/vpx3220.o)
+#include <linux/clk.h>
+#include <linux/errno.h>
+#include <linux/if_arp.h>
+#include <linux/interrupt.h>
+#include <linux/kernel.h>
+#include <linux/module.h>
+#include <linux/netdevice.h>
+#include <linux/of.h>
+#include <linux/platform_device.h>
+#include <linux/rtnetlink.h>
+#include <linux/skbuff.h>
+#include <linux/spinlock.h>
+#include <linux/string.h>
+#include <linux/types.h>
 
-$(deps_drivers/media/i2c/vpx3220.o):
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       cmd_drivers/media/i2c/vpx3220.o := gcc -Wp,-MMD,drivers/media/i2c/.vpx3220.o.d -nostdinc -I./arch/x86/include -I./arch/x86/include/generated  -I./include -I./arch/x86/include/uapi -I./arch/x86/include/generated/uapi -I./include/uapi -I./include/generated/uapi -include ./include/linux/compiler-version.h -include ./include/linux/kconfig.h -include ./include/linux/compiler_types.h -D__KERNEL__ -fmacro-prefix-map=./= -Wall -Wundef -Werror=strict-prototypes -Wno-trigraphs -fno-strict-aliasing -fno-common -fshort-wchar -fno-PIE -Werror=implicit-function-declaration -Werror=implicit-int -Werror=return-type -Wno-format-security -std=gnu11 -mno-sse -mno-mmx -mno-sse2 -mno-3dnow -mno-avx -fcf-protection=none -m32 -msoft-float -mregparm=3 -freg-struct-return -fno-pic -mpreferred-stack-boundary=2 -march=i686 -mtune=pentium3 -mtune=generic -Wa,-mtune=generic32 -ffreestanding -mstack-protector-guard-reg=fs -mstack-protector-guard-symbol=__stack_chk_guard -Wno-sign-compare -fno-asynchronous-unwind-tables -mindirect-branch=thunk-extern -mindirect-branch-register -fno-jump-tables -fno-delete-null-pointer-checks -Wno-frame-address -Wno-format-truncation -Wno-format-overflow -Wno-address-of-packed-member -O2 -fno-allow-store-data-races -fstack-protector-strong -Wimplicit-fallthrough=5 -Wno-main -Wno-unused-but-set-variable -Wno-unused-const-variable -fno-stack-clash-protection -pg -mrecord-mcount -mfentry -DCC_USING_FENTRY -Wdeclaration-after-statement -Wvla -Wno-pointer-sign -Wcast-function-type -Wno-stringop-truncation -Wno-stringop-overflow -Wno-restrict -Wno-maybe-uninitialized -Wno-alloc-size-larger-than -fno-strict-overflow -fno-stack-check -fconserve-stack -Werror=date-time -Werror=incompatible-pointer-types -Werror=designated-init -Wno-packed-not-aligned  -DMODULE  -DKBUILD_BASENAME='"vpx3220"' -DKBUILD_MODNAME='"vpx3220"' -D__KBUILD_MODNAME=kmod_vpx3220 -c -o drivers/media/i2c/vpx3220.o drivers/media/i2c/vpx3220.c 
+#include <linux/can/dev.h>
+#include <linux/can/error.h>
+#include <linux/can/led.h>
 
-source_drivers/media/i2c/vpx3220.o := drivers/media/i2c/vpx3220.c
+#define AT91_MB_MASK(i)		((1 << (i)) - 1)
 
-deps_drivers/media/i2c/vpx3220.o := \
-  include/linux/compiler-version.h \
-    $(wildcard include/config/CC_VERSION_TEXT) \
-  include/linux/kconfig.h \
-    $(wildcard include/config/CPU_BIG_ENDIAN) \
-    $(wildcard include/config/BOOGER) \
-    $(wildcard include/config/FOO) \
-  include/linux/compiler_types.h \
-    $(wildcard include/config/DEBUG_INFO_BTF) \
-    $(wildcard include/config/PAHOLE_HAS_BTF_TAG) \
-    $(wildcard include/config/HAVE_ARCH_COMPILER_H) \
-    $(wildcard include/config/CC_HAS_ASM_INLINE) \
-  include/linux/compiler_attributes.h \
-  include/linux/compiler-gcc.h \
-    $(wildcard include/config/RETPOLINE) \
-    $(wildcard include/config/ARCH_USE_BUILTIN_BSWAP) \
-    $(wildcard include/config/SHADOW_CALL_STACK) \
-    $(wildcard include/config/KCOV) \
-  include/linux/module.h \
-    $(wildcard include/config/MODULES) \
-    $(wildcard include/config/SYSFS) \
-    $(wildcard include/config/MODULES_TREE_LOOKUP) \
-    $(wildcard include/config/LIVEPATCH) \
-    $(wildcard include/config/STACKTRACE_BUILD_ID) \
-    $(wildcard include/config/CFI_CLANG) \
-    $(wildcard include/config/MODULE_SIG) \
-    $(wildcard include/config/GENERIC_BUG) \
-    $(wildcard include/config/KALLSYMS) \
-    $(wildcard include/config/SMP) \
-    $(wildcard include/config/TRACEPOINTS) \
-    $(wildcard include/config/TREE_SRCU) \
-    $(wildcard include/config/BPF_EVENTS) \
-    $(wildcard include/config/DEBUG_INFO_BTF_MODULES) \
-    $(wildcard include/config/JUMP_LABEL) \
-    $(wildcard include/config/TRACING) \
-    $(wildcard include/config/EVENT_TRACING) \
-    $(wildcard include/config/FTRACE_MCOUNT_RECORD) \
-    $(wildcard include/config/KPROBES) \
-    $(wildcard include/config/HAVE_STATIC_CALL_INLINE) \
-    $(wildcard include/config/PRINTK_INDEX) \
-    $(wildcard include/config/MODULE_UNLOAD) \
-    $(wildcard include/config/CONSTRUCTORS) \
-    $(wildcard include/config/FUNCTION_ERROR_INJECTION) \
-  include/linux/list.h \
-    $(wildcard include/config/DEBUG_LIST) \
-  include/linux/container_of.h \
-  include/linux/build_bug.h \
-  include/linux/compiler.h \
-    $(wildcard include/config/TRACE_BRANCH_PROFILING) \
-    $(wildcard include/config/PROFILE_ALL_BRANCHES) \
-    $(wildcard include/config/STACK_VALIDATION) \
-  include/linux/compiler_types.h \
-  arch/x86/include/generated/asm/rwonce.h \
-  include/asm-generic/rwonce.h \
-  include/linux/kasan-checks.h \
-    $(wildcard include/config/KASAN_GENERIC) \
-    $(wildcard include/config/KASAN_SW_TAGS) \
-  include/linux/types.h \
-    $(wildcard include/config/HAVE_UID16) \
-    $(wildcard include/config/UID16) \
-    $(wildcard include/config/ARCH_DMA_ADDR_T_64BIT) \
-    $(wildcard include/config/PHYS_ADDR_T_64BIT) \
-    $(wildcard include/config/64BIT) \
-    $(wildcard include/config/ARCH_32BIT_USTAT_F_TINODE) \
-  include/uapi/linux/types.h \
-  arch/x86/include/generated/uapi/asm/types.h \
-  include/uapi/asm-generic/types.h \
-  include/asm-generic/int-ll64.h \
-  include/uapi/asm-generic/int-ll64.h \
-  arch/x86/include/uapi/asm/bitsperlong.h \
-  include/asm-generic/bitsperlong.h \
-  include/uapi/asm-generic/bitsperlong.h \
-  include/uapi/linux/posix_types.h \
-  include/linux/stddef.h \
-  include/uapi/linux/stddef.h \
-  arch/x86/include/asm/posix_types.h \
-    $(wildcard include/config/X86_32) \
-  arch/x86/include/uapi/asm/posix_types_32.h \
-  include/uapi/asm-generic/posix_types.h \
-  include/linux/kcsan-checks.h \
-    $(wildcard include/config/KCSAN) \
-    $(wildcard include/config/KCSAN_WEAK_MEMORY) \
-    $(wildcard include/config/KCSAN_IGNORE_ATOMICS) \
-  include/linux/err.h \
-  arch/x86/include/generated/uapi/asm/errno.h \
-  include/uapi/asm-generic/errno.h \
-  include/uapi/asm-generic/errno-base.h \
-  include/linux/poison.h \
-    $(wildcard include/config/ILLEGAL_POINTER_VALUE) \
-  include/linux/const.h \
-  include/vdso/const.h \
-  include/uapi/linux/const.h \
-  arch/x86/include/asm/barrier.h \
-  arch/x86/include/asm/alternative.h \
-  include/linux/stringify.h \
-  arch/x86/include/asm/asm.h \
-  arch/x86/include/asm/extable_fixup_types.h \
-  arch/x86/include/asm/nops.h \
-  include/asm-generic/barrier.h \
-  include/linux/stat.h \
-  arch/x86/include/uapi/asm/stat.h \
-  include/uapi/linux/stat.h \
-  include/linux/time.h \
-    $(wildcard include/config/POSIX_TIMERS) \
-  include/linux/cache.h \
-    $(wildcard include/config/ARCH_HAS_CACHE_LINE_SIZE) \
-  include/uapi/linux/kernel.h \
-  include/uapi/linux/sysinfo.h \
-  arch/x86/include/asm/ca
+/* Common registers */
+enum at91_reg {
+	AT91_MR		= 0x000,
+	AT91_IER	= 0x004,
+	AT91_IDR	= 0x008,
+	AT91_IMR	= 0x00C,
+	AT91_SR		= 0x010,
+	AT91_BR		= 0x014,
+	AT91_TIM	= 0x018,
+	AT91_TIMESTP	= 0x01C,
+	AT91_ECR	= 0x020,
+	AT91_TCR	= 0x024,
+	AT91_ACR	= 0x028,
+};
+
+/* Mailbox registers (0 <= i <= 15) */
+#define AT91_MMR(i)		((enum at91_reg)(0x200 + ((i) * 0x20)))
+#define AT91_MAM(i)		((enum at91_reg)(0x204 + ((i) * 0x20)))
+#define AT91_MID(i)		((enum at91_reg)(0x208 + ((i) * 0x20)))
+#define AT91_MFID(i)		((enum at91_reg)(0x20C + ((i) * 0x20)))
+#define AT91_MSR(i)		((enum at91_reg)(0x210 + ((i) * 0x20)))
+#define AT91_MDL(i)		((enum at91_reg)(0x214 + ((i) * 0x20)))
+#define AT91_MDH(i)		((enum at91_reg)(0x218 + ((i) * 0x20)))
+#define AT91_MCR(i)		((enum at91_reg)(0x21C + ((i) * 0x20)))
+
+/* Register bits */
+#define AT91_MR_CANEN		BIT(0)
+#define AT91_MR_LPM		BIT(1)
+#define AT91_MR_ABM		BIT(2)
+#define AT91_MR_OVL		BIT(3)
+#define AT91_MR_TEOF		BIT(4)
+#define AT91_MR_TTM		BIT(5)
+#define AT91_MR_TIMFRZ		BIT(6)
+#define AT91_MR_DRPT		BIT(7)
+
+#define AT91_SR_RBSY		BIT(29)
+
+#define AT91_MMR_PRIO_SHIFT	(16)
+
+#define AT91_MID_MIDE		BIT(29)
+
+#define AT91_MSR_MRTR		BIT(20)
+#define AT91_MSR_MABT		BIT(22)
+#define AT91_MSR_MRDY		BIT(23)
+#define AT91_MSR_MMI		BIT(24)
+
+#define AT91_MCR_MRTR		BIT(20)
+#define AT91_MCR_MTCR		BIT(23)
+
+/* Mailbox Modes */
+enum at91_mb_mode {
+	AT91_MB_MODE_DISABLED	= 0,
+	AT91_MB_MODE_RX		= 1,
+	AT91_MB_MODE_RX_OVRWR	= 2,
+	AT91_MB_MODE_TX		= 3,
+	AT91_MB_MODE_CONSUMER	= 4,
+	AT91_MB_MODE_PRODUCER	= 5,
+};
+
+/* Interrupt mask bits */
+#define AT91_IRQ_ERRA		BIT(16)
+#define AT91_IRQ_WARN		BIT(17)
+#define AT91_IRQ_ERRP		BIT(18)
+#define AT91_IRQ_BOFF		BIT(19)
+#define AT91_IRQ_SLEEP		BIT(20)
+#define AT91_IRQ_WAKEUP		BIT(21)
+#define AT91_IRQ_TOVF		BIT(22)
+#define AT91_IRQ_TSTP		BIT(23)
+#define AT91_IRQ_CERR		BIT(24)
+#define AT91_IRQ_SERR		BIT(25)
+#define AT91_IRQ_AERR		BIT(26)
+#define AT91_IRQ_FERR		BIT(27)
+#define AT91_IRQ_BERR		BIT(28)
+
+#define AT91_IRQ_ERR_ALL	(0x1fff0000)
+#define AT91_IRQ_ERR_FRAME	(AT91_IRQ_CERR | AT91_IRQ_SERR | \
+				 AT91_IRQ_AERR | AT91_IRQ_FERR | AT91_IRQ_BERR)
+#define AT91_IRQ_ERR_LINE	(AT91_IRQ_ERRA | AT91_IRQ_WARN | \
+				 AT91_IRQ_ERRP | AT91_IRQ_BOFF)
+
+#define AT91_IRQ_ALL		(0x1fffffff)
+
+enum at91_devtype {
+	AT91_DEVTYPE_SAM9263,
+	AT91_DEVTYPE_SAM9X5,
+};
+
+struct at91_devtype_data {
+	unsigned int rx_first;
+	unsigned int rx_split;
+	unsigned int rx_last;
+	unsigned int tx_shift;
+	enum at91_devtype type;
+};
+
+struct at91_priv {
+	struct can_priv can;		/* must be the first member! */
+	struct napi_struct napi;
+
+	void __iomem *reg_base;
+
+	u32 reg_sr;
+	unsigned int tx_next;
+	unsigned int tx_echo;
+	unsigned int rx_next;
+	struct at91_devtype_data devtype_data;
+
+	struct clk *clk;
+	struct at91_can_data *pdata;
+
+	canid_t mb0_id;
+};
+
+static const struct at91_devtype_data at91_at91sam9263_data = {
+	.rx_first = 1,
+	.rx_split = 8,
+	.rx_last = 11,
+	.tx_shift = 2,
+	.type = AT91_DEVTYPE_SAM9263,
+};
+
+static const struct at91_devtype_data at91_at91sam9x5_data = {
+	.rx_first = 0,
+	.rx_split = 4,
+	.rx_last = 5,
+	.tx_shift = 1,
+	.type = AT91_DEVTYPE_SAM9X5,
+};
+
+static const struct can_bittiming_const at91_bittiming_const = {
+	.name		= KBUILD_MODNAME,
+	.tseg1_min	= 4,
+	.tseg1_max	= 16,
+	.tseg2_min	= 2,
+	.tseg2_max	= 8,
+	.sjw_max	= 4,
+	.brp_min	= 2,
+	.brp_max	= 128,
+	.brp_inc	= 1,
+};
+
+#define AT91_IS(_model) \
+static inline int __maybe_unused at91_is_sam##_model(const struct at91_priv *priv) \
+{ \
+	return priv->devtype_data.type == AT91_DEVTYPE_SAM##_model; \
+}
+
+AT91_IS(9263);
+AT91_IS(9X5);
+
+static inline unsigned int get_mb_rx_first(const struct at91_priv *priv)
+{
+	return priv->devtype_data.rx_first;
+}
+
+static inline unsigned int get_mb_rx_last(const struct at91_priv *priv)
+{
+	return priv->devtype_data.rx_last;
+}
+
+static inline unsigned int get_mb_rx_split(const struct at91_priv *priv)
+{
+	return priv->devtype_data.rx_split;
+}
+
+static inline unsigned int get_mb_rx_num(const struct at91_priv *priv)
+{
+	return get_mb_rx_last(priv) - get_mb_rx_first(priv) + 1;
+}
+
+static inline unsigned int get_mb_rx_low_last(const struct at91_priv *priv)
+{
+	return get_mb_rx_split(priv) - 1;
+}
+
+static inline unsigned int get_mb_rx_low_mask(const struct at91_priv *priv)
+{
+	return AT91_MB_MASK(get_mb_rx_split(priv)) &
+		~AT91_MB_MASK(get_mb_rx_first(priv));
+}
+
+static inline unsigned int get_mb_tx_shift(const struct at91_priv *priv)
+{
+	return priv->devtype_data.tx_shift;
+}
+
+static inline unsigned int get_mb_tx_num(const struct at91_priv *priv)
+{
+	return 1 << get_mb_tx_shift(priv);
+}
+
+static inline unsigned int get_mb_tx_first(const struct at91_priv *priv)
+{
+	return get_mb_rx_last(priv) + 1;
+}
+
+static inline unsigned int get_mb_tx_last(const struct at91_priv *priv)
+{
+	return get_mb_tx_first(priv) + get_mb_tx_num(priv) - 1;
+}
+
+static inline unsigned int get_next_prio_shift(const struct at91_priv *priv)
+{
+	return get_mb_tx_shift(priv);
+}
+
+static inline unsigned int get_next_prio_mask(const struct at91_priv *priv)
+{
+	return 0xf << get_mb_tx_shift(priv);
+}
+
+static inline unsigned int get_next_mb_mask(const struct at91_priv *priv)
+{
+	return AT91_MB_MASK(get_mb_tx_shift(priv));
+}
+
+static inline unsigned int get_next_mask(const struct at91_priv *priv)
+{
+	return get_next_mb_mask(priv) | get_next_prio_mask(priv);
+}
+
+static inline unsigned int get_irq_mb_rx(const struct at91_priv *priv)
+{
+	return AT91_MB_MASK(get_mb_rx_last(priv) + 1) &
+		~AT91_MB_MASK(get_mb_rx_first(priv));
+}
+
+static inline unsigned int get_irq_mb_tx(const struct at91_priv *priv)
+{
+	return AT91_MB_MASK(get_mb_tx_last(priv) + 1) &
+		~AT91_MB_MASK(get_mb_tx_first(priv));
+}
+
+static inline unsigned int get_tx_next_mb(const struct at91_priv *priv)
+{
+	return (priv->tx_next & get_next_mb_mask(priv)) + get_mb_tx_first(priv);
+}
+
+static inline unsigned int get_tx_next_prio(const struct at91_priv *priv)
+{
+	return (priv->tx_next >> get_next_prio_shift(priv)) & 0xf;
+}
+
+static inline unsigned int get_tx_echo_mb(const struct at91_priv *priv)
+{
+	return (priv->tx_echo & get_next_mb_mask(priv)) + get_mb_tx_first(priv);
+}
+
+static inline u32 at91_read(const struct at91_priv *priv, enum at91_reg reg)
+{
+	return readl_relaxed(priv->reg_base + reg);
+}
+
+static inline void at91_write(const struct at91_priv *priv, enum at91_reg reg,
+			      u32 value)
+{
+	writel_relaxed(value, priv->reg_base + reg);
+}
+
+static inline void set_mb_mode_prio(const struct at91_priv *priv,
+				    unsigned int mb, enum at91_mb_mode mode,
+				    int prio)
+{
+	at91_write(priv, AT91_MMR(mb), (mode << 24) | (prio << 16));
+}
+
+static inline void set_mb_mode(const struct at91_priv *priv, unsigned int mb,
+			       enum at91_mb_mode mode)
+{
+	set_mb_mode_prio(priv, mb, mode, 0);
+}
+
+static inline u32 at91_can_id_to_reg_mid(canid_t can_id)
+{
+	u32 reg_mid;
+
+	if (can_id & CAN_EFF_FLAG)
+		reg_mid = (can_id & CAN_EFF_MASK) | AT91_MID_MIDE;
+	else
+		reg_mid = (can_id & CAN_SFF_MASK) << 18;
+
+	return reg_mid;
+}
+
+static void at91_setup_mailboxes(struct net_device *dev)
+{
+	struct at91_priv *priv = netdev_priv(dev);
+	unsigned int i;
+	u32 reg_mid;
+
+	/* Due to a chip bug (errata 50.2.6.3 & 50.3.5.3) the first
+	 * mailbox is disabled. The next 11 mailboxes are used as a
+	 * reception FIFO. The last mailbox is configured with
+	 * overwrite option. The overwrite flag indicates a FIFO
+	 * overflow.
+	 */
+	reg_mid = at91_can_id_to_reg_mid(priv->mb0_id);
+	for (i = 0; i < get_mb_rx_first(priv); i++) {
+		set_mb_mode(priv, i, AT91_MB_MODE_DISABLED);
+		at91_write(priv, AT91_MID(i), reg_mid);
+		at91_write(priv, AT91_MCR(i), 0x0);	/* clear dlc */
+	}
+
+	for (i = get_mb_rx_first(priv); i < get_mb_rx_last(priv); i++)
+		set_mb_mode(priv, i, AT91_MB_MODE_RX);
+	set_mb_mode(priv, get_mb_rx_last(priv), AT91_MB_MODE_RX_OVRWR);
+
+	/* reset acceptance mask and id register */
+	for (i = get_mb_rx_first(priv); i <= get_mb_rx_last(priv); i++) {
+		at91_write(priv, AT91_MAM(i), 0x0);
+		at91_write(priv, AT91_MID(i), AT91_MID_MIDE);
+	}
+
+	/* The last 4 mailboxes are used for transmitting. */
+	for (i = get_mb_tx_first(priv); i <= get_mb_tx_last(priv); i++)
+		set_mb_mode_prio(priv, i, AT91_MB_MODE_TX, 0);
+
+	/* Reset tx and rx helper pointers */
+	priv->tx_next = priv->tx_echo = 0;
+	priv->rx_next = get_mb_rx_first(priv);
+}
+
+static int at91_set_bittiming(struct net_device *dev)
+{
+	const struct at91_priv *priv = netdev_priv(dev);
+	const struct can_bittiming *bt = &priv->can.bittiming;
+	u32 reg_br;
+
+	reg_br = ((priv->can.ctrlmode & CAN_CTRLMODE_3_SAMPLES) ? 1 << 24 : 0) |
+		((bt->brp - 1) << 16) | ((bt->sjw - 1) << 12) |
+		((bt->prop_seg - 1) << 8) | ((bt->phase_seg1 - 1) << 4) |
+		((bt->phase_seg2 - 1) << 0);
+
+	netdev_info(dev, "writing AT91_BR: 0x%08x\n", reg_br);
+
+	at91_write(priv, AT91_BR, reg_br);
+
+	return 0;
+}
+
+static int at91_get_berr_counter(const struct net_device *dev,
+				 struct can_berr_counter *bec)
+{
+	const struct at91_priv *priv = netdev_priv(dev);
+	u32 reg_ecr = at91_read(priv, AT91_ECR);
+
+	bec->rxerr = reg_ecr & 0xff;
+	bec->txerr = reg_ecr >> 16;
+
+	return 0;
+}
+
+static void at91_chip_start(struct net_device *dev)
+{
+	struct at91_priv *priv = netdev_priv(dev);
+	u32 reg_mr, reg_ier;
+
+	/* disable interrupts */
+	at91_write(priv, AT91_IDR, AT91_IRQ_ALL);
+
+	/* disable chip */
+	reg_mr = at91_read(priv, AT91_MR);
+	at91_write(priv, AT91_MR, reg_mr & ~AT91_MR_CANEN);
+
+	at91_set_bittiming(dev);
+	at91_setup_mailboxes(dev);
+
+	/* enable chip */
+	if (priv->can.ctrlmode & CAN_CTRLMODE_LISTENONLY)
+		reg_mr = AT91_MR_CANEN | AT91_MR_ABM;
+	else
+		reg_mr = AT91_MR_CANEN;
+	at91_write(priv, AT91_MR, reg_mr);
+
+	priv->can.state = CAN_STATE_ERROR_ACTIVE;
+
+	/* Enable interrupts */
+	reg_ier = get_irq_mb_rx(priv) | AT91_IRQ_ERRP | AT91_IRQ_ERR_FRAME;
+	at91_write(priv, AT91_IDR, AT91_IRQ_ALL);
+	at91_write(priv, AT91_IER, reg_ier);
+}
+
+static void at91_chip_stop(struct net_device *dev, enum can_state state)
+{
+	struct at91_priv *priv = netdev_priv(dev);
+	u32 reg_mr;
+
+	/* disable interrupts */
+	at91_write(priv, AT91_IDR, AT91_IRQ_ALL);
+
+	reg_mr = at91_read(priv, AT91_MR);
+	at91_write(priv, AT91_MR, reg_mr & ~AT91_MR_CANEN);
+
+	priv->can.state = state;
+}
+
+/* theory of operation:
+ *
+ * According to the datasheet priority 0 is the highest priority, 15
+ * is the lowest. If two mailboxes have the same priority level the
+ * message of the mailbox with the lowest number is sent first.
+ *
+ * We use the first TX mailbox (AT91_MB_TX_FIRST) with prio 0, then
+ * the next mailbox with prio 0, and so on, until all mailboxes are
+ * used. Then we start from the beginning with mailbox
+ * AT91_MB_TX_FIRST, but with prio 1, mailbox AT91_MB_TX_FIRST + 1
+ * prio 1. When we reach the last mailbox with prio 15, we have to
+ * stop sending, waiting for all messages to be delivered, then start
+ * again with mailbox AT91_MB_TX_FIRST prio 0.
+ *
+ * We use the priv->tx_next as counter for the next transmission
+ * mailbox, but without the offset AT91_MB_TX_FIRST. The lower bits
+ * encode the mailbox number, the upper 4 bits the mailbox priority:
+ *
+ * priv->tx_next = (prio << get_next_prio_shift(priv)) |
+ *                 (mb - get_mb_tx_first(priv));
+ *
+ */
+static netdev_tx_t at91_start_xmit(struct sk_buff *skb, struct net_device *dev)
+{
+	struct at91_priv *priv = netdev_priv(dev);
+	struct can_frame *cf = (struct can_frame *)skb->data;
+	unsigned int mb, prio;
+	u32 reg_mid, reg_mcr;
+
+	if (can_dropped_invalid_skb(dev, skb))
+		return NETDEV_TX_OK;
+
+	mb = get_tx_next_mb(priv);
+	prio = get_tx_next_prio(priv);
+
+	if (unlikely(!(at91_read(priv, AT91_MSR(mb)) & AT91_MSR_MRDY))) {
+		netif_stop_queue(dev);
+
+		netdev_err(dev, "BUG! TX buffer full when queue awake!\n");
+		return NETDEV_TX_BUSY;
+	}
+	reg_mid = at91_can_id_to_reg_mid(cf->can_id);
+	reg_mcr = ((cf->can_id & CAN_RTR_FLAG) ? AT91_MCR_MRTR : 0) |
+		(cf->len << 16) | AT91_MCR_MTCR;
+
+	/* disable MB while writing ID (see datasheet) */
+	set_mb_mode(priv, mb, AT91_MB_MODE_DISABLED);
+	at91_write(priv, AT91_MID(mb), reg_mid);
+	set_mb_mode_prio(priv, mb, AT91_MB_MODE_TX, prio);
+
+	at91_write(priv, AT91_MDL(mb), *(u32 *)(cf->data + 0));
+	at91_write(priv, AT91_MDH(mb), *(u32 *)(cf->data + 4));
+
+	/* This triggers transmission */
+	at91_write(priv, AT91_MCR(mb), reg_mcr);
+
+	/* _NOTE_: subtract AT91_MB_TX_FIRST offset from mb! */
+	can_put_echo_skb(skb, dev, mb - get_mb_tx_first(priv), 0);
+
+	/* we have to stop the queue and deliver all messages in case
+	 * of a prio+mb counter wrap around. This is the case if
+	 * tx_next buffer prio and mailbox equals 0.
+	 *
+	 * also stop the queue if next buffer is still in use
+	 * (== not ready)
+	 */
+	priv->tx_next++;
+	if (!(at91_read(priv, AT91_MSR(get_tx_next_mb(priv))) &
+	      AT91_MSR_MRDY) ||
+	    (priv->tx_next & get_next_mask(priv)) == 0)
+		netif_stop_queue(dev);
+
+	/* Enable interrupt for this mailbox */
+	at91_write(priv, AT91_IER, 1 << mb);
+
+	return NETDEV_TX_OK;
+}
+
+/**
+ * at91_activate_rx_low - activate lower rx mailboxes
+ * @priv: a91 context
+ *
+ * Reenables the lower mailboxes for reception of new CAN messages
+ */
+static inline void at91_activate_rx_low(const struct at91_priv *priv)
+{
+	u32 mask = get_mb_rx_low_mask(priv);
+
+	at91_write(priv, AT91_TCR, mask);
+}
+
+/**
+ * at91_activate_rx_mb - reactive single rx mailbox
+ * @priv: a91 context
+ * @mb: mailbox to reactivate
+ *
+ * Reenables given mailbox for reception of new CAN messages
+ */
+static inline void at91_activate_rx_mb(const struct at91_priv *priv,
+				       unsigned int mb)
+{
+	u32 mask = 1 << mb;
+
+	at91_write(priv, AT91_TCR, mask);
+}
+
+/**
+ * at91_rx_overflow_err - send error frame due to rx overflow
+ * @dev: net device
+ */
+static void at91_rx_overflow_err(struct net_device *dev)
+{
+	struct net_device_stats *stats = &dev->stats;
+	struct sk_buff *skb;
+	struct can_frame *cf;
+
+	netdev_dbg(dev, "RX buffer overflow\n");
+	stats->rx_over_errors++;
+	stats->rx_errors++;
+
+	skb = alloc_can_err_skb(dev, &cf);
+	if (unlikely(!skb))
+		return;
+
+	cf->can_id |= CAN_ERR_CRTL;
+	cf->data[1] = CAN_ERR_CRTL_RX_OVERFLOW;
+
+	netif_receive_skb(skb);
+}
+
+/**
+ * at91_read_mb - read CAN msg from mailbox (lowlevel impl)
+ * @dev: net device
+ * @mb: mailbox number to read from
+ * @cf: can frame where to store message
+ *
+ * Reads a CAN message from the given mailbox and stores data into
+ * given can frame. "mb" and "cf" must be valid.
+ */
+static void at91_read_mb(struct net_device *dev, unsigned int mb,
+			 struct can_frame *cf)
+{
+	const struct at91_priv *priv = netdev_priv(dev);
+	u32 reg_msr, reg_mid;
+
+	reg_mid = at91_read(priv, AT91_MID(mb));
+	if (reg_mid & AT91_MID_MIDE)
+		cf->can_id = ((reg_mid >> 0) & CAN_EFF_MASK) | CAN_EFF_FLAG;
+	else
+		cf->can_id = (reg_mid >> 18) & CAN_SFF_MASK;
+
+	reg_msr = at91_read(priv, AT91_MSR(mb));
+	cf->len = can_cc_dlc2len((reg_msr >> 16) & 0xf);
+
+	if (reg_msr & AT91_MSR_MRTR) {
+		cf->can_id |= CAN_RTR_FLAG;
+	} else {
+		*(u32 *)(cf->data + 0) = at91_read(priv, AT91_MDL(mb));
+		*(u32 *)(cf->data + 4) = at91_read(priv, AT91_MDH(mb));
+	}
+
+	/* allow RX of extended frames */
+	at91_write(priv, AT91_MID(mb), AT91_MID_MIDE);
+
+	if (unlikely(mb == get_mb_rx_last(priv) && reg_msr & AT91_MSR_MMI))
+		at91_rx_overflow_err(dev);
+}
+
+/**
+ * at91_read_msg - read CAN message from mailbox
+ * @dev: net device
+ * @mb: mail box to read from
+ *
+ * Reads a CAN message from given mailbox, and put into linux network
+ * RX queue, does all housekeeping chores (stats, ...)
+ */
+static void at91_read_msg(struct net_device *dev, unsigned int mb)
+{
+	struct net_device_stats *stats = &dev->stats;
+	struct can_frame *cf;
+	struct sk_buff *skb;
+
+	skb = alloc_can_skb(dev, &cf);
+	if (unlikely(!skb)) {
+		stats->rx_dropped++;
+		return;
+	}
+
+	at91_read_mb(dev, mb, cf);
+
+	stats->rx_packets++;
+	if (!(cf->can_id & CAN_RTR_FLAG))
+		stats->rx_bytes += cf->len;
+
+	netif_receive_skb(skb);
+
+	can_led_event(dev, CAN_LED_EVENT_RX);
+}
+
+/**
+ * at91_poll_rx - read multiple CAN messages from mailboxes
+ * @dev: net device
+ * @quota: max number of pkgs we're allowed to receive
+ *
+ * Theory of Operation:
+ *
+ * About 3/4 of the mailboxes (get_mb_rx_first()...get_mb_rx_last())
+ * on the chip are reserved for RX. We split them into 2 groups. The
+ * lower group ranges from get_mb_rx_first() to get_mb_rx_low_last().
+ *
+ * Like it or not, but the chip always saves a received CAN message
+ * into the first free mailbox it finds (starting with the
+ * lowest). This makes it very difficult to read the messages in the
+ * right order from the chip. This is how we work around that problem:
+ *
+ * The first message goes into mb nr. 1 and issues an interrupt. All
+ * rx ints are disabled in the interrupt handler and a napi poll is
+ * scheduled. We read the mailbox, but do _not_ re-enable the mb (to
+ * receive another message).
+ *
+ *    lower mbxs      upper
+ *     ____^______    __^__
+ *    /           \  /     \
+ * +-+-+-+-+-+-+-+-++-+-+-+-+
+ * | |x|x|x|x|x|x|x|| | | | |
+ * +-+-+-+-+-+-+-+-++-+-+-+-+
+ *  0 0 0 0 0 0  0 0 0 0 1 1  \ mail
+ *  0 1 2 3 4 5  6 7 8 9 0 1  / box
+ *  ^
+ *  |
+ *   \
+ *     unused, due to chip bug
+ *
+ * The variable priv->rx_next points to the next mailbox to read a
+ * message from. As long we're in the lower mailboxes we just read the
+ * mailbox but not re-enable it.
+ *
+ * With completion of the last of the lower mailboxes, we re-enable the
+ * whole first group, but continue to look for filled mailboxes in the
+ * upper mailboxes. Imagine the second group like overflow mailboxes,
+ * which takes CAN messages if the lower goup is full. While in the
+ * upper group we re-enable the mailbox right after reading it. Giving
+ * the chip more room to store messages.
+ *
+ * After finishing we look again in the lower group if we've still
+ * quota.
+ *
+ */
+static int at91_poll_rx(struct net_device *dev, int quota)
+{
+	struct at91_priv *priv = netdev_priv(dev);
+	u32 reg_sr = at91_read(priv, AT91_SR);
+	const unsigned long *addr = (unsigned long *)&reg_sr;
+	unsigned int mb;
+	int received = 0;
+
+	if (priv->rx_next > get_mb_rx_low_last(priv) &&
+	    reg_sr & get_mb_rx_low_mask(priv))
+		netdev_info(dev,
+			    "order of incoming frames cannot be guaranteed\n");
+
+ again:
+	for (mb = find_next_bit(addr, get_mb_tx_first(priv), priv->rx_next);
+	     mb < get_mb_tx_first(priv) && quota > 0;
+	     reg_sr = at91_read(priv, AT91_SR),
+	     mb = find_next_bit(addr, get_mb_tx_first(priv), ++priv->rx_next)) {
+		at91_read_msg(dev, mb);
+
+		/* reactivate mailboxes */
+		if (mb == get_mb_rx_low_last(priv))
+			/* all lower mailboxed, if just finished it */
+			at91_activate_rx_low(priv);
+		else if (mb > get_mb_rx_low_last(priv))
+			/* only the mailbox we read */
+			at91_activate_rx_mb(priv, mb);
+
+		received++;
+		quota--;
+	}
+
+	/* upper group completed, look again in lower */
+	if (priv->rx_next > get_mb_rx_low_last(priv) &&
+	    mb > get_mb_rx_last(priv)) {
+		priv->rx_next = get_mb_rx_first(priv);
+		if (quota > 0)
+			goto again;
+	}
+
+	return received;
+}
+
+static void at91_poll_err_frame(struct net_device *dev,
+				struct can_frame *cf, u32 reg_sr)
+{
+	struct at91_priv *priv = netdev_priv(dev);
+
+	/* CRC error */
+	if (reg_sr & AT91_IRQ_CERR) {
+		netdev_dbg(dev, "CERR irq\n");
+		dev->stats.rx_errors++;
+		priv->can.can_stats.bus_error++;
+		cf->can_id |= CAN_ERR_PROT | CAN_ERR_BUSERROR;
+	}
+
+	/* Stuffing Error */
+	if (reg_sr & AT91_IRQ_SERR) {
+		netdev_dbg(dev, "SERR irq\n");
+		dev->stats.rx_errors++;
+		priv->can.can_stats.bus_error++;
+		cf->can_id |= CAN_ERR_PROT | CAN_ERR_BUSERROR;
+		cf->data[2] |= CAN_ERR_PROT_STUFF;
+	}
+
+	/* Acknowledgement Error */
+	if (reg_sr & AT91_IRQ_AERR) {
+		netdev_dbg(dev, "AERR irq\n");
+		dev->stats.tx_errors++;
+		cf->can_id |= CAN_ERR_ACK;
+	}
+
+	/* Form error */
+	if (reg_sr & AT91_IRQ_FERR) {
+		netdev_dbg(dev, "FERR irq\n");
+		dev->stats.rx_errors++;
+		priv->can.can_stats.bus_error++;
+		cf->can_id |= CAN_ERR_PROT | CAN_ERR_BUSERROR;
+		cf->data[2] |= CAN_ERR_PROT_FORM;
+	}
+
+	/* Bit Error */
+	if (reg_sr & AT91_IRQ_BERR) {
+		netdev_dbg(dev, "BERR irq\n");
+		dev->stats.tx_errors++;
+		priv->can.can_stats.bus_error++;
+		cf->can_id |= CAN_ERR_PROT | CAN_ERR_BUSERROR;
+		cf->data[2] |= CAN_ERR_PROT_BIT;
+	}
+}
+
+static int at91_poll_err(struct net_device *dev, int quota, u32 reg_sr)
+{
+	struct sk_buff *skb;
+	struct can_frame *cf;
+
+	if (quota == 0)
+		return 0;
+
+	skb = alloc_can_err_skb(dev, &cf);
+	if (unlikely(!skb))
+		return 0;
+
+	at91_poll_err_frame(dev, cf, reg_sr);
+
+	netif_receive_skb(skb);
+
+	return 1;
+}
+
+static int at91_poll(struct napi_struct *napi, int quota)
+{
+	struct net_device *dev = napi->dev;
+	const struct at91_priv *priv = netdev_priv(dev);
+	u32 reg_sr = at91_read(priv, AT91_SR);
+	int work_done = 0;
+
+	if (reg_sr & get_irq_mb_rx(priv))
+		work_done += at91_poll_rx(dev, quota - work_done);
+
+	/* The error bits are clear on read,
+	 * so use saved value from irq handler.
+	 */
+	reg_sr |= priv->reg_sr;
+	if (reg_sr & AT91_IRQ_ERR_FRAME)
+		work_done += at91_poll_err(dev, quota - work_done, reg_sr);
+
+	if (work_done < quota) {
+		/* enable IRQs for frame errors and all mailboxes >= rx_next */
+		u32 reg_ier = AT91_IRQ_ERR_FRAME;
+
+		reg_ier |= get_irq_mb_rx(priv) & ~AT91_MB_MASK(priv->rx_next);
+
+		napi_complete_done(napi, work_done);
+		at91_write(priv, AT91_IER, reg_ier);
+	}
+
+	return work_done;
+}
+
+/* theory of operation:
+ *
+ * priv->tx_echo holds the number of the oldest can_frame put for
+ * transmission into the hardware, but not yet ACKed by the CAN tx
+ * complete IRQ.
+ *
+ * We iterate from priv->tx_echo to priv->tx_next and check if the
+ * packet has been transmitted, echo it back to the CAN framework. If
+ * we discover a not yet transmitted package, stop looking for more.
+ *
+ */
+static void at91_irq_tx(struct net_device *dev, u32 reg_sr)
+{
+	struct at91_priv *priv = netdev_priv(dev);
+	u32 reg_msr;
+	unsigned int mb;
+
+	/* masking of reg_sr not needed, already done by at91_irq */
+
+	for (/* nix */; (priv->tx_next - priv->tx_echo) > 0; priv->tx_echo++) {
+		mb = get_tx_echo_mb(priv);
+
+		/* no event in mailbox? */
+		if (!(reg_sr & (1 << mb)))
+			break;
+
+		/* Disable irq for this TX mailbox */
+		at91_write(priv, AT91_IDR, 1 << mb);
+
+		/* only echo if mailbox signals us a transfer
+		 * complete (MSR_MRDY). Otherwise it's a tansfer
+		 * abort. "can_bus_off()" takes care about the skbs
+		 * parked in the echo queue.
+		 */
+		reg_msr = at91_read(priv, AT91_MSR(mb));
+		if (likely(reg_msr & AT91_MSR_MRDY &&
+			   ~reg_msr & AT91_MSR_MABT)) {
+			/* _NOTE_: subtract AT91_MB_TX_FIRST offset from mb! */
+			dev->stats.tx_bytes +=
+				can_get_echo_skb(dev,
+						 mb - get_mb_tx_first(priv),
+						 NULL);
+			dev->stats.tx_packets++;
+			can_led_event(dev, CAN_LED_EVENT_TX);
+		}
+	}
+
+	/* restart queue if we don't have a wrap around but restart if
+	 * we get a TX int for the last can frame directly before a
+	 * wrap around.
+	 */
+	if ((priv->tx_next & get_next_mask(priv)) != 0 ||
+	    (priv->tx_echo & get_next_mask(priv)) == 0)
+		netif_wake_queue(dev);
+}
+
+static void at91_irq_err_state(struct net_device *dev,
+			       struct can_frame *cf, enum can_state new_state)
+{
+	struct at91_priv *priv = netdev_priv(dev);
+	u32 reg_idr = 0, reg_ier = 0;
+	struct can_berr_counter bec;
+
+	at91_get_berr_counter(dev, &bec);
+
+	switch (priv->can.state) {
+	case CAN_STATE_ERROR_ACTIVE:
+		/* from: ERROR_ACTIVE
+		 * to  : ERROR_WARNING, ERROR_PASSIVE, BUS_OFF
+		 * =>  : there was a warning int
+		 */
+		if (new_state >= CAN_STATE_ERROR_WARNING &&
+		    new_state <= CAN_STATE_BUS_OFF) {
+			netdev_dbg(dev, "Error Warning IRQ\n");
+			priv->can.can_stats.error_warning++;
+
+			cf->can_id |= CAN_ERR_CRTL;
+			cf->data[1] = (bec.txerr > bec.rxerr) ?
+				CAN_ERR_CRTL_TX_WARNING :
+				CAN_ERR_CRTL_RX_WARNING;
+		}
+		fallthrough;
+	case CAN_STATE_ERROR_WARNING:
+		/* from: ERROR_ACTIVE, ERROR_WARNING
+		 * to  : ERROR_PASSIVE, BUS_OFF
+		 * =>  : error passive int
+		 */
+		if (new_state >= CAN_STATE_ERROR_PASSIVE &&
+		    new_state <= CAN_STATE_BUS_OFF) {
+			netdev_dbg(dev, "Error Passive IRQ\n");
+			priv->can.can_stats.error_passive++;
+
+			cf->can_id |= CAN_ERR_CRTL;
+			cf->data[1] = (bec.txerr > bec.rxerr) ?
+				CAN_ERR_CRTL_TX_PASSIVE :
+				CAN_ERR_CRTL_RX_PASSIVE;
+		}
+		break;
+	case CAN_STATE_BUS_OFF:
+		/* from: BUS_OFF
+		 * to  : ERROR_ACTIVE, ERROR_WARNING, ERROR_PASSIVE
+		 */
+		if (new_state <= CAN_STATE_ERROR_PASSIVE) {
+			cf->can_id |= CAN_ERR_RESTARTED;
+
+			netdev_dbg(dev, "restarted\n");
+			priv->can.can_stats.restarts++;
+
+			netif_carrier_on(dev);
+			netif_wake_queue(dev);
+		}
+		break;
+	default:
+		break;
+	}
+
+	/* process state changes depending on the new state */
+	switch (new_state) {
+	case CAN_STATE_ERROR_ACTIVE:
+		/* actually we want to enable AT91_IRQ_WARN here, but
+		 * it screws up the system under certain
+		 * circumstances. so just enable AT91_IRQ_ERRP, thus
+		 * the "fallthrough"
+		 */
+		netdev_dbg(dev, "Error Active\n");
+		cf->can_id |= CAN_ERR_PROT;
+		cf->data[2] = CAN_ERR_PROT_ACTIVE;
+		fallthrough;
+	case CAN_STATE_ERROR_WARNING:
+		reg_idr = AT91_IRQ_ERRA | AT91_IRQ_WARN | AT91_IRQ_BOFF;
+		reg_ier = AT91_IRQ_ERRP;
+		break;
+	case CAN_STATE_ERROR_PASSIVE:
+		reg_idr = AT91_IRQ_ERRA | AT91_IRQ_WARN | AT91_IRQ_ERRP;
+		reg_ier = AT91_IRQ_BOFF;
+		break;
+	case CAN_STATE_BUS_OFF:
+		reg_idr = AT91_IRQ_ERRA | AT91_IRQ_ERRP |
+			AT91_IRQ_WARN | AT91_IRQ_BOFF;
+		reg_ier = 0;
+
+		cf->can_id |= CAN_ERR_BUSOFF;
+
+		netdev_dbg(dev, "bus-off\n");
+		netif_carrier_off(dev);
+		priv->can.can_stats.bus_off++;
+
+		/* turn off chip, if restart is disabled */
+		if (!priv->can.restart_ms) {
+			at91_chip_stop(dev, CAN_STATE_BUS_OFF);
+			return;
+		}
+		break;
+	default:
+		break;
+	}
+
+	at91_write(priv, AT91_IDR, reg_idr);
+	at91_write(priv, AT91_IER, reg_ier);
+}
+
+static int at91_get_state_by_bec(const struct net_device *dev,
+				 enum can_state *state)
+{
+	struct can_berr_counter bec;
+	int err;
+
+	err = at91_get_berr_counter(dev, &bec);
+	if (err)
+		return err;
+
+	if (bec.txerr < 96 && bec.rxerr < 96)
+		*state = CAN_STATE_ERROR_ACTIVE;
+	else if (bec.txerr < 128 && bec.rxerr < 128)
+		*state = CAN_STATE_ERROR_WARNING;
+	else if (bec.txerr < 256 && bec.rxerr < 256)
+		*state = CAN_STATE_ERROR_PASSIVE;
+	else
+		*state = CAN_STATE_BUS_OFF;
+
+	return 0;
+}
+
+static void at91_irq_err(struct net_device *dev)
+{
+	struct at91_priv *priv = netdev_priv(dev);
+	struct sk_buff *skb;
+	struct can_frame *cf;
+	enum can_state new_state;
+	u32 reg_sr;
+	int err;
+
+	if (at91_is_sam9263(priv)) {
+		reg_sr = at91_read(priv, AT91_SR);
+
+		/* we need to look at the unmasked reg_sr */
+		if (unlikely(reg_sr & AT91_IRQ_BOFF)) {
+			new_state = CAN_STATE_BUS_OFF;
+		} else if (unlikely(reg_sr & AT91_IRQ_ERRP)) {
+			new_state = CAN_STATE_ERROR_PASSIVE;
+		} else if (unlikely(reg_sr & AT91_IRQ_WARN)) {
+			new_state = CAN_STATE_ERROR_WARNING;
+		} else if (likely(reg_sr & AT91_IRQ_ERRA)) {
+			new_state = CAN_STATE_ERROR_ACTIVE;
+		} else {
+			netdev_err(dev, "BUG! hardware in undefined state\n");
+			return;
+		}
+	} else {
+		err = at91_get_state_by_bec(dev, &new_state);
+		if (err)
+			return;
+	}
+
+	/* state hasn't changed */
+	if (likely(new_state == priv->can.state))
+		return;
+
+	skb = alloc_can_err_skb(dev, &cf);
+	if (unlikely(!skb))
+		return;
+
+	at91_irq_err_state(dev, cf, new_state);
+
+	netif_rx(skb);
+
+	priv->can.state = new_state;
+}
+
+/* interrupt handler
+ */
+static irqreturn_t at91_irq(int irq, void *dev_id)
+{
+	struct net_device *dev = dev_id;
+	struct at91_priv *priv = netdev_priv(dev);
+	irqreturn_t handled = IRQ_NONE;
+	u32 reg_sr, reg_imr;
+
+	reg_sr = at91_read(priv, AT91_SR);
+	reg_imr = at91_read(priv, AT91_IMR);
+
+	/* Ignore masked interrupts */
+	reg_sr &= reg_imr;
+	if (!reg_sr)
+		goto exit;
+
+	handled = IRQ_HANDLED;
+
+	/* Receive or error interrupt? -> napi */
+	if (reg_sr & (get_irq_mb_rx(priv) | AT91_IRQ_ERR_FRAME)) {
+		/* The error bits are clear on read,
+		 * save for later use.
+		 */
+		priv->reg_sr = reg_sr;
+		at91_write(priv, AT91_IDR,
+			   get_irq_mb_rx(priv) | AT91_IRQ_ERR_FRAME);
+		napi_schedule(&priv->napi);
+	}
+
+	/* Transmission complete interrupt */
+	if (reg_sr & get_irq_mb_tx(priv))
+		at91_irq_tx(dev, reg_sr);
+
+	at91_irq_err(dev);
+
+ exit:
+	return handled;
+}
+
+static int at91_open(struct net_device *dev)
+{
+	struct at91_priv *priv = netdev_priv(dev);
+	int err;
+
+	err = clk_prepare_enable(priv->clk);
+	if (err)
+		return err;
+
+	/* check or determine and set bittime */
+	err = open_candev(dev);
+	if (err)
+		goto out;
+
+	/* register interrupt handler */
+	if (request_irq(dev->irq, at91_irq, IRQF_SHARED,
+			dev->name, dev)) {
+		err = -EAGAIN;
+		goto out_close;
+	}
+
+	can_led_event(dev, CAN_LED_EVENT_OPEN);
+
+	/* start chip and queuing */
+	at91_chip_start(dev);
+	napi_enable(&priv->napi);
+	netif_start_queue(dev);
+
+	return 0;
+
+ out_close:
+	close_candev(dev);
+ out:
+	clk_disable_unprepare(priv->clk);
+
+	return err;
+}
+
+/* stop CAN bus activity
+ */
+static int at91_close(struct net_device *dev)
+{
+	struct at91_priv *priv = netdev_priv(dev);
+
+	netif_stop_queue(dev);
+	napi_disable(&priv->napi);
+	at91_chip_stop(dev, CAN_STATE_STOPPED);
+
+	free_irq(dev->irq, dev);
+	clk_disable_unprepare(priv->clk);
+
+	close_candev(dev);
+
+	can_led_event(dev, CAN_LED_EVENT_STOP);
+
+	return 0;
+}
+
+static int at91_set_mode(struct net_device *dev, enum can_mode mode)
+{
+	switch (mode) {
+	case CAN_MODE_START:
+		at91_chip_start(dev);
+		netif_wake_queue(dev);
+		break;
+
+	default:
+		return -EOPNOTSUPP;
+	}
+
+	return 0;
+}
+
+static const struct net_device_ops at91_netdev_ops = {
+	.ndo_open	= at91_open,
+	.ndo_stop	= at91_close,
+	.ndo_start_xmit	= at91_start_xmit,
+	.ndo_change_mtu = can_change_mtu,
+};
+
+static ssize_t mb0_id_show(struct device *dev,
+			   struct device_attribute *attr, char *buf)
+{
+	struct at91_priv *priv = netdev_priv(to_net_dev(dev));
+
+	if (priv->mb0_id & CAN_EFF_FLAG)
+		return sysfs_emit(buf, "0x%08x\n", priv->mb0_id);
+	else
+		return sysfs_emit(buf, "0x%03x\n", priv->mb0_id);
+}
+
+static ssize_t mb0_id_store(struct device *dev,
+			    struct device_attribute *attr,
+			    const char *buf, size_t count)
+{
+	struct net_device *ndev = to_net_dev(dev);
+	struct at91_priv *priv = netdev_priv(ndev);
+	unsigned long can_id;
+	ssize_t ret;
+	int err;
+
+	rtnl_lock();
+
+	if (ndev->flags & IFF_UP) {
+		ret = -EBUSY;
+		goto out;
+	}
+
+	err = kstrtoul(buf, 0, &can_id);
+	if (err) {
+		ret = err;
+		goto out;
+	}
+
+	if (can_id & CAN_EFF_FLAG)
+		can_id &= CAN_EFF_MASK | CAN_EFF_FLAG;
+	else
+		can_id &= CAN_SFF_MASK;
+
+	priv->mb0_id = can_id;
+	ret = count;
+
+ out:
+	rtnl_unlock();
+	return ret;
+}
+
+static DEVICE_ATTR_RW(mb0_id);
+
+static struct attribute *at91_sysfs_attrs[] = {
+	&dev_attr_mb0_id.attr,
+	NULL,
+};
+
+static const struct attribute_group at91_sysfs_attr_group = {
+	.attrs = at91_sysfs_attrs,
+};
+
+#if defined(CONFIG_OF)
+static const struct of_device_id at91_can_dt_ids[] = {
+	{
+		.compatible = "atmel,at91sam9x5-can",
+		.data = &at91_at91sam9x5_data,
+	}, {
+		.compatible = "atmel,at91sam9263-can",
+		.data = &at91_at91sam9263_data,
+	}, {
+		/* sentinel */
+	}
+};
+MODULE_DEVICE_TABLE(of, at91_can_dt_ids);
+#endif
+
+static const struct at91_devtype_data *at91_can_get_driver_data(struct platform_device *pdev)
+{
+	if (pdev->dev.of_node) {
+		const struct of_device_id *match;
+
+		match = of_match_node(at91_can_dt_ids, pdev->dev.of_node);
+		if (!match) {
+			dev_err(&pdev->dev, "no matching node found in dtb\n");
+			return NULL;
+		}
+		return (const struct at91_devtype_data *)match->data;
+	}
+	return (const struct at91_devtype_data *)
+		platform_get_device_id(pdev)->driver_data;
+}
+
+static int at91_can_probe(struct platform_device *pdev)
+{
+	const struct at91_devtype_data *devtype_data;
+	struct net_device *dev;
+	struct at91_priv *priv;
+	struct resource *res;
+	struct clk *clk;
+	void __iomem *addr;
+	int err, irq;
+
+	devtype_data = at91_can_get_driver_data(pdev);
+	if (!devtype_data) {
+		dev_err(&pdev->dev, "no driver data\n");
+		err = -ENODEV;
+		goto exit;
+	}
+
+	clk = clk_get(&pdev->dev, "can_clk");
+	if (IS_ERR(clk)) {
+		dev_err(&pdev->dev, "no clock defined\n");
+		err = -ENODEV;
+		goto exit;
+	}
+
+	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+	irq = platform_get_irq(pdev, 0);
+	if (!res || irq <= 0) {
+		err = -ENODEV;
+		goto exit_put;
+	}
+
+	if (!request_mem_region(res->start,
+				resource_size(res),
+				pdev->name)) {
+		err = -EBUSY;
+		goto exit_put;
+	}
+
+	addr = ioremap(res->start, resource_size(res));
+	if (!addr) {
+		err = -ENOMEM;
+		goto exit_release;
+	}
+
+	dev = alloc_candev(sizeof(struct at91_priv),
+			   1 << devtype_data->tx_shift);
+	if (!dev) {
+		err = -ENOMEM;
+		goto exit_iounmap;
+	}
+
+	dev->netdev_ops	= &at91_netdev_ops;
+	dev->irq = irq;
+	dev->flags |= IFF_ECHO;
+
+	priv = netdev_priv(dev);
+	priv->can.clock.freq = clk_get_rate(clk);
+	priv->can.bittiming_const = &at91_bittiming_const;
+	priv->can.do_set_mode = at91_set_mode;
+	priv->can.do_get_berr_counter = at91_get_berr_counter;
+	priv->can.ctrlmode_supported = CAN_CTRLMODE_3_SAMPLES |
+		CAN_CTRLMODE_LISTENONLY;
+	priv->reg_base = addr;
+	priv->devtype_data = *devtype_data;
+	priv->clk = clk;
+	priv->pdata = dev_get_platdata(&pdev->dev);
+	priv->mb0_id = 0x7ff;
+
+	netif_napi_add(dev, &priv->napi, at91_poll, get_mb_rx_num(priv));
+
+	if (at91_is_sam9263(priv))
+		dev->sysfs_groups[0] = &at91_sysfs_attr_group;
+
+	platform_set_drvdata(pdev, dev);
+	SET_NETDEV_DEV(dev, &pdev->dev);
+
+	err = register_candev(dev);
+	if (err) {
+		dev_err(&pdev->dev, "registering netdev failed\n");
+		goto exit_free;
+	}
+
+	devm_can_led_init(dev);
+
+	dev_info(&pdev->dev, "device registered (reg_base=%p, irq=%d)\n",
+		 priv->reg_base, dev->irq);
+
+	return 0;
+
+ exit_free:
+	free_candev(dev);
+ exit_iounmap:
+	iounmap(addr);
+ exit_release:
+	release_mem_region(res->start, resource_size(res));
+ exit_put:
+	clk_put(clk);
+ exit:
+	return err;
+}
+
+static int at91_can_remove(struct platform_device *pdev)
+{
+	struct net_device *dev = platform_get_drvdata(pdev);
+	struct at91_priv *priv = netdev_priv(dev);
+	struct resource *res;
+
+	unregister_netdev(dev);
+
+	iounmap(priv->reg_base);
+
+	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+	release_mem_region(res->start, resource_size(res));
+
+	clk_put(priv->clk);
+
+	free_candev(dev);
+
+	return 0;
+}
+
+static const struct platform_device_id at91_can_id_table[] = {
+	{
+		.name = "at91sam9x5_can",
+		.driver_data = (kernel_ulong_t)&at91_at91sam9x5_data,
+	}, {
+		.name = "at91_can",
+		.driver_data = (kernel_ulong_t)&at91_at91sam9263_data,
+	}, {
+		/* sentinel */
+	}
+};
+MODULE_DEVICE_TABLE(platform, at91_can_id_table);
+
+static struct platform_driver at91_can_driver = {
+	.probe = at91_can_probe,
+	.remove = at91_can_remove,
+	.driver = {
+		.name = KBUILD_MODNAME,
+		.of_match_table = of_match_ptr(at91_can_dt_ids),
+	},
+	.id_table = at91_can_id_table,
+};
+
+module_platform_driver(at91_can_driver);
+
+MODULE_AUTHOR("Marc Kleine-Budde <mkl@pengutronix.de>");
+MODULE_LICENSE("GPL v2");
+MODULE_DESCRIPTION(KBUILD_MODNAME " CAN netdevice driver");

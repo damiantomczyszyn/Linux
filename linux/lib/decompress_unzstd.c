@@ -1,403 +1,352 @@
-_BITMAP(list_entries_in_use, MAX_LOCKDEP_ENTRIES);
+DING,
+};
+enum cx23885_copyright {
+	CX23885_COPYRIGHT_OFF,
+	CX23885_COPYRIGHT_ON,
+};
+enum cx23885_notification_type {
+	CX23885_NOTIFICATION_REFRESH,
+};
+enum cx23885_notification_status {
+	CX23885_NOTIFICATION_OFF,
+	CX23885_NOTIFICATION_ON,
+};
+enum cx23885_notification_mailbox {
+	CX23885_NOTIFICATION_NO_MAILBOX = -1,
+};
+enum cx23885_field1_lines {
+	CX23885_FIELD1_SAA7114 = 0x00EF, /* 239 */
+	CX23885_FIELD1_SAA7115 = 0x00F0, /* 240 */
+	CX23885_FIELD1_MICRONAS = 0x0105, /* 261 */
+};
+enum cx23885_field2_lines {
+	CX23885_FIELD2_SAA7114 = 0x00EF, /* 239 */
+	CX23885_FIELD2_SAA7115 = 0x00F0, /* 240 */
+	CX23885_FIELD2_MICRONAS = 0x0106, /* 262 */
+};
+enum cx23885_custom_data_type {
+	CX23885_CUSTOM_EXTENSION_USR_DATA,
+	CX23885_CUSTOM_PRIVATE_PACKET,
+};
+enum cx23885_mute {
+	CX23885_UNMUTE,
+	CX23885_MUTE,
+};
+enum cx23885_mute_video_mask {
+	CX23885_MUTE_VIDEO_V_MASK = 0x0000FF00,
+	CX23885_MUTE_VIDEO_U_MASK = 0x00FF0000,
+	CX23885_MUTE_VIDEO_Y_MASK = 0xFF000000,
+};
+enum cx23885_mute_video_shift {
+	CX23885_MUTE_VIDEO_V_SHIFT = 8,
+	CX23885_MUTE_VIDEO_U_SHIFT = 16,
+	CX23885_MUTE_VIDEO_Y_SHIFT = 24,
+};
 
-/*
- * All data structures here are protected by the global debug_lock.
- *
- * nr_lock_classes is the number of elements of lock_classes[] that is
- * in use.
- */
-#define KEYHASH_BITS		(MAX_LOCKDEP_KEYS_BITS - 1)
-#define KEYHASH_SIZE		(1UL << KEYHASH_BITS)
-static struct hlist_head lock_keys_hash[KEYHASH_SIZE];
-unsigned long nr_lock_classes;
-unsigned long nr_zapped_classes;
-unsigned long max_lock_class_idx;
-struct lock_class lock_classes[MAX_LOCKDEP_KEYS];
-DECLARE_BITMAP(lock_classes_in_use, MAX_LOCKDEP_KEYS);
+/* defines below are from ivtv-driver.h */
+#define IVTV_CMD_HW_BLOCKS_RST 0xFFFFFFFF
 
-static inline struct lock_class *hlock_class(struct held_lock *hlock)
+/* Firmware API commands */
+#define IVTV_API_STD_TIMEOUT 500
+
+/* Registers */
+/* IVTV_REG_OFFSET */
+#define IVTV_REG_ENC_SDRAM_REFRESH (0x07F8)
+#define IVTV_REG_ENC_SDRAM_PRECHARGE (0x07FC)
+#define IVTV_REG_SPU (0x9050)
+#define IVTV_REG_HW_BLOCKS (0x9054)
+#define IVTV_REG_VPU (0x9058)
+#define IVTV_REG_APU (0xA064)
+
+/**** Bit definitions for MC417_RWD and MC417_OEN registers  ***
+  bits 31-16
++-----------+
+| Reserved  |
++-----------+
+  bit 15  bit 14  bit 13 bit 12  bit 11  bit 10  bit 9   bit 8
++-------+-------+-------+-------+-------+-------+-------+-------+
+| MIWR# | MIRD# | MICS# |MIRDY# |MIADDR3|MIADDR2|MIADDR1|MIADDR0|
++-------+-------+-------+-------+-------+-------+-------+-------+
+ bit 7   bit 6   bit 5   bit 4   bit 3   bit 2   bit 1   bit 0
++-------+-------+-------+-------+-------+-------+-------+-------+
+|MIDATA7|MIDATA6|MIDATA5|MIDATA4|MIDATA3|MIDATA2|MIDATA1|MIDATA0|
++-------+-------+-------+-------+-------+-------+-------+-------+
+***/
+#define MC417_MIWR	0x8000
+#define MC417_MIRD	0x4000
+#define MC417_MICS	0x2000
+#define MC417_MIRDY	0x1000
+#define MC417_MIADDR	0x0F00
+#define MC417_MIDATA	0x00FF
+
+/* MIADDR* nibble definitions */
+#define  MCI_MEMORY_DATA_BYTE0          0x000
+#define  MCI_MEMORY_DATA_BYTE1          0x100
+#define  MCI_MEMORY_DATA_BYTE2          0x200
+#define  MCI_MEMORY_DATA_BYTE3          0x300
+#define  MCI_MEMORY_ADDRESS_BYTE2       0x400
+#define  MCI_MEMORY_ADDRESS_BYTE1       0x500
+#define  MCI_MEMORY_ADDRESS_BYTE0       0x600
+#define  MCI_REGISTER_DATA_BYTE0        0x800
+#define  MCI_REGISTER_DATA_BYTE1        0x900
+#define  MCI_REGISTER_DATA_BYTE2        0xA00
+#define  MCI_REGISTER_DATA_BYTE3        0xB00
+#define  MCI_REGISTER_ADDRESS_BYTE0     0xC00
+#define  MCI_REGISTER_ADDRESS_BYTE1     0xD00
+#define  MCI_REGISTER_MODE              0xE00
+
+/* Read and write modes */
+#define  MCI_MODE_REGISTER_READ         0
+#define  MCI_MODE_REGISTER_WRITE        1
+#define  MCI_MODE_MEMORY_READ           0
+#define  MCI_MODE_MEMORY_WRITE          0x40
+
+/*** Bit definitions for MC417_CTL register ****
+ bits 31-6   bits 5-4   bit 3    bits 2-1       Bit 0
++--------+-------------+--------+--------------+------------+
+|Reserved|MC417_SPD_CTL|Reserved|MC417_GPIO_SEL|UART_GPIO_EN|
++--------+-------------+--------+--------------+------------+
+***/
+#define MC417_SPD_CTL(x)	(((x) << 4) & 0x00000030)
+#define MC417_GPIO_SEL(x)	(((x) << 1) & 0x00000006)
+#define MC417_UART_GPIO_EN	0x00000001
+
+/* Values for speed control */
+#define MC417_SPD_CTL_SLOW	0x1
+#define MC417_SPD_CTL_MEDIUM	0x0
+#define MC417_SPD_CTL_FAST	0x3     /* b'1x, but we use b'11 */
+
+/* Values for GPIO select */
+#define MC417_GPIO_SEL_GPIO3	0x3
+#define MC417_GPIO_SEL_GPIO2	0x2
+#define MC417_GPIO_SEL_GPIO1	0x1
+#define MC417_GPIO_SEL_GPIO0	0x0
+
+void cx23885_mc417_init(struct cx23885_dev *dev)
 {
-	unsigned int class_idx = hlock->class_idx;
+	u32 regval;
 
-	/* Don't re-read hlock->class_idx, can't use READ_ONCE() on bitfield */
-	barrier();
+	dprintk(2, "%s()\n", __func__);
 
-	if (!test_bit(class_idx, lock_classes_in_use)) {
-		/*
-		 * Someone passed in garbage, we give up.
-		 */
-		DEBUG_LOCKS_WARN_ON(1);
-		return NULL;
+	/* Configure MC417_CTL register to defaults. */
+	regval = MC417_SPD_CTL(MC417_SPD_CTL_FAST)	|
+		 MC417_GPIO_SEL(MC417_GPIO_SEL_GPIO3)	|
+		 MC417_UART_GPIO_EN;
+	cx_write(MC417_CTL, regval);
+
+	/* Configure MC417_OEN to defaults. */
+	regval = MC417_MIRDY;
+	cx_write(MC417_OEN, regval);
+
+	/* Configure MC417_RWD to defaults. */
+	regval = MC417_MIWR | MC417_MIRD | MC417_MICS;
+	cx_write(MC417_RWD, regval);
+}
+
+static int mc417_wait_ready(struct cx23885_dev *dev)
+{
+	u32 mi_ready;
+	unsigned long timeout = jiffies + msecs_to_jiffies(1);
+
+	for (;;) {
+		mi_ready = cx_read(MC417_RWD) & MC417_MIRDY;
+		if (mi_ready != 0)
+			return 0;
+		if (time_after(jiffies, timeout))
+			return -1;
+		udelay(1);
 	}
+}
 
-	/*
-	 * At this point, if the passed hlock->class_idx is still garbage,
-	 * we just have to live with it
+int mc417_register_write(struct cx23885_dev *dev, u16 address, u32 value)
+{
+	u32 regval;
+
+	/* Enable MC417 GPIO outputs except for MC417_MIRDY,
+	 * which is an input.
 	 */
-	return lock_classes + class_idx;
+	cx_write(MC417_OEN, MC417_MIRDY);
+
+	/* Write data byte 0 */
+	regval = MC417_MIRD | MC417_MIRDY | MCI_REGISTER_DATA_BYTE0 |
+		(value & 0x000000FF);
+	cx_write(MC417_RWD, regval);
+
+	/* Transition CS/WR to effect write transaction across bus. */
+	regval |= MC417_MICS | MC417_MIWR;
+	cx_write(MC417_RWD, regval);
+
+	/* Write data byte 1 */
+	regval = MC417_MIRD | MC417_MIRDY | MCI_REGISTER_DATA_BYTE1 |
+		((value >> 8) & 0x000000FF);
+	cx_write(MC417_RWD, regval);
+	regval |= MC417_MICS | MC417_MIWR;
+	cx_write(MC417_RWD, regval);
+
+	/* Write data byte 2 */
+	regval = MC417_MIRD | MC417_MIRDY | MCI_REGISTER_DATA_BYTE2 |
+		((value >> 16) & 0x000000FF);
+	cx_write(MC417_RWD, regval);
+	regval |= MC417_MICS | MC417_MIWR;
+	cx_write(MC417_RWD, regval);
+
+	/* Write data byte 3 */
+	regval = MC417_MIRD | MC417_MIRDY | MCI_REGISTER_DATA_BYTE3 |
+		((value >> 24) & 0x000000FF);
+	cx_write(MC417_RWD, regval);
+	regval |= MC417_MICS | MC417_MIWR;
+	cx_write(MC417_RWD, regval);
+
+	/* Write address byte 0 */
+	regval = MC417_MIRD | MC417_MIRDY | MCI_REGISTER_ADDRESS_BYTE0 |
+		(address & 0xFF);
+	cx_write(MC417_RWD, regval);
+	regval |= MC417_MICS | MC417_MIWR;
+	cx_write(MC417_RWD, regval);
+
+	/* Write address byte 1 */
+	regval = MC417_MIRD | MC417_MIRDY | MCI_REGISTER_ADDRESS_BYTE1 |
+		((address >> 8) & 0xFF);
+	cx_write(MC417_RWD, regval);
+	regval |= MC417_MICS | MC417_MIWR;
+	cx_write(MC417_RWD, regval);
+
+	/* Indicate that this is a write. */
+	regval = MC417_MIRD | MC417_MIRDY | MCI_REGISTER_MODE |
+		MCI_MODE_REGISTER_WRITE;
+	cx_write(MC417_RWD, regval);
+	regval |= MC417_MICS | MC417_MIWR;
+	cx_write(MC417_RWD, regval);
+
+	/* Wait for the trans to complete (MC417_MIRDY asserted). */
+	return mc417_wait_ready(dev);
 }
 
-#ifdef CONFIG_LOCK_STAT
-static DEFINE_PER_CPU(struct lock_class_stats[MAX_LOCKDEP_KEYS], cpu_lock_stats);
-
-static inline u64 lockstat_clock(void)
+int mc417_register_read(struct cx23885_dev *dev, u16 address, u32 *value)
 {
-	return local_clock();
+	int retval;
+	u32 regval;
+	u32 tempval;
+	u32 dataval;
+
+	/* Enable MC417 GPIO outputs except for MC417_MIRDY,
+	 * which is an input.
+	 */
+	cx_write(MC417_OEN, MC417_MIRDY);
+
+	/* Write address byte 0 */
+	regval = MC417_MIRD | MC417_MIRDY | MCI_REGISTER_ADDRESS_BYTE0 |
+		((address & 0x00FF));
+	cx_write(MC417_RWD, regval);
+	regval |= MC417_MICS | MC417_MIWR;
+	cx_write(MC417_RWD, regval);
+
+	/* Write address byte 1 */
+	regval = MC417_MIRD | MC417_MIRDY | MCI_REGISTER_ADDRESS_BYTE1 |
+		((address >> 8) & 0xFF);
+	cx_write(MC417_RWD, regval);
+	regval |= MC417_MICS | MC417_MIWR;
+	cx_write(MC417_RWD, regval);
+
+	/* Indicate that this is a register read. */
+	regval = MC417_MIRD | MC417_MIRDY | MCI_REGISTER_MODE |
+		MCI_MODE_REGISTER_READ;
+	cx_write(MC417_RWD, regval);
+	regval |= MC417_MICS | MC417_MIWR;
+	cx_write(MC417_RWD, regval);
+
+	/* Wait for the trans to complete (MC417_MIRDY asserted). */
+	retval = mc417_wait_ready(dev);
+
+	/* switch the DAT0-7 GPIO[10:3] to input mode */
+	cx_write(MC417_OEN, MC417_MIRDY | MC417_MIDATA);
+
+	/* Read data byte 0 */
+	regval = MC417_MIRD | MC417_MIRDY | MCI_REGISTER_DATA_BYTE0;
+	cx_write(MC417_RWD, regval);
+
+	/* Transition RD to effect read transaction across bus.
+	 * Transition 0x5000 -> 0x9000 correct (RD/RDY -> WR/RDY)?
+	 * Should it be 0x9000 -> 0xF000 (also why is RDY being set, its
+	 * input only...)
+	 */
+	regval = MC417_MIWR | MC417_MIRDY | MCI_REGISTER_DATA_BYTE0;
+	cx_write(MC417_RWD, regval);
+
+	/* Collect byte */
+	tempval = cx_read(MC417_RWD);
+	dataval = tempval & 0x000000FF;
+
+	/* Bring CS and RD high. */
+	regval = MC417_MIWR | MC417_MIRD | MC417_MICS | MC417_MIRDY;
+	cx_write(MC417_RWD, regval);
+
+	/* Read data byte 1 */
+	regval = MC417_MIRD | MC417_MIRDY | MCI_REGISTER_DATA_BYTE1;
+	cx_write(MC417_RWD, regval);
+	regval = MC417_MIWR | MC417_MIRDY | MCI_REGISTER_DATA_BYTE1;
+	cx_write(MC417_RWD, regval);
+	tempval = cx_read(MC417_RWD);
+	dataval |= ((tempval & 0x000000FF) << 8);
+	regval = MC417_MIWR | MC417_MIRD | MC417_MICS | MC417_MIRDY;
+	cx_write(MC417_RWD, regval);
+
+	/* Read data byte 2 */
+	regval = MC417_MIRD | MC417_MIRDY | MCI_REGISTER_DATA_BYTE2;
+	cx_write(MC417_RWD, regval);
+	regval = MC417_MIWR | MC417_MIRDY | MCI_REGISTER_DATA_BYTE2;
+	cx_write(MC417_RWD, regval);
+	tempval = cx_read(MC417_RWD);
+	dataval |= ((tempval & 0x000000FF) << 16);
+	regval = MC417_MIWR | MC417_MIRD | MC417_MICS | MC417_MIRDY;
+	cx_write(MC417_RWD, regval);
+
+	/* Read data byte 3 */
+	regval = MC417_MIRD | MC417_MIRDY | MCI_REGISTER_DATA_BYTE3;
+	cx_write(MC417_RWD, regval);
+	regval = MC417_MIWR | MC417_MIRDY | MCI_REGISTER_DATA_BYTE3;
+	cx_write(MC417_RWD, regval);
+	tempval = cx_read(MC417_RWD);
+	dataval |= ((tempval & 0x000000FF) << 24);
+	regval = MC417_MIWR | MC417_MIRD | MC417_MICS | MC417_MIRDY;
+	cx_write(MC417_RWD, regval);
+
+	*value  = dataval;
+
+	return retval;
 }
 
-static int lock_point(unsigned long points[], unsigned long ip)
+int mc417_memory_write(struct cx23885_dev *dev, u32 address, u32 value)
 {
-	int i;
+	u32 regval;
 
-	for (i = 0; i < LOCKSTAT_POINTS; i++) {
-		if (points[i] == 0) {
-			points[i] = ip;
-			break;
-		}
-		if (points[i] == ip)
-			break;
-	}
+	/* Enable MC417 GPIO outputs except for MC417_MIRDY,
+	 * which is an input.
+	 */
+	cx_write(MC417_OEN, MC417_MIRDY);
 
-	return i;
-}
+	/* Write data byte 0 */
+	regval = MC417_MIRD | MC417_MIRDY | MCI_MEMORY_DATA_BYTE0 |
+		(value & 0x000000FF);
+	cx_write(MC417_RWD, regval);
 
-static void lock_time_inc(struct lock_time *lt, u64 time)
-{
-	if (time > lt->max)
-		lt->max = time;
+	/* Transition CS/WR to effect write transaction across bus. */
+	regval |= MC417_MICS | MC417_MIWR;
+	cx_write(MC417_RWD, regval);
 
-	if (time < lt->min || !lt->nr)
-		lt->min = time;
+	/* Write data byte 1 */
+	regval = MC417_MIRD | MC417_MIRDY | MCI_MEMORY_DATA_BYTE1 |
+		((value >> 8) & 0x000000FF);
+	cx_write(MC417_RWD, regval);
+	regval |= MC417_MICS | MC417_MIWR;
+	cx_write(MC417_RWD, regval);
 
-	lt->total += time;
-	lt->nr++;
-}
+	/* Write data byte 2 */
+	regval = MC417_MIRD | MC417_MIRDY | MCI_MEMORY_DATA_BYTE2 |
+		((value >> 16) & 0x000000FF);
+	cx_write(MC417_RWD, regval);
+	regval |= MC417_MICS | MC417_MIWR;
+	cx_write(MC417_RWD, regval);
 
-static inline void lock_time_add(struct lock_time *src, struct lock_time *dst)
-{
-	if (!src->nr)
-		return;
-
-	if (src->max > dst->max)
-		dst->max = src->max;
-
-	if (src->min < dst->min || !dst->nr)
-		dst->min = src->min;
-
-	dst->total += src->total;
-	dst->nr += src->nr;
-}
-
-struct lock_class_stats lock_stats(struct lock_class *class)
-{
-	struct lock_class_stats stats;
-	int cpu, i;
-
-	memset(&stats, 0, sizeof(struct lock_class_stats));
-	for_each_possible_cpu(cpu) {
-		struct lock_class_stats *pcs =
-			&per_cpu(cpu_lock_stats, cpu)[class - lock_classes];
-
-		for (i = 0; i < ARRAY_SIZE(stats.contention_point); i++)
-			stats.contention_point[i] += pcs->contention_point[i];
-
-		for (i = 0; i < ARRAY_SIZE(stats.contending_point); i++)
-			stats.contending_point[i] += pcs->contending_point[i];
-
-		lock_time_add(&pcs->read_waittime, &stats.read_waittime);
-		lock_time_add(&pcs->write_waittime, &stats.write_waittime);
-
-		lock_time_add(&pcs->read_holdtime, &stats.read_holdtime);
-		lock_time_add(&pcs->write_holdtime, &stats.write_holdtime);
-
-		for (i = 0; i < ARRAY_SIZE(stats.bounces); i++)
-			stats.bounces[i] += pcs->bounces[i];
-	}
-
-	return stats;
-}
-
-void clear_lock_stats(struct lock_class *class)
-{
-	int cpu;
-
-	for_each_possible_cpu(cpu) {
-		struct lock_class_stats *cpu_stats =
-			&per_cpu(cpu_lock_stats, cpu)[class - lock_classes];
-
-		memset(cpu_stats, 0, sizeof(struct lock_class_stats));
-	}
-	memset(class->contention_point, 0, sizeof(class->contention_point));
-	memset(class->contending_point, 0, sizeof(class->contending_point));
-}
-
-static struct lock_class_stats *get_lock_stats(struct lock_class *class)
-{
-	return &this_cpu_ptr(cpu_lock_stats)[class - lock_classes];
-}
-
-static void lock_release_holdtime(struct held_lock *hlock)
-{
-	struct lock_class_stats *stats;
-	u64 holdtime;
-
-	if (!lock_stat)
-		return;
-
-	holdtime = lockstat_clock() - hlock->holdtime_stamp;
-
-	stats = get_lock_stats(hlock_class(hlock));
-	if (hlock->read)
-		lock_time_inc(&stats->read_holdtime, holdtime);
-	else
-		lock_time_inc(&stats->write_holdtime, holdtime);
-}
-#else
-static inline void lock_release_holdtime(struct held_lock *hlock)
-{
-}
-#endif
-
-/*
- * We keep a global list of all lock classes. The list is only accessed with
- * the lockdep spinlock lock held. free_lock_classes is a list with free
- * elements. These elements are linked together by the lock_entry member in
- * struct lock_class.
- */
-static LIST_HEAD(all_lock_classes);
-static LIST_HEAD(free_lock_classes);
-
-/**
- * struct pending_free - information about data structures about to be freed
- * @zapped: Head of a list with struct lock_class elements.
- * @lock_chains_being_freed: Bitmap that indicates which lock_chains[] elements
- *	are about to be freed.
- */
-struct pending_free {
-	struct list_head zapped;
-	DECLARE_BITMAP(lock_chains_being_freed, MAX_LOCKDEP_CHAINS);
-};
-
-/**
- * struct delayed_free - data structures used for delayed freeing
- *
- * A data structure for delayed freeing of data structures that may be
- * accessed by RCU readers at the time these were freed.
- *
- * @rcu_head:  Used to schedule an RCU callback for freeing data structures.
- * @index:     Index of @pf to which freed data structures are added.
- * @scheduled: Whether or not an RCU callback has been scheduled.
- * @pf:        Array with information about data structures about to be freed.
- */
-static struct delayed_free {
-	struct rcu_head		rcu_head;
-	int			index;
-	int			scheduled;
-	struct pending_free	pf[2];
-} delayed_free;
-
-/*
- * The lockdep classes are in a hash-table as well, for fast lookup:
- */
-#define CLASSHASH_BITS		(MAX_LOCKDEP_KEYS_BITS - 1)
-#define CLASSHASH_SIZE		(1UL << CLASSHASH_BITS)
-#define __classhashfn(key)	hash_long((unsigned long)key, CLASSHASH_BITS)
-#define classhashentry(key)	(classhash_table + __classhashfn((key)))
-
-static struct hlist_head classhash_table[CLASSHASH_SIZE];
-
-/*
- * We put the lock dependency chains into a hash-table as well, to cache
- * their existence:
- */
-#define CHAINHASH_BITS		(MAX_LOCKDEP_CHAINS_BITS-1)
-#define CHAINHASH_SIZE		(1UL << CHAINHASH_BITS)
-#define __chainhashfn(chain)	hash_long(chain, CHAINHASH_BITS)
-#define chainhashentry(chain)	(chainhash_table + __chainhashfn((chain)))
-
-static struct hlist_head chainhash_table[CHAINHASH_SIZE];
-
-/*
- * the id of held_lock
- */
-static inline u16 hlock_id(struct held_lock *hlock)
-{
-	BUILD_BUG_ON(MAX_LOCKDEP_KEYS_BITS + 2 > 16);
-
-	return (hlock->class_idx | (hlock->read << MAX_LOCKDEP_KEYS_BITS));
-}
-
-static inline unsigned int chain_hlock_class_idx(u16 hlock_id)
-{
-	return hlock_id & (MAX_LOCKDEP_KEYS - 1);
-}
-
-/*
- * The hash key of the lock dependency chains is a hash itself too:
- * it's a hash of all locks taken up to that lock, including that lock.
- * It's a 64-bit hash, because it's important for the keys to be
- * unique.
- */
-static inline u64 iterate_chain_key(u64 key, u32 idx)
-{
-	u32 k0 = key, k1 = key >> 32;
-
-	__jhash_mix(idx, k0, k1); /* Macro that modifies arguments! */
-
-	return k0 | (u64)k1 << 32;
-}
-
-void lockdep_init_task(struct task_struct *task)
-{
-	task->lockdep_depth = 0; /* no locks held yet */
-	task->curr_chain_key = INITIAL_CHAIN_KEY;
-	task->lockdep_recursion = 0;
-}
-
-static __always_inline void lockdep_recursion_inc(void)
-{
-	__this_cpu_inc(lockdep_recursion);
-}
-
-static __always_inline void lockdep_recursion_finish(void)
-{
-	if (WARN_ON_ONCE(__this_cpu_dec_return(lockdep_recursion)))
-		__this_cpu_write(lockdep_recursion, 0);
-}
-
-void lockdep_set_selftest_task(struct task_struct *task)
-{
-	lockdep_selftest_task_struct = task;
-}
-
-/*
- * Debugging switches:
- */
-
-#define VERBOSE			0
-#define VERY_VERBOSE		0
-
-#if VERBOSE
-# define HARDIRQ_VERBOSE	1
-# define SOFTIRQ_VERBOSE	1
-#else
-# define HARDIRQ_VERBOSE	0
-# define SOFTIRQ_VERBOSE	0
-#endif
-
-#if VERBOSE || HARDIRQ_VERBOSE || SOFTIRQ_VERBOSE
-/*
- * Quick filtering for interesting events:
- */
-static int class_filter(struct lock_class *class)
-{
-#if 0
-	/* Example */
-	if (class->name_version == 1 &&
-			!strcmp(class->name, "lockname"))
-		return 1;
-	if (class->name_version == 1 &&
-			!strcmp(class->name, "&struct->lockfield"))
-		return 1;
-#endif
-	/* Filter everything else. 1 would be to allow everything else */
-	return 0;
-}
-#endif
-
-static int verbose(struct lock_class *class)
-{
-#if VERBOSE
-	return class_filter(class);
-#endif
-	return 0;
-}
-
-static void print_lockdep_off(const char *bug_msg)
-{
-	printk(KERN_DEBUG "%s\n", bug_msg);
-	printk(KERN_DEBUG "turning off the locking correctness validator.\n");
-#ifdef CONFIG_LOCK_STAT
-	printk(KERN_DEBUG "Please attach the output of /proc/lock_stat to the bug report\n");
-#endif
-}
-
-unsigned long nr_stack_trace_entries;
-
-#ifdef CONFIG_PROVE_LOCKING
-/**
- * struct lock_trace - single stack backtrace
- * @hash_entry:	Entry in a stack_trace_hash[] list.
- * @hash:	jhash() of @entries.
- * @nr_entries:	Number of entries in @entries.
- * @entries:	Actual stack backtrace.
- */
-struct lock_trace {
-	struct hlist_node	hash_entry;
-	u32			hash;
-	u32			nr_entries;
-	unsigned long		entries[] __aligned(sizeof(unsigned long));
-};
-#define LOCK_TRACE_SIZE_IN_LONGS				\
-	(sizeof(struct lock_trace) / sizeof(unsigned long))
-/*
- * Stack-trace: sequence of lock_trace structures. Protected by the graph_lock.
- */
-static unsigned long stack_trace[MAX_STACK_TRACE_ENTRIES];
-static struct hlist_head stack_trace_hash[STACK_TRACE_HASH_SIZE];
-
-static bool traces_identical(struct lock_trace *t1, struct lock_trace *t2)
-{
-	return t1->hash == t2->hash && t1->nr_entries == t2->nr_entries &&
-		memcmp(t1->entries, t2->entries,
-		       t1->nr_entries * sizeof(t1->entries[0])) == 0;
-}
-
-static struct lock_trace *save_trace(void)
-{
-	struct lock_trace *trace, *t2;
-	struct hlist_head *hash_head;
-	u32 hash;
-	int max_entries;
-
-	BUILD_BUG_ON_NOT_POWER_OF_2(STACK_TRACE_HASH_SIZE);
-	BUILD_BUG_ON(LOCK_TRACE_SIZE_IN_LONGS >= MAX_STACK_TRACE_ENTRIES);
-
-	trace = (struct lock_trace *)(stack_trace + nr_stack_trace_entries);
-	max_entries = MAX_STACK_TRACE_ENTRIES - nr_stack_trace_entries -
-		LOCK_TRACE_SIZE_IN_LONGS;
-
-	if (max_entries <= 0) {
-		if (!debug_locks_off_graph_unlock())
-			return NULL;
-
-		print_lockdep_off("BUG: MAX_STACK_TRACE_ENTRIES too low!");
-		dump_stack();
-
-		return NULL;
-	}
-	trace->nr_entries = stack_trace_save(trace->entries, max_entries, 3);
-
-	hash = jhash(trace->entries, trace->nr_entries *
-		     sizeof(trace->entries[0]), 0);
-	trace->hash = hash;
-	hash_head = stack_trace_hash + (hash & (STACK_TRACE_HASH_SIZE - 1));
-	hlist_for_each_entry(t2, hash_head, hash_entry) {
-		if (traces_identical(trace, t2))
-			return t2;
-	}
-	nr_stack_trace_entries += LOCK_TRACE_SIZE_IN_LONGS + trace->nr_entries;
-	hlist_add_head(&trace->hash_entry, hash_head);
-
-	return trace;
-}
-
-/* Return the number of stack traces in the stack_trace[] array. */
-u64 lockdep_stack_trace_count(void)
-{
-	struct lock_trace *trace;
-	u64 c = 0;
-	int i;
-
-	for (i = 0; i < ARRAY_SIZE(stack_trace_hash); i++) {
-		hlist_for_each_entry
+	/* Write data byte 3 */
+	regval = MC417_MIRD | MC417_MIRDY | MCI

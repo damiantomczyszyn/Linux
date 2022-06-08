@@ -1,9 +1,10 @@
-urrent chain
- */
-static inline int get_first_held_lock(struct task_struct *curr,
-					struct held_lock *hlock)
-{
-	int i;
-	struct held_lock *hlock_curr;
+.prepare = snd_cx23885_prepare,
+	.trigger = snd_cx23885_card_trigger,
+	.pointer = snd_cx23885_pointer,
+	.page = snd_cx23885_page,
+};
 
-	for (i = curr->lockdep_depth - 1; i >= 0; 
+/*
+ * create a PCM device
+ */
+static int snd_cx23885_pcm(struc

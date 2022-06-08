@@ -1,4 +1,5 @@
-sm/pgtable-3level_types.h \
-  include/asm-generic/pgtable-nop4d.h \
-  include/asm-generic/pgtable-nopud.h \
-  arch/x86/include/
+/* SPDX-License-Identifier: GPL-2.0-or-later */
+/*
+ * netup-eeprom.h
+ *
+ * 24LC02 EEPROM driver in conjunction with NetUP Dual 

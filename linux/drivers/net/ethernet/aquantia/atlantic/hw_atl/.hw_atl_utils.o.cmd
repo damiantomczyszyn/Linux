@@ -1,558 +1,2094 @@
-/config/GENERIC_IOMAP) \
-    $(wildcard include/config/GENERIC_IOREMAP) \
-    $(wildcard include/config/VIRT_TO_BUS) \
-    $(wildcard include/config/GENERIC_DEVMEM_IS_ALLOWED) \
-  include/linux/logic_pio.h \
-    $(wildcard include/config/INDIRECT_PIO) \
-  include/linux/vmalloc.h \
-    $(wildcard include/config/HAVE_ARCH_HUGE_VMALLOC) \
-  arch/x86/include/asm/vmalloc.h \
-    $(wildcard include/config/HAVE_ARCH_HUGE_VMAP) \
-  arch/x86/include/asm/acpi.h \
-    $(wildcard include/config/ACPI_APEI) \
-  include/acpi/pdc_intel.h \
-  arch/x86/include/asm/numa.h \
-    $(wildcard include/config/NUMA_EMU) \
-  arch/x86/include/asm/numa_32.h \
-  include/linux/regulator/consumer.h \
-    $(wildcard include/config/REGULATOR) \
-  include/linux/suspend.h \
-    $(wildcard include/config/VT) \
-    $(wildcard include/config/SUSPEND) \
-    $(wildcard include/config/HIBERNATION_SNAPSHOT_DEV) \
-    $(wildcard include/config/PM_SLEEP_DEBUG) \
-    $(wildcard include/config/PM_AUTOSLEEP) \
-  include/linux/swap.h \
-    $(wildcard include/config/DEVICE_PRIVATE) \
-    $(wildcard include/config/MIGRATION) \
-    $(wildcard include/config/FRONTSWAP) \
-    $(wildcard include/config/THP_SWAP) \
-    $(wildcard include/config/MEMCG_SWAP) \
-  include/linux/memcontrol.h \
-    $(wildcard include/config/CGROUP_WRITEBACK) \
-  include/linux/cgroup.h \
-    $(wildcard include/config/CGROUP_CPUACCT) \
-    $(wildcard include/config/SOCK_CGROUP_DATA) \
-    $(wildcard include/config/CGROUP_DATA) \
-    $(wildcard include/config/CGROUP_BPF) \
-  include/uapi/linux/cgroupstats.h \
-  include/uapi/linux/taskstats.h \
-  include/linux/fs.h \
-    $(wildcard include/config/READ_ONLY_THP_FOR_FS) \
-    $(wildcard include/config/FS_POSIX_ACL) \
-    $(wildcard include/config/IMA) \
-    $(wildcard include/config/FILE_LOCKING) \
-    $(wildcard include/config/FSNOTIFY) \
-    $(wildcard include/config/FS_ENCRYPTION) \
-    $(wildcard include/config/FS_VERITY) \
-    $(wildcard include/config/EPOLL) \
-    $(wildcard include/config/UNICODE) \
-    $(wildcard include/config/QUOTA) \
-    $(wildcard include/config/FS_DAX) \
-    $(wildcard include/config/BLOCK) \
-  include/linux/wait_bit.h \
-  include/linux/kdev_t.h \
-  include/uapi/linux/kdev_t.h \
-  include/linux/dcache.h \
-  include/linux/rculist_bl.h \
-  include/linux/list_bl.h \
-  include/linux/bit_spinlock.h \
-  include/linux/lockref.h \
-    $(wildcard include/config/ARCH_USE_CMPXCHG_LOCKREF) \
-  include/linux/stringhash.h \
-    $(wildcard include/config/DCACHE_WORD_ACCESS) \
-  include/linux/hash.h \
-    $(wildcard include/config/HAVE_ARCH_HASH) \
-  include/linux/path.h \
-  include/linux/list_lru.h \
-  include/linux/shrinker.h \
-  include/linux/capability.h \
-  include/uapi/linux/capability.h \
-  include/linux/semaphore.h \
-  include/linux/fcntl.h \
-    $(wildcard include/config/ARCH_32BIT_OFF_T) \
-  include/uapi/linux/fcntl.h \
-  arch/x86/include/generated/uapi/asm/fcntl.h \
-  include/uapi/asm-generic/fcntl.h \
-  include/uapi/linux/openat2.h \
-  include/linux/migrate_mode.h \
-  include/linux/percpu-rwsem.h \
-  include/linux/rcuwait.h \
-  include/linux/sched/signal.h \
-    $(wildcard include/config/SCHED_AUTOGROUP) \
-    $(wildcard include/config/BSD_PROCESS_ACCT) \
-    $(wildcard include/config/TASKSTATS) \
-    $(wildcard include/config/STACK_GROWSUP) \
-  include/linux/signal.h \
-    $(wildcard include/config/DYNAMIC_SIGFRAME) \
-  include/linux/sched/jobctl.h \
-  include/linux/sched/task.h \
-    $(wildcard include/config/HAVE_EXIT_THREAD) \
-    $(wildcard include/config/ARCH_WANTS_DYNAMIC_TASK_STRUCT) \
-    $(wildcard include/config/HAVE_ARCH_THREAD_STRUCT_WHITELIST) \
-  include/linux/uaccess.h \
-  include/linux/fault-inject-usercopy.h \
-    $(wildcard include/config/FAULT_INJECTION_USERCOPY) \
-  arch/x86/include/asm/uaccess.h \
-    $(wildcard include/config/CC_HAS_ASM_GOTO_OUTPUT) \
-    $(wildcard include/config/CC_HAS_ASM_GOTO_TIED_OUTPUT) \
-    $(wildcard include/config/ARCH_HAS_COPY_MC) \
-    $(wildcard include/config/X86_INTEL_USERCOPY) \
-  arch/x86/include/asm/smap.h \
-  arch/x86/include/asm/extable.h \
-    $(wildcard include/config/BPF_JIT) \
-  include/asm-generic/access_ok.h \
-    $(wildcard include/config/ALTERNATE_USER_ADDRESS_SPACE) \
-  arch/x86/include/asm/uaccess_32.h \
-  include/linux/cred.h \
-    $(wildcard include/config/DEBUG_CREDENTIALS) \
-  include/linux/key.h \
-    $(wildcard include/config/KEY_NOTIFICATIONS) \
-    $(wildcard include/config/NET) \
-  include/linux/assoc_array.h \
-    $(wildcard include/config/ASSOCIATIVE_ARRAY) \
-  include/linux/sched/user.h \
-    $(wildcard include/config/WATCH_QUEUE) \
-  include/linux/percpu_counter.h \
-  include/linux/rcu_sync.h \
-  include/linux/delayed_call.h \
-  include/linux/errseq.h \
-  include/linux/ioprio.h \
-  include/linux/sched/rt.h \
-  include/linux/iocontext.h \
-    $(wildcard include/config/BLK_ICQ) \
-  include/uapi/linux/ioprio.h \
-  include/linux/fs_types.h \
-  include/linux/mount.h \
-  include/linux/mnt_idmapping.h \
-  include/uapi/linux/fs.h \
-  include/linux/quota.h \
-    $(wildcard include/config/QUOTA_NETLINK_INTERFACE) \
-  include/uapi/linux/dqblk_xfs.h \
-  include/linux/dqblk_v1.h \
-  include/linux/dqblk_v2.h \
-  include/linux/dqblk_qtree.h \
-  include/linux/projid.h \
-  include/uapi/linux/quota.h \
-  include/linux/nfs_fs_i.h \
-  include/linux/seq_file.h \
-  include/linux/string_helpers.h \
-  include/linux/ns_common.h \
-  include/linux/nsproxy.h \
-  include/linux/user_namespace.h \
-    $(wildcard include/config/INOTIFY_USER) \
-    $(wildcard include/config/FANOTIFY) \
-    $(wildcard include/config/PERSISTENT_KEYRINGS) \
-  include/linux/kernel_stat.h \
-  include/linux/interrupt.h \
-    $(wildcard include/config/IRQ_FORCED_THREADING) \
-    $(wildcard include/config/GENERIC_IRQ_PROBE) \
-    $(wildcard include/config/IRQ_TIMINGS) \
-  include/linux/irqreturn.h \
-  include/linux/irqnr.h \
-  include/uapi/linux/irqnr.h \
-  include/linux/hardirq.h \
-  include/linux/context_tracking_state.h \
-    $(wildcard include/config/CONTEXT_TRACKING) \
-  include/linux/ftrace_irq.h \
-    $(wildcard include/config/HWLAT_TRACER) \
-    $(wildcard include/config/OSNOISE_TRACER) \
-  include/linux/vtime.h \
-    $(wildcard include/config/VIRT_CPU_ACCOUNTING) \
-    $(wildcard include/config/IRQ_TIME_ACCOUNTING) \
-  arch/x86/include/asm/hardirq.h \
-    $(wildcard include/config/KVM_INTEL) \
-    $(wildcard include/config/X86_THERMAL_VECTOR) \
-    $(wildcard include/config/X86_MCE_THRESHOLD) \
-    $(wildcard include/config/X86_MCE_AMD) \
-    $(wildcard include/config/X86_HV_CALLBACK_VECTOR) \
-  arch/x86/include/asm/irq.h \
-  arch/x86/include/asm/sections.h \
-  include/asm-generic/sections.h \
-    $(wildcard include/config/HAVE_FUNCTION_DESCRIPTORS) \
-  include/linux/cgroup-defs.h \
-    $(wildcard include/config/CGROUP_NET_CLASSID) \
-    $(wildcard include/config/CGROUP_NET_PRIO) \
-  include/linux/u64_stats_sync.h \
-  include/linux/bpf-cgroup-defs.h \
-  include/linux/psi_types.h \
-  include/linux/kthread.h \
-  include/linux/cgroup_subsys.h \
-    $(wildcard include/config/CGROUP_DEVICE) \
-    $(wildcard include/config/CGROUP_FREEZER) \
-    $(wildcard include/config/CGROUP_PERF) \
-    $(wildcard include/config/CGROUP_HUGETLB) \
-    $(wildcard include/config/CGROUP_PIDS) \
-    $(wildcard include/config/CGROUP_RDMA) \
-    $(wildcard include/config/CGROUP_MISC) \
-    $(wildcard include/config/CGROUP_DEBUG) \
-  include/linux/vm_event_item.h \
-    $(wildcard include/config/HAVE_ARCH_TRANSPARENT_HUGEPAGE_PUD) \
-    $(wildcard include/config/MEMORY_BALLOON) \
-    $(wildcard include/config/BALLOON_COMPACTION) \
-    $(wildcard include/config/DEBUG_TLBFLUSH) \
-    $(wildcard include/config/DEBUG_VM_VMACACHE) \
-  include/linux/page_counter.h \
-  include/linux/vmpressure.h \
-  include/linux/eventfd.h \
-  include/linux/mm.h \
-    $(wildcard include/config/HAVE_ARCH_MMAP_RND_BITS) \
-    $(wildcard include/config/HAVE_ARCH_MMAP_RND_COMPAT_BITS) \
-    $(wildcard include/config/ARCH_USES_HIGH_VMA_FLAGS) \
-    $(wildcard include/config/ARCH_HAS_PKEYS) \
-    $(wildcard include/config/PPC) \
-    $(wildcard include/config/PARISC) \
-    $(wildcard include/config/SPARC64) \
-    $(wildcard include/config/ARM64_MTE) \
-    $(wildcard include/config/HAVE_ARCH_USERFAULTFD_MINOR) \
-    $(wildcard include/config/SHMEM) \
-    $(wildcard include/config/ARCH_HAS_PTE_SPECIAL) \
-    $(wildcard include/config/ARCH_HAS_PTE_DEVMAP) \
-    $(wildcard include/config/DEBUG_VM_RB) \
-    $(wildcard include/config/PAGE_POISONING) \
-    $(wildcard include/config/INIT_ON_ALLOC_DEFAULT_ON) \
-    $(wildcard include/config/INIT_ON_FREE_DEFAULT_ON) \
-    $(wildcard include/config/DEBUG_PAGEALLOC) \
-    $(wildcard include/config/HUGETLBFS) \
-    $(wildcard include/config/MAPPING_DIRTY_HELPERS) \
-    $(wildcard include/config/ANON_VMA_NAME) \
-  include/linux/mmap_lock.h \
-  include/linux/page_ext.h \
-  include/linux/stacktrace.h \
-    $(wildcard include/config/ARCH_STACKWALK) \
-    $(wildcard include/config/STACKTRACE) \
-    $(wildcard include/config/HAVE_RELIABLE_STACKTRACE) \
-  include/linux/stackdepot.h \
-    $(wildcard include/config/STACKDEPOT_ALWAYS_INIT) \
-  include/linux/page_ref.h \
-    $(wildcard include/config/DEBUG_PAGE_REF) \
-  include/linux/sizes.h \
-  include/linux/pgtable.h \
-    $(wildcard include/config/HIGHPTE) \
-    $(wildcard include/config/GUP_GET_PTE_LOW_HIGH) \
-    $(wildcard include/config/HAVE_ARCH_SOFT_DIRTY) \
-    $(wildcard include/config/ARCH_ENABLE_THP_MIGRATION) \
-    $(wildcard include/config/X86_ESPFIX64) \
-  arch/x86/include/asm/pgtable.h \
-    $(wildcard include/config/DEBUG_WX) \
-    $(wildcard include/config/PAGE_TABLE_CHECK) \
-  arch/x86/include/asm/pkru.h \
-  arch/x86/include/asm/fpu/api.h \
-    $(wildcard include/config/X86_DEBUG_FPU) \
-  arch/x86/include/asm/coco.h \
-  include/asm-generic/pgtable_uffd.h \
-  include/linux/page_table_check.h \
-  arch/x86/include/asm/pgtable_32.h \
-  arch/x86/include/asm/pgtable-3level.h \
-  arch/x86/include/asm/pgtable-invert.h \
-  include/linux/huge_mm.h \
-  include/linux/sched/coredump.h \
-    $(wildcard include/config/CORE_DUMP_DEFAULT_ELF_HEADERS) \
-  include/linux/vmstat.h \
-    $(wildcard include/config/VM_EVENT_COUNTERS) \
-  include/linux/writeback.h \
-  include/linux/flex_proportions.h \
-  include/linux/backing-dev-defs.h \
-    $(wildcard include/config/DEBUG_FS) \
-  include/linux/blk_types.h \
-    $(wildcard include/config/FAIL_MAKE_REQUEST) \
-    $(wildcard include/config/BLK_CGROUP_IOCOST) \
-    $(wildcard include/config/BLK_INLINE_ENCRYPTION) \
-    $(wildcard include/config/BLK_DEV_INTEGRITY) \
-  include/linux/bvec.h \
-  include/linux/highmem.h \
-  include/linux/cacheflush.h \
-  arch/x86/include/asm/cacheflush.h \
-  include/asm-generic/cacheflush.h \
-  include/linux/highmem-internal.h \
-  arch/x86/include/asm/highmem.h \
-  arch/x86/include/asm/tlbflush.h \
-  arch/x86/include/asm/invpcid.h \
-  arch/x86/include/asm/pti.h \
-  include/linux/bio.h \
-  include/linux/mempool.h \
-  include/linux/uio.h \
-    $(wildcard include/config/ARCH_HAS_UACCESS_FLUSHCACHE) \
-  include/uapi/linux/uio.h \
-  include/linux/node.h \
-    $(wildcard include/config/HMEM_REPORTING) \
-  include/linux/pagemap.h \
-  include/linux/hugetlb_inline.h \
-  include/uapi/linux/mempolicy.h \
-  include/linux/freezer.h \
-  include/uapi/linux/i2c.h \
-  include/linux/delay.h \
-  arch/x86/include/asm/delay.h \
-  include/asm-generic/delay.h \
-  include/linux/videodev2.h \
-  include/uapi/linux/videodev2.h \
-    $(wildcard include/config/VIDEO_ADV_DEBUG) \
-  include/uapi/linux/v4l2-common.h \
-  include/uapi/linux/v4l2-controls.h \
-  include/uapi/linux/v4l2-mediabus.h \
-  include/uapi/linux/media-bus-format.h \
-  include/linux/of_graph.h \
-  include/media/v4l2-async.h \
-  include/media/v4l2-device.h \
-    $(wildcard include/config/VIDEO_V4L2_SUBDEV_API) \
-  include/media/media-device.h \
-  include/media/media-devnode.h \
-  include/linux/poll.h \
-  include/uapi/linux/poll.h \
-  arch/x86/include/generated/uapi/asm/poll.h \
-  include/uapi/asm-generic/poll.h \
-  include/uapi/linux/eventpoll.h \
-  include/linux/cdev.h \
-  include/media/media-entity.h \
-  include/uapi/linux/media.h \
-  include/media/v4l2-subdev.h \
-  include/uapi/linux/v4l2-subdev.h \
-  include/media/v4l2-common.h \
-    $(wildcard include/config/VIDEO_V4L2_I2C) \
-    $(wildcard include/config/SPI) \
-  include/media/v4l2-dev.h \
-  include/linux/spi/spi.h \
-    $(wildcard include/config/SPI_SLAVE) \
-  include/linux/scatterlist.h \
-    $(wildcard include/config/NEED_SG_DMA_LENGTH) \
-    $(wildcard include/config/DEBUG_SG) \
-    $(wildcard include/config/SGL_ALLOC) \
-    $(wildcard include/config/ARCH_NO_SG_CHAIN) \
-    $(wildcard include/config/SG_POOL) \
-  include/linux/gpio/consumer.h \
-    $(wildcard include/config/OF_GPIO) \
-    $(wildcard include/config/GPIO_SYSFS) \
-  include/uapi/linux/spi/spi.h \
-  include/media/v4l2-fh.h \
-  include/media/v4l2-mediabus.h \
-  include/media/v4l2-fwnode.h \
-  include/media/v4l2-ctrls.h \
-  include/media/media-request.h \
-  include/media/hevc-ctrls.h \
-  include/media/i2c/tvp514x.h \
-  drivers/media/i2c/tvp514x_regs.h \
+C417_RWD, regval);
 
-drivers/media/i2c/tvp514x.o: $(deps_drivers/media/i2c/tvp514x.o)
+	/* Wait for the trans to complete (MC417_MIRDY asserted). */
+	retval = mc417_wait_ready(dev);
 
-$(deps_drivers/media/i2c/tvp514x.o):
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     ELF                       j      4     (               èüÿÿÿS‹˜X  ‹ˆT  1À‰Z[‰
-Ãt& èüÿÿÿ‹€|  ÇAA	  ‰1ÀÃ´&    fèüÿÿÿ‹…Òu‹A…ÀuÇA   1ÀÃt& ¸êÿÿÿÃ´&    v èüÿÿÿƒ9w6y   u-‹D  ‰Q‰Q‹H  Ñê‰Q‹€H  Ñè‰A1ÀÃ´&    ¸êÿÿÿÃ´&    v èüÿÿÿúŒ   vŠPÿÿÿƒùw ¸ Á ÓèƒàÃt& úƒ   —ÀÃ¶    1ÀÃt& èüÿÿÿ‹P@‹‚P  …ÀuÃt& ‹‚L  j ¹@   ºÁ   j j j@èüÿÿÿƒÄÃ´&    èüÿÿÿ‹P@‹‚P  …ÀuÃt& ‹‚L  j ¹@   ºÁ   j j j èüÿÿÿƒÄÃ´&    èüÿÿÿƒì‹€L  ¶Òd‹    ‰L$1É‰áèüÿÿÿ…ÀI$‹T$d+    uƒÄÃèüÿÿÿ´&    ´&    èüÿÿÿUWVS‰Ã‰Ğ‰Ê‰Á€õ@ƒì	Ñt}‰Á€õ	Ñt<‰Æ‰×Æ şÿÿƒ×ÿæÿıÿÿ‰ù	ñtk‰Áá °  uq„Àu}%  ÿ ‰Ç÷ßÉƒá‰Èëv ¹   ¸   ‹    …Òüÿÿÿ‹ƒL  º(   èüÿÿÿ1ÀƒÄ[^_]Ã¶    ¹
-   ¸
-   ëÆt& ¹   ¸   ë¶t& ¹   ¸   ë¦t& ¹   ¸   ë–´&    t& èüÿÿÿWVS‹˜X  ‹°T  1Ë1Ö	ótd‹°È  ‹˜Ä  …ötD‹{‹s!Î!×‰ó	ûtJ‰Ó‰¸T  ã ù  ‰°X  ƒûÛƒã`Ãà  ‰˜H  [^_é´şÿÿt& ¿ÿÿÿ 1öë¹´&    1À[^_Ã¸êÿÿÿëõv èüÿÿÿ…ÉtGƒyuAS‹˜D  ‰Y‹H  ÇA   ÑêÇA   ‰QÇA   ‹    …É!   1À[Ãt& ¸êÿÿÿÃ´&    v èüÿÿÿ‹€    º   èüÿÿÿ1ÀÃ´&    èüÿÿÿWVS‰Ó‹    …Òİ   {‰Ù1ÀÇ    ƒçüÇCp    ºÈ  )ùƒÁtÁéó«fƒÂ$úœ  t/‹zü…ÿtî‹‹J‰ş9Èwv f	tCƒÀ9ÈvôƒÂ$f	;úœ  uÑ[1À^_ÃèüÿÿÿS‹ƒûtƒûu[éüÿÿÿ´&    [éüÿÿÿ´&    v ¸êÿÿÿ[Ã´&    fèüÿÿÿ‹    U‰ÅWVS‹x\…Òú   ‹‡È  ·   1Û…ÀtJf‰ğƒÃÆŒ   èüÿÿÿ‹‡È  9Øwæ…Àt*·@  1Û´&    v ‰ğƒÃÆŒ   èüÿÿÿ9ŸÈ  wè‰øƒÅèüÿÿÿ‡Ì  èüÿÿÿ‰èº   èüÿÿÿ‰èº   èüÿÿÿ1À[^_]Ãt& èüÿÿÿV‰ÆSzGREY‰Ót<ƒ{t1À[^Ãƒ{uô‹†L  1Éº   èüÿÿÿ‹†L  ¹   º   èüÿÿÿëË‹€L  ¹p   º   èüÿÿÿë­´&    fèüÿÿÿU‰ÅWVSƒìfƒ: ‰$„æ   1Ûv ‹$1Éf‰LX2·|X‹…T  ‰Âòÿÿÿ •X  „  ©ÿÿ sDó1ÉFú‰D$ƒøwl¸È  1ÉƒÀ$ºœ  9Ât#‹Pü…Òtí…×t	;0r;pvƒÀ$ºœ  ƒÁ9Âuİ‹|$‰Î‹…L  Îğ   ÿ‰ñWĞ¶Òèüÿÿÿ‹…L  WÑ‰ñ¶Òèüÿÿÿ‰ñ‹$f‰LXƒÃƒû…>ÿÿÿ‹…L  ¹   ºÍ   èüÿÿÿ1ÀƒÄ[^_]Ã‹€L  1ÉºÍ   »Ğ   èüÿÿÿ‹…L  1ÉºÏ   èüÿÿÿ¶    ‹…L  ‰Ú¹ÿ   ƒÃèüÿÿÿûü   uãƒÄ1À[^_]Ã´&    fèüÿÿÿVS‰Óƒì‹²L  ºÀ   d¡    ‰D$1ÀL$Ç$    ‰ğÇD$    èüÿÿÿ‹L$…Éuk‰áº‡   ‰ğèüÿÿÿ‹$…Àu&‹D$d+    …°   ƒÄ¸   [^Ã´&    v L$º†   ‰ğÇD$    èüÿÿÿ‹L$…Étºº   ‰ğèüÿÿÿë¬fºÀ   ‰ğèüÿÿÿ‹D$¨@t–‹    %€   •ƒt  …Ò7  ‰Øº@  èüÿÿÿ1À€»t   t‹ƒl  j ¹   º   j j P‰ğèüÿÿÿƒÄé?ÿÿÿèüÿÿÿèüÿÿÿS‹˜    º   ‰Øèüÿÿÿ1Ò…Àx
-‰Ğ[Ã¶    ‰Â‹ƒô   …ÀtêHÿğ±‹ô   uï‰Ğ[Ã´&    t& èüÿÿÿVS‰Ã·€v  f=PQ„¶   1öf=QQ„‚   ‹ƒd  …Àt‰òƒÎƒÊƒøDò‹    …Òd  ‹ƒL  1Éº   èüÿÿÿ‹ƒL  ‰ñ1Òèüÿÿÿº@   ¸   ƒ»d  EÂ‹›L  j ¹P   j º   j P‰ØèüÿÿÿƒÄ[^Ãv f»x   …oÿÿÿ‹‹p  1À…É”À4Å    éVÿÿÿ1öf»x   …EÿÿÿëÔ´&    ¶    èüÿÿÿ‹P(‹Hú	˜ tmv;ú	˜ „   ú	Ÿ …«   ‹@|…À”À¶À‰¤   4ıÿÿèÇşÿÿ1ÀÃt& ú 	˜ thú	˜ ux‹P|‹€   ‰Ñº   èüÿÿÿ1ÀÃ´&    ‹P|‹€   ‰Ñº
-   èüÿÿÿ1ÀÃ´&    ‹P|‹€   ‰Ñº   èüÿÿÿ1ÀÃ´&    ‹P|‹€   ‰Ñº	   èüÿÿÿ1ÀÃ¸êÿÿÿÃfèüÿÿÿ‰d  1Òƒù•Â‰ˆh  ‰p  èşÿÿ1ÀÃ´&    fèüÿÿÿU‰ÅW1ÿV°,     Sƒì‹È  ‰D$…ÛuéZ  fƒÇÆŒ   9½È  †C  iÇŒ   1Ò^N`è‹€,  9ğDÂ‹Vü‹@ÇF|   ‰$º   ‰D$1À…ÿ”À‰D$‰Øèüÿÿÿ…Àˆ­   ‹E`‰Ú‹@èüÿÿÿ…Àˆ˜   ÿt$·D$‰é1ÒP‰ØèüÿÿÿZY…Àx}ƒ<$tO…ÿ…_ÿÿÿ‹T$1À…Ò•À‰$‹$‰…d  ‰èèıÿÿ‹D$‹•8  ‹<  ‰…Ä  ‰èè4÷ÿÿéÿÿÿ´&    ÿt$‹F‰é1Ò·@P‰ØèüÿÿÿY[…Àx…ÿt¦éòşÿÿf‰Â‹…È  …Àt.µ@  1Û‰×´&    v ‰ğƒÃÆŒ   èüÿÿÿ9È  wè‰úƒÄ‰Ğ[^_]Ãt& ƒÄ1Ò[‰Ğ^_]Ã´&    t& èüÿÿÿUWVS‰Ãƒì·Bf‰$‹Bƒà…‹  ‰Ö·$‰Ïƒò·Ê‰L$‹‹È  …É„~  ‹o“@  ëv ƒÀÂŒ   9È„_  9ÕuëiÀŒ   ‹    ‹„(  …É‘  ƒø…@  ½   “À   ‰Ğ‰$èüÿÿÿ…Àt!‹$èüÿÿÿ…À„X  Ç@$    ‹@ Ç@$    “à   ‰Ğ‰$èüÿÿÿ…Àt!‹$èüÿÿÿ…À„#  Ç@$    ‹@ Ç@$    ‹D$$‰éƒà‰Âƒò„Éu~·N‰“h  ‰‹d  …Àt~Çƒp     ‰Øè1ûÿÿ‹“È  …ÒttG”‹“T  ‰ƒÄ  ‹O¬‹ƒT  ‹o°1ÿ!Ê1ĞƒX  ‰ÖtI…Òu‰Î‰ï‰ò‰ù‰Øè)õÿÿ1ÀƒÄ[^_]Ã´&    Çƒd     ‰“h  …Àu4Çƒp      ‰Øè³úÿÿ1ÀƒÄ[^_]Ã´&    f¡    …ÀM1íé¾şÿÿÇƒp     ‰Øèúÿÿ‹T$‰øƒÂÁâÚèüÿÿÿ…Àt‹t$$‰p$‹@ ‰p$é%ÿÿÿ¸êÿÿÿëéµ  éW  t& èüÿÿÿU‰Å1ÉWVS»À  ƒì‹°L  1À¶Ğ‰÷ët& ¶K‹½L  ‰øƒÃèüÿÿÿ¶€úÿuä‹•P  …Ò„  1Éº   ‰ğèüÿÿÿ¹   ºÂ   ‰ğèüÿÿÿ¹   º   ‰ğèüÿÿÿ‹µL  1ÉºÏ   »Ğ   ‰ğèüÿÿÿt& ‰Ú¹ÿ   ‰ğƒÃèüÿÿÿûü   uç»Ğ  ‰,${$û€  tt& ‹Gô…Àu1‰û{$û€  uì‹,$‰èèRùÿÿ…Ì  èüÿÿÿ1ÀƒÄ[^_]Ãt& ·oğºÅ   ‰ğƒÃ‰éfÁé·Éèüÿÿÿ·ÍºÄ   ‰ğèüÿÿÿt& ¶KºÃ   ‰ğƒÃèüÿÿÿ9ûué‰ûë†¹   º   ‰ğèüÿÿÿ¹   ºÂ   ‰ğèüÿÿÿ1Éº   ‰ğèüÿÿÿéúşÿÿ´&    èüÿÿÿU‰ÅWVS1Ûƒì‰T$d¡    ‰D$‰ĞxHÇ@    ƒçüÇ@^    1À)ùƒÁ`Áéó«ÇD$    ëCv ‹D$…Àˆ“  ƒàƒø
-À4…Ä  ƒÇ;<$uX‰ğ·ö	t$‹L$f‰DYƒÃƒût`‹…T  ‰Âòÿÿÿ •X  „³  ©ÿÿ SDÓ1ÀƒêƒúwÀTĞ1ö¶úG‰$‹…L  L$‰úèüÿÿÿ…À‰iÿÿÿé“  t& ‰È·L$f‰‹D$d+    u
-ƒÄ1À[^_]Ãèüÿÿÿ´&    v èüÿÿÿS‰Óƒì‹€L  d‹    ‰T$1Ò‰áºˆ   èüÿÿÿº    …ÀI$ƒàƒø¸ÿÿ  EÂ‰C<‹D$d+    uƒÄ1À[ÃèüÿÿÿèüÿÿÿVS‰Ãƒì‹³    d¡    ‰D$1À…Ò„¢   º   ‰ğèüÿÿÿ‰Â…Àˆ$  ¹   º   ¾”  ëv ¶N‹ƒL  ƒÆèüÿÿÿ¶€úÿuæ‹“T  ‹‹X  ‰Ğ5ÿÿÿ 	È„û   ‰Øèğÿÿ‹ƒ|  ƒø„•   ƒø„|   ‹ƒP  …Àub‹³l  º@  ‰Øèüÿÿÿë¶    ‰ğº   1öèüÿÿÿj ‹ƒL  º   ¹   j j Vèüÿÿÿ1ÒƒÄ‹D$d+    …»   ƒÄ‰Ğ[^Ã1ö€»t   t™ë‘v Çƒl  	   éuÿÿÿj ‹ƒL  ¹   º   j j j èüÿÿÿÇƒl     ƒÄéEÿÿÿ‹†ô   …ÀtHÿğ±ô   „|ÿÿÿëév ‹ƒL  ‰áºŒ   èüÿÿÿ…ÀI$ƒàƒèƒø
-v1Ò1ÉéÙşÿÿt& ‹Å    ‹Å   éÂşÿÿèüÿÿÿ´&    èüÿÿÿV‰ÖS‰Ãƒìd¡    ‰D$1À‹ƒP  …Àt,¶ƒt  …ÀuF1À1Ò‰‰V‹D$d+    ucƒÄ1À[^Ãv ‹ƒL  ‰áºˆ   èüÿÿÿ‹$ƒàƒø”À¶À…Àtº‹ƒL  ‰áºŒ   èüÿÿÿ…ÀI$ƒàƒèƒø
-w—‹Å   ‹Å    ë‹èüÿÿÿv èüÿÿÿVS‰Ãƒìd¡    ‰D$‹ƒT  5ÿÿÿ ƒX  t‹D$d+    …á   ƒÄ1À[^Ã¶    ‹ƒL  ‰áºŒ   èüÿÿÿ‹‹\  ‹“`  …ÀI$ƒàƒèƒø
-vI	Êt®Çƒ\      Çƒ`      Çƒ@      Çƒ<      ÇƒD  Ğ  ÇƒH  @  émÿÿÿt& ‹4Å    ‹Å   1ñ1Â	Ê„Oÿÿÿ‰³\  æ ù  ‰ƒ`  Çƒ@      Çƒ<      ÇƒD  Ğ  t¡ÇƒH  à  éÿÿÿèüÿÿÿèüÿÿÿU1ÒWVS‰Ãƒìd¡    ‰D$‹ƒL  L$èüÿÿÿ…ÀˆĞ  éÌ  ´&    v èüÿÿÿUW‰ÇVSƒìd¡    ‰D$‹G‹P‹Rèüÿÿÿ%   =   …š  o¹   º  ‰èèüÿÿÿ‰Ã= ğÿÿ‡Y  …Àt1Òèüÿÿÿ¸   èüÿÿÿ¹   º  ‰èèüÿÿÿ‰Ã= ğÿÿ‡&  …Àt'¸Ä	  èüÿÿÿ1Ò‰Øèüÿÿÿ¹   ºú   ¸È   èüÿÿÿ¹À  º€  ‰èèüÿÿÿ‰Æ…À„  j 1Éº€   ‰øèüÿÿÿ[‰Ã= ğÿÿ‡Ê   ‰†L  ¹À  ‰ú‰ğèüÿÿÿº   ‰ğƒN\À   ÇFh  Ç†|     ÇF8  ÇF  Ç†Ü      Ç†Ø      Ç†ü      Ç†ø      Ç†     Ç†     èüÿÿÿ‰Ã…Àu?‹†”   º€   ‰$‹†L  jL$èüÿÿÿY‰Ã…À‰$  éı  ´&    …Û„ışÿÿ‹D$d+    uƒÄ‰Ø[^_]Ã»ûÿÿÿëáèüÿÿÿ»ôÿÿÿëÕ´&    ¶    èüÿÿÿUWV‰ÆSƒì‹Yd¡    ‰D$1À…Û…«  ¡    ‰×‰Ë…Àé  ‹k1À‹S…íHè¸ÿ  9ÅOè1À…ÒHĞ¸   ‰k9ÂOĞ‰S‹†T  ‰Áñÿÿÿ X  „š  % ù  ƒøÀƒà`à  )Ğj ¹Ğ  ºÑ   j )ê)ékPƒèPCP‰èjèüÿÿÿ‹‹CƒÄ…Ò„  ¸êÿÿÿƒút‹T$d+    …  ƒÄ[^_]Ãt& ¾<  ÿ ğÿÿ‡õ  ‹†D  9C„O  ‹T  ‹†L  ‰Êòÿÿÿ –X  „g  €åù„  ½à  ‹Kº   èüÿÿÿ‹K‹†L  º   K)éèüÿÿÿ‹K‹†L  º   Áùèüÿÿÿ‹K‹†L  º   ƒÉèüÿÿÿ‹S‹CŒşÿÿ‹†L  º   Áéèüÿÿÿ‹S‹CŒşÿÿ‹†L  º   èüÿÿÿë$·N 9Èƒì   €Áâz0ÿ ğÿÿ‡  ‹C‰‹C‰G‹C‰G‹C‰G1ÀéÂşÿÿ´&    ‹†L  ‰áºŒ   èüÿÿÿ‹S‹k…ÀI$ƒàHÿ¸@  ƒù
-‡Fşÿÿ‹Í    é(şÿÿ´&    v ‹†H  9C…¢şÿÿ‹†@  9C…“şÿÿ‹†<  9C…„şÿÿéaÿÿÿ¶    ‰áºŒ   èüÿÿÿ…ÀI$ƒàƒèƒø
-v+‹†L  ½@  ézşÿÿv éÿÿÿ¸êÿÿÿéùıÿÿ¶    ‹Å    ‹†L  é?şÿÿèüÿÿÿ‰øéÕıÿÿfèüÿÿÿV‰ÆS‰Ëƒì‹Id¡    ‰D$1À…Éto¸êÿÿÿƒùuEÇC    ÇC    ÇCĞ  ‹–T  ‰Ğ5ÿÿÿ †X  „‡   €æù„¡   ÇCà  1Àt& ‹T$d+    …Ã   ƒÄ[^Ã´&    f‹‹K…Àtƒøu2†<  = ğÿÿwÅ‹‰S‹P‰S‹P‰S‹@‰C1Àëª´&    v ¸êÿÿÿë™´&    f‹†L  ‰áºŒ   èüÿÿÿ…ÀI$ƒàƒèƒø
-v-ÇC@  1Àé_ÿÿÿ´&    ·v 9ñs ‰ÁàƒÀ0étÿÿÿ‹Å    éÿÿÿt& ëâèüÿÿÿ               €                 [                                                              À           €                                                         À                                               ÿ       $                                                                                             @   p   À      @  €  Ğ  °  @  F      À  @  €  0           p  `	  @
-  p
-    0  À  à  @    À  à             Set video std register to %d.
-  tvp5150.c: removing tvp5150 adapter on address 0x%x
-    VBI can't be configured without knowing number of lines
-    Selecting video route: route input=%s, output=%s => tvp5150 input=0x%02x, opmode=0x%02x
-    link setup '%s':%d->'%s':%d[%d] tvp5150: Video input source selection #1 = 0x%02x
-  tvp5150: Analog channel controls = 0x%02x
-  tvp5150: Operation mode controls = 0x%02x
-  tvp5150: Miscellaneous controls = 0x%02x
-   tvp5150: Autoswitch mask= 0x%02x
-   tvp5150: Color killer threshold control = 0x%02x
-   tvp5150: Luminance processing controls #1 #2 and #3 = %02x %02x %02x
-   tvp5150: Brightness control = 0x%02x
-   tvp5150: Color saturation control = 0x%02x
- tvp5150: Hue control = 0x%02x
-  tvp5150: Contrast control = 0x%02x
- tvp5150: Outputs and data rates select = 0x%02x
-    tvp5150: Configuration shared pins = 0x%02x
-    tvp5150: Active video cropping start = 0x%02x%02x
-  tvp5150: Active video cropping stop  = 0x%02x%02x
-  tvp5150: Genlock/RTC = 0x%02x
-  tvp5150: Horizontal sync start = 0x%02x
-    tvp5150: Vertical blanking start = 0x%02x
-  tvp5150: Vertical blanking stop = 0x%02x
-   tvp5150: Chrominance processing control #1 and #2 = %02x %02x
-  tvp5150: Interrupt reset register B = 0x%02x
-   tvp5150: Interrupt enable register B = 0x%02x
-  tvp5150: Interrupt configuration register B = 0x%02x
-   tvp5150: Video standard = 0x%02x
-   tvp5150: Chroma gain factor: Cb=0x%02x Cr=0x%02x
-   tvp5150: Macrovision on counter = 0x%02x
-   tvp5150: Macrovision off counter = 0x%02x
-  tvp5150: ITU-R BT.656.%d timing(TVP5150AM1 only)
-   tvp5150: Device ID = %02x%02x
-  tvp5150: ROM version = (hex) %02x.%02x
- tvp5150: Vertical line count = 0x%02x%02x
-  tvp5150: Interrupt status register B = 0x%02x
-  tvp5150: Interrupt active register B = 0x%02x
-  tvp5150: Status regs #1 to #5 = %02x %02x %02x %02x %02x
-   tvp5150: Teletext filter enable = 0x%02x
-   tvp5150: Interrupt status register A = 0x%02x
-  tvp5150: Interrupt enable register A = 0x%02x
-  tvp5150: Interrupt configuration = 0x%02x
-  tvp5150: VDP status register = 0x%02x
-  tvp5150: FIFO word count = 0x%02x
-  tvp5150: FIFO interrupt threshold = 0x%02x
- tvp5150: Line number interrupt = 0x%02x
-    tvp5150: Pixel alignment register = 0x%02x%02x
- tvp5150: FIFO output control = 0x%02x
-  tvp5150: Full field enable = 0x%02x
-    tvp5150: Full field mode register = 0x%02x
- reading ID registers failed: %d
-    tvp%04x (%u.%u) chip found @ 0x%02x (%s)
-   *** unknown tvp%04x chip detected.
- %s left=%d, top=%d, width=%d, height=%d
- 7 width = %d, height = %d
- %s reg %02x = %*ph
- g_sliced_vbi_cap
- ck ss sync lo%s signal
- normal black-frame-gen svideo aip1a aip1b %s: failed with error = %d
- Teletext filter 1 Teletext filter 2 tvp5150: FIFO reset = 0x%02x
- CC   data WSS  data VPS  data VITC data Line mode pdn reset tvp5150a detected.
- tvp5150am1 detected.
- tvp5151 detected.
- tvp5150 include/media/v4l2-subdev.h Disabled Black screen ‰$Ph    ÿ³    h    èüÿÿÿ‹L$ƒÄéD  RSh   ÿ°    h    èüÿÿÿ1ÀƒÄé…  èüÿÿÿUW‰ÇVS¶Ùƒì‰T$¶l$0d¡    ‰D$1À‰,$‰ı9$~Q‹4$)Ş;t$4Ot$41ÿ9÷}‰è¶Òè|  ˆD<GëèD$PVSÿt$h   ÿµ    h    èüÿÿÿ\$PƒÄëª‹D$d+    tèüÿÿÿƒÄ[^_]Ãh0   ÿ°    h    èüÿÿÿƒÄéÔ  ·@ÀPh    ÿ·    h    èüÿÿÿƒÄé˜  hX   ÿµ    èüÿÿÿ1ÉXZéj  …ÀºE   ¸B   DÂPhH   ÿ³    h    èüÿÿÿƒÄéÚ  ƒ»h   ºZ   ¹a   EÑ…Àt2ƒø¹q   ¸~   EÁj VRPh”   ÿ³    h    èüÿÿÿƒÄé¸  ¸x   ë×‹L$$‰D$ƒáQ·T$‰L$R‹Vÿr·WRÿuhğ   ÿ³    h    èüÿÿÿ‹D$,ƒÄ ƒø…Õ  ƒ=     ‹L$½   š  Q‹D$ÁàØ·Ô   R‹€Ğ   ÿp·GP‹Gÿphğ   ÿ³    h    èüÿÿÿƒÄ éš  ‹D$$ƒàP·D$P‹Fÿp·GP‹Gÿphğ   ÿ³    h    èüÿÿÿƒÄ éÕ  PhX   h„   ÿµ    èüÿÿÿ1ÀƒÄé;  hX   ÿµ    èüÿÿÿX1ÀZé;  ‹D$Ph  ÿ³    h    èüÿÿÿ‹ƒL  º   L$èüÿÿÿƒÄ…À‰'
-  PhD  ÿ³    h    èüÿÿÿ‹ƒL  º   L$èüÿÿÿƒÄ…À‰û	  Php  ÿ³    h    èüÿÿÿ‹ƒL  º   L$èüÿÿÿƒÄ…À‰Ï	  Phœ  ÿ³    h    èüÿÿÿ‹ƒL  º   L$èüÿÿÿƒÄ…À‰£	  PhÈ  ÿ³    h    èüÿÿÿ‹ƒL  º   L$èüÿÿÿƒÄ…À‰w	  Phì  ÿ³    h    èüÿÿÿ‹ƒL  º   L$èüÿÿÿ‰ÇƒÄ…À‰I	  ‹ƒL  L$º   èüÿÿÿ‰Æ…Àx‹t$‹ƒL  L$º   èüÿÿÿ…Àx‹D$WVPh   ÿ³    h    èüÿÿÿ‹ƒL  º	   L$èüÿÿÿƒÄ…À‰á  Phh  ÿ³    h    èüÿÿÿ‹ƒL  º
-   L$èüÿÿÿƒÄ…À‰µ  Ph  ÿ³    h    èüÿÿÿ‹ƒL  º   L$èüÿÿÿƒÄ…À‰‰  Ph¼  ÿ³    h    èüÿÿÿ‹ƒL  º   L$èüÿÿÿƒÄ…À‰]  PhÜ  ÿ³    h    èüÿÿÿ‹ƒL  º   L$èüÿÿÿƒÄ…À‰1  Ph   ÿ³    h    èüÿÿÿ‹ƒL  º   L$èüÿÿÿƒÄ…À‰  Ph4  ÿ³    h    èüÿÿÿ‹ƒL  º   L$èüÿÿÿ‰ÆƒÄ…À‰×  ‹ƒL  L$º   èüÿÿÿ…Àx‹D$VPhd  ÿ³    h    èüÿÿÿ‹ƒL  º   L$èüÿÿÿ‰ÆƒÄ…À‰Œ  ‹ƒL  L$º   èüÿÿÿ…Àx‹D$VPh˜  ÿ³    h    èüÿÿÿ‹ƒL  º   L$èüÿÿÿƒÄ…À‰C  PhÌ  ÿ³    h    èüÿÿÿ‹ƒL  º   L$èüÿÿÿƒÄ…À‰  Phì  ÿ³    h    èüÿÿÿ‹ƒL  º   L$èüÿÿÿƒÄ…À‰ë  Ph  ÿ³    h    èüÿÿÿ‹ƒL  º   L$èüÿÿÿƒÄ…À‰¿  PhD  ÿ³    h    èüÿÿÿ‹ƒL  º   L$èüÿÿÿ‰ÆƒÄ…À‰‘  ‹ƒL  L$º   èüÿÿÿ…Àx‹D$VPhp  ÿ³    h    èüÿÿÿ‹ƒL  º   L$èüÿÿÿƒÄ…À‰H  Ph°  ÿ³    h    èüÿÿÿ‹ƒL  º   L$èüÿÿÿƒÄ…À‰  Phà  ÿ³    h    èüÿÿÿ‹ƒL  º   L$èüÿÿÿƒÄ…À‰ğ  Ph  ÿ³    h    èüÿÿÿ‹ƒL  º(   L$èüÿÿÿƒÄ…À‰Ä  PhH  ÿ³    h    èüÿÿÿ‹ƒL  º-   L$èüÿÿÿ‰ÆƒÄ…À‰–  ‹ƒL  L$º,   èüÿÿÿ…Àx‹D$VPhl  ÿ³    h    èüÿÿÿ‹ƒL  º.   L$èüÿÿÿƒÄ…À‰M  Ph   ÿ³    h    èüÿÿÿ‹ƒL  º/   L$èüÿÿÿƒÄ…À‰!  PhÌ  ÿ³    h    èüÿÿÿ‹ƒL  º0   L$èüÿÿÿƒÄ…À‰õ  ƒàº   )ÂRhø  ÿ³    h    èüÿÿÿº   ‰Øè|  º€   ‰Æ‰Øè|  VPh,  ÿ³    h    èüÿÿÿºƒ   ‰ØƒÄ$è|  º‚   ‰Æ‰Øè|  VPhL  ÿ³    h    èüÿÿÿº…   ‰Øè|  º„   ‰Æ‰Øè|  VPht  ÿ³    h    èüÿÿÿº†   ‰ØƒÄ(è|  Ph   ÿ³    h    èüÿÿÿº‡   ‰Øè|  PhĞ  ÿ³    h    èüÿÿÿºŒ   ‰ØƒÄ è|  º‹   ‰$‰Øè|  ºŠ   ‰Å‰Øè|  º‰   ‰Ç‰Øè|  ºˆ   ‰Æ‰Øè|  ‹$QUWVPh   ÿ³    h    èüÿÿÿ¹±   º    ‰ØƒÄ jhµ   è¤õÿÿ¹¶   º²   ‰Øjhº   èŒõÿÿº»   ‰Øè|  Ph<  ÿ³    h    èüÿÿÿºÀ   ‰ØƒÄ è|  Phh  ÿ³    h    èüÿÿÿºÁ   ‰Øè|  Ph˜  ÿ³    h    èüÿÿÿºÂ   ‰ØƒÄ è|  PhÈ  ÿ³    h    èüÿÿÿºÆ   ‰Øè|  Phô  ÿ³    h    èüÿÿÿºÇ   ‰ØƒÄ è|  Ph  ÿ³    h    èüÿÿÿºÈ   ‰Øè|  Ph@  ÿ³    h    èüÿÿÿºÉ   ‰ØƒÄ è|  PhÄ   ÿ³    h    èüÿÿÿºÊ   ‰Øè|  Phl  ÿ³    h    èüÿÿÿºË   ‰ØƒÄ è|  ºÌ   ‰Æ‰Øè|  VPh˜  ÿ³    h    èüÿÿÿºÍ   ‰Øè|  PhÈ  ÿ³    h    èüÿÿÿºÏ   ‰ØƒÄ$è|  Phğ  ÿ³    h    èüÿÿÿºü   ‰Øè|  Ph	  ÿ³    h    èüÿÿÿ¹   ºâ   ‰ØƒÄ jh“   è–óÿÿ¹”   ºì   ‰Øjh™   è~óÿÿ¹š   ºö   ‰Øjh¦   èfóÿÿ¹§   º   ‰Øj
-h¯   èNóÿÿº
-  ‰Ø¹Ğ   ƒÄ jhû   è3óÿÿXZ‹D$d+    …ı   ƒÄ1À[^_]Ã‹D$éĞõÿÿ‹D$éüõÿÿ‹D$é(öÿÿ‹D$éTöÿÿ‹D$é€öÿÿ‹|$é®öÿÿ‹D$é÷ÿÿ‹D$éB÷ÿÿ‹D$én÷ÿÿ‹D$éš÷ÿÿ‹D$éÆ÷ÿÿ‹D$éò÷ÿÿ‹t$é øÿÿ‹t$ékøÿÿ‹D$é´øÿÿ‹D$éàøÿÿ‹D$éùÿÿ‹D$é8ùÿÿ‹t$éfùÿÿ‹D$é¯ùÿÿ‹D$éÛùÿÿ‹D$éúÿÿ‹D$é3úÿÿ‹t$éaúÿÿ‹D$éªúÿÿ‹D$éÖúÿÿ‹D$éûÿÿèüÿÿÿ·D$·T$‹$¶L$fÁÀfÁÂf‰†v  ·Àf‰–x  ‹S‰$Â  R·SÒR¶T$RQPhh	  ÿ¶    èüÿÿÿ·†v  ƒÄf=PQ…‰   ·x  ‹–    fù!…š   h  RèüÿÿÿXZ‹È  1À9Ø„Á   iÈŒ   ‹–T  ƒÀ”8  ‰$‹–X  ”<  ‰Ñ‹$‰X  ‰–T  ë¿PhD	  ‹D$ƒÀPèüÿÿÿƒÄéÔ  ‹–    f=QQu$f¾x   uhH  RèüÿÿÿXZésÿÿÿfù tPh”	  ÿ¶    èüÿÿÿƒÄéSÿÿÿh2  Rèüÿÿÿ‹†L  1Éº0   èüÿÿÿY[é/ÿÿÿ…ÀuÇ†T  ÿÿÿ Ç†X      †Ì  1Éº   Ç†\      ‰$‰Ãj Ç†`      Ç†d     Ç†p     èüÿÿÿ¹ 	˜ º  ‰Øj h€   j jj hÿ   j j èüÿÿÿ¹	˜ º  ‰ØƒÄ$j h€   j jj hÿ   j j èüÿÿÿ¹	˜ º  ‰ØƒÄ j h€   j jj hÿ   j j èüÿÿÿ¹	˜ º  ‰ØƒÄ j j j jj jjÿj€èüÿÿÿ¹	Ÿ º  ‰ØƒÄ j hÀü›j jj hÀü›j hÀü›èüÿÿÿº  ‰Ø¹	Ÿ ƒÄ h  j j j jèüÿÿÿ‰^l‹  ƒÄ‰Ú…Ût‹$‰T$èüÿÿÿ‹\$éÔ  ‹†L  L$ºŒ   èüÿÿÿ…Àx‹D$ƒàº@  ƒèƒø
-†¨   ‹‡à  ‰–H  1ÒÇ†@      ‰†P  ‰ğÇ†<      Ç†D  Ğ  è,  ‹—à  …Òt&V1É‰èh[  h   h   èüÿÿÿ‰ÂƒÄ…À…Rÿÿÿ‰ğèüÿÿÿ‰Â…ÀˆAÿÿÿƒ=    ~‰ğèÜ  1Ò‰èèüÿÿÿ‰èèüÿÿÿ1Ò‰èèüÿÿÿéÔ  ‹Å    % ù  ƒøÒƒâ`Âà  é9ÿÿÿÿqÿqÿqÿqhh   h¸	  ÿ¶    h    èüÿÿÿƒÄ éB     W  ­  Ø  c  ë	P  c  ë	èüÿÿÿº    ¸    éüÿÿÿ¸    éüÿÿÿ           °              ÿ                                              @                ÿ     tvp5150_get_vbi tvp5150_set_selection   tvp5150                                                                                                                                         @           ˆ  @  
-                                                (   (   ,   0   €   Œ      »   À   Í   Ï   ü   p
-                                            à         @             à  À  @   p       @  @                                                  À  0  À         @
-          °                        @                                                                          à                                          à              0                      @              `	                                                                                                                                                                                                      0               ªªÿÿ'. +¦r                                                                                                                                                                                        ğ               ª*ÿ?QniŒ	   '    @           [UÅÿ qnB¦Í   :                                                                                                                            ªªÿÿºÎ+¦Ú   ` o GT' ÿÿ                               ` 	€
-€ €G     €     ( ./» À Á ÂÈ€É Ê ËNÌ ÍÏ Ğ üÿÿdebug parm=debug:Debug level (0-2) parmtype=debug:int license=GPL v2 author=Mauro Carvalho Chehab description=Texas Instruments TVP5150A/TVP5150AM1/TVP5151 video decoder driver              ¤ÿ      GCC: (GNU) 11.2.0           GNU  À       À                                  ñÿ                                                                  1   @   &     H   p   F     `   À   ;     u      9     Œ   @  9     ¤   €  A                                	              
- ±   Ğ  Ô     y           Á       %    
- Ö   °       ä   @  V     õ   %   !    
-   F   ›    
-           (  À  €     A  À  Ô    Q  á       
- o  @  7     ‡  €  ¬     –  ş   $    
- ª  0  g     ¼     W    Ñ  "      
- ë          ÷  @  €       ;  -    
-      E     $  p  ã     3  h  Q    
- G  `	  Ş     V  @
-  '     h  p
-  ”    {          ¹  Ş    
- ¦  0  ˆ    ´  À  X     É  À      Ş  —  9    
- ø  X          à  _       @  È    $  ”       8      X     B    ­     S  À       d  à  6     w  Ğ  X   
-      ã      €   ´     ¬  À        ¸         Í         â  (  Å   
- õ                      ş    2  í  .    
- M  h        X    I                  n           ‚      €     ‘      
-                   ¥  À   \     ´  €   0     ¿  $       Ö  @  P     î  à  0     ÿ     ,       @  P     #          3  à  @     C           X          q                    ‘  0        ¨  ?        ¾  \   O     Ù             ä             ü                                       +             8             D             V             }                          ¹             Ø             õ                          !             9             B             [             o             †             £             ¹             Ñ             è                                        1             J             Q             `             s             €             —             ¬             ½             Ç             ä             ö             	             -	             H	             Z	             p	             ~	             ’	           	             ­	      
-     ¼	  €   0     ß	             ı	              tvp5150.c tvp5150_g_std tvp5150_get_mbus_config tvp5150_enum_mbus_code tvp5150_enum_frame_size tvp5150_volatile_reg tvp5150_runtime_resume tvp5150_runtime_suspend tvp5150_read tvp5150_set_std tvp5150_set_std.cold tvp5150_s_std tvp5150_fill_fmt tvp5150_fill_fmt.cold dump_reg_range tvp5150_close tvp5150_g_sliced_vbi_cap vbi_ram_default tvp5150_g_sliced_vbi_cap.cold tvp5150_subscribe_event tvp5150_remove tvp5150_remove.cold tvp5150_s_raw_fmt tvp5150_s_sliced_fmt tvp5150_s_sliced_fmt.cold tvp5150_isr tvp5150_ev_fmt tvp5150_isr.cold tvp5150_open tvp5150_selmux tvp5150_selmux.cold tvp5150_s_ctrl tvp5150_s_routing tvp5150_registered tvp5150_link_setup tvp5150_link_setup.cold tvp5150_reset tvp5150_init_default tvp5150_g_sliced_fmt tvp5150_g_sliced_fmt.cold __func__.2 tvp5150_g_tuner tvp5150_s_stream tvp5150_init_enable CSWTCH.90 tvp5150_querystd tvp5150_init_cfg tvp5150_log_status tvp5150_log_status.cold tvp5150_probe tvp5150_config tvp5150_ops tvp5150_internal_ops tvp5150_sd_media_ops tvp5150_probe.cold tvp5150_ctrl_ops tvp5150_test_patterns tvp5150_set_selection tvp5150_set_selection.cold __func__.1 tvp5150_get_selection tvp5150_driver_init tvp5150_driver tvp5150_driver_exit tvp5150_pm_ops tvp5150_id tvp5150_readable_table tvp5150_readable_ranges tvp5150_core_ops tvp5150_tuner_ops tvp5150_video_ops tvp5150_vbi_ops tvp5150_pad_ops __UNIQUE_ID_debug283 __UNIQUE_ID_debugtype282 __param_debug __param_str_debug __UNIQUE_ID_license281 __UNIQUE_ID_author280 __UNIQUE_ID_description279 __fentry__ regmap_update_bits_base __stack_chk_guard regmap_read __stack_chk_fail regmap_write _dev_printk __pm_runtime_idle v4l2_src_change_event_subdev_subscribe v4l2_ctrl_subdev_subscribe_event v4l2_fwnode_connector_free media_device_unregister_entity v4l2_async_unregister_subdev v4l2_ctrl_handler_free __pm_runtime_disable __pm_runtime_set_status _dev_err v4l2_subdev_notify_event __pm_runtime_resume media_entity_pads_init media_device_register_entity media_create_pad_link media_entity_remote_pad media_entity_find_link v4l2_ctrl_handler_setup __x86_indirect_thunk_edx devm_gpiod_get_optional gpiod_set_value_cansleep msleep __const_udelay usleep_range_state devm_kmalloc __devm_regmap_init_i2c v4l2_i2c_subdev_init regmap_bulk_read _dev_info v4l2_ctrl_handler_init_class v4l2_ctrl_new_std v4l2_ctrl_new_std_menu_items devm_request_threaded_irq v4l2_async_register_subdev pm_runtime_enable v4l_bound_align_image __this_module i2c_register_driver init_module i2c_del_driver cleanup_module __mod_i2c__tvp5150_id_device_table v4l2_event_subdev_unsubscribe param_ops_int     Z  !   Z  A   Z  q   Z  Á   Z    Z  1  [  A  Z  q  [    Z  ”  \  ¡  ]  ²  \  ½  ^  Ñ  Z  <    T  _  ±  Z  A  Z  {    ¡  Z  ±  a  Á  Z  Ì    ğ  I    I  4  I  A  Z    Z  ‡    ¼  d  ì  e  ş  f  	  g    h  !  i  1  Z  d  _  y  _  ‘  _  ¡  Z    I    I  -  I  U  _  h  _  “  _  ´  _  Æ  _  á  _    Z    \  9  ]  O  ]  a  \  ”  ]  ¨  _  ¸  _  Æ    á  I  æ  k    [    ^  !  Z  4  l  q  Z  °    Ê  _  Ù  _  	  [  a	  Z  Ñ	  _  ñ	  _  
-  _  1
-  _  A
-  Z  q
-  Z  ÷
-  m    n  )  o  ›  o  Ü  e    Z  }    ª  p  ¶  q  ß  p  ë  q  Ñ       q  1  Z  >  I  h  _  Œ  _    _  ®  _  Ç  _  İ  _  ê  I  ö  I    I  %  r  P  _  _  _  w  _    _  ¡  _  ¯  _  Á  Z  Ö  \  *  I  ›  ]  Á  \  Ò  ^  á  Z  ô  \    ]  -  \  ;  ^  A  Z  T  \  n  l  ‡  I    _  õ  I  ü  k    a  .  [  >  \  ‰  [  Î  ]  ó  I  ú  I    ^    Z     \  O  \  n  ]  “  ]  «  I  ²  I  ¹  ^  Á  Z  Î  \  ğ  \    ]  ƒ  I  Š  I  Ü  ^  á  Z  ò  \    ]  !  Z  0  \  B  s  _    f  t  ~  u  ˆ  v  ’    ™  t  ´  w  ½  u  Ñ  x  â  y  õ    ü  z    I    {  6  I  G  I    m  ´  |  ß  \  ø  ^    Z  #  \  6    Å  „  ê  \  X  _  p  _  †  _  œ  _  ¼  _  Ù  _  6  ]  ]  I  °  ]  ó  I    ^    Z  #  \  ‡  \  ş  ]  C  I  U  ^  D    ƒ    Ô    T  b  b  c  ˜    å    Ú    ¸    "    '        f    ¨            ¿    Ä    B                   \   I  h   I  ¤     Ü   I                                                 $     (     ,     0     4     8     <     @     D     H     L     P     T     X     \     `     d     h     l     p     t     x     |     €     „     ˆ     Œ   E               `  (     3     8   `  G   Z  b   \  “     ª     µ     º   `  Î   \  Õ   ^  â     í     ò   `            `  #    .  j  >    C    L    W    \  `  p    u    „    ‰    –    ¡    ¦  `  ³    Ş    é    î  `      ?    J    O  `  {    †    ‹  `  ™  I      ©  j  ¸    Ã  j  Ö    á    æ  `  ú  ]            `  /  ]  @    K    P  `  d  ]  u    €    …  `  ™  ]  ª    µ    º  `  Î  ]  ß    ê    ï  `    ]  $  ]  B  ]  R    ]    b  `  v  ]  ‡    ’    —  `  «  ]  ¼    Ç    Ì  `  à  ]  ñ    ü      `    ]  &    1    6  `  J  ]  [    f    k  `    ]      ›       `  ´  ]  Õ  ]  ä    ï    ô  `    ]  )  ]  8    C    H  `  \  ]  m    x    }  `  ‘  ]  ¢    ­    ²  `  Æ  ]  ×    â    ç  `  û  ]            `  0  ]  Q  ]  `    k    p  `  „  ]  •         ¥  `  ¹  ]  Ê    Õ    Ú  `  î  ]  ÿ    
-      `  #  ]  4    ?    D  `  X  ]  y  ]  ˆ    “    ˜  `  ¬  ]  ½    È    Í  `  á  ]  ò    ı    	  `  	  ]  1	    <	    A	  `  M	    [	    b	    m	    r	  `  	    	    –	    ¡	    ¦	  `  ²	    À	    Ç	    Ò	    ×	  `  æ	    ì	    ÷	    ü	  `  
-    
-    
-    
-  `  -
-    <
-    J
-    X
-    f
-    s
-    ~
-    ƒ
-  `  
-    ¨
-    Â
-    È
-    Ó
-    Ø
-  `  ç
-    í
-    ø
-    ı
-  `  	              `  .    4    ?    D  `  P    V    a    f  `  u    {    †    ‹  `  —        ¨    ­  `  ¼    Â    Í    Ò  `  Ş    ä    ï    ô  `              #    (  `  4    :    E    J  `  Y    _    j    o  `  {        Œ    ‘  `  ›    ¶    Î    æ    ù      \  $  ^  p    {  }  ¬    ²  }        j  4    :  }  N    Y  }  f    l  }  ~  _  Ş  ~  è  I        I  /    9  I  Y    c  I  }    ‡  I  ª    ¯  I  ¾  I  Ë  €  é  g    ]  [    o    y    ~    ’  ‚  ¢    ¬    µ  i  ¼  ƒ  Å  a  Ñ  I  ú  I  ÿ    
-      `  !     B     ú         7    d    ®    ş        W    “    ³    Ì        ò    Ê                                           Z          …     †          ˆ                   $  I      ˜    œ    À  I  Ä  I  Ì  I  Ğ  I  Ü  I  à    ä    è    ğ    ô    ø    ü        ,    0    4    8    @    H    L    X    h    ´    à    ğ          ‹               I     …     Œ        .symtab .strtab .shstrtab .rel.text .rel.data .bss .rel__mcount_loc .rodata.str1.4 .rodata.str1.1 .rel.text.unlikely .rel.smp_locks .rel__bug_table .rel.init.text .rel.exit.text .rel.rodata .modinfo .rel__param .comment .note.GNU-stack .note.gnu.property                                                      @   Y                    	   @       8U  À              )                4                  %   	   @       ø[  8               /             Ô                    8             Ô                    4   	   @       0\                 E      2       d  á	                T      2       E'  •                g             Ú(                   c   	   @       P]  
-     
-         z             ø:                    v   	   @       Xg                 ‰              ;                    …   	   @       hg                  ™             ;                    •   	   @       ˆg                  ¨             ,;  
-                  ¤   	   @       ¨g                 ·             @;                    ³   	   @       ¸g  (              ¿             ^A  «                  Ì             B                    È   	   @       àh                  Ô      0        B                   İ              3B                     í             4B  (                                \B  Ğ     Z         	              ,K  
-                                i                                                                                                                                                                                                                                                                                                                            ELF                       j      4     (               èüÿÿÿS‹˜X  ‹ˆT  1À‰Z[‰
-Ãt& èüÿÿÿ‹€|  ÇAA	  ‰1ÀÃ´&    fèüÿÿÿ‹…Òu‹A…ÀuÇA   1ÀÃt& ¸êÿÿÿÃ´&    v èüÿÿÿƒ9w6y   u-‹D  ‰Q‰Q‹H  Ñê‰Q‹€H  Ñè‰A1ÀÃ´&    ¸êÿÿÿÃ´&    v èüÿÿÿúŒ   vŠPÿÿÿƒùw ¸ Á ÓèƒàÃt& úƒ   —ÀÃ¶    1ÀÃt& èüÿÿÿ‹P@‹‚P  …ÀuÃt& ‹‚L  j ¹@   ºÁ   j j j@èüÿÿÿƒÄÃ´&    èüÿÿÿ‹P@‹‚P  …ÀuÃt& ‹‚L  j ¹@   ºÁ   j j j èüÿÿÿƒÄÃ´&    èüÿÿÿƒì‹€L  ¶Òd‹    ‰L$1É‰áèüÿÿÿ…ÀI$‹T$d+    uƒÄÃèüÿÿÿ´&    ´&    èüÿÿÿUWVS‰Ã‰Ğ‰Ê‰Á€õ@ƒì	Ñt}‰Á€õ	Ñt<‰Æ‰×Æ şÿÿƒ×ÿæÿıÿÿ‰ù	ñtk‰Áá °  uq„Àu}%  ÿ ‰Ç÷ßÉƒá‰Èëv ¹   ¸   ‹    …Òüÿÿÿ‹ƒL  º(   èüÿÿÿ1ÀƒÄ[^_]Ã¶    ¹
-   ¸
-   ëÆt& ¹   ¸   ë¶t& ¹   ¸   ë¦t& ¹   ¸   ë–´&    t& èüÿÿÿWVS‹˜X  ‹°T  1Ë1Ö	ótd‹°È  ‹˜Ä  …ötD‹{‹s!Î!×‰ó	ûtJ‰Ó‰¸T  ã ù  ‰°X  ƒûÛƒã`Ãà  ‰˜H  [^_é´şÿÿt& ¿ÿÿÿ 1öë¹´&    1À[^_Ã¸êÿÿÿëõv èüÿÿÿ…ÉtGƒyuAS‹˜D  ‰Y‹H  ÇA   ÑêÇA   ‰QÇA   ‹    …É!   1À[Ãt& ¸êÿÿÿÃ´&    v èüÿÿÿ‹€    º   èüÿÿÿ1ÀÃ´&    èüÿÿÿWVS‰Ó‹    …Òİ   {‰Ù1ÀÇ    ƒçüÇCp    ºÈ  )ùƒÁtÁéó«fƒÂ$úœ  t/‹zü…ÿtî‹‹J‰ş9Èwv f	tCƒÀ9ÈvôƒÂ$f	;úœ  uÑ[1À^_ÃèüÿÿÿS‹ƒûtƒûu[éüÿÿÿ´&    [éüÿÿÿ´&    v ¸êÿÿÿ[Ã´&    fèüÿÿÿ‹    U‰ÅWVS‹x\…Òú   ‹‡È  ·   1Û…ÀtJf‰ğƒÃÆŒ   èüÿÿÿ‹‡È  9Øwæ…Àt*·@  1Û´&    v ‰ğƒÃÆŒ   èüÿÿÿ9ŸÈ  wè‰øƒÅèüÿÿÿ‡Ì  èüÿÿÿ‰èº   èüÿÿÿ‰èº   èüÿÿÿ1À[^_]Ãt& èüÿÿÿV‰ÆSzGREY‰Ót<ƒ{t1À[^Ãƒ{uô‹†L  1Éº   èüÿÿÿ‹†L  ¹   º   èüÿÿÿëË‹€L  ¹p   º   èüÿÿÿë­´&    fèüÿÿÿU‰ÅWVSƒìfƒ: ‰$„æ   1Ûv ‹$1Éf‰LX2·|X‹…T  ‰Âòÿÿÿ •X  „  ©ÿÿ sDó1ÉFú‰D$ƒøwl¸È  1ÉƒÀ$ºœ  9Ât#‹Pü…Òtí…×t	;0r;pvƒÀ$ºœ  ƒÁ9Âuİ‹|$‰Î‹…L  Îğ   ÿ‰ñWĞ¶Òèüÿÿÿ‹…L  WÑ‰ñ¶Òèüÿÿÿ‰ñ‹$f‰LXƒÃƒû…>ÿÿÿ‹…L  ¹   ºÍ   èüÿÿÿ1ÀƒÄ[^_]Ã‹€L  1ÉºÍ   »Ğ   èüÿÿÿ‹…L  1ÉºÏ   èüÿÿÿ¶    ‹…L  ‰Ú¹ÿ   ƒÃèüÿÿÿûü   uãƒÄ1À[^_]Ã´&    fèüÿÿÿVS‰Óƒì‹²L  ºÀ   d¡    ‰D$1ÀL$Ç$    ‰ğÇD$    èüÿÿÿ‹L$…Éuk‰áº‡   ‰ğèüÿÿÿ‹$…Àu&‹D$d+    …°   ƒÄ¸   [^Ã´&    v L$º†   ‰ğÇD$    èüÿÿÿ‹L$…Étºº   ‰ğèüÿÿÿë¬fºÀ   ‰ğèüÿÿÿ‹D$¨@t–‹    %€   •ƒt  …Ò7  ‰Øº@  èüÿÿÿ1À€»t   t‹ƒl  j ¹   º   j j P‰ğèüÿÿÿƒÄé?ÿÿÿèüÿÿÿèüÿÿÿS‹˜    º   ‰Øèüÿÿÿ1Ò…Àx
-‰Ğ[Ã¶    ‰Â‹ƒô   …ÀtêHÿğ±‹ô   uï‰Ğ[Ã´&    t& èüÿÿÿVS‰Ã·€v  f=PQ„¶   1öf=QQ„‚   ‹ƒd  …Àt‰òƒÎƒÊƒøDò‹    …Òd  ‹ƒL  1Éº   èüÿÿÿ‹ƒL  ‰ñ1Òèüÿÿÿº@   ¸   ƒ»d  EÂ‹›L  j ¹P   j º   j P‰ØèüÿÿÿƒÄ[^Ãv f»x   …oÿÿÿ‹‹p  1À…É”À4Å    éVÿÿÿ1öf»x   …EÿÿÿëÔ´&    ¶    èüÿÿÿ‹P(‹Hú	˜ tmv;ú	˜ „   ú	Ÿ …«   ‹@|…À”À¶À‰¤   4ıÿÿèÇşÿÿ1ÀÃt& ú 	˜ thú	˜ ux‹P|‹€   ‰Ñº   èüÿÿÿ1ÀÃ´&    ‹P|‹€   ‰Ñº
-   èüÿÿÿ1ÀÃ´&    ‹P|‹€   ‰Ñº   èüÿÿÿ1ÀÃ´&    ‹P|‹€   ‰Ñº	   èüÿÿÿ1ÀÃ¸êÿÿÿÃfèüÿÿÿ‰d  1Òƒù•Â‰ˆh  ‰p  èşÿÿ1ÀÃ´&    fèüÿÿÿU‰ÅW1ÿV°,     Sƒì‹È  ‰D$…ÛuéZ  fƒÇÆŒ   9½È  †C  iÇŒ   1Ò^N`è‹€,  9ğDÂ‹Vü‹@ÇF|   ‰$º   ‰D$1À…ÿ”À‰D$‰Øèüÿÿÿ…Àˆ­   ‹E`‰Ú‹@èüÿÿÿ…Àˆ˜   ÿt$·D$‰é1ÒP‰ØèüÿÿÿZY…Àx}ƒ<$tO…ÿ…_ÿÿÿ‹T$1À…Ò•À‰$‹$‰…d  ‰èèıÿÿ‹D$‹•8  ‹<  ‰…Ä  ‰èè4÷ÿÿéÿÿÿ´&    ÿt$‹F‰é1Ò·@P‰ØèüÿÿÿY[…Àx…ÿt¦éòşÿÿf‰Â‹…È  …Àt.µ@  1Û‰×´&    v ‰ğƒÃÆŒ   èüÿÿÿ9È  wè‰úƒÄ‰Ğ[^_]Ãt& ƒÄ1Ò[‰Ğ^_]Ã´&    t& èüÿÿÿUWVS‰Ãƒì·Bf‰$‹Bƒà…‹  ‰Ö·$‰Ïƒò·Ê‰L$‹‹È  …É„~  ‹o“@  ëv ƒÀÂŒ   9È„_  9ÕuëiÀŒ   ‹    ‹„(  …É‘  ƒø…@  ½   “À   ‰Ğ‰$èüÿÿÿ…Àt!‹$èüÿÿÿ…À„X  Ç@$    ‹@ Ç@$    “à   ‰Ğ‰$èüÿÿÿ…Àt!‹$èüÿÿÿ…À„#  Ç@$    ‹@ Ç@$    ‹D$$‰éƒà‰Âƒò„Éu~·N‰“h  ‰‹d  …Àt~Çƒp     ‰Øè1ûÿÿ‹“È  …ÒttG”‹“T  ‰ƒÄ  ‹O¬‹ƒT  ‹o°1ÿ!Ê1ĞƒX  ‰ÖtI…Òu‰Î‰ï‰ò‰ù‰Øè)õÿÿ1ÀƒÄ[^_]Ã´&    Çƒd     ‰“h  …Àu4Çƒp      ‰Øè³úÿÿ1ÀƒÄ[^_]Ã´&    f¡    …ÀM1íé¾şÿÿÇƒp     ‰Øèúÿÿ‹T$‰øƒÂÁâÚèüÿÿÿ…Àt‹t$$‰p$‹@ ‰p$é%ÿÿÿ¸êÿÿÿëéµ  éW  t& èüÿÿÿU‰Å1ÉWVS»À  ƒì‹°L  1À¶Ğ‰÷ët& ¶K‹½L  ‰øƒÃèüÿÿÿ¶€úÿuä‹•P  …Ò„  1Éº   ‰ğèüÿÿÿ¹   ºÂ   ‰ğèüÿÿÿ¹   º   ‰ğèüÿÿÿ‹µL  1ÉºÏ   »Ğ   ‰ğèüÿÿÿt& ‰Ú¹ÿ   ‰ğƒÃèüÿÿÿûü   uç»Ğ  ‰,${$û€  tt& ‹Gô…Àu1‰û{$û€  uì‹,$‰èèRùÿÿ…Ì  èüÿÿÿ1ÀƒÄ[^_]Ãt& ·oğºÅ   ‰ğƒÃ‰éfÁé·Éèüÿÿÿ·ÍºÄ   ‰ğèüÿÿÿt& ¶KºÃ   ‰ğƒÃèüÿÿÿ9ûué‰ûë†¹   º   ‰ğèüÿÿÿ¹   ºÂ   ‰ğèüÿÿÿ1Éº   ‰ğèüÿÿÿéúşÿÿ´&    èüÿÿÿU‰ÅWVS1Ûƒì‰T$d¡    ‰D$‰ĞxHÇ@    ƒçüÇ@^    1À)ùƒÁ`Áéó«ÇD$    ëCv ‹D$…Àˆ“  ƒàƒø
-À4…Ä  ƒÇ;<$uX‰ğ·ö	t$‹L$f‰DYƒÃƒût`‹…T  ‰Âòÿÿÿ •X  „³  ©ÿÿ SDÓ1ÀƒêƒúwÀTĞ1ö¶úG‰$‹…L  L$‰úèüÿÿÿ…À‰iÿÿÿé“  t& ‰È·L$f‰‹D$d+    u
-ƒÄ1À[^_]Ãèüÿÿÿ´&    v èüÿÿÿS‰Óƒì‹€L  d‹    ‰T$1Ò‰áºˆ   èüÿÿÿº    …ÀI$ƒàƒø¸ÿÿ  EÂ‰C<‹D$d+    uƒÄ1À[ÃèüÿÿÿèüÿÿÿVS‰Ãƒì‹³    d¡    ‰D$1À…Ò„¢   º   ‰ğèüÿÿÿ‰Â…Àˆ$  ¹   º   ¾”  ëv ¶N‹ƒL  ƒÆèüÿÿÿ¶€úÿuæ‹“T  ‹‹X  ‰Ğ5ÿÿÿ 	È„û   ‰Øèğÿÿ‹ƒ|  ƒø„•   ƒø„|   ‹ƒP  …Àub‹³l  º@  ‰Øèüÿÿÿë¶    ‰ğº   1öèüÿÿÿj ‹ƒL  º   ¹   j j Vèüÿÿÿ1ÒƒÄ‹D$d+    …»   ƒÄ‰Ğ[^Ã1ö€»t   t™ë‘v Çƒl  	   éuÿÿÿj ‹ƒL  ¹   º   j j j èüÿÿÿÇƒl     ƒÄéEÿÿÿ‹†ô   …ÀtHÿğ±ô   „|ÿÿÿëév ‹ƒL  ‰áºŒ   èüÿÿÿ…ÀI$ƒàƒèƒø
-v1Ò1ÉéÙşÿÿt& ‹Å    ‹Å   éÂşÿÿèüÿÿÿ´&    èüÿÿÿV‰ÖS‰Ãƒìd¡    ‰D$1À‹ƒP  …Àt,¶ƒt  …ÀuF1À1Ò‰‰V‹D$d+    ucƒÄ1À[^Ãv ‹ƒL  ‰áºˆ   èüÿÿÿ‹$ƒàƒø”À¶À…Àtº‹ƒL  ‰áºŒ   èüÿÿÿ…ÀI$ƒàƒèƒø
-w—‹Å   ‹Å    ë‹èüÿÿÿv èüÿÿÿVS‰Ãƒìd¡    ‰D$‹ƒT  5ÿÿÿ ƒX  t‹D$d+    …á   ƒÄ1À[^Ã¶    ‹ƒL  ‰áºŒ   èüÿÿÿ‹‹\  ‹“`  …ÀI$ƒàƒèƒø
-vI	Êt®Çƒ\      Çƒ`      Çƒ@      Çƒ<      ÇƒD  Ğ  ÇƒH  @  émÿÿÿt& ‹4Å    ‹Å   1ñ1Â	Ê„Oÿÿÿ‰³\  æ ù  ‰ƒ`  Çƒ@      Çƒ<      ÇƒD  Ğ  t¡ÇƒH  à  éÿÿÿèüÿÿÿèüÿÿÿU1ÒWVS‰Ãƒìd¡    ‰D$‹ƒL  L$èüÿÿÿ…ÀˆĞ  éÌ  ´&    v èüÿÿÿUW‰ÇVSƒìd¡    ‰D$‹G‹P‹Rèüÿÿÿ%   =   …š  o¹   º  ‰èèüÿÿÿ‰Ã= ğÿÿ‡Y  …Àt1Òèüÿÿÿ¸   èüÿÿÿ¹   º  ‰èèüÿÿÿ‰Ã= ğÿÿ‡&  …Àt'¸Ä	  èüÿÿÿ1Ò‰Øèüÿÿÿ¹   ºú   ¸È   èüÿÿÿ¹À  º€  ‰èèüÿÿÿ‰Æ…À„  j 1Éº€   ‰øèüÿÿÿ[‰Ã= ğÿÿ‡Ê   ‰†L  ¹À  ‰ú‰ğèüÿÿÿº   ‰ğƒN\À   ÇFh  Ç†|     ÇF8  ÇF  Ç†Ü      Ç†Ø      Ç†ü      Ç†ø      Ç†     Ç†     èüÿÿÿ‰Ã…Àu?‹†”   º€   ‰$‹†L  jL$èüÿÿÿY‰Ã…À‰$  éı  ´&    …Û„ışÿÿ‹D$d+    uƒÄ‰Ø[^_]Ã»ûÿÿÿëáèüÿÿÿ»ôÿÿÿëÕ´&    ¶    èüÿÿÿUWV‰ÆSƒì‹Yd¡    ‰D$1À…Û…«  ¡    ‰×‰Ë…Àé  ‹k1À‹S…íHè¸ÿ  9ÅOè1À…ÒHĞ¸   ‰k9ÂOĞ‰S‹†T  ‰Áñÿÿÿ X  „š  % ù  ƒøÀƒà`à  )Ğj ¹Ğ  ºÑ   j )ê)ékPƒèPCP‰èjèüÿÿÿ‹‹CƒÄ…Ò„  ¸êÿÿÿƒút‹T$d+    …  ƒÄ[^_]Ãt& ¾<  ÿ ğÿÿ‡õ  ‹†D  9C„O  ‹T  ‹†L  ‰Êòÿÿÿ –X  „g  €åù„  ½à  ‹Kº   èüÿÿÿ‹K‹†L  º   K)éèüÿÿÿ‹K‹†L  º   Áùèüÿÿÿ‹K‹†L  º   ƒÉèüÿÿÿ‹S‹CŒşÿÿ‹†L  º   Áéèüÿÿÿ‹S‹CŒşÿÿ‹†L  º   èüÿÿÿë$·N 9Èƒì   €Áâz0ÿ ğÿÿ‡  ‹C‰‹C‰G‹C‰G‹C‰G1ÀéÂşÿÿ´&    ‹†L  ‰áºŒ   èüÿÿÿ‹S‹k…ÀI$ƒàHÿ¸@  ƒù
-‡Fşÿÿ‹Í    é(şÿÿ´&    v ‹†H  9C…¢şÿÿ‹†@  9C…“şÿÿ‹†<  9C…„şÿÿéaÿÿÿ¶    ‰áºŒ   èüÿÿÿ…ÀI$ƒàƒèƒø
-v+‹†L  ½@  ézşÿÿv éÿÿÿ¸êÿÿÿéùıÿÿ¶    ‹Å    ‹†L  é?şÿÿèüÿÿÿ‰øéÕıÿÿfèüÿÿÿV‰ÆS‰Ëƒì‹Id¡    ‰D$1À…Éto¸êÿÿÿƒùuEÇC    ÇC    ÇCĞ  ‹–T  ‰Ğ5ÿÿÿ †X  „‡   €æù„¡   ÇCà  1Àt& ‹T$d+    …Ã   ƒÄ[^Ã´&    f‹‹K…Àtƒøu2†<  = ğÿÿwÅ‹‰S‹P‰S‹P‰S‹@‰C1Àëª´&    v ¸êÿÿÿë™´&    f‹†L  ‰áºŒ   èüÿÿÿ…ÀI$ƒàƒèƒø
-v-ÇC@  1Àé_ÿÿÿ´&    ·v 9ñs ‰ÁàƒÀ0étÿÿÿ‹Å    éÿÿÿt& ëâèüÿÿÿ               €                 [                                                              À           €                                                         À                                               ÿ       $                                                                                             @   p   À      @  €  Ğ  °  @  F      À  @  €  0           p  `	  @
-  p
-    0  À  à  @    À  à             Set video std register to %d.
-  tvp5150.c: removing tvp5150 adapter on address 0x%x
-    VBI can't be configured without knowing number of lines
-    Selecting video route: route input=%s, output=%s => tvp5150 input=0x%02x, opmode=0x%02x
-    link setup '%s':%d->'%s':%d[%d] tvp5150: Video input source selection #1 = 0x%02x
-  tvp5150: Analog channel controls = 0x%02x
-  tvp5150: Operation mode controls = 0x%02x
-  tvp5150: Miscellaneous controls = 0x%02x
-   tvp5150: Autoswitch mask= 0x%02x
-   tvp5150: Color killer threshold control = 0x%02x
-   tvp5150: Luminance processing controls #1 #2 and #3 = %02x %02x %02x
-   tvp5150: Brightness control = 0x%02x
-   tvp5150: Color saturation control = 0x%02x
- tvp5150: Hue control = 0x%02x
-  tvp5150: Contrast control = 0x%02x
- tvp5150: Outputs and data rates select = 0x%02x
-    tvp5150: Configuration shared pins = 0x%02x
-    tvp5150: Active video cropping start = 0x%02x%02x
-  tvp5150: Active video cropping stop  = 0x%02x%02x
-  tvp5150: Genlock/RTC = 0x%02x
-  tvp5150: Horizontal sync start = 0x%02x
-    tvp5150: Vertical blanking start = 0x%02x
-  tvp5150: Vertical blanking stop = 0x%02x
-   tvp5150: Chrominance processing control #1 and #2 = %02x %02x
-  tvp5150: Interrupt reset register B = 0x%02x
-   tvp5150: Interrupt enable register B = 0x%02x
-  tvp5150: Interrupt configuration register B = 0x%02x
-   tvp5150: Video standard = 0x%02x
-   tvp5150: Chroma gain factor: Cb=0x%02x Cr=0x%02x
-   tvp5150: Macrovision on counter = 0x%02x
-   tvp5150: Macrovision off counter = 0x%02x
-  tvp5150: ITU-R BT.656.%d timing(TVP5150AM1 only)
-   tvp5150: Device ID = %02x%02x
-  tvp5150: ROM version = (hex) %02x.%02x
- tvp5150: Vertical line count = 0x%02x%02x
-  tvp5150: Interrupt status register B = 0x%02x
-  tvp5150: Interrupt active register B = 0x%02x
-  tvp5150: Status regs #1 to #5 = %02x %02x %02x %02x %02x
-   tvp5150: Teletext filter enable = 0x%02x
-   tvp5150: Interrupt status register A = 0x%02x
-  tvp5150: Interrupt enable register A = 0x%02x
-  tvp5150: Interrupt configuration = 0x%02x
-  tvp5150: VDP status register = 0x%02x
-  tvp5150: FIFO word count = 0x%02x
-  tvp5150: FIFO interrupt threshold = 0x%02x
- tvp5150: Line number interrupt = 0x%02x
-    tvp5150: Pixel alignment register = 0x%02x%02x
- tvp5150: FIFO output control = 0x%02x
-  tvp5150: Full field enable = 0x%02x
-    tvp5150: Full field mode register = 0x%02x
- reading ID registers failed: %d
-    tvp%04x (%u.%u) chip found @ 0x%02x (%s)
-   *** unknown tvp%04x chip detected.
- %s left=%d, top=%d, width=%d, height=%d
- 7 width = %d, height = %d
- %s reg %02x = %*ph
- g_sliced_vbi_cap
- ck ss sync lo%s signal
- normal black-frame-gen svideo aip1a aip1b %s: failed with error = %d
- Teletext filter 1 Teletext filter 2 tvp5150: FIFO reset = 0x%02x
- CC   data WSS  data VPS  data VITC data Line mode pdn reset tvp5150a detected.
- tvp5150am1 detected.
- tvp5151 detected.
- tvp5150 include/media/v4l2-subdev.h Disabled Black screen ‰$Ph    ÿ³    h    èüÿÿÿ‹L$ƒÄéD  RSh   ÿ°    h    èüÿÿÿ1ÀƒÄé…  èüÿÿÿUW‰ÇVS¶Ùƒì‰T$¶l$0d¡    ‰D$1À‰,$‰ı9$~Q‹4$)Ş;t$4Ot$41ÿ9÷}‰è¶Òè|  ˆD<GëèD$PVSÿt$h   ÿµ    h    èüÿÿÿ\$PƒÄëª‹D$d+    tèüÿÿÿƒÄ[^_]Ãh0   ÿ°    h    èüÿÿÿƒÄéÔ  ·@ÀPh    ÿ·    h    èüÿÿÿƒÄé˜  hX   ÿµ    èüÿÿÿ1ÉXZéj  …ÀºE   ¸B   DÂPhH   ÿ³    h    èüÿÿÿƒÄéÚ  ƒ»h   ºZ   ¹a   EÑ…Àt2ƒø¹q   ¸~   EÁj VRPh”   ÿ³    h    èüÿÿÿƒÄé¸  ¸x   ë×‹L$$‰D$ƒáQ·T$‰L$R‹Vÿr·WRÿuhğ   ÿ³    h    èüÿÿÿ‹D$,ƒÄ ƒø…Õ  ƒ=     ‹L$½   š  Q‹D$ÁàØ·Ô   R‹€Ğ   ÿp·GP‹Gÿphğ   ÿ³    h    èüÿÿÿƒÄ éš  ‹D$$ƒàP·D$P‹Fÿp·GP‹Gÿphğ   ÿ³    h    èüÿÿÿƒÄ éÕ  PhX   h„   ÿµ    èüÿÿÿ1ÀƒÄé;  hX   ÿµ    èüÿÿÿX1ÀZé;  ‹D$Ph  ÿ³    h    èüÿÿÿ‹ƒL  º   L$èüÿÿÿƒÄ…À‰'
-  PhD  ÿ³    h    èüÿÿÿ‹ƒL  º   L$èüÿÿÿƒÄ…À‰û	  Php  ÿ³    h    èüÿÿÿ‹ƒL  º   L$èüÿÿÿƒÄ…À‰Ï	  Phœ  ÿ³    h    èüÿÿÿ‹ƒL  º   L$èüÿÿÿƒÄ…À‰£	  PhÈ  ÿ³    h    èüÿÿÿ‹ƒL  º   L$èüÿÿÿƒÄ…À‰w	  Phì  ÿ³    h    èüÿÿÿ‹ƒL  º   L$èüÿÿÿ‰ÇƒÄ…À‰I	  ‹ƒL  L$º   èüÿÿÿ‰Æ…Àx‹t$‹ƒL  L$º   èüÿÿÿ…Àx‹D$WVPh   ÿ³    h    èüÿÿÿ‹ƒL  º	   L$èüÿÿÿƒÄ…À‰á  Phh  ÿ³    h    èüÿÿÿ‹ƒL  º
-   L$èüÿÿÿƒÄ…À‰µ  Ph  ÿ³    h    èüÿÿÿ‹ƒL  º   L$èüÿÿÿƒÄ…À‰‰  Ph¼  ÿ³    h    èüÿÿÿ‹ƒL  º   L$èüÿÿÿƒÄ…À‰]  PhÜ  ÿ³    h    èüÿÿÿ‹ƒL  º   L$èüÿÿÿƒÄ…À‰1  Ph   ÿ³    h    èüÿÿÿ‹ƒL  º   L$èüÿÿÿƒÄ…À‰  Ph4  ÿ³    h    èüÿÿÿ‹ƒL  º   L$èüÿÿÿ‰ÆƒÄ…À‰×  ‹ƒL  L$º   èüÿÿÿ…Àx‹D$VPhd  ÿ³    h    èüÿÿÿ‹ƒL  º   L$èüÿÿÿ‰ÆƒÄ…À‰Œ  ‹ƒL  L$º   èüÿÿÿ…Àx‹D$VPh˜  ÿ³    h    èüÿÿÿ‹ƒL  º   L$èüÿÿÿƒÄ…À‰C  PhÌ  ÿ³    h    èüÿÿÿ‹ƒL  º   L$èüÿÿÿƒÄ…À‰  Phì  ÿ³    h    èüÿÿÿ‹ƒL  º   L$èüÿÿÿƒÄ…À‰ë  Ph  ÿ³    h    èüÿÿÿ‹ƒL  º   L$èüÿÿÿƒÄ…À‰¿  PhD  ÿ³    h    èüÿÿÿ‹ƒL  º   L$èüÿÿÿ‰ÆƒÄ…À‰‘  ‹ƒL  L$º   èüÿÿÿ…Àx‹D$VPhp  ÿ³    h    èüÿÿÿ‹ƒL  º   L$èüÿÿÿƒÄ…À‰H  Ph°  ÿ³    h    èüÿÿÿ‹ƒL  º   L$èüÿÿÿƒÄ…À‰  Phà  ÿ³    h    èüÿÿÿ‹ƒL  º   L$èüÿÿÿƒÄ…À‰ğ  Ph  ÿ³    h    èüÿÿÿ‹ƒL  º(   L$èüÿÿÿƒÄ…À‰Ä  PhH  ÿ³    h    èüÿÿÿ‹ƒL  º-   L$èüÿÿÿ‰ÆƒÄ…À‰–  ‹ƒL  L$º,   èüÿÿÿ…Àx‹D$VPhl  ÿ³    h    èüÿÿÿ‹ƒL  º.   L$èüÿÿÿƒÄ…À‰M  Ph   ÿ³    h    èüÿÿÿ‹ƒL  º/   L$èüÿÿÿƒÄ…À‰!  PhÌ  ÿ³    h    èüÿÿÿ‹ƒL  º0   L$èüÿÿÿƒÄ…À‰õ  ƒàº   )ÂRhø  ÿ³    h    èüÿÿÿº   ‰Øè|  º€   ‰Æ‰Øè|  VPh,  ÿ³    h    èüÿÿÿºƒ   ‰ØƒÄ$è|  º‚   ‰Æ‰Øè|  VPhL  ÿ³    h    èüÿÿÿº…   ‰Øè|  º„   ‰Æ‰Øè|  VPht  ÿ³    h    èüÿÿÿº†   ‰ØƒÄ(è|  Ph   ÿ³    h    èüÿÿÿº‡   ‰Øè|  PhĞ  ÿ³    h    èüÿÿÿºŒ   ‰ØƒÄ è|  º‹   ‰$‰Øè|  ºŠ   ‰Å‰Øè|  º‰   ‰Ç‰Øè|  ºˆ   ‰Æ‰Øè|  ‹$QUWVPh   ÿ³    h    èüÿÿÿ¹±   º    ‰ØƒÄ jhµ   è¤õÿÿ¹¶   º²   ‰Øjhº   èŒõÿÿº»   ‰Øè|  Ph<  ÿ³    h    èüÿÿÿºÀ   ‰ØƒÄ è|  Phh  ÿ³    h    èüÿÿÿºÁ   ‰Øè|  Ph˜  ÿ³    h    èüÿÿÿºÂ   ‰ØƒÄ è|  PhÈ  ÿ³    h    èüÿÿÿºÆ   ‰Øè|  Phô  ÿ³    h    èüÿÿÿºÇ   ‰ØƒÄ è|  Ph  ÿ³    h    èüÿÿÿºÈ   ‰Øè|  Ph@  ÿ³    h    èüÿÿÿºÉ   ‰ØƒÄ è|  PhÄ   ÿ³    h    èüÿÿÿºÊ   ‰Øè|  Phl  ÿ³    h    èüÿÿÿºË   ‰ØƒÄ è|  ºÌ   ‰Æ‰Øè|  VPh˜  ÿ³    h    èüÿÿÿºÍ   ‰Øè|  PhÈ  ÿ³    h    èüÿÿÿºÏ   ‰ØƒÄ$è|  Phğ  ÿ³    h    èüÿÿÿºü   ‰Øè|  Ph	  ÿ³    h    èüÿÿÿ¹   ºâ   ‰ØƒÄ jh“   è–óÿÿ¹”   ºì   ‰Øjh™   è~óÿÿ¹š   ºö   ‰Øjh¦   èfóÿÿ¹§   º   ‰Øj
-h¯   èNóÿÿº
-  ‰Ø¹Ğ   ƒÄ jhû   è3óÿÿXZ‹D$d+    …ı   ƒÄ1À[^_]Ã‹D$éĞõÿÿ‹D$éüõÿÿ‹D$é(öÿÿ‹D$éTöÿÿ‹D$é€öÿÿ‹|$é®öÿÿ‹D$é÷ÿÿ‹D$éB÷ÿÿ‹D$én÷ÿÿ‹D$éš÷ÿÿ‹D$éÆ÷ÿÿ‹D$éò÷ÿÿ‹t$é øÿÿ‹t$ékøÿÿ‹D$é´øÿÿ‹D$éàøÿÿ‹D$éùÿÿ‹D$é8ùÿÿ‹t$éfùÿÿ‹D$é¯ùÿÿ‹D$éÛùÿÿ‹D$éúÿÿ‹D$é3úÿÿ‹t$éaúÿÿ‹D$éªúÿÿ‹D$éÖúÿÿ‹D$éûÿÿèüÿÿÿ·D$·T$‹$¶L$fÁÀfÁÂf‰†v  ·Àf‰–x  ‹S‰$Â  R·SÒR¶T$RQPhh	  ÿ¶    èüÿÿÿ·†v  ƒÄf=PQ…‰   ·x  ‹–    fù!…š   h  RèüÿÿÿXZ‹È  1À9Ø„Á   iÈŒ   ‹–T  ƒÀ”8  ‰$‹–X  ”<  ‰Ñ‹$‰X  ‰–T  ë¿PhD	  ‹D$ƒÀPèüÿÿÿƒÄéÔ  ‹–    f=QQu$f¾x   uhH  RèüÿÿÿXZésÿÿÿfù tPh”	  ÿ¶    èüÿÿÿƒÄéSÿÿÿh2  Rèüÿÿÿ‹†L  1Éº0   èüÿÿÿY[é/ÿÿÿ…ÀuÇ†T  ÿÿÿ Ç†X      †Ì  1Éº   Ç†\      ‰$‰Ãj Ç†`      Ç†d     Ç†p     èüÿÿÿ¹ 	˜ º  ‰Øj h€   j jj hÿ   j j èüÿÿÿ¹	˜ º  ‰ØƒÄ$j h€   j jj hÿ   j j èüÿÿÿ¹	˜ º  ‰ØƒÄ j h€   j jj hÿ   j j èüÿÿÿ¹	˜ º  ‰ØƒÄ j j j jj jjÿj€èüÿÿÿ¹	Ÿ º  ‰ØƒÄ j hÀü›j jj hÀü›j hÀü›
+	/* switch the DAT0-7 GPIO[10:3] to input mode */
+	cx_write(MC417_OEN, MC417_MIRDY | MC417_MIDATA);
+
+	/* Read data byte 3 */
+	regval = MC417_MIRD | MC417_MIRDY | MCI_MEMORY_DATA_BYTE3;
+	cx_write(MC417_RWD, regval);
+
+	/* Transition RD to effect read transaction across bus. */
+	regval = MC417_MIWR | MC417_MIRDY | MCI_MEMORY_DATA_BYTE3;
+	cx_write(MC417_RWD, regval);
+
+	/* Collect byte */
+	tempval = cx_read(MC417_RWD);
+	dataval = ((tempval & 0x000000FF) << 24);
+
+	/* Bring CS and RD high. */
+	regval = MC417_MIWR | MC417_MIRD | MC417_MICS | MC417_MIRDY;
+	cx_write(MC417_RWD, regval);
+
+	/* Read data byte 2 */
+	regval = MC417_MIRD | MC417_MIRDY | MCI_MEMORY_DATA_BYTE2;
+	cx_write(MC417_RWD, regval);
+	regval = MC417_MIWR | MC417_MIRDY | MCI_MEMORY_DATA_BYTE2;
+	cx_write(MC417_RWD, regval);
+	tempval = cx_read(MC417_RWD);
+	dataval |= ((tempval & 0x000000FF) << 16);
+	regval = MC417_MIWR | MC417_MIRD | MC417_MICS | MC417_MIRDY;
+	cx_write(MC417_RWD, regval);
+
+	/* Read data byte 1 */
+	regval = MC417_MIRD | MC417_MIRDY | MCI_MEMORY_DATA_BYTE1;
+	cx_write(MC417_RWD, regval);
+	regval = MC417_MIWR | MC417_MIRDY | MCI_MEMORY_DATA_BYTE1;
+	cx_write(MC417_RWD, regval);
+	tempval = cx_read(MC417_RWD);
+	dataval |= ((tempval & 0x000000FF) << 8);
+	regval = MC417_MIWR | MC417_MIRD | MC417_MICS | MC417_MIRDY;
+	cx_write(MC417_RWD, regval);
+
+	/* Read data byte 0 */
+	regval = MC417_MIRD | MC417_MIRDY | MCI_MEMORY_DATA_BYTE0;
+	cx_write(MC417_RWD, regval);
+	regval = MC417_MIWR | MC417_MIRDY | MCI_MEMORY_DATA_BYTE0;
+	cx_write(MC417_RWD, regval);
+	tempval = cx_read(MC417_RWD);
+	dataval |= (tempval & 0x000000FF);
+	regval = MC417_MIWR | MC417_MIRD | MC417_MICS | MC417_MIRDY;
+	cx_write(MC417_RWD, regval);
+
+	*value  = dataval;
+
+	return retval;
+}
+
+void mc417_gpio_set(struct cx23885_dev *dev, u32 mask)
+{
+	u32 val;
+
+	/* Set the gpio value */
+	mc417_register_read(dev, 0x900C, &val);
+	val |= (mask & 0x000ffff);
+	mc417_register_write(dev, 0x900C, val);
+}
+
+void mc417_gpio_clear(struct cx23885_dev *dev, u32 mask)
+{
+	u32 val;
+
+	/* Clear the gpio value */
+	mc417_register_read(dev, 0x900C, &val);
+	val &= ~(mask & 0x0000ffff);
+	mc417_register_write(dev, 0x900C, val);
+}
+
+void mc417_gpio_enable(struct cx23885_dev *dev, u32 mask, int asoutput)
+{
+	u32 val;
+
+	/* Enable GPIO direction bits */
+	mc417_register_read(dev, 0x9020, &val);
+	if (asoutput)
+		val |= (mask & 0x0000ffff);
+	else
+		val &= ~(mask & 0x0000ffff);
+
+	mc417_register_write(dev, 0x9020, val);
+}
+/* ------------------------------------------------------------------ */
+
+/* MPEG encoder API */
+static char *cmd_to_str(int cmd)
+{
+	switch (cmd) {
+	case CX2341X_ENC_PING_FW:
+		return  "PING_FW";
+	case CX2341X_ENC_START_CAPTURE:
+		return  "START_CAPTURE";
+	case CX2341X_ENC_STOP_CAPTURE:
+		return  "STOP_CAPTURE";
+	case CX2341X_ENC_SET_AUDIO_ID:
+		return  "SET_AUDIO_ID";
+	case CX2341X_ENC_SET_VIDEO_ID:
+		return  "SET_VIDEO_ID";
+	case CX2341X_ENC_SET_PCR_ID:
+		return  "SET_PCR_ID";
+	case CX2341X_ENC_SET_FRAME_RATE:
+		return  "SET_FRAME_RATE";
+	case CX2341X_ENC_SET_FRAME_SIZE:
+		return  "SET_FRAME_SIZE";
+	case CX2341X_ENC_SET_BIT_RATE:
+		return  "SET_BIT_RATE";
+	case CX2341X_ENC_SET_GOP_PROPERTIES:
+		return  "SET_GOP_PROPERTIES";
+	case CX2341X_ENC_SET_ASPECT_RATIO:
+		return  "SET_ASPECT_RATIO";
+	case CX2341X_ENC_SET_DNR_FILTER_MODE:
+		return  "SET_DNR_FILTER_MODE";
+	case CX2341X_ENC_SET_DNR_FILTER_PROPS:
+		return  "SET_DNR_FILTER_PROPS";
+	case CX2341X_ENC_SET_CORING_LEVELS:
+		return  "SET_CORING_LEVELS";
+	case CX2341X_ENC_SET_SPATIAL_FILTER_TYPE:
+		return  "SET_SPATIAL_FILTER_TYPE";
+	case CX2341X_ENC_SET_VBI_LINE:
+		return  "SET_VBI_LINE";
+	case CX2341X_ENC_SET_STREAM_TYPE:
+		return  "SET_STREAM_TYPE";
+	case CX2341X_ENC_SET_OUTPUT_PORT:
+		return  "SET_OUTPUT_PORT";
+	case CX2341X_ENC_SET_AUDIO_PROPERTIES:
+		return  "SET_AUDIO_PROPERTIES";
+	case CX2341X_ENC_HALT_FW:
+		return  "HALT_FW";
+	case CX2341X_ENC_GET_VERSION:
+		return  "GET_VERSION";
+	case CX2341X_ENC_SET_GOP_CLOSURE:
+		return  "SET_GOP_CLOSURE";
+	case CX2341X_ENC_GET_SEQ_END:
+		return  "GET_SEQ_END";
+	case CX2341X_ENC_SET_PGM_INDEX_INFO:
+		return  "SET_PGM_INDEX_INFO";
+	case CX2341X_ENC_SET_VBI_CONFIG:
+		return  "SET_VBI_CONFIG";
+	case CX2341X_ENC_SET_DMA_BLOCK_SIZE:
+		return  "SET_DMA_BLOCK_SIZE";
+	case CX2341X_ENC_GET_PREV_DMA_INFO_MB_10:
+		return  "GET_PREV_DMA_INFO_MB_10";
+	case CX2341X_ENC_GET_PREV_DMA_INFO_MB_9:
+		return  "GET_PREV_DMA_INFO_MB_9";
+	case CX2341X_ENC_SCHED_DMA_TO_HOST:
+		return  "SCHED_DMA_TO_HOST";
+	case CX2341X_ENC_INITIALIZE_INPUT:
+		return  "INITIALIZE_INPUT";
+	case CX2341X_ENC_SET_FRAME_DROP_RATE:
+		return  "SET_FRAME_DROP_RATE";
+	case CX2341X_ENC_PAUSE_ENCODER:
+		return  "PAUSE_ENCODER";
+	case CX2341X_ENC_REFRESH_INPUT:
+		return  "REFRESH_INPUT";
+	case CX2341X_ENC_SET_COPYRIGHT:
+		return  "SET_COPYRIGHT";
+	case CX2341X_ENC_SET_EVENT_NOTIFICATION:
+		return  "SET_EVENT_NOTIFICATION";
+	case CX2341X_ENC_SET_NUM_VSYNC_LINES:
+		return  "SET_NUM_VSYNC_LINES";
+	case CX2341X_ENC_SET_PLACEHOLDER:
+		return  "SET_PLACEHOLDER";
+	case CX2341X_ENC_MUTE_VIDEO:
+		return  "MUTE_VIDEO";
+	case CX2341X_ENC_MUTE_AUDIO:
+		return  "MUTE_AUDIO";
+	case CX2341X_ENC_MISC:
+		return  "MISC";
+	default:
+		return "UNKNOWN";
+	}
+}
+
+static int cx23885_mbox_func(void *priv,
+			     u32 command,
+			     int in,
+			     int out,
+			     u32 data[CX2341X_MBOX_MAX_DATA])
+{
+	struct cx23885_dev *dev = priv;
+	unsigned long timeout;
+	u32 value, flag, retval = 0;
+	int i;
+
+	dprintk(3, "%s: command(0x%X) = %s\n", __func__, command,
+		cmd_to_str(command));
+
+	/* this may not be 100% safe if we can't read any memory location
+	   without side effects */
+	mc417_memory_read(dev, dev->cx23417_mailbox - 4, &value);
+	if (value != 0x12345678) {
+		pr_err("Firmware and/or mailbox pointer not initialized or corrupted, signature = 0x%x, cmd = %s\n",
+			value, cmd_to_str(command));
+		return -1;
+	}
+
+	/* This read looks at 32 bits, but flag is only 8 bits.
+	 * Seems we also bail if CMD or TIMEOUT bytes are set???
+	 */
+	mc417_memory_read(dev, dev->cx23417_mailbox, &flag);
+	if (flag) {
+		pr_err("ERROR: Mailbox appears to be in use (%x), cmd = %s\n",
+		       flag, cmd_to_str(command));
+		return -1;
+	}
+
+	flag |= 1; /* tell 'em we're working on it */
+	mc417_memory_write(dev, dev->cx23417_mailbox, flag);
+
+	/* write command + args + fill remaining with zeros */
+	/* command code */
+	mc417_memory_write(dev, dev->cx23417_mailbox + 1, command);
+	mc417_memory_write(dev, dev->cx23417_mailbox + 3,
+		IVTV_API_STD_TIMEOUT); /* timeout */
+	for (i = 0; i < in; i++) {
+		mc417_memory_write(dev, dev->cx23417_mailbox + 4 + i, data[i]);
+		dprintk(3, "API Input %d = %d\n", i, data[i]);
+	}
+	for (; i < CX2341X_MBOX_MAX_DATA; i++)
+		mc417_memory_write(dev, dev->cx23417_mailbox + 4 + i, 0);
+
+	flag |= 3; /* tell 'em we're done writing */
+	mc417_memory_write(dev, dev->cx23417_mailbox, flag);
+
+	/* wait for firmware to handle the API command */
+	timeout = jiffies + msecs_to_jiffies(10);
+	for (;;) {
+		mc417_memory_read(dev, dev->cx23417_mailbox, &flag);
+		if (0 != (flag & 4))
+			break;
+		if (time_after(jiffies, timeout)) {
+			pr_err("ERROR: API Mailbox timeout\n");
+			return -1;
+		}
+		udelay(10);
+	}
+
+	/* read output values */
+	for (i = 0; i < out; i++) {
+		mc417_memory_read(dev, dev->cx23417_mailbox + 4 + i, data + i);
+		dprintk(3, "API Output %d = %d\n", i, data[i]);
+	}
+
+	mc417_memory_read(dev, dev->cx23417_mailbox + 2, &retval);
+	dprintk(3, "API result = %d\n", retval);
+
+	flag = 0;
+	mc417_memory_write(dev, dev->cx23417_mailbox, flag);
+
+	return retval;
+}
+
+/* We don't need to call the API often, so using just one
+ * mailbox will probably suffice
+ */
+static int cx23885_api_cmd(struct cx23885_dev *dev,
+			   u32 command,
+			   u32 inputcnt,
+			   u32 outputcnt,
+			   ...)
+{
+	u32 data[CX2341X_MBOX_MAX_DATA];
+	va_list vargs;
+	int i, err;
+
+	dprintk(3, "%s() cmds = 0x%08x\n", __func__, command);
+
+	va_start(vargs, outputcnt);
+	for (i = 0; i < inputcnt; i++)
+		data[i] = va_arg(vargs, int);
+
+	err = cx23885_mbox_func(dev, command, inputcnt, outputcnt, data);
+	for (i = 0; i < outputcnt; i++) {
+		int *vptr = va_arg(vargs, int *);
+		*vptr = data[i];
+	}
+	va_end(vargs);
+
+	return err;
+}
+
+static int cx23885_api_func(void *priv, u32 cmd, int in, int out, u32 data[CX2341X_MBOX_MAX_DATA])
+{
+	return cx23885_mbox_func(priv, cmd, in, out, data);
+}
+
+static int cx23885_find_mailbox(struct cx23885_dev *dev)
+{
+	u32 signature[4] = {
+		0x12345678, 0x34567812, 0x56781234, 0x78123456
+	};
+	int signaturecnt = 0;
+	u32 value;
+	int i;
+
+	dprintk(2, "%s()\n", __func__);
+
+	for (i = 0; i < CX23885_FIRM_IMAGE_SIZE; i++) {
+		mc417_memory_read(dev, i, &value);
+		if (value == signature[signaturecnt])
+			signaturecnt++;
+		else
+			signaturecnt = 0;
+		if (4 == signaturecnt) {
+			dprintk(1, "Mailbox signature found at 0x%x\n", i+1);
+			return i+1;
+		}
+	}
+	pr_err("Mailbox signature values not found!\n");
+	return -1;
+}
+
+static int cx23885_load_firmware(struct cx23885_dev *dev)
+{
+	static const unsigned char magic[8] = {
+		0xa7, 0x0d, 0x00, 0x00, 0x66, 0xbb, 0x55, 0xaa
+	};
+	const struct firmware *firmware;
+	int i, retval = 0;
+	u32 value = 0;
+	u32 gpio_output = 0;
+	u32 gpio_value;
+	u32 checksum = 0;
+	u32 *dataptr;
+
+	dprintk(2, "%s()\n", __func__);
+
+	/* Save GPIO settings before reset of APU */
+	retval |= mc417_memory_read(dev, 0x9020, &gpio_output);
+	retval |= mc417_memory_read(dev, 0x900C, &gpio_value);
+
+	retval  = mc417_register_write(dev,
+		IVTV_REG_VPU, 0xFFFFFFED);
+	retval |= mc417_register_write(dev,
+		IVTV_REG_HW_BLOCKS, IVTV_CMD_HW_BLOCKS_RST);
+	retval |= mc417_register_write(dev,
+		IVTV_REG_ENC_SDRAM_REFRESH, 0x80000800);
+	retval |= mc417_register_write(dev,
+		IVTV_REG_ENC_SDRAM_PRECHARGE, 0x1A);
+	retval |= mc417_register_write(dev,
+		IVTV_REG_APU, 0);
+
+	if (retval != 0) {
+		pr_err("%s: Error with mc417_register_write\n",
+			__func__);
+		return -1;
+	}
+
+	retval = request_firmware(&firmware, CX23885_FIRM_IMAGE_NAME,
+				  &dev->pci->dev);
+
+	if (retval != 0) {
+		pr_err("ERROR: Hotplug firmware request failed (%s).\n",
+		       CX23885_FIRM_IMAGE_NAME);
+		pr_err("Please fix your hotplug setup, the board will not work without firmware loaded!\n");
+		return -1;
+	}
+
+	if (firmware->size != CX23885_FIRM_IMAGE_SIZE) {
+		pr_err("ERROR: Firmware size mismatch (have %zu, expected %d)\n",
+		       firmware->size, CX23885_FIRM_IMAGE_SIZE);
+		release_firmware(firmware);
+		return -1;
+	}
+
+	if (0 != memcmp(firmware->data, magic, 8)) {
+		pr_err("ERROR: Firmware magic mismatch, wrong file?\n");
+		release_firmware(firmware);
+		return -1;
+	}
+
+	/* transfer to the chip */
+	dprintk(2, "Loading firmware ...\n");
+	dataptr = (u32 *)firmware->data;
+	for (i = 0; i < (firmware->size >> 2); i++) {
+		value = *dataptr;
+		checksum += ~value;
+		if (mc417_memory_write(dev, i, value) != 0) {
+			pr_err("ERROR: Loading firmware failed!\n");
+			release_firmware(firmware);
+			return -1;
+		}
+		dataptr++;
+	}
+
+	/* read back to verify with the checksum */
+	dprintk(1, "Verifying firmware ...\n");
+	for (i--; i >= 0; i--) {
+		if (mc417_memory_read(dev, i, &value) != 0) {
+			pr_err("ERROR: Reading firmware failed!\n");
+			release_firmware(firmware);
+			return -1;
+		}
+		checksum -= ~value;
+	}
+	if (checksum) {
+		pr_err("ERROR: Firmware load failed (checksum mismatch).\n");
+		release_firmware(firmware);
+		return -1;
+	}
+	release_firmware(firmware);
+	dprintk(1, "Firmware upload successful.\n");
+
+	retval |= mc417_register_write(dev, IVTV_REG_HW_BLOCKS,
+		IVTV_CMD_HW_BLOCKS_RST);
+
+	/* F/W power up disturbs the GPIOs, restore state */
+	retval |= mc417_register_write(dev, 0x9020, gpio_output);
+	retval |= mc417_register_write(dev, 0x900C, gpio_value);
+
+	retval |= mc417_register_read(dev, IVTV_REG_VPU, &value);
+	retval |= mc417_register_write(dev, IVTV_REG_VPU, value & 0xFFFFFFE8);
+
+	/* Hardcoded GPIO's here */
+	retval |= mc417_register_write(dev, 0x9020, 0x4000);
+	retval |= mc417_register_write(dev, 0x900C, 0x4000);
+
+	mc417_register_read(dev, 0x9020, &gpio_output);
+	mc417_register_read(dev, 0x900C, &gpio_value);
+
+	if (retval < 0)
+		pr_err("%s: Error with mc417_register_write\n",
+			__func__);
+	return 0;
+}
+
+void cx23885_417_check_encoder(struct cx23885_dev *dev)
+{
+	u32 status, seq;
+
+	status = seq = 0;
+	cx23885_api_cmd(dev, CX2341X_ENC_GET_SEQ_END, 0, 2, &status, &seq);
+	dprintk(1, "%s() status = %d, seq = %d\n", __func__, status, seq);
+}
+
+static void cx23885_codec_settings(struct cx23885_dev *dev)
+{
+	dprintk(1, "%s()\n", __func__);
+
+	/* Dynamically change the height based on video standard */
+	if (dev->encodernorm.id & V4L2_STD_525_60)
+		dev->ts1.height = 480;
+	else
+		dev->ts1.height = 576;
+
+	/* assign frame size */
+	cx23885_api_cmd(dev, CX2341X_ENC_SET_FRAME_SIZE, 2, 0,
+				dev->ts1.height, dev->ts1.width);
+
+	dev->cxhdl.width = dev->ts1.width;
+	dev->cxhdl.height = dev->ts1.height;
+	dev->cxhdl.is_50hz =
+		(dev->encodernorm.id & V4L2_STD_625_50) != 0;
+
+	cx2341x_handler_setup(&dev->cxhdl);
+
+	cx23885_api_cmd(dev, CX2341X_ENC_MISC, 2, 0, 3, 1);
+	cx23885_api_cmd(dev, CX2341X_ENC_MISC, 2, 0, 4, 1);
+}
+
+static int cx23885_initialize_codec(struct cx23885_dev *dev, int startencoder)
+{
+	int version;
+	int retval;
+	u32 i, data[7];
+
+	dprintk(1, "%s()\n", __func__);
+
+	retval = cx23885_api_cmd(dev, CX2341X_ENC_PING_FW, 0, 0); /* ping */
+	if (retval < 0) {
+		dprintk(2, "%s() PING OK\n", __func__);
+		retval = cx23885_load_firmware(dev);
+		if (retval < 0) {
+			pr_err("%s() f/w load failed\n", __func__);
+			return retval;
+		}
+		retval = cx23885_find_mailbox(dev);
+		if (retval < 0) {
+			pr_err("%s() mailbox < 0, error\n",
+				__func__);
+			return -1;
+		}
+		dev->cx23417_mailbox = retval;
+		retval = cx23885_api_cmd(dev, CX2341X_ENC_PING_FW, 0, 0);
+		if (retval < 0) {
+			pr_err("ERROR: cx23417 firmware ping failed!\n");
+			return -1;
+		}
+		retval = cx23885_api_cmd(dev, CX2341X_ENC_GET_VERSION, 0, 1,
+			&version);
+		if (retval < 0) {
+			pr_err("ERROR: cx23417 firmware get encoder :version failed!\n");
+			return -1;
+		}
+		dprintk(1, "cx23417 firmware version is 0x%08x\n", version);
+		msleep(200);
+	}
+
+	cx23885_codec_settings(dev);
+	msleep(60);
+
+	cx23885_api_cmd(dev, CX2341X_ENC_SET_NUM_VSYNC_LINES, 2, 0,
+		CX23885_FIELD1_SAA7115, CX23885_FIELD2_SAA7115);
+	cx23885_api_cmd(dev, CX2341X_ENC_SET_PLACEHOLDER, 12, 0,
+		CX23885_CUSTOM_EXTENSION_USR_DATA, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+		0, 0);
+
+	/* Setup to capture VBI */
+	data[0] = 0x0001BD00;
+	data[1] = 1;          /* frames per interrupt */
+	data[2] = 4;          /* total bufs */
+	data[3] = 0x91559155; /* start codes */
+	data[4] = 0x206080C0; /* stop codes */
+	data[5] = 6;          /* lines */
+	data[6] = 64;         /* BPL */
+
+	cx23885_api_cmd(dev, CX2341X_ENC_SET_VBI_CONFIG, 7, 0, data[0], data[1],
+		data[2], data[3], data[4], data[5], data[6]);
+
+	for (i = 2; i <= 24; i++) {
+		int valid;
+
+		valid = ((i >= 19) && (i <= 21));
+		cx23885_api_cmd(dev, CX2341X_ENC_SET_VBI_LINE, 5, 0, i,
+				valid, 0 , 0, 0);
+		cx23885_api_cmd(dev, CX2341X_ENC_SET_VBI_LINE, 5, 0,
+				i | 0x80000000, valid, 0, 0, 0);
+	}
+
+	cx23885_api_cmd(dev, CX2341X_ENC_MUTE_AUDIO, 1, 0, CX23885_UNMUTE);
+	msleep(60);
+
+	/* initialize the video input */
+	cx23885_api_cmd(dev, CX2341X_ENC_INITIALIZE_INPUT, 0, 0);
+	msleep(60);
+
+	/* Enable VIP style pixel invalidation so we work with scaled mode */
+	mc417_memory_write(dev, 2120, 0x00000080);
+
+	/* start capturing to the host interface */
+	if (startencoder) {
+		cx23885_api_cmd(dev, CX2341X_ENC_START_CAPTURE, 2, 0,
+			CX23885_MPEG_CAPTURE, CX23885_RAW_BITS_NONE);
+		msleep(10);
+	}
+
+	return 0;
+}
+
+/* ------------------------------------------------------------------ */
+
+static int queue_setup(struct vb2_queue *q,
+			   unsigned int *num_buffers, unsigned int *num_planes,
+			   unsigned int sizes[], struct device *alloc_devs[])
+{
+	struct cx23885_dev *dev = q->drv_priv;
+
+	dev->ts1.ts_packet_size  = mpeglinesize;
+	dev->ts1.ts_packet_count = mpeglines;
+	*num_planes = 1;
+	sizes[0] = mpeglinesize * mpeglines;
+	*num_buffers = mpegbufs;
+	return 0;
+}
+
+static int buffer_prepare(struct vb2_buffer *vb)
+{
+	struct vb2_v4l2_buffer *vbuf = to_vb2_v4l2_buffer(vb);
+	struct cx23885_dev *dev = vb->vb2_queue->drv_priv;
+	struct cx23885_buffer *buf =
+		container_of(vbuf, struct cx23885_buffer, vb);
+
+	return cx23885_buf_prepare(buf, &dev->ts1);
+}
+
+static void buffer_finish(struct vb2_buffer *vb)
+{
+	struct vb2_v4l2_buffer *vbuf = to_vb2_v4l2_buffer(vb);
+	struct cx23885_dev *dev = vb->vb2_queue->drv_priv;
+	struct cx23885_buffer *buf = container_of(vbuf,
+		struct cx23885_buffer, vb);
+
+	cx23885_free_buffer(dev, buf);
+}
+
+static void buffer_queue(struct vb2_buffer *vb)
+{
+	struct vb2_v4l2_buffer *vbuf = to_vb2_v4l2_buffer(vb);
+	struct cx23885_dev *dev = vb->vb2_queue->drv_priv;
+	struct cx23885_buffer   *buf = container_of(vbuf,
+		struct cx23885_buffer, vb);
+
+	cx23885_buf_queue(&dev->ts1, buf);
+}
+
+static int cx23885_start_streaming(struct vb2_queue *q, unsigned int count)
+{
+	struct cx23885_dev *dev = q->drv_priv;
+	struct cx23885_dmaqueue *dmaq = &dev->ts1.mpegq;
+	unsigned long flags;
+	int ret;
+
+	ret = cx23885_initialize_codec(dev, 1);
+	if (ret == 0) {
+		struct cx23885_buffer *buf = list_entry(dmaq->active.next,
+			struct cx23885_buffer, queue);
+
+		cx23885_start_dma(&dev->ts1, dmaq, buf);
+		return 0;
+	}
+	spin_lock_irqsave(&dev->slock, flags);
+	while (!list_empty(&dmaq->active)) {
+		struct cx23885_buffer *buf = list_entry(dmaq->active.next,
+			struct cx23885_buffer, queue);
+
+		list_del(&buf->queue);
+		vb2_buffer_done(&buf->vb.vb2_buf, VB2_BUF_STATE_QUEUED);
+	}
+	spin_unlock_irqrestore(&dev->slock, flags);
+	return ret;
+}
+
+static void cx23885_stop_streaming(struct vb2_queue *q)
+{
+	struct cx23885_dev *dev = q->drv_priv;
+
+	/* stop mpeg capture */
+	cx23885_api_cmd(dev, CX2341X_ENC_STOP_CAPTURE, 3, 0,
+			CX23885_END_NOW, CX23885_MPEG_CAPTURE,
+			CX23885_RAW_BITS_NONE);
+
+	msleep(500);
+	cx23885_417_check_encoder(dev);
+	cx23885_cancel_buffers(&dev->ts1);
+}
+
+static const struct vb2_ops cx23885_qops = {
+	.queue_setup    = queue_setup,
+	.buf_prepare  = buffer_prepare,
+	.buf_finish = buffer_finish,
+	.buf_queue    = buffer_queue,
+	.wait_prepare = vb2_ops_wait_prepare,
+	.wait_finish = vb2_ops_wait_finish,
+	.start_streaming = cx23885_start_streaming,
+	.stop_streaming = cx23885_stop_streaming,
+};
+
+/* ------------------------------------------------------------------ */
+
+static int vidioc_g_std(struct file *file, void *priv, v4l2_std_id *id)
+{
+	struct cx23885_dev *dev = video_drvdata(file);
+
+	*id = dev->tvnorm;
+	return 0;
+}
+
+static int vidioc_s_std(struct file *file, void *priv, v4l2_std_id id)
+{
+	struct cx23885_dev *dev = video_drvdata(file);
+	unsigned int i;
+	int ret;
+
+	for (i = 0; i < ARRAY_SIZE(cx23885_tvnorms); i++)
+		if (id & cx23885_tvnorms[i].id)
+			break;
+	if (i == ARRAY_SIZE(cx23885_tvnorms))
+		return -EINVAL;
+
+	ret = cx23885_set_tvnorm(dev, id);
+	if (!ret)
+		dev->encodernorm = cx23885_tvnorms[i];
+	return ret;
+}
+
+static int vidioc_enum_input(struct file *file, void *priv,
+	struct v4l2_input *i)
+{
+	struct cx23885_dev *dev = video_drvdata(file);
+	dprintk(1, "%s()\n", __func__);
+	return cx23885_enum_input(dev, i);
+}
+
+static int vidioc_g_input(struct file *file, void *priv, unsigned int *i)
+{
+	return cx23885_get_input(file, priv, i);
+}
+
+static int vidioc_s_input(struct file *file, void *priv, unsigned int i)
+{
+	return cx23885_set_input(file, priv, i);
+}
+
+static int vidioc_g_tuner(struct file *file, void *priv,
+				struct v4l2_tuner *t)
+{
+	struct cx23885_dev *dev = video_drvdata(file);
+
+	if (dev->tuner_type == TUNER_ABSENT)
+		return -EINVAL;
+	if (0 != t->index)
+		return -EINVAL;
+	strscpy(t->name, "Television", sizeof(t->name));
+	call_all(dev, tuner, g_tuner, t);
+
+	dprintk(1, "VIDIOC_G_TUNER: tuner type %d\n", t->type);
+
+	return 0;
+}
+
+static int vidioc_s_tuner(struct file *file, void *priv,
+				const struct v4l2_tuner *t)
+{
+	struct cx23885_dev *dev = video_drvdata(file);
+
+	if (dev->tuner_type == TUNER_ABSENT)
+		return -EINVAL;
+
+	/* Update the A/V core */
+	call_all(dev, tuner, s_tuner, t);
+
+	return 0;
+}
+
+static int vidioc_g_frequency(struct file *file, void *priv,
+				struct v4l2_frequency *f)
+{
+	struct cx23885_dev *dev = video_drvdata(file);
+
+	if (dev->tuner_type == TUNER_ABSENT)
+		return -EINVAL;
+	f->type = V4L2_TUNER_ANALOG_TV;
+	f->frequency = dev->freq;
+
+	call_all(dev, tuner, g_frequency, f);
+
+	return 0;
+}
+
+static int vidioc_s_frequency(struct file *file, void *priv,
+	const struct v4l2_frequency *f)
+{
+	return cx23885_set_frequency(file, priv, f);
+}
+
+static int vidioc_querycap(struct file *file, void  *priv,
+				struct v4l2_capability *cap)
+{
+	struct cx23885_dev *dev = video_drvdata(file);
+	struct cx23885_tsport  *tsport = &dev->ts1;
+
+	strscpy(cap->driver, dev->name, sizeof(cap->driver));
+	strscpy(cap->card, cx23885_boards[tsport->dev->board].name,
+		sizeof(cap->card));
+	sprintf(cap->bus_info, "PCIe:%s", pci_name(dev->pci));
+	cap->capabilities = V4L2_CAP_VIDEO_CAPTURE | V4L2_CAP_READWRITE |
+			    V4L2_CAP_STREAMING | V4L2_CAP_VBI_CAPTURE |
+			    V4L2_CAP_AUDIO | V4L2_CAP_DEVICE_CAPS;
+	if (dev->tuner_type != TUNER_ABSENT)
+		cap->capabilities |= V4L2_CAP_TUNER;
+
+	return 0;
+}
+
+static int vidioc_enum_fmt_vid_cap(struct file *file, void  *priv,
+					struct v4l2_fmtdesc *f)
+{
+	if (f->index != 0)
+		return -EINVAL;
+
+	f->pixelformat = V4L2_PIX_FMT_MPEG;
+
+	return 0;
+}
+
+static int vidioc_g_fmt_vid_cap(struct file *file, void *priv,
+				struct v4l2_format *f)
+{
+	struct cx23885_dev *dev = video_drvdata(file);
+
+	f->fmt.pix.pixelformat  = V4L2_PIX_FMT_MPEG;
+	f->fmt.pix.bytesperline = 0;
+	f->fmt.pix.sizeimage    =
+		dev->ts1.ts_packet_size * dev->ts1.ts_packet_count;
+	f->fmt.pix.colorspace   = 0;
+	f->fmt.pix.width        = dev->ts1.width;
+	f->fmt.pix.height       = dev->ts1.height;
+	f->fmt.pix.field        = V4L2_FIELD_INTERLACED;
+	dprintk(1, "VIDIOC_G_FMT: w: %d, h: %d\n",
+		dev->ts1.width, dev->ts1.height);
+	return 0;
+}
+
+static int vidioc_try_fmt_vid_cap(struct file *file, void *priv,
+				struct v4l2_format *f)
+{
+	struct cx23885_dev *dev = video_drvdata(file);
+
+	f->fmt.pix.pixelformat  = V4L2_PIX_FMT_MPEG;
+	f->fmt.pix.bytesperline = 0;
+	f->fmt.pix.sizeimage    =
+		dev->ts1.ts_packet_size * dev->ts1.ts_packet_count;
+	f->fmt.pix.colorspace   = 0;
+	f->fmt.pix.field        = V4L2_FIELD_INTERLACED;
+	dprintk(1, "VIDIOC_TRY_FMT: w: %d, h: %d\n",
+		dev->ts1.width, dev->ts1.height);
+	return 0;
+}
+
+static int vidioc_s_fmt_vid_cap(struct file *file, void *priv,
+				struct v4l2_format *f)
+{
+	struct cx23885_dev *dev = video_drvdata(file);
+
+	f->fmt.pix.pixelformat  = V4L2_PIX_FMT_MPEG;
+	f->fmt.pix.bytesperline = 0;
+	f->fmt.pix.sizeimage    =
+		dev->ts1.ts_packet_size * dev->ts1.ts_packet_count;
+	f->fmt.pix.colorspace   = 0;
+	f->fmt.pix.field        = V4L2_FIELD_INTERLACED;
+	dprintk(1, "VIDIOC_S_FMT: w: %d, h: %d, f: %d\n",
+		f->fmt.pix.width, f->fmt.pix.height, f->fmt.pix.field);
+	return 0;
+}
+
+static int vidioc_log_status(struct file *file, void *priv)
+{
+	struct cx23885_dev *dev = video_drvdata(file);
+	char name[32 + 2];
+
+	snprintf(name, sizeof(name), "%s/2", dev->name);
+	call_all(dev, core, log_status);
+	v4l2_ctrl_handler_log_status(&dev->cxhdl.hdl, name);
+	return 0;
+}
+
+static const struct v4l2_file_operations mpeg_fops = {
+	.owner	       = THIS_MODULE,
+	.open           = v4l2_fh_open,
+	.release        = vb2_fop_release,
+	.read           = vb2_fop_read,
+	.poll		= vb2_fop_poll,
+	.unlocked_ioctl = video_ioctl2,
+	.mmap           = vb2_fop_mmap,
+};
+
+static const struct v4l2_ioctl_ops mpeg_ioctl_ops = {
+	.vidioc_g_std		 = vidioc_g_std,
+	.vidioc_s_std		 = vidioc_s_std,
+	.vidioc_enum_input	 = vidioc_enum_input,
+	.vidioc_g_input		 = vidioc_g_input,
+	.vidioc_s_input		 = vidioc_s_input,
+	.vidioc_g_tuner		 = vidioc_g_tuner,
+	.vidioc_s_tuner		 = vidioc_s_tuner,
+	.vidioc_g_frequency	 = vidioc_g_frequency,
+	.vidioc_s_frequency	 = vidioc_s_frequency,
+	.vidioc_querycap	 = vidioc_querycap,
+	.vidioc_enum_fmt_vid_cap = vidioc_enum_fmt_vid_cap,
+	.vidioc_g_fmt_vid_cap	 = vidioc_g_fmt_vid_cap,
+	.vidioc_try_fmt_vid_cap	 = vidioc_try_fmt_vid_cap,
+	.vidioc_s_fmt_vid_cap	 = vidioc_s_fmt_vid_cap,
+	.vidioc_reqbufs       = vb2_ioctl_reqbufs,
+	.vidioc_prepare_buf   = vb2_ioctl_prepare_buf,
+	.vidioc_querybuf      = vb2_ioctl_querybuf,
+	.vidioc_qbuf          = vb2_ioctl_qbuf,
+	.vidioc_dqbuf         = vb2_ioctl_dqbuf,
+	.vidioc_streamon      = vb2_ioctl_streamon,
+	.vidioc_streamoff     = vb2_ioctl_streamoff,
+	.vidioc_log_status	 = vidioc_log_status,
+#ifdef CONFIG_VIDEO_ADV_DEBUG
+	.vidioc_g_chip_info	 = cx23885_g_chip_info,
+	.vidioc_g_register	 = cx23885_g_register,
+	.vidioc_s_register	 = cx23885_s_register,
+#endif
+};
+
+static struct video_device cx23885_mpeg_template = {
+	.name          = "cx23885",
+	.fops          = &mpeg_fops,
+	.ioctl_ops     = &mpeg_ioctl_ops,
+	.tvnorms       = CX23885_NORMS,
+};
+
+void cx23885_417_unregister(struct cx23885_dev *dev)
+{
+	dprintk(1, "%s()\n", __func__);
+
+	if (dev->v4l_device) {
+		if (video_is_registered(dev->v4l_device))
+			video_unregister_device(dev->v4l_device);
+		else
+			video_device_release(dev->v4l_device);
+		v4l2_ctrl_handler_free(&dev->cxhdl.hdl);
+		dev->v4l_device = NULL;
+	}
+}
+
+static struct video_device *cx23885_video_dev_alloc(
+	struct cx23885_tsport *tsport,
+	struct pci_dev *pci,
+	struct video_device *template,
+	char *type)
+{
+	struct video_device *vfd;
+	struct cx23885_dev *dev = tsport->dev;
+
+	dprintk(1, "%s()\n", __func__);
+
+	vfd = video_device_alloc();
+	if (NULL == vfd)
+		return NULL;
+	*vfd = *template;
+	snprintf(vfd->name, sizeof(vfd->name), "%s (%s)",
+		cx23885_boards[tsport->dev->board].name, type);
+	vfd->v4l2_dev = &dev->v4l2_dev;
+	vfd->release = video_device_release;
+	return vfd;
+}
+
+int cx23885_417_register(struct cx23885_dev *dev)
+{
+	/* FIXME: Port1 hardcoded here */
+	int err = -ENODEV;
+	struct cx23885_tsport *tsport = &dev->ts1;
+	struct vb2_queue *q;
+
+	dprintk(1, "%s()\n", __func__);
+
+	if (cx23885_boards[dev->board].portb != CX23885_MPEG_ENCODER)
+		return err;
+
+	/* Set default TV standard */
+	dev->encodernorm = cx23885_tvnorms[0];
+
+	if (dev->encodernorm.id & V4L2_STD_525_60)
+		tsport->height = 480;
+	else
+		tsport->height = 576;
+
+	tsport->width = 720;
+	dev->cxhdl.port = CX2341X_PORT_SERIAL;
+	err = cx2341x_handler_init(&dev->cxhdl, 50);
+	if (err)
+		return err;
+	dev->cxhdl.priv = dev;
+	dev->cxhdl.func = cx23885_api_func;
+	cx2341x_handler_set_50hz(&dev->cxhdl, tsport->height == 576);
+	v4l2_ctrl_add_handler(&dev->ctrl_handler, &dev->cxhdl.hdl, NULL, false);
+
+	/* Allocate and initialize V4L video device */
+	dev->v4l_device = cx23885_video_dev_alloc(tsport,
+		dev->pci, &cx23885_mpeg_template, "mpeg");
+	q = &dev->vb2_mpegq;
+	q->type = V4L2_BUF_TYPE_VIDEO_CAPTURE;
+	q->io_modes = VB2_MMAP | VB2_USERPTR | VB2_DMABUF | VB2_READ;
+	q->gfp_flags = GFP_DMA32;
+	q->min_buffers_needed = 2;
+	q->drv_priv = dev;
+	q->buf_struct_size = sizeof(struct cx23885_buffer);
+	q->ops = &cx23885_qops;
+	q->mem_ops = &vb2_dma_sg_memops;
+	q->timestamp_flags = V4L2_BUF_FLAG_TIMESTAMP_MONOTONIC;
+	q->lock = &dev->lock;
+	q->dev = &dev->pci->dev;
+
+	err = vb2_queue_init(q);
+	if (err < 0)
+		return err;
+	video_set_drvdata(dev->v4l_device, dev);
+	dev->v4l_device->lock = &dev->lock;
+	dev->v4l_device->queue = q;
+	dev->v4l_device->device_caps = V4L2_CAP_VIDEO_CAPTURE |
+				       V4L2_CAP_READWRITE | V4L2_CAP_STREAMING;
+	if (dev->tuner_type != TUNER_ABSENT)
+		dev->v4l_device->device_caps |= V4L2_CAP_TUNER;
+	err = video_register_device(dev->v4l_device,
+		VFL_TYPE_VIDEO, -1);
+	if (err < 0) {
+		pr_info("%s: can't register mpeg device\n", dev->name);
+		return err;
+	}
+
+	pr_info("%s: registered device %s [mpeg]\n",
+	       dev->name, video_device_node_name(dev->v4l_device));
+
+	/* ST: Configure the encoder parameters, but don't begin
+	 * encoding, this resolves an issue where the first time the
+	 * encoder is started video can be choppy.
+	 */
+	cx23885_initialize_codec(dev, 0);
+
+	return 0;
+}
+
+MODULE_FIRMWARE(CX23885_FIRM_IMAGE_NAME);
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              // SPDX-License-Identifier: GPL-2.0-or-later
+/*
+ *
+ *  Support for a cx23417 mpeg encoder via cx23885 host port.
+ *
+ *    (c) 2004 Jelle Foks <jelle@foks.us>
+ *    (c) 2004 Gerd Knorr <kraxel@bytesex.org>
+ *    (c) 2008 Steven Toth <stoth@linuxtv.org>
+ *      - CX23885/7/8 support
+ *
+ *  Includes parts from the ivtv driver <http://sourceforge.net/projects/ivtv/>
+ */
+
+#include "cx23885.h"
+#include "cx23885-ioctl.h"
+
+#include <linux/module.h>
+#include <linux/moduleparam.h>
+#include <linux/init.h>
+#include <linux/fs.h>
+#include <linux/delay.h>
+#include <linux/device.h>
+#include <linux/firmware.h>
+#include <linux/slab.h>
+#include <media/v4l2-common.h>
+#include <media/v4l2-ioctl.h>
+#include <media/drv-intf/cx2341x.h>
+
+#define CX23885_FIRM_IMAGE_SIZE 376836
+#define CX23885_FIRM_IMAGE_NAME "v4l-cx23885-enc.fw"
+
+static unsigned int mpegbufs = 32;
+module_param(mpegbufs, int, 0644);
+MODULE_PARM_DESC(mpegbufs, "number of mpeg buffers, range 2-32");
+static unsigned int mpeglines = 32;
+module_param(mpeglines, int, 0644);
+MODULE_PARM_DESC(mpeglines, "number of lines in an MPEG buffer, range 2-32");
+static unsigned int mpeglinesize = 512;
+module_param(mpeglinesize, int, 0644);
+MODULE_PARM_DESC(mpeglinesize,
+	"number of bytes in each line of an MPEG buffer, range 512-1024");
+
+static unsigned int v4l_debug;
+module_param(v4l_debug, int, 0644);
+MODULE_PARM_DESC(v4l_debug, "enable V4L debug messages");
+
+#define dprintk(level, fmt, arg...)\
+	do { if (v4l_debug >= level) \
+		printk(KERN_DEBUG pr_fmt("%s: 417:" fmt), \
+			__func__, ##arg); \
+	} while (0)
+
+static struct cx23885_tvnorm cx23885_tvnorms[] = {
+	{
+		.name      = "NTSC-M",
+		.id        = V4L2_STD_NTSC_M,
+	}, {
+		.name      = "NTSC-JP",
+		.id        = V4L2_STD_NTSC_M_JP,
+	}, {
+		.name      = "PAL-BG",
+		.id        = V4L2_STD_PAL_BG,
+	}, {
+		.name      = "PAL-DK",
+		.id        = V4L2_STD_PAL_DK,
+	}, {
+		.name      = "PAL-I",
+		.id        = V4L2_STD_PAL_I,
+	}, {
+		.name      = "PAL-M",
+		.id        = V4L2_STD_PAL_M,
+	}, {
+		.name      = "PAL-N",
+		.id        = V4L2_STD_PAL_N,
+	}, {
+		.name      = "PAL-Nc",
+		.id        = V4L2_STD_PAL_Nc,
+	}, {
+		.name      = "PAL-60",
+		.id        = V4L2_STD_PAL_60,
+	}, {
+		.name      = "SECAM-L",
+		.id        = V4L2_STD_SECAM_L,
+	}, {
+		.name      = "SECAM-DK",
+		.id        = V4L2_STD_SECAM_DK,
+	}
+};
+
+/* ------------------------------------------------------------------ */
+enum cx23885_capture_type {
+	CX23885_MPEG_CAPTURE,
+	CX23885_RAW_CAPTURE,
+	CX23885_RAW_PASSTHRU_CAPTURE
+};
+enum cx23885_capture_bits {
+	CX23885_RAW_BITS_NONE             = 0x00,
+	CX23885_RAW_BITS_YUV_CAPTURE      = 0x01,
+	CX23885_RAW_BITS_PCM_CAPTURE      = 0x02,
+	CX23885_RAW_BITS_VBI_CAPTURE      = 0x04,
+	CX23885_RAW_BITS_PASSTHRU_CAPTURE = 0x08,
+	CX23885_RAW_BITS_TO_HOST_CAPTURE  = 0x10
+};
+enum cx23885_capture_end {
+	CX23885_END_AT_GOP, /* stop at the end of gop, generate irq */
+	CX23885_END_NOW, /* stop immediately, no irq */
+};
+enum cx23885_framerate {
+	CX23885_FRAMERATE_NTSC_30, /* NTSC: 30fps */
+	CX23885_FRAMERATE_PAL_25   /* PAL: 25fps */
+};
+enum cx23885_stream_port {
+	CX23885_OUTPUT_PORT_MEMORY,
+	CX23885_OUTPUT_PORT_STREAMING,
+	CX23885_OUTPUT_PORT_SERIAL
+};
+enum cx23885_data_xfer_status {
+	CX23885_MORE_BUFFERS_FOLLOW,
+	CX23885_LAST_BUFFER,
+};
+enum cx23885_picture_mask {
+	CX23885_PICTURE_MASK_NONE,
+	CX23885_PICTURE_MASK_I_FRAMES,
+	CX23885_PICTURE_MASK_I_P_FRAMES = 0x3,
+	CX23885_PICTURE_MASK_ALL_FRAMES = 0x7,
+};
+enum cx23885_vbi_mode_bits {
+	CX23885_VBI_BITS_SLICED,
+	CX23885_VBI_BITS_RAW,
+};
+enum cx23885_vbi_insertion_bits {
+	CX23885_VBI_BITS_INSERT_IN_XTENSION_USR_DATA,
+	CX23885_VBI_BITS_INSERT_IN_PRIVATE_PACKETS = 0x1 << 1,
+	CX23885_VBI_BITS_SEPARATE_STREAM = 0x2 << 1,
+	CX23885_VBI_BITS_SEPARATE_STREAM_USR_DATA = 0x4 << 1,
+	CX23885_VBI_BITS_SEPARATE_STREAM_PRV_DATA = 0x5 << 1,
+};
+enum cx23885_dma_unit {
+	CX23885_DMA_BYTES,
+	CX23885_DMA_FRAMES,
+};
+enum cx23885_dma_transfer_status_bits {
+	CX23885_DMA_TRANSFER_BITS_DONE = 0x01,
+	CX23885_DMA_TRANSFER_BITS_ERROR = 0x04,
+	CX23885_DMA_TRANSFER_BITS_LL_ERROR = 0x10,
+};
+enum cx23885_pause {
+	CX23885_PAUSE_ENCODING,
+	CX23885_RESUME_ENCODING,
+};
+enum cx23885_copyright {
+	CX23885_COPYRIGHT_OFF,
+	CX23885_COPYRIGHT_ON,
+};
+enum cx23885_notification_type {
+	CX23885_NOTIFICATION_REFRESH,
+};
+enum cx23885_notification_status {
+	CX23885_NOTIFICATION_OFF,
+	CX23885_NOTIFICATION_ON,
+};
+enum cx23885_notification_mailbox {
+	CX23885_NOTIFICATION_NO_MAILBOX = -1,
+};
+enum cx23885_field1_lines {
+	CX23885_FIELD1_SAA7114 = 0x00EF, /* 239 */
+	CX23885_FIELD1_SAA7115 = 0x00F0, /* 240 */
+	CX23885_FIELD1_MICRONAS = 0x0105, /* 261 */
+};
+enum cx23885_field2_lines {
+	CX23885_FIELD2_SAA7114 = 0x00EF, /* 239 */
+	CX23885_FIELD2_SAA7115 = 0x00F0, /* 240 */
+	CX23885_FIELD2_MICRONAS = 0x0106, /* 262 */
+};
+enum cx23885_custom_data_type {
+	CX23885_CUSTOM_EXTENSION_USR_DATA,
+	CX23885_CUSTOM_PRIVATE_PACKET,
+};
+enum cx23885_mute {
+	CX23885_UNMUTE,
+	CX23885_MUTE,
+};
+enum cx23885_mute_video_mask {
+	CX23885_MUTE_VIDEO_V_MASK = 0x0000FF00,
+	CX23885_MUTE_VIDEO_U_MASK = 0x00FF0000,
+	CX23885_MUTE_VIDEO_Y_MASK = 0xFF000000,
+};
+enum cx23885_mute_video_shift {
+	CX23885_MUTE_VIDEO_V_SHIFT = 8,
+	CX23885_MUTE_VIDEO_U_SHIFT = 16,
+	CX23885_MUTE_VIDEO_Y_SHIFT = 24,
+};
+
+/* defines below are from ivtv-driver.h */
+#define IVTV_CMD_HW_BLOCKS_RST 0xFFFFFFFF
+
+/* Firmware API commands */
+#define IVTV_API_STD_TIMEOUT 500
+
+/* Registers */
+/* IVTV_REG_OFFSET */
+#define IVTV_REG_ENC_SDRAM_REFRESH (0x07F8)
+#define IVTV_REG_ENC_SDRAM_PRECHARGE (0x07FC)
+#define IVTV_REG_SPU (0x9050)
+#define IVTV_REG_HW_BLOCKS (0x9054)
+#define IVTV_REG_VPU (0x9058)
+#define IVTV_REG_APU (0xA064)
+
+/**** Bit definitions for MC417_RWD and MC417_OEN registers  ***
+  bits 31-16
++-----------+
+| Reserved  |
++-----------+
+  bit 15  bit 14  bit 13 bit 12  bit 11  bit 10  bit 9   bit 8
++-------+-------+-------+-------+-------+-------+-------+-------+
+| MIWR# | MIRD# | MICS# |MIRDY# |MIADDR3|MIADDR2|MIADDR1|MIADDR0|
++-------+-------+-------+-------+-------+-------+-------+-------+
+ bit 7   bit 6   bit 5   bit 4   bit 3   bit 2   bit 1   bit 0
++-------+-------+-------+-------+-------+-------+-------+-------+
+|MIDATA7|MIDATA6|MIDATA5|MIDATA4|MIDATA3|MIDATA2|MIDATA1|MIDATA0|
++-------+-------+-------+-------+-------+-------+-------+-------+
+***/
+#define MC417_MIWR	0x8000
+#define MC417_MIRD	0x4000
+#define MC417_MICS	0x2000
+#define MC417_MIRDY	0x1000
+#define MC417_MIADDR	0x0F00
+#define MC417_MIDATA	0x00FF
+
+/* MIADDR* nibble definitions */
+#define  MCI_MEMORY_DATA_BYTE0          0x000
+#define  MCI_MEMORY_DATA_BYTE1          0x100
+#define  MCI_MEMORY_DATA_BYTE2          0x200
+#define  MCI_MEMORY_DATA_BYTE3          0x300
+#define  MCI_MEMORY_ADDRESS_BYTE2       0x400
+#define  MCI_MEMORY_ADDRESS_BYTE1       0x500
+#define  MCI_MEMORY_ADDRESS_BYTE0       0x600
+#define  MCI_REGISTER_DATA_BYTE0        0x800
+#define  MCI_REGISTER_DATA_BYTE1        0x900
+#define  MCI_REGISTER_DATA_BYTE2        0xA00
+#define  MCI_REGISTER_DATA_BYTE3        0xB00
+#define  MCI_REGISTER_ADDRESS_BYTE0     0xC00
+#define  MCI_REGISTER_ADDRESS_BYTE1     0xD00
+#define  MCI_REGISTER_MODE              0xE00
+
+/* Read and write modes */
+#define  MCI_MODE_REGISTER_READ         0
+#define  MCI_MODE_REGISTER_WRITE        1
+#define  MCI_MODE_MEMORY_READ           0
+#define  MCI_MODE_MEMORY_WRITE          0x40
+
+/*** Bit definitions for MC417_CTL register ****
+ bits 31-6   bits 5-4   bit 3    bits 2-1       Bit 0
++--------+-------------+--------+--------------+------------+
+|Reserved|MC417_SPD_CTL|Reserved|MC417_GPIO_SEL|UART_GPIO_EN|
++--------+-------------+--------+--------------+------------+
+***/
+#define MC417_SPD_CTL(x)	(((x) << 4) & 0x00000030)
+#define MC417_GPIO_SEL(x)	(((x) << 1) & 0x00000006)
+#define MC417_UART_GPIO_EN	0x00000001
+
+/* Values for speed control */
+#define MC417_SPD_CTL_SLOW	0x1
+#define MC417_SPD_CTL_MEDIUM	0x0
+#define MC417_SPD_CTL_FAST	0x3     /* b'1x, but we use b'11 */
+
+/* Values for GPIO select */
+#define MC417_GPIO_SEL_GPIO3	0x3
+#define MC417_GPIO_SEL_GPIO2	0x2
+#define MC417_GPIO_SEL_GPIO1	0x1
+#define MC417_GPIO_SEL_GPIO0	0x0
+
+void cx23885_mc417_init(struct cx23885_dev *dev)
+{
+	u32 regval;
+
+	dprintk(2, "%s()\n", __func__);
+
+	/* Configure MC417_CTL register to defaults. */
+	regval = MC417_SPD_CTL(MC417_SPD_CTL_FAST)	|
+		 MC417_GPIO_SEL(MC417_GPIO_SEL_GPIO3)	|
+		 MC417_UART_GPIO_EN;
+	cx_write(MC417_CTL, regval);
+
+	/* Configure MC417_OEN to defaults. */
+	regval = MC417_MIRDY;
+	cx_write(MC417_OEN, regval);
+
+	/* Configure MC417_RWD to defaults. */
+	regval = MC417_MIWR | MC417_MIRD | MC417_MICS;
+	cx_write(MC417_RWD, regval);
+}
+
+static int mc417_wait_ready(struct cx23885_dev *dev)
+{
+	u32 mi_ready;
+	unsigned long timeout = jiffies + msecs_to_jiffies(1);
+
+	for (;;) {
+		mi_ready = cx_read(MC417_RWD) & MC417_MIRDY;
+		if (mi_ready != 0)
+			return 0;
+		if (time_after(jiffies, timeout))
+			return -1;
+		udelay(1);
+	}
+}
+
+int mc417_register_write(struct cx23885_dev *dev, u16 address, u32 value)
+{
+	u32 regval;
+
+	/* Enable MC417 GPIO outputs except for MC417_MIRDY,
+	 * which is an input.
+	 */
+	cx_write(MC417_OEN, MC417_MIRDY);
+
+	/* Write data byte 0 */
+	regval = MC417_MIRD | MC417_MIRDY | MCI_REGISTER_DATA_BYTE0 |
+		(value & 0x000000FF);
+	cx_write(MC417_RWD, regval);
+
+	/* Transition CS/WR to effect write transaction across bus. */
+	regval |= MC417_MICS | MC417_MIWR;
+	cx_write(MC417_RWD, regval);
+
+	/* Write data byte 1 */
+	regval = MC417_MIRD | MC417_MIRDY | MCI_REGISTER_DATA_BYTE1 |
+		((value >> 8) & 0x000000FF);
+	cx_write(MC417_RWD, regval);
+	regval |= MC417_MICS | MC417_MIWR;
+	cx_write(MC417_RWD, regval);
+
+	/* Write data byte 2 */
+	regval = MC417_MIRD | MC417_MIRDY | MCI_REGISTER_DATA_BYTE2 |
+		((value >> 16) & 0x000000FF);
+	cx_write(MC417_RWD, regval);
+	regval |= MC417_MICS | MC417_MIWR;
+	cx_write(MC417_RWD, regval);
+
+	/* Write data byte 3 */
+	regval = MC417_MIRD | MC417_MIRDY | MCI_REGISTER_DATA_BYTE3 |
+		((value >> 24) & 0x000000FF);
+	cx_write(MC417_RWD, regval);
+	regval |= MC417_MICS | MC417_MIWR;
+	cx_write(MC417_RWD, regval);
+
+	/* Write address byte 0 */
+	regval = MC417_MIRD | MC417_MIRDY | MCI_REGISTER_ADDRESS_BYTE0 |
+		(address & 0xFF);
+	cx_write(MC417_RWD, regval);
+	regval |= MC417_MICS | MC417_MIWR;
+	cx_write(MC417_RWD, regval);
+
+	/* Write address byte 1 */
+	regval = MC417_MIRD | MC417_MIRDY | MCI_REGISTER_ADDRESS_BYTE1 |
+		((address >> 8) & 0xFF);
+	cx_write(MC417_RWD, regval);
+	regval |= MC417_MICS | MC417_MIWR;
+	cx_write(MC417_RWD, regval);
+
+	/* Indicate that this is a write. */
+	regval = MC417_MIRD | MC417_MIRDY | MCI_REGISTER_MODE |
+		MCI_MODE_REGISTER_WRITE;
+	cx_write(MC417_RWD, regval);
+	regval |= MC417_MICS | MC417_MIWR;
+	cx_write(MC417_RWD, regval);
+
+	/* Wait for the trans to complete (MC417_MIRDY asserted). */
+	return mc417_wait_ready(dev);
+}
+
+int mc417_register_read(struct cx23885_dev *dev, u16 address, u32 *value)
+{
+	int retval;
+	u32 regval;
+	u32 tempval;
+	u32 dataval;
+
+	/* Enable MC417 GPIO outputs except for MC417_MIRDY,
+	 * which is an input.
+	 */
+	cx_write(MC417_OEN, MC417_MIRDY);
+
+	/* Write address byte 0 */
+	regval = MC417_MIRD | MC417_MIRDY | MCI_REGISTER_ADDRESS_BYTE0 |
+		((address & 0x00FF));
+	cx_write(MC417_RWD, regval);
+	regval |= MC417_MICS | MC417_MIWR;
+	cx_write(MC417_RWD, regval);
+
+	/* Write address byte 1 */
+	regval = MC417_MIRD | MC417_MIRDY | MCI_REGISTER_ADDRESS_BYTE1 |
+		((address >> 8) & 0xFF);
+	cx_write(MC417_RWD, regval);
+	regval |= MC417_MICS | MC417_MIWR;
+	cx_write(MC417_RWD, regval);
+
+	/* Indicate that this is a register read. */
+	regval = MC417_MIRD | MC417_MIRDY | MCI_REGISTER_MODE |
+		MCI_MODE_REGISTER_READ;
+	cx_write(MC417_RWD, regval);
+	regval |= MC417_MICS | MC417_MIWR;
+	cx_write(MC417_RWD, regval);
+
+	/* Wait for the trans to complete (MC417_MIRDY asserted). */
+	retval = mc417_wait_ready(dev);
+
+	/* switch the DAT0-7 GPIO[10:3] to input mode */
+	cx_write(MC417_OEN, MC417_MIRDY | MC417_MIDATA);
+
+	/* Read data byte 0 */
+	regval = MC417_MIRD | MC417_MIRDY | MCI_REGISTER_DATA_BYTE0;
+	cx_write(MC417_RWD, regval);
+
+	/* Transition RD to effect read transaction across bus.
+	 * Transition 0x5000 -> 0x9000 correct (RD/RDY -> WR/RDY)?
+	 * Should it be 0x9000 -> 0xF000 (also why is RDY being set, its
+	 * input only...)
+	 */
+	regval = MC417_MIWR | MC417_MIRDY | MCI_REGISTER_DATA_BYTE0;
+	cx_write(MC417_RWD, regval);
+
+	/* Collect byte */
+	tempval = cx_read(MC417_RWD);
+	dataval = tempval & 0x000000FF;
+
+	/* Bring CS and RD high. */
+	regval = MC417_MIWR | MC417_MIRD | MC417_MICS | MC417_MIRDY;
+	cx_write(MC417_RWD, regval);
+
+	/* Read data byte 1 */
+	regval = MC417_MIRD | MC417_MIRDY | MCI_REGISTER_DATA_BYTE1;
+	cx_write(MC417_RWD, regval);
+	regval = MC417_MIWR | MC417_MIRDY | MCI_REGISTER_DATA_BYTE1;
+	cx_write(MC417_RWD, regval);
+	tempval = cx_read(MC417_RWD);
+	dataval |= ((tempval & 0x000000FF) << 8);
+	regval = MC417_MIWR | MC417_MIRD | MC417_MICS | MC417_MIRDY;
+	cx_write(MC417_RWD, regval);
+
+	/* Read data byte 2 */
+	regval = MC417_MIRD | MC417_MIRDY | MCI_REGISTER_DATA_BYTE2;
+	cx_write(MC417_RWD, regval);
+	regval = MC417_MIWR | MC417_MIRDY | MCI_REGISTER_DATA_BYTE2;
+	cx_write(MC417_RWD, regval);
+	tempval = cx_read(MC417_RWD);
+	dataval |= ((tempval & 0x000000FF) << 16);
+	regval = MC417_MIWR | MC417_MIRD | MC417_MICS | MC417_MIRDY;
+	cx_write(MC417_RWD, regval);
+
+	/* Read data byte 3 */
+	regval = MC417_MIRD | MC417_MIRDY | MCI_REGISTER_DATA_BYTE3;
+	cx_write(MC417_RWD, regval);
+	regval = MC417_MIWR | MC417_MIRDY | MCI_REGISTER_DATA_BYTE3;
+	cx_write(MC417_RWD, regval);
+	tempval = cx_read(MC417_RWD);
+	dataval |= ((tempval & 0x000000FF) << 24);
+	regval = MC417_MIWR | MC417_MIRD | MC417_MICS | MC417_MIRDY;
+	cx_write(MC417_RWD, regval);
+
+	*value  = dataval;
+
+	return retval;
+}
+
+int mc417_memory_write(struct cx23885_dev *dev, u32 address, u32 value)
+{
+	u32 regval;
+
+	/* Enable MC417 GPIO outputs except for MC417_MIRDY,
+	 * which is an input.
+	 */
+	cx_write(MC417_OEN, MC417_MIRDY);
+
+	/* Write data byte 0 */
+	regval = MC417_MIRD | MC417_MIRDY | MCI_MEMORY_DATA_BYTE0 |
+		(value & 0x000000FF);
+	cx_write(MC417_RWD, regval);
+
+	/* Transition CS/WR to effect write transaction across bus. */
+	regval |= MC417_MICS | MC417_MIWR;
+	cx_write(MC417_RWD, regval);
+
+	/* Write data byte 1 */
+	regval = MC417_MIRD | MC417_MIRDY | MCI_MEMORY_DATA_BYTE1 |
+		((value >> 8) & 0x000000FF);
+	cx_write(MC417_RWD, regval);
+	regval |= MC417_MICS | MC417_MIWR;
+	cx_write(MC417_RWD, regval);
+
+	/* Write data byte 2 */
+	regval = MC417_MIRD | MC417_MIRDY | MCI_MEMORY_DATA_BYTE2 |
+		((value >> 16) & 0x000000FF);
+	cx_write(MC417_RWD, regval);
+	regval |= MC417_MICS | MC417_MIWR;
+	cx_write(MC417_RWD, regval);
+
+	/* Write data byte 3 */
+	regval = MC417_MIRD | MC417_MIRDY | MCI_MEMORY_DATA_BYTE3 |
+		((value >> 24) & 0x000000FF);
+	cx_write(MC417_RWD, regval);
+	regval |= MC417_MICS | MC417_MIWR;
+	cx_write(MC417_RWD, regval);
+
+	/* Write address byte 2 */
+	regval = MC417_MIRD | MC417_MIRDY | MCI_MEMORY_ADDRESS_BYTE2 |
+		MCI_MODE_MEMORY_WRITE | ((address >> 16) & 0x3F);
+	cx_write(MC417_RWD, regval);
+	regval |= MC417_MICS | MC417_MIWR;
+	cx_write(MC417_RWD, regval);
+
+	/* Write address byte 1 */
+	regval = MC417_MIRD | MC417_MIRDY | MCI_MEMORY_ADDRESS_BYTE1 |
+		((address >> 8) & 0xFF);
+	cx_write(MC417_RWD, regval);
+	regval |= MC417_MICS | MC417_MIWR;
+	cx_write(MC417_RWD, regval);
+
+	/* Write address byte 0 */
+	regval = MC417_MIRD | MC417_MIRDY | MCI_MEMORY_ADDRESS_BYTE0 |
+		(address & 0xFF);
+	cx_write(MC417_RWD, regval);
+	regval |= MC417_MICS | MC417_MIWR;
+	cx_write(MC417_RWD, regval);
+
+	/* Wait for the trans to complete (MC417_MIRDY asserted). */
+	return mc417_wait_ready(dev);
+}
+
+int mc417_memory_read(struct cx23885_dev *dev, u32 address, u32 *value)
+{
+	int retval;
+	u32 regval;
+	u32 tempval;
+	u32 dataval;
+
+	/* Enable MC417 GPIO outputs except for MC417_MIRDY,
+	 * which is an input.
+	 */
+	cx_write(MC417_OEN, MC417_MIRDY);
+
+	/* Write address byte 2 */
+	regval = MC417_MIRD | MC417_MIRDY | MCI_MEMORY_ADDRESS_BYTE2 |
+		MCI_MODE_MEMORY_READ | ((address >> 16) & 0x3F);
+	cx_write(MC417_RWD, regval);
+	regval |= MC417_MICS | MC417_MIWR;
+	cx_write(MC417_RWD, regval);
+
+	/* Write address byte 1 */
+	regval = MC417_MIRD | MC417_MIRDY | MCI_MEMORY_ADDRESS_BYTE1 |
+		((address >> 8) & 0xFF);
+	cx_write(MC417_RWD, regval);
+	regval |= MC417_MICS | MC417_MIWR;
+	cx_write(MC417_RWD, regval);
+
+	/* Write address byte 0 */
+	regval = MC417_MIRD | MC417_MIRDY | MCI_MEMORY_ADDRESS_BYTE0 |
+		(address & 0xFF);
+	cx_write(MC417_RWD, regval);
+	regval |= MC417_MICS | MC417_MIWR;
+	cx_write(MC417_RWD, regval);
+
+	/* Wait for the trans to complete (MC417_MIRDY asserted). */
+	retval = mc417_wait_ready(dev);
+
+	/* switch the DAT0-7 GPIO[10:3] to input mode */
+	cx_write(MC417_OEN, MC417_MIRDY | MC417_MIDATA);
+
+	/* Read data byte 3 */
+	regval = MC417_MIRD | MC417_MIRDY | MCI_MEMORY_DATA_BYTE3;
+	cx_write(MC417_RWD, regval);
+
+	/* Transition RD to effect read transaction across bus. */
+	regval = MC417_MIWR | MC417_MIRDY | MCI_MEMORY_DATA_BYTE3;
+	cx_write(MC417_RWD, regval);
+
+	/* Collect byte */
+	tempval = cx_read(MC417_RWD);
+	dataval = ((tempval & 0x000000FF) << 24);
+
+	/* Bring CS and RD high. */
+	regval = MC417_MIWR | MC417_MIRD | MC417_MICS | MC417_MIRDY;
+	cx_write(MC417_RWD, regval);
+
+	/* Read data byte 2 */
+	regval = MC417_MIRD | MC417_MIRDY | MCI_MEMORY_DATA_BYTE2;
+	cx_write(MC417_RWD, regval);
+	regval = MC417_MIWR | MC417_MIRDY | MCI_MEMORY_DATA_BYTE2;
+	cx_write(MC417_RWD, regval);
+	tempval = cx_read(MC417_RWD);
+	dataval |= ((tempval & 0x000000FF) << 16);
+	regval = MC417_MIWR | MC417_MIRD | MC417_MICS | MC417_MIRDY;
+	cx_write(MC417_RWD, regval);
+
+	/* Read data byte 1 */
+	regval = MC417_MIRD | MC417_MIRDY | MCI_MEMORY_DATA_BYTE1;
+	cx_write(MC417_RWD, regval);
+	regval = MC417_MIWR | MC417_MIRDY | MCI_MEMORY_DATA_BYTE1;
+	cx_write(MC417_RWD, regval);
+	tempval = cx_read(MC417_RWD);
+	dataval |= ((tempval & 0x000000FF) << 8);
+	regval = MC417_MIWR | MC417_MIRD | MC417_MICS | MC417_MIRDY;
+	cx_write(MC417_RWD, regval);
+
+	/* Read data byte 0 */
+	regval = MC417_MIRD | MC417_MIRDY | MCI_MEMORY_DATA_BYTE0;
+	cx_write(MC417_RWD, regval);
+	regval = MC417_MIWR | MC417_MIRDY | MCI_MEMORY_DATA_BYTE0;
+	cx_write(MC417_RWD, regval);
+	tempval = cx_read(MC417_RWD);
+	dataval |= (tempval & 0x000000FF);
+	regval = MC417_MIWR | MC417_MIRD | MC417_MICS | MC417_MIRDY;
+	cx_write(MC417_RWD, regval);
+
+	*value  = dataval;
+
+	return retval;
+}
+
+void mc417_gpio_set(struct cx23885_dev *dev, u32 mask)
+{
+	u32 val;
+
+	/* Set the gpio value */
+	mc417_register_read(dev, 0x900C, &val);
+	val |= (mask & 0x000ffff);
+	mc417_register_write(dev, 0x900C, val);
+}
+
+void mc417_gpio_clear(struct cx23885_dev *dev, u32 mask)
+{
+	u32 val;
+
+	/* Clear the gpio value */
+	mc417_register_read(dev, 0x900C, &val);
+	val &= ~(mask & 0x0000ffff);
+	mc417_register_write(dev, 0x900C, val);
+}
+
+void mc417_gpio_enable(struct cx23885_dev *dev, u32 mask, int asoutput)
+{
+	u32 val;
+
+	/* Enable GPIO direction bits */
+	mc417_register_read(dev, 0x9020, &val);
+	if (asoutput)
+		val |= (mask & 0x0000ffff);
+	else
+		val &= ~(mask & 0x0000ffff);
+
+	mc417_register_write(dev, 0x9020, val);
+}
+/* ------------------------------------------------------------------ */
+
+/* MPEG encoder API */
+static char *cmd_to_str(int cmd)
+{
+	switch (cmd) {
+	case CX2341X_ENC_PING_FW:
+		return  "PING_FW";
+	case CX2341X_ENC_START_CAPTURE:
+		return  "START_CAPTURE";
+	case CX2341X_ENC_STOP_CAPTURE:
+		return  "STOP_CAPTURE";
+	case CX2341X_ENC_SET_AUDIO_ID:
+		return  "SET_AUDIO_ID";
+	case CX2341X_ENC_SET_VIDEO_ID:
+		return  "SET_VIDEO_ID";
+	case CX2341X_ENC_SET_PCR_ID:
+		return  "SET_PCR_ID";
+	case CX2341X_ENC_SET_FRAME_RATE:
+		return  "SET_FRAME_RATE";
+	case CX2341X_ENC_SET_FRAME_SIZE:
+		return  "SET_FRAME_SIZE";
+	case CX2341X_ENC_SET_BIT_RATE:
+		return  "SET_BIT_RATE";
+	case CX2341X_ENC_SET_GOP_PROPERTIES:
+		return  "SET_GOP_PROPERTIES";
+	case CX2341X_ENC_SET_ASPECT_RATIO:
+		return  "SET_ASPECT_RATIO";
+	case CX2341X_ENC_SET_DNR_FILTER_MODE:
+		return  "SET_DNR_FILTER_MODE";
+	case CX2341X_ENC_SET_DNR_FILTER_PROPS:
+		return  "SET_DNR_FILTER_PROPS";
+	case CX2341X_ENC_SET_CORING_LEVELS:
+		return  "SET_CORING_LEVELS";
+	case CX2341X_ENC_SET_SPATIAL_FILTER_TYPE:
+		return  "SET_SPATIAL_FILTER_TYPE";
+	case CX2341X_ENC_SET_VBI_LINE:
+		return  "SET_VBI_LINE";
+	case CX2341X_ENC_SET_STREAM_TYPE:
+		return  "SET_STREAM_TYPE";
+	case CX2341X_ENC_SET_OUTPUT_PORT:
+		return  "SET_OUTPUT_PORT";
+	case CX2341X_ENC_SET_AUDIO_PROPERTIES:
+		return  "SET_AUDIO_PROPERTIES";
+	case CX2341X_ENC_HALT_FW:
+		return  "HALT_FW";
+	case CX2341X_ENC_GET_VERSION:
+		return  "GET_VERSION";
+	case CX2341X_ENC_SET_GOP_CLOSURE:
+		return  "SET_GOP_CLOSURE";
+	case CX2341X_ENC_GET_SEQ_END:
+		return  "GET_SEQ_END";
+	case CX2341X_ENC_SET_PGM_INDEX_INFO:
+		return  "SET_PGM_INDEX_INFO";
+	case CX2341X_ENC_SET_VBI_CONFIG:
+		return  "SET_VBI_CONFIG";
+	case CX2341X_ENC_SET_DMA_BLOCK_SIZE:
+		return  "SET_DMA_BLOCK_SIZE";
+	case CX2341X_ENC_GET_PREV_DMA_INFO_MB_10:
+		return  "GET_PREV_DMA_INFO_MB_10";
+	case CX2341X_ENC_GET_PREV_DMA_INFO_MB_9:
+		return  "GET_PREV_DMA_INFO_MB_9";
+	case CX2341X_ENC_SCHED_DMA_TO_HOST:
+		return  "SCHED_DMA_TO_HOST";
+	case CX2341X_ENC_INITIALIZE_INPUT:
+		return  "INITIALIZE_INPUT";
+	case CX2341X_ENC_SET_FRAME_DROP_RATE:
+		return  "SET_FRAME_DROP_RATE";
+	case CX2341X_ENC_PAUSE_ENCODER:
+		return  "PAUSE_ENCODER";
+	case CX2341X_ENC_REFRESH_INPUT:
+		return  "REFRESH_INPUT";
+	case CX2341X_ENC_SET_COPYRIGHT:
+		return  "SET_COPYRIGHT";
+	case CX2341X_ENC_SET_EVENT_NOTIFICATION:
+		return  "SET_EVENT_NOTIFICATION";
+	case CX2341X_ENC_SET_NUM_VSYNC_LINES:
+		return  "SET_NUM_VSYNC_LINES";
+	case CX2341X_ENC_SET_PLACEHOLDER:
+		return  "SET_PLACEHOLDER";
+	case CX2341X_ENC_MUTE_VIDEO:
+		return  "MUTE_VIDEO";
+	case CX2341X_ENC_MUTE_AUDIO:
+		return  "MUTE_AUDIO";
+	case CX2341X_ENC_MISC:
+		return  "MISC";
+	default:
+		return "UNKNOWN";
+	}
+}
+
+static int cx23885_mbox_func(void *priv,
+			     u32 command,
+			     int in,
+			     int out,
+			     u32 data[CX2341X_MBOX_MAX_DATA])
+{
+	struct cx23885_dev *dev = priv;
+	unsigned long timeout;
+	u32 value, flag, retval = 0;
+	int i;
+
+	dprintk(3, "%s: command(0x%X) = %s\n", __func__, command,
+		cmd_to_str(command));
+
+	/* this may not be 100% safe if we can't read any memory location
+	   without side effects */
+	mc417_memory_read(dev, dev->cx23417_mailbox - 4, &value);
+	if (value != 0x12345678) {
+		pr_err("Firmware and/or mailbox pointer not initialized or corrupted, signature = 0x%x, cmd = %s\n",
+			value, cmd_to_str(command));
+		return -1;
+	}
+
+	/* This read looks at 32 bits, but flag is only 8 bits.
+	 * Seems we also bail if CMD or TIMEOUT bytes are set???
+	 */
+	mc417_memory_read(dev, dev->cx23417_mailbox, &flag);
+	if (flag) {
+		pr_err("ERROR: Mailbox appears to be in use (%x), cmd = %s\n",
+		       flag, cmd_to_str(command));
+		return -1;
+	}
+
+	flag |= 1; /* tell 'em we're working on it */
+	mc417_memory_write(dev, dev->cx23417_mailbox, flag);
+
+	/* write command + args + fill remaining with zeros */
+	/* command code */
+	mc417_memory_write(dev, dev->cx23417_mailbox + 1, command);
+	mc417_memory_write(dev, dev->cx23417_mailbox + 3,
+		IVTV_API_STD_TIMEOUT); /* timeout */
+	for (i = 0; i < in; i++) {
+		mc417_memory_write(dev, dev->cx23417_mailbox + 4 + i, data[i]);
+		dprintk(3, "API Input %d = %d\n", i, data[i]);
+	}
+	for (; i < CX2341X_MBOX_MAX_DATA; i++)
+		mc417_memory_write(dev, dev->cx23417_mailbox + 4 + i, 0);
+
+	flag |= 3; /* tell 'em we're done writing */
+	mc417_memory_write(dev, dev->cx23417_mailbox, flag);
+
+	/* wait for firmware to handle the API command */
+	timeout = jiffies + msecs_to_jiffies(10);
+	for (;;) {
+		mc417_memory_read(dev, dev->cx23417_mailbox, &flag);
+		if (0 != (flag & 4))
+			break;
+		if (time_after(jiffies, timeout)) {
+			pr_err("ERROR: API Mailbox timeout\n");
+			return -1;
+		}
+		udelay(10);
+	}
+
+	/* read output values */
+	for (i = 0; i < out; i++) {
+		mc417_memory_read(dev, dev->cx23417_mailbox + 4 + i, data + i);
+		dprintk(3, "API Output %d = %d\n", i, data[i]);
+	}
+
+	mc417_memory_read(dev, dev->cx23417_mailbox + 2, &retval);
+	dprintk(3, "API result = %d\n", retval);
+
+	flag = 0;
+	mc417_memory_write(dev, dev->cx23417_mailbox, flag);
+
+	return retval;
+}
+
+/* We don't need to call the API often, so using just one
+ * mailbox will probably suffice
+ */
+static int cx23885_api_cmd(struct cx23885_dev *dev,
+			   u32 command,
+			   u32 inputcnt,
+			   u32 outputcnt,
+			   ...)
+{
+	u32 data[CX2341X_MBOX_MAX_DATA];
+	va_list vargs;
+	int i, err;
+
+	dprintk(3, "%s() cmds = 0x%08x\n", __func__, command);
+
+	va_start(vargs, outputcnt);
+	for (i = 0; i < inputcnt; i++)
+		data[i] = va_arg(vargs, int);
+
+	err = cx23885_mbox_func(dev, command, inputcnt, outputcnt, data);
+	for (i = 0; i < outputcnt; i++) {
+		int *vptr = va_arg(vargs, int *);
+		*vptr = data[i];
+	}
+	va_end(vargs);
+
+	return err;
+}
+
+static int cx23885_api_func(void *priv, u32 cmd, int in, int out, u32 data[CX2341X_MBOX_MAX_DATA])
+{
+	return cx23885_mbox_func(priv, cmd, in, out, data);
+}
+
+static int cx23885_find_mailbox(struct cx23885_dev *dev)
+{
+	u32 signature[4] = {
+		0x12345678, 0x34567812, 0x56781234, 0x78123456
+	};
+	int signaturecnt = 0;
+	u32 value;
+	int i;
+
+	dprintk(2, "%s()\n", __func__);
+
+	for (i = 0; i < CX23885_FIRM_IMAGE_SIZE; i++) {
+		mc417_memory_read(dev, i, &value);
+		if (value == signature[signaturecnt])
+			signaturecnt++;
+		else
+			signaturecnt = 0;
+		if (4 == signaturecnt) {
+			dprintk(1, "Mailbox signature found at 0x%x\n", i+1);
+			return i+1;
+		}
+	}
+	pr_err("Mailbox signature values not found!\n");
+	return -1;
+}
+
+static int cx23885_load_firmware(struct cx23885_dev *dev)
+{
+	static const unsigned char magic[8] = {
+		0xa7, 0x0d, 0x00, 0x00, 0x66, 0xbb, 0x55, 0xaa
+	};
+	const struct firmware *firmware;
+	int i, retval = 0;
+	u32 value = 0;
+	u32 gpio_output = 0;
+	u32 gpio_value;
+	u32 checksum = 0;
+	u32 *dataptr;
+
+	dprintk(2, "%s()\n", __func__);
+
+	/* Save GPIO settings before reset of APU */
+	retval |= mc417_memory_read(dev, 0x9020, &gpio_output);
+	retval |= mc417_memory_read(dev, 0x900C, &gpio_value);
+
+	retval  = mc417_register_write(dev,
+		IVTV_REG_VPU, 0xFFFFFFED);
+	retval |= mc417_register_write(dev,
+		IVTV_REG_HW_BLOCKS, IVTV_CMD_HW_BLOCKS_RST);
+	retval |= mc417_register_write(dev,
+		IVTV_REG_ENC_SDRAM_REFRESH, 0x80000800);
+	retval |= mc417_register_write(dev,
+		IVTV_REG_ENC_SDRAM_PRECHARGE, 0x1A);
+	retval |= mc417_register_write(dev,
+		IVTV_REG_APU, 0);
+
+	if (retval != 0) {
+		pr_err("%s: Error with mc417_register_write\n",
+			__func__);
+		return -1;
+	}
+
+	retval = request_firmware(&firmware, CX23885_FIRM_IMAGE_NAME,
+				  &dev->pci->dev);
+
+	if (retval != 0) {
+		pr_err("ERROR: Hotplug firmware request failed (%s).\n",
+		       CX23885_FIRM_IMAGE_NAME);
+		pr_err("Please fix your hotplug setup, the board will not work without firmware loaded!\n");
+		return -1;
+	}
+
+	if (firmware->size != CX23885_FIRM_IMAGE_SIZE) {
+		pr_err("ERROR: Firmware size mismatch (have %zu, expected %d)\n",
+		       firmware->size, CX23885_FIRM_IMAGE_SIZE);
+		release_firmware(firmware);
+		return -1;
+	}
+
+	if (0 != memcmp(firmware->data, magic, 8)) {
+		pr_err("ERROR: Firmware magic mismatch, wrong file?\n");
+		release_firmware(firmware);
+		return -1;
+	}
+
+	/* transfer to the chip */
+	dprintk(2, "Loading firmware ...\n");
+	dataptr = (u32 *)firmware->data;
+	for (i = 0; i < (firmware->size >> 2); i++) {
+		value = *dataptr;
+		checksum += ~value;
+		if (mc417_memory_write(dev, i, value) != 0) {
+			pr_err("ERROR: Loading firmware failed!\n");
+			release_firmware(firmware);
+			return -1;
+		}
+		dataptr++;
+	}
+
+	/* read back to verify with the checksum */
+	dprintk(1, "Verifying firmware ...\n");
+	for (i--; i >= 0; i--) {
+		if (mc417_memory_read(dev, i, &value) != 0) {
+			pr_err("ERROR: Reading firmware failed!\n");
+			release_firmware(firmware);
+			return -1;
+		}
+		checksum -= ~value;
+	}
+	if (checksum) {
+		pr_err("ERROR: Firmware load failed (checksum mismatch).\n");
+		release_firmware(firmware);
+		return -1;
+	}
+	release_firmware(firmware);
+	dprintk(1, "Firmware upload successful.\n");
+
+	retval |= mc417_register_write(dev, IVTV_REG_HW_BLOCKS,
+		IVTV_CMD_HW_BLOCKS_RST);
+
+	/* F/W power up disturbs the GPIOs, restore state */
+	retval |= mc417_register_write(dev, 0x9020, gpio_output);
+	retval |= mc417_register_write(dev, 0x900C, gpio_value);
+
+	retval |= mc417_register_read(dev, IVTV_REG_VPU, &value);
+	retval |= mc417_register_write(dev, IVTV_REG_VPU, value & 0xFFFFFFE8);
+
+	/* Hardcoded GPIO's here */
+	retval |= mc417_register_write(dev, 0x9020, 0x4000);
+	retval |= mc417_register_write(dev, 0x900C, 0x4000);
+
+	mc417_register_read(dev, 0x9020, &gpio_output);
+	mc417_register_read(dev, 0x900C, &gpio_value);
+
+	if (retval < 0)
+		pr_err("%s: Error with mc417_register_write\n",
+			__func__);
+	return 0;
+}
+
+void cx23885_417_check_encoder(struct cx23885_dev *dev)
+{
+	u32 status, seq;
+
+	status = seq = 0;
+	cx23885_api_cmd(dev, CX2341X_ENC_GET_SEQ_END, 0, 2, &status, &seq);
+	dprintk(1, "%s() status = %d, seq = %d\n", __func__, status, seq);
+}
+
+static void cx23885_codec_settings(struct cx23885_dev *dev)
+{
+	dprintk(1, "%s()\n", __func__);
+
+	/* Dynamically change the height based on video standard */
+	if (dev->encodernorm.id & V4L2_STD_525_60)
+		dev->ts1.height = 480;
+	else
+		dev->ts1.height = 576;
+
+	/* assign frame size */
+	cx23885_api_cmd(dev, CX2341X_ENC_SET_FRAME_SIZE, 2, 0,
+				dev->ts1.height, dev->ts1.width);
+
+	dev->cxhdl.width = dev->ts1.width;
+	dev->cxhdl.height = dev->ts1.height;
+	dev->cxhdl.is_50hz =
+		(dev->encodernorm.id & V4L2_STD_625_50) != 0;
+
+	cx2341x_handler_setup(&dev->cxhdl);
+
+	cx23885_api_cmd(dev, CX2341X_ENC_MISC, 2, 0, 3, 1);
+	cx23885_api_cmd(dev, CX2341X_ENC_MISC, 2, 0, 4, 1);
+}
+
+static int cx23885_initialize_codec(struct cx23885_dev *dev, int startencoder)
+{
+	int version;
+	int retval;
+	u32 i, data[7];
+
+	dprintk(1, "%s()\n", __func__);
+
+	retval = cx23885_api_cmd(dev, CX2341X_ENC_PING_FW, 0, 0); /* ping */
+	if (retval < 0) {
+		dprintk(2, "%s() PING OK\n", __func__);
+		retval = cx23885_load_firmware(dev);
+		if (retval < 0) {
+			pr_err("%s() f/w load failed\n", __func__);
+			return retval;
+		}
+		retval = cx23885_find_mailbox(dev);
+		if (retval < 0) {
+			pr_err("%s() mailbox < 0, error\n",
+				__func__);
+			return -1;
+		}
+		dev->cx23417_mailbox = retval;
+		retval = cx23885_api_cmd(dev, CX2341X_ENC_PING_FW, 0, 0);
+		if (retval < 0) {
+			pr_err("ERROR: cx23417 firmware ping failed!\n");
+			return -1;
+		}
+		retval = cx23885_api_cmd(dev, CX2341X_ENC_GET_VERSION, 0, 1,
+			&version);
+		if (retval < 0) {
+			pr_err("ERROR: cx23417 firmware get encoder :version failed!\n");
+			return -1;
+		}
+		dprintk(1, "cx23417 firmware version is 0x%08x\n", version);
+		msleep(200);
+	}
+
+	cx23885_codec_settings(dev);
+	msleep(60);
+
+	cx23885_api_cmd(dev, CX2341X_ENC_SET_NUM_VSYNC_LINES, 2, 0,
+		CX23885_FIELD1_SAA7115, CX23885_FIELD2_SAA7115);
+	cx23885_api_cmd(dev, CX2341X_ENC_SET_PLACEHOLDER, 12, 0,
+		CX23885_CUSTOM_EXTENSION_USR_DATA, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+		0, 0);
+
+	/* Setup to capture VBI */
+	data[0] = 0x0001BD00;
+	data[1] = 1;          /* frames per interrupt */
+	data[2] = 4;          /* total bufs */
+	data[3] = 0x91559155; /* start codes */
+	data[4] = 0x206080C0; /* stop codes */
+	data[5] = 6;          /* lines */
+	data[6] = 64;         /* BPL */
+
+	cx23885_api_cmd(dev, CX2341X_ENC_SET_VBI_CONFIG, 7, 0, data[0], data[1],
+		data[2], data[3], data[4], data[5], da

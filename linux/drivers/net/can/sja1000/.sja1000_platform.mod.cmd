@@ -1,5 +1,1 @@
-ia/v4l2-dev.h \
-  include/linux/spi/spi.h \
-    $(wildcard include/config/SPI_SLAVE) \
-  include/linux/scatterlist.h \
-    $(wildcard include/config/NEED_SG_DMA
+cmd_drivers/net/can/sja1000/sja1000_platform.mod := { echo  drivers/net/can/sja1000/sja1000_platform.o;  echo; } > drivers/net/can/sja1000/sja1000_platform.mod

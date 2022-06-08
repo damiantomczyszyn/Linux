@@ -1,16 +1,30 @@
-ackwards for a lock dependency,
- * 	for a lock dependency A -> B, there are two lock_lists:
- *
- * 	a)	lock_list in the ->locks_after list of A, whose ->class is B and
- * 		->links_to is A. In this case, we can say the lock_list is
- * 		"A -> B" (forwards case).
- *
- * 	b)	lock_list in the ->locks_before list of B, whose ->class is A
- * 		and ->links_to is B. In this case, we can say the lock_list is
- * 		"B <- A" (bacwards case).
- *
- * 	The ->trace of both a) and b) point to the call trace where B was
- * 	acquired with A held.
- *
- * 2)	A "helper" lock_list is introduced during BFS, this lock_list doesn't
- * 	represent a cer
+*smt_mask = cpu_smt_mask(cpu);
+	struct rq *rq = cpu_rq(cpu), *core_rq = NULL;
+	unsigned long flags;
+	int t;
+
+	sched_core_lock(cpu, &flags);
+
+	/* if we're the last man standing, nothing to do */
+	if (cpumask_weight(smt_mask) == 1) {
+		WARN_ON_ONCE(rq->core != rq);
+		goto unlock;
+	}
+
+	/* if we're not the leader, nothing to do */
+	if (rq->core != rq)
+		goto unlock;
+
+	/* find a new leader */
+	for_each_cpu(t, smt_mask) {
+		if (t == cpu)
+			continue;
+		core_rq = cpu_rq(t);
+		break;
+	}
+
+	if (WARN_ON_ONCE(!core_rq)) /* impossible */
+		goto unlock;
+
+	/* copy the shared state to the new leader */
+	core_rq->core_task_seq             

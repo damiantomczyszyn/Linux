@@ -1,1286 +1,660 @@
-de/config/BPF_JIT) \
-  include/asm-generic/access_ok.h \
-    $(wildcard include/config/ALTERNATE_USER_ADDRESS_SPACE) \
-  arch/x86/include/asm/uaccess_32.h \
-  include/linux/cred.h \
-    $(wildcard include/config/DEBUG_CREDENTIALS) \
-  include/linux/key.h \
-    $(wildcard include/config/KEY_NOTIFICATIONS) \
-    $(wildcard include/config/NET) \
-  include/linux/assoc_array.h \
-    $(wildcard include/config/ASSOCIATIVE_ARRAY) \
-  include/linux/sched/user.h \
-    $(wildcard include/config/WATCH_QUEUE) \
-  include/linux/percpu_counter.h \
-  include/linux/rcu_sync.h \
-  include/linux/delayed_call.h \
-  include/linux/errseq.h \
-  include/linux/ioprio.h \
-  include/linux/sched/rt.h \
-  include/linux/iocontext.h \
-    $(wildcard include/config/BLK_ICQ) \
-  include/uapi/linux/ioprio.h \
-  include/linux/fs_types.h \
-  include/linux/mount.h \
-  include/linux/mnt_idmapping.h \
-  include/uapi/linux/fs.h \
-  include/linux/quota.h \
-    $(wildcard include/config/QUOTA_NETLINK_INTERFACE) \
-  include/uapi/linux/dqblk_xfs.h \
-  include/linux/dqblk_v1.h \
-  include/linux/dqblk_v2.h \
-  include/linux/dqblk_qtree.h \
-  include/linux/projid.h \
-  include/uapi/linux/quota.h \
-  include/linux/nfs_fs_i.h \
-  include/linux/seq_file.h \
-  include/linux/string_helpers.h \
-  include/linux/ns_common.h \
-  include/linux/nsproxy.h \
-  include/linux/user_namespace.h \
-    $(wildcard include/config/INOTIFY_USER) \
-    $(wildcard include/config/FANOTIFY) \
-    $(wildcard include/config/PERSISTENT_KEYRINGS) \
-  include/linux/kernel_stat.h \
-  include/linux/interrupt.h \
-    $(wildcard include/config/IRQ_FORCED_THREADING) \
-    $(wildcard include/config/GENERIC_IRQ_PROBE) \
-    $(wildcard include/config/IRQ_TIMINGS) \
-  include/linux/irqreturn.h \
-  include/linux/irqnr.h \
-  include/uapi/linux/irqnr.h \
-  include/linux/hardirq.h \
-  include/linux/context_tracking_state.h \
-    $(wildcard include/config/CONTEXT_TRACKING) \
-  include/linux/ftrace_irq.h \
-    $(wildcard include/config/HWLAT_TRACER) \
-    $(wildcard include/config/OSNOISE_TRACER) \
-  include/linux/vtime.h \
-    $(wildcard include/config/VIRT_CPU_ACCOUNTING) \
-    $(wildcard include/config/IRQ_TIME_ACCOUNTING) \
-  arch/x86/include/asm/hardirq.h \
-    $(wildcard include/config/KVM_INTEL) \
-    $(wildcard include/config/X86_THERMAL_VECTOR) \
-    $(wildcard include/config/X86_MCE_THRESHOLD) \
-    $(wildcard include/config/X86_MCE_AMD) \
-    $(wildcard include/config/X86_HV_CALLBACK_VECTOR) \
-  arch/x86/include/asm/irq.h \
-  arch/x86/include/asm/sections.h \
-  include/asm-generic/sections.h \
-    $(wildcard include/config/HAVE_FUNCTION_DESCRIPTORS) \
-  include/linux/cgroup-defs.h \
-    $(wildcard include/config/CGROUP_NET_CLASSID) \
-    $(wildcard include/config/CGROUP_NET_PRIO) \
-  include/linux/u64_stats_sync.h \
-  include/linux/bpf-cgroup-defs.h \
-  include/linux/psi_types.h \
-  include/linux/kthread.h \
-  include/linux/cgroup_subsys.h \
-    $(wildcard include/config/CGROUP_DEVICE) \
-    $(wildcard include/config/CGROUP_FREEZER) \
-    $(wildcard include/config/CGROUP_PERF) \
-    $(wildcard include/config/CGROUP_HUGETLB) \
-    $(wildcard include/config/CGROUP_PIDS) \
-    $(wildcard include/config/CGROUP_RDMA) \
-    $(wildcard include/config/CGROUP_MISC) \
-    $(wildcard include/config/CGROUP_DEBUG) \
-  include/linux/vm_event_item.h \
-    $(wildcard include/config/HAVE_ARCH_TRANSPARENT_HUGEPAGE_PUD) \
-    $(wildcard include/config/MEMORY_BALLOON) \
-    $(wildcard include/config/BALLOON_COMPACTION) \
-    $(wildcard include/config/DEBUG_TLBFLUSH) \
-    $(wildcard include/config/DEBUG_VM_VMACACHE) \
-  include/linux/page_counter.h \
-  include/linux/vmpressure.h \
-  include/linux/eventfd.h \
-  include/linux/mm.h \
-    $(wildcard include/config/HAVE_ARCH_MMAP_RND_BITS) \
-    $(wildcard include/config/HAVE_ARCH_MMAP_RND_COMPAT_BITS) \
-    $(wildcard include/config/ARCH_USES_HIGH_VMA_FLAGS) \
-    $(wildcard include/config/ARCH_HAS_PKEYS) \
-    $(wildcard include/config/PPC) \
-    $(wildcard include/config/PARISC) \
-    $(wildcard include/config/SPARC64) \
-    $(wildcard include/config/ARM64_MTE) \
-    $(wildcard include/config/HAVE_ARCH_USERFAULTFD_MINOR) \
-    $(wildcard include/config/SHMEM) \
-    $(wildcard include/config/ARCH_HAS_PTE_SPECIAL) \
-    $(wildcard include/config/ARCH_HAS_PTE_DEVMAP) \
-    $(wildcard include/config/DEBUG_VM_RB) \
-    $(wildcard include/config/PAGE_POISONING) \
-    $(wildcard include/config/INIT_ON_ALLOC_DEFAULT_ON) \
-    $(wildcard include/config/INIT_ON_FREE_DEFAULT_ON) \
-    $(wildcard include/config/DEBUG_PAGEALLOC) \
-    $(wildcard include/config/HUGETLBFS) \
-    $(wildcard include/config/MAPPING_DIRTY_HELPERS) \
-    $(wildcard include/config/ANON_VMA_NAME) \
-  include/linux/mmap_lock.h \
-  include/linux/page_ext.h \
-  include/linux/stacktrace.h \
-    $(wildcard include/config/ARCH_STACKWALK) \
-    $(wildcard include/config/STACKTRACE) \
-    $(wildcard include/config/HAVE_RELIABLE_STACKTRACE) \
-  include/linux/stackdepot.h \
-    $(wildcard include/config/STACKDEPOT_ALWAYS_INIT) \
-  include/linux/page_ref.h \
-    $(wildcard include/config/DEBUG_PAGE_REF) \
-  include/linux/sizes.h \
-  include/linux/pgtable.h \
-    $(wildcard include/config/HIGHPTE) \
-    $(wildcard include/config/GUP_GET_PTE_LOW_HIGH) \
-    $(wildcard include/config/HAVE_ARCH_SOFT_DIRTY) \
-    $(wildcard include/config/ARCH_ENABLE_THP_MIGRATION) \
-    $(wildcard include/config/X86_ESPFIX64) \
-  arch/x86/include/asm/pgtable.h \
-    $(wildcard include/config/DEBUG_WX) \
-    $(wildcard include/config/PAGE_TABLE_CHECK) \
-  arch/x86/include/asm/pkru.h \
-  arch/x86/include/asm/fpu/api.h \
-    $(wildcard include/config/X86_DEBUG_FPU) \
-  arch/x86/include/asm/coco.h \
-  include/asm-generic/pgtable_uffd.h \
-  include/linux/page_table_check.h \
-  arch/x86/include/asm/pgtable_32.h \
-  arch/x86/include/asm/pgtable-3level.h \
-  arch/x86/include/asm/pgtable-invert.h \
-  include/linux/huge_mm.h \
-  include/linux/sched/coredump.h \
-    $(wildcard include/config/CORE_DUMP_DEFAULT_ELF_HEADERS) \
-  include/linux/vmstat.h \
-    $(wildcard include/config/VM_EVENT_COUNTERS) \
-  include/linux/writeback.h \
-  include/linux/flex_proportions.h \
-  include/linux/backing-dev-defs.h \
-    $(wildcard include/config/DEBUG_FS) \
-  include/linux/blk_types.h \
-    $(wildcard include/config/FAIL_MAKE_REQUEST) \
-    $(wildcard include/config/BLK_CGROUP_IOCOST) \
-    $(wildcard include/config/BLK_INLINE_ENCRYPTION) \
-    $(wildcard include/config/BLK_DEV_INTEGRITY) \
-  include/linux/bvec.h \
-  include/linux/highmem.h \
-  include/linux/cacheflush.h \
-  arch/x86/include/asm/cacheflush.h \
-  include/asm-generic/cacheflush.h \
-  include/linux/highmem-internal.h \
-  arch/x86/include/asm/highmem.h \
-  arch/x86/include/asm/tlbflush.h \
-  arch/x86/include/asm/invpcid.h \
-  arch/x86/include/asm/pti.h \
-  include/linux/bio.h \
-  include/linux/mempool.h \
-  include/linux/uio.h \
-    $(wildcard include/config/ARCH_HAS_UACCESS_FLUSHCACHE) \
-  include/uapi/linux/uio.h \
-  include/linux/node.h \
-    $(wildcard include/config/HMEM_REPORTING) \
-  include/linux/pagemap.h \
-  include/linux/hugetlb_inline.h \
-  include/uapi/linux/mempolicy.h \
-  include/linux/freezer.h \
-  include/uapi/linux/i2c.h \
-  include/linux/videodev2.h \
-  include/uapi/linux/videodev2.h \
-  include/uapi/linux/v4l2-common.h \
-  include/uapi/linux/v4l2-controls.h \
-  include/media/v4l2-device.h \
-    $(wildcard include/config/VIDEO_V4L2_SUBDEV_API) \
-  include/media/media-device.h \
-    $(wildcard include/config/MEDIA_CONTROLLER) \
-  include/media/media-devnode.h \
-  include/linux/poll.h \
-  include/uapi/linux/poll.h \
-  arch/x86/include/generated/uapi/asm/poll.h \
-  include/uapi/asm-generic/poll.h \
-  include/uapi/linux/eventpoll.h \
-  include/linux/cdev.h \
-  include/media/media-entity.h \
-  include/uapi/linux/media.h \
-  include/media/v4l2-subdev.h \
-  include/uapi/linux/v4l2-subdev.h \
-  include/uapi/linux/v4l2-mediabus.h \
-  include/uapi/linux/media-bus-format.h \
-  include/media/v4l2-async.h \
-  include/media/v4l2-common.h \
-    $(wildcard include/config/VIDEO_V4L2_I2C) \
-    $(wildcard include/config/SPI) \
-  include/media/v4l2-dev.h \
-  include/linux/spi/spi.h \
-    $(wildcard include/config/SPI_SLAVE) \
-  include/linux/scatterlist.h \
-    $(wildcard include/config/NEED_SG_DMA_LENGTH) \
-    $(wildcard include/config/DEBUG_SG) \
-    $(wildcard include/config/SGL_ALLOC) \
-    $(wildcard include/config/ARCH_NO_SG_CHAIN) \
-    $(wildcard include/config/SG_POOL) \
-  include/linux/gpio/consumer.h \
-    $(wildcard include/config/OF_GPIO) \
-    $(wildcard include/config/GPIO_SYSFS) \
-  include/uapi/linux/spi/spi.h \
-  include/media/v4l2-fh.h \
-  include/media/v4l2-mediabus.h \
-  include/media/i2c/upd64083.h \
+NE_MUTEX(uclamp_mutex);
 
-drivers/media/i2c/upd64083.o: $(deps_drivers/media/i2c/upd64083.o)
+/* Max allowed minimum utilization */
+unsigned int sysctl_sched_uclamp_util_min = SCHED_CAPACITY_SCALE;
 
-$(deps_drivers/media/i2c/upd64083.o):
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    cmd_kernel/bpf/cgroup.o := gcc -Wp,-MMD,kernel/bpf/.cgroup.o.d -nostdinc -I./arch/x86/include -I./arch/x86/include/generated  -I./include -I./arch/x86/include/uapi -I./arch/x86/include/generated/uapi -I./include/uapi -I./include/generated/uapi -include ./include/linux/compiler-version.h -include ./include/linux/kconfig.h -include ./include/linux/compiler_types.h -D__KERNEL__ -fmacro-prefix-map=./= -Wall -Wundef -Werror=strict-prototypes -Wno-trigraphs -fno-strict-aliasing -fno-common -fshort-wchar -fno-PIE -Werror=implicit-function-declaration -Werror=implicit-int -Werror=return-type -Wno-format-security -std=gnu11 -mno-sse -mno-mmx -mno-sse2 -mno-3dnow -mno-avx -fcf-protection=none -m32 -msoft-float -mregparm=3 -freg-struct-return -fno-pic -mpreferred-stack-boundary=2 -march=i686 -mtune=pentium3 -mtune=generic -Wa,-mtune=generic32 -ffreestanding -mstack-protector-guard-reg=fs -mstack-protector-guard-symbol=__stack_chk_guard -Wno-sign-compare -fno-asynchronous-unwind-tables -mindirect-branch=thunk-extern -mindirect-branch-register -fno-jump-tables -fno-delete-null-pointer-checks -Wno-frame-address -Wno-format-truncation -Wno-format-overflow -Wno-address-of-packed-member -O2 -fno-allow-store-data-races -fstack-protector-strong -Wimplicit-fallthrough=5 -Wno-main -Wno-unused-but-set-variable -Wno-unused-const-variable -fno-stack-clash-protection -pg -mrecord-mcount -mfentry -DCC_USING_FENTRY -Wdeclaration-after-statement -Wvla -Wno-pointer-sign -Wcast-function-type -Wno-stringop-truncation -Wno-stringop-overflow -Wno-restrict -Wno-maybe-uninitialized -Wno-alloc-size-larger-than -fno-strict-overflow -fno-stack-check -fconserve-stack -Werror=date-time -Werror=incompatible-pointer-types -Werror=designated-init -Wno-packed-not-aligned    -DKBUILD_MODFILE='"kernel/bpf/cgroup"' -DKBUILD_BASENAME='"cgroup"' -DKBUILD_MODNAME='"cgroup"' -D__KBUILD_MODNAME=kmod_cgroup -c -o kernel/bpf/cgroup.o kernel/bpf/cgroup.c 
-
-source_kernel/bpf/cgroup.o := kernel/bpf/cgroup.c
-
-deps_kernel/bpf/cgroup.o := \
-    $(wildcard include/config/NET) \
-    $(wildcard include/config/INET) \
-  include/linux/compiler-version.h \
-    $(wildcard include/config/CC_VERSION_TEXT) \
-  include/linux/kconfig.h \
-    $(wildcard include/config/CPU_BIG_ENDIAN) \
-    $(wildcard include/config/BOOGER) \
-    $(wildcard include/config/FOO) \
-  include/linux/compiler_types.h \
-    $(wildcard include/config/DEBUG_INFO_BTF) \
-    $(wildcard include/config/PAHOLE_HAS_BTF_TAG) \
-    $(wildcard include/config/HAVE_ARCH_COMPILER_H) \
-    $(wildcard include/config/CC_HAS_ASM_INLINE) \
-  include/linux/compiler_attributes.h \
-  include/linux/compiler-gcc.h \
-    $(wildcard include/config/RETPOLINE) \
-    $(wildcard include/config/ARCH_USE_BUILTIN_BSWAP) \
-    $(wildcard include/config/SHADOW_CALL_STACK) \
-    $(wildcard include/config/KCOV) \
-  include/linux/kernel.h \
-    $(wildcard include/config/PREEMPT_VOLUNTARY_BUILD) \
-    $(wildcard include/config/PREEMPT_DYNAMIC) \
-    $(wildcard include/config/HAVE_PREEMPT_DYNAMIC_CALL) \
-    $(wildcard include/config/HAVE_PREEMPT_DYNAMIC_KEY) \
-    $(wildcard include/config/PREEMPT_) \
-    $(wildcard include/config/DEBUG_ATOMIC_SLEEP) \
-    $(wildcard include/config/SMP) \
-    $(wildcard include/config/MMU) \
-    $(wildcard include/config/PROVE_LOCKING) \
-    $(wildcard include/config/TRACING) \
-    $(wildcard include/config/FTRACE_MCOUNT_RECORD) \
-  include/linux/stdarg.h \
-  include/linux/align.h \
-  include/linux/const.h \
-  include/vdso/const.h \
-  include/uapi/linux/const.h \
-  include/linux/limits.h \
-  include/uapi/linux/limits.h \
-  include/linux/types.h \
-    $(wildcard include/config/HAVE_UID16) \
-    $(wildcard include/config/UID16) \
-    $(wildcard include/config/ARCH_DMA_ADDR_T_64BIT) \
-    $(wildcard include/config/PHYS_ADDR_T_64BIT) \
-    $(wildcard include/config/64BIT) \
-    $(wildcard include/config/ARCH_32BIT_USTAT_F_TINODE) \
-  include/uapi/linux/types.h \
-  arch/x86/include/generated/uapi/asm/types.h \
-  include/uapi/asm-generic/types.h \
-  include/asm-generic/int-ll64.h \
-  include/uapi/asm-generic/int-ll64.h \
-  arch§ÛŒßõÂ§¹ Š“i£g‚g]®“ò3;mî¶"êğW]é.XÏ¢1Œ@ÖõêKÈwBŒh2™™š	0[ŸŒ£®—ä@ıª[Õ€{ Ø¢”—ÕxÿÑHôA•Q~rb)€Ao–ÊXš+úû–{ğP€²fÃ’—ñäq$§6dq%G4dˆãŸ)£ G
-·‹%<´nÕä9Å•òqEÔ^Ç¦AçGWØÖ-`pw·ùßÎÉ®ğvu\ç<“H‹¶´-Bç†©ÎÂ&&ÏGFFòÃ´ÓßbïZĞX²¹iA˜·œì¯tË¶B£’&$í¦l^—Ù2p³*ì*É'Lô/>‡˜\põê{î~…iû‡êá›•Äp¸×&^Ô"«Ë¦°€Sı²¢rDÀ‹®À¹’l‰ãÑÛ"¨“¯2Væ%RÂHHnGrv;éPÄ8âÀsğ3¿u[Íün05¨J¶aµR;™Œ:#w”}”ÎıùTŞ/­'ZÔvs9Tô•š¾±ôÌ=„´óO„:Àš[^$ª˜¶… ‰«Ëû®‰¤‰¬~ízê†(.°ºóV(na	›ò±´m[»w=-ã•øõ÷Ş½ûõÈÚ
-È¤@Ğ5F.”øØÚ¶QŸ:sˆ!ßæ>f¦„ö¿A;ª†i’ØÒ„ïâ]˜Z÷¾s\ÎÒ°úµ…¤'Áï Ë©iLX×M¡IKÅ	é§ ı­p“Eƒ›İsór\Õ“iªv’g×ÕzC”½zÙ a
-ªRss„äÈîG¨ì+M4HŸqWònÒ&´×Ààñ¢JFÊÿÊj©DjjÌ	pÌ¸ş7KÚ[ù´É¤!Ëõ1ò?ú×<[:Ù*^>›ú=–^rì˜8ü´®jÎ4óY–ôÄøN«•¦ãØ¼‹§:©9í­ÀRq"%£©A–‡æıãİ¼ ;Éš
-öˆy¶¿å^šº¦ªú1»ÑÆ$Î
-QnMrwÛ4–V0ãÀ¸Gú½¶œõµÎ¾•å(vJ]€â¾H”RÓƒ¹[šÑ™}Á=-h1§'´®RôÖ‹xŸ¾:ÁÛ%]ÅGn<˜[eú·‚—îÚ®^5>$Éš>Ş"´péÊ À9+çDÂÛ×2º„7|ˆü\3\ûæ?&§BC÷
-†ñ¤¼äÎÔÿ)?ÿ‚vMK‡a5Ê¤WóÚ¢WÕÿÏßõêûGV
-„¢ÌŸYm"Í†'ó”¢z÷t:¾)4÷ü$²ü,î P‘š>b—^RŒ•Ÿu‘ÜV)¾uœ:—·Gg»j­s<nt7ƒ•O­€@ÚÖ„Ó¾¼,õòõ¥Åÿ8Ta&léô£Ëkê„mè–ˆRèq?N.Åx½ÍcD8%-]ÏØ!EgXĞ_¶FÃƒŞ¶tnM
-T`~­¥oá›ƒÖÃûÂÌPb z@CuâƒGÿ*Â†g,ÆÑC¬ˆÕ h}>Xzâ2£÷ºq“U!(>®ÆlŸ3îÌÖÈØ÷
-Î¤ıÏ	jSÂÊõõ¬WÔ·ìºüy:úf{]0D•1ïÅ=½¶ßÂ·¼ã,K=óÿîuhøxÓïx&5Ñn’¬–º}I¦Œ,"A³X^C¿A!ßVÓeQp»©`Ñ!škêktl»}	é‘ñsä€âp$jD[H—]®À‚ÓH!ùµ\¯0·Û¿ˆ‚74"æ‡­—EÖÖyíİ4pèÓgs£*‡dÜ’–Â³+P·ïõw\çNe«dK½ş¡¢™»œi)N¾Átql~±÷‘8©ùòÔÏ_šd+N‘$%ı8Ì¯¼Ò<¹„Æß¦ô&Ni€L[Û°_"Âë°ò±İ¤§[s«e=ˆ2E{ CA4«X°¤ø$‹I9¼Amtˆ‘h²EêÃkÅ~>%îs•ÙéA‘èIoqÎùm‚ÇÊeõÎşF°ÔyX‰	Ÿ-u@ñ§Ì0òş”w|K`FkxœESBœ¯G}Í¸Ù¡Z,j‡ H •öÈ5.ša.-ÁEÕ’Â-Ü*l¨guy´bçèåµşeL±âÉ³ºûÉx*Š4¥:ÄÚÔGOÑìïp?ş*¤diçå«¶DÆ½ó+Âğ{µİíØƒOáã™m\NYm@+ˆ½G²ÑÏóBŠ,e½>aòÑx7¨æ|gÚ¨(ÿk<ÊE/ôÃ‹Ğæ’W6Û›¼Õq×6(Cá=¥S…<+;Åß§®o*Úf»ém²ÿÎªê¨avl&p†Ò^-Àõ?ÃO±Sf2òd]x Ğ_·
-F>%ñ®&ÌsèãÉé­•:¡F<5{,ü(ï(AælÈb›Á²$ş¬E©s”^ ÍŸóÁDBûf‘æ€y‘{é»PÜc·,|Ï–L•g5‘—6ÿ†,5š>–<³T­3Ù2•'&Z"ÉÃæ†4qı4œÒ9¹DØ©ÿÆÑ
-üÚ½uùuŸTåuñ­Ó€6o‹É¦ä˜r4A¶²)HmıÇ“»xó¡_U'h…	¦a¯†ÇœMìğ3Ÿ/m`?ŠáÊèŒñ† Æf(}'G‡\´ÜÓ°ùÚ¢7æc°ï
-ZBCÎ¿Õé+4óWSe"«ApêY€=IúTxQ®éV'}pŒñÑ¬PZ=Oçğ°!ç^h¬<¸£cˆ¾2x‘èÖA1Âˆ¢ŠI#µ7æø·5SÖÙüÏÉûç¥jæ¬ÇşÓN ÔŞÚøûh:ÉKƒU$5=ÿ9eĞ°F½Ì}|Êò8hªÏ`Å¡\~³ß¾‰ıàËÀxµöáX:;•úĞšÏ¾¨g'x“Y´Lo4§5~4†?k@D]‹ãÛô×â§¼ªÎvMİEer”	íâ%ÅîOcøªá—;kM¤`~8Ÿ6tµ¡‘?fØ+ğB¾·™eæsr»NTN¾™¼bÀxµ>°Tx×#±ÚÜ«FÆÿo ÿ6-×Õûg–›qZ‚HÄ¾YÈ@ÏvæƒŒê¼Ù°Ù4ËáGÔA©2Dš3›†µ³p.6}S_12‚ä×çæZƒÆ¦ÖÊÆO`<²>hÓÛ)ğöGT!O§Ù;ÚÆ)ğ\¨€‰åd ¶Îvb#·²ƒdP…Lí§ÁWSw‘j; h^©di ”vQYõ¤j¤Ëy™M%¨ÉòC´~N}LíGZÛAHØRĞ‰¿ÙûÅ“µwÃËèyÉm°b ±`Ÿs‰éOŞŠ—LÖ›¬s(“ƒ»ê“—K[LÒ6f¨8”¸ms‹Õ)5ÏÇ_³¡>çª¼—FÙ.íĞş`}G¶Îrv@ld£6åÕÛıú¶?UU¦·CaÛ¬1Ï,à†-0…­tTÄNlï@ÿã DÌ—V4™İ;ADuÚ/qšL“6X«‡“ııŠ9wµëA2Šµ–œ`W¤’Ÿ‹°¸u.=ö¡µ!.piÍúÒfc­üÿ¡¿õlua4@“@×]`‚÷ÿ8V-¹…Â5>Œşı°¼{áÙ5"!X¶oê¦ïá=ÁÈT,4¿ƒ&€çgå•J& t±¹‚ÏfzŠ$µÊÒ1Ò–€‚ô¨SA©¹8š ë<¼ÉÓŸ­DšuMÅw`Có5Ìä™àç–8nª*0û|û åıÑş,áhËu½MV.|h)Q«Fc1$9Èw•–Xò¸Ímüë´ÿ£ƒˆÛF@1U—M=µâß,éÒ0B_,3©=V‹³…ªÏq%í’R4€½}|%#Áò^&,ƒı|i{¬İLz7„²¸gb¨7`Kls¸£_,ScÅ¸çmİ4#¹•Â8ÎÍ@Ìw’æÄß6\Ö@™F0mÜŸO8‡Ïêu¢4ªry){‹YLw¾jDM=2Úß’?ä i«²¯sF1h­= iLË!ê{pV˜ ˜jTÈ¤£ìÜRb ÊYÃlH9«> só§(¿JÉ˜7iO„_ÁÑÔé]•€DsRPP#T#LX’ÊŸ<RşÊsN¬ÄÈà$€*ªûepzãP T9]5ÂlìÖ—e2?*îf3±gˆÏ£S0B˜¸m‡¨¿N=…ék[­« ¥#$œ—pbO®QÔ¥JÁn´õè}j©W™1å/Ìïb*‡ñüáyt-×âksÙ£MÕàR'—Á9›HMv·>š†ÍpãŒ Á3”†Ü²Œ§´D¬Æ²ù’3É¡¶û¼ó
-Óqòö›K€¥X»ü •ğ—¨ş–MGàw&E.4 š>EÿxZşÉ!.á&°ìë{>ù_¼`h¢)lUD¬¸qÆ´ñI<>öPµI×E5±]Y	ItÇğ1àÃ®Å$¯Ÿ]Š°-Gå	¥7¸Qê;L2Æ¤ áŞï3ğp¥ŠîtÓúƒ^<±ÚËÔ¢Än[¬É×’¼+#ÉOLvbYíËöKR8˜(•ìF?DÏ„Ò•¬õ°mÏÑˆB‡ölÆÊçkûÛ.²ÏRånçÈ&‰½a\r^øzöbğCmà‘E™ª*+¬ÁOÌ^åO.IÓ5Ù‰@‚©(Û~‹?j–Éˆ—¤ĞÅ÷Ï¨xD+š–R$—“=ÅõH~¸İS¾égËjÁÉî|ÎêcenU¸ï.»>Ë]dÎºèÉçápGk$áIÚrtÚãÁb'éÌ… ÓÓ|ş¢'½ö\M•¦N›ãŠÖ¿³ÌÃDŞÛñS5#³Ô,Pm46z\™Şb¢aö	h$b­ë‹ˆ:‡ûÏº½GG#°UBzø½"XüFèÇñ/r‚Ò·>^È©Ë ¬\Ke-·æ›’àÍP„¼\)¬ËûwM˜e·eFŞ§J€œó—"˜X9½éöÅò‚ò÷“~İÑxr–íßõIÒq§»ôb‘É=ÿl¶+8™q&\eÍ,sØåó°u»À®ë
-‚ÿ6£•€ò³ ¥°ÖØ¶J²:VèBÌ'A´VÇÉƒ8Æ¬ü‰=H¤¸ìs¾mÃÂyÑè=Ò…åE"ê_4oóÏ›
-XáLÃ	 acl§ö0Dƒ èW2-‘¼7(æ*	êîı‡=¬Lé ÅäŸ×Èóøü¬®†GaJy½v[‡ìõ³ı·0Æ¼´|J«úé;¶lïn»ìô•9g-Õjªdğ G+Öö‡y‘TG¬ÌªhîøÀÙÀ-ÎPkz?=ÕLÙ¾¥0›£<é„ƒ¼œN~ê]sÍ\J^¥æÀYTl°áœ:öuÄrM4œe‰.4ëk„ÎA”¢idÆSÌm+Ç¤©P‰ØrÑÃ Ü"7Âee]›ödª&¼?ÄÍ)%ÄÙšöÇŸ®HÁœğvu˜Úøˆ9êğyè¹„ökM¢¿­ó…1©øÅ¥ü‘Ï…7%ûš«A~ôµŸt%R}™€ıÔ(k}KUpÇ5µø'’ÓSğUaã’Š"ù³¥j1QúåHqßiBèŒÏ6$SŸ{eüŠÑ‘Ç\¿WéìŠ¦¿L¼z˜«%’“T\¾üyMUtÍµJù÷3Ÿ`Ù˜é‰ÁºÇşª[ù;ğã{n•¦1:›Sõ+®CòÏP“[?eš÷ÇQå9İFO­©µ¬!9ƒ5*ŸN9òfñŞ1ãÖè±¨ĞK“?“Ÿ£É]qgÛP&|ûèr[±µaØsjTßWv”^ğjğŸ@$T}õËFÅş6œ_( Ğ ø(%ó¬Jiäâ–÷2ûêøBó?ÙK–¾ûYgØç"kgo©åpÚ"n94’@ÌI%[Ê¬^¶åCy“İTIZ©ğ©`ìøF]¢š±m#ìãè.¶ÑÁBxƒ¥Mš²ÂÈ?ÀéÇÁÎîÄnò½û„†(Év•pscÂFué-³êJ–ˆnÌ¯$ëCÊó[ilDc-¢¾¾Örê™jY$.K9ù}W05ë®Šqc¦}Çƒ;©iÜŞ²`Y`›ïÌ‡ap`¤æZ¥Iæ/½;áx|ŸŞp¥}V¹nô_4ª^1"£`í…¤¨¨ç« A’„í0u Zš¢yu¢æ~õĞÓäw$ï¬ñŸôRE<r­j8²ş¨Éñ»ê'¸jÿaÀzB†ßšK®6ˆ	&tK´dŒHj“ö@™Òİ}]§$¾É§;éEŒ®û0Ş§ò£râyùa}Ø>9ù}¸¬)øŸ\»çâúŞİ¤&&ª0W‰üÈLgfOÚâ#ƒVl˜U”Fğô1AgÄ>mıNVf-ÀBš×‰"8pÿÖÖ½ôŞYÒnGÑ …O¿ËZÄEfzrì‰'ìeù%q¯0r§fKùtÈy‘UM=ßœàQgÒ5à;F…ˆıQÜ¹W³Ò#'µå|G#Òq]%œÀ;úòR('¢òişwúßâÄlšPàÓ¬VĞ_ôâ<'$ù·•o¦Ÿ8å*¢ñkê:z‚U““™"R8 Ä`^Bäı¸sİ{éÚ1=9³”ÜŞw[ğ\6:7ÜuÔÊız«tƒª»¶…ÿJbcFB½P˜â×‘üF [­goóh@ì¿îÌ•RÂG
-×ŸLİOZ–»@•3‹rQXM!RÛ¡?qLHğ^©q_îˆ#f!,¤lQ(E*£øûæ/®Ô¼TI{aòÀ8/İŸûp=îø"ÎÀ>Î<p‹¿]/WQ,2‰PRk¦ƒÄ;{FÚ¸½øƒjOx-‹Ã¯X	´	C‘¿s`ÿ ­LÂBKæ0±ö½è9IÖ9KÂõTD‘+3 S$²7İ³{×1İænwücçº‹;gá&LkÕÕÃ"<õºu&÷¹êş°iÅ½Z˜îË‰İ¿w-aUœa½vs@˜ıFAP•¿4±¤J¼ê¨¦Zè2—‡‰p¶«Lu8ßğ& )	y 53áÂ «B>ŒëRîÌ’1_CÖ”vJrµÒĞ“²ÄÎÃq0²8ÿ…¥Î£Ô*ãƒ\Ü5p0×˜M^qÍŸf`Æ.sGÌw‡ŞoPm“Õ><2”vÕª¾nHUîİg mÜñ	ÀUÅM<Å'X3åğ-?`ÖqRÏêù4mYÂÌæ…#q£ë&i“ŒÀhcísÛ*XZ-¹«X²÷€¢{c;Ë¸I¢±5Y…T€(ÑæÁœXµåFì€êgÍÏ
-àÓmÔVŞç>5˜‹Æ‰öÀã øálƒiŸqæ~ÛLJ~Ì¬ÈpºÓâz‚eÂotØ4¨N–¼(Æèe×ÌœÑ‰©í5—A(!ÆGè º-j1kèeØÔ‹J»@üyNÙ$é1·¬×Nõj,H6§	.dú00„ujeñ•¼ÜP_‰EğV~Î×
-¸p%kÛÀ*Ÿ„ÄØğ¡Œ€x’HT(LÔÈ§u°OW“z›k4_hb
-ØI¶BğŸ5‘‚Q1ÄİI5ç„şHı«VÏ˜şî+„Â+Gº‡Î_¨[ vÒè3ŒèºÒáöVá2zÊãm]$8À­zİšFÙ•:Ö]G‹ê^äm¡€p²Ş~M­×Õ#3{ PŠ	¤éÁË¥ÎD3÷Ä¢~ÎŞ” ¾x¾ì<¸iº¤~ëYbó¯b¿^Mû±ÙI|ttë~›JÃèİ«s'Ñ8³ìrã /%‡qFÚ+ÎàXÆ@+‰às¢h“×î*â¬é}M‚ÄoËÿÎ±å<Sênvı Ûè<ÔU4ouß‡-n/Ú	’ÎŸ/9K&‘BS¹‚¥–ÿ`ÃIiª~Gf™9,»6®@
-ÊcÓ‚ò¿…¼86RDëâóš[ù†!|8â|u[æM}Kä:.©À¬²´Ğ5şPäİ4n¬Õñ»ÚÔ5‹jŞØ}ˆƒqa—ÿÍú‡Â±š	‘îm„îWÂÏZjL)-óè&I®À2Îhtˆ[” Ñ3vì3i²éGŸ_·‹ûz£VPv™8vQ±¢oÉP_$ÂHPªZîP5WI®%]*ÓÚ}=áÀİmÀ2¤2+Ìkø6«oEÏÿóÜwm?ŒF%èLè~»y§àzcwsù‰ªÎGÏ¾-’<[Ã@856Ôıÿı$üÔìQÌïT»±;y¨¨ò›®Li‰pêàºÜÚwG¢òë»2#ë¢a”|R74`İñ_Ú9Q/ÚöÅw–/z;BÛïrÛ -:Ö*NÒßSd@èñ‡D^Aµ=ºQT«à*‹=·@È÷YÊÖÍÔ'bİñâ\s™L´¶NW5À 'AÌr8{aä,ÀFfmyæ³sË5Èí”[Î›Úïd)–i×—ÌåEçPùö@üEM™ËÑÏÔCM²Œ.>òñÃ“ã©õT¾}­X' ‚ƒ?ëì¹¤NQxZj:—:UÊ+ü…8½Ç“" Ÿşl‚r]ğñW´1âÏ3£­ó!ü¼×\Ãt±Ûd¯÷FÑåûÛL-±ªIƒ6ãx†Üš¿9MÄÇìıâ@àüŠšd«±=f8Xbze*÷Û‡# OdÅVóûÁô®kpú@T˜W{!N ©VÇÒ’}¬?m7
-häp;!d«%èóšdØ#´tÆçšN¹9XˆÙx€ÜÂ¦o`ÔVu™Éj0y«æ¿qı<GXÉúAöXŒŒØŒKãévÂ1_#Ñ®Ï‘¿êí®
-ØÄc—4z.¢p*P½Û—™¦`ì5q)uèçp8}Úé´,
-a “qßùTN“x¼ø0qÇ1­–”+äÀ“îÅÏş&ÑP‚¿~ä¬Öø§îö2ÏXùFæˆ¾g9u€F<	[‚XyÎ:›ô{f>ò_H([ù ¸ä0ÖiØËœÖ[xçK	L'.jkø`0¿$SD'cËêüÒş[˜ƒôŸÛx„Ñö1óÜçQ+nxÈ
-0¥Éí§_YˆCk³$õ¢ß¶6åSó8©²eOËtkHd–ĞÓ(RªK¯·ä}´kn×ú§Ó)ˆm¥ Ñ³â
-tZ
-E?§äŠC	˜Õ{‡rçjE¥²¨½I]•şñ¦ö—ïÿ¼¬A+t½‘ˆÌ"™Ï¼nEQú©•²‰j_Qm~ã¶™#ì›;lÇ]j2PœûQóá<v6Ë~-(ğÏHùa+ï6``99zVÛq¶Q[‡º?ëìDî…Ò±íÓä6]Ö~XÍÌ_,\Ùók®öJ7"§Z¡¼€?ÇÿşJ‡	U‰i´˜•â7È2È¾%ëÄË)ø®€š|w™ñ+öf#BøÿÓ¹)«B\SFÏÉó+0EAñØä|(‘àRë{Ñ†²¤UÚc×*¶¯\2.vw&©)¼h!çÔCmÛg€VªÎNsĞ¢•
-˜-´Ô%q†·P$8[‹RD´¹WÏ!ç5¬÷ê.]˜–VÙ0	Câb'Ì½"w3üô@¼EÌu¢í˜y½«ÅuØH‰¾¹aK1®5mÅõz€i™É¼O„”Šï†dB5´/…ô5ÕãÈ\÷Şfä÷‡X”¸K/(Üc8nÎSœ:øóªŞªM<Lz5›yôæƒgk}áz%ÒrP½p]
-cµª,µ·ßL pFÒê,‚÷Cş øÕAƒüñ'È>rğ…ş¥~×ú$P•	0ÇÔŒ9Ÿ¡­-Í¤Måıôâ‘„ğÜÖ£ûë2|&ix(›ëXÓyT›£?^İ§ºÊñVúì×oÃ£Š<lJ²Z"ƒìØí–BÉßtŠÕÑ¶c?i:	dîÃ/’Øş&`w7wì;š+”¶Ç¬Ï”èÕªÖòÃ/–Î#ÊÌ¯k,³Àj/‹~o],ì¯á½íİ¶TPÒò(
-í•KÄ¥¨wÄÅUEb³Jr_N,‡’‹…ˆ	–$9(96ÿ™ÉI\–o>5ÔèlÇÃ% 4«ov˜/¾ûüc+D"àY|ˆ
-İòçùüJëU¸ktÉ‡Ò‹Ì§ú¡””g?¶x6æ<Æ,Óz—WZêBÔš š*`'aè1gW9 !!>Üá{T~éúƒ‚Ë5sË† È¦rîAÁ¢J‹Y¶˜@ü5`eÖØ€Á¥R §€/ãuiKÑú0Š­útıØ0r~“+£!šSŞ€vr9ª_ïFåS£Ö¤\Ij€H¹©ş–&óO¶Zæ@œÀ…®@w#}¨tµ²I&ßVXL†Ø5@XdcÔÓÏtÌ?%bÜÂÉ¬u½'´&­š~ƒ|êK®j4—İ’Ú°íëŠ"ÁéÇ½õHÄã5™LX¼0'À«„7òk2¥uÀD Õ{«,[€÷çĞìnÊ¢Sg­9¦.3›¦»¦oSÓ>;+.­êÄ#_Ãó´!œê_WèƒØjSUPwé&ÏU'}9Egîš9|xl=JÕ÷B„.íıcw—®KPp¾–v’¹
-‰«ÉD§Äé89Ét~}ÄH²ˆ•˜ÕùURE˜¬s`2Ú´c¬¢û-Gt³OƒÑ ÇG»¯9±Ãa¹üŠúÚêœğ4INš(ù®©ä½İG6„×pl"ûqk:\óÁNö	÷Ô=Rrº†A{×%kÚ=í[ÀTãÁû9"ûÇ¤À(L>päĞAĞ2ÊXR«ƒw–ì5{5OY„ëqDÆÙ
-Ò²&à"œµ#ë8%W¯Şâˆ‹1866Øó"Rœb;)¤‘å#)[(ª}ÛÃâfïK+ğÒß	/59‰Ú,UG¢!pÎãöºr Rú¤$m Iü»©Ei|¡¸\ulÄ4CÔj°|H;i[ xXÑ´m«˜#DeÁJšLÔ¥¨üŠ"%ÛáíŠ†ılÑT)xşôYä;˜Ù¿¯‰âÌ·İîM´#¬3)èR´³´~SğÑSWtê‘¤û‡ûğÁ×Ç¥i›&ß=hõSÁ°ÒœdOÛ‡clrÚó´¯zj;•ç»†{-üKH]_‰"¹Q;y`‚b:æÑDø®R×Eº<…Gbòh¥ÈµÕï\"¦Ä;$|Ş¨k©JÖ|Î„$ ˆœÚ@h9&[êÂ›/¬ÑL;øh@Ÿ&x&ß2ËÔñd–[j„xŒÃ˜Ú°˜Ã¼…«™7Ú¥ÔªkØ…‡&’„‹ƒäÿuj‰Šr·~Š»B§·q}1œn/ÛÌHÒ™Nl4Ë®kNé+u™ûó6EPÀÀY	²RV—Š‰’ªq™eï@c!+™Eƒƒa+¨yÔ*J‚(Tx²ãgú÷‚d÷y/ÚEœ…A kzşwrn(ªü»t+è+Tİ./Z
-¯}©>Ï´Tğ~ü=ä=<Šß+c)cPhÑ|4™İèbTˆã
-ÒĞ«X;`ÎÕÏñ@Ã~!ôÄĞm‡Së]ãñÿ‡£#Kx’áŸğ=Q›µF cO§•0Êè4{kšqøÕd|ˆĞ$ãci¦!6ÖıûLCî¬@g
-D|sÀ¹K}Ù)¿ÿ¨ªºSŞŠâ7‹¬šYåKqËäxáBÏ×*¿oöa2|¹S#‰EİD¡å¬XWF/§U}ë^< $B(šS—¨ šÃQ¹|npßÁ1÷òŠ¤Åj&—®§Çå!A?ROW'{
-ÚWàú²ÏíJ‘üu‡;{İÎ~ŒßõtóL2WT3DA?¦£ö…oÕZµª3•´“ ¾6QJ'º„ìZˆ7>‚ş¾f<[;‰pÑş(t6)å½Q¸zËg±DKÍg÷v¦[Sú}‰¦L­ rU»õĞÅ×CùÍL¥aFÌò†ÿ0DÃät³0êª*®‚ã5‘À_'Û4±¸É4Â)tç`ä‡v¼“¤¤[<õÄµDù0Òd1·±LEÚ}±÷n–b»LU°`t‹‡KkÕ„c'–HŞÂæ#\—D,ú¦¦zq¸»û©–oµIn0tW¡ŠÈ%Ás\æƒüâ@}}±ÆâÎšÅ	Ïø¡³£Ú@Cè®ÈlñÒçußL“?gb :qº|r7x÷Š³]‚>Ş¢†õğ‘ˆdë[¬ºvfâ#ÚÇ¾é°ô;èØ#ÈNSe¦_@U–Á1˜¹Äcş;¬²|‰'gSaÄJl“ŠäÅÔ']i}Â6ãİ©¿L¹Ã¦gWo¤Ìs³\’U)¦òâ.çqFÍ ëÍ#Sª|/dëÖù-!ˆBØ<h YrJùuµû£Ïæ>6d¸=ªÍku@Ÿ³©ío+mT.ã/‡òô NXStö[kŸpp÷›ş*¤~ã¾AmX(œÂ›ƒCBxToJ©íÖÙš­šEıèrŒ®¨şôTxU½"¹ÓË±•_’®eØ¶ûpT¢Û/´©œ»ˆÓÁ{À›=^59‹Y‚z?Ø&œ2ÃÒİo9I0ğkƒÚÓòãFÊfB™à¹m©õnĞ¬”Sóvw¥G¨ÜoCa•—µ‘^rx* p†D•ÿ1ø¿³=ïš Àã?g˜ÄˆB£m	L=›ŒÙñ—4ÕxÙ ­`,&ªnşñ81ìØÌL^tƒ>\ÿk_AÎ¢|GâJØ† ì°MÈ½0ŠßO2‰xµd³ÿm‰¾ñ0¾„.f=<ÕÄbaÕIÅ%Nò¸òh¹V“İôg>º‹Í]¼ä‹ıxô•FMW»Z É"‡ÒÏœS•=7$6V©ó°æøj¥Ú ˜I–~=XH3×Ìki•>qq‘t;¢_k×;åĞ'2”?®îVoŠPÆ–ÛØĞuÃ‘z°ª~Ÿš4úÁ9Q°îñÇìe}5%ª€ÆW—T\pÈÑvÕâ´
-EÇ©¡3SŒ…İøZìæÒöK·CT¬YÛrC *çøUeé+¿ÍÊ{Jr©ö?ƒ{4îZ€PÖA—èóæd”U¾°p½•å‚å÷sÂ˜o½J¸=¹½yÒQŸ-±™¯#¿Sœv:ŠVöt
- Ş–ØÉÃ*’ìÎ¶âDUâq´	Ş˜‡²ùw6…ûİõq0ú¦•Ğcî5ÇôÚ_2J†şÇv
-zÉÀ·#i"¿2Ò¢Ââ^æèÉD×k+½­PPp~ŒLá.Ä­·ğ‹W¸âÚ
-eo{Í:T³DL
-@Ğ*¾ü¨9I½ï+RéWQğëîW±|‰ËÙ^“{n‡kfÖ¸…®ëI™ëßyoƒ}ü)SÇ0£ÿA…ĞGëCğ$¨Œ¦Ÿ[œcXXÈ6šúêî-&2tsÕ”ó:F]BF·«6í»ËßÄê©Õ1œ2¹­”¦LO?+MB˜éÛdÆ8Q|Í; ÙÛ×ĞÄrVñM™*8	Òà ÕÅpÂ@÷±†fãâŞuù<šYÂaDSŸ)¿Ê†p§—vq)¯+*êĞnøSò%È±¯<äûÖ’˜ ¥ŞÚ?j`µË‘íóH€GÉGvÕÏ¶n§³0šøJ¨Ê"jøŠ½å!Ñ:·'1­]H
-A‡Ï{h€éµ”²`ìú?Ÿ¶õ²«®M–‹…rXµêe¿TÿŠß\òˆ._åÌq'm@]u¾K®Üšk×}å]wådf'Ÿos;ƒÃ-Ğ–G®¿1¶¯s }ùÃn¦…“x }Zlv_ŸóE™õ tÅp©#fMî#]ÂÌ\÷ú/P¿¸#ÀLÂR×8±L
-ë*«j)ôÂkzW}¬8•”½iuùDÂAz¥XŠß<wçÒ jÖí'Bd#ÄnIuÍÔ‘2îó¸ı¸lJ¯ÿC?ÔOÃ¦MqŞ$·¯Q:¼¥ôë|;Äøõ9ÃƒÌôa»I¶c)˜×'°.;lÁ·µÃ6ÿù±Û¡ß}6Ô)©U‡±Æ:Æï2æwÅÀB‹å¼w‘ûGíšT@$]+ƒE{	­Æ*§¥üy¡€“CòNMuãÏÂµ7Ç1üxQ­Q7ÂTÖ­Ç!…†ˆïXN'{çEh›‰e«¦i+`€éû:F*uzÅ°·Ñ:uÂ@œäœÁ§³‹¢C/‰é6èö‹lë—\‹tLZGI5“±mJ[cĞ}Á-¾.ÁÙú#jçù%3O¹28’åó¬}ÂÖtqH)ƒÂ*@"Dä¹hÂ_•›·t‡O³İÂ¥q3™Úúß‡ìq4®u„!Dà•Õhjœ–
- †®¦ºYÕ§:u«€Ş©t†0ˆbŒ¯Ü0Ò´„)w4&]è³½f{ûí^·D$Æã‹+Ã·ND#ke7j…]Ø‘Èk+B¸‡ˆŞ•B[Ç"üÀ_a´.Çæ>Âÿ>'”Á‰ÃbDzÕî‡JPš"š2üp‰`yH³#*mHŠ¨ZVV'‚}7À?sA¸E—,J;Äÿşj¡ÕğÛ¢ÄvKèçU©BÍ#(6¾Ÿ6ß³ÇåßQX·º„´qP´àIÔş»‘tDx-1İÏq GôºşòÌçÕƒóŸŒ½Né'«K÷éy%è9ˆİ-õ ş23EDGÚíòOiÅ!^1ĞÆwrJı™Äõô f½˜¶£¶»l¾”ê~lraÛGDwä8¬¬„F¦]™7?C1-uµ(í¨LüŸéŠÇıù„?Å#I;öe”›í¯
-â4,tÃ¡)K”[ø,P´3ÙR2oæ5GªÑz›¤,KöcI ×¨¦NwqA&\©GôÆd<J%ŠëÕ¾ÅÜÒƒ®•ÂvÍUrU(fàgMÑá “nLæe^=Ó¡ÑyÿEÏô¬‡İ[a‡Ï˜¿ÖÀa’˜Oqûdqá}ãÉ€èg)ñ'á*Y`Htæıs£‚Şzì‘½V;HïÛóLY:ôÉRqÀı¯Ÿ:{šsŠÏÍrObŸğ·¿,\X<ÌËÄ–%5ø—¨é› ¦«ËÏHja$\©çßgŠÔ:)uUˆêw»àXvì€’9ÜºND Ë˜À
-Œõï„1Š<îmª/ÁaiJßÙ`œ«º§êµ¶bÅØM@3â™	-ÅN‡à’'.-´C4†È?Yöèı¾KôÏ;–ÔËíO	f“ª¹*Ö^¨ª!¬Š±×ˆÙ^å}hfe ”® y®BQ~&EYo`Ó+œ”¸Ëfß{şŠ‡â§˜|ù½Mœ=g’í6ËÄz½õİt¾JĞ Àş¡dá|t¨ÒßÛnï˜–´å_î'’Pòy®áœOÂÖÎÄ‹EE}ŞaB•”#eF¸l½«ß²Œ½%oÜÈ¶‚¨ó ”¦ÖÅıu&¬¥üÁ«ÄÇ0¢ÈR®éh6ÀìZªIÌtù®µ2G¬:€fÊÁFi*7XzHÌï´–Òm¨±Á-2ŠK’zæ,™›”-cÍâ…ªÆ_rõgÊzIxÛ-"õs hßïÕÍ9We)ª‚öò}˜›]”½Ê7+îqÑıÔWª=•Æ¯if°S÷OÌ×¾Y®±H“¤°”‹Y;¼ËH®^^NìŸõÊP¶§ª]T%>ÔY‘,ø,Ÿ¤Œ”ì»ìåµñ‹ç@&bŸûÇÊ c`¾Ó÷õƒnkVÖ°|ˆ\®.øñõŞy{ˆuD,Aé'>FZ[ÎwpN:Qäò½ç.¡·ÄVÏRÿ¹hì$é/Ê W!‚ã÷º5ù»l[~ÿù')‹åŞò¤ªSB·ùB8àOcvzóNttÕâª5pâ&½è7÷ì¶5E&™Nô1ÿhz»«ÙÿoVIã;“Ò„à{53)»–¢à¡©¾ãÍÓL6?îŸ(×™Öô=Ë¼´àı{Éµ®ôüJå ®£ßIœ!#‡X¶µ?JÜÇÀ?óg)/$EúnJš5 VÜ?ñ&ÅJ›pğKI§#˜fmw`Ä°[$œDc¶óaÃ`Kğj<!körÿ8pX­udÏtTbf?TÔPîÏ‚«Ù=ÑÅŸ)<N‹¥N¦ç|è·Á–rXeoåBÕÃ†ú:á3H#7W();ıø«àğ1¸âkUoÜGˆü§`€İ4„t5£&Î¯ç¤‚–lò°v‰§2%ç‚nÚäRøë6®.RÍ—…œıl4Ä¦ÍhÛ-œbú;èë_]a¤&Ì'¶ÁVvœz=øR¶9‰˜5ÆöZçè_%÷ŒŞN/Nt8™U6òj[Ë¹>ÎÍtGŞvw8"¡ª´·Kûoç‰aD&EŒìRûŒìL½OLÉÊ &D^——’7IC·-~ÿTÎGçªÖí‡·Iò«,2ú»ø„UQ,¦á.WŸe ß–¦ŒšOÍûäÀ±‡d©p0ªÿ(_>À‹ÆQ•tÏ@EBŸ¹tÅÙ.Én±ìEZïv¬1TÉp@ÊåßÑÍ/“!LÆÜl1h²üÒ`?¥JğS‚%°Ìªº—FÄL›şNÇ\JÛÅØ;C-`tãÕ"å5êÓ˜.×ÎGxyñQØG!t¿!'f{Ïşdgñ/=¹D›¨Î]%¤Á,mĞºËU†òØ³ûº ãÅ]z¨#ÎpaºŒkÈ^>Á<¦7M÷„Jú “IÔ’£€B,âŠ’ô‹ÎÛ÷îÿä@"Á;Cøƒ‚nıSŞO ¿7+zâ$ $E²%8••&ŞùéúÎlZP…ıÛ£–m3”$äåjñC‹Óê(²dğšzå©… güg?ÅqñæJEÏ^á{_êÒ«ˆ/¼İX¤YãÊ¸%tœòiˆ\Ë€vÖA‚Èl€+¦¤êmAØwSc˜»/…®
-¼Ê?¢«~3ĞÜ·eR3 -$‰!Ãˆh­€ÇxLÚı±Ò5È
-ğôD±¾ŒmŒÈ«pSÕ\´´]Š\ÿ4øõÕËı×ææ`ß—àô<w>mYü¶ìë*l]£º2[İƒ» ¿7\§WÓñ°)=2(›„üeåMés	GºJlƒË‰
-÷ÀH/Ñ¸®öÄ·ÀjJuv8Á¹Ã!$¾ëíÄõ¯–ãéÁx¼ˆR>^|r);­À‚ò?ü ]xó°¡É‚3…Ÿ4p>æQV$)k
-Í³Š·XCÁæö1ZBö½ûÉ.ÈiDıÊÈ¾Ñ¹’mõ-á:	Sà‡s1‘óZŞ².ªİÕò2º ~ÈQ¯dÉì?Ï¯t‘Zñİ	m¾f¸øÇE+K)·´­G‘ÆA®’y}PÑÖ™x:ósúl¸zr;ˆ û•Ù³åiYİßÿên«1wz3ˆÏÀQ³Î›dM²·$q'Ÿ’ğ/¼†k!xEúÀèçªÒE [@t’ì);ƒ7@Ø&uC˜dóª<–{ÑÛ  €u9¥CİmgÏºSş¡£ØC}¸ó–8NEÏ³gèHî.CE/IƒqKW[ó„@LWú¯À7â÷ˆ_\ÔIŠ@¡uïÍ"ï.	œÆã´KµÖdVÈ6h°…]Óà—„ôšÌó>«X_
-ë M­Ê¼¯áÌ8	ÖşC'HêõwÅo9¯KÀÊ†´/¬©$âÜŸ_QìÅÔ°>ı%{€vlúkÆô¯­¹ˆ®SPUÂèÂŸPL­|Ös=‰¤ä#T4õ¹Ñè±&yŠÍ¼Iï“ï1Zé1²YeRt!RÙZ^›N›ªÏøK¢¸‹Î	-©şÿe¯[†5£>E¸‚Ñï•BÅmÈ¬/ˆİª~×Ña¿±÷«DÌwö´åö˜eü§¤hÆB^‘D—y((C=ío^FF®¡C{éÎşxxÎ^»jı‘“É\Ç¢¤iãÌn©$’ÜF"î˜ ĞÀøÑHÕWÕûŞÑ­ŸlOK 0µiU“#œOÍ|ë‰Øí ã—Wİ¦=‡˜+/ç@C^¨îqÊ½ÎkEH¬Œ°ñÜ~¢ğxøy´P®RE„R¶.ĞGFˆü•,Îãoÿ‘²Ñ±ĞTÂM*ı2<Ác‚—'€/0"_Ñò1¯rÒ³_”İT;3
-ˆŸˆtM=ÎI£m(v_L¸Ìw/àÓXf2f<K½÷U¹Hæ™‰Ş!@fºDepÎËw1Vuº(í )ßÉ%î3VRÛ%šÉén­&^ªå½Ê‡S Ç'ÔIĞxX¿©8bXäÿK²!Š''>|p2´ˆº{™Ôlû-ñ\ÎÁê?ãzbéğ¢”5[éä=a†å—£W¶Ók[Åàä%9`=Íæ2“Zˆ@×à¬tàÙjÅõ++È0G g°Òÿ˜™HkÓVĞ†cUcÂ%ŸSğõYÑå©[@O[d^şİ¯à1Z«ÉP;Yp‚dŠ“é´àW°vßè‘]APv„§|ôWDÒÖI¿oŠêİqk$jO÷¿ûçŸ‡Ğådöø¬ÄC""büzE"n°{•QoVWÒ¸#o·tã?]S!,½·ùÁ;@Ù&€˜‚ø»5¿}Æ]ï,@ªæ&°b¸…K‹>.Cõâk]˜Üb¼z&Ú!G8`Xìÿ6†üÙ†ÖÏ¦PcúÛ!ÍÅY}9K¥sÊù¢$%å˜›2ó~u*ˆ.ğêÄt`%f ï¥S6©yòÇR)Õ6b4¨¹Ï>ÀÉô0’IAÂ¶##Äˆ¶¯ş.úÃyÒb[ƒÉ‹ã§Q´rë3{|Öa2À¯† Ad»‰Õ!èoÖ¨mîÉÙş¿™±˜rkfŠ(²…Fr‡ ÉT¸_ÚQ„e£ L‘u†¬ß»ÿß[O3Õù§@%v`®ìhUGBÏpH¼…©+Ó¬QÃ\É¯|¤½-²Š‰„yº©vÖ†š½¦Ì6‹sçkÃçÈbÃŠÛ„WJ¡eç­yLƒŞÖWNî€êE%‡•bÀ}W–ÓD¼éV(Úl
-S nxìŠº±M/÷ï&}¸wïyÚ¸—­ÂîXqKh¯ÿ,øTı½rƒÂeÜMôs_HUDßouÊĞáœóxû
-]ìú	†G{—æ€ãøü.Ä¥Ò¹Î÷Âr»¢‘òøñÑå¿+2v+?ªl	ìÿGBÖ{üèVXªpÎFê€@Ÿé©°ñé…8Š'i!'LI6fî//•Ä¸ï|wø	J@¥ÌßŞŞMP<~2‚J¡~°;­ïÎñ•\X¦d…*ÅÃÕ^*"ÃF˜ï`,–xÑ“*ìë/Åä®ã3t´2ªulm1ª|çfµzş+ÆRè «õ&‚0ªöÔá±yµHàlªš’X¹V<Ãn§0tˆÇŸ2"bñ~ØI]p
-§’8(?²Á_
-H­èpbrğU
-ª­©Çøü©r¼øû6BÏœ¤'¡~ÊşT2?+å„£Ï– ëÒP[gfÃ•sàX—¸¥óm‰±êAs9ae_2&õç÷†P.ì›ÒW9PmR+D¯ÊYk–Š¤awa6ÚÆÇêºÄ!Óß¤}À	{æ2]Ó¦ı¦Ã-0ÇÑ‹ Şç«/¹	Fı¯°ºáì#q€ùtwê@#Æ¨:ãfk_Aê([¿¾Š”5ÁË©ú[À˜C_ŸÌnÉ|»²k´cËÃò;¿r£Ò•à ‘ß= 72ÎeNûPæ•Ü?Ú¨Màç†•şÂƒék¤´ê~	zãj¼”¤>W´UˆLwg³nš » ª·Q(™Eš;s¤­ëÚÖHó=ĞéË¼ß¶I}“ oÙ`=ÛŸqş-eá”å¢KŒ…­‡œı “‚ÖŞğ|•§ª8¢ıT¡«]ÇÜ§ØBÁšÓOVPßíõ¸„)°(b(5ikÃ 
-Ú¥·u’X¾¸ãÖS3õ*ÎæàÚ÷G"Ycşáo]£ŒT¥fƒhÁxÚy,n’.<Î7øXAFÑcf^ğìep¹ÏéZm+{¬Š·¸B@Õyr4P}5eüYTI4˜(2°T§ìğV¯
-ËGXÇ¥‹€¢-Šò?·NÎ¼^Ô‡÷ı²/ éEôøjï…Ãa•À`Šo‡Aj	µ¼ÛqKéÙLö ±ÛĞs˜oİÊ³¹ÊDî:Ü~ ß³±Û62ğ¬ûØZĞºpñª"ëú0,–0ÊXæë~s#‚ò<rpá²,¦_`ƒ9išDòØy_("oªÛ¼óÃN.W	xsñ°Ò¢"}[Uæx¨ŠJ¤ğƒ[keªûPiw%Æ)~çaRr?¿ÂˆwkyOä¹‰»œÇãgÃRijå!ƒŠõ'~Ğ”)V$ô-(vÖ(Å
-àÚ°Üìn>ßpğ1ŞZ¨)6W®(¼dM|‹K¸5>•œ±ç^˜Öµ§ØÛ¤ü6,d¨=ÚŞvb½~ÒäÙ¯:ÆÕd9oQ\ñ%Ö&ÎvÄ¾T31®ù¿$sTô@l!Ïò´$Íà'ªñû—€~J M©Q¥…ü)&ãäîğÃæ†olbIûî8ŒŸuî‹¨ºÃ±×ãW!z> |6_”en“QÓ–I<Ñ-¤‚3d¶·e Ëœã6ZS†¤Á‹¦Rt3ÃbÅÃûúz2ó¬ô­Jçâ¤‰ÃúÔofY>ÖMzAb}K$7ĞG¹øS'$®î•q@"ÖSM19udÜ%sV›ê,™¥Ägƒõ©T›üÅ9€¹ŠO¡Zwù9˜§öÈš9éÍûÙ‡ÆÜÿ‡Õ…<Ô%F¶¼/Ï(>)’@¿CD„Eg*ˆn«í‚p<ãhı®˜¤a+§.ğÉR…„Ñ~jßcfÙÀlş…®ì„»ôWğ&*®V¦|3},‡2NÃö©ğ#]w/hÌ_‚ÓG¡	>ĞX®{‡„Z¾¦–…¶é3*ã|DÏ€tvP’³p{Ïş¬òŠpà>9ÖÃiò=g¶–ë•Ğ©ŒõzS§‘xWœZyßzßPLKxnLZ@ vÍíÖÕÀİT–ÓÓğ)Í¤Ú)’áoÀÖl­‹­˜½ŸDhyg_OòsR0¸1\4"UöÒb‚¯0-‚ô"n
-(Öï4¶İKúÛhôµ.¤ŒÊË(ì†Öqß+¢I&y›½ğC
-_Kc•Ï¾ ÏTİ®½‚YœÉ3Bã…ÌZBL ÿy×Úç`Ì‡°ßÚC¶;OÅ'—ƒ;Q§W§‰ß<Æçƒ9JßËz¡Äjl™¦¶ª'3‡ 7ÃbUU³ßuÛA•c˜>	ıÆA8×.:$hÏĞvÑ2ÿğ©2„ÍŸ¤Ä¼ÛM{¿BÀ³]ğÿÊ{Êá6““ÄA’Ô«#ê(ñi'ª$í`…Ñ¦“ÌªßlVého©ìÄ -> @hlock and @hlock -> <whatever __bfs() found> is not -(*R)->
- * and -(S*)->.
- */
-static inline void bfs_init_root(struct lock_list *lock,
-				 struct held_lock *hlock)
-{
-	__bfs_init_root(lock, hlock_class(hlock));
-	lock->only_xr = (hlock->read == 2);
-}
+/* Max allowed maximum utilization */
+unsigned int sysctl_sched_uclamp_util_max = SCHED_CAPACITY_SCALE;
 
 /*
- * Similar to bfs_init_root() but initialize the root for backwards BFS.
+ * By default RT tasks run at the maximum performance point/capacity of the
+ * system. Uclamp enforces this by always setting UCLAMP_MIN of RT tasks to
+ * SCHED_CAPACITY_SCALE.
  *
- * ->only_xr of the initial lock node is set to @hlock->read != 0, to make sure
- * that <next> -> @hlock and @hlock -> <whatever backwards BFS found> is not
- * -(*S)-> and -(R*)-> (reverse order of -(*R)-> and -(S*)->).
+ * This knob allows admins to change the default behavior when uclamp is being
+ * used. In battery powered devices, particularly, running at the maximum
+ * capacity and frequency will increase energy consumption and shorten the
+ * battery life.
+ *
+ * This knob only affects RT tasks that their uclamp_se->user_defined == false.
+ *
+ * This knob will not override the system default sched_util_clamp_min defined
+ * above.
  */
-static inline void bfs_init_rootb(struct lock_list *lock,
-				  struct held_lock *hlock)
-{
-	__bfs_init_root(lock, hlock_class(hlock));
-	lock->only_xr = (hlock->read != 0);
-}
+unsigned int sysctl_sched_uclamp_util_min_rt_default = SCHED_CAPACITY_SCALE;
 
-static inline struct lock_list *__bfs_next(struct lock_list *lock, int offset)
-{
-	if (!lock || !lock->parent)
-		return NULL;
-
-	return list_next_or_null_rcu(get_dep_list(lock->parent, offset),
-				     &lock->entry, struct lock_list, entry);
-}
+/* All clamps are required to be less or equal than these values */
+static struct uclamp_se uclamp_default[UCLAMP_CNT];
 
 /*
- * Breadth-First Search to find a strong path in the dependency graph.
+ * This static key is used to reduce the uclamp overhead in the fast path. It
+ * primarily disables the call to uclamp_rq_{inc, dec}() in
+ * enqueue/dequeue_task().
  *
- * @source_entry: the source of the path we are searching for.
- * @data: data used for the second parameter of @match function
- * @match: match function for the search
- * @target_entry: pointer to the target of a matched path
- * @offset: the offset to struct lock_class to determine whether it is
- *          locks_after or locks_before
+ * This allows users to continue to enable uclamp in their kernel config with
+ * minimum uclamp overhead in the fast path.
  *
- * We may have multiple edges (considering different kinds of dependencies,
- * e.g. ER and SN) between two nodes in the dependency graph. But
- * only the strong dependency path in the graph is relevant to deadlocks. A
- * strong dependency path is a dependency path that doesn't have two adjacent
- * dependencies as -(*R)-> -(S*)->, please see:
+ * As soon as userspace modifies any of the uclamp knobs, the static key is
+ * enabled, since we have an actual users that make use of uclamp
+ * functionality.
  *
- *         Documentation/locking/lockdep-design.rst
+ * The knobs that would enable this static key are:
  *
- * for more explanation of the definition of strong dependency paths
- *
- * In __bfs(), we only traverse in the strong dependency path:
- *
- *     In lock_list::only_xr, we record whether the previous dependency only
- *     has -(*R)-> in the search, and if it does (prev only has -(*R)->), we
- *     filter out any -(S*)-> in the current dependency and after that, the
- *     ->only_xr is set according to whether we only have -(*R)-> left.
+ *   * A task modifying its uclamp value with sched_setattr().
+ *   * An admin modifying the sysctl_sched_uclamp_{min, max} via procfs.
+ *   * An admin modifying the cgroup cpu.uclamp.{min, max}
  */
-static enum bfs_result __bfs(struct lock_list *source_entry,
-			     void *data,
-			     bool (*match)(struct lock_list *entry, void *data),
-			     bool (*skip)(struct lock_list *entry, void *data),
-			     struct lock_list **target_entry,
-			     int offset)
+DEFINE_STATIC_KEY_FALSE(sched_uclamp_used);
+
+/* Integer rounded range for each bucket */
+#define UCLAMP_BUCKET_DELTA DIV_ROUND_CLOSEST(SCHED_CAPACITY_SCALE, UCLAMP_BUCKETS)
+
+#define for_each_clamp_id(clamp_id) \
+	for ((clamp_id) = 0; (clamp_id) < UCLAMP_CNT; (clamp_id)++)
+
+static inline unsigned int uclamp_bucket_id(unsigned int clamp_value)
 {
-	struct circular_queue *cq = &lock_cq;
-	struct lock_list *lock = NULL;
-	struct lock_list *entry;
-	struct list_head *head;
-	unsigned int cq_depth;
-	bool first;
+	return min_t(unsigned int, clamp_value / UCLAMP_BUCKET_DELTA, UCLAMP_BUCKETS - 1);
+}
 
-	lockdep_assert_locked();
+static inline unsigned int uclamp_none(enum uclamp_id clamp_id)
+{
+	if (clamp_id == UCLAMP_MIN)
+		return 0;
+	return SCHED_CAPACITY_SCALE;
+}
 
-	__cq_init(cq);
-	__cq_enqueue(cq, source_entry);
+static inline void uclamp_se_set(struct uclamp_se *uc_se,
+				 unsigned int value, bool user_defined)
+{
+	uc_se->value = value;
+	uc_se->bucket_id = uclamp_bucket_id(value);
+	uc_se->user_defined = user_defined;
+}
 
-	while ((lock = __bfs_next(lock, offset)) || (lock = __cq_dequeue(cq))) {
-		if (!lock->class)
-			return BFS_EINVALIDNODE;
+static inline unsigned int
+uclamp_idle_value(struct rq *rq, enum uclamp_id clamp_id,
+		  unsigned int clamp_value)
+{
+	/*
+	 * Avoid blocked utilization pushing up the frequency when we go
+	 * idle (which drops the max-clamp) by retaining the last known
+	 * max-clamp.
+	 */
+	if (clamp_id == UCLAMP_MAX) {
+		rq->uclamp_flags |= UCLAMP_FLAG_IDLE;
+		return clamp_value;
+	}
 
-		/*
-		 * Step 1: check whether we already finish on this one.
-		 *
-		 * If we have visited all the dependencies from this @lock to
-		 * others (iow, if we have visited all lock_list entries in
-		 * @lock->class->locks_{after,before}) we skip, otherwise go
-		 * and visit all the dependencies in the list and mark this
-		 * list accessed.
-		 */
-		if (lock_accessed(lock))
+	return uclamp_none(UCLAMP_MIN);
+}
+
+static inline void uclamp_idle_reset(struct rq *rq, enum uclamp_id clamp_id,
+				     unsigned int clamp_value)
+{
+	/* Reset max-clamp retention only on idle exit */
+	if (!(rq->uclamp_flags & UCLAMP_FLAG_IDLE))
+		return;
+
+	WRITE_ONCE(rq->uclamp[clamp_id].value, clamp_value);
+}
+
+static inline
+unsigned int uclamp_rq_max_value(struct rq *rq, enum uclamp_id clamp_id,
+				   unsigned int clamp_value)
+{
+	struct uclamp_bucket *bucket = rq->uclamp[clamp_id].bucket;
+	int bucket_id = UCLAMP_BUCKETS - 1;
+
+	/*
+	 * Since both min and max clamps are max aggregated, find the
+	 * top most bucket with tasks in.
+	 */
+	for ( ; bucket_id >= 0; bucket_id--) {
+		if (!bucket[bucket_id].tasks)
 			continue;
-		else
-			mark_lock_accessed(lock);
-
-		/*
-		 * Step 2: check whether prev dependency and this form a strong
-		 *         dependency path.
-		 */
-		if (lock->parent) { /* Parent exists, check prev dependency */
-			u8 dep = lock->dep;
-			bool prev_only_xr = lock->parent->only_xr;
-
-			/*
-			 * Mask out all -(S*)-> if we only have *R in previous
-			 * step, because -(*R)-> -(S*)-> don't make up a strong
-			 * dependency.
-			 */
-			if (prev_only_xr)
-				dep &= ~(DEP_SR_MASK | DEP_SN_MASK);
-
-			/* If nothing left, we skip */
-			if (!dep)
-				continue;
-
-			/* If there are only -(*R)-> left, set that for the next step */
-			lock->only_xr = !(dep & (DEP_SN_MASK | DEP_EN_MASK));
-		}
-
-		/*
-		 * Step 3: we haven't visited this and there is a strong
-		 *         dependency path to this, so check with @match.
-		 *         If @skip is provide and returns true, we skip this
-		 *         lock (and any path this lock is in).
-		 */
-		if (skip && skip(lock, data))
-			continue;
-
-		if (match(lock, data)) {
-			*target_entry = lock;
-			return BFS_RMATCH;
-		}
-
-		/*
-		 * Step 4: if not match, expand the path by adding the
-		 *         forward or backwards dependencies in the search
-		 *
-		 */
-		first = true;
-		head = get_dep_list(lock, offset);
-		list_for_each_entry_rcu(entry, head, entry) {
-			visit_lock_entry(entry, lock);
-
-			/*
-			 * Note we only enqueue the first of the list into the
-			 * queue, because we can always find a sibling
-			 * dependency from one (see __bfs_next()), as a result
-			 * the space of queue is saved.
-			 */
-			if (!first)
-				continue;
-
-			first = false;
-
-			if (__cq_enqueue(cq, entry))
-				return BFS_EQUEUEFULL;
-
-			cq_depth = __cq_get_elem_count(cq);
-			if (max_bfs_queue_depth < cq_depth)
-				max_bfs_queue_depth = cq_depth;
-		}
+		return bucket[bucket_id].value;
 	}
 
-	return BFS_RNOMATCH;
+	/* No tasks -- default clamp values */
+	return uclamp_idle_value(rq, clamp_id, clamp_value);
 }
 
-static inline enum bfs_result
-__bfs_forwards(struct lock_list *src_entry,
-	       void *data,
-	       bool (*match)(struct lock_list *entry, void *data),
-	       bool (*skip)(struct lock_list *entry, void *data),
-	       struct lock_list **target_entry)
+static void __uclamp_update_util_min_rt_default(struct task_struct *p)
 {
-	return __bfs(src_entry, data, match, skip, target_entry,
-		     offsetof(struct lock_class, locks_after));
+	unsigned int default_util_min;
+	struct uclamp_se *uc_se;
 
-}
+	lockdep_assert_held(&p->pi_lock);
 
-static inline enum bfs_result
-__bfs_backwards(struct lock_list *src_entry,
-		void *data,
-		bool (*match)(struct lock_list *entry, void *data),
-	       bool (*skip)(struct lock_list *entry, void *data),
-		struct lock_list **target_entry)
-{
-	return __bfs(src_entry, data, match, skip, target_entry,
-		     offsetof(struct lock_class, locks_before));
+	uc_se = &p->uclamp_req[UCLAMP_MIN];
 
-}
-
-static void print_lock_trace(const struct lock_trace *trace,
-			     unsigned int spaces)
-{
-	stack_trace_print(trace->entries, trace->nr_entries, spaces);
-}
-
-/*
- * Print a dependency chain entry (this is only done when a deadlock
- * has been detected):
- */
-static noinline void
-print_circular_bug_entry(struct lock_list *target, int depth)
-{
-	if (debug_locks_silent)
+	/* Only sync if user didn't override the default */
+	if (uc_se->user_defined)
 		return;
-	printk("\n-> #%u", depth);
-	print_lock_name(target->class);
-	printk(KERN_CONT ":\n");
-	print_lock_trace(target->trace, 6);
+
+	default_util_min = sysctl_sched_uclamp_util_min_rt_default;
+	uclamp_se_set(uc_se, default_util_min, false);
 }
 
-static void
-print_circular_lock_scenario(struct held_lock *src,
-			     struct held_lock *tgt,
-			     struct lock_list *prt)
+static void uclamp_update_util_min_rt_default(struct task_struct *p)
 {
-	struct lock_class *source = hlock_class(src);
-	struct lock_class *target = hlock_class(tgt);
-	struct lock_class *parent = prt->class;
+	struct rq_flags rf;
+	struct rq *rq;
+
+	if (!rt_task(p))
+		return;
+
+	/* Protect updates to p->uclamp_* */
+	rq = task_rq_lock(p, &rf);
+	__uclamp_update_util_min_rt_default(p);
+	task_rq_unlock(rq, p, &rf);
+}
+
+static void uclamp_sync_util_min_rt_default(void)
+{
+	struct task_struct *g, *p;
 
 	/*
-	 * A direct locking problem where unsafe_class lock is taken
-	 * directly by safe_class lock, then all we need to show
-	 * is the deadlock scenario, as it is obvious that the
-	 * unsafe lock is taken under the safe lock.
+	 * copy_process()			sysctl_uclamp
+	 *					  uclamp_min_rt = X;
+	 *   write_lock(&tasklist_lock)		  read_lock(&tasklist_lock)
+	 *   // link thread			  smp_mb__after_spinlock()
+	 *   write_unlock(&tasklist_lock)	  read_unlock(&tasklist_lock);
+	 *   sched_post_fork()			  for_each_process_thread()
+	 *     __uclamp_sync_rt()		    __uclamp_sync_rt()
 	 *
-	 * But if there is a chain instead, where the safe lock takes
-	 * an intermediate lock (middle_class) where this lock is
-	 * not the same as the safe lock, then the lock chain is
-	 * used to describe the problem. Otherwise we would need
-	 * to show a different CPU case for each link in the chain
-	 * from the safe_class lock to the unsafe_class lock.
+	 * Ensures that either sched_post_fork() will observe the new
+	 * uclamp_min_rt or for_each_process_thread() will observe the new
+	 * task.
 	 */
-	if (parent != source) {
-		printk("Chain exists of:\n  ");
-		__print_lock_name(source);
-		printk(KERN_CONT " --> ");
-		__print_lock_name(parent);
-		printk(KERN_CONT " --> ");
-		__print_lock_name(target);
-		printk(KERN_CONT "\n\n");
-	}
+	read_lock(&tasklist_lock);
+	smp_mb__after_spinlock();
+	read_unlock(&tasklist_lock);
 
-	printk(" Possible unsafe locking scenario:\n\n");
-	printk("       CPU0                    CPU1\n");
-	printk("       ----                    ----\n");
-	printk("  lock(");
-	__print_lock_name(target);
-	printk(KERN_CONT ");\n");
-	printk("                               lock(");
-	__print_lock_name(parent);
-	printk(KERN_CONT ");\n");
-	printk("                               lock(");
-	__print_lock_name(target);
-	printk(KERN_CONT ");\n");
-	printk("  lock(");
-	__print_lock_name(source);
-	printk(KERN_CONT ");\n");
-	printk("\n *** DEADLOCK ***\n\n");
+	rcu_read_lock();
+	for_each_process_thread(g, p)
+		uclamp_update_util_min_rt_default(p);
+	rcu_read_unlock();
 }
 
-/*
- * When a circular dependency is detected, print the
- * header first:
- */
-static noinline void
-print_circular_bug_header(struct lock_list *entry, unsigned int depth,
-			struct held_lock *check_src,
-			struct held_lock *check_tgt)
+static inline struct uclamp_se
+uclamp_tg_restrict(struct task_struct *p, enum uclamp_id clamp_id)
 {
-	struct task_struct *curr = current;
-
-	if (debug_locks_silent)
-		return;
-
-	pr_warn("\n");
-	pr_warn("======================================================\n");
-	pr_warn("WARNING: possible circular locking dependency detected\n");
-	print_kernel_ident();
-	pr_warn("------------------------------------------------------\n");
-	pr_warn("%s/%d is trying to acquire lock:\n",
-		curr->comm, task_pid_nr(curr));
-	print_lock(check_src);
-
-	pr_warn("\nbut task is already holding lock:\n");
-
-	print_lock(check_tgt);
-	pr_warn("\nwhich lock already depends on the new lock.\n\n");
-	pr_warn("\nthe existing dependency chain (in reverse order) is:\n");
-
-	print_circular_bug_entry(entry, depth);
-}
-
-/*
- * We are about to add A -> B into the dependency graph, and in __bfs() a
- * strong dependency path A -> .. -> B is found: hlock_class equals
- * entry->class.
- *
- * If A -> .. -> B can replace A -> B in any __bfs() search (means the former
- * is _stronger_ than or equal to the latter), we consider A -> B as redundant.
- * For example if A -> .. -> B is -(EN)-> (i.e. A -(E*)-> .. -(*N)-> B), and A
- * -> B is -(ER)-> or -(EN)->, then we don't need to add A -> B into the
- * dependency graph, as any strong path ..-> A -> B ->.. we can get with
- * having dependency A -> B, we could already get a equivalent path ..-> A ->
- * .. -> B -> .. with A -> .. -> B. Therefore A -> B is redundant.
- *
- * We need to make sure both the start and the end of A -> .. -> B is not
- * weaker than A -> B. For the start part, please see the comment in
- * check_redundant(). For the end part, we need:
- *
- * Either
- *
- *     a) A -> B is -(*R)-> (everything is not weaker than that)
- *
- * or
- *
- *     b) A -> .. -> B is -(*N)-> (nothing is stronger than this)
- *
- */
-static inline bool hlock_equal(struct lock_list *entry, void *data)
-{
-	struct held_lock *hlock = (struct held_lock *)data;
-
-	return hlock_class(hlock) == entry->class && /* Found A -> .. -> B */
-	       (hlock->read == 2 ||  /* A -> B is -(*R)-> */
-		!entry->only_xr); /* A -> .. -> B is -(*N)-> */
-}
-
-/*
- * We are about to add B -> A into the dependency graph, and in __bfs() a
- * strong dependency path A -> .. -> B is found: hlock_class equals
- * entry->class.
- *
- * We will have a deadlock case (conflict) if A -> .. -> B -> A is a strong
- * dependency cycle, that means:
- *
- * Either
- *
- *     a) B -> A is -(E*)->
- *
- * or
- *
- *     b) A -> .. -> B is -(*N)-> (i.e. A -> .. -(*N)-> B)
- *
- * as then we don't have -(*R)-> -(S*)-> in the cycle.
- */
-static inline bool hlock_conflict(struct lock_list *entry, void *data)
-{
-	struct held_lock *hlock = (struct held_lock *)data;
-
-	return hlock_class(hlock) == entry->class && /* Found A -> .. -> B */
-	       (hlock->read == 0 || /* B -> A is -(E*)-> */
-		!entry->only_xr); /* A -> .. -> B is -(*N)-> */
-}
-
-static noinline void print_circular_bug(struct lock_list *this,
-				struct lock_list *target,
-				struct held_lock *check_src,
-				struct held_lock *check_tgt)
-{
-	struct task_struct *curr = current;
-	struct lock_list *parent;
-	struct lock_list *first_parent;
-	int depth;
-
-	if (!debug_locks_off_graph_unlock() || debug_locks_silent)
-		return;
-
-	this->trace = save_trace();
-	if (!this->trace)
-		return;
-
-	depth = get_lock_depth(target);
-
-	print_circular_bug_header(target, depth, check_src, check_tgt);
-
-	parent = get_lock_parent(target);
-	first_parent = parent;
-
-	while (parent) {
-		print_circular_bug_entry(parent, --depth);
-		parent = get_lock_parent(parent);
-	}
-
-	printk("\nother info that might help us debug this:\n\n");
-	print_circular_lock_scenario(check_src, check_tgt,
-				     first_parent);
-
-	lockdep_print_held_locks(curr);
-
-	printk("\nstack backtrace:\n");
-	dump_stack();
-}
-
-static noinline void print_bfs_bug(int ret)
-{
-	if (!debug_locks_off_graph_unlock())
-		return;
+	/* Copy by value as we could modify it */
+	struct uclamp_se uc_req = p->uclamp_req[clamp_id];
+#ifdef CONFIG_UCLAMP_TASK_GROUP
+	unsigned int tg_min, tg_max, value;
 
 	/*
-	 * Breadth-first-search failed, graph got corrupted?
+	 * Tasks in autogroups or root task group will be
+	 * restricted by system defaults.
 	 */
-	WARN(1, "lockdep bfs error:%d\n", ret);
-}
+	if (task_group_is_autogroup(task_group(p)))
+		return uc_req;
+	if (task_group(p) == &root_task_group)
+		return uc_req;
 
-static bool noop_count(struct lock_list *entry, void *data)
-{
-	(*(unsigned long *)data)++;
-	return false;
-}
-
-static unsigned long __lockdep_count_forward_deps(struct lock_list *this)
-{
-	unsigned long  count = 0;
-	struct lock_list *target_entry;
-
-	__bfs_forwards(this, (void *)&count, noop_count, NULL, &target_entry);
-
-	return count;
-}
-unsigned long lockdep_count_forward_deps(struct lock_class *class)
-{
-	unsigned long ret, flags;
-	struct lock_list this;
-
-	__bfs_init_root(&this, class);
-
-	raw_local_irq_save(flags);
-	lockdep_lock();
-	ret = __lockdep_count_forward_deps(&this);
-	lockdep_unlock();
-	raw_local_irq_restore(flags);
-
-	return ret;
-}
-
-static unsigned long __lockdep_count_backward_deps(struct lock_list *this)
-{
-	unsigned long  count = 0;
-	struct lock_list *target_entry;
-
-	__bfs_backwards(this, (void *)&count, noop_count, NULL, &target_entry);
-
-	return count;
-}
-
-unsigned long lockdep_count_backward_deps(struct lock_class *class)
-{
-	unsigned long ret, flags;
-	struct lock_list this;
-
-	__bfs_init_root(&this, class);
-
-	raw_local_irq_save(flags);
-	lockdep_lock();
-	ret = __lockdep_count_backward_deps(&this);
-	lockdep_unlock();
-	raw_local_irq_restore(flags);
-
-	return ret;
-}
-
-/*
- * Check that the dependency graph starting at <src> can lead to
- * <target> or not.
- */
-static noinline enum bfs_result
-check_path(struct held_lock *target, struct lock_list *src_entry,
-	   bool (*match)(struct lock_list *entry, void *data),
-	   bool (*skip)(struct lock_list *entry, void *data),
-	   struct lock_list **target_entry)
-{
-	enum bfs_result ret;
-
-	ret = __bfs_forwards(src_entry, target, match, skip, target_entry);
-
-	if (unlikely(bfs_error(ret)))
-		print_bfs_bug(ret);
-
-	return ret;
-}
-
-/*
- * Prove that the dependency graph starting at <src> can not
- * lead to <target>. If it can, there is a circle when adding
- * <target> -> <src> dependency.
- *
- * Print an error and return BFS_RMATCH if it does.
- */
-static noinline enum bfs_result
-check_noncircular(struct held_lock *src, struct held_lock *target,
-		  struct lock_trace **const trace)
-{
-	enum bfs_result ret;
-	struct lock_list *target_entry;
-	struct lock_list src_entry;
-
-	bfs_init_root(&src_entry, src);
-
-	debug_atomic_inc(nr_cyclic_checks);
-
-	ret = check_path(target, &src_entry, hlock_conflict, NULL, &target_entry);
-
-	if (unlikely(ret == BFS_RMATCH)) {
-		if (!*trace) {
-			/*
-			 * If save_trace fails here, the printing might
-			 * trigger a WARN but because of the !nr_entries it
-			 * should not do bad things.
-			 */
-			*trace = save_trace();
-		}
-
-		print_circular_bug(&src_entry, target_entry, src, target);
-	}
-
-	return ret;
-}
-
-#ifdef CONFIG_TRACE_IRQFLAGS
-
-/*
- * Forwards and backwards subgraph searching, for the purposes of
- * proving that two subgraphs can be connected by a new dependency
- * without creating any illegal irq-safe -> irq-unsafe lock dependency.
- *
- * A irq safe->unsafe deadlock happens with the following conditions:
- *
- * 1) We have a strong dependency path A -> ... -> B
- *
- * 2) and we have ENABLED_IRQ usage of B and USED_IN_IRQ usage of A, therefore
- *    irq can create a new dependency B -> A (consider the case that a holder
- *    of B gets interrupted by an irq whose handler will try to acquire A).
- *
- * 3) the dependency circle A -> ... -> B -> A we get from 1) and 2) is a
- *    strong circle:
- *
- *      For the usage bits of B:
- *        a) if A -> B is -(*N)->, then B -> A could be any type, so any
- *           ENABLED_IRQ usage suffices.
- *        b) if A -> B is -(*R)->, then B -> A must be -(E*)->, so only
- *           ENABLED_IRQ_*_READ usage suffices.
- *
- *      For the usage bits of A:
- *        c) if A -> B is -(E*)->, then B -> A could be any type, so any
- *           USED_IN_IRQ usage suffices.
- *        d) if A -> B is -(S*)->, then B -> A must be -(*N)->, so only
- *           USED_IN_IRQ_*_READ usage suffices.
- */
-
-/*
- * There is a strong dependency path in the dependency graph: A -> B, and now
- * we need to decide which usage bit of A should be accumulated to detect
- * safe->unsafe bugs.
- *
- * Note that usage_accumulate() is used in backwards search, so ->only_xr
- * stands for whether A -> B only has -(S*)-> (in this case ->only_xr is true).
- *
- * As above, if only_xr is false, which means A -> B has -(E*)-> dependency
- * path, any usage of A should be considered. Otherwise, we should only
- * consider _READ usage.
- */
-static inline bool usage_accumulate(struct lock_list *entry, void *mask)
-{
-	if (!entry->only_xr)
-		*(unsigned long *)mask |= entry->class->usage_mask;
-	else /* Mask out _READ usage bits */
-		*(unsigned long *)mask |= (entry->class->usage_mask & LOCKF_IRQ);
-
-	return false;
-}
-
-/*
- * There is a strong dependency path in the dependency graph: A -> B, and now
- * we need to decide which usage bit of B conflicts with the usage bits of A,
- * i.e. which usage bit of B may introduce safe->unsafe deadlocks.
- *
- * As above, if only_xr is false, which means A -> B has -(*N)-> dependency
- * path, any usage of B should be considered. Otherwise, we should only
- * consider _READ usage.
- */
-static inline bool usage_match(struct lock_list *entry, void *mask)
-{
-	if (!entry->only_xr)
-		return !!(entry->class->usage_mask & *(unsigned long *)mask);
-	else /* Mask out _READ usage bits */
-		return !!((entry->class->usage_mask & LOCKF_IRQ) & *(unsigned long *)mask);
-}
-
-static inline bool usage_skip(struct lock_list *entry, void *mask)
-{
-	/*
-	 * Skip local_lock() for irq inversion detection.
-	 *
-	 * For !RT, local_lock() is not a real lock, so it won't carry any
-	 * dependency.
-	 *
-	 * For RT, an irq inversion happens when we have lock A and B, and on
-	 * some CPU we can have:
-	 *
-	 *	lock(A);
-	 *	<interrupted>
-	 *	  lock(B);
-	 *
-	 * where lock(B) cannot sleep, and we have a dependency B -> ... -> A.
-	 *
-	 * Now we prove local_lock() cannot exist in that dependency. First we
-	 * have the observation for any lock chain L1 -> ... -> Ln, for any
-	 * 1 <= i <= n, Li.inner_wait_type <= L1.inner_wait_type, otherwise
-	 * wait context check will complain. And since B is not a sleep lock,
-	 * therefore B.inner_wait_type >= 2, and since the inner_wait_type of
-	 * local_lock() is 3, which is greater than 2, therefore there is no
-	 * way the local_lock() exists in the dependency B -> ... -> A.
-	 *
-	 * As a result, we will skip local_lock(), when we search for irq
-	 * inversion bugs.
-	 */
-	if (entry->class->lock_type == LD_LOCK_PERCPU) {
-		if (DEBUG_LOCKS_WARN_ON(entry->class->wait_type_inner < LD_WAIT_CONFIG))
-			return false;
-
-		return true;
-	}
-
-	return false;
-}
-
-/*
- * Find a node in the forwards-direction dependency sub-graph starting
- * at @root->class that matches @bit.
- *
- * Return BFS_MATCH if such a node exists in the subgraph, and put that node
- * into *@target_entry.
- */
-static enum bfs_result
-find_usage_forwards(struct lock_list *root, unsigned long usage_mask,
-			struct lock_list **target_entry)
-{
-	enum bfs_result result;
-
-	debug_atomic_inc(nr_find_usage_forwards_checks);
-
-	result = __bfs_forwards(root, &usage_mask, usage_match, usage_skip, target_entry);
-
-	return result;
-}
-
-/*
- * Find a node in the backwards-direction dependency sub-graph starting
- * at @root->class that matches @bit.
- */
-static enum bfs_result
-find_usage_backwards(struct lock_list *root, unsigned long usage_mask,
-			struct lock_list **target_entry)
-{
-	enum bfs_result result;
-
-	debug_atomic_inc(nr_find_usage_backwards_checks);
-
-	result = __bfs_backwards(root, &usage_mask, usage_match, usage_skip, target_entry);
-
-	return result;
-}
-
-static void print_lock_class_header(struct lock_class *class, int depth)
-{
-	int bit;
-
-	printk("%*s->", depth, "");
-	print_lock_name(class);
-#ifdef CONFIG_DEBUG_LOCKDEP
-	printk(KERN_CONT " ops: %lu", debug_class_ops_read(class));
+	tg_min = task_group(p)->uclamp[UCLAMP_MIN].value;
+	tg_max = task_group(p)->uclamp[UCLAMP_MAX].value;
+	value = uc_req.value;
+	value = clamp(value, tg_min, tg_max);
+	uclamp_se_set(&uc_req, value, false);
 #endif
-	printk(KERN_CONT " {\n");
 
-	for (bit = 0; bit < LOCK_TRACE_STATES; bit++) {
-		if (class->usage_mask & (1 << bit)) {
-			int len = depth;
-
-			len += printk("%*s   %s", depth, "", usage_str[bit]);
-			len += printk(KERN_CONT " at:\n");
-			print_lock_trace(class->usage_traces[bit], len);
-		}
-	}
-	printk("%*s }\n", depth, "");
-
-	printk("%*s ... key      at: [<%px>] %pS\n",
-		depth, "", class->key, class->key);
+	return uc_req;
 }
 
 /*
- * Dependency path printing:
- *
- * After BFS we get a lock dependency path (linked via ->parent of lock_list),
- * printing out each lock in the dependency path will help on understanding how
- * the deadlock could happen. Here are some details about dependency path
- * printing:
- *
- * 1)	A lock_list can be either forwards or backwards for a lock dependency,
- * 	for a lock dependency A -> B, there are two lock_lists:
- *
- * 	a)	lock_list in the ->locks_after list of A, whose ->class is B and
- * 		->links_to is A. In this case, we can say the lock_list is
- * 		"A -> B" (forwards case).
- *
- * 	b)	lock_list in the ->locks_before list of B, whose ->class is A
- * 		and ->links_to is B. In this case, we can say the lock_list is
- * 		"B <- A" (bacwards case).
- *
- * 	The ->trace of both a) and b) point to the call trace where B was
- * 	acquired with A held.
- *
- * 2)	A "helper" lock_list is introduced during BFS, this lock_list doesn't
- * 	represent a certain lock dependency, it only provides an initial entry
- * 	for BFS. For example, BFS may introduce a "helper" lock_list whose
- * 	->class is A, as a result BFS will search all dependencies starting with
- * 	A, e.g. A -> B or A -> C.
- *
- * 	The notation of a forwards helper lock_list is like "-> A", which means
- * 	we should search the forwards dependencies starting with "A", e.g A -> B
- * 	or A -> C.
- *
- * 	The notation of a bacwards helper lock_list is like "<- B", which means
- * 	we should search the backwards dependencies ending with "B", e.g.
- * 	B <- A or B <- C.
+ * The effective clamp bucket index of a task depends on, by increasing
+ * priority:
+ * - the task specific clamp value, when explicitly requested from userspace
+ * - the task group effective clamp value, for tasks not either in the root
+ *   group or in an autogroup
+ * - the system default clamp value, defined by the sysadmin
  */
-
-/*
- * printk the shortest lock dependencies from @root to @leaf in reverse order.
- *
- * We have a lock dependency path as follow:
- *
- *    @root                                                                 @leaf
- *      |                                                                     |
- *      V                                                                     V
- *	          ->parent                                   ->parent
- * | lock_list | <--------- | lock_list | ... | lock_list  | <--------- | lock_list |
- * |    -> L1  |            | L1 -> L2  | ... |Ln-2 -> Ln-1|            | Ln-1 -> Ln|
- *
- * , so it's natural that we start from @leaf and print every ->class and
- * ->trace until we reach the @root.
- */
-static void __used
-print_shortest_lock_dependencies(struct lock_list *leaf,
-				 struct lock_list *root)
+static inline struct uclamp_se
+uclamp_eff_get(struct task_struct *p, enum uclamp_id clamp_id)
 {
-	struct lock_list *entry = leaf;
-	int depth;
+	struct uclamp_se uc_req = uclamp_tg_restrict(p, clamp_id);
+	struct uclamp_se uc_max = uclamp_default[clamp_id];
 
-	/*compute depth from generated tree by BFS*/
-	depth = get_lock_depth(leaf);
+	/* System default restrictions always apply */
+	if (unlikely(uc_req.value > uc_max.value))
+		return uc_max;
 
-	do {
-		print_lock_class_header(entry->class, depth);
-		printk("%*s ... acquired at:\n", depth, "");
-		print_lock_trace(entry->trace, 2);
-		printk("\n");
+	return uc_req;
+}
 
-		if (depth == 0 && (entry != root)) {
-			printk("lockdep:%s bad path found in chain graph\n", __func__);
-			break;
-		}
+unsigned long uclamp_eff_value(struct task_struct *p, enum uclamp_id clamp_id)
+{
+	struct uclamp_se uc_eff;
 
-		entry = get_lock_parent(entry);
-		depth--;
-	} while (entry && (depth >= 0));
+	/* Task currently refcounted: use back-annotated (effective) value */
+	if (p->uclamp[clamp_id].active)
+		return (unsigned long)p->uclamp[clamp_id].value;
+
+	uc_eff = uclamp_eff_get(p, clamp_id);
+
+	return (unsigned long)uc_eff.value;
 }
 
 /*
- * printk the shortest lock dependencies from @leaf to @root.
+ * When a task is enqueued on a rq, the clamp bucket currently defined by the
+ * task's uclamp::bucket_id is refcounted on that rq. This also immediately
+ * updates the rq's clamp value if required.
  *
- * We have a lock dependency path (from a backwards search) as follow:
- *
- *    @leaf                                                                 @root
- *      |                                                                     |
- *      V                                                                     V
- *	          ->parent                                   ->parent
- * | lock_list | ---------> | lock_list | ... | lock_list  | ---------> | lock_list |
- * | L2 <- L1  |            | L3 <- L2  | ... | Ln <- Ln-1 |            |    <- Ln  |
- *
- * , so when we iterate from @leaf to @root, we actually print the lock
- * dependency path L1 -> L2 -> .. -> Ln in the non-reverse order.
- *
- * Another thing to notice here is that ->class of L2 <- L1 is L1, while the
- * ->trace of L2 <- L1 is the call trace of L2, in fact we don't have the call
- * trace of L1 in the dependency path, which is alright, because most of the
- * time we can figure out where L1 is held from the call trace of L2.
+ * Tasks can have a task-specific value requested from user-space, track
+ * within each bucket the maximum value for tasks refcounted in it.
+ * This "local max aggregation" allows to track the exact "requested" value
+ * for each bucket when all its RUNNABLE tasks require the same clamp.
  */
-static void __used
-print_shortest_lock_dependencies_backwards(struct lock_list *leaf,
-					   struct lock_list *root)
+static inline void uclamp_rq_inc_id(struct rq *rq, struct task_struct *p,
+				    enum uclamp_id clamp_id)
 {
-	struct lock_list *entry = leaf;
-	const struct lock_trace *trace = NULL;
-	int depth;
+	struct uclamp_rq *uc_rq = &rq->uclamp[clamp_id];
+	struct uclamp_se *uc_se = &p->uclamp[clamp_id];
+	struct uclamp_bucket *bucket;
 
-	/*compute depth from generated tree by BFS*/
-	depth = get_lock_depth(leaf);
+	lockdep_assert_rq_held(rq);
 
-	do {
-		print_lock_class_header(entry->class, depth);
-		if (trace) {
-			printk("%*s ... acquired at:\n", depth, "");
-			print_lock_trace(trace, 2);
-			printk("\n");
-		}
+	/* Update task effective clamp */
+	p->uclamp[clamp_id] = uclamp_eff_get(p, clamp_id);
 
-		/*
-		 * Record the pointer to the trace for the next lock_list
-		 * entry, see the comments for the function.
-		 */
-		trace = entry->trace;
+	bucket = &uc_rq->bucket[uc_se->bucket_id];
+	bucket->tasks++;
+	uc_se->active = true;
 
-		if (depth == 0 && (entry != root)) {
-			printk("lockdep:%s bad path found in chain graph\n", __func__);
-			break;
-		}
-
-		entry = get_lock_parent(entry);
-		depth--;
-	} while (entry && (depth >= 0));
-}
-
-static void
-print_irq_lock_scenario(struct lock_list *safe_entry,
-			struct lock_list *unsafe_entry,
-			struct lock_class *prev_class,
-			struct lock_class *next_class)
-{
-	struct lock_class *safe_class = safe_entry->class;
-	struct lock_class *unsafe_class = unsafe_entry->class;
-	struct lock_class *middle_class = prev_class;
-
-	if (middle_class == safe_class)
-		middle_class = next_class;
+	uclamp_idle_reset(rq, clamp_id, uc_se->value);
 
 	/*
-	 * A direct locking problem where unsafe_class lock is taken
-	 * directly by safe_class lock, then all we need to show
-	 * is the deadlock scenario, as it is obvious that the
-	 * unsafe lock is taken under the safe lock.
-	 *
-	 * But if there is a chain instead, where the safe lock takes
-	 * an intermediate lock (middle_class) where this lock is
-	 * not the same as the safe lock, then the lock chain is
-	 * used to describe the problem. Otherwise we would need
-	 * to show a different CPU case for each link in the chain
-	 * from the safe_class lock to the unsafe_class lock.
+	 * Local max aggregation: rq buckets always track the max
+	 * "requested" clamp value of its RUNNABLE tasks.
 	 */
-	if (middle_class != unsafe_class) {
-		printk("Chain exists of:\n  ");
-		__print_lock_name(safe_class);
-		printk(KERN_CONT " --> ");
-		__print_lock_name(middle_class);
-		printk(KERN_CONT " --> ");
-		__print_lock_name(unsafe_class);
-		printk(KERN_CONT "\n\n");
-	}
+	if (bucket->tasks == 1 || uc_se->value > bucket->value)
+		bucket->value = uc_se->value;
 
-	printk(" Possible interrupt unsafe locking scenario:\n\n");
-	printk("       CPU0                    CPU1\n");
-	printk("       ----                    ----\n");
-	printk("  lock(");
-	__print_lock_name(unsafe_class);
-	printk(KERN_CONT ");\n");
-	printk("                               local_irq_disable();\n");
-	printk("                               lock(");
-	__print_lock_name(safe_class);
-	printk(KERN_CONT ");\n");
-	printk("                               lock(");
-	__print_lock_name(middle_class);
-	printk(KERN_CONT ");\n");
-	printk("  <Interrupt>\n");
-	printk("    lock(");
-	__print_lock_name(safe_class);
-	printk(KERN_CONT ");\n");
-	printk("\n *** DEADLOCK ***\n\n");
+	if (uc_se->value > READ_ONCE(uc_rq->value))
+		WRITE_ONCE(uc_rq->value, uc_se->value);
 }
 
-static void
-print_bad_irq_dependency(struct task_struct *curr,
-			 struct lock_list *prev_root,
-			 struct lock_list *next_root,
-			 struct lock_list *backwards_entry,
-			 struct lock_list *forwards_entry,
-			 struct held_lock *prev,
-			 struct held_lock *next,
-			 enum lock_usage_bit bit1,
-			 enum lock_usage_bit bit2,
-			 const char *irqclass)
+/*
+ * When a task is dequeued from a rq, the clamp bucket refcounted by the task
+ * is released. If this is the last task reference counting the rq's max
+ * active clamp value, then the rq's clamp value is updated.
+ *
+ * Both refcounted tasks and rq's cached clamp values are expected to be
+ * always valid. If it's detected they are not, as defensive programming,
+ * enforce the expected state and warn.
+ */
+static inline void uclamp_rq_dec_id(struct rq *rq, struct task_struct *p,
+				    enum uclamp_id clamp_id)
 {
-	if (!debug_locks_off_graph_unlock() || debug_locks_silent)
+	struct uclamp_rq *uc_rq = &rq->uclamp[clamp_id];
+	struct uclamp_se *uc_se = &p->uclamp[clamp_id];
+	struct uclamp_bucket *bucket;
+	unsigned int bkt_clamp;
+	unsigned int rq_clamp;
+
+	lockdep_assert_rq_held(rq);
+
+	/*
+	 * If sched_uclamp_used was enabled after task @p was enqueued,
+	 * we could end up with unbalanced call to uclamp_rq_dec_id().
+	 *
+	 * In this case the uc_se->active flag should be false since no uclamp
+	 * accounting was performed at enqueue time and we can just return
+	 * here.
+	 *
+	 * Need to be careful of the following enqueue/dequeue ordering
+	 * problem too
+	 *
+	 *	enqueue(taskA)
+	 *	// sched_uclamp_used gets enabled
+	 *	enqueue(taskB)
+	 *	dequeue(taskA)
+	 *	// Must not decrement bucket->tasks here
+	 *	dequeue(taskB)
+	 *
+	 * where we could end up with stale data in uc_se and
+	 * bucket[uc_se->bucket_id].
+	 *
+	 * The following check here eliminates the possibility of such race.
+	 */
+	if (unlikely(!uc_se->active))
 		return;
 
-	pr_warn("\n");
-	pr_warn("=====================================================\n");
-	pr_warn("WARNING: %s-safe -> %s-unsafe lock order detected\n",
-		irqclass, irqclass);
-	print_kernel_ident();
-	pr_warn("-----------------------------------------------------\n");
-	pr_warn("%s/%d [HC%u[%lu]:SC%u[%lu]:HE%u:SE%u] is trying to acquire:\n",
-		curr->comm, task_pid_nr(curr),
-		lockdep_hardirq_context(), hardirq_count() >> HARDIRQ_SHIFT,
-		curr->softirq_context, softirq_count() >> SOFTIRQ_SHIFT,
-		lockdep_hardirqs_enabled(),
-		curr->softirqs_enabled);
-	print_lock(next);
+	bucket = &uc_rq->bucket[uc_se->bucket_id];
 
-	pr_warn("\nand this task is already holding:\n");
-	print_lock(prev);
-	pr_warn("which would create a new lock dependency:\n");
-	print_lock_name(hlock_class(prev));
-	pr_cont(" ->");
-	print_lock_name(hlock_class(next));
-	pr_cont("\n");
+	SCHED_WARN_ON(!bucket->tasks);
+	if (likely(bucket->tasks))
+		bucket->tasks--;
 
-	pr_warn("\nbut this new dependency connects a %s-irq-safe lock:\n",
-		irqclass);
-	print_lock_name(backwards_entry->class);
-	pr_warn("\n... which became %s-irq-safe at:\n", irqclass);
+	uc_se->active = false;
 
-	print_lock_trace(backwards_entry->class->usage_traces[bit1], 1);
+	/*
+	 * Keep "local max aggregation" simple and accept to (possibly)
+	 * overboost some RUNNABLE tasks in the same bucket.
+	 * The rq clamp bucket value is reset to its base value whenever
+	 * there are no more RUNNABLE tasks refcounting it.
+	 */
+	if (likely(bucket->tasks))
+		return;
 
-	pr_warn("\nto a %s-irq-unsafe lock:\n", irqclass);
-	print_lock_name(forwards_entry->class);
-	pr_warn("\n... which became %s-irq-unsafe at:\n", irqclass);
-	pr_warn("...");
+	rq_clamp = READ_ONCE(uc_rq->value);
+	/*
+	 * Defensive programming: this should never happen. If it happens,
+	 * e.g. due to future modification, warn and fixup the expected value.
+	 */
+	SCHED_WARN_ON(bucket->value > rq_clamp);
+	if (bucket->value >= rq_clamp) {
+		bkt_clamp = uclamp_rq_max_value(rq, clamp_id, uc_se->value);
+		WRITE_ONCE(uc_rq->value, bkt_clamp);
+	}
+}
 
-	print_lock_trace(forwards_entry->class->usage_traces[bit2], 1);
+static inline void uclamp_rq_inc(struct rq *rq, struct task_struct *p)
+{
+	enum uclamp_id clamp_id;
 
-	pr_warn("\nother info that might help us debug this:\n\n");
-	print_irq_lock_scenario(backwards_entry, forwards_entry,
-				hlock_class(prev), hlock_class(next));
+	/*
+	 * Avoid any overhead until uclamp is actually used by the userspace.
+	 *
+	 * The condition is constructed such that a NOP is generated when
+	 * sched_uclamp_used is disabled.
+	 */
+	if (!static_branch_unlikely(&sched_uclamp_used))
+		return;
 
-	lockdep_print_held_locks(curr);
+	if (unlikely(!p->sched_class->uclamp_enabled))
+		return;
 
-	pr_warn("\nthe dependencies between %s-irq-safe lock and the holding lock:\n", irqclass);
-	print_shortest_lock_dependencies_backwards(backwards_entry, prev_root);
+	for_each_clamp_id(clamp_id)
+		uclamp_rq_inc_id(rq, p, clamp_id);
 
-	pr_warn("\nthe dependencies between the lock to be acquired");
-	pr_warn(" and %s-irq
+	/* Reset clamp idle holding when there is one RUNNABLE task */
+	if (rq->uclamp_flags & UCLAMP_FLAG_IDLE)
+		rq->uclamp_flags &= ~UCLAMP_FLAG_IDLE;
+}
+
+static inline void uclamp_rq_dec(struct rq *rq, struct task_struct *p)
+{
+	enum uclamp_id clamp_id;
+
+	/*
+	 * Avoid any overhead until uclamp is actually used by the userspace.
+	 *
+	 * The condition is constructed such that a NOP is generated when
+	 * sched_uclamp_used is disabled.
+	 */
+	if (!static_branch_unlikely(&sched_uclamp_used))
+		return;
+
+	if (unlikely(!p->sched_class->uclamp_enabled))
+		return;
+
+	for_each_clamp_id(clamp_id)
+		uclamp_rq_dec_id(rq, p, clamp_id);
+}
+
+static inline void uclamp_rq_reinc_id(struct rq *rq, struct task_struct *p,
+				      enum uclamp_id clamp_id)
+{
+	if (!p->uclamp[clamp_id].active)
+		return;
+
+	uclamp_rq_dec_id(rq, p, clamp_id);
+	uclamp_rq_inc_id(rq, p, clamp_id);
+
+	/*
+	 * Make sure to clear the idle flag if we've transiently reached 0
+	 * active tasks on rq.
+	 */
+	if (clamp_id == UCLAMP_MAX && (rq->uclamp_flags & UCLAMP_FLAG_IDLE))
+		rq->uclamp_flags &= ~UCLAMP_FLAG_IDLE;
+}
+
+static inline void
+uclamp_update_active(struct task_struct *p)
+{
+	enum uclamp_id clamp_id;
+	struct rq_flags rf;
+	struct rq *rq;
+
+	/*
+	 * Lock the task and the rq where the task is (or was) queued.
+	 *
+	 * We might lock the (previous) rq of a !RUNNABLE task, but that's the
+	 * price to pay to safely serialize util_{min,max} updates with
+	 * enqueues, dequeues and migration operations.
+	 * This is the same locking schema used by __set_cpus_allowed_ptr().
+	 */
+	rq = task_rq_lock(p, &rf);
+
+	/*
+	 * Setting the clamp bucket is serialized by task_rq_lock().
+	 * If the task is not yet RUNNABLE and its task_struct is not
+	 * affecting a valid clamp bucket, the next time it's enqueued,
+	 * it will already see the updated clamp bucket value.
+	 */
+	for_each_clamp_id(clamp_id)
+		uclamp_rq_reinc_id(rq, p, clamp_id);
+
+	task_rq_unlock(rq, p, &rf);
+}
+
+#ifdef CONFIG_UCLAMP_TASK_GROUP
+static inline void
+uclamp_update_active_tasks(struct cgroup_subsys_state *css)
+{
+	struct css_task_iter it;
+	struct task_struct *p;
+
+	css_task_iter_start(css, 0, &it);
+	while ((p = css_task_iter_next(&it)))
+		uclamp_update_active(p);
+	css_task_iter_end(&it);
+}
+
+static void cpu_util_update_eff(struct cgroup_subsys_state *css);
+static void uclamp_update_root_tg(void)
+{
+	struct task_group *tg = &root_task_group;
+
+	uclamp_se_set(&tg->uclamp_req[UCLAMP_MIN],
+		      sysctl_sched_uclamp_util_min, false);
+	uclamp_se_set(&tg->uclamp_req[UCLAMP_MAX],
+		      sysctl_sched_uclamp_util_max, false);
+
+	rcu_read_lock();
+	cpu_util_update_eff(&root_task_group.css);
+	rcu_read_unlock();
+}
+#else
+static void uclamp_update_root_tg(void) { }
+#endif
+
+int sysctl_sched_uclamp_handler(struct ctl_table *table, int write,
+				void *buffer, size_t *lenp, loff_t *ppos)
+{
+	bool update_root_tg = false;
+	int old_min, old_max, old_min_rt;
+	int result;
+
+	mutex_lock(&uclamp_mutex);
+	old_min = sysctl_sched_uclamp_util_min;
+	old_max = sysctl_sched_uclamp_util_max;
+	old_min_rt = sysctl_sched_uclamp_util_min_rt_default;
+
+	result = proc_dointvec(table, write, buffer, lenp, ppos);
+	if (result)
+		goto undo;
+	if (!write)
+		goto done;
+
+	if (sysctl_sched_uclamp_util_min > sysctl_sched_uclamp_util_max ||
+	    sysctl_sched_uclamp_util_max > SCHED_CAPACITY_SCALE	||
+	    sysctl_sched_uclamp_util_min_rt_default > SCHED_CAPACITY_SCALE) {
+
+		result = -EINVAL;
+		goto undo;
+	}
+
+	if (old_min != sysctl_sched_uclamp_util_min) {
+		uclamp_se_set(&uclamp_default[UCLAMP_MIN],
+			      sysctl_sched_uclamp_util_min, false);
+		update_root_tg = true;
+	}
+	if (old_max != sysctl_sched_uclamp_util_max) {
+		uclamp_se_set(&uclamp_default[UCLAMP_MAX],
+			      sysctl_sched_uclamp_util_max, false);
+		update_root_tg = true;
+	}
+
+	if (update_root_tg) {
+		static_branch_enable(&sched_uclamp_used);
+		uclamp_update_root_tg();
+	}
+
+	if (old_min_rt != sysctl_sched_uclamp_util_min_rt_default) {
+		static_branch_enable(&sched_uclamp_used);
+		uclamp_sync_util_min_rt_default();
+	}
+
+	/*
+	 * We update all RUNNABLE tasks only when task groups are in use.
+	 * Otherwise, keep it simple and do just a lazy update at each next
+	 * task enqueue time.
+	 */
+
+	goto done;
+
+undo:
+	sysctl_sched_uclamp_util_min = old_min;
+	sysctl_sched_uclamp_util_max = old_max;
+	sysctl_sched_uclamp_util_min_rt_default = old_min_rt;
+done:
+	mutex_unlock(&uclamp_mutex);
+
+	return result;
+}
+
+static int uclamp_validate(struct task_struct *p,
+			   const struct sched_attr *attr)
+{
+	int util_min = p->uclamp_req[UCLAMP_MIN].value;
+	int util_max = p->uclamp_req[UCLAMP_MAX].value;
+
+	if (attr->sched_flags & SCHED_FLAG_UTIL_CLAMP_MIN) {
+		util_min = attr->sched_util_min;
+
+		if (util_min + 1 > SCHED_CAPACITY_SCALE + 1)
+			return -EINVAL;
+	}
+
+	if (attr->sched_flags & SCHED_FLAG_UTIL_CLAMP_MAX) {
+		util_max = attr->sched_util_max;
+
+		if (util_max + 1 > SCHED_CAPACITY_SCALE + 1)
+			return -EINVAL;
+	}
+
+	if (util_min != -1 && util_max != -1 && util_min > util_max)
+		return -EINVAL;
+
+	/*
+	 * We have valid uclamp attributes; make sure uclamp is enabled.
+	 *
+	 * We need to do that here, because enabling static branches is a
+	 * blocking operation which obviously cannot be done while holding
+	 * scheduler locks.
+	 */
+	static_branch_enable(&sched_uclamp_used);
+
+	return 0;
+}
+
+static bool uclamp_reset(const struct sched_attr *attr,
+			 enum uclamp_id clamp_id,
+			 struct uclamp_se *uc_se)
+{
+	/* Reset on sched cl®+v_µøŸ-ğèkÅès6-ëtÛéÎ•7%“p"8ñ²Ñ6Ÿİ“!J]3’FÅÇ;™ãhÃáfrLñŞ²KlÌ©OcàÑBÑïnö9ãÍÌõu4İ!0³!ñº¤ƒ.ìQ£y4ÒÖì¤C^º(Ó•çîÁ^v:Èéş”`hdì¼n}‰ìÂcİÌÇ´L¸â.À|nyîu£‡&@÷(ã‡]À¬¡0| ’½Wübg~UÎXI­ñ'¤7ö]%~OxæË7Ÿz Zw˜ª,7Œá@àxbDË¡ ûÆm£yë
+ ƒó¤ñÙæ«‰lt4Ã~¹½³´XU¤uI!<­sĞIq:šEriÛôÉ™Z•ˆp'Œa*ùEs.´,™	Ë?=ğ/\ïi"£ÜcØ[#yWÎ2ñ&óÀ!GyÓB$G2úO4Œëƒ&æuWH¼Tš7» _B_ŠÙŠ\x×Z)şløI{÷§é¨G)ßaĞøwŒ€—ñºª3ÊõÈìlJG¦‹ZQ×—Ãòƒ”¨ÀRšMË±®û•å
+Ğ8ÊÉ&
+…8RòE7%¦b]˜rmE~Ci9Á¬†c°ø“DJVYkW¡—W¹ôÊ#ùHŠàÆ~—”ãO5S@ÏXj²Í_“f4¶¹™^Æ Â5…à†¤³2bı¡–2¢Ûë]vjíçÁÈ¦çeÈ“¨”Í´é'IöQ¾¬ …’¤\¼õ¢=eoÎ{ñ*/&Ö=>†„È—Xğô%m9Î{b/:¢›O’ `(ª%á´“õXÌÍ.(öæùCœÇBxZeù’Cçí}„¨«ëÕR¿ËWös÷«²pÒç”wç$§˜MAÊ
+Z¢¥VûÌ‚fe £}È²]æxÈ«¯òÂ†a*İ°y¤Ïå™S÷°'N‡ŒÇ»Šà$ò-˜Y°µ¦ Ä~¡:É¸^ñBrÎñÄâî«ag²ïk‡ÓÙ¾»¢¼ÛÔf›0f¶³¤èÏğl"„¥õ†œbÈÓYì¹-SÙ 'áÑàÖü©“f}ˆ@XëÜ~øg«ŠşG°0§=0=NF+3'K¡úÈ”³˜Š‹j«î„7Be•¸Ø¢Iº¸Í˜ssØyQ½m›~i™aè0dÕó÷ØY€‡0Ö]Uíå¦Bd*rƒøÈá:â%”°òÅ_(ëf˜t0ûG’»6,—¨\¹¦œ0šB Ô§ÅœÜÃí	`j«¶PXâCw˜^µ³èöJ”×XVçÅí=rÅC.Ğ6’ç¬_Tö"ÜòW»ƒää$ÒnDE©ªÔÂ[nˆ{—3,»˜oŒbötº7ÉUKÕ¯Ç^ºrÇ8¢¬Kd
+ÀÊùÅõŞÙ¢İ–¾·cåğØ)M>­@pj‡u!»÷.ş™º'"dT¦'®rF/ÈæAVìM¸Ö­±]‹oî]÷"³!ÿğ—zÔ–_EBÚZ«w)~î’:îÀPyG•OiJ•6¸Åá–&cƒ|I!GÄöP’\»kb££´Ï
+©ØŞú5¯iªYy~“¡½.N¥z ÉÙğîÆî—?³f¹0y!à{ÿ›Ô8±Ï^l¿²=ÖaæVäm ¢¯Ğëş.İÑü–	Æ("lúœÚ¦.4¦$¢O½Iél	xvT¬z»i´pÏ¶I±P­İ8bC]·ñàãûH6à5N$…xe­(Û†Dÿ¹k\âFT´vá‡¨füJÃQÕÔU([wBócÉŸwº²êì9±îğ~(b3€À4 Yƒ;TB(Ö™2oµ©‘°
+åsµAãQL¤œgÏÉ™­ïaZİ?òHG|9mEFqA2qxû%dNÁîr´å~{VCp] p^¬ şş_†­b¦cı\&Óò¡8	õSéàïØd{;Ø'	r‹ì^*LÂFD<gÖŸĞá¬#¢œÿh½â„˜y‹ãáBÇŒ®æÿúœ’Sø)KU!¾ßıy
+ÔÂc2r¶ûœë±´l¬åŸçxÊäœ
+¨MHøªenMÚ² ±{¹æ{™à#á\˜èË±ÊğU_;††ÖÖB™êºz0sæUb.Ä—;0ø`l¯=~4cËA5ÊËqß‰@ª½Aå“j|´‘GD-ìå«NŠ»høs<sC¬âHÔ\X(CSKC¡½ÉJöíoÕüp	*1uE]+ß7(77§l4›D	¸oĞE"qã¼(ç´Œ)ˆõ¥¶}«C3@4E»ŞÉ73¢ïšû‰wQ_ÓfúF€(^T¦>¯ÔÍuæ²tÅ=]…éö€ğ_1şö]ñÜ—"Ôàs‘†®hü‰{~Ëæthß£„cJş<6–´A·k—º~³ŸZ²÷‡¤á®¢Œ8´¿° )L®ºk«ÎÔ(Ë¼V|¬ê/öÕ‡$bğNË‘Jö¾ÁÊÔNÚñ¡'|OPÆ„S ˜LîÄŞÜóMWò49Ç…Çª„™}²µ9y"<G%·9šmÄ€°u
+e”&Ûn_›ÑÈ¡R]h(ßªÑ»ÙuÊyÙèûfê!j±_N¾‹“‘û³¶u¸{P[d¦=7P„UäåÙ˜j½ŒæĞ4	ëúF5±q	`Ô®8Øqv«­ûJÂ})TjÇs_ê•jsÄ@U;»ïµ¼îĞJd.€G¿N½?ôBUtÁù:XÆŒpY0®eV° ÂsÇDOjy£œEë%;#Ê¼¢í‰ ï6‡ãfI?0LË‚¥‘ccVdĞIµŒ¿ôÄò]{Bj^†oU&àV+UÂO8YÁôoªı•¸“­~‰ğÀF^;áš7;"(÷U…úÈ†ªº¶€)oÍÎ/‹ºíSlÎ"eP^–1>v«VÏ‡ş¹=Ød³$„5Å3iã
+b©J÷sğ»™œpÒ-‡@ô²êM8	¬tÕ‰OÿGÓD!ûÄÅp¤¢q§xG¼ÔúixS¸ãº
+¬ì•B;tƒt¥ó’Kgà„³º›È‘iÈçáq?åG†õ[|¸Ò× £ºöå #¤ˆ|æ¼èµ0×Ú•®?|U¿QÜ~ ì 1ˆÄ6­+uë·™¨ù'”X‹Ö %e‰ŞFæÏ§c||áŒ>ŞIULe"vO“tHéÕÖ»Õ àMÙqc‘/Äø+üÃôÍ#.¾˜Îh¬fEz×BN»®V×€½F³[˜€<€UnauÏpdäšóşDîV¦ñPš&´ÿ¶×È%LP¬DTIìtnó[>Í-]9ÿªNéyH-HùšlºëòYNTæ€p3&êÿLÈtI^(Cõ7ò…œ¼ÊÌMqPğ¥Zï£Y-È˜ÎaSúÁƒyØ™F•µ´Qû>!ç.ZP'!Y'Zàâş'š‚Â²3+£•“ T[˜}¹Iªl¼E—W+—ËE¼u-èçiÿ^ª+gIğ-¸wFßXL(‹â—ñ˜ÅÂ"º€õÈüßˆ“œ¼¤g³7ä¾|¥>YŸo2Éîò1-•×…9w4®¿Û­$‚”ºÛ<Ø:œxX÷s*¼ìJQá}ÌÊ½\'Á>e­2ùÀ?¾ép¾»#@äL	o`ÇßÌ—†68ÃŠwqm€®£ã™öëšV®ø[l¶fYÃMK£RsêÕŒ^æ•ÆÄh×31Ü3ÍiÀïÕÈôŠkÛ’å¸QP;DrıY•n%¢#©V—ÂX=Dık¼pİC•>dH(0PMÿ=v|¯¼Ê}á‹4şüdkM§®u>?“ú¹ê1O!è!:;_Ş7ğB© ˆ<KâØ«ìšwq$ÑÉÖ¬ç+Ñ¨<¢Æ“É;h©L–âíôõ]HWóÎÛh[§¸^Ãşé–õW~1_•ÑÓ3Ze`ñ7Ø% }‹Gª˜@H8bšHó!ş
+æÓTí>eÃ_ğÙ¢¨W~'Ğ/.´Q ò±>Y·GqüTŒïe­ë£©X¼ÕB[ 3%\ÛÀÄßCû ¬cI<Æ\ÔxÕ	bßØU¿Ÿ¸ã…jQÌöæ3C ÷ûŠ¯.•5f…ô9n¶46Gk¯ÁM$‰§¸Z\X`ıƒÉè`ÔÊ&1ïˆ;€®"¯áØÿğ†Ï_ğ.cğËãw¬`³ÛÅ÷ÄànôÆë\ëV'”"tÑæıvº0ì€™Úº¥µº¡ÂyE]ë¨êXúÕ®±½H¼ mß£ ğ“öz[QÁÑ>6?±õ`§ÑT™Ñk½×ºr«•£İnøíòÀé€¢æ¶„”ıŠyõP¤¸ÒœI—¨qºZ¬/‡§êiî6"=²˜)›¶ê_˜ô3ŸF½cØt=$³JÎ4{
+ãVèT,&¶“õr¨È…%í’˜‚!p¢õx+ÅL¶ˆ‹sïU‰øËÎ’ˆtğ‹¬x!Æ÷èˆ³Ò|OKŸÌ{¡^ò!uµÀ)««?>™ãA¶.©ã`È‘I¤ õ!ZeÖ.³xxX§‰WËNC¨~æe5ŒÖı"$4[J¥QD£¢I¾Í«BÔÖî3^‘S‘7)£#Ò]sdğÙèkecÙnJ¿Áy£¥Ğ™Hîƒz&Ò«”ò½W0Òd“LŒ™ÿ¿]Ÿ
+laÂÁh„n˜4PöD‰m5¯ø$Àª-¸C£îÆ›
+d Áå¨«¸í	Òô²‚(ßó—áã,ïHgb2¿7úN¥û4ªÎ¤ ˜<©%ı)+—vY	—é[F'ÛMÂ”ijàl³tS"ã»¹:à‹¸Pb5]¯5|ZªLTNs¨æØ=r,<ÊÍ[ån•yºzÏÏX†³;töú‘?WwB´#Ğ‘Šô¾c9UtÜó£?¤Ôw¸1‡Ğ€Oäêæ¹xÏ×Dw¹2 Æ!¤H†ì_eèÉ¨ÔûT,GİË˜óàw}»’£Ò­èUÙŠÔ,¤[ƒÇ•¥]o6HãÚi9À» ¯æŒ y€9tÛ`¾x²":ˆ¤Ï‘\J:ÚšG=‘ì›|ÿyR´@Ü|gT›è¿%	è¢›tÔK_¢eBÌxÅâÌA°’¸´Ù›b6¹û’#GìmV?|NÍ”lºØÈCJúáÜò45NÔ'Fq\ªZù¤ßéÌ|¢°U£Â‹ !Í£Ô…uaQ¸'yFN³´•Û;XVL:”ËUßU‚«Yá›L"˜uu=`Sà_²z‚[©H®«ÿ0ßä–ïÊ( 7ŒÈ8ĞÒ{Æø9Ü§í{ÉñXZË@â0Äú”ŞË6LüİÂa>Ü«˜Œ¿µš_ÕêˆNkSøI ë—•)sÆq*n„ùfãÒÃJÍh4>ãâfóñÅF{ÅôJè%ù]^c¹@-0¿!ÿ>’}@Éú‹ÅÔÄ…çó'y`åj“š0Í¢XŞ°S¨ñ%²şÕ6"ÛÉv¹Wà'g‡b¿¸ç^Èº!ÊBÌ€ô	}çËæ!¤ıYôı»‡òƒŸ6î“ç~9¢#rÌz‘ìÃŸB¦§ô¯u™Ç#­în%Ûá¯2Lì²óh,Ñ™S«¾¤
+²e”oC,	°^¡H(ÀTKµuŠUÂk%›ôÆ¼²#|¯”YB×7pdtEIârFÖ¿SÓ3.…Ãıšvq!ĞØ¢“Ü‚tzËÉÉF²Bª¶®@|?©OÃ©høq»ÈÜs)…a–µG]x6W›[–‡›aÈ‘]“3Ê-²Èó#ws@¯qô®³İNµƒLf’ ZÕô5!BÌŸ—›”iH¸í75´6ÇŞ‘GŠ€Y$V×¨ŒÎOEù°¯"h¹Ä>Ú)+‘¥ËC–º|=ĞÕÓEqºEÖ"¬,9¤ï¡
+Zt”Òao÷‚sm[™NfT5÷üFôMÕ[‰Ã”ik®ÿ)cˆŒE;}Í½¼³óéKâ[3ÒH8Éa@@w!ØqúE_İ«¥æV]äT¥Ğ`ëP†6KŒğüsö{^X¢ ,EåĞÎ¯aP…qgsÜÙ%1zF,¬Ç%5q<÷ùèë¡)º
+?¬–ªåÊ`"4ªFÓè.üç˜gÕ66	ïş9\ÚŒ‹Û=®û¶ØmIİå
+È¹ù?©Ê¥öVŠWp•Sÿ¦C.ƒëÒæQ!N°1‹¢"Yœáo_b[Ä?ğ#ÌpB)Ê~¦®|\àp¼!‰cÖ9ô®àIñgxš«ÉßŸè8fw˜îKX¤™LG_]F€ÿ3*oz\˜ï&$a¶"k2~«¶-ŞÀJÅNMµG#j!s	Œûd‰?ZO	ğ¡şömf5ı²n‹?Qi-êE¢}9l–QYò¦yĞ®¯jIôb«;*!’‚ÿE×’…àFÌyÒcGocâ‰$ QF;îĞZr¼›ra¡åı_ÈCEÚhÆ
+ğk[0÷€H2#ï~ù6½¾lÅã÷Û»uã¥«V¦€b`F5¦gß¾."TÌê½°ËRıtÚQ9_váõm}ñôÿlâºÚ‹Ö3cÏ=v‘#‡Æ`8¾ützKÁrçz¦ÏÊ¿â«ì0ÀçÓÁôŒ¿P#òÔ82ù8w—ÿ„½lñBMùöPßî…`	Zûß·Ì8ªÉD€ÕLXcı€î‰û–1ÕUë.`)¤ËøÙŞò¡Š\ŒhF<YáÚåıÑÔo…dÂöÆSşºEtF`vw:âµ“”CVO„‘ˆø`b³]·{Ü.Qœl,g¯çÇS”P ­8¯*ùcÛàJ‰ñÖzú¹,ıó®ÎûˆƒV'Iœ¢£íä+äó±"½+]xºÃÔãÊ¼d¡'ûòkN1ë®ÎòÔg.¶Â´•´ä şyÅñ Mr;’ût82RÒ¢éM1„ È´q\À·G¦H‡˜ %Ç·mˆ,C><te3¦µÄôóoÎ¡}3ôM	f¬o šóuõnğ¢F¶Ô¤Ê„ÿ±èøçşrØ
+~g¤¨ÜîA[»Äšlâ?ne‹ó(^;5.7Z/1«©1hm>bluGÚT¤#·´Ú>D~h>Y±âp´„Í‘î¨ŸDqëĞnó'jõÃoù<“àVÎË%†i)¥‚[>W]|<-Ì]"Mã¥ÎùÅ¯óeFgŒ¦Ğ@©|_¡LïG|N%¸ÁŒ8H3Æ~Ön‹_š©÷)<ÈÉXj¸ƒ~wj^I Ğm‰›Ÿ:I+@å‹=7gÆô“ÛçwP3H¤ŞÆ–õv~ö„LèT
+ÁËZš	/à›&¢ÈòîÚ±¦dÆ`‰¹æà6×‰;û›ğ…å½$¾äcl(³JúÀi©9è«ƒ¡P/ße5è’ËÕ]ÚÆ#2ÈÂ¡Ïá(^Rw^bÂK$|==±ñØDµ—ÔçıÖP±*“>fÛr«"³Q[>ÔM’º±¼ğÚİSÒìGè~ŒıÖ‰õ(Ø#%8¸ë©ÀÆ^£“t0*©;˜%¯0ßMŠ¶‹‘J$8Çúx@)À+3O?~1¯dFßºÿ_î ‡şŒ"RL¨5ê2x#¤à†nü€wŸ9Öü`Ç(
++ßl‡u*Öt@øÉñÚ%"ØÀënïtÂÛ‡¤—ìE˜Cû'oR¹w Uä±–Z85sUBğ°ûÍ9³²Ê»í	,Ş1C{ÙÂËˆÁ÷ÇÖöÙn’ô’ôAgzİÌ•ŠaDb)ÇÖP1” 2ã®‚Ï=¼ÑÛí”àŞ!‡zb¶UAç–Y–	MkXI(LáN~û²&„±p1v¤JxÀèo²˜Ünc‘¼Ş2^û;¹#ûsJ~Úc5Íàõpkæ¡“£§˜Zç	zñ¼c?jÜ¹¡Zîáò	¦*$ø(»üÙÂU5ÅèùqñoÎ°é]×>û-?r¥µ:ûß ÌaA%“œZyİ¤6#¡Ó@o•KrF1c¿1Q¥£²*búÏ Å»t.°™âu^¯,øâÁ×5ª0ÓÁT;ºŞG=°rÜì•:Æ…~Ş¡·„L¡ùèU…éØ«+ë›‘wø<&¨Y±¡Y"ïÙ×ÿPÚ)Õ*‰ÇGãÓ› aZaô}+Déu«!ô°F¸®pš$L\rmóÆòO!¡†¸ƒî>ò<v]¸à­ŸXêVÉö_ Ì·ÑšáãŒĞóZ¢¶ÌJÒ&5PoòAD_²gs¡2M¦ø©P¼>£Ğd)Ó¸%ÑñÏW<‰eœ 	!n)ãáøÔ¬vuğ#9ÔHÕT€ˆVhœr	›À.*õXŞpnÎ-F·¾ÈåtŞu¨uíuÖ3‘v°Å»ÙdRö:-?	ºŞáæÅ›Rœ]$€İÊ+:‚ªÄo1— WDö
+c-¡C.|yÓ7¯‰"ÈûêÿĞG§yıÁç<_ã‘QŞhĞì“fÄ16ı†™epàú.ŞôÎ=öÃØä© m €FêÀÂÜJ©0œ¶kLÓZPf:)9ş–#¶¨=q [Ö¼œóµ3°Ñ‰ŸDXŠzJ¨–¸¨·„‹\ìåcÜ)¬…~x¹§—ê ¥+[yÒeàºæ5ÖñxÃ<nsKËö$N–Ê
+<[S=Æ€QŞ“R—ÀD­YlğX±ã#>×ÎÜUdEKüç¯ô»J‡¯šV¤½¾EÅá&›>’H6Mh]‡ès	çÇßõ×(–Äl7Ôâ%‹â4M†eÖ«—$D&®a‹
+Ø^=ÎKŠ	FoïY]K™§ÑèNÉ:-¤ä¹`n£ÄwZ¨+‡üÙÂ±ÑóşÂÓŞyŞùÔîš'³C“¹.ñªÙ=â¦#ö}gJ¢
+^[gÜÄv$w¿Û‰ÅOvlˆ}è?Ÿ”Ã²b°#'útblµCóH½Êª§œJ6ÉaŸ[µ¨—s"–÷öŞJ?Ç+½	r Gwú‡‡¤\Ï€2£
+²ı?ù¬eøjW‘†uÊÁ{<‘º"‹î|~°O+¦
+ıöé7Õ²!c&€Nâçğ Ir¤Ò‡}Ö$˜¹A±¼VD8}:£ĞT?1T¨9ğ‡|î'i`pñş~õà´@	ğÁu4=<\´×ğşOüx'xeCµ¿¢X£Š,&wF—áİ›<¥Û0Kãë„¾Ü†Œ‚<I$¶Ù|ÊÎjØ„¯A–[[çHoÊj!èüIè
+É¢úòŠöëü¢§•hİ`ş>^1CÖéVÓ˜hÈa‚û*$-{ã€±†ÕÃyi"ö<Ş™Ô%D`“÷ƒW^ŒCÑ·;å‹Y< —LÈÇ¨ã©²ØÜrCJõÀOQ~c±JƒÍ‰¦ÿòZ[~
+IáôãËÀc–QXg¤àów1½è´˜tıÑ¯xomAsÓ€RçÅ¾’QÆ¦·tær°Î³f ±ır|…ÚmFöÏœOôÛéèñ”‚>³"-y\mÚv‘f7IíEše>…«=gD/"§nKSy±jã(¯o|túF¹m›4¸²{Ù2ø–­¥NÕ7Ê“ü¾6­ ¤,ÇFü)ÄB6NÏßùÆ\kxöı·@Öˆ'{,YÈŒQç³’¤0÷ÑúĞjÓ5§mÄ¢ó ìC‹MÁBp­;ê¼—ûÊÜl`2;eCwê÷¹¡¬ÅÛ‡¨òW›ü­‹.İĞıú¼˜´ÅFh;Í%ÊÖò;,Ø£Q—_§"¶§ç3C´¢‹“İQ¯¬¾°QôL7ºÕm©7·zÀ´|WâêÇÎhY»Ïª)¢ (èMh8
+gB@;],_G@:+IÜÿNï%ôänÈXTnŸÒ6ËÙ9Ô(:ë@ÅO·vˆÉ;K27á‚óÔlw‘ÅÂ]İ1º²çÑŠ} wİŒóÔ@Ö±WGW%aN›p ãl"ğRì7V¹{2;ŠšĞ;8p…¼ù©h\*„m”­ ÙÈèl£ ËqÍÍ¹WáhhrİÌî&NŠcåWüqß·ûÂ³ùg$…%½ÕÛ*§(çOñ{c¦–	»ZÏëã‡6RøòŠKƒ@VlC.ô$wÕßö®Å@ë%DŠÁ¥” *¦ÇŸ¾é·´ÕCë ÏdwÁÛ¹ÿv Á§ˆ“¦K¾ƒä2=,6÷0%óTG‡îFè˜U[r-\@"…ÏcÎéQ ı+'ÏŸ`Íiï'B ã_Ê™ÂUM;¹ÂéšJD­«_°ü¤ R÷Ù$…*A¡ñKU¬gXzòX°è»’-r:½'¢	ÅkŸ’ª?ÖÂé×jâüütN.w*ßR¬²5?ÏÒ	ZÏ!¦Å=…O7†€$í¦V<V8ô4’B‰ü˜ŠÑtäRŞx¤/Àm’\r=Ü9r,²ÕÅAÇlM}§îE§H$ô™ve&õÔKÏ‚ë_9ğ÷c‡ş«5ã‡Š%È[«fÉ©,`suPÍ¥Ó€TVB†½ÇmWKŒ½¢œõS¼¢oö«ë³ŸHá·jñ¥a?èÈÄÅv©Ècƒ³K‘f#/A †À:C_Ú¿ÙI€9wy!£È(íS0äÅR=öçîùˆ‡VËÜBZ§ÄA…ö1~37óÿ¾9è9å‡Àm€“vgw>›$ë×&Ò4üÍ3 çIa:(à Ö1:‡Rx<ò;µ‰;ELF                      ¬2     4     (            GNU  À       À          èüÿÿÿWV‰Æ‰Ğ‰ÊS‹Ü   ‹|$‹™  ƒãıƒø‹Ü   Àƒàş  	Ø‰  ‹†Ü      ‹ 1Û€ä_…Ò•ÃÁã	Ã‹†Ü   ‰˜   ‰Ø‰ÚÁøƒà…ÿEø‹†Ü   €Î ‰   ¸Ç  èüÿÿÿ‹†Ü   ‰˜   ‰ø[^_ÃfèüÿÿÿS‰ÃÃ¼  ƒìHd¡    ‰D$D‰àèüÿÿÿ‹D$,=9‰ ‡L  =7‰ ‡   =Õˆ ‡6  =Óˆ ‡   =Q… ‡   =O… ‡   =í„ ‡
+  =ë„ ‡   =Wu „   ‡î  =9K „   ‡İ  =ÅØ „   ‡Ì  =»Ø „   ‡»  =ÙN „   ‡ª  =L „   ‡™  =o> „   ‡ˆ  =e> „   ‡w  =“8 „   ‡f  =77 „   ‡U  =Ó6 „   ‡D  =É6 „   ‡3  =6 „   ‡"  =ı4 „   ‡  =™4 „   ‡   ='3 „   =Ã2 ‡ê   =¤2 ‡?   =»0 „   ‡Î   =û, „   ‡½   =ñ, „   ‡¬   =Ó, „   ‡›   =É, „   ‡Š   =9+ „   w}=? „   wp=+ „   = w^= ‡W   = „   wF= „   w9=¿ „   w,=¼ „   w=a „   w=V  ‡üÿÿÿ=ğU  wPSh    èüÿÿÿƒÄé   éo   ´&    v èüÿÿÿQÿUWVSƒú†Ó   ‹8‰Î…É…í   ‹¸  ƒùwƒùws[‰ğ^_]Ãƒù„Í   ƒù,„®   wåƒù*u¸ûÿÿÿ½   ‹—Ü   Â  ‹
+!È‰»È   ¶    ¸X‰A èüÿÿÿƒëuñ‹‡Ü     ‹€  	Å‰*[‰ğ^_]Ãº   Óâ÷Â`2 u€æu@ƒù…pÿÿÿ¸ıÿÿÿ½   ëv ƒéƒá÷„uÿÿÿéPÿÿÿ´&    1ö[‰ğ^_]Ã´&    ‹hƒıtƒı…(ÿÿÿéCÿÿÿ‹P‰øèüÿÿÿ‰ğ[^_]Ã¸şÿÿÿé2ÿÿÿ´&    èüÿÿÿS‰Ã‹€¸  ƒø„	  wwƒø	„#  †   ƒø„'  †Q  ƒøt†  ƒø„½  ¹   ‰Øº `  èüÿÿÿº `  ‰Øèüÿÿÿ¸d   èüÿÿÿ‰Øº @  èüÿÿÿ¸d   [éüÿÿÿ´&    ƒø)‡  ƒø'‡  ƒø!„Ã  †G  ƒø&„r  ƒø'…é  ‹ƒÜ   (  ‹ƒâş‰‹ƒÜ     ‹Ê   ‰¹   ºø*  ¸'  èüÿÿÿ‹ƒÜ     ‹Ê  ‰¹   ºø*  ¸'  èüÿÿÿ‹ƒÜ     ‹âşÿşÿ‰¹   ºø*  ¸'  èüÿÿÿ‹ƒÜ     ‹Ê  ‰¹   ºø*  ¸'  èüÿÿÿ‹ƒÜ     ‹âüÿüÿ‰¹   ºø*  ¸'  èüÿÿÿ‹ƒÜ     ‹Ê  ‰¹   ºø*  ¸'  èüÿÿÿ‹ƒÜ     ‹Ê  ‰¹   ºø*  ¸'  èüÿÿÿ‹ƒÜ     ‹âıÿıÿ‰‹ƒÜ     ‹Ê  ‰‹ƒÜ     ‹âûÿûÿ‰‹ƒÜ     ‹€    ‰¸<   [éüÿÿÿ´&    fƒøvPƒø„î   ¹   º   ‰Øèüÿÿÿº   ‰Øèüÿÿÿ¸d   èüÿÿÿº   ‰Øèüÿÿÿ¸d   [éüÿÿÿƒø$…[  ¹   ‰Øº`  èüÿÿÿ‰Øº`  èüÿÿÿº   ‰Øèüÿÿÿ¸   èüÿÿÿ‰Øº   [éüÿÿÿv ƒø„/  v]ƒøuT‹ƒÜ     ‹Ê   ‰¸   èüÿÿÿ‹ƒÜ     ‹ƒâû‰¸   èüÿÿÿ‹ƒÜ     ‹€    ‰[Ãfƒøt£ƒøuò‹ƒÜ     ‹€    ‰[Ãv ƒø„  †  ƒø†hÿÿÿƒøu·‹ƒÜ   º6   ‰(  º   ‹ƒÜ   ‰$  ‹ƒÜ      ‹ƒÊ‰¸È   èüÿÿÿ‹ƒÜ      ‹€æ÷‰¸È   èüÿÿÿ‹ƒÜ      ‹€   €Ì‰¸È   [éüÿÿÿ´&    ƒø„·  †É   ƒøt	ƒø…ÿÿÿ‹ƒÜ     ‹Ê   ‰¸   èüÿÿÿ‹ƒÜ     ‹ƒâú‰¸   èüÿÿÿ‹ƒÜ     ‹€    ‰[Ãƒø
+…¸şÿÿ‹ƒÜ     ‹Ê   ‰¸   èüÿÿÿ‹ƒÜ     ‹ƒâğ‰¸   èüÿÿÿ‹ƒÜ     ‹€    ‰[Ã¶    ƒø„aşÿÿƒø„nÿÿÿƒø…Aşÿÿ¹   ‰Øº À  èüÿÿÿº À  ‰Øèüÿÿÿ¸d   èüÿÿÿº À  ‰Øèüÿÿÿ¸d   èüÿÿÿ¹   ‰Øº   èüÿÿÿº   ‰Øèüÿÿÿ¸   èüÿÿÿº   ‰Øèüÿÿÿ¸   èüÿÿÿ‰Øº   èüÿÿÿ¸   [éüÿÿÿt& ƒø1„÷  †   ƒø5w\ƒø3wc‹ƒÜ   º7   ‰(  ¹   ‰Øº  èüÿÿÿº  ‰Øèüÿÿÿ¸d   èüÿÿÿ‰Øº  [éüÿÿÿfƒø%„Œıÿÿé>ıÿÿfƒè8ƒø‡0ıÿÿ¹   º   ‰Øèüÿÿÿº   ‰Øèüÿÿÿ¸d   èüÿÿÿº   é=üÿÿƒø-„cÿÿÿ†ª   ƒø1„çüÿÿ‹ƒÜ     ‹Ê  ‰‹ƒÜ     ‹âûÿşÿ‰¸d   èüÿÿÿ‹ƒÜ     ‹Ê  ‰‹ƒÜ     ‹âıÿşÿ‰º7   ‹ƒÜ   ‰(  º   ‹ƒÜ   ‰$  ‹ƒÜ   º Ã  ‰   1Ò‹ƒÜ   ‰  [Ãƒø*„éûÿÿƒø,„|ıÿÿ[Ã¶    ‹ƒÜ     ‹Ê   ‰‹ƒÜ     ‹âùÿşÿ‰¸d   èüÿÿÿ‹ƒÜ     ‹ƒÊ‰º7   ‹ƒÜ   ‰(  º P  ‹ƒÜ   ‰$  º   ‹ƒÜ   éXÿÿÿ´&    ¹   ‰Øº   èüÿÿÿº   ‰Øèüÿÿÿ¸d   èüÿÿÿ‰Øº   [éüÿÿÿt& ‹ƒÜ     ‹Ê   ‰‹ƒÜ     ‹ƒâú‰¸   èüÿÿÿébüÿÿf¹   º   ‰Øèüÿÿÿº   ‰Øèüÿÿÿ¸d   èüÿÿÿº   éIúÿÿ´&    ‹ƒÜ     ‹Ê   ‰‹ƒÜ     ‹âûÿüÿ‰¸d   èüÿÿÿ‹ƒÜ     ‹Ê  é-şÿÿ´&    t& èüÿÿÿUWVS‰Ãƒì0‹‹¸  d¡    ‰D$,1Àƒù„w  vEƒéƒùw¸   Óà© ãud¨…×  ƒùt71ö‹D$,d+    …±  ƒÄ0‰ğ[^_]Ãt& ƒù„§   1öƒùvĞƒùuh    1öjèüÿÿÿXZë¹´&    fƒùu«‹5   …ötŸº   ‰Øèüÿÿÿ‰ƒ¨  …À„?  ‹ƒ”  …À„wÿÿÿ‹Pd‹…Ò„jÿÿÿ‹Z…Û„_ÿÿÿ‹    ¹   …Ò„æ  ‹r…ö„Û  º   èüÿÿÿ1öé2ÿÿÿf‹   …É„ ÿÿÿº   ‰Øèüÿÿÿ‰ƒ¨  …À„À  ‹ƒ”  …À„øşÿÿ‹Pd‹…Ò„ëşÿÿ‹Z…Û„àşÿÿ‹    ¹    …Ò„x  ‹r…ö„m  º   èüÿÿÿ1öé³şÿÿv ‰Øèüÿÿÿ‰Æ…À…Ÿşÿÿº   ‰Øèüÿÿÿ‰ƒ¨  ‹ƒ”  …À„}şÿÿ‹Pd‹…Ò„pşÿÿ‹Z…Û„eşÿÿ‹    ¹   …Ò„İ  ‹z…ÿ„Ò  º   èüÿÿÿé:şÿÿ´&    v ‰Øèüÿÿÿ‰Æ…À…şÿÿº   ‰Øèüÿÿÿ‰ƒ¨  ‰Á‹ƒ”  …ÀtA‹Pd‹…Òt8‹z…ÿt1‹    ¹    …Ò„@  ‹j…í„5  º   èüÿÿÿ‹‹¨  v …É„¶ıÿÿ‹Ad‹@…À„Ú   ‹x…ÿ„Ï   ¡   ‰â…À„Ô   ‹h…í„É   ‰Èèüÿÿÿ‹‹¨  ÆD$ ÆD$
+ ÆD$…É„_ıÿÿ‹Ad‹@…Àtw‹x…ÿtp¡   ‰â…À„¸   ‹h…í„­   ‰Èèüÿÿÿ‹‹¨  ÆD$
+…É„ıÿÿ‹Ad‹@…À„ıÿÿ‹X…Û„ıÿÿ¡   ‰â…ÀtN‹x…ÿtG‰Èèüÿÿÿéåüÿÿt& ÆD$
+ë½´&    fÆD$ ÆD$
+ ÆD$é[ÿÿÿ‰Èèüÿÿÿ‹‹¨  é2ÿÿÿ‰Èèüÿÿÿéüÿÿº   èüÿÿÿ‹‹¨  éÉşÿÿ‰Èèüÿÿÿ‹‹¨  éNÿÿÿº   èüÿÿÿéhüÿÿº   1öèüÿÿÿéWüÿÿº   èüÿÿÿéFüÿÿ¾íÿÿÿé>üÿÿèüÿÿÿ´&    fèüÿÿÿ‹ˆ¸  ƒù3wpS‰Ãƒùvƒé¸   Óà© ãu¨u3[Ãƒùt
+ƒùt&ƒùuî‰Øº   èüÿÿÿÇƒ¨      [Ã´&    f‰Øº   èüÿÿÿ‰ØèüÿÿÿÇƒ¨      [ÃÃ´&    ´&    èüÿÿÿ‹ˆ¸  ƒù3wƒùvƒéº   Óâ÷Â ãuƒâu,Ãv ƒùt
+ƒùtƒùuí‹¨  …Òtãº   éüÿÿÿt& ‹ˆ¨  …ÉtÊº   éüÿÿÿt& èüÿÿÿWVS‰Ãƒì‹»`  d¡    ‰D$1À…ÿ„9  ‹ƒ¸  ‰Âƒø	t‡æ  ƒø„¬  Hûƒù‡1  ‰Âƒø&†  ƒø2„µ  †ç  ƒø5„f  †Ø  ƒø;„ˆ  †¶  HÄƒù‡\  ÇƒØ     ÇƒÜ     Çƒà     Çƒ     Çƒ      Çƒ$     ƒø"‡½  Jú¸   Óà©ÅXß„³  j “
+  ¹9   CjDèüÿÿÿ‰ƒ”  ZY…À„Ô  “ğ   ‰˜   ‹ƒ”  Ç€      ‹ƒ”  …À„ª  ‹Pd‹…Ò„  ‹R…Ò„’  ‹    …É„|  ‹I…É„q  èüÿÿÿ‹“¸  éo  ƒøt3†Û   Höƒù‡X  Çƒ     Çƒ      Çƒ$     v ÇƒØ     ÇƒÜ     Çƒà     ƒú"‡¶  ƒú‡ğşÿÿBÿƒø†ùşÿÿƒú„"  ƒú„  ‹D$d+    …3  ƒÄ[^_ÃfHÊƒù‡%şÿÿ¾P   ƒô  ¹   º    f‰³ö  èüÿÿÿ‹»`  …ÿ„
+  ‹ƒ¸  ééıÿÿƒø…€  ÇƒØ    ‹ƒÜ   º   ÇƒÜ     Çƒà     Çƒä      Çƒè  ÌG ‰„ Çƒ     ‹“¸  Çƒ      Çƒ$     éûşÿÿt& èüÿÿÿv ‹“¸  ƒú6…Á   j “ü   C¹A   jAèüÿÿÿ‹“¸  _Xƒú…Şşÿÿ‹D$d+    …  ƒÄ‰Ø[^_éüÿÿÿHÈƒù†Jıÿÿé¡  fƒø3…§   ÇƒØ     ÇƒÜ     Çƒà     Çƒ     Çƒ      Çƒ$     BÜƒø‡Mÿÿÿ¹ùş}£Á‚>ıÿÿƒú6„?ÿÿÿƒú7…Uÿÿÿj »ü   s¹A   j@‰ú‰ğèüÿÿÿ‰ú¹A   ‰ğj jAèüÿÿÿ‹“¸  ƒÄéÿÿÿt& ƒø4…æ  ÇƒØ     ÇƒÜ     Çƒà     Çƒ     Çƒ      Çƒ$     éKÿÿÿ¶    ƒø)wKƒø'…  ÇƒØ     ÇƒÜ     Çƒà     Çƒ    Çƒ      Çƒ$     éNüÿÿƒø-„°şÿÿv,ƒø2„;  ÇƒØ     ÇƒÜ     Çƒà     éøûÿÿƒø,„·üÿÿé
+  v ƒø‡×   ƒø„ö  †€üÿÿƒø„fıÿÿ†	  ƒø…×   ÇƒØ     ÇƒÜ     Çƒà     Çƒ     Çƒ      Çƒ$     é­üÿÿ´&    ¾P   º    ƒl  ¹   f‰³n  èüÿÿÿ‹ƒ¸  ‰Âƒø†®   HÜƒù‡³úÿÿ¾   Óæ‰ñ÷Æ… ó…H  á   …müÿÿƒø&‡’úÿÿHâ¾   Óæ‰ñöÁ¨…×şÿÿƒá…­úÿÿƒø&„¡  Çƒ     ‰ÂÇƒ      Çƒ$     éÂûÿÿt& ƒø„rúÿÿvHêƒù†…şÿÿë¾´&    …vşÿÿë¯…Àt«‰Á¾   Óæ‰ñ÷Æ†<……   á`  u]ƒø……şÿÿ‹‹`  …É…uÿÿÿ€=    „tKºà   ‰ØèÑçÿÿ‹ƒ¸  ‰Âéµùÿÿt& ƒú…müÿÿ‹5   …ö„Oûÿÿé1úÿÿt& ‹“`  …Ò…ùÿÿº    ‰Øè†çÿÿé|ûÿÿ‹‹`  …Ét™éşÿÿÇƒØ     ÇƒÜ     Çƒà     éóúÿÿt& ÇƒØ     ÇƒÜ     Çƒà     Çƒ     Çƒ      Çƒ$     é”ùÿÿ´&    ÇƒØ     ‹ƒÜ   ÇƒÜ     Çƒà       Çƒ     Çƒ      Çƒ$     ‹Ê  ‰¹   º'  ¸è  èüÿÿÿ‹ƒÜ     ‹ƒâı‰¹   º'  ¸è  1öèüÿÿÿv ‹ƒÜ     ‹ƒâø‰¹   º'  ¸è  èüÿÿÿ‹ƒÜ     ‹:‰ğ‰ñÁø÷Ñ¶€    ƒáÓø‰Áƒá‰ÈƒÈ÷Ğ!ø	ÈƒÈ‰¹   º'  ¸è  ƒÆèüÿÿÿƒşHu†‹ƒÜ     ‹ƒÊ‰‹“¸  éOùÿÿ´&    fÇƒØ     ÇƒÜ     Çƒà     Çƒ     Çƒ      Çƒ$     é5ùÿÿ´&    ÇƒØ     ÇƒÜ     Çƒà     éùÿÿƒ»`   „{ıÿÿéD÷ÿÿ‰Ø‰\$ÇD$H   ÇD$    èüÿÿÿƒü   º    èüÿÿÿ¡ŒF  …À„6  é1  èüÿÿÿèüÿÿÿ‹P(Ç   ‹‚ì  ¯‚ğ  ‹’è  ¯B‹T$Áè‰1ÀÃ´&    ´&    èüÿÿÿUWVS‰Ãƒì‹ ‹“ˆ  ‹p(‹ƒ  ƒÀ¾¸  ‰B‹ƒŒ  Ç   p‹ƒ  ‹“Œ  ƒÀ‰B‹ƒŒ  Ç@    ‰øèüÿÿÿ‹®ø  ø  ‰Âƒx  9étS‹«ˆ  M    ‹®ü  ‰†ü  ‰‹x  ‰«|  ‰E ‹E‹‹  ƒ=x  ‰H‡ø  ƒÄ‰ø[^_]éüÿÿÿt& ‹®ü  ‰†ü  ‰‹x  ‰«|  ‰E ƒ=x  ‡Ö  ƒÄ‰ø[^_]éüÿÿÿfèüÿÿÿUWVS‹h(‹…Ü   @  ‹ƒâî‰½¸  ø  ‰øèüÿÿÿ‰Æ‹…ø  9Ãt@v ‹…ø  ‹P‹-x  ‰Q‰
+º   Ç€x     Ç€|  "  èüÿÿÿ‹…ø  9ØuÃ[‰ò‰ø^_]éüÿÿÿ¶    èüÿÿÿVSèüÿÿÿ‹°(  ‹FƒÆ9Æt$X´‹Cd‹ …Àt‹…Òt‰Øèüÿÿÿ‹CLX´9Æuà1À[^Ã´&    t& èüÿÿÿWV‰ÎSèüÿÿÿ‹¸(  ‹‡¸  ƒø4tƒè8ƒøwPÇF   ‹‡Ü  ƒÇ‰F‹X´9Çt(t& ‹Cd‹@…Àt‹H…Ét	‰ò‰Øèüÿÿÿ‹CLX´9ÇuÜ1À[^_Ã¶    ƒ¿€  u§¸êÿÿÿëæ´&    èüÿÿÿWV‰ÎSèüÿÿÿ‹¸(  ‹‡¸  ƒø4tƒè8ƒøwH‹…ÀuK‹GƒÇX´9Çt)t& ‹Cd‹@…Àt‹H…Ét	‰ò‰Øèüÿÿÿ‹CLX´9ÇuÜ1À[^_Ã¶    ƒ¿€  u¯¸êÿÿÿëæèüÿÿÿWV‰ÎSèüÿÿÿ‹¸(  ‹‡¸  ƒø4tƒè8ƒøwX‹…Àu[F¹   ºª  ƒÇèüÿÿÿ‹X´9Çt(t& ‹Cd‹@…Àt‹H…Ét	‰ò‰Øèüÿÿÿ‹CLX´9ÇuÜ1À[^_Ã¶    ƒ¿€  uŸ¸êÿÿÿëæèüÿÿÿS‰Ëèüÿÿÿƒ;‹(  uH‹Cƒèƒøw=ÇC    ÇC    ÇCĞ  ‹‚x  % ù  ƒøÀƒà`à  ‰C1À[Ã´&    f¸êÿÿÿ[Ã´&    fèüÿÿÿV‰ÎS‹\$èüÿÿÿ‹€(  ‹€x  %ÿÿ ƒşu(ƒøÒƒâÕƒÂ6ƒøÀ‰ƒàÏƒÀ;‰C1À[^Ã´&    ¸êÿÿÿëî´&    fèüÿÿÿVS‰Ëèüÿÿÿ‹°(  ¡x  …À…  ‹†x  ‹–|  ‰1À‰S[^Ã´&    fèüÿÿÿVS‰Ëèüÿÿÿ‹(  ‹‚ì  ‰C‹Šğ  ‰K‹²ô  ‰s‹²è  ‹6‰s‹’è  ¯BÇC   Áè¯È‰C1À‰K[^Ãt& èüÿÿÿ‹…Àu¡ÔI  ‰A,1ÀÃ´&    v ¸êÿÿÿÃ´&    v èüÿÿÿ‰Â‹ ‹@(éüÿÿÿ´&    ´&    èüÿÿÿU1ÒWVS‰Ãƒì‹ ‹p(‰Øèüÿÿÿ‹k‰Ç‹†è  ‹@¯†ì  Áè‰ƒ€  ‰Â…í…¼   ¯–ğ  …Ò…  ‹–ô  ƒú„À   wTƒú„+  ƒú…  ‹®Ì   ÿ¶ğ  “„  j P‰èj jÿ‹èüÿÿÿƒÄƒ=x  ‡6  1ÀƒÄ[^_]Ã¶    ƒú„  ƒú…J  ‹ğ  ‹®Ì   “„  ÑéQ¯Èj P‰èj Q‹èüÿÿÿƒÄë¥´&    v ¯–ğ  9ST‚  ‰SP‹–ô  ƒú…@ÿÿÿ‹x  ÷†x   ù  ti¸    ‹‰  …É„´   …Ò…p  Ç$    ‰Á‹–Ì   «„  ‰T$‹–ğ  ÑêR‰êQQPÿt$‹‹D$èüÿÿÿƒÄé	ÿÿÿ¶    ‹®Ì   ÿ¶ğ  “„  j Pjÿj ‹‰èèüÿÿÿƒÄéÙşÿÿ¶    ‹ğ  ‹®Ì   “„  ÑéQ¯Èj PQëÉ´&    v ƒÄ¸êÿÿÿ[^_]Ãv …Ò…’  ‰$‰Á1ÀéIÿÿÿ¸êÿÿÿéŠşÿÿèüÿÿÿVS‰Ëèüÿÿÿ‹5ÔI  ‹€(  9s…­   ‹€x  ‹S% ù  ƒøÀƒà`à  …Òt^ƒúwyƒú…   º   j s¹Ğ  j PC‰Sº0   j P‰ğjèüÿÿÿ‹C¯ØI  ÇC   ƒÄÁè‰C¯C‰C1À[^Ã‰Áº   Ñé9Kw§º   ‰Èë´&    fJüƒù¹   CÑë…¸êÿÿÿ[^Ã´&    Ñè‰Á‰Èéjÿÿÿt& èüÿÿÿU‰ÍWV‰ÖS‰Ãƒìpd¡    ‰D$l‰Øèüÿÿÿ¹   ‹€(  |$ÇD$   ‰$1Àƒ=x  ó«‡´  ‰é‰ò‰Øè·şÿÿ‰D$‰Á…À…U  ‹<$‹Ÿ   …Û…]  ‹—`  …Ò…O  ‹‡Ä  …À…A  ¡ÔI  9E¸ÔI  EÁƒ=x  ‰‡è  ‹E‰‡ì  ‹U‰—ğ  ‹M‰ô  ‡Ğ  ‹E‹]0ÇD$$   ‹<$‹u‹M‹U‰D$(‰D$‹E(ƒÇ‰t$ f‰D$0f‰D$‹E,‰L$,f‰D$2f‰D$·Ãf‰\$4‹‰T$‰\$ƒëL;|$tYt& ‹Cd‹@…Àt‹p…ötL$1Ò‰Øèüÿÿÿ‹CLX´9ÇuØ‹D$(‹T$‹t$ ‹L$,‰D$·D$0f‰D$·D$2f‰D$·D$4‰U‹T$‰E0‹$‰U·T$‰u‰U(·T$‰M‰U,‹€ô  ‰E‹D$ld+    u‹D$ƒÄp[^_]ÃÇD$ğÿÿÿëİèüÿÿÿ´&    t& èüÿÿÿUWVS‰ËèüÿÿÿºĞ  ¹   ‹°(  ‰Øèüÿÿÿº    i†¸    ‹¸    ‰øèüÿÿÿƒøÿ„ù  k‰Áƒø tƒÁƒù ‡ï  ‰ú‰èèüÿÿÿ‹–Ì   ‹‚´   …Àu‹‚ˆ   PC0hØ  PèüÿÿÿÇCT …‹†¸  ƒÄƒø4tƒè8ƒøwÇCT …1À[^_]Ãt& ƒ¾€  uä[1À^_]ÃèüÿÿÿW‰×V‰ÆS‹‹@P‰V‰ƒôşÿÿèüÿÿÿ‰ƒœıÿÿ‰“ ıÿÿƒ=x  ‡  ³ˆıÿÿ‹‹C‰B‰‰ğº   Ç   ÇC"  [^_éüÿÿÿ´&    fèüÿÿÿWVS‰Ã¡x  …À…+  ‹ƒúwrs{1ÀÇC    ƒçü‰ñÇF,    )ùƒÁ0Áéó«‹<•À   º    ‰øèüÿÿÿ‰Áƒøÿ„Q  ƒø tƒÁƒù ‡G  ‰ú‰ğèüÿÿÿÇC$   1À[^_Ã´&    ¸êÿÿÿëí´&    fèüÿÿÿ‰ÈéTÿÿÿt& èüÿÿÿS‰Ëèüÿÿÿ‹(  kŠl  i‚¸    ‹„,   ¹   ƒèƒøv‹Šp  ‰¡x  …À…[  ‰Ø[éûşÿÿ´&    t& èüÿÿÿU‰ÍWV‰ÖS‰Ãƒì¡x  …À…x  èüÿÿÿ‰Â…Àt]‰Ç¹Í   Có¥‰‚¬  ƒ  Ç‚      ‰‚0  iƒ¸    Uÿ°    ‚À  hà  j ‰T$Pèüÿÿÿ‹T$ƒÄ‰š(  ƒÄ‰Ğ[^_]Ã´&    ´&    èüÿÿÿV‹x  S‹X(‹³ø  …Ò…”  ‹ƒÜ   @  ‹ƒâî‰‹“d  ‹Nÿv‰Øèüÿÿÿ‹ƒÜ   º   ‰0  Çƒ       ‰Øº   èüÿÿÿ‹ƒÜ      ‹ƒÊ‰‹ƒÜ      ‹ƒÊ ‰‹ƒÜ   @  ‹€@  ƒÈ‰X1À[^Ãt& èüÿÿÿS‰Ëèüÿÿÿ‹€(  ‹€l  ‰‹x  …Ò…°  1À[Ãv èüÿÿÿ‰Ğ‰Ê‹9Èt	éìüÿÿt& Ã´&    èüÿÿÿUWV‰ÆS‰Ë¹   ƒìd‰$|$d¡    ‰D$`1ÀÇD$   ó«‹=x  ÇD$   …ÿ…6  ‹†|  ‹$3–x  1Ø	Ğ„ÿ   ‹   …É…  ‹–`  …Ò…ú   ‹†Ä  …À…ì   ‹$~‰|  ‰İÇ†ì  Ğ  ‰†x  % ù  Ç†ô     ƒøÀƒà`à  ‰†ğ  ‹FX´9Ç„‡   ‰t$v ‹Cd‹@…Àt‹p…öt‹$‰é‰Øèüÿÿÿ‹CLX´9ÇuÙ‹t$‹ğ  ‹–ô  ‹F‹¶ì  ‰L$‰t$X´‰T$9Çt-t& ‹Cd‹@…Àt‹p…ötL$1Ò‰Øèüÿÿÿ‹CLX´9ÇuØ1À‹T$`d+    u8ƒÄd[^_]Ã¸ğÿÿÿëä‰×‰Ğ‰ÚèüÿÿÿPWh˜  h˜  h0  èüÿÿÿƒÄé¡şÿÿèüÿÿÿt& èüÿÿÿWVS‹t$‹|$èüÿÿÿ‹˜(  ¡x  …À…Í  ‰ò‰ù‰Ø[^_éşÿÿ´&    v èüÿÿÿS
+  ƒìd‹    ‰\$1ÛˆT$º   f‰T$T$ˆL$¹   ‰T$‰âÇ$L   èüÿÿÿ‹T$d+    uƒÄ[Ãèüÿÿÿèüÿÿÿƒì 
+  d‹    ‰L$1ÉˆT$T$¹   ‰T$º   f‰T$T$f‰L$¹   ‰T$‰âÆD$ Ç$L   ÇD$L  èüÿÿÿƒø…é  ¶D$‹T$d+    uƒÄ Ãèüÿÿÿ´&    v èüÿÿÿWVS‰Ãƒìd¡    ‰D$1À¡x  …À…ÿ  ƒú„©   ƒú…ˆ   º   ‰ØèüÿÿÿƒÈƒÈ |$T$¹   ³
+  ˆD$f‰L$‰ğ¹   ÆD$ÇD$L   ‰|$èüÿÿÿ¸   ¹   f‰D$¸   T$f‰D$‰ğÇD$L   ‰|$èüÿÿÿ¡x  …À…$  ‹D$d+    uƒÄ[^_Ãt& º   ‰Øèüÿÿÿƒà÷é[ÿÿÿèüÿÿÿ´&    ´&    èüÿÿÿU‹-x  WV‰ÖS‰Ã…í…o  ‹“¸  ‰³l  Bê‰Ñƒø†›   ƒú!„’   ‹ƒ”  …À„Ä   ‹Hd‹y…ÿ„&  ‹?…ÿ„  kî‹   iÒ  ‹”0   …É„^  ‹)…í„T  j 1Éèüÿÿÿ_‹“¸  ƒú„‹   ƒú „‚   ƒúvlBßƒøw
+¹Iè#£Árk[^_]Ã¶    kşiÂ  ƒ¼,   …Wÿÿÿº   ‰Øèüÿÿÿ‹“¸  ‹ƒ”  ‰Ñ…À…Cÿÿÿ´&    ƒú t}ƒútxƒúw”ƒúv¡¸ £Ğs—f‹ƒ”  …ÀtV‹Hd‹I…ÉtL‹y…ÿtEkî‹   iÒ  ‹”4   …Étc‹i…ít\j 1Éèüÿÿÿ‹‹¸  Zëfƒú t¸ƒú… ÿÿÿë­‰Ñköº   iÉ  ‹„4   ƒøtƒø…ÿÿÿº   ‰Ø[^_]é;ıÿÿv j 1Éèüÿÿÿ‹‹¸  Xë¸¶    j 1ÉèüÿÿÿYé§şÿÿèüÿÿÿS‰Ãƒì¡x  …À…¯  kÒiƒ¸    ƒ¼4   tƒÄ‰Øº   [éÑüÿÿƒÄ‰Øº   [éÀüÿÿèüÿÿÿV‰ÎSèüÿÿÿ‹˜(  k“l  iƒ¸    ‹„,   ƒèƒøv,‹ƒúw=¡x  …À…Ô  ‰“p  ‰ØƒÂèhüÿÿ1À[^Ãv ƒ>¸êÿÿÿº    [DÂ^Ãt& ¸êÿÿÿëÛèüÿÿÿUWV‰ÖS‰Ãƒì‹x  …É…ó  ‹>ƒÿ‡ı   kÇi“¸    ‹”,   …Ò„á   ÇF$   i“¸    ‹„,   º    ‹,…@  F‰$‰èèüÿÿÿ‰Áƒøÿ„  ƒø tƒÁƒù ‡  ‹$‰êèüÿÿÿÇF0÷r k×ÇF4    iƒ¸    ‹„,   º   ƒèƒøwÇF$   º   ‰V(9»l  t1ÀƒÄ[^_]Ãt& ‹CƒÃx´9ÃtåƒÆ8‹Gd‹@…Àt‹H$…Ét	‰ò‰øèüÿÿÿ‹GLx´9ÃuÜë¼¸êÿÿÿë·v èüÿÿÿVS‰Ëèüÿÿÿ‹°(  ¡x  …À…#  ‰Ú‰ğ[^é¤şÿÿt& èüÿÿÿS‰Ëèüÿÿÿ‹€(  ‹€l  ‰‹x  …Ò…?  1À[Ãv èüÿÿÿVS‰Ëèüÿÿÿ‹x  ‹°(  …Ò…\  ƒûw9kÓi†¸    ‹„,   …Àt!‰Ú‰ğèhûÿÿ‰ğ‰ÚèOıÿÿ1À[^Ã´&    v ¸êÿÿÿëì´&    fèüÿÿÿë‰´&    fèüÿÿÿUWVS‰Ëƒì$d‹    ‰T$ 1Òèüÿÿÿ‹°(  ‹†¸  ƒø:wƒø#‡Î   Pìƒâû„â   ƒè8ƒø‡6  ‹…Ò…<  ‹Cº		˜ n‰†Ü  F\èüÿÿÿ‰Ç…À„A  èüÿÿÿ‰D$…À„  ‹Fp´9Å„8  f‹Fd‹@…Àt‹H…Ét	‰Ú‰ğèüÿÿÿ‹FLp´9ÅuÜ¸d   èüÿÿÿ‹D$Ç$    …À…ˆ  ‹G‹@èüÿÿÿ1Ò‰øèüÿÿÿ‹G‹@èüÿÿÿé]  v PÜ¹ q £Ñrƒø4„4ÿÿÿé#ÿÿÿt& ‹K‹†x  ÇD$   ‹–|  ÇD$   ‰Ü  ‰D$F\‰T$º		˜ ‰L$èüÿÿÿ‰D$Ç$   …Àtèüÿÿÿ‰$…À„k  ‹=x  …ÿ…«  †,  º   èüÿÿÿ…À„í   ‹@‰D$‹†¸  Pìƒâû„ä   ƒè$ƒøwº q £Â‚Î   ‹D$…À„Õ  ‹ˆÔ  …É„Õ  ‹FnX´9Åt?´&    ‹Cd‹@…Àt‹x…ÿt‹–x  ‹|  ‰Øèüÿÿÿ‹CLX´9ÅuÒ‹D$‹ˆÔ  ‹D$T$èüÿÿÿ¸d   èüÿÿÿ‹$…É„ş   Ç$    ‹D$ d+    …  ‹$ƒÄ$[^_]Ãv ƒ¾€  …½ıÿÿv Ç$êÿÿÿëÈ´&    †ø  ‰D$é#ÿÿÿ´&    f‹FÇD$   p´9Å…Êıÿÿ¸d   èüÿÿÿÇ$    ë€´&    ‹|$‹G‹@èüÿÿÿº   ‰øèüÿÿÿ‹G‹@èüÿÿÿéjşÿÿt& ‹G‹@èüÿÿÿº   ‰øèüÿÿÿ‹G‹@èüÿÿÿ‹Fp´9Å…Pıÿÿ¸d   èüÿÿÿé‚ıÿÿ‹|$‹G‹@èüÿÿÿ1Ò‰øèüÿÿÿ‹G‹@èüÿÿÿéáşÿÿèüÿÿÿv èüÿÿÿéfüÿÿ¶    èüÿÿÿWV‰ÆS‹€Ü      ‹ …Â„¡   ‹†Ü   ‰Ó‰$  ÷Â  t+÷Â   …  öÇ…†   öÇtƒ=x  ‡ë  t& 1ÿöÃu‰Ú‰ğèüÿÿÿ[^ø_Ã´&    v ¾¸  ‰øèüÿÿÿ‹†Ü   ‹ˆ   ‹–ø  †ø  9Ğt‰Êèàïÿÿ‰ø¿   èüÿÿÿë©f[1À^_Ã´&    v ƒ=x  ‡L  1ÿöÃtƒëš´&    v èüÿÿÿ‹x  S‰Ã…Ò…h  ‰Øº   èüÿÿÿ‹ƒä  …Àt‹ğ  ƒâuYèüÿÿÿÇƒä      ‹ƒà  …Àt‹ğ  ƒâu%èüÿÿÿÇƒà      ‹ƒ0  …Àt,‰Ø[éüÿÿÿt& èüÿÿÿëÙ´&    fèüÿÿÿë¥´&    f[Ã´&    ´&    èüÿÿÿUWVS‰Ãƒì@‹x  d¡    ‰D$<1À…É…@  ¿@  ¾ F  ¹Í   º  ó¥¸   ‰Í¹   èüÿÿÿ¸ÔI  º   =ÔI  YUYVÇƒx     EÅÇƒ|      ‰ƒè  ƒø  ‰ƒø  ‰ƒü  ƒX  ‰ƒX  ‰ƒ\  ‰ØÇƒô     Çƒì  Ğ  Çƒğ  à  èüÿÿÿƒ»€  t‹ƒˆ  ƒø†ÿ  ³  »  ‰ğèüÿÿÿ‹‹|  ‹“x  ‰Øèüÿÿÿ1Ò‰Øèàôÿÿ1Ò‰ØèÇöÿÿ‰ğèüÿÿÿ‹ƒÌ   Çƒ     Çƒ     ˆ   ‰›,  ‰ƒ  ‰øÇƒ<     Çƒ@     Çƒ4     Çƒ      Çƒ$      Çƒ8      ‰³  èüÿÿÿ‰Â…Àˆ  ‹ƒÌ   ‰›Œ  «d  Çƒd     ˆ   ‰³x  ‰ƒl  ‰èÇƒh     Çƒœ     Çƒ      Çƒ”     Çƒ€      Çƒ„      Çƒ˜      èüÿÿÿ‰Â…Àˆ–   ¹K  º F  ‰Øè=îÿÿ‰ƒà  ‰¸¸  ‹ƒà  Ç€ä    ‹ƒ¸  ƒø4tƒè8ƒø‡  ‹ƒà  ˆä      ‹“Œ  ‹ƒà  ³¼  ‹• J  ‹à   ÿ21Òjèüÿÿÿ‰ÂXY…Ò‰„  é\  ´&    ‰Ø‰$èüÿÿÿ‹$‹D$<d+    …†  ƒÄ@‰Ğ[^_]Ã¶“„  s„Ò…^  ¸   èüÿÿÿ¹(  i“ˆ  ˆ  P‰ğj ”ü   èüÿÿÿ_]‰Æ…ö„¹ıÿÿ‹ƒ€  ÇD$    ÇD$    ‰D$‰ğÇD$    ÇD$   èüÿÿÿf‰D$‹FdÇD$    ‹@…Àt*‹H$…Ét#¡   T$…À„   ‹x$…ÿ„•  ‰ğèüÿÿÿ‹ƒ¸  ƒø„ï   ƒø*„æ   ƒø'…&ıÿÿ‹ƒ€  ÇD$(    ÇD$,    ‰D$D$ ÇD$0    ÇD$4    ÇD$8    ÇD$ <  ÇD$$@   ‰D$‹Fd‹@…À„Îüÿÿ‹H(…É„Ãüÿÿ¡   T$…À„!  ‹x(…ÿ„  ‰ğèüÿÿÿé›üÿÿ´&    v iÀˆ  j ¹(  R„ü   ‰Â‰ğèüÿÿÿ‰ÆXZé©şÿÿ´&    fƒ»€  …Ùıÿÿéäıÿÿ¶    ‹“€  ÇD$(    ÇD$,    ‰T$T$ ÇD$0    ÇD$4    ÇD$8    ÇD$ .  ÇD$$@   ‰T$‹Vd‹R…Ò„Âşÿÿ‹J(…É„·şÿÿ¡   T$…Àt0‹x(…ÿt)‰ğèüÿÿÿ‹ƒ¸  é‘şÿÿ´&    ‰ğèüÿÿÿéfşÿÿt& ‰ğèüÿÿÿ‹ƒ¸  éhşÿÿ¶    ‰ğèüÿÿÿé…ûÿÿèüÿÿÿfffffffèüÿÿÿ‹@(‹T$‹€x  Ç   % ù  ƒøÀ%€C   ‡  ‰1ÀÃ´&    ´&    èüÿÿÿUWVS‰Ã«x  ƒì‹ ‹“ˆ  ‹p(‹ƒ  ƒÀX  ¾¸  ‰B‹ƒŒ  Ç   p‹ƒ  ‹“Œ  ƒÀ‰B‹ƒŒ  Ç@    ‹†X  9Átt‹ƒˆ  ‰L$   ‹†\  ‰$‰øèüÿÿÿ‹L$‰Â‹†\  ‰®\  ‰‹x  ‰ƒ|  ‰(‰øèüÿÿÿ‹$‹“  ƒ=|  ‹@‰P‡ı  ƒÄ[^_]Ã´&    f‰ø‰$èüÿÿÿ‹$‰Â‹†\  ‰®\  ‰‹x  ‰ƒ|  ‰(‰øèüÿÿÿƒ=|  ‡â  ƒÄ[^_]Ã´&    t& èüÿÿÿUWVS‹h(‹…Ü   @  ‹ƒâİ‰½¸  X  ‰øèüÿÿÿ‰Æ‹…X  9Ãt@v ‹…X  ‹P‹-x  ‰Q‰
+º   Ç€x     Ç€|  "  èüÿÿÿ‹…X  9ØuÃ[‰ò‰ø^_]éüÿÿÿ¶    èüÿÿÿ‰Â‹ ‹@(éüÿÿÿ´&    ´&    èüÿÿÿW1ÒVS‰Ã‹ ‹p(‰Øèüÿÿÿ‹S‰Á‹†x  % ù  ƒøÀƒàƒÀ…Òu	[¸êÿÿÿ^_Ãiø@  ‹ST9úrêG×‰SP“„  ‹Ì   PiÀ   j h   P‰Øj ‹	èüÿÿÿ1ÀƒÄ[^_Ã´&    ´&    èüÿÿÿV‹|  S‹X(‹³X  …Ò…  ‹ƒd  ÿv¹   P,‰Øèüÿÿÿ‹ƒÜ   º   ‰ˆ  ‹ƒÜ   ‰4  Çƒ`      ‰Øº   èüÿÿÿ‹ƒÜ      ‹ƒÊ"‰‹ƒÜ      ‹ƒÊ ‰‹ƒÜ   @  ‹€@  ƒÈ"‰X1À[^Ã¶    èüÿÿÿS‰Ëèüÿÿÿ‹€(  ÇCÀü›ÇC   ÇCGREYÇC    ÇC$    ‹€x  öÄùt'ÇC
+   ÇC  ÇC   ÇC    1À[Ã´&    ©ÿÿ tîÇC   1ÀÇC?  ÇC   ÇC    [ÃèüÿÿÿƒâtFVS‰Ã¡|  …À…4  ³¸  ‰ğèüÿÿÿ‹ƒÜ   ‹ˆ$  “X  ‰Øèüÿÿÿ‰ğèüÿÿÿ¸   [^Ã1ÀÃffffffèüÿÿÿV°è   S‰Ã‰ğèüÿÿÿ‰Â‹ƒÜ   ‹˜  ‰ğèüÿÿÿ‰Ø[^ÃèüÿÿÿUWV‰ÎS‰Óƒì€|$4 ‹T$ tÇ    pƒÀÇ@ø    Ç@ü    ‰ÇƒúÿtÊ € €ƒÇ‰‹T$,…Ò„­   ‹D$0Ç$    …À•D$¶    ‹K‹l$$…öt-‰Øë´&    f)Îèüÿÿÿ…ö„  ‹H9ñvê‹l$$‰Ã)ñõ‹$…Àti€|$ tb1Ò÷t$0ƒúWÀ%     ;L$$rRD$$   ‰s‰wÇG    ‰×‹t$(ƒ$‹$î9D$,…kÿÿÿƒÄ‰ø[^_]Ã´&    f¸   W;L$$s®	È‰T$   ‰s‰Ø‰wÇG    +kèüÿÿÿ‹T$‰Ã‹@9Åv5‰Á‰Ø‰Óv É   ƒÃ‰Kô‹P‰SøÇCü    +hèüÿÿÿ‹H9érØ‰Ú‰Ã‰èz   ‰‹CÇB    ‰BéDÿÿÿ¶    ‹H‹l$$‰Ãéêşÿÿ´&    v èüÿÿÿWVS‹ˆÌ   ‰Ã‹‘\  ‹X  ‹±P  ‹¹T  ‰Ñ	Át
+ƒÀƒÒ )ğúR‰ù‰òP¸    èüÿÿÿğÿ”ÀZY„Àt|‹ƒ¸  iĞ  ƒº   tiĞ  ‹’   ƒú„‚   ƒú„Ÿ   iÀ  ‹€   ƒø„¤   ƒøt7ƒ
+  èüÿÿÿƒ|  èüÿÿÿƒô   èüÿÿÿ‹ƒÜ   [^_éüÿÿÿ[^_Ãt& ‰ØèüÿÿÿëÀ´&    ‰Øèüÿÿÿ‹ƒ¸  éoÿÿÿ¶    ƒÜ  èüÿÿÿ‹ƒ¸  iĞ  ‹’   ƒú…aÿÿÿ‰Øèüÿÿÿ‹ƒ¸  éOÿÿÿ´&    ƒ   èüÿÿÿiƒ¸    ‹€   é<ÿÿÿèüÿÿÿ…Àt7S‹X`ú v@túv@t[Ã9ƒ¤  uõ‹[éüÿÿÿ9ƒ¤  uå‹[éüÿÿÿÃ´&    ´&    èüÿÿÿö€4  t*S‹˜Ü   ‹‹  ‹˜Ü   ‹“”  …Ét…Òu
+[Ã´&    Ã‹˜Ü   ‰‹  ‹˜Ü   ‰“”  ‹˜Ü   Ã  ‹‹˜Ü   Ã ‹‹˜Ü   Ã  ‹‹˜Ü   Ã ‹RQhè
+  ‹€Ì   ˆ   PèüÿÿÿƒÄ[Ã´&    v èüÿÿÿUW¿   V‰ÆSƒì‰$ëM´&    ‹„  …Ò…Ô  ‹‹Cƒï‰B‰º   ‰èÇ   ÇC"  èüÿÿÿ·V‹$)Ğ…À~O…ÿ~K‹9ğtE‹èüÿÿÿ‰“ ıÿÿ«ˆıÿÿ‰ƒœıÿÿ‹FP‰V‰ƒôşÿÿ‹F·Ğ;$u‚ƒ=„  v‡é÷  t& ƒÄ[^_]Ã´&    èüÿÿÿWV1öS‰Ã‹€Ü   ‰°   ‹ƒÜ   ‰°   ‹ƒÜ   ‰°@  ‹ƒÜ   ‰°@ ‹ƒÜ   ‰°@ ‹ƒÜ   ‰°@  ‹ƒÜ   ‰°@ ‹ƒÜ   ‰°   »è   ‰øèüÿÿÿ‰Â‹ƒÜ   ˆ  ‹‰1‰øèüÿÿÿ‹ƒÜ   ‰°   ‹ƒÜ   ‰°0  ‹ƒÜ   ‰°@  ‹ƒÜ   ‰°P  ‹ƒÜ   ‰°`  [^_Ã´&    ´&    èüÿÿÿWV‰ÆS‹¸È   _ü‰Øèüÿÿÿ‰Øèüÿÿÿ‰Øèøşÿÿ‹†L  ‰Úèüÿÿÿ‰ğèüÿÿÿ‰Øè½ûÿÿGXèüÿÿÿ‰øèüÿÿÿ‰Ø[^_éüÿÿÿt& èüÿÿÿW¸è   V‰ÖS‰Ã‰øèüÿÿÿ	³ä   ‰Â‹ƒÜ   ˆ  ‹€  	ğ‰[‰ø^_éüÿÿÿ´&    ´&    èüÿÿÿW¸è   V‰Æ‰øS‰Óèüÿÿÿ‰Â#ä   t‹†Ü   ˆ  ‹€  	Ø‰[‰ø^_éüÿÿÿ´&    ¶    èüÿÿÿW¸è   V‰Æ‰øS‰Óèüÿÿÿ‰Â‹†Ü   ˆ  ‹€  ÷Ó!Ã‰[‰ø^_éüÿÿÿv èüÿÿÿW¸è   V‰Æ‰øS‰Óèüÿÿÿ‹Ü   ‰Â‰Ø÷Ğ™  !†ä   ‹‰  !È‰[‰ø^_éüÿÿÿ´&    t& èüÿÿÿUW‰×VS‰Ãƒì‹r¡„  …ö„  …À…8	  ‹GƒÁ1Òƒáø‰D$‹G‰L$‰$÷ñº   9ĞFĞ‰T$ƒø†>  ‹ƒÜ   º  p‰Pº   ‹ƒÜ   ‰P1Ò‹ƒÜ   ‰P1íÇD$    ‹t$‹L$9$ro‰|$1Éfƒ=„  ‡]	  ‰ğƒàüƒÜ   ‰$‹D$‹x‹$ï‰8FƒàüƒÜ   ‰FƒàüƒÜ   ‰FƒàüƒÜ   ‰ƒÁƒÆl$9L$w‹|$‹G‹W(ƒàüƒÜ   …Ò…  ‹T$(‰‹G1ÒƒÀƒàüƒÜ   ‰‹G‹L$ƒÀƒàüƒÜ   ‰‹G‹t$ƒÀÁæƒàüÁîƒÜ   ‰0‹G‹WƒÀƒàüƒÜ   ‰‹G(…À‹G„÷   ƒÀº  €ƒàüƒÜ   ‰º   1Ét& ‹GĞƒàüƒÜ   ‰ƒÂƒúPuè‹G‹WƒàüƒÜ   ‰‹G‹L$ƒàüƒÜ   ‰‹G$ƒàüƒÜ   ‰0‹T$‹G ÁêƒàüƒÜ   ƒê‰ƒ=„  ‡	  ƒÄ1À[^_]Ãº   ‰éøşÿÿt& …À…	  ‹G1ÒƒàüƒÜ   ‰‹GƒàüƒÜ   ‰‹G$ƒàüƒÜ   ‰‹G ƒàüƒÜ   ‰ƒÄ1À[^_]Ãt& ƒÀº   ƒàüƒÜ   ‰éÿÿÿ¶    èüÿÿÿUWV‰ÆS‰Óâ  ‹8…€  öÃt`ƒ=„  ‡k  ®´   ‰èèüÿÿÿ‹†¸   ƒàü‡Ü   ‹†˜   èÚùÿÿ‰èèüÿÿÿ‹†è   ƒàü‡Ü   ‰¸   [^_]Ã´&    …ÛuÙ[1À^_]Ãt& èüÿÿÿUhW‰×V‰Æ‰èSèüÿÿÿ‹FV9Ât/X´ë´&    v ‹CLX´9Ât9»   uî‰èèüÿÿÿ‰Ø[^_]Ã‰è1Ûèüÿÿÿ‰Ø[^_]ÃèüÿÿÿUWV‰Î1ÉS‹l$‰Ó‹|$$ƒıÿ•Á1Òƒ|$ÿ•Âˆ   Ñ‹T$T$ j ¯×hÀ  ÁêT¯ÑKTRÁâ‰èüÿÿÿZY‰C…Àtnƒıÿtj‰é‰òj Wÿt$,ÿt$,j èŸôÿÿƒÄƒ|$ÿt'1Òƒıÿ”ÂR‰òj Wÿt$,ÿt$,h   ‹L$0èqôÿÿƒÄ‰C+C1ÒƒÀ;w[‰Ğ^_]Ã´&    ºôÿÿÿëè´&    èüÿÿÿUˆ   WV‰ÎS‰Ó‹|$‹T$‹l$j KhÀ  ¯×ÁêTRÁâ‰èüÿÿÿZY‰C…Àt:1Ò…í”Â1ÉR‰òUWj ÿt$$jÿèİóÿÿ1Ò‰C+CƒÄƒÀ;w[‰Ğ^_]Ãt& ºôÿÿÿëì´&    èüÿÿÿUWV‰Î1ÉS‹l$‰Ó‹|$$ƒıÿ•Á1Òƒ|$ÿ•Âˆ   Ñ‹T$T$ j ¯×hÀ  ÁêT¯ÑKTRÁâ‰èüÿÿÿZY‰C…Àtnƒıÿtj‰é‰òj Wÿt$,ÿt$,j è/óÿÿƒÄƒ|$ÿt'1Òƒıÿ”ÂR‰òj Wÿt$,ÿt$,h   ‹L$0èóÿÿƒÄ‰C+C1ÒƒÀ;w[‰Ğ^_]Ã´&    ºôÿÿÿëè´&    èüÿÿÿS‹š„  ‹Šˆ  ‹€Ì   j ÿ²”  ÿ²  ˆ   ‰ÚèüÿÿÿƒÄ[Ã´&    fèüÿÿÿU‰ÕW‰ÏV‰ÆSƒì‹„  ‹…É…q  ‰Øè×õÿÿ‹†À   ƒàüƒÜ   ‹‹–ô   ÷Ò!Ê‰kV,‹¤   ‰Ø“d  ÿ·  èüÿÿÿƒ=„  Z‡²  ‹†Ä   ‹–¤   ƒàüƒÜ   ‰iƒ¸        ‹PöÂu‹@¨„Ÿ  ƒú„  ¸¼ èüÿÿÿ‹†ì   …Àtƒàü‹–  ƒÜ   ‰‹†È   ‹–  ƒàüƒÜ   ‰‹†à   ‹–   ƒàüƒÜ   ‰‹†Ü   ‹–  ƒàüƒÜ   ‰‹†Ì   ‹–ü   ƒàüƒÜ   ‰¸¼ èüÿÿÿ‹†¼   º   ƒàüƒÜ   ‰ÇE    ‹ƒ¸  iĞ  ƒº   u"‹ƒÜ   L  ‹ ƒàü‹»Ü   ‰‡L  ‹ƒ¸  iĞ  ƒº   u"‹ƒÜ   L  ‹ ƒàû‹»Ü   ‰‡L  ‹ƒ¸  iÀ  ƒ¸   uE‹ƒÜ   L  ‹ ƒàş‹»Ü   ƒÈ
+‰‡L  ‹ƒÜ   H  ‹Ê  €‰ºE ‹ƒÜ   ‰,  ‹ƒh  =u  t-w  ƒø‡,  ¡„  …À…–  ‰Øèºóÿÿ‹†ä   ƒàüƒÜ   ‹–ø   ‰‹†À   ƒàüƒÜ   ‹–ô   ‰»è   ‰Øè{óÿÿ‰ø‹®ğ   èüÿÿÿ	«ä   ‰Â‰øèüÿÿÿ‰øèüÿÿÿ‰Â‹ƒä   …Àut‰øèüÿÿÿ‰Øè>óÿÿ‹ƒÜ      ‹ƒÊ ‰‰Øè%óÿÿiƒ¸    ƒ¸   tbƒ=„  wi‰øèüÿÿÿ‰Â‹ƒÜ     ‹ ‰øèüÿÿÿ‰Øèåòÿÿ1ÀƒÄ[^_]Ãv ‹‹Ü   Á  ‹)	è‰éuÿÿÿ1Ò‰Øèüÿÿÿéeıÿÿfº   ‰ØèüÿÿÿëéÊ  ´&    t& èüÿÿÿUWV‰ÖS‰Ãƒì‹º¤   ‹*¯º¨   1Òèüÿÿÿ‹„  ‰Â…É…!  ‹C…ÀuC¸êÿÿÿ…ÿu(‹…Ì   j Ã„  ÿ¶¨   ÿ¶¤   ‹
+‰Úèüÿÿÿ1ÀƒÄƒÄ[^_]Ã´&    v ;{Tw‰{Pë¼¸êÿÿÿëİ´&    ´&    èüÿÿÿUWV‰ÆS‰Óƒì‹8‹ƒ  ‹’ˆ  ƒÀÇ¸  ‰B‹ƒŒ  Ç   p‹ƒ  ‹“Œ  ƒÀ‰B‹ƒŒ  Ç@    ‰øèüÿÿÿ‹®˜   ˜   ‰Âƒx  9étT‹«ˆ  M    ‹®œ   ‰†œ   ‰‹x  ‰«|  ‰E ‹E‹‹  ‰H¡„  …À…l  ƒÄ‰ø[^_]éüÿÿÿt& ‹®œ   ‰†œ   ‰‹x  ‰«|  ‰E ‹„  …É…E  ƒÄ‰ø[^_]éüÿÿÿèüÿÿÿUW‰ÇVSƒì‹„  …Ò…“  ‹0‹‡ä   ƒàü†Ü   ‹‹—ø   ÷Ò!Ê‰‹‡À   ƒàü†Ü   ‹‹—ô   ÷Ò!Ê‰»   v ¸X‰A èüÿÿÿƒëuñ»d   ë´&    v …Àt,¸X‰A èüÿÿÿƒët‹†Ü   ‹  ‹†Ü   ”  ‹ …ÒuĞi†¸    ƒ¸   t}‡´   Ÿ˜   ‰$èüÿÿÿ‰D$ë?v ‹·˜   ‹‹F®ˆıÿÿ‰B‰‰èº   Ç   ÇF"  èüÿÿÿ¡„  …À…Õ  ‹‡˜   9Øuº‹T$‹$ƒÄ[^_]éüÿÿÿ´&    ‹†Ü   L  ‹ ƒàõ‹Ü   ƒÈ‰L  ‹‡ì   1Òƒàü†Ü   ‰‹‡Ì   º   ƒàü†Ü   ‰i†¸    ƒ¸   …$ÿÿÿ1Ò‰ğèüÿÿÿéÿÿÿv èüÿÿÿ…Ò„ƒ   UWV‰ÖS‰Ã‹€”  ƒàüƒÜ   ‹8ƒ=„  wd÷Æ 3 …û  ÷Æ   t.ƒ=„  ‡G  «  ‰èèüÿÿÿƒt  ‰úè†ïÿÿ‰èèüÿÿÿ‹ƒÄ  ƒàüƒÜ   ‰0¸   [^_]Ãt& 1ÀÃ‹ƒÀ  ƒàüƒÜ   ‹ WPRhÔ  hD  èüÿÿÿƒÄéqÿÿÿfèüÿÿÿUWVS‰Óƒì<d¡    ‰D$8‹‚Ü   ‹¨  ºè   ‰øèüÿÿÿ‰Â‹ƒÜ   ‹°  ‰øèüÿÿÿ‰è!ğ‰$„%  ‹ƒÜ   $  ‹ ‰D$‹ƒÜ      ‹ ‰D$‹ƒÜ   T  ‹ ‰D$‹ƒÜ   P  ‹ ‰D$‹ƒÜ   ‹ˆ4  ‹ƒÜ   0  ‹ ‰D$‹ƒÜ   D  ‹ ‰D$‹ƒÜ   @  ‹ ‰D$‹ƒÜ   ‹   ‹ƒÜ      ‹ ‰D$ ‹ƒ”  ƒàüƒÜ   ‹ ‰D$$‹ƒØ  ƒàüƒÜ   ‹ ƒ=„  ‰D$(‡x  ‰è%   ‰D$÷Å€„ò   ÷Å   tƒ=„  ‡K  ÷Å   tƒ=„  ‡o  ÷Å   tƒ=„  ‡  ÷Å   tƒ=„  ‡'  ÷Å   tƒ=„  ‡ß  ÷Å   …Ú  ÷Å   tƒ=„  ‡>  ÷Å   „Ò  ƒ=„  ‡  ÷Å   „  ƒ=„  ‡ü  ÷Å  € u÷Å   tƒ=„  ‡Ø  ÷Å   „ú  ƒ=„  ‡´  iƒ¸    1ö‹€  ƒø„2  ƒø„a  …Ét"iƒ¸    ‹€   ƒø„Ì  ƒø„S  ‹D$…Àt"iƒ¸    ‹€   ƒø„º  ƒø„9  ‹L$…É…-  ‹T$…Ò…‘  ‹D$…Àt[‹ƒ¨  ÆD$7 …ÀtL‹Pd‹…ÒtC‹J$‰L$…Ét8‹    …Ò„x  ‹J$‰L$…É„i  T$7‰Ñ‰ê‹l$èüÿÿÿ€|$7 tƒÆ÷$   …Ñ   …öu-Ç$    ‹D$8d+    …9  ‹$ƒÄ<[^_]Ã´&    v ‹ƒÜ   ‹<$‰¸  Ç$   ëÂ´&    ÷Å  €„Ëşÿÿ‰ê‰Ø‰L$èüÿÿÿ‹L$‰Æiƒ¸    ‹€  éšşÿÿt& ÷Å  € „“şÿÿ‰Ø‰L$èüÿÿÿ‹L$Æé}şÿÿ¶    ‹T$‰Øèüÿÿÿ‹T$Æ…Ò„ÆşÿÿëUt& ‰øèüÿÿÿ‰Â‹ƒÜ     ‹áÿÿÿ÷‰‰øƒÆèüÿÿÿ‹˜  ¸    ‹    èüÿÿÿ…ö„íşÿÿéÿÿÿt& ‹L$‹T$‰ØèüÿÿÿÆ‹D$…À„µşÿÿéUşÿÿ¶    ƒ=„  †µşÿÿé_  ¶    ƒ=„  ‡“  ÷Å   ….ıÿÿ÷Å   „/ıÿÿƒ=„  †"ıÿÿéš  ´&    f‰Ê‰ØèüÿÿÿÆéıÿÿ‹T$‰ØèüÿÿÿÆéµıÿÿ¶    ÷Å  € „ıÿÿƒ=„  †	ıÿÿé»  ´&    v ‹D$…À„ıÿÿƒ=„  †úüÿÿév  fƒÜ  ‰Êè³ïÿÿÆé)ıÿÿt& ‹T$ƒ   è™ïÿÿÆé9ıÿÿf‰êL$7‹l$èüÿÿÿé”ıÿÿèüÿÿÿ´&    èüÿÿÿV‰Æ‰ĞS‰Óƒàt‹Ü   ‘  ‹
+	È‰÷Ãøÿ t>i†¸    ƒ¸   „_  ƒ¸   „_  ‹†Ü      ‹
+‰ØÁè·À	È‰ã  ø …w  [^Ã´&    èüÿÿÿV‰Æ‰ĞS‰Óƒàt‹Ü   ‘  ‹
+÷Ğ!È‰÷Ãøÿ t@i†¸    ƒ¸   „  ƒ¸   „  ‹†Ü      ‹
+‰ØÁè·À÷Ğ!È‰ã  ø …§  [^Ãv èüÿÿÿV‰ÆS‰Óƒâuh÷Ãøÿ u‰Ø%  ø …¿  [^Ã´&    i€¸    ƒ¸   „Ù  ƒ¸   „Ù  ‹†Ü   ‹   ‰Ø[^Áè!ĞÁà%øÿ Ã¶    ‹€Ü   ‹€  Áè!Ø[^ƒàÃèüÿÿÿW‰ÏV‰ÆS‰Óƒât ‹€Ü     ‰ØÁà%   …Éts‹
+	È‰÷Ãøÿ tFi†¸    ƒ¸   „ñ  ƒ¸   „ñ  ‹–Ü   Áë·Û‚$  …ÿt‹’$  ÷Ó!Ó‰[^_Ãv ‹’$  	Ó‰[^_Ã´&    v ‹
+÷Ğ!È‰ë‰¶    èüÿÿÿU¹8  ºÀ  W‰ÇVSƒì¡4   èüÿÿÿ…À„š  ‰Ã¡`N  …À„Ç   º   ƒøtM1É¸"  ºQ  1öèüÿÿÿ…Àu%ƒÆƒş„š   ‹õ	  ‹õ 	  1Éèüÿÿÿ…ÀtÛèüÿÿÿº   ´&    ¶ƒ4  kƒàş	Ğ‰êˆƒ4  ‡ˆ   ‰D$èüÿÿÿ‰Æ…Àx/j C\1Éº   ‰D$èüÿÿÿ‹³˜   X…öt,‹$èüÿÿÿ‰èèüÿÿÿ‰ØèüÿÿÿƒÄ‰ğ[^_]Ãt& 1ÒëŒt& ‹$‰»Ì   ¾ûÿÿÿÇƒ˜  àÿÿÿ‰C@ƒœ  ‰ƒœ  ‰ƒ   ƒ°  ‰ƒ°  ‰ƒ´  ƒÄ  ‰ƒÄ  ‰ƒÈ  ‰øÇƒ¤      Çƒ¬  àÿÿÿÇƒ¸      ÇƒÀ  àÿÿÿÇƒÌ      ÇC< E  èüÿÿÿ‰D$…À…7ÿÿÿƒ  ¹€  º°  Çƒè       Çƒ¸      èüÿÿÿƒ¤  ¹€  º»  èüÿÿÿğÿ¡€  ‹¼  ‰L$‰ƒŒ  PPhË  Q‰€  èüÿÿÿ‹ƒÌ   ƒÄ·@"f=€ˆ„§  f=Rˆt¸u  ¹ ?«º L  ‰‹ğ   ‹„  ‰ƒh  ‰“d  …É…'  ‹ƒŒ  ‹…@N  ;    ‚(  Çƒ¸  ÿÿÿÿ‹    ‹t$ëf‹“¸  ƒÆƒúÿuR9Ît1‹ƒÌ   ·õ    f9P$uÚ·õ   f9P&uÌ‹õ   ‰“¸  ëÃÇƒ¸      ‰Øèüÿÿÿ‹ƒÌ   ‹“¸  fx"Rˆ„Ù  iÊ  ‹‰(   …Ét‰‹ğ   ƒú+„Ÿ  ‹P³è   ¶Rt‰“Ô   ‹@Áèƒà‰ƒØ   ‰ğèüÿÿÿ‹ä      ‰Â‰ğèüÿÿÿ‹ƒ¸  Çƒø       ‰›ô   iĞ  ‰›|  Çƒl    Çƒh    Çƒp     Çƒt    Çƒx    Çƒd     Çƒ€     Çƒô	    Çƒğ	    Çƒø	     Çƒü	    Çƒ 
+    Çƒì	     Çƒ
+     ‰›
+  Çƒ|    Çƒx    Çƒ€     Çƒ„    Çƒˆ    Çƒt     ‹’   ƒâıƒú„ü  iÀ  ‹€   ƒàıƒø„™  ‹‹Ì   ‹‘\  ‹X  ‰T$‹‘T  ‰D$‹P  ‰T$‹T$‰D$‹D$‰Ñ	ÁtƒÀƒÒ +D$T$‰D$‰T$j ¸    ÿt$ÿt$ÿt$‹T$$‹L$(èüÿÿÿƒÄ…À„  ‹³Ì   ‹T  ‹†P  ‹–\  ‰L$‹X  ƒÁ)Á–X  ¾    ‹T$DÎèüÿÿÿ‹“Œ  ¹•  ‰ƒÜ   ‰ƒà   ‹ƒ¸  9•@N  º£  EÊ‹“Ì   QPiÀ  ÿ°    ·B&P·B$Pÿt$$hP  èüÿÿÿ¡„  ƒÄ…À„[  éD  ´&    ‰“¸  ƒúÿ„Óüÿÿ‹ƒÌ   é6ıÿÿfx&7q…UıÿÿÇƒğ   @x}éFıÿÿƒú9„É  ƒú8…ıÿÿÇƒ¸  <   ‹Ø@  …Ò„ıÿÿ‰“ğ   éıÿÿ¡„  …À…	  ƒ¸  ‰›   ¹€  ºõ  ‰ƒ¸  ‰ƒ¼  ƒ4  Çƒ     Çƒ    Çƒ(      Çƒ,  ÀG ÇƒÔ      Çƒ$     èüÿÿÿƒ,  Çƒ°      ‰ƒ,  ‰ƒ0  ‹ƒ0  …Àu
+Çƒ0     ÇƒØ    ÇƒÜ  0 Çƒà  @ Çƒä  P Çƒè  T Çƒì  X Çƒğ  \ Çƒô  ` Çƒø  d Çƒü  h Çƒ   l Çƒ      Çƒ  @  Çƒ  D  Çƒ(     Çƒ     éıÿÿ‹„  …Ò…Q  ƒt  ‰›Ü  ¹€  ºõ  ‰ƒt  ‰ƒx  ƒğ  ÇƒĞ     ÇƒÔ    Çƒä      Çƒè  ÀG Çƒ      Çƒà     èüÿÿÿƒè  Çƒl      ‰ƒè  ‰ƒì  ‹ƒì  …Àu
+Çƒì     Çƒ”    ‹ƒ¸  Çƒ˜  4 Çƒœ  @ Çƒ   P Çƒ¤  T Çƒ¨  X Çƒ¬  \ Çƒ°  ` Çƒ´  d Çƒ¸  h Çƒ¼  l ÇƒÈ  D ÇƒÀ  0  ÇƒÄ  4  Çƒä     ÇƒÌ     é²ûÿÿÇƒ¸  =   ‹ìA  …Ò„\úÿÿé;ıÿÿ¾ôÿÿÿé$øÿÿ¸x  ¹€ğúº K  é]ùÿÿfffffffèüÿÿÿ¸	 ÿÃt& èüÿÿÿV‰ÆS»@   ë¸à èüÿÿÿƒët)‹F‹‹€x  ƒàü‚Ü   ‹ ¨u×¸   [^Ã´&    1À[^Ãv èüÿÿÿU‰ÕWVSƒì‹x‰D$¡Œ  ‹…Àt	öÁ„"  ·Ef…À„Â   ‹Œ  …Û…ê!  ‰ë1ö‰Õ‰Úë1f‹‡€  ƒàü…Ü   ‹‹Bˆ0¡Œ  …À…o"  ·BƒÆ9ğvm‹Ÿp  ƒè‰$‰ÙË  É  9ğ‹‡|  FÙ·
+ƒàü…Ü   Áá‰‹‡t  ƒàü…Ü   ‰‹D$èáşÿÿ‹$…À…vÿÿÿ¡Œ  …À…   ¸ûÿÿÿƒÄ[^_]Ãt& ‹‡|  ·M ƒàüÁá‚Ü   ‰‹‡t  ƒàü‚Ü   ‹—p  ƒÊ‰‹D$è}şÿÿ…Àt°‹D$‹@‹‹€x  ƒàü‚Ü   ‹ ¨t‹5Œ  …ö…Ì!  ƒÄ1À[^_]Ã¸úÿÿÿéuÿÿÿé¿"  t& èüÿÿÿU‰ÕW‰ÏVSƒì‹p‰D$¡Œ  ‰L$‹·M…ÿ„b  …À…#  ‹|  ·E ‹ºÜ   ƒãüÁàßf…É„‰  ‹]¶	Ø‰D$‹†p  fƒù„-    ‰$‹D$‰‹†„  ƒàü‚Ü   ‰‹†t  ‹$‰T$ƒàü‚Ü   ‰‹D$è}ıÿÿ…À„  ‹Œ  …Ò‹T$…a#  ·Eƒøù   ‰é¿   ‰Õ‰Êëv´&    fË  ‹†|  ‰$‹T$ƒàü…Ü   ‰‹†„  ƒàü…Ü   ‰‹†t  ƒàü…Ü   ‰‹D$è÷üÿÿ…À„   ‹Œ  ‹$…É…¤#  ·BƒÇ9ø~v‹Jƒè‹p  ¶99ø{ÿÿÿ‰ØË    ƒ|$ DØégÿÿÿ…À„şÿÿé9#  v ‰Á  É  ƒ|$ EÈ‰$é¾şÿÿv ‹Œ  …É…õ"  ¸ûÿÿÿƒÄ[^_]Ãt& ‰‹†t  ƒàü‚Ü   ‹–p  ƒÊ‰‹D$è+üÿÿ…ÀtÅ‹D$‹@‹‹€x  ƒàü‚Ü   ‹ ¨t¡Œ  …À…×"  ƒÄ1À[^_]Ã¸úÿÿÿë´&    t& èüÿÿÿU‰ÕW‰ÇV‰ÎSƒì‹Œ  …Ò…Ú#  1Û…ö<é•   t& C‰$9ğ}D‰Áö@t· f9tJ1É‰øèYıÿÿ…Àx1ƒÃ9Ş~^[¡Œ  ÁáT …À…÷#  öBt±1É‰øè¨ûÿÿ…ÀyÏƒÄ[^_]Ãt& ‰Ë·I‰øèıÿÿ…Àxã‰Ú¹   ‰øèyûÿÿ‹$ë›t& ƒÄ‰ğ[^_]Ã¶    èüÿÿÿUWVS‰ÃƒìH‹3d¡    ‰D$D1À¡Œ  …À…ï$  ‰òk1À¹œ   ‰ïó«»x  ¹}   ÇC    ÇC   Çƒ  cx23Çƒ  885 ‰|$ó«º¼  º    Çƒ|  cx23Çƒ€  885 Çƒ„  inteÇƒˆ  rnal‹†Ì   ˆ   ‰Chƒ  ‰$‰øèüÿÿÿ‰Áƒø†¨   ƒø0…å$  ‹$‰úèüÿÿÿF‰[‰ƒ„   ‰èèüÿÿÿ‹ƒl  ‰«  …À…Ì$  ‹=Œ  …ÿ…$  ¡ˆ  …À…-$  t$1À¹   º!	  ‰÷ó«¹	   ‰ğèüÿÿÿ‰ò¹Ì	  ‰èh    èüÿÿÿ‹ƒl  Z‹T$Dd+    u&ƒÄH[^_]Ãt& ƒø0„XÿÿÿƒÁƒù0†Lÿÿÿé%  èüÿÿÿèüÿÿÿƒÀèüÿÿÿ1ÀÃèüÿÿÿS‰Ãƒì‹Œ  d¡    ‰D$1À…É…%  ƒú¸D  º   ¹   f‰D$”À€f‰T$T$ˆD$D$‰D$ƒ
+  ÇD$D  è&ıÿÿ‹D$d+    uƒÄ[Ãèüÿÿÿfffffffèüÿÿÿ‹@(Ç€¤   ğ  Ç€¨       Ç   ‹ˆ¤   ¯ˆ¨   ‰È‹L$‰1ÀÇ    Ãèüÿÿÿ‹€$  ‹@ ‹ ‹€Ü      ƒút …Òtº   ‰1ÀÃfº   ‰1ÀÃ¶    º   ‰1ÀÃ¶    èüÿÿÿS1É‹˜4  …Ò”Áº   Q1É‹[èüÿÿÿZ[Ã´&    v èüÿÿÿ1ÀÃ´&    èüÿÿÿS‹ˆà  …Étèüÿÿÿ‰Ã…Àˆ?%  1Û‰Ø[Ã´&    t& èüÿÿÿWVS‹¸<  ‰X  ‹Ğ  Ç€<      …Òt‰Ãèüÿÿÿ‰»<  ‰Æ…ÀˆU%  1ö‰ğ[^_Ã´&    fèüÿÿÿS‹ˆÜ  …Étèüÿÿÿ‰Ã…Àˆk%  1Û‰Ø[Ã´&    t& èüÿÿÿWVS‹¸X  ‰<  ‹Ğ  Ç€X      …Òt‰Ãèüÿÿÿ‰»X  ‰Æ…Àˆ%  1ö‰ğ[^_Ã´&    fèüÿÿÿS‰Ó‹”   Hƒú~2‰Èèüÿÿÿ…Àt‹@…Àt‹ˆ  …Ét‰Ú[éüÿÿÿ¶    [Ã¶    º   ‰ÈèüÿÿÿëÇ´&    v èüÿÿÿ‰Â‹ ‹@(éüÿÿÿ´&    ´&    èüÿÿÿ‹@(éüÿÿÿv èüÿÿÿ‹@(‹˜   Šˆıÿÿ˜   èüÿÿÿ1ÀÃ´&    ´&    èüÿÿÿ‰Â‹ ‹@(‹ éüÿÿÿ´&    ¶    èüÿÿÿ‹‹R(éüÿÿÿèüÿÿÿU¹   WV‰ÆS‹€$  ‰Óº 0  ‹h ‹} ‰øèüÿÿÿƒût!ƒût|…ÛtH‹@  ‰Ú‰ğ[^_]éüÿÿÿt& ‰øº    èüÿÿÿ‰øº   èüÿÿÿ‹@  ‰Ú‰ğ[^_]éüÿÿÿt& ‰øº    èüÿÿÿ‰øº   èüÿÿÿ‹@  ‰Ú‰ğ[^_]éüÿÿÿt& ‰øº    èüÿÿÿ‰øº   èüÿÿÿ‹@  ‰Ú‰ğ[^_]éüÿÿÿt& èüÿÿÿU¹   WV‰ÆS‹€$  ‰Óº   ‹h ‹} ‰øèüÿÿÿƒût!ƒût\…Ût8‹@  ‰Ú‰ğèüÿÿÿ1À[^_]Ãf‰øº   èüÿÿÿº   ‰øèüÿÿÿëÎ¶    ‰øº   èüÿÿÿº   ‰øèüÿÿÿë®¶    ‰øº   èüÿÿÿº   ‰øèüÿÿÿë¶    èüÿÿÿVS‰Ã‹€$  ‹p ‹‹¸  ƒøw9ƒøw9ƒøuƒ»@  º    ‰Èt?èüÿÿÿ‹–<  …Òt(‰Ø[^éüÿÿÿ´&    ƒø!uáº   ‰ÈëÓ´&    v 1À[^Ãv èüÿÿÿë¿èüÿÿÿUW‰ÏVSƒì‹0‰$‹\$®¤  ‰èèüÿÿÿ‹†Ü   º   ‰$  ‹†Ü      ‰ø¶À€ÌÇ‰‹†Ü      ‹€æû‰‰ù‹†Ü   ¶ıÏ Ë  ‰¸   ‹†Ü      ‹€æ÷‰€<$ ‹†Ü   „Ò   ºÿ  ‰$  ‹†Ü      ‹€æş‰‹†Ü      ‹
+€<$À% Àÿÿ-@  !È‰‹=    ¡    ƒÇ9Çy&é   t& ¸2   ¹   ºd   èüÿÿÿ¡    9Çx‹†Ü   ‹˜   öÇuÒ¶Û‹†Ü      ‹€   €ÌÃ‰‹D$‰‰èèüÿÿÿ1À€<$ u‹D$‹ Áøƒà‡ƒÄ[^_]Ã´&    ¶Û€ÏÃ‰˜   é(ÿÿÿ1Ûë¤v èüÿÿÿUWVS‰Ãƒì‹5    ‹€Ü   ‰$‹|$ƒÆ   ‹ ‹‹Ü   …ÿ„—   Á$  ‹)Íÿ   ‰)‰Á€äı€Í…ÒEÁ‹‹Ü   €äò‰Â€Ì€Î…ÿEÂ‰   ët& ‹    9Öx¸Ç  èüÿÿÿ‹ƒÜ      ‹ öÄuÚ‹“Ü   Š   ‹’   €Î‰¶À…ÿEøƒÄ[^‰ø_]Ã´&    f©$  ‰é‹m å ÿÿÿ‰)Š$é^ÿÿÿt& èüÿÿÿVpº   S‰Ã‰ğèüÿÿÿ…Àt‹@…Àt‰ğèüÿÿÿ‹³8  …öt‹FT‹@èüÿÿÿ‰ğèüÿÿÿ‹³4  …öt‹FT‹@èüÿÿÿ‰ğèüÿÿÿ‹³0  …öt‹FT‹@èüÿÿÿ‰ğèüÿÿÿ‹³,  …öt‹FT‹@èüÿÿÿ‰ğèüÿÿÿ‹‹¸  ƒøt!ƒøu
+‹S‰ÈèüÿÿÿÇƒ      1À[^Ãv ‰Øèüÿÿÿ1ÀÇƒ      [^ÃfèüÿÿÿS‹tY  ‹@(‰˜€  ‹xY  ‰˜„  Ç   ¡tY  ¯xY  ‹L$‰¡|Y  [‰1ÀÃ´&    t& èüÿÿÿ‹…ÀuÇA,MPEG1ÀÃv ¸êÿÿÿÃfèüÿÿÿ‰Â‹ ‹@(Ü  éüÿÿÿ´&    v èüÿÿÿ‰Â‹ ‹@(éüÿÿÿ´&    ´&    èüÿÿÿ‹‹R(ÂÜ  éüÿÿÿ´&    t& èüÿÿÿUWVSƒì(d‹    ‰T$$1Òèüÿÿÿ‹°(  †¼  nPhI  j"|$Wèüÿÿÿ‹FƒÄ9Åt'X´t& ‹Cd‹ …Àt‹…Òt‰Øèüÿÿÿ‹CLX´9Åuà†Ô  ‰úèüÿÿÿ‹D$$d+    u
+ƒÄ(1À[^_]Ãèüÿÿÿ´&    èüÿÿÿWV‰ÎSèüÿÿÿ‹¸(  ƒ¿€  tLÇF   ‹‡Ü  ƒÇ‰F‹X´9Çt*¶    ‹Cd‹@…Àt‹H…Ét	‰ò‰Øèüÿÿÿ‹CLX´9ÇuÜ1À[^_Ã¸êÿÿÿëõ´&    ´&    èüÿÿÿWV‰ÎSèüÿÿÿ‹¸(  ƒ¿€  t<‹GƒÇX´9Çt)t& ‹Cd‹@…Àt‹H…Ét	‰ò‰Øèüÿÿÿ‹CLX´9ÇuÜ1À[^_Ã¸êÿÿÿëõ´&    ´&    èüÿÿÿS‰Ëèüÿÿÿ‹€(  ‹|  ‹€x  ‰S‰1À[Ã´&    èüÿÿÿS‰Ëèüÿÿÿ‹(  ÇCMPEGÇC    ‹‚€  ¯‚„  ÇC    ÇC   ‰C¡¤  …À…©k  1À[ÃèüÿÿÿS‰Ëèüÿÿÿ‹€(  ÇCMPEGÇC    ‹€  ¯„  ÇC    ‰S‹ˆ  ‰S‹Œ  ÇC   ‰S‹¤  …Ò…Ìk  1À[Ã´&    ¶    èüÿÿÿéüÿÿÿ¶    èüÿÿÿWV‰ÎSèüÿÿÿ‹¸(  ƒ¿€  th‹…Òu[F¹   ºN  ƒÇèüÿÿÿ‹X´9Çt*¶    ‹Cd‹@…Àt‹H…Ét	‰ò‰Øèüÿÿÿ‹CLX´9ÇuÜ¡¤  …À…ïk  1À[^_Ã¸êÿÿÿëõ¸êÿÿÿëîv èüÿÿÿéüÿÿÿ¶    èüÿÿÿéüÿÿÿ¶    èüÿÿÿVS‰Ëèüÿÿÿ‹°(  ¡¤  …À…l  ‰Ú‰ğ[^éüÿÿÿt& èüÿÿÿUWVS‹l$1Û‹|$èüÿÿÿº   ‹°(  1Àë´&    f›‹…ä  ‹…è  !ê!ø	ĞuƒÃƒûuß¸êÿÿÿ[^_]Ãt& ‰ê‰ù‰ğèüÿÿÿ…Àuç›Áá‘à  ‹‰à  ‰  ‹J‰   ‹J‰$  ‹J‹R‰(  ‰–,  [^_]ÃèüÿÿÿUWVS‰Ëèüÿÿÿº   ‹°(  ¾¼  ‰øèüÿÿÿƒø‡1l  ‰ÁƒøtƒÁƒù‡'l  ‰ú‰Økèüÿÿÿ‹†Ü  º    i€¸    ‹¸    ‰øèüÿÿÿ‰Áƒøÿ„1l  ƒø tƒÁƒù ‡'l  ‰ú‰èèüÿÿÿ‹–Ì   ‹‚´   …Àu‹‚ˆ   PC0hr  Pèüÿÿÿ¸ …º …ÇCT …ƒÄƒ¾€  DÂ‰CT[1À^_]Ã´&    t& èüÿÿÿS‰Ëèüÿÿÿ‹(  ÇCMPEGÇC    ‹‚€  ¯‚„  ÇC    ÇC   ‰C¡¤  …À…;l  1À[Ãèüÿÿÿƒ=¤  S‰Ã‡Zl  ‹ƒÜ   º7   ‰(  º   ‹ƒÜ   ‰$  º à  ‹ƒÜ   ‰   [Ã¶    èüÿÿÿWV¾   S‰Ã‰Ğ‰Ê‹»Ü   ‰·$  ¶É‹³Ü   ‰ÏÏ X  ‰¾   ‹»Ü   €Íø‰   ¶Î‹³Ü   ‰ÏÏ Y  ‰¾   ‹»Ü   €Íù‰   ‰Ñ‹³Ü   Áé¶É‰ÏÏ Z  ‰¾   ‹»Ü   €Íú‰   Áê‹»Ü   ‰ÖÎ [  ‰·   ‹»Ü   €Îû‰—   ¶Ğ‹»Ü   ‰Ñ€Í\·É‰   fÊ ü‹»Ü   ·Ò‰—   fÁè‹»Ü   ‰Â€Î]·Ò‰—   f ı‹“Ü   ·À‰‚   º^  ‹ƒÜ   ‰   ºş  ‹ƒÜ   ‰   ‹5    ƒÆë¡    9Æx'¸Ç  èüÿÿÿ‹ƒÜ      ‹ öÄtÛ[1À^_Ãt& [¸ÿÿÿÿ^_Ã´&    èüÿÿÿUWVS‰Ã‰Ğƒì‹»Ü   ‰$¹   ‰$  ¶Ò‹»Ü   ‰Ñ€Í\·É‰   fÊ ü‹»Ü   ·Ò‰—   fÁè‹»Ü   ‰Â€Î]·Ò‰—   f ı‹»Ü   ·À‰‡   º ^  ‹ƒÜ   ‰   º ş  ‹ƒÜ   ‰   ‹5    ƒÆë ´&    f¡    9Æˆ[  ¸Ç  èüÿÿÿ‹ƒÜ      ‹ öÄt×1ÿ‹ƒÜ   ºÿ  ‰$  º X  ‹ƒÜ   ‰   º ˜  ‹ƒÜ   ‰   ‹ƒÜ   ‹   ¹ ğ  ‹ƒÜ   ‰ˆ   ¾ Y  ‹ƒÜ   ‰°   ¾ ™  ‹ƒÜ   ‰°   ‹ƒÜ      ‹ ‰D$‹«Ü   ‰   ¾ Z  ‹«Ü   ‰µ   ¾ š  ‹«Ü   ‰µ   ‹«Ü   ‹…   ‹«Ü   ‰   ‹«Ü   µ   ½ [  ‰.‹«Ü   µ   ½ ›  ‰.‹«Ü   ‹µ   Áæ¶Ò	ò‹t$Áæ·ö	Ö‹“Ü   ‰Š   Áà%  ÿ 	ğ‰Â‹$‰ƒÄ‰ø[^_]Ã´&    ¿ÿÿÿÿé¹şÿÿ´&    ´&    èüÿÿÿWV¾   S‰Ã‰È‹»Ü   ‰·$  ¶É‹³Ü   ‰ÏÏ P  ‰¾   ‹»Ü   €Íğ‰   ¶Ì‹³Ü   ‰ÏÏ Q  ‰¾   ‹»Ü   €Íñ‰   ‰Á‹³Ü   Áé¶É‰ÏÏ R  ‰¾   ‹»Ü   €Íò‰   Áè‹»Ü   ‰ÆÎ S  ‰·   ‹»Ü   €Ìó‰‡   ‰Ğ‹»Ü   Áèƒà?‰ÆÎ@T  ‰·   ‹»Ü   @ô  ‰‡   ¶Æ‹»Ü   ‰ÆÎ U  ‰·   ‹»Ü   €Ìõ‰‡   ¶Ò‹ƒÜ   ‰Ñ€ÍV‰ˆ   ‹ƒÜ   €Îö‰   ‹5    ƒÆët& ¡    9Æx'¸Ç  èüÿÿÿ‹ƒÜ      ‹ öÄtÛ[1À^_Ãt& [¸ÿÿÿÿ^_Ã´&    èüÿÿÿUWVS‰Ã‰Ğƒì‹»Ü   ‰$¹   ‰$  Áê‹»Ü   ƒâ?‰ÖÎ T  ‰·   ‹»Ü   €Îô‰—   ¶Ô‹»Ü   ‰ÖÎ U  ‰·   ‹»Ü   €Îõ‰—   ¶À‹»Ü   ‰Á€ÍV‰   ‹»Ü   €Ìö‰‡   ‹5    ƒÆë´&    ¡    9Æˆc  ¸Ç  èüÿÿÿ‹ƒÜ      ‹ öÄt×1ÿ‹ƒÜ   ºÿ  ‰$  º S  ‹ƒÜ   ‰   º “  ‹ƒÜ   ‰   ‹ƒÜ   ‹   ¹ ğ  ‹ƒÜ   ‰ˆ   ¾ R  ‹ƒÜ   ‰°   ¾ ’  ‹ƒÜ   ‰°   ‹ƒÜ      ‹ ‰D$‹«Ü   ‰   ¾ Q  ‹«Ü   ‰µ   ¾ ‘  ‹«Ü   ‰µ   ‹«Ü   ‹…   ‰D$‹«Ü   ‰   ‹«Ü   µ   ½ P  ‰.‹«Ü   µ   ½   ‰.‹«Ü   ‹µ   ‰ğÁâ¶ğ	ò‹t$Áææ  ÿ 	Ö‹“Ü   ‰Š   ‹D$Áà·Ğ‹$	ò‰ƒÄ‰ø[^_]Ã¶    ¿ÿÿÿÿé±şÿÿ´&    ´&    èüÿÿÿU‰ÍWV‰ÖS‰Ãƒìd¡    ‰D$1Àƒ=¤  ÇD$    ‹|$(‡!m  ‹ƒ¼  ‰áPü‰Øèüÿÿÿ‹$=xV4…ıl  ‹“¼  L$‰Øèüÿÿÿ‹D$…À…Ùl  ‹“¼  ¹   ‰ØÇD$   èüÿÿÿ‹ƒ¼  ‰ñ1öP‰Øèüÿÿÿ‹ƒ¼  ¹ô  P‰Øèüÿÿÿ…í~5t& ‹ƒ¼  ‹·T‰Øèüÿÿÿƒ=¤  ‡¾l  ƒÆ9õuØƒşv ‹ƒ¼  1ÉT‰ØƒÆèüÿÿÿƒşuå‹“¼  ¹   ‰ØÇD$   èüÿÿÿ‹5    ƒÆ
+ë¡    9Æˆ«l  ¸Æ§  èüÿÿÿ‹“¼  L$‰ØèüÿÿÿöD$tÑ‹T$$‹l$$1ö…Ò~-v ‹ƒ¼  ‰ùT‰Øèüÿÿÿƒ=¤  ‡‘l  ƒÆƒÇ9õuÖ‹ƒ¼  L$P‰Øèüÿÿÿƒ=¤  ‡vl  ‹“¼  1É‰Øèüÿÿÿ‹D$‹T$d+    uƒÄ[^_]Ãèüÿÿÿ´&    èüÿÿÿUWVSƒìHd¡    ‰D$D1À‹t$\‹|$dƒ=¤  ‡gm  \$l…ÿt{‰4$D$pl$‰ê¸v ‹pü‰ÃƒÀƒÂ‰rü9Èuî‹4$U‰ù‰ğÿt$l‹T$hè¡ıÿÿZY‹t$h…öt‹‹L$ƒ|$h‰
+u	‹S‹L$‰
+‹T$Dd+    uƒÄH[^_]Ã´&    v l$ë§èüÿÿÿt& èüÿÿÿéFıÿÿ¶    èüÿÿÿUWVS‰Ãƒì,‹¤  ‰T$d¡    ‰D$(1À…É…ëm  j j h€   SèõşÿÿƒÄ…À‰;  ƒ=¤  ‡Ån  ÇD$    ÇD$    L$º   ‰Øèüÿÿÿº  ‰Ø|$‰ùèüÿÿÿ¹íÿÿÿºX  ‰Øèüÿÿÿ¹ÿÿÿÿºT  ‰Æ‰Øèüÿÿÿ¹  €ºø  	Æ‰Øèüÿÿÿ¹   ºü  	Æ‰Øèüÿÿÿ1Éºd   	Æ‰Øèüÿÿÿ	ğ…¯n  ‹ƒÌ   º‚  ˆˆ   D$èüÿÿÿ…À…n  ‹D$‹úÀ …n  ‹@8§  ‰Át8h/  èüÿÿÿ‹D$èüÿÿÿXhD  hh0  èüÿÿÿXZÇD$ÿÿÿÿéô  ¶    xf»Uªu¿ƒ=¤  ‡.  ‰$1í1ö‰Ëë	´&    ‰Í‹«‹$‰ê)Î‰L$ƒîèüÿÿÿ…À…Òm  ‹D$M‹ Áè9ÈwĞ‹¤  ‹$…É…]o  …íx%v L$‰ê‰Øèüÿÿÿ…À…Do  ‹D$tƒísŞ…ö…+o  ‹D$èüÿÿÿ¡¤  …À…o  ¹ÿÿÿÿºT  ‰Øèüÿÿÿ‹L$º   ‰Æ‰Øèüÿÿÿ‹L$º  	Æ‰ØèüÿÿÿºX  	ÆL$‰Øèüÿÿÿ‹L$ºX  	Æ‰Øƒáèèüÿÿÿ¹ @  º   	Æ‰Øèüÿÿÿ¹ @  º  	Æ‰Øèüÿÿÿº   	ÆL$‰Øèüÿÿÿ‰ùº  ‰Øèüÿÿÿ…öˆo  ƒ=¤  ÇD$xV4ÇD$xV4ÇD$ 4xVÇD$$V4x‡so  1ö1íëv 1öƒÅıÀ „¥o  ‰ù‰ê‰Øèüÿÿÿ‹D$9D´uÚƒÆƒşuÔ¡¤  ƒÅ…À…ºm  ‰«¼  j j h€   SèíûÿÿƒÄ…ÀˆQ  Wjj hÄ   SèÒûÿÿƒÄ…Àˆ¢m  ‹=¤  …ÿ…‡m  ¸È   èüÿÿÿ‹5¤  …ö…rn  ‹ƒ   ¾   ‰ß% ù  ƒøÀƒà`à  ‰ƒŒ  ÿ³ˆ  Pj jh‘   Sèfûÿÿ‹ƒˆ  ƒÄf‰ƒÈ  ‹ƒŒ  f‰ƒÊ  1À÷ƒ   ÿÿ •Àf‰ƒÌ  ƒÀ  èüÿÿÿjjj jhÜ   Sèûÿÿjjj jhÜ   Sèûÿÿ¸<   ƒÄ0èüÿÿÿhğ   hğ   j jhÖ   SèÜúÿÿj j j j j j j j j j j j j jh×   SèµúÿÿƒÄXj@jhÀ€` hU‘U‘jjh ½ j jhÈ   SèŒúÿÿƒÄ,´&    fFí1Ûj ƒøj –Ãj SVj jh·   Wè^úÿÿ‰ğƒÆƒÄ$   €j j j SPj jh·   Wè:úÿÿƒÄ$ƒşu²j j jhÚ   Wè!úÿÿ¸<   èüÿÿÿj j hÍ   Wèúÿÿ¸<   ƒÄ$èüÿÿÿ¹€   ºH  ‰øèüÿÿÿ‹L$…Éu"‹D$(d+    u?‹D$ƒÄ,[^_]Ã´&    fj j j jh   Wè­ùÿÿ¸
+   èüÿÿÿƒÄÇD$    ë´èüÿÿÿéÎo  é(n  ´&    èüÿÿÿUº   WVSƒì‹h(‰èt  è/úÿÿ‰Æ…Àty½¸  ‰øèüÿÿÿ‰$‹…t  9ØtD´&    ‹…t  ‹P‹-x  ‰Q‰
+º   Ç€x     Ç€|  "  èüÿÿÿ‹…t  9ÃuÃ‹$‰øèüÿÿÿ‰ğƒÄ[^_]Ã´&    ‹…t

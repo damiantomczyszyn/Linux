@@ -1,4 +1,1 @@
-.h \
-  include/linux/atomic/atomic-arch-fallback.h \
-    $(wildcard include/config/GENERIC_ATOMIC64) \
-  include/linux/atomic/atomic-
+cmd_drivers/net/arcnet/com20020-isa.mod := { echo  drivers/net/arcnet/com20020-isa.o;  echo; } > drivers/net/arcnet/com20020-isa.mod

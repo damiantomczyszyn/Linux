@@ -1,1 +1,5 @@
-¶N,G«±ü·¹ÚŸÇŽ„‰KL—ÃîÊ*þ?í¼½ÉGœë’Tö(Ïýùò£œÏä¥"Jµ#7‘xþ¤Þ:/nxõƒí£ºÞ.!Ã¨œ{BJ´‘#D’3" ÞX‚åôöÃÜÆ»a‹Ç
+amux   = CX25840_AUDIO8,
+		}, {
+			.type   = CX23885_VMUX_SVIDEO,
+			.vmux   = CX25840_VIN8_CH1 |
+				  CX25840

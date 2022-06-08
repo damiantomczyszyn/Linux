@@ -1,1 +1,1 @@
-$(wildcard include/config/TRACE_BRANCH_PROFILING) 
+.duty_cycle = 25,      /* 25 %   - RC-5 carrier */

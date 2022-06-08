@@ -1,13 +1,5 @@
-s[0]),
-				       GFP_KERNEL);
-		if (reader_tasks == NULL) {
-			TOROUT_ERRSTRING("reader_tasks: Out of memory");
-			kfree(writer_tasks);
-			writer_tasks = NULL;
-			firsterr = -ENOMEM;
-			goto unwind;
-		}
-	}
-
-	/*
-	 * Create the kthreads and start to
+/* SPDX-License-Identifier: GPL-2.0 */
+/*
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the Licen

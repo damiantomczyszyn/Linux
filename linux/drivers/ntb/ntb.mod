@@ -1,1 +1,1 @@
-$(wildcard include/c
+.duty_cycle = 25,   

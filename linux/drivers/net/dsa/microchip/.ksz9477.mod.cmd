@@ -1,4 +1,1 @@
-odule.h \
-    $(wildcard include/config/MODULES_TREE_LOOKUP) \
-    $(wildcard include/config/STACKTRACE_BUILD_ID) \
-    $(wildcard include/
+cmd_drivers/net/dsa/microchip/ksz9477.mod := { echo  drivers/net/dsa/microchip/ksz9477.o;  echo; } > drivers/net/dsa/microchip/ksz9477.mod

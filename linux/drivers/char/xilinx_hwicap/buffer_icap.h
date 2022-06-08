@@ -1,57 +1,87 @@
-h/x86/include/asm/pgtable_32_types.h \
-  arch/x86/include/asm/pgtable-3level_types.h \
-  include/asm-generic/pgtable-nop4d.h \
-  include/asm-generic/pgtable-nopud.h \
-  arch/x86/include/asm/nospec-branch.h \
-  include/linux/static_key.h \
-  include/linux/jump_label.h \
-    $(wildcard include/config/HAVE_ARCH_JUMP_LABEL_RELATIVE) \
-  arch/x86/include/asm/jump_label.h \
-  include/linux/objtool.h \
-    $(wildcard include/config/FRAME_POINTER) \
-  arch/x86/include/asm/msr-index.h \
-  arch/x86/include/asm/unwind_hints.h \
-  arch/x86/include/asm/orc_types.h \
-  arch/x86/include/asm/GEN-for-each-reg.h \
-  arch/x86/include/asm/spinlock_types.h \
-  include/asm-generic/qspinlock_types.h \
-    $(wildcard include/config/NR_CPUS) \
-  include/asm-generic/qrwlock_types.h \
-  arch/x86/include/asm/proto.h \
-  arch/x86/include/uapi/asm/ldt.h \
-  arch/x86/include/uapi/asm/sigcontext.h \
-  arch/x86/include/asm/current.h \
-  arch/x86/include/asm/percpu.h \
-    $(wildcard include/config/X86_64_SMP) \
-  include/linux/kernel.h \
-    $(wildcard include/config/PREEMPT_VOLUNTARY_BUILD) \
-    $(wildcard include/config/PREEMPT_DYNAMIC) \
-    $(wildcard include/config/HAVE_PREEMPT_DYNAMIC_CALL) \
-    $(wildcard include/config/HAVE_PREEMPT_DYNAMIC_KEY) \
-    $(wildcard include/config/PREEMPT_) \
-    $(wildcard include/config/DEBUG_ATOMIC_SLEEP) \
-    $(wildcard include/config/MMU) \
-    $(wildcard include/config/PROVE_LOCKING) \
-  include/linux/stdarg.h \
-  include/linux/align.h \
-  include/linux/limits.h \
-  include/uapi/linux/limits.h \
-  include/vdso/limits.h \
-  include/linux/kstrtox.h \
-  include/linux/minmax.h \
-  include/linux/panic.h \
-    $(wildcard include/config/PANIC_TIMEOUT) \
-  include/linux/printk.h \
-    $(wildcard include/config/MESSAGE_LOGLEVEL_DEFAULT) \
-    $(wildcard include/config/CONSOLE_LOGLEVEL_DEFAULT) \
-    $(wildcard include/config/CONSOLE_LOGLEVEL_QUIET) \
-    $(wildcard include/config/EARLY_PRINTK) \
-    $(wildcard include/config/PRINTK) \
-    $(wildcard include/config/DYNAMIC_DEBUG) \
-    $(wildcard include/config/DYNAMIC_DEBUG_CORE) \
-  include/linux/kern_levels.h \
-  include/linux/ratelimit_types.h \
-  include/linux/spinlock_types_raw.h \
-    $(wildcard include/config/DEBUG_SPINLOCK) \
-    $(wildcard include/config/DEBUG_LOCK_ALLOC) \
-  include/linux/lock
+/* SPDX-License-Identifier: GPL-2.0-or-later */
+/*
+ *  Driver for the Conexant CX23885 PCIe bridge
+ *
+ *  Copyright (c) 2006 Steven Toth <stoth@linuxtv.org>
+ */
+
+#ifndef _CX23885_REG_H_
+#define _CX23885_REG_H_
+
+/*
+Address Map
+0x00000000 -> 0x00009000   TX SRAM  (Fifos)
+0x00010000 -> 0x00013c00   RX SRAM  CMDS + CDT
+
+EACH CMDS struct is 0x80 bytes long
+
+DMAx_PTR1 = 0x03040 address of first cluster
+DMAx_PTR2 = 0x10600 address of the CDT
+DMAx_CNT1 = cluster size in (bytes >> 4) -1
+DMAx_CNT2 = total cdt size for all entries >> 3
+
+Cluster Descriptor entry = 4 DWORDS
+ DWORD 0 -> ptr to cluster
+ DWORD 1 Reserved
+ DWORD 2 Reserved
+ DWORD 3 Reserved
+
+Channel manager Data Structure entry = 20 DWORD
+  0  IntialProgramCounterLow
+  1  IntialProgramCounterHigh
+  2  ClusterDescriptorTableBase
+  3  ClusterDescriptorTableSize
+  4  InstructionQueueBase
+  5  InstructionQueueSize
+...  Reserved
+ 19  Reserved
+*/
+
+/* Risc Instructions */
+#define RISC_CNT_INC		 0x00010000
+#define RISC_CNT_RESET		 0x00030000
+#define RISC_IRQ1		 0x01000000
+#define RISC_IRQ2		 0x02000000
+#define RISC_EOL		 0x04000000
+#define RISC_SOL		 0x08000000
+#define RISC_WRITE		 0x10000000
+#define RISC_SKIP		 0x20000000
+#define RISC_JUMP		 0x70000000
+#define RISC_SYNC		 0x80000000
+#define RISC_RESYNC		 0x80008000
+#define RISC_READ		 0x90000000
+#define RISC_WRITERM		 0xB0000000
+#define RISC_WRITECM		 0xC0000000
+#define RISC_WRITECR		 0xD0000000
+#define RISC_WRITEC		 0x50000000
+#define RISC_READC		 0xA0000000
+
+
+/* Audio and Video Core */
+#define HOST_REG1		0x00000000
+#define HOST_REG2		0x00000001
+#define HOST_REG3		0x00000002
+
+/* Chip Configuration Registers */
+#define CHIP_CTRL		0x00000100
+#define AFE_CTRL		0x00000104
+#define VID_PLL_INT_POST	0x00000108
+#define VID_PLL_FRAC		0x0000010C
+#define AUX_PLL_INT_POST	0x00000110
+#define AUX_PLL_FRAC		0x00000114
+#define SYS_PLL_INT_POST	0x00000118
+#define SYS_PLL_FRAC		0x0000011C
+#define PIN_CTRL		0x00000120
+#define AUD_IO_CTRL		0x00000124
+#define AUD_LOCK1		0x00000128
+#define AUD_LOCK2		0x0000012C
+#define POWER_CTRL		0x00000130
+#define AFE_DIAG_CTRL1		0x00000134
+#define AFE_DIAG_CTRL3		0x0000013C
+#define PLL_DIAG_CTRL		0x00000140
+#define AFE_CLK_OUT_CTRL	0x00000144
+#define DLL1_DIAG_CTRL		0x0000015C
+
+/* GPIO[23:19] Output Enable */
+#define GPIO2_OUT_EN_REG	0x00000160
+/* 

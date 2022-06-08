@@ -1,2 +1,3 @@
-nclude/asm/atomic64_32.h \
-  include/l
+}
+
+static const struct vb2_ops dvb_qop

@@ -1,1 +1,1 @@
-cmd_drivers/media/i2
+!try_module_get(clie

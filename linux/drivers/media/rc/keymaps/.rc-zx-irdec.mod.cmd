@@ -1,1 +1,7 @@
-cmd_drivers/media/rc/keymaps/rc-zx-irdec.mod := { echo  drivers/media/rc/keymaps/rc-zx-irdec.o;  echo; } > drivers/media/rc/keymaps/rc-zx-irdec.mod
+E310B         62
+
+#define GPIO_0 0x00000001
+#define GPIO_1 0x00000002
+#define GPIO_2 0x00000004
+#define GPIO_3 0x00000008
+#define GPIO_4 0x00000010

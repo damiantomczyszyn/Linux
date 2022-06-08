@@ -1,2 +1,1 @@
-.h \
-  include/linux/
+us & VID_BC_MSK_SYNC)

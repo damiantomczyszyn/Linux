@@ -1,1 +1,7 @@
-cmd_drivers/media/radio/radio-terratec.mod := { echo  drivers/media/radio/radio-terratec.o;  echo; } > drivers/media/radio/radio-terratec.mod
+
+	dprintk(1, "%s() status = %d, seq = %d\n", __func__, status, seq);
+}
+
+static void cx23885_codec_settings(struct cx23885_dev *dev)
+{
+	dprintk

@@ -1,32 +1,51 @@
-e/config/ACPI_APEI_GHES) \
-    $(wildcard include/config/INTEL_TXT) \
-  arch/x86/include/generated/asm/kmap_size.h \
-  include/asm-generic/kmap_size.h \
-    $(wildcard include/config/DEBUG_KMAP_LOCAL) \
-  include/asm-generic/fixmap.h \
-  arch/x86/include/asm/irq_vectors.h \
-    $(wildcard include/config/HAVE_KVM) \
-    $(wildcard include/config/HYPERV) \
-    $(wildcard include/config/PCI_MSI) \
-  arch/x86/include/asm/cpu_entry_area.h \
-  arch/x86/include/asm/intel_ds.h \
-  arch/x86/include/asm/pgtable_areas.h \
-  arch/x86/include/asm/pgtable_32_areas.h \
-  include/uapi/linux/elf.h \
-  include/uapi/linux/elf-em.h \
-  include/linux/kobject.h \
-    $(wildcard include/config/UEVENT_HELPER) \
-    $(wildcard include/config/DEBUG_KOBJECT_RELEASE) \
-  include/linux/sysfs.h \
-  include/linux/kernfs.h \
-    $(wildcard include/config/KERNFS) \
-  include/linux/idr.h \
-  include/linux/radix-tree.h \
-  include/linux/xarray.h \
-    $(wildcard include/config/XARRAY_MULTI) \
-  include/linux/kconfig.h \
-  include/linux/kobject_ns.h \
-  include/linux/moduleparam.h \
-    $(wildcard include/config/ALPHA) \
-    $(wildcard include/config/IA64) \
-    $(wildcard include
+// SPDX-License-Identifier: GPL-2.0-or-later
+/*
+ * Driver for Silicon Labs C8051F300 microcontroller.
+ *
+ * It is used for LNB power control in TeVii S470,
+ * TBS 6920 PCIe DVB-S2 cards.
+ *
+ * Microcontroller connected to cx23885 GPIO pins:
+ * GPIO0 - data		- P0.3 F300
+ * GPIO1 - reset	- P0.2 F300
+ * GPIO2 - clk		- P0.1 F300
+ * GPIO3 - busy		- P0.0 F300
+ *
+ * Copyright (C) 2009 Igor M. Liplianin <liplianin@me.by>
+ */
+
+#include "cx23885.h"
+#include "cx23885-f300.h"
+
+#define F300_DATA	GPIO_0
+#define F300_RESET	GPIO_1
+#define F300_CLK	GPIO_2
+#define F300_BUSY	GPIO_3
+
+static void f300_set_line(struct cx23885_dev *dev, u32 line, u8 lvl)
+{
+	cx23885_gpio_enable(dev, line, 1);
+	if (lvl == 1)
+		cx23885_gpio_set(dev, line);
+	else
+		cx23885_gpio_clear(dev, line);
+}
+
+static u8 f300_get_line(struct cx23885_dev *dev, u32 line)
+{
+	cx23885_gpio_enable(dev, line, 0);
+
+	return cx23885_gpio_get(dev, line);
+}
+
+static void f300_send_byte(struct cx23885_dev *dev, u8 dta)
+{
+	u8 i;
+
+	for (i = 0; i < 8; i++) {
+		f300_set_line(dev, F300_CLK, 0);
+		udelay(30);
+		f300_set_line(dev, F300_DATA, (dta & 0x80) >> 7);/* msb first */
+		udelay(30);
+		dta <<= 1;
+		f300_set_line(dev

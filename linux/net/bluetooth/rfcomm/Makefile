@@ -1,1 +1,9 @@
-¾R©hórPÕ%¬¿¹Rk¤|îhƒë{ëê›õúÚ,/øI {Lªc‰/b·gwIÃßµ\¶Ešn8:§·vÙ0îŠ?/î›ğ¦ğ€Qld7øÔ„…§v“›£¡Oû56'ƒ9x1B•.†ĞÑ/¦†eBHeëiÌÎb+Pà—½ÿ<Ú‘$ŞÁû_2xY)¤µcÂ½êİ«3ØÒ„GYL%ÓYrŠU‡„Ñğe-Ìó'6¥ª']sÇI_˜õ+:øÍ¥>
+ware FIFO overrun\n");
+	}
+	if (roe && ror) {
+		/*
+		 * The RX FIFO Enable (CNTRL_RFE) must be toggled to clear
+		 * the Rx FIFO Over Run status (STATS_ROR)
+		 */
+		v |= CNTRL_RFE;
+		events |= V4L2_SU

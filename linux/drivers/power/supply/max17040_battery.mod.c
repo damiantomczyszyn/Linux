@@ -1,41 +1,64 @@
-(wildcard include/config/SPLIT_PTLOCK_CPUS) \
-    $(wildcard include/config/ARCH_ENABLE_SPLIT_PMD_PTLOCK) \
-  arch/x86/include/asm/tlbbatch.h \
-  include/linux/task_io_accounting.h \
-    $(wildcard include/config/TASK_IO_ACCOUNTING) \
-  include/linux/posix-timers.h \
-  include/linux/alarmtimer.h \
-    $(wildcard include/config/RTC_CLASS) \
-  include/uapi/linux/rseq.h \
-  include/linux/kcsan.h \
-  arch/x86/include/generated/asm/kmap_size.h \
-  include/asm-generic/kmap_size.h \
-    $(wildcard include/config/DEBUG_KMAP_LOCAL) \
-  arch/x86/include/asm/delay.h \
-  include/asm-generic/delay.h \
-  include/linux/gpio/consumer.h \
-    $(wildcard include/config/GPIOLIB) \
-    $(wildcard include/config/OF_GPIO) \
-    $(wildcard include/config/ACPI) \
-    $(wildcard include/config/GPIO_SYSFS) \
-  include/linux/i2c.h \
-    $(wildcard include/config/I2C) \
-    $(wildcard include/config/I2C_SLAVE) \
-    $(wildcard include/config/I2C_BOARDINFO) \
-    $(wildcard include/config/I2C_MUX) \
-  include/linux/acpi.h \
-    $(wildcard include/config/ACPI_DEBUGGER) \
-    $(wildcard include/config/ACPI_TABLE_LIB) \
-    $(wildcard include/config/IA64) \
-    $(wildcard include/config/LOONGARCH) \
-    $(wildcard include/config/ARM64) \
-    $(wildcard include/config/ACPI_PROCESSOR_CSTATE) \
-    $(wildcard include/config/ACPI_HOTPLUG_CPU) \
-    $(wildcard include/config/ACPI_HOTPLUG_IOAPIC) \
-    $(wildcard include/config/X86_IO_APIC) \
-    $(wildcard include/config/PCI) \
-    $(wildcard include/config/ACPI_WMI) \
-    $(wildcard include/config/ACPI_NUMA) \
-    $(wildcard include/config/HIBERNATION) \
-    $(wildcard include/config/PM_SLEEP) \
-    $(wildcard includ
+IO moving on encoder ports\n",
+				dev->name);
+		cx_clear(MC417_RWD, (mask & 0x7fff8) >> 3);
+	}
+
+	/* TODO: 23-19 */
+	if (mask & 0x00f80000)
+		pr_info("%s: Unsupported\n", dev->name);
+}
+
+u32 cx23885_gpio_get(struct cx23885_dev *dev, u32 mask)
+{
+	if (mask & 0x00000007)
+		return (cx_read(GP0_IO) >> 8) & mask & 0x7;
+
+	if (mask & 0x0007fff8) {
+		if (encoder_on_portb(dev) || encoder_on_portc(dev))
+			pr_err("%s: Reading GPIO moving on encoder ports\n",
+				dev->name);
+		return (cx_read(MC417_RWD) & ((mask & 0x7fff8) >> 3)) << 3;
+	}
+
+	/* TODO: 23-19 */
+	if (mask & 0x00f80000)
+		pr_info("%s: Unsupported\n", dev->name);
+
+	return 0;
+}
+
+void cx23885_gpio_enable(struct cx23885_dev *dev, u32 mask, int asoutput)
+{
+	if ((mask & 0x00000007) && asoutput)
+		cx_set(GP0_IO, (mask & 0x7) << 16);
+	else if ((mask & 0x00000007) && !asoutput)
+		cx_clear(GP0_IO, (mask & 0x7) << 16);
+
+	if (mask & 0x0007fff8) {
+		if (encoder_on_portb(dev) || encoder_on_portc(dev))
+			pr_err("%s: Enabling GPIO on encoder ports\n",
+				dev->name);
+	}
+
+	/* MC417_OEN is active low for output, write 1 for an input */
+	if ((mask & 0x0007fff8) && asoutput)
+		cx_clear(MC417_OEN, (mask & 0x7fff8) >> 3);
+
+	else if ((mask & 0x0007fff8) && !asoutput)
+		cx_set(MC417_OEN, (mask & 0x7fff8) >> 3);
+
+	/* TODO: 23-19 */
+}
+
+static struct {
+	int vendor, dev;
+} const broken_dev_id[] = {
+	/* According with
+	 * https://openbenchmarking.org/system/1703021-RI-AMDZEN08075/Ryzen%207%201800X/lspci,
+	 * 0x1451 is PCI ID for the IOMMU found on Ryzen
+	 */
+	{ PCI_VENDOR_ID_AMD, 0x1451 },
+	/* According to sudo lspci -nn,
+	 * 0x1423 is the PCI ID for the IOMMU found on Kaveri
+	 */
+	{ PCI_VENDOR_ID_AMD, 0x1423 

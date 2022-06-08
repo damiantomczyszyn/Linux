@@ -1,495 +1,410 @@
+(of runnable tasks) this is provided by the following means:
+ *
+ *  A) UNLOCK of the rq(c0)->lock scheduling out task t
+ *  B) migration for t is required to synchronize *both* rq(c0)->lock and
+ *     rq(c1)->lock (if not at the same time, then in that order).
+ *  C) LOCK of the rq(c1)->lock scheduling in task
+ *
+ * Release/acquire chaining guarantees that B happens after A and C after B.
+ * Note: the CPU doing B need not be c0 or c1
+ *
+ * Example:
+ *
+ *   CPU0            CPU1            CPU2
+ *
+ *   LOCK rq(0)->lock
+ *   sched-out X
+ *   sched-in Y
+ *   UNLOCK rq(0)->lock
+ *
+ *                                   LOCK rq(0)->lock // orders against CPU0
+ *                                   dequeue X
+ *                                   UNLOCK rq(0)->lock
+ *
+ *                                   LOCK rq(1)->lock
+ *                                   enqueue X
+ *                                   UNLOCK rq(1)->lock
+ *
+ *                   LOCK rq(1)->lock // orders against CPU2
+ *                   sched-out Z
+ *                   sched-in X
+ *                   UNLOCK rq(1)->lock
+ *
+ *
+ *  BLOCKING -- aka. SLEEP + WAKEUP
+ *
+ * For blocking we (obviously) need to provide the same guarantee as for
+ * migration. However the means are completely different as there is no lock
+ * chain to provide order. Instead we do:
+ *
+ *   1) smp_store_release(X->on_cpu, 0)   -- finish_task()
+ *   2) smp_cond_load_acquire(!X->on_cpu) -- try_to_wake_up()
+ *
+ * Example:
+ *
+ *   CPU0 (schedule)  CPU1 (try_to_wake_up) CPU2 (schedule)
+ *
+ *   LOCK rq(0)->lock LOCK X->pi_lock
+ *   dequeue X
+ *   sched-out X
+ *   smp_store_release(X->on_cpu, 0);
+ *
+ *                    smp_cond_load_acquire(&X->on_cpu, !VAL);
+ *                    X->state = WAKING
+ *                    set_task_cpu(X,2)
+ *
+ *                    LOCK rq(2)->lock
+ *                    enqueue X
+ *                    X->state = RUNNING
+ *                    UNLOCK rq(2)->lock
+ *
+ *                                          LOCK rq(2)->lock // orders against CPU1
+ *                                          sched-out Z
+ *                                          sched-in X
+ *                                          UNLOCK rq(2)->lock
+ *
+ *                    UNLOCK X->pi_lock
+ *   UNLOCK rq(0)->lock
+ *
+ *
+ * However, for wakeups there is a second guarantee we must provide, namely we
+ * must ensure that CONDITION=1 done by the caller can not be reordered with
+ * accesses to the task state; see try_to_wake_up() and set_current_state().
  */
 
-static inline void check_data_structures(void) { }
-
-#endif /* CONFIG_DEBUG_LOCKDEP */
-
-static void init_chain_block_buckets(void);
-
-/*
- * Initialize the lock_classes[] array elements, the free_lock_classes list
- * and also the delayed_free structure.
+/**
+ * try_to_wake_up - wake up a thread
+ * @p: the thread to be awakened
+ * @state: the mask of task states that can be woken
+ * @wake_flags: wake modifier flags (WF_*)
+ *
+ * Conceptually does:
+ *
+ *   If (@state & @p->state) @p->state = TASK_RUNNING.
+ *
+ * If the task was not queued/runnable, also place it back on a runqueue.
+ *
+ * This function is atomic against schedule() which would dequeue the task.
+ *
+ * It issues a full memory barrier before accessing @p->state, see the comment
+ * with set_current_state().
+ *
+ * Uses p->pi_lock to serialize against concurrent wake-ups.
+ *
+ * Relies on p->pi_lock stabilizing:
+ *  - p->sched_class
+ *  - p->cpus_ptr
+ *  - p->sched_task_group
+ * in order to do migration, see its use of select_task_rq()/set_task_cpu().
+ *
+ * Tries really hard to only take one task_rq(p)->lock for performance.
+ * Takes rq->lock in:
+ *  - ttwu_runnable()    -- old rq, unavoidable, see comment there;
+ *  - ttwu_queue()       -- new rq, for enqueue of the task;
+ *  - psi_ttwu_dequeue() -- much sadness :-( accounting will kill us.
+ *
+ * As a consequence we race really badly with just about everything. See the
+ * many memory barriers and their comments for details.
+ *
+ * Return: %true if @p->state changes (an actual wakeup was done),
+ *	   %false otherwise.
  */
-static void init_data_structures_once(void)
+static int
+try_to_wake_up(struct task_struct *p, unsigned int state, int wake_flags)
 {
-	static bool __read_mostly ds_initialized, rcu_head_initialized;
-	int i;
-
-	if (likely(rcu_head_initialized))
-		return;
-
-	if (system_state >= SYSTEM_SCHEDULING) {
-		init_rcu_head(&delayed_free.rcu_head);
-		rcu_head_initialized = true;
-	}
-
-	if (ds_initialized)
-		return;
-
-	ds_initialized = true;
-
-	INIT_LIST_HEAD(&delayed_free.pf[0].zapped);
-	INIT_LIST_HEAD(&delayed_free.pf[1].zapped);
-
-	for (i = 0; i < ARRAY_SIZE(lock_classes); i++) {
-		list_add_tail(&lock_classes[i].lock_entry, &free_lock_classes);
-		INIT_LIST_HEAD(&lock_classes[i].locks_after);
-		INIT_LIST_HEAD(&lock_classes[i].locks_before);
-	}
-	init_chain_block_buckets();
-}
-
-static inline struct hlist_head *keyhashentry(const struct lock_class_key *key)
-{
-	unsigned long hash = hash_long((uintptr_t)key, KEYHASH_BITS);
-
-	return lock_keys_hash + hash;
-}
-
-/* Register a dynamically allocated key. */
-void lockdep_register_key(struct lock_class_key *key)
-{
-	struct hlist_head *hash_head;
-	struct lock_class_key *k;
 	unsigned long flags;
+	int cpu, success = 0;
 
-	if (WARN_ON_ONCE(static_obj(key)))
-		return;
-	hash_head = keyhashentry(key);
+	preempt_disable();
+	if (p == current) {
+		/*
+		 * We're waking current, this means 'p->on_rq' and 'task_cpu(p)
+		 * == smp_processor_id()'. Together this means we can special
+		 * case the whole 'p->on_rq && ttwu_runnable()' case below
+		 * without taking any locks.
+		 *
+		 * In particular:
+		 *  - we rely on Program-Order guarantees for all the ordering,
+		 *  - we're serialized against set_special_state() by virtue of
+		 *    it disabling IRQs (this allows not taking ->pi_lock).
+		 */
+		if (!ttwu_state_match(p, state, &success))
+			goto out;
 
-	raw_local_irq_save(flags);
-	if (!graph_lock())
-		goto restore_irqs;
-	hlist_for_each_entry_rcu(k, hash_head, hash_entry) {
-		if (WARN_ON_ONCE(k == key))
-			goto out_unlock;
+		trace_sched_waking(p);
+		WRITE_ONCE(p->__state, TASK_RUNNING);
+		trace_sched_wakeup(p);
+		goto out;
 	}
-	hlist_add_head_rcu(&key->hash_entry, hash_head);
-out_unlock:
-	graph_unlock();
-restore_irqs:
-	raw_local_irq_restore(flags);
-}
-EXPORT_SYMBOL_GPL(lockdep_register_key);
-
-/* Check whether a key has been registered as a dynamic key. */
-static bool is_dynamic_key(const struct lock_class_key *key)
-{
-	struct hlist_head *hash_head;
-	struct lock_class_key *k;
-	bool found = false;
-
-	if (WARN_ON_ONCE(static_obj(key)))
-		return false;
 
 	/*
-	 * If lock debugging is disabled lock_keys_hash[] may contain
-	 * pointers to memory that has already been freed. Avoid triggering
-	 * a use-after-free in that case by returning early.
+	 * If we are going to wake up a thread waiting for CONDITION we
+	 * need to ensure that CONDITION=1 done by the caller can not be
+	 * reordered with p->state check below. This pairs with smp_store_mb()
+	 * in set_current_state() that the waiting thread does.
 	 */
-	if (!debug_locks)
-		return true;
+	raw_spin_lock_irqsave(&p->pi_lock, flags);
+	smp_mb__after_spinlock();
+	if (!ttwu_state_match(p, state, &success))
+		goto unlock;
 
-	hash_head = keyhashentry(key);
+	trace_sched_waking(p);
 
-	rcu_read_lock();
-	hlist_for_each_entry_rcu(k, hash_head, hash_entry) {
-		if (k == key) {
-			found = true;
-			break;
+	/*
+	 * Ensure we load p->on_rq _after_ p->state, otherwise it would
+	 * be possible to, falsely, observe p->on_rq == 0 and get stuck
+	 * in smp_cond_load_acquire() below.
+	 *
+	 * sched_ttwu_pending()			try_to_wake_up()
+	 *   STORE p->on_rq = 1			  LOAD p->state
+	 *   UNLOCK rq->lock
+	 *
+	 * __schedule() (switch to task 'p')
+	 *   LOCK rq->lock			  smp_rmb();
+	 *   smp_mb__after_spinlock();
+	 *   UNLOCK rq->lock
+	 *
+	 * [task p]
+	 *   STORE p->state = UNINTERRUPTIBLE	  LOAD p->on_rq
+	 *
+	 * Pairs with the LOCK+smp_mb__after_spinlock() on rq->lock in
+	 * __schedule().  See the comment for smp_mb__after_spinlock().
+	 *
+	 * A similar smb_rmb() lives in try_invoke_on_locked_down_task().
+	 */
+	smp_rmb();
+	if (READ_ONCE(p->on_rq) && ttwu_runnable(p, wake_flags))
+		goto unlock;
+
+#ifdef CONFIG_SMP
+	/*
+	 * Ensure we load p->on_cpu _after_ p->on_rq, otherwise it would be
+	 * possible to, falsely, observe p->on_cpu == 0.
+	 *
+	 * One must be running (->on_cpu == 1) in order to remove oneself
+	 * from the runqueue.
+	 *
+	 * __schedule() (switch to task 'p')	try_to_wake_up()
+	 *   STORE p->on_cpu = 1		  LOAD p->on_rq
+	 *   UNLOCK rq->lock
+	 *
+	 * __schedule() (put 'p' to sleep)
+	 *   LOCK rq->lock			  smp_rmb();
+	 *   smp_mb__after_spinlock();
+	 *   STORE p->on_rq = 0			  LOAD p->on_cpu
+	 *
+	 * Pairs with the LOCK+smp_mb__after_spinlock() on rq->lock in
+	 * __schedule().  See the comment for smp_mb__after_spinlock().
+	 *
+	 * Form a control-dep-acquire with p->on_rq == 0 above, to ensure
+	 * schedule()'s deactivate_task() has 'happened' and p will no longer
+	 * care about it's own p->state. See the comment in __schedule().
+	 */
+	smp_acquire__after_ctrl_dep();
+
+	/*
+	 * We're doing the wakeup (@success == 1), they did a dequeue (p->on_rq
+	 * == 0), which means we need to do an enqueue, change p->state to
+	 * TASK_WAKING such that we can unlock p->pi_lock before doing the
+	 * enqueue, such as ttwu_queue_wakelist().
+	 */
+	WRITE_ONCE(p->__state, TASK_WAKING);
+
+	/*
+	 * If the owning (remote) CPU is still in the middle of schedule() with
+	 * this task as prev, considering queueing p on the remote CPUs wake_list
+	 * which potentially sends an IPI instead of spinning on p->on_cpu to
+	 * let the waker make forward progress. This is safe because IRQs are
+	 * disabled and the IPI will deliver after on_cpu is cleared.
+	 *
+	 * Ensure we load task_cpu(p) after p->on_cpu:
+	 *
+	 * set_task_cpu(p, cpu);
+	 *   STORE p->cpu = @cpu
+	 * __schedule() (switch to task 'p')
+	 *   LOCK rq->lock
+	 *   smp_mb__after_spin_lock()		smp_cond_load_acquire(&p->on_cpu)
+	 *   STORE p->on_cpu = 1		LOAD p->cpu
+	 *
+	 * to ensure we observe the correct CPU on which the task is currently
+	 * scheduling.
+	 */
+	if (smp_load_acquire(&p->on_cpu) &&
+	    ttwu_queue_wakelist(p, task_cpu(p), wake_flags | WF_ON_CPU))
+		goto unlock;
+
+	/*
+	 * If the owning (remote) CPU is still in the middle of schedule() with
+	 * this task as prev, wait until it's done referencing the task.
+	 *
+	 * Pairs with the smp_store_release() in finish_task().
+	 *
+	 * This ensures that tasks getting woken will be fully ordered against
+	 * their previous state and preserve Program Order.
+	 */
+	smp_cond_load_acquire(&p->on_cpu, !VAL);
+
+	cpu = select_task_rq(p, p->wake_cpu, wake_flags | WF_TTWU);
+	if (task_cpu(p) != cpu) {
+		if (p->in_iowait) {
+			delayacct_blkio_end(p);
+			atomic_dec(&task_rq(p)->nr_iowait);
 		}
-	}
-	rcu_read_unlock();
 
-	return found;
+		wake_flags |= WF_MIGRATED;
+		psi_ttwu_dequeue(p);
+		set_task_cpu(p, cpu);
+	}
+#else
+	cpu = task_cpu(p);
+#endif /* CONFIG_SMP */
+
+	ttwu_queue(p, cpu, wake_flags);
+unlock:
+	raw_spin_unlock_irqrestore(&p->pi_lock, flags);
+out:
+	if (success)
+		ttwu_stat(p, task_cpu(p), wake_flags);
+	preempt_enable();
+
+	return success;
 }
 
-/*
- * Register a lock's class in the hash-table, if the class is not present
- * yet. Otherwise we look it up. We cache the result in the lock object
- * itself, so actual lookup of the hash should be once per lock object.
+/**
+ * task_call_func - Invoke a function on task in fixed state
+ * @p: Process for which the function is to be invoked, can be @current.
+ * @func: Function to invoke.
+ * @arg: Argument to function.
+ *
+ * Fix the task in it's current state by avoiding wakeups and or rq operations
+ * and call @func(@arg) on it.  This function can use ->on_rq and task_curr()
+ * to work out what the state is, if required.  Given that @func can be invoked
+ * with a runqueue lock held, it had better be quite lightweight.
+ *
+ * Returns:
+ *   Whatever @func returns
  */
-static struct lock_class *
-register_lock_class(struct lockdep_map *lock, unsigned int subclass, int force)
+int task_call_func(struct task_struct *p, task_call_f func, void *arg)
 {
-	struct lockdep_subclass_key *key;
-	struct hlist_head *hash_head;
-	struct lock_class *class;
-	int idx;
+	struct rq *rq = NULL;
+	unsigned int state;
+	struct rq_flags rf;
+	int ret;
 
-	DEBUG_LOCKS_WARN_ON(!irqs_disabled());
+	raw_spin_lock_irqsave(&p->pi_lock, rf.flags);
 
-	class = look_up_lock_class(lock, subclass);
-	if (likely(class))
-		goto out_set_class_cache;
-
-	if (!lock->key) {
-		if (!assign_lock_key(lock))
-			return NULL;
-	} else if (!static_obj(lock->key) && !is_dynamic_key(lock->key)) {
-		return NULL;
-	}
-
-	key = lock->key->subkeys + subclass;
-	hash_head = classhashentry(key);
-
-	if (!graph_lock()) {
-		return NULL;
-	}
-	/*
-	 * We have to do the hash-walk again, to avoid races
-	 * with another CPU:
-	 */
-	hlist_for_each_entry_rcu(class, hash_head, hash_entry) {
-		if (class->key == key)
-			goto out_unlock_set;
-	}
-
-	init_data_structures_once();
-
-	/* Allocate a new lock class and add it to the hash. */
-	class = list_first_entry_or_null(&free_lock_classes, typeof(*class),
-					 lock_entry);
-	if (!class) {
-		if (!debug_locks_off_graph_unlock()) {
-			return NULL;
-		}
-
-		print_lockdep_off("BUG: MAX_LOCKDEP_KEYS too low!");
-		dump_stack();
-		return NULL;
-	}
-	nr_lock_classes++;
-	__set_bit(class - lock_classes, lock_classes_in_use);
-	debug_atomic_inc(nr_unused_locks);
-	class->key = key;
-	class->name = lock->name;
-	class->subclass = subclass;
-	WARN_ON_ONCE(!list_empty(&class->locks_before));
-	WARN_ON_ONCE(!list_empty(&class->locks_after));
-	class->name_version = count_matching_names(class);
-	class->wait_type_inner = lock->wait_type_inner;
-	class->wait_type_outer = lock->wait_type_outer;
-	class->lock_type = lock->lock_type;
-	/*
-	 * We use RCU's safe list-add method to make
-	 * parallel walking of the hash-list safe:
-	 */
-	hlist_add_head_rcu(&class->hash_entry, hash_head);
-	/*
-	 * Remove the class from the free list and add it to the global list
-	 * of classes.
-	 */
-	list_move_tail(&class->lock_entry, &all_lock_classes);
-	idx = class - lock_classes;
-	if (idx > max_lock_class_idx)
-		max_lock_class_idx = idx;
-
-	if (verbose(class)) {
-		graph_unlock();
-
-		printk("\nnew class %px: %s", class->key, class->name);
-		if (class->name_version > 1)
-			printk(KERN_CONT "#%d", class->name_version);
-		printk(KERN_CONT "\n");
-		dump_stack();
-
-		if (!graph_lock()) {
-			return NULL;
-		}
-	}
-out_unlock_set:
-	graph_unlock();
-
-out_set_class_cache:
-	if (!subclass || force)
-		lock->class_cache[0] = class;
-	else if (subclass < NR_LOCKDEP_CACHING_CLASSES)
-		lock->class_cache[subclass] = class;
+	state = READ_ONCE(p->__state);
 
 	/*
-	 * Hash collision, did we smoke some? We found a class with a matching
-	 * hash but the subclass -- which is hashed in -- didn't match.
+	 * Ensure we load p->on_rq after p->__state, otherwise it would be
+	 * possible to, falsely, observe p->on_rq == 0.
+	 *
+	 * See try_to_wake_up() for a longer comment.
 	 */
-	if (DEBUG_LOCKS_WARN_ON(class->subclass != subclass))
-		return NULL;
+	smp_rmb();
 
-	return class;
-}
-
-#ifdef CONFIG_PROVE_LOCKING
-/*
- * Allocate a lockdep entry. (assumes the graph_lock held, returns
- * with NULL on failure)
- */
-static struct lock_list *alloc_list_entry(void)
-{
-	int idx = find_first_zero_bit(list_entries_in_use,
-				      ARRAY_SIZE(list_entries));
-
-	if (idx >= ARRAY_SIZE(list_entries)) {
-		if (!debug_locks_off_graph_unlock())
-			return NULL;
-
-		print_lockdep_off("BUG: MAX_LOCKDEP_ENTRIES too low!");
-		dump_stack();
-		return NULL;
-	}
-	nr_list_entries++;
-	__set_bit(idx, list_entries_in_use);
-	return list_entries + idx;
-}
-
-/*
- * Add a new dependency to the head of the list:
- */
-static int add_lock_to_list(struct lock_class *this,
-			    struct lock_class *links_to, struct list_head *head,
-			    unsigned long ip, u16 distance, u8 dep,
-			    const struct lock_trace *trace)
-{
-	struct lock_list *entry;
 	/*
-	 * Lock not present yet - get a new dependency struct and
-	 * add it to the list:
+	 * Since pi->lock blocks try_to_wake_up(), we don't need rq->lock when
+	 * the task is blocked. Make sure to check @state since ttwu() can drop
+	 * locks at the end, see ttwu_queue_wakelist().
 	 */
-	entry = alloc_list_entry();
-	if (!entry)
-		return 0;
+	if (state == TASK_RUNNING || state == TASK_WAKING || p->on_rq)
+		rq = __task_rq_lock(p, &rf);
 
-	entry->class = this;
-	entry->links_to = links_to;
-	entry->dep = dep;
-	entry->distance = distance;
-	entry->trace = trace;
 	/*
-	 * Both allocation and removal are done under the graph lock; but
-	 * iteration is under RCU-sched; see look_up_lock_class() and
-	 * lockdep_free_key_range().
+	 * At this point the task is pinned; either:
+	 *  - blocked and we're holding off wakeups	 (pi->lock)
+	 *  - woken, and we're holding off enqueue	 (rq->lock)
+	 *  - queued, and we're holding off schedule	 (rq->lock)
+	 *  - running, and we're holding off de-schedule (rq->lock)
+	 *
+	 * The called function (@func) can use: task_curr(), p->on_rq and
+	 * p->__state to differentiate between these states.
 	 */
-	list_add_tail_rcu(&entry->entry, head);
+	ret = func(p, arg);
 
-	return 1;
+	if (rq)
+		rq_unlock(rq, &rf);
+
+	raw_spin_unlock_irqrestore(&p->pi_lock, rf.flags);
+	return ret;
 }
 
-/*
- * For good efficiency of modular, we use power of 2
+/**
+ * wake_up_process - Wake up a specific process
+ * @p: The process to be woken up.
+ *
+ * Attempt to wake up the nominated process and move it to the set of runnable
+ * processes.
+ *
+ * Return: 1 if the process was woken up, 0 if it was already running.
+ *
+ * This function executes a full memory barrier before accessing the task state.
  */
-#define MAX_CIRCULAR_QUEUE_SIZE		(1UL << CONFIG_LOCKDEP_CIRCULAR_QUEUE_BITS)
-#define CQ_MASK				(MAX_CIRCULAR_QUEUE_SIZE-1)
+int wake_up_process(struct task_struct *p)
+{
+	return try_to_wake_up(p, TASK_NORMAL, 0);
+}
+EXPORT_SYMBOL(wake_up_process);
+
+int wake_up_state(struct task_struct *p, unsigned int state)
+{
+	return try_to_wake_up(p, state, 0);
+}
 
 /*
- * The circular_queue and helpers are used to implement graph
- * breadth-first search (BFS) algorithm, by which we can determine
- * whether there is a path from a lock to another. In deadlock checks,
- * a path from the next lock to be acquired to a previous held lock
- * indicates that adding the <prev> -> <next> lock dependency will
- * produce a circle in the graph. Breadth-first search instead of
- * depth-first search is used in order to find the shortest (circular)
- * path.
+ * Perform scheduler related setup for a newly forked process p.
+ * p is forked by current.
+ *
+ * __sched_fork() is basic setup used by init_idle() too:
  */
-struct circular_queue {
-	struct lock_list *element[MAX_CIRCULAR_QUEUE_SIZE];
-	unsigned int  front, rear;
-};
-
-static struct circular_queue lock_cq;
-
-unsigned int max_bfs_queue_depth;
-
-static unsigned int lockdep_dependency_gen_id;
-
-static inline void __cq_init(struct circular_queue *cq)
+static void __sched_fork(unsigned long clone_flags, struct task_struct *p)
 {
-	cq->front = cq->rear = 0;
-	lockdep_dependency_gen_id++;
-}
+	p->on_rq			= 0;
 
-static inline int __cq_empty(struct circular_queue *cq)
-{
-	return (cq->front == cq->rear);
-}
+	p->se.on_rq			= 0;
+	p->se.exec_start		= 0;
+	p->se.sum_exec_runtime		= 0;
+	p->se.prev_sum_exec_runtime	= 0;
+	p->se.nr_migrations		= 0;
+	p->se.vruntime			= 0;
+	INIT_LIST_HEAD(&p->se.group_node);
 
-static inline int __cq_full(struct circular_queue *cq)
-{
-	return ((cq->rear + 1) & CQ_MASK) == cq->front;
-}
+#ifdef CONFIG_FAIR_GROUP_SCHED
+	p->se.cfs_rq			= NULL;
+#endif
 
-static inline int __cq_enqueue(struct circular_queue *cq, struct lock_list *elem)
-{
-	if (__cq_full(cq))
-		return -1;
+#ifdef CONFIG_SCHEDSTATS
+	/* Even if schedstat is disabled, there should not be garbage */
+	memset(&p->stats, 0, sizeof(p->stats));
+#endif
 
-	cq->element[cq->rear] = elem;
-	cq->rear = (cq->rear + 1) & CQ_MASK;
-	return 0;
-}
+	RB_CLEAR_NODE(&p->dl.rb_node);
+	init_dl_task_timer(&p->dl);
+	init_dl_inactive_task_timer(&p->dl);
+	__dl_clear_params(p);
 
-/*
- * Dequeue an element from the circular_queue, return a lock_list if
- * the queue is not empty, or NULL if otherwise.
- */
-static inline struct lock_list * __cq_dequeue(struct circular_queue *cq)
-{
-	struct lock_list * lock;
+	INIT_LIST_HEAD(&p->rt.run_list);
+	p->rt.timeout		= 0;
+	p->rt.time_slice	= sched_rr_timeslice;
+	p->rt.on_rq		= 0;
+	p->rt.on_list		= 0;
 
-	if (__cq_empty(cq))
-		return NULL;
+#ifdef CONFIG_PREEMPT_NOTIFIERS
+	INIT_HLIST_HEAD(&p->preempt_notifiers);
+#endif
 
-	lock = cq->element[cq->front];
-	cq->front = (cq->front + 1) & CQ_MASK;
+#ifdef CONFIG_COMPACTION
+	p->capture_control = NULL;
+#endif
+	init_numa_balancing(clone_flags, p);
+#ifdef CONFIG_SMP
+	p->wake_entry.u_flags = CSD_TYPE_TTWU;
+	p->migration_pending = NULL;
+#endq;
 
-	return lock;
-}
-
-static inline unsigned int  __cq_get_elem_count(struct circular_queue *cq)
-{
-	return (cq->rear - cq->front) & CQ_MASK;
-}
-
-static inline void mark_lock_accessed(struct lock_list *lock)
-{
-	lock->class->dep_gen_id = lockdep_dependency_gen_id;
-}
-
-static inline void visit_lock_entry(struct lock_list *lock,
-				    struct lock_list *parent)
-{
-	lock->parent = parent;
-}
-
-static inline unsigned long lock_accessed(struct lock_list *lock)
-{
-	return lock->class->dep_gen_id == lockdep_dependency_gen_id;
-}
-
-static inline struct lock_list *get_lock_parent(struct lock_list *child)
-{
-	return child->parent;
-}
-
-static inline int get_lock_depth(struct lock_list *child)
-{
-	int depth = 0;
-	struct lock_list *parent;
-
-	while ((parent = get_lock_parent(child))) {
-		child = parent;
-		depth++;
-	}
-	return depth;
-}
-
-/*
- * Return the forward or backward dependency list.
- *
- * @lock:   the lock_list to get its class's dependency list
- * @offset: the offset to struct lock_class to determine whether it is
- *          locks_after or locks_before
- */
-static inline struct list_head *get_dep_list(struct lock_list *lock, int offset)
-{
-	void *lock_class = lock->class;
-
-	return lock_class + offset;
-}
-/*
- * Return values of a bfs search:
- *
- * BFS_E* indicates an error
- * BFS_R* indicates a result (match or not)
- *
- * BFS_EINVALIDNODE: Find a invalid node in the graph.
- *
- * BFS_EQUEUEFULL: The queue is full while doing the bfs.
- *
- * BFS_RMATCH: Find the matched node in the graph, and put that node into
- *             *@target_entry.
- *
- * BFS_RNOMATCH: Haven't found the matched node and keep *@target_entry
- *               _unchanged_.
- */
-enum bfs_result {
-	BFS_EINVALIDNODE = -2,
-	BFS_EQUEUEFULL = -1,
-	BFS_RMATCH = 0,
-	BFS_RNOMATCH = 1,
-};
-
-/*
- * bfs_result < 0 means error
- */
-static inline bool bfs_error(enum bfs_result res)
-{
-	return res < 0;
-}
-
-/*
- * DEP_*_BIT in lock_list::dep
- *
- * For dependency @prev -> @next:
- *
- *   SR: @prev is shared reader (->read != 0) and @next is recursive reader
- *       (->read == 2)
- *   ER: @prev is exclusive locker (->read == 0) and @next is recursive reader
- *   SN: @prev is shared reader and @next is non-recursive locker (->read != 2)
- *   EN: @prev is exclusive locker and @next is non-recursive locker
- *
- * Note that we define the value of DEP_*_BITs so that:
- *   bit0 is prev->read == 0
- *   bit1 is next->read != 2
- */
-#define DEP_SR_BIT (0 + (0 << 1)) /* 0 */
-#define DEP_ER_BIT (1 + (0 << 1)) /* 1 */
-#define DEP_SN_BIT (0 + (1 << 1)) /* 2 */
-#define DEP_EN_BIT (1 + (1 << 1)) /* 3 */
-
-#define DEP_SR_MASK (1U << (DEP_SR_BIT))
-#define DEP_ER_MASK (1U << (DEP_ER_BIT))
-#define DEP_SN_MASK (1U << (DEP_SN_BIT))
-#define DEP_EN_MASK (1U << (DEP_EN_BIT))
-
-static inline unsigned int
-__calc_dep_bit(struct held_lock *prev, struct held_lock *next)
-{
-	return (prev->read == 0) + ((next->read != 2) << 1);
-}
-
-static inline u8 calc_dep(struct held_lock *prev, struct held_lock *next)
-{
-	return 1U << __calc_dep_bit(prev, next);
-}
-
-/*
- * calculate the dep_bit for backwards edges. We care about whether @prev is
- * shared and whether @next is recursive.
- */
-static inline unsigned int
-__calc_dep_bitb(struct held_lock *prev, struct held_lock *next)
-{
-	return (next->read != 2) + ((prev->read == 0) << 1);
-}
-
-static inline u8 calc_depb(struct held_lock *prev, struct held_lock *next)
-{
-	return 1U << __calc_dep_bitb(prev, next);
-}
-
-/*
- * Initialize a lock_list entry @lock belonging to @class as the root for a BFS
- * search.
- */
-static inline void __bfs_init_root(struct lock_list *lock,
-				   struct lock_class *class)
-{
-	lock->class = class;
-	lock->parent = NULL;
-	lock->only_xr = 0;
-}
-
-/*
- * Initialize a lock_list entry @lock based on a lock acquisition @hlock as the
- * root for a BFS search.
- *
- * ->only_xr of the initial lock node is set to @hlock->read == 2, to make sure
- * that <prev>úËqìéŸ>¸aÊ´‘aÍÊBé\ÉmØ¥ÔcéŠÙ‹„UÉõ\rº8ˆ°§Ý`‚|ðß‰üâ	Y¹3@zB=;`9ì”,“ý`_¹ŠÌÈ©‚7ÜÄÉÞËk[ô©ãã‹CêtZ¨*
+	for (;;) {
+		raw_spin_lock_irqsave(&p->pi_lock, rf->flags);
+		rq = task_rq(p);
+		raw_spin_rq_lock(rq);
+	

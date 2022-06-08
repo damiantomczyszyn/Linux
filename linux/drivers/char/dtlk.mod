@@ -1,1 +1,1 @@
-cmd_drivers/media/i2c
+TEK WinFast PxTV1200"

@@ -1,6 +1,10 @@
-onfig/TRACE_BRANCH_PROFILING) \
-    $(wildcard include/config/PROFILE_ALL_BRANCHES) \
-    $(wildcard include/config/STACK_VALIDATION) \
-  include/linux/compiler_types.h \
-  arch/x86/include/generated/asm/rwonce.h \
-  include/asm-gen
+00000);
+	cx_write(PAD_CTRL, 0x00500300);
+
+	/* clear dma in progress */
+	cx23885_clear_bridge_error(dev);
+	msleep(100);
+
+	cx23885_sram_channel_setup(dev, &dev->sram_channels[SRAM_CH01],
+		720*4, 0);
+	cx23885_sram_channel_setup(dev, &

@@ -1,3 +1,3 @@
-cpi_io.h \
-  include/linux/io.h \
-  
+K_RCD + 1)
+		count = RXCLK_RCD;
+	els

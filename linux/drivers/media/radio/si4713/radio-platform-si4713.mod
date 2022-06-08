@@ -1,3 +1,2 @@
-media/v4l2-dev.h \
-  include/linux/poll.h \
-  includ
+egval = MC417_SPD_CTL(MC417_SPD_CTL_FAST)	|
+		 MC417

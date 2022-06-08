@@ -1,2 +1,2 @@
- include/config/TRACE_BRANCH_PROFILING) \
-    $(wildcard include/config/PRO
+        = LGDT3306A_TPCLK_RISING_EDGE,
+	.tpvalid_polarity       = LGDT3306A

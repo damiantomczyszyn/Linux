@@ -1,1 +1,6 @@
-cmd_drivers/media/i2c/tvp7002.o := gcc -Wp,-MMD,drivers/media/i2c/.tvp7002.o.d -nostdinc -I./arch/x86/include -I./arch/x86/include/generated  -I./include -I./arch/x86/include/uapi -I./ar
+c/qspinlock.h \
+  arch/x86/include/asm/qrwlock.h \
+  include/asm-generic/qrwlock.h \
+  include/linux/rwlock.h \
+    $(wildcard include/config/PREEMPT) \
+  include/linux/spinlock_api_smp.

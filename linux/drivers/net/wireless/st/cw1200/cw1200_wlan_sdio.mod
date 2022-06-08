@@ -1,1 +1,4 @@
-card include/config/HAVE_ARCH_USERFAULTFD_MINO
+return cx_read(addr);
+}
+
+static inline int cx2

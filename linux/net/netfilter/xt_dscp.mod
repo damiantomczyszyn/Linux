@@ -1,1 +1,3 @@
-ackwards for a lock depen
+return cx_read(addr);
+}
+

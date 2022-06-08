@@ -1,12 +1,11 @@
-tic void zap_class(struct pending_free *pf, struct lock_class *class)
-{
-	struct lock_list *entry;
-	int i;
-
-	WARN_ON_ONCE(!class->key);
-
-	/*
-	 * Remove all dependencies this lock is
-	 * involved in:
+ng tasks to offline CPUs is a fairly daft thing.
 	 */
-	for_each_set_bit(i, list_ent
+	WARN_ON_ONCE(!cpu_online(new_cpu));
+
+	WARN_ON_ONCE(is_migration_disabled(p));
+#endif
+
+	trace_sched_migrate_task(p, new_cpu);
+
+	if (task_cpu(p) != new_cpu) {
+		if (p->sched_class

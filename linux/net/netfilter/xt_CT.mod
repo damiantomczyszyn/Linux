@@ -1,1 +1,3 @@
-J ¬aèŒ|Q¥éG1D„¬)öñ
+y(struct rq *rq)
+{
+	int

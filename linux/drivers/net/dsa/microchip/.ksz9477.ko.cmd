@@ -1,6 +1,1 @@
-nclude/linux/page-flags-layout.h \
-    $(wildcard include/config/KASAN_HW_TAGS) \
-  include/linux/numa.h \
-    $(wildcard include/config/NODES_SHIFT) \
-    $(wildcard include/config/NUMA_KEEP_MEMINFO) \
-    $(wildcard includ
+cmd_drivers/net/dsa/microchip/ksz9477.ko := ld -r -m elf_i386 --build-id=sha1  -T scripts/module.lds -o drivers/net/dsa/microchip/ksz9477.ko drivers/net/dsa/microchip/ksz9477.o drivers/net/dsa/microchip/ksz9477.mod.o;  true

@@ -1,3 +1,1 @@
- include/config/TRACE_BRANCH_PROFILING) \
-    $(wildcard include/config/PROFILE_ALL_BRANCHES) \
-    $(wildcard include/confi
+cmd_drivers/net/can/usb/usb_8dev.mod := { echo  drivers/net/can/usb/usb_8dev.o;  echo; } > drivers/net/can/usb/usb_8dev.mod

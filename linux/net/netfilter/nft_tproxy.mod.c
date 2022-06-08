@@ -1,23 +1,19 @@
-s[0]),
-				       GFP_KERNEL);
-		if (reader_tasks == NULL) {
-			TOROUT_ERRSTRING("reader_tasks: Out of memory");
-			kfree(writer_tasks);
-			writer_tasks = NULL;
-			firsterr = -ENOMEM;
-			goto unwind;
-		}
-	}
+/* SPDX-License-Identifier: GPL-2.0 */
+/*
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * Authors: Waiman Long <longman@redhat.com>
+ */
 
-	/*
-	 * Create the kthreads and start torturing (oh, those poor little locks).
-	 *
-	 * TODO: Note that we interleave writers with readers, giving writers a
-	 * slight advantage, by creating its kthread first. This can be modified
-	 * for very specific needs, or even let the user choose the policy, if
-	 * ever wanted.
-	 */
-	for (i = 0, j = 0; i < cxt.nrealwriters_stress ||
-		    j < cxt.nrealreaders_stress; i++, j++) {
-		if (i >= cxt.nrealwriters_stress)
-			goto cre
+#ifndef __LOCKING_LOCK_EVENTS_H
+#define __LOCKING_LOCK_EVENTS_H
+
+enum lock_events

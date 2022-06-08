@@ -1,4 +1,1 @@
-lude/config/SHMEM) \
-    $(wildcard include/config/ARCH_HAS_PTE_SPECIAL) \
-    $(wildcard include/config/ARCH_HAS_PTE_DEVMAP) \
-    $(wildcard include/config/DEBU
+cmd_drivers/media/pci/cx18/cx18-alsa.o := ld -m elf_i386   -r -o drivers/media/pci/cx18/cx18-alsa.o drivers/media/pci/cx18/cx18-alsa-main.o drivers/media/pci/cx18

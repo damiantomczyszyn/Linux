@@ -1,4 +1,4 @@
-e/linux/rwlock.h \
-    $(wildcard include/config/PREEMPT) \
-  include/linux/spinlock_api_smp.h \
-    $(wildcard include/confi
+\
+    $(wildcard include/config/HAVE_EFFICIENT_UNALIGNED_ACCESS) \
+  include/uapi/linux/if_ether.h \
+  include/net/netns/core

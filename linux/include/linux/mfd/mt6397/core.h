@@ -1,40 +1,38 @@
-pes.h \
-  include/asm-generic/pgtable-nop4d.h \
-  include/asm-generic/pgtable-nopud.h \
-  arch/x86/include/asm/nospec-branch.h \
-  include/linux/static_key.h \
-  include/linux/jump_label.h \
-    $(wildcard include/config/HAVE_ARCH_JUMP_LABEL_RELATIVE) \
-  arch/x86/include/asm/jump_label.h \
-  include/linux/objtool.h \
-    $(wildcard include/config/FRAME_POINTER) \
-  arch/x86/include/asm/msr-index.h \
-  arch/x86/include/asm/unwind_hints.h \
-  arch/x86/include/asm/orc_types.h \
-  arch/x86/include/asm/GEN-for-each-reg.h \
-  arch/x86/include/asm/spinlock_types.h \
-  include/asm-generic/qspinlock_types.h \
-    $(wildcard include/config/NR_CPUS) \
-  include/asm-generic/qrwlock_types.h \
-  arch/x86/include/asm/proto.h \
-  arch/x86/include/uapi/asm/ldt.h \
-  arch/x86/include/uapi/asm/sigcontext.h \
-  arch/x86/include/asm/current.h \
-  arch/x86/include/asm/percpu.h \
-    $(wildcard include/config/X86_64_SMP) \
-  include/linux/kernel.h \
-    $(wildcard include/config/PREEMPT_VOLUNTARY_BUILD) \
-    $(wildcard include/config/PREEMPT_DYNAMIC) \
-    $(wildcard include/config/HAVE_PREEMPT_DYNAMIC_CALL) \
-    $(wildcard include/config/HAVE_PREEMPT_DYNAMIC_KEY) \
-    $(wildcard include/config/PREEMPT_) \
-    $(wildcard include/config/DEBUG_ATOMIC_SLEEP) \
-    $(wildcard include/config/MMU) \
-    $(wildcard include/config/PROVE_LOCKING) \
-  include/linux/stdarg.h \
-  include/linux/align.h \
-  include/linux/limits.h \
-  include/uapi/linux/limits.h \
-  include/vdso/limits.h \
-  include/linux/kstrtox.h \
-  include/li
+# SPDX-License-Identifier: GPL-2.0-only
+config VIDEO_CX23885
+	tristate "Conexant cx23885 (2388x successor) support"
+	depends on DVB_CORE && VIDEO_DEV && PCI && I2C && INPUT && SND
+	select SND_PCM
+	select I2C_ALGOBIT
+	select VIDEO_TUNER
+	select VIDEO_TVEEPROM
+	depends on RC_CORE
+	select VIDEOBUF2_DVB
+	select VIDEOBUF2_DMA_SG
+	select VIDEO_CX25840
+	select VIDEO_CX2341X
+	select VIDEO_CS3308
+	select DVB_DIB7000P if MEDIA_SUBDRV_AUTOSELECT
+	select DVB_DRXK if MEDIA_SUBDRV_AUTOSELECT
+	select DVB_S5H1409 if MEDIA_SUBDRV_AUTOSELECT
+	select DVB_S5H1411 if MEDIA_SUBDRV_AUTOSELECT
+	select DVB_LGDT330X if MEDIA_SUBDRV_AUTOSELECT
+	select DVB_ZL10353 if MEDIA_SUBDRV_AUTOSELECT
+	select DVB_TDA10048 if MEDIA_SUBDRV_AUTOSELECT
+	select DVB_LNBP21 if MEDIA_SUBDRV_AUTOSELECT
+	select DVB_STV090x if MEDIA_SUBDRV_AUTOSELECT
+	select DVB_STB6100 if MEDIA_SUBDRV_AUTOSELECT
+	select DVB_STV6110 if MEDIA_SUBDRV_AUTOSELECT
+	select DVB_CX24116 if MEDIA_SUBDRV_AUTOSELECT
+	select DVB_CX24117 if MEDIA_SUBDRV_AUTOSELECT
+	select DVB_STV0900 if MEDIA_SUBDRV_AUTOSELECT
+	select DVB_DS3000 if MEDIA_SUBDRV_AUTOSELECT
+	select DVB_TS2020 if MEDIA_SUBDRV_AUTOSELECT
+	select DVB_STV0367 if MEDIA_SUBDRV_AUTOSELECT
+	select DVB_TDA10071 if MEDIA_SUBDRV_AUTOSELECT
+	select DVB_A8293 if MEDIA_SUBDRV_AUTOSELECT
+	select DVB_MB86A20S if MEDIA_SUBDRV_AUTOSELECT
+	select DVB_SI2165 if MEDIA_SUBDRV_AUTOSELECT
+	select DVB_SI2168 if MEDIA_SUBDRV_AUTOSELECT
+	select DVB_M88DS3103 if MEDIA_SUBDRV_AUTOSELECT
+	select MEDIA_TUNER_MT2063 if MEDIA_SUBDRV_AUTOSELEC

@@ -1,2 +1,3 @@
-/x86/include/uapi/asm/bitsperlong.h \
-  include/asm-generic/bitsperlong.h 
+>drv_priv;
+	struct cx23885_buffer *buf = container_of(vbuf,
+		struct cx238

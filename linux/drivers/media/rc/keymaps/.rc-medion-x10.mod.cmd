@@ -1,1 +1,4 @@
-cmd_drivers/media/rc/keymaps/rc-medion-x10.mod := { echo  drivers/media/rc/keymaps/rc-medion-x10.o;  echo; } > drivers/media/rc/keymaps/rc-medion-x10.mod
+d to userspace.
+ *
+ * It also sets the final jump of the previous buffer to the start of the new
+ * buffer, thus chaining the new buffer into the DMA chai

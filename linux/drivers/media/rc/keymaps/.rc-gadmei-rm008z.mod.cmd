@@ -1,1 +1,5 @@
-cmd_drivers/media/rc/keymaps/rc-gadmei-rm008z.mod := { echo  drivers/media/rc/keymaps/rc-gadmei-rm008z.o;  echo; } > drivers/media/rc/keymaps/rc-gadmei-rm008z.mod
+// SPDX-License-Identifier: GPL-2.0-or-later
+/*
+ *  Driver for the Conexant CX23885/7/8 PCIe bridge
+ *
+ *  AV device support routines - non-input, non-vl42_subdev 

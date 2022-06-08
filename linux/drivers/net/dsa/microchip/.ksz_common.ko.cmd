@@ -1,7 +1,1 @@
-CPI_APEI_GHES) \
-    $(wildcard include/config/INTEL_TXT) \
-  arch/x86/include/generated/asm/kmap_size.h \
-  include/asm-generic/kmap_size.h \
-    $(wildcard include/config/DEBUG_KMAP_LOCAL) \
-  include/asm-generic/fixmap.h \
-  arch/x86
+cmd_drivers/net/dsa/microchip/ksz_common.ko := ld -r -m elf_i386 --build-id=sha1  -T scripts/module.lds -o drivers/net/dsa/microchip/ksz_common.ko drivers/net/dsa/microchip/ksz_common.o drivers/net/dsa/microchip/ksz_common.mod.o;  true

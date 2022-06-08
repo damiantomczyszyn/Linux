@@ -1,1047 +1,1418 @@
--3level_types.h \
-  include/asm-generic/pgtable-nop4d.h \
-  include/asm-generic/pgtable-nopud.h \
-  arch/x86/include/asm/nospec-branch.h \
-  include/linux/static_key.h \
-  include/linux/jump_label.h \
-    $(wildcard include/config/HAVE_ARCH_JUMP_LABEL_RELATIVE) \
-  arch/x86/include/asm/jump_label.h \
-  include/linux/objtool.h \
-    $(wildcard include/config/FRAME_POINTER) \
-  arch/x86/include/asm/msr-index.h \
-  arch/x86/include/asm/unwind_hints.h \
-  arch/x86/include/asm/orc_types.h \
-  arch/x86/include/asm/GEN-for-each-reg.h \
-  arch/x86/include/asm/spinlock_types.h \
-  include/asm-generic/qspinlock_types.h \
-    $(wildcard include/config/NR_CPUS) \
-  include/asm-generic/qrwlock_types.h \
-  arch/x86/include/asm/proto.h \
-  arch/x86/include/uapi/asm/ldt.h \
-  arch/x86/include/uapi/asm/sigcontext.h \
-  arch/x86/include/asm/current.h \
-  arch/x86/include/asm/percpu.h \
-    $(wildcard include/config/X86_64_SMP) \
-  include/linux/kernel.h \
-    $(wildcard include/config/PREEMPT_VOLUNTARY_BUILD) \
-    $(wildcard include/config/PREEMPT_DYNAMIC) \
-    $(wildcard include/config/HAVE_PREEMPT_DYNAMIC_CALL) \
-    $(wildcard include/config/HAVE_PREEMPT_DYNAMIC_KEY) \
-    $(wildcard include/config/PREEMPT_) \
-    $(wildcard include/config/DEBUG_ATOMIC_SLEEP) \
-    $(wildcard include/config/MMU) \
-    $(wildcard include/config/PROVE_LOCKING) \
-  include/linux/stdarg.h \
-  include/linux/align.h \
-  include/linux/limits.h \
-  include/uapi/linux/limits.h \
-  include/vdso/limits.h \
-  include/linux/kstrtox.h \
-  include/linux/minmax.h \
-  include/linux/panic.h \
-    $(wildcard include/config/PANIC_TIMEOUT) \
-  include/linux/printk.h \
-    $(wildcard include/config/MESSAGE_LOGLEVEL_DEFAULT) \
-    $(wildcard include/config/CONSOLE_LOGLEVEL_DEFAULT) \
-    $(wildcard include/config/CONSOLE_LOGLEVEL_QUIET) \
-    $(wildcard include/config/EARLY_PRINTK) \
-    $(wildcard include/config/PRINTK) \
-    $(wildcard include/config/DYNAMIC_DEBUG) \
-    $(wildcard include/config/DYNAMIC_DEBUG_CORE) \
-  include/linux/kern_levels.h \
-  include/linux/ratelimit_types.h \
-  include/linux/spinlock_types_raw.h \
-    $(wildcard include/config/DEBUG_SPINLOCK) \
-    $(wildcard include/config/DEBUG_LOCK_ALLOC) \
-  include/linux/lockdep_types.h \
-    $(wildcard include/config/PROVE_RAW_LOCK_NESTING) \
-    $(wildcard include/config/LOCKDEP) \
-    $(wildcard include/config/LOCK_STAT) \
-  include/linux/once_lite.h \
-  include/linux/static_call_types.h \
-    $(wildcard include/config/HAVE_STATIC_CALL) \
-  include/linux/instruction_pointer.h \
-  include/asm-generic/percpu.h \
-    $(wildcard include/config/DEBUG_PREEMPT) \
-    $(wildcard include/config/HAVE_SETUP_PER_CPU_AREA) \
-  include/linux/threads.h \
-    $(wildcard include/config/BASE_SMALL) \
-  include/linux/percpu-defs.h \
-    $(wildcard include/config/DEBUG_FORCE_WEAK_PER_CPU) \
-  arch/x86/include/asm/page.h \
-  arch/x86/include/asm/page_32.h \
-    $(wildcard include/config/DEBUG_VIRTUAL) \
-    $(wildcard include/config/FLATMEM) \
-  include/linux/string.h \
-    $(wildcard include/config/BINARY_PRINTF) \
-    $(wildcard include/config/FORTIFY_SOURCE) \
-  include/linux/errno.h \
-  include/uapi/linux/errno.h \
-  include/uapi/linux/string.h \
-  arch/x86/include/asm/string.h \
-  arch/x86/include/asm/string_32.h \
-  include/linux/fortify-string.h \
-  include/linux/range.h \
-  include/asm-generic/memory_model.h \
-    $(wildcard include/config/SPARSEMEM_VMEMMAP) \
-    $(wildcard include/config/SPARSEMEM) \
-  include/linux/pfn.h \
-  include/asm-generic/getorder.h \
-  arch/x86/include/asm/msr.h \
-  arch/x86/include/asm/msr-index.h \
-  arch/x86/include/asm/cpumask.h \
-  include/linux/cpumask.h \
-    $(wildcard include/config/CPUMASK_OFFSTACK) \
-    $(wildcard include/config/HOTPLUG_CPU) \
-    $(wildcard include/config/DEBUG_PER_CPU_MAPS) \
-  include/linux/bitmap.h \
-  include/linux/find.h \
-  include/linux/atomic.h \
-  arch/x86/include/asm/atomic.h \
-  arch/x86/include/asm/cmpxchg.h \
-  arch/x86/include/asm/cmpxchg_32.h \
-  arch/x86/include/asm/atomic64_32.h \
-  include/linux/atomic/atomic-arch-fallback.h \
-    $(wildcard include/config/GENERIC_ATOMIC64) \
-  include/linux/atomic/atomic-long.h \
-  include/linux/atomic/atomic-instrumented.h \
-  include/linux/bug.h \
-    $(wildcard include/config/BUG_ON_DATA_CORRUPTION) \
-  arch/x86/include/asm/bug.h \
-    $(wildcard include/config/DEBUG_BUGVERBOSE) \
-  include/linux/instrumentation.h \
-    $(wildcard include/config/DEBUG_ENTRY) \
-  include/asm-generic/bug.h \
-    $(wildcard include/config/BUG) \
-    $(wildcard include/config/GENERIC_BUG_RELATIVE_POINTERS) \
-  arch/x86/include/uapi/asm/msr.h \
-  include/linux/tracepoint-defs.h \
-  arch/x86/include/asm/special_insns.h \
-  include/linux/irqflags.h \
-    $(wildcard include/config/TRACE_IRQFLAGS) \
-    $(wildcard include/config/PREEMPT_RT) \
-    $(wildcard include/config/IRQSOFF_TRACER) \
-    $(wildcard include/config/PREEMPT_TRACER) \
-    $(wildcard include/config/DEBUG_IRQFLAGS) \
-    $(wildcard include/config/TRACE_IRQFLAGS_SUPPORT) \
-  arch/x86/include/asm/irqflags.h \
-  arch/x86/include/asm/fpu/types.h \
-  arch/x86/include/asm/vmxfeatures.h \
-  arch/x86/include/asm/vdso/processor.h \
-  include/linux/personality.h \
-  include/uapi/linux/personality.h \
-  arch/x86/include/asm/tsc.h \
-  arch/x86/include/asm/cpufeature.h \
-    $(wildcard include/config/X86_FEATURE_NAMES) \
-  include/vdso/time32.h \
-  include/vdso/time.h \
-  include/linux/uidgid.h \
-    $(wildcard include/config/MULTIUSER) \
-    $(wildcard include/config/USER_NS) \
-  include/linux/highuid.h \
-  include/linux/buildid.h \
-    $(wildcard include/config/CRASH_CORE) \
-  include/linux/mm_types.h \
-    $(wildcard include/config/HAVE_ALIGNED_STRUCT_PAGE) \
-    $(wildcard include/config/MEMCG) \
-    $(wildcard include/config/USERFAULTFD) \
-    $(wildcard include/config/SWAP) \
-    $(wildcard include/config/NUMA) \
-    $(wildcard include/config/HAVE_ARCH_COMPAT_MMAP_BASES) \
-    $(wildcard include/config/MEMBARRIER) \
-    $(wildcard include/config/AIO) \
-    $(wildcard include/config/MMU_NOTIFIER) \
-    $(wildcard include/config/TRANSPARENT_HUGEPAGE) \
-    $(wildcard include/config/NUMA_BALANCING) \
-    $(wildcard include/config/ARCH_WANT_BATCHED_UNMAP_TLB_FLUSH) \
-    $(wildcard include/config/HUGETLB_PAGE) \
-    $(wildcard include/config/IOMMU_SVA) \
-  include/linux/mm_types_task.h \
-    $(wildcard include/config/SPLIT_PTLOCK_CPUS) \
-    $(wildcard include/config/ARCH_ENABLE_SPLIT_PMD_PTLOCK) \
-  arch/x86/include/asm/tlbbatch.h \
-  include/linux/auxvec.h \
-  include/uapi/linux/auxvec.h \
-  arch/x86/include/uapi/asm/auxvec.h \
-  include/linux/kref.h \
-  include/linux/spinlock.h \
-    $(wildcard include/config/PREEMPTION) \
-  include/linux/preempt.h \
-    $(wildcard include/config/PREEMPT_COUNT) \
-    $(wildcard include/config/TRACE_PREEMPT_TOGGLE) \
-    $(wildcard include/config/PREEMPT_NOTIFIERS) \
-  arch/x86/include/asm/preempt.h \
-  include/linux/thread_info.h \
-    $(wildcard include/config/THREAD_INFO_IN_TASK) \
-    $(wildcard include/config/GENERIC_ENTRY) \
-    $(wildcard include/config/HAVE_ARCH_WITHIN_STACK_FRAMES) \
-    $(wildcard include/config/HARDENED_USERCOPY) \
-  include/linux/restart_block.h \
-  arch/x86/include/asm/thread_info.h \
-    $(wildcard include/config/COMPAT) \
-  include/linux/bottom_half.h \
-  include/linux/lockdep.h \
-    $(wildcard include/config/DEBUG_LOCKING_API_SELFTESTS) \
-  include/linux/smp.h \
-    $(wildcard include/config/UP_LATE_INIT) \
-  include/linux/smp_types.h \
-  include/linux/llist.h \
-    $(wildcard include/config/ARCH_HAVE_NMI_SAFE_CMPXCHG) \
-  arch/x86/include/asm/smp.h \
-    $(wildcard include/config/X86_LOCAL_APIC) \
-    $(wildcard include/config/DEBUG_NMI_SELFTEST) \
-  arch/x86/include/generated/asm/mmiowb.h \
-  include/asm-generic/mmiowb.h \
-    $(wildcard include/config/MMIOWB) \
-  include/linux/spinlock_types.h \
-  include/linux/rwlock_types.h \
-  arch/x86/include/asm/spinlock.h \
-  arch/x86/include/asm/paravirt.h \
-    $(wildcard include/config/PARAVIRT_SPINLOCKS) \
-  arch/x86/include/asm/frame.h \
-  arch/x86/include/asm/qspinlock.h \
-  include/asm-generic/qspinlock.h \
-  arch/x86/include/asm/qrwlock.h \
-  include/asm-generic/qrwlock.h \
-  include/linux/rwlock.h \
-    $(wildcard include/config/PREEMPT) \
-  include/linux/spinlock_api_smp.h \
-    $(wildcard include/config/INLINE_SPIN_LOCK) \
-    $(wildcard include/config/INLINE_SPIN_LOCK_BH) \
-    $(wildcard include/config/INLINE_SPIN_LOCK_IRQ) \
-    $(wildcard include/config/INLINE_SPIN_LOCK_IRQSAVE) \
-    $(wildcard include/config/INLINE_SPIN_TRYLOCK) \
-    $(wildcard include/config/INLINE_SPIN_TRYLOCK_BH) \
-    $(wildcard include/config/UNINLINE_SPIN_UNLOCK) \
-    $(wildcard include/config/INLINE_SPIN_UNLOCK_BH) \
-    $(wildcard include/config/INLINE_SPIN_UNLOCK_IRQ) \
-    $(wildcard include/config/INLINE_SPIN_UNLOCK_IRQRESTORE) \
-    $(wildcard include/config/GENERIC_LOCKBREAK) \
-  include/linux/rwlock_api_smp.h \
-    $(wildcard include/config/INLINE_READ_LOCK) \
-    $(wildcard include/config/INLINE_WRITE_LOCK) \
-    $(wildcard include/config/INLINE_READ_LOCK_BH) \
-    $(wildcard include/config/INLINE_WRITE_LOCK_BH) \
-    $(wildcard include/config/INLINE_READ_LOCK_IRQ) \
-    $(wildcard include/config/INLINE_WRITE_LOCK_IRQ) \
-    $(wildcard include/config/INLINE_READ_LOCK_IRQSAVE) \
-    $(wildcard include/config/INLINE_WRITE_LOCK_IRQSAVE) \
-    $(wildcard include/config/INLINE_READ_TRYLOCK) \
-    $(wildcard include/config/INLINE_WRITE_TRYLOCK) \
-    $(wildcard include/config/INLINE_READ_UNLOCK) \
-    $(wildcard include/config/INLINE_WRITE_UNLOCK) \
-    $(wildcard include/config/INLINE_READ_UNLOCK_BH) \
-    $(wildcard include/config/INLINE_WRITE_UNLOCK_BH) \
-    $(wildcard include/config/INLINE_READ_UNLOCK_IRQ) \
-    $(wildcard include/config/INLINE_WRITE_UNLOCK_IRQ) \
-    $(wildcard include/config/INLINE_READ_UNLOCK_IRQRESTORE) \
-    $(wildcard include/config/INLINE_WRITE_UNLOCK_IRQRESTORE) \
-  include/linux/refcount.h \
-  include/linux/rbtree.h \
-  include/linux/rbtree_types.h \
-  include/linux/rcupdate.h \
-    $(wildcard include/config/PREEMPT_RCU) \
-    $(wildcard include/config/TINY_RCU) \
-    $(wildcard include/config/RCU_STRICT_GRACE_PERIOD) \
-    $(wildcard include/config/TASKS_RCU_GENERIC) \
-    $(wildcard include/config/RCU_STALL_COMMON) \
-    $(wildcard include/config/NO_HZ_FULL) \
-    $(wildcard include/config/RCU_NOCB_CPU) \
-    $(wildcard include/config/TASKS_RCU) \
-    $(wildcard include/config/TASKS_TRACE_RCU) \
-    $(wildcard include/config/TASKS_RUDE_RCU) \
-    $(wildcard include/config/TREE_RCU) \
-    $(wildcard include/config/DEBUG_OBJECTS_RCU_HEAD) \
-    $(wildcard include/config/PROVE_RCU) \
-    $(wildcard include/config/ARCH_WEAK_RELEASE_ACQUIRE) \
-  include/linux/rcutree.h \
-  include/linux/rwsem.h \
-    $(wildcard include/config/RWSEM_SPIN_ON_OWNER) \
-    $(wildcard include/config/DEBUG_RWSEMS) \
-  include/linux/osq_lock.h \
-  include/linux/completion.h \
-  include/linux/swait.h \
-  include/linux/wait.h \
-  include/uapi/linux/wait.h \
-  include/linux/uprobes.h \
-    $(wildcard include/config/UPROBES) \
-  arch/x86/include/asm/uprobes.h \
-  include/linux/notifier.h \
-  include/linux/mutex.h \
-    $(wildcard include/config/MUTEX_SPIN_ON_OWNER) \
-    $(wildcard include/config/DEBUG_MUTEXES) \
-  include/linux/debug_locks.h \
-  include/linux/srcu.h \
-    $(wildcard include/config/TINY_SRCU) \
-    $(wildcard include/config/SRCU) \
-  include/linux/workqueue.h \
-    $(wildcard include/config/DEBUG_OBJECTS_WORK) \
-    $(wildcard include/config/FREEZER) \
-    $(wildcard include/config/WQ_WATCHDOG) \
-  include/linux/timer.h \
-    $(wildcard include/config/DEBUG_OBJECTS_TIMERS) \
-    $(wildcard include/config/NO_HZ_COMMON) \
-  include/linux/ktime.h \
-  include/linux/jiffies.h \
-  include/vdso/jiffies.h \
-  include/generated/timeconst.h \
-  include/vdso/ktime.h \
-  include/linux/timekeeping.h \
-    $(wildcard include/config/GENERIC_CMOS_UPDATE) \
-  include/linux/clocksource_ids.h \
-  include/linux/debugobjects.h \
-    $(wildcard include/config/DEBUG_OBJECTS) \
-    $(wildcard include/config/DEBUG_OBJECTS_FREE) \
-  include/linux/rcu_segcblist.h \
-  include/linux/srcutree.h \
-  include/linux/rcu_node_tree.h \
-    $(wildcard include/config/RCU_FANOUT) \
-    $(wildcard include/config/RCU_FANOUT_LEAF) \
-  include/linux/page-flags-layout.h \
-    $(wildcard include/config/KASAN_HW_TAGS) \
-  include/linux/numa.h \
-    $(wildcard include/config/NODES_SHIFT) \
-    $(wildcard include/config/NUMA_KEEP_MEMINFO) \
-    $(wildcard include/config/HAVE_ARCH_NODE_DEV_GROUP) \
-  arch/x86/include/asm/sparsemem.h \
-  include/generated/bounds.h \
-  include/linux/seqlock.h \
-  include/linux/ww_mutex.h \
-    $(wildcard include/config/DEBUG_RT_MUTEXES) \
-    $(wildcard include/config/DEBUG_WW_MUTEX_SLOWPATH) \
-  include/linux/rtmutex.h \
-  arch/x86/include/asm/mmu.h \
-    $(wildcard include/config/MODIFY_LDT_SYSCALL) \
-  include/linux/kmod.h \
-  include/linux/umh.h \
-  include/linux/gfp.h \
-    $(wildcard include/config/HIGHMEM) \
-    $(wildcard include/config/ZONE_DMA) \
-    $(wildcard include/config/ZONE_DMA32) \
-    $(wildcard include/config/ZONE_DEVICE) \
-    $(wildcard include/config/PM_SLEEP) \
-    $(wildcard include/config/CONTIG_ALLOC) \
-    $(wildcard include/config/CMA) \
-  include/linux/mmdebug.h \
-    $(wildcard include/config/DEBUG_VM) \
-    $(wildcard include/config/DEBUG_VM_PGFLAGS) \
-  include/linux/mmzone.h \
-    $(wildcard include/config/FORCE_MAX_ZONEORDER) \
-    $(wildcard include/config/MEMORY_ISOLATION) \
-    $(wildcard include/config/ZSMALLOC) \
-    $(wildcard include/config/MEMORY_HOTPLUG) \
-    $(wildcard include/config/COMPACTION) \
-    $(wildcard include/config/PAGE_EXTENSION) \
-    $(wildcard include/config/DEFERRED_STRUCT_PAGE_INIT) \
-    $(wildcard include/config/HAVE_MEMORYLESS_NODES) \
-    $(wildcard include/config/SPARSEMEM_EXTREME) \
-    $(wildcard include/config/HAVE_ARCH_PFN_VALID) \
-  include/linux/nodemask.h \
-  include/linux/pageblock-flags.h \
-    $(wildcard include/config/HUGETLB_PAGE_SIZE_VARIABLE) \
-  include/linux/page-flags.h \
-    $(wildcard include/config/ARCH_USES_PG_UNCACHED) \
-    $(wildcard include/config/MEMORY_FAILURE) \
-    $(wildcard include/config/PAGE_IDLE_FLAG) \
-    $(wildcard include/config/HUGETLB_PAGE_FREE_VMEMMAP) \
-    $(wildcard include/config/HUGETLB_PAGE_FREE_VMEMMAP_DEFAULT_ON) \
-    $(wildcard include/config/KSM) \
-  include/linux/local_lock.h \
-  include/linux/local_lock_internal.h \
-  include/linux/memory_hotplug.h \
-    $(wildcard include/config/HAVE_ARCH_NODEDATA_EXTENSION) \
-    $(wildcard include/config/ARCH_HAS_ADD_PAGES) \
-    $(wildcard include/config/MEMORY_HOTREMOVE) \
-  arch/x86/include/asm/mmzone.h \
-  arch/x86/include/asm/mmzone_32.h \
-  include/linux/topology.h \
-    $(wildcard include/config/USE_PERCPU_NUMA_NODE_ID) \
-    $(wildcard include/config/SCHED_SMT) \
-    $(wildcard include/config/SCHED_CLUSTER) \
-  include/linux/arch_topology.h \
-    $(wildcard include/config/ACPI_CPPC_LIB) \
-    $(wildcard include/config/GENERIC_ARCH_TOPOLOGY) \
-  include/linux/percpu.h \
-    $(wildcard include/config/NEED_PER_CPU_EMBED_FIRST_CHUNK) \
-    $(wildcard include/config/NEED_PER_CPU_PAGE_FIRST_CHUNK) \
-  arch/x86/include/asm/topology.h \
-    $(wildcard include/config/SCHED_MC_PRIO) \
-  arch/x86/include/asm/mpspec.h \
-    $(wildcard include/config/EISA) \
-    $(wildcard include/config/X86_MPPARSE) \
-  arch/x86/include/asm/mpspec_def.h \
-  arch/x86/include/asm/x86_init.h \
-  arch/x86/include/asm/apicdef.h \
-  include/asm-generic/topology.h \
-  include/linux/sysctl.h \
-    $(wildcard include/config/SYSCTL) \
-  include/uapi/linux/sysctl.h \
-  include/linux/elf.h \
-    $(wildcard include/config/ARCH_USE_GNU_PROPERTY) \
-    $(wildcard include/config/ARCH_HAVE_ELF_PROT) \
-  arch/x86/include/asm/elf.h \
-    $(wildcard include/config/X86_X32_ABI) \
-  arch/x86/include/asm/user.h \
-  arch/x86/include/asm/user_32.h \
-  arch/x86/include/asm/fsgsbase.h \
-  arch/x86/include/asm/vdso.h \
-  arch/x86/include/asm/desc.h \
-  arch/x86/include/asm/fixmap.h \
-    $(wildcard include/config/DEBUG_KMAP_LOCAL_FORCE_MAP) \
-    $(wildcard include/config/X86_VSYSCALL_EMULATION) \
-    $(wildcard include/config/PROVIDE_OHCI1394_DMA_INIT) \
-    $(wildcard include/config/X86_IO_APIC) \
-    $(wildcard include/config/KMAP_LOCAL) \
-    $(wildcard include/config/PCI_MMCONFIG) \
-    $(wildcard include/config/ACPI_APEI_GHES) \
-    $(wildcard include/config/INTEL_TXT) \
-  arch/x86/include/generated/asm/kmap_size.h \
-  include/asm-generic/kmap_size.h \
-    $(wildcard include/config/DEBUG_KMAP_LOCAL) \
-  include/asm-generic/fixmap.h \
-  arch/x86/include/asm/irq_vectors.h \
-    $(wildcard include/config/HAVE_KVM) \
-    $(wildcard include/config/HYPERV) \
-    $(wildcard include/config/PCI_MSI) \
-  arch/x86/include/asm/cpu_entry_area.h \
-  arch/x86/include/asm/intel_ds.h \
-  arch/x86/include/asm/pgtable_areas.h \
-  arch/x86/include/asm/pgtable_32_areas.h \
-  include/uapi/linux/elf.h \
-  include/uapi/linux/elf-em.h \
-  include/linux/kobject.h \
-    $(wildcard include/config/UEVENT_HELPER) \
-    $(wildcard include/config/DEBUG_KOBJECT_RELEASE) \
-  include/linux/sysfs.h \
-  include/linux/kernfs.h \
-    $(wildcard include/config/KERNFS) \
-  include/linux/idr.h \
-  include/linux/radix-tree.h \
-  include/linux/xarray.h \
-    $(wildcard include/config/XARRAY_MULTI) \
-  include/linux/kconfig.h \
-  include/linux/kobject_ns.h \
-  include/linux/moduleparam.h \
-    $(wildcard include/config/ALPHA) \
-    $(wildcard include/config/IA64) \
-    $(wildcard include/config/PPC64) \
-  include/linux/rbtree_latch.h \
-  include/linux/error-injection.h \
-  include/asm-generic/error-injection.h \
-  include/linux/cfi.h \
-    $(wildcard include/config/CFI_CLANG_SHADOW) \
-  arch/x86/include/asm/module.h \
-    $(wildcard include/config/UNWINDER_ORC) \
-  include/asm-generic/module.h \
-    $(wildcard include/config/HAVE_MOD_ARCH_SPECIFIC) \
-    $(wildcard include/config/MODULES_USE_ELF_REL) \
-    $(wildcard include/config/MODULES_USE_ELF_RELA) \
-  arch/x86/include/asm/orc_types.h \
-  include/linux/delay.h \
-  include/linux/sched.h \
-    $(wildcard include/config/VIRT_CPU_ACCOUNTING_NATIVE) \
-    $(wildcard include/config/SCHED_INFO) \
-    $(wildcard include/config/SCHEDSTATS) \
-    $(wildcard include/config/SCHED_CORE) \
-    $(wildcard include/config/FAIR_GROUP_SCHED) \
-    $(wildcard include/config/RT_GROUP_SCHED) \
-    $(wildcard include/config/RT_MUTEXES) \
-    $(wildcard include/config/UCLAMP_TASK) \
-    $(wildcard include/config/UCLAMP_BUCKETS_COUNT) \
-    $(wildcard include/config/CGROUP_SCHED) \
-    $(wildcard include/config/BLK_DEV_IO_TRACE) \
-    $(wildcard include/config/PSI) \
-    $(wildcard include/config/COMPAT_BRK) \
-    $(wildcard include/config/CGROUPS) \
-    $(wildcard include/config/BLK_CGROUP) \
-    $(wildcard include/config/PAGE_OWNER) \
-    $(wildcard include/config/EVENTFD) \
-    $(wildcard include/config/ARCH_HAS_SCALED_CPUTIME) \
-    $(wildcard include/config/VIRT_CPU_ACCOUNTING_GEN) \
-    $(wildcard include/config/POSIX_CPUTIMERS) \
-    $(wildcard include/config/POSIX_CPU_TIMERS_TASK_WORK) \
-    $(wildcard include/config/KEYS) \
-    $(wildcard include/config/SYSVIPC) \
-    $(wildcard include/config/DETECT_HUNG_TASK) \
-    $(wildcard include/config/IO_URING) \
-    $(wildcard include/config/AUDIT) \
-    $(wildcard include/config/AUDITSYSCALL) \
-    $(wildcard include/config/UBSAN) \
-    $(wildcard include/config/UBSAN_TRAP) \
-    $(wildcard include/config/TASK_XACCT) \
-    $(wildcard include/config/CPUSETS) \
-    $(wildcard include/config/X86_CPU_RESCTRL) \
-    $(wildcard include/config/FUTEX) \
-    $(wildcard include/config/PERF_EVENTS) \
-    $(wildcard include/config/RSEQ) \
-    $(wildcard include/config/TASK_DELAY_ACCT) \
-    $(wildcard include/config/FAULT_INJECTION) \
-    $(wildcard include/config/LATENCYTOP) \
-    $(wildcard include/config/KUNIT) \
-    $(wildcard include/config/FUNCTION_GRAPH_TRACER) \
-    $(wildcard include/config/BCACHE) \
-    $(wildcard include/config/VMAP_STACK) \
-    $(wildcard include/config/SECURITY) \
-    $(wildcard include/config/BPF_SYSCALL) \
-    $(wildcard include/config/GCC_PLUGIN_STACKLEAK) \
-    $(wildcard include/config/X86_MCE) \
-    $(wildcard include/config/KRETPROBES) \
-    $(wildcard include/config/RETHOOK) \
-    $(wildcard include/config/ARCH_HAS_PARANOID_L1D_FLUSH) \
-    $(wildcard include/config/ARCH_TASK_STRUCT_ON_STACK) \
-    $(wildcard include/config/DEBUG_RSEQ) \
-  include/uapi/linux/sched.h \
-  include/linux/pid.h \
-  include/linux/rculist.h \
-    $(wildcard include/config/PROVE_RCU_LIST) \
-  include/linux/sem.h \
-  include/uapi/linux/sem.h \
-  include/linux/ipc.h \
-  include/linux/rhashtable-types.h \
-  include/uapi/linux/ipc.h \
-  arch/x86/include/generated/uapi/asm/ipcbuf.h \
-  include/uapi/asm-generic/ipcbuf.h \
-  arch/x86/include/uapi/asm/sembuf.h \
-  include/linux/shm.h \
-  include/uapi/linux/shm.h \
-  include/uapi/asm-generic/hugetlb_encode.h \
-  arch/x86/include/uapi/asm/shmbuf.h \
-  include/uapi/asm-generic/shmbuf.h \
-  arch/x86/include/asm/shmparam.h \
-  include/linux/plist.h \
-    $(wildcard include/config/DEBUG_PLIST) \
-  include/linux/hrtimer.h \
-    $(wildcard include/config/HIGH_RES_TIMERS) \
-    $(wildcard include/config/TIME_LOW_RES) \
-    $(wildcard include/config/TIMERFD) \
-  include/linux/hrtimer_defs.h \
-  include/linux/timerqueue.h \
-  include/linux/seccomp.h \
-    $(wildcard include/config/SECCOMP) \
-    $(wildcard include/config/HAVE_ARCH_SECCOMP_FILTER) \
-    $(wildcard include/config/SECCOMP_FILTER) \
-    $(wildcard include/config/CHECKPOINT_RESTORE) \
-    $(wildcard include/config/SECCOMP_CACHE_DEBUG) \
-  include/uapi/linux/seccomp.h \
-  arch/x86/include/asm/seccomp.h \
-  arch/x86/include/asm/unistd.h \
-  arch/x86/include/uapi/asm/unistd.h \
-  arch/x86/include/generated/uapi/asm/unistd_32.h \
-  include/asm-generic/seccomp.h \
-  include/uapi/linux/unistd.h \
-  include/linux/resource.h \
-  include/uapi/linux/resource.h \
-  arch/x86/include/generated/uapi/asm/resource.h \
-  include/asm-generic/resource.h \
-  include/uapi/asm-generic/resource.h \
-  include/linux/latencytop.h \
-  include/linux/sched/prio.h \
-  include/linux/sched/types.h \
-  include/linux/signal_types.h \
-    $(wildcard include/config/OLD_SIGACTION) \
-  include/uapi/linux/signal.h \
-  arch/x86/include/asm/signal.h \
-  arch/x86/include/uapi/asm/signal.h \
-  include/uapi/asm-generic/signal-defs.h \
-  arch/x86/include/uapi/asm/siginfo.h \
-  include/uapi/asm-generic/siginfo.h \
-  include/linux/syscall_user_dispatch.h \
-  include/linux/task_io_accounting.h \
-    $(wildcard include/config/TASK_IO_ACCOUNTING) \
-  include/linux/posix-timers.h \
-  include/linux/alarmtimer.h \
-    $(wildcard include/config/RTC_CLASS) \
-  include/uapi/linux/rseq.h \
-  include/linux/kcsan.h \
-  arch/x86/include/asm/delay.h \
-  include/asm-generic/delay.h \
-  include/linux/slab.h \
-    $(wildcard include/config/DEBUG_SLAB) \
-    $(wildcard include/config/FAILSLAB) \
-    $(wildcard include/config/MEMCG_KMEM) \
-    $(wildcard include/config/KASAN) \
-    $(wildcard include/config/SLAB) \
-    $(wildcard include/config/SLUB) \
-    $(wildcard include/config/SLOB) \
-  include/linux/overflow.h \
-  include/linux/percpu-refcount.h \
-  include/linux/kasan.h \
-    $(wildcard include/config/KASAN_STACK) \
-    $(wildcard include/config/KASAN_VMALLOC) \
-    $(wildcard include/config/KASAN_INLINE) \
-  include/linux/kasan-enabled.h \
-  include/linux/uaccess.h \
-  include/linux/fault-inject-usercopy.h \
-    $(wildcard include/config/FAULT_INJECTION_USERCOPY) \
-  arch/x86/include/asm/uaccess.h \
-    $(wildcard include/config/CC_HAS_ASM_GOTO_OUTPUT) \
-    $(wildcard include/config/CC_HAS_ASM_GOTO_TIED_OUTPUT) \
-    $(wildcard include/config/ARCH_HAS_COPY_MC) \
-    $(wildcard include/config/X86_INTEL_USERCOPY) \
-  arch/x86/include/asm/smap.h \
-  arch/x86/include/asm/extable.h \
-    $(wildcard include/config/BPF_JIT) \
-  include/asm-generic/access_ok.h \
-    $(wildcard include/config/ALTERNATE_USER_ADDRESS_SPACE) \
-  arch/x86/include/asm/uaccess_32.h \
-  include/linux/i2c.h \
-    $(wildcard include/config/I2C) \
-    $(wildcard include/config/I2C_SLAVE) \
-    $(wildcard include/config/I2C_BOARDINFO) \
-    $(wildcard include/config/I2C_MUX) \
-    $(wildcard include/config/OF) \
-    $(wildcard include/config/ACPI) \
-  include/linux/acpi.h \
-    $(wildcard include/config/ACPI_DEBUGGER) \
-    $(wildcard include/config/ACPI_TABLE_LIB) \
-    $(wildcard include/config/LOONGARCH) \
-    $(wildcard include/config/ARM64) \
-    $(wildcard include/config/ACPI_PROCESSOR_CSTATE) \
-    $(wildcard include/config/ACPI_HOTPLUG_CPU) \
-    $(wildcard include/config/ACPI_HOTPLUG_IOAPIC) \
-    $(wildcard include/config/PCI) \
-    $(wildcard include/config/ACPI_WMI) \
-    $(wildcard include/config/ACPI_NUMA) \
-    $(wildcard include/config/HIBERNATION) \
-    $(wildcard include/config/ACPI_HOTPLUG_MEMORY) \
-    $(wildcard include/config/ACPI_CONTAINER) \
-    $(wildcard include/config/ACPI_GTDT) \
-    $(wildcard include/config/PM) \
-    $(wildcard include/config/GPIOLIB) \
-    $(wildcard include/config/ACPI_TABLE_UPGRADE) \
-    $(wildcard include/config/ACPI_WATCHDOG) \
-    $(wildcard include/config/ACPI_SPCR_TABLE) \
-    $(wildcard include/config/ACPI_GENERIC_GSI) \
-    $(wildcard include/config/ACPI_LPIT) \
-    $(wildcard include/config/ACPI_PPTT) \
-    $(wildcard include/config/ACPI_PCC) \
-  include/linux/ioport.h \
-  include/linux/irqdomain.h \
-    $(wildcard include/config/IRQ_DOMAIN_HIERARCHY) \
-    $(wildcard include/config/GENERIC_IRQ_DEBUGFS) \
-    $(wildcard include/config/IRQ_DOMAIN) \
-    $(wildcard include/config/IRQ_DOMAIN_NOMAP) \
-  include/linux/irqhandler.h \
-  include/linux/of.h \
-    $(wildcard include/config/OF_DYNAMIC) \
-    $(wildcard include/config/SPARC) \
-    $(wildcard include/config/OF_PROMTREE) \
-    $(wildcard include/config/OF_KOBJ) \
-    $(wildcard include/config/OF_NUMA) \
-    $(wildcard include/config/OF_OVERLAY) \
-  include/linux/mod_devicetable.h \
-  include/linux/uuid.h \
-  include/uapi/linux/uuid.h \
-  include/linux/property.h \
-  include/linux/fwnode.h \
-  include/linux/resource_ext.h \
-  include/linux/device.h \
-    $(wildcard include/config/GENERIC_MSI_IRQ_DOMAIN) \
-    $(wildcard include/config/GENERIC_MSI_IRQ) \
-    $(wildcard include/config/ENERGY_MODEL) \
-    $(wildcard include/config/PINCTRL) \
-    $(wildcard include/config/DMA_OPS) \
-    $(wildcard include/config/DMA_DECLARE_COHERENT) \
-    $(wildcard include/config/DMA_CMA) \
-    $(wildcard include/config/SWIOTLB) \
-    $(wildcard include/config/ARCH_HAS_SYNC_DMA_FOR_DEVICE) \
-    $(wildcard include/config/ARCH_HAS_SYNC_DMA_FOR_CPU) \
-    $(wildcard include/config/ARCH_HAS_SYNC_DMA_FOR_CPU_ALL) \
-    $(wildcard include/config/DMA_OPS_BYPASS) \
-    $(wildcard include/config/DEVTMPFS) \
-    $(wildcard include/config/SYSFS_DEPRECATED) \
-  include/linux/dev_printk.h \
-  include/linux/ratelimit.h \
-  include/linux/energy_model.h \
-  include/linux/sched/cpufreq.h \
-    $(wildcard include/config/CPU_FREQ) \
-  include/linux/sched/topology.h \
-    $(wildcard include/config/SCHED_DEBUG) \
-    $(wildcard include/config/SCHED_MC) \
-    $(wildcard include/config/CPU_FREQ_GOV_SCHEDUTIL) \
-  include/linux/sched/idle.h \
-  include/linux/sched/sd_flags.h \
-  include/linux/klist.h \
-  include/linux/pm.h \
-    $(wildcard include/config/VT_CONSOLE_SLEEP) \
-    $(wildcard include/config/PM_CLK) \
-    $(wildcard include/config/PM_GENERIC_DOMAINS) \
-  include/linux/device/bus.h \
-  include/linux/device/class.h \
-  include/linux/device/driver.h \
-  arch/x86/include/asm/device.h \
-  include/linux/pm_wakeup.h \
-  include/acpi/acpi.h \
-  include/acpi/platform/acenv.h \
-  include/acpi/platform/acgcc.h \
-  include/acpi/platform/aclinux.h \
-    $(wildcard include/config/ACPI_REDUCED_HARDWARE_ONLY) \
-    $(wildcard include/config/ACPI_DEBUG) \
-  include/linux/ctype.h \
-  arch/x86/include/asm/acenv.h \
-  include/acpi/acnames.h \
-  include/acpi/actypes.h \
-  include/acpi/acexcep.h \
-  include/acpi/actbl.h \
-  include/acpi/actbl1.h \
-  include/acpi/actbl2.h \
-  include/acpi/actbl3.h \
-  include/acpi/acrestyp.h \
-  include/acpi/platform/acenvex.h \
-  include/acpi/platform/aclinuxex.h \
-  include/acpi/platform/acgccex.h \
-  include/acpi/acoutput.h \
-  include/acpi/acpiosxf.h \
-  include/acpi/acpixf.h \
-  include/acpi/acconfig.h \
-  include/acpi/acbuffer.h \
-  include/linux/dynamic_debug.h \
-  include/acpi/acpi_bus.h \
-    $(wildcard include/config/X86_ANDROID_TABLETS) \
-    $(wildcard include/config/ACPI_SYSTEM_POWER_STATES_SUPPORT) \
-    $(wildcard include/config/ACPI_SLEEP) \
-  include/acpi/acpi_drivers.h \
-    $(wildcard include/config/ACPI_DOCK) \
-  include/acpi/acpi_numa.h \
-    $(wildcard include/config/ACPI_HMAT) \
-  include/acpi/acpi_io.h \
-  include/linux/io.h \
-    $(wildcard include/config/HAS_IOPORT_MAP) \
-  arch/x86/include/asm/io.h \
-    $(wildcard include/config/MTRR) \
-    $(wildcard include/config/X86_PAT) \
-  arch/x86/include/generated/asm/early_ioremap.h \
-  include/asm-generic/early_ioremap.h \
-    $(wildcard include/config/GENERIC_EARLY_IOREMAP) \
-  include/asm-generic/iomap.h \
-  include/asm-generic/pci_iomap.h \
-    $(wildcard include/config/NO_GENERIC_PCI_IOPORT_MAP) \
-    $(wildcard include/config/GENERIC_PCI_IOMAP) \
-  include/asm-generic/io.h \
-    $(wildcard include/config/GENERIC_IOMAP) \
-    $(wildcard include/config/GENERIC_IOREMAP) \
-    $(wildcard include/config/VIRT_TO_BUS) \
-    $(wildcard include/config/GENERIC_DEVMEM_IS_ALLOWED) \
-  include/linux/logic_pio.h \
-    $(wildcard include/config/INDIRECT_PIO) \
-  include/linux/vmalloc.h \
-    $(wildcard include/config/HAVE_ARCH_HUGE_VMALLOC) \
-  arch/x86/include/asm/vmalloc.h \
-    $(wildcard include/config/HAVE_ARCH_HUGE_VMAP) \
-  arch/x86/include/asm/acpi.h \
-    $(wildcard include/config/ACPI_APEI) \
-  include/acpi/pdc_intel.h \
-  arch/x86/include/asm/numa.h \
-    $(wildcard include/config/NUMA_EMU) \
-  arch/x86/include/asm/numa_32.h \
-  include/linux/regulator/consumer.h \
-    $(wildcard include/config/REGULATOR) \
-  include/linux/suspend.h \
-    $(wildcard include/config/VT) \
-    $(wildcard include/config/SUSPEND) \
-    $(wildcard include/config/HIBERNATION_SNAPSHOT_DEV) \
-    $(wildcard include/config/PM_SLEEP_DEBUG) \
-    $(wildcard include/config/PM_AUTOSLEEP) \
-  include/linux/swap.h \
-    $(wildcard include/config/DEVICE_PRIVATE) \
-    $(wildcard include/config/MIGRATION) \
-    $(wildcard include/config/FRONTSWAP) \
-    $(wildcard include/config/THP_SWAP) \
-    $(wildcard include/config/MEMCG_SWAP) \
-  include/linux/memcontrol.h \
-    $(wildcard include/config/CGROUP_WRITEBACK) \
-  include/linux/cgroup.h \
-    $(wildcard include/config/CGROUP_CPUACCT) \
-    $(wildcard include/config/SOCK_CGROUP_DATA) \
-    $(wildcard include/config/CGROUP_DATA) \
-    $(wildcard include/config/CGROUP_BPF) \
-  include/uapi/linux/cgroupstats.h \
-  include/uapi/linux/taskstats.h \
-  include/linux/fs.h \
-    $(wildcard include/config/READ_ONLY_THP_FOR_FS) \
-    $(wildcard include/config/FS_POSIX_ACL) \
-    $(wildcard include/config/IMA) \
-    $(wildcard include/config/FILE_LOCKING) \
-    $(wildcard include/config/FSNOTIFY) \
-    $(wildcard include/config/FS_ENCRYPTION) \
-    $(wildcard include/config/FS_VERITY) \
-    $(wildcard include/config/EPOLL) \
-    $(wildcard include/config/UNICODE) \
-    $(wildcard include/config/QUOTA) \
-    $(wildcard include/config/FS_DAX) \
-    $(wildcard include/config/BLOCK) \
-  include/linux/wait_bit.h \
-  include/linux/kdev_t.h \
-  include/uapi/linux/kdev_t.h \
-  include/linux/dcache.h \
-  include/linux/rculist_bl.h \
-  include/linux/list_bl.h \
-  include/linux/bit_spinlock.h \
-  include/linux/lockref.h \
-    $(wildcard include/config/ARCH_USE_CMPXCHG_LOCKREF) \
-  include/linux/stringhash.h \
-    $(wildcard include/config/DCACHE_WORD_ACCESS) \
-  include/linux/hash.h \
-    $(wildcard include/config/HAVE_ARCH_HASH) \
-  include/linux/path.h \
-  include/linux/list_lru.h \
-  include/linux/shrinker.h \
-  include/linux/capability.h \
-  include/uapi/linux/capability.h \
-  include/linux/semaphore.h \
-  include/linux/fcntl.h \
-    $(wildcard include/config/ARCH_32BIT_OFF_T) \
-  include/uapi/linux/fcntl.h \
-  arch/x86/include/generated/uapi/asm/fcntl.h \
-  include/uapi/asm-generic/fcntl.h \
-  include/uapi/linux/openat2.h \
-  include/linux/migrate_mode.h \
-  include/linux/percpu-rwsem.h \
-  include/linux/rcuwait.h \
-  include/linux/sched/signal.h \
-    $(wildcard include/config/SCHED_AUTOGROUP) \
-    $(wildcard include/config/BSD_PROCESS_ACCT) \
-    $(wildcard include/config/TASKSTATS) \
-    $(wildcard include/config/STACK_GROWSUP) \
-  include/linux/signal.h \
-    $(wildcard include/config/DYNAMIC_SIGFRAME) \
-  include/linux/sched/jobctl.h \
-  include/linux/sched/task.h \
-    $(wildcard include/config/HAVE_EXIT_THREAD) \
-    $(wildcard include/config/ARCH_WANTS_DYNAMIC_TASK_STRUCT) \
-    $(wildcard include/config/HAVE_ARCH_THREAD_STRUCT_WHITELIST) \
-  include/linux/cred.h \
-    $(wildcard include/config/DEBUG_CREDENTIALS) \
-  include/linux/key.h \
-    $(wildcard include/config/KEY_NOTIFICATIONS) \
-    $(wildcard include/config/NET) \
-  include/linux/assoc_array.h \
-    $(wildcard include/config/ASSOCIATIVE_ARRAY) \
-  include/linux/sched/user.h \
-    $(wildcard include/config/WATCH_QUEUE) \
-  include/linux/percpu_counter.h \
-  include/linux/rcu_sync.h \
-  include/linux/delayed_call.h \
-  include/linux/errseq.h \
-  include/linux/ioprio.h \
-  include/linux/sched/rt.h \
-  include/linux/iocontext.h \
-    $(wildcard include/config/BLK_ICQ) \
-  include/uapi/linux/ioprio.h \
-  include/linux/fs_types.h \
-  include/linux/mount.h \
-  include/linux/mnt_idmapping.h \
-  include/uapi/linux/fs.h \
-  include/linux/quota.h \
-    $(wildcard include/config/QUOTA_NETLINK_INTERFACE) \
-  include/uapi/linux/dqblk_xfs.h \
-  include/linux/dqblk_v1.h \
-  include/linux/dqblk_v2.h \
-  include/linux/dqblk_qtree.h \
-  include/linux/projid.h \
-  include/uapi/linux/quota.h \
-  include/linux/nfs_fs_i.h \
-  include/linux/seq_file.h \
-  include/linux/string_helpers.h \
-  include/linux/ns_common.h \
-  include/linux/nsproxy.h \
-  include/linux/user_namespace.h \
-    $(wildcard include/config/INOTIFY_USER) \
-    $(wildcard include/config/FANOTIFY) \
-    $(wildcard include/config/PERSISTENT_KEYRINGS) \
-  include/linux/kernel_stat.h \
-  include/linux/interrupt.h \
-    $(wildcard include/config/IRQ_FORCED_THREADING) \
-    $(wildcard include/config/GENERIC_IRQ_PROBE) \
-    $(wildcard include/config/IRQ_TIMINGS) \
-  include/linux/irqreturn.h \
-  include/linux/irqnr.h \
-  include/uapi/linux/irqnr.h \
-  include/linux/hardirq.h \
-  include/linux/context_tracking_state.h \
-    $(wildcard include/config/CONTEXT_TRACKING) \
-  include/linux/ftrace_irq.h \
-    $(wildcard include/config/HWLAT_TRACER) \
-    $(wildcard include/config/OSNOISE_TRACER) \
-  include/linux/vtime.h \
-    $(wildcard include/config/VIRT_CPU_ACCOUNTING) \
-    $(wildcard include/config/IRQ_TIME_ACCOUNTING) \
-  arch/x86/include/asm/hardirq.h \
-    $(wildcard include/config/KVM_INTEL) \
-    $(wildcard include/config/X86_THERMAL_VECTOR) \
-    $(wildcard include/config/X86_MCE_THRESHOLD) \
-    $(wildcard include/config/X86_MCE_AMD) \
-    $(wildcard include/config/X86_HV_CALLBACK_VECTOR) \
-  arch/x86/include/asm/irq.h \
-  arch/x86/include/asm/sections.h \
-  include/asm-generic/sections.h \
-    $(wildcard include/config/HAVE_FUNCTION_DESCRIPTORS) \
-  include/linux/cgroup-defs.h \
-    $(wildcard include/config/CGROUP_NET_CLASSID) \
-    $(wildcard include/config/CGROUP_NET_PRIO) \
-  include/linux/u64_stats_sync.h \
-  include/linux/bpf-cgroup-defs.h \
-  include/linux/psi_types.h \
-  include/linux/kthread.h \
-  include/linux/cgroup_subsys.h \
-    $(wildcard include/config/CGROUP_DEVICE) \
-    $(wildcard include/config/CGROUP_FREEZER) \
-    $(wildcard include/config/CGROUP_PERF) \
-    $(wildcard include/config/CGROUP_HUGETLB) \
-    $(wildcard include/config/CGROUP_PIDS) \
-    $(wildcard include/config/CGROUP_RDMA) \
-    $(wildcard include/config/CGROUP_MISC) \
-    $(wildcard include/config/CGROUP_DEBUG) \
-  include/linux/vm_event_item.h \
-    $(wildcard include/config/HAVE_ARCH_TRANSPARENT_HUGEPAGE_PUD) \
-    $(wildcard include/config/MEMORY_BALLOON) \
-    $(wildcard include/config/BALLOON_COMPACTION) \
-    $(wildcard include/config/DEBUG_TLBFLUSH) \
-    $(wildcard include/config/DEBUG_VM_VMACACHE) \
-  include/linux/page_counter.h \
-  include/linux/vmpressure.h \
-  include/linux/eventfd.h \
-  include/linux/mm.h \
-    $(wildcard include/config/HAVE_ARCH_MMAP_RND_BITS) \
-    $(wildcard include/config/HAVE_ARCH_MMAP_RND_COMPAT_BITS) \
-    $(wildcard include/config/ARCH_USES_HIGH_VMA_FLAGS) \
-    $(wildcard include/config/ARCH_HAS_PKEYS) \
-    $(wildcard include/config/PPC) \
-    $(wildcard include/config/PARISC) \
-    $(wildcard include/config/SPARC64) \
-    $(wildcard include/config/ARM64_MTE) \
-    $(wildcard include/config/HAVE_ARCH_USERFAULTFD_MINOR) \
-    $(wildcard include/config/SHMEM) \
-    $(wildcard include/config/ARCH_HAS_PTE_SPECIAL) \
-    $(wildcard include/config/ARCH_HAS_PTE_DEVMAP) \
-    $(wildcard include/config/DEBUG_VM_RB) \
-    $(wildcard include/config/PAGE_POISONING) \
-    $(wildcard include/config/INIT_ON_ALLOC_DEFAULT_ON) \
-    $(wildcard include/config/INIT_ON_FREE_DEFAULT_ON) \
-    $(wildcard include/config/DEBUG_PAGEALLOC) \
-    $(wildcard include/config/HUGETLBFS) \
-    $(wildcard include/config/MAPPING_DIRTY_HELPERS) \
-    $(wildcard include/config/ANON_VMA_NAME) \
-  include/linux/mmap_lock.h \
-  include/linux/page_ext.h \
-  include/linux/stacktrace.h \
-    $(wildcard include/config/ARCH_STACKWALK) \
-    $(wildcard include/config/STACKTRACE) \
-    $(wildcard include/config/HAVE_RELIABLE_STACKTRACE) \
-  include/linux/stackdepot.h \
-    $(wildcard include/config/STACKDEPOT_ALWAYS_INIT) \
-  include/linux/page_ref.h \
-    $(wildcard include/config/DEBUG_PAGE_REF) \
-  include/linux/sizes.h \
-  include/linux/pgtable.h \
-    $(wildcard include/config/HIGHPTE) \
-    $(wildcard include/config/GUP_GET_PTE_LOW_HIGH) \
-    $(wildcard include/config/HAVE_ARCH_SOFT_DIRTY) \
-    $(wildcard include/config/ARCH_ENABLE_THP_MIGRATION) \
-    $(wildcard include/config/X86_ESPFIX64) \
-  arch/x86/include/asm/pgtable.h \
-    $(wildcard include/config/DEBUG_WX) \
-    $(wildcard include/config/PAGE_TABLE_CHECK) \
-  arch/x86/include/asm/pkru.h \
-  arch/x86/include/asm/fpu/api.h \
-    $(wildcard include/config/X86_DEBUG_FPU) \
-  arch/x86/include/asm/coco.h \
-  include/asm-generic/pgtable_uffd.h \
-  include/linux/page_table_check.h \
-  arch/x86/include/asm/pgtable_32.h \
-  arch/x86/include/asm/pgtable-3level.h \
-  arch/x86/include/asm/pgtable-invert.h \
-  include/linux/huge_mm.h \
-  include/linux/sched/coredump.h \
-    $(wildcard include/config/CORE_DUMP_DEFAULT_ELF_HEADERS) \
-  include/linux/vmstat.h \
-    $(wildcard include/config/VM_EVENT_COUNTERS) \
-  include/linux/writeback.h \
-  include/linux/flex_proportions.h \
-  include/linux/backing-dev-defs.h \
-    $(wildcard include/config/DEBUG_FS) \
-  include/linux/blk_types.h \
-    $(wildcard include/config/FAIL_MAKE_REQUEST) \
-    $(wildcard include/config/BLK_CGROUP_IOCOST) \
-    $(wildcard include/config/BLK_INLINE_ENCRYPTION) \
-    $(wildcard include/config/BLK_DEV_INTEGRITY) \
-  include/linux/bvec.h \
-  include/linux/highmem.h \
-  include/linux/cacheflush.h \
-  arch/x86/include/asm/cacheflush.h \
-  include/asm-generic/cacheflush.h \
-  include/linux/highmem-internal.h \
-  arch/x86/include/asm/highmem.h \
-  arch/x86/include/asm/tlbflush.h \
-  arch/x86/include/asm/invpcid.h \
-  arch/x86/include/asm/pti.h \
-  include/linux/bio.h \
-  include/linux/mempool.h \
-  include/linux/uio.h \
-    $(wildcard include/config/ARCH_HAS_UACCESS_FLUSHCACHE) \
-  include/uapi/linux/uio.h \
-  include/linux/node.h \
-    $(wildcard include/config/HMEM_REPORTING) \
-  include/linux/pagemap.h \
-  include/linux/hugetlb_inline.h \
-  include/uapi/linux/mempolicy.h \
-  include/linux/freezer.h \
-  include/uapi/linux/i2c.h \
-  include/linux/videodev2.h \
-  include/uapi/linux/videodev2.h \
-    $(wildcard include/config/VIDEO_ADV_DEBUG) \
-  include/uapi/linux/v4l2-common.h \
-  include/uapi/linux/v4l2-controls.h \
-  include/media/v4l2-device.h \
-    $(wildcard include/config/VIDEO_V4L2_SUBDEV_API) \
-  include/media/media-device.h \
-    $(wildcard include/config/MEDIA_CONTROLLER) \
-  include/media/media-devnode.h \
-  include/linux/poll.h \
-  include/uapi/linux/poll.h \
-  arch/x86/include/generated/uapi/asm/poll.h \
-  include/uapi/asm-generic/poll.h \
-  include/uapi/linux/eventpoll.h \
-  include/linux/cdev.h \
-  include/media/media-entity.h \
-  include/uapi/linux/media.h \
-  include/media/v4l2-subdev.h \
-  include/uapi/linux/v4l2-subdev.h \
-  include/uapi/linux/v4l2-mediabus.h \
-  include/uapi/linux/media-bus-format.h \
-  include/media/v4l2-async.h \
-  include/media/v4l2-common.h \
-    $(wildcard include/config/VIDEO_V4L2_I2C) \
-    $(wildcard include/config/SPI) \
-  include/media/v4l2-dev.h \
-  include/linux/spi/spi.h \
-    $(wildcard include/config/SPI_SLAVE) \
-  include/linux/scatterlist.h \
-    $(wildcard include/config/NEED_SG_DMA_LENGTH) \
-    $(wildcard include/config/DEBUG_SG) \
-    $(wildcard include/config/SGL_ALLOC) \
-    $(wildcard include/config/ARCH_NO_SG_CHAIN) \
-    $(wildcard include/config/SG_POOL) \
-  include/linux/gpio/consumer.h \
-    $(wildcard include/config/OF_GPIO) \
-    $(wildcard include/config/GPIO_SYSFS) \
-  include/uapi/linux/spi/spi.h \
-  include/media/v4l2-fh.h \
-  include/media/v4l2-mediabus.h \
-  include/media/v4l2-ctrls.h \
-  include/media/media-request.h \
-  include/media/hevc-ctrls.h \
+// SPDX-License-Identifier: GPL-2.0
+/* Copyright (c) 2018-2019, Vladimir Oltean <olteanv@gmail.com>
+ */
+#include "sja1105.h"
 
-drivers/media/i2c/vpx3220.o: $(deps_drivers/media/i2c/vpx3220.o)
+/* In the dynamic configuration interface, the switch exposes a register-like
+ * view of some of the static configuration tables.
+ * Many times the field organization of the dynamic tables is abbreviated (not
+ * all fields are dynamically reconfigurable) and different from the static
+ * ones, but the key reason for having it is that we can spare a switch reset
+ * for settings that can be changed dynamically.
+ *
+ * This file creates a per-switch-family abstraction called
+ * struct sja1105_dynamic_table_ops and two operations that work with it:
+ * - sja1105_dynamic_config_write
+ * - sja1105_dynamic_config_read
+ *
+ * Compared to the struct sja1105_table_ops from sja1105_static_config.c,
+ * the dynamic accessors work with a compound buffer:
+ *
+ * packed_buf
+ *
+ * |
+ * V
+ * +-----------------------------------------+------------------+
+ * |              ENTRY BUFFER               |  COMMAND BUFFER  |
+ * +-----------------------------------------+------------------+
+ *
+ * <----------------------- packed_size ------------------------>
+ *
+ * The ENTRY BUFFER may or may not have the same layout, or size, as its static
+ * configuration table entry counterpart. When it does, the same packing
+ * function is reused (bar exceptional cases - see
+ * sja1105pqrs_dyn_l2_lookup_entry_packing).
+ *
+ * The reason for the COMMAND BUFFER being at the end is to be able to send
+ * a dynamic write command through a single SPI burst. By the time the switch
+ * reacts to the command, the ENTRY BUFFER is already populated with the data
+ * sent by the core.
+ *
+ * The COMMAND BUFFER is always SJA1105_SIZE_DYN_CMD bytes (one 32-bit word) in
+ * size.
+ *
+ * Sometimes the ENTRY BUFFER does not really exist (when the number of fields
+ * that can be reconfigured is small), then the switch repurposes some of the
+ * unused 32 bits of the COMMAND BUFFER to hold ENTRY data.
+ *
+ * The key members of struct sja1105_dynamic_table_ops are:
+ * - .entry_packing: A function that deals with packing an ENTRY structure
+ *		     into an SPI buffer, or retrieving an ENTRY structure
+ *		     from one.
+ *		     The @packed_buf pointer it's given does always point to
+ *		     the ENTRY portion of the buffer.
+ * - .cmd_packing: A function that deals with packing/unpacking the COMMAND
+ *		   structure to/from the SPI buffer.
+ *		   It is given the same @packed_buf pointer as .entry_packing,
+ *		   so most of the time, the @packed_buf points *behind* the
+ *		   COMMAND offset inside the buffer.
+ *		   To access the COMMAND portion of the buffer, the function
+ *		   knows its correct offset.
+ *		   Giving both functions the same pointer is handy because in
+ *		   extreme cases (see sja1105pqrs_dyn_l2_lookup_entry_packing)
+ *		   the .entry_packing is able to jump to the COMMAND portion,
+ *		   or vice-versa (sja1105pqrs_l2_lookup_cmd_packing).
+ * - .access: A bitmap of:
+ *	OP_READ: Set if the hardware manual marks the ENTRY portion of the
+ *		 dynamic configuration table buffer as R (readable) after
+ *		 an SPI read command (the switch will populate the buffer).
+ *	OP_WRITE: Set if the manual marks the ENTRY portion of the dynamic
+ *		  table buffer as W (writable) after an SPI write command
+ *		  (the switch will read the fields provided in the buffer).
+ *	OP_DEL: Set if the manual says the VALIDENT bit is supported in the
+ *		COMMAND portion of this dynamic config buffer (i.e. the
+ *		specified entry can be invalidated through a SPI write
+ *		command).
+ *	OP_SEARCH: Set if the manual says that the index of an entry can
+ *		   be retrieved in the COMMAND portion of the buffer based
+ *		   on its ENTRY portion, as a result of a SPI write command.
+ *		   Only the TCAM-based FDB table on SJA1105 P/Q/R/S supports
+ *		   this.
+ *	OP_VALID_ANYWAY: Reading some tables through the dynamic config
+ *			 interface is possible even if the VALIDENT bit is not
+ *			 set in the writeback. So don't error out in that case.
+ * - .max_entry_count: The number of entries, counting from zero, that can be
+ *		       reconfigured through the dynamic interface. If a static
+ *		       table can be reconfigured at all dynamically, this
+ *		       number always matches the maximum number of supported
+ *		       static entries.
+ * - .packed_size: The length in bytes of the compound ENTRY + COMMAND BUFFER.
+ *		   Note that sometimes the compound buffer may contain holes in
+ *		   it (see sja1105_vlan_lookup_cmd_packing). The @packed_buf is
+ *		   contiguous however, so @packed_size includes any unused
+ *		   bytes.
+ * - .addr: The base SPI address at which the buffer must be written to the
+ *	    switch's memory. When looking at the hardware manual, this must
+ *	    always match the lowest documented address for the ENTRY, and not
+ *	    that of the COMMAND, since the other 32-bit words will follow along
+ *	    at the correct addresses.
+ */
 
-$(deps_drivers/media/i2c/vpx3220.o):
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       ELF                      L"      4     (               Ë¸ˇˇˇãÖ¿uãAÉ¯wã≈¨  âA1¿√∏Íˇˇˇ√ç¥&    çv Ë¸ˇˇˇâ¬â»ãIÖ…upãä8  âHãä<  âHãä@  âHãäD  âHãäH  âHãäL  âHãäP  âH ãäT  âH$ãäX  âH(ãä\  âH,ãä`  âH0ãíd  âP41¿√ê∏Íˇˇˇ√ç¥&    çv Ë¸ˇˇˇãà4  âJãÄ0  âB1¿√ç∂    Ë¸ˇˇˇSãX\âÿË¸ˇˇˇãClË¸ˇˇˇ1¿[√çt& Ë¸ˇˇˇÉÏãÄî   dã    âL$1…πÄˇˇfâL$Ö“t7∆D$j π   çT$Ë¸ˇˇˇX∏ºç Ë¸ˇˇˇãD$d+    u1¿Éƒ√çt& ∆D$Î«Ë¸ˇˇˇçt& Ë¸ˇˇˇSâ√ÉÏãJd°    âD$1¿Ö…tãBÖ¿Öﬂ   «B   ∏   «B   âÉ0  ãB∫Äˇˇπ   fâT$âÉ4  ãÉî   ∆D$ j çT$Ë¸ˇˇˇãì0  πÅˇˇãÉî   fâL$π   àt$j çT$	Ë¸ˇˇˇãì0  πÇˇˇãÉî   fâL$	π   àT$j çT$Ë¸ˇˇˇãì4  ãÉî   ªÑˇˇfâ\$π   àT$j çT$Ë¸ˇˇˇÉƒãD$d+    uÉƒ1¿[√çv k…9»Ü)ˇˇˇÈˇˇˇË¸ˇˇˇçv Ë¸ˇˇˇUâ≈WVSÉÏd°    âD$ãEãPãRË¸ˇˇˇ®Ñ)  ãEXâ$Ö¿Ñ"  h    çuãπ   âË¸ˇˇˇâ√XÖ€Ö¸ˇˇˇ∏d   Ë¸ˇˇˇπ¿  ∫l  âË¸ˇˇˇâ√Ö¿Ñ„  π@   âÍæ†  Ë¸ˇˇˇπ   ∫ÅˇˇÎê∑Nf¡¬àL$ãÉî   É∆fâT$π   j çT$	Ë¸ˇˇˇ∑XfÖ“uÕ∫¿  ∆D$ãÉî   π   fâT$j çT$	Ë¸ˇˇˇπ¿D  ãÉî   fâL$	π   ∆D$j çT$Ë¸ˇˇˇπ   ∫¯*  ∏'  Ë¸ˇˇˇπ   ^∫oÄˇˇ_æ|  Îçt& ∑Nf¡¬àL$ãÉî   É∆fâT$π   j çT$	Ë¸ˇˇˇ∑XfÖ“uÕ∫Ñ   æ¥  ø@  Îçt& ∑Wf¡∆àT$É«π   fât$ãÉî   j çT$	Ë¸ˇˇˇ∑7XfÖˆuÕ∫%Üˇˇ∆D$ãÉî   π   fâT$ø‡  j çT$	Ë¸ˇˇˇ∫  YÎçv ∑wf¡¬âÒãÉî   É«fâT$àL$π   j çT$	Ë¸ˇˇˇ∑XfÖ“uÀ∫Äˇˇ∆D$ π   ãÉî   fâT$æÇˇˇøÑˇˇ«É0     «É4     j çT$	Ë¸ˇˇˇãì0  πÅˇˇãÉî   fâL$	π   àt$j çT$Ë¸ˇˇˇãì0  ãÉî   π   fât$ç≥¿   àT$j çT$Ë¸ˇˇˇãì4  ãÉî   π   fâ|$çª8  àT$j çT$Ë¸ˇˇˇ1¿π   ∑UÛ´ãD$«É8  Ä  «É<  ‡  «É@     «ÉD     «ÉH     ã âÉh  ãEçà  QçQRˇ∞   ãETˇ0h,   Ë¸ˇˇˇ1…∫   âÉƒ(j Ë¸ˇˇˇπ	ò ∫0  âj há   j jj hˇ   j j Ë¸ˇˇˇπ	ò ∫0  âÉƒ$j jxj jj hˇ   j j Ë¸ˇˇˇπ	ò ∫0  âÉƒ j j j jj jj j Ë¸ˇˇˇπ	ò ∫0  âÉƒ j j j jj jj j Ë¸ˇˇˇâslãõ¸   âÉƒ Ö€u6Ë¸ˇˇˇâ√Ö¿uãD$d+    u:Éƒâÿ[^_]√çt& âË¸ˇˇˇÎ‹ç¥&    Ë¸ˇˇˇÎŒª˚ˇˇˇÎ«ªÍˇˇˇÎ¿ªÙˇˇˇÎπË¸ˇˇˇç¥&    ç¥&    êË¸ˇˇˇSÉÏãHdã    âT$1“ãP(Å˙	ò Ñê   wNÅ˙	ò tnÅ˙	ò u^∫∂ˇˇãY‘ã@|fâT$àD$π   âÿj çT$Ë¸ˇˇˇX1¿ãT$d+    uZÉƒ[√çv Å˙	ò u∫ºˇˇãY‘ã@|fâT$Î∏ç∂    ∏ÍˇˇˇÎƒêãY‘π¥ˇˇã@|fâL$Îòç∂    ãY‘π∫ˇˇã@|fâL$ÎÄË¸ˇˇˇêË¸ˇˇˇUWVâ∆SÉÏd°    âD$1¿ãAÖ¿Öé   ãAâ◊âÀçê˙ﬂˇˇÉ‚˝Ñ%  =  Ñ*  «A   π   ãCãk«C   âKâ¬É‚¸=Å  ∏Ä  C–âËÉ‡¸Å˝·  Ω‡  C≈ã+âSâCÖÌtEãC=   Ñó  =   ÑD  =  tu∏ÍˇˇˇãT$d+    Ö¬  Éƒ[^_]√ç¥&    ãâãSâPãSâPãSâPãSâPãSâPãS âPãS$âPãS(âP ãS,âP$ãS0âP(ãS4âP,1¿Îñç∂    ∫∞ˇˇç|$∆D$ãÜî   fâT$π   â˙j Ë¸ˇˇˇπ%îˇˇãÜî   fâL$∆D$ j π   â˙Ë¸ˇˇˇãCY]ãÆî   =Ä  Ñ∏  =@  ÖÌ  Å{   Ñ⁄  ∏Äˇˇ∆D$π   â˙fâD$âËΩÑˇˇj Ë¸ˇˇˇãSπÉˇˇãÜî   fâL$π   àt$â˙j Ë¸ˇˇˇãSãÜî   π   fâl$	ΩàˇˇàT$â˙j Ë¸ˇˇˇãSπáˇˇãÜî   fâL$π   àt$â˙j Ë¸ˇˇˇãSãÜî   π   fâl$àT$â˙j Ë¸ˇˇˇ∫ûˇˇãÜî   π   fâT$â˙∆D$j Ë¸ˇˇˇÉƒãCâÜ8  ãCâÜ<  ãCâÜ@  ãCâÜD  ãCâÜH  ãCâÜL  ãC âÜP  ãC$âÜT  ãC(âÜX  ãC,âÜ\  ãC0âÜ`  ãC4âÜd  1¿ÈÃ˝ˇˇçt& ø∞ˇˇ∆D$ ãÜî   π   fâ|$ç|$Ω%ñˇˇj â˙Ë¸ˇˇˇãÜî   fâl$∆D$È3˛ˇˇç¥&    ∫∞ˇˇç|$∆D$ ãÜî   fâT$π   â˙j Ë¸ˇˇˇπ%ñˇˇãÜî   fâL$∆D$ÈÎ˝ˇˇç¥&    =†   u!É{xÖ˛ˇˇ∏Äˇˇ∆D$fâD$Î~ç∂    =`  u!Å{   Ö‰˝ˇˇ∏Äˇˇ∆D$fâD$ÎSçv =∞   u!Å{ê   Öº˝ˇˇ∏Äˇˇ∆D$fâD$Î+çv É¯XÖü˝ˇˇÉ{HÖï˝ˇˇπÄˇˇ∆D$fâL$ç∂    j π   â˙âËË¸ˇˇˇXÈC˛ˇˇç¥&    çv Å{‡  ÖS˝ˇˇ∫Äˇˇ∆D$fâT$Î¬fêπ   ÈË˚ˇˇç∂    π   Èÿ˚ˇˇ∏Äˇˇ∆D$fâD$ÎïË¸ˇˇˇ                    ê  ‡                                                                                                                          0   ¿   ‡      p  ê    ‡      VS6624 Chip Enable vs6624   3%s %d-%04x: failed to request GPIO %d
-    6%s %d-%04x: chip found @ 0x%02x (%s)
- ã$ˇ0∑EPãEˇ∞   ãETˇ0h    Ë¸ˇˇˇÉƒÈ±  Ë¸ˇˇˇ∫    ∏    È¸ˇˇˇ∏    È¸ˇˇˇlicense=GPL v2 author=Scott Jiang <Scott.Jiang.Linux@gmail.com> description=VS6624 sensor driver                                vs6624                                                                     †               `                   0   ‡                                                                                         ¿   p                                                                                                        ¥Ñ ∂u ∏ 4Ñ 6u 8 ÇÄ ÑÄ ÜÄ Ä ê˛ Ç  Äd     ( ∫  º  ã  å è  ê ï  ñ ô  ö  Ñ%! Ä  Ñ Ç Ç  ∞  ñ% Ä                            <  f e — f b      &  & &c &— &h &› &: &  Ä$  ä0 ëb íJ ïe ñ °: ¢∏  
-
- :  ; Ö 	; 
-Ö :  0 è      oÄ å                             Å Å  … …G … …Ä …: :ê ;êG <ê …1 	…‹ 
-…Ä …D Dê Eê1 Fê‚ … …‡ …Ä …G Gêê HêÉ IêÅ Jê‡ Kê` Lê Mêê Nê¿ OêC Pêt Qê Rê SêÄ Tê Uê‰ Vêê Wê¿ XêC Yê Zê [ê \êÏ …] …  …Ä …] ]ê£ ^ê _ê `ê£ aê bê cê" …r …í …Ä …d dêt eê fê gêr hêï …G …Ú …Å …i iët jë kë lëÏ më¥ në oë
- pëê qëÄ rë së‡ tëp uë vëê wë” xëƒ yë zë" …
- …æ …Ä …s sê¸ tê£ uê‡ vêı wêÇ xêå yêÉ zê£ {ê£ |ê‡ }ê¸ ~ê£ ê‡ Äê√ Åêü Çêˇ ÉêÏ Ñêû Öê˛ Üê áê
- àêÍ  …G !…8 "…Ä #…â âêÏ äê” ãêî åê  çê@ éê èê êêê ëê” íê‘ ìêÏ îê ïê ñêG óê= $…E %…  &…Ä '…ò òê ôêw öê÷ õê úêE ùêÕ (…  )…’ *…Ä +…û ûêê üêÇ †ê °ê‡ ¢ê¥ £ê §ê •êê ¶êÉ ßêø ®ê‡ ©ê` ™ê ´êê ¨êÅ ≠ê¸ Æê‡ Øêˇ ∞ê√ ±ê ≤ê ≥êê ¥êÅ µê¸ ∂ê‡ ∑êˇ ∏ê πê  ∫ê⁄ ,…p -…º .…Ä /…
+#define SJA1105_SIZE_DYN_CMD					4
+
+#define SJA1105ET_SIZE_VL_LOOKUP_DYN_CMD			\
+	SJA1105_SIZE_DYN_CMD
+
+#define SJA1105PQRS_SIZE_VL_LOOKUP_DYN_CMD			\
+	(SJA1105_SIZE_DYN_CMD + SJA1105_SIZE_VL_LOOKUP_ENTRY)
+
+#define SJA1110_SIZE_VL_POLICING_DYN_CMD			\
+	(SJA1105_SIZE_DYN_CMD + SJA1105_SIZE_VL_POLICING_ENTRY)
+
+#define SJA1105ET_SIZE_MAC_CONFIG_DYN_ENTRY			\
+	SJA1105_SIZE_DYN_CMD
+
+#define SJA1105ET_SIZE_L2_LOOKUP_DYN_CMD			\
+	(SJA1105_SIZE_DYN_CMD + SJA1105ET_SIZE_L2_LOOKUP_ENTRY)
+
+#define SJA1105PQRS_SIZE_L2_LOOKUP_DYN_CMD			\
+	(SJA1105_SIZE_DYN_CMD + SJA1105PQRS_SIZE_L2_LOOKUP_ENTRY)
+
+#define SJA1110_SIZE_L2_LOOKUP_DYN_CMD				\
+	(SJA1105_SIZE_DYN_CMD + SJA1110_SIZE_L2_LOOKUP_ENTRY)
+
+#define SJA1105_SIZE_VLAN_LOOKUP_DYN_CMD			\
+	(SJA1105_SIZE_DYN_CMD + 4 + SJA1105_SIZE_VLAN_LOOKUP_ENTRY)
+
+#define SJA1110_SIZE_VLAN_LOOKUP_DYN_CMD			\
+	(SJA1105_SIZE_DYN_CMD + SJA1110_SIZE_VLAN_LOOKUP_ENTRY)
+
+#define SJA1105_SIZE_L2_FORWARDING_DYN_CMD			\
+	(SJA1105_SIZE_DYN_CMD + SJA1105_SIZE_L2_FORWARDING_ENTRY)
+
+#define SJA1105ET_SIZE_MAC_CONFIG_DYN_CMD			\
+	(SJA1105_SIZE_DYN_CMD + SJA1105ET_SIZE_MAC_CONFIG_DYN_ENTRY)
+
+#define SJA1105PQRS_SIZE_MAC_CONFIG_DYN_CMD			\
+	(SJA1105_SIZE_DYN_CMD + SJA1105PQRS_SIZE_MAC_CONFIG_ENTRY)
+
+#define SJA1105ET_SIZE_L2_LOOKUP_PARAMS_DYN_CMD			\
+	SJA1105_SIZE_DYN_CMD
+
+#define SJA1105PQRS_SIZE_L2_LOOKUP_PARAMS_DYN_CMD		\
+	(SJA1105_SIZE_DYN_CMD + SJA1105PQRS_SIZE_L2_LOOKUP_PARAMS_ENTRY)
+
+#define SJA1110_SIZE_L2_LOOKUP_PARAMS_DYN_CMD		\
+	(SJA1105_SIZE_DYN_CMD + SJA1110_SIZE_L2_LOOKUP_PARAMS_ENTRY)
+
+#define SJA1105ET_SIZE_GENERAL_PARAMS_DYN_CMD			\
+	SJA1105_SIZE_DYN_CMD
+
+#define SJA1105PQRS_SIZE_GENERAL_PARAMS_DYN_CMD			\
+	(SJA1105_SIZE_DYN_CMD + SJA1105PQRS_SIZE_GENERAL_PARAMS_ENTRY)
+
+#define SJA1110_SIZE_GENERAL_PARAMS_DYN_CMD			\
+	(SJA1105_SIZE_DYN_CMD + SJA1110_SIZE_GENERAL_PARAMS_ENTRY)
+
+#define SJA1105PQRS_SIZE_AVB_PARAMS_DYN_CMD			\
+	(SJA1105_SIZE_DYN_CMD + SJA1105PQRS_SIZE_AVB_PARAMS_ENTRY)
+
+#define SJA1105_SIZE_RETAGGING_DYN_CMD				\
+	(SJA1105_SIZE_DYN_CMD + SJA1105_SIZE_RETAGGING_ENTRY)
+
+#define SJA1105ET_SIZE_CBS_DYN_CMD				\
+	(SJA1105_SIZE_DYN_CMD + SJA1105ET_SIZE_CBS_ENTRY)
+
+#define SJA1105PQRS_SIZE_CBS_DYN_CMD				\
+	(SJA1105_SIZE_DYN_CMD + SJA1105PQRS_SIZE_CBS_ENTRY)
+
+#define SJA1110_SIZE_XMII_PARAMS_DYN_CMD			\
+	SJA1110_SIZE_XMII_PARAMS_ENTRY
+
+#define SJA1110_SIZE_L2_POLICING_DYN_CMD			\
+	(SJA1105_SIZE_DYN_CMD + SJA1105_SIZE_L2_POLICING_ENTRY)
+
+#define SJA1110_SIZE_L2_FORWARDING_PARAMS_DYN_CMD		\
+	SJA1105_SIZE_L2_FORWARDING_PARAMS_ENTRY
+
+#define SJA1105_MAX_DYN_CMD_SIZE				\
+	SJA1110_SIZE_GENERAL_PARAMS_DYN_CMD
+
+struct sja1105_dyn_cmd {
+	bool search;
+	u64 valid;
+	u64 rdwrset;
+	u64 errors;
+	u64 valident;
+	u64 index;
+};
+
+enum sja1105_hostcmd {
+	SJA1105_HOSTCMD_SEARCH = 1,
+	SJA1105_HOSTCMD_READ = 2,
+	SJA1105_HOSTCMD_WRITE = 3,
+	SJA1105_HOSTCMD_INVALIDATE = 4,
+};
+
+/* Command and entry overlap */
+static void
+sja1105et_vl_lookup_cmd_packing(void *buf, struct sja1105_dyn_cmd *cmd,
+				enum packing_op op)
+{
+	const int size = SJA1105_SIZE_DYN_CMD;
+
+	sja1105_packing(buf, &cmd->valid,   31, 31, size, op);
+	sja1105_packing(buf, &cmd->errors,  30, 30, size, op);
+	sja1105_packing(buf, &cmd->rdwrset, 29, 29, size, op);
+	sja1105_packing(buf, &cmd->index,    9,  0, size, op);
+}
+
+/* Command and entry are separate */
+static void
+sja1105pqrs_vl_lookup_cmd_packing(void *buf, struct sja1105_dyn_cmd *cmd,
+				  enum packing_op op)
+{
+	u8 *p = buf + SJA1105_SIZE_VL_LOOKUP_ENTRY;
+	const int size = SJA1105_SIZE_DYN_CMD;
+
+	sja1105_packing(p, &cmd->valid,   31, 31, size, op);
+	sja1105_packing(p, &cmd->errors,  30, 30, size, op);
+	sja1105_packing(p, &cmd->rdwrset, 29, 29, size, op);
+	sja1105_packing(p, &cmd->index,    9,  0, size, op);
+}
+
+static void
+sja1110_vl_lookup_cmd_packing(void *buf, struct sja1105_dyn_cmd *cmd,
+			      enum packing_op op)
+{
+	u8 *p = buf + SJA1105PQRS_SIZE_L2_LOOKUP_ENTRY;
+	const int size = SJA1105_SIZE_DYN_CMD;
+
+	sja1105_packing(p, &cmd->valid,   31, 31, size, op);
+	sja1105_packing(p, &cmd->rdwrset, 30, 30, size, op);
+	sja1105_packing(p, &cmd->errors,  29, 29, size, op);
+	sja1105_packing(p, &cmd->index,   11,  0, size, op);
+}
+
+static size_t sja1105et_vl_lookup_entry_packing(void *buf, void *entry_ptr,
+						enum packing_op op)
+{
+	struct sja1105_vl_lookup_entry *entry = entry_ptr;
+	const int size = SJA1105ET_SIZE_VL_LOOKUP_DYN_CMD;
+
+	sja1105_packing(buf, &entry->egrmirr,  21, 17, size, op);
+	sja1105_packing(buf, &entry->ingrmirr, 16, 16, size, op);
+	return size;
+}
+
+static void
+sja1110_vl_policing_cmd_packing(void *buf, struct sja1105_dyn_cmd *cmd,
+				enum packing_op op)
+{
+	u8 *p = buf + SJA1105_SIZE_VL_LOOKUP_ENTRY;
+	const int size = SJA1105_SIZE_DYN_CMD;
+
+	sja1105_packing(p, &cmd->valid,   31, 31, size, op);
+	sja1105_packing(p, &cmd->rdwrset, 30, 30, size, op);
+	sja1105_packing(p, &cmd->index,   11,  0, size, op);
+}
+
+static void
+sja1105pqrs_common_l2_lookup_cmd_packing(void *buf, struct sja1105_dyn_cmd *cmd,
+					 enum packing_op op, int entry_size)
+{
+	const int size = SJA1105_SIZE_DYN_CMD;
+	u8 *p = buf + entry_size;
+	u64 hostcmd;
+
+	sja1105_packing(p, &cmd->valid,    31, 31, size, op);
+	sja1105_packing(p, &cmd->rdwrset,  30, 30, size, op);
+	sja1105_packing(p, &cmd->errors,   29, 29, size, op);
+	sja1105_packing(p, &cmd->valident, 27, 27, size, op);
+
+	/* VALIDENT is supposed to indicate "keep or not", but in SJA1105 E/T,
+	 * using it to delete a management route was unsupported. UM10944
+	 * said about it:
+	 *
+	 *   In case of a write access with the MGMTROUTE flag set,
+	 *   the flag will be ignored. It will always be found cleared
+	 *   for read accesses with the MGMTROUTE flag set.
+	 *
+	 * SJA1105 P/Q/R/S keeps the same behavior w.r.t. VALIDENT, but there
+	 * is now another flag called HOSTCMD which does more stuff (quoting
+	 * from UM11040):
+	 *
+	 *   A write request is accepted only when HOSTCMD is set to write host
+	 *   or invalid. A read request is accepted only when HOSTCMD is set to
+	 *   search host or read host.
+	 *
+	 * So it is possible to translate a RDWRSET/VALIDENT combination into
+	 * HOSTCMD so that we keep the dynamic command API in place, and
+	 * at the same time achieve compatibility with the management route
+	 * command structure.
+	 */
+	if (cmd->rdwrset == SPI_READ) {
+		if (cmd->search)
+			hostcmd = SJA1105_HOSTCMD_SEARCH;
+		else
+			hostcmd = SJA1105_HOSTCMD_READ;
+	} else {
+		/* SPI_WRITE */
+		if (cmd->valident)
+			hostcmd = SJA1105_HOSTCMD_WRITE;
+		else
+			hostcmd = SJA1105_HOSTCMD_INVALIDATE;
+	}
+	sja1105_packing(p, &hostcmd, 25, 23, size, op);
+}
+
+static void
+sja1105pqrs_l2_lookup_cmd_packing(void *buf, struct sja1105_dyn_cmd *cmd,
+				  enum packing_op op)
+{
+	int entry_size = SJA1105PQRS_SIZE_L2_LOOKUP_ENTRY;
+
+	sja1105pqrs_common_l2_lookup_cmd_packing(buf, cmd, op, entry_size);
+
+	/* Hack - The hardware takes the 'index' field within
+	 * struct sja1105_l2_lookup_entry as the index on which this command
+	 * will operate. However it will ignore everything else, so 'index'
+	 * is logically part of command but physically part of entry.
+	 * Populate the 'index' entry field from within the command callback,
+	 * such that our API doesn't need to ask for a full-blown entry
+	 * structure when e.g. a delete is requested.
+	 */
+	sja1105_packing(buf, &cmd->index, 15, 6, entry_size, op);
+}
+
+static void
+sja1110_l2_lookup_cmd_packing(void *buf, struct sja1105_dyn_cmd *cmd,
+			      enum packing_op op)
+{
+	int entry_size = SJA1110_SIZE_L2_LOOKUP_ENTRY;
+
+	sja1105pqrs_common_l2_lookup_cmd_packing(buf, cmd, op, entry_size);
+
+	sja1105_packing(buf, &cmd->index, 10, 1, entry_size, op);
+}
+
+/* The switch is so retarded that it makes our command/entry abstraction
+ * crumble apart.
+ *
+ * On P/Q/R/S, the switch tries to say whether a FDB entry
+ * is statically programmed or dynamically learned via a flag called LOCKEDS.
+ * The hardware manual says about this fiels:
+ *
+ *   On write will specify the format of ENTRY.
+ *   On read the flag will be found cleared at times the VALID flag is found
+ *   set.  The flag will also be found cleared in response to a read having the
+ *   MGMTROUTE flag set.  In response to a read with the MGMTROUTE flag
+ *   cleared, the flag be set if the most recent access operated on an entry
+ *   that was either loaded by configuration or through dynamic reconfiguration
+ *   (as opposed to automatically learned entries).
+ *
+ * The trouble with this flag is that it's part of the *command* to access the
+ * dynamic interface, and not part of the *entry* retrieved from it.
+ * Otherwise said, for a sja1105_dynamic_config_read, LOCKEDS is supposed to be
+ * an output from the switch into the command buffer, and for a
+ * sja1105_dynamic_config_write, the switch treats LOCKEDS as an input
+ * (hence we can write either static, or automatically learned entries, from
+ * the core).
+ * But the manual contradicts itself in the last phrase where it says that on
+ * read, LOCKEDS will be set to 1 for all FDB entries written through the
+ * dynamic interface (therefore, the value of LOCKEDS from the
+ * sja1105_dynamic_config_write is not really used for anything, it'll store a
+ * 1 anyway).
+ * This means you can't really write a FDB entry with LOCKEDS=0 (automatically
+ * learned) into the switch, which kind of makes sense.
+ * As for reading through the dynamic interface, it doesn't make too much sense
+ * to put LOCKEDS into the command, since the switch will inevitably have to
+ * ignore it (otherwise a command would be like "read the FDB entry 123, but
+ * only if it's dynamically learned" <- well how am I supposed to know?) and
+ * just use it as an output buffer for its findings. But guess what... that's
+ * what the entry buffer is for!
+ * Unfortunately, what really breaks this abstraction is the fact that it
+ * wasn't designed having the fact in mind that the switch can output
+ * entry-related data as writeback through the command buffer.
+ * However, whether a FDB entry is statically or dynamically learned *is* part
+ * of the entry and not the command data, no matter what the switch thinks.
+ * In order to do that, we'll need to wrap around the
+ * sja1105pqrs_l2_lookup_entry_packing from sja1105_static_config.c, and take
+ * a peek outside of the caller-supplied @buf (the entry buffer), to reach the
+ * command buffer.
+ */
+static size_t
+sja1105pqrs_dyn_l2_lookup_entry_packing(void *buf, void *entry_ptr,
+					enum packing_op op)
+{
+	struct sja1105_l2_lookup_entry *entry = entry_ptr;
+	u8 *cmd = buf + SJA1105PQRS_SIZE_L2_LOOKUP_ENTRY;
+	const int size = SJA1105_SIZE_DYN_CMD;
+
+	sja1105_packing(cmd, &entry->lockeds, 28, 28, size, op);
+
+	return sja1105pqrs_l2_lookup_entry_packing(buf, entry_ptr, op);
+}
+
+static size_t sja1110_dyn_l2_lookup_entry_packing(void *buf, void *entry_ptr,
+						  enum packing_op op)
+{
+	struct sja1105_l2_lookup_entry *entry = entry_ptr;
+	u8 *cmd = buf + SJA1110_SIZE_L2_LOOKUP_ENTRY;
+	const int size = SJA1105_SIZE_DYN_CMD;
+
+	sja1105_packing(cmd, &entry->lockeds, 28, 28, size, op);
+
+	return sja1110_l2_lookup_entry_packing(buf, entry_ptr, op);
+}
+
+static void
+sja1105et_l2_lookup_cmd_packing(void *buf, struct sja1105_dyn_cmd *cmd,
+				enum packing_op op)
+{
+	u8 *p = buf + SJA1105ET_SIZE_L2_LOOKUP_ENTRY;
+	const int size = SJA1105_SIZE_DYN_CMD;
+
+	sja1105_packing(p, &cmd->valid,    31, 31, size, op);
+	sja1105_packing(p, &cmd->rdwrset,  30, 30, size, op);
+	sja1105_packing(p, &cmd->errors,   29, 29, size, op);
+	sja1105_packing(p, &cmd->valident, 27, 27, size, op);
+	/* Hack - see comments above. */
+	sja1105_packing(buf, &cmd->index, 29, 20,
+			SJA1105ET_SIZE_L2_LOOKUP_ENTRY, op);
+}
+
+static size_t sja1105et_dyn_l2_lookup_entry_packing(void *buf, void *entry_ptr,
+						    enum packing_op op)
+{
+	struct sja1105_l2_lookup_entry *entry = entry_ptr;
+	u8 *cmd = buf + SJA1105ET_SIZE_L2_LOOKUP_ENTRY;
+	const int size = SJA1105_SIZE_DYN_CMD;
+
+	sja1105_packing(cmd, &entry->lockeds, 28, 28, size, op);
+
+	return sja1105et_l2_lookup_entry_packing(buf, entry_ptr, op);
+}
+
+static void
+sja1105et_mgmt_route_cmd_packing(void *buf, struct sja1105_dyn_cmd *cmd,
+				 enum packing_op op)
+{
+	u8 *p = buf + SJA1105ET_SIZE_L2_LOOKUP_ENTRY;
+	u64 mgmtroute = 1;
+
+	sja1105et_l2_lookup_cmd_packing(buf, cmd, op);
+	if (op == PACK)
+		sja1105_pack(p, &mgmtroute, 26, 26, SJA1105_SIZE_DYN_CMD);
+}
+
+static size_t sja1105et_mgmt_route_entry_packing(void *buf, void *entry_ptr,
+						 enum packing_op op)
+{
+	struct sja1105_mgmt_entry *entry = entry_ptr;
+	const size_t size = SJA1105ET_SIZE_L2_LOOKUP_ENTRY;
+
+	/* UM10944: To specify if a PTP egress timestamp shall be captured on
+	 * each port upon transmission of the frame, the LSB of VLANID in the
+	 * ENTRY field provided by the host must be set.
+	 * Bit 1 of VLANID then specifies the register where the timestamp for
+	 * this port is stored in.
+	 */
+	sja1105_packing(buf, &entry->tsreg,     85, 85, size, op);
+	sja1105_packing(buf, &entry->takets,    84, 84, size, op);
+	sja1105_packing(buf, &entry->macaddr,   83, 36, size, op);
+	sja1105_packing(buf, &entry->destports, 35, 31, size, op);
+	sja1105_packing(buf, &entry->enfport,   30, 30, size, op);
+	return size;
+}
+
+static void
+sja1105pqrs_mgmt_route_cmd_packing(void *buf, struct sja1105_dyn_cmd *cmd,
+				   enum packing_op op)
+{
+	u8 *p = buf + SJA1105PQRS_SIZE_L2_LOOKUP_ENTRY;
+	u64 mgmtroute = 1;
+
+	sja1105pqrs_l2_lookup_cmd_packing(buf, cmd, op);
+	if (op == PACK)
+		sja1105_pack(p, &mgmtroute, 26, 26, SJA1105_SIZE_DYN_CMD);
+}
+
+static size_t sja1105pqrs_mgmt_route_entry_packing(void *buf, void *entry_ptr,
+						   enum packing_op op)
+{
+	const size_t size = SJA1105PQRS_SIZE_L2_LOOKUP_ENTRY;
+	struct sja1105_mgmt_entry *entry = entry_ptr;
+
+	/* In P/Q/R/S, enfport got renamed to mgmtvalid, but its purpose
+	 * is the same (driver uses it to confirm that frame was sent).
+	 * So just keep the name from E/T.
+	 */
+	sja1105_packing(buf, &entry->tsreg,     71, 71, size, op);
+	sja1105_packing(buf, &entry->takets,    70, 70, size, op);
+	sja1105_packing(buf, &entry->macaddr,   69, 22, size, op);
+	sja1105_packing(buf, &entry->destports, 21, 17, size, op);
+	sja1105_packing(buf, &entry->enfport,   16, 16, size, op);
+	return size;
+}
+
+/* In E/T, entry is at addresses 0x27-0x28. There is a 4 byte gap at 0x29,
+ * and command is at 0x2a. Similarly in P/Q/R/S there is a 1 register gap
+ * between entry (0x2d, 0x2e) and command (0x30).
+ */
+static void
+sja1105_vlan_lookup_cmd_packing(void *buf, struct sja1105_dyn_cmd *cmd,
+				enum packing_op op)
+{
+	u8 *p = buf + SJA1105_SIZE_VLAN_LOOKUP_ENTRY + 4;
+	const int size = SJA1105_SIZE_DYN_CMD;
+
+	sja1105_packing(p, &cmd->valid,    31, 31, size, op);
+	sja1105_packing(p, &cmd->rdwrset,  30, 30, size, op);
+	sja1105_packing(p, &cmd->valident, 27, 27, size, op);
+	/* Hack - see comments above, applied for 'vlanid' field of
+	 * struct sja1105_vlan_lookup_entry.
+	 */
+	sja1105_packing(buf, &cmd->index, 38, 27,
+			SJA1105_SIZE_VLAN_LOOKUP_ENTRY, op);
+}
+
+/* In SJA1110 there is no gap between the command and the data, yay... */
+static void
+sja1110_vlan_lookup_cmd_packing(void *buf, struct sja1105_dyn_cmd *cmd,
+				enum packing_op op)
+{
+	u8 *p = buf + SJA1110_SIZE_VLAN_LOOKUP_ENTRY;
+	const int size = SJA1105_SIZE_DYN_CMD;
+	u64 type_entry = 0;
+
+	sja1105_packing(p, &cmd->valid,   31, 31, size, op);
+	sja1105_packing(p, &cmd->rdwrset, 30, 30, size, op);
+	sja1105_packing(p, &cmd->errors,  29, 29, size, op);
+	/* Hack: treat 'vlanid' field of struct sja1105_vlan_lookup_entry as
+	 * cmd->index.
+	 */
+	sja1105_packing(buf, &cmd->index, 38, 27,
+			SJA1110_SIZE_VLAN_LOOKUP_ENTRY, op);
+
+	/* But the VALIDENT bit has disappeared, now we are supposed to
+	 * invalidate an entry through the TYPE_ENTRY field of the entry..
+	 * This is a hack to transform the non-zero quality of the TYPE_ENTRY
+	 * field into a VALIDENT bit.
+	 */
+	if (op == PACK && !cmd->valident) {
+		sja1105_packing(buf, &type_entry, 40, 39,
+				SJA1110_SIZE_VLAN_LOOKUP_ENTRY, PACK);
+	} else if (op == UNPACK) {
+		sja1105_packing(buf, &type_entry, 40, 39,
+				SJA1110_SIZE_VLAN_LOOKUP_ENTRY, UNPACK);
+		cmd->valident = !!type_entry;
+	}
+}
+
+static void
+sja1105_l2_forwarding_cmd_packing(void *buf, struct sja1105_dyn_cmd *cmd,
+				  enum packing_op op)
+{
+	u8 *p = buf + SJA1105_SIZE_L2_FORWARDING_ENTRY;
+	const int size = SJA1105_SIZE_DYN_CMD;
+
+	sja1105_packing(p, &cmd->valid,   31, 31, size, op);
+	sja1105_packing(p, &cmd->errors,  30, 30, size, op);
+	sja1105_packing(p, &cmd->rdwrset, 29, 29, size, op);
+	sja1105_packing(p, &cmd->index,    4,  0, size, op);
+}
+
+static void
+sja1110_l2_forwarding_cmd_packing(void *buf, struct sja1105_dyn_cmd *cmd,
+				  enum packing_op op)
+{
+	u8 *p = buf + SJA1105_SIZE_L2_FORWARDING_ENTRY;
+	const int size = SJA1105_SIZE_DYN_CMD;
+
+	sja1105_packing(p, &cmd->valid,   31, 31, size, op);
+	sja1105_packing(p, &cmd->rdwrset, 30, 30, size, op);
+	sja1105_packing(p, &cmd->errors,  29, 29, size, op);
+	sja1105_packing(p, &cmd->index,    4,  0, size, op);
+}
+
+static void
+sja1105et_mac_config_cmd_packing(void *buf, struct sja1105_dyn_cmd *cmd,
+				 enum packing_op op)
+{
+	const int size = SJA1105_SIZE_DYN_CMD;
+	/* Yup, user manual definitions are reversed */
+	u8 *reg1 = buf + 4;
+
+	sja1105_packing(reg1, &cmd->valid, 31, 31, size, op);
+	sja1105_packing(reg1, &cmd->index, 26, 24, size, op);
+}
+
+static size_t sja1105et_mac_config_entry_packing(void *buf, void *entry_ptr,
+						 enum packing_op op)
+{
+	const int size = SJA1105ET_SIZE_MAC_CONFIG_DYN_ENTRY;
+	struct sja1105_mac_config_entry *entry = entry_ptr;
+	/* Yup, user manual definitions are reversed */
+	u8 *reg1 = buf + 4;
+	u8 *reg2 = buf;
+
+	sja1105_packing(reg1, &entry->speed,     30, 29, size, op);
+	sja1105_packing(reg1, &entry->drpdtag,   23, 23, size, op);
+	sja1105_packing(reg1, &entry->drpuntag,  22, 22, size, op);
+	sja1105_packing(reg1, &entry->retag,     21, 21, size, op);
+	sja1105_packing(reg1, &entry->dyn_learn, 20, 20, size, op);
+	sja1105_packing(reg1, &entry->egress,    19, 19, size, op);
+	sja1105_packing(reg1, &entry->ingress,   18, 18, size, op);
+	sja1105_packing(reg1, &entry->ing_mirr,  17, 17, size, op);
+	sja1105_packing(reg1, &entry->egr_mirr,  16, 16, size, op);
+	sja1105_packing(reg1, &entry->vlanprio,  14, 12, size, op);
+	sja1105_packing(reg1, &entry->vlanid,    11,  0, size, op);
+	sja1105_packing(reg2, &entry->tp_delin,  31, 16, size, op);
+	sja1105_packing(reg2, &entry->tp_delout, 15,  0, size, op);
+	/* MAC configuration table entries which can't be reconfigured:
+	 * top, base, enabled, ifg, maxage, drpnona664
+	 */
+	/* Bogus return value, not used anywhere */
+	return 0;
+}
+
+static void
+sja1105pqrs_mac_config_cmd_packing(void *buf, struct sja1105_dyn_cmd *cmd,
+				   enum packing_op op)
+{
+	const int size = SJA1105ET_SIZE_MAC_CONFIG_DYN_ENTRY;
+	u8 *p = buf + SJA1105PQRS_SIZE_MAC_CONFIG_ENTRY;
+
+	sja1105_packing(p, &cmd->valid,   31, 31, size, op);
+	sja1105_packing(p, &cmd->errors,  30, 30, size, op);
+	sja1105_packing(p, &cmd->rdwrset, 29, 29, size, op);
+	sja1105_packing(p, &cmd->index,    2,  0, size, op);
+}
+
+static void
+sja1110_mac_config_cmd_packing(void *buf, struct sja1105_dyn_cmd *cmd,
+			       enum packing_op op)
+{
+	u8 *p = buf + SJA1105PQRS_SIZE_MAC_CONFIG_ENTRY;
+	const int size = SJA1105_SIZE_DYN_CMD;
+
+	sja1105_packing(p, &cmd->valid,   31, 31, size, op);
+	sja1105_packing(p, &cmd->rdwrset, 30, 30, size, op);
+	sja1105_packing(p, &cmd->errors,  29, 29, size, op);
+	sja1105_packing(p, &cmd->index,    3,  0, size, op);
+}
+
+static void
+sja1105et_l2_lookup_params_cmd_packing(void *buf, struct sja1105_dyn_cmd *cmd,
+				       enum packing_op op)
+{
+	sja1105_packing(buf, &cmd->valid, 31, 31,
+			SJA1105ET_SIZE_L2_LOOKUP_PARAMS_DYN_CMD, op);
+}
+
+static size_t
+sja1105et_l2_lookup_params_entry_packing(void *buf, void *entry_ptr,
+					 enum packing_op op)
+{
+	struct sja1105_l2_lookup_params_entry *entry = entry_ptr;
+
+	sja1105_packing(buf, &entry->poly, 7, 0,
+			SJA1105ET_SIZE_L2_LOOKUP_PARAMS_DYN_CMD, op);
+	/* Bogus return value, not used anywhere */
+	return 0;
+}
+
+static void
+sja1105pqrs_l2_lookup_params_cmd_packing(void *buf,
+					 struct sja1105_dyn_cmd *cmd,
+					 enum packing_op op)
+{
+	u8 *p = buf + SJA1105PQRS_SIZE_L2_LOOKUP_PARAMS_ENTRY;
+	const int size = SJA1105_SIZE_DYN_CMD;
+
+	sja1105_packing(p, &cmd->valid,   31, 31, size, op);
+	sja1105_packing(p, &cmd->rdwrset, 30, 30, size, op);
+}
+
+static void
+sja1110_l2_lookup_params_cmd_packing(void *buf, struct sja1105_dyn_cmd *cmd,
+				     enum packing_op op)
+{
+	u8 *p = buf + SJA1110_SIZE_L2_LOOKUP_PARAMS_ENTRY;
+	const int size = SJA1105_SIZE_DYN_CMD;
+
+	sja1105_packing(p, &cmd->valid,   31, 31, size, op);
+	sja1105_packing(p, &cmd->rdwrset, 30, 30, size, op);
+	sja1105_packing(p, &cmd->errors,  29, 29, size, op);
+}
+
+static void
+sja1105et_general_params_cmd_packing(void *buf, struct sja1105_dyn_cmd *cmd,
+				     enum packing_op op)
+{
+	const int size = SJA1105ET_SIZE_GENERAL_PARAMS_DYN_CMD;
+
+	sja1105_packing(buf, &cmd->valid,  31, 31, size, op);
+	sja1105_packing(buf, &cmd->errors, 30, 30, size, op);
+}
+
+static size_t
+sja1105et_general_params_entry_packing(void *buf, void *entry_ptr,
+				       enum packing_op op)
+{
+	struct sja1105_general_params_entry *entry = entry_ptr;
+	const int size = SJA1105ET_SIZE_GENERAL_PARAMS_DYN_CMD;
+
+	sja1105_packing(buf, &entry->mirr_port, 2, 0, size, op);
+	/* Bogus return value, not used anywhere */
+	return 0;
+}
+
+static void
+sja1105pqrs_general_params_cmd_packing(void *buf, struct sja1105_dyn_cmd *cmd,
+				       enum packing_op op)
+{
+	u8 *p = buf + SJA1105PQRS_SIZE_GENERAL_PARAMS_ENTRY;
+	const int size = SJA1105_SIZE_DYN_CMD;
+
+	sja1105_packing(p, &cmd->valid,   31, 31, size, op);
+	sja1105_packing(p, &cmd->errors,  30, 30, size, op);
+	sja1105_packing(p, &cmd->rdwrset, 28, 28, size, op);
+}
+
+static void
+sja1110_general_params_cmd_packing(void *buf, struct sja1105_dyn_cmd *cmd,
+				   enum packing_op op)
+{
+	u8 *p = buf + SJA1110_SIZE_GENERAL_PARAMS_ENTRY;
+	const int size = SJA1105_SIZE_DYN_CMD;
+
+	sja1105_packing(p, &cmd->valid,   31, 31, size, op);
+	sja1105_packing(p, &cmd->rdwrset, 30, 30, size, op);
+	sja1105_packing(p, &cmd->errors,  29, 29, size, op);
+}
+
+static void
+sja1105pqrs_avb_params_cmd_packing(void *buf, struct sja1105_dyn_cmd *cmd,
+				   enum packing_op op)
+{
+	u8 *p = buf + SJA1105PQRS_SIZE_AVB_PARAMS_ENTRY;
+	const int size = SJA1105_SIZE_DYN_CMD;
+
+	sja1105_packing(p, &cmd->valid,   31, 31, size, op);
+	sja1105_packing(p, &cmd->errors,  30, 30, size, op);
+	sja1105_packing(p, &cmd->rdwrset, 29, 29, size, op);
+}
+
+static void
+sja1105_retagging_cmd_packing(void *buf, struct sja1105_dyn_cmd *cmd,
+			      enum packing_op op)
+{
+	u8 *p = buf + SJA1105_SIZE_RETAGGING_ENTRY;
+	const int size = SJA1105_SIZE_DYN_CMD;
+
+	sja1105_packing(p, &cmd->valid,    31, 31, size, op);
+	sja1105_packing(p, &cmd->errors,   30, 30, size, op);
+	sja1105_packing(p, &cmd->valident, 29, 29, size, op);
+	sja1105_packing(p, &cmd->rdwrset,  28, 28, size, op);
+	sja1105_packing(p, &cmd->index,     5,  0, size, op);
+}
+
+static void
+sja1110_retagging_cmd_packing(void *buf, struct sja1105_dyn_cmd *cmd,
+			      enum packing_op op)
+{
+	u8 *p = buf + SJA1105_SIZE_RETAGGING_ENTRY;
+	const int size = SJA1105_SIZE_DYN_CMD;
+
+	sja1105_packing(p, &cmd->valid,    31, 31, size, op);
+	sja1105_packing(p, &cmd->rdwrset,  30, 30, size, op);
+	sja1105_packing(p, &cmd->errors,   29, 29, size, op);
+	sja1105_packing(p, &cmd->valident, 28, 28, size, op);
+	sja1105_packing(p, &cmd->index,     4,  0, size, op);
+}
+
+static void sja1105et_cbs_cmd_packing(void *buf, struct sja1105_dyn_cmd *cmd,
+				      enum packing_op op)
+{
+	u8 *p = buf + SJA1105ET_SIZE_CBS_ENTRY;
+	const int size = SJA1105_SIZE_DYN_CMD;
+
+	sja1105_packing(p, &cmd->valid, 31, 31, size, op);
+	sja1105_packing(p, &cmd->index, 19, 16, size, op);
+}
+
+static size_t sja1105et_cbs_entry_packing(void *buf, void *entry_ptr,
+					  enum packing_op op)
+{
+	const size_t size = SJA1105ET_SIZE_CBS_ENTRY;
+	struct sja1105_cbs_entry *entry = entry_ptr;
+	u8 *cmd = buf + size;
+	u32 *p = buf;
+
+	sja1105_packing(cmd, &entry->port, 5, 3, SJA1105_SIZE_DYN_CMD, op);
+	sja1105_packing(cmd, &entry->prio, 2, 0, SJA1105_SIZE_DYN_CMD, op);
+	sja1105_packing(p + 3, &entry->credit_lo,  31, 0, size, op);
+	sja1105_packing(p + 2, &entry->credit_hi,  31, 0, size, op);
+	sja1105_packing(p + 1, &entry->send_slope, 31, 0, size, op);
+	sja1105_packing(p + 0, &entry->idle_slope, 31, 0, size, op);
+	return size;
+}
+
+static void sja1105pqrs_cbs_cmd_packing(void *buf, struct sja1105_dyn_cmd *cmd,
+					enum packing_op op)
+{
+	u8 *p = buf + SJA1105PQRS_SIZE_CBS_ENTRY;
+	const int size = SJA1105_SIZE_DYN_CMD;
+
+	sja1105_packing(p, &cmd->valid,   31, 31, size, op);
+	sja1105_packing(p, &cmd->rdwrset, 30, 30, size, op);
+	sja1105_packing(p, &cmd->errors,  29, 29, size, op);
+	sja1105_packing(p, &cmd->index,    3,  0, size, op);
+}
+
+static void sja1110_cbs_cmd_packing(void *buf, struct sja1105_dyn_cmd *cmd,
+				    enum packing_op op)
+{
+	u8 *p = buf + SJA1105PQRS_SIZE_CBS_ENTRY;
+	const int size = SJA1105_SIZE_DYN_CMD;
+
+	sja1105_packing(p, &cmd->valid,   31, 31, size, op);
+	sja1105_packing(p, &cmd->rdwrset, 30, 30, size, op);
+	sja1105_packing(p, &cmd->errors,  29, 29, size, op);
+	sja1105_packing(p, &cmd->index,    7,  0, size, op);
+}
+
+static size_t sja1105pqrs_cbs_entry_packing(void *buf, void *entry_ptr,
+					    enum packing_op op)
+{
+	const size_t size = SJA1105PQRS_SIZE_CBS_ENTRY;
+	struct sja1105_cbs_entry *entry = entry_ptr;
+
+	sja1105_packing(buf, &entry->port,      159, 157, size, op);
+	sja1105_packing(buf, &entry->prio,      156, 154, size, op);
+	sja1105_packing(buf, &entry->credit_lo, 153, 122, size, op);
+	sja1105_packing(buf, &entry->credit_hi, 121,  90, size, op);
+	sja1105_packing(buf, &entry->send_slope, 89,  58, size, op);
+	sja1105_packing(buf, &entry->idle_slope, 57,  26, size, op);
+	return size;
+}
+
+static size_t sja1110_cbs_entry_packing(void *buf, void *entry_ptr,
+					enum packing_op op)
+{
+	const size_t size = SJA1105PQRS_SIZE_CBS_ENTRY;
+	struct sja1105_cbs_entry *entry = entry_ptr;
+	u64 entry_type = SJA1110_CBS_SHAPER;
+
+	sja1105_packing(buf, &entry_type,       159, 159, size, op);
+	sja1105_packing(buf, &entry->credit_lo, 151, 120, size, op);
+	sja1105_packing(buf, &entry->credit_hi, 119,  88, size, op);
+	sja1105_packing(buf, &entry->send_slope, 87,  56, size, op);
+	sja1105_packing(buf, &entry->idle_slope, 55,  24, size, op);
+	return size;
+}
+
+static void sja1110_dummy_cmd_packing(void *buf, struct sja1105_dyn_cmd *cmd,
+				      enum packing_op op)
+{
+}
+
+static void
+sja1110_l2_policing_cmd_packing(void *buf, struct sja1105_dyn_cmd *cmd,
+				enum packing_op op)
+{
+	u8 *p = buf + SJA1105_SIZE_L2_POLICING_ENTRY;
+	const int size = SJA1105_SIZE_DYN_CMD;
+
+	sja1105_packing(p, &cmd->valid,   31, 31, size, op);
+	sja1105_packing(p, &cmd->rdwrset, 30, 30, size, op);
+	sja1105_packing(p, &cmd->errors,  29, 29, size, op);
+	sja1105_packing(p, &cmd->index,    6,  0, size, op);
+}
+
+#define OP_READ		BIT(0)
+#define OP_WRITE	BIT(1)
+#define OP_DEL		BIT(2)
+#define OP_SEARCH	BIT(3)
+#define OP_VALID_ANYWAY	BIT(4)
+
+/* SJA1105E/T: First generation */
+const struct sja1105_dynamic_table_ops sja1105et_dyn_ops[BLK_IDX_MAX_DYN] = {
+	[BLK_IDX_VL_LOOKUP] = {
+		.entry_packing = sja1105et_vl_lookup_entry_packing,
+		.cmd_packing = sja1105et_vl_lookup_cmd_packing,
+		.access = OP_WRITE,
+		.max_entry_count = SJA1105_MAX_VL_LOOKUP_COUNT,
+		.packed_size = SJA1105ET_SIZE_VL_LOOKUP_DYN_CMD,
+		.addr = 0x35,
+	},
+	[BLK_IDX_L2_LOOKUP] = {
+		.entry_packing = sja1105et_dyn_l2_lookup_entry_packing,
+		.cmd_packing = sja1105et_l2_lookup_cmd_packing,
+		.access = (OP_READ | OP_WRITE | OP_DEL),
+		.max_entry_count = SJA1105_MAX_L2_LOOKUP_COUNT,
+		.packed_size = SJA1105ET_SIZE_L2_LOOKUP_DYN_CMD,
+		.addr = 0x20,
+	},
+	[BLK_IDX_MGMT_ROUTE] = {
+		.entry_packing = sja1105et_mgmt_route_entry_packing,
+		.cmd_packing = sja1105et_mgmt_route_cmd_packing,
+		.access = (OP_READ | OP_WRITE | OP_VALID_ANYWAY),
+		.max_entry_count = SJA1105_NUM_PORTS,
+		.packed_size = SJA1105ET_SIZE_L2_LOOKUP_DYN_CMD,
+		.addr = 0x20,
+	},
+	[BLK_IDX_VLAN_LOOKUP] = {
+		.entry_packing = sja1105_vlan_lookup_entry_packing,
+		.cmd_packing = sja1105_vlan_lookup_cmd_packing,
+		.access = (OP_WRITE | OP_DEL),
+		.max_entry_count = SJA1105_MAX_VLAN_LOOKUP_COUNT,
+		.packed_size = SJA1105_SIZE_VLAN_LOOKUP_DYN_CMD,
+		.addr = 0x27,
+	},
+	[BLK_IDX_L2_FORWARDING] = {
+		.entry_packing = sja1105_l2_forwarding_entry_packing,
+		.cmd_packing = sja1105_l2_forwarding_cmd_packing,
+		.max_entry_count = SJA1105_MAX_L2_FORWARDING_COUNT,
+		.access = OP_WRITE,
+		.packed_size = SJA1105_SIZE_L2_FORWARDING_DYN_CMD,
+		.addr = 0x24,
+	},
+	[BLK_IDX_MAC_CONFIG] = {
+		.entry_packing = sja1105et_mac_config_entry_packing,
+		.cmd_packing = sja1105et_mac_config_cmd_packing,
+		.max_entry_count = SJA1105_MAX_MAC_CONFIG_COUNT,
+		.access = OP_WRITE,
+		.packed_size = SJA1105ET_SIZE_MAC_CONFIG_DYN_CMD,
+		.addr = 0x36,
+	},
+	[BLK_IDX_L2_LOOKUP_PARAMS] = {
+		.entry_packing = sja1105et_l2_lookup_params_entry_packing,
+		.cmd_packing = sja1105et_l2_lookup_params_cmd_packing,
+		.max_entry_count = SJA1105_MAX_L2_LOOKUP_PARAMS_COUNT,
+		.access = OP_WRITE,
+		.packed_size = SJA1105ET_SIZE_L2_LOOKUP_PARAMS_DYN_CMD,
+		.addr = 0x38,
+	},
+	[BLK_IDX_GENERAL_PARAMS] = {
+		.entry_packing = sja1105et_general_params_entry_packing,
+		.cmd_packing = sja1105et_general_params_cmd_packing,
+		.max_entry_count = SJA1105_MAX_GENERAL_PARAMS_COUNT,
+		.access = OP_WRITE,
+		.packed_size = SJA1105ET_SIZE_GENERAL_PARAMS_DYN_CMD,
+		.addr = 0x34,
+	},
+	[BLK_IDX_RETAGGING] = {
+		.entry_packing = sja1105_retagging_entry_packing,
+		.cmd_packing = sja1105_retagging_cmd_packing,
+		.max_entry_count = SJA1105_MAX_RETAGGING_COUNT,
+		.access = (OP_WRITE | OP_DEL),
+		.packed_size = SJA1105_SIZE_RETAGGING_DYN_CMD,
+		.addr = 0x31,
+	},
+	[BLK_IDX_CBS] = {
+		.entry_packing = sja1105et_cbs_entry_packing,
+		.cmd_packing = sja1105et_cbs_cmd_packing,
+		.max_entry_count = SJA1105ET_MAX_CBS_COUNT,
+		.access = OP_WRITE,
+		.packed_size = SJA1105ET_SIZE_CBS_DYN_CMD,
+		.addr = 0x2c,
+	},
+};
+
+/* SJA1105P/Q/R/S: Second generation */
+const struct sja1105_dynamic_table_ops sja1105pqrs_dyn_ops[BLK_IDX_MAX_DYN] = {
+	[BLK_IDX_VL_LOOKUP] = {
+		.entry_packing = sja1105_vl_lookup_entry_packing,
+		.cmd_packing = sja1105pqrs_vl_lookup_cmd_packing,
+		.access = (OP_READ | OP_WRITE),
+		.max_entry_count = SJA1105_MAX_VL_LOOKUP_COUNT,
+		.packed_size = SJA1105PQRS_SIZE_VL_LOOKUP_DYN_CMD,
+		.addr = 0x47,
+	},
+	[BLK_IDX_L2_LOOKUP] = {
+		.entry_packing = sja1105pqrs_dyn_l2_lookup_entry_packing,
+		.cmd_packing = sja1105pqrs_l2_lookup_cmd_packing,
+		.access = (OP_READ | OP_WRITE | OP_DEL | OP_SEARCH),
+		.max_entry_count = SJA1105_MAX_L2_LOOKUP_COUNT,
+		.packed_size = SJA1105PQRS_SIZE_L2_LOOKUP_DYN_CMD,
+		.addr = 0x24,
+	},
+	[BLK_IDX_MGMT_ROUTE] = {
+		.entry_packing = sja1105pqrs_mgmt_route_entry_packing,
+		.cmd_packing = sja1105pqrs_mgmt_route_cmd_packing,
+		.access = (OP_READ | OP_WRITE | OP_DEL | OP_SEARCH | OP_VALID_ANYWAY),
+		.max_entry_count = SJA1105_NUM_PORTS,
+		.packed_size = SJA1105PQRS_SIZE_L2_LOOKUP_DYN_CMD,
+		.addr = 0x24,
+	},
+	[BLK_IDX_VLAN_LOOKUP] = {
+		.entry_packing = sja1105_vlan_lookup_entry_packing,
+		.cmd_packing = sja1105_vlan_lookup_cmd_packing,
+		.access = (OP_READ | OP_WRITE | OP_DEL),
+		.max_entry_count = SJA1105_MAX_VLAN_LOOKUP_COUNT,
+		.packed_size = SJA1105_SIZE_VLAN_LOOKUP_DYN_CMD,
+		.addr = 0x2D,
+	},
+	[BLK_IDX_L2_FORWARDING] = {
+		.entry_packing = sja1105_l2_forwarding_entry_packing,
+		.cmd_packing = sja1105_l2_forwarding_cmd_packing,
+		.max_entry_count = SJA1105_MAX_L2_FORWARDING_COUNT,
+		.access = OP_WRITE,
+		.packed_size = SJA1105_SIZE_L2_FORWARDING_DYN_CMD,
+		.addr = 0x2A,
+	},
+	[BLK_IDX_MAC_CONFIG] = {
+		.entry_packing = sja1105pqrs_mac_config_entry_packing,
+		.cmd_packing = sja1105pqrs_mac_config_cmd_packing,
+		.max_entry_count = SJA1105_MAX_MAC_CONFIG_COUNT,
+		.access = (OP_READ | OP_WRITE),
+		.packed_size = SJA1105PQRS_SIZE_MAC_CONFIG_DYN_CMD,
+		.addr = 0x4B,
+	},
+	[BLK_IDX_L2_LOOKUP_PARAMS] = {
+		.entry_packing = sja1105pqrs_l2_lookup_params_entry_packing,
+		.cmd_packing = sja1105pqrs_l2_lookup_params_cmd_packing,
+		.max_entry_count = SJA1105_MAX_L2_LOOKUP_PARAMS_COUNT,
+		.access = (OP_READ | OP_WRITE),
+		.packed_size = SJA1105PQRS_SIZE_L2_LOOKUP_PARAMS_DYN_CMD,
+		.addr = 0x54,
+	},
+	[BLK_IDX_AVB_PARAMS] = {
+		.entry_packing = sja1105pqrs_avb_params_entry_packing,
+		.cmd_packing = sja1105pqrs_avb_params_cmd_packing,
+		.max_entry_count = SJA1105_MAX_AVB_PARAMS_COUNT,
+		.access = (OP_READ | OP_WRITE),
+		.packed_size = SJA1105PQRS_SIZE_AVB_PARAMS_DYN_CMD,
+		.addr = 0x8003,
+	},
+	[BLK_IDX_GENERAL_PARAMS] = {
+		.entry_packing = sja1105pqrs_general_params_entry_packing,
+		.cmd_packing = sja1105pqrs_general_params_cmd_packing,
+		.max_entry_count = SJA1105_MAX_GENERAL_PARAMS_COUNT,
+		.access = (OP_READ | OP_WRITE),
+		.packed_size = SJA1105PQRS_SIZE_GENERAL_PARAMS_DYN_CMD,
+		.addr = 0x3B,
+	},
+	[BLK_IDX_RETAGGING] = {
+		.entry_packing = sja1105_retagging_entry_packing,
+		.cmd_packing = sja1105_retagging_cmd_packing,
+		.max_entry_count = SJA1105_MAX_RETAGGING_COUNT,
+		.access = (OP_READ | OP_WRITE | OP_DEL),
+		.packed_size = SJA1105_SIZE_RETAGGING_DYN_CMD,
+		.addr = 0x38,
+	},
+	[BLK_IDX_CBS] = {
+		.entry_packing = sja1105pqrs_cbs_entry_packing,
+		.cmd_packing = sja1105pqrs_cbs_cmd_packing,
+		.max_entry_count = SJA1105PQRS_MAX_CBS_COUNT,
+		.access = OP_WRITE,
+		.packed_size = SJA1105PQRS_SIZE_CBS_DYN_CMD,
+		.addr = 0x32,
+	},
+};
+
+/* SJA1110: Third generation */
+const struct sja1105_dynamic_table_ops sja1110_dyn_ops[BLK_IDX_MAX_DYN] = {
+	[BLK_IDX_VL_LOOKUP] = {
+		.entry_packing = sja1110_vl_lookup_entry_packing,
+		.cmd_packing = sja1110_vl_lookup_cmd_packing,
+		.access = (OP_READ | OP_WRITE | OP_VALID_ANYWAY),
+		.max_entry_count = SJA1110_MAX_VL_LOOKUP_COUNT,
+		.packed_size = SJA1105PQRS_SIZE_VL_LOOKUP_DYN_CMD,
+		.addr = SJA1110_SPI_ADDR(0x124),
+	},
+	[BLK_IDX_VL_POLICING] = {
+		.entry_packing = sja1110_vl_policing_entry_packing,
+		.cmd_packing = sja1110_vl_policing_cmd_packing,
+		.access = (OP_READ | OP_WRITE | OP_VALID_ANYWAY),
+		.max_entry_count = SJA1110_MAX_VL_POLICING_COUNT,
+		.packed_size = SJA1110_SIZE_VL_POLICING_DYN_CMD,
+		.addr = SJA1110_SPI_ADDR(0x310),
+	},
+	[BLK_IDX_L2_LOOKUP] = {
+		.entry_packing = sja1110_dyn_l2_lookup_entry_packing,
+		.cmd_packing = sja1110_l2_lookup_cmd_packing,
+		.access = (OP_READ | OP_WRITE | OP_DEL | OP_SEARCH),
+		.max_entry_count = SJA1105_MAX_L2_LOOKUP_COUNT,
+		.packed_size = SJA1110_SIZE_L2_LOOKUP_DYN_CMD,
+		.addr = SJA1110_SPI_ADDR(0x8c),
+	},
+	[BLK_IDX_VLAN_LOOKUP] = {
+		.entry_packing = sja1110_vlan_lookup_entry_packing,
+		.cmd_packing = sja1110_vlan_lookup_cmd_packing,
+		.access = (OP_READ | OP_WRITE | OP_DEL),
+		.max_entry_count = SJA1105_MAX_VLAN_LOOKUP_COUNT,
+		.packed_size = SJA1110_SIZE_VLAN_LOOKUP_DYN_CMD,
+		.addr = SJA1110_SPI_ADDR(0xb4),
+	},
+	[BLK_IDX_L2_FORWARDING] = {
+		.entry_packing = sja1110_l2_forwarding_entry_packing,
+		.cmd_packing = sja1110_l2_forwarding_cmd_packing,
+		.max_entry_count = SJA1110_MAX_L2_FORWARDING_COUNT,
+		.access = (OP_READ | OP_WRITE | OP_VALID_ANYWAY),
+		.packed_size = SJA1105_SIZE_L2_FORWARDING_DYN_CMD,
+		.addr = SJA1110_SPI_ADDR(0xa8),
+	},
+	[BLK_IDX_MAC_CONFIG] = {
+		.entry_packing = sja1110_mac_config_entry_packing,
+		.cmd_packing = sja1110_mac_config_cmd_packing,
+		.max_entry_count = SJA1110_MAX_MAC_CONFIG_COUNT,
+		.access = (OP_READ | OP_WRITE | OP_VALID_ANYWAY),
+		.packed_size = SJA1105PQRS_SIZE_MAC_CONFIG_DYN_CMD,
+		.addr = SJA1110_SPI_ADDR(0x134),
+	},
+	[BLK_IDX_L2_LOOKUP_PARAMS] = {
+		.entry_packing = sja1110_l2_lookup_params_entry_packing,
+		.cmd_packing = sja1110_l2_lookup_params_cmd_packing,
+		.max_entry_count = SJA1105_MAX_L2_LOOKUP_PARAMS_COUNT,
+		.access = (OP_READ | OP_WRITE | OP_VALID_ANYWAY),
+		.packed_size = SJA1110_SIZE_L2_LOOKUP_PARAMS_DYN_CMD,
+		.addr = SJA1110_SPI_ADDR(0x158),
+	},
+	[BLK_IDX_AVB_PARAMS] = {
+		.entry_packing = sja1105pqrs_avb_params_entry_packing,
+		.cmd_packing = sja1105pqrs_avb_params_cmd_packing,
+		.max_entry_count = SJA1105_MAX_AVB_PARAMS_COUNT,
+		.access = (OP_READ | OP_WRITE | OP_VALID_ANYWAY),
+		.packed_size = SJA1105PQRS_SIZE_AVB_PARAMS_DYN_CMD,
+		.addr = SJA1110_SPI_ADDR(0x2000C),
+	},
+	[BLK_IDX_GENERAL_PARAMS] = {
+		.entry_packing = sja1110_general_params_entry_packing,
+		.cmd_packing = sja1110_general_params_cmd_packing,
+		.max_entry_count = SJA1105_MAX_GENERAL_PARAMS_COUNT,
+		.access = (OP_READ | OP_WRITE | OP_VALID_ANYWAY),
+		.packed_size = SJA1110_SIZE_GENERAL_PARAMS_DYN_CMD,
+		.addr = SJA1110_SPI_ADDR(0xe8),
+	},
+	[BLK_IDX_RETAGGING] = {
+		.entry_packing = sja1110_retagging_entry_packing,
+		.cmd_packing = sja1110_retagging_cmd_packing,
+		.max_entry_count = SJA1105_MAX_RETAGGING_COUNT,
+		.access = (OP_READ | OP_WRITE | OP_DEL),
+		.packed_size = SJA1105_SIZE_RETAGGING_DYN_CMD,
+		.addr = SJA1110_SPI_ADDR(0xdc),
+	},
+	[BLK_IDX_CBS] = {
+		.entry_packing = sja1110_cbs_entry_packing,
+		.cmd_packing = sja1110_cbs_cmd_packing,
+		.max_entry_count = SJA1110_MAX_CBS_COUNT,
+		.access = (OP_READ | OP_WRITE | OP_VALID_ANYWAY),
+		.packed_size = SJA1105PQRS_SIZE_CBS_DYN_CMD,
+		.addr = SJA1110_SPI_ADDR(0xc4),
+	},
+	[BLK_IDX_XMII_PARAMS] = {
+		.entry_packing = sja1110_xmii_params_entry_packing,
+		.cmd_packing = sja1110_dummy_cmd_packing,
+		.max_entry_count = SJA1105_MAX_XMII_PARAMS_COUNT,
+		.access = (OP_READ | OP_VALID_ANYWAY),
+		.packed_size = SJA1110_SIZE_XMII_PARAMS_DYN_CMD,
+		.addr = SJA1110_SPI_ADDR(0x3c),
+	},
+	[BLK_IDX_L2_POLICING] = {
+		.entry_packing = sja1110_l2_policing_entry_packing,
+		.cmd_packing = sja1110_l2_policing_cmd_packing,
+		.max_entry_count = SJA1110_MAX_L2_POLICING_COUNT,
+		.access = (OP_READ | OP_WRITE | OP_VALID_ANYWAY),
+		.packed_size = SJA1110_SIZE_L2_POLICING_DYN_CMD,
+		.addr = SJA1110_SPI_ADDR(0x2fc),
+	},
+	[BLK_IDX_L2_FORWARDING_PARAMS] = {
+		.entry_packing = sja1110_l2_forwarding_params_entry_packing,
+		.cmd_packing = sja1110_dummy_cmd_packing,
+		.max_entry_count = SJA1105_MAX_L2_FORWARDING_PARAMS_COUNT,
+		.access = (OP_READ | OP_VALID_ANYWAY),
+		.packed_size = SJA1110_SIZE_L2_FORWARDING_PARAMS_DYN_CMD,
+		.addr = SJA1110_SPI_ADDR(0x20000),
+	},
+};
+
+#define SJA1105_DYNAMIC_CONFIG_SLEEP_US		10
+#define SJA1105_DYNAMIC_CONFIG_TIMEOUT_US	100000
+
+static int
+sja1105_dynamic_config_poll_valid(struct sja1105_private *priv,
+				  struct sja1105_dyn_cmd *cmd,
+				  const struct sja1105_dynamic_table_ops *ops)
+{
+	u8 packed_buf[SJA1105_MAX_DYN_CMD_SIZE] = {};
+	int rc;
+
+	/* We don't _need_ to read the full entry, just the command area which
+	 * is a fixed SJA1105_SIZE_DYN_CMD. But our cmd_packing() API expects a
+	 * buffer that contains the full entry too. Additionally, our API
+	 * doesn't really know how many bytes into the buffer does the command
+	 * area really begin. So just read back the whole entry.
+	 */
+	rc = sja1105_xfer_buf(priv, SPI_READ, ops->addr, packed_buf,
+			      ops->packed_size);
+	if (rc)
+		return rc;
+
+	/* Unpack the command structure, and return it to the caller in case it
+	 * needs to perform further checks on it (VALIDENT).
+	 */
+	memset(cmd, 0, sizeof(*cmd));
+	ops->cmd_packing(packed_buf, cmd, UNPACK);
+
+	/* Hardware hasn't cleared VALID => still working on it */
+	return cmd->valid ? -EAGAIN : 0;
+}
+
+/* Poll the dynamic config entry's control area until the hardware has
+ * cleared the VALID bit, which means we have confirmation that it has
+ * finished processing the command.
+ */
+static int
+sja1105_dynamic_config_wait_complete(struct sja1105_private *priv,
+				     struct sja1105_dyn_cmd *cmd,
+				     const struct sja1105_dynamic_table_ops *ops)
+{
+	int rc;
+
+	return read_poll_timeout(sja1105_dynamic_config_poll_valid,
+				 rc, rc != -EAGAIN,
+				 SJA1105_DYNAMIC_CONFIG_SLEEP_US,
+				 SJA1105_DYNAMIC_CONFIG_TIMEOUT_US,
+				 false, priv, cmd, ops);
+}
+
+/* Provides read access to the settings through the dynamic interface
+ * of the switch.
+ * @blk_idx	is used as key to select from the sja1105_dynamic_table_ops.
+ *		The selection is limited by the hardware in respect to which
+ *		configuration blocks can be read through the dynamic interface.
+ * @index	is used to retrieve a particular table entry. If negative,
+ *		(and if the @blk_idx supports the searching operation) a search
+ *		is performed by the @entry parameter.
+ * @entry	Type-casted to an unpacked structure that holds a table entry
+ *		of the type specified in @blk_idx.
+ *		Usually an output argument. If @index is negative, then this
+ *		argument is used as input/output: it should be pre-populated
+ *		with the element to search for. Entries which support the
+ *		search operation will have an "index" field (not the @index
+ *		argument to this function) and that is where the found index
+ *		will be returned (or left unmodified - thus negative - if not
+ *		found).
+ */
+int sja1105_dynamic_config_read(struct sja1105_private *priv,
+				enum sja1105_blk_idx blk_idx,
+				int index, void *entry)
+{
+	const struct sja1105_dynamic_table_ops *ops;
+	struct sja1105_dyn_cmd cmd = {0};
+	/* SPI payload buffer */
+	u8 packed_buf[SJA1105_MAX_DYN_CMD_SIZE] = {0};
+	int rc;
+
+	if (blk_idx >= BLK_IDX_MAX_DYN)
+		return -ERANGE;
+
+	ops = &priv->info->dyn_ops[blk_idx];
+
+	if (index >= 0 && index >= ops->max_entry_count)
+		return -ERANGE;
+	if (index < 0 && !(ops->access & OP_SEARCH))
+		return -EOPNOTSUPP;
+	if (!(ops->access & OP_READ))
+		return -EOPNOTSUPP;
+	if (ops->packed_size > SJA1105_MAX_DYN_CMD_SIZE)
+		return -ERANGE;
+	if (!ops->cmd_packing)
+		return -EOPNOTSUPP;
+	if (!ops->entry_packing)
+		return -EOPNOTSUPP;
+
+	cmd.valid = true; /* Trigger action on table entry */
+	cmd.rdwrset = SPI_READ; /* Action is read */
+	if (index < 0) {
+		/* Avoid copying a signed negative number to an u64 */
+		cmd.index = 0;
+		cmd.search = true;
+	} else {
+		cmd.index = index;
+		cmd.search = false;
+	}
+	cmd.valident = true;
+	ops->cmd_packing(packed_buf, &cmd, PACK);
+
+	if (cmd.search)
+		ops->entry_packing(packed_buf, entry, PACK);
+
+	/* Send SPI write operation: read config table entry */
+	mutex_lock(&priv->dynamic_config_lock);
+	rc = sja1105_xfer_buf(priv, SPI_WRITE, ops->addr, packed_buf,
+			      ops->packed_size);
+	if (rc < 0) {
+		mutex_unlock(&priv->dynamic_config_lock);
+		return rc;
+	}
+
+	rc = sja1105_dynamic_config_wait_complete(priv, &cmd, ops);
+	mutex_unlock(&priv->dynamic_config_lock);
+	if (rc < 0)
+		return rc;
+
+	if (!cmd.valident && !(ops->access & OP_VALID_ANYWAY))
+		return -ENOENT;
+
+	/* Don't dereference possibly NULL pointer - maybe caller
+	 * only wanted to see whether the entry existed or not.
+	 */
+	if (entry)
+		ops->entry_packing(packed_buf, entry, UNPACK);
+	return 0;
+}
+
+int sja1105_dynamic_config_write(struct sja1105_private *priv,
+				 enum sja1105_blk_idx blk_idx,
+				 int index, void *entry, bool keep)
+{
+	const struct sja1105_dynamic_table_ops *ops;
+	struct sja1105_dyn_cmd cmd = {0};
+	/* SPI payload buffer */
+	u8 packed_buf[SJA1105_MAX_DYN_CMD_SIZE] = {0};
+	int rc;
+
+	if (blk_idx >= BLK_IDX_MAX_DYN)
+		return -ERANGE;
+
+	ops = &priv->info->dyn_ops[blk_idx];
+
+	if (index >= ops->max_entry_count)
+		return -ERANGE;
+	if (index < 0)
+		return -ERANGE;
+	if (!(ops->access & OP_WRITE))
+		return -EOPNOTSUPP;
+	if (!keep && !(ops->access & OP_DEL))
+		return -EOPNOTSUPP;
+	if (ops->packed_size > SJA1105_MAX_DYN_CMD_SIZE)
+		return -ERANGE;
+
+	cmd.valident = keep; /* If false, deletes entry */
+	cmd.valid = true; /* Trigger action on table entry */
+	cmd.rdwrset = SPI_WRITE; /* Action is write */
+	cmd.index = index;
+
+	if (!ops->cmd_packing)
+		return -EOPNOTSUPP;
+	ops->cmd_packing(packed_buf, &cmd, PACK);
+
+	if (!ops->entry_packing)
+		return -EOPNOTSUPP;
+	/* Don't dereference potentially NULL pointer if just
+	 * deleting a table entry is what was requested. For cases
+	 * where 'index' field is physically part of entry structure,
+	 * and needed here, we deal with that in the cmd_packing callback.
+	 */
+	if (keep)
+		ops->entry_packing(packed_buf, entry, PACK);
+
+	/* Send SPI write operation: read config table entry */
+	mutex_lock(&priv->dynamic_config_lock);
+	rc = sja1105_xfer_buf(priv, SPI_WRITE, ops->addr, packed_buf,
+			      ops->packed_size);
+	if (rc < 0) {
+		mutex_unlock(&priv->dynamic_config_lock);
+		return rc;
+	}
+
+	rc = sja1105_dynamic_config_wait_complete(priv, &cmd, ops);
+	mutex_unlock(&priv->dynamic_config_lock);
+	if (rc < 0)
+		return rc;
+
+	cmd = (struct sja1105_dyn_cmd) {0};
+	ops->cmd_packing(packed_buf, &cmd, UNPACK);
+	if (cmd.errors)
+		return -EINVAL;
+
+	return 0;
+}
+
+static u8 sja1105_crc8_add(u8 crc, u8 byte, u8 poly)
+{
+	int i;
+
+	for (i = 0; i < 8; i++) {
+		if ((crc ^ byte) & (1 << 7)) {
+			crc <<= 1;
+			crc ^= poly;
+		} else {
+			crc <<= 1;
+		}
+		byte <<= 1;
+	}
+	return crc;
+}
+
+/* CRC8 algorithm with non-reversed input, non-reversed output,
+ * no input xor and no output xor. Code customized for receiving
+ * the SJA1105 E/T FDB keys (vlanid, macaddr) as input. CRC polynomial
+ * is also received as argument in the Koopman notation that the switch
+ * hardware stores it in.
+ */
+u8 sja1105et_fdb_hash(struct sja1105_private *priv, const u8 *addr, u16 vid)
+{
+	struct sja1105_l2_lookup_params_entry *l2_lookup_params =
+		priv->static_config.tables[BLK_IDX_L2_LOOKUP_PARAMS].entries;
+	u64 input, poly_koopman = l2_lookup_params->poly;
+	/* Convert polynomial from Koopman to 'normal' notation */
+	u8 poly = (u8)(1 + (poly_koopman << 1));
+	u8 crc = 0; /* seed */
+	int i;
+
+	input = ((u64)vid << 48) | ether_addr_to_u64(addr);
+
+	/* Mask the eight bytes starting from MSB one at a time */
+	for (i = 56; i >= 0; i -= 8) {
+		u8 byte = (input & (0xffull << i)) >> i;
+
+		crc = sja1105_crc8_add(crc, byte, poly);
+	}
+	return crc;
+}

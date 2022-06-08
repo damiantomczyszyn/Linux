@@ -1,2 +1,2 @@
-drivers/media/rc/keymaps/rc-streamzap.o
-
+er->owner);
+				i2c_unregister_device(cli

@@ -1,1 +1,2 @@
- $(wildcard include/config/SLOB)
+onst struct v4l2_frequency *f)
+{

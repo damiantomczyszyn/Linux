@@ -1,1 +1,3 @@
-cmd_kernel/irq/cpuhotplug.o := gcc -Wp,-MMD,kernel/ir
+NE_MUTEX(uclamp_mutex);
+
+/* Max allowed minimum utili

@@ -1,76 +1,100 @@
-t.h \
-    $(wildcard include/config/DEBUG_PLIST) \
-  include/linux/hrtimer.h \
-    $(wildcard include/config/HIGH_RES_TIMERS) \
-    $(wildcard include/config/TIME_LOW_RES) \
-    $(wildcard include/config/TIMERFD) \
-  include/linux/hrtimer_defs.h \
-  include/linux/timerqueue.h \
-  include/linux/seccomp.h \
-    $(wildcard include/config/SECCOMP) \
-    $(wildcard include/config/HAVE_ARCH_SECCOMP_FILTER) \
-    $(wildcard include/config/SECCOMP_FILTER) \
-    $(wildcard include/config/CHECKPOINT_RESTORE) \
-    $(wildcard include/config/SECCOMP_CACHE_DEBUG) \
-  include/uapi/linux/seccomp.h \
-  arch/x86/include/asm/seccomp.h \
-  arch/x86/include/asm/unistd.h \
-  arch/x86/include/uapi/asm/unistd.h \
-  arch/x86/include/generated/uapi/asm/unistd_32.h \
-  include/asm-generic/seccomp.h \
-  include/uapi/linux/unistd.h \
-  include/linux/resource.h \
-  include/uapi/linux/resource.h \
-  arch/x86/include/generated/uapi/asm/resource.h \
-  include/asm-generic/resource.h \
-  include/uapi/asm-generic/resource.h \
-  include/linux/latencytop.h \
-  include/linux/sched/prio.h \
-  include/linux/sched/types.h \
-  include/linux/signal_types.h \
-    $(wildcard include/config/OLD_SIGACTION) \
-  include/uapi/linux/signal.h \
-  arch/x86/include/asm/signal.h \
-  arch/x86/include/uapi/asm/signal.h \
-  include/uapi/asm-generic/signal-defs.h \
-  arch/x86/include/uapi/asm/siginfo.h \
-  include/uapi/asm-generic/siginfo.h \
-  include/linux/syscall_user_dispatch.h \
-  include/linux/task_io_accounting.h \
-    $(wildcard include/config/TASK_IO_ACCOUNTING) \
-  include/linux/posix-timers.h \
-  include/linux/alarmtimer.h \
-    $(wildcard include/config/RTC_CLASS) \
-  include/uapi/linux/rseq.h \
-  include/linux/kcsan.h \
-  include/linux/energy_model.h \
-  include/linux/sched/cpufreq.h \
-    $(wildcard include/config/CPU_FREQ) \
-  include/linux/sched/topology.h \
-    $(wildcard include/config/SCHED_DEBUG) \
-    $(wildcard include/config/SCHED_MC) \
-    $(wildcard include/config/CPU_FREQ_GOV_SCHEDUTIL) \
-  include/linux/sched/idle.h \
-  include/linux/sched/sd_flags.h \
-  include/linux/klist.h \
-  include/linux/pm.h \
-    $(wildcard include/config/VT_CONSOLE_SLEEP) \
-    $(wildcard include/config/PM_CLK) \
-    $(wildcard include/config/PM_GENERIC_DOMAINS) \
-  include/linux/device/bus.h \
-  include/linux/device/class.h \
-  include/linux/device/driver.h \
-  arch/x86/include/asm/device.h \
-  include/linux/pm_wakeup.h \
-  include/acpi/acpi.h \
-  include/acpi/platform/acenv.h \
-  include/acpi/platform/acgcc.h \
-  include/acpi/platform/aclinux.h \
-    $(wildcard include/config/ACPI_REDUCED_HARDWARE_ONLY) \
-    $(wildcard include/config/ACPI_DEBUG) \
-  include/linux/ctype.h \
-  arch/x86/include/asm/acenv.h \
-  include/acpi/acnames.h \
-  include/acpi/actypes.h \
-  include/acpi/acexcep.h \
-  include/acpi/actbl
+!try_module_get(client_tuner->dev.driver->owner)) {
+				i2c_unregister_device(client_tuner);
+				client_tuner = NULL;
+				goto frontend_detach;
+			}
+			port->i2c_client_tuner = client_tuner;
+
+			dev->ts1.analog_fe.tuner_priv = client_tuner;
+			memcpy(&dev->ts1.analog_fe.ops.tuner_ops,
+			       &fe0->dvb.frontend->ops.tuner_ops,
+			       sizeof(struct dvb_tuner_ops));
+			break;
+		}
+		break;
+	default:
+		pr_info("%s: The frontend of your DVB/ATSC card  isn't supported yet\n",
+			dev->name);
+		break;
+	}
+
+	if ((NULL == fe0->dvb.frontend) || (fe1 && NULL == fe1->dvb.frontend)) {
+		pr_err("%s: frontend initialization failed\n",
+		       dev->name);
+		goto frontend_detach;
+	}
+
+	/* define general-purpose callback pointer */
+	fe0->dvb.frontend->callback = cx23885_tuner_callback;
+	if (fe1)
+		fe1->dvb.frontend->callback = cx23885_tuner_callback;
+#if 0
+	/* Ensure all frontends negotiate bus access */
+	fe0->dvb.frontend->ops.ts_bus_ctrl = cx23885_dvb_bus_ctrl;
+	if (fe1)
+		fe1->dvb.frontend->ops.ts_bus_ctrl = cx23885_dvb_bus_ctrl;
+#endif
+
+	/* Put the tuner in standby to keep it quiet */
+	call_all(dev, tuner, standby);
+
+	if (fe0->dvb.frontend->ops.analog_ops.standby)
+		fe0->dvb.frontend->ops.analog_ops.standby(fe0->dvb.frontend);
+
+	/* register everything */
+	ret = vb2_dvb_register_bus(&port->frontends, THIS_MODULE, port,
+				   &dev->pci->dev, NULL,
+				   adapter_nr, mfe_shared);
+	if (ret)
+		goto frontend_detach;
+
+	ret = dvb_register_ci_mac(port);
+	if (ret)
+		goto frontend_detach;
+
+	return 0;
+
+frontend_detach:
+	/* remove I2C client for SEC */
+	client_sec = port->i2c_client_sec;
+	if (client_sec) {
+		module_put(client_sec->dev.driver->owner);
+		i2c_unregister_device(client_sec);
+		port->i2c_client_sec = NULL;
+	}
+
+	/* remove I2C client for tuner */
+	client_tuner = port->i2c_client_tuner;
+	if (client_tuner) {
+		module_put(client_tuner->dev.driver->owner);
+		i2c_unregister_device(client_tuner);
+		port->i2c_client_tuner = NULL;
+	}
+
+	/* remove I2C client for demodulator */
+	client_demod = port->i2c_client_demod;
+	if (client_demod) {
+		module_put(client_demod->dev.driver->owner);
+		i2c_unregister_device(client_demod);
+		port->i2c_client_demod = NULL;
+	}
+
+	port->gate_ctrl = NULL;
+	vb2_dvb_dealloc_frontends(&port->frontends);
+	return -EINVAL;
+}
+
+int cx23885_dvb_register(struct cx23885_tsport *port)
+{
+
+	struct vb2_dvb_frontend *fe0;
+	struct cx23885_dev *dev = port->dev;
+	int err, i;
+
+	/* Here we need to allocate the correct number of frontends,
+	 * as reflected in the cards struct. The reality is that currently
+	 * no cx23885 boards support this - yet. But, if we don't modify this
+	 * code then the second frontend would never be allocated (later)
+	 * and fail with error before the attach in dvb_register().
+	 * Without these changes we risk an OOPS later. The changes here
+	 * 

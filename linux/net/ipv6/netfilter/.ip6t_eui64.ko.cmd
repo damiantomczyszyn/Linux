@@ -1,1 +1,8 @@
-Ù~ð$!H§žqšÚH¼µ’{rèMPÐž"ÜŽì4žEjáÊØÐT˜†r*6ô3fVT»ž#àÌë¶¿³#y¡«Äé¿\×ÿÆ‹dÄV#L•¸øÂ	gîAç90-;êâa¶§ŽÒZñÒV‡&EbÔFÙ ã†>F°<•¡‹’¢ˆßÌIT°nUéÐ+Ë˜Ñ)®%?ºZ¶—½%%ÓD”¦d@öÿ’-Øl‡ˆüqœõM¶%pcÈá‚ ™8w"óšöó÷
+debugfs_create_file(lockevent_names[LOCKEVENT_reset_cnts], 0200,
+				 d_counts, (void *)(long)LOCKEVENT_reset_cnts,
+				 &fops_lockevent))
+		goto fail_undo;
+
+	return 0;
+fail_undo:
+	debugfs_remove_recursive(d_

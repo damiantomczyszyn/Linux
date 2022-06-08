@@ -1,2 +1,1 @@
-e/linux/rwlock.h \
-    $(wildc
+/* SPDX-License-Identifier: GP

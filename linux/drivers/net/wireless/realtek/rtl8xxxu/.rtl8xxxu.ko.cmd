@@ -1,8 +1,10 @@
--3level_types.h \
-  include/asm-generic/pgtable-nop4d.h \
-  include/asm-generic/pgtable-nopud.h \
-  arch/x86/include/asm/nospec-branch.h \
-  include/linux/static_key.h \
-  include/linux/jump_label.h \
-    $(wildcard include/config/HAVE_ARCH_JUMP_LABEL_RELATIVE) \
-  arch/x86/i
+// SPDX-License-Identifier: GPL-2.0-or-later
+/*
+ * Driver for Silicon Labs C8051F300 microcontroller.
+ *
+ * It is used for LNB power control in TeVii S470,
+ * TBS 6920 PCIe DVB-S2 cards.
+ *
+ * Microcontroller connected to cx23885 GPIO pins:
+ * GPIO0 - data		- P0.3 F300
+ * GPI

@@ -1,7 +1,4 @@
-(&torture_ww_mutex_0);
-	ww_mutex_unlock(&torture_ww_mutex_1);
-	ww_mutex_unlock(&torture_ww_mutex_2);
-	ww_acquire_fini(ctx);
-}
-
-static struct lock_torture_ops ww
+/* SPDX-License-Identifier: GPL-2.0 */
+/*
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Publi

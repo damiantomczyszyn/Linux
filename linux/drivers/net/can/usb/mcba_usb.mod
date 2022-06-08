@@ -1,2 +1,2 @@
-ldcard include/config/SHMEM) \
- 
+drivers/net/can/usb/mcba_usb.o
+

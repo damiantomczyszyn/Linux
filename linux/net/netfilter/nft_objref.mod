@@ -1,2 +1,1 @@
-x/scatterlist.h \
-    $(wild
+ (0x9d << 24); /* 100kHz */

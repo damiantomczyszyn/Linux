@@ -1,2 +1,1 @@
-config/ACPI_HOTPLUG_IOAPIC) \
-    $(wild
+/* SPDX-License-Identifier: GPL-2.0-or-l

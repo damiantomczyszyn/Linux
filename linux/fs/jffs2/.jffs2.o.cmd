@@ -1,14 +1,12 @@
+# SPDX-License-Identifier: GPL-2.0
+cx23885-objs	:= cx23885-cards.o cx23885-video.o cx23885-vbi.o \
+		    cx23885-core.o cx23885-i2c.o cx23885-dvb.o cx23885-417.o \
+		    cx23885-ioctl.o cx23885-ir.o cx23885-av.o cx23885-input.o \
+		    cx23888-ir.o netup-init.o cimax2.o netup-eeprom.o \
+		    cx23885-f300.o cx23885-alsa.o
 
-  arch/x86/include/asm/msr-index.h \
-  arch/x86/include/asm/cpumask.h \
-  include/linux/cpumask.h \
-    $(wildcard include/config/CPUMASK_OFFSTACK) \
-    $(wildcard include/config/DEBUG_PER_CPU_MAPS) \
-  include/linux/bitmap.h \
-  include/linux/find.h \
-  arch/x86/include/uapi/asm/msr.h \
-  include/linux/tracepoint-defs.h \
-  arch/x86/include/asm/special_insns.h \
-  arch/x86/include/asm/fpu/types.h \
-  arch/x86/include/asm/vmxfeatures.h \
-  arch/x86/include/asm/vdso/p
+obj-$(CONFIG_VIDEO_CX23885) += cx23885.o
+obj-$(CONFIG_MEDIA_ALTERA_CI) += altera-ci.o
+
+ccflags-y += -I $(srctree)/drivers/media/tuners
+ccflags-y += 

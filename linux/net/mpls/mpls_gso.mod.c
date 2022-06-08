@@ -1,30 +1,18 @@
-_LOCK_DEPTH))
-		return 0;
+schedule_debug(prev, !!sched_mode);
 
-	class_idx = class - lock_classes;
+	if (sched_feat(HRTICK) || sched_feat(HRTICK_DL))
+		hrtick_clear(rq);
 
-	if (depth) { /* we're holding locks */
-		hlock = curr->held_locks + depth - 1;
-		if (hlock->class_idx == class_idx && nest_lock) {
-			if (!references)
-				references++;
+	local_irq_disable();
+	rcu_note_context_switch(!!sched_mode);
 
-			if (!hlock->references)
-				hlock->references++;
-
-			hlock->references += references;
-
-			/* Overflow */
-			if (DEBUG_LOCKS_WARN_ON(hlock->references < references))
-				return 0;
-
-			return 2;
-		}
-	}
-
-	hlock = curr->held_locks + depth;
 	/*
-	 * Plain impossible, we just registered it and checked it weren't no
-	 * NULL like.. I bet this mushroom I ate was good!
-	 */
-	if 
+	 * Make sure that signal_pending_state()->signal_pending() below
+	 * can't be reordered with __set_current_state(TASK_INTERRUPTIBLE)
+	 * done by the caller to avoid the race with signal_wake_up():
+	 *
+	 * __set_current_state(@state)		signal_wake_up()
+	 * schedule()				  set_tsk_thread_flag(p, TIF_SIGPENDING)
+	 *					  wake_up_state(p, state)
+	 *   LOCK rq->lock			    LOCK p->pi_state
+	 *   smp_mb__after_spinlock()		    smp_mb__a

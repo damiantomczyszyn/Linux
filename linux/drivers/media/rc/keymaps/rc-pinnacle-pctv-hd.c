@@ -1,66 +1,38 @@
-// SPDX-License-Identifier: GPL-2.0+
-// pinnacle-pctv-hd.h - Keytable for pinnacle_pctv_hd Remote Controller
-//
-// keymap imported from ir-keymaps.c
-//
-// Copyright (c) 2010 by Mauro Carvalho Chehab
-
-#include <media/rc-map.h>
-#include <linux/module.h>
-
-/* Pinnacle PCTV HD 800i mini remote */
-
-static struct rc_map_table pinnacle_pctv_hd[] = {
-	/* Key codes for the tiny Pinnacle remote*/
-	{ 0x0700, KEY_MUTE },
-	{ 0x0701, KEY_MENU }, /* Pinnacle logo */
-	{ 0x0739, KEY_POWER },
-	{ 0x0703, KEY_VOLUMEUP },
-	{ 0x0705, KEY_OK },
-	{ 0x0709, KEY_VOLUMEDOWN },
-	{ 0x0706, KEY_CHANNELUP },
-	{ 0x070c, KEY_CHANNELDOWN },
-	{ 0x070f, KEY_NUMERIC_1 },
-	{ 0x0715, KEY_NUMERIC_2 },
-	{ 0x0710, KEY_NUMERIC_3 },
-	{ 0x0718, KEY_NUMERIC_4 },
-	{ 0x071b, KEY_NUMERIC_5 },
-	{ 0x071e, KEY_NUMERIC_6 },
-	{ 0x0711, KEY_NUMERIC_7 },
-	{ 0x0721, KEY_NUMERIC_8 },
-	{ 0x0712, KEY_NUMERIC_9 },
-	{ 0x0727, KEY_NUMERIC_0 },
-	{ 0x0724, KEY_ZOOM }, /* 'Square' key */
-	{ 0x072a, KEY_SUBTITLE },   /* 'T' key */
-	{ 0x072d, KEY_REWIND },
-	{ 0x0730, KEY_PLAYPAUSE },
-	{ 0x0733, KEY_FASTFORWARD },
-	{ 0x0736, KEY_RECORD },
-	{ 0x073c, KEY_STOP },
-	{ 0x073f, KEY_HELP }, /* '?' key */
-};
-
-static struct rc_map_list pinnacle_pctv_hd_map = {
-	.map = {
-		.scan     = pinnacle_pctv_hd,
-		.size     = ARRAY_SIZE(pinnacle_pctv_hd),
-		.rc_proto = RC_PROTO_RC5,
-		.name     = RC_MAP_PINNACLE_PCTV_HD,
-	}
-};
-
-static int __init init_rc_map_pinnacle_pctv_hd(void)
-{
-	return rc_map_register(&pinnacle_pctv_hd_map);
-}
-
-static void __exit exit_rc_map_pinnacle_pctv_hd(void)
-{
-	rc_map_unregister(&pinnacle_pctv_hd_map);
-}
-
-module_init(init_rc_map_pinnacle_pctv_hd)
-module_exit(exit_rc_map_pinnacle_pctv_hd)
-
-MODULE_LICENSE("GPL");
-MODULE_AUTHOR("Mauro Carvalho Chehab");
+lude/config/CGROUP_PERF) \
+    $(wildcard include/config/CGROUP_HUGETLB) \
+    $(wildcard include/config/CGROUP_PIDS) \
+    $(wildcard include/config/CGROUP_RDMA) \
+    $(wildcard include/config/CGROUP_MISC) \
+    $(wildcard include/config/CGROUP_DEBUG) \
+  include/linux/vm_event_item.h \
+    $(wildcard include/config/HAVE_ARCH_TRANSPARENT_HUGEPAGE_PUD) \
+    $(wildcard include/config/MEMORY_BALLOON) \
+    $(wildcard include/config/BALLOON_COMPACTION) \
+    $(wildcard include/config/DEBUG_TLBFLUSH) \
+    $(wildcard include/config/DEBUG_VM_VMACACHE) \
+  include/linux/page_counter.h \
+  include/linux/vmpressure.h \
+  include/linux/eventfd.h \
+  include/linux/mm.h \
+    $(wildcard include/config/HAVE_ARCH_MMAP_RND_BITS) \
+    $(wildcard include/config/HAVE_ARCH_MMAP_RND_COMPAT_BITS) \
+    $(wildcard include/config/ARCH_USES_HIGH_VMA_FLAGS) \
+    $(wildcard include/config/ARCH_HAS_PKEYS) \
+    $(wildcard include/config/PPC) \
+    $(wildcard include/config/PARISC) \
+    $(wildcard include/config/SPARC64) \
+    $(wildcard include/config/ARM64_MTE) \
+    $(wildcard include/config/HAVE_ARCH_USERFAULTFD_MINOR) \
+    $(wildcard include/config/SHMEM) \
+    $(wildcard include/config/ARCH_HAS_PTE_SPECIAL) \
+    $(wildcard include/config/ARCH_HAS_PTE_DEVMAP) \
+    $(wildcard include/config/DEBUG_VM_RB) \
+    $(wildcard include/config/PAGE_POISONING) \
+    $(wildcard include/config/INIT_ON_ALLOC_DEFAULT_ON) \
+    $(wildcard include/config/INIT_ON_FREE_DEFAULT_ON) \
+    $(wildcard include/config/DEBUG_PAGEALLOC) \
+    $(wildcard include/config/HUGETLBFS) \
+    $(wildcard include/config/MAPPING_DIRTY_HELPERS) \
+    $(wildcard include/config/ANON_VMA_NAME) \
+  include/linux/mmap_lock.h \
+  include/linux/pag

@@ -1,1 +1,1 @@
-ard include/config/ACPI_APEI_
+/* SPDX-License-Identifier: G

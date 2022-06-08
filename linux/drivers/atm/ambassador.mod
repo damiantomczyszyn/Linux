@@ -1,2 +1,1 @@
-EAF) \
-  include/linux/pag
+        = LGDT3306A_TPCLK_

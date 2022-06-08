@@ -1,16 +1,87 @@
-cmd_drivers/media/i2c/vs6624.o := gcc -Wp,-MMD,drivers/media/i2c/.vs6624.o.d -nostdinc -I./arch/x86/include -I./arch/x86/include/generated  -I./include -I./arch/x86/include/uapi -I./arch/x86/include/generated/uapi -I./include/uapi -I./include/generated/uapi -include ./include/linux/compiler-version.h -include ./include/linux/kconfig.h -include ./include/linux/compiler_types.h -D__KERNEL__ -fmacro-prefix-map=./= -Wall -Wundef -Werror=strict-prototypes -Wno-trigraphs -fno-strict-aliasing -fno-common -fshort-wchar -fno-PIE -Werror=implicit-function-declaration -Werror=implicit-int -Werror=return-type -Wno-format-security -std=gnu11 -mno-sse -mno-mmx -mno-sse2 -mno-3dnow -mno-avx -fcf-protection=none -m32 -msoft-float -mregparm=3 -freg-struct-return -fno-pic -mpreferred-stack-boundary=2 -march=i686 -mtune=pentium3 -mtune=generic -Wa,-mtune=generic32 -ffreestanding -mstack-protector-guard-reg=fs -mstack-protector-guard-symbol=__stack_chk_guard -Wno-sign-compare -fno-asynchronous-unwind-tables -mindirect-branch=thunk-extern -mindirect-branch-register -fno-jump-tables -fno-delete-null-pointer-checks -Wno-frame-address -Wno-format-truncation -Wno-format-overflow -Wno-address-of-packed-member -O2 -fno-allow-store-data-races -fstack-protector-strong -Wimplicit-fallthrough=5 -Wno-main -Wno-unused-but-set-variable -Wno-unused-const-variable -fno-stack-clash-protection -pg -mrecord-mcount -mfentry -DCC_USING_FENTRY -Wdeclaration-after-statement -Wvla -Wno-pointer-sign -Wcast-function-type -Wno-stringop-truncation -Wno-stringop-overflow -Wno-restrict -Wno-maybe-uninitialized -Wno-alloc-size-larger-than -fno-strict-overflow -fno-stack-check -fconserve-stack -Werror=date-time -Werror=incompatible-pointer-types -Werror=designated-init -Wno-packed-not-aligned  -DMODULE  -DKBUILD_BASENAME='"vs6624"' -DKBUILD_MODNAME='"vs6624"' -D__KBUILD_MODNAME=kmod_vs6624 -c -o drivers/media/i2c/vs6624.o drivers/media/i2c/vs6624.c 
+ION		0x000004B4
+#define VBI_PASS_CTRL		0x000004BC
 
-source_drivers/media/i2c/vs6624.o := drivers/media/i2c/vs6624.c
+/* Audio Decoder Registers */
+/* 8051 Configuration */
+#define DL_CTL		0x00000800
+#define STD_DET_STATUS	0x00000804
+#define STD_DET_CTL	0x00000808
+#define DW8051_INT	0x0000080C
+#define GENERAL_CTL	0x00000810
+#define AAGC_CTL	0x00000814
+#define DEMATRIX_CTL	0x000008CC
+#define PATH1_CTL1	0x000008D0
+#define PATH1_VOL_CTL	0x000008D4
+#define PATH1_EQ_CTL	0x000008D8
+#define PATH1_SC_CTL	0x000008DC
+#define PATH2_CTL1	0x000008E0
+#define PATH2_VOL_CTL	0x000008E4
+#define PATH2_EQ_CTL	0x000008E8
+#define PATH2_SC_CTL	0x000008EC
 
-deps_drivers/media/i2c/vs6624.o := \
-    $(wildcard include/config/VIDEO_ADV_DEBUG) \
-  include/linux/compiler-version.h \
-    $(wildcard include/config/CC_VERSION_TEXT) \
-  include/linux/kconfig.h \
-    $(wildcard include/config/CPU_BIG_ENDIAN) \
-    $(wildcard include/config/BOOGER) \
-    $(wildcard include/config/FOO) \
-  include/linux/compiler_types.h \
-    $(wildcard include/config/DEBUG_INFO_BTF) \
-    $(wildcard include/config/PAHOLE_HAS_BTF_TAG) \
-    $(wildcard include/config/HAVE_ARCH_COMPILER_H
+/* Sample Rate Converter */
+#define SRC_CTL		0x000008F0
+#define SRC_LF_COEF	0x000008F4
+#define SRC1_CTL	0x000008F8
+#define SRC2_CTL	0x000008FC
+#define SRC3_CTL	0x00000900
+#define SRC4_CTL	0x00000904
+#define SRC5_CTL	0x00000908
+#define SRC6_CTL	0x0000090C
+#define BAND_OUT_SEL	0x00000910
+#define I2S_N_CTL	0x00000914
+#define I2S_OUT_CTL	0x00000918
+#define AUTOCONFIG_REG	0x000009C4
+
+/* Audio ADC Registers */
+#define DSM_CTRL1	0x00000000
+#define DSM_CTRL2	0x00000001
+#define CHP_EN_CTRL	0x00000002
+#define CHP_CLK_CTRL1	0x00000004
+#define CHP_CLK_CTRL2	0x00000005
+#define BG_REF_CTRL	0x00000006
+#define SD2_SW_CTRL1	0x00000008
+#define SD2_SW_CTRL2	0x00000009
+#define SD2_BIAS_CTRL	0x0000000A
+#define AMP_BIAS_CTRL	0x0000000C
+#define CH_PWR_CTRL1	0x0000000E
+#define FLD_CH_SEL      (1 << 3)
+#define CH_PWR_CTRL2	0x0000000F
+#define DSM_STATUS1	0x00000010
+#define DSM_STATUS2	0x00000011
+#define DIG_CTL1	0x00000012
+#define DIG_CTL2	0x00000013
+#define I2S_TX_CFG	0x0000001A
+
+#define DEV_CNTRL2	0x00040000
+
+#define PCI_MSK_IR        (1 << 28)
+#define PCI_MSK_AV_CORE   (1 << 27)
+#define PCI_MSK_GPIO1     (1 << 24)
+#define PCI_MSK_GPIO0     (1 << 23)
+#define PCI_MSK_APB_DMA   (1 << 12)
+#define PCI_MSK_AL_WR     (1 << 11)
+#define PCI_MSK_AL_RD     (1 << 10)
+#define PCI_MSK_RISC_WR   (1 <<  9)
+#define PCI_MSK_RISC_RD   (1 <<  8)
+#define PCI_MSK_AUD_EXT   (1 <<  4)
+#define PCI_MSK_AUD_INT   (1 <<  3)
+#define PCI_MSK_VID_C     (1 <<  2)
+#define PCI_MSK_VID_B     (1 <<  1)
+#define PCI_MSK_VID_A      1
+#define PCI_INT_MSK	0x00040010
+
+#define PCI_INT_STAT	0x00040014
+#define PCI_INT_MSTAT	0x00040018
+
+#define VID_A_INT_MSK	0x00040020
+#define VID_A_INT_STAT	0x00040024
+#define VID_A_INT_MSTAT	0x00040028
+#define VID_A_INT_SSTAT	0x0004002C
+
+#define VID_B_INT_MSK	0x00040030
+#define VID_B_MSK_BAD_PKT     (1 << 20)
+#define VID_B_MSK_VBI_OPC_ERR (1 << 17)
+#define VID_B_MSK_OPC_ERR     (1 << 16)
+#define VID_B_MSK_VBI_SYNC    (1 << 13)
+#define

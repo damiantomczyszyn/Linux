@@ -1,296 +1,318 @@
-// SPDX-License-Identifier: GPL-2.0
-// ir-rc5-decoder.c - decoder for RC5(x) and StreamZap protocols
-//
-// Copyright (C) 2010 by Mauro Carvalho Chehab
-// Copyright (C) 2010 by Jarod Wilson <jarod@redhat.com>
-
-/*
- * This decoder handles the 14 bit RC5 protocol, 15 bit "StreamZap" protocol
- * and 20 bit RC5x protocol.
- */
-
-#include "rc-core-priv.h"
-#include <linux/module.h>
-
-#define RC5_NBITS		14
-#define RC5_SZ_NBITS		15
-#define RC5X_NBITS		20
-#define CHECK_RC5X_NBITS	8
-#define RC5_UNIT		889 /* us */
-#define RC5_BIT_START		(1 * RC5_UNIT)
-#define RC5_BIT_END		(1 * RC5_UNIT)
-#define RC5X_SPACE		(4 * RC5_UNIT)
-#define RC5_TRAILER		(6 * RC5_UNIT) /* In reality, approx 100 */
-
-enum rc5_state {
-	STATE_INACTIVE,
-	STATE_BIT_START,
-	STATE_BIT_END,
-	STATE_CHECK_RC5X,
-	STATE_FINISHED,
-};
-
-/**
- * ir_rc5_decode() - Decode one RC-5 pulse or space
- * @dev:	the struct rc_dev descriptor of the device
- * @ev:		the struct ir_raw_event descriptor of the pulse/space
- *
- * This function returns -EINVAL if the pulse violates the state machine
- */
-static int ir_rc5_decode(struct rc_dev *dev, struct ir_raw_event ev)
-{
-	struct rc5_dec *data = &dev->raw->rc5;
-	u8 toggle;
-	u32 scancode;
-	enum rc_proto protocol;
-
-	if (!is_timing_event(ev)) {
-		if (ev.overflow)
-			data->state = STATE_INACTIVE;
-		return 0;
+2_FIELD_SEQ_BT:
+		break;
+	default:
+		field = V4L2_FIELD_INTERLACED;
+		break;
 	}
 
-	if (!geq_margin(ev.duration, RC5_UNIT, RC5_UNIT / 2))
-		goto out;
+	f->fmt.pix.field = field;
+	v4l_bound_align_image(&f->fmt.pix.width, 48, maxw, 2,
+			      &f->fmt.pix.height, 32, maxh, 0, 0);
+	f->fmt.pix.bytesperline =
+		(f->fmt.pix.width * fmt->depth) >> 3;
+	f->fmt.pix.sizeimage =
+		f->fmt.pix.height * f->fmt.pix.bytesperline;
+	f->fmt.pix.colorspace = V4L2_COLORSPACE_SMPTE170M;
 
-again:
-	dev_dbg(&dev->dev, "RC5(x/sz) decode started at state %i (%uus %s)\n",
-		data->state, ev.duration, TO_STR(ev.pulse));
-
-	if (!geq_margin(ev.duration, RC5_UNIT, RC5_UNIT / 2))
-		return 0;
-
-	switch (data->state) {
-
-	case STATE_INACTIVE:
-		if (!ev.pulse)
-			break;
-
-		data->state = STATE_BIT_START;
-		data->count = 1;
-		decrease_duration(&ev, RC5_BIT_START);
-		goto again;
-
-	case STATE_BIT_START:
-		if (!ev.pulse && geq_margin(ev.duration, RC5_TRAILER, RC5_UNIT / 2)) {
-			data->state = STATE_FINISHED;
-			goto again;
-		}
-
-		if (!eq_margin(ev.duration, RC5_BIT_START, RC5_UNIT / 2))
-			break;
-
-		data->bits <<= 1;
-		if (!ev.pulse)
-			data->bits |= 1;
-		data->count++;
-		data->state = STATE_BIT_END;
-		return 0;
-
-	case STATE_BIT_END:
-		if (data->count == CHECK_RC5X_NBITS)
-			data->state = STATE_CHECK_RC5X;
-		else
-			data->state = STATE_BIT_START;
-
-		decrease_duration(&ev, RC5_BIT_END);
-		goto again;
-
-	case STATE_CHECK_RC5X:
-		if (!ev.pulse && geq_margin(ev.duration, RC5X_SPACE, RC5_UNIT / 2)) {
-			data->is_rc5x = true;
-			decrease_duration(&ev, RC5X_SPACE);
-		} else
-			data->is_rc5x = false;
-		data->state = STATE_BIT_START;
-		goto again;
-
-	case STATE_FINISHED:
-		if (ev.pulse)
-			break;
-
-		if (data->is_rc5x && data->count == RC5X_NBITS) {
-			/* RC5X */
-			u8 xdata, command, system;
-			if (!(dev->enabled_protocols & RC_PROTO_BIT_RC5X_20)) {
-				data->state = STATE_INACTIVE;
-				return 0;
-			}
-			xdata    = (data->bits & 0x0003F) >> 0;
-			command  = (data->bits & 0x00FC0) >> 6;
-			system   = (data->bits & 0x1F000) >> 12;
-			toggle   = (data->bits & 0x20000) ? 1 : 0;
-			command += (data->bits & 0x40000) ? 0 : 0x40;
-			scancode = system << 16 | command << 8 | xdata;
-			protocol = RC_PROTO_RC5X_20;
-
-		} else if (!data->is_rc5x && data->count == RC5_NBITS) {
-			/* RC5 */
-			u8 command, system;
-			if (!(dev->enabled_protocols & RC_PROTO_BIT_RC5)) {
-				data->state = STATE_INACTIVE;
-				return 0;
-			}
-			command  = (data->bits & 0x0003F) >> 0;
-			system   = (data->bits & 0x007C0) >> 6;
-			toggle   = (data->bits & 0x00800) ? 1 : 0;
-			command += (data->bits & 0x01000) ? 0 : 0x40;
-			scancode = system << 8 | command;
-			protocol = RC_PROTO_RC5;
-
-		} else if (!data->is_rc5x && data->count == RC5_SZ_NBITS) {
-			/* RC5 StreamZap */
-			u8 command, system;
-			if (!(dev->enabled_protocols & RC_PROTO_BIT_RC5_SZ)) {
-				data->state = STATE_INACTIVE;
-				return 0;
-			}
-			command  = (data->bits & 0x0003F) >> 0;
-			system   = (data->bits & 0x02FC0) >> 6;
-			toggle   = (data->bits & 0x01000) ? 1 : 0;
-			scancode = system << 6 | command;
-			protocol = RC_PROTO_RC5_SZ;
-
-		} else
-			break;
-
-		dev_dbg(&dev->dev, "RC5(x/sz) scancode 0x%06x (p: %u, t: %u)\n",
-			scancode, protocol, toggle);
-
-		rc_keydown(dev, protocol, scancode, toggle);
-		data->state = STATE_INACTIVE;
-		return 0;
-	}
-
-out:
-	dev_dbg(&dev->dev, "RC5(x/sz) decode failed at state %i count %d (%uus %s)\n",
-		data->state, data->count, ev.duration, TO_STR(ev.pulse));
-	data->state = STATE_INACTIVE;
-	return -EINVAL;
-}
-
-static const struct ir_raw_timings_manchester ir_rc5_timings = {
-	.leader_pulse		= RC5_UNIT,
-	.clock			= RC5_UNIT,
-	.trailer_space		= RC5_UNIT * 10,
-};
-
-static const struct ir_raw_timings_manchester ir_rc5x_timings[2] = {
-	{
-		.leader_pulse		= RC5_UNIT,
-		.clock			= RC5_UNIT,
-		.trailer_space		= RC5X_SPACE,
-	},
-	{
-		.clock			= RC5_UNIT,
-		.trailer_space		= RC5_UNIT * 10,
-	},
-};
-
-static const struct ir_raw_timings_manchester ir_rc5_sz_timings = {
-	.leader_pulse			= RC5_UNIT,
-	.clock				= RC5_UNIT,
-	.trailer_space			= RC5_UNIT * 10,
-};
-
-/**
- * ir_rc5_encode() - Encode a scancode as a stream of raw events
- *
- * @protocol:	protocol variant to encode
- * @scancode:	scancode to encode
- * @events:	array of raw ir events to write into
- * @max:	maximum size of @events
- *
- * Returns:	The number of events written.
- *		-ENOBUFS if there isn't enough space in the array to fit the
- *		encoding. In this case all @max events will have been written.
- *		-EINVAL if the scancode is ambiguous or invalid.
- */
-static int ir_rc5_encode(enum rc_proto protocol, u32 scancode,
-			 struct ir_raw_event *events, unsigned int max)
-{
-	int ret;
-	struct ir_raw_event *e = events;
-	unsigned int data, xdata, command, commandx, system, pre_space_data;
-
-	/* Detect protocol and convert scancode to raw data */
-	if (protocol == RC_PROTO_RC5) {
-		/* decode scancode */
-		command  = (scancode & 0x003f) >> 0;
-		commandx = (scancode & 0x0040) >> 6;
-		system   = (scancode & 0x1f00) >> 8;
-		/* encode data */
-		data = !commandx << 12 | system << 6 | command;
-
-		/* First bit is encoded by leader_pulse */
-		ret = ir_raw_gen_manchester(&e, max, &ir_rc5_timings,
-					    RC5_NBITS - 1, data);
-		if (ret < 0)
-			return ret;
-	} else if (protocol == RC_PROTO_RC5X_20) {
-		/* decode scancode */
-		xdata    = (scancode & 0x00003f) >> 0;
-		command  = (scancode & 0x003f00) >> 8;
-		commandx = !(scancode & 0x004000);
-		system   = (scancode & 0x1f0000) >> 16;
-
-		/* encode data */
-		data = commandx << 18 | system << 12 | command << 6 | xdata;
-
-		/* First bit is encoded by leader_pulse */
-		pre_space_data = data >> (RC5X_NBITS - CHECK_RC5X_NBITS);
-		ret = ir_raw_gen_manchester(&e, max, &ir_rc5x_timings[0],
-					    CHECK_RC5X_NBITS - 1,
-					    pre_space_data);
-		if (ret < 0)
-			return ret;
-		ret = ir_raw_gen_manchester(&e, max - (e - events),
-					    &ir_rc5x_timings[1],
-					    RC5X_NBITS - CHECK_RC5X_NBITS,
-					    data);
-		if (ret < 0)
-			return ret;
-	} else if (protocol == RC_PROTO_RC5_SZ) {
-		/* RC5-SZ scancode is raw enough for Manchester as it is */
-		/* First bit is encoded by leader_pulse */
-		ret = ir_raw_gen_manchester(&e, max, &ir_rc5_sz_timings,
-					    RC5_SZ_NBITS - 1,
-					    scancode & 0x2fff);
-		if (ret < 0)
-			return ret;
-	} else {
-		return -EINVAL;
-	}
-
-	return e - events;
-}
-
-static struct ir_raw_handler rc5_handler = {
-	.protocols	= RC_PROTO_BIT_RC5 | RC_PROTO_BIT_RC5X_20 |
-							RC_PROTO_BIT_RC5_SZ,
-	.decode		= ir_rc5_decode,
-	.encode		= ir_rc5_encode,
-	.carrier	= 36000,
-	.min_timeout	= RC5_TRAILER,
-};
-
-static int __init ir_rc5_decode_init(void)
-{
-	ir_raw_handler_register(&rc5_handler);
-
-	printk(KERN_INFO "IR RC5(x/sz) protocol handler initialized\n");
 	return 0;
 }
 
-static void __exit ir_rc5_decode_exit(void)
+static int vidioc_s_fmt_vid_cap(struct file *file, void *priv,
+	struct v4l2_format *f)
 {
-	ir_raw_handler_unregister(&rc5_handler);
+	struct cx23885_dev *dev = video_drvdata(file);
+	struct v4l2_subdev_format format = {
+		.which = V4L2_SUBDEV_FORMAT_ACTIVE,
+	};
+	int err;
+
+	dprintk(2, "%s()\n", __func__);
+	err = vidioc_try_fmt_vid_cap(file, priv, f);
+
+	if (0 != err)
+		return err;
+
+	if (vb2_is_busy(&dev->vb2_vidq) || vb2_is_busy(&dev->vb2_vbiq) ||
+	    vb2_is_busy(&dev->vb2_mpegq))
+		return -EBUSY;
+
+	dev->fmt        = format_by_fourcc(f->fmt.pix.pixelformat);
+	dev->width      = f->fmt.pix.width;
+	dev->height     = f->fmt.pix.height;
+	dev->field	= f->fmt.pix.field;
+	dprintk(2, "%s() width=%d height=%d field=%d\n", __func__,
+		dev->width, dev->height, dev->field);
+	v4l2_fill_mbus_format(&format.format, &f->fmt.pix, MEDIA_BUS_FMT_FIXED);
+	call_all(dev, pad, set_fmt, NULL, &format);
+	v4l2_fill_pix_format(&f->fmt.pix, &format.format);
+	/* set_fmt overwrites f->fmt.pix.field, restore it */
+	f->fmt.pix.field = dev->field;
+	return 0;
 }
 
-module_init(ir_rc5_decode_init);
-module_exit(ir_rc5_decode_exit);
+static int vidioc_querycap(struct file *file, void  *priv,
+	struct v4l2_capability *cap)
+{
+	struct cx23885_dev *dev = video_drvdata(file);
 
-MODULE_LICENSE("GPL v2");
-MODULE_AUTHOR("Mauro Carvalho Chehab and Jarod Wilson");
-MODULE_AUTHOR("Red Hat Inc. (http://www.redhat.com)");
-MODULE_DESCRIPTION("RC5(x/sz) IR protocol decoder");
+	strscpy(cap->driver, "cx23885", sizeof(cap->driver));
+	strscpy(cap->card, cx23885_boards[dev->board].name,
+		sizeof(cap->card));
+	sprintf(cap->bus_info, "PCIe:%s", pci_name(dev->pci));
+	cap->capabilities = V4L2_CAP_READWRITE | V4L2_CAP_STREAMING |
+			    V4L2_CAP_AUDIO | V4L2_CAP_VBI_CAPTURE |
+			    V4L2_CAP_VIDEO_CAPTURE |
+			    V4L2_CAP_DEVICE_CAPS;
+	switch (dev->board) { /* i2c device tuners */
+	case CX23885_BOARD_HAUPPAUGE_HVR1265_K4:
+	case CX23885_BOARD_HAUPPAUGE_HVR5525:
+	case CX23885_BOARD_HAUPPAUGE_QUADHD_DVB:
+	case CX23885_BOARD_HAUPPAUGE_QUADHD_ATSC:
+		cap->capabilities |= V4L2_CAP_TUNER;
+		break;
+	default:
+		if (dev->tuner_type != TUNER_ABSENT)
+			cap->capabilities |= V4L2_CAP_TUNER;
+		break;
+	}
+	return 0;
+}
+
+static int vidioc_enum_fmt_vid_cap(struct file *file, void  *priv,
+	struct v4l2_fmtdesc *f)
+{
+	if (unlikely(f->index >= ARRAY_SIZE(formats)))
+		return -EINVAL;
+
+	f->pixelformat = formats[f->index].fourcc;
+
+	return 0;
+}
+
+static int vidioc_g_pixelaspect(struct file *file, void *priv,
+				int type, struct v4l2_fract *f)
+{
+	struct cx23885_dev *dev = video_drvdata(file);
+	bool is_50hz = dev->tvnorm & V4L2_STD_625_50;
+
+	if (type != V4L2_BUF_TYPE_VIDEO_CAPTURE)
+		return -EINVAL;
+
+	f->numerator = is_50hz ? 54 : 11;
+	f->denominator = is_50hz ? 59 : 10;
+
+	return 0;
+}
+
+static int vidioc_g_selection(struct file *file, void *fh,
+			      struct v4l2_selection *sel)
+{
+	struct cx23885_dev *dev = video_drvdata(file);
+
+	if (sel->type != V4L2_BUF_TYPE_VIDEO_CAPTURE)
+		return -EINVAL;
+
+	switch (sel->target) {
+	case V4L2_SEL_TGT_CROP_BOUNDS:
+	case V4L2_SEL_TGT_CROP_DEFAULT:
+		sel->r.top = 0;
+		sel->r.left = 0;
+		sel->r.width = 720;
+		sel->r.height = norm_maxh(dev->tvnorm);
+		break;
+	default:
+		return -EINVAL;
+	}
+	return 0;
+}
+
+static int vidioc_g_std(struct file *file, void *priv, v4l2_std_id *id)
+{
+	struct cx23885_dev *dev = video_drvdata(file);
+	dprintk(1, "%s()\n", __func__);
+
+	*id = dev->tvnorm;
+	return 0;
+}
+
+static int vidioc_s_std(struct file *file, void *priv, v4l2_std_id tvnorms)
+{
+	struct cx23885_dev *dev = video_drvdata(file);
+	dprintk(1, "%s()\n", __func__);
+
+	return cx23885_set_tvnorm(dev, tvnorms);
+}
+
+int cx23885_enum_input(struct cx23885_dev *dev, struct v4l2_input *i)
+{
+	static const char *iname[] = {
+		[CX23885_VMUX_COMPOSITE1] = "Composite1",
+		[CX23885_VMUX_COMPOSITE2] = "Composite2",
+		[CX23885_VMUX_COMPOSITE3] = "Composite3",
+		[CX23885_VMUX_COMPOSITE4] = "Composite4",
+		[CX23885_VMUX_SVIDEO]     = "S-Video",
+		[CX23885_VMUX_COMPONENT]  = "Component",
+		[CX23885_VMUX_TELEVISION] = "Television",
+		[CX23885_VMUX_CABLE]      = "Cable TV",
+		[CX23885_VMUX_DVB]        = "DVB",
+		[CX23885_VMUX_DEBUG]      = "for debug only",
+	};
+	unsigned int n;
+	dprintk(1, "%s()\n", __func__);
+
+	n = i->index;
+	if (n >= MAX_CX23885_INPUT)
+		return -EINVAL;
+
+	if (0 == INPUT(n)->type)
+		return -EINVAL;
+
+	i->index = n;
+	i->type  = V4L2_INPUT_TYPE_CAMERA;
+	strscpy(i->name, iname[INPUT(n)->type], sizeof(i->name));
+	i->std = CX23885_NORMS;
+	if ((CX23885_VMUX_TELEVISION == INPUT(n)->type) ||
+		(CX23885_VMUX_CABLE == INPUT(n)->type)) {
+		i->type = V4L2_INPUT_TYPE_TUNER;
+		i->audioset = 4;
+	} else {
+		/* Two selectable audio inputs for non-tv inputs */
+		i->audioset = 3;
+	}
+
+	if (dev->input == n) {
+		/* enum'd input matches our configured input.
+		 * Ask the video decoder to process the call
+		 * and give it an oppertunity to update the
+		 * status field.
+		 */
+		call_all(dev, video, g_input_status, &i->status);
+	}
+
+	return 0;
+}
+
+static int vidioc_enum_input(struct file *file, void *priv,
+				struct v4l2_input *i)
+{
+	struct cx23885_dev *dev = video_drvdata(file);
+	dprintk(1, "%s()\n", __func__);
+	return cx23885_enum_input(dev, i);
+}
+
+int cx23885_get_input(struct file *file, void *priv, unsigned int *i)
+{
+	struct cx23885_dev *dev = video_drvdata(file);
+
+	*i = dev->input;
+	dprintk(1, "%s() returns %d\n", __func__, *i);
+	return 0;
+}
+
+static int vidioc_g_input(struct file *file, void *priv, unsigned int *i)
+{
+	return cx23885_get_input(file, priv, i);
+}
+
+int cx23885_set_input(struct file *file, void *priv, unsigned int i)
+{
+	struct cx23885_dev *dev = video_drvdata(file);
+
+	dprintk(1, "%s(%d)\n", __func__, i);
+
+	if (i >= MAX_CX23885_INPUT) {
+		dprintk(1, "%s() -EINVAL\n", __func__);
+		return -EINVAL;
+	}
+
+	if (INPUT(i)->type == 0)
+		return -EINVAL;
+
+	cx23885_video_mux(dev, i);
+
+	/* By default establish the default audio input for the card also */
+	/* Caller is free to use VIDIOC_S_AUDIO to override afterwards */
+	cx23885_audio_mux(dev, i);
+	return 0;
+}
+
+static int vidioc_s_input(struct file *file, void *priv, unsigned int i)
+{
+	return cx23885_set_input(file, priv, i);
+}
+
+static int vidioc_log_status(struct file *file, void *priv)
+{
+	struct cx23885_dev *dev = video_drvdata(file);
+
+	call_all(dev, core, log_status);
+	return 0;
+}
+
+static int cx23885_query_audinput(struct file *file, void *priv,
+	struct v4l2_audio *i)
+{
+	static const char *iname[] = {
+		[0] = "Baseband L/R 1",
+		[1] = "Baseband L/R 2",
+		[2] = "TV",
+	};
+	unsigned int n;
+	dprintk(1, "%s()\n", __func__);
+
+	n = i->index;
+	if (n >= 3)
+		return -EINVAL;
+
+	memset(i, 0, sizeof(*i));
+	i->index = n;
+	strscpy(i->name, iname[n], sizeof(i->name));
+	i->capability = V4L2_AUDCAP_STEREO;
+	return 0;
+
+}
+
+static int vidioc_enum_audinput(struct file *file, void *priv,
+				struct v4l2_audio *i)
+{
+	return cx23885_query_audinput(file, priv, i);
+}
+
+static int vidioc_g_audinput(struct file *file, void *priv,
+	struct v4l2_audio *i)
+{
+	struct cx23885_dev *dev = video_drvdata(file);
+
+	if ((CX23885_VMUX_TELEVISION == INPUT(dev->input)->type) ||
+		(CX23885_VMUX_CABLE == INPUT(dev->input)->type))
+		i->index = 2;
+	else
+		i->index = dev->audinput;
+	dprintk(1, "%s(input=%d)\n", __func__, i->index);
+
+	return cx23885_query_audinput(file, priv, i);
+}
+
+static int vidioc_s_audinput(struct file *file, void *priv,
+	const struct v4l2_audio *i)
+{
+	struct cx23885_dev *dev = video_drvdata(file);
+
+	if ((CX23885_VMUX_TELEVISION == INPUT(dev->input)->type) ||
+		(CX23885_VMUX_CABLE == INPUT(dev->input)->type)) {
+		return i->index != 2 ? -EINVAL : 0;
+	}
+	if (i->index > 1)
+		return -EINVAL;
+
+	dprintk(1, "%s(%d)\n", __func__, i->index);
+
+	dev->audinput = i->index;
+
+	/* Skip the audio defaults from the cards struct, caller wants
+	 * directly touch the audio mux hardware. */
+	cx23885_flatiron_mux(dev, dev->audinput + 1);
+	return 0;
+}
+
+st

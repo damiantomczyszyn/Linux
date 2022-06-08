@@ -1,1 +1,1 @@
-    $(wildcard include/config/HIGH_RES_
+egval = MC417_SPD_CTL(MC417_SPD_CTL_FAS

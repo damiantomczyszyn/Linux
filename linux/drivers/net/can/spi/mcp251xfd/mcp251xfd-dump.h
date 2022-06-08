@@ -1,25 +1,45 @@
-lude/linux/percpu-refcount.h \
-  include/linux/kasan.h \
-    $(wildcard include/config/KASAN_STACK) \
-    $(wildcard include/config/KASAN_VMALLOC) \
-    $(wildcard include/config/KASAN_INLINE) \
-  include/linux/kasan-enabled.h \
-  include/linux/device.h \
-    $(wildcard include/config/GENERIC_MSI_IRQ_DOMAIN) \
-    $(wildcard include/config/GENERIC_MSI_IRQ) \
-    $(wildcard include/config/ENERGY_MODEL) \
-    $(wildcard include/config/PINCTRL) \
-    $(wildcard include/config/DMA_OPS) \
-    $(wildcard include/config/DMA_DECLARE_COHERENT) \
-    $(wildcard include/config/DMA_CMA) \
-    $(wildcard include/config/SWIOTLB) \
-    $(wildcard include/config/ARCH_HAS_SYNC_DMA_FOR_DEVICE) \
-    $(wildcard include/config/ARCH_HAS_SYNC_DMA_FOR_CPU) \
-    $(wildcard include/config/ARCH_HAS_SYNC_DMA_FOR_CPU_ALL) \
-    $(wildcard include/config/DMA_OPS_BYPASS) \
-    $(wildcard include/config/DEVTMPFS) \
-    $(wildcard include/config/SYSFS_DEPRECATED) \
-  include/linux/dev_printk.h \
-  include/linux/ratelimit.h \
-  include/linux/sched.h \
-    $(wi
+/* SPDX-License-Identifier: GPL-2.0
+ *
+ * mcp251xfd - Microchip MCP251xFD Family CAN controller driver
+ *
+ * Copyright (c) 2019, 2020, 2021 Pengutronix,
+ *               Marc Kleine-Budde <kernel@pengutronix.de>
+ */
+
+#ifndef _MCP251XFD_DUMP_H
+#define _MCP251XFD_DUMP_H
+
+#define MCP251XFD_DUMP_MAGIC 0x1825434d
+
+enum mcp251xfd_dump_object_type {
+	MCP251XFD_DUMP_OBJECT_TYPE_REG,
+	MCP251XFD_DUMP_OBJECT_TYPE_TEF,
+	MCP251XFD_DUMP_OBJECT_TYPE_RX,
+	MCP251XFD_DUMP_OBJECT_TYPE_TX,
+	MCP251XFD_DUMP_OBJECT_TYPE_END = -1,
+};
+
+enum mcp251xfd_dump_object_ring_key {
+	MCP251XFD_DUMP_OBJECT_RING_KEY_HEAD,
+	MCP251XFD_DUMP_OBJECT_RING_KEY_TAIL,
+	MCP251XFD_DUMP_OBJECT_RING_KEY_BASE,
+	MCP251XFD_DUMP_OBJECT_RING_KEY_NR,
+	MCP251XFD_DUMP_OBJECT_RING_KEY_FIFO_NR,
+	MCP251XFD_DUMP_OBJECT_RING_KEY_OBJ_NUM,
+	MCP251XFD_DUMP_OBJECT_RING_KEY_OBJ_SIZE,
+	__MCP251XFD_DUMP_OBJECT_RING_KEY_MAX,
+};
+
+struct mcp251xfd_dump_object_header {
+	__le32 magic;
+	__le32 type;
+	__le32 offset;
+	__le32 len;
+};
+
+struct mcp251xfd_dump_object_reg {
+	__le32 reg;
+	__le32 val;
+};
+
+#endif

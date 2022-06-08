@@ -1,48 +1,77 @@
- $(wildcard include/config/SLOB) \
-  include/linux/overflow.h \
-  include/linux/percpu-refcount.h \
-  include/linux/kasan.h \
-    $(wildcard include/config/KASAN_STACK) \
-    $(wildcard include/config/KASAN_VMALLOC) \
-    $(wildcard include/config/KASAN_INLINE) \
-  include/linux/kasan-enabled.h \
-  include/linux/device.h \
-    $(wildcard include/config/GENERIC_MSI_IRQ_DOMAIN) \
-    $(wildcard include/config/GENERIC_MSI_IRQ) \
-    $(wildcard include/config/ENERGY_MODEL) \
-    $(wildcard include/config/PINCTRL) \
-    $(wildcard include/config/DMA_OPS) \
-    $(wildcard include/config/DMA_DECLARE_COHERENT) \
-    $(wildcard include/config/DMA_CMA) \
-    $(wildcard include/config/SWIOTLB) \
-    $(wildcard include/config/ARCH_HAS_SYNC_DMA_FOR_DEVICE) \
-    $(wildcard include/config/ARCH_HAS_SYNC_DMA_FOR_CPU) \
-    $(wildcard include/config/ARCH_HAS_SYNC_DMA_FOR_CPU_ALL) \
-    $(wildcard include/config/DMA_OPS_BYPASS) \
-    $(wildcard include/config/DEVTMPFS) \
-    $(wildcard include/config/SYSFS_DEPRECATED) \
-  include/linux/dev_printk.h \
-  include/linux/ratelimit.h \
-  include/linux/sched.h \
-    $(wildcard include/config/VIRT_CPU_ACCOUNTING_NATIVE) \
-    $(wildcard include/config/SCHED_INFO) \
-    $(wildcard include/config/SCHEDSTATS) \
-    $(wildcard include/config/SCHED_CORE) \
-    $(wildcard include/config/FAIR_GROUP_SCHED) \
-    $(wildcard include/config/RT_GROUP_SCHED) \
-    $(wildcard include/config/RT_MUTEXES) \
-    $(wildcard include/config/UCLAMP_TASK) \
-    $(wildcard include/config/UCLAMP_BUCKETS_COUNT) \
-    $(wildcard include/config/CGROUP_SCHED) \
-    $(wildcard include/config/BLK_DEV_IO_TRACE) \
-    $(wildcard include/config/PSI) \
-    $(wildcard include/config/COMPAT_BRK) \
-    $(wildcard include/config/CGROUPS) \
-    $(wildcard include/config/BLK_CGROUP) \
-    $(wildcard include/config/PAGE_OWNER) \
-    $(wildcard include/config/EVENTFD) \
-    $(wildcard include/config/ARCH_HAS_SCALED_CPUTIME) \
-    $(wildcard include/config/VIRT_CPU_ACCOUNTING_GEN) \
-    $(wildcard include/config/POSIX_CPUTIMERS) \
-    $(wildcard include/config/POSIX_CPU_TIMERS_TASK_WORK) \
-    $(wildcard include/config/KEYS) \
+] IR controller */
+		allowed_protos = RC_PROTO_BIT_ALL_IR_DECODER;
+		/* The grey Hauppauge RC-5 remote */
+		rc_map = RC_MAP_HAUPPAUGE;
+		break;
+	case CX23885_BOARD_TERRATEC_CINERGY_T_PCIE_DUAL:
+		/* Integrated CX23885 IR controller */
+		allowed_protos = RC_PROTO_BIT_ALL_IR_DECODER;
+		/* The grey Terratec remote with orange buttons */
+		rc_map = RC_MAP_NEC_TERRATEC_CINERGY_XS;
+		break;
+	case CX23885_BOARD_TEVII_S470:
+		/* Integrated CX23885 IR controller */
+		allowed_protos = RC_PROTO_BIT_ALL_IR_DECODER;
+		/* A guess at the remote */
+		rc_map = RC_MAP_TEVII_NEC;
+		break;
+	case CX23885_BOARD_MYGICA_X8507:
+		/* Integrated CX23885 IR controller */
+		allowed_protos = RC_PROTO_BIT_ALL_IR_DECODER;
+		/* A guess at the remote */
+		rc_map = RC_MAP_TOTAL_MEDIA_IN_HAND_02;
+		break;
+	case CX23885_BOARD_TBS_6980:
+	case CX23885_BOARD_TBS_6981:
+		/* Integrated CX23885 IR controller */
+		allowed_protos = RC_PROTO_BIT_ALL_IR_DECODER;
+		/* A guess at the remote */
+		rc_map = RC_MAP_TBS_NEC;
+		break;
+	case CX23885_BOARD_DVBSKY_T9580:
+	case CX23885_BOARD_DVBSKY_T980C:
+	case CX23885_BOARD_DVBSKY_S950C:
+	case CX23885_BOARD_DVBSKY_S950:
+	case CX23885_BOARD_DVBSKY_S952:
+	case CX23885_BOARD_DVBSKY_T982:
+		/* Integrated CX23885 IR controller */
+		allowed_protos = RC_PROTO_BIT_ALL_IR_DECODER;
+		rc_map = RC_MAP_DVBSKY;
+		break;
+	case CX23885_BOARD_TT_CT2_4500_CI:
+		/* Integrated CX23885 IR controller */
+		allowed_protos = RC_PROTO_BIT_ALL_IR_DECODER;
+		rc_map = RC_MAP_TT_1500;
+		break;
+	default:
+		return -ENODEV;
+	}
+
+	/* cx23885 board instance kernel IR state */
+	kernel_ir = kzalloc(sizeof(struct cx23885_kernel_ir), GFP_KERNEL);
+	if (kernel_ir == NULL)
+		return -ENOMEM;
+
+	kernel_ir->cx = dev;
+	kernel_ir->name = kasprintf(GFP_KERNEL, "cx23885 IR (%s)",
+				    cx23885_boards[dev->board].name);
+	if (!kernel_ir->name) {
+		ret = -ENOMEM;
+		goto err_out_free;
+	}
+
+	kernel_ir->phys = kasprintf(GFP_KERNEL, "pci-%s/ir0",
+				    pci_name(dev->pci));
+	if (!kernel_ir->phys) {
+		ret = -ENOMEM;
+		goto err_out_free_name;
+	}
+
+	/* input device */
+	rc = rc_allocate_device(RC_DRIVER_IR_RAW);
+	if (!rc) {
+		ret = -ENOMEM;
+		goto err_out_free_phys;
+	}
+
+	ker

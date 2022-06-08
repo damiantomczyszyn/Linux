@@ -1,2 +1,2 @@
-lude/config/SHMEM) \
-    $(wild
+drivers/net/can/m_can/m_can.o
+

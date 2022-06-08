@@ -1,3 +1,3 @@
-INJECTION) \
-    $(wildcard include/config/LATENCYTOP) \
-    $(wildcard incl
+th =
+			    txclk_tx_s_max_pulse_width(dev, p->max_pulse_width,
+						      

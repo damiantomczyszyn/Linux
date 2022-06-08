@@ -1,1 +1,2 @@
-de/generated/asm/early_ioremap
+  = 0x61,
+	.if_khz           =

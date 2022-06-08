@@ -1,231 +1,207 @@
-/* SPDX-License-Identifier: GPL-2.0-or-later */
-/*
- * Driver for Feature Integration Technology Inc. (aka Fintek) LPC CIR
- *
- * Copyright (C) 2011 Jarod Wilson <jarod@redhat.com>
- *
- * Special thanks to Fintek for providing hardware and spec sheets.
- * This driver is based upon the nuvoton, ite and ene drivers for
- * similar hardware.
- */
+:
+		i2c_bus = &dev->i2c_bus[0];
 
-#include <linux/spinlock.h>
-#include <linux/ioctl.h>
+		if (!dvb_attach(dib7000p_attach, &dib7000p_ops))
+			return -ENODEV;
 
-/* platform driver name to register */
-#define FINTEK_DRIVER_NAME	"fintek-cir"
-#define FINTEK_DESCRIPTION	"Fintek LPC SuperIO Consumer IR Transceiver"
-#define VENDOR_ID_FINTEK	0x1934
+		fe0->dvb.frontend = dib7000p_ops.init(&i2c_bus->i2c_adap,
+			0x12, &hauppauge_hvr1400_dib7000_config);
+		if (fe0->dvb.frontend != NULL) {
+			struct dvb_frontend *fe;
+			struct xc2028_config cfg = {
+				.i2c_adap  = &dev->i2c_bus[1].i2c_adap,
+				.i2c_addr  = 0x64,
+			};
+			static struct xc2028_ctrl ctl = {
+				.fname   = XC3028L_DEFAULT_FIRMWARE,
+				.max_len = 64,
+				.demod   = XC3028_FE_DIBCOM52,
+				/* This is true for all demods with
+					v36 firmware? */
+				.type    = XC2028_D2633,
+			};
 
+			fe = dvb_attach(xc2028_attach,
+					fe0->dvb.frontend, &cfg);
+			if (fe != NULL && fe->ops.tuner_ops.set_config != NULL)
+				fe->ops.tuner_ops.set_config(fe, &ctl);
+		}
+		break;
+	case CX23885_BOARD_DVICO_FUSIONHDTV_7_DUAL_EXP:
+		i2c_bus = &dev->i2c_bus[port->nr - 1];
 
-/* debugging module parameter */
-static int debug;
+		fe0->dvb.frontend = dvb_attach(s5h1409_attach,
+						&dvico_s5h1409_config,
+						&i2c_bus->i2c_adap);
+		if (fe0->dvb.frontend == NULL)
+			fe0->dvb.frontend = dvb_attach(s5h1411_attach,
+							&dvico_s5h1411_config,
+							&i2c_bus->i2c_adap);
+		if (fe0->dvb.frontend != NULL)
+			dvb_attach(xc5000_attach, fe0->dvb.frontend,
+				   &i2c_bus->i2c_adap,
+				   &dvico_xc5000_tunerconfig);
+		break;
+	case CX23885_BOARD_DVICO_FUSIONHDTV_DVB_T_DUAL_EXP: {
+		i2c_bus = &dev->i2c_bus[port->nr - 1];
 
-#define fit_pr(level, text, ...) \
-	printk(level KBUILD_MODNAME ": " text, ## __VA_ARGS__)
+		fe0->dvb.frontend = dvb_attach(zl10353_attach,
+					       &dvico_fusionhdtv_xc3028,
+					       &i2c_bus->i2c_adap);
+		if (fe0->dvb.frontend != NULL) {
+			struct dvb_frontend      *fe;
+			struct xc2028_config	  cfg = {
+				.i2c_adap  = &i2c_bus->i2c_adap,
+				.i2c_addr  = 0x61,
+			};
+			static struct xc2028_ctrl ctl = {
+				.fname       = XC2028_DEFAULT_FIRMWARE,
+				.max_len     = 64,
+				.demod       = XC3028_FE_ZARLINK456,
+			};
 
-#define fit_dbg(text, ...) \
-	if (debug) \
-		printk(KERN_DEBUG \
-			KBUILD_MODNAME ": " text "\n" , ## __VA_ARGS__)
+			fe = dvb_attach(xc2028_attach, fe0->dvb.frontend,
+					&cfg);
+			if (fe != NULL && fe->ops.tuner_ops.set_config != NULL)
+				fe->ops.tuner_ops.set_config(fe, &ctl);
+		}
+		break;
+	}
+	case CX23885_BOARD_DVICO_FUSIONHDTV_DVB_T_DUAL_EXP2: {
+		i2c_bus = &dev->i2c_bus[port->nr - 1];
+		/* cxusb_ctrl_msg(adap->dev, CMD_DIGITAL, NULL, 0, NULL, 0); */
+		/* cxusb_bluebird_gpio_pulse(adap->dev, 0x02, 1); */
 
-#define fit_dbg_verbose(text, ...) \
-	if (debug > 1) \
-		printk(KERN_DEBUG \
-			KBUILD_MODNAME ": " text "\n" , ## __VA_ARGS__)
+		if (!dvb_attach(dib7000p_attach, &dib7000p_ops))
+			return -ENODEV;
 
-#define fit_dbg_wake(text, ...) \
-	if (debug > 2) \
-		printk(KERN_DEBUG \
-			KBUILD_MODNAME ": " text "\n" , ## __VA_ARGS__)
+		if (dib7000p_ops.i2c_enumeration(&i2c_bus->i2c_adap, 1, 0x12, &dib7070p_dib7000p_config) < 0) {
+			pr_warn("Unable to enumerate dib7000p\n");
+			return -ENODEV;
+		}
+		fe0->dvb.frontend = dib7000p_ops.init(&i2c_bus->i2c_adap, 0x80, &dib7070p_dib7000p_config);
+		if (fe0->dvb.frontend != NULL) {
+			struct i2c_adapter *tun_i2c;
 
+			fe0->dvb.frontend->sec_priv = kmemdup(&dib7000p_ops, sizeof(dib7000p_ops), GFP_KERNEL);
+			if (!fe0->dvb.frontend->sec_priv)
+				return -ENOMEM;
+			tun_i2c = dib7000p_ops.get_i2c_master(fe0->dvb.frontend, DIBX000_I2C_INTERFACE_TUNER, 1);
+			if (!dvb_attach(dib0070_attach, fe0->dvb.frontend, tun_i2c, &dib7070p_dib0070_config))
+				return -ENODEV;
+		}
+		break;
+	}
+	case CX23885_BOARD_LEADTEK_WINFAST_PXDVR3200_H:
+	case CX23885_BOARD_COMPRO_VIDEOMATE_E650F:
+	case CX23885_BOARD_COMPRO_VIDEOMATE_E800:
+		i2c_bus = &dev->i2c_bus[0];
 
-#define TX_BUF_LEN 256
-#define RX_BUF_LEN 32
+		fe0->dvb.frontend = dvb_attach(zl10353_attach,
+			&dvico_fusionhdtv_xc3028,
+			&i2c_bus->i2c_adap);
+		if (fe0->dvb.frontend != NULL) {
+			struct dvb_frontend      *fe;
+			struct xc2028_config	  cfg = {
+				.i2c_adap  = &dev->i2c_bus[1].i2c_adap,
+				.i2c_addr  = 0x61,
+			};
+			static struct xc2028_ctrl ctl = {
+				.fname       = XC2028_DEFAULT_FIRMWARE,
+				.max_len     = 64,
+				.demod       = XC3028_FE_ZARLINK456,
+			};
 
-struct fintek_dev {
-	struct pnp_dev *pdev;
-	struct rc_dev *rdev;
+			fe = dvb_attach(xc2028_attach, fe0->dvb.frontend,
+				&cfg);
+			if (fe != NULL && fe->ops.tuner_ops.set_config != NULL)
+				fe->ops.tuner_ops.set_config(fe, &ctl);
+		}
+		break;
+	case CX23885_BOARD_LEADTEK_WINFAST_PXDVR3200_H_XC4000:
+		i2c_bus = &dev->i2c_bus[0];
 
-	spinlock_t fintek_lock;
+		fe0->dvb.frontend = dvb_attach(zl10353_attach,
+					       &dvico_fusionhdtv_xc3028,
+					       &i2c_bus->i2c_adap);
+		if (fe0->dvb.frontend != NULL) {
+			struct dvb_frontend	*fe;
+			struct xc4000_config	cfg = {
+				.i2c_address	  = 0x61,
+				.default_pm	  = 0,
+				.dvb_amplitude	  = 134,
+				.set_smoothedcvbs = 1,
+				.if_khz		  = 4560
+			};
 
-	/* for rx */
-	u8 buf[RX_BUF_LEN];
-	unsigned int pkts;
+			fe = dvb_attach(xc4000_attach, fe0->dvb.frontend,
+					&dev->i2c_bus[1].i2c_adap, &cfg);
+			if (!fe) {
+				pr_err("%s/2: xc4000 attach failed\n",
+				       dev->name);
+				goto frontend_detach;
+			}
+		}
+		break;
+	case CX23885_BOARD_TBS_6920:
+		i2c_bus = &dev->i2c_bus[1];
 
-	struct {
-		spinlock_t lock;
-		u8 buf[TX_BUF_LEN];
-		unsigned int buf_count;
-		unsigned int cur_buf_num;
-		wait_queue_head_t queue;
-	} tx;
+		fe0->dvb.frontend = dvb_attach(cx24116_attach,
+					&tbs_cx24116_config,
+					&i2c_bus->i2c_adap);
+		if (fe0->dvb.frontend != NULL)
+			fe0->dvb.frontend->ops.set_voltage = f300_set_voltage;
 
-	/* Config register index/data port pair */
-	u32 cr_ip;
-	u32 cr_dp;
+		break;
+	case CX23885_BOARD_TBS_6980:
+	case CX23885_BOARD_TBS_6981:
+		i2c_bus = &dev->i2c_bus[1];
 
-	/* hardware I/O settings */
-	unsigned long cir_addr;
-	int cir_irq;
-	int cir_port_len;
+		switch (port->nr) {
+		/* PORT B */
+		case 1:
+			fe0->dvb.frontend = dvb_attach(cx24117_attach,
+					&tbs_cx24117_config,
+					&i2c_bus->i2c_adap);
+			break;
+		/* PORT C */
+		case 2:
+			fe0->dvb.frontend = dvb_attach(cx24117_attach,
+					&tbs_cx24117_config,
+					&i2c_bus->i2c_adap);
+			break;
+		}
+		break;
+	case CX23885_BOARD_TEVII_S470:
+		i2c_bus = &dev->i2c_bus[1];
 
-	/* hardware id */
-	u8 chip_major;
-	u8 chip_minor;
-	u16 chip_vendor;
-	u8 logical_dev_cir;
+		fe0->dvb.frontend = dvb_attach(ds3000_attach,
+					&tevii_ds3000_config,
+					&i2c_bus->i2c_adap);
+		if (fe0->dvb.frontend != NULL) {
+			dvb_attach(ts2020_attach, fe0->dvb.frontend,
+				&tevii_ts2020_config, &i2c_bus->i2c_adap);
+			fe0->dvb.frontend->ops.set_voltage = f300_set_voltage;
+		}
 
-	/* hardware features */
-	bool hw_learning_capable;
-	bool hw_tx_capable;
+		break;
+	case CX23885_BOARD_DVBWORLD_2005:
+		i2c_bus = &dev->i2c_bus[1];
 
-	/* rx settings */
-	bool learning_enabled;
-	bool carrier_detect_enabled;
-
-	enum {
-		CMD_HEADER = 0,
-		SUBCMD,
-		CMD_DATA,
-		PARSE_IRDATA,
-	} parser_state;
-
-	u8 cmd, rem;
-
-	/* carrier period = 1 / frequency */
-	u32 carrier;
-};
-
-/* buffer packet constants, largely identical to mceusb.c */
-#define BUF_PULSE_BIT		0x80
-#define BUF_LEN_MASK		0x1f
-#define BUF_SAMPLE_MASK		0x7f
-
-#define BUF_COMMAND_HEADER	0x9f
-#define BUF_COMMAND_MASK	0xe0
-#define BUF_COMMAND_NULL	0x00
-#define BUF_HW_CMD_HEADER	0xff
-#define BUF_CMD_G_REVISION	0x0b
-#define BUF_CMD_S_CARRIER	0x06
-#define BUF_CMD_S_TIMEOUT	0x0c
-#define BUF_CMD_SIG_END		0x01
-#define BUF_CMD_S_TXMASK	0x08
-#define BUF_CMD_S_RXSENSOR	0x14
-#define BUF_RSP_PULSE_COUNT	0x15
-
-#define CIR_SAMPLE_PERIOD	50
-
-/*
- * Configuration Register:
- *  Index Port
- *  Data Port
- */
-#define CR_INDEX_PORT		0x2e
-#define CR_DATA_PORT		0x2f
-
-/* Possible alternate values, depends on how the chip is wired */
-#define CR_INDEX_PORT2		0x4e
-#define CR_DATA_PORT2		0x4f
-
-/*
- * GCR_CONFIG_PORT_SEL bit 4 specifies which Index Port value is
- * active. 1 = 0x4e, 0 = 0x2e
- */
-#define PORT_SEL_PORT_4E_EN	0x10
-
-/* Extended Function Mode enable/disable magic values */
-#define CONFIG_REG_ENABLE	0x87
-#define CONFIG_REG_DISABLE	0xaa
-
-/* Chip IDs found in CR_CHIP_ID_{HI,LO} */
-#define CHIP_ID_HIGH_F71809U	0x04
-#define CHIP_ID_LOW_F71809U	0x08
-
-/*
- * Global control regs we need to care about:
- *      Global Control                  def.
- *      Register name           addr    val. */
-#define GCR_SOFTWARE_RESET	0x02 /* 0x00 */
-#define GCR_LOGICAL_DEV_NO	0x07 /* 0x00 */
-#define GCR_CHIP_ID_HI		0x20 /* 0x04 */
-#define GCR_CHIP_ID_LO		0x21 /* 0x08 */
-#define GCR_VENDOR_ID_HI	0x23 /* 0x19 */
-#define GCR_VENDOR_ID_LO	0x24 /* 0x34 */
-#define GCR_CONFIG_PORT_SEL	0x25 /* 0x01 */
-#define GCR_KBMOUSE_WAKEUP	0x27
-
-#define LOGICAL_DEV_DISABLE	0x00
-#define LOGICAL_DEV_ENABLE	0x01
-
-/* Logical device number of the CIR function */
-#define LOGICAL_DEV_CIR_REV1	0x05
-#define LOGICAL_DEV_CIR_REV2	0x08
-
-/* CIR Logical Device (LDN 0x08) config registers */
-#define CIR_CR_COMMAND_INDEX	0x04
-#define CIR_CR_IRCS		0x05 /* Before host writes command to IR, host
-					must set to 1. When host finshes write
-					command to IR, host must clear to 0. */
-#define CIR_CR_COMMAND_DATA	0x06 /* Host read or write command data */
-#define CIR_CR_CLASS		0x07 /* 0xff = rx-only, 0x66 = rx + 2 tx,
-					0x33 = rx + 1 tx */
-#define CIR_CR_DEV_EN		0x30 /* bit0 = 1 enables CIR */
-#define CIR_CR_BASE_ADDR_HI	0x60 /* MSB of CIR IO base addr */
-#define CIR_CR_BASE_ADDR_LO	0x61 /* LSB of CIR IO base addr */
-#define CIR_CR_IRQ_SEL		0x70 /* bits3-0 store CIR IRQ */
-#define CIR_CR_PSOUT_STATUS	0xf1
-#define CIR_CR_WAKE_KEY3_ADDR	0xf8
-#define CIR_CR_WAKE_KEY3_CODE	0xf9
-#define CIR_CR_WAKE_KEY3_DC	0xfa
-#define CIR_CR_WAKE_CONTROL	0xfb
-#define CIR_CR_WAKE_KEY12_ADDR	0xfc
-#define CIR_CR_WAKE_KEY4_ADDR	0xfd
-#define CIR_CR_WAKE_KEY5_ADDR	0xfe
-
-#define CLASS_RX_ONLY		0xff
-#define CLASS_RX_2TX		0x66
-#define CLASS_RX_1TX		0x33
-
-/* CIR device registers */
-#define CIR_STATUS		0x00
-#define CIR_RX_DATA		0x01
-#define CIR_TX_CONTROL		0x02
-#define CIR_TX_DATA		0x03
-#define CIR_CONTROL		0x04
-
-/* Bits to enable CIR wake */
-#define LOGICAL_DEV_ACPI	0x01
-#define LDEV_ACPI_WAKE_EN_REG	0xe8
-#define ACPI_WAKE_EN_CIR_BIT	0x04
-
-#define LDEV_ACPI_PME_EN_REG	0xf0
-#define LDEV_ACPI_PME_CLR_REG	0xf1
-#define ACPI_PME_CIR_BIT	0x02
-
-#define LDEV_ACPI_STATE_REG	0xf4
-#define ACPI_STATE_CIR_BIT	0x20
-
-/*
- * CIR status register (0x00):
- *   7 - CIR_IRQ_EN (1 = enable CIR IRQ, 0 = disable)
- *   3 - TX_FINISH (1 when TX finished, write 1 to clear)
- *   2 - TX_UNDERRUN (1 on TX underrun, write 1 to clear)
- *   1 - RX_TIMEOUT (1 on RX timeout, write 1 to clear)
- *   0 - RX_RECEIVE (1 on RX receive, write 1 to clear)
- */
-#define CIR_STATUS_IRQ_EN	0x80
-#define CIR_STATUS_TX_FINISH	0x08
-#define CIR_STATUS_TX_UNDERRUN	0x04
-#define CIR_STATUS_RX_TIMEOUT	0x02
-#define CIR_STATUS_RX_RECEIVE	0x01
-#define CIR_STATUS_IRQ_MASK	0x0f
-
-/*
- * CIR TX control register (0x02):
- *   7 - TX_START (1 to indicate TX start, auto-cleared when done)
- *   6 - TX_END (1 to indicate TX data written to TX fifo)
- */
-#define CIR_TX_CONTROL_TX_START	0x80
-#define CIR_TX_CONTROL_TX_END	0x40
-
+		fe0->dvb.frontend = dvb_attach(cx24116_attach,
+			&dvbworld_cx24116_config,
+			&i2c_bus->i2c_adap);
+		break;
+	case CX23885_BOARD_NETUP_DUAL_DVBS2_CI:
+		i2c_bus = &dev->i2c_bus[0];
+		switch (port->nr) {
+		/* port B */
+		case 1:
+			fe0->dvb.frontend = dvb_attach(stv0900_attach,
+							&netup_stv0900_config,
+							&i2c_bus->i2c_adap, 0);
+			if (fe0->dvb.frontend != NULL) {
+				if (dvb_attach(stv6110_attach,
+						fe0->dvb.frontend,
+						&netup_stv6110_tunerconfig_a,
+						

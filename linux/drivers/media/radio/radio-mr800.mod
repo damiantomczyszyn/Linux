@@ -1,2 +1,2 @@
-drivers/media/radio/radio-mr800.o
-
+] = {
+		.name		= "Hauppauge WinTV-H

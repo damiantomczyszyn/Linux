@@ -1,138 +1,101 @@
-st_head *hash_head = chainhashentry(chain_key);
-	struct lock_chain *chain;
-	int i, j;
-
+smlinkage __visible void __sched notrace preempt_schedule(void)
+{
 	/*
-	 * The caller must hold the graph lock, ensure we've got IRQs
-	 * disabled to make this an IRQ-safe lock.. for recursion reasons
-	 * lockdep won't complain about its own locking errors.
+	 * If there is a non-zero preempt_count or interrupts are disabled,
+	 * we do not want to preempt the current task. Just return..
 	 */
-	if (lockdep_assert_locked())
-		return 0;
-
-	chain = alloc_lock_chain();
-	if (!chain) {
-		if (!debug_locks_off_graph_unlock())
-			return 0;
-
-		print_lockdep_off("BUG: MAX_LOCKDEP_CHAINS too low!");
-		dump_stack();
-		return 0;
-	}
-	chain->chain_key = chain_key;
-	chain->irq_context = hlock->irq_context;
-	i = get_first_held_lock(curr, hlock);
-	chain->depth = curr->lockdep_depth + 1 - i;
-
-	BUILD_BUG_ON((1UL << 24) <= ARRAY_SIZE(chain_hlocks));
-	BUILD_BUG_ON((1UL << 6)  <= ARRAY_SIZE(curr->held_locks));
-	BUILD_BUG_ON((1UL << 8*sizeof(chain_hlocks[0])) <= ARRAY_SIZE(lock_classes));
-
-	j = alloc_chain_hlocks(chain->depth);
-	if (j < 0) {
-		if (!debug_locks_off_graph_unlock())
-			return 0;
-
-		print_lockdep_off("BUG: MAX_LOCKDEP_CHAIN_HLOCKS too low!");
-		dump_stack();
-		return 0;
-	}
-
-	chain->base = j;
-	for (j = 0; j < chain->depth - 1; j++, i++) {
-		int lock_id = hlock_id(curr->held_locks + i);
-
-		chain_hlocks[chain->base + j] = lock_id;
-	}
-	chain_hlocks[chain->base + j] = hlock_id(hlock);
-	hlist_add_head_rcu(&chain->entry, hash_head);
-	debug_atomic_inc(chain_lookup_misses);
-	inc_chains(chain->irq_context);
-
-	return 1;
+	if (likely(!preemptible()))
+		return;
+	preempt_schedule_common();
 }
+NOKPROBE_SYMBOL(preempt_schedule);
+EXPORT_SYMBOL(preempt_schedule);
 
-/*
- * Look up a dependency chain. Must be called with either the graph lock or
- * the RCU read lock held.
+#ifdef CONFIG_PREEMPT_DYNAMIC
+#if defined(CONFIG_HAVE_PREEMPT_DYNAMIC_CALL)
+#ifndef preempt_schedule_dynamic_enabled
+#define preempt_schedule_dynamic_enabled	preempt_schedule
+#define preempt_schedule_dynamic_disabled	NULL
+#endif
+DEFINE_STATIC_CALL(preempt_schedule, preempt_schedule_dynamic_enabled);
+EXPORT_STATIC_CALL_TRAMP(preempt_schedule);
+#elif defined(CONFIG_HAVE_PREEMPT_DYNAMIC_KEY)
+static DEFINE_STATIC_KEY_TRUE(sk_dynamic_preempt_schedule);
+void __sched notrace dynamic_preempt_schedule(void)
+{
+	if (!static_branch_unlikely(&sk_dynamic_preempt_schedule))
+		return;
+	preempt_schedule();
+}
+NOKPROBE_SYMBOL(dynamic_preempt_schedule);
+EXPORT_SYMBOL(dynamic_preempt_schedule);
+#endif
+#endif
+
+/**
+ * preempt_schedule_notrace - preempt_schedule called by tracing
+ *
+ * The tracing infrastructure uses preempt_enable_notrace to prevent
+ * recursion and tracing preempt enabling caused by the tracing
+ * infrastructure itself. But as tracing can happen in areas coming
+ * from userspace or just about to enter userspace, a preempt enable
+ * can occur before user_exit() is called. This will cause the scheduler
+ * to be called when the system is still in usermode.
+ *
+ * To prevent this, the preempt_enable_notrace will use this function
+ * instead of preempt_schedule() to exit user context if needed before
+ * calling the scheduler.
  */
-static inline struct lock_chain *lookup_chain_cache(u64 chain_key)
+asmlinkage __visible void __sched notrace preempt_schedule_notrace(void)
 {
-	struct hlist_head *hash_head = chainhashentry(chain_key);
-	struct lock_chain *chain;
+	enum ctx_state prev_ctx;
 
-	hlist_for_each_entry_rcu(chain, hash_head, entry) {
-		if (READ_ONCE(chain->chain_key) == chain_key) {
-			debug_atomic_inc(chain_lookup_hits);
-			return chain;
-		}
-	}
-	return NULL;
+	if (likely(!preemptible()))
+		return;
+
+	do {
+		/*
+		 * Because the function tracer can trace preempt_count_sub()
+		 * and it also uses preempt_enable/disable_notrace(), if
+		 * NEED_RESCHED is set, the preempt_enable_notrace() called
+		 * by the function tracer will call this function again and
+		 * cause infinite recursion.
+		 *
+		 * Preemption must be disabled here before the function
+		 * tracer can trace. Break up preempt_disable() into two
+		 * calls. One to disable preemption without fear of being
+		 * traced. The other to still record the preemption latency,
+		 * which can also be traced by the function tracer.
+		 */
+		preempt_disable_notrace();
+		preempt_latency_start(1);
+		/*
+		 * Needs preempt disabled in case user_exit() is traced
+		 * and the tracer calls preempt_enable_notrace() causing
+		 * an infinite recursion.
+		 */
+		prev_ctx = exception_enter();
+		__schedule(SM_PREEMPT);
+		exception_exit(prev_ctx);
+
+		preempt_latency_stop(1);
+		preempt_enable_no_resched_notrace();
+	} while (need_resched());
 }
+EXPORT_SYMBOL_GPL(preempt_schedule_notrace);
 
-/*
- * If the key is not present yet in dependency chain cache then
- * add it and return 1 - in this case the new dependency chain is
- * validated. If the key is already hashed, return 0.
- * (On return with 1 graph_lock is held.)
- */
-static inline int lookup_chain_cache_add(struct task_struct *curr,
-					 struct held_lock *hlock,
-					 u64 chain_key)
+#ifdef CONFIG_PREEMPT_DYNAMIC
+#if defined(CONFIG_HAVE_PREEMPT_DYNAMIC_CALL)
+#ifndef preempt_schedule_notrace_dynamic_enabled
+#define preempt_schedule_notrace_dynamic_enabled	preempt_schedule_notrace
+#define preempt_schedule_notrace_dynamic_disabled	NULL
+#endif
+DEFINE_STATIC_CALL(preempt_schedule_notrace, preempt_schedule_notrace_dynamic_enabled);
+EXPORT_STATIC_CALL_TRAMP(preempt_schedule_notrace);
+#elif defined(CONFIG_HAVE_PREEMPT_DYNAMIC_KEY)
+static DEFINE_STATIC_KEY_TRUE(sk_dynamic_preempt_schedule_notrace);
+void __sched notrace dynamic_preempt_schedule_notrace(void)
 {
-	struct lock_class *class = hlock_class(hlock);
-	struct lock_chain *chain = lookup_chain_cache(chain_key);
-
-	if (chain) {
-cache_hit:
-		if (!check_no_collision(curr, hlock, chain))
-			return 0;
-
-		if (very_verbose(class)) {
-			printk("\nhash chain already cached, key: "
-					"%016Lx tail class: [%px] %s\n",
-					(unsigned long long)chain_key,
-					class->key, class->name);
-		}
-
-		return 0;
-	}
-
-	if (very_verbose(class)) {
-		printk("\nnew hash chain, key: %016Lx tail class: [%px] %s\n",
-			(unsigned long long)chain_key, class->key, class->name);
-	}
-
-	if (!graph_lock())
-		return 0;
-
-	/*
-	 * We have to walk the chain again locked - to avoid duplicates:
-	 */
-	chain = lookup_chain_cache(chain_key);
-	if (chain) {
-		graph_unlock();
-		goto cache_hit;
-	}
-
-	if (!add_chain_cache(curr, hlock, chain_key))
-		return 0;
-
-	return 1;
-}
-
-static int validate_chain(struct task_struct *curr,
-			  struct held_lock *hlock,
-			  int chain_head, u64 chain_key)
-{
-	/*
-	 * Trylock needs to maintain the stack of held locks, but it
-	 * does not add new dependencies, because trylock can be done
-	 * in any order.
-	 *
-	 * We look up the chain_key and do the O(N^2) check and update of
-	 * the dependencies only if this is a new dependency chain.
-	 * (If lookup_chain_cache_add() return with 1 it acquires
-	 * graph_lock for us)
-	 */
-	if (!hlock->try
+	if (!static_branch_unlikely(&sk_dynamic_preempt_schedule_notrace))
+		return;
+	preempt_schedule_notrace();

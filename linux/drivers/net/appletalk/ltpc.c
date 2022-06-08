@@ -1,713 +1,1277 @@
-cmd_drivers/media/i2c/vs6624.o := gcc -Wp,-MMD,drivers/media/i2c/.vs6624.o.d -nostdinc -I./arch/x86/include -I./arch/x86/include/generated  -I./include -I./arch/x86/include/uapi -I./arch/x86/include/generated/uapi -I./include/uapi -I./include/generated/uapi -include ./include/linux/compiler-version.h -include ./include/linux/kconfig.h -include ./include/linux/compiler_types.h -D__KERNEL__ -fmacro-prefix-map=./= -Wall -Wundef -Werror=strict-prototypes -Wno-trigraphs -fno-strict-aliasing -fno-common -fshort-wchar -fno-PIE -Werror=implicit-function-declaration -Werror=implicit-int -Werror=return-type -Wno-format-security -std=gnu11 -mno-sse -mno-mmx -mno-sse2 -mno-3dnow -mno-avx -fcf-protection=none -m32 -msoft-float -mregparm=3 -freg-struct-return -fno-pic -mpreferred-stack-boundary=2 -march=i686 -mtune=pentium3 -mtune=generic -Wa,-mtune=generic32 -ffreestanding -mstack-protector-guard-reg=fs -mstack-protector-guard-symbol=__stack_chk_guard -Wno-sign-compare -fno-asynchronous-unwind-tables -mindirect-branch=thunk-extern -mindirect-branch-register -fno-jump-tables -fno-delete-null-pointer-checks -Wno-frame-address -Wno-format-truncation -Wno-format-overflow -Wno-address-of-packed-member -O2 -fno-allow-store-data-races -fstack-protector-strong -Wimplicit-fallthrough=5 -Wno-main -Wno-unused-but-set-variable -Wno-unused-const-variable -fno-stack-clash-protection -pg -mrecord-mcount -mfentry -DCC_USING_FENTRY -Wdeclaration-after-statement -Wvla -Wno-pointer-sign -Wcast-function-type -Wno-stringop-truncation -Wno-stringop-overflow -Wno-restrict -Wno-maybe-uninitialized -Wno-alloc-size-larger-than -fno-strict-overflow -fno-stack-check -fconserve-stack -Werror=date-time -Werror=incompatible-pointer-types -Werror=designated-init -Wno-packed-not-aligned  -DMODULE  -DKBUILD_BASENAME='"vs6624"' -DKBUILD_MODNAME='"vs6624"' -D__KBUILD_MODNAME=kmod_vs6624 -c -o drivers/media/i2c/vs6624.o drivers/media/i2c/vs6624.c 
+/***    ltpc.c -- a driver for the LocalTalk PC card.
+ *
+ *      Copyright (c) 1995,1996 Bradford W. Johnson <johns393@maroon.tc.umn.edu>
+ *
+ *      This software may be used and distributed according to the terms
+ *      of the GNU General Public License, incorporated herein by reference.
+ *
+ *      This is ALPHA code at best.  It may not work for you.  It may
+ *      damage your equipment.  It may damage your relations with other
+ *      users of your network.  Use it at your own risk!
+ *
+ *      Based in part on:
+ *      skeleton.c      by Donald Becker
+ *      dummy.c         by Nick Holloway and Alan Cox
+ *      loopback.c      by Ross Biro, Fred van Kampen, Donald Becker
+ *      the netatalk source code (UMICH)
+ *      lots of work on the card...
+ *
+ *      I do not have access to the (proprietary) SDK that goes with the card.
+ *      If you do, I don't want to know about it, and you can probably write
+ *      a better driver yourself anyway.  This does mean that the pieces that
+ *      talk to the card are guesswork on my part, so use at your own risk!
+ *
+ *      This is my first try at writing Linux networking code, and is also
+ *      guesswork.  Again, use at your own risk!  (Although on this part, I'd
+ *      welcome suggestions)
+ *
+ *      This is a loadable kernel module which seems to work at my site
+ *      consisting of a 1.2.13 linux box running netatalk 1.3.3, and with
+ *      the kernel support from 1.3.3b2 including patches routing.patch
+ *      and ddp.disappears.from.chooser.  In order to run it, you will need
+ *      to patch ddp.c and aarp.c in the kernel, but only a little...
+ *
+ *      I'm fairly confident that while this is arguably badly written, the
+ *      problems that people experience will be "higher level", that is, with
+ *      complications in the netatalk code.  The driver itself doesn't do
+ *      anything terribly complicated -- it pretends to be an ether device
+ *      as far as netatalk is concerned, strips the DDP data out of the ether
+ *      frame and builds a LLAP packet to send out the card.  In the other
+ *      direction, it receives LLAP frames from the card and builds a fake
+ *      ether packet that it then tosses up to the networking code.  You can
+ *      argue (correctly) that this is an ugly way to do things, but it
+ *      requires a minimal amount of fooling with the code in ddp.c and aarp.c.
+ *
+ *      The card will do a lot more than is used here -- I *think* it has the
+ *      layers up through ATP.  Even if you knew how that part works (which I
+ *      don't) it would be a big job to carve up the kernel ddp code to insert
+ *      things at a higher level, and probably a bad idea...
+ *
+ *      There are a number of other cards that do LocalTalk on the PC.  If
+ *      nobody finds any insurmountable (at the netatalk level) problems
+ *      here, this driver should encourage people to put some work into the
+ *      other cards (some of which I gather are still commercially available)
+ *      and also to put hooks for LocalTalk into the official ddp code.
+ *
+ *      I welcome comments and suggestions.  This is my first try at Linux
+ *      networking stuff, and there are probably lots of things that I did
+ *      suboptimally.  
+ *
+ ***/
 
-source_drivers/media/i2c/vs6624.o := drivers/media/i2c/vs6624.c
+/***
+ *
+ * $Log: ltpc.c,v $
+ * Revision 1.1.2.1  2000/03/01 05:35:07  jgarzik
+ * at and tr cleanup
+ *
+ * Revision 1.8  1997/01/28 05:44:54  bradford
+ * Clean up for non-module a little.
+ * Hacked about a bit to clean things up - Alan Cox 
+ * Probably broken it from the origina 1.8
+ *
 
-deps_drivers/media/i2c/vs6624.o := \
-    $(wildcard include/config/VIDEO_ADV_DEBUG) \
-  include/linux/compiler-version.h \
-    $(wildcard include/config/CC_VERSION_TEXT) \
-  include/linux/kconfig.h \
-    $(wildcard include/config/CPU_BIG_ENDIAN) \
-    $(wildcard include/config/BOOGER) \
-    $(wildcard include/config/FOO) \
-  include/linux/compiler_types.h \
-    $(wildcard include/config/DEBUG_INFO_BTF) \
-    $(wildcard include/config/PAHOLE_HAS_BTF_TAG) \
-    $(wildcard include/config/HAVE_ARCH_COMPILER_H) \
-    $(wildcard include/config/CC_HAS_ASM_INLINE) \
-  include/linux/compiler_attributes.h \
-  include/linux/compiler-gcc.h \
-    $(wildcard include/config/RETPOLINE) \
-    $(wildcard include/config/ARCH_USE_BUILTIN_BSWAP) \
-    $(wildcard include/config/SHADOW_CALL_STACK) \
-    $(wildcard include/config/KCOV) \
-  include/linux/delay.h \
-  include/linux/math.h \
-  include/linux/types.h \
-    $(wildcard include/config/HAVE_UID16) \
-    $(wildcard include/config/UID16) \
-    $(wildcard include/config/ARCH_DMA_ADDR_T_64BIT) \
-    $(wildcard include/config/PHYS_ADDR_T_64BIT) \
-    $(wildcard include/config/64BIT) \
-    $(wildcard include/config/ARCH_32BIT_USTAT_F_TINODE) \
-  include/uapi/linux/types.h \
-  arch/x86/include/generated/uapi/asm/types.h \
-  include/uapi/asm-generic/types.h \
-  include/asm-generic/int-ll64.h \
-  include/uapi/asm-generic/int-ll64.h \
-  arch/x86/include/uapi/asm/bitsperlong.h \
-  include/asm-generic/bitsperlong.h \
-  include/uapi/asm-generic/bitsperlong.h \
-  include/uapi/linux/posix_types.h \
-  include/linux/stddef.h \
-  include/uapi/linux/stddef.h \
-  include/linux/compiler_types.h \
-  arch/x86/include/asm/posix_types.h \
-    $(wildcard include/config/X86_32) \
-  arch/x86/include/uapi/asm/posix_types_32.h \
-  include/uapi/asm-generic/posix_types.h \
-  arch/x86/include/asm/div64.h \
-  include/linux/log2.h \
-    $(wildcard include/config/ARCH_HAS_ILOG2_U32) \
-    $(wildcard include/config/ARCH_HAS_ILOG2_U64) \
-  include/linux/bitops.h \
-  include/linux/bits.h \
-  include/linux/const.h \
-  include/vdso/const.h \
-  include/uapi/linux/const.h \
-  include/vdso/bits.h \
-  include/linux/build_bug.h \
-  include/linux/compiler.h \
-    $(wildcard include/config/TRACE_BRANCH_PROFILING) \
-    $(wildcard include/config/PROFILE_ALL_BRANCHES) \
-    $(wildcard include/config/STACK_VALIDATION) \
-    $(wildcard include/config/CFI_CLANG) \
-  arch/x86/include/generated/asm/rwonce.h \
-  include/asm-generic/rwonce.h \
-  include/linux/kasan-checks.h \
-    $(wildcard include/config/KASAN_GENERIC) \
-    $(wildcard include/config/KASAN_SW_TAGS) \
-  include/linux/kcsan-checks.h \
-    $(wildcard include/config/KCSAN) \
-    $(wildcard include/config/KCSAN_WEAK_MEMORY) \
-    $(wildcard include/config/KCSAN_IGNORE_ATOMICS) \
-  include/linux/typecheck.h \
-  include/uapi/linux/kernel.h \
-  include/uapi/linux/sysinfo.h \
-  arch/x86/include/asm/bitops.h \
-    $(wildcard include/config/X86_64) \
-    $(wildcard include/config/X86_CMOV) \
-  arch/x86/include/asm/alternative.h \
-    $(wildcard include/config/SMP) \
-  include/linux/stringify.h \
-  arch/x86/include/asm/asm.h \
-    $(wildcard include/config/KPROBES) \
-  arch/x86/include/asm/extable_fixup_types.h \
-  arch/x86/include/asm/rmwcc.h \
-    $(wildcard include/config/CC_HAS_ASM_GOTO) \
-  arch/x86/include/asm/barrier.h \
-  arch/x86/include/asm/nops.h \
-  include/asm-generic/barrier.h \
-  include/asm-generic/bitops/fls64.h \
-  include/asm-generic/bitops/sched.h \
-  arch/x86/include/asm/arch_hweight.h \
-  arch/x86/include/asm/cpufeatures.h \
-  arch/x86/include/asm/required-features.h \
-    $(wildcard include/config/X86_MINIMUM_CPU_FAMILY) \
-    $(wildcard include/config/MATH_EMULATION) \
-    $(wildcard include/config/X86_PAE) \
-    $(wildcard include/config/X86_CMPXCHG64) \
-    $(wildcard include/config/X86_P6_NOP) \
-    $(wildcard include/config/MATOM) \
-    $(wildcard include/config/PARAVIRT_XXL) \
-  arch/x86/include/asm/disabled-features.h \
-    $(wildcard include/config/X86_SMAP) \
-    $(wildcard include/config/X86_UMIP) \
-    $(wildcard include/config/X86_INTEL_MEMORY_PROTECTION_KEYS) \
-    $(wildcard include/config/X86_5LEVEL) \
-    $(wildcard include/config/PAGE_TABLE_ISOLATION) \
-    $(wildcard include/config/INTEL_IOMMU_SVM) \
-    $(wildcard include/config/X86_SGX) \
-  include/asm-generic/bitops/const_hweight.h \
-  include/asm-generic/bitops/instrumented-atomic.h \
-  include/linux/instrumented.h \
-  include/asm-generic/bitops/instrumented-non-atomic.h \
-    $(wildcard include/config/KCSAN_ASSUME_PLAIN_WRITES_ATOMIC) \
-  include/asm-generic/bitops/instrumented-lock.h \
-  include/asm-generic/bitops/le.h \
-  arch/x86/include/uapi/asm/byteorder.h \
-  include/linux/byteorder/little_endian.h \
-  include/uapi/linux/byteorder/little_endian.h \
-  include/linux/swab.h \
-  include/uapi/linux/swab.h \
-  arch/x86/include/uapi/asm/swab.h \
-  include/linux/byteorder/generic.h \
-  include/asm-generic/bitops/ext2-atomic-setbit.h \
-  include/linux/sched.h \
-    $(wildcard include/config/DEBUG_ATOMIC_SLEEP) \
-    $(wildcard include/config/PREEMPT_RT) \
-    $(wildcard include/config/VIRT_CPU_ACCOUNTING_NATIVE) \
-    $(wildcard include/config/SCHED_INFO) \
-    $(wildcard include/config/SCHEDSTATS) \
-    $(wildcard include/config/SCHED_CORE) \
-    $(wildcard include/config/FAIR_GROUP_SCHED) \
-    $(wildcard include/config/RT_GROUP_SCHED) \
-    $(wildcard include/config/RT_MUTEXES) \
-    $(wildcard include/config/UCLAMP_TASK) \
-    $(wildcard include/config/UCLAMP_BUCKETS_COUNT) \
-    $(wildcard include/config/KMAP_LOCAL) \
-    $(wildcard include/config/THREAD_INFO_IN_TASK) \
-    $(wildcard include/config/CGROUP_SCHED) \
-    $(wildcard include/config/PREEMPT_NOTIFIERS) \
-    $(wildcard include/config/BLK_DEV_IO_TRACE) \
-    $(wildcard include/config/PREEMPT_RCU) \
-    $(wildcard include/config/TASKS_RCU) \
-    $(wildcard include/config/TASKS_TRACE_RCU) \
-    $(wildcard include/config/PSI) \
-    $(wildcard include/config/MEMCG) \
-    $(wildcard include/config/COMPAT_BRK) \
-    $(wildcard include/config/CGROUPS) \
-    $(wildcard include/config/BLK_CGROUP) \
-    $(wildcard include/config/PAGE_OWNER) \
-    $(wildcard include/config/EVENTFD) \
-    $(wildcard include/config/IOMMU_SVA) \
-    $(wildcard include/config/STACKPROTECTOR) \
-    $(wildcard include/config/ARCH_HAS_SCALED_CPUTIME) \
-    $(wildcard include/config/VIRT_CPU_ACCOUNTING_GEN) \
-    $(wildcard include/config/NO_HZ_FULL) \
-    $(wildcard include/config/POSIX_CPUTIMERS) \
-    $(wildcard include/config/POSIX_CPU_TIMERS_TASK_WORK) \
-    $(wildcard include/config/KEYS) \
-    $(wildcard include/config/SYSVIPC) \
-    $(wildcard include/config/DETECT_HUNG_TASK) \
-    $(wildcard include/config/IO_URING) \
-    $(wildcard include/config/AUDIT) \
-    $(wildcard include/config/AUDITSYSCALL) \
-    $(wildcard include/config/DEBUG_MUTEXES) \
-    $(wildcard include/config/TRACE_IRQFLAGS) \
-    $(wildcard include/config/LOCKDEP) \
-    $(wildcard include/config/UBSAN) \
-    $(wildcard include/config/UBSAN_TRAP) \
-    $(wildcard include/config/COMPACTION) \
-    $(wildcard include/config/TASK_XACCT) \
-    $(wildcard include/config/CPUSETS) \
-    $(wildcard include/config/X86_CPU_RESCTRL) \
-    $(wildcard include/config/FUTEX) \
-    $(wildcard include/config/COMPAT) \
-    $(wildcard include/config/PERF_EVENTS) \
-    $(wildcard include/config/DEBUG_PREEMPT) \
-    $(wildcard include/config/NUMA) \
-    $(wildcard include/config/NUMA_BALANCING) \
-    $(wildcard include/config/RSEQ) \
-    $(wildcard include/config/TASK_DELAY_ACCT) \
-    $(wildcard include/config/FAULT_INJECTION) \
-    $(wildcard include/config/LATENCYTOP) \
-    $(wildcard include/config/KUNIT) \
-    $(wildcard include/config/FUNCTION_GRAPH_TRACER) \
-    $(wildcard include/config/TRACING) \
-    $(wildcard include/config/UPROBES) \
-    $(wildcard include/config/BCACHE) \
-    $(wildcard include/config/MMU) \
-    $(wildcard include/config/VMAP_STACK) \
-    $(wildcard include/config/LIVEPATCH) \
-    $(wildcard include/config/SECURITY) \
-    $(wildcard include/config/BPF_SYSCALL) \
-    $(wildcard include/config/GCC_PLUGIN_STACKLEAK) \
-    $(wildcard include/config/X86_MCE) \
-    $(wildcard include/config/KRETPROBES) \
-    $(wildcard include/config/RETHOOK) \
-    $(wildcard include/config/ARCH_HAS_PARANOID_L1D_FLUSH) \
-    $(wildcard include/config/ARCH_TASK_STRUCT_ON_STACK) \
-    $(wildcard include/config/PREEMPTION) \
-    $(wildcard include/config/PREEMPT_DYNAMIC) \
-    $(wildcard include/config/HAVE_PREEMPT_DYNAMIC_CALL) \
-    $(wildcard include/config/HAVE_PREEMPT_DYNAMIC_KEY) \
-    $(wildcard include/config/DEBUG_RSEQ) \
-  include/uapi/linux/sched.h \
-  arch/x86/include/asm/current.h \
-  arch/x86/include/asm/percpu.h \
-    $(wildcard include/config/X86_64_SMP) \
-  include/linux/kernel.h \
-    $(wildcard include/config/PREEMPT_VOLUNTARY_BUILD) \
-    $(wildcard include/config/PREEMPT_) \
-    $(wildcard include/config/PROVE_LOCKING) \
-    $(wildcard include/config/FTRACE_MCOUNT_RECORD) \
-  include/linux/stdarg.h \
-  include/linux/align.h \
-  include/linux/limits.h \
-  include/uapi/linux/limits.h \
-  include/vdso/limits.h \
-  include/linux/linkage.h \
-    $(wildcard include/config/ARCH_USE_SYM_ANNOTATIONS) \
-  include/linux/export.h \
-    $(wildcard include/config/MODVERSIONS) \
-    $(wildcard include/config/MODULE_REL_CRCS) \
-    $(wildcard include/config/HAVE_ARCH_PREL32_RELOCATIONS) \
-    $(wildcard include/config/MODULES) \
-    $(wildcard include/config/TRIM_UNUSED_KSYMS) \
-  arch/x86/include/asm/linkage.h \
-    $(wildcard include/config/X86_ALIGNMENT_16) \
-    $(wildcard include/config/SLS) \
-  arch/x86/include/asm/ibt.h \
-    $(wildcard include/config/X86_KERNEL_IBT) \
-  include/linux/container_of.h \
-  include/linux/err.h \
-  arch/x86/include/generated/uapi/asm/errno.h \
-  include/uapi/asm-generic/errno.h \
-  include/uapi/asm-generic/errno-base.h \
-  include/linux/kstrtox.h \
-  include/linux/minmax.h \
-  include/linux/panic.h \
-    $(wildcard include/config/PANIC_TIMEOUT) \
-  include/linux/printk.h \
-    $(wildcard include/config/MESSAGE_LOGLEVEL_DEFAULT) \
-    $(wildcard include/config/CONSOLE_LOGLEVEL_DEFAULT) \
-    $(wildcard include/config/CONSOLE_LOGLEVEL_QUIET) \
-    $(wildcard include/config/EARLY_PRINTK) \
-    $(wildcard include/config/PRINTK) \
-    $(wildcard include/config/PRINTK_INDEX) \
-    $(wildcard include/config/DYNAMIC_DEBUG) \
-    $(wildcard include/config/DYNAMIC_DEBUG_CORE) \
-  include/linux/init.h \
-    $(wildcard include/config/STRICT_KERNEL_RWX) \
-    $(wildcard include/config/STRICT_MODULE_RWX) \
-    $(wildcard include/config/LTO_CLANG) \
-  include/linux/kern_levels.h \
-  include/linux/cache.h \
-    $(wildcard include/config/ARCH_HAS_CACHE_LINE_SIZE) \
-  arch/x86/include/asm/cache.h \
-    $(wildcard include/config/X86_L1_CACHE_SHIFT) \
-    $(wildcard include/config/X86_INTERNODE_CACHE_SHIFT) \
-    $(wildcard include/config/X86_VSMP) \
-  include/linux/ratelimit_types.h \
-  include/uapi/linux/param.h \
-  arch/x86/include/generated/uapi/asm/param.h \
-  include/asm-generic/param.h \
-    $(wildcard include/config/HZ) \
-  include/uapi/asm-generic/param.h \
-  include/linux/spinlock_types_raw.h \
-    $(wildcard include/config/DEBUG_SPINLOCK) \
-    $(wildcard include/config/DEBUG_LOCK_ALLOC) \
-  arch/x86/include/asm/spinlock_types.h \
-  include/asm-generic/qspinlock_types.h \
-    $(wildcard include/config/NR_CPUS) \
-  include/asm-generic/qrwlock_types.h \
-  include/linux/lockdep_types.h \
-    $(wildcard include/config/PROVE_RAW_LOCK_NESTING) \
-    $(wildcard include/config/LOCK_STAT) \
-  include/linux/once_lite.h \
-  include/linux/static_call_types.h \
-    $(wildcard include/config/HAVE_STATIC_CALL) \
-    $(wildcard include/config/HAVE_STATIC_CALL_INLINE) \
-  include/linux/instruction_pointer.h \
-  include/asm-generic/percpu.h \
-    $(wildcard include/config/HAVE_SETUP_PER_CPU_AREA) \
-  include/linux/threads.h \
-    $(wildcard include/config/BASE_SMALL) \
-  include/linux/percpu-defs.h \
-    $(wildcard include/config/DEBUG_FORCE_WEAK_PER_CPU) \
-    $(wildcard include/config/AMD_MEM_ENCRYPT) \
-  include/linux/pid.h \
-  include/linux/rculist.h \
-    $(wildcard include/config/PROVE_RCU_LIST) \
-  include/linux/list.h \
-    $(wildcard include/config/DEBUG_LIST) \
-  include/linux/poison.h \
-    $(wildcard include/config/ILLEGAL_POINTER_VALUE) \
-  include/linux/rcupdate.h \
-    $(wildcard include/config/TINY_RCU) \
-    $(wildcard include/config/RCU_STRICT_GRACE_PERIOD) \
-    $(wildcard include/config/TASKS_RCU_GENERIC) \
-    $(wildcard include/config/RCU_STALL_COMMON) \
-    $(wildcard include/config/RCU_NOCB_CPU) \
-    $(wildcard include/config/TASKS_RUDE_RCU) \
-    $(wildcard include/config/TREE_RCU) \
-    $(wildcard include/config/DEBUG_OBJECTS_RCU_HEAD) \
-    $(wildcard include/config/HOTPLUG_CPU) \
-    $(wildcard include/config/PROVE_RCU) \
-    $(wildcard include/config/ARCH_WEAK_RELEASE_ACQUIRE) \
-  include/linux/atomic.h \
-  arch/x86/include/asm/atomic.h \
-  arch/x86/include/asm/cmpxchg.h \
-  arch/x86/include/asm/cmpxchg_32.h \
-  arch/x86/include/asm/atomic64_32.h \
-  include/linux/atomic/atomic-arch-fallback.h \
-    $(wildcard include/config/GENERIC_ATOMIC64) \
-  include/linux/atomic/atomic-long.h \
-  include/linux/atomic/atomic-instrumented.h \
-  include/linux/irqflags.h \
-    $(wildcard include/config/IRQSOFF_TRACER) \
-    $(wildcard include/config/PREEMPT_TRACER) \
-    $(wildcard include/config/DEBUG_IRQFLAGS) \
-    $(wildcard include/config/TRACE_IRQFLAGS_SUPPORT) \
-  arch/x86/include/asm/irqflags.h \
-    $(wildcard include/config/DEBUG_ENTRY) \
-    $(wildcard include/config/XEN_PV) \
-  arch/x86/include/asm/processor-flags.h \
-    $(wildcard include/config/VM86) \
-  arch/x86/include/uapi/asm/processor-flags.h \
-  include/linux/mem_encrypt.h \
-    $(wildcard include/config/ARCH_HAS_MEM_ENCRYPT) \
-  arch/x86/include/asm/mem_encrypt.h \
-  include/linux/cc_platform.h \
-    $(wildcard include/config/ARCH_HAS_CC_PLATFORM) \
-  arch/x86/include/uapi/asm/bootparam.h \
-  include/linux/screen_info.h \
-  include/uapi/linux/screen_info.h \
-  include/linux/apm_bios.h \
-  include/uapi/linux/apm_bios.h \
-  include/uapi/linux/ioctl.h \
-  arch/x86/include/generated/uapi/asm/ioctl.h \
-  include/asm-generic/ioctl.h \
-  include/uapi/asm-generic/ioctl.h \
-  include/linux/edd.h \
-  include/uapi/linux/edd.h \
-  arch/x86/include/asm/ist.h \
-  arch/x86/include/uapi/asm/ist.h \
-  include/video/edid.h \
-    $(wildcard include/config/X86) \
-  include/uapi/video/edid.h \
-  arch/x86/include/asm/nospec-branch.h \
-  include/linux/static_key.h \
-  include/linux/jump_label.h \
-    $(wildcard include/config/JUMP_LABEL) \
-    $(wildcard include/config/HAVE_ARCH_JUMP_LABEL_RELATIVE) \
-  arch/x86/include/asm/jump_label.h \
-  include/linux/objtool.h \
-    $(wildcard include/config/FRAME_POINTER) \
-  arch/x86/include/asm/msr-index.h \
-  arch/x86/include/asm/unwind_hints.h \
-  arch/x86/include/asm/orc_types.h \
-  arch/x86/include/asm/GEN-for-each-reg.h \
-  arch/x86/include/asm/segment.h \
-  include/linux/preempt.h \
-    $(wildcard include/config/PREEMPT_COUNT) \
-    $(wildcard include/config/TRACE_PREEMPT_TOGGLE) \
-  arch/x86/include/asm/preempt.h \
-  include/linux/thread_info.h \
-    $(wildcard include/config/GENERIC_ENTRY) \
-    $(wildcard include/config/HAVE_ARCH_WITHIN_STACK_FRAMES) \
-    $(wildcard include/config/HARDENED_USERCOPY) \
-    $(wildcard include/config/BUG) \
-  include/linux/bug.h \
-    $(wildcard include/config/GENERIC_BUG) \
-    $(wildcard include/config/BUG_ON_DATA_CORRUPTION) \
-  arch/x86/include/asm/bug.h \
-    $(wildcard include/config/DEBUG_BUGVERBOSE) \
-  include/linux/instrumentation.h \
-  include/asm-generic/bug.h \
-    $(wildcard include/config/GENERIC_BUG_RELATIVE_POINTERS) \
-  include/linux/restart_block.h \
-  include/linux/time64.h \
-  include/linux/math64.h \
-    $(wildcard include/config/ARCH_SUPPORTS_INT128) \
-  include/vdso/math64.h \
-  include/vdso/time64.h \
-  include/uapi/linux/time.h \
-  include/uapi/linux/time_types.h \
-  include/linux/errno.h \
-  include/uapi/linux/errno.h \
-  arch/x86/include/asm/thread_info.h \
-    $(wildcard include/config/X86_IOPL_IOPERM) \
-    $(wildcard include/config/IA32_EMULATION) \
-  arch/x86/include/asm/page.h \
-  arch/x86/include/asm/page_types.h \
-    $(wildcard include/config/PHYSICAL_START) \
-    $(wildcard include/config/PHYSICAL_ALIGN) \
-    $(wildcard include/config/DYNAMIC_PHYSICAL_MASK) \
-  arch/x86/include/asm/page_32_types.h \
-    $(wildcard include/config/HIGHMEM4G) \
-    $(wildcard include/config/HIGHMEM64G) \
-    $(wildcard include/config/PAGE_OFFSET) \
-  arch/x86/include/asm/page_32.h \
-    $(wildcard include/config/DEBUG_VIRTUAL) \
-    $(wildcard include/config/FLATMEM) \
-  include/linux/string.h \
-    $(wildcard include/config/BINARY_PRINTF) \
-    $(wildcard include/config/FORTIFY_SOURCE) \
-  include/uapi/linux/string.h \
-  arch/x86/include/asm/string.h \
-  arch/x86/include/asm/string_32.h \
-  include/linux/fortify-string.h \
-  include/linux/range.h \
-  include/asm-generic/memory_model.h \
-    $(wildcard include/config/SPARSEMEM_VMEMMAP) \
-    $(wildcard include/config/SPARSEMEM) \
-  include/linux/pfn.h \
-  include/asm-generic/getorder.h \
-  arch/x86/include/asm/cpufeature.h \
-    $(wildcard include/config/X86_FEATURE_NAMES) \
-  arch/x86/include/asm/processor.h \
-    $(wildcard include/config/X86_VMX_FEATURE_NAMES) \
-    $(wildcard include/config/X86_DEBUGCTLMSR) \
-    $(wildcard include/config/CPU_SUP_AMD) \
-    $(wildcard include/config/XEN) \
-  arch/x86/include/asm/math_emu.h \
-  arch/x86/include/asm/ptrace.h \
-    $(wildcard include/config/PARAVIRT) \
-  arch/x86/include/uapi/asm/ptrace.h \
-  arch/x86/include/uapi/asm/ptrace-abi.h \
-  arch/x86/include/asm/paravirt_types.h \
-    $(wildcard include/config/PGTABLE_LEVELS) \
-    $(wildcard include/config/PARAVIRT_DEBUG) \
-  arch/x86/include/asm/desc_defs.h \
-  arch/x86/include/asm/pgtable_types.h \
-    $(wildcard include/config/MEM_SOFT_DIRTY) \
-    $(wildcard include/config/HAVE_ARCH_USERFAULTFD_WP) \
-    $(wildcard include/config/PROC_FS) \
-  arch/x86/include/asm/pgtable_32_types.h \
-  arch/x86/include/asm/pgtable-3level_types.h \
-  include/asm-generic/pgtable-nop4d.h \
-  include/asm-generic/pgtable-nopud.h \
-  arch/x86/include/asm/proto.h \
-  arch/x86/include/uapi/asm/ldt.h \
-  arch/x86/include/uapi/asm/sigcontext.h \
-  arch/x86/include/asm/msr.h \
-    $(wildcard include/config/TRACEPOINTS) \
-  arch/x86/include/asm/msr-index.h \
-  arch/x86/include/asm/cpumask.h \
-  include/linux/cpumask.h \
-    $(wildcard include/config/CPUMASK_OFFSTACK) \
-    $(wildcard include/config/DEBUG_PER_CPU_MAPS) \
-  include/linux/bitmap.h \
-  include/linux/find.h \
-  arch/x86/include/uapi/asm/msr.h \
-  include/linux/tracepoint-defs.h \
-  arch/x86/include/asm/special_insns.h \
-  arch/x86/include/asm/fpu/types.h \
-  arch/x86/include/asm/vmxfeatures.h \
-  arch/x86/include/asm/vdso/processor.h \
-  include/linux/personality.h \
-  include/uapi/linux/personality.h \
-  include/linux/bottom_half.h \
-  include/linux/lockdep.h \
-    $(wildcard include/config/DEBUG_LOCKING_API_SELFTESTS) \
-  include/linux/smp.h \
-    $(wildcard include/config/UP_LATE_INIT) \
-  include/linux/smp_types.h \
-  include/linux/llist.h \
-    $(wildcard include/config/ARCH_HAVE_NMI_SAFE_CMPXCHG) \
-  arch/x86/include/asm/smp.h \
-    $(wildcard include/config/X86_LOCAL_APIC) \
-    $(wildcard include/config/DEBUG_NMI_SELFTEST) \
-  include/linux/rcutree.h \
-  include/linux/wait.h \
-  include/linux/spinlock.h \
-  arch/x86/include/generated/asm/mmiowb.h \
-  include/asm-generic/mmiowb.h \
-    $(wildcard include/config/MMIOWB) \
-  include/linux/spinlock_types.h \
-  include/linux/rwlock_types.h \
-  arch/x86/include/asm/spinlock.h \
-  arch/x86/include/asm/paravirt.h \
-    $(wildcard include/config/PARAVIRT_SPINLOCKS) \
-  arch/x86/include/asm/frame.h \
-  arch/x86/include/asm/qspinlock.h \
-  include/asm-generic/qspinlock.h \
-  arch/x86/include/asm/qrwlock.h \
-  include/asm-generic/qrwlock.h \
-  include/linux/rwlock.h \
-    $(wildcard include/config/PREEMPT) \
-  include/linux/spinlock_api_smp.h \
-    $(wildcard include/config/INLINE_SPIN_LOCK) \
-    $(wildcard include/config/INLINE_SPIN_LOCK_BH) \
-    $(wildcard include/config/INLINE_SPIN_LOCK_IRQ) \
-    $(wildcard include/config/INLINE_SPIN_LOCK_IRQSAVE) \
-    $(wildcard include/config/INLINE_SPIN_TRYLOCK) \
-    $(wildcard include/config/INLINE_SPIN_TRYLOCK_BH) \
-    $(wildcard include/config/UNINLINE_SPIN_UNLOCK) \
-    $(wildcard include/config/INLINE_SPIN_UNLOCK_BH) \
-    $(wildcard include/config/INLINE_SPIN_UNLOCK_IRQ) \
-    $(wildcard include/config/INLINE_SPIN_UNLOCK_IRQRESTORE) \
-    $(wildcard include/config/GENERIC_LOCKBREAK) \
-  include/linux/rwlock_api_smp.h \
-    $(wildcard include/config/INLINE_READ_LOCK) \
-    $(wildcard include/config/INLINE_WRITE_LOCK) \
-    $(wildcard include/config/INLINE_READ_LOCK_BH) \
-    $(wildcard include/config/INLINE_WRITE_LOCK_BH) \
-    $(wildcard include/config/INLINE_READ_LOCK_IRQ) \
-    $(wildcard include/config/INLINE_WRITE_LOCK_IRQ) \
-    $(wildcard include/config/INLINE_READ_LOCK_IRQSAVE) \
-    $(wildcard include/config/INLINE_WRITE_LOCK_IRQSAVE) \
-    $(wildcard include/config/INLINE_READ_TRYLOCK) \
-    $(wildcard include/config/INLINE_WRITE_TRYLOCK) \
-    $(wildcard include/config/INLINE_READ_UNLOCK) \
-    $(wildcard include/config/INLINE_WRITE_UNLOCK) \
-    $(wildcard include/config/INLINE_READ_UNLOCK_BH) \
-    $(wildcard include/config/INLINE_WRITE_UNLOCK_BH) \
-    $(wildcard include/config/INLINE_READ_UNLOCK_IRQ) \
-    $(wildcard include/config/INLINE_WRITE_UNLOCK_IRQ) \
-    $(wildcard include/config/INLINE_READ_UNLOCK_IRQRESTORE) \
-    $(wildcard include/config/INLINE_WRITE_UNLOCK_IRQRESTORE) \
-  include/uapi/linux/wait.h \
-  include/linux/refcount.h \
-  include/linux/sem.h \
-  include/uapi/linux/sem.h \
-  include/linux/ipc.h \
-  include/linux/uidgid.h \
-    $(wildcard include/config/MULTIUSER) \
-    $(wildcard include/config/USER_NS) \
-  include/linux/highuid.h \
-  include/linux/rhashtable-types.h \
-  include/linux/mutex.h \
-    $(wildcard include/config/MUTEX_SPIN_ON_OWNER) \
-  include/linux/osq_lock.h \
-  include/linux/debug_locks.h \
-  include/linux/workqueue.h \
-    $(wildcard include/config/DEBUG_OBJECTS_WORK) \
-    $(wildcard include/config/FREEZER) \
-    $(wildcard include/config/SYSFS) \
-    $(wildcard include/config/WQ_WATCHDOG) \
-  include/linux/timer.h \
-    $(wildcard include/config/DEBUG_OBJECTS_TIMERS) \
-    $(wildcard include/config/NO_HZ_COMMON) \
-  include/linux/ktime.h \
-  include/linux/time.h \
-    $(wildcard include/config/POSIX_TIMERS) \
-  include/linux/time32.h \
-  include/linux/timex.h \
-  include/uapi/linux/timex.h \
-  arch/x86/include/asm/timex.h \
-    $(wildcard include/config/X86_TSC) \
-  arch/x86/include/asm/tsc.h \
-  include/vdso/time32.h \
-  include/vdso/time.h \
-  include/linux/jiffies.h \
-  include/vdso/jiffies.h \
-  include/generated/timeconst.h \
-  include/vdso/ktime.h \
-  include/linux/timekeeping.h \
-    $(wildcard include/config/GENERIC_CMOS_UPDATE) \
-  include/linux/clocksource_ids.h \
-  include/linux/debugobjects.h \
-    $(wildcard include/config/DEBUG_OBJECTS) \
-    $(wildcard include/config/DEBUG_OBJECTS_FREE) \
-  include/uapi/linux/ipc.h \
-  arch/x86/include/generated/uapi/asm/ipcbuf.h \
-  include/uapi/asm-generic/ipcbuf.h \
-  arch/x86/include/uapi/asm/sembuf.h \
-  include/linux/shm.h \
-  include/uapi/linux/shm.h \
-  include/uapi/asm-generic/hugetlb_encode.h \
-  arch/x86/include/uapi/asm/shmbuf.h \
-  include/uapi/asm-generic/shmbuf.h \
-  arch/x86/include/asm/shmparam.h \
-  include/linux/plist.h \
-    $(wildcard include/config/DEBUG_PLIST) \
-  include/linux/hrtimer.h \
-    $(wildcard include/config/HIGH_RES_TIMERS) \
-    $(wildcard include/config/TIME_LOW_RES) \
-    $(wildcard include/config/TIMERFD) \
-  include/linux/hrtimer_defs.h \
-  include/linux/rbtree.h \
-  include/linux/rbtree_types.h \
-  include/linux/percpu.h \
-    $(wildcard include/config/NEED_PER_CPU_EMBED_FIRST_CHUNK) \
-    $(wildcard include/config/NEED_PER_CPU_PAGE_FIRST_CHUNK) \
-  include/linux/mmdebug.h \
-    $(wildcard include/config/DEBUG_VM) \
-    $(wildcard include/config/DEBUG_VM_PGFLAGS) \
-  include/linux/seqlock.h \
-  include/linux/ww_mutex.h \
-    $(wildcard include/config/DEBUG_RT_MUTEXES) \
-    $(wildcard include/config/DEBUG_WW_MUTEX_SLOWPATH) \
-  include/linux/rtmutex.h \
-  include/linux/timerqueue.h \
-  include/linux/seccomp.h \
-    $(wildcard include/config/SECCOMP) \
-    $(wildcard include/config/HAVE_ARCH_SECCOMP_FILTER) \
-    $(wildcard include/config/SECCOMP_FILTER) \
-    $(wildcard include/config/CHECKPOINT_RESTORE) \
-    $(wildcard include/config/SECCOMP_CACHE_DEBUG) \
-  include/uapi/linux/seccomp.h \
-  arch/x86/include/asm/seccomp.h \
-  arch/x86/include/asm/unistd.h \
-  arch/x86/include/uapi/asm/unistd.h \
-  arch/x86/include/generated/uapi/asm/unistd_32.h \
-  include/asm-generic/seccomp.h \
-  include/uapi/linux/unistd.h \
-  include/linux/nodemask.h \
-    $(wildcard include/config/HIGHMEM) \
-  include/linux/numa.h \
-    $(wildcard include/config/NODES_SHIFT) \
-    $(wildcard include/config/NUMA_KEEP_MEMINFO) \
-    $(wildcard include/config/HAVE_ARCH_NODE_DEV_GROUP) \
-  arch/x86/include/asm/sparsemem.h \
-  include/linux/resource.h \
-  include/uapi/linux/resource.h \
-  arch/x86/include/generated/uapi/asm/resource.h \
-  include/asm-generic/resource.h \
-  include/uapi/asm-generic/resource.h \
-  include/linux/latencytop.h \
-  include/linux/sched/prio.h \
-  include/linux/sched/types.h \
-  include/linux/signal_types.h \
-    $(wildcard include/config/OLD_SIGACTION) \
-  include/uapi/linux/signal.h \
-  arch/x86/include/asm/signal.h \
-  arch/x86/include/uapi/asm/signal.h \
-  include/uapi/asm-generic/signal-defs.h \
-  arch/x86/include/uapi/asm/siginfo.h \
-  include/uapi/asm-generic/siginfo.h \
-  include/linux/syscall_user_dispatch.h \
-  include/linux/mm_types_task.h \
-    $(wildcard include/config/ARCH_WANT_BATCHED_UNMAP_TLB_FLUSH) \
-    $(wildcard include/config/SPLIT_PTLOCK_CPUS) \
-    $(wildcard include/config/ARCH_ENABLE_SPLIT_PMD_PTLOCK) \
-  arch/x86/include/asm/tlbbatch.h \
-  include/linux/task_io_accounting.h \
-    $(wildcard include/config/TASK_IO_ACCOUNTING) \
-  include/linux/posix-timers.h \
-  include/linux/alarmtimer.h \
-    $(wildcard include/config/RTC_CLASS) \
-  include/uapi/linux/rseq.h \
-  include/linux/kcsan.h \
-  arch/x86/include/generated/asm/kmap_size.h \
-  include/asm-generic/kmap_size.h \
-    $(wildcard include/config/DEBUG_KMAP_LOCAL) \
-  arch/x86/include/asm/delay.h \
-  include/asm-generic/delay.h \
-  include/linux/gpio.h \
-    $(wildcard include/config/GPIOLIB) \
-    $(wildcard include/config/ARCH_HAVE_CUSTOM_GPIO_H) \
-  include/asm-generic/gpio.h \
-    $(wildcard include/config/ARCH_NR_GPIO) \
-  include/linux/gpio/driver.h \
-    $(wildcard include/config/IRQ_DOMAIN_HIERARCHY) \
-    $(wildcard include/config/GPIO_GENERIC) \
-    $(wildcard include/config/GPIOLIB_IRQCHIP) \
-    $(wildcard include/config/OF_GPIO) \
-    $(wildcard include/config/PINCTRL) \
-  include/linux/device.h \
-    $(wildcard include/config/GENERIC_MSI_IRQ_DOMAIN) \
-    $(wildcard include/config/GENERIC_MSI_IRQ) \
-    $(wildcard include/config/ENERGY_MODEL) \
-    $(wildcard include/config/DMA_OPS) \
-    $(wildcard include/config/DMA_DECLARE_COHERENT) \
-    $(wildcard include/config/DMA_CMA) \
-    $(wildcard include/config/SWIOTLB) \
-    $(wildcard include/config/ARCH_HAS_SYNC_DMA_FOR_DEVICE) \
-    $(wildcard include/config/ARCH_HAS_SYNC_DMA_FOR_CPU) \
-    $(wildcard include/config/ARCH_HAS_SYNC_DMA_FOR_CPU_ALL) \
-    $(wildcard include/config/DMA_OPS_BYPASS) \
-    $(wildcard include/config/PM_SLEEP) \
-    $(wildcard include/config/OF) \
-    $(wildcard include/config/DEVTMPFS) \
-    $(wildcard include/config/SYSFS_DEPRECATED) \
-  include/linux/dev_printk.h \
-  include/linux/ratelimit.h \
-  include/linux/energy_model.h \
-  include/linux/kobject.h \
-    $(wildcard include/config/UEVENT_HELPER) \
-    $(wildcard include/config/DEBUG_KOBJECT_RELEASE) \
-  include/linux/sysfs.h \
-  include/linux/kernfs.h \
-    $(wildcard include/config/KERNFS) \
-  include/linux/idr.h \
-  include/linux/radix-tree.h \
-  include/linux/gfp.h \
-    $(wildcard include/config/KASAN_HW_TAGS) \
-    $(wildcard include/config/ZONE_DMA) \
-    $(wildcard include/config/ZONE_DMA32) \
-    $(wildcard include/config/ZONE_DEVICE) \
-    $(wildcard include/config/CONTIG_ALLOC) \
-    $(wildcard include/config/CMA) \
-  include/linux/mmzone.h \
-    $(wildcard include/config/FORCE_MAX_ZONEORDER) \
-    $(wildcard include/config/MEMORY_ISOLATION) \
-    $(wildcard include/config/ZSMALLOC) \
-    $(wildcard include/config/SWAP) \
-    $(wildcard include/config/TRANSPARENT_HUGEPAGE) \
-    $(wildcard include/config/MEMORY_HOTPLUG) \
-    $(wildcard include/config/PAGE_EXTENSION) \
-    $(wildcard include/config/DEFERRED_STRUCT_PAGE_INIT) \
-    $(wildcard include/config/HAVE_MEMORYLESS_NODES) \
-    $(wildcard include/config/SPARSEMEM_EXTREME) \
-    $(wildcard include/config/HAVE_ARCH_PFN_VALID) \
-  include/linux/pageblock-flags.h \
-    $(wildcard include/config/HUGETLB_PAGE) \
-    $(wildcard include/config/HUGETLB_PAGE_SIZE_VARIABLE) \
-  include/linux/page-flags-layout.h \
-  include/generated/bounds.h \
-  include/linux/mm_types.h \
-    $(wildcard include/config/HAVE_ALIGNED_STRUCT
+ * 1998/11/09: David Huggins-Daines <dhd@debian.org>
+ * Cleaned up the initialization code to use the standard autoirq methods,
+   and to probe for things in the standard order of i/o, irq, dma.  This
+   removes the "reset the reset" hack, because I couldn't figure out an
+   easy way to get the card to trigger an interrupt after it.
+ * Added support for passing configuration parameters on the kernel command
+   line and through insmod
+ * Changed the device name from "ltalk0" to "lt0", both to conform with the
+   other localtalk driver, and to clear up the inconsistency between the
+   module and the non-module versions of the driver :-)
+ * Added a bunch of comments (I was going to make some enums for the state
+   codes and the register offsets, but I'm still not sure exactly what their
+   semantics are)
+ * Don't poll anymore in interrupt-driven mode
+ * It seems to work as a module now (as of 2.1.127), but I don't think
+   I'm responsible for that...
+
+ *
+ * Revision 1.7  1996/12/12 03:42:33  bradford
+ * DMA alloc cribbed from 3c505.c.
+ *
+ * Revision 1.6  1996/12/12 03:18:58  bradford
+ * Added virt_to_bus; works in 2.1.13.
+ *
+ * Revision 1.5  1996/12/12 03:13:22  root
+ * xmitQel initialization -- think through better though.
+ *
+ * Revision 1.4  1996/06/18 14:55:55  root
+ * Change names to ltpc. Tabs. Took a shot at dma alloc,
+ * although more needs to be done eventually.
+ *
+ * Revision 1.3  1996/05/22 14:59:39  root
+ * Change dev->open, dev->close to track dummy.c in 1.99.(around 7)
+ *
+ * Revision 1.2  1996/05/22 14:58:24  root
+ * Change tabs mostly.
+ *
+ * Revision 1.1  1996/04/23 04:45:09  root
+ * Initial revision
+ *
+ * Revision 0.16  1996/03/05 15:59:56  root
+ * Change ARPHRD_LOCALTLK definition to the "real" one.
+ *
+ * Revision 0.15  1996/03/05 06:28:30  root
+ * Changes for kernel 1.3.70.  Still need a few patches to kernel, but
+ * it's getting closer.
+ *
+ * Revision 0.14  1996/02/25 17:38:32  root
+ * More cleanups.  Removed query to card on get_stats.
+ *
+ * Revision 0.13  1996/02/21  16:27:40  root
+ * Refix debug_print_skb.  Fix mac.raw gotcha that appeared in 1.3.65.
+ * Clean up receive code a little.
+ *
+ * Revision 0.12  1996/02/19  16:34:53  root
+ * Fix debug_print_skb.  Kludge outgoing snet to 0 when using startup
+ * range.  Change debug to mask: 1 for verbose, 2 for higher level stuff
+ * including packet printing, 4 for lower level (card i/o) stuff.
+ *
+ * Revision 0.11  1996/02/12  15:53:38  root
+ * Added router sends (requires new aarp.c patch)
+ *
+ * Revision 0.10  1996/02/11  00:19:35  root
+ * Change source LTALK_LOGGING debug switch to insmod ... debug=2.
+ *
+ * Revision 0.9  1996/02/10  23:59:35  root
+ * Fixed those fixes for 1.2 -- DANGER!  The at.h that comes with netatalk
+ * has a *different* definition of struct sockaddr_at than the Linux kernel
+ * does.  This is an "insidious and invidious" bug...
+ * (Actually the preceding comment is false -- it's the atalk.h in the
+ * ancient atalk-0.06 that's the problem)
+ *
+ * Revision 0.8  1996/02/10 19:09:00  root
+ * Merge 1.3 changes.  Tested OK under 1.3.60.
+ *
+ * Revision 0.7  1996/02/10 17:56:56  root
+ * Added debug=1 parameter on insmod for debugging prints.  Tried
+ * to fix timer unload on rmmod, but I don't think that's the problem.
+ *
+ * Revision 0.6  1995/12/31  19:01:09  root
+ * Clean up rmmod, irq comments per feedback from Corin Anderson (Thanks Corey!)
+ * Clean up initial probing -- sometimes the card wakes up latched in reset.
+ *
+ * Revision 0.5  1995/12/22  06:03:44  root
+ * Added comments in front and cleaned up a bit.
+ * This version sent out to people.
+ *
+ * Revision 0.4  1995/12/18  03:46:44  root
+ * Return shortDDP to longDDP fake to 0/0.  Added command structs.
+ *
+ ***/
+
+/* ltpc jumpers are:
+*
+*	Interrupts -- set at most one.  If none are set, the driver uses
+*	polled mode.  Because the card was developed in the XT era, the
+*	original documentation refers to IRQ2.  Since you'll be running
+*	this on an AT (or later) class machine, that really means IRQ9.
+*
+*	SW1	IRQ 4
+*	SW2	IRQ 3
+*	SW3	IRQ 9 (2 in original card documentation only applies to XT)
+*
+*
+*	DMA -- choose DMA 1 or 3, and set both corresponding switches.
+*
+*	SW4	DMA 3
+*	SW5	DMA 1
+*	SW6	DMA 3
+*	SW7	DMA 1
+*
+*
+*	I/O address -- choose one.  
+*
+*	SW8	220 / 240
+*/
+
+/*	To have some stuff logged, do 
+*	insmod ltpc.o debug=1
+*
+*	For a whole bunch of stuff, use higher numbers.
+*
+*	The default is 0, i.e. no messages except for the probe results.
+*/
+
+/* insmod-tweakable variables */
+static int debug;
+#define DEBUG_VERBOSE 1
+#define DEBUG_UPPER 2
+#define DEBUG_LOWER 4
+
+static int io;
+static int irq;
+static int dma;
+
+#include <linux/module.h>
+#include <linux/kernel.h>
+#include <linux/types.h>
+#include <linux/fcntl.h>
+#include <linux/interrupt.h>
+#include <linux/ptrace.h>
+#include <linux/ioport.h>
+#include <linux/spinlock.h>
+#include <linux/in.h>
+#include <linux/string.h>
+#include <linux/errno.h>
+#include <linux/init.h>
+#include <linux/netdevice.h>
+#include <linux/etherdevice.h>
+#include <linux/skbuff.h>
+#include <linux/if_arp.h>
+#include <linux/if_ltalk.h>
+#include <linux/delay.h>
+#include <linux/timer.h>
+#include <linux/atalk.h>
+#include <linux/bitops.h>
+#include <linux/gfp.h>
+
+#include <net/Space.h>
+
+#include <asm/dma.h>
+#include <asm/io.h>
+
+/* our stuff */
+#include "ltpc.h"
+
+static DEFINE_SPINLOCK(txqueue_lock);
+static DEFINE_SPINLOCK(mbox_lock);
+
+/* function prototypes */
+static int do_read(struct net_device *dev, void *cbuf, int cbuflen,
+	void *dbuf, int dbuflen);
+static int sendup_buffer (struct net_device *dev);
+
+/* Dma Memory related stuff, cribbed directly from 3c505.c */
+
+static unsigned long dma_mem_alloc(int size)
+{
+        int order = get_order(size);
+
+        return __get_dma_pages(GFP_KERNEL, order);
+}
+
+/* DMA data buffer, DMA command buffer */
+static unsigned char *ltdmabuf;
+static unsigned char *ltdmacbuf;
+
+/* private struct, holds our appletalk address */
+
+struct ltpc_private
+{
+	struct atalk_addr my_addr;
+};
+
+/* transmit queue element struct */
+
+struct xmitQel {
+	struct xmitQel *next;
+	/* command buffer */
+	unsigned char *cbuf;
+	short cbuflen;
+	/* data buffer */
+	unsigned char *dbuf;
+	short dbuflen;
+	unsigned char QWrite;	/* read or write data */
+	unsigned char mailbox;
+};
+
+/* the transmit queue itself */
+
+static struct xmitQel *xmQhd, *xmQtl;
+
+static void enQ(struct xmitQel *qel)
+{
+	unsigned long flags;
+	qel->next = NULL;
+	
+	spin_lock_irqsave(&txqueue_lock, flags);
+	if (xmQtl) {
+		xmQtl->next = qel;
+	} else {
+		xmQhd = qel;
+	}
+	xmQtl = qel;
+	spin_unlock_irqrestore(&txqueue_lock, flags);
+
+	if (debug & DEBUG_LOWER)
+		printk("enqueued a 0x%02x command\n",qel->cbuf[0]);
+}
+
+static struct xmitQel *deQ(void)
+{
+	unsigned long flags;
+	int i;
+	struct xmitQel *qel=NULL;
+	
+	spin_lock_irqsave(&txqueue_lock, flags);
+	if (xmQhd) {
+		qel = xmQhd;
+		xmQhd = qel->next;
+		if(!xmQhd) xmQtl = NULL;
+	}
+	spin_unlock_irqrestore(&txqueue_lock, flags);
+
+	if ((debug & DEBUG_LOWER) && qel) {
+		int n;
+		printk(KERN_DEBUG "ltpc: dequeued command ");
+		n = qel->cbuflen;
+		if (n>100) n=100;
+		for(i=0;i<n;i++) printk("%02x ",qel->cbuf[i]);
+		printk("\n");
+	}
+
+	return qel;
+}
+
+/* and... the queue elements we'll be using */
+static struct xmitQel qels[16];
+
+/* and their corresponding mailboxes */
+static unsigned char mailbox[16];
+static unsigned char mboxinuse[16] = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
+
+static int wait_timeout(struct net_device *dev, int c)
+{
+	/* returns true if it stayed c */
+	/* this uses base+6, but it's ok */
+	int i;
+
+	/* twenty second or so total */
+
+	for(i=0;i<200000;i++) {
+		if ( c != inb_p(dev->base_addr+6) ) return 0;
+		udelay(100);
+	}
+	return 1; /* timed out */
+}
+
+/* get the first free mailbox */
+
+static int getmbox(void)
+{
+	unsigned long flags;
+	int i;
+
+	spin_lock_irqsave(&mbox_lock, flags);
+	for(i=1;i<16;i++) if(!mboxinuse[i]) {
+		mboxinuse[i]=1;
+		spin_unlock_irqrestore(&mbox_lock, flags);
+		return i;
+	}
+	spin_unlock_irqrestore(&mbox_lock, flags);
+	return 0;
+}
+
+/* read a command from the card */
+static void handlefc(struct net_device *dev)
+{
+	/* called *only* from idle, non-reentrant */
+	int dma = dev->dma;
+	int base = dev->base_addr;
+	unsigned long flags;
+
+
+	flags=claim_dma_lock();
+	disable_dma(dma);
+	clear_dma_ff(dma);
+	set_dma_mode(dma,DMA_MODE_READ);
+	set_dma_addr(dma,virt_to_bus(ltdmacbuf));
+	set_dma_count(dma,50);
+	enable_dma(dma);
+	release_dma_lock(flags);
+
+	inb_p(base+3);
+	inb_p(base+2);
+
+	if ( wait_timeout(dev,0xfc) ) printk("timed out in handlefc\n");
+}
+
+/* read data from the card */
+static void handlefd(struct net_device *dev)
+{
+	int dma = dev->dma;
+	int base = dev->base_addr;
+	unsigned long flags;
+
+	flags=claim_dma_lock();
+	disable_dma(dma);
+	clear_dma_ff(dma);
+	set_dma_mode(dma,DMA_MODE_READ);
+	set_dma_addr(dma,virt_to_bus(ltdmabuf));
+	set_dma_count(dma,800);
+	enable_dma(dma);
+	release_dma_lock(flags);
+
+	inb_p(base+3);
+	inb_p(base+2);
+
+	if ( wait_timeout(dev,0xfd) ) printk("timed out in handlefd\n");
+	sendup_buffer(dev);
+} 
+
+static void handlewrite(struct net_device *dev)
+{
+	/* called *only* from idle, non-reentrant */
+	/* on entry, 0xfb and ltdmabuf holds data */
+	int dma = dev->dma;
+	int base = dev->base_addr;
+	unsigned long flags;
+	
+	flags=claim_dma_lock();
+	disable_dma(dma);
+	clear_dma_ff(dma);
+	set_dma_mode(dma,DMA_MODE_WRITE);
+	set_dma_addr(dma,virt_to_bus(ltdmabuf));
+	set_dma_count(dma,800);
+	enable_dma(dma);
+	release_dma_lock(flags);
+	
+	inb_p(base+3);
+	inb_p(base+2);
+
+	if ( wait_timeout(dev,0xfb) ) {
+		flags=claim_dma_lock();
+		printk("timed out in handlewrite, dma res %d\n",
+			get_dma_residue(dev->dma) );
+		release_dma_lock(flags);
+	}
+}
+
+static void handleread(struct net_device *dev)
+{
+	/* on entry, 0xfb */
+	/* on exit, ltdmabuf holds data */
+	int dma = dev->dma;
+	int base = dev->base_addr;
+	unsigned long flags;
+
+	
+	flags=claim_dma_lock();
+	disable_dma(dma);
+	clear_dma_ff(dma);
+	set_dma_mode(dma,DMA_MODE_READ);
+	set_dma_addr(dma,virt_to_bus(ltdmabuf));
+	set_dma_count(dma,800);
+	enable_dma(dma);
+	release_dma_lock(flags);
+
+	inb_p(base+3);
+	inb_p(base+2);
+	if ( wait_timeout(dev,0xfb) ) printk("timed out in handleread\n");
+}
+
+static void handlecommand(struct net_device *dev)
+{
+	/* on entry, 0xfa and ltdmacbuf holds command */
+	int dma = dev->dma;
+	int base = dev->base_addr;
+	unsigned long flags;
+
+	flags=claim_dma_lock();
+	disable_dma(dma);
+	clear_dma_ff(dma);
+	set_dma_mode(dma,DMA_MODE_WRITE);
+	set_dma_addr(dma,virt_to_bus(ltdmacbuf));
+	set_dma_count(dma,50);
+	enable_dma(dma);
+	release_dma_lock(flags);
+	inb_p(base+3);
+	inb_p(base+2);
+	if ( wait_timeout(dev,0xfa) ) printk("timed out in handlecommand\n");
+} 
+
+/* ready made command for getting the result from the card */
+static unsigned char rescbuf[2] = {LT_GETRESULT,0};
+static unsigned char resdbuf[2];
+
+static int QInIdle;
+
+/* idle expects to be called with the IRQ line high -- either because of
+ * an interrupt, or because the line is tri-stated
+ */
+
+static void idle(struct net_device *dev)
+{
+	unsigned long flags;
+	int state;
+	/* FIXME This is initialized to shut the warning up, but I need to
+	 * think this through again.
+	 */
+	struct xmitQel *q = NULL;
+	int oops;
+	int i;
+	int base = dev->base_addr;
+
+	spin_lock_irqsave(&txqueue_lock, flags);
+	if(QInIdle) {
+		spin_unlock_irqrestore(&txqueue_lock, flags);
+		return;
+	}
+	QInIdle = 1;
+	spin_unlock_irqrestore(&txqueue_lock, flags);
+
+	/* this tri-states the IRQ line */
+	(void) inb_p(base+6);
+
+	oops = 100;
+
+loop:
+	if (0>oops--) { 
+		printk("idle: looped too many times\n");
+		goto done;
+	}
+
+	state = inb_p(base+6);
+	if (state != inb_p(base+6)) goto loop;
+
+	switch(state) {
+		case 0xfc:
+			/* incoming command */
+			if (debug & DEBUG_LOWER) printk("idle: fc\n");
+			handlefc(dev); 
+			break;
+		case 0xfd:
+			/* incoming data */
+			if(debug & DEBUG_LOWER) printk("idle: fd\n");
+			handlefd(dev); 
+			break;
+		case 0xf9:
+			/* result ready */
+			if (debug & DEBUG_LOWER) printk("idle: f9\n");
+			if(!mboxinuse[0]) {
+				mboxinuse[0] = 1;
+				qels[0].cbuf = rescbuf;
+				qels[0].cbuflen = 2;
+				qels[0].dbuf = resdbuf;
+				qels[0].dbuflen = 2;
+				qels[0].QWrite = 0;
+				qels[0].mailbox = 0;
+				enQ(&qels[0]);
+			}
+			inb_p(dev->base_addr+1);
+			inb_p(dev->base_addr+0);
+			if( wait_timeout(dev,0xf9) )
+				printk("timed out idle f9\n");
+			break;
+		case 0xf8:
+			/* ?? */
+			if (xmQhd) {
+				inb_p(dev->base_addr+1);
+				inb_p(dev->base_addr+0);
+				if(wait_timeout(dev,0xf8) )
+					printk("timed out idle f8\n");
+			} else {
+				goto done;
+			}
+			break;
+		case 0xfa:
+			/* waiting for command */
+			if(debug & DEBUG_LOWER) printk("idle: fa\n");
+			if (xmQhd) {
+				q=deQ();
+				memcpy(ltdmacbuf,q->cbuf,q->cbuflen);
+				ltdmacbuf[1] = q->mailbox;
+				if (debug>1) { 
+					int n;
+					printk("ltpc: sent command     ");
+					n = q->cbuflen;
+					if (n>100) n=100;
+					for(i=0;i<n;i++)
+						printk("%02x ",ltdmacbuf[i]);
+					printk("\n");
+				}
+
+				handlecommand(dev);
+
+				if (0xfa == inb_p(base + 6)) {
+					/* we timed out, so return */
+					goto done;
+				}
+			} else {
+				/* we don't seem to have a command */
+				if (!mboxinuse[0]) {
+					mboxinuse[0] = 1;
+					qels[0].cbuf = rescbuf;
+					qels[0].cbuflen = 2;
+					qels[0].dbuf = resdbuf;
+					qels[0].dbuflen = 2;
+					qels[0].QWrite = 0;
+					qels[0].mailbox = 0;
+					enQ(&qels[0]);
+				} else {
+					printk("trouble: response command already queued\n");
+					goto done;
+				}
+			} 
+			break;
+		case 0Xfb:
+			/* data transfer ready */
+			if(debug & DEBUG_LOWER) printk("idle: fb\n");
+			if(q->QWrite) {
+				memcpy(ltdmabuf,q->dbuf,q->dbuflen);
+				handlewrite(dev);
+			} else {
+				handleread(dev);
+				/* non-zero mailbox numbers are for
+				   commmands, 0 is for GETRESULT
+				   requests */
+				if(q->mailbox) {
+					memcpy(q->dbuf,ltdmabuf,q->dbuflen);
+				} else { 
+					/* this was a result */
+					mailbox[ 0x0f & ltdmabuf[0] ] = ltdmabuf[1];
+					mboxinuse[0]=0;
+				}
+			}
+			break;
+	}
+	goto loop;
+
+done:
+	QInIdle=0;
+
+	/* now set the interrupts back as appropriate */
+	/* the first read takes it out of tri-state (but still high) */
+	/* the second resets it */
+	/* note that after this point, any read of base+6 will
+	   trigger an interrupt */
+
+	if (dev->irq) {
+		inb_p(base+7);
+		inb_p(base+7);
+	}
+}
+
+
+static int do_write(struct net_device *dev, void *cbuf, int cbuflen,
+	void *dbuf, int dbuflen)
+{
+
+	int i = getmbox();
+	int ret;
+
+	if(i) {
+		qels[i].cbuf = cbuf;
+		qels[i].cbuflen = cbuflen;
+		qels[i].dbuf = dbuf;
+		qels[i].dbuflen = dbuflen;
+		qels[i].QWrite = 1;
+		qels[i].mailbox = i;  /* this should be initted rather */
+		enQ(&qels[i]);
+		idle(dev);
+		ret = mailbox[i];
+		mboxinuse[i]=0;
+		return ret;
+	}
+	printk("ltpc: could not allocate mbox\n");
+	return -1;
+}
+
+static int do_read(struct net_device *dev, void *cbuf, int cbuflen,
+	void *dbuf, int dbuflen)
+{
+
+	int i = getmbox();
+	int ret;
+
+	if(i) {
+		qels[i].cbuf = cbuf;
+		qels[i].cbuflen = cbuflen;
+		qels[i].dbuf = dbuf;
+		qels[i].dbuflen = dbuflen;
+		qels[i].QWrite = 0;
+		qels[i].mailbox = i;  /* this should be initted rather */
+		enQ(&qels[i]);
+		idle(dev);
+		ret = mailbox[i];
+		mboxinuse[i]=0;
+		return ret;
+	}
+	printk("ltpc: could not allocate mbox\n");
+	return -1;
+}
+
+/* end of idle handlers -- what should be seen is do_read, do_write */
+
+static struct timer_list ltpc_timer;
+static struct net_device *ltpc_timer_dev;
+
+static netdev_tx_t ltpc_xmit(struct sk_buff *skb, struct net_device *dev);
+
+static int read_30 ( struct net_device *dev)
+{
+	lt_command c;
+	c.getflags.command = LT_GETFLAGS;
+	return do_read(dev, &c, sizeof(c.getflags),&c,0);
+}
+
+static int set_30 (struct net_device *dev,int x)
+{
+	lt_command c;
+	c.setflags.command = LT_SETFLAGS;
+	c.setflags.flags = x;
+	return do_write(dev, &c, sizeof(c.setflags),&c,0);
+}
+
+/* LLAP to DDP translation */
+
+static int sendup_buffer (struct net_device *dev)
+{
+	/* on entry, command is in ltdmacbuf, data in ltdmabuf */
+	/* called from idle, non-reentrant */
+
+	int dnode, snode, llaptype, len; 
+	int sklen;
+	struct sk_buff *skb;
+	struct lt_rcvlap *ltc = (struct lt_rcvlap *) ltdmacbuf;
+
+	if (ltc->command != LT_RCVLAP) {
+		printk("unknown command 0x%02x from ltpc card\n",ltc->command);
+		return -1;
+	}
+	dnode = ltc->dnode;
+	snode = ltc->snode;
+	llaptype = ltc->laptype;
+	len = ltc->length; 
+
+	sklen = len;
+	if (llaptype == 1) 
+		sklen += 8;  /* correct for short ddp */
+	if(sklen > 800) {
+		printk(KERN_INFO "%s: nonsense length in ltpc command 0x14: 0x%08x\n",
+			dev->name,sklen);
+		return -1;
+	}
+
+	if ( (llaptype==0) || (llaptype>2) ) {
+		printk(KERN_INFO "%s: unknown LLAP type: %d\n",dev->name,llaptype);
+		return -1;
+	}
+
+
+	skb = dev_alloc_skb(3+sklen);
+	if (skb == NULL) 
+	{
+		printk("%s: dropping packet due to memory squeeze.\n",
+			dev->name);
+		return -1;
+	}
+	skb->dev = dev;
+
+	if (sklen > len)
+		skb_reserve(skb,8);
+	skb_put(skb,len+3);
+	skb->protocol = htons(ETH_P_LOCALTALK);
+	/* add LLAP header */
+	skb->data[0] = dnode;
+	skb->data[1] = snode;
+	skb->data[2] = llaptype;
+	skb_reset_mac_header(skb);	/* save pointer to llap header */
+	skb_pull(skb,3);
+
+	/* copy ddp(s,e)hdr + contents */
+	skb_copy_to_linear_data(skb, ltdmabuf, len);
+
+	skb_reset_transport_header(skb);
+
+	dev->stats.rx_packets++;
+	dev->stats.rx_bytes += skb->len;
+
+	/* toss it onwards */
+	netif_rx(skb);
+	return 0;
+}
+
+/* the handler for the board interrupt */
+ 
+static irqreturn_t
+ltpc_interrupt(int irq, void *dev_id)
+{
+	struct net_device *dev = dev_id;
+
+	if (dev==NULL) {
+		printk("ltpc_interrupt: unknown device.\n");
+		return IRQ_NONE;
+	}
+
+	inb_p(dev->base_addr+6);  /* disable further interrupts from board */
+
+	idle(dev); /* handle whatever is coming in */
+ 
+	/* idle re-enables interrupts from board */ 
+
+	return IRQ_HANDLED;
+}
+
+/***
+ *
+ *    The ioctls that the driver responds to are:
+ *
+ *    SIOCSIFADDR -- do probe using the passed node hint.
+ *    SIOCGIFADDR -- return net, node.
+ *
+ *    some of this stuff should be done elsewhere.
+ *
+ ***/
+
+static int ltpc_ioctl(struct net_device *dev, struct ifreq *ifr, int cmd)
+{
+	struct sockaddr_at *sa = (struct sockaddr_at *) &ifr->ifr_addr;
+	/* we'll keep the localtalk node address in dev->pa_addr */
+	struct ltpc_private *ltpc_priv = netdev_priv(dev);
+	struct atalk_addr *aa = &ltpc_priv->my_addr;
+	struct lt_init c;
+	int ltflags;
+
+	if(debug & DEBUG_VERBOSE) printk("ltpc_ioctl called\n");
+
+	switch(cmd) {
+		case SIOCSIFADDR:
+
+			aa->s_net  = sa->sat_addr.s_net;
+      
+			/* this does the probe and returns the node addr */
+			c.command = LT_INIT;
+			c.hint = sa->sat_addr.s_node;
+
+			aa->s_node = do_read(dev,&c,sizeof(c),&c,0);
+
+			/* get all llap frames raw */
+			ltflags = read_30(dev);
+			ltflags |= LT_FLAG_ALLLAP;
+			set_30 (dev,ltflags);  
+
+			dev->broadcast[0] = 0xFF;
+			dev->addr_len=1;
+			dev_addr_set(dev, &aa->s_node);
+   
+			return 0;
+
+		case SIOCGIFADDR:
+
+			sa->sat_addr.s_net = aa->s_net;
+			sa->sat_addr.s_node = aa->s_node;
+
+			return 0;
+
+		default: 
+			return -EINVAL;
+	}
+}
+
+static void set_multicast_list(struct net_device *dev)
+{
+	/* This needs to be present to keep netatalk happy. */
+	/* Actually netatalk needs fixing! */
+}
+
+static int ltpc_poll_counter;
+
+static void ltpc_poll(struct timer_list *unused)
+{
+	del_timer(&ltpc_timer);
+
+	if(debug & DEBUG_VERBOSE) {
+		if (!ltpc_poll_counter) {
+			ltpc_poll_counter = 50;
+			printk("ltpc poll is alive\n");
+		}
+		ltpc_poll_counter--;
+	}
+
+	/* poll 20 times per second */
+	idle(ltpc_timer_dev);
+	ltpc_timer.expires = jiffies + HZ/20;
+	add_timer(&ltpc_timer);
+}
+
+/* DDP to LLAP translation */
+
+static netdev_tx_t ltpc_xmit(struct sk_buff *skb, struct net_device *dev)
+{
+	/* in kernel 1.3.xx, on entry skb->data points to ddp header,
+	 * and skb->len is the length of the ddp data + ddp header
+	 */
+	int i;
+	struct lt_sendlap cbuf;
+	unsigned char *hdr;
+
+	cbuf.command = LT_SENDLAP;
+	cbuf.dnode = skb->data[0];
+	cbuf.laptype = skb->data[2];
+	skb_pull(skb,3);	/* skip past LLAP header */
+	cbuf.length = skb->len;	/* this is host order */
+	skb_reset_transport_header(skb);
+
+	if(debug & DEBUG_UPPER) {
+		printk("command ");
+		for(i=0;i<6;i++)
+			printk("%02x ",((unsigned char *)&cbuf)[i]);
+		printk("\n");
+	}
+
+	hdr = skb_transport_header(skb);
+	do_write(dev, &cbuf, sizeof(cbuf), hdr, skb->len);
+
+	if(debug & DEBUG_UPPER) {
+		printk("sent %d ddp bytes\n",skb->len);
+		for (i = 0; i < skb->len; i++)
+			printk("%02x ", hdr[i]);
+		printk("\n");
+	}
+
+	dev->stats.tx_packets++;
+	dev->stats.tx_bytes += skb->len;
+
+	dev_kfree_skb(skb);
+	return NETDEV_TX_OK;
+}
+
+/* initialization stuff */
+  
+static int __init ltpc_probe_dma(int base, int dma)
+{
+	int want = (dma == 3) ? 2 : (dma == 1) ? 1 : 3;
+	unsigned long timeout;
+	unsigned long f;
+  
+	if (want & 1) {
+		if (request_dma(1,"ltpc")) {
+			want &= ~1;
+		} else {
+			f=claim_dma_lock();
+			disable_dma(1);
+			clear_dma_ff(1);
+			set_dma_mode(1,DMA_MODE_WRITE);
+			set_dma_addr(1,virt_to_bus(ltdmabuf));
+			set_dma_count(1,sizeof(struct lt_mem));
+			enable_dma(1);
+			release_dma_lock(f);
+		}
+	}
+	if (want & 2) {
+		if (request_dma(3,"ltpc")) {
+			want &= ~2;
+		} else {
+			f=claim_dma_lock();
+			disable_dma(3);
+			clear_dma_ff(3);
+			set_dma_mode(3,DMA_MODE_WRITE);
+			set_dma_addr(3,virt_to_bus(ltdmabuf));
+			set_dma_count(3,sizeof(struct lt_mem));
+			enable_dma(3);
+			release_dma_lock(f);
+		}
+	}
+	/* set up request */
+
+	/* FIXME -- do timings better! */
+
+	ltdmabuf[0] = LT_READMEM;
+	ltdmabuf[1] = 1;  /* mailbox */
+	ltdmabuf[2] = 0; ltdmabuf[3] = 0;  /* address */
+	ltdmabuf[4] = 0; ltdmabuf[5] = 1;  /* read 0x0100 bytes */
+	ltdmabuf[6] = 0; /* dunno if this is necessary */
+
+	inb_p(io+1);
+	inb_p(io+0);
+	timeout = jiffies+100*HZ/100;
+	while(time_before(jiffies, timeout)) {
+		if ( 0xfa == inb_p(io+6) ) break;
+	}
+
+	inb_p(io+3);
+	inb_p(io+2);
+	while(time_before(jiffies, timeout)) {
+		if ( 0xfb == inb_p(io+6) ) break;
+	}
+
+	/* release the other dma channel (if we opened both of them) */
+
+	if ((want & 2) && (get_dma_residue(3)==sizeof(struct lt_mem))) {
+		want &= ~2;
+		free_dma(3);
+	}
+
+	if ((want & 1) && (get_dma_residue(1)==sizeof(struct lt_mem))) {
+		want &= ~1;
+		free_dma(1);
+	}
+
+	if (!want)
+		return 0;
+
+	return (want & 2) ? 3 : 1;
+}
+
+static const struct net_device_ops ltpc_netdev = {
+	.ndo_start_xmit		= ltpc_xmit,
+	.ndo_do_ioctl		= ltpc_ioctl,
+	.ndo_set_rx_mode	= set_multicast_list,
+};
+
+static struct net_device * __init ltpc_probe(void)
+{
+	struct net_device *dev;
+	int err = -ENOMEM;
+	int x=0,y=0;
+	int autoirq;
+	unsigned long f;
+	unsigned long timeout;
+
+	dev = alloc_ltalkdev(sizeof(struct ltpc_private));
+	if (!dev)
+		goto out;
+
+	/* probe for the I/O port address */
+	
+	if (io != 0x240 && request_region(0x220,8,"ltpc")) {
+		x = inb_p(0x220+6);
+		if ( (x!=0xff) && (x>=0xf0) ) {
+			io = 0x220;
+			goto got_port;
+		}
+		release_region(0x220,8);
+	}
+	if (io != 0x220 && request_region(0x240,8,"ltpc")) {
+		y = inb_p(0x240+6);
+		if ( (y!=0xff) && (y>=0xf0) ){ 
+			io = 0x240;
+			goto got_port;
+		}
+		release_region(0x240,8);
+	} 
+
+	/* give up in despair */
+	printk(KERN_ERR "LocalTalk card not found; 220 = %02x, 240 = %02x.\n", x,y);
+	err = -ENODEV;
+	goto out1;
+
+ got_port:
+	/* probe for the IRQ line */
+	if (irq < 2) {
+		unsigned long irq_mask;
+
+		irq_mask = probe_irq_on();
+		/* reset the interrupt line */
+		inb_p(io+7);
+		inb_p(io+7);
+		/* trigger an interrupt (I hope) */
+		inb_p(io+6);
+		mdelay(2);
+		autoirq = probe_irq_off(irq_mask);
+
+		if (autoirq == 0) {
+			printk(KERN_ERR "ltpc: probe at %#x failed to detect IRQ line.\n", io);
+		} else {
+			irq = autoirq;
+		}
+	}
+
+	/* allocate a DMA buffer */
+	ltdmabuf = (unsigned char *) dma_mem_alloc(1000);
+	if (!ltdmabuf) {
+		printk(KERN_ERR "ltpc: mem alloc failed\n");
+		err = -ENOMEM;
+		goto out2;
+	}
+
+	ltdmacbuf = &ltdmabuf[800];
+
+	if(debug & DEBUG_VERBOSE) {
+		printk("ltdmabuf pointer %08lx\n",(unsigned long) ltdmabuf);
+	}
+
+	/* reset the card */
+
+	inb_p(io+1);
+	inb_p(io+3);
+
+	msleep(20);
+
+	inb_p(io+0);
+	inb_p(io+2);
+	inb_p(io+7); /* clear reset */
+	inb_p(io+4); 
+	inb_p(io+5);
+	inb_p(io+5); /* enable dma */
+	inb_p(io+6); /* tri-state interrupt line */
+
+	ssleep(1);
+	
+	/* now, figure out which dma channel we're using, unless it's
+	   already been specified */
+	/* well, 0 is a legal DMA channel, but the LTPC card doesn't
+	   use it... */
+	dma = ltpc_probe_dma(io, dma);
+	if (!dma) {  /* no dma channel */
+		printk(KERN_ERR "No DMA channel found on ltpc card.\n");
+		err = -ENODEV;
+		goto out3;
+	}
+
+	/* print out friendly message */
+	if(irq)
+		printk(KERN_INFO "Apple/Farallon LocalTalk-PC card at %03x, IR%d, DMA%d.\n",io,irq,dma);
+	else
+		printk(KERN_INFO "Apple/Farallon LocalTalk-PC card at %03x, DMA%d.  Using polled mode.\n",io,dma);
+
+	dev->netdev_ops = &ltpc_netdev;
+	dev->base_addr = io;
+	dev->irq = irq;
+	dev->dma = dma;
+
+	/* the card will want to send a result at this point */
+	/* (I think... leaving out this part makes the kernel crash,
+           so I put it back in...) */
+
+	f=claim_dma_lock();
+	disable_dma(dma);
+	clear_dma_ff(dma);
+	set_dma_mode(dma,DMA_MODE_READ);
+	set_dma_addr(dma,virt_to_bus(ltdmabuf));
+	set_dma_count(dma,0x100);
+	enable_dma(dma);
+	release_dma_lock(f);
+
+	(void) inb_p(io+3);
+	(void) inb_p(io+2);
+	timeout = jiffies+100*HZ/100;
+
+	while(time_before(jiffies, timeout)) {
+		if( 0xf9 == inb_p(io+6))
+			break;
+		schedule();
+	}
+
+	if(debug & DEBUG_VERBOSE) {
+		printk("setting up timer and irq\n");
+	}
+
+	/* grab it and don't let go :-) */
+	if (irq && request_irq( irq, ltpc_interrupt, 0, "ltpc", dev) >= 0)
+	{
+		(void) inb_p(io+7);  /* enable interrupts from board */
+		(void) inb_p(io+7);  /* and reset irq line */
+	} else {
+		if( irq )
+			printk(KERN_ERR "ltpc: IRQ already in use, using polled mode.\n");
+		dev->irq = 0;
+		/* polled mode -- 20 times per second */
+		/* this is really, really slow... should it poll more often? */
+		ltpc_timer_dev = dev;
+		timer_setup(&ltpc_timer, ltpc_poll, 0);
+
+		ltpc_timer.expires = jiffies + HZ/20;
+		add_timer(&ltpc_timer);
+	}
+	err = register_netdev(dev);
+	if (err)
+		goto out4;
+
+	return NULL;
+out4:
+	del_timer_sync(&ltpc_timer);
+	if (dev->irq)
+		free_irq(dev->irq, dev);
+out3:
+	free_pages((unsigned long)ltdmabuf, get_order(1000));
+out2:
+	release_region(io, 8);
+out1:
+	free_netdev(dev);
+out:
+	return ERR_PTR(err);
+}
+
+#ifndef MODULE
+/* handles "ltpc=io,irq,dma" kernel command lines */
+static int __init ltpc_setup(char *str)
+{
+	int ints[5];
+
+	str = get_options(str, ARRAY_SIZE(ints), ints);
+
+	if (ints[0] == 0) {
+		if (str && !strncmp(str, "auto", 4)) {
+			/* do nothing :-) */
+		}
+		else {
+			/* usage message */
+			printk (KERN_ERR
+				"ltpc: usage: ltpc=auto|iobase[,irq[,dma]]\n");
+			return 0;
+		}
+	} else {
+		io = ints[1];
+		if (ints[0] > 1) {
+			irq = ints[2];
+		}
+		if (ints[0] > 2) {
+			dma = ints[3];
+		}
+		/* ignore any other parameters */
+	}
+	return 1;
+}
+
+__setup("ltpc=", ltpc_setup);
+#endif
+
+static struct net_device *dev_ltpc;
+
+MODULE_LICENSE("GPL");
+module_param(debug, int, 0);
+module_param_hw(io, int, ioport, 0);
+module_param_hw(irq, int, irq, 0);
+module_param_hw(dma, int, dma, 0);
+
+
+static int __init ltpc_module_init(void)
+{
+        if(io == 0)
+		printk(KERN_NOTICE
+		       "ltpc: Autoprobing is not recommended for modules\n");
+
+	dev_ltpc = ltpc_probe();
+	return PTR_ERR_OR_ZERO(dev_ltpc);
+}
+module_init(ltpc_module_init);
+
+static void __exit ltpc_cleanup(void)
+{
+
+	if(debug & DEBUG_VERBOSE) printk("unregister_netdev\n");
+	unregister_netdev(dev_ltpc);
+
+	del_timer_sync(&ltpc_timer);
+
+	if(debug & DEBUG_VERBOSE) printk("freeing irq\n");
+
+	if (dev_ltpc->irq)
+		free_irq(dev_ltpc->irq, dev_ltpc);
+
+	if(debug & DEBUG_VERBOSE) printk("freeing dma\n");
+
+	if (dev_ltpc->dma)
+		free_dma(dev_ltpc->dma);
+
+	if(debug & DEBUG_VERBOSE) printk("freeing ioaddr\n");
+
+	if (dev_ltpc->base_addr)
+		release_region(dev_ltpc->base_addr,8);
+
+	free_netdev(dev_ltpc);
+
+	if(debug & DEBUG_VERBOSE) printk("free_pages\n");
+
+	free_pages( (unsigned long) ltdmabuf, get_order(1000));
+
+	if(debug & DEBUG_VERBOSE) printk("returning from cleanup_module\n");
+}
+
+module_exit(ltpc_cleanup);

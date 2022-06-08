@@ -1,1 +1,9 @@
-cmd_drivers/media/rc/keymaps/rc-winfast.mod := { echo  drivers/media/rc/keymaps/rc-winfast.o;  echo; } > drivers/media/rc/keymaps/rc-winfast.mod
+2_FIELD_SEQ_BT:
+		break;
+	default:
+		field = V4L2_FIELD_INTERLACED;
+		break;
+	}
+
+	f->fmt.pix.field = field;
+	v4l_bound_align_image(&f->fmt.pix.wi

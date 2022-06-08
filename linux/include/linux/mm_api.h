@@ -1,1 +1,2 @@
-rd include/config/ALTE
+00d00);
+		/* enable ir

@@ -1,2 +1,2 @@
-drivers/media/rc/keymaps/rc-gotview7135.o
-
+pauge WinTV-HVR1275",
+		.portc		= CX23885_M

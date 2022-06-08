@@ -1,1 +1,2 @@
-cmd_drivers/media/i2c/upd64083.o := gcc -Wp,-MMD,drivers/media/i2c/.upd64083.o.d -nostdinc -I./arch/x86/include -I./arch/x86/include/generated  -I./include -I./arch/x86/include/uapi -I./arch/x86/include/generated/uapi -I./include/uapi -I./include/generated/uapi -include ./include/linux/compiler-version.h 
+drivers/net/bonding/bond_main.o drivers/net/bonding/bond_3ad.o drivers/net/bonding/bond_alb.o drivers/net/bonding/bond_sysfs.o drivers/net/bonding/bond_sysfs_slave.o drivers/net/bonding/bond_debugfs.o drivers/net/bonding/bond_netlink.o drivers/net/bonding/bond_options.o drivers/net/bonding/bond_procfs.o
+

@@ -1,53 +1,88 @@
-86/include/asm/qrwlock.h \
-  include/asm-generic/qrwlock.h \
-  include/linux/rwlock.h \
-    $(wildcard include/config/PREEMPT) \
-  include/linux/spinlock_api_smp.h \
-    $(wildcard include/config/INLINE_SPIN_LOCK) \
-    $(wildcard include/config/INLINE_SPIN_LOCK_BH) \
-    $(wildcard include/config/INLINE_SPIN_LOCK_IRQ) \
-    $(wildcard include/config/INLINE_SPIN_LOCK_IRQSAVE) \
-    $(wildcard include/config/INLINE_SPIN_TRYLOCK) \
-    $(wildcard include/config/INLINE_SPIN_TRYLOCK_BH) \
-    $(wildcard include/config/UNINLINE_SPIN_UNLOCK) \
-    $(wildcard include/config/INLINE_SPIN_UNLOCK_BH) \
-    $(wildcard include/config/INLINE_SPIN_UNLOCK_IRQ) \
-    $(wildcard include/config/INLINE_SPIN_UNLOCK_IRQRESTORE) \
-    $(wildcard include/config/GENERIC_LOCKBREAK) \
-  include/linux/rwlock_api_smp.h \
-    $(wildcard include/config/INLINE_READ_LOCK) \
-    $(wildcard include/config/INLINE_WRITE_LOCK) \
-    $(wildcard include/config/INLINE_READ_LOCK_BH) \
-    $(wildcard include/config/INLINE_WRITE_LOCK_BH) \
-    $(wildcard include/config/INLINE_READ_LOCK_IRQ) \
-    $(wildcard include/config/INLINE_WRITE_LOCK_IRQ) \
-    $(wildcard include/config/INLINE_READ_LOCK_IRQSAVE) \
-    $(wildcard include/config/INLINE_WRITE_LOCK_IRQSAVE) \
-    $(wildcard include/config/INLINE_READ_TRYLOCK) \
-    $(wildcard include/config/INLINE_WRITE_TRYLOCK) \
-    $(wildcard include/config/INLINE_READ_UNLOCK) \
-    $(wildcard include/config/INLINE_WRITE_UNLOCK) \
-    $(wildcard include/config/INLINE_READ_UNLOCK_BH) \
-    $(wildcard include/config/INLINE_WRITE_UNLOCK_BH) \
-    $(wildcard include/config/INLINE_READ_UNLOCK_IRQ) \
-    $(wildcard include/config/INLINE_WRITE_UNLOCK_IRQ) \
-    $(wildcard include/config/INLINE_READ_UNLOCK_IRQRESTORE) \
-    $(wildcard include/config/INLINE_WRITE_UNLOCK_IRQRESTORE) \
-  include/linux/refcount.h \
-  include/linux/rbtree.h \
-  include/linux/rbtree_types.h \
-  include/linux/rcupdate.h \
-    $(wildcard include/config/PREEMPT_RCU) \
-    $(wildcard include/config/TINY_RCU) \
-    $(wildcard include/config/RCU_STRICT_GRACE_PERIOD) \
-    $(wildcard include/config/TASKS_RCU_GENERIC) \
-    $(wildcard include/config/RCU_STALL_COMMON) \
-    $(wildcard include/config/NO_HZ_FULL) \
-    $(wildcard include/config/RCU_NOCB_CPU) \
-    $(wildcard include/config/TASKS_RCU) \
-    $(wildcard include/config/TASKS_TRACE_RCU) \
-    $(wildcard include/config/TASKS_RUDE_RCU) \
-    $(wildcard include/config/TREE_RCU) \
-    $(wildcard include/config/DEBUG_OBJECTS_RCU_HEAD) \
-    $(wildcard include/config/PROVE_RCU) \
-    $(wildcard in
+ION		0x000004B4
+#define VBI_PASS_CTRL		0x000004BC
+
+/* Audio Decoder Registers */
+/* 8051 Configuration */
+#define DL_CTL		0x00000800
+#define STD_DET_STATUS	0x00000804
+#define STD_DET_CTL	0x00000808
+#define DW8051_INT	0x0000080C
+#define GENERAL_CTL	0x00000810
+#define AAGC_CTL	0x00000814
+#define DEMATRIX_CTL	0x000008CC
+#define PATH1_CTL1	0x000008D0
+#define PATH1_VOL_CTL	0x000008D4
+#define PATH1_EQ_CTL	0x000008D8
+#define PATH1_SC_CTL	0x000008DC
+#define PATH2_CTL1	0x000008E0
+#define PATH2_VOL_CTL	0x000008E4
+#define PATH2_EQ_CTL	0x000008E8
+#define PATH2_SC_CTL	0x000008EC
+
+/* Sample Rate Converter */
+#define SRC_CTL		0x000008F0
+#define SRC_LF_COEF	0x000008F4
+#define SRC1_CTL	0x000008F8
+#define SRC2_CTL	0x000008FC
+#define SRC3_CTL	0x00000900
+#define SRC4_CTL	0x00000904
+#define SRC5_CTL	0x00000908
+#define SRC6_CTL	0x0000090C
+#define BAND_OUT_SEL	0x00000910
+#define I2S_N_CTL	0x00000914
+#define I2S_OUT_CTL	0x00000918
+#define AUTOCONFIG_REG	0x000009C4
+
+/* Audio ADC Registers */
+#define DSM_CTRL1	0x00000000
+#define DSM_CTRL2	0x00000001
+#define CHP_EN_CTRL	0x00000002
+#define CHP_CLK_CTRL1	0x00000004
+#define CHP_CLK_CTRL2	0x00000005
+#define BG_REF_CTRL	0x00000006
+#define SD2_SW_CTRL1	0x00000008
+#define SD2_SW_CTRL2	0x00000009
+#define SD2_BIAS_CTRL	0x0000000A
+#define AMP_BIAS_CTRL	0x0000000C
+#define CH_PWR_CTRL1	0x0000000E
+#define FLD_CH_SEL      (1 << 3)
+#define CH_PWR_CTRL2	0x0000000F
+#define DSM_STATUS1	0x00000010
+#define DSM_STATUS2	0x00000011
+#define DIG_CTL1	0x00000012
+#define DIG_CTL2	0x00000013
+#define I2S_TX_CFG	0x0000001A
+
+#define DEV_CNTRL2	0x00040000
+
+#define PCI_MSK_IR        (1 << 28)
+#define PCI_MSK_AV_CORE   (1 << 27)
+#define PCI_MSK_GPIO1     (1 << 24)
+#define PCI_MSK_GPIO0     (1 << 23)
+#define PCI_MSK_APB_DMA   (1 << 12)
+#define PCI_MSK_AL_WR     (1 << 11)
+#define PCI_MSK_AL_RD     (1 << 10)
+#define PCI_MSK_RISC_WR   (1 <<  9)
+#define PCI_MSK_RISC_RD   (1 <<  8)
+#define PCI_MSK_AUD_EXT   (1 <<  4)
+#define PCI_MSK_AUD_INT   (1 <<  3)
+#define PCI_MSK_VID_C     (1 <<  2)
+#define PCI_MSK_VID_B     (1 <<  1)
+#define PCI_MSK_VID_A      1
+#define PCI_INT_MSK	0x00040010
+
+#define PCI_INT_STAT	0x00040014
+#define PCI_INT_MSTAT	0x00040018
+
+#define VID_A_INT_MSK	0x00040020
+#define VID_A_INT_STAT	0x00040024
+#define VID_A_INT_MSTAT	0x00040028
+#define VID_A_INT_SSTAT	0x0004002C
+
+#define VID_B_INT_MSK	0x00040030
+#define VID_B_MSK_BAD_PKT     (1 << 20)
+#define VID_B_MSK_VBI_OPC_ERR (1 << 17)
+#define VID_B_MSK_OPC_ERR     (1 << 16)
+#define VID_B_MSK_VBI_SYNC    (1 << 13)
+#define VID_B_MSK_SYNC        (1 << 12)
+#define VID

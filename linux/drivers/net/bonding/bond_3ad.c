@@ -1,1440 +1,2792 @@
- include/config/TRACE_BRANCH_PROFILING) \
-    $(wildcard include/config/PROFILE_ALL_BRANCHES) \
-    $(wildcard include/config/STACK_VALIDATION) \
-  include/linux/compiler_types.h \
-  arch/x86/include/generated/asm/rwonce.h \
-  include/asm-generic/rwonce.h \
-  include/linux/kasan-checks.h \
-    $(wildcard include/config/KASAN_GENERIC) \
-    $(wildcard include/config/KASAN_SW_TAGS) \
-  include/linux/types.h \
-    $(wildcard include/config/HAVE_UID16) \
-    $(wildcard include/config/UID16) \
-    $(wildcard include/config/ARCH_DMA_ADDR_T_64BIT) \
-    $(wildcard include/config/PHYS_ADDR_T_64BIT) \
-    $(wildcard include/config/64BIT) \
-    $(wildcard include/config/ARCH_32BIT_USTAT_F_TINODE) \
-  include/uapi/linux/types.h \
-  arch/x86/include/generated/uapi/asm/types.h \
-  include/uapi/asm-generic/types.h \
-  include/asm-generic/int-ll64.h \
-  include/uapi/asm-generic/int-ll64.h \
-  arch/x86/include/uapi/asm/bitsperlong.h \
-  include/asm-generic/bitsperlong.h \
-  include/uapi/asm-generic/bitsperlong.h \
-  include/uapi/linux/posix_types.h \
-  include/linux/stddef.h \
-  include/uapi/linux/stddef.h \
-  arch/x86/include/asm/posix_types.h \
-    $(wildcard include/config/X86_32) \
-  arch/x86/include/uapi/asm/posix_types_32.h \
-  include/uapi/asm-generic/posix_types.h \
-  include/linux/kcsan-checks.h \
-    $(wildcard include/config/KCSAN) \
-    $(wildcard include/config/KCSAN_WEAK_MEMORY) \
-    $(wildcard include/config/KCSAN_IGNORE_ATOMICS) \
-  include/linux/err.h \
-  arch/x86/include/generated/uapi/asm/errno.h \
-  include/uapi/asm-generic/errno.h \
-  include/uapi/asm-generic/errno-base.h \
-  include/linux/poison.h \
-    $(wildcard include/config/ILLEGAL_POINTER_VALUE) \
-  include/linux/const.h \
-  include/vdso/const.h \
-  include/uapi/linux/const.h \
-  arch/x86/include/asm/barrier.h \
-  arch/x86/include/asm/alternative.h \
-  include/linux/stringify.h \
-  arch/x86/include/asm/asm.h \
-  arch/x86/include/asm/extable_fixup_types.h \
-  arch/x86/include/asm/nops.h \
-  include/asm-generic/barrier.h \
-  include/linux/stat.h \
-  arch/x86/include/uapi/asm/stat.h \
-  include/uapi/linux/stat.h \
-  include/linux/time.h \
-    $(wildcard include/config/POSIX_TIMERS) \
-  include/linux/cache.h \
-    $(wildcard include/config/ARCH_HAS_CACHE_LINE_SIZE) \
-  include/uapi/linux/kernel.h \
-  include/uapi/linux/sysinfo.h \
-  arch/x86/include/asm/cache.h \
-    $(wildcard include/config/X86_L1_CACHE_SHIFT) \
-    $(wildcard include/config/X86_INTERNODE_CACHE_SHIFT) \
-    $(wildcard include/config/X86_VSMP) \
-  include/linux/linkage.h \
-    $(wildcard include/config/ARCH_USE_SYM_ANNOTATIONS) \
-  include/linux/export.h \
-    $(wildcard include/config/MODVERSIONS) \
-    $(wildcard include/config/MODULE_REL_CRCS) \
-    $(wildcard include/config/HAVE_ARCH_PREL32_RELOCATIONS) \
-    $(wildcard include/config/TRIM_UNUSED_KSYMS) \
-  arch/x86/include/asm/linkage.h \
-    $(wildcard include/config/X86_64) \
-    $(wildcard include/config/X86_ALIGNMENT_16) \
-    $(wildcard include/config/SLS) \
-  arch/x86/include/asm/ibt.h \
-    $(wildcard include/config/X86_KERNEL_IBT) \
-  include/linux/math64.h \
-    $(wildcard include/config/ARCH_SUPPORTS_INT128) \
-  include/linux/math.h \
-  arch/x86/include/asm/div64.h \
-  include/linux/log2.h \
-    $(wildcard include/config/ARCH_HAS_ILOG2_U32) \
-    $(wildcard include/config/ARCH_HAS_ILOG2_U64) \
-  include/linux/bitops.h \
-  include/linux/bits.h \
-  include/vdso/bits.h \
-  include/linux/typecheck.h \
-  arch/x86/include/asm/bitops.h \
-    $(wildcard include/config/X86_CMOV) \
-  arch/x86/include/asm/rmwcc.h \
-    $(wildcard include/config/CC_HAS_ASM_GOTO) \
-  include/asm-generic/bitops/fls64.h \
-  include/asm-generic/bitops/sched.h \
-  arch/x86/include/asm/arch_hweight.h \
-  arch/x86/include/asm/cpufeatures.h \
-  arch/x86/include/asm/required-features.h \
-    $(wildcard include/config/X86_MINIMUM_CPU_FAMILY) \
-    $(wildcard include/config/MATH_EMULATION) \
-    $(wildcard include/config/X86_PAE) \
-    $(wildcard include/config/X86_CMPXCHG64) \
-    $(wildcard include/config/X86_P6_NOP) \
-    $(wildcard include/config/MATOM) \
-    $(wildcard include/config/PARAVIRT_XXL) \
-  arch/x86/include/asm/disabled-features.h \
-    $(wildcard include/config/X86_SMAP) \
-    $(wildcard include/config/X86_UMIP) \
-    $(wildcard include/config/X86_INTEL_MEMORY_PROTECTION_KEYS) \
-    $(wildcard include/config/X86_5LEVEL) \
-    $(wildcard include/config/PAGE_TABLE_ISOLATION) \
-    $(wildcard include/config/INTEL_IOMMU_SVM) \
-    $(wildcard include/config/X86_SGX) \
-  include/asm-generic/bitops/const_hweight.h \
-  include/asm-generic/bitops/instrumented-atomic.h \
-  include/linux/instrumented.h \
-  include/asm-generic/bitops/instrumented-non-atomic.h \
-    $(wildcard include/config/KCSAN_ASSUME_PLAIN_WRITES_ATOMIC) \
-  include/asm-generic/bitops/instrumented-lock.h \
-  include/asm-generic/bitops/le.h \
-  arch/x86/include/uapi/asm/byteorder.h \
-  include/linux/byteorder/little_endian.h \
-  include/uapi/linux/byteorder/little_endian.h \
-  include/linux/swab.h \
-  include/uapi/linux/swab.h \
-  arch/x86/include/uapi/asm/swab.h \
-  include/linux/byteorder/generic.h \
-  include/asm-generic/bitops/ext2-atomic-setbit.h \
-  include/vdso/math64.h \
-  include/linux/time64.h \
-  include/vdso/time64.h \
-  include/uapi/linux/time.h \
-  include/uapi/linux/time_types.h \
-  include/linux/time32.h \
-  include/linux/timex.h \
-  include/uapi/linux/timex.h \
-  include/uapi/linux/param.h \
-  arch/x86/include/generated/uapi/asm/param.h \
-  include/asm-generic/param.h \
-    $(wildcard include/config/HZ) \
-  include/uapi/asm-generic/param.h \
-  arch/x86/include/asm/timex.h \
-    $(wildcard include/config/X86_TSC) \
-  arch/x86/include/asm/processor.h \
-    $(wildcard include/config/X86_VMX_FEATURE_NAMES) \
-    $(wildcard include/config/X86_IOPL_IOPERM) \
-    $(wildcard include/config/STACKPROTECTOR) \
-    $(wildcard include/config/VM86) \
-    $(wildcard include/config/X86_DEBUGCTLMSR) \
-    $(wildcard include/config/CPU_SUP_AMD) \
-    $(wildcard include/config/XEN) \
-  arch/x86/include/asm/processor-flags.h \
-  arch/x86/include/uapi/asm/processor-flags.h \
-  include/linux/mem_encrypt.h \
-    $(wildcard include/config/ARCH_HAS_MEM_ENCRYPT) \
-    $(wildcard include/config/AMD_MEM_ENCRYPT) \
-  arch/x86/include/asm/mem_encrypt.h \
-  include/linux/init.h \
-    $(wildcard include/config/STRICT_KERNEL_RWX) \
-    $(wildcard include/config/STRICT_MODULE_RWX) \
-    $(wildcard include/config/LTO_CLANG) \
-  include/linux/cc_platform.h \
-    $(wildcard include/config/ARCH_HAS_CC_PLATFORM) \
-  arch/x86/include/uapi/asm/bootparam.h \
-  include/linux/screen_info.h \
-  include/uapi/linux/screen_info.h \
-  include/linux/apm_bios.h \
-  include/uapi/linux/apm_bios.h \
-  include/uapi/linux/ioctl.h \
-  arch/x86/include/generated/uapi/asm/ioctl.h \
-  include/asm-generic/ioctl.h \
-  include/uapi/asm-generic/ioctl.h \
-  include/linux/edd.h \
-  include/uapi/linux/edd.h \
-  arch/x86/include/asm/ist.h \
-  arch/x86/include/uapi/asm/ist.h \
-  include/video/edid.h \
-    $(wildcard include/config/X86) \
-  include/uapi/video/edid.h \
-  arch/x86/include/asm/math_emu.h \
-  arch/x86/include/asm/ptrace.h \
-    $(wildcard include/config/PARAVIRT) \
-    $(wildcard include/config/IA32_EMULATION) \
-  arch/x86/include/asm/segment.h \
-    $(wildcard include/config/XEN_PV) \
-  arch/x86/include/asm/page_types.h \
-    $(wildcard include/config/PHYSICAL_START) \
-    $(wildcard include/config/PHYSICAL_ALIGN) \
-    $(wildcard include/config/DYNAMIC_PHYSICAL_MASK) \
-  arch/x86/include/asm/page_32_types.h \
-    $(wildcard include/config/HIGHMEM4G) \
-    $(wildcard include/config/HIGHMEM64G) \
-    $(wildcard include/config/PAGE_OFFSET) \
-  arch/x86/include/uapi/asm/ptrace.h \
-  arch/x86/include/uapi/asm/ptrace-abi.h \
-  arch/x86/include/asm/paravirt_types.h \
-    $(wildcard include/config/PGTABLE_LEVELS) \
-    $(wildcard include/config/PARAVIRT_DEBUG) \
-  arch/x86/include/asm/desc_defs.h \
-  arch/x86/include/asm/pgtable_types.h \
-    $(wildcard include/config/MEM_SOFT_DIRTY) \
-    $(wildcard include/config/HAVE_ARCH_USERFAULTFD_WP) \
-    $(wildcard include/config/PROC_FS) \
-  arch/x86/include/asm/pgtable_32_types.h \
-  arch/x86/include/asm/pgtable-3level_types.h \
-  include/asm-generic/pgtable-nop4d.h \
-  include/asm-generic/pgtable-nopud.h \
-  arch/x86/include/asm/nospec-branch.h \
-  include/linux/static_key.h \
-  include/linux/jump_label.h \
-    $(wildcard include/config/HAVE_ARCH_JUMP_LABEL_RELATIVE) \
-  arch/x86/include/asm/jump_label.h \
-  include/linux/objtool.h \
-    $(wildcard include/config/FRAME_POINTER) \
-  arch/x86/include/asm/msr-index.h \
-  arch/x86/include/asm/unwind_hints.h \
-  arch/x86/include/asm/orc_types.h \
-  arch/x86/include/asm/GEN-for-each-reg.h \
-  arch/x86/include/asm/spinlock_types.h \
-  include/asm-generic/qspinlock_types.h \
-    $(wildcard include/config/NR_CPUS) \
-  include/asm-generic/qrwlock_types.h \
-  arch/x86/include/asm/proto.h \
-  arch/x86/include/uapi/asm/ldt.h \
-  arch/x86/include/uapi/asm/sigcontext.h \
-  arch/x86/include/asm/current.h \
-  arch/x86/include/asm/percpu.h \
-    $(wildcard include/config/X86_64_SMP) \
-  include/linux/kernel.h \
-    $(wildcard include/config/PREEMPT_VOLUNTARY_BUILD) \
-    $(wildcard include/config/PREEMPT_DYNAMIC) \
-    $(wildcard include/config/HAVE_PREEMPT_DYNAMIC_CALL) \
-    $(wildcard include/config/HAVE_PREEMPT_DYNAMIC_KEY) \
-    $(wildcard include/config/PREEMPT_) \
-    $(wildcard include/config/DEBUG_ATOMIC_SLEEP) \
-    $(wildcard include/config/MMU) \
-    $(wildcard include/config/PROVE_LOCKING) \
-  include/linux/stdarg.h \
-  include/linux/align.h \
-  include/linux/limits.h \
-  include/uapi/linux/limits.h \
-  include/vdso/limits.h \
-  include/linux/kstrtox.h \
-  include/linux/minmax.h \
-  include/linux/panic.h \
-    $(wildcard include/config/PANIC_TIMEOUT) \
-  include/linux/printk.h \
-    $(wildcard include/config/MESSAGE_LOGLEVEL_DEFAULT) \
-    $(wildcard include/config/CONSOLE_LOGLEVEL_DEFAULT) \
-    $(wildcard include/config/CONSOLE_LOGLEVEL_QUIET) \
-    $(wildcard include/config/EARLY_PRINTK) \
-    $(wildcard include/config/PRINTK) \
-    $(wildcard include/config/DYNAMIC_DEBUG) \
-    $(wildcard include/config/DYNAMIC_DEBUG_CORE) \
-  include/linux/kern_levels.h \
-  include/linux/ratelimit_types.h \
-  include/linux/spinlock_types_raw.h \
-    $(wildcard include/config/DEBUG_SPINLOCK) \
-    $(wildcard include/config/DEBUG_LOCK_ALLOC) \
-  include/linux/lockdep_types.h \
-    $(wildcard include/config/PROVE_RAW_LOCK_NESTING) \
-    $(wildcard include/config/LOCKDEP) \
-    $(wildcard include/config/LOCK_STAT) \
-  include/linux/once_lite.h \
-  include/linux/static_call_types.h \
-    $(wildcard include/config/HAVE_STATIC_CALL) \
-  include/linux/instruction_pointer.h \
-  include/asm-generic/percpu.h \
-    $(wildcard include/config/DEBUG_PREEMPT) \
-    $(wildcard include/config/HAVE_SETUP_PER_CPU_AREA) \
-  include/linux/threads.h \
-    $(wildcard include/config/BASE_SMALL) \
-  include/linux/percpu-defs.h \
-    $(wildcard include/config/DEBUG_FORCE_WEAK_PER_CPU) \
-  arch/x86/include/asm/page.h \
-  arch/x86/include/asm/page_32.h \
-    $(wildcard include/config/DEBUG_VIRTUAL) \
-    $(wildcard include/config/FLATMEM) \
-  include/linux/string.h \
-    $(wildcard include/config/BINARY_PRINTF) \
-    $(wildcard include/config/FORTIFY_SOURCE) \
-  include/linux/errno.h \
-  include/uapi/linux/errno.h \
-  include/uapi/linux/string.h \
-  arch/x86/include/asm/string.h \
-  arch/x86/include/asm/string_32.h \
-  include/linux/fortify-string.h \
-  include/linux/range.h \
-  include/asm-generic/memory_model.h \
-    $(wildcard include/config/SPARSEMEM_VMEMMAP) \
-    $(wildcard include/config/SPARSEMEM) \
-  include/linux/pfn.h \
-  include/asm-generic/getorder.h \
-  arch/x86/include/asm/msr.h \
-  arch/x86/include/asm/msr-index.h \
-  arch/x86/include/asm/cpumask.h \
-  include/linux/cpumask.h \
-    $(wildcard include/config/CPUMASK_OFFSTACK) \
-    $(wildcard include/config/HOTPLUG_CPU) \
-    $(wildcard include/config/DEBUG_PER_CPU_MAPS) \
-  include/linux/bitmap.h \
-  include/linux/find.h \
-  include/linux/atomic.h \
-  arch/x86/include/asm/atomic.h \
-  arch/x86/include/asm/cmpxchg.h \
-  arch/x86/include/asm/cmpxchg_32.h \
-  arch/x86/include/asm/atomic64_32.h \
-  include/linux/atomic/atomic-arch-fallback.h \
-    $(wildcard include/config/GENERIC_ATOMIC64) \
-  include/linux/atomic/atomic-long.h \
-  include/linux/atomic/atomic-instrumented.h \
-  include/linux/bug.h \
-    $(wildcard include/config/BUG_ON_DATA_CORRUPTION) \
-  arch/x86/include/asm/bug.h \
-    $(wildcard include/config/DEBUG_BUGVERBOSE) \
-  include/linux/instrumentation.h \
-    $(wildcard include/config/DEBUG_ENTRY) \
-  include/asm-generic/bug.h \
-    $(wildcard include/config/BUG) \
-    $(wildcard include/config/GENERIC_BUG_RELATIVE_POINTERS) \
-  arch/x86/include/uapi/asm/msr.h \
-  include/linux/tracepoint-defs.h \
-  arch/x86/include/asm/special_insns.h \
-  include/linux/irqflags.h \
-    $(wildcard include/config/TRACE_IRQFLAGS) \
-    $(wildcard include/config/PREEMPT_RT) \
-    $(wildcard include/config/IRQSOFF_TRACER) \
-    $(wildcard include/config/PREEMPT_TRACER) \
-    $(wildcard include/config/DEBUG_IRQFLAGS) \
-    $(wildcard include/config/TRACE_IRQFLAGS_SUPPORT) \
-  arch/x86/include/asm/irqflags.h \
-  arch/x86/include/asm/fpu/types.h \
-  arch/x86/include/asm/vmxfeatures.h \
-  arch/x86/include/asm/vdso/processor.h \
-  include/linux/personality.h \
-  include/uapi/linux/personality.h \
-  arch/x86/include/asm/tsc.h \
-  arch/x86/include/asm/cpufeature.h \
-    $(wildcard include/config/X86_FEATURE_NAMES) \
-  include/vdso/time32.h \
-  include/vdso/time.h \
-  include/linux/uidgid.h \
-    $(wildcard include/config/MULTIUSER) \
-    $(wildcard include/config/USER_NS) \
-  include/linux/highuid.h \
-  include/linux/buildid.h \
-    $(wildcard include/config/CRASH_CORE) \
-  include/linux/mm_types.h \
-    $(wildcard include/config/HAVE_ALIGNED_STRUCT_PAGE) \
-    $(wildcard include/config/MEMCG) \
-    $(wildcard include/config/USERFAULTFD) \
-    $(wildcard include/config/SWAP) \
-    $(wildcard include/config/NUMA) \
-    $(wildcard include/config/HAVE_ARCH_COMPAT_MMAP_BASES) \
-    $(wildcard include/config/MEMBARRIER) \
-    $(wildcard include/config/AIO) \
-    $(wildcard include/config/MMU_NOTIFIER) \
-    $(wildcard include/config/TRANSPARENT_HUGEPAGE) \
-    $(wildcard include/config/NUMA_BALANCING) \
-    $(wildcard include/config/ARCH_WANT_BATCHED_UNMAP_TLB_FLUSH) \
-    $(wildcard include/config/HUGETLB_PAGE) \
-    $(wildcard include/config/IOMMU_SVA) \
-  include/linux/mm_types_task.h \
-    $(wildcard include/config/SPLIT_PTLOCK_CPUS) \
-    $(wildcard include/config/ARCH_ENABLE_SPLIT_PMD_PTLOCK) \
-  arch/x86/include/asm/tlbbatch.h \
-  include/linux/auxvec.h \
-  include/uapi/linux/auxvec.h \
-  arch/x86/include/uapi/asm/auxvec.h \
-  include/linux/kref.h \
-  include/linux/spinlock.h \
-    $(wildcard include/config/PREEMPTION) \
-  include/linux/preempt.h \
-    $(wildcard include/config/PREEMPT_COUNT) \
-    $(wildcard include/config/TRACE_PREEMPT_TOGGLE) \
-    $(wildcard include/config/PREEMPT_NOTIFIERS) \
-  arch/x86/include/asm/preempt.h \
-  include/linux/thread_info.h \
-    $(wildcard include/config/THREAD_INFO_IN_TASK) \
-    $(wildcard include/config/GENERIC_ENTRY) \
-    $(wildcard include/config/HAVE_ARCH_WITHIN_STACK_FRAMES) \
-    $(wildcard include/config/HARDENED_USERCOPY) \
-  include/linux/restart_block.h \
-  arch/x86/include/asm/thread_info.h \
-    $(wildcard include/config/COMPAT) \
-  include/linux/bottom_half.h \
-  include/linux/lockdep.h \
-    $(wildcard include/config/DEBUG_LOCKING_API_SELFTESTS) \
-  include/linux/smp.h \
-    $(wildcard include/config/UP_LATE_INIT) \
-  include/linux/smp_types.h \
-  include/linux/llist.h \
-    $(wildcard include/config/ARCH_HAVE_NMI_SAFE_CMPXCHG) \
-  arch/x86/include/asm/smp.h \
-    $(wildcard include/config/X86_LOCAL_APIC) \
-    $(wildcard include/config/DEBUG_NMI_SELFTEST) \
-  arch/x86/include/generated/asm/mmiowb.h \
-  include/asm-generic/mmiowb.h \
-    $(wildcard include/config/MMIOWB) \
-  include/linux/spinlock_types.h \
-  include/linux/rwlock_types.h \
-  arch/x86/include/asm/spinlock.h \
-  arch/x86/include/asm/paravirt.h \
-    $(wildcard include/config/PARAVIRT_SPINLOCKS) \
-  arch/x86/include/asm/frame.h \
-  arch/x86/include/asm/qspinlock.h \
-  include/asm-generic/qspinlock.h \
-  arch/x86/include/asm/qrwlock.h \
-  include/asm-generic/qrwlock.h \
-  include/linux/rwlock.h \
-    $(wildcard include/config/PREEMPT) \
-  include/linux/spinlock_api_smp.h \
-    $(wildcard include/config/INLINE_SPIN_LOCK) \
-    $(wildcard include/config/INLINE_SPIN_LOCK_BH) \
-    $(wildcard include/config/INLINE_SPIN_LOCK_IRQ) \
-    $(wildcard include/config/INLINE_SPIN_LOCK_IRQSAVE) \
-    $(wildcard include/config/INLINE_SPIN_TRYLOCK) \
-    $(wildcard include/config/INLINE_SPIN_TRYLOCK_BH) \
-    $(wildcard include/config/UNINLINE_SPIN_UNLOCK) \
-    $(wildcard include/config/INLINE_SPIN_UNLOCK_BH) \
-    $(wildcard include/config/INLINE_SPIN_UNLOCK_IRQ) \
-    $(wildcard include/config/INLINE_SPIN_UNLOCK_IRQRESTORE) \
-    $(wildcard include/config/GENERIC_LOCKBREAK) \
-  include/linux/rwlock_api_smp.h \
-    $(wildcard include/config/INLINE_READ_LOCK) \
-    $(wildcard include/config/INLINE_WRITE_LOCK) \
-    $(wildcard include/config/INLINE_READ_LOCK_BH) \
-    $(wildcard include/config/INLINE_WRITE_LOCK_BH) \
-    $(wildcard include/config/INLINE_READ_LOCK_IRQ) \
-    $(wildcard include/config/INLINE_WRITE_LOCK_IRQ) \
-    $(wildcard include/config/INLINE_READ_LOCK_IRQSAVE) \
-    $(wildcard include/config/INLINE_WRITE_LOCK_IRQSAVE) \
-    $(wildcard include/config/INLINE_READ_TRYLOCK) \
-    $(wildcard include/config/INLINE_WRITE_TRYLOCK) \
-    $(wildcard include/config/INLINE_READ_UNLOCK) \
-    $(wildcard include/config/INLINE_WRITE_UNLOCK) \
-    $(wildcard include/config/INLINE_READ_UNLOCK_BH) \
-    $(wildcard include/config/INLINE_WRITE_UNLOCK_BH) \
-    $(wildcard include/config/INLINE_READ_UNLOCK_IRQ) \
-    $(wildcard include/config/INLINE_WRITE_UNLOCK_IRQ) \
-    $(wildcard include/config/INLINE_READ_UNLOCK_IRQRESTORE) \
-    $(wildcard include/config/INLINE_WRITE_UNLOCK_IRQRESTORE) \
-  include/linux/refcount.h \
-  include/linux/rbtree.h \
-  include/linux/rbtree_types.h \
-  include/linux/rcupdate.h \
-    $(wildcard include/config/PREEMPT_RCU) \
-    $(wildcard include/config/TINY_RCU) \
-    $(wildcard include/config/RCU_STRICT_GRACE_PERIOD) \
-    $(wildcard include/config/TASKS_RCU_GENERIC) \
-    $(wildcard include/config/RCU_STALL_COMMON) \
-    $(wildcard include/config/NO_HZ_FULL) \
-    $(wildcard include/config/RCU_NOCB_CPU) \
-    $(wildcard include/config/TASKS_RCU) \
-    $(wildcard include/config/TASKS_TRACE_RCU) \
-    $(wildcard include/config/TASKS_RUDE_RCU) \
-    $(wildcard include/config/TREE_RCU) \
-    $(wildcard include/config/DEBUG_OBJECTS_RCU_HEAD) \
-    $(wildcard include/config/PROVE_RCU) \
-    $(wildcard include/config/ARCH_WEAK_RELEASE_ACQUIRE) \
-  include/linux/rcutree.h \
-  include/linux/rwsem.h \
-    $(wildcard include/config/RWSEM_SPIN_ON_OWNER) \
-    $(wildcard include/config/DEBUG_RWSEMS) \
-  include/linux/osq_lock.h \
-  include/linux/completion.h \
-  include/linux/swait.h \
-  include/linux/wait.h \
-  include/uapi/linux/wait.h \
-  include/linux/uprobes.h \
-    $(wildcard include/config/UPROBES) \
-  arch/x86/include/asm/uprobes.h \
-  include/linux/notifier.h \
-  include/linux/mutex.h \
-    $(wildcard include/config/MUTEX_SPIN_ON_OWNER) \
-    $(wildcard include/config/DEBUG_MUTEXES) \
-  include/linux/debug_locks.h \
-  include/linux/srcu.h \
-    $(wildcard include/config/TINY_SRCU) \
-    $(wildcard include/config/SRCU) \
-  include/linux/workqueue.h \
-    $(wildcard include/config/DEBUG_OBJECTS_WORK) \
-    $(wildcard include/config/FREEZER) \
-    $(wildcard include/config/WQ_WATCHDOG) \
-  include/linux/timer.h \
-    $(wildcard include/config/DEBUG_OBJECTS_TIMERS) \
-    $(wildcard include/config/NO_HZ_COMMON) \
-  include/linux/ktime.h \
-  include/linux/jiffies.h \
-  include/vdso/jiffies.h \
-  include/generated/timeconst.h \
-  include/vdso/ktime.h \
-  include/linux/timekeeping.h \
-    $(wildcard include/config/GENERIC_CMOS_UPDATE) \
-  include/linux/clocksource_ids.h \
-  include/linux/debugobjects.h \
-    $(wildcard include/config/DEBUG_OBJECTS) \
-    $(wildcard include/config/DEBUG_OBJECTS_FREE) \
-  include/linux/rcu_segcblist.h \
-  include/linux/srcutree.h \
-  include/linux/rcu_node_tree.h \
-    $(wildcard include/config/RCU_FANOUT) \
-    $(wildcard include/config/RCU_FANOUT_LEAF) \
-  include/linux/page-flags-layout.h \
-    $(wildcard include/config/KASAN_HW_TAGS) \
-  include/linux/numa.h \
-    $(wildcard include/config/NODES_SHIFT) \
-    $(wildcard include/config/NUMA_KEEP_MEMINFO) \
-    $(wildcard include/config/HAVE_ARCH_NODE_DEV_GROUP) \
-  arch/x86/include/asm/sparsemem.h \
-  include/generated/bounds.h \
-  include/linux/seqlock.h \
-  include/linux/ww_mutex.h \
-    $(wildcard include/config/DEBUG_RT_MUTEXES) \
-    $(wildcard include/config/DEBUG_WW_MUTEX_SLOWPATH) \
-  include/linux/rtmutex.h \
-  arch/x86/include/asm/mmu.h \
-    $(wildcard include/config/MODIFY_LDT_SYSCALL) \
-  include/linux/kmod.h \
-  include/linux/umh.h \
-  include/linux/gfp.h \
-    $(wildcard include/config/HIGHMEM) \
-    $(wildcard include/config/ZONE_DMA) \
-    $(wildcard include/config/ZONE_DMA32) \
-    $(wildcard include/config/ZONE_DEVICE) \
-    $(wildcard include/config/PM_SLEEP) \
-    $(wildcard include/config/CONTIG_ALLOC) \
-    $(wildcard include/config/CMA) \
-  include/linux/mmdebug.h \
-    $(wildcard include/config/DEBUG_VM) \
-    $(wildcard include/config/DEBUG_VM_PGFLAGS) \
-  include/linux/mmzone.h \
-    $(wildcard include/config/FORCE_MAX_ZONEORDER) \
-    $(wildcard include/config/MEMORY_ISOLATION) \
-    $(wildcard include/config/ZSMALLOC) \
-    $(wildcard include/config/MEMORY_HOTPLUG) \
-    $(wildcard include/config/COMPACTION) \
-    $(wildcard include/config/PAGE_EXTENSION) \
-    $(wildcard include/config/DEFERRED_STRUCT_PAGE_INIT) \
-    $(wildcard include/config/HAVE_MEMORYLESS_NODES) \
-    $(wildcard include/config/SPARSEMEM_EXTREME) \
-    $(wildcard include/config/HAVE_ARCH_PFN_VALID) \
-  include/linux/nodemask.h \
-  include/linux/pageblock-flags.h \
-    $(wildcard include/config/HUGETLB_PAGE_SIZE_VARIABLE) \
-  include/linux/page-flags.h \
-    $(wildcard include/config/ARCH_USES_PG_UNCACHED) \
-    $(wildcard include/config/MEMORY_FAILURE) \
-    $(wildcard include/config/PAGE_IDLE_FLAG) \
-    $(wildcard include/config/HUGETLB_PAGE_FREE_VMEMMAP) \
-    $(wildcard include/config/HUGETLB_PAGE_FREE_VMEMMAP_DEFAULT_ON) \
-    $(wildcard include/config/KSM) \
-  include/linux/local_lock.h \
-  include/linux/local_lock_internal.h \
-  include/linux/memory_hotplug.h \
-    $(wildcard include/config/HAVE_ARCH_NODEDATA_EXTENSION) \
-    $(wildcard include/config/ARCH_HAS_ADD_PAGES) \
-    $(wildcard include/config/MEMORY_HOTREMOVE) \
-  arch/x86/include/asm/mmzone.h \
-  arch/x86/include/asm/mmzone_32.h \
-  include/linux/topology.h \
-    $(wildcard include/config/USE_PERCPU_NUMA_NODE_ID) \
-    $(wildcard include/config/SCHED_SMT) \
-    $(wildcard include/config/SCHED_CLUSTER) \
-  include/linux/arch_topology.h \
-    $(wildcard include/config/ACPI_CPPC_LIB) \
-    $(wildcard include/config/GENERIC_ARCH_TOPOLOGY) \
-  include/linux/percpu.h \
-    $(wildcard include/config/NEED_PER_CPU_EMBED_FIRST_CHUNK) \
-    $(wildcard include/config/NEED_PER_CPU_PAGE_FIRST_CHUNK) \
-  arch/x86/include/asm/topology.h \
-    $(wildcard include/config/SCHED_MC_PRIO) \
-  arch/x86/include/asm/mpspec.h \
-    $(wildcard include/config/EISA) \
-    $(wildcard include/config/X86_MPPARSE) \
-  arch/x86/include/asm/mpspec_def.h \
-  arch/x86/include/asm/x86_init.h \
-  arch/x86/include/asm/apicdef.h \
-  include/asm-generic/topology.h \
-  include/linux/sysctl.h \
-    $(wildcard include/config/SYSCTL) \
-  include/uapi/linux/sysctl.h \
-  include/linux/elf.h \
-    $(wildcard include/config/ARCH_USE_GNU_PROPERTY) \
-    $(wildcard include/config/ARCH_HAVE_ELF_PROT) \
-  arch/x86/include/asm/elf.h \
-    $(wildcard include/config/X86_X32_ABI) \
-  arch/x86/include/asm/user.h \
-  arch/x86/include/asm/user_32.h \
-  arch/x86/include/asm/fsgsbase.h \
-  arch/x86/include/asm/vdso.h \
-  arch/x86/include/asm/desc.h \
-  arch/x86/include/asm/fixmap.h \
-    $(wildcard include/config/DEBUG_KMAP_LOCAL_FORCE_MAP) \
-    $(wildcard include/config/X86_VSYSCALL_EMULATION) \
-    $(wildcard include/config/PROVIDE_OHCI1394_DMA_INIT) \
-    $(wildcard include/config/X86_IO_APIC) \
-    $(wildcard include/config/KMAP_LOCAL) \
-    $(wildcard include/config/PCI_MMCONFIG) \
-    $(wildcard include/config/ACPI_APEI_GHES) \
-    $(wildcard include/config/INTEL_TXT) \
-  arch/x86/include/generated/asm/kmap_size.h \
-  include/asm-generic/kmap_size.h \
-    $(wildcard include/config/DEBUG_KMAP_LOCAL) \
-  include/asm-generic/fixmap.h \
-  arch/x86/include/asm/irq_vectors.h \
-    $(wildcard include/config/HAVE_KVM) \
-    $(wildcard include/config/HYPERV) \
-    $(wildcard include/config/PCI_MSI) \
-  arch/x86/include/asm/cpu_entry_area.h \
-  arch/x86/include/asm/intel_ds.h \
-  arch/x86/include/asm/pgtable_areas.h \
-  arch/x86/include/asm/pgtable_32_areas.h \
-  include/uapi/linux/elf.h \
-  include/uapi/linux/elf-em.h \
-  include/linux/kobject.h \
-    $(wildcard include/config/UEVENT_HELPER) \
-    $(wildcard include/config/DEBUG_KOBJECT_RELEASE) \
-  include/linux/sysfs.h \
-  include/linux/kernfs.h \
-    $(wildcard include/config/KERNFS) \
-  include/linux/idr.h \
-  include/linux/radix-tree.h \
-  include/linux/xarray.h \
-    $(wildcard include/config/XARRAY_MULTI) \
-  include/linux/kconfig.h \
-  include/linux/kobject_ns.h \
-  include/linux/moduleparam.h \
-    $(wildcard include/config/ALPHA) \
-    $(wildcard include/config/IA64) \
-    $(wildcard include/config/PPC64) \
-  include/linux/rbtree_latch.h \
-  include/linux/error-injection.h \
-  include/asm-generic/error-injection.h \
-  include/linux/cfi.h \
-    $(wildcard include/config/CFI_CLANG_SHADOW) \
-  arch/x86/include/asm/module.h \
-    $(wildcard include/config/UNWINDER_ORC) \
-  include/asm-generic/module.h \
-    $(wildcard include/config/HAVE_MOD_ARCH_SPECIFIC) \
-    $(wildcard include/config/MODULES_USE_ELF_REL) \
-    $(wildcard include/config/MODULES_USE_ELF_RELA) \
-  arch/x86/include/asm/orc_types.h \
-  include/linux/sched.h \
-    $(wildcard include/config/VIRT_CPU_ACCOUNTING_NATIVE) \
-    $(wildcard include/config/SCHED_INFO) \
-    $(wildcard include/config/SCHEDSTATS) \
-    $(wildcard include/config/SCHED_CORE) \
-    $(wildcard include/config/FAIR_GROUP_SCHED) \
-    $(wildcard include/config/RT_GROUP_SCHED) \
-    $(wildcard include/config/RT_MUTEXES) \
-    $(wildcard include/config/UCLAMP_TASK) \
-    $(wildcard include/config/UCLAMP_BUCKETS_COUNT) \
-    $(wildcard include/config/CGROUP_SCHED) \
-    $(wildcard include/config/BLK_DEV_IO_TRACE) \
-    $(wildcard include/config/PSI) \
-    $(wildcard include/config/COMPAT_BRK) \
-    $(wildcard include/config/CGROUPS) \
-    $(wildcard include/config/BLK_CGROUP) \
-    $(wildcard include/config/PAGE_OWNER) \
-    $(wildcard include/config/EVENTFD) \
-    $(wildcard include/config/ARCH_HAS_SCALED_CPUTIME) \
-    $(wildcard include/config/VIRT_CPU_ACCOUNTING_GEN) \
-    $(wildcard include/config/POSIX_CPUTIMERS) \
-    $(wildcard include/config/POSIX_CPU_TIMERS_TASK_WORK) \
-    $(wildcard include/config/KEYS) \
-    $(wildcard include/config/SYSVIPC) \
-    $(wildcard include/config/DETECT_HUNG_TASK) \
-    $(wildcard include/config/IO_URING) \
-    $(wildcard include/config/AUDIT) \
-    $(wildcard include/config/AUDITSYSCALL) \
-    $(wildcard include/config/UBSAN) \
-    $(wildcard include/config/UBSAN_TRAP) \
-    $(wildcard include/config/TASK_XACCT) \
-    $(wildcard include/config/CPUSETS) \
-    $(wildcard include/config/X86_CPU_RESCTRL) \
-    $(wildcard include/config/FUTEX) \
-    $(wildcard include/config/PERF_EVENTS) \
-    $(wildcard include/config/RSEQ) \
-    $(wildcard include/config/TASK_DELAY_ACCT) \
-    $(wildcard include/config/FAULT_INJECTION) \
-    $(wildcard include/config/LATENCYTOP) \
-    $(wildcard include/config/KUNIT) \
-    $(wildcard include/config/FUNCTION_GRAPH_TRACER) \
-    $(wildcard include/config/BCACHE) \
-    $(wildcard include/config/VMAP_STACK) \
-    $(wildcard include/config/SECURITY) \
-    $(wildcard include/config/BPF_SYSCALL) \
-    $(wildcard include/config/GCC_PLUGIN_STACKLEAK) \
-    $(wildcard include/config/X86_MCE) \
-    $(wildcard include/config/KRETPROBES) \
-    $(wildcard include/config/RETHOOK) \
-    $(wildcard include/config/ARCH_HAS_PARANOID_L1D_FLUSH) \
-    $(wildcard include/config/ARCH_TASK_STRUCT_ON_STACK) \
-    $(wildcard include/config/DEBUG_RSEQ) \
-  include/uapi/linux/sched.h \
-  include/linux/pid.h \
-  include/linux/rculist.h \
-    $(wildcard include/config/PROVE_RCU_LIST) \
-  include/linux/sem.h \
-  include/uapi/linux/sem.h \
-  include/linux/ipc.h \
-  include/linux/rhashtable-types.h \
-  include/uapi/linux/ipc.h \
-  arch/x86/include/generated/uapi/asm/ipcbuf.h \
-  include/uapi/asm-generic/ipcbuf.h \
-  arch/x86/include/uapi/asm/sembuf.h \
-  include/linux/shm.h \
-  include/uapi/linux/shm.h \
-  include/uapi/asm-generic/hugetlb_encode.h \
-  arch/x86/include/uapi/asm/shmbuf.h \
-  include/uapi/asm-generic/shmbuf.h \
-  arch/x86/include/asm/shmparam.h \
-  include/linux/plist.h \
-    $(wildcard include/config/DEBUG_PLIST) \
-  include/linux/hrtimer.h \
-    $(wildcard include/config/HIGH_RES_TIMERS) \
-    $(wildcard include/config/TIME_LOW_RES) \
-    $(wildcard include/config/TIMERFD) \
-  include/linux/hrtimer_defs.h \
-  include/linux/timerqueue.h \
-  include/linux/seccomp.h \
-    $(wildcard include/config/SECCOMP) \
-    $(wildcard include/config/HAVE_ARCH_SECCOMP_FILTER) \
-    $(wildcard include/config/SECCOMP_FILTER) \
-    $(wildcard include/config/CHECKPOINT_RESTORE) \
-    $(wildcard include/config/SECCOMP_CACHE_DEBUG) \
-  include/uapi/linux/seccomp.h \
-  arch/x86/include/asm/seccomp.h \
-  arch/x86/include/asm/unistd.h \
-  arch/x86/include/uapi/asm/unistd.h \
-  arch/x86/include/generated/uapi/asm/unistd_32.h \
-  include/asm-generic/seccomp.h \
-  include/uapi/linux/unistd.h \
-  include/linux/resource.h \
-  include/uapi/linux/resource.h \
-  arch/x86/include/generated/uapi/asm/resource.h \
-  include/asm-generic/resource.h \
-  include/uapi/asm-generic/resource.h \
-  include/linux/latencytop.h \
-  include/linux/sched/prio.h \
-  include/linux/sched/types.h \
-  include/linux/signal_types.h \
-    $(wildcard include/config/OLD_SIGACTION) \
-  include/uapi/linux/signal.h \
-  arch/x86/include/asm/signal.h \
-  arch/x86/include/uapi/asm/signal.h \
-  include/uapi/asm-generic/signal-defs.h \
-  arch/x86/include/uapi/asm/siginfo.h \
-  include/uapi/asm-generic/siginfo.h \
-  include/linux/syscall_user_dispatch.h \
-  include/linux/task_io_accounting.h \
-    $(wildcard include/config/TASK_IO_ACCOUNTING) \
-  include/linux/posix-timers.h \
-  include/linux/alarmtimer.h \
-    $(wildcard include/config/RTC_CLASS) \
-  include/uapi/linux/rseq.h \
-  include/linux/kcsan.h \
-  include/linux/delay.h \
-  arch/x86/include/asm/delay.h \
-  include/asm-generic/delay.h \
-  include/linux/slab.h \
-    $(wildcard include/config/DEBUG_SLAB) \
-    $(wildcard include/config/FAILSLAB) \
-    $(wildcard include/config/MEMCG_KMEM) \
-    $(wildcard include/config/KASAN) \
-    $(wildcard include/config/SLAB) \
-    $(wildcard include/config/SLUB) \
-    $(wildcard include/config/SLOB) \
-  include/linux/overflow.h \
-  include/linux/percpu-refcount.h \
-  include/linux/kasan.h \
-    $(wildcard include/config/KASAN_STACK) \
-    $(wildcard include/config/KASAN_VMALLOC) \
-    $(wildcard include/config/KASAN_INLINE) \
-  include/linux/kasan-enabled.h \
-  include/linux/videodev2.h \
-  include/uapi/linux/videodev2.h \
-    $(wildcard include/config/VIDEO_ADV_DEBUG) \
-  include/uapi/linux/v4l2-common.h \
-  include/uapi/linux/v4l2-controls.h \
-  include/linux/i2c.h \
-    $(wildcard include/config/I2C) \
-    $(wildcard include/config/I2C_SLAVE) \
-    $(wildcard include/config/I2C_BOARDINFO) \
-    $(wildcard include/config/I2C_MUX) \
-    $(wildcard include/config/OF) \
-    $(wildcard include/config/ACPI) \
-  include/linux/acpi.h \
-    $(wildcard include/config/ACPI_DEBUGGER) \
-    $(wildcard include/config/ACPI_TABLE_LIB) \
-    $(wildcard include/config/LOONGARCH) \
-    $(wildcard include/config/ARM64) \
-    $(wildcard include/config/ACPI_PROCESSOR_CSTATE) \
-    $(wildcard include/config/ACPI_HOTPLUG_CPU) \
-    $(wildcard include/config/ACPI_HOTPLUG_IOAPIC) \
-    $(wildcard include/config/PCI) \
-    $(wildcard include/config/ACPI_WMI) \
-    $(wildcard include/config/ACPI_NUMA) \
-    $(wildcard include/config/HIBERNATION) \
-    $(wildcard include/config/ACPI_HOTPLUG_MEMORY) \
-    $(wildcard include/config/ACPI_CONTAINER) \
-    $(wildcard include/config/ACPI_GTDT) \
-    $(wildcard include/config/PM) \
-    $(wildcard include/config/GPIOLIB) \
-    $(wildcard include/config/ACPI_TABLE_UPGRADE) \
-    $(wildcard include/config/ACPI_WATCHDOG) \
-    $(wildcard include/config/ACPI_SPCR_TABLE) \
-    $(wildcard include/config/ACPI_GENERIC_GSI) \
-    $(wildcard include/config/ACPI_LPIT) \
-    $(wildcard include/config/ACPI_PPTT) \
-    $(wildcard include/config/ACPI_PCC) \
-  include/linux/ioport.h \
-  include/linux/irqdomain.h \
-    $(wildcard include/config/IRQ_DOMAIN_HIERARCHY) \
-    $(wildcard include/config/GENERIC_IRQ_DEBUGFS) \
-    $(wildcard include/config/IRQ_DOMAIN) \
-    $(wildcard include/config/IRQ_DOMAIN_NOMAP) \
-  include/linux/irqhandler.h \
-  include/linux/of.h \
-    $(wildcard include/config/OF_DYNAMIC) \
-    $(wildcard include/config/SPARC) \
-    $(wildcard include/config/OF_PROMTREE) \
-    $(wildcard include/config/OF_KOBJ) \
-    $(wildcard include/config/OF_NUMA) \
-    $(wildcard include/config/OF_OVERLAY) \
-  include/linux/mod_devicetable.h \
-  include/linux/uuid.h \
-  include/uapi/linux/uuid.h \
-  include/linux/property.h \
-  include/linux/fwnode.h \
-  include/linux/resource_ext.h \
-  include/linux/device.h \
-    $(wildcard include/config/GENERIC_MSI_IRQ_DOMAIN) \
-    $(wildcard include/config/GENERIC_MSI_IRQ) \
-    $(wildcard include/config/ENERGY_MODEL) \
-    $(wildcard include/config/PINCTRL) \
-    $(wildcard include/config/DMA_OPS) \
-    $(wildcard include/config/DMA_DECLARE_COHERENT) \
-    $(wildcard include/config/DMA_CMA) \
-    $(wildcard include/config/SWIOTLB) \
-    $(wildcard include/config/ARCH_HAS_SYNC_DMA_FOR_DEVICE) \
-    $(wildcard include/config/ARCH_HAS_SYNC_DMA_FOR_CPU) \
-    $(wildcard include/config/ARCH_HAS_SYNC_DMA_FOR_CPU_ALL) \
-    $(wildcard include/config/DMA_OPS_BYPASS) \
-    $(wildcard include/config/DEVTMPFS) \
-    $(wildcard include/config/SYSFS_DEPRECATED) \
-  include/linux/dev_printk.h \
-  include/linux/ratelimit.h \
-  include/linux/energy_model.h \
-  include/linux/sched/cpufreq.h \
-    $(wildcard include/config/CPU_FREQ) \
-  include/linux/sched/topology.h \
-    $(wildcard include/config/SCHED_DEBUG) \
-    $(wildcard include/config/SCHED_MC) \
-    $(wildcard include/config/CPU_FREQ_GOV_SCHEDUTIL) \
-  include/linux/sched/idle.h \
-  include/linux/sched/sd_flags.h \
-  include/linux/klist.h \
-  include/linux/pm.h \
-    $(wildcard include/config/VT_CONSOLE_SLEEP) \
-    $(wildcard include/config/PM_CLK) \
-    $(wildcard include/config/PM_GENERIC_DOMAINS) \
-  include/linux/device/bus.h \
-  include/linux/device/class.h \
-  include/linux/device/driver.h \
-  arch/x86/include/asm/device.h \
-  include/linux/pm_wakeup.h \
-  include/acpi/acpi.h \
-  include/acpi/platform/acenv.h \
-  include/acpi/platform/acgcc.h \
-  include/acpi/platform/aclinux.h \
-    $(wildcard include/config/ACPI_REDUCED_HARDWARE_ONLY) \
-    $(wildcard include/config/ACPI_DEBUG) \
-  include/linux/ctype.h \
-  arch/x86/include/asm/acenv.h \
-  include/acpi/acnames.h \
-  include/acpi/actypes.h \
-  include/acpi/acexcep.h \
-  include/acpi/actbl.h \
-  include/acpi/actbl1.h \
-  include/acpi/actbl2.h \
-  include/acpi/actbl3.h \
-  include/acpi/acrestyp.h \
-  include/acpi/platform/acenvex.h \
-  include/acpi/platform/aclinuxex.h \
-  include/acpi/platform/acgccex.h \
-  include/acpi/acoutput.h \
-  include/acpi/acpiosxf.h \
-  include/acpi/acpixf.h \
-  include/acpi/acconfig.h \
-  include/acpi/acbuffer.h \
-  include/linux/dynamic_debug.h \
-  include/acpi/acpi_bus.h \
-    $(wildcard include/config/X86_ANDROID_TABLETS) \
-    $(wildcard include/config/ACPI_SYSTEM_POWER_STATES_SUPPORT) \
-    $(wildcard include/config/ACPI_SLEEP) \
-  include/acpi/acpi_drivers.h \
-    $(wildcard include/config/ACPI_DOCK) \
-  include/acpi/acpi_numa.h \
-    $(wildcard include/config/ACPI_HMAT) \
-  include/acpi/acpi_io.h \
-  include/linux/io.h \
-    $(wildcard include/config/HAS_IOPORT_MAP) \
-  arch/x86/include/asm/io.h \
-    $(wildcard include/config/MTRR) \
-    $(wildcard include/config/X86_PAT) \
-  arch/x86/include/generated/asm/early_ioremap.h \
-  include/asm-generic/early_ioremap.h \
-    $(wildcard include/config/GENERIC_EARLY_IOREMAP) \
-  include/asm-generic/iomap.h \
-  include/asm-generic/pci_iomap.h \
-    $(wildcard include/config/NO_GENERIC_PCI_IOPORT_MAP) \
-    $(wildcard include/config/GENERIC_PCI_IOMAP) \
-  include/asm-generic/io.h \
-    $(wildcard include/config/GENERIC_IOMAP) \
-    $(wildcard include/config/GENERIC_IOREMAP) \
-    $(wildcard include/config/VIRT_TO_BUS) \
-    $(wildcard include/config/GENERIC_DEVMEM_IS_ALLOWED) \
-  include/linux/logic_pio.h \
-    $(wildcard include/config/INDIRECT_PIO) \
-  include/linux/vmalloc.h \
-    $(wildcard include/config/HAVE_ARCH_HUGE_VMALLOC) \
-  arch/x86/include/asm/vmalloc.h \
-    $(wildcard include/config/HAVE_ARCH_HUGE_VMAP) \
-  arch/x86/include/asm/acpi.h \
-    $(wildcard include/config/ACPI_APEI) \
-  include/acpi/pdc_intel.h \
-  arch/x86/include/asm/numa.h \
-    $(wildcard include/config/NUMA_EMU) \
-  arch/x86/include/asm/numa_32.h \
-  include/linux/regulator/consumer.h \
-    $(wildcard include/config/REGULATOR) \
-  include/linux/suspend.h \
-    $(wildcard include/config/VT) \
-    $(wildcard include/config/SUSPEND) \
-    $(wildcard include/config/HIBERNATION_SNAPSHOT_DEV) \
-    $(wildcard include/config/PM_SLEEP_DEBUG) \
-    $(wildcard include/config/PM_AUTOSLEEP) \
-  include/linux/swap.h \
-    $(wildcard include/config/DEVICE_PRIVATE) \
-    $(wildcard include/config/MIGRATION) \
-    $(wildcard include/config/FRONTSWAP) \
-    $(wildcard include/config/THP_SWAP) \
-    $(wildcard include/config/MEMCG_SWAP) \
-  include/linux/memcontrol.h \
-    $(wildcard include/config/CGROUP_WRITEBACK) \
-  include/linux/cgroup.h \
-    $(wildcard include/config/CGROUP_CPUACCT) \
-    $(wildcard include/config/SOCK_CGROUP_DATA) \
-    $(wildcard include/config/CGROUP_DATA) \
-    $(wildcard include/config/CGROUP_BPF) \
-  include/uapi/linux/cgroupstats.h \
-  include/uapi/linux/taskstats.h \
-  include/linux/fs.h \
-    $(wildcard include/config/READ_ONLY_THP_FOR_FS) \
-    $(wildcard include/config/FS_POSIX_ACL) \
-    $(wildcard include/config/IMA) \
-    $(wildcard include/config/FILE_LOCKING) \
-    $(wildcard include/config/FSNOTIFY) \
-    $(wildcard include/config/FS_ENCRYPTION) \
-    $(wildcard include/config/FS_VERITY) \
-    $(wildcard include/config/EPOLL) \
-    $(wildcard include/config/UNICODE) \
-    $(wildcard include/config/QUOTA) \
-    $(wildcard include/config/FS_DAX) \
-    $(wildcard include/config/BLOCK) \
-  include/linux/wait_bit.h \
-  include/linux/kdev_t.h \
-  include/uapi/linux/kdev_t.h \
-  include/linux/dcache.h \
-  include/linux/rculist_bl.h \
-  include/linux/list_bl.h \
-  include/linux/bit_spinlock.h \
-  include/linux/lockref.h \
-    $(wildcard include/config/ARCH_USE_CMPXCHG_LOCKREF) \
-  include/linux/stringhash.h \
-    $(wildcard include/config/DCACHE_WORD_ACCESS) \
-  include/linux/hash.h \
-    $(wildcard include/config/HAVE_ARCH_HASH) \
-  include/linux/path.h \
-  include/linux/list_lru.h \
-  include/linux/shrinker.h \
-  include/linux/capability.h \
-  include/uapi/linux/capability.h \
-  include/linux/semaphore.h \
-  include/linux/fcntl.h \
-    $(wildcard include/config/ARCH_32BIT_OFF_T) \
-  include/uapi/linux/fcntl.h \
-  arch/x86/include/generated/uapi/asm/fcntl.h \
-  include/uapi/asm-generic/fcntl.h \
-  include/uapi/linux/openat2.h \
-  include/linux/migrate_mode.h \
-  include/linux/percpu-rwsem.h \
-  include/linux/rcuwait.h \
-  include/linux/sched/signal.h \
-    $(wildcard include/config/SCHED_AUTOGROUP) \
-    $(wildcard include/config/BSD_PROCESS_ACCT) \
-    $(wildcard include/config/TASKSTATS) \
-    $(wildcard include/config/STACK_GROWSUP) \
-  include/linux/signal.h \
-    $(wildcard include/config/DYNAMIC_SIGFRAME) \
-  include/linux/sched/jobctl.h \
-  include/linux/sched/task.h \
-    $(wildcard include/config/HAVE_EXIT_THREAD) \
-    $(wildcard include/config/ARCH_WANTS_DYNAMIC_TASK_STRUCT) \
-    $(wildcard include/config/HAVE_ARCH_THREAD_STRUCT_WHITELIST) \
-  include/linux/uaccess.h \
-  include/linux/fault-inject-usercopy.h \
-    $(wildcard include/config/FAULT_INJECTION_USERCOPY) \
-  arch/x86/include/asm/uaccess.h \
-    $(wildcard include/config/CC_HAS_ASM_GOTO_OUTPUT) \
-    $(wildcard include/config/CC_HAS_ASM_GOTO_TIED_OUTPUT) \
-    $(wildcard include/config/ARCH_HAS_COPY_MC) \
-    $(wildcard include/config/X86_INTEL_USERCOPY) \
-  arch/x86/include/asm/smap.h \
-  arch/x86/include/asm/extable.h \
-    $(wildcard include/config/BPF_JIT) \
-  include/asm-generic/access_ok.h \
-    $(wildcard include/config/ALTERNATE_USER_ADDRESS_SPACE) \
-  arch/x86/include/asm/uaccess_32.h \
-  include/linux/cred.h \
-    $(wildcard include/config/DEBUG_CREDENTIALS) \
-  include/linux/key.h \
-    $(wildcard include/config/KEY_NOTIFICATIONS) \
-    $(wildcard include/config/NET) \
-  include/linux/assoc_array.h \
-    $(wildcard include/config/ASSOCIATIVE_ARRAY) \
-  include/linux/sched/user.h \
-    $(wildcard include/config/WATCH_QUEUE) \
-  include/linux/percpu_counter.h \
-  include/linux/rcu_sync.h \
-  include/linux/delayed_call.h \
-  include/linux/errseq.h \
-  include/linux/ioprio.h \
-  include/linux/sched/rt.h \
-  include/linux/iocontext.h \
-    $(wildcard include/config/BLK_ICQ) \
-  include/uapi/linux/ioprio.h \
-  include/linux/fs_types.h \
-  include/linux/mount.h \
-  include/linux/mnt_idmapping.h \
-  include/uapi/linux/fs.h \
-  include/linux/quota.h \
-    $(wildcard include/config/QUOTA_NETLINK_INTERFACE) \
-  include/uapi/linux/dqblk_xfs.h \
-  include/linux/dqblk_v1.h \
-  include/linux/dqblk_v2.h \
-  include/linux/dqblk_qtree.h \
-  include/linux/projid.h \
-  include/uapi/linux/quota.h \
-  include/linux/nfs_fs_i.h \
-  include/linux/seq_file.h \
-  include/linux/string_helpers.h \
-  include/linux/ns_common.h \
-  include/linux/nsproxy.h \
-  include/linux/user_namespace.h \
-    $(wildcard include/config/INOTIFY_USER) \
-    $(wildcard include/config/FANOTIFY) \
-    $(wildcard include/config/PERSISTENT_KEYRINGS) \
-  include/linux/kernel_stat.h \
-  include/linux/interrupt.h \
-    $(wildcard include/config/IRQ_FORCED_THREADING) \
-    $(wildcard include/config/GENERIC_IRQ_PROBE) \
-    $(wildcard include/config/IRQ_TIMINGS) \
-  include/linux/irqreturn.h \
-  include/linux/irqnr.h \
-  include/uapi/linux/irqnr.h \
-  include/linux/hardirq.h \
-  include/linux/context_tracking_state.h \
-    $(wildcard include/config/CONTEXT_TRACKING) \
-  include/linux/ftrace_irq.h \
-    $(wildcard include/config/HWLAT_TRACER) \
-    $(wildcard include/config/OSNOISE_TRACER) \
-  include/linux/vtime.h \
-    $(wildcard include/config/VIRT_CPU_ACCOUNTING) \
-    $(wildcard include/config/IRQ_TIME_ACCOUNTING) \
-  arch/x86/include/asm/hardirq.h \
-    $(wildcard include/config/KVM_INTEL) \
-    $(wildcard include/config/X86_THERMAL_VECTOR) \
-    $(wildcard include/config/X86_MCE_THRESHOLD) \
-    $(wildcard include/config/X86_MCE_AMD) \
-    $(wildcard include/config/X86_HV_CALLBACK_VECTOR) \
-  arch/x86/include/asm/irq.h \
-  arch/x86/include/asm/sections.h \
-  include/asm-generic/sections.h \
-    $(wildcard include/config/HAVE_FUNCTION_DESCRIPTORS) \
-  include/linux/cgroup-defs.h \
-    $(wildcard include/config/CGROUP_NET_CLASSID) \
-    $(wildcard include/config/CGROUP_NET_PRIO) \
-  include/linux/u64_stats_sync.h \
-  include/linux/bpf-cgroup-defs.h \
-  include/linux/psi_types.h \
-  include/linux/kthread.h \
-  include/linux/cgroup_subsys.h \
-    $(wildcard include/config/CGROUP_DEVICE) \
-    $(wildcard include/config/CGROUP_FREEZER) \
-    $(wildcard include/config/CGROUP_PERF) \
-    $(wildcard include/config/CGROUP_HUGETLB) \
-    $(wildcard include/config/CGROUP_PIDS) \
-    $(wildcard include/config/CGROUP_RDMA) \
-    $(wildcard include/config/CGROUP_MISC) \
-    $(wildcard include/config/CGROUP_DEBUG) \
-  include/linux/vm_event_item.h \
-    $(wildcard include/config/HAVE_ARCH_TRANSPARENT_HUGEPAGE_PUD) \
-    $(wildcard include/config/MEMORY_BALLOON) \
-    $(wildcard include/config/BALLOON_COMPACTION) \
-    $(wildcard include/config/DEBUG_TLBFLUSH) \
-    $(wildcard include/config/DEBUG_VM_VMACACHE) \
-  include/linux/page_counter.h \
-  include/linux/vmpressure.h \
-  include/linux/eventfd.h \
-  include/linux/mm.h \
-    $(wildcard include/config/HAVE_ARCH_MMAP_RND_BITS) \
-    $(wildcard include/config/HAVE_ARCH_MMAP_RND_COMPAT_BITS) \
-    $(wildcard include/config/ARCH_USES_HIGH_VMA_FLAGS) \
-    $(wildcard include/config/ARCH_HAS_PKEYS) \
-    $(wildcard include/config/PPC) \
-    $(wildcard include/config/PARISC) \
-    $(wildcard include/config/SPARC64) \
-    $(wildcard include/config/ARM64_MTE) \
-    $(wildcard include/config/HAVE_ARCH_USERFAULTFD_MINOR) \
-    $(wildcard include/config/SHMEM) \
-    $(wildcard include/config/ARCH_HAS_PTE_SPECIAL) \
-    $(wildcard include/config/ARCH_HAS_PTE_DEVMAP) \
-    $(wildcard include/config/DEBUG_VM_RB) \
-    $(wildcard include/config/PAGE_POISONING) \
-    $(wildcard include/config/INIT_ON_ALLOC_DEFAULT_ON) \
-    $(wildcard include/config/INIT_ON_FREE_DEFAULT_ON) \
-    $(wildcard include/config/DEBUG_PAGEALLOC) \
-    $(wildcard include/config/HUGETLBFS) \
-    $(wildcard include/config/MAPPING_DIRTY_HELPERS) \
-    $(wildcard include/config/ANON_VMA_NAME) \
-  include/linux/mmap_lock.h \
-  include/linux/page_ext.h \
-  include/linux/stacktrace.h \
-    $(wildcard include/config/ARCH_STACKWALK) \
-    $(wildcard include/config/STACKTRACE) \
-    $(wildcard include/config/HAVE_RELIABLE_STACKTRACE) \
-  include/linux/stackdepot.h \
-    $(wildcard include/config/STACKDEPOT_ALWAYS_INIT) \
-  include/linux/page_ref.h \
-    $(wildcard include/config/DEBUG_PAGE_REF) \
-  include/linux/sizes.h \
-  include/linux/pgtable.h \
-    $(wildcard include/config/HIGHPTE) \
-    $(wildcard include/config/GUP_GET_PTE_LOW_HIGH) \
-    $(wildcard include/config/HAVE_ARCH_SOFT_DIRTY) \
-    $(wildcard include/config/ARCH_ENABLE_THP_MIGRATION) \
-    $(wildcard include/config/X86_ESPFIX64) \
-  arch/x86/include/asm/pgtable.h \
-    $(wildcard include/config/DEBUG_WX) \
-    $(wildcard include/config/PAGE_TABLE_CHECK) \
-  arch/x86/include/asm/pkru.h \
-  arch/x86/include/asm/fpu/api.h \
-    $(wildcard include/config/X86_DEBUG_FPU) \
-  arch/x86/include/asm/coco.h \
-  include/asm-generic/pgtable_uffd.h \
-  include/linux/page_table_check.h \
-  arch/x86/include/asm/pgtable_32.h \
-  arch/x86/include/asm/pgtable-3level.h \
-  arch/x86/include/asm/pgtable-invert.h \
-  include/linux/huge_mm.h \
-  include/linux/sched/coredump.h \
-    $(wildcard include/config/CORE_DUMP_DEFAULT_ELF_HEADERS) \
-  include/linux/vmstat.h \
-    $(wildcard include/config/VM_EVENT_COUNTERS) \
-  include/linux/writeback.h \
-  include/linux/flex_proportions.h \
-  include/linux/backing-dev-defs.h \
-    $(wildcard include/config/DEBUG_FS) \
-  include/linux/blk_types.h \
-    $(wildcard include/config/FAIL_MAKE_REQUEST) \
-    $(wildcard include/config/BLK_CGROUP_IOCOST) \
-    $(wildcard include/config/BLK_INLINE_ENCRYPTION) \
-    $(wildcard include/config/BLK_DEV_INTEGRITY) \
-  include/linux/bvec.h \
-  include/linux/highmem.h \
-  include/linux/cacheflush.h \
-  arch/x86/include/asm/cacheflush.h \
-  include/asm-generic/cacheflush.h \
-  include/linux/highmem-internal.h \
-  arch/x86/include/asm/highmem.h \
-  arch/x86/include/asm/tlbflush.h \
-  arch/x86/include/asm/invpcid.h \
-  arch/x86/include/asm/pti.h \
-  include/linux/bio.h \
-  include/linux/mempool.h \
-  include/linux/uio.h \
-    $(wildcard include/config/ARCH_HAS_UACCESS_FLUSHCACHE) \
-  include/uapi/linux/uio.h \
-  include/linux/node.h \
-    $(wildcard include/config/HMEM_REPORTING) \
-  include/linux/pagemap.h \
-  include/linux/hugetlb_inline.h \
-  include/uapi/linux/mempolicy.h \
-  include/linux/freezer.h \
-  include/uapi/linux/i2c.h \
-  include/media/i2c/tvaudio.h \
-  include/media/v4l2-device.h \
-    $(wildcard include/config/VIDEO_V4L2_SUBDEV_API) \
-  include/media/media-device.h \
-    $(wildcard include/config/MEDIA_CONTROLLER) \
-  include/media/media-devnode.h \
-  include/linux/poll.h \
-  include/uapi/linux/poll.h \
-  arch/x86/include/generated/uapi/asm/poll.h \
-  include/uapi/asm-generic/poll.h \
-  include/uapi/linux/eventpoll.h \
-  include/linux/cdev.h \
-  include/media/media-entity.h \
-  include/uapi/linux/media.h \
-  include/media/v4l2-subdev.h \
-  include/uapi/linux/v4l2-subdev.h \
-  include/uapi/linux/v4l2-mediabus.h \
-  include/uapi/linux/media-bus-format.h \
-  include/media/v4l2-async.h \
-  include/media/v4l2-common.h \
-    $(wildcard include/config/VIDEO_V4L2_I2C) \
-    $(wildcard include/config/SPI) \
-  include/media/v4l2-dev.h \
-  include/linux/spi/spi.h \
-    $(wildcard include/config/SPI_SLAVE) \
-  include/linux/scatterlist.h \
-    $(wildcard include/config/NEED_SG_DMA_LENGTH) \
-    $(wildcard include/config/DEBUG_SG) \
-    $(wildcard include/config/SGL_ALLOC) \
-    $(wildcard include/config/ARCH_NO_SG_CHAIN) \
-    $(wildcard include/config/SG_POOL) \
-  include/linux/gpio/consumer.h \
-    $(wildcard include/config/OF_GPIO) \
-    $(wildcard include/config/GPIO_SYSFS) \
-  include/uapi/linux/spi/spi.h \
-  include/media/v4l2-fh.h \
-  include/media/v4l2-mediabus.h \
-  include/media/v4l2-ctrls.h \
-  include/media/media-request.h \
-  include/media/hevc-ctrls.h \
+// SPDX-License-Identifier: GPL-2.0-or-later
+/*
+ * Copyright(c) 1999 - 2004 Intel Corporation. All rights reserved.
+ */
 
-drivers/media/i2c/tvaudio.o: $(deps_drivers/media/i2c/tvaudio.o)
+#include <linux/skbuff.h>
+#include <linux/if_ether.h>
+#include <linux/netdevice.h>
+#include <linux/spinlock.h>
+#include <linux/ethtool.h>
+#include <linux/etherdevice.h>
+#include <linux/if_bonding.h>
+#include <linux/pkt_sched.h>
+#include <net/net_namespace.h>
+#include <net/bonding.h>
+#include <net/bond_3ad.h>
+#include <net/netlink.h>
 
-$(deps_drivers/media/i2c/tvaudio.o):
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       ELF                       å      4     (            GNU  ¿       ¿          Ë¸ˇˇˇÉÏã    Ö…è¸ˇˇˇÅ˙ † t2Å˙ @ u«Äx     1¿Éƒ√ç¥&    çv ∏ÍˇˇˇÉƒ√ç¥&    «Äx      1¿Éƒ√Ë¸ˇˇˇWãJVã2S#∞d  #àh  ãòî   â2É=    âJ[1¿^_√ã∞d  ã∏h  É√ãÄT  Ë¸ˇˇˇWVPh    Sh   Ë¸ˇˇˇÉƒÎ»ç¥&    çt& Ë¸ˇˇˇãàL  Ö…uãR89êê  tâêê  ãàî   â»Ë¸ˇˇˇ1¿√Ë¸ˇˇˇUWVSâ√ÉÏ8ã≥î   d°    âD$41¿ÉªP  Ö.   âË¸ˇˇˇÈ.   ç¥&    Ë¸ˇˇˇÉz$u=Vâ∆ÉÏãÄL  Ö¿uÉæP  t,ãÜî  âB4ãÜê  ÉJ(pâB8Éƒ1¿^√ç¥&    1¿√çt& êãÜî   â$Ë¸ˇˇˇã$Î¡ç¥&    ç∂    Ë¸ˇˇˇãÄî   ã@\ãê§  Ö“t'∂ê¥  π   ®  É‚¸É àP∫   j Ë¸ˇˇˇX1¿√ç¥&    ç¥&    Ë¸ˇˇˇÉÏã    Ö…èè  ã@@ãê§  Ö“t'∂ê¥  π   ®  É‚¸É àP∫   j Ë¸ˇˇˇX1¿Éƒ√Ë¸ˇˇˇWVSã∞L  ãòî   Öˆuã∞`  ã∏\  1Œ1◊	˛tJâê\  âà`  «ÄL      ãC\ãê§  Ö“t'∂ê¥  π   ®  É‚¸É àP∫   j Ë¸ˇˇˇX[1¿^_√çt& Ë¸ˇˇˇSâ√π   ÉÏ8d°    âD$41¿∑C«D$    É=    «D$    fâ$fâD$fâD$fâD$$çD$2«D$(    «D$  «D$   «D$  «D$   fâL$«D$     «D$&  âD$,è«  ãCπ   â‚Ë¸ˇˇˇÉ¯ÖØ  ãCπ   çT$Ë¸ˇˇˇÉ¯ÖØ  ãCπ   çT$Ë¸ˇˇˇÉ¯ÖØ  1¿ãT$4d+    uÉƒ8[√Ë¸ˇˇˇç∂    Ë¸ˇˇˇU1ÌWâœπ   Vâ÷Sâ√ÉÏ(d°    âD$$1¿∑C«D$    çT$!«D$    fâD$fâD$çD$âD$çFàD$!â¯f¡¿«D$    fâD$"çCfâL$âT$«D$  â$ãCπ   çT$Ë¸ˇˇˇÉ¯Ö  ∑D$f¡¿É=    ∑¿è‚  ãT$$d+    uÉƒ([^_]√Ë¸ˇˇˇçv Ë¸ˇˇˇUWâœVâ÷Sâ√ÉÏd°    âD$1¿â»àT$f¡¿fâD$∑D$$f¡¿É=    fâD$
-èó  çC1Ìâ$j π   âÿçT$Ë¸ˇˇˇYÉ¯ÖR  1¿ãT$d+    uÉƒ[^_]√Ë¸ˇˇˇç¥&    êË¸ˇˇˇUWVSãpãX|ã@(ã~‘=	ò ÑP  vN=	ò Ñì  =
-	ò Ö  Ö€∏   π   ∫   Eÿâ¯SËˇˇˇÄ~~ Xuuçt& ê1¿[^_]√ç¥&    fê=	ò ti=	ò Ö∆  Ö€çÉˇ   π   ∫   Hÿâ¯¡˚É√Ä∂€¡„SË≈˛ˇˇÄ~~ ]tÆSπ0   ∫   â¯Ë¨˛ˇˇYÎôç¥&    fêSπ3   Î‡ç¥&    êãÜ‹   ãñ‡   ã-    ã@|â¡	—Ö  âŸ∫Ä Ä¡·)Ÿâ»˜Íç
-¡˘¡˚)À¡„ÖÌè2  S1…∫   â¯Ë<˛ˇˇXâ›ÉÕUπ   ∫   â¯Ë$˛ˇˇÄæÑ    XÖ÷   Ä~~ Ñ¸˛ˇˇSπ   ÈIˇˇˇêç[∫Ä Ä¡·ÅÈ  0 â»˜Íâ¯ç
-¡˘∫   ¡˚)Àπ   ¡„SËÀ˝ˇˇÄ~~ XÑ∞˛ˇˇSπ1   È˝˛ˇˇçt& êç[∫Ä Ä¡·ÅÈ  0 â»˜Íâ¯ç
-¡˘∫   ¡˚)Àπ   ¡„SË{˝ˇˇÄ~~ XÑ`˛ˇˇSπ2   È≠˛ˇˇçt& êÖÌ>S∫   1…â¯Ω   ËH˝ˇˇZÈˇˇˇfêUπ@   ∫   â¯Ë.˝ˇˇXÈˇˇˇ∏ÍˇˇˇÈ˛ˇˇÈΩ  È  çt& Ë¸ˇˇˇã    SçX‰Ö“è]  âÿË¸ˇˇˇ1¿[√ç¥&    ç¥&    Ë¸ˇˇˇVâ∆SãX\âÿË¸ˇˇˇãÉ§  Ö¿tÄã¥  Ë¸ˇˇˇâË¸ˇˇˇçÉ¿   Ë¸ˇˇˇ1¿[^√Ë¸ˇˇˇUâ≈WVSÉÏ Ö“uç@π   ∫+  Ë¸ˇˇˇâËË¸ˇˇˇÉ¯ˇÑt  çEπ¿  ∫¯  âD$Ë¸ˇˇˇâ√Ö¿Ñf  π   âÍË¸ˇˇˇ«C   çã∏  âÿ«É‘     ∫   «É–     «ÉÙ     «É     Ë¸ˇˇˇâ∆Ö¿à™   «É\   ∞  çÉ®  π   ∫F  «É`      «Éd  ˇˇˇ «Éh      «Éê     «ÉÑ  ˇˇˇˇ«Éx      Ë¸ˇˇˇπ   ∫   âË«Éà      «Éå  B   Ë•˙ˇˇâD$âÉ0  É¯ˇu&°    Ö¿è¶  ç¥&    fêæÌˇˇˇÉƒ â[^_]√êπ   ∫   âËË_˙ˇˇãª0  âÉ4  â|$ã=    Öˇè}  ã|$Éˇˇt∏âD$	¯t∞ãt$âÉÊ¡¯çN@É‡â$É¿âD$ãD$∂‘â◊∫ÕÃÃÃâ¯â|$˜‚¡ÍâT$çíâ˙¿çí)«çÑN†  ãt$iŒ'  »âÉ8  ãD$É‡˚É¯îÉ<  É<$FüD$
-Éˇ∂D$
-û¡É˛àÉ=  ü¿ÉˇûD$∂t$àã>  	∆	»É<$CâÚàÉA  àì@  ü¬â÷!ŒÉ|$π   ÑÅ  àãB  1…É<$CàÉC  N¡∂T$∂L$
-àÉD  âàÉF  !—É<$GàìG  î¿ÉˇàãE  î¡!¡ÉˇàãH  î¡!¡É|$î¬àãI  !–É|$î¬!–àÉJ  °®   É¯v É<$F~«ÉP     Îçt& ê1¿É<$Cü¿âÉP  j çª¿   1…∫   â¯Ë¸ˇˇˇÄªG   ^ÖÕ   j π	ò ∫0  â¯h Ê  j hè  j hˇˇ  j j Ë¸ˇˇˇπ	ò ∫0  Éƒ âÉò  â¯j h Ä  j hè  j hˇˇ  j j Ë¸ˇˇˇπ		ò ∫0  â¯Éƒ j j j jj jj j Ë¸ˇˇˇã≥¸   â{lâÉú  Éƒ ÖˆÑÓ   â¯Ë¸ˇˇˇâÉƒ [^_]√ç¥&    fêâÚÑ“Öñ   1…Èn˛ˇˇç¥&    j π	ò ∫0  â¯h Ä  j hè  j hˇˇ  j j Ë¸ˇˇˇπ	ò ∫0  â¯Éƒ j h Ä  j hè  j hˇˇ  j j Ë¸ˇˇˇπ
-	ò ∫0  â¯Éƒ j j j jj jj j Ë¸ˇˇˇÉƒ È∞˛ˇˇçt& ê∆ÉB  àÉC  È‚˝ˇˇç∂    °    Ö¿éõ¸ˇˇÈÔ  æÙˇˇˇÈë¸ˇˇçìò  ∏   Ë¸ˇˇˇâ¯Ë¸ˇˇˇÄª=   Ñu  ÈW  È}  ç¥&    ç¥&    Ë¸ˇˇˇâ—∫   Èøˆˇˇç¥&    ç¥&    êË¸ˇˇˇâ—∫   Èüˆˇˇç¥&    ç¥&    êË¸ˇˇˇQâ—∫   ËN˜ˇˇZ√ç¥&    çt& êË¸ˇˇˇQâ—∫   Ë.˜ˇˇZ√ç¥&    çt& êË¸ˇˇˇWVSâ√â–â ãs\âÜt  É¯wÉ˘v?π`  ã=    âép  Öˇè*  Q∫   π   âÿË‘ˆˇˇÄæE   Zu:[^_√ç∂    ç…ç|ã<Ω`  Éˇˇt„ãç`  ˜—#ép  	˘Î†ç¥&    çv ˇ∂x  âÿπ@   ∫   ËyˆˇˇX[^_√çt& Ë¸ˇˇˇUWâ◊V¡ÔSâ√â»ÉÏã≥î   â<$â◊ÉÁâ|$âœ¡ÈÉÁÉ·â|$âL$9ìà  Ñ  âìà  π   1ˇâÉå  ∏   â’”ÌÉÂD«É¡É˘uÓÖ¿∫	   «Éî     E¬ãT$1…âÉX  âË¸ˇˇˇãT$π   âË¸ˇˇˇãT$π   âË¸ˇˇˇâË¸ˇˇˇ∏ª   ∫   ÉªP  ª0   EÿââŸË¿Ùˇˇã$âŸ%ˇ˛  ¡‚Å‚   	¬âR∫   ËnıˇˇãF\Zãà§  Ö…t'∂ê¥  π   ®  É‚¸É àP∫   j Ë¸ˇˇˇXÉƒ1¿[^_]√ç¥&    9Éå  ÖÚ˛ˇˇÎ·ç¥&    çv Ë¸ˇˇˇUWVâ÷Sâ√çª®  dã-    ÉÏd°    âD$1¿â‚â¯«$    «D$    «D$    âl$«D$    Ë¸ˇˇˇË¸ˇˇˇÑ¿uÖˆxNâË¸ˇˇˇË¸ˇˇˇâ‚â¯Ë¸ˇˇˇË¸ˇˇˇ°    dã    Ö¿u4∂É¥  É‡ãT$d+    u1Éƒ[^_]√çt& ê∏   áEË¸ˇˇˇÎØêâ–Ë¸ˇˇˇÑ¿t¡1¿Ë¸ˇˇˇÎ∏Ë¸ˇˇˇç¥&    Ë¸ˇˇˇSâ√ãÄò  ã@ã@Ë¸ˇˇˇãÉò  ãêÄ   âP|ãÉú  ãêÄ   âP|ãÉò  Ë~ÙˇˇãÉò  [ã@ã@È¸ˇˇˇç¥&    çt& êË¸ˇˇˇVSãòL  ã∞î   Ö€ugã    â√«ÄL     Ö…èT  ãÉP  Ä£¥  ˝Ö¿tFÉËÉ¯w4ãF\ãê§  Ö“t'∂ê¥  π   ®  É‚¸É àP∫   j Ë¸ˇˇˇX1¿[^√çt& êâ∫   Ë¸ˇˇˇâπrúî ∫rúî Ë¸ˇˇˇâÿË¸ˇˇˇ1¿[^√fêfêfêfêfêfêfêêË¸ˇˇˇÄ=     WV∑ÚSâ√ãx\tWπ   ∫   Ë¸ˇˇˇπ   ∫	   âÿË¸ˇˇˇâÒ∫
-   âÿË¸ˇˇˇâÒ∫   âÿË¸ˇˇˇâÒ∫   âÿË¸ˇˇˇÄøC   u$[^_√âÒ∫   Ë¸ˇˇˇâÒ∫	   âÿË¸ˇˇˇÎ≠çt& âÒâÿ∫A   [^_È¸ˇˇˇç¥&    ç¥&    êË¸ˇˇˇWVSâ√â»ÉÏã{\ãèê  É˘w;ã4ç4  ãç   Ö¿u7¡ÊÉŒ âÒã5    ∑“Öˆèo  Éƒâÿ[^_È¸ˇˇˇçv π    æ   Ö¿t…É¯
-~ÄøI   tçp¡Ê	ÒÎπfêâ∆¡Ê	ÒÎÆç¥&    Ë¸ˇˇˇU∫   WVSãh\â√ãµà  â˜¡ÔÉÁâ˘ËHˇˇˇâ˘∫   âÿË:ˇˇˇâÒ∫	   âÿ¡ÈÉ·Ë&ˇˇˇâÒ∫
-   âÿ¡ÈÉ·ËˇˇˇÄΩC   u¡Óâÿ∫   [âÒ^_É·]ÈÒ˛ˇˇêâÒ∫A   âÿ¡ÈÉ·Ë‹˛ˇˇÎ—ç¥&    çv Ë¸ˇˇˇS∫∏  â√1…∏∏  Îç¥&    çv ãBÖ¿tã
-É¬9Àu[√ç∂    ∏Ü  [√êË¸ˇˇˇWâ◊VâŒâ—¡ˇSÅ·ˇ  â√∫ì   Ë¸ˇˇˇâ˘∫õ   âÿË¸ˇˇˇâÒ∫£   âÿÅ·ˇ  ¡˛Ë¸ˇˇˇâÒ∫´   âÿË¸ˇˇˇâÿ1…[∫V   ^_È¸ˇˇˇç¥&    fêË¸ˇˇˇU∫Ü  WVâ∆SÉÏãx\ãüê  É˚wãùH  ÉøP  ã    tyãáX  É¯	Ñ:  ãØî  É˝toÉÂÑ  É˚Ω   F›É¯u]Ö…èB  É˚ÑU  èœ  Ö€Öó  âπGZ ∫GZ Ë¸ˇˇˇ°    Ö¿è<  1“Î}çt& êÖ…è   Éƒ[^_]√1€É¯t£è£   É¯Ñ:  É¯Öú   Ö…èù  É˚Ñ   è¢  Ö€Ñ¶  ã    1“Ö…è¸  É˚ÑŸ   É˚èê   Ö€Öò   ÉøX  Ñ´  ˆáî  ∏0   E–°    Ö¿èÿ  Éƒâ[^_]È¸ˇˇêÖ€ï√∂€ÈUˇˇˇçv É¯Ñá   ~Ö…èÄ  Éƒ[^_]√çt& êtÈÖ…è^  ãØl  1“ÖÌï¬¡‚ÈWˇˇˇêÉ˚uúÉ  Îäç∂    É˚tÎäç¥&    fêâπ Äa ∫ Äf Ë¸ˇˇˇ°    Ö¿èπ  1“É ÈLˇˇˇç¥&    êÖ…èõ  1“Èˇ˛ˇˇêÖ…èø  1“ÈÔ˛ˇˇêÉ˚uπ Äa ∫  d âË¸ˇˇˇ°    Ö¿è  1“ÈÕ˛ˇˇç∂    É˚usâπ Äa ∫ Äf Ë¸ˇˇˇ°    Ö¿è„  1“È◊˛ˇˇç∂    Ö…èï  ∫   È|˛ˇˇç∂    çC˛É¯áZ˛ˇˇπ 0  ∫   âË¸ˇˇˇã    1“ÈD˛ˇˇç∂    É˚ÑTˇˇˇÈ`ˇˇˇç¥&    çv ã    Ö“èz  ∫   1…âË¸ˇˇˇ∫   È>˛ˇˇç¥&    çv π0  ∫   âË¸ˇˇˇ°    Ö¿è[  1“ÈÄ˛ˇˇç¥&    çt& Ë¸ˇˇˇUâ’WVSâ√ÉÏã@\â$ãÄà  â¡âD$°    ¡ÈÖ¿è   ã$ç|Ì ¡·∫ª   ¡ÁÅ·   æ   â®X  èò  «Äî     âÿË¸ˇˇˇçt& ãå∑`  ∫   âÿË¸ˇˇˇÉÓsËπ   ∫   âÿæ   Ë¸ˇˇˇπ@   ∫   âÿË¸ˇˇˇ1…∫   âÿË¸ˇˇˇçv ãå∑x  ∫   âÿË¸ˇˇˇÉÓsËçDÌ ∫É   ç4≈`  âÿãN<Ë¸ˇˇˇãN4ãV0âÿË¸ˇˇˇ∑V@âÿË&˘ˇˇπ   ∫   âÿË¸ˇˇˇãND∫   âÿË¸ˇˇˇã$Ä∏<   u
-Éƒ[^_]√fêÉƒâÿπ Z  ∫   [^_]È¸ˇˇˇç¥&    êË¸ˇˇˇSãP\â√ãÇP  É¯~É¯uÉ∫T   t,âÿ[È‰˘ˇˇçt& Ö¿y[√ç¥&    çv âÿ[È˚ˇˇç¥&    êˆÇî  tãÇê  ÉËÉ‡˝tπ    ∫    âÿË¸ˇˇˇÎ™ç∂    π!   ∫    âÿË¸ˇˇˇÎëç¥&    ç∂    Ë¸ˇˇˇUWVâ∆SÉÏãx\ãüP  É˚éÄ   É˚u∫   Ë¸ˇˇˇâ≈â¡â¬1¿ÅÂ   É·@ÉøX  	tK∏   Ö…Dÿãáî  âüî  ÖÌtÉøT   ÑÄ  «áî     ª   É=     èL  9ÿï¿∂¿Éƒ[^_]√çt& Ö€yÉƒ1¿[^_]√fêãèl  ãáX  âÀÉ¯ÑŸ   çP˚1¿É˙wV∫#   âË¸ˇˇˇÉ=    è#  â√ãóî  Ω   É„uTçt& 9ÍÑ¯   ã    Ö…è  âØî  ãèl  ∏   9ŸÑeˇˇˇ°    Ö¿è/  âül  Éƒ∏   [^_]√ê—¯É‡É¯t6Ω   Ö¿tõÉ¯Ω   EÎÎéç∂    É¯
-Ω   EÎÈxˇˇˇç¥&    êΩ   Èfˇˇˇç∂    ∫   âË¸ˇˇˇ=ˇ  çê  ˇˇO¬É=    èÓ  ãóî  1€=    ∫= ˇˇΩ   ∏   MËÈˇˇˇçv ÉÀâüî  ÈÅ˛ˇˇfêãèl  1¿ÈˇˇˇÈx  ç¥&    ç¥&    Ë¸ˇˇˇUâ≈WVSÉÏãX\°    Ö¿è.	  «Éd  ˇˇˇ «Éh      Ë¸ˇˇˇçEâ$çv É=    è	  ∫ˇˇˇˇâÿË¸ˇˇˇ°    É¯èö	  Ä£¥  ˛Ë¸ˇˇˇÑ¿ÖE  ÉªX  	Ñ(  «É†     âÿæ@   Ë¸ˇˇˇãªL  ÖˇuãÉ\  % ∞  É¯ˆÉÊ·É∆ Ä£¥  ˝∫»   âÿ«Él      Ë¸ˇˇˇâ«°    ÖˇÖø  É=    èÌ  É˛Ñ   1“1¿Î"ç¥&    çv É¿ç@ã’¨  Ö…tã’†  9÷u‰ã    Ö“èŒ  ç@â≥T  Ä=     ç≈†  «Éî     ãPã@âì|  âÉÄ  Ñ]  ãÉL  Ö¿ÖO  ˜É\    ˇ Ñ?  É˛	Ñ6  ã    Ö…è©  π	   ∫    âË«ÉT  	   Ë¸ˇˇˇçt& êÄã¥  «ÉX     «Él     π   ∫   âËË¸ˇˇˇπ 0  ∫   âËË¸ˇˇˇÄª<   ÖÓ  ÄªE   Ö…  âËËzˆˇˇâÿ«É†      Ë¸ˇˇˇˆÉ¥  Ñ¸˝ˇˇæ   ÎCçt& ê∫Ë  âÿË¸ˇˇˇÖ¿uDÉÓâËã}\Ë¸ˇˇˇÖ¿uOÄ=     tÄß¥  ˝ˆÉ¥  Ñ≤˝ˇˇÖˆuæ∫à  âÿË¸ˇˇˇâ∆Ö¿tø°    É¯éµ˝ˇˇÈd	  ç¥&    fêâËË¸ˇˇˇÎ®ç¥&    1¿Î çt& É«çã≈¨  Ö“ÑÎ   ã≈†  9∆u‡çã≈¥  ã≈∞  âÉd  âìh  É˛FÉ˛	è¥  É˛ÑD  É˛	Ñì˛ˇˇÉÓÉ˛á¢˛ˇˇÄã¥  «ÉX     Èå˛ˇˇç¥&    fêÉ˛ Ñ/  É˛@Öq˛ˇˇ«ÉX     âË∫   «Éî     Ë¸ˇˇˇπrúî ∫rúî âËË¸ˇˇˇÈ;˛ˇˇç¥&    ê°    Ö¿è	  «É†      âÿË¸ˇˇˇÈm¸ˇˇçt& ê∏ˇˇˇ 1“È%ˇˇˇçt& ããx  ∫@   âËË¸ˇˇˇÈ ˛ˇˇêπ Z  ∫   âËË¸ˇˇˇÈ¸˝ˇˇç¥&    çv π   ∫    âËË¸ˇˇˇÎ%çt& ê∫~   âËË¸ˇˇˇ=˛  ~eÉ=    è   ∫d   âÿË¸ˇˇˇÖ¿t–È7˛ˇˇçv ∏   Äã¥  âÉX  «Él     ÈR˝ˇˇç¥&    «ÉX     È<˝ˇˇç¥&    fêâ∆ÈI¸ˇˇç¥&    fê°    Ö¿èI	  Éƒ1¿[^_]√1¿É˛
-î¿É¿Îë∏∏  Îçt& êÉ¿;1tFãPâ¡Ö“uÈ∫	  çv âD$∫∏  π∏  1¿Îç∂    ãJÖ…ÑÂ  ãÉ¬9∆uÏãD$ÈÓ  Èø	  ç¥&    ç¥&    Ë¸ˇˇˇUWVâ∆SÉÏã=    ãX\Öˇèê
-  «Éd  ˇˇˇ ç~«Éh      Ë¸ˇˇˇ°    â<$çt& êÉ¯èu
-  ∫ˇˇˇˇâÿË¸ˇˇˇ°    É¯èU
-  Ö¿è:
-  Ä£¥  ˛Ë¸ˇˇˇÑ¿Ö  ÉªX  	Ñ  ãn\â«ÖT     ãΩà  ¡ÔË¸ˇˇˇÄΩE   Ör  ãF\ãêL  Ö“Ö!  ãê\  ãÄ`  â—Äı 	¡ÑÄ  â—ÄıÄ	¡Ñ  â—ÅÒ  @ 	¡Ñ{  ∏p  ÄÊ∑Ö›  ¡Á∫0   â˘Å·   	¡âË¸ˇˇˇâËÕˇˇπ   ∫   âË¸ˇˇˇπ 0  ∫   âË¸ˇˇˇÄΩ<   ÖÆ  ã    ∫"   âË¸ˇˇˇãÉL  π@   Ö¿uÄªJ   ã    tÉ˘∏    D»âãT  ∫    âË¸ˇˇˇããT  É˘ub°    Ö¿è˜	  ø
-   çt& ∫d   âÿË¸ˇˇˇÖ¿Ö‰  ∫~   âË¸ˇˇˇ=˛  é5  É=    è‹	  ÉÔu√ããT  É˘Ñ%  ã-    ÖÌèë  1“1¿ÎÉ¿ç@ã<’¨  ÖˇÑõ   ã’†  9—u‡ç@ã≈¥  ã≈∞  âÉd  âìh  É˘	Ñb  âÿË¸ˇˇˇããp  ∫   âË¸ˇˇˇÖ¿Ö  ÉªT   Ñ¨   °    Èö˝ˇˇfêã    Ö…èà  «É†      âÿË¸ˇˇˇ°    Èo˝ˇˇç¥&    ∏ˇˇˇ 1“Èuˇˇˇçt& ã    Ö…èh  ∏   È˛ˇˇç¥&    êπ Z  ∫   âË¸ˇˇˇÈ<˛ˇˇç¥&    çv ãçx  ∫@   âË¸ˇˇˇÈw˝ˇˇç¥&    fêÄã¥  âã~\Ë¸ˇˇˇÖ¿ÖÔ   Ä=     t.Äß¥  ˝Î%çt& êÄ=     tÄß¥  ˝∫à  âÿË¸ˇˇˇÖ¿u(ˆÉ¥  Ñ˜˛ˇˇâã~\Ë¸ˇˇˇÖ¿t≈âË¸ˇˇˇÎºçt& °    Èô¸ˇˇç∂    π |  ∫   âË¸ˇˇˇÈà˛ˇˇfê°    Ö¿èH  ∏   È˝ˇˇç¥&    fê°    Ö¿è(  ∏   ÈÏ¸ˇˇç¥&    fêâ¡âÉT  É˘Ö€˝ˇˇ°    Ö¿é˙˚ˇˇÈË
-  çt& êâË¸ˇˇˇÈˇˇˇçt& ã    Ö“è  ∏@  Èì¸ˇˇ°    Ö¿è»
-  ∏`  È|¸ˇˇ°    Ö¿è´
-  1¿Éƒ[^_]√Éƒ∏ˇˇˇˇ[^_]√∏∏  1ˇ∫∏  Îç¥&    ãPÖ“Ñ
-  ã8É¿9˘uÏÈ
-  ç¥&    Ë¸ˇˇˇUWâ«VSÉÏãp\°    Ö¿è0  «Üd  ˇˇˇ «Üh      Ë¸ˇˇˇçGâD$fêÉ=    è  ∫ˇˇˇˇâË¸ˇˇˇ°    É¯è“  Ä¶¥  ˛Ë¸ˇˇˇÑ¿Ö•  ãÜL  Ö¿u[ÉæX  	tR«Ü†     âË¸ˇˇˇ1“â¯Ë¸ˇˇˇÄ¶¥  ˝∫»   â«Ül      Ë¸ˇˇˇâ$Ö¿t<°    É¯~ëÈ∑  çt& êã-    ÖÌèú  «Ü†      âË¸ˇˇˇÈ<ˇˇˇçt& Ä=     ÑÉ   ãÜ\  ©  ˇ tvã    Ö€èl  ã  âñ|  ©  ˇ Ö  Äæ<   Ñˇ  °¿   ∫   âÜÄ  â¯Ë¸ˇˇˇÄé¥  «Ül     «Üd  ‡ 2 «Üh      È–  çv «D$ˇˇˇˇ1€1ÌÎDç¥&    çv ∫   â¯Ë¸ˇˇˇçê  ˇˇ=ˇ  O¬9≈}â\$â≈ã    Ö…è.  É√É˚t.ã›   â¯â—Ë¸ˇˇˇ∫d   âË¸ˇˇˇÖ¿t¶°    ÈΩ˛ˇˇçt& ãD$É¯Öõ   «D$   Ω   Ä=     Öû  «D$ˇˇˇˇ1€ÎFçt& ê∫   â¯Ë¸ˇˇˇçê  ˇˇ=ˇ  O¬;$~â$â\$ã    Ö“è  É√;\$çü  ãT› â¯â—Ë¸ˇˇˇ∫d   âË¸ˇˇˇÖ¿t¢°    È˛ˇˇç¥&    êÉ¯Ñ  Ä=     Ö∫  ã≈   «D$ˇˇˇˇâñ|  É|$~EÉ|$Ñ  ãD$ÉËÉ¯Üì  É|$ u?ãÜ\  È˛ˇˇê°    Ö¿èQ  Éƒ1¿[^_]√ãD$Ö¿u«Üd   ∑  «Üh      âñÄ  â¯∫   Ë¸ˇˇˇãé|  ãñÄ  â¯Ë¸ˇˇˇâ¯«Ü†      Ë◊ÍˇˇâË¸ˇˇˇ°    Ö¿Ö  ˆÜ¥  Ññ¸ˇˇª   ÎIç¥&    ∫Ë  âË¸ˇˇˇÖ¿Ö>˛ˇˇâ¯ÉÎão\Ë¸ˇˇˇÖ¿uEÄ=     tÄ•¥  ˝ˆÜ¥  ÑF¸ˇˇÖ€u∫∫à  âË¸ˇˇˇâ√Ö¿Öˆ˝ˇˇâ¯ão\Ë¸ˇˇˇÖ¿tªâ¯Ë¸ˇˇˇÎ≤çt& êãD$ã≈   âñ|  É¯Ö°˛ˇˇ«Üd    ãD$«Üh      Ö¿ÑÃ  É|$Öﬁ˛ˇˇÄæ<   Ñ—˛ˇˇ°¯   ∫   âÜÄ  â¯Ë¸ˇˇˇÄé¥  «Ül     È∂˛ˇˇêã_\ãã|  ;ãÄ  Ñì   Ö¿èK  ãÉX  çP˚É˙veÉ¯ÖÑ   ã    Ö…é´˛ˇˇÈ…  ç¥&    fê«Üd     ∫   â¯«Üh      «ÜÄ    [ Ë¸ˇˇˇÄé¥  «Ül     È%˛ˇˇã-    ÖÌéO˛ˇˇÈÑ  çt& êÖ¿émˇˇˇÈ‹  çv É¯Ö,˛ˇˇããÄ  9ã|  Ñ˛ˇˇã    Ö“é˛ˇˇÈ£  ç¥&    çv ãD$∫   ã≈¿   âÜÄ  â¯Ë¸ˇˇˇÄé¥  «Üd  ‡ 2 «Üh      Èà˝ˇˇãÜ\  ©  ˇ ÑQ¸ˇˇãL$ãÕ   âñ|  É˘Ñ¯˛ˇˇÉ˘Ñ+˚ˇˇÖ…Ñ&˝ˇˇÉ˘Ö1˝ˇˇ«Üd    «Üh      °   ∫   âÜÄ  â¯Ë¸ˇˇˇÄé¥  È˝ˇˇ°¿   ∫   âÜÄ  â¯Ë¸ˇˇˇÄé¥  «Üd    ¿ «Üh      È’¸ˇˇãÜ\  ©  ˇ ÖMˇˇˇãD$ã≈   âñ|  É¯u4«Üd    «Üh      ÈÉ¸ˇˇÄ=     u«D$   Ω¿   ÈT˚ˇˇ«D$ˇˇˇˇÈÛ˚ˇˇãÜ\  ©  ˇ t‘È‰˛ˇˇRâT$h    ãàî   É¡âD$Qh   Ë¸ˇˇˇãD$ãT$ÉƒÈ   ç~É∆ˇ≥4  ˇ≥0  Vh    WË¸ˇˇˇçCpPh8   j4çt$ VË¸ˇˇˇçÉ¿   âÙâÚË¸ˇˇˇãÉX  É¯	vL∏   ãìP  Ö“Ö£   ãìî  æ+   π$   ˆ¬DŒÄ‚æ3   ∫,   D÷QRPhU   WË¸ˇˇˇÉƒÎãÖ    u∞PhG   WË¸ˇˇˇâÙˇ≥ê  h   WË¸ˇˇˇˇ≥å  ˇ≥à  h@   WË¸ˇˇˇˇ≥p  hë   WË¸ˇˇˇÉƒ(ãD$4d+    ucÉƒ81¿[^_]√ÉÍuPhG   WË¸ˇˇˇÉƒãÉî  ∫+   Ω$   æ,   ®DÍ®∏3   DãÉT  Ë¸ˇˇˇUVPhj   WË¸ˇˇˇÉƒÈTˇˇˇË¸ˇˇˇh£   PâD$h   Ë¸ˇˇˇãD$ÉƒÈ  É√h∂   SË¸ˇˇˇXÉ»ˇZÈØ  çCh´   Ph   Ë¸ˇˇˇÉƒÈa  PÉ√âD$WVh…   Sh   Ë¸ˇˇˇãD$ÉƒÈ  WVUÉ≈hl   ˇt$Ë¸ˇˇˇ∏
-   Ë¸ˇˇˇÉƒÉ˝uhê   ˇt$Ë¸ˇˇˇâÿË¸ˇˇˇXÉ»ˇZÈ  ÈL  WVUÉ≈h¥   ˇt$Ë¸ˇˇˇ∏
-   Ë¸ˇˇˇÉƒÉ˝u@hê   ˇt$Ë¸ˇˇˇâÿË¸ˇˇˇXÉ»ˇZÈ
-  çCˇt$$QRhÂ   Ph   Ë¸ˇˇˇÉƒÈ‰  ÈÏ  ãéÿ   ãI|Ö“ÑÉ   Ö¿Ω  ∏  ∫  D≈QΩ   RPçGh‹   Ph   Ë¸ˇˇˇ1…∫   â¯SËú  ÉƒÈf  ãÜÿ   ˇp|çGh  h  h‹   Ph   Ë¸ˇˇˇ1…∫   â¯SËú  ÉƒÈa  ∫  ∏  ÎÖh  Ph   Ë¸ˇˇˇÉƒÈ£  ∫+   Äª<   ∏  D¬â◊ããP  ˇ4ç¸   WRPãE  PãD$(É‡PãD$$∂ƒÉ¿@Pˇt$ˇt$<ˇt$(h(  ˇt$DË¸ˇˇˇãÉP  Éƒ0É¯áQ	  ãÖ    Ö¿ÑQ	  hk  jˇUPË¸ˇˇˇâ«Éƒ= ˇˇáˇ   Ë¸ˇˇˇâª§  ãE\É∏§   ÑQ	  ∂ê¥  π   ®  É‚¸É àP∫   j Ë¸ˇˇˇ[ÈQ	  π+   ∫  ∏  Äª<   D—D¡ø%  Èˇˇˇˇ≥4  ˇt$hQ  ˇt$$h   Ë¸ˇˇˇãÉ0  âD$ ÉƒÉ¿tãÉ4  ã|$	«âD$Öú	  É=     éL	  h¸   æÌˇˇˇˇt$h   Ë¸ˇˇˇÉƒÈQ	  çEh3  æÌˇˇˇPh   Ë¸ˇˇˇÉƒÈQ	  âÉ§  hs  ˇt$Ë¸ˇˇˇZYÈÒ˛ˇˇQRˇ4Ö@  çChd  Ph   Ë¸ˇˇˇãép  ÉƒÈ∂  çFhã  Ph   Ë¸ˇˇˇÉƒÈ˝  RâT$QâL$PçChå  PhÉ  Ë¸ˇˇˇãL$ãT$ÉƒÈÑ  çFRhé  PhÉ  Ë¸ˇˇˇÉƒÈ  çFjh(  PhÉ  Ë¸ˇˇˇ1“ÉƒÈ  RçFâT$h  PhÉ  Ë¸ˇˇˇãT$ÉƒÈm  çFâ$Sh(  PhÉ  Ë¸ˇˇˇãT$ÉƒÉ˚Ñ  É˚èê  Ö€ÑD  ÉÎÑ—  È`  çFRh¢  PhÉ  Ë¸ˇˇˇÉƒÈé  çFRh∑  PhÉ  Ë¸ˇˇˇã    ÉƒÈ∂  É∆h  VhÉ  Ë¸ˇˇˇÉƒÈ‘  çFRhŒ  PhÉ  Ë¸ˇˇˇã    1“ÉƒÈ"  çFRh¸  PhÉ  Ë¸ˇˇˇã    1“ÉƒÈ"  çFjh(  PhÉ  Ë¸ˇˇˇ1“ÉƒÈ`  çFSh(  PhÉ  Ë¸ˇˇˇ1“ÉƒÈˇˇˇÉ∆Shÿ  VhÉ  Ë¸ˇˇˇÉƒÈ‘  çFj h(  PhÉ  Ë¸ˇˇˇ1“ÉƒÈD  çFjh(  PhÉ  Ë¸ˇˇˇ1“ÉƒÈ—  çFh8  PhÉ  Ë¸ˇˇˇÉƒÈ
-  çFRh‰  PhÉ  Ë¸ˇˇˇã    ∫   ÉƒÈ"  É˚Ö`  È—  çCâL$RhN  PhÉ  Ë¸ˇˇˇãL$ÉƒÈé  PçVâD$h\  RhÉ  Ë¸ˇˇˇãD$ÉƒÈ#  çFURhD  PhÉ  Ë¸ˇˇˇÉƒÈr  É∆SQhê  VhÉ  Ë¸ˇˇˇÉƒÈò  É∆â$SUQRhd  VhÉ  Ë¸ˇˇˇãüî  ãD$ÉƒÈË  â¬—˙É‚Râ¬É‚âD$RçVhx  RhÉ  Ë¸ˇˇˇãD$ÉƒÈF  Vh:  h‹  ˇt$hÉ  Ë¸ˇˇˇÉƒÈ$  h  ˇt$hÉ  Ë¸ˇˇˇÉƒÈ‘  ãD$πÜ  âD$VQhº  ˇt$hÉ  Ë¸ˇˇˇãD$ÉƒÈ∂  hø  ˇt$hÉ  Ë¸ˇˇˇÉƒÈ…  çEhß  PhÉ  Ë¸ˇˇˇÉƒÈö  É≈hQ  UhÉ  Ë¸ˇˇˇÉƒÈI   hÓ  ˇt$hÉ  Ë¸ˇˇˇÉƒÈ„  h  ˇt$hÉ  Ë¸ˇˇˇÉƒÈ9  h÷  ˇt$hÉ  Ë¸ˇˇˇ°    ÉƒÈ%  ∫Ü  VRhú  ˇt$hÉ  Ë¸ˇˇˇÉƒÈs  h  ˇt$hÉ  Ë¸ˇˇˇÉƒÈ‘"  h   ˇt$hÉ  Ë¸ˇˇˇÉƒÈì"  ∫Ü  QRhÄ  ˇt$hÉ  Ë¸ˇˇˇããT  ÉƒÈˆ"  hÓ  ˇt$hÉ  Ë¸ˇˇˇÉƒÈ?!  hê  ˇt$hÉ  Ë¸ˇˇˇ°    ÉƒÈ7!  hx  ˇt$hÉ  Ë¸ˇˇˇÉƒÈ!  ç@h_  PhÉ  Ë¸ˇˇˇÉƒÈÎ   É∆hQ  VhÉ  Ë¸ˇˇˇ1¿ÉƒÈr%  h  ˇt$hÉ  Ë¸ˇˇˇ∏`  ÉƒÈﬂ!  hH  ˇt$hÉ  Ë¸ˇˇˇ°    ÉƒÈ!  hø  ˇt$hÉ  Ë¸ˇˇˇ∏@  ÉƒÈﬂ!  hŸ  ˇt$hÉ  Ë¸ˇˇˇ∏   ÉƒÈﬂ!  h  ˇt$hÉ  Ë¸ˇˇˇ∏   ÉƒÈﬂ!  h©  ˇt$hÉ  Ë¸ˇˇˇ∏   ÉƒÈﬂ!  h  ˇt$hÉ  Ë¸ˇˇˇÉƒÈä#  â»ªé  ô˜˚ªË  ô˜˚â»ª∞‚ Rô˜˚Ph0  ˇt$hÉ  Ë¸ˇˇˇÉƒÈY)  â»Ωé  ô˜˝ΩË  ô˜˝â»Ω∞‚ Rô˜˝Ph†  ˇt$hÉ  Ë¸ˇˇˇÉƒÈâ*  h9  ˇt$hÉ  Ë¸ˇˇˇÉƒÈ	&  çGh!  PhÉ  Ë¸ˇˇˇÉƒÈ⁄%  â»Ωé  ô˜˝ΩË  ô˜˝â»Ω∞‚ Rô˜˝Phƒ  ˇt$hÉ  Ë¸ˇˇˇÉƒÈâ*  ããÄ  Ωé  â»ô˜˝ΩË  ô˜˝â»Ω∞‚ Rô˜˝PhË  ˇt$hÉ  Ë¸ˇˇˇãÉX  ÉƒÈó*  ããÄ  Ωé  â»ô˜˝ΩË  ô˜˝â»Ω∞‚ Rô˜˝Ph  ˇt$hÉ  Ë¸ˇˇˇãÉX  ÉƒÈ$+  ˇt›Phì  ˇt$hÉ  Ë¸ˇˇˇÉƒÈ@(  ˇ4›  Ph{  ˇt$hÉ  Ë¸ˇˇˇÉƒÈû'  çGhQ  PhÉ  Ë¸ˇˇˇÉƒÈÈ(  hh  Ω¿   ˇt$hÉ  Ë¸ˇˇˇÉƒ«D$   «D$   ÈÓ'  h  ˇt$hÉ  Ë¸ˇˇˇÉƒÈ™&  hÓ  ˇt$hÉ  Ë¸ˇˇˇÉƒÈ#&  hP  ˇt$hÉ  Ë¸ˇˇˇ°    ÉƒÈç&  Ë¸ˇˇˇ∫    ∏    È¸ˇˇˇ∏    È¸ˇˇˇ                                  §     º  ≈  ‡  Ú         %                          msp3400                                                                 ê     ê     ê                                                                 4  ;  F                             `  @  †                          0                          –  ∞          @  –                                                   P          `                                                                                                                              0      `  d  h  l  p  w  3   ~                   ˇˇˇˇˇˇˇˇ      @  @         @     @      @  Ä0     Ä  Ä   Ä0      Ä        0  dolby   amsound standard    stereo_threshold    debug   once    opmode              0                                  ´  ∞  ∑  Ω  √      K      $   #   '   (   K      $   #   '   (   écL écL –           0  ˇˇˇˇˇˇˇˇ¯ˇˇˇ   ;   ~   ˇˇˇˇˇˇˇˇ¯ˇˇˇ   ;   ~   écL écL –           0  ¯ˇˇˇ¯ˇˇˇ      N   k   ¯ˇˇˇ¯ˇˇˇ      N   k   rúî rúî –   Ä       0           0   B   H            0   B   H   écL écL –   Ä  0    0     	         !   %            0   B   H   GZ GZ ∆   Ä       0  ˛ˇˇˇ¯ˇˇˇˆˇˇˇ
-   2   V            0   B   H   écL écL –   @       0        ˙ˇˇˇ¸ˇˇˇ(   ^            0   B   H   UUS UUS –   @       0  ˛ˇˇˇ¯ˇˇˇˆˇˇˇ
-   2   V   ¸ˇˇˇÙˇˇˇ˜ˇˇˇ   O   ~   GZ GZ ∆   @      |              ∏  ˇˇˇ                ⁄  ˇˇˇ         Ä> 9éA Î   ∑         écL ™¿O            GZ  ÍV #  ‡ 2        GZ 9§] A  ‡ 2        GZ GZ _  ‡ 2        GZ ™¿O x  ‡ 2        écL  @Q :        	   GZ  @Q ñ    ¿     
-   UUS „¯Z ´            GZ  @Q ¿  ‡ 2        GZ  @Q T  ‡ 2        GZ  @Q t  ‡ 2          Ä>  Ä> ◊         !    Ä>  Ä> Í         0    Ä>  Ä>           @   rúî rúî   ˇˇˇ     P   GZ GZ 1  ˇˇˇ     Q    Äa   d ?  ˇˇˇ     `     d   d U  ˇˇˇ     ˇˇˇˇ                    Setting I2S speed to %d
- 7 unknown , dual  stereo mono %s: Audio:     Mode:     %s
- Mode:     %s (%s%s)
- Standard: %s (%s%s)
- Audmode:  0x%04x
- ACB:      0x%04x
- resume
- msp_reset
- chip reset failed
- msp_read(0x%x, 0x%x): 0x%x
- msp_write(0x%x, 0x%x, 0x%x)
- no on yes off suspend
- nicam  and  radio msp3400 msp3400 not found
- &state->wq rev1=0x%04x, rev2=0x%04x
- msp34xx kernel_thread() failed
- switching to radio mode
- AM (for carrier detect) FM Radio Terrestrial FM-mono/stereo Satellite FM-mono NICAM/FM (B/G, D/K) NICAM/FM (I) NICAM/AM (L) BTSC External input manual autodetect autodetect and autoselect in1 in2 in3 in4 in1 da in2 da mute 7 unknown FM set_audmode: %s
- SAT set_audmode: %s
- NICAM set_audmode: %s
- BTSC set_audmode: %s
- extern set_audmode: %s
- FM-Radio set_audmode: %s
- mono set_audmode
- set audmode %d
- switching to AM mono
- set_mode: %d
- stereo detect register: %d
- nicam sync=%d, mode=%d
- watch: nicam %d => %d
- msp3410 daemon started
- msp3410 thread: sleep
- msp3410 thread: wakeup
- thread: restart scan
- thread: no carrier scan
- detection still in progress
- 5.5/5.85  B/G NICAM FM thread: exit
- msp34xxg daemon started
- msp34xxg thread: sleep
- msp34xxg thread: wakeup
- selected radio modus
- selected M (EIA-J) modus
- selected M (A2) modus
- selected SECAM-L modus
- selected M (BTSC) modus
- msp3400 daemon started
- msp3400 thread: sleep
- msp3400 thread: wakeup
- AM sound override
- carrier1 val: %5d / %s
- carrier2 val: %5d / %s
- mono stereo lang2 lang1 lang1+lang2 5.85  PAL D/K + SECAM NICAM 6.25  PAL D/K1 FM-stereo 6.74  PAL D/K2 FM-stereo 7.02  PAL SAT FM-stereo s/b 7.20  PAL SAT FM-stereo s 7.38  PAL SAT FM-stereo b 5.742 PAL B/G FM-stereo 5.85  PAL B/G NICAM 4.5   NTSC 5.5   PAL B/G 6.0   PAL I 6.5   PAL D/K + SAT + SECAM autodetect start 4.5/4.72  M Dual FM-Stereo 5.5/5.74  B/G Dual FM-Stereo 6.5/6.25  D/K1 Dual FM-Stereo 6.5/6.74  D/K2 Dual FM-Stereo 6.5  D/K FM-Mono (HDEV3) 6.5/5.74  D/K3 Dual FM-Stereo 6.5/5.85  L NICAM AM 6.0/6.55  I NICAM FM 6.5/5.85  D/K NICAM FM 4.5  M BTSC-Stereo 4.5  M BTSC-Mono + SAP 4.5  M EIA-J Japan Stereo 10.7  FM-Stereo Radio 6.5  SAT-Mono 7.02/7.20  SAT-Stereo 7.2  SAT ADR     `   –      @  ∞     P  –  –  †  0  ê  ¿           @  `  Ä  0  ê  p  –      ê  @  –  p  ∞     `  ¿  `  Ä  –   ¿%    detected standard: %s(0x%08Lx)
- %s rev1 = 0x%04x rev2 = 0x%04x
- Routing:  0x%08x (input) 0x%08x (output)
-   I/O error #%d (read 0x%02x/0x%02x)
- resetting chip, sound will go off.
- I/O error #%d (write 0x%02x/0x%02x)
-    mute=%s scanning=%s volume=%d
-  not an msp3400 (cannot read chip version)
-  MSP%d4%02d%c-%c%d found on %s: supports %s%s%s, mode is %s
- scart switch: %s => %d (ACB=0x%04x)
-    set source to %d (0x%x) for output %02x
-    could not detect sound standard set_audmode called with mode=%d instead of set_source (ignored)
-    set_audmode final source/matrix = 0x%x
- watch: rxsubchans %02x => %02x
- status=0x%x, stereo=%d, bilingual=%d -> rxsubchans=%d
-  setting standard: %s (0x%04x)
-  current standard: %s (0x%04x)
-  autodetection failed, switching to backup standard: %s (0x%04x)
-    started autodetect, waiting for result
- detection still in progress after 10 tries. giving up.
- detected standard: %s (0x%04x)
- mono sound carrier: %d.%03d MHz
-    main sound carrier: %d.%03d MHz
-    NICAM/FM carrier  : %d.%03d MHz
-    NICAM/AM carrier  : %d.%03d MHz
-    FM-stereo carrier : %d.%03d MHz
-    6.5/5.85  D/K NICAM FM (HDEV2)  6.5/5.85  D/K NICAM FM (HDEV3) parm=dolby:Activates Dolby processing parm=amsound:Hardwire AM sound at 6.5Hz (France), FM can autoscan parm=standard:Specify audio standard: 32 = NTSC, 64 = radio, Default: Autodetect parm=stereo_threshold:Sets signal threshold to activate stereo parm=debug:Enable debug messages [0-3] parm=once:No continuous stereo monitoring parm=opmode:Forces a MSP3400 opmode. 0=Manual, 1=Autodetect, 2=Autodetect and autoselect parmtype=dolby:bool parmtype=amsound:bool parmtype=standard:int parmtype=stereo_threshold:int parmtype=debug:int parmtype=once:bool parmtype=opmode:int license=GPL author=Gerd Knorr description=device driver for msp34xx TV sound processor Ã          §ˇ     ‘          §ˇ     ‹          §ˇ     Ë          §ˇ     ¸          §ˇ               §ˇ               $ˇ ®             Ä                                  ¿                  +                                                              †           `                       ê     ˇˇˇˇ                     @Q œ   ÍV Î  9§]    Äa     d 9   Äf S  ™¿O m   @Q Ö   Ä> ô  écL §  UUS ≤  GZ æ   GCC: (GNU) 11.2.0  GCC: (GNU) 11.2.0                                                                                                      
-                                                                                                                                           Òˇ       `     '       2     A   `   e     N   –   0     Z      9     i   2   a    }       (    
- á   @  c     ì   ∞  B     £      P     Æ   ì        æ   P  |     »           ‘           ﬂ            Á   ≥  3     ˆ   –  Õ     ˇ   Ê  p       †  à       V  k     &  0  \    1  ¡  †     A  ê  "     M  a       ^  ¿  @     i     Ú    s          
- {           ≈  ®        É  0      
- ê  y  µ    ü  ¸       
- ™          
- ¥  `  l    
- ª  .  *     Œ  @       
- ⁄  0  V    Ë  –  ±     Ù  X                        Ä            
-     0  †   \    
- ?  `   0    
- F     0    
- S  `  ,    
- a  @      
- o  †  P    
- }      &     í  &   B     ©  h   Q     ¡  π   ?     ·  ¯   '     ˆ    *     
-  I  Y        ¢       9           G  Ã      
- Y  ∂       t          Ñ  ‘      
- ò  Ã       ¥  (        ≈  ‹  	    
- ⁄  ‚       ˛  <          Ë      
- 4          M  P        [  ¸      
- m         Ö  d        í        
- £  &       Ω  x        Ã        
- ﬂ  :       ˆ  F         X  9     '           Òˇ:  ê  °     I  @  â     ]  4      
- g         
- q  s  .     ä  –  ñ     ü  †     
- ´     5    ¿  H      
-    °  -    ‰  `  @   
- ˜  Œ  $       Ú  ª     %  ≠  3    :  ‡	  «    O           l  ¿   0     á          ¢  ß  O    ∑             Ã          ÷             „             ˆ                                         Ä  B    /             L      
-     [  †        m  `       {             â           ì             ≤          æ             Õ  ∞  g     ‚             ¸                            `      ,             7           C             S             b  p  ?     x  –  ˙     Ç             ü             ∑             ¿             —  ¿  ì     ·             Î             ˇ             	             &	  §        3	             >	  ê  Ÿ     H	             _	             l	             	             å	             ñ	  Ä  ¨     §	             ∫	             –	  ¿%  
-    ‡	  `  X    Ú	  @        
-             
-  p  T     )
-             1
-             >
-             M
-             _
-             v
-             ä
-             ó
-  `   0    
- ∂
-             »
-          ’
-          ‚
-             Ò
-             ˇ
-               –   È                 -          6              msp3400-driver.c msp_s_i2s_clock_freq msp_s_i2s_clock_freq.cold msp_querystd msp_s_tuner msp_log_status msp_log_status.cold CSWTCH.74 msp_g_tuner msp_s_frequency msp_resume msp_resume.cold msp_s_std reset_off.1 reset_on.2 write.3 msp_reset.cold msp_read msp_read.cold msp_write msp_write.cold msp_s_ctrl msp_s_ctrl.cold msp_suspend msp_suspend.cold msp_remove msp_probe msp_ops __key.4 msp_ctrl_ops msp_probe.cold opmode_str CSWTCH.84 scarts msp_set_scart.cold scart_names msp_s_routing msp_s_radio msp_s_radio.cold msp_driver_init msp_driver msp_driver_exit msp3400_pm_ops msp_id msp_core_ops msp_tuner_ops msp_audio_ops msp_video_ops __UNIQUE_ID_dolby282 __UNIQUE_ID_amsound281 __UNIQUE_ID_standard280 __UNIQUE_ID_stereo_threshold279 __UNIQUE_ID_debug278 __UNIQUE_ID_once277 __UNIQUE_ID_opmode276 __UNIQUE_ID_dolbytype275 __param_dolby __param_str_dolby __UNIQUE_ID_amsoundtype274 __param_amsound __param_str_amsound __UNIQUE_ID_standardtype273 __param_standard __param_str_standard __UNIQUE_ID_stereo_thresholdtype272 __param_stereo_threshold __param_str_stereo_threshold __UNIQUE_ID_debugtype271 __param_debug __param_str_debug __UNIQUE_ID_oncetype270 __param_once __param_str_once __UNIQUE_ID_opmodetype269 __param_opmode __param_str_opmode __UNIQUE_ID_license268 __UNIQUE_ID_author267 __UNIQUE_ID_description266 msp3400-kthreads.c msp_set_source msp34xxg_set_source CSWTCH.91 CSWTCH.92 msp34xxg_set_source.cold msp34xxg_set_sources msp_stdlist msp3400c_set_audmode strmode.0 msp3400c_set_audmode.cold msp3400c_init_data msp3400c_set_mode.cold msp_detect_stereo.cold msp3410d_thread.cold msp34xxg_thread.cold msp3400c_carrier_detect_main msp3400c_carrier_detect_65 msp3400c_carrier_detect_55 msp3400c_thread.cold v4l2_i2c_subdev_init msp_debug devm_kmalloc __msecs_to_jiffies __this_module snprintf __stack_chk_guard msp3410d_thread v4l2_ctrl_handler_init_class cleanup_module msp_stereo_thresh msp_write_dsp set_freezable msp_dolby schedule_timeout_interruptible msp_amsound add_wait_queue msp3400c_set_carrier i2c_transfer_buffer_flags kthread_should_stop __wake_up msp_detect_stereo __fentry__ init_module wake_up_process __refrigerator msp_standard_std_name msp_reset v4l2_ctrl_handler_log_status v4l2_ctrl_handler_setup schedule __stack_chk_fail msp_set_audmode _dev_info i2c_register_driver v4l2_device_unregister_subdev _dev_err msp_standard mutex_lock msp_sleep media_entity_pads_init kthread_stop freezing_slow_path current_task _dev_warn msp_set_scart default_wake_function __init_waitqueue_head msp3400c_thread msp3400c_set_mode msp_write_dem kthread_create_on_node msp_update_volume strscpy mutex_unlock param_ops_bool v4l2_ctrl_new_std v4l2_ctrl_handler_free system_freezing_cnt i2c_transfer __mod_i2c__msp_id_device_table remove_wait_queue msp_read_dsp msp_read_dem i2c_del_driver param_ops_int _dev_printk msp34xxg_thread v4l2_ctrl_cluster msp_once __SCT__might_resched     ä  
-   u       a   ä  É   u  ©   é  ±   	  ∑     º   ∂  —   ä  ˘   î    ä    z  )    0  â  5    A  ä  ö  â  ±  ä  Í  à    ä  
-  u      E  à  Q  ä  ¡  à  —  ä  ‚  z  ˙  u  2    B    O    a    p  Ø  y    ä  Ø  ì    §  Ø  ≠    ∫  z  ∆  ì  —  ä  Î  z  ]  Ø  f    u  u      ä  z  ô  ì  °  ä  ¥  z  ÿ  u  ‰    ˛  Ü        z  $  ì  1  ä    u  É    à    ë  ä  ó  u  £    ™  è  ¡  ä  œ  ó  Â  ù  Ï  è  ˜  ≠    ä         ©  '  è  F  v  U    \  t  ù  ú  º    ¡    	  £  ;	  u  É	  u  ã	    Ë
-    )  |  C    a  ¨  k    î  ¨  û    ∏  ¨  Ÿ  ≠      .  ¨  8    [  ¨  e      ¨  ©  u  ∂    –  ∏  ◊  ë  ‰    È    Ó      ä  !  ä  A  ä  a  ä  Å  ä  ®  u  ∂    Í    ˆ    1  ä  √  °  ”  °  „  °  Í  î  b  à  ë  ä  ¶  ü  Ø  z  ‹  ¢  ·  Ñ  Ê  á  ı  w  ˙  Ç    ±    ∫    Æ    ü  -  z  I  í  S  û  ^  ç  e  ì  q  ä  Ö  ö  ¿  ™  —  ä  È  u  ˝    I  à  `  •  q  Ö  x  ®  ë  ä  ó  Å  ¥    ≈    ”    ·    Ô            -    A  ä  `    g    y  u  Ñ    ë    —  ä  q  ä  w    Ä  	  ©    ±  ä  œ  ¶  ›  ¶  Ù  ¶    ¶    ¶  !  ä  '    D    Q  u  é    ∂  Ö  ª  u  √    ‘           u  *    e  u  m    ü    ∂    ˝  Ö    u  
-    $    4    R  Ö  W  u  _    Ç  Ö  á  u  è    §    —    ◊  u    u  
-      °  =    B  u  J    a  ä  É  u  é    ∑    »  ¶  ”    ﬂ  ¶  ˙  ¶    ¶    ¶  #    /  ¶  D    N  ¶  [  Ö  w    Ü    ¥    ¡  ä  4  ¶  M  ¶  a  ä  ã  ≥  ·  u  Ë    9  ≥  ?  u  j  u  r    ê  u  ò      ≤    u  #    n    Å  ä  í  u  ö    ≥  Ä  ¬  u  …    ’  õ  ⁄  u  „    Ô  á    ®  W  õ  ^  u  l  u  ô    §    Æ  u  ≈  É  Õ      u  $    ?  ¶  p    Å    ≥  ®  ÿ  õ  È  â  Û  π    õ  %  u  3    C  î  a    p    ~    Ö      •    Ö  1  u  9    J  ®  v  ¶  ç    ≠  ¶  ¿  ≥  Õ  u  ‘    ‡  õ  A   u  I     e     Å     ç     í   	  ß     π     æ     —   ä  ‡   u  Î     !  Ä  !  u  !    )!  õ  .!  u  7!    ?!    K!  á  }!  è  ¯!  ¶  "    !"    4"  ~  @"  ¶  \"  ô  {"  ¶  ã"  u  ì"    ®"  õ  º"  ≥  Õ"  u  ‘"    Ó"  u  	#    #    &#    -#    I#  ®  [#    u#  u  Ç#  u  ä#    õ#  ®  †#  u  ¬#  u   #    Ì#    $  ¶  -$  â  ;$  π  R$  π  h$  õ  É$  â  é$  î  ô$  u  µ$    ¡$  u  …$    ·$  u  È$    %  u  %    +%  î  :%  u  B%    Q%  u  Y%    h%  u  p%    å%    ì%  	  ß%    µ%    ¡%  ä  “%  u  ⁄%    Û%  Ä  &  u  	&    &  õ  &  u  #&    /&  á  [&  ®  d&  •  Å&  õ  ç&  u  ó&    ¢&  u  ™&    ª&  ®   &  É  ‰&  u  Ï&    Ú&    '    ''  •  x'  ≤  ñ'  u  û'    ≠'    ∂'  Ö  ¬'  õ  À'  u  Ó'    Ù'  É  (  ≤  8(  u  @(    Z(  Ö  f(  õ  o(  u  ã(  É  ô(    ·(  u  È(    !)  •  4)  Ö  L)  ®  Q)  u  Ä)  õ  ï)  â  ü)  π  ∆)  õ  ⁄)  â  Â)  î  ˜)    C*    U*  •  â*    ¶*  u  ≥*    Ê*  •  +  u  +    !+    E+  u  R+    l+    y+  •  µ+    ˜+    	,  •  ,    ,,  •  h,    í,  É  ¢,                 ∂  .     F   	  L   ï  U     a   y  p   ê  Ä     ô     û     ¨     ±     º     ¬   ï  Œ     ÷     ‹   ï  È     Ô   ï     	    ï        ï  %  z  <    B  ï  P    U    Z    f    t  é  |    Ç  ï  è  ì  î    û    £  ∂  Ø    ∑    Ω  ò  «    œ    ’    ⁄  ∂  ‚    Ò    ˜    ¸  ∂        	    †  &  Ç  3  	  <  †  C  è  M    R    ]  	  f  †  p  Ç  }  	  Ü  †  ç  è  ó    •    ´    ∞  ∂  ∏    Ω    ’    ⁄    ﬂ    Ú  	  ¯    ˝  ∂          %    *    /  	  5    :  ∂  I    Q    V    [    b    h    m  ∂  u    z    Ü    ò    »  	  —  ï  „    Í    Ú    ˜       ß    å  +    Q  à  W    \    a    f    x    å    ï    ö  ∂  ¬    »  u  œ    ‘  	  ‚    Á  ∂  Ô    ˜          ∂          #  †  3    ;  	  A    F  ∂  T    \    b    g  ∂  o    Ç  	  à    ç  ∂  ù    ¶    ¨    ±  ∂  π    √    …    Œ  ∂  ÿ    Â  	  Î      ∂  ¸              ∂  #    4    =    B    K    Q    V  ∂  ^    g    m    r  ∂  x  u  Ä    à    é    ì  ∂  õ    §    ™    Ø  ∂  µ  u  ø    »    Œ    ”  ∂  Ÿ  u  „    Ì    Û    ¯  ∂                ∂  )  	  /    4  ∂  <    F    L    Q  ∂  [    e    k    p  ∂  z    Ç    à    ç  ∂  ï    û    §    ©  ∂  Ø  u  º    ≈         ◊    ›    ‚  ∂  Ó    ˚          ∂        	  "    '  ∂  /    9    ?    D  ∂  L    [  	  a    f  ∂  x    í    ò    ù  ∂  ©    Ø    ¥  	  Ω    ¬  ∂       œ    ÿ    ›  ∂  Â    Ó    ˘  	  	    	  ∂  	    	    !	    &	  ∂  .	    6	    <	    A	  ∂  I	    Q	    W	    \	  ∂  d	    i	    r	    w	  ∂  	    Ñ	    ç	    í	  ∂  ö	    ü	    ®	    ≠	  ∂  ≤	  u  ∫	    ø	    ∆	  	  œ	    ‘	  ∂  ‹	    ·	    Í	    Ô	  ∂  ˜	    ¸	  	  
-    
+/* General definitions */
+#define AD_SHORT_TIMEOUT           1
+#define AD_LONG_TIMEOUT            0
+#define AD_STANDBY                 0x2
+#define AD_MAX_TX_IN_SECOND        3
+#define AD_COLLECTOR_MAX_DELAY     0
 
-  ∂  
-    
-    
-  	  '
-    ,
-  ∂  :
-    ?
-    H
-    M
-  ∂  U
-    Z
-    c
-    h
-  ∂  m
-  u  u
-    z
-    É
-    à
-  ∂  ê
-    ò
-    û
-    £
-  ∂  ´
-    ≥
-    π
-    æ
-  ∂  »
-    Õ
-    ÷
-    €
-  ∂  Ë
-    Ì
-  	  ˆ
-    ˚
-  ∂     u                ∂  (    -    6    ;  ∂  H    M    V    [  ∂  h    m    v    {  ∂  à    ç    ñ    õ  ∂  £    ∆  	  œ    ‘  ∂  ‹    ˇ  	        ∂          #    (  ∂  0    8    >    C  ∂  K    n  	  w    |  ∂  Ñ    ≠  	  ∂    ª  ∂  …    Ú  	  ˚       ∂          !    &  ∂  .    5    ;    D    I  ∂  Q    Y    _    d  ∂  l    q    v        Ñ  ∂  ú    °    ™    Ø  ∂  ∑    º    ≈       ∂  “    ◊    ‡    Â  ∂  Í  u  Ú       ä          x     ñ          ¥      §     
+/* Timer definitions (43.4.4 in the 802.3ad standard) */
+#define AD_FAST_PERIODIC_TIME      1
+#define AD_SLOW_PERIODIC_TIME      30
+#define AD_SHORT_TIMEOUT_TIME      (3*AD_FAST_PERIODIC_TIME)
+#define AD_LONG_TIMEOUT_TIME       (3*AD_SLOW_PERIODIC_TIME)
+#define AD_CHURN_DETECTION_TIME    60
+#define AD_AGGREGATE_WAIT_TIME     2
+
+/* Port Variables definitions used by the State Machines (43.4.7 in the
+ * 802.3ad standard)
+ */
+#define AD_PORT_BEGIN           0x1
+#define AD_PORT_LACP_ENABLED    0x2
+#define AD_PORT_ACTOR_CHURN     0x4
+#define AD_PORT_PARTNER_CHURN   0x8
+#define AD_PORT_READY           0x10
+#define AD_PORT_READY_N         0x20
+#define AD_PORT_MATCHED         0x40
+#define AD_PORT_STANDBY         0x80
+#define AD_PORT_SELECTED        0x100
+#define AD_PORT_MOVED           0x200
+#define AD_PORT_CHURNED         (AD_PORT_ACTOR_CHURN | AD_PORT_PARTNER_CHURN)
+
+/* Port Key definitions
+ * key is determined according to the link speed, duplex and
+ * user key (which is yet not supported)
+ *           --------------------------------------------------------------
+ * Port key  | User key (10 bits)           | Speed (5 bits)      | Duplex|
+ *           --------------------------------------------------------------
+ *           |15                           6|5                   1|0
+ */
+#define  AD_DUPLEX_KEY_MASKS    0x1
+#define  AD_SPEED_KEY_MASKS     0x3E
+#define  AD_USER_KEY_MASKS      0xFFC0
+
+enum ad_link_speed_type {
+	AD_LINK_SPEED_1MBPS = 1,
+	AD_LINK_SPEED_10MBPS,
+	AD_LINK_SPEED_100MBPS,
+	AD_LINK_SPEED_1000MBPS,
+	AD_LINK_SPEED_2500MBPS,
+	AD_LINK_SPEED_5000MBPS,
+	AD_LINK_SPEED_10000MBPS,
+	AD_LINK_SPEED_14000MBPS,
+	AD_LINK_SPEED_20000MBPS,
+	AD_LINK_SPEED_25000MBPS,
+	AD_LINK_SPEED_40000MBPS,
+	AD_LINK_SPEED_50000MBPS,
+	AD_LINK_SPEED_56000MBPS,
+	AD_LINK_SPEED_100000MBPS,
+	AD_LINK_SPEED_200000MBPS,
+	AD_LINK_SPEED_400000MBPS,
+};
+
+/* compare MAC addresses */
+#define MAC_ADDRESS_EQUAL(A, B)	\
+	ether_addr_equal_64bits((const u8 *)A, (const u8 *)B)
+
+static const u8 null_mac_addr[ETH_ALEN + 2] __long_aligned = {
+	0, 0, 0, 0, 0, 0
+};
+static u16 ad_ticks_per_sec;
+static const int ad_delta_in_ticks = (AD_TIMER_INTERVAL * HZ) / 1000;
+
+static const u8 lacpdu_mcast_addr[ETH_ALEN + 2] __long_aligned =
+	MULTICAST_LACPDU_ADDR;
+
+/* ================= main 802.3ad protocol functions ================== */
+static int ad_lacpdu_send(struct port *port);
+static int ad_marker_send(struct port *port, struct bond_marker *marker);
+static void ad_mux_machine(struct port *port, bool *update_slave_arr);
+static void ad_rx_machine(struct lacpdu *lacpdu, struct port *port);
+static void ad_tx_machine(struct port *port);
+static void ad_periodic_machine(struct port *port, struct bond_params *bond_params);
+static void ad_port_selection_logic(struct port *port, bool *update_slave_arr);
+static void ad_agg_selection_logic(struct aggregator *aggregator,
+				   bool *update_slave_arr);
+static void ad_clear_agg(struct aggregator *aggregator);
+static void ad_initialize_agg(struct aggregator *aggregator);
+static void ad_initialize_port(struct port *port, int lacp_fast);
+static void ad_enable_collecting_distributing(struct port *port,
+					      bool *update_slave_arr);
+static void ad_disable_collecting_distributing(struct port *port,
+					       bool *update_slave_arr);
+static void ad_marker_info_received(struct bond_marker *marker_info,
+				    struct port *port);
+static void ad_marker_response_received(struct bond_marker *marker,
+					struct port *port);
+static void ad_update_actor_keys(struct port *port, bool reset);
+
+
+/* ================= api to bonding and kernel code ================== */
+
+/**
+ * __get_bond_by_port - get the port's bonding struct
+ * @port: the port we're looking at
+ *
+ * Return @port's bonding struct, or %NULL if it can't be found.
+ */
+static inline struct bonding *__get_bond_by_port(struct port *port)
+{
+	if (port->slave == NULL)
+		return NULL;
+
+	return bond_get_bond_by_slave(port->slave);
+}
+
+/**
+ * __get_first_agg - get the first aggregator in the bond
+ * @port: the port we're looking at
+ *
+ * Return the aggregator of the first slave in @bond, or %NULL if it can't be
+ * found.
+ * The caller must hold RCU or RTNL lock.
+ */
+static inline struct aggregator *__get_first_agg(struct port *port)
+{
+	struct bonding *bond = __get_bond_by_port(port);
+	struct slave *first_slave;
+	struct aggregator *agg;
+
+	/* If there's no bond for this port, or bond has no slaves */
+	if (bond == NULL)
+		return NULL;
+
+	rcu_read_lock();
+	first_slave = bond_first_slave_rcu(bond);
+	agg = first_slave ? &(SLAVE_AD_INFO(first_slave)->aggregator) : NULL;
+	rcu_read_unlock();
+
+	return agg;
+}
+
+/**
+ * __agg_has_partner - see if we have a partner
+ * @agg: the agregator we're looking at
+ *
+ * Return nonzero if aggregator has a partner (denoted by a non-zero ether
+ * address for the partner). Return 0 if not.
+ */
+static inline int __agg_has_partner(struct aggregator *agg)
+{
+	return !is_zero_ether_addr(agg->partner_system.mac_addr_value);
+}
+
+/**
+ * __disable_port - disable the port's slave
+ * @port: the port we're looking at
+ */
+static inline void __disable_port(struct port *port)
+{
+	bond_set_slave_inactive_flags(port->slave, BOND_SLAVE_NOTIFY_LATER);
+}
+
+/**
+ * __enable_port - enable the port's slave, if it's up
+ * @port: the port we're looking at
+ */
+static inline void __enable_port(struct port *port)
+{
+	struct slave *slave = port->slave;
+
+	if ((slave->link == BOND_LINK_UP) && bond_slave_is_up(slave))
+		bond_set_slave_active_flags(slave, BOND_SLAVE_NOTIFY_LATER);
+}
+
+/**
+ * __port_is_enabled - check if the port's slave is in active state
+ * @port: the port we're looking at
+ */
+static inline int __port_is_enabled(struct port *port)
+{
+	return bond_is_active_slave(port->slave);
+}
+
+/**
+ * __get_agg_selection_mode - get the aggregator selection mode
+ * @port: the port we're looking at
+ *
+ * Get the aggregator selection mode. Can be %STABLE, %BANDWIDTH or %COUNT.
+ */
+static inline u32 __get_agg_selection_mode(struct port *port)
+{
+	struct bonding *bond = __get_bond_by_port(port);
+
+	if (bond == NULL)
+		return BOND_AD_STABLE;
+
+	return bond->params.ad_select;
+}
+
+/**
+ * __check_agg_selection_timer - check if the selection timer has expired
+ * @port: the port we're looking at
+ */
+static inline int __check_agg_selection_timer(struct port *port)
+{
+	struct bonding *bond = __get_bond_by_port(port);
+
+	if (bond == NULL)
+		return 0;
+
+	return atomic_read(&BOND_AD_INFO(bond).agg_select_timer) ? 1 : 0;
+}
+
+/**
+ * __get_link_speed - get a port's speed
+ * @port: the port we're looking at
+ *
+ * Return @port's speed in 802.3ad enum format. i.e. one of:
+ *     0,
+ *     %AD_LINK_SPEED_10MBPS,
+ *     %AD_LINK_SPEED_100MBPS,
+ *     %AD_LINK_SPEED_1000MBPS,
+ *     %AD_LINK_SPEED_2500MBPS,
+ *     %AD_LINK_SPEED_5000MBPS,
+ *     %AD_LINK_SPEED_10000MBPS
+ *     %AD_LINK_SPEED_14000MBPS,
+ *     %AD_LINK_SPEED_20000MBPS
+ *     %AD_LINK_SPEED_25000MBPS
+ *     %AD_LINK_SPEED_40000MBPS
+ *     %AD_LINK_SPEED_50000MBPS
+ *     %AD_LINK_SPEED_56000MBPS
+ *     %AD_LINK_SPEED_100000MBPS
+ *     %AD_LINK_SPEED_200000MBPS
+ *     %AD_LINK_SPEED_400000MBPS
+ */
+static u16 __get_link_speed(struct port *port)
+{
+	struct slave *slave = port->slave;
+	u16 speed;
+
+	/* this if covers only a special case: when the configuration starts
+	 * with link down, it sets the speed to 0.
+	 * This is done in spite of the fact that the e100 driver reports 0
+	 * to be compatible with MVT in the future.
+	 */
+	if (slave->link != BOND_LINK_UP)
+		speed = 0;
+	else {
+		switch (slave->speed) {
+		case SPEED_10:
+			speed = AD_LINK_SPEED_10MBPS;
+			break;
+
+		case SPEED_100:
+			speed = AD_LINK_SPEED_100MBPS;
+			break;
+
+		case SPEED_1000:
+			speed = AD_LINK_SPEED_1000MBPS;
+			break;
+
+		case SPEED_2500:
+			speed = AD_LINK_SPEED_2500MBPS;
+			break;
+
+		case SPEED_5000:
+			speed = AD_LINK_SPEED_5000MBPS;
+			break;
+
+		case SPEED_10000:
+			speed = AD_LINK_SPEED_10000MBPS;
+			break;
+
+		case SPEED_14000:
+			speed = AD_LINK_SPEED_14000MBPS;
+			break;
+
+		case SPEED_20000:
+			speed = AD_LINK_SPEED_20000MBPS;
+			break;
+
+		case SPEED_25000:
+			speed = AD_LINK_SPEED_25000MBPS;
+			break;
+
+		case SPEED_40000:
+			speed = AD_LINK_SPEED_40000MBPS;
+			break;
+
+		case SPEED_50000:
+			speed = AD_LINK_SPEED_50000MBPS;
+			break;
+
+		case SPEED_56000:
+			speed = AD_LINK_SPEED_56000MBPS;
+			break;
+
+		case SPEED_100000:
+			speed = AD_LINK_SPEED_100000MBPS;
+			break;
+
+		case SPEED_200000:
+			speed = AD_LINK_SPEED_200000MBPS;
+			break;
+
+		case SPEED_400000:
+			speed = AD_LINK_SPEED_400000MBPS;
+			break;
+
+		default:
+			/* unknown speed value from ethtool. shouldn't happen */
+			if (slave->speed != SPEED_UNKNOWN)
+				pr_err_once("%s: (slave %s): unknown ethtool speed (%d) for port %d (set it to 0)\n",
+					    slave->bond->dev->name,
+					    slave->dev->name, slave->speed,
+					    port->actor_port_number);
+			speed = 0;
+			break;
+		}
+	}
+
+	slave_dbg(slave->bond->dev, slave->dev, "Port %d Received link speed %d update from adapter\n",
+		  port->actor_port_number, speed);
+	return speed;
+}
+
+/**
+ * __get_duplex - get a port's duplex
+ * @port: the port we're looking at
+ *
+ * Return @port's duplex in 802.3ad bitmask format. i.e.:
+ *     0x01 if in full duplex
+ *     0x00 otherwise
+ */
+static u8 __get_duplex(struct port *port)
+{
+	struct slave *slave = port->slave;
+	u8 retval = 0x0;
+
+	/* handling a special case: when the configuration starts with
+	 * link down, it sets the duplex to 0.
+	 */
+	if (slave->link == BOND_LINK_UP) {
+		switch (slave->duplex) {
+		case DUPLEX_FULL:
+			retval = 0x1;
+			slave_dbg(slave->bond->dev, slave->dev, "Port %d Received status full duplex update from adapter\n",
+				  port->actor_port_number);
+			break;
+		case DUPLEX_HALF:
+		default:
+			retval = 0x0;
+			slave_dbg(slave->bond->dev, slave->dev, "Port %d Received status NOT full duplex update from adapter\n",
+				  port->actor_port_number);
+			break;
+		}
+	}
+	return retval;
+}
+
+static void __ad_actor_update_port(struct port *port)
+{
+	const struct bonding *bond = bond_get_bond_by_slave(port->slave);
+
+	port->actor_system = BOND_AD_INFO(bond).system.sys_mac_addr;
+	port->actor_system_priority = BOND_AD_INFO(bond).system.sys_priority;
+}
+
+/* Conversions */
+
+/**
+ * __ad_timer_to_ticks - convert a given timer type to AD module ticks
+ * @timer_type:	which timer to operate
+ * @par: timer parameter. see below
+ *
+ * If @timer_type is %current_while_timer, @par indicates long/short timer.
+ * If @timer_type is %periodic_timer, @par is one of %FAST_PERIODIC_TIME,
+ *						     %SLOW_PERIODIC_TIME.
+ */
+static u16 __ad_timer_to_ticks(u16 timer_type, u16 par)
+{
+	u16 retval = 0; /* to silence the compiler */
+
+	switch (timer_type) {
+	case AD_CURRENT_WHILE_TIMER:	/* for rx machine usage */
+		if (par)
+			retval = (AD_SHORT_TIMEOUT_TIME*ad_ticks_per_sec);
+		else
+			retval = (AD_LONG_TIMEOUT_TIME*ad_ticks_per_sec);
+		break;
+	case AD_ACTOR_CHURN_TIMER:	/* for local churn machine */
+		retval = (AD_CHURN_DETECTION_TIME*ad_ticks_per_sec);
+		break;
+	case AD_PERIODIC_TIMER:		/* for periodic machine */
+		retval = (par*ad_ticks_per_sec); /* long timeout */
+		break;
+	case AD_PARTNER_CHURN_TIMER:	/* for remote churn machine */
+		retval = (AD_CHURN_DETECTION_TIME*ad_ticks_per_sec);
+		break;
+	case AD_WAIT_WHILE_TIMER:	/* for selection machine */
+		retval = (AD_AGGREGATE_WAIT_TIME*ad_ticks_per_sec);
+		break;
+	}
+
+	return retval;
+}
+
+
+/* ================= ad_rx_machine helper functions ================== */
+
+/**
+ * __choose_matched - update a port's matched variable from a received lacpdu
+ * @lacpdu: the lacpdu we've received
+ * @port: the port we're looking at
+ *
+ * Update the value of the matched variable, using parameter values from a
+ * newly received lacpdu. Parameter values for the partner carried in the
+ * received PDU are compared with the corresponding operational parameter
+ * values for the actor. Matched is set to TRUE if all of these parameters
+ * match and the PDU parameter partner_state.aggregation has the same value as
+ * actor_oper_port_state.aggregation and lacp will actively maintain the link
+ * in the aggregation. Matched is also set to TRUE if the value of
+ * actor_state.aggregation in the received PDU is set to FALSE, i.e., indicates
+ * an individual link and lacp will actively maintain the link. Otherwise,
+ * matched is set to FALSE. LACP is considered to be actively maintaining the
+ * link if either the PDU's actor_state.lacp_activity variable is TRUE or both
+ * the actor's actor_oper_port_state.lacp_activity and the PDU's
+ * partner_state.lacp_activity variables are TRUE.
+ *
+ * Note: the AD_PORT_MATCHED "variable" is not specified by 802.3ad; it is
+ * used here to implement the language from 802.3ad 43.4.9 that requires
+ * recordPDU to "match" the LACPDU parameters to the stored values.
+ */
+static void __choose_matched(struct lacpdu *lacpdu, struct port *port)
+{
+	/* check if all parameters are alike
+	 * or this is individual link(aggregation == FALSE)
+	 * then update the state machine Matched variable.
+	 */
+	if (((ntohs(lacpdu->partner_port) == port->actor_port_number) &&
+	     (ntohs(lacpdu->partner_port_priority) == port->actor_port_priority) &&
+	     MAC_ADDRESS_EQUAL(&(lacpdu->partner_system), &(port->actor_system)) &&
+	     (ntohs(lacpdu->partner_system_priority) == port->actor_system_priority) &&
+	     (ntohs(lacpdu->partner_key) == port->actor_oper_port_key) &&
+	     ((lacpdu->partner_state & LACP_STATE_AGGREGATION) == (port->actor_oper_port_state & LACP_STATE_AGGREGATION))) ||
+	    ((lacpdu->actor_state & LACP_STATE_AGGREGATION) == 0)
+		) {
+		port->sm_vars |= AD_PORT_MATCHED;
+	} else {
+		port->sm_vars &= ~AD_PORT_MATCHED;
+	}
+}
+
+/**
+ * __record_pdu - record parameters from a received lacpdu
+ * @lacpdu: the lacpdu we've received
+ * @port: the port we're looking at
+ *
+ * Record the parameter values for the Actor carried in a received lacpdu as
+ * the current partner operational parameter values and sets
+ * actor_oper_port_state.defaulted to FALSE.
+ */
+static void __record_pdu(struct lacpdu *lacpdu, struct port *port)
+{
+	if (lacpdu && port) {
+		struct port_params *partner = &port->partner_oper;
+
+		__choose_matched(lacpdu, port);
+		/* record the new parameter values for the partner
+		 * operational
+		 */
+		partner->port_number = ntohs(lacpdu->actor_port);
+		partner->port_priority = ntohs(lacpdu->actor_port_priority);
+		partner->system = lacpdu->actor_system;
+		partner->system_priority = ntohs(lacpdu->actor_system_priority);
+		partner->key = ntohs(lacpdu->actor_key);
+		partner->port_state = lacpdu->actor_state;
+
+		/* set actor_oper_port_state.defaulted to FALSE */
+		port->actor_oper_port_state &= ~LACP_STATE_DEFAULTED;
+
+		/* set the partner sync. to on if the partner is sync,
+		 * and the port is matched
+		 */
+		if ((port->sm_vars & AD_PORT_MATCHED) &&
+		    (lacpdu->actor_state & LACP_STATE_SYNCHRONIZATION)) {
+			partner->port_state |= LACP_STATE_SYNCHRONIZATION;
+			slave_dbg(port->slave->bond->dev, port->slave->dev,
+				  "partner sync=1\n");
+		} else {
+			partner->port_state &= ~LACP_STATE_SYNCHRONIZATION;
+			slave_dbg(port->slave->bond->dev, port->slave->dev,
+				  "partner sync=0\n");
+		}
+	}
+}
+
+/**
+ * __record_default - record default parameters
+ * @port: the port we're looking at
+ *
+ * This function records the default parameter values for the partner carried
+ * in the Partner Admin parameters as the current partner operational parameter
+ * values and sets actor_oper_port_state.defaulted to TRUE.
+ */
+static void __record_default(struct port *port)
+{
+	if (port) {
+		/* record the partner admin parameters */
+		memcpy(&port->partner_oper, &port->partner_admin,
+		       sizeof(struct port_params));
+
+		/* set actor_oper_port_state.defaulted to true */
+		port->actor_oper_port_state |= LACP_STATE_DEFAULTED;
+	}
+}
+
+/**
+ * __update_selected - update a port's Selected variable from a received lacpdu
+ * @lacpdu: the lacpdu we've received
+ * @port: the port we're looking at
+ *
+ * Update the value of the selected variable, using parameter values from a
+ * newly received lacpdu. The parameter values for the Actor carried in the
+ * received PDU are compared with the corresponding operational parameter
+ * values for the ports partner. If one or more of the comparisons shows that
+ * the value(s) received in the PDU differ from the current operational values,
+ * then selected is set to FALSE and actor_oper_port_state.synchronization is
+ * set to out_of_sync. Otherwise, selected remains unchanged.
+ */
+static void __update_selected(struct lacpdu *lacpdu, struct port *port)
+{
+	if (lacpdu && port) {
+		const struct port_params *partner = &port->partner_oper;
+
+		/* check if any parameter is different then
+		 * update the state machine selected variable.
+		 */
+		if (ntohs(lacpdu->actor_port) != partner->port_number ||
+		    ntohs(lacpdu->actor_port_priority) != partner->port_priority ||
+		    !MAC_ADDRESS_EQUAL(&lacpdu->actor_system, &partner->system) ||
+		    ntohs(lacpdu->actor_system_priority) != partner->system_priority ||
+		    ntohs(lacpdu->actor_key) != partner->key ||
+		    (lacpdu->actor_state & LACP_STATE_AGGREGATION) != (partner->port_state & LACP_STATE_AGGREGATION)) {
+			port->sm_vars &= ~AD_PORT_SELECTED;
+		}
+	}
+}
+
+/**
+ * __update_default_selected - update a port's Selected variable from Partner
+ * @port: the port we're looking at
+ *
+ * This function updates the value of the selected variable, using the partner
+ * administrative parameter values. The administrative values are compared with
+ * the corresponding operational parameter values for the partner. If one or
+ * more of the comparisons shows that the administrative value(s) differ from
+ * the current operational values, then Selected is set to FALSE and
+ * actor_oper_port_state.synchronization is set to OUT_OF_SYNC. Otherwise,
+ * Selected remains unchanged.
+ */
+static void __update_default_selected(struct port *port)
+{
+	if (port) {
+		const struct port_params *admin = &port->partner_admin;
+		const struct port_params *oper = &port->partner_oper;
+
+		/* check if any parameter is different then
+		 * update the state machine selected variable.
+		 */
+		if (admin->port_number != oper->port_number ||
+		    admin->port_priority != oper->port_priority ||
+		    !MAC_ADDRESS_EQUAL(&admin->system, &oper->system) ||
+		    admin->system_priority != oper->system_priority ||
+		    admin->key != oper->key ||
+		    (admin->port_state & LACP_STATE_AGGREGATION)
+			!= (oper->port_state & LACP_STATE_AGGREGATION)) {
+			port->sm_vars &= ~AD_PORT_SELECTED;
+		}
+	}
+}
+
+/**
+ * __update_ntt - update a port's ntt variable from a received lacpdu
+ * @lacpdu: the lacpdu we've received
+ * @port: the port we're looking at
+ *
+ * Updates the value of the ntt variable, using parameter values from a newly
+ * received lacpdu. The parameter values for the partner carried in the
+ * received PDU are compared with the corresponding operational parameter
+ * values for the Actor. If one or more of the comparisons shows that the
+ * value(s) received in the PDU differ from the current operational values,
+ * then ntt is set to TRUE. Otherwise, ntt remains unchanged.
+ */
+static void __update_ntt(struct lacpdu *lacpdu, struct port *port)
+{
+	/* validate lacpdu and port */
+	if (lacpdu && port) {
+		/* check if any parameter is different then
+		 * update the port->ntt.
+		 */
+		if ((ntohs(lacpdu->partner_port) != port->actor_port_number) ||
+		    (ntohs(lacpdu->partner_port_priority) != port->actor_port_priority) ||
+		    !MAC_ADDRESS_EQUAL(&(lacpdu->partner_system), &(port->actor_system)) ||
+		    (ntohs(lacpdu->partner_system_priority) != port->actor_system_priority) ||
+		    (ntohs(lacpdu->partner_key) != port->actor_oper_port_key) ||
+		    ((lacpdu->partner_state & LACP_STATE_LACP_ACTIVITY) != (port->actor_oper_port_state & LACP_STATE_LACP_ACTIVITY)) ||
+		    ((lacpdu->partner_state & LACP_STATE_LACP_TIMEOUT) != (port->actor_oper_port_state & LACP_STATE_LACP_TIMEOUT)) ||
+		    ((lacpdu->partner_state & LACP_STATE_SYNCHRONIZATION) != (port->actor_oper_port_state & LACP_STATE_SYNCHRONIZATION)) ||
+		    ((lacpdu->partner_state & LACP_STATE_AGGREGATION) != (port->actor_oper_port_state & LACP_STATE_AGGREGATION))
+		   ) {
+			port->ntt = true;
+		}
+	}
+}
+
+/**
+ * __agg_ports_are_ready - check if all ports in an aggregator are ready
+ * @aggregator: the aggregator we're looking at
+ *
+ */
+static int __agg_ports_are_ready(struct aggregator *aggregator)
+{
+	struct port *port;
+	int retval = 1;
+
+	if (aggregator) {
+		/* scan all ports in this aggregator to verfy if they are
+		 * all ready.
+		 */
+		for (port = aggregator->lag_ports;
+		     port;
+		     port = port->next_port_in_aggregator) {
+			if (!(port->sm_vars & AD_PORT_READY_N)) {
+				retval = 0;
+				break;
+			}
+		}
+	}
+
+	return retval;
+}
+
+/**
+ * __set_agg_ports_ready - set value of Ready bit in all ports of an aggregator
+ * @aggregator: the aggregator we're looking at
+ * @val: Should the ports' ready bit be set on or off
+ *
+ */
+static void __set_agg_ports_ready(struct aggregator *aggregator, int val)
+{
+	struct port *port;
+
+	for (port = aggregator->lag_ports; port;
+	     port = port->next_port_in_aggregator) {
+		if (val)
+			port->sm_vars |= AD_PORT_READY;
+		else
+			port->sm_vars &= ~AD_PORT_READY;
+	}
+}
+
+static int __agg_active_ports(struct aggregator *agg)
+{
+	struct port *port;
+	int active = 0;
+
+	for (port = agg->lag_ports; port;
+	     port = port->next_port_in_aggregator) {
+		if (port->is_enabled)
+			active++;
+	}
+
+	return active;
+}
+
+/**
+ * __get_agg_bandwidth - get the total bandwidth of an aggregator
+ * @aggregator: the aggregator we're looking at
+ *
+ */
+static u32 __get_agg_bandwidth(struct aggregator *aggregator)
+{
+	int nports = __agg_active_ports(aggregator);
+	u32 bandwidth = 0;
+
+	if (nports) {
+		switch (__get_link_speed(aggregator->lag_ports)) {
+		case AD_LINK_SPEED_1MBPS:
+			bandwidth = nports;
+			break;
+		case AD_LINK_SPEED_10MBPS:
+			bandwidth = nports * 10;
+			break;
+		case AD_LINK_SPEED_100MBPS:
+			bandwidth = nports * 100;
+			break;
+		case AD_LINK_SPEED_1000MBPS:
+			bandwidth = nports * 1000;
+			break;
+		case AD_LINK_SPEED_2500MBPS:
+			bandwidth = nports * 2500;
+			break;
+		case AD_LINK_SPEED_5000MBPS:
+			bandwidth = nports * 5000;
+			break;
+		case AD_LINK_SPEED_10000MBPS:
+			bandwidth = nports * 10000;
+			break;
+		case AD_LINK_SPEED_14000MBPS:
+			bandwidth = nports * 14000;
+			break;
+		case AD_LINK_SPEED_20000MBPS:
+			bandwidth = nports * 20000;
+			break;
+		case AD_LINK_SPEED_25000MBPS:
+			bandwidth = nports * 25000;
+			break;
+		case AD_LINK_SPEED_40000MBPS:
+			bandwidth = nports * 40000;
+			break;
+		case AD_LINK_SPEED_50000MBPS:
+			bandwidth = nports * 50000;
+			break;
+		case AD_LINK_SPEED_56000MBPS:
+			bandwidth = nports * 56000;
+			break;
+		case AD_LINK_SPEED_100000MBPS:
+			bandwidth = nports * 100000;
+			break;
+		case AD_LINK_SPEED_200000MBPS:
+			bandwidth = nports * 200000;
+			break;
+		case AD_LINK_SPEED_400000MBPS:
+			bandwidth = nports * 400000;
+			break;
+		default:
+			bandwidth = 0; /* to silence the compiler */
+		}
+	}
+	return bandwidth;
+}
+
+/**
+ * __get_active_agg - get the current active aggregator
+ * @aggregator: the aggregator we're looking at
+ *
+ * Caller must hold RCU lock.
+ */
+static struct aggregator *__get_active_agg(struct aggregator *aggregator)
+{
+	struct bonding *bond = aggregator->slave->bond;
+	struct list_head *iter;
+	struct slave *slave;
+
+	bond_for_each_slave_rcu(bond, slave, iter)
+		if (SLAVE_AD_INFO(slave)->aggregator.is_active)
+			return &(SLAVE_AD_INFO(slave)->aggregator);
+
+	return NULL;
+}
+
+/**
+ * __update_lacpdu_from_port - update a port's lacpdu fields
+ * @port: the port we're looking at
+ */
+static inline void __update_lacpdu_from_port(struct port *port)
+{
+	struct lacpdu *lacpdu = &port->lacpdu;
+	const struct port_params *partner = &port->partner_oper;
+
+	/* update current actual Actor parameters
+	 * lacpdu->subtype                   initialized
+	 * lacpdu->version_number            initialized
+	 * lacpdu->tlv_type_actor_info       initialized
+	 * lacpdu->actor_information_length  initialized
+	 */
+
+	lacpdu->actor_system_priority = htons(port->actor_system_priority);
+	lacpdu->actor_system = port->actor_system;
+	lacpdu->actor_key = htons(port->actor_oper_port_key);
+	lacpdu->actor_port_priority = htons(port->actor_port_priority);
+	lacpdu->actor_port = htons(port->actor_port_number);
+	lacpdu->actor_state = port->actor_oper_port_state;
+	slave_dbg(port->slave->bond->dev, port->slave->dev,
+		  "update lacpdu: actor port state %x\n",
+		  port->actor_oper_port_state);
+
+	/* lacpdu->reserved_3_1              initialized
+	 * lacpdu->tlv_type_partner_info     initialized
+	 * lacpdu->partner_information_length initialized
+	 */
+
+	lacpdu->partner_system_priority = htons(partner->system_priority);
+	lacpdu->partner_system = partner->system;
+	lacpdu->partner_key = htons(partner->key);
+	lacpdu->partner_port_priority = htons(partner->port_priority);
+	lacpdu->partner_port = htons(partner->port_number);
+	lacpdu->partner_state = partner->port_state;
+
+	/* lacpdu->reserved_3_2              initialized
+	 * lacpdu->tlv_type_collector_info   initialized
+	 * lacpdu->collector_information_length initialized
+	 * collector_max_delay                initialized
+	 * reserved_12[12]                   initialized
+	 * tlv_type_terminator               initialized
+	 * terminator_length                 initialized
+	 * reserved_50[50]                   initialized
+	 */
+}
+
+/* ================= main 802.3ad protocol code ========================= */
+
+/**
+ * ad_lacpdu_send - send out a lacpdu packet on a given port
+ * @port: the port we're looking at
+ *
+ * Returns:   0 on success
+ *          < 0 on error
+ */
+static int ad_lacpdu_send(struct port *port)
+{
+	struct slave *slave = port->slave;
+	struct sk_buff *skb;
+	struct lacpdu_header *lacpdu_header;
+	int length = sizeof(struct lacpdu_header);
+
+	skb = dev_alloc_skb(length);
+	if (!skb)
+		return -ENOMEM;
+
+	atomic64_inc(&SLAVE_AD_INFO(slave)->stats.lacpdu_tx);
+	atomic64_inc(&BOND_AD_INFO(slave->bond).stats.lacpdu_tx);
+
+	skb->dev = slave->dev;
+	skb_reset_mac_header(skb);
+	skb->network_header = skb->mac_header + ETH_HLEN;
+	skb->protocol = PKT_TYPE_LACPDU;
+	skb->priority = TC_PRIO_CONTROL;
+
+	lacpdu_header = skb_put(skb, length);
+
+	ether_addr_copy(lacpdu_header->hdr.h_dest, lacpdu_mcast_addr);
+	/* Note: source address is set to be the member's PERMANENT address,
+	 * because we use it to identify loopback lacpdus in receive.
+	 */
+	ether_addr_copy(lacpdu_header->hdr.h_source, slave->perm_hwaddr);
+	lacpdu_header->hdr.h_proto = PKT_TYPE_LACPDU;
+
+	lacpdu_header->lacpdu = port->lacpdu;
+
+	dev_queue_xmit(skb);
+
+	return 0;
+}
+
+/**
+ * ad_marker_send - send marker information/response on a given port
+ * @port: the port we're looking at
+ * @marker: marker data to send
+ *
+ * Returns:   0 on success
+ *          < 0 on error
+ */
+static int ad_marker_send(struct port *port, struct bond_marker *marker)
+{
+	struct slave *slave = port->slave;
+	struct sk_buff *skb;
+	struct bond_marker_header *marker_header;
+	int length = sizeof(struct bond_marker_header);
+
+	skb = dev_alloc_skb(length + 16);
+	if (!skb)
+		return -ENOMEM;
+
+	switch (marker->tlv_type) {
+	case AD_MARKER_INFORMATION_SUBTYPE:
+		atomic64_inc(&SLAVE_AD_INFO(slave)->stats.marker_tx);
+		atomic64_inc(&BOND_AD_INFO(slave->bond).stats.marker_tx);
+		break;
+	case AD_MARKER_RESPONSE_SUBTYPE:
+		atomic64_inc(&SLAVE_AD_INFO(slave)->stats.marker_resp_tx);
+		atomic64_inc(&BOND_AD_INFO(slave->bond).stats.marker_resp_tx);
+		break;
+	}
+
+	skb_reserve(skb, 16);
+
+	skb->dev = slave->dev;
+	skb_reset_mac_header(skb);
+	skb->network_header = skb->mac_header + ETH_HLEN;
+	skb->protocol = PKT_TYPE_LACPDU;
+
+	marker_header = skb_put(skb, length);
+
+	ether_addr_copy(marker_header->hdr.h_dest, lacpdu_mcast_addr);
+	/* Note: source address is set to be the member's PERMANENT address,
+	 * because we use it to identify loopback MARKERs in receive.
+	 */
+	ether_addr_copy(marker_header->hdr.h_source, slave->perm_hwaddr);
+	marker_header->hdr.h_proto = PKT_TYPE_LACPDU;
+
+	marker_header->marker = *marker;
+
+	dev_queue_xmit(skb);
+
+	return 0;
+}
+
+/**
+ * ad_mux_machine - handle a port's mux state machine
+ * @port: the port we're looking at
+ * @update_slave_arr: Does slave array need update?
+ */
+static void ad_mux_machine(struct port *port, bool *update_slave_arr)
+{
+	mux_states_t last_state;
+
+	/* keep current State Machine state to compare later if it was
+	 * changed
+	 */
+	last_state = port->sm_mux_state;
+
+	if (port->sm_vars & AD_PORT_BEGIN) {
+		port->sm_mux_state = AD_MUX_DETACHED;
+	} else {
+		switch (port->sm_mux_state) {
+		case AD_MUX_DETACHED:
+			if ((port->sm_vars & AD_PORT_SELECTED)
+			    || (port->sm_vars & AD_PORT_STANDBY))
+				/* if SELECTED or STANDBY */
+				port->sm_mux_state = AD_MUX_WAITING;
+			break;
+		case AD_MUX_WAITING:
+			/* if SELECTED == FALSE return to DETACH state */
+			if (!(port->sm_vars & AD_PORT_SELECTED)) {
+				port->sm_vars &= ~AD_PORT_READY_N;
+				/* in order to withhold the Selection Logic to
+				 * check all ports READY_N value every callback
+				 * cycle to update ready variable, we check
+				 * READY_N and update READY here
+				 */
+				__set_agg_ports_ready(port->aggregator, __agg_ports_are_ready(port->aggregator));
+				port->sm_mux_state = AD_MUX_DETACHED;
+				break;
+			}
+
+			/* check if the wait_while_timer expired */
+			if (port->sm_mux_timer_counter
+			    && !(--port->sm_mux_timer_counter))
+				port->sm_vars |= AD_PORT_READY_N;
+
+			/* in order to withhold the selection logic to check
+			 * all ports READY_N value every callback cycle to
+			 * update ready variable, we check READY_N and update
+			 * READY here
+			 */
+			__set_agg_ports_ready(port->aggregator, __agg_ports_are_ready(port->aggregator));
+
+			/* if the wait_while_timer expired, and the port is
+			 * in READY state, move to ATTACHED state
+			 */
+			if ((port->sm_vars & AD_PORT_READY)
+			    && !port->sm_mux_timer_counter)
+				port->sm_mux_state = AD_MUX_ATTACHED;
+			break;
+		case AD_MUX_ATTACHED:
+			/* check also if agg_select_timer expired (so the
+			 * edable port will take place only after this timer)
+			 */
+			if ((port->sm_vars & AD_PORT_SELECTED) &&
+			    (port->partner_oper.port_state & LACP_STATE_SYNCHRONIZATION) &&
+			    !__check_agg_selection_timer(port)) {
+				if (port->aggregator->is_active)
+					port->sm_mux_state =
+					    AD_MUX_COLLECTING_DISTRIBUTING;
+			} else if (!(port->sm_vars & AD_PORT_SELECTED) ||
+				   (port->sm_vars & AD_PORT_STANDBY)) {
+				/* if UNSELECTED or STANDBY */
+				port->sm_vars &= ~AD_PORT_READY_N;
+				/* in order to withhold the selection logic to
+				 * check all ports READY_N value every callback
+				 * cycle to update ready variable, we check
+				 * READY_N and update READY here
+				 */
+				__set_agg_ports_ready(port->aggregator, __agg_ports_are_ready(port->aggregator));
+				port->sm_mux_state = AD_MUX_DETACHED;
+			} else if (port->aggregator->is_active) {
+				port->actor_oper_port_state |=
+				    LACP_STATE_SYNCHRONIZATION;
+			}
+			break;
+		case AD_MUX_COLLECTING_DISTRIBUTING:
+			if (!(port->sm_vars & AD_PORT_SELECTED) ||
+			    (port->sm_vars & AD_PORT_STANDBY) ||
+			    !(port->partner_oper.port_state & LACP_STATE_SYNCHRONIZATION) ||
+			    !(port->actor_oper_port_state & LACP_STATE_SYNCHRONIZATION)) {
+				port->sm_mux_state = AD_MUX_ATTACHED;
+			} else {
+				/* if port state hasn't changed make
+				 * sure that a collecting distributing
+				 * port in an active aggregator is enabled
+				 */
+				if (port->aggregator &&
+				    port->aggregator->is_active &&
+				    !__port_is_enabled(port)) {
+					__enable_port(port);
+					*update_slave_arr = true;
+				}
+			}
+			break;
+		default:
+			break;
+		}
+	}
+
+	/* check if the state machine was changed */
+	if (port->sm_mux_state != last_state) {
+		slave_dbg(port->slave->bond->dev, port->slave->dev,
+			  "Mux Machine: Port=%d, Last State=%d, Curr State=%d\n",
+			  port->actor_port_number,
+			  last_state,
+			  port->sm_mux_state);
+		switch (port->sm_mux_state) {
+		case AD_MUX_DETACHED:
+			port->actor_oper_port_state &= ~LACP_STATE_SYNCHRONIZATION;
+			ad_disable_collecting_distributing(port,
+							   update_slave_arr);
+			port->actor_oper_port_state &= ~LACP_STATE_COLLECTING;
+			port->actor_oper_port_state &= ~LACP_STATE_DISTRIBUTING;
+			port->ntt = true;
+			break;
+		case AD_MUX_WAITING:
+			port->sm_mux_timer_counter = __ad_timer_to_ticks(AD_WAIT_WHILE_TIMER, 0);
+			break;
+		case AD_MUX_ATTACHED:
+			if (port->aggregator->is_active)
+				port->actor_oper_port_state |=
+				    LACP_STATE_SYNCHRONIZATION;
+			else
+				port->actor_oper_port_state &=
+				    ~LACP_STATE_SYNCHRONIZATION;
+			port->actor_oper_port_state &= ~LACP_STATE_COLLECTING;
+			port->actor_oper_port_state &= ~LACP_STATE_DISTRIBUTING;
+			ad_disable_collecting_distributing(port,
+							   update_slave_arr);
+			port->ntt = true;
+			break;
+		case AD_MUX_COLLECTING_DISTRIBUTING:
+			port->actor_oper_port_state |= LACP_STATE_COLLECTING;
+			port->actor_oper_port_state |= LACP_STATE_DISTRIBUTING;
+			port->actor_oper_port_state |= LACP_STATE_SYNCHRONIZATION;
+			ad_enable_collecting_distributing(port,
+							  update_slave_arr);
+			port->ntt = true;
+			break;
+		default:
+			break;
+		}
+	}
+}
+
+/**
+ * ad_rx_machine - handle a port's rx State Machine
+ * @lacpdu: the lacpdu we've received
+ * @port: the port we're looking at
+ *
+ * If lacpdu arrived, stop previous timer (if exists) and set the next state as
+ * CURRENT. If timer expired set the state machine in the proper state.
+ * In other cases, this function checks if we need to switch to other state.
+ */
+static void ad_rx_machine(struct lacpdu *lacpdu, struct port *port)
+{
+	rx_states_t last_state;
+
+	/* keep current State Machine state to compare later if it was
+	 * changed
+	 */
+	last_state = port->sm_rx_state;
+
+	if (lacpdu) {
+		atomic64_inc(&SLAVE_AD_INFO(port->slave)->stats.lacpdu_rx);
+		atomic64_inc(&BOND_AD_INFO(port->slave->bond).stats.lacpdu_rx);
+	}
+	/* check if state machine should change state */
+
+	/* first, check if port was reinitialized */
+	if (port->sm_vars & AD_PORT_BEGIN) {
+		port->sm_rx_state = AD_RX_INITIALIZE;
+		port->sm_vars |= AD_PORT_CHURNED;
+	/* check if port is not enabled */
+	} else if (!(port->sm_vars & AD_PORT_BEGIN) && !port->is_enabled)
+		port->sm_rx_state = AD_RX_PORT_DISABLED;
+	/* check if new lacpdu arrived */
+	else if (lacpdu && ((port->sm_rx_state == AD_RX_EXPIRED) ||
+		 (port->sm_rx_state == AD_RX_DEFAULTED) ||
+		 (port->sm_rx_state == AD_RX_CURRENT))) {
+		if (port->sm_rx_state != AD_RX_CURRENT)
+			port->sm_vars |= AD_PORT_CHURNED;
+		port->sm_rx_timer_counter = 0;
+		port->sm_rx_state = AD_RX_CURRENT;
+	} else {
+		/* if timer is on, and if it is expired */
+		if (port->sm_rx_timer_counter &&
+		    !(--port->sm_rx_timer_counter)) {
+			switch (port->sm_rx_state) {
+			case AD_RX_EXPIRED:
+				port->sm_rx_state = AD_RX_DEFAULTED;
+				break;
+			case AD_RX_CURRENT:
+				port->sm_rx_state = AD_RX_EXPIRED;
+				break;
+			default:
+				break;
+			}
+		} else {
+			/* if no lacpdu arrived and no timer is on */
+			switch (port->sm_rx_state) {
+			case AD_RX_PORT_DISABLED:
+				if (port->is_enabled &&
+				    (port->sm_vars & AD_PORT_LACP_ENABLED))
+					port->sm_rx_state = AD_RX_EXPIRED;
+				else if (port->is_enabled
+					 && ((port->sm_vars
+					      & AD_PORT_LACP_ENABLED) == 0))
+					port->sm_rx_state = AD_RX_LACP_DISABLED;
+				break;
+			default:
+				break;
+
+			}
+		}
+	}
+
+	/* check if the State machine was changed or new lacpdu arrived */
+	if ((port->sm_rx_state != last_state) || (lacpdu)) {
+		slave_dbg(port->slave->bond->dev, port->slave->dev,
+			  "Rx Machine: Port=%d, Last State=%d, Curr State=%d\n",
+			  port->actor_port_number,
+			  last_state,
+			  port->sm_rx_state);
+		switch (port->sm_rx_state) {
+		case AD_RX_INITIALIZE:
+			if (!(port->actor_oper_port_key & AD_DUPLEX_KEY_MASKS))
+				port->sm_vars &= ~AD_PORT_LACP_ENABLED;
+			else
+				port->sm_vars |= AD_PORT_LACP_ENABLED;
+			port->sm_vars &= ~AD_PORT_SELECTED;
+			__record_default(port);
+			port->actor_oper_port_state &= ~LACP_STATE_EXPIRED;
+			port->sm_rx_state = AD_RX_PORT_DISABLED;
+
+			fallthrough;
+		case AD_RX_PORT_DISABLED:
+			port->sm_vars &= ~AD_PORT_MATCHED;
+			break;
+		case AD_RX_LACP_DISABLED:
+			port->sm_vars &= ~AD_PORT_SELECTED;
+			__record_default(port);
+			port->partner_oper.port_state &= ~LACP_STATE_AGGREGATION;
+			port->sm_vars |= AD_PORT_MATCHED;
+			port->actor_oper_port_state &= ~LACP_STATE_EXPIRED;
+			break;
+		case AD_RX_EXPIRED:
+			/* Reset of the Synchronization flag (Standard 43.4.12)
+			 * This reset cause to disable this port in the
+			 * COLLECTING_DISTRIBUTING state of the mux machine in
+			 * case of EXPIRED even if LINK_DOWN didn't arrive for
+			 * the port.
+			 */
+			port->partner_oper.port_state &= ~LACP_STATE_SYNCHRONIZATION;
+			port->sm_vars &= ~AD_PORT_MATCHED;
+			port->partner_oper.port_state |= LACP_STATE_LACP_TIMEOUT;
+			port->partner_oper.port_state |= LACP_STATE_LACP_ACTIVITY;
+			port->sm_rx_timer_counter = __ad_timer_to_ticks(AD_CURRENT_WHILE_TIMER, (u16)(AD_SHORT_TIMEOUT));
+			port->actor_oper_port_state |= LACP_STATE_EXPIRED;
+			port->sm_vars |= AD_PORT_CHURNED;
+			break;
+		case AD_RX_DEFAULTED:
+			__update_default_selected(port);
+			__record_default(port);
+			port->sm_vars |= AD_PORT_MATCHED;
+			port->actor_oper_port_state &= ~LACP_STATE_EXPIRED;
+			break;
+		case AD_RX_CURRENT:
+			/* detect loopback situation */
+			if (MAC_ADDRESS_EQUAL(&(lacpdu->actor_system),
+					      &(port->actor_system))) {
+				slave_err(port->slave->bond->dev, port->slave->dev, "An illegal loopback occurred on slave\n"
+					  "Check the configuration to verify that all adapters are connected to 802.3ad compliant switch ports\n");
+				return;
+			}
+			__update_selected(lacpdu, port);
+			__update_ntt(lacpdu, port);
+			__record_pdu(lacpdu, port);
+			port->sm_rx_timer_counter = __ad_timer_to_ticks(AD_CURRENT_WHILE_TIMER, (u16)(port->actor_oper_port_state & LACP_STATE_LACP_TIMEOUT));
+			port->actor_oper_port_state &= ~LACP_STATE_EXPIRED;
+			break;
+		default:
+			break;
+		}
+	}
+}
+
+/**
+ * ad_churn_machine - handle port churn's state machine
+ * @port: the port we're looking at
+ *
+ */
+static void ad_churn_machine(struct port *port)
+{
+	if (port->sm_vars & AD_PORT_CHURNED) {
+		port->sm_vars &= ~AD_PORT_CHURNED;
+		port->sm_churn_actor_state = AD_CHURN_MONITOR;
+		port->sm_churn_partner_state = AD_CHURN_MONITOR;
+		port->sm_churn_actor_timer_counter =
+			__ad_timer_to_ticks(AD_ACTOR_CHURN_TIMER, 0);
+		port->sm_churn_partner_timer_counter =
+			 __ad_timer_to_ticks(AD_PARTNER_CHURN_TIMER, 0);
+		return;
+	}
+	if (port->sm_churn_actor_timer_counter &&
+	    !(--port->sm_churn_actor_timer_counter) &&
+	    port->sm_churn_actor_state == AD_CHURN_MONITOR) {
+		if (port->actor_oper_port_state & LACP_STATE_SYNCHRONIZATION) {
+			port->sm_churn_actor_state = AD_NO_CHURN;
+		} else {
+			port->churn_actor_count++;
+			port->sm_churn_actor_state = AD_CHURN;
+		}
+	}
+	if (port->sm_churn_partner_timer_counter &&
+	    !(--port->sm_churn_partner_timer_counter) &&
+	    port->sm_churn_partner_state == AD_CHURN_MONITOR) {
+		if (port->partner_oper.port_state & LACP_STATE_SYNCHRONIZATION) {
+			port->sm_churn_partner_state = AD_NO_CHURN;
+		} else {
+			port->churn_partner_count++;
+			port->sm_churn_partner_state = AD_CHURN;
+		}
+	}
+}
+
+/**
+ * ad_tx_machine - handle a port's tx state machine
+ * @port: the port we're looking at
+ */
+static void ad_tx_machine(struct port *port)
+{
+	/* check if tx timer expired, to verify that we do not send more than
+	 * 3 packets per second
+	 */
+	if (port->sm_tx_timer_counter && !(--port->sm_tx_timer_counter)) {
+		/* check if there is something to send */
+		if (port->ntt && (port->sm_vars & AD_PORT_LACP_ENABLED)) {
+			__update_lacpdu_from_port(port);
+
+			if (ad_lacpdu_send(port) >= 0) {
+				slave_dbg(port->slave->bond->dev,
+					  port->slave->dev,
+					  "Sent LACPDU on port %d\n",
+					  port->actor_port_number);
+
+				/* mark ntt as false, so it will not be sent
+				 * again until demanded
+				 */
+				port->ntt = false;
+			}
+		}
+		/* restart tx timer(to verify that we will not exceed
+		 * AD_MAX_TX_IN_SECOND
+		 */
+		port->sm_tx_timer_counter = ad_ticks_per_sec/AD_MAX_TX_IN_SECOND;
+	}
+}
+
+/**
+ * ad_periodic_machine - handle a port's periodic state machine
+ * @port: the port we're looking at
+ * @bond_params: bond parameters we will use
+ *
+ * Turn ntt flag on priodically to perform periodic transmission of lacpdu's.
+ */
+static void ad_periodic_machine(struct port *port, struct bond_params *bond_params)
+{
+	periodic_states_t last_state;
+
+	/* keep current state machine state to compare later if it was changed */
+	last_state = port->sm_periodic_state;
+
+	/* check if port was reinitialized */
+	if (((port->sm_vars & AD_PORT_BEGIN) || !(port->sm_vars & AD_PORT_LACP_ENABLED) || !port->is_enabled) ||
+	    (!(port->actor_oper_port_state & LACP_STATE_LACP_ACTIVITY) && !(port->partner_oper.port_state & LACP_STATE_LACP_ACTIVITY)) ||
+	    !bond_params->lacp_active) {
+		port->sm_periodic_state = AD_NO_PERIODIC;
+	}
+	/* check if state machine should change state */
+	else if (port->sm_periodic_timer_counter) {
+		/* check if periodic state machine expired */
+		if (!(--port->sm_periodic_timer_counter)) {
+			/* if expired then do tx */
+			port->sm_periodic_state = AD_PERIODIC_TX;
+		} else {
+			/* If not expired, check if there is some new timeout
+			 * parameter from the partner state
+			 */
+			switch (port->sm_periodic_state) {
+			case AD_FAST_PERIODIC:
+				if (!(port->partner_oper.port_state
+				      & LACP_STATE_LACP_TIMEOUT))
+					port->sm_periodic_state = AD_SLOW_PERIODIC;
+				break;
+			case AD_SLOW_PERIODIC:
+				if ((port->partner_oper.port_state & LACP_STATE_LACP_TIMEOUT)) {
+					port->sm_periodic_timer_counter = 0;
+					port->sm_periodic_state = AD_PERIODIC_TX;
+				}
+				break;
+			default:
+				break;
+			}
+		}
+	} else {
+		switch (port->sm_periodic_state) {
+		case AD_NO_PERIODIC:
+			port->sm_periodic_state = AD_FAST_PERIODIC;
+			break;
+		case AD_PERIODIC_TX:
+			if (!(port->partner_oper.port_state &
+			    LACP_STATE_LACP_TIMEOUT))
+				port->sm_periodic_state = AD_SLOW_PERIODIC;
+			else
+				port->sm_periodic_state = AD_FAST_PERIODIC;
+			break;
+		default:
+			break;
+		}
+	}
+
+	/* check if the state machine was changed */
+	if (port->sm_periodic_state != last_state) {
+		slave_dbg(port->slave->bond->dev, port->slave->dev,
+			  "Periodic Machine: Port=%d, Last State=%d, Curr State=%d\n",
+			  port->actor_port_number, last_state,
+			  port->sm_periodic_state);
+		switch (port->sm_periodic_state) {
+		case AD_NO_PERIODIC:
+			port->sm_periodic_timer_counter = 0;
+			break;
+		case AD_FAST_PERIODIC:
+			/* decrement 1 tick we lost in the PERIODIC_TX cycle */
+			port->sm_periodic_timer_counter = __ad_timer_to_ticks(AD_PERIODIC_TIMER, (u16)(AD_FAST_PERIODIC_TIME))-1;
+			break;
+		case AD_SLOW_PERIODIC:
+			/* decrement 1 tick we lost in the PERIODIC_TX cycle */
+			port->sm_periodic_timer_counter = __ad_timer_to_ticks(AD_PERIODIC_TIMER, (u16)(AD_SLOW_PERIODIC_TIME))-1;
+			break;
+		case AD_PERIODIC_TX:
+			port->ntt = true;
+			break;
+		default:
+			break;
+		}
+	}
+}
+
+/**
+ * ad_port_selection_logic - select aggregation groups
+ * @port: the port we're looking at
+ * @update_slave_arr: Does slave array need update?
+ *
+ * Select aggregation groups, and assign each port for it's aggregetor. The
+ * selection logic is called in the inititalization (after all the handshkes),
+ * and after every lacpdu receive (if selected is off).
+ */
+static void ad_port_selection_logic(struct port *port, bool *update_slave_arr)
+{
+	struct aggregator *aggregator, *free_aggregator = NULL, *temp_aggregator;
+	struct port *last_port = NULL, *curr_port;
+	struct list_head *iter;
+	struct bonding *bond;
+	struct slave *slave;
+	int found = 0;
+
+	/* if the port is already Selected, do nothing */
+	if (port->sm_vars & AD_PORT_SELECTED)
+		return;
+
+	bond = __get_bond_by_port(port);
+
+	/* if the port is connected to other aggregator, detach it */
+	if (port->aggregator) {
+		/* detach the port from its former aggregator */
+		temp_aggregator = port->aggregator;
+		for (curr_port = temp_aggregator->lag_ports; curr_port;
+		     last_port = curr_port,
+		     curr_port = curr_port->next_port_in_aggregator) {
+			if (curr_port == port) {
+				temp_aggregator->num_of_ports--;
+				/* if it is the first port attached to the
+				 * aggregator
+				 */
+				if (!last_port) {
+					temp_aggregator->lag_ports =
+						port->next_port_in_aggregator;
+				} else {
+					/* not the first port attached to the
+					 * aggregator
+					 */
+					last_port->next_port_in_aggregator =
+						port->next_port_in_aggregator;
+				}
+
+				/* clear the port's relations to this
+				 * aggregator
+				 */
+				port->aggregator = NULL;
+				port->next_port_in_aggregator = NULL;
+				port->actor_port_aggregator_identifier = 0;
+
+				slave_dbg(bond->dev, port->slave->dev, "Port %d left LAG %d\n",
+					  port->actor_port_number,
+					  temp_aggregator->aggregator_identifier);
+				/* if the aggregator is empty, clear its
+				 * parameters, and set it ready to be attached
+				 */
+				if (!temp_aggregator->lag_ports)
+					ad_clear_agg(temp_aggregator);
+				break;
+			}
+		}
+		if (!curr_port) {
+			/* meaning: the port was related to an aggregator
+			 * but was not on the aggregator port list
+			 */
+			net_warn_ratelimited("%s: (slave %s): Warning: Port %d was related to aggregator %d but was not on its port list\n",
+					     port->slave->bond->dev->name,
+					     port->slave->dev->name,
+					     port->actor_port_number,
+					     port->aggregator->aggregator_identifier);
+		}
+	}
+	/* search on all aggregators for a suitable aggregator for this port */
+	bond_for_each_slave(bond, slave, iter) {
+		aggregator = &(SLAVE_AD_INFO(slave)->aggregator);
+
+		/* keep a free aggregator for later use(if needed) */
+		if (!aggregator->lag_ports) {
+			if (!free_aggregator)
+				free_aggregator = aggregator;
+			continue;
+		}
+		/* check if current aggregator suits us */
+		if (((aggregator->actor_oper_aggregator_key == port->actor_oper_port_key) && /* if all parameters match AND */
+		     MAC_ADDRESS_EQUAL(&(aggregator->partner_system), &(port->partner_oper.system)) &&
+		     (aggregator->partner_system_priority == port->partner_oper.system_priority) &&
+		     (aggregator->partner_oper_aggregator_key == port->partner_oper.key)
+		    ) &&
+		    ((!MAC_ADDRESS_EQUAL(&(port->partner_oper.system), &(null_mac_addr)) && /* partner answers */
+		      !aggregator->is_individual)  /* but is not individual OR */
+		    )
+		   ) {
+			/* attach to the founded aggregator */
+			port->aggregator = aggregator;
+			port->actor_port_aggregator_identifier =
+				port->aggregator->aggregator_identifier;
+			port->next_port_in_aggregator = aggregator->lag_ports;
+			port->aggregator->num_of_ports++;
+			aggregator->lag_ports = port;
+			slave_dbg(bond->dev, slave->dev, "Port %d joined LAG %d (existing LAG)\n",
+				  port->actor_port_number,
+				  port->aggregator->aggregator_identifier);
+
+			/* mark this port as selected */
+			port->sm_vars |= AD_PORT_SELECTED;
+			found = 1;
+			break;
+		}
+	}
+
+	/* the port couldn't find an aggregator - attach it to a new
+	 * aggregator
+	 */
+	if (!found) {
+		if (free_aggregator) {
+			/* assign port a new aggregator */
+			port->aggregator = free_aggregator;
+			port->actor_port_aggregator_identifier =
+				port->aggregator->aggregator_identifier;
+
+			/* update the new aggregator's parameters
+			 * if port was responsed from the end-user
+			 */
+			if (port->actor_oper_port_key & AD_DUPLEX_KEY_MASKS)
+				/* if port is full duplex */
+				port->aggregator->is_individual = false;
+			else
+				port->aggregator->is_individual = true;
+
+			port->aggregator->actor_admin_aggregator_key =
+				port->actor_admin_port_key;
+			port->aggregator->actor_oper_aggregator_key =
+				port->actor_oper_port_key;
+			port->aggregator->partner_system =
+				port->partner_oper.system;
+			port->aggregator->partner_system_priority =
+				port->partner_oper.system_priority;
+			port->aggregator->partner_oper_aggregator_key = port->partner_oper.key;
+			port->aggregator->receive_state = 1;
+			port->aggregator->transmit_state = 1;
+			port->aggregator->lag_ports = port;
+			port->aggregator->num_of_ports++;
+
+			/* mark this port as selected */
+			port->sm_vars |= AD_PORT_SELECTED;
+
+			slave_dbg(bond->dev, port->slave->dev, "Port %d joined LAG %d (new LAG)\n",
+				  port->actor_port_number,
+				  port->aggregator->aggregator_identifier);
+		} else {
+			slave_err(bond->dev, port->slave->dev,
+				  "Port %d did not find a suitable aggregator\n",
+				  port->actor_port_number);
+		}
+	}
+	/* if all aggregator's ports are READY_N == TRUE, set ready=TRUE
+	 * in all aggregator's ports, else set ready=FALSE in all
+	 * aggregator's ports
+	 */
+	__set_agg_ports_ready(port->aggregator,
+			      __agg_ports_are_ready(port->aggregator));
+
+	aggregator = __get_first_agg(port);
+	ad_agg_selection_logic(aggregator, update_slave_arr);
+
+	if (!port->aggregator->is_active)
+		port->actor_oper_port_state &= ~LACP_STATE_SYNCHRONIZATION;
+}
+
+/* Decide if "agg" is a better choice for the new active aggregator that
+ * the current best, according to the ad_select policy.
+ */
+static struct aggregator *ad_agg_selection_test(struct aggregator *best,
+						struct aggregator *curr)
+{
+	/* 0. If no best, select current.
+	 *
+	 * 1. If the current agg is not individual, and the best is
+	 *    individual, select current.
+	 *
+	 * 2. If current agg is individual and the best is not, keep best.
+	 *
+	 * 3. Therefore, current and best are both individual or both not
+	 *    individual, so:
+	 *
+	 * 3a. If current agg partner replied, and best agg partner did not,
+	 *     select current.
+	 *
+	 * 3b. If current agg partner did not reply and best agg partner
+	 *     did reply, keep best.
+	 *
+	 * 4.  Therefore, current and best both have partner replies or
+	 *     both do not, so perform selection policy:
+	 *
+	 * BOND_AD_COUNT: Select by count of ports.  If count is equal,
+	 *     select by bandwidth.
+	 *
+	 * BOND_AD_STABLE, BOND_AD_BANDWIDTH: Select by bandwidth.
+	 */
+	if (!best)
+		return curr;
+
+	if (!curr->is_individual && best->is_individual)
+		return curr;
+
+	if (curr->is_individual && !best->is_individual)
+		return best;
+
+	if (__agg_has_partner(curr) && !__agg_has_partner(best))
+		return curr;
+
+	if (!__agg_has_partner(curr) && __agg_has_partner(best))
+		return best;
+
+	switch (__get_agg_selection_mode(curr->lag_ports)) {
+	case BOND_AD_COUNT:
+		if (__agg_active_ports(curr) > __agg_active_ports(best))
+			return curr;
+
+		if (__agg_active_ports(curr) < __agg_active_ports(best))
+			return best;
+
+		fallthrough;
+	case BOND_AD_STABLE:
+	case BOND_AD_BANDWIDTH:
+		if (__get_agg_bandwidth(curr) > __get_agg_bandwidth(best))
+			return curr;
+
+		break;
+
+	default:
+		net_warn_ratelimited("%s: (slave %s): Impossible agg select mode %d\n",
+				     curr->slave->bond->dev->name,
+				     curr->slave->dev->name,
+				     __get_agg_selection_mode(curr->lag_ports));
+		break;
+	}
+
+	return best;
+}
+
+static int agg_device_up(const struct aggregator *agg)
+{
+	struct port *port = agg->lag_ports;
+
+	if (!port)
+		return 0;
+
+	for (port = agg->lag_ports; port;
+	     port = port->next_port_in_aggregator) {
+		if (netif_running(port->slave->dev) &&
+		    netif_carrier_ok(port->slave->dev))
+			return 1;
+	}
+
+	return 0;
+}
+
+/**
+ * ad_agg_selection_logic - select an aggregation group for a team
+ * @agg: the aggregator we're looking at
+ * @update_slave_arr: Does slave array need update?
+ *
+ * It is assumed that only one aggregator may be selected for a team.
+ *
+ * The logic of this function is to select the aggregator according to
+ * the ad_select policy:
+ *
+ * BOND_AD_STABLE: select the aggregator with the most ports attached to
+ * it, and to reselect the active aggregator only if the previous
+ * aggregator has no more ports related to it.
+ *
+ * BOND_AD_BANDWIDTH: select the aggregator with the highest total
+ * bandwidth, and reselect whenever a link state change takes place or the
+ * set of slaves in the bond changes.
+ *
+ * BOND_AD_COUNT: select the aggregator with largest number of ports
+ * (slaves), and reselect whenever a link state change takes place or the
+ * set of slaves in the bond changes.
+ *
+ * FIXME: this function MUST be called with the first agg in the bond, or
+ * __get_active_agg() won't work correctly. This function should be better
+ * called with the bond itself, and retrieve the first agg from it.
+ */
+static void ad_agg_selection_logic(struct aggregator *agg,
+				   bool *update_slave_arr)
+{
+	struct aggregator *best, *active, *origin;
+	struct bonding *bond = agg->slave->bond;
+	struct list_head *iter;
+	struct slave *slave;
+	struct port *port;
+
+	rcu_read_lock();
+	origin = agg;
+	active = __get_active_agg(agg);
+	best = (active && agg_device_up(active)) ? active : NULL;
+
+	bond_for_each_slave_rcu(bond, slave, iter) {
+		agg = &(SLAVE_AD_INFO(slave)->aggregator);
+
+		agg->is_active = 0;
+
+		if (__agg_active_ports(agg) && agg_device_up(agg))
+			best = ad_agg_selection_test(best, agg);
+	}
+
+	if (best &&
+	    __get_agg_selection_mode(best->lag_ports) == BOND_AD_STABLE) {
+		/* For the STABLE policy, don't replace the old active
+		 * aggregator if it's still active (it has an answering
+		 * partner) or if both the best and active don't have an
+		 * answering partner.
+		 */
+		if (active && active->lag_ports &&
+		    __agg_active_ports(active) &&
+		    (__agg_has_partner(active) ||
+		     (!__agg_has_partner(active) &&
+		     !__agg_has_partner(best)))) {
+			if (!(!active->actor_oper_aggregator_key &&
+			      best->actor_oper_aggregator_key)) {
+				best = NULL;
+				active->is_active = 1;
+			}
+		}
+	}
+
+	if (best && (best == active)) {
+		best = NULL;
+		active->is_active = 1;
+	}
+
+	/* if there is new best aggregator, activate it */
+	if (best) {
+		netdev_dbg(bond->dev, "(slave %s): best Agg=%d; P=%d; a k=%d; p k=%d; Ind=%d; Act=%d\n",
+			   best->slave ? best->slave->dev->name : "NULL",
+			   best->aggregator_identifier, best->num_of_ports,
+			   best->actor_oper_aggregator_key,
+			   best->partner_oper_aggregator_key,
+			   best->is_individual, best->is_active);
+		netdev_dbg(bond->dev, "(slave %s): best ports %p slave %p\n",
+			   best->slave ? best->slave->dev->name : "NULL",
+			   best->lag_ports, best->slave);
+
+		bond_for_each_slave_rcu(bond, slave, iter) {
+			agg = &(SLAVE_AD_INFO(slave)->aggregator);
+
+			slave_dbg(bond->dev, slave->dev, "Agg=%d; P=%d; a k=%d; p k=%d; Ind=%d; Act=%d\n",
+				  agg->aggregator_identifier, agg->num_of_ports,
+				  agg->actor_oper_aggregator_key,
+				  agg->partner_oper_aggregator_key,
+				  agg->is_individual, agg->is_active);
+		}
+
+		/* check if any partner replies */
+		if (best->is_individual)
+			net_warn_ratelimited("%s: Warning: No 802.3ad response from the link partner for any adapters in the bond\n",
+					     bond->dev->name);
+
+		best->is_active = 1;
+		netdev_dbg(bond->dev, "(slave %s): LAG %d chosen as the active LAG\n",
+			   best->slave ? best->slave->dev->name : "NULL",
+			   best->aggregator_identifier);
+		netdev_dbg(bond->dev, "(slave %s): Agg=%d; P=%d; a k=%d; p k=%d; Ind=%d; Act=%d\n",
+			   best->slave ? best->slave->dev->name : "NULL",
+			   best->aggregator_identifier, best->num_of_ports,
+			   best->actor_oper_aggregator_key,
+			   best->partner_oper_aggregator_key,
+			   best->is_individual, best->is_active);
+
+		/* disable the ports that were related to the former
+		 * active_aggregator
+		 */
+		if (active) {
+			for (port = active->lag_ports; port;
+			     port = port->next_port_in_aggregator) {
+				__disable_port(port);
+			}
+		}
+		/* Slave array needs update. */
+		*update_slave_arr = true;
+	}
+
+	/* if the selected aggregator is of join individuals
+	 * (partner_system is NULL), enable their ports
+	 */
+	active = __get_active_agg(origin);
+
+	if (active) {
+		if (!__agg_has_partner(active)) {
+			for (port = active->lag_ports; port;
+			     port = port->next_port_in_aggregator) {
+				__enable_port(port);
+			}
+			*update_slave_arr = true;
+		}
+	}
+
+	rcu_read_unlock();
+
+	bond_3ad_set_carrier(bond);
+}
+
+/**
+ * ad_clear_agg - clear a given aggregator's parameters
+ * @aggregator: the aggregator we're looking at
+ */
+static void ad_clear_agg(struct aggregator *aggregator)
+{
+	if (aggregator) {
+		aggregator->is_individual = false;
+		aggregator->actor_admin_aggregator_key = 0;
+		aggregator->actor_oper_aggregator_key = 0;
+		eth_zero_addr(aggregator->partner_system.mac_addr_value);
+		aggregator->partner_system_priority = 0;
+		aggregator->partner_oper_aggregator_key = 0;
+		aggregator->receive_state = 0;
+		aggregator->transmit_state = 0;
+		aggregator->lag_ports = NULL;
+		aggregator->is_active = 0;
+		aggregator->num_of_ports = 0;
+		pr_debug("%s: LAG %d was cleared\n",
+			 aggregator->slave ?
+			 aggregator->slave->dev->name : "NULL",
+			 aggregator->aggregator_identifier);
+	}
+}
+
+/**
+ * ad_initialize_agg - initialize a given aggregator's parameters
+ * @aggregator: the aggregator we're looking at
+ */
+static void ad_initialize_agg(struct aggregator *aggregator)
+{
+	if (aggregator) {
+		ad_clear_agg(aggregator);
+
+		eth_zero_addr(aggregator->aggregator_mac_address.mac_addr_value);
+		aggregator->aggregator_identifier = 0;
+		aggregator->slave = NULL;
+	}
+}
+
+/**
+ * ad_initialize_port - initialize a given port's parameters
+ * @port: the port we're looking at
+ * @lacp_fast: boolean. whether fast periodic should be used
+ */
+static void ad_initialize_port(struct port *port, int lacp_fast)
+{
+	static const struct port_params tmpl = {
+		.system_priority = 0xffff,
+		.key             = 1,
+		.port_number     = 1,
+		.port_priority   = 0xff,
+		.port_state      = 1,
+	};
+	static const struct lacpdu lacpdu = {
+		.subtype		= 0x01,
+		.version_number = 0x01,
+		.tlv_type_actor_info = 0x01,
+		.actor_information_length = 0x14,
+		.tlv_type_partner_info = 0x02,
+		.partner_information_length = 0x14,
+		.tlv_type_collector_info = 0x03,
+		.collector_information_length = 0x10,
+		.collector_max_delay = htons(AD_COLLECTOR_MAX_DELAY),
+	};
+
+	if (port) {
+		port->actor_port_priority = 0xff;
+		port->actor_port_aggregator_identifier = 0;
+		port->ntt = false;
+		port->actor_admin_port_state = LACP_STATE_AGGREGATION |
+					       LACP_STATE_LACP_ACTIVITY;
+		port->actor_oper_port_state  = LACP_STATE_AGGREGATION |
+					       LACP_STATE_LACP_ACTIVITY;
+
+		if (lacp_fast)
+			port->actor_oper_port_state |= LACP_STATE_LACP_TIMEOUT;
+
+		memcpy(&port->partner_admin, &tmpl, sizeof(tmpl));
+		memcpy(&port->partner_oper, &tmpl, sizeof(tmpl));
+
+		port->is_enabled = true;
+		/* private parameters */
+		port->sm_vars = AD_PORT_BEGIN | AD_PORT_LACP_ENABLED;
+		port->sm_rx_state = 0;
+		port->sm_rx_timer_counter = 0;
+		port->sm_periodic_state = 0;
+		port->sm_periodic_timer_counter = 0;
+		port->sm_mux_state = 0;
+		port->sm_mux_timer_counter = 0;
+		port->sm_tx_state = 0;
+		port->aggregator = NULL;
+		port->next_port_in_aggregator = NULL;
+		port->transaction_id = 0;
+
+		port->sm_churn_actor_timer_counter = 0;
+		port->sm_churn_actor_state = 0;
+		port->churn_actor_count = 0;
+		port->sm_churn_partner_timer_counter = 0;
+		port->sm_churn_partner_state = 0;
+		port->churn_partner_count = 0;
+
+		memcpy(&port->lacpdu, &lacpdu, sizeof(lacpdu));
+	}
+}
+
+/**
+ * ad_enable_collecting_distributing - enable a port's transmit/receive
+ * @port: the port we're looking at
+ * @update_slave_arr: Does slave array need update?
+ *
+ * Enable @port if it's in an active aggregator
+ */
+static void ad_enable_collecting_distributing(struct port *port,
+					      bool *update_slave_arr)
+{
+	if (port->aggregator->is_active) {
+		slave_dbg(port->slave->bond->dev, port->slave->dev,
+			  "Enabling port %d (LAG %d)\n",
+			  port->actor_port_number,
+			  port->aggregator->aggregator_identifier);
+		__enable_port(port);
+		/* Slave array needs update */
+		*update_slave_arr = true;
+	}
+}
+
+/**
+ * ad_disable_collecting_distributing - disable a port's transmit/receive
+ * @port: the port we're looking at
+ * @update_slave_arr: Does slave array need update?
+ */
+static void ad_disable_collecting_distributing(struct port *port,
+					       bool *update_slave_arr)
+{
+	if (port->aggregator &&
+	    !MAC_ADDRESS_EQUAL(&(port->aggregator->partner_system),
+			       &(null_mac_addr))) {
+		slave_dbg(port->slave->bond->dev, port->slave->dev,
+			  "Disabling port %d (LAG %d)\n",
+			  port->actor_port_number,
+			  port->aggregator->aggregator_identifier);
+		__disable_port(port);
+		/* Slave array needs an update */
+		*update_slave_arr = true;
+	}
+}
+
+/**
+ * ad_marker_info_received - handle receive of a Marker information frame
+ * @marker_info: Marker info received
+ * @port: the port we're looking at
+ */
+static void ad_marker_info_received(struct bond_marker *marker_info,
+				    struct port *port)
+{
+	struct bond_marker marker;
+
+	atomic64_inc(&SLAVE_AD_INFO(port->slave)->stats.marker_rx);
+	atomic64_inc(&BOND_AD_INFO(port->slave->bond).stats.marker_rx);
+
+	/* copy the received marker data to the response marker */
+	memcpy(&marker, marker_info, sizeof(struct bond_marker));
+	/* change the marker subtype to marker response */
+	marker.tlv_type = AD_MARKER_RESPONSE_SUBTYPE;
+
+	/* send the marker response */
+	if (ad_marker_send(port, &marker) >= 0)
+		slave_dbg(port->slave->bond->dev, port->slave->dev,
+			  "Sent Marker Response on port %d\n",
+			  port->actor_port_number);
+}
+
+/**
+ * ad_marker_response_received - handle receive of a marker response frame
+ * @marker: marker PDU received
+ * @port: the port we're looking at
+ *
+ * This function does nothing since we decided not to implement send and handle
+ * response for marker PDU's, in this stage, but only to respond to marker
+ * information.
+ */
+static void ad_marker_response_received(struct bond_marker *marker,
+					struct port *port)
+{
+	atomic64_inc(&SLAVE_AD_INFO(port->slave)->stats.marker_resp_rx);
+	atomic64_inc(&BOND_AD_INFO(port->slave->bond).stats.marker_resp_rx);
+
+	/* DO NOTHING, SINCE WE DECIDED NOT TO IMPLEMENT THIS FEATURE FOR NOW */
+}
+
+/* ========= AD exported functions to the main bonding code ========= */
+
+/* Check aggregators status in team every T seconds */
+#define AD_AGGREGATOR_SELECTION_TIMER  8
+
+/**
+ * bond_3ad_initiate_agg_selection - initate aggregator selection
+ * @bond: bonding struct
+ * @timeout: timeout value to set
+ *
+ * Set the aggregation selection timer, to initiate an agg selection in
+ * the very near future.  Called during first initialization, and during
+ * any down to up transitions of the bond.
+ */
+void bond_3ad_initiate_agg_selection(struct bonding *bond, int timeout)
+{
+	atomic_set(&BOND_AD_INFO(bond).agg_select_timer, timeout);
+}
+
+/**
+ * bond_3ad_initialize - initialize a bond's 802.3ad parameters and structures
+ * @bond: bonding struct to work on
+ * @tick_resolution: tick duration (millisecond resolution)
+ *
+ * Can be called only after the mac address of the bond is set.
+ */
+void bond_3ad_initialize(struct bonding *bond, u16 tick_resolution)
+{
+	/* check that the bond is not initialized yet */
+	if (!MAC_ADDRESS_EQUAL(&(BOND_AD_INFO(bond).system.sys_mac_addr),
+				bond->dev->dev_addr)) {
+
+		BOND_AD_INFO(bond).aggregator_identifier = 0;
+
+		BOND_AD_INFO(bond).system.sys_priority =
+			bond->params.ad_actor_sys_prio;
+		if (is_zero_ether_addr(bond->params.ad_actor_system))
+			BOND_AD_INFO(bond).system.sys_mac_addr =
+			    *((struct mac_addr *)bond->dev->dev_addr);
+		else
+			BOND_AD_INFO(bond).system.sys_mac_addr =
+			    *((struct mac_addr *)bond->params.ad_actor_system);
+
+		/* initialize how many times this module is called in one
+		 * second (should be about every 100ms)
+		 */
+		ad_ticks_per_sec = tick_resolution;
+
+		bond_3ad_initiate_agg_selection(bond,
+						AD_AGGREGATOR_SELECTION_TIMER *
+						ad_ticks_per_sec);
+	}
+}
+
+/**
+ * bond_3ad_bind_slave - initialize a slave's port
+ * @slave: slave struct to work on
+ *
+ * Returns:   0 on success
+ *          < 0 on error
+ */
+void bond_3ad_bind_slave(struct slave *slave)
+{
+	struct bonding *bond = bond_get_bond_by_slave(slave);
+	struct port *port;
+	struct aggregator *aggregator;
+
+	/* check that the slave has not been initialized yet. */
+	if (SLAVE_AD_INFO(slave)->port.slave != slave) {
+
+		/* port initialization */
+		port = &(SLAVE_AD_INFO(slave)->port);
+
+		ad_initialize_port(port, bond->params.lacp_fast);
+
+		port->slave = slave;
+		port->actor_port_number = SLAVE_AD_INFO(slave)->id;
+		/* key is determined according to the link speed, duplex and
+		 * user key
+		 */
+		port->actor_admin_port_key = bond->params.ad_user_port_key << 6;
+		ad_update_actor_keys(port, false);
+		/* actor system is the bond's system */
+		__ad_actor_update_port(port);
+		/* tx timer(to verify that no more than MAX_TX_IN_SECOND
+		 * lacpdu's are sent in one second)
+		 */
+		port->sm_tx_timer_counter = ad_ticks_per_sec/AD_MAX_TX_IN_SECOND;
+
+		__disable_port(port);
+
+		/* aggregator initialization */
+		aggregator = &(SLAVE_AD_INFO(slave)->aggregator);
+
+		ad_initialize_agg(aggregator);
+
+		aggregator->aggregator_mac_address = *((struct mac_addr *)bond->dev->dev_addr);
+		aggregator->aggregator_identifier = ++BOND_AD_INFO(bond).aggregator_identifier;
+		aggregator->slave = slave;
+		aggregator->is_active = 0;
+		aggregator->num_of_ports = 0;
+	}
+}
+
+/**
+ * bond_3ad_unbind_slave - deinitialize a slave's port
+ * @slave: slave struct to work on
+ *
+ * Search for the aggregator that is related to this port, remove the
+ * aggregator and assign another aggregator for other port related to it
+ * (if any), and remove the port.
+ */
+void bond_3ad_unbind_slave(struct slave *slave)
+{
+	struct port *port, *prev_port, *temp_port;
+	struct aggregator *aggregator, *new_aggregator, *temp_aggregator;
+	int select_new_active_agg = 0;
+	struct bonding *bond = slave->bond;
+	struct slave *slave_iter;
+	struct list_head *iter;
+	bool dummy_slave_update; /* Ignore this value as caller updates array */
+
+	/* Sync against bond_3ad_state_machine_handler() */
+	spin_lock_bh(&bond->mode_lock);
+	aggregator = &(SLAVE_AD_INFO(slave)->aggregator);
+	port = &(SLAVE_AD_INFO(slave)->port);
+
+	/* if slave is null, the whole port is not initialized */
+	if (!port->slave) {
+		slave_warn(bond->dev, slave->dev, "Trying to unbind an uninitialized port\n");
+		goto out;
+	}
+
+	slave_dbg(bond->dev, slave->dev, "Unbinding Link Aggregation Group %d\n",
+		  aggregator->aggregator_identifier);
+
+	/* Tell the partner that this port is not suitable for aggregation */
+	port->actor_oper_port_state &= ~LACP_STATE_SYNCHRONIZATION;
+	port->actor_oper_port_state &= ~LACP_STATE_COLLECTING;
+	port->actor_oper_port_state &= ~LACP_STATE_DISTRIBUTING;
+	port->actor_oper_port_state &= ~LACP_STATE_AGGREGATION;
+	__update_lacpdu_from_port(port);
+	ad_lacpdu_send(port);
+
+	/* check if this aggregator is occupied */
+	if (aggregator->lag_ports) {
+		/* check if there are other ports related to this aggregator
+		 * except the port related to this slave(thats ensure us that
+		 * there is a reason to search for new aggregator, and that we
+		 * will find one
+		 */
+		if ((aggregator->lag_ports != port) ||
+		    (aggregator->lag_ports->next_port_in_aggregator)) {
+			/* find new aggregator for the related port(s) */
+			bond_for_each_slave(bond, slave_iter, iter) {
+				new_aggregator = &(SLAVE_AD_INFO(slave_iter)->aggregator);
+				/* if the new aggregator is empty, or it is
+				 * connected to our port only
+				 */
+				if (!new_aggregator->lag_ports ||
+				    ((new_aggregator->lag_ports == port) &&
+				     !new_aggregator->lag_ports->next_port_in_aggregator))
+					break;
+			}
+			if (!slave_iter)
+				new_aggregator = NULL;
+
+			/* if new aggregator found, copy the aggregator's
+			 * parameters and connect the related lag_ports to the
+			 * new aggregator
+			 */
+			if ((new_aggregator) && ((!new_aggregator->lag_ports) || ((new_aggregator->lag_ports == port) && !new_aggregator->lag_ports->next_port_in_aggregator))) {
+				slave_dbg(bond->dev, slave->dev, "Some port(s) related to LAG %d - replacing with LAG %d\n",
+					  aggregator->aggregator_identifier,
+					  new_aggregator->aggregator_identifier);
+
+				if ((new_aggregator->lag_ports == port) &&
+				    new_aggregator->is_active) {
+					slave_info(bond->dev, slave->dev, "Removing an active aggregator\n");
+					select_new_active_agg = 1;
+				}
+
+				new_aggregator->is_individual = aggregator->is_individual;
+				new_aggregator->actor_admin_aggregator_key = aggregator->actor_admin_aggregator_key;
+				new_aggregator->actor_oper_aggregator_key = aggregator->actor_oper_aggregator_key;
+				new_aggregator->partner_system = aggregator->partner_system;
+				new_aggregator->partner_system_priority = aggregator->partner_system_priority;
+				new_aggregator->partner_oper_aggregator_key = aggregator->partner_oper_aggregator_key;
+				new_aggregator->receive_state = aggregator->receive_state;
+				new_aggregator->transmit_state = aggregator->transmit_state;
+				new_aggregator->lag_ports = aggregator->lag_ports;
+				new_aggregator->is_active = aggregator->is_active;
+				new_aggregator->num_of_ports = aggregator->num_of_ports;
+
+				/* update the information that is written on
+				 * the ports about the aggregator
+				 */
+				for (temp_port = aggregator->lag_ports; temp_port;
+				     temp_port = temp_port->next_port_in_aggregator) {
+					temp_port->aggregator = new_aggregator;
+					temp_port->actor_port_aggregator_identifier = new_aggregator->aggregator_identifier;
+				}
+
+				ad_clear_agg(aggregator);
+
+				if (select_new_active_agg)
+					ad_agg_selection_logic(__get_first_agg(port),
+							       &dummy_slave_update);
+			} else {
+				slave_warn(bond->dev, slave->dev, "unbinding aggregator, and could not find a new aggregator for its ports\n");
+			}
+		} else {
+			/* in case that the only port related to this
+			 * aggregator is the one we want to remove
+			 */
+			select_new_active_agg = aggregator->is_active;
+			ad_clear_agg(aggregator);
+			if (select_new_active_agg) {
+				slave_info(bond->dev, slave->dev, "Removing an active aggregator\n");
+				/* select new active aggregator */
+				temp_aggregator = __get_first_agg(port);
+				if (temp_aggregator)
+					ad_agg_selection_logic(temp_aggregator,
+							       &dummy_slave_update);
+			}
+		}
+	}
+
+	slave_dbg(bond->dev, slave->dev, "Unbinding port %d\n", port->actor_port_number);
+
+	/* find the aggregator that this port is connected to */
+	bond_for_each_slave(bond, slave_iter, iter) {
+		temp_aggregator = &(SLAVE_AD_INFO(slave_iter)->aggregator);
+		prev_port = NULL;
+		/* search the port in the aggregator's related ports */
+		for (temp_port = temp_aggregator->lag_ports; temp_port;
+		     prev_port = temp_port,
+		     temp_port = temp_port->next_port_in_aggregator) {
+			if (temp_port == port) {
+				/* the aggregator found - detach the port from
+				 * this aggregator
+				 */
+				if (prev_port)
+					prev_port->next_port_in_aggregator = temp_port->next_port_in_aggregator;
+				else
+					temp_aggregator->lag_ports = temp_port->next_port_in_aggregator;
+				temp_aggregator->num_of_ports--;
+				if (__agg_active_ports(temp_aggregator) == 0) {
+					select_new_active_agg = temp_aggregator->is_active;
+					ad_clear_agg(temp_aggregator);
+					if (select_new_active_agg) {
+						slave_info(bond->dev, slave->dev, "Removing an active aggregator\n");
+						/* select new active aggregator */
+						ad_agg_selection_logic(__get_first_agg(port),
+							               &dummy_slave_update);
+					}
+				}
+				break;
+			}
+		}
+	}
+	port->slave = NULL;
+
+out:
+	spin_unlock_bh(&bond->mode_lock);
+}
+
+/**
+ * bond_3ad_update_ad_actor_settings - reflect change of actor settings to ports
+ * @bond: bonding struct to work on
+ *
+ * If an ad_actor setting gets changed we need to update the individual port
+ * settings so the bond device will use the new values when it gets upped.
+ */
+void bond_3ad_update_ad_actor_settings(struct bonding *bond)
+{
+	struct list_head *iter;
+	struct slave *slave;
+
+	ASSERT_RTNL();
+
+	BOND_AD_INFO(bond).system.sys_priority = bond->params.ad_actor_sys_prio;
+	if (is_zero_ether_addr(bond->params.ad_actor_system))
+		BOND_AD_INFO(bond).system.sys_mac_addr =
+		    *((struct mac_addr *)bond->dev->dev_addr);
+	else
+		BOND_AD_INFO(bond).system.sys_mac_addr =
+		    *((struct mac_addr *)bond->params.ad_actor_system);
+
+	spin_lock_bh(&bond->mode_lock);
+	bond_for_each_slave(bond, slave, iter) {
+		struct port *port = &(SLAVE_AD_INFO(slave))->port;
+
+		__ad_actor_update_port(port);
+		port->ntt = true;
+	}
+	spin_unlock_bh(&bond->mode_lock);
+}
+
+/**
+ * bond_agg_timer_advance - advance agg_select_timer
+ * @bond:  bonding structure
+ *
+ * Return true when agg_select_timer reaches 0.
+ */
+static bool bond_agg_timer_advance(struct bonding *bond)
+{
+	int val, nval;
+
+	while (1) {
+		val = atomic_read(&BOND_AD_INFO(bond).agg_select_timer);
+		if (!val)
+			return false;
+		nval = val - 1;
+		if (atomic_cmpxchg(&BOND_AD_INFO(bond).agg_select_timer,
+				   val, nval) == val)
+			break;
+	}
+	return nval == 0;
+}
+
+/**
+ * bond_3ad_state_machine_handler - handle state machines timeout
+ * @work: work context to fetch bonding struct to work on from
+ *
+ * The state machine handling concept in this module is to check every tick
+ * which state machine should operate any function. The execution order is
+ * round robin, so when we have an interaction between state machines, the
+ * reply of one to each other might be delayed until next tick.
+ *
+ * This function also complete the initialization when the agg_select_timer
+ * times out, and it selects an aggregator for the ports that are yet not
+ * related to any aggregator, and selects the active aggregator for a bond.
+ */
+void bond_3ad_state_machine_handler(struct work_struct *work)
+{
+	struct bonding *bond = container_of(work, struct bonding,
+					    ad_work.work);
+	struct aggregator *aggregator;
+	struct list_head *iter;
+	struct slave *slave;
+	struct port *port;
+	bool should_notify_rtnl = BOND_SLAVE_NOTIFY_LATER;
+	bool update_slave_arr = false;
+
+	/* Lock to protect data accessed by all (e.g., port->sm_vars) and
+	 * against running with bond_3ad_unbind_slave. ad_rx_machine may run
+	 * concurrently due to incoming LACPDU as well.
+	 */
+	spin_lock_bh(&bond->mode_lock);
+	rcu_read_lock();
+
+	/* check if there are any slaves */
+	if (!bond_has_slaves(bond))
+		goto re_arm;
+
+	if (bond_agg_timer_advance(bond)) {
+		slave = bond_first_slave_rcu(bond);
+		port = slave ? &(SLAVE_AD_INFO(slave)->port) : NULL;
+
+		/* select the active aggregator for the bond */
+		if (port) {
+			if (!port->slave) {
+				net_warn_ratelimited("%s: Warning: bond's first port is uninitialized\n",
+						     bond->dev->name);
+				goto re_arm;
+			}
+
+			aggregator = __get_first_agg(port);
+			ad_agg_selection_logic(aggregator, &update_slave_arr);
+		}
+		bond_3ad_set_carrier(bond);
+	}
+
+	/* for each port run the state machines */
+	bond_for_each_slave_rcu(bond, slave, iter) {
+		port = &(SLAVE_AD_INFO(slave)->port);
+		if (!port->slave) {
+			net_warn_ratelimited("%s: Warning: Found an uninitialized port\n",
+					    bond->dev->name);
+			goto re_arm;
+		}
+
+		ad_rx_machine(NULL, port);
+		ad_periodic_machine(port, &bond->params);
+		ad_port_selection_logic(port, &update_slave_arr);
+		ad_mux_machine(port, &update_slave_arr);
+		ad_tx_machine(port);
+		ad_churn_machine(port);
+
+		/* turn off the BEGIN bit, since we already handled it */
+		if (port->sm_vars & AD_PORT_BEGIN)
+			port->sm_vars &= ~AD_PORT_BEGIN;
+	}
+
+re_arm:
+	bond_for_each_slave_rcu(bond, slave, iter) {
+		if (slave->should_notify) {
+			should_notify_rtnl = BOND_SLAVE_NOTIFY_NOW;
+			break;
+		}
+	}
+	rcu_read_unlock();
+	spin_unlock_bh(&bond->mode_lock);
+
+	if (update_slave_arr)
+		bond_slave_arr_work_rearm(bond, 0);
+
+	if (should_notify_rtnl && rtnl_trylock()) {
+		bond_slave_state_notify(bond);
+		rtnl_unlock();
+	}
+	queue_delayed_work(bond->wq, &bond->ad_work, ad_delta_in_ticks);
+}
+
+/**
+ * bond_3ad_rx_indication - handle a received frame
+ * @lacpdu: received lacpdu
+ * @slave: slave struct to work on
+ *
+ * It is assumed that frames that were sent on this NIC don't returned as new
+ * received frames (loopback). Since only the payload is given to this
+ * function, it check for loopback.
+ */
+static int bond_3ad_rx_indication(struct lacpdu *lacpdu, struct slave *slave)
+{
+	struct bonding *bond = slave->bond;
+	int ret = RX_HANDLER_ANOTHER;
+	struct bond_marker *marker;
+	struct port *port;
+	atomic64_t *stat;
+
+	port = &(SLAVE_AD_INFO(slave)->port);
+	if (!port->slave) {
+		net_warn_ratelimited("%s: Warning: port of slave %s is uninitialized\n",
+				     slave->dev->name, slave->bond->dev->name);
+		return ret;
+	}
+
+	switch (lacpdu->subtype) {
+	case AD_TYPE_LACPDU:
+		ret = RX_HANDLER_CONSUMED;
+		slave_dbg(slave->bond->dev, slave->dev,
+			  "Received LACPDU on port %d\n",
+			  port->actor_port_number);
+		/* Protect against concurrent state machines */
+		spin_lock(&slave->bond->mode_lock);
+		ad_rx_machine(lacpdu, port);
+		spin_unlock(&slave->bond->mode_lock);
+		break;
+	case AD_TYPE_MARKER:
+		ret = RX_HANDLER_CONSUMED;
+		/* No need to convert fields to Little Endian since we
+		 * don't use the marker's fields.
+		 */
+		marker = (struct bond_marker *)lacpdu;
+		switch (marker->tlv_type) {
+		case AD_MARKER_INFORMATION_SUBTYPE:
+			slave_dbg(slave->bond->dev, slave->dev, "Received Marker Information on port %d\n",
+				  port->actor_port_number);
+			ad_marker_info_received(marker, port);
+			break;
+		case AD_MARKER_RESPONSE_SUBTYPE:
+			slave_dbg(slave->bond->dev, slave->dev, "Received Marker Response on port %d\n",
+				  port->actor_port_number);
+			ad_marker_response_received(marker, port);
+			break;
+		default:
+			slave_dbg(slave->bond->dev, slave->dev, "Received an unknown Marker subtype on port %d\n",
+				  port->actor_port_number);
+			stat = &SLAVE_AD_INFO(slave)->stats.marker_unknown_rx;
+			atomic64_inc(stat);
+			stat = &BOND_AD_INFO(bond).stats.marker_unknown_rx;
+			atomic64_inc(stat);
+		}
+		break;
+	default:
+		atomic64_inc(&SLAVE_AD_INFO(slave)->stats.lacpdu_unknown_rx);
+		atomic64_inc(&BOND_AD_INFO(bond).stats.lacpdu_unknown_rx);
+	}
+
+	return ret;
+}
+
+/**
+ * ad_update_actor_keys - Update the oper / admin keys for a port based on
+ * its current speed and duplex settings.
+ *
+ * @port: the port we'are looking at
+ * @reset: Boolean to just reset the speed and the duplex part of the key
+ *
+ * The logic to change the oper / admin keys is:
+ * (a) A full duplex port can participate in LACP with partner.
+ * (b) When the speed is changed, LACP need to be reinitiated.
+ */
+static void ad_update_actor_keys(struct port *port, bool reset)
+{
+	u8 duplex = 0;
+	u16 ospeed = 0, speed = 0;
+	u16 old_oper_key = port->actor_oper_port_key;
+
+	port->actor_admin_port_key &= ~(AD_SPEED_KEY_MASKS|AD_DUPLEX_KEY_MASKS);
+	if (!reset) {
+		speed = __get_link_speed(port);
+		ospeed = (old_oper_key & AD_SPEED_KEY_MASKS) >> 1;
+		duplex = __get_duplex(port);
+		port->actor_admin_port_key |= (speed << 1) | duplex;
+	}
+	port->actor_oper_port_key = port->actor_admin_port_key;
+
+	if (old_oper_key != port->actor_oper_port_key) {
+		/* Only 'duplex' port participates in LACP */
+		if (duplex)
+			port->sm_vars |= AD_PORT_LACP_ENABLED;
+		else
+			port->sm_vars &= ~AD_PORT_LACP_ENABLED;
+
+		if (!reset) {
+			if (!speed) {
+				slave_err(port->slave->bond->dev,
+					  port->slave->dev,
+					  "speed changed to 0 on port %d\n",
+					  port->actor_port_number);
+			} else if (duplex && ospeed != speed) {
+				/* Speed change restarts LACP state-machine */
+				port->sm_vars |= AD_PORT_BEGIN;
+			}
+		}
+	}
+}
+
+/**
+ * bond_3ad_adapter_speed_duplex_changed - handle a slave's speed / duplex
+ * change indication
+ *
+ * @slave: slave struct to work on
+ *
+ * Handle reselection of aggregator (if needed) for this port.
+ */
+void bond_3ad_adapter_speed_duplex_changed(struct slave *slave)
+{
+	struct port *port;
+
+	port = &(SLAVE_AD_INFO(slave)->port);
+
+	/* if slave is null, the whole port is not initialized */
+	if (!port->slave) {
+		slave_warn(slave->bond->dev, slave->dev,
+			   "speed/duplex changed for uninitialized port\n");
+		return;
+	}
+
+	spin_lock_bh(&slave->bond->mode_lock);
+	ad_update_actor_keys(port, false);
+	spin_unlock_bh(&slave->bond->mode_lock);
+	slave_dbg(slave->bond->dev, slave->dev, "Port %d changed speed/duplex\n",
+		  port->actor_port_number);
+}
+
+/**
+ * bond_3ad_handle_link_change - handle a slave's link status change indication
+ * @slave: slave struct to work on
+ * @link: whether the link is now up or down
+ *
+ * Handle reselection of aggregator (if needed) for this port.
+ */
+void bond_3ad_handle_link_change(struct slave *slave, char link)
+{
+	struct aggregator *agg;
+	struct port *port;
+	bool dummy;
+
+	port = &(SLAVE_AD_INFO(slave)->port);
+
+	/* if slave is null, the whole port is not initialized */
+	if (!port->slave) {
+		slave_warn(slave->bond->dev, slave->dev, "link status changed for uninitialized port\n");
+		return;
+	}
+
+	spin_lock_bh(&slave->bond->mode_lock);
+	/* on link down we are zeroing duplex and speed since
+	 * some of the adaptors(ce1000.lan) report full duplex/speed
+	 * instead of N/A(duplex) / 0(speed).
+	 *
+	 * on link up we are forcing recheck on the duplex and speed since
+	 * some of he adaptors(ce1000.lan) report.
+	 */
+	if (link == BOND_LINK_UP) {
+		port->is_enabled = true;
+		ad_update_actor_keys(port, false);
+	} else {
+		/* link has failed */
+		port->is_enabled = false;
+		ad_update_actor_keys(port, true);
+	}
+	agg = __get_first_agg(port);
+	ad_agg_selection_logic(agg, &dummy);
+
+	spin_unlock_bh(&slave->bond->mode_lock);
+
+	slave_dbg(slave->bond->dev, slave->dev, "Port %d changed link status to %s\n",
+		  port->actor_port_number,
+		  link == BOND_LINK_UP ? "UP" : "DOWN");
+
+	/* RTNL is held and mode_lock is released so it's safe
+	 * to update slave_array here.
+	 */
+	bond_update_slave_arr(slave->bond, NULL);
+}
+
+/**
+ * bond_3ad_set_carrier - set link state for bonding master
+ * @bond: bonding structure
+ *
+ * if we have an active aggregator, we're up, if not, we're down.
+ * Presumes that we cannot have an active aggregator if there are
+ * no slaves with link up.
+ *
+ * This behavior complies with IEEE 802.3 section 43.3.9.
+ *
+ * Called by bond_set_carrier(). Return zero if carrier state does not
+ * change, nonzero if it does.
+ */
+int bond_3ad_set_carrier(struct bonding *bond)
+{
+	struct aggregator *active;
+	struct slave *first_slave;
+	int ret = 1;
+
+	rcu_read_lock();
+	first_slave = bond_first_slave_rcu(bond);
+	if (!first_slave) {
+		ret = 0;
+		goto out;
+	}
+	active = __get_active_agg(&(SLAVE_AD_INFO(first_slave)->aggregator));
+	if (active) {
+		/* are enough slaves available to consider link up? */
+		if (__agg_active_ports(active) < bond->params.min_links) {
+			if (netif_carrier_ok(bond->dev)) {
+				netif_carrier_off(bond->dev);
+				goto out;
+			}
+		} else if (!netif_carrier_ok(bond->dev)) {
+			netif_carrier_on(bond->dev);
+			goto out;
+		}
+	} else if (netif_carrier_ok(bond->dev)) {
+		netif_carrier_off(bond->dev);
+	}
+out:
+	rcu_read_unlock();
+	return ret;
+}
+
+/**
+ * __bond_3ad_get_active_agg_info - get information of the active aggregator
+ * @bond: bonding struct to work on
+ * @ad_info: ad_info struct to fill with the bond's info
+ *
+ * Returns:   0 on success
+ *          < 0 on error
+ */
+int __bond_3ad_get_active_agg_info(struct bonding *bond,
+				   struct ad_info *ad_info)
+{
+	struct aggregator *aggregator = NULL;
+	struct list_head *iter;
+	struct slave *slave;
+	struct port *port;
+
+	bond_for_each_slave_rcu(bond, slave, iter) {
+		port = &(SLAVE_AD_INFO(slave)->port);
+		if (port->aggregator && port->aggregator->is_active) {
+			aggregator = port->aggregator;
+			break;
+		}
+	}
+
+	if (!aggregator)
+		return -1;
+
+	ad_info->aggregator_id = aggregator->aggregator_identifier;
+	ad_info->ports = __agg_active_ports(aggregator);
+	ad_info->actor_key = aggregator->actor_oper_aggregator_key;
+	ad_info->partner_key = aggregator->partner_oper_aggregator_key;
+	ether_addr_copy(ad_info->partner_system,
+			aggregator->partner_system.mac_addr_value);
+	return 0;
+}
+
+int bond_3ad_get_active_agg_info(struct bonding *bond, struct ad_info *ad_info)
+{
+	int ret;
+
+	rcu_read_lock();
+	ret = __bond_3ad_get_active_agg_info(bond, ad_info);
+	rcu_read_unlock();
+
+	return ret;
+}
+
+int bond_3ad_lacpdu_recv(const struct sk_buff *skb, struct bonding *bond,
+			 struct slave *slave)
+{
+	struct lacpdu *lacpdu, _lacpdu;
+
+	if (skb->protocol != PKT_TYPE_LACPDU)
+		return RX_HANDLER_ANOTHER;
+
+	if (!MAC_ADDRESS_EQUAL(eth_hdr(skb)->h_dest, lacpdu_mcast_addr))
+		return RX_HANDLER_ANOTHER;
+
+	lacpdu = skb_header_pointer(skb, 0, sizeof(_lacpdu), &_lacpdu);
+	if (!lacpdu) {
+		atomic64_inc(&SLAVE_AD_INFO(slave)->stats.lacpdu_illegal_rx);
+		atomic64_inc(&BOND_AD_INFO(bond).stats.lacpdu_illegal_rx);
+		return RX_HANDLER_ANOTHER;
+	}
+
+	return bond_3ad_rx_indication(lacpdu, slave);
+}
+
+/**
+ * bond_3ad_update_lacp_rate - change the lacp rate
+ * @bond: bonding struct
+ *
+ * When modify lacp_rate parameter via sysfs,
+ * update actor_oper_port_state of each port.
+ *
+ * Hold bond->mode_lock,
+ * so we can modify port->actor_oper_port_state,
+ * no matter bond is up or down.
+ */
+void bond_3ad_update_lacp_rate(struct bonding *bond)
+{
+	struct port *port = NULL;
+	struct list_head *iter;
+	struct slave *slave;
+	int lacp_fast;
+
+	lacp_fast = bond->params.lacp_fast;
+	spin_lock_bh(&bond->mode_lock);
+	bond_for_each_slave(bond, slave, iter) {
+		port = &(SLAVE_AD_INFO(slave)->port);
+		if (lacp_fast)
+			port->actor_oper_port_state |= LACP_STATE_LACP_TIMEOUT;
+		else
+			port->actor_oper_port_state &= ~LACP_STATE_LACP_TIMEOUT;
+	}
+	spin_unlock_bh(&bond->mode_lock);
+}
+
+size_t bond_3ad_stats_size(void)
+{
+	return nla_total_size_64bit(sizeof(u64)) + /* BOND_3AD_STAT_LACPDU_RX */
+	       nla_total_size_64bit(sizeof(u64)) + /* BOND_3AD_STAT_LACPDU_TX */
+	       nla_total_size_64bit(sizeof(u64)) + /* BOND_3AD_STAT_LACPDU_UNKNOWN_RX */
+	       nla_total_size_64bit(sizeof(u64)) + /* BOND_3AD_STAT_LACPDU_ILLEGAL_RX */
+	       nla_total_size_64bit(sizeof(u64)) + /* BOND_3AD_STAT_MARKER_RX */
+	       nla_total_size_64bit(sizeof(u64)) + /* BOND_3AD_STAT_MARKER_TX */
+	       nla_total_size_64bit(sizeof(u64)) + /* BOND_3AD_STAT_MARKER_RESP_RX */
+	       nla_total_size_64bit(sizeof(u64)) + /* BOND_3AD_STAT_MARKER_RESP_TX */
+	       nla_total_size_64bit(sizeof(u64)); /* BOND_3AD_STAT_MARKER_UNKNOWN_RX */
+}
+
+int bond_3ad_stats_fill(struct sk_buff *skb, struct bond_3ad_stats *stats)
+{
+	u64 val;
+
+	val = atomic64_read(&stats->lacpdu_rx);
+	if (nla_put_u64_64bit(skb, BOND_3AD_STAT_LACPDU_RX, val,
+			      BOND_3AD_STAT_PAD))
+		return -EMSGSIZE;
+	val = atomic64_read(&stats->lacpdu_tx);
+	if (nla_put_u64_64bit(skb, BOND_3AD_STAT_LACPDU_TX, val,
+			      BOND_3AD_STAT_PAD))
+		return -EMSGSIZE;
+	val = atomic64_read(&stats->lacpdu_unknown_rx);
+	if (nla_put_u64_64bit(skb, BOND_3AD_STAT_LACPDU_UNKNOWN_RX, val,
+			      BOND_3AD_STAT_PAD))
+		return -EMSGSIZE;
+	val = atomic64_read(&stats->lacpdu_illegal_rx);
+	if (nla_put_u64_64bit(skb, BOND_3AD_STAT_LACPDU_ILLEGAL_RX, val,
+			      BOND_3AD_STAT_PAD))
+		return -EMSGSIZE;
+
+	val = atomic64_read(&stats->marker_rx);
+	if (nla_put_u64_64bit(skb, BOND_3AD_STAT_MARKER_RX, val,
+			      BOND_3AD_STAT_PAD))
+		return -EMSGSIZE;
+	val = atomic64_read(&stats->marker_tx);
+	if (nla_put_u64_64bit(skb, BOND_3AD_STAT_MARKER_TX, val,
+			      BOND_3AD_STAT_PAD))
+		return -EMSGSIZE;
+	val = atomic64_read(&stats->marker_resp_rx);
+	if (nla_put_u64_64bit(skb, BOND_3AD_STAT_MARKER_RESP_RX, val,
+			      BOND_3AD_STAT_PAD))
+		return -EMSGSIZE;
+	val = atomic64_read(&stats->marker_resp_tx);
+	if (nla_put_u64_64bit(skb, BOND_3AD_STAT_MARKER_RESP_TX, val,
+			      BOND_3AD_STAT_PAD))
+		return -EMSGSIZE;
+	val = atomic64_read(&stats->marker_unknown_rx);
+	if (nla_put_u64_64bit(skb, BOND_3AD_STAT_MARKER_UNKNOWN_RX, val,
+			      BOND_3AD_STAT_PAD))
+		return -EMSGSIZE;
+
+	return 0;
+}

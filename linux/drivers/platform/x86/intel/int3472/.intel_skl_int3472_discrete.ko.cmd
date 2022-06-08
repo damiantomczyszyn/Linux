@@ -1,8 +1,18 @@
+// SPDX-License-Identifier: GPL-2.0-or-later
 
-    $(wildcard include/config/PARAVIRT_XXL) \
-  arch/x86/include/asm/disabled-features.h \
-    $(wildcard include/config/X86_SMAP) \
-    $(wildcard include/config/X86_UMIP) \
-    $(wildcard include/config/X86_INTEL_MEMORY_PROTECTION_KEYS) \
-    $(wildcard include/config/X86_5LEVEL) \
-    $(wildcard include/config/PAGE_TABLE_ISOLATION
+/*
+ * netup-eeprom.c
+ *
+ * 24LC02 EEPROM driver in conjunction with NetUP Dual DVB-S2 CI card
+ *
+ * Copyright (C) 2009 NetUP Inc.
+ * Copyright (C) 2009 Abylay Ospan <aospan@netup.ru>
+ */
+
+#
+#include "cx23885.h"
+#include "netup-eeprom.h"
+
+#define EEPROM_I2C_ADDR 0x50
+
+int netup_eeprom_read(

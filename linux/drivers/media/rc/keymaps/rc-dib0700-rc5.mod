@@ -1,2 +1,1 @@
-drivers/media/rc/keymaps/rc-dib0700-rc5.o
-
+x], Reg=[0x%02x], data=%02x, TS config = %0

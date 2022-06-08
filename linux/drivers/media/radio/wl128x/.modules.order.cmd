@@ -1,1 +1,6 @@
-cmd_drivers/media/radio/wl128x/modules.order := {   echo drivers/media/radio/wl128x/fm_drv.ko; :; } | awk '!x[$$0]++' - > drivers/media/radio/wl128x/modules.order
+3885_BOARD_DVBSKY_T980C:
+	case CX23885_BOARD_DVBSKY_S950C:
+	case CX23885_BOARD_TT_CT2_4500_CI:
+	case CX23885_BOARD_DVBSKY_S950:
+	case CX23885_BOARD_DVBSKY_S952:
+	c

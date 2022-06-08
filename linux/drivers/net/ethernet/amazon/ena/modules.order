@@ -1,2 +1,1 @@
-\
-    $(wildcard include/config/SHMEM) 
+cmd_drivers/media/pci/cx18/cx18.o := ld

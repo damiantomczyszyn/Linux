@@ -1,4 +1,1 @@
-  $(wildcard include/config/ALTERNATE_USER_ADDRESS_SPACE) \
-  arch/x86/include/asm/uaccess_32.h \
-  include/linux/cred.h \
- 
+cmd_drivers/net/can/usb/esd_usb2.mod := { echo  drivers/net/can/usb/esd_usb2.o;  echo; } > drivers/net/can/usb/esd_usb2.mod

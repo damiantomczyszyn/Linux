@@ -1,158 +1,244 @@
-  $(wildcard include/config/ALTERNATE_USER_ADDRESS_SPACE) \
-  arch/x86/include/asm/uaccess_32.h \
-  include/linux/cred.h \
-    $(wildcard include/config/DEBUG_CREDENTIALS) \
-  include/linux/key.h \
-    $(wildcard include/config/KEY_NOTIFICATIONS) \
-    $(wildcard include/config/NET) \
-  include/linux/assoc_array.h \
-    $(wildcard include/config/ASSOCIATIVE_ARRAY) \
-  include/linux/sched/user.h \
-    $(wildcard include/config/WATCH_QUEUE) \
-  include/linux/percpu_counter.h \
-  include/linux/rcu_sync.h \
-  include/linux/delayed_call.h \
-  include/linux/errseq.h \
-  include/linux/ioprio.h \
-  include/linux/sched/rt.h \
-  include/linux/iocontext.h \
-    $(wildcard include/config/BLK_ICQ) \
-  include/uapi/linux/ioprio.h \
-  include/linux/fs_types.h \
-  include/linux/mount.h \
-  include/linux/mnt_idmapping.h \
-  include/uapi/linux/fs.h \
-  include/linux/quota.h \
-    $(wildcard include/config/QUOTA_NETLINK_INTERFACE) \
-  include/uapi/linux/dqblk_xfs.h \
-  include/linux/dqblk_v1.h \
-  include/linux/dqblk_v2.h \
-  include/linux/dqblk_qtree.h \
-  include/linux/projid.h \
-  include/uapi/linux/quota.h \
-  include/linux/nfs_fs_i.h \
-  include/linux/seq_file.h \
-  include/linux/string_helpers.h \
-  include/linux/ns_common.h \
-  include/linux/nsproxy.h \
-  include/linux/user_namespace.h \
-    $(wildcard include/config/INOTIFY_USER) \
-    $(wildcard include/config/FANOTIFY) \
-    $(wildcard include/config/PERSISTENT_KEYRINGS) \
-  include/linux/kernel_stat.h \
-  include/linux/interrupt.h \
-    $(wildcard include/config/IRQ_FORCED_THREADING) \
-    $(wildcard include/config/GENERIC_IRQ_PROBE) \
-    $(wildcard include/config/IRQ_TIMINGS) \
-  include/linux/irqreturn.h \
-  include/linux/irqnr.h \
-  include/uapi/linux/irqnr.h \
-  include/linux/hardirq.h \
-  include/linux/context_tracking_state.h \
-    $(wildcard include/config/CONTEXT_TRACKING) \
-  include/linux/ftrace_irq.h \
-    $(wildcard include/config/HWLAT_TRACER) \
-    $(wildcard include/config/OSNOISE_TRACER) \
-  include/linux/vtime.h \
-    $(wildcard include/config/VIRT_CPU_ACCOUNTING) \
-    $(wildcard include/config/IRQ_TIME_ACCOUNTING) \
-  arch/x86/include/asm/hardirq.h \
-    $(wildcard include/config/KVM_INTEL) \
-    $(wildcard include/config/X86_THERMAL_VECTOR) \
-    $(wildcard include/config/X86_MCE_THRESHOLD) \
-    $(wildcard include/config/X86_MCE_AMD) \
-    $(wildcard include/config/X86_HV_CALLBACK_VECTOR) \
-  arch/x86/include/asm/irq.h \
-  arch/x86/include/asm/sections.h \
-  include/asm-generic/sections.h \
-    $(wildcard include/config/HAVE_FUNCTION_DESCRIPTORS) \
-  include/linux/cgroup-defs.h \
-    $(wildcard include/config/CGROUP_NET_CLASSID) \
-    $(wildcard include/config/CGROUP_NET_PRIO) \
-  include/linux/u64_stats_sync.h \
-  include/linux/bpf-cgroup-defs.h \
-  include/linux/psi_types.h \
-  include/linux/kthread.h \
-  include/linux/cgroup_subsys.h \
-    $(wildcard include/config/CGROUP_DEVICE) \
-    $(wildcard include/config/CGROUP_FREEZER) \
-    $(wildcard include/config/CGROUP_PERF) \
-    $(wildcard include/config/CGROUP_HUGETLB) \
-    $(wildcard include/config/CGROUP_PIDS) \
-    $(wildcard include/config/CGROUP_RDMA) \
-    $(wildcard include/config/CGROUP_MISC) \
-    $(wildcard include/config/CGROUP_DEBUG) \
-  include/linux/vm_event_item.h \
-    $(wildcard include/config/HAVE_ARCH_TRANSPARENT_HUGEPAGE_PUD) \
-    $(wildcard include/config/MEMORY_BALLOON) \
-    $(wildcard include/config/BALLOON_COMPACTION) \
-    $(wildcard include/config/DEBUG_TLBFLUSH) \
-    $(wildcard include/config/DEBUG_VM_VMACACHE) \
-  include/linux/page_counter.h \
-  include/linux/vmpressure.h \
-  include/linux/eventfd.h \
-  include/linux/mm.h \
-    $(wildcard include/config/HAVE_ARCH_MMAP_RND_BITS) \
-    $(wildcard include/config/HAVE_ARCH_MMAP_RND_COMPAT_BITS) \
-    $(wildcard include/config/ARCH_USES_HIGH_VMA_FLAGS) \
-    $(wildcard include/config/ARCH_HAS_PKEYS) \
-    $(wildcard include/config/PPC) \
-    $(wildcard include/config/PARISC) \
-    $(wildcard include/config/SPARC64) \
-    $(wildcard include/config/ARM64_MTE) \
-    $(wildcard include/config/HAVE_ARCH_USERFAULTFD_MINOR) \
-    $(wildcard include/config/SHMEM) \
-    $(wildcard include/config/ARCH_HAS_PTE_SPECIAL) \
-    $(wildcard include/config/ARCH_HAS_PTE_DEVMAP) \
-    $(wildcard include/config/DEBUG_VM_RB) \
-    $(wildcard include/config/PAGE_POISONING) \
-    $(wildcard include/config/INIT_ON_ALLOC_DEFAULT_ON) \
-    $(wildcard include/config/INIT_ON_FREE_DEFAULT_ON) \
-    $(wildcard include/config/DEBUG_PAGEALLOC) \
-    $(wildcard include/config/HUGETLBFS) \
-    $(wildcard include/config/MAPPING_DIRTY_HELPERS) \
-    $(wildcard include/config/ANON_VMA_NAME) \
-  include/linux/mmap_lock.h \
-  include/linux/page_ext.h \
-  include/linux/stacktrace.h \
-    $(wildcard include/config/ARCH_STACKWALK) \
-    $(wildcard include/config/STACKTRACE) \
-    $(wildcard include/config/HAVE_RELIABLE_STACKTRACE) \
-  include/linux/stackdepot.h \
-    $(wildcard include/config/STACKDEPOT_ALWAYS_INIT) \
-  include/linux/page_ref.h \
-    $(wildcard include/config/DEBUG_PAGE_REF) \
-  include/linux/sizes.h \
-  include/linux/pgtable.h \
-    $(wildcard include/config/HIGHPTE) \
-    $(wildcard include/config/GUP_GET_PTE_LOW_HIGH) \
-    $(wildcard include/config/HAVE_ARCH_SOFT_DIRTY) \
-    $(wildcard include/config/ARCH_ENABLE_THP_MIGRATION) \
-    $(wildcard include/config/X86_ESPFIX64) \
-  arch/x86/include/asm/pgtable.h \
-    $(wildcard include/config/DEBUG_WX) \
-    $(wildcard include/config/PAGE_TABLE_CHECK) \
-  arch/x86/include/asm/pkru.h \
-  arch/x86/include/asm/fpu/api.h \
-    $(wildcard include/config/X86_DEBUG_FPU) \
-  arch/x86/include/asm/coco.h \
-  include/asm-generic/pgtable_uffd.h \
-  include/linux/page_table_check.h \
-  arch/x86/include/asm/pgtable_32.h \
-  arch/x86/include/asm/pgtable-3level.h \
-  arch/x86/include/asm/pgtable-invert.h \
-  include/linux/huge_mm.h \
-  include/linux/sched/coredump.h \
-    $(wildcard include/config/CORE_DUMP_DEFAULT_ELF_HEADERS) \
-  include/linux/vmstat.h \
-    $(wildcard include/config/VM_EVENT_COUNTERS) \
-  include/linux/writeback.h \
-  include/linux/flex_proportions.h \
-  include/linux/backing-dev-defs.h \
-    $(wildcard include/config/DEBUG_FS) \
-  include/linux/blk_types.h \
-    $(wildcard include/config/FAIL_MAKE_REQUEST) \
-    $(wildcard include/config/BLK_CGROUP_IOCOST) \
-    $(wildcard include/config/BLK_INLINE_ENCRYPTION) \
-    $(wildcard include/config/BLK_DEV_INTEGRITY) \
-  include/linux
+// SPDX-License-Identifier: GPL-2.0-only
+/*
+ * Broadcom GENET (Gigabit Ethernet) Wake-on-LAN support
+ *
+ * Copyright (c) 2014-2020 Broadcom
+ */
+
+#define pr_fmt(fmt)				"bcmgenet_wol: " fmt
+
+#include <linux/kernel.h>
+#include <linux/module.h>
+#include <linux/sched.h>
+#include <linux/types.h>
+#include <linux/interrupt.h>
+#include <linux/string.h>
+#include <linux/init.h>
+#include <linux/errno.h>
+#include <linux/delay.h>
+#include <linux/pm.h>
+#include <linux/clk.h>
+#include <linux/platform_device.h>
+#include <net/arp.h>
+
+#include <linux/mii.h>
+#include <linux/ethtool.h>
+#include <linux/netdevice.h>
+#include <linux/inetdevice.h>
+#include <linux/etherdevice.h>
+#include <linux/skbuff.h>
+#include <linux/in.h>
+#include <linux/ip.h>
+#include <linux/ipv6.h>
+#include <linux/phy.h>
+
+#include "bcmgenet.h"
+
+/* ethtool function - get WOL (Wake on LAN) settings, Only Magic Packet
+ * Detection is supported through ethtool
+ */
+void bcmgenet_get_wol(struct net_device *dev, struct ethtool_wolinfo *wol)
+{
+	struct bcmgenet_priv *priv = netdev_priv(dev);
+	struct device *kdev = &priv->pdev->dev;
+
+	if (!device_can_wakeup(kdev)) {
+		wol->supported = 0;
+		wol->wolopts = 0;
+		return;
+	}
+
+	wol->supported = WAKE_MAGIC | WAKE_MAGICSECURE | WAKE_FILTER;
+	wol->wolopts = priv->wolopts;
+	memset(wol->sopass, 0, sizeof(wol->sopass));
+
+	if (wol->wolopts & WAKE_MAGICSECURE)
+		memcpy(wol->sopass, priv->sopass, sizeof(priv->sopass));
+}
+
+/* ethtool function - set WOL (Wake on LAN) settings.
+ * Only for magic packet detection mode.
+ */
+int bcmgenet_set_wol(struct net_device *dev, struct ethtool_wolinfo *wol)
+{
+	struct bcmgenet_priv *priv = netdev_priv(dev);
+	struct device *kdev = &priv->pdev->dev;
+
+	if (!device_can_wakeup(kdev))
+		return -ENOTSUPP;
+
+	if (wol->wolopts & ~(WAKE_MAGIC | WAKE_MAGICSECURE | WAKE_FILTER))
+		return -EINVAL;
+
+	if (wol->wolopts & WAKE_MAGICSECURE)
+		memcpy(priv->sopass, wol->sopass, sizeof(priv->sopass));
+
+	/* Flag the device and relevant IRQ as wakeup capable */
+	if (wol->wolopts) {
+		device_set_wakeup_enable(kdev, 1);
+		/* Avoid unbalanced enable_irq_wake calls */
+		if (priv->wol_irq_disabled)
+			enable_irq_wake(priv->wol_irq);
+		priv->wol_irq_disabled = false;
+	} else {
+		device_set_wakeup_enable(kdev, 0);
+		/* Avoid unbalanced disable_irq_wake calls */
+		if (!priv->wol_irq_disabled)
+			disable_irq_wake(priv->wol_irq);
+		priv->wol_irq_disabled = true;
+	}
+
+	priv->wolopts = wol->wolopts;
+
+	return 0;
+}
+
+static int bcmgenet_poll_wol_status(struct bcmgenet_priv *priv)
+{
+	struct net_device *dev = priv->dev;
+	int retries = 0;
+
+	while (!(bcmgenet_rbuf_readl(priv, RBUF_STATUS)
+		& RBUF_STATUS_WOL)) {
+		retries++;
+		if (retries > 5) {
+			netdev_crit(dev, "polling wol mode timeout\n");
+			return -ETIMEDOUT;
+		}
+		mdelay(1);
+	}
+
+	return retries;
+}
+
+static void bcmgenet_set_mpd_password(struct bcmgenet_priv *priv)
+{
+	bcmgenet_umac_writel(priv, get_unaligned_be16(&priv->sopass[0]),
+			     UMAC_MPD_PW_MS);
+	bcmgenet_umac_writel(priv, get_unaligned_be32(&priv->sopass[2]),
+			     UMAC_MPD_PW_LS);
+}
+
+int bcmgenet_wol_power_down_cfg(struct bcmgenet_priv *priv,
+				enum bcmgenet_power_mode mode)
+{
+	struct net_device *dev = priv->dev;
+	struct bcmgenet_rxnfc_rule *rule;
+	u32 reg, hfb_ctrl_reg, hfb_enable = 0;
+	int retries = 0;
+
+	if (mode != GENET_POWER_WOL_MAGIC) {
+		netif_err(priv, wol, dev, "unsupported mode: %d\n", mode);
+		return -EINVAL;
+	}
+
+	/* Can't suspend with WoL if MAC is still in reset */
+	reg = bcmgenet_umac_readl(priv, UMAC_CMD);
+	if (reg & CMD_SW_RESET)
+		reg &= ~CMD_SW_RESET;
+
+	/* disable RX */
+	reg &= ~CMD_RX_EN;
+	bcmgenet_umac_writel(priv, reg, UMAC_CMD);
+	mdelay(10);
+
+	if (priv->wolopts & (WAKE_MAGIC | WAKE_MAGICSECURE)) {
+		reg = bcmgenet_umac_readl(priv, UMAC_MPD_CTRL);
+		reg |= MPD_EN;
+		if (priv->wolopts & WAKE_MAGICSECURE) {
+			bcmgenet_set_mpd_password(priv);
+			reg |= MPD_PW_EN;
+		}
+		bcmgenet_umac_writel(priv, reg, UMAC_MPD_CTRL);
+	}
+
+	hfb_ctrl_reg = bcmgenet_hfb_reg_readl(priv, HFB_CTRL);
+	if (priv->wolopts & WAKE_FILTER) {
+		list_for_each_entry(rule, &priv->rxnfc_list, list)
+			if (rule->fs.ring_cookie == RX_CLS_FLOW_WAKE)
+				hfb_enable |= (1 << rule->fs.location);
+		reg = (hfb_ctrl_reg & ~RBUF_HFB_EN) | RBUF_ACPI_EN;
+		bcmgenet_hfb_reg_writel(priv, reg, HFB_CTRL);
+	}
+
+	/* Do not leave UniMAC in MPD mode only */
+	retries = bcmgenet_poll_wol_status(priv);
+	if (retries < 0) {
+		reg = bcmgenet_umac_readl(priv, UMAC_MPD_CTRL);
+		reg &= ~(MPD_EN | MPD_PW_EN);
+		bcmgenet_umac_writel(priv, reg, UMAC_MPD_CTRL);
+		bcmgenet_hfb_reg_writel(priv, hfb_ctrl_reg, HFB_CTRL);
+		return retries;
+	}
+
+	netif_dbg(priv, wol, dev, "MPD WOL-ready status set after %d msec\n",
+		  retries);
+
+	clk_prepare_enable(priv->clk_wol);
+	priv->wol_active = 1;
+
+	if (hfb_enable) {
+		bcmgenet_hfb_reg_writel(priv, hfb_enable,
+					HFB_FLT_ENABLE_V3PLUS + 4);
+		hfb_ctrl_reg = RBUF_HFB_EN | RBUF_ACPI_EN;
+		bcmgenet_hfb_reg_writel(priv, hfb_ctrl_reg, HFB_CTRL);
+	}
+
+	/* Enable CRC forward */
+	reg = bcmgenet_umac_readl(priv, UMAC_CMD);
+	priv->crc_fwd_en = 1;
+	reg |= CMD_CRC_FWD;
+
+	/* Receiver must be enabled for WOL MP detection */
+	reg |= CMD_RX_EN;
+	bcmgenet_umac_writel(priv, reg, UMAC_CMD);
+
+	reg = UMAC_IRQ_MPD_R;
+	if (hfb_enable)
+		reg |=  UMAC_IRQ_HFB_SM | UMAC_IRQ_HFB_MM;
+
+	bcmgenet_intrl2_0_writel(priv, reg, INTRL2_CPU_MASK_CLEAR);
+
+	return 0;
+}
+
+void bcmgenet_wol_power_up_cfg(struct bcmgenet_priv *priv,
+			       enum bcmgenet_power_mode mode)
+{
+	u32 reg;
+
+	if (mode != GENET_POWER_WOL_MAGIC) {
+		netif_err(priv, wol, priv->dev, "invalid mode: %d\n", mode);
+		return;
+	}
+
+	if (!priv->wol_active)
+		return;	/* failed to suspend so skip the rest */
+
+	priv->wol_active = 0;
+	clk_disable_unprepare(priv->clk_wol);
+	priv->crc_fwd_en = 0;
+
+	/* Disable Magic Packet Detection */
+	if (priv->wolopts & (WAKE_MAGIC | WAKE_MAGICSECURE)) {
+		reg = bcmgenet_umac_readl(priv, UMAC_MPD_CTRL);
+		if (!(reg & MPD_EN))
+			return;	/* already reset so skip the rest */
+		reg &= ~(MPD_EN | MPD_PW_EN);
+		bcmgenet_umac_writel(priv, reg, UMAC_MPD_CTRL);
+	}
+
+	/* Disable WAKE_FILTER Detection */
+	if (priv->wolopts & WAKE_FILTER) {
+		reg = bcmgenet_hfb_reg_readl(priv, HFB_CTRL);
+		if (!(reg & RBUF_ACPI_EN))
+			return;	/* already reset so skip the rest */
+		reg &= ~(RBUF_HFB_EN | RBUF_ACPI_EN);
+		bcmgenet_hfb_reg_writel(priv, reg, HFB_CTRL);
+	}
+
+	/* Disable CRC Forward */
+	reg = bcmgenet_umac_readl(priv, UMAC_CMD);
+	reg &= ~CMD_CRC_FWD;
+	bcmgenet_umac_writel(priv, reg, UMAC_CMD);
+}

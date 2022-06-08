@@ -1,5 +1,7 @@
-CPI_APEI_GHES) \
-    $(wildcard include/config/INTEL_TXT) \
-  arch/x86/include/generated/asm/kmap_size.h \
-  include/asm-generic/kmap_size.h \
-    $(wildcard include/config/DEBUG_KMAP_LOCAL) \
+de/linux/ptr_ring.h \
+  include/linux/seq_file_net.h \
+  include/net/netprio_cgroup.h \
+  include/net/xdp.h \
+  include/uapi/linux/neighbour.h \
+  include/linux/netlink.h \
+  include/net/scm.h

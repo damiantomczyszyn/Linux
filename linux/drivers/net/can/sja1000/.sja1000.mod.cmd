@@ -1,4 +1,1 @@
-TATE) \
-    $(wildcard include/config/ACPI_HOTPLUG_CPU) \
-    $(wildcard include/config/ACPI_HOTPLUG_IOAPIC) \
-    $(wildcard include
+cmd_drivers/net/can/sja1000/sja1000.mod := { echo  drivers/net/can/sja1000/sja1000.o;  echo; } > drivers/net/can/sja1000/sja1000.mod

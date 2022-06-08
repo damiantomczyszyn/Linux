@@ -1,30 +1,28 @@
-_LOCK_DEPTH))
-		return 0;
+t_task_stack(prev);
 
-	class_idx = class - lock_classes;
-
-	if (depth) { /* we're holding locks */
-		hlock = curr->held_locks + depth - 1;
-		if (hlock->class_idx == class_idx && nest_lock) {
-			if (!references)
-				references++;
-
-			if (!hlock->references)
-				hlock->references++;
-
-			hlock->references += references;
-
-			/* Overflow */
-			if (DEBUG_LOCKS_WARN_ON(hlock->references < references))
-				return 0;
-
-			return 2;
-		}
+		put_task_struct_rcu_user(prev);
 	}
 
-	hlock = curr->held_locks + depth;
+	return rq;
+}
+
+/**
+ * schedule_tail - first thing a freshly forked thread must call.
+ * @prev: the thread we just switched away from.
+ */
+asmlinkage __visible void schedule_tail(struct task_struct *prev)
+	__releases(rq->lock)
+{
 	/*
-	 * Plain impossible, we just registered it and checked it weren't no
-	 * NULL like.. I bet this mushroom I ate was good!
+	 * New tasks start with FORK_PREEMPT_COUNT, see there and
+	 * finish_task_switch() for details.
+	 *
+	 * finish_task_switch() will drop rq->lock() and lower preempt_count
+	 * and the preempt_enable() will end up enabling preemption (on
+	 * PREEMPT_COUNT kernels).
 	 */
-	if (DEBUG_
+
+	finish_task_switch(prev);
+	preempt_enable();
+
+	if (cu

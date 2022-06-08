@@ -1,2 +1,1 @@
-lude/config/SPI) \
- 
+cmd_drivers/media/pc

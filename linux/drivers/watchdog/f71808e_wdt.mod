@@ -1,2 +1,1 @@
-de/uapi/linux/swab.h \
-  arch/x8
+        = LGDT3306A_TPCLK_RISING

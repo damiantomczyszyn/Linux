@@ -1,348 +1,240 @@
-onfig/TRACE_BRANCH_PROFILING) \
-    $(wildcard include/config/PROFILE_ALL_BRANCHES) \
-    $(wildcard include/config/STACK_VALIDATION) \
-  include/linux/compiler_types.h \
-  arch/x86/include/generated/asm/rwonce.h \
-  include/asm-generic/rwonce.h \
-  include/linux/kasan-checks.h \
-    $(wildcard include/config/KASAN_GENERIC) \
-    $(wildcard include/config/KASAN_SW_TAGS) \
-  include/linux/types.h \
-    $(wildcard include/config/HAVE_UID16) \
-    $(wildcard include/config/UID16) \
-    $(wildcard include/config/ARCH_DMA_ADDR_T_64BIT) \
-    $(wildcard include/config/PHYS_ADDR_T_64BIT) \
-    $(wildcard include/config/64BIT) \
-    $(wildcard include/config/ARCH_32BIT_USTAT_F_TINODE) \
-  include/uapi/linux/types.h \
-  arch/x86/include/generated/uapi/asm/types.h \
-  include/uapi/asm-generic/types.h \
-  include/asm-generic/int-ll64.h \
-  include/uapi/asm-generic/int-ll64.h \
-  arch/x86/include/uapi/asm/bitsperlong.h \
-  include/asm-generic/bitsperlong.h \
-  include/uapi/asm-generic/bitsperlong.h \
-  include/uapi/linux/posix_types.h \
-  include/linux/stddef.h \
-  include/uapi/linux/stddef.h \
-  arch/x86/include/asm/posix_types.h \
-    $(wildcard include/config/X86_32) \
-  arch/x86/include/uapi/asm/posix_types_32.h \
-  include/uapi/asm-generic/posix_types.h \
-  include/linux/kcsan-checks.h \
-    $(wildcard include/config/KCSAN) \
-    $(wildcard include/config/KCSAN_WEAK_MEMORY) \
-    $(wildcard include/config/KCSAN_IGNORE_ATOMICS) \
-  include/linux/err.h \
-  arch/x86/include/generated/uapi/asm/errno.h \
-  include/uapi/asm-generic/errno.h \
-  include/uapi/asm-generic/errno-base.h \
-  include/linux/poison.h \
-    $(wildcard include/config/ILLEGAL_POINTER_VALUE) \
-  include/linux/const.h \
-  include/vdso/const.h \
-  include/uapi/linux/const.h \
-  arch/x86/include/asm/barrier.h \
-  arch/x86/include/asm/alternative.h \
-  include/linux/stringify.h \
-  arch/x86/include/asm/asm.h \
-  arch/x86/include/asm/extable_fixup_types.h \
-  arch/x86/include/asm/nops.h \
-  include/asm-generic/barrier.h \
-  include/linux/stat.h \
-  arch/x86/include/uapi/asm/stat.h \
-  include/uapi/linux/stat.h \
-  include/linux/time.h \
-    $(wildcard include/config/POSIX_TIMERS) \
-  include/linux/cache.h \
-    $(wildcard include/config/ARCH_HAS_CACHE_LINE_SIZE) \
-  include/uapi/linux/kernel.h \
-  include/uapi/linux/sysinfo.h \
-  arch/x86/include/asm/cache.h \
-    $(wildcard include/config/X86_L1_CACHE_SHIFT) \
-    $(wildcard include/config/X86_INTERNODE_CACHE_SHIFT) \
-    $(wildcard include/config/X86_VSMP) \
-  include/linux/linkage.h \
-    $(wildcard include/config/ARCH_USE_SYM_ANNOTATIONS) \
-  include/linux/export.h \
-    $(wildcard include/config/MODVERSIONS) \
-    $(wildcard include/config/MODULE_REL_CRCS) \
-    $(wildcard include/config/HAVE_ARCH_PREL32_RELOCATIONS) \
-    $(wildcard include/config/TRIM_UNUSED_KSYMS) \
-  arch/x86/include/asm/linkage.h \
-    $(wildcard include/config/X86_64) \
-    $(wildcard include/config/X86_ALIGNMENT_16) \
-    $(wildcard include/config/SLS) \
-  arch/x86/include/asm/ibt.h \
-    $(wildcard include/config/X86_KERNEL_IBT) \
-  include/linux/math64.h \
-    $(wildcard include/config/ARCH_SUPPORTS_INT128) \
-  include/linux/math.h \
-  arch/x86/include/asm/div64.h \
-  include/linux/log2.h \
-    $(wildcard include/config/ARCH_HAS_ILOG2_U32) \
-    $(wildcard include/config/ARCH_HAS_ILOG2_U64) \
-  include/linux/bitops.h \
-  include/linux/bits.h \
-  include/vdso/bits.h \
-  include/linux/typecheck.h \
-  arch/x86/include/asm/bitops.h \
-    $(wildcard include/config/X86_CMOV) \
-  arch/x86/include/asm/rmwcc.h \
-    $(wildcard include/config/CC_HAS_ASM_GOTO) \
-  include/asm-generic/bitops/fls64.h \
-  include/asm-generic/bitops/sched.h \
-  arch/x86/include/asm/arch_hweight.h \
-  arch/x86/include/asm/cpufeatures.h \
-  arch/x86/include/asm/required-features.h \
-    $(wildcard include/config/X86_MINIMUM_CPU_FAMILY) \
-    $(wildcard include/config/MATH_EMULATION) \
-    $(wildcard include/config/X86_PAE) \
-    $(wildcard include/config/X86_CMPXCHG64) \
-    $(wildcard include/config/X86_P6_NOP) \
-    $(wildcard include/config/MATOM) \
-    $(wildcard include/config/PARAVIRT_XXL) \
-  arch/x86/include/asm/disabled-features.h \
-    $(wildcard include/config/X86_SMAP) \
-    $(wildcard include/config/X86_UMIP) \
-    $(wildcard include/config/X86_INTEL_MEMORY_PROTECTION_KEYS) \
-    $(wildcard include/config/X86_5LEVEL) \
-    $(wildcard include/config/PAGE_TABLE_ISOLATION) \
-    $(wildcard include/config/INTEL_IOMMU_SVM) \
-    $(wildcard include/config/X86_SGX) \
-  include/asm-generic/bitops/const_hweight.h \
-  include/asm-generic/bitops/instrumented-atomic.h \
-  include/linux/instrumented.h \
-  include/asm-generic/bitops/instrumented-non-atomic.h \
-    $(wildcard include/config/KCSAN_ASSUME_PLAIN_WRITES_ATOMIC) \
-  include/asm-generic/bitops/instrumented-lock.h \
-  include/asm-generic/bitops/le.h \
-  arch/x86/include/uapi/asm/byteorder.h \
-  include/linux/byteorder/little_endian.h \
-  include/uapi/linux/byteorder/little_endian.h \
-  include/linux/swab.h \
-  include/uapi/linux/swab.h \
-  arch/x86/include/uapi/asm/swab.h \
-  include/linux/byteorder/generic.h \
-  include/asm-generic/bitops/ext2-atomic-setbit.h \
-  include/vdso/math64.h \
-  include/linux/time64.h \
-  include/vdso/time64.h \
-  include/uapi/linux/time.h \
-  include/uapi/linux/time_types.h \
-  include/linux/time32.h \
-  include/linux/timex.h \
-  include/uapi/linux/timex.h \
-  include/uapi/linux/param.h \
-  arch/x86/include/generated/uapi/asm/param.h \
-  include/asm-generic/param.h \
-    $(wildcard include/config/HZ) \
-  include/uapi/asm-generic/param.h \
-  arch/x86/include/asm/timex.h \
-    $(wildcard include/config/X86_TSC) \
-  arch/x86/include/asm/processor.h \
-    $(wildcard include/config/X86_VMX_FEATURE_NAMES) \
-    $(wildcard include/config/X86_IOPL_IOPERM) \
-    $(wildcard include/config/STACKPROTECTOR) \
-    $(wildcard include/config/VM86) \
-    $(wildcard include/config/X86_DEBUGCTLMSR) \
-    $(wildcard include/config/CPU_SUP_AMD) \
-    $(wildcard include/config/XEN) \
-  arch/x86/include/asm/processor-flags.h \
-  arch/x86/include/uapi/asm/processor-flags.h \
-  include/linux/mem_encrypt.h \
-    $(wildcard include/config/ARCH_HAS_MEM_ENCRYPT) \
-    $(wildcard include/config/AMD_MEM_ENCRYPT) \
-  arch/x86/include/asm/mem_encrypt.h \
-  include/linux/init.h \
-    $(wildcard include/config/STRICT_KERNEL_RWX) \
-    $(wildcard include/config/STRICT_MODULE_RWX) \
-    $(wildcard include/config/LTO_CLANG) \
-  include/linux/cc_platform.h \
-    $(wildcard include/config/ARCH_HAS_CC_PLATFORM) \
-  arch/x86/include/uapi/asm/bootparam.h \
-  include/linux/screen_info.h \
-  include/uapi/linux/screen_info.h \
-  include/linux/apm_bios.h \
-  include/uapi/linux/apm_bios.h \
-  include/uapi/linux/ioctl.h \
-  arch/x86/include/generated/uapi/asm/ioctl.h \
-  include/asm-generic/ioctl.h \
-  include/uapi/asm-generic/ioctl.h \
-  include/linux/edd.h \
-  include/uapi/linux/edd.h \
-  arch/x86/include/asm/ist.h \
-  arch/x86/include/uapi/asm/ist.h \
-  include/video/edid.h \
-    $(wildcard include/config/X86) \
-  include/uapi/video/edid.h \
-  arch/x86/include/asm/math_emu.h \
-  arch/x86/include/asm/ptrace.h \
-    $(wildcard include/config/PARAVIRT) \
-    $(wildcard include/config/IA32_EMULATION) \
-  arch/x86/include/asm/segment.h \
-    $(wildcard include/config/XEN_PV) \
-  arch/x86/include/asm/page_types.h \
-    $(wildcard include/config/PHYSICAL_START) \
-    $(wildcard include/config/PHYSICAL_ALIGN) \
-    $(wildcard include/config/DYNAMIC_PHYSICAL_MASK) \
-  arch/x86/include/asm/page_32_types.h \
-    $(wildcard include/config/HIGHMEM4G) \
-    $(wildcard include/config/HIGHMEM64G) \
-    $(wildcard include/config/PAGE_OFFSET) \
-  arch/x86/include/uapi/asm/ptrace.h \
-  arch/x86/include/uapi/asm/ptrace-abi.h \
-  arch/x86/include/asm/paravirt_types.h \
-    $(wildcard include/config/PGTABLE_LEVELS) \
-    $(wildcard include/config/PARAVIRT_DEBUG) \
-  arch/x86/include/asm/desc_defs.h \
-  arch/x86/include/asm/pgtable_types.h \
-    $(wildcard include/config/MEM_SOFT_DIRTY) \
-    $(wildcard include/config/HAVE_ARCH_USERFAULTFD_WP) \
-    $(wildcard include/config/PROC_FS) \
-  arch/x86/include/asm/pgtable_32_types.h \
-  arch/x86/include/asm/pgtable-3level_types.h \
-  include/asm-generic/pgtable-nop4d.h \
-  include/asm-generic/pgtable-nopud.h \
-  arch/x86/include/asm/nospec-branch.h \
-  include/linux/static_key.h \
-  include/linux/jump_label.h \
-    $(wildcard include/config/HAVE_ARCH_JUMP_LABEL_RELATIVE) \
-  arch/x86/include/asm/jump_label.h \
-  include/linux/objtool.h \
-    $(wildcard include/config/FRAME_POINTER) \
-  arch/x86/include/asm/msr-index.h \
-  arch/x86/include/asm/unwind_hints.h \
-  arch/x86/include/asm/orc_types.h \
-  arch/x86/include/asm/GEN-for-each-reg.h \
-  arch/x86/include/asm/spinlock_types.h \
-  include/asm-generic/qspinlock_types.h \
-    $(wildcard include/config/NR_CPUS) \
-  include/asm-generic/qrwlock_types.h \
-  arch/x86/include/asm/proto.h \
-  arch/x86/include/uapi/asm/ldt.h \
-  arch/x86/include/uapi/asm/sigcontext.h \
-  arch/x86/include/asm/current.h \
-  arch/x86/include/asm/percpu.h \
-    $(wildcard include/config/X86_64_SMP) \
-  include/linux/kernel.h \
-    $(wildcard include/config/PREEMPT_VOLUNTARY_BUILD) \
-    $(wildcard include/config/PREEMPT_DYNAMIC) \
-    $(wildcard include/config/HAVE_PREEMPT_DYNAMIC_CALL) \
-    $(wildcard include/config/HAVE_PREEMPT_DYNAMIC_KEY) \
-    $(wildcard include/config/PREEMPT_) \
-    $(wildcard include/config/DEBUG_ATOMIC_SLEEP) \
-    $(wildcard include/config/MMU) \
-    $(wildcard include/config/PROVE_LOCKING) \
-  include/linux/stdarg.h \
-  include/linux/align.h \
-  include/linux/limits.h \
-  include/uapi/linux/limits.h \
-  include/vdso/limits.h \
-  include/linux/kstrtox.h \
-  include/linux/minmax.h \
-  include/linux/panic.h \
-    $(wildcard include/config/PANIC_TIMEOUT) \
-  include/linux/printk.h \
-    $(wildcard include/config/MESSAGE_LOGLEVEL_DEFAULT) \
-    $(wildcard include/config/CONSOLE_LOGLEVEL_DEFAULT) \
-    $(wildcard include/config/CONSOLE_LOGLEVEL_QUIET) \
-    $(wildcard include/config/EARLY_PRINTK) \
-    $(wildcard include/config/PRINTK) \
-    $(wildcard include/config/DYNAMIC_DEBUG) \
-    $(wildcard include/config/DYNAMIC_DEBUG_CORE) \
-  include/linux/kern_levels.h \
-  include/linux/ratelimit_types.h \
-  include/linux/spinlock_types_raw.h \
-    $(wildcard include/config/DEBUG_SPINLOCK) \
-    $(wildcard include/config/DEBUG_LOCK_ALLOC) \
-  include/linux/lockdep_types.h \
-    $(wildcard include/config/PROVE_RAW_LOCK_NESTING) \
-    $(wildcard include/config/LOCKDEP) \
-    $(wildcard include/config/LOCK_STAT) \
-  include/linux/once_lite.h \
-  include/linux/static_call_types.h \
-    $(wildcard include/config/HAVE_STATIC_CALL) \
-  include/linux/instruction_pointer.h \
-  include/asm-generic/percpu.h \
-    $(wildcard include/config/DEBUG_PREEMPT) \
-    $(wildcard include/config/HAVE_SETUP_PER_CPU_AREA) \
-  include/linux/threads.h \
-    $(wildcard include/config/BASE_SMALL) \
-  include/linux/percpu-defs.h \
-    $(wildcard include/config/DEBUG_FORCE_WEAK_PER_CPU) \
-  arch/x86/include/asm/page.h \
-  arch/x86/include/asm/page_32.h \
-    $(wildcard include/config/DEBUG_VIRTUAL) \
-    $(wildcard include/config/FLATMEM) \
-  include/linux/string.h \
-    $(wildcard include/config/BINARY_PRINTF) \
-    $(wildcard include/config/FORTIFY_SOURCE) \
-  include/linux/errno.h \
-  include/uapi/linux/errno.h \
-  include/uapi/linux/string.h \
-  arch/x86/include/asm/string.h \
-  arch/x86/include/asm/string_32.h \
-  include/linux/fortify-string.h \
-  include/linux/range.h \
-  include/asm-generic/memory_model.h \
-    $(wildcard include/config/SPARSEMEM_VMEMMAP) \
-    $(wildcard include/config/SPARSEMEM) \
-  include/linux/pfn.h \
-  include/asm-generic/getorder.h \
-  arch/x86/include/asm/msr.h \
-  arch/x86/include/asm/msr-index.h \
-  arch/x86/include/asm/cpumask.h \
-  include/linux/cpumask.h \
-    $(wildcard include/config/CPUMASK_OFFSTACK) \
-    $(wildcard include/config/HOTPLUG_CPU) \
-    $(wildcard include/config/DEBUG_PER_CPU_MAPS) \
-  include/linux/bitmap.h \
-  include/linux/find.h \
-  include/linux/atomic.h \
-  arch/x86/include/asm/atomic.h \
-  arch/x86/include/asm/cmpxchg.h \
-  arch/x86/include/asm/cmpxchg_32.h \
-  arch/x86/include/asm/atomic64_32.h \
-  include/linux/atomic/atomic-arch-fallback.h \
-    $(wildcard include/config/GENERIC_ATOMIC64) \
-  include/linux/atomic/atomic-long.h \
-  include/linux/atomic/atomic-instrumented.h \
-  include/linux/bug.h \
-    $(wildcard include/config/BUG_ON_DATA_CORRUPTION) \
-  arch/x86/include/asm/bug.h \
-    $(wildcard include/config/DEBUG_BUGVERBOSE) \
-  include/linux/instrumentation.h \
-    $(wildcard include/config/DEBUG_ENTRY) \
-  include/asm-generic/bug.h \
-    $(wildcard include/config/BUG) \
-    $(wildcard include/config/GENERIC_BUG_RELATIVE_POINTERS) \
-  arch/x86/include/uapi/asm/msr.h \
-  include/linux/tracepoint-defs.h \
-  arch/x86/include/asm/special_insns.h \
-  include/linux/irqflags.h \
-    $(wildcard include/config/TRACE_IRQFLAGS) \
-    $(wildcard include/config/PREEMPT_RT) \
-    $(wildcard include/config/IRQSOFF_TRACER) \
-    $(wildcard include/config/PREEMPT_TRACER) \
-    $(wildcard include/config/DEBUG_IRQFLAGS) \
-    $(wildcard include/config/TRACE_IRQFLAGS_SUPPORT) \
-  arch/x86/include/asm/irqflags.h \
-  arch/x86/include/asm/fpu/types.h \
-  arch/x86/include/asm/vmxfeatures.h \
-  arch/x86/include/asm/vdso/processor.h \
-  include/linux/personality.h \
-  include/uapi/linux/personality.h \
-  arch/x86/include/asm/tsc.h \
-  arch/x86/include/asm/cpufeature.h \
-    $(wildcard include/config/X86_FEATURE_NAMES) \
-  include/vdso/time32.h \
-  include/vdso/time.h \
-  include/linux/uidgid.h \
-    $(wildcard include/config/MULTIUSER) \
-    $(wildcard include/config/USER_NS) \
-  include/linux/highuid.h \
-  include/linux/buildid.h \
-    $(wildcard include/config/CRASH_CORE) \
-  include/linux/mm_types.h \
-    $(wildcard include/config/HAVE_ALIGN
+#include <linux/module.h>
+#define INCLUDE_VERMAGIC
+#include <linux/build-salt.h>
+#include <linux/elfnote-lto.h>
+#include <linux/vermagic.h>
+#include <linux/compiler.h>
+
+BUILD_SALT;
+BUILD_LTO_INFO;
+
+MODULE_INFO(vermagic, VERMAGIC_STRING);
+MODULE_INFO(name, KBUILD_MODNAME);
+
+__visible struct module __this_module
+__section(".gnu.linkonce.this_module") = {
+	.name = KBUILD_MODNAME,
+	.init = init_module,
+#ifdef CONFIG_MODULE_UNLOAD
+	.exit = cleanup_module,
+#endif
+	.arch = MODULE_ARCH_INIT,
+};
+
+MODULE_INFO(intree, "Y");
+
+#ifdef CONFIG_RETPOLINE
+MODULE_INFO(retpoline, "Y");
+#endif
+
+MODULE_INFO(depends, "8390,pcmcia");
+
+MODULE_ALIAS("pcmcia:m0057c0021f*fn*pfn00pa*pb*pc*pd*");
+MODULE_ALIAS("pcmcia:m0104c000Af*fn*pfn00pa*pb*pc*pd*");
+MODULE_ALIAS("pcmcia:m0105cEA15f*fn*pfn00pa*pb*pc*pd*");
+MODULE_ALIAS("pcmcia:m0143c3341f*fn*pfn00pa*pb*pc*pd*");
+MODULE_ALIAS("pcmcia:m0143cC0ABf*fn*pfn00pa*pb*pc*pd*");
+MODULE_ALIAS("pcmcia:m021Bc0101f*fn*pfn00pa*pb*pc*pd*");
+MODULE_ALIAS("pcmcia:m08A1cC0ABf*fn*pfn00pa*pb*pc*pd*");
+MODULE_ALIAS("pcmcia:m*c*f*fn*pfn00pa578BA6E7pbB0AC62C4pc*pd*");
+MODULE_ALIAS("pcmcia:m*c*f*fn*pfn00paBA9EB7E2pb077C174Epc*pd*");
+MODULE_ALIAS("pcmcia:m*c*f*fn*pfn00pa1A424A1CpbB23897FFpc*pd*");
+MODULE_ALIAS("pcmcia:m*c*f*fn*pfn00pa2A151FACpb48B932AEpc*pd*");
+MODULE_ALIAS("pcmcia:m*c*f*fn*pfn00pa0733CC81pbB3765033pc*pd*");
+MODULE_ALIAS("pcmcia:m*c*f*fn*pfn00paF7CB0B07pb7A821B58pc*pd*");
+MODULE_ALIAS("pcmcia:m*c*f*fn*pfn00paB2CED065pb3CED0555pc*pd*");
+MODULE_ALIAS("pcmcia:m*c*f*fn*pfn00paDCFE12D3pbCD8906CCpc*pd*");
+MODULE_ALIAS("pcmcia:m*c*f*fn*pfn00paDCFE12D3pbC67C648Fpc*pd*");
+MODULE_ALIAS("pcmcia:m*c*f*fn00pfn*paB569A6E5pb5BD4FF2Cpc*pd*");
+MODULE_ALIAS("pcmcia:m*c*f*fn00pfn*paB569A6E5pb4BDF15C3pc*pd*");
+MODULE_ALIAS("pcmcia:m*c*f*fn00pfn*paB569A6E5pbAE911C15pc*pd*");
+MODULE_ALIAS("pcmcia:m*c*f*fn00pfn*pa11C2DA09pb7289DC5DpcAAD95E1Fpd*");
+MODULE_ALIAS("pcmcia:m*c*f*fn00pfn*pa*pb1ED59302pc*pd*");
+MODULE_ALIAS("pcmcia:m0057c1004f*fn*pfn*pa*pb*pc*pd*");
+MODULE_ALIAS("pcmcia:m0104c000Df*fn*pfn*pa*pb*pc*pd*");
+MODULE_ALIAS("pcmcia:m0104c0075f*fn*pfn*pa*pb*pc*pd*");
+MODULE_ALIAS("pcmcia:m0104c0145f*fn*pfn*pa*pb*pc*pd*");
+MODULE_ALIAS("pcmcia:m0149c0230f*fn*pfn*pa*pb*pc*pd*");
+MODULE_ALIAS("pcmcia:m0149c4530f*fn*pfn*pa*pb*pc*pd*");
+MODULE_ALIAS("pcmcia:m0149cC1ABf*fn*pfn*pa*pb*pc*pd*");
+MODULE_ALIAS("pcmcia:m0186c0110f*fn*pfn*pa*pb*pc*pd*");
+MODULE_ALIAS("pcmcia:m01BFc8041f*fn*pfn*pa*pb*pc*pd*");
+MODULE_ALIAS("pcmcia:m0213c2452f*fn*pfn*pa*pb*pc*pd*");
+MODULE_ALIAS("pcmcia:m026Fc0300f*fn*pfn*pa*pb*pc*pd*");
+MODULE_ALIAS("pcmcia:m026Fc0307f*fn*pfn*pa*pb*pc*pd*");
+MODULE_ALIAS("pcmcia:m026Fc030Af*fn*pfn*pa*pb*pc*pd*");
+MODULE_ALIAS("pcmcia:m0274c1103f*fn*pfn*pa*pb*pc*pd*");
+MODULE_ALIAS("pcmcia:m0274c1121f*fn*pfn*pa*pb*pc*pd*");
+MODULE_ALIAS("pcmcia:mC001c0009f*fn*pfn*pa*pb*pc*pd*");
+MODULE_ALIAS("pcmcia:m*c*f*fn*pfn*pa352FFF7Fpb00B2E941pc*pd*");
+MODULE_ALIAS("pcmcia:m*c*f*fn*pfn*paB38BCC2Epb4DE88352pcEACA6C8Dpd7E57C22E*");
+MODULE_ALIAS("pcmcia:m*c*f*fn*pfn*pa9533672Epb281F1C5Dpc3FF7175Bpd*");
+MODULE_ALIAS("pcmcia:m*c*f*fn*pfn*pa9FE55D3Dpb85601198pc3FF7175Bpd*");
+MODULE_ALIAS("pcmcia:m*c*f*fn*pfn*pa9999AB35pb00B2E941pc4B0D829Epd*");
+MODULE_ALIAS("pcmcia:m*c*f*fn*pfn*pa738A0019pb281F1C5Dpc5E9D92C0pd*");
+MODULE_ALIAS("pcmcia:m*c*f*fn*pfn*pa3D294BE4pbEB9AAB6Cpc3FF7175Bpd*");
+MODULE_ALIAS("pcmcia:m*c*f*fn*pfn*pa1D55D7ECpbE4C64D34pc3FF7175Bpd*");
+MODULE_ALIAS("pcmcia:m*c*f*fn*pfn*pa547E66DCpb6B260753pc3FF7175Bpd*");
+MODULE_ALIAS("pcmcia:m*c*f*fn*pfn*pa932B7189pb699E4436pc6F6652E0pd*");
+MODULE_ALIAS("pcmcia:m*c*f*fn*pfn*pa281F1C5DpbD4CD2F20pcB87ADD82pd*");
+MODULE_ALIAS("pcmcia:m*c*f*fn*pfn*pa281F1C5DpbD4CD2F20pc7D3D83A8pd*");
+MODULE_ALIAS("pcmcia:m*c*f*fn*pfn*pa67F236ABpb*pc*pd*");
+MODULE_ALIAS("pcmcia:m*c*f*fn*pfn*paDFC6B5B2pbCB112A11pc*pd*");
+MODULE_ALIAS("pcmcia:m*c*f*fn*pfn*paDFC6B5B2pb5542BFFFpc*pd*");
+MODULE_ALIAS("pcmcia:m*c*f*fn*pfn*paBB7FBDD7pbCD91CC68pc*pd*");
+MODULE_ALIAS("pcmcia:m*c*f*fn*pfn*pa36634A66pbC6D05997pc*pd*");
+MODULE_ALIAS("pcmcia:m*c*f*fn*pfn*paBB7FBDD7pb28E299F8pc*pd*");
+MODULE_ALIAS("pcmcia:m*c*f*fn*pfn*pa36634A66pb62241D96pc*pd*");
+MODULE_ALIAS("pcmcia:m*c*f*fn*pfn*pa5070A7F9pb82F96E96pc*pd*");
+MODULE_ALIAS("pcmcia:m*c*f*fn*pfn*pa5070A7F9pb86741224pc*pd*");
+MODULE_ALIAS("pcmcia:m*c*f*fn*pfn*pa93B15570pb75EC3EFBpc*pd*");
+MODULE_ALIAS("pcmcia:m*c*f*fn*pfn*pa93B15570pb461C5247pc*pd*");
+MODULE_ALIAS("pcmcia:m*c*f*fn*pfn*pa93B15570pb82F96E96pc*pd*");
+MODULE_ALIAS("pcmcia:m*c*f*fn*pfn*pa578BA6E7pb0A9888C1pc*pd*");
+MODULE_ALIAS("pcmcia:m*c*f*fn*pfn*pa578BA6E7pb939FEDBDpc*pd*");
+MODULE_ALIAS("pcmcia:m*c*f*fn*pfn*pa313ADBC8pb08D9F190pc*pd*");
+MODULE_ALIAS("pcmcia:m*c*f*fn*pfn*pa3A7ADE0Fpb41C64504pc*pd*");
+MODULE_ALIAS("pcmcia:m*c*f*fn*pfn*pa552AB682pbEEB1BA6Apc*pd*");
+MODULE_ALIAS("pcmcia:m*c*f*fn*pfn*pa44EBF863pb93AE4D79pc*pd*");
+MODULE_ALIAS("pcmcia:m*c*f*fn*pfn*paBC477DDEpbFBA775A7pc*pd*");
+MODULE_ALIAS("pcmcia:m*c*f*fn*pfn*paFA2E424DpbE9190D8Apc*pd*");
+MODULE_ALIAS("pcmcia:m*c*f*fn*pfn*paFA2E424Dpb3953D9B9pc*pd*");
+MODULE_ALIAS("pcmcia:m*c*f*fn*pfn*pa21CAB552pbF6F90722pc*pd*");
+MODULE_ALIAS("pcmcia:m*c*f*fn*pfn*pa0A21501ApbA51564A2pc*pd*");
+MODULE_ALIAS("pcmcia:m*c*f*fn*pfn*pa0A21501Apb6589340Apc*pd*");
+MODULE_ALIAS("pcmcia:m*c*f*fn*pfn*pa5261440Fpb8797663Bpc*pd*");
+MODULE_ALIAS("pcmcia:m*c*f*fn*pfn*pa5261440FpbFA9D85BDpc*pd*");
+MODULE_ALIAS("pcmcia:m*c*f*fn*pfn*pa5261440FpbC49BD73Dpc*pd*");
+MODULE_ALIAS("pcmcia:m*c*f*fn*pfn*paD4FDCBD8pbC49BD73Dpc*pd*");
+MODULE_ALIAS("pcmcia:m*c*f*fn*pfn*pa5261440Fpb6705FCAApc*pd*");
+MODULE_ALIAS("pcmcia:m*c*f*fn*pfn*pa5261440Fpb47D5CA83pc*pd*");
+MODULE_ALIAS("pcmcia:m*c*f*fn*pfn*pa5261440Fpb485E85D9pc*pd*");
+MODULE_ALIAS("pcmcia:m*c*f*fn*pfn*pa110D26D9pb9FD2F0A2pc*pd*");
+MODULE_ALIAS("pcmcia:m*c*f*fn*pfn*pa9791A90Epb9FD2F0A2pc*pd*");
+MODULE_ALIAS("pcmcia:m*c*f*fn*pfn*pa5261440Fpb73EC0D88pc*pd*");
+MODULE_ALIAS("pcmcia:m*c*f*fn*pfn*paEE5AF0ADpb7C2ADD04pc*pd*");
+MODULE_ALIAS("pcmcia:m*c*f*fn*pfn*pa77008979pb9D8D445Dpc*pd*");
+MODULE_ALIAS("pcmcia:m*c*f*fn*pfn*pa77008979pbFD184814pc*pd*");
+MODULE_ALIAS("pcmcia:m*c*f*fn*pfn*pa5CD66D9Dpb84697CE0pc*pd*");
+MODULE_ALIAS("pcmcia:m*c*f*fn*pfn*pa0C629325pbB4E7DBAFpc*pd*");
+MODULE_ALIAS("pcmcia:m*c*f*fn*pfn*pa697403D8pbE160B995pc*pd*");
+MODULE_ALIAS("pcmcia:m*c*f*fn*pfn*pa697403D8pbA6D3B233pc*pd*");
+MODULE_ALIAS("pcmcia:m*c*f*fn*pfn*pa69616CB3pbE600E76Epc*pd*");
+MODULE_ALIAS("pcmcia:m*c*f*fn*pfn*pa1A424A1CpbF28C8398pc*pd*");
+MODULE_ALIAS("pcmcia:m*c*f*fn*pfn*pa1A424A1CpbD9A1D05Bpc*pd*");
+MODULE_ALIAS("pcmcia:m*c*f*fn*pfn*pa1A424A1Cpb50DCD0ECpc*pd*");
+MODULE_ALIAS("pcmcia:m*c*f*fn*pfn*pa1A424A1Cpb0F0073F9pc*pd*");
+MODULE_ALIAS("pcmcia:m*c*f*fn*pfn*pa725B842DpbF1EFEE84pc*pd*");
+MODULE_ALIAS("pcmcia:m*c*f*fn*pfn*pa725B842Dpb2DB1F8E9pc*pd*");
+MODULE_ALIAS("pcmcia:m*c*f*fn*pfn*pa55632FD5pbDC65F2B1pc*pd*");
+MODULE_ALIAS("pcmcia:m*c*f*fn*pfn*pa6A26D1CFpbDC65F2B1pc*pd*");
+MODULE_ALIAS("pcmcia:m*c*f*fn*pfn*pa6A26D1CFpbC4F84EFBpc*pd*");
+MODULE_ALIAS("pcmcia:m*c*f*fn*pfn*pa6701DA11pb6701DA11pc*pd*");
+MODULE_ALIAS("pcmcia:m*c*f*fn*pfn*pa53C864C6pbEDD059F6pc*pd*");
+MODULE_ALIAS("pcmcia:m*c*f*fn*pfn*pa53C864C6pb929C486Cpc*pd*");
+MODULE_ALIAS("pcmcia:m*c*f*fn*pfn*pa00B2E941pb4B0D829Epc*pd*");
+MODULE_ALIAS("pcmcia:m*c*f*fn*pfn*pa96767301pb71FBBC61pc*pd*");
+MODULE_ALIAS("pcmcia:m*c*f*fn*pfn*pa8DD86181pbF2B52517pc*pd*");
+MODULE_ALIAS("pcmcia:m*c*f*fn*pfn*paB4BE14E3pb4B0D829Epc*pd*");
+MODULE_ALIAS("pcmcia:m*c*f*fn*pfn*pa2A151FACpbF00555CBpc*pd*");
+MODULE_ALIAS("pcmcia:m*c*f*fn*pfn*pa2A151FACpbC1B7E327pc*pd*");
+MODULE_ALIAS("pcmcia:m*c*f*fn*pfn*pa76E171BDpb6EB1C947pc*pd*");
+MODULE_ALIAS("pcmcia:m*c*f*fn*pfn*paE3736C88pb00B2E941pc*pd*");
+MODULE_ALIAS("pcmcia:m*c*f*fn*pfn*pa60CB09A6pb60CB09A6pc*pd*");
+MODULE_ALIAS("pcmcia:m*c*f*fn*pfn*pa93693494pb93693494pc*pd*");
+MODULE_ALIAS("pcmcia:m*c*f*fn*pfn*pa547E66DCpb6FC5459Bpc*pd*");
+MODULE_ALIAS("pcmcia:m*c*f*fn*pfn*pa56C538D2pb11B0FFC0pc*pd*");
+MODULE_ALIAS("pcmcia:m*c*f*fn*pfn*paB18DC3B4pbCC51A956pc*pd*");
+MODULE_ALIAS("pcmcia:m*c*f*fn*pfn*paAF8144C9pb868F6616pc*pd*");
+MODULE_ALIAS("pcmcia:m*c*f*fn*pfn*paA89B87D3pb1EB88E64pc*pd*");
+MODULE_ALIAS("pcmcia:m*c*f*fn*pfn*pa7BCB459ApbA5C81FA5pc*pd*");
+MODULE_ALIAS("pcmcia:m*c*f*fn*pfn*pa1128E633pbCE2A89B3pc*pd*");
+MODULE_ALIAS("pcmcia:m*c*f*fn*pfn*pa313C7BE3pb0AFB54A2pc*pd*");
+MODULE_ALIAS("pcmcia:m*c*f*fn*pfn*pa1B7827B2pbCDA71D1Cpc*pd*");
+MODULE_ALIAS("pcmcia:m*c*f*fn*pfn*pa1B7827B2pbFEC71E40pc*pd*");
+MODULE_ALIAS("pcmcia:m*c*f*fn*pfn*pa1B7827B2pb79FBA4F7pc*pd*");
+MODULE_ALIAS("pcmcia:m*c*f*fn*pfn*pa1B7827B2pb931AFAABpc*pd*");
+MODULE_ALIAS("pcmcia:m*c*f*fn*pfn*paBBEFB52FpbD2897A97pc*pd*");
+MODULE_ALIAS("pcmcia:m*c*f*fn*pfn*pa0733CC81pb32EE8C78pc*pd*");
+MODULE_ALIAS("pcmcia:m*c*f*fn*pfn*paF7CB0B07pb6701DA11pc*pd*");
+MODULE_ALIAS("pcmcia:m*c*f*fn*pfn*pa0733CC81pb453C3F9Dpc*pd*");
+MODULE_ALIAS("pcmcia:m*c*f*fn*pfn*pa0733CC81pb66C5A389pc*pd*");
+MODULE_ALIAS("pcmcia:m*c*f*fn*pfn*pa0733CC81pb3A3B28E9pc*pd*");
+MODULE_ALIAS("pcmcia:m*c*f*fn*pfn*pa0733CC81pb7A3E5C3Apc*pd*");
+MODULE_ALIAS("pcmcia:m*c*f*fn*pfn*pa88FCDEDApb6D772737pc*pd*");
+MODULE_ALIAS("pcmcia:m*c*f*fn*pfn*pa88FCDEDApb0E714BEEpc*pd*");
+MODULE_ALIAS("pcmcia:m*c*f*fn*pfn*pa88FCDEDApb81090922pc*pd*");
+MODULE_ALIAS("pcmcia:m*c*f*fn*pfn*pa88FCDEDApbC1E2521Cpc*pd*");
+MODULE_ALIAS("pcmcia:m*c*f*fn*pfn*paF866B0B0pb6F6652E0pc*pd*");
+MODULE_ALIAS("pcmcia:m*c*f*fn*pfn*pa20841B68pbAF8A3578pc*pd*");
+MODULE_ALIAS("pcmcia:m*c*f*fn*pfn*paD830297FpbD265C307pc*pd*");
+MODULE_ALIAS("pcmcia:m*c*f*fn*pfn*pa44445376pb8DED41D4pc*pd*");
+MODULE_ALIAS("pcmcia:m*c*f*fn*pfn*pa78D64BC0pbCA0CA4B8pc*pd*");
+MODULE_ALIAS("pcmcia:m*c*f*fn*pfn*pa481E0094pbA2EB0CF3pc*pd*");
+MODULE_ALIAS("pcmcia:m*c*f*fn*pfn*pa481E0094pb41A6916Cpc*pd*");
+MODULE_ALIAS("pcmcia:m*c*f*fn*pfn*pa4B91CEC7pbE70220D6pc*pd*");
+MODULE_ALIAS("pcmcia:m*c*f*fn*pfn*pa2E6DA59Bpb0478E472pc*pd*");
+MODULE_ALIAS("pcmcia:m*c*f*fn*pfn*pa648D55C1pbBDE526C7pc*pd*");
+MODULE_ALIAS("pcmcia:m*c*f*fn*pfn*pa36E1191Fpb60C229B9pc*pd*");
+MODULE_ALIAS("pcmcia:m*c*f*fn*pfn*pa36E1191FpbA6617EC8pc*pd*");
+MODULE_ALIAS("pcmcia:m*c*f*fn*pfn*pa18DF0BA0pbBC912D76pc*pd*");
+MODULE_ALIAS("pcmcia:m*c*f*fn*pfn*pa9AA79DC3pb60E5BC0Epc*pd*");
+MODULE_ALIAS("pcmcia:m*c*f*fn*pfn*pa820A67B6pb31ED1A5Fpc*pd*");
+MODULE_ALIAS("pcmcia:m*c*f*fn*pfn*paAEDAEC74pbAD050EF1pc*pd*");
+MODULE_ALIAS("pcmcia:m*c*f*fn*pfn*pa281F1C5Dpb6E41773Bpc*pd*");
+MODULE_ALIAS("pcmcia:m*c*f*fn*pfn*pa281F1C5Dpb00B2E941pc*pd*");
+MODULE_ALIAS("pcmcia:m*c*f*fn*pfn*pa281F1C5Dpb3FF7175Bpc*pd*");
+MODULE_ALIAS("pcmcia:m*c*f*fn*pfn*pa281F1C5Dpb4DE2F6C8pc*pd*");
+MODULE_ALIAS("pcmcia:m*c*f*fn*pfn*pa281F1C5Dpb5E9D92C0pc*pd*");
+MODULE_ALIAS("pcmcia:m*c*f*fn*pfn*pa281F1C5Dpb929C486Cpc*pd*");
+MODULE_ALIAS("pcmcia:m*c*f*fn*pfn*pa281F1C5Dpb4D8817C8pc*pd*");
+MODULE_ALIAS("pcmcia:m*c*f*fn*pfn*pa281F1C5DpbFE871EEBpc*pd*");
+MODULE_ALIAS("pcmcia:m*c*f*fn*pfn*pa281F1C5Dpb45F1F3B4pc*pd*");
+MODULE_ALIAS("pcmcia:m*c*f*fn*pfn*pa281F1C5DpbEC5DBCA7pc*pd*");
+MODULE_ALIAS("pcmcia:m*c*f*fn*pfn*pa7500E246pb00B2E941pc*pd*");
+MODULE_ALIAS("pcmcia:m*c*f*fn*pfn*pa281F1C5DpbE707F641pc*pd*");
+MODULE_ALIAS("pcmcia:m*c*f*fn*pfn*paDCFE12D3pbCD8906CCpc*pd*");
+MODULE_ALIAS("pcmcia:m*c*f*fn*pfn*pa281F1C5DpbBF17199Bpc*pd*");
+MODULE_ALIAS("pcmcia:m*c*f*fn*pfn*pa281F1C5Dpb42D5D7E1pc*pd*");
+MODULE_ALIAS("pcmcia:m*c*f*fn*pfn*paEBF91155pb30074C80pc*pd*");
+MODULE_ALIAS("pcmcia:m*c*f*fn*pfn*paEBF91155pb7F5A4F50pc*pd*");
+MODULE_ALIAS("pcmcia:m*c*f*fn*pfn*paF5F025C2pb3A30E110pc*pd*");
+MODULE_ALIAS("pcmcia:m*c*f*fn*pfn*paCDD0644Apb00B2E941pc*pd*");
+MODULE_ALIAS("pcmcia:m*c*f*fn*pfn*pa7DD33481pb10B41826pc*pd*");
+MODULE_ALIAS("pcmcia:m*c*f*fn*pfn*paE3E66E22pbB96150DFpc*pd*");
+MODULE_ALIAS("pcmcia:m*c*f*fn*pfn*paDC6F88FDpb4A7E2AE0pc*pd*");
+MODULE_ALIAS("pcmcia:m*c*f*fn*pfn*paDC6F88FDpb4BCBD7FDpc*pd*");
+MODULE_ALIAS("pcmcia:m*c*f*fn*pfn*paC53AC515pb81E39388pc*pd*");
+MODULE_ALIAS("pcmcia:m*c*f*fn*pfn*paBDC3B102pb929C486Cpc*pd*");
+MODULE_ALIAS("pcmcia:m*c*f*fn*pfn*pa09928730pb00B2E941pc*pd*");
+MODULE_ALIAS("pcmcia:m*c*f*fn*pfn*paC4F8B18BpbFB21D265pc*pd*");
+MODULE_ALIAS("pcmcia:m*c*f*fn*pfn*paC70A4760pb2ADE483Epc*pd*");
+MODULE_ALIAS("pcmcia:m*c*f*fn*pfn*paC70A4760pb5DD978A8pc*pd*");
+MODULE_ALIAS("pcmcia:m*c*f*fn*pfn*pa1EAE9475pb0ED386FApc*pd*");
+MODULE_ALIAS("pcmcia:m*c*f*fn*pfn*pa466B05F0pb8B74BC4Fpc*pd*");
+MODULE_ALIAS("pcmcia:m*c*f*fn*pfn*pa466B05F0pb33C8DB2Apc*pd*");
+MODULE_ALIAS("pcmcia:m*c*f*fn*pfn*pa8787BEC7pb*pcF6E4A31Epd*");
+MODULE_ALIAS("pcmcia:m*c*f*fn*pfn*pa932B7189pb*pc5E9D92C0pd*");
+MODULE_ALIAS("pcmcia:m*c*f*fn*pfn*paF866B0B0pb*pcF6E4A31Epd*");
+MODULE_ALIAS("pcmcia:m*c*f*fn*pfn*pa2E3EE845pb*pc22A49F89pd*");
+MODULE_ALIAS("pcmcia:m*c*f*fn*pfn*pa94FAF360pb*pc*pd*");
+MODULE_ALIAS("pcmcia:m*c*f*fn*pfn*pa8850B4DEpb*pc*pd*");
+MODULE_ALIAS("pcmcia:m*c*f*fn*pfn*pa06A8514Fpb*pc*pd*");
+MODULE_ALIAS("pcmcia:m*c*f*fn*pfn*pa75B8AD5Apb*pc*pd*");
+MODULE_ALIAS("pcmcia:m*c*f*fn*pfn*pa*pbA996D078pc*pd*");
+MODULE_ALIAS("pcmcia:m*c*f*fn*pfn00pa281F1C5Dpb570F348Epc*pd*");
+MODULE_ALIAS("pcmcia:m*c*f*fn*pfn00pa281F1C5Dpb6FDCACEEpc*pd*");
+MODULE_ALIAS("pcmcia:m*c*f*fn*pfn00paF5F025C2pb338E8155pc*pd*");
+MODULE_ALIAS("pcmcia:m*c*f*fn*pfn00paF5F025C2pb4AE85D35pc*pd*");
+MODULE_ALIAS("pcmcia:m*c*f*fn*pfn00paF7CB0B07pb66881874pc*pd*");
+MODULE_ALIAS("pcmcia:m*c*f*fn*pfn00paB4585A1Apb53F922F8pc*pd*");
+MODULE_ALIAS("pcmcia:m*c*f*fn00pfn*pa8FDF8F89pbDD5ED9E8pc*pd*");
+MODULE_ALIAS("pcmcia:m*c*f*fn00pfn*pa*pb*pc*pd58FC6056*");
+MODULE_ALIAS("pcmcia:m0175c0000f*fn00pfn*pa*pb*pc*pd*");
+MODULE_ALIAS("pcmcia:m*c*f*fn*pfn*pa2AD62F3Cpb9FD2F0A2pc*pd*");
+MODULE_ALIAS("pcmcia:m*c*f*fn*pfn*paAD180345pb9D58D392pc*pd*");
+MODULE_ALIAS("pcmcia:m*c*f*fn*pfn*pa01C43AE1pb00B2E941pc*pd*");
+MODULE_ALIAS("pcmcia:m*c*f*fn*pfn*pa34F3F1C8pb10B59F8Cpc*pd*");
+MODULE_ALIAS("pcmcia:m*c*f*fn*pfn*paCF434FBApb00B2E941pc*pd*");
+MODULE_ALIAS("pcmcia:m*c*f*fn*pfn*pa00B2E941pb43AC239Bpc*pd*");
+MODULE_ALIAS("pcmcia:m*c*f*fn*pfn*paB4BE14E3pb43AC239Bpc0877B627pd*");

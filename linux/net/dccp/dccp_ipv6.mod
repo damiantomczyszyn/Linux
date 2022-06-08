@@ -1,1 +1,1 @@
- include/config/T
+ in both TC_REQ a

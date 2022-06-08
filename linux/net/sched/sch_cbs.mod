@@ -1,1 +1,1 @@
-cmd_drivers/media/i2c
+ sys_sched_rr_get_int

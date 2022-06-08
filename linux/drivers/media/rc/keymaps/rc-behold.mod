@@ -1,2 +1,2 @@
-drivers/media/rc/keymaps/rc-behold.o
-
+# SPDX-License-Identifier: GPL-2.0
+cx2

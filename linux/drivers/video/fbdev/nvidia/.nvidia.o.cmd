@@ -1,445 +1,4 @@
-LE_UPGRADE) \
-    $(wildcard include/config/ACPI_WATCHDOG) \
-    $(wildcard include/config/ACPI_SPCR_TABLE) \
-    $(wildcard include/config/ACPI_GENERIC_GSI) \
-    $(wildcard include/config/ACPI_LPIT) \
-    $(wildcard include/config/ACPI_PPTT) \
-    $(wildcard include/config/ACPI_PCC) \
-  include/linux/errno.h \
-  include/uapi/linux/errno.h \
-  arch/x86/include/generated/uapi/asm/errno.h \
-  include/uapi/asm-generic/errno.h \
-  include/uapi/asm-generic/errno-base.h \
-  include/linux/ioport.h \
-    $(wildcard include/config/MEMORY_HOTREMOVE) \
-    $(wildcard include/config/MEMORY_HOTPLUG) \
-  include/linux/bits.h \
-  include/linux/const.h \
-  include/vdso/const.h \
-  include/uapi/linux/const.h \
-  include/vdso/bits.h \
-  arch/x86/include/uapi/asm/bitsperlong.h \
-  include/asm-generic/bitsperlong.h \
-    $(wildcard include/config/64BIT) \
-  include/uapi/asm-generic/bitsperlong.h \
-  include/linux/build_bug.h \
-  include/linux/compiler.h \
-    $(wildcard include/config/TRACE_BRANCH_PROFILING) \
-    $(wildcard include/config/PROFILE_ALL_BRANCHES) \
-    $(wildcard include/config/STACK_VALIDATION) \
-    $(wildcard include/config/CFI_CLANG) \
-  include/linux/compiler_types.h \
-  arch/x86/include/generated/asm/rwonce.h \
-  include/asm-generic/rwonce.h \
-  include/linux/kasan-checks.h \
-    $(wildcard include/config/KASAN_GENERIC) \
-    $(wildcard include/config/KASAN_SW_TAGS) \
-  include/linux/types.h \
-    $(wildcard include/config/HAVE_UID16) \
-    $(wildcard include/config/UID16) \
-    $(wildcard include/config/ARCH_DMA_ADDR_T_64BIT) \
-    $(wildcard include/config/PHYS_ADDR_T_64BIT) \
-    $(wildcard include/config/ARCH_32BIT_USTAT_F_TINODE) \
-  include/uapi/linux/types.h \
-  arch/x86/include/generated/uapi/asm/types.h \
-  include/uapi/asm-generic/types.h \
-  include/asm-generic/int-ll64.h \
-  include/uapi/asm-generic/int-ll64.h \
-  include/uapi/linux/posix_types.h \
-  include/linux/stddef.h \
-  include/uapi/linux/stddef.h \
-  arch/x86/include/asm/posix_types.h \
-    $(wildcard include/config/X86_32) \
-  arch/x86/include/uapi/asm/posix_types_32.h \
-  include/uapi/asm-generic/posix_types.h \
-  include/linux/kcsan-checks.h \
-    $(wildcard include/config/KCSAN) \
-    $(wildcard include/config/KCSAN_WEAK_MEMORY) \
-    $(wildcard include/config/KCSAN_IGNORE_ATOMICS) \
-  include/linux/minmax.h \
-  include/linux/irqdomain.h \
-    $(wildcard include/config/IRQ_DOMAIN_HIERARCHY) \
-    $(wildcard include/config/GENERIC_IRQ_DEBUGFS) \
-    $(wildcard include/config/IRQ_DOMAIN) \
-    $(wildcard include/config/IRQ_DOMAIN_NOMAP) \
-  include/linux/irqhandler.h \
-  include/linux/of.h \
-    $(wildcard include/config/OF_DYNAMIC) \
-    $(wildcard include/config/SPARC) \
-    $(wildcard include/config/OF_PROMTREE) \
-    $(wildcard include/config/OF_KOBJ) \
-    $(wildcard include/config/NUMA) \
-    $(wildcard include/config/OF_NUMA) \
-    $(wildcard include/config/OF_OVERLAY) \
-  include/linux/bitops.h \
-  include/linux/typecheck.h \
-  include/uapi/linux/kernel.h \
-  include/uapi/linux/sysinfo.h \
-  arch/x86/include/asm/bitops.h \
-    $(wildcard include/config/X86_64) \
-    $(wildcard include/config/X86_CMOV) \
-  arch/x86/include/asm/alternative.h \
-    $(wildcard include/config/SMP) \
-  include/linux/stringify.h \
-  arch/x86/include/asm/asm.h \
-    $(wildcard include/config/KPROBES) \
-  arch/x86/include/asm/extable_fixup_types.h \
-  arch/x86/include/asm/rmwcc.h \
-    $(wildcard include/config/CC_HAS_ASM_GOTO) \
-  arch/x86/include/asm/barrier.h \
-  arch/x86/include/asm/nops.h \
-  include/asm-generic/barrier.h \
-  include/asm-generic/bitops/fls64.h \
-  include/asm-generic/bitops/sched.h \
-  arch/x86/include/asm/arch_hweight.h \
-  arch/x86/include/asm/cpufeatures.h \
-  arch/x86/include/asm/required-features.h \
-    $(wildcard include/config/X86_MINIMUM_CPU_FAMILY) \
-    $(wildcard include/config/MATH_EMULATION) \
-    $(wildcard include/config/X86_PAE) \
-    $(wildcard include/config/X86_CMPXCHG64) \
-    $(wildcard include/config/X86_P6_NOP) \
-    $(wildcard include/config/MATOM) \
-    $(wildcard include/config/PARAVIRT_XXL) \
-  arch/x86/include/asm/disabled-features.h \
-    $(wildcard include/config/X86_SMAP) \
-    $(wildcard include/config/X86_UMIP) \
-    $(wildcard include/config/X86_INTEL_MEMORY_PROTECTION_KEYS) \
-    $(wildcard include/config/X86_5LEVEL) \
-    $(wildcard include/config/PAGE_TABLE_ISOLATION) \
-    $(wildcard include/config/INTEL_IOMMU_SVM) \
-    $(wildcard include/config/X86_SGX) \
-  include/asm-generic/bitops/const_hweight.h \
-  include/asm-generic/bitops/instrumented-atomic.h \
-  include/linux/instrumented.h \
-  include/asm-generic/bitops/instrumented-non-atomic.h \
-    $(wildcard include/config/KCSAN_ASSUME_PLAIN_WRITES_ATOMIC) \
-  include/asm-generic/bitops/instrumented-lock.h \
-  include/asm-generic/bitops/le.h \
-  arch/x86/include/uapi/asm/byteorder.h \
-  include/linux/byteorder/little_endian.h \
-  include/uapi/linux/byteorder/little_endian.h \
-  include/linux/swab.h \
-  include/uapi/linux/swab.h \
-  arch/x86/include/uapi/asm/swab.h \
-  include/linux/byteorder/generic.h \
-  include/asm-generic/bitops/ext2-atomic-setbit.h \
-  include/linux/kobject.h \
-    $(wildcard include/config/UEVENT_HELPER) \
-    $(wildcard include/config/DEBUG_KOBJECT_RELEASE) \
-  include/linux/list.h \
-    $(wildcard include/config/DEBUG_LIST) \
-  include/linux/container_of.h \
-  include/linux/err.h \
-  include/linux/poison.h \
-    $(wildcard include/config/ILLEGAL_POINTER_VALUE) \
-  include/linux/sysfs.h \
-    $(wildcard include/config/DEBUG_LOCK_ALLOC) \
-    $(wildcard include/config/SYSFS) \
-  include/linux/kernfs.h \
-    $(wildcard include/config/KERNFS) \
-  include/linux/mutex.h \
-    $(wildcard include/config/PREEMPT_RT) \
-    $(wildcard include/config/MUTEX_SPIN_ON_OWNER) \
-    $(wildcard include/config/DEBUG_MUTEXES) \
-  arch/x86/include/asm/current.h \
-  arch/x86/include/asm/percpu.h \
-    $(wildcard include/config/X86_64_SMP) \
-  include/linux/kernel.h \
-    $(wildcard include/config/PREEMPT_VOLUNTARY_BUILD) \
-    $(wildcard include/config/PREEMPT_DYNAMIC) \
-    $(wildcard include/config/HAVE_PREEMPT_DYNAMIC_CALL) \
-    $(wildcard include/config/HAVE_PREEMPT_DYNAMIC_KEY) \
-    $(wildcard include/config/PREEMPT_) \
-    $(wildcard include/config/DEBUG_ATOMIC_SLEEP) \
-    $(wildcard include/config/MMU) \
-    $(wildcard include/config/PROVE_LOCKING) \
-    $(wildcard include/config/TRACING) \
-    $(wildcard include/config/FTRACE_MCOUNT_RECORD) \
-  include/linux/stdarg.h \
-  include/linux/align.h \
-  include/linux/limits.h \
-  include/uapi/linux/limits.h \
-  include/vdso/limits.h \
-  include/linux/linkage.h \
-    $(wildcard include/config/ARCH_USE_SYM_ANNOTATIONS) \
-  include/linux/export.h \
-    $(wildcard include/config/MODVERSIONS) \
-    $(wildcard include/config/MODULE_REL_CRCS) \
-    $(wildcard include/config/HAVE_ARCH_PREL32_RELOCATIONS) \
-    $(wildcard include/config/MODULES) \
-    $(wildcard include/config/TRIM_UNUSED_KSYMS) \
-  arch/x86/include/asm/linkage.h \
-    $(wildcard include/config/X86_ALIGNMENT_16) \
-    $(wildcard include/config/SLS) \
-  arch/x86/include/asm/ibt.h \
-    $(wildcard include/config/X86_KERNEL_IBT) \
-  include/linux/kstrtox.h \
-  include/linux/log2.h \
-    $(wildcard include/config/ARCH_HAS_ILOG2_U32) \
-    $(wildcard include/config/ARCH_HAS_ILOG2_U64) \
-  include/linux/math.h \
-  arch/x86/include/asm/div64.h \
-  include/linux/panic.h \
-    $(wildcard include/config/PANIC_TIMEOUT) \
-  include/linux/printk.h \
-    $(wildcard include/config/MESSAGE_LOGLEVEL_DEFAULT) \
-    $(wildcard include/config/CONSOLE_LOGLEVEL_DEFAULT) \
-    $(wildcard include/config/CONSOLE_LOGLEVEL_QUIET) \
-    $(wildcard include/config/EARLY_PRINTK) \
-    $(wildcard include/config/PRINTK) \
-    $(wildcard include/config/PRINTK_INDEX) \
-    $(wildcard include/config/DYNAMIC_DEBUG_CORE) \
-  include/linux/init.h \
-    $(wildcard include/config/STRICT_KERNEL_RWX) \
-    $(wildcard include/config/STRICT_MODULE_RWX) \
-    $(wildcard include/config/LTO_CLANG) \
-  include/linux/kern_levels.h \
-  include/linux/cache.h \
-    $(wildcard include/config/ARCH_HAS_CACHE_LINE_SIZE) \
-  arch/x86/include/asm/cache.h \
-    $(wildcard include/config/X86_L1_CACHE_SHIFT) \
-    $(wildcard include/config/X86_INTERNODE_CACHE_SHIFT) \
-    $(wildcard include/config/X86_VSMP) \
-  include/linux/ratelimit_types.h \
-  include/uapi/linux/param.h \
-  arch/x86/include/generated/uapi/asm/param.h \
-  include/asm-generic/param.h \
-    $(wildcard include/config/HZ) \
-  include/uapi/asm-generic/param.h \
-  include/linux/spinlock_types_raw.h \
-    $(wildcard include/config/DEBUG_SPINLOCK) \
-  arch/x86/include/asm/spinlock_types.h \
-  include/asm-generic/qspinlock_types.h \
-    $(wildcard include/config/NR_CPUS) \
-  include/asm-generic/qrwlock_types.h \
-  include/linux/lockdep_types.h \
-    $(wildcard include/config/PROVE_RAW_LOCK_NESTING) \
-    $(wildcard include/config/LOCKDEP) \
-    $(wildcard include/config/LOCK_STAT) \
-  include/linux/once_lite.h \
-  include/linux/static_call_types.h \
-    $(wildcard include/config/HAVE_STATIC_CALL) \
-    $(wildcard include/config/HAVE_STATIC_CALL_INLINE) \
-  include/linux/instruction_pointer.h \
-  include/asm-generic/percpu.h \
-    $(wildcard include/config/DEBUG_PREEMPT) \
-    $(wildcard include/config/HAVE_SETUP_PER_CPU_AREA) \
-  include/linux/threads.h \
-    $(wildcard include/config/BASE_SMALL) \
-  include/linux/percpu-defs.h \
-    $(wildcard include/config/DEBUG_FORCE_WEAK_PER_CPU) \
-    $(wildcard include/config/AMD_MEM_ENCRYPT) \
-  include/linux/spinlock_types.h \
-  include/linux/rwlock_types.h \
-  include/linux/lockdep.h \
-    $(wildcard include/config/DEBUG_LOCKING_API_SELFTESTS) \
-    $(wildcard include/config/PREEMPT_COUNT) \
-  include/linux/smp.h \
-    $(wildcard include/config/UP_LATE_INIT) \
-  include/linux/cpumask.h \
-    $(wildcard include/config/CPUMASK_OFFSTACK) \
-    $(wildcard include/config/HOTPLUG_CPU) \
-    $(wildcard include/config/DEBUG_PER_CPU_MAPS) \
-  include/linux/bitmap.h \
-  include/linux/find.h \
-  include/linux/string.h \
-    $(wildcard include/config/BINARY_PRINTF) \
-    $(wildcard include/config/FORTIFY_SOURCE) \
-  include/uapi/linux/string.h \
-  arch/x86/include/asm/string.h \
-  arch/x86/include/asm/string_32.h \
-  include/linux/fortify-string.h \
-  include/linux/atomic.h \
-  arch/x86/include/asm/atomic.h \
-  arch/x86/include/asm/cmpxchg.h \
-  arch/x86/include/asm/cmpxchg_32.h \
-  arch/x86/include/asm/atomic64_32.h \
-  include/linux/atomic/atomic-arch-fallback.h \
-    $(wildcard include/config/GENERIC_ATOMIC64) \
-  include/linux/atomic/atomic-long.h \
-  include/linux/atomic/atomic-instrumented.h \
-  include/linux/bug.h \
-    $(wildcard include/config/GENERIC_BUG) \
-    $(wildcard include/config/BUG_ON_DATA_CORRUPTION) \
-  arch/x86/include/asm/bug.h \
-    $(wildcard include/config/DEBUG_BUGVERBOSE) \
-  include/linux/instrumentation.h \
-    $(wildcard include/config/DEBUG_ENTRY) \
-  include/linux/objtool.h \
-    $(wildcard include/config/FRAME_POINTER) \
-  include/asm-generic/bug.h \
-    $(wildcard include/config/BUG) \
-    $(wildcard include/config/GENERIC_BUG_RELATIVE_POINTERS) \
-  include/linux/smp_types.h \
-  include/linux/llist.h \
-    $(wildcard include/config/ARCH_HAVE_NMI_SAFE_CMPXCHG) \
-  include/linux/preempt.h \
-    $(wildcard include/config/TRACE_PREEMPT_TOGGLE) \
-    $(wildcard include/config/PREEMPTION) \
-    $(wildcard include/config/PREEMPT_NOTIFIERS) \
-  arch/x86/include/asm/preempt.h \
-  include/linux/thread_info.h \
-    $(wildcard include/config/THREAD_INFO_IN_TASK) \
-    $(wildcard include/config/GENERIC_ENTRY) \
-    $(wildcard include/config/HAVE_ARCH_WITHIN_STACK_FRAMES) \
-    $(wildcard include/config/HARDENED_USERCOPY) \
-  include/linux/restart_block.h \
-  include/linux/time64.h \
-  include/linux/math64.h \
-    $(wildcard include/config/ARCH_SUPPORTS_INT128) \
-  include/vdso/math64.h \
-  include/vdso/time64.h \
-  include/uapi/linux/time.h \
-  include/uapi/linux/time_types.h \
-  arch/x86/include/asm/thread_info.h \
-    $(wildcard include/config/VM86) \
-    $(wildcard include/config/X86_IOPL_IOPERM) \
-    $(wildcard include/config/COMPAT) \
-    $(wildcard include/config/IA32_EMULATION) \
-  arch/x86/include/asm/page.h \
-  arch/x86/include/asm/page_types.h \
-    $(wildcard include/config/PHYSICAL_START) \
-    $(wildcard include/config/PHYSICAL_ALIGN) \
-    $(wildcard include/config/DYNAMIC_PHYSICAL_MASK) \
-  include/linux/mem_encrypt.h \
-    $(wildcard include/config/ARCH_HAS_MEM_ENCRYPT) \
-  arch/x86/include/asm/mem_encrypt.h \
-  include/linux/cc_platform.h \
-    $(wildcard include/config/ARCH_HAS_CC_PLATFORM) \
-  arch/x86/include/uapi/asm/bootparam.h \
-  include/linux/screen_info.h \
-  include/uapi/linux/screen_info.h \
-  include/linux/apm_bios.h \
-  include/uapi/linux/apm_bios.h \
-  include/uapi/linux/ioctl.h \
-  arch/x86/include/generated/uapi/asm/ioctl.h \
-  include/asm-generic/ioctl.h \
-  include/uapi/asm-generic/ioctl.h \
-  include/linux/edd.h \
-  include/uapi/linux/edd.h \
-  arch/x86/include/asm/ist.h \
-  arch/x86/include/uapi/asm/ist.h \
-  include/video/edid.h \
-  include/uapi/video/edid.h \
-  arch/x86/include/asm/page_32_types.h \
-    $(wildcard include/config/HIGHMEM4G) \
-    $(wildcard include/config/HIGHMEM64G) \
-    $(wildcard include/config/PAGE_OFFSET) \
-  arch/x86/include/asm/page_32.h \
-    $(wildcard include/config/DEBUG_VIRTUAL) \
-    $(wildcard include/config/FLATMEM) \
-  include/linux/range.h \
-  include/asm-generic/memory_model.h \
-    $(wildcard include/config/SPARSEMEM_VMEMMAP) \
-    $(wildcard include/config/SPARSEMEM) \
-  include/linux/pfn.h \
-  include/asm-generic/getorder.h \
-  arch/x86/include/asm/cpufeature.h \
-    $(wildcard include/config/X86_FEATURE_NAMES) \
-  arch/x86/include/asm/processor.h \
-    $(wildcard include/config/X86_VMX_FEATURE_NAMES) \
-    $(wildcard include/config/STACKPROTECTOR) \
-    $(wildcard include/config/X86_DEBUGCTLMSR) \
-    $(wildcard include/config/CPU_SUP_AMD) \
-    $(wildcard include/config/XEN) \
-  arch/x86/include/asm/processor-flags.h \
-  arch/x86/include/uapi/asm/processor-flags.h \
-  arch/x86/include/asm/math_emu.h \
-  arch/x86/include/asm/ptrace.h \
-    $(wildcard include/config/PARAVIRT) \
-  arch/x86/include/asm/segment.h \
-    $(wildcard include/config/XEN_PV) \
-  arch/x86/include/uapi/asm/ptrace.h \
-  arch/x86/include/uapi/asm/ptrace-abi.h \
-  arch/x86/include/asm/paravirt_types.h \
-    $(wildcard include/config/PGTABLE_LEVELS) \
-    $(wildcard include/config/PARAVIRT_DEBUG) \
-  arch/x86/include/asm/desc_defs.h \
-  arch/x86/include/asm/pgtable_types.h \
-    $(wildcard include/config/MEM_SOFT_DIRTY) \
-    $(wildcard include/config/HAVE_ARCH_USERFAULTFD_WP) \
-    $(wildcard include/config/PROC_FS) \
-  arch/x86/include/asm/pgtable_32_types.h \
-  arch/x86/include/asm/pgtable-3level_types.h \
-  include/asm-generic/pgtable-nop4d.h \
-  include/asm-generic/pgtable-nopud.h \
-  arch/x86/include/asm/nospec-branch.h \
-  include/linux/static_key.h \
-  include/linux/jump_label.h \
-    $(wildcard include/config/JUMP_LABEL) \
-    $(wildcard include/config/HAVE_ARCH_JUMP_LABEL_RELATIVE) \
-  arch/x86/include/asm/jump_label.h \
-  arch/x86/include/asm/msr-index.h \
-  arch/x86/include/asm/unwind_hints.h \
-  arch/x86/include/asm/orc_types.h \
-  arch/x86/include/asm/GEN-for-each-reg.h \
-  arch/x86/include/asm/proto.h \
-  arch/x86/include/uapi/asm/ldt.h \
-  arch/x86/include/uapi/asm/sigcontext.h \
-  arch/x86/include/asm/msr.h \
-    $(wildcard include/config/TRACEPOINTS) \
-  arch/x86/include/asm/msr-index.h \
-  arch/x86/include/asm/cpumask.h \
-  arch/x86/include/uapi/asm/msr.h \
-  include/linux/tracepoint-defs.h \
-  arch/x86/include/asm/special_insns.h \
-  include/linux/irqflags.h \
-    $(wildcard include/config/TRACE_IRQFLAGS) \
-    $(wildcard include/config/IRQSOFF_TRACER) \
-    $(wildcard include/config/PREEMPT_TRACER) \
-    $(wildcard include/config/DEBUG_IRQFLAGS) \
-    $(wildcard include/config/TRACE_IRQFLAGS_SUPPORT) \
-  arch/x86/include/asm/irqflags.h \
-  arch/x86/include/asm/fpu/types.h \
-  arch/x86/include/asm/vmxfeatures.h \
-  arch/x86/include/asm/vdso/processor.h \
-  include/linux/personality.h \
-  include/uapi/linux/personality.h \
-  arch/x86/include/asm/smp.h \
-    $(wildcard include/config/X86_LOCAL_APIC) \
-    $(wildcard include/config/DEBUG_NMI_SELFTEST) \
-  include/linux/osq_lock.h \
-  include/linux/debug_locks.h \
-  include/linux/idr.h \
-  include/linux/radix-tree.h \
-  include/linux/gfp.h \
-    $(wildcard include/config/KASAN_HW_TAGS) \
-    $(wildcard include/config/HIGHMEM) \
-    $(wildcard include/config/ZONE_DMA) \
-    $(wildcard include/config/ZONE_DMA32) \
-    $(wildcard include/config/ZONE_DEVICE) \
-    $(wildcard include/config/CONTIG_ALLOC) \
-    $(wildcard include/config/CMA) \
-  include/linux/mmdebug.h \
-    $(wildcard include/config/DEBUG_VM) \
-    $(wildcard include/config/DEBUG_VM_PGFLAGS) \
-  include/linux/mmzone.h \
-    $(wildcard include/config/FORCE_MAX_ZONEORDER) \
-    $(wildcard include/config/MEMORY_ISOLATION) \
-    $(wildcard include/config/ZSMALLOC) \
-    $(wildcard include/config/SWAP) \
-    $(wildcard include/config/NUMA_BALANCING) \
-    $(wildcard include/config/TRANSPARENT_HUGEPAGE) \
-    $(wildcard include/config/MEMCG) \
-    $(wildcard include/config/COMPACTION) \
-    $(wildcard include/config/PAGE_EXTENSION) \
-    $(wildcard include/config/DEFERRED_STRUCT_PAGE_INIT) \
-    $(wildcard include/config/HAVE_MEMORYLESS_NODES) \
-    $(wildcard include/config/SPARSEMEM_EXTREME) \
-    $(wildcard include/config/HAVE_ARCH_PFN_VALID) \
-  include/linux/spinlock.h \
-  include/linux/bottom_half.h \
-  arch/x86/include/generated/asm/mmiowb.h \
-  include/asm-generic/mmiowb.h \
-    $(wildcard include/config/MMIOWB) \
-  arch/x86/include/asm/spinlock.h \
-  arch/x86/include/asm/paravirt.h \
-    $(wildcard include/config/PARAVIRT_SPINLOCKS) \
-  arch/x86/include/asm/frame.h \
-  arch/x86/include/asm/qspinlock.h \
-  include/asm-generic/qspinlock.h \
-  arch/x86/include/asm/qrwlock.h \
+
   include/asm-generic/qrwlock.h \
   include/linux/rwlock.h \
     $(wildcard include/config/PREEMPT) \
@@ -474,44 +33,9 @@ LE_UPGRADE) \
     $(wildcard include/config/INLINE_WRITE_UNLOCK_IRQ) \
     $(wildcard include/config/INLINE_READ_UNLOCK_IRQRESTORE) \
     $(wildcard include/config/INLINE_WRITE_UNLOCK_IRQRESTORE) \
-  include/linux/wait.h \
-  include/uapi/linux/wait.h \
-  include/linux/numa.h \
-    $(wildcard include/config/NODES_SHIFT) \
-    $(wildcard include/config/NUMA_KEEP_MEMINFO) \
-    $(wildcard include/config/HAVE_ARCH_NODE_DEV_GROUP) \
-  arch/x86/include/asm/sparsemem.h \
-  include/linux/seqlock.h \
-  include/linux/ww_mutex.h \
-    $(wildcard include/config/DEBUG_RT_MUTEXES) \
-    $(wildcard include/config/DEBUG_WW_MUTEX_SLOWPATH) \
-  include/linux/rtmutex.h \
-  include/linux/rbtree_types.h \
-  include/linux/nodemask.h \
-  include/linux/pageblock-flags.h \
-    $(wildcard include/config/HUGETLB_PAGE) \
-    $(wildcard include/config/HUGETLB_PAGE_SIZE_VARIABLE) \
-  include/linux/page-flags-layout.h \
-  include/generated/bounds.h \
-  include/linux/mm_types.h \
-    $(wildcard include/config/HAVE_ALIGNED_STRUCT_PAGE) \
-    $(wildcard include/config/USERFAULTFD) \
-    $(wildcard include/config/HAVE_ARCH_COMPAT_MMAP_BASES) \
-    $(wildcard include/config/MEMBARRIER) \
-    $(wildcard include/config/AIO) \
-    $(wildcard include/config/MMU_NOTIFIER) \
-    $(wildcard include/config/ARCH_WANT_BATCHED_UNMAP_TLB_FLUSH) \
-    $(wildcard include/config/IOMMU_SVA) \
-  include/linux/mm_types_task.h \
-    $(wildcard include/config/SPLIT_PTLOCK_CPUS) \
-    $(wildcard include/config/ARCH_ENABLE_SPLIT_PMD_PTLOCK) \
-  arch/x86/include/asm/tlbbatch.h \
-  include/linux/auxvec.h \
-  include/uapi/linux/auxvec.h \
-  arch/x86/include/uapi/asm/auxvec.h \
-  include/linux/kref.h \
   include/linux/refcount.h \
   include/linux/rbtree.h \
+  include/linux/rbtree_types.h \
   include/linux/rcupdate.h \
     $(wildcard include/config/PREEMPT_RCU) \
     $(wildcard include/config/TINY_RCU) \
@@ -531,13 +55,19 @@ LE_UPGRADE) \
   include/linux/rwsem.h \
     $(wildcard include/config/RWSEM_SPIN_ON_OWNER) \
     $(wildcard include/config/DEBUG_RWSEMS) \
+  include/linux/osq_lock.h \
   include/linux/completion.h \
   include/linux/swait.h \
+  include/linux/wait.h \
+  include/uapi/linux/wait.h \
   include/linux/uprobes.h \
     $(wildcard include/config/UPROBES) \
   arch/x86/include/asm/uprobes.h \
   include/linux/notifier.h \
-    $(wildcard include/config/TREE_SRCU) \
+  include/linux/mutex.h \
+    $(wildcard include/config/MUTEX_SPIN_ON_OWNER) \
+    $(wildcard include/config/DEBUG_MUTEXES) \
+  include/linux/debug_locks.h \
   include/linux/srcu.h \
     $(wildcard include/config/TINY_SRCU) \
     $(wildcard include/config/SRCU) \
@@ -549,16 +79,6 @@ LE_UPGRADE) \
     $(wildcard include/config/DEBUG_OBJECTS_TIMERS) \
     $(wildcard include/config/NO_HZ_COMMON) \
   include/linux/ktime.h \
-  include/linux/time.h \
-    $(wildcard include/config/POSIX_TIMERS) \
-  include/linux/time32.h \
-  include/linux/timex.h \
-  include/uapi/linux/timex.h \
-  arch/x86/include/asm/timex.h \
-    $(wildcard include/config/X86_TSC) \
-  arch/x86/include/asm/tsc.h \
-  include/vdso/time32.h \
-  include/vdso/time.h \
   include/linux/jiffies.h \
   include/vdso/jiffies.h \
   include/generated/timeconst.h \
@@ -574,8 +94,48 @@ LE_UPGRADE) \
   include/linux/rcu_node_tree.h \
     $(wildcard include/config/RCU_FANOUT) \
     $(wildcard include/config/RCU_FANOUT_LEAF) \
+  include/linux/page-flags-layout.h \
+    $(wildcard include/config/KASAN_HW_TAGS) \
+  include/linux/numa.h \
+    $(wildcard include/config/NODES_SHIFT) \
+    $(wildcard include/config/NUMA_KEEP_MEMINFO) \
+    $(wildcard include/config/HAVE_ARCH_NODE_DEV_GROUP) \
+  arch/x86/include/asm/sparsemem.h \
+  include/generated/bounds.h \
+  include/linux/seqlock.h \
+  include/linux/ww_mutex.h \
+    $(wildcard include/config/DEBUG_RT_MUTEXES) \
+    $(wildcard include/config/DEBUG_WW_MUTEX_SLOWPATH) \
+  include/linux/rtmutex.h \
   arch/x86/include/asm/mmu.h \
     $(wildcard include/config/MODIFY_LDT_SYSCALL) \
+  include/linux/kmod.h \
+  include/linux/umh.h \
+  include/linux/gfp.h \
+    $(wildcard include/config/HIGHMEM) \
+    $(wildcard include/config/ZONE_DMA) \
+    $(wildcard include/config/ZONE_DMA32) \
+    $(wildcard include/config/ZONE_DEVICE) \
+    $(wildcard include/config/PM_SLEEP) \
+    $(wildcard include/config/CONTIG_ALLOC) \
+    $(wildcard include/config/CMA) \
+  include/linux/mmdebug.h \
+    $(wildcard include/config/DEBUG_VM) \
+    $(wildcard include/config/DEBUG_VM_PGFLAGS) \
+  include/linux/mmzone.h \
+    $(wildcard include/config/FORCE_MAX_ZONEORDER) \
+    $(wildcard include/config/MEMORY_ISOLATION) \
+    $(wildcard include/config/ZSMALLOC) \
+    $(wildcard include/config/MEMORY_HOTPLUG) \
+    $(wildcard include/config/COMPACTION) \
+    $(wildcard include/config/PAGE_EXTENSION) \
+    $(wildcard include/config/DEFERRED_STRUCT_PAGE_INIT) \
+    $(wildcard include/config/HAVE_MEMORYLESS_NODES) \
+    $(wildcard include/config/SPARSEMEM_EXTREME) \
+    $(wildcard include/config/HAVE_ARCH_PFN_VALID) \
+  include/linux/nodemask.h \
+  include/linux/pageblock-flags.h \
+    $(wildcard include/config/HUGETLB_PAGE_SIZE_VARIABLE) \
   include/linux/page-flags.h \
     $(wildcard include/config/ARCH_USES_PG_UNCACHED) \
     $(wildcard include/config/MEMORY_FAILURE) \
@@ -588,6 +148,7 @@ LE_UPGRADE) \
   include/linux/memory_hotplug.h \
     $(wildcard include/config/HAVE_ARCH_NODEDATA_EXTENSION) \
     $(wildcard include/config/ARCH_HAS_ADD_PAGES) \
+    $(wildcard include/config/MEMORY_HOTREMOVE) \
   arch/x86/include/asm/mmzone.h \
   arch/x86/include/asm/mmzone_32.h \
   include/linux/topology.h \
@@ -609,207 +170,6 @@ LE_UPGRADE) \
   arch/x86/include/asm/x86_init.h \
   arch/x86/include/asm/apicdef.h \
   include/asm-generic/topology.h \
-  include/linux/xarray.h \
-    $(wildcard include/config/XARRAY_MULTI) \
-  include/linux/kconfig.h \
-  include/linux/uidgid.h \
-    $(wildcard include/config/MULTIUSER) \
-    $(wildcard include/config/USER_NS) \
-  include/linux/highuid.h \
-  include/linux/kobject_ns.h \
-  include/linux/stat.h \
-  arch/x86/include/uapi/asm/stat.h \
-  include/uapi/linux/stat.h \
-  include/linux/mod_devicetable.h \
-  include/linux/uuid.h \
-  include/uapi/linux/uuid.h \
-  include/linux/property.h \
-  include/linux/fwnode.h \
-  include/linux/resource_ext.h \
-  include/linux/slab.h \
-    $(wildcard include/config/DEBUG_SLAB) \
-    $(wildcard include/config/FAILSLAB) \
-    $(wildcard include/config/MEMCG_KMEM) \
-    $(wildcard include/config/KASAN) \
-    $(wildcard include/config/SLAB) \
-    $(wildcard include/config/SLUB) \
-    $(wildcard include/config/SLOB) \
-  include/linux/overflow.h \
-  include/linux/percpu-refcount.h \
-  include/linux/kasan.h \
-    $(wildcard include/config/KASAN_STACK) \
-    $(wildcard include/config/KASAN_VMALLOC) \
-    $(wildcard include/config/KASAN_INLINE) \
-  include/linux/kasan-enabled.h \
-  include/linux/device.h \
-    $(wildcard include/config/GENERIC_MSI_IRQ_DOMAIN) \
-    $(wildcard include/config/GENERIC_MSI_IRQ) \
-    $(wildcard include/config/ENERGY_MODEL) \
-    $(wildcard include/config/PINCTRL) \
-    $(wildcard include/config/DMA_OPS) \
-    $(wildcard include/config/DMA_DECLARE_COHERENT) \
-    $(wildcard include/config/DMA_CMA) \
-    $(wildcard include/config/SWIOTLB) \
-    $(wildcard include/config/ARCH_HAS_SYNC_DMA_FOR_DEVICE) \
-    $(wildcard include/config/ARCH_HAS_SYNC_DMA_FOR_CPU) \
-    $(wildcard include/config/ARCH_HAS_SYNC_DMA_FOR_CPU_ALL) \
-    $(wildcard include/config/DMA_OPS_BYPASS) \
-    $(wildcard include/config/DEVTMPFS) \
-    $(wildcard include/config/SYSFS_DEPRECATED) \
-  include/linux/dev_printk.h \
-  include/linux/ratelimit.h \
-  include/linux/sched.h \
-    $(wildcard include/config/VIRT_CPU_ACCOUNTING_NATIVE) \
-    $(wildcard include/config/SCHED_INFO) \
-    $(wildcard include/config/SCHEDSTATS) \
-    $(wildcard include/config/SCHED_CORE) \
-    $(wildcard include/config/FAIR_GROUP_SCHED) \
-    $(wildcard include/config/RT_GROUP_SCHED) \
-    $(wildcard include/config/RT_MUTEXES) \
-    $(wildcard include/config/UCLAMP_TASK) \
-    $(wildcard include/config/UCLAMP_BUCKETS_COUNT) \
-    $(wildcard include/config/KMAP_LOCAL) \
-    $(wildcard include/config/CGROUP_SCHED) \
-    $(wildcard include/config/BLK_DEV_IO_TRACE) \
-    $(wildcard include/config/PSI) \
-    $(wildcard include/config/COMPAT_BRK) \
-    $(wildcard include/config/CGROUPS) \
-    $(wildcard include/config/BLK_CGROUP) \
-    $(wildcard include/config/PAGE_OWNER) \
-    $(wildcard include/config/EVENTFD) \
-    $(wildcard include/config/ARCH_HAS_SCALED_CPUTIME) \
-    $(wildcard include/config/VIRT_CPU_ACCOUNTING_GEN) \
-    $(wildcard include/config/POSIX_CPUTIMERS) \
-    $(wildcard include/config/POSIX_CPU_TIMERS_TASK_WORK) \
-    $(wildcard include/config/KEYS) \
-    $(wildcard include/config/SYSVIPC) \
-    $(wildcard include/config/DETECT_HUNG_TASK) \
-    $(wildcard include/config/IO_URING) \
-    $(wildcard include/config/AUDIT) \
-    $(wildcard include/config/AUDITSYSCALL) \
-    $(wildcard include/config/UBSAN) \
-    $(wildcard include/config/UBSAN_TRAP) \
-    $(wildcard include/config/TASK_XACCT) \
-    $(wildcard include/config/CPUSETS) \
-    $(wildcard include/config/X86_CPU_RESCTRL) \
-    $(wildcard include/config/FUTEX) \
-    $(wildcard include/config/PERF_EVENTS) \
-    $(wildcard include/config/RSEQ) \
-    $(wildcard include/config/TASK_DELAY_ACCT) \
-    $(wildcard include/config/FAULT_INJECTION) \
-    $(wildcard include/config/LATENCYTOP) \
-    $(wildcard include/config/KUNIT) \
-    $(wildcard include/config/FUNCTION_GRAPH_TRACER) \
-    $(wildcard include/config/BCACHE) \
-    $(wildcard include/config/VMAP_STACK) \
-    $(wildcard include/config/LIVEPATCH) \
-    $(wildcard include/config/SECURITY) \
-    $(wildcard include/config/BPF_SYSCALL) \
-    $(wildcard include/config/GCC_PLUGIN_STACKLEAK) \
-    $(wildcard include/config/X86_MCE) \
-    $(wildcard include/config/KRETPROBES) \
-    $(wildcard include/config/RETHOOK) \
-    $(wildcard include/config/ARCH_HAS_PARANOID_L1D_FLUSH) \
-    $(wildcard include/config/ARCH_TASK_STRUCT_ON_STACK) \
-    $(wildcard include/config/DEBUG_RSEQ) \
-  include/uapi/linux/sched.h \
-  include/linux/pid.h \
-  include/linux/rculist.h \
-    $(wildcard include/config/PROVE_RCU_LIST) \
-  include/linux/sem.h \
-  include/uapi/linux/sem.h \
-  include/linux/ipc.h \
-  include/linux/rhashtable-types.h \
-  include/uapi/linux/ipc.h \
-  arch/x86/include/generated/uapi/asm/ipcbuf.h \
-  include/uapi/asm-generic/ipcbuf.h \
-  arch/x86/include/uapi/asm/sembuf.h \
-  include/linux/shm.h \
-  include/uapi/linux/shm.h \
-  include/uapi/asm-generic/hugetlb_encode.h \
-  arch/x86/include/uapi/asm/shmbuf.h \
-  include/uapi/asm-generic/shmbuf.h \
-  arch/x86/include/asm/shmparam.h \
-  include/linux/plist.h \
-    $(wildcard include/config/DEBUG_PLIST) \
-  include/linux/hrtimer.h \
-    $(wildcard include/config/HIGH_RES_TIMERS) \
-    $(wildcard include/config/TIME_LOW_RES) \
-    $(wildcard include/config/TIMERFD) \
-  include/linux/hrtimer_defs.h \
-  include/linux/timerqueue.h \
-  include/linux/seccomp.h \
-    $(wildcard include/config/SECCOMP) \
-    $(wildcard include/config/HAVE_ARCH_SECCOMP_FILTER) \
-    $(wildcard include/config/SECCOMP_FILTER) \
-    $(wildcard include/config/CHECKPOINT_RESTORE) \
-    $(wildcard include/config/SECCOMP_CACHE_DEBUG) \
-  include/uapi/linux/seccomp.h \
-  arch/x86/include/asm/seccomp.h \
-  arch/x86/include/asm/unistd.h \
-  arch/x86/include/uapi/asm/unistd.h \
-  arch/x86/include/generated/uapi/asm/unistd_32.h \
-  include/asm-generic/seccomp.h \
-  include/uapi/linux/unistd.h \
-  include/linux/resource.h \
-  include/uapi/linux/resource.h \
-  arch/x86/include/generated/uapi/asm/resource.h \
-  include/asm-generic/resource.h \
-  include/uapi/asm-generic/resource.h \
-  include/linux/latencytop.h \
-  include/linux/sched/prio.h \
-  include/linux/sched/types.h \
-  include/linux/signal_types.h \
-    $(wildcard include/config/OLD_SIGACTION) \
-  include/uapi/linux/signal.h \
-  arch/x86/include/asm/signal.h \
-  arch/x86/include/uapi/asm/signal.h \
-  include/uapi/asm-generic/signal-defs.h \
-  arch/x86/include/uapi/asm/siginfo.h \
-  include/uapi/asm-generic/siginfo.h \
-  include/linux/syscall_user_dispatch.h \
-  include/linux/task_io_accounting.h \
-    $(wildcard include/config/TASK_IO_ACCOUNTING) \
-  include/linux/posix-timers.h \
-  include/linux/alarmtimer.h \
-    $(wildcard include/config/RTC_CLASS) \
-  include/uapi/linux/rseq.h \
-  include/linux/kcsan.h \
-  arch/x86/include/generated/asm/kmap_size.h \
-  include/asm-generic/kmap_size.h \
-    $(wildcard include/config/DEBUG_KMAP_LOCAL) \
-  include/linux/energy_model.h \
-  include/linux/sched/cpufreq.h \
-    $(wildcard include/config/CPU_FREQ) \
-  include/linux/sched/topology.h \
-    $(wildcard include/config/SCHED_DEBUG) \
-    $(wildcard include/config/SCHED_MC) \
-    $(wildcard include/config/CPU_FREQ_GOV_SCHEDUTIL) \
-  include/linux/sched/idle.h \
-  include/linux/sched/sd_flags.h \
-  include/linux/klist.h \
-  include/linux/pm.h \
-    $(wildcard include/config/VT_CONSOLE_SLEEP) \
-    $(wildcard include/config/PM_CLK) \
-    $(wildcard include/config/PM_GENERIC_DOMAINS) \
-  include/linux/device/bus.h \
-  include/linux/device/class.h \
-  include/linux/device/driver.h \
-  include/linux/module.h \
-    $(wildcard include/config/MODULES_TREE_LOOKUP) \
-    $(wildcard include/config/STACKTRACE_BUILD_ID) \
-    $(wildcard include/config/MODULE_SIG) \
-    $(wildcard include/config/KALLSYMS) \
-    $(wildcard include/config/BPF_EVENTS) \
-    $(wildcard include/config/DEBUG_INFO_BTF_MODULES) \
-    $(wildcard include/config/EVENT_TRACING) \
-    $(wildcard include/config/MODULE_UNLOAD) \
-    $(wildcard include/config/CONSTRUCTORS) \
-    $(wildcard include/config/FUNCTION_ERROR_INJECTION) \
-  include/linux/buildid.h \
-    $(wildcard include/config/CRASH_CORE) \
-  include/linux/kmod.h \
-  include/linux/umh.h \
   include/linux/sysctl.h \
     $(wildcard include/config/SYSCTL) \
   include/uapi/linux/sysctl.h \
@@ -827,9 +187,14 @@ LE_UPGRADE) \
     $(wildcard include/config/DEBUG_KMAP_LOCAL_FORCE_MAP) \
     $(wildcard include/config/X86_VSYSCALL_EMULATION) \
     $(wildcard include/config/PROVIDE_OHCI1394_DMA_INIT) \
+    $(wildcard include/config/X86_IO_APIC) \
+    $(wildcard include/config/KMAP_LOCAL) \
     $(wildcard include/config/PCI_MMCONFIG) \
     $(wildcard include/config/ACPI_APEI_GHES) \
     $(wildcard include/config/INTEL_TXT) \
+  arch/x86/include/generated/asm/kmap_size.h \
+  include/asm-generic/kmap_size.h \
+    $(wildcard include/config/DEBUG_KMAP_LOCAL) \
   include/asm-generic/fixmap.h \
   arch/x86/include/asm/irq_vectors.h \
     $(wildcard include/config/HAVE_KVM) \
@@ -841,8 +206,21 @@ LE_UPGRADE) \
   arch/x86/include/asm/pgtable_32_areas.h \
   include/uapi/linux/elf.h \
   include/uapi/linux/elf-em.h \
+  include/linux/kobject.h \
+    $(wildcard include/config/UEVENT_HELPER) \
+    $(wildcard include/config/DEBUG_KOBJECT_RELEASE) \
+  include/linux/sysfs.h \
+  include/linux/kernfs.h \
+    $(wildcard include/config/KERNFS) \
+  include/linux/idr.h \
+  include/linux/radix-tree.h \
+  include/linux/xarray.h \
+    $(wildcard include/config/XARRAY_MULTI) \
+  include/linux/kconfig.h \
+  include/linux/kobject_ns.h \
   include/linux/moduleparam.h \
     $(wildcard include/config/ALPHA) \
+    $(wildcard include/config/IA64) \
     $(wildcard include/config/PPC64) \
   include/linux/rbtree_latch.h \
   include/linux/error-injection.h \
@@ -856,431 +234,230 @@ LE_UPGRADE) \
     $(wildcard include/config/MODULES_USE_ELF_REL) \
     $(wildcard include/config/MODULES_USE_ELF_RELA) \
   arch/x86/include/asm/orc_types.h \
-  arch/x86/include/asm/device.h \
-  include/linux/pm_wakeup.h \
-  include/acpi/acpi.h \
-  include/acpi/platform/acenv.h \
-  include/acpi/platform/acgcc.h \
-  include/acpi/platform/aclinux.h \
-    $(wildcard include/config/ACPI_REDUCED_HARDWARE_ONLY) \
-    $(wildcard include/config/ACPI_DEBUG) \
-  include/linux/ctype.h \
-  arch/x86/include/asm/acenv.h \
-  include/acpi/acnames.h \
-  include/acpi/actypes.h \
-  include/acpi/acexcep.h \
-  include/acpi/actbl.h \
-  include/acpi/actbl1.h \
-  include/acpi/actbl2.h \
-  include/acpi/actbl3.h \
-  include/acpi/acrestyp.h \
-  include/acpi/platform/acenvex.h \
-  include/acpi/platform/aclinuxex.h \
-  include/acpi/platform/acgccex.h \
-  include/acpi/acoutput.h \
-  include/acpi/acpiosxf.h \
-  include/acpi/acpixf.h \
-  include/acpi/acconfig.h \
-  include/acpi/acbuffer.h \
-  include/linux/dynamic_debug.h \
-  include/acpi/acpi_bus.h \
-    $(wildcard include/config/X86_ANDROID_TABLETS) \
-    $(wildcard include/config/ACPI_SYSTEM_POWER_STATES_SUPPORT) \
-    $(wildcard include/config/ACPI_SLEEP) \
-  include/acpi/acpi_drivers.h \
-    $(wildcard include/config/ACPI_DOCK) \
-  include/acpi/acpi_numa.h \
-    $(wildcard include/config/ACPI_HMAT) \
-  include/acpi/acpi_io.h \
-  include/linux/io.h \
-    $(wildcard include/config/HAS_IOPORT_MAP) \
-  arch/x86/include/asm/io.h \
-    $(wildcard include/config/MTRR) \
-    $(wildcard include/config/X86_PAT) \
-  arch/x86/include/generated/asm/early_ioremap.h \
-  include/asm-generic/early_ioremap.h \
-    $(wildcard include/config/GENERIC_EARLY_IOREMAP) \
-  include/asm-generic/iomap.h \
-  include/asm-generic/pci_iomap.h \
-    $(wildcard include/config/NO_GENERIC_PCI_IOPORT_MAP) \
-    $(wildcard include/config/GENERIC_PCI_IOMAP) \
-  include/asm-generic/io.h \
-    $(wildcard include/config/GENERIC_IOMAP) \
-    $(wildcard include/config/GENERIC_IOREMAP) \
-    $(wildcard include/config/VIRT_TO_BUS) \
-    $(wildcard include/config/GENERIC_DEVMEM_IS_ALLOWED) \
-  include/linux/logic_pio.h \
-    $(wildcard include/config/INDIRECT_PIO) \
-  include/linux/vmalloc.h \
-    $(wildcard include/config/HAVE_ARCH_HUGE_VMALLOC) \
-  arch/x86/include/asm/vmalloc.h \
-    $(wildcard include/config/HAVE_ARCH_HUGE_VMAP) \
-  arch/x86/include/asm/acpi.h \
-    $(wildcard include/config/ACPI_APEI) \
-  include/acpi/pdc_intel.h \
-  arch/x86/include/asm/numa.h \
-    $(wildcard include/config/NUMA_EMU) \
-  arch/x86/include/asm/numa_32.h \
-  include/linux/regulator/consumer.h \
-    $(wildcard include/config/REGULATOR) \
-  include/linux/suspend.h \
-    $(wildcard include/config/VT) \
-    $(wildcard include/config/SUSPEND) \
-    $(wildcard include/config/HIBERNATION_SNAPSHOT_DEV) \
-    $(wildcard include/config/PM_SLEEP_DEBUG) \
-    $(wildcard include/config/PM_AUTOSLEEP) \
-  include/linux/swap.h \
-    $(wildcard include/config/DEVICE_PRIVATE) \
-    $(wildcard include/config/MIGRATION) \
-    $(wildcard include/config/FRONTSWAP) \
-    $(wildcard include/config/THP_SWAP) \
-    $(wildcard include/config/MEMCG_SWAP) \
-  include/linux/memcontrol.h \
-    $(wildcard include/config/CGROUP_WRITEBACK) \
-  include/linux/cgroup.h \
-    $(wildcard include/config/CGROUP_CPUACCT) \
-    $(wildcard include/config/SOCK_CGROUP_DATA) \
-    $(wildcard include/config/CGROUP_DATA) \
-    $(wildcard include/config/CGROUP_BPF) \
-  include/uapi/linux/cgroupstats.h \
-  include/uapi/linux/taskstats.h \
-  include/linux/fs.h \
-    $(wildcard include/config/READ_ONLY_THP_FOR_FS) \
-    $(wildcard include/config/FS_POSIX_ACL) \
-    $(wildcard include/config/IMA) \
-    $(wildcard include/config/FILE_LOCKING) \
-    $(wildcard include/config/FSNOTIFY) \
-    $(wildcard include/config/FS_ENCRYPTION) \
-    $(wildcard include/config/FS_VERITY) \
-    $(wildcard include/config/EPOLL) \
-    $(wildcard include/config/UNICODE) \
-    $(wildcard include/config/QUOTA) \
-    $(wildcard include/config/FS_DAX) \
-    $(wildcard include/config/BLOCK) \
-  include/linux/wait_bit.h \
-  include/linux/kdev_t.h \
-  include/uapi/linux/kdev_t.h \
-  include/linux/dcache.h \
-  include/linux/rculist_bl.h \
-  include/linux/list_bl.h \
-  include/linux/bit_spinlock.h \
-  include/linux/lockref.h \
-    $(wildcard include/config/ARCH_USE_CMPXCHG_LOCKREF) \
-  include/linux/stringhash.h \
-    $(wildcard include/config/DCACHE_WORD_ACCESS) \
-  include/linux/hash.h \
-    $(wildcard include/config/HAVE_ARCH_HASH) \
-  include/linux/path.h \
-  include/linux/list_lru.h \
-  include/linux/shrinker.h \
-  include/linux/capability.h \
-  include/uapi/linux/capability.h \
-  include/linux/semaphore.h \
-  include/linux/fcntl.h \
-    $(wildcard include/config/ARCH_32BIT_OFF_T) \
-  include/uapi/linux/fcntl.h \
-  arch/x86/include/generated/uapi/asm/fcntl.h \
-  include/uapi/asm-generic/fcntl.h \
-  include/uapi/linux/openat2.h \
-  include/linux/migrate_mode.h \
-  include/linux/percpu-rwsem.h \
-  include/linux/rcuwait.h \
-  include/linux/sched/signal.h \
-    $(wildcard include/config/SCHED_AUTOGROUP) \
-    $(wildcard include/config/BSD_PROCESS_ACCT) \
-    $(wildcard include/config/TASKSTATS) \
-    $(wildcard include/config/STACK_GROWSUP) \
-  include/linux/signal.h \
-    $(wildcard include/config/DYNAMIC_SIGFRAME) \
-  include/linux/sched/jobctl.h \
-  include/linux/sched/task.h \
-    $(wildcard include/config/HAVE_EXIT_THREAD) \
-    $(wildcard include/config/ARCH_WANTS_DYNAMIC_TASK_STRUCT) \
-    $(wildcard include/config/HAVE_ARCH_THREAD_STRUCT_WHITELIST) \
-  include/linux/uaccess.h \
-  include/linux/fault-inject-usercopy.h \
-    $(wildcard include/config/FAULT_INJECTION_USERCOPY) \
-  arch/x86/include/asm/uaccess.h \
-    $(wildcard include/config/CC_HAS_ASM_GOTO_OUTPUT) \
-    $(wildcard include/config/CC_HAS_ASM_GOTO_TIED_OUTPUT) \
-    $(wildcard include/config/ARCH_HAS_COPY_MC) \
-    $(wildcard include/config/X86_INTEL_USERCOPY) \
-  arch/x86/include/asm/smap.h \
-  arch/x86/include/asm/extable.h \
-    $(wildcard include/config/BPF_JIT) \
-  include/asm-generic/access_ok.h \
-    $(wildcard include/config/ALTERNATE_USER_ADDRESS_SPACE) \
-  arch/x86/include/asm/uaccess_32.h \
-  include/linux/cred.h \
-    $(wildcard include/config/DEBUG_CREDENTIALS) \
-  include/linux/key.h \
-    $(wildcard include/config/KEY_NOTIFICATIONS) \
-    $(wildcard include/config/NET) \
-  include/linux/assoc_array.h \
-    $(wildcard include/config/ASSOCIATIVE_ARRAY) \
-  include/linux/sched/user.h \
-    $(wildcard include/config/WATCH_QUEUE) \
-  include/linux/percpu_counter.h \
-  include/linux/rcu_sync.h \
-  include/linux/delayed_call.h \
-  include/linux/errseq.h \
-  include/linux/ioprio.h \
-  include/linux/sched/rt.h \
-  include/linux/iocontext.h \
-    $(wildcard include/config/BLK_ICQ) \
-  include/uapi/linux/ioprio.h \
-  include/linux/fs_types.h \
-  include/linux/mount.h \
-  include/linux/mnt_idmapping.h \
-  include/uapi/linux/fs.h \
-  include/linux/quota.h \
-    $(wildcard include/config/QUOTA_NETLINK_INTERFACE) \
-  include/uapi/linux/dqblk_xfs.h \
-  include/linux/dqblk_v1.h \
-  include/linux/dqblk_v2.h \
-  include/linux/dqblk_qtree.h \
-  include/linux/projid.h \
-  include/uapi/linux/quota.h \
-  include/linux/nfs_fs_i.h \
-  include/linux/seq_file.h \
-  include/linux/string_helpers.h \
-  include/linux/ns_common.h \
-  include/linux/nsproxy.h \
-  include/linux/user_namespace.h \
-    $(wildcard include/config/INOTIFY_USER) \
-    $(wildcard include/config/FANOTIFY) \
-    $(wildcard include/config/PERSISTENT_KEYRINGS) \
-  include/linux/kernel_stat.h \
-  include/linux/interrupt.h \
-    $(wildcard include/config/IRQ_FORCED_THREADING) \
-    $(wildcard include/config/GENERIC_IRQ_PROBE) \
-    $(wildcard include/config/IRQ_TIMINGS) \
-  include/linux/irqreturn.h \
-  include/linux/irqnr.h \
-  include/uapi/linux/irqnr.h \
-  include/linux/hardirq.h \
-  include/linux/context_tracking_state.h \
-    $(wildcard include/config/CONTEXT_TRACKING) \
-  include/linux/ftrace_irq.h \
-    $(wildcard include/config/HWLAT_TRACER) \
-    $(wildcard include/config/OSNOISE_TRACER) \
-  include/linux/vtime.h \
-    $(wildcard include/config/VIRT_CPU_ACCOUNTING) \
-    $(wildcard include/config/IRQ_TIME_ACCOUNTING) \
-  arch/x86/include/asm/hardirq.h \
-    $(wildcard include/config/KVM_INTEL) \
-    $(wildcard include/config/X86_THERMAL_VECTOR) \
-    $(wildcard include/config/X86_MCE_THRESHOLD) \
-    $(wildcard include/config/X86_MCE_AMD) \
-    $(wildcard include/config/X86_HV_CALLBACK_VECTOR) \
-  arch/x86/include/asm/irq.h \
-  arch/x86/include/asm/sections.h \
-  include/asm-generic/sections.h \
-    $(wildcard include/config/HAVE_FUNCTION_DESCRIPTORS) \
-  include/linux/cgroup-defs.h \
-    $(wildcard include/config/CGROUP_NET_CLASSID) \
-    $(wildcard include/config/CGROUP_NET_PRIO) \
-  include/linux/u64_stats_sync.h \
-  include/linux/bpf-cgroup-defs.h \
-  include/linux/psi_types.h \
-  include/linux/kthread.h \
-  include/linux/cgroup_subsys.h \
-    $(wildcard include/config/CGROUP_DEVICE) \
-    $(wildcard include/config/CGROUP_FREEZER) \
-    $(wildcard include/config/CGROUP_PERF) \
-    $(wildcard include/config/CGROUP_HUGETLB) \
-    $(wildcard include/config/CGROUP_PIDS) \
-    $(wildcard include/config/CGROUP_RDMA) \
-    $(wildcard include/config/CGROUP_MISC) \
-    $(wildcard include/config/CGROUP_DEBUG) \
-  include/linux/vm_event_item.h \
-    $(wildcard include/config/HAVE_ARCH_TRANSPARENT_HUGEPAGE_PUD) \
-    $(wildcard include/config/MEMORY_BALLOON) \
-    $(wildcard include/config/BALLOON_COMPACTION) \
-    $(wildcard include/config/DEBUG_TLBFLUSH) \
-    $(wildcard include/config/DEBUG_VM_VMACACHE) \
-  include/linux/page_counter.h \
-  include/linux/vmpressure.h \
-  include/linux/eventfd.h \
-  include/linux/mm.h \
-    $(wildcard include/config/HAVE_ARCH_MMAP_RND_BITS) \
-    $(wildcard include/config/HAVE_ARCH_MMAP_RND_COMPAT_BITS) \
-    $(wildcard include/config/ARCH_USES_HIGH_VMA_FLAGS) \
-    $(wildcard include/config/ARCH_HAS_PKEYS) \
-    $(wildcard include/config/PPC) \
-    $(wildcard include/config/PARISC) \
-    $(wildcard include/config/SPARC64) \
-    $(wildcard include/config/ARM64_MTE) \
-    $(wildcard include/config/HAVE_ARCH_USERFAULTFD_MINOR) \
-    $(wildcard include/config/SHMEM) \
-    $(wildcard include/config/ARCH_HAS_PTE_SPECIAL) \
-    $(wildcard include/config/ARCH_HAS_PTE_DEVMAP) \
-    $(wildcard include/config/DEBUG_VM_RB) \
-    $(wildcard include/config/PAGE_POISONING) \
-    $(wildcard include/config/INIT_ON_ALLOC_DEFAULT_ON) \
-    $(wildcard include/config/INIT_ON_FREE_DEFAULT_ON) \
-    $(wildcard include/config/DEBUG_PAGEALLOC) \
-    $(wildcard include/config/HUGETLBFS) \
-    $(wildcard include/config/MAPPING_DIRTY_HELPERS) \
-    $(wildcard include/config/ANON_VMA_NAME) \
-  include/linux/mmap_lock.h \
-  include/linux/page_ext.h \
-  include/linux/stacktrace.h \
-    $(wildcard include/config/ARCH_STACKWALK) \
-    $(wildcard include/config/STACKTRACE) \
-    $(wildcard include/config/HAVE_RELIABLE_STACKTRACE) \
-  include/linux/stackdepot.h \
-    $(wildcard include/config/STACKDEPOT_ALWAYS_INIT) \
-  include/linux/page_ref.h \
-    $(wildcard include/config/DEBUG_PAGE_REF) \
-  include/linux/sizes.h \
-  include/linux/pgtable.h \
-    $(wildcard include/config/HIGHPTE) \
-    $(wildcard include/config/GUP_GET_PTE_LOW_HIGH) \
-    $(wildcard include/config/HAVE_ARCH_SOFT_DIRTY) \
-    $(wildcard include/config/ARCH_ENABLE_THP_MIGRATION) \
-    $(wildcard include/config/X86_ESPFIX64) \
-  arch/x86/include/asm/pgtable.h \
-    $(wildcard include/config/DEBUG_WX) \
-    $(wildcard include/config/PAGE_TABLE_CHECK) \
-  arch/x86/include/asm/pkru.h \
-  arch/x86/include/asm/fpu/api.h \
-    $(wildcard include/config/X86_DEBUG_FPU) \
-  arch/x86/include/asm/coco.h \
-  include/asm-generic/pgtable_uffd.h \
-  include/linux/page_table_check.h \
-  arch/x86/include/asm/pgtable_32.h \
-  arch/x86/include/asm/pgtable-3level.h \
-  arch/x86/include/asm/pgtable-invert.h \
-  include/linux/huge_mm.h \
-  include/linux/sched/coredump.h \
-    $(wildcard include/config/CORE_DUMP_DEFAULT_ELF_HEADERS) \
-  include/linux/vmstat.h \
-    $(wildcard include/config/VM_EVENT_COUNTERS) \
-  include/linux/writeback.h \
-  include/linux/flex_proportions.h \
-  include/linux/backing-dev-defs.h \
-    $(wildcard include/config/DEBUG_FS) \
-  include/linux/blk_types.h \
-    $(wildcard include/config/FAIL_MAKE_REQUEST) \
-    $(wildcard include/config/BLK_CGROUP_IOCOST) \
-    $(wildcard include/config/BLK_INLINE_ENCRYPTION) \
-    $(wildcard include/config/BLK_DEV_INTEGRITY) \
-  include/linux/bvec.h \
-  include/linux/highmem.h \
-  include/linux/cacheflush.h \
-  arch/x86/include/asm/cacheflush.h \
-  include/asm-generic/cacheflush.h \
-  include/linux/highmem-internal.h \
-  arch/x86/include/asm/highmem.h \
-  arch/x86/include/asm/tlbflush.h \
-  arch/x86/include/asm/invpcid.h \
-  arch/x86/include/asm/pti.h \
-  include/linux/bio.h \
-  include/linux/mempool.h \
-  include/linux/uio.h \
-    $(wildcard include/config/ARCH_HAS_UACCESS_FLUSHCACHE) \
-  include/uapi/linux/uio.h \
-  include/linux/node.h \
-    $(wildcard include/config/HMEM_REPORTING) \
-  include/linux/pagemap.h \
-  include/linux/hugetlb_inline.h \
-  include/uapi/linux/mempolicy.h \
-  include/linux/freezer.h \
-  include/uapi/linux/i2c.h \
-  include/linux/delay.h \
-  arch/x86/include/asm/delay.h \
-  include/asm-generic/delay.h \
-  include/linux/videodev2.h \
-  include/uapi/linux/videodev2.h \
-    $(wildcard include/config/VIDEO_ADV_DEBUG) \
-  include/uapi/linux/v4l2-common.h \
-  include/uapi/linux/v4l2-controls.h \
-  include/uapi/linux/v4l2-mediabus.h \
-  include/uapi/linux/media-bus-format.h \
-  include/linux/of_graph.h \
-  include/media/v4l2-async.h \
-  include/media/v4l2-device.h \
-    $(wildcard include/config/VIDEO_V4L2_SUBDEV_API) \
-  include/media/media-device.h \
-  include/media/media-devnode.h \
-  include/linux/poll.h \
-  include/uapi/linux/poll.h \
-  arch/x86/include/generated/uapi/asm/poll.h \
-  include/uapi/asm-generic/poll.h \
-  include/uapi/linux/eventpoll.h \
-  include/linux/cdev.h \
-  include/media/media-entity.h \
-  include/uapi/linux/media.h \
-  include/media/v4l2-subdev.h \
-  include/uapi/linux/v4l2-subdev.h \
-  include/media/v4l2-common.h \
-    $(wildcard include/config/VIDEO_V4L2_I2C) \
-    $(wildcard include/config/SPI) \
-  include/media/v4l2-dev.h \
-  include/linux/spi/spi.h \
-    $(wildcard include/config/SPI_SLAVE) \
-  include/linux/scatterlist.h \
-    $(wildcard include/config/NEED_SG_DMA_LENGTH) \
-    $(wildcard include/config/DEBUG_SG) \
-    $(wildcard include/config/SGL_ALLOC) \
-    $(wildcard include/config/ARCH_NO_SG_CHAIN) \
-    $(wildcard include/config/SG_POOL) \
-  include/linux/gpio/consumer.h \
-    $(wildcard include/config/OF_GPIO) \
-    $(wildcard include/config/GPIO_SYSFS) \
-  include/uapi/linux/spi/spi.h \
-  include/media/v4l2-fh.h \
-  include/media/v4l2-mediabus.h \
-  include/media/v4l2-fwnode.h \
-  include/media/v4l2-ctrls.h \
-  include/media/media-request.h \
-  include/media/hevc-ctrls.h \
-  include/media/i2c/tvp514x.h \
-  drivers/media/i2c/tvp514x_regs.h \
+  include/linux/build-salt.h \
+    $(wildcard include/config/BUILD_SALT) \
+  include/linux/elfnote.h \
+  include/linux/elfnote-lto.h \
+    $(wildcard include/config/LTO) \
+  include/linux/vermagic.h \
+    $(wildcard include/config/PREEMPT_BUILD) \
+  include/generated/utsrelease.h \
+  arch/x86/include/asm/vermagic.h \
+    $(wildcard include/config/M486SX) \
+    $(wildcard include/config/M486) \
+    $(wildcard include/config/M586) \
+    $(wildcard include/config/M586TSC) \
+    $(wildcard include/config/M586MMX) \
+    $(wildcard include/config/MCORE2) \
+    $(wildcard include/config/M686) \
+    $(wildcard include/config/MPENTIUMII) \
+    $(wildcard include/config/MPENTIUMIII) \
+    $(wildcard include/config/MPENTIUMM) \
+    $(wildcard include/config/MPENTIUM4) \
+    $(wildcard include/config/MK6) \
+    $(wildcard include/config/MK7) \
+    $(wildcard include/config/MK8) \
+    $(wildcard include/config/MELAN) \
+    $(wildcard include/config/MCRUSOE) \
+    $(wildcard include/config/MEFFICEON) \
+    $(wildcard include/config/MWINCHIPC6) \
+    $(wildcard include/config/MWINCHIP3D) \
+    $(wildcard include/config/MCYRIXIII) \
+    $(wildcard include/config/MVIAC3_2) \
+    $(wildcard include/config/MVIAC7) \
+    $(wildcard include/config/MGEODEGX1) \
+    $(wildcard include/config/MGEODE_LX) \
 
-drivers/media/i2c/tvp514x.o: $(deps_drivers/media/i2c/tvp514x.o)
+drivers/media/pci/cx18/cx18.mod.o: $(deps_drivers/media/pci/cx18/cx18.mod.o)
 
-$(deps_drivers/media/i2c/tvp514x.o):
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     cmd_drivers/media/i2c/tvp514x.o := gcc -Wp,-MMD,drivers/media/i2c/.tvp514x.o.d -nostdinc -I./arch/x86/include -I./arch/x86/include/generated  -I./include -I./arch/x86/include/uapi -I./arch/x86/include/generated/uapi -I./include/uapi -I./include/generated/uapi -include ./include/linux/compiler-version.h -include ./include/linux/kconfig.h -include ./include/linux/compiler_types.h -D__KERNEL__ -fmacro-prefix-map=./= -Wall -Wundef -Werror=strict-prototypes -Wno-trigraphs -fno-strict-aliasing -fno-common -fshort-wchar -fno-PIE -Werror=implicit-function-declaration -Werror=implicit-int -Werror=return-type -Wno-format-security -std=gnu11 -mno-sse -mno-mmx -mno-sse2 -mno-3dnow -mno-avx -fcf-protection=none -m32 -msoft-float -mregparm=3 -freg-struct-return -fno-pic -mpreferred-stack-boundary=2 -march=i686 -mtune=pentium3 -mtune=generic -Wa,-mtune=generic32 -ffreestanding -mstack-protector-guard-reg=fs -mstack-protector-guard-symbol=__stack_chk_guard -Wno-sign-compare -fno-asynchronous-unwind-tables -mindirect-branch=thunk-extern -mindirect-branch-register -fno-jump-tables -fno-delete-null-pointer-checks -Wno-frame-address -Wno-format-truncation -Wno-format-overflow -Wno-address-of-packed-member -O2 -fno-allow-store-data-races -fstack-protector-strong -Wimplicit-fallthrough=5 -Wno-main -Wno-unused-but-set-variable -Wno-unused-const-variable -fno-stack-clash-protection -pg -mrecord-mcount -mfentry -DCC_USING_FENTRY -Wdeclaration-after-statement -Wvla -Wno-pointer-sign -Wcast-function-type -Wno-stringop-truncation -Wno-stringop-overflow -Wno-restrict -Wno-maybe-uninitialized -Wno-alloc-size-larger-than -fno-strict-overflow -fno-stack-check -fconserve-stack -Werror=date-time -Werror=incompatible-pointer-types -Werror=designated-init -Wno-packed-not-aligned  -DMODULE  -DKBUILD_BASENAME='"tvp514x"' -DKBUILD_MODNAME='"tvp514x"' -D__KBUILD_MODNAME=kmod_tvp514x -c -o drivers/media/i2c/tvp514x.o drivers/media/i2c/tvp514x.c 
-
-source_drivers/media/i2c/tvp514x.o := drivers/media/i2c/tvp514x.c
-
-deps_drivers/media/i2c/tvp514x.o := \
-    $(wildcard include/config/OF) \
-    $(wildcard include/config/MEDIA_CONTROLLER) \
-  include/linux/compiler-version.h \
-    $(wildcard include/config/CC_VERSION_TEXT) \
-  include/linux/kconfig.h \
-    $(wildcard include/config/CPU_BIG_ENDIAN) \
-    $(wildcard include/config/BOOGER) \
-    $(wildcard include/config/FOO) \
-  include/linux/compiler_types.h \
-    $(wildcard include/config/DEBUG_INFO_BTF) \
-    $(wildcard include/config/PAHOLE_HAS_BTF_TAG) \
-    $(wildcard include/config/HAVE_ARCH_COMPILER_H) \
-    $(wildcard include/config/CC_HAS_ASM_INLINE) \
-  include/linux/compiler_attributes.h \
-  include/linux/compiler-gcc.h \
-    $(wildcard include/config/RETPOLINE) \
-    $(wildcard include/config/ARCH_USE_BUILTIN_BSWAP) \
-    $(wildcard include/config/SHADOW_CALL_STACK) \
-    $(wildcard include/config/KCOV) \
-  include/linux/i2c.h \
-    $(wildcard include/config/I2C) \
-    $(wildcard include/config/I2C_SLAVE) \
-    $(wildcard include/config/I2C_BOARDINFO) \
-    $(wildcard include/config/I2C_MUX) \
-    $(wildcard include/config/ACPI) \
-  include/linux/acpi.h \
-    $(wildcard include/config/ACPI_DEBUGGER) \
-    $(wildcard include/config/ACPI_TABLE_LIB) \
-    $(wildcard include/config/X86) \
-    $(wildcard include/config/IA64) \
-    $(wildcard include/config/LOONGARCH) \
-    $(wildcard include/config/ARM64) \
-    $(wildcard include/config/ACPI_PROCESSOR_CSTATE) \
-    $(wildcard include/config/ACPI_HOTPLUG_CPU) \
-    $(wildcard include/config/ACPI_HOTPLUG_IOAPIC) \
-    $(wildcard include/config/X86_IO_APIC) \
-    $(wildcard include/config/PCI)
+$(deps_drivers/media/pci/cx18/cx18.mod.o):
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                ELF                      p'      4     (                Ë¸ˇˇˇÖ¿t?Sâ√ãÄà  Ö¿tãÖ“t
+«Ç$&      Ë¸ˇˇˇ«Éà      «Éå      [√ç¥&    √ç¥&    Ë¸ˇˇˇUWVâ∆Sâ˜ÉÏd°    âD$1¿É«ÑŒ   ãñ  Ö“Ñ˝   ãÜ,&  Ö¿Öç   ãF«$    1…∫ˇˇˇˇTj à   h    Ë¸ˇˇˇÉƒÖ¿Öt   °   π   ∫¿  ã,$Ë¸ˇˇˇâ√Ö¿ÑZ   â8π   ∫
+   âhâÖà  «Öå      ãxã(çGË¸ˇˇˇçG$ˇu¯É«Dh   j PË¸ˇˇˇˇudˇu¯h@  jPWË¸ˇˇˇâÿÉƒ$Ë¸ˇˇˇÖ¿Ö   âû,&  ã$Ë¸ˇˇˇÖ¿Ö®   ˆ    u-ãD$d+    uÉƒ1¿[^_]√çv ˆ    t›È¸ˇˇˇË¸ˇˇˇÈ‰   fêfêfêfêË¸ˇˇˇã@«@    «@    1¿√ç¥&    Ë¸ˇˇˇ1¿√ç¥&    êË¸ˇˇˇVSãpç^âÿË¸ˇˇˇãvâ¬âÿË¸ˇˇˇâ[^√ç¥&    çt& Ë¸ˇˇˇUWVSâ√ÉÏã5   â$â ÖˆÖ2  ãhÖÌÑ¬   ã}|ÖˇÑ∑   ãw`¡ÓÑù   9ÚÇ  ãè4  Ö…Ñ7  â–1“˜ˆãSâD$ãGTâD$â–Ø∆»â—âD$ãD$–â¬ãD$9¬svØt$ã$ãD$âÒË¸ˇˇˇâËË¸ˇˇˇãCãt$âCãOTâ¬) 9»C¬sâsâÒâCãGL9∆Éû   ÉƒâË[^_]È¸ˇˇˇã-   ÖÌÖ  Éƒ[^_]√ç¥&    çv â¬âL$ãD$) â—ã$ØŒâL$Ë¸ˇˇˇãD$ãL$+L$ã$»ãL$Ø∆ â¡ãá4  Ë¸ˇˇˇÈTˇˇˇç¥&    ã   Ö€Ö   Éƒ[^_]√ç¥&    çv )¡âËâKË¸ˇˇˇâËÉƒ[^_]È¸ˇˇˇç∂    ã   Ö…ÑPˇˇˇÈá  ç¥&    ç∂    Ë¸ˇˇˇWVSãpãçÉ   çªT  Ë¸ˇˇˇ1“â¯Ë¸ˇˇˇÄ£®  Ôâ¯Ë¸ˇˇˇ«É(&      ã   Ë¸ˇˇˇ1¿[^_√ç¥&    ç¥&    Ë¸ˇˇˇUâ≈WVSÉÏlãu|d°    âD$hãEãâ$çC¯âD$â«çÉ   Ë¸ˇˇˇãÉ<&  ãìî  â|$dçHâD$\çD$âã<&  âT$`Ë¸ˇˇˇÖ¿Ö"  â¬ãÉ®  Ñ¿xçÉT  âD$∫´®  s6ã$âT$ã    Ë¸ˇˇˇãT$ãD$hd+    ÖÚ   Éƒlâ–[^_]√çt& â–çæ¯   π   ∫   Û´â«Ü¯    «Ü¸      «Ü       «Ü  Ä   «Ü  Äª  «Ü  Äª  «Ü     «Ü     «Ü  ® @«Ü!  1  «Ü(  b   Ë¸ˇˇˇã<$ãL$âoâé   «É(&      Äã®  ãD$Ë¸ˇˇˇâ$ã   Ë¸ˇˇˇã$Èˇˇˇã$ã    Ë¸ˇˇˇ∫ˇˇˇÈ˝˛ˇˇË¸ˇˇˇç¥&    Ë¸ˇˇˇU1…∫   Wâ«VSÉÏã/d°    âD$1¿ãGTjj Ë¸ˇˇˇâ∆ÉƒÖ¿Ö‘  «G    ã$πÄ   ∫   Ë¸ˇˇˇ1…∫   j j ãD$Ë¸ˇˇˇã\$∫P   «C    É√Xâª`  ã}dâ¯Ë¸ˇˇˇâ¡XZÉ˘ˇÑ   É˘PtÉ¡É˘Pá¿  â˙âÿË¸ˇˇˇãD$d+    u
+Éƒâ[^_]√Ë¸ˇˇˇSã@@Ö¿uh    h    Ë¸ˇˇˇXZÎ6ãê$&  Ö“uÉ¿h    Ph0   Ë¸ˇˇˇÉƒÎããBË¸ˇˇˇ«É$&      1¿[√hh  Ë¸ˇˇˇ∫    ∏   Ë¸ˇˇˇ1…1“h    Ë¸ˇˇˇ«        hå  Ë¸ˇˇˇÉƒ√h(   h    h`   Ë¸ˇˇˇÉƒÈb  É∆Ph   Vhl  Ë¸ˇˇˇÉƒã$Ö¿tË¸ˇˇˇâÿË¸ˇˇˇh(   Vh  Ë¸ˇˇˇÉƒÈb  É∆jÙh   Vh  Ë¸ˇˇˇÉƒÎªÉ∆Ph   Vh–   Ë¸ˇˇˇÉƒÎµÉ∆h(   Vhò   Ë¸ˇˇˇÉƒÈb  «Ü,&      É∆Ph   Vh®  Ë¸ˇˇˇÉƒÈaˇˇˇh(   h    Ë¸ˇˇˇY[Èb  h(   h    h‡  Ë¸ˇˇˇÉƒÈb  hd   hd   hp  Ë¸ˇˇˇÉƒÈÍ  hd   hL  Ë¸ˇˇˇ^_ÈÍ  QâL$ˇt$Phd   h¥  Ë¸ˇˇˇãkãT$ÉƒÖÌtDã}|ÖˇÖ3  É=    ÑÍ  hd   h$  Ë¸ˇˇˇXZÈÍ  hd   hú  Ë¸ˇˇˇXZÈÍ  É=    ÑÍ  hd   h¸  Ë¸ˇˇˇY[ÈÍ  ∏H   Ë¸ˇˇˇ∏@   Ë¸ˇˇˇÉ≈PhP   Uh–  Ë¸ˇˇˇÉƒÈp  Ë¸ˇˇˇhH  Ë¸ˇˇˇX1¿«    P   √           cx18_alsa_exit_callback snd_cx18_init   cx18_alsa_load  debug   strnlen strscpy snd_cx18_pcm_create cx18_alsa_announce_pcm_data   ∞              †  ¿      –                              pcm_debug   3cx18-alsa: %s: struct v4l2_device * is NULL
+  4%s-alsa: %s: struct snd_cx18_card * is NULL
+  6%s: %s: PCM stream for card is disabled - skipping
+   3%s-alsa: %s: struct snd_cx18_card * already exists
+   3%s-alsa: %s: snd_card_new() failed with err %d
+   3%s-alsa: %s: snd_cx18_card_create() failed with err %d
+   CX23418 #%d %s TV/FM Radio/Line-In Capture  3%s-alsa: %s: snd_cx18_pcm_create() failed with err %d
+    3%s-alsa: %s: snd_card_register() failed with err %d
+  6%s: %s: created cx18 ALSA interface instance
+ 3%s-alsa: %s: failed to create struct snd_cx18_card
+   6cx18-alsa: module loading...
+ 6cx18-alsa: module unloading...
+   6cx18-alsa: module unload complete
+    6cx18-alsa-pcm %s: cx18 alsa announce ptr=%p data=%p num_bytes=%zu
+    6cx18-alsa-pcm %s: substream was NULL
+ 6cx18-alsa-pcm %s: runtime was NULL
+   6cx18-alsa-pcm %s: stride is zero
+ 6cx18-alsa-pcm %s: %s: length was zero
+    6cx18-alsa-pcm %s: dma area was NULL - ignoring
+   3%s-alsa: %s: snd_cx18_pcm_create() failed with err %d
+     P       †  ¿  –     ∞    ¿  cx18-alsa CX23418 CX18-%d cx18 CX23418 PCM version=1.5.1 license=GPL description=CX23418 ALSA Interface author=Andy Walls parm=debug:Debug level (bitmask). Default: 0
+			  1/0x0001: warning
+			  2/0x0002: info
+ parmtype=debug:int parm=pcm_debug:enable debug messages for pcm parmtype=pcm_debug:int srcversion=0A31E57A452F6B591496F85 depends=snd-pcm,cx18,snd retpoline=Y intree=Y name=cx18_alsa vermagic=5.18.2-smp SMP preempt mod_unload PENTIUMIII    8           §ˇ     ¿           §ˇ    ◊  è  s           GNU  ¿       ¿               GNU p¢7Úú∞J©ˆ=O"çÌ&˘ï        Linux                Linux                                   cx18_alsa                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            GCC: (GNU) 11.2.0  GCC: (GNU) 11.2.0  GCC: (GNU) 11.2.0                                                                                         	                                                                                                                                                                                                                 Òˇ       U     *           	 5       I     P   P   H    _           s   (       	 ~          	 â            ò   U   ?     ß            æ           ’      #        =          O   Y       ®        4           B  8       	 T           Òˇd  †       y  ¿       é  –  %     ä          £    ¿     s   d       	 ƒ  ∞  R     ﬂ    ©    ˘  Ä   @    	   ƒ  0     +  H       	 6  @       	 A  P       	 L  ª   -     e  Ë        Ç          î  ¿   
+    	 ™           Òˇ∫  ˇ   #     ”  "       È  ;         G  	       P       )  _  7     @           H          P             \           j             s                          ë             £             ±  U   ?     ¿             «             Õ             ‰             ˚             	                                      >             F             \             m             u             Ç             ç             ù             Ø             √             ﬂ             ˛                          9             A             U             c             p             á           ó     £    ≥                           ÿ  ¿  –     Ï             ˘              cx18-alsa-main.c cx18_alsa_exit_callback __func__.7 snd_cx18_card_private_free cx18_alsa_load cx18_alsa_load.cold __func__.3 __func__.4 cx18_alsa_init cx18_alsa_exit __UNIQUE_ID_version366 __UNIQUE_ID_license365 __UNIQUE_ID_description364 __UNIQUE_ID_author363 __UNIQUE_ID_debug362 __UNIQUE_ID_debugtype361 __param_debug __param_str_debug cx18-alsa-pcm.c snd_cx18_pcm_prepare snd_cx18_pcm_trigger snd_cx18_pcm_pointer cx18_alsa_announce_pcm_data.cold snd_cx18_pcm_capture_close snd_cx18_pcm_capture_open snd_cx18_pcm_capture_ops snd_cx18_pcm_create.cold __func__.1 __func__.0 __func__.2 __UNIQUE_ID_pcm_debug362 __UNIQUE_ID_pcm_debugtype361 __param_pcm_debug __param_str_pcm_debug cx18-alsa.mod.c __UNIQUE_ID_srcversion99 __UNIQUE_ID_depends98 __UNIQUE_ID_retpoline97 __UNIQUE_ID_intree96 __UNIQUE_ID_name95 __UNIQUE_ID_vermagic94 _note_9 _note_8 driver_find __this_module snprintf snd_pcm_new __stack_chk_guard snd_card_register snd_card_free cleanup_module memcpy kfree _raw_spin_lock_irqsave kmem_cache_alloc_trace fortify_panic __fentry__ init_module cx18_start_v4l2_encode_stream _printk snd_pcm_stream_unlock __stack_chk_fail strnlen snd_card_new mutex_lock snd_pcm_set_ops cx18_claim_stream cx18_release_stream _raw_spin_unlock_irqrestore snd_pcm_set_managed_buffer_all cx18_stop_v4l2_encode_stream snd_pcm_hw_constraint_integer strscpy snd_pcm_stream_lock cx18_ext_init mutex_unlock driver_for_each_device cx18_alsa_debug cx18_alsa_announce_pcm_data snd_pcm_period_elapsed param_ops_int snd_cx18_pcm_create pci_bus_type kmalloc_caches    N  '   J  Q   N  b   E  q     ç     ´   B  ∞   U  ª     ¿   i  “   L  ‹     Ë     ˚       ^        C  )    1  C  ;  g  C    Q  F  Y    _  c  m  E  Ç  c  ä    è  S  î    °  N  ¡  N  —  N  ‡  K  Ï  Z    N          ô  I  †  _  ‹  R  ‚    Í      I  @  I  R    Z    x  R  Ü  e  í    ü    ±  N     V  ”  \  ‚  Y  ¯  a    N  #  E  C  V  m  X  ©  a  ∏  E  U  ]  o  d  Ä  P  è  a  ¶  a  µ  S  ¡  N  …    Ÿ  E  Ï  D  ˘          W  &  [  I  T  V    g    p  ^  {  E  å  S  	             Q  )     /     4   Q  C   G  V     [   Q  `   h  e     j   A  s     x   b  ~   `  á     å   Q                    Q       !     '     ,   Q  ;   G  B   J  G     M     R   Q  Z     d     j     o   Q  }     É     à   Q  ï     õ     †   Q  ®     ª     ¡     ∆   Q  ”     ÿ     ›   Q  ‰     È     Ó     Û     ¯   Q           
+          Q      !    &    +  Q  2    A    F    K  Q  d    j    q    v    {    Ä  Q  á    å    ë    ñ  Q  ù    £    ™    Ø    ¥    π  Q  ¿    ≈       M  œ    ‘  M  ›    „    Ë  Q         N          Q     `       Ä     Ñ     î     ò     †                                                    $              B     f     c          B     f  $                     Ã   O  Ù  H   .symtab .strtab .shstrtab .rel.text .rel.exit.text .rel.text.unlikely .rel.init.text .rel.rodata .rodata.str1.4 .rel__mcount_loc .rodata.str1.1 .modinfo .rel__param .rel.smp_locks .data .note.gnu.property .note.gnu.build-id .note.Linux .rel.gnu.linkonce.this_module .bss .comment .note.GNU-stack                                                         @   ê                    	   @       ‰  à              )             –  î                  %   	   @       l"  à               8             d  Ù                 4   	   @       Ù"  H              K             X	                    G   	   @       <%  (               Z             Ä	                      V   	   @       d%  (      	         b      2       L
+  	                u             U  (                  q   	   @       å%  P               Ç      2       }  +                 ë             ®  ñ                 û             @  (                  ö   	   @       ‹%  @               ™             h                    ¶   	   @       &                 µ             t                     ª             t  (                  Œ             ú  $                  ·             ¿  0                  Ò                           @       Ì   	   @       4&                                                       0          9                              9                                   <  †     A         	              ‹                                 D&  )                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 ELF                      p'      4     (                Ë¸ˇˇˇÖ¿t?Sâ√ãÄà  Ö¿tãÖ“t
+«Ç$&      Ë¸ˇˇˇ«Éà      «Éå      [√ç¥&    √ç¥&    Ë¸ˇˇˇUWVâ∆Sâ˜ÉÏd°    âD$1¿É«ÑŒ   ãñ  Ö“Ñ˝   ãÜ,&  Ö¿Öç   ãF«$    1…∫ˇˇˇˇTj à   h    Ë¸ˇˇˇÉƒÖ¿Öt   °   π   ∫¿  ã,$Ë¸ˇˇˇâ√Ö¿ÑZ   â8π   ∫
+   âhâÖà  «Öå      ãxã(çGË¸ˇˇˇçG$ˇu¯É«Dh   j PË¸ˇˇˇˇudˇu¯h@  jPWË¸ˇˇˇâÿÉƒ$Ë¸ˇˇˇÖ¿Ö   âû,&  ã$Ë¸ˇˇˇÖ¿Ö®   ˆ    u-ãD$d+    uÉƒ1¿[^_]√çv ˆ    t›È¸ˇˇˇË¸ˇˇˇÈ‰   fêfêfêfêË¸ˇˇˇã@«@    «@    1¿√ç¥&    Ë¸ˇˇˇ1¿√ç¥&    êË¸ˇˇˇVSãpç^âÿË¸ˇˇˇãvâ¬âÿË¸ˇˇˇâ[^√ç¥&    çt& Ë¸ˇˇˇUWVSâ√ÉÏã5   â$â ÖˆÖ2  ãhÖÌÑ¬   ã}|ÖˇÑ∑   ãw`¡ÓÑù   9ÚÇ  ãè4  Ö…Ñ7  â–1“˜ˆãSâD$ãGTâD$â–Ø∆»â—âD$ãD$–â¬ãD$9¬svØt$ã$ãD$âÒË¸ˇˇˇâËË¸ˇˇˇãCãt$âCãOTâ¬) 9»C¬sâsâÒâCãGL9∆Éû   ÉƒâË[^_]È¸ˇˇˇã-   ÖÌÖ  Éƒ[^_]√ç¥&    çv â¬âL$ãD$) â—ã$ØŒâL$Ë¸ˇˇˇãD$ãL$+L$ã$»ãL$Ø∆ â¡ãá4  Ë¸ˇˇˇÈTˇˇˇç¥&    ã   Ö€Ö   Éƒ[^_]√ç¥&    çv )¡âËâKË¸ˇˇˇâËÉƒ[^_]È¸ˇˇˇç∂    ã   Ö…ÑPˇˇˇÈá  ç¥&    ç∂    Ë¸ˇˇˇWVSãpãçÉ   çªT  Ë¸ˇˇˇ1“â¯Ë¸ˇˇˇÄ£®  Ôâ¯Ë¸ˇˇˇ«É(&      ã   Ë¸ˇˇˇ1¿[^_√ç¥&    ç¥&    Ë¸ˇˇˇUâ≈WVSÉÏlãu|d°    âD$hãEãâ$çC¯âD$â«çÉ   Ë¸ˇˇˇãÉ<&  ãìî  â|$dçHâD$\çD$âã<&  âT$`Ë¸ˇˇˇÖ¿Ö"  â¬ãÉ®  Ñ¿xçÉT  âD$∫´®  s6ã$âT$ã    Ë¸ˇˇˇãT$ãD$hd+    ÖÚ   Éƒlâ–[^_]√çt& â–çæ¯   π   ∫   Û´â«Ü¯    «Ü¸      «Ü       «Ü  Ä   «Ü  Äª  «Ü  Äª  «Ü     «Ü     «Ü  ® @«Ü!  1  «Ü(  b   Ë¸ˇˇˇã<$ãL$âoâé   «É(&      Äã®  ãD$Ë¸ˇˇˇâ$ã   Ë¸ˇˇˇã$Èˇˇˇã$ã    Ë¸ˇˇˇ∫ˇˇˇÈ˝˛ˇˇË¸ˇˇˇç¥&    Ë¸ˇˇˇU1…∫   Wâ«VSÉÏã/d°    âD$1¿ãGTjj Ë¸ˇˇˇâ∆ÉƒÖ¿Ö‘  «G    ã$πÄ   ∫   Ë¸ˇˇˇ1…∫   j j ãD$Ë¸ˇˇˇã\$∫P   «C    É√Xâª`  ã}dâ¯Ë¸ˇˇˇâ¡XZÉ˘ˇÑ   É˘PtÉ¡É˘Pá¿  â˙âÿË¸ˇˇˇãD$d+    u
+Éƒâ[^_]√Ë¸ˇˇˇSã@@Ö¿uh    h    Ë¸ˇˇˇXZÎ6ãê$&  Ö“uÉ¿h    Ph0   Ë¸ˇˇˇÉƒÎããBË¸ˇˇˇ«É$&      1¿[√hh  Ë¸ˇˇˇ∫    ∏   Ë¸ˇˇˇ1…1“h    Ë¸ˇˇˇ«        hå  Ë¸ˇˇˇÉƒ√h(   h    h`   Ë¸ˇˇˇÉƒÈb  É∆Ph   Vhl  Ë¸ˇˇˇÉƒã$Ö¿tË¸ˇˇˇâÿË¸ˇˇˇh(   Vh  Ë¸ˇˇˇÉƒÈb  É∆jÙh   Vh  Ë¸ˇˇˇÉƒÎªÉ∆Ph   Vh–   Ë¸ˇˇˇÉƒÎµÉ∆h(   Vhò   Ë¸ˇˇˇÉƒÈb  «Ü,&      É∆Ph   Vh®  Ë¸ˇˇˇÉƒÈaˇˇˇh(   h    Ë¸ˇˇˇY[Èb  h(   h    h‡  Ë¸ˇˇˇÉƒÈb  hd   hd   hp  Ë¸ˇˇˇÉƒÈÍ  hd   hL  Ë¸ˇˇˇ^_ÈÍ  QâL$ˇt$Phd   h¥  Ë¸ˇˇˇãkãT$ÉƒÖÌtDã}|ÖˇÖ3  É=    ÑÍ  hd   h$  Ë¸ˇˇˇXZÈÍ  hd   hú  Ë¸ˇˇˇXZÈÍ  É=    ÑÍ  hd   h¸  Ë¸ˇˇˇY[ÈÍ  ∏H   Ë¸ˇˇˇ∏@   Ë¸ˇˇˇÉ≈PhP   Uh–  Ë¸ˇˇˇÉƒÈp  Ë¸ˇˇˇhH  Ë¸ˇˇˇX1¿«    P   √           cx18_alsa_exit_callback snd_cx18_init   cx18_alsa_load  debug   strnlen strscpy snd_cx18_pcm_create cx18_alsa_announce_pcm_data   ∞              †  ¿      –                              pcm_debug   3cx18-alsa: %s: struct v4l2_device * is NULL
+  4%s-alsa: %s: struct snd_cx18_card * is NULL
+  6%s: %s: PCM stream for card is disabled - skipping
+   3%s-alsa: %s: struct snd_cx18_card * already exists
+   3%s-alsa: %s: snd_card_new() failed with err %d
+   3%s-alsa: %s: snd_cx18_card_create() failed with err %d
+   CX23418 #%d %s TV/FM Radio/Line-In Capture  3%s-alsa: %s: snd_cx18_pcm_create() failed with err %d
+    3%s-alsa: %s: snd_card_register() failed with err %d
+  6%s: %s: created cx18 ALSA interface instance
+ 3%s-alsa: %s: failed to create struct snd_cx18_card
+   6cx18-alsa: module loading...
+ 6cx18-alsa: module unloading...
+   6cx18-alsa: module unload complete
+    6cx18-alsa-pcm %s: cx18 alsa announce ptr=%p data=%p num_bytes=%zu
+    6cx18-alsa-pcm %s: substream was NULL
+ 6cx18-alsa-pcm %s: runtime was NULL
+   6cx18-alsa-pcm %s: stride is zero
+ 6cx18-alsa-pcm %s: %s: length was zero
+    6cx18-alsa-pcm %s: dma area was NULL - ignoring
+   3%s-alsa: %s: snd_cx18_pcm_create() failed with err %d
+     P       †  ¿  –     ∞    ¿  cx18-alsa CX23418 CX18-%d cx18 CX23418 PCM version=1.5.1 license=GPL description=CX23418 ALSA Interface author=Andy Walls parm=debug:Debug level (bitmask). Default: 0
+			  1/0x0001: warning
+			  2/0x0002: info
+ parmtype=debug:int parm=pcm_debug:enable debug messages for pcm parmtype=pcm_debug:int srcversion=0A31E57A452F6B591496F85 depends=snd-pcm,cx18,snd retpoline=Y intree=Y name=cx18_alsa vermagic=5.18.2-smp SMP preempt mod_unload PENTIUMIII    8           §ˇ     ¿           §ˇ    ◊  è  s           GNU  ¿       ¿               GNU p¢7Úú∞J©ˆ=O"çÌ&˘ï        Linux                Linux                                   cx18_alsa                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            GCC: (GNU) 11.2.0  GCC: (GNU) 11.2.0  GCC: (GNU) 11.2.0                                                                                         	                                                                                                                                                                                                                 Òˇ       U     *           	 5       I     P   P   H    _           s   (       	 ~          	 â            ò   U   ?     ß            æ           ’      #        =          O   Y       ®        4           B  8       	 T           Òˇd  †       y  ¿       é  –  %     ä          £    ¿     s   d       	 ƒ  ∞  R     ﬂ    ©    ˘  Ä   @    	   ƒ  0     +  H       	 6  @       	 A  P       	 L  ª   -     e  Ë        Ç          î  ¿   
+    	 ™           Òˇ∫  ˇ   #     ”  "       È  ;         G  	       P       )  _  7     @           H          P             \           j             s                          ë             £             ±  U   ?     ¿             «             Õ             ‰             ˚             	                                      >             F             \             m             u             Ç             ç             ù             Ø             √             ﬂ             ˛                          9             A             U             c             p             á           ó     £    ≥                           ÿ  ¿  –     Ï             ˘              cx18-alsa-main.c cx18_alsa_exit_callback __func__.7 snd_cx18_card_private_free cx18_alsa_load cx18_alsa_load.cold __func__.3 __func__.4 cx18_alsa_init cx18_alsa_exit __UNIQUE_ID_version366 __UNIQUE_ID_license365 __UNIQUE_ID_description364 __UNIQUE_ID_author363 __UNIQUE_ID_debug362 __UNIQUE_ID_debugtype361 __param_debug __param_str_debug cx18-alsa-pcm.c snd_cx18_pcm_prepare snd_cx18_pcm_trigger snd_cx18_pcm_pointer cx18_alsa_announce_pcm_data.cold snd_cx18_pcm_capture_close snd_cx18_pcm_capture_open snd_cx18_pcm_capture_ops snd_cx18_pcm_create.cold __func__.1 __func__.0 __func__.2 __UNIQUE_ID_pcm_debug362 __UNIQUE_ID_pcm_debugtype361 __param_pcm_debug __param_str_pcm_debug cx18-alsa.mod.c __UNIQUE_ID_srcversion99 __UNIQUE_ID_depends98 __UNIQUE_ID_retpoline97 __UNIQUE_ID_intree96 __UNIQUE_ID_name95 __UNIQUE_ID_vermagic94 _note_9 _note_8 driver_find __this_module snprintf snd_pcm_new __stack_chk_guard snd_card_register snd_card_free cleanup_module memcpy kfree _raw_spin_lock_irqsave kmem_cache_alloc_trace fortify_panic __fentry__ init_module cx18_start_v4l2_encode_stream _printk snd_pcm_stream_unlock __stack_chk_fail strnlen snd_card_new mutex_lock snd_pcm_set_ops cx18_claim_stream cx18_release_stream _raw_spin_unlock_irqrestore snd_pcm_set_managed_buffer_all cx18_stop_v4l2_encode_stream snd_pcm_hw_constraint_integer strscpy snd_pcm_stream_lock cx18_ext_init mutex_unlock driver_for_each_device cx18_alsa_debug cx18_alsa_announce_pcm_data snd_pcm_period_elapsed param_ops_int snd_cx18_pcm_create pci_bus_type kmalloc_caches    N  '   J  Q   N  b   E  q     ç     ´   B  ∞   U  ª     ¿   i  “   L  ‹     Ë     ˚       ^        C  )    1  C  ;  g  C    Q  F  Y    _  c  m  E  Ç  c  ä    è  S  î    °  N  ¡  N  —  N  ‡  K  Ï  Z    N          ô  I  †  _  ‹  R  ‚    Í      I  @  I  R    Z    x  R  Ü  e  í    ü    ±  N     V  ”  \  ‚  Y  ¯  a    N  #  E  C  V  m  X  ©  a  ∏  E  U  ]  o  d  Ä  P  è  a  ¶  a  µ  S  ¡  N  …    Ÿ  E  Ï  D  ˘          W  &  [  I  T  V    g    p  ^  {  E  å  S  	             Q  )     /     4   Q  C   G  V     [   Q  `   h  e     j   A  s     x   b  ~   `  á     å   Q                    Q       !     '     ,   Q  ;   G  B   J  G     M     R   Q  Z     d     j     o   Q  }     É     à   Q  ï     õ     †   Q  ®     ª     ¡     ∆   Q  ”     ÿ     ›   Q  ‰     È     Ó     Û     ¯   Q           
+          Q      !    &    +  Q  2    A    F    K  Q  d    j    q    v    {    Ä  Q  á    å    ë    ñ  Q  ù    £    ™    Ø    ¥    π  Q  ¿    ≈       M  œ    ‘  M  ›    „    Ë  Q         N          Q     `       Ä     Ñ     î     ò     †                                                    $              B     f     c          B     f  $                     Ã   O  Ù  H   .symtab .strtab .shstrtab .rel.text .rel.exit.text .rel.text.unlikely .rel.init.text .rel.rodata .rodata.str1.4 .rel__mcount_loc .rodata.str1.1 .modinfo .rel__param .rel.smp_locks .data .note.gnu.property .note.gnu.build-id .note.Linux .rel.gnu.linkonce.this_module .bss .comment .note.GNU-stack                                                         @   ê                    	   @       ‰  à              )             –  î                  %   	   @       l"  à               8             d  Ù                 4   	   @       Ù"  H              K             X	                    G   	   @       <%  (               Z             Ä	                      V   	   @       d%  (      	         b      2       L
+  	                u             U  (                  q   	   @       å%  P               Ç      2       }  +                 ë             ®  ñ                 û             @  (                  ö   	   @       ‹%  @               ™             h                    ¶   	   @       &                 µ             t                     ª             t  (                  Œ             ú  $                  ·             ¿  0                  Ò                           @       Ì   	   @       4&                                                       0          9                              9                                   <  †     A         	              ‹                                 D&  )                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 cmd_drivers/media/pci/cx18/cx18-alsa.ko := ld -r -m elf_i386 --build-id=sha1  -T scripts/module.lds -o drivers/media/pci/cx18/cx18-alsa.ko drivers/media/pci/cx18/cx18-alsa.o drivers/media/pci/cx18/cx18-alsa.mod.o;  true
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    cmd_drivers/media/pci/cx18/cx18-alsa.ko := ld -r -m elf_i386 --build-id=sha1  -T scripts/module.lds -o drivers/media/pci/cx18/cx18-alsa.ko drivers/media/pci/cx18/cx18-alsa.o drivers/media/pci/cx18/cx18-alsa.mod.o;  true
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    ELF                      (W     4     ( ' &             Ë¸ˇˇˇSâ√h    jË¸ˇˇˇã    XYÖ“tçÉP¶ˇˇ[È¸ˇˇˇçt& [√ç¥&    ç¥&    Ë¸ˇˇˇUWVSÉÏã∞»   çFç~¯â$ˆ    Ös   çÜ®Y  Ë¸ˇˇˇˆ    Ö_   ãÜ4&  Ö¿~â¯Ë¸ˇˇˇ∫   â¯çÆ‹1  Ë¸ˇˇˇçûîQ  ç¥&    âËÉ≈tË¸ˇˇˇ9›uÚçÆd  çûÙ)  ç∂    ãÖ‹˛ˇˇÖ¿tâËË¸ˇˇˇÅ≈  9›uÂ∫à   â¯Ë¸ˇˇˇâ¯Ë¸ˇˇˇãÜÃ1  Ë¸ˇˇˇ∫   â¯Ë¸ˇˇˇâ¯Ë¸ˇˇˇãF¸â˙ãÄL  Ë¸ˇˇˇÖˇt&ãÜL&  Ö¿tˆ    Öá   Ë¸ˇˇˇ«ÜL&      ãÜ@&  ãñD&  j h   â—â¬∏    Ë¸ˇˇˇãF¸Ë¸ˇˇˇãÜ80  ZYÖ¿t$çÆ<0  çû∏0  Îç¥&    ãE É≈Ë¸ˇˇˇ9›uÒçÜh  Ë¸ˇˇˇˇvdˇt$hY   Ë¸ˇˇˇâË¸ˇˇˇâ¯Éƒ[^_]È¸ˇˇˇË¸ˇˇˇWVSâ”âﬁË¸ˇˇˇ˜ﬁˆÉ∆dã=    Îç¥&    Ö¿t4Ñ…t0âÚáWË¸ˇˇˇ1“π   Ö€t„ãÅ‚   u!ã¡ÍÉ‚â—ÉÒÖ¿uÃ[â–^_√ç¥&    çv ∫   [^â–_√çt& êË¸ˇˇˇUâ≈â—WçzVÉÁ¸â÷S)˘É¡D¡ÈÅÏ  d°    âÑ$   1¿«    «B@    ∫¿  Û´πÙ  °$   Ë¸ˇˇˇÖ¿tRâ√π   ç@∫k   Ë¸ˇˇˇçÖúR  π   âC∏P   â‚fâCâÿË¸ˇˇˇÖ¿uãEhã É¯	u5â‚âË¸ˇˇˇâÿË¸ˇˇˇãÑ$   d+    u-Åƒ  [^_]√ç¥&    çv è´   É¯è°   Ö¿y∏È´   Ë¸ˇˇˇçv Ë¸ˇˇˇUWVæ   SÉÏ|â$d°    âD$x1¿¡5†   É˛è3  π   ∫¿  ∏¿Y  Ë¸ˇˇˇâ√Ö¿Ññ
+  ã$â3çSâT$âCà   âD$Ë¸ˇˇˇâD$Ö¿ÖÇ  çCç≥<  âD$â«ˇ3h}   j$PË¸ˇˇˇˇ3W1ˇhÖ   Ë¸ˇˇˇ°¸   ã-Ã   «ÉT      «É|      ÉƒâÉ@  °¯   â´d  âÉ<  °Ù   âÉP  °   âÉD  °Ï   âÉH  °Ë   âÉL  °–   âÉh  °»   âÉx  °ƒ   âÉl  °¿   âÉp  °º   âÉt  °‰   âÉÑ  °‡   âÉÄ  °‹   âÉî  °ÿ   «Éå  À  âÉà  °‘   «Éò      âÉê  â\$Îoç∂    ãÖ€~gãNDÖ…~`ÉˇÑ≤  ÉˇÑ©  ∏,   £¯Çœ  ÖÌàk  ØÈÖÌçÖˇ  I≈¡¯
+â¡·
+âNDˆ    ÖÑ  É«É∆Éˇt&ãn(ÖÌuìÉ««    É∆«F$    «F@    Éˇu⁄ã\$∂  ãã4Ö    ãÖ†  ãÖ   â≥X  âì\  âÉ`  Ä˘MÑˇ  è9  Ä˘BÑÎ  éB  ∏   1“Ä˘HtéÙ  ∏   1“Ä˘IÖœ  ç¥&    êâÉ†Y  âì§Y  É˛ˇÑo  çFˇ∑¿Ë¸ˇˇˇâChÖ¿Öö  ã´X  ÖÌÖÂ  ãCfÉx$pÑœ  ãt$∑∆Ë¸ˇˇˇâChâ¡Ö¿Ñå  ãÅ‡   Ö¿tN∑fÖ“tFãkÉ¿∑}"Îfê∑É¿fÖ“t-f9◊u∑P¸f9U$uÊ∑P˛f9U&Ñv  ∑É¿fÖ“uÿçt& êÉ∆Îéçv ¡·
+∫I÷πÚâ»˜Íç
+¡˘∫ á  ¡¯)»ãL$i¿ á  9–L¬âÅà  ãNDÖÌà¥  ØÕÖ…çÅˇˇ I¡¡¯âÈ2˛ˇˇçt& Ä˘-u{∂  Ä˘LÑ-  è  Ä˘BÑˆ  è>  Ä˘-Ö∑  ∂   Ä˘MÑq  èw  ∏    1“Ä˘JÑè˛ˇˇ∏ Ä  1“Ä˘KÑ˛ˇˇÄ˘-ÖÇ  1¿1“Èm˛ˇˇçt& êÄ˘6Ö   ∏   1“ÈS˛ˇˇÄ˘NtnÄ˘bÖV  ∏   1“È9˛ˇˇÄ˘KÖñ  ∏‡   1“È$˛ˇˇ∏‡   1“Ä˘DÑ˛ˇˇÄ˘Gt È˛   ç¥&    çv Ä˘iÑ5  ~E∏   1“Ä˘mÑÂ˝ˇˇÄ˘nud∂  ∏   1“É·ﬂÄ˘CÖ∆˝ˇˇ∏   1“È∫˝ˇˇç¥&    çv Ä˘dÑwˇˇˇéNˇˇˇ∏   1“Ä˘gÑë˝ˇˇÄ˘hÖ»  ∏   1“È|˝ˇˇÄ˘kÑCˇˇˇÈ˛   ç∂    âÿ¡‡
+ô˜˘âF(Èò¸ˇˇç¥&    êâÿ¡‡ô˜˘âF(ÈÜ¸ˇˇ¡·
+∏´™™™˜·ãL$¡Í
+çR∫   ¡‡	9–B¬âÅî  È˛ˇˇ1¿Ë¸ˇˇˇâChãC∑P"R∑@ Pã|$Wh¯  Ë¸ˇˇˇãC∑P&R∑@$PWh(  Ë¸ˇˇˇãChÉƒ ˇpWhÓ   Ë¸ˇˇˇWhd  Ë¸ˇˇˇWhº  Ë¸ˇˇˇWh  Ë¸ˇˇˇãChÉƒ$ãPâSxãPâSlãÄƒ   âCpÉªX  ˇÑP  ãCπ   ç≥ÿ1  ãêT  ãÄP  âìL&  ∫  âÉH&  çÉ(  Ë¸ˇˇˇçÉX  π   ∫  Ë¸ˇˇˇçÉà   π   ∫.  Ë¸ˇˇˇπ   ∫C  çÉú   Ë¸ˇˇˇˇt$hX  jVË¸ˇˇˇVjh 
+ h^  Ë¸ˇˇˇâÉ‘1  Éƒ Ö¿Ñi  çãúQ  çÉË1  çì†Q  ç∂    âXâHl«@¸‡ˇˇˇâ â@É¿t«@î    9¬u‡çÉú  ç´  «ÉD&     ∫2   âÉî  âË«É      «É     «Éú      «Éò      Ë¸ˇˇˇâD$Ö¿ÖX  çÉ$  ãì  π   âCDãÉ   ãÄÄ   âÉ  ãÉ¸  ãÄÄ   âÉ  ãÉÏ  ãíÄ   ãÄÄ   ¡‚¿	–ãìË  ÇÄ   ∫a  âÉ  çÉ∞1  Ë¸ˇˇˇçÉò1  π   ∫l  Ë¸ˇˇˇçÉ§1  π   ∫~  Ë¸ˇˇˇçÉº1  ∫ê  π   Ë¸ˇˇˇçÉ`&  çìD1  «É\&     âÉ('  çÉl1  âÉl1  âìH1  âìD1  çìX1  âìX1  âÉ\1  âìl1  âìp1  âÉX1  ˆ    ÖÜ  ã$Ë¸ˇˇˇÖ¿Ö≈  ãD$1…∫ˇˇˇˇË¸ˇˇˇÖ¿Öˇ  j ∏    hü  j h   ãìH&  ããL&  Ë¸ˇˇˇÉƒÖ¿Ñ£  ã<$çL$ ∫   â¯Ë¸ˇˇˇ∑L$ ∫   â¯É…fâL$ ∑…Ë¸ˇˇˇ∂G,∫   çL$àÉP&  â¯Ë¸ˇˇˇ∂D$<?wã∏   Ö“Ö√  ãÉH&  ãìL&  ˆ    Ö  π   Ë¸ˇˇˇâÉT&  Ö¿Ñ6  çê   âìX&  ãê( «â–%   ˇ=   Ñ  =   ˇÑú  Rˇt$hò  Ë¸ˇˇˇÉƒÈÆ  ç¥&    ∏  2 1“Ä˘dÑ‡¯ˇˇéÄ   ÉÈgÄ˘á(  ∏   1“È¬¯ˇˇ∏   1“È∂¯ˇˇÄ˘ktK~øÄ˘lÖ(  ∂  ∏  @ 1“É·ﬂÄ˘CÖå¯ˇˇ∏  Ä 1“ÈÄ¯ˇˇÄ˘H+∏   1“Ä˘Fèk¯ˇˇÄ˘Dum∏  2 1“ÈZ¯ˇˇÄ˘btáÈ(  Ä˘KtÂÈ(  ç∂    ∏   1“È4¯ˇˇ∏   1“È(¯ˇˇ∏ Ä  1“Ä˘kÑ¯ˇˇÄ˘mtﬂÄ˘jÖ  ∏    1“È˛˜ˇˇÈ(  È(  È  È˛   1¿Ë¸ˇˇˇâChˇt$h‘  Ë¸ˇˇˇãChZYÖ¿Ñ¯ˇˇÈ%˚ˇˇÈ˛   «D$ÙˇˇˇãD$xd+    uãD$Éƒ|[^_]√È˛   È˛   Ë¸ˇˇˇç¥&    çt& Ë¸ˇˇˇSâ√ÅÏå   d°    âÑ$à   1¿â\$XãÉ4&  ©  @ Ö∏  ∫´4&  ∏    Çk  âÿË¸ˇˇˇÖ¿Ö∆  Äã4&  j hπ   jh  SË¸ˇˇˇj h  SË¸ˇˇˇÉƒ j jh  SË¸ˇˇˇâÿË¸ˇˇˇÉƒÖ¿Öô  j hπ   jh  SË¸ˇˇˇj h  SË¸ˇˇˇÉƒ j jh  SË¸ˇˇˇãC`ÉƒÖ¿t1ãPdãÖ“t(ãRÖ“t!ã    Ö…Ñ„   ãIÖ…Ñÿ   Ë¸ˇˇˇçv ãì†Y  «D$\    «D$`   â–«D$d   ÄÙ É§Y  Ñë   ÄÊt«D$d4  ããúY  â‚çAâÉúY  1¿Ë¸ˇˇˇãÉ®Y  ãì¨Y  ÉÉ†Y  â¡Éì§Y   ÅÒˇˇˇ 	—u∏   1“RP1¿çT$Ë¸ˇˇˇ1¿çL$dçT$Ë¸ˇˇˇ[X1¿ãî$à   d+    u0Åƒå   [√ç¥&    «D$d¥  Èoˇˇˇçv Ë¸ˇˇˇÈ&ˇˇˇ∏˙ˇˇˇÎ¿Ë¸ˇˇˇfêfêfêfêfêË¸ˇˇˇfÉ¯	w∑¿ãÖ`  √ç¥&    çv 1¿√ç¥&    ç∂    Ë¸ˇˇˇUWVâ∆â–∑“SâÀÉÏãNhç|—∂Nvf9¡Üß   â∂∫    ã,Ö8  çCâ$âËË¸ˇˇˇâ¡É¯ˇÑ  É¯ tÉ¡É˘ á¸  ã$âÍË¸ˇˇˇÄ?t6«C$   ∂Nw∏   1“”‡ÉËâC(∏ˇˇˇ âS4âC01¿Éƒ[^_]√ç¥&    «C$   ∂Nw∏   ”‡ÉËâC(ãÜ®Y  ãñ¨Y  Î√fê∏ÍˇˇˇÎ¬ç¥&    fêË¸ˇˇˇU∑ÍWVâ∆SâÀçLm ÉÏã@h«    «C0    çDàLâŸâ$çCâ«âD$1¿ÉÁ¸)˘É¡4¡ÈÛ´∂Fwf9–vWã$∫    ∂ ã4Ö  âË¸ˇˇˇâ¡É¯ˇÑ  É¯ tÉ¡É˘ á  ãD$âÚË¸ˇˇˇâ+1¿«C$   Éƒ[^_]√çt& ∏ÍˇˇˇÎÌêË¸ˇˇˇSÉxâ—ã¿% ˇ˛ˇãìX&   QÚ ¬ãÖ…t(É ÉX&  π
+   ç¥&    çv âã9⁄tÉÈuÛ[√êÉ‚˛ÉX&  π
+   fêâã9⁄tÂÉÈuÛ[√êË¸ˇˇˇSÉxâ—ã¿% ˇ˛ˇãìX&   QÚ ¬ãÖ…t(É ÉX&  π
+   ç¥&    çv âã9⁄tÉÈuÛ[√êÉ‚˝ÉX&  π
+   fêâã9⁄tÂÉÈuÛ[√êË¸ˇˇˇãÉx¿ãíX&  % ˇ˛ˇçÑQÚ ã É‡√ç¥&    çt& Ë¸ˇˇˇãÉx¿ãíX&  % ˇ˛ˇçÑQÚ ã É‡√ç¥&    çt& Ë¸ˇˇˇUâ—Wø   V”ÁSâ√ÉÏDã4ï‡  d°    âD$@1¿∂Ç   i¿p  ç¨úR  Éˇt]∂Ç  ÅˇÄ   Ñ¬   Ñ¿t>j É√âÒâÍPâÿË¸ˇˇˇZYÖ¿t'â∏ê   1¿ãT$@d+    ÖB  ÉƒD[^_]√ç∂    ∏ˇˇˇˇÎ⁄êˇspç{âÒâÍj â¯Ë¸ˇˇˇYZÖ¿t
+«Äê      ãCpâÒâÍÉ¿Pâ¯j Ë¸ˇˇˇYZÖ¿t
+«Äê      ãCpâÍâÒÉ¿
+Pâ¯j Ë¸ˇˇˇ]ZÖ¿tó«Äê      1¿Ègˇˇˇç∂    ø˛ˇˇˇfâD$1¿π   fâ|$ç|$çì‹W  Û´â$â∫   Ë¸ˇˇˇâ¡É¯ˇÑ.  É¯tÉ¡É˘á$  âÚçD$Ë¸ˇˇˇãCl«É‹W  l  «ÉÙW     âÉ‡W  ã$«É‰W    «ÉËW      âD$$âËj çL$çT$Ë¸ˇˇˇ[= ˇˇó¿∂¿˜ÿÈ≠˛ˇˇË¸ˇˇˇç¥&    ç¥&    êË¸ˇˇˇUçhWâ◊Vâ∆âËSË¸ˇˇˇãFçV9¬t/çX¥Îç¥&    çv ãCLçX¥9¬t9ªê   uÓâËË¸ˇˇˇâÿ[^_]√âË1€Ë¸ˇˇˇâÿ[^_]√Ë¸ˇˇˇUWVâ∆SÉÏˆ    @ÖB  çÜÃW  «$    çÆ|W  âD$çFçû†T  âD$ã$π
+   çíçº∆|W  1¿Û´i¬p  ã|$«E†  «E0  πú   «E@  «E  «E   «E –  âW∫0   â7â} çºúR  1¿Û´«cx18âÿ«É¸˝ˇˇ    «C i2c«C dri«Cver «C    «C    «C    «C    «C     «C$    «C(    «C,    â´˛ˇˇã>Ë¸ˇˇˇÉ¯0á8  ÑW  ÿˇ4$É≈(Å√p  Whè  PË¸ˇˇˇã|$ÉD$Éƒâª¸ˇˇã~çáà   âÉÏ˚ˇˇÉ<$Ö  ãÜX&   QÚ ã =/¿ Ö  ãÜX&  ª  ¿ çà « ∏
+   çt& âãÉ˙ˇtÅ‚¿ ¿ tÉËuÍª
+   çt& ê∏XâA Ë¸ˇˇˇÉÎuÒãÜX&  ∫
+   ª¿ ¿ çà « çv âãÉ¯ˇt%¿ ¿ =¿   tÉÍuÊª
+   ê∏XâA Ë¸ˇˇˇÉÎuÒãÜX&  ª  ¿ çà « ∏
+   çv âãÉ˙ˇtÅ‚¿ ¿ tÉËuÍª
+   çt& ê∏XâA Ë¸ˇˇˇÉÎuÒãÜX&  ª  ¿ çê»0« ∏
+   çv âã
+Å˘  ¿ tÉËuÔãÜX&  ª  ¿ çàƒ0« ∏
+   ç¥&    fêâãÉ˙ˇtÅ‚  ¿ tÉËuÍãÜX&  ª çê PÒ ∏
+   çt& âã
+Å˘ tÉËuÔÉæ–W  ãñÃW  ¿ãäX&  % ˇ˛ˇ QÚ ¡ã	ÇX&  É…∫
+   ç∂    âã9ŸtÉÍuÛÉæ–W  ãñÃW  ¿ãäX&  % ˇ˛ˇ QÚ ¡ã	ÇX&  É…∫
+   ç¥&    çv âã9ŸtÉÍuÛãÜX&  ª çê QÚ ∏
+   çt& êâã
+Å˘ tÉËuÔÉæÿW  ãñ‘W  ¿ãäX&  % ˇ˛ˇ QÚ ¡ã	ÇX&  É…∫
+   ç∂    âã9ŸtÉÍuÛÉæÿW  ãñ‘W  ¿ãäX&  % ˇ˛ˇ QÚ ¡ã	ÇX&  É…∫
+   fêâã9ŸtÉÍuÛãFç~çX¥9«t2ç∂    ˆÉê   @tãCdã Ö¿tãHÖ…t	1“âÿË¸ˇˇˇãCLçX¥9«u‘çæúR  â¯Ë¸ˇˇˇâ√Ö¿Ñï   Éƒâÿ[^_]√çv «$   È≥˚ˇˇçt& ãÜX&  ª   çà« ∏
+   ç¥&    çv âãÉ˙ˇtÅ‚  tÉËuÍãÜX&  ∫
+   ª  çà$« çt& âãÉ¯ˇt%  =   ÑÖ¸ˇˇÉÍu‚È{¸ˇˇçt& êçÜU  Ë¸ˇˇˇâ√Ö¿ÑVˇˇˇâ¯Ë¸ˇˇˇÈJˇˇˇç¥&    Ë¸ˇˇˇVSâ√ˆ    @Öa  ãÉX&  ãà PÒ ãÉX&  É…çê PÒ ∏
+   ç¥&    çv â
+ã29ÒtÉËuÛãÉX&  ãà QÚ ãÉX&  É…çê QÚ ∏
+   çv â
+ã29ÒtÉËuÛçÉúR  Ë¸ˇˇˇçÉU  [^È¸ˇˇˇfêfêfêfêfêêË¸ˇˇˇVâ∆Sˆ    Öv  ãÜX&  ∫
+   ª  çà « çt& âãÉ¯ˇt
+%  É¯tÉÍuËãéX&  ∫
+   ª  Å¡ Å« fêâãÉ¯ˇt
+%  É¯tÉÍuË[^√çt& êË¸ˇˇˇWâ¡ø   VSãÄX&  â”çêàÄ« ∏
+   ç∂    â:ã2É˛tÉËuÚãÅX&  ø   ç∞ Å« ∏
+   çt& â>ãÉ˙ˇtÅ‚  tÉËuÍÉ˚ãÅX&  “É‚ç∞ Ä« ∏
+   É¬ç∂    âã>9˙tÉËuÛÉ˚ãÅX&  “Å‚†$I˛ç∞Ä« ∏
+   Å¬7øÔç¥&    fêâã>9˙tÉËuÛãÅX&  ø   çêÄ« ∏
+   çt& êâ:ã2É˛tÉËuÚãÅX&  ø   çêÄ« ∏
+   çt& â:ã2É˛tÉËuÚãÅX&  ø   çêÄ« ∏
+   çt& â:ã2É˛tÉËuÚãÅX&  É˚æ   ÉﬁˇçêÄ« ∏
+   ç∂    â2ã:9˛tÉËuÛÉ˚ãÅX&  “Å‚;œÛ ç∞Ä« ∏
+   Å¬D√0 ç¥&    fêâã>9˙tÉËuÛãÅX&  ø   çêÄ« ∏
+   çt& êâ:ã2É˛tÉËuÚãÅX&  ø   çê@Ä« ∏
+   çt& â:ã2É˛tÉËuÚãÅX&  ø˛‚+ çêDÄ« ∏
+   çt& â:ã2Å˛˛‚+ tÉËuÔãÅX&  ø   çêHÄ« ∏
+   êâ:ã2É˛tÉËuÚãÅX&   « Ö€Ñ˜   ∫
+   æ  ˇˇçt& êâ0ãÉ˚ tÉÍuÚãÅX&  æ ˇˇçê« ∏
+   çt& â2ãÉ˚tÉËuÚãÅX&  æ ˇˇçê« ∏
+   çt& â2ãÉ˚tÉËuÚãÅX&  æˇˇçê« ∏
+   çt& â2ãÅ˚  tÉËuÔãÅX&  æ&êˇˇçê « ∏
+   êâ2ãÅ˚&ê  tÉËuÔãëX&  ∏
+   ª1ˇˇÅ¬$« ç¥&    fêâã
+Å˘1  tÉËuÔ[^_√çv ª
+   æ  ç∂    â0ãÉ˙ˇtÅ‚  É˙tÉÎuÁãÅX&  ∫
+   æ  çò« ç¥&    fêâ3ãÉ¯ˇt%  É¯ÑÔ˛ˇˇÉÍu‰ÈÂ˛ˇˇç¥&    ç¥&    êË¸ˇˇˇV1“æ   Sâ√∏
+   Ë¸ˇˇˇãÉX&  çà « ∏
+   çt& êâ1ãÉ˙ˇtÅ‚  tÉËuÍ1“∏
+   Ë¸ˇˇˇãChãà»   ãÉX&  çê » ∏
+   çt& â
+ã29ÒtÉËuÛ1“∏
+   Ë¸ˇˇˇãChãàÃ   ãÉX&  çê » ∏
+   çt& êâ
+ã29ÒtÉËuÛãChãà–   ãÉX&  çê » ∏
+   êâ
+ã29ÒtÉËuÛãChãà‘   ãÉX&  çê » ∏
+   ç¥&    fêâ
+ã29ÒtÉËuÛ1“∏
+   Ë¸ˇˇˇãChãàÿ   ãÉX&  çêH » ∏
+   çt& êâ
+ã29ÒtÉËuÛãChãà‹   ãÉX&  çêT » ∏
+   êâ
+ã29ÒtÉËuÛ1“∏
+   æ   Ë¸ˇˇˇãÉX&  çà « ∏
+   êâ1ãÉ˙ˇtÅ‚  tÉËuÍ1“∏
+   æ   Ë¸ˇˇˇãÉX&  çê » ∏
+   ç¥&    êâ2ã
+É˘tÉËuÚãÉX&  ∫
+   æ  çà$ « çt& â1ãÉ¯ˇt
+%  É¯tÉÍuËãÉX&  æH   çêú » ∏
+   ç¥&    çv â2ã
+É˘HtÉËuÚãÉX&  æ   çê¸» ∏
+   çt& â2ã
+Å˘   tÉËuÔãÉX&  æ  çê… ∏
+   êâ2ã
+Å˘  tÉËuÔãÉX&  æ  çê$… ∏
+   ç¥&    fêâ2ã
+Å˘  tÉËuÔãÉX&  æ  çê… ∏
+   ç¥&    fêâ2ã
+Å˘  tÉËuÔãÉX&  æ  çê… ∏
+   ç¥&    fêâ2ã
+Å˘  tÉËuÔãÉX&  æ  çê… ∏
+   ç¥&    fêâ2ã
+Å˘  tÉËuÔãÉX&  æ  çê(… ∏
+   ç¥&    fêâ2ã
+Å˘  tÉËuÔãÉX&  æ  çê0… ∏
+   ç¥&    fêâ2ã
+Å˘  tÉËuÔãÉX&  æ  çê4… ∏
+   ç¥&    fêâ2ã
+Å˘  tÉËuÔãÉX&  æ  çê,… ∏
+   ç¥&    fêâ2ã
+Å˘  tÉËuÔãìX&  ∏
+   ª  Å¬8… ç¥&    fêâã
+Å˘  tÉËuÔ[^√ç¥&    çt& êË¸ˇˇˇUWâ«VSª   ÉÏPâD$d°    âD$Lâ¯ãÄX&  â$çêL – ∏
+   âã
+É˘tÉËuÚãD$∫
+   ª  ãÄX&  â$çà « âãÉ¯ˇt
+%  É¯tÉÍuË1“∏   Ë¸ˇˇˇãD$ãÄX&  â$ « ã ®ÑŸ  ã|$∫   â¯Ë¸ˇˇˇâ¯∫à   Ë¸ˇˇˇãG∫  ãüT&  «D$0    â$çàà   çD$0Ë¸ˇˇˇâ«Ö¿Ö€  ãD$0ããpâ$Ö…Ñs  ãD$â˙â˝Ë¸ˇˇˇãD$0â|$Å«   âD$ã â$9≈s9çt& 9˝}1ã∏
+   çt& êâã9 tÉËuÛã9¬Ö¶  É√É∆É≈;,$rÀ;<$röãD$ãÄ4&  ®Ñã  ãD$Ë¸ˇˇˇãt$∫  ‹ âË¸ˇˇˇã<$Öˇé∞  âË¸ˇˇˇãFãæT&  ∫3  «D$0    â$çàà   çD$0â|$ Ë¸ˇˇˇÖ¿Ö˝  ãT$0ãzã2â–∂_â|$ât$à\$$∂_à\$*∂_0à\$+É˛Üô  ãD$«D$   «D$    É¿âD$,ÎãD$ã:É¿â∆âD$â–9˛É‚   ãD$ãt$É‡¸D$ãxâ|$ãx˛Å8Segmâ<$ât$uΩÅxHedru¥ˆ    Ö
+  ã|$9|$Çé   ã$Ö…t~ãD$ ãt$1ˇâD$ãD$â˚â˝ç8ãD$Å«   Ë¸ˇˇˇ9$vJ9˚}Fçv ãD$ã\$ç(ãD$ç4(âÉ‡¸ã∏
+   êâã9⁄tÉËuÛã9¬Öt  É≈9,$v9˝|Ω;<$ríãT$0ÈˇˇˇãD$0ã8ãt$ãñ4&  É‚Ñ5  Ë¸ˇˇˇãt$1“âË¸ˇˇˇÖˇãD$Ld+    Ö=  ÉƒPâ¯[^_]√ãÜX&  ª   â$çê « ∏
+   âã
+É˘ˇtÅ·  tÉËuÍãt$ª2   Îçv 1“∏
+   Ë¸ˇˇˇÉÎÑÜ   ãÜX&   « ã ®u⁄1“∏»   Ë¸ˇˇˇãt$∫à   âË¸ˇˇˇj jh   çD$@PVË¸ˇˇˇâ«ÉƒÖ¿àEˇˇˇãÜX&  π
+   ª  Å« âãÉ˙ˇtÅ‚  Å˙   t9ÉÈu‰1ˇÈˇˇˇ1“∏»   Ë¸ˇˇˇãD$ãÄX&  â$ « ã ®ÑoˇˇˇÈª  1ˇÈŸ˛ˇˇãt$ãñ4&  É‚t+Ë¸ˇˇˇãD$∫  ‹ Ë¸ˇˇˇÈ≤˛ˇˇË¸ˇˇˇçt& êã|$Èv˛ˇˇÈã  fêfêfêfêfêË¸ˇˇˇWVSã∞î   â√É√pçæX  â¯Ë¸ˇˇˇˇ∂ X  ˇ∂¸W  Sh¨  Ë¸ˇˇˇâ¯Ë¸ˇˇˇ1¿Éƒ[^_√ç¥&    fêË¸ˇˇˇVSâ√ã@`ãàò   Ö…tJˆ    Ö-  âŸÅ¡–X  t3ãÉ4Y  ã Ö¿t'ãXÖ€t °    ∫   Ö¿tãpÖˆtâ»[âÒ^È¸ˇˇˇ[^√çt& êâ»âŸ[^È¸ˇˇˇç¥&    ç∂    Ë¸ˇˇˇWVSã∞î   â√É√pçæX  â¯Ë¸ˇˇˇˇ∂ X  ˇ∂¸W  Sh¨  Ë¸ˇˇˇâ¯Ë¸ˇˇˇ1¿Éƒ[^_√ç¥&    fêË¸ˇˇˇUâ≈WVSÉÏãê¸W  ãÄ X  ∑¡Ëâ$â”âD$ãÖX&  ∑˙¡„ât$â÷çàÅ« ¡Ó∏
+   ç¥&    âãÉ˙ˇtÖ◊tÉËuÓãD$ãçX&  ât$∫
+   	√Å¡ Å« â∆êâãÉ¯ˇt1Ö¯tÉÍuÏãÖX&  ã$ãt$çòÅ« f1“∏
+   êâãÉ˘ˇtÖŒtÉËuÓã|$ãùX&  π
+   	˙Å√Å« ç¥&    âãÉ¯ˇt1¯ÖtÉÈuÏÉƒ[^_]√çt& Ë¸ˇˇˇUWVSãòî   ãChã®ú   ÖÌt5çªX  ã∞®   â¯Ë¸ˇˇˇ3≥ X  âÿ!Ó3≥ X  â≥ X  Ë∂˛ˇˇâ¯Ë¸ˇˇˇ[1¿^_]√ç¥&    êË¸ˇˇˇUWVSã∞î   ãVhãéòY  ã™ú   çIãÇ§   fÉ|äTEÇ†   ÖÌt3çæX  â√â¯Ë¸ˇˇˇãÜ X  1ÿ!Ë3Ü X  âÜ X  âË<˛ˇˇâ¯Ë¸ˇˇˇ[1¿^_]√ç¥&    ç¥&    Ë¸ˇˇˇUWâ«Vâ÷SââÀÉÏ	ÿãL$ ãT$$â$âL$âT$uÉƒ[^_]√çt& êçØX  âËË¸ˇˇˇ3∑ X  â¯˜÷#4$3∑ X  â∑ X  ËΩ˝ˇˇâËË¸ˇˇˇãD$Ë¸ˇˇˇË¸ˇˇˇâËË¸ˇˇˇ3ü X  â¯˜”#$3ü X  âü X  ËÉ˝ˇˇâËË¸ˇˇˇãD$Ë¸ˇˇˇÉƒ[^_]È¸ˇˇˇç¥&    Ë¸ˇˇˇSãòî   ãChÉ˙tÉ˙t_Ö“t31¿[√ç¥&    ãêò   ˇ∞î   1…ˇ∞ê   âÿË˝˛ˇˇ1¿Y[[√ç¥&    ãêà   ãàå   ˇ∞î   ˇ∞ê   âÿË—˛ˇˇX1¿Z[√çv É∏¥   Guú∂H|j∫   âÿj”‚1…Ëß˛ˇˇXZÎÄçv Ë¸ˇˇˇUWVSÉÏã∞î   É˙tÉ˙t|øÍˇˇˇÖ“tcÉƒâ¯[^_]√êãFhãò§   ãêú   1ˇÖ“â$t›çÆX  âËË¸ˇˇˇã$3û X  â!”3û X  âû X  ËM¸ˇˇâËË¸ˇˇˇâ¯Éƒ[^_]√çt& ãFhãò†   Î¶çt& êãFhãò® 

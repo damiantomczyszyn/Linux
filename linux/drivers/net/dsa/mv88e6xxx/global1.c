@@ -1,370 +1,610 @@
-timer.h \
-    $(wildcard include/config/HIGH_RES_TIMERS) \
-    $(wildcard include/config/TIME_LOW_RES) \
-    $(wildcard include/config/TIMERFD) \
-  include/linux/hrtimer_defs.h \
-  include/linux/timerqueue.h \
-  include/linux/seccomp.h \
-    $(wildcard include/config/SECCOMP) \
-    $(wildcard include/config/HAVE_ARCH_SECCOMP_FILTER) \
-    $(wildcard include/config/SECCOMP_FILTER) \
-    $(wildcard include/config/CHECKPOINT_RESTORE) \
-    $(wildcard include/config/SECCOMP_CACHE_DEBUG) \
-  include/uapi/linux/seccomp.h \
-  arch/x86/include/asm/seccomp.h \
-  arch/x86/include/asm/unistd.h \
-  arch/x86/include/uapi/asm/unistd.h \
-  arch/x86/include/generated/uapi/asm/unistd_32.h \
-  include/asm-generic/seccomp.h \
-  include/uapi/linux/unistd.h \
-  include/linux/resource.h \
-  include/uapi/linux/resource.h \
-  arch/x86/include/generated/uapi/asm/resource.h \
-  include/asm-generic/resource.h \
-  include/uapi/asm-generic/resource.h \
-  include/linux/latencytop.h \
-  include/linux/sched/prio.h \
-  include/linux/sched/types.h \
-  include/linux/signal_types.h \
-    $(wildcard include/config/OLD_SIGACTION) \
-  include/uapi/linux/signal.h \
-  arch/x86/include/asm/signal.h \
-  arch/x86/include/uapi/asm/signal.h \
-  include/uapi/asm-generic/signal-defs.h \
-  arch/x86/include/uapi/asm/siginfo.h \
-  include/uapi/asm-generic/siginfo.h \
-  include/linux/syscall_user_dispatch.h \
-  include/linux/task_io_accounting.h \
-    $(wildcard include/config/TASK_IO_ACCOUNTING) \
-  include/linux/posix-timers.h \
-  include/linux/alarmtimer.h \
-    $(wildcard include/config/RTC_CLASS) \
-  include/uapi/linux/rseq.h \
-  include/linux/kcsan.h \
-  include/linux/energy_model.h \
-  include/linux/sched/cpufreq.h \
-    $(wildcard include/config/CPU_FREQ) \
-  include/linux/sched/topology.h \
-    $(wildcard include/config/SCHED_DEBUG) \
-    $(wildcard include/config/SCHED_MC) \
-    $(wildcard include/config/CPU_FREQ_GOV_SCHEDUTIL) \
-  include/linux/sched/idle.h \
-  include/linux/sched/sd_flags.h \
-  include/linux/klist.h \
-  include/linux/pm.h \
-    $(wildcard include/config/VT_CONSOLE_SLEEP) \
-    $(wildcard include/config/PM_CLK) \
-    $(wildcard include/config/PM_GENERIC_DOMAINS) \
-  include/linux/device/bus.h \
-  include/linux/device/class.h \
-  include/linux/device/driver.h \
-  arch/x86/include/asm/device.h \
-  include/linux/pm_wakeup.h \
-  include/acpi/acpi.h \
-  include/acpi/platform/acenv.h \
-  include/acpi/platform/acgcc.h \
-  include/acpi/platform/aclinux.h \
-    $(wildcard include/config/ACPI_REDUCED_HARDWARE_ONLY) \
-    $(wildcard include/config/ACPI_DEBUG) \
-  include/linux/ctype.h \
-  arch/x86/include/asm/acenv.h \
-  include/acpi/acnames.h \
-  include/acpi/actypes.h \
-  include/acpi/acexcep.h \
-  include/acpi/actbl.h \
-  include/acpi/actbl1.h \
-  include/acpi/actbl2.h \
-  include/acpi/actbl3.h \
-  include/acpi/acrestyp.h \
-  include/acpi/platform/acenvex.h \
-  include/acpi/platform/aclinuxex.h \
-  include/acpi/platform/acgccex.h \
-  include/acpi/acoutput.h \
-  include/acpi/acpiosxf.h \
-  include/acpi/acpixf.h \
-  include/acpi/acconfig.h \
-  include/acpi/acbuffer.h \
-  include/linux/dynamic_debug.h \
-  include/acpi/acpi_bus.h \
-    $(wildcard include/config/X86_ANDROID_TABLETS) \
-    $(wildcard include/config/ACPI_SYSTEM_POWER_STATES_SUPPORT) \
-    $(wildcard include/config/ACPI_SLEEP) \
-  include/acpi/acpi_drivers.h \
-    $(wildcard include/config/ACPI_DOCK) \
-  include/acpi/acpi_numa.h \
-    $(wildcard include/config/ACPI_HMAT) \
-  include/acpi/acpi_io.h \
-  include/linux/io.h \
-    $(wildcard include/config/HAS_IOPORT_MAP) \
-  arch/x86/include/asm/io.h \
-    $(wildcard include/config/MTRR) \
-    $(wildcard include/config/X86_PAT) \
-  arch/x86/include/generated/asm/early_ioremap.h \
-  include/asm-generic/early_ioremap.h \
-    $(wildcard include/config/GENERIC_EARLY_IOREMAP) \
-  include/asm-generic/iomap.h \
-  include/asm-generic/pci_iomap.h \
-    $(wildcard include/config/NO_GENERIC_PCI_IOPORT_MAP) \
-    $(wildcard include/config/GENERIC_PCI_IOMAP) \
-  include/asm-generic/io.h \
-    $(wildcard include/config/GENERIC_IOMAP) \
-    $(wildcard include/config/GENERIC_IOREMAP) \
-    $(wildcard include/config/VIRT_TO_BUS) \
-    $(wildcard include/config/GENERIC_DEVMEM_IS_ALLOWED) \
-  include/linux/logic_pio.h \
-    $(wildcard include/config/INDIRECT_PIO) \
-  include/linux/vmalloc.h \
-    $(wildcard include/config/HAVE_ARCH_HUGE_VMALLOC) \
-  arch/x86/include/asm/vmalloc.h \
-    $(wildcard include/config/HAVE_ARCH_HUGE_VMAP) \
-  arch/x86/include/asm/acpi.h \
-    $(wildcard include/config/ACPI_APEI) \
-  include/acpi/pdc_intel.h \
-  arch/x86/include/asm/numa.h \
-    $(wildcard include/config/NUMA_EMU) \
-  arch/x86/include/asm/numa_32.h \
-  include/linux/regulator/consumer.h \
-    $(wildcard include/config/REGULATOR) \
-  include/linux/suspend.h \
-    $(wildcard include/config/VT) \
-    $(wildcard include/config/SUSPEND) \
-    $(wildcard include/config/HIBERNATION_SNAPSHOT_DEV) \
-    $(wildcard include/config/PM_SLEEP_DEBUG) \
-    $(wildcard include/config/PM_AUTOSLEEP) \
-  include/linux/swap.h \
-    $(wildcard include/config/DEVICE_PRIVATE) \
-    $(wildcard include/config/MIGRATION) \
-    $(wildcard include/config/FRONTSWAP) \
-    $(wildcard include/config/THP_SWAP) \
-    $(wildcard include/config/MEMCG_SWAP) \
-  include/linux/memcontrol.h \
-    $(wildcard include/config/CGROUP_WRITEBACK) \
-  include/linux/cgroup.h \
-    $(wildcard include/config/CGROUP_CPUACCT) \
-    $(wildcard include/config/SOCK_CGROUP_DATA) \
-    $(wildcard include/config/CGROUP_DATA) \
-    $(wildcard include/config/CGROUP_BPF) \
-  include/uapi/linux/cgroupstats.h \
-  include/uapi/linux/taskstats.h \
-  include/linux/fs.h \
-    $(wildcard include/config/READ_ONLY_THP_FOR_FS) \
-    $(wildcard include/config/FS_POSIX_ACL) \
-    $(wildcard include/config/IMA) \
-    $(wildcard include/config/FILE_LOCKING) \
-    $(wildcard include/config/FSNOTIFY) \
-    $(wildcard include/config/FS_ENCRYPTION) \
-    $(wildcard include/config/FS_VERITY) \
-    $(wildcard include/config/EPOLL) \
-    $(wildcard include/config/UNICODE) \
-    $(wildcard include/config/QUOTA) \
-    $(wildcard include/config/FS_DAX) \
-    $(wildcard include/config/BLOCK) \
-  include/linux/wait_bit.h \
-  include/linux/kdev_t.h \
-  include/uapi/linux/kdev_t.h \
-  include/linux/dcache.h \
-  include/linux/rculist_bl.h \
-  include/linux/list_bl.h \
-  include/linux/bit_spinlock.h \
-  include/linux/lockref.h \
-    $(wildcard include/config/ARCH_USE_CMPXCHG_LOCKREF) \
-  include/linux/stringhash.h \
-    $(wildcard include/config/DCACHE_WORD_ACCESS) \
-  include/linux/hash.h \
-    $(wildcard include/config/HAVE_ARCH_HASH) \
-  include/linux/path.h \
-  include/linux/list_lru.h \
-  include/linux/shrinker.h \
-  include/linux/capability.h \
-  include/uapi/linux/capability.h \
-  include/linux/semaphore.h \
-  include/linux/fcntl.h \
-    $(wildcard include/config/ARCH_32BIT_OFF_T) \
-  include/uapi/linux/fcntl.h \
-  arch/x86/include/generated/uapi/asm/fcntl.h \
-  include/uapi/asm-generic/fcntl.h \
-  include/uapi/linux/openat2.h \
-  include/linux/migrate_mode.h \
-  include/linux/percpu-rwsem.h \
-  include/linux/rcuwait.h \
-  include/linux/sched/signal.h \
-    $(wildcard include/config/SCHED_AUTOGROUP) \
-    $(wildcard include/config/BSD_PROCESS_ACCT) \
-    $(wildcard include/config/TASKSTATS) \
-    $(wildcard include/config/STACK_GROWSUP) \
-  include/linux/signal.h \
-    $(wildcard include/config/DYNAMIC_SIGFRAME) \
-  include/linux/sched/jobctl.h \
-  include/linux/sched/task.h \
-    $(wildcard include/config/HAVE_EXIT_THREAD) \
-    $(wildcard include/config/ARCH_WANTS_DYNAMIC_TASK_STRUCT) \
-    $(wildcard include/config/HAVE_ARCH_THREAD_STRUCT_WHITELIST) \
-  include/linux/uaccess.h \
-  include/linux/fault-inject-usercopy.h \
-    $(wildcard include/config/FAULT_INJECTION_USERCOPY) \
-  arch/x86/include/asm/uaccess.h \
-    $(wildcard include/config/CC_HAS_ASM_GOTO_OUTPUT) \
-    $(wildcard include/config/CC_HAS_ASM_GOTO_TIED_OUTPUT) \
-    $(wildcard include/config/ARCH_HAS_COPY_MC) \
-    $(wildcard include/config/X86_INTEL_USERCOPY) \
-  arch/x86/include/asm/smap.h \
-  arch/x86/include/asm/extable.h \
-    $(wildcard include/config/BPF_JIT) \
-  include/asm-generic/access_ok.h \
-    $(wildcard include/config/ALTERNATE_USER_ADDRESS_SPACE) \
-  arch/x86/include/asm/uaccess_32.h \
-  include/linux/cred.h \
-    $(wildcard include/config/DEBUG_CREDENTIALS) \
-  include/linux/key.h \
-    $(wildcard include/config/KEY_NOTIFICATIONS) \
-    $(wildcard include/config/NET) \
-  include/linux/assoc_array.h \
-    $(wildcard include/config/ASSOCIATIVE_ARRAY) \
-  include/linux/sched/user.h \
-    $(wildcard include/config/WATCH_QUEUE) \
-  include/linux/percpu_counter.h \
-  include/linux/rcu_sync.h \
-  include/linux/delayed_call.h \
-  include/linux/errseq.h \
-  include/linux/ioprio.h \
-  include/linux/sched/rt.h \
-  include/linux/iocontext.h \
-    $(wildcard include/config/BLK_ICQ) \
-  include/uapi/linux/ioprio.h \
-  include/linux/fs_types.h \
-  include/linux/mount.h \
-  include/linux/mnt_idmapping.h \
-  include/uapi/linux/fs.h \
-  include/linux/quota.h \
-    $(wildcard include/config/QUOTA_NETLINK_INTERFACE) \
-  include/uapi/linux/dqblk_xfs.h \
-  include/linux/dqblk_v1.h \
-  include/linux/dqblk_v2.h \
-  include/linux/dqblk_qtree.h \
-  include/linux/projid.h \
-  include/uapi/linux/quota.h \
-  include/linux/nfs_fs_i.h \
-  include/linux/seq_file.h \
-  include/linux/string_helpers.h \
-  include/linux/ns_common.h \
-  include/linux/nsproxy.h \
-  include/linux/user_namespace.h \
-    $(wildcard include/config/INOTIFY_USER) \
-    $(wildcard include/config/FANOTIFY) \
-    $(wildcard include/config/PERSISTENT_KEYRINGS) \
-  include/linux/kernel_stat.h \
-  include/linux/interrupt.h \
-    $(wildcard include/config/IRQ_FORCED_THREADING) \
-    $(wildcard include/config/GENERIC_IRQ_PROBE) \
-    $(wildcard include/config/IRQ_TIMINGS) \
-  include/linux/irqreturn.h \
-  include/linux/irqnr.h \
-  include/uapi/linux/irqnr.h \
-  include/linux/hardirq.h \
-  include/linux/context_tracking_state.h \
-    $(wildcard include/config/CONTEXT_TRACKING) \
-  include/linux/ftrace_irq.h \
-    $(wildcard include/config/HWLAT_TRACER) \
-    $(wildcard include/config/OSNOISE_TRACER) \
-  include/linux/vtime.h \
-    $(wildcard include/config/VIRT_CPU_ACCOUNTING) \
-    $(wildcard include/config/IRQ_TIME_ACCOUNTING) \
-  arch/x86/include/asm/hardirq.h \
-    $(wildcard include/config/KVM_INTEL) \
-    $(wildcard include/config/X86_THERMAL_VECTOR) \
-    $(wildcard include/config/X86_MCE_THRESHOLD) \
-    $(wildcard include/config/X86_MCE_AMD) \
-    $(wildcard include/config/X86_HV_CALLBACK_VECTOR) \
-  arch/x86/include/asm/irq.h \
-  arch/x86/include/asm/sections.h \
-  include/asm-generic/sections.h \
-    $(wildcard include/config/HAVE_FUNCTION_DESCRIPTORS) \
-  include/linux/cgroup-defs.h \
-    $(wildcard include/config/CGROUP_NET_CLASSID) \
-    $(wildcard include/config/CGROUP_NET_PRIO) \
-  include/linux/u64_stats_sync.h \
-  include/linux/bpf-cgroup-defs.h \
-  include/linux/psi_types.h \
-  include/linux/kthread.h \
-  include/linux/cgroup_subsys.h \
-    $(wildcard include/config/CGROUP_DEVICE) \
-    $(wildcard include/config/CGROUP_FREEZER) \
-    $(wildcard include/config/CGROUP_PERF) \
-    $(wildcard include/config/CGROUP_HUGETLB) \
-    $(wildcard include/config/CGROUP_PIDS) \
-    $(wildcard include/config/CGROUP_RDMA) \
-    $(wildcard include/config/CGROUP_MISC) \
-    $(wildcard include/config/CGROUP_DEBUG) \
-  include/linux/vm_event_item.h \
-    $(wildcard include/config/HAVE_ARCH_TRANSPARENT_HUGEPAGE_PUD) \
-    $(wildcard include/config/MEMORY_BALLOON) \
-    $(wildcard include/config/BALLOON_COMPACTION) \
-    $(wildcard include/config/DEBUG_TLBFLUSH) \
-    $(wildcard include/config/DEBUG_VM_VMACACHE) \
-  include/linux/page_counter.h \
-  include/linux/vmpressure.h \
-  include/linux/eventfd.h \
-  include/linux/mm.h \
-    $(wildcard include/config/HAVE_ARCH_MMAP_RND_BITS) \
-    $(wildcard include/config/HAVE_ARCH_MMAP_RND_COMPAT_BITS) \
-    $(wildcard include/config/ARCH_USES_HIGH_VMA_FLAGS) \
-    $(wildcard include/config/ARCH_HAS_PKEYS) \
-    $(wildcard include/config/PPC) \
-    $(wildcard include/config/PARISC) \
-    $(wildcard include/config/SPARC64) \
-    $(wildcard include/config/ARM64_MTE) \
-    $(wildcard include/config/HAVE_ARCH_USERFAULTFD_MINOR) \
-    $(wildcard include/config/SHMEM) \
-    $(wildcard include/config/ARCH_HAS_PTE_SPECIAL) \
-    $(wildcard include/config/ARCH_HAS_PTE_DEVMAP) \
-    $(wildcard include/config/DEBUG_VM_RB) \
-    $(wildcard include/config/PAGE_POISONING) \
-    $(wildcard include/config/INIT_ON_ALLOC_DEFAULT_ON) \
-    $(wildcard include/config/INIT_ON_FREE_DEFAULT_ON) \
-    $(wildcard include/config/DEBUG_PAGEALLOC) \
-    $(wildcard include/config/HUGETLBFS) \
-    $(wildcard include/config/MAPPING_DIRTY_HELPERS) \
-    $(wildcard include/config/ANON_VMA_NAME) \
-  include/linux/mmap_lock.h \
-  include/linux/page_ext.h \
-  include/linux/stacktrace.h \
-    $(wildcard include/config/ARCH_STACKWALK) \
-    $(wildcard include/config/STACKTRACE) \
-    $(wildcard include/config/HAVE_RELIABLE_STACKTRACE) \
-  include/linux/stackdepot.h \
-    $(wildcard include/config/STACKDEPOT_ALWAYS_INIT) \
-  include/linux/page_ref.h \
-    $(wildcard include/config/DEBUG_PAGE_REF) \
-  include/linux/sizes.h \
-  include/linux/pgtable.h \
-    $(wildcard include/config/HIGHPTE) \
-    $(wildcard include/config/GUP_GET_PTE_LOW_HIGH) \
-    $(wildcard include/config/HAVE_ARCH_SOFT_DIRTY) \
-    $(wildcard include/config/ARCH_ENABLE_THP_MIGRATION) \
-    $(wildcard include/config/X86_ESPFIX64) \
-  arch/x86/include/asm/pgtable.h \
-    $(wildcard include/config/DEBUG_WX) \
-    $(wildcard include/config/PAGE_TABLE_CHECK) \
-  arch/x86/include/asm/pkru.h \
-  arch/x86/include/asm/fpu/api.h \
-    $(wildcard include/config/X86_DEBUG_FPU) \
-  arch/x86/include/asm/coco.h \
-  include/asm-generic/pgtable_uffd.h \
-  include/linux/page_table_check.h \
-  arch/x86/include/asm/pgtable_32.h \
-  arch/x86/include/asm/pgtable-3level.h \
-  arch/x86/include/asm/pgtable-invert.h \
-  include/linux/huge_mm.h \
-  include/linux/sched/coredump.h \
-    $(wildcard include/config/CORE_DUMP_DEFAULT_ELF_HEADERS) \
-  include/linux/vmstat.h \
-    $(wildcard include/config/VM_EVENT_COUNTERS) \
-  include/linux/writeback.h \
-  include/linux/flex_proportions.h \
-  include/linux/backing-dev-defs.h \
-    $(wildcard include/config/DEBUG_FS) \
-  include/linux/blk_types.h \
-    $(wildcard include/config/FAIL_MAKE_REQUEST) \
-    $(wildcard include/config/BLK_CGROUP_IOCOST) \
-    $(wildcard include/config/BLK_INLINE_ENCRYPTION) \
-    $(wildcar
+// SPDX-License-Identifier: GPL-2.0-or-later
+/*
+ * Marvell 88E6xxx Switch Global (1) Registers support
+ *
+ * Copyright (c) 2008 Marvell Semiconductor
+ *
+ * Copyright (c) 2016-2017 Savoir-faire Linux Inc.
+ *	Vivien Didelot <vivien.didelot@savoirfairelinux.com>
+ */
+
+#include <linux/bitfield.h>
+
+#include "chip.h"
+#include "global1.h"
+
+int mv88e6xxx_g1_read(struct mv88e6xxx_chip *chip, int reg, u16 *val)
+{
+	int addr = chip->info->global1_addr;
+
+	return mv88e6xxx_read(chip, addr, reg, val);
+}
+
+int mv88e6xxx_g1_write(struct mv88e6xxx_chip *chip, int reg, u16 val)
+{
+	int addr = chip->info->global1_addr;
+
+	return mv88e6xxx_write(chip, addr, reg, val);
+}
+
+int mv88e6xxx_g1_wait_bit(struct mv88e6xxx_chip *chip, int reg, int
+			  bit, int val)
+{
+	return mv88e6xxx_wait_bit(chip, chip->info->global1_addr, reg,
+				  bit, val);
+}
+
+int mv88e6xxx_g1_wait_mask(struct mv88e6xxx_chip *chip, int reg,
+			   u16 mask, u16 val)
+{
+	return mv88e6xxx_wait_mask(chip, chip->info->global1_addr, reg,
+				   mask, val);
+}
+
+/* Offset 0x00: Switch Global Status Register */
+
+static int mv88e6185_g1_wait_ppu_disabled(struct mv88e6xxx_chip *chip)
+{
+	return mv88e6xxx_g1_wait_mask(chip, MV88E6XXX_G1_STS,
+				      MV88E6185_G1_STS_PPU_STATE_MASK,
+				      MV88E6185_G1_STS_PPU_STATE_DISABLED);
+}
+
+static int mv88e6185_g1_wait_ppu_polling(struct mv88e6xxx_chip *chip)
+{
+	return mv88e6xxx_g1_wait_mask(chip, MV88E6XXX_G1_STS,
+				      MV88E6185_G1_STS_PPU_STATE_MASK,
+				      MV88E6185_G1_STS_PPU_STATE_POLLING);
+}
+
+static int mv88e6352_g1_wait_ppu_polling(struct mv88e6xxx_chip *chip)
+{
+	int bit = __bf_shf(MV88E6352_G1_STS_PPU_STATE);
+
+	return mv88e6xxx_g1_wait_bit(chip, MV88E6XXX_G1_STS, bit, 1);
+}
+
+static int mv88e6xxx_g1_wait_init_ready(struct mv88e6xxx_chip *chip)
+{
+	int bit = __bf_shf(MV88E6XXX_G1_STS_INIT_READY);
+
+	/* Wait up to 1 second for the switch to be ready. The InitReady bit 11
+	 * is set to a one when all units inside the device (ATU, VTU, etc.)
+	 * have finished their initialization and are ready to accept frames.
+	 */
+	return mv88e6xxx_g1_wait_bit(chip, MV88E6XXX_G1_STS, bit, 1);
+}
+
+void mv88e6xxx_g1_wait_eeprom_done(struct mv88e6xxx_chip *chip)
+{
+	const unsigned long timeout = jiffies + 1 * HZ;
+	u16 val;
+	int err;
+
+	/* Wait up to 1 second for the switch to finish reading the
+	 * EEPROM.
+	 */
+	while (time_before(jiffies, timeout)) {
+		err = mv88e6xxx_g1_read(chip, MV88E6XXX_G1_STS, &val);
+		if (err) {
+			dev_err(chip->dev, "Error reading status");
+			return;
+		}
+
+		/* If the switch is still resetting, it may not
+		 * respond on the bus, and so MDIO read returns
+		 * 0xffff. Differentiate between that, and waiting for
+		 * the EEPROM to be done by bit 0 being set.
+		 */
+		if (val != 0xffff &&
+		    val & BIT(MV88E6XXX_G1_STS_IRQ_EEPROM_DONE))
+			return;
+
+		usleep_range(1000, 2000);
+	}
+
+	dev_err(chip->dev, "Timeout waiting for EEPROM done");
+}
+
+/* Offset 0x01: Switch MAC Address Register Bytes 0 & 1
+ * Offset 0x02: Switch MAC Address Register Bytes 2 & 3
+ * Offset 0x03: Switch MAC Address Register Bytes 4 & 5
+ */
+int mv88e6xxx_g1_set_switch_mac(struct mv88e6xxx_chip *chip, u8 *addr)
+{
+	u16 reg;
+	int err;
+
+	reg = (addr[0] << 8) | addr[1];
+	err = mv88e6xxx_g1_write(chip, MV88E6XXX_G1_MAC_01, reg);
+	if (err)
+		return err;
+
+	reg = (addr[2] << 8) | addr[3];
+	err = mv88e6xxx_g1_write(chip, MV88E6XXX_G1_MAC_23, reg);
+	if (err)
+		return err;
+
+	reg = (addr[4] << 8) | addr[5];
+	err = mv88e6xxx_g1_write(chip, MV88E6XXX_G1_MAC_45, reg);
+	if (err)
+		return err;
+
+	return 0;
+}
+
+/* Offset 0x04: Switch Global Control Register */
+
+int mv88e6185_g1_reset(struct mv88e6xxx_chip *chip)
+{
+	u16 val;
+	int err;
+
+	/* Set the SWReset bit 15 along with the PPUEn bit 14, to also restart
+	 * the PPU, including re-doing PHY detection and initialization
+	 */
+	err = mv88e6xxx_g1_read(chip, MV88E6XXX_G1_CTL1, &val);
+	if (err)
+		return err;
+
+	val |= MV88E6XXX_G1_CTL1_SW_RESET;
+	val |= MV88E6XXX_G1_CTL1_PPU_ENABLE;
+
+	err = mv88e6xxx_g1_write(chip, MV88E6XXX_G1_CTL1, val);
+	if (err)
+		return err;
+
+	err = mv88e6xxx_g1_wait_init_ready(chip);
+	if (err)
+		return err;
+
+	return mv88e6185_g1_wait_ppu_polling(chip);
+}
+
+int mv88e6250_g1_reset(struct mv88e6xxx_chip *chip)
+{
+	u16 val;
+	int err;
+
+	/* Set the SWReset bit 15 */
+	err = mv88e6xxx_g1_read(chip, MV88E6XXX_G1_CTL1, &val);
+	if (err)
+		return err;
+
+	val |= MV88E6XXX_G1_CTL1_SW_RESET;
+
+	err = mv88e6xxx_g1_write(chip, MV88E6XXX_G1_CTL1, val);
+	if (err)
+		return err;
+
+	return mv88e6xxx_g1_wait_init_ready(chip);
+}
+
+int mv88e6352_g1_reset(struct mv88e6xxx_chip *chip)
+{
+	int err;
+
+	err = mv88e6250_g1_reset(chip);
+	if (err)
+		return err;
+
+	return mv88e6352_g1_wait_ppu_polling(chip);
+}
+
+int mv88e6185_g1_ppu_enable(struct mv88e6xxx_chip *chip)
+{
+	u16 val;
+	int err;
+
+	err = mv88e6xxx_g1_read(chip, MV88E6XXX_G1_CTL1, &val);
+	if (err)
+		return err;
+
+	val |= MV88E6XXX_G1_CTL1_PPU_ENABLE;
+
+	err = mv88e6xxx_g1_write(chip, MV88E6XXX_G1_CTL1, val);
+	if (err)
+		return err;
+
+	return mv88e6185_g1_wait_ppu_polling(chip);
+}
+
+int mv88e6185_g1_ppu_disable(struct mv88e6xxx_chip *chip)
+{
+	u16 val;
+	int err;
+
+	err = mv88e6xxx_g1_read(chip, MV88E6XXX_G1_CTL1, &val);
+	if (err)
+		return err;
+
+	val &= ~MV88E6XXX_G1_CTL1_PPU_ENABLE;
+
+	err = mv88e6xxx_g1_write(chip, MV88E6XXX_G1_CTL1, val);
+	if (err)
+		return err;
+
+	return mv88e6185_g1_wait_ppu_disabled(chip);
+}
+
+int mv88e6185_g1_set_max_frame_size(struct mv88e6xxx_chip *chip, int mtu)
+{
+	u16 val;
+	int err;
+
+	mtu += ETH_HLEN + ETH_FCS_LEN;
+
+	err = mv88e6xxx_g1_read(chip, MV88E6XXX_G1_CTL1, &val);
+	if (err)
+		return err;
+
+	val &= ~MV88E6185_G1_CTL1_MAX_FRAME_1632;
+
+	if (mtu > 1518)
+		val |= MV88E6185_G1_CTL1_MAX_FRAME_1632;
+
+	return mv88e6xxx_g1_write(chip, MV88E6XXX_G1_CTL1, val);
+}
+
+/* Offset 0x10: IP-PRI Mapping Register 0
+ * Offset 0x11: IP-PRI Mapping Register 1
+ * Offset 0x12: IP-PRI Mapping Register 2
+ * Offset 0x13: IP-PRI Mapping Register 3
+ * Offset 0x14: IP-PRI Mapping Register 4
+ * Offset 0x15: IP-PRI Mapping Register 5
+ * Offset 0x16: IP-PRI Mapping Register 6
+ * Offset 0x17: IP-PRI Mapping Register 7
+ */
+
+int mv88e6085_g1_ip_pri_map(struct mv88e6xxx_chip *chip)
+{
+	int err;
+
+	/* Reset the IP TOS/DiffServ/Traffic priorities to defaults */
+	err = mv88e6xxx_g1_write(chip, MV88E6XXX_G1_IP_PRI_0, 0x0000);
+	if (err)
+		return err;
+
+	err = mv88e6xxx_g1_write(chip, MV88E6XXX_G1_IP_PRI_1, 0x0000);
+	if (err)
+		return err;
+
+	err = mv88e6xxx_g1_write(chip, MV88E6XXX_G1_IP_PRI_2, 0x5555);
+	if (err)
+		return err;
+
+	err = mv88e6xxx_g1_write(chip, MV88E6XXX_G1_IP_PRI_3, 0x5555);
+	if (err)
+		return err;
+
+	err = mv88e6xxx_g1_write(chip, MV88E6XXX_G1_IP_PRI_4, 0xaaaa);
+	if (err)
+		return err;
+
+	err = mv88e6xxx_g1_write(chip, MV88E6XXX_G1_IP_PRI_5, 0xaaaa);
+	if (err)
+		return err;
+
+	err = mv88e6xxx_g1_write(chip, MV88E6XXX_G1_IP_PRI_6, 0xffff);
+	if (err)
+		return err;
+
+	err = mv88e6xxx_g1_write(chip, MV88E6XXX_G1_IP_PRI_7, 0xffff);
+	if (err)
+		return err;
+
+	return 0;
+}
+
+/* Offset 0x18: IEEE-PRI Register */
+
+int mv88e6085_g1_ieee_pri_map(struct mv88e6xxx_chip *chip)
+{
+	/* Reset the IEEE Tag priorities to defaults */
+	return mv88e6xxx_g1_write(chip, MV88E6XXX_G1_IEEE_PRI, 0xfa41);
+}
+
+int mv88e6250_g1_ieee_pri_map(struct mv88e6xxx_chip *chip)
+{
+	/* Reset the IEEE Tag priorities to defaults */
+	return mv88e6xxx_g1_write(chip, MV88E6XXX_G1_IEEE_PRI, 0xfa50);
+}
+
+/* Offset 0x1a: Monitor Control */
+/* Offset 0x1a: Monitor & MGMT Control on some devices */
+
+int mv88e6095_g1_set_egress_port(struct mv88e6xxx_chip *chip,
+				 enum mv88e6xxx_egress_direction direction,
+				 int port)
+{
+	u16 reg;
+	int err;
+
+	err = mv88e6xxx_g1_read(chip, MV88E6185_G1_MONITOR_CTL, &reg);
+	if (err)
+		return err;
+
+	switch (direction) {
+	case MV88E6XXX_EGRESS_DIR_INGRESS:
+		reg &= ~MV88E6185_G1_MONITOR_CTL_INGRESS_DEST_MASK;
+		reg |= port <<
+		       __bf_shf(MV88E6185_G1_MONITOR_CTL_INGRESS_DEST_MASK);
+		break;
+	case MV88E6XXX_EGRESS_DIR_EGRESS:
+		reg &= ~MV88E6185_G1_MONITOR_CTL_EGRESS_DEST_MASK;
+		reg |= port <<
+		       __bf_shf(MV88E6185_G1_MONITOR_CTL_EGRESS_DEST_MASK);
+		break;
+	default:
+		return -EINVAL;
+	}
+
+	return mv88e6xxx_g1_write(chip, MV88E6185_G1_MONITOR_CTL, reg);
+}
+
+/* Older generations also call this the ARP destination. It has been
+ * generalized in more modern devices such that more than ARP can
+ * egress it
+ */
+int mv88e6095_g1_set_cpu_port(struct mv88e6xxx_chip *chip, int port)
+{
+	u16 reg;
+	int err;
+
+	err = mv88e6xxx_g1_read(chip, MV88E6185_G1_MONITOR_CTL, &reg);
+	if (err)
+		return err;
+
+	reg &= ~MV88E6185_G1_MONITOR_CTL_ARP_DEST_MASK;
+	reg |= port << __bf_shf(MV88E6185_G1_MONITOR_CTL_ARP_DEST_MASK);
+
+	return mv88e6xxx_g1_write(chip, MV88E6185_G1_MONITOR_CTL, reg);
+}
+
+static int mv88e6390_g1_monitor_write(struct mv88e6xxx_chip *chip,
+				      u16 pointer, u8 data)
+{
+	u16 reg;
+
+	reg = MV88E6390_G1_MONITOR_MGMT_CTL_UPDATE | pointer | data;
+
+	return mv88e6xxx_g1_write(chip, MV88E6390_G1_MONITOR_MGMT_CTL, reg);
+}
+
+int mv88e6390_g1_set_egress_port(struct mv88e6xxx_chip *chip,
+				 enum mv88e6xxx_egress_direction direction,
+				 int port)
+{
+	u16 ptr;
+
+	switch (direction) {
+	case MV88E6XXX_EGRESS_DIR_INGRESS:
+		ptr = MV88E6390_G1_MONITOR_MGMT_CTL_PTR_INGRESS_DEST;
+		break;
+	case MV88E6XXX_EGRESS_DIR_EGRESS:
+		ptr = MV88E6390_G1_MONITOR_MGMT_CTL_PTR_EGRESS_DEST;
+		break;
+	default:
+		return -EINVAL;
+	}
+
+	return mv88e6390_g1_monitor_write(chip, ptr, port);
+}
+
+int mv88e6390_g1_set_cpu_port(struct mv88e6xxx_chip *chip, int port)
+{
+	u16 ptr = MV88E6390_G1_MONITOR_MGMT_CTL_PTR_CPU_DEST;
+
+	/* Use the default high priority for management frames sent to
+	 * the CPU.
+	 */
+	port |= MV88E6390_G1_MONITOR_MGMT_CTL_PTR_CPU_DEST_MGMTPRI;
+
+	return mv88e6390_g1_monitor_write(chip, ptr, port);
+}
+
+int mv88e6390_g1_mgmt_rsvd2cpu(struct mv88e6xxx_chip *chip)
+{
+	u16 ptr;
+	int err;
+
+	/* 01:80:c2:00:00:00-01:80:c2:00:00:07 are Management */
+	ptr = MV88E6390_G1_MONITOR_MGMT_CTL_PTR_0180C200000XLO;
+	err = mv88e6390_g1_monitor_write(chip, ptr, 0xff);
+	if (err)
+		return err;
+
+	/* 01:80:c2:00:00:08-01:80:c2:00:00:0f are Management */
+	ptr = MV88E6390_G1_MONITOR_MGMT_CTL_PTR_0180C200000XHI;
+	err = mv88e6390_g1_monitor_write(chip, ptr, 0xff);
+	if (err)
+		return err;
+
+	/* 01:80:c2:00:00:20-01:80:c2:00:00:27 are Management */
+	ptr = MV88E6390_G1_MONITOR_MGMT_CTL_PTR_0180C200002XLO;
+	err = mv88e6390_g1_monitor_write(chip, ptr, 0xff);
+	if (err)
+		return err;
+
+	/* 01:80:c2:00:00:28-01:80:c2:00:00:2f are Management */
+	ptr = MV88E6390_G1_MONITOR_MGMT_CTL_PTR_0180C200002XHI;
+	err = mv88e6390_g1_monitor_write(chip, ptr, 0xff);
+	if (err)
+		return err;
+
+	return 0;
+}
+
+/* Offset 0x1c: Global Control 2 */
+
+static int mv88e6xxx_g1_ctl2_mask(struct mv88e6xxx_chip *chip, u16 mask,
+				  u16 val)
+{
+	u16 reg;
+	int err;
+
+	err = mv88e6xxx_g1_read(chip, MV88E6XXX_G1_CTL2, &reg);
+	if (err)
+		return err;
+
+	reg &= ~mask;
+	reg |= val & mask;
+
+	return mv88e6xxx_g1_write(chip, MV88E6XXX_G1_CTL2, reg);
+}
+
+int mv88e6185_g1_set_cascade_port(struct mv88e6xxx_chip *chip, int port)
+{
+	const u16 mask = MV88E6185_G1_CTL2_CASCADE_PORT_MASK;
+
+	return mv88e6xxx_g1_ctl2_mask(chip, mask, port << __bf_shf(mask));
+}
+
+int mv88e6085_g1_rmu_disable(struct mv88e6xxx_chip *chip)
+{
+	return mv88e6xxx_g1_ctl2_mask(chip, MV88E6085_G1_CTL2_P10RM |
+				      MV88E6085_G1_CTL2_RM_ENABLE, 0);
+}
+
+int mv88e6352_g1_rmu_disable(struct mv88e6xxx_chip *chip)
+{
+	return mv88e6xxx_g1_ctl2_mask(chip, MV88E6352_G1_CTL2_RMU_MODE_MASK,
+				      MV88E6352_G1_CTL2_RMU_MODE_DISABLED);
+}
+
+int mv88e6390_g1_rmu_disable(struct mv88e6xxx_chip *chip)
+{
+	return mv88e6xxx_g1_ctl2_mask(chip, MV88E6390_G1_CTL2_RMU_MODE_MASK,
+				      MV88E6390_G1_CTL2_RMU_MODE_DISABLED);
+}
+
+int mv88e6390_g1_stats_set_histogram(struct mv88e6xxx_chip *chip)
+{
+	return mv88e6xxx_g1_ctl2_mask(chip, MV88E6390_G1_CTL2_HIST_MODE_MASK,
+				      MV88E6390_G1_CTL2_HIST_MODE_RX |
+				      MV88E6390_G1_CTL2_HIST_MODE_TX);
+}
+
+int mv88e6xxx_g1_set_device_number(struct mv88e6xxx_chip *chip, int index)
+{
+	return mv88e6xxx_g1_ctl2_mask(chip,
+				      MV88E6XXX_G1_CTL2_DEVICE_NUMBER_MASK,
+				      index);
+}
+
+/* Offset 0x1d: Statistics Operation 2 */
+
+static int mv88e6xxx_g1_stats_wait(struct mv88e6xxx_chip *chip)
+{
+	int bit = __bf_shf(MV88E6XXX_G1_STATS_OP_BUSY);
+
+	return mv88e6xxx_g1_wait_bit(chip, MV88E6XXX_G1_STATS_OP, bit, 0);
+}
+
+int mv88e6095_g1_stats_set_histogram(struct mv88e6xxx_chip *chip)
+{
+	u16 val;
+	int err;
+
+	err = mv88e6xxx_g1_read(chip, MV88E6XXX_G1_STATS_OP, &val);
+	if (err)
+		return err;
+
+	val |= MV88E6XXX_G1_STATS_OP_HIST_RX_TX;
+
+	err = mv88e6xxx_g1_write(chip, MV88E6XXX_G1_STATS_OP, val);
+
+	return err;
+}
+
+int mv88e6xxx_g1_stats_snapshot(struct mv88e6xxx_chip *chip, int port)
+{
+	int err;
+
+	/* Snapshot the hardware statistics counters for this port. */
+	err = mv88e6xxx_g1_write(chip, MV88E6XXX_G1_STATS_OP,
+				 MV88E6XXX_G1_STATS_OP_BUSY |
+				 MV88E6XXX_G1_STATS_OP_CAPTURE_PORT |
+				 MV88E6XXX_G1_STATS_OP_HIST_RX_TX | port);
+	if (err)
+		return err;
+
+	/* Wait for the snapshotting to complete. */
+	return mv88e6xxx_g1_stats_wait(chip);
+}
+
+int mv88e6320_g1_stats_snapshot(struct mv88e6xxx_chip *chip, int port)
+{
+	port = (port + 1) << 5;
+
+	return mv88e6xxx_g1_stats_snapshot(chip, port);
+}
+
+int mv88e6390_g1_stats_snapshot(struct mv88e6xxx_chip *chip, int port)
+{
+	int err;
+
+	port = (port + 1) << 5;
+
+	/* Snapshot the hardware statistics counters for this port. */
+	err = mv88e6xxx_g1_write(chip, MV88E6XXX_G1_STATS_OP,
+				 MV88E6XXX_G1_STATS_OP_BUSY |
+				 MV88E6XXX_G1_STATS_OP_CAPTURE_PORT | port);
+	if (err)
+		return err;
+
+	/* Wait for the snapshotting to complete. */
+	return mv88e6xxx_g1_stats_wait(chip);
+}
+
+void mv88e6xxx_g1_stats_read(struct mv88e6xxx_chip *chip, int stat, u32 *val)
+{
+	u32 value;
+	u16 reg;
+	int err;
+
+	*val = 0;
+
+	err = mv88e6xxx_g1_write(chip, MV88E6XXX_G1_STATS_OP,
+				 MV88E6XXX_G1_STATS_OP_BUSY |
+				 MV88E6XXX_G1_STATS_OP_READ_CAPTURED | stat);
+	if (err)
+		return;
+
+	err = mv88e6xxx_g1_stats_wait(chip);
+	if (err)
+		return;
+
+	err = mv88e6xxx_g1_read(chip, MV88E6XXX_G1_STATS_COUNTER_32, &reg);
+	if (err)
+		return;
+
+	value = reg << 16;
+
+	err = mv88e6xxx_g1_read(chip, MV88E6XXX_G1_STATS_COUNTER_01, &reg);
+	if (err)
+		return;
+
+	*val = value | reg;
+}
+
+int mv88e6xxx_g1_stats_clear(struct mv88e6xxx_chip *chip)
+{
+	int err;
+	u16 val;
+
+	err = mv88e6xxx_g1_read(chip, MV88E6XXX_G1_STATS_OP, &val);
+	if (err)
+		return err;
+
+	/* Keep the histogram mode bits */
+	val &= MV88E6XXX_G1_STATS_OP_HIST_RX_TX;
+	val |= MV88E6XXX_G1_STATS_OP_BUSY | MV88E6XXX_G1_STATS_OP_FLUSH_ALL;
+
+	err = mv88e6xxx_g1_write(chip, MV88E6XXX_G1_STATS_OP, val);
+	if (err)
+		return err;
+
+	/* Wait for the flush to complete. */
+	return mv88e6xxx_g1_stats_wait(chip);
+}

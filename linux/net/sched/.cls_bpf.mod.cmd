@@ -1,4 +1,4 @@
-haracter as follows:
-	 *
-	 * - '+': irq is enabled and not in irq context
-	 * - '-': in irq
+us & VID_BC_MSK_SYNC) ||
+		(status & VID_BC_MSK_OF)) {
+
+		if (status & VID_BC_MSK_OPC_ERR)

@@ -1,1 +1,2 @@
-config/ACPI_HOTPLUG_IOAPI
+th =
+			    txclk_tx_s_ma

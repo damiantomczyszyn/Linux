@@ -1,1 +1,3 @@
-    $(wildcard include/config/HIGH_RES_
+ET_SEQ_END:
+		return  "GET_SEQ_END";
+	c

@@ -1,79 +1,93 @@
-IRQ) << LOCK_USAGE_READ_MASK;
-
-	return excl;
-}
-
-/*
- * Find the first pair of bit match between an original
- * usage mask and an exclusive usage mask.
- */
-static int find_exclusive_match(unsigned long mask,
-				unsigned long excl_mask,
-				enum lock_usage_bit *bitp,
-				enum lock_usage_bit *excl_bitp)
-{
-	int bit, excl, excl_read;
-
-	for_each_set_bit(bit, &mask, LOCK_USED) {
-		/*
-		 * exclusive_bit() strips the read bit, however,
-		 * LOCK_ENABLED_IRQ_*_READ may cause deadlocks too, so we need
-		 * to search excl | LOCK_USAGE_READ_MASK as well.
+d domains by considering the
+		 * cpuset configurations.
 		 */
-		excl = exclusive_bit(bit);
-		excl_read = excl | LOCK_USAGE_READ_MASK;
-		if (excl_mask & lock_flag(excl)) {
-			*bitp = bit;
-			*excl_bitp = excl;
-			return 0;
-		} else if (excl_mask & lock_flag(excl_read)) {
-			*bitp = bit;
-			*excl_bitp = excl_read;
-			return 0;
-		}
+		cpuset_force_rebuild();
 	}
-	return -1;
+	cpuset_update_active_cpus();
 }
 
-/*
- * Prove that the new dependency does not connect a hardirq-safe(-read)
- * lock with a hardirq-unsafe lock - to achieve this we search
- * the backwards-subgraph starting at <prev>, and the
- * forwards-subgraph starting at <next>:
- */
-static int check_irq_usage(struct task_struct *curr, struct held_lock *prev,
-			   struct held_lock *next)
+static int cpuset_cpu_inactive(unsigned int cpu)
 {
-	unsigned long usage_mask = 0, forward_mask, backward_mask;
-	enum lock_usage_bit forward_bit = 0, backward_bit = 0;
-	struct lock_list *target_entry1;
-	struct lock_list *target_entry;
-	struct lock_list this, that;
-	enum bfs_result ret;
+	if (!cpuhp_tasks_frozen) {
+		int ret = dl_cpu_busy(cpu, NULL);
+
+		if (ret)
+			return ret;
+		cpuset_update_active_cpus();
+	} else {
+		num_cpus_frozen++;
+		partition_sched_domains(1, NULL, NULL);
+	}
+	return 0;
+}
+
+int sched_cpu_activate(unsigned int cpu)
+{
+	struct rq *rq = cpu_rq(cpu);
+	struct rq_flags rf;
 
 	/*
-	 * Step 1: gather all hard/soft IRQs usages backward in an
-	 * accumulated usage mask.
+	 * Clear the balance_push callback and prepare to schedule
+	 * regular tasks.
 	 */
-	bfs_init_rootb(&this, prev);
+	balance_push_set(cpu, false);
 
-	ret = __bfs_backwards(&this, &usage_mask, usage_accumulate, usage_skip, NULL);
-	if (bfs_error(ret)) {
-		print_bfs_bug(ret);
-		return 0;
+#ifdef CONFIG_SCHED_SMT
+	/*
+	 * When going up, increment the number of cores with SMT present.
+	 */
+	if (cpumask_weight(cpu_smt_mask(cpu)) == 2)
+		static_branch_inc_cpuslocked(&sched_smt_present);
+#endif
+	set_cpu_active(cpu, true);
+
+	if (sched_smp_initialized) {
+		sched_update_numa(cpu, true);
+		sched_domains_numa_masks_set(cpu);
+		cpuset_cpu_active();
 	}
 
-	usage_mask &= LOCKF_USED_IN_IRQ_ALL;
-	if (!usage_mask)
-		return 1;
+	/*
+	 * Put the rq online, if not already. This happens:
+	 *
+	 * 1) In the early boot process, because we build the real domains
+	 *    after all CPUs have been brought up.
+	 *
+	 * 2) At runtime, if cpuset_cpu_active() fails to rebuild the
+	 *    domains.
+	 */
+	rq_lock_irqsave(rq, &rf);
+	if (rq->rd) {
+		BUG_ON(!cpumask_test_cpu(cpu, rq->rd->span));
+		set_rq_online(rq);
+	}
+	rq_unlock_irqrestore(rq, &rf);
+
+	return 0;
+}
+
+int sched_cpu_deactivate(unsigned int cpu)
+{
+	struct rq *rq = cpu_rq(cpu);
+	struct rq_flags rf;
+	int ret;
 
 	/*
-	 * Step 2: find exclusive uses forward that match the previous
-	 * backward accumulated mask.
+	 * Remove CPU from nohz.idle_cpus_mask to prevent participating in
+	 * load balancing when not active
 	 */
-	forward_mask = exclusive_mask(usage_mask);
+	nohz_balance_exit_idle(rq);
 
-	bfs_init_root(&that, next);
+	set_cpu_active(cpu, false);
 
-	ret = find_usage_forwards(&that, forward_mask, &target_entry1);
-	if (bf
+	/*
+	 * From this point forward, this CPU will refuse to run any task that
+	 * is not: migrate_disable() or KTHREAD_IS_PER_CPU, and will actively
+	 * push those tasks away until this gets cleared, see
+	 * sched_cpu_dying().
+	 */
+	balance_push_set(cpu, true);
+
+	/*
+	 * We've cleared cpu_active_mask / set balance_push, wait for all
+	 * preempt-disabl

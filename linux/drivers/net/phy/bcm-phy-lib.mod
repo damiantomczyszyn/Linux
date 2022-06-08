@@ -1,1 +1,1 @@
-$(wildcard include/config/TRACE
+/* SPDX-License-Identifier: GPL

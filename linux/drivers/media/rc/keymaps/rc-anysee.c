@@ -1,81 +1,91 @@
-// SPDX-License-Identifier: GPL-2.0-or-later
+K_RCD + 1)
+		count = RXCLK_RCD;
+	else if (count < 2)
+		count = 1;
+	else
+		count--;
+	return (u16) count;
+}
+
 /*
- * Anysee remote controller keytable
- *
- * Copyright (C) 2010 Antti Palosaari <crope@iki.fi>
+ * IR Control Register helpers
  */
-
-#include <media/rc-map.h>
-#include <linux/module.h>
-
-static struct rc_map_table anysee[] = {
-	{ 0x0800, KEY_NUMERIC_0 },
-	{ 0x0801, KEY_NUMERIC_1 },
-	{ 0x0802, KEY_NUMERIC_2 },
-	{ 0x0803, KEY_NUMERIC_3 },
-	{ 0x0804, KEY_NUMERIC_4 },
-	{ 0x0805, KEY_NUMERIC_5 },
-	{ 0x0806, KEY_NUMERIC_6 },
-	{ 0x0807, KEY_NUMERIC_7 },
-	{ 0x0808, KEY_NUMERIC_8 },
-	{ 0x0809, KEY_NUMERIC_9 },
-	{ 0x080a, KEY_POWER2 },          /* [red power button] */
-	{ 0x080b, KEY_VIDEO },           /* [*] MODE */
-	{ 0x080c, KEY_CHANNEL },         /* [symbol counterclockwise arrow] */
-	{ 0x080d, KEY_NEXT },            /* [>>|] */
-	{ 0x080e, KEY_MENU },            /* MENU */
-	{ 0x080f, KEY_EPG },             /* [EPG] */
-	{ 0x0810, KEY_CLEAR },           /* EXIT */
-	{ 0x0811, KEY_CHANNELUP },
-	{ 0x0812, KEY_VOLUMEDOWN },
-	{ 0x0813, KEY_VOLUMEUP },
-	{ 0x0814, KEY_CHANNELDOWN },
-	{ 0x0815, KEY_OK },
-	{ 0x0816, KEY_RADIO },           /* [symbol TV/radio] */
-	{ 0x0817, KEY_INFO },            /* [i] */
-	{ 0x0818, KEY_PREVIOUS },        /* [|<<] */
-	{ 0x0819, KEY_FAVORITES },       /* FAV. */
-	{ 0x081a, KEY_SUBTITLE },        /* Subtitle */
-	{ 0x081b, KEY_CAMERA },          /* [symbol camera] */
-	{ 0x081c, KEY_YELLOW },
-	{ 0x081d, KEY_RED },
-	{ 0x081e, KEY_LANGUAGE },        /* [symbol Second Audio Program] */
-	{ 0x081f, KEY_GREEN },
-	{ 0x0820, KEY_SLEEP },           /* Sleep */
-	{ 0x0821, KEY_SCREEN },          /* 16:9 / 4:3 */
-	{ 0x0822, KEY_ZOOM },            /* SIZE */
-	{ 0x0824, KEY_FN },              /* [F1] */
-	{ 0x0825, KEY_FN },              /* [F2] */
-	{ 0x0842, KEY_MUTE },            /* symbol mute */
-	{ 0x0844, KEY_BLUE },
-	{ 0x0847, KEY_TEXT },            /* TEXT */
-	{ 0x0848, KEY_STOP },
-	{ 0x0849, KEY_RECORD },
-	{ 0x0850, KEY_PLAY },
-	{ 0x0851, KEY_PAUSE },
+enum tx_fifo_watermark {
+	TX_FIFO_HALF_EMPTY = 0,
+	TX_FIFO_EMPTY      = CNTRL_TIC,
 };
 
-static struct rc_map_list anysee_map = {
-	.map = {
-		.scan     = anysee,
-		.size     = ARRAY_SIZE(anysee),
-		.rc_proto = RC_PROTO_NEC,
-		.name     = RC_MAP_ANYSEE,
+enum rx_fifo_watermark {
+	RX_FIFO_HALF_FULL = 0,
+	RX_FIFO_NOT_EMPTY = CNTRL_RIC,
+};
+
+static inline void control_tx_irq_watermark(struct cx23885_dev *dev,
+					    enum tx_fifo_watermark level)
+{
+	cx23888_ir_and_or4(dev, CX23888_IR_CNTRL_REG, ~CNTRL_TIC, level);
+}
+
+static inline void control_rx_irq_watermark(struct cx23885_dev *dev,
+					    enum rx_fifo_watermark level)
+{
+	cx23888_ir_and_or4(dev, CX23888_IR_CNTRL_REG, ~CNTRL_RIC, level);
+}
+
+static inline void control_tx_enable(struct cx23885_dev *dev, bool enable)
+{
+	cx23888_ir_and_or4(dev, CX23888_IR_CNTRL_REG, ~(CNTRL_TXE | CNTRL_TFE),
+			   enable ? (CNTRL_TXE | CNTRL_TFE) : 0);
+}
+
+static inline void control_rx_enable(struct cx23885_dev *dev, bool enable)
+{
+	cx23888_ir_and_or4(dev, CX23888_IR_CNTRL_REG, ~(CNTRL_RXE | CNTRL_RFE),
+			   enable ? (CNTRL_RXE | CNTRL_RFE) : 0);
+}
+
+static inline void control_tx_modulation_enable(struct cx23885_dev *dev,
+						bool enable)
+{
+	cx23888_ir_and_or4(dev, CX23888_IR_CNTRL_REG, ~CNTRL_MOD,
+			   enable ? CNTRL_MOD : 0);
+}
+
+static inline void control_rx_demodulation_enable(struct cx23885_dev *dev,
+						  bool enable)
+{
+	cx23888_ir_and_or4(dev, CX23888_IR_CNTRL_REG, ~CNTRL_DMD,
+			   enable ? CNTRL_DMD : 0);
+}
+
+static inline void control_rx_s_edge_detection(struct cx23885_dev *dev,
+					       u32 edge_types)
+{
+	cx23888_ir_and_or4(dev, CX23888_IR_CNTRL_REG, ~CNTRL_EDG_BOTH,
+			   edge_types & CNTRL_EDG_BOTH);
+}
+
+static void control_rx_s_carrier_window(struct cx23885_dev *dev,
+					unsigned int carrier,
+					unsigned int *carrier_range_low,
+					unsigned int *carrier_range_high)
+{
+	u32 v;
+	unsigned int c16 = carrier * 16;
+
+	if (*carrier_range_low < DIV_ROUND_CLOSEST(c16, 16 + 3)) {
+		v = CNTRL_WIN_3_4;
+		*carrier_range_low = DIV_ROUND_CLOSEST(c16, 16 + 4);
+	} else {
+		v = CNTRL_WIN_3_3;
+		*carrier_range_low = DIV_ROUND_CLOSEST(c16, 16 + 3);
 	}
-};
 
-static int __init init_rc_map_anysee(void)
-{
-	return rc_map_register(&anysee_map);
-}
-
-static void __exit exit_rc_map_anysee(void)
-{
-	rc_map_unregister(&anysee_map);
-}
-
-module_init(init_rc_map_anysee)
-module_exit(exit_rc_map_anysee)
-
-MODULE_LICENSE("GPL");
-MODULE_AUTHOR("Antti Palosaari <crope@iki.fi>");
+	if (*carrier_range_high > DIV_ROUND_CLOSEST(c16, 16 - 3)) {
+		v |= CNTRL_WIN_4_3;
+		*carrier_range_high = DIV_ROUND_CLOSEST(c16, 16 - 4);
+	} else {
+		v |= CNTRL_WIN_3_3;
+		*carrier_range_high = DIV_ROUND_CLOSEST(c16, 16 - 3);
+	}
+	cx23888_ir_and_or4(dev, CX23888_IR_CNTRL_REG, ~CNTRL_WI

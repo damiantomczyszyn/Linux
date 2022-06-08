@@ -1,1 +1,2 @@
-de/uapi/linux/swab.h
+ of reset */
+		break

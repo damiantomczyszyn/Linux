@@ -1,15 +1,1 @@
-IOAPIC) \
-    $(wildcard include/config/PCI) \
-    $(wildcard include/config/ACPI_WMI) \
-    $(wildcard include/config/ACPI_NUMA) \
-    $(wildcard include/config/HIBERNATION) \
-    $(wildcard include/config/ACPI_HOTPLUG_MEMORY) \
-    $(wildcard include/config/ACPI_CONTAINER) \
-    $(wildcard include/config/ACPI_GTDT) \
-    $(wildcard include/config/PM) \
-    $(wildcard include/config/GPIOLIB) \
-    $(wildcard include/config/ACPI_TABLE_UPGRADE) \
-    $(wildcard include/config/ACPI_WATCHDOG) \
-    $(wildcard include/config/ACPI_SPCR_TABLE) \
-    $(wildcard include/config/ACPI_GENERIC_GSI) \
-    $(wildcard include/config/AC
+cmd_drivers/media/pci/cx18/cx18.o := ld -m elf_i386   -r -o drivers/media/pci/cx18/cx18.o drivers/media/pci/cx18/cx18-driver.o drivers/media/pci/cx18/cx18-cards.o drivers/media/pci/cx18/cx18-i2c.o drivers/media/pci/cx18/cx18-firmware.o drivers/media/pci/cx18/cx18-gpio.o drivers/media/pci/cx18/cx18-queue.o drivers/media/pci/cx18/cx18-streams.o drivers/media/pci/cx18/cx18-fileops.o drivers/media/pci/cx18/cx18-ioctl.o drivers/media/pci/cx18/cx18-controls.o drivers/media/pci/cx18/cx18-mailbox.o drivers/media/pci/cx18/cx18-vbi.o drivers/media/pci/cx18/cx18-audio.o drivers/media/pci/cx18/cx18-video.o drivers/media/pci/cx18/cx1

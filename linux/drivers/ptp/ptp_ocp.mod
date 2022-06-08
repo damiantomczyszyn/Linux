@@ -1,2 +1,2 @@
-qrwlock.h \
-  include/l
+return cx_read(addr);
+}

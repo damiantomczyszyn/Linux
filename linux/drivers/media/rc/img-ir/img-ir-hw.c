@@ -1,1147 +1,1198 @@
-// SPDX-License-Identifier: GPL-2.0-or-later
-/*
- * ImgTec IR Hardware Decoder found in PowerDown Controller.
- *
- * Copyright 2010-2014 Imagination Technologies Ltd.
- *
- * This ties into the input subsystem using the RC-core. Protocol support is
- * provided in separate modules which provide the parameters and scancode
- * translation functions to set up the hardware decoder and interpret the
- * resulting input.
- */
+he real set_frontend */
+	if (port->set_frontend)
+		return port->set_frontend(fe);
 
-#include <linux/bitops.h>
-#include <linux/clk.h>
-#include <linux/interrupt.h>
-#include <linux/spinlock.h>
-#include <linux/timer.h>
-#include <media/rc-core.h>
-#include "img-ir.h"
+	return 0;
+}
 
-/* Decoders lock (only modified to preprocess them) */
-static DEFINE_SPINLOCK(img_ir_decoders_lock);
+static void cx23885_set_frontend_hook(struct cx23885_tsport *port,
+				     struct dvb_frontend *fe)
+{
+	port->set_frontend = fe->ops.set_frontend;
+	fe->ops.set_frontend = cx23885_dvb_set_frontend;
+}
 
-static bool img_ir_decoders_preprocessed;
-static struct img_ir_decoder *img_ir_decoders[] = {
-#ifdef CONFIG_IR_IMG_NEC
-	&img_ir_nec,
-#endif
-#ifdef CONFIG_IR_IMG_JVC
-	&img_ir_jvc,
-#endif
-#ifdef CONFIG_IR_IMG_SONY
-	&img_ir_sony,
-#endif
-#ifdef CONFIG_IR_IMG_SHARP
-	&img_ir_sharp,
-#endif
-#ifdef CONFIG_IR_IMG_SANYO
-	&img_ir_sanyo,
-#endif
-#ifdef CONFIG_IR_IMG_RC5
-	&img_ir_rc5,
-#endif
-#ifdef CONFIG_IR_IMG_RC6
-	&img_ir_rc6,
-#endif
-	NULL
+static struct lgs8gxx_config magicpro_prohdtve2_lgs8g75_config = {
+	.prod = LGS8GXX_PROD_LGS8G75,
+	.demod_address = 0x19,
+	.serial_ts = 0,
+	.ts_clk_pol = 1,
+	.ts_clk_gated = 1,
+	.if_clk_freq = 30400, /* 30.4 MHz */
+	.if_freq = 6500, /* 6.50 MHz */
+	.if_neg_center = 1,
+	.ext_adc = 0,
+	.adc_signed = 1,
+	.adc_vpp = 2, /* 1.6 Vpp */
+	.if_neg_edge = 1,
 };
 
-#define IMG_IR_F_FILTER		BIT(RC_FILTER_NORMAL)	/* enable filtering */
-#define IMG_IR_F_WAKE		BIT(RC_FILTER_WAKEUP)	/* enable waking */
+static struct xc5000_config magicpro_prohdtve2_xc5000_config = {
+	.i2c_address = 0x61,
+	.if_khz = 6500,
+};
 
-/* code type quirks */
+static struct atbm8830_config mygica_x8558pro_atbm8830_cfg1 = {
+	.prod = ATBM8830_PROD_8830,
+	.demod_address = 0x44,
+	.serial_ts = 0,
+	.ts_sampling_edge = 1,
+	.ts_clk_gated = 0,
+	.osc_clk_freq = 30400, /* in kHz */
+	.if_freq = 0, /* zero IF */
+	.zif_swap_iq = 1,
+	.agc_min = 0x2E,
+	.agc_max = 0xFF,
+	.agc_hold_loop = 0,
+};
 
-#define IMG_IR_QUIRK_CODE_BROKEN	0x1	/* Decode is broken */
-#define IMG_IR_QUIRK_CODE_LEN_INCR	0x2	/* Bit length needs increment */
-/*
- * The decoder generates rapid interrupts without actually having
- * received any new data after an incomplete IR code is decoded.
- */
-#define IMG_IR_QUIRK_CODE_IRQ		0x4
+static struct max2165_config mygic_x8558pro_max2165_cfg1 = {
+	.i2c_address = 0x60,
+	.osc_clk = 20
+};
 
-/* functions for preprocessing timings, ensuring max is set */
+static struct atbm8830_config mygica_x8558pro_atbm8830_cfg2 = {
+	.prod = ATBM8830_PROD_8830,
+	.demod_address = 0x44,
+	.serial_ts = 1,
+	.ts_sampling_edge = 1,
+	.ts_clk_gated = 0,
+	.osc_clk_freq = 30400, /* in kHz */
+	.if_freq = 0, /* zero IF */
+	.zif_swap_iq = 1,
+	.agc_min = 0x2E,
+	.agc_max = 0xFF,
+	.agc_hold_loop = 0,
+};
 
-static void img_ir_timing_preprocess(struct img_ir_timing_range *range,
-				     unsigned int unit)
+static struct max2165_config mygic_x8558pro_max2165_cfg2 = {
+	.i2c_address = 0x60,
+	.osc_clk = 20
+};
+static struct stv0367_config netup_stv0367_config[] = {
+	{
+		.demod_address = 0x1c,
+		.xtal = 27000000,
+		.if_khz = 4500,
+		.if_iq_mode = 0,
+		.ts_mode = 1,
+		.clk_pol = 0,
+	}, {
+		.demod_address = 0x1d,
+		.xtal = 27000000,
+		.if_khz = 4500,
+		.if_iq_mode = 0,
+		.ts_mode = 1,
+		.clk_pol = 0,
+	},
+};
+
+static struct xc5000_config netup_xc5000_config[] = {
+	{
+		.i2c_address = 0x61,
+		.if_khz = 4500,
+	}, {
+		.i2c_address = 0x64,
+		.if_khz = 4500,
+	},
+};
+
+static struct drxk_config terratec_drxk_config[] = {
+	{
+		.adr = 0x29,
+		.no_i2c_bridge = 1,
+	}, {
+		.adr = 0x2a,
+		.no_i2c_bridge = 1,
+	},
+};
+
+static struct mt2063_config terratec_mt2063_config[] = {
+	{
+		.tuner_address = 0x60,
+	}, {
+		.tuner_address = 0x67,
+	},
+};
+
+static const struct tda10071_platform_data hauppauge_tda10071_pdata = {
+	.clk = 40444000, /* 40.444 MHz */
+	.i2c_wr_max = 64,
+	.ts_mode = TDA10071_TS_SERIAL,
+	.pll_multiplier = 20,
+	.tuner_i2c_addr = 0x54,
+};
+
+static const struct m88ds3103_config dvbsky_t9580_m88ds3103_config = {
+	.i2c_addr = 0x68,
+	.clock = 27000000,
+	.i2c_wr_max = 33,
+	.clock_out = 0,
+	.ts_mode = M88DS3103_TS_PARALLEL,
+	.ts_clk = 16000,
+	.ts_clk_pol = 1,
+	.lnb_en_pol = 1,
+	.lnb_hv_pol = 0,
+	.agc = 0x99,
+};
+
+static const struct m88ds3103_config dvbsky_s950c_m88ds3103_config = {
+	.i2c_addr = 0x68,
+	.clock = 27000000,
+	.i2c_wr_max = 33,
+	.clock_out = 0,
+	.ts_mode = M88DS3103_TS_CI,
+	.ts_clk = 10000,
+	.ts_clk_pol = 1,
+	.lnb_en_pol = 1,
+	.lnb_hv_pol = 0,
+	.agc = 0x99,
+};
+
+static const struct m88ds3103_config hauppauge_hvr5525_m88ds3103_config = {
+	.i2c_addr = 0x69,
+	.clock = 27000000,
+	.i2c_wr_max = 33,
+	.ts_mode = M88DS3103_TS_PARALLEL,
+	.ts_clk = 16000,
+	.ts_clk_pol = 1,
+	.agc = 0x99,
+};
+
+static struct lgdt3306a_config hauppauge_hvr1265k4_config = {
+	.i2c_addr               = 0x59,
+	.qam_if_khz             = 4000,
+	.vsb_if_khz             = 3250,
+	.deny_i2c_rptr          = 1, /* Disabled */
+	.spectral_inversion     = 0, /* Disabled */
+	.mpeg_mode              = LGDT3306A_MPEG_SERIAL,
+	.tpclk_edge             = LGDT3306A_TPCLK_RISING_EDGE,
+	.tpvalid_polarity       = LGDT3306A_TP_VALID_HIGH,
+	.xtalMHz                = 25, /* 24 or 25 */
+};
+
+static int netup_altera_fpga_rw(void *device, int flag, int data, int read)
 {
-	if (range->max < range->min)
-		range->max = range->min;
-	if (unit) {
-		/* multiply by unit and convert to microseconds */
-		range->min = (range->min*unit)/1000;
-		range->max = (range->max*unit + 999)/1000; /* round up */
+	struct cx23885_dev *dev = (struct cx23885_dev *)device;
+	unsigned long timeout = jiffies + msecs_to_jiffies(1);
+	uint32_t mem = 0;
+
+	mem = cx_read(MC417_RWD);
+	if (read)
+		cx_set(MC417_OEN, ALT_DATA);
+	else {
+		cx_clear(MC417_OEN, ALT_DATA);/* D0-D7 out */
+		mem &= ~ALT_DATA;
+		mem |= (data & ALT_DATA);
 	}
-}
 
-static void img_ir_symbol_timing_preprocess(struct img_ir_symbol_timing *timing,
-					    unsigned int unit)
-{
-	img_ir_timing_preprocess(&timing->pulse, unit);
-	img_ir_timing_preprocess(&timing->space, unit);
-}
-
-static void img_ir_timings_preprocess(struct img_ir_timings *timings,
-				      unsigned int unit)
-{
-	img_ir_symbol_timing_preprocess(&timings->ldr, unit);
-	img_ir_symbol_timing_preprocess(&timings->s00, unit);
-	img_ir_symbol_timing_preprocess(&timings->s01, unit);
-	img_ir_symbol_timing_preprocess(&timings->s10, unit);
-	img_ir_symbol_timing_preprocess(&timings->s11, unit);
-	/* default s10 and s11 to s00 and s01 if no leader */
-	if (unit)
-		/* multiply by unit and convert to microseconds (round up) */
-		timings->ft.ft_min = (timings->ft.ft_min*unit + 999)/1000;
-}
-
-/* functions for filling empty fields with defaults */
-
-static void img_ir_timing_defaults(struct img_ir_timing_range *range,
-				   struct img_ir_timing_range *defaults)
-{
-	if (!range->min)
-		range->min = defaults->min;
-	if (!range->max)
-		range->max = defaults->max;
-}
-
-static void img_ir_symbol_timing_defaults(struct img_ir_symbol_timing *timing,
-					  struct img_ir_symbol_timing *defaults)
-{
-	img_ir_timing_defaults(&timing->pulse, &defaults->pulse);
-	img_ir_timing_defaults(&timing->space, &defaults->space);
-}
-
-static void img_ir_timings_defaults(struct img_ir_timings *timings,
-				    struct img_ir_timings *defaults)
-{
-	img_ir_symbol_timing_defaults(&timings->ldr, &defaults->ldr);
-	img_ir_symbol_timing_defaults(&timings->s00, &defaults->s00);
-	img_ir_symbol_timing_defaults(&timings->s01, &defaults->s01);
-	img_ir_symbol_timing_defaults(&timings->s10, &defaults->s10);
-	img_ir_symbol_timing_defaults(&timings->s11, &defaults->s11);
-	if (!timings->ft.ft_min)
-		timings->ft.ft_min = defaults->ft.ft_min;
-}
-
-/* functions for converting timings to register values */
-
-/**
- * img_ir_control() - Convert control struct to control register value.
- * @control:	Control data
- *
- * Returns:	The control register value equivalent of @control.
- */
-static u32 img_ir_control(const struct img_ir_control *control)
-{
-	u32 ctrl = control->code_type << IMG_IR_CODETYPE_SHIFT;
-	if (control->decoden)
-		ctrl |= IMG_IR_DECODEN;
-	if (control->hdrtog)
-		ctrl |= IMG_IR_HDRTOG;
-	if (control->ldrdec)
-		ctrl |= IMG_IR_LDRDEC;
-	if (control->decodinpol)
-		ctrl |= IMG_IR_DECODINPOL;
-	if (control->bitorien)
-		ctrl |= IMG_IR_BITORIEN;
-	if (control->d1validsel)
-		ctrl |= IMG_IR_D1VALIDSEL;
-	if (control->bitinv)
-		ctrl |= IMG_IR_BITINV;
-	if (control->decodend2)
-		ctrl |= IMG_IR_DECODEND2;
-	if (control->bitoriend2)
-		ctrl |= IMG_IR_BITORIEND2;
-	if (control->bitinvd2)
-		ctrl |= IMG_IR_BITINVD2;
-	return ctrl;
-}
-
-/**
- * img_ir_timing_range_convert() - Convert microsecond range.
- * @out:	Output timing range in clock cycles with a shift.
- * @in:		Input timing range in microseconds.
- * @tolerance:	Tolerance as a fraction of 128 (roughly percent).
- * @clock_hz:	IR clock rate in Hz.
- * @shift:	Shift of output units.
- *
- * Converts min and max from microseconds to IR clock cycles, applies a
- * tolerance, and shifts for the register, rounding in the right direction.
- * Note that in and out can safely be the same object.
- */
-static void img_ir_timing_range_convert(struct img_ir_timing_range *out,
-					const struct img_ir_timing_range *in,
-					unsigned int tolerance,
-					unsigned long clock_hz,
-					unsigned int shift)
-{
-	unsigned int min = in->min;
-	unsigned int max = in->max;
-	/* add a tolerance */
-	min = min - (min*tolerance >> 7);
-	max = max + (max*tolerance >> 7);
-	/* convert from microseconds into clock cycles */
-	min = min*clock_hz / 1000000;
-	max = (max*clock_hz + 999999) / 1000000; /* round up */
-	/* apply shift and copy to output */
-	out->min = min >> shift;
-	out->max = (max + ((1 << shift) - 1)) >> shift; /* round up */
-}
-
-/**
- * img_ir_symbol_timing() - Convert symbol timing struct to register value.
- * @timing:	Symbol timing data
- * @tolerance:	Timing tolerance where 0-128 represents 0-100%
- * @clock_hz:	Frequency of source clock in Hz
- * @pd_shift:	Shift to apply to symbol period
- * @w_shift:	Shift to apply to symbol width
- *
- * Returns:	Symbol timing register value based on arguments.
- */
-static u32 img_ir_symbol_timing(const struct img_ir_symbol_timing *timing,
-				unsigned int tolerance,
-				unsigned long clock_hz,
-				unsigned int pd_shift,
-				unsigned int w_shift)
-{
-	struct img_ir_timing_range hw_pulse, hw_period;
-	/* we calculate period in hw_period, then convert in place */
-	hw_period.min = timing->pulse.min + timing->space.min;
-	hw_period.max = timing->pulse.max + timing->space.max;
-	img_ir_timing_range_convert(&hw_period, &hw_period,
-			tolerance, clock_hz, pd_shift);
-	img_ir_timing_range_convert(&hw_pulse, &timing->pulse,
-			tolerance, clock_hz, w_shift);
-	/* construct register value */
-	return	(hw_period.max	<< IMG_IR_PD_MAX_SHIFT)	|
-		(hw_period.min	<< IMG_IR_PD_MIN_SHIFT)	|
-		(hw_pulse.max	<< IMG_IR_W_MAX_SHIFT)	|
-		(hw_pulse.min	<< IMG_IR_W_MIN_SHIFT);
-}
-
-/**
- * img_ir_free_timing() - Convert free time timing struct to register value.
- * @timing:	Free symbol timing data
- * @clock_hz:	Source clock frequency in Hz
- *
- * Returns:	Free symbol timing register value.
- */
-static u32 img_ir_free_timing(const struct img_ir_free_timing *timing,
-			      unsigned long clock_hz)
-{
-	unsigned int minlen, maxlen, ft_min;
-	/* minlen is only 5 bits, and round minlen to multiple of 2 */
-	if (timing->minlen < 30)
-		minlen = timing->minlen & -2;
+	if (flag)
+		mem |= ALT_AD_RG;
 	else
-		minlen = 30;
-	/* maxlen has maximum value of 48, and round maxlen to multiple of 2 */
-	if (timing->maxlen < 48)
-		maxlen = (timing->maxlen + 1) & -2;
+		mem &= ~ALT_AD_RG;
+
+	mem &= ~ALT_CS;
+	if (read)
+		mem = (mem & ~ALT_RD) | ALT_WR;
 	else
-		maxlen = 48;
-	/* convert and shift ft_min, rounding upwards */
-	ft_min = (timing->ft_min*clock_hz + 999999) / 1000000;
-	ft_min = (ft_min + 7) >> 3;
-	/* construct register value */
-	return	(maxlen << IMG_IR_MAXLEN_SHIFT)	|
-		(minlen << IMG_IR_MINLEN_SHIFT)	|
-		(ft_min << IMG_IR_FT_MIN_SHIFT);
-}
+		mem = (mem & ~ALT_WR) | ALT_RD;
 
-/**
- * img_ir_free_timing_dynamic() - Update free time register value.
- * @st_ft:	Static free time register value from img_ir_free_timing.
- * @filter:	Current filter which may additionally restrict min/max len.
- *
- * Returns:	Updated free time register value based on the current filter.
- */
-static u32 img_ir_free_timing_dynamic(u32 st_ft, struct img_ir_filter *filter)
-{
-	unsigned int minlen, maxlen, newminlen, newmaxlen;
+	cx_write(MC417_RWD, mem);  /* start RW cycle */
 
-	/* round minlen, maxlen to multiple of 2 */
-	newminlen = filter->minlen & -2;
-	newmaxlen = (filter->maxlen + 1) & -2;
-	/* extract min/max len from register */
-	minlen = (st_ft & IMG_IR_MINLEN) >> IMG_IR_MINLEN_SHIFT;
-	maxlen = (st_ft & IMG_IR_MAXLEN) >> IMG_IR_MAXLEN_SHIFT;
-	/* if the new values are more restrictive, update the register value */
-	if (newminlen > minlen) {
-		st_ft &= ~IMG_IR_MINLEN;
-		st_ft |= newminlen << IMG_IR_MINLEN_SHIFT;
-	}
-	if (newmaxlen < maxlen) {
-		st_ft &= ~IMG_IR_MAXLEN;
-		st_ft |= newmaxlen << IMG_IR_MAXLEN_SHIFT;
-	}
-	return st_ft;
-}
-
-/**
- * img_ir_timings_convert() - Convert timings to register values
- * @regs:	Output timing register values
- * @timings:	Input timing data
- * @tolerance:	Timing tolerance where 0-128 represents 0-100%
- * @clock_hz:	Source clock frequency in Hz
- */
-static void img_ir_timings_convert(struct img_ir_timing_regvals *regs,
-				   const struct img_ir_timings *timings,
-				   unsigned int tolerance,
-				   unsigned int clock_hz)
-{
-	/* leader symbol timings are divided by 16 */
-	regs->ldr = img_ir_symbol_timing(&timings->ldr, tolerance, clock_hz,
-			4, 4);
-	/* other symbol timings, pd fields only are divided by 2 */
-	regs->s00 = img_ir_symbol_timing(&timings->s00, tolerance, clock_hz,
-			1, 0);
-	regs->s01 = img_ir_symbol_timing(&timings->s01, tolerance, clock_hz,
-			1, 0);
-	regs->s10 = img_ir_symbol_timing(&timings->s10, tolerance, clock_hz,
-			1, 0);
-	regs->s11 = img_ir_symbol_timing(&timings->s11, tolerance, clock_hz,
-			1, 0);
-	regs->ft = img_ir_free_timing(&timings->ft, clock_hz);
-}
-
-/**
- * img_ir_decoder_preprocess() - Preprocess timings in decoder.
- * @decoder:	Decoder to be preprocessed.
- *
- * Ensures that the symbol timing ranges are valid with respect to ordering, and
- * does some fixed conversion on them.
- */
-static void img_ir_decoder_preprocess(struct img_ir_decoder *decoder)
-{
-	/* default tolerance */
-	if (!decoder->tolerance)
-		decoder->tolerance = 10; /* percent */
-	/* and convert tolerance to fraction out of 128 */
-	decoder->tolerance = decoder->tolerance * 128 / 100;
-
-	/* fill in implicit fields */
-	img_ir_timings_preprocess(&decoder->timings, decoder->unit);
-
-	/* do the same for repeat timings if applicable */
-	if (decoder->repeat) {
-		img_ir_timings_preprocess(&decoder->rtimings, decoder->unit);
-		img_ir_timings_defaults(&decoder->rtimings, &decoder->timings);
-	}
-}
-
-/**
- * img_ir_decoder_convert() - Generate internal timings in decoder.
- * @decoder:	Decoder to be converted to internal timings.
- * @reg_timings: Timing register values.
- * @clock_hz:	IR clock rate in Hz.
- *
- * Fills out the repeat timings and timing register values for a specific clock
- * rate.
- */
-static void img_ir_decoder_convert(const struct img_ir_decoder *decoder,
-				   struct img_ir_reg_timings *reg_timings,
-				   unsigned int clock_hz)
-{
-	/* calculate control value */
-	reg_timings->ctrl = img_ir_control(&decoder->control);
-
-	/* fill in implicit fields and calculate register values */
-	img_ir_timings_convert(&reg_timings->timings, &decoder->timings,
-			       decoder->tolerance, clock_hz);
-
-	/* do the same for repeat timings if applicable */
-	if (decoder->repeat)
-		img_ir_timings_convert(&reg_timings->rtimings,
-				       &decoder->rtimings, decoder->tolerance,
-				       clock_hz);
-}
-
-/**
- * img_ir_write_timings() - Write timings to the hardware now
- * @priv:	IR private data
- * @regs:	Timing register values to write
- * @type:	RC filter type (RC_FILTER_*)
- *
- * Write timing register values @regs to the hardware, taking into account the
- * current filter which may impose restrictions on the length of the expected
- * data.
- */
-static void img_ir_write_timings(struct img_ir_priv *priv,
-				 struct img_ir_timing_regvals *regs,
-				 enum rc_filter_type type)
-{
-	struct img_ir_priv_hw *hw = &priv->hw;
-
-	/* filter may be more restrictive to minlen, maxlen */
-	u32 ft = regs->ft;
-	if (hw->flags & BIT(type))
-		ft = img_ir_free_timing_dynamic(regs->ft, &hw->filters[type]);
-	/* write to registers */
-	img_ir_write(priv, IMG_IR_LEAD_SYMB_TIMING, regs->ldr);
-	img_ir_write(priv, IMG_IR_S00_SYMB_TIMING, regs->s00);
-	img_ir_write(priv, IMG_IR_S01_SYMB_TIMING, regs->s01);
-	img_ir_write(priv, IMG_IR_S10_SYMB_TIMING, regs->s10);
-	img_ir_write(priv, IMG_IR_S11_SYMB_TIMING, regs->s11);
-	img_ir_write(priv, IMG_IR_FREE_SYMB_TIMING, ft);
-	dev_dbg(priv->dev, "timings: ldr=%#x, s=[%#x, %#x, %#x, %#x], ft=%#x\n",
-		regs->ldr, regs->s00, regs->s01, regs->s10, regs->s11, ft);
-}
-
-static void img_ir_write_filter(struct img_ir_priv *priv,
-				struct img_ir_filter *filter)
-{
-	if (filter) {
-		dev_dbg(priv->dev, "IR filter=%016llx & %016llx\n",
-			(unsigned long long)filter->data,
-			(unsigned long long)filter->mask);
-		img_ir_write(priv, IMG_IR_IRQ_MSG_DATA_LW, (u32)filter->data);
-		img_ir_write(priv, IMG_IR_IRQ_MSG_DATA_UP, (u32)(filter->data
-									>> 32));
-		img_ir_write(priv, IMG_IR_IRQ_MSG_MASK_LW, (u32)filter->mask);
-		img_ir_write(priv, IMG_IR_IRQ_MSG_MASK_UP, (u32)(filter->mask
-									>> 32));
-	} else {
-		dev_dbg(priv->dev, "IR clearing filter\n");
-		img_ir_write(priv, IMG_IR_IRQ_MSG_MASK_LW, 0);
-		img_ir_write(priv, IMG_IR_IRQ_MSG_MASK_UP, 0);
-	}
-}
-
-/* caller must have lock */
-static void _img_ir_set_filter(struct img_ir_priv *priv,
-			       struct img_ir_filter *filter)
-{
-	struct img_ir_priv_hw *hw = &priv->hw;
-	u32 irq_en, irq_on;
-
-	irq_en = img_ir_read(priv, IMG_IR_IRQ_ENABLE);
-	if (filter) {
-		/* Only use the match interrupt */
-		hw->filters[RC_FILTER_NORMAL] = *filter;
-		hw->flags |= IMG_IR_F_FILTER;
-		irq_on = IMG_IR_IRQ_DATA_MATCH;
-		irq_en &= ~(IMG_IR_IRQ_DATA_VALID | IMG_IR_IRQ_DATA2_VALID);
-	} else {
-		/* Only use the valid interrupt */
-		hw->flags &= ~IMG_IR_F_FILTER;
-		irq_en &= ~IMG_IR_IRQ_DATA_MATCH;
-		irq_on = IMG_IR_IRQ_DATA_VALID | IMG_IR_IRQ_DATA2_VALID;
-	}
-	irq_en |= irq_on;
-
-	img_ir_write_filter(priv, filter);
-	/* clear any interrupts we're enabling so we don't handle old ones */
-	img_ir_write(priv, IMG_IR_IRQ_CLEAR, irq_on);
-	img_ir_write(priv, IMG_IR_IRQ_ENABLE, irq_en);
-}
-
-/* caller must have lock */
-static void _img_ir_set_wake_filter(struct img_ir_priv *priv,
-				    struct img_ir_filter *filter)
-{
-	struct img_ir_priv_hw *hw = &priv->hw;
-	if (filter) {
-		/* Enable wake, and copy filter for later */
-		hw->filters[RC_FILTER_WAKEUP] = *filter;
-		hw->flags |= IMG_IR_F_WAKE;
-	} else {
-		/* Disable wake */
-		hw->flags &= ~IMG_IR_F_WAKE;
-	}
-}
-
-/* Callback for setting scancode filter */
-static int img_ir_set_filter(struct rc_dev *dev, enum rc_filter_type type,
-			     struct rc_scancode_filter *sc_filter)
-{
-	struct img_ir_priv *priv = dev->priv;
-	struct img_ir_priv_hw *hw = &priv->hw;
-	struct img_ir_filter filter, *filter_ptr = &filter;
-	int ret = 0;
-
-	dev_dbg(priv->dev, "IR scancode %sfilter=%08x & %08x\n",
-		type == RC_FILTER_WAKEUP ? "wake " : "",
-		sc_filter->data,
-		sc_filter->mask);
-
-	spin_lock_irq(&priv->lock);
-
-	/* filtering can always be disabled */
-	if (!sc_filter->mask) {
-		filter_ptr = NULL;
-		goto set_unlock;
-	}
-
-	/* current decoder must support scancode filtering */
-	if (!hw->decoder || !hw->decoder->filter) {
-		ret = -EINVAL;
-		goto unlock;
-	}
-
-	/* convert scancode filter to raw filter */
-	filter.minlen = 0;
-	filter.maxlen = ~0;
-	if (type == RC_FILTER_NORMAL) {
-		/* guess scancode from protocol */
-		ret = hw->decoder->filter(sc_filter, &filter,
-					  dev->enabled_protocols);
-	} else {
-		/* for wakeup user provided exact protocol variant */
-		ret = hw->decoder->filter(sc_filter, &filter,
-					  1ULL << dev->wakeup_protocol);
-	}
-	if (ret)
-		goto unlock;
-	dev_dbg(priv->dev, "IR raw %sfilter=%016llx & %016llx\n",
-		type == RC_FILTER_WAKEUP ? "wake " : "",
-		(unsigned long long)filter.data,
-		(unsigned long long)filter.mask);
-
-set_unlock:
-	/* apply raw filters */
-	switch (type) {
-	case RC_FILTER_NORMAL:
-		_img_ir_set_filter(priv, filter_ptr);
-		break;
-	case RC_FILTER_WAKEUP:
-		_img_ir_set_wake_filter(priv, filter_ptr);
-		break;
-	default:
-		ret = -EINVAL;
-	}
-
-unlock:
-	spin_unlock_irq(&priv->lock);
-	return ret;
-}
-
-static int img_ir_set_normal_filter(struct rc_dev *dev,
-				    struct rc_scancode_filter *sc_filter)
-{
-	return img_ir_set_filter(dev, RC_FILTER_NORMAL, sc_filter);
-}
-
-static int img_ir_set_wakeup_filter(struct rc_dev *dev,
-				    struct rc_scancode_filter *sc_filter)
-{
-	return img_ir_set_filter(dev, RC_FILTER_WAKEUP, sc_filter);
-}
-
-/**
- * img_ir_set_decoder() - Set the current decoder.
- * @priv:	IR private data.
- * @decoder:	Decoder to use with immediate effect.
- * @proto:	Protocol bitmap (or 0 to use decoder->type).
- */
-static void img_ir_set_decoder(struct img_ir_priv *priv,
-			       const struct img_ir_decoder *decoder,
-			       u64 proto)
-{
-	struct img_ir_priv_hw *hw = &priv->hw;
-	struct rc_dev *rdev = hw->rdev;
-	u32 ir_status, irq_en;
-	spin_lock_irq(&priv->lock);
-
-	/*
-	 * First record that the protocol is being stopped so that the end timer
-	 * isn't restarted while we're trying to stop it.
-	 */
-	hw->stopping = true;
-
-	/*
-	 * Release the lock to stop the end timer, since the end timer handler
-	 * acquires the lock and we don't want to deadlock waiting for it.
-	 */
-	spin_unlock_irq(&priv->lock);
-	del_timer_sync(&hw->end_timer);
-	del_timer_sync(&hw->suspend_timer);
-	spin_lock_irq(&priv->lock);
-
-	hw->stopping = false;
-
-	/* switch off and disable interrupts */
-	img_ir_write(priv, IMG_IR_CONTROL, 0);
-	irq_en = img_ir_read(priv, IMG_IR_IRQ_ENABLE);
-	img_ir_write(priv, IMG_IR_IRQ_ENABLE, irq_en & IMG_IR_IRQ_EDGE);
-	img_ir_write(priv, IMG_IR_IRQ_CLEAR, IMG_IR_IRQ_ALL & ~IMG_IR_IRQ_EDGE);
-
-	/* ack any data already detected */
-	ir_status = img_ir_read(priv, IMG_IR_STATUS);
-	if (ir_status & (IMG_IR_RXDVAL | IMG_IR_RXDVALD2)) {
-		ir_status &= ~(IMG_IR_RXDVAL | IMG_IR_RXDVALD2);
-		img_ir_write(priv, IMG_IR_STATUS, ir_status);
-	}
-
-	/* always read data to clear buffer if IR wakes the device */
-	img_ir_read(priv, IMG_IR_DATA_LW);
-	img_ir_read(priv, IMG_IR_DATA_UP);
-
-	/* switch back to normal mode */
-	hw->mode = IMG_IR_M_NORMAL;
-
-	/* clear the wakeup scancode filter */
-	rdev->scancode_wakeup_filter.data = 0;
-	rdev->scancode_wakeup_filter.mask = 0;
-	rdev->wakeup_protocol = RC_PROTO_UNKNOWN;
-
-	/* clear raw filters */
-	_img_ir_set_filter(priv, NULL);
-	_img_ir_set_wake_filter(priv, NULL);
-
-	/* clear the enabled protocols */
-	hw->enabled_protocols = 0;
-
-	/* switch decoder */
-	hw->decoder = decoder;
-	if (!decoder)
-		goto unlock;
-
-	/* set the enabled protocols */
-	if (!proto)
-		proto = decoder->type;
-	hw->enabled_protocols = proto;
-
-	/* write the new timings */
-	img_ir_decoder_convert(decoder, &hw->reg_timings, hw->clk_hz);
-	img_ir_write_timings(priv, &hw->reg_timings.timings, RC_FILTER_NORMAL);
-
-	/* set up and enable */
-	img_ir_write(priv, IMG_IR_CONTROL, hw->reg_timings.ctrl);
-
-
-unlock:
-	spin_unlock_irq(&priv->lock);
-}
-
-/**
- * img_ir_decoder_compatible() - Find whether a decoder will work with a device.
- * @priv:	IR private data.
- * @dec:	Decoder to check.
- *
- * Returns:	true if @dec is compatible with the device @priv refers to.
- */
-static bool img_ir_decoder_compatible(struct img_ir_priv *priv,
-				      const struct img_ir_decoder *dec)
-{
-	unsigned int ct;
-
-	/* don't accept decoders using code types which aren't supported */
-	ct = dec->control.code_type;
-	if (priv->hw.ct_quirks[ct] & IMG_IR_QUIRK_CODE_BROKEN)
-		return false;
-
-	return true;
-}
-
-/**
- * img_ir_allowed_protos() - Get allowed protocols from global decoder list.
- * @priv:	IR private data.
- *
- * Returns:	Mask of protocols supported by the device @priv refers to.
- */
-static u64 img_ir_allowed_protos(struct img_ir_priv *priv)
-{
-	u64 protos = 0;
-	struct img_ir_decoder **decp;
-
-	for (decp = img_ir_decoders; *decp; ++decp) {
-		const struct img_ir_decoder *dec = *decp;
-		if (img_ir_decoder_compatible(priv, dec))
-			protos |= dec->type;
-	}
-	return protos;
-}
-
-/* Callback for changing protocol using sysfs */
-static int img_ir_change_protocol(struct rc_dev *dev, u64 *ir_type)
-{
-	struct img_ir_priv *priv = dev->priv;
-	struct img_ir_priv_hw *hw = &priv->hw;
-	struct rc_dev *rdev = hw->rdev;
-	struct img_ir_decoder **decp;
-	u64 wakeup_protocols;
-
-	if (!*ir_type) {
-		/* disable all protocols */
-		img_ir_set_decoder(priv, NULL, 0);
-		goto success;
-	}
-	for (decp = img_ir_decoders; *decp; ++decp) {
-		const struct img_ir_decoder *dec = *decp;
-		if (!img_ir_decoder_compatible(priv, dec))
-			continue;
-		if (*ir_type & dec->type) {
-			*ir_type &= dec->type;
-			img_ir_set_decoder(priv, dec, *ir_type);
-			goto success;
-		}
-	}
-	return -EINVAL;
-
-success:
-	/*
-	 * Only allow matching wakeup protocols for now, and only if filtering
-	 * is supported.
-	 */
-	wakeup_protocols = *ir_type;
-	if (!hw->decoder || !hw->decoder->filter)
-		wakeup_protocols = 0;
-	rdev->allowed_wakeup_protocols = wakeup_protocols;
-	return 0;
-}
-
-/* Changes ir-core protocol device attribute */
-static void img_ir_set_protocol(struct img_ir_priv *priv, u64 proto)
-{
-	struct rc_dev *rdev = priv->hw.rdev;
-
-	mutex_lock(&rdev->lock);
-	rdev->enabled_protocols = proto;
-	rdev->allowed_wakeup_protocols = proto;
-	mutex_unlock(&rdev->lock);
-}
-
-/* Set up IR decoders */
-static void img_ir_init_decoders(void)
-{
-	struct img_ir_decoder **decp;
-
-	spin_lock(&img_ir_decoders_lock);
-	if (!img_ir_decoders_preprocessed) {
-		for (decp = img_ir_decoders; *decp; ++decp)
-			img_ir_decoder_preprocess(*decp);
-		img_ir_decoders_preprocessed = true;
-	}
-	spin_unlock(&img_ir_decoders_lock);
-}
-
-#ifdef CONFIG_PM_SLEEP
-/**
- * img_ir_enable_wake() - Switch to wake mode.
- * @priv:	IR private data.
- *
- * Returns:	non-zero if the IR can wake the system.
- */
-static int img_ir_enable_wake(struct img_ir_priv *priv)
-{
-	struct img_ir_priv_hw *hw = &priv->hw;
-	int ret = 0;
-
-	spin_lock_irq(&priv->lock);
-	if (hw->flags & IMG_IR_F_WAKE) {
-		/* interrupt only on a match */
-		hw->suspend_irqen = img_ir_read(priv, IMG_IR_IRQ_ENABLE);
-		img_ir_write(priv, IMG_IR_IRQ_ENABLE, IMG_IR_IRQ_DATA_MATCH);
-		img_ir_write_filter(priv, &hw->filters[RC_FILTER_WAKEUP]);
-		img_ir_write_timings(priv, &hw->reg_timings.timings,
-				     RC_FILTER_WAKEUP);
-		hw->mode = IMG_IR_M_WAKE;
-		ret = 1;
-	}
-	spin_unlock_irq(&priv->lock);
-	return ret;
-}
-
-/**
- * img_ir_disable_wake() - Switch out of wake mode.
- * @priv:	IR private data
- *
- * Returns:	1 if the hardware should be allowed to wake from a sleep state.
- *		0 otherwise.
- */
-static int img_ir_disable_wake(struct img_ir_priv *priv)
-{
-	struct img_ir_priv_hw *hw = &priv->hw;
-	int ret = 0;
-
-	spin_lock_irq(&priv->lock);
-	if (hw->flags & IMG_IR_F_WAKE) {
-		/* restore normal filtering */
-		if (hw->flags & IMG_IR_F_FILTER) {
-			img_ir_write(priv, IMG_IR_IRQ_ENABLE,
-				     (hw->suspend_irqen & IMG_IR_IRQ_EDGE) |
-				     IMG_IR_IRQ_DATA_MATCH);
-			img_ir_write_filter(priv,
-					    &hw->filters[RC_FILTER_NORMAL]);
-		} else {
-			img_ir_write(priv, IMG_IR_IRQ_ENABLE,
-				     (hw->suspend_irqen & IMG_IR_IRQ_EDGE) |
-				     IMG_IR_IRQ_DATA_VALID |
-				     IMG_IR_IRQ_DATA2_VALID);
-			img_ir_write_filter(priv, NULL);
-		}
-		img_ir_write_timings(priv, &hw->reg_timings.timings,
-				     RC_FILTER_NORMAL);
-		hw->mode = IMG_IR_M_NORMAL;
-		ret = 1;
-	}
-	spin_unlock_irq(&priv->lock);
-	return ret;
-}
-#endif /* CONFIG_PM_SLEEP */
-
-/* lock must be held */
-static void img_ir_begin_repeat(struct img_ir_priv *priv)
-{
-	struct img_ir_priv_hw *hw = &priv->hw;
-	if (hw->mode == IMG_IR_M_NORMAL) {
-		/* switch to repeat timings */
-		img_ir_write(priv, IMG_IR_CONTROL, 0);
-		hw->mode = IMG_IR_M_REPEATING;
-		img_ir_write_timings(priv, &hw->reg_timings.rtimings,
-				     RC_FILTER_NORMAL);
-		img_ir_write(priv, IMG_IR_CONTROL, hw->reg_timings.ctrl);
-	}
-}
-
-/* lock must be held */
-static void img_ir_end_repeat(struct img_ir_priv *priv)
-{
-	struct img_ir_priv_hw *hw = &priv->hw;
-	if (hw->mode == IMG_IR_M_REPEATING) {
-		/* switch to normal timings */
-		img_ir_write(priv, IMG_IR_CONTROL, 0);
-		hw->mode = IMG_IR_M_NORMAL;
-		img_ir_write_timings(priv, &hw->reg_timings.timings,
-				     RC_FILTER_NORMAL);
-		img_ir_write(priv, IMG_IR_CONTROL, hw->reg_timings.ctrl);
-	}
-}
-
-/* lock must be held */
-static void img_ir_handle_data(struct img_ir_priv *priv, u32 len, u64 raw)
-{
-	struct img_ir_priv_hw *hw = &priv->hw;
-	const struct img_ir_decoder *dec = hw->decoder;
-	int ret = IMG_IR_SCANCODE;
-	struct img_ir_scancode_req request;
-
-	request.protocol = RC_PROTO_UNKNOWN;
-	request.toggle   = 0;
-
-	if (dec->scancode)
-		ret = dec->scancode(len, raw, hw->enabled_protocols, &request);
-	else if (len >= 32)
-		request.scancode = (u32)raw;
-	else if (len < 32)
-		request.scancode = (u32)raw & ((1 << len)-1);
-	dev_dbg(priv->dev, "data (%u bits) = %#llx\n",
-		len, (unsigned long long)raw);
-	if (ret == IMG_IR_SCANCODE) {
-		dev_dbg(priv->dev, "decoded scan code %#x, toggle %u\n",
-			request.scancode, request.toggle);
-		rc_keydown(hw->rdev, request.protocol, request.scancode,
-			   request.toggle);
-		img_ir_end_repeat(priv);
-	} else if (ret == IMG_IR_REPEATCODE) {
-		if (hw->mode == IMG_IR_M_REPEATING) {
-			dev_dbg(priv->dev, "decoded repeat code\n");
-			rc_repeat(hw->rdev);
-		} else {
-			dev_dbg(priv->dev, "decoded unexpected repeat code, ignoring\n");
-		}
-	} else {
-		dev_dbg(priv->dev, "decode failed (%d)\n", ret);
-		return;
-	}
-
-
-	/* we mustn't update the end timer while trying to stop it */
-	if (dec->repeat && !hw->stopping) {
-		unsigned long interval;
-
-		img_ir_begin_repeat(priv);
-
-		/* update timer, but allowing for 1/8th tolerance */
-		interval = dec->repeat + (dec->repeat >> 3);
-		mod_timer(&hw->end_timer,
-			  jiffies + msecs_to_jiffies(interval));
-	}
-}
-
-/* timer function to end waiting for repeat. */
-static void img_ir_end_timer(struct timer_list *t)
-{
-	struct img_ir_priv *priv = from_timer(priv, t, hw.end_timer);
-
-	spin_lock_irq(&priv->lock);
-	img_ir_end_repeat(priv);
-	spin_unlock_irq(&priv->lock);
-}
-
-/*
- * Timer function to re-enable the current protocol after it had been
- * cleared when invalid interrupts were generated due to a quirk in the
- * img-ir decoder.
- */
-static void img_ir_suspend_timer(struct timer_list *t)
-{
-	struct img_ir_priv *priv = from_timer(priv, t, hw.suspend_timer);
-
-	spin_lock_irq(&priv->lock);
-	/*
-	 * Don't overwrite enabled valid/match IRQs if they have already been
-	 * changed by e.g. a filter change.
-	 */
-	if ((priv->hw.quirk_suspend_irq & IMG_IR_IRQ_EDGE) ==
-				img_ir_read(priv, IMG_IR_IRQ_ENABLE))
-		img_ir_write(priv, IMG_IR_IRQ_ENABLE,
-					priv->hw.quirk_suspend_irq);
-	/* enable */
-	img_ir_write(priv, IMG_IR_CONTROL, priv->hw.reg_timings.ctrl);
-	spin_unlock_irq(&priv->lock);
-}
-
-#ifdef CONFIG_COMMON_CLK
-static void img_ir_change_frequency(struct img_ir_priv *priv,
-				    struct clk_notifier_data *change)
-{
-	struct img_ir_priv_hw *hw = &priv->hw;
-
-	dev_dbg(priv->dev, "clk changed %lu HZ -> %lu HZ\n",
-		change->old_rate, change->new_rate);
-
-	spin_lock_irq(&priv->lock);
-	if (hw->clk_hz == change->new_rate)
-		goto unlock;
-	hw->clk_hz = change->new_rate;
-	/* refresh current timings */
-	if (hw->decoder) {
-		img_ir_decoder_convert(hw->decoder, &hw->reg_timings,
-				       hw->clk_hz);
-		switch (hw->mode) {
-		case IMG_IR_M_NORMAL:
-			img_ir_write_timings(priv, &hw->reg_timings.timings,
-					     RC_FILTER_NORMAL);
+	for (;;) {
+		mem = cx_read(MC417_RWD);
+		if ((mem & ALT_RDY) == 0)
 			break;
-		case IMG_IR_M_REPEATING:
-			img_ir_write_timings(priv, &hw->reg_timings.rtimings,
-					     RC_FILTER_NORMAL);
+		if (time_after(jiffies, timeout))
 			break;
-#ifdef CONFIG_PM_SLEEP
-		case IMG_IR_M_WAKE:
-			img_ir_write_timings(priv, &hw->reg_timings.timings,
-					     RC_FILTER_WAKEUP);
-			break;
-#endif
-		}
+		udelay(1);
 	}
-unlock:
-	spin_unlock_irq(&priv->lock);
+
+	cx_set(MC417_RWD, ALT_RD | ALT_WR | ALT_CS);
+	if (read)
+		return mem & ALT_DATA;
+
+	return 0;
+};
+
+static int dib7070_tuner_reset(struct dvb_frontend *fe, int onoff)
+{
+	struct dib7000p_ops *dib7000p_ops = fe->sec_priv;
+
+	return dib7000p_ops->set_gpio(fe, 8, 0, !onoff);
 }
 
-static int img_ir_clk_notify(struct notifier_block *self, unsigned long action,
-			     void *data)
+static int dib7070_tuner_sleep(struct dvb_frontend *fe, int onoff)
 {
-	struct img_ir_priv *priv = container_of(self, struct img_ir_priv,
-						hw.clk_nb);
-	switch (action) {
-	case POST_RATE_CHANGE:
-		img_ir_change_frequency(priv, data);
-		break;
-	default:
-		break;
-	}
-	return NOTIFY_OK;
-}
-#endif /* CONFIG_COMMON_CLK */
-
-/* called with priv->lock held */
-void img_ir_isr_hw(struct img_ir_priv *priv, u32 irq_status)
-{
-	struct img_ir_priv_hw *hw = &priv->hw;
-	u32 ir_status, len, lw, up;
-	unsigned int ct;
-
-	/* use the current decoder */
-	if (!hw->decoder)
-		return;
-
-	ct = hw->decoder->control.code_type;
-
-	ir_status = img_ir_read(priv, IMG_IR_STATUS);
-	if (!(ir_status & (IMG_IR_RXDVAL | IMG_IR_RXDVALD2))) {
-		if (!(priv->hw.ct_quirks[ct] & IMG_IR_QUIRK_CODE_IRQ) ||
-				hw->stopping)
-			return;
-		/*
-		 * The below functionality is added as a work around to stop
-		 * multiple Interrupts generated when an incomplete IR code is
-		 * received by the decoder.
-		 * The decoder generates rapid interrupts without actually
-		 * having received any new data. After a single interrupt it's
-		 * expected to clear up, but instead multiple interrupts are
-		 * rapidly generated. only way to get out of this loop is to
-		 * reset the control register after a short delay.
-		 */
-		img_ir_write(priv, IMG_IR_CONTROL, 0);
-		hw->quirk_suspend_irq = img_ir_read(priv, IMG_IR_IRQ_ENABLE);
-		img_ir_write(priv, IMG_IR_IRQ_ENABLE,
-			     hw->quirk_suspend_irq & IMG_IR_IRQ_EDGE);
-
-		/* Timer activated to re-enable the protocol. */
-		mod_timer(&hw->suspend_timer,
-			  jiffies + msecs_to_jiffies(5));
-		return;
-	}
-	ir_status &= ~(IMG_IR_RXDVAL | IMG_IR_RXDVALD2);
-	img_ir_write(priv, IMG_IR_STATUS, ir_status);
-
-	len = (ir_status & IMG_IR_RXDLEN) >> IMG_IR_RXDLEN_SHIFT;
-	/* some versions report wrong length for certain code types */
-	if (hw->ct_quirks[ct] & IMG_IR_QUIRK_CODE_LEN_INCR)
-		++len;
-
-	lw = img_ir_read(priv, IMG_IR_DATA_LW);
-	up = img_ir_read(priv, IMG_IR_DATA_UP);
-	img_ir_handle_data(priv, len, (u64)up << 32 | lw);
+	return 0;
 }
 
-void img_ir_setup_hw(struct img_ir_priv *priv)
-{
-	struct img_ir_decoder **decp;
+static struct dib0070_config dib7070p_dib0070_config = {
+	.i2c_address = DEFAULT_DIB0070_I2C_ADDRESS,
+	.reset = dib7070_tuner_reset,
+	.sleep = dib7070_tuner_sleep,
+	.clock_khz = 12000,
+	.freq_offset_khz_vhf = 550,
+	/* .flip_chip = 1, */
+};
 
-	if (!priv->hw.rdev)
-		return;
-
-	/* Use the first available decoder (or disable stuff if NULL) */
-	for (decp = img_ir_decoders; *decp; ++decp) {
-		const struct img_ir_decoder *dec = *decp;
-		if (img_ir_decoder_compatible(priv, dec)) {
-			img_ir_set_protocol(priv, dec->type);
-			img_ir_set_decoder(priv, dec, 0);
-			return;
-		}
-	}
-	img_ir_set_decoder(priv, NULL, 0);
-}
-
-/**
- * img_ir_probe_hw_caps() - Probe capabilities of the hardware.
- * @priv:	IR private data.
- */
-static void img_ir_probe_hw_caps(struct img_ir_priv *priv)
-{
-	struct img_ir_priv_hw *hw = &priv->hw;
-	/*
-	 * When a version of the block becomes available without these quirks,
-	 * they'll have to depend on the core revision.
-	 */
-	hw->ct_quirks[IMG_IR_CODETYPE_PULSELEN]
-		|= IMG_IR_QUIRK_CODE_LEN_INCR;
-	hw->ct_quirks[IMG_IR_CODETYPE_BIPHASE]
-		|= IMG_IR_QUIRK_CODE_IRQ;
-	hw->ct_quirks[IMG_IR_CODETYPE_2BITPULSEPOS]
-		|= IMG_IR_QUIRK_CODE_BROKEN;
-}
-
-int img_ir_probe_hw(struct img_ir_priv *priv)
-{
-	struct img_ir_priv_hw *hw = &priv->hw;
-	struct rc_dev *rdev;
-	int error;
-
-	/* Ensure hardware decoders have been preprocessed */
-	img_ir_init_decoders();
-
-	/* Probe hardware capabilities */
-	img_ir_probe_hw_caps(priv);
-
-	/* Set up the end timer */
-	timer_setup(&hw->end_timer, img_ir_end_timer, 0);
-	timer_setup(&hw->suspend_timer, img_ir_suspend_timer, 0);
-
-	/* Register a clock notifier */
-	if (!IS_ERR(priv->clk)) {
-		hw->clk_hz = clk_get_rate(priv->clk);
-#ifdef CONFIG_COMMON_CLK
-		hw->clk_nb.notifier_call = img_ir_clk_notify;
-		error = clk_notifier_register(priv->clk, &hw->clk_nb);
-		if (error)
-			dev_warn(priv->dev,
-				 "failed to register clock notifier\n");
-#endif
-	} else {
-		hw->clk_hz = 32768;
-	}
-
-	/* Allocate hardware decoder */
-	hw->rdev = rdev = rc_allocate_device(RC_DRIVER_SCANCODE);
-	if (!rdev) {
-		dev_err(priv->dev, "cannot allocate input device\n");
-		error = -ENOMEM;
-		goto err_alloc_rc;
-	}
-	rdev->priv = priv;
-	rdev->map_name = RC_MAP_EMPTY;
-	rdev->allowed_protocols = img_ir_allowed_protos(priv);
-	rdev->device_name = "IMG Infrared Decoder";
-	rdev->s_filter = img_ir_set_normal_filter;
-	rdev->s_wakeup_filter = img_ir_set_wakeup_filter;
-
-	/* Register hardware decoder */
-	error = rc_register_device(rdev);
-	if (error) {
-		dev_err(priv->dev, "failed to register IR input device\n");
-		goto err_register_rc;
-	}
+/* DIB7070 generic */
+static struct dibx000_agc_config dib7070_agc_config = {
+	.band_caps = BAND_UHF | BAND_VHF | BAND_LBAND | BAND_SBAND,
 
 	/*
-	 * Set this after rc_register_device as no protocols have been
-	 * registered yet.
+	 * P_agc_use_sd_mod1=0, P_agc_use_sd_mod2=0, P_agc_freq_pwm_div=5,
+	 * P_agc_inv_pwm1=0, P_agc_inv_pwm2=0, P_agc_inh_dc_rv_est=0,
+	 * P_agc_time_est=3, P_agc_freeze=0, P_agc_nb_est=5, P_agc_write=0
 	 */
-	rdev->change_protocol = img_ir_change_protocol;
+	.setup = (0 << 15) | (0 << 14) | (5 << 11) | (0 << 10) | (0 << 9) |
+		 (0 << 8) | (3 << 5) | (0 << 4) | (5 << 1) | (0 << 0),
+	.inv_gain = 600,
+	.time_stabiliz = 10,
+	.alpha_level = 0,
+	.thlock = 118,
+	.wbd_inv = 0,
+	.wbd_ref = 3530,
+	.wbd_sel = 1,
+	.wbd_alpha = 5,
+	.agc1_max = 65535,
+	.agc1_min = 0,
+	.agc2_max = 65535,
+	.agc2_min = 0,
+	.agc1_pt1 = 0,
+	.agc1_pt2 = 40,
+	.agc1_pt3 = 183,
+	.agc1_slope1 = 206,
+	.agc1_slope2 = 255,
+	.agc2_pt1 = 72,
+	.agc2_pt2 = 152,
+	.agc2_slope1 = 88,
+	.agc2_slope2 = 90,
+	.alpha_mant = 17,
+	.alpha_exp = 27,
+	.beta_mant = 23,
+	.beta_exp = 51,
+	.perform_agc_softsplit = 0,
+};
 
-	device_init_wakeup(priv->dev, 1);
+static struct dibx000_bandwidth_config dib7070_bw_config_12_mhz = {
+	.internal = 60000,
+	.sampling = 15000,
+	.pll_prediv = 1,
+	.pll_ratio = 20,
+	.pll_range = 3,
+	.pll_reset = 1,
+	.pll_bypass = 0,
+	.enable_refdiv = 0,
+	.bypclk_div = 0,
+	.IO_CLK_en_core = 1,
+	.ADClkSrc = 1,
+	.modulo = 2,
+	/* refsel, sel, freq_15k */
+	.sad_cfg = (3 << 14) | (1 << 12) | (524 << 0),
+	.ifreq = (0 << 25) | 0,
+	.timf = 20452225,
+	.xtal_hz = 12000000,
+};
 
-	return 0;
+static struct dib7000p_config dib7070p_dib7000p_config = {
+	/* .output_mode = OUTMODE_MPEG2_FIFO, */
+	.output_mode = OUTMODE_MPEG2_SERIAL,
+	/* .output_mode = OUTMODE_MPEG2_PAR_GATED_CLK, */
+	.output_mpeg2_in_188_bytes = 1,
 
-err_register_rc:
-	img_ir_set_decoder(priv, NULL, 0);
-	hw->rdev = NULL;
-	rc_free_device(rdev);
-err_alloc_rc:
-#ifdef CONFIG_COMMON_CLK
-	if (!IS_ERR(priv->clk))
-		clk_notifier_unregister(priv->clk, &hw->clk_nb);
-#endif
-	return error;
-}
+	.agc_config_count = 1,
+	.agc = &dib7070_agc_config,
+	.bw  = &dib7070_bw_config_12_mhz,
+	.tuner_is_baseband = 1,
+	.spur_protect = 1,
 
-void img_ir_remove_hw(struct img_ir_priv *priv)
+	.gpio_dir = 0xfcef, /* DIB7000P_GPIO_DEFAULT_DIRECTIONS, */
+	.gpio_val = 0x0110, /* DIB7000P_GPIO_DEFAULT_VALUES, */
+	.gpio_pwm_pos = DIB7000P_GPIO_DEFAULT_PWM_POS,
+
+	.hostbus_diversity = 1,
+};
+
+static int dvb_register_ci_mac(struct cx23885_tsport *port)
 {
-	struct img_ir_priv_hw *hw = &priv->hw;
-	struct rc_dev *rdev = hw->rdev;
-	if (!rdev)
-		return;
-	img_ir_set_decoder(priv, NULL, 0);
-	hw->rdev = NULL;
-	rc_unregister_device(rdev);
-#ifdef CONFIG_COMMON_CLK
-	if (!IS_ERR(priv->clk))
-		clk_notifier_unregister(priv->clk, &hw->clk_nb);
-#endif
-}
+	struct cx23885_dev *dev = port->dev;
+	struct i2c_client *client_ci = NULL;
+	struct vb2_dvb_frontend *fe0;
 
-#ifdef CONFIG_PM_SLEEP
-int img_ir_suspend(struct device *dev)
-{
-	struct img_ir_priv *priv = dev_get_drvdata(dev);
+	fe0 = vb2_dvb_get_frontend(&port->frontends, 1);
+	if (!fe0)
+		return -EINVAL;
 
-	if (device_may_wakeup(dev) && img_ir_enable_wake(priv))
-		enable_irq_wake(priv->irq);
+	switch (dev->board) {
+	case CX23885_BOARD_NETUP_DUAL_DVBS2_CI: {
+		static struct netup_card_info cinfo;
+
+		netup_get_card_info(&dev->i2c_bus[0].i2c_adap, &cinfo);
+		memcpy(port->frontends.adapter.proposed_mac,
+				cinfo.port[port->nr - 1].mac, 6);
+		pr_info("NetUP Dual DVB-S2 CI card port%d MAC=%pM\n",
+			port->nr, port->frontends.adapter.proposed_mac);
+
+		netup_ci_init(port);
+		return 0;
+		}
+	case CX23885_BOARD_NETUP_DUAL_DVB_T_C_CI_RF: {
+		struct altera_ci_config netup_ci_cfg = {
+			.dev = dev,/* magic number to identify*/
+			.adapter = &port->frontends.adapter,/* for CI */
+			.demux = &fe0->dvb.demux,/* for hw pid filter */
+			.fpga_rw = netup_altera_fpga_rw,
+		};
+
+		altera_ci_init(&netup_ci_cfg, port->nr);
+		return 0;
+		}
+	case CX23885_BOARD_TEVII_S470: {
+		u8 eeprom[256]; /* 24C02 i2c eeprom */
+
+		if (port->nr != 1)
+			return 0;
+
+		/* Read entire EEPROM */
+		dev->i2c_bus[0].i2c_client.addr = 0xa0 >> 1;
+		tveeprom_read(&dev->i2c_bus[0].i2c_client, eeprom, sizeof(eeprom));
+		pr_info("TeVii S470 MAC= %pM\n", eeprom + 0xa0);
+		memcpy(port->frontends.adapter.proposed_mac, eeprom + 0xa0, 6);
+		return 0;
+		}
+	case CX23885_BOARD_DVBSKY_T9580:
+	case CX23885_BOARD_DVBSKY_S950:
+	case CX23885_BOARD_DVBSKY_S952:
+	case CX23885_BOARD_DVBSKY_T982: {
+		u8 eeprom[256]; /* 24C02 i2c eeprom */
+
+		if (port->nr > 2)
+			return 0;
+
+		/* Read entire EEPROM */
+		dev->i2c_bus[0].i2c_client.addr = 0xa0 >> 1;
+		tveeprom_read(&dev->i2c_bus[0].i2c_client, eeprom,
+				sizeof(eeprom));
+		pr_info("%s port %d MAC address: %pM\n",
+			cx23885_boards[dev->board].name, port->nr,
+			eeprom + 0xc0 + (port->nr-1) * 8);
+		memcpy(port->frontends.adapter.proposed_mac, eeprom + 0xc0 +
+			(port->nr-1) * 8, 6);
+		return 0;
+		}
+	case CX23885_BOARD_DVBSKY_S950C:
+	case CX23885_BOARD_DVBSKY_T980C:
+	case CX23885_BOARD_TT_CT2_4500_CI: {
+		u8 eeprom[256]; /* 24C02 i2c eeprom */
+		struct sp2_config sp2_config;
+		struct i2c_board_info info;
+		struct cx23885_i2c *i2c_bus = &dev->i2c_bus[0];
+
+		/* attach CI */
+		memset(&sp2_config, 0, sizeof(sp2_config));
+		sp2_config.dvb_adap = &port->frontends.adapter;
+		sp2_config.priv = port;
+		sp2_config.ci_control = cx23885_sp2_ci_ctrl;
+		memset(&info, 0, sizeof(struct i2c_board_info));
+		strscpy(info.type, "sp2", I2C_NAME_SIZE);
+		info.addr = 0x40;
+		info.platform_data = &sp2_config;
+		request_module(info.type);
+		client_ci = i2c_new_client_device(&i2c_bus->i2c_adap, &info);
+		if (!i2c_client_has_driver(client_ci))
+			return -ENODEV;
+		if (!try_module_get(client_ci->dev.driver->owner)) {
+			i2c_unregister_device(client_ci);
+			return -ENODEV;
+		}
+		port->i2c_client_ci = client_ci;
+
+		if (port->nr != 1)
+			return 0;
+
+		/* Read entire EEPROM */
+		dev->i2c_bus[0].i2c_client.addr = 0xa0 >> 1;
+		tveeprom_read(&dev->i2c_bus[0].i2c_client, eeprom,
+				sizeof(eeprom));
+		pr_info("%s MAC address: %pM\n",
+			cx23885_boards[dev->board].name, eeprom + 0xc0);
+		memcpy(port->frontends.adapter.proposed_mac, eeprom + 0xc0, 6);
+		return 0;
+		}
+	}
 	return 0;
 }
 
-int img_ir_resume(struct device *dev)
+static int dvb_register(struct cx23885_tsport *port)
 {
-	struct img_ir_priv *priv = dev_get_drvdata(dev);
+	struct dib7000p_ops dib7000p_ops;
+	struct cx23885_dev *dev = port->dev;
+	struct cx23885_i2c *i2c_bus = NULL, *i2c_bus2 = NULL;
+	struct vb2_dvb_frontend *fe0, *fe1 = NULL;
+	struct si2168_config si2168_config;
+	struct si2165_platform_data si2165_pdata;
+	struct si2157_config si2157_config;
+	struct ts2020_config ts2020_config;
+	struct m88ds3103_platform_data m88ds3103_pdata;
+	struct m88rs6000t_config m88rs6000t_config = {};
+	struct a8293_platform_data a8293_pdata = {};
+	struct i2c_board_info info;
+	struct i2c_adapter *adapter;
+	struct i2c_client *client_demod = NULL, *client_tuner = NULL;
+	struct i2c_client *client_sec = NULL;
+	int (*p_set_voltage)(struct dvb_frontend *fe,
+			     enum fe_sec_voltage voltage) = NULL;
+	int mfe_shared = 0; /* bus not shared by default */
+	int ret;
 
-	if (device_may_wakeup(dev) && img_ir_disable_wake(priv))
-		disable_irq_wake(priv->irq);
-	return 0;
-}
-#endif	/* CONFIG_PM_SLEEP */
+	/* Get the first frontend */
+	fe0 = vb2_dvb_get_frontend(&port->frontends, 1);
+	if (!fe0)
+		return -EINVAL;
+
+	/* init struct vb2_dvb */
+	fe0->dvb.name = dev->name;
+
+	/* multi-frontend gate control is undefined or defaults to fe0 */
+	port->frontends.gate = 0;
+
+	/* Sets the gate control callback to be used by i2c command calls */
+	port->gate_ctrl = cx23885_dvb_gate_ctrl;
+
+	/* init frontend */
+	switch (dev->board) {
+	case CX23885_BOARD_HAUPPAUGE_HVR1250:
+		i2c_bus = &dev->i2c_bus[0];
+		fe0->dvb.frontend = dvb_attach(s5h1409_attach,
+						&hauppauge_generic_config,
+						&i2c_bus->i2c_adap);
+		if (fe0->dvb.frontend == NULL)
+			break;
+		dvb_attach(mt2131_attach, fe0->dvb.frontend,
+			   &i2c_bus->i2c_adap,
+			   &hauppauge_generic_tunerconfig, 0);
+		break;
+	case CX23885_BOARD_HAUPPAUGE_HVR1270:
+	case CX23885_BOARD_HAUPPAUGE_HVR1275:
+		i2c_bus = &dev->i2c_bus[0];
+		fe0->dvb.frontend = dvb_attach(lgdt3305_attach,
+					       &hauppauge_lgdt3305_config,
+					       &i2c_bus->i2c_adap);
+		if (fe0->dvb.frontend == NULL)
+			break;
+		dvb_attach(tda18271_attach, fe0->dvb.frontend,
+			   0x60, &dev->i2c_bus[1].i2c_adap,
+			   &hauppauge_hvr127x_config);
+		if (dev->board == CX23885_BOARD_HAUPPAUGE_HVR1275)
+			cx23885_set_frontend_hook(port, fe0->dvb.frontend);
+		break;
+	case CX23885_BOARD_HAUPPAUGE_HVR1255:
+	case CX23885_BOARD_HAUPPAUGE_HVR1255_22111:
+		i2c_bus = &dev->i2c_bus[0];
+		fe0->dvb.frontend = dvb_attach(s5h1411_attach,
+					       &hcw_s5h1411_config,
+					       &i2c_bus->i2c_adap);
+		if (fe0->dvb.frontend == NULL)
+			break;
+
+		dvb_attach(tda18271_attach, fe0->dvb.frontend,
+			   0x60, &dev->i2c_bus[1].i2c_adap,
+			   &hauppauge_tda18271_config);
+
+		tda18271_attach(&dev->ts1.analog_fe,
+			0x60, &dev->i2c_bus[1].i2c_adap,
+			&hauppauge_tda18271_config);
+
+		break;
+	case CX23885_BOARD_HAUPPAUGE_HVR1800:
+		i2c_bus = &dev->i2c_bus[0];
+		switch (alt_tuner) {
+		case 1:
+			fe0->dvb.frontend =
+				dvb_attach(s5h1409_attach,
+					   &hauppauge_ezqam_config,
+					   &i2c_bus->i2c_adap);
+			if (fe0->dvb.frontend == NULL)
+				break;
+
+			dvb_attach(tda829x_attach, fe0->dvb.frontend,
+				   &dev->i2c_bus[1].i2c_adap, 0x42,
+				   &tda829x_no_probe);
+			dvb_attach(tda18271_attach, fe0->dvb.frontend,
+				   0x60, &dev->i2c_bus[1].i2c_adap,
+				   &hauppauge_tda18271_config);
+			break;
+		case 0:
+		default:
+			fe0->dvb.frontend =
+				dvb_attach(s5h1409_attach,
+					   &hauppauge_generic_config,
+					   &i2c_bus->i2c_adap);
+			if (fe0->dvb.frontend == NULL)
+				break;
+			dvb_attach(mt2131_attach, fe0->dvb.frontend,
+				   &i2c_bus->i2c_adap,
+				   &hauppauge_generic_tunerconfig, 0);
+		}
+		break;
+	case CX23885_BOARD_HAUPPAUGE_HVR1800lp:
+		i2c_bus = &dev->i2c_bus[0];
+		fe0->dvb.frontend = dvb_attach(s5h1409_attach,
+						&hauppauge_hvr1800lp_config,
+						&i2c_bus->i2c_adap);
+		if (fe0->dvb.frontend == NULL)
+			break;
+		dvb_attach(mt2131_attach, fe0->dvb.frontend,
+			   &i2c_bus->i2c_adap,
+			   &hauppauge_generic_tunerconfig, 0);
+		break;
+	case CX23885_BOARD_DVICO_FUSIONHDTV_5_EXP:
+		i2c_bus = &dev->i2c_bus[0];
+		fe0->dvb.frontend = dvb_attach(lgdt330x_attach,
+					       &fusionhdtv_5_express,
+					       0x0e,
+					       &i2c_bus->i2c_adap);
+		if (fe0->dvb.frontend == NULL)
+			break;
+		dvb_attach(simple_tuner_attach, fe0->dvb.frontend,
+			   &i2c_bus->i2c_adap, 0x61,
+			   TUNER_LG_TDVS_H06XF);
+		break;
+	case CX23885_BOARD_HAUPPAUGE_HVR1500Q:
+		i2c_bus = &dev->i2c_bus[1];
+		fe0->dvb.frontend = dvb_attach(s5h1409_attach,
+						&hauppauge_hvr1500q_config,
+						&dev->i2c_bus[0].i2c_adap);
+		if (fe0->dvb.frontend == NULL)
+			break;
+		dvb_attach(xc5000_attach, fe0->dvb.frontend,
+			   &i2c_bus->i2c_adap,
+			   &hauppauge_hvr1500q_tunerconfig);
+		break;
+	case CX23885_BOARD_HAUPPAUGE_HVR1500:
+		i2c_bus = &dev->i2c_bus[1];
+		fe0->dvb.frontend = dvb_attach(s5h1409_attach,
+						&hauppauge_hvr1500_config,
+						&dev->i2c_bus[0].i2c_adap);
+		if (fe0->dvb.frontend != NULL) {
+			struct dvb_frontend *fe;
+			struct xc2028_config cfg = {
+				.i2c_adap  = &i2c_bus->i2c_adap,
+				.i2c_addr  = 0x61,
+			};
+			static struct xc2028_ctrl ctl = {
+				.fname       = XC2028_DEFAULT_FIRMWARE,
+				.max_len     = 64,
+				.demod       = XC3028_FE_OREN538,
+			};
+
+			fe = dvb_attach(xc2028_attach,
+					fe0->dvb.frontend, &cfg);
+			if (fe != NULL && fe->ops.tuner_ops.set_config != NULL)
+				fe->ops.tuner_ops.set_config(fe, &ctl);
+		}
+		break;
+	case CX23885_BOARD_HAUPPAUGE_HVR1200:
+	case CX23885_BOARD_HAUPPAUGE_HVR1700:
+		i2c_bus = &dev->i2c_bus[0];
+		fe0->dvb.frontend = dvb_attach(tda10048_attach,
+			&hauppauge_hvr1200_config,
+			&i2c_bus->i2c_adap);
+		if (fe0->dvb.frontend == NULL)
+			break;
+		dvb_attach(tda829x_attach, fe0->dvb.frontend,
+			   &dev->i2c_bus[1].i2c_adap, 0x42,
+			   &tda829x_no_probe);
+		dvb_attach(tda18271_attach, fe0->dvb.frontend,
+			   0x60, &dev->i2c_bus[1].i2c_adap,
+			   &hauppauge_hvr1200_tuner_config);
+		break;
+	case CX23885_BOARD_HAUPPAUGE_HVR1210:
+		i2c_bus = &dev->i2c_bus[0];
+		fe0->dvb.frontend = dvb_attach(tda10048_attach,
+			&hauppauge_hvr1210_config,
+			&i2c_bus->i2c_adap);
+		if (fe0->dvb.frontend != NULL) {
+			dvb_attach(tda18271_attach, fe0->dvb.frontend,
+				0x60, &dev->i2c_bus[1].i2c_adap,
+				&hauppauge_hvr1210_tuner_config);
+		}
+		break;
+	case CX23885_BOARD_HAUPPAUGE_HVR1400:
+		i2c_bus = &dev->i2c_bus[0];
+
+		if (!dvb_attach(dib7000p_attach, &dib7000p_ops))
+			return -ENODEV;
+
+		fe0->dvb.frontend = dib7000p_ops.init(&i2c_bus->i2c_adap,
+			0x12, &hauppauge_hvr1400_dib7000_config);
+		if (fe0->dvb.frontend != NULL) {
+			struct dvb_frontend *fe;
+			struct xc2028_config cfg = {
+				.i2c_adap  = &dev->i2c_bus[1].i2c_adap,
+				.i2c_addr  = 0x64,
+			};
+			static struct xc2028_ctrl ctl = {
+				.fname   = XC3028L_DEFAULT_FIRMWARE,
+				.max_len = 64,
+				.demod   = XC3028_FE_DIBCOM52,
+				/* This is true for all demods with
+					v36 firmware? */
+				.type    = XC2028_D2633,
+			};
+
+			fe = dvb_attach(xc2028_attach,
+					fe0->dvb.frontend, &cfg);
+			if (fe != NULL && fe->ops.tuner_ops.set_config != NULL)
+				fe->ops.tuner_ops.set_config(fe, &ctl);
+		}
+		break;
+	case CX23885_BOARD_DVICO_FUSIONHDTV_7_DUAL_EXP:
+		i2c_bus = &dev->i2c_bus[port->nr - 1];
+
+		fe0->dvb.frontend = dvb_attach(s5h1409_attach,
+						&dvico_s5h1409_config,
+						&i2c_bus->i2c_adap);
+		if (fe0->dvb.frontend == NULL)
+			fe0->dvb.frontend = dvb_attach(s5h1411_attach,
+							&dvico_s5h1411_config,
+							&i2c_bus->i2c_adap);
+		if (fe0->dvb.frontend != NULL)
+			dvb_attach(xc5000_attach, fe0->dvb.frontend,
+				   &i2c_bus->i2c_adap,
+				   &dvico_xc5000_tunerconfig);
+		break;
+	case CX23885_BOARD_DVICO_FUSIONHDTV_DVB_T_DUAL_EXP: {
+		i2c_bus = &dev->i2c_bus[port->nr - 1];
+
+		fe0->dvb.frontend = dvb_attach(zl10353_attach,
+					       &dvico_fusionhdtv_xc3028,
+					       &i2c_bus->i2c_adap);
+		if (fe0->dvb.frontend != NULL) {
+			struct dvb_frontend      *fe;
+			struct xc2028_config	  cfg = {
+				.i2c_adap  = &i2c_bus->i2c_adap,
+				.i2c_addr  = 0x61,
+			};
+			static struct xc2028_ctrl ctl = {
+				.fname       = XC2028_DEFAULT_FIRMWARE,
+				.max_len     = 64,
+				.demod       = XC3028_FE_ZARLINK456,
+			};
+
+			fe = dvb_attach(xc2028_attach, fe0->dvb.frontend,
+					&cfg);
+			if (fe != NULL && fe->ops.tuner_ops.set_config != NULL)
+				fe->ops.tuner_ops.set_config(fe, &ctl);
+		}
+		break;
+	}
+	case CX23885_BOARD_DVICO_FUSIONHDTV_DVB_T_DUAL_EXP2: {
+		i2c_bus = &dev->i2c_bus[port->nr - 1];
+		/* cxusb_ctrl_msg(adap->dev, CMD_DIGITAL, NULL, 0, NULL, 0); */
+		/* cxusb_bluebird_gpio_pulse(adap->dev, 0x02, 1); */
+
+		if (!dvb_attach(dib7000p_attach, &dib7000p_ops))
+			return -ENODEV;
+
+		if (dib7000p_ops.i2c_enumeration(&i2c_bus->i2c_adap, 1, 0x12, &dib7070p_dib7000p_config) < 0) {
+			pr_warn("Unable to enumerate dib7000p\n");
+			return -ENODEV;
+		}
+		fe0->dvb.frontend = dib7000p_ops.init(&i2c_bus->i2c_adap, 0x80, &dib7070p_dib7000p_config);
+		if (fe0->dvb.frontend != NULL) {
+			struct i2c_adapter *tun_i2c;
+
+			fe0->dvb.frontend->sec_priv = kmemdup(&dib7000p_ops, sizeof(dib7000p_ops), GFP_KERNEL);
+			if (!fe0->dvb.frontend->sec_priv)
+				return -ENOMEM;
+			tun_i2c = dib7000p_ops.get_i2c_master(fe0->dvb.frontend, DIBX000_I2C_INTERFACE_TUNER, 1);
+			if (!dvb_attach(dib0070_attach, fe0->dvb.frontend, tun_i2c, &dib7070p_dib0070_config))
+				return -ENODEV;
+		}
+		break;
+	}
+	case CX23885_BOARD_LEADTEK_WINFAST_PXDVR3200_H:
+	case CX23885_BOARD_COMPRO_VIDEOMATE_E650F:
+	case CX23885_BOARD_COMPRO_VIDEOMATE_E800:
+		i2c_bus = &dev->i2c_bus[0];
+
+		fe0->dvb.frontend = dvb_attach(zl10353_attach,
+			&dvico_fusionhdtv_xc3028,
+			&i2c_bus->i2c_adap);
+		if (fe0->dvb.frontend != NULL) {
+			struct dvb_frontend      *fe;
+			struct xc2028_config	  cfg = {
+				.i2c_adap  = &dev->i2c_bus[1].i2c_adap,
+				.i2c_addr  = 0x61,
+			};
+			static struct xc2028_ctrl ctl = {
+				.fname       = XC2028_DEFAULT_FIRMWARE,
+				.max_len     = 64,
+				.demod       = XC3028_FE_ZARLINK456,
+			};
+
+			fe = dvb_attach(xc2028_attach, fe0->dvb.frontend,
+				&cfg);
+			if (fe != NULL && fe->ops.tuner_ops.set_config != NULL)
+				fe->ops.tuner_ops.set_config(fe, &ctl);
+		}
+		break;
+	case CX23885_BOARD_LEADTEK_WINFAST_PXDVR3200_H_XC4000:
+		i2c_bus = &dev->i2c_bus[0];
+
+		fe0->dvb.frontend = dvb_attach(zl10353_attach,
+					       &dvico_fusionhdtv_xc3028,
+					       &i2c_bus->i2c_adap);
+		if (fe0->dvb.frontend != NULL) {
+			struct dvb_frontend	*fe;
+			struct xc4000_config	cfg = {
+				.i2c_address	  = 0x61,
+				.default_pm	  = 0,
+				.dvb_amplitude	  = 134,
+				.set_smoothedcvbs = 1,
+				.if_khz		  = 4560
+			};
+
+			fe = dvb_attach(xc4000_attach, fe0->dvb.frontend,
+					&dev->i2c_bus[1].i2c_adap, &cfg);
+			if (!fe) {
+				pr_err("%s/2: xc4000 attach failed\n",
+				       dev->name);
+				goto frontend_detach;
+			}
+		}
+		break;
+	case CX23885_BOARD_TBS_6920:
+		i2c_bus = &dev->i2c_bus[1];
+
+		fe0->dvb.frontend = dvb_attach(cx24116_attach,
+					&tbs_cx24116_config,
+					&i2c_bus->i2c_adap);
+		if (fe0->dvb.frontend != NULL)
+			fe0->dvb.frontend->ops.set_voltage = f300_set_voltage;
+
+		break;
+	case CX23885_BOARD_TBS_6980:
+	case CX23885_BOARD_TBS_6981:
+		i2c_bus = &dev->i2c_bus[1];
+
+		switch (port->nr) {
+		/* PORT B */
+		case 1:
+			fe0->dvb.frontend = dvb_attach(cx24117_attach,
+					&tbs_cx24117_config,
+					&i2c_bus->i2c_adap);
+			break;
+		/* PORT C */
+		case 2:
+			fe0->dvb.frontend = dvb_attach(cx24117_attach,
+					&tbs_cx24117_config,
+					&i2c_bus->i2c_adap);
+			break;
+		}
+		break;
+	case CX23885_BOARD_TEVII_S470:
+		i2c_bus = &dev->i2c_bus[1];
+
+		fe0->dvb.frontend = dvb_attach(ds3000_attach,
+					&tevii_ds3000_config,
+					&i2c_bus->i2c_adap);
+		if (fe0->dvb.frontend != NULL) {
+			dvb_attach(ts2020_attach, fe0->dvb.frontend,
+				&tevii_ts2020_config, &i2c_bus->i2c_adap);
+			fe0->dvb.frontend->ops.set_voltage = f300_set_voltage;
+		}
+
+		break;
+	case CX23885_BOARD_DVBWORLD_2005:
+		i2c_bus = &dev->i2c_bus[1];
+
+		fe0->dvb.frontend = dvb_attach(cx24116_attach,
+			&dvbworld_cx24116_config,
+			&i2c_bus->i2c_adap);
+		break;
+	case CX23885_BOARD_NETUP_DUAL_DVBS2_CI:
+		i2c_bus = &dev->i2c_bus[0];
+		switch (port->nr) {
+		/* port B */
+		case 1:
+			fe0->dvb.frontend = dvb_attach(stv0900_attach,
+							&netup_stv0900_config,
+							&i2c_bus->i2c_adap, 0);
+			if (fe0->dvb.frontend != NULL) {
+				if (dvb_attach(stv6110_attach,
+						fe0->dvb.frontend,
+						&netup_stv6110_tunerconfig_a,
+						&i2c_bus->i2c_adap)) {
+					if (!dvb_attach(lnbh24_attach,
+							fe0->dvb.frontend,
+							&i2c_bus->i2c_adap,
+							LNBH24_PCL | LNBH24_TTX,
+							LNBH24_TEN, 0x09))
+						pr_err("No LNBH24 found!\n");
+
+				}
+			}
+			break;
+		/* port C */
+		case 2:
+			fe0->dvb.frontend = dvb_attach(stv0900_attach,
+							&netup_stv0900_config,
+							&i2c_bus->i2c_adap, 1);
+			if (fe0->dvb.frontend != NULL) {
+				if (dvb_attach(stv6110_attach,
+						fe0->dvb.frontend,
+						&netup_stv6110_tunerconfig_b,
+						&i2c_bus->i2c_adap)) {
+					if (!dvb_attach(lnbh24_attach,
+							fe0->dvb.frontend,
+							&i2c_bus->i2c_adap,
+							LNBH24_PCL | LNBH24_TTX,
+							LNBH24_TEN, 0x0a))
+						pr_err("No LNBH24 found!\n");
+
+				}
+			}
+			break;
+		}
+		break;
+	case CX23885_BOARD_MYGICA_X8506:
+		i2c_bus = &dev->i2c_bus[0];
+		i2c_bus2 = &dev->i2c_bus[1];
+		fe0->dvb.frontend = dvb_attach(lgs8gxx_attach,
+			&mygica_x8506_lgs8gl5_config,
+			&i2c_bus->i2c_adap);
+		if (fe0->dvb.frontend == NULL)
+			break;
+		dvb_attach(xc5000_attach, fe0->dvb.frontend,
+			   &i2c_bus2->i2c_adap, &mygica_x8506_xc5000_config);
+		cx23885_set_frontend_hook(port, fe0->dvb.frontend);
+		break;
+	case CX23885_BOARD_MYGICA_X8507:
+		i2c_bus = &dev->i2c_bus[0];
+		i2c_bus2 = &dev->i2c_bus[1];
+		fe0->dvb.frontend = dvb_attach(mb86a20s_attach,
+			&mygica_x8507_mb86a20s_config,
+			&i2c_bus->i2c_adap);
+		if (fe0->dvb.frontend == NULL)
+			break;
+
+		dvb_attach(xc5000_attach, fe0->dvb.frontend,
+			   &i2c_bus2->i2c_adap,
+			   &mygica_x8507_xc5000_config);
+		cx23885_set_frontend_hook(port, fe0->dvb.frontend);
+		break;
+	case CX23885_BOARD_MAGICPRO_PROHDTVE2:
+		i2c_bus = &dev->i2c_bus[0];
+		i2c_bus2 = &dev->i2c_bus[1];
+		fe0->dvb.frontend = dvb_attach(lgs8gxx_attach,
+			&magicpro_prohdtve2_lgs8g75_config,
+			&i2c_bus->i2c_adap);
+		if (fe0->dvb.frontend == NULL)
+			break;
+		dvb_attach(xc5000_attach, fe0->dvb.frontend,
+			   &i2c_bus2->i2c_adap,
+			   &magicpro_prohdtve2_xc5000_config);
+		cx23885_set_frontend_hook(port, fe0->dvb.frontend);
+		break;
+	case CX23885_BOARD_HAUPPAUGE_HVR1850:
+		i2c_bus = &dev->i2c_bus[0];
+		fe0->dvb.frontend = dvb_attach(s5h1411_attach,
+			&hcw_s5h1411_config,
+			&i2c_bus->i2c_adap);
+		if (fe0->dvb.frontend == NULL)
+			break;
+		dvb_attach(tda18271_attach, fe0->dvb.frontend,
+			   0x60, &dev->i2c_bus[0].i2c_adap,
+			   &hauppauge_tda18271_config);
+
+		tda18271_attach(&dev->ts1.analog_fe,
+			0x60, &dev->i2c_bus[1].i2c_adap,
+			&hauppauge_tda18271_config);
+
+		break;
+	case CX23885_BOARD_HAUPPAUGE_HVR1290:
+		i2c_bus = &dev->i2c_bus[0];
+		fe0->dvb.frontend = dvb_attach(s5h1411_attach,
+			&hcw_s5h1411_config,
+			&i2c_bus->i2c_adap);
+		if (fe0->dvb.frontend == NULL)
+			break;
+		dvb_attach(tda18271_attach, fe0->dvb.frontend,
+			   0x60, &dev->i2c_bus[0].i2c_adap,
+			   &hauppauge_tda18271_config);
+		break;
+	case CX23885_BOARD_MYGICA_X8558PRO:
+		switch (port->nr) {
+		/* port B */
+		case 1:
+			i2c_bus = &dev->i2c_bus[0];
+			fe0->dvb.frontend = dvb_attach(atbm8830_attach,
+				&mygica_x8558pro_atbm8830_cfg1,
+				&i2c_bus->i2c_adap);
+			if (fe0->dvb.frontend == NULL)
+				break;
+			dvb_attach(max2165_attach, fe0->dvb.frontend,
+				   &i2c_bus->i2c_adap,
+				   &mygic_x8558pro_max2165_cfg1);
+			break;
+		/* port C */
+		case 2:
+			i2c_bus = &dev->i2c_bus[1];
+			fe0->dvb.frontend = dvb_attach(atbm8830_attach,
+				&mygica_x8558pro_atbm8830_cfg2,
+				&i2c_bus->i2c_adap);
+			if (fe0->dvb.frontend == NULL)
+				break;
+			dvb_attach(max2165_attach, fe0->dvb.frontend,
+				   &i2c_bus->i2c_adap,
+				   &mygic_x8558pro_max2165_cfg2);
+		}
+		break;
+	case CX23885_BOARD_NETUP_DUAL_DVB_T_C_CI_RF:
+		if (port->nr > 2)
+			return 0;
+
+		i2c_bus = &dev->i2c_bus[0];
+		mfe_shared = 1;/* MFE */
+		port->frontends.gate = 0;/* not clear for me yet */
+		/* ports B, C */
+		/* MFE frontend 1 DVB-T */
+		fe0->dvb.frontend = dvb_attach(stv0367ter_attach,
+					&netup_stv0367_config[port->nr - 1],
+					&i2c_bus->i2c_adap);
+		if (fe0->dvb.frontend == NULL)
+			break;
+		if (NULL == dvb_attach(xc5000_attach, fe0->dvb.frontend,
+					&i2c_bus->i2c_adap,
+					&netup_xc5000_config[port->nr - 1]))
+			goto frontend_detach;
+		/* load xc5000 firmware */
+		fe0->dvb.frontend->ops.tuner_ops.init(fe0->dvb.frontend);
+
+		/* MFE frontend 2 */
+		fe1 = vb2_dvb_get_frontend(&port->frontends, 2);
+		if (fe1 == NULL)
+			goto frontend_detach;
+		/* DVB-C init */
+		fe1->dvb.frontend = dvb_attach(stv0367cab_attach,
+					&netup_stv0367_config[port->nr - 1],
+					&i2c_bus->i2c_adap);
+		if (fe1->dvb.frontend == NULL)
+			break;
+
+		fe1->dvb.frontend->id = 1;
+		if (NULL == dvb_attach(xc5000_attach,
+				       fe1->dvb.frontend,
+				       &i2c_bus->i2c_adap,
+				       &netup_xc5000_config[port->nr - 1]))
+			goto frontend_detach;
+		break;
+	case CX23885_BOARD_TERRATEC_CINERGY_T_PCIE_DUAL:
+		i2c_bus = &dev->i2c_bus[0];
+		i2c_bus2 = &dev->i2c_bus[1];
+
+		switch (port->nr) {
+		/* port b */
+		case 1:
+			fe0->dvb.frontend = dvb_attach(drxk_attach,
+					&terratec_drxk_config[0],
+					&i2c_bus->i2c_adap);
+			if (fe0->dvb.frontend == NULL)
+				break;
+			if (!dvb_attach(mt2063_attach,
+					fe0->dvb.frontend,
+					&terratec_mt2063_config[0],
+					&i2c_bus2->i2c_adap))
+				goto frontend_detach;
+			break;
+		/* port c */
+		case 2:
+			fe0->dvb.frontend = dvb_attach(drxk_attach,
+					&terratec_drxk_config[1],
+					&i2c_bus->i2c_adap);
+			if (fe0->dvb.frontend == NULL)
+				break;
+			if (!dvb_attach(mt2063_attach,
+					fe0->dvb.frontend,
+					&terratec_mt2063_config[1],
+					&i2c_bus2->i2c_adap))
+				goto frontend_detach;
+			break;
+		}
+		break;
+	case CX23885_BOARD_TEVII_S471:
+		i2c_bus = &dev->i2c_bus[1];
+
+		fe0->dvb.frontend = dvb_attach(ds3000_attach,
+					&tevii_ds3000_config,
+					&i2c_bus->i2c_adap);
+		if (fe0->dvb.frontend == NULL)
+			break;
+		dvb_attach(ts2020_attach, fe0->dvb.frontend,
+			   &tevii_ts2020_config, &i2c_bus->i2c_adap);
+		break;
+	case CX23885_BOARD_PROF_8000:
+		i2c_bus = &dev->i2c_bus[0];
+
+		fe0->dvb.frontend = dvb_attach(stv090x_attach,
+						&prof_8000_stv090x_config,
+						&i2c_bus->i2c_adap,
+						STV090x_DEMODULATOR_0);
+		if (fe0->dvb.frontend == NULL)
+			break;
+		if (!dvb_attach(stb6100_attach,
+				fe0->dvb.frontend,
+				&prof_8000_stb6100_config,
+				&i2c_bus->i2c_adap))
+			goto frontend_detach;
+
+		fe0->dvb.frontend->ops.set_voltage = p8000_set_voltage;
+		break;
+	case CX23885_BOARD_HAUPPAUGE_HVR4400: {
+		struct tda10071_platform_data tda10071_pdata = hauppauge_tda10071_pdata;
+		struct a8293_platform_data a8293_pdata = {};
+
+		i2c_bus = &dev->i2c_bus[0];
+		i2c_bus2 = &dev->i2c_bus[1];
+		switch (port->nr) {
+		/* port b */
+		case 1:
+			/* attach demod + tuner combo */
+			memset(&info, 0, sizeof(info));
+			strscpy(info.type, "tda10071_cx24118", I2C_NAME_SIZE);
+			info.addr = 0x05;
+			info.platform_data = &tda10071_pdata;
+			request_module("tda10071");
+			client_demod = i2c_new_client_device(&i2c_bus->i2c_adap, &info);
+			if (!i2c_client_has_driver(client_demod))
+				goto frontend_detach;
+			if (!try_module_get(client_demod->dev.driver->owner)) {
+				i2c_unregister_device(client_demod);
+				goto frontend_detach;
+			}
+			fe0->dvb.frontend = tda10071_pdata.get_dvb_frontend(client_demod);
+			port->i2c_client_demod = client_demod;
+
+			/* attach SEC */
+			a8293_pdata.dvb_frontend = fe0->dvb.frontend;
+			memset(&info, 0, sizeof(info));
+			strscpy(info.type, "a8293", I2C_NAME_SIZE);
+			info.addr = 0x0b;
+			info.platform_data = &a8293_pdata;
+			request_module("a8293");
+			client_sec = i2c_new_client_device(&i2c_bus->i2c_adap, &info);
+			if (!i2c_client_has_driver(client_sec))
+				goto frontend_detach;
+			if (!try_module_get(client_sec->dev.driver->owner)) {
+				i2c_unregister_device(client_sec);
+				goto frontend_detach;
+			}
+			port->i2c_client_sec = client_sec;
+			break;
+		/* port c */
+		case 2:
+			/* attach frontend */
+			memset(&si2165_pdata, 0, sizeof(si2165_pdata));
+			si2165_pdata.fe = &fe0->dvb.frontend;
+			si2165_pdata.chip_mode = SI2165_MODE_PLL_XTAL;
+			si2165_pdata.ref_freq_hz = 16000000;
+			memset(&info, 0, sizeof(struct i2c_board_info));
+			strscpy(info.type, "si2165", I2C_NAME_SIZE);
+			info.addr = 0x64;
+			info.platform_data = &si2165_pdata;
+			request_module(info.type);
+			client_demod = i2c_new_client_device(&i2c_bus->i2c_adap, &info);
+			if (!i2c_client_has_driver(client_demod))
+				goto frontend_detach;
+			if (!try_module_get(client_demod->dev.driver->owner)) {
+				i2c_unregister_device(client_demod);
+				goto frontend_detach;
+			}
+			port->i2c_client_demod = client_demod;
+
+			if (fe0->dvb.frontend == NULL)
+				break;
+			fe0->dvb.frontend->ops.i2c_gate_ctrl = NULL;
+			if (!dvb_attach(tda18271_attach,
+					fe0->dvb.frontend,
+					0x60, &i2c_bus2->i2c_adap,
+				  &hauppauge_hvr4400_tuner_config))
+				goto frontend_detach;
+			break;
+		}
+		break;
+	}
+	case CX23885_BOARD_HAUPPAUGE_STARBURST: {
+		struct tda10071_platform_data tda10071_pdata = hauppauge_tda10071_pdata;
+		struct a8293_platform_data a8293_pdata = {};
+
+		i2c_bus = &dev->i2c_bus[0];
+
+		/* attach demod + tuner combo */
+		memset(&info, 0, sizeof(info));
+		strscpy(info.type, "tda10071_cx24118", I2C_NAME_SIZE);
+		info.addr = 0x05;
+		info.platform_data = &tda10071_pdata;
+		request_module("tda10071");
+		client_demod = i2c_new_client_device(&i2c_bus->i2c_adap, &info);
+		if (!i2c_client_has_driver(client_demod))
+			goto frontend_detach;
+		if (!try_module_get(client_demod->dev.driver->owner)) {
+			i2c_unregister_device(client_demod);
+			goto frontend_detach;
+		}
+		fe0->dvb.frontend = tda10071_pdata.get_dvb_frontend(client_demod);
+		port->i2c_client_demod = client_demod;
+
+		/* attach SEC */
+		a8293_pdata.dvb_frontend = fe0->dvb.frontend;
+		memset(&info, 0, sizeof(info));
+		strscpy(info.type, "a8293", I2C_NAME_SIZE);
+		info.addr = 0x0b;
+		info.platform_data = &a8293_pdata;
+		request_module("a8293");
+		client_sec = i2c_new_client_device(&i2c_bus->i2c_adap, &info);
+		if (!i2c_client_has_driver(client_sec))
+			goto frontend_detach;
+		if (!try_module_get(client_sec->dev.driver->owner)) {
+			i2c_unregister_device(client_sec);
+			goto frontend_detach;
+		}
+		port->i2c_client_sec = client_sec;
+		break;
+	}
+	case CX23885_BOARD_DVBSKY_T9580:
+	case CX23885_BOARD_DVBSKY_S950:
+		i2c_bus = &dev->i2c_bus[0];
+		i2c_bus2 = &dev->i2c_bus[1];
+		switch (port->nr) {
+		/* port b - satellite */
+		case 1:
+			/* attach frontend */
+			fe0->dvb.frontend = dvb_attach(m88ds3103_attach,
+					&dvbsky_t9580_m88ds3103_config,
+					&i2c_bus2->i2c_adap, &adapter);
+			if (fe0->dvb.frontend == NULL)
+				break;
+
+			/* attach tuner */
+			memset(&ts2020_config, 0, sizeof(ts2020_config));
+			ts2020_config.fe = fe0->dvb.frontend;
+			ts2020_config.get_agc_pwm = m88ds3103_get_agc_pwm;
+			memset(&info, 0, sizeof(struct i2c_board_info));
+			strscpy(info.type, "ts2020", I2C_NAME_SIZE);
+			info.addr = 0x60;
+			info.platform_data = &ts2020_config;
+			request_module(info.type);
+			client_tuner = i2c_new_client_device(adapter, &info);
+			if (!i2c_client_has_driver(client_tuner))
+				goto frontend_detach;
+			if (!try_module_get(client_tuner->dev.driver->owner)) {
+				i2c_unregister_device(client_tuner);
+				goto frontend_detach;
+			}
+
+	

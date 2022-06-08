@@ -1,485 +1,833 @@
--3level_types.h \
-  include/asm-generic/pgtable-nop4d.h \
-  include/asm-generic/pgtable-nopud.h \
-  arch/x86/include/asm/nospec-branch.h \
-  include/linux/static_key.h \
-  include/linux/jump_label.h \
-    $(wildcard include/config/HAVE_ARCH_JUMP_LABEL_RELATIVE) \
-  arch/x86/include/asm/jump_label.h \
-  include/linux/objtool.h \
-    $(wildcard include/config/FRAME_POINTER) \
-  arch/x86/include/asm/msr-index.h \
-  arch/x86/include/asm/unwind_hints.h \
-  arch/x86/include/asm/orc_types.h \
-  arch/x86/include/asm/GEN-for-each-reg.h \
-  arch/x86/include/asm/spinlock_types.h \
-  include/asm-generic/qspinlock_types.h \
-    $(wildcard include/config/NR_CPUS) \
-  include/asm-generic/qrwlock_types.h \
-  arch/x86/include/asm/proto.h \
-  arch/x86/include/uapi/asm/ldt.h \
-  arch/x86/include/uapi/asm/sigcontext.h \
-  arch/x86/include/asm/current.h \
-  arch/x86/include/asm/percpu.h \
-    $(wildcard include/config/X86_64_SMP) \
-  include/linux/kernel.h \
-    $(wildcard include/config/PREEMPT_VOLUNTARY_BUILD) \
-    $(wildcard include/config/PREEMPT_DYNAMIC) \
-    $(wildcard include/config/HAVE_PREEMPT_DYNAMIC_CALL) \
-    $(wildcard include/config/HAVE_PREEMPT_DYNAMIC_KEY) \
-    $(wildcard include/config/PREEMPT_) \
-    $(wildcard include/config/DEBUG_ATOMIC_SLEEP) \
-    $(wildcard include/config/MMU) \
-    $(wildcard include/config/PROVE_LOCKING) \
-  include/linux/stdarg.h \
-  include/linux/align.h \
-  include/linux/limits.h \
-  include/uapi/linux/limits.h \
-  include/vdso/limits.h \
-  include/linux/kstrtox.h \
-  include/linux/minmax.h \
-  include/linux/panic.h \
-    $(wildcard include/config/PANIC_TIMEOUT) \
-  include/linux/printk.h \
-    $(wildcard include/config/MESSAGE_LOGLEVEL_DEFAULT) \
-    $(wildcard include/config/CONSOLE_LOGLEVEL_DEFAULT) \
-    $(wildcard include/config/CONSOLE_LOGLEVEL_QUIET) \
-    $(wildcard include/config/EARLY_PRINTK) \
-    $(wildcard include/config/PRINTK) \
-    $(wildcard include/config/DYNAMIC_DEBUG) \
-    $(wildcard include/config/DYNAMIC_DEBUG_CORE) \
-  include/linux/kern_levels.h \
-  include/linux/ratelimit_types.h \
-  include/linux/spinlock_types_raw.h \
-    $(wildcard include/config/DEBUG_SPINLOCK) \
-    $(wildcard include/config/DEBUG_LOCK_ALLOC) \
-  include/linux/lockdep_types.h \
-    $(wildcard include/config/PROVE_RAW_LOCK_NESTING) \
-    $(wildcard include/config/LOCKDEP) \
-    $(wildcard include/config/LOCK_STAT) \
-  include/linux/once_lite.h \
-  include/linux/static_call_types.h \
-    $(wildcard include/config/HAVE_STATIC_CALL) \
-  include/linux/instruction_pointer.h \
-  include/asm-generic/percpu.h \
-    $(wildcard include/config/DEBUG_PREEMPT) \
-    $(wildcard include/config/HAVE_SETUP_PER_CPU_AREA) \
-  include/linux/threads.h \
-    $(wildcard include/config/BASE_SMALL) \
-  include/linux/percpu-defs.h \
-    $(wildcard include/config/DEBUG_FORCE_WEAK_PER_CPU) \
-  arch/x86/include/asm/page.h \
-  arch/x86/include/asm/page_32.h \
-    $(wildcard include/config/DEBUG_VIRTUAL) \
-    $(wildcard include/config/FLATMEM) \
-  include/linux/string.h \
-    $(wildcard include/config/BINARY_PRINTF) \
-    $(wildcard include/config/FORTIFY_SOURCE) \
-  include/linux/errno.h \
-  include/uapi/linux/errno.h \
-  include/uapi/linux/string.h \
-  arch/x86/include/asm/string.h \
-  arch/x86/include/asm/string_32.h \
-  include/linux/fortify-string.h \
-  include/linux/range.h \
-  include/asm-generic/memory_model.h \
-    $(wildcard include/config/SPARSEMEM_VMEMMAP) \
-    $(wildcard include/config/SPARSEMEM) \
-  include/linux/pfn.h \
-  include/asm-generic/getorder.h \
-  arch/x86/include/asm/msr.h \
-  arch/x86/include/asm/msr-index.h \
-  arch/x86/include/asm/cpumask.h \
-  include/linux/cpumask.h \
-    $(wildcard include/config/CPUMASK_OFFSTACK) \
-    $(wildcard include/config/HOTPLUG_CPU) \
-    $(wildcard include/config/DEBUG_PER_CPU_MAPS) \
-  include/linux/bitmap.h \
-  include/linux/find.h \
-  include/linux/atomic.h \
-  arch/x86/include/asm/atomic.h \
-  arch/x86/include/asm/cmpxchg.h \
-  arch/x86/include/asm/cmpxchg_32.h \
-  arch/x86/include/asm/atomic64_32.h \
-  include/linux/atomic/atomic-arch-fallback.h \
-    $(wildcard include/config/GENERIC_ATOMIC64) \
-  include/linux/atomic/atomic-long.h \
-  include/linux/atomic/atomic-instrumented.h \
-  include/linux/bug.h \
-    $(wildcard include/config/BUG_ON_DATA_CORRUPTION) \
-  arch/x86/include/asm/bug.h \
-    $(wildcard include/config/DEBUG_BUGVERBOSE) \
-  include/linux/instrumentation.h \
-    $(wildcard include/config/DEBUG_ENTRY) \
-  include/asm-generic/bug.h \
-    $(wildcard include/config/BUG) \
-    $(wildcard include/config/GENERIC_BUG_RELATIVE_POINTERS) \
-  arch/x86/include/uapi/asm/msr.h \
-  include/linux/tracepoint-defs.h \
-  arch/x86/include/asm/special_insns.h \
-  include/linux/irqflags.h \
-    $(wildcard include/config/TRACE_IRQFLAGS) \
-    $(wildcard include/config/PREEMPT_RT) \
-    $(wildcard include/config/IRQSOFF_TRACER) \
-    $(wildcard include/config/PREEMPT_TRACER) \
-    $(wildcard include/config/DEBUG_IRQFLAGS) \
-    $(wildcard include/config/TRACE_IRQFLAGS_SUPPORT) \
-  arch/x86/include/asm/irqflags.h \
-  arch/x86/include/asm/fpu/types.h \
-  arch/x86/include/asm/vmxfeatures.h \
-  arch/x86/include/asm/vdso/processor.h \
-  include/linux/personality.h \
-  include/uapi/linux/personality.h \
-  arch/x86/include/asm/tsc.h \
-  arch/x86/include/asm/cpufeature.h \
-    $(wildcard include/config/X86_FEATURE_NAMES) \
-  include/vdso/time32.h \
-  include/vdso/time.h \
-  include/linux/uidgid.h \
-    $(wildcard include/config/MULTIUSER) \
-    $(wildcard include/config/USER_NS) \
-  include/linux/highuid.h \
-  include/linux/buildid.h \
-    $(wildcard include/config/CRASH_CORE) \
-  include/linux/mm_types.h \
-    $(wildcard include/config/HAVE_ALIGNED_STRUCT_PAGE) \
-    $(wildcard include/config/MEMCG) \
-    $(wildcard include/config/USERFAULTFD) \
-    $(wildcard include/config/SWAP) \
-    $(wildcard include/config/NUMA) \
-    $(wildcard include/config/HAVE_ARCH_COMPAT_MMAP_BASES) \
-    $(wildcard include/config/MEMBARRIER) \
-    $(wildcard include/config/AIO) \
-    $(wildcard include/config/MMU_NOTIFIER) \
-    $(wildcard include/config/TRANSPARENT_HUGEPAGE) \
-    $(wildcard include/config/NUMA_BALANCING) \
-    $(wildcard include/config/ARCH_WANT_BATCHED_UNMAP_TLB_FLUSH) \
-    $(wildcard include/config/HUGETLB_PAGE) \
-    $(wildcard include/config/IOMMU_SVA) \
-  include/linux/mm_types_task.h \
-    $(wildcard include/config/SPLIT_PTLOCK_CPUS) \
-    $(wildcard include/config/ARCH_ENABLE_SPLIT_PMD_PTLOCK) \
-  arch/x86/include/asm/tlbbatch.h \
-  include/linux/auxvec.h \
-  include/uapi/linux/auxvec.h \
-  arch/x86/include/uapi/asm/auxvec.h \
-  include/linux/kref.h \
-  include/linux/spinlock.h \
-    $(wildcard include/config/PREEMPTION) \
-  include/linux/preempt.h \
-    $(wildcard include/config/PREEMPT_COUNT) \
-    $(wildcard include/config/TRACE_PREEMPT_TOGGLE) \
-    $(wildcard include/config/PREEMPT_NOTIFIERS) \
-  arch/x86/include/asm/preempt.h \
-  include/linux/thread_info.h \
-    $(wildcard include/config/THREAD_INFO_IN_TASK) \
-    $(wildcard include/config/GENERIC_ENTRY) \
-    $(wildcard include/config/HAVE_ARCH_WITHIN_STACK_FRAMES) \
-    $(wildcard include/config/HARDENED_USERCOPY) \
-  include/linux/restart_block.h \
-  arch/x86/include/asm/thread_info.h \
-    $(wildcard include/config/COMPAT) \
-  include/linux/bottom_half.h \
-  include/linux/lockdep.h \
-    $(wildcard include/config/DEBUG_LOCKING_API_SELFTESTS) \
-  include/linux/smp.h \
-    $(wildcard include/config/UP_LATE_INIT) \
-  include/linux/smp_types.h \
-  include/linux/llist.h \
-    $(wildcard include/config/ARCH_HAVE_NMI_SAFE_CMPXCHG) \
-  arch/x86/include/asm/smp.h \
-    $(wildcard include/config/X86_LOCAL_APIC) \
-    $(wildcard include/config/DEBUG_NMI_SELFTEST) \
-  arch/x86/include/generated/asm/mmiowb.h \
-  include/asm-generic/mmiowb.h \
-    $(wildcard include/config/MMIOWB) \
-  include/linux/spinlock_types.h \
-  include/linux/rwlock_types.h \
-  arch/x86/include/asm/spinlock.h \
-  arch/x86/include/asm/paravirt.h \
-    $(wildcard include/config/PARAVIRT_SPINLOCKS) \
-  arch/x86/include/asm/frame.h \
-  arch/x86/include/asm/qspinlock.h \
-  include/asm-generic/qspinlock.h \
-  arch/x86/include/asm/qrwlock.h \
-  include/asm-generic/qrwlock.h \
-  include/linux/rwlock.h \
-    $(wildcard include/config/PREEMPT) \
-  include/linux/spinlock_api_smp.h \
-    $(wildcard include/config/INLINE_SPIN_LOCK) \
-    $(wildcard include/config/INLINE_SPIN_LOCK_BH) \
-    $(wildcard include/config/INLINE_SPIN_LOCK_IRQ) \
-    $(wildcard include/config/INLINE_SPIN_LOCK_IRQSAVE) \
-    $(wildcard include/config/INLINE_SPIN_TRYLOCK) \
-    $(wildcard include/config/INLINE_SPIN_TRYLOCK_BH) \
-    $(wildcard include/config/UNINLINE_SPIN_UNLOCK) \
-    $(wildcard include/config/INLINE_SPIN_UNLOCK_BH) \
-    $(wildcard include/config/INLINE_SPIN_UNLOCK_IRQ) \
-    $(wildcard include/config/INLINE_SPIN_UNLOCK_IRQRESTORE) \
-    $(wildcard include/config/GENERIC_LOCKBREAK) \
-  include/linux/rwlock_api_smp.h \
-    $(wildcard include/config/INLINE_READ_LOCK) \
-    $(wildcard include/config/INLINE_WRITE_LOCK) \
-    $(wildcard include/config/INLINE_READ_LOCK_BH) \
-    $(wildcard include/config/INLINE_WRITE_LOCK_BH) \
-    $(wildcard include/config/INLINE_READ_LOCK_IRQ) \
-    $(wildcard include/config/INLINE_WRITE_LOCK_IRQ) \
-    $(wildcard include/config/INLINE_READ_LOCK_IRQSAVE) \
-    $(wildcard include/config/INLINE_WRITE_LOCK_IRQSAVE) \
-    $(wildcard include/config/INLINE_READ_TRYLOCK) \
-    $(wildcard include/config/INLINE_WRITE_TRYLOCK) \
-    $(wildcard include/config/INLINE_READ_UNLOCK) \
-    $(wildcard include/config/INLINE_WRITE_UNLOCK) \
-    $(wildcard include/config/INLINE_READ_UNLOCK_BH) \
-    $(wildcard include/config/INLINE_WRITE_UNLOCK_BH) \
-    $(wildcard include/config/INLINE_READ_UNLOCK_IRQ) \
-    $(wildcard include/config/INLINE_WRITE_UNLOCK_IRQ) \
-    $(wildcard include/config/INLINE_READ_UNLOCK_IRQRESTORE) \
-    $(wildcard include/config/INLINE_WRITE_UNLOCK_IRQRESTORE) \
-  include/linux/refcount.h \
-  include/linux/rbtree.h \
-  include/linux/rbtree_types.h \
-  include/linux/rcupdate.h \
-    $(wildcard include/config/PREEMPT_RCU) \
-    $(wildcard include/config/TINY_RCU) \
-    $(wildcard include/config/RCU_STRICT_GRACE_PERIOD) \
-    $(wildcard include/config/TASKS_RCU_GENERIC) \
-    $(wildcard include/config/RCU_STALL_COMMON) \
-    $(wildcard include/config/NO_HZ_FULL) \
-    $(wildcard include/config/RCU_NOCB_CPU) \
-    $(wildcard include/config/TASKS_RCU) \
-    $(wildcard include/config/TASKS_TRACE_RCU) \
-    $(wildcard include/config/TASKS_RUDE_RCU) \
-    $(wildcard include/config/TREE_RCU) \
-    $(wildcard include/config/DEBUG_OBJECTS_RCU_HEAD) \
-    $(wildcard include/config/PROVE_RCU) \
-    $(wildcard include/config/ARCH_WEAK_RELEASE_ACQUIRE) \
-  include/linux/rcutree.h \
-  include/linux/rwsem.h \
-    $(wildcard include/config/RWSEM_SPIN_ON_OWNER) \
-    $(wildcard include/config/DEBUG_RWSEMS) \
-  include/linux/osq_lock.h \
-  include/linux/completion.h \
-  include/linux/swait.h \
-  include/linux/wait.h \
-  include/uapi/linux/wait.h \
-  include/linux/uprobes.h \
-    $(wildcard include/config/UPROBES) \
-  arch/x86/include/asm/uprobes.h \
-  include/linux/notifier.h \
-  include/linux/mutex.h \
-    $(wildcard include/config/MUTEX_SPIN_ON_OWNER) \
-    $(wildcard include/config/DEBUG_MUTEXES) \
-  include/linux/debug_locks.h \
-  include/linux/srcu.h \
-    $(wildcard include/config/TINY_SRCU) \
-    $(wildcard include/config/SRCU) \
-  include/linux/workqueue.h \
-    $(wildcard include/config/DEBUG_OBJECTS_WORK) \
-    $(wildcard include/config/FREEZER) \
-    $(wildcard include/config/WQ_WATCHDOG) \
-  include/linux/timer.h \
-    $(wildcard include/config/DEBUG_OBJECTS_TIMERS) \
-    $(wildcard include/config/NO_HZ_COMMON) \
-  include/linux/ktime.h \
-  include/linux/jiffies.h \
-  include/vdso/jiffies.h \
-  include/generated/timeconst.h \
-  include/vdso/ktime.h \
-  include/linux/timekeeping.h \
-    $(wildcard include/config/GENERIC_CMOS_UPDATE) \
-  include/linux/clocksource_ids.h \
-  include/linux/debugobjects.h \
-    $(wildcard include/config/DEBUG_OBJECTS) \
-    $(wildcard include/config/DEBUG_OBJECTS_FREE) \
-  include/linux/rcu_segcblist.h \
-  include/linux/srcutree.h \
-  include/linux/rcu_node_tree.h \
-    $(wildcard include/config/RCU_FANOUT) \
-    $(wildcard include/config/RCU_FANOUT_LEAF) \
-  include/linux/page-flags-layout.h \
-    $(wildcard include/config/KASAN_HW_TAGS) \
-  include/linux/numa.h \
-    $(wildcard include/config/NODES_SHIFT) \
-    $(wildcard include/config/NUMA_KEEP_MEMINFO) \
-    $(wildcard include/config/HAVE_ARCH_NODE_DEV_GROUP) \
-  arch/x86/include/asm/sparsemem.h \
-  include/generated/bounds.h \
-  include/linux/seqlock.h \
-  include/linux/ww_mutex.h \
-    $(wildcard include/config/DEBUG_RT_MUTEXES) \
-    $(wildcard include/config/DEBUG_WW_MUTEX_SLOWPATH) \
-  include/linux/rtmutex.h \
-  arch/x86/include/asm/mmu.h \
-    $(wildcard include/config/MODIFY_LDT_SYSCALL) \
-  include/linux/kmod.h \
-  include/linux/umh.h \
-  include/linux/gfp.h \
-    $(wildcard include/config/HIGHMEM) \
-    $(wildcard include/config/ZONE_DMA) \
-    $(wildcard include/config/ZONE_DMA32) \
-    $(wildcard include/config/ZONE_DEVICE) \
-    $(wildcard include/config/PM_SLEEP) \
-    $(wildcard include/config/CONTIG_ALLOC) \
-    $(wildcard include/config/CMA) \
-  include/linux/mmdebug.h \
-    $(wildcard include/config/DEBUG_VM) \
-    $(wildcard include/config/DEBUG_VM_PGFLAGS) \
-  include/linux/mmzone.h \
-    $(wildcard include/config/FORCE_MAX_ZONEORDER) \
-    $(wildcard include/config/MEMORY_ISOLATION) \
-    $(wildcard include/config/ZSMALLOC) \
-    $(wildcard include/config/MEMORY_HOTPLUG) \
-    $(wildcard include/config/COMPACTION) \
-    $(wildcard include/config/PAGE_EXTENSION) \
-    $(wildcard include/config/DEFERRED_STRUCT_PAGE_INIT) \
-    $(wildcard include/config/HAVE_MEMORYLESS_NODES) \
-    $(wildcard include/config/SPARSEMEM_EXTREME) \
-    $(wildcard include/config/HAVE_ARCH_PFN_VALID) \
-  include/linux/nodemask.h \
-  include/linux/pageblock-flags.h \
-    $(wildcard include/config/HUGETLB_PAGE_SIZE_VARIABLE) \
-  include/linux/page-flags.h \
-    $(wildcard include/config/ARCH_USES_PG_UNCACHED) \
-    $(wildcard include/config/MEMORY_FAILURE) \
-    $(wildcard include/config/PAGE_IDLE_FLAG) \
-    $(wildcard include/config/HUGETLB_PAGE_FREE_VMEMMAP) \
-    $(wildcard include/config/HUGETLB_PAGE_FREE_VMEMMAP_DEFAULT_ON) \
-    $(wildcard include/config/KSM) \
-  include/linux/local_lock.h \
-  include/linux/local_lock_internal.h \
-  include/linux/memory_hotplug.h \
-    $(wildcard include/config/HAVE_ARCH_NODEDATA_EXTENSION) \
-    $(wildcard include/config/ARCH_HAS_ADD_PAGES) \
-    $(wildcard include/config/MEMORY_HOTREMOVE) \
-  arch/x86/include/asm/mmzone.h \
-  arch/x86/include/asm/mmzone_32.h \
-  include/linux/topology.h \
-    $(wildcard include/config/USE_PERCPU_NUMA_NODE_ID) \
-    $(wildcard include/config/SCHED_SMT) \
-    $(wildcard include/config/SCHED_CLUSTER) \
-  include/linux/arch_topology.h \
-    $(wildcard include/config/ACPI_CPPC_LIB) \
-    $(wildcard include/config/GENERIC_ARCH_TOPOLOGY) \
-  include/linux/percpu.h \
-    $(wildcard include/config/NEED_PER_CPU_EMBED_FIRST_CHUNK) \
-    $(wildcard include/config/NEED_PER_CPU_PAGE_FIRST_CHUNK) \
-  arch/x86/include/asm/topology.h \
-    $(wildcard include/config/SCHED_MC_PRIO) \
-  arch/x86/include/asm/mpspec.h \
-    $(wildcard include/config/EISA) \
-    $(wildcard include/config/X86_MPPARSE) \
-  arch/x86/include/asm/mpspec_def.h \
-  arch/x86/include/asm/x86_init.h \
-  arch/x86/include/asm/apicdef.h \
-  include/asm-generic/topology.h \
-  include/linux/sysctl.h \
-    $(wildcard include/config/SYSCTL) \
-  include/uapi/linux/sysctl.h \
-  include/linux/elf.h \
-    $(wildcard include/config/ARCH_USE_GNU_PROPERTY) \
-    $(wildcard include/config/ARCH_HAVE_ELF_PROT) \
-  arch/x86/include/asm/elf.h \
-    $(wildcard include/config/X86_X32_ABI) \
-  arch/x86/include/asm/user.h \
-  arch/x86/include/asm/user_32.h \
-  arch/x86/include/asm/fsgsbase.h \
-  arch/x86/include/asm/vdso.h \
-  arch/x86/include/asm/desc.h \
-  arch/x86/include/asm/fixmap.h \
-    $(wildcard include/config/DEBUG_KMAP_LOCAL_FORCE_MAP) \
-    $(wildcard include/config/X86_VSYSCALL_EMULATION) \
-    $(wildcard include/config/PROVIDE_OHCI1394_DMA_INIT) \
-    $(wildcard include/config/X86_IO_APIC) \
-    $(wildcard include/config/KMAP_LOCAL) \
-    $(wildcard include/config/PCI_MMCONFIG) \
-    $(wildcard include/config/ACPI_APEI_GHES) \
-    $(wildcard include/config/INTEL_TXT) \
-  arch/x86/include/generated/asm/kmap_size.h \
-  include/asm-generic/kmap_size.h \
-    $(wildcard include/config/DEBUG_KMAP_LOCAL) \
-  include/asm-generic/fixmap.h \
-  arch/x86/include/asm/irq_vectors.h \
-    $(wildcard include/config/HAVE_KVM) \
-    $(wildcard include/config/HYPERV) \
-    $(wildcard include/config/PCI_MSI) \
-  arch/x86/include/asm/cpu_entry_area.h \
-  arch/x86/include/asm/intel_ds.h \
-  arch/x86/include/asm/pgtable_areas.h \
-  arch/x86/include/asm/pgtable_32_areas.h \
-  include/uapi/linux/elf.h \
-  include/uapi/linux/elf-em.h \
-  include/linux/kobject.h \
-    $(wildcard include/config/UEVENT_HELPER) \
-    $(wildcard include/config/DEBUG_KOBJECT_RELEASE) \
-  include/linux/sysfs.h \
-  include/linux/kernfs.h \
-    $(wildcard include/config/KERNFS) \
-  include/linux/idr.h \
-  include/linux/radix-tree.h \
-  include/linux/xarray.h \
-    $(wildcard include/config/XARRAY_MULTI) \
-  include/linux/kconfig.h \
-  include/linux/kobject_ns.h \
-  include/linux/moduleparam.h \
-    $(wildcard include/config/ALPHA) \
-    $(wildcard include/config/IA64) \
-    $(wildcard include/config/PPC64) \
-  include/linux/rbtree_latch.h \
-  include/linux/error-injection.h \
-  include/asm-generic/error-injection.h \
-  include/linux/cfi.h \
-    $(wildcard include/config/CFI_CLANG_SHADOW) \
-  arch/x86/include/asm/module.h \
-    $(wildcard include/config/UNWINDER_ORC) \
-  include/asm-generic/module.h \
-    $(wildcard include/config/HAVE_MOD_ARCH_SPECIFIC) \
-    $(wildcard include/config/MODULES_USE_ELF_REL) \
-    $(wildcard include/config/MODULES_USE_ELF_RELA) \
-  arch/x86/include/asm/orc_types.h \
-  include/linux/i2c.h \
-    $(wildcard include/config/I2C) \
-    $(wildcard include/config/I2C_SLAVE) \
-    $(wildcard include/config/I2C_BOARDINFO) \
-    $(wildcard include/config/I2C_MUX) \
-    $(wildcard include/config/OF) \
-    $(wildcard include/config/ACPI) \
-  include/linux/acpi.h \
-    $(wildcard include/config/ACPI_DEBUGGER) \
-    $(wildcard include/config/ACPI_TABLE_LIB) \
-    $(wildcard include/config/LOONGARCH) \
-    $(wildcard include/config/ARM64) \
-    $(wildcard include/config/ACPI_PROCESSOR_CSTATE) \
-    $(wildcard include/config/ACPI_HOTPLUG_CPU) \
-    $(wildcard include/config/ACPI_HOTPLUG_IOAPIC) \
-    $(wildcard include/config/PCI) \
-    $(wildcard include/config/ACPI_WMI) \
-    $(wildcard include/config/ACPI_NUMA) \
-    $(wildcard include/config/HIBERNATION) \
-    $(wildcard include/config/ACPI_HOTPLUG_MEMORY) \
-    $(wildcard include/config/ACPI_CONTAINER) \
-    $(wildcard include/config/ACPI_GTDT) \
-    $(wildcard include/config/PM) \
-    $(wildcard include/config/GPIOLIB) \
-    $(wildcard include/config/ACPI_TABLE_UPGRADE) \
-    $(wildcard include/config/ACPI_WATCHDOG) \
-    $(wildcard include/config/ACPI_SPCR_TABLE) \
-    $(wildcard include/config/ACPI_GENERIC_GSI) \
-    $(wildcard include/config/ACPI_LPIT) \
-    $(wildcard include/config/ACPI_PPTT) \
-    $(wildcard include/config/ACPI_PCC) \
-  include/linux/ioport.h \
-  include/linux/irqdomain.h \
-    $(wildcard include/config/IRQ_DOMAIN_HIERARCHY) \
-    $(wildcard include/config/GENERIC_IRQ_DEBUGFS) \
-    $(wildcard include/config/IRQ_DOMAIN) \
-    $(wildcard include/config/IRQ_DOMAIN_NOMAP) \
-  include/linux/irqhandler.h \
-  include/linux/of.h \
-    $(wildcard include/config/OF_DYNAMIC) \
-    $(wildcard include/config/SPARC) \
-    $(wildcard include/config/OF_PROMTREE) \
-    $(wildcard include/config/OF_KOBJ) \
-    $(wildcard include/config/OF_NUMA) \
-    $(wildcard include/config/OF_OVERLAY) \
-  include/linux/mod_deviceta
+// SPDX-License-Identifier: GPL-2.0-or-later
+#include <net/dsa.h>
+
+#include "chip.h"
+#include "devlink.h"
+#include "global1.h"
+#include "global2.h"
+#include "port.h"
+
+static int mv88e6xxx_atu_get_hash(struct mv88e6xxx_chip *chip, u8 *hash)
+{
+	if (chip->info->ops->atu_get_hash)
+		return chip->info->ops->atu_get_hash(chip, hash);
+
+	return -EOPNOTSUPP;
+}
+
+static int mv88e6xxx_atu_set_hash(struct mv88e6xxx_chip *chip, u8 hash)
+{
+	if (chip->info->ops->atu_set_hash)
+		return chip->info->ops->atu_set_hash(chip, hash);
+
+	return -EOPNOTSUPP;
+}
+
+enum mv88e6xxx_devlink_param_id {
+	MV88E6XXX_DEVLINK_PARAM_ID_BASE = DEVLINK_PARAM_GENERIC_ID_MAX,
+	MV88E6XXX_DEVLINK_PARAM_ID_ATU_HASH,
+};
+
+int mv88e6xxx_devlink_param_get(struct dsa_switch *ds, u32 id,
+				struct devlink_param_gset_ctx *ctx)
+{
+	struct mv88e6xxx_chip *chip = ds->priv;
+	int err;
+
+	mv88e6xxx_reg_lock(chip);
+
+	switch (id) {
+	case MV88E6XXX_DEVLINK_PARAM_ID_ATU_HASH:
+		err = mv88e6xxx_atu_get_hash(chip, &ctx->val.vu8);
+		break;
+	default:
+		err = -EOPNOTSUPP;
+		break;
+	}
+
+	mv88e6xxx_reg_unlock(chip);
+
+	return err;
+}
+
+int mv88e6xxx_devlink_param_set(struct dsa_switch *ds, u32 id,
+				struct devlink_param_gset_ctx *ctx)
+{
+	struct mv88e6xxx_chip *chip = ds->priv;
+	int err;
+
+	mv88e6xxx_reg_lock(chip);
+
+	switch (id) {
+	case MV88E6XXX_DEVLINK_PARAM_ID_ATU_HASH:
+		err = mv88e6xxx_atu_set_hash(chip, ctx->val.vu8);
+		break;
+	default:
+		err = -EOPNOTSUPP;
+		break;
+	}
+
+	mv88e6xxx_reg_unlock(chip);
+
+	return err;
+}
+
+static const struct devlink_param mv88e6xxx_devlink_params[] = {
+	DSA_DEVLINK_PARAM_DRIVER(MV88E6XXX_DEVLINK_PARAM_ID_ATU_HASH,
+				 "ATU_hash", DEVLINK_PARAM_TYPE_U8,
+				 BIT(DEVLINK_PARAM_CMODE_RUNTIME)),
+};
+
+int mv88e6xxx_setup_devlink_params(struct dsa_switch *ds)
+{
+	return dsa_devlink_params_register(ds, mv88e6xxx_devlink_params,
+					   ARRAY_SIZE(mv88e6xxx_devlink_params));
+}
+
+void mv88e6xxx_teardown_devlink_params(struct dsa_switch *ds)
+{
+	dsa_devlink_params_unregister(ds, mv88e6xxx_devlink_params,
+				      ARRAY_SIZE(mv88e6xxx_devlink_params));
+}
+
+enum mv88e6xxx_devlink_resource_id {
+	MV88E6XXX_RESOURCE_ID_ATU,
+	MV88E6XXX_RESOURCE_ID_ATU_BIN_0,
+	MV88E6XXX_RESOURCE_ID_ATU_BIN_1,
+	MV88E6XXX_RESOURCE_ID_ATU_BIN_2,
+	MV88E6XXX_RESOURCE_ID_ATU_BIN_3,
+};
+
+static u64 mv88e6xxx_devlink_atu_bin_get(struct mv88e6xxx_chip *chip,
+					 u16 bin)
+{
+	u16 occupancy = 0;
+	int err;
+
+	mv88e6xxx_reg_lock(chip);
+
+	err = mv88e6xxx_g2_atu_stats_set(chip, MV88E6XXX_G2_ATU_STATS_MODE_ALL,
+					 bin);
+	if (err) {
+		dev_err(chip->dev, "failed to set ATU stats kind/bin\n");
+		goto unlock;
+	}
+
+	err = mv88e6xxx_g1_atu_get_next(chip, 0);
+	if (err) {
+		dev_err(chip->dev, "failed to perform ATU get next\n");
+		goto unlock;
+	}
+
+	err = mv88e6xxx_g2_atu_stats_get(chip, &occupancy);
+	if (err) {
+		dev_err(chip->dev, "failed to get ATU stats\n");
+		goto unlock;
+	}
+
+	occupancy &= MV88E6XXX_G2_ATU_STATS_MASK;
+
+unlock:
+	mv88e6xxx_reg_unlock(chip);
+
+	return occupancy;
+}
+
+static u64 mv88e6xxx_devlink_atu_bin_0_get(void *priv)
+{
+	struct mv88e6xxx_chip *chip = priv;
+
+	return mv88e6xxx_devlink_atu_bin_get(chip,
+					     MV88E6XXX_G2_ATU_STATS_BIN_0);
+}
+
+static u64 mv88e6xxx_devlink_atu_bin_1_get(void *priv)
+{
+	struct mv88e6xxx_chip *chip = priv;
+
+	return mv88e6xxx_devlink_atu_bin_get(chip,
+					     MV88E6XXX_G2_ATU_STATS_BIN_1);
+}
+
+static u64 mv88e6xxx_devlink_atu_bin_2_get(void *priv)
+{
+	struct mv88e6xxx_chip *chip = priv;
+
+	return mv88e6xxx_devlink_atu_bin_get(chip,
+					     MV88E6XXX_G2_ATU_STATS_BIN_2);
+}
+
+static u64 mv88e6xxx_devlink_atu_bin_3_get(void *priv)
+{
+	struct mv88e6xxx_chip *chip = priv;
+
+	return mv88e6xxx_devlink_atu_bin_get(chip,
+					     MV88E6XXX_G2_ATU_STATS_BIN_3);
+}
+
+static u64 mv88e6xxx_devlink_atu_get(void *priv)
+{
+	return mv88e6xxx_devlink_atu_bin_0_get(priv) +
+		mv88e6xxx_devlink_atu_bin_1_get(priv) +
+		mv88e6xxx_devlink_atu_bin_2_get(priv) +
+		mv88e6xxx_devlink_atu_bin_3_get(priv);
+}
+
+int mv88e6xxx_setup_devlink_resources(struct dsa_switch *ds)
+{
+	struct devlink_resource_size_params size_params;
+	struct mv88e6xxx_chip *chip = ds->priv;
+	int err;
+
+	devlink_resource_size_params_init(&size_params,
+					  mv88e6xxx_num_macs(chip),
+					  mv88e6xxx_num_macs(chip),
+					  1, DEVLINK_RESOURCE_UNIT_ENTRY);
+
+	err = dsa_devlink_resource_register(ds, "ATU",
+					    mv88e6xxx_num_macs(chip),
+					    MV88E6XXX_RESOURCE_ID_ATU,
+					    DEVLINK_RESOURCE_ID_PARENT_TOP,
+					    &size_params);
+	if (err)
+		goto out;
+
+	devlink_resource_size_params_init(&size_params,
+					  mv88e6xxx_num_macs(chip) / 4,
+					  mv88e6xxx_num_macs(chip) / 4,
+					  1, DEVLINK_RESOURCE_UNIT_ENTRY);
+
+	err = dsa_devlink_resource_register(ds, "ATU_bin_0",
+					    mv88e6xxx_num_macs(chip) / 4,
+					    MV88E6XXX_RESOURCE_ID_ATU_BIN_0,
+					    MV88E6XXX_RESOURCE_ID_ATU,
+					    &size_params);
+	if (err)
+		goto out;
+
+	err = dsa_devlink_resource_register(ds, "ATU_bin_1",
+					    mv88e6xxx_num_macs(chip) / 4,
+					    MV88E6XXX_RESOURCE_ID_ATU_BIN_1,
+					    MV88E6XXX_RESOURCE_ID_ATU,
+					    &size_params);
+	if (err)
+		goto out;
+
+	err = dsa_devlink_resource_register(ds, "ATU_bin_2",
+					    mv88e6xxx_num_macs(chip) / 4,
+					    MV88E6XXX_RESOURCE_ID_ATU_BIN_2,
+					    MV88E6XXX_RESOURCE_ID_ATU,
+					    &size_params);
+	if (err)
+		goto out;
+
+	err = dsa_devlink_resource_register(ds, "ATU_bin_3",
+					    mv88e6xxx_num_macs(chip) / 4,
+					    MV88E6XXX_RESOURCE_ID_ATU_BIN_3,
+					    MV88E6XXX_RESOURCE_ID_ATU,
+					    &size_params);
+	if (err)
+		goto out;
+
+	dsa_devlink_resource_occ_get_register(ds,
+					      MV88E6XXX_RESOURCE_ID_ATU,
+					      mv88e6xxx_devlink_atu_get,
+					      chip);
+
+	dsa_devlink_resource_occ_get_register(ds,
+					      MV88E6XXX_RESOURCE_ID_ATU_BIN_0,
+					      mv88e6xxx_devlink_atu_bin_0_get,
+					      chip);
+
+	dsa_devlink_resource_occ_get_register(ds,
+					      MV88E6XXX_RESOURCE_ID_ATU_BIN_1,
+					      mv88e6xxx_devlink_atu_bin_1_get,
+					      chip);
+
+	dsa_devlink_resource_occ_get_register(ds,
+					      MV88E6XXX_RESOURCE_ID_ATU_BIN_2,
+					      mv88e6xxx_devlink_atu_bin_2_get,
+					      chip);
+
+	dsa_devlink_resource_occ_get_register(ds,
+					      MV88E6XXX_RESOURCE_ID_ATU_BIN_3,
+					      mv88e6xxx_devlink_atu_bin_3_get,
+					      chip);
+
+	return 0;
+
+out:
+	dsa_devlink_resources_unregister(ds);
+	return err;
+}
+
+static int mv88e6xxx_region_global_snapshot(struct devlink *dl,
+					    const struct devlink_region_ops *ops,
+					    struct netlink_ext_ack *extack,
+					    u8 **data)
+{
+	struct mv88e6xxx_region_priv *region_priv = ops->priv;
+	struct dsa_switch *ds = dsa_devlink_to_ds(dl);
+	struct mv88e6xxx_chip *chip = ds->priv;
+	u16 *registers;
+	int i, err;
+
+	registers = kmalloc_array(32, sizeof(u16), GFP_KERNEL);
+	if (!registers)
+		return -ENOMEM;
+
+	mv88e6xxx_reg_lock(chip);
+	for (i = 0; i < 32; i++) {
+		switch (region_priv->id) {
+		case MV88E6XXX_REGION_GLOBAL1:
+			err = mv88e6xxx_g1_read(chip, i, &registers[i]);
+			break;
+		case MV88E6XXX_REGION_GLOBAL2:
+			err = mv88e6xxx_g2_read(chip, i, &registers[i]);
+			break;
+		default:
+			err = -EOPNOTSUPP;
+		}
+
+		if (err) {
+			kfree(registers);
+			goto out;
+		}
+	}
+	*data = (u8 *)registers;
+out:
+	mv88e6xxx_reg_unlock(chip);
+
+	return err;
+}
+
+/* The ATU entry varies between mv88e6xxx chipset generations. Define
+ * a generic format which covers all the current and hopefully future
+ * mv88e6xxx generations
+ */
+
+struct mv88e6xxx_devlink_atu_entry {
+	/* The FID is scattered over multiple registers. */
+	u16 fid;
+	u16 atu_op;
+	u16 atu_data;
+	u16 atu_01;
+	u16 atu_23;
+	u16 atu_45;
+};
+
+static int mv88e6xxx_region_atu_snapshot_fid(struct mv88e6xxx_chip *chip,
+					     int fid,
+					     struct mv88e6xxx_devlink_atu_entry *table,
+					     int *count)
+{
+	u16 atu_op, atu_data, atu_01, atu_23, atu_45;
+	struct mv88e6xxx_atu_entry addr;
+	int err;
+
+	addr.state = 0;
+	eth_broadcast_addr(addr.mac);
+
+	do {
+		err = mv88e6xxx_g1_atu_getnext(chip, fid, &addr);
+		if (err)
+			return err;
+
+		if (!addr.state)
+			break;
+
+		err = mv88e6xxx_g1_read(chip, MV88E6XXX_G1_ATU_OP, &atu_op);
+		if (err)
+			return err;
+
+		err = mv88e6xxx_g1_read(chip, MV88E6XXX_G1_ATU_DATA, &atu_data);
+		if (err)
+			return err;
+
+		err = mv88e6xxx_g1_read(chip, MV88E6XXX_G1_ATU_MAC01, &atu_01);
+		if (err)
+			return err;
+
+		err = mv88e6xxx_g1_read(chip, MV88E6XXX_G1_ATU_MAC23, &atu_23);
+		if (err)
+			return err;
+
+		err = mv88e6xxx_g1_read(chip, MV88E6XXX_G1_ATU_MAC45, &atu_45);
+		if (err)
+			return err;
+
+		table[*count].fid = fid;
+		table[*count].atu_op = atu_op;
+		table[*count].atu_data = atu_data;
+		table[*count].atu_01 = atu_01;
+		table[*count].atu_23 = atu_23;
+		table[*count].atu_45 = atu_45;
+		(*count)++;
+	} while (!is_broadcast_ether_addr(addr.mac));
+
+	return 0;
+}
+
+static int mv88e6xxx_region_atu_snapshot(struct devlink *dl,
+					 const struct devlink_region_ops *ops,
+					 struct netlink_ext_ack *extack,
+					 u8 **data)
+{
+	struct dsa_switch *ds = dsa_devlink_to_ds(dl);
+	DECLARE_BITMAP(fid_bitmap, MV88E6XXX_N_FID);
+	struct mv88e6xxx_devlink_atu_entry *table;
+	struct mv88e6xxx_chip *chip = ds->priv;
+	int fid = -1, count, err;
+
+	table = kmalloc_array(mv88e6xxx_num_databases(chip),
+			      sizeof(struct mv88e6xxx_devlink_atu_entry),
+			      GFP_KERNEL);
+	if (!table)
+		return -ENOMEM;
+
+	memset(table, 0, mv88e6xxx_num_databases(chip) *
+	       sizeof(struct mv88e6xxx_devlink_atu_entry));
+
+	count = 0;
+
+	mv88e6xxx_reg_lock(chip);
+
+	err = mv88e6xxx_fid_map(chip, fid_bitmap);
+	if (err) {
+		kfree(table);
+		goto out;
+	}
+
+	while (1) {
+		fid = find_next_bit(fid_bitmap, MV88E6XXX_N_FID, fid + 1);
+		if (fid == MV88E6XXX_N_FID)
+			break;
+
+		err =  mv88e6xxx_region_atu_snapshot_fid(chip, fid, table,
+							 &count);
+		if (err) {
+			kfree(table);
+			goto out;
+		}
+	}
+	*data = (u8 *)table;
+out:
+	mv88e6xxx_reg_unlock(chip);
+
+	return err;
+}
+
+/**
+ * struct mv88e6xxx_devlink_vtu_entry - Devlink VTU entry
+ * @fid:   Global1/2:   FID and VLAN policy.
+ * @sid:   Global1/3:   SID, unknown filters and learning.
+ * @op:    Global1/5:   FID (old chipsets).
+ * @vid:   Global1/6:   VID, valid, and page.
+ * @data:  Global1/7-9: Membership data and priority override.
+ * @resvd: Reserved. Also happens to align the size to 16B.
+ *
+ * The VTU entry format varies between chipset generations, the
+ * descriptions above represent the superset of all possible
+ * information, not all fields are valid on all devices. Since this is
+ * a low-level debug interface, copy all data verbatim and defer
+ * parsing to the consumer.
+ */
+struct mv88e6xxx_devlink_vtu_entry {
+	u16 fid;
+	u16 sid;
+	u16 op;
+	u16 vid;
+	u16 data[3];
+	u16 resvd;
+};
+
+static int mv88e6xxx_region_vtu_snapshot(struct devlink *dl,
+					 const struct devlink_region_ops *ops,
+					 struct netlink_ext_ack *extack,
+					 u8 **data)
+{
+	struct mv88e6xxx_devlink_vtu_entry *table, *entry;
+	struct dsa_switch *ds = dsa_devlink_to_ds(dl);
+	struct mv88e6xxx_chip *chip = ds->priv;
+	struct mv88e6xxx_vtu_entry vlan;
+	int err;
+
+	table = kcalloc(mv88e6xxx_max_vid(chip) + 1,
+			sizeof(struct mv88e6xxx_devlink_vtu_entry),
+			GFP_KERNEL);
+	if (!table)
+		return -ENOMEM;
+
+	entry = table;
+	vlan.vid = mv88e6xxx_max_vid(chip);
+	vlan.valid = false;
+
+	mv88e6xxx_reg_lock(chip);
+
+	do {
+		err = mv88e6xxx_g1_vtu_getnext(chip, &vlan);
+		if (err)
+			break;
+
+		if (!vlan.valid)
+			break;
+
+		err = err ? : mv88e6xxx_g1_read(chip, MV88E6352_G1_VTU_FID,
+						&entry->fid);
+		err = err ? : mv88e6xxx_g1_read(chip, MV88E6352_G1_VTU_SID,
+						&entry->sid);
+		err = err ? : mv88e6xxx_g1_read(chip, MV88E6XXX_G1_VTU_OP,
+						&entry->op);
+		err = err ? : mv88e6xxx_g1_read(chip, MV88E6XXX_G1_VTU_VID,
+						&entry->vid);
+		err = err ? : mv88e6xxx_g1_read(chip, MV88E6XXX_G1_VTU_DATA1,
+						&entry->data[0]);
+		err = err ? : mv88e6xxx_g1_read(chip, MV88E6XXX_G1_VTU_DATA2,
+						&entry->data[1]);
+		err = err ? : mv88e6xxx_g1_read(chip, MV88E6XXX_G1_VTU_DATA3,
+						&entry->data[2]);
+		if (err)
+			break;
+
+		entry++;
+	} while (vlan.vid < mv88e6xxx_max_vid(chip));
+
+	mv88e6xxx_reg_unlock(chip);
+
+	if (err) {
+		kfree(table);
+		return err;
+	}
+
+	*data = (u8 *)table;
+	return 0;
+}
+
+/**
+ * struct mv88e6xxx_devlink_stu_entry - Devlink STU entry
+ * @sid:   Global1/3:   SID, unknown filters and learning.
+ * @vid:   Global1/6:   Valid bit.
+ * @data:  Global1/7-9: Membership data and priority override.
+ * @resvd: Reserved. In case we forgot something.
+ *
+ * The STU entry format varies between chipset generations. Peridot
+ * and Amethyst packs the STU data into Global1/7-8. Older silicon
+ * spreads the information across all three VTU data registers -
+ * inheriting the layout of even older hardware that had no STU at
+ * all. Since this is a low-level debug interface, copy all data
+ * verbatim and defer parsing to the consumer.
+ */
+struct mv88e6xxx_devlink_stu_entry {
+	u16 sid;
+	u16 vid;
+	u16 data[3];
+	u16 resvd;
+};
+
+static int mv88e6xxx_region_stu_snapshot(struct devlink *dl,
+					 const struct devlink_region_ops *ops,
+					 struct netlink_ext_ack *extack,
+					 u8 **data)
+{
+	struct mv88e6xxx_devlink_stu_entry *table, *entry;
+	struct dsa_switch *ds = dsa_devlink_to_ds(dl);
+	struct mv88e6xxx_chip *chip = ds->priv;
+	struct mv88e6xxx_stu_entry stu;
+	int err;
+
+	table = kcalloc(mv88e6xxx_max_sid(chip) + 1,
+			sizeof(struct mv88e6xxx_devlink_stu_entry),
+			GFP_KERNEL);
+	if (!table)
+		return -ENOMEM;
+
+	entry = table;
+	stu.sid = mv88e6xxx_max_sid(chip);
+	stu.valid = false;
+
+	mv88e6xxx_reg_lock(chip);
+
+	do {
+		err = mv88e6xxx_g1_stu_getnext(chip, &stu);
+		if (err)
+			break;
+
+		if (!stu.valid)
+			break;
+
+		err = err ? : mv88e6xxx_g1_read(chip, MV88E6352_G1_VTU_SID,
+						&entry->sid);
+		err = err ? : mv88e6xxx_g1_read(chip, MV88E6XXX_G1_VTU_VID,
+						&entry->vid);
+		err = err ? : mv88e6xxx_g1_read(chip, MV88E6XXX_G1_VTU_DATA1,
+						&entry->data[0]);
+		err = err ? : mv88e6xxx_g1_read(chip, MV88E6XXX_G1_VTU_DATA2,
+						&entry->data[1]);
+		err = err ? : mv88e6xxx_g1_read(chip, MV88E6XXX_G1_VTU_DATA3,
+						&entry->data[2]);
+		if (err)
+			break;
+
+		entry++;
+	} while (stu.sid < mv88e6xxx_max_sid(chip));
+
+	mv88e6xxx_reg_unlock(chip);
+
+	if (err) {
+		kfree(table);
+		return err;
+	}
+
+	*data = (u8 *)table;
+	return 0;
+}
+
+static int mv88e6xxx_region_pvt_snapshot(struct devlink *dl,
+					 const struct devlink_region_ops *ops,
+					 struct netlink_ext_ack *extack,
+					 u8 **data)
+{
+	struct dsa_switch *ds = dsa_devlink_to_ds(dl);
+	struct mv88e6xxx_chip *chip = ds->priv;
+	int dev, port, err;
+	u16 *pvt, *cur;
+
+	pvt = kcalloc(MV88E6XXX_MAX_PVT_ENTRIES, sizeof(*pvt), GFP_KERNEL);
+	if (!pvt)
+		return -ENOMEM;
+
+	mv88e6xxx_reg_lock(chip);
+
+	cur = pvt;
+	for (dev = 0; dev < MV88E6XXX_MAX_PVT_SWITCHES; dev++) {
+		for (port = 0; port < MV88E6XXX_MAX_PVT_PORTS; port++) {
+			err = mv88e6xxx_g2_pvt_read(chip, dev, port, cur);
+			if (err)
+				break;
+
+			cur++;
+		}
+	}
+
+	mv88e6xxx_reg_unlock(chip);
+
+	if (err) {
+		kfree(pvt);
+		return err;
+	}
+
+	*data = (u8 *)pvt;
+	return 0;
+}
+
+static int mv88e6xxx_region_port_snapshot(struct devlink_port *devlink_port,
+					  const struct devlink_port_region_ops *ops,
+					  struct netlink_ext_ack *extack,
+					  u8 **data)
+{
+	struct dsa_switch *ds = dsa_devlink_port_to_ds(devlink_port);
+	int port = dsa_devlink_port_to_port(devlink_port);
+	struct mv88e6xxx_chip *chip = ds->priv;
+	u16 *registers;
+	int i, err;
+
+	registers = kmalloc_array(32, sizeof(u16), GFP_KERNEL);
+	if (!registers)
+		return -ENOMEM;
+
+	mv88e6xxx_reg_lock(chip);
+	for (i = 0; i < 32; i++) {
+		err = mv88e6xxx_port_read(chip, port, i, &registers[i]);
+		if (err) {
+			kfree(registers);
+			goto out;
+		}
+	}
+	*data = (u8 *)registers;
+out:
+	mv88e6xxx_reg_unlock(chip);
+
+	return err;
+}
+
+static struct mv88e6xxx_region_priv mv88e6xxx_region_global1_priv = {
+	.id = MV88E6XXX_REGION_GLOBAL1,
+};
+
+static struct devlink_region_ops mv88e6xxx_region_global1_ops = {
+	.name = "global1",
+	.snapshot = mv88e6xxx_region_global_snapshot,
+	.destructor = kfree,
+	.priv = &mv88e6xxx_region_global1_priv,
+};
+
+static struct mv88e6xxx_region_priv mv88e6xxx_region_global2_priv = {
+	.id = MV88E6XXX_REGION_GLOBAL2,
+};
+
+static struct devlink_region_ops mv88e6xxx_region_global2_ops = {
+	.name = "global2",
+	.snapshot = mv88e6xxx_region_global_snapshot,
+	.destructor = kfree,
+	.priv = &mv88e6xxx_region_global2_priv,
+};
+
+static struct devlink_region_ops mv88e6xxx_region_atu_ops = {
+	.name = "atu",
+	.snapshot = mv88e6xxx_region_atu_snapshot,
+	.destructor = kfree,
+};
+
+static struct devlink_region_ops mv88e6xxx_region_vtu_ops = {
+	.name = "vtu",
+	.snapshot = mv88e6xxx_region_vtu_snapshot,
+	.destructor = kfree,
+};
+
+static struct devlink_region_ops mv88e6xxx_region_stu_ops = {
+	.name = "stu",
+	.snapshot = mv88e6xxx_region_stu_snapshot,
+	.destructor = kfree,
+};
+
+static struct devlink_region_ops mv88e6xxx_region_pvt_ops = {
+	.name = "pvt",
+	.snapshot = mv88e6xxx_region_pvt_snapshot,
+	.destructor = kfree,
+};
+
+static const struct devlink_port_region_ops mv88e6xxx_region_port_ops = {
+	.name = "port",
+	.snapshot = mv88e6xxx_region_port_snapshot,
+	.destructor = kfree,
+};
+
+struct mv88e6xxx_region {
+	struct devlink_region_ops *ops;
+	u64 size;
+
+	bool (*cond)(struct mv88e6xxx_chip *chip);
+};
+
+static struct mv88e6xxx_region mv88e6xxx_regions[] = {
+	[MV88E6XXX_REGION_GLOBAL1] = {
+		.ops = &mv88e6xxx_region_global1_ops,
+		.size = 32 * sizeof(u16)
+	},
+	[MV88E6XXX_REGION_GLOBAL2] = {
+		.ops = &mv88e6xxx_region_global2_ops,
+		.size = 32 * sizeof(u16) },
+	[MV88E6XXX_REGION_ATU] = {
+		.ops = &mv88e6xxx_region_atu_ops
+	  /* calculated at runtime */
+	},
+	[MV88E6XXX_REGION_VTU] = {
+		.ops = &mv88e6xxx_region_vtu_ops
+	  /* calculated at runtime */
+	},
+	[MV88E6XXX_REGION_STU] = {
+		.ops = &mv88e6xxx_region_stu_ops,
+		.cond = mv88e6xxx_has_stu,
+	  /* calculated at runtime */
+	},
+	[MV88E6XXX_REGION_PVT] = {
+		.ops = &mv88e6xxx_region_pvt_ops,
+		.size = MV88E6XXX_MAX_PVT_ENTRIES * sizeof(u16),
+		.cond = mv88e6xxx_has_pvt,
+	},
+};
+
+void mv88e6xxx_teardown_devlink_regions_global(struct dsa_switch *ds)
+{
+	struct mv88e6xxx_chip *chip = ds->priv;
+	int i;
+
+	for (i = 0; i < ARRAY_SIZE(mv88e6xxx_regions); i++)
+		dsa_devlink_region_destroy(chip->regions[i]);
+}
+
+void mv88e6xxx_teardown_devlink_regions_port(struct dsa_switch *ds, int port)
+{
+	struct mv88e6xxx_chip *chip = ds->priv;
+
+	dsa_devlink_region_destroy(chip->ports[port].region);
+}
+
+int mv88e6xxx_setup_devlink_regions_port(struct dsa_switch *ds, int port)
+{
+	struct mv88e6xxx_chip *chip = ds->priv;
+	struct devlink_region *region;
+
+	region = dsa_devlink_port_region_create(ds,
+						port,
+						&mv88e6xxx_region_port_ops, 1,
+						32 * sizeof(u16));
+	if (IS_ERR(region))
+		return PTR_ERR(region);
+
+	chip->ports[port].region = region;
+
+	return 0;
+}
+
+int mv88e6xxx_setup_devlink_regions_global(struct dsa_switch *ds)
+{
+	bool (*cond)(struct mv88e6xxx_chip *chip);
+	struct mv88e6xxx_chip *chip = ds->priv;
+	struct devlink_region_ops *ops;
+	struct devlink_region *region;
+	u64 size;
+	int i, j;
+
+	for (i = 0; i < ARRAY_SIZE(mv88e6xxx_regions); i++) {
+		ops = mv88e6xxx_regions[i].ops;
+		size = mv88e6xxx_regions[i].size;
+		cond = mv88e6xxx_regions[i].cond;
+
+		if (cond && !cond(chip))
+			continue;
+
+		switch (i) {
+		case MV88E6XXX_REGION_ATU:
+			size = mv88e6xxx_num_databases(chip) *
+				sizeof(struct mv88e6xxx_devlink_atu_entry);
+			break;
+		case MV88E6XXX_REGION_VTU:
+			size = (mv88e6xxx_max_vid(chip) + 1) *
+				sizeof(struct mv88e6xxx_devlink_vtu_entry);
+			break;
+		case MV88E6XXX_REGION_STU:
+			size = (mv88e6xxx_max_sid(chip) + 1) *
+				sizeof(struct mv88e6xxx_devlink_stu_entry);
+			break;
+		}
+
+		region = dsa_devlink_region_create(ds, ops, 1, size);
+		if (IS_ERR(region))
+			goto out;
+		chip->regions[i] = region;
+	}
+	return 0;
+
+out:
+	for (j = 0; j < i; j++)
+		dsa_devlink_region_destroy(chip->regions[j]);
+
+	return PTR_ERR(region);
+}
+
+int mv88e6xxx_devlink_info_get(struct dsa_switch *ds,
+			       struct devlink_info_req *req,
+			       struct netlink_ext_ack *extack)
+{
+	struct mv88e6xxx_chip *chip = ds->priv;
+	int err;
+
+	err = devlink_info_driver_name_put(req, "mv88e6xxx");
+	if (err)
+		return err;
+
+	return devlink_info_version_fixed_put(req,
+					      DEVLINK_INFO_VERSION_GENERIC_ASIC_ID,
+					      chip->info->name);
+}

@@ -1,56 +1,54 @@
-// SPDX-License-Identifier: GPL-2.0-or-later
+return cx_read(addr);
+}
+
+static inline int cx23888_ir_and_or4(struct cx23885_dev *dev, u32 addr,
+				     u32 and_mask, u32 or_value)
+{
+	cx_andor(addr, ~and_mask, or_value);
+	return 0;
+}
+
 /*
- * A-Link DTU(m) remote controller keytable
+ * Rx and Tx Clock Divider register computations
  *
- * Copyright (C) 2010 Antti Palosaari <crope@iki.fi>
+ * Note the largest clock divider value of 0xffff corresponds to:
+ *	(0xffff + 1) * 1000 / 108/2 MHz = 1,213,629.629... ns
+ * which fits in 21 bits, so we'll use unsigned int for time arguments.
  */
-
-#include <media/rc-map.h>
-#include <linux/module.h>
-
-/* A-Link DTU(m) slim remote, 6 rows, 3 columns. */
-static struct rc_map_table alink_dtu_m[] = {
-	{ 0x0800, KEY_VOLUMEUP },
-	{ 0x0801, KEY_NUMERIC_1 },
-	{ 0x0802, KEY_NUMERIC_3 },
-	{ 0x0803, KEY_NUMERIC_7 },
-	{ 0x0804, KEY_NUMERIC_9 },
-	{ 0x0805, KEY_NEW },             /* symbol: PIP */
-	{ 0x0806, KEY_NUMERIC_0 },
-	{ 0x0807, KEY_CHANNEL },         /* JUMP */
-	{ 0x080d, KEY_NUMERIC_5 },
-	{ 0x080f, KEY_NUMERIC_2 },
-	{ 0x0812, KEY_POWER2 },
-	{ 0x0814, KEY_CHANNELUP },
-	{ 0x0816, KEY_VOLUMEDOWN },
-	{ 0x0818, KEY_NUMERIC_6 },
-	{ 0x081a, KEY_MUTE },
-	{ 0x081b, KEY_NUMERIC_8 },
-	{ 0x081c, KEY_NUMERIC_4 },
-	{ 0x081d, KEY_CHANNELDOWN },
-};
-
-static struct rc_map_list alink_dtu_m_map = {
-	.map = {
-		.scan     = alink_dtu_m,
-		.size     = ARRAY_SIZE(alink_dtu_m),
-		.rc_proto = RC_PROTO_NEC,
-		.name     = RC_MAP_ALINK_DTU_M,
-	}
-};
-
-static int __init init_rc_map_alink_dtu_m(void)
+static inline u16 count_to_clock_divider(unsigned int d)
 {
-	return rc_map_register(&alink_dtu_m_map);
+	if (d > RXCLK_RCD + 1)
+		d = RXCLK_RCD;
+	else if (d < 2)
+		d = 1;
+	else
+		d--;
+	return (u16) d;
 }
 
-static void __exit exit_rc_map_alink_dtu_m(void)
+static inline u16 carrier_freq_to_clock_divider(unsigned int freq)
 {
-	rc_map_unregister(&alink_dtu_m_map);
+	return count_to_clock_divider(
+			  DIV_ROUND_CLOSEST(CX23888_IR_REFCLK_FREQ, freq * 16));
 }
 
-module_init(init_rc_map_alink_dtu_m)
-module_exit(exit_rc_map_alink_dtu_m)
+static inline unsigned int clock_divider_to_carrier_freq(unsigned int divider)
+{
+	return DIV_ROUND_CLOSEST(CX23888_IR_REFCLK_FREQ, (divider + 1) * 16);
+}
 
-MODULE_LICENSE("GPL");
-MODULE_AUTHOR("Antti Palosaari <crope@iki.fi>");
+static inline unsigned int clock_divider_to_freq(unsigned int divider,
+						 unsigned int rollovers)
+{
+	return DIV_ROUND_CLOSEST(CX23888_IR_REFCLK_FREQ,
+				 (divider + 1) * rollovers);
+}
+
+/*
+ * Low Pass Filter register calculations
+ *
+ * Note the largest count value of 0xffff corresponds to:
+ *	0xffff * 1000 / 108/2 MHz = 1,213,611.11... ns
+ * which fits in 21 bits, so we'll use unsigned int for time arguments.
+ */
+static inline u16 count_to_lpf_

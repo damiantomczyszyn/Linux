@@ -1,3 +1,1 @@
-_BITS) \
-    $(wildcard include/config/HAVE_ARCH_MMAP_RND_COMPAT_BITS) \
-    $(wildcard include/config/ARCH_USES_HIGH_VMA_FLAGS) \
+cmd_drivers/net/dsa/b53/b53_serdes.mod := { echo  drivers/net/dsa/b53/b53_serdes.o;  echo; } > drivers/net/dsa/b53/b53_serdes.mod

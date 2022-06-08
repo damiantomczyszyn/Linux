@@ -111,11 +111,6 @@ kernel/crypto/camellia_generic.ko
 kernel/crypto/cast_common.ko
 kernel/crypto/cast5_generic.ko
 kernel/crypto/cast6_generic.ko
-kernel/crypto/arc4.ko
-kernel/crypto/tea.ko
-kernel/crypto/khazad.ko
-kernel/crypto/anubis.ko
-kernel/crypto/seed.ko
 kernel/crypto/deflate.ko
 kernel/crypto/michael_mic.ko
 kernel/crypto/crc32c_generic.ko
@@ -151,11 +146,9 @@ kernel/block/mq-deadline.ko
 kernel/block/t10-pi.ko
 kernel/lib/math/rational.ko
 kernel/lib/crypto/libaes.ko
-kernel/lib/crypto/libarc4.ko
 kernel/lib/crypto/libblake2s.ko
 kernel/lib/crypto/libdes.ko
 kernel/lib/crypto/libsha256.ko
-kernel/lib/btree.ko
 kernel/lib/bitrev.ko
 kernel/lib/linear_ranges.ko
 kernel/lib/packing.ko
@@ -188,7 +181,6 @@ kernel/lib/asn1_encoder.ko
 kernel/lib/fonts/font.ko
 kernel/lib/oid_registry.ko
 kernel/lib/ucs2_string.ko
-kernel/lib/pldmfw/pldmfw.ko
 kernel/drivers/pinctrl/pinctrl-amd.ko
 kernel/drivers/pinctrl/intel/pinctrl-intel.ko
 kernel/drivers/pci/hotplug/acpiphp.ko
@@ -223,7 +215,6 @@ kernel/drivers/char/hw_random/virtio-rng.ko
 kernel/drivers/char/tpm/tpm.ko
 kernel/drivers/iommu/ioasid.ko
 kernel/drivers/iommu/iova.ko
-kernel/drivers/gpu/drm/drm_mipi_dsi.ko
 kernel/drivers/gpu/drm/drm_panel_orientation_quirks.ko
 kernel/drivers/connector/cn.ko
 kernel/drivers/base/firmware_loader/firmware_class.ko

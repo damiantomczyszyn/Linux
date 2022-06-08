@@ -1,2 +1,3 @@
-drivers/media/rc/keymaps/rc-terratec-cinergy-xs.o
-
+C:
+	case CX23885_BOARD_TT_CT2_4500_CI:
+	case CX2388

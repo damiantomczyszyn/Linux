@@ -1,42 +1,47 @@
-IOAPIC) \
-    $(wildcard include/config/PCI) \
-    $(wildcard include/config/ACPI_WMI) \
-    $(wildcard include/config/ACPI_NUMA) \
-    $(wildcard include/config/HIBERNATION) \
-    $(wildcard include/config/ACPI_HOTPLUG_MEMORY) \
-    $(wildcard include/config/ACPI_CONTAINER) \
-    $(wildcard include/config/ACPI_GTDT) \
-    $(wildcard include/config/PM) \
-    $(wildcard include/config/GPIOLIB) \
-    $(wildcard include/config/ACPI_TABLE_UPGRADE) \
-    $(wildcard include/config/ACPI_WATCHDOG) \
-    $(wildcard include/config/ACPI_SPCR_TABLE) \
-    $(wildcard include/config/ACPI_GENERIC_GSI) \
-    $(wildcard include/config/ACPI_LPIT) \
-    $(wildcard include/config/ACPI_PPTT) \
-    $(wildcard include/config/ACPI_PCC) \
-  include/linux/ioport.h \
-  include/linux/irqdomain.h \
-    $(wildcard include/config/IRQ_DOMAIN_HIERARCHY) \
-    $(wildcard include/config/GENERIC_IRQ_DEBUGFS) \
-    $(wildcard include/config/IRQ_DOMAIN) \
-    $(wildcard include/config/IRQ_DOMAIN_NOMAP) \
-  include/linux/irqhandler.h \
-  include/linux/of.h \
-    $(wildcard include/config/OF_DYNAMIC) \
-    $(wildcard include/config/SPARC) \
-    $(wildcard include/config/OF_PROMTREE) \
-    $(wildcard include/config/OF_KOBJ) \
-    $(wildcard include/config/OF_NUMA) \
-    $(wildcard include/config/OF_OVERLAY) \
-  include/linux/mod_devicetable.h \
-  include/linux/uuid.h \
-  include/uapi/linux/uuid.h \
-  include/linux/property.h \
-  include/linux/fwnode.h \
-  include/linux/resource_ext.h \
-  include/linux/device.h \
-    $(wildcard include/config/GENERIC_MSI_IRQ_DOMAIN) \
-    $(wildcard include/config/GENERIC_MSI_IRQ) \
-    $(wildcard include/config/ENERGY_MODEL) \
-    $(wildcard inclu
+de/linux/ptr_ring.h \
+  include/linux/seq_file_net.h \
+  include/net/netprio_cgroup.h \
+  include/net/xdp.h \
+  include/uapi/linux/neighbour.h \
+  include/linux/netlink.h \
+  include/net/scm.h \
+    $(wildcard include/config/SECURITY_NETWORK) \
+  include/linux/security.h \
+    $(wildcard include/config/SECURITY_INFINIBAND) \
+    $(wildcard include/config/SECURITY_NETWORK_XFRM) \
+    $(wildcard include/config/SECURITY_PATH) \
+    $(wildcard include/config/SECURITYFS) \
+  include/linux/kernel_read_file.h \
+  include/uapi/linux/netlink.h \
+  include/uapi/linux/netdevice.h \
+  include/uapi/linux/if.h \
+  include/uapi/linux/hdlc/ioctl.h \
+  include/linux/if_ether.h \
+  include/linux/if_link.h \
+  include/uapi/linux/if_link.h \
+  include/uapi/linux/if_bonding.h \
+  include/uapi/linux/pkt_cls.h \
+  include/uapi/linux/pkt_sched.h \
+  include/linux/hashtable.h \
+  include/linux/inetdevice.h \
+    $(wildcard include/config/INET) \
+  include/linux/ip.h \
+  include/uapi/linux/ip.h \
+  include/linux/rtnetlink.h \
+    $(wildcard include/config/NET_INGRESS) \
+    $(wildcard include/config/NET_EGRESS) \
+  include/uapi/linux/rtnetlink.h \
+  include/uapi/linux/if_addr.h \
+  include/linux/etherdevice.h \
+  include/linux/crc32.h \
+  include/linux/bitrev.h \
+    $(wildcard include/config/HAVE_ARCH_BITREVERSE) \
+  arch/x86/include/generated/asm/unaligned.h \
+  include/asm-generic/unaligned.h \
+  include/linux/unaligned/packed_struct.h \
+  include/media/videobuf-core.h \
+  include/media/videobuf-vmalloc.h \
+  drivers/media/pci/cx18/cx18-queue.h \
+  drivers/media/pci/cx18/cx18-streams.h \
+  drivers/media/pci/cx18/cx18-fileops.h \
+  drivers/media/pci/cx18/cx18-alsa

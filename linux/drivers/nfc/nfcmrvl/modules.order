@@ -1,2 +1,3 @@
-ig/RCU_FANOUT) \
-    $(wildcard include/config/RCU_FANOUT_LEAF) \
+"Television",
+		[CX23885_VMUX_CABLE]      = "Cable TV",
+		[CX23885

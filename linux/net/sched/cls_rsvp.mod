@@ -1,2 +1,2 @@
-lude/config/SHMEM) \
- 
+dio",
+		.cmds_start	= 

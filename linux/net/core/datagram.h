@@ -1,7 +1,12 @@
-nclude/config/GENERIC_CLOCKEVENTS_BROADCAST) \
-  include/linux/clockchips.h \
-    $(wildcard include/config/ARCH_HAS_TICK_BROADCAST) \
-  include/linux/clocksource.h \
-    $(wildcard include/config/ARCH_CLOCKSOURCE_DATA) \
-    $(wildcard include/config/GENERIC_GETTIMEOFDAY) \
-    $(wildcard include/config/CLOCKSOURCE_WATC
+nt));
+	WRITE_ONCE(rdp->dynticks_nesting, 1);
+	WARN_ON_ONCE(rdp->dynticks_nmi_nesting);
+	WRITE_ONCE(rdp->dynticks_nmi_nesting, DYNTICK_IRQ_NONIDLE);
+	instrumentation_end();
+}
+
+/**
+ * rcu_idle_exit - inform RCU that current CPU is leaving idle
+ *
+ * Exit idle mode, in other words, -enter- the mode in which RCU
+ * read-side

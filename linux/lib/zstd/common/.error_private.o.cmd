@@ -1,135 +1,161 @@
-NTRIES);
-	seq_printf(m, " indirect dependencies:         %11lu\n",
-			sum_forward_deps);
-
-	/*
-	 * Total number of dependencies:
-	 *
-	 * All irq-safe locks may nest inside irq-unsafe locks,
-	 * plus all the other known dependencies:
-	 */
-	seq_printf(m, " all direct dependencies:       %11lu\n",
-			nr_irq_unsafe * nr_irq_safe +
-			nr_hardirq_unsafe * nr_hardirq_safe +
-			nr_list_entries);
-
-#ifdef CONFIG_PROVE_LOCKING
-	seq_printf(m, " dependency chains:             %11lu [max: %lu]\n",
-			lock_chain_count(), MAX_LOCKDEP_CHAINS);
-	seq_printf(m, " dependency chain hlocks used:  %11lu [max: %lu]\n",
-			MAX_LOCKDEP_CHAIN_HLOCKS -
-			(nr_free_chain_hlocks + nr_lost_chain_hlocks),
-			MAX_LOCKDEP_CHAIN_HLOCKS);
-	seq_printf(m, " dependency chain hlocks lost:  %11u\n",
-			nr_lost_chain_hlocks);
-#endif
-
-#ifdef CONFIG_TRACE_IRQFLAGS
-	seq_printf(m, " in-hardirq chains:             %11u\n",
-			nr_hardirq_chains);
-	seq_printf(m, " in-softirq chains:             %11u\n",
-			nr_softirq_chains);
-#endif
-	seq_printf(m, " in-process chains:             %11u\n",
-			nr_process_chains);
-	seq_printf(m, " stack-trace entries:           %11lu [max: %lu]\n",
-			nr_stack_trace_entries, MAX_STACK_TRACE_ENTRIES);
-#if defined(CONFIG_TRACE_IRQFLAGS) && defined(CONFIG_PROVE_LOCKING)
-	seq_printf(m, " number of stack traces:        %11llu\n",
-		   lockdep_stack_trace_count());
-	seq_printf(m, " number of stack hash chains:   %11llu\n",
-		   lockdep_stack_hash_count());
-#endif
-	seq_printf(m, " combined max dependencies:     %11u\n",
-			(nr_hardirq_chains + 1) *
-			(nr_softirq_chains + 1) *
-			(nr_process_chains + 1)
-	);
-	seq_printf(m, " hardirq-safe locks:            %11lu\n",
-			nr_hardirq_safe);
-	seq_printf(m, " hardirq-unsafe locks:          %11lu\n",
-			nr_hardirq_unsafe);
-	seq_printf(m, " softirq-safe locks:            %11lu\n",
-			nr_softirq_safe);
-	seq_printf(m, " softirq-unsafe locks:          %11lu\n",
-			nr_softirq_unsafe);
-	seq_printf(m, " irq-safe locks:                %11lu\n",
-			nr_irq_safe);
-	seq_printf(m, " irq-unsafe locks:              %11lu\n",
-			nr_irq_unsafe);
-
-	seq_printf(m, " hardirq-read-safe locks:       %11lu\n",
-			nr_hardirq_read_safe);
-	seq_printf(m, " hardirq-read-unsafe locks:     %11lu\n",
-			nr_hardirq_read_unsafe);
-	seq_printf(m, " softirq-read-safe locks:       %11lu\n",
-			nr_softirq_read_safe);
-	seq_printf(m, " softirq-read-unsafe locks:     %11lu\n",
-			nr_softirq_read_unsafe);
-	seq_printf(m, " irq-read-safe locks:           %11lu\n",
-			nr_irq_read_safe);
-	seq_printf(m, " irq-read-unsafe locks:         %11lu\n",
-			nr_irq_read_unsafe);
-
-	seq_printf(m, " uncategorized locks:           %11lu\n",
-			nr_uncategorized);
-	seq_printf(m, " unused locks:                  %11lu\n",
-			nr_unused);
-	seq_printf(m, " max locking depth:             %11u\n",
-			max_lockdep_depth);
-#ifdef CONFIG_PROVE_LOCKING
-	seq_printf(m, " max bfs queue depth:           %11u\n",
-			max_bfs_queue_depth);
-#endif
-	seq_printf(m, " max lock class index:          %11lu\n",
-			max_lock_class_idx);
-	lockdep_stats_debug_show(m);
-	seq_printf(m, " debug_locks:                   %11u\n",
-			debug_locks);
-
-	/*
-	 * Zapped classes and lockdep data buffers reuse statistics.
-	 */
-	seq_puts(m, "\n");
-	seq_printf(m, " zapped classes:                %11lu\n",
-			nr_zapped_classes);
-#ifdef CONFIG_PROVE_LOCKING
-	seq_printf(m, " zapped lock chains:            %11lu\n",
-			nr_zapped_lock_chains);
-	seq_printf(m, " large chain blocks:            %11u\n",
-			nr_large_chain_blocks);
-#endif
-	return 0;
+RRAY_SIZE(lock_classes); i++) {
+		class = &lock_classes[i];
+		if (in_list(e, &class->locks_after) ||
+		    in_list(e, &class->locks_before))
+			return true;
+	}
+	return false;
 }
 
-#ifdef CONFIG_LOCK_STAT
-
-struct lock_stat_data {
-	struct lock_class *class;
-	struct lock_class_stats stats;
-};
-
-struct lock_stat_seq {
-	struct lock_stat_data *iter_end;
-	struct lock_stat_data stats[MAX_LOCKDEP_KEYS];
-};
-
-/*
- * sort on absolute number of contentions
- */
-static int lock_stat_cmp(const void *l, const void *r)
+static bool class_lock_list_valid(struct lock_class *c, struct list_head *h)
 {
-	const struct lock_stat_data *dl = l, *dr = r;
-	unsigned long nl, nr;
+	struct lock_list *e;
 
-	nl = dl->stats.read_waittime.nr + dl->stats.write_waittime.nr;
-	nr = dr->stats.read_waittime.nr + dr->stats.write_waittime.nr;
-
-	return nr - nl;
+	list_for_each_entry(e, h, entry) {
+		if (e->links_to != c) {
+			printk(KERN_INFO "class %s: mismatch for lock entry %ld; class %s <> %s",
+			       c->name ? : "(?)",
+			       (unsigned long)(e - list_entries),
+			       e->links_to && e->links_to->name ?
+			       e->links_to->name : "(?)",
+			       e->class && e->class->name ? e->class->name :
+			       "(?)");
+			return false;
+		}
+	}
+	return true;
 }
 
-static void seq_line(struct seq_file *m, char c, int offset, int length)
+#ifdef CONFIG_PROVE_LOCKING
+static u16 chain_hlocks[MAX_LOCKDEP_CHAIN_HLOCKS];
+#endif
+
+static bool check_lock_chain_key(struct lock_chain *chain)
 {
+#ifdef CONFIG_PROVE_LOCKING
+	u64 chain_key = INITIAL_CHAIN_KEY;
 	int i;
 
-	for (i = 0;
+	for (i = chain->base; i < chain->base + chain->depth; i++)
+		chain_key = iterate_chain_key(chain_key, chain_hlocks[i]);
+	/*
+	 * The 'unsigned long long' casts avoid that a compiler warning
+	 * is reported when building tools/lib/lockdep.
+	 */
+	if (chain->chain_key != chain_key) {
+		printk(KERN_INFO "chain %lld: key %#llx <> %#llx\n",
+		       (unsigned long long)(chain - lock_chains),
+		       (unsigned long long)chain->chain_key,
+		       (unsigned long long)chain_key);
+		return false;
+	}
+#endif
+	return true;
+}
+
+static bool in_any_zapped_class_list(struct lock_class *class)
+{
+	struct pending_free *pf;
+	int i;
+
+	for (i = 0, pf = delayed_free.pf; i < ARRAY_SIZE(delayed_free.pf); i++, pf++) {
+		if (in_list(&class->lock_entry, &pf->zapped))
+			return true;
+	}
+
+	return false;
+}
+
+static bool __check_data_structures(void)
+{
+	struct lock_class *class;
+	struct lock_chain *chain;
+	struct hlist_head *head;
+	struct lock_list *e;
+	int i;
+
+	/* Check whether all classes occur in a lock list. */
+	for (i = 0; i < ARRAY_SIZE(lock_classes); i++) {
+		class = &lock_classes[i];
+		if (!in_list(&class->lock_entry, &all_lock_classes) &&
+		    !in_list(&class->lock_entry, &free_lock_classes) &&
+		    !in_any_zapped_class_list(class)) {
+			printk(KERN_INFO "class %px/%s is not in any class list\n",
+			       class, class->name ? : "(?)");
+			return false;
+		}
+	}
+
+	/* Check whether all classes have valid lock lists. */
+	for (i = 0; i < ARRAY_SIZE(lock_classes); i++) {
+		class = &lock_classes[i];
+		if (!class_lock_list_valid(class, &class->locks_before))
+			return false;
+		if (!class_lock_list_valid(class, &class->locks_after))
+			return false;
+	}
+
+	/* Check the chain_key of all lock chains. */
+	for (i = 0; i < ARRAY_SIZE(chainhash_table); i++) {
+		head = chainhash_table + i;
+		hlist_for_each_entry_rcu(chain, head, entry) {
+			if (!check_lock_chain_key(chain))
+				return false;
+		}
+	}
+
+	/*
+	 * Check whether all list entries that are in use occur in a class
+	 * lock list.
+	 */
+	for_each_set_bit(i, list_entries_in_use, ARRAY_SIZE(list_entries)) {
+		e = list_entries + i;
+		if (!in_any_class_list(&e->entry)) {
+			printk(KERN_INFO "list entry %d is not in any class list; class %s <> %s\n",
+			       (unsigned int)(e - list_entries),
+			       e->class->name ? : "(?)",
+			       e->links_to->name ? : "(?)");
+			return false;
+		}
+	}
+
+	/*
+	 * Check whether all list entries that are not in use do not occur in
+	 * a class lock list.
+	 */
+	for_each_clear_bit(i, list_entries_in_use, ARRAY_SIZE(list_entries)) {
+		e = list_entries + i;
+		if (in_any_class_list(&e->entry)) {
+			printk(KERN_INFO "list entry %d occurs in a class list; class %s <> %s\n",
+			       (unsigned int)(e - list_entries),
+			       e->class && e->class->name ? e->class->name :
+			       "(?)",
+			       e->links_to && e->links_to->name ?
+			       e->links_to->name : "(?)");
+			return false;
+		}
+	}
+
+	return true;
+}
+
+int check_consistency = 0;
+module_param(check_consistency, int, 0644);
+
+static void check_data_structures(void)
+{
+	static bool once = false;
+
+	if (check_consistency && !once) {
+		if (!__check_data_structures()) {
+			once = true;
+			WARN_ON(once);
+		}
+	}
+}
+
+#else /* CONFIG_DEBUG_LOCKDEP */
+
+static inline void check_data_structures(void) { }
+
+#

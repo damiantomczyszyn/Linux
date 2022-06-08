@@ -1,241 +1,276 @@
-config/X86_P6_NOP) \
-    $(wildcard include/config/MATOM) \
-    $(wildcard include/config/PARAVIRT_XXL) \
-  arch/x86/include/asm/disabled-features.h \
-    $(wildcard include/config/X86_SMAP) \
-    $(wildcard include/config/X86_UMIP) \
-    $(wildcard include/config/X86_INTEL_MEMORY_PROTECTION_KEYS) \
-    $(wildcard include/config/X86_5LEVEL) \
-    $(wildcard include/config/PAGE_TABLE_ISOLATION) \
-    $(wildcard include/config/INTEL_IOMMU_SVM) \
-    $(wildcard include/config/X86_SGX) \
-  include/asm-generic/bitops/const_hweight.h \
-  include/asm-generic/bitops/instrumented-atomic.h \
-  include/linux/instrumented.h \
-  include/asm-generic/bitops/instrumented-non-atomic.h \
-    $(wildcard include/config/KCSAN_ASSUME_PLAIN_WRITES_ATOMIC) \
-  include/asm-generic/bitops/instrumented-lock.h \
-  include/asm-generic/bitops/le.h \
-  arch/x86/include/uapi/asm/byteorder.h \
-  include/linux/byteorder/little_endian.h \
-  include/uapi/linux/byteorder/little_endian.h \
-  include/linux/swab.h \
-  include/uapi/linux/swab.h \
-  arch/x86/include/uapi/asm/swab.h \
-  include/linux/byteorder/generic.h \
-  include/asm-generic/bitops/ext2-atomic-setbit.h \
-  include/vdso/math64.h \
-  include/linux/time64.h \
-  include/vdso/time64.h \
-  include/uapi/linux/time.h \
-  include/uapi/linux/time_types.h \
-  include/linux/time32.h \
-  include/linux/timex.h \
-  include/uapi/linux/timex.h \
-  include/uapi/linux/param.h \
-  arch/x86/include/generated/uapi/asm/param.h \
-  include/asm-generic/param.h \
-    $(wildcard include/config/HZ) \
-  include/uapi/asm-generic/param.h \
-  arch/x86/include/asm/timex.h \
-    $(wildcard include/config/X86_TSC) \
-  arch/x86/include/asm/processor.h \
-    $(wildcard include/config/X86_VMX_FEATURE_NAMES) \
-    $(wildcard include/config/X86_IOPL_IOPERM) \
-    $(wildcard include/config/STACKPROTECTOR) \
-    $(wildcard include/config/VM86) \
-    $(wildcard include/config/X86_DEBUGCTLMSR) \
-    $(wildcard include/config/CPU_SUP_AMD) \
-    $(wildcard include/config/XEN) \
-  arch/x86/include/asm/processor-flags.h \
-  arch/x86/include/uapi/asm/processor-flags.h \
-  include/linux/mem_encrypt.h \
-    $(wildcard include/config/ARCH_HAS_MEM_ENCRYPT) \
-    $(wildcard include/config/AMD_MEM_ENCRYPT) \
-  arch/x86/include/asm/mem_encrypt.h \
-  include/linux/init.h \
-    $(wildcard include/config/STRICT_KERNEL_RWX) \
-    $(wildcard include/config/STRICT_MODULE_RWX) \
-    $(wildcard include/config/LTO_CLANG) \
-  include/linux/cc_platform.h \
-    $(wildcard include/config/ARCH_HAS_CC_PLATFORM) \
-  arch/x86/include/uapi/asm/bootparam.h \
-  include/linux/screen_info.h \
-  include/uapi/linux/screen_info.h \
-  include/linux/apm_bios.h \
-  include/uapi/linux/apm_bios.h \
-  include/uapi/linux/ioctl.h \
-  arch/x86/include/generated/uapi/asm/ioctl.h \
-  include/asm-generic/ioctl.h \
-  include/uapi/asm-generic/ioctl.h \
-  include/linux/edd.h \
-  include/uapi/linux/edd.h \
-  arch/x86/include/asm/ist.h \
-  arch/x86/include/uapi/asm/ist.h \
-  include/video/edid.h \
-    $(wildcard include/config/X86) \
-  include/uapi/video/edid.h \
-  arch/x86/include/asm/math_emu.h \
-  arch/x86/include/asm/ptrace.h \
-    $(wildcard include/config/PARAVIRT) \
-    $(wildcard include/config/IA32_EMULATION) \
-  arch/x86/include/asm/segment.h \
-    $(wildcard include/config/XEN_PV) \
-  arch/x86/include/asm/page_types.h \
-    $(wildcard include/config/PHYSICAL_START) \
-    $(wildcard include/config/PHYSICAL_ALIGN) \
-    $(wildcard include/config/DYNAMIC_PHYSICAL_MASK) \
-  arch/x86/include/asm/page_32_types.h \
-    $(wildcard include/config/HIGHMEM4G) \
-    $(wildcard include/config/HIGHMEM64G) \
-    $(wildcard include/config/PAGE_OFFSET) \
-  arch/x86/include/uapi/asm/ptrace.h \
-  arch/x86/include/uapi/asm/ptrace-abi.h \
-  arch/x86/include/asm/paravirt_types.h \
-    $(wildcard include/config/PGTABLE_LEVELS) \
-    $(wildcard include/config/PARAVIRT_DEBUG) \
-  arch/x86/include/asm/desc_defs.h \
-  arch/x86/include/asm/pgtable_types.h \
-    $(wildcard include/config/MEM_SOFT_DIRTY) \
-    $(wildcard include/config/HAVE_ARCH_USERFAULTFD_WP) \
-    $(wildcard include/config/PROC_FS) \
-  arch/x86/include/asm/pgtable_32_types.h \
-  arch/x86/include/asm/pgtable-3level_types.h \
-  include/asm-generic/pgtable-nop4d.h \
-  include/asm-generic/pgtable-nopud.h \
-  arch/x86/include/asm/nospec-branch.h \
-  include/linux/static_key.h \
-  include/linux/jump_label.h \
-    $(wildcard include/config/HAVE_ARCH_JUMP_LABEL_RELATIVE) \
-  arch/x86/include/asm/jump_label.h \
-  include/linux/objtool.h \
-    $(wildcard include/config/FRAME_POINTER) \
-  arch/x86/include/asm/msr-index.h \
-  arch/x86/include/asm/unwind_hints.h \
-  arch/x86/include/asm/orc_types.h \
-  arch/x86/include/asm/GEN-for-each-reg.h \
-  arch/x86/include/asm/spinlock_types.h \
-  include/asm-generic/qspinlock_types.h \
-    $(wildcard include/config/NR_CPUS) \
-  include/asm-generic/qrwlock_types.h \
-  arch/x86/include/asm/proto.h \
-  arch/x86/include/uapi/asm/ldt.h \
-  arch/x86/include/uapi/asm/sigcontext.h \
-  arch/x86/include/asm/current.h \
-  arch/x86/include/asm/percpu.h \
-    $(wildcard include/config/X86_64_SMP) \
-  include/linux/kernel.h \
-    $(wildcard include/config/PREEMPT_VOLUNTARY_BUILD) \
-    $(wildcard include/config/PREEMPT_DYNAMIC) \
-    $(wildcard include/config/HAVE_PREEMPT_DYNAMIC_CALL) \
-    $(wildcard include/config/HAVE_PREEMPT_DYNAMIC_KEY) \
-    $(wildcard include/config/PREEMPT_) \
-    $(wildcard include/config/DEBUG_ATOMIC_SLEEP) \
-    $(wildcard include/config/MMU) \
-    $(wildcard include/config/PROVE_LOCKING) \
-  include/linux/stdarg.h \
-  include/linux/align.h \
-  include/linux/limits.h \
-  include/uapi/linux/limits.h \
-  include/vdso/limits.h \
-  include/linux/kstrtox.h \
-  include/linux/minmax.h \
-  include/linux/panic.h \
-    $(wildcard include/config/PANIC_TIMEOUT) \
-  include/linux/printk.h \
-    $(wildcard include/config/MESSAGE_LOGLEVEL_DEFAULT) \
-    $(wildcard include/config/CONSOLE_LOGLEVEL_DEFAULT) \
-    $(wildcard include/config/CONSOLE_LOGLEVEL_QUIET) \
-    $(wildcard include/config/EARLY_PRINTK) \
-    $(wildcard include/config/PRINTK) \
-    $(wildcard include/config/DYNAMIC_DEBUG) \
-    $(wildcard include/config/DYNAMIC_DEBUG_CORE) \
-  include/linux/kern_levels.h \
-  include/linux/ratelimit_types.h \
-  include/linux/spinlock_types_raw.h \
-    $(wildcard include/config/DEBUG_SPINLOCK) \
-    $(wildcard include/config/DEBUG_LOCK_ALLOC) \
-  include/linux/lockdep_types.h \
-    $(wildcard include/config/PROVE_RAW_LOCK_NESTING) \
-    $(wildcard include/config/LOCKDEP) \
-    $(wildcard include/config/LOCK_STAT) \
-  include/linux/once_lite.h \
-  include/linux/static_call_types.h \
-    $(wildcard include/config/HAVE_STATIC_CALL) \
-  include/linux/instruction_pointer.h \
-  include/asm-generic/percpu.h \
-    $(wildcard include/config/DEBUG_PREEMPT) \
-    $(wildcard include/config/HAVE_SETUP_PER_CPU_AREA) \
-  include/linux/threads.h \
-    $(wildcard include/config/BASE_SMALL) \
-  include/linux/percpu-defs.h \
-    $(wildcard include/config/DEBUG_FORCE_WEAK_PER_CPU) \
-  arch/x86/include/asm/page.h \
-  arch/x86/include/asm/page_32.h \
-    $(wildcard include/config/DEBUG_VIRTUAL) \
-    $(wildcard include/config/FLATMEM) \
-  include/linux/string.h \
-    $(wildcard include/config/BINARY_PRINTF) \
-    $(wildcard include/config/FORTIFY_SOURCE) \
-  include/linux/errno.h \
-  include/uapi/linux/errno.h \
-  include/uapi/linux/string.h \
-  arch/x86/include/asm/string.h \
-  arch/x86/include/asm/string_32.h \
-  include/linux/fortify-string.h \
-  include/linux/range.h \
-  include/asm-generic/memory_model.h \
-    $(wildcard include/config/SPARSEMEM_VMEMMAP) \
-    $(wildcard include/config/SPARSEMEM) \
-  include/linux/pfn.h \
-  include/asm-generic/getorder.h \
-  arch/x86/include/asm/msr.h \
-  arch/x86/include/asm/msr-index.h \
-  arch/x86/include/asm/cpumask.h \
-  include/linux/cpumask.h \
-    $(wildcard include/config/CPUMASK_OFFSTACK) \
-    $(wildcard include/config/HOTPLUG_CPU) \
-    $(wildcard include/config/DEBUG_PER_CPU_MAPS) \
-  include/linux/bitmap.h \
-  include/linux/find.h \
-  include/linux/atomic.h \
-  arch/x86/include/asm/atomic.h \
-  arch/x86/include/asm/cmpxchg.h \
-  arch/x86/include/asm/cmpxchg_32.h \
-  arch/x86/include/asm/atomic64_32.h \
-  include/linux/atomic/atomic-arch-fallback.h \
-    $(wildcard include/config/GENERIC_ATOMIC64) \
-  include/linux/atomic/atomic-long.h \
-  include/linux/atomic/atomic-instrumented.h \
-  include/linux/bug.h \
-    $(wildcard include/config/BUG_ON_DATA_CORRUPTION) \
-  arch/x86/include/asm/bug.h \
-    $(wildcard include/config/DEBUG_BUGVERBOSE) \
-  include/linux/instrumentation.h \
-    $(wildcard include/config/DEBUG_ENTRY) \
-  include/asm-generic/bug.h \
-    $(wildcard include/config/BUG) \
-    $(wildcard include/config/GENERIC_BUG_RELATIVE_POINTERS) \
-  arch/x86/include/uapi/asm/msr.h \
-  include/linux/tracepoint-defs.h \
-  arch/x86/include/asm/special_insns.h \
-  include/linux/irqflags.h \
-    $(wildcard include/config/TRACE_IRQFLAGS) \
-    $(wildcard include/config/PREEMPT_RT) \
-    $(wildcard include/config/IRQSOFF_TRACER) \
-    $(wildcard include/config/PREEMPT_TRACER) \
-    $(wildcard include/config/DEBUG_IRQFLAGS) \
-    $(wildcard include/config/TRACE_IRQFLAGS_SUPPORT) \
-  arch/x86/include/asm/irqflags.h \
-  arch/x86/include/asm/fpu/types.h \
-  arch/x86/include/asm/vmxfeatures.h \
-  arch/x86/include/asm/vdso/processor.h \
-  include/linux/personality.h \
-  include/uapi/linux/personality.h \
-  arch/x86/include/asm/tsc.h \
-  arch/x86/include/asm/cpufeature.h \
-    $(wildcard include/config/X86_FEATURE_NAMES) \
-  include/vdso/time32.h \
-  include/vdso/time.h \
-  include/linux/uidgid.h \
-    $(wil
+ Push furthest requested GP to leaf node and rcu_data structure. */
+	if (ULONG_CMP_LT(gp_seq_req, rnp->gp_seq_needed)) {
+		WRITE_ONCE(rnp_start->gp_seq_needed, rnp->gp_seq_needed);
+		WRITE_ONCE(rdp->gp_seq_needed, rnp->gp_seq_needed);
+	}
+	if (rnp != rnp_start)
+		raw_spin_unlock_rcu_node(rnp);
+	return ret;
+}
+
+/*
+ * Clean up any old requests for the just-ended grace period.  Also return
+ * whether any additional grace periods have been requested.
+ */
+static bool rcu_future_gp_cleanup(struct rcu_node *rnp)
+{
+	bool needmore;
+	struct rcu_data *rdp = this_cpu_ptr(&rcu_data);
+
+	needmore = ULONG_CMP_LT(rnp->gp_seq, rnp->gp_seq_needed);
+	if (!needmore)
+		rnp->gp_seq_needed = rnp->gp_seq; /* Avoid counter wrap. */
+	trace_rcu_this_gp(rnp, rdp, rnp->gp_seq,
+			  needmore ? TPS("CleanupMore") : TPS("Cleanup"));
+	return needmore;
+}
+
+/*
+ * Awaken the grace-period kthread.  Don't do a self-awaken (unless in an
+ * interrupt or softirq handler, in which case we just might immediately
+ * sleep upon return, resulting in a grace-period hang), and don't bother
+ * awakening when there is nothing for the grace-period kthread to do
+ * (as in several CPUs raced to awaken, we lost), and finally don't try
+ * to awaken a kthread that has not yet been created.  If all those checks
+ * are passed, track some debug information and awaken.
+ *
+ * So why do the self-wakeup when in an interrupt or softirq handler
+ * in the grace-period kthread's context?  Because the kthread might have
+ * been interrupted just as it was going to sleep, and just after the final
+ * pre-sleep check of the awaken condition.  In this case, a wakeup really
+ * is required, and is therefore supplied.
+ */
+static void rcu_gp_kthread_wake(void)
+{
+	struct task_struct *t = READ_ONCE(rcu_state.gp_kthread);
+
+	if ((current == t && !in_hardirq() && !in_serving_softirq()) ||
+	    !READ_ONCE(rcu_state.gp_flags) || !t)
+		return;
+	WRITE_ONCE(rcu_state.gp_wake_time, jiffies);
+	WRITE_ONCE(rcu_state.gp_wake_seq, READ_ONCE(rcu_state.gp_seq));
+	swake_up_one(&rcu_state.gp_wq);
+}
+
+/*
+ * If there is room, assign a ->gp_seq number to any callbacks on this
+ * CPU that have not already been assigned.  Also accelerate any callbacks
+ * that were previously assigned a ->gp_seq number that has since proven
+ * to be too conservative, which can happen if callbacks get assigned a
+ * ->gp_seq number while RCU is idle, but with reference to a non-root
+ * rcu_node structure.  This function is idempotent, so it does not hurt
+ * to call it repeatedly.  Returns an flag saying that we should awaken
+ * the RCU grace-period kthread.
+ *
+ * The caller must hold rnp->lock with interrupts disabled.
+ */
+static bool rcu_accelerate_cbs(struct rcu_node *rnp, struct rcu_data *rdp)
+{
+	unsigned long gp_seq_req;
+	bool ret = false;
+
+	rcu_lockdep_assert_cblist_protected(rdp);
+	raw_lockdep_assert_held_rcu_node(rnp);
+
+	/* If no pending (not yet ready to invoke) callbacks, nothing to do. */
+	if (!rcu_segcblist_pend_cbs(&rdp->cblist))
+		return false;
+
+	trace_rcu_segcb_stats(&rdp->cblist, TPS("SegCbPreAcc"));
+
+	/*
+	 * Callbacks are often registered with incomplete grace-period
+	 * information.  Something about the fact that getting exact
+	 * information requires acquiring a global lock...  RCU therefore
+	 * makes a conservative estimate of the grace period number at which
+	 * a given callback will become ready to invoke.	The following
+	 * code checks this estimate and improves it when possible, thus
+	 * accelerating callback invocation to an earlier grace-period
+	 * number.
+	 */
+	gp_seq_req = rcu_seq_snap(&rcu_state.gp_seq);
+	if (rcu_segcblist_accelerate(&rdp->cblist, gp_seq_req))
+		ret = rcu_start_this_gp(rnp, rdp, gp_seq_req);
+
+	/* Trace depending on how much we were able to accelerate. */
+	if (rcu_segcblist_restempty(&rdp->cblist, RCU_WAIT_TAIL))
+		trace_rcu_grace_period(rcu_state.name, gp_seq_req, TPS("AccWaitCB"));
+	else
+		trace_rcu_grace_period(rcu_state.name, gp_seq_req, TPS("AccReadyCB"));
+
+	trace_rcu_segcb_stats(&rdp->cblist, TPS("SegCbPostAcc"));
+
+	return ret;
+}
+
+/*
+ * Similar to rcu_accelerate_cbs(), but does not require that the leaf
+ * rcu_node structure's ->lock be held.  It consults the cached value
+ * of ->gp_seq_needed in the rcu_data structure, and if that indicates
+ * that a new grace-period request be made, invokes rcu_accelerate_cbs()
+ * while holding the leaf rcu_node structure's ->lock.
+ */
+static void rcu_accelerate_cbs_unlocked(struct rcu_node *rnp,
+					struct rcu_data *rdp)
+{
+	unsigned long c;
+	bool needwake;
+
+	rcu_lockdep_assert_cblist_protected(rdp);
+	c = rcu_seq_snap(&rcu_state.gp_seq);
+	if (!READ_ONCE(rdp->gpwrap) && ULONG_CMP_GE(rdp->gp_seq_needed, c)) {
+		/* Old request still live, so mark recent callbacks. */
+		(void)rcu_segcblist_accelerate(&rdp->cblist, c);
+		return;
+	}
+	raw_spin_lock_rcu_node(rnp); /* irqs already disabled. */
+	needwake = rcu_accelerate_cbs(rnp, rdp);
+	raw_spin_unlock_rcu_node(rnp); /* irqs remain disabled. */
+	if (needwake)
+		rcu_gp_kthread_wake();
+}
+
+/*
+ * Move any callbacks whose grace period has completed to the
+ * RCU_DONE_TAIL sublist, then compact the remaining sublists and
+ * assign ->gp_seq numbers to any callbacks in the RCU_NEXT_TAIL
+ * sublist.  This function is idempotent, so it does not hurt to
+ * invoke it repeatedly.  As long as it is not invoked -too- often...
+ * Returns true if the RCU grace-period kthread needs to be awakened.
+ *
+ * The caller must hold rnp->lock with interrupts disabled.
+ */
+static bool rcu_advance_cbs(struct rcu_node *rnp, struct rcu_data *rdp)
+{
+	rcu_lockdep_assert_cblist_protected(rdp);
+	raw_lockdep_assert_held_rcu_node(rnp);
+
+	/* If no pending (not yet ready to invoke) callbacks, nothing to do. */
+	if (!rcu_segcblist_pend_cbs(&rdp->cblist))
+		return false;
+
+	/*
+	 * Find all callbacks whose ->gp_seq numbers indicate that they
+	 * are ready to invoke, and put them into the RCU_DONE_TAIL sublist.
+	 */
+	rcu_segcblist_advance(&rdp->cblist, rnp->gp_seq);
+
+	/* Classify any remaining callbacks. */
+	return rcu_accelerate_cbs(rnp, rdp);
+}
+
+/*
+ * Move and classify callbacks, but only if doing so won't require
+ * that the RCU grace-period kthread be awakened.
+ */
+static void __maybe_unused rcu_advance_cbs_nowake(struct rcu_node *rnp,
+						  struct rcu_data *rdp)
+{
+	rcu_lockdep_assert_cblist_protected(rdp);
+	if (!rcu_seq_state(rcu_seq_current(&rnp->gp_seq)) || !raw_spin_trylock_rcu_node(rnp))
+		return;
+	// The grace period cannot end while we hold the rcu_node lock.
+	if (rcu_seq_state(rcu_seq_current(&rnp->gp_seq)))
+		WARN_ON_ONCE(rcu_advance_cbs(rnp, rdp));
+	raw_spin_unlock_rcu_node(rnp);
+}
+
+/*
+ * In CONFIG_RCU_STRICT_GRACE_PERIOD=y kernels, attempt to generate a
+ * quiescent state.  This is intended to be invoked when the CPU notices
+ * a new grace period.
+ */
+static void rcu_strict_gp_check_qs(void)
+{
+	if (IS_ENABLED(CONFIG_RCU_STRICT_GRACE_PERIOD)) {
+		rcu_read_lock();
+		rcu_read_unlock();
+	}
+}
+
+/*
+ * Update CPU-local rcu_data state to record the beginnings and ends of
+ * grace periods.  The caller must hold the ->lock of the leaf rcu_node
+ * structure corresponding to the current CPU, and must have irqs disabled.
+ * Returns true if the grace-period kthread needs to be awakened.
+ */
+static bool __note_gp_changes(struct rcu_node *rnp, struct rcu_data *rdp)
+{
+	bool ret = false;
+	bool need_qs;
+	const bool offloaded = rcu_rdp_is_offloaded(rdp);
+
+	raw_lockdep_assert_held_rcu_node(rnp);
+
+	if (rdp->gp_seq == rnp->gp_seq)
+		return false; /* Nothing to do. */
+
+	/* Handle the ends of any preceding grace periods first. */
+	if (rcu_seq_completed_gp(rdp->gp_seq, rnp->gp_seq) ||
+	    unlikely(READ_ONCE(rdp->gpwrap))) {
+		if (!offloaded)
+			ret = rcu_advance_cbs(rnp, rdp); /* Advance CBs. */
+		rdp->core_needs_qs = false;
+		trace_rcu_grace_period(rcu_state.name, rdp->gp_seq, TPS("cpuend"));
+	} else {
+		if (!offloaded)
+			ret = rcu_accelerate_cbs(rnp, rdp); /* Recent CBs. */
+		if (rdp->core_needs_qs)
+			rdp->core_needs_qs = !!(rnp->qsmask & rdp->grpmask);
+	}
+
+	/* Now handle the beginnings of any new-to-this-CPU grace periods. */
+	if (rcu_seq_new_gp(rdp->gp_seq, rnp->gp_seq) ||
+	    unlikely(READ_ONCE(rdp->gpwrap))) {
+		/*
+		 * If the current grace period is waiting for this CPU,
+		 * set up to detect a quiescent state, otherwise don't
+		 * go looking for one.
+		 */
+		trace_rcu_grace_period(rcu_state.name, rnp->gp_seq, TPS("cpustart"));
+		need_qs = !!(rnp->qsmask & rdp->grpmask);
+		rdp->cpu_no_qs.b.norm = need_qs;
+		rdp->core_needs_qs = need_qs;
+		zero_cpu_stall_ticks(rdp);
+	}
+	rdp->gp_seq = rnp->gp_seq;  /* Remember new grace-period state. */
+	if (ULONG_CMP_LT(rdp->gp_seq_needed, rnp->gp_seq_needed) || rdp->gpwrap)
+		WRITE_ONCE(rdp->gp_seq_needed, rnp->gp_seq_needed);
+	WRITE_ONCE(rdp->gpwrap, false);
+	rcu_gpnum_ovf(rnp, rdp);
+	return ret;
+}
+
+static void note_gp_changes(struct rcu_data *rdp)
+{
+	unsigned long flags;
+	bool needwake;
+	struct rcu_node *rnp;
+
+	local_irq_save(flags);
+	rnp = rdp->mynode;
+	if ((rdp->gp_seq == rcu_seq_current(&rnp->gp_seq) &&
+	     !unlikely(READ_ONCE(rdp->gpwrap))) || /* w/out lock. */
+	    !raw_spin_trylock_rcu_node(rnp)) { /* irqs already off, so later. */
+		local_irq_restore(flags);
+		return;
+	}
+	needwake = __note_gp_changes(rnp, rdp);
+	raw_spin_unlock_irqrestore_rcu_node(rnp, flags);
+	rcu_strict_gp_check_qs();
+	if (needwake)
+		rcu_gp_kthread_wake();
+}
+
+static void rcu_gp_slow(int delay)
+{
+	if (delay > 0 &&
+	    !(rcu_seq_ctr(rcu_state.gp_seq) %
+	      (rcu_num_nodes * PER_RCU_NODE_PERIOD * delay)))
+		schedule_timeout_idle(delay);
+}
+
+static unsigned long sleep_duration;
+
+/* Allow rcutorture to stall the grace-period kthread. */
+void rcu_gp_set_torture_wai

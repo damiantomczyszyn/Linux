@@ -1,5 +1,1 @@
-include/config/HAVE_ALIGNED_STRUCT_PAGE) \
-    $(wildcard include/config/USERFAULTFD) \
-    $(wildcard include/config/HAVE_ARCH_COMPAT_MMAP_BASES) \
-    $(wildcard include/config/MEMBARRIER) \
-   
+cmd_drivers/net/appletalk/ltpc.ko := ld -r -m elf_i386 --build-id=sha1  -T scripts/module.lds -o drivers/net/appletalk/ltpc.ko drivers/net/appletalk/ltpc.o drivers/net/appletalk/ltpc.mod.o;  true

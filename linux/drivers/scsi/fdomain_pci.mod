@@ -1,1 +1,2 @@
-x86/include/asm/desc_defs.h 
+_read(ALT_PIN_OUT_SEL));
+	dp

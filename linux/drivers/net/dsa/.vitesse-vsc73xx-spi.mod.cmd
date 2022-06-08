@@ -1,4 +1,1 @@
-config/ACPI_HOTPLUG_IOAPIC) \
-    $(wildcard include/config/PCI) \
-    $(wildcard include/config/ACPI_WMI) \
-    $(wildcard include/config/ACPI_N
+cmd_drivers/net/dsa/vitesse-vsc73xx-spi.mod := { echo  drivers/net/dsa/vitesse-vsc73xx-spi.o;  echo; } > drivers/net/dsa/vitesse-vsc73xx-spi.mod

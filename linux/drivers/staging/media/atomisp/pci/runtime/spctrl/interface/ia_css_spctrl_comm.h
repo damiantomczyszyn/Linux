@@ -1,41 +1,39 @@
-pes.h \
-  include/asm-generic/pgtable-nop4d.h \
-  include/asm-generic/pgtable-nopud.h \
-  arch/x86/include/asm/nospec-branch.h \
-  include/linux/static_key.h \
-  include/linux/jump_label.h \
-    $(wildcard include/config/HAVE_ARCH_JUMP_LABEL_RELATIVE) \
-  arch/x86/include/asm/jump_label.h \
-  include/linux/objtool.h \
-    $(wildcard include/config/FRAME_POINTER) \
-  arch/x86/include/asm/msr-index.h \
-  arch/x86/include/asm/unwind_hints.h \
-  arch/x86/include/asm/orc_types.h \
-  arch/x86/include/asm/GEN-for-each-reg.h \
-  arch/x86/include/asm/spinlock_types.h \
-  include/asm-generic/qspinlock_types.h \
-    $(wildcard include/config/NR_CPUS) \
-  include/asm-generic/qrwlock_types.h \
-  arch/x86/include/asm/proto.h \
-  arch/x86/include/uapi/asm/ldt.h \
-  arch/x86/include/uapi/asm/sigcontext.h \
-  arch/x86/include/asm/current.h \
-  arch/x86/include/asm/percpu.h \
-    $(wildcard include/config/X86_64_SMP) \
-  include/linux/kernel.h \
-    $(wildcard include/config/PREEMPT_VOLUNTARY_BUILD) \
-    $(wildcard include/config/PREEMPT_DYNAMIC) \
-    $(wildcard include/config/HAVE_PREEMPT_DYNAMIC_CALL) \
-    $(wildcard include/config/HAVE_PREEMPT_DYNAMIC_KEY) \
-    $(wildcard include/config/PREEMPT_) \
-    $(wildcard include/config/DEBUG_ATOMIC_SLEEP) \
-    $(wildcard include/config/MMU) \
-    $(wildcard include/config/PROVE_LOCKING) \
-  include/linux/stdarg.h \
-  include/linux/align.h \
-  include/linux/limits.h \
-  include/uapi/linux/limits.h \
-  include/vdso/limits.h \
-  include/linux/kstrtox.h \
-  include/linux/minmax.h \
-  incl
+mempolicy.h \
+  include/linux/freezer.h \
+  include/uapi/linux/i2c.h \
+  include/linux/spi/spi.h \
+    $(wildcard include/config/SPI_SLAVE) \
+  include/linux/scatterlist.h \
+    $(wildcard include/config/NEED_SG_DMA_LENGTH) \
+    $(wildcard include/config/DEBUG_SG) \
+    $(wildcard include/config/SGL_ALLOC) \
+    $(wildcard include/config/ARCH_NO_SG_CHAIN) \
+    $(wildcard include/config/SG_POOL) \
+  include/linux/gpio/consumer.h \
+    $(wildcard include/config/OF_GPIO) \
+    $(wildcard include/config/GPIO_SYSFS) \
+  include/uapi/linux/spi/spi.h \
+  include/media/v4l2-fh.h \
+  include/media/v4l2-mediabus.h \
+  include/sound/core.h \
+    $(wildcard include/config/SND_DYNAMIC_MINORS) \
+    $(wildcard include/config/SND_MAX_CARDS) \
+    $(wildcard include/config/SND_MAJOR) \
+    $(wildcard include/config/SND_DEBUG) \
+    $(wildcard include/config/SND_MIXER_OSS) \
+    $(wildcard include/config/SND_OSSEMUL) \
+    $(wildcard include/config/ISA_DMA_API) \
+    $(wildcard include/config/SND_VERBOSE_PRINTK) \
+    $(wildcard include/config/SND_DEBUG_VERBOSE) \
+    $(wildcard include/config/GAMEPORT) \
+  include/sound/pcm.h \
+    $(wildcard include/config/SND_PCM_OSS) \
+    $(wildcard include/config/SND_VERBOSE_PROCFS) \
+    $(wildcard include/config/SND_PCM_XRUN_DEBUG) \
+  include/sound/asound.h \
+  include/uapi/sound/asound.h \
+  include/sound/memalloc.h \
+    $(wildcard include/config/GENERIC_ALLOCATOR) \
+    $(wildcard include/config/SND_DMA_SGBUF) \
+    $(wildcard include/config/HAS_DMA) \
+  include/linux/dma-direction.h \

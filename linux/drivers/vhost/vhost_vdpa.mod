@@ -1,2 +1,2 @@
-media/v4l2-dev.h \
-  i
+  = 0x61,
+	.if_khz    

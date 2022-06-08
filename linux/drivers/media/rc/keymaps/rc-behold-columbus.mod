@@ -1,2 +1,2 @@
-drivers/media/rc/keymaps/rc-behold-columbus.o
-
+# SPDX-License-Identifier: GPL-2.0-only
+config 

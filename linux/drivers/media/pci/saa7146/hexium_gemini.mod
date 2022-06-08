@@ -1,2 +1,5 @@
-config/X86_P6_NOP) \
-    $(wildcard include
+,
+			.amux   = CX25840_AUDIO8,
+		} },
+	},
+	

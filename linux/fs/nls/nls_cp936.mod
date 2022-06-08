@@ -1,1 +1,1 @@
-dcard include/config
+ (0x9d << 24); /* 10

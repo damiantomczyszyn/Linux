@@ -1,1 +1,1 @@
-_BITMAP(list_entries_
+r_completion(&pending

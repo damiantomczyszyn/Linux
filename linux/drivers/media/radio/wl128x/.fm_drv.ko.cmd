@@ -1,1 +1,11 @@
-cmd_drivers/media/radio/wl128x/fm_drv.ko := ld -r -m elf_i386 --build-id=sha1  -T scripts/module.lds -o drivers/media/radio/wl128x/fm_drv.ko drivers/media/radio/wl128x/fm_drv.o drivers/media/radio/wl128x/fm_drv.mod.o;  true
+dio",
+		.cmds_start	= 0x10190,
+		.ctrl_start	= 0x10480,
+		.cdt		= 0x10a00,
+		.fifo_start	= 0x7000,
+		.fifo_size	= 0x1000,
+		.ptr1_reg	= DMA6_PTR1,
+		.ptr2_reg	= DMA6_PTR2,
+		.cnt1_reg	= DMA6_CNT1,
+		.cnt2_reg	= DMA6_CNT2,
+	}

@@ -1,91 +1,111 @@
-pes.h \
-  include/asm-generic/pgtable-nop4d.h \
-  include/asm-generic/pgtable-nopud.h \
-  arch/x86/include/asm/nospec-branch.h \
-  include/linux/static_key.h \
-  include/linux/jump_label.h \
-    $(wildcard include/config/HAVE_ARCH_JUMP_LABEL_RELATIVE) \
-  arch/x86/include/asm/jump_label.h \
-  include/linux/objtool.h \
-    $(wildcard include/config/FRAME_POINTER) \
-  arch/x86/include/asm/msr-index.h \
-  arch/x86/include/asm/unwind_hints.h \
-  arch/x86/include/asm/orc_types.h \
-  arch/x86/include/asm/GEN-for-each-reg.h \
-  arch/x86/include/asm/spinlock_types.h \
-  include/asm-generic/qspinlock_types.h \
-    $(wildcard include/config/NR_CPUS) \
-  include/asm-generic/qrwlock_types.h \
-  arch/x86/include/asm/proto.h \
-  arch/x86/include/uapi/asm/ldt.h \
-  arch/x86/include/uapi/asm/sigcontext.h \
-  arch/x86/include/asm/current.h \
-  arch/x86/include/asm/percpu.h \
-    $(wildcard include/config/X86_64_SMP) \
-  include/linux/kernel.h \
-    $(wildcard include/config/PREEMPT_VOLUNTARY_BUILD) \
-    $(wildcard include/config/PREEMPT_DYNAMIC) \
-    $(wildcard include/config/HAVE_PREEMPT_DYNAMIC_CALL) \
-    $(wildcard include/config/HAVE_PREEMPT_DYNAMIC_KEY) \
-    $(wildcard include/config/PREEMPT_) \
-    $(wildcard include/config/DEBUG_ATOMIC_SLEEP) \
-    $(wildcard include/config/MMU) \
-    $(wildcard include/config/PROVE_LOCKING) \
-  include/linux/stdarg.h \
-  include/linux/align.h \
-  include/linux/limits.h \
-  include/uapi/linux/limits.h \
-  include/vdso/limits.h \
-  include/linux/kstrtox.h \
-  include/linux/minmax.h \
-  include/linux/panic.h \
-    $(wildcard include/config/PANIC_TIMEOUT) \
-  include/linux/printk.h \
-    $(wildcard include/config/MESSAGE_LOGLEVEL_DEFAULT) \
-    $(wildcard include/config/CONSOLE_LOGLEVEL_DEFAULT) \
-    $(wildcard include/config/CONSOLE_LOGLEVEL_QUIET) \
-    $(wildcard include/config/EARLY_PRINTK) \
-    $(wildcard include/config/PRINTK) \
-    $(wildcard include/config/DYNAMIC_DEBUG) \
-    $(wildcard include/config/DYNAMIC_DEBUG_CORE) \
-  include/linux/kern_levels.h \
-  include/linux/ratelimit_types.h \
-  include/linux/spinlock_types_raw.h \
-    $(wildcard include/config/DEBUG_SPINLOCK) \
-    $(wildcard include/config/DEBUG_LOCK_ALLOC) \
-  include/linux/lockdep_types.h \
-    $(wildcard include/config/PROVE_RAW_LOCK_NESTING) \
-    $(wildcard include/config/LOCKDEP) \
-    $(wildcard include/config/LOCK_STAT) \
-  include/linux/once_lite.h \
-  include/linux/static_call_types.h \
-    $(wildcard include/config/HAVE_STATIC_CALL) \
-  include/linux/instruction_pointer.h \
-  include/asm-generic/percpu.h \
-    $(wildcard include/config/DEBUG_PREEMPT) \
-    $(wildcard include/config/HAVE_SETUP_PER_CPU_AREA) \
-  include/linux/threads.h \
-    $(wildcard include/config/BASE_SMALL) \
-  include/linux/percpu-defs.h \
-    $(wildcard include/config/DEBUG_FORCE_WEAK_PER_CPU) \
-  arch/x86/include/asm/page.h \
-  arch/x86/include/asm/page_32.h \
-    $(wildcard include/config/DEBUG_VIRTUAL) \
-    $(wildcard include/config/FLATMEM) \
-  include/linux/string.h \
-    $(wildcard include/config/BINARY_PRINTF) \
-    $(wildcard include/config/FORTIFY_SOURCE) \
-  include/linux/errno.h \
-  include/uapi/linux/errno.h \
-  include/uapi/linux/string.h \
-  arch/x86/include/asm/string.h \
-  arch/x86/include/asm/string_32.h \
-  include/linux/fortify-string.h \
-  include/linux/range.h \
-  include/asm-generic/memory_model.h \
-    $(wildcard include/config/SPARSEMEM_VMEMMAP) \
-    $(wildcard include/config/SPARSEMEM) \
-  include/linux/pfn.h \
-  include/asm-generic/getorder.h \
-  arch/x86/include/asm/msr.h \
-  arc
+00000);
+	cx_write(PAD_CTRL, 0x00500300);
+
+	/* clear dma in progress */
+	cx23885_clear_bridge_error(dev);
+	msleep(100);
+
+	cx23885_sram_channel_setup(dev, &dev->sram_channels[SRAM_CH01],
+		720*4, 0);
+	cx23885_sram_channel_setup(dev, &dev->sram_channels[SRAM_CH02], 128, 0);
+	cx23885_sram_channel_setup(dev, &dev->sram_channels[SRAM_CH03],
+		188*4, 0);
+	cx23885_sram_channel_setup(dev, &dev->sram_channels[SRAM_CH04], 128, 0);
+	cx23885_sram_channel_setup(dev, &dev->sram_channels[SRAM_CH05], 128, 0);
+	cx23885_sram_channel_setup(dev, &dev->sram_channels[SRAM_CH06],
+		188*4, 0);
+	cx23885_sram_channel_setup(dev, &dev->sram_channels[SRAM_CH07], 128, 0);
+	cx23885_sram_channel_setup(dev, &dev->sram_channels[SRAM_CH08], 128, 0);
+	cx23885_sram_channel_setup(dev, &dev->sram_channels[SRAM_CH09], 128, 0);
+
+	cx23885_gpio_setup(dev);
+
+	cx23885_irq_get_mask(dev);
+
+	/* clear dma in progress */
+	cx23885_clear_bridge_error(dev);
+}
+
+
+static int cx23885_pci_quirks(struct cx23885_dev *dev)
+{
+	dprintk(1, "%s()\n", __func__);
+
+	/* The cx23885 bridge has a weird bug which causes NMI to be asserted
+	 * when DMA begins if RDR_TLCTL0 bit4 is not cleared. It does not
+	 * occur on the cx23887 bridge.
+	 */
+	if (dev->bridge == CX23885_BRIDGE_885)
+		cx_clear(RDR_TLCTL0, 1 << 4);
+
+	/* clear dma in progress */
+	cx23885_clear_bridge_error(dev);
+	return 0;
+}
+
+static int get_resources(struct cx23885_dev *dev)
+{
+	if (request_mem_region(pci_resource_start(dev->pci, 0),
+			       pci_resource_len(dev->pci, 0),
+			       dev->name))
+		return 0;
+
+	pr_err("%s: can't get MMIO memory @ 0x%llx\n",
+	       dev->name, (unsigned long long)pci_resource_start(dev->pci, 0));
+
+	return -EBUSY;
+}
+
+static int cx23885_init_tsport(struct cx23885_dev *dev,
+	struct cx23885_tsport *port, int portno)
+{
+	dprintk(1, "%s(portno=%d)\n", __func__, portno);
+
+	/* Transport bus init dma queue  - Common settings */
+	port->dma_ctl_val        = 0x11; /* Enable RISC controller and Fifo */
+	port->ts_int_msk_val     = 0x1111; /* TS port bits for RISC */
+	port->vld_misc_val       = 0x0;
+	port->hw_sop_ctrl_val    = (0x47 << 16 | 188 << 4);
+
+	spin_lock_init(&port->slock);
+	port->dev = dev;
+	port->nr = portno;
+
+	INIT_LIST_HEAD(&port->mpegq.active);
+	mutex_init(&port->frontends.lock);
+	INIT_LIST_HEAD(&port->frontends.felist);
+	port->frontends.active_fe_id = 0;
+
+	/* This should be hardcoded allow a single frontend
+	 * attachment to this tsport, keeping the -dvb.c
+	 * code clean and safe.
+	 */
+	if (!port->num_frontends)
+		port->num_frontends = 1;
+
+	switch (portno) {
+	case 1:
+		port->reg_gpcnt          = VID_B_GPCNT;
+		port->reg_gpcnt_ctl      = VID_B_GPCNT_CTL;
+		port->reg_dma_ctl        = VID_B_DMA_CTL;
+		port->reg_lngth          = VID_B_LNGTH;
+		port->reg_hw_sop_ctrl    = VID_B_HW_SOP_CTL;
+		port->reg_gen_ctrl       = VID_B_GEN_CTL;
+		port->reg_bd_pkt_status  = VID_B_BD_PKT_STATUS;
+		port->reg_sop_status     = VID_B_SOP_STATUS;
+		port->reg_fifo_ovfl_stat = VID_B_FIFO_OVFL_STAT;
+		port->reg_vld_misc       = VID_B_VLD_MISC;
+		port->reg_ts_clk_en      = VID_B_TS_CLK_EN;
+		port->reg_src_sel        = VID_B_SRC_SEL;
+		port->reg_ts_int_msk     = VID_B_INT_MSK;
+		port->reg_ts_int_stat    = VID_B_INT_STAT;
+		port->sram_chno          = SRAM_CH03; /* VID_B */
+		port->pci_irqmask        = 0x02; /* VID_B bit1 */
+		break;
+	case 2:
+		port->reg_gpcnt          = VID_C_GPCNT;
+		port->reg_gpcnt_ctl      = VID_C_GPCNT_CTL;
+		port->reg_dma_ctl        = VID_C_DMA_CTL;
+		port->reg_lngth          = VID_C_LNGTH;
+		port->reg_hw_sop_ctrl    = VID_C_HW_SOP_CTL;
+		port->reg_gen_ctrl       = VID_C_GEN_CTL;

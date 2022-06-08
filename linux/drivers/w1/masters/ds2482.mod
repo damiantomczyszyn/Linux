@@ -1,1 +1,1 @@
-lude/linux/atomic/atomic-arch
+/* SPDX-License-Identifier: G

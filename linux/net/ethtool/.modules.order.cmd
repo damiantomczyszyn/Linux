@@ -1,7 +1,5 @@
-_name(read_bit));
-	}
+ority = p->rt_priority;
+	rcu_read_unlock();
 
-	return 0;
-}
-
-void print_irqtrace_events(struct task_struct *curr)
+	/*
+	 * This one might sleep, we cannot do i

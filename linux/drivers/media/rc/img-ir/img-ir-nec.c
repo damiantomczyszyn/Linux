@@ -1,173 +1,168 @@
-// SPDX-License-Identifier: GPL-2.0-or-later
-/*
- * ImgTec IR Decoder setup for NEC protocol.
- *
- * Copyright 2010-2014 Imagination Technologies Ltd.
- */
+!try_module_get(client_tuner->dev.driver->owner)) {
+				i2c_unregister_device(client_tuner);
+				client_tuner = NULL;
+				goto frontend_detach;
+			}
+			port->i2c_client_tuner = client_tuner;
 
-#include "img-ir-hw.h"
-#include <linux/bitrev.h>
-#include <linux/log2.h>
-
-/* Convert NEC data to a scancode */
-static int img_ir_nec_scancode(int len, u64 raw, u64 enabled_protocols,
-			       struct img_ir_scancode_req *request)
-{
-	unsigned int addr, addr_inv, data, data_inv;
-	/* a repeat code has no data */
-	if (!len)
-		return IMG_IR_REPEATCODE;
-	if (len != 32)
-		return -EINVAL;
-	/* raw encoding: ddDDaaAA */
-	addr     = (raw >>  0) & 0xff;
-	addr_inv = (raw >>  8) & 0xff;
-	data     = (raw >> 16) & 0xff;
-	data_inv = (raw >> 24) & 0xff;
-	if ((data_inv ^ data) != 0xff) {
-		/* 32-bit NEC (used by Apple and TiVo remotes) */
-		/* scan encoding: as transmitted, MSBit = first received bit */
-		request->scancode = bitrev8(addr)     << 24 |
-				bitrev8(addr_inv) << 16 |
-				bitrev8(data)     <<  8 |
-				bitrev8(data_inv);
-		request->protocol = RC_PROTO_NEC32;
-	} else if ((addr_inv ^ addr) != 0xff) {
-		/* Extended NEC */
-		/* scan encoding: AAaaDD */
-		request->scancode = addr     << 16 |
-				addr_inv <<  8 |
-				data;
-		request->protocol = RC_PROTO_NECX;
-	} else {
-		/* Normal NEC */
-		/* scan encoding: AADD */
-		request->scancode = addr << 8 |
-				data;
-		request->protocol = RC_PROTO_NEC;
-	}
-	return IMG_IR_SCANCODE;
-}
-
-/* Convert NEC scancode to NEC data filter */
-static int img_ir_nec_filter(const struct rc_scancode_filter *in,
-			     struct img_ir_filter *out, u64 protocols)
-{
-	unsigned int addr, addr_inv, data, data_inv;
-	unsigned int addr_m, addr_inv_m, data_m, data_inv_m;
-
-	data       = in->data & 0xff;
-	data_m     = in->mask & 0xff;
-
-	protocols &= RC_PROTO_BIT_NEC | RC_PROTO_BIT_NECX | RC_PROTO_BIT_NEC32;
-
-	/*
-	 * If only one bit is set, we were requested to do an exact
-	 * protocol. This should be the case for wakeup filters; for
-	 * normal filters, guess the protocol from the scancode.
-	 */
-	if (!is_power_of_2(protocols)) {
-		if ((in->data | in->mask) & 0xff000000)
-			protocols = RC_PROTO_BIT_NEC32;
-		else if ((in->data | in->mask) & 0x00ff0000)
-			protocols = RC_PROTO_BIT_NECX;
-		else
-			protocols = RC_PROTO_BIT_NEC;
+			dev->ts1.analog_fe.tuner_priv = client_tuner;
+			memcpy(&dev->ts1.analog_fe.ops.tuner_ops,
+			       &fe0->dvb.frontend->ops.tuner_ops,
+			       sizeof(struct dvb_tuner_ops));
+			break;
+		}
+		break;
+	default:
+		pr_info("%s: The frontend of your DVB/ATSC card  isn't supported yet\n",
+			dev->name);
+		break;
 	}
 
-	if (protocols == RC_PROTO_BIT_NEC32) {
-		/* 32-bit NEC (used by Apple and TiVo remotes) */
-		/* scan encoding: as transmitted, MSBit = first received bit */
-		addr       = bitrev8(in->data >> 24);
-		addr_m     = bitrev8(in->mask >> 24);
-		addr_inv   = bitrev8(in->data >> 16);
-		addr_inv_m = bitrev8(in->mask >> 16);
-		data       = bitrev8(in->data >>  8);
-		data_m     = bitrev8(in->mask >>  8);
-		data_inv   = bitrev8(in->data >>  0);
-		data_inv_m = bitrev8(in->mask >>  0);
-	} else if (protocols == RC_PROTO_BIT_NECX) {
-		/* Extended NEC */
-		/* scan encoding AAaaDD */
-		addr       = (in->data >> 16) & 0xff;
-		addr_m     = (in->mask >> 16) & 0xff;
-		addr_inv   = (in->data >>  8) & 0xff;
-		addr_inv_m = (in->mask >>  8) & 0xff;
-		data_inv   = data ^ 0xff;
-		data_inv_m = data_m;
-	} else {
-		/* Normal NEC */
-		/* scan encoding: AADD */
-		addr       = (in->data >>  8) & 0xff;
-		addr_m     = (in->mask >>  8) & 0xff;
-		addr_inv   = addr ^ 0xff;
-		addr_inv_m = addr_m;
-		data_inv   = data ^ 0xff;
-		data_inv_m = data_m;
+	if ((NULL == fe0->dvb.frontend) || (fe1 && NULL == fe1->dvb.frontend)) {
+		pr_err("%s: frontend initialization failed\n",
+		       dev->name);
+		goto frontend_detach;
 	}
 
-	/* raw encoding: ddDDaaAA */
-	out->data = data_inv << 24 |
-		    data     << 16 |
-		    addr_inv <<  8 |
-		    addr;
-	out->mask = data_inv_m << 24 |
-		    data_m     << 16 |
-		    addr_inv_m <<  8 |
-		    addr_m;
+	/* define general-purpose callback pointer */
+	fe0->dvb.frontend->callback = cx23885_tuner_callback;
+	if (fe1)
+		fe1->dvb.frontend->callback = cx23885_tuner_callback;
+#if 0
+	/* Ensure all frontends negotiate bus access */
+	fe0->dvb.frontend->ops.ts_bus_ctrl = cx23885_dvb_bus_ctrl;
+	if (fe1)
+		fe1->dvb.frontend->ops.ts_bus_ctrl = cx23885_dvb_bus_ctrl;
+#endif
+
+	/* Put the tuner in standby to keep it quiet */
+	call_all(dev, tuner, standby);
+
+	if (fe0->dvb.frontend->ops.analog_ops.standby)
+		fe0->dvb.frontend->ops.analog_ops.standby(fe0->dvb.frontend);
+
+	/* register everything */
+	ret = vb2_dvb_register_bus(&port->frontends, THIS_MODULE, port,
+				   &dev->pci->dev, NULL,
+				   adapter_nr, mfe_shared);
+	if (ret)
+		goto frontend_detach;
+
+	ret = dvb_register_ci_mac(port);
+	if (ret)
+		goto frontend_detach;
+
 	return 0;
+
+frontend_detach:
+	/* remove I2C client for SEC */
+	client_sec = port->i2c_client_sec;
+	if (client_sec) {
+		module_put(client_sec->dev.driver->owner);
+		i2c_unregister_device(client_sec);
+		port->i2c_client_sec = NULL;
+	}
+
+	/* remove I2C client for tuner */
+	client_tuner = port->i2c_client_tuner;
+	if (client_tuner) {
+		module_put(client_tuner->dev.driver->owner);
+		i2c_unregister_device(client_tuner);
+		port->i2c_client_tuner = NULL;
+	}
+
+	/* remove I2C client for demodulator */
+	client_demod = port->i2c_client_demod;
+	if (client_demod) {
+		module_put(client_demod->dev.driver->owner);
+		i2c_unregister_device(client_demod);
+		port->i2c_client_demod = NULL;
+	}
+
+	port->gate_ctrl = NULL;
+	vb2_dvb_dealloc_frontends(&port->frontends);
+	return -EINVAL;
 }
 
-/*
- * NEC decoder
- * See also http://www.sbprojects.com/knowledge/ir/nec.php
- *        http://wiki.altium.com/display/ADOH/NEC+Infrared+Transmission+Protocol
- */
-struct img_ir_decoder img_ir_nec = {
-	.type = RC_PROTO_BIT_NEC | RC_PROTO_BIT_NECX | RC_PROTO_BIT_NEC32,
-	.control = {
-		.decoden = 1,
-		.code_type = IMG_IR_CODETYPE_PULSEDIST,
-	},
-	/* main timings */
-	.unit = 562500, /* 562.5 us */
-	.timings = {
-		/* leader symbol */
-		.ldr = {
-			.pulse = { 16	/* 9ms */ },
-			.space = { 8	/* 4.5ms */ },
-		},
-		/* 0 symbol */
-		.s00 = {
-			.pulse = { 1	/* 562.5 us */ },
-			.space = { 1	/* 562.5 us */ },
-		},
-		/* 1 symbol */
-		.s01 = {
-			.pulse = { 1	/* 562.5 us */ },
-			.space = { 3	/* 1687.5 us */ },
-		},
-		/* free time */
-		.ft = {
-			.minlen = 32,
-			.maxlen = 32,
-			.ft_min = 10,	/* 5.625 ms */
-		},
-	},
-	/* repeat codes */
-	.repeat = 108,			/* 108 ms */
-	.rtimings = {
-		/* leader symbol */
-		.ldr = {
-			.space = { 4	/* 2.25 ms */ },
-		},
-		/* free time */
-		.ft = {
-			.minlen = 0,	/* repeat code has no data */
-			.maxlen = 0,
-		},
-	},
-	/* scancode logic */
-	.scancode = img_ir_nec_scancode,
-	.filter = img_ir_nec_filter,
-};
+int cx23885_dvb_register(struct cx23885_tsport *port)
+{
+
+	struct vb2_dvb_frontend *fe0;
+	struct cx23885_dev *dev = port->dev;
+	int err, i;
+
+	/* Here we need to allocate the correct number of frontends,
+	 * as reflected in the cards struct. The reality is that currently
+	 * no cx23885 boards support this - yet. But, if we don't modify this
+	 * code then the second frontend would never be allocated (later)
+	 * and fail with error before the attach in dvb_register().
+	 * Without these changes we risk an OOPS later. The changes here
+	 * are for safety, and should provide a good foundation for the
+	 * future addition of any multi-frontend cx23885 based boards.
+	 */
+	pr_info("%s() allocating %d frontend(s)\n", __func__,
+		port->num_frontends);
+
+	for (i = 1; i <= port->num_frontends; i++) {
+		struct vb2_queue *q;
+
+		if (vb2_dvb_alloc_frontend(
+			&port->frontends, i) == NULL) {
+			pr_err("%s() failed to alloc\n", __func__);
+			return -ENOMEM;
+		}
+
+		fe0 = vb2_dvb_get_frontend(&port->frontends, i);
+		if (!fe0)
+			return -EINVAL;
+
+		dprintk(1, "%s\n", __func__);
+		dprintk(1, " ->probed by Card=%d Name=%s, PCI %02x:%02x\n",
+			dev->board,
+			dev->name,
+			dev->pci_bus,
+			dev->pci_slot);
+
+		/* dvb stuff */
+		/* We have to init the queue for each frontend on a port. */
+		pr_info("%s: cx23885 based dvb card\n", dev->name);
+		q = &fe0->dvb.dvbq;
+		q->type = V4L2_BUF_TYPE_VIDEO_CAPTURE;
+		q->io_modes = VB2_MMAP | VB2_USERPTR | VB2_DMABUF | VB2_READ;
+		q->gfp_flags = GFP_DMA32;
+		q->min_buffers_needed = 2;
+		q->drv_priv = port;
+		q->buf_struct_size = sizeof(struct cx23885_buffer);
+		q->ops = &dvb_qops;
+		q->mem_ops = &vb2_dma_sg_memops;
+		q->timestamp_flags = V4L2_BUF_FLAG_TIMESTAMP_MONOTONIC;
+		q->lock = &dev->lock;
+		q->dev = &dev->pci->dev;
+
+		err = vb2_queue_init(q);
+		if (err < 0)
+			return err;
+	}
+	err = dvb_register(port);
+	if (err != 0)
+		pr_err("%s() dvb_register failed err = %d\n",
+		       __func__, err);
+
+	return err;
+}
+
+int cx23885_dvb_unregister(struct cx23885_tsport *port)
+{
+	struct vb2_dvb_frontend *fe0;
+	struct i2c_client *client;
+
+	fe0 = vb2_dvb_get_frontend(&port->frontends, 1);
+
+	if (fe0 && fe0->dvb.frontend)
+		vb2_dvb_unregister_bus(&port->frontends);
+
+	/* remove I2C client for CI */
+	client = port->i2c_client_ci;
+	if (client) {
+		module_put(client->dev.driver->owner);
+		i2c_unregister_device(clie

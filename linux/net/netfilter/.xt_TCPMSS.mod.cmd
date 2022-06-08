@@ -1,8 +1,9 @@
-*pf;
-	unsigned long flags;
-	bool found = false;
+2_FIELD_SEQ_BT:
+		break;
+	default:
+		field = V4L2_FIELD_INTERLACED;
+		break;
+	}
 
-	might_sleep();
-
-	if (WARN_ON_ONCE(static_obj(key)))
-		retur
+	f->fmt.pix.field = field;
+	

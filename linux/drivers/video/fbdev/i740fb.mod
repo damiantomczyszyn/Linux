@@ -1,1 +1,1 @@
-de/generated/asm/early_ioremap
+ct tda10071_platform_data tda1

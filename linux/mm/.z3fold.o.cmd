@@ -1,733 +1,1544 @@
-LUB) \
-    $(wildcard include/config/SLOB) \
-  include/linux/overflow.h \
-  include/linux/percpu-refcount.h \
-  include/linux/kasan.h \
-    $(wildcard include/config/KASAN_STACK) \
-    $(wildcard include/config/KASAN_VMALLOC) \
-    $(wildcard include/config/KASAN_INLINE) \
-  include/linux/kasan-enabled.h \
-  include/linux/device.h \
-    $(wildcard include/config/GENERIC_MSI_IRQ_DOMAIN) \
-    $(wildcard include/config/GENERIC_MSI_IRQ) \
-    $(wildcard include/config/ENERGY_MODEL) \
-    $(wildcard include/config/PINCTRL) \
-    $(wildcard include/config/DMA_OPS) \
-    $(wildcard include/config/DMA_DECLARE_COHERENT) \
-    $(wildcard include/config/DMA_CMA) \
-    $(wildcard include/config/SWIOTLB) \
-    $(wildcard include/config/ARCH_HAS_SYNC_DMA_FOR_DEVICE) \
-    $(wildcard include/config/ARCH_HAS_SYNC_DMA_FOR_CPU) \
-    $(wildcard include/config/ARCH_HAS_SYNC_DMA_FOR_CPU_ALL) \
-    $(wildcard include/config/DMA_OPS_BYPASS) \
-    $(wildcard include/config/DEVTMPFS) \
-    $(wildcard include/config/SYSFS_DEPRECATED) \
-  include/linux/dev_printk.h \
-  include/linux/ratelimit.h \
-  include/linux/sched.h \
-    $(wildcard include/config/VIRT_CPU_ACCOUNTING_NATIVE) \
-    $(wildcard include/config/SCHED_INFO) \
-    $(wildcard include/config/SCHEDSTATS) \
-    $(wildcard include/config/SCHED_CORE) \
-    $(wildcard include/config/FAIR_GROUP_SCHED) \
-    $(wildcard include/config/RT_GROUP_SCHED) \
-    $(wildcard include/config/RT_MUTEXES) \
-    $(wildcard include/config/UCLAMP_TASK) \
-    $(wildcard include/config/UCLAMP_BUCKETS_COUNT) \
-    $(wildcard include/config/CGROUP_SCHED) \
-    $(wildcard include/config/BLK_DEV_IO_TRACE) \
-    $(wildcard include/config/PSI) \
-    $(wildcard include/config/COMPAT_BRK) \
-    $(wildcard include/config/CGROUPS) \
-    $(wildcard include/config/BLK_CGROUP) \
-    $(wildcard include/config/PAGE_OWNER) \
-    $(wildcard include/config/EVENTFD) \
-    $(wildcard include/config/ARCH_HAS_SCALED_CPUTIME) \
-    $(wildcard include/config/VIRT_CPU_ACCOUNTING_GEN) \
-    $(wildcard include/config/POSIX_CPUTIMERS) \
-    $(wildcard include/config/POSIX_CPU_TIMERS_TASK_WORK) \
-    $(wildcard include/config/KEYS) \
-    $(wildcard include/config/SYSVIPC) \
-    $(wildcard include/config/DETECT_HUNG_TASK) \
-    $(wildcard include/config/IO_URING) \
-    $(wildcard include/config/AUDIT) \
-    $(wildcard include/config/AUDITSYSCALL) \
-    $(wildcard include/config/UBSAN) \
-    $(wildcard include/config/UBSAN_TRAP) \
-    $(wildcard include/config/TASK_XACCT) \
-    $(wildcard include/config/CPUSETS) \
-    $(wildcard include/config/X86_CPU_RESCTRL) \
-    $(wildcard include/config/FUTEX) \
-    $(wildcard include/config/PERF_EVENTS) \
-    $(wildcard include/config/RSEQ) \
-    $(wildcard include/config/TASK_DELAY_ACCT) \
-    $(wildcard include/config/FAULT_INJECTION) \
-    $(wildcard include/config/LATENCYTOP) \
-    $(wildcard include/config/KUNIT) \
-    $(wildcard include/config/FUNCTION_GRAPH_TRACER) \
-    $(wildcard include/config/BCACHE) \
-    $(wildcard include/config/VMAP_STACK) \
-    $(wildcard include/config/SECURITY) \
-    $(wildcard include/config/BPF_SYSCALL) \
-    $(wildcard include/config/GCC_PLUGIN_STACKLEAK) \
-    $(wildcard include/config/X86_MCE) \
-    $(wildcard include/config/KRETPROBES) \
-    $(wildcard include/config/RETHOOK) \
-    $(wildcard include/config/ARCH_HAS_PARANOID_L1D_FLUSH) \
-    $(wildcard include/config/ARCH_TASK_STRUCT_ON_STACK) \
-    $(wildcard include/config/DEBUG_RSEQ) \
-  include/uapi/linux/sched.h \
-  include/linux/pid.h \
-  include/linux/rculist.h \
-    $(wildcard include/config/PROVE_RCU_LIST) \
-  include/linux/sem.h \
-  include/uapi/linux/sem.h \
-  include/linux/ipc.h \
-  include/linux/rhashtable-types.h \
-  include/uapi/linux/ipc.h \
-  arch/x86/include/generated/uapi/asm/ipcbuf.h \
-  include/uapi/asm-generic/ipcbuf.h \
-  arch/x86/include/uapi/asm/sembuf.h \
-  include/linux/shm.h \
-  include/uapi/linux/shm.h \
-  include/uapi/asm-generic/hugetlb_encode.h \
-  arch/x86/include/uapi/asm/shmbuf.h \
-  include/uapi/asm-generic/shmbuf.h \
-  arch/x86/include/asm/shmparam.h \
-  include/linux/plist.h \
-    $(wildcard include/config/DEBUG_PLIST) \
-  include/linux/hrtimer.h \
-    $(wildcard include/config/HIGH_RES_TIMERS) \
-    $(wildcard include/config/TIME_LOW_RES) \
-    $(wildcard include/config/TIMERFD) \
-  include/linux/hrtimer_defs.h \
-  include/linux/timerqueue.h \
-  include/linux/seccomp.h \
-    $(wildcard include/config/SECCOMP) \
-    $(wildcard include/config/HAVE_ARCH_SECCOMP_FILTER) \
-    $(wildcard include/config/SECCOMP_FILTER) \
-    $(wildcard include/config/CHECKPOINT_RESTORE) \
-    $(wildcard include/config/SECCOMP_CACHE_DEBUG) \
-  include/uapi/linux/seccomp.h \
-  arch/x86/include/asm/seccomp.h \
-  arch/x86/include/asm/unistd.h \
-  arch/x86/include/uapi/asm/unistd.h \
-  arch/x86/include/generated/uapi/asm/unistd_32.h \
-  include/asm-generic/seccomp.h \
-  include/uapi/linux/unistd.h \
-  include/linux/resource.h \
-  include/uapi/linux/resource.h \
-  arch/x86/include/generated/uapi/asm/resource.h \
-  include/asm-generic/resource.h \
-  include/uapi/asm-generic/resource.h \
-  include/linux/latencytop.h \
-  include/linux/sched/prio.h \
-  include/linux/sched/types.h \
-  include/linux/signal_types.h \
-    $(wildcard include/config/OLD_SIGACTION) \
-  include/uapi/linux/signal.h \
-  arch/x86/include/asm/signal.h \
-  arch/x86/include/uapi/asm/signal.h \
-  include/uapi/asm-generic/signal-defs.h \
-  arch/x86/include/uapi/asm/siginfo.h \
-  include/uapi/asm-generic/siginfo.h \
-  include/linux/syscall_user_dispatch.h \
-  include/linux/task_io_accounting.h \
-    $(wildcard include/config/TASK_IO_ACCOUNTING) \
-  include/linux/posix-timers.h \
-  include/linux/alarmtimer.h \
-    $(wildcard include/config/RTC_CLASS) \
-  include/uapi/linux/rseq.h \
-  include/linux/kcsan.h \
-  include/linux/energy_model.h \
-  include/linux/sched/cpufreq.h \
-    $(wildcard include/config/CPU_FREQ) \
-  include/linux/sched/topology.h \
-    $(wildcard include/config/SCHED_DEBUG) \
-    $(wildcard include/config/SCHED_MC) \
-    $(wildcard include/config/CPU_FREQ_GOV_SCHEDUTIL) \
-  include/linux/sched/idle.h \
-  include/linux/sched/sd_flags.h \
-  include/linux/klist.h \
-  include/linux/pm.h \
-    $(wildcard include/config/VT_CONSOLE_SLEEP) \
-    $(wildcard include/config/PM_CLK) \
-    $(wildcard include/config/PM_GENERIC_DOMAINS) \
-  include/linux/device/bus.h \
-  include/linux/device/class.h \
-  include/linux/device/driver.h \
-  arch/x86/include/asm/device.h \
-  include/linux/pm_wakeup.h \
-  include/acpi/acpi.h \
-  include/acpi/platform/acenv.h \
-  include/acpi/platform/acgcc.h \
-  include/acpi/platform/aclinux.h \
-    $(wildcard include/config/ACPI_REDUCED_HARDWARE_ONLY) \
-    $(wildcard include/config/ACPI_DEBUG) \
-  include/linux/ctype.h \
-  arch/x86/include/asm/acenv.h \
-  include/acpi/acnames.h \
-  include/acpi/actypes.h \
-  include/acpi/acexcep.h \
-  include/acpi/actbl.h \
-  include/acpi/actbl1.h \
-  include/acpi/actbl2.h \
-  include/acpi/actbl3.h \
-  include/acpi/acrestyp.h \
-  include/acpi/platform/acenvex.h \
-  include/acpi/platform/aclinuxex.h \
-  include/acpi/platform/acgccex.h \
-  include/acpi/acoutput.h \
-  include/acpi/acpiosxf.h \
-  include/acpi/acpixf.h \
-  include/acpi/acconfig.h \
-  include/acpi/acbuffer.h \
-  include/linux/dynamic_debug.h \
-  include/acpi/acpi_bus.h \
-    $(wildcard include/config/X86_ANDROID_TABLETS) \
-    $(wildcard include/config/ACPI_SYSTEM_POWER_STATES_SUPPORT) \
-    $(wildcard include/config/ACPI_SLEEP) \
-  include/acpi/acpi_drivers.h \
-    $(wildcard include/config/ACPI_DOCK) \
-  include/acpi/acpi_numa.h \
-    $(wildcard include/config/ACPI_HMAT) \
-  include/acpi/acpi_io.h \
-  include/linux/io.h \
-    $(wildcard include/config/HAS_IOPORT_MAP) \
-  arch/x86/include/asm/io.h \
-    $(wildcard include/config/MTRR) \
-    $(wildcard include/config/X86_PAT) \
-  arch/x86/include/generated/asm/early_ioremap.h \
-  include/asm-generic/early_ioremap.h \
-    $(wildcard include/config/GENERIC_EARLY_IOREMAP) \
-  include/asm-generic/iomap.h \
-  include/asm-generic/pci_iomap.h \
-    $(wildcard include/config/NO_GENERIC_PCI_IOPORT_MAP) \
-    $(wildcard include/config/GENERIC_PCI_IOMAP) \
-  include/asm-generic/io.h \
-    $(wildcard include/config/GENERIC_IOMAP) \
-    $(wildcard include/config/GENERIC_IOREMAP) \
-    $(wildcard include/config/VIRT_TO_BUS) \
-    $(wildcard include/config/GENERIC_DEVMEM_IS_ALLOWED) \
-  include/linux/logic_pio.h \
-    $(wildcard include/config/INDIRECT_PIO) \
-  include/linux/vmalloc.h \
-    $(wildcard include/config/HAVE_ARCH_HUGE_VMALLOC) \
-  arch/x86/include/asm/vmalloc.h \
-    $(wildcard include/config/HAVE_ARCH_HUGE_VMAP) \
-  arch/x86/include/asm/acpi.h \
-    $(wildcard include/config/ACPI_APEI) \
-  include/acpi/pdc_intel.h \
-  arch/x86/include/asm/numa.h \
-    $(wildcard include/config/NUMA_EMU) \
-  arch/x86/include/asm/numa_32.h \
-  include/linux/regulator/consumer.h \
-    $(wildcard include/config/REGULATOR) \
-  include/linux/suspend.h \
-    $(wildcard include/config/VT) \
-    $(wildcard include/config/SUSPEND) \
-    $(wildcard include/config/HIBERNATION_SNAPSHOT_DEV) \
-    $(wildcard include/config/PM_SLEEP_DEBUG) \
-    $(wildcard include/config/PM_AUTOSLEEP) \
-  include/linux/swap.h \
-    $(wildcard include/config/DEVICE_PRIVATE) \
-    $(wildcard include/config/MIGRATION) \
-    $(wildcard include/config/FRONTSWAP) \
-    $(wildcard include/config/THP_SWAP) \
-    $(wildcard include/config/MEMCG_SWAP) \
-  include/linux/memcontrol.h \
-    $(wildcard include/config/CGROUP_WRITEBACK) \
-  include/linux/cgroup.h \
-    $(wildcard include/config/CGROUP_CPUACCT) \
-    $(wildcard include/config/SOCK_CGROUP_DATA) \
-    $(wildcard include/config/CGROUP_DATA) \
-    $(wildcard include/config/CGROUP_BPF) \
-  include/uapi/linux/cgroupstats.h \
-  include/uapi/linux/taskstats.h \
-  include/linux/fs.h \
-    $(wildcard include/config/READ_ONLY_THP_FOR_FS) \
-    $(wildcard include/config/FS_POSIX_ACL) \
-    $(wildcard include/config/IMA) \
-    $(wildcard include/config/FILE_LOCKING) \
-    $(wildcard include/config/FSNOTIFY) \
-    $(wildcard include/config/FS_ENCRYPTION) \
-    $(wildcard include/config/FS_VERITY) \
-    $(wildcard include/config/EPOLL) \
-    $(wildcard include/config/UNICODE) \
-    $(wildcard include/config/QUOTA) \
-    $(wildcard include/config/FS_DAX) \
-    $(wildcard include/config/BLOCK) \
-  include/linux/wait_bit.h \
-  include/linux/kdev_t.h \
-  include/uapi/linux/kdev_t.h \
-  include/linux/dcache.h \
-  include/linux/rculist_bl.h \
-  include/linux/list_bl.h \
-  include/linux/bit_spinlock.h \
-  include/linux/lockref.h \
-    $(wildcard include/config/ARCH_USE_CMPXCHG_LOCKREF) \
-  include/linux/stringhash.h \
-    $(wildcard include/config/DCACHE_WORD_ACCESS) \
-  include/linux/hash.h \
-    $(wildcard include/config/HAVE_ARCH_HASH) \
-  include/linux/path.h \
-  include/linux/list_lru.h \
-  include/linux/shrinker.h \
-  include/linux/capability.h \
-  include/uapi/linux/capability.h \
-  include/linux/semaphore.h \
-  include/linux/fcntl.h \
-    $(wildcard include/config/ARCH_32BIT_OFF_T) \
-  include/uapi/linux/fcntl.h \
-  arch/x86/include/generated/uapi/asm/fcntl.h \
-  include/uapi/asm-generic/fcntl.h \
-  include/uapi/linux/openat2.h \
-  include/linux/migrate_mode.h \
-  include/linux/percpu-rwsem.h \
-  include/linux/rcuwait.h \
-  include/linux/sched/signal.h \
-    $(wildcard include/config/SCHED_AUTOGROUP) \
-    $(wildcard include/config/BSD_PROCESS_ACCT) \
-    $(wildcard include/config/TASKSTATS) \
-    $(wildcard include/config/STACK_GROWSUP) \
-  include/linux/signal.h \
-    $(wildcard include/config/DYNAMIC_SIGFRAME) \
-  include/linux/sched/jobctl.h \
-  include/linux/sched/task.h \
-    $(wildcard include/config/HAVE_EXIT_THREAD) \
-    $(wildcard include/config/ARCH_WANTS_DYNAMIC_TASK_STRUCT) \
-    $(wildcard include/config/HAVE_ARCH_THREAD_STRUCT_WHITELIST) \
-  include/linux/uaccess.h \
-  include/linux/fault-inject-usercopy.h \
-    $(wildcard include/config/FAULT_INJECTION_USERCOPY) \
-  arch/x86/include/asm/uaccess.h \
-    $(wildcard include/config/CC_HAS_ASM_GOTO_OUTPUT) \
-    $(wildcard include/config/CC_HAS_ASM_GOTO_TIED_OUTPUT) \
-    $(wildcard include/config/ARCH_HAS_COPY_MC) \
-    $(wildcard include/config/X86_INTEL_USERCOPY) \
-  arch/x86/include/asm/smap.h \
-  arch/x86/include/asm/extable.h \
-    $(wildcard include/config/BPF_JIT) \
-  include/asm-generic/access_ok.h \
-    $(wildcard include/config/ALTERNATE_USER_ADDRESS_SPACE) \
-  arch/x86/include/asm/uaccess_32.h \
-  include/linux/cred.h \
-    $(wildcard include/config/DEBUG_CREDENTIALS) \
-  include/linux/key.h \
-    $(wildcard include/config/KEY_NOTIFICATIONS) \
-    $(wildcard include/config/NET) \
-  include/linux/assoc_array.h \
-    $(wildcard include/config/ASSOCIATIVE_ARRAY) \
-  include/linux/sched/user.h \
-    $(wildcard include/config/WATCH_QUEUE) \
-  include/linux/percpu_counter.h \
-  include/linux/rcu_sync.h \
-  include/linux/delayed_call.h \
-  include/linux/errseq.h \
-  include/linux/ioprio.h \
-  include/linux/sched/rt.h \
-  include/linux/iocontext.h \
-    $(wildcard include/config/BLK_ICQ) \
-  include/uapi/linux/ioprio.h \
-  include/linux/fs_types.h \
-  include/linux/mount.h \
-  include/linux/mnt_idmapping.h \
-  include/uapi/linux/fs.h \
-  include/linux/quota.h \
-    $(wildcard include/config/QUOTA_NETLINK_INTERFACE) \
-  include/uapi/linux/dqblk_xfs.h \
-  include/linux/dqblk_v1.h \
-  include/linux/dqblk_v2.h \
-  include/linux/dqblk_qtree.h \
-  include/linux/projid.h \
-  include/uapi/linux/quota.h \
-  include/linux/nfs_fs_i.h \
-  include/linux/seq_file.h \
-  include/linux/string_helpers.h \
-  include/linux/ns_common.h \
-  include/linux/nsproxy.h \
-  include/linux/user_namespace.h \
-    $(wildcard include/config/INOTIFY_USER) \
-    $(wildcard include/config/FANOTIFY) \
-    $(wildcard include/config/PERSISTENT_KEYRINGS) \
-  include/linux/kernel_stat.h \
-  include/linux/interrupt.h \
-    $(wildcard include/config/IRQ_FORCED_THREADING) \
-    $(wildcard include/config/GENERIC_IRQ_PROBE) \
-    $(wildcard include/config/IRQ_TIMINGS) \
-  include/linux/irqreturn.h \
-  include/linux/irqnr.h \
-  include/uapi/linux/irqnr.h \
-  include/linux/hardirq.h \
-  include/linux/context_tracking_state.h \
-    $(wildcard include/config/CONTEXT_TRACKING) \
-  include/linux/ftrace_irq.h \
-    $(wildcard include/config/HWLAT_TRACER) \
-    $(wildcard include/config/OSNOISE_TRACER) \
-  include/linux/vtime.h \
-    $(wildcard include/config/VIRT_CPU_ACCOUNTING) \
-    $(wildcard include/config/IRQ_TIME_ACCOUNTING) \
-  arch/x86/include/asm/hardirq.h \
-    $(wildcard include/config/KVM_INTEL) \
-    $(wildcard include/config/X86_THERMAL_VECTOR) \
-    $(wildcard include/config/X86_MCE_THRESHOLD) \
-    $(wildcard include/config/X86_MCE_AMD) \
-    $(wildcard include/config/X86_HV_CALLBACK_VECTOR) \
-  arch/x86/include/asm/irq.h \
-  arch/x86/include/asm/sections.h \
-  include/asm-generic/sections.h \
-    $(wildcard include/config/HAVE_FUNCTION_DESCRIPTORS) \
-  include/linux/cgroup-defs.h \
-    $(wildcard include/config/CGROUP_NET_CLASSID) \
-    $(wildcard include/config/CGROUP_NET_PRIO) \
-  include/linux/u64_stats_sync.h \
-  include/linux/bpf-cgroup-defs.h \
-  include/linux/psi_types.h \
-  include/linux/kthread.h \
-  include/linux/cgroup_subsys.h \
-    $(wildcard include/config/CGROUP_DEVICE) \
-    $(wildcard include/config/CGROUP_FREEZER) \
-    $(wildcard include/config/CGROUP_PERF) \
-    $(wildcard include/config/CGROUP_HUGETLB) \
-    $(wildcard include/config/CGROUP_PIDS) \
-    $(wildcard include/config/CGROUP_RDMA) \
-    $(wildcard include/config/CGROUP_MISC) \
-    $(wildcard include/config/CGROUP_DEBUG) \
-  include/linux/vm_event_item.h \
-    $(wildcard include/config/HAVE_ARCH_TRANSPARENT_HUGEPAGE_PUD) \
-    $(wildcard include/config/MEMORY_BALLOON) \
-    $(wildcard include/config/BALLOON_COMPACTION) \
-    $(wildcard include/config/DEBUG_TLBFLUSH) \
-    $(wildcard include/config/DEBUG_VM_VMACACHE) \
-  include/linux/page_counter.h \
-  include/linux/vmpressure.h \
-  include/linux/eventfd.h \
-  include/linux/mm.h \
-    $(wildcard include/config/HAVE_ARCH_MMAP_RND_BITS) \
-    $(wildcard include/config/HAVE_ARCH_MMAP_RND_COMPAT_BITS) \
-    $(wildcard include/config/ARCH_USES_HIGH_VMA_FLAGS) \
-    $(wildcard include/config/ARCH_HAS_PKEYS) \
-    $(wildcard include/config/PPC) \
-    $(wildcard include/config/PARISC) \
-    $(wildcard include/config/SPARC64) \
-    $(wildcard include/config/ARM64_MTE) \
-    $(wildcard include/config/HAVE_ARCH_USERFAULTFD_MINOR) \
-    $(wildcard include/config/SHMEM) \
-    $(wildcard include/config/ARCH_HAS_PTE_SPECIAL) \
-    $(wildcard include/config/ARCH_HAS_PTE_DEVMAP) \
-    $(wildcard include/config/DEBUG_VM_RB) \
-    $(wildcard include/config/PAGE_POISONING) \
-    $(wildcard include/config/INIT_ON_ALLOC_DEFAULT_ON) \
-    $(wildcard include/config/INIT_ON_FREE_DEFAULT_ON) \
-    $(wildcard include/config/DEBUG_PAGEALLOC) \
-    $(wildcard include/config/HUGETLBFS) \
-    $(wildcard include/config/MAPPING_DIRTY_HELPERS) \
-    $(wildcard include/config/ANON_VMA_NAME) \
-  include/linux/mmap_lock.h \
-  include/linux/page_ext.h \
-  include/linux/stacktrace.h \
-    $(wildcard include/config/ARCH_STACKWALK) \
-    $(wildcard include/config/STACKTRACE) \
-    $(wildcard include/config/HAVE_RELIABLE_STACKTRACE) \
-  include/linux/stackdepot.h \
-    $(wildcard include/config/STACKDEPOT_ALWAYS_INIT) \
-  include/linux/page_ref.h \
-    $(wildcard include/config/DEBUG_PAGE_REF) \
-  include/linux/sizes.h \
-  include/linux/pgtable.h \
-    $(wildcard include/config/HIGHPTE) \
-    $(wildcard include/config/GUP_GET_PTE_LOW_HIGH) \
-    $(wildcard include/config/HAVE_ARCH_SOFT_DIRTY) \
-    $(wildcard include/config/ARCH_ENABLE_THP_MIGRATION) \
-    $(wildcard include/config/X86_ESPFIX64) \
-  arch/x86/include/asm/pgtable.h \
-    $(wildcard include/config/DEBUG_WX) \
-    $(wildcard include/config/PAGE_TABLE_CHECK) \
-  arch/x86/include/asm/pkru.h \
-  arch/x86/include/asm/fpu/api.h \
-    $(wildcard include/config/X86_DEBUG_FPU) \
-  arch/x86/include/asm/coco.h \
-  include/asm-generic/pgtable_uffd.h \
-  include/linux/page_table_check.h \
-  arch/x86/include/asm/pgtable_32.h \
-  arch/x86/include/asm/pgtable-3level.h \
-  arch/x86/include/asm/pgtable-invert.h \
-  include/linux/huge_mm.h \
-  include/linux/sched/coredump.h \
-    $(wildcard include/config/CORE_DUMP_DEFAULT_ELF_HEADERS) \
-  include/linux/vmstat.h \
-    $(wildcard include/config/VM_EVENT_COUNTERS) \
-  include/linux/writeback.h \
-  include/linux/flex_proportions.h \
-  include/linux/backing-dev-defs.h \
-    $(wildcard include/config/DEBUG_FS) \
-  include/linux/blk_types.h \
-    $(wildcard include/config/FAIL_MAKE_REQUEST) \
-    $(wildcard include/config/BLK_CGROUP_IOCOST) \
-    $(wildcard include/config/BLK_INLINE_ENCRYPTION) \
-    $(wildcard include/config/BLK_DEV_INTEGRITY) \
-  include/linux/bvec.h \
-  include/linux/highmem.h \
-  include/linux/cacheflush.h \
-  arch/x86/include/asm/cacheflush.h \
-  include/asm-generic/cacheflush.h \
-  include/linux/highmem-internal.h \
-  arch/x86/include/asm/highmem.h \
-  arch/x86/include/asm/tlbflush.h \
-  arch/x86/include/asm/invpcid.h \
-  arch/x86/include/asm/pti.h \
-  include/linux/bio.h \
-  include/linux/mempool.h \
-  include/linux/uio.h \
-    $(wildcard include/config/ARCH_HAS_UACCESS_FLUSHCACHE) \
-  include/uapi/linux/uio.h \
-  include/linux/node.h \
-    $(wildcard include/config/HMEM_REPORTING) \
-  include/linux/pagemap.h \
-  include/linux/hugetlb_inline.h \
-  include/uapi/linux/mempolicy.h \
-  include/linux/freezer.h \
-  include/uapi/linux/i2c.h \
-  include/linux/videodev2.h \
-  include/uapi/linux/videodev2.h \
-  include/uapi/linux/v4l2-common.h \
-  include/uapi/linux/v4l2-controls.h \
-  include/media/v4l2-device.h \
-    $(wildcard include/config/VIDEO_V4L2_SUBDEV_API) \
-  include/media/media-device.h \
-    $(wildcard include/config/MEDIA_CONTROLLER) \
-  include/media/media-devnode.h \
-  include/linux/poll.h \
-  include/uapi/linux/poll.h \
-  arch/x86/include/generated/uapi/asm/poll.h \
-  include/uapi/asm-generic/poll.h \
-  include/uapi/linux/eventpoll.h \
-  include/linux/cdev.h \
-  include/media/media-entity.h \
-  include/uapi/linux/media.h \
-  include/media/v4l2-subdev.h \
-  include/uapi/linux/v4l2-subdev.h \
-  include/uapi/linux/v4l2-mediabus.h \
-  include/uapi/linux/media-bus-format.h \
-  include/media/v4l2-async.h \
-  include/media/v4l2-common.h \
-    $(wildcard include/config/VIDEO_V4L2_I2C) \
-    $(wildcard include/config/SPI) \
-  include/media/v4l2-dev.h \
-  include/linux/spi/spi.h \
-    $(wildcard include/config/SPI_SLAVE) \
-  include/linux/scatterlist.h \
-    $(wildcard include/config/NEED_SG_DMA_LENGTH) \
-    $(wildcard include/config/DEBUG_SG) \
-    $(wildcard include/config/SGL_ALLOC) \
-    $(wildcard include/config/ARCH_NO_SG_CHAIN) \
-    $(wildcard include/config/SG_POOL) \
-  include/linux/gpio/consumer.h \
-    $(wildcard include/config/OF_GPIO) \
-    $(wildcard include/config/GPIO_SYSFS) \
-  include/uapi/linux/spi/spi.h \
-  include/media/v4l2-fh.h \
-  include/media/v4l2-mediabus.h \
-  include/media/i2c/upd64031a.h \
+= 1,
+	.agc = &xc3028_agc_config,
+	.bw  = &xc3028_bw_config,
 
-drivers/media/i2c/upd64031a.o: $(deps_drivers/media/i2c/upd64031a.o)
+	.gpio_dir = DIB7000P_GPIO_DEFAULT_DIRECTIONS,
+	.gpio_val = DIB7000P_GPIO_DEFAULT_VALUES,
+	.gpio_pwm_pos = DIB7000P_GPIO_DEFAULT_PWM_POS,
 
-$(deps_drivers/media/i2c/upd64031a.o):
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      R  À  ¼     a      
-     u  $        €     i     ›    Œ     ²     ü     Í     ú     ß     <     ş  à  <       €  <     -  @  <     P  À   <     o     <     „     r     –     Í    ©      #     ´  °  w     Ê  0  7    â  p      ù  €  …        ¡     ,  À       D  à       [     
-    q  `   <     ”  0      ¨  \                     ½           û          :          r          «          X       ¸     Ç   `	  W    9  °  6    ¸  ğ  ³    <  p  6    ß           î             ù                          ğ  3     2             ;             A             N             Y             f             p             ~             ‰             ›             ±             Ê             Ö             ï                                       (  °  Š     A             H             O  À  (     l  ğ  n     …             •             ¥             ·             Æ             Î             Ö             ä  €  ™     ø             	             '	             G	             e	             y	             ‹	             §	             Ã	             Í	             å	             ø	             
-             
-             3
-             G
-             [
-             t
-             ‡
-             Ÿ
-             »
-             Ó
-             ì
-                                       .             D             \             k             ‚             –             ¯  P$  Q     Â             Ş  °$      ñ               @&  b                 +             A  °'  Ù     X  (  E    o             }             Œ             œ             ­  à)  ¬    Ã             ç             Ù             õ  ,  b       .  å    6             M             f  ğ0  
-    ‰                          ­             ¾             Ë   4      î             û                6  ›    0  ,        D  0        \  œ        o           †  ¼       š  Ô        cgroup.c __kstrtab_cgroup_bpf_enabled_key __kstrtabns_cgroup_bpf_enabled_key __ksymtab_cgroup_bpf_enabled_key __kstrtab___cgroup_bpf_run_filter_skb __kstrtabns___cgroup_bpf_run_filter_skb __ksymtab___cgroup_bpf_run_filter_skb __kstrtab___cgroup_bpf_run_filter_sk __kstrtabns___cgroup_bpf_run_filter_sk __ksymtab___cgroup_bpf_run_filter_sk __kstrtab___cgroup_bpf_run_filter_sock_addr __kstrtabns___cgroup_bpf_run_filter_sock_addr __ksymtab___cgroup_bpf_run_filter_sock_addr __kstrtab___cgroup_bpf_run_filter_sock_ops __kstrtabns___cgroup_bpf_run_filter_sock_ops __ksymtab___cgroup_bpf_run_filter_sock_ops sysctl_convert_ctx_access cg_sockopt_convert_ctx_access cg_sockopt_get_prologue bpf_cgroup_link_dealloc bpf_cgroup_link_fill_link_info cgroup_bpf_release_fn cgroup_bpf_release bpf_cgroup_link_show_fdinfo __bpf_prog_run_save_cb copy_sysctl_value sysctl_cpy_dir sysctl_cpy_dir.cold __func__.0 cgroup_dev_is_valid_access sysctl_is_valid_access cg_sockopt_is_valid_access sysctl_func_proto bpf_sysctl_get_new_value_proto bpf_set_retval_proto bpf_sysctl_get_name_proto bpf_sysctl_get_current_value_proto bpf_sysctl_set_new_value_proto bpf_get_retval_proto sockopt_alloc_buf cgroup_bpf_replace CSWTCH.197 cgroup_dev_func_proto compute_effective_progs update_effective_progs __cgroup_bpf_detach bpf_cgroup_link_release.part.0 bpf_cgroup_link_release bpf_cgroup_link_detach cg_sockopt_func_proto bpf_get_netns_cookie_sockopt_proto __cgroup_bpf_attach bpf_cgroup_link_lops __UNIQUE_ID___addressable___cgroup_bpf_run_filter_sock_ops491 __UNIQUE_ID___addressable___cgroup_bpf_run_filter_sock_addr490 __UNIQUE_ID___addressable___cgroup_bpf_run_filter_sk489 __UNIQUE_ID___addressable___cgroup_bpf_run_filter_skb488 __UNIQUE_ID___addressable_cgroup_bpf_enabled_key483 bpf_get_retval __fentry__ current_task bpf_set_retval bpf_get_netns_cookie_sockopt init_net kµdNİ7Ò=Œh#9ÃsıŠ½ÊéyOT±,[9!µ&{¬S_1$´Ô >¾¦Ïwú‘*-'HŒĞ(Š¥âNÄĞlVÁa!JĞ{zí÷çh–X¾Cãm'M’â‚Zìˆ©õšŞØÅInpL27ä&87^Vc%ù@Ë¤÷BZÑ–“8.nÆw5!}‡Gİ	sÊ×õ¥R!‹y3‡"¶@Æ²Ñé@£*V”Er”éTÜZOĞS·G®ÅìŒ»àµ»ı‘SõjìYqÏÈ…§ÀÂú&ìe6MËEÄ¤®hû!íQkÕ¤\KÈzoO<ñÉı@Uâ•x¸aT¢¼Ş"›”Es=™®@Üş«nö$_¶<)¹	ªh”ßj(Ì®¦"9²|“ª¹ÇŞ¢x'ícŸ=âüÛE•Y­rBàÔl3*`Ÿ2ZŒ&Dİ<H¸Ôı £5ó2H[ó&VaâVÿT~®kısêx¢5Ú—^2ÚrŸ§‡';DÙ1ÿÇFíâŸ§;Ë*?>±ÅEÆG.¥$_åiXÖ›ÀÑ%Eñîü@ôîWF–ê+O`C˜ä<K{B™gïsÄ	*
-J&¹iûgÒ‚ê…N:ºdİ²Âx°¸SàPá\9
-°-µ‡jp…È…Ç±òÚ€Ql¡^Ä|@ŒA"[ŠèˆvFŸhnpà$±2ß7 RµÛíÙŒrÛ1POÈ	Ëø©Ä<Øœa)0Æ;»WæB‰[‚t$	™¶İ›
-KØ³¥Y™Dg(‘Øøoµ2×mÈKà5«Î‚*—´Š­Òµï9ˆô‹”ÇH;¯ûGÙù?ï‘ô–ĞóîyëÈåŒ0_·SxğK»fÿ÷¹óùÿ¼´[ËÇ%ıs×†L±@M8¶3†zµ“æ«*míÔÛáÛt3ºç‰û@	/¼=vØŒ+[ş?r’ì£»Ón÷Æ‘¨³Îi«„8‘ ó’İÕ§ù‡"cÜ@‰7ƒmX÷|T —/İZÛÕ¼Ë‘^ÎğN"ñì+ç­”=&	,-¨¶´xèÀ¹ÿÄÒ,~7\µCúë}jP08¢ëı¯š2í&+–&'Á>›;œü½/pî7#JòdNÃeù5€¨Lfãåæêˆaš¼,ø½ó~?ü|²">•Dk©ùRù×òy.Ú\Uà'FÁe½òÊmFgà½cF78puâDKtAÿl|u2nÃƒçÌbÌ‚ºì³¹Ğô&iU”wfK,OQšBğrä"ß”Diê¢óKœ™ i=šì×[¹ò[k
- EE§älZ+~†Ğ“ˆİ¿Ì‹ªoÉg7².¸…Û•ù¯IÇ9¨”MbûÖú­ñ©Tnü&êbˆ­O‹ĞBDTd‰6Ù‡Œ†ªsşî+H›ä>ÕİØT^şñ%Çk YšÚ‘±È;h¼Øa‰YwG¶~Æí¸£äXNÔ—K_]n²t=©ÅâëSzhÆ~×>«‡}crqÇmqf:ø0Ö@¥ÆBl5%!¬ÃÜåò·“›µjH0Cäš?ÄjÂ8B†Z¥ãóè™4B¬PÑ{0(c:”Hn5³•‡/OJ˜TuÍ¤ 7ôø‹±ùAöãBæ^ºÖPTuØbÇfˆÕ†`óiwJŞÀs¶¿æ|¦¦Î‰òì=*¸@sà·¹0›¾JæõÁ¡æp†àùèƒ¢{QMÈ´°’u°ÛÈi;6Ò×Bœ%SçïĞü‰¨¨¡£î“H)- Ó R+ºŞZ2a1Ê{ƒ—V>¼0%÷™²É$XìäğFU?‘÷uÔœsŒ,t¢î+ ŞıA†?dğ‘†ÀŸ‡o“À×¨ˆÎc7¾µ¸ë	‰AFàËSq¦êŞ“ê]]`²—Íéu8
-ø˜a‚9¹h|AQXŠGU¡	Ÿ¢úV-&:¿.¤¹\Âˆà5â¯óİ3‚¯û[™_¤ \]é]¹ùóÓ-ƒ~÷w› rõâˆ».Ük=¡UD=‡@Š{½¦k%Ï¼š³…H[i|Qj›ãTÉÛÌİQ×–’¸şµÇIß]™ÖJ®ÿéùaşè£G‘ø…ÅË_O²ÔGŒ±X÷Ï›mLn»%¼c4I#ò<¿Kã	Üq¸¯Ò4V½Œrëñ,ã‰)ÕÈÊ,£ëµ&¦+§Ğ¹ÃêJo	¿°%†×´*˜7è	ÍæKö’¥Ôv¨ÄZn÷ÆµÓ¿\ò*LÔ½ûÀ™}Zò{ü¨qTÂ_Ñ2Gˆ~?’Â“–TcG¨V8Ø´öPÿìètÀû”ï2¶×ê¹7KÖ.5aŞİ‡0Ã,ƒ’tec®¹åÛ†lŒu"YöàFá¯§?r‚/³Q,
-ş˜ã‹0š’}µjXš”™ì&ZûÅ;€–ã ±Q’æôj<,aÈ„¢Jù%*¯”1›ú‰Q2›²º.00-ÊánŸ»1Ôú`º çbKõ€! Á"¬½~RÈŒËEÇjø£Àq¢x¥F¶€ZÓGü!cUyØ|ÂqĞR¡…”ãZê¦Ùg¥~ÇŠO=¨IÀ±êÌ‹r‹İNõBœ5•XyÉmrüœ7Å!İÎø‹?`CØ°—>Î*  û¸òİÎVî€Èq
-°Ó0š5—‹ªNY‰ÍrÊan¯0ÌKÜàùA¿{
-ãz°QúÑÓ èŸvÜwmƒQ¦W€©	Y¸_Ë™\ä]–7Nqğ,y(÷.÷ò¤%¢
-Êû<Ğ[ü’VĞ|et[¾RÆÉÒËÊ}­†U-ÑCË³iİŸ·E'á’¡@f$Í*’IMGrI~løa¶ÙîÚğ}ÃšmCdF9ø/µ€±ú©ÅêÜ¨J"P‰¨j`5iÏNMµb3à{nrÖ£ü!™œ÷‹’Ï’»R•êhUyÃjÇ1¯TÍT‘ùîLÁ7Ò
-rQµ#šy£‚[zq"×Ã/$vöÚR.ªG“©$¢I˜ØEñIÚpU[…!òEtQhÀ€f
-‹3½m_l?	Q†ô'VšÆ:“ğò¿BAœ€4áƒ~ÿ‰ı.ˆ(\·?ãÖŠˆµõ@?zT8¼[ÏûŒPì)0«â`ä¸¸Ÿ’ìâ[u×‚É’Ûù}†ƒ"]™o/óKß°tên*åÊ{hP–4WX-º„£?}àŞ¤^¬[WFĞñé×KÔq¨Îq’¦&ÁgƒRXŒ¤mÙ¾˜©(dM6(L;Š_æ>iŸéš†?GÁ…­š`pˆ#^©³q4t$m¶˜›´Ô·¤rô±)&%‚ÿ «íE@•Ûš4È Lõ¾&ëıŠX2ÒZ×áo:Z[ü#¾³İ…ªº‘“7<Ëå	ŞĞe<|P\nØä®™_W¥™ ˜G÷MhHXĞx=¤é+2zäÀæĞu@jíØ-aA‰Œ‚x‚(4OIËº+6I„&•ùe`×ÅÔ£R,ÂãDğ“Ô¼ÒÏD'¤¿X‹ŠmÆÊ»³À)—ã/”†=>¼ehnÉËó,µ3ÇÇ‡Ğ†YìH–#2¿jêa°ÇœÙÊ1†MÁ«QÓ¬ÚæÂiuFĞ6[26}Ãb.ã4pñc’|ªâal¼u¢†÷z1Ê™¶ª4zuóÈu'kÈ	—-1H!ò?>2âÙKËóñ]¨ğEîOT—¸‘g{»–2Ò9@Û¨pê½%]m£+›l <¢@HtŞ*
-ØX#¼ë²{ğ»|b 4!˜”—7ŞùºBÎoc* b_wRäGãS7aò¯U–J†Ûnõï9‘1Ô3°$–SáXI\‘™G}z·CtQOÓ»PÇ©7‚)äø":?w¸@º×XÇOhôİ„¯xÇLÛ° Fµ}	K÷‚¨›ñ6iM^ôJS¶@ƒ&œÜöt~}hĞch||fIG)ÉÈLv'eh¡Æ¬çÇL)`§¡”ê˜¥‡B)\ä~şÉ$}ÿ©V6t¶Kß/Iµg¯ÍñMqŸÅSàïÇu%?‚ğK
-\mœô‡ìÉ+·k
-şO$ÂÙ<›úBbxŠ¿(5ÇÿÛ=·9UÊºµ!ûâ1¥/]ñ-0A¶Ò»P8#Dº4sÁŞRÕ½B¹ä…¥Ÿ^„ÈKãÖ×¿(á|O,h"¥:ÒÆ‡L¸tøÍnt§€€=VÃæ';Õú*õ«»7öEı:²º`|ïïÀ(átB¹A»SPtI](ŠÊJlGë@ÁĞ†Œóå-4™EÖ‡ĞHê £Lcktkqc~ºòWT4‘¹(Iîšè†‡½ƒš§d]»Áy"kº'N‡É¬¾÷f<”óP}Ã~ŠüW¹”Š‰‘@­º‚…å =èÂ&,óNY«OÄÛê´H@S>¨ÈÌÒÆñö»´¢¬ú‰³j{Ù)Y%!ÚA'9‰ÈrÏİé3ˆ°‰¥Ä£òÇ%÷ŞJàé¼«§éµè–ñ($^ã„vbÏ¶ü8¯-9hôÕ—ò™éˆ-Ô[MT
-¦šÅÛU_ó†7dö‰¾¤§,ÎH÷íbn'`»¬ÕsB%Õì³|¼™Z=.j¶¶©‹blÃ¬\Â“¨ƒÖ$‰ÖXÜWÿÿ}?&ˆµ½çâ¡ÆAüãPúùA2’=ÑÉ|ó¦¹9°…®Z$…kJÁÑ£2Aä¡ààùI»mÿÙä-Ô)ÏÍN“UyÖÕ
-Z!VÿƒR(ˆ]ŠQT%ì·W2fÓ¦	Š’^LÜÿ¤oB@ºò2o_$ßÂÿrn¶â	:ÜÂÖÂopÑ#õˆZã4nôNşm'œ†$óMŸ
-ØÕ#–jµPóümöa b7iø:™&–õRd4Û~Ê×¤>Ÿ"AÂ3k!ŞéNhB’f¢B;…P7MmÂ„’ÀVë¬€E\D`3á¯’—làƒ#Hh>:=]o™˜‚#@¤m’ ®Ñá1C4Åtd9|ñæÑl³x±Ô&<úvóÔxWÀñDBÙ çŸså4pCë™Õ8˜{yLÖã—êííãÛDcÈu”újQ.¨8ÚÇLÕ¯o'÷ùâ@8TŠ„ŸËG¦á5›QŸeFjÔ…|Œ.È	õGa(æYŒ	`9V~Eğe„Óú¢øçüö²¯@kN,c±lù,6¸hÙJggù*>:ü‡»Ek5¯O™SMş$È7¦ìowÈÀÒ…¿øEÄÃ©›ÎŞj¤	ˆ?®gHÇĞ…wÏ>Vï-EÕÏƒ*º$‚ùeV0Z=Ë¡bĞjÖp–î’2=ôË,Sk"àW=2²ãT"b~Eo.—;®6Qä"ù9,^î£ÚG¡ıYPœŒ·Qz•Ã;0P_<2§,|Ô0Ã–F}Î¼C¬±ÀÖˆ™jôÅqOÄ•‘´;bM\”]8†KFø¢šV,¤|xÏ@èpì
-×—LyŒö¿ƒaóğÁùPşKÖvßd³
-‚º2Œ4eY§ tœÈc4ãÆ9Nëà®-Ô.Á{ó¿-3u q{ƒ¥¿ÎîcÔu‹Uö÷XÏï	Ù½·@Aç
-AIc`İo•ÀK‹Ç>SG"c#on’,…©ÿ±1sùü‡mØn†(!~òŠ®SØÎªÀ²êÔ#V l¯)Ê¬ŠáOV[ØÄüÈRU•l¯Şnƒ›e6A£l}ç'u<t
-?¢Êh)Y¿"ûäªuàéy,Àó]ÉiFspÎªxJ1tçÎ6ç/äadIxKÒ–ëu	‡´ÃíS=Ñô#4®À:ö]~j:
-(«Õë¢×—Wş’Ãp#Ut\‚å|)•áİ cR§‘©¦ê"ï·ÿU2ÖÜãúCæls+q1UÄ.e^Î£bí}n5íU/¢«Y½‰ã™DH:5C›{#Â
-¾¦yôùÔ Bh	ÅèôÀW´ú=5œûŠkÖPÚï<Ê5“xa	¥ƒYSm'TòŒ@LÄ“Ë	‡½¬™•iK»º%8ù ³Á{•ƒ*ˆî>÷<w‘l•ŞZY¾¼OåD˜ÔŠqUu:^ËéÌœVEæQ£%“†Ám1ÇŸ…qø {:z#cÏTiUÏ}) ç<M”.B_ 3JÖBÿ½xµËŞø˜¶i¯PlÀCM½;²pé¢XH‚JéøF&ı^eíXS1)ú±Î–³a¹nÀ[y\´¤ÇlNÃ¼.¸)dqĞu¦1Ş`¨ÄAÃ¿ÛÛ<0‚@åP/€:·Ïp¶¯Ş­E«ıİ æiı„33ƒwk¸8¶Õ"Š]XÕ¢ëŞ$¹Ì ßĞ}d 7€e¡aÊœ°alº¯Ÿ¼ÆO´¢ªók×«go32jn ¾ØA‰¬s—z(¥[a”7Ñ°•cW6ÓYÏì]ˆ¯Y˜},:u÷RN·³)ü·p²B	ÎW›‚*g©YÉ˜µéW€D¦²RÔØÕ]D,nŠJÊÀq—5–¹ÙOåÉ×UB`#Ç&Ibm<l8ÍûZ×ÜJ/L)g;Í§Zë¦/MÆ+N·K%qb?×-Rn»¡k‘\#<”E®ìhõ±åùeŸà=â‘óTf-€vÃª~C=m2ªn)Ğc¤_ÜÎY K¥ršomÀU»£:±Fû®ñ–ıÌÔ«+¤àí™A[=¹ö/×<# D9"µDtÒU+/ÈÒ7Øjk’[×9Xàƒ|Ô[<ßôëiëÇ	™ñØ9Ò	o€
-j]•fzÚ©FÄv¾*ú IQˆÅÜ)\ÃœGD!Šãê;4ôaA«Äe©ù³¾YóX[°÷ÚÜåR5†sVÍãéºÒV%­›[o|yñ¾š–gø^jİµ$|™Ğó¼Ä³*¬¿y2¢ƒ¤3^SÀ¸fÍIˆ¿$•üà×›¢*e„ÄèzÚŸK^ĞTÚÏ²Z¦ÿú–0÷üP¦—ú¨ÛÿbLJõE"P'šcç®«¦<Æë´û;t*ØÆïÌfïÍö6‚â—È†ívÏ”öÄ³0øs³ÿoŞWáóP³³‡a0ğöîŸ+[ˆ`VmO‰ö¾F‘IÆğvğb%;¯T·fg†®a~Â¯»ÑÌòƒ¬®pï@wÃ¨7$¸èz–#Å‰zqcômL}üğ"æ[£Ôs›’qæßm˜H±ğ±ø“é¶g)G9®¾Û)¾ş²Á˜ÑˆÉÙ€äCñp¸©cêñfØ?!Â‰¹M]ÿ\¥Ê¼0aœ¸˜p³š§W¾oâ¸ÿrØZ£2$<öá%mË¿òê„w# {…DÅ£Ê2ooCºW¾¦k”±)/—­I:¶Ê¤¢\Æ’’Âlr¶mÒ”‰ÙAyvŒ(f²î@èÁİü #%mu,^*ß=2(…ôõòOÎËhŸ•¡ü" Çúå^Kßïø>xq=ûßãhd8c€õA@ÅöŸ°v¸­­9\ğñê(mı5;[€röÛn!Ío3`àÕè1R×Ï«)Q3!…3Ó»EU„ÜOaÒCë¿)FÈAëC5ì_@S 1–7eDMî¦Â~)ĞU¶ŸHƒ™H:®R¦7#¬Áğgcêé›ïå…˜¸ßÄ¢k¥ù‡Vñ¬0w>¶]VãsêyÉ*ßŞÃ}1>A$š@1ÌzºÉD']¦ë³’k·-hK§çÂI`‹ĞYM/]]
-hÚäÒL¹=lƒ-–â÷İ@ñj¼ñ½ù8ªÇôíë4qnwçé#9Ë4É7Ó:ÿâ¬ê#}‘Ö%IÚgˆ`¯ Så´G"°M­•X¦ÃƒFvgK^ò³š„<rWRúÿhIÒ7¸Ö½–[ªJ6WÂÂ=—ÏÖÛ¦Ì™)ÆŠ3Ãó’+#¸c!¾ÒÛSSŸ¼òHñ²I73œjqÌú>¾^«¢_·åùb)"=ƒO¿umğµ*ï
-OÙşXXâ¢áuÑ¹ÏyKvğkí9ğ¼ê®£¥5ĞGózújfRÿîÂsI™‰ı"Ş:¯»,ÙŒñ¿äÇ ÄA!B—ÁøáK|ÈU6àÙ¡œ£G#˜Ëj¢ ‘L$ŠÍ­‚24hûÅÚÁB3¯›ªÓÖé…)4İ»>Í':ÈóÖú"£4¾ G­flwú…©Ÿ6 ¦ú*ékµ§sŠºpÿû+èfoû`g¡o5caxd–gZ$Ş;ŸgDêÁH3cbÓËºŞÑş·„ÊüÀÊ¸i–ÑN6%IfˆšdŒ	ls;.;ğ<!@¦*µAß‰ÀĞÌ±w¡ïĞ6)?w‰Æ2îIwPôYAÌŞ°µ®V8¤õá-5¾è–Ş*í!‡V˜¶–Ù •p$[‚!b¥m%”„© èOZ’	|¥lŞ­û’ÙzıÜ}Ï…» $0ÉÅ}k‹ôqxp¨¨TÏfä»Ïõ6‡-BN›(sÁáââ%°†ùùĞ¸G%p;9¥hMâ((ÍF(¨,Ÿ³…+|,BkDÿ Ï7ì¬ê"aÂûjIîÿï4Ê «¤>{c´ŠE¦÷R=iÙôb¸ŒÜ…[Ş/È@°P_Ÿ}¢°J{h†i1x¤xÎ¬
-]CLõó°±®³V/l,Le¹™µ¬ÏH:ØšÏsŸR¾m-a1; ËC¸º+zô½{’XCö_®ğcŞ©™o®¼%®|§«4mvş‹jğoÇ¥“ÜåœìiHÚšz²•¬•zº`6˜yqR/
-ğ<¼¬Z·™Ä¦¡3£gğœTmº­ÃFfªÈÏÏÈl@(FxcQÑ»±n‡°qç
-IÇ•ÿ‚‚¼)–f×§‡GÜÏ‡U± ÎG¸=éT)e˜&èÑÿ…Åmg[5„°¿'-º7&yVë)Ù3qm°>–úŸ û]ÒI·òj7á€7²‚”ètSôÛ¿Q’IÑ¯åî"B·E†Ü„½I®,,#E‡0Ï‰¤Ìò,²Yá¼OııvÅ=ÄµÓë†© oúKğüŒB:k¬”Ù(wt¾b“€*€c
-›Ûºy@]I¡î4#ÇKZ¶Õ—±ÍğÑ›IChî…EL]Øğòn‡f5kÎıÃ]Çœi¯dsb&Rÿ¥òDìñ@‰¤å$tQıæ«X×£BÁ	â¼Î‡s<\?™Ö(»c U4CØmm&Ëû§»½òV{,5ÍïEalÆqYVÓ²¥‹ÌƒË_ïØÜ»Ô†•ñÇõ2JÇ_ë$Ù_ÉwğØmD0U/›aÑ“IÍ
-Gƒ‚\ÂEKb´K«¯•Ø<nîŞÊU4íFuM Éù§:ÿ›…4ş4SRç¯ô€=ó?¸ERÏ>º´ÑçöÃm™İ0ÿF„—+EZÙ¥`Mr¹…+„<(ºœ¢†±Qszÿk“\Àó‘é˜Ù</~9*?i:÷-òln\yIìÜyI¡@¯Óà¹ùT&4=R(Å~aÈÓL–ò­A«](©#©¦ÒÜøÑûjCP£2lXùĞÉ=tíg’ĞùëáEåEË0½L1L%­Ü‹É‰u=£-íF1UyÒ¨;¦®Î.À«&?N	ñö®®.Ç3W~X”nL:[eÅ?ßæY@ß3R¬hƒ¿ q}8g oò.(æ_\ öå‚_*šßhFœ* :©8’"Ë7&ÏjÖaD¢†ö)e05­ÂÚğ÷ü?¯cIÿ1Ü7n‘'vaN_' 
-êz+u„"=r°ît˜•'ÎñW$†â	üáUºPq+õÏ€Õê©W¨S€¦U@­/…ÇAúòªd3¢Šø Zéxì@Ë½ñØ{7b¬{¥DKÿ¹ïı®]–c\g8a½#‚ƒ«ŸŒ;#ÃàìÚğ&{Ç‰Á˜Nù‘’\¤]+€[a¶wÓWşN‘!8WÈôıÚì{B;ìF¿[¤5>¼ã5çšüˆˆ-¬Æ’ «´¿ÕéÌ•s\±[_wİ;Ô8²iB"ğÑ——¯bvÕAœ?İÃİµ‚Gò
-Ø >J¥”ê¬ÙµwxíDšVd,ÖóI˜=°±´òpŠ­Ä—x%şGÓ/X7U7¥¥UÌÅlz4¯¡"fÃ%ÿ%£jLÄ€×ÍeUf¹FR5‹åVÑ/5o7¿©@ØEØÖ±‚§)œ~ëv‚R”…6Jé
-öo[-¹bÎP;.¨ÑPöt¦|<k¢	ñLo³RÃ\m>ÕÔTÄ8ßŞöL“¦	àÑŒø_eÑÈ˜[S¸ª³^Fsû“ÏĞ×1Ğ1zFLk3Ş®¡U™j8/Ykååàë“LQûJ\¢]U#ÓS>i’¡aI» õ·Ì_hü!1ZÉ’@Wj¯Õ"<Ã`E0Ó›$°õ9›g„jôr ÁO­æfÅ§t¯Ô(HSÀõ¸n8ˆ*óE¨hu :Â¡7©cÚú4€¥H+Ö‡Á"Æ¡6p©
-Úe ƒÀv3‹øi6÷ô’¢!¹Îî¢ç^ö§eŠN8‘>ÙJî´~d©E4o‘Ã­Ÿ¨/.úƒåüÒ)°8õıD7ÕüD`HÆúGç«®Ø'ùcêS¦üØ<ĞåèÖ¾o»²5*•Ø.J¾R©hórPÕ%¬¿¹Rk¤|îhƒë{ëê›õúÚ,/øI {Lªc‰/b·gwIÃßµ\¶Ešn8:§·vÙ0îŠ?/î›ğ¦ğ€Qld7øÔ„…§v“›£¡Oû56'ƒ9x1B•.†ĞÑ/¦†eBHeëiÌÎb+Pà—½ÿ<Ú‘$ŞÁû_2xY)¤µcÂ½êİ«3ØÒ„GYL%ÓYrŠU‡„Ñğe-Ìó'6¥ª']sÇI_˜õ+:øÍ¥>Ï¢7†ıÖàËGD6ú=Ö”w‡{OA§½ïüª{ÃÒ™€‰s5¯ß…Øä$3û§t&‚Ò7Ù
-ÅBö`ZœÁr>‚EïMQİ3Ç›ñÖô5c‰–ÿ&v?Ä=`ò>tÑÍFO®gì–ó¹?¸DÆZ¿r»UYäé­ z!Ğ%	-l«Ês•÷Ş1¦ã
-ûyä—òŒ‚şs¥$L¢§à¼áïĞ4Ú±ù¶è)œ÷£¸¤êÏŸÖcü^ÜşÓİFw‡Ãg¯XhU©>“¼	*Q$‹&¨1l†  4Ó])Û—nå|KwÿÅ	+¾ÂÔ,Ô/Ã\^1ˆõ£ë?dƒ.Æş2au*C¤ğ:ëó”KWÛËcCeçø‚ÅÖo_ÚDlrğ>RŸqE¾–>Õ¥Fd0ÉÙE‹Ã—U²uˆ^’®XKœ—µí_-Ü>ÉùĞs7l¼‚áŞ‘î9d“Ë3`\+qğÑ¼¿r€0zõú ’í”Læ$&ĞçRŸ¾Rsc•¬ÎôÇÇöíVxo†LÌ|  Ì <->ªÕÊ Ìâëé„ôÃsø
-Çô2¼öhb¡ ¾•ÄÄä]šiR,h?aõLíó’‹ZVQØ8Ã¸ûgJÉ¢é&Iãfƒƒ½Yàˆ©Ò;4 ”¥Œ–V¡
-ôQ†á¢”@¡Ö½èŒìäÜáå0sÙ),d»91;}7µx^zÏjÇ"v«îƒíèi«LÇ»cñÆ™fşåc1_èîK4¿vOÔv§şÕ¥Ùµû8s«4zzUáiè«vÀàÈÂò¥GÏß¡úÅ6Íux4ÓCŒûH"?\Æf•(IÔKüôW`Â‡Üi·"+CÇxïw×ÃÖ²µ"ÔÂ¸û|öü!°ÌCúëáw'tC9s¯çÒì‚âS±¤—§ Ç'îË ã(›ùôÉt‚+zó>Í N`·ˆ”ä3fê9ušÔ=c—f_ÏÔøÃ;,døú”uE<ç­¿x-2‰ê§TÔ†ÕW
-ğœˆB¶¦­,èn%S!:jiàaÊö`ç™WÀÓÏ"GA^)u±¡Ğ0ëk¯‡]u­gbƒñ°ÿ LêÌÔ:Z~è¸Nû[=éêäO°˜´"³Z0U²	Ò.ÿX|¾¹æ»&ˆ8d©9bÚ´œøÈJc|Ÿ‡PL0Ø4&V6‡?f	×¹üÇõuÌ¢ú¯×#ˆ1²„DÚÁöÌŸ«5±/XEöbvüÂBëZ˜BLÀ·ákp¶1ˆìÆà«PTş-Õóàƒi°kU|©€Á‹fÇõæ2v…öñêô!ÃhåáØ†éA
-T6ÈÜRÑ¶êrá~hÛu3Haïœ_ğÌËêõ†wG{2.(M­ofv”íÜhM¼%(h$1¢á– ş5VéÁd35JÿZÃ<Ş\»¾jğü¦ã—tü©’	¶­‚¡LêÇKÌÍbXQ@ú„‰ÅÛŸ¸\íu@š¸…Ç¬÷Bôàú!
-K•oşågºÄBFAgÙ\W0Tz…H›óŒ6çk³mÜ\¥Ñ×ÖGò8ù„»ò—nì7eı½ZràÉk`Ç„É¡hÇjÁARğı»~åmëöı¥ŒSCüCÑıœ‰Kd5ªŒ˜H³Õ™Æ‹Íù‹è/úadğæû²0Nb2İİ9„…®z«Ë7v[šá{ïƒÏYx¡ÕÆ*Gâu£øwo<yúÆ~×{›Cr”ôãqÑheËü2û{H$
-3(oAE†í}Üù¿¸Sõ/95Å|›Y0.¾ªe{Gr:O÷;O"‚™ºsÒ!‰Gc¥’¬#;[ÿÖP†%ÿ‰“®‰ÿg<ã›|ä!ÅÄ»§Íüò†êƒ+ÈV†n½Z"•×ÿr;=õkA*á2Tü»ĞIqíôçÙ¾m²¾ø¸Îj¡D=ç1‘Qz'LR8hZöJ°%‡>Ø€0o“öïaB'¨G`¡.?Q”…˜À©’H5ÂJ#àÆˆ 5ã£ˆSÂn„U àüVV˜‹ˆ
-M5ÖUO¤öå²[†}™;Œëãë ŒZ!Â?²Ğc-Xïÿ!tÊ‘…O¿H¤#Õt+î÷‘FH“­næÇ&ô_Ø°&Şc$¢Ìv:ÎL+ıƒ>ô„(Jo56İâÿÆÆ¡Æl/åà–|`¬†L¾KŸqÉ÷Åæç˜Ø€¨û€å+vt5]1ÈjØ>·ÂQní’÷#ùƒÑ,K'£÷”_7‘‡ÓRFŒF¥œXRÃØ@åÖš¯4©š>©Ğ•ÒC\²Zv©]ø²P¶%ïN9í÷ï„ĞÓ€8ÇÂ—UĞJì®‘ÜÕ0ü»¤4µR•Mü`—ÍGHøù4ÔA“£’Ò1jbOX(±!Ù)¦R¬‚©''ÖÎìù¾úº®bzK§-&TÉÛª~ÃA$8l:#PÏòoÕŒ/ÚrÔÛˆºî:aŸªMÂN!¦TV(‘CË†4·E'áìç%ñ½ñIü-:+íáz•f Ò7gF»Â¡<ÍJhO\Ö“É ò%ÚB¸¾*	O»Æêfå}oõbóP„|æİĞê…E. tîzrºâ î¿ĞbGÖ V8£…¶hL<>ÈNşâµÏ&¨×¸¬4fğ%›Ôëåô'`ƒÅ¸»ÿc¦ •Yrèşy)˜şÍ+ùÀ–1G«7£%8ğàNgÔ«°çìØ5HŠE
-‡·Í¦¶\úÅ dÏÅÔ‰¢ïÌŒr¬VéÃxUôŞ«Q£~ôšED™‘XePÏ`¹k òAÊfàÆï5”¬ò1»“,ô>Í£<¨º­f6á£Ÿÿz¿JëÉFÏrÚÔKA1@n	›d…Äuİª#d.ÛW»2€"N•*<ğÈú•Ü”Ğ6ô­‡¶çŞÄ©YÏ<™Ëú2¶ãjøqà=0B2¶í®²ÁáUìpuâQ/@Ó»°8œïº<vÅ^íd&Õv²ğƒ~U±¶k¥ÀêW0Ğ…2‰½©i#Œ!I?íÃ/™‹‚T-1Á£ˆ—m«²ø‹6 ›¯ÿÆq‰ß°cégƒ±ZØr›&jÊâ¨Uj—`,Áê<m/£µ“í¨sN‹Lòä¥Ø×¼EÌT¥.lşWöfB¼¾ßoğ~¶*vÅLÏß0¥%(À ®Z–¨ë3Q¡œË4Ãw>½ƒ¸¡Në)×bä_YJ§ªÈ’	lBz±ßò^‹Úç…ÉàQ_*|éêàº'eèÆêõĞ}uõtÂ%ø±kLÜ"ú:.mënõ‰Ã§Åm©0µö™«ì»ãÇùcÊ+³ gªª;¿¨@~Ù<´f…iÂÍˆè]ğ#TrÏd$7ìÚ“Y½’&†.ê¨$áŠpSÃCÊı)õ¾¸´ /Îµ´ıÜ%p0_Î÷záØåtÌ¤å˜ıg,ñQ¹Uª2'j2Gzµy{·Ş?(¾Èk§RPÒî“öÜ¬ÖÇW{l’¢xS&|RÛ“*_h ëøcMƒqÇMfzŸ­5ß|`–ò÷‰úâ×U–lhHÿ‡‹x€2rd']c§ÑtH*µgÅ~Eö”§Q[İ¨DC/vÌ(O_‘ß¼ wkz6ªùtf;'·Gqã-¤fŒ«Fn/ƒ*p_&GáO¬D}ªÆs(’ĞñÂW€Œª€v×ó^“FÔ;F	«è°ƒû ü˜lÎèÌàt­ƒ¼UÇ/WÂ˜@ÎÈ› ­g*¬å¨8øvâ“'Î(î65Èmó^t«¡N.Ñ©aÇjÚ´,±|½€­-!ğnòÃùZn”?mËTéQ€.Pß$ò&ÑVÅ7ı=†QGoÊñ1xİH‰®EØøú3—ØAäi/Úø”EâE~tB¨Ç¼Oôó°ÇD(©µ²D>$YöåÉ–õˆ£Ğf[´Åˆü7K«úFÌ¬ª²Z[s‘ÏåÙ·¶cNRpù Ïqwm?äÏ™'nmZ	t¸Ñ¡ô¾/‘b›M'ıš¤Ô-÷&ê9‹´k°Ç5‰. ‹C‰³¢\ñTêw†¦‰]¡¯x	
-I d|5NHÄªµãn ­ÜÕ(JK(„¦§V•…DŒ4ÌÅXÀV,±>™æ–Â(ı×[¥Şí©ÅGgß
-å–n¼8°q/5‘ãv=á}¾w^Íd³ÎÕ=§æÉ˜Ø×eÌn¢Û‡Gğ'mcE™®d¢¯÷5Zy)9Òxa;A\v+‘…òRCRRá&9‹yjH‹íB\h:¨aófª‘zó0İ)åesäögÁ[—P£JZ•0ê]j"¹CS<ÑÓâÛ€”æ3ÍÖë(Î},pÃ²%£¢=¹&ûx»!ÁŞ£,zòNdÜÚï³ÿ¨Xÿ–v€UÓµİv¸ğh ÙÑ´âçBœ}^=*rø@Ş|²]z!EÃİ¢î4+Uoı²ââH|c±—ïU|+é¿•år‘J…Jşh1«ÿ«Æ^R¥6,“˜ı˜}’ıK¦İHvíq,ôeÅÒlÃM€s´$:~jÀkMû&ĞSM9xœOŠ‚îı p38›Ip?üøíZ†ªbÇk‰È²¾$ğÖ‹¡S!ÎJÛ ğ±™ÛÙ¬®Wj4–K‡'ÆºJ‘˜ğ…dQBÈæ;Y {NeÓ»‹ˆ"Y`7ËâÛM‰© r0S6¸)h®3U=•B´â]b›Gêæ4{LdïÛÎí’*¥™F«vôÊ_QÆP¦®óÌ·Àœ‰ÒIõœ.g¦PAØ°^Ùk"ŠğŞšëÊÌ¦”<ñ\ôB^<ZÁå9õ6	IùŠåKÙø®ğQüÚl›û£šµß±ÊÅ÷^±E	I9’Uh §H„GRú–-qùÉë•pØ•kÇ¦¹ÛV	 ÏñP¨Wi¯Eíá2ó}YJüÛNÒƒ–—cª‘gL¨:Ë‹n†ÀN:º»³¿áŒ¬÷¡SíŒ8ÒR3ÈúõF¦ôär9åOoó)ø‘¤ş­ UŒ=¶ôxg%yºğ«²Úşf††½O&á²˜-{»XCù'+s"šşv‘›(àõ…8³$n¤~#Q‰hîÅå› J_üc^/IF›ÀHi½‰ºyz³ü9šËy	´H_DôÓ¶§ ?ßåŞßnf­‰.’„VİkWnDòäÇ.EvhN¿2íîg»¹”`µå>ÛRÉàù…#a´ÒËÀò4&
-©ízÙ™K‡8PH;ûŸŠøQĞ€uS¯nä
-y—¹kN}¾:“oN””@úŠŠÚìÕ^A™“èvÀá™7ØDªóq˜ÕŞiSVqLb0u³D0á2[	º<·qÉŸæ,‡Ã\³#…\0O:ßàšœx!ğò¥+y\~Ó™õD’sî‡¶œğâz/ºINğñYô@6%"2¸N¬.¹Ÿ­Y×G…şNF¸a9Ø6|w<“£[ ¤±_	
-ƒ[-âEœö»Œc,ìß8ö%´É¤yw¥³nUøo!]Å_¬çi’è•:U¢fAJˆYÉrÅy3JRİfğ®ãİ+Ùd$‹ráş$ò„øVaÀÊ?èjõU £?Í0ˆDçcdéêƒc3­9WÉ
-å^qÊ·77&Tcºú‡_2~+Wğ!ª±jéKÔ:Ô…sÏø¶¢Åß45mbßl´â4&hZ®x¤|Œ¤CuyGŒ†<®«`TNÊ<'\'ßä!ó"9²YÿgJX&,;½`Û¾ø‡„Ê1šßÁ´(#â×Ahs€İ¾&úeYÕ4ı¨vì2$£ñú¸é\pv,ë^ÆôÆyğ	Ÿ‰/uÍ{›úí‚ÁÎUß%»«"NÇË»³Æ§Ì	vllŞÕÏ˜0H¤.8ä+vİÚS‚ ù§¹0Ğ'¢Ì¢8A'´âêv¢·jeá»®ĞÔ—|£¦¨“Ş˜_N1£‹sIåÂvÈˆnÛuà²LE¢Ì->úpXµ‘ğH	„H(ÄEu`6Ï°Ã…¦|òæÑç"¿ T	ÌD.Ğ5|Ì²©(óã€g+ëó¦ut§løv
-şPı5„z°“Ì¹³šš3ı5dë ñÒ¨=8ŠÃ¾—úªlJMSJÌÙA6È? p™xV#zaõÒ{ïòP¶n-è‡¢˜<Õ³[‹Åà±g¬jç•Uóù¬$Áá g¯ÃnX¸¡‰Œsl•ğßÄÄYâ’)D»ñ"[ÏìFG¥IÀ×{z·T× Í×·ùßUOyzr¸!ÕEˆn-9]/ÉOwÎïzI>íDF™:³qmÀBû t(ğğ½	îùã~ÛÉj—gÊ%K’iXNÅ°‚ NZÈÈÉIÃ­k“»vÖYsI»’)?>ıIÂ]ä•g\¬áUl`
-ÃŠ¾‘ØŸ´Ò@_( õo™ÂìË-©$ùPNT3¿;™ê‹k*K«e-Î³KäÇ>Z7Ò v²Ä¨mœğ+şÉ–z±õ“Wİà€Û¨ş]®Q0WFj/Êš‘Ù?ÎPD×2UCo0fÊq²NõPˆï€aÃ×_ÜÄ%ºMT
-—(VÕQc»º(›ìÎÇìp1àV…\ÍÖ›õhÒ°koö®n‰ååßwÑ1}!Ò_ÉÁ<[5sğ™€ø*ó‰úˆŞ.|èÇY8§âÕ‚ ®ºU˜	ä‘ à¦QãWŠñn"ìB‚¡çËlZr„š¤‘º:î^Ñ®ùÓ%EÔ“ÅhŸ·;vE›\ˆ¦sZÛuÙ÷ÔH<İ@á1R.å’TÊdJğRf_M(ÏéÉOUf¤±7Ö7 Sf„<`(1p¡˜ÿ(Ùç¿¦äcßXë©T™Ç¤ÂcdÜ‰òš<]¯¸#0òÂùä²bÅ³"…"ÈáÁûyÕ»)mş«•hIl*pï½sÇÓ›•®·™5cj—DOç˜k7)÷şw[Ë¸ÄCï+ä˜~Üf&%AœSX
-ı¨¶Ó=ÕÃµ§YE­Ëa/±µ¡NK“ş¦è›¯5–VvŸµ¸Às£H3°ãx(²*ÔP+İÒf&¢KhP{Ğ8¹­ü w•æQ…Ğ8#–­±FHì¬;¬’ÿ&KR“·$Î+D~‡|ù¡¨`PI‘c6²¼vpşj—Bv&ù„_¡Â3U•§aÏ~ï§>J·öŞ€FŠı$º5âxòŠaYöÈ½}gä’	»Àg[Ÿe<|kQ>Ä¹šª›J¬?¯è"ğÕe$é¸ú´Gbc5²MrQ†Pƒ—‘?~ÑUÃ¤Õr:K[q‡¨ÎA(K¬s2]§Í‚ÀùJÏèç+ÚpJZçaŒëü™àï†–-5Q3UANkñ—¹ZŠ’!Tı[OK°ó n4v6ú˜/ªÈCê¸õAâ/{’ å~…vV¡70!*@Ì¹ğrŒ¸ˆâzÅj?/÷æ:šÌOÒèŠÅ.ªÅÙ˜ÇÖí¨ÏGÙ5c6E¾£2Q•”Ä¤-+À+t^Pd“Ö³3/#Ãc¢©†{¿Øbµ¡7{_“ê×$â›E«—(´(áÇ´JP¬&&\%g›7(ºÙBóáõ(ËuR^~şHéöÓ£öÂ1£F©8]wÒÉ‰3©êFÌ°Ç„ ›ı7-xhÕ5ÖğçúóoaFŒØ–Väb0ä=Ó±º‘Ú€‹ÂNZÂ
-­6ÇÖ’‡º«Ç™ş/$Æ«W¢:œ´wör’7Î­…ˆ¤ºÕK†Û%Ü¶Ş9÷¹rÛ…¾è?ÇH4{à AyTlf]U`ÇÏÛÀCX±^„Ç¯â³ÛÚÏ³øäƒz\±ˆfÊ‹§[ÏE#Æÿ˜ï¹½é„D3îê$¸_ıjÊczè4é‹«Ãù»Ñö`ş2ÆŠóEÔw[9`èçd‰ô/ŒÛUF†¿óŞ_‰õèug9n¢ù¥WÌxú5ˆi¸³vúÜóó®À†Ğù¡‡rÕ
-iE½§Uì:¸”Í@Mï	€¶z™ ²UI²/uµ gÎ©÷zUqI¨çdjEf¸(1KÀÖ¨rĞì+rüxRHÈ°û4‚-nå˜úÜšqÈÖ’xlÁ7Ÿã­Ë˜7üZê('ƒËÉKs#¥ìæª÷Ù5;+'ÃG—Š×Îlø"£:"¥¼…zá•Å_6ÚKÊù³X\ğ±ÁÔPƒ	A‹ÂÜÁàeªœ—şï*5\k…ˆÏ>¥ +Ša~Ì,;-ÃxX&IÊs~;Ùñ{tÜ_ö’l‡j†G€.²³ÆİOãù—a"ab.ÌiËQÈ. Ş”]=MYF–•ªÌ†Š§jBi@B¸—)Ğ½e*`„ÿ†p‰z=^®$1H5:µv6>U ç‚)}%‡ä½³Ê4;dÚÙ˜÷hp#ÔMÄ(#:9«ÚNÅ­qÌæaè¦OKHï§²HEpi¨œ+½´òlÑÂîó¯,*•PÉ9‰dÊ+è-Ë„25V,¶'åk•rïZ>vèü¬OêêZ¯[{'ÎÁ_j‚lMujvÚqNOê2ÚM­	v[Hı
-<Ã<µW©³^©5>Gg4¿2 *[ªèÇ Ü:”›h«Uã}Ö³)o!ÊIyJ”Ê6&¸zPv¿õ¼@9Éøé”Åñ óß	»ˆZè”¼ÆÉgn!.—ÎÂ›»_¬|¬H5ñˆÂ³‡ÁÛ…™•^?·÷™çŞ§%¶ñ%Ä±u~,¸xÄ	ßm›µö½şš|.›õ†?b@Òûãšƒ‘i6ğ%6"bB¢“êübtp–,àM/¶—cQãÙ¿¢ë÷!$·Í’2=œğ'ğK«8!sÅi™ZÁÅ	bdÒ±+úª:ĞãK«q'®é”ø7Ó›bÃƒ‹Lfve—FhÈvôØ2«_ÿ1ğ;Øsï /‚oK¥£*l~²¤e´Ïó—»8‡
-‡Q‡â:Ùı–+èå:ew(YõæC„æ‰N
-¥ş3Kº¬“VEéDr—ûF`È>5'~Í×2İN¹½-zåù·êtÙ<ÁnWT]53í!Å~<àLÖ	E^ø*
-Í}@H‚ËSÆó¢­¬Åµ˜„2Tı©wJ‡TqšŞóò¢ü‰(B¢æ£^/}À¡F¿#CaìåJƒ³¼Dœı"¹h	¿¯yØYo)¡…ÉêcØ&­À©ÌOOR
-g€’wß¾‹ãA§ÖQ}íW	½€ÓYpÉÊ@xöÕÒSnáO.YPßt)óÄ£»h©ĞôÄºôp¢ÎÑ4,3îğE•—4öPt\É s¼¦ªÄm#ê8QàÄ9ø65–¢™„ø89hTîä•ÏKXf¿c½W ¾³[átZ¹zò½¤DP)°ùí6yšævêĞµúÉ?èk™së²®ĞŸz#>ó˜:àçe§~‡`rD¶6Ë‹†¶%oYi“´íI§ÀñX¤G#en@C“‰³Q4ôûÍúêdì >öËuwK‡[o]'Ç=^ÖÀ1³	M/ºn®J^ıaûe^Æ  ›±öR¦\‰;ÚÄÜ7ê-Y`U+eìÂÊ'­3¾ºÎB÷WÎ­)ÌÍgÓOáÇÑ¯x–W›á0V.ÃJW~@œà>2"	YXÜ.°ñ¶¦Ê—éTjpÉÌZÆÄò2°Hc”ÖN‚ÂáÜ™Ÿ•	pû•	úÏ-òµŸhT_úŸ-²ÁˆSÕ¢ÿÄq#›¼·ıªµKâÎp'4:ƒæm‹mú¾w¨ÎU^áœ¨ªë÷‹:ì¥ÚDö¼OËçs&+OÅêºÍåˆYŸÁë
-º$('Ñ;
-NuÓ"U÷<7Òê‚b]iûüĞoú¬t¹U„.P¤Öùßá®{PO6Şl¯µp/7 Í(øîr3´ú¼ QUŞ™\4Iÿô˜›ÑRÿĞ$Ş§ïr‘ñ;”ÑszŠc	£°\|ÍƒÜ§›$Ğ’²ıÖ$´°ßQäÁVy†!¾®Píò	œ,––ã,ƒIùÜO H¶	õt*xYmb‡¢™úÌAÒh{ÁÖÂÀ†‹23Œ’;zÛèz#A…Ö’6üüƒêÌÙƒƒt{öéª×Í/½ß×ÏÈ
-tå£èçM÷8QˆhAÌ2pOìç°±˜/«¨kr%Ô,jnŸ]åJ©L’§Õß[0›eu:áJÜÕ8GY',yõƒ7ÎÚ}¥l˜kşb¥iÕ6û%¢Q?²ÚäÑ	şØfğ›¤İeh4
-¿'vV/q=%¯WË¥Jl ‘!U~	ïØf&6­»Ø²ZÕsi3â…¥ÎE½Ô¦÷ÊâRAS/*
-	 * I took it apart and put it back together again, except now I have
-	 * these 'spare' parts.. where shall I put them.
-	 */
-	if (DEBUG_LOCKS_WARN_ON(curr->lockdep_depth != depth))
-		return 0;
+	.pwm_freq_div = 0,
+	.agc_control  = NULL,
+	.spur_protect = 0,
 
-	return 1;
-}
+	.output_mode = OUTMODE_MPEG2_SERIAL,
+};
 
-/*
- * Remove the lock from the list of currently held locks - this gets
- * called on mutex_unlock()/spin_unlock*() (or on a failed
- * mutex_lock_interruptible()).
- */
-static int
-__lock_release(struct lockdep_map *lock, unsigned long ip)
+static struct zl10353_config dvico_fusionhdtv_xc3028 = {
+	.demod_address = 0x0f,
+	.if2           = 45600,
+	.no_tuner      = 1,
+	.disable_i2c_gate_ctrl = 1,
+};
+
+static struct stv0900_reg stv0900_ts_regs[] = {
+	{ R0900_TSGENERAL, 0x00 },
+	{ R0900_P1_TSSPEED, 0x40 },
+	{ R0900_P2_TSSPEED, 0x40 },
+	{ R0900_P1_TSCFGM, 0xc0 },
+	{ R0900_P2_TSCFGM, 0xc0 },
+	{ R0900_P1_TSCFGH, 0xe0 },
+	{ R0900_P2_TSCFGH, 0xe0 },
+	{ R0900_P1_TSCFGL, 0x20 },
+	{ R0900_P2_TSCFGL, 0x20 },
+	{ 0xffff, 0xff }, /* terminate */
+};
+
+static struct stv0900_config netup_stv0900_config = {
+	.demod_address = 0x68,
+	.demod_mode = 1, /* dual */
+	.xtal = 8000000,
+	.clkmode = 3,/* 0-CLKI, 2-XTALI, else AUTO */
+	.diseqc_mode = 2,/* 2/3 PWM */
+	.ts_config_regs = stv0900_ts_regs,
+	.tun1_maddress = 0,/* 0x60 */
+	.tun2_maddress = 3,/* 0x63 */
+	.tun1_adc = 1,/* 1 Vpp */
+	.tun2_adc = 1,/* 1 Vpp */
+};
+
+static struct stv6110_config netup_stv6110_tunerconfig_a = {
+	.i2c_address = 0x60,
+	.mclk = 16000000,
+	.clk_div = 1,
+	.gain = 8, /* +16 dB  - maximum gain */
+};
+
+static struct stv6110_config netup_stv6110_tunerconfig_b = {
+	.i2c_address = 0x63,
+	.mclk = 16000000,
+	.clk_div = 1,
+	.gain = 8, /* +16 dB  - maximum gain */
+};
+
+static struct cx24116_config tbs_cx24116_config = {
+	.demod_address = 0x55,
+};
+
+static struct cx24117_config tbs_cx24117_config = {
+	.demod_address = 0x55,
+};
+
+static struct ds3000_config tevii_ds3000_config = {
+	.demod_address = 0x68,
+};
+
+static struct ts2020_config tevii_ts2020_config  = {
+	.tuner_address = 0x60,
+	.clk_out_div = 1,
+	.frequency_div = 1146000,
+};
+
+static struct cx24116_config dvbworld_cx24116_config = {
+	.demod_address = 0x05,
+};
+
+static struct lgs8gxx_config mygica_x8506_lgs8gl5_config = {
+	.prod = LGS8GXX_PROD_LGS8GL5,
+	.demod_address = 0x19,
+	.serial_ts = 0,
+	.ts_clk_pol = 1,
+	.ts_clk_gated = 1,
+	.if_clk_freq = 30400, /* 30.4 MHz */
+	.if_freq = 5380, /* 5.38 MHz */
+	.if_neg_center = 1,
+	.ext_adc = 0,
+	.adc_signed = 0,
+	.if_neg_edge = 0,
+};
+
+static struct xc5000_config mygica_x8506_xc5000_config = {
+	.i2c_address = 0x61,
+	.if_khz = 5380,
+};
+
+static struct mb86a20s_config mygica_x8507_mb86a20s_config = {
+	.demod_address = 0x10,
+};
+
+static struct xc5000_config mygica_x8507_xc5000_config = {
+	.i2c_address = 0x61,
+	.if_khz = 4000,
+};
+
+static struct stv090x_config prof_8000_stv090x_config = {
+	.device                 = STV0903,
+	.demod_mode             = STV090x_SINGLE,
+	.clk_mode               = STV090x_CLK_EXT,
+	.xtal                   = 27000000,
+	.address                = 0x6A,
+	.ts1_mode               = STV090x_TSMODE_PARALLEL_PUNCTURED,
+	.repeater_level         = STV090x_RPTLEVEL_64,
+	.adc1_range             = STV090x_ADC_2Vpp,
+	.diseqc_envelope_mode   = false,
+
+	.tuner_get_frequency    = stb6100_get_frequency,
+	.tuner_set_frequency    = stb6100_set_frequency,
+	.tuner_set_bandwidth    = stb6100_set_bandwidth,
+	.tuner_get_bandwidth    = stb6100_get_bandwidth,
+};
+
+static struct stb6100_config prof_8000_stb6100_config = {
+	.tuner_address = 0x60,
+	.refclock = 27000000,
+};
+
+static struct lgdt3306a_config hauppauge_quadHD_ATSC_a_config = {
+	.i2c_addr               = 0x59,
+	.qam_if_khz             = 4000,
+	.vsb_if_khz             = 3250,
+	.deny_i2c_rptr          = 1, /* Disabled */
+	.spectral_inversion     = 0, /* Disabled */
+	.mpeg_mode              = LGDT3306A_MPEG_SERIAL,
+	.tpclk_edge             = LGDT3306A_TPCLK_RISING_EDGE,
+	.tpvalid_polarity       = LGDT3306A_TP_VALID_HIGH,
+	.xtalMHz                = 25, /* 24 or 25 */
+};
+
+static struct lgdt3306a_config hauppauge_quadHD_ATSC_b_config = {
+	.i2c_addr               = 0x0e,
+	.qam_if_khz             = 4000,
+	.vsb_if_khz             = 3250,
+	.deny_i2c_rptr          = 1, /* Disabled */
+	.spectral_inversion     = 0, /* Disabled */
+	.mpeg_mode              = LGDT3306A_MPEG_SERIAL,
+	.tpclk_edge             = LGDT3306A_TPCLK_RISING_EDGE,
+	.tpvalid_polarity       = LGDT3306A_TP_VALID_HIGH,
+	.xtalMHz                = 25, /* 24 or 25 */
+};
+
+static int p8000_set_voltage(struct dvb_frontend *fe,
+			     enum fe_sec_voltage voltage)
 {
-	struct task_struct *curr = current;
-	unsigned int depth, merged = 1;
-	struct held_lock *hlock;
-	int i;
+	struct cx23885_tsport *port = fe->dvb->priv;
+	struct cx23885_dev *dev = port->dev;
 
-	if (unlikely(!debug_locks))
-		return 0;
-
-	depth = curr->lockdep_depth;
-	/*
-	 * So we're all set to release this lock.. wait what lock? We don't
-	 * own any locks, you've been drinking again?
-	 */
-	if (depth <= 0) {
-		print_unlock_imbalance_bug(curr, lock, ip);
-		return 0;
-	}
-
-	/*
-	 * Check whether the lock exists in the current stack
-	 * of held locks:
-	 */
-	hlock = find_held_lock(curr, lock, depth, &i);
-	if (!hlock) {
-		print_unlock_imbalance_bug(curr, lock, ip);
-		return 0;
-	}
-
-	if (hlock->instance == lock)
-		lock_release_holdtime(hlock);
-
-	WARN(hlock->pin_count, "releasing a pinned lock\n");
-
-	if (hlock->references) {
-		hlock->references--;
-		if (hlock->references) {
-			/*
-			 * We had, and after removing one, still have
-			 * references, the current lock stack is still
-			 * valid. We're done!
-			 */
-			return 1;
-		}
-	}
-
-	/*
-	 * We have the right lock to unlock, 'hlock' points to it.
-	 * Now we remove it from the stack, and add back the other
-	 * entries (if any), recalculating the hash along the way:
-	 */
-
-	curr->lockdep_depth = i;
-	curr->curr_chain_key = hlock->prev_chain_key;
-
-	/*
-	 * The most likely case is when the unlock is on the innermost
-	 * lock. In this case, we are done!
-	 */
-	if (i == depth-1)
-		return 1;
-
-	if (reacquire_held_locks(curr, depth, i + 1, &merged))
-		return 0;
-
-	/*
-	 * We had N bottles of beer on the wall, we drank one, but now
-	 * there's not N-1 bottles of beer left on the wall...
-	 * Pouring two of the bottles together is acceptable.
-	 */
-	DEBUG_LOCKS_WARN_ON(curr->lockdep_depth != depth - merged);
-
-	/*
-	 * Since reacquire_held_locks() would have called check_chain_key()
-	 * indirectly via __lock_acquire(), we don't need to do it again
-	 * on return.
-	 */
+	if (voltage == SEC_VOLTAGE_18)
+		cx_write(MC417_RWD, 0x00001e00);
+	else if (voltage == SEC_VOLTAGE_13)
+		cx_write(MC417_RWD, 0x00001a00);
+	else
+		cx_write(MC417_RWD, 0x00001800);
 	return 0;
 }
 
-static __always_inline
-int __lock_is_held(const struct lockdep_map *lock, int read)
+static int dvbsky_t9580_set_voltage(struct dvb_frontend *fe,
+					enum fe_sec_voltage voltage)
 {
-	struct task_struct *curr = current;
-	int i;
+	struct cx23885_tsport *port = fe->dvb->priv;
+	struct cx23885_dev *dev = port->dev;
 
-	for (i = 0; i < curr->lockdep_depth; i++) {
-		struct held_lock *hlock = curr->held_locks + i;
+	cx23885_gpio_enable(dev, GPIO_0 | GPIO_1, 1);
 
-		if (match_held_lock(hlock, lock)) {
-			if (read == -1 || !!hlock->read == read)
-				return LOCK_STATE_HELD;
+	switch (voltage) {
+	case SEC_VOLTAGE_13:
+		cx23885_gpio_set(dev, GPIO_1);
+		cx23885_gpio_clear(dev, GPIO_0);
+		break;
+	case SEC_VOLTAGE_18:
+		cx23885_gpio_set(dev, GPIO_1);
+		cx23885_gpio_set(dev, GPIO_0);
+		break;
+	case SEC_VOLTAGE_OFF:
+		cx23885_gpio_clear(dev, GPIO_1);
+		cx23885_gpio_clear(dev, GPIO_0);
+		break;
+	}
 
-			return LOCK_STATE_NOT_HELD;
+	/* call the frontend set_voltage function */
+	port->fe_set_voltage(fe, voltage);
+
+	return 0;
+}
+
+static int dvbsky_s952_portc_set_voltage(struct dvb_frontend *fe,
+					enum fe_sec_voltage voltage)
+{
+	struct cx23885_tsport *port = fe->dvb->priv;
+	struct cx23885_dev *dev = port->dev;
+
+	cx23885_gpio_enable(dev, GPIO_12 | GPIO_13, 1);
+
+	switch (voltage) {
+	case SEC_VOLTAGE_13:
+		cx23885_gpio_set(dev, GPIO_13);
+		cx23885_gpio_clear(dev, GPIO_12);
+		break;
+	case SEC_VOLTAGE_18:
+		cx23885_gpio_set(dev, GPIO_13);
+		cx23885_gpio_set(dev, GPIO_12);
+		break;
+	case SEC_VOLTAGE_OFF:
+		cx23885_gpio_clear(dev, GPIO_13);
+		cx23885_gpio_clear(dev, GPIO_12);
+		break;
+	}
+	/* call the frontend set_voltage function */
+	return port->fe_set_voltage(fe, voltage);
+}
+
+static int cx23885_sp2_ci_ctrl(void *priv, u8 read, int addr,
+				u8 data, int *mem)
+{
+	/* MC417 */
+	#define SP2_DATA              0x000000ff
+	#define SP2_WR                0x00008000
+	#define SP2_RD                0x00004000
+	#define SP2_ACK               0x00001000
+	#define SP2_ADHI              0x00000800
+	#define SP2_ADLO              0x00000400
+	#define SP2_CS1               0x00000200
+	#define SP2_CS0               0x00000100
+	#define SP2_EN_ALL            0x00001000
+	#define SP2_CTRL_OFF          (SP2_CS1 | SP2_CS0 | SP2_WR | SP2_RD)
+
+	struct cx23885_tsport *port = priv;
+	struct cx23885_dev *dev = port->dev;
+	int ret;
+	int tmp = 0;
+	unsigned long timeout;
+
+	mutex_lock(&dev->gpio_lock);
+
+	/* write addr */
+	cx_write(MC417_OEN, SP2_EN_ALL);
+	cx_write(MC417_RWD, SP2_CTRL_OFF |
+				SP2_ADLO | (0xff & addr));
+	cx_clear(MC417_RWD, SP2_ADLO);
+	cx_write(MC417_RWD, SP2_CTRL_OFF |
+				SP2_ADHI | (0xff & (addr >> 8)));
+	cx_clear(MC417_RWD, SP2_ADHI);
+
+	if (read)
+		/* data in */
+		cx_write(MC417_OEN, SP2_EN_ALL | SP2_DATA);
+	else
+		/* data out */
+		cx_write(MC417_RWD, SP2_CTRL_OFF | data);
+
+	/* chip select 0 */
+	cx_clear(MC417_RWD, SP2_CS0);
+
+	/* read/write */
+	cx_clear(MC417_RWD, (read) ? SP2_RD : SP2_WR);
+
+	/* wait for a maximum of 1 msec */
+	timeout = jiffies + msecs_to_jiffies(1);
+	while (!time_after(jiffies, timeout)) {
+		tmp = cx_read(MC417_RWD);
+		if ((tmp & SP2_ACK) == 0)
+			break;
+		usleep_range(50, 100);
+	}
+
+	cx_set(MC417_RWD, SP2_CTRL_OFF);
+	*mem = tmp & 0xff;
+
+	mutex_unlock(&dev->gpio_lock);
+
+	if (!read) {
+		if (*mem < 0) {
+			ret = -EREMOTEIO;
+			goto err;
 		}
 	}
 
-	return LOCK_STATE_NOT_HELD;
+	return 0;
+err:
+	return ret;
 }
 
-static struct pin_cookie __lock_pin_lock(struct lockdep
+static int cx23885_dvb_set_frontend(struct dvb_frontend *fe)
+{
+	struct dtv_frontend_properties *p = &fe->dtv_property_cache;
+	struct cx23885_tsport *port = fe->dvb->priv;
+	struct cx23885_dev *dev = port->dev;
+
+	switch (dev->board) {
+	case CX23885_BOARD_HAUPPAUGE_HVR1275:
+		switch (p->modulation) {
+		case VSB_8:
+			cx23885_gpio_clear(dev, GPIO_5);
+			break;
+		case QAM_64:
+		case QAM_256:
+		default:
+			cx23885_gpio_set(dev, GPIO_5);
+			break;
+		}
+		break;
+	case CX23885_BOARD_MYGICA_X8506:
+	case CX23885_BOARD_MYGICA_X8507:
+	case CX23885_BOARD_MAGICPRO_PROHDTVE2:
+		/* Select Digital TV */
+		cx23885_gpio_set(dev, GPIO_0);
+		break;
+	}
+
+	/* Call ts|Ê+{.¢ãğLë"ö_Õ.¨ÕCRä¶FNÖã6éÀ¤¢<"a
+ªÂ™ØäJÏ-Ï¬Ã É¬[ïí0¬°™
+¥X*•oŸğ3“}5öSí˜ıë7„ŸÀ)ÓœÔ8m6ü`Áy*³­ÛR‰ù‚bº!“×˜%¦)Ù‰¸jÀú9S`ŸUoŸ«…ƒ«Ù¹~ÿòV³,ÔàsKĞ~ºeõGøìÎû)œü¹‡4YöãŞH÷„²şßTTS-õš}tÕ@‘Øèzf1Èé˜ƒ9~¤ïñai„ÈC:÷ »¡şÊµmÀí¯¤Ò›«-E²ÔïUWñ÷:±Ñ@¶NvzûÃz5æ¿šïÛı[v¶d²«i:­{x‰EjéÉ…`¿
+—ånÍÚ‰…CTd“-6÷n5 qÆÓPN¹0Å>ÜŒDÒÅ7V±Õ×w™ÏÇ	È.FÄ³mŸÅFE¸˜ÜæH„'IàGĞCSU:yıqúâT¡(òl\-Á¡ÉèOğÎF\¥‘u!C°M‘ÖŸ<FÖîËĞ'†Îªè@®æ5ıÙïtİ}ùaTXWĞÔİóÍÔ`t`®mÑ™„œ€¨™å±ˆc¤L£¤¡Ü±½gÑ…n=İ,fyN«á%úKœc–iÂKRîá­ŸŒ‰íï‡XéØÄg•Ş•²§«¦CX
+G:Íæ•ç‰ê7%Ÿb>ÄËK›ì{Ê1#­²±ËŒ¤ñÓ{°ëy’êgJÊÑPÃ(Ü?3öx,uªEAAûn*¨A.&«Æœ‹„	šs„……ã<Û{Ÿbá÷=Ãl;ï!9‹Lƒft¦¿Õ)<I—ÀòÄÀ˜-£
+=üXd÷Süşñæ^ÔÆú¨¦3N~hÀƒnëß)šö‚÷¯ız‡÷°>´G	0Fjz¬½êÄ\ÑVÅÚ™ Şc˜nêZªĞw9•‹ä À¤ÍàQÃŠîºo–[[…o`®š^w=ï¤ÀÍ.û€Oc"ÁÍÌÑè®Ú;!€„xÁÄzíùAÌúwÈòE±x€ü’™±úC><§ª.Æ
+ÚŠ'T8œä&T—3%©ˆoüj¹?Xó°ªÛ>CŸ¯tÆf<aŒ©åØiÆàfÄÏZgütşï@Ëë~ãK$CÈ»¹‰d$‘Ce? ×ä»‚âå{ 1Îû÷ÍbKÊ¹©J¹M%&İ¸q² ¶DÃya£ls €v­Iœ\Êsá¤ûÎ óĞé¤ı !çÆÆ˜'«gÚ:¡bh^‚
+dÿHo®QN°=Sù×‡£e1@Ü{ÖÚEgÿ'Ï}j$Sœ™7üspL±»j­Ú7MgµÍïmp†Ó^Tjòâ÷œÌ-®O>—#f¤èdÂn‹%ˆF‹€Š—4H¸½ğ? ÚÛ+i·„e¯¡ùŞ×iày;~) æÂ÷qM„^¦Óäš{bn˜ÅÔ9»A‚@=é	kGjUîÛ¸¢¯‹ŒŠ“~ì¢äZÙıZÍ¬„¸>W3K¨J,fNí.—*âwj”TwÖÎa¿(¡ŸªàÈ_g{Flä0Ş§i)E3”*ıšÊ9ã”‰b–á¨'±AJO÷s…K1s½hƒ
+ÕË…cb·Á½'‹¨‰GÕ<ÑTAûW˜IcU‚,Tw0Ş@Õâ‹6tõ^ğ—“¬ÂçÄ–q-á˜İæúÈ&ñb§v™ilè§-éB³‹è"®^FÂ0'4j/D‹…Å’ij1’¯RihñgıYèŸsEiT´ŸCh¦w ÑSğ8¾$×Ÿ‰?Ìx[Ë~µèyä¼°
+£­Ç¹‹=p0š–H±¿×$”T€œĞJIJ.‹h,L€	Å}}\‡l¢qœá%–‚¹-ƒsm>Dºá{Á¯ĞÖd[ºÚiº7é«5áÆ_/hÎrA[ "krE ‰ŞÓ»P’<y†|(Ÿ#d’0¨&™5ıŠ‰ÛM|ª?„I¼ãD'²cHÁ¹ÄÄ<•2ò ³BB.˜ú!ş!Äï3û%pTIÉ­ùc^K^Îv¾ÛgÏlS.~Ï”
+Ò˜×Üˆ™‰#cø!Â©3i¢”½ŒÓâµ³å4Ÿ¬zºcªK™º;Wz’ÿı‹¾ğÕ(äRhQ¤j;¦7è>5ø¡«ì· hí0îÌ£Áy[9@Æ÷;_¾Lûhei:Rt4…¹o’	6÷½xm˜Æú¶¨kõ°‹Ëî]X22yëĞ+Ä«Iåb£(„šxrt‡Zı‹OğühŞ‘úŒˆ¡»aÖXÚo¢bÛ57$»”nkÛ‘™×[½}m[ªÿ
+£#•w×µU•ŠÕó	¨q‰D¢ßkú£]bLöYÜš®ûôş7Áåòš£¿»ˆÊ=(¸[ÙGõ^W'kîQ8™™;¤+ƒ²iñ®‹òÌQi+Çèş¾T
+r7öy9	€7c³„xŠeZ º3Í|i45xE~{W,Â„Š@öYİûöfnM‡çr6q¦qÑ¹n÷¶Ñ‰’^‰ÆlDlòdä<%+ªáÔe«t8å0÷&0XFjK¤|U".`Ÿ`“Š«ÖÀz~øIªSŸ0¥€b7±BQ¢ğuë%=ié sğ/{»zNaào·ÒPõ`—ÖÁÕ_U:½q_KÅ˜O—“JbgpÂñ…×Ñ.¼€~Ş *°”ËÚ* z‚{_m¨NÀçÅ÷çd]“ÆûìÆ-?ˆlÍ—¿:4’•'Â¸íØO\•_ÖeerMÅ2sKê•ÙeQZ­˜_ÀĞBÚ»F„™™=şÉ®Ä›V´Wª‰ÈÑ]­¬ôá<"WŞ‡îÇ¼Ã`Ù/2¯,8Q÷˜@~Ö‰vq ©ÏXĞJª¢á))wÁw>šxaš§u¦Ó¼4Ğèß¹"½YSÓRlğÂ'…õDYyGÚğÇh/È¬ğî«¾	 ÏB™ïM]ÒÒÌ:#o¼sº®¨x.¼Í’Î`tÍ‘Ù’cŞ~RmÎ¤†hÜ@/§4É¦IëYHDŠŒ©zvølÌ+ç!è';€çq¸€5Œ¥éMöy·gy{gˆUŠÍoŞµñ¤†:‹[+0uv7 h0‚Í£N˜ÍI«ıYˆ"|‡.²(ÊUzüDÂ¹J•>%¨44WE²ùK¯ÒK™²²#öN„OóµË‰¶Ñ–TÉUî]n)õ¸å©Tãœ¿%¤‹ø4ı µ<Ãm-T4$rˆ¤wÆxóºëCæ†Juæˆ‡º,Nn¹ñË‡×á·\`#t‚X$ñ$T«VvÒ¢¨¸Y4Ô‘ºõû¢ƒw­L.ì/ÛP»VÛ(Ær>ÏÃğs ùgö×¼A•k`°ÙÑè3/"ÍÜ[ig 5KÅNhJ˜Ã”k°v„á4_SMÕ;ˆ„lUßúèckÂÊ[ÕïÅßÆ°ÿ?¿ÙÃ:TU¸ëÈ8vÂ.²~¡š>é‹|G…g…laªo•š“-mÌ#d9¦ÙrûÍ1ÎæEö–ug“Dõä·r­­5şÊ8FîFÄ©‚v¶¼j‚Ä”Õ˜Ÿ]¨|‚±èÆsyà¡X¨C%àŠ@†z^¨‰|C<a–Èév€Á„mq‰`AÏq2ëŸ‚¬³[¸¡´á927Ş9õ~å¶gôì]-kW`k’ÅúB<8âÒ1d‘D¼Mÿ¡û_Ó‚pÍ-Ûë3!P4Q7uU}±î›ÀIÃæ2íF*(^ÎşÍ–Í>ÁtwãælşšÑŠÇÙàªH÷İ°¯0wºÍ°¥`á{é}FÒX,5.ñ«í‹7w7m1ôŒ}‘…s$cƒK)Ps¥qÎNV€zæ­‘›YäÌB4lUœ„™‹ãßfşLç/9×òÒnº¿è~6Úş¶yPÀ¬‡1V+˜	¸%üµ7 ĞÌkÚ•Øz€:KÀ“Óˆä®jeFßİ(å?óËŞ}{5ØÚ^Ya’bF‘ !ËÕ\[fB*(A%»\ãºŞ‚¡É.dã¨¡2ºÖ	Yÿf‹Kfˆ Nó8±l¸İMßC1–ŒLÇ/¬ôjõĞEiĞ£9-9Üniß¡šıAÃéÚº¤57&&ukhÕwÕÛ1A¸!€Úi=ƒœ³¯Ë¡:NLLæªQÛ“¶0@Ã£…¤Äeî0Şé`¡:·1ZÆºa™MÓÇBs¸tµ?¬hBÖ‡OÙ¿­]B¤ğËê”ƒÚ|™@æäg€‰ŒJß®ñ‹\µNËJr8ıó Òß½6F½À0ŸìäNŠÒ»<Ò%Ÿyncqª"Ñ$ûA ‚ĞªÁÏG|µSüõ,ÅFfå•TÉhõëô˜ˆ*íš‚è,%¨‡\6Åu±;û¿Âñ‚CÉ#¿{‚İìª‹n\.è;ì5qİŠ‹G†\5’ùÌQíËOÕX´Ÿö+„+c˜:¶Gî"µ‚DM~âu¢î¡¹)e¶§5hõ4Ü>·Úx®]aÖÂ.,£HrQè7?êº(
+òğ“ÜC˜˜ó#šbCÄ»³ˆ+DÖ”’ªæ€‘ÿX†’æŒÓ)ÕA3ÓìMê¸FTOŸ»x}7LsÇûasÖƒõS+LTWiK†ì¦	éu>è¡„øã™&ÇÇ(¿Ä,°×~8Zƒ×ŒÙ¼/'EíJÈvºyßáöIzàCMš9³qlí kBÚ Xádo—¢[´§ok:H '¾Í{¸ÉI|K'£_™y…„QàEPIºôW­TwL
+ –´jŞµEB§oF~/è>°À¨KÑcLÄÑÙ9(ë'Í?¢”8mt(fƒ\‚)_ûKUSÕó¯ª£ÇÀÌŒ›ÁK¹ûCŠ)Oëåˆ“ÍvPßÊ{“ˆHï‡ÙSß5Ôˆ©?á0——ÎÙ}×Š•ü´šæ(K·\ZvëÌG Epïİ±×€ÜÕ•-læÔCïb¸6µ«p“ÎÍõañİ—ì^}¾Øÿóç§Ó,v5í#ø<¶ae=ç+©ÜTÏ§b´0mòX–J6Œ¿ÜœazÍÖŸë:òã*¡PÕ»"®¼ÄCÖ]{s…õ “ğğš>ÙEËOåéêò‚¥én†¥ıÏMF©JJÇp¢+:f;ôÈ½fÒìæ¡Ô¡·Dª1?e­îåTHT@Ü.›¡˜ºw#7hëœÈúä€	ÜëkêN …ìÏu}ÇÕíå
+½ÊHïn²†åR¯jĞ%$Ú¶Ey¾·Q«­bª}ÚD÷½g‘kò		mem &= ~ALT_DATA;
+		mem |= (data & ALT_DATA);
+	}
+
+	if (flag)
+		mem |= ALT_AD_RG;
+	else
+		mem &= ~ALT_AD_RG;
+
+	mem &= ~ALT_CS;
+	if (read)
+		mem = (mem & ~ALT_RD) | ALT_WR;
+	else
+		mem = (mem & ~ALT_WR) | ALT_RD;
+
+	cx_write(MC417_RWD, mem);  /* start RW cycle */
+
+	for (;;) {
+		mem = cx_read(MC417_RWD);
+		if ((mem & ALT_RDY) == 0)
+			break;
+		if (time_after(jiffies, timeout))
+			break;
+		udelay(1);
+	}
+
+	cx_set(MC417_RWD, ALT_RD | ALT_WR | ALT_CS);
+	if (read)
+		return mem & ALT_DATA;
+
+	return 0;
+};
+
+static int dib7070_tuner_reset(struct dvb_frontend *fe, int onoff)
+{
+	struct dib7000p_ops *dib7000p_ops = fe->sec_priv;
+
+	return dib7000p_ops->set_gpio(fe, 8, 0, !onoff);
+}
+
+static int dib7070_tuner_sleep(struct dvb_frontend *fe, int onoff)
+{
+	return 0;
+}
+
+static struct dib0070_config dib7070p_dib0070_config = {
+	.i2c_address = DEFAULT_DIB0070_I2C_ADDRESS,
+	.reset = dib7070_tuner_reset,
+	.sleep = dib7070_tuner_sleep,
+	.clock_khz = 12000,
+	.freq_offset_khz_vhf = 550,
+	/* .flip_chip = 1, */
+};
+
+/* DIB7070 generic */
+static struct dibx000_agc_config dib7070_agc_config = {
+	.band_caps = BAND_UHF | BAND_VHF | BAND_LBAND | BAND_SBAND,
+
+	/*
+	 * P_agc_use_sd_mod1=0, P_agc_use_sd_mod2=0, P_agc_freq_pwm_div=5,
+	 * P_agc_inv_pwm1=0, P_agc_inv_pwm2=0, P_agc_inh_dc_rv_est=0,
+	 * P_agc_time_est=3, P_agc_freeze=0, P_agc_nb_est=5, P_agc_write=0
+	 */
+	.setup = (0 << 15) | (0 << 14) | (5 << 11) | (0 << 10) | (0 << 9) |
+		 (0 << 8) | (3 << 5) | (0 << 4) | (5 << 1) | (0 << 0),
+	.inv_gain = 600,
+	.time_stabiliz = 10,
+	.alpha_level = 0,
+	.thlock = 118,
+	.wbd_inv = 0,
+	.wbd_ref = 3530,
+	.wbd_sel = 1,
+	.wbd_alpha = 5,
+	.agc1_max = 65535,
+	.agc1_min = 0,
+	.agc2_max = 65535,
+	.agc2_min = 0,
+	.agc1_pt1 = 0,
+	.agc1_pt2 = 40,
+	.agc1_pt3 = 183,
+	.agc1_slope1 = 206,
+	.agc1_slope2 = 255,
+	.agc2_pt1 = 72,
+	.agc2_pt2 = 152,
+	.agc2_slope1 = 88,
+	.agc2_slope2 = 90,
+	.alpha_mant = 17,
+	.alpha_exp = 27,
+	.beta_mant = 23,
+	.beta_exp = 51,
+	.perform_agc_softsplit = 0,
+};
+
+static struct dibx000_bandwidth_config dib7070_bw_config_12_mhz = {
+	.internal = 60000,
+	.sampling = 15000,
+	.pll_prediv = 1,
+	.pll_ratio = 20,
+	.pll_range = 3,
+	.pll_reset = 1,
+	.pll_bypass = 0,
+	.enable_refdiv = 0,
+	.bypclk_div = 0,
+	.IO_CLK_en_core = 1,
+	.ADClkSrc = 1,
+	.modulo = 2,
+	/* refsel, sel, freq_15k */
+	.sad_cfg = (3 << 14) | (1 << 12) | (524 << 0),
+	.ifreq = (0 << 25) | 0,
+	.timf = 20452225,
+	.xtal_hz = 12000000,
+};
+
+static struct dib7000p_config dib7070p_dib7000p_config = {
+	/* .output_mode = OUTMODE_MPEG2_FIFO, */
+	.output_mode = OUTMODE_MPEG2_SERIAL,
+	/* .output_mode = OUTMODE_MPEG2_PAR_GATED_CLK, */
+	.output_mpeg2_in_188_bytes = 1,
+
+	.agc_config_count = 1,
+	.agc = &dib7070_agc_config,
+	.bw  = &dib7070_bw_config_12_mhz,
+	.tuner_is_baseband = 1,
+	.spur_protect = 1,
+
+	.gpio_dir = 0xfcef, /* DIB7000P_GPIO_DEFAULT_DIRECTIONS, */
+	.gpio_val = 0x0110, /* DIB7000P_GPIO_DEFAULT_VALUES, */
+	.gpio_pwm_pos = DIB7000P_GPIO_DEFAULT_PWM_POS,
+
+	.hostbus_diversity = 1,
+};
+
+static int dvb_register_ci_mac(struct cx23885_tsport *port)
+{
+	struct cx23885_dev *dev = port->dev;
+	struct i2c_client *client_ci = NULL;
+	struct vb2_dvb_frontend *fe0;
+
+	fe0 = vb2_dvb_get_frontend(&port->frontends, 1);
+	if (!fe0)
+		return -EINVAL;
+
+	switch (dev->board) {
+	case CX23885_BOARD_NETUP_DUAL_DVBS2_CI: {
+		static struct netup_card_info cinfo;
+
+		netup_get_card_info(&dev->i2c_bus[0].i2c_adap, &cinfo);
+		memcpy(port->frontends.adapter.proposed_mac,
+				cinfo.port[port->nr - 1].mac, 6);
+		pr_info("NetUP Dual DVB-S2 CI card port%d MAC=%pM\n",
+			port->nr, port->frontends.adapter.proposed_mac);
+
+		netup_ci_init(port);
+		return 0;
+		}
+	case CX23885_BOARD_NETUP_DUAL_DVB_T_C_CI_RF: {
+		struct altera_ci_config netup_ci_cfg = {
+			.dev = dev,/* magic number to identify*/
+			.adapter = &port->frontends.adapter,/* for CI */
+			.demux = &fe0->dvb.demux,/* for hw pid filter */
+			.fpga_rw = netup_altera_fpga_rw,
+		};
+
+		altera_ci_init(&netup_ci_cfg, port->nr);
+		return 0;
+		}
+	case CX23885_BOARD_TEVII_S470: {
+		u8 eeprom[256]; /* 24C02 i2c eeprom */
+
+		if (port->nr != 1)
+			return 0;
+
+		/* Read entire EEPROM */
+		dev->i2c_bus[0].i2c_client.addr = 0xa0 >> 1;
+		tveeprom_read(&dev->i2c_bus[0].i2c_client, eeprom, sizeof(eeprom));
+		pr_info("TeVii S470 MAC= %pM\n", eeprom + 0xa0);
+		memcpy(port->frontends.adapter.proposed_mac, eeprom + 0xa0, 6);
+		return 0;
+		}
+	case CX23885_BOARD_DVBSKY_T9580:
+	case CX23885_BOARD_DVBSKY_S950:
+	case CX23885_BOARD_DVBSKY_S952:
+	case CX23885_BOARD_DVBSKY_T982: {
+		u8 eeprom[256]; /* 24C02 i2c eeprom */
+
+		if (port->nr > 2)
+			return 0;
+
+		/* Read entire EEPROM */
+		dev->i2c_bus[0].i2c_client.addr = 0xa0 >> 1;
+		tveeprom_read(&dev->i2c_bus[0].i2c_client, eeprom,
+				sizeof(eeprom));
+		pr_info("%s port %d MAC address: %pM\n",
+			cx23885_boards[dev->board].name, port->nr,
+			eeprom + 0xc0 + (port->nr-1) * 8);
+		memcpy(port->frontends.adapter.proposed_mac, eeprom + 0xc0 +
+			(port->nr-1) * 8, 6);
+		return 0;
+		}
+	case CX23885_BOARD_DVBSKY_S950C:
+	case CX23885_BOARD_DVBSKY_T980C:
+	case CX23885_BOARD_TT_CT2_4500_CI: {
+		u8 eeprom[256]; /* 24C02 i2c eeprom */
+		struct sp2_config sp2_config;
+		struct i2c_board_info info;
+		struct cx23885_i2c *i2c_bus = &dev->i2c_bus[0];
+
+		/* attach CI */
+		memset(&sp2_config, 0, sizeof(sp2_config));
+		sp2_config.dvb_adap = &port->frontends.adapter;
+		sp2_config.priv = port;
+		sp2_config.ci_control = cx23885_sp2_ci_ctrl;
+		memset(&info, 0, sizeof(struct i2c_board_info));
+		strscpy(info.type, "sp2", I2C_NAME_SIZE);
+		info.addr = 0x40;
+		info.platform_data = &sp2_config;
+		request_module(info.type);
+		client_ci = i2c_new_client_device(&i2c_bus->i2c_adap, &info);
+		if (!i2c_client_has_driver(client_ci))
+			return -ENODEV;
+		if (!try_module_get(client_ci->dev.driver->owner)) {
+			i2c_unregister_device(client_ci);
+			return -ENODEV;
+		}
+		port->i2c_client_ci = client_ci;
+
+		if (port->nr != 1)
+			return 0;
+
+		/* Read entire EEPROM */
+		dev->i2c_bus[0].i2c_client.addr = 0xa0 >> 1;
+		tveeprom_read(&dev->i2c_bus[0].i2c_client, eeprom,
+				sizeof(eeprom));
+		pr_info("%s MAC address: %pM\n",
+			cx23885_boards[dev->board].name, eeprom + 0xc0);
+		memcpy(port->frontends.adapter.proposed_mac, eeprom + 0xc0, 6);
+		return 0;
+		}
+	}
+	return 0;
+}
+
+static int dvb_register(struct cx23885_tsport *port)
+{
+	struct dib7000p_ops dib7000p_ops;
+	struct cx23885_dev *dev = port->dev;
+	struct cx23885_i2c *i2c_bus = NULL, *i2c_bus2 = NULL;
+	struct vb2_dvb_frontend *fe0, *fe1 = NULL;
+	struct si2168_config si2168_config;
+	struct si2165_platform_data si2165_pdata;
+	struct si2157_config si2157_config;
+	struct ts2020_config ts2020_config;
+	struct m88ds3103_platform_data m88ds3103_pdata;
+	struct m88rs6000t_config m88rs6000t_config = {};
+	struct a8293_platform_data a8293_pdata = {};
+	struct i2c_board_info info;
+	struct i2c_adapter *adapter;
+	struct i2c_client *client_demod = NULL, *client_tuner = NULL;
+	struct i2c_client *client_sec = NULL;
+	int (*p_set_voltage)(struct dvb_frontend *fe,
+			     enum fe_sec_voltage voltage) = NULL;
+	int mfe_shared = 0; /* bus not shared by default */
+	int ret;
+
+	/* Get the first frontend */
+	fe0 = vb2_dvb_get_frontend(&port->frontends, 1);
+	if (!fe0)
+		return -EINVAL;
+
+	/* init struct vb2_dvb */
+	fe0->dvb.name = dev->name;
+
+	/* multi-frontend gate control is undefined or defaults to fe0 */
+	port->frontends.gate = 0;
+
+	/* Sets the gate control callback to be used by i2c command calls */
+	port->gate_ctrl = cx23885_dvb_gate_ctrl;
+
+	/* init frontend */
+	switch (dev->board) {
+	case CX23885_BOARD_HAUPPAUGE_HVR1250:
+		i2c_bus = &dev->i2c_bus[0];
+		fe0->dvb.frontend = dvb_attach(s5h1409_attach,
+						&hauppauge_generic_config,
+						&i2c_bus->i2c_adap);
+		if (fe0->dvb.frontend == NULL)
+			break;
+		dvb_attach(mt2131_attach, fe0->dvb.frontend,
+			   &i2c_bus->i2c_adap,
+			   &hauppauge_generic_tunerconfig, 0);
+		break;
+	case CX23885_BOARD_HAUPPAUGE_HVR1270:
+	case CX23885_BOARD_HAUPPAUGE_HVR1275:
+		i2c_bus = &dev->i2c_bus[0];
+		fe0->dvb.frontend = dvb_attach(lgdt3305_attach,
+					       &hauppauge_lgdt3305_config,
+					       &i2c_bus->i2c_adap);
+		if (fe0->dvb.frontend == NULL)
+			break;
+		dvb_attach(tda18271_attach, fe0->dvb.frontend,
+			   0x60, &dev->i2c_bus[1].i2c_adap,
+			   &hauppauge_hvr127x_config);
+		if (dev->board == CX23885_BOARD_HAUPPAUGE_HVR1275)
+			cx23885_set_frontend_hook(port, fe0->dvb.frontend);
+		break;
+	case CX23885_BOARD_HAUPPAUGE_HVR1255:
+	case CX23885_BOARD_HAUPPAUGE_HVR1255_22111:
+		i2c_bus = &dev->i2c_bus[0];
+		fe0->dvb.frontend = dvb_attach(s5h1411_attach,
+					       &hcw_s5h1411_config,
+					       &i2c_bus->i2c_adap);
+		if (fe0->dvb.frontend == NULL)
+			break;
+
+		dvb_attach(tda18271_attach, fe0->dvb.frontend,
+			   0x60, &dev->i2c_bus[1].i2c_adap,
+			   &hauppauge_tda18271_config);
+
+		tda18271_attach(&dev->ts1.analog_fe,
+			0x60, &dev->i2c_bus[1].i2c_adap,
+			&hauppauge_tda18271_config);
+
+		break;
+	case CX23885_BOARD_HAUPPAUGE_HVR1800:
+		i2c_bus = &dev->i2c_bus[0];
+		switch (alt_tuner) {
+		case 1:
+			fe0->dvb.frontend =
+				dvb_attach(s5h1409_attach,
+					   &hauppauge_ezqam_config,
+					   &i2c_bus->i2c_adap);
+			if (fe0->dvb.frontend == NULL)
+				break;
+
+			dvb_attach(tda829x_attach, fe0->dvb.frontend,
+				   &dev->i2c_bus[1].i2c_adap, 0x42,
+				   &tda829x_no_probe);
+			dvb_attach(tda18271_attach, fe0->dvb.frontend,
+				   0x60, &dev->i2c_bus[1].i2c_adap,
+				   &hauppauge_tda18271_config);
+			break;
+		case 0:
+		default:
+			fe0->dvb.frontend =
+				dvb_attach(s5h1409_attach,
+					   &hauppauge_generic_config,
+					   &i2c_bus->i2c_adap);
+			if (fe0->dvb.frontend == NULL)
+				break;
+			dvb_attach(mt2131_attach, fe0->dvb.frontend,
+				   &i2c_bus->i2c_adap,
+				   &hauppauge_generic_tunerconfig, 0);
+		}
+		break;
+	case CX23885_BOARD_HAUPPAUGE_HVR1800lp:
+		i2c_bus = &dev->i2c_bus[0];
+		fe0->dvb.frontend = dvb_attach(s5h1409_attach,
+						&hauppauge_hvr1800lp_config,
+						&i2c_bus->i2c_adap);
+		if (fe0->dvb.frontend == NULL)
+			break;
+		dvb_attach(mt2131_attach, fe0->dvb.frontend,
+			   &i2c_bus->i2c_adap,
+			   &hauppauge_generic_tunerconfig, 0);
+		break;
+	case CX23885_BOARD_DVICO_FUSIONHDTV_5_EXP:
+		i2c_bus = &dev->i2c_bus[0];
+		fe0->dvb.frontend = dvb_attach(lgdt330x_attach,
+					       &fusionhdtv_5_express,
+					       0x0e,
+					       &i2c_bus->i2c_adap);
+		if (fe0->dvb.frontend == NULL)
+			break;
+		dvb_attach(simple_tuner_attach, fe0->dvb.frontend,
+			   &i2c_bus->i2c_adap, 0x61,
+			   TUNER_LG_TDVS_H06XF);
+		break;
+	case CX23885_BOARD_HAUPPAUGE_HVR1500Q:
+		i2c_bus = &dev->i2c_bus[1];
+		fe0->dvb.frontend = dvb_attach(s5h1409_attach,
+						&hauppauge_hvr1500q_config,
+						&dev->i2c_bus[0].i2c_adap);
+		if (fe0->dvb.frontend == NULL)
+			break;
+		dvb_attach(xc5000_attach, fe0->dvb.frontend,
+			   &i2c_bus->i2c_adap,
+			   &hauppauge_hvr1500q_tunerconfig);
+		break;
+	case CX23885_BOARD_HAUPPAUGE_HVR1500:
+		i2c_bus = &dev->i2c_bus[1];
+		fe0->dvb.frontend = dvb_attach(s5h1409_attach,
+						&hauppauge_hvr1500_config,
+						&dev->i2c_bus[0].i2c_adap);
+		if (fe0->dvb.frontend != NULL) {
+			struct dvb_frontend *fe;
+			struct xc2028_config cfg = {
+				.i2c_adap  = &i2c_bus->i2c_adap,
+				.i2c_addr  = 0x61,
+			};
+			static struct xc2028_ctrl ctl = {
+				.fname       = XC2028_DEFAULT_FIRMWARE,
+				.max_len     = 64,
+				.demod       = XC3028_FE_OREN538,
+			};
+
+			fe = dvb_attach(xc2028_attach,
+					fe0->dvb.frontend, &cfg);
+			if (fe != NULL && fe->ops.tuner_ops.set_config != NULL)
+				fe->ops.tuner_ops.set_config(fe, &ctl);
+		}
+		break;
+	case CX23885_BOARD_HAUPPAUGE_HVR1200:
+	case CX23885_BOARD_HAUPPAUGE_HVR1700:
+		i2c_bus = &dev->i2c_bus[0];
+		fe0->dvb.frontend = dvb_attach(tda10048_attach,
+			&hauppauge_hvr1200_config,
+			&i2c_bus->i2c_adap);
+		if (fe0->dvb.frontend == NULL)
+			break;
+		dvb_attach(tda829x_attach, fe0->dvb.frontend,
+			   &dev->i2c_bus[1].i2c_adap, 0x42,
+			   &tda829x_no_probe);
+		dvb_attach(tda18271_attach, fe0->dvb.frontend,
+			   0x60, &dev->i2c_bus[1].i2c_adap,
+			   &hauppauge_hvr1200_tuner_config);
+		break;
+	case CX23885_BOARD_HAUPPAUGE_HVR1210:
+		i2c_bus = &dev->i2c_bus[0];
+		fe0->dvb.frontend = dvb_attach(tda10048_attach,
+			&hauppauge_hvr1210_config,
+			&i2c_bus->i2c_adap);
+		if (fe0->dvb.frontend != NULL) {
+			dvb_attach(tda18271_attach, fe0->dvb.frontend,
+				0x60, &dev->i2c_bus[1].i2c_adap,
+				&hauppauge_hvr1210_tuner_config);
+		}
+		break;
+	case CX23885_BOARD_HAUPPAUGE_HVR1400:
+		i2c_bus = &dev->i2c_bus[0];
+
+		if (!dvb_attach(dib7000p_attach, &dib7000p_ops))
+			return -ENODEV;
+
+		fe0->dvb.frontend = dib7000p_ops.init(&i2c_bus->i2c_adap,
+			0x12, &hauppauge_hvr1400_dib7000_config);
+		if (fe0->dvb.frontend != NULL) {
+			struct dvb_frontend *fe;
+			struct xc2028_config cfg = {
+				.i2c_adap  = &dev->i2c_bus[1].i2c_adap,
+				.i2c_addr  = 0x64,
+			};
+			static struct xc2028_ctrl ctl = {
+				.fname   = XC3028L_DEFAULT_FIRMWARE,
+				.max_len = 64,
+				.demod   = XC3028_FE_DIBCOM52,
+				/* This is true for all demods with
+					v36 firmware? */
+				.type    = XC2028_D2633,
+			};
+
+			fe = dvb_attach(xc2028_attach,
+					fe0->dvb.frontend, &cfg);
+			if (fe != NULL && fe->ops.tuner_ops.set_config != NULL)
+				fe->ops.tuner_ops.set_config(fe, &ctl);
+		}
+		break;
+	case CX23885_BOARD_DVICO_FUSIONHDTV_7_DUAL_EXP:
+		i2c_bus = &dev->i2c_bus[port->nr - 1];
+
+		fe0->dvb.frontend = dvb_attach(s5h1409_attach,
+						&dvico_s5h1409_config,
+						&i2c_bus->i2c_adap);
+		if (fe0->dvb.frontend == NULL)
+			fe0->dvb.frontend = dvb_attach(s5h1411_attach,
+							&dvico_s5h1411_config,
+							&i2c_bus->i2c_adap);
+		if (fe0->dvb.frontend != NULL)
+			dvb_attach(xc5000_attach, fe0->dvb.frontend,
+				   &i2c_bus->i2c_adap,
+				   &dvico_xc5000_tunerconfig);
+		break;
+	case CX23885_BOARD_DVICO_FUSIONHDTV_DVB_T_DUAL_EXP: {
+		i2c_bus = &dev->i2c_bus[port->nr - 1];
+
+		fe0->dvb.frontend = dvb_attach(zl10353_attach,
+					       &dvico_fusionhdtv_xc3028,
+					       &i2c_bus->i2c_adap);
+		if (fe0->dvb.frontend != NULL) {
+			struct dvb_frontend      *fe;
+			struct xc2028_config	  cfg = {
+				.i2c_adap  = &i2c_bus->i2c_adap,
+				.i2c_addr  = 0x61,
+			};
+			static struct xc2028_ctrl ctl = {
+				.fname       = XC2028_DEFAULT_FIRMWARE,
+				.max_len     = 64,
+				.demod       = XC3028_FE_ZARLINK456,
+			};
+
+			fe = dvb_attach(xc2028_attach, fe0->dvb.frontend,
+					&cfg);
+			if (fe != NULL && fe->ops.tuner_ops.set_config != NULL)
+				fe->ops.tuner_ops.set_config(fe, &ctl);
+		}
+		break;
+	}
+	case CX23885_BOARD_DVICO_FUSIONHDTV_DVB_T_DUAL_EXP2: {
+		i2c_bus = &dev->i2c_bus[port->nr - 1];
+		/* cxusb_ctrl_msg(adap->dev, CMD_DIGITAL, NULL, 0, NULL, 0); */
+		/* cxusb_bluebird_gpio_pulse(adap->dev, 0x02, 1); */
+
+		if (!dvb_attach(dib7000p_attach, &dib7000p_ops))
+			return -ENODEV;
+
+		if (dib7000p_ops.i2c_enumeration(&i2c_bus->i2c_adap, 1, 0x12, &dib7070p_dib7000p_config) < 0) {
+			pr_warn("Unable to enumerate dib7000p\n");
+			return -ENODEV;
+		}
+		fe0->dvb.frontend = dib7000p_ops.init(&i2c_bus->i2c_adap, 0x80, &dib7070p_dib7000p_config);
+		if (fe0->dvb.frontend != NULL) {
+			struct i2c_adapter *tun_i2c;
+
+			fe0->dvb.frontend->sec_priv = kmemdup(&dib7000p_ops, sizeof(dib7000p_ops), GFP_KERNEL);
+			if (!fe0->dvb.frontend->sec_priv)
+				return -ENOMEM;
+			tun_i2c = dib7000p_ops.get_i2c_master(fe0->dvb.frontend, DIBX000_I2C_INTERFACE_TUNER, 1);
+			if (!dvb_attach(dib0070_attach, fe0->dvb.frontend, tun_i2c, &dib7070p_dib0070_config))
+				return -ENODEV;
+		}
+		break;
+	}
+	case CX23885_BOARD_LEADTEK_WINFAST_PXDVR3200_H:
+	case CX23885_BOARD_COMPRO_VIDEOMATE_E650F:
+	case CX23885_BOARD_COMPRO_VIDEOMATE_E800:
+		i2c_bus = &dev->i2c_bus[0];
+
+		fe0->dvb.frontend = dvb_attach(zl10353_attach,
+			&dvico_fusionhdtv_xc3028,
+			&i2c_bus->i2c_adap);
+		if (fe0->dvb.frontend != NULL) {
+			struct dvb_frontend      *fe;
+			struct xc2028_config	  cfg = {
+				.i2c_adap  = &dev->i2c_bus[1].i2c_adap,
+				.i2c_addr  = 0x61,
+			};
+			static struct xc2028_ctrl ctl = {
+				.fname       = XC2028_DEFAULT_FIRMWARE,
+				.max_len     = 64,
+				.demod       = XC3028_FE_ZARLINK456,
+			};
+
+			fe = dvb_attach(xc2028_attach, fe0->dvb.frontend,
+				&cfg);
+			if (fe != NULL && fe->ops.tuner_ops.set_config != NULL)
+				fe->ops.tuner_ops.set_config(fe, &ctl);
+		}
+		break;
+	case CX23885_BOARD_LEADTEK_WINFAST_PXDVR3200_H_XC4000:
+		i2c_bus = &dev->i2c_bus[0];
+
+		fe0->dvb.frontend = dvb_attach(zl10353_attach,
+					       &dvico_fusionhdtv_xc3028,
+					       &i2c_bus->i2c_adap);
+		if (fe0->dvb.frontend != NULL) {
+			struct dvb_frontend	*fe;
+			struct xc4000_config	cfg = {
+				.i2c_address	  = 0x61,
+				.default_pm	  = 0,
+				.dvb_amplitude	  = 134,
+				.set_smoothedcvbs = 1,
+				.if_khz		  = 4560
+			};
+
+			fe = dvb_attach(xc4000_attach, fe0->dvb.frontend,
+					&dev->i2c_bus[1].i2c_adap, &cfg);
+			if (!fe) {
+				pr_err("%s/2: xc4000 attach failed\n",
+				       dev->name);
+				goto frontend_detach;
+			}
+		}
+		break;
+	case CX23885_BOARD_TBS_6920:
+		i2c_bus = &dev->i2c_bus[1];
+
+		fe0->dvb.frontend = dvb_attach(cx24116_attach,
+					&tbs_cx24116_config,
+					&i2c_bus->i2c_adap);
+		if (fe0->dvb.frontend != NULL)
+			fe0->dvb.frontend->ops.set_voltage = f300_set_voltage;
+
+		break;
+	case CX23885_BOARD_TBS_6980:
+	case CX23885_BOARD_TBS_6981:
+		i2c_bus = &dev->i2c_bus[1];
+
+		switch (port->nr) {
+		/* PORT B */
+		case 1:
+			fe0->dvb.frontend = dvb_attach(cx24117_attach,
+					&tbs_cx24117_config,
+					&i2c_bus->i2c_adap);
+			break;
+		/* PORT C */
+		case 2:
+			fe0->dvb.frontend = dvb_attach(cx24117_attach,
+					&tbs_cx24117_config,
+					&i2c_bus->i2c_adap);
+			break;
+		}
+		break;
+	case CX23885_BOARD_TEVII_S470:
+		i2c_bus = &dev->i2c_bus[1];
+
+		fe0->dvb.frontend = dvb_attach(ds3000_attach,
+					&tevii_ds3000_config,
+					&i2c_bus->i2c_adap);
+		if (fe0->dvb.frontend != NULL) {
+			dvb_attach(ts2020_attach, fe0->dvb.frontend,
+				&tevii_ts2020_config, &i2c_bus->i2c_adap);
+			fe0->dvb.frontend->ops.set_voltage = f300_set_voltage;
+		}
+
+		break;
+	case CX23885_BOARD_DVBWORLD_2005:
+		i2c_bus = &dev->i2c_bus[1];
+
+		fe0->dvb.frontend = dvb_attach(cx24116_attach,
+			&dvbworld_cx24116_config,
+			&i2c_bus->i2c_adap);
+		break;
+	case CX23885_BOARD_NETUP_DUAL_DVBS2_CI:
+		i2c_bus = &dev->i2c_bus[0];
+		switch (port->nr) {
+		/* port B */
+		case 1:
+			fe0->dvb.frontend = dvb_attach(stv0900_attach,
+							&netup_stv0900_config,
+							&i2c_bus->i2c_adap, 0);
+			if (fe0->dvb.frontend != NULL) {
+				if (dvb_attach(stv6110_attach,
+						fe0->dvb.frontend,
+						&netup_stv6110_tunerconfig_a,
+						&i2c_bus->i2c_adap)) {
+					if (!dvb_attach(lnbh24_attach,
+							fe0->dvb.frontend,
+							&i2c_bus->i2c_adap,
+							LNBH24_PCL | LNBH24_TTX,
+							LNBH24_TEN, 0x09))
+						pr_err("No LNBH24 found!\n");
+
+				}
+			}
+			break;
+		/* port C */
+		case 2:
+			fe0->dvb.frontend = dvb_attach(stv0900_attach,
+							&netup_stv0900_config,
+							&i2c_bus->i2c_adap, 1);
+			if (fe0->dvb.frontend != NULL) {
+				if (dvb_attach(stv6110_attach,
+						fe0->dvb.frontend,
+						&netup_stv6110_tunerconfig_b,
+						&i2c_bus->i2c_adap)) {
+					if (!dvb_attach(lnbh24_attach,
+							fe0->dvb.frontend,
+							&i2c_bus->i2c_adap,
+							LNBH24_PCL | LNBH24_TTX,
+							LNBH24_TEN, 0x0a))
+						pr_err("No LNBH24 found!\n");
+
+				}
+			}
+			break;
+		}
+		break;
+	case CX23885_BOARD_MYGICA_X8506:
+		i2c_bus = &dev->i2c_bus[0];
+		i2c_bus2 = &dev->i2c_bus[1];
+		fe0->dvb.frontend = dvb_attach(lgs8gxx_attach,
+			&mygica_x8506_lgs8gl5_config,
+			&i2c_bus->i2c_adap);
+		if (fe0->dvb.frontend == NULL)
+			break;
+		dvb_attach(xc5000_attach, fe0->dvb.frontend,
+			   &i2c_bus2->i2c_adap, &mygica_x8506_xc5000_config);
+		cx23885_set_frontend_hook(port, fe0->dvb.frontend);
+		break;
+	case CX23885_BOARD_MYGICA_X8507:
+		i2c_bus = &dev->i2c_bus[0];
+		i2c_bus2 = &dev->i2c_bus[1];
+		fe0->dvb.frontend = dvb_attach(mb86a20s_attach,
+			&mygica_x8507_mb86a20s_config,
+			&i2c_bus->i2c_adap);
+		if (fe0->dvb.frontend == NULL)
+			break;
+
+		dvb_attach(xc5000_attach, fe0->dvb.frontend,
+			   &i2c_bus2->i2c_adap,
+			   &mygica_x8507_xc5000_config);
+		cx23885_set_frontend_hook(port, fe0->dvb.frontend);
+		break;
+	case CX23885_BOARD_MAGICPRO_PROHDTVE2:
+		i2c_bus = &dev->i2c_bus[0];
+		i2c_bus2 = &dev->i2c_bus[1];
+		fe0->dvb.frontend = dvb_attach(lgs8gxx_attach,
+			&magicpro_prohdtve2_lgs8g75_config,
+			&i2c_bus->i2c_adap);
+		if (fe0->dvb.frontend == NULL)
+			break;
+		dvb_attach(xc5000_attach, fe0->dvb.frontend,
+			   &i2c_bus2->i2c_adap,
+			   &magicpro_prohdtve2_xc5000_config);
+		cx23885_set_frontend_hook(port, fe0->dvb.frontend);
+		break;
+	case CX23885_BOARD_HAUPPAUGE_HVR1850:
+		i2c_bus = &dev->i2c_bus[0];
+		fe0->dvb.frontend = dvb_attach(s5h1411_attach,
+			&hcw_s5h1411_config,
+			&i2c_bus->i2c_adap);
+		if (fe0->dvb.frontend == NULL)
+			break;
+		dvb_attach(tda18271_attach, fe0->dvb.frontend,
+			   0x60, &dev->i2c_bus[0].i2c_adap,
+			   &hauppauge_tda18271_config);
+
+		tda18271_attach(&dev->ts1.analog_fe,
+			0x60, &dev->i2c_bus[1].i2c_adap,
+			&hauppauge_tda18271_config);
+
+		break;
+	case CX23885_BOARD_HAUPPAUGE_HVR1290:
+		i2c_bus = &dev->i2c_bus[0];
+		fe0->dvb.frontend = dvb_attach(s5h1411_attach,
+			&hcw_s5h1411_config,
+			&i2c_bus->i2c_adap);
+		if (fe0->dvb.frontend == NULL)
+			break;
+		dvb_attach(tda18271_attach, fe0->dvb.frontend,
+			   0x60, &dev->i2c_bus[0].i2c_adap,
+			   &hauppauge_tda18271_config);
+		break;
+	case CX23885_BOARD_MYGICA_X8558PRO:
+		switch (port->nr) {
+		/* port B */
+		case 1:
+			i2c_bus = &dev->i2c_bus[0];
+			fe0->dvb.frontend = dvb_attach(atbm8830_attach,
+				&mygica_x8558pro_atbm8830_cfg1,
+				&i2c_bus->i2c_adap);
+			if (fe0->dvb.frontend == NULL)
+				break;
+			dvb_attach(max2165_attach, fe0->dvb.frontend,
+				   &i2c_bus->i2c_adap,
+				   &mygic_x8558pro_max2165_cfg1);
+			break;
+		/* port C */
+		case 2:
+			i2c_bus = &dev->i2c_bus[1];
+			fe0->dvb.frontend = dvb_attach(atbm8830_attach,
+				&mygica_x8558pro_atbm8830_cfg2,
+				&i2c_bus->i2c_adap);
+			if (fe0->dvb.frontend == NULL)
+				break;
+			dvb_attach(max2165_attach, fe0->dvb.frontend,
+				   &i2c_bus->i2c_adap,
+				   &mygic_x8558pro_max2165_cfg2);
+		}
+		break;
+	case CX23885_BOARD_NETUP_DUAL_DVB_T_C_CI_RF:
+		if (port->nr > 2)
+			return 0;
+
+		i2c_bus = &dev->i2c_bus[0];
+		mfe_shared = 1;/* MFE */
+		port->frontends.gate = 0;/* not clear for me yet */
+		/* ports B, C */
+		/* MFE frontend 1 DVB-T */
+		fe0->dvb.frontend = dvb_attach(stv0367ter_attach,
+					&netup_stv0367_config[port->nr - 1],
+					&i2c_bus->i2c_adap);
+		if (fe0->dvb.frontend == NULL)
+			break;
+		if (NULL == dvb_attach(xc5000_attach, fe0->dvb.frontend,
+					&i2c_bus->i2c_adap,
+					&netup_xc5000_config[port->nr - 1]))
+			goto frontend_detach;
+		/* load xc5000 firmware */
+		fe0->dvb.frontend->ops.tuner_ops.init(fe0->dvb.frontend);
+
+		/* MFE frontend 2 */
+		fe1 = vb2_dvb_get_frontend(&port->frontends, 2);
+		if (fe1 == NULL)
+			goto frontend_detach;
+		/* DVB-C init */
+		fe1->dvb.frontend = dvb_attach(stv0367cab_attach,
+					&netup_stv0367_config[port->nr - 1],
+					&i2c_bus->i2c_adap);
+		if (fe1->dvb.frontend == NULL)
+			break;
+
+		fe1->dvb.frontend->id = 1;
+		if (NULL == dvb_attach(xc5000_attach,
+				       fe1->dvb.frontend,
+				       &i2c_bus->i2c_adap,
+				       &netup_xc5000_config[port->nr - 1]))
+			goto frontend_detach;
+		break;
+	case CX23885_BOARD_TERRATEC_CINERGY_T_PCIE_DUAL:
+		i2c_bus = &dev->i2c_bus[0];
+		i2c_bus2 = &dev->i2c_bus[1];
+
+		switch (port->nr) {
+		/* port b */
+		case 1:
+			fe0->dvb.frontend = dvb_attach(drxk_attach,
+					&terratec_drxk_config[0],
+					&i2c_bus->i2c_adap);
+			if (fe0->dvb.frontend == NULL)
+				break;
+			if (!dvb_attach(mt2063_attach,
+					fe0->dvb.frontend,
+					&terratec_mt2063_config[0],
+					&i2c_bus2->i2c_adap))
+				goto frontend_detach;
+			break;
+		/* port c */
+		case 2:
+			fe0->dvb.frontend = dvb_attach(drxk_attach,
+					&terratec_drxk_config[1],
+					&i2c_bus->i2c_adap);
+			if (fe0->dvb.frontend == NULL)
+				break;
+			if (!dvb_attach(mt2063_attach,
+					fe0->dvb.frontend,
+					&terratec_mt2063_config[1],
+					&i2c_bus2->i2c_adap))
+				goto frontend_detach;
+			break;
+		}
+		break;
+	case CX23885_BOARD_TEVII_S471:
+		i2c_bus = &dev->i2c_bus[1];
+
+		fe0->dvb.frontend = dvb_attach(ds3000_attach,
+					&tevii_ds3000_config,
+					&i2c_bus->i2c_adap);
+		if (fe0->dvb.frontend == NULL)
+			break;
+		dvb_attach(ts2020_attach, fe0->dvb.frontend,
+			   &tevii_ts2020_config, &i2c_bus->i2c_adap);
+		break;
+	case CX23885_BOARD_PROF_8000:
+		i2c_bus = &dev->i2c_bus[0];
+
+		fe0->dvb.frontend = dvb_attach(stv090x_attach,
+						&prof_8000_stv090x_config,
+						&i2c_bus->i2c_adap,
+						STV090x_DEMODULATOR_0);
+		if (fe0->dvb.frontend == NULL)
+			break;
+		if (!dvb_attach(stb6100_attach,
+				fe0->dvb.frontend,
+				&prof_8000_stb6100_config,
+				&i2c_bus->i2c_adap))
+			goto frontend_detach;
+
+		fe0->dvb.frontend->ops.set_voltage = p8000_set_voltage;
+		break;
+	case CX23885_BOARD_HAUPPAUGE_HVR4400: {
+		struct tda10071_platform_data tda10071_pdata = hauppauge_tda10071_pdata;
+		struct a8293_platform_data a8293_pdata = {};
+
+		i2c_bus = &dev->i2c_bus[0];
+		i2c_bus2 = &dev->i2c_bus[1];
+		switch (port->nr) {
+		/* port b */
+		case 1:
+			/* attach demod + tuner combo */
+			memset(&info, 0, sizeof(info));
+			strscpy(info.type, "tda10071_cx24118", I2C_NAME_SIZE);
+			info.addr = 0x05;
+			info.platform_data = &tda10071_pdata;
+			request_module("tda10071");
+			client_demod = i2c_new_client_device(&i2c_bus->i2c_adap, &info);
+			if (!i2c_client_has_driver(client_demod))
+				goto frontend_detach;
+			if (!try_module_get(client_demod->dev.driver->owner)) {
+				i2c_unregister_device(client_demod);
+				goto frontend_detach;
+			}
+			fe0->dvb.frontend = tda10071_pdata.get_dvb_frontend(client_demod);
+			port->i2c_client_demod = client_demod;
+
+			/* attach SEC */
+			a8293_pdata.dvb_frontend = fe0->dvb.frontend;
+			memset(&info, 0, sizeof(info));
+			strscpy(info.type, "a8293", I2C_NAME_SIZE);
+			info.addr = 0x0b;
+			info.platform_data = &a8293_pdata;
+			request_module("a8293");
+			client_sec = i2c_new_client_device(&i2c_bus->i2c_adap, &info);
+			if (!i2c_client_has_driver(client_sec))
+				goto frontend_detach;
+			if (!try_module_get(client_sec->dev.driver->owner)) {
+				i2c_unregister_device(client_sec);
+				goto frontend_detach;
+			}
+			port->i2c_client_sec = client_sec;
+			break;
+		/* port c */
+		case 2:
+			/* attach frontend */
+			memset(&si2165_pdata, 0, sizeof(si2165_pdata));
+			si2165_pdata.fe = &fe0->dvb.frontend;
+			si2165_pdata.chip_mode = SI2165_MODE_PLL_XTAL;
+			si2165_pdata.ref_freq_hz = 16000000;
+			memset(&info, 0, sizeof(struct i2c_board_info));
+			strscpy(info.type, "si2165", I2C_NAME_SIZE);
+			info.addr = 0x64;
+			info.platform_data = &si2165_pdata;
+			request_module(info.type);
+			client_demod = i2c_new_client_device(&i2c_bus->i2c_adap, &info);
+			if (!i2c_client_has_driver(client_demod))
+				goto frontend_detach;
+			if (!try_module_get(client_demod->dev.driver->owner)) {
+				i2c_unregister_device(client_demod);
+				goto frontend_detach;
+			}
+			port->i2c_client_demod = client_demod;
+
+			if (fe0->dvb.frontend == NULL)
+				break;
+			fe0->dvb.frontend->ops.i2c_gate_ctrl = NULL;
+			if (!dvb_attach(tda18271_attach,
+					fe0->dvb.frontend,
+					0x60, &i2c_bus2->i2c_adap,
+				  &hauppauge_hvr4400_tuner_config))
+				goto frontend_detach;
+			break;
+		}
+		break;
+	}
+	case CX23885_BOARD_HAUPPAUGE_STARBURST: {
+		struct tda10071_platform_data tda10071_pdata = hauppauge_tda10071_pdata;
+		struct a8293_platform_data a8293_pdata = {};
+
+		i2c_bus = &dev->i2c_bus[0];
+
+		/* attach demod + tuner combo */
+		memset(&info, 0, sizeof(info));
+		strscpy(info.type, "tda10071_cx24118", I2C_NAME_SIZE);
+		info.addr = 0x05;
+		info.platform_data = &tda10071_pdata;
+		request_module("tda10071");
+		client_demod = i2c_new_client_device(&i2c_bus->i2c_adap, &info);
+		if (!i2c_client_has_driver(client_demod))
+			goto frontend_detach;
+		if (!try_module_get(client_demod->dev.driver->owner)) {
+			i2c_unregister_device(client_demod);
+			goto frontend_detach;
+		}
+		fe0->dvb.frontend = tda10071_pdata.get_dvb_frontend(client_demod);
+		port->i2c_client_demod = client_demod;
+
+		/* attach SEC */
+		a8293_pdata.dvb_frontend = fe0->dvb.frontend;
+		memset(&info, 0, sizeof(info));
+		strscpy(info.type, "a8293", I2C_NAME_SIZE);
+		info.addr = 0x0b;
+		info.platform_data = &a8293_pdata;
+		request_module("a8293");
+		client_sec = i2c_new_client_device(&i2c_bus->i2c_adap, &info);
+		if (!i2c_client_has_driver(client_sec))
+			goto frontend_detach;
+		if (!try_module_get(client_sec->dev.driver->owner)) {
+			i2c_unregister_device(client_sec);
+			goto frontend_detach;
+		}
+		port->i2c_client_sec = client_sec;
+		break;
+	}
+	case CX23885_BOARD_DVBSKY_T9580:
+	case CX23885_BOARD_DVBSKY_S950:
+		i2c_bus = &dev->i2c_bus[0];
+		i2c_bus2 = &dev->i2c_bus[1];
+		switch (port->nr) {
+		/* port b - satellite */
+		case 1:
+			/* attach frontend */
+			fe0->dvb.frontend = dvb_attach(m88ds3103_attach,
+					&dvbsky_t9580_m88ds3103_config,
+					&i2c_bus2->i2c_adap, &adapter);
+			if (fe0->dvb.frontend == NULL)
+				break;
+
+			/* attach tuner */
+			memset(&ts2020_config, 0, sizeof(ts2020_config));
+			ts2020_config.fe = fe0->dvb.frontend;
+			ts2020_config.get_agc_pwm = m88ds3103_get_agc_pwm;
+			memset(&info, 0, sizeof(struct i2c_board_info));
+			strscpy(info.type, "ts2020", I2C_NAME_SIZE);
+			info.addr = 0x60;
+			info.platform_data = &ts2020_config;
+			request_module(info.type);
+			client_tuner = i2c_new_client_device(adapter, &info);
+			if (!i2c_client_has_driver(client_tuner))
+				goto frontend_detach;
+			if (!try_module_get(client_tuner->dev.driver->owner)) {
+				i2c_unregister_device(client_tuner);
+				goto frontend_detach;
+			}
+
+			/* delegate signal strength measurement to tuner */
+			fe0->dvb.frontend->ops.read_signal_strength =
+				fe0->dvb.frontend->ops.tuner_ops.get_rf_strength;
+
+			/*
+			 * for setting the voltage we need to set GPIOs on
+			 * the card.
+			 */
+			port->fe_set_voltage =
+				fe0->dvb.frontend->ops.set_voltage;
+			fe0->dvb.frontend->ops.set_voltage =
+				dvbsky_t9580_set_voltage;
+
+			port->i2c_client_tuner = client_tuner;
+
+			break;
+		/* port c - terrestrial/cable */
+		case 2:
+			/* attach frontend */
+			memset(&si2168_config, 0, sizeof(si2168_config));
+			si2168_config.i2c_adapter = &adapter;
+			si2168_config.fe = &fe0->dvb.frontend;
+			si2168_config.ts_mode = SI2168_TS_SERIAL;
+			memset(&info, 0, sizeof(struct i2c_board_info));
+			strscpy(info.type, "si2168", I2C_NAME_SIZE);
+			info.addr = 0x64;
+			info.platform_data = &si2168_config;
+			request_module(info.type);
+			client_demod = i2c_new_client_device(&i2c_bus->i2c_adap, &info);
+			if (!i2c_client_has_driver(client_demod))
+				goto frontend_detach;
+			if (!try_module_get(client_demod->dev.driver->owner)) {
+				i2c_unregister_device(client_demod);
+				goto frontend_detach;
+			}
+			port->i2c_client_demod = client_demod;
+
+			/* attach tuner */
+			memset(&si2157_config, 0, sizeof(si2157_config));
+			si2157_config.fe = fe0->dvb.frontend;
+			si2157_config.if_port = 1;
+			memset(&info, 0, sizeof(struct i2c_board_info));
+			strscpy(info.type, "si2157", I2C_NAME_SIZE);
+			info.addr = 0x60;
+			info.platform_data = &si2157_config;
+			request_module(info.type);
+			client_tuner = i2c_new_client_device(adapter, &info);
+			if (!i2c_client_has_driver(client_tuner))
+				goto frontend_detach;
+
+			if (!try_module_get(client_tuner->dev.driver->owner)) {
+				i2c_unregister_device(client_tuner);
+				goto frontend_detach;
+			}
+			port->i2c_client_tuner = client_tuner;
+			break;
+		}
+		break;
+	case CX23885_BOARD_DVBSKY_T980C:
+	case CX23885_BOARD_TT_CT2_4500_CI:
+		i2c_bus = &dev->i2c_bus[0];
+		i2c_bus2 = &dev->i2c_bus[1];
+
+		/* attach frontend */
+		memset(&si2168_config, 0, sizeof(si2168_config));
+		si2168_config.i2c_adapter = &adapter;
+		si2168_config.fe = &fe0->dvb.frontend;
+		si2168_config.ts_mode = SI2168_TS_PARALLEL;
+		memset(&info, 0, sizeof(struct i2c_board_info));
+		strscpy(info.type, "si2168", I2C_NAME_SIZE);
+		info.addr = 0x64;
+		info.platform_data = &si2168_config;
+		request_module(info.type);
+		client_demod = i2c_new_client_device(&i2c_bus2->i2c_adap, &info);
+		if (!i2c_client_has_driver(client_demod))
+			goto frontend_detach;
+		if (!try_module_get(client_demod->dev.driver->owner)) {
+			i2c_unregister_device(client_demod);
+			goto frontend_detach;
+		}
+		port->i2c_client_demod = client_demod;
+
+		/* attach tuner */
+		memset(&si2157_config, 0, sizeof(si2157_config));
+		si2157_config.fe = fe0->dvb.frontend;
+		si2157_config.if_port = 1;
+		memset(&info, 0, sizeof(struct i2c_board_info));
+		strscpy(info.type, "si2157", I2C_NAME_SIZE);
+		info.addr = 0x60;
+		info.platform_data = &si2157_config;
+		request_module(info.type);
+		client_tuner = i2c_new_client_device(adapter, &info);
+		if (!i2c_client_has_driver(client_tuner))
+			goto frontend_detach;
+		if (!try_module_get(client_tuner->dev.driver->owner)) {
+			i2c_unregister_device(client_tuner);
+			goto frontend_detach;
+		}
+		port->i2c_client_tuner = client_tuner;
+		break;
+	case CX23885_BOARD_DVBSKY_S950C:
+		i2c_bus = &dev->i2c_bus[0];
+		i2c_bus2 = &dev->i2c_bus[1];
+
+		/* attach frontend */
+		fe0->dvb.frontend = dvb_attach(m88ds3103_attach,
+				&dvbsky_s950c_m88ds3103_config,
+				&i2c_bus2->i2c_adap, &adapter);
+		if (fe0->dvb.frontend == NULL)
+			break;
+
+		/* attach tuner */
+		memset(&ts2020_config, 0, sizeof(ts2020_config));
+		ts2020_config.fe = fe0->dvb.frontend;
+		ts2020_config.get_agc_pwm = m88ds3103_get_agc_pwm;
+		memset(&info, 0, sizeof(struct i2c_board_info));
+		strscpy(info.type, "ts2020", I2C_NAME_SIZE);
+		info.addr = 0x60;
+		info.platform_data = &ts2020_config;
+		request_module(info.type);
+		client_tuner = i2c_new_client_device(adapter, &info);
+		if (!i2c_client_has_driver(client_tuner))
+			goto frontend_detach;
+		if (!try_module_get(client_tuner->dev.driver->owner)) {
+			i2c_unregister_device(client_tuner);
+			goto frontend_detach;
+		}
+
+		/* delegate signal strength measurement to tuner */
+		fe0->dvb.frontend->ops.read_signal_strength =
+			fe0->dvb.frontend->ops.tuner_ops.get_rf_strength;
+
+		port->i2c_client_tuner = client_tuner;
+		break;
+	case CX23885_BOARD_DVBSKY_S952:
+		/* attach frontend */
+		memset(&m88ds3103_pdata, 0, sizeof(m88ds3103_pdata));
+		m88ds3103_pdata.clk = 27000000;
+		m88ds3103_pdata.i2c_wr_max = 33;
+		m88ds3103_pdata.agc = 0x99;
+		m88ds3103_pdata.clk_out = M88DS3103_CLOCK_OUT_DISABLED;
+		m88ds3103_pdata.lnb_en_pol = 1;
+
+		switch (port->nr) {
+		/* port b */
+		case 1:
+			i2c_bus = &dev->i2c_bus[1];
+			m88ds3103_pdata.ts_mode = M88DS3103_TS_PARALLEL;
+			m88ds3103_pdata.ts_clk = 16000;
+			m88ds3103_pdata.ts_clk_pol = 1;
+			p_set_voltage = dvbsky_t9580_set_voltage;
+			break;
+		/* port c */
+		case 2:
+			i2c_bus = &dev->i2c_bus[0];
+			m88ds3103_pdata.ts_mode = M88DS3103_TS_SERIAL;
+			m88ds3103_pdata.ts_clk = 96000;
+			m88ds3103_pdata.ts_clk_pol = 0;
+			p_set_voltage = dvbsky_s952_portc_set_voltage;
+			break;
+		default:
+			return 0;
+		}
+
+		memset(&info, 0, sizeof(info));
+		strscpy(info.type, "m88ds3103", I2C_NAME_SIZE);
+		info.addr = 0x68;
+		info.platform_data = &m88ds3103_pdata;
+		request_module(info.type);
+		client_demod = i2c_new_client_device(&i2c_bus->i2c_adap, &info);
+		if (!i2c_client_has_driver(client_demod))
+			goto frontend_detach;
+		if (!try_module_get(client_demod->dev.driver->owner)) {
+			i2c_unregister_device(client_demod);
+			goto frontend_detach;
+		}
+		port->i2c_client_demod = client_demod;
+		adapter = m88ds3103_pdata.get_i2c_adapter(client_demod);
+		fe0->dvb.frontend = m88ds3103_pdata.get_dvb_frontend(client_demod);
+
+		/* attach tuner */
+		memset(&ts2020_config, 0, sizeof(ts2020_config));
+		ts2020_config.fe = fe0->dvb.frontend;
+		ts2020_config.get_agc_pwm = m88ds3103_get_agc_pwm;
+		memset(&info, 0, sizeof(struct i2c_board_info));
+		strscpy(info.type, "ts2020", I2C_NAME_SIZE);
+		info.addr = 0x60;
+		info.platform_data = &ts2020_config;
+		request_module(info.type);
+		client_tuner = i2c_new_client_device

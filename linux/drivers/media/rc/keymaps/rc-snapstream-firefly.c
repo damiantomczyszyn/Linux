@@ -1,94 +1,53 @@
-// SPDX-License-Identifier: GPL-2.0-or-later
-/*
- * SnapStream Firefly X10 RF remote keytable
- *
- * Copyright (C) 2011 Anssi Hannula <anssi.hannula@?ki.fi>
- */
-
-#include <linux/module.h>
-#include <media/rc-map.h>
-
-static struct rc_map_table snapstream_firefly[] = {
-	{ 0x2c, KEY_ZOOM },       /* Maximize */
-	{ 0x02, KEY_CLOSE },
-
-	{ 0x0d, KEY_NUMERIC_1 },
-	{ 0x0e, KEY_NUMERIC_2 },
-	{ 0x0f, KEY_NUMERIC_3 },
-	{ 0x10, KEY_NUMERIC_4 },
-	{ 0x11, KEY_NUMERIC_5 },
-	{ 0x12, KEY_NUMERIC_6 },
-	{ 0x13, KEY_NUMERIC_7 },
-	{ 0x14, KEY_NUMERIC_8 },
-	{ 0x15, KEY_NUMERIC_9 },
-	{ 0x17, KEY_NUMERIC_0 },
-	{ 0x16, KEY_BACK },
-	{ 0x18, KEY_KPENTER },    /* ent */
-
-	{ 0x09, KEY_VOLUMEUP },
-	{ 0x08, KEY_VOLUMEDOWN },
-	{ 0x0a, KEY_MUTE },
-	{ 0x0b, KEY_CHANNELUP },
-	{ 0x0c, KEY_CHANNELDOWN },
-	{ 0x00, KEY_VENDOR },     /* firefly */
-
-	{ 0x2e, KEY_INFO },
-	{ 0x2f, KEY_OPTION },
-
-	{ 0x1d, KEY_LEFT },
-	{ 0x1f, KEY_RIGHT },
-	{ 0x22, KEY_DOWN },
-	{ 0x1a, KEY_UP },
-	{ 0x1e, KEY_OK },
-
-	{ 0x1c, KEY_MENU },
-	{ 0x20, KEY_EXIT },
-
-	{ 0x27, KEY_RECORD },
-	{ 0x25, KEY_PLAY },
-	{ 0x28, KEY_STOP },
-	{ 0x24, KEY_REWIND },
-	{ 0x26, KEY_FORWARD },
-	{ 0x29, KEY_PAUSE },
-	{ 0x2b, KEY_PREVIOUS },
-	{ 0x2a, KEY_NEXT },
-
-	{ 0x06, KEY_AUDIO },      /* Music */
-	{ 0x05, KEY_IMAGES },     /* Photos */
-	{ 0x04, KEY_DVD },
-	{ 0x03, KEY_TV },
-	{ 0x07, KEY_VIDEO },
-
-	{ 0x01, KEY_HELP },
-	{ 0x2d, KEY_MODE },       /* Mouse */
-
-	{ 0x19, KEY_A },
-	{ 0x1b, KEY_B },
-	{ 0x21, KEY_C },
-	{ 0x23, KEY_D },
-};
-
-static struct rc_map_list snapstream_firefly_map = {
-	.map = {
-		.scan     = snapstream_firefly,
-		.size     = ARRAY_SIZE(snapstream_firefly),
-		.rc_proto = RC_PROTO_OTHER,
-		.name     = RC_MAP_SNAPSTREAM_FIREFLY,
-	}
-};
-
-static int __init init_rc_map_snapstream_firefly(void)
-{
-	return rc_map_register(&snapstream_firefly_map);
-}
-
-static void __exit exit_rc_map_snapstream_firefly(void)
-{
-	rc_map_unregister(&snapstream_firefly_map);
-}
-
-module_init(init_rc_map_snapstream_firefly)
-module_exit(exit_rc_map_snapstream_firefly)
-
-MODULE_LICENSE("GPL");
-MODULE_AUTHOR("Anssi Hannula <anssi.hannula@iki.fi>");
+6/include/asm/mpspec.h \
+    $(wildcard include/config/EISA) \
+    $(wildcard include/config/X86_MPPARSE) \
+  arch/x86/include/asm/mpspec_def.h \
+  arch/x86/include/asm/x86_init.h \
+  arch/x86/include/asm/apicdef.h \
+  include/asm-generic/topology.h \
+  include/linux/kconfig.h \
+  include/linux/radix-tree.h \
+  include/linux/pid.h \
+  include/linux/capability.h \
+  include/uapi/linux/capability.h \
+  include/linux/semaphore.h \
+  include/linux/fcntl.h \
+    $(wildcard include/config/ARCH_32BIT_OFF_T) \
+  include/uapi/linux/fcntl.h \
+  arch/x86/include/generated/uapi/asm/fcntl.h \
+  include/uapi/asm-generic/fcntl.h \
+  include/uapi/linux/openat2.h \
+  include/linux/migrate_mode.h \
+  include/linux/percpu-rwsem.h \
+  include/linux/rcuwait.h \
+  include/linux/sched/signal.h \
+    $(wildcard include/config/SCHED_AUTOGROUP) \
+    $(wildcard include/config/BSD_PROCESS_ACCT) \
+    $(wildcard include/config/TASKSTATS) \
+    $(wildcard include/config/AUDIT) \
+    $(wildcard include/config/STACK_GROWSUP) \
+  include/linux/signal.h \
+    $(wildcard include/config/DYNAMIC_SIGFRAME) \
+  include/linux/signal_types.h \
+    $(wildcard include/config/OLD_SIGACTION) \
+  include/uapi/linux/signal.h \
+  arch/x86/include/asm/signal.h \
+  arch/x86/include/uapi/asm/signal.h \
+  include/uapi/asm-generic/signal-defs.h \
+  arch/x86/include/uapi/asm/siginfo.h \
+  include/uapi/asm-generic/siginfo.h \
+  include/linux/sched.h \
+    $(wildcard include/config/VIRT_CPU_ACCOUNTING_NATIVE) \
+    $(wildcard include/config/SCHED_INFO) \
+    $(wildcard include/config/SCHEDSTATS) \
+    $(wildcard include/config/SCHED_CORE) \
+    $(wildcard include/config/FAIR_GROUP_SCHED) \
+    $(wildcard include/config/RT_GROUP_SCHED) \
+    $(wildcard include/config/RT_MUTEXES) \
+    $(wildcard include/config/UCLAMP_TASK) \
+    $(wildcard include/config/UCLAMP_BUCKETS_COUNT) \
+    $(wildcard include/config/KMAP_LOCAL) \
+    $(wildcard include/config/CGROUP_SCHED) \
+    $(wildcard include/config/BLK_DEV_IO_TRACE) \
+    $(wildcard include/config/PSI) \
+    $(wildcard include/config/COMPAT_BRK

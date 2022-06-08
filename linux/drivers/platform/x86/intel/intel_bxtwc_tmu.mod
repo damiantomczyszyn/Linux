@@ -1,2 +1,2 @@
-.h \
-  include/uapi/asm-generic/bitsperl
+ze, &risc->dma,
+				       GFP_KERNEL);

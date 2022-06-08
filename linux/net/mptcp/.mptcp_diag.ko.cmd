@@ -1,10 +1,9 @@
-atic inline int check_wait_context(struct task_struct *curr,
-				     struct held_lock *next)
-{
-	return 0;
-}
+* use task_rq_lock() here and obtain the other rq->lock.
+	 *
+	 * Silence PROVE_RCU
+	 */
+	rcu_read_lock();
+	__set_task_cpu(idle, cpu);
+	rcu_read_unlock();
 
-#endif /* CONFIG_PROVE_LOCKING */
-
-/*
- * Initialize a lock ins
+	rq->idle = idle;

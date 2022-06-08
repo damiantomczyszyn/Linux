@@ -1,99 +1,83 @@
-me lock
-		 * already?
-		 */
-		int ret = check_deadlock(curr, hlock);
+th =
+			    txclk_tx_s_max_pulse_width(dev, p->max_pulse_width,
+						       &txclk_divider);
+	}
+	o->max_pulse_width = p->max_pulse_width;
+	atomic_set(&state->txclk_divider, txclk_divider);
 
-		if (!ret)
-			return 0;
-		/*
-		 * Add dependency only if this lock is not the head
-		 * of the chain, and if the new lock introduces no more
-		 * lock dependency (because we already hold a lock with the
-		 * same lock class) nor deadlock (because the nest_lock
-		 * serializes nesting locks), see the comments for
-		 * check_deadlock().
-		 */
-		if (!chain_head && ret != 2) {
-			if (!check_prevs_add(curr, hlock))
-				return 0;
-		}
+	p->resolution = clock_divider_to_resolution(txclk_divider);
+	o->resolution = p->resolution;
 
-		graph_unlock();
-	} else {
-		/* after lookup_chain_cache_add(): */
-		if (unlikely(!debug_locks))
-			return 0;
+	/* FIXME - make this dependent on resolution for better performance */
+	control_tx_irq_watermark(dev, TX_FIFO_HALF_EMPTY);
+
+	control_tx_polarity_invert(dev, p->invert_carrier_sense);
+	o->invert_carrier_sense = p->invert_carrier_sense;
+
+	control_tx_level_invert(dev, p->invert_level);
+	o->invert_level = p->invert_level;
+
+	o->interrupt_enable = p->interrupt_enable;
+	o->enable = p->enable;
+	if (p->enable) {
+		if (p->interrupt_enable)
+			irqenable_tx(dev, IRQEN_TSE);
+		control_tx_enable(dev, p->enable);
 	}
 
-	return 1;
-}
-#else
-static inline int validate_chain(struct task_struct *curr,
-				 struct held_lock *hlock,
-				 int chain_head, u64 chain_key)
-{
-	return 1;
+	mutex_unlock(&state->tx_params_lock);
+	return 0;
 }
 
-static void init_chain_block_buckets(void)	{ }
-#endif /* CONFIG_PROVE_LOCKING */
 
 /*
- * We are building curr_chain_key incrementally, so double-check
- * it from scratch, to make sure that it's done correctly:
+ * V4L2 Subdevice Core Ops
  */
-static void check_chain_key(struct task_struct *curr)
+static int cx23888_ir_log_status(struct v4l2_subdev *sd)
 {
-#ifdef CONFIG_DEBUG_LOCKDEP
-	struct held_lock *hlock, *prev_hlock = NULL;
-	unsigned int i;
-	u64 chain_key = INITIAL_CHAIN_KEY;
+	struct cx23888_ir_state *state = to_state(sd);
+	struct cx23885_dev *dev = state->dev;
+	char *s;
+	int i, j;
 
-	for (i = 0; i < curr->lockdep_depth; i++) {
-		hlock = curr->held_locks + i;
-		if (chain_key != hlock->prev_chain_key) {
-			debug_locks_off();
-			/*
-			 * We got mighty confused, our chain keys don't match
-			 * with what we expect, someone trample on our task state?
-			 */
-			WARN(1, "hm#1, depth: %u [%u], %016Lx != %016Lx\n",
-				curr->lockdep_depth, i,
-				(unsigned long long)chain_key,
-				(unsigned long long)hlock->prev_chain_key);
-			return;
-		}
+	u32 cntrl = cx23888_ir_read4(dev, CX23888_IR_CNTRL_REG);
+	u32 txclk = cx23888_ir_read4(dev, CX23888_IR_TXCLK_REG) & TXCLK_TCD;
+	u32 rxclk = cx23888_ir_read4(dev, CX23888_IR_RXCLK_REG) & RXCLK_RCD;
+	u32 cduty = cx23888_ir_read4(dev, CX23888_IR_CDUTY_REG) & CDUTY_CDC;
+	u32 stats = cx23888_ir_read4(dev, CX23888_IR_STATS_REG);
+	u32 irqen = cx23888_ir_read4(dev, CX23888_IR_IRQEN_REG);
+	u32 filtr = cx23888_ir_read4(dev, CX23888_IR_FILTR_REG) & FILTR_LPF;
 
-		/*
-		 * hlock->class_idx can't go beyond MAX_LOCKDEP_KEYS, but is
-		 * it registered lock class index?
-		 */
-		if (DEBUG_LOCKS_WARN_ON(!test_bit(hlock->class_idx, lock_classes_in_use)))
-			return;
-
-		if (prev_hlock && (prev_hlock->irq_context !=
-							hlock->irq_context))
-			chain_key = INITIAL_CHAIN_KEY;
-		chain_key = iterate_chain_key(chain_key, hlock_id(hlock));
-		prev_hlock = hlock;
+	v4l2_info(sd, "IR Receiver:\n");
+	v4l2_info(sd, "\tEnabled:                           %s\n",
+		  cntrl & CNTRL_RXE ? "yes" : "no");
+	v4l2_info(sd, "\tDemodulation from a carrier:       %s\n",
+		  cntrl & CNTRL_DMD ? "enabled" : "disabled");
+	v4l2_info(sd, "\tFIFO:                              %s\n",
+		  cntrl & CNTRL_RFE ? "enabled" : "disabled");
+	switch (cntrl & CNTRL_EDG) {
+	case CNTRL_EDG_NONE:
+		s = "disabled";
+		break;
+	case CNTRL_EDG_FALL:
+		s = "falling edge";
+		break;
+	case CNTRL_EDG_RISE:
+		s = "rising edge";
+		break;
+	case CNTRL_EDG_BOTH:
+		s = "rising & falling edges";
+		break;
+	default:
+		s = "??? edge";
+		break;
 	}
-	if (chain_key != curr->curr_chain_key) {
-		debug_locks_off();
-		/*
-		 * More smoking hash instead of calculating it, damn see these
-		 * numbers float.. I bet that a pink elephant stepped on my memory.
-		 */
-		WARN(1, "hm#2, depth: %u [%u], %016Lx != %016Lx\n",
-			curr->lockdep_depth, i,
-			(unsigned long long)chain_key,
-			(unsigned long long)curr->curr_chain_key);
-	}
-#endif
-}
-
-#ifdef CONFIG_PROVE_LOCKING
-static int mark_lock(struct task_struct *curr, struct held_lock *this,
-		     enum lock_usage_bit new_bit);
-
-static void print_usage_bug_scenario(struct held_lock *lock)
-{
+	v4l2_info(sd, "\tPulse timers' start/stop trigger:  %s\n", s);
+	v4l2_info(sd, "\tFIFO data on pulse timer overflow: %s\n",
+		  cntrl & CNTRL_R ? "not loaded" : "overflow marker");
+	v4l2_info(sd, "\tFIFO interrupt watermark:          %s\n",
+		  cntrl & CNTRL_RIC ? "not empty" : "half full or greater");
+	v4l2_info(sd, "\tLoopback mode:                     %s\n",
+		  cntrl & CNTRL_LBM ? "loopback active" : "normal receive");
+	if (cntrl & CNTRL_DMD) {
+		v4l2_info(sd, 

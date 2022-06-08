@@ -1,1 +1,2 @@
-ard include/confi
+th =
+			    txclk

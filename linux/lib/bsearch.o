@@ -1,57 +1,55 @@
-_LOCK_DEPTH))
-		return 0;
+ine void cx23885_irq_disable_all(struct cx23885_dev *dev)
+{
+	cx23885_irq_disable(dev, 0xffffffff);
+}
 
-	class_idx = class - lock_classes;
+void cx23885_irq_remove(struct cx23885_dev *dev, u32 mask)
+{
+	unsigned long flags;
+	spin_lock_irqsave(&dev->pci_irqmask_lock, flags);
 
-	if (depth) { /* we're holding locks */
-		hlock = curr->held_locks + depth - 1;
-		if (hlock->class_idx == class_idx && nest_lock) {
-			if (!references)
-				references++;
+	dev->pci_irqmask &= ~mask;
+	cx_clear(PCI_INT_MSK, mask);
 
-			if (!hlock->references)
-				hlock->references++;
+	spin_unlock_irqrestore(&dev->pci_irqmask_lock, flags);
+}
 
-			hlock->references += references;
+static u32 cx23885_irq_get_mask(struct cx23885_dev *dev)
+{
+	u32 v;
+	unsigned long flags;
+	spin_lock_irqsave(&dev->pci_irqmask_lock, flags);
 
-			/* Overflow */
-			if (DEBUG_LOCKS_WARN_ON(hlock->references < references))
-				return 0;
+	v = cx_read(PCI_INT_MSK);
 
-			return 2;
-		}
-	}
+	spin_unlock_irqrestore(&dev->pci_irqmask_lock, flags);
+	return v;
+}
 
-	hlock = curr->held_locks + depth;
-	/*
-	 * Plain impossible, we just registered it and checked it weren't no
-	 * NULL like.. I bet this mushroom I ate was good!
-	 */
-	if (DEBUG_LOCKS_WARN_ON(!class))
-		return 0;
-	hlock->class_idx = class_idx;
-	hlock->acquire_ip = ip;
-	hlock->instance = lock;
-	hlock->nest_lock = nest_lock;
-	hlock->irq_context = task_irq_context(curr);
-	hlock->trylock = trylock;
-	hlock->read = read;
-	hlock->check = check;
-	hlock->hardirqs_off = !!hardirqs_off;
-	hlock->references = references;
-#ifdef CONFIG_LOCK_STAT
-	hlock->waittime_stamp = 0;
-	hlock->holdtime_stamp = lockstat_clock();
-#endif
-	hlock->pin_count = pin_count;
-
-	if (check_wait_context(curr, hlock))
-		return 0;
-
-	/* Initialize the lock usage bit */
-	if (!mark_usage(curr, hlock, check))
-		return 0;
-
-	/*
-	 * Calculate the chain hash: it's the combined hash of all the
-	 * lock keys along the dependency chain. We save the ha
+static int cx23885_risc_decode(u32 risc)
+{
+	static char *instr[16] = {
+		[RISC_SYNC    >> 28] = "sync",
+		[RISC_WRITE   >> 28] = "write",
+		[RISC_WRITEC  >> 28] = "writec",
+		[RISC_READ    >> 28] = "read",
+		[RISC_READC   >> 28] = "readc",
+		[RISC_JUMP    >> 28] = "jump",
+		[RISC_SKIP    >> 28] = "skip",
+		[RISC_WRITERM >> 28] = "writerm",
+		[RISC_WRITECM >> 28] = "writecm",
+		[RISC_WRITECR >> 28] = "writecr",
+	};
+	static int incr[16] = {
+		[RISC_WRITE   >> 28] = 3,
+		[RISC_JUMP    >> 28] = 3,
+		[RISC_SKIP    >> 28] = 1,
+		[RISC_SYNC    >> 28] = 1,
+		[RISC_WRITERM >> 28] = 3,
+		[RISC_WRITECM >> 28] = 3,
+		[RISC_WRITECR >> 28] = 4,
+	};
+	static char *bits[] = {
+		"12",   "13",   "14",   "resync",
+		"cnt0", "cnt1", "18",   "19",
+		"20",   "21",   

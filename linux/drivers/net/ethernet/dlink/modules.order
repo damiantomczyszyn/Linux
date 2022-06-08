@@ -1,4 +1,2 @@
-) \
-  include/acpi/acpi_io.h \
-  include/linux/io.h \
-    $(wildcard inclu
+.duty_cycle = 25,      /* 25 %   - RC-5 carrier */
+	.invert_level = false,

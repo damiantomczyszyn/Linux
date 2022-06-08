@@ -1,2 +1,4 @@
-UMA) \
-    $(wildcard include/c
+TRL, reg);
+	}
+
+	/* Set VIDC pin

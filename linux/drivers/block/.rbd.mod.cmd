@@ -1,3 +1,3 @@
-ldcard include/config/PCI_MMCONFIG) \
-    $(wildcard include/config/ACPI_APEI_GHES) \
-    $
+reg_dma_ctl;
+	u32                        reg_lngth;
+	u32                        reg_hw_sop_

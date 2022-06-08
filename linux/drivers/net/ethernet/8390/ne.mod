@@ -1,2 +1,2 @@
-TION) \
-  arch/x86/include/asm/p
+drivers/net/ethernet/8390/ne.o
+

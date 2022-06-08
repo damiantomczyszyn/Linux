@@ -1,1 +1,6 @@
-cmd_drivers/media/radio/radio-mr800.ko := ld -r -m elf_i386 --build-id=sha1  -T scripts/module.lds -o drivers/media/radio/radio-mr800.ko drivers/media/radio/radio-mr800.o drivers/media/radio/radio-mr800.mod.o;  true
+sm/atomic64_32.h \
+  include/linux/atomic/atomic-arch-fallback.h \
+    $(wildcard include/config/GENERIC_ATOMIC64) \
+  include/linux/atomic/atomic-long.h \
+  include/linux/atomic/atomic-instrumented.h \
+  include/lin

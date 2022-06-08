@@ -1,1 +1,1 @@
-config/ACPI_HOTPLUG_IOAPIC)
+	v4l2_info(sd, "\tFIFO serv

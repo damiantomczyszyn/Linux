@@ -1,2 +1,2 @@
- $(wildcard include/config/SLOB) \
-  include/l
+e        *video_dev;
+	struct video_device     

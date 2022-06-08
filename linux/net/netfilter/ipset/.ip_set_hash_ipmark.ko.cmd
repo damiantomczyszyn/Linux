@@ -1,8 +1,15 @@
-p_next_lockchain(long i);
-unsigned long lock_chain_count(void);
-extern unsigned long nr_stack_trace_entries;
+t),
+	       current->pid, current->comm);
 
-extern unsigned int nr_hardirq_chains;
-extern unsigned int nr_softirq_chains;
-extern unsigned int nr_process_chains;
-extern unsigned i
+	debug_show_held_locks(current);
+	dump_stack();
+	add_taint(TAINT_WARN, LOCKDEP_STILL_OK);
+}
+EXPORT_SYMBOL_GPL(__cant_migrate);
+#endif
+#endif
+
+#ifdef CONFIG_MAGIC_SYSRQ
+void normalize_rt_tasks(void)
+{
+	

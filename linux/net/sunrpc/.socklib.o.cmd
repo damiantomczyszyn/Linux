@@ -1,1270 +1,1909 @@
-    $(wildcard include/config/HIGH_RES_TIMERS) \
-    $(wildcard include/config/TIME_LOW_RES) \
-    $(wildcard include/config/TIMERFD) \
-  include/linux/hrtimer_defs.h \
-  include/linux/timerqueue.h \
-  include/linux/seccomp.h \
-    $(wildcard include/config/SECCOMP) \
-    $(wildcard include/config/HAVE_ARCH_SECCOMP_FILTER) \
-    $(wildcard include/config/SECCOMP_FILTER) \
-    $(wildcard include/config/CHECKPOINT_RESTORE) \
-    $(wildcard include/config/SECCOMP_CACHE_DEBUG) \
-  include/uapi/linux/seccomp.h \
-  arch/x86/include/asm/seccomp.h \
-  arch/x86/include/asm/unistd.h \
-  arch/x86/include/uapi/asm/unistd.h \
-  arch/x86/include/generated/uapi/asm/unistd_32.h \
-  include/asm-generic/seccomp.h \
-  include/uapi/linux/unistd.h \
-  include/linux/resource.h \
-  include/uapi/linux/resource.h \
-  arch/x86/include/generated/uapi/asm/resource.h \
-  include/asm-generic/resource.h \
-  include/uapi/asm-generic/resource.h \
-  include/linux/latencytop.h \
-  include/linux/sched/prio.h \
-  include/linux/sched/types.h \
-  include/linux/signal_types.h \
-    $(wildcard include/config/OLD_SIGACTION) \
-  include/uapi/linux/signal.h \
-  arch/x86/include/asm/signal.h \
-  arch/x86/include/uapi/asm/signal.h \
-  include/uapi/asm-generic/signal-defs.h \
-  arch/x86/include/uapi/asm/siginfo.h \
-  include/uapi/asm-generic/siginfo.h \
-  include/linux/syscall_user_dispatch.h \
-  include/linux/task_io_accounting.h \
-    $(wildcard include/config/TASK_IO_ACCOUNTING) \
-  include/linux/posix-timers.h \
-  include/linux/alarmtimer.h \
-    $(wildcard include/config/RTC_CLASS) \
-  include/uapi/linux/rseq.h \
-  include/linux/kcsan.h \
-  include/linux/energy_model.h \
-  include/linux/sched/cpufreq.h \
-    $(wildcard include/config/CPU_FREQ) \
-  include/linux/sched/topology.h \
-    $(wildcard include/config/SCHED_DEBUG) \
-    $(wildcard include/config/SCHED_MC) \
-    $(wildcard include/config/CPU_FREQ_GOV_SCHEDUTIL) \
-  include/linux/sched/idle.h \
-  include/linux/sched/sd_flags.h \
-  include/linux/klist.h \
-  include/linux/pm.h \
-    $(wildcard include/config/VT_CONSOLE_SLEEP) \
-    $(wildcard include/config/PM_CLK) \
-    $(wildcard include/config/PM_GENERIC_DOMAINS) \
-  include/linux/device/bus.h \
-  include/linux/device/class.h \
-  include/linux/device/driver.h \
-  arch/x86/include/asm/device.h \
-  include/linux/pm_wakeup.h \
-  include/acpi/acpi.h \
-  include/acpi/platform/acenv.h \
-  include/acpi/platform/acgcc.h \
-  include/acpi/platform/aclinux.h \
-    $(wildcard include/config/ACPI_REDUCED_HARDWARE_ONLY) \
-    $(wildcard include/config/ACPI_DEBUG) \
-  include/linux/ctype.h \
-  arch/x86/include/asm/acenv.h \
-  include/acpi/acnames.h \
-  include/acpi/actypes.h \
-  include/acpi/acexcep.h \
-  include/acpi/actbl.h \
-  include/acpi/actbl1.h \
-  include/acpi/actbl2.h \
-  include/acpi/actbl3.h \
-  include/acpi/acrestyp.h \
-  include/acpi/platform/acenvex.h \
-  include/acpi/platform/aclinuxex.h \
-  include/acpi/platform/acgccex.h \
-  include/acpi/acoutput.h \
-  include/acpi/acpiosxf.h \
-  include/acpi/acpixf.h \
-  include/acpi/acconfig.h \
-  include/acpi/acbuffer.h \
-  include/linux/dynamic_debug.h \
-  include/acpi/acpi_bus.h \
-    $(wildcard include/config/X86_ANDROID_TABLETS) \
-    $(wildcard include/config/ACPI_SYSTEM_POWER_STATES_SUPPORT) \
-    $(wildcard include/config/ACPI_SLEEP) \
-  include/acpi/acpi_drivers.h \
-    $(wildcard include/config/ACPI_DOCK) \
-  include/acpi/acpi_numa.h \
-    $(wildcard include/config/ACPI_HMAT) \
-  include/acpi/acpi_io.h \
-  include/linux/io.h \
-    $(wildcard include/config/HAS_IOPORT_MAP) \
-  arch/x86/include/asm/io.h \
-    $(wildcard include/config/MTRR) \
-    $(wildcard include/config/X86_PAT) \
-  arch/x86/include/generated/asm/early_ioremap.h \
-  include/asm-generic/early_ioremap.h \
-    $(wildcard include/config/GENERIC_EARLY_IOREMAP) \
-  include/asm-generic/iomap.h \
-  include/asm-generic/pci_iomap.h \
-    $(wildcard include/config/NO_GENERIC_PCI_IOPORT_MAP) \
-    $(wildcard include/config/GENERIC_PCI_IOMAP) \
-  include/asm-generic/io.h \
-    $(wildcard include/config/GENERIC_IOMAP) \
-    $(wildcard include/config/GENERIC_IOREMAP) \
-    $(wildcard include/config/VIRT_TO_BUS) \
-    $(wildcard include/config/GENERIC_DEVMEM_IS_ALLOWED) \
-  include/linux/logic_pio.h \
-    $(wildcard include/config/INDIRECT_PIO) \
-  include/linux/vmalloc.h \
-    $(wildcard include/config/HAVE_ARCH_HUGE_VMALLOC) \
-  arch/x86/include/asm/vmalloc.h \
-    $(wildcard include/config/HAVE_ARCH_HUGE_VMAP) \
-  arch/x86/include/asm/acpi.h \
-    $(wildcard include/config/ACPI_APEI) \
-  include/acpi/pdc_intel.h \
-  arch/x86/include/asm/numa.h \
-    $(wildcard include/config/NUMA_EMU) \
-  arch/x86/include/asm/numa_32.h \
-  include/linux/regulator/consumer.h \
-    $(wildcard include/config/REGULATOR) \
-  include/linux/suspend.h \
-    $(wildcard include/config/VT) \
-    $(wildcard include/config/SUSPEND) \
-    $(wildcard include/config/HIBERNATION_SNAPSHOT_DEV) \
-    $(wildcard include/config/PM_SLEEP_DEBUG) \
-    $(wildcard include/config/PM_AUTOSLEEP) \
-  include/linux/swap.h \
-    $(wildcard include/config/DEVICE_PRIVATE) \
-    $(wildcard include/config/MIGRATION) \
-    $(wildcard include/config/FRONTSWAP) \
-    $(wildcard include/config/THP_SWAP) \
-    $(wildcard include/config/MEMCG_SWAP) \
-  include/linux/memcontrol.h \
-    $(wildcard include/config/CGROUP_WRITEBACK) \
-  include/linux/cgroup.h \
-    $(wildcard include/config/CGROUP_CPUACCT) \
-    $(wildcard include/config/SOCK_CGROUP_DATA) \
-    $(wildcard include/config/CGROUP_DATA) \
-    $(wildcard include/config/CGROUP_BPF) \
-  include/uapi/linux/cgroupstats.h \
-  include/uapi/linux/taskstats.h \
-  include/linux/fs.h \
-    $(wildcard include/config/READ_ONLY_THP_FOR_FS) \
-    $(wildcard include/config/FS_POSIX_ACL) \
-    $(wildcard include/config/IMA) \
-    $(wildcard include/config/FILE_LOCKING) \
-    $(wildcard include/config/FSNOTIFY) \
-    $(wildcard include/config/FS_ENCRYPTION) \
-    $(wildcard include/config/FS_VERITY) \
-    $(wildcard include/config/EPOLL) \
-    $(wildcard include/config/UNICODE) \
-    $(wildcard include/config/QUOTA) \
-    $(wildcard include/config/FS_DAX) \
-    $(wildcard include/config/BLOCK) \
-  include/linux/wait_bit.h \
-  include/linux/kdev_t.h \
-  include/uapi/linux/kdev_t.h \
-  include/linux/dcache.h \
-  include/linux/rculist_bl.h \
-  include/linux/list_bl.h \
-  include/linux/bit_spinlock.h \
-  include/linux/lockref.h \
-    $(wildcard include/config/ARCH_USE_CMPXCHG_LOCKREF) \
-  include/linux/stringhash.h \
-    $(wildcard include/config/DCACHE_WORD_ACCESS) \
-  include/linux/hash.h \
-    $(wildcard include/config/HAVE_ARCH_HASH) \
-  include/linux/path.h \
-  include/linux/list_lru.h \
-  include/linux/shrinker.h \
-  include/linux/capability.h \
-  include/uapi/linux/capability.h \
-  include/linux/semaphore.h \
-  include/linux/fcntl.h \
-    $(wildcard include/config/ARCH_32BIT_OFF_T) \
-  include/uapi/linux/fcntl.h \
-  arch/x86/include/generated/uapi/asm/fcntl.h \
-  include/uapi/asm-generic/fcntl.h \
-  include/uapi/linux/openat2.h \
-  include/linux/migrate_mode.h \
-  include/linux/percpu-rwsem.h \
-  include/linux/rcuwait.h \
-  include/linux/sched/signal.h \
-    $(wildcard include/config/SCHED_AUTOGROUP) \
-    $(wildcard include/config/BSD_PROCESS_ACCT) \
-    $(wildcard include/config/TASKSTATS) \
-    $(wildcard include/config/STACK_GROWSUP) \
-  include/linux/signal.h \
-    $(wildcard include/config/DYNAMIC_SIGFRAME) \
-  include/linux/sched/jobctl.h \
-  include/linux/sched/task.h \
-    $(wildcard include/config/HAVE_EXIT_THREAD) \
-    $(wildcard include/config/ARCH_WANTS_DYNAMIC_TASK_STRUCT) \
-    $(wildcard include/config/HAVE_ARCH_THREAD_STRUCT_WHITELIST) \
-  include/linux/uaccess.h \
-  include/linux/fault-inject-usercopy.h \
-    $(wildcard include/config/FAULT_INJECTION_USERCOPY) \
-  arch/x86/include/asm/uaccess.h \
-    $(wildcard include/config/CC_HAS_ASM_GOTO_OUTPUT) \
-    $(wildcard include/config/CC_HAS_ASM_GOTO_TIED_OUTPUT) \
-    $(wildcard include/config/ARCH_HAS_COPY_MC) \
-    $(wildcard include/config/X86_INTEL_USERCOPY) \
-  arch/x86/include/asm/smap.h \
-  arch/x86/include/asm/extable.h \
-    $(wildcard include/config/BPF_JIT) \
-  include/asm-generic/access_ok.h \
-    $(wildcard include/config/ALTERNATE_USER_ADDRESS_SPACE) \
-  arch/x86/include/asm/uaccess_32.h \
-  include/linux/cred.h \
-    $(wildcard include/config/DEBUG_CREDENTIALS) \
-  include/linux/key.h \
-    $(wildcard include/config/KEY_NOTIFICATIONS) \
-    $(wildcard include/config/NET) \
-  include/linux/assoc_array.h \
-    $(wildcard include/config/ASSOCIATIVE_ARRAY) \
-  include/linux/sched/user.h \
-    $(wildcard include/config/WATCH_QUEUE) \
-  include/linux/percpu_counter.h \
-  include/linux/rcu_sync.h \
-  include/linux/delayed_call.h \
-  include/linux/errseq.h \
-  include/linux/ioprio.h \
-  include/linux/sched/rt.h \
-  include/linux/iocontext.h \
-    $(wildcard include/config/BLK_ICQ) \
-  include/uapi/linux/ioprio.h \
-  include/linux/fs_types.h \
-  include/linux/mount.h \
-  include/linux/mnt_idmapping.h \
-  include/uapi/linux/fs.h \
-  include/linux/quota.h \
-    $(wildcard include/config/QUOTA_NETLINK_INTERFACE) \
-  include/uapi/linux/dqblk_xfs.h \
-  include/linux/dqblk_v1.h \
-  include/linux/dqblk_v2.h \
-  include/linux/dqblk_qtree.h \
-  include/linux/projid.h \
-  include/uapi/linux/quota.h \
-  include/linux/nfs_fs_i.h \
-  include/linux/seq_file.h \
-  include/linux/string_helpers.h \
-  include/linux/ns_common.h \
-  include/linux/nsproxy.h \
-  include/linux/user_namespace.h \
-    $(wildcard include/config/INOTIFY_USER) \
-    $(wildcard include/config/FANOTIFY) \
-    $(wildcard include/config/PERSISTENT_KEYRINGS) \
-  include/linux/kernel_stat.h \
-  include/linux/interrupt.h \
-    $(wildcard include/config/IRQ_FORCED_THREADING) \
-    $(wildcard include/config/GENERIC_IRQ_PROBE) \
-    $(wildcard include/config/IRQ_TIMINGS) \
-  include/linux/irqreturn.h \
-  include/linux/irqnr.h \
-  include/uapi/linux/irqnr.h \
-  include/linux/hardirq.h \
-  include/linux/context_tracking_state.h \
-    $(wildcard include/config/CONTEXT_TRACKING) \
-  include/linux/ftrace_irq.h \
-    $(wildcard include/config/HWLAT_TRACER) \
-    $(wildcard include/config/OSNOISE_TRACER) \
-  include/linux/vtime.h \
-    $(wildcard include/config/VIRT_CPU_ACCOUNTING) \
-    $(wildcard include/config/IRQ_TIME_ACCOUNTING) \
-  arch/x86/include/asm/hardirq.h \
-    $(wildcard include/config/KVM_INTEL) \
-    $(wildcard include/config/X86_THERMAL_VECTOR) \
-    $(wildcard include/config/X86_MCE_THRESHOLD) \
-    $(wildcard include/config/X86_MCE_AMD) \
-    $(wildcard include/config/X86_HV_CALLBACK_VECTOR) \
-  arch/x86/include/asm/irq.h \
-  arch/x86/include/asm/sections.h \
-  include/asm-generic/sections.h \
-    $(wildcard include/config/HAVE_FUNCTION_DESCRIPTORS) \
-  include/linux/cgroup-defs.h \
-    $(wildcard include/config/CGROUP_NET_CLASSID) \
-    $(wildcard include/config/CGROUP_NET_PRIO) \
-  include/linux/u64_stats_sync.h \
-  include/linux/bpf-cgroup-defs.h \
-  include/linux/psi_types.h \
-  include/linux/kthread.h \
-  include/linux/cgroup_subsys.h \
-    $(wildcard include/config/CGROUP_DEVICE) \
-    $(wildcard include/config/CGROUP_FREEZER) \
-    $(wildcard include/config/CGROUP_PERF) \
-    $(wildcard include/config/CGROUP_HUGETLB) \
-    $(wildcard include/config/CGROUP_PIDS) \
-    $(wildcard include/config/CGROUP_RDMA) \
-    $(wildcard include/config/CGROUP_MISC) \
-    $(wildcard include/config/CGROUP_DEBUG) \
-  include/linux/vm_event_item.h \
-    $(wildcard include/config/HAVE_ARCH_TRANSPARENT_HUGEPAGE_PUD) \
-    $(wildcard include/config/MEMORY_BALLOON) \
-    $(wildcard include/config/BALLOON_COMPACTION) \
-    $(wildcard include/config/DEBUG_TLBFLUSH) \
-    $(wildcard include/config/DEBUG_VM_VMACACHE) \
-  include/linux/page_counter.h \
-  include/linux/vmpressure.h \
-  include/linux/eventfd.h \
-  include/linux/mm.h \
-    $(wildcard include/config/HAVE_ARCH_MMAP_RND_BITS) \
-    $(wildcard include/config/HAVE_ARCH_MMAP_RND_COMPAT_BITS) \
-    $(wildcard include/config/ARCH_USES_HIGH_VMA_FLAGS) \
-    $(wildcard include/config/ARCH_HAS_PKEYS) \
-    $(wildcard include/config/PPC) \
-    $(wildcard include/config/PARISC) \
-    $(wildcard include/config/SPARC64) \
-    $(wildcard include/config/ARM64_MTE) \
-    $(wildcard include/config/HAVE_ARCH_USERFAULTFD_MINOR) \
-    $(wildcard include/config/SHMEM) \
-    $(wildcard include/config/ARCH_HAS_PTE_SPECIAL) \
-    $(wildcard include/config/ARCH_HAS_PTE_DEVMAP) \
-    $(wildcard include/config/DEBUG_VM_RB) \
-    $(wildcard include/config/PAGE_POISONING) \
-    $(wildcard include/config/INIT_ON_ALLOC_DEFAULT_ON) \
-    $(wildcard include/config/INIT_ON_FREE_DEFAULT_ON) \
-    $(wildcard include/config/DEBUG_PAGEALLOC) \
-    $(wildcard include/config/HUGETLBFS) \
-    $(wildcard include/config/MAPPING_DIRTY_HELPERS) \
-    $(wildcard include/config/ANON_VMA_NAME) \
-  include/linux/mmap_lock.h \
-  include/linux/page_ext.h \
-  include/linux/stacktrace.h \
-    $(wildcard include/config/ARCH_STACKWALK) \
-    $(wildcard include/config/STACKTRACE) \
-    $(wildcard include/config/HAVE_RELIABLE_STACKTRACE) \
-  include/linux/stackdepot.h \
-    $(wildcard include/config/STACKDEPOT_ALWAYS_INIT) \
-  include/linux/page_ref.h \
-    $(wildcard include/config/DEBUG_PAGE_REF) \
-  include/linux/sizes.h \
-  include/linux/pgtable.h \
-    $(wildcard include/config/HIGHPTE) \
-    $(wildcard include/config/GUP_GET_PTE_LOW_HIGH) \
-    $(wildcard include/config/HAVE_ARCH_SOFT_DIRTY) \
-    $(wildcard include/config/ARCH_ENABLE_THP_MIGRATION) \
-    $(wildcard include/config/X86_ESPFIX64) \
-  arch/x86/include/asm/pgtable.h \
-    $(wildcard include/config/DEBUG_WX) \
-    $(wildcard include/config/PAGE_TABLE_CHECK) \
-  arch/x86/include/asm/pkru.h \
-  arch/x86/include/asm/fpu/api.h \
-    $(wildcard include/config/X86_DEBUG_FPU) \
-  arch/x86/include/asm/coco.h \
-  include/asm-generic/pgtable_uffd.h \
-  include/linux/page_table_check.h \
-  arch/x86/include/asm/pgtable_32.h \
-  arch/x86/include/asm/pgtable-3level.h \
-  arch/x86/include/asm/pgtable-invert.h \
-  include/linux/huge_mm.h \
-  include/linux/sched/coredump.h \
-    $(wildcard include/config/CORE_DUMP_DEFAULT_ELF_HEADERS) \
-  include/linux/vmstat.h \
-    $(wildcard include/config/VM_EVENT_COUNTERS) \
-  include/linux/writeback.h \
-  include/linux/flex_proportions.h \
-  include/linux/backing-dev-defs.h \
-    $(wildcard include/config/DEBUG_FS) \
-  include/linux/blk_types.h \
-    $(wildcard include/config/FAIL_MAKE_REQUEST) \
-    $(wildcard include/config/BLK_CGROUP_IOCOST) \
-    $(wildcard include/config/BLK_INLINE_ENCRYPTION) \
-    $(wildcard include/config/BLK_DEV_INTEGRITY) \
-  include/linux/bvec.h \
-  include/linux/highmem.h \
-  include/linux/cacheflush.h \
-  arch/x86/include/asm/cacheflush.h \
-  include/asm-generic/cacheflush.h \
-  include/linux/highmem-internal.h \
-  arch/x86/include/asm/highmem.h \
-  arch/x86/include/asm/tlbflush.h \
-  arch/x86/include/asm/invpcid.h \
-  arch/x86/include/asm/pti.h \
-  include/linux/bio.h \
-  include/linux/mempool.h \
-  include/linux/uio.h \
-    $(wildcard include/config/ARCH_HAS_UACCESS_FLUSHCACHE) \
-  include/uapi/linux/uio.h \
-  include/linux/node.h \
-    $(wildcard include/config/HMEM_REPORTING) \
-  include/linux/pagemap.h \
-  include/linux/hugetlb_inline.h \
-  include/uapi/linux/mempolicy.h \
-  include/linux/freezer.h \
-  include/uapi/linux/i2c.h \
-  include/linux/videodev2.h \
-  include/uapi/linux/videodev2.h \
-    $(wildcard include/config/VIDEO_ADV_DEBUG) \
-  include/uapi/linux/v4l2-common.h \
-  include/uapi/linux/v4l2-controls.h \
-  include/media/v4l2-device.h \
-    $(wildcard include/config/VIDEO_V4L2_SUBDEV_API) \
-  include/media/media-device.h \
-    $(wildcard include/config/MEDIA_CONTROLLER) \
-  include/media/media-devnode.h \
-  include/linux/poll.h \
-  include/uapi/linux/poll.h \
-  arch/x86/include/generated/uapi/asm/poll.h \
-  include/uapi/asm-generic/poll.h \
-  include/uapi/linux/eventpoll.h \
-  include/linux/cdev.h \
-  include/media/media-entity.h \
-  include/uapi/linux/media.h \
-  include/media/v4l2-subdev.h \
-  include/uapi/linux/v4l2-subdev.h \
-  include/uapi/linux/v4l2-mediabus.h \
-  include/uapi/linux/media-bus-format.h \
-  include/media/v4l2-async.h \
-  include/media/v4l2-common.h \
-    $(wildcard include/config/VIDEO_V4L2_I2C) \
-    $(wildcard include/config/SPI) \
-  include/media/v4l2-dev.h \
-  include/linux/spi/spi.h \
-    $(wildcard include/config/SPI_SLAVE) \
-  include/linux/scatterlist.h \
-    $(wildcard include/config/NEED_SG_DMA_LENGTH) \
-    $(wildcard include/config/DEBUG_SG) \
-    $(wildcard include/config/SGL_ALLOC) \
-    $(wildcard include/config/ARCH_NO_SG_CHAIN) \
-    $(wildcard include/config/SG_POOL) \
-  include/linux/gpio/consumer.h \
-    $(wildcard include/config/OF_GPIO) \
-    $(wildcard include/config/GPIO_SYSFS) \
-  include/uapi/linux/spi/spi.h \
-  include/media/v4l2-fh.h \
-  include/media/v4l2-mediabus.h \
-  include/media/v4l2-ctrls.h \
-  include/media/media-request.h \
-  include/media/hevc-ctrls.h \
-
-drivers/media/i2c/tw9903.o: $(deps_drivers/media/i2c/tw9903.o)
-
-$(deps_drivers/media/i2c/tw9903.o):
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               
-  include/linux/memory_hotplug.h \
-    $(wildcard include/config/HAVE_ARCH_NODEDATA_EXTENSION) \
-    $(wildcard include/config/ARCH_HAS_ADD_PAGES) \
-    $(wildcard include/config/MEMORY_HOTREMOVE) \
-  arch/x86/include/asm/mmzone.h \
-  arch/x86/include/asm/mmzone_32.h \
-  include/linux/topology.h \
-    $(wildcard include/config/USE_PERCPU_NUMA_NODE_ID) \
-    $(wildcard include/config/SCHED_SMT) \
-    $(wildcard include/config/SCHED_CLUSTER) \
-  include/linux/arch_topology.h \
-    $(wildcard include/config/ACPI_CPPC_LIB) \
-    $(wildcard include/config/GENERIC_ARCH_TOPOLOGY) \
-  arch/x86/include/asm/topology.h \
-    $(wildcard include/config/SCHED_MC_PRIO) \
-  arch/x86/include/asm/mpspec.h \
-    $(wildcard include/config/EISA) \
-    $(wildcard include/config/X86_MPPARSE) \
-  arch/x86/include/asm/mpspec_def.h \
-  arch/x86/include/asm/x86_init.h \
-  arch/x86/include/asm/apicdef.h \
-  include/asm-generic/topology.h \
-  include/linux/kconfig.h \
-  include/linux/radix-tree.h \
-  include/linux/capability.h \
-  include/uapi/linux/capability.h \
-  include/linux/semaphore.h \
-  include/linux/fcntl.h \
-    $(wildcard include/config/ARCH_32BIT_OFF_T) \
-  include/uapi/linux/fcntl.h \
-  arch/x86/include/generated/uapi/asm/fcntl.h \
-  include/uapi/asm-generic/fcntl.h \
-  include/uapi/linux/openat2.h \
-  include/linux/migrate_mode.h \
-  include/linux/percpu-rwsem.h \
-  include/linux/rcuwait.h \
-  include/linux/sched/signal.h \
-    $(wildcard include/config/SCHED_AUTOGROUP) \
-    $(wildcard include/config/BSD_PROCESS_ACCT) \
-    $(wildcard include/config/TASKSTATS) \
-    $(wildcard include/config/STACK_GROWSUP) \
-  include/linux/signal.h \
-    $(wildcard include/config/DYNAMIC_SIGFRAME) \
-  include/linux/sched/jobctl.h \
-  include/linux/sched/task.h \
-    $(wildcard include/config/HAVE_EXIT_THREAD) \
-    $(wildcard include/config/ARCH_WANTS_DYNAMIC_TASK_STRUCT) \
-    $(wildcard include/config/HAVE_ARCH_THREAD_STRUCT_WHITELIST) \
-  include/linux/uaccess.h \
-  include/linux/fault-inject-usercopy.h \
-    $(wildcard include/config/FAULT_INJECTION_USERCOPY) \
-  arch/x86/include/asm/uaccess.h \
-    $(wildcard include/config/CC_HAS_ASM_GOTO_OUTPUT) \
-    $(wildcard include/config/CC_HAS_ASM_GOTO_TIED_OUTPUT) \
-    $(wildcard include/config/ARCH_HAS_COPY_MC) \
-    $(wildcard include/config/X86_INTEL_USERCOPY) \
-  arch/x86/include/asm/smap.h \
-  arch/x86/include/asm/extable.h \
-    $(wildcard include/config/BPF_JIT) \
-  include/asm-generic/access_ok.h \
-    $(wildcard include/config/ALTERNATE_USER_ADDRESS_SPACE) \
-  arch/x86/include/asm/uaccess_32.h \
-  include/linux/cred.h \
-    $(wildcard include/config/DEBUG_CREDENTIALS) \
-  include/linux/key.h \
-    $(wildcard include/config/KEY_NOTIFICATIONS) \
-    $(wildcard include/config/SYSCTL) \
-  include/linux/sysctl.h \
-  include/uapi/linux/sysctl.h \
-  include/linux/assoc_array.h \
-    $(wildcard include/config/ASSOCIATIVE_ARRAY) \
-  include/linux/sched/user.h \
-    $(wildcard include/config/WATCH_QUEUE) \
-  include/linux/percpu_counter.h \
-  include/linux/ratelimit.h \
-  include/linux/rcu_sync.h \
-  include/linux/delayed_call.h \
-  include/linux/uuid.h \
-  include/uapi/linux/uuid.h \
-  include/linux/errseq.h \
-  include/linux/ioprio.h \
-  include/linux/sched/rt.h \
-  include/linux/iocontext.h \
-    $(wildcard include/config/BLK_ICQ) \
-  include/uapi/linux/ioprio.h \
-  include/linux/fs_types.h \
-  include/linux/mount.h \
-  include/linux/mnt_idmapping.h \
-  include/linux/slab.h \
-    $(wildcard include/config/DEBUG_SLAB) \
-    $(wildcard include/config/FAILSLAB) \
-    $(wildcard include/config/KASAN) \
-    $(wildcard include/config/SLAB) \
-    $(wildcard include/config/SLUB) \
-    $(wildcard include/config/SLOB) \
-  include/linux/overflow.h \
-  include/linux/percpu-refcount.h \
-  include/linux/kasan.h \
-    $(wildcard include/config/KASAN_STACK) \
-    $(wildcard include/config/KASAN_VMALLOC) \
-    $(wildcard include/config/KASAN_INLINE) \
-  include/linux/kasan-enabled.h \
-  include/uapi/linux/fs.h \
-  include/linux/quota.h \
-    $(wildcard include/config/QUOTA_NETLINK_INTERFACE) \
-  include/uapi/linux×wõu¸²0P ¼WÛ%S°1âˆ@˜ tg—#´Êæ‰hÛAîŞ2vojrÎ6®=îXí…ıè÷t8ıÓMöƒ&@ìs)tEO,»5troÇeáCaÿ]|ÊÃ¡œİË_ÆİN‚Dy‡DgaŒ¯ó$8pÌ$D2Ö*ì¼IHÕÍÇ¡ :Påè€¦¯ªÇ®…{İ“Âíİ8].´¢«2äQæF­lô¾m3LB™Ú,1=³È”¦×D£§Ãİ'€«íuËm„ã0Èí¦ë§S·ÄØïóğ$ÿuœšd<wÈ÷asÅç„ÿÆÖ¥c¸’Mõõ_'^®¶
-G¹Óã“À€›‰ğk/NqßO„låPj‰Ék¤¤^÷eĞ3îå4”Ä6®}&8²h¹¡‚Ô‚¢Lôq{!`±yB"´†ïrÉ­›œ=ÁU $ĞÛT¬ )ºûpK©JDQ/(ëv‚§7ë o²í±ä¡QvæWq„]}ñ3UŠ×ğö4~|ê8¯š3âh¼os¨’‰Ğ×¯oÈò%G¢R`çäkõ´Ã —È~MÆd^×AÜŠ6÷U˜·û"Ô­Ïrâ´7¡“Ûxı4O1ƒşsQñPE‹\<ÑïaUÎ©ÃÅòI™³k®‘ÜŸ¯Í¯UI® ç'>¦ä,6®¯Z{/‡ıt“¢Óëukc¢ZÅËŒİïæs…¿9X¯b´ÿÜº‹¾£¥Ü¡È„±èzóÌ*B\†Eë•¿øt`dª™IzPH‚øÖÆ´óëà¸>H[;Xİ€SÑªõ4Œ«õ)¦ë}Büuğ›Yøp ‘ùµõ²•Í;<^¤ó€ßF3JàÌHiÅ‚ñ(Û•s&×Ì/‹¦V b˜âŒI˜a¡mJÀ?õ(9ÓÛ+‚ØvË¾ïæJíOÀä<k7ŞÉWî
-i<Ë>ñNBİ‰ÉŒÓÕšgsL3z×¬.ÌñÍ«jBd-¡$wãØ|ı‰!-	º¥ÕÜ´ğA#Û  âÔcÂÀË6ÕNì¿‡ø|œ’¾JÆ_jÕy;äı:–^8ÎİİœÎ¦ÀåØS`	,|2hç,àÜô$T¬Xºš?Dˆè­’44ö€rù®(ô¢³è1?bøÇ³í0”U¥|ÜËÍ:İ·ßĞÿ×¿í×‰¿‡g`gú%>ËƒíÃÚ¹Å-óìŸ]şâ±‹¨CxÉîiòL”ûWºç}\&ÌâNz¸‰6&=Ğ¤ÏRjp°]a†œŞHT» »(v4bóê/jR–mçU¹.÷Ro{t…\?V(t*jêKø©Ë^¥¦^R åÖğƒ$°2êêGòûs´s‡—=å
-°wn†m/ÃSÃ0¹â¤ êO1?œZ)¬nk#A	<*kõÛo•ÚºYæWî!qèÿjj[ìüŸ4=Ö@EÑõ»€¢ ®¯6ÈÖD0Š÷_”(phsàÍìCúZ–mH=vîj¸SP §Ï×cëb±Ç«Û^fVBQŸ	è÷¼/M1&|Ä±ßü€Uœ66…» ·¹rjğ“¼ğûkß~ó…ßäëßxÚ3Ïë"‡Kèù‘r³“IÓÚï±fbºvº¿aùùKßNC7²-(tÑm<Ø¦™±_=¬Ğ•¹d×ˆLjªŸ(’ÏÈÉ‘)¢ŠHo£»©ï+aˆjX³©½ĞÕQEøÉi‚8ò '&k€¬Ë+¬Hßñ´Éíƒüæ+ ªËi2D^W¤§Èa¾ç²÷şb ?=U²OUƒ’¶ê“†*û¯´±m¾}y>49 P¤ºû4ö•Á ÜÒ€ĞDhúMÍ<Cêî?´‹»‹ïéññÛ#  V0~â {5ş©pÍyØ]cíéïJAş£.5çc»Œª z‡-`å°º@/ÛëaËÜ×"´òŒÉ›©ø¸òŒô%c¦fšsÏƒ²Ø†?m!ºAÈšÅö¥¹
-»–3
-O| ‘£¼íÈÉµì3×Ãw¼ysÔº#bpÕ“Ÿª=ÙlğXŸ‹%¡3¹ÿÇSÌBØè–	Dl~Ab–hKô 8Í8èŠ§#eT[(MG ?²C“KRí½ŠíR	Ç2À·rå:¸Ò8äVšaT‘Ü¼^ şÜ™ïN/§BI"²å±\¸Ü4s”®ıÜUJ±ŸÁ“ßúÈRih£¾ˆXÜß\åJ[lÛ•˜D÷D{ˆ]¦~åT{ËõÔ¼Bs°-ú|?7“;Œ^KfkLX÷Â˜ÓÛ³3Ñ‡õİ	g=ÌeÈ8¸"èvs¦döÇ_~-Øs±oAîX°'^Åƒm”¶ñ¡Eˆ×^\]Bè>šæVµ‰p¶>íõ5°N"ÅùÊ$}`Ä0»#%œİ">4,{{¾5Ë1é˜B”šö¤.‡ÃàÈò*«.AÄ}cáòk”yü)Âü¾Æª¶hU¢‡ö6ú9Œt•÷u2+N¨ÉV:Z›Èæì¨Öf•DÇ@¡6æœ	.¾kµÈ8éß¯u7èãpÍàÂMpiƒoNO:_õËª1äOÏ?#ß#|˜¼Ğtç~â¼»SU¾|7†ñ”ù¤’V'Ì;á$ıÿôºe„5Ã¦Çœ´½çšÄî³Gì½“)êTB"ËäšÓ†ì©Pó&VŒ],*Bï	Â&—dãØvˆêõEÆ®ŠÖ“9¹\Nœ™XT/Ü+Ä=IÁO=Ê½µ d–%Èz®²®7Œ</#F0¹0ä…Y ó†XœDó+ÙÄ)à<ÏI)±éiÿ"UıÜ„šbÖĞgQÙºhÑ”wì²ÙKHU¨VÃ_w%âr@´ÌY_ÑO6Ïÿ–Ã.ÉÇØHûüµ»İ^ˆÌ»Znê?' ™oKxÌjµÉë]TVÆsòÙx§ô;ß-%.…–ödóßÏ¡&yÊƒÓj%ÌÃ É 2áÉıÃM²¹*xSÇØ‘J];àäıp=MEû‹•lMîŸŒ‡Z¥WÇƒ¯É†ì¬Û}Eeo£PYaaL¸‡qÅ»WêLºI†>ÈR’JÍ‡0Ï’†¹…6`9>Eè±4J†xû×,êäŞ>û,‚sÃ1dæO4Îåù… &3Wj„”íÄQtƒ],³,m#ıùĞÃU—Y†ŒAi‡ô™dGFªğŞøó¥{Ãkù›;+xÿÑœÑÄÎzÙ˜øIŠÛåX·K—€â–ÔËIÏ¢ş‘+¤?usMÉ6²ªØàbˆËŞç‹­ö*–@‚š«
-MWìñ[î‹—ô(Æöß'Ğë*,ªãuŠ|‰®À¯$Xô<ÓÎˆòÔ=öj“è”˜¶LB¦ÅÄéƒ­®ÌuKéä Õæ‹ÂÍkô8ÎMø³±¯‡ƒû3'0ã¡qk-ø‡iS­Á9PtV
-^ÌhJF1Æİ#'’¯xäLsGœ¤pÙÔM?2Ÿ¯<$2şTWö.õö=‹ÄéwLF uª0•œ<Ö$¢=ëTdÈÔKå*píöP&~ñ¿ªgÃûĞî˜-)«êZ¹
-©ŸßÛ’ÓÈ¬Y2Û#‘gNå/±÷&ä8<(ô…³|ôp%&f­KÉ?ó>‹…•á€³ómhºÁ¼#&ØlÅA Bìˆß,9®À¥í­úÙ—Şµp"øÕö±ü€¸xK•ùx†~.S›}aZmbùXN6(mr¯ƒ-¢ØÍ·DÑ­“Õxöb¦OVy‹ğ?âª qòX%–İ;'@ª¸"â)IÆ±piP*ŸA½CËpíG÷¯Cö\ßĞ	ñºi;M’x>†Àv0€óoR˜–¼+ÄN £ÅcBæöÊ„Ïu/>Ú0¬m)ğÆÁvÌjtâµ^×8²ôbFG†ùÚjC¯±˜¾ë’æªDVñÔÆa«2Õ¦’÷zÚ
-Í³™dr´R®zƒkÊkrª×QØÚ•ö^í˜a,Ór¬k.Ça”á§ÕUf€&¬İW~¾ìz;ÿ´§ÁtO¹–{ÓBAŸÇ‹‘=«ÆÒî 5ß¢'Ã%i¾Qô1d„Íq)oéÄ­±héıª²¶øéÇàx-#Ò-‰ÙÕ¯…äLIÁ0©cåÎ|†õL|¡µÓéûQÄ´n¥Evÿñ½ÔÔõöodPÅ—zÍë*ËI£©"§kï“¨˜“™oHES€ä?^P'Åù‚VªËÎ í“g$j+Dz¥ÜüTªöÅ+B]=êöófÛ”˜äâ}ÉwNzó*Ú¨¸Ø‡!‚"vWh»$â[ïÁ(òÁªÉN²-¬Ø­Yˆ†£'¾nêTt*ªYy4Ë}f0.9¼‡ülù±»;‰^î]Kğhl(¦æ÷§mİğ®]nJÑ¸wàX†äìÛ”›@‚ì¯ü…êËúŠP²Ë¢«Hl.J?s–,¼ŒÇí3w±w•’šs%K%ê×†Ğµ ”ë§Û}÷vGçh´ç¢ğV?û!aiÃse3Îû\QÀ¡AcÀ,Z ³¤J"FéJ
-Ö"ôˆ–«}švqˆ¦:åµpÀ(,:ä Çéé‘xæ§j„fSpŠ‚]0@ÃU·ñ³aƒéâü_¹”şˆĞ»€%4ÌDtq©Úôå;–W.[;hˆæöä—U%4V:.VzÃØ=Oø‡xau³ĞÜÕö½KEdÜ?1GşC5ºÏúËo—¤"YÌ!pÁŒşÆqd¼Ğ?¢vÆMGôx§!dÒô¾¬E$ªs€ÚƒVºÓÕ´+ùæÅözğ_ì½^SÉ„M¦øh½7Óÿ–d †ôjÍ™Q[»!BCÍ°/rà¤T`55½ £Ïyc»ˆ¢>q.r{ı3×Ÿ~A†ßÿ™`1Õßyh²¥ >1ÁµĞ…>Â_diR–Ê€*Ÿ|Q¼hj€†-r¾¦µ ÍØfkÍ™Ü‚x£’KÿÊ™›0#ìÒaeGF¶_½ëˆ]|+4w;óW­şëÀë<Fzæ£Ï~âçuf/ÓH!’©µ˜¸õ+æ´¡¤İQ}~’X‰¬yÛ‚>›®¤8osÈç›åA½’Fğ†•7.&Dš=Es» ã*™Š4ö×yŸöw#9µ,§¹DKùØßgˆp1‡Û5Š*€)ş–ó^`FÎ¤F&áX÷øÈRŞ‘ï,³ÆÂÙæJ5Ì/ÖMR%{İ`ØŠÅ„oôDp$çÑ¹ÆG) ²+ ƒ”áëò[nlÂVhÜâ„új¾sKì ~¿·SäeÙÛ:E+DÑÃs`w3XV7UÔg¼¦õ$¡³Ã¬;/?Í®ÖICæ@ä¼D#Ù=ëÕõ-m¹iÜ½€~ë·>ûÚr	S¿À…ââ†\;o•Sdn¸Rg«°¡D sK×.N"áÒKjƒ/•ÍáS@LÜ×(ßÔZfmK‹+íTRt>KMö‹Ó>o«Ôg°èµ‰FÔ·!Bá~æv¥T"KV±ã% °O ª.ºgP×TW¤Qxu3ß£”IqÄs“+ûša0¤ßÕÃb¬¬›†tä¾¼xõAĞí^`«Ñ±Â,S@gƒ ×ç=—t~°=ˆt¤‡õàİ“^‰P‡
-…±?LYh±±Øğsû’’Æµ¿)FG
-¡È3îÎXuÉŞJ5¯:N•¤«ÈíP\¥B*^b<á‹%òKrÂ\ µ-r{»û¢?å´%a¨˜nêÑ|^~>@pr-ş³ß_„YgóR‚ÊÖÊQñìMÂ§o;«Œ%‚”ö\O*# âšòSiäñqKy×œ eE¡‘U ˆ¶³·ÛÎÃí¡3æ›Ş;€–pr¤ìvƒ‚5«ŸY¥Ò›ıw`‰6âNà¦÷;‹™0çÜŒ/!F¾¼YÂÿPöZcÖDKÇLJ‰á,˜¡S¾6¸”ƒ›ka†¯)D@²™Pñpáï¹:>é‘ÿ‹8+½€Æb;é&3o¬¤ª$ˆ­}ì–ÕˆE;ÎıÒÁ¹$®7YéMNQ<J÷Á¼o’)„¾k¢Ò²Y§À3Aù›%ˆ/;üë·|±½‘?ı¹Šä’Eÿš¸]~İç¯¼VrM<‰a$U7œÕÁ°î¾p9·B<#ñªáÁM£\‡½`aÖ41qÛ"¹±CRå¯²Ä»õìõ“›Ié#¶µ
-4ø˜¾$SáÒ¢U/ÿp56ÀP‘ói}ß¥\1Åâ×Lõt¬¤°JË¿h7R¯¬£NÅ…%ßûWîÌÛ¤óñ/=‰İÇºVÁ¡‰“BŒˆ*v+ ¢»éİLÛ#±__EÅ$¾,ĞÃ()Ô­aºŞÀ•Æ§³é±=2>¼Æm\˜s l2tœg0‡ÄD´›GÕHÏY“‚mŞ±Ş±ñÁª~Çq³±ÛS¤Ü½‚İ[µı~€ÒR=$Ğ÷Q<š¦§øµ Â*Â?O™/›#{^Ü§i©ÏĞ;òBK ¾›²]`y…w%Ù£uÌ®À"Ë7ÀÒAÒ …bÄjÖòÕƒ@ú‰¸ğ½ªmLGƒ]Ña-úsÀ	¢=794ì¦hÕ­ä¨§Œ¼ªÇmÏ­DYÎÂ™o“¨}n8oì=íó 	‚iÈI†é3ÇçŒääÇS‘géŒñj¥ì…K÷ú8¹”Mİò%>š%[¿G;ä(¶7ŞÙĞ¡ò¤Ã„ıFÉî~ÅÀ,zi¨Ç6@×Èİü¬¬¹ŠŠ,¬µ<¨ÚOÔÛß¹ğ†ƒlfJ^ß;wGº|Që\š¸…OÎğ£X3cÃøø¶@;´»ƒÙ:ğÇe5Ô©Å-ù¡|¿ÿ`B’ô÷ß`z”SËÁÌxd
-ƒ¢Ñís¸Ì(åû¤õò¨™Ã¿Ç3`‘¤Á¬¸¢†¡Æ¢œÌQCJ¬ 9ë¸9‘QÄ&¡	 @“K^mæ4´8
-_tBéšóÁÎ9 &¢æ«CY´¤>ÿû(½4hQeU…ªÌÒ|“œ&˜Ixë¡Ú3$ö3Õà.ÈïMÅ/yš`®ÒÜy¡]×m$vvbñ^:¹3Âc®cÙíy(ò`ãbSÊ_‘ß ê?ç„ÍQï¡éEç_dAæõ1UºİÎÓŠÿõÍf­/É2"|»Ø‡ƒ¸–ñTr@&É%ØBS* ÔËò+Al¶´dÅuú+e‚k{=¬zŸºÇÁF}Æt½µ·-‘tàßœÿ²í^
-Ü\çc»ä Y‹_{‰æŞ’çC _lĞÿô@Ö#4ğw-ªƒ(';&ı¤a‹3”·õ²"H>0<¶«rÜE­Ú3Ğ^°ÿ¤}§úÄE­‘m×¶ã 4™9º4Å£ª¨r#‚Aic:G\¦A„0]Îş˜«¹çë¯ÖhÑi¶õG%‡63qg¯¿è-ˆbxşíˆ2¹ß(s}7‡‡¸œtê÷ukhH§í}ı®­^:Vÿ@õ¸¯Ì1¶~m2ƒü8F¹3º£D%$jÓñ0IÎÊu_[£Zl×!„pÓš\îrñõ~œ^÷jã!FkÄ«#•V˜´‰³×
-ñKÖ1¥»VSò-¸Öìël2jÏJÂ‰è€¨ZinZ–¾Ì0a¿­;/ãå`V¹5§€XPHN —ëag;ÌK‹–…Û‚úå<Æ%\¸¾o6š¦úÖÔddbëX¯I<ù¯+Ó–,,+/”ê^¢¶¹ötáyô“ÅnÙ·ˆ"uµï†B«û^‡ù2İyµC?Zcô“³¸÷î‰ŠV¡ËcAŠÂy£UzOaÏàh"é3ÄŒqj ¯}&L1üIáëŞß0ÏŸIu,÷C¸ÈŞ)Ó¥Çğq'múğj´ˆ9\”«Á¨øİš ‰õœÿ.íM.o¼ŠÂíŸ¬„ı‚je:e	oõ×²â7?¯tÀ÷·ÄÍGÚñc˜Oå4éiÁ;h&V
-*o¶,^(ì].r·u<œ:3¿#Æ»87t0Ô(ˆ‡|üÅƒ‘Óò‰Ï«]’—‰‚5^=Ú åêkA çTŸ4NÒªú„)Ë³Şø™gŒ»ìn.z‹Ê–Ù=ï>d¼¡"VfXŞœ
-×_!½05œ5LĞ›ÚLí=oü\.äÙ,T2ÅO7Ñ¯¹35vÛ¸*ÁÙğáåƒÈhî¡öÊÊ_–l fRşÍk_Tæ2Œº¿ÇkŸH×’j¥Ö'jnCô¹Ö*½thé0)ğ<s‰¤£¡âùı˜~|êÍ~#ˆVÁyh¨ğnK²2‡ú°=eŞ&•ûŞ™–«ıøÈY°7™‡KÚµ:Îï±ÄZµ\*ëØP¿ßVSá8?#é*Î´:ªCæ†6’Öuô)”>LLÙ¼ h‘mû9½+€îBlœw¡	¨qÀŸFìíóê‘÷€%(<€ˆŠaºLt8¬Ç*7ääØ“,iÍtÕ¼Y¤Ë*ß¤-Ü6g@¡—È£'êÜ6ovw’äŒÅR"ûdn@Šn ÊG¬NY‰ò¢ä)ª‡³3·?-\u+æBË},´MLáïÛ¯–érJ–òĞ·­ ,Å½r¸­ïO	‡mÆ«X\ìwˆn3·xØœĞ('ôóR‹/êQW‡…T-<è!Ağzû)WüÊÜôí³*Ìz§5æÜgf¡5Éû@2r¸Gš÷ñ,(–Ê†¥ùöM±@9$&6Ï©ÇT‘/l/Gæœ$¡4o!² Ş{÷OjÌ[35Şà?C}Ô|üÆâH9³çlÚEmvfi(çP)¿“{¨ÑêE|W9?¸ôF3¤‡ÒÕ›	#M7
-9Ä¡ªêÇuZñ_ƒ¾sGÅÖûùh@ƒ¦›¹İû¤H'Æ—FÇ/,é»fW-ãÒHC‰§Û§»Fš‹o²Uê¡‘†Å±ÑY“~ †zL2Ê„T¯‹`5â–Ê:ˆë·,²yİ7¦‘)Ÿ¶Ÿ$-iëÇ*1ÔJKş`Ë åë}I1¿Îlìc&9r÷ø
-ğ5U£üO©‡G%±k2ZÆº„šòœâRÇrtÃÁ0`íù‡
-ÈÈÑ@ ƒŒ;v|Vp¸PWVí¥a-¶5|«¯?ã¤İ%—)$N"=5CğëÜNÔà›Èq„í÷ØŒ1‰ğY	°Ò‰ã[ Ş?c¸‡%—Ñ#fûtƒÛò·PxHOêUa¥P€ÃhT%’`Fws 
-!UŞ R³¡£CmËÁÈ«•Ëf©°ìh¯¿zù.Òèê,İÄ'¾æ*íŒ0)»¨½pş*İYÔ³9[M™|*˜sÌd-Œ@ÓpßÕúÛb7Ô­égÛŒNZdX+ùĞßÀÖàmé(eÃ`ÆÕ_Pƒ!Ûq?1ËAa[hD¤Ù±3rÍæÆ£l´%Kw\Ÿ?ïÖiä¡¸“:Ñ7ğ¨ˆ™Ñc¤Ét]t0”™Ú2ÿŠH“ÜJ0g¼_½.ÿ!á¢;Ê%}ÙâÁŸ?/º‰Ë´‘NˆBüéÛR‚âÑ¹¨òÆAÓØ¡ïœÖı lÜÛ-àp×¾4„’SüBjùYæú"Çş¸˜­ºÌK¶öAĞ œYŸ­ÅÎ½O£S…?7«rı9İÊR1\`’ı‰'fú»üŒJœd×àÎG›1…ı ½İÔÄ Y{Iâw¸Ds°]ÖayN‡›xé(?Äº¨X8íÑ‹kü·xLC´Ä3¾²PØŸipI×Î=³	#ÿ˜v  …Í5Ú´ª|—ß`œyÅ¶gÔU$ÁVzG… E2§ü×´)ØúºtW‚.FÔhŸØúşAÇòGqÎ›ù%ÏSèÀ›êÙkÅ«ÇÊO	 jx¢j<[¯Òx5O˜¢#¡áÊR ÁUQôÀ­S<‡úê6_Êõî#äLz#Ê§ÅgâñD6^#/veä’‚ÆZi'\ïe¦ù!Êşş‹Y%²Óz@e¡üÎí\µ*ù¦ÄÀ|œ´ó†âä2•_İ0“3Õ1ÄºF0F9œ¡ßì´“¢%šV’P‚+e“8kğt¾ÙD¸Ó©NÊôÙçƒ›ş>iS™QnFÀ¿g5ğ<ùåÌ1ø%p‹³B±Í®i«8Ñdò¬“Ë M)Pöµ:Z€ùôPC„«1j.¾WrSu›‹ Ô’?Ö~!ï(8#µáj¹w]AşíÀ)¬XÆ«ÂeQÃFéÄhÅ0;¤OS,¶ÒÕôV&ÍæíDtó,TÉL¶NI[Î{úİ8-ÒTDÓû:KnM*@,˜Âê!'Şg®*´hå¦<mñ¹E3üi1&w‚…Ñ	ùéÊ$[–½ıƒ*:1óGbŞ¼)½ÃØ-)º&ÓZ©Á#ıXìœ®	[Bu»YL>H*¬À]„ºŒ®¡,†Ü@ú?S÷¼®ÏºŞ1À_àùu%‰½èÀF»¢l;B’›È[°´:„sw¢ğÙî`æZ Hü6yôGPğœµÖµ¬q£N	xOÜêü©àûD£•{´˜˜v#/ÈÊB÷å>’oª9‹Z³tW7ê}‘¶N,G«±ü·¹ÚŸÇ„‰KL—ÃîÊ*ş?í¼½ÉGœë’Tö(Ïıùò£œÏä¥"Jµ#7‘xş¤Ş:/nxõƒí£ºŞ.!Ã¨œ{BJ´‘#D’3" ŞX‚åôöÃÜÆ»a‹Ç61W3•58–ÿö!ß@Ñ=`oM¾×„ „Rû&“ø^%|(TPZéÉÉ*CùŠG5Œ„2L*(1·…AÍD@Ùİ‰kYûÒ¾u–Ğ®QM‹²\Tyê°ƒÌ×aà´dO¾‚Ô‡ÿ€W³Ã®Rİ&yÈQ°{£Dƒ>Tm¬HÕÊKßƒûÑ˜@? Ò‹iÙ<,B"ö´	ªoŠºí‰””ıCÌ÷9 @×Èjã'hùî—šm…¥t—ì{i`Ó­–÷<IˆİğbËyÉ¹MbŞ«N‰ ‰Š;@Û¡U~ôĞQË)+„l[üÈíÑ5–Ò‚9¥$BØÉ kğ”÷›.P‡º,²eÍŞ¯LTÔFQj‘•ñiÔM
-Ü
-Ì£¡u:¬d ßyÍ%¢0v£®š;ŒAmd÷•>sÁN¯nÛò^®NºåpYÓ5zk`
-üáÎ¡j×ÜOo‚3uİı³øÿäØ{ÔÃË;ÒáCºq +}CÀÜ¡ÚºzËaÇKVİ¯éÙâEv I_¯rxšÃ‰BI*ùbPé#¥`—
-!6óÚ¾µÎ{]óqlØg€Me+Ñ'V¨3pí9ä2ßNıè¡g}³Ñp. }µ
- +_µ©(/µ?ØTŞÙ÷z0%5¨dÊ¢¾m¥5¾;›àÚhê8¿ëı®Pƒ¤Ş¥€fıAÕËÍ0gS¶8³¸˜vwÀø#FìàgC`ÎÌªFõEDÏ'd˜Ï“ê^©5Î‹ü›/şÙâÔ¨#®È_êlÔxb\Äü¼„¾UÒĞ‡ç!Èk[’ƒ¼¾™t ©°$)(ö€H6ú`ş‚Hi)²Uæ…Şsêu¯dæÒ´ÑMw}LŞeçÿs?XîšúFÌ’ªBÏ¬O”êë»R(êĞ…·jw“lÆ‡—¡xÙ›¦g›C¶Ù-ÿôJ•‡²ù±£±ÑÙXp}Ö®ø‘4IÊÑgä;¢éÄ!Å76¿µ•8Ê¿8İ¿+¯:@'¬oH®=—¾,OÏÚ$7jŒ™¹Ì—‹Ò:‰r£]+N[¨~8­¹èWöd.*2ûƒ, …‰ÿh±hº
-vlªG!yü“¯ëô7á¦]`jÿ?…|Ğº[Ñ,ªõè§10Ì¶İ%˜úZVQ©û§-­R¢9rC[jlÃÅ×|=ÆÈºÏ6×šy?Á(ıÔÚ:ë:	h‹+ô.·ë0ÆKÀ¹}úû;İPÄ0	öóhĞ‘µñ1õ°Ù±@¬­„8Ò‹ïº(ü†ÒÕëe&¾Æ³æ»lqHõ3±¡#»ù¾Yj·Átœü/Ëûøeùœ?€ |R÷…MÓµæ»w—Æ£E©ŠA³SKÙP1håW9xaÕÚ{J%§.úÃ¸~ş9i˜¿ô´"U›\ôÂ³ÿ²N…šç$õ8ïì|…6Ÿ#ª°âŸÉ´§\gxyé—:§¸/•ï‹“÷<„kÔ?œL£9bâäÙ¯İ'÷ÄŞQŸ•|ñ1íaô[j“Àd¨éÆÕ~ZBÊ.ìÒ[ÀuL¯A<d°¨-.£ı6mˆ!íÔ¿ókE§BC-—:óU¤­
-“à)g0ÒÀv‰mO{hƒB|ûGP_Ædh‘İâô^·èO1ë©lŞ4Jğ²ªv„I‘í÷;¨¹P%•¾TC°»©UfŒ%)õ"ˆ}k\ì|ÆèX.ŠŒõPCLt
-Sî¨ô·®Çå7ôô}¸Íši
-Œô¾”«:(·í÷í,kª³Á´é.i·ĞxZ“|ëãæÔa¡d£€Ö*â;½šÔOÓŒqH¼2~“>BøK™¡:ˆ¬h9š™%MöŸï¬ŞFÖÈŠ:Æ¸M!`Ï't DEŠkR™?® UPa™‘:)DoÖşƒ”N@JÊ,<ZÛÌ6bciMıvZo‡c×,IbV‡Ï!™ü8h­§Ñíƒ_]j¡&!„¸uøØR,¸o÷yY¬œYª3ÍF€Sıé®åcÇ$®“¥á˜)[Q4ô€ÉMçÿyHš0¨’Îì2¾P¨ÒšÑû™2F¶cWR'3qG	&<">–}‘c™úC/ƒKuÛ<¡±T‘Ä­âVÆ¡Ó‡B5„jçÃ(3İWÌçñÇ1ZdÛ¬Í[#Šïû±¶ìZT	‡PĞ½
-Æ_òGVkO´Àšñ.û·etš5æ<\T^•©FùoNø¼BÔïír´WøpşLXY´êS¼R—œ7õ|öÅ1÷rP o¨WÎÂù–+-æ®Ù<ˆY:jCÏ7™6zG­4²-İËìC¼c1`ÏêC›f9@ë\HÅ“nşáv¶RÁ””¬Ñ:‚¶¯³ô
-MùßKÎ‘Š¨š$M°%XıO;ñ¢6ØD#?+»’}†zÄÁ–¥»{qóÚaˆ}u•ïó.’œ ãéÖˆ-Øh[
-‰òJOYRd˜XOƒğ~›àS»–¼O¬X°İe×İ!
-_ÒQ¼˜ÑÇ»fÓ/:ÁËPÉ«ZÊ%ÉôüãÎsQíƒC’q”ïÒ’‚ÇÅÊÓ“ı¨i/CEü‹c':0øm…?
-vå¡ÆÂ.ãê]A©íÇr•Íøw«1T>ÙÔÃ ¶œ[Î5_øyÅ‡‡+}?Vÿ­ï¤4ufœ‹›5íû[³5ÊÕÿw`b½¨Ø˜ºº²}ˆ™™$,á…6² ìm—×3öÏ›=-‚S®{ĞJ/«#š<-èqÁK©R *ìãó!ëv‘¶;YO±—01›~Ó¹³¶5w%(ÏÉMğPRG…£êœ¶ô7ÏÏĞ(¦~;S»Àˆõ«Ã¥&`Äëm„VO:åAsÕbá%fô«!-4‡cV¯Ny¥"\Ps¤&ô-~êc²M‘µy€k÷2X`Ğ°1E¤ğş†„9¶¨µ¾¼Îç<÷¤:÷ÙìG IÜ:K5Ñö©ÿ*4	á–fxÀkª;ZÄ­¤zøä³ò©µ6öµ‡…¾Æğ´-›á-‘«Z¯&¼>Ø•6  «´Ä¤JxH‹ë-¨ÜutXÄ}P'nSj1ŞÆÆ ƒT)~gQòwHò¤x	ç„×uÖÕ	Üœk„¬Cd„ıêEW6èèZÕ%6‚jRcÚvÃlõûë[RÏ’“Éê}Ô‡°%G|/IÒB˜tP˜‡q¦PÒÃà!ê'5îuƒÁ€÷Êíi=;gs›Jöï%A¦¶(4½Ğ³m?I}:³ˆˆş[NßHXì4¡`·lZlLL¡õ©‹Ó™¸‡=q#0ÖÖßŒĞ!OGŠ³F;ÏÌàÓç×aG g ½†SãÜNĞCÌPº§æÏÄ‘ˆsNØ}Å—+óC„(uŠ
-³"#Ù¢5Y8?ÆÛ˜zEJµw›aD ²k{	0HDXÀÙ¸)şg¼ÜCì°¨ßÏ7
-o r(Y8›‡‡¿¯¢İÚ¾E§íÏ:¦Òûk¾ÑjÖŞ›OIéiåÕ„Q-vYFÉbÁ>:hàì%ô²%võCÎoe­"kÁÙ¡—Ç8wXRôˆ*Š@Ã>¸‘EnéÔdøãÔ0b„zä;«È“CZ”*Í$07×Zü’U`[“j½’t…® \·ÊªÑtì ¬lÙ¦Ç¶iÒ©lxœ€s'#ÏPu-C7à'³3ÁLB°€›hVn¶ÔàÌ”RİÑ¹à7©·	˜š³µú
-ò*t¢´já)$Şp·T Ì“ò$¥Z‹üQ
-‹°¤NRê?Ø%ÏHÛŠHwÅ¬Ã4˜Å­ºläâ>BìbQÃÈP’ÈÅõıV
-÷GØDj° gÄ¤c‘”oJ¬{Yzç7°¨Ë ï-ú3s¶GåêwÎyş¾ŞBK‰•g®êS…­?´>E²7İtş©ãŞû[ÈÈTbÃ+ávÒÀLZH–t8¤ñ¯ÃÒwŒïŸ'EÚ ²mTOqfnjûòßúAŒÂÆ?ªgÁ¹6+Šèè÷v4—BßC
-çvr]Vp†‰vE˜Ğ%–Í/™i«aS1 ¤€´¹å ‡äòÌmÚ]–çe[êóyC»öXàÆÅ·¤§KQ³Pk”™¢áf½SP­DZL`kı
-hbŒ¨ÎÀr‚x/©ù¥«ŸØx“e^«à”‡D9ô]­*ØĞ›O‘kU óPäí•ÆĞƒjÂxVa’ÿk¯ïr±î?®ŒBœ}É¨‡3Â²@ÂbW9)~éäó›¡Æß»Qå ¹‡ı4†¹ü«Oú4V—*r¼ƒ%ó)Ê¨Š&&1s·ò^fÍ8º1³Şs¤='Ôcü)6YLs™M‚¨@P(íâ£ÎÃ'”Yx"!úârZ¾7 ¢?¿b/¡U8&A÷¥pÉ£mŞåËpŸ‚DØ³Ğ,Ä“\½­>o÷©Ê¾ÖsÖP.Ô™Ê´=ò|w”ßİ“¾=~D‹T«¢f¾‚¿ÅÌRÛkcMöğàø4 „.©_É\é®Ş¦{8HQ«oîh¢å u	oûs][¦ï¯•äÂ¢zô,	6<ãz3>Ô…ŒO·àlû˜½Pû|3rWE4Gü:wyE]oÇQ$¶ˆ1=¶+£ïs›l)İ<oaÖ-!íİÍB°,ˆ5lÀêb…{OÆëëÕˆiÀ‚©öy8ÇÔuhöM‹V‘‹”Ëø5=p×Ò•Çñl5¥ªæïÇåty§',Aª4†’j„j@>$ğFm±åİV²_iq@ÿ9Ú[~Ü*^òøö+Î|v4ÛSämèz¯¸ ìpÁZÿ4©D·$©ÿüTğÒeíwb‚|ê+uXŒ™öñëàşí§9‹
-lãT.*#'<j:†¢ cRLE©*AÔHœéğ^“R-ñÙ4FĞÈ9[Q¶úkC¥Ş x9 ^C&äêaêıìk<5.):Ä.İx}mÿ“yô›$u}oş ×%˜Ì¼g†ÁµYÙ,C¯~^4høûöûuc.ù3› ï,f2õ*?sÖW˜„{İ|ƒÖ‡ámoH;z!{jîL¾YZÆ†å|_P¢ÊÅV›E':±ğüôœÓìŸ5m}ë‘xqñiÂ
-¦ĞÄm"bÏŸ ìÓœ;ÑEöÔC6‰!æ=eÄÄÙ‡îFˆ¿ù	‹|&B¢_qÁ„Ê<peK?Šo*üÖƒÎÚU²G€bAçmŠä@«Îıï—°p“}L‰Ho¸”O¬•3›ßö§2g+Sñ9/XA—4"­Œ×‚/F·-Ôzb"÷†oê³|éÜuIˆÓ
-–µ¶­ªµ½oûI Ã£’dÙÅ.;ÏøLÆß—aGŞ¼®óÀÅx±$5Qv]Y-y‡¢4>²òDŒ>MXBy'
-(Í˜6Qœş¨_3U£… ²m·Ø~à ÔGõ½—Âıİ»
-•-Æ„ò>Ü'èW™òÅÒ¿m´|í¼/ÈıIqÆşyièf0Ï)hgä^lzG~ı¤îii(òü[ÀÓ“Ê¢W.øWX°ØGP+0¹¾9¹"!‚¦sº#õBì ·0›/hªºæ‰‘N‰Œ‡¼—-º&B¬MÂ J*2ìŠÙá¦¾îaıt’(Ë+dÏ9åÛáÉKÆ»Ü)"µÚümÛ9%1mäOÈıĞ"ÑàÑûÂê§pIŞÑ÷*8øÄJçßˆe+[üï:s¼bÊ¯q»ü8YPs[ÃfbwÊãß6Ù»¸öìX¨0·êÈıHÁ€I—yÙ_kçcp:­dËBzílË]}í³MŒÎ« wí³É}yhÙmtpTıX!ÕL6ËI'«-Sà}uy­ØòA3¡Š	¿2êÊî):¾¦8;8d#G·
-Äœ œ¶×‰]r+â»şØüĞA'˜2–¤‹ÒBıZí‡QU„ş+ZJKc‹ÓEªH)ÎOÚ %~©€¤ù¹g£^¬†	f÷88"–ódML@ø{×<Y¾­ïT “êÓ§¾Ê¸ÃYÎ½ºú³ÙqàD~ËÕ’µèh±zÆ”jR“º/GU±Ü†’_ +o¡ÙÙã3F²|Ó‚È6^=c¹Èôè&rßÌ%¿˜Šï´­}WIô½åzj_â)-Ó]ÑCÖŒ!âv}F‚¨çå|÷p‰ñêÛcÆ#/ulGÀìš«¾ AŞ‰Ş¾?^*"î²Ö+B«+50I}GŒ˜í`9 ª`ÕLÔ`°cP0©–s£Ñ¥Åãƒÿ1¹Zî€™råÊç1k¬Œôôax%½e<|âq+ÂÕréÁä/ôC2ÆëÎÀdÑU)¢*-i•Ms ˜jƒÍìJ±Ó
-½³öÏ9<—_×ıä™÷N¦V%eïª¯pÏÄÙ"Óri¬ŸäÿFø¼ne¥òköG~ˆ2efÒ²J¦6Ü\‚uaBDšÏç18d/ÄÍ0›ãıé¹g$¢#GQÇbKjä’a’kÇãÁR+šãs/#F,?;Õi– Ï˜íÚÈ¦D;P+–¨´‰µÓ„{V'@r¦cåòÄ¦ÛîŞŞĞ“ç™şíûñY1R7ˆÀ¤T·meğ(½HşA!Œ0IÍ"[uİ-Ç¯PÒ•ÏÕò¸€ßpÍäÒõj!FêJPÄ¤¾\ÈJthÏåuZ­*G¸Áİ’Ój±‹o”VP¸b)òxR]ÿ´8
-* sÂà§Jq™túm–×/èX<6|‘ñ)T?(v¹±¶k ª°X¡(M3ŞuË5
-=İªûìèŸRÍ&ìßuËÛ å–:ÚF#èy_U%×÷Ş.~‡ØDÒë+ï²KØãmÏÒs:»¸ÜfWê½Q‹@Æ¾ÑKõ‹D¹áåSê¤‘ì5~0èó*!½ml'Í¼¨X§$Áø‡P"(|U×ÄusŸWÃd›çêœ¦ÙÔ:"íÇ.Ø¤L‰·c%åä¢±ÊGŞv*ÌÀ÷u"±âúV¢†Û†ºú’ZïiÒ”LlC·-
-¡7:§Àßí
-{‡©z P¥.[Í=Ğ¨fÍÏ)°©‘Õnì)œçÒÑNÀšéä8ÔÏ,mFR¯ÑÍÚtXÖ€eÖx³m	áÌßjtÜ˜ù”§'X¡\Dâgİ+3j5®o±ú¡ØQEñ¬ñéÛJõ³ÚfcÔğ¿#$ŞueRtÕ-QDş“l ½Ä˜8ÀİÌ«n¼ş©úË†åU$NÚğJhKd¿˜*§¹èÆ*İñEëå©w¹Í…ºÅ‰ }9‚hñƒGÈ™3Nmİ3Ò„x:Ï]AÒšÍC®‡­²äÈEûÓ¥©;Ÿ5Ù©Ë”w»“@\Ù¡Ø(åò>mã\zòJ@¤˜EYHEÙF¥„lÍI•h,€ ÕÁ3T*ÁbÔ™	Ê*èè-¼Í‡Ê7à‘¸ìÏwuı£bµ+ı^ŞcaÚ¸Ÿ0DÈX¦MTñy &	x±G¡íÇê8”˜¦H¢*ü¦èB‹qõñ!=§âlŠh|Ñ¥9Dæª4:›
-õHÒİù~/C~D†\F^dzn`9ÿæ£ÎD¾0€¤Dœ©dáî ïµYLìä¯Y =lgÙÛ·5àçØWz9É{!l*Êl"é p»áábQ¹>àú¬ğ¾¨=<g
-ğı%•]I«'ĞÔö”Ò•m±à$ZÙ˜‹tPº…!¢Ğ	iæ&œJúJ“Vëô‚§^’ Ê~ığ¿ğµ
-C˜ò#ä‘ç B¦ïÁ$q/fEjªæY©­ë¯èù¹ùâ}šÁÈN›SØ´ş+ê8Ò4ãC©Ñ^©hşÀİVˆ‰9+G±Qt!£»ìõ7'ıış–¦!·wûch'ã·ì ı¨Šî¥ÑÃ4ëJ´½šŸÙ9¼ÒşÙã†0hÄ|šz_¹L¦EOá¡|¹K¸¯Å AôkŞ”ê!ÛCmêZrF3os‡—ıj ÅúfÆóù$“%–2OœÏrÙ2Ş÷°5m­zwúK:oÊ¦˜‰úl÷NÅô6³ô Ã¦;ErÒ<"©‹øßÊ™_	ƒ’-ŠÖù‘‹|çÁ)WŠxrhâºˆµ˜ ³ôk¹d¾kû;¤šX(T=äå+´xù´Öİ‹æI×“¯Ü¨ã)eú^C¼åÃ£‰ïÂàËX¦&ÿÅrWpE|_ìQ\*AEä_µºÊU8¶Ö°m.¨ã_ŞmÓ¬ÇÅ6j@2¡A¯­-…2™à^ÄA­(–#úÆŒ×c®Ìwõ¯,C>F«ìË%‚'í‹+çÉ³Òˆ¥”MPr‘ñÖ¹E‰ş›}¸2¨…Ôkk'É‡Œ½Zz×JĞ’Òz“ljUĞó Òúä™‰Ä¹ıxx¬k‘NÿEµJ90)ÁşvU3Y ÷)³o(_[ÿ~úF0Lˆß‰É­éÏOø[¦\C´>|ÏZÛş^æjV
-‹å8sZV†àçDêkjÔ–—x“.4„Vfj‰‡¸¥g{}ó\r¼’ÂôI(\˜™¤26rí*“;Y=#y‘}Ë‰ÓlùwU*Ø{‡ªÕ1-khæjs%¯¦,—û¬É˜2ÆÓ²·„‘E Á7ìs¨NQksq‚ê&p'İ)£n;…Zu`çÄ_o±ÍêŒtå ¬*ºÀ÷/&¨Í’ =vN/ê
-¤Ës8dİ¶1F~OƒiF`‘.íoÒ`‘JA[8òÙçp’üÚÆÙRİÔ)j¾éEe–*bë—_XŸ?"Ì¯’mÍµye4a‰,°€‘täÓµÔ+föv¦¶\Bk÷‚2…ø³Šé:¬½ü™ŒJ$5ÆÚicms¸İH&ÌÙWäÀÓÀ`¨Gæ^I-Cá¾àYP‡!3%ñüG³ÒQé‹½Q»F@ÆË	çË]¼XSlpGƒw/;ÄÄ‚Å–ğÂñ^éÓÌö,ùÈ
-Hï}Œ¾gB%*<•\ÀcÛ°œX™¨æÒm÷”Ôäa‡g‰g‡3?˜HwLßò\uìon€šÖ/{1ß±×µñÅ²ğÀ,ımW^åªïj®‘O»»ÑEº-•¢¦úªµ ÔŸ*<½Bä V®cm‰ŞIr®õê-@Ö'[¿ü*ô»A¯úŸ~qÕe–şÖú*À¢î ?€!õ¾¶wÆB-Å|V_d	Ì‚Ó‚ç{´é›Pfº×ÆL¤ª<,$.¹%×pL…z€,»EÖÀË¡<V™Ï~~îbMë‰ËLˆ<éË-÷Bå@ræJé$_K”W¦ÑÙú$ô(s_®{G®M"›Ú.lNê»	ÄÉ²¡dg5TT.IŒ ({ÑK]ˆÈÚ Ö9ş'y‘¶.ª.ÕL¿J5‚6±¤ï&xg¢9A(H“µ‚°­¹dLÔoÄJu›¼Œ‹v¡G‹8EÕÆˆı0˜í¸Òzr(a‹0NBu€çfÕ#KŒ0á:Ïï>Ó Î»ÿ;$ÃXKıèW9@IÅDe[]v]rê`ğŒ[	a;ç=µ=r}¨øSqÆ”Ÿæã~Ü]ûƒÙµG%„ÃæØ½ˆBşŞ™ù)˜OÇCBúWßş:.²¡ŸAº-üp#FÃ'¤‘ou{4ÇÊÅ,×tÕøøÄ†€İüóO'˜"ö;ÓìU€ÏnUî¦ ÛPšÌÙöÆÜ_úYŞæF·8ÿsÖÉ£=f;ı•$xİ6£q›lúèáv`·¹¡QàE¤ 0[e2$ü£·pò.R¶¦—(‘¼Aí+Œ0=À-‡N M;¨2ˆœ°mßB¹ÅÁ°×oµªiÂQˆãÔı–EUÜ–ë÷oÇ°Yn}3ÄH-»î|şi(¹ëT'‰#tèwGé+kÛqÇhªï†õv…³ÙĞä.ÀöïŸ	`§¹¸y	ÇÍ#İ]U^÷èØ©ê
-ï,¥—›ÒW‡kgÍı¶Ô2×“³}™ÉãaGçÁ2:ï#ÄM¢mö@GÓp³T¾³T?ˆ·gÉ4.7[=‹2õœf_2*qN.9~ƒö4Xˆ+y‡Î—qÀíÏˆç.¼ä²ÏÆÎfrÈ<à'	§¦ã¥	O¥b„Šà\Ôp—ß€!]¤y&Ö>ÊC?VDóó:ÌòË„ÛJ§`Ev’Ú.™*u­c‹„ıÎ‡vÌ„¶k›'ã†´Â‰0>©+n™ÛW#§Sû³xç`€¦MŠ£^ ÷DpªÒpá‚DâçíàÓ1	µaV}&ë“ùŸc\9ù¼0ì½aÜRæ)‹A±ş2%òÿu¨xBEûÌFL  Jÿœ»–»„í5.a‚ãl­W˜ÀrÛg;
-CWÔéC‘ãQæšÖÅÕæ¡«qç0ÕÀa~’uw•Á ´R%ß2Îÿ©"±ì¾6_ä7Iw,NùBßÕ¦¬!Î ¨&7qõİGœ=ÅyÌ!Vû-øj´$~ôºSçŸŒst_head *hash_head = chainhashentry(chain_key);
-	struct lock_chain *chain;
-	int i, j;
-
-	/*
-	 * The caller must hold the graph lock, ensure we've got IRQs
-	 * disabled to make this an IRQ-safe lock.. for recursion reasons
-	 * lockdep won't complain about its own locking errors.
-	 */
-	if (lockdep_assert_locked())
-		return 0;
-
-	chain = alloc_lock_chain();
-	if (!chain) {
-		if (!debug_locks_off_graph_unlock())
-			return 0;
-
-		print_lockdep_off("BUG: MAX_LOCKDEP_CHAINS too low!");
-		dump_stack();
-		return 0;
-	}
-	chain->chain_key = chain_key;
-	chain->irq_context = hlock->irq_context;
-	i = get_first_held_lock(curr, hlock);
-	chain->depth = curr->lockdep_depth + 1 - i;
-
-	BUILD_BUG_ON((1UL << 24) <= ARRAY_SIZE(chain_hlocks));
-	BUILD_BUG_ON((1UL << 6)  <= ARRAY_SIZE(curr->held_locks));
-	BUILD_BUG_ON((1UL << 8*sizeof(chain_hlocks[0])) <= ARRAY_SIZE(lock_classes));
-
-	j = alloc_chain_hlocks(chain->depth);
-	if (j < 0) {
-		if (!debug_locks_off_graph_unlock())
-			return 0;
-
-		print_lockdep_off("BUG: MAX_LOCKDEP_CHAIN_HLOCKS too low!");
-		dump_stack();
-		return 0;
-	}
-
-	chain->base = j;
-	for (j = 0; j < chain->depth - 1; j++, i++) {
-		int lock_id = hlock_id(curr->held_locks + i);
-
-		chain_hlocks[chain->base + j] = lock_id;
-	}
-	chain_hlocks[chain->base + j] = hlock_id(hlock);
-	hlist_add_head_rcu(&chain->entry, hash_head);
-	debug_atomic_inc(chain_lookup_misses);
-	inc_chains(chain->irq_context);
-
-	return 1;
-}
-
-/*
- * Look up a dependency chain. Must be called with either the graph lock or
- * the RCU read lock held.
- */
-static inline struct lock_chain *lookup_chain_cache(u64 chain_key)
-{
-	struct hlist_head *hash_head = chainhashentry(chain_key);
-	struct lock_chain *chain;
-
-	hlist_for_each_entry_rcu(chain, hash_head, entry) {
-		if (READ_ONCE(chain->chain_key) == chain_key) {
-			debug_atomic_inc(chain_lookup_hits);
-			return chain;
-		}
-	}
-	return NULL;
-}
-
-/*
- * If the key is not present yet in dependency chain cache then
- * add it and return 1 - in this case the new dependency chain is
- * validated. If the key is already hashed, return 0.
- * (On return with 1 graph_lock is held.)
- */
-static inline int lookup_chain_cache_add(struct task_struct *curr,
-					 struct held_lock *hlock,
-					 u64 chain_key)
-{
-	struct lock_class *class = hlock_class(hlock);
-	struct lock_chain *chain = lookup_chain_cache(chain_key);
-
-	if (chain) {
-cache_hit:
-		if (!check_no_collision(curr, hlock, chain))
-			return 0;
-
-		if (very_verbose(class)) {
-			printk("\nhash chain already cached, key: "
-					"%016Lx tail class: [%px] %s\n",
-					(unsigned long long)chain_key,
-					class->key, class->name);
-		}
-
-		return 0;
-	}
-
-	if (very_verbose(class)) {
-		printk("\nnew hash chain, key: %016Lx tail class: [%px] %s\n",
-			(unsigned long long)chain_key, class->key, class->name);
-	}
-
-	if (!graph_lock())
-		return 0;
-
-	/*
-	 * We have to walk the chain again locked - to avoid duplicates:
-	 */
-	chain = lookup_chain_cache(chain_key);
-	if (chain) {
-		graph_unlock();
-		goto cache_hit;
-	}
-
-	if (!add_chain_cache(curr, hlock, chain_key))
-		return 0;
-
-	return 1;
-}
-
-static int validate_chain(struct task_struct *curr,
-			  struct held_lock *hlock,
-			  int chain_head, u64 chain_key)
-{
-	/*
-	 * Trylock needs to maintain the stack of held locks, but it
-	 * does not add new dependencies, because trylock can be done
-	 * in any order.
-	 *
-	 * We look up the chain_key and do the O(N^2) check and update of
-	 * the dependencies only if this is a new dependency chain.
-	 * (If lookup_chain_cache_add() return with 1 it acquires
-	 * graph_lock for us)
-	 */
-	if (!hlock->trylock && hlock->check &&
-	    lookup_chain_cache_add(curr, hlock, chain_key)) {
-		/*
-		 * Check whether last held lock:
-		 *
-		 * - is irq-safe, if this lock is irq-unsafe
-		 * - is softirq-safe, if this lock is hardirq-unsafe
-		 *
-		 * And check whether the new lock's dependency graph
-		 * could lead back to the previous lock:
-		 *
-		 * - within the current held-lock stack
-		 * - across our accumulated lock dependency records
-		 *
-		 * any of these scenarios could lead to a deadlock.
-		 */
-		/*
-		 * The simple case: does the current hold the same lock
-		 * already?
-		 */
-		int ret = check_deadlock(curr, hlock);
-
-		if (!ret)
-			return 0;
-		/*
-		 * Add dependency only if this lock is not the head
-		 * of the chain, and if the new lock introduces no more
-		 * lock dependency (because we already hold a lock with the
-		 * same lock class) nor deadlock (because the nest_lock
-		 * serializes nesting locks), see the comments for
-		 * check_deadlock().
-		 */
-		if (!chain_head && ret != 2) {
-			if (!check_prevs_add(curr, hlock))
-				return 0;
-		}
-
-		graph_unlock();
-	} else {
-		/* after lookup_chain_cache_add(): */
-		if (unlikely(!debug_locks))
-			return 0;
-	}
-
-	return 1;
-}
-#else
-static inline int validate_chain(struct task_struct *curr,
-				 struct held_lock *hlock,
-				 int chain_head, u64 chain_key)
-{
-	return 1;
-}
-
-static void init_chain_block_buckets(void)	{ }
-#endif /* CONFIG_PROVE_LOCKING */
-
-/*
- * We are building curr_chain_key incrementally, so double-check
- * it from scratch, to make sure that it's done correctly:
- */
-static void check_chain_key(struct task_struct *curr)
-{
-#ifdef CONFIG_DEBUG_LOCKDEP
-	struct held_lock *hlock, *prev_hlock = NULL;
-	unsigned int i;
-	u64 chain_key = INITIAL_CHAIN_KEY;
-
-	for (i = 0; i < curr->lockdep_depth; i++) {
-		hlock = curr->held_locks + i;
-		if (chain_key != hlock->prev_chain_key) {
-			debug_locks_off();
-			/*
-			 * We got mighty confused, our chain keys don't match
-			 * with what we expect, someone trample on our task state?
-			 */
-			WARN(1, "hm#1, depth: %u [%u], %016Lx != %016Lx\n",
-				curr->lockdep_depth, i,
-				(unsigned long long)chain_key,
-				(unsigned long long)hlock->prev_chain_key);
-			return;
-		}
-
-		/*
-		 * hlock->class_idx can't go beyond MAX_LOCKDEP_KEYS, but is
-		 * it registered lock class index?
-		 */
-		if (DEBUG_LOCKS_WARN_ON(!test_bit(hlock->class_idx, lock_classes_in_use)))
-			return;
-
-		if (prev_hlock && (prev_hlock->irq_context !=
-							hlock->irq_context))
-			chain_key = INITIAL_CHAIN_KEY;
-		chain_key = iterate_chain_key(chain_key, hlock_id(hlock));
-		prev_hlock = hlock;
-	}
-	if (chain_key != curr->curr_chain_key) {
-		debug_locks_off();
-		/*
-		 * More smoking hash instead of calculating it, damn see these
-		 * numbers float.. I bet that a pink elephant stepped on my memory.
-		 */
-		WARN(1, "hm#2, depth: %u [%u], %016Lx != %016Lx\n",
-			curr->lockdep_depth, i,
-			(unsigned long long)chain_key,
-			(unsigned long long)curr->curr_chain_key);
-	}
-#endif
-}
-
-#ifdef CONFIG_PROVE_LOCKING
-static int mark_lock(struct task_struct *curr, struct held_lock *this,
-		     enum lock_usage_bit new_bit);
-
-static void print_usage_bug_scenario(struct held_lock *lock)
-{
-	struct lock_class *class = hlock_class(lock);
-
-	printk(" Possible unsafe locking scenario:\n\n");
-	printk("       CPU0\n");
-	printk("       ----\n");
-	printk("  lock(");
-	__print_lock_name(class);
-	printk(KERN_CONT ");\n");
-	printk("  <Interrupt>\n");
-	printk("    lock(");
-	__print_lock_name(class);
-	printk(KERN_CONT ");\n");
-	printk("\n *** DEADLOCK ***\n\n");
-}
-
-static void
-print_usage_bug(struct task_struct *curr, struct held_lock *this,
-		enum lock_usage_bit prev_bit, enum lock_usage_bit new_bit)
-{
-	if (!debug_locks_off() || debug_locks_silent)
-		return;
-
-	pr_warn("\n");
-	pr_warn("================================\n");
-	pr_warn("WARNING: inconsistent lock state\n");
-	print_kernel_ident();
-	pr_warn("--------------------------------\n");
-
-	pr_warn("inconsistent {%s} -> {%s} usage.\n",
-		usage_str[prev_bit], usage_str[new_bit]);
-
-	pr_warn("%s/%d [HC%u[%lu]:SC%u[%lu]:HE%u:SE%u] takes:\n",
-		curr->comm, task_pid_nr(curr),
-		lockdep_hardirq_context(), hardirq_count() >> HARDIRQ_SHIFT,
-		lockdep_softirq_context(curr), softirq_count() >> SOFTIRQ_SHIFT,
-		lockdep_hardirqs_enabled(),
-		lockdep_softirqs_enabled(curr));
-	print_lock(this);
-
-	pr_warn("{%s} state was registered at:\n", usage_str[prev_bit]);
-	print_lock_trace(hlock_class(this)->usage_traces[prev_bit], 1);
-
-	print_irqtrace_events(curr);
-	pr_warn("\nother info that might help us debug this:\n");
-	print_usage_bug_scenario(this);
-
-	lockdep_print_held_locks(curr);
-
-	pr_warn("\nstack backtrace:\n");
-	dump_stack();
-}
-
-/*
- * Print out an error if an invalid bit is set:
- */
-static inline int
-valid_state(struct task_struct *curr, struct held_lock *this,
-	    enum lock_usage_bit new_bit, enum lock_usage_bit bad_bit)
-{
-	if (unlikely(hlock_class(this)->usage_mask & (1 << bad_bit))) {
-		graph_unlock();
-		print_usage_bug(curr, this, bad_bit, new_bit);
-		return 0;
-	}
-	return 1;
-}
-
-
-/*
- * print irq inversion bug:
- */
-static void
-print_irq_inversion_bug(struct task_struct *curr,
-			struct lock_list *root, struct lock_list *other,
-			struct held_lock *this, int forwards,
-			const char *irqclass)
-{
-	struct lock_list *entry = other;
-	struct lock_list *middle = NULL;
-	int depth;
-
-	if (!debug_locks_off_graph_unlock() || debug_locks_silent)
-		return;
-
-	pr_warn("\n");
-	pr_warn("========================================================\n");
-	pr_warn("WARNING: possible irq lock inversion dependency detected\n");
-	print_kernel_ident();
-	pr_warn("--------------------------------------------------------\n");
-	pr_warn("%s/%d just changed the state of lock:\n",
-		curr->comm, task_pid_nr(curr));
-	print_lock(this);
-	if (forwards)
-		pr_warn("but this lock took another, %s-unsafe lock in the past:\n", irqclass);
-	else
-		pr_warn("but this lock was taken by another, %s-safe lock in the past:\n", irqclass);
-	print_lock_name(other->class);
-	pr_warn("\n\nand interrupts could create inverse lock ordering between them.\n\n");
-
-	pr_warn("\nother info that might help us debug this:\n");
-
-	/* Find a middle lock (if one exists) */
-	depth = get_lock_depth(other);
-	do {
-		if (depth == 0 && (entry != root)) {
-			pr_warn("lockdep:%s bad path found in chain graph\n", __func__);
-			break;
-		}
-		middle = entry;
-		entry = get_lock_parent(entry);
-		depth--;
-	} while (entry && entry != root && (depth >= 0));
-	if (forwards)
-		print_irq_lock_scenario(root, other,
-			middle ? middle->class : root->class, other->class);
-	else
-		print_irq_lock_scenario(other, root,
-			middle ? middle->class : other->class, root->class);
-
-	lockdep_print_held_locks(curr);
-
-	pr_warn("\nthe shortest dependencies between 2nd lock and 1st lock:\n");
-	root->trace = save_trace();
-	if (!root->trace)
-		return;
-	print_shortest_lock_dependencies(other, root);
-
-	pr_warn("\nstack backtrace:\n");
-	dump_stack();
-}
-
-/*
- * Prove that in the forwards-direction subgraph starting at <this>
- * there is no lock matching <mask>:
- */
-static int
-check_usage_forwards(struct task_struct *curr, struct held_lock *this,
-		     enum lock_usage_bit bit)
-{
-	enum bfs_result ret;
-	struct lock_list root;
-	struct lock_list *target_entry;
-	enum lock_usage_bit read_bit = bit + LOCK_USAGE_READ_MASK;
-	unsigned usage_mask = lock_flag(bit) | lock_flag(read_bit);
-
-	bfs_init_root(&root, this);
-	ret = find_usage_forwards(&root, usage_mask, &target_entry);
-	if (bfs_error(ret)) {
-		print_bfs_bug(ret);
-		return 0;
-	}
-	if (ret == BFS_RNOMATCH)
-		return 1;
-
-	/* Check whether write or read usage is the match */
-	if (target_entry->class->usage_mask & lock_flag(bit)) {
-		print_irq_inversion_bug(curr, &root, target_entry,
-					this, 1, state_name(bit));
-	} else {
-		print_irq_inversion_bug(curr, &root, target_entry,
-					this, 1, state_name(read_bit));
-	}
-
-	return 0;
-}
-
-/*
- * Prove that in the backwards-direction subgraph starting at <this>
- * there is no lock matching <mask>:
- */
-static int
-check_usage_backwards(struct task_struct *curr, struct held_lock *this,
-		      enum lock_usage_bit bit)
-{
-	enum bfs_result ret;
-	struct lock_list root;
-	struct lock_list *target_entry;
-	enum lock_usage_bit read_bit = bit + LOCK_USAGE_READ_MASK;
-	unsigned usage_mask = lock_flag(bit) | lock_flag(read_bit);
-
-	bfs_init_rootb(&root, this);
-	ret = find_usage_backwards(&root, usage_mask, &target_entry);
-	if (bfs_error(ret)) {
-		print_bfs_bug(ret);
-		return 0;
-	}
-	if (ret == BFS_RNOMATCH)
-		return 1;
-
-	/* Check whether write or read usage is the match */
-	if (target_entry->class->usage_mask & lock_flag(bit)) {
-		print_irq_inversion_bug(curr, &root, target_entry,
-					this, 0, state_name(bit));
-	} else {
-		print_irq_inversion_bug(curr, &root, target_entry,
-					this, 0, state_name(read_bit));
-	}
-
-	return 0;
-}
-
-void print_irqtrace_events(struct task_struct *curr)
-{
-	const struct irqtrace_events *trace = &curr->irqtrace;
-
-	printk("irq event stamp: %u\n", trace->irq_events);
-	printk("hardirqs last  enabled at (%u): [<%px>] %pS\n",
-		trace->hardirq_enable_event, (void *)trace->hardirq_enable_ip,
-		(void *)trace->hardirq_enable_ip);
-	printk("hardirqs last disabled at (%u): [<%px>] %pS\n",
-		trace->hardirq_disable_event, (void *)trace->hardirq_disable_ip,
-		(void *)trace->hardirq_disable_ip);
-	printk("softirqs last  enabled at (%u): [<%px>] %pS\n",
-		trace->softirq_enable_event, (void *)trace->softirq_enable_ip,
-		(void *)trace->softirq_enable_ip);
-	printk("softirqs last disabled at (%u): [<%px>] %pS\n",
-		trace->softirq_disable_event, (void *)trace->softirq_disable_ip,
-		(void *)trace->softirq_disable_ip);
-}
-
-static int HARDIRQ_verbose(struct lock_class *class)
-{
-#if HARDIRQ_VERBOSE
-	return class_filter(class);
-#endif
-	return 0;
-}
-
-static int SOFTIRQ_verbose(struct lock_class *class)
-{
-#if SOFTIRQ_VERBOSE
-	return class_filter(class);
-#endif
-	return 0;
-}
-
-static int (*state_verbose_f[])(struct lock_class *class) = {
-#define LOCKDEP_STATE(__STATE) \
-	__STATE##_verbose,
-#include "lockdep_states.h"
-#undef LOCKDEP_STATE
+] = {
+		.name		= "Hauppauge WinTV-HVR1500Q",
+		.portc		= CX23885_MPEG_DVB,
+	},
+	[CX23885_BOARD_HAUPPAUGE_HVR1500] = {
+		.name		= "Hauppauge WinTV-HVR1500",
+		.porta		= CX23885_ANALOG_VIDEO,
+		.portc		= CX23885_MPEG_DVB,
+		.tuner_type	= TUNER_XC2028,
+		.tuner_addr	= 0x61, /* 0xc2 >> 1 */
+		.input          = {{
+			.type   = CX23885_VMUX_TELEVISION,
+			.vmux   =	CX25840_VIN7_CH3 |
+					CX25840_VIN5_CH2 |
+					CX25840_VIN2_CH1,
+			.gpio0  = 0,
+		}, {
+			.type   = CX23885_VMUX_COMPOSITE1,
+			.vmux   =	CX25840_VIN7_CH3 |
+					CX25840_VIN4_CH2 |
+					CX25840_VIN6_CH1,
+			.gpio0  = 0,
+		}, {
+			.type   = CX23885_VMUX_SVIDEO,
+			.vmux   =	CX25840_VIN7_CH3 |
+					CX25840_VIN4_CH2 |
+					CX25840_VIN8_CH1 |
+					CX25840_SVIDEO_ON,
+			.gpio0  = 0,
+		} },
+	},
+	[CX23885_BOARD_HAUPPAUGE_HVR1200] = {
+		.name		= "Hauppauge WinTV-HVR1200",
+		.portc		= CX23885_MPEG_DVB,
+	},
+	[CX23885_BOARD_HAUPPAUGE_HVR1700] = {
+		.name		= "Hauppauge WinTV-HVR1700",
+		.portc		= CX23885_MPEG_DVB,
+	},
+	[CX23885_BOARD_HAUPPAUGE_HVR1400] = {
+		.name		= "Hauppauge WinTV-HVR1400",
+		.portc		= CX23885_MPEG_DVB,
+	},
+	[CX23885_BOARD_DVICO_FUSIONHDTV_7_DUAL_EXP] = {
+		.name		= "DViCO FusionHDTV7 Dual Express",
+		.portb		= CX23885_MPEG_DVB,
+		.portc		= CX23885_MPEG_DVB,
+	},
+	[CX23885_BOARD_DVICO_FUSIONHDTV_DVB_T_DUAL_EXP] = {
+		.name		= "DViCO FusionHDTV DVB-T Dual Express",
+		.portb		= CX23885_MPEG_DVB,
+		.portc		= CX23885_MPEG_DVB,
+	},
+	[CX23885_BOARD_LEADTEK_WINFAST_PXDVR3200_H] = {
+		.name		= "Leadtek Winfast PxDVR3200 H",
+		.portc		= CX23885_MPEG_DVB,
+	},
+	[CX23885_BOARD_LEADTEK_WINFAST_PXPVR2200] = {
+		.name		= "Leadtek Winfast PxPVR2200",
+		.porta		= CX23885_ANALOG_VIDEO,
+		.tuner_type	= TUNER_XC2028,
+		.tuner_addr	= 0x61,
+		.tuner_bus	= 1,
+		.input		= {{
+			.type	= CX23885_VMUX_TELEVISION,
+			.vmux	= CX25840_VIN2_CH1 |
+				  CX25840_VIN5_CH2,
+			.amux	= CX25840_AUDIO8,
+			.gpio0	= 0x704040,
+		}, {
+			.type	= CX23885_VMUX_COMPOSITE1,
+			.vmux	= CX25840_COMPOSITE1,
+			.amux	= CX25840_AUDIO7,
+			.gpio0	= 0x704040,
+		}, {
+			.type	= CX23885_VMUX_SVIDEO,
+			.vmux	= CX25840_SVIDEO_LUMA3 |
+				  CX25840_SVIDEO_CHROMA4,
+			.amux	= CX25840_AUDIO7,
+			.gpio0	= 0x704040,
+		}, {
+			.type	= CX23885_VMUX_COMPONENT,
+			.vmux	= CX25840_VIN7_CH1 |
+				  CX25840_VIN6_CH2 |
+				  CX25840_VIN8_CH3 |
+				  CX25840_COMPONENT_ON,
+			.amux	= CX25840_AUDIO7,
+			.gpio0	= 0x704040,
+		} },
+	},
+	[CX23885_BOARD_LEADTEK_WINFAST_PXDVR3200_H_XC4000] = {
+		.name		= "Leadtek Winfast PxDVR3200 H XC4000",
+		.porta		= CX23885_ANALOG_VIDEO,
+		.portc		= CX23885_MPEG_DVB,
+		.tuner_type	= TUNER_XC4000,
+		.tuner_addr	= 0x61,
+		.radio_type	= UNSET,
+		.radio_addr	= ADDR_UNSET,
+		.input		= {{
+			.type	= CX23885_VMUX_TELEVISION,
+			.vmux	= CX25840_VIN2_CH1 |
+				  CX25840_VIN5_CH2 |
+				  CX25840_NONE0_CH3,
+		}, {
+			.type	= CX23885_VMUX_COMPOSITE1,
+			.vmux	= CX25840_COMPOSITE1,
+		}, {
+			.type	= CX23885_VMUX_SVIDEO,
+			.vmux	= CX25840_SVIDEO_LUMA3 |
+				  CX25840_SVIDEO_CHROMA4,
+		}, {
+			.type	= CX23885_VMUX_COMPONENT,
+			.vmux	= CX25840_VIN7_CH1 |
+				  CX25840_VIN6_CH2 |
+				  CX25840_VIN8_CH3 |
+				  CX25840_COMPONENT_ON,
+		} },
+	},
+	[CX23885_BOARD_COMPRO_VIDEOMATE_E650F] = {
+		.name		= "Compro VideoMate E650F",
+		.portc		= CX23885_MPEG_DVB,
+	},
+	[CX23885_BOARD_TBS_6920] = {
+		.name		= "TurboSight TBS 6920",
+		.portb		= CX23885_MPEG_DVB,
+	},
+	[CX23885_BOARD_TBS_6980] = {
+		.name		= "TurboSight TBS 6980",
+		.portb		= CX23885_MPEG_DVB,
+		.portc		= CX23885_MPEG_DVB,
+	},
+	[CX23885_BOARD_TBS_6981] = {
+		.name		= "TurboSight TBS 6981",
+		.portb		= CX23885_MPEG_DVB,
+		.portc		= CX23885_MPEG_DVB,
+	},
+	[CX23885_BOARD_TEVII_S470] = {
+		.name		= "TeVii S470",
+		.portb		= CX23885_MPEG_DVB,
+	},
+	[CX23885_BOARD_DVBWORLD_2005] = {
+		.name		= "DVBWorld DVB-S2 2005",
+		.portb		= CX23885_MPEG_DVB,
+	},
+	[CX23885_BOARD_NETUP_DUAL_DVBS2_CI] = {
+		.ci_type	= 1,
+		.name		= "NetUP Dual DVB-S2 CI",
+		.portb		= CX23885_MPEG_DVB,
+		.portc		= CX23885_MPEG_DVB,
+	},
+	[CX23885_BOARD_HAUPPAUGE_HVR1270] = {
+		.name		= "Hauppauge WinTV-HVR1270",
+		.portc		= CX23885_MPEG_DVB,
+	},
+	[CX23885_BOARD_HAUPPAUGE_HVR1275] = {
+		.name		= "Hauppauge WinTV-HVR1275",
+		.portc		= CX23885_MPEG_DVB,
+	},
+	[CX23885_BOARD_HAUPPAUGE_HVR1255] = {
+		.name		= "Hauppauge WinTV-HVR1255",
+		.porta		= CX23885_ANALOG_VIDEO,
+		.portc		= CX23885_MPEG_DVB,
+		.tuner_type	= TUNER_ABSENT,
+		.tuner_addr	= 0x42, /* 0x84 >> 1 */
+		.force_bff	= 1,
+		.input          = {{
+			.type   = CX23885_VMUX_TELEVISION,
+			.vmux   =	CX25840_VIN7_CH3 |
+					CX25840_VIN5_CH2 |
+					CX25840_VIN2_CH1 |
+					CX25840_DIF_ON,
+			.amux   = CX25840_AUDIO8,
+		}, {
+			.type   = CX23885_VMUX_COMPOSITE1,
+			.vmux   =	CX25840_VIN7_CH3 |
+					CX25840_VIN4_CH2 |
+					CX25840_VIN6_CH1,
+			.amux   = CX25840_AUDIO7,
+		}, {
+			.type   = CX23885_VMUX_SVIDEO,
+			.vmux   =	CX25840_VIN7_CH3 |
+					CX25840_VIN4_CH2 |
+					CX25840_VIN8_CH1 |
+					CX25840_SVIDEO_ON,
+			.amux   = CX25840_AUDIO7,
+		} },
+	},
+	[CX23885_BOARD_HAUPPAUGE_HVR1255_22111] = {
+		.name		= "Hauppauge WinTV-HVR1255",
+		.porta		= CX23885_ANALOG_VIDEO,
+		.portc		= CX23885_MPEG_DVB,
+		.tuner_type	= TUNER_ABSENT,
+		.tuner_addr	= 0x42, /* 0x84 >> 1 */
+		.force_bff	= 1,
+		.input          = {{
+			.type   = CX23885_VMUX_TELEVISION,
+			.vmux   =	CX25840_VIN7_CH3 |
+					CX25840_VIN5_CH2 |
+					CX25840_VIN2_CH1 |
+					CX25840_DIF_ON,
+			.amux   = CX25840_AUDIO8,
+		}, {
+			.type   = CX23885_VMUX_SVIDEO,
+			.vmux   =	CX25840_VIN7_CH3 |
+					CX25840_VIN4_CH2 |
+					CX25840_VIN8_CH1 |
+					CX25840_SVIDEO_ON,
+			.amux   = CX25840_AUDIO7,
+		} },
+	},
+	[CX23885_BOARD_HAUPPAUGE_HVR1210] = {
+		.name		= "Hauppauge WinTV-HVR1210",
+		.portc		= CX23885_MPEG_DVB,
+	},
+	[CX23885_BOARD_MYGICA_X8506] = {
+		.name		= "Mygica X8506 DMB-TH",
+		.tuner_type = TUNER_XC5000,
+		.tuner_addr = 0x61,
+		.tuner_bus	= 1,
+		.porta		= CX23885_ANALOG_VIDEO,
+		.portb		= CX23885_MPEG_DVB,
+		.input		= {
+			{
+				.type   = CX23885_VMUX_TELEVISION,
+				.vmux   = CX25840_COMPOSITE2,
+			},
+			{
+				.type   = CX23885_VMUX_COMPOSITE1,
+				.vmux   = CX25840_COMPOSITE8,
+			},
+			{
+				.type   = CX23885_VMUX_SVIDEO,
+				.vmux   = CX25840_SVIDEO_LUMA3 |
+						CX25840_SVIDEO_CHROMA4,
+			},
+			{
+				.type   = CX23885_VMUX_COMPONENT,
+				.vmux   = CX25840_COMPONENT_ON |
+					CX25840_VIN1_CH1 |
+					CX25840_VIN6_CH2 |
+					CX25840_VIN7_CH3,
+			},
+		},
+	},
+	[CX23885_BOARD_MAGICPRO_PROHDTVE2] = {
+		.name		= "Magic-Pro ProHDTV Extreme 2",
+		.tuner_type = TUNER_XC5000,
+		.tuner_addr = 0x61,
+		.tuner_bus	= 1,
+		.porta		= CX23885_ANALOG_VIDEO,
+		.portb		= CX23885_MPEG_DVB,
+		.input		= {
+			{
+				.type   = CX23885_VMUX_TELEVISION,
+				.vmux   = CX25840_COMPOSITE2,
+			},
+			{
+				.type   = CX23885_VMUX_COMPOSITE1,
+				.vmux   = CX25840_COMPOSITE8,
+			},
+			{
+				.type   = CX23885_VMUX_SVIDEO,
+				.vmux   = CX25840_SVIDEO_LUMA3 |
+						CX25840_SVIDEO_CHROMA4,
+			},
+			{
+				.type   = CX23885_VMUX_COMPONENT,
+				.vmux   = CX25840_COMPONENT_ON |
+					CX25840_VIN1_CH1 |
+					CX25840_VIN6_CH2 |
+					CX25840_VIN7_CH3,
+			},
+		},
+	},
+	[CX23885_BOARD_HAUPPAUGE_HVR1850] = {
+		.name		= "Hauppauge WinTV-HVR1850",
+		.porta		= CX23885_ANALOG_VIDEO,
+		.portb		= CX23885_MPEG_ENCODER,
+		.portc		= CX23885_MPEG_DVB,
+		.tuner_type	= TUNER_ABSENT,
+		.tuner_addr	= 0x42, /* 0x84 >> 1 */
+		.force_bff	= 1,
+		.input          = {{
+			.type   = CX23885_VMUX_TELEVISION,
+			.vmux   =	CX25840_VIN7_CH3 |
+					CX25840_VIN5_CH2 |
+					CX25840_VIN2_CH1 |
+					CX25840_DIF_ON,
+			.amux   = CX25840_AUDIO8,
+		}, {
+			.type   = CX23885_VMUX_COMPOSITE1,
+			.vmux   =	CX25840_VIN7_CH3 |
+					CX25840_VIN4_CH2 |
+					CX25840_VIN6_CH1,
+			.amux   = CX25840_AUDIO7,
+		}, {
+			.type   = CX23885_VMUX_SVIDEO,
+			.vmux   =	CX25840_VIN7_CH3 |
+					CX25840_VIN4_CH2 |
+					CX25840_VIN8_CH1 |
+					CX25840_SVIDEO_ON,
+			.amux   = CX25840_AUDIO7,
+		} },
+	},
+	[CX23885_BOARD_COMPRO_VIDEOMATE_E800] = {
+		.name		= "Compro VideoMate E800",
+		.portc		= CX23885_MPEG_DVB,
+	},
+	[CX23885_BOARD_HAUPPAUGE_HVR1290] = {
+		.name		= "Hauppauge WinTV-HVR1290",
+		.portc		= CX23885_MPEG_DVB,
+	},
+	[CX23885_BOARD_MYGICA_X8558PRO] = {
+		.name		= "Mygica X8558 PRO DMB-TH",
+		.portb		= CX23885_MPEG_DVB,
+		.portc		= CX23885_MPEG_DVB,
+	},
+	[CX23885_BOARD_LEADTEK_WINFAST_PXTV1200] = {
+		.name           = "LEADl£çy
+bcâ¹P«±Å;
+©°9Ô·¤óËŸÊ·4'7‚k›×Ñú]ªE&Ï–÷a2ÇñóŸ½He?%ÆUöVd§·>!mêeY£¨[
+b¢§RC;n@	Dïrï¡OŠsX¾“Äõéã¡ø{)FOëlìOÆÔ²\É¤áv4…ÛrÁPÜ‰ÉÛ˜ùå´eONÄ€õHm±—=ÏpDK£‘Üç&¾}'X’ƒŞÿË•%cÕˆB†6=pWyäé&dPa@şÖ›Áı^÷ñ«Ù«öcÒ~‚yæ¸MßwoÒŒ­ €°¨¥ëıã>û©n«¯Õš£MOÀv4ƒ‚rËÅ²[~ı-ıàBK!S7(ç¡¦Õüç$YÖŞ§nzakg=^½ô±ªƒØó+§{’&­ÇÀ½?.!µ³;»®¬ÎÌş@®£ÿ|î~1œ#ºYnièÍÙÙ‡_şl_ä8¼ù² f5ĞÅ”ö`•
+íuÔQnÙ÷èñ~åûÄíËHŸw&ÛfMAÚø¡òÑ;gk–¢4‡yòB„
+*şÕDÍpArØÀ0a×<Ü“ó¯k5Í¤ÃX•f–+[Ò¦«g¤¾Ö@à¬L-İ¤°b%—§ÿifYÜëØ;ã«™ÉD„Œ½—a7¾Nâ÷ªÎwúMo:c„c°¡ ®ÌÀd\õÏ¢/nkû¨†R2¦ºöòC‹à++<ò–$
+ß¨Ì4ß…y*c–¾r«ç‹?/:$TõBW's° ƒ£¯#rtKv)¯îk0, ×BÏ) ùˆéÜ&¯ÁÊ³
+»R‹)ÆIüãTˆm5±	>'bkrÙxàiªb6‰Me=ÓU.±šÀçô	ı”0A&qÌlWK]5œıo%>ø31­vëyò
+
+FÕûí^ÀŠqZ¤vÔ• °ĞÖ(jÁkj¬îş2ÑC<¨ô´«•ô8%£1U:›2ÇìÈAø€šİÒ…”Ğ°¸Š0â 6·Æ6Ø~¹j—z.›m§"5üÿz×ËÖfÍgÇÁÍ$²=”PøúI]Äš¹­°Ò)t+2ç„1T¨ËõÜõ­³~^KóÆ’¹3¾ü]Ë&.×Á§Ö²u–®ºÖİ¾Ó@À«’_eâNË®ˆ…ŸŒä½dÙÔÛW¬µ™ ­D¢ˆğˆoÒÒ^Ù:Š6"Hß£“õ½aœ!I,}ˆ: >eQwĞ8÷1x÷İÅÇgÇÉúAÓ“QÀöìf-êj†Iuxkâ6¶c´bQ½Èq{òˆÆßPÍ¼p¸|ğ$Jé±x«¹·!ºş]@vC\F;T÷Lƒò“Q[£ga"£a^cûÀR…TéwÕóKÑ—Ê{ÂïäŸÚ¼GõÛÿH'¿¸ïlÊÔ¿—ÁŞşEıpÈTS’)(l*Ÿ(£„ÅPÛn“d@èLXÊ³N» òƒJà{³Õ“õ9R¬f8œW[oÌX,S³å¨ñYÅ,§ÁêÀøJ2"n©Ú>Ò³M:ÂeŸ”šAÍ¥<#>™RŞÔ€Ü|`òù—`ûÍÅëè”Œé"hHÏ{3‘½¥K›5´ì4àXµÜ³±sÍVm:eC­4ŠL=A<õ~_·óÚpØØ}’ÛWmŒßÀRcç45:é¥n LÃv•!BRDŞÃ,ÃôbşèJ$–`’BfR3´ë’Âk*2öÔÏéóì˜¦²˜ÔoZó³Äã6	™Èv" òÛÆ‡4)LtñYé•ÆèÇ6*¿îÂãÖ~y$,çÄ0É­N,Ø®ÕPbb>KE´³Ü/AñÍVO¼ªò¼f t06š ìlpêXS˜Oº6@af “KX“ÉŞ¿ëåpe8%)±/b[Øí§îÚd`c=Qßvó¿ãƒğÏ»#ç}6ˆdÛÄt´ÛOÖµ+	¬ssNÀ™ôß§ŸáÕ0.3c“l•…"ÉƒãGƒ©ôf`“­
+ $Ñ¿:êÂÜg)!ÍÀ•ØdşÅŸoh3™ºø‰n±AúñÎl¦!k_V?òú¥aTdÏ_(1j˜²aG›ÿ,Æ÷fÙ²¹ÈC-iÜzÊºŞ¹Y˜Ûã‡ßà³yòçËs,Š!²åñnÅì®œıÍ"½#¥âşq›W1“õø»v¢lK7¢ç™,ê™ezŸ…ˆr:öãÜeßŒq9˜¢âQ- +Ù¤Ôuf¿`ŒÊ.DÜ r$ëBÖ´zŠ¨¨–%¤iÛ¸’Áöp\¬ÛÍ‚¾Œÿ‡Zœü|Öa'¾˜¬\§D•t'÷Ò~*³>6&´É [C&-s»*‰Vã}œ+ºëY{ß<¬ {W§Æuæ¬½ÿFT“Ú¤Ó‚ŠbXØ‹p"¦†+‰İõÆ°8ü³İ#=Ãz»ešĞ>÷cNò.ùq˜a¿eğy×007Ír[ƒªŠ$å1®õ­'h½pv@Lréü´@wïNc$Ğ ÊÇà1ıÑô¤9hÃäYf`_s¥C÷ôÑ:¡ãæ‰€}ĞFe&Ú4L°·İ€–Ög²EëNäø:;AÙS&L'™ÃzŸ—À$Ò7ËIÉSÖ°³n•xŞØU™kvR¶ú'RÄ+óNà}0÷üC«)o©,ÃCq'ír|69ÃæCÉ Ó°²ÖÛŸt#á0LFËQÕá/Îštiœ‡zc _û/ao—ïôæ5 î©Äi¥÷^ÓµÍp™Ø¥‘Zô‘`'Ş"Yø×tXİÙ8:$RÁ¿šcê¤äE½ài:-[Ù€r¿•nà0gÌÀ<@l©Âø«èÕ+!|„Ì%ŸªØh”Ú#}©:KĞ=]“52+jF+(¶¸¥ğvsU:Ô·V_Zÿô9ÈåPvˆ¡‹½Øa¡øBk)ÙhßçŸ6p ìT/Jğ)ØJ·<ùKBú…Œïm¢zøcËU$×hÁi¤Şdã)"ç,İX|ÔI‘Ö¢ŞKL,&Ö¹.#¤ğyxÖ*ºsÈ™Dh¨2¬YfÇÓó6îİÆãBÁ
+[ç¼Ûe-îq%í{ó^+°œ„ŞëusæA›_-¿ ãØÉ=\‹¥²d†}Ú; ë<89ô–Ø%HæQĞZ˜:ÈÇp™µúâÜZì04z¼ª`Eñ!ã·úê~)>ŠàjŒMŸÆÅ‘tH×
+2I6¶äıó»„;æŸÅÓºZC¶º‡œäˆrh(ŠÈÕy	Ëç€È% õ)ŠŸ?Š1QôLŒŸtßÍ‹}` /*XK2{L0Ü0„[s°Úfšé†“tr‘´wóëâ0^’ë\€<ÌÜĞN´­,
+BÁëÖ‰ÎÒ¥Î¥ğèÕñ->‚?“PıÂSr¼Ÿƒ×T ü ®‰êÒmkÛFœE"G¢–™­õå°oÊv0¸i¿¿N§ûı«­y0œ©Ì”âO1ó¸Ú§áâÙkYÂ×Ì—U=J=E I,Û‡ª#N[÷Zı8ß^Óé}¾+"Ñ/Ïg$ Ù›~¶°îò†©>Àî¦_™ºÏnwû—-<C]Q 8±ÍôiwÁÊ÷4»õt”H=©r÷]şakW¸|>†7“û_ÄÉT”,r²‚–_˜JPG2CŞ«d=Ÿp	I¬8~K&íèQLçÛŠˆŒ¸İ¹q×òs¹I)Ì©6õ[e.„±6gæ‚çKßğ%çáiz¿› ½AO‚šãÜvTõLÁø—³± 2U5e åßZ:í(Ä|BÍ×jî(úUµÃ>76ÜÖ¾æ1ÜE,…Ğ:_æİ‰®£mÕµLö€ßár‘ó!b¡sš@óÍ+¿ ùhyş&_Vší>0â;.ŒÎ‡û'†B¶ì`}ÜçNQ@ÿù0$P)9Îã)…NJŠÁ<=­„]|vî2xüÚñÙ˜h–~to¤VÀö¬`Ù‰‡İ|U‹èl‘ÌœÍ“¬\oe+Å½ ?DÑ
+j)Ğâç}Ëvº¿ 1*ğ¥FÁkÄ ğ£‹ÔRŠ`ÿ˜‚šÆ‰EƒT$ØÆeè0&xmàZ•f¯Pº6Öäìa­ê'f›0&HXÍFSêè4¯²'Ø®UÚDHf§á€o(²÷AÀÑ_N¯pkísCÉ±¥ L0ú_È9[6ÇŞt}ñ†*µ‹Õr¯©ˆ1óvd¡Mâ‘/-Â88#½‘oËåç«íøiºV2k—SXÇsò;z¹+R$LÛaÓ4$F+İŒ(õ!ğ%TP”ûÌàÃŒe‘²àÍ`kTìEqMš$­ûâÀ¤_®ãó­ıéòÍŸlä˜}ˆú%ğş²%û´”y:ë¿[á!£\Q¹½L¥µ[c.c­ k±·o?”È{û¥ük?µÉÕ‡F;¶+±mšœÄ/ÚFmµç¾ç†bo=ï )U¤ö¡²¨²`ù¹9M]¨BÏl ñ}ïü—ı¿e<bËÀÒuÀ
+²±£iİIš	Íg‡ò{}ÍÛJAÖº)êÈÃ»¬=u‘4°çØ”MwJ`ÒbZ?ã Ü(óg1ç(¤ES‰\o,„Øù6Ã×$°äåbXÆÖ1Ô_u	½2XÏ|µı cB.öõ÷0ï—Ö¾2Ô¡V}S¢Ê§YZ»§nC^š ë8ŒY`¨Áú€?ÜÉ	¦¼Ù^½ŒHF”Ÿ-âkÄò=.’^véŠáÃgEğñÈü‹·Œù/ÄÖ,êAî@ş,KãO«woow„}Òp1¨’$‚Zà½ô‰¿eWøÆ'ğğÉ‘†·>Z[²ˆEöÄD[$Šåô•-p²EßMvV‚O'Ô9ËË^p{`do%\Ü°€ü°;ƒ§³ôŠûÑ²É‚C¸…@âŒ„$ç¬ŸZÓcµIáNTr°Óví]"«®xÆuê‚XÓ&“öÎğPıû6m$Å$–ææáÁú†˜ )‹?_l4)wõ­9ÙßZ˜’¡‡ëªsù‡òIÂã	CÙá•Û<O²†/¼ÌÛuP `êÚö´R¡np¬ÔìúŞÕ\ye—‡U‡¸Ç~å/Ö‚,ÒŠkÒt¯ƒP¸#ÀÊ¾bœràñIÒ.©
+½ÔÎ‘Wpÿ~Â‡|´ªihº¶øşº1§ğÁÚ±úAt6*KL"/$qôö+ÍEº°¦Õ_#×ˆ™)¼·ı£å])	…jfíbKòô>˜'¤Rà:Úìş!ÀØñj S5su²„ÕJù“†ªB¯Ë2amux   = CX25840_AUDIO8,
+		}, {
+			.type   = CX23885_VMUX_SVIDEO,
+			.vmux   = CX25840_VIN8_CH1 |
+				  CX25840_NONE_CH2 |
+				  CX25840_VIN7_CH3 |
+				  CX25840_SVIDEO_ON,
+			.amux   = CX25840_AUDIO6,
+		}, {
+			.type   = CX23885_VMUX_COMPONENT,
+			.vmux   = CX25840_VIN1_CH1 |
+				  CX25840_NONE_CH2 |
+				  CX25840_NONE0_CH3 |
+				  CX25840_NONE1_CH3,
+			.amux   = CX25840_AUDIO6,
+		} },
+	},
+	[CX23885_BOARD_DVICO_FUSIONHDTV_DVB_T_DUAL_EXP2] = {
+		.name		= "DViCO FusionHDTV DVB-T Dual Express2",
+		.portb		= CX23885_MPEG_DVB,
+		.portc		= CX23885_MPEG_DVB,
+	},
+	[CX23885_BOARD_HAUPPAUGE_IMPACTVCBE] = {
+		.name		= "Hauppauge ImpactVCB-e",
+		.tuner_type	= TUNER_ABSENT,
+		.porta		= CX23885_ANALOG_VIDEO,
+		.input          = {{
+			.type   = CX23885_VMUX_COMPOSITE1,
+			.vmux   = CX25840_VIN6_CH1,
+			.amux   = CX25840_AUDIO7,
+		}, {
+			.type   = CX23885_VMUX_SVIDEO,
+			.vmux   = CX25840_VIN4_CH2 |
+				  CX25840_VIN8_CH1 |
+				  CX25840_SVIDEO_ON,
+			.amux   = CX25840_AUDIO7,
+		} },
+	},
+	[CX23885_BOARD_DVBSKY_T9580] = {
+		.name		= "DVBSky T9580",
+		.portb		= CX23885_MPEG_DVB,
+		.portc		= CX23885_MPEG_DVB,
+	},
+	[CX23885_BOARD_DVBSKY_T980C] = {
+		.name		= "DVBSky T980C",
+		.portb		= CX23885_MPEG_DVB,
+	},
+	[CX23885_BOARD_DVBSKY_S950C] = {
+		.name		= "DVBSky S950C",
+		.portb		= CX23885_MPEG_DVB,
+	},
+	[CX23885_BOARD_TT_CT2_4500_CI] = {
+		.name		= "Technotrend TT-budget CT2-4500 CI",
+		.portb		= CX23885_MPEG_DVB,
+	},
+	[CX23885_BOARD_DVBSKY_S950] = {
+		.name		= "DVBSky S950",
+		.portb		= CX23885_MPEG_DVB,
+	},
+	[CX23885_BOARD_DVBSKY_S952] = {
+		.name		= "DVBSky S952",
+		.portb		= CX23885_MPEG_DVB,
+		.portc		= CX23885_MPEG_DVB,
+	},
+	[CX23885_BOARD_DVBSKY_T982] = {
+		.name		= "DVBSky T982",
+		.portb		= CX23885_MPEG_DVB,
+		.portc		= CX23885_MPEG_DVB,
+	},
+	[CX23885_BOARD_HAUPPAUGE_HVR5525] = {
+		.name		= "Hauppauge WinTV-HVR5525",
+		.porta		= CX23885_ANALOG_VIDEO,
+		.portb		= CX23885_MPEG_DVB,
+		.portc		= CX23885_MPEG_DVB,
+		.tuner_type	= TUNER_ABSENT,
+		.force_bff	= 1,
+		.input		= {{
+			.type	= CX23885_VMUX_TELEVISION,
+			.vmux	=	CX25840_VIN7_CH3 |
+					CX25840_VIN5_CH2 |
+					CX25840_VIN2_CH1 |
+					CX25840_DIF_ON,
+			.amux   = CX25840_AUDIO8,
+		}, {
+			.type   = CX23885_VMUX_COMPOSITE1,
+			.vmux   = CX25840_VIN6_CH1,
+			.amux   = CX25840_AUDIO7,
+		}, {
+			.type   = CX23885_VMUX_SVIDEO,
+			.vmux   = CX25840_VIN7_CH3 |
+				  CX25840_VIN8_CH1 |
+				  CX25840_SVIDEO_ON,
+			.amux   = CX25840_AUDIO7,
+		} },
+	},
+	[CX23885_BOARD_VIEWCAST_260E] = {
+		.name		= "ViewCast 260e",
+		.porta		= CX23885_ANALOG_VIDEO,
+		.force_bff	= 1,
+		.input          = {{
+			.type   = CX23885_VMUX_COMPOSITE1,
+			.vmux   = CX25840_VIN6_CH1,
+			.amux   = CX25840_AUDIO7,
+		}, {
+			.type   = CX23885_VMUX_SVIDEO,
+			.vmux   = CX25840_VIN7_CH3 |
+					CX25840_VIN5_CH1 |
+					CX25840_SVIDEO_ON,
+			.amux   = CX25840_AUDIO7,
+		}, {
+			.type   = CX23885_VMUX_COMPONENT,
+			.vmux   = CX25840_VIN7_CH3 |
+					CX25840_VIN6_CH2 |
+					CX25840_VIN5_CH1 |
+					CX25840_COMPONENT_ON,
+			.amux   = CX25840_AUDIO7,
+		} },
+	},
+	[CX23885_BOARD_VIEWCAST_460E] = {
+		.name		= "ViewCast 460e",
+		.porta		= CX23885_ANALOG_VIDEO,
+		.force_bff	= 1,
+		.input          = {{
+			.type   = CX23885_VMUX_COMPOSITE1,
+			.vmux   = CX25840_VIN4_CH1,
+			.amux   = CX25840_AUDIO7,
+		}, {
+			.type   = CX23885_VMUX_SVIDEO,
+			.vmux   = CX25840_VIN7_CH3 |
+					CX25840_VIN6_CH1 |
+					CX25840_SVIDEO_ON,
+			.amux   = CX25840_AUDIO7,
+		}, {
+			.type   = CX23885_VMUX_COMPONENT,
+			.vmux   = CX25840_VIN7_CH3 |
+					CX25840_VIN6_CH1 |
+					CX25840_VIN5_CH2 |
+					CX25840_COMPONENT_ON,
+			.amux   = CX25840_AUDIO7,
+		}, {
+			.type   = CX23885_VMUX_COMPOSITE2,
+			.vmux   = CX25840_VIN6_CH1,
+			.amux   = CX25840_AUDIO7,
+		} },
+	},
+	[CX23885_BOARD_HAUPPAUGE_QUADHD_DVB] = {
+		.name         = "Hauppauge WinTV-QuadHD-DVB",
+		.porta        = CX23885_ANALOG_VIDEO,
+		.portb        = CX23885_MPEG_DVB,
+		.portc        = CX23885_MPEG_DVB,
+		.tuner_type	= TUNER_ABSENT,
+		.force_bff	= 1,
+		.input          = {{
+			.type   = CX23885_VMUX_TELEVISION,
+			.vmux   =	CX25840_VIN7_CH3 |
+					CX25840_VIN5_CH2 |
+					CX25840_VIN2_CH1 |
+					CX25840_DIF_ON,
+			.amux   = CX25840_AUDIO8,
+		} },
+	},
+	[CX23885_BOARD_HAUPPAUGE_QUADHD_DVB_885] = {
+		.name         = "Hauppauge WinTV-QuadHD-DVB(885)",
+		.portb        = CX23885_MPEG_DVB,
+		.portc        = CX23885_MPEG_DVB,
+		.tuner_type   = TUNER_ABSENT,
+	},
+	[CX23885_BOARD_HAUPPAUGE_QUADHD_ATSC] = {
+		.name         = "Hauppauge WinTV-QuadHD-ATSC",
+		.porta        = CX23885_ANALOG_VIDEO,
+		.portb        = CX23885_MPEG_DVB,
+		.portc        = CX23885_MPEG_DVB,
+		.tuner_type	= TUNER_ABSENT,
+		.input          = {{
+			.type   = CX23885_VMUX_TELEVISION,
+			.vmux   =	CX25840_VIN7_CH3 |
+					CX25840_VIN5_CH2 |
+					CX25840_VIN2_CH1 |
+					CX25840_DIF_ON,
+			.amux   = CX25840_AUDIO8,
+		} },
+	},
+	[CX23885_BOARD_HAUPPAUGE_QUADHD_ATSC_885] = {
+		.name         = "Hauppauge WinTV-QuadHD-ATSC(885)",
+		.portb        = CX23885_MPEG_DVB,
+		.portc        = CX23885_MPEG_DVB,
+		.tuner_type   = TUNER_ABSENT,
+	},
+	[CX23885_BOARD_HAUPPAUGE_HVR1265_K4] = {
+		.name		= "Hauppauge WinTV-HVR-1265(161111)",
+		.porta          = CX23885_ANALOG_VIDEO,
+		.portc		= CX23885_MPEG_DVB,
+		.tuner_type     = TUNER_ABSENT,
+		.input          = {{
+			.type   = CX23885_VMUX_TELEVISION,
+			.vmux   =	CX25840_VIN7_CH3 |
+					CX25840_VIN5_CH2 |
+					CX25840_VIN2_CH1 |
+					CX25840_DIF_ON,
+			.amux   = CX25840_AUDIO8,
+		}, {
+			.type   = CX23885_VMUX_SVIDEO,
+			.vmux   =	CX25840_VIN4_CH2 |
+					CX25840_VIN6_CH1 |
+					CX25840_SVIDEO_ON,
+			.amux   = CX25840_AUDIO7,
+		} },
+	},
+	[CX23885_BOARD_HAUPPAUGE_STARBURST2] = {
+		.name		= "Hauppauge WinTV-Starburst2",
+		.portb		= CX23885_MPEG_DVB,
+	},
+	[CX23885_BOARD_AVERMEDIA_CE310B] = {
+		.name		= "AVerMedia CE310B",
+		.porta		= CX23885_ANALOG_VIDEO,
+		.force_bff	= 1,
+		.input          = {{
+			.type   = CX23885_VMUX_COMPOSITE1,
+			.vmux   = CX25840_VIN1_CH1 |
+				  CX25840_NONE_CH2 |
+				  CX25840_NONE0_CH3,
+			.amux   = CX25840_AUDIO7,
+		}, {
+			.type   = CX23885_VMUX_SVIDEO,
+			.vmux   = CX25840_VIN8_CH1 |
+				  CX25840_NONE_CH2 |
+				  CX25840_VIN7_CH3 |
+				  CX25840_SVIDEO_ON,
+			.amux   = CX25840_AUDIO7,
+		} },
+	},
 };
+const unsigned int cx23885_bcount = ARRAY_SIZE(cx23885_boards);
 
-static inline int state_verbose(enum lock_usage_bit bit,
-				struct lock_class *class)
+/* ------------------------------------------------------------------ */
+/* PCI subsystem IDs                                                  */
+
+struct cx23885_subid cx23885_subids[] = {
+	{
+		.subvendor = 0x0070,
+		.subdevice = 0x3400,
+		.card      = CX23885_BOARD_UNKNOWN,
+	}, {
+		.subvendor = 0x0070,
+		.subdevice = 0x7600,
+		.card      = CX23885_BOARD_HAUPPAUGE_HVR1800lp,
+	}, {
+		.subvendor = 0x0070,
+		.subdevice = 0x7800,
+		.card      = CX23885_BOARD_HAUPPAUGE_HVR1800,
+	}, {
+		.subvendor = 0x0070,
+		.subdevice = 0x7801,
+		.card      = CX23885_BOARD_HAUPPAUGE_HVR1800,
+	}, {
+		.subvendor = 0x0070,
+		.subdevice = 0x7809,
+		.card      = CX23885_BOARD_HAUPPAUGE_HVR1800,
+	}, {
+		.subvendor = 0x0070,
+		.subdevice = 0x7911,
+		.card      = CX23885_BOARD_HAUPPAUGE_HVR1250,
+	}, {
+		.subvendor = 0x18ac,
+		.subdevice = 0xd500,
+		.card      = CX23885_BOARD_DVICO_FUSIONHDTV_5_EXP,
+	}, {
+		.subvendor = 0x0070,
+		.subdevice = 0x7790,
+		.card      = CX23885_BOARD_HAUPPAUGE_HVR1500Q,
+	}, {
+		.subvendor = 0x0070,
+		.subdevice = 0x7797,
+		.card      = CX23885_BOARD_HAUPPAUGE_HVR1500Q,
+	}, {
+		.subvendor = 0x0070,
+		.subdevice = 0x7710,
+		.card      = CX23885_BOARD_HAUPPAUGE_HVR1500,
+	}, {
+		.subvendor = 0x0070,
+		.subdevice = 0x7717,
+		.card      = CX23885_BOARD_HAUPPAUGE_HVR1500,
+	}, {
+		.subvendor = 0x0070,
+		.subdevice = 0x71d1,
+		.card      = CX23885_BOARD_HAUPPAUGE_HVR1200,
+	}, {
+		.subvendor = 0x0070,
+		.subdevice = 0x71d3,
+		.card      = CX23885_BOARD_HAUPPAUGE_HVR1200,
+	}, {
+		.subvendor = 0x0070,
+		.subdevice = 0x8101,
+		.card      = CX23885_BOARD_HAUPPAUGE_HVR1700,
+	}, {
+		.subvendor = 0x0070,
+		.subdevice = 0x8010,
+		.card      = CX23885_BOARD_HAUPPAUGE_HVR1400,
+	}, {
+		.subvendor = 0x18ac,
+		.subdevice = 0xd618,
+		.card      = CX23885_BOARD_DVICO_FUSIONHDTV_7_DUAL_EXP,
+	}, {
+		.subvendor = 0x18ac,
+		.subdevice = 0xdb78,
+		.card      = CX23885_BOARD_DVICO_FUSIONHDTV_DVB_T_DUAL_EXP,
+	}, {
+		.subvendor = 0x107d,
+		.subdevice = 0x6681,
+		.card      = CX23885_BOARD_LEADTEK_WINFAST_PXDVR3200_H,
+	}, {
+		.subvendor = 0x107d,
+		.subdevice = 0x6f21,
+		.card      = CX23885_BOARD_LEADTEK_WINFAST_PXPVR2200,
+	}, {
+		.subvendor = 0x107d,
+		.subdevice = 0x6f39,
+		.card	   = CX23885_BOARD_LEADTEK_WINFAST_PXDVR3200_H_XC4000,
+	}, {
+		.subvendor = 0x185b,
+		.subdevice = 0xe800,
+		.card      = CX23885_BOARD_COMPRO_VIDEOMATE_E650F,
+	}, {
+		.subvendor = 0x6920,
+		.subdevice = 0x8888,
+		.card      = CX23885_BOARD_TBS_6920,
+	}, {
+		.subvendor = 0x6980,
+		.subdevice = 0x8888,
+		.card      = CX23885_BOARD_TBS_6980,
+	}, {
+		.subvendor = 0x6981,
+		.subdevice = 0x8888,
+		.card      = CX23885_BOARD_TBS_6981,
+	}, {
+		.subvendor = 0xd470,
+		.subdevice = 0x9022,
+		.card      = CX23885_BOARD_TEVII_S470,
+	}, {
+		.subvendor = 0x0001,
+		.subdevice = 0x2005,
+		.card      = CX23885_BOARD_DVBWORLD_2005,
+	}, {
+		.subvendor = 0x1b55,
+		.subdevice = 0x2a2c,
+		.card      = CX23885_BOARD_NETUP_DUAL_DVBS2_CI,
+	}, {
+		.subvendor = 0x0070,
+		.subdevice = 0x2211,
+		.card      = CX23885_BOARD_HAUPPAUGE_HVR1270,
+	}, {
+		.subvendor = 0x0070,
+		.subdevice = 0x2215,
+		.card      = CX23885_BOARD_HAUPPAUGE_HVR1275,
+	}, {
+		.subvendor = 0x0070,
+		.subdevice = 0x221d,
+		.card      = CX23885_BOARD_HAUPPAUGE_HVR1275,
+	}, {
+		.subvendor = 0x0070,
+		.subdevice = 0x2251,
+		.card      = CX23885_BOARD_HAUPPAUGE_HVR1255,
+	}, {
+		.subvendor = 0x0070,
+		.subdevice = 0x2259,
+		.card      = CX23885_BOARD_HAUPPAUGE_HVR1255_22111,
+	}, {
+		.subvendor = 0x0070,
+		.subdevice = 0x2291,
+		.card      = CX23885_BOARD_HAUPPAUGE_HVR1210,
+	}, {
+		.subvendor = 0x0070,
+		.subdevice = 0x2295,
+		.card      = CX23885_BOARD_HAUPPAUGE_HVR1210,
+	}, {
+		.subvendor = 0x0070,
+		.subdevice = 0x2299,
+		.card      = CX23885_BOARD_HAUPPAUGE_HVR1210,
+	}, {
+		.subvendor = 0x0070,
+		.subdevice = 0x229d,
+		.card      = CX23885_BOARD_HAUPPAUGE_HVR1210, /* HVR1215 */
+	}, {
+		.subvendor = 0x0070,
+		.subdevice = 0x22f0,
+		.card      = CX23885_BOARD_HAUPPAUGE_HVR1210,
+	}, {
+		.subvendor = 0x0070,
+		.subdevice = 0x22f1,
+		.card      = CX23885_BOARD_HAUPPAUGE_HVR1255,
+	}, {
+		.subvendor = 0x0070,
+		.subdevice = 0x22f2,
+		.card      = CX23885_BOARD_HAUPPAUGE_HVR1275,
+	}, {
+		.subvendor = 0x0070,
+		.subdevice = 0x22f3,
+		.card      = CX23885_BOARD_HAUPPAUGE_HVR1210, /* HVR1215 */
+	}, {
+		.subvendor = 0x0070,
+		.subdevice = 0x22f4,
+		.card      = CX23885_BOARD_HAUPPAUGE_HVR1210,
+	}, {
+		.subvendor = 0x0070,
+		.subdevice = 0x22f5,
+		.card      = CX23885_BOARD_HAUPPAUGE_HVR1210, /* HVR1215 */
+	}, {
+		.subvendor = 0x14f1,
+		.subdevice = 0x8651,
+		.card      = CX23885_BOARD_MYGICA_X8506,
+	}, {
+		.subvendor = 0x14f1,
+		.subdevice = 0x8657,
+		.card      = CX23885_BOARD_MAGICPRO_PROHDTVE2,
+	}, {
+		.subvendor = 0x0070,
+		.subdevice = 0x8541,
+		.card      = CX23885_BOARD_HAUPPAUGE_HVR1850,
+	}, {
+		.subvendor = 0x1858,
+		.subdevice = 0xe800,
+		.card      = CX23885_BOARD_COMPRO_VIDEOMATE_E800,
+	}, {
+		.subvendor = 0x0070,
+		.subdevice = 0x8551,
+		.card      = CX23885_BOARD_HAUPPAUGE_HVR1290,
+	}, {
+		.subvendor = 0x14f1,
+		.subdevice = 0x8578,
+		.card      = CX23885_BOARD_MYGICA_X8558PRO,
+	}, {
+		.subvendor = 0x107d,
+		.subdevice = 0x6f22,
+		.card      = CX23885_BOARD_LEADTEK_WINFAST_PXTV1200,
+	}, {
+		.subvendor = 0x5654,
+		.subdevice = 0x2390,
+		.card      = CX23885_BOARD_GOTVIEW_X5_3D_HYBRID,
+	}, {
+		.subvendor = 0x1b55,
+		.subdevice = 0xe2e4,
+		.card      = CX23885_BOARD_NETUP_DUAL_DVB_T_C_CI_RF,
+	}, {
+		.subvendor = 0x14f1,
+		.subdevice = 0x8502,
+		.card      = CX23885_BOARD_MYGICA_X8507,
+	}, {
+		.subvendor = 0x153b,
+		.subdevice = 0x117e,
+		.card      = CX23885_BOARD_TERRATEC_CINERGY_T_PCIE_DUAL,
+	}, {
+		.subvendor = 0xd471,
+		.subdevice = 0x9022,
+		.card      = CX23885_BOARD_TEVII_S471,
+	}, {
+		.subvendor = 0x8000,
+		.subdevice = 0x3034,
+		.card      = CX23885_BOARD_PROF_8000,
+	}, {
+		.subvendor = 0x0070,
+		.subdevice = 0xc108,
+		.card      = CX23885_BOARD_HAUPPAUGE_HVR4400, /* Hauppauge WinTV HVR-4400 (Model 121xxx, Hybrid DVB-T/S2, IR) */
+	}, {
+		.subvendor = 0x0070,
+		.subdevice = 0xc138,
+		.card      = CX23885_BOARD_HAUPPAUGE_HVR4400, /* Hauppauge WinTV HVR-5500 (Model 121xxx, Hybrid DVB-T/C/S2, IR) */
+	}, {
+		.subvendor = 0x0070,
+		.subdevice = 0xc12a,
+		.card      = CX23885_BOARD_HAUPPAUGE_STARBURST, /* Hauppauge WinTV Starburst (Model 121x00, DVB-S2, IR) */
+	}, {
+		.subvendor = 0x0070,
+		.subdevice = 0xc1f8,
+		.card      = CX23885_BOARD_HAUPPAUGE_HVR4400, /* Hauppauge WinTV HVR-5500 (Model 121xxx, Hybrid DVB-T/C/S2, IR) */
+	}, {
+		.subvendor = 0x1461,
+		.subdevice = 0xd939,
+		.card      = CX23885_BOARD_AVERMEDIA_HC81R,
+	}, {
+		.subvendor = 0x0070,
+		.subdevice = 0x7133,
+		.card      = CX23885_BOARD_HAUPPAUGE_IMPACTVCBE,
+	}, {
+		.subvendor = 0x0070,
+		.subdevice = 0x7137,
+		.card      = CX23885_BOARD_HAUPPAUGE_IMPACTVCBE,
+	}, {
+		.subvendor = 0x18ac,
+		.subdevice = 0xdb98,
+		.card      = CX23885_BOARD_DVICO_FUSIONHDTV_DVB_T_DUAL_EXP2,
+	}, {
+		.subvendor = 0x4254,
+		.subdevice = 0x9580,
+		.card      = CX23885_BOARD_DVBSKY_T9580,
+	}, {
+		.subvendor = 0x4254,
+		.subdevice = 0x980c,
+		.card      = CX23885_BOARD_DVBSKY_T980C,
+	}, {
+		.subvendor = 0x4254,
+		.subdevice = 0x950c,
+		.card      = CX23885_BOARD_DVBSKY_S950C,
+	}, {
+		.subvendor = 0x13c2,
+		.subdevice = 0x3013,
+		.card      = CX23885_BOARD_TT_CT2_4500_CI,
+	}, {
+		.subvendor = 0x4254,
+		.subdevice = 0x0950,
+		.card      = CX23885_BOARD_DVBSKY_S950,
+	}, {
+		.subvendor = 0x4254,
+		.subdevice = 0x0952,
+		.card      = CX23885_BOARD_DVBSKY_S952,
+	}, {
+		.subvendor = 0x4254,
+		.subdevice = 0x0982,
+		.card      = CX23885_BOARD_DVBSKY_T982,
+	}, {
+		.subvendor = 0x0070,
+		.subdevice = 0xf038,
+		.card      = CX23885_BOARD_HAUPPAUGE_HVR5525,
+	}, {
+		.subvendor = 0x1576,
+		.subdevice = 0x0260,
+		.card      = CX23885_BOARD_VIEWCAST_260E,
+	}, {
+		.subvendor = 0x1576,
+		.subdevice = 0x0460,
+		.card      = CX23885_BOARD_VIEWCAST_460E,
+	}, {
+		.subvendor = 0x0070,
+		.subdevice = 0x6a28,
+		.card      = CX23885_BOARD_HAUPPAUGE_QUADHD_DVB, /* Tuner Pair 1 */
+	}, {
+		.subvendor = 0x0070,
+		.subdevice = 0x6b28,
+		.card      = CX23885_BOARD_HAUPPAUGE_QUADHD_DVB, /* Tuner Pair 2 */
+	}, {
+		.subvendor = 0x0070,
+		.subdevice = 0x6a18,
+		.card      = CX23885_BOARD_HAUPPAUGE_QUADHD_ATSC, /* Tuner Pair 1 */
+	}, {
+		.subvendor = 0x0070,
+		.subdevice = 0x6b18,
+		.card      = CX23885_BOARD_HAUPPAUGE_QUADHD_ATSC, /* Tuner Pair 2 */
+	}, {
+		.subvendor = 0x0070,
+		.subdevice = 0x2a18,
+		.card      = CX23885_BOARD_HAUPPAUGE_HVR1265_K4, /* Hauppauge WinTV HVR-1265 (Model 161xx1, Hybrid ATSC/QAM-B) */
+	}, {
+		.subvendor = 0x0070,
+		.subdevice = 0xf02a,
+		.card      = CX23885_BOARD_HAUPPAUGE_STARBURST2,
+	}, {
+		.subvendor = 0x1461,
+		.subdevice = 0x3100,
+		.card      = CX23885_BOARD_AVERMEDIA_CE310B,
+	},
+};
+const unsigned int cx23885_idcount = ARRAY_SIZE(cx23885_subids);
+
+void cx23885_card_list(struct cx23885_dev *dev)
 {
-	return state_verbose_f[bit >> LOCK_USAGE_DIR_MASK](class);
-}
-
-typedef int (*check_usage_f)(struct task_struct *, struct held_lock *,
-			     enum lock_usage_bit bit, const char *name);
-
-static int
-mark_lock_irq(struct task_struct *curr, struct held_lock *this,
-		enum lock_usage_bit new_bit)
-{
-	int excl_bit = exclusive_bit(new_bit);
-	int read = new_bit & LOCK_USAGE_READ_MASK;
-	int dir = new_bit & LOCK_USAGE_DIR_MASK;
-
-	/*
-	 * Validate that this particular lock does not have conflicting
-	 * usage states.
-	 */
-	if (!valid_state(curr, this, new_bit, excl_bit))
-		return 0;
-
-	/*
-	 * Check for read in write conflicts
-	 */
-	if (!read && !valid_state(curr, this, new_bit,
-				  excl_bit + LOCK_USAGE_READ_MASK))
-		return 0;
-
-
-	/*
-	 * Validate that the lock dependencies don't have conflicting usage
-	 * states.
-	 */
-	if (dir) {
-		/*
-		 * mark ENABLED has to look backwards -- to ensure no dependee
-		 * has USED_IN state, which, again, would allow  recursion deadlocks.
-		 */
-		if (!check_usage_backwards(curr, this, excl_bit))
-			return 0;
-	} else {
-		/*
-		 * mark USED_IN has to look forwards -- to ensure no dependency
-		 * has ENABLED state, which would allow recursion deadlocks.
-		 */
-		if (!check_usage_forwards(curr, this, excl_bit))
-			return 0;
-	}
-
-	if (state_verbose(new_bit, hlock_class(this)))
-		return 2;
-
-	return 1;
-}
-
-/*
- * Mark all held locks with a usage bit:
- */
-static int
-mark_held_locks(struct task_struct *curr, enum lock_usage_bit base_bit)
-{
-	struct held_lock *hlock;
 	int i;
 
-	for (i = 0; i < curr->lockdep_depth; i++) {
-		enum lock_usage_bit hlock_bit = base_bit;
-		hlock = curr->held_locks + i;
+	if (0 == dev->pci->subsystem_vendor &&
+	    0 == dev->pci->subsystem_device) {
+		pr_info("%s: Board has no valid PCIe Subsystem ID and can't\n"
+			"%s: be autodetected. Pass card=<n> insmod option\n"
+			"%s: to workaround that. Redirect complaints to the\n"
+			"%s: vendor of the TV card.  Best regards,\n"
+			"%s:         -- tux\n",
+			dev->name, dev->name, dev->name, dev->name, dev->name);
+	} else {
+		pr_info("%s: Your board isn't known (yet) to the driver.\n"
+			"%s: Try to pick one of the existing card configs via\n"
+			"%s: card=<n> insmod option.  Updating to the latest\n"
+			"%s: version might help as well.\n",
+			dev->name, dev->name, dev->name, dev->name);
+	}
+	pr_info("%s: Here is a list of valid choices for the card=<n> insmod option:\n",
+	       dev->name);
+	for (i = 0; i < cx23885_bcount; i++)
+		pr_info("%s:    card=%d -> %s\n",
+			dev->name, i, cx23885_boards[i].name);
+}
 
-		if (hlock->read)
-			hlock_bit += LOCK_USAGE_READ_MASK;
+static void viewcast_eeprom(struct cx23885_dev *dev, u8 *eeprom_data)
+{
+	u32 sn;
 
-		BUG_ON(hlock_bit >= LOCK_USAGE_STATES);
-
-		if (!hlock->check)
-			continue;
-
-		if (!mark_lock(curr, hlock, hlock_bit))
-			return 0;
+	/* The serial number record begins with tag 0x59 */
+	if (*(eeprom_data + 0x00) != 0x59) {
+		pr_info("%s() eeprom records are undefined, no serial number\n",
+			__func__);
+		return;
 	}
 
-	return 1;
+	sn =	(*(eeprom_data + 0x06) << 24) |
+		(*(eeprom_data + 0x05) << 16) |
+		(*(eeprom_data + 0x04) << 8) |
+		(*(eeprom_data + 0x03));
+
+	pr_info("%s: card '%s' sn# MM%d\n",
+		dev->name,
+		cx23885_boards[dev->board].name,
+		sn);
 }
 
-/*
- * Hardirqs will be enabled:
- */
-static void __trace_hardirqs_on_caller(void)
+static void hauppauge_eeprom(struct cx23885_dev *dev, u8 *eeprom_data)
 {
-	struct task_struct *curr = current;
+	struct tveeprom tv;
 
-	/*
-	 * We are going to turn hardirqs on, so set the
-	 * usage bit for all held locks:
-	 */
-	if (!mark_held_locks(curr, LOCK_ENABLED_HARDIRQ))
-		return;
-	/*
-	 * If we have softirqs enabled, then set the usage
-	 * bit for all held locks. (disabled hardirqs prevented
-	 * this bit from being set before)
-	 */
-	if (curr->softirqs_enabled)
-		mark_held_locks(curr, LOCK_ENABLED_SOFTIRQ);
+	tveeprom_hauppauge_analog(&tv, eeprom_data);
+
+	/* Make sure we support the board model */
+	switch (tv.model) {
+	case 22001:
+		/* WinTV-HVR1270 (PCIe, Retail, half height)
+		 * ATSC/QAM and basic analog, IR Blast */
+	case 22009:
+		/* WinTV-HVR1210 (PCIe, Retail, half height)
+		 * DVB-T and basic analog, IR Blast */
+	case 22011:
+		/* WinTV-HVR1270 (PCIe, Retail, half height)
+		 * ATSC/QAM and basic analog, IR Recv */
+	case 22019:
+		/* WinTV-HVR1210 (PCIe, Retail, half height)
+		 * DVB-T and basic analog, IR Recv */
+	case 22021:
+		/* WinTV-HVR1275 (PCIe, Retail, half height)
+		 * ATSC/QAM and basic analog, IR Recv */
+	case 22029:
+		/* WinTV-HVR1210 (PCIe, Retail, half height)
+		 * DVB-T and basic analog, IR Recv */
+	case 22101:
+		/* WinTV-HVR1270 (PCIe, Retail, full height)
+		 * ATSC/QAM and basic analog, IR Blast */
+	case 22109:
+		/* WinTV-HVR1210 (PCIe, Retail, full height)
+		 * DVB-T and basic analog, IR Blast */
+	case 22111:
+		/* WinTV-HVR1270 (PCIe, Retail, full height)
+		 * ATSC/QAM and basic analog, IR Recv */
+	case 22119:
+		/* WinTV-HVR1210 (PCIe, Retail, full height)
+		 * DVB-T and basic analog, IR Recv */
+	case 22121:
+		/* WinTV-HVR1275 (PCIe, Retail, full height)
+		 * ATSC/QAM and basic analog, IR Recv */
+	case 22129:
+		/* WinTV-HVR1210 (PCIe, Retail, full height)
+		 * DVB-T and basic analog, IR Recv */
+	case 71009:
+		/* WinTV-HVR1200 (PCIe, Retail, full height)
+		 * DVB-T and basic analog */
+	case 71100:
+		/* WinTV-ImpactVCB-e (PCIe, Retail, half height)
+		 * Basic analog */
+	case 71359:
+		/* WinTV-HVR1200 (PCIe, OEM, half height)
+		 * DVB-T and basic analog */
+	case 71439:
+		/* WinTV-HVR1200 (PCIe, OEM, half height)
+		 * DVB-T and basic analog */
+	case 71449:
+		/* WinTV-HVR1200 (PCIe, OEM, full height)
+		 * DVB-T and basic analog */
+	case 71939:
+		/* WinTV-HVR1200 (PCIe, OEM, half height)
+		 * DVB-T and basic analog */
+	case 71949:
+		/* WinTV-HVR1200 (PCIe, OEM, full height)
+		 * DVB-T and basic analog */
+	case 71959:
+		/* WinTV-HVR1200 (PCIe, OEM, full height)
+		 * DVB-T and basic analog */
+	case 71979:
+		/* WinTV-HVR1200 (PCIe, OEM, half height)
+		 * DVB-T and basic analog */
+	case 71999:
+		/* WinTV-HVR1200 (PCIe, OEM, full height)
+		 * DVB-T and basic analog */
+	case 76601:
+		/* WinTV-HVR1800lp (PCIe, Retail, No IR, Dual
+			channel ATSC and MPEG2 HW Encoder */
+	case 77001:
+		/* WinTV-HVR1500 (Express Card, OEM, No IR, ATSC
+			and Basic analog */
+	case 77011:
+		/* WinTV-HVR1500 (Express Card, Retail, No IR, ATSC
+			and Basic analog */
+	case 77041:
+		/* WinTV-HVR1500Q (Express Card, OEM, No IR, ATSC/QAM
+			and Basic analog */
+	case 77051:
+		/* WinTV-HVR1500Q (Express Card, Retail, No IR, ATSC/QAM
+			and Basic analog */
+	case 78011:
+		/* WinTV-HVR1800 (PCIe, Retail, 3.5mm in, IR, No FM,
+			Dual channel ATSC and MPEG2 HW Encoder */
+	case 78501:
+		/* WinTV-HVR1800 (PCIe, OEM, RCA in, No IR, FM,
+			Dual channel ATSC and MPEG2 HW Encoder */
+	case 78521:
+		/* WinTV-HVR1800 (PCIe, OEM, RCA in, No IR, FM,
+			Dual channel ATSC and MPEG2 HW Encoder */
+	case 78531:
+		/* WinTV-HVR1800 (PCIe, OEM, RCA in, No IR, No FM,
+			Dual channel ATSC and MPEG2 HW Encoder */
+	case 78631:
+		/* WinTV-HVR1800 (PCIe, OEM, No IR, No FM,
+			Dual channel ATSC and MPEG2 HW Encoder */
+	case 79001:
+		/* WinTV-HVR1250 (PCIe, Retail, IR, full height,
+			ATSC and Basic analog */
+	case 79101:
+		/* WinTV-HVR1250 (PCIe, Retail, IR, half height,
+			ATSC and Basic analog */
+	case 79501:
+		/* WinTV-HVR1250 (PCIe, No IR, half height,
+			ATSC [at least] and Basic analog) */
+	case 79561:
+		/* WinTV-HVR1250 (PCIe, OEM, No IR, half height,
+			ATSC and Basic analog */
+	case 79571:
+		/* WinTV-HVR1250 (PCIe, OEM, No IR, full height,
+		 ATSC and Basic analog */
+	case 79671:
+		/* WinTV-HVR1250 (PCIe, OEM, No IR, half height,
+			ATSC and Basic analog */
+	case 80019:
+		/* WinTV-HVR1400 (Express Card, Retail, IR,
+		 * DVB-T and Basic analog */
+	case 81509:
+		/* WinTV-HVR1700 (PCIe, OEM, No IR, half height)
+		 * DVB-T and MPEG2 HW Encoder */
+	case 81519:
+		/* WinTV-HVR1700 (PCIe, OEM, No IR, full height)
+		 * DVB-T and MPEG2 HW Encoder */
+		break;
+	case 85021:
+		/* WinTV-HVR1850 (PCIe, Retail, 3.5mm in, IR, FM,
+			Dual channel ATSC and MPEG2 HW Encoder */
+		break;
+	case 85721:
+		/* WinTV-HVR1290 (PCIe, OEM, RCA in, IR,
+			Dual channel ATSC and Basic analog */
+	case 121019:
+		/* WinTV-HVR4400 (PCIe, DVB-S2, DVB-C/T) */
+		break;
+	case 121029:
+		/* WinTV-HVR5500 (PCIe, DVB-S2, DVB-C/T) */
+		break;
+	case 150329:
+		/* WinTV-HVR5525 (PCIe, DVB-S/S2, DVB-T/T2/C) */
+		break;
+	case 161111:
+		/* WinTV-HVR-1265 K4 (PCIe, Analog/ATSC/QAM-B) */
+		break;
+	case 166100: /* 888 version, hybrid */
+	case 166200: /* 885 version, DVB only */
+		/* WinTV-QuadHD (DVB) Tuner Pair 1 (PCIe, IR, half height,
+		   DVB-T/T2/C, DVB-T/T2/C */
+		break;
+	case 166101: /* 888 version, hybrid */
+	case 166201: /* 885 version, DVB only */
+		/* WinTV-QuadHD (DVB) Tuner Pair 2 (PCIe, IR, half height,
+		   DVB-T/T2/C, DVB-T/T2/C */
+		break;
+	case 165100: /* 888 version, hybrid */
+	case 165200: /* 885 version, digital only */
+		/* WinTV-QuadHD (ATSC) Tuner Pair 1 (PCIe, IR, half height,
+		 * ATSC/QAM-B, ATSC/QAM-B */
+		break;
+	case 165101: /* 888 version, hybrid */
+	case 165201: /* 885 version, digital only */
+		/* WinTV-QuadHD (ATSC) Tuner Pair 2 (PCIe, IR, half height,
+		 * ATSC/QAM-B, ATSC/QAM-B */
+		break;
+	default:
+		pr_warn("%s: warning: unknown hauppauge model #%d\n",
+			dev->name, tv.model);
+		break;
+	}
+
+	pr_info("%s: hauppauge eeprom: model=%d\n",
+		dev->name, tv.model);
 }
 
-/**
- * lockdep_hardirqs_on_prepare - Prepare for enabling interrupts
- * @ip:		Caller address
- *
- * Invoked before a possible transition to RCU idle from exit to user or
- * guest mode. This ensures that all RCU operations are done before RCU
- * stops watching. After the RCU transition lockdep_hardirqs_on() has to be
- * invoked to set the final state.
- */
-void lockdep_hardirqs_on_prepare(unsigned long ip)
+/* Some TBS cards require initing a chip using a bitbanged SPI attached
+   to the cx23885 gpio's. If this chip doesn't get init'ed the demod
+   doesn't respond to any command. */
+static void tbs_card_init(struct cx23885_dev *dev)
 {
-	if (unlikely(!debug_locks))
-		return;
+	int i;
+	static const u8 buf[] = {
+		0xe0, 0x06, 0x66, 0x33, 0x65,
+		0x01, 0x17, 0x06, 0xde};
 
-	/*
-	 * NMIs do not (and cannot) track lock dependencies, nothing to do.
-	 */
-	if (unlikely(in_nmi()))
-		return;
+	switch (dev->board) {
+	case CX23885_BOARD_TBS_6980:
+	case CX23885_BOARD_TBS_6981:
+		cx_set(GP0_IO, 0x00070007);
+		usleep_range(1000, 10000);
+		cx_clear(GP0_IO, 2);
+		usleep_range(1000, 10000);
+		for (i = 0; i < 9 * 8; i++) {
+			cx_clear(GP0_IO, 7);
+			usleep_range(1000, 10000);
+			cx_set(GP0_IO,
+				((buf[i >> 3] >> (7 - (i & 7))) & 1) | 4);
+			usleep_range(1000, 10000);
+		}
+		cx_set(GP0_IO, 7);
+		break;
+	}
+}
 
-	if (unlikely(this_cpu_read(lockdep_recursion)))
-		return;
+int cx23885_tuner_callback(void *priv, int component, int command, int arg)
+{
+	struct cx23885_tsport *port = priv;
+	struct cx23885_dev *dev = port->dev;
+	u32 bitmask = 0;
 
-	if (unlikely(lockdep_hardirqs_enabled())) {
-		/*
-		 * Neither irq nor preemption are disabled here
-		 * so this is racy by nature but losing one hit
-		 * in a stat is not a big deal.
+	if ((command == XC2028_RESET_CLK) || (command == XC2028_I2C_FLUSH))
+		return 0;
+
+	if (command != 0) {
+		pr_err("%s(): Unknown command 0x%x.\n",
+		       __func__, command);
+		return -EINVAL;
+	}
+
+	switch (dev->board) {
+	case CX23885_BOARD_HAUPPAUGE_HVR1400:
+	case CX23885_BOARD_HAUPPAUGE_HVR1500:
+	case CX23885_BOARD_HAUPPAUGE_HVR1500Q:
+	case CX23885_BOARD_LEADTEK_WINFAST_PXDVR3200_H:
+	case CX23885_BOARD_LEADTEK_WINFAST_PXPVR2200:
+	case CX23885_BOARD_LEADTEK_WINFAST_PXDVR3200_H_XC4000:
+	case CX23885_BOARD_COMPRO_VIDEOMATE_E650F:
+	case CX23885_BOARD_COMPRO_VIDEOMATE_E800:
+	case CX23885_BOARD_LEADTEK_WINFAST_PXTV1200:
+		/* Tuner Reset Command */
+		bitmask = 0x04;
+		break;
+	case CX23885_BOARD_DVICO_FUSIONHDTV_7_DUAL_EXP:
+	case CX23885_BOARD_DVICO_FUSIONHDTV_DVB_T_DUAL_EXP:
+	case CX23885_BOARD_DVICO_FUSIONHDTV_DVB_T_DUAL_EXP2:
+		/* Two identical tuners on two different i2c buses,
+		 * we need to reset the correct gpio. */
+		if (port->nr == 1)
+			bitmask = 0x01;
+		else if (port->nr == 2)
+			bitmask = 0x04;
+		break;
+	case CX23885_BOARD_GOTVIEW_X5_3D_HYBRID:
+		/* Tuner Reset Command */
+		bitmask = 0x02;
+		break;
+	case CX23885_BOARD_NETUP_DUAL_DVB_T_C_CI_RF:
+		altera_ci_tuner_reset(dev, port->nr);
+		break;
+	case CX23885_BOARD_AVERMEDIA_HC81R:
+		/* XC3028L Reset Command */
+		bitmask = 1 << 2;
+		break;
+	}
+
+	if (bitmask) {
+		/* Drive the tuner into reset and back out */
+		cx_clear(GP0_IO, bitmask);
+		mdelay(200);
+		cx_set(GP0_IO, bitmask);
+	}
+
+	return 0;
+}
+
+void cx23885_gpio_setup(struct cx23885_dev *dev)
+{
+	switch (dev->board) {
+	case CX23885_BOARD_HAUPPAUGE_HVR1250:
+		/* GPIO-0 cx24227 demodulator reset */
+		cx_set(GP0_IO, 0x00010001); /* Bring the part out of reset */
+		break;
+	case CX23885_BOARD_HAUPPAUGE_HVR1500:
+		/* GPIO-0 cx24227 demodulator */
+		/* GPIO-2 xc3028 tuner */
+
+		/* Put the parts into reset */
+		cx_set(GP0_IO, 0x00050000);
+		cx_clear(GP0_IO, 0x00000005);
+		msleep(5);
+
+		/* Bring the parts out of reset */
+		cx_set(GP0_IO, 0x00050005);
+		break;
+	case CX23885_BOARD_HAUPPAUGE_HVR1500Q:
+		/* GPIO-0 cx24227 demodulator reset */
+		/* GPIO-2 xc5000 tuner reset */
+		cx_set(GP0_IO, 0x00050005); /* Bring the part out of reset */
+		break;
+	case CX23885_BOARD_HAUPPAUGE_HVR1800:
+		/* GPIO-0 656_CLK */
+		/* GPIO-1 656_D0 */
+		/* GPIO-2 8295A Reset */
+		/* GPIO-3-10 cx23417 data0-7 */
+		/* GPIO-11-14 cx23417 addr0-3 */
+		/* GPIO-15-18 cx23417 READY, CS, RD, WR */
+		/* GPIO-19 IR_RX */
+
+		/* CX23417 GPIO's */
+		/* EIO15 Zilog Reset */
+		/* EIO14 S5H1409/CX24227 Reset */
+		mc417_gpio_enable(dev, GPIO_15 | GPIO_14, 1);
+
+		/* Put the demod into reset and protect the eeprom */
+		mc417_gpio_clear(dev, GPIO_15 | GPIO_14);
+		msleep(100);
+
+		/* Bring the demod and blaster out of reset */
+		mc417_gpio_set(dev, GPIO_15 | GPIO_14);
+		msleep(100);
+
+		/* Force the TDA8295A into reset and back */
+		cx23885_gpio_enable(dev, GPIO_2, 1);
+		cx23885_gpio_set(dev, GPIO_2);
+		msleep(20);
+		cx23885_gpio_clear(dev, GPIO_2);
+		msleep(20);
+		cx23885_gpio_set(dev, GPIO_2);
+		msleep(20);
+		break;
+	case CX23885_BOARD_HAUPPAUGE_HVR1200:
+		/* GPIO-0 tda10048 demodulator reset */
+		/* GPIO-2 tda18271 tuner reset */
+
+		/* Put the parts into reset and back */
+		cx_set(GP0_IO, 0x00050000);
+		msleep(20);
+		cx_clear(GP0_IO, 0x00000005);
+		msleep(20);
+		cx_set(GP0_IO, 0x00050005);
+		break;
+	case CX23885_BOARD_HAUPPAUGE_HVR1700:
+		/* GPIO-0 TDA10048 demodulator reset */
+		/* GPIO-2 TDA8295A Reset */
+		/* GPIO-3-10 cx23417 data0-7 */
+		/* GPIO-11-14 cx23417 addr0-3 */
+		/* GPIO-15-18 cx23417 READY, CS, RD, WR */
+
+		/* The following GPIO's are on the interna AVCore (cx25840) */
+		/* GPIO-19 IR_RX */
+		/* GPIO-20 IR_TX 416/DVBT Select */
+		/* GPIO-21 IIS DAT */
+		/* GPIO-22 IIS WCLK */
+		/* GPIO-23 IIS BCLK */
+
+		/* Put the parts into reset and back */
+		cx_set(GP0_IO, 0x00050000);
+		msleep(20);
+		cx_clear(GP0_IO, 0x00000005);
+		msleep(20);
+		cx_set(GP0_IO, 0x00050005);
+		break;
+	case CX23885_BOARD_HAUPPAUGE_HVR1400:
+		/* GPIO-0  Dibcom7000p demodulator reset */
+		/* GPIO-2  xc3028L tuner reset */
+		/* GPIO-13 LED */
+
+		/* Put the parts into reset and back */
+		cx_set(GP0_IO, 0x00050000);
+		msleep(20);
+		cx_clear(GP0_IO, 0x00000005);
+		msleep(20);
+		cx_set(GP0_IO, 0x00050005);
+		break;
+	case CX23885_BOARD_DVICO_FUSIONHDTV_7_DUAL_EXP:
+		/* GPIO-0 xc5000 tuner reset i2c bus 0 */
+		/* GPIO-1 s5h1409 demod reset i2c bus 0 */
+		/* GPIO-2 xc5000 tuner reset i2c bus 1 */
+		/* GPIO-3 s5h1409 demod reset i2c bus 0 */
+
+		/* Put the parts into reset and back */
+		cx_set(GP0_IO, 0x000f0000);
+		msleep(20);
+		cx_clear(GP0_IO, 0x0000000f);
+		msleep(20);
+		cx_set(GP0_IO, 0x000f000f);
+		break;
+	case CX23885_BOARD_DVICO_FUSIONHDTV_DVB_T_DUAL_EXP:
+	case CX23885_BOARD_DVICO_FUSIONHDTV_DVB_T_DUAL_EXP2:
+		/* GPIO-0 portb xc3028 reset */
+		/* GPIO-1 portb zl10353 reset */
+		/* GPIO-2 portc xc3028 reset */
+		/* GPIO-3 portc zl10353 reset */
+
+		/* Put the parts into reset and back */
+		cx_set(GP0_IO, 0x000f0000);
+		msleep(20);
+		cx_clear(GP0_IO, 0x0000000f);
+		msleep(20);
+		cx_set(GP0_IO, 0x000f000f);
+		break;
+	case CX23885_BOARD_LEADTEK_WINFAST_PXDVR3200_H:
+	case CX23885_BOARD_LEADTEK_WINFAST_PXPVR2200:
+	case CX23885_BOARD_LEADTEK_WINFAST_PXDVR3200_H_XC4000:
+	case CX23885_BOARD_COMPRO_VIDEOMATE_E650F:
+	case CX23885_BOARD_COMPRO_VIDEOMATE_E800:
+	case CX23885_BOARD_LEADTEK_WINFAST_PXTV1200:
+		/* GPIO-2  xc3028 tuner reset */
+
+		/* The following GPIO's are on the internal AVCore (cx25840) */
+		/* GPIO-?  zl10353 demod reset */
+
+		/* Put the parts into reset and back */
+		cx_set(GP0_IO, 0x00040000);
+		msleep(20);
+		cx_clear(GP0_IO, 0x00000004);
+		msleep(20);
+		cx_set(GP0_IO, 0x00040004);
+		break;
+	case CX23885_BOARD_TBS_6920:
+	case CX23885_BOARD_TBS_6980:
+	case CX23885_BOARD_TBS_6981:
+	case CX23885_BOARD_PROF_8000:
+		cx_write(MC417_CTL, 0x00000036);
+		cx_write(MC417_OEN, 0x00001000);
+		cx_set(MC417_RWD, 0x00000002);
+		msleep(200);
+		cx_clear(MC417_RWD, 0x00000800);
+		msleep(200);
+		cx_set(MC417_RWD, 0x00000800);
+		msleep(200);
+		break;
+	case CX23885_BOARD_NETUP_DUAL_DVBS2_CI:
+		/* GPIO-0 INTA from CiMax1
+		   GPIO-1 INTB from CiMax2
+		   GPIO-2 reset chips
+		   GPIO-3 to GPIO-10 data/addr for CA
+		   GPIO-11 ~CS0 to CiMax1
+		   GPIO-12 ~CS1 to CiMax2
+		   GPIO-13 ADL0 load LSB addr
+		   GPIO-14 ADL1 load MSB addr
+		   GPIO-15 ~RDY from CiMax
+		   GPIO-17 ~RD to CiMax
+		   GPIO-18 ~WR to CiMax
 		 */
-		__debug_atomic_inc(redundant_hardirqs_on);
-		return;
+		cx_set(GP0_IO, 0x00040000); /* GPIO as out */
+		/* GPIO1 and GPIO2 as INTA and INTB from CiMaxes, reset low */
+		cx_clear(GP0_IO, 0x00030004);
+		msleep(100);/* reset delay */
+		cx_set(GP0_IO, 0x00040004); /* GPIO as out, reset high */
+		cx_write(MC417_CTL, 0x00000037);/* enable GPIO3-18 pins */
+		/* GPIO-15 IN as ~ACK, rest as OUT */
+		cx_write(MC417_OEN, 0x00001000);
+		/* ~RD, ~WR high; ADL0, ADL1 low; ~CS0, ~CS1 high */
+		cx_write(MC417_RWD, 0x0000c300);
+		/* enable irq */
+		cx_write(GPIO_ISM, 0x00000000);/* INTERRUPTS active low*/
+		break;
+	case CX23885_BOARD_HAUPPAUGE_HVR1270:
+	case CX23885_BOARD_HAUPPAUGE_HVR1275:
+	case CX23885_BOARD_HAUPPAUGE_HVR1255:
+	case CX23885_BOARD_HAUPPAUGE_HVR1255_22111:
+	case CX23885_BOARD_HAUPPAUGE_HVR1210:
+		/* GPIO-5 RF Control: 0 = RF1 Terrestrial, 1 = RF2 Cable */
+		/* GPIO-6 I2C Gate which can isolate the demod from the bus */
+		/* GPIO-9 Demod reset */
+
+		/* Put the parts into reset and back */
+		cx23885_gpio_enable(dev, GPIO_9 | GPIO_6 | GPIO_5, 1);
+		cx23885_gpio_set(dev, GPIO_9 | GPIO_6 | GPIO_5);
+		cx23885_gpio_clear(dev, GPIO_9);
+		msleep(20);
+		cx23885_gpio_set(dev, GPIO_9);
+		break;
+	case CX23885_BOARD_MYGICA_X8506:
+	case CX23885_BOARD_MAGICPRO_PROHDTVE2:
+	case CX23885_BOARD_MYGICA_X8507:
+		/* GPIO-0 (0)Analog / (1)Digital TV */
+		/* GPIO-1 reset XC5000 */
+		/* GPIO-2 demod reset */
+		cx23885_gpio_enable(dev, GPIO_0 | GPIO_1 | GPIO_2, 1);
+		cx23885_gpio_clear(dev, GPIO_1 | GPIO_2);
+		msleep(100);
+		cx23885_gpio_set(dev, GPIO_0 | GPIO_1 | GPIO_2);
+		msleep(100);
+		break;
+	case CX23885_BOARD_MYGICA_X8558PRO:
+		/* GPIO-0 reset first ATBM8830 */
+		/* GPIO-1 reset second ATBM8830 */
+		cx23885_gpio_enable(dev, GPIO_0 | GPIO_1, 1);
+		cx23885_gpio_clear(dev, GPIO_0 | GPIO_1);
+		msleep(100);
+		cx23885_gpio_set(dev, GPIO_0 | GPIO_1);
+		msleep(100);
+		break;
+	case CX23885_BOARD_HAUPPAUGE_HVR1850:
+	case CX23885_BOARD_HAUPPAUGE_HVR1290:
+		/* GPIO-0 656_CLK */
+		/* GPIO-1 656_D0 */
+		/* GPIO-2 Wake# */
+		/* GPIO-3-10 cx23417 data0-7 */
+		/* GPIO-11-14 cx23417 addr0-3 */
+		/* GPIO-15-18 cx23417 READY, CS, RD, WR */
+		/* GPIO-19 IR_RX */
+		/* GPIO-20 C_IR_TX */
+		/* GPIO-21 I2S DAT */
+		/* GPIO-22 I2S WCLK */
+		/* GPIO-23 I2S BCLK */
+		/* ALT GPIO: EXP GPIO LATCH */
+
+		/* CX23417 GPIO's */
+		/* GPIO-14 S5H1411/CX24228 Reset */
+		/* GPIO-13 EEPROM write protect */
+		mc417_gpio_enable(dev, GPIO_14 | GPIO_13, 1);
+
+		/* Put the demod into reset and protect the eeprom */
+		mc417_gpio_clear(dev, GPIO_14 | GPIO_13);
+		msleep(100);
+
+		/* Bring the demod out of reset */
+		mc417_gpio_set(dev, GPIO_14);
+		msleep(100);
+
+		/* CX24228 GPIO */
+		/* Connected to IF / Mux */
+		break;
+	case CX23885_BOARD_GOTVIEW_X5_3D_HYBRID:
+		cx_set(GP0_IO, 0x00010001); /* Bring the part out of reset */
+		break;
+	case CX23885_BOARD_NETUP_DUAL_DVB_T_C_CI_RF:
+		/* GPIO-0 ~INT in
+		   GPIO-1 TMS out
+		   GPIO-2 ~reset chips out
+		   GPIO-3 to GPIO-10 data/addr for CA in/out
+		   GPIO-11 ~CS out
+		   GPIO-12 ADDR out
+		   GPIO-13 ~WR out
+		   GPIO-14 ~RD out
+		   GPIO-15 ~RDY in
+		   GPIO-16 TCK out
+		   GPIO-17 TDO in
+		   GPIO-18 TDI out
+		 */
+		cx_set(GP0_IO, 0x00060000); /* GPIO-1,2 as out */
+		/* GPIO-0 as INT, reset & TMS low */
+		cx_clear(GP0_IO, 0x00010006);
+		msleep(100);/* reset delay */
+		cx_set(GP0_IO, 0x00000004); /* reset high */
+		cx_write(MC417_CTL, 0x00000037);/* enable GPIO-3..18 pins */
+		/* GPIO-17 is TDO in, GPIO-15 is ~RDY in, rest is out */
+		cx_write(MC417_OEN, 0x00005000);
+		/* ~RD, ~WR high; ADDR low; ~CS high */
+		cx_write(MC417_RWD, 0x00000d00);
+		/* enable irq */
+		cx_write(GPIO_ISM, 0x00000000);/* INTERRUPTS active low*/
+		break;
+	case CX23885_BOARD_HAUPPAUGE_HVR4400:
+	case CX23885_BOARD_HAUPPAUGE_STARBURST:
+		/* GPIO-8 tda10071 demod reset */
+		/* GPIO-9 si2165 demod reset (only HVR4400/HVR5500)*/
+
+		/* Put the parts into reset and back */
+		cx23885_gpio_enable(dev, GPIO_8 | GPIO_9, 1);
+
+		cx23885_gpio_clear(dev, GPIO_8 | GPIO_9);
+		msleep(100);
+		cx23885_gpio_set(dev, GPIO_8 | GPIO_9);
+		msleep(100);
+
+		break;
+	case CX23885_BOARD_AVERMEDIA_HC81R:
+		cx_clear(MC417_CTL, 1);
+		/* GPIO-0,1,2 setup direction as output */
+		cx_set(GP0_IO, 0x00070000);
+		usleep_range(10000, 11000);
+		/* AF9013 demod reset */
+		cx_set(GP0_IO, 0x00010001);
+		usleep_range(10000, 11000);
+		cx_clear(GP0_IO, 0x00010001);
+		usleep_range(10000, 11000);
+		cx_set(GP0_IO, 0x00010001);
+		usleep_range(10000, 11000);
+		/* demod tune? */
+		cx_clear(GP0_IO, 0x00030003);
+		usleep_range(10000, 11000);
+		cx_set(GP0_IO, 0x00020002);
+		usleep_range(10000, 11000);
+		cx_set(GP0_IO, 0x00010001);
+		usleep_range(10000, 11000);
+		cx_clear(GP0_IO, 0x00020002);
+		/* XC3028L tuner reset */
+		cx_set(GP0_IO, 0x00040004);
+		cx_clear(GP0_IO, 0x00040004);
+		cx_set(GP0_IO, 0x00040004);
+		msleep(60);
+		break;
+	case CX23885_BOARD_DVBSKY_T9580:
+	case CX23885_BOARD_DVBSKY_S952:
+	case CX23885_BOARD_DVBSKY_T982:
+		/* enable GPIO3-18 pins */
+		cx_write(MC417_CTL, 0x00000037);
+		cx23885_gpio_enable(dev, GPIO_2 | GPIO_11, 1);
+		cx23885_gpio_clear(dev, GPIO_2 | GPIO_11);
+		msleep(100);
+		cx23885_gpio_set(dev, GPIO_2 | GPIO_11);
+		break;
+	case CX23885_BOARD_DVBSKY_T980C:
+	case CX23885_BOARD_DVBSKY_S950C:
+	case CX23885_BOARD_TT_CT2_4500_CI:
+		/*
+		 * GPIO-0 INTA from CiMax, input
+		 * GPIO-1 reset CiMax, output, high active
+		 * GPIO-2 reset demod, output, low active
+		 * GPIO-3 to GPIO-10 data/addr for CAM
+		 * GPIO-11 ~CS0 to CiMax1
+		 * GPIO-12 ~CS1 to CiMax2
+		 * GPIO-13 ADL0 load LSB addr
+		 * GPIO-14 ADL1 load MSB addr
+		 * GPIO-15 ~RDY from CiMax
+		 * GPIO-17 ~RD to CiMax
+		 * GPIO-18 ~WR to CiMax
+		 */
+
+		cx_set(GP0_IO, 0x00060002); /* GPIO 1/2 as output */
+		cx_clear(GP0_IO, 0x00010004); /* GPIO 0 as input */
+		msleep(100); /* reset delay */
+		cx_set(GP0_IO, 0x00060004); /* GPIO as out, reset high */
+		cx_clear(GP0_IO, 0x00010002);
+		cx_write(MC417_CTL, 0x00000037); /* enable GPIO3-18 pins */
+
+		/* GPIO-15 IN as ~ACK, rest as OUT */
+		cx_write(MC417_OEN, 0x00001000);
+
+		/* ~RD, ~WR high; ADL0, ADL1 low; ~CS0, ~CS1 high */
+		cx_write(MC417_RWD, 0x0000c300);
+
+		/* enable irq */
+		cx_write(GPIO_ISM, 0x00000000); /* INTERRUPTS active low */
+		break;
+	case CX23885_BOARD_DVBSKY_S950:
+		cx23885_gpio_enable(dev, GPIO_2, 1);
+		cx23885_gpio_clear(dev, GPIO_2);
+		msleep(100);
+		cx23885_gpio_set(dev, GPIO_2);
+		break;
+	case CX23885_BOARD_HAUPPAUGE_HVR5525:
+	case CX23885_BOARD_HAUPPAUGE_STARBURST2:
+		/*
+		 * HVR5525 GPIO Details:
+		 *  GPIO-00 IR_WIDE
+		 *  GPIO-02 wake#
+		 *  GPIO-03 VAUX Pres.
+		 *  GPIO-07 PROG#
+		 *  GPIO-08 SAT_RESN
+		 *  GPIO-09 TER_RESN
+		 *  GPIO-10 B2_SENSE
+		 *  GPIO-11 B1_SENSE
+		 *  GPIO-15 IR_LED_STATUS
+		 *  GPIO-19 IR_NARROW
+		 *  GPIO-20 Blauster1
+		 *  ALTGPIO VAUX_SWITCH
+		 *  AUX_PLL_CLK : Blaster2
+		 */
+		/* Put the parts into reset and back */
+		cx23885_gpio_enable(dev, GPIO_8 | GPIO_9, 1);
+		cx23885_gpio_clear(dev, GPIO_8 | GPIO_9);
+		msleep(100);
+		cx23885_gpio_set(dev, GPIO_8 | GPIO_9);
+		msleep(100);
+		break;
+	case CX23885_BOARD_VIEWCAST_260E:
+	case CX23885_BOARD_VIEWCAST_460E:
+		/* For documentation purposes, it's worth noting that this
+		 * card does not have any GPIO's connected to subcomponents.
+		 */
+		break;
+	case CX23885_BOARD_HAUPPAUGE_HVR1265_K4:
+	case CX23885_BOARD_HAUPPAUGE_QUADHD_DVB:
+	case CX23885_BOARD_HAUPPAUGE_QUADHD_DVB_885:
+	case CX23885_BOARD_HAUPPAUGE_QUADHD_ATSC:
+	case CX23885_BOARD_HAUPPAUGE_QUADHD_ATSC_885:
+		/*
+		 * GPIO-08 TER1_RESN
+		 * GPIO-09 TER2_RESN
+		 */
+		/* Put the parts into reset and back */
+		cx23885_gpio_enable(dev, GPIO_8 | GPIO_9, 1);
+		cx23885_gpio_clear(dev, GPIO_8 | GPIO_9);
+		msleep(100);
+		cx23885_gpio_set(dev, GPIO_8 | GPIO_9);
+		msleep(100);
+		break;
+	}
+}
+
+int cx23885_ir_init(struct cx23885_dev *dev)
+{
+	static struct v4l2_subdev_io_pin_config ir_rxtx_pin_cfg[] = {
+		{
+			.flags	  = BIT(V4L2_SUBDEV_IO_PIN_INPUT),
+			.pin	  = CX23885_PIN_IR_RX_GPIO19,
+			.function = CX23885_PAD_IR_RX,
+			.value	  = 0,
+			.strength = CX25840_PIN_DRIVE_MEDIUM,
+		}, {
+			.flags	  = BIT(V4L2_SUBDEV_IO_PIN_OUTPUT),
+			.pin	  = CX23885_PIN_IR_TX_GPIO20,
+			.function = CX23885_PAD_IR_TX,
+			.value	  = 0,
+			.strength = CX25840_PIN_DRIVE_MEDIUM,
+		}
+	};
+	const size_t ir_rxtx_pin_cfg_count = ARRAY_SIZE(ir_rxtx_pin_cfg);
+
+	static struct v4l2_subdev_io_pin_config ir_rx_pin_cfg[] = {
+		{
+			.flags	  = BIT(V4L2_SUBDEV_IO_PIN_INPUT),
+			.pin	  = CX23885_PIN_IR_RX_GPIO19,
+			.function = CX23885_PAD_IR_RX,
+			.value	  = 0,
+			.strength = CX25840_PIN_DRIVE_MEDIUM,
+		}
+	};
+	const size_t ir_rx_pin_cfg_count = ARRAY_SIZE(ir_rx_pin_cfg);
+
+	struct v4l2_subdev_ir_parameters params;
+	int ret = 0;
+	switch (dev->board) {
+	case CX23885_BOARD_HAUPPAUGE_HVR1500:
+	case CX23885_BOARD_HAUPPAUGE_HVR1500Q:
+	case CX23885_BOARD_HAUPPAUGE_HVR1800:
+	case CX23885_BOARD_HAUPPAUGE_HVR1200:
+	case CX23885_BOARD_HAUPPAUGE_HVR1400:
+	case CX23885_BOARD_HAUPPAUGE_HVR1275:
+	case CX23885_BOARD_HAUPPAUGE_HVR1255:
+	case CX23885_BOARD_HAUPPAUGE_HVR1255_22111:
+	case CX23885_BOARD_HAUPPAUGE_HVR1210:
+	case CX23885_BOARD_HAUPPAUGE_QUADHD_DVB:
+	case CX23885_BOARD_HAUPPAUGE_QUADHD_ATSC:
+		/* FIXME: Implement me */
+		break;
+	case CX23885_BOARD_HAUPPAUGE_HVR1270:
+		ret = cx23888_ir_probe(dev);
+		if (ret)
+			break;
+		dev->sd_ir = cx23885_find_hw(dev, CX23885_HW_888_IR);
+		v4l2_subdev_call(dev->sd_cx25840, core, s_io_pin_config,
+				 ir_rx_pin_cfg_count, ir_rx_pin_cfg);
+		break;
+	case CX23885_BOARD_HAUPPAUGE_HVR1850:
+	case CX23885_BOARD_HAUPPAUGE_HVR1290:
+		ret = cx23888_ir_probe(dev);
+		if (ret)
+			break;
+		dev->sd_ir = cx23885_find_hw(dev, CX23885_HW_888_IR);
+		v4l2_subdev_call(dev->sd_cx25840, core, s_io_pin_config,
+				 ir_rxtx_pin_cfg_count, ir_rxtx_pin_cfg);
+		/*
+		 * For these boards we need to invert the Tx output via the
+		 * IR controller to have the LED off while idle
+		 */
+		v4l2_subdev_call(dev->sd_ir, ir, tx_g_parameters, &params);
+		params.enable = false;
+		params.shutdown = false;
+		params.invert_level = true;
+		v4l2_subdev_call(dev->sd_ir, ir, tx_s_parameters, &params);
+		params.shutdown = true;
+		v4l2_subdev_call(dev->sd_ir, ir, tx_s_parameters, &params);
+		break;
+	case CX23885_BOARD_TERRATEC_CINERGY_T_PCIE_DUAL:
+	case CX23885_BOARD_TEVII_S470:
+	case CX23885_BOARD_MYGICA_X8507:
+	case CX23885_BOARD_TBS_6980:
+	case CX23885_BOARD_TBS_6981:
+	case CX23885_BOARD_DVBSKY_T9580:
+	case CX23885_BOARD_DVBSKY_T980C:
+	case CX23885_BOARD_DVBSKY_S950C:
+	case CX23885_BOARD_TT_CT2_4500_CI:
+	case CX23885_BOARD_DVBSKY_S950:
+	case CX23885_BOARD_DVBSKY_S952:
+	case CX23885_BOARD_DVBSKY_T982:
+		if (!enable_885_ir)
+			break;
+		dev->sd_ir = cx23885_find_hw(dev, CX23885_HW_AV_CORE);
+		if (dev->sd_ir == NULL) {
+			ret = -ENODEV;
+			break;
+		}
+		v4l2_subdev_call(dev->sd_cx25840, core, s_io_pin_config,
+				 ir_rx_pin_cfg_count, ir_rx_pin_cfg);
+		break;
+	case CX23885_BOARD_HAUPPAUGE_HVR1250:
+		if (!enable_885_ir)
+			break;
+		dev->sd_ir = cx23885_find_hw(dev, CX23885_HW_AV_CORE);
+		if (dev->sd_ir == NULL) {
+			ret = -ENODEV;
+			break;
+		}
+		v4l2_subdev_call(dev->sd_cx25840, core, s_io_pin_config,
+				 ir_rxtx_pin_cfg_count, ir_rxtx_pin_cfg);
+		break;
+	case CX23885_BOARD_DVICO_FUSIONHDTV_DVB_T_DUAL_EXP:
+	case CX23885_BOARD_DVICO_FUSIONHDTV_DVB_T_DUAL_EXP2:
+		request_module("ir-kbd-i2c");
+		break;
 	}
 
-	/*
-	 * We're enabling irqs and according to our state above irqs weren't
-	 * already enabled, yet we find the hardware thinks they are in fact
-	 * enabled.. someone messed up their IRQ state tracing.
-	 */
-	if (DEBUG_LOCKS_WARN_ON(!irqs_disabled()))
-		return;
+	return ret;
+}
 
-	/*
-	 * See the fine text that goes along with this variable definition.
-	 */
-	if (DEBUG_LOCKS_WARN_ON(early_boot_irqs_disabled))
-		return;
+void cx23885_ir_fini(struct cx23885_dev *dev)
+{
+	switch (dev->board) {
+	case CX23885_BOARD_HAUPPAUGE_HVR1270:
+	case CX23885_BOARD_HAUPPAUGE_HVR1850:
+	case CX23885_BOARD_HAUPPAUGE_HVR1290:
+		cx23885_irq_remove(dev, PCI_MSK_IR);
+		cx23888_ir_remove(dev);
+		dev->sd_ir = NULL;
+		break;
+	case CX23885_BOARD_TERRATEC_CINERGY_T_PCIE_DUAL:
+	case CX23885_BOARD_TEVII_S470:
+	case CX23885_BOARD_HAUPPAUGE_HVR1250:
+	case CX23885_BOARD_MYGICA_X8507:
+	case CX23885_BOARD_TBS_6980:
+	case CX23885_BOARD_TBS_6981:
+	case CX23885_BOARD_DVBSKY_T9580:
+	case CX23885_BOARD_DVBSKY_T980C:
+	case CX23885_BOARD_DVBSKY_S950C:
+	case CX23885_BOARD_TT_CT2_4500_CI:
+	case CX23885_BOARD_DVBSKY_S950:
+	case CX23885_BOARD_DVBSKY_S952:
+	case CX23885_BOARD_DVBSKY_T982:
+		cx23885_irq_remove(dev, PCI_MSK_AV_CORE);
+		/* sd_ir is a duplicate pointer to the AV Core, just clear it */
+		dev->sd_ir = NULL;
+		break;
+	}
+}
 
-	/*
-	 * Can't allow enabling interrupts while in an interrupt handler,
-	 * that's general bad form and such. Recursion, limited stack etc..
-	 */
-	if (DEBUG_LOCKS_WARN_ON(lockdep_hardirq_context()))
-		return;
+static int netup_jtag_io(void *device, int tms, int tdi, int read_tdo)
+{
+	int data;
+	int tdo = 0;
+	struct cx23885_dev *dev = (struct cx23885_dev *)device;
+	/*TMS*/
+	data = ((cx_read(GP0_IO)) & (~0x00000002));
+	data |= (tms ? 0x00020002 : 0x00020000);
+	cx_write(GP0_IO, data);
 
-	current->hardirq_chain_key = current->curr_chain_key;
+	/*TDI*/
+	data = ((cx_read(MC417_RWD)) & (~0x0000a000));
+	data |= (tdi ? 0x00008000 : 0);
+	cx_write(MC417_RWD, data);
+	if (read_tdo)
+		tdo = (data & 0x00004000) ? 1 : 0; /*TDO*/
 
-	lockdep_recursion_inc();
-	__trace_hardirqs_on_calle
+	cx_write(MC417_RWD, data | 0x00002000);
+	udelay(1);
+	/*TCK*/
+	cx_write(MC417_RWD, data);
+
+	return tdo;
+}
+
+void cx23885_ir_pci_int_enable(struct cx23885_dev *dev)
+{
+	switch (dev->board) {
+	case CX23885_BOARD_HAUPPAUGE_HVR1270:
+	case CX23885_BOARD_HAUPPAUGE_HVR1850:
+	case CX23885_BOARD_HAUPPAUGE_HVR1290:
+		if (dev->sd_ir)
+			cx23885_irq_add_enable(dev, PCI_MSK_IR);
+		break;
+	case CX23885_BOARD_TERRATEC_CINERGY_T_PCIE_DUAL:
+	case CX23885_BOARD_TEVII_S470:
+	case CX23885_BOARD_HAUPPAUGE_HVR1250:
+	case CX23885_BOARD_MYGICA_X8507:
+	case CX23885_BOARD_TBS_6980:
+	case CX23885_BOARD_TBS_6981:
+	case CX23885_BOARD_DVBSKY_T9580:
+	case CX23885_BOARD_DVBSKY_T980C:
+	case CX23885_BOARD_DVBSKY_S950C:
+	case CX23885_BOARD_TT_CT2_4500_CI:
+	case CX23885_BOARD_DVBSKY_S950:
+	case CX23885_BOARD_DVBSKY_S952:
+	case CX23885_BOARD_DVBSKY_T982:
+		if (dev->sd_ir)
+			cx23885_irq_add_enable(dev, PCI_MSK_AV_CORE);
+		break;
+	}
+}
+
+void cx23885_card_setup(struct cx23885_dev *dev)
+{
+	struct cx23885_tsport *ts1 = &dev->ts1;
+	struct cx23885_tsport *ts2 = &dev->ts2;
+
+	static u8 eeprom[256];
+
+	if (dev->i2c_bus[0].i2c_rc == 0) {
+		dev->i2c_bus[0].i2c_client.addr = 0xa0 >> 1;
+		tveeprom_read(&dev->i2c_bus[0].i2c_client,
+			      eeprom, sizeof(eeprom));
+	}
+
+	switch (dev->board) {
+	case CX23885_BOARD_HAUPPAUGE_HVR1250:
+		if (dev->i2c_bus[0].i2c_rc == 0) {
+			if (eeprom[0x80] != 0x84)
+				hauppauge_eeprom(dev, eeprom+0xc0);
+			else
+				hauppauge_eeprom(dev, eeprom+0x80);
+		}
+		break;
+	case CX23885_BOARD_HAUPPAUGE_HVR1500:
+	case CX23885_BOARD_HAUPPAUGE_HVR1500Q:
+	case CX23885_BOARD_HAUPPAUGE_HVR1400:
+		if (dev->i2c_bus[0].i2c_rc == 0)
+			hauppauge_eeprom(dev, eeprom+0x80);
+		break;
+	case CX23885_BOARD_HAUPPAUGE_HVR1800:
+	case CX23885_BOARD_HAUPPAUGE_HVR1800lp:
+	case CX23885_BOARD_HAUPPAUGE_HVR1200:
+	case CX23885_BOARD_HAUPPAUGE_HVR1700:
+	case CX23885_BOARD_HAUPPAUGE_HVR1270:
+	case CX23885_BOARD_HAUPPAUGE_HVR1275:
+	case CX23885_BOARD_HAUPPAUGE_HVR1255:
+	case CX23885_BOARD_HAUPPAUGE_HVR1255_22111:
+	case CX23885_BOARD_HAUPPAUGE_HVR1210:
+	case CX23885_BOARD_HAUPPAUGE_HVR1850:
+	case CX23885_BOARD_HAUPPAUGE_HVR1290:
+	case CX23885_BOARD_HAUPPAUGE_HVR4400:
+	case CX23885_BOARD_HAUPPAUGE_STARBURST:
+	case CX23885_BOARD_HAUPPAUGE_IMPACTVCBE:
+	case CX23885_BOARD_HAUPPAUGE_HVR5525:
+	case CX23885_BOARD_HAUPPAUGE_HVR1265_K4:
+	case CX23885_BOARD_HAUPPAUGE_STARBURST2:
+	case CX23885_BOARD_HAUPPAUGE_QUADHD_DVB:
+	case CX23885_BOARD_HAUPPAUGE_QUADHD_DVB_885:
+	case CX23885_BOARD_HAUPPAUGE_QUADHD_ATSC:
+	case CX23885_BOARD_HAUPPAUGE_QUADHD_ATSC_885:
+		if (dev->i2c_bus[0].i2c_rc == 0)
+			hauppauge_eeprom(dev, eeprom+0xc0);
+		break;
+	case CX23885_BOARD_VIEWCAST_260E:
+	case CX23885_BOARD_VIEWCAST_460E:
+		dev->i2c_bus[1].i2c_client.addr = 0xa0 >> 1;
+		tveeprom_read(&dev->i2c_bus[1].i2c_client,
+			      eeprom, sizeof(eeprom));
+		if (dev->i2c_bus[0].i2c_rc == 0)
+			viewcast_eeprom(dev, eeprom);
+		break;
+	}
+
+	switch (dev->board) {
+	case CX23885_BOARD_AVERMEDIA_HC81R:
+		/* Defaults for VID B */
+		ts1->gen_ctrl_val  = 0x4; /* Parallel */
+		ts1->ts_clk_en_val = 0x1; /* Enable TS_CLK */
+		ts1->src_sel_val   = CX23885_SRC_SEL_PARALLEL_MPEG_VIDEO;
+		/* Defaults for VID C */
+		/* DREQ_POL, SMODE, PUNC_CLK, MCLK_POL Serial bus + punc clk */
+		ts2->gen_ctrl_val  = 0x10e;
+		ts2->ts_clk_en_val = 0x1; /* Enable TS_CLK */
+		ts2†”ºèÏï¶'AÍ
+µzCİçŒŒM†tIá¸ 'ì±ĞÄFòˆŒà+ÑÌ¤àÀàÚ¾%NÔK¿9d„İ"ó"áHx+¨j#åHn÷~„‚Ò9Œ®_Gzø¦·ªóEU›Q Äª	şÚ!"_UúšEË×mCİ:GÖÊ$Kî®ÕC7‘k²#9/j°ó¼pé0‡äS¨ø–~ó2Õ×‡šî+…XùÅ¬ÏûÍ!¢ç¢€[Àù-“ıİxètd.äºàêì·àS:‰Ê.ªR%“ÆM`W=:dşuUT•Ï©÷u»´«Dˆ…¨*…|P&Bf¾y#+6_}xŞDy SEÀhùM­¼£ÅD<}ÍOÁR¥è¼Íô	Šña"=ËÓQé¹¤á’=Úè:Z8Ä(â«¿ßÿlÔ±X©ã.œµ°c% <ù}rJ×”
+~´fXmÅŞ9¥nÕhù'™†4rí-"$ÈV=Šš“:šOYÈJ÷#aì`Y Bõúú65ÎÀÛè’É©‹Eçádî™q.Ôúÿ‹{ü K

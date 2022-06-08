@@ -1,2 +1,2 @@
-RCOPY) \
-  arch/x86/include/
+		mem &= ~ALT_DATA;
+		mem |=

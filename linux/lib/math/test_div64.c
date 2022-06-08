@@ -1,175 +1,319 @@
-qrwlock.h \
-  include/linux/rwlock.h \
-    $(wildcard include/config/PREEMPT) \
-  include/linux/spinlock_api_smp.h \
-    $(wildcard include/config/INLINE_SPIN_LOCK) \
-    $(wildcard include/config/INLINE_SPIN_LOCK_BH) \
-    $(wildcard include/config/INLINE_SPIN_LOCK_IRQ) \
-    $(wildcard include/config/INLINE_SPIN_LOCK_IRQSAVE) \
-    $(wildcard include/config/INLINE_SPIN_TRYLOCK) \
-    $(wildcard include/config/INLINE_SPIN_TRYLOCK_BH) \
-    $(wildcard include/config/UNINLINE_SPIN_UNLOCK) \
-    $(wildcard include/config/INLINE_SPIN_UNLOCK_BH) \
-    $(wildcard include/config/INLINE_SPIN_UNLOCK_IRQ) \
-    $(wildcard include/config/INLINE_SPIN_UNLOCK_IRQRESTORE) \
-    $(wildcard include/config/GENERIC_LOCKBREAK) \
-  include/linux/rwlock_api_smp.h \
-    $(wildcard include/config/INLINE_READ_LOCK) \
-    $(wildcard include/config/INLINE_WRITE_LOCK) \
-    $(wildcard include/config/INLINE_READ_LOCK_BH) \
-    $(wildcard include/config/INLINE_WRITE_LOCK_BH) \
-    $(wildcard include/config/INLINE_READ_LOCK_IRQ) \
-    $(wildcard include/config/INLINE_WRITE_LOCK_IRQ) \
-    $(wildcard include/config/INLINE_READ_LOCK_IRQSAVE) \
-    $(wildcard include/config/INLINE_WRITE_LOCK_IRQSAVE) \
-    $(wildcard include/config/INLINE_READ_TRYLOCK) \
-    $(wildcard include/config/INLINE_WRITE_TRYLOCK) \
-    $(wildcard include/config/INLINE_READ_UNLOCK) \
-    $(wildcard include/config/INLINE_WRITE_UNLOCK) \
-    $(wildcard include/config/INLINE_READ_UNLOCK_BH) \
-    $(wildcard include/config/INLINE_WRITE_UNLOCK_BH) \
-    $(wildcard include/config/INLINE_READ_UNLOCK_IRQ) \
-    $(wildcard include/config/INLINE_WRITE_UNLOCK_IRQ) \
-    $(wildcard include/config/INLINE_READ_UNLOCK_IRQRESTORE) \
-    $(wildcard include/config/INLINE_WRITE_UNLOCK_IRQRESTORE) \
-  include/linux/refcount.h \
-  include/linux/rbtree.h \
-  include/linux/rbtree_types.h \
-  include/linux/rcupdate.h \
-    $(wildcard include/config/PREEMPT_RCU) \
-    $(wildcard include/config/TINY_RCU) \
-    $(wildcard include/config/RCU_STRICT_GRACE_PERIOD) \
-    $(wildcard include/config/TASKS_RCU_GENERIC) \
-    $(wildcard include/config/RCU_STALL_COMMON) \
-    $(wildcard include/config/NO_HZ_FULL) \
-    $(wildcard include/config/RCU_NOCB_CPU) \
-    $(wildcard include/config/TASKS_RCU) \
-    $(wildcard include/config/TASKS_TRACE_RCU) \
-    $(wildcard include/config/TASKS_RUDE_RCU) \
-    $(wildcard include/config/TREE_RCU) \
-    $(wildcard include/config/DEBUG_OBJECTS_RCU_HEAD) \
-    $(wildcard include/config/PROVE_RCU) \
-    $(wildcard include/config/ARCH_WEAK_RELEASE_ACQUIRE) \
-  include/linux/rcutree.h \
-  include/linux/rwsem.h \
-    $(wildcard include/config/RWSEM_SPIN_ON_OWNER) \
-    $(wildcard include/config/DEBUG_RWSEMS) \
-  include/linux/osq_lock.h \
-  include/linux/completion.h \
-  include/linux/swait.h \
-  include/linux/wait.h \
-  include/uapi/linux/wait.h \
-  include/linux/uprobes.h \
-    $(wildcard include/config/UPROBES) \
-  arch/x86/include/asm/uprobes.h \
-  include/linux/notifier.h \
-  include/linux/mutex.h \
-    $(wildcard include/config/MUTEX_SPIN_ON_OWNER) \
-    $(wildcard include/config/DEBUG_MUTEXES) \
-  include/linux/debug_locks.h \
-  include/linux/srcu.h \
-    $(wildcard include/config/TINY_SRCU) \
-    $(wildcard include/config/SRCU) \
-  include/linux/workqueue.h \
-    $(wildcard include/config/DEBUG_OBJECTS_WORK) \
-    $(wildcard include/config/FREEZER) \
-    $(wildcard include/config/WQ_WATCHDOG) \
-  include/linux/timer.h \
-    $(wildcard include/config/DEBUG_OBJECTS_TIMERS) \
-    $(wildcard include/config/NO_HZ_COMMON) \
-  include/linux/ktime.h \
-  include/linux/jiffies.h \
-  include/vdso/jiffies.h \
-  include/generated/timeconst.h \
-  include/vdso/ktime.h \
-  include/linux/timekeeping.h \
-    $(wildcard include/config/GENERIC_CMOS_UPDATE) \
-  include/linux/clocksource_ids.h \
-  include/linux/debugobjects.h \
-    $(wildcard include/config/DEBUG_OBJECTS) \
-    $(wildcard include/config/DEBUG_OBJECTS_FREE) \
-  include/linux/rcu_segcblist.h \
-  include/linux/srcutree.h \
-  include/linux/rcu_node_tree.h \
-    $(wildcard include/config/RCU_FANOUT) \
-    $(wildcard include/config/RCU_FANOUT_LEAF) \
-  include/linux/page-flags-layout.h \
-    $(wildcard include/config/KASAN_HW_TAGS) \
-  include/linux/numa.h \
-    $(wildcard include/config/NODES_SHIFT) \
-    $(wildcard include/config/NUMA_KEEP_MEMINFO) \
-    $(wildcard include/config/HAVE_ARCH_NODE_DEV_GROUP) \
-  arch/x86/include/asm/sparsemem.h \
-  include/generated/bounds.h \
-  include/linux/seqlock.h \
-  include/linux/ww_mutex.h \
-    $(wildcard include/config/DEBUG_RT_MUTEXES) \
-    $(wildcard include/config/DEBUG_WW_MUTEX_SLOWPATH) \
-  include/linux/rtmutex.h \
-  arch/x86/include/asm/mmu.h \
-    $(wildcard include/config/MODIFY_LDT_SYSCALL) \
-  include/linux/kmod.h \
-  include/linux/umh.h \
-  include/linux/gfp.h \
-    $(wildcard include/config/HIGHMEM) \
-    $(wildcard include/config/ZONE_DMA) \
-    $(wildcard include/config/ZONE_DMA32) \
-    $(wildcard include/config/ZONE_DEVICE) \
-    $(wildcard include/config/PM_SLEEP) \
-    $(wildcard include/config/CONTIG_ALLOC) \
-    $(wildcard include/config/CMA) \
-  include/linux/mmdebug.h \
-    $(wildcard include/config/DEBUG_VM) \
-    $(wildcard include/config/DEBUG_VM_PGFLAGS) \
-  include/linux/mmzone.h \
-    $(wildcard include/config/FORCE_MAX_ZONEORDER) \
-    $(wildcard include/config/MEMORY_ISOLATION) \
-    $(wildcard include/config/ZSMALLOC) \
-    $(wildcard include/config/MEMORY_HOTPLUG) \
-    $(wildcard include/config/COMPACTION) \
-    $(wildcard include/config/PAGE_EXTENSION) \
-    $(wildcard include/config/DEFERRED_STRUCT_PAGE_INIT) \
-    $(wildcard include/config/HAVE_MEMORYLESS_NODES) \
-    $(wildcard include/config/SPARSEMEM_EXTREME) \
-    $(wildcard include/config/HAVE_ARCH_PFN_VALID) \
-  include/linux/nodemask.h \
-  include/linux/pageblock-flags.h \
-    $(wildcard include/config/HUGETLB_PAGE_SIZE_VARIABLE) \
-  include/linux/page-flags.h \
-    $(wildcard include/config/ARCH_USES_PG_UNCACHED) \
-    $(wildcard include/config/MEMORY_FAILURE) \
-    $(wildcard include/config/PAGE_IDLE_FLAG) \
-    $(wildcard include/config/HUGETLB_PAGE_FREE_VMEMMAP) \
-    $(wildcard include/config/HUGETLB_PAGE_FREE_VMEMMAP_DEFAULT_ON) \
-    $(wildcard include/config/KSM) \
-  include/linux/local_lock.h \
-  include/linux/local_lock_internal.h \
-  include/linux/memory_hotplug.h \
-    $(wildcard include/config/HAVE_ARCH_NODEDATA_EXTENSION) \
-    $(wildcard include/config/ARCH_HAS_ADD_PAGES) \
-    $(wildcard include/config/MEMORY_HOTREMOVE) \
-  arch/x86/include/asm/mmzone.h \
-  arch/x86/include/asm/mmzone_32.h \
-  include/linux/topology.h \
-    $(wildcard include/config/USE_PERCPU_NUMA_NODE_ID) \
-    $(wildcard include/config/SCHED_SMT) \
-    $(wildcard include/config/SCHED_CLUSTER) \
-  include/linux/arch_topology.h \
-    $(wildcard include/config/ACPI_CPPC_LIB) \
-    $(wildcard include/config/GENERIC_ARCH_TOPOLOGY) \
-  include/linux/percpu.h \
-    $(wildcard include/config/NEED_PER_CPU_EMBED_FIRST_CHUNK) \
-    $(wildcard include/config/NEED_PER_CPU_PAGE_FIRST_CHUNK) \
-  arch/x86/include/asm/topology.h \
-    $(wildcard include/config/SCHED_MC_PRIO) \
-  arch/x86/include/asm/mpspec.h \
-    $(wildcard include/config/EISA) \
-    $(wildcard include/config/X86_MPPARSE) \
-  arch/x86/include/asm/mpspec_def.h \
-  arch/x86/include/asm/x86_init.h \
-  arch/x86/include/asm/apicdef.h \
-  include/asm-generic/topology.h \
-  include/linux/sysctl.h \
-    $(wildcard include/config/SYSCTL) \
-  include/uapi/linux/sysctl.h \
-  include
+// SPDX-License-Identifier: GPL-2.0-or-later
+/*
+ *  Driver for the Conexant CX23885 PCIe bridge
+ *
+ *  Copyright (c) 2006 Steven Toth <stoth@linuxtv.org>
+ */
+
+#include "cx23885.h"
+
+#include <linux/module.h>
+#include <linux/init.h>
+#include <linux/delay.h>
+#include <asm/io.h>
+
+#include <media/v4l2-common.h>
+
+static unsigned int i2c_debug;
+module_param(i2c_debug, int, 0644);
+MODULE_PARM_DESC(i2c_debug, "enable debug messages [i2c]");
+
+static unsigned int i2c_scan;
+module_param(i2c_scan, int, 0444);
+MODULE_PARM_DESC(i2c_scan, "scan i2c bus at insmod time");
+
+#define dprintk(level, fmt, arg...)\
+	do { if (i2c_debug >= level)\
+		printk(KERN_DEBUG pr_fmt("%s: i2c:" fmt), \
+			__func__, ##arg); \
+	} while (0)
+
+#define I2C_WAIT_DELAY 32
+#define I2C_WAIT_RETRY 64
+
+#define I2C_EXTEND  (1 << 3)
+#define I2C_NOSTOP  (1 << 4)
+
+static inline int i2c_slave_did_ack(struct i2c_adapter *i2c_adap)
+{
+	struct cx23885_i2c *bus = i2c_adap->algo_data;
+	struct cx23885_dev *dev = bus->dev;
+	return cx_read(bus->reg_stat) & 0x01;
+}
+
+static inline int i2c_is_busy(struct i2c_adapter *i2c_adap)
+{
+	struct cx23885_i2c *bus = i2c_adap->algo_data;
+	struct cx23885_dev *dev = bus->dev;
+	return cx_read(bus->reg_stat) & 0x02 ? 1 : 0;
+}
+
+static int i2c_wait_done(struct i2c_adapter *i2c_adap)
+{
+	int count;
+
+	for (count = 0; count < I2C_WAIT_RETRY; count++) {
+		if (!i2c_is_busy(i2c_adap))
+			break;
+		udelay(I2C_WAIT_DELAY);
+	}
+
+	if (I2C_WAIT_RETRY == count)
+		return 0;
+
+	return 1;
+}
+
+static int i2c_sendbytes(struct i2c_adapter *i2c_adap,
+			 const struct i2c_msg *msg, int joined_rlen)
+{
+	struct cx23885_i2c *bus = i2c_adap->algo_data;
+	struct cx23885_dev *dev = bus->dev;
+	u32 wdata, addr, ctrl;
+	int retval, cnt;
+
+	if (joined_rlen)
+		dprintk(1, "%s(msg->wlen=%d, nextmsg->rlen=%d)\n", __func__,
+			msg->len, joined_rlen);
+	else
+		dprintk(1, "%s(msg->len=%d)\n", __func__, msg->len);
+
+	/* Deal with i2c probe functions with zero payload */
+	if (msg->len == 0) {
+		cx_write(bus->reg_addr, msg->addr << 25);
+		cx_write(bus->reg_ctrl, bus->i2c_period | (1 << 2));
+		if (!i2c_wait_done(i2c_adap))
+			return -EIO;
+		if (!i2c_slave_did_ack(i2c_adap))
+			return -ENXIO;
+
+		dprintk(1, "%s() returns 0\n", __func__);
+		return 0;
+	}
+
+
+	/* dev, reg + first byte */
+	addr = (msg->addr << 25) | msg->buf[0];
+	wdata = msg->buf[0];
+	ctrl = bus->i2c_period | (1 << 12) | (1 << 2);
+
+	if (msg->len > 1)
+		ctrl |= I2C_NOSTOP | I2C_EXTEND;
+	else if (joined_rlen)
+		ctrl |= I2C_NOSTOP;
+
+	cx_write(bus->reg_addr, addr);
+	cx_write(bus->reg_wdata, wdata);
+	cx_write(bus->reg_ctrl, ctrl);
+
+	if (!i2c_wait_done(i2c_adap))
+		goto eio;
+	if (i2c_debug) {
+		printk(KERN_DEBUG " <W %02x %02x", msg->addr << 1, msg->buf[0]);
+		if (!(ctrl & I2C_NOSTOP))
+			pr_cont(" >\n");
+	}
+
+	for (cnt = 1; cnt < msg->len; cnt++) {
+		/* following bytes */
+		wdata = msg->buf[cnt];
+		ctrl = bus->i2c_period | (1 << 12) | (1 << 2);
+
+		if (cnt < msg->len - 1)
+			ctrl |= I2C_NOSTOP | I2C_EXTEND;
+		else if (joined_rlen)
+			ctrl |= I2C_NOSTOP;
+
+		cx_write(bus->reg_addr, addr);
+		cx_write(bus->reg_wdata, wdata);
+		cx_write(bus->reg_ctrl, ctrl);
+
+		if (!i2c_wait_done(i2c_adap))
+			goto eio;
+		if (i2c_debug) {
+			pr_cont(" %02x", msg->buf[cnt]);
+			if (!(ctrl & I2C_NOSTOP))
+				pr_cont(" >\n");
+		}
+	}
+	return msg->len;
+
+ eio:
+	retval = -EIO;
+	if (i2c_debug)
+		pr_err(" ERR: %d\n", retval);
+	return retval;
+}
+
+static int i2c_readbytes(struct i2c_adapter *i2c_adap,
+			 const struct i2c_msg *msg, int joined)
+{
+	struct cx23885_i2c *bus = i2c_adap->algo_data;
+	struct cx23885_dev *dev = bus->dev;
+	u32 ctrl, cnt;
+	int retval;
+
+
+	if (i2c_debug && !joined)
+		dprintk(1, "%s(msg->len=%d)\n", __func__, msg->len);
+
+	/* Deal with i2c probe functions with zero payload */
+	if (msg->len == 0) {
+		cx_write(bus->reg_addr, msg->addr << 25);
+		cx_write(bus->reg_ctrl, bus->i2c_period | (1 << 2) | 1);
+		if (!i2c_wait_done(i2c_adap))
+			return -EIO;
+		if (!i2c_slave_did_ack(i2c_adap))
+			return -ENXIO;
+
+
+		dprintk(1, "%s() returns 0\n", __func__);
+		return 0;
+	}
+
+	if (i2c_debug) {
+		if (joined)
+			dprintk(1, " R");
+		else
+			dprintk(1, " <R %02x", (msg->addr << 1) + 1);
+	}
+
+	for (cnt = 0; cnt < msg->len; cnt++) {
+
+		ctrl = bus->i2c_period | (1 << 12) | (1 << 2) | 1;
+
+		if (cnt < msg->len - 1)
+			ctrl |= I2C_NOSTOP | I2C_EXTEND;
+
+		cx_write(bus->reg_addr, msg->addr << 25);
+		cx_write(bus->reg_ctrl, ctrl);
+
+		if (!i2c_wait_done(i2c_adap))
+			goto eio;
+		msg->buf[cnt] = cx_read(bus->reg_rdata) & 0xff;
+		if (i2c_debug) {
+			dprintk(1, " %02x", msg->buf[cnt]);
+			if (!(ctrl & I2C_NOSTOP))
+				dprintk(1, " >\n");
+		}
+	}
+	return msg->len;
+
+ eio:
+	retval = -EIO;
+	if (i2c_debug)
+		pr_err(" ERR: %d\n", retval);
+	return retval;
+}
+
+static int i2c_xfer(struct i2c_adapter *i2c_adap,
+		    struct i2c_msg *msgs, int num)
+{
+	int i, retval = 0;
+
+	dprintk(1, "%s(num = %d)\n", __func__, num);
+
+	for (i = 0 ; i < num; i++) {
+		dprintk(1, "%s(num = %d) addr = 0x%02x  len = 0x%x\n",
+			__func__, num, msgs[i].addr, msgs[i].len);
+		if (msgs[i].flags & I2C_M_RD) {
+			/* read */
+			retval = i2c_readbytes(i2c_adap, &msgs[i], 0);
+		} else if (i + 1 < num && (msgs[i + 1].flags & I2C_M_RD) &&
+			   msgs[i].addr == msgs[i + 1].addr) {
+			/* write then read from same address */
+			retval = i2c_sendbytes(i2c_adap, &msgs[i],
+					       msgs[i + 1].len);
+			if (retval < 0)
+				goto err;
+			i++;
+			retval = i2c_readbytes(i2c_adap, &msgs[i], 1);
+		} else {
+			/* write */
+			retval = i2c_sendbytes(i2c_adap, &msgs[i], 0);
+		}
+		if (retval < 0)
+			goto err;
+	}
+	return num;
+
+ err:
+	return retval;
+}
+
+static u32 cx23885_functionality(struct i2c_adapter *adap)
+{
+	return I2C_FUNC_SMBUS_EMUL | I2C_FUNC_I2C;
+}
+
+static const struct i2c_algorithm cx23885_i2c_algo_template = {
+	.master_xfer	= i2c_xfer,
+	.functionality	= cx23885_functionality,
+};
+
+/* ----------------------------------------------------------------------- */
+
+static const struct i2c_adapter cx23885_i2c_adap_template = {
+	.name              = "cx23885",
+	.owner             = THIS_MODULE,
+	.algo              = &cx23885_i2c_algo_template,
+};
+
+static const struct i2c_client cx23885_i2c_client_template = {
+	.name	= "cx23885 internal",
+};
+
+static char *i2c_devs[128] = {
+	[0x10 >> 1] = "tda10048",
+	[0x12 >> 1] = "dib7000pc",
+	[0x1c >> 1] = "lgdt3303",
+	[0x80 >> 1] = "cs3308",
+	[0x82 >> 1] = "cs3308",
+	[0x86 >> 1] = "tda9887",
+	[0x32 >> 1] = "cx24227",
+	[0x88 >> 1] = "cx25837",
+	[0x84 >> 1] = "tda8295",
+	[0x98 >> 1] = "flatiron",
+	[0xa0 >> 1] = "eeprom",
+	[0xc0 >> 1] = "tuner/mt2131/tda8275",
+	[0xc2 >> 1] = "tuner/mt2131/tda8275/xc5000/xc3028",
+	[0xc8 >> 1] = "tuner/xc3028L",
+};
+
+static void do_i2c_scan(char *name, struct i2c_client *c)
+{
+	unsigned char buf;
+	int i, rc;
+
+	for (i = 0; i < 128; i++) {
+		c->addr = i;
+		rc = i2c_master_recv(c, &buf, 0);
+		if (rc < 0)
+			continue;
+		pr_info("%s: i2c scan: found device @ 0x%04x  [%s]\n",
+		       name, i, i2c_devs[i] ? i2c_devs[i] : "???");
+	}
+}
+
+/* init + register i2c adapter */
+int cx23885_i2c_register(struct cx23885_i2c *bus)
+{
+	struct cx23885_dev *dev = bus->dev;
+
+	dprintk(1, "%s(bus = %d)\n", __func__, bus->nr);
+
+	bus->i2c_adap = cx23885_i2c_adap_template;
+	bus->i2c_client = cx23885_i2c_client_template;
+	bus->i2c_adap.dev.parent = &dev->pci->dev;
+
+	strscpy(bus->i2c_adap.name, bus->dev->name,
+		sizeof(bus->i2c_adap.name));
+
+	bus->i2c_adap.algo_data = bus;
+	i2c_set_adapdata(&bus->i2c_adap, &dev->v4l2_dev);
+	i2c_add_adapter(&bus->i2c_adap);
+
+	bus->i2c_client.adapter = &bus->i2c_adap;
+
+	if (0 == bus->i2c_rc) {
+		dprintk(1, "%s:

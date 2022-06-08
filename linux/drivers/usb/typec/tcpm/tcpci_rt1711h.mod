@@ -1,2 +1,3 @@
-dcard include/config/PARAVIRT_XXL) \
-  a
+}
+
+static const struct vb2_ops dvb_qops 

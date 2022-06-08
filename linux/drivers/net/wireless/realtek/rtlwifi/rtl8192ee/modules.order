@@ -1,3 +1,2 @@
-cpi_io.h \
-  include/linux/io.h \
-    $(wildcard include/con
+include/config/ALPHA) \
+    $(wildcard include/config/IA64) 

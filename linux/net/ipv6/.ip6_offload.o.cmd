@@ -1,1363 +1,1343 @@
-tirqs will be enabled:
- */
-void lockdep_softirqs_on(unsigned long ip)
-{
-	struct irqtrace_events *trace = &current->irqtrace;
+schedule_debug(prev, !!sched_mode);
 
-	if (unlikely(!lockdep_enabled()))
-		return;
+	if (sched_feat(HRTICK) || sched_feat(HRTICK_DL))
+		hrtick_clear(rq);
 
-	/*
-	 * We fancy IRQs being disabled here, see softirq.c, avoids
-	 * funny state and nesting things.
-	 */
-	if (DEBUG_LOCKS_WARN_ON(!irqs_disabled()))
-		return;
-
-	if (current->softirqs_enabled) {
-		debug_atomic_inc(redundant_softirqs_on);
-		return;
-	}
-
-	lockdep_recursion_inc();
-	/*
-	 * We'll do an OFF -> ON transition:
-	 */
-	current->softirqs_enabled = 1;
-	trace->softirq_enable_ip = ip;
-	trace->softirq_enable_event = ++trace->irq_events;
-	debug_atomic_inc(softirqs_on_events);
-	/*
-	 * We are going to turn softirqs on, so set the
-	 * usage bit for all held locks, if hardirqs are
-	 * enabled too:
-	 */
-	if (lockdep_hardirqs_enabled())
-		mark_held_locks(current, LOCK_ENABLED_SOFTIRQ);
-	lockdep_recursion_finish();
-}
-
-/*
- * Softirqs were disabled:
- */
-void lockdep_softirqs_off(unsigned long ip)
-{
-	if (unlikely(!lockdep_enabled()))
-		return;
+	local_irq_disable();
+	rcu_note_context_switch(!!sched_mode);
 
 	/*
-	 * We fancy IRQs being disabled here, see softirq.c
-	 */
-	if (DEBUG_LOCKS_WARN_ON(!irqs_disabled()))
-		return;
-
-	if (current->softirqs_enabled) {
-		struct irqtrace_events *trace = &current->irqtrace;
-
-		/*
-		 * We have done an ON -> OFF transition:
-		 */
-		current->softirqs_enabled = 0;
-		trace->softirq_disable_ip = ip;
-		trace->softirq_disable_event = ++trace->irq_events;
-		debug_atomic_inc(softirqs_off_events);
-		/*
-		 * Whoops, we wanted softirqs off, so why aren't they?
-		 */
-		DEBUG_LOCKS_WARN_ON(!softirq_count());
-	} else
-		debug_atomic_inc(redundant_softirqs_off);
-}
-
-static int
-mark_usage(struct task_struct *curr, struct held_lock *hlock, int check)
-{
-	if (!check)
-		goto lock_used;
-
-	/*
-	 * If non-trylock use in a hardirq or softirq context, then
-	 * mark the lock as used in these contexts:
-	 */
-	if (!hlock->trylock) {
-		if (hlock->read) {
-			if (lockdep_hardirq_context())
-				if (!mark_lock(curr, hlock,
-						LOCK_USED_IN_HARDIRQ_READ))
-					return 0;
-			if (curr->softirq_context)
-				if (!mark_lock(curr, hlock,
-						LOCK_USED_IN_SOFTIRQ_READ))
-					return 0;
-		} else {
-			if (lockdep_hardirq_context())
-				if (!mark_lock(curr, hlock, LOCK_USED_IN_HARDIRQ))
-					return 0;
-			if (curr->softirq_context)
-				if (!mark_lock(curr, hlock, LOCK_USED_IN_SOFTIRQ))
-					return 0;
-		}
-	}
-	if (!hlock->hardirqs_off) {
-		if (hlock->read) {
-			if (!mark_lock(curr, hlock,
-					LOCK_ENABLED_HARDIRQ_READ))
-				return 0;
-			if (curr->softirqs_enabled)
-				if (!mark_lock(curr, hlock,
-						LOCK_ENABLED_SOFTIRQ_READ))
-					return 0;
-		} else {
-			if (!mark_lock(curr, hlock,
-					LOCK_ENABLED_HARDIRQ))
-				return 0;
-			if (curr->softirqs_enabled)
-				if (!mark_lock(curr, hlock,
-						LOCK_ENABLED_SOFTIRQ))
-					return 0;
-		}
-	}
-
-lock_used:
-	/* mark it as used: */
-	if (!mark_lock(curr, hlock, LOCK_USED))
-		return 0;
-
-	return 1;
-}
-
-static inline unsigned int task_irq_context(struct task_struct *task)
-{
-	return LOCK_CHAIN_HARDIRQ_CONTEXT * !!lockdep_hardirq_context() +
-	       LOCK_CHAIN_SOFTIRQ_CONTEXT * !!task->softirq_context;
-}
-
-static int separate_irq_context(struct task_struct *curr,
-		struct held_lock *hlock)
-{
-	unsigned int depth = curr->lockdep_depth;
-
-	/*
-	 * Keep track of points where we cross into an interrupt context:
-	 */
-	if (depth) {
-		struct held_lock *prev_hlock;
-
-		prev_hlock = curr->held_locks + depth-1;
-		/*
-		 * If we cross into another context, reset the
-		 * hash key (this also prevents the checking and the
-		 * adding of the dependency to 'prev'):
-		 */
-		if (prev_hlock->irq_context != hlock->irq_context)
-			return 1;
-	}
-	return 0;
-}
-
-/*
- * Mark a lock with a usage bit, and validate the state transition:
- */
-static int mark_lock(struct task_struct *curr, struct held_lock *this,
-			     enum lock_usage_bit new_bit)
-{
-	unsigned int new_mask, ret = 1;
-
-	if (new_bit >= LOCK_USAGE_STATES) {
-		DEBUG_LOCKS_WARN_ON(1);
-		return 0;
-	}
-
-	if (new_bit == LOCK_USED && this->read)
-		new_bit = LOCK_USED_READ;
-
-	new_mask = 1 << new_bit;
-
-	/*
-	 * If already set then do not dirty the cacheline,
-	 * nor do any checks:
-	 */
-	if (likely(hlock_class(this)->usage_mask & new_mask))
-		return 1;
-
-	if (!graph_lock())
-		return 0;
-	/*
-	 * Make sure we didn't race:
-	 */
-	if (unlikely(hlock_class(this)->usage_mask & new_mask))
-		goto unlock;
-
-	if (!hlock_class(this)->usage_mask)
-		debug_atomic_dec(nr_unused_locks);
-
-	hlock_class(this)->usage_mask |= new_mask;
-
-	if (new_bit < LOCK_TRACE_STATES) {
-		if (!(hlock_class(this)->usage_traces[new_bit] = save_trace()))
-			return 0;
-	}
-
-	if (new_bit < LOCK_USED) {
-		ret = mark_lock_irq(curr, this, new_bit);
-		if (!ret)
-			return 0;
-	}
-
-unlock:
-	graph_unlock();
-
-	/*
-	 * We must printk outside of the graph_lock:
-	 */
-	if (ret == 2) {
-		printk("\nmarked lock as {%s}:\n", usage_str[new_bit]);
-		print_lock(this);
-		print_irqtrace_events(curr);
-		dump_stack();
-	}
-
-	return ret;
-}
-
-static inline short task_wait_context(struct task_struct *curr)
-{
-	/*
-	 * Set appropriate wait type for the context; for IRQs we have to take
-	 * into account force_irqthread as that is implied by PREEMPT_RT.
-	 */
-	if (lockdep_hardirq_context()) {
-		/*
-		 * Check if force_irqthreads will run us threaded.
-		 */
-		if (curr->hardirq_threaded || curr->irq_config)
-			return LD_WAIT_CONFIG;
-
-		return LD_WAIT_SPIN;
-	} else if (curr->softirq_context) {
-		/*
-		 * Softirqs are always threaded.
-		 */
-		return LD_WAIT_CONFIG;
-	}
-
-	return LD_WAIT_MAX;
-}
-
-static int
-print_lock_invalid_wait_context(struct task_struct *curr,
-				struct held_lock *hlock)
-{
-	short curr_inner;
-
-	if (!debug_locks_off())
-		return 0;
-	if (debug_locks_silent)
-		return 0;
-
-	pr_warn("\n");
-	pr_warn("=============================\n");
-	pr_warn("[ BUG: Invalid wait context ]\n");
-	print_kernel_ident();
-	pr_warn("-----------------------------\n");
-
-	pr_warn("%s/%d is trying to lock:\n", curr->comm, task_pid_nr(curr));
-	print_lock(hlock);
-
-	pr_warn("other info that might help us debug this:\n");
-
-	curr_inner = task_wait_context(curr);
-	pr_warn("context-{%d:%d}\n", curr_inner, curr_inner);
-
-	lockdep_print_held_locks(curr);
-
-	pr_warn("stack backtrace:\n");
-	dump_stack();
-
-	return 0;
-}
-
-/*
- * Verify the wait_type context.
- *
- * This check validates we take locks in the right wait-type order; that is it
- * ensures that we do not take mutexes inside spinlocks and do not attempt to
- * acquire spinlocks inside raw_spinlocks and the sort.
- *
- * The entire thing is slightly more complex because of RCU, RCU is a lock that
- * can be taken from (pretty much) any context but also has constraints.
- * However when taken in a stricter environment the RCU lock does not loosen
- * the constraints.
- *
- * Therefore we must look for the strictest environment in the lock stack and
- * compare that to the lock we're trying to acquire.
- */
-static int check_wait_context(struct task_struct *curr, struct held_lock *next)
-{
-	u8 next_inner = hlock_class(next)->wait_type_inner;
-	u8 next_outer = hlock_class(next)->wait_type_outer;
-	u8 curr_inner;
-	int depth;
-
-	if (!next_inner || next->trylock)
-		return 0;
-
-	if (!next_outer)
-		next_outer = next_inner;
-
-	/*
-	 * Find start of current irq_context..
-	 */
-	for (depth = curr->lockdep_depth - 1; depth >= 0; depth--) {
-		struct held_lock *prev = curr->held_locks + depth;
-		if (prev->irq_context != next->irq_context)
-			break;
-	}
-	depth++;
-
-	curr_inner = task_wait_context(curr);
-
-	for (; depth < curr->lockdep_depth; depth++) {
-		struct held_lock *prev = curr->held_locks + depth;
-		u8 prev_inner = hlock_class(prev)->wait_type_inner;
-
-		if (prev_inner) {
-			/*
-			 * We can have a bigger inner than a previous one
-			 * when outer is smaller than inner, as with RCU.
-			 *
-			 * Also due to trylocks.
-			 */
-			curr_inner = min(curr_inner, prev_inner);
-		}
-	}
-
-	if (next_outer > curr_inner)
-		return print_lock_invalid_wait_context(curr, next);
-
-	return 0;
-}
-
-#else /* CONFIG_PROVE_LOCKING */
-
-static inline int
-mark_usage(struct task_struct *curr, struct held_lock *hlock, int check)
-{
-	return 1;
-}
-
-static inline unsigned int task_irq_context(struct task_struct *task)
-{
-	return 0;
-}
-
-static inline int separate_irq_context(struct task_struct *curr,
-		struct held_lock *hlock)
-{
-	return 0;
-}
-
-static inline int check_wait_context(struct task_struct *curr,
-				     struct held_lock *next)
-{
-	return 0;
-}
-
-#endif /* CONFIG_PROVE_LOCKING */
-
-/*
- * Initialize a lock instance's lock-class mapping info:
- */
-void lockdep_init_map_type(struct lockdep_map *lock, const char *name,
-			    struct lock_class_key *key, int subclass,
-			    u8 inner, u8 outer, u8 lock_type)
-{
-	int i;
-
-	for (i = 0; i < NR_LOCKDEP_CACHING_CLASSES; i++)
-		lock->class_cache[i] = NULL;
-
-#ifdef CONFIG_LOCK_STAT
-	lock->cpu = raw_smp_processor_id();
-#endif
-
-	/*
-	 * Can't be having no nameless bastards around this place!
-	 */
-	if (DEBUG_LOCKS_WARN_ON(!name)) {
-		lock->name = "NULL";
-		return;
-	}
-
-	lock->name = name;
-
-	lock->wait_type_outer = outer;
-	lock->wait_type_inner = inner;
-	lock->lock_type = lock_type;
-
-	/*
-	 * No key, no joy, we need to hash something.
-	 */
-	if (DEBUG_LOCKS_WARN_ON(!key))
-		return;
-	/*
-	 * Sanity check, the lock-class key must either have been allocated
-	 * statically or must have been registered as a dynamic key.
-	 */
-	if (!static_obj(key) && !is_dynamic_key(key)) {
-		if (debug_locks)
-			printk(KERN_ERR "BUG: key %px has not been registered!\n", key);
-		DEBUG_LOCKS_WARN_ON(1);
-		return;
-	}
-	lock->key = key;
-
-	if (unlikely(!debug_locks))
-		return;
-
-	if (subclass) {
-		unsigned long flags;
-
-		if (DEBUG_LOCKS_WARN_ON(!lockdep_enabled()))
-			return;
-
-		raw_local_irq_save(flags);
-		lockdep_recursion_inc();
-		register_lock_class(lock, subclass, 1);
-		lockdep_recursion_finish();
-		raw_local_irq_restore(flags);
-	}
-}
-EXPORT_SYMBOL_GPL(lockdep_init_map_type);
-
-struct lock_class_key __lockdep_no_validate__;
-EXPORT_SYMBOL_GPL(__lockdep_no_validate__);
-
-static void
-print_lock_nested_lock_not_held(struct task_struct *curr,
-				struct held_lock *hlock,
-				unsigned long ip)
-{
-	if (!debug_locks_off())
-		return;
-	if (debug_locks_silent)
-		return;
-
-	pr_warn("\n");
-	pr_warn("==================================\n");
-	pr_warn("WARNING: Nested lock was not taken\n");
-	print_kernel_ident();
-	pr_warn("----------------------------------\n");
-
-	pr_warn("%s/%d is trying to lock:\n", curr->comm, task_pid_nr(curr));
-	print_lock(hlock);
-
-	pr_warn("\nbut this task is not holding:\n");
-	pr_warn("%s\n", hlock->nest_lock->name);
-
-	pr_warn("\nstack backtrace:\n");
-	dump_stack();
-
-	pr_warn("\nother info that might help us debug this:\n");
-	lockdep_print_held_locks(curr);
-
-	pr_warn("\nstack backtrace:\n");
-	dump_stack();
-}
-
-static int __lock_is_held(const struct lockdep_map *lock, int read);
-
-/*
- * This gets called for every mutex_lock*()/spin_lock*() operation.
- * We maintain the dependency maps and validate the locking attempt:
- *
- * The callers must make sure that IRQs are disabled before calling it,
- * otherwise we could get an interrupt which would want to take locks,
- * which would end up in lockdep again.
- */
-static int __lock_acquire(struct lockdep_map *lock, unsigned int subclass,
-			  int trylock, int read, int check, int hardirqs_off,
-			  struct lockdep_map *nest_lock, unsigned long ip,
-			  int references, int pin_count)
-{
-	struct task_struct *curr = current;
-	struct lock_class *class = NULL;
-	struct held_lock *hlock;
-	unsigned int depth;
-	int chain_head = 0;
-	int class_idx;
-	u64 chain_key;
-
-	if (unlikely(!debug_locks))
-		return 0;
-
-	if (!prove_locking || lock->key == &__lockdep_no_validate__)
-		check = 0;
-
-	if (subclass < NR_LOCKDEP_CACHING_CLASSES)
-		class = lock->class_cache[subclass];
-	/*
-	 * Not cached?
-	 */
-	if (unlikely(!class)) {
-		class = register_lock_class(lock, subclass, 0);
-		if (!class)
-			return 0;
-	}
-
-	debug_class_ops_inc(class);
-
-	if (very_verbose(class)) {
-		printk("\nacquire class [%px] %s", class->key, class->name);
-		if (class->name_version > 1)
-			printk(KERN_CONT "#%d", class->name_version);
-		printk(KERN_CONT "\n");
-		dump_stack();
-	}
-
-	/*
-	 * Add the lock to the list of currently held locks.
-	 * (we dont increase the depth just yet, up until the
-	 * dependency checks are done)
-	 */
-	depth = curr->lockdep_depth;
-	/*
-	 * Ran out of static storage for our per-task lock stack again have we?
-	 */
-	if (DEBUG_LOCKS_WARN_ON(depth >= MAX_LOCK_DEPTH))
-		return 0;
-
-	class_idx = class - lock_classes;
-
-	if (depth) { /* we're holding locks */
-		hlock = curr->held_locks + depth - 1;
-		if (hlock->class_idx == class_idx && nest_lock) {
-			if (!references)
-				references++;
-
-			if (!hlock->references)
-				hlock->references++;
-
-			hlock->references += references;
-
-			/* Overflow */
-			if (DEBUG_LOCKS_WARN_ON(hlock->references < references))
-				return 0;
-
-			return 2;
-		}
-	}
-
-	hlock = curr->held_locks + depth;
-	/*
-	 * Plain impossible, we just registered it and checked it weren't no
-	 * NULL like.. I bet this mushroom I ate was good!
-	 */
-	if (DEBUG_LOCKS_WARN_ON(!class))
-		return 0;
-	hlock->class_idx = class_idx;
-	hlock->acquire_ip = ip;
-	hlock->instance = lock;
-	hlock->nest_lock = nest_lock;
-	hlock->irq_context = task_irq_context(curr);
-	hlock->trylock = trylock;
-	hlock->read = read;
-	hlock->check = check;
-	hlock->hardirqs_off = !!hardirqs_off;
-	hlock->references = references;
-#ifdef CONFIG_LOCK_STAT
-	hlock->waittime_stamp = 0;
-	hlock->holdtime_stamp = lockstat_clock();
-#endif
-	hlock->pin_count = pin_count;
-
-	if (check_wait_context(curr, hlock))
-		return 0;
-
-	/* Initialize the lock usage bit */
-	if (!mark_usage(curr, hlock, check))
-		return 0;
-
-	/*
-	 * Calculate the chain hash: it's the combined hash of all the
-	 * lock keys along the dependency chain. We save the hash value
-	 * at every step so that we can get the current hash easily
-	 * after unlock. The chain hash is then used to cache dependency
-	 * results.
+	 * Make sure that signal_pending_state()->signal_pending() below
+	 * can't be reordered with __set_current_state(TASK_INTERRUPTIBLE)
+	 * done by the caller to avoid the race with signal_wake_up():
 	 *
-	 * The 'key ID' is what is the most compact key value to drive
-	 * the hash, not class->key.
+	 * __set_current_state(@state)		signal_wake_up()
+	 * schedule()				  set_tsk_thread_flag(p, TIF_SIGPENDING)
+	 *					  wake_up_state(p, state)
+	 *   LOCK rq->lock			    LOCK p->pi_state
+	 *   smp_mb__after_spinlock()		    smp_mb__after_spinlock()
+	 *     if (signal_pending_state())	    if (p->state & @state)
+	 *
+	 * Also, the membarrier system call requires a full memory barrier
+	 * after coming from user-space, before storing to rq->curr.
 	 */
+	rq_lock(rq, &rf);
+	smp_mb__after_spinlock();
+
+	/* Promote REQ to ACT */
+	rq->clock_update_flags <<= 1;
+	update_rq_clock(rq);
+
+	switch_count = &prev->nivcsw;
+
 	/*
-	 * Whoops, we did it again.. class_idx is invalid.
+	 * We must load prev->state once (task_struct::state is volatile), such
+	 * that:
+	 *
+	 *  - we form a control dependency vs deactivate_task() below.
+	 *  - ptrace_{,un}freeze_traced() can change ->state underneath us.
 	 */
-	if (DEBUG_LOCKS_WARN_ON(!test_bit(class_idx, lock_classes_in_use)))
-		return 0;
+	prev_state = READ_ONCE(prev->__state);
+	if (!(sched_mode & SM_MASK_PREEMPT) && prev_state) {
+		if (signal_pending_state(prev_state, prev)) {
+			WRITE_ONCE(prev->__state, TASK_RUNNING);
+		} else {
+			prev->sched_contributes_to_load =
+				(prev_state & TASK_UNINTERRUPTIBLE) &&
+				!(prev_state & TASK_NOLOAD) &&
+				!(prev->flags & PF_FROZEN);
 
-	chain_key = curr->curr_chain_key;
-	if (!depth) {
-		/*
-		 * How can we have a chain hash when we ain't got no keys?!
-		 */
-		if (DEBUG_LOCKS_WARN_ON(chain_key != INITIAL_CHAIN_KEY))
-			return 0;
-		chain_head = 1;
+			if (prev->sched_contributes_to_load)
+				rq->nr_uninterruptible++;
+
+			/*
+			 * __schedule()			ttwu()
+			 *   prev_state = prev->state;    if (p->on_rq && ...)
+			 *   if (prev_state)		    goto out;
+			 *     p->on_rq = 0;		  smp_acquire__after_ctrl_dep();
+			 *				  p->state = TASK_WAKING
+			 *
+			 * Where __schedule() and ttwu() have matching control dependencies.
+			 *
+			 * After this, schedule() must not care about p->state any more.
+			 */
+			deactivate_task(rq, prev, DEQUEUE_SLEEP | DEQUEUE_NOCLOCK);
+
+			if (prev->in_iowait) {
+				atomic_inc(&rq->nr_iowait);
+				delayacct_blkio_start();
+			}
+		}
+		switch_count = &prev->nvcsw;
 	}
 
-	hlock->prev_chain_key = chain_key;
-	if (separate_irq_context(curr, hlock)) {
-		chain_key = INITIAL_CHAIN_KEY;
-		chain_head = 1;
-	}
-	chain_key = iterate_chain_key(chain_key, hlock_id(hlock));
-
-	if (nest_lock && !__lock_is_held(nest_lock, -1)) {
-		print_lock_nested_lock_not_held(curr, hlock, ip);
-		return 0;
-	}
-
-	if (!debug_locks_silent) {
-		WARN_ON_ONCE(depth && !hlock_class(hlock - 1)->key);
-		WARN_ON_ONCE(!hlock_class(hlock)->key);
-	}
-
-	if (!validate_chain(curr, hlock, chain_head, chain_key))
-		return 0;
-
-	curr->curr_chain_key = chain_key;
-	curr->lockdep_depth++;
-	check_chain_key(curr);
-#ifdef CONFIG_DEBUG_LOCKDEP
-	if (unlikely(!debug_locks))
-		return 0;
+	next = pick_next_task(rq, prev, &rf);
+	clear_tsk_need_resched(prev);
+	clear_preempt_need_resched();
+#ifdef CONFIG_SCHED_DEBUG
+	rq->last_seen_need_resched_ns = 0;
 #endif
-	if (unlikely(curr->lockdep_depth >= MAX_LOCK_DEPTH)) {
-		debug_locks_off();
-		print_lockdep_off("BUG: MAX_LOCK_DEPTH too low!");
-		printk(KERN_DEBUG "depth: %i  max: %lu!\n",
-		       curr->lockdep_depth, MAX_LOCK_DEPTH);
 
-		lockdep_print_held_locks(current);
-		debug_show_all_locks();
-		dump_stack();
+	if (likely(prev != next)) {
+		rq->nr_switches++;
+		/*
+		 * RCU users of rcu_dereference(rq->curr) may not see
+		 * changes to task_struct made by pick_next_task().
+		 */
+		RCU_INIT_POINTER(rq->curr, next);
+		/*
+		 * The membarrier system call requires each architecture
+		 * to have a full memory barrier after updating
+		 * rq->curr, before returning to user-space.
+		 *
+		 * Here are the schemes providing that barrier on the
+		 * various architectures:
+		 * - mm ? switch_mm() : mmdrop() for x86, s390, sparc, PowerPC.
+		 *   switch_mm() rely on membarrier_arch_switch_mm() on PowerPC.
+		 * - finish_lock_switch() for weakly-ordered
+		 *   architectures where spin_unlock is a full barrier,
+		 * - switch_to() for arm64 (weakly-ordered, spin_unlock
+		 *   is a RELEASE barrier),
+		 */
+		++*switch_count;
 
-		return 0;
+		migrate_disable_switch(rq, prev);
+		psi_sched_switch(prev, next, !task_on_rq_queued(prev));
+
+		trace_sched_switch(sched_mode & SM_MASK_PREEMPT, prev, next, prev_state);
+
+		/* Also unlocks the rq: */
+		rq = context_switch(rq, prev, next, &rf);
+	} else {
+		rq->clock_update_flags &= ~(RQCF_ACT_SKIP|RQCF_REQ_SKIP);
+
+		rq_unpin_lock(rq, &rf);
+		__balance_callbacks(rq);
+		raw_spin_rq_unlock_irq(rq);
+	}
+}
+
+void __noreturn do_task_dead(void)
+{
+	/* Causes final put_task_struct in finish_task_switch(): */
+	set_special_state(TASK_DEAD);
+
+	/* Tell freezer to ignore us: */
+	current->flags |= PF_NOFREEZE;
+
+	__schedule(SM_NONE);
+	BUG();
+
+	/* Avoid "noreturn function does return" - but don't continue if BUG() is a NOP: */
+	for (;;)
+		cpu_relax();
+}
+
+static inline void sched_submit_work(struct task_struct *tsk)
+{
+	unsigned int task_flags;
+
+	if (task_is_running(tsk))
+		return;
+
+	task_flags = tsk->flags;
+	/*
+	 * If a worker goes to sleep, notify and ask workqueue whether it
+	 * wants to wake up a task to maintain concurrency.
+	 */
+	if (task_flags & (PF_WQ_WORKER | PF_IO_WORKER)) {
+		if (task_flags & PF_WQ_WORKER)
+			wq_worker_sleeping(tsk);
+		else
+			io_wq_worker_sleeping(tsk);
 	}
 
-	if (unlikely(curr->lockdep_depth > max_lockdep_depth))
-		max_lockdep_depth = curr->lockdep_depth;
-
-	return 1;
-}
-
-static void print_unlock_imbalance_bug(struct task_struct *curr,
-				       struct lockdep_map *lock,
-				       unsigned long ip)
-{
-	if (!debug_locks_off())
-		return;
-	if (debug_locks_silent)
+	if (tsk_is_pi_blocked(tsk))
 		return;
 
-	pr_warn("\n");
-	pr_warn("=====================================\n");
-	pr_warn("WARNING: bad unlock balance detected!\n");
-	print_kernel_ident();
-	pr_warn("-------------------------------------\n");
-	pr_warn("%s/%d is trying to release lock (",
-		curr->comm, task_pid_nr(curr));
-	print_lockdep_cache(lock);
-	pr_cont(") at:\n");
-	print_ip_sym(KERN_WARNING, ip);
-	pr_warn("but there are no more locks to release!\n");
-	pr_warn("\nother info that might help us debug this:\n");
-	lockdep_print_held_locks(curr);
-
-	pr_warn("\nstack backtrace:\n");
-	dump_stack();
+	/*
+	 * If we are going to sleep and we have plugged IO queued,
+	 * make sure to submit it to avoid deadlocks.
+	 */
+	blk_flush_plug(tsk->plug, true);
 }
 
-static noinstr int match_held_lock(const struct held_lock *hlock,
-				   const struct lockdep_map *lock)
+static void sched_update_worker(struct task_struct *tsk)
 {
-	if (hlock->instance == lock)
-		return 1;
+	if (tsk->flags & (PF_WQ_WORKER | PF_IO_WORKER)) {
+		if (tsk->flags & PF_WQ_WORKER)
+			wq_worker_running(tsk);
+		else
+			io_wq_worker_running(tsk);
+	}
+}
 
-	if (hlock->references) {
-		const struct lock_class *class = lock->class_cache[0];
+asmlinkage __visible void __sched schedule(void)
+{
+	struct task_struct *tsk = current;
 
-		if (!class)
-			class = look_up_lock_class(lock, 0);
+	sched_submit_work(tsk);
+	do {
+		preempt_disable();
+		__schedule(SM_NONE);
+		sched_preempt_enable_no_resched();
+	} while (need_resched());
+	sched_update_worker(tsk);
+}
+EXPORT_SYMBOL(schedule);
+
+/*
+ * synchronize_rcu_tasks() makes sure that no task is stuck in preempted
+ * state (have scheduled out non-voluntarily) by making sure that all
+ * tasks have either left the run queue or have gone into user space.
+ * As idle tasks do not do either, they must not ever be preempted
+ * (schedule out non-voluntarily).
+ *
+ * schedule_idle() is similar to schedule_preempt_disable() except that it
+ * never enables preemption because it does not call sched_submit_work().
+ */
+void __sched schedule_idle(void)
+{
+	/*
+	 * As this skips calling sched_submit_work(), which the idle task does
+	 * regardless because that function is a nop when the task is in a
+	 * TASK_RUNNING state, make sure this isn't used someplace that the
+	 * current task can be in any other state. Note, idle is always in the
+	 * TASK_RUNNING state.
+	 */
+	WARN_ON_ONCE(current->__state);
+	do {
+		__schedule(SM_NONE);
+	} while (need_resched());
+}
+
+#if defined(CONFIG_CONTEXT_TRACKING) && !defined(CONFIG_HAVE_CONTEXT_TRACKING_OFFSTACK)
+asmlinkage __visible void __sched schedule_user(void)
+{
+	/*
+	 * If we come here after a random call to set_need_resched(),
+	 * or we have been woken up remotely but the IPI has not yet arrived,
+	 * we haven't yet exited the RCU idle mode. Do it here manually until
+	 * we find a better solution.
+	 *
+	 * NB: There are buggy callers of this function.  Ideally we
+	 * should warn if prev_state != CONTEXT_USER, but that will trigger
+	 * too frequently to make sense yet.
+	 */
+	enum ctx_state prev_state = exception_enter();
+	schedule();
+	exception_exit(prev_state);
+}
+#endif
+
+/**
+ * schedule_preempt_disabled - called with preemption disabled
+ *
+ * Returns with preemption disabled. Note: preempt_count must be 1
+ */
+void __sched schedule_preempt_disabled(void)
+{
+	sched_preempt_enable_no_resched();
+	schedule();
+	preempt_disable();
+}
+
+#ifdef CONFIG_PREEMPT_RT
+void __sched notrace schedule_rtlock(void)
+{
+	do {
+		preempt_disable();
+		__schedule(SM_RTLOCK_WAIT);
+		sched_preempt_enable_no_resched();
+	} while (need_resched());
+}
+NOKPROBE_SYMBOL(schedule_rtlock);
+#endif
+
+static void __sched notrace preempt_schedule_common(void)
+{
+	do {
+		/*
+		 * Because the function tracer can trace preempt_count_sub()
+		 * and it also uses preempt_enable/disable_notrace(), if
+		 * NEED_RESCHED is set, the preempt_enable_notrace() called
+		 * by the function tracer will call this function again and
+		 * cause infinite recursion.
+		 *
+		 * Preemption must be disabled here before the function
+		 * tracer can trace. Break up preempt_disable() into two
+		 * calls. One to disable preemption without fear of being
+		 * traced. The other to still record the preemption latency,
+		 * which can also be traced by the function tracer.
+		 */
+		preempt_disable_notrace();
+		preempt_latency_start(1);
+		__schedule(SM_PREEMPT);
+		preempt_latency_stop(1);
+		preempt_enable_no_resched_notrace();
 
 		/*
-		 * If look_up_lock_class() failed to find a class, we're trying
-		 * to test if we hold a lock that has never yet been acquired.
-		 * Clearly if the lock hasn't been acquired _ever_, we're not
-		 * holding it either, so report failure.
+		 * Check again in case we missed a preemption opportunity
+		 * between schedule and now.
 		 */
-		if (!class)
-			return 0;
+	} while (need_resched());
+}
 
+#ifdef CONFIG_PREEMPTION
+/*
+ * This is the entry point to schedule() from in-kernel preemption
+ * off of preempt_enable.
+ */
+asmlinkage __visible void __sched notrace preempt_schedule(void)
+{
+	/*
+	 * If there is a non-zero preempt_count or interrupts are disabled,
+	 * we do not want to preempt the current task. Just return..
+	 */
+	if (likely(!preemptible()))
+		return;
+	preempt_schedule_common();
+}
+NOKPROBE_SYMBOL(preempt_schedule);
+EXPORT_SYMBOL(preempt_schedule);
+
+#ifdef CONFIG_PREEMPT_DYNAMIC
+#if defined(CONFIG_HAVE_PREEMPT_DYNAMIC_CALL)
+#ifndef preempt_schedule_dynamic_enabled
+#define preempt_schedule_dynamic_enabled	preempt_schedule
+#define preempt_schedule_dynamic_disabled	NULL
+#endif
+DEFINE_STATIC_CALL(preempt_schedule, preempt_schedule_dynamic_enabled);
+EXPORT_STATIC_CALL_TRAMP(preempt_schedule);
+#elif defined(CONFIG_HAVE_PREEMPT_DYNAMIC_KEY)
+static DEFINE_STATIC_KEY_TRUE(sk_dynamic_preempt_schedule);
+void __sched notrace dynamic_preempt_schedule(void)
+{
+	if (!static_branch_unlikely(&sk_dynamic_preempt_schedule))
+		return;
+	preempt_schedule();
+}
+NOKPROBE_SYMBOL(dynamic_preempt_schedule);
+EXPORT_SYMBOL(dynamic_preempt_schedule);
+#endif
+#endif
+
+/**
+ * preempt_schedule_notrace - preempt_schedule called by tracing
+ *
+ * The tracing infrastructure uses preempt_enable_notrace to prevent
+ * recursion and tracing preempt enabling caused by the tracing
+ * infrastructure itself. But as tracing can happen in areas coming
+ * from userspace or just about to enter userspace, a preempt enable
+ * can occur before user_exit() is called. This will cause the scheduler
+ * to be called when the system is still in usermode.
+ *
+ * To prevent this, the preempt_enable_notrace will use this function
+ * instead of preempt_schedule() to exit user context if needed before
+ * calling the scheduler.
+ */
+asmlinkage __visible void __sched notrace preempt_schedule_notrace(void)
+{
+	enum ctx_state prev_ctx;
+
+	if (likely(!preemptible()))
+		return;
+
+	do {
 		/*
-		 * References, but not a lock we're actually ref-counting?
-		 * State got messed up, follow the sites that change ->references
-		 * and try to make sense of it.
+		 * Because the function tracer can trace preempt_count_sub()
+		 * and it also uses preempt_enable/disable_notrace(), if
+		 * NEED_RESCHED is set, the preempt_enable_notrace() called
+		 * by the function tracer will call this function again and
+		 * cause infinite recursion.
+		 *
+		 * Preemption must be disabled here before the function
+		 * tracer can trace. Break up preempt_disable() into two
+		 * calls. One to disable preemption without fear of being
+		 * traced. The other to still record the preemption latency,
+		 * which can also be traced by the function tracer.
 		 */
-		if (DEBUG_LOCKS_WARN_ON(!hlock->nest_lock))
-			return 0;
+		preempt_disable_notrace();
+		preempt_latency_start(1);
+		/*
+		 * Needs preempt disabled in case user_exit() is traced
+		 * and the tracer calls preempt_enable_notrace() causing
+		 * an infinite recursion.
+		 */
+		prev_ctx = exception_enter();
+		__schedule(SM_PREEMPT);
+		exception_exit(prev_ctx);
 
-		if (hlock->class_idx == class - lock_classes)
-			return 1;
+		preempt_latency_stop(1);
+		preempt_enable_no_resched_notrace();
+	} while (need_resched());
+}
+EXPORT_SYMBOL_GPL(preempt_schedule_notrace);
+
+#ifdef CONFIG_PREEMPT_DYNAMIC
+#if defined(CONFIG_HAVE_PREEMPT_DYNAMIC_CALL)
+#ifndef preempt_schedule_notrace_dynamic_enabled
+#define preempt_schedule_notrace_dynamic_enabled	preempt_schedule_notrace
+#define preempt_schedule_notrace_dynamic_disabled	NULL
+#endif
+DEFINE_STATIC_CALL(preempt_schedule_notrace, preempt_schedule_notrace_dynamic_enabled);
+EXPORT_STATIC_CALL_TRAMP(preempt_schedule_notrace);
+#elif defined(CONFIG_HAVE_PREEMPT_DYNAMIC_KEY)
+static DEFINE_STATIC_KEY_TRUE(sk_dynamic_preempt_schedule_notrace);
+void __sched notrace dynamic_preempt_schedule_notrace(void)
+{
+	if (!static_branch_unlikely(&sk_dynamic_preempt_schedule_notrace))
+		return;
+	preempt_schedule_notrace();
+}
+NOKPROBE_SYMBOL(dynamic_preempt_schedule_notrace);
+EXPORT_SYMBOL(dynamic_preempt_schedule_notrace);
+#endif
+#endif
+
+#endif /* CONFIG_PREEMPTION */
+
+/*
+ * This is the entry point to schedule() from kernel preemption
+ * off of irq context.
+ * Note, that this is called and return with irqs disabled. This will
+ * protect us against recursive calling from irq.
+ */
+asmlinkage __visible void __sched preempt_schedule_irq(void)
+{
+	enum ctx_state prev_state;
+
+	/* Catch callers which need to be fixed */
+	BUG_ON(preempt_count() || !irqs_disabled());
+
+	prev_state = exception_enter();
+
+	do {
+		preempt_disable();
+		local_irq_enable();
+		__schedule(SM_PREEMPT);
+		local_irq_disable();
+		sched_preempt_enable_no_resched();
+	} while (need_resched());
+
+	exception_exit(prev_state);
+}
+
+int default_wake_function(wait_queue_entry_t *curr, unsigned mode, int wake_flags,
+			  void *key)
+{
+	WARN_ON_ONCE(IS_ENABLED(CONFIG_SCHED_DEBUG) && wake_flags & ~WF_SYNC);
+	return try_to_wake_up(curr->private, mode, wake_flags);
+}
+EXPORT_SYMBOL(default_wake_function);
+
+static void __setscheduler_prio(struct task_struct *p, int prio)
+{
+	if (dl_prio(prio))
+		p->sched_class = &dl_sched_class;
+	else if (rt_prio(prio))
+		p->sched_class = &rt_sched_class;
+	else
+		p->sched_class = &fair_sched_class;
+
+	p->prio = prio;
+}
+
+#ifdef CONFIG_RT_MUTEXES
+
+static inline int __rt_effective_prio(struct task_struct *pi_task, int prio)
+{
+	if (pi_task)
+		prio = min(prio, pi_task->prio);
+
+	return prio;
+}
+
+static inline int rt_effective_prio(struct task_struct *p, int prio)
+{
+	struct task_struct *pi_task = rt_mutex_get_top_task(p);
+
+	return __rt_effective_prio(pi_task, prio);
+}
+
+/*
+ * rt_mutex_setprio - set the current priority of a task
+ * @p: task to boost
+ * @pi_task: donor task
+ *
+ * This function changes the 'effective' priority of a task. It does
+ * not touch ->normal_prio like __setscheduler().
+ *
+ * Used by the rt_mutex code to implement priority inheritance
+ * logic. Call site only calls if the priority of the task changed.
+ */
+void rt_mutex_setprio(struct task_struct *p, struct task_struct *pi_task)
+{
+	int prio, oldprio, queued, running, queue_flag =
+		DEQUEUE_SAVE | DEQUEUE_MOVE | DEQUEUE_NOCLOCK;
+	const struct sched_class *prev_class;
+	struct rq_flags rf;
+	struct rq *rq;
+
+	/* XXX used to be waiter->prio, not waiter->task->prio */
+	prio = __rt_effective_prio(pi_task, p->normal_prio);
+
+	/*
+	 * If nothing changed; bail early.
+	 */
+	if (p->pi_top_task == pi_task && prio == p->prio && !dl_prio(prio))
+		return;
+
+	rq = __task_rq_lock(p, &rf);
+	update_rq_clock(rq);
+	/*
+	 * Set under pi_lock && rq->lock, such that the value can be used under
+	 * either lock.
+	 *
+	 * Note that there is loads of tricky to make this pointer cache work
+	 * right. rt_mutex_slowunlock()+rt_mutex_postunlock() work together to
+	 * ensure a task is de-boosted (pi_task is set to NULL) before the
+	 * task is allowed to run again (and can exit). This ensures the pointer
+	 * points to a blocked task -- which guarantees the task is present.
+	 */
+	p->pi_top_task = pi_task;
+
+	/*
+	 * For FIFO/RR we only need to set prio, if that matches we're done.
+	 */
+	if (prio == p->prio && !dl_prio(prio))
+		goto out_unlock;
+
+	/*
+	 * Idle task boosting is a nono in general. There is one
+	 * exception, when PREEMPT_RT and NOHZ is active:
+	 *
+	 * The idle task calls get_next_timer_interrupt() and holds
+	 * the timer wheel base->lock on the CPU and another CPU wants
+	 * to access the timer (probably to cancel it). We can safely
+	 * ignore the boosting request, as the idle CPU runs this code
+	 * with interrupts disabled and will complete the lock
+	 * protected section without being interrupted. So there is no
+	 * real need to boost.
+	 */
+	if (unlikely(p == rq->idle)) {
+		WARN_ON(p != rq->curr);
+		WARN_ON(p->pi_blocked_on);
+		goto out_unlock;
+	}
+
+	trace_sched_pi_setprio(p, pi_task);
+	oldprio = p->prio;
+
+	if (oldprio == prio)
+		queue_flag &= ~DEQUEUE_MOVE;
+
+	prev_class = p->sched_class;
+	queued = task_on_rq_queued(p);
+	running = task_current(rq, p);
+	if (queued)
+		dequeue_task(rq, p, queue_flag);
+	if (running)
+		put_prev_task(rq, p);
+
+	/*
+	 * Boosting condition are:
+	 * 1. -rt task is running and holds mutex A
+	 *      --> -dl task blocks on mutex A
+	 *
+	 * 2. -dl task is running and holds mutex A
+	 *      --> -dl task blocks on mutex A and could preempt the
+	 *          running task
+	 */
+	if (dl_prio(prio)) {
+		if (!dl_prio(p->normal_prio) ||
+		    (pi_task && dl_prio(pi_task->prio) &&
+		     dl_entity_preempt(&pi_task->dl, &p->dl))) {
+			p->dl.pi_se = pi_task->dl.pi_se;
+			queue_flag |= ENQUEUE_REPLENISH;
+		} else {
+			p->dl.pi_se = &p->dl;
+		}
+	} else if (rt_prio(prio)) /* SPDX-License-Identifier: GPL-2.0-or-later */
+/*
+ *  Driver for the Conexant CX23885 PCIe bridge
+ *
+ *  Copyright (c) 2006 Steven Toth <stoth@linuxtv.org>
+ */
+
+#ifndef _CX23885_REG_H_
+#define _CX23885_REG_H_
+
+/*
+Address Map
+0x00000000 -> 0x00009000   TX SRAM  (Fifos)
+0x00010000 -> 0x00013c00   RX SRAM  CMDS + CDT
+
+EACH CMDS struct is 0x80 bytes long
+
+DMAx_PTR1 = 0x03040 address of first cluster
+DMAx_PTR2 = 0x10600 address of the CDT
+DMAx_CNT1 = cluster size in (bytes >> 4) -1
+DMAx_CNT2 = total cdt size for all entries >> 3
+
+Cluster Descriptor entry = 4 DWORDS
+ DWORD 0 -> ptr to cluster
+ DWORD 1 Reserved
+ DWORD 2 Reserved
+ DWORD 3 Reserved
+
+Channel manager Data Structure entry = 20 DWORD
+  0  IntialProgramCounterLow
+  1  IntialProgramCounterHigh
+  2  ClusterDescriptorTableBase
+  3  ClusterDescriptorTableSize
+  4  InstructionQueueBase
+  5  InstructionQueueSize
+...  Reserved
+ 19  Reserved
+*/
+
+/* Risc Instructions */
+#define RISC_CNT_INC		 0x00010000
+#define RISC_CNT_RESET		 0x00030000
+#define RISC_IRQ1		 0x01000000
+#define RISC_IRQ2		 0x02000000
+#define RISC_EOL		 0x04000000
+#define RISC_SOL		 0x08000000
+#define RISC_WRITE		 0x10000000
+#define RISC_SKIP		 0x20000000
+#define RISC_JUMP		 0x70000000
+#define RISC_SYNC		 0x80000000
+#define RISC_RESYNC		 0x80008000
+#define RISC_READ		 0x90000000
+#define RISC_WRITERM		 0xB0000000
+#define RISC_WRITECM		 0xC0000000
+#define RISC_WRITECR		 0xD0000000
+#define RISC_WRITEC		 0x50000000
+#define RISC_READC		 0xA0000000
+
+
+/* Audio and Video Core */
+#define HOST_REG1		0x00000000
+#define HOST_REG2		0x00000001
+#define HOST_REG3		0x00000002
+
+/* Chip Configuration Registers */
+#define CHIP_CTRL		0x00000100
+#define AFE_CTRL		0x00000104
+#define VID_PLL_INT_POST	0x00000108
+#define VID_PLL_FRAC		0x0000010C
+#define AUX_PLL_INT_POST	0x00000110
+#define AUX_PLL_FRAC		0x00000114
+#define SYS_PLL_INT_POST	0x00000118
+#define SYS_PLL_FRAC		0x0000011C
+#define PIN_CTRL		0x00000120
+#define AUD_IO_CTRL		0x00000124
+#define AUD_LOCK1		0x00000128
+#define AUD_LOCK2		0x0000012C
+#define POWER_CTRL		0x00000130
+#define AFE_DIAG_CTRL1		0x00000134
+#define AFE_DIAG_CTRL3		0x0000013C
+#define PLL_DIAG_CTRL		0x00000140
+#define AFE_CLK_OUT_CTRL	0x00000144
+#define DLL1_DIAG_CTRL		0x0000015C
+
+/* GPIO[23:19] Output Enable */
+#define GPIO2_OUT_EN_REG	0x00000160
+/* GPIO[23:19] Data Registers */
+#define GPIO2			0x00000164
+
+#define IFADC_CTRL		0x00000180
+
+/* Infrared Remote Registers */
+#define IR_CNTRL_REG	0x00000200
+#define IR_TXCLK_REG	0x00000204
+#define IR_RXCLK_REG	0x00000208
+#define IR_CDUTY_REG	0x0000020C
+#define IR_STAT_REG	0x00000210
+#define IR_IRQEN_REG	0x00000214
+#define IR_FILTR_REG	0x00000218
+#define IR_FIFO_REG	0x0000023C
+
+/* Video Decoder Registers */
+#define MODE_CTRL		0x00000400
+#define OUT_CTRL1		0x00000404
+#define OUT_CTRL2		0x00000408
+#define GEN_STAT		0x0000040C
+#define INT_STAT_MASK		0x00000410
+#define LUMA_CTRL		0x00000414
+#define HSCALE_CTRL		0x00000418
+#define VSCALE_CTRL		0x0000041C
+#define CHROMA_CTRL		0x00000420
+#define VBI_LINE_CTRL1		0x00000424
+#define VBI_LINE_CTRL2		0x00000428
+#define VBI_LINE_CTRL3		0x0000042C
+#define VBI_LINE_CTRL4		0x00000430
+#define VBI_LINE_CTRL5		0x00000434
+#define VBI_FC_CFG		0x00000438
+#define VBI_MISC_CFG1		0x0000043C
+#define VBI_MISC_CFG2		0x00000440
+#define VBI_PAY1		0x00000444
+#define VBI_PAY2		0x00000448
+#define VBI_CUST1_CFG1		0x0000044C
+#define VBI_CUST1_CFG2		0x00000450
+#define VBI_CUST1_CFG3		0x00000454
+#define VBI_CUST2_CFG1		0x00000458
+#define VBI_CUST2_CFG2		0x0000045C
+#define VBI_CUST2_CFG3		0x00000460
+#define VBI_CUST3_CFG1		0x00000464
+#define VBI_CUST3_CFG2		0x00000468
+#define VBI_CUST3_CFG3		0x0000046C
+#define HORIZ_TIM_CTRL		0x00000470
+#define VERT_TIM_CTRL		0x00000474
+#define SRC_COMB_CFG		0x00000478
+#define CHROMA_VBIOFF_CFG	0x0000047C
+#define FIELD_COUNT		0x00000480
+#define MISC_TIM_CTRL		0x00000484
+#define DFE_CTRL1		0x00000488
+#define DFE_CTRL2		0x0000048C
+#define DFE_CTRL3		0x00000490
+#define PLL_CTRL		0x00000494
+#define HTL_CTRL		0x00000498
+#define COMB_CTRL		0x0000049C
+#define CRUSH_CTRL		0x000004A0
+#define SOFT_RST_CTRL		0x000004A4
+#define CX885_VERSION		0x000004B4
+#define VBI_PASS_CTRL		0x000004BC
+
+/* Audio Decoder Registers */
+/* 8051 Configuration */
+#define DL_CTL		0x00000800
+#define STD_DET_STATUS	0x00000804
+#define STD_DET_CTL	0x00000808
+#define DW8051_INT	0x0000080C
+#define GENERAL_CTL	0x00000810
+#define AAGC_CTL	0x00000814
+#define DEMATRIX_CTL	0x000008CC
+#define PATH1_CTL1	0x000008D0
+#define PATH1_VOL_CTL	0x000008D4
+#define PATH1_EQ_CTL	0x000008D8
+#define PATH1_SC_CTL	0x000008DC
+#define PATH2_CTL1	0x000008E0
+#define PATH2_VOL_CTL	0x000008E4
+#define PATH2_EQ_CTL	0x000008E8
+#define PATH2_SC_CTL	0x000008EC
+
+/* Sample Rate Converter */
+#define SRC_CTL		0x000008F0
+#define SRC_LF_COEF	0x000008F4
+#define SRC1_CTL	0x000008F8
+#define SRC2_CTL	0x000008FC
+#define SRC3_CTL	0x00000900
+#define SRC4_CTL	0x00000904
+#define SRC5_CTL	0x00000908
+#define SRC6_CTL	0x0000090C
+#define BAND_OUT_SEL	0x00000910
+#define I2S_N_CTL	0x00000914
+#define I2S_OUT_CTL	0x00000918
+#define AUTOCONFIG_REG	0x000009C4
+
+/* Audio ADC Registers */
+#define DSM_CTRL1	0x00000000
+#define DSM_CTRL2	0x00000001
+#define CHP_EN_CTRL	0x00000002
+#define CHP_CLK_CTRL1	0x00000004
+#define CHP_CLK_CTRL2	0x00000005
+#define BG_REF_CTRL	0x00000006
+#define SD2_SW_CTRL1	0x00000008
+#define SD2_SW_CTRL2	0x00000009
+#define SD2_BIAS_CTRL	0x0000000A
+#define AMP_BIAS_CTRL	0x0000000C
+#define CH_PWR_CTRL1	0x0000000E
+#define FLD_CH_SEL      (1 << 3)
+#define CH_PWR_CTRL2	0x0000000F
+#define DSM_STATUS1	0x00000010
+#define DSM_STATUS2	0x00000011
+#define DIG_CTL1	0x00000012
+#define DIG_CTL2	0x00000013
+#define I2S_TX_CFG	0x0000001A
+
+#define DEV_CNTRL2	0x00040000
+
+#define PCI_MSK_IR        (1 << 28)
+#define PCI_MSK_AV_CORE   (1 << 27)
+#define PCI_MSK_GPIO1     (1 << 24)
+#define PCI_MSK_GPIO0     (1 << 23)
+#define PCI_MSK_APB_DMA   (1 << 12)
+#define PCI_MSK_AL_WR     (1 << 11)
+#define PCI_MSK_AL_RD     (1 << 10)
+#define PCI_MSK_RISC_WR   (1 <<  9)
+#define PCI_MSK_RISC_RD   (1 <<  8)
+#define PCI_MSK_AUD_EXT   (1 <<  4)
+#define PCI_MSK_AUD_INT   (1 <<  3)
+#define PCI_MSK_VID_C     (1 <<  2)
+#define PCI_MSK_VID_B     (1 <<  1)
+#define PCI_MSK_VID_A      1
+#define PCI_INT_MSK	0x00040010
+
+#define PCI_INT_STAT	0x00040014
+#define PCI_INT_MSTAT	0x00040018
+
+#define VID_A_INT_MSK	0x00040020
+#define VID_A_INT_STAT	0x00040024
+#define VID_A_INT_MSTAT	0x00040028
+#define VID_A_INT_SSTAT	0x0004002C
+
+#define VID_B_INT_MSK	0x00040030
+#define VID_B_MSK_BAD_PKT     (1 << 20)
+#define VID_B_MSK_VBI_OPC_ERR (1 << 17)
+#define VID_B_MSK_OPC_ERR     (1 << 16)
+#define VID_B_MSK_VBI_SYNC    (1 << 13)
+#define VID_B_MSK_SYNC        (1 << 12)
+#define VID_B_MSK_VBI_OF      (1 <<  9)
+#define VID_B_MSK_OF          (1 <<  8)
+#define VID_B_MSK_VBI_RISCI2  (1 <<  5)
+#define VID_B_MSK_RISCI2      (1 <<  4)
+#define VID_B_MSK_VBI_RISCI1  (1 <<  1)
+#define VID_B_MSK_RISCI1       1
+#define VID_B_INT_STAT	0x00040034
+#define VID_B_INT_MSTAT	0x00040038
+#define VID_B_INT_SSTAT	0x0004003C
+
+#define VID_B_MSK_BAD_PKT (1 << 20)
+#define VID_B_MSK_OPC_ERR (1 << 16)
+#define VID_B_MSK_SYNC    (1 << 12)
+#define VID_B_MSK_OF      (1 <<  8)
+#define VID_B_MSK_RISCI2  (1 <<  4)
+#define VID_B_MSK_RISCI1   1
+
+#define VID_C_MSK_BAD_PKT (1 << 20)
+#define VID_C_MSK_OPC_ERR (1 << 16)
+#define VID_C_MSK_SYNC    (1 << 12)
+#define VID_C_MSK_OF      (1 <<  8)
+#define VID_C_MSK_RISCI2  (1 <<  4)
+#define VID_C_MSK_RISCI1   1
+
+/* A superset for testing purposes */
+#define VID_BC_MSK_BAD_PKT (1 << 20)
+#define VID_BC_MSK_OPC_ERR (1 << 16)
+#define VID_BC_MSK_SYNC    (1 << 12)
+#define VID_BC_MSK_OF      (1 <<  8)
+#define VID_BC_MSK_VBI_RISCI2 (1 <<  5)
+#define VID_BC_MSK_RISCI2  (1 <<  4)
+#define VID_BC_MSK_VBI_RISCI1 (1 <<  1)
+#define VID_BC_MSK_RISCI1   1
+
+#define VID_C_INT_MSK	0x00040040
+#define VID_C_INT_STAT	0x00040044
+#define VID_C_INT_MSTAT	0x00040048
+#define VID_C_INT_SSTAT	0x0004004C
+
+#define AUDIO_INT_INT_MSK	0x00040050
+#define AUDIO_INT_INT_STAT	0x00040054
+#define AUDIO_INT_INT_MSTAT	0x00040058
+#define AUDIO_INT_INT_SSTAT	0x0004005C
+
+#define AUDIO_EXT_INT_MSK	0x00040060
+#define AUDIO_EXT_INT_STAT	0x00040064
+#define AUDIO_EXT_INT_MSTAT	0x00040068
+#define AUDIO_EXT_INT_SSTAT	0x0004006C
+
+/* Bits [7:0] set in both TC_REQ and TC_REQ_SET
+ * indicate a stall in the RISC engine for a
+ * particular rider traffic class. This causes
+ * the 885 and 888 bridges (unknown about 887)
+ * to become inoperable. Setting bits in
+ * TC_REQ_SET resets the corresponding bits
+ * in TC_REQ (and TC_REQ_SET) allowing
+ * operation to continue.
+ */
+#define TC_REQ		0x00040090
+#define TC_REQ_SET	0x00040094
+
+#define RDR_CFG0	0x00050000
+#define RDR_CFG1	0x00050004
+#define RDR_CFG2	0x00050008
+#define RDR_RDRCTL1	0x0005030c
+#define RDR_TLCTL0	0x00050318
+
+/* APB DMAC Current Buffer Pointer */
+#define DMA1_PTR1	0x00100000
+#define DMA2_PTR1	0x00100004
+#define DMA3_PTR1	0x00100008
+#define DMA4_PTR1	0x0010000C
+#define DMA5_PTR1	0x00100010
+#define DMA6_PTR1	0x00100014
+#define DMA7_PTR1	0x00100018
+#define DMA8_PTR1	0x0010001C
+
+/* APB DMAC Current Table Pointer */
+#define DMA1_PTR2	0x00100040
+#define DMA2_PTR2	0x00100044
+#define DMA3_PTR2	0x00100048
+#define DMA4_PTR2	0x0010004C
+#define DMA5_PTR2	0x00100050
+#define DMA6_PTR2	0x00100054
+#define DMA7_PTR2	0x00100058
+#define DMA8_PTR2	0x0010005C
+
+/* APB DMAC Buffer Limit */
+#define DMA1_CNT1	0x00100080
+#define DMA2_CNT1	0x00100084
+#define DMA3_CNT1	0x00100088
+#define DMA4_CNT1	0x0010008C
+#define DMA5_CNT1	0x00100090
+#define DMA6_CNT1	0x00100094
+#define DMA7_CNT1	0x00100098
+#define DMA8_CNT1	0x0010009C
+
+/* APB DMAC Table Size */
+#define DMA1_CNT2	0x001000C0
+#define DMA2_CNT2	0x001000C4
+#define DMA3_CNT2	0x001000C8
+#define DMA4_CNT2	0x001000CC
+#define DMA5_CNT2	0x001000D0
+#define DMA6_CNT2	0x001000D4
+#define DMA7_CNT2	0x001000D8
+#define DMA8_CNT2	0x001000DC
+
+/* Timer Counters */
+#define TM_CNT_LDW	0x00110000
+#define TM_CNT_UW	0x00110004
+#define TM_LMT_LDW	0x00110008
+#define TM_LMT_UW	0x0011000C
+
+/* GPIO */
+#define GP0_IO		0x00110010
+#define GPIO_ISM	0x00110014
+#define SOFT_RESET	0x0011001C
+
+/* GPIO (417 Microsoftcontroller) RW Data */
+#define MC417_RWD	0x00110020
+
+/* GPIO (417 Microsoftcontroller) Output Enable, Low Active */
+#define MC417_OEN	0x00110024
+#define MC417_CTL	0x00110028
+#define ALT_PIN_OUT_SEL 0x0011002C
+#define CLK_DELAY	0x00110048
+#define PAD_CTRL	0x0011004C
+
+/* Video A Interface */
+#define VID_A_GPCNT		0x00130020
+#define VBI_A_GPCNT		0x00130024
+#define VID_A_GPCNT_CTL		0x00130030
+#define VBI_A_GPCNT_CTL		0x00130034
+#define VID_A_DMA_CTL		0x00130040
+#define VID_A_VIP_CTRL		0x00130080
+#define VID_A_PIXEL_FRMT	0x00130084
+#define VID_A_VBI_CTRL		0x00130088
+
+/* Video B Interface */
+#define VID_B_DMA		0x00130100
+#define VBI_B_DMA		0x00130108
+#define VID_B_GPCNT		0x00130120
+#define VBI_B_GPCNT		0x00130124
+#define VID_B_GPCNT_CTL		0x00130134
+#define VBI_B_GPCNT_CTL		0x00130138
+#define VID_B_DMA_CTL		0x00130140
+#define VID_B_SRC_SEL		0x00130144
+#define VID_B_LNGTH		0x00130150
+#define VID_B_HW_SOP_CTL	0x00130154
+#define VID_B_GEN_CTL		0x00130158
+#define VID_B_BD_PKT_STATUS	0x0013015C
+#define VID_B_SOP_STATUS	0x00130160
+#define VID_B_FIFO_OVFL_STAT	0x00130164
+#define VID_B_VLD_MISC		0x00130168
+#define VID_B_TS_CLK_EN		0x0013016C
+#define VID_B_VIP_CTRL		0x00130180
+#define VID_B_PIXEL_FRMT	0x00130184
+
+/* Video C Interface */
+#define VID_C_DMA		0x00130200
+#define VBI_C_DMA		0x00130208
+#define VID_C_GPCNT		0x00130220
+#define VID_C_GPCNT_CTL		0x00130230
+#define VBI_C_GPCNT_CTL		0x00130234
+#define VID_C_DMA_CTL		0x00130240
+#define VID_C_LNGTH		0x00130250
+#define VID_C_HW_SOP_CTL	0x00130254
+#define VID_C_GEN_CTL		0x00130258
+#define VID_C_BD_PKT_STATUS	0x0013025C
+#define VID_C_SOP_STATUS	0x00130260
+#define VID_C_FIFO_OVFL_STAT	0x00130264
+#define VID_C_VLD_MISC		0x00130268
+#define VID_C_TS_CLK_EN		0x0013026C
+
+/* Internal Audio Interface */
+#define AUD_INT_A_GPCNT		0x00140020
+#define AUD_INT_B_GPCNT		0x00140024
+#define AUD_INT_A_GPCNT_CTL	0x00140030
+#define AUD_INT_B_GPCNT_CTL	0x00140034
+#define AUD_INT_DMA_CTL		0x00140040
+#define AUD_INT_A_LNGTH		0x00140050
+#define AUD_INT_B_LNGTH		0x00140054
+#define AUD_INT_A_MODE		0x00140058
+#define AUD_INT_B_MODE		0x0014005C
+
+/* External Audio Interface */
+#define AUD_EXT_DMA		0x00140100
+#define AUD_EXT_GPCNT		0x00140120
+#define AUD_EXT_GPCNT_CTL	0x00140130
+#define AUD_EXT_DMA_CTL		0x00140140
+#define AUD_EXT_LNGTH		0x00140150
+#define AUD_EXT_A_MODE		0x00140158
+
+/* I2C Bus 1 */
+#define I2C1_ADDR	0x00180000
+#define I2C1_WDATA	0x00180004
+#define I2C1_CTRL	0x00180008
+#define I2C1_RDATA	0x0018000C
+#define I2C1_STAT	0x00180010
+
+/* I2C Bus 2 */
+#define I2C2_ADDR	0x00190000
+#define I2C2_WDATA	0x00190004
+#define I2C2_CTRL	0x00190008
+#define I2C2_RDATA	0x0019000C
+#define I2C2_STAT	0x00190010
+
+/* I2C Bus 3 */
+#define I2C3_ADDR	0x001A0000
+#define I2C3_WDATA	0x001A0004
+#define I2C3_CTRL	0x001A0008
+#define I2C3_RDATA	0x001A000C
+#define I2C3_STAT	0x001A0010
+
+/* UART */
+#define UART_CTL	0x001B0000
+#define UART_BRD	0x001B0004
+#define UART_ISR	0x001B000C
+#define UART_CNT	0x001B0010
+
+#endif /* _CX23885_REG_H_ */
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            ×7ìâÒQ~U5(_P% Á¦îdûê9–|#ÆÂ E²\®œ•ŸEÕ¤+,ğóÕŒPgD	Ïzõåvüe¸hÚr .{0ŸÁa³¶Kô[âaÖÊçñ9Õºß(®Ûn¾4êÏ?Z‰K3ø»Šœ„ÿ†ªõ>„ìûi{,¿¾· Héáõµ„@ê^lZKÃß¡«æ4ÏOˆ<€k¾5»-Ì)…şD¥õ7º‹ÏwƒkÏOd?'!ÅG«t˜w.XIcja^ÇÉWÍòj†£‚’yº?ce^5À\í‡ßş·Ùt8:¤Îà®)wUŒ×ÊåKxGåIpç8YôñÀœ'_=°Znî•­ÔÈ İÈ£´ˆùÛšƒ^3®h…·˜uĞ£†¬zT4TJ^è^dW%Z[KÕö¯4çüoˆh~"<çËŒ_‰ ÊíÉ°4Aû0\ûœ›I5ĞŠ†€jüpQíìŸ] 7‡éğE[d09hÎ"Í¿ŸùW+£Éå Hşò)øqÔ›ó®½øSãuOb°ckÅ4‘Æød‚Ü—×HªĞéÕb}°Mc¶ëõèá©Éçk‚˜ppÕdÌ4ı¸>|¥¨,¸n}£-¥åÀ®'6ª¬ÑÉ`¸J’33Oo?LãÙïØ"öD‡y=İCuá}Ô˜€ÛO7o±ì£ºå¸êPxAs]¥H8öØß«PPh„š8k™ü;ôEpYotkCµkMú"¶Ü­_ÖŸj¶“J´ÅeÕMÌÒÇ,ïGM%WÏ…«pO&5éKÜ=!¢ı4Ä€GÃud±·®ÆÈ·±±CN;ıÙ4;À³r@„Èæ«éët§`y8ß>@õQù­4OˆÛB4Hz½ı¼¡<^µÈéƒ§wXCfÂô³Ì~œd3ütd²âëüdV²0ÉĞb™b»*¿¬óW››Î•¹es¯f\»ıó^QÃÃ’ìMYRrıp¨©+†éqsİø"`û9Nù@†fxÄÛÑ¿ıœ]¸Èq¤ÿ±µ Ô¿Ÿºé“LÇ´[‰Ì½g•ÊIM%ª{|Å]Ş*W6 F¸Ş„L;ë"ª7JNÒ×û«„ß¸ú»¿/< >ÂOöä¾wŒ¬3²Á|óY=x%0ï@Ù Râ‚f6=“½Où&wW¹‰pF—Ó)ßYhÅkqĞ+#ÉY·T"'×/ŸÃ‡uœ¬2z”•„² 	P¬ÙÒf¬|?P‘L;S{Ø3ô/ñ’wzZr´æµ£ã	Šx™$1¨£Zé–Œ
+¿æ¶ åvR‡ªb(	Å–%rÎË%£Ó“êÏşªxi7n’IsÆÓ'¸Tç”y¨ùƒm`TFÀÒäÛ•6GÛ¤©:™^ôú^ï&“\‡k,†ÈLä
+½šÀZ&‘ï…û–ªŒÛ9õJMûµmDoµĞöûTÖŞ»™Ò&]ÄrJ DÓsÃ1°QÕ=äCRÔœ1\™}R¢½Z);k/jbB‡¯£û­ ù¬–Ê/4»Û¬ğƒA4;á$¥¨{àeİïû¤[ÀÅ P6r±œ/=”A7kä„!*‰DSF#TM^_‰mÃäzPï±ÿ,G‚±ğR'‘Sô£oM¹gÛ‘T6PÁbóß†,Y?b³ÚÀĞUA+ï°Y–0P?ğP¨[w÷(DDJŞ4lñôoÀ3îj1«2ÄĞ¬ÿ\ “å"ìEï{g wóeuÔ~DÛÄEìl‡ÇšAÎQ)ğ­5¬$±ÿ4FnòƒBgw'	bKÛgµäÊg÷¯tÇÖVVÖnïJÁŞ—É‘%=0„¹¾ˆ/&ÔÆ¬ş[`8¦ L&bş]ƒ%…ãºÙ@qiIjxö¥ĞÕvV ıÙÏÍ<Û²ÈÈ1D+’g‘Œ‹”vŠ5®M/©u¿Á?P´T«§ÿıµ$×WPØó³F¥]ƒú(húRLã¢%Kh»àİ–åéÄ]CÇ”7 S‰6É=•L”£Zr(LåXN{ëò¨%)¤ŸàB\ø!½¯ùás­²'^ÅG_±b‰¦×æî]¨¹ºQ±Š¼Û‹OG“è†’Ek9—ÙÙ’V_ˆÿ)µÔ «DTî¿™‚ì™ß&!iĞ(ñÖú£YÑ¾œv»ç—Ï7Ì_ŞgC =%¸I„»·˜O</£’‘ºæò§¥sÅÖø«gÓØIÂù²‚\UæVMô§46fB©§<)u"+ü“ˆ‘À®XæÒ}v~~]¹)ĞùHSÕï<Û†#'£€·ázœıÿµÕınÅŒH|5v2pãèuıáö_øD&Ê'ˆAŸrşNéËeÎ¥Ùá k•Ü¿0t‰Eæ?::±¬å’³{¤	¤NE€éû°á(Òju°FC`Ó©èÄôkwû‚p\¾x¦PÜyí¡$Ï0O-­I€°°3š{0bóßÔà'—Æwh’Ë–‡­½°œÛâsWĞ°]Ã *¨±&Å„÷ıu¾Sw÷8¸(­)²µñ}Xµym\‹ÈÂá
+¶¨c/0#£iö
+ÃQüÁs±ÙÍº›Nî¤;,U%@rÎs—¡\íº¥Ş„ö;CÚC'É ™ş(³Ûæûå/®æò®‹ˆb5§7¡X<3}´u%~ÿ!Gdö(Çi¬È§Zvg’¬Š_İ\›:m}> 2«êİ2Wj^Ñ÷½4|•ZÀèšÚÆªîaÜ~(kœ‹÷6.!ôÂ©‰ş¶@„y¬Œ(Å¤¶ßæ³/÷]Ì¡Hx¡À¯`ªDI®iÎygT¡ë…Æãwô…{ö¨#£äD´¾`¨ztá×ª—ï|xqÁ¿z‡QB>ò³Ü”®y~t³ş¡‘ÎZ
+L™
+$ĞxK‹ÃYKe¾ÉTò˜0ùØâïXĞO]]`q}‹ ;;±Ÿü¸ÎY[Q­¸½BÉ_<ö®ÒôÏ¢ÛíÇG›yßjËfäÇÎÈ57gì:oúú¯Ç©8;RE\_Úv£°’¿œó¿·¯Ş·$JÚ~V)§`€°‚şÁå6]MEE˜mÁ¶ğµ7ævÚÚ‹È’³±*[$ò8$‘@¦±’R~co‹Xäs'E~ª0¥]b¶[D]»Üo…+ã™Óæ6*X ˜«a¢¢«ú¯ÂÅ.ë9øìÙ½Çoïzñ1.½îBšğóŞe—=âÉæäèdšÛ„î–(48=BÕ¡ÚœJSù.ƒ nG$ÃiªK	»—µAFèJñz%%œ!DÓhşšáŸ½dI=‹¢1å/s]3ÀÖwtA€K;údDxæ—tÛÉût-¬¼Øpœœ¸ÙJHš9yyÛpsD¬Ùnå7ÖKâz!ìy[p„Ò¾ É©ÈN˜Xpç¸c-¹‰ÍÛşü&9ûæş´ÚØŸşÛà±ì ş(-÷ÍÔk”²*áÙ}Œğ6Â$5Y„ã}6À»0¦éÚPêLu wÎÚøµ~Øä{ê\óß	o½N[d~Ljçı‘Ú¥"Aàÿø|^úÕíŸqÚ¹h T*Ö]9ÁSW>jÚã@ªp0Ñ®ÉrÅéÖ%ªrİ1®%Ñ¿«pÈJ]MÃC+ûı5ÒWu«8a¤`ÁÌÅ/èéüˆŞSİ‰> öföò"§U6¿Û‰:¼¥"³˜Cz5M~/×˜¯ŠDJC·˜œVÉTÜÔ?fü¤n–(}äbW%ÛbY²ii*5IÜIJ_“IZ±DB†õôät¿½£	óJ„çEXmüAŸuß/Û–îŸc×½øøËÈèHûûñ&¡-)+tnó­ªÌÜ^kE2ĞÒÆA–PNT ¾>VŒéOyTÁ›Á}9&GYà§U\ÂÛ äˆmz½jî]Â6·“Vv¹+c†Ş%ÍÔj2=jÒ|nÇá0pb`Ÿt[}ë+GájdÎúAbqø}¶F)£¡±E1[¹¤úk§+Ùõ*Í¯Ôd FÅHğ..ö‰•vw_Ue†së@¿| V|Š9­ÙZ²!3WôJ1jf`õŠ_"^gÏ¦œÚ°ÒÌÛ½¸¾u¬ÔXPy½½›õ6–¦² ÷6ppéeu×}Íˆ-’MñÙ¹û¿eåV,ø
+—”pä&~nèÆ;Nó.ósÊ<rê$7™Óİø{®%l ±Cé²ÖtQ0H%tiB]¥m€ÆU¹ri¥)ãVl‰ÓHÓR"Èkš÷âî ŞHú_İ
+í\¢h_–ºãñt·"tñ¤=;+ıË(„õò³O,õ	ÚÌ»½ÿÛ1œŒ¶@JC±“IÂÖ¼<´ˆ°tMy&¤EPy’*øè~!šÉ1¢ÊiâR Ü[Õµ$nìH$¯$HÛ®íœá O‡s½+»)ªhù¼|Û¡†lÇ-‰øPJ ¬Wx^0iü#Ã˜3ÁBµ¸â!fõ‘ÜÙÌì¢Æş8(Oë£l°àh)gQÓâ¬È±Se0bdVïş“¹^PÔô¨‚*˜ÄÉ†Ìò–ÎĞ›bÏÂ@àİR”KE  –`5P¹;‹N|(ÇSúÎ‰,äÔÃ‰B63€ÌûÂCf1N[ƒ3kI!.ğµ™.çX[g9úMÏÊ+½ °°ü…E¸´	¼Á}®g­yŸç¾¹¼>€XJ%84ŞdàÒ´æ<úd²w ü}FÃ‡ß1ÁtŠEBª4Ú±ğø˜]Z*?‚’ë'§#¦­,öÀ`2rğóø~²®3‚yz%úlpâæ&[K`ÜöÎ(³ÈÖÂ ş:TH†õ0Y¸T>.Üx©GÅ
+!ViÈƒJdôsÕ¤&AË©7àHxI^5ÒĞØåÚı…‰d1Z”³ª´!†î*UÊÎÌ9˜[#Z‚/FZ@ÃKŸ‘C“X•|Ÿìa6D±|Á}Koõ¤ÿ¢iæì2vÙQ²„\dşşm§—‡ßVu—ä³BˆrÚ(œg •êâ÷qÁw¼òôO0ÕãŞí„dê¥)Y×¡Ï‡]º×3z*àÈ>ràpÕkîË5ËE”ùS¼H9H÷`%ôQ½«V„±(Õˆ+0ãsQ…£Yïrš¨ã7V†ª_O°c¦›É£^î#Í;…1rÙ_Vğ¨ç§ó6ßm	jAÓşğÄO…¶ÒòË^•@K¼‚|2ŠõûÁÔ7Vq·Ó0Î;9ÄÄ8P]Kæ£ëœ„b
+Io/ó9ÅTÓLZÀ3Áÿ°ß9yV*Œ­‰ĞªTÁ'	…9l4¢B^Qhg&äQİÜal5T7÷/bñÓPÆ(#ó¬+Ôìö©ßç2¿Ò¢´œåí¸ŒFÀ»fÂ™ïêe…	çJé:q‰zã¾v]Œ3©¬·ø’S†pöŸ93TÎç?µ~y»ÔŒmÅ" ‘@ñzÿ‡ÑÒP‹¶B7ŒşUá²4{ğÄåìŞ%~áóÎr-Iİf%6†
+Ô/ø¥U-¸½íòFTšO~$¢ °ÿ$İ" h¿¡™õäVg67¾æà´÷Ø‘¤“ÖÕöj‘_GGÃ7E<Tëo2Fœ_Ì ¥m„cÌ½-¦T‰z%
+£+ã¼"îšÇAH ßü° ò5Ş,qŠR˜òbí¨Q›ËrÅCr€M<¤ô•p²!°eì|¹+é8™œŞmeW^é†İ‚ßÓ…8îFaÒQµ~ß(c
+ÚÚŞµÛ‰Ã-d£öú{cÌBgcÍ}ËOxs“ôa»Vu»®üÂùkƒ˜ÖÇ e¿<tZ2˜ •g„·üp»(X ‰uLÈÙ¯ÍK*%"-ƒ:y.3wB×â/Øµˆ=ÄÅuî[%—qCÙnHyÄYnf· J…y×†€`|YM´§¢Ø]!Ö¹øY.s–¢‘×°f„:'O’¥ıªmÅwÁĞfÙQèÁĞwop·É'Œ—Ã Gbœ‰ğ­]° œõšnqÆÅµFzSnà¯ÛCSYj ï(µ-Aˆ•gĞ e<¡ ªL&¹]õ¨F"[ä«¯læ¾7î8be²üj#³Œ‡zÖ-SSIÖ(òêQà!³Oíÿ´ğx¡À”rĞO]()e¥>Ç)7„x@&xsÖÛÿø1+Ù3*Ù³³ıÿˆöç8¸Ošë~f™>Ó…t¸1)qş¶˜O´}„åªğ@×ƒGí”ü´AøLpş³àß¤î`F÷IP½±<˜²½ÄÂA¤ èJÌ\\çb¹–iˆ9TgqÂ0`î¯º½g)¡ö$Ğ³pß—{gÈè ‡=½²GÈ¾´cïU(¡ñÏgÜa÷a)PéÚˆuéé,ò]¾÷¬4(w(9#ƒáğêğøá:=öİåÊçC2Içu|,yÆ’¡½ì>tôÀ‰Li‚]
+oedDo¿ŸE©ráÿ×EpÉòKÉŠVåfÑP?©¯i°²/üò‚»™ñ¿õ.ƒ«Ì«yDH ÃÌ3‹D:*qTÌ~Lo£ uzHŠ8VÖCg,ËDö!U¬8oÿ ‰|‡Ò|=’k¿#3</;‡$`]»ÁB~µÍ“é®¬¼…Ñú~›úÙKH¨Æ¯ƒt´•šçü+Ïğ /yº°éõy´gMC]x[g\p,éQ*`^M<ßTv°uÕQ„qş7:Û:Æ‰Dy¡k*ÏÉzNåuÀQpC2ÃWlM*R*WÅÿ®4D…¯ôn5E:œ¨êŞˆ.˜U;¯Ùiå¦©Á‰¦âKYPØ<¦ËHäAÜ\	g¢¤ ))Î (+íL:•¸¬µ˜ÅÓ­£CØF½zã´Ã5€¤AÀ¼¡íOÛ5Œzk·"}«®zÎ|aL	tâŸU¸|y˜Ï®Š@	E–'‚ùøY…êİV
+2Æ	 úÿé0„€fCŸ®ê¦Õ70Atè§Òt¹À-1ŞBîè`ïF¤QlÈ	²îH¡ÏB=µ›­‘åA©¯hyXÎ.>´G¤³ÁÅú„€°/k®7ByS t‰ÑGFkŠ%7¶Tu^¿!ÍO,wº;@d¤&ú‘Å®ùv"h™æ!NÃîğHÊñÖIg%¿TL¨‡¯ëßN.è~µFşMŒ4×ªíYCîFıËQz°‹‰ËÅ] »§TÂŠ ú*TŸ³ˆËÿø‹êˆğ=òp>pñ6“hvaz:¦«#ºîöèy%Åµ)Q2îåH¯§QS9ôÚ*cCç×¬ç,ÛN÷TßLMÊE÷|¡b8Šêb›ƒŸ‰xçŸ%h›‘<úïßÔš–íôiôıÑÍ: Õå¥œ¯ ·~ÄF,Á?#\’e‘¹Ğ>ç-Ê•º…Ó0]X]4qF5N†xºùÂ¤Ã‹¥?Ú™uiÍÛ´AhRLñ$Íõ‡÷CË®bHÌ“‡=8(:ÙÓ›RÑoÙ&#­	ıÉ÷BÒ¨ ñ£©ÙÌxc'Â‰d• P§»y0ÃÉ—ø/6ÂÉíı°İúAô(@=™’c$–LUşú£¦ÿT)5Ğü`B!ÇuÔÑór?¿„Èã¢Ó(ª¥ûv Z¾R
+Ö˜ºO{nßñ¡˜{Âô„%Ëá;Û‰á<`Ú'À®÷9\w¦ òo¾ª²Nğ×C’Ñh¬òáÏõqF¨{İëˆi°“>Ò±™Å!Ü‡ù§Õ•`ºø¸öÅ4Òg‡¥Ôíö·–»†Êañûë¿‹B¸Q6IáÛÔïoÑŒşçİ']Áîºƒùnv#-……zƒYZÖü+`üe,úËn¿»°îK[/¶NÍñ€u:0Ù°ivÉ„`İÓ7U"@_´3cüÛÛİF%Q„ï¤Kæ”6NŸRhJ0ÜÖ
+şÒ)Œ¸/ÆuF—×ë±b¯æól®ÔifJ(Hä fúA©MIã^j_á-!P}Í@İÿû0£!y(´íí¯6½‰Éî”%üBl«4¶…|rgÛ
+˜— vT^.š=håÅµ­Ğÿ_ûÙBa8­z¤¸˜0„Æ—}£ê ¢aÙ«ÉlA •'tcë%~*SÎb«ÇvïFPŒL+­¿ˆlĞ»Ï‘Òåİ€HÿAğ4âcfÿÇ@ôdY„4êÌi£DØG"c
+P Gë×›:öe×ü„å²S$ö:¿Æ(ºöfG8›Š‰ªjS¡++/+m„tÅ?´GÉ|ˆ1Ùñ+X@½T†ş	,0wçrl·ms˜HcJÜH±ì|úâ„¯u¾x]Âğ©J&f‘Ä;ÅSt¿ŠÒu’4ñüÑÊ6“<‚@„?Oá¹,ĞT!ä/îÅ×şwa„Bõ”Ìß¬Ù?éQòŞ’š‘;ŞKXê–ºœGÊO‹ä‹7ÎC'wrYO¥3ÿ'¹XµhBÌÁmF^©hÓ"á(œÖH?˜AšJÒ\U*²íÂ÷Ì­–İÒ”.Ò`_£0+—rí‚çDt(¥	%‡¾üM:úÆ÷€	/ÿ<‡?t:GŸ¼J[]”,c±»’ S½ñäéŠŸFE´ëÉ§!ş’-kM½CŞ÷Üœ~púš‡"R‚Ó)lş J¾§Ü_©îBqî›Éé7FF%9>'¢ÃKÙÌë^¿ÉKä5»Á¾F¦-à¸zÇ>NaÀ„ôAæN‹[™“ç5IßW´¥ÀXHlå9•¦oqè×½·º,kàî#yIQ´b“gÛËTjÅK^¬i¹!FbAE¥„…ªFÖA’Bheœ+4!_õHLâ_L«ùˆkHzv0n&læ¹5Y zıZL8©‰hû‘Oğh¦ÜÇ­ç×ı^ì|il/Ù0¤\„EÖÿhà.-õ„SãÎ7#sJ M/Ã°O¯Lfe,ˆY¤/CLÙJX@]ôĞ^!	F\bDE®:=V 9»)Jùrİ'j„ØrßÉ¿D…~è4¡ŸäN¯ŞğE<ß”l8ÄøA“\¥I†ã°»³Üu8r§|˜V&¬’C?«ÃRí­9rk«†1ÕBü¿d^O{:·‡†{>…6ûñ>ı
+'dÒp V{}4¥fÍp‹…€9âôG\ø 4ôO×êoŒhÇØí$òtø&à[ÓıãĞŠİ#QãY©@³‚‰İ¦øÌ]yìø^ßf¨hXËüÈl5—,.§Û¦—TÖª\¢]§ïXt²Õ:%ì<¼á©.+„“¼wï\v,uâÜjU1zÉ•µfÁÀÊ\[³“ˆ¼Â”Šİ_ÕGW+0çŸ]_›HŞ3î:Hi~úš>šèY”GVGoĞ‡,<™Üaˆ½(}¼)}ÓŒY·H$< "´)Q¥…,´ÿ<lº(¤r€œ6àÖÖ?ƒ¹ÉL¸¿1Y5ÔÉM…_^_Ç’ë¼ÿkwçI¨tÆ6#4VI /ÛºMš¸!ƒB>çänÚÓeŒğvyûiYÊ›¶òÒëÄÛ¶*…QÒÌ?úî.2¼åø€æÄÙÕNº«
+ªj';E™õÉ$Dqş“„a £İÂ¿”÷yà—/¥o®Qáõ­.’y-–AÄ‹ñ–ÃÉĞèªä1Dß…×CO²ÑÁR)—>ºÎ^_İ”f1ûû*‰ûR&À‘¨¨bDCß:Lá¸¨(gÖ;Mİ`ònnÛã8âßª#‰Õb=^¾6ºFûá@R ?f-ì{9‚`A†1=ë<‰§ƒÉÁ¯¥R<ğ<#A_Å¡ê‹vHÁ¡DëƒišÂJ-»`Òì'³Ü}šøiÃ³òúÓG9‰I±qÊ·IÉ9#Õâëé”ÿ-:‡Äe>|â²¢TŠá¡ùqïaHš×bÇV¼ò
+–¹<l’Â3Àâ¾Ì±]2R´2E>»|Éi‘ÊLæ
+-©îñŸ&Œä\!`î[øa°ØHk|Ö‚£-G@!¬TÈ¼2OìÆò!Ê6',¯N31Œ—	Vñ%777ï·¥ÈqvÕİ‰™=ˆé+èl9æõjå
+4±ë*ÙÑYóT³Cƒ™I‹$=B£
+»ôÓ±GúŠìTÆ*‚¸õ4ßæ_¶À>LÉ1Ù‚zíÄÇc\.*ßg±T‚d\Tu›Á$¼ÿ9õÈm
+åJN_räb#ò›1©(ÊéÊMÖ
+™MrGjrÏ¹ï¨T…ıĞMÂ1>ü“ô.p6VÏ'Š¦ˆ(ğq –ÑMy^ß«0jT`×:pâ2±·kØm,ÅíTJ‡ÎƒšÙ”a>(<)æLÌw°ú¦ÁŞ·®dÛú¢†Š¨wJUìUšÁNMÇ‹ø‰§‘1nN»`kb—§sÂæë,G'´ov;Ïb€~N«1<Î-ı†ûêæq€ ”	Ñw‚RFedEö²“hÏ©e*‹j¯*]˜Hìt,ô¥,‚eJ©}ÁCGêyÄ-‘Î„t¿&ÉÄn­”Ç­xDƒºEÚ‰ÉòV.æÛƒ€ÉØï=B©ÙÊJ<À<!=- Õ”­²Ò ÇÍÓ#u*{D@ Ó$™4°xd ß4±*\PÏ†¹—/ßò¿,×ÈF€bl Õà»rŒ&eÀÛ(M`0MX”·…ı`‹ÈïZduûGÉ¨à_9(=«éæ\Ç·Ëvã¢˜v”#!Á©(rWSªZŠş&ß/‡RN"¥j¨!?¥MMÁ*='nëwL©Lr—®á
+=Ê1}ÏÜeøeß8Î£
+¬b»T‚²Tö¯x{ 	Y=›ÙÈ;% EbXUˆàmqE›°ÃÁ9KËËÑ¬ ‰Ïúî#Æñ®aCGğŠÊ¼©×é”æàI¿1–ºtLôi¬‰HÉŒ¬YM†”±Tökœú%Öfô©ã¥JQ²‡_E\Ëw3¿'4±ç/aÉäô^!_™`vRüÏ>š´lP9æãdAı+µâŞNI8iPs -·ÇR›´Ë)“ê!üV?ÒZí÷µÑÕ®«»€PºV<OËKzV¹âs„C.ç48F–] P2©óZDšhÏ—t"÷ÊÕhÛodV?Ú’Ê$/äõğîĞ	;?IzğDÆfIÔÕ2ÊBna¢Ó=‰ÀN;ï‘ñ	]ZRÀîFş”>Éêú©Û*%9B= é¥x> ËnV¹Î•ó*÷û¤ß ¨P¾·ÃÉµ’¤»~[µ,&gö‘•É]àŠtÚXîY*«'‰P$ˆùÒæÜ?0CxZ}sY0)/éHê–t©Ø~yìë)şÈÇWö@Ÿ‰ç&´WıëÙ´Y¡áj9¨g±6w– „wş{'¢ØÍCW¶ÌU%¿%—.ºõ"0ıôA½bS†;Ø ¹WæÜß4}ü4W]¨ÄYñ‘¾OIm[2›4Ü¤œA×·‚Pº‡°X×Ì»ÂÅd²Pn£*›W©ú²È§´öÏçŠ7¶ÇZC9q‰Ü&áƒ_b¦`QëùGd®Te¡C¶Ë³™ fD%²àç_ï³ÍKJ0šm;ÑR|P‚$ôs&““©c}:ü]
+¬¼2,c?k«·Ï˜^®]Ÿ*húsâì ÿ*“¡È(Û/5ôA6JÛÍşˆ‡íGô·2EIˆËN×ûBâo<í(i10-ì=Ñ;ÆU*¢QºÕ*Â©I!¬91JÆ_)³Æ*?€™Å^0ÅR@E‡Ş-‰Éi§±&Œ>,ìuzÇ?PZp0nv ›ûhù\|¾Ø‘C`É?EJ•r&“ƒ Sß“Ùå‘ÅŸï™|¶õj ‹ÃD¿ıšÈÓÕ’èr@6|Å/…|+`#À}aßÑæ3	ánR€NİSEşç¥è¦…sÇÉ›g49¼ÌÅ×%ˆùöÁ©æ8C=ĞR:{hê· |ú¦3™¿¶b?¡©¼Äı“L¹˜æñ—ô4€æ¿3úXiÀ€Æ:>=¸¢|çò=Ù^}¶cËÛûúÑ›T‚ïX4aUeÎıAµYÇ+ò£Y¦*ÅQ9`H+¬¤”_¯ _‡L‰Äf””l¤ÿDªV’Î±Ä_
+ƒûö8Ìäö¯µØ¼\rj£MòÙkŒƒ¢©$Åd¸w›ïF„Qähé§1”…†Ê  cOÁMÎ‹“šn»etU’Hbõpdï¦{öÿLB\½ş ÍiËr|8a­½ÔF¥‹«¢ı)ÏÃ¼©1Ißæ}p†.ë00PÓÔÕŸæºª5EœÙ"­‚š=İ¤4<Î,ñt±=“œ Æü>“¼®ñå,¸X´ÿ%„vÿE<€»®õQp×*Ó/ªv÷3Æg›ĞV¶şlÍU¹Ûe´5;ßê¼ÅFÔük²¡TÑÇ©ÄŞ=æ‡‘Gbî?èù9ÜÁG°¦fçé,6æØgVözõdñiªK?Ø`¡j¿ğ0Õ	L£• ëşC†jiÔa±Şfq
+.ˆë:ÀÆ.øt$M’°Qm9ÌœOÆxÂG—!›8éü“óšáëWÂJ…?T= RgŞyº×.fPƒ¢ Ü!g‹Ëßìïâ0:›»eîëûJDn]`Ó®$Ôü¿ùˆB8gp‰Í%åøŒ×U‡†ËÅ——·;ËÙ
+/†°øfÉ MsÃ˜>Jq—çküÄ÷ÃÈCË™˜^äf8 ñş˜é®°1bb~¹`7ÿ€vy¼‰ªµºç!Âå…ïŸ‘>m%Åñ+8Ä&óó;¾l+˜Å¥|Áôûƒÿˆ$Íàe¥ÁŒ¬<üéªk»oŠ3ñ†¹´İ
+ì*ã0ıó€XWÊl ƒ½kÊÓØ--J°Ö¨h/­êTgk Îlë1,mÃ"šs×ÊG.6ª iWdV=çlúèõªù ,,‰¿’ZËé‰©p¾šĞ<öwÈs,®U¬OŸR»·¿‚ X·!p‘zÜyı°5'_ºiB"Š²Ia;A{YZ_+Ò5ôè†
+ÇD×&yÆQ2ıò9v'émÍÓ¸Tşş–^îø*¦ıVbP@g<ÕÃ~3·Fhkd9·­Kš‘²¥èë. BT}‘¤“1º¬Îø²4†œcı§¢„&Á°À}Àn¶;Çí9ı?q!læ†–7ş°…Á±‰o[CÁïWtôDÅF¥RGŞO‘ØíÍÂ#=°ŞÁ—ûJ"sêÍw°Eh.Èî©á1|€Ù[°	Í‘€á–iÙ,¼èmÄ(A2t>_ÂèbQÖÍ¤Îe$òĞ–_r›ñ´*ˆŒÄ˜|¥v#¡Àdùæö…{š˜Gø\j°£áÏ‚QÊpCu®{°=¿‚™¿Û†ù¶ƒ+G;b†ªÉ'Öî<É¯ŸFÛF`¥‰lª÷ì‰ëŠ9ÕQ¢‡'Í#&+aŠS”§©|®ŸT4ø’'ÓXz0Í7²]d]&I.–5Â7z¥pgõşÌ<‡›e‚ *ŠÔF9WŞÈ Œs‚‚ŸitÒ3å°Atµ¼à-©Ó’°Ü2ZSı®LG\‘°¥Ä>¢î³nŸw¦9ÃÅk?Î«ÎS¼ãoùÜ¶¾A-åz#^P~Ti×“	 nfÂ@Ó®tC©¥³ÿ…ø¬ì\ìZJjk{Š„Ã“ï«v²ùNíèYn ædì”mTbù#îyf&ø'"?Ë¢œ¥İ<PÛø{;ğqÏø›Ñ	_™Ä¥ã^‘•[Ízí"3O´”V1*yj1Ùø†ó{å Ë‹òÙÛ6øØ!ÙÍ8;hô2üêŠÇß}gbp$,òSÉü,V‹˜õÑˆîÙ³}c~ÿñÿşj—™;­äQ3GOÉPC‰ŸìYëEºÁÂ›ES]d´f·‡ŠéµŸ¡‹î6˜sd¤#ár;m/¼HPAVµñØÏ&»RNÿá›ıIe‡é™'°5²Ú›÷AZ±Lø"R•ş‚Â¡™ÁÙ·Aí
+?´Œ×Nÿ{g=Â~—uŠ¾Ûüé»´Æ¬wÖ[‘=(31JS
+ññJÖíĞj ØéÈ~fC¿&İhèĞ«‰ªkû^ó=ò_Í®Ø6½£‚±JË)•Î‹\Ní;¾¾:e.²Âª7wö«*÷%Z
+Ç8&ç·Qs4¨âß\ÚŞ†A’Ç…kA·‰„˜@}°¿Šj±÷h§Á;Ÿô_ò=T"-#„§!˜±Èİ¢Õç^{)öÀ@çûÿ¢=¨^ğË5ƒ·ñ	¼ı®úÚ(IÌsq„3e ôÙnt¸ q”ß¯-Bä¼|Xİ4
+Åk.¥æ¦ x—@M¨´.~^ülÏ™JhÌ$;¨ÔåNÁ²~ï5ã‹y-ŠBÌÇtüÉ+¸ºÛŞ¸ùcÂ‰<<o+i	¦&ô·hx@87Äë¬Fy÷¤´CqbÀ-ø¿T"|Yq²…Y®%Î²æ›,*Mm§Gœ°õ*ˆœUVœoyµ©Gl®VÕŞ¿Í¢şÀ`¦ÅÌ>Ö›Wá[Óéê‰tZ7nl`ä¦÷4SOD»­ğ¾é-¿€<Óy¯„ûOi‡SÈOço7¬V6üxAm:ä<î¯©	ø2ëìÔØ«	L„pñ"3 EŠ©[ üA‚Çöóèü*yôğœøP$å·
+ì£VÑ§6†hˆäŠèƒŠ™aé)`pÂYKŠä#6Ã_WóL|‘˜H\DÁR˜àÉ†åeÃ–»«¼c;”}ˆñÓ.ş8T™[VÙÈÁ×Ù3«òF@¬‹Â=Õ*òÛ´µø>Õ‘Æof1¬ÁU{ğ~Ù,…7¦a³ÿT˜aÙZŒKãÊAvSïh}ŒÏW6Q³°æòÓ¨ÜŸ£×Å<îßDXäÜ•6 ‘gÑ°4‘%6¶§‚á¼9««ªÛ•WŸ pªŒ!µ_–nj&my×˜Æ·‡l<€óm væ
+Ût»1(ÛØ7şyÉÌ(Ö/«‚Ğ&ª¨k‚PÌÙuE=Aä™UèU{ºEÑÉŠà;_£ MÕĞ©h­©VãÙ‚æÅ##,Z¤ôÄ•eÅÁ´À$¹5£ôù¦™W4yéßó	}Ì÷g™4Rjd-Qr=ı€Òç9¬Rms;ğÎ;"¿Lô˜Ò<ÚBĞÄúÜP‘ò¬ÃãZä[ØCåR#Z÷4hŠwÍŞ¢Èwé®óbÿ‡öïM±opWbÿ~"R ÂÚUüòK%àQ—óAôÅXÜÆÅ¥½Cwo[A¦^ö«ÍkÕcè:vª1Ã³aVMC»ìB%oûŠ²6¾'ˆ“ªb)¬;ıÙïj£Ÿ³s=Àø&®½´1‚§µ»W_:=ç? r%øs?1“Ø°x™IÉBáZpä,6k“Ü£g™¼ñFÅQ²ıLq|"úë(*NÛ ß´‘ån‘	r«zaãOe‡@¯é^>„ğ~®TÇ{*GŞXª”£»ø”\`h¹H¢2êAzx…Ä^L÷ãbîû±ŠÂRNö¿K ‰ÄU©é›2Ğ½½¨*ÓLµÎ(ÉpÚ2 Ø¹î	5ĞF¹’Z¨UÍ_z†WÎ+ÃĞ)ågpî¡2æ–&7VJ¬¡Tûß@ñ‰ºM™ğe‘5Û9”]û¦Å@„	î› BVÌU(ô5`×¨ÄSB})‚4‚ÁN E3½j.Ø,İ[õ5Ø|-–/™‹EÜÈä÷VÌëšŒŸïX8Ëi !bóK­wïŞõ(¼<ÊAIÄ«¹ì=2¿ä(ã¶şÆ7ÔH-~bCÕ’~QşŒvÉ"»toRkÒ–û**}Ql*¤†Ö‡´H0
+Våßx«6©> ğ‚H…ÁÚ÷#;"‡xW~ICsç—,]([â£¬Ş´«?~ÄKïHrÌÚ´©òª‰şªô]¨´?³Ş9`uyéD*U£lò	û²“Îu´Í!Öóè°¼ ¨ /ï"Ù
+Ôõ×âTŒÍúÂˆYtÉ-KøË7¤ íÅUà#6²ÕeĞÍ?Ü”àÛÀ©h‰7ä–KaÌĞ¨vEáe“Xÿ‰më¼ÏìÒæ1k*ã11Uå“P—CzÚÊôv<x¬O±¬*Ã¡ÑÃì&ö[é¶^RˆÍ¼,óÕA ÏçªH(5R¤Ì¬Šp/¸”½?‰©™§ªS9#JÄh@Kopêö1ÉZÏË¿tÔVAug^.síE1ƒªø+ù¶!Ÿ®q,½£‚¯#¡³?|\]VW¼Yƒ»x? .ˆZ>ğşÔ“0sHPÄŒa!$yŞJÆE íÂnIb#a†t¼—¨ÄÂÀ¾¨SA]‘¤*…§d«?hø(µ\I÷E?	19B×2\´®'s~`¢wŞCõ	ÛıÄÈÛRœgküsŸÏ¹§kĞY¦¿´:<¹g.;PŒÚ¾MÃ*°P|Ä4`@<Ç#ßtºGgÓc„	ÒçQÜBÁÛ;!Õb’²î™ë‰Ş¼Zİı Zp#1“Áyˆ~_m–ÙjL¶Ä7ûnÿŸ$_®Jğ;e›t­êõ®BµXnÉ:\è÷v~ ¥{1™×ÅAñóŞ†DxD¶Ÿš:¡P÷KXCmïûTJİ”±Hİ}0 q¥eäçïlÎ8T2ËšÏuÌ#$¸Ù2wÊ<ïBÕ—çC¿L$*©?â¾,vøº'H@‹OVªTÃ§móÅ0«W^6PDÂï•j¾’tŒïcö|…Ş$Ô³ÌûŒŸe¹lë¼TƒÂjèÃíÖ¹rŠVà¿9œ\$û=„¹±•m-f²x»,š^´öö$©´å~¦’“O‹£ĞaÁ—„Ñçû‰rï‘ñúP´¨]cø6ïœ¯ _ÆÀÀ‹ÏM‘ı°…qbÃ^F&¦ÖLwæp†®óíà%İÜ~P/}Œ´uô_Œ‡Ôş",î…–2^«ë¥ÕCr‘¯¡ÆËÎêR4À¼Ò|dİMğ1}ı¼±‹B‘Œ·şÑaI…ı1]9*9¶òîÈî'aø­ö™¦?("Ówğ}Ÿj{³£àhçk!>j””™}Ï?Œ(Ï}=·ä@‚RÒü8V¢§¥ˆ.+—³kô%n{âŠûö@cÉ¾B¦4èI¸o\á¾{13°Ã—£ó¢§Oç°´0¢>aÇîU+ï[ëÑª¬(:"„bÒZá)Æ–DE^g‰å¿&Çú¶– €ıçó¸ò6m"´üÂñxi+*jÎ“ù’ÇQ>>¢jé6½™DY© CE[cèÖíˆ¦»oš¬ô6ªĞ+lx£¢YNˆÛä”ıÈ¤?¬õU Èz²Õkz²İ¯
+Üö'º4±á>ŸUšRƒ1û®Ô8¡iÃ¡¦Çájñ;"Íï1dÈÛ’RxÍ%
+˜!o¡¯Ü”dbøJ€		ó‚‘5N“å´B¦=ƒf½½Ø„´[$-Œ1™#²uæÁüBå­mÙk[M‡›,[¼&è |/´cRnz‚êâ£7®lwŞ¡!·š9oøFğ¡ø:²,ËvÉV°¦ÒÊĞb·6Xa[æJ:.0æ¿Cem';eœĞµnl‘¹MìÄ=ë$¸8sê®&’‚5S9j[º¥&"è§K¿ö<‡)á6yÆôşÙlu4O¯:ÚÚ	ASL=dås¦’4’x¡ã1¨§ä°cd/ıâıYitC ~îE’ÄÍœ­f÷!ÓÃşß¬¸YØüÆ³aNÅÃè±˜Œƒcº½(nŒ9¼ãm:1 ’¹õö¨òQŸx/îcnm_:ô‘ìIêÛÜë×~L‚ÿ‹hä÷ë½şøbÃî”’IÒ½b,$ïÀCOZcO²Âf/R#+BïNª"ØAûŒ¦ï”3³\Fr¢~êÖ¥ÄÉ¿¶….Ï®_ø1ùûë–T?qÏa#$WS¡{ËÄHÕ0‚<S ê†¾.kA`X4°£Å*Eß‡gîpÇ¸–À|tû'Úøæ z¸DŸò£¸8ûÓ9¬s;Ö/2tºT¤şT›¾ÓÎÉ×jt[Nôµ=áëT@%XÃ‚A2Ì¥çï×A×~•F&»©XDP£FG	(.>¼P”6sx•(Óˆ»±ÓÔ‚½ÕM1¸¡•ò@ˆ~Ô—vë®O*Ä¬<ñõÎ¥>â^ ÕÌêİ'¦óş…1jÔË'¤œß¦º¤yµŞOàç‘õé&Ü)ï+]güÚìÀŠOL~z`¿T²6Å]¥åĞóçÕyÆOŒõE/¸¯ÖKë¶a¨ŠÊü?ÜÆ!Kû?Ú™$›r6ÁfO'x´ÏJÛØûêì>›|ÍÌ)¨ÀŸgiÃ(ÇúİĞ@Yı÷a6Š–ú½wATy£ğÁáaúfóRE]İ÷’WWJ«Ak® nîğ€	?ğ3|†,ÁU30MÙ	“ ê1ó~†6üÛ*6‡ÅL}i«Êæ2K~Ãâü2(>­'¸7ÃÖU>M&í# ¾“ ,†·àvÊšv‹ã|>	
+[yµù[Ç)Ì$(©îJ.±çû‘«=wÓ'çûj…²:èéÑ{P¸íF<S(wKy©Ç·ó‰Ùÿ†ÿğIgáy7
+³<ëJÛo³!ÿ\1ïY0‹ì}O=qEnZßg­âhm‚Šş¿ò¿°$g*©øa†o>é¶4àÀÂ0yÑ5¬İŞ{Ë
+Gšh¬=œ ˆã¡¸dTe j
+…<ò!J,§·rjiêX8<:<_úw”Ê•
+ûB;Ì‰ñÅ/ÙÿéZ|Ï>np†=9Ûöc¸L‡E{ö7õnMÙ{Ğ¥òE:×æ‰fS_LY¢ö6ô¸¼üUlÅg©n4¯¯,ëéôñ(Nà¦”
+¼œæå§÷ù˜çÌ¿ØÓ»ûÆ€5€2š‘q¢¼Óiyj©B~WR*ñ?Ù%wt'fCÛ­Gdo¤03z:õ1M…“[7÷r4Ä‘@ï™6Ü~„‡œƒ¿×‹;
+~	k³oó‹ÈŒ<È“Élex ¿pc6q.Ú#faà¾»“ë7Úxj.£:¥8±RßÚ†­µÜ-–® Ò½ä òWsà<HµLÓ±Äı2ˆ²İíT:¯ÿP€½û‰ÉjÜ“:æğD°hö‘MÕ¿¸¡S*öhQ2ğÜƒC¼(ÿ¬7o—:\ıW(Aû¾¾É\íRÌ}B‚§Õô¹XR]¡™i2xàXş=ß"˜VYx|šysÎE§Xù‹Ğ?´û}xæk2¾î’ı¬À_a%Ÿ°Õ×8\øJK…(:æ¿‹ëàt{åUô*““ê·H“È,
+j¡”\—cOŒ¯[Ìxwg2ô öcÓîÔ\QÔü#î<O¸çH¦½n0Õ´m™£´?Ò[/ßÕ1¬“¾fyÑ(pÁò:Û+>€Æ 3mµqÜ€"¤‡Q´htË„ÖÖê[8ÄùÕUs†hN#aäı»Øİ„Ã›ê–&k‡àæWgr>c¹èªc.®>`vÙÂkÚCºµÓFƒß¼X#Ã]UÚ3–Æ‹ÑJj‡Lö«Á–-D9/rÿ$h>ê:¡Ğ‹ï2fŒN÷üB7ÃüCÏj€Îzâ`9[x!ä16zOgí‡ËL-â¼Í¨«ÿ;z‰€\ğÿé££Æé…|®[fè¦Şv[ÔîkjŞ6ÎŞ9ª¾ÑpW¼²
+Gä*Öa`5®I½ù¶rÆ4àî«°ï®üÍHjxÕW°¤VÕÆëÔ7çÛ—c½¢÷÷qVÌr‚Ï™i0Fs€•\Pª|`ÓX4±K–õríån·ŸÂÔ·ê´!tø­ÀìÌ•vtdÜíúe»ŠÉÃºB6Ş}jè¢œq¨gµ3»à"£•$¬wÓ+;€àíƒOVx2ˆ¨jõŒÍwuc÷ä¹¿ÍgM*¬šFW^÷ıs?G;
+_Ò£OŠºê§©]±Ò¬à"ãÃ:‰W8ºªˆìƒë×4áx§×—PH¤4ŸGâ]¯§m,*É|iK³ŒŠşbñd¦Eß˜7Ôë§X#¾Î¡åßF¶ß«íåàzÌXÌÔÇo&c0¸îÉé3%ÌB(Õ‰X	¿Ûİ¡Ì·^mŒ·ƒBı¸¸ ¹/úÎ*NŞA; ç…C°EYZ¸†k“Üu.µ+~Í¼	ªQv«ƒ=™êšàŠú¯Y’Ë‰ØTÜJƒg×7¦Q'
+y]iÈ=™,!–o2EE 5Áï Zu+¦²DßSŠÛP
+	Ğ’Šc§4ÌÑª£¡}åONÆ)ÑÍJû7¬wà¾ç¢ó¸¾|'™Ñ^ü&\ôen›À³ †ñ‰e‡SGN­¶èäT%®ÓÙ&ŠgÑ¯¶g•E­EúY}¾Kñ„&€MĞ‚û%²[ràpÓêôl½#L"#*8uøÈ.<ÌŞÜO¯&¡¦™Æ‘åTVì‡¤²7Úe{srB‰Nêâ8xfê½Ò(ÇAÁONVŸÕó­pIJºD€réñì¿G0ñJ¢½BP¯ĞrÃO<Éìù0Œb<ªãüs2ÂàGçëˆWEe·„¸'Fğ“‡{iÊ{š:í˜ïL¼BõébqL]FXqR‹@9Ï‘`ñƒƒ¥Ğqˆz¤=<ÁÂ„‚A¼“RøM|–‘qşN¾Mïşƒ°ºìW#~Î-¥lM‡j–ZÂ‚9›d„SzÕU¬¬ªĞ(°¥C£µ%G‰ìd¬tÁ\^æÃû¯øİ³aµî·l›çĞ-Nª°,‘‹÷º‚çu¢à‡ÚPœi¢ş™&,6aˆ?Q×0ÛÆÅˆèÇ`c
+æMoQÉ8}	ş’9À
+u§(^òÕ0İ­x’G(@óã{€®Ó÷äx¡Ç°»x(Ö1Ùn½s:*UwœšcñB%f×ÑTR8™Mß@i}H]-†h×óÓ<(«>ûÓrÆşvBQXÉ€õÌIµ‘‘úÁÄÿv®uÏçJ4lHğo³U?ôVx‚í–2XîAº®BiK4PÆƒ²œOÍŒºĞ†{¹¯ø£Fk×yğ»cœãZp¶¦Àˆ–©_2ÁcÍ}oÚm1ĞÁÜêpç>Ñï÷™ùØqÙ«ï	h¸Ğg—// SPDX-License-Identifier: GPL-2.0-or-later
+/*
+ *  Driver for the Conexant CX23885 PCIe bridge
+ *
+ *  Copyright (c) 2007 Steven Toth <stoth@linuxtv.org>
+ */
+
+#include "cx23885.h"
+
+#include <linux/kernel.h>
+#include <linux/module.h>
+#include <linux/moduleparam.h>
+#include <linux/init.h>
+
+static unsigned int vbibufs = 4;
+module_param(vbibufs, int, 0644);
+MODULE_PARM_DESC(vbibufs, "number of vbi buffers, range 2-32");
+
+static unsigned int vbi_debug;
+module_param(vbi_debug, int, 0644);
+MODULE_PARM_DESC(vbi_debug, "enable debug messages [vbi]");
+
+#define dprintk(level, fmt, arg...)\
+	do { if (vbi_debug >= level)\
+		printk(KERN_DEBUG pr_fmt("%s: vbi:" fmt), \
+			__func__, ##arg); \
+	} while (0)
+
+/* ------------------------------------------------------------------ */
+
+#define VBI_LINE_LENGTH 1440
+#define VBI_NTSC_LINE_COUNT 12
+#define VBI_PAL_LINE_COUNT 18
+
+
+int cx23885_vbi_fmt(struct file *file, void *priv,
+	struct v4l2_format *f)
+{
+	struct cx23885_dev *dev = video_drvdata(file);
+
+	f->fmt.vbi.sampling_rate = 27000000;
+	f->fmt.vbi.samples_per_line = VBI_LINE_LENGTH;
+	f->fmt.vbi.sample_format = V4L2_PIX_FMT_GREY;
+	f->fmt.vbi.offset = 0;
+	f->fmt.vbi.flags = 0;
+	if (dev->tvnorm & V4L2_STD_525_60) {
+		/* ntsc */
+		f->fmt.vbi.start[0] = V4L2_VBI_ITU_525_F1_START + 9;
+		f->fmt.vbi.start[1] = V4L2_VBI_ITU_525_F2_START + 9;
+		f->fmt.vbi.count[0] = VBI_NTSC_LINE_COUNT;
+		f->fmt.vbi.count[1] = VBI_NTSC_LINE_COUNT;
+	} else if (dev->tvnorm & V4L2_STD_625_50) {
+		/* pal */
+		f->fmt.vbi.start[0] = V4L2_VBI_ITU_625_F1_START + 5;
+		f->fmt.vbi.start[1] = V4L2_VBI_ITU_625_F2_START + 5;
+		f->fmt.vbi.count[0] = VBI_PAL_LINE_COUNT;
+		f->fmt.vbi.count[1] = VBI_PAL_LINE_COUNT;
 	}
 
 	return 0;
 }
 
-/* @depth must not be zero */
-static struct held_lock *find_held_lock(struct task_struct *curr,
-					struct lockdep_map *lock,
-					unsigned int depth, int *idx)
+/* We're given the Video Interrupt status register.
+ * The cx23885_video_irq() func has already validated
+ * the potential error bits, we just need to
+ * deal with vbi payload and return indication if
+ * we actually processed any payload.
+ */
+int cx23885_vbi_irq(struct cx23885_dev *dev, u32 status)
 {
-	struct held_lock *ret, *hlock, *prev_hlock;
-	int i;
+	u32 count;
+	int handled = 0;
 
-	i = depth - 1;
-	hlock = curr->held_locks + i;
-	ret = hlock;
-	if (match_held_lock(hlock, lock))
-		goto out;
-
-	ret = NULL;
-	for (i--, prev_hlock = hlock--;
-	     i >= 0;
-	     i--, prev_hlock = hlock--) {
-		/*
-		 * We must not cross into another context:
-		 */
-		if (prev_hlock->irq_context != hlock->irq_context) {
-			ret = NULL;
-			break;
-		}
-		if (match_held_lock(hlock, lock)) {
-			ret = hlock;
-			break;
-		}
+	if (status & VID_BC_MSK_VBI_RISCI1) {
+		dprintk(1, "%s() VID_BC_MSK_VBI_RISCI1\n", __func__);
+		spin_lock(&dev->slock);
+		count = cx_read(VBI_A_GPCNT);
+		cx23885_video_wakeup(dev, &dev->vbiq, count);
+		spin_unlock(&dev->slock);
+		handled++;
 	}
 
-out:
-	*idx = i;
-	return ret;
+	return handled;
 }
 
-static int reacquire_held_locks(struct task_struct *curr, unsigned int depth,
-				int idx, unsigned int *merged)
+static int cx23885_start_vbi_dma(struct cx23885_dev    *dev,
+			 struct cx23885_dmaqueue *q,
+			 struct cx23885_buffer   *buf)
 {
-	struct held_lock *hlock;
-	int first_idx = idx;
+	dprintk(1, "%s()\n", __func__);
 
-	if (DEBUG_LOCKS_WARN_ON(!irqs_disabled()))
-		return 0;
+	/* setup fifo + format */
+	cx23885_sram_channel_setup(dev, &dev->sram_channels[SRAM_CH02],
+				VBI_LINE_LENGTH, buf->risc.dma);
 
-	for (hlock = curr->held_locks + idx; idx < depth; idx++, hlock++) {
-		switch (__lock_acquire(hlock->instance,
-				    hlock_class(hlock)->subclass,
-				    hlock->trylock,
-				    hlock->read, hlock->check,
-				    hlock->hardirqs_off,
-				    hlock->nest_lock, hlock->acquire_ip,
-				    hlock->references, hlock->pin_count)) {
-		case 0:
-			return 1;
-		case 1:
-			break;
-		case 2:
-			*merged += (idx == first_idx);
-			break;
-		default:
-			WARN_ON(1);
-			return 0;
-		}
-	}
+	/* reset counter */
+	cx_write(VID_A_VBI_CTRL, 3);
+	cx_write(VBI_A_GPCNT_CTL, 3);
+	q->count = 0;
+
+	/* enable irq */
+	cx23885_irq_add_enable(dev, 0x01);
+	cx_set(VID_A_INT_MSK, 0x000022);
+
+	/* start dma */
+	cx_set(DEV_CNTRL2, (1<<5));
+	cx_set(VID_A_DMA_CTL, 0x22); /* FIFO and RISC enable */
+
 	return 0;
 }
 
-static int
-__lock_set_class(struct lockdep_map *lock, const char *name,
-		 struct lock_class_key *key, unsigned int subclass,
-		 unsigned long ip)
+/* ------------------------------------------------------------------ */
+
+static int queue_setup(struct vb2_queue *q,
+			   unsigned int *num_buffers, unsigned int *num_planes,
+			   unsigned int sizes[], struct device *alloc_devs[])
 {
-	struct task_struct *curr = current;
-	unsigned int depth, merged = 0;
-	struct held_lock *hlock;
-	struct lock_class *class;
-	int i;
+	struct cx23885_dev *dev = q->drv_priv;
+	unsigned lines = VBI_PAL_LINE_COUNT;
 
-	if (unlikely(!debug_locks))
-		return 0;
-
-	depth = curr->lockdep_depth;
-	/*
-	 * This function is about (re)setting the class of a held lock,
-	 * yet we're not actually holding any locks. Naughty user!
-	 */
-	if (DEBUG_LOCKS_WARN_ON(!depth))
-		return 0;
-
-	hlock = find_held_lock(curr, lock, depth, &i);
-	if (!hlock) {
-		print_unlock_imbalance_bug(curr, lock, ip);
-		return 0;
-	}
-
-	lockdep_init_map_waits(lock, name, key, 0,
-			       lock->wait_type_inner,
-			       lock->wait_type_outer);
-	class = register_lock_class(lock, subclass, 0);
-	hlock->class_idx = class - lock_classes;
-
-	curr->lockdep_depth = i;
-	curr->curr_chain_key = hlock->prev_chain_key;
-
-	if (reacquire_held_locks(curr, depth, i, &merged))
-		return 0;
-
-	/*
-	 * I took it apart and put it back together again, except now I have
-	 * these 'spare' parts.. where shall I put them.
-	 */
-	if (DEBUG_LOCKS_WARN_ON(curr->lockdep_depth != depth - merged))
-		return 0;
-	return 1;
+	if (dev->tvnorm & V4L2_STD_525_60)
+		lines = VBI_NTSC_LINE_COUNT;
+	*num_planes = 1;
+	sizes[0] = lines * VBI_LINE_LENGTH * 2;
+	return 0;
 }
 
-static int __lock_downgrade(struct lockdep_map *lock, unsigned long ip)
+static int buffer_prepare(struct vb2_buffer *vb)
 {
-	struct task_struct *curr = current;
-	unsigned int depth, merged = 0;
-	struct held_lock *hlock;
-	int i;
+	struct vb2_v4l2_buffer *vbuf = to_vb2_v4l2_buffer(vb);
+	struct cx23885_dev *dev = vb->vb2_queue->drv_priv;
+	struct cx23885_buffer *buf = container_of(vbuf,
+		struct cx23885_buffer, vb);
+	struct sg_table *sgt = vb2_dma_sg_plane_desc(vb, 0);
+	unsigned lines = VBI_PAL_LINE_COUNT;
 
-	if (unlikely(!debug_locks))
-		return 0;
+	if (dev->tvnorm & V4L2_STD_525_60)
+		lines = VBI_NTSC_LINE_COUNT;
 
-	depth = curr->lockdep_depth;
-	/*
-	 * This function is about (re)setting the class of a held lock,
-	 * yet we're not actually holding any locks. Naughty user!
-	 */
-	if (DEBUG_LOCKS_WARN_ON(!depth))
-		return 0;
+	if (vb2_plane_size(vb, 0) < lines * VBI_LINE_LENGTH * 2)
+		return -EINVAL;
+	vb2_set_plane_payload(vb, 0, lines * VBI_LINE_LENGTH * 2);
 
-	hlock = find_held_lock(curr, lock, depth, &i);
-	if (!hlock) {
-		print_unlock_imbalance_bug(curr, lock, ip);
-		return 0;
+	cx23885_risc_vbibuffer(dev->pci, &buf->risc,
+			 sgt->sgl,
+			 0, VBI_LINE_LENGTH * lines,
+			 VBI_LINE_LENGTH, 0,
+			 lines);
+	return 0;
+}
+
+static void buffer_finish(struct vb2_buffer *vb)
+{
+	struct vb2_v4l2_buffer *vbuf = to_vb2_v4l2_buffer(vb);
+	struct cx23885_buffer *buf = container_of(vbuf,
+		struct cx23885_buffer, vb);
+
+	cx23885_free_buffer(vb->vb2_queue->drv_priv, buf);
+}
+
+/*
+ * The risc program for each buffer works as follows: it starts with a simple
+ * 'JUMP to addr + 12', which is effectively a NOP. Then the code to DMA the
+ * buffer follows and at the end we have a JUMP back to the start + 12 (skipping
+ * the initial JUMP).
+ *
+ * This is the risc program of the first buffer to be queued if the active list
+ * is empty and it just keeps DMAing this buffer without generating any
+ * interrupts.
+ *
+ * If a new buffer is added then the initial JUMP in the code for that buffer
+ * will generate an interrupt which signals that the previous buffer has been
+ * DMAed successfully and that it can be returned to userspace.
+ *
+ * It also sets the final jump of the previous buffer to the start of the new
+ * buffer, thus chaining the new buffer into the DMA chain. This is a single
+ * atomic u32 write, so there is no race condition.
+ *
+ * The end-result of all this that you only get an interrupt when a buffer
+ * is ready, so the control flow is very easy.
+ */
+static void buffer_queue(struct vb2_buffer *vb)
+{
+	struct vb2_v4l2_buffer *vbuf = to_vb2_v4l2_buffer(vb);
+	struct cx23885_dev *dev = vb->vb2_queue->drv_priv;
+	struct cx23885_buffer *buf = container_of(vbuf,
+			struct cx23885_buffer, vb);
+	struct cx23885_buffer *prev;
+	struct cx23885_dmaqueue *q = &dev->vbiq;
+	unsigned long flags;
+
+	buf->risc.cpu[1] = cpu_to_le32(buf->risc.dma + 12);
+	buf->risc.jmp[0] = cpu_to_le32(RISC_JUMP | RISC_CNT_INC);
+	buf->risc.jmp[1] = cpu_to_le32(buf->risc.dma + 12);
+	buf->risc.jmp[2] = cpu_to_le32(0); /* bits 63-32 */
+
+	if (list_empty(&q->active)) {
+		spin_lock_irqsave(&dev->slock, flags);
+		list_add_tail(&buf->queue, &q->active);
+		spin_unlock_irqrestore(&dev->slock, flags);
+		dprintk(2, "[%p/%d] vbi_queue - first active\n",
+			buf, buf->vb.vb2_buf.index);
+
+	} else {
+		buf->risc.cpu[0] |= cpu_to_le32(RISC_IRQ1);
+		prev = list_entry(q->active.prev, struct cx23885_buffer,
+			queue);
+		spin_lock_irqsave(&dev->slock, flags);
+		list_add_tail(&buf->queue, &q->active);
+		spin_unlock_irqrestore(&dev->slock, flags);
+		prev->risc.jmp[1] = cpu_to_le32(buf->risc.dma);
+		dprintk(2, "[%p/%d] buffer_queue - append to active\n",
+			buf, buf->vb.vb2_buf.index);
 	}
+}
 
-	curr->lockdep_depth = i;
-	curr->curr_chain_key = hlock->prev_chain_key;
+static int cx23885_start_streaming(struct vb2_queue *q, unsigned int count)
+{
+	struct cx23885_dev *dev = q->drv_priv;
+	struct cx23885_dmaqueue *dmaq = &dev->vbiq;
+	struct cx23885_buffer *buf = list_entry(dmaq->active.next,
+			struct cx23885_buffer, queue);
 
-	WARN(hlock->read, "downgrading a read lock");
-	hlock->read = 1;
-	hlock->acquire_ip = ip;
+	cx23885_start_vbi_dma(dev, dmaq, buf);
+	return 0;
+}
 
-	if (reacquire_held_locks(curr, depth, i, &merged))
-		return 0;
+static void cx23885_stop_streaming(struct vb2_queue *q)
+{
+	struct cx23885_dev *dev = q->drv_priv;
+	struct cx23885_dmaqueue *dmaq = &dev->vbiq;
+	unsigned long flags;
 
-	/* Merging can't happen with unchanged classes.. */
-	if (DEBUG_LOCKS_WARN_ON(merged))
-		return 0;
+	cx_clear(VID_A_DMA_CTL, 0x22); /* FIFO and RISC enable */
+	spin_lock_irqsave(&dev->slock, flags);
+	while (!list_empty(&dmaq->active)) {
+		struct cx23885_buffer *buf = list_entry(dmaq->active.next,
+			struct cx23885_buffer, queue);
 
-	º    ‰ĞÃ´&    º@  ‰ĞÃ´&    ºÀ   ‰ĞÃ´&    º   éIÿÿÿ¶    º    é9ÿÿÿ¶    º    é)ÿÿÿ¶    èüÿÿÿWVS…ÒxT‰Æú   ‰×‰Óƒú ‰NÑ‰Ó‰N‰Ø[^_Ã»   ¿   ºÀ ‰øèüÿÿÿ‰F…Àtø‰F‰Ø[^_Ã´&    »êÿÿÿ‰Ø[^_Ã»ôÿÿÿë·´&    ´&    èüÿÿÿUW‰ÏV‰ÖS‰Ã¸    ƒìèüÿÿÿ‹C(‰$…À„™  …ÿt	9{…‚  ‹C,ƒø"‡Í   ¾€    ‰D$…Àˆº   ‹<$ˆ„   Å4  ‹n‰D$‰ú‰L$Â‹C9h…   ‹DÏ9Âué!  f‹ 9Â„  ;Xuñ‰ğ‡C‹$‰D$1Àèüÿÿÿ‰Æ‹D$8  ‰D$…öuéÕ   ¶    ‹$‰ğèüÿÿÿ‰Æ…À„»   †T  èüÿÿÿ„Àuİ‰õ1É…Ét5‹D$öD…u*‹mh…íuê»êÿÿÿ¸    èüÿÿÿ‰ØƒÄ[^_]Ã´&    ‹D$| ‹D$‹DÅ9ÇuëÀ´&    v 9Ót ƒÁ‹ 9Çt©ƒx ‹Puê…Òtíƒz tç9Óuà‹|$‹CIÁâ”¾Ø  ‰B‹$‰ğèüÿÿÿ‰Æ…À…Eÿÿÿ‹D$1Ûèüÿÿÿéfÿÿÿ»şÿÿÿé\ÿÿÿ»ÿÿÿÿéRÿÿÿ»½ÿÿÿéHÿÿÿv èüÿÿÿU‰ÕWVSƒì‹€ä  d‹    ‰T$1ÒÇD$    ‹œˆØ  èüÿÿÿèüÿÿÿ{d¡    ‹°p  ‰t$t$‰°p  ‹[…Ût:f‰|$>t& ‹K$S0‰èèüÿÿÿ‰Æ…öu|$ ğÿÿwÇD$ÿÿÿÿ‹_ƒÇ…ÛuÈ‹|$d¡    ‰¸p  èüÿÿÿèüÿÿÿ‹D$‹T$d+    unƒÄ[^_]Ãt& èüÿÿÿS0‹s$‰D$‰èèüÿÿÿ‹[‰Æèüÿÿÿ…    œ$úƒCƒƒS èüÿÿÿ‹L$1Ò)ÈCSƒC÷$   „MÿÿÿûéGÿÿÿèüÿÿÿ´&    v èüÿÿÿU‰ÅWVSƒìd¡    ‰D$‹…ä  ÇD$    ‹œØ  èüÿÿÿèüÿÿÿ{d¡    ‹°p  ‰t$t$‰°p  ‹[…Ût=t& ‰|$>t& ‹K$S0‰èèüÿÿÿ‰Æ…öu|$ ğÿÿwÇD$ÿÿÿÿ‹_ƒÇ…ÛuÈ‹|$d¡    ‰¸p  èüÿÿÿèüÿÿÿ‹D$‹T$d+    unƒÄ[^_]Ãt& èüÿÿÿS0‹s$‰D$‰èèüÿÿÿ‹[‰Æèüÿÿÿ…    œ$úƒCƒƒS èüÿÿÿ‹L$1Ò)ÈCSƒC÷$   „MÿÿÿûéGÿÿÿèüÿÿÿ´&    v èüÿÿÿUWV1öS‰Ã‰Ğ‰Êì¬   d‹    ‰Œ$¨   1É‹Œ$À   ÇD$    ÇD$     ‹¬$Ä   ‰L$$·K‰\$ƒá÷‰D$fƒù…«   …À„.  ‹ƒä  ÇD$    ‹œØ  èüÿÿÿèüÿÿÿ{d¡    ‹p  ‰T$T$‰p  ‹s…ötBv ‰|$>t& ‹N$V0D$èüÿÿÿ‰ÃöÃu|$ ğÿÿwÇD$ÿÿÿÿƒÇÑë	] ‹7…öuÁ‹|$d¡    ‰¸p  èüÿÿÿèüÿÿÿ‹t$‹„$¨   d+    …   Ä¬   ‰ğ[^_]ÃfèüÿÿÿV0‹^$‰D$D$èüÿÿÿ‹v‰Ãèüÿÿÿ4…    œ$úƒFƒƒV èüÿÿÿ‹L$1Ò)ÈFVƒF÷$   „=ÿÿÿûé7ÿÿÿt& t$(¹    ‰÷‰t$ó«é¼şÿÿèüÿÿÿ´&    ¶    èüÿÿÿƒøQtfwƒøtOº    ƒøPu%‰ĞÃf=º   t)=»   uºà  ‰ĞÃ´&    v º    ƒøtÑéüÿÿÿº   ëÄ´&    fº    ë´´&    fº    ë¤´&    fèüÿÿÿU1íWV²„   S‰Ã‰Ğ8  ‰ßƒì‰t$4Õ4  ‰T$‰L$‰4$‰D$‰è…ít‹t$öD·tD‹$1Ò4‹D$‹DÇ9Æuë(ƒÂ‹ 9Æt‹H…Éuğ‹H…Étì‹I…Éuâ‹ 9Æuåt& D ‰Å‹h…ÿu¤ºÀ  èüÿÿÿ‰Æ…À„‡   ‹D$1Ò8  ‰D$…Ò~$‹D$öDƒu‹[h…Ûuê‹D$‰01ÀƒÄ[^_]Ãf‹D$‹<$‹DÃ,;9Åu'ëÓt& <RƒÂ‰L¾R‹x‰9‹x‰y‹ 9èt®‹H…ÉuØ‹H…Étì‹I…ÉtåëÈ¸ôÿÿÿëŸ´&    fèüÿÿÿUW‰×‰ÂV‰Æ1ÀSèüÿÿÿ…Àt=‰Ãt& ƒT  èüÿÿÿ„Àu‹P  ‰ú‰Øè‚şÿÿ‰Å…À…ˆ   ‰Ø‰òèüÿÿÿ‰Ã…ÀuÉ‰ò1ÀÇô   èüÿÿÿ‰Ã…ÀuëVf‹ƒP  …Àu,‰Ø‰òèüÿÿÿ‰Ã…Àt;ƒT  èüÿÿÿ„ÀuØ‹“P  ‹D»‰T»èüÿÿÿ‰Ø‰òÇƒP      èüÿÿÿ‰Ã…ÀuÅ1í[‰è^_]Ãv ‰ò1Àèüÿÿÿ‰Ã…Àtç‹ƒP  èüÿÿÿ‰Ø‰òÇƒP      èüÿÿÿ‰Ã…ÀuÜ[‰è^_]Ãt& èüÿÿÿUWV‰Æ‰ĞSƒì‹T$(‰$ƒú"‡    ‰Ë¾Š    …Éˆ   ¹„   ‘8  ‰|$Áç‰|$|>‰T$‹T–…Àt…Ûudƒâuo‹T$½şÿÿÿ‹DÖ9ÇtS‹\Öû ğÿÿ‡ü   ‹CÇC    ‰ÊÇC    ‰D$‰ğèPşÿÿ‰Å…Àtz‹D$‰C‹$‰CƒÄ‰è[^_]Ãv ½êÿÿÿƒÄ‰è[^_]Ã‹$½êÿÿÿ‰Ó	Ãtç‹\$‹\Ş9ßuët& ‹9ßt;Cuõ;S„rÿÿÿ‹9ßuìƒÄ½şÿÿÿ[‰è^_]Ã´&    ‹C‹‰A‰‰ØÇ   ÇC"  èüÿÿÿ‹D$‹DÆ9Çt&‹D$…Àtèüÿÿÿ‹D$àûÿÿèüÿÿÿ‰èƒÄ[^_]Ã‹D$ÇD†    ëÌ‰İé@ÿÿÿ´&    t& èüÿÿÿVS‰Ã¸    èüÿÿÿ‹C(…ÀtVÿs,1Ò‰ÙèJşÿÿZ…ÀuU‹s(ÇC(    ¸    èüÿÿÿöF,t[^Ã´&    èüÿÿÿ‹F¨u,dÿ[^éüÿÿÿ´&    v [¸    ^éüÿÿÿt& ë§t& ‹Fğƒ(uÎ‹VF‹Rèüÿÿÿë¾´&    ´&    èüÿÿÿ‹P(…Òté?ÿÿÿ´&    Ã´&    èüÿÿÿ‹P(…Òtèÿÿÿ1ÀÃ´&    t& èüÿÿÿƒøk„Â   wƒø9t[¹    ƒø`u!‰ÈÃ¶    ƒølt3ƒøzuV¹`   ‰ÈÃ¶    ƒø1u[ƒz¹    ¸    EÈëÇ´&    ¹    ë¸´&    fƒz¹    ¸    EÈëœt& =º   tQ=»   u2¹à  ë‚v ƒøQt[wáƒøtD¹    ƒøP„eÿÿÿ¹    ƒø„Wÿÿÿéüÿÿÿv ¹    éEÿÿÿ¶    ¹   é5ÿÿÿ¶    ¹    é%ÿÿÿ¶    ¹    éÿÿÿ¶    èüÿÿÿU½    W‰ÇVSƒì‰D$@ì‰D$¸    èüÿÿÿ‰ø¿Øşÿÿ-„  ‰D$´&    ‹‹39ûu'éƒ   v ÇB(    ‰Ø‰óèüÿÿÿ‰èèüÿÿÿ‹9ştc‰Æ‹C‰F‰0‹CÇ   ÇC"  …Àtèüÿÿÿ‹S…ÒtÀ‹J(öA,u°‰L$‰$èüÿÿÿ‹L$‹$‹A¨…Â   dÿ‰$èüÿÿÿ‹$ë‚f‹t$ƒÅƒÇ‹èüÿÿÿ‰ğƒÀ‰D$ı¸   …Jÿÿÿ‹D$‹|$‹@ì‹Xäqä9D$t‰Øèüÿÿÿ‰Ø‰óèüÿÿÿ‹FpäC9øuã¸    èüÿÿÿ‹D$‹˜ûÿÿ…Ûtèüÿÿÿ‹ƒT  ¨utdÿèüÿÿÿ‹[h…Ûuâ‹|$Gøèüÿÿÿö‡Ğúÿÿt.ƒÄ[^_]Ã‹Ağƒ(…4ÿÿÿA‹I‰$‹Ièüÿÿÿ‹$éÿÿÿèüÿÿÿ‹D$‹€¬úÿÿ¨u4dÿƒÄ[^_]éüÿÿÿ‹ƒX  ğƒ(uƒ‹“X  ƒT  ‹Rèüÿÿÿéjÿÿÿ‹D$‹€°úÿÿğƒ(u¿‹L$‹‘°úÿÿ¬úÿÿ‹Rèüÿÿÿë¥´&    fèüÿÿÿUWVSƒìH‹t$\‰$‰L$‰t$d¡    ‰D$D‹D$dÇD$4    ÇD$8    ÇD$<    ÇD$@    ƒà‰D$ƒø„_  ‹D$dƒàƒø„O  ‰×…öt	Ñ…A  ‹D$d‹t$Áèƒà…ö•Â8Ğ…&ELF                             4     (               èüÿÿÿ‹@\èüÿÿÿ1ÀÃèüÿÿÿV¹   S‰ÃƒÃpƒìd¡    ‰D$‹C$jT$èüÿÿÿ‹C$¶t$¹   jT$
-èüÿÿÿ‰ğ¶ğV¶D$PSh    èüÿÿÿƒÄ‹D$d+    uƒÄ1À[^Ãèüÿÿÿ´&    èüÿÿÿUW‰ÏV‰ÖS‰Ãƒì‹«”   d¡    ‰D$1ÀˆL$‹    ˆT$…É   j ¹   ‰èT$èüÿÿÿZƒø…üÿÿÿ‹D$d+    uƒÄ[^_]Ãèüÿÿÿèüÿÿÿ‹    VS‰Ã¶°À   …É>   ‰ñ‰Ø1ÒƒÉ¶Éèaÿÿÿ‰ñ‰Ø1Òáï   èPÿÿÿ1À[^Ã´&    t& èüÿÿÿUWVS‰Ã‹@‹P‹Rèüÿÿÿ%   =   „S   ¸ûÿÿÿ[^_]Ã´&    ¶    èüÿÿÿU‰ÕÁåWƒåÀV4S‰é‰Ãƒæ ˆ‹Ñ   ‰ñ‰ĞÁâˆ‹Ò   ¶‹À   Áàƒâ€	ÖˆƒĞ   ‰Ïˆ“Ó   ƒá?1Òƒç_	Á‰Ø	÷¶³È   ¶Éè˜şÿÿ‰øº   ƒæ?¶È‰Øè„şÿÿ	îº   ‰ğ¶È‰Øèqşÿÿ‹    ¶³À   …Éà   ‰ñ‰Ø1ÒƒÉ¶ÉèKşÿÿ‰ñ‰Ø1Òáï   è:şÿÿ1À[^_]Ã       P                                                                                                                                       P        6%s: Status: SA00=0x%02x SA01=0x%02x
-  7%s: write reg: %02X val: %02X
-    3%s: I/O error write 0x%02x/0x%02x
-    7%s: changed input or channel
- 6%s %d-%04x: chip found @ 0x%x (%s)
- ‰øƒÃp¶ø‰ğ¶ğWVShL   èüÿÿÿƒÄéâ   ‰ø¶ÀP¶ÂPCpPh(   èüÿÿÿƒÄéÆ   @pPht   èüÿÿÿXZé  ‹S·CŠ  Q QPÿ²   ‹CTÿ0h”   èüÿÿÿC¹À  ºÔ   èüÿÿÿ‰ÅƒÄ…Àu
-¸ôÿÿÿéz  ¹`   ‰Ú½À   1Ûèüÿÿÿ¾    ¹   ó¥¶ŒÀ   ‰Ú‰èƒÃèŒ   ƒûuç1Àéz  CpPht   èüÿÿÿXZé0                    ¸HÒæ¯  ^ Ğ €              upd64031a                                                          à       €                                                                                                                                                                                                                               debug èüÿÿÿº    ¸    éüÿÿÿ¸    éüÿÿÿupd64031a parm=debug:Debug level (0-1) parmtype=debug:int license=GPL author=T. Adachi, Takeru KOMORIYA, Hans Verkuil description=uPD64031A driver  P          ¤ÿ      GCC: (GNU) 11.2.0           GNU  À        À                                  ñÿ                                                                          x                  	 3      p     ¤           C       B    	 X      E     n   B       	               ‰   P  3     ™   W       	 ®   `         ¼     Í     Ğ   ä       	               é            ÿ       €           
-                   &      0     3     0     F  à   ,     Z  €   P     n           ƒ          œ           ª  P       ¼  0        Ó  <   0     é  l                                  -             ?             Y             a             r             ‹             ˜             ­             »             Ï           Û             ê      
-     ù      0                   upd64031a.c upd64031a_remove upd64031a_log_status upd64031a_write upd64031a_write.cold upd64031a_s_frequency upd64031a_s_frequency.cold upd64031a_probe upd64031a_probe.cold upd64031a_ops upd64031a_s_routing upd64031a_s_routing.cold upd64031a_driver_init upd64031a_driver upd64031a_driver_exit upd64031a_id upd64031a_core_ops upd64031a_tuner_ops upd64031a_video_ops __UNIQUE_ID_debug270 __UNIQUE_ID_debugtype269 __param_debug __param_str_debug __UNIQUE_ID_license268 __UNIQUE_ID_author267 __UNIQUE_ID_description266 __fentry__ v4l2_device_unregister_subdev __stack_chk_guard i2c_transfer_buffer_flags _printk __stack_chk_fail __x86_indirect_thunk_edx devm_kmalloc v4l2_i2c_subdev_init __this_module i2c_register_driver init_module i2c_del_driver cleanup_module __mod_i2c__upd64031a_id_device_table param_ops_int    $  	   %     $  &   &  8   '  P   '  b     g   (  u   &  „   )  ‘   $  ª   &  º     Ø   '  í   &  ü   )    $      Q  $  e  *  ‘  $  !    Æ     â         u    0                   h                                                 (  1     6   (  G     L   (  v     {   (     +  ¥     ´   ,  ¹     Ô     é     î   (       >     S           à     õ     `     d     l     €     è             $          -     .          0           -     3        .symtab .strtab .shstrtab .rel.text .rel.data .bss .rel__mcount_loc .rodata.str1.4 .rel.text.unlikely .rel.rodata .rel.init.text .rel.exit.text .rodata.str1.1 .modinfo .rel__param .comment .note.GNU-stack .note.gnu.property                                                         @   ]                    	   @       Ä  Ø               )                €                   %   	   @       œ                  /                                  8                                  4   	   @       ¼  8               E      2       <  º                 X             ö  ù                  T   	   @       ô  ¨      	         k                V                  g   	   @       œ  0               w             V                    s   	   @       Ì                  †             j  
-                  ‚   	   @       ì                 ‘      2       t  
-                               ~  ‰                  ­                                 ©   	   @       ü                  µ      0                          ¾              /                     Î             0  (                                X  @     $         	              ˜
-  ,                                 á                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            ƒ|$`"‡  ‹D$`¾€    ‰D$…Àˆ  ˜„   İ    ‰\$q‰L$$‰ó‰t$‹4$‰õ‹vhİ…ötz8  ‰l$ ‰D$‹D$‹l†‰êƒâuZ‹D$‹D$‹DÆ9Èuë>´&    ƒÂ‹ 9Át‹X…Ûuğ‹X…Ûtì‹[…Ûuâ‹ 9Áuåt& ƒú‡'  „(  ‹vh…öu—‹l$ ‹4$‹\$Ş‰D$‹€4  9Åt‹D$9„ì  …  ‹D$‹˜4  9İ„C  ‰Ø1Òët& ƒÂ‹ 9Åt‹p…öuğ‹H…Étì‹I…Éuâ‹ 9Åuåt& ƒú?‡1  öD$d„  ‹L$‹T$‰Ø´&    v …ÿt9xu9Ï…·   …Òt	;P„ª   ‹ 9ÅuÜ‹T$‹D$…ÒuéÕ   v ‹9İ„ª  ;Cuñû ğÿÿ‡Î  ‰ù…ÿ„ë  ‹$‰\$‰Ë1ö‹€”   ‹P@‹@<‰D$(‹D$`‰T$,‰D$0‹C(‹„°x  …Àt1ÉT$(èüÿÿÿ‰D´4…À„w  ƒştj‹C(¾   ‹„°x  …ÀuÑëæt& ¾êÿÿÿ‹D$Dd+    …>  ƒÄH‰ğ[^_]ÃöD$d…¬  t& ‹D$‹€4  9Å…=ÿÿÿ1ÛéBÿÿÿ´&    ‹\$…Ûtu‹D$‹k‰{‹L$‹|$‰C‹D$4‰ú‰C‹D$8‰C‹$‰Œ¸ì  èüõÿÿ‰Æ…À…ú   …í„Ÿ   ‰èèüÿÿÿ‹<$‹L$`1ö‹D$<‰úèüÿÿÿ‹L$`‹D$@‰úèüÿÿÿé8ÿÿÿ¡   ¹   ºÀ  èüÿÿÿ‰Ã…À„C  ‹t$‹L$‰+‹†8  ‰8  ‰C‰‹D$‰{‹|$‰C‹D$4‰ú‰C‹D$8‰C‹$‰Œ¸ì  èUõÿÿ‰Æ…À…²   ‹D$$àûÿÿèüÿÿÿéUÿÿÿ´&    ‰ò‰Øèüÿÿÿ‰D´4= ğÿÿ‡¾   ‰D´<éhşÿÿ´&    ‹D$‹Hé	şÿÿt& …ít[‰k‹D$<ÇC    èüÿÿÿ‹D$@èüÿÿÿéPşÿÿv éØüÿÿ‰è‹l$ ¨…Õüÿÿ¾ÿÿÿÿé.şÿÿ‹D$¾şÿÿÿ…À…şÿÿ1Ûéœıÿÿ‹D$<èüÿÿÿ‹D$@èüÿÿÿ‹C‹‰B‰‰ØÇ   ÇC"  èüÿÿÿéáıÿÿ¾şÿÿÿé×ıÿÿ‹D$<¾ôÿÿÿèüÿÿÿ‹D$@èüÿÿÿé»ıÿÿ¾ùÿÿÿé±ıÿÿèüÿÿÿ‰Şé¥ıÿÿ´&    èüÿÿÿS‰Ãö@,tƒT  1Ò[éüÿÿÿt& èüÿÿÿ‹C¨udÿ èüÿÿÿƒT  1Ò[éüÿÿÿ¶    ‹Cğƒ ëŞ´&    ´&    èüÿÿÿU¹   ºĞ  WV‰ÆSƒìdd¡    ‰D$`1Àl$‰ïó«†T  ‰$hÀ  èüÿÿÿZ‰Ç…À…¶   ‹^h…Ût"èüÿÿÿ‹ƒT  ¨…ì   dÿ èüÿÿÿ‹[h…ÛuŞ†4  ì  ‰ ‰@ƒÀ9Áuô†H  ‰†H  ‰†L  ëƒÇƒÿtxL½ ‰ú‰ğ‰ëèÉñÿÿ…Àtål$`‹ƒÃèüÿÿÿ9ëuò‹^h…Ûtèüÿÿÿ‹ƒT  ¨u{dÿèüÿÿÿ‹[h…Ûuâ‹$¿ôÿÿÿèüÿÿÿ‹D$`d+    u{ƒÄd‰ø[^_]Ã´&    f1Û¶    ‹L ‹„Ø  “ô   ƒÃ‰L–èüÿÿÿƒûuŞ1ÿë²f‹ƒX  ğƒ éÿÿÿ‹ƒX  ğƒ(…xÿÿÿ‹“X  ƒT  ‹Rèüÿÿÿé_ÿÿÿèüÿÿÿv èüÿÿÿU‰ÕW‰ÏVS‰Ãƒì‹ èüÿÿÿ‰Æ= ğÿÿ‡Ê   ‹S‰ĞƒàƒøtE¸    ‹[‰$èüÿÿÿ‹$1É‰ğR‰úSj è›øÿÿ‰Ã¸    èüÿÿÿƒÄöF,thƒÄ‰Ø[^_]Ãt& ‹C‰ê1Éèüÿÿÿ‰Å= ğÿÿws‹S¸    ‹[‰$èüÿÿÿ‹$‰é‰ğR‰úSj è>øÿÿ‰Ã¸    èüÿÿÿƒÄ…ítŸ‰èèüÿÿÿöF,u˜èüÿÿÿ‹F¨uRdÿèüÿÿÿ‰ØƒÄ[^_]ÃƒÄ‰Ã‰Ø[^_]Ãt& öF,t
-‰ëé]ÿÿÿv èüÿÿÿ‹F¨u-dÿèüÿÿÿ‰ëé?ÿÿÿt& ‹Fğƒ(u¨‹VF‹Rèüÿÿÿë˜‹Fğƒ(uÍ‹VF‹Rèüÿÿÿë½´&    ´&    èüÿÿÿW‰×V‰ÆS‹ èüÿÿÿ‰Ã= ğÿÿwt‹F‰ú1Éèüÿÿÿ‹v‰Ç¸    ÿ ğÿÿwfèüÿÿÿ‰ú1É‰ØVè…ñÿÿ‰Æ¸    èüÿÿÿZ…ÿt‰øèüÿÿÿöC,t‰ğ[^_Ãèüÿÿÿ‹C¨uDdÿèüÿÿÿ‰ğ[^_Ã¶    ‰Æ[‰ğ^_Ã´&    èüÿÿÿ1É1Ò‰ØVèñÿÿ‰Æ¸    èüÿÿÿXë£‹Cğƒ(u¶‹SC‹Rèüÿÿÿë¦´&    èüÿÿÿUWV‰ÆSƒì‹Nd¡    ‰D$1À…É…ó   ‹F‰Õèüÿÿÿ‰Ç= ğÿÿ‡Ô   ¡   ¹0   ºÀ èüÿÿÿ‰Ã…À„ß   U¹\  º   èüÿÿÿ‹F‰{(T$‰C,‰Øèüÿÿÿ‰ÆX…öuS‹s,¸    èüÿÿÿ1É1Ò‰øjVSèÿõÿÿ‰Æ¸    èüÿÿÿƒÄ‰à…öuJèüÿÿÿ‰Æ‹D$d+    uvƒÄ‰ğ[^_]Ãt& ‰ØèüÿÿÿöG,uØèüÿÿÿ‹G¨u/dÿèüÿÿÿëÂt& èüÿÿÿëØ´&    f‰Æë©t& ¾êÿÿÿë‹Gğƒ(uË‹WG‹Rèüÿÿÿë»¾ôÿÿÿëŸèüÿÿÿ´&    t& èüÿÿÿUWV‰ÖS‰Ãƒì d¡    ‰D$‹èüÿÿÿ‰Ç= ğÿÿ‡ò  ¸    èüÿÿÿ‹CÇ$êÿÿÿƒø"‡<  ¾€    …Àˆ-  ˆ„   ‹”‡ì  ‹k‰L$ŒÇ4  ‰L$‹Œ‡Ø  ‹C‰T$‰L$ƒà„D  ‰Èèüÿÿÿ‰D$¹   FT$èüÿÿÿ…À…¬  F¹   T$èüÿÿÿ…À…“  ‹C‰î…À„¢   …í„š   ‹L$‰$…É„’   9ÈƒC  ‰D$Ç$äÿÿÿöC…~  ‹D$1í‹\Ç‹D$9Øtc‰|$‰Çë@t& ‹@(¹   T$‹@ ‰D$‰ğèüÿÿÿ…À…  ƒÅ;l$„Ñ   ‹ƒÆ9ß„Ä   ‹C…Àu½‹C…Àt¶‹@ë±Ç$    ¸    èüÿÿÿöG,t!‹D$d+    …ÿ   ‹$ƒÄ [^_]Ãt& èüÿÿÿ‹G¨…¨   dÿèüÿÿÿëÅ¶    ‹L$‹TÏ‹L$9Ñth‰$‰Ëë
-ƒÀ‹9Ót‹J…Éuğ‹J…Étì‹I…Éuâëã‹$éƒşÿÿ´&    ‰$éoÿÿÿ´&    ‹|$éNÿÿÿ´&    Ç$    é¼şÿÿt& 1ÀéDşÿÿ´&    f‹|$Ç$òÿÿÿéÿÿÿ‹Gğƒ(…Nÿÿÿ‹WG‹Rèüÿÿÿé;ÿÿÿ‹L$‹D$‰êèüÿÿÿ‰$éàşÿÿèüÿÿÿt& èüÿÿÿUWVS‰Ã¿Ûƒì d¡    ‰D$1À¿D$4‰L$‰T$Áà	Ø‰D$d‹    èüÿÿÿ‹ƒÈ  ‹T$8ÇD$    ‹@8‹´Ø  èüÿÿÿèüÿÿÿ‹ƒp  ‰D$D$‰ƒp  ‹^…ÛtB~t& ‰|$>t& ‹K$S0D$èüÿÿÿ‰Æ…öu|$ ğÿÿwÇD$ÿÿÿÿ‹_ƒÇ…ÛuÆ‹L$d¡    ‰ˆp  èüÿÿÿèüÿÿÿ‹\$èüÿÿÿ‹D$d+    ukƒÄ ‰Ø[^_]Ãt& èüÿÿÿS0‹s$‰ÅD$èüÿÿÿ‹[‰Æèüÿÿÿ…    œ$úƒCƒƒS èüÿÿÿ1Ò)èCSƒC÷$   „KÿÿÿûéEÿÿÿèüÿÿÿ´&    ´&    èüÿÿÿU‰ÅWV‰Î¹	   S‰ÓƒìP‹D$d|$(‰D$‹D$h‰D$d¡    ‰D$L1À‰T$$ºÀ  ‰l$ ÇD$    ÇD$    ó«‹D$lÇD$,   ‰t$<‹L$`‰D$@¸   èüÿÿÿ‰D$(…À„4  ‰ÁD$1ÒPD$0P‰Ø‹{èüÿÿÿ[_…À…  …öt‹D$‹…Ét‹D$‹…Ò…  èüÿÿÿ‹T$pd‹    ‹ƒÈ  ÇD$    ‹@8‹´Ø  èüÿÿÿèüÿÿÿ‹ƒp  ~‰D$D$‰ƒp  ‹^…Ût@¶    ‰|$>t& ‹K$S0D$ èüÿÿÿ‰Æ…öu|$ ğÿÿwÇD$ÿÿÿÿ‹_ƒÇ…ÛuÆ‹L$d¡    ‰ˆp  èüÿÿÿèüÿÿÿ‹\$èüÿÿÿ‹D$(èüÿÿÿƒûu‹D$8…À…™   ‹D$0èüÿÿÿ‹D$Ld+    …7  ƒÄP‰Ø[^_]Ãt& ÇD$,    éáşÿÿv èüÿÿÿS0‹s$‰ÅD$ èüÿÿÿ‹[‰Æèüÿÿÿ…    œ$úƒCƒƒS èüÿÿÿ1Ò)èCSƒC÷$   „ÿÿÿûéÿÿÿv ‹|$‹èüÿÿÿ‹D$0‹L$‰‹D$4‰éPÿÿÿ´&    ‹L$`ºÀ  ¸   èüÿÿÿ¹   ‰D$0‰Â‹D$‹ 9ÈGÁ‰D$4…ÒtR‹L$‹1ƒøs$…À„.şÿÿ¶ˆ
-¨„!şÿÿ·Lşf‰Lşéşÿÿ‹zƒçü‰
-‹Lü‰Lü)ú)ÖÁéó¥éïıÿÿÇD$4    éâıÿÿèüÿÿÿ´&    t& èüÿÿÿUWV‰ÆSƒìp‹¶ä  ‰D$‹„$ˆ   ‰T$‹œ$„   1Ò‰D$‹„$Œ   ‰L$‰D$d¡    ‰D$l1À‰TLƒÀƒø rô1Ò1À‰T,ƒÀƒø rô‹D$‹|$L$L‰D$(‹D$‹‹ ‰D$4‹D$‹ ‰D$8¸   9ÂLĞD$(èŞÿÿ‰D$…ÀxN‹?‹l$,9Ç‰|$<Oø…ÿˆñ  ‰ú1É‰èèüÿÿÿ‰ù‰Ú‰èèüÿÿÿ‰Ç…ÿt=‹l$,ÇD$òÿÿÿD$L9Åt‰èèüÿÿÿ‹D$ld+    …í  ‹D$ƒÄp[^_]Ãt& ‹D$1Òèüÿÿÿ‹  ÇD$$    èüÿÿÿ{èüÿÿÿd¡    ‹ˆp  ‰L$L$ ‰ˆp  ‹[…Ût;‰|$ >t& ‹K$S0D$(èüÿÿÿ‰Æ…öu|$$ ğÿÿwÇD$$ÿÿÿÿ‹_ƒÇ…ÛuÆ‹L$d¡    ‰ˆp  èüÿÿÿèüÿÿÿ‹\$$‹D$èüÿÿÿ…Û…Ç   ‹D$<‹l$,ƒøÿ„Æ   Œÿşÿÿ;D$õşÿÿ‹T$4‹L$‰‹T$8‹L$‰…À„±   ‹L$‰L$L9Í„¬   ‹D$ÇD$    ‰(éËşÿÿt& èüÿÿÿS0‹s$‰ÅD$(èüÿÿÿ‹[‰Æèüÿÿÿ…    œ$úƒCƒƒS èüÿÿÿ1Ò)èCSƒC÷$   „óşÿÿûéíşÿÿv ‰\$‹l$,éJşÿÿv ÇD$   é:şÿÿv é şÿÿÇD$    é#şÿÿºÀ èüÿÿÿ‰Ã…Àt%‹L$<‹T$,èüÿÿÿ‹D$ÇD$    ‰éşÿÿèüÿÿÿÇD$ôÿÿÿ‹l$,éİıÿÿ¶    èüÿÿÿUWV‰ÆSƒìh‹ä  1ö‰D$‹D$|‹¼$ˆ   ‰D$‹„$€   ‰D$d¡    ‰D$d1À‰tDƒÀƒø rô1ö1À‰t$ƒÀƒø rô‹D$‰T$,‰L$0L$D‰D$ d¡    ‰D$8‹„$„   ‰D$4‰ÂD$ èÛÿÿ‰D$…ÀˆX  …ÿuL‹D$èüÿÿÿ‰T$4…Òˆc  …À…[  ‹D$‰Ö‹l$$9ÂOğ1É‰è‰òèüÿÿÿ‹T$‰ñ‰èèüÿÿÿ…À…,  ‹D$1Òèüÿÿÿ‹›  ‰|$èüÿÿÿ{èüÿÿÿd¡    ‹ˆp  ‰L$L$‰ˆp  ‹[…Ût;‰|$>t& ‹K$S0D$ èüÿÿÿ‰Æ…öu|$ ğÿÿwÇD$ÿÿÿÿ‹_ƒÇ…ÛuÆ‹L$d¡    ‰ˆp  èüÿÿÿèüÿÿÿ‹t$‹D$èüÿÿÿ…öˆ÷   ‹\$4‹D$$;\$u…Ûxq‰t$t6¹   ‰Ú‰$èüÿÿÿ‹$‹D$‰Ùèüÿÿÿ…ÀuF‹D$4‹L$èüÿÿÿ…Éu5‹D$$L$D9Ètèüÿÿÿ‹D$dd+    …”   ‹D$ƒÄh[^_]Ã´&    ‹D$$ÇD$òÿÿÿëÁ´&    v èüÿÿÿS0‹s$‰ÅD$ èüÿÿÿ‹[‰Æèüÿÿÿ…    œ$úƒCƒƒS èüÿÿÿ1Ò)èCSƒC÷$   „Ãşÿÿûé½şÿÿv ‰t$éJÿÿÿèüÿÿÿfèüÿÿÿUWV‰ÖS‰Ãƒì<‹|$T‹D$P‰|$d‹    ‰T$8‹“ä  ‰\$‹‰D$Ø‰t$ ‰D$‹D$X‰L$$‰D$‹²  ‰\$(ÇD$0    d‹    ÇD$4    ‰\$,èüÿÿÿèüÿÿÿ‹ƒp  ‰D$D$‰ƒp  ‹^…ÛtC~¶    ‰|$>t& ‹K$S0D$èüÿÿÿ‰Æ…öu|$ ğÿÿwÇD$ÿÿÿÿ‹_ƒÇ…ÛuÆ‹L$d¡    ‰ˆp  èüÿÿÿèüÿÿÿ‹D$…Àx‹L$‹T$(;€   …Òux‹T$8d+    uyƒÄ<[^_]Ãv èüÿÿÿS0‹s$‰ÅD$èüÿÿÿ‹[‰Æèüÿÿÿ…    œ$úƒCƒƒS èüÿÿÿ1Ò)èCSƒC÷$   „;ÿÿÿûé5ÿÿÿv ‰ë„¸òÿÿÿézÿÿÿèüÿÿÿ     cgroup_bpf_enabled_key  __cgroup_bpf_run_filter_skb  __cgroup_bpf_run_filter_sk  __cgroup_bpf_run_filter_sock_addr  __cgroup_bpf_run_filter_sock_ops                                                                        @   ğ  0  P  `  p  Ğ     °  @  À  ğ  `	  À  €                   p  °  ğ  °  0  p  €    À  à       0  P$  °$  @&  °'  (  à)  ,   .  ğ0   4   6  cgroup_id:	%llu
-attach_type:	%d
-      À      Ô  @        €      ¤         -  -      /  È/      T2   3      45  06      D7  È7      include/linux/skbuff.h / kernel/bpf/cgroup.c include/linux/thread_info.h °      ö	  ­     @       ƒ	 #     Õ 	 3  -   é 	¸$   èüÿÿÿ ›  “  Ş    ›$  &  &  s'  Œ'  s(  ³)  S,   ÿÿÿ	
-ÿÿÿÿÿÿÿÿÿ strnlen           P      0                                          	                                                               @                           	                                                            	                                                             	                                                             	         
-                                   °                                             
-                                                                                                               À  `  à        p                       GCC: (GNU) 11.2.0           GNU  À       À                                  ñÿ              
-              +             N              o             •   4          ½              ã   5            P          /            
- T  Q          €  s          ®             Ú  t            •          2             ]  @   ª    w  0      •  P       ­  `  
-     Å  p  V     ä  Ğ  /     ú                           V     )  `  E    @  @  y                 cmd_drivers/media/i2c/upd64031a.o := gcc -Wp,-MMD,drivers/media/i2c/.upd64031a.o.d -nostdinc -I./arch/x86/include -I./arch/x86/include/generated  -I./include -I./arch/x86/include/uapi -I./arch/x86/include/generated/uapi -I./include/uapi -I./include/generated/uapi -include ./include/linux/compiler-version.h -include ./include/linux/kconfig.h -include ./include/linux/compiler_types.h -D__KERNEL__ -fmacro-prefix-map=./= -Wall -Wundef -Werror=strict-prototypes -Wno-trigraphs -fno-strict-aliasing -fno-common -fshort-wchar -fno-PIE -Werror=implicit-function-declaration -Werror=implicit-int -Werror=return-type -Wno-format-security -std=gnu11 -mno-sse -mno-mmx -mno-sse2 -mno-3dnow -mno-avx -fcf-protection=none -m32 -msoft-float -mregparm=3 -freg-struct-return -fno-pic -mpreferred-stack-boundary=2 -march=i686 -mtune=pentium3 -mtune=generic -Wa,-mtune=generic32 -ffreestanding -mstack-protector-guard-reg=fs -mstack-protector-guard-symbol=__stack_chk_guard -Wno-sign-compare -fno-asynchronous-unwind-tables -mindirect-branch=thunk-extern -mindirect-branch-register -fno-jump-tables -fno-delete-null-pointer-checks -Wno-frame-address -Wno-format-truncation -Wno-format-overflow -Wno-address-of-packed-member -O2 -fno-allow-store-data-races -fstack-protector-strong -Wimplicit-fallthrough=5 -Wno-main -Wno-unused-but-set-variable -Wno-unused-const-variable -fno-stack-clash-protection -pg -mrecord-mcount -mfentry -DCC_USING_FENTRY -Wdeclaration-after-statement -Wvla -Wno-pointer-sign -Wcast-function-type -Wno-stringop-truncation -Wno-stringop-overflow -Wno-restrict -Wno-maybe-uninitialized -Wno-alloc-size-larger-than -fno-strict-overflow -fno-stack-check -fconserve-stack -Werror=date-time -Werror=incompatible-pointer-types -Werror=designated-init -Wno-packed-not-aligned  -DMODULE  -DKBUILD_BASENAME='"upd64031a"' -DKBUILD_MODNAME='"upd64031a"' -D__KBUILD_MODNAME=kmod_upd64031a -c -o drivers/media/i2c/upd64031a.o drivers/media/i2c/upd64031a.c 
+		list_del(&buf->queue);
+		vb2_buffer_done(&buf->vb.vb2_buf, VB2_BUF_STATE_ERROR);
+	}
+	spin_unlock_irqrestore(&dev->slock, flags);
+}
 
-source_drivers/media/i2c/upd64031a.o := drivers/media/i2c/upd64031a.c
 
-deps_drivers/media/i2c/upd64031a.o := \
-    $(wildcard include/config/VIDEO_ADV_DEBUG) \
-  include/linux/compiler-version.h \
-    $(wildcard include/config/CC_VERSION_TEXT) \
-  include/linux/kconfig.h \
-    $(wildcard include/config/CPU_BIG_ENDIAN) \
-    $(wildcard include/config/BOOGER) \
-    $(wildcard include/config/FOO) \
-  include/linux/compiler_types.h \
-    $(wildcard include/config/DEBUG_INFO_BTF) \
-    $(wildcard include/config/PAHOLE_HAS_BTF_TAG) \
-    $(wildcard include/config/HAVE_ARCH_COMPILER_H) \
-    $(wildcard include/config/CC_HAS_ASM_INLINE) \
-  include/linux/compiler_attributes.h \
-  include/linux/compiler-gcc.h \
-    $(wildcard include/config/RETPOLINE) \
-    $(wildcard include/config/ARCH_USE_BUILTIN_BSWAP) \
-    $(wildcard include/config/SHADOW_CALL_STACK) \
-    $(wildcard include/config/KCOV) \
-  include/linux/module.h \
-    $(wildcard include/config/MODULES) \
-    $(wildcard include/config/SYSFS) \
-    $(wildcard include/config/MODULES_TREE_LOOKUP) \
-    $(wildcard include/config/LIVEPATCH) \
-    $(wildcard include/config/STACKTRACE_BUILD_ID) \
-    $(wildcard include/config/CFI_CLANG) \
-    $(wildcard include/config/MODULE_SIG) \
-    $(wildcard include/config/GENERIC_BUG) \
-    $(wildcard include/config/KALLSYMS) \
-    $(wildcard include/config/SMP) \
-    $(wildcard include/config/TRACEPOINTS) \
-    $(wildcard include/config/TREE_SRCU) \
-    $(wildcard include/config/BPF_EVENTS) \
-    $(wildcard include/config/DEBUG_INFO_BTF_MODULES) \
-    $(wildcard include/config/JUMP_LABEL) \
-    $(wildcard include/config/TRACING) \
-    $(wildcard include/config/EVENT_TRACING) \
-    $(wildcard include/config/FTRACE_MCOUNT_RECORD) \
-    $(wildcard include/config/KPROBES) \
-    $(wildcard include/config/HAVE_STATIC_CALL_INLINE) \
-    $(wildcard include/config/PRINTK_INDEX) \
-    $(wildcard include/config/MODULE_UNLOAD) \
-    $(wildcard include/config/CONSTRUCTORS) \
-    $(wildcard include/config/FUNCTION_ERROR_INJECTION) \
-  include/linux/list.h \
-    $(wildcard include/config/DEBUG_LIST) \
-  include/linux/container_of.h \
-  include/linux/build_bug.h \
-  include/linux/compiler.h \
-    $(wildcard include/config/TRACE_BRANCH_PROFILING) \
-    $(wildcard include/config/PROFILE_ALL_BRANCHES) \
-    $(wildcard include/config/STACK_VALIDATION) \
-  include/linux/compiler_types.h \
-  arch/x86/include/generated/asm/rwonce.h \
-  include/asm-generic/rwonce.h \
-  include/linux/kasan-checks.h \
-    $(wildcard include/config/KASAN_GENERIC) \
-    $(wildcard include/config/KASAN_SW_TAGS) \
-  include/linux/types.h \
-    $(wildcard include/config/HAVE_UID16) \
-    $(wildcard include/config/UID16) \
-    $(wildcard include/config/ARCH_DMA_ADDR_T_64BIT) \
-    $(wildcard include/config/PHYS_ADDR_T_64BIT) \
-    $(wildcard include/config/64BIT) \
-    $(wildcard include/config/ARCH_32BIT_USTAT_F_TINODE) \
-  include/uapi/linux/types.h \
-  arch/x86/include/generated/uapi/asm/types.h \
-  include/uapi/asm-generic/types.h \
-  include/asm-generic/int-ll64.h \
-  include/uapi/asm-generic/int-ll64.h \
-  arch/x86/include/uapi/asm/bitsperlong.h \
-  include/asm-generic/bitsperlong.h \
-  include/uapi/asm-generic/bitsperlong.h \
-  include/uapi/linux/posix_types.h \
-  include/linux/stddef.h \
-  include/uapi/linux/stddef.h \
-  arch/x86/include/asm/posix_types.h \
-    $(wildcard include/config/X86_32) \
-  arch/x86/include/uapi/asm/posix_types_32.h \
-  include/uapi/asm-generic/posix_types.h \
-  include/linux/kcsan-checks.h \
-    $(wildcard include/config/KCSAN) \
-    $(wildcard include/config/KCSAN_WEAK_MEMORY) \
-    $(wildcard include/config/KCSAN_IGNORE_ATOMICS) \
-  include/linux/err.h \
-  arch/x86/include/generated/uapi/asm/errno.h \
-  include/uapi/asm-generic/errno.h \
-  include/uapi/asm-generic/errno-base.h \
-  include/linux/poison.h \
-    $(wildcard include/config/ILLEGAL_POINTER_VALUE) \
-  include/linux/const.h \
-  include/vdso/const.h \
-  include/uapi/linux/const.h \
-  arch/x86/include/asm/barrier.h \
-  arch/x86/include/asm/alternative.h \
-  include/linux/stringify.h \
-  arch/x86/include/asm/asm.h \
-  arch/x86/include/asm/extable_fixup_types.h \
-  arch/x86/include/asm/nops.h \
-  include/asm-generic/barrier.h \
-  include/linux/stat.h \
-  arch/x86/include/uapi/asm/stat.h \
-  include/uapi/linux/stat.h \
-  include/linux/time.h \
-    $(wildcard include/config/POSIX_TIMERS) \
-  include/linux/cache.h \
-    $(wildcard include/config/ARCH_HAS_CACHE_LINE_SIZE) \
-  include/uapi/linux/kernel.h \
-  include/uapi/linux/sysinfo.h \
-  arch/x86/include/asm/cache.h \
-    $(wildcard include/config/X86_L1_CACHE_SHIFT) \
-    $(wildcard include/config/X86_INTERNODE_CACHE_SHIFT) \
-    $(wildcard include/config/X86_VSMP) \
-  include/linux/linkage.h \
-    $(wildcard include/config/ARCH_USE_SYM_ANNOTATIONS) \
-  include/linux/export.h \
-    $(wildcard include/config/MODVERSIONS) \
-    $(wildcard include/config/MODULE_REL_CRCS) \
-    $(wildcard include/config/HAVE_ARCH_PREL32_RELOCATIONS) \
-    $(wildcard include/config/TRIM_UNUSED_KSYMS) \
-  arch/x86/include/asm/linkage.h \
-    $(wildcard include/config/X86_64) \
-    $(wildcard include/config/X86_ALIGNMENT_16) \
-    $(wildcard include/config/SLS) \
-  arch/x86/include/asm/ibt.h \
-    $(wildcard include/config/X86_KERNEL_IBT) \
-  include/linux/math64.h \
-    $(wildcard include/config/ARCH_SUPPORTS_INT128) \
-  include/linux/math.h \
-  arch/x86/include/asm/div64.h \
-  include/linux/log2.h \
-    $(wildcard include/config/ARCH_HAS_ILOG2_U32) \
-    $(wildcard include/config/ARCH_HAS_ILOG2_U64) \
-  include/linux/bitops.h \
-  include/linux/bits.h \
-  include/vdso/bits.h \
-  include/linux/typecheck.h \
-  arch/x86/include/asm/bitops.h \
-    $(wildcard include/config/X86_CMOV) \
-  arch/x86/include/asm/rmwcc.h \
-    $(wildcard include/config/CC_HAS_ASM_GOTO) \
-  include/asm-generic/bitops/fls64.h \
-  include/asm-generic/bitops/sched.h \
-  arch/x86/include/asm/arch_hweight.h \
-  arch/x86/include/asm/cpufeatures.h \
-  arch/x86/include/asm/required-features.h \
-    $(wildcard include/config/X86_MINIMUM_CPU_FAMILY) \
-    $(wildcard include/config/MATH_EMULATION) \
-    $(wildcard include/config/X86_PAE) \
-    $(wildcard include/config/X86_CMPXCHG64) \
-    $(wildcard include/config/X86_P6_NOP) \
-    $(wildcard include/config/MATOM) \
-    $(wildcard include/config/PARAVIRT_XXL) \
-  arch/x86/include/asm/disabled-features.h \
-    $(wildcard include/config/X86_SMAP) \
-    $(wildcard include/config/X86_UMIP) \
-    $(wildcard include/config/X86_INTEL_MEMORY_PROTECTION_KEYS) \
-    $(wildcard include/config/X86_5LEVEL) \
-    $(wildcard include/config/PAGE_TABLE_ISOLATION) \
-    $(wildcard include/config/INTEL_IOMMU_SVM) \
-    $(wildcard include/config/X86_SGX) \
-  include/asm-generic/bitops/const_hweight.h \
-  include/asm-generic/bitops/instrumented-atomic.h \
-  include/linux/instrumented.h \
-  include/asm-generic/bitops/instrumented-non-atomic.h \
-    $(wildcard include/config/KCSAN_ASSUME_PLAIN_WRITES_ATOMIC) \
-  include/asm-generic/bitops/instrumented-lock.h \
-  include/asm-generic/bitops/le.h \
-  arch/x86/include/uapi/asm/byteorder.h \
-  include/linux/byteorder/little_endian.h \
-  include/uapi/linux/byteorder/little_endian.h \
-  include/linux/swab.h \
-  include/uapi/linux/swab.h \
-  arch/x86/include/uapi/asm/swab.h \
-  include/linux/byteorder/generic.h \
-  include/asm-generic/bitops/ext2-atomic-setbit.h \
-  include/vdso/math64.h \
-  include/linux/time64.h \
-  include/vdso/time64.h \
-  include/uapi/linux/time.h \
-  include/uapi/linux/time_types.h \
-  include/linux/time32.h \
-  include/linux/timex.h \
-  include/uapi/linux/timex.h \
-  include/uapi/linux/param.h \
-  arch/x86/include/generated/uapi/asm/param.h \
-  include/asm-generic/param.h \
-    $(wildcard include/config/HZ) \
-  include/uapi/asm-generic/param.h \
-  arch/x86/include/asm/timex.h \
-    $(wildcard include/config/X86_TSC) \
-  arch/x86/include/asm/processor.h \
-    $(wildcard include/config/X86_VMX_FEATURE_NAMES) \
-    $(wildcard include/config/X86_IOPL_IOPERM) \
-    $(wildcard include/config/STACKPROTECTOR) \
-    $(wildcard include/config/VM86) \
-    $(wildcard include/config/X86_DEBUGCTLMSR) \
-    $(wildcard include/config/CPU_SUP_AMD) \
-    $(wildcard include/config/XEN) \
-  arch/x86/include/asm/processor-flags.h \
-  arch/x86/include/uapi/asm/processor-flags.h \
-  include/linux/mem_encrypt.h \
-    $(wildcard include/config/ARCH_HAS_MEM_ENCRYPT) \
-    $(wildcard include/config/AMD_MEM_ENCRYPT) \
-  arch/x86/include/asm/mem_encrypt.h \
-  include/linux/init.h \
-    $(wildcard include/config/STRICT_KERNEL_RWX) \
-    $(wildcard include/config/STRICT_MODULE_RWX) \
-    $(wildcard include/config/LTO_CLANG) \
-  include/linux/cc_platform.h \
-    $(wildcard include/config/ARCH_HAS_CC_PLATFORM) \
-  arch/x86/include/uapi/asm/bootparam.h \
-  include/linux/screen_info.h \
-  include/uapi/linux/screen_info.h \
-  include/linux/apm_bios.h \
-  include/uapi/linux/apm_bios.h \
-  include/uapi/linux/ioctl.h \
-  arch/x86/include/generated/uapi/asm/ioctl.h \
-  include/asm-generic/ioctl.h \
-  include/uapi/asm-generic/ioctl.h \
-  include/linux/edd.h \
-  include/uapi/linux/edd.h \
-  arch/x86/include/asm/ist.h \
-  arch/x86/include/uapi/asm/ist.h \
-  include/video/edid.h \
-    $(wildcard include/config/X86) \
-  include/uapi/video/edid.h \
-  arch/x86/include/asm/math_emu.h \
-  arch/x86/include/asm/ptrace.h \
-    $(wildcard include/config/PARAVIRT) \
-    $(wildcard include/config/IA32_EMULATION) \
-  arch/x86/include/asm/segment.h \
-    $(wildcard include/config/XEN_PV) \
-  arch/x86/include/asm/page_types.h \
-    $(wildcard include/config/PHYSICAL_START) \
-    $(wildcard include/config/PHYSICAL_ALIGN) \
-    $(wildcard include/config/DYNAMIC_PHYSICAL_MASK) \
-  arch/x86/include/asm/page_32_types.h \
-    $(wildcard include/config/HIGHMEM4G) \
-    $(wildcard include/config/HIGHMEM64G) \
-    $(wildcard include/config/PAGE_OFFSET) \
-  arch/x86/include/uapi/asm/ptrace.h \
-  arch/x86/include/uapi/asm/ptrace-abi.h \
-  arch/x86/include/asm/paravirt_types.h \
-    $(wildcard include/config/PGTABLE_LEVELS) \
-    $(wildcard include/config/PARAVIRT_DEBUG) \
-  arch/x86/include/asm/desc_defs.h \
-  arch/x86/include/asm/pgtable_types.h \
-    $(wildcard include/config/MEM_SOFT_DIRTY) \
-    $(wildcard include/config/HAVE_ARCH_USERFAULTFD_WP) \
-    $(wildcard include/config/PROC_FS) \
-  arch/x86/include/asm/pgtable_32_types.h \
-  arch/x86/include/asm/pgtable-3level_types.h \
-  include/asm-generic/pgtable-nop4d.h \
-  include/asm-generic/pgtable-nopud.h \
-  arch/x86/include/asm/nospec-branch.h \
-  include/linux/static_key.h \
-  include/linux/jump_label.h \
-    $(wildcard include/config/HAVE_ARCH_JUMP_LABEL_RELATIVE) \
-  arch/x86/include/asm/jump_label.h \
-  include/linux/objtool.h \
-    $(wildcard include/config/FRAME_POINTER) \
-  arch/x86/include/asm/msr-index.h \
-  arch/x86/include/asm/unwind_hints.h \
-  arch/x86/include/asm/orc_types.h \
-  arch/x86/include/asm/GEN-for-each-reg.h \
-  arch/x86/include/asm/spinlock_types.h \
-  include/asm-generic/qspinlock_types.h \
-    $(wildcard include/config/NR_CPUS) \
-  include/asm-generic/qrwlock_types.h \
-  arch/x86/include/asm/proto.h \
-  arch/x86/include/uapi/asm/ldt.h \
-  arch/x86/include/uapi/asm/sigcontext.h \
-  arch/x86/include/asm/current.h \
-  arch/x86/include/asm/percpu.h \
-    $(wildcard include/config/X86_64_SMP) \
-  include/linux/kernel.h \
-    $(wildcard include/config/PREEMPT_VOLUNTARY_BUILD) \
-    $(wildcard include/config/PREEMPT_DYNAMIC) \
-    $(wildcard include/config/HAVE_PREEMPT_DYNAMIC_CALL) \
-    $(wildcard include/config/HAVE_PREEMPT_DYNAMIC_KEY) \
-    $(wildcard include/config/PREEMPT_) \
-    $(wildcard include/config/DEBUG_ATOMIC_SLEEP) \
-    $(wildcard include/config/MMU) \
-    $(wildcard include/config/PROVE_LOCKING) \
-  include/linux/stdarg.h \
-  include/linux/align.h \
-  include/linux/limits.h \
-  include/uapi/linux/limits.h \
-  include/vdso/limits.h \
-  include/linux/kstrtox.h \
-  include/linux/minmax.h \
-  include/linux/panic.h \
-    $(wildcard include/config/PANIC_TIMEOUT) \
-  include/linux/printk.h \
-    $(wildcard include/config/MESSAGE_LOGLEVEL_DEFAULT) \
-    $(wildcard include/config/CONSOLE_LOGLEVEL_DEFAULT) \
-    $(wildcard include/config/CONSOLE_LOGLEVEL_QUIET) \
-    $(wildcard include/config/EARLY_PRINTK) \
-    $(wildcard include/config/PRINTK) \
-    $(wildcard include/config/DYNAMIC_DEBUG) \
-    $(wildcard include/config/DYNAMIC_DEBUG_CORE) \
-  include/linux/kern_levels.h \
-  include/linux/ratelimit_types.h \
-  include/linux/spinlock_types_raw.h \
-    $(wildcard include/config/DEBUG_SPINLOCK) \
-    $(wildcard include/config/DEBUG_LOCK_ALLOC) \
-  include/linux/lockdep_types.h \
-    $(wildcard include/config/PROVE_RAW_LOCK_NESTING) \
-    $(wildcard include/config/LOCKDEP) \
-    $(wildcard include/config/LOCK_STAT) \
-  include/linux/once_lite.h \
-  include/linux/static_call_types.h \
-    $(wildcard include/config/HAVE_STATIC_CALL) \
-  include/linux/instruction_pointer.h \
-  include/asm-generic/percpu.h \
-    $(wildcard include/config/DEBUG_PREEMPT) \
-    $(wildcard include/config/HAVE_SETUP_PER_CPU_AREA) \
-  include/linux/threads.h \
-    $(wildcard include/config/BASE_SMALL) \
-  include/linux/percpu-defs.h \
-    $(wildcard include/config/DEBUG_FORCE_WEAK_PER_CPU) \
-  arch/x86/include/asm/page.h \
-  arch/x86/include/asm/page_32.h \
-    $(wildcard include/config/DEBUG_VIRTUAL) \
-    $(wildcard include/config/FLATMEM) \
-  include/linux/string.h \
-    $(wildcard include/config/BINARY_PRINTF) \
-    $(wildcard include/config/FORTIFY_SOURCE) \
-  include/linux/errno.h \
-  include/uapi/linux/errno.h \
-  include/uapi/linux/string.h \
-  arch/x86/include/asm/string.h \
-  arch/x86/include/asm/string_32.h \
-  include/linux/fortify-string.h \
-  include/linux/range.h \
-  include/asm-generic/memory_model.h \
-    $(wildcard include/config/SPARSEMEM_VMEMMAP) \
-    $(wildcard include/config/SPARSEMEM) \
-  include/linux/pfn.h \
-  include/asm-generic/getorder.h \
-  arch/x86/include/asm/msr.h \
-  arch/x86/include/asm/msr-index.h \
-  arch/x86/include/asm/cpumask.h \
-  include/linux/cpumask.h \
-    $(wildcard include/config/CPUMASK_OFFSTACK) \
-    $(wildcard include/config/HOTPLUG_CPU) \
-    $(wildcard include/config/DEBUG_PER_CPU_MAPS) \
-  include/linux/bitmap.h \
-  include/linux/find.h \
-  include/linux/atomic.h \
-  arch/x86/include/asm/atomic.h \
-  arch/x86/include/asm/cmpxchg.h \
-  arch/x86/include/asm/cmpxchg_32.h \
-  arch/x86/include/asm/atomic64_32.h \
-  include/linux/atomic/atomic-arch-fallback.h \
-    $(wildcard include/config/GENERIC_ATOMIC64) \
-  include/linux/atomic/atomic-long.h \
-  include/linux/atomic/atomic-instrumented.h \
-  include/linux/bug.h \
-    $(wildcard include/config/BUG_ON_DATA_CORRUPTION) \
-  arch/x86/include/asm/bug.h \
-    $(wildcard include/config/DEBUG_BUGVERBOSE) \
-  include/linux/instrumentation.h \
-    $(wildcard include/config/DEBUG_ENTRY) \
-  include/asm-generic/bug.h \
-    $(wildcard include/config/BUG) \
-    $(wildcard include/config/GENERIC_BUG_RELATIVE_POINTERS) \
-  arch/x86/include/uapi/asm/msr.h \
-  include/linux/tracepoint-defs.h \
-  arch/x86/include/asm/special_insns.h \
-  include/linux/irqflags.h \
-    $(wildcard include/config/TRACE_IRQFLAGS) \
-    $(wildcard include/config/PREEMPT_RT) \
-    $(wildcard include/config/IRQSOFF_TRACER) \
-    $(wildcard include/config/PREEMPT_TRACER) \
-    $(wildcard include/config/DEBUG_IRQFLAGS) \
-    $(wildcard include/config/TRACE_IRQFLAGS_SUPPORT) \
-  arch/x86/include/asm/irqflags.h \
-  arch/x86/include/asm/fpu/types.h \
-  arch/x86/include/asm/vmxfeatures.h \
-  arch/x86/include/asm/vdso/processor.h \
-  include/linux/personality.h \
-  include/uapi/linux/personality.h \
-  arch/x86/include/asm/tsc.h \
-  arch/x86/include/asm/cpufeature.h \
-    $(wildcard include/config/X86_FEATURE_NAMES) \
-  include/vdso/time32.h \
-  include/vdso/time.h \
-  include/linux/uidgid.h \
-    $(wildcard include/config/MULTIUSER) \
-    $(wildcard include/config/USER_NS) \
-  include/linux/highuid.h \
-  include/linux/buildid.h \
-    $(wildcard include/config/CRASH_CORE) \
-  include/linux/mm_types.h \
-    $(wildcard include/config/HAVE_ALIGNED_STRUCT_PAGE) \
-    $(wildcard include/config/MEMCG) \
-    $(wildcard include/config/USERFAULTFD) \
-    $(wildcard include/config/SWAP) \
-    $(wildcard include/config/NUMA) \
-    $(wildcard include/config/HAVE_ARCH_COMPAT_MMAP_BASES) \
-    $(wildcard include/config/MEMBARRIER) \
-    $(wildcard include/config/AIO) \
-    $(wildcard include/config/MMU_NOTIFIER) \
-    $(wildcard include/config/TRANSPARENT_HUGEPAGE) \
-    $(wildcard include/config/NUMA_BALANCING) \
-    $(wildcard include/config/ARCH_WANT_BATCHED_UNMAP_TLB_FLUSH) \
-    $(wildcard include/config/HUGETLB_PAGE) \
-    $(wildcard include/config/IOMMU_SVA) \
-  include/linux/mm_types_task.h \
-    $(wildcard include/config/SPLIT_PTLOCK_CPUS) \
-    $(wildcard include/config/ARCH_ENABLE_SPLIT_PMD_PTLOCK) \
-  arch/x86/include/asm/tlbbatch.h \
-  include/linux/auxvec.h \
-  include/uapi/linux/auxvec.h \
-  arch/x86/include/uapi/asm/auxvec.h \
-  include/linux/kref.h \
-  include/linux/spinlock.h \
-    $(wildcard include/config/PREEMPTION) \
-  include/linux/preempt.h \
-    $(wildcard include/config/PREEMPT_COUNT) \
-    $(wildcard include/config/TRACE_PREEMPT_TOGGLE) \
-    $(wildcard include/config/PREEMPT_NOTIFIERS) \
-  arch/x86/include/asm/preempt.h \
-  include/linux/thread_info.h \
-    $(wildcard include/config/THREAD_INFO_IN_TASK) \
-    $(wildcard include/config/GENERIC_ENTRY) \
-    $(wildcard include/config/HAVE_ARCH_WITHIN_STACK_FRAMES) \
-    $(wildcard include/config/HARDENED_USERCOPY) \
-  include/linux/restart_block.h \
-  arch/x86/include/asm/thread_info.h \
-    $(wildcard include/config/COMPAT) \
-  include/linux/bottom_half.h \
-  include/linux/lockdep.h \
-    $(wildcard include/config/DEBUG_LOCKING_API_SELFTESTS) \
-  include/linux/smp.h \
-    $(wildcard include/config/UP_LATE_INIT) \
-  include/linux/smp_types.h \
-  include/linux/llist.h \
-    $(wildcard include/config/ARCH_HAVE_NMI_SAFE_CMPXCHG) \
-  arch/x86/include/asm/smp.h \
-    $(wildcard include/config/X86_LOCAL_APIC) \
-    $(wildcard include/config/DEBUG_NMI_SELFTEST) \
-  arch/x86/include/generated/asm/mmiowb.h \
-  include/asm-generic/mmiowb.h \
-    $(wildcard include/config/MMIOWB) \
-  include/linux/spinlock_types.h \
-  include/linux/rwlock_types.h \
-  arch/x86/include/asm/spinlock.h \
-  arch/x86/include/asm/paravirt.h \
-    $(wildcard include/config/PARAVIRT_SPINLOCKS) \
-  arch/x86/include/asm/frame.h \
-  arch/x86/include/asm/qspinlock.h \
-  include/asm-generic/qspinlock.h \
-  arch/x86/include/asm/qrwlock.h \
-  include/asm-generic/qrwlock.h \
-  include/linux/rwlock.h \
-    $(wildcard include/config/PREEMPT) \
-  include/linux/spinlock_api_smp.h \
-    $(wildcard include/config/INLINE_SPIN_LOCK) \
-    $(wildcard include/config/INLINE_SPIN_LOCK_BH) \
-    $(wildcard include/config/INLINE_SPIN_LOCK_IRQ) \
-    $(wildcard include/config/INLINE_SPIN_LOCK_IRQSAVE) \
-    $(wildcard include/config/INLINE_SPIN_TR
+const struct vb2_ops cx23885_vbi_qops = {
+	.queue_setup    = queue_setup,
+	.buf_prepare  = buffer_prepare,
+	.buf_finish = buffer_finish,
+	.buf_queue    = buffer_queue,
+	.wait_prepare = vb2_ops_wait_prepare,
+	.wait_finish = vb2_ops_wait_finish,
+	.start_streaming = cx23885_start_streaming,
+	.stop_streaming = cx23885_stop_streaming,
+};
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         %İ]1Ùºã^"«ÜçÀ‰òPÛ,Lå©QÏÑYƒ j_©7\ÏaÒ£<5l¹Ô2œZV{j£T«š+À"`Ò“ïİÁä.Ÿ¸aJ0ÛxWcL. sçŸâ‚(°a©WÄ*Iã­^aÊº(Bü€É¥©wf¶îÔ…?ÙïÁš¶ÌşºÍwœAú-DÇ¡_éSƒWpÓ<YaÈ™y/ôñ©$„sÂjgyb	*O`æˆü4x- "‘ı–Xrèà1o<º>ë†c3´èÌ6ÌóÉàVŒ0@„?b:bé>1›Æcˆ´[ÅÛb=Gœç¤ÇáÃ-ŒX4ç=3ShxÁ-Ïf¹'xh%ØÿhQhæa@Ñ ä¦vcÆ
+gi…i,c2 ÀL*ÚseÍi
+Ÿ®Ÿ^)GGb=ÿ@k«FäôÎ<a¼†7ÄÙTnô;ÔùVcg¤# Ü|tköıÖe×âÕ»P›¹A{ÍKÃg]èOÔÊëÌ¿tUòŞ,UöPÿ–GÄë¡x²Ã5%äyş2Ú|¶À<Oºù;U”iŞæ³Ÿê—æòÎ`ÎäÊİ9M÷O¶>‚F¶Ç“pgõ5j`¶dq/iêñ¥:îi|ÅCî¡+!Û†ÆB?xqóÀj»ßÃp–wdr;-Çùé!«Ê]ĞÃ^o3U‡ó´ï^¾µD¾>$”§É¨{p.4¤R6pêü¥¦Ë!]s„YøÜ*bjjÁÚ|
+Ô?1Lê7íÍ‰ ÏWIN'TìÈ»ÀsVôàiEËæté¦ÂíZy¨9­wöÂc¹ÂÑüÏ"$­%eï*äG‹DÇ©ÿ†š‡ˆˆU®[‘C(R›|Â£ïyàë½ty=ê¦ É£&ğödwt7²u½E5Ì=7rŒÕ÷\8k*YnÿÛœ ˜µ@ƒS^/b<áËh›º2÷a9
+<ŒYz=Ö¡~£Šº‹ïÏš6ù5[b2Ì¸€·„5&KL¯±×¨¿y†Õ|y,fL—ÌvxàÙcWöş›U33:ñWĞ
+s0 l.ùå7¸æ¸ãiŠuõ†²® ú/<lí¡v}İı>q$óÊ1À»ïÇ&„Ï5?µv"%­|S…Õİ|w$¶ã+,¸Dõª‹•‚§¸&í!_×ZğÀOÑG ’)oÄ"`Ã"#ìoÅÜu¨Ç«¤ÑªWÕ›5¬õÑRåe×ºØÑ,ŸÕ•A´
+…Ü‡a—7¾.0/7d„>³&ŸN Wî©Ä)m´¤u—UšÀ,)×¹Ü{L|wÖ7n?r™/n>Ünö{»¥™[ó/XW¹®”ÂÌje/9yû(ÿŸŞP­Üo‰ÊÕ)ıyNƒxšàÜ&Hşr	açdtL´1ZİM¿0¿#ÀgK¶5aİ•gcÏe1‰Áò¥±Úò]½®é³W§[ÃşJ¬Mf Á„gÇÚøGò›V,´~Ïè òĞ;Š%J‡Õ£Òp€á~ä:ªn³øÑš¤s¢lÒò.^d¾†ì4J¢g.DÑ¹iÀÕzœ7¯ZÂÜ$VqÒı€¡ÎÙ…BK²ë)ˆ&ÒğâQ¸Û`E¹BšÅ=;9ü"Õ˜ sn `öêzõ¹[}#<¡ÔyZqûÑ˜ƒ'^YZ§İˆ³É¢ôÑRğ ¼@9S¥¸<~c½Dí\TÓW½g‡~xóGÊÛš7RM·¤×r"Ö„*'¦f-ÍU'í.óË\H×µ#±şO:ç?ÎCµ\äò¿ÏÛËë¸UMËsD«hÌ®©ñQSWú˜]ÕêÆĞ©;?šWÁ«gÙiÅ~}İò¥Ó&ï^1nÆ\»)Ş˜1p6ÈŞË‘VR·}ebIÎÆ]g˜à*8!’a&V¢ÙgT»7±1©¦°öÙO~$¾oQià-
+¬˜§GxË©¹‘• $í«®Ã¦»h@ûëÃ™Ÿ^w%åN" $ÕÌ.å~ò¢yüNaå0T0æÊ‚–€>İHK=Gƒ“ŸK*kµB_Æ™m6¢yl¬’YÇÂíÙ¢Šî/‡ëÏ+³Ûs÷äT37ú5öŒW;(LÇ*ä(³¹ôìœ†ÏØ£·ŸÄ¶qo4¿ ­ün¬|Ò%f¿´Î×1aìhÍ&©A!Ã[èÆ]¶;/>Ü2É¥aˆtòÍä™¥ûƒ÷ş>lF»B½ƒ4ŸŒ\ljÛb¬	ÿlÕÌ­VLŸÏ«§»GñÜÕTDÎTå[ >Dv@ß¿–_A®,™šñM	k	}“KT!ø¯å,`ÒĞå*†£°z”„'1ÇÊÏà/œnØ7«ö5›_åî"·Œ3²Úû?³ş;àóêy(ZAe{£:UštàVş8ôV!^‡@”¯	–NjöwˆXÆ	 ùtLäRÑjò5zÊ
+_¹uP}ë9¢‡™'±Ä¥¶û½×tIñkÃPë>k~ 1AOlçÅioc ¯Ğµ¼ş{:õ¤9å0‘&^ÿ #çù è`~ÛcªÉC¸j Ò–æi`ÑU!!<¬ı’–#åĞêãb‰îc[>•ëHv+Í¡î–UØ­vJÕ%|†lÒ`ˆ32]/jî›ôL®~| :9ÿV)İ<?¡Üw{]Ğ9ŠC÷İäU´ØßøÇØu²à›?çêÓV¹‰³ğ`ë\¬”0ìë÷ÓüëA6½ ‰ò/°{™B€áº[¯@KÃïÕvi<’¢··m«†â°MT@Mñûôt÷Æw
+WD®EOPI{Ì´& ehº_q
+âÓX²Ä•”Wö?ËF.&£Qwgkğ^«}2ìP¸31 9õGs"ƒ«…£`n®œıŞ®Á|æ@„LYæAn8\™ñ„Èœ'À¥F¿¦›æIÇm/²e!ë«ò‘÷ëÁşJ?ÍG|’¤3…şYJ«Ù&ñ¥#gL˜[h§¯ºQÛ\•¶Ó½hJá˜<ÿÅÉ&Ğ"X-IS¦hÃ!¢?´|##k"§ø3h—Óq¹`á†„İ2+:F½Gl/†è‚¹Iƒ¾+$Q.»¶0_S9–UŒZzß¥9‡ÀØ{Şb)i9ÂRºz]+û“Ój%~¿÷f	.;0’,NŸ…kÂ\u‹çZE¿ƒÚz5ÈPÙR8mª¶4dsEbŸ¢læëç~ú¸YiM§´fâ+ˆß˜ ïé,|éT5Y•ò…8ûÒˆ¯oÒªWÜoùPÙMYÑN%¾ì¼Ç°G…e^‡dlÕÿÿ~öŞéø5åZÃ©WV3–ˆ²­¡¯¯Ší¹Ç½(ëÓ”]ÇißFrì5eMn6¢Nm&ÈÌŸuí wş)rÿ7®¿‰ÇÀ9¹,ıT¢DqS×ÑIS”&èßÁîè°°Wz®yÉ§&jUµ™„„=L©Ğæã@Ì<®¬ï²xLbÁÌşs8¤9Íî‰E…Ø@ÕJCç×·UfU”zê@\‘Ÿ1…×XÍi×¾.iíŒó¸2óöh;ˆô¢B@H—FÏøùü95®¼Ÿø`yZµ%ØB;Tèßä<¶yıİ£ÕÕ^b“4â°¾3 ÿ"¦/ŞÂíú€SÆ,#îºú@2ù á=%ƒg:÷wG-I<Ê \Û¶Ô‘ÔqŠê|µb2&;rÚöJç!¸½â‡"!1„#–Dç%P¨àIáôë%ƒ`ŒmíJ3ò-Œo6¹å"gL*Í´²GjÉ¦î…y+ŞîÙ‹æ@:næ&MÕ“éjÆhÓ •D³í(İ…`êMí=“s›¦á\ÃíPÍY[¨iÉ/âc²ä)b§Z~Øb-WjC¸O·ñµ– ?ãSƒYaö$`&¥KÎ…p®ŠXf›ÉÄl·a,¨u<‹Ò.]†¥CãØg¾çé7SÉ¯œÌã²Eàî¬wµıeîµkó‹
+JêkvòïŒç~Ã0ò‰Ñ©–+xEöƒkì9pò—^‹;T_ë=ïşêãøfà90?H›	—ƒÄ¥qñ‘ïjï5<ş{’Úì¼‘½J1õiLİ³.S—âÏ™6]@-‚wú¥ÃgŞãÅv=jª‡¤¼`_¢€Ï¦/_‡Şï+ní*ÀZıÿt
+™ÌŸÿ—ğó-¿Ó®Jú†m<D	¬Ë”‰ 	Ã¡·}@1œBMòø 1míë’šO¾Ñ§Ş°o÷2©ÖFQvWvØ- {Â9:à(öMóTLÜ(ıÒ%ÏÓÄÊÄp‹É¤º¿]íDş‘/û·ˆ*¤zz4«·¦{åß9^ePã~nà¡‹†s*1
+œ-rpeÖ»xÓMÈœü´i=¢ˆE=w¨´à&ES*Wã:å4ÿ[=¼&V°(7*a(Ù'‡&Xri?¥‚ë3ÕU}Ò/Èë“‹÷Hq™ÓÜaÍ„µÇõ¡Ğ£ö-U6”]I¹&ÍÈ`Å/
+µÇT£¾Ã„Yàâ <:¶kóZ.r¹w3¦d`7ôæœêøs ìao"~ª<*˜0Ş?ËÖk0½&¥-—ªÿëÍŸòw¹dí†§=„a&P†”Eè)g¶=AÑRv’òšíÙäSsb³)QäIºïë¿LV°“44¥šzœ§7îñõüJ%5•£
+åëø$î+IĞ0ºÍ¡Ò„êúzˆ* ¨öXtzCğ¤÷Çâÿƒ~Û­\6bln_—ÉõÛi¡PÔ÷ÜÆÂÆõÛQ¶ˆQŸˆÉ£­Tôë¿Mí]©Lqhü0|±îºğĞïXæs']X-¨˜1æH‚f/Â>'™8ùØV>Òt¯¿2ëÍ++\ÄÌ³cÌi0ÀHñ%V.ÿ²åùí§#’Y¨½y—ğö #>›¹'ë¸ìHj

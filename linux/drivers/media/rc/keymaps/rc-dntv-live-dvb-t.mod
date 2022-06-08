@@ -1,2 +1,2 @@
-drivers/media/rc/keymaps/rc-dntv-live-dvb-t.o
-
+// SPDX-License-Identifier: GPL-2.0-or-later
+/*

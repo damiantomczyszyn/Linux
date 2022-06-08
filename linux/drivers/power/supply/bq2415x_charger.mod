@@ -1,2 +1,2 @@
-fig/GENERIC_ATOMIC64) \
-  include/linux/
+00000036);
+		cx_write(MC417_OEN, 0x00001

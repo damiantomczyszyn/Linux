@@ -1,2 +1,1 @@
-de/linux/bits.h \
-  include/lin
+# SPDX-License-Identifier: GPL-

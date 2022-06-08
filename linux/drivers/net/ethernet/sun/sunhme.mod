@@ -1,1 +1,2 @@
-cmd_drivers/media/i2c/upd64083.o :=
+q;
+	dev->video_dev->device_caps = V

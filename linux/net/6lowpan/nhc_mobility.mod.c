@@ -1,28 +1,29 @@
-ip)
+if
+}
+
+DEFINE_STATIC_KEY_FALSE(sched_numa_balancing);
+
+#ifdef CONFIG_NUMA_BALANCING
+
+int sysctl_numa_balancing_mode;
+
+static void __set_numabalancing_state(bool enabled)
 {
-	if (unlikely(!debug_locks))
-		return;
+	if (enabled)
+		static_branch_enable(&sched_numa_balancing);
+	else
+		static_branch_disable(&sched_numa_balancing);
+}
 
-	/*
-	 * NMIs do not (and cannot) track lock dependencies, nothing to do.
-	 */
-	if (unlikely(in_nmi()))
-		return;
+void set_numabalancing_state(bool enabled)
+{
+	if (enabled)
+		sysctl_numa_balancing_mode = NUMA_BALANCING_NORMAL;
+	else
+		sysctl_numa_balancing_mode = NUMA_BALANCING_DISABLED;
+	__set_numabalancing_state(enabled);
+}
 
-	if (unlikely(this_cpu_read(lockdep_recursion)))
-		return;
-
-	if (unlikely(lockdep_hardirqs_enabled())) {
-		/*
-		 * Neither irq nor preemption are disabled here
-		 * so this is racy by nature but losing one hit
-		 * in a stat is not a big deal.
-		 */
-		__debug_atomic_inc(redundant_hardirqs_on);
-		return;
-	}
-
-	/*
-	 * We're enabling irqs and according to our state above irqs weren't
-	 * already enabled, yet we find the hardware thinks they are in fact
-	 
+#ifdef CONFIG_PROC_SYSCTL
+int sysctl_numa_balancing(struct ctl_table *table, int write,
+			  void *buffer, size

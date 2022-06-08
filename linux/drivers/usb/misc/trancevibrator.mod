@@ -1,2 +1,2 @@
-pes.h \
-  include/asm-generic/pgtab
+         = &mpeg_fops,
+	.ioctl_ops 

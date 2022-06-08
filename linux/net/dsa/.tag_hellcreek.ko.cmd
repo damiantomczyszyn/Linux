@@ -1,12 +1,5 @@
-m, char c, int offset, int length)
-{
-	int i;
-
-	for (i = 0; i < offset; i++)
-		seq_puts(m, " ");
-	for (i = 0; i < length; i++)
-		seq_printf(m, "%c", c);
-	seq_puts(m, "\n");
-}
-
-s
+dcard include/config/RCU_FANOUT_LEAF) \
+  include/linux/page-flags-layout.h \
+    $(wildcard include/config/KASAN_HW_TAGS) \
+  include/linux/numa.h \
+    $(wildcard include/con

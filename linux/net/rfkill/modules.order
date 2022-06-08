@@ -1,2 +1,1 @@
-ude/asm-generic/ioctl.h \
-  include/uapi/asm-ge
+cmd_kernel/kheaders.ko := ld -r -m elf_i386 --b

@@ -1,7 +1,1 @@
-\
-  include/linux/rwlock.h \
-    $(wildcard include/config/PREEMPT) \
-  include/linux/spinlock_api_smp.h \
-    $(wildcard include/config/INLINE_SPIN_LOCK) \
-    $(wildcard include/config/INLINE_SPIN_LOCK_BH) \
-    $(wildcard include/config/INLINE_SPIN_LOCK
+cmd_drivers/net/can/usb/etas_es58x/etas_es58x.ko := ld -r -m elf_i386 --build-id=sha1  -T scripts/module.lds -o drivers/net/can/usb/etas_es58x/etas_es58x.ko drivers/net/can/usb/etas_es58x/etas_es58x.o drivers/net/can/usb/etas_es58x/etas_es58x.mod.o;  true

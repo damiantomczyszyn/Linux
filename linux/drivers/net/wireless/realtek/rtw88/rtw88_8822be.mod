@@ -1,1 +1,3 @@
-    $(wildcard include/config/HIGH_RES_TIMERS) \
+IO moving on encoder ports\n",
+				dev->name);
+	

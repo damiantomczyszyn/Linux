@@ -1,68 +1,90 @@
-ldcard include/config/X86_INTERNODE_CACHE_SHIFT) \
-    $(wildcard include/config/X86_VSMP) \
-  include/linux/ratelimit_types.h \
-  include/uapi/linux/param.h \
-  arch/x86/include/generated/uapi/asm/param.h \
-  include/asm-generic/param.h \
-    $(wildcard include/config/HZ) \
-  include/uapi/asm-generic/param.h \
-  include/linux/spinlock_types_raw.h \
-    $(wildcard include/config/DEBUG_SPINLOCK) \
-  arch/x86/include/asm/spinlock_types.h \
-  include/asm-generic/qspinlock_types.h \
-    $(wildcard include/config/NR_CPUS) \
-  include/asm-generic/qrwlock_types.h \
-  include/linux/lockdep_types.h \
-    $(wildcard include/config/PROVE_RAW_LOCK_NESTING) \
-    $(wildcard include/config/LOCKDEP) \
-    $(wildcard include/config/LOCK_STAT) \
-  include/linux/once_lite.h \
-  include/linux/static_call_types.h \
-    $(wildcard include/config/HAVE_STATIC_CALL) \
-    $(wildcard include/config/HAVE_STATIC_CALL_INLINE) \
-  include/linux/instruction_pointer.h \
-  include/asm-generic/percpu.h \
-    $(wildcard include/config/DEBUG_PREEMPT) \
-    $(wildcard include/config/HAVE_SETUP_PER_CPU_AREA) \
-  include/linux/threads.h \
-    $(wildcard include/config/BASE_SMALL) \
-  include/linux/percpu-defs.h \
-    $(wildcard include/config/DEBUG_FORCE_WEAK_PER_CPU) \
-    $(wildcard include/config/AMD_MEM_ENCRYPT) \
-  include/linux/spinlock_types.h \
-  include/linux/rwlock_types.h \
-  include/linux/lockdep.h \
-    $(wildcard include/config/DEBUG_LOCKING_API_SELFTESTS) \
-    $(wildcard include/config/PREEMPT_COUNT) \
-  include/linux/smp.h \
-    $(wildcard include/config/UP_LATE_INIT) \
-  include/linux/cpumask.h \
-    $(wildcard include/config/CPUMASK_OFFSTACK) \
-    $(wildcard include/config/HOTPLUG_CPU) \
-    $(wildcard include/config/DEBUG_PER_CPU_MAPS) \
-  include/linux/bitmap.h \
-  include/linux/find.h \
-  include/linux/string.h \
-    $(wildcard include/config/BINARY_PRINTF) \
-    $(wildcard include/config/FORTIFY_SOURCE) \
-  include/uapi/linux/string.h \
-  arch/x86/include/asm/string.h \
-  arch/x86/include/asm/string_32.h \
-  include/linux/fortify-string.h \
-  include/linux/atomic.h \
-  arch/x86/include/asm/atomic.h \
-  arch/x86/include/asm/cmpxchg.h \
-  arch/x86/include/asm/cmpxchg_32.h \
-  arch/x86/include/asm/atomic64_32.h \
-  include/linux/atomic/atomic-arch-fallback.h \
-    $(wildcard include/config/GENERIC_ATOMIC64) \
-  include/linux/atomic/atomic-long.h \
-  include/linux/atomic/atomic-instrumented.h \
-  include/linux/bug.h \
-    $(wildcard include/config/GENERIC_BUG) \
-    $(wildcard include/config/BUG_ON_DATA_CORRUPTION) \
-  arch/x86/include/asm/bug.h \
-    $(wildcard include/config/DEBUG_BUGVERBOSE) \
-  include/linux/instrumentation.h \
-    $(wildcard include/config/DEBUG_ENTRY) \
-  include/
+s);
+
+/**
+ * struct pending_free - information about data structures about to be freed
+ * @zapped: Head of a list with struct lock_class elements.
+ * @lock_chains_being_freed: Bitmap that indicates which lock_chains[] elements
+ *	are about to be freed.
+ */
+struct pending_free {
+	struct list_head zapped;
+	DECLARE_BITMAP(lock_chains_being_freed, MAX_LOCKDEP_CHAINS);
+};
+
+/**
+ * struct delayed_free - data structures used for delayed freeing
+ *
+ * A data structure for delayed freeing of data structures that may be
+ * accessed by RCU readers at the time these were freed.
+ *
+ * @rcu_head:  Used to schedule an RCU callback for freeing data structures.
+ * @index:     Index of @pf to which freed data structures are added.
+ * @scheduled: Whether or not an RCU callback has been scheduled.
+ * @pf:        Array with information about data structures about to be freed.
+ */
+static struct delayed_free {
+	struct rcu_head		rcu_head;
+	int			index;
+	int			scheduled;
+	struct pending_free	pf[2];
+} delayed_free;
+
+/*
+ * The lockdep classes are in a hash-table as well, for fast lookup:
+ */
+#define CLASSHASH_BITS		(MAX_LOCKDEP_KEYS_BITS - 1)
+#define CLASSHASH_SIZE		(1UL << CLASSHASH_BITS)
+#define __classhashfn(key)	hash_long((unsigned long)key, CLASSHASH_BITS)
+#define classhashentry(key)	(classhash_table + __classhashfn((key)))
+
+static struct hlist_head classhash_table[CLASSHASH_SIZE];
+
+/*
+ * We put the lock dependency chains into a hash-table as well, to cache
+ * their existence:
+ */
+#define CHAINHASH_BITS		(MAX_LOCKDEP_CHAINS_BITS-1)
+#define CHAINHASH_SIZE		(1UL << CHAINHASH_BITS)
+#define __chainhashfn(chain)	hash_long(chain, CHAINHASH_BITS)
+#define chainhashentry(chain)	(chainhash_table + __chainhashfn((chain)))
+
+static struct hlist_head chainhash_table[CHAINHASH_SIZE];
+
+/*
+ * the id of held_lock
+ */
+static inline u16 hlock_id(struct held_lock *hlock)
+{
+	BUILD_BUG_ON(MAX_LOCKDEP_KEYS_BITS + 2 > 16);
+
+	return (hlock->class_idx | (hlock->read << MAX_LOCKDEP_KEYS_BITS));
+}
+
+static inline unsigned int chain_hlock_class_idx(u16 hlock_id)
+{
+	return hlock_id & (MAX_LOCKDEP_KEYS - 1);
+}
+
+/*
+ * The hash key of the lock dependency chains is a hash itself too:
+ * it's a hash of all locks taken up to that lock, including that lock.
+ * It's a 64-bit hash, because it's important for the keys to be
+ * unique.
+ */
+static inline u64 iterate_chain_key(u64 key, u32 idx)
+{
+	u32 k0 = key, k1 = key >> 32;
+
+	__jhash_mix(idx, k0, k1); /* Macro that modifies arguments! */
+
+	return k0 | (u64)k1 << 32;
+}
+
+void lockdep_init_task(struct task_struct *task)
+{
+	task->lockdep_depth = 0; /* no locks held yet */
+	task->curr_chain_key = INITIAL_CHAIN_KEY;
+	task->lockdep_recursion = 0;
+}
+
+static __always_inline void lockdep_recur

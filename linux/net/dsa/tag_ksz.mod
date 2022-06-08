@@ -1,1 +1,2 @@
-tic void zap_class(
+C:
+	case CX23885_BO

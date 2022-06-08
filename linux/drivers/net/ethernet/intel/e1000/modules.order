@@ -1,2 +1,1 @@
-86/include/asm/qrwlock.h \
-  include/asm-g
+/* SPDX-License-Identifier: GPL-2.0-or-lat

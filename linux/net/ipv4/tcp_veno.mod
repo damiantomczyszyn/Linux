@@ -1,1 +1,2 @@
-card include/config/B
+"Television",
+		[CX23

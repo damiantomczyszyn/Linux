@@ -1,2 +1,2 @@
-ACPI_DOCK) \
-  include/acpi/acpi_numa.h
+drivers/net/can/sja1000/sja1000_isa.o
+

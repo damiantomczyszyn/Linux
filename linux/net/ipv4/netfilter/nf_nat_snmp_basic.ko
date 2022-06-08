@@ -1,207 +1,174 @@
-/* SPDX-License-Identifier: GPL-2.0 */
-/*
- * kernel/lockdep_internals.h
- *
- * Runtime locking correctness validator
- *
- * lockdep subsystem internal functions and variables.
+ue of having been offline.
  */
-
-/*
- * Lock-class usage-state bits:
- */
-enum lock_usage_bit {
-#define LOCKDEP_STATE(__STATE)		\
-	LOCK_USED_IN_##__STATE,		\
-	LOCK_USED_IN_##__STATE##_READ,	\
-	LOCK_ENABLED_##__STATE,		\
-	LOCK_ENABLED_##__STATE##_READ,
-#include "lockdep_states.h"
-#undef LOCKDEP_STATE
-	LOCK_USED,
-	LOCK_USED_READ,
-	LOCK_USAGE_STATES,
-};
-
-/* states after LOCK_USED_READ are not traced and printed */
-static_assert(LOCK_TRACE_STATES == LOCK_USAGE_STATES);
-
-#define LOCK_USAGE_READ_MASK 1
-#define LOCK_USAGE_DIR_MASK  2
-#define LOCK_USAGE_STATE_MASK (~(LOCK_USAGE_READ_MASK | LOCK_USAGE_DIR_MASK))
-
-/*
- * Usage-state bitmasks:
- */
-#define __LOCKF(__STATE)	LOCKF_##__STATE = (1 << LOCK_##__STATE),
-
-enum {
-#define LOCKDEP_STATE(__STATE)						\
-	__LOCKF(USED_IN_##__STATE)					\
-	__LOCKF(USED_IN_##__STATE##_READ)				\
-	__LOCKF(ENABLED_##__STATE)					\
-	__LOCKF(ENABLED_##__STATE##_READ)
-#include "lockdep_states.h"
-#undef LOCKDEP_STATE
-	__LOCKF(USED)
-	__LOCKF(USED_READ)
-};
-
-#define LOCKDEP_STATE(__STATE)	LOCKF_ENABLED_##__STATE |
-static const unsigned long LOCKF_ENABLED_IRQ =
-#include "lockdep_states.h"
-	0;
-#undef LOCKDEP_STATE
-
-#define LOCKDEP_STATE(__STATE)	LOCKF_USED_IN_##__STATE |
-static const unsigned long LOCKF_USED_IN_IRQ =
-#include "lockdep_states.h"
-	0;
-#undef LOCKDEP_STATE
-
-#define LOCKDEP_STATE(__STATE)	LOCKF_ENABLED_##__STATE##_READ |
-static const unsigned long LOCKF_ENABLED_IRQ_READ =
-#include "lockdep_states.h"
-	0;
-#undef LOCKDEP_STATE
-
-#define LOCKDEP_STATE(__STATE)	LOCKF_USED_IN_##__STATE##_READ |
-static const unsigned long LOCKF_USED_IN_IRQ_READ =
-#include "lockdep_states.h"
-	0;
-#undef LOCKDEP_STATE
-
-#define LOCKF_ENABLED_IRQ_ALL (LOCKF_ENABLED_IRQ | LOCKF_ENABLED_IRQ_READ)
-#define LOCKF_USED_IN_IRQ_ALL (LOCKF_USED_IN_IRQ | LOCKF_USED_IN_IRQ_READ)
-
-#define LOCKF_IRQ (LOCKF_ENABLED_IRQ | LOCKF_USED_IN_IRQ)
-#define LOCKF_IRQ_READ (LOCKF_ENABLED_IRQ_READ | LOCKF_USED_IN_IRQ_READ)
-
-/*
- * CONFIG_LOCKDEP_SMALL is defined for sparc. Sparc requires .text,
- * .data and .bss to fit in required 32MB limit for the kernel. With
- * CONFIG_LOCKDEP we could go over this limit and cause system boot-up problems.
- * So, reduce the static allocations for lockdeps related structures so that
- * everything fits in current required size limit.
- */
-#ifdef CONFIG_LOCKDEP_SMALL
-/*
- * MAX_LOCKDEP_ENTRIES is the maximum number of lock dependencies
- * we track.
- *
- * We use the per-lock dependency maps in two ways: we grow it by adding
- * every to-be-taken lock to all currently held lock's own dependency
- * table (if it's not there yet), and we check it for lock order
- * conflicts and deadlocks.
- */
-#define MAX_LOCKDEP_ENTRIES	16384UL
-#define MAX_LOCKDEP_CHAINS_BITS	15
-#define MAX_STACK_TRACE_ENTRIES	262144UL
-#define STACK_TRACE_HASH_SIZE	8192
-#else
-#define MAX_LOCKDEP_ENTRIES	(1UL << CONFIG_LOCKDEP_BITS)
-
-#define MAX_LOCKDEP_CHAINS_BITS	CONFIG_LOCKDEP_CHAINS_BITS
-
-/*
- * Stack-trace: tightly packed array of stack backtrace
- * addresses. Protected by the hash_lock.
- */
-#define MAX_STACK_TRACE_ENTRIES	(1UL << CONFIG_LOCKDEP_STACK_TRACE_BITS)
-#define STACK_TRACE_HASH_SIZE	(1 << CONFIG_LOCKDEP_STACK_TRACE_HASH_BITS)
-#endif
-
-/*
- * Bit definitions for lock_chain.irq_context
- */
-#define LOCK_CHAIN_SOFTIRQ_CONTEXT	(1 << 0)
-#define LOCK_CHAIN_HARDIRQ_CONTEXT	(1 << 1)
-
-#define MAX_LOCKDEP_CHAINS	(1UL << MAX_LOCKDEP_CHAINS_BITS)
-
-#define MAX_LOCKDEP_CHAIN_HLOCKS (MAX_LOCKDEP_CHAINS*5)
-
-extern struct lock_chain lock_chains[];
-
-#define LOCK_USAGE_CHARS (2*XXX_LOCK_USAGE_STATES + 1)
-
-extern void get_usage_chars(struct lock_class *class,
-			    char usage[LOCK_USAGE_CHARS]);
-
-extern const char *__get_key_name(const struct lockdep_subclass_key *key,
-				  char *str);
-
-struct lock_class *lock_chain_get_class(struct lock_chain *chain, int i);
-
-extern unsigned long nr_lock_classes;
-extern unsigned long nr_zapped_classes;
-extern unsigned long nr_zapped_lock_chains;
-extern unsigned long nr_list_entries;
-long lockdep_next_lockchain(long i);
-unsigned long lock_chain_count(void);
-extern unsigned long nr_stack_trace_entries;
-
-extern unsigned int nr_hardirq_chains;
-extern unsigned int nr_softirq_chains;
-extern unsigned int nr_process_chains;
-extern unsigned int nr_free_chain_hlocks;
-extern unsigned int nr_lost_chain_hlocks;
-extern unsigned int nr_large_chain_blocks;
-
-extern unsigned int max_lockdep_depth;
-extern unsigned int max_bfs_queue_depth;
-extern unsigned long max_lock_class_idx;
-
-extern struct lock_class lock_classes[MAX_LOCKDEP_KEYS];
-extern unsigned long lock_classes_in_use[];
-
-#ifdef CONFIG_PROVE_LOCKING
-extern unsigned long lockdep_count_forward_deps(struct lock_class *);
-extern unsigned long lockdep_count_backward_deps(struct lock_class *);
-#ifdef CONFIG_TRACE_IRQFLAGS
-u64 lockdep_stack_trace_count(void);
-u64 lockdep_stack_hash_count(void);
-#endif
-#else
-static inline unsigned long
-lockdep_count_forward_deps(struct lock_class *class)
+static int rcu_implicit_dynticks_qs(struct rcu_data *rdp)
 {
-	return 0;
-}
-static inline unsigned long
-lockdep_count_backward_deps(struct lock_class *class)
-{
-	return 0;
-}
-#endif
-
-#ifdef CONFIG_DEBUG_LOCKDEP
-
-#include <asm/local.h>
-/*
- * Various lockdep statistics.
- * We want them per cpu as they are often accessed in fast path
- * and we want to avoid too much cache bouncing.
- */
-struct lockdep_stats {
-	unsigned long  chain_lookup_hits;
-	unsigned int   chain_lookup_misses;
-	unsigned long  hardirqs_on_events;
-	unsigned long  hardirqs_off_events;
-	unsigned long  redundant_hardirqs_on;
-	unsigned long  redundant_hardirqs_off;
-	unsigned long  softirqs_on_events;
-	unsigned long  softirqs_off_events;
-	unsigned long  redundant_softirqs_on;
-	unsigned long  redundant_softirqs_off;
-	int            nr_unused_locks;
-	unsigned int   nr_redundant_checks;
-	unsigned int   nr_redundant;
-	unsigned int   nr_cyclic_checks;
-	unsigned int   nr_find_usage_forwards_checks;
-	unsigned int   nr_find_usage_backwards_checks;
+	unsigned long jtsq;
+	struct rcu_node *rnp = rdp->mynode;
 
 	/*
-	 * Per lock class locking operation stat counts
+	 * If the CPU passed through or entered a dynticks idle phase with
+	 * no active irq/NMI handlers, then we can safely pretend that the CPU
+	 * already acknowledged the request to pass through a quiescent
+	 * state.  Either way, that CPU cannot possibly be in an RCU
+	 * read-side critical section that started before the beginning
+	 * of the current RCU grace period.
 	 */
-	unsigned long lock_class_
+	if (rcu_dynticks_in_eqs_since(rdp, rdp->dynticks_snap)) {
+		trace_rcu_fqs(rcu_state.name, rdp->gp_seq, rdp->cpu, TPS("dti"));
+		rcu_gpnum_ovf(rnp, rdp);
+		return 1;
+	}
+
+	/*
+	 * Complain if a CPU that is considered to be offline from RCU's
+	 * perspective has not yet reported a quiescent state.  After all,
+	 * the offline CPU should have reported a quiescent state during
+	 * the CPU-offline process, or, failing that, by rcu_gp_init()
+	 * if it ran concurrently with either the CPU going offline or the
+	 * last task on a leaf rcu_node structure exiting its RCU read-side
+	 * critical section while all CPUs corresponding to that structure
+	 * are offline.  This added warning detects bugs in any of these
+	 * code paths.
+	 *
+	 * The rcu_node structure's ->lock is held here, which excludes
+	 * the relevant portions the CPU-hotplug code, the grace-period
+	 * initialization code, and the rcu_read_unlock() code paths.
+	 *
+	 * For more detail, please refer to the "Hotplug CPU" section
+	 * of RCU's Requirements documentation.
+	 */
+	if (WARN_ON_ONCE(!rcu_rdp_cpu_online(rdp))) {
+		struct rcu_node *rnp1;
+
+		pr_info("%s: grp: %d-%d level: %d ->gp_seq %ld ->completedqs %ld\n",
+			__func__, rnp->grplo, rnp->grphi, rnp->level,
+			(long)rnp->gp_seq, (long)rnp->completedqs);
+		for (rnp1 = rnp; rnp1; rnp1 = rnp1->parent)
+			pr_info("%s: %d:%d ->qsmask %#lx ->qsmaskinit %#lx ->qsmaskinitnext %#lx ->rcu_gp_init_mask %#lx\n",
+				__func__, rnp1->grplo, rnp1->grphi, rnp1->qsmask, rnp1->qsmaskinit, rnp1->qsmaskinitnext, rnp1->rcu_gp_init_mask);
+		pr_info("%s %d: %c online: %ld(%d) offline: %ld(%d)\n",
+			__func__, rdp->cpu, ".o"[rcu_rdp_cpu_online(rdp)],
+			(long)rdp->rcu_onl_gp_seq, rdp->rcu_onl_gp_flags,
+			(long)rdp->rcu_ofl_gp_seq, rdp->rcu_ofl_gp_flags);
+		return 1; /* Break things loose after complaining. */
+	}
+
+	/*
+	 * A CPU running for an extended time within the kernel can
+	 * delay RCU grace periods: (1) At age jiffies_to_sched_qs,
+	 * set .rcu_urgent_qs, (2) At age 2*jiffies_to_sched_qs, set
+	 * both .rcu_need_heavy_qs and .rcu_urgent_qs.  Note that the
+	 * unsynchronized assignments to the per-CPU rcu_need_heavy_qs
+	 * variable are safe because the assignments are repeated if this
+	 * CPU failed to pass through a quiescent state.  This code
+	 * also checks .jiffies_resched in case jiffies_to_sched_qs
+	 * is set way high.
+	 */
+	jtsq = READ_ONCE(jiffies_to_sched_qs);
+	if (!READ_ONCE(rdp->rcu_need_heavy_qs) &&
+	    (time_after(jiffies, rcu_state.gp_start + jtsq * 2) ||
+	     time_after(jiffies, rcu_state.jiffies_resched) ||
+	     rcu_state.cbovld)) {
+		WRITE_ONCE(rdp->rcu_need_heavy_qs, true);
+		/* Store rcu_need_heavy_qs before rcu_urgent_qs. */
+		smp_store_release(&rdp->rcu_urgent_qs, true);
+	} else if (time_after(jiffies, rcu_state.gp_start + jtsq)) {
+		WRITE_ONCE(rdp->rcu_urgent_qs, true);
+	}
+
+	/*
+	 * NO_HZ_FULL CPUs can run in-kernel without rcu_sched_clock_irq!
+	 * The above code handles this, but only for straight cond_resched().
+	 * And some in-kernel loops check need_resched() before calling
+	 * cond_resched(), which defeats the above code for CPUs that are
+	 * running in-kernel with scheduling-clock interrupts disabled.
+	 * So hit them over the head with the resched_cpu() hammer!
+	 */
+	if (tick_nohz_full_cpu(rdp->cpu) &&
+	    (time_after(jiffies, READ_ONCE(rdp->last_fqs_resched) + jtsq * 3) ||
+	     rcu_state.cbovld)) {
+		WRITE_ONCE(rdp->rcu_urgent_qs, true);
+		resched_cpu(rdp->cpu);
+		WRITE_ONCE(rdp->last_fqs_resched, jiffies);
+	}
+
+	/*
+	 * If more than halfway to RCU CPU stall-warning time, invoke
+	 * resched_e = "stat",
+		.seq_show = cpu_cfs_stat_show,
+	},
+#endif
+#ifdef CONFIG_RT_GROUP_SCHED
+	{
+		.name = "rt_runtime_us",
+		.read_s64 = cpu_rt_runtime_read,
+		.write_s64 = cpu_rt_runtime_write,
+	},
+	{
+		.name = "rt_period_us",
+		.read_u64 = cpu_rt_period_read_uint,
+		.write_u64 = cpu_rt_period_write_uint,
+	},
+#endif
+#ifdef CONFIG_UCLAMP_TASK_GROUP
+	{
+		.name = "uclamp.min",
+		.flags = CFTYPE_NOT_ON_ROOT,
+		.seq_show = cpu_uclamp_min_show,
+		.write = cpu_uclamp_min_write,
+	},
+	{
+		.name = "uclamp.max",
+		.flags = CFTYPE_NOT_ON_ROOT,
+		.seq_show = cpu_uclamp_max_show,
+		.write = cpu_uclamp_max_write,
+	},
+#endif
+	{ }	/* Terminate */
+};
+
+static int cpu_extra_stat_show(struct seq_file *sf,
+			       struct cgroup_subsys_state *css)
+{
+#ifdef CONFIG_CFS_BANDWIDTH
+	{
+		struct task_group *tg = css_tg(css);
+		struct cfs_bandwidth *cfs_b = &tg->cfs_bandwidth;
+		u64 throttled_usec, burst_usec;
+
+		throttled_usec = cfs_b->throttled_time;
+		do_div(throttled_usec, NSEC_PER_USEC);
+		burst_usec = cfs_b->burst_time;
+		do_div(burst_usec, NSEC_PER_USEC);
+
+		seq_printf(sf, "nr_periods %d\n"
+			   "nr_throttled %d\n"
+			   "throttled_usec %llu\n"
+			   "nr_bursts %d\n"
+			   "burst_usec %llu\n",
+			   cfs_b->nr_periods, cfs_b->nr_throttled,
+			   throttled_usec, cfs_b->nr_burst, burst_usec);
+	}
+#endif
+	return 0;
+}
+
+#ifdef CONFIG_FAIR_GROUP_SCHED
+static u64 cpu_weight_read_u64(struct cgroup_subsys_state *css,
+			       struct cftype *cft)
+{
+	struct task_group *tg = css_tg(css);
+	u64 weight = scale_load_down(tg->shares);
+
+	return DIV_ROUND_CLOSEST_ULL(weight * CGROUP_WEIGHT_DFL, 1024);
+}
+
+static int cpu_weight_write_u64(struct cgroup_subsys_state *css,
+				struct cftype *cft, u64 weight)
+{
+	/*
+	 * cgroup weight knobs should use the common MIN, DFL and MAX
+	 * values which are 1, 100 and 10000 respectively.  While it loses
+	 * a bit of range on both ends, it maps pretty well onto the shares
+	 * value used by scheduler and the round-trip conversions preserve
+	 * the original valu

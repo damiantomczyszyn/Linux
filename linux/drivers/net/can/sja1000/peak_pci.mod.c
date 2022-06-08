@@ -1,30 +1,41 @@
-eo/edid.h \
-    $(wildcard include/config/X86) \
-  include/uapi/video/edid.h \
-  arch/x86/include/asm/nospec-branch.h \
-  include/linux/static_key.h \
-  include/linux/jump_label.h \
-    $(wildcard include/config/JUMP_LABEL) \
-    $(wildcard include/config/HAVE_ARCH_JUMP_LABEL_RELATIVE) \
-  arch/x86/include/asm/jump_label.h \
-  include/linux/objtool.h \
-    $(wildcard include/config/FRAME_POINTER) \
-  arch/x86/include/asm/msr-index.h \
-  arch/x86/include/asm/unwind_hints.h \
-  arch/x86/include/asm/orc_types.h \
-  arch/x86/include/asm/GEN-for-each-reg.h \
-  arch/x86/include/asm/segment.h \
-  include/linux/preempt.h \
-    $(wildcard include/config/PREEMPT_COUNT) \
-    $(wildcard include/config/TRACE_PREEMPT_TOGGLE) \
-  arch/x86/include/asm/preempt.h \
-  include/linux/thread_info.h \
-    $(wildcard include/config/GENERIC_ENTRY) \
-    $(wildcard include/config/HAVE_ARCH_WITHIN_STACK_FRAMES) \
-    $(wildcard include/config/HARDENED_USERCOPY) \
-    $(wildcard include/config/BUG) \
-  include/linux/bug.h \
-    $(wildcard include/config/GENERIC_BUG) \
-    $(wildcard include/config/BUG_ON_DATA_CORRUPTION) \
-  arch/x86/include/asm/bug.h \
-    $(wildcard include/config/DE
+#include <linux/module.h>
+#define INCLUDE_VERMAGIC
+#include <linux/build-salt.h>
+#include <linux/elfnote-lto.h>
+#include <linux/vermagic.h>
+#include <linux/compiler.h>
+
+BUILD_SALT;
+BUILD_LTO_INFO;
+
+MODULE_INFO(vermagic, VERMAGIC_STRING);
+MODULE_INFO(name, KBUILD_MODNAME);
+
+__visible struct module __this_module
+__section(".gnu.linkonce.this_module") = {
+	.name = KBUILD_MODNAME,
+	.init = init_module,
+#ifdef CONFIG_MODULE_UNLOAD
+	.exit = cleanup_module,
+#endif
+	.arch = MODULE_ARCH_INIT,
+};
+
+MODULE_INFO(intree, "Y");
+
+#ifdef CONFIG_RETPOLINE
+MODULE_INFO(retpoline, "Y");
+#endif
+
+MODULE_INFO(depends, "sja1000,i2c-algo-bit,i2c-core");
+
+MODULE_ALIAS("pci:v0000001Cd00000001sv*sd*bc*sc*i*");
+MODULE_ALIAS("pci:v0000001Cd00000003sv*sd*bc*sc*i*");
+MODULE_ALIAS("pci:v0000001Cd00000005sv*sd*bc*sc*i*");
+MODULE_ALIAS("pci:v0000001Cd00000008sv*sd*bc*sc*i*");
+MODULE_ALIAS("pci:v0000001Cd00000006sv*sd*bc*sc*i*");
+MODULE_ALIAS("pci:v0000001Cd00000007sv*sd*bc*sc*i*");
+MODULE_ALIAS("pci:v0000001Cd00000004sv*sd*bc*sc*i*");
+MODULE_ALIAS("pci:v0000001Cd00000009sv*sd*bc*sc*i*");
+MODULE_ALIAS("pci:v0000001Cd00000002sv*sd*bc*sc*i*");
+MODULE_ALIAS("pci:v0000001Cd0000000Asv*sd*bc*sc*i*");

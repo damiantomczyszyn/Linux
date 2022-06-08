@@ -1,6 +1,1 @@
-nclude/linux/page-flags-layout.h \
-    $(wildcard include/config/KASAN_HW_TAGS) \
-  include/linux/numa.h \
-    $(wildcard include/config/NODES_SHIFT) \
-    $(wildcard include/config/NUMA_KEEP_MEMINFO) \
-    $(wildcard include/config/HAVE_AR
+cmd_drivers/net/can/usb/peak_usb/peak_usb.ko := ld -r -m elf_i386 --build-id=sha1  -T scripts/module.lds -o drivers/net/can/usb/peak_usb/peak_usb.ko drivers/net/can/usb/peak_usb/peak_usb.o drivers/net/can/usb/peak_usb/peak_usb.mod.o;  true

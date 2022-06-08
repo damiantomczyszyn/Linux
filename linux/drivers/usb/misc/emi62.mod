@@ -1,2 +1,1 @@
-h \
-    $(wildcard include
+/* SPDX-License-Identifier

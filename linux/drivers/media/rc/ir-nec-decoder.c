@@ -1,278 +1,238 @@
-// SPDX-License-Identifier: GPL-2.0
-// ir-nec-decoder.c - handle NEC IR Pulse/Space protocol
-//
-// Copyright (C) 2010 by Mauro Carvalho Chehab
-
-#include <linux/bitrev.h>
-#include <linux/module.h>
-#include "rc-core-priv.h"
-
-#define NEC_NBITS		32
-#define NEC_UNIT		563  /* us */
-#define NEC_HEADER_PULSE	(16 * NEC_UNIT)
-#define NECX_HEADER_PULSE	(8  * NEC_UNIT) /* Less common NEC variant */
-#define NEC_HEADER_SPACE	(8  * NEC_UNIT)
-#define NEC_REPEAT_SPACE	(4  * NEC_UNIT)
-#define NEC_BIT_PULSE		(1  * NEC_UNIT)
-#define NEC_BIT_0_SPACE		(1  * NEC_UNIT)
-#define NEC_BIT_1_SPACE		(3  * NEC_UNIT)
-#define	NEC_TRAILER_PULSE	(1  * NEC_UNIT)
-#define	NEC_TRAILER_SPACE	(10 * NEC_UNIT) /* even longer in reality */
-#define NECX_REPEAT_BITS	1
-
-enum nec_state {
-	STATE_INACTIVE,
-	STATE_HEADER_SPACE,
-	STATE_BIT_PULSE,
-	STATE_BIT_SPACE,
-	STATE_TRAILER_PULSE,
-	STATE_TRAILER_SPACE,
-};
-
-/**
- * ir_nec_decode() - Decode one NEC pulse or space
- * @dev:	the struct rc_dev descriptor of the device
- * @ev:		the struct ir_raw_event descriptor of the pulse/space
- *
- * This function returns -EINVAL if the pulse violates the state machine
- */
-static int ir_nec_decode(struct rc_dev *dev, struct ir_raw_event ev)
-{
-	struct nec_dec *data = &dev->raw->nec;
-	u32 scancode;
-	enum rc_proto rc_proto;
-	u8 address, not_address, command, not_command;
-
-	if (!is_timing_event(ev)) {
-		if (ev.overflow)
-			data->state = STATE_INACTIVE;
-		return 0;
+nput)->amux == CX25840_AUDIO6)
+		cx23885_flatiron_mux(dev, 2);
+	else {
+		/* Not specifically defined, assume the default. */
+		cx23885_flatiron_mux(dev, 1);
 	}
 
-	dev_dbg(&dev->dev, "NEC decode started at state %d (%uus %s)\n",
-		data->state, ev.duration, TO_STR(ev.pulse));
-
-	switch (data->state) {
-
-	case STATE_INACTIVE:
-		if (!ev.pulse)
-			break;
-
-		if (eq_margin(ev.duration, NEC_HEADER_PULSE, NEC_UNIT * 2)) {
-			data->is_nec_x = false;
-			data->necx_repeat = false;
-		} else if (eq_margin(ev.duration, NECX_HEADER_PULSE, NEC_UNIT / 2))
-			data->is_nec_x = true;
-		else
-			break;
-
-		data->count = 0;
-		data->state = STATE_HEADER_SPACE;
-		return 0;
-
-	case STATE_HEADER_SPACE:
-		if (ev.pulse)
-			break;
-
-		if (eq_margin(ev.duration, NEC_HEADER_SPACE, NEC_UNIT)) {
-			data->state = STATE_BIT_PULSE;
-			return 0;
-		} else if (eq_margin(ev.duration, NEC_REPEAT_SPACE, NEC_UNIT / 2)) {
-			data->state = STATE_TRAILER_PULSE;
-			return 0;
-		}
-
-		break;
-
-	case STATE_BIT_PULSE:
-		if (!ev.pulse)
-			break;
-
-		if (!eq_margin(ev.duration, NEC_BIT_PULSE, NEC_UNIT / 2))
-			break;
-
-		data->state = STATE_BIT_SPACE;
-		return 0;
-
-	case STATE_BIT_SPACE:
-		if (ev.pulse)
-			break;
-
-		if (data->necx_repeat && data->count == NECX_REPEAT_BITS &&
-		    geq_margin(ev.duration, NEC_TRAILER_SPACE, NEC_UNIT / 2)) {
-			dev_dbg(&dev->dev, "Repeat last key\n");
-			rc_repeat(dev);
-			data->state = STATE_INACTIVE;
-			return 0;
-		} else if (data->count > NECX_REPEAT_BITS)
-			data->necx_repeat = false;
-
-		data->bits <<= 1;
-		if (eq_margin(ev.duration, NEC_BIT_1_SPACE, NEC_UNIT / 2))
-			data->bits |= 1;
-		else if (!eq_margin(ev.duration, NEC_BIT_0_SPACE, NEC_UNIT / 2))
-			break;
-		data->count++;
-
-		if (data->count == NEC_NBITS)
-			data->state = STATE_TRAILER_PULSE;
-		else
-			data->state = STATE_BIT_PULSE;
-
-		return 0;
-
-	case STATE_TRAILER_PULSE:
-		if (!ev.pulse)
-			break;
-
-		if (!eq_margin(ev.duration, NEC_TRAILER_PULSE, NEC_UNIT / 2))
-			break;
-
-		data->state = STATE_TRAILER_SPACE;
-		return 0;
-
-	case STATE_TRAILER_SPACE:
-		if (ev.pulse)
-			break;
-
-		if (!geq_margin(ev.duration, NEC_TRAILER_SPACE, NEC_UNIT / 2))
-			break;
-
-		if (data->count == NEC_NBITS) {
-			address     = bitrev8((data->bits >> 24) & 0xff);
-			not_address = bitrev8((data->bits >> 16) & 0xff);
-			command	    = bitrev8((data->bits >>  8) & 0xff);
-			not_command = bitrev8((data->bits >>  0) & 0xff);
-
-			scancode = ir_nec_bytes_to_scancode(address,
-							    not_address,
-							    command,
-							    not_command,
-							    &rc_proto);
-
-			if (data->is_nec_x)
-				data->necx_repeat = true;
-
-			rc_keydown(dev, rc_proto, scancode, 0);
-		} else {
-			rc_repeat(dev);
-		}
-
-		data->state = STATE_INACTIVE;
-		return 0;
-	}
-
-	dev_dbg(&dev->dev, "NEC decode failed at count %d state %d (%uus %s)\n",
-		data->count, data->state, ev.duration, TO_STR(ev.pulse));
-	data->state = STATE_INACTIVE;
-	return -EINVAL;
-}
-
-/**
- * ir_nec_scancode_to_raw() - encode an NEC scancode ready for modulation.
- * @protocol:	specific protocol to use
- * @scancode:	a single NEC scancode.
- */
-static u32 ir_nec_scancode_to_raw(enum rc_proto protocol, u32 scancode)
-{
-	unsigned int addr, addr_inv, data, data_inv;
-
-	data = scancode & 0xff;
-
-	if (protocol == RC_PROTO_NEC32) {
-		/* 32-bit NEC (used by Apple and TiVo remotes) */
-		/* scan encoding: aaAAddDD */
-		addr_inv   = (scancode >> 24) & 0xff;
-		addr       = (scancode >> 16) & 0xff;
-		data_inv   = (scancode >>  8) & 0xff;
-	} else if (protocol == RC_PROTO_NECX) {
-		/* Extended NEC */
-		/* scan encoding AAaaDD */
-		addr       = (scancode >> 16) & 0xff;
-		addr_inv   = (scancode >>  8) & 0xff;
-		data_inv   = data ^ 0xff;
-	} else {
-		/* Normal NEC */
-		/* scan encoding: AADD */
-		addr       = (scancode >>  8) & 0xff;
-		addr_inv   = addr ^ 0xff;
-		data_inv   = data ^ 0xff;
-	}
-
-	/* raw encoding: ddDDaaAA */
-	return data_inv << 24 |
-	       data     << 16 |
-	       addr_inv <<  8 |
-	       addr;
-}
-
-static const struct ir_raw_timings_pd ir_nec_timings = {
-	.header_pulse	= NEC_HEADER_PULSE,
-	.header_space	= NEC_HEADER_SPACE,
-	.bit_pulse	= NEC_BIT_PULSE,
-	.bit_space[0]	= NEC_BIT_0_SPACE,
-	.bit_space[1]	= NEC_BIT_1_SPACE,
-	.trailer_pulse	= NEC_TRAILER_PULSE,
-	.trailer_space	= NEC_TRAILER_SPACE,
-	.msb_first	= 0,
-};
-
-/**
- * ir_nec_encode() - Encode a scancode as a stream of raw events
- *
- * @protocol:	protocol to encode
- * @scancode:	scancode to encode
- * @events:	array of raw ir events to write into
- * @max:	maximum size of @events
- *
- * Returns:	The number of events written.
- *		-ENOBUFS if there isn't enough space in the array to fit the
- *		encoding. In this case all @max events will have been written.
- */
-static int ir_nec_encode(enum rc_proto protocol, u32 scancode,
-			 struct ir_raw_event *events, unsigned int max)
-{
-	struct ir_raw_event *e = events;
-	int ret;
-	u32 raw;
-
-	/* Convert a NEC scancode to raw NEC data */
-	raw = ir_nec_scancode_to_raw(protocol, scancode);
-
-	/* Modulate the raw data using a pulse distance modulation */
-	ret = ir_raw_gen_pd(&e, max, &ir_nec_timings, NEC_NBITS, raw);
-	if (ret < 0)
-		return ret;
-
-	return e - events;
-}
-
-static struct ir_raw_handler nec_handler = {
-	.protocols	= RC_PROTO_BIT_NEC | RC_PROTO_BIT_NECX |
-							RC_PROTO_BIT_NEC32,
-	.decode		= ir_nec_decode,
-	.encode		= ir_nec_encode,
-	.carrier	= 38000,
-	.min_timeout	= NEC_TRAILER_SPACE,
-};
-
-static int __init ir_nec_decode_init(void)
-{
-	ir_raw_handler_register(&nec_handler);
-
-	printk(KERN_INFO "IR NEC protocol handler initialized\n");
 	return 0;
 }
 
-static void __exit ir_nec_decode_exit(void)
+/* ------------------------------------------------------------------ */
+static int cx23885_start_video_dma(struct cx23885_dev *dev,
+			   struct cx23885_dmaqueue *q,
+			   struct cx23885_buffer *buf)
 {
-	ir_raw_handler_unregister(&nec_handler);
+	dprintk(1, "%s()\n", __func__);
+
+	/* Stop the dma/fifo before we tamper with it's risc programs */
+	cx_clear(VID_A_DMA_CTL, 0x11);
+
+	/* setup fifo + format */
+	cx23885_sram_channel_setup(dev, &dev->sram_channels[SRAM_CH01],
+				buf->bpl, buf->risc.dma);
+
+	/* reset counter */
+	cx_write(VID_A_GPCNT_CTL, 3);
+	q->count = 0;
+
+	/* enable irq */
+	cx23885_irq_add_enable(dev, 0x01);
+	cx_set(VID_A_INT_MSK, 0x000011);
+
+	/* start dma */
+	cx_set(DEV_CNTRL2, (1<<5));
+	cx_set(VID_A_DMA_CTL, 0x11); /* FIFO and RISC enable */
+
+	return 0;
 }
 
-module_init(ir_nec_decode_init);
-module_exit(ir_nec_decode_exit);
+static int queue_setup(struct vb2_queue *q,
+			   unsigned int *num_buffers, unsigned int *num_planes,
+			   unsigned int sizes[], struct device *alloc_devs[])
+{
+	struct cx23885_dev *dev = q->drv_priv;
 
-MODULE_LICENSE("GPL v2");
-MODULE_AUTHOR("Mauro Carvalho Chehab");
-MODULE_AUTHOR("Red Hat Inc. (http://www.redhat.com)");
-MODULE_DESCRIPTION("NEC IR protocol decoder");
+	*num_planes = 1;
+	sizes[0] = (dev->fmt->depth * dev->width * dev->height) >> 3;
+	return 0;
+}
+
+static int buffer_prepare(struct vb2_buffer *vb)
+{
+	struct vb2_v4l2_buffer *vbuf = to_vb2_v4l2_buffer(vb);
+	struct cx23885_dev *dev = vb->vb2_queue->drv_priv;
+	struct cx23885_buffer *buf =
+		container_of(vbuf, struct cx23885_buffer, vb);
+	u32 line0_offset, line1_offset;
+	struct sg_table *sgt = vb2_dma_sg_plane_desc(vb, 0);
+	int field_tff;
+
+	buf->bpl = (dev->width * dev->fmt->depth) >> 3;
+
+	if (vb2_plane_size(vb, 0) < dev->height * buf->bpl)
+		return -EINVAL;
+	vb2_set_plane_payload(vb, 0, dev->height * buf->bpl);
+
+	switch (dev->field) {
+	case V4L2_FIELD_TOP:
+		cx23885_risc_buffer(dev->pci, &buf->risc,
+				sgt->sgl, 0, UNSET,
+				buf->bpl, 0, dev->height);
+		break;
+	case V4L2_FIELD_BOTTOM:
+		cx23885_risc_buffer(dev->pci, &buf->risc,
+				sgt->sgl, UNSET, 0,
+				buf->bpl, 0, dev->height);
+		break;
+	case V4L2_FIELD_INTERLACED:
+		if (dev->tvnorm & V4L2_STD_525_60)
+			/* NTSC or  */
+			field_tff = 1;
+		else
+			field_tff = 0;
+
+		if (cx23885_boards[dev->board].force_bff)
+			/* PAL / SECAM OR 888 in NTSC MODE */
+			field_tff = 0;
+
+		if (field_tff) {
+			/* cx25840 transmits NTSC bottom field first */
+			dprintk(1, "%s() Creating TFF/NTSC risc\n",
+					__func__);
+			line0_offset = buf->bpl;
+			line1_offset = 0;
+		} else {
+			/* All other formats are top field first */
+			dprintk(1, "%s() Creating BFF/PAL/SECAM risc\n",
+					__func__);
+			line0_offset = 0;
+			line1_offset = buf->bpl;
+		}
+		cx23885_risc_buffer(dev->pci, &buf->risc,
+				sgt->sgl, line0_offset,
+				line1_offset,
+				buf->bpl, buf->bpl,
+				dev->height >> 1);
+		break;
+	case V4L2_FIELD_SEQ_TB:
+		cx23885_risc_buffer(dev->pci, &buf->risc,
+				sgt->sgl,
+				0, buf->bpl * (dev->height >> 1),
+				buf->bpl, 0,
+				dev->height >> 1);
+		break;
+	case V4L2_FIELD_SEQ_BT:
+		cx23885_risc_buffer(dev->pci, &buf->risc,
+				sgt->sgl,
+				buf->bpl * (dev->height >> 1), 0,
+				buf->bpl, 0,
+				dev->height >> 1);
+		break;
+	default:
+		BUG();
+	}
+	dprintk(2, "[%p/%d] buffer_init - %dx%d %dbpp 0x%08x - dma=0x%08lx\n",
+		buf, buf->vb.vb2_buf.index,
+		dev->width, dev->height, dev->fmt->depth, dev->fmt->fourcc,
+		(unsigned long)buf->risc.dma);
+	return 0;
+}
+
+static void buffer_finish(struct vb2_buffer *vb)
+{
+	struct vb2_v4l2_buffer *vbuf = to_vb2_v4l2_buffer(vb);
+	struct cx23885_buffer *buf = container_of(vbuf,
+		struct cx23885_buffer, vb);
+
+	cx23885_free_buffer(vb->vb2_queue->drv_priv, buf);
+}
+
+/*
+ * The risc program for each buffer works as follows: it starts with a simple
+ * 'JUMP to addr + 12', which is effectively a NOP. Then the code to DMA the
+ * buffer follows and at the end we have a JUMP back to the start + 12 (skipping
+ * the initial JUMP).
+ *
+ * This is the risc program of the first buffer to be queued if the active list
+ * is empty and it just keeps DMAing this buffer without generating any
+ * interrupts.
+ *
+ * If a new buffer is added then the initial JUMP in the code for that buffer
+ * will generate an interrupt which signals that the previous buffer has been
+ * DMAed successfully and that it can be returned to userspace.
+ *
+ * It also sets the final jump of the previous buffer to the start of the new
+ * buffer, thus chaining the new buffer into the DMA chain. This is a single
+ * atomic u32 write, so there is no race condition.
+ *
+ * The end-result of all this that you only get an interrupt when a buffer
+ * is ready, so the control flow is very easy.
+ */
+static void buffer_queue(struct vb2_buffer *vb)
+{
+	struct vb2_v4l2_buffer *vbuf = to_vb2_v4l2_buffer(vb);
+	struct cx23885_dev *dev = vb->vb2_queue->drv_priv;
+	struct cx23885_buffer   *buf = container_of(vbuf,
+		struct cx23885_buffer, vb);
+	struct cx23885_buffer   *prev;
+	struct cx23885_dmaqueue *q    = &dev->vidq;
+	unsigned long flags;
+
+	/* add jump to start */
+	buf->risc.cpu[1] = cpu_to_le32(buf->risc.dma + 12);
+	buf->risc.jmp[0] = cpu_to_le32(RISC_JUMP | RISC_CNT_INC);
+	buf->risc.jmp[1] = cpu_to_le32(buf->risc.dma + 12);
+	buf->risc.jmp[2] = cpu_to_le32(0); /* bits 63-32 */
+
+	spin_lock_irqsave(&dev->slock, flags);
+	if (list_empty(&q->active)) {
+		list_add_tail(&buf->queue, &q->active);
+		dprintk(2, "[%p/%d] buffer_queue - first active\n",
+			buf, buf->vb.vb2_buf.index);
+	} else {
+		buf->risc.cpu[0] |= cpu_to_le32(RISC_IRQ1);
+		prev = list_entry(q->active.prev, struct cx23885_buffer,
+			queue);
+		list_add_tail(&buf->queue, &q->active);
+		prev->risc.jmp[1] = cpu_to_le32(buf->risc.dma);
+		dprintk(2, "[%p/%d] buffer_queue - append to active\n",
+				buf, buf->vb.vb2_buf.index);
+	}
+	spin_unlock_irqrestore(&dev->slock, flags);
+}
+
+static int cx23885_start_streaming(struct vb2_queue *q, unsigned int count)
+{
+	struct cx23885_dev *dev = q->drv_priv;
+	struct cx23885_dmaqueue *dmaq = &dev->vidq;
+	struct cx23885_buffer *buf = list_entry(dmaq->active.next,
+			struct cx23885_buffer, queue);
+
+	cx23885_start_video_dma(dev, dmaq, buf);
+	return 0;
+}
+
+static void cx23885_stop_streaming(struct vb2_queue *q)
+{
+	struct cx23885_dev *dev = q->drv_priv;
+	struct cx23885_dmaqueue *dmaq = &dev->vidq;
+	unsigned long flags;
+
+	cx_clear(VID_A_DMA_CTL, 0x11);
+	spin_lock_irqsave(&dev->slock, flags);
+	while (!list_empty(&dmaq->active)) {
+		struct cx23885_buffer *buf = list_entry(dmaq->active.next,
+			struct cx23885_buffer, queue);
+
+		list_del(&buf->queue);
+		vb2_buffer_done(&buf->vb.vb2_buf, VB2_BUF_STATE_ERROR);
+	}
+	spin_unlock_irqrestore(&dev->slock, flags);
+}
+
+static const struct vb2_ops cx23885_video_qops = {
+	.queue_setup    = queue_setup,
+	.buf_prepare  = buffer_prepare,
+	.buf_finish = buffer_finish,
+	.buf_queue    = buffer_queue,
+	.wait_prepare = vb2_ops_wait_prepare,
+	.wait_finish = vb2_ops_wait_finish,
+	.start_streaming = cx23885_start_streaming,
+	.stop_streaming = cx23885_stop_streaming,
+};
+
+/* ------------------------------------------------------------------ */
+/* VIDEO IOCTLS                                                       */
+
+static int vidioc_g_fmt_

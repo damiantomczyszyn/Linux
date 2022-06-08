@@ -1,2 +1,1 @@
-fig/GENERIC_ATOMIC64) \
-  incl
+// SPDX-License-Identifier: GP

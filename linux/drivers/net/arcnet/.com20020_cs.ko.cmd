@@ -1,6 +1,1 @@
-x/scatterlist.h \
-    $(wildcard include/config/NEED_SG_DMA_LENGTH) \
-    $(wildcard include/config/DEBUG_SG) \
-    $(wildcard include/config/SGL_ALLOC) \
-    $(wildcard include/config/ARCH_NO_SG_CHAIN) \
-    $(w
+cmd_drivers/net/arcnet/com20020_cs.ko := ld -r -m elf_i386 --build-id=sha1  -T scripts/module.lds -o drivers/net/arcnet/com20020_cs.ko drivers/net/arcnet/com20020_cs.o drivers/net/arcnet/com20020_cs.mod.o;  true

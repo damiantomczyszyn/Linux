@@ -1,1 +1,1 @@
-wildcard include/config/GE
+	v4l2_info(sd, "\tFIFO ser

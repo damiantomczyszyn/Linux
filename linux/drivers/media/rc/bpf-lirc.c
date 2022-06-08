@@ -1,338 +1,223 @@
-// SPDX-License-Identifier: GPL-2.0
-// bpf-lirc.c - handles bpf
-//
-// Copyright (C) 2018 Sean Young <sean@mess.org>
+ze, &risc->dma,
+				       GFP_KERNEL);
+	if (risc->cpu == NULL)
+		return -ENOMEM;
 
-#include <linux/bpf.h>
-#include <linux/filter.h>
-#include <linux/bpf_lirc.h>
-#include "rc-core-priv.h"
+	/* write risc instructions */
+	rp = risc->cpu;
+	if (UNSET != top_offset)
+		rp = cx23885_risc_field(rp, sglist, top_offset, 0,
+					bpl, padding, lines, 0, true);
+	if (UNSET != bottom_offset)
+		rp = cx23885_risc_field(rp, sglist, bottom_offset, 0x200,
+					bpl, padding, lines, 0, UNSET == top_offset);
 
-#define lirc_rcu_dereference(p)						\
-	rcu_dereference_protected(p, lockdep_is_held(&ir_raw_handler_lock))
-
-/*
- * BPF interface for raw IR
- */
-const struct bpf_prog_ops lirc_mode2_prog_ops = {
-};
-
-BPF_CALL_1(bpf_rc_repeat, u32*, sample)
-{
-	struct ir_raw_event_ctrl *ctrl;
-
-	ctrl = container_of(sample, struct ir_raw_event_ctrl, bpf_sample);
-
-	rc_repeat(ctrl->dev);
-
+	/* save pointer to jmp instruction address */
+	risc->jmp = rp;
+	BUG_ON((risc->jmp - risc->cpu + 2) * sizeof(*risc->cpu) > risc->size);
 	return 0;
 }
 
-static const struct bpf_func_proto rc_repeat_proto = {
-	.func	   = bpf_rc_repeat,
-	.gpl_only  = true, /* rc_repeat is EXPORT_SYMBOL_GPL */
-	.ret_type  = RET_INTEGER,
-	.arg1_type = ARG_PTR_TO_CTX,
-};
-
-BPF_CALL_4(bpf_rc_keydown, u32*, sample, u32, protocol, u64, scancode,
-	   u32, toggle)
+int cx23885_risc_databuffer(struct pci_dev *pci,
+				   struct cx23885_riscmem *risc,
+				   struct scatterlist *sglist,
+				   unsigned int bpl,
+				   unsigned int lines, unsigned int lpi)
 {
-	struct ir_raw_event_ctrl *ctrl;
+	u32 instructions;
+	__le32 *rp;
 
-	ctrl = container_of(sample, struct ir_raw_event_ctrl, bpf_sample);
+	/* estimate risc mem: worst case is one write per page border +
+	   one write per scan line + syncs + jump (all 2 dwords).  Here
+	   there is no padding and no sync.  First DMA region may be smaller
+	   than PAGE_SIZE */
+	/* Jump and write need an extra dword */
+	instructions  = 1 + (bpl * lines) / PAGE_SIZE + lines;
+	instructions += 4;
 
-	rc_keydown(ctrl->dev, protocol, scancode, toggle != 0);
+	risc->size = instructions * 12;
+	risc->cpu = dma_alloc_coherent(&pci->dev, risc->size, &risc->dma,
+				       GFP_KERNEL);
+	if (risc->cpu == NULL)
+		return -ENOMEM;
 
+	/* write risc instructions */
+	rp = risc->cpu;
+	rp = cx23885_risc_field(rp, sglist, 0, NO_SYNC_LINE,
+				bpl, 0, lines, lpi, lpi == 0);
+
+	/* save pointer to jmp instruction address */
+	risc->jmp = rp;
+	BUG_ON((risc->jmp - risc->cpu + 2) * sizeof(*risc->cpu) > risc->size);
 	return 0;
 }
 
-static const struct bpf_func_proto rc_keydown_proto = {
-	.func	   = bpf_rc_keydown,
-	.gpl_only  = true, /* rc_keydown is EXPORT_SYMBOL_GPL */
-	.ret_type  = RET_INTEGER,
-	.arg1_type = ARG_PTR_TO_CTX,
-	.arg2_type = ARG_ANYTHING,
-	.arg3_type = ARG_ANYTHING,
-	.arg4_type = ARG_ANYTHING,
-};
-
-BPF_CALL_3(bpf_rc_pointer_rel, u32*, sample, s32, rel_x, s32, rel_y)
+int cx23885_risc_vbibuffer(struct pci_dev *pci, struct cx23885_riscmem *risc,
+			struct scatterlist *sglist, unsigned int top_offset,
+			unsigned int bottom_offset, unsigned int bpl,
+			unsigned int padding, unsigned int lines)
 {
-	struct ir_raw_event_ctrl *ctrl;
+	u32 instructions, fields;
+	__le32 *rp;
 
-	ctrl = container_of(sample, struct ir_raw_event_ctrl, bpf_sample);
+	fields = 0;
+	if (UNSET != top_offset)
+		fields++;
+	if (UNSET != bottom_offset)
+		fields++;
 
-	input_report_rel(ctrl->dev->input_dev, REL_X, rel_x);
-	input_report_rel(ctrl->dev->input_dev, REL_Y, rel_y);
-	input_sync(ctrl->dev->input_dev);
+	/* estimate risc mem: worst case is one write per page border +
+	   one write per scan line + syncs + jump (all 2 dwords).  Padding
+	   can cause next bpl to start close to a page border.  First DMA
+	   region may be smaller than PAGE_SIZE */
+	/* write and jump need and extra dword */
+	instructions  = fields * (1 + ((bpl + padding) * lines)
+		/ PAGE_SIZE + lines);
+	instructions += 5;
+	risc->size = instructions * 12;
+	risc->cpu = dma_alloc_coherent(&pci->dev, risc->size, &risc->dma,
+				       GFP_KERNEL);
+	if (risc->cpu == NULL)
+		return -ENOMEM;
+	/* write risc instructions */
+	rp = risc->cpu;
 
+	/* Sync to line 6, so US CC line 21 will appear in line '12'
+	 * in the userland vbi payload */
+	if (UNSET != top_offset)
+		rp = cx23885_risc_field(rp, sglist, top_offset, 0,
+					bpl, padding, lines, 0, true);
+
+	if (UNSET != bottom_offset)
+		rp = cx23885_risc_field(rp, sglist, bottom_offset, 0x200,
+					bpl, padding, lines, 0, UNSET == top_offset);
+
+
+
+	/* save pointer to jmp instruction address */
+	risc->jmp = rp;
+	BUG_ON((risc->jmp - risc->cpu + 2) * sizeof(*risc->cpu) > risc->size);
 	return 0;
 }
 
-static const struct bpf_func_proto rc_pointer_rel_proto = {
-	.func	   = bpf_rc_pointer_rel,
-	.gpl_only  = true,
-	.ret_type  = RET_INTEGER,
-	.arg1_type = ARG_PTR_TO_CTX,
-	.arg2_type = ARG_ANYTHING,
-	.arg3_type = ARG_ANYTHING,
-};
 
-static const struct bpf_func_proto *
-lirc_mode2_func_proto(enum bpf_func_id func_id, const struct bpf_prog *prog)
+void cx23885_free_buffer(struct cx23885_dev *dev, struct cx23885_buffer *buf)
 {
-	switch (func_id) {
-	case BPF_FUNC_rc_repeat:
-		return &rc_repeat_proto;
-	case BPF_FUNC_rc_keydown:
-		return &rc_keydown_proto;
-	case BPF_FUNC_rc_pointer_rel:
-		return &rc_pointer_rel_proto;
-	case BPF_FUNC_map_lookup_elem:
-		return &bpf_map_lookup_elem_proto;
-	case BPF_FUNC_map_update_elem:
-		return &bpf_map_update_elem_proto;
-	case BPF_FUNC_map_delete_elem:
-		return &bpf_map_delete_elem_proto;
-	case BPF_FUNC_map_push_elem:
-		return &bpf_map_push_elem_proto;
-	case BPF_FUNC_map_pop_elem:
-		return &bpf_map_pop_elem_proto;
-	case BPF_FUNC_map_peek_elem:
-		return &bpf_map_peek_elem_proto;
-	case BPF_FUNC_ktime_get_ns:
-		return &bpf_ktime_get_ns_proto;
-	case BPF_FUNC_ktime_get_boot_ns:
-		return &bpf_ktime_get_boot_ns_proto;
-	case BPF_FUNC_tail_call:
-		return &bpf_tail_call_proto;
-	case BPF_FUNC_get_prandom_u32:
-		return &bpf_get_prandom_u32_proto;
-	case BPF_FUNC_trace_printk:
-		if (perfmon_capable())
-			return bpf_get_trace_printk_proto();
-		fallthrough;
-	default:
-		return NULL;
+	struct cx23885_riscmem *risc = &buf->risc;
+
+	dma_free_coherent(&dev->pci->dev, risc->size, risc->cpu, risc->dma);
+}
+
+static void cx23885_tsport_reg_dump(struct cx23885_tsport *port)
+{
+	struct cx23885_dev *dev = port->dev;
+
+	dprintk(1, "%s() Register Dump\n", __func__);
+	dprintk(1, "%s() DEV_CNTRL2               0x%08X\n", __func__,
+		cx_read(DEV_CNTRL2));
+	dprintk(1, "%s() PCI_INT_MSK              0x%08X\n", __func__,
+		cx23885_irq_get_mask(dev));
+	dprintk(1, "%s() AUD_INT_INT_MSK          0x%08X\n", __func__,
+		cx_read(AUDIO_INT_INT_MSK));
+	dprintk(1, "%s() AUD_INT_DMA_CTL          0x%08X\n", __func__,
+		cx_read(AUD_INT_DMA_CTL));
+	dprintk(1, "%s() AUD_EXT_INT_MSK          0x%08X\n", __func__,
+		cx_read(AUDIO_EXT_INT_MSK));
+	dprintk(1, "%s() AUD_EXT_DMA_CTL          0x%08X\n", __func__,
+		cx_read(AUD_EXT_DMA_CTL));
+	dprintk(1, "%s() PAD_CTRL                 0x%08X\n", __func__,
+		cx_read(PAD_CTRL));
+	dprintk(1, "%s() ALT_PIN_OUT_SEL          0x%08X\n", __func__,
+		cx_read(ALT_PIN_OUT_SEL));
+	dprintk(1, "%s() GPIO2                    0x%08X\n", __func__,
+		cx_read(GPIO2));
+	dprintk(1, "%s() gpcnt(0x%08X)          0x%08X\n", __func__,
+		port->reg_gpcnt, cx_read(port->reg_gpcnt));
+	dprintk(1, "%s() gpcnt_ctl(0x%08X)      0x%08x\n", __func__,
+		port->reg_gpcnt_ctl, cx_read(port->reg_gpcnt_ctl));
+	dprintk(1, "%s() dma_ctl(0x%08X)        0x%08x\n", __func__,
+		port->reg_dma_ctl, cx_read(port->reg_dma_ctl));
+	if (port->reg_src_sel)
+		dprintk(1, "%s() src_sel(0x%08X)        0x%08x\n", __func__,
+			port->reg_src_sel, cx_read(port->reg_src_sel));
+	dprintk(1, "%s() lngth(0x%08X)          0x%08x\n", __func__,
+		port->reg_lngth, cx_read(port->reg_lngth));
+	dprintk(1, "%s() hw_sop_ctrl(0x%08X)    0x%08x\n", __func__,
+		port->reg_hw_sop_ctrl, cx_read(port->reg_hw_sop_ctrl));
+	dprintk(1, "%s() gen_ctrl(0x%08X)       0x%08x\n", __func__,
+		port->reg_gen_ctrl, cx_read(port->reg_gen_ctrl));
+	dprintk(1, "%s() bd_pkt_status(0x%08X)  0x%08x\n", __func__,
+		port->reg_bd_pkt_status, cx_read(port->reg_bd_pkt_status));
+	dprintk(1, "%s() sop_status(0x%08X)     0x%08x\n", __func__,
+		port->reg_sop_status, cx_read(port->reg_sop_status));
+	dprintk(1, "%s() fifo_ovfl_stat(0x%08X) 0x%08x\n", __func__,
+		port->reg_fifo_ovfl_stat, cx_read(port->reg_fifo_ovfl_stat));
+	dprintk(1, "%s() vld_misc(0x%08X)       0x%08x\n", __func__,
+		port->reg_vld_misc, cx_read(port->reg_vld_misc));
+	dprintk(1, "%s() ts_clk_en(0x%08X)      0x%08x\n", __func__,
+		port->reg_ts_clk_en, cx_read(port->reg_ts_clk_en));
+	dprintk(1, "%s() ts_int_msk(0x%08X)     0x%08x\n", __func__,
+		port->reg_ts_int_msk, cx_read(port->reg_ts_int_msk));
+	dprintk(1, "%s() ts_int_status(0x%08X)  0x%08x\n", __func__,
+		port->reg_ts_int_stat, cx_read(port->reg_ts_int_stat));
+	dprintk(1, "%s() PCI_INT_STAT           0x%08X\n", __func__,
+		cx_read(PCI_INT_STAT));
+	dprintk(1, "%s() VID_B_INT_MSTAT        0x%08X\n", __func__,
+		cx_read(VID_B_INT_MSTAT));
+	dprintk(1, "%s() VID_B_INT_SSTAT        0x%08X\n", __func__,
+		cx_read(VID_B_INT_SSTAT));
+	dprintk(1, "%s() VID_C_INT_MSTAT        0x%08X\n", __func__,
+		cx_read(VID_C_INT_MSTAT));
+	dprintk(1, "%s() VID_C_INT_SSTAT        0x%08X\n", __func__,
+		cx_read(VID_C_INT_SSTAT));
+}
+
+int cx23885_start_dma(struct cx23885_tsport *port,
+			     struct cx23885_dmaqueue *q,
+			     struct cx23885_buffer   *buf)
+{
+	struct cx23885_dev *dev = port->dev;
+	u32 reg;
+
+	dprintk(1, "%s() w: %d, h: %d, f: %d\n", __func__,
+		dev->width, dev->height, dev->field);
+
+	/* clear dma in progress */
+	cx23885_clear_bridge_error(dev);
+
+	/* Stop the fifo and risc engine for this port */
+	cx_clear(port->reg_dma_ctl, port->dma_ctl_val);
+
+	/* setup fifo + format */
+	cx23885_sram_channel_setup(dev,
+				   &dev->sram_channels[port->sram_chno],
+				   port->ts_packet_size, buf->risc.dma);
+	if (debug > 5) {
+		cx23885_sram_channel_dump(dev,
+			&dev->sram_channels[port->sram_chno]);
+		cx23885_risc_disasm(port, &buf->risc);
 	}
-}
 
-static bool lirc_mode2_is_valid_access(int off, int size,
-				       enum bpf_access_type type,
-				       const struct bpf_prog *prog,
-				       struct bpf_insn_access_aux *info)
-{
-	/* We have one field of u32 */
-	return type == BPF_READ && off == 0 && size == sizeof(u32);
-}
+	/* write TS length to chip */
+	cx_write(port->reg_lngth, port->ts_packet_size);
 
-const struct bpf_verifier_ops lirc_mode2_verifier_ops = {
-	.get_func_proto  = lirc_mode2_func_proto,
-	.is_valid_access = lirc_mode2_is_valid_access
-};
-
-#define BPF_MAX_PROGS 64
-
-static int lirc_bpf_attach(struct rc_dev *rcdev, struct bpf_prog *prog)
-{
-	struct bpf_prog_array *old_array;
-	struct bpf_prog_array *new_array;
-	struct ir_raw_event_ctrl *raw;
-	int ret;
-
-	if (rcdev->driver_type != RC_DRIVER_IR_RAW)
+	if ((!(cx23885_boards[dev->board].portb & CX23885_MPEG_DVB)) &&
+		(!(cx23885_boards[dev->board].portc & CX23885_MPEG_DVB))) {
+		pr_err("%s() Unsupported .portb/c (0x%08x)/(0x%08x)\n",
+			__func__,
+			cx23885_boards[dev->board].portb,
+			cx23885_boards[dev->board].portc);
 		return -EINVAL;
-
-	ret = mutex_lock_interruptible(&ir_raw_handler_lock);
-	if (ret)
-		return ret;
-
-	raw = rcdev->raw;
-	if (!raw) {
-		ret = -ENODEV;
-		goto unlock;
 	}
 
-	old_array = lirc_rcu_dereference(raw->progs);
-	if (old_array && bpf_prog_array_length(old_array) >= BPF_MAX_PROGS) {
-		ret = -E2BIG;
-		goto unlock;
-	}
+	if (cx23885_boards[dev->board].portb == CX23885_MPEG_ENCODER)
+		cx23885_av_clk(dev, 0);
 
-	ret = bpf_prog_array_copy(old_array, NULL, prog, 0, &new_array);
-	if (ret < 0)
-		goto unlock;
+	udelay(100);
 
-	rcu_assign_pointer(raw->progs, new_array);
-	bpf_prog_array_free(old_array);
+	/* If the port supports SRC SELECT, configure it */
+	if (port->reg_src_sel)
+		cx_write(port->reg_src_sel, port->src_sel_val);
 
-unlock:
-	mutex_unlock(&ir_raw_handler_lock);
-	return ret;
-}
-
-static int lirc_bpf_detach(struct rc_dev *rcdev, struct bpf_prog *prog)
-{
-	struct bpf_prog_array *old_array;
-	struct bpf_prog_array *new_array;
-	struct ir_raw_event_ctrl *raw;
-	int ret;
-
-	if (rcdev->driver_type != RC_DRIVER_IR_RAW)
-		return -EINVAL;
-
-	ret = mutex_lock_interruptible(&ir_raw_handler_lock);
-	if (ret)
-		return ret;
-
-	raw = rcdev->raw;
-	if (!raw) {
-		ret = -ENODEV;
-		goto unlock;
-	}
-
-	old_array = lirc_rcu_dereference(raw->progs);
-	ret = bpf_prog_array_copy(old_array, prog, NULL, 0, &new_array);
-	/*
-	 * Do not use bpf_prog_array_delete_safe() as we would end up
-	 * with a dummy entry in the array, and the we would free the
-	 * dummy in lirc_bpf_free()
-	 */
-	if (ret)
-		goto unlock;
-
-	rcu_assign_pointer(raw->progs, new_array);
-	bpf_prog_array_free(old_array);
-	bpf_prog_put(prog);
-unlock:
-	mutex_unlock(&ir_raw_handler_lock);
-	return ret;
-}
-
-void lirc_bpf_run(struct rc_dev *rcdev, u32 sample)
-{
-	struct ir_raw_event_ctrl *raw = rcdev->raw;
-
-	raw->bpf_sample = sample;
-
-	if (raw->progs)
-		BPF_PROG_RUN_ARRAY(raw->progs, &raw->bpf_sample, bpf_prog_run);
-}
-
-/*
- * This should be called once the rc thread has been stopped, so there can be
- * no concurrent bpf execution.
- *
- * Should be called with the ir_raw_handler_lock held.
- */
-void lirc_bpf_free(struct rc_dev *rcdev)
-{
-	struct bpf_prog_array_item *item;
-	struct bpf_prog_array *array;
-
-	array = lirc_rcu_dereference(rcdev->raw->progs);
-	if (!array)
-		return;
-
-	for (item = array->items; item->prog; item++)
-		bpf_prog_put(item->prog);
-
-	bpf_prog_array_free(array);
-}
-
-int lirc_prog_attach(const union bpf_attr *attr, struct bpf_prog *prog)
-{
-	struct rc_dev *rcdev;
-	int ret;
-
-	if (attr->attach_flags)
-		return -EINVAL;
-
-	rcdev = rc_dev_get_from_fd(attr->target_fd);
-	if (IS_ERR(rcdev))
-		return PTR_ERR(rcdev);
-
-	ret = lirc_bpf_attach(rcdev, prog);
-
-	put_device(&rcdev->dev);
-
-	return ret;
-}
-
-int lirc_prog_detach(const union bpf_attr *attr)
-{
-	struct bpf_prog *prog;
-	struct rc_dev *rcdev;
-	int ret;
-
-	if (attr->attach_flags)
-		return -EINVAL;
-
-	prog = bpf_prog_get_type(attr->attach_bpf_fd,
-				 BPF_PROG_TYPE_LIRC_MODE2);
-	if (IS_ERR(prog))
-		return PTR_ERR(prog);
-
-	rcdev = rc_dev_get_from_fd(attr->target_fd);
-	if (IS_ERR(rcdev)) {
-		bpf_prog_put(prog);
-		return PTR_ERR(rcdev);
-	}
-
-	ret = lirc_bpf_detach(rcdev, prog);
-
-	bpf_prog_put(prog);
-	put_device(&rcdev->dev);
-
-	return ret;
-}
-
-int lirc_prog_query(const union bpf_attr *attr, union bpf_attr __user *uattr)
-{
-	__u32 __user *prog_ids = u64_to_user_ptr(attr->query.prog_ids);
-	struct bpf_prog_array *progs;
-	struct rc_dev *rcdev;
-	u32 cnt, flags = 0;
-	int ret;
-
-	if (attr->query.query_flags)
-		return -EINVAL;
-
-	rcdev = rc_dev_get_from_fd(attr->query.target_fd);
-	if (IS_ERR(rcdev))
-		return PTR_ERR(rcdev);
-
-	if (rcdev->driver_type != RC_DRIVER_IR_RAW) {
-		ret = -EINVAL;
-		goto put;
-	}
-
-	ret = mutex_lock_interruptible(&ir_raw_handler_lock);
-	if (ret)
-		goto put;
-
-	progs = lirc_rcu_dereference(rcdev->raw->progs);
-	cnt = progs ? bpf_prog_array_length(progs) : 0;
-
-	if (copy_to_user(&uattr->query.prog_cnt, &cnt, sizeof(cnt))) {
-		ret = -EFAULT;
-		goto unlock;
-	}
-
-	if (copy_to_user(&uattr->query.attach_flags, &flags, sizeof(flags))) {
-		ret = -EFAULT;
-		goto unlock;
-	}
-
-	if (attr->query.prog_cnt != 0 && prog_ids && cnt)
-		ret = bpf_prog_array_copy_to_user(progs, prog_ids,
-						  attr->query.prog_cnt);
-
-unlock:
-	mutex_unlock(&ir_raw_handler_lock);
-put:
-	put_device(&rcdev->dev);
-
-	return ret;
-}
+	cx_write(port->reg_hw_sop_ctrl, port->hw_sop_ctrl_val);
+	cx_wr

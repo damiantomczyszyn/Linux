@@ -1,2 +1,1 @@
-IC_IOREMAP) \
-    $(wildcard i
+taval = tempval & 0x000000FF;

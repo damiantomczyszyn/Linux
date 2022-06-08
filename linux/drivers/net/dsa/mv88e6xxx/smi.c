@@ -1,124 +1,190 @@
-ldcard include/config/PCI_MMCONFIG) \
-    $(wildcard include/config/ACPI_APEI_GHES) \
-    $(wildcard include/config/INTEL_TXT) \
-  arch/x86/include/generated/asm/kmap_size.h \
-  include/asm-generic/kmap_size.h \
-    $(wildcard include/config/DEBUG_KMAP_LOCAL) \
-  include/asm-generic/fixmap.h \
-  arch/x86/include/asm/irq_vectors.h \
-    $(wildcard include/config/HAVE_KVM) \
-    $(wildcard include/config/HYPERV) \
-    $(wildcard include/config/PCI_MSI) \
-  arch/x86/include/asm/cpu_entry_area.h \
-  arch/x86/include/asm/intel_ds.h \
-  arch/x86/include/asm/pgtable_areas.h \
-  arch/x86/include/asm/pgtable_32_areas.h \
-  include/uapi/linux/elf.h \
-  include/uapi/linux/elf-em.h \
-  include/linux/kobject.h \
-    $(wildcard include/config/UEVENT_HELPER) \
-    $(wildcard include/config/DEBUG_KOBJECT_RELEASE) \
-  include/linux/sysfs.h \
-  include/linux/kernfs.h \
-    $(wildcard include/config/KERNFS) \
-  include/linux/idr.h \
-  include/linux/radix-tree.h \
-  include/linux/xarray.h \
-    $(wildcard include/config/XARRAY_MULTI) \
-  include/linux/kconfig.h \
-  include/linux/kobject_ns.h \
-  include/linux/moduleparam.h \
-    $(wildcard include/config/ALPHA) \
-    $(wildcard include/config/IA64) \
-    $(wildcard include/config/PPC64) \
-  include/linux/rbtree_latch.h \
-  include/linux/error-injection.h \
-  include/asm-generic/error-injection.h \
-  include/linux/cfi.h \
-    $(wildcard include/config/CFI_CLANG_SHADOW) \
-  arch/x86/include/asm/module.h \
-    $(wildcard include/config/UNWINDER_ORC) \
-  include/asm-generic/module.h \
-    $(wildcard include/config/HAVE_MOD_ARCH_SPECIFIC) \
-    $(wildcard include/config/MODULES_USE_ELF_REL) \
-    $(wildcard include/config/MODULES_USE_ELF_RELA) \
-  arch/x86/include/asm/orc_types.h \
-  include/linux/i2c.h \
-    $(wildcard include/config/I2C) \
-    $(wildcard include/config/I2C_SLAVE) \
-    $(wildcard include/config/I2C_BOARDINFO) \
-    $(wildcard include/config/I2C_MUX) \
-    $(wildcard include/config/OF) \
-    $(wildcard include/config/ACPI) \
-  include/linux/acpi.h \
-    $(wildcard include/config/ACPI_DEBUGGER) \
-    $(wildcard include/config/ACPI_TABLE_LIB) \
-    $(wildcard include/config/LOONGARCH) \
-    $(wildcard include/config/ARM64) \
-    $(wildcard include/config/ACPI_PROCESSOR_CSTATE) \
-    $(wildcard include/config/ACPI_HOTPLUG_CPU) \
-    $(wildcard include/config/ACPI_HOTPLUG_IOAPIC) \
-    $(wildcard include/config/PCI) \
-    $(wildcard include/config/ACPI_WMI) \
-    $(wildcard include/config/ACPI_NUMA) \
-    $(wildcard include/config/HIBERNATION) \
-    $(wildcard include/config/ACPI_HOTPLUG_MEMORY) \
-    $(wildcard include/config/ACPI_CONTAINER) \
-    $(wildcard include/config/ACPI_GTDT) \
-    $(wildcard include/config/PM) \
-    $(wildcard include/config/GPIOLIB) \
-    $(wildcard include/config/ACPI_TABLE_UPGRADE) \
-    $(wildcard include/config/ACPI_WATCHDOG) \
-    $(wildcard include/config/ACPI_SPCR_TABLE) \
-    $(wildcard include/config/ACPI_GENERIC_GSI) \
-    $(wildcard include/config/ACPI_LPIT) \
-    $(wildcard include/config/ACPI_PPTT) \
-    $(wildcard include/config/ACPI_PCC) \
-  include/linux/ioport.h \
-  include/linux/irqdomain.h \
-    $(wildcard include/config/IRQ_DOMAIN_HIERARCHY) \
-    $(wildcard include/config/GENERIC_IRQ_DEBUGFS) \
-    $(wildcard include/config/IRQ_DOMAIN) \
-    $(wildcard include/config/IRQ_DOMAIN_NOMAP) \
-  include/linux/irqhandler.h \
-  include/linux/of.h \
-    $(wildcard include/config/OF_DYNAMIC) \
-    $(wildcard include/config/SPARC) \
-    $(wildcard include/config/OF_PROMTREE) \
-    $(wildcard include/config/OF_KOBJ) \
-    $(wildcard include/config/OF_NUMA) \
-    $(wildcard include/config/OF_OVERLAY) \
-  include/linux/mod_devicetable.h \
-  include/linux/uuid.h \
-  include/uapi/linux/uuid.h \
-  include/linux/property.h \
-  include/linux/fwnode.h \
-  include/linux/resource_ext.h \
-  include/linux/slab.h \
-    $(wildcard include/config/DEBUG_SLAB) \
-    $(wildcard include/config/FAILSLAB) \
-    $(wildcard include/config/MEMCG_KMEM) \
-    $(wildcard include/config/KASAN) \
-    $(wildcard include/config/SLAB) \
-    $(wildcard include/config/SLUB) \
-    $(wildcard include/config/SLOB) \
-  include/linux/overflow.h \
-  include/linux/percpu-refcount.h \
-  include/linux/kasan.h \
-    $(wildcard include/config/KASAN_STACK) \
-    $(wildcard include/config/KASAN_VMALLOC) \
-    $(wildcard include/config/KASAN_INLINE) \
-  include/linux/kasan-enabled.h \
-  include/linux/device.h \
-    $(wildcard include/config/GENERIC_MSI_IRQ_DOMAIN) \
-    $(wildcard include/config/GENERIC_MSI_IRQ) \
-    $(wildcard include/config/ENERGY_MODEL) \
-    $(wildcard include/config/PINCTRL) \
-    $(wildcard include/config/DMA_OPS) \
-    $(wildcard include/config/DMA_DECLARE_COHERENT) \
-    $(wildcard include/config/DMA_CMA) \
-    $(wildcard include/config/SWIOTLB) \
-    $(wildcard include/config/ARCH_HAS_SYNC_DMA_FOR_DEVICE) \
-    $(wildcard include/config/ARCH_HAS_SYNC_DMA_FOR_CPU) \
-    $(wildcard include/config/ARCH_HAS_SYNC_DMA_FOR_CPU_ALL) \
-    $(wildcard include/conf
+// SPDX-License-Identifier: GPL-2.0-or-later
+/*
+ * Marvell 88E6xxx System Management Interface (SMI) support
+ *
+ * Copyright (c) 2008 Marvell Semiconductor
+ *
+ * Copyright (c) 2019 Vivien Didelot <vivien.didelot@gmail.com>
+ */
+
+#include "chip.h"
+#include "smi.h"
+
+/* The switch ADDR[4:1] configuration pins define the chip SMI device address
+ * (ADDR[0] is always zero, thus only even SMI addresses can be strapped).
+ *
+ * When ADDR is all zero, the chip uses Single-chip Addressing Mode, assuming it
+ * is the only device connected to the SMI master. In this mode it responds to
+ * all 32 possible SMI addresses, and thus maps directly the internal devices.
+ *
+ * When ADDR is non-zero, the chip uses Multi-chip Addressing Mode, allowing
+ * multiple devices to share the SMI interface. In this mode it responds to only
+ * 2 registers, used to indirectly access the internal SMI devices.
+ *
+ * Some chips use a different scheme: Only the ADDR4 pin is used for
+ * configuration, and the device responds to 16 of the 32 SMI
+ * addresses, allowing two to coexist on the same SMI interface.
+ */
+
+static int mv88e6xxx_smi_direct_read(struct mv88e6xxx_chip *chip,
+				     int dev, int reg, u16 *data)
+{
+	int ret;
+
+	ret = mdiobus_read_nested(chip->bus, dev, reg);
+	if (ret < 0)
+		return ret;
+
+	*data = ret & 0xffff;
+
+	return 0;
+}
+
+static int mv88e6xxx_smi_direct_write(struct mv88e6xxx_chip *chip,
+				      int dev, int reg, u16 data)
+{
+	int ret;
+
+	ret = mdiobus_write_nested(chip->bus, dev, reg, data);
+	if (ret < 0)
+		return ret;
+
+	return 0;
+}
+
+static int mv88e6xxx_smi_direct_wait(struct mv88e6xxx_chip *chip,
+				     int dev, int reg, int bit, int val)
+{
+	const unsigned long timeout = jiffies + msecs_to_jiffies(50);
+	u16 data;
+	int err;
+	int i;
+
+	/* Even if the initial poll takes longer than 50ms, always do
+	 * at least one more attempt.
+	 */
+	for (i = 0; time_before(jiffies, timeout) || (i < 2); i++) {
+		err = mv88e6xxx_smi_direct_read(chip, dev, reg, &data);
+		if (err)
+			return err;
+
+		if (!!(data & BIT(bit)) == !!val)
+			return 0;
+
+		if (i < 2)
+			cpu_relax();
+		else
+			usleep_range(1000, 2000);
+	}
+
+	return -ETIMEDOUT;
+}
+
+static const struct mv88e6xxx_bus_ops mv88e6xxx_smi_direct_ops = {
+	.read = mv88e6xxx_smi_direct_read,
+	.write = mv88e6xxx_smi_direct_write,
+};
+
+static int mv88e6xxx_smi_dual_direct_read(struct mv88e6xxx_chip *chip,
+					  int dev, int reg, u16 *data)
+{
+	return mv88e6xxx_smi_direct_read(chip, chip->sw_addr + dev, reg, data);
+}
+
+static int mv88e6xxx_smi_dual_direct_write(struct mv88e6xxx_chip *chip,
+					   int dev, int reg, u16 data)
+{
+	return mv88e6xxx_smi_direct_write(chip, chip->sw_addr + dev, reg, data);
+}
+
+static const struct mv88e6xxx_bus_ops mv88e6xxx_smi_dual_direct_ops = {
+	.read = mv88e6xxx_smi_dual_direct_read,
+	.write = mv88e6xxx_smi_dual_direct_write,
+};
+
+/* Offset 0x00: SMI Command Register
+ * Offset 0x01: SMI Data Register
+ */
+
+static int mv88e6xxx_smi_indirect_read(struct mv88e6xxx_chip *chip,
+				       int dev, int reg, u16 *data)
+{
+	int err;
+
+	err = mv88e6xxx_smi_direct_write(chip, chip->sw_addr,
+					 MV88E6XXX_SMI_CMD,
+					 MV88E6XXX_SMI_CMD_BUSY |
+					 MV88E6XXX_SMI_CMD_MODE_22 |
+					 MV88E6XXX_SMI_CMD_OP_22_READ |
+					 (dev << 5) | reg);
+	if (err)
+		return err;
+
+	err = mv88e6xxx_smi_direct_wait(chip, chip->sw_addr,
+					MV88E6XXX_SMI_CMD, 15, 0);
+	if (err)
+		return err;
+
+	return mv88e6xxx_smi_direct_read(chip, chip->sw_addr,
+					 MV88E6XXX_SMI_DATA, data);
+}
+
+static int mv88e6xxx_smi_indirect_write(struct mv88e6xxx_chip *chip,
+					int dev, int reg, u16 data)
+{
+	int err;
+
+	err = mv88e6xxx_smi_direct_write(chip, chip->sw_addr,
+					 MV88E6XXX_SMI_DATA, data);
+	if (err)
+		return err;
+
+	err = mv88e6xxx_smi_direct_write(chip, chip->sw_addr,
+					 MV88E6XXX_SMI_CMD,
+					 MV88E6XXX_SMI_CMD_BUSY |
+					 MV88E6XXX_SMI_CMD_MODE_22 |
+					 MV88E6XXX_SMI_CMD_OP_22_WRITE |
+					 (dev << 5) | reg);
+	if (err)
+		return err;
+
+	return mv88e6xxx_smi_direct_wait(chip, chip->sw_addr,
+					 MV88E6XXX_SMI_CMD, 15, 0);
+}
+
+static int mv88e6xxx_smi_indirect_init(struct mv88e6xxx_chip *chip)
+{
+	/* Ensure that the chip starts out in the ready state. As both
+	 * reads and writes always ensure this on return, they can
+	 * safely depend on the chip not being busy on entry.
+	 */
+	return mv88e6xxx_smi_direct_wait(chip, chip->sw_addr,
+					 MV88E6XXX_SMI_CMD, 15, 0);
+}
+
+static const struct mv88e6xxx_bus_ops mv88e6xxx_smi_indirect_ops = {
+	.read = mv88e6xxx_smi_indirect_read,
+	.write = mv88e6xxx_smi_indirect_write,
+	.init = mv88e6xxx_smi_indirect_init,
+};
+
+int mv88e6xxx_smi_init(struct mv88e6xxx_chip *chip,
+		       struct mii_bus *bus, int sw_addr)
+{
+	if (chip->info->dual_chip)
+		chip->smi_ops = &mv88e6xxx_smi_dual_direct_ops;
+	else if (sw_addr == 0)
+		chip->smi_ops = &mv88e6xxx_smi_direct_ops;
+	else if (chip->info->multi_chip)
+		chip->smi_ops = &mv88e6xxx_smi_indirect_ops;
+	else
+		return -EINVAL;
+
+	chip->bus = bus;
+	chip->sw_addr = sw_addr;
+
+	if (chip->smi_ops->init)
+		return chip->smi_ops->init(chip);
+
+	return 0;
+}

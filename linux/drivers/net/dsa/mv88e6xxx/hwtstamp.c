@@ -1,407 +1,615 @@
-\
-    $(wildcard include/config/PCI_MMCONFIG) \
-    $(wildcard include/config/ACPI_APEI_GHES) \
-    $(wildcard include/config/INTEL_TXT) \
-  arch/x86/include/generated/asm/kmap_size.h \
-  include/asm-generic/kmap_size.h \
-    $(wildcard include/config/DEBUG_KMAP_LOCAL) \
-  include/asm-generic/fixmap.h \
-  arch/x86/include/asm/irq_vectors.h \
-    $(wildcard include/config/HAVE_KVM) \
-    $(wildcard include/config/HYPERV) \
-    $(wildcard include/config/PCI_MSI) \
-  arch/x86/include/asm/cpu_entry_area.h \
-  arch/x86/include/asm/intel_ds.h \
-  arch/x86/include/asm/pgtable_areas.h \
-  arch/x86/include/asm/pgtable_32_areas.h \
-  include/uapi/linux/elf.h \
-  include/uapi/linux/elf-em.h \
-  include/linux/kobject.h \
-    $(wildcard include/config/UEVENT_HELPER) \
-    $(wildcard include/config/DEBUG_KOBJECT_RELEASE) \
-  include/linux/sysfs.h \
-  include/linux/kernfs.h \
-    $(wildcard include/config/KERNFS) \
-  include/linux/idr.h \
-  include/linux/radix-tree.h \
-  include/linux/xarray.h \
-    $(wildcard include/config/XARRAY_MULTI) \
-  include/linux/kconfig.h \
-  include/linux/kobject_ns.h \
-  include/linux/moduleparam.h \
-    $(wildcard include/config/ALPHA) \
-    $(wildcard include/config/IA64) \
-    $(wildcard include/config/PPC64) \
-  include/linux/rbtree_latch.h \
-  include/linux/error-injection.h \
-  include/asm-generic/error-injection.h \
-  include/linux/cfi.h \
-    $(wildcard include/config/CFI_CLANG_SHADOW) \
-  arch/x86/include/asm/module.h \
-    $(wildcard include/config/UNWINDER_ORC) \
-  include/asm-generic/module.h \
-    $(wildcard include/config/HAVE_MOD_ARCH_SPECIFIC) \
-    $(wildcard include/config/MODULES_USE_ELF_REL) \
-    $(wildcard include/config/MODULES_USE_ELF_RELA) \
-  arch/x86/include/asm/orc_types.h \
-  include/linux/i2c.h \
-    $(wildcard include/config/I2C) \
-    $(wildcard include/config/I2C_SLAVE) \
-    $(wildcard include/config/I2C_BOARDINFO) \
-    $(wildcard include/config/I2C_MUX) \
-    $(wildcard include/config/OF) \
-    $(wildcard include/config/ACPI) \
-  include/linux/acpi.h \
-    $(wildcard include/config/ACPI_DEBUGGER) \
-    $(wildcard include/config/ACPI_TABLE_LIB) \
-    $(wildcard include/config/LOONGARCH) \
-    $(wildcard include/config/ARM64) \
-    $(wildcard include/config/ACPI_PROCESSOR_CSTATE) \
-    $(wildcard include/config/ACPI_HOTPLUG_CPU) \
-    $(wildcard include/config/ACPI_HOTPLUG_IOAPIC) \
-    $(wildcard include/config/PCI) \
-    $(wildcard include/config/ACPI_WMI) \
-    $(wildcard include/config/ACPI_NUMA) \
-    $(wildcard include/config/HIBERNATION) \
-    $(wildcard include/config/ACPI_HOTPLUG_MEMORY) \
-    $(wildcard include/config/ACPI_CONTAINER) \
-    $(wildcard include/config/ACPI_GTDT) \
-    $(wildcard include/config/PM) \
-    $(wildcard include/config/GPIOLIB) \
-    $(wildcard include/config/ACPI_TABLE_UPGRADE) \
-    $(wildcard include/config/ACPI_WATCHDOG) \
-    $(wildcard include/config/ACPI_SPCR_TABLE) \
-    $(wildcard include/config/ACPI_GENERIC_GSI) \
-    $(wildcard include/config/ACPI_LPIT) \
-    $(wildcard include/config/ACPI_PPTT) \
-    $(wildcard include/config/ACPI_PCC) \
-  include/linux/ioport.h \
-  include/linux/irqdomain.h \
-    $(wildcard include/config/IRQ_DOMAIN_HIERARCHY) \
-    $(wildcard include/config/GENERIC_IRQ_DEBUGFS) \
-    $(wildcard include/config/IRQ_DOMAIN) \
-    $(wildcard include/config/IRQ_DOMAIN_NOMAP) \
-  include/linux/irqhandler.h \
-  include/linux/of.h \
-    $(wildcard include/config/OF_DYNAMIC) \
-    $(wildcard include/config/SPARC) \
-    $(wildcard include/config/OF_PROMTREE) \
-    $(wildcard include/config/OF_KOBJ) \
-    $(wildcard include/config/OF_NUMA) \
-    $(wildcard include/config/OF_OVERLAY) \
-  include/linux/mod_devicetable.h \
-  include/linux/uuid.h \
-  include/uapi/linux/uuid.h \
-  include/linux/property.h \
-  include/linux/fwnode.h \
-  include/linux/resource_ext.h \
-  include/linux/slab.h \
-    $(wildcard include/config/DEBUG_SLAB) \
-    $(wildcard include/config/FAILSLAB) \
-    $(wildcard include/config/MEMCG_KMEM) \
-    $(wildcard include/config/KASAN) \
-    $(wildcard include/config/SLAB) \
-    $(wildcard include/config/SLUB) \
-    $(wildcard include/config/SLOB) \
-  include/linux/overflow.h \
-  include/linux/percpu-refcount.h \
-  include/linux/kasan.h \
-    $(wildcard include/config/KASAN_STACK) \
-    $(wildcard include/config/KASAN_VMALLOC) \
-    $(wildcard include/config/KASAN_INLINE) \
-  include/linux/kasan-enabled.h \
-  include/linux/device.h \
-    $(wildcard include/config/GENERIC_MSI_IRQ_DOMAIN) \
-    $(wildcard include/config/GENERIC_MSI_IRQ) \
-    $(wildcard include/config/ENERGY_MODEL) \
-    $(wildcard include/config/PINCTRL) \
-    $(wildcard include/config/DMA_OPS) \
-    $(wildcard include/config/DMA_DECLARE_COHERENT) \
-    $(wildcard include/config/DMA_CMA) \
-    $(wildcard include/config/SWIOTLB) \
-    $(wildcard include/config/ARCH_HAS_SYNC_DMA_FOR_DEVICE) \
-    $(wildcard include/config/ARCH_HAS_SYNC_DMA_FOR_CPU) \
-    $(wildcard include/config/ARCH_HAS_SYNC_DMA_FOR_CPU_ALL) \
-    $(wildcard include/config/DMA_OPS_BYPASS) \
-    $(wildcard include/config/DEVTMPFS) \
-    $(wildcard include/config/SYSFS_DEPRECATED) \
-  include/linux/dev_printk.h \
-  include/linux/ratelimit.h \
-  include/linux/sched.h \
-    $(wildcard include/config/VIRT_CPU_ACCOUNTING_NATIVE) \
-    $(wildcard include/config/SCHED_INFO) \
-    $(wildcard include/config/SCHEDSTATS) \
-    $(wildcard include/config/SCHED_CORE) \
-    $(wildcard include/config/FAIR_GROUP_SCHED) \
-    $(wildcard include/config/RT_GROUP_SCHED) \
-    $(wildcard include/config/RT_MUTEXES) \
-    $(wildcard include/config/UCLAMP_TASK) \
-    $(wildcard include/config/UCLAMP_BUCKETS_COUNT) \
-    $(wildcard include/config/CGROUP_SCHED) \
-    $(wildcard include/config/BLK_DEV_IO_TRACE) \
-    $(wildcard include/config/PSI) \
-    $(wildcard include/config/COMPAT_BRK) \
-    $(wildcard include/config/CGROUPS) \
-    $(wildcard include/config/BLK_CGROUP) \
-    $(wildcard include/config/PAGE_OWNER) \
-    $(wildcard include/config/EVENTFD) \
-    $(wildcard include/config/ARCH_HAS_SCALED_CPUTIME) \
-    $(wildcard include/config/VIRT_CPU_ACCOUNTING_GEN) \
-    $(wildcard include/config/POSIX_CPUTIMERS) \
-    $(wildcard include/config/POSIX_CPU_TIMERS_TASK_WORK) \
-    $(wildcard include/config/KEYS) \
-    $(wildcard include/config/SYSVIPC) \
-    $(wildcard include/config/DETECT_HUNG_TASK) \
-    $(wildcard include/config/IO_URING) \
-    $(wildcard include/config/AUDIT) \
-    $(wildcard include/config/AUDITSYSCALL) \
-    $(wildcard include/config/UBSAN) \
-    $(wildcard include/config/UBSAN_TRAP) \
-    $(wildcard include/config/TASK_XACCT) \
-    $(wildcard include/config/CPUSETS) \
-    $(wildcard include/config/X86_CPU_RESCTRL) \
-    $(wildcard include/config/FUTEX) \
-    $(wildcard include/config/PERF_EVENTS) \
-    $(wildcard include/config/RSEQ) \
-    $(wildcard include/config/TASK_DELAY_ACCT) \
-    $(wildcard include/config/FAULT_INJECTION) \
-    $(wildcard include/config/LATENCYTOP) \
-    $(wildcard include/config/KUNIT) \
-    $(wildcard include/config/FUNCTION_GRAPH_TRACER) \
-    $(wildcard include/config/BCACHE) \
-    $(wildcard include/config/VMAP_STACK) \
-    $(wildcard include/config/SECURITY) \
-    $(wildcard include/config/BPF_SYSCALL) \
-    $(wildcard include/config/GCC_PLUGIN_STACKLEAK) \
-    $(wildcard include/config/X86_MCE) \
-    $(wildcard include/config/KRETPROBES) \
-    $(wildcard include/config/RETHOOK) \
-    $(wildcard include/config/ARCH_HAS_PARANOID_L1D_FLUSH) \
-    $(wildcard include/config/ARCH_TASK_STRUCT_ON_STACK) \
-    $(wildcard include/config/DEBUG_RSEQ) \
-  include/uapi/linux/sched.h \
-  include/linux/pid.h \
-  include/linux/rculist.h \
-    $(wildcard include/config/PROVE_RCU_LIST) \
-  include/linux/sem.h \
-  include/uapi/linux/sem.h \
-  include/linux/ipc.h \
-  include/linux/rhashtable-types.h \
-  include/uapi/linux/ipc.h \
-  arch/x86/include/generated/uapi/asm/ipcbuf.h \
-  include/uapi/asm-generic/ipcbuf.h \
-  arch/x86/include/uapi/asm/sembuf.h \
-  include/linux/shm.h \
-  include/uapi/linux/shm.h \
-  include/uapi/asm-generic/hugetlb_encode.h \
-  arch/x86/include/uapi/asm/shmbuf.h \
-  include/uapi/asm-generic/shmbuf.h \
-  arch/x86/include/asm/shmparam.h \
-  include/linux/plist.h \
-    $(wildcard include/config/DEBUG_PLIST) \
-  include/linux/hrtimer.h \
-    $(wildcard include/config/HIGH_RES_TIMERS) \
-    $(wildcard include/config/TIME_LOW_RES) \
-    $(wildcard include/config/TIMERFD) \
-  include/linux/hrtimer_defs.h \
-  include/linux/timerqueue.h \
-  include/linux/seccomp.h \
-    $(wildcard include/config/SECCOMP) \
-    $(wildcard include/config/HAVE_ARCH_SECCOMP_FILTER) \
-    $(wildcard include/config/SECCOMP_FILTER) \
-    $(wildcard include/config/CHECKPOINT_RESTORE) \
-    $(wildcard include/config/SECCOMP_CACHE_DEBUG) \
-  include/uapi/linux/seccomp.h \
-  arch/x86/include/asm/seccomp.h \
-  arch/x86/include/asm/unistd.h \
-  arch/x86/include/uapi/asm/unistd.h \
-  arch/x86/include/generated/uapi/asm/unistd_32.h \
-  include/asm-generic/seccomp.h \
-  include/uapi/linux/unistd.h \
-  include/linux/resource.h \
-  include/uapi/linux/resource.h \
-  arch/x86/include/generated/uapi/asm/resource.h \
-  include/asm-generic/resource.h \
-  include/uapi/asm-generic/resource.h \
-  include/linux/latencytop.h \
-  include/linux/sched/prio.h \
-  include/linux/sched/types.h \
-  include/linux/signal_types.h \
-    $(wildcard include/config/OLD_SIGACTION) \
-  include/uapi/linux/signal.h \
-  arch/x86/include/asm/signal.h \
-  arch/x86/include/uapi/asm/signal.h \
-  include/uapi/asm-generic/signal-defs.h \
-  arch/x86/include/uapi/asm/siginfo.h \
-  include/uapi/asm-generic/siginfo.h \
-  include/linux/syscall_user_dispatch.h \
-  include/linux/task_io_accounting.h \
-    $(wildcard include/config/TASK_IO_ACCOUNTING) \
-  include/linux/posix-timers.h \
-  include/linux/alarmtimer.h \
-    $(wildcard include/config/RTC_CLASS) \
-  include/uapi/linux/rseq.h \
-  include/linux/kcsan.h \
-  include/linux/energy_model.h \
-  include/linux/sched/cpufreq.h \
-    $(wildcard include/config/CPU_FREQ) \
-  include/linux/sched/topology.h \
-    $(wildcard include/config/SCHED_DEBUG) \
-    $(wildcard include/config/SCHED_MC) \
-    $(wildcard include/config/CPU_FREQ_GOV_SCHEDUTIL) \
-  include/linux/sched/idle.h \
-  include/linux/sched/sd_flags.h \
-  include/linux/klist.h \
-  include/linux/pm.h \
-    $(wildcard include/config/VT_CONSOLE_SLEEP) \
-    $(wildcard include/config/PM_CLK) \
-    $(wildcard include/config/PM_GENERIC_DOMAINS) \
-  include/linux/device/bus.h \
-  include/linux/device/class.h \
-  include/linux/device/driver.h \
-  arch/x86/include/asm/device.h \
-  include/linux/pm_wakeup.h \
-  include/acpi/acpi.h \
-  include/acpi/platform/acenv.h \
-  include/acpi/platform/acgcc.h \
-  include/acpi/platform/aclinux.h \
-    $(wildcard include/config/ACPI_REDUCED_HARDWARE_ONLY) \
-    $(wildcard include/config/ACPI_DEBUG) \
-  include/linux/ctype.h \
-  arch/x86/include/asm/acenv.h \
-  include/acpi/acnames.h \
-  include/acpi/actypes.h \
-  include/acpi/acexcep.h \
-  include/acpi/actbl.h \
-  include/acpi/actbl1.h \
-  include/acpi/actbl2.h \
-  include/acpi/actbl3.h \
-  include/acpi/acrestyp.h \
-  include/acpi/platform/acenvex.h \
-  include/acpi/platform/aclinuxex.h \
-  include/acpi/platform/acgccex.h \
-  include/acpi/acoutput.h \
-  include/acpi/acpiosxf.h \
-  include/acpi/acpixf.h \
-  include/acpi/acconfig.h \
-  include/acpi/acbuffer.h \
-  include/linux/dynamic_debug.h \
-  include/acpi/acpi_bus.h \
-    $(wildcard include/config/X86_ANDROID_TABLETS) \
-    $(wildcard include/config/ACPI_SYSTEM_POWER_STATES_SUPPORT) \
-    $(wildcard include/config/ACPI_SLEEP) \
-  include/acpi/acpi_drivers.h \
-    $(wildcard include/config/ACPI_DOCK) \
-  include/acpi/acpi_numa.h \
-    $(wildcard include/config/ACPI_HMAT) \
-  include/acpi/acpi_io.h \
-  include/linux/io.h \
-    $(wildcard include/config/HAS_IOPORT_MAP) \
-  arch/x86/include/asm/io.h \
-    $(wildcard include/config/MTRR) \
-    $(wildcard include/config/X86_PAT) \
-  arch/x86/include/generated/asm/early_ioremap.h \
-  include/asm-generic/early_ioremap.h \
-    $(wildcard include/config/GENERIC_EARLY_IOREMAP) \
-  include/asm-generic/iomap.h \
-  include/asm-generic/pci_iomap.h \
-    $(wildcard include/config/NO_GENERIC_PCI_IOPORT_MAP) \
-    $(wildcard include/config/GENERIC_PCI_IOMAP) \
-  include/asm-generic/io.h \
-    $(wildcard include/config/GENERIC_IOMAP) \
-    $(wildcard include/config/GENERIC_IOREMAP) \
-    $(wildcard include/config/VIRT_TO_BUS) \
-    $(wildcard include/config/GENERIC_DEVMEM_IS_ALLOWED) \
-  include/linux/logic_pio.h \
-    $(wildcard include/config/INDIRECT_PIO) \
-  include/linux/vmalloc.h \
-    $(wildcard include/config/HAVE_ARCH_HUGE_VMALLOC) \
-  arch/x86/include/asm/vmalloc.h \
-    $(wildcard include/config/HAVE_ARCH_HUGE_VMAP) \
-  arch/x86/include/asm/acpi.h \
-    $(wildcard include/config/ACPI_APEI) \
-  include/acpi/pdc_intel.h \
-  arch/x86/include/asm/numa.h \
-    $(wildcard include/config/NUMA_EMU) \
-  arch/x86/include/asm/numa_32.h \
-  include/linux/regulator/consumer.h \
-    $(wildcard include/config/REGULATOR) \
-  include/linux/suspend.h \
-    $(wildcard include/config/VT) \
-    $(wildcard include/config/SUSPEND) \
-    $(wildcard include/config/HIBERNATION_SNAPSHOT_DEV) \
-    $(wildcard include/config/PM_SLEEP_DEBUG) \
-    $(wildcard include/config/PM_AUTOSLEEP) \
-  include/linux/swap.h \
-    $(wildcard include/config/DEVICE_PRIVATE) \
-    $(wildcard include/config/MIGRATION) \
-    $(wildcard include/config/FRONTSWAP) \
-    $(wildcard include/config/THP_SWAP) \
-    $(wildcard include/config/MEMCG_SWAP) \
-  include/linux/memcontrol.h \
-    $(wildcard include/config/CGROUP_WRITEBACK) \
-  include/linux/cgroup.h \
-    $(wildcard include/config/CGROUP_CPUACCT) \
-    $(wildcard include/config/SOCK_CGROUP_DATA) \
-    $(wildcard include/config/CGROUP_DATA) \
-    $(wildcard include/config/CGROUP_BPF) \
-  include/uapi/linux/cgroupstats.h \
-  include/uapi/linux/taskstats.h \
-  include/linux/fs.h \
-    $(wildcard include/config/READ_ONLY_THP_FOR_FS) \
-    $(wildcard include/config/FS_POSIX_ACL) \
-    $(wildcard include/config/IMA) \
-    $(wildcard include/config/FILE_LOCKING) \
-    $(wildcard include/config/FSNOTIFY) \
-    $(wildcard include/config/FS_ENCRYPTION) \
-    $(wildcard include/config/FS_VERITY) \
-    $(wildcard include/config/EPOLL) \
-    $(wildcard include/config/UNICODE) \
-    $(wildcard include/config/QUOTA) \
-    $(wildcard include/config/FS_DAX) \
-    $(wildcard include/config/BLOCK) \
-  include/linux/wait_bit.h \
-  include/linux/kdev_t.h \
-  include/uapi/linux/kdev_t.h \
-  include/linux/dcache.h \
-  include/linux/rculist_bl.h \
-  include/linux/list_bl.h \
-  include/linux/bit_spinlock.h \
-  include/linux/lockref.h \
-    $(wildcard include/config/ARCH_USE_CMPXCHG_LOCKREF) \
-  include/linux/stringhash.h \
-    $(wildcard include/config/DCACHE_WORD_ACCESS) \
-  include/linux/hash.h \
-    $(wildcard include/config/HAVE_ARCH_HASH) \
-  include/linux/path.h \
-  include/linux/list_lru.h \
-  include/linux/shrinker.h \
-  include/linux/capability.h \
-  include/uapi/linux/capability.h \
-  include/linux/semaphore.h \
-  include/linux/fcntl.h \
-    $(wildcard include/config/ARCH_32BIT_OFF_T) \
-  include/uapi/linux/fcntl.h \
-  arch/x86/include/generated/uapi/asm/fcntl.h \
-  include/uapi/asm-generic/fcntl.h \
-  include/uapi/linux/openat2.h \
-  include/linux/migrate_mode.h \
-  include/linux/percpu-rwsem.h \
-  include/linux/rcuwait.h \
-  include/linux/sched/signal.h \
-    $(wildcard include/config/SCHED_AUTOGROUP) \
-    $(wildcard include/config/BSD_PROCESS_ACCT) \
-    $(wildcard include/config/TASKSTATS) \
-    $(wildcard include/config/STACK_GROWSUP) \
-  include/linux/signal.h \
-    $(wildcard include/config/DYNAMIC_SIGFRAME) \
-  include/linux/sched/jobctl.h \
-  include/linux/sched/task.h \
-    $(wildcard include/config/HAVE_EXIT_THREAD) \
-    $(wildcard include/config/ARCH_WANTS_DYNAMIC_TASK_STRUCT) \
-    $(wildcard include/config/HAVE_ARCH_THREAD_STRUCT_WHITELIST) \
-  include/linux/uaccess.h \
-  include/linux/fault-inject-usercopy.h \
-    $(wildcard include/config/FAULT_INJECTION_USERCOPY) \
-  arch/x86/include/asm/uaccess.h \
-    $(wildcard include/config/CC_
+// SPDX-License-Identifier: GPL-2.0-or-later
+/*
+ * Marvell 88E6xxx Switch hardware timestamping support
+ *
+ * Copyright (c) 2008 Marvell Semiconductor
+ *
+ * Copyright (c) 2017 National Instruments
+ *      Erik Hons <erik.hons@ni.com>
+ *      Brandon Streiff <brandon.streiff@ni.com>
+ *      Dane Wagner <dane.wagner@ni.com>
+ */
+
+#include "chip.h"
+#include "global2.h"
+#include "hwtstamp.h"
+#include "ptp.h"
+#include <linux/ptp_classify.h>
+
+#define SKB_PTP_TYPE(__skb) (*(unsigned int *)((__skb)->cb))
+
+static int mv88e6xxx_port_ptp_read(struct mv88e6xxx_chip *chip, int port,
+				   int addr, u16 *data, int len)
+{
+	if (!chip->info->ops->avb_ops->port_ptp_read)
+		return -EOPNOTSUPP;
+
+	return chip->info->ops->avb_ops->port_ptp_read(chip, port, addr,
+						       data, len);
+}
+
+static int mv88e6xxx_port_ptp_write(struct mv88e6xxx_chip *chip, int port,
+				    int addr, u16 data)
+{
+	if (!chip->info->ops->avb_ops->port_ptp_write)
+		return -EOPNOTSUPP;
+
+	return chip->info->ops->avb_ops->port_ptp_write(chip, port, addr,
+							data);
+}
+
+static int mv88e6xxx_ptp_write(struct mv88e6xxx_chip *chip, int addr,
+			       u16 data)
+{
+	if (!chip->info->ops->avb_ops->ptp_write)
+		return -EOPNOTSUPP;
+
+	return chip->info->ops->avb_ops->ptp_write(chip, addr, data);
+}
+
+static int mv88e6xxx_ptp_read(struct mv88e6xxx_chip *chip, int addr,
+			      u16 *data)
+{
+	if (!chip->info->ops->avb_ops->ptp_read)
+		return -EOPNOTSUPP;
+
+	return chip->info->ops->avb_ops->ptp_read(chip, addr, data, 1);
+}
+
+/* TX_TSTAMP_TIMEOUT: This limits the time spent polling for a TX
+ * timestamp. When working properly, hardware will produce a timestamp
+ * within 1ms. Software may enounter delays due to MDIO contention, so
+ * the timeout is set accordingly.
+ */
+#define TX_TSTAMP_TIMEOUT	msecs_to_jiffies(40)
+
+int mv88e6xxx_get_ts_info(struct dsa_switch *ds, int port,
+			  struct ethtool_ts_info *info)
+{
+	const struct mv88e6xxx_ptp_ops *ptp_ops;
+	struct mv88e6xxx_chip *chip;
+
+	chip = ds->priv;
+	ptp_ops = chip->info->ops->ptp_ops;
+
+	if (!chip->info->ptp_support)
+		return -EOPNOTSUPP;
+
+	info->so_timestamping =
+		SOF_TIMESTAMPING_TX_HARDWARE |
+		SOF_TIMESTAMPING_RX_HARDWARE |
+		SOF_TIMESTAMPING_RAW_HARDWARE;
+	info->phc_index = ptp_clock_index(chip->ptp_clock);
+	info->tx_types =
+		(1 << HWTSTAMP_TX_OFF) |
+		(1 << HWTSTAMP_TX_ON);
+	info->rx_filters = ptp_ops->rx_filters;
+
+	return 0;
+}
+
+static int mv88e6xxx_set_hwtstamp_config(struct mv88e6xxx_chip *chip, int port,
+					 struct hwtstamp_config *config)
+{
+	const struct mv88e6xxx_ptp_ops *ptp_ops = chip->info->ops->ptp_ops;
+	struct mv88e6xxx_port_hwtstamp *ps = &chip->port_hwtstamp[port];
+	bool tstamp_enable = false;
+
+	/* Prevent the TX/RX paths from trying to interact with the
+	 * timestamp hardware while we reconfigure it.
+	 */
+	clear_bit_unlock(MV88E6XXX_HWTSTAMP_ENABLED, &ps->state);
+
+	switch (config->tx_type) {
+	case HWTSTAMP_TX_OFF:
+		tstamp_enable = false;
+		break;
+	case HWTSTAMP_TX_ON:
+		tstamp_enable = true;
+		break;
+	default:
+		return -ERANGE;
+	}
+
+	/* The switch supports timestamping both L2 and L4; one cannot be
+	 * disabled independently of the other.
+	 */
+
+	if (!(BIT(config->rx_filter) & ptp_ops->rx_filters)) {
+		config->rx_filter = HWTSTAMP_FILTER_NONE;
+		dev_dbg(chip->dev, "Unsupported rx_filter %d\n",
+			config->rx_filter);
+		return -ERANGE;
+	}
+
+	switch (config->rx_filter) {
+	case HWTSTAMP_FILTER_NONE:
+		tstamp_enable = false;
+		break;
+	case HWTSTAMP_FILTER_PTP_V2_L4_EVENT:
+	case HWTSTAMP_FILTER_PTP_V2_L4_SYNC:
+	case HWTSTAMP_FILTER_PTP_V2_L4_DELAY_REQ:
+	case HWTSTAMP_FILTER_PTP_V2_L2_EVENT:
+	case HWTSTAMP_FILTER_PTP_V2_L2_SYNC:
+	case HWTSTAMP_FILTER_PTP_V2_L2_DELAY_REQ:
+	case HWTSTAMP_FILTER_PTP_V2_EVENT:
+	case HWTSTAMP_FILTER_PTP_V2_SYNC:
+	case HWTSTAMP_FILTER_PTP_V2_DELAY_REQ:
+		config->rx_filter = HWTSTAMP_FILTER_PTP_V2_EVENT;
+		break;
+	case HWTSTAMP_FILTER_ALL:
+	default:
+		config->rx_filter = HWTSTAMP_FILTER_NONE;
+		return -ERANGE;
+	}
+
+	mv88e6xxx_reg_lock(chip);
+	if (tstamp_enable) {
+		chip->enable_count += 1;
+		if (chip->enable_count == 1 && ptp_ops->global_enable)
+			ptp_ops->global_enable(chip);
+		if (ptp_ops->port_enable)
+			ptp_ops->port_enable(chip, port);
+	} else {
+		if (ptp_ops->port_disable)
+			ptp_ops->port_disable(chip, port);
+		chip->enable_count -= 1;
+		if (chip->enable_count == 0 && ptp_ops->global_disable)
+			ptp_ops->global_disable(chip);
+	}
+	mv88e6xxx_reg_unlock(chip);
+
+	/* Once hardware has been configured, enable timestamp checks
+	 * in the RX/TX paths.
+	 */
+	if (tstamp_enable)
+		set_bit(MV88E6XXX_HWTSTAMP_ENABLED, &ps->state);
+
+	return 0;
+}
+
+int mv88e6xxx_port_hwtstamp_set(struct dsa_switch *ds, int port,
+				struct ifreq *ifr)
+{
+	struct mv88e6xxx_chip *chip = ds->priv;
+	struct mv88e6xxx_port_hwtstamp *ps = &chip->port_hwtstamp[port];
+	struct hwtstamp_config config;
+	int err;
+
+	if (!chip->info->ptp_support)
+		return -EOPNOTSUPP;
+
+	if (copy_from_user(&config, ifr->ifr_data, sizeof(config)))
+		return -EFAULT;
+
+	err = mv88e6xxx_set_hwtstamp_config(chip, port, &config);
+	if (err)
+		return err;
+
+	/* Save the chosen configuration to be returned later. */
+	memcpy(&ps->tstamp_config, &config, sizeof(config));
+
+	return copy_to_user(ifr->ifr_data, &config, sizeof(config)) ?
+		-EFAULT : 0;
+}
+
+int mv88e6xxx_port_hwtstamp_get(struct dsa_switch *ds, int port,
+				struct ifreq *ifr)
+{
+	struct mv88e6xxx_chip *chip = ds->priv;
+	struct mv88e6xxx_port_hwtstamp *ps = &chip->port_hwtstamp[port];
+	struct hwtstamp_config *config = &ps->tstamp_config;
+
+	if (!chip->info->ptp_support)
+		return -EOPNOTSUPP;
+
+	return copy_to_user(ifr->ifr_data, config, sizeof(*config)) ?
+		-EFAULT : 0;
+}
+
+/* Returns a pointer to the PTP header if the caller should time stamp,
+ * or NULL if the caller should not.
+ */
+static struct ptp_header *mv88e6xxx_should_tstamp(struct mv88e6xxx_chip *chip,
+						  int port, struct sk_buff *skb,
+						  unsigned int type)
+{
+	struct mv88e6xxx_port_hwtstamp *ps = &chip->port_hwtstamp[port];
+	struct ptp_header *hdr;
+
+	if (!chip->info->ptp_support)
+		return NULL;
+
+	hdr = ptp_parse_header(skb, type);
+	if (!hdr)
+		return NULL;
+
+	if (!test_bit(MV88E6XXX_HWTSTAMP_ENABLED, &ps->state))
+		return NULL;
+
+	return hdr;
+}
+
+static int mv88e6xxx_ts_valid(u16 status)
+{
+	if (!(status & MV88E6XXX_PTP_TS_VALID))
+		return 0;
+	if (status & MV88E6XXX_PTP_TS_STATUS_MASK)
+		return 0;
+	return 1;
+}
+
+static int seq_match(struct sk_buff *skb, u16 ts_seqid)
+{
+	unsigned int type = SKB_PTP_TYPE(skb);
+	struct ptp_header *hdr;
+
+	hdr = ptp_parse_header(skb, type);
+
+	return ts_seqid == ntohs(hdr->sequence_id);
+}
+
+static void mv88e6xxx_get_rxts(struct mv88e6xxx_chip *chip,
+			       struct mv88e6xxx_port_hwtstamp *ps,
+			       struct sk_buff *skb, u16 reg,
+			       struct sk_buff_head *rxq)
+{
+	u16 buf[4] = { 0 }, status, seq_id;
+	struct skb_shared_hwtstamps *shwt;
+	struct sk_buff_head received;
+	u64 ns, timelo, timehi;
+	unsigned long flags;
+	int err;
+
+	/* The latched timestamp belongs to one of the received frames. */
+	__skb_queue_head_init(&received);
+	spin_lock_irqsave(&rxq->lock, flags);
+	skb_queue_splice_tail_init(rxq, &received);
+	spin_unlock_irqrestore(&rxq->lock, flags);
+
+	mv88e6xxx_reg_lock(chip);
+	err = mv88e6xxx_port_ptp_read(chip, ps->port_id,
+				      reg, buf, ARRAY_SIZE(buf));
+	mv88e6xxx_reg_unlock(chip);
+	if (err)
+		pr_err("failed to get the receive time stamp\n");
+
+	status = buf[0];
+	timelo = buf[1];
+	timehi = buf[2];
+	seq_id = buf[3];
+
+	if (status & MV88E6XXX_PTP_TS_VALID) {
+		mv88e6xxx_reg_lock(chip);
+		err = mv88e6xxx_port_ptp_write(chip, ps->port_id, reg, 0);
+		mv88e6xxx_reg_unlock(chip);
+		if (err)
+			pr_err("failed to clear the receive status\n");
+	}
+	/* Since the device can only handle one time stamp at a time,
+	 * we purge any extra frames from the queue.
+	 */
+	for ( ; skb; skb = __skb_dequeue(&received)) {
+		if (mv88e6xxx_ts_valid(status) && seq_match(skb, seq_id)) {
+			ns = timehi << 16 | timelo;
+
+			mv88e6xxx_reg_lock(chip);
+			ns = timecounter_cyc2time(&chip->tstamp_tc, ns);
+			mv88e6xxx_reg_unlock(chip);
+			shwt = skb_hwtstamps(skb);
+			memset(shwt, 0, sizeof(*shwt));
+			shwt->hwtstamp = ns_to_ktime(ns);
+			status &= ~MV88E6XXX_PTP_TS_VALID;
+		}
+		netif_rx(skb);
+	}
+}
+
+static void mv88e6xxx_rxtstamp_work(struct mv88e6xxx_chip *chip,
+				    struct mv88e6xxx_port_hwtstamp *ps)
+{
+	const struct mv88e6xxx_ptp_ops *ptp_ops = chip->info->ops->ptp_ops;
+	struct sk_buff *skb;
+
+	skb = skb_dequeue(&ps->rx_queue);
+
+	if (skb)
+		mv88e6xxx_get_rxts(chip, ps, skb, ptp_ops->arr0_sts_reg,
+				   &ps->rx_queue);
+
+	skb = skb_dequeue(&ps->rx_queue2);
+	if (skb)
+		mv88e6xxx_get_rxts(chip, ps, skb, ptp_ops->arr1_sts_reg,
+				   &ps->rx_queue2);
+}
+
+static int is_pdelay_resp(const struct ptp_header *hdr)
+{
+	return (hdr->tsmt & 0xf) == 3;
+}
+
+bool mv88e6xxx_port_rxtstamp(struct dsa_switch *ds, int port,
+			     struct sk_buff *skb, unsigned int type)
+{
+	struct mv88e6xxx_port_hwtstamp *ps;
+	struct mv88e6xxx_chip *chip;
+	struct ptp_header *hdr;
+
+	chip = ds->priv;
+	ps = &chip->port_hwtstamp[port];
+
+	if (ps->tstamp_config.rx_filter != HWTSTAMP_FILTER_PTP_V2_EVENT)
+		return false;
+
+	hdr = mv88e6xxx_should_tstamp(chip, port, skb, type);
+	if (!hdr)
+		return false;
+
+	SKB_PTP_TYPE(skb) = type;
+
+	if (is_pdelay_resp(hdr))
+		skb_queue_tail(&ps->rx_queue2, skb);
+	else
+		skb_queue_tail(&ps->rx_queue, skb);
+
+	ptp_schedule_worker(chip->ptp_clock, 0);
+
+	return true;
+}
+
+static int mv88e6xxx_txtstamp_work(struct mv88e6xxx_chip *chip,
+				   struct mv88e6xxx_port_hwtstamp *ps)
+{
+	const struct mv88e6xxx_ptp_ops *ptp_ops = chip->info->ops->ptp_ops;
+	struct skb_shared_hwtstamps shhwtstamps;
+	u16 departure_block[4], status;
+	struct sk_buff *tmp_skb;
+	u32 time_raw;
+	int err;
+	u64 ns;
+
+	if (!ps->tx_skb)
+		return 0;
+
+	mv88e6xxx_reg_lock(chip);
+	err = mv88e6xxx_port_ptp_read(chip, ps->port_id,
+				      ptp_ops->dep_sts_reg,
+				      departure_block,
+				      ARRAY_SIZE(departure_block));
+	mv88e6xxx_reg_unlock(chip);
+
+	if (err)
+		goto free_and_clear_skb;
+
+	if (!(departure_block[0] & MV88E6XXX_PTP_TS_VALID)) {
+		if (time_is_before_jiffies(ps->tx_tstamp_start +
+					   TX_TSTAMP_TIMEOUT)) {
+			dev_warn(chip->dev, "p%d: clearing tx timestamp hang\n",
+				 ps->port_id);
+			goto free_and_clear_skb;
+		}
+		/* The timestamp should be available quickly, while getting it
+		 * is high priority and time bounded to only 10ms. A poll is
+		 * warranted so restart the work.
+		 */
+		return 1;
+	}
+
+	/* We have the timestamp; go ahead and clear valid now */
+	mv88e6xxx_reg_lock(chip);
+	mv88e6xxx_port_ptp_write(chip, ps->port_id, ptp_ops->dep_sts_reg, 0);
+	mv88e6xxx_reg_unlock(chip);
+
+	status = departure_block[0] & MV88E6XXX_PTP_TS_STATUS_MASK;
+	if (status != MV88E6XXX_PTP_TS_STATUS_NORMAL) {
+		dev_warn(chip->dev, "p%d: tx timestamp overrun\n", ps->port_id);
+		goto free_and_clear_skb;
+	}
+
+	if (departure_block[3] != ps->tx_seq_id) {
+		dev_warn(chip->dev, "p%d: unexpected seq. id\n", ps->port_id);
+		goto free_and_clear_skb;
+	}
+
+	memset(&shhwtstamps, 0, sizeof(shhwtstamps));
+	time_raw = ((u32)departure_block[2] << 16) | departure_block[1];
+	mv88e6xxx_reg_lock(chip);
+	ns = timecounter_cyc2time(&chip->tstamp_tc, time_raw);
+	mv88e6xxx_reg_unlock(chip);
+	shhwtstamps.hwtstamp = ns_to_ktime(ns);
+
+	dev_dbg(chip->dev,
+		"p%d: txtstamp %llx status 0x%04x skb ID 0x%04x hw ID 0x%04x\n",
+		ps->port_id, ktime_to_ns(shhwtstamps.hwtstamp),
+		departure_block[0], ps->tx_seq_id, departure_block[3]);
+
+	/* skb_complete_tx_timestamp() will free up the client to make
+	 * another timestamp-able transmit. We have to be ready for it
+	 * -- by clearing the ps->tx_skb "flag" -- beforehand.
+	 */
+
+	tmp_skb = ps->tx_skb;
+	ps->tx_skb = NULL;
+	clear_bit_unlock(MV88E6XXX_HWTSTAMP_TX_IN_PROGRESS, &ps->state);
+	skb_complete_tx_timestamp(tmp_skb, &shhwtstamps);
+
+	return 0;
+
+free_and_clear_skb:
+	dev_kfree_skb_any(ps->tx_skb);
+	ps->tx_skb = NULL;
+	clear_bit_unlock(MV88E6XXX_HWTSTAMP_TX_IN_PROGRESS, &ps->state);
+
+	return 0;
+}
+
+long mv88e6xxx_hwtstamp_work(struct ptp_clock_info *ptp)
+{
+	struct mv88e6xxx_chip *chip = ptp_to_chip(ptp);
+	struct dsa_switch *ds = chip->ds;
+	struct mv88e6xxx_port_hwtstamp *ps;
+	int i, restart = 0;
+
+	for (i = 0; i < ds->num_ports; i++) {
+		if (!dsa_is_user_port(ds, i))
+			continue;
+
+		ps = &chip->port_hwtstamp[i];
+		if (test_bit(MV88E6XXX_HWTSTAMP_TX_IN_PROGRESS, &ps->state))
+			restart |= mv88e6xxx_txtstamp_work(chip, ps);
+
+		mv88e6xxx_rxtstamp_work(chip, ps);
+	}
+
+	return restart ? 1 : -1;
+}
+
+void mv88e6xxx_port_txtstamp(struct dsa_switch *ds, int port,
+			     struct sk_buff *skb)
+{
+	struct mv88e6xxx_chip *chip = ds->priv;
+	struct mv88e6xxx_port_hwtstamp *ps = &chip->port_hwtstamp[port];
+	struct ptp_header *hdr;
+	struct sk_buff *clone;
+	unsigned int type;
+
+	type = ptp_classify_raw(skb);
+	if (type == PTP_CLASS_NONE)
+		return;
+
+	hdr = mv88e6xxx_should_tstamp(chip, port, skb, type);
+	if (!hdr)
+		return;
+
+	clone = skb_clone_sk(skb);
+	if (!clone)
+		return;
+
+	if (test_and_set_bit_lock(MV88E6XXX_HWTSTAMP_TX_IN_PROGRESS,
+				  &ps->state)) {
+		kfree_skb(clone);
+		return;
+	}
+
+	ps->tx_skb = clone;
+	ps->tx_tstamp_start = jiffies;
+	ps->tx_seq_id = be16_to_cpu(hdr->sequence_id);
+
+	ptp_schedule_worker(chip->ptp_clock, 0);
+}
+
+int mv88e6165_global_disable(struct mv88e6xxx_chip *chip)
+{
+	u16 val;
+	int err;
+
+	err = mv88e6xxx_ptp_read(chip, MV88E6165_PTP_CFG, &val);
+	if (err)
+		return err;
+	val |= MV88E6165_PTP_CFG_DISABLE_PTP;
+
+	return mv88e6xxx_ptp_write(chip, MV88E6165_PTP_CFG, val);
+}
+
+int mv88e6165_global_enable(struct mv88e6xxx_chip *chip)
+{
+	u16 val;
+	int err;
+
+	err = mv88e6xxx_ptp_read(chip, MV88E6165_PTP_CFG, &val);
+	if (err)
+		return err;
+
+	val &= ~(MV88E6165_PTP_CFG_DISABLE_PTP | MV88E6165_PTP_CFG_TSPEC_MASK);
+
+	return mv88e6xxx_ptp_write(chip, MV88E6165_PTP_CFG, val);
+}
+
+int mv88e6352_hwtstamp_port_disable(struct mv88e6xxx_chip *chip, int port)
+{
+	return mv88e6xxx_port_ptp_write(chip, port, MV88E6XXX_PORT_PTP_CFG0,
+					MV88E6XXX_PORT_PTP_CFG0_DISABLE_PTP);
+}
+
+int mv88e6352_hwtstamp_port_enable(struct mv88e6xxx_chip *chip, int port)
+{
+	return mv88e6xxx_port_ptp_write(chip, port, MV88E6XXX_PORT_PTP_CFG0,
+					MV88E6XXX_PORT_PTP_CFG0_DISABLE_TSPEC_MATCH);
+}
+
+static int mv88e6xxx_hwtstamp_port_setup(struct mv88e6xxx_chip *chip, int port)
+{
+	const struct mv88e6xxx_ptp_ops *ptp_ops = chip->info->ops->ptp_ops;
+	struct mv88e6xxx_port_hwtstamp *ps = &chip->port_hwtstamp[port];
+
+	ps->port_id = port;
+
+	skb_queue_head_init(&ps->rx_queue);
+	skb_queue_head_init(&ps->rx_queue2);
+
+	if (ptp_ops->port_disable)
+		return ptp_ops->port_disable(chip, port);
+
+	return 0;
+}
+
+int mv88e6xxx_hwtstamp_setup(struct mv88e6xxx_chip *chip)
+{
+	const struct mv88e6xxx_ptp_ops *ptp_ops = chip->info->ops->ptp_ops;
+	int err;
+	int i;
+
+	/* Disable timestamping on all ports. */
+	for (i = 0; i < mv88e6xxx_num_ports(chip); ++i) {
+		err = mv88e6xxx_hwtstamp_port_setup(chip, i);
+		if (err)
+			return err;
+	}
+
+	/* Disable PTP globally */
+	if (ptp_ops->global_disable) {
+		err = ptp_ops->global_disable(chip);
+		if (err)
+			return err;
+	}
+
+	/* Set the ethertype of L2 PTP messages */
+	err = mv88e6xxx_ptp_write(chip, MV88E6XXX_PTP_GC_ETYPE, ETH_P_1588);
+	if (err)
+		return err;
+
+	/* MV88E6XXX_PTP_MSG_TYPE is a mask of PTP message types to
+	 * timestamp. This affects all ports that have timestamping enabled,
+	 * but the timestamp config is per-port; thus we configure all events
+	 * here and only support the HWTSTAMP_FILTER_*_EVENT filter types.
+	 */
+	err = mv88e6xxx_ptp_write(chip, MV88E6XXX_PTP_MSGTYPE,
+				  MV88E6XXX_PTP_MSGTYPE_ALL_EVENT);
+	if (err)
+		return err;
+
+	/* Use ARRIVAL1 for peer delay response messages. */
+	err = mv88e6xxx_ptp_write(chip, MV88E6XXX_PTP_TS_ARRIVAL_PTR,
+				  MV88E6XXX_PTP_MSGTYPE_PDLAY_RES);
+	if (err)
+		return err;
+
+	/* 88E6341 devices default to timestamping at the PHY, but this has
+	 * a hardware issue that results in unreliable timestamps. Force
+	 * these devices to timestamp at the MAC.
+	 */
+	if (chip->info->family == MV88E6XXX_FAMILY_6341) {
+		u16 val = MV88E6341_PTP_CFG_UPDATE |
+			  MV88E6341_PTP_CFG_MODE_IDX |
+			  MV88E6341_PTP_CFG_MODE_TS_AT_MAC;
+		err = mv88e6xxx_ptp_write(chip, MV88E6341_PTP_CFG, val);
+		if (err)
+			return err;
+	}
+
+	return 0;
+}
+
+void mv88e6xxx_hwtstamp_free(struct mv88e6xxx_chip *chip)
+{
+}

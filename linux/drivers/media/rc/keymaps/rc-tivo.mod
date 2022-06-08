@@ -1,2 +1,1 @@
-drivers/media/rc/keymaps/rc-tivo.o
-
+// SPDX-License-Identifier: GPL-2.0-

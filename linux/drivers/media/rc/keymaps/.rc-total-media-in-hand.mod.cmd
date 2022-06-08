@@ -1,1 +1,8 @@
-cmd_drivers/media/rc/keymaps/rc-total-media-in-hand.mod := { echo  drivers/media/rc/keymaps/rc-total-media-in-hand.o;  echo; } > drivers/media/rc/keymaps/rc-total-media-in-hand.mod
+ION		0x000004B4
+#define VBI_PASS_CTRL		0x000004BC
+
+/* Audio Decoder Registers */
+/* 8051 Configuration */
+#define DL_CTL		0x00000800
+#define STD_DET_STATUS	0x00000804
+#define STD_DE

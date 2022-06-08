@@ -1,1 +1,1 @@
-ldcard include/config/X86_INTEL_USERCOPY) \
+/* SPDX-License-Identifier: GPL-2.0-or-late

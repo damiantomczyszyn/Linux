@@ -1,2 +1,1 @@
-drivers/media/rc/keymaps/rc-gadmei-rm008z.o
-
+// SPDX-License-Identifier: GPL-2.0-or-later

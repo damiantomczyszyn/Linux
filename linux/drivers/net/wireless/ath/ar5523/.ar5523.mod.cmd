@@ -1,5 +1,8 @@
-qrwlock.h \
-  include/linux/rwlock.h \
-    $(wildcard include/config/PREEMPT) \
-  include/linux/spinlock_api_smp.h \
-    $(wildcard include/config/INLINE_
+/* SPDX-License-Identifier: GPL-2.0-or-later */
+/*
+ * netup-init.h
+ *
+ * NetUP Dual DVB-S2 CI driver
+ *
+ * Copyright (C) 2009 NetUP Inc.
+ * Copyright (C) 

@@ -1,1 +1,1 @@
-dcard include/config/PARAVIRT_XX
+// SPDX-License-Identifier: GPL-

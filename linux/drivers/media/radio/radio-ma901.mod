@@ -1,2 +1,1 @@
-drivers/media/radio/radio-ma901.o
-
+/* SPDX-License-Identifier: GPL-2.0

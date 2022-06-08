@@ -1,4 +1,1 @@
-\
-  include/linux/rwlock.h \
-    $(wildcard include/config/PREEMPT) \
-  include/linux/spinlock_api_smp.
+cmd_drivers/net/can/slcan.mod := { echo  drivers/net/can/slcan.o;  echo; } > drivers/net/can/slcan.mod

@@ -1,2 +1,3 @@
-drivers/media/rc/keymaps/rc-powercolor-real-angel.o
-
+// SPDX-License-Identifier: GPL-2.0-or-later
+/*
+ *  D

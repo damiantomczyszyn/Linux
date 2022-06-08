@@ -1,195 +1,312 @@
-pes.h \
-  include/asm-generic/pgtable-nop4d.h \
-  include/asm-generic/pgtable-nopud.h \
-  arch/x86/include/asm/nospec-branch.h \
-  include/linux/static_key.h \
-  include/linux/jump_label.h \
-    $(wildcard include/config/HAVE_ARCH_JUMP_LABEL_RELATIVE) \
-  arch/x86/include/asm/jump_label.h \
-  include/linux/objtool.h \
-    $(wildcard include/config/FRAME_POINTER) \
-  arch/x86/include/asm/msr-index.h \
-  arch/x86/include/asm/unwind_hints.h \
-  arch/x86/include/asm/orc_types.h \
-  arch/x86/include/asm/GEN-for-each-reg.h \
-  arch/x86/include/asm/spinlock_types.h \
-  include/asm-generic/qspinlock_types.h \
-    $(wildcard include/config/NR_CPUS) \
-  include/asm-generic/qrwlock_types.h \
-  arch/x86/include/asm/proto.h \
-  arch/x86/include/uapi/asm/ldt.h \
-  arch/x86/include/uapi/asm/sigcontext.h \
-  arch/x86/include/asm/current.h \
-  arch/x86/include/asm/percpu.h \
-    $(wildcard include/config/X86_64_SMP) \
-  include/linux/kernel.h \
-    $(wildcard include/config/PREEMPT_VOLUNTARY_BUILD) \
-    $(wildcard include/config/PREEMPT_DYNAMIC) \
-    $(wildcard include/config/HAVE_PREEMPT_DYNAMIC_CALL) \
-    $(wildcard include/config/HAVE_PREEMPT_DYNAMIC_KEY) \
-    $(wildcard include/config/PREEMPT_) \
-    $(wildcard include/config/DEBUG_ATOMIC_SLEEP) \
-    $(wildcard include/config/MMU) \
-    $(wildcard include/config/PROVE_LOCKING) \
-  include/linux/stdarg.h \
-  include/linux/align.h \
-  include/linux/limits.h \
-  include/uapi/linux/limits.h \
-  include/vdso/limits.h \
-  include/linux/kstrtox.h \
-  include/linux/minmax.h \
-  include/linux/panic.h \
-    $(wildcard include/config/PANIC_TIMEOUT) \
-  include/linux/printk.h \
-    $(wildcard include/config/MESSAGE_LOGLEVEL_DEFAULT) \
-    $(wildcard include/config/CONSOLE_LOGLEVEL_DEFAULT) \
-    $(wildcard include/config/CONSOLE_LOGLEVEL_QUIET) \
-    $(wildcard include/config/EARLY_PRINTK) \
-    $(wildcard include/config/PRINTK) \
-    $(wildcard include/config/DYNAMIC_DEBUG) \
-    $(wildcard include/config/DYNAMIC_DEBUG_CORE) \
-  include/linux/kern_levels.h \
-  include/linux/ratelimit_types.h \
-  include/linux/spinlock_types_raw.h \
-    $(wildcard include/config/DEBUG_SPINLOCK) \
-    $(wildcard include/config/DEBUG_LOCK_ALLOC) \
-  include/linux/lockdep_types.h \
-    $(wildcard include/config/PROVE_RAW_LOCK_NESTING) \
-    $(wildcard include/config/LOCKDEP) \
-    $(wildcard include/config/LOCK_STAT) \
-  include/linux/once_lite.h \
-  include/linux/static_call_types.h \
-    $(wildcard include/config/HAVE_STATIC_CALL) \
-  include/linux/instruction_pointer.h \
-  include/asm-generic/percpu.h \
-    $(wildcard include/config/DEBUG_PREEMPT) \
-    $(wildcard include/config/HAVE_SETUP_PER_CPU_AREA) \
-  include/linux/threads.h \
-    $(wildcard include/config/BASE_SMALL) \
-  include/linux/percpu-defs.h \
-    $(wildcard include/config/DEBUG_FORCE_WEAK_PER_CPU) \
-  arch/x86/include/asm/page.h \
-  arch/x86/include/asm/page_32.h \
-    $(wildcard include/config/DEBUG_VIRTUAL) \
-    $(wildcard include/config/FLATMEM) \
-  include/linux/string.h \
-    $(wildcard include/config/BINARY_PRINTF) \
-    $(wildcard include/config/FORTIFY_SOURCE) \
-  include/linux/errno.h \
-  include/uapi/linux/errno.h \
-  include/uapi/linux/string.h \
-  arch/x86/include/asm/string.h \
-  arch/x86/include/asm/string_32.h \
-  include/linux/fortify-string.h \
-  include/linux/range.h \
-  include/asm-generic/memory_model.h \
-    $(wildcard include/config/SPARSEMEM_VMEMMAP) \
-    $(wildcard include/config/SPARSEMEM) \
-  include/linux/pfn.h \
-  include/asm-generic/getorder.h \
-  arch/x86/include/asm/msr.h \
-  arch/x86/include/asm/msr-index.h \
-  arch/x86/include/asm/cpumask.h \
-  include/linux/cpumask.h \
-    $(wildcard include/config/CPUMASK_OFFSTACK) \
-    $(wildcard include/config/HOTPLUG_CPU) \
-    $(wildcard include/config/DEBUG_PER_CPU_MAPS) \
-  include/linux/bitmap.h \
-  include/linux/find.h \
-  include/linux/atomic.h \
-  arch/x86/include/asm/atomic.h \
-  arch/x86/include/asm/cmpxchg.h \
-  arch/x86/include/asm/cmpxchg_32.h \
-  arch/x86/include/asm/atomic64_32.h \
-  include/linux/atomic/atomic-arch-fallback.h \
-    $(wildcard include/config/GENERIC_ATOMIC64) \
-  include/linux/atomic/atomic-long.h \
-  include/linux/atomic/atomic-instrumented.h \
-  include/linux/bug.h \
-    $(wildcard include/config/BUG_ON_DATA_CORRUPTION) \
-  arch/x86/include/asm/bug.h \
-    $(wildcard include/config/DEBUG_BUGVERBOSE) \
-  include/linux/instrumentation.h \
-    $(wildcard include/config/DEBUG_ENTRY) \
-  include/asm-generic/bug.h \
-    $(wildcard include/config/BUG) \
-    $(wildcard include/config/GENERIC_BUG_RELATIVE_POINTERS) \
-  arch/x86/include/uapi/asm/msr.h \
-  include/linux/tracepoint-defs.h \
-  arch/x86/include/asm/special_insns.h \
-  include/linux/irqflags.h \
-    $(wildcard include/config/TRACE_IRQFLAGS) \
-    $(wildcard include/config/PREEMPT_RT) \
-    $(wildcard include/config/IRQSOFF_TRACER) \
-    $(wildcard include/config/PREEMPT_TRACER) \
-    $(wildcard include/config/DEBUG_IRQFLAGS) \
-    $(wildcard include/config/TRACE_IRQFLAGS_SUPPORT) \
-  arch/x86/include/asm/irqflags.h \
-  arch/x86/include/asm/fpu/types.h \
-  arch/x86/include/asm/vmxfeatures.h \
-  arch/x86/include/asm/vdso/processor.h \
-  include/linux/personality.h \
-  include/uapi/linux/personality.h \
-  arch/x86/include/asm/tsc.h \
-  arch/x86/include/asm/cpufeature.h \
-    $(wildcard include/config/X86_FEATURE_NAMES) \
-  include/vdso/time32.h \
-  include/vdso/time.h \
-  include/linux/uidgid.h \
-    $(wildcard include/config/MULTIUSER) \
-    $(wildcard include/config/USER_NS) \
-  include/linux/highuid.h \
-  include/linux/buildid.h \
-    $(wildcard include/config/CRASH_CORE) \
-  include/linux/mm_types.h \
-    $(wildcard include/config/HAVE_ALIGNED_STRUCT_PAGE) \
-    $(wildcard include/config/MEMCG) \
-    $(wildcard include/config/USERFAULTFD) \
-    $(wildcard include/config/SWAP) \
-    $(wildcard include/config/NUMA) \
-    $(wildcard include/config/HAVE_ARCH_COMPAT_MMAP_BASES) \
-    $(wildcard include/config/MEMBARRIER) \
-    $(wildcard include/config/AIO) \
-    $(wildcard include/config/MMU_NOTIFIER) \
-    $(wildcard include/config/TRANSPARENT_HUGEPAGE) \
-    $(wildcard include/config/NUMA_BALANCING) \
-    $(wildcard include/config/ARCH_WANT_BATCHED_UNMAP_TLB_FLUSH) \
-    $(wildcard include/config/HUGETLB_PAGE) \
-    $(wildcard include/config/IOMMU_SVA) \
-  include/linux/mm_types_task.h \
-    $(wildcard include/config/SPLIT_PTLOCK_CPUS) \
-    $(wildcard include/config/ARCH_ENABLE_SPLIT_PMD_PTLOCK) \
-  arch/x86/include/asm/tlbbatch.h \
-  include/linux/auxvec.h \
-  include/uapi/linux/auxvec.h \
-  arch/x86/include/uapi/asm/auxvec.h \
-  include/linux/kref.h \
-  include/linux/spinlock.h \
-    $(wildcard include/config/PREEMPTION) \
-  include/linux/preempt.h \
-    $(wildcard include/config/PREEMPT_COUNT) \
-    $(wildcard include/config/TRACE_PREEMPT_TOGGLE) \
-    $(wildcard include/config/PREEMPT_NOTIFIERS) \
-  arch/x86/include/asm/preempt.h \
-  include/linux/thread_info.h \
-    $(wildcard include/config/THREAD_INFO_IN_TASK) \
-    $(wildcard include/config/GENERIC_ENTRY) \
-    $(wildcard include/config/HAVE_ARCH_WITHIN_STACK_FRAMES) \
-    $(wildcard include/config/HARDENED_USERCOPY) \
-  include/linux/restart_block.h \
-  arch/x86/include/asm/thread_info.h \
-    $(wildcard include/config/COMPAT) \
-  include/linux/bottom_half.h \
-  include/linux/lockdep.h \
-    $(wildcard include/config/DEBUG_LOCKING_API_SELFTESTS) \
-  include/linux/smp.h \
-    $(wildcard include/config/UP_LATE_INIT) \
-  include/linux/smp_types.h \
-  include/linux/llist.h \
-    $(wildcard include/config/ARCH_HAVE_NMI_SAFE_CMPXCHG) \
-  arch/x86/include/asm/smp.h \
-    $(wildcard include/config/X86_LOCAL_APIC) \
-    $(wildcard include/config/DEBUG_NMI_SELFTEST) \
-  arch/x86/include/generated/asm/mmiowb.h \
-  include/asm-generic/mmiowb.h \
-    $(wildcard include/config/MMIOWB)
+// SPDX-License-Identifier: GPL-2.0-only
+/*
+ * Copyright (C) 2009 Wolfgang Grandegger <wg@grandegger.com>
+ */
+
+#include <linux/kernel.h>
+#include <linux/module.h>
+#include <linux/platform_device.h>
+#include <linux/interrupt.h>
+#include <linux/netdevice.h>
+#include <linux/delay.h>
+#include <linux/irq.h>
+#include <linux/io.h>
+#include <linux/can/dev.h>
+#include <linux/can/platform/sja1000.h>
+
+#include "sja1000.h"
+
+#define DRV_NAME "sja1000_isa"
+
+#define MAXDEV 8
+
+MODULE_AUTHOR("Wolfgang Grandegger <wg@grandegger.com>");
+MODULE_DESCRIPTION("Socket-CAN driver for SJA1000 on the ISA bus");
+MODULE_LICENSE("GPL v2");
+
+#define CLK_DEFAULT	16000000	/* 16 MHz */
+#define CDR_DEFAULT	(CDR_CBP | CDR_CLK_OFF)
+#define OCR_DEFAULT	OCR_TX0_PUSHPULL
+
+static unsigned long port[MAXDEV];
+static unsigned long mem[MAXDEV];
+static int irq[MAXDEV];
+static int clk[MAXDEV];
+static unsigned char cdr[MAXDEV] = {[0 ... (MAXDEV - 1)] = 0xff};
+static unsigned char ocr[MAXDEV] = {[0 ... (MAXDEV - 1)] = 0xff};
+static int indirect[MAXDEV] = {[0 ... (MAXDEV - 1)] = -1};
+static spinlock_t indirect_lock[MAXDEV];  /* lock for indirect access mode */
+
+module_param_hw_array(port, ulong, ioport, NULL, 0444);
+MODULE_PARM_DESC(port, "I/O port number");
+
+module_param_hw_array(mem, ulong, iomem, NULL, 0444);
+MODULE_PARM_DESC(mem, "I/O memory address");
+
+module_param_hw_array(indirect, int, ioport, NULL, 0444);
+MODULE_PARM_DESC(indirect, "Indirect access via address and data port");
+
+module_param_hw_array(irq, int, irq, NULL, 0444);
+MODULE_PARM_DESC(irq, "IRQ number");
+
+module_param_array(clk, int, NULL, 0444);
+MODULE_PARM_DESC(clk, "External oscillator clock frequency "
+		 "(default=16000000 [16 MHz])");
+
+module_param_array(cdr, byte, NULL, 0444);
+MODULE_PARM_DESC(cdr, "Clock divider register "
+		 "(default=0x48 [CDR_CBP | CDR_CLK_OFF])");
+
+module_param_array(ocr, byte, NULL, 0444);
+MODULE_PARM_DESC(ocr, "Output control register "
+		 "(default=0x18 [OCR_TX0_PUSHPULL])");
+
+#define SJA1000_IOSIZE          0x20
+#define SJA1000_IOSIZE_INDIRECT 0x02
+
+static struct platform_device *sja1000_isa_devs[MAXDEV];
+
+static u8 sja1000_isa_mem_read_reg(const struct sja1000_priv *priv, int reg)
+{
+	return readb(priv->reg_base + reg);
+}
+
+static void sja1000_isa_mem_write_reg(const struct sja1000_priv *priv,
+				      int reg, u8 val)
+{
+	writeb(val, priv->reg_base + reg);
+}
+
+static u8 sja1000_isa_port_read_reg(const struct sja1000_priv *priv, int reg)
+{
+	return inb((unsigned long)priv->reg_base + reg);
+}
+
+static void sja1000_isa_port_write_reg(const struct sja1000_priv *priv,
+				       int reg, u8 val)
+{
+	outb(val, (unsigned long)priv->reg_base + reg);
+}
+
+static u8 sja1000_isa_port_read_reg_indirect(const struct sja1000_priv *priv,
+					     int reg)
+{
+	unsigned long flags, base = (unsigned long)priv->reg_base;
+	u8 readval;
+
+	spin_lock_irqsave(&indirect_lock[priv->dev->dev_id], flags);
+	outb(reg, base);
+	readval = inb(base + 1);
+	spin_unlock_irqrestore(&indirect_lock[priv->dev->dev_id], flags);
+
+	return readval;
+}
+
+static void sja1000_isa_port_write_reg_indirect(const struct sja1000_priv *priv,
+						int reg, u8 val)
+{
+	unsigned long flags, base = (unsigned long)priv->reg_base;
+
+	spin_lock_irqsave(&indirect_lock[priv->dev->dev_id], flags);
+	outb(reg, base);
+	outb(val, base + 1);
+	spin_unlock_irqrestore(&indirect_lock[priv->dev->dev_id], flags);
+}
+
+static int sja1000_isa_probe(struct platform_device *pdev)
+{
+	struct net_device *dev;
+	struct sja1000_priv *priv;
+	void __iomem *base = NULL;
+	int iosize = SJA1000_IOSIZE;
+	int idx = pdev->id;
+	int err;
+
+	dev_dbg(&pdev->dev, "probing idx=%d: port=%#lx, mem=%#lx, irq=%d\n",
+		idx, port[idx], mem[idx], irq[idx]);
+
+	if (mem[idx]) {
+		if (!request_mem_region(mem[idx], iosize, DRV_NAME)) {
+			err = -EBUSY;
+			goto exit;
+		}
+		base = ioremap(mem[idx], iosize);
+		if (!base) {
+			err = -ENOMEM;
+			goto exit_release;
+		}
+	} else {
+		if (indirect[idx] > 0 ||
+		    (indirect[idx] == -1 && indirect[0] > 0))
+			iosize = SJA1000_IOSIZE_INDIRECT;
+		if (!request_region(port[idx], iosize, DRV_NAME)) {
+			err = -EBUSY;
+			goto exit;
+		}
+	}
+
+	dev = alloc_sja1000dev(0);
+	if (!dev) {
+		err = -ENOMEM;
+		goto exit_unmap;
+	}
+	priv = netdev_priv(dev);
+
+	dev->irq = irq[idx];
+	priv->irq_flags = IRQF_SHARED;
+	if (mem[idx]) {
+		priv->reg_base = base;
+		dev->base_addr = mem[idx];
+		priv->read_reg = sja1000_isa_mem_read_reg;
+		priv->write_reg = sja1000_isa_mem_write_reg;
+	} else {
+		priv->reg_base = (void __iomem *)port[idx];
+		dev->base_addr = port[idx];
+
+		if (iosize == SJA1000_IOSIZE_INDIRECT) {
+			priv->read_reg = sja1000_isa_port_read_reg_indirect;
+			priv->write_reg = sja1000_isa_port_write_reg_indirect;
+			spin_lock_init(&indirect_lock[idx]);
+		} else {
+			priv->read_reg = sja1000_isa_port_read_reg;
+			priv->write_reg = sja1000_isa_port_write_reg;
+		}
+	}
+
+	if (clk[idx])
+		priv->can.clock.freq = clk[idx] / 2;
+	else if (clk[0])
+		priv->can.clock.freq = clk[0] / 2;
+	else
+		priv->can.clock.freq = CLK_DEFAULT / 2;
+
+	if (ocr[idx] != 0xff)
+		priv->ocr = ocr[idx];
+	else if (ocr[0] != 0xff)
+		priv->ocr = ocr[0];
+	else
+		priv->ocr = OCR_DEFAULT;
+
+	if (cdr[idx] != 0xff)
+		priv->cdr = cdr[idx];
+	else if (cdr[0] != 0xff)
+		priv->cdr = cdr[0];
+	else
+		priv->cdr = CDR_DEFAULT;
+
+	platform_set_drvdata(pdev, dev);
+	SET_NETDEV_DEV(dev, &pdev->dev);
+	dev->dev_id = idx;
+
+	err = register_sja1000dev(dev);
+	if (err) {
+		dev_err(&pdev->dev, "registering %s failed (err=%d)\n",
+			DRV_NAME, err);
+		goto exit_unmap;
+	}
+
+	dev_info(&pdev->dev, "%s device registered (reg_base=0x%p, irq=%d)\n",
+		 DRV_NAME, priv->reg_base, dev->irq);
+	return 0;
+
+ exit_unmap:
+	if (mem[idx])
+		iounmap(base);
+ exit_release:
+	if (mem[idx])
+		release_mem_region(mem[idx], iosize);
+	else
+		release_region(port[idx], iosize);
+ exit:
+	return err;
+}
+
+static int sja1000_isa_remove(struct platform_device *pdev)
+{
+	struct net_device *dev = platform_get_drvdata(pdev);
+	struct sja1000_priv *priv = netdev_priv(dev);
+	int idx = pdev->id;
+
+	unregister_sja1000dev(dev);
+
+	if (mem[idx]) {
+		iounmap(priv->reg_base);
+		release_mem_region(mem[idx], SJA1000_IOSIZE);
+	} else {
+		if (priv->read_reg == sja1000_isa_port_read_reg_indirect)
+			release_region(port[idx], SJA1000_IOSIZE_INDIRECT);
+		else
+			release_region(port[idx], SJA1000_IOSIZE);
+	}
+	free_sja1000dev(dev);
+
+	return 0;
+}
+
+static struct platform_driver sja1000_isa_driver = {
+	.probe = sja1000_isa_probe,
+	.remove = sja1000_isa_remove,
+	.driver = {
+		.name = DRV_NAME,
+	},
+};
+
+static int __init sja1000_isa_init(void)
+{
+	int idx, err;
+
+	for (idx = 0; idx < MAXDEV; idx++) {
+		if ((port[idx] || mem[idx]) && irq[idx]) {
+			sja1000_isa_devs[idx] =
+				platform_device_alloc(DRV_NAME, idx);
+			if (!sja1000_isa_devs[idx]) {
+				err = -ENOMEM;
+				goto exit_free_devices;
+			}
+			err = platform_device_add(sja1000_isa_devs[idx]);
+			if (err) {
+				platform_device_put(sja1000_isa_devs[idx]);
+				goto exit_free_devices;
+			}
+			pr_debug("%s: platform device %d: port=%#lx, mem=%#lx, "
+				 "irq=%d\n",
+				 DRV_NAME, idx, port[idx], mem[idx], irq[idx]);
+		} else if (idx == 0 || port[idx] || mem[idx]) {
+				pr_err("%s: insufficient parameters supplied\n",
+				       DRV_NAME);
+				err = -EINVAL;
+				goto exit_free_devices;
+		}
+	}
+
+	err = platform_driver_register(&sja1000_isa_driver);
+	if (err)
+		goto exit_free_devices;
+
+	pr_info("Legacy %s driver for max. %d devices registered\n",
+		DRV_NAME, MAXDEV);
+
+	return 0;
+
+exit_free_devices:
+	while (--idx >= 0) {
+		if (sja1000_isa_devs[idx])
+			platform_device_unregister(sja1000_isa_devs[idx]);
+	}
+
+	return err;
+}
+
+static void __exit sja1000_isa_exit(void)
+{
+	int idx;
+
+	platform_driver_unregister(&sja1000_isa_driver);
+	for (idx = 0; idx < MAXDEV; idx++) {
+		if (sja1000_isa_devs[idx])
+			platform_device_unregister(sja1000_isa_devs[idx]);
+	}
+}
+
+module_init(sja1000_isa_init);
+module_exit(sja1000_isa_exit);

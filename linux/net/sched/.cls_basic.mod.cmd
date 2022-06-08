@@ -1,5 +1,6 @@
-// SPDX-License-Identifier: GPL-2.0-only
-/*
- * kernel/lockdep.c
- *
- * Runtime locking correctness
+ze, &risc->dma,
+				       GFP_KERNEL);
+	if (risc->cpu == NULL)
+		return -ENOMEM;
+
+	/* write risc

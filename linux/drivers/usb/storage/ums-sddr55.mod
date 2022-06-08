@@ -1,1 +1,1 @@
-cmd_drivers/media/i2c/tw9903.o
+.prepare = snd_cx23885_prepare

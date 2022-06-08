@@ -1,2 +1,1 @@
-CPI_APEI_GHES) \
-    $(wildcard i
+/* SPDX-License-Identifier: GPL-2

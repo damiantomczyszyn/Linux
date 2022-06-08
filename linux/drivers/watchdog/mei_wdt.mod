@@ -1,2 +1,1 @@
-.h \
-  include/linux/atomic/
+ in both TC_REQ and TC_REQ_S

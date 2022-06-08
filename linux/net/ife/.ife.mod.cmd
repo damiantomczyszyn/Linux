@@ -1,6 +1,3 @@
-npinned lock\n"))
-				return;
-
-			hlock->pin_count -= cookie.val;
-
-			if 
+th =
+			    txclk_tx_s_max_pulse_width(dev, p->max_pulse_width,
+						   

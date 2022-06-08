@@ -1,1133 +1,2054 @@
-nclude/config/GENERIC_ATOMIC64) \
-  include/linux/atomic/atomic-long.h \
-  include/linux/atomic/atomic-instrumented.h \
-  include/linux/bug.h \
-    $(wildcard include/config/BUG_ON_DATA_CORRUPTION) \
-  arch/x86/include/asm/bug.h \
-    $(wildcard include/config/DEBUG_BUGVERBOSE) \
-  include/linux/instrumentation.h \
-    $(wildcard include/config/DEBUG_ENTRY) \
-  include/asm-generic/bug.h \
-    $(wildcard include/config/BUG) \
-    $(wildcard include/config/GENERIC_BUG_RELATIVE_POINTERS) \
-  arch/x86/include/uapi/asm/msr.h \
-  include/linux/tracepoint-defs.h \
-  arch/x86/include/asm/special_insns.h \
-  include/linux/irqflags.h \
-    $(wildcard include/config/TRACE_IRQFLAGS) \
-    $(wildcard include/config/PREEMPT_RT) \
-    $(wildcard include/config/IRQSOFF_TRACER) \
-    $(wildcard include/config/PREEMPT_TRACER) \
-    $(wildcard include/config/DEBUG_IRQFLAGS) \
-    $(wildcard include/config/TRACE_IRQFLAGS_SUPPORT) \
-  arch/x86/include/asm/irqflags.h \
-  arch/x86/include/asm/fpu/types.h \
-  arch/x86/include/asm/vmxfeatures.h \
-  arch/x86/include/asm/vdso/processor.h \
-  include/linux/personality.h \
-  include/uapi/linux/personality.h \
-  arch/x86/include/asm/tsc.h \
-  arch/x86/include/asm/cpufeature.h \
-    $(wildcard include/config/X86_FEATURE_NAMES) \
-  include/vdso/time32.h \
-  include/vdso/time.h \
-  include/linux/uidgid.h \
-    $(wildcard include/config/MULTIUSER) \
-    $(wildcard include/config/USER_NS) \
-  include/linux/highuid.h \
-  include/linux/buildid.h \
-    $(wildcard include/config/CRASH_CORE) \
-  include/linux/mm_types.h \
-    $(wildcard include/config/HAVE_ALIGNED_STRUCT_PAGE) \
-    $(wildcard include/config/MEMCG) \
-    $(wildcard include/config/USERFAULTFD) \
-    $(wildcard include/config/SWAP) \
-    $(wildcard include/config/NUMA) \
-    $(wildcard include/config/HAVE_ARCH_COMPAT_MMAP_BASES) \
-    $(wildcard include/config/MEMBARRIER) \
-    $(wildcard include/config/AIO) \
-    $(wildcard include/config/MMU_NOTIFIER) \
-    $(wildcard include/config/TRANSPARENT_HUGEPAGE) \
-    $(wildcard include/config/NUMA_BALANCING) \
-    $(wildcard include/config/ARCH_WANT_BATCHED_UNMAP_TLB_FLUSH) \
-    $(wildcard include/config/HUGETLB_PAGE) \
-    $(wildcard include/config/IOMMU_SVA) \
-  include/linux/mm_types_task.h \
-    $(wildcard include/config/SPLIT_PTLOCK_CPUS) \
-    $(wildcard include/config/ARCH_ENABLE_SPLIT_PMD_PTLOCK) \
-  arch/x86/include/asm/tlbbatch.h \
-  include/linux/auxvec.h \
-  include/uapi/linux/auxvec.h \
-  arch/x86/include/uapi/asm/auxvec.h \
-  include/linux/kref.h \
-  include/linux/spinlock.h \
-    $(wildcard include/config/PREEMPTION) \
-  include/linux/preempt.h \
-    $(wildcard include/config/PREEMPT_COUNT) \
-    $(wildcard include/config/TRACE_PREEMPT_TOGGLE) \
-    $(wildcard include/config/PREEMPT_NOTIFIERS) \
-  arch/x86/include/asm/preempt.h \
-  include/linux/thread_info.h \
-    $(wildcard include/config/THREAD_INFO_IN_TASK) \
-    $(wildcard include/config/GENERIC_ENTRY) \
-    $(wildcard include/config/HAVE_ARCH_WITHIN_STACK_FRAMES) \
-    $(wildcard include/config/HARDENED_USERCOPY) \
-  include/linux/restart_block.h \
-  arch/x86/include/asm/thread_info.h \
-    $(wildcard include/config/COMPAT) \
-  include/linux/bottom_half.h \
-  include/linux/lockdep.h \
-    $(wildcard include/config/DEBUG_LOCKING_API_SELFTESTS) \
-  include/linux/smp.h \
-    $(wildcard include/config/UP_LATE_INIT) \
-  include/linux/smp_types.h \
-  include/linux/llist.h \
-    $(wildcard include/config/ARCH_HAVE_NMI_SAFE_CMPXCHG) \
-  arch/x86/include/asm/smp.h \
-    $(wildcard include/config/X86_LOCAL_APIC) \
-    $(wildcard include/config/DEBUG_NMI_SELFTEST) \
-  arch/x86/include/generated/asm/mmiowb.h \
-  include/asm-generic/mmiowb.h \
-    $(wildcard include/config/MMIOWB) \
-  include/linux/spinlock_types.h \
-  include/linux/rwlock_types.h \
-  arch/x86/include/asm/spinlock.h \
-  arch/x86/include/asm/paravirt.h \
-    $(wildcard include/config/PARAVIRT_SPINLOCKS) \
-  arch/x86/include/asm/frame.h \
-  arch/x86/include/asm/qspinlock.h \
-  include/asm-generic/qspinlock.h \
-  arch/x86/include/asm/qrwlock.h \
-  include/asm-generic/qrwlock.h \
-  include/linux/rwlock.h \
-    $(wildcard include/config/PREEMPT) \
-  include/linux/spinlock_api_smp.h \
-    $(wildcard include/config/INLINE_SPIN_LOCK) \
-    $(wildcard include/config/INLINE_SPIN_LOCK_BH) \
-    $(wildcard include/config/INLINE_SPIN_LOCK_IRQ) \
-    $(wildcard include/config/INLINE_SPIN_LOCK_IRQSAVE) \
-    $(wildcard include/config/INLINE_SPIN_TRYLOCK) \
-    $(wildcard include/config/INLINE_SPIN_TRYLOCK_BH) \
-    $(wildcard include/config/UNINLINE_SPIN_UNLOCK) \
-    $(wildcard include/config/INLINE_SPIN_UNLOCK_BH) \
-    $(wildcard include/config/INLINE_SPIN_UNLOCK_IRQ) \
-    $(wildcard include/config/INLINE_SPIN_UNLOCK_IRQRESTORE) \
-    $(wildcard include/config/GENERIC_LOCKBREAK) \
-  include/linux/rwlock_api_smp.h \
-    $(wildcard include/config/INLINE_READ_LOCK) \
-    $(wildcard include/config/INLINE_WRITE_LOCK) \
-    $(wildcard include/config/INLINE_READ_LOCK_BH) \
-    $(wildcard include/config/INLINE_WRITE_LOCK_BH) \
-    $(wildcard include/config/INLINE_READ_LOCK_IRQ) \
-    $(wildcard include/config/INLINE_WRITE_LOCK_IRQ) \
-    $(wildcard include/config/INLINE_READ_LOCK_IRQSAVE) \
-    $(wildcard include/config/INLINE_WRITE_LOCK_IRQSAVE) \
-    $(wildcard include/config/INLINE_READ_TRYLOCK) \
-    $(wildcard include/config/INLINE_WRITE_TRYLOCK) \
-    $(wildcard include/config/INLINE_READ_UNLOCK) \
-    $(wildcard include/config/INLINE_WRITE_UNLOCK) \
-    $(wildcard include/config/INLINE_READ_UNLOCK_BH) \
-    $(wildcard include/config/INLINE_WRITE_UNLOCK_BH) \
-    $(wildcard include/config/INLINE_READ_UNLOCK_IRQ) \
-    $(wildcard include/config/INLINE_WRITE_UNLOCK_IRQ) \
-    $(wildcard include/config/INLINE_READ_UNLOCK_IRQRESTORE) \
-    $(wildcard include/config/INLINE_WRITE_UNLOCK_IRQRESTORE) \
-  include/linux/refcount.h \
-  include/linux/rbtree.h \
-  include/linux/rbtree_types.h \
-  include/linux/rcupdate.h \
-    $(wildcard include/config/PREEMPT_RCU) \
-    $(wildcard include/config/TINY_RCU) \
-    $(wildcard include/config/RCU_STRICT_GRACE_PERIOD) \
-    $(wildcard include/config/TASKS_RCU_GENERIC) \
-    $(wildcard include/config/RCU_STALL_COMMON) \
-    $(wildcard include/config/NO_HZ_FULL) \
-    $(wildcard include/config/RCU_NOCB_CPU) \
-    $(wildcard include/config/TASKS_RCU) \
-    $(wildcard include/config/TASKS_TRACE_RCU) \
-    $(wildcard include/config/TASKS_RUDE_RCU) \
-    $(wildcard include/config/TREE_RCU) \
-    $(wildcard include/config/DEBUG_OBJECTS_RCU_HEAD) \
-    $(wildcard include/config/PROVE_RCU) \
-    $(wildcard include/config/ARCH_WEAK_RELEASE_ACQUIRE) \
-  include/linux/rcutree.h \
-  include/linux/rwsem.h \
-    $(wildcard include/config/RWSEM_SPIN_ON_OWNER) \
-    $(wildcard include/config/DEBUG_RWSEMS) \
-  include/linux/osq_lock.h \
-  include/linux/completion.h \
-  include/linux/swait.h \
-  include/linux/wait.h \
-  include/uapi/linux/wait.h \
-  include/linux/uprobes.h \
-    $(wildcard include/config/UPROBES) \
-  arch/x86/include/asm/uprobes.h \
-  include/linux/notifier.h \
-  include/linux/mutex.h \
-    $(wildcard include/config/MUTEX_SPIN_ON_OWNER) \
-    $(wildcard include/config/DEBUG_MUTEXES) \
-  include/linux/debug_locks.h \
-  include/linux/srcu.h \
-    $(wildcard include/config/TINY_SRCU) \
-    $(wildcard include/config/SRCU) \
-  include/linux/workqueue.h \
-    $(wildcard include/config/DEBUG_OBJECTS_WORK) \
-    $(wildcard include/config/FREEZER) \
-    $(wildcard include/config/WQ_WATCHDOG) \
-  include/linux/timer.h \
-    $(wildcard include/config/DEBUG_OBJECTS_TIMERS) \
-    $(wildcard include/config/NO_HZ_COMMON) \
-  include/linux/ktime.h \
-  include/linux/jiffies.h \
-  include/vdso/jiffies.h \
-  include/generated/timeconst.h \
-  include/vdso/ktime.h \
-  include/linux/timekeeping.h \
-    $(wildcard include/config/GENERIC_CMOS_UPDATE) \
-  include/linux/clocksource_ids.h \
-  include/linux/debugobjects.h \
-    $(wildcard include/config/DEBUG_OBJECTS) \
-    $(wildcard include/config/DEBUG_OBJECTS_FREE) \
-  include/linux/rcu_segcblist.h \
-  include/linux/srcutree.h \
-  include/linux/rcu_node_tree.h \
-    $(wildcard include/config/RCU_FANOUT) \
-    $(wildcard include/config/RCU_FANOUT_LEAF) \
-  include/linux/page-flags-layout.h \
-    $(wildcard include/config/KASAN_HW_TAGS) \
-  include/linux/numa.h \
-    $(wildcard include/config/NODES_SHIFT) \
-    $(wildcard include/config/NUMA_KEEP_MEMINFO) \
-    $(wildcard include/config/HAVE_ARCH_NODE_DEV_GROUP) \
-  arch/x86/include/asm/sparsemem.h \
-  include/generated/bounds.h \
-  include/linux/seqlock.h \
-  include/linux/ww_mutex.h \
-    $(wildcard include/config/DEBUG_RT_MUTEXES) \
-    $(wildcard include/config/DEBUG_WW_MUTEX_SLOWPATH) \
-  include/linux/rtmutex.h \
-  arch/x86/include/asm/mmu.h \
-    $(wildcard include/config/MODIFY_LDT_SYSCALL) \
-  include/linux/kmod.h \
-  include/linux/umh.h \
-  include/linux/gfp.h \
-    $(wildcard include/config/HIGHMEM) \
-    $(wildcard include/config/ZONE_DMA) \
-    $(wildcard include/config/ZONE_DMA32) \
-    $(wildcard include/config/ZONE_DEVICE) \
-    $(wildcard include/config/PM_SLEEP) \
-    $(wildcard include/config/CONTIG_ALLOC) \
-    $(wildcard include/config/CMA) \
-  include/linux/mmdebug.h \
-    $(wildcard include/config/DEBUG_VM) \
-    $(wildcard include/config/DEBUG_VM_PGFLAGS) \
-  include/linux/mmzone.h \
-    $(wildcard include/config/FORCE_MAX_ZONEORDER) \
-    $(wildcard include/config/MEMORY_ISOLATION) \
-    $(wildcard include/config/ZSMALLOC) \
-    $(wildcard include/config/MEMORY_HOTPLUG) \
-    $(wildcard include/config/COMPACTION) \
-    $(wildcard include/config/PAGE_EXTENSION) \
-    $(wildcard include/config/DEFERRED_STRUCT_PAGE_INIT) \
-    $(wildcard include/config/HAVE_MEMORYLESS_NODES) \
-    $(wildcard include/config/SPARSEMEM_EXTREME) \
-    $(wildcard include/config/HAVE_ARCH_PFN_VALID) \
-  include/linux/nodemask.h \
-  include/linux/pageblock-flags.h \
-    $(wildcard include/config/HUGETLB_PAGE_SIZE_VARIABLE) \
-  include/linux/page-flags.h \
-    $(wildcard include/config/ARCH_USES_PG_UNCACHED) \
-    $(wildcard include/config/MEMORY_FAILURE) \
-    $(wildcard include/config/PAGE_IDLE_FLAG) \
-    $(wildcard include/config/HUGETLB_PAGE_FREE_VMEMMAP) \
-    $(wildcard include/config/HUGETLB_PAGE_FREE_VMEMMAP_DEFAULT_ON) \
-    $(wildcard include/config/KSM) \
-  include/linux/local_lock.h \
-  include/linux/local_lock_internal.h \
-  include/linux/memory_hotplug.h \
-    $(wildcard include/config/HAVE_ARCH_NODEDATA_EXTENSION) \
-    $(wildcard include/config/ARCH_HAS_ADD_PAGES) \
-    $(wildcard include/config/MEMORY_HOTREMOVE) \
-  arch/x86/include/asm/mmzone.h \
-  arch/x86/include/asm/mmzone_32.h \
-  include/linux/topology.h \
-    $(wildcard include/config/USE_PERCPU_NUMA_NODE_ID) \
-    $(wildcard include/config/SCHED_SMT) \
-    $(wildcard include/config/SCHED_CLUSTER) \
-  include/linux/arch_topology.h \
-    $(wildcard include/config/ACPI_CPPC_LIB) \
-    $(wildcard include/config/GENERIC_ARCH_TOPOLOGY) \
-  include/linux/percpu.h \
-    $(wildcard include/config/NEED_PER_CPU_EMBED_FIRST_CHUNK) \
-    $(wildcard include/config/NEED_PER_CPU_PAGE_FIRST_CHUNK) \
-  arch/x86/include/asm/topology.h \
-    $(wildcard include/config/SCHED_MC_PRIO) \
-  arch/x86/include/asm/mpspec.h \
-    $(wildcard include/config/EISA) \
-    $(wildcard include/config/X86_MPPARSE) \
-  arch/x86/include/asm/mpspec_def.h \
-  arch/x86/include/asm/x86_init.h \
-  arch/x86/include/asm/apicdef.h \
-  include/asm-generic/topology.h \
-  include/linux/sysctl.h \
-    $(wildcard include/config/SYSCTL) \
-  include/uapi/linux/sysctl.h \
-  include/linux/elf.h \
-    $(wildcard include/config/ARCH_USE_GNU_PROPERTY) \
-    $(wildcard include/config/ARCH_HAVE_ELF_PROT) \
-  arch/x86/include/asm/elf.h \
-    $(wildcard include/config/X86_X32_ABI) \
-  arch/x86/include/asm/user.h \
-  arch/x86/include/asm/user_32.h \
-  arch/x86/include/asm/fsgsbase.h \
-  arch/x86/include/asm/vdso.h \
-  arch/x86/include/asm/desc.h \
-  arch/x86/include/asm/fixmap.h \
-    $(wildcard include/config/DEBUG_KMAP_LOCAL_FORCE_MAP) \
-    $(wildcard include/config/X86_VSYSCALL_EMULATION) \
-    $(wildcard include/config/PROVIDE_OHCI1394_DMA_INIT) \
-    $(wildcard include/config/X86_IO_APIC) \
-    $(wildcard include/config/KMAP_LOCAL) \
-    $(wildcard include/config/PCI_MMCONFIG) \
-    $(wildcard include/config/ACPI_APEI_GHES) \
-    $(wildcard include/config/INTEL_TXT) \
-  arch/x86/include/generated/asm/kmap_size.h \
-  include/asm-generic/kmap_size.h \
-    $(wildcard include/config/DEBUG_KMAP_LOCAL) \
-  include/asm-generic/fixmap.h \
-  arch/x86/include/asm/irq_vectors.h \
-    $(wildcard include/config/HAVE_KVM) \
-    $(wildcard include/config/HYPERV) \
-    $(wildcard include/config/PCI_MSI) \
-  arch/x86/include/asm/cpu_entry_area.h \
-  arch/x86/include/asm/intel_ds.h \
-  arch/x86/include/asm/pgtable_areas.h \
-  arch/x86/include/asm/pgtable_32_areas.h \
-  include/uapi/linux/elf.h \
-  include/uapi/linux/elf-em.h \
-  include/linux/kobject.h \
-    $(wildcard include/config/UEVENT_HELPER) \
-    $(wildcard include/config/DEBUG_KOBJECT_RELEASE) \
-  include/linux/sysfs.h \
-  include/linux/kernfs.h \
-    $(wildcard include/config/KERNFS) \
-  include/linux/idr.h \
-  include/linux/radix-tree.h \
-  include/linux/xarray.h \
-    $(wildcard include/config/XARRAY_MULTI) \
-  include/linux/kconfig.h \
-  include/linux/kobject_ns.h \
-  include/linux/moduleparam.h \
-    $(wildcard include/config/ALPHA) \
-    $(wildcard include/config/IA64) \
-    $(wildcard include/config/PPC64) \
-  include/linux/rbtree_latch.h \
-  include/linux/error-injection.h \
-  include/asm-generic/error-injection.h \
-  include/linux/cfi.h \
-    $(wildcard include/config/CFI_CLANG_SHADOW) \
-  arch/x86/include/asm/module.h \
-    $(wildcard include/config/UNWINDER_ORC) \
-  include/asm-generic/module.h \
-    $(wildcard include/config/HAVE_MOD_ARCH_SPECIFIC) \
-    $(wildcard include/config/MODULES_USE_ELF_REL) \
-    $(wildcard include/config/MODULES_USE_ELF_RELA) \
-  arch/x86/include/asm/orc_types.h \
-  include/linux/delay.h \
-  include/linux/sched.h \
-    $(wildcard include/config/VIRT_CPU_ACCOUNTING_NATIVE) \
-    $(wildcard include/config/SCHED_INFO) \
-    $(wildcard include/config/SCHEDSTATS) \
-    $(wildcard include/config/SCHED_CORE) \
-    $(wildcard include/config/FAIR_GROUP_SCHED) \
-    $(wildcard include/config/RT_GROUP_SCHED) \
-    $(wildcard include/config/RT_MUTEXES) \
-    $(wildcard include/config/UCLAMP_TASK) \
-    $(wildcard include/config/UCLAMP_BUCKETS_COUNT) \
-    $(wildcard include/config/CGROUP_SCHED) \
-    $(wildcard include/config/BLK_DEV_IO_TRACE) \
-    $(wildcard include/config/PSI) \
-    $(wildcard include/config/COMPAT_BRK) \
-    $(wildcard include/config/CGROUPS) \
-    $(wildcard include/config/BLK_CGROUP) \
-    $(wildcard include/config/PAGE_OWNER) \
-    $(wildcard include/config/EVENTFD) \
-    $(wildcard include/config/ARCH_HAS_SCALED_CPUTIME) \
-    $(wildcard include/config/VIRT_CPU_ACCOUNTING_GEN) \
-    $(wildcard include/config/POSIX_CPUTIMERS) \
-    $(wildcard include/config/POSIX_CPU_TIMERS_TASK_WORK) \
-    $(wildcard include/config/KEYS) \
-    $(wildcard include/config/SYSVIPC) \
-    $(wildcard include/config/DETECT_HUNG_TASK) \
-    $(wildcard include/config/IO_URING) \
-    $(wildcard include/config/AUDIT) \
-    $(wildcard include/config/AUDITSYSCALL) \
-    $(wildcard include/config/UBSAN) \
-    $(wildcard include/config/UBSAN_TRAP) \
-    $(wildcard include/config/TASK_XACCT) \
-    $(wildcard include/config/CPUSETS) \
-    $(wildcard include/config/X86_CPU_RESCTRL) \
-    $(wildcard include/config/FUTEX) \
-    $(wildcard include/config/PERF_EVENTS) \
-    $(wildcard include/config/RSEQ) \
-    $(wildcard include/config/TASK_DELAY_ACCT) \
-    $(wildcard include/config/FAULT_INJECTION) \
-    $(wildcard include/config/LATENCYTOP) \
-    $(wildcard include/config/KUNIT) \
-    $(wildcard include/config/FUNCTION_GRAPH_TRACER) \
-    $(wildcard include/config/BCACHE) \
-    $(wildcard include/config/VMAP_STACK) \
-    $(wildcard include/config/SECURITY) \
-    $(wildcard include/config/BPF_SYSCALL) \
-    $(wildcard include/config/GCC_PLUGIN_STACKLEAK) \
-    $(wildcard include/config/X86_MCE) \
-    $(wildcard include/config/KRETPROBES) \
-    $(wildcard include/config/RETHOOK) \
-    $(wildcard include/config/ARCH_HAS_PARANOID_L1D_FLUSH) \
-    $(wildcard include/config/ARCH_TASK_STRUCT_ON_STACK) \
-    $(wildcard include/config/DEBUG_RSEQ) \
-  include/uapi/linux/sched.h \
-  include/linux/pid.h \
-  include/linux/rculist.h \
-    $(wildcard include/config/PROVE_RCU_LIST) \
-  include/linux/sem.h \
-  include/uapi/linux/sem.h \
-  include/linux/ipc.h \
-  include/linux/rhashtable-types.h \
-  include/uapi/linux/ipc.h \
-  arch/x86/include/generated/uapi/asm/ipcbuf.h \
-  include/uapi/asm-generic/ipcbuf.h \
-  arch/x86/include/uapi/asm/sembuf.h \
-  include/linux/shm.h \
-  include/uapi/linux/shm.h \
-  include/uapi/asm-generic/hugetlb_encode.h \
-  arch/x86/include/uapi/asm/shmbuf.h \
-  include/uapi/asm-generic/shmbuf.h \
-  arch/x86/include/asm/shmparam.h \
-  include/linux/plist.h \
-    $(wildcard include/config/DEBUG_PLIST) \
-  include/linux/hrtimer.h \
-    $(wildcard include/config/HIGH_RES_TIMERS) \
-    $(wildcard include/config/TIME_LOW_RES) \
-    $(wildcard include/config/TIMERFD) \
-  include/linux/hrtimer_defs.h \
-  include/linux/timerqueue.h \
-  include/linux/seccomp.h \
-    $(wildcard include/config/SECCOMP) \
-    $(wildcard include/config/HAVE_ARCH_SECCOMP_FILTER) \
-    $(wildcard include/config/SECCOMP_FILTER) \
-    $(wildcard include/config/CHECKPOINT_RESTORE) \
-    $(wildcard include/config/SECCOMP_CACHE_DEBUG) \
-  include/uapi/linux/seccomp.h \
-  arch/x86/include/asm/seccomp.h \
-  arch/x86/include/asm/unistd.h \
-  arch/x86/include/uapi/asm/unistd.h \
-  arch/x86/include/generated/uapi/asm/unistd_32.h \
-  include/asm-generic/seccomp.h \
-  include/uapi/linux/unistd.h \
-  include/linux/resource.h \
-  include/uapi/linux/resource.h \
-  arch/x86/include/generated/uapi/asm/resource.h \
-  include/asm-generic/resource.h \
-  include/uapi/asm-generic/resource.h \
-  include/linux/latencytop.h \
-  include/linux/sched/prio.h \
-  include/linux/sched/types.h \
-  include/linux/signal_types.h \
-    $(wildcard include/config/OLD_SIGACTION) \
-  include/uapi/linux/signal.h \
-  arch/x86/include/asm/signal.h \
-  arch/x86/include/uapi/asm/signal.h \
-  include/uapi/asm-generic/signal-defs.h \
-  arch/x86/include/uapi/asm/siginfo.h \
-  include/uapi/asm-generic/siginfo.h \
-  include/linux/syscall_user_dispatch.h \
-  include/linux/task_io_accounting.h \
-    $(wildcard include/config/TASK_IO_ACCOUNTING) \
-  include/linux/posix-timers.h \
-  include/linux/alarmtimer.h \
-    $(wildcard include/config/RTC_CLASS) \
-  include/uapi/linux/rseq.h \
-  include/linux/kcsan.h \
-  arch/x86/include/asm/delay.h \
-  include/asm-generic/delay.h \
-  include/linux/slab.h \
-    $(wildcard include/config/DEBUG_SLAB) \
-    $(wildcard include/config/FAILSLAB) \
-    $(wildcard include/config/MEMCG_KMEM) \
-    $(wildcard include/config/KASAN) \
-    $(wildcard include/config/SLAB) \
-    $(wildcard include/config/SLUB) \
-    $(wildcard include/config/SLOB) \
-  include/linux/overflow.h \
-  include/linux/percpu-refcount.h \
-  include/linux/kasan.h \
-    $(wildcard include/config/KASAN_STACK) \
-    $(wildcard include/config/KASAN_VMALLOC) \
-    $(wildcard include/config/KASAN_INLINE) \
-  include/linux/kasan-enabled.h \
-  include/linux/uaccess.h \
-  include/linux/fault-inject-usercopy.h \
-    $(wildcard include/config/FAULT_INJECTION_USERCOPY) \
-  arch/x86/include/asm/uaccess.h \
-    $(wildcard include/config/CC_HAS_ASM_GOTO_OUTPUT) \
-    $(wildcard include/config/CC_HAS_ASM_GOTO_TIED_OUTPUT) \
-    $(wildcard include/config/ARCH_HAS_COPY_MC) \
-    $(wildcard include/config/X86_INTEL_USERCOPY) \
-  arch/x86/include/asm/smap.h \
-  arch/x86/include/asm/extable.h \
-    $(wildcard include/config/BPF_JIT) \
-  include/asm-generic/access_ok.h \
-    $(wildcard include/config/ALTERNATE_USER_ADDRESS_SPACE) \
-  arch/x86/include/asm/uaccess_32.h \
-  include/linux/i2c.h \
-    $(wildcard include/config/I2C) \
-    $(wildcard include/config/I2C_SLAVE) \
-    $(wildcard include/config/I2C_BOARDINFO) \
-    $(wildcard include/config/I2C_MUX) \
-    $(wildcard include/config/OF) \
-    $(wildcard include/config/ACPI) \
-  include/linux/acpi.h \
-    $(wildcard include/config/ACPI_DEBUGGER) \
-    $(wildcard include/config/ACPI_TABLE_LIB) \
-    $(wildcard include/config/LOONGARCH) \
-    $(wildcard include/config/ARM64) \
-    $(wildcard include/config/ACPI_PROCESSOR_CSTATE) \
-    $(wildcard include/config/ACPI_HOTPLUG_CPU) \
-    $(wildcard include/config/ACPI_HOTPLUG_IOAPIC) \
-    $(wildcard include/config/PCI) \
-    $(wildcard include/config/ACPI_WMI) \
-    $(wildcard include/config/ACPI_NUMA) \
-    $(wildcard include/config/HIBERNATION) \
-    $(wildcard include/config/ACPI_HOTPLUG_MEMORY) \
-    $(wildcard include/config/ACPI_CONTAINER) \
-    $(wildcard include/config/ACPI_GTDT) \
-    $(wildcard include/config/PM) \
-    $(wildcard include/config/GPIOLIB) \
-    $(wildcard include/config/ACPI_TABLE_UPGRADE) \
-    $(wildcard include/config/ACPI_WATCHDOG) \
-    $(wildcard include/config/ACPI_SPCR_TABLE) \
-    $(wildcard include/config/ACPI_GENERIC_GSI) \
-    $(wildcard include/config/ACPI_LPIT) \
-    $(wildcard include/config/ACPI_PPTT) \
-    $(wildcard include/config/ACPI_PCC) \
-  include/linux/ioport.h \
-  include/linux/irqdomain.h \
-    $(wildcard include/config/IRQ_DOMAIN_HIERARCHY) \
-    $(wildcard include/config/GENERIC_IRQ_DEBUGFS) \
-    $(wildcard include/config/IRQ_DOMAIN) \
-    $(wildcard include/config/IRQ_DOMAIN_NOMAP) \
-  include/linux/irqhandler.h \
-  include/linux/of.h \
-    $(wildcard include/config/OF_DYNAMIC) \
-    $(wildcard include/config/SPARC) \
-    $(wildcard include/config/OF_PROMTREE) \
-    $(wildcard include/config/OF_KOBJ) \
-    $(wildcard include/config/OF_NUMA) \
-    $(wildcard include/config/OF_OVERLAY) \
-  include/linux/mod_devicetable.h \
-  include/linux/uuid.h \
-  include/uapi/linux/uuid.h \
-  include/linux/property.h \
-  include/linux/fwnode.h \
-  include/linux/resource_ext.h \
-  include/linux/device.h \
-    $(wildcard include/config/GENERIC_MSI_IRQ_DOMAIN) \
-    $(wildcard include/config/GENERIC_MSI_IRQ) \
-    $(wildcard include/config/ENERGY_MODEL) \
-    $(wildcard include/config/PINCTRL) \
-    $(wildcard include/config/DMA_OPS) \
-    $(wildcard include/config/DMA_DECLARE_COHERENT) \
-    $(wildcard include/config/DMA_CMA) \
-    $(wildcard include/config/SWIOTLB) \
-    $(wildcard include/config/ARCH_HAS_SYNC_DMA_FOR_DEVICE) \
-    $(wildcard include/config/ARCH_HAS_SYNC_DMA_FOR_CPU) \
-    $(wildcard include/config/ARCH_HAS_SYNC_DMA_FOR_CPU_ALL) \
-    $(wildcard include/config/DMA_OPS_BYPASS) \
-    $(wildcard include/config/DEVTMPFS) \
-    $(wildcard include/config/SYSFS_DEPRECATED) \
-  include/linux/dev_printk.h \
-  include/linux/ratelimit.h \
-  include/linux/energy_model.h \
-  include/linux/sched/cpufreq.h \
-    $(wildcard include/config/CPU_FREQ) \
-  include/linux/sched/topology.h \
-    $(wildcard include/config/SCHED_DEBUG) \
-    $(wildcard include/config/SCHED_MC) \
-    $(wildcard include/config/CPU_FREQ_GOV_SCHEDUTIL) \
-  include/linux/sched/idle.h \
-  include/linux/sched/sd_flags.h \
-  include/linux/klist.h \
-  include/linux/pm.h \
-    $(wildcard include/config/VT_CONSOLE_SLEEP) \
-    $(wildcard include/config/PM_CLK) \
-    $(wildcard include/config/PM_GENERIC_DOMAINS) \
-  include/linux/device/bus.h \
-  include/linux/device/class.h \
-  include/linux/device/driver.h \
-  arch/x86/include/asm/device.h \
-  include/linux/pm_wakeup.h \
-  include/acpi/acpi.h \
-  include/acpi/platform/acenv.h \
-  include/acpi/platform/acgcc.h \
-  include/acpi/platform/aclinux.h \
-    $(wildcard include/config/ACPI_REDUCED_HARDWARE_ONLY) \
-    $(wildcard include/config/ACPI_DEBUG) \
-  include/linux/ctype.h \
-  arch/x86/include/asm/acenv.h \
-  include/acpi/acnames.h \
-  include/acpi/actypes.h \
-  include/acpi/acexcep.h \
-  include/acpi/actbl.h \
-  include/acpi/actbl1.h \
-  include/acpi/actbl2.h \
-  include/acpi/actbl3.h \
-  include/acpi/acrestyp.h \
-  include/acpi/platform/acenvex.h \
-  include/acpi/platform/aclinuxex.h \
-  include/acpi/platform/acgccex.h \
-  include/acpi/acoutput.h \
-  include/acpi/acpiosxf.h \
-  include/acpi/acpixf.h \
-  include/acpi/acconfig.h \
-  include/acpi/acbuffer.h \
-  include/linux/dynamic_debug.h \
-  include/acpi/acpi_bus.h \
-    $(wildcard include/config/X86_ANDROID_TABLETS) \
-    $(wildcard include/config/ACPI_SYSTEM_POWER_STATES_SUPPORT) \
-    $(wildcard include/config/ACPI_SLEEP) \
-  include/acpi/acpi_drivers.h \
-    $(wildcard include/config/ACPI_DOCK) \
-  include/acpi/acpi_numa.h \
-    $(wildcard include/config/ACPI_HMAT) \
-  include/acpi/acpi_io.h \
-  include/linux/io.h \
-    $(wildcard include/config/HAS_IOPORT_MAP) \
-  arch/x86/include/asm/io.h \
-    $(wildcard include/config/MTRR) \
-    $(wildcard include/config/X86_PAT) \
-  arch/x86/include/generated/asm/early_ioremap.h \
-  include/asm-generic/early_ioremap.h \
-    $(wildcard include/config/GENERIC_EARLY_IOREMAP) \
-  include/asm-generic/iomap.h \
-  include/asm-generic/pci_iomap.h \
-    $(wildcard include/config/NO_GENERIC_PCI_IOPORT_MAP) \
-    $(wildcard include/config/GENERIC_PCI_IOMAP) \
-  include/asm-generic/io.h \
-    $(wildcard include/config/GENERIC_IOMAP) \
-    $(wildcard include/config/GENERIC_IOREMAP) \
-    $(wildcard include/config/VIRT_TO_BUS) \
-    $(wildcard include/config/GENERIC_DEVMEM_IS_ALLOWED) \
-  include/linux/logic_pio.h \
-    $(wildcard include/config/INDIRECT_PIO) \
-  include/linux/vmalloc.h \
-    $(wildcard include/config/HAVE_ARCH_HUGE_VMALLOC) \
-  arch/x86/include/asm/vmalloc.h \
-    $(wildcard include/config/HAVE_ARCH_HUGE_VMAP) \
-  arch/x86/include/asm/acpi.h \
-    $(wildcard include/config/ACPI_APEI) \
-  include/acpi/pdc_intel.h \
-  arch/x86/include/asm/numa.h \
-    $(wildcard include/config/NUMA_EMU) \
-  arch/x86/include/asm/numa_32.h \
-  include/linux/regulator/consumer.h \
-    $(wildcard include/config/REGULATOR) \
-  include/linux/suspend.h \
-    $(wildcard include/config/VT) \
-    $(wildcard include/config/SUSPEND) \
-    $(wildcard include/config/HIBERNATION_SNAPSHOT_DEV) \
-    $(wildcard include/config/PM_SLEEP_DEBUG) \
-    $(wildcard include/config/PM_AUTOSLEEP) \
-  include/linux/swap.h \
-    $(wildcard include/config/DEVICE_PRIVATE) \
-    $(wildcard include/config/MIGRATION) \
-    $(wildcard include/config/FRONTSWAP) \
-    $(wildcard include/config/THP_SWAP) \
-    $(wildcard include/config/MEMCG_SWAP) \
-  include/linux/memcontrol.h \
-    $(wildcard include/config/CGROUP_WRITEBACK) \
-  include/linux/cgroup.h \
-    $(wildcard include/config/CGROUP_CPUACCT) \
-    $(wildcard include/config/SOCK_CGROUP_DATA) \
-    $(wildcard include/config/CGROUP_DATA) \
-    $(wildcard include/config/CGROUP_BPF) \
-  include/uapi/linux/cgroupstats.h \
-  include/uapi/linux/taskstats.h \
-  include/linux/fs.h \
-    $(wildcard include/config/READ_ONLY_THP_FOR_FS) \
-    $(wildcard include/config/FS_POSIX_ACL) \
-    $(wildcard include/config/IMA) \
-    $(wildcard include/config/FILE_LOCKING) \
-    $(wildcard include/config/FSNOTIFY) \
-    $(wildcard include/config/FS_ENCRYPTION) \
-    $(wildcard include/config/FS_VERITY) \
-    $(wildcard include/config/EPOLL) \
-    $(wildcard include/config/UNICODE) \
-    $(wildcard include/config/QUOTA) \
-    $(wildcard include/config/FS_DAX) \
-    $(wildcard include/config/BLOCK) \
-  include/linux/wait_bit.h \
-  include/linux/kdev_t.h \
-  include/uapi/linux/kdev_t.h \
-  include/linux/dcache.h \
-  include/linux/rculist_bl.h \
-  include/linux/list_bl.h \
-  include/linux/bit_spinlock.h \
-  include/linux/lockref.h \
-    $(wildcard include/config/ARCH_USE_CMPXCHG_LOCKREF) \
-  include/linux/stringhash.h \
-    $(wildcard include/config/DCACHE_WORD_ACCESS) \
-  include/linux/hash.h \
-    $(wildcard include/config/HAVE_ARCH_HASH) \
-  include/linux/path.h \
-  include/linux/list_lru.h \
-  include/linux/shrinker.h \
-  include/linux/capability.h \
-  include/uapi/linux/capability.h \
-  include/linux/semaphore.h \
-  include/linux/fcntl.h \
-    $(wildcard include/config/ARCH_32BIT_OFF_T) \
-  include/uapi/linux/fcntl.h \
-  arch/x86/include/generated/uapi/asm/fcntl.h \
-  include/uapi/asm-generic/fcntl.h \
-  include/uapi/linux/openat2.h \
-  include/linux/migrate_mode.h \
-  include/linux/percpu-rwsem.h \
-  include/linux/rcuwait.h \
-  include/linux/sched/signal.h \
-    $(wildcard include/config/SCHED_AUTOGROUP) \
-    $(wildcard include/config/BSD_PROCESS_ACCT) \
-    $(wildcard include/config/TASKSTATS) \
-    $(wildcard include/config/STACK_GROWSUP) \
-  include/linux/signal.h \
-    $(wildcard include/config/DYNAMIC_SIGFRAME) \
-  include/linux/sched/jobctl.h \
-  include/linux/sched/task.h \
-    $(wildcard include/config/HAVE_EXIT_THREAD) \
-    $(wildcard include/config/ARCH_WANTS_DYNAMIC_TASK_STRUCT) \
-    $(wildcard include/config/HAVE_ARCH_THREAD_STRUCT_WHITELIST) \
-  include/linux/cred.h \
-    $(wildcard include/config/DEBUG_CREDENTIALS) \
-  include/linux/key.h \
-    $(wildcard include/config/KEY_NOTIFICATIONS) \
-    $(wildcard include/config/NET) \
-  include/linux/assoc_array.h \
-    $(wildcard include/config/ASSOCIATIVE_ARRAY) \
-  include/linux/sched/user.h \
-    $(wildcard include/config/WATCH_QUEUE) \
-  include/linux/percpu_counter.h \
-  include/linux/rcu_sync.h \
-  include/linux/delayed_call.h \
-  include/linux/errseq.h \
-  include/linux/ioprio.h \
-  include/linux/sched/rt.h \
-  include/linux/iocontext.h \
-    $(wildcard include/config/BLK_ICQ) \
-  include/uapi/linux/ioprio.h \
-  include/linux/fs_types.h \
-  include/linux/mount.h \
-  include/linux/mnt_idmapping.h \
-  include/uapi/linux/fs.h \
-  include/linux/quota.h \
-    $(wildcard include/config/QUOTA_NETLINK_INTERFACE) \
-  include/uapi/linux/dqblk_xfs.h \
-  include/linux/dqblk_v1.h \
-  include/linux/dqblk_v2.h \
-  include/linux/dqblk_qtree.h \
-  include/linux/projid.h \
-  include/uapi/linux/quota.h \
-  include/linux/nfs_fs_i.h \
-  include/linux/seq_file.h \
-  include/linux/string_helpers.h \
-  include/linux/ns_common.h \
-  include/linux/nsproxy.h \
-  include/linux/user_namespace.h \
-    $(wildcard include/config/INOTIFY_USER) \
-    $(wildcard include/config/FANOTIFY) \
-    $(wildcard include/config/PERSISTENT_KEYRINGS) \
-  include/linux/kernel_stat.h \
-  include/linux/interrupt.h \
-    $(wildcard include/config/IRQ_FORCED_THREADING) \
-    $(wildcard include/config/GENERIC_IRQ_PROBE) \
-    $(wildcard include/config/IRQ_TIMINGS) \
-  include/linux/irqreturn.h \
-  include/linux/irqnr.h \
-  include/uapi/linux/irqnr.h \
-  include/linux/hardirq.h \
-  include/linux/context_tracking_state.h \
-    $(wildcard include/config/CONTEXT_TRACKING) \
-  include/linux/ftrace_irq.h \
-    $(wildcard include/config/HWLAT_TRACER) \
-    $(wildcard include/config/OSNOISE_TRACER) \
-  include/linux/vtime.h \
-    $(wildcard include/config/VIRT_CPU_ACCOUNTING) \
-    $(wildcard include/config/IRQ_TIME_ACCOUNTING) \
-  arch/x86/include/asm/hardirq.h \
-    $(wildcard include/config/KVM_INTEL) \
-    $(wildcard include/config/X86_THERMAL_VECTOR) \
-    $(wildcard include/config/X86_MCE_THRESHOLD) \
-    $(wildcard include/config/X86_MCE_AMD) \
-    $(wildcard include/config/X86_HV_CALLBACK_VECTOR) \
-  arch/x86/include/asm/irq.h \
-  arch/x86/include/asm/sections.h \
-  include/asm-generic/sections.h \
-    $(wildcard include/config/HAVE_FUNCTION_DESCRIPTORS) \
-  include/linux/cgroup-defs.h \
-    $(wildcard include/config/CGROUP_NET_CLASSID) \
-    $(wildcard include/config/CGROUP_NET_PRIO) \
-  include/linux/u64_stats_sync.h \
-  include/linux/bpf-cgroup-defs.h \
-  include/linux/psi_types.h \
-  include/linux/kthread.h \
-  include/linux/cgroup_subsys.h \
-    $(wildcard include/config/CGROUP_DEVICE) \
-    $(wildcard include/config/CGROUP_FREEZER) \
-    $(wildcard include/config/CGROUP_PERF) \
-    $(wildcard include/config/CGROUP_HUGETLB) \
-    $(wildcard include/config/CGROUP_PIDS) \
-    $(wildcard include/config/CGROUP_RDMA) \
-    $(wildcard include/config/CGROUP_MISC) \
-    $(wildcard include/config/CGROUP_DEBUG) \
-  include/linux/vm_event_item.h \
-    $(wildcard include/config/HAVE_ARCH_TRANSPARENT_HUGEPAGE_PUD) \
-    $(wildcard include/config/MEMORY_BALLOON) \
-    $(wildcard include/config/BALLOON_COMPACTION) \
-    $(wildcard include/config/DEBUG_TLBFLUSH) \
-    $(wildcard include/config/DEBUG_VM_VMACACHE) \
-  include/linux/page_counter.h \
-  include/linux/vmpressure.h \
-  include/linux/eventfd.h \
-  include/linux/mm.h \
-    $(wildcard include/config/HAVE_ARCH_MMAP_RND_BITS) \
-    $(wildcard include/config/HAVE_ARCH_MMAP_RND_COMPAT_BITS) \
-    $(wildcard include/config/ARCH_USES_HIGH_VMA_FLAGS) \
-    $(wildcard include/config/ARCH_HAS_PKEYS) \
-    $(wildcard include/config/PPC) \
-    $(wildcard include/config/PARISC) \
-    $(wildcard include/config/SPARC64) \
-    $(wildcard include/config/ARM64_MTE) \
-    $(wildcard include/config/HAVE_ARCH_USERFAULTFD_MINOR) \
-    $(wildcard include/config/SHMEM) \
-    $(wildcard include/config/ARCH_HAS_PTE_SPECIAL) \
-    $(wildcard include/config/ARCH_HAS_PTE_DEVMAP) \
-    $(wildcard include/config/DEBUG_VM_RB) \
-    $(wildcard include/config/PAGE_POISONING) \
-    $(wildcard include/config/INIT_ON_ALLOC_DEFAULT_ON) \
-    $(wildcard include/config/INIT_ON_FREE_DEFAULT_ON) \
-    $(wildcard include/config/DEBUG_PAGEALLOC) \
-    $(wildcard include/config/HUGETLBFS) \
-    $(wildcard include/config/MAPPING_DIRTY_HELPERS) \
-    $(wildcard include/config/ANON_VMA_NAME) \
-  include/linux/mmap_lock.h \
-  include/linux/page_ext.h \
-  include/linux/stacktrace.h \
-    $(wildcard include/config/ARCH_STACKWALK) \
-    $(wildcard include/config/STACKTRACE) \
-    $(wildcard include/config/HAVE_RELIABLE_STACKTRACE) \
-  include/linux/stackdepot.h \
-    $(wildcard include/config/STACKDEPOT_ALWAYS_INIT) \
-  include/linux/page_ref.h \
-    $(wildcard include/config/DEBUG_PAGE_REF) \
-  include/linux/sizes.h \
-  include/linux/pgtable.h \
-    $(wildcard include/config/HIGHPTE) \
-    $(wildcard include/config/GUP_GET_PTE_LOW_HIGH) \
-    $(wildcard include/config/HAVE_ARCH_SOFT_DIRTY) \
-    $(wildcard include/config/ARCH_ENABLE_THP_MIGRATION) \
-    $(wildcard include/config/X86_ESPFIX64) \
-  arch/x86/include/asm/pgtable.h \
-    $(wildcard include/config/DEBUG_WX) \
-    $(wildcard include/config/PAGE_TABLE_CHECK) \
-  arch/x86/include/asm/pkru.h \
-  arch/x86/include/asm/fpu/api.h \
-    $(wildcard include/config/X86_DEBUG_FPU) \
-  arch/x86/include/asm/coco.h \
-  include/asm-generic/pgtable_uffd.h \
-  include/linux/page_table_check.h \
-  arch/x86/include/asm/pgtable_32.h \
-  arch/x86/include/asm/pgtable-3level.h \
-  arch/x86/include/asm/pgtable-invert.h \
-  include/linux/huge_mm.h \
-  include/linux/sched/coredump.h \
-    $(wildcard include/config/CORE_DUMP_DEFAULT_ELF_HEADERS) \
-  include/linux/vmstat.h \
-    $(wildcard include/config/VM_EVENT_COUNTERS) \
-  include/linux/writeback.h \
-  include/linux/flex_proportions.h \
-  include/linux/backing-dev-defs.h \
-    $(wildcard include/config/DEBUG_FS) \
-  include/linux/blk_types.h \
-    $(wildcard include/config/FAIL_MAKE_REQUEST) \
-    $(wildcard include/config/BLK_CGROUP_IOCOST) \
-    $(wildcard include/config/BLK_INLINE_ENCRYPTION) \
-    $(wildcard include/config/BLK_DEV_INTEGRITY) \
-  include/linux/bvec.h \
-  include/linux/highmem.h \
-  include/linux/cacheflush.h \
-  arch/x86/include/asm/cacheflush.h \
-  include/asm-generic/cacheflush.h \
-  include/linux/highmem-internal.h \
-  arch/x86/include/asm/highmem.h \
-  arch/x86/include/asm/tlbflush.h \
-  arch/x86/include/asm/invpcid.h \
-  arch/x86/include/asm/pti.h \
-  include/linux/bio.h \
-  include/linux/mempool.h \
-  include/linux/uio.h \
-    $(wildcard include/config/ARCH_HAS_UACCESS_FLUSHCACHE) \
-  include/uapi/linux/uio.h \
-  include/linux/node.h \
-    $(wildcard include/config/HMEM_REPORTING) \
-  include/linux/pagemap.h \
-  include/linux/hugetlb_inline.h \
-  include/uapi/linux/mempolicy.h \
-  include/linux/freezer.h \
-  include/uapi/linux/i2c.h \
-  include/linux/videodev2.h \
-  include/uapi/linux/videodev2.h \
-    $(wildcard include/config/VIDEO_ADV_DEBUG) \
-  include/uapi/linux/v4l2-common.h \
-  include/uapi/linux/v4l2-controls.h \
-  include/media/v4l2-device.h \
-    $(wildcard include/config/VIDEO_V4L2_SUBDEV_API) \
-  include/media/media-device.h \
-    $(wildcard include/config/MEDIA_CONTROLLER) \
-  include/media/media-devnode.h \
-  include/linux/poll.h \
-  include/uapi/linux/poll.h \
-  arch/x86/include/generated/uapi/asm/poll.h \
-  include/uapi/asm-generic/poll.h \
-  include/uapi/linux/eventpoll.h \
-  include/linux/cdev.h \
-  include/media/media-entity.h \
-  include/uapi/linux/media.h \
-  include/media/v4l2-subdev.h \
-  include/uapi/linux/v4l2-subdev.h \
-  include/uapi/linux/v4l2-mediabus.h \
-  include/uapi/linux/media-bus-format.h \
-  include/media/v4l2-async.h \
-  include/media/v4l2-common.h \
-    $(wildcard include/config/VIDEO_V4L2_I2C) \
-    $(wildcard include/config/SPI) \
-  include/media/v4l2-dev.h \
-  include/linux/spi/spi.h \
-    $(wildcard include/config/SPI_SLAVE) \
-  include/linux/scatterlist.h \
-    $(wildcard include/config/NEED_SG_DMA_LENGTH) \
-    $(wildcard include/config/DEBUG_SG) \
-    $(wildcard include/config/SGL_ALLOC) \
-    $(wildcard include/config/ARCH_NO_SG_CHAIN) \
-    $(wildcard include/config/SG_POOL) \
-  include/linux/gpio/consumer.h \
-    $(wildcard include/config/OF_GPIO) \
-    $(wildcard include/config/GPIO_SYSFS) \
-  include/uapi/linux/spi/spi.h \
-  include/media/v4l2-fh.h \
-  include/media/v4l2-mediabus.h \
-  include/media/v4l2-ctrls.h \
-  include/media/media-request.h \
-  include/media/hevc-ctrls.h \
+// SPDX-License-Identifier: GPL-2.0-or-later
+/*
+ * Janz MODULbus VMOD-ICAN3 CAN Interface Driver
+ *
+ * Copyright (c) 2010 Ira W. Snyder <iws@ovro.caltech.edu>
+ */
 
-drivers/media/i2c/vpx3220.o: $(deps_drivers/media/i2c/vpx3220.o)
+#include <linux/kernel.h>
+#include <linux/module.h>
+#include <linux/interrupt.h>
+#include <linux/delay.h>
+#include <linux/platform_device.h>
 
-$(deps_drivers/media/i2c/vpx3220.o):
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       cmd_drivers/media/i2c/vpx3220.o := gcc -Wp,-MMD,drivers/media/i2c/.vpx3220.o.d -nostdinc -I./arch/x86/include -I./arch/x86/include/generated  -I./include -I./arch/x86/include/uapi -I./arch/x86/include/generated/uapi -I./include/uapi -I./include/generated/uapi -include ./include/linux/compiler-version.h -include ./include/linux/kconfig.h -include ./include/linux/compiler_types.h -D__KERNEL__ -fmacro-prefix-map=./= -Wall -Wundef -Werror=strict-prototypes -Wno-trigraphs -fno-strict-aliasing -fno-common -fshort-wchar -fno-PIE -Werror=implicit-function-declaration -Werror=implicit-int -Werror=return-type -Wno-format-security -std=gnu11 -mno-sse -mno-mmx -mno-sse2 -mno-3dnow -mno-avx -fcf-protection=none -m32 -msoft-float -mregparm=3 -freg-struct-return -fno-pic -mpreferred-stack-boundary=2 -march=i686 -mtune=pentium3 -mtune=generic -Wa,-mtune=generic32 -ffreestanding -mstack-protector-guard-reg=fs -mstack-protector-guard-symbol=__stack_chk_guard -Wno-sign-compare -fno-asynchronous-unwind-tables -mindirect-branch=thunk-extern -mindirect-branch-register -fno-jump-tables -fno-delete-null-pointer-checks -Wno-frame-address -Wno-format-truncation -Wno-format-overflow -Wno-address-of-packed-member -O2 -fno-allow-store-data-races -fstack-protector-strong -Wimplicit-fallthrough=5 -Wno-main -Wno-unused-but-set-variable -Wno-unused-const-variable -fno-stack-clash-protection -pg -mrecord-mcount -mfentry -DCC_USING_FENTRY -Wdeclaration-after-statement -Wvla -Wno-pointer-sign -Wcast-function-type -Wno-stringop-truncation -Wno-stringop-overflow -Wno-restrict -Wno-maybe-uninitialized -Wno-alloc-size-larger-than -fno-strict-overflow -fno-stack-check -fconserve-stack -Werror=date-time -Werror=incompatible-pointer-types -Werror=designated-init -Wno-packed-not-aligned  -DMODULE  -DKBUILD_BASENAME='"vpx3220"' -DKBUILD_MODNAME='"vpx3220"' -D__KBUILD_MODNAME=kmod_vpx3220 -c -o drivers/media/i2c/vpx3220.o drivers/media/i2c/vpx3220.c 
+#include <linux/netdevice.h>
+#include <linux/can.h>
+#include <linux/can/dev.h>
+#include <linux/can/skb.h>
+#include <linux/can/error.h>
 
-source_drivers/media/i2c/vpx3220.o := drivers/media/i2c/vpx3220.c
+#include <linux/mfd/janz.h>
+#include <asm/io.h>
 
-deps_drivers/media/i2c/vpx3220.o := \
-  include/linux/compiler-version.h \
-    $(wildcard include/config/CC_VERSION_TEXT) \
-  include/linux/kconfig.h \
-    $(wildcard include/config/CPU_BIG_ENDIAN) \
-    $(wildcard include/config/BOOGER) \
-    $(wildcard include/config/FOO) \
-  include/linux/compiler_types.h \
-    $(wildcard include/config/DEBUG_INFO_BTF) \
-    $(wildcard include/config/PAHOLE_HAS_BTF_TAG) \
-    $(wildcard include/config/HAVE_ARCH_COMPILER_H) \
-    $(wildcard include/config/CC_HAS_ASM_INLINE) \
-  include/linux/compiler_attributes.h \
-  include/linux/compiler-gcc.h \
-    $(wildcard include/config/RETPOLINE) \
-    $(wildcard include/config/ARCH_USE_BUILTIN_BSWAP) \
-    $(wildcard include/config/SHADOW_CALL_STACK) \
-    $(wildcard include/config/KCOV) \
-  include/linux/module.h \
-    $(wildcard include/config/MODULES) \
-    $(wildcard include/config/SYSFS) \
-    $(wildcard include/config/MODULES_TREE_LOOKUP) \
-    $(wildcard include/config/LIVEPATCH) \
-    $(wildcard include/config/STACKTRACE_BUILD_ID) \
-    $(wildcard include/config/CFI_CLANG) \
-    $(wildcard include/config/MODULE_SIG) \
-    $(wildcard include/config/GENERIC_BUG) \
-    $(wildcard include/config/KALLSYMS) \
-    $(wildcard include/config/SMP) \
-    $(wildcard include/config/TRACEPOINTS) \
-    $(wildcard include/config/TREE_SRCU) \
-    $(wildcard include/config/BPF_EVENTS) \
-    $(wildcard include/config/DEBUG_INFO_BTF_MODULES) \
-    $(wildcard include/config/JUMP_LABEL) \
-    $(wildcard include/config/TRACING) \
-    $(wildcard include/config/EVENT_TRACING) \
-    $(wildcard include/config/FTRACE_MCOUNT_RECORD) \
-    $(wildcard include/config/KPROBES) \
-    $(wildcard include/config/HAVE_STATIC_CALL_INLINE) \
-    $(wildcard include/config/PRINTK_INDEX) \
-    $(wildcard include/config/MODULE_UNLOAD) \
-    $(wildcard include/config/CONSTRUCTORS) \
-    $(wildcard include/config/FUNCTION_ERROR_INJECTION) \
-  include/linux/list.h \
-    $(wildcard include/config/DEBUG_LIST) \
-  include/linux/container_of.h \
-  include/linux/build_bug.h \
-  include/linux/compiler.h \
-    $(wildcard include/config/TRACE_BRANCH_PROFILING) \
-    $(wildcard include/config/PROFILE_ALL_BRANCHES) \
-    $(wildcard include/config/STACK_VALIDATION) \
-  include/linux/compiler_types.h \
-  arch/x86/include/generated/asm/rwonce.h \
-  include/asm-generic/rwonce.h \
-  include/linux/kasan-checks.h \
-    $(wildcard include/config/KASAN_GENERIC) \
-    $(wildcard include/config/KASAN_SW_TAGS) \
-  include/linux/types.h \
-    $(wildcard include/config/HAVE_UID16) \
-    $(wildcard include/config/UID16) \
-    $(wildcard include/config/ARCH_DMA_ADDR_T_64BIT) \
-    $(wildcard include/config/PHYS_ADDR_T_64BIT) \
-    $(wildcard include/config/64BIT) \
-    $(wildcard include/config/ARCH_32BIT_USTAT_F_TINODE) \
-  include/uapi/linux/types.h \
-  arch/x86/include/generated/uapi/asm/types.h \
-  include/uapi/asm-generic/types.h \
-  include/asm-generic/int-ll64.h \
-  include/uapi/asm-generic/int-ll64.h \
-  arch/x86/include/uapi/asm/bitsperlong.h \
-  include/asm-generic/bitsperlong.h \
-  include/uapi/asm-generic/bitsperlong.h \
-  include/uapi/linux/posix_types.h \
-  include/linux/stddef.h \
-  include/uapi/linux/stddef.h \
-  arch/x86/include/asm/posix_types.h \
-    $(wildcard include/config/X86_32) \
-  arch/x86/include/uapi/asm/posix_types_32.h \
-  include/uapi/asm-generic/posix_types.h \
-  include/linux/kcsan-checks.h \
-    $(wildcard include/config/KCSAN) \
-    $(wildcard include/config/KCSAN_WEAK_MEMORY) \
-    $(wildcard include/config/KCSAN_IGNORE_ATOMICS) \
-  include/linux/err.h \
-  arch/x86/include/generated/uapi/asm/errno.h \
-  include/uapi/asm-generic/errno.h \
-  include/uapi/asm-generic/errno-base.h \
-  include/linux/poison.h \
-    $(wildcard include/config/ILLEGAL_POINTER_VALUE) \
-  include/linux/const.h \
-  include/vdso/const.h \
-  include/uapi/linux/const.h \
-  arch/x86/include/asm/barrier.h \
-  arch/x86/include/asm/alternative.h \
-  include/linux/stringify.h \
-  arch/x86/include/asm/asm.h \
-  arch/x86/include/asm/extable_fixup_types.h \
-  arch/x86/include/asm/nops.h \
-  include/asm-generic/barrier.h \
-  include/linux/stat.h \
-  arch/x86/include/uapi/asm/stat.h \
-  include/uapi/linux/stat.h \
-  include/linux/time.h \
-    $(wildcard include/config/POSIX_TIMERS) \
-  include/linux/cache.h \
-    $(wildcard include/config/ARCH_HAS_CACHE_LINE_SIZE) \
-  include/uapi/linux/kernel.h \
-  include/uapi/linux/sysinfo.h \
-  arch/x86/include/asm/cache.h \
-    $(wildcard include/config/X86_L1_CACHE_SHIFT) \
-    $(wildcard include/config/X86_INTERNODE_CACHE_SHIFT) \
-    $(wildcard include/config/X86_VSMP) \
-  include/linux/linkage.h \
-    $(wildcard include/config/ARCH_USE_SYM_ANNOTATIONS) \
-  include/linux/export.h \
-    $(wildcard include/config/MODVERSIONS) \
-    $(wildcard include/config/MODULE_REL_CRCS) \
-    $(wildcard include/config/HAVE_ARCH_PREL32_RELOCATIONS) \
-    $(wildcard include/config/TRIM_UNUSED_KSYMS) \
-  arch/x86/include/asm/linkage.h \
-    $(wildcard include/config/X86_64) \
-    $(wildcard include/config/X86_ALIGNMENT_16) \
-    $(wildcard include/config/SLS) \
-  arch/x86/include/asm/ibt.h \
-    $(wildcard include/config/X86_KERNEL_IBT) \
-  include/linux/math64.h \
-    $(wildcard include/config/ARCH_SUPPORTS_INT128) \
-  include/linux/math.h \
-  arch/x86/include/asm/div64.h \
-  include/linux/log2.h \
-    $(wildcard include/config/ARCH_HAS_ILOG2_U32) \
-    $(wildcard include/config/ARCH_HAS_ILOG2_U64) \
-  include/linux/bitops.h \
-  include/linux/bits.h \
-  include/vdso/bits.h \
-  include/linux/typecheck.h \
-  arch/x86/include/asm/bitops.h \
-    $(wildcard include/config/X86_CMOV) \
-  arch/x86/include/asm/rmwcc.h \
-    $(wildcard include/config/CC_HAS_ASM_GOTO) \
-  include/asm-generic/bitops/fls64.h \
-  include/asm-generic/bitops/sched.h \
-  arch/x86/include/asm/arch_hweight.h \
-  arch/x86/include/asm/cpufeatures.h \
-  arch/x86/include/asm/required-features.h \
-    $(wildcard include/config/X86_MINIMUM_CPU_FAMILY) \
-    $(wildcard include/config/MATH_EMULATION) \
-    $(wildcard include/config/X86_PAE) \
-    $(wildcard include/config/X86_CMPXCHG64) \
-    $(wildcard include/config/X86_P6_NOP) \
-    $(wildcard include/config/MATOM) \
-    $(wildcard include/config/PARAVIRT_XXL) \
-  arch/x86/include/asm/disabled-features.h \
-    $(wildcard include/config/X86_SMAP) \
-    $(wildcard include/config/X86_UMIP) \
-    $(wildcard include/config/X86_INTEL_MEMORY_PROTECTION_KEYS) \
-    $(wildcard include/config/X86_5LEVEL) \
-    $(wildcard include/config/PAGE_TABLE_ISOLATION) \
-    $(wildcard include/config/INTEL_IOMMU_SVM) \
-    $(wildcard include/config/X86_SGX) \
-  include/asm-generic/bitops/const_hweight.h \
-  include/asm-generic/bitops/instrumented-atomic.h \
-  include/linux/instrumented.h \
-  include/asm-generic/bitops/instrumented-non-atomic.h \
-    $(wildcard include/config/KCSAN_ASSUME_PLAIN_WRITES_ATOMIC) \
-  include/asm-generic/bitops/instrumented-lock.h \
-  include/asm-generic/bitops/le.h \
-  arch/x86/include/uapi/asm/byteorder.h \
-  include/linux/byteorder/little_endian.h \
-  include/uapi/linux/byteorder/little_endian.h \
-  include/linux/swab.h \
-  include/uapi/linux/swab.h \
-  arch/x86/include/uapi/asm/swab.h \
-  include/linux/byteorder/generic.h \
-  include/asm-generic/bitops/ext2-atomic-setbit.h \
-  include/vdso/math64.h \
-  include/linux/time64.h \
-  include/vdso/time64.h \
-  include/uapi/linux/time.h \
-  include/uapi/linux/time_types.h \
-  include/linux/time32.h \
-  include/linux/timex.h \
-  include/uapi/linux/timex.h \
-  include/uapi/linux/param.h \
-  arch/x86/include/generated/uapi/asm/param.h \
-  include/asm-generic/param.h \
-    $(wildcard include/config/HZ) \
-  include/uapi/asm-generic/param.h \
-  arch/x86/include/asm/timex.h \
-    $(wildcard include/config/X86_TSC) \
-  arch/x86/include/asm/processor.h \
-    $(wildcard include/config/X86_VMX_FEATURE_NAMES) \
-    $(wildcard include/config/X86_IOPL_IOPERM) \
-    $(wildcard include/config/STACKPROTECTOR) \
-    $(wildcard include/config/VM86) \
-  
+/* the DPM has 64k of memory, organized into 256x 256 byte pages */
+#define DPM_NUM_PAGES		256
+#define DPM_PAGE_SIZE		256
+#define DPM_PAGE_ADDR(p)	((p) * DPM_PAGE_SIZE)
+
+/* JANZ ICAN3 "old-style" host interface queue page numbers */
+#define QUEUE_OLD_CONTROL	0
+#define QUEUE_OLD_RB0		1
+#define QUEUE_OLD_RB1		2
+#define QUEUE_OLD_WB0		3
+#define QUEUE_OLD_WB1		4
+
+/* Janz ICAN3 "old-style" host interface control registers */
+#define MSYNC_PEER		0x00		/* ICAN only */
+#define MSYNC_LOCL		0x01		/* host only */
+#define TARGET_RUNNING		0x02
+#define FIRMWARE_STAMP		0x60		/* big endian firmware stamp */
+
+#define MSYNC_RB0		0x01
+#define MSYNC_RB1		0x02
+#define MSYNC_RBLW		0x04
+#define MSYNC_RB_MASK		(MSYNC_RB0 | MSYNC_RB1)
+
+#define MSYNC_WB0		0x10
+#define MSYNC_WB1		0x20
+#define MSYNC_WBLW		0x40
+#define MSYNC_WB_MASK		(MSYNC_WB0 | MSYNC_WB1)
+
+/* Janz ICAN3 "new-style" host interface queue page numbers */
+#define QUEUE_TOHOST		5
+#define QUEUE_FROMHOST_MID	6
+#define QUEUE_FROMHOST_HIGH	7
+#define QUEUE_FROMHOST_LOW	8
+
+/* The first free page in the DPM is #9 */
+#define DPM_FREE_START		9
+
+/* Janz ICAN3 "new-style" and "fast" host interface descriptor flags */
+#define DESC_VALID		0x80
+#define DESC_WRAP		0x40
+#define DESC_INTERRUPT		0x20
+#define DESC_IVALID		0x10
+#define DESC_LEN(len)		(len)
+
+/* Janz ICAN3 Firmware Messages */
+#define MSG_CONNECTI		0x02
+#define MSG_DISCONNECT		0x03
+#define MSG_IDVERS		0x04
+#define MSG_MSGLOST		0x05
+#define MSG_NEWHOSTIF		0x08
+#define MSG_INQUIRY		0x0a
+#define MSG_SETAFILMASK		0x10
+#define MSG_INITFDPMQUEUE	0x11
+#define MSG_HWCONF		0x12
+#define MSG_FMSGLOST		0x15
+#define MSG_CEVTIND		0x37
+#define MSG_CBTRREQ		0x41
+#define MSG_COFFREQ		0x42
+#define MSG_CONREQ		0x43
+#define MSG_CCONFREQ		0x47
+#define MSG_NMTS		0xb0
+#define MSG_LMTS		0xb4
+
+/*
+ * Janz ICAN3 CAN Inquiry Message Types
+ *
+ * NOTE: there appears to be a firmware bug here. You must send
+ * NOTE: INQUIRY_STATUS and expect to receive an INQUIRY_EXTENDED
+ * NOTE: response. The controller never responds to a message with
+ * NOTE: the INQUIRY_EXTENDED subspec :(
+ */
+#define INQUIRY_STATUS		0x00
+#define INQUIRY_TERMINATION	0x01
+#define INQUIRY_EXTENDED	0x04
+
+/* Janz ICAN3 CAN Set Acceptance Filter Mask Message Types */
+#define SETAFILMASK_REJECT	0x00
+#define SETAFILMASK_FASTIF	0x02
+
+/* Janz ICAN3 CAN Hardware Configuration Message Types */
+#define HWCONF_TERMINATE_ON	0x01
+#define HWCONF_TERMINATE_OFF	0x00
+
+/* Janz ICAN3 CAN Event Indication Message Types */
+#define CEVTIND_EI		0x01
+#define CEVTIND_DOI		0x02
+#define CEVTIND_LOST		0x04
+#define CEVTIND_FULL		0x08
+#define CEVTIND_BEI		0x10
+
+#define CEVTIND_CHIP_SJA1000	0x02
+
+#define ICAN3_BUSERR_QUOTA_MAX	255
+
+/* Janz ICAN3 CAN Frame Conversion */
+#define ICAN3_SNGL	0x02
+#define ICAN3_ECHO	0x10
+#define ICAN3_EFF_RTR	0x40
+#define ICAN3_SFF_RTR	0x10
+#define ICAN3_EFF	0x80
+
+#define ICAN3_CAN_TYPE_MASK	0x0f
+#define ICAN3_CAN_TYPE_SFF	0x00
+#define ICAN3_CAN_TYPE_EFF	0x01
+
+#define ICAN3_CAN_DLC_MASK	0x0f
+
+/* Janz ICAN3 NMTS subtypes */
+#define NMTS_CREATE_NODE_REQ	0x0
+#define NMTS_SLAVE_STATE_IND	0x8
+#define NMTS_SLAVE_EVENT_IND	0x9
+
+/* Janz ICAN3 LMTS subtypes */
+#define LMTS_BUSON_REQ		0x0
+#define LMTS_BUSOFF_REQ		0x1
+#define LMTS_CAN_CONF_REQ	0x2
+
+/* Janz ICAN3 NMTS Event indications */
+#define NE_LOCAL_OCCURRED	0x3
+#define NE_LOCAL_RESOLVED	0x2
+#define NE_REMOTE_OCCURRED	0xc
+#define NE_REMOTE_RESOLVED	0x8
+
+/*
+ * SJA1000 Status and Error Register Definitions
+ *
+ * Copied from drivers/net/can/sja1000/sja1000.h
+ */
+
+/* status register content */
+#define SR_BS		0x80
+#define SR_ES		0x40
+#define SR_TS		0x20
+#define SR_RS		0x10
+#define SR_TCS		0x08
+#define SR_TBS		0x04
+#define SR_DOS		0x02
+#define SR_RBS		0x01
+
+#define SR_CRIT (SR_BS|SR_ES)
+
+/* ECC register */
+#define ECC_SEG		0x1F
+#define ECC_DIR		0x20
+#define ECC_ERR		6
+#define ECC_BIT		0x00
+#define ECC_FORM	0x40
+#define ECC_STUFF	0x80
+#define ECC_MASK	0xc0
+
+/* Number of buffers for use in the "new-style" host interface */
+#define ICAN3_NEW_BUFFERS	16
+
+/* Number of buffers for use in the "fast" host interface */
+#define ICAN3_TX_BUFFERS	512
+#define ICAN3_RX_BUFFERS	1024
+
+/* SJA1000 Clock Input */
+#define ICAN3_CAN_CLOCK		8000000
+
+/* Janz ICAN3 firmware types */
+enum ican3_fwtype {
+	ICAN3_FWTYPE_ICANOS,
+	ICAN3_FWTYPE_CAL_CANOPEN,
+};
+
+/* Driver Name */
+#define DRV_NAME "janz-ican3"
+
+/* DPM Control Registers -- starts at offset 0x100 in the MODULbus registers */
+struct ican3_dpm_control {
+	/* window address register */
+	u8 window_address;
+	u8 unused1;
+
+	/*
+	 * Read access: clear interrupt from microcontroller
+	 * Write access: send interrupt to microcontroller
+	 */
+	u8 interrupt;
+	u8 unused2;
+
+	/* write-only: reset all hardware on the module */
+	u8 hwreset;
+	u8 unused3;
+
+	/* write-only: generate an interrupt to the TPU */
+	u8 tpuinterrupt;
+};
+
+struct ican3_dev {
+
+	/* must be the first member */
+	struct can_priv can;
+
+	/* CAN network device */
+	struct net_device *ndev;
+	struct napi_struct napi;
+
+	/* module number */
+	unsigned int num;
+
+	/* base address of registers and IRQ */
+	struct janz_cmodio_onboard_regs __iomem *ctrl;
+	struct ican3_dpm_control __iomem *dpmctrl;
+	void __iomem *dpm;
+	int irq;
+
+	/* CAN bus termination status */
+	struct completion termination_comp;
+	bool termination_enabled;
+
+	/* CAN bus error status registers */
+	struct completion buserror_comp;
+	struct can_berr_counter bec;
+
+	/* firmware type */
+	enum ican3_fwtype fwtype;
+	char fwinfo[32];
+
+	/* old and new style host interface */
+	unsigned int iftype;
+
+	/* queue for echo packets */
+	struct sk_buff_head echoq;
+
+	/*
+	 * Any function which changes the current DPM page must hold this
+	 * lock while it is performing data accesses. This ensures that the
+	 * function will not be preempted and end up reading data from a
+	 * different DPM page than it expects.
+	 */
+	spinlock_t lock;
+
+	/* new host interface */
+	unsigned int rx_int;
+	unsigned int rx_num;
+	unsigned int tx_num;
+
+	/* fast host interface */
+	unsigned int fastrx_start;
+	unsigned int fastrx_num;
+	unsigned int fasttx_start;
+	unsigned int fasttx_num;
+
+	/* first free DPM page */
+	unsigned int free_page;
+};
+
+struct ican3_msg {
+	u8 control;
+	u8 spec;
+	__le16 len;
+	u8 data[252];
+};
+
+struct ican3_new_desc {
+	u8 control;
+	u8 pointer;
+};
+
+struct ican3_fast_desc {
+	u8 control;
+	u8 command;
+	u8 data[14];
+};
+
+/* write to the window basic address register */
+static inline void ican3_set_page(struct ican3_dev *mod, unsigned int page)
+{
+	BUG_ON(page >= DPM_NUM_PAGES);
+	iowrite8(page, &mod->dpmctrl->window_address);
+}
+
+/*
+ * ICAN3 "old-style" host interface
+ */
+
+/*
+ * Receive a message from the ICAN3 "old-style" firmware interface
+ *
+ * LOCKING: must hold mod->lock
+ *
+ * returns 0 on success, -ENOMEM when no message exists
+ */
+static int ican3_old_recv_msg(struct ican3_dev *mod, struct ican3_msg *msg)
+{
+	unsigned int mbox, mbox_page;
+	u8 locl, peer, xord;
+
+	/* get the MSYNC registers */
+	ican3_set_page(mod, QUEUE_OLD_CONTROL);
+	peer = ioread8(mod->dpm + MSYNC_PEER);
+	locl = ioread8(mod->dpm + MSYNC_LOCL);
+	xord = locl ^ peer;
+
+	if ((xord & MSYNC_RB_MASK) == 0x00) {
+		netdev_dbg(mod->ndev, "no mbox for reading\n");
+		return -ENOMEM;
+	}
+
+	/* find the first free mbox to read */
+	if ((xord & MSYNC_RB_MASK) == MSYNC_RB_MASK)
+		mbox = (xord & MSYNC_RBLW) ? MSYNC_RB0 : MSYNC_RB1;
+	else
+		mbox = (xord & MSYNC_RB0) ? MSYNC_RB0 : MSYNC_RB1;
+
+	/* copy the message */
+	mbox_page = (mbox == MSYNC_RB0) ? QUEUE_OLD_RB0 : QUEUE_OLD_RB1;
+	ican3_set_page(mod, mbox_page);
+	memcpy_fromio(msg, mod->dpm, sizeof(*msg));
+
+	/*
+	 * notify the firmware that the read buffer is available
+	 * for it to fill again
+	 */
+	locl ^= mbox;
+
+	ican3_set_page(mod, QUEUE_OLD_CONTROL);
+	iowrite8(locl, mod->dpm + MSYNC_LOCL);
+	return 0;
+}
+
+/*
+ * Send a message through the "old-style" firmware interface
+ *
+ * LOCKING: must hold mod->lock
+ *
+ * returns 0 on success, -ENOMEM when no free space exists
+ */
+static int ican3_old_send_msg(struct ican3_dev *mod, struct ican3_msg *msg)
+{
+	unsigned int mbox, mbox_page;
+	u8 locl, peer, xord;
+
+	/* get the MSYNC registers */
+	ican3_set_page(mod, QUEUE_OLD_CONTROL);
+	peer = ioread8(mod->dpm + MSYNC_PEER);
+	locl = ioread8(mod->dpm + MSYNC_LOCL);
+	xord = locl ^ peer;
+
+	if ((xord & MSYNC_WB_MASK) == MSYNC_WB_MASK) {
+		netdev_err(mod->ndev, "no mbox for writing\n");
+		return -ENOMEM;
+	}
+
+	/* calculate a free mbox to use */
+	mbox = (xord & MSYNC_WB0) ? MSYNC_WB1 : MSYNC_WB0;
+
+	/* copy the message to the DPM */
+	mbox_page = (mbox == MSYNC_WB0) ? QUEUE_OLD_WB0 : QUEUE_OLD_WB1;
+	ican3_set_page(mod, mbox_page);
+	memcpy_toio(mod->dpm, msg, sizeof(*msg));
+
+	locl ^= mbox;
+	if (mbox == MSYNC_WB1)
+		locl |= MSYNC_WBLW;
+
+	ican3_set_page(mod, QUEUE_OLD_CONTROL);
+	iowrite8(locl, mod->dpm + MSYNC_LOCL);
+	return 0;
+}
+
+/*
+ * ICAN3 "new-style" Host Interface Setup
+ */
+
+static void ican3_init_new_host_interface(struct ican3_dev *mod)
+{
+	struct ican3_new_desc desc;
+	unsigned long flags;
+	void __iomem *dst;
+	int i;
+
+	spin_lock_irqsave(&mod->lock, flags);
+
+	/* setup the internal datastructures for RX */
+	mod->rx_num = 0;
+	mod->rx_int = 0;
+
+	/* tohost queue descriptors are in page 5 */
+	ican3_set_page(mod, QUEUE_TOHOST);
+	dst = mod->dpm;
+
+	/* initialize the tohost (rx) queue descriptors: pages 9-24 */
+	for (i = 0; i < ICAN3_NEW_BUFFERS; i++) {
+		desc.control = DESC_INTERRUPT | DESC_LEN(1); /* I L=1 */
+		desc.pointer = mod->free_page;
+
+		/* set wrap flag on last buffer */
+		if (i == ICAN3_NEW_BUFFERS - 1)
+			desc.control |= DESC_WRAP;
+
+		memcpy_toio(dst, &desc, sizeof(desc));
+		dst += sizeof(desc);
+		mod->free_page++;
+	}
+
+	/* fromhost (tx) mid queue descriptors are in page 6 */
+	ican3_set_page(mod, QUEUE_FROMHOST_MID);
+	dst = mod->dpm;
+
+	/* setup the internal datastructures for TX */
+	mod->tx_num = 0;
+
+	/* initialize the fromhost mid queue descriptors: pages 25-40 */
+	for (i = 0; i < ICAN3_NEW_BUFFERS; i++) {
+		desc.control = DESC_VALID | DESC_LEN(1); /* V L=1 */
+		desc.pointer = mod->free_page;
+
+		/* set wrap flag on last buffer */
+		if (i == ICAN3_NEW_BUFFERS - 1)
+			desc.control |= DESC_WRAP;
+
+		memcpy_toio(dst, &desc, sizeof(desc));
+		dst += sizeof(desc);
+		mod->free_page++;
+	}
+
+	/* fromhost hi queue descriptors are in page 7 */
+	ican3_set_page(mod, QUEUE_FROMHOST_HIGH);
+	dst = mod->dpm;
+
+	/* initialize only a single buffer in the fromhost hi queue (unused) */
+	desc.control = DESC_VALID | DESC_WRAP | DESC_LEN(1); /* VW L=1 */
+	desc.pointer = mod->free_page;
+	memcpy_toio(dst, &desc, sizeof(desc));
+	mod->free_page++;
+
+	/* fromhost low queue descriptors are in page 8 */
+	ican3_set_page(mod, QUEUE_FROMHOST_LOW);
+	dst = mod->dpm;
+
+	/* initialize only a single buffer in the fromhost low queue (unused) */
+	desc.control = DESC_VALID | DESC_WRAP | DESC_LEN(1); /* VW L=1 */
+	desc.pointer = mod->free_page;
+	memcpy_toio(dst, &desc, sizeof(desc));
+	mod->free_page++;
+
+	spin_unlock_irqrestore(&mod->lock, flags);
+}
+
+/*
+ * ICAN3 Fast Host Interface Setup
+ */
+
+static void ican3_init_fast_host_interface(struct ican3_dev *mod)
+{
+	struct ican3_fast_desc desc;
+	unsigned long flags;
+	unsigned int addr;
+	void __iomem *dst;
+	int i;
+
+	spin_lock_irqsave(&mod->lock, flags);
+
+	/* save the start recv page */
+	mod->fastrx_start = mod->free_page;
+	mod->fastrx_num = 0;
+
+	/* build a single fast tohost queue descriptor */
+	memset(&desc, 0, sizeof(desc));
+	desc.control = 0x00;
+	desc.command = 1;
+
+	/* build the tohost queue descriptor ring in memory */
+	addr = 0;
+	for (i = 0; i < ICAN3_RX_BUFFERS; i++) {
+
+		/* set the wrap bit on the last buffer */
+		if (i == ICAN3_RX_BUFFERS - 1)
+			desc.control |= DESC_WRAP;
+
+		/* switch to the correct page */
+		ican3_set_page(mod, mod->free_page);
+
+		/* copy the descriptor to the DPM */
+		dst = mod->dpm + addr;
+		memcpy_toio(dst, &desc, sizeof(desc));
+		addr += sizeof(desc);
+
+		/* move to the next page if necessary */
+		if (addr >= DPM_PAGE_SIZE) {
+			addr = 0;
+			mod->free_page++;
+		}
+	}
+
+	/* make sure we page-align the next queue */
+	if (addr != 0)
+		mod->free_page++;
+
+	/* save the start xmit page */
+	mod->fasttx_start = mod->free_page;
+	mod->fasttx_num = 0;
+
+	/* build a single fast fromhost queue descriptor */
+	memset(&desc, 0, sizeof(desc));
+	desc.control = DESC_VALID;
+	desc.command = 1;
+
+	/* build the fromhost queue descriptor ring in memory */
+	addr = 0;
+	for (i = 0; i < ICAN3_TX_BUFFERS; i++) {
+
+		/* set the wrap bit on the last buffer */
+		if (i == ICAN3_TX_BUFFERS - 1)
+			desc.control |= DESC_WRAP;
+
+		/* switch to the correct page */
+		ican3_set_page(mod, mod->free_page);
+
+		/* copy the descriptor to the DPM */
+		dst = mod->dpm + addr;
+		memcpy_toio(dst, &desc, sizeof(desc));
+		addr += sizeof(desc);
+
+		/* move to the next page if necessary */
+		if (addr >= DPM_PAGE_SIZE) {
+			addr = 0;
+			mod->free_page++;
+		}
+	}
+
+	spin_unlock_irqrestore(&mod->lock, flags);
+}
+
+/*
+ * ICAN3 "new-style" Host Interface Message Helpers
+ */
+
+/*
+ * LOCKING: must hold mod->lock
+ */
+static int ican3_new_send_msg(struct ican3_dev *mod, struct ican3_msg *msg)
+{
+	struct ican3_new_desc desc;
+	void __iomem *desc_addr = mod->dpm + (mod->tx_num * sizeof(desc));
+
+	/* switch to the fromhost mid queue, and read the buffer descriptor */
+	ican3_set_page(mod, QUEUE_FROMHOST_MID);
+	memcpy_fromio(&desc, desc_addr, sizeof(desc));
+
+	if (!(desc.control & DESC_VALID)) {
+		netdev_dbg(mod->ndev, "%s: no free buffers\n", __func__);
+		return -ENOMEM;
+	}
+
+	/* switch to the data page, copy the data */
+	ican3_set_page(mod, desc.pointer);
+	memcpy_toio(mod->dpm, msg, sizeof(*msg));
+
+	/* switch back to the descriptor, set the valid bit, write it back */
+	ican3_set_page(mod, QUEUE_FROMHOST_MID);
+	desc.control ^= DESC_VALID;
+	memcpy_toio(desc_addr, &desc, sizeof(desc));
+
+	/* update the tx number */
+	mod->tx_num = (desc.control & DESC_WRAP) ? 0 : (mod->tx_num + 1);
+	return 0;
+}
+
+/*
+ * LOCKING: must hold mod->lock
+ */
+static int ican3_new_recv_msg(struct ican3_dev *mod, struct ican3_msg *msg)
+{
+	struct ican3_new_desc desc;
+	void __iomem *desc_addr = mod->dpm + (mod->rx_num * sizeof(desc));
+
+	/* switch to the tohost queue, and read the buffer descriptor */
+	ican3_set_page(mod, QUEUE_TOHOST);
+	memcpy_fromio(&desc, desc_addr, sizeof(desc));
+
+	if (!(desc.control & DESC_VALID)) {
+		netdev_dbg(mod->ndev, "%s: no buffers to recv\n", __func__);
+		return -ENOMEM;
+	}
+
+	/* switch to the data page, copy the data */
+	ican3_set_page(mod, desc.pointer);
+	memcpy_fromio(msg, mod->dpm, sizeof(*msg));
+
+	/* switch back to the descriptor, toggle the valid bit, write it back */
+	ican3_set_page(mod, QUEUE_TOHOST);
+	desc.control ^= DESC_VALID;
+	memcpy_toio(desc_addr, &desc, sizeof(desc));
+
+	/* update the rx number */
+	mod->rx_num = (desc.control & DESC_WRAP) ? 0 : (mod->rx_num + 1);
+	return 0;
+}
+
+/*
+ * Message Send / Recv Helpers
+ */
+
+static int ican3_send_msg(struct ican3_dev *mod, struct ican3_msg *msg)
+{
+	unsigned long flags;
+	int ret;
+
+	spin_lock_irqsave(&mod->lock, flags);
+
+	if (mod->iftype == 0)
+		ret = ican3_old_send_msg(mod, msg);
+	else
+		ret = ican3_new_send_msg(mod, msg);
+
+	spin_unlock_irqrestore(&mod->lock, flags);
+	return ret;
+}
+
+static int ican3_recv_msg(struct ican3_dev *mod, struct ican3_msg *msg)
+{
+	unsigned long flags;
+	int ret;
+
+	spin_lock_irqsave(&mod->lock, flags);
+
+	if (mod->iftype == 0)
+		ret = ican3_old_recv_msg(mod, msg);
+	else
+		ret = ican3_new_recv_msg(mod, msg);
+
+	spin_unlock_irqrestore(&mod->lock, flags);
+	return ret;
+}
+
+/*
+ * Quick Pre-constructed Messages
+ */
+
+static int ican3_msg_connect(struct ican3_dev *mod)
+{
+	struct ican3_msg msg;
+
+	memset(&msg, 0, sizeof(msg));
+	msg.spec = MSG_CONNECTI;
+	msg.len = cpu_to_le16(0);
+
+	return ican3_send_msg(mod, &msg);
+}
+
+static int ican3_msg_disconnect(struct ican3_dev *mod)
+{
+	struct ican3_msg msg;
+
+	memset(&msg, 0, sizeof(msg));
+	msg.spec = MSG_DISCONNECT;
+	msg.len = cpu_to_le16(0);
+
+	return ican3_send_msg(mod, &msg);
+}
+
+static int ican3_msg_newhostif(struct ican3_dev *mod)
+{
+	struct ican3_msg msg;
+	int ret;
+
+	memset(&msg, 0, sizeof(msg));
+	msg.spec = MSG_NEWHOSTIF;
+	msg.len = cpu_to_le16(0);
+
+	/* If we're not using the old interface, switching seems bogus */
+	WARN_ON(mod->iftype != 0);
+
+	ret = ican3_send_msg(mod, &msg);
+	if (ret)
+		return ret;
+
+	/* mark the module as using the new host interface */
+	mod->iftype = 1;
+	return 0;
+}
+
+static int ican3_msg_fasthostif(struct ican3_dev *mod)
+{
+	struct ican3_msg msg;
+	unsigned int addr;
+
+	memset(&msg, 0, sizeof(msg));
+	msg.spec = MSG_INITFDPMQUEUE;
+	msg.len = cpu_to_le16(8);
+
+	/* write the tohost queue start address */
+	addr = DPM_PAGE_ADDR(mod->fastrx_start);
+	msg.data[0] = addr & 0xff;
+	msg.data[1] = (addr >> 8) & 0xff;
+	msg.data[2] = (addr >> 16) & 0xff;
+	msg.data[3] = (addr >> 24) & 0xff;
+
+	/* write the fromhost queue start address */
+	addr = DPM_PAGE_ADDR(mod->fasttx_start);
+	msg.data[4] = addr & 0xff;
+	msg.data[5] = (addr >> 8) & 0xff;
+	msg.data[6] = (addr >> 16) & 0xff;
+	msg.data[7] = (addr >> 24) & 0xff;
+
+	/* If we're not using the new interface yet, we cannot do this */
+	WARN_ON(mod->iftype != 1);
+
+	return ican3_send_msg(mod, &msg);
+}
+
+/*
+ * Setup the CAN filter to either accept or reject all
+ * messages from the CAN bus.
+ */
+static int ican3_set_id_filter(struct ican3_dev *mod, bool accept)
+{
+	struct ican3_msg msg;
+	int ret;
+
+	/* Standard Frame Format */
+	memset(&msg, 0, sizeof(msg));
+	msg.spec = MSG_SETAFILMASK;
+	msg.len = cpu_to_le16(5);
+	msg.data[0] = 0x00; /* IDLo LSB */
+	msg.data[1] = 0x00; /* IDLo MSB */
+	msg.data[2] = 0xff; /* IDHi LSB */
+	msg.data[3] = 0x07; /* IDHi MSB */
+
+	/* accept all frames for fast host if, or reject all frames */
+	msg.data[4] = accept ? SETAFILMASK_FASTIF : SETAFILMASK_REJECT;
+
+	ret = ican3_send_msg(mod, &msg);
+	if (ret)
+		return ret;
+
+	/* Extended Frame Format */
+	memset(&msg, 0, sizeof(msg));
+	msg.spec = MSG_SETAFILMASK;
+	msg.len = cpu_to_le16(13);
+	msg.data[0] = 0;    /* MUX = 0 */
+	msg.data[1] = 0x00; /* IDLo LSB */
+	msg.data[2] = 0x00;
+	msg.data[3] = 0x00;
+	msg.data[4] = 0x20; /* IDLo MSB */
+	msg.data[5] = 0xff; /* IDHi LSB */
+	msg.data[6] = 0xff;
+	msg.data[7] = 0xff;
+	msg.data[8] = 0x3f; /* IDHi MSB */
+
+	/* accept all frames for fast host if, or reject all frames */
+	msg.data[9] = accept ? SETAFILMASK_FASTIF : SETAFILMASK_REJECT;
+
+	return ican3_send_msg(mod, &msg);
+}
+
+/*
+ * Bring the CAN bus online or offline
+ */
+static int ican3_set_bus_state(struct ican3_dev *mod, bool on)
+{
+	struct can_bittiming *bt = &mod->can.bittiming;
+	struct ican3_msg msg;
+	u8 btr0, btr1;
+	int res;
+
+	/* This algorithm was stolen from drivers/net/can/sja1000/sja1000.c      */
+	/* The bittiming register command for the ICAN3 just sets the bit timing */
+	/* registers on the SJA1000 chip directly                                */
+	btr0 = ((bt->brp - 1) & 0x3f) | (((bt->sjw - 1) & 0x3) << 6);
+	btr1 = ((bt->prop_seg + bt->phase_seg1 - 1) & 0xf) |
+		(((bt->phase_seg2 - 1) & 0x7) << 4);
+	if (mod->can.ctrlmode & CAN_CTRLMODE_3_SAMPLES)
+		btr1 |= 0x80;
+
+	if (mod->fwtype == ICAN3_FWTYPE_ICANOS) {
+		if (on) {
+			/* set bittiming */
+			memset(&msg, 0, sizeof(msg));
+			msg.spec = MSG_CBTRREQ;
+			msg.len = cpu_to_le16(4);
+			msg.data[0] = 0x00;
+			msg.data[1] = 0x00;
+			msg.data[2] = btr0;
+			msg.data[3] = btr1;
+
+			res = ican3_send_msg(mod, &msg);
+			if (res)
+				return res;
+		}
+
+		/* can-on/off request */
+		memset(&msg, 0, sizeof(msg));
+		msg.spec = on ? MSG_CONREQ : MSG_COFFREQ;
+		msg.len = cpu_to_le16(0);
+
+		return ican3_send_msg(mod, &msg);
+
+	} else if (mod->fwtype == ICAN3_FWTYPE_CAL_CANOPEN) {
+		/* bittiming + can-on/off request */
+		memset(&msg, 0, sizeof(msg));
+		msg.spec = MSG_LMTS;
+		if (on) {
+			msg.len = cpu_to_le16(4);
+			msg.data[0] = LMTS_BUSON_REQ;
+			msg.data[1] = 0;
+			msg.data[2] = btr0;
+			msg.data[3] = btr1;
+		} else {
+			msg.len = cpu_to_le16(2);
+			msg.data[0] = LMTS_BUSOFF_REQ;
+			msg.data[1] = 0;
+		}
+		res = ican3_send_msg(mod, &msg);
+		if (res)
+			return res;
+
+		if (on) {
+			/* create NMT Slave Node for error processing
+			 *   class 2 (with error capability, see CiA/DS203-1)
+			 *   id    1
+			 *   name  locnod1 (must be exactly 7 bytes)
+			 */
+			memset(&msg, 0, sizeof(msg));
+			msg.spec = MSG_NMTS;
+			msg.len = cpu_to_le16(11);
+			msg.data[0] = NMTS_CREATE_NODE_REQ;
+			msg.data[1] = 0;
+			msg.data[2] = 2;                 /* node class */
+			msg.data[3] = 1;                 /* node id */
+			strcpy(msg.data + 4, "locnod1"); /* node name  */
+			return ican3_send_msg(mod, &msg);
+		}
+		return 0;
+	}
+	return -ENOTSUPP;
+}
+
+static int ican3_set_termination(struct ican3_dev *mod, bool on)
+{
+	struct ican3_msg msg;
+
+	memset(&msg, 0, sizeof(msg));
+	msg.spec = MSG_HWCONF;
+	msg.len = cpu_to_le16(2);
+	msg.data[0] = 0x00;
+	msg.data[1] = on ? HWCONF_TERMINATE_ON : HWCONF_TERMINATE_OFF;
+
+	return ican3_send_msg(mod, &msg);
+}
+
+static int ican3_send_inquiry(struct ican3_dev *mod, u8 subspec)
+{
+	struct ican3_msg msg;
+
+	memset(&msg, 0, sizeof(msg));
+	msg.spec = MSG_INQUIRY;
+	msg.len = cpu_to_le16(2);
+	msg.data[0] = subspec;
+	msg.data[1] = 0x00;
+
+	return ican3_send_msg(mod, &msg);
+}
+
+static int ican3_set_buserror(struct ican3_dev *mod, u8 quota)
+{
+	struct ican3_msg msg;
+
+	if (mod->fwtype == ICAN3_FWTYPE_ICANOS) {
+		memset(&msg, 0, sizeof(msg));
+		msg.spec = MSG_CCONFREQ;
+		msg.len = cpu_to_le16(2);
+		msg.data[0] = 0x00;
+		msg.data[1] = quota;
+	} else if (mod->fwtype == ICAN3_FWTYPE_CAL_CANOPEN) {
+		memset(&msg, 0, sizeof(msg));
+		msg.spec = MSG_LMTS;
+		msg.len = cpu_to_le16(4);
+		msg.data[0] = LMTS_CAN_CONF_REQ;
+		msg.data[1] = 0x00;
+		msg.data[2] = 0x00;
+		msg.data[3] = quota;
+	} else {
+		return -ENOTSUPP;
+	}
+	return ican3_send_msg(mod, &msg);
+}
+
+/*
+ * ICAN3 to Linux CAN Frame Conversion
+ */
+
+static void ican3_to_can_frame(struct ican3_dev *mod,
+			       struct ican3_fast_desc *desc,
+			       struct can_frame *cf)
+{
+	if ((desc->command & ICAN3_CAN_TYPE_MASK) == ICAN3_CAN_TYPE_SFF) {
+		if (desc->data[1] & ICAN3_SFF_RTR)
+			cf->can_id |= CAN_RTR_FLAG;
+
+		cf->can_id |= desc->data[0] << 3;
+		cf->can_id |= (desc->data[1] & 0xe0) >> 5;
+		cf->len = can_cc_dlc2len(desc->data[1] & ICAN3_CAN_DLC_MASK);
+		memcpy(cf->data, &desc->data[2], cf->len);
+	} else {
+		cf->len = can_cc_dlc2len(desc->data[0] & ICAN3_CAN_DLC_MASK);
+		if (desc->data[0] & ICAN3_EFF_RTR)
+			cf->can_id |= CAN_RTR_FLAG;
+
+		if (desc->data[0] & ICAN3_EFF) {
+			cf->can_id |= CAN_EFF_FLAG;
+			cf->can_id |= desc->data[2] << 21; /* 28-21 */
+			cf->can_id |= desc->data[3] << 13; /* 20-13 */
+			cf->can_id |= desc->data[4] << 5;  /* 12-5  */
+			cf->can_id |= (desc->data[5] & 0xf8) >> 3;
+		} else {
+			cf->can_id |= desc->data[2] << 3;  /* 10-3  */
+			cf->can_id |= desc->data[3] >> 5;  /* 2-0   */
+		}
+
+		memcpy(cf->data, &desc->data[6], cf->len);
+	}
+}
+
+static void can_frame_to_ican3(struct ican3_dev *mod,
+			       struct can_frame *cf,
+			       struct ican3_fast_desc *desc)
+{
+	/* clear out any stale data in the descriptor */
+	memset(desc->data, 0, sizeof(desc->data));
+
+	/* we always use the extended format, with the ECHO flag set */
+	desc->command = ICAN3_CAN_TYPE_EFF;
+	desc->data[0] |= cf->len;
+	desc->data[1] |= ICAN3_ECHO;
+
+	/* support single transmission (no retries) mode */
+	if (mod->can.ctrlmode & CAN_CTRLMODE_ONE_SHOT)
+		desc->data[1] |= ICAN3_SNGL;
+
+	if (cf->can_id & CAN_RTR_FLAG)
+		desc->data[0] |= ICAN3_EFF_RTR;
+
+	/* pack the id into the correct places */
+	if (cf->can_id & CAN_EFF_FLAG) {
+		desc->data[0] |= ICAN3_EFF;
+		desc->data[2] = (cf->can_id & 0x1fe00000) >> 21; /* 28-21 */
+		desc->data[3] = (cf->can_id & 0x001fe000) >> 13; /* 20-13 */
+		desc->data[4] = (cf->can_id & 0x00001fe0) >> 5;  /* 12-5  */
+		desc->data[5] = (cf->can_id & 0x0000001f) << 3;  /* 4-0   */
+	} else {
+		desc->data[2] = (cf->can_id & 0x7F8) >> 3; /* bits 10-3 */
+		desc->data[3] = (cf->can_id & 0x007) << 5; /* bits 2-0  */
+	}
+
+	/* copy the data bits into the descriptor */
+	memcpy(&desc->data[6], cf->data, cf->len);
+}
+
+/*
+ * Interrupt Handling
+ */
+
+/*
+ * Handle an ID + Version message response from the firmware. We never generate
+ * this message in production code, but it is very useful when debugging to be
+ * able to display this message.
+ */
+static void ican3_handle_idvers(struct ican3_dev *mod, struct ican3_msg *msg)
+{
+	netdev_dbg(mod->ndev, "IDVERS response: %s\n", msg->data);
+}
+
+static void ican3_handle_msglost(struct ican3_dev *mod, struct ican3_msg *msg)
+{
+	struct net_device *dev = mod->ndev;
+	struct net_device_stats *stats = &dev->stats;
+	struct can_frame *cf;
+	struct sk_buff *skb;
+
+	/*
+	 * Report that communication messages with the microcontroller firmware
+	 * are being lost. These are never CAN frames, so we do not generate an
+	 * error frame for userspace
+	 */
+	if (msg->spec == MSG_MSGLOST) {
+		netdev_err(mod->ndev, "lost %d control messages\n", msg->data[0]);
+		return;
+	}
+
+	/*
+	 * Oops, this indicates that we have lost messages in the fast queue,
+	 * which are exclusively CAN messages. Our driver isn't reading CAN
+	 * frames fast enough.
+	 *
+	 * We'll pretend that the SJA1000 told us that it ran out of buffer
+	 * space, because there is not a better message for this.
+	 */
+	skb = alloc_can_err_skb(dev, &cf);
+	if (skb) {
+		cf->can_id |= CAN_ERR_CRTL;
+		cf->data[1] = CAN_ERR_CRTL_RX_OVERFLOW;
+		stats->rx_over_errors++;
+		stats->rx_errors++;
+		netif_rx(skb);
+	}
+}
+
+/*
+ * Handle CAN Event Indication Messages from the firmware
+ *
+ * The ICAN3 firmware provides the values of some SJA1000 registers when it
+ * generates this message. The code below is largely copied from the
+ * drivers/net/can/sja1000/sja1000.c file, and adapted as necessary
+ */
+static int ican3_handle_cevtind(struct ican3_dev *mod, struct ican3_msg *msg)
+{
+	struct net_device *dev = mod->ndev;
+	struct net_device_stats *stats = &dev->stats;
+	enum can_state state = mod->can.state;
+	u8 isrc, ecc, status, rxerr, txerr;
+	struct can_frame *cf;
+	struct sk_buff *skb;
+
+	/* we can only handle the SJA1000 part */
+	if (msg->data[1] != CEVTIND_CHIP_SJA1000) {
+		netdev_err(mod->ndev, "unable to handle errors on non-SJA1000\n");
+		return -ENODEV;
+	}
+
+	/* check the message length for sanity */
+	if (le16_to_cpu(msg->len) < 6) {
+		netdev_err(mod->ndev, "error message too short\n");
+		return -EINVAL;
+	}
+
+	isrc = msg->data[0];
+	ecc = msg->data[2];
+	status = msg->data[3];
+	rxerr = msg->data[4];
+	txerr = msg->data[5];
+
+	/*
+	 * This hardware lacks any support other than bus error messages to
+	 * determine if packet transmission has failed.
+	 *
+	 * When TX errors happen, one echo skb needs to be dropped from the
+	 * front of the queue.
+	 *
+	 * A small bit of code is duplicated here and below, to avoid error
+	 * skb allocation when it will just be freed immediately.
+	 */
+	if (isrc == CEVTIND_BEI) {
+		int ret;
+		netdev_dbg(mod->ndev, "bus error interrupt\n");
+
+		/* TX error */
+		if (!(ecc & ECC_DIR)) {
+			kfree_skb(skb_dequeue(&mod->echoq));
+			stats->tx_errors++;
+		} else {
+			stats->rx_errors++;
+		}
+
+		/*
+		 * The controller automatically disables bus-error interrupts
+		 * and therefore we must re-enable them.
+		 */
+		ret = ican3_set_buserror(mod, 1);
+		if (ret) {
+			netdev_err(mod->ndev, "unable to re-enable bus-error\n");
+			return ret;
+		}
+
+		/* bus error reporting is off, return immediately */
+		if (!(mod->can.ctrlmode & CAN_CTRLMODE_BERR_REPORTING))
+			return 0;
+	}
+
+	skb = alloc_can_err_skb(dev, &cf);
+	if (skb == NULL)
+		return -ENOMEM;
+
+	/* data overrun interrupt */
+	if (isrc == CEVTIND_DOI || isrc == CEVTIND_LOST) {
+		netdev_dbg(mod->ndev, "data overrun interrupt\n");
+		cf->can_id |= CAN_ERR_CRTL;
+		cf->data[1] = CAN_ERR_CRTL_RX_OVERFLOW;
+		stats->rx_over_errors++;
+		stats->rx_errors++;
+	}
+
+	/* error warning + passive interrupt */
+	if (isrc == CEVTIND_EI) {
+		netdev_dbg(mod->ndev, "error warning + passive interrupt\n");
+		if (status & SR_BS) {
+			state = CAN_STATE_BUS_OFF;
+			cf->can_id |= CAN_ERR_BUSOFF;
+			mod->can.can_stats.bus_off++;
+			can_bus_off(dev);
+		} else if (status & SR_ES) {
+			if (rxerr >= 128 || txerr >= 128)
+				state = CAN_STATE_ERROR_PASSIVE;
+			else
+				state = CAN_STATE_ERROR_WARNING;
+		} else {
+			state = CAN_STATE_ERROR_ACTIVE;
+		}
+	}
+
+	/* bus error interrupt */
+	if (isrc == CEVTIND_BEI) {
+		mod->can.can_stats.bus_error++;
+		cf->can_id |= CAN_ERR_PROT | CAN_ERR_BUSERROR;
+
+		switch (ecc & ECC_MASK) {
+		case ECC_BIT:
+			cf->data[2] |= CAN_ERR_PROT_BIT;
+			break;
+		case ECC_FORM:
+			cf->data[2] |= CAN_ERR_PROT_FORM;
+			break;
+		case ECC_STUFF:
+			cf->data[2] |= CAN_ERR_PROT_STUFF;
+			break;
+		default:
+			cf->data[3] = ecc & ECC_SEG;
+			break;
+		}
+
+		if (!(ecc & ECC_DIR))
+			cf->data[2] |= CAN_ERR_PROT_TX;
+
+		cf->data[6] = txerr;
+		cf->data[7] = rxerr;
+	}
+
+	if (state != mod->can.state && (state == CAN_STATE_ERROR_WARNING ||
+					state == CAN_STATE_ERROR_PASSIVE)) {
+		cf->can_id |= CAN_ERR_CRTL;
+		if (state == CAN_STATE_ERROR_WARNING) {
+			mod->can.can_stats.error_warning++;
+			cf->data[1] = (txerr > rxerr) ?
+				CAN_ERR_CRTL_TX_WARNING :
+				CAN_ERR_CRTL_RX_WARNING;
+		} else {
+			mod->can.can_stats.error_passive++;
+			cf->data[1] = (txerr > rxerr) ?
+				CAN_ERR_CRTL_TX_PASSIVE :
+				CAN_ERR_CRTL_RX_PASSIVE;
+		}
+
+		cf->data[6] = txerr;
+		cf->data[7] = rxerr;
+	}
+
+	mod->can.state = state;
+	netif_rx(skb);
+	return 0;
+}
+
+static void ican3_handle_inquiry(struct ican3_dev *mod, struct ican3_msg *msg)
+{
+	switch (msg->data[0]) {
+	case INQUIRY_STATUS:
+	case INQUIRY_EXTENDED:
+		mod->bec.rxerr = msg->data[5];
+		mod->bec.txerr = msg->data[6];
+		complete(&mod->buserror_comp);
+		break;
+	case INQUIRY_TERMINATION:
+		mod->termination_enabled = msg->data[6] & HWCONF_TERMINATE_ON;
+		complete(&mod->termination_comp);
+		break;
+	default:
+		netdev_err(mod->ndev, "received an unknown inquiry response\n");
+		break;
+	}
+}
+
+/* Handle NMTS Slave Event Indication Messages from the firmware */
+static void ican3_handle_nmtsind(struct ican3_dev *mod, struct ican3_msg *msg)
+{
+	u16 subspec;
+
+	subspec = msg->data[0] + msg->data[1] * 0x100;
+	if (subspec == NMTS_SLAVE_EVENT_IND) {
+		switch (msg->data[2]) {
+		case NE_LOCAL_OCCURRED:
+		case NE_LOCAL_RESOLVED:
+			/* now follows the same message as Raw ICANOS CEVTIND
+			 * shift the data at the same place and call this method
+			 */
+			le16_add_cpu(&msg->len, -3);
+			memmove(msg->data, msg->data + 3, le16_to_cpu(msg->len));
+			ican3_handle_cevtind(mod, msg);
+			break;
+		case NE_REMOTE_OCCURRED:
+		case NE_REMOTE_RESOLVED:
+			/* should not occurre, ignore */
+			break;
+		default:
+			netdev_warn(mod->ndev, "unknown NMTS event indication %x\n",
+				    msg->data[2]);
+			break;
+		}
+	} else if (subspec == NMTS_SLAVE_STATE_IND) {
+		/* ignore state indications */
+	} else {
+		netdev_warn(mod->ndev, "unhandled NMTS indication %x\n",
+			    subspec);
+		return;
+	}
+}
+
+static void ican3_handle_unknown_message(struct ican3_dev *mod,
+					struct ican3_msg *msg)
+{
+	netdev_warn(mod->ndev, "received unknown message: spec 0x%.2x length %d\n",
+			   msg->spec, le16_to_cpu(msg->len));
+}
+
+/*
+ * Handle a control message from the firmware
+ */
+static void ican3_handle_message(struct ican3_dev *mod, struct ican3_msg *msg)
+{
+	netdev_dbg(mod->ndev, "%s: modno %d spec 0x%.2x len %d bytes\n", __func__,
+			   mod->num, msg->spec, le16_to_cpu(msg->len));
+
+	switch (msg->spec) {
+	case MSG_IDVERS:
+		ican3_handle_idvers(mod, msg);
+		break;
+	case MSG_MSGLOST:
+	case MSG_FMSGLOST:
+		ican3_handle_msglost(mod, msg);
+		break;
+	case MSG_CEVTIND:
+		ican3_handle_cevtind(mod, msg);
+		break;
+	case MSG_INQUIRY:
+		ican3_handle_inquiry(mod, msg);
+		break;
+	case MSG_NMTS:
+		ican3_handle_nmtsind(mod, msg);
+		break;
+	default:
+		ican3_handle_unknown_message(mod, msg);
+		break;
+	}
+}
+
+/*
+ * The ican3 needs to store all echo skbs, and therefore cannot
+ * use the generic infrastructure for this.
+ */
+static void ican3_put_echo_skb(struct ican3_dev *mod, struct sk_buff *skb)
+{
+	skb = can_create_echo_skb(skb);
+	if (!skb)
+		return;
+
+	/* save this skb for tx interrupt echo handling */
+	skb_queue_tail(&mod->echoq, skb);
+}
+
+static unsigned int ican3_get_echo_skb(struct ican3_dev *mod)
+{
+	struct sk_buff *skb = skb_dequeue(&mod->echoq);
+	struct can_frame *cf;
+	u8 dlc = 0;
+
+	/* this should never trigger unless there is a driver bug */
+	if (!skb) {
+		netdev_err(mod->ndev, "BUG: echo skb not occupied\n");
+		return 0;
+	}
+
+	cf = (struct can_frame *)skb->data;
+	if (!(cf->can_id & CAN_RTR_FLAG))
+		dlc = cf->len;
+
+	/* check flag whether this packet has to be looped back */
+	if (skb->pkt_type != PACKET_LOOPBACK) {
+		kfree_skb(skb);
+		return dlc;
+	}
+
+	skb->protocol = htons(ETH_P_CAN);
+	skb->pkt_type = PACKET_BROADCAST;
+	skb->ip_summed = CHECKSUM_UNNECESSARY;
+	skb->dev = mod->ndev;
+	netif_receive_skb(skb);
+	return dlc;
+}
+
+/*
+ * Compare an skb with an existing echo skb
+ *
+ * This function will be used on devices which have a hardware loopback.
+ * On these devices, this function can be used to compare a received skb
+ * with the saved echo skbs so that the hardware echo skb can be dropped.
+ *
+ * Returns true if the skb's are identical, false otherwise.
+ */
+static bool ican3_echo_skb_matches(struct ican3_dev *mod, struct sk_buff *skb)
+{
+	struct can_frame *cf = (struct can_frame *)skb->data;
+	struct sk_buff *echo_skb = skb_peek(&mod->echoq);
+	struct can_frame *echo_cf;
+
+	if (!echo_skb)
+		return false;
+
+	echo_cf = (struct can_frame *)echo_skb->data;
+	if (cf->can_id != echo_cf->can_id)
+		return false;
+
+	if (cf->len != echo_cf->len)
+		return false;
+
+	return memcmp(cf->data, echo_cf->data, cf->len) == 0;
+}
+
+/*
+ * Check that there is room in the TX ring to transmit another skb
+ *
+ * LOCKING: must hold mod->lock
+ */
+static bool ican3_txok(struct ican3_dev *mod)
+{
+	struct ican3_fast_desc __iomem *desc;
+	u8 control;
+
+	/* check that we have echo queue space */
+	if (skb_queue_len(&mod->echoq) >= ICAN3_TX_BUFFERS)
+		return false;
+
+	/* copy the control bits of the descriptor */
+	ican3_set_page(mod, mod->fasttx_start + (mod->fasttx_num / 16));
+	desc = mod->dpm + ((mod->fasttx_num % 16) * sizeof(*desc));
+	control = ioread8(&desc->control);
+
+	/* if the control bits are not valid, then we have no more space */
+	if (!(control & DESC_VALID))
+		return false;
+
+	return true;
+}
+
+/*
+ * Receive one CAN frame from the hardware
+ *
+ * CONTEXT: must be called from user context
+ */
+static int ican3_recv_skb(struct ican3_dev *mod)
+{
+	struct net_device *ndev = mod->ndev;
+	struct net_device_stats *stats = &ndev->stats;
+	struct ican3_fast_desc desc;
+	void __iomem *desc_addr;
+	struct can_frame *cf;
+	struct sk_buff *skb;
+	unsigned long flags;
+
+	spin_lock_irqsave(&mod->lock, flags);
+
+	/* copy the whole descriptor */
+	ican3_set_page(mod, mod->fastrx_start + (mod->fastrx_num / 16));
+	desc_addr = mod->dpm + ((mod->fastrx_num % 16) * sizeof(desc));
+	memcpy_fromio(&desc, desc_addr, sizeof(desc));
+
+	spin_unlock_irqrestore(&mod->lock, flags);
+
+	/* check that we actually have a CAN frame */
+	if (!(desc.control & DESC_VALID))
+		return -ENOBUFS;
+
+	/* allocate an skb */
+	skb = alloc_can_skb(ndev, &cf);
+	if (unlikely(skb == NULL)) {
+		stats->rx_dropped++;
+		goto err_noalloc;
+	}
+
+	/* convert the ICAN3 frame into Linux CAN format */
+	ican3_to_can_frame(mod, &desc, cf);
+
+	/*
+	 * If this is an ECHO frame received from the hardware loopback
+	 * feature, use the skb saved in the ECHO stack instead. This allows
+	 * the Linux CAN core to support CAN_RAW_RECV_OWN_MSGS correctly.
+	 *
+	 * Since this is a confirmation of a successfully transmitted packet
+	 * sent from this host, update the transmit statistics.
+	 *
+	 * Also, the netdevice queue needs to be allowed to send packets again.
+	 */
+	if (ican3_echo_skb_matches(mod, skb)) {
+		stats->tx_packets++;
+		stats->tx_bytes += ican3_get_echo_skb(mod);
+		kfree_skb(skb);
+		goto err_noalloc;
+	}
+
+	/* update statistics, receive the skb */
+	stats->rx_packets++;
+	if (!(cf->can_id & CAN_RTR_FLAG))
+		stats->rx_bytes += cf->len;
+	netif_receive_skb(skb);
+
+err_noalloc:
+	/* toggle the valid bit and return the descriptor to the ring */
+	desc.control ^= DESC_VALID;
+
+	spin_lock_irqsave(&mod->lock, flags);
+
+	ican3_set_page(mod, mod->fastrx_start + (mod->fastrx_num / 16));
+	memcpy_toio(desc_addr, &desc, 1);
+
+	/* update the next buffer pointer */
+	mod->fastrx_num = (desc.control & DESC_WRAP) ? 0
+						     : (mod->fastrx_num + 1);
+
+	/* there are still more buffers to process */
+	spin_unlock_irqrestore(&mod->lock, flags);
+	return 0;
+}
+
+static int ican3_napi(struct napi_struct *napi, int budget)
+{
+	struct ican3_dev *mod = container_of(napi, struct ican3_dev, napi);
+	unsigned long flags;
+	int received = 0;
+	int ret;
+
+	/* process all communication messages */
+	while (true) {
+		struct ican3_msg msg;
+		ret = ican3_recv_msg(mod, &msg);
+		if (ret)
+			break;
+
+		ican3_handle_message(mod, &msg);
+	}
+
+	/* process all CAN frames from the fast interface */
+	while (received < budget) {
+		ret = ican3_recv_skb(mod);
+		if (ret)
+			break;
+
+		received++;
+	}
+
+	/* We have processed all packets that the adapter had, but it
+	 * was less than our budget, stop polling */
+	if (received < budget)
+		napi_complete_done(napi, received);
+
+	spin_lock_irqsave(&mod->lock, flags);
+
+	/* Wake up the transmit queue if necessary */
+	if (netif_queue_stopped(mod->ndev) && ican3_txok(mod))
+		netif_wake_queue(mod->ndev);
+
+	spin_unlock_irqrestore(&mod->lock, flags);
+
+	/* re-enable interrupt generation */
+	iowrite8(1 << mod->num, &mod->ctrl->int_enable);
+	return received;
+}
+
+static irqreturn_t ican3_irq(int irq, void *dev_id)
+{
+	struct ican3_dev *mod = dev_id;
+	u8 stat;
+
+	/*
+	 * The interrupt status register on this device reports interrupts
+	 * as zeroes instead of using ones like most other devices
+	 */
+	stat = ioread8(&mod->ctrl->int_disable) & (1 << mod->num);
+	if (stat == (1 << mod->num))
+		return IRQ_NONE;
+
+	/* clear the MODULbus interrupt from the microcontroller */
+	ioread8(&mod->dpmctrl->interrupt);
+
+	/* disable interrupt generation, schedule the NAPI poller */
+	iowrite8(1 << mod->num, &mod->ctrl->int_disable);
+	napi_schedule(&mod->napi);
+	return IRQ_HANDLED;
+}
+
+/*
+ * Firmware reset, startup, and shutdown
+ */
+
+/*
+ * Reset an ICAN module to its power-on state
+ *
+ * CONTEXT: no network device registered
+ */
+static int ican3_reset_module(struct ican3_dev *mod)
+{
+	unsigned long start;
+	u8 runold, runnew;
+
+	/* disable interrupts so no more work is scheduled */
+	iowrite8(1 << mod->num, &mod->ctrl->int_disable);
+
+	/* the first unallocated page in the DPM is #9 */
+	mod->free_page = DPM_FREE_START;
+
+	ican3_set_page(mod, QUEUE_OLD_CONTROL);
+	runold = ioread8(mod->dpm + TARGET_RUNNING);
+
+	/* reset the module */
+	iowrite8(0x00, &mod->dpmctrl->hwreset);
+
+	/* wait until the module has finished resetting and is running */
+	start = jiffies;
+	do {
+		ican3_set_page(mod, QUEUE_OLD_CONTROL);
+		runnew = ioread8(mod->dpm + TARGET_RUNNING);
+		if (runnew == (runold ^ 0xff))
+			return 0;
+
+		msleep(10);
+	} while (time_before(jiffies, start + HZ / 2));
+
+	netdev_err(mod->ndev, "failed to reset CAN module\n");
+	return -ETIMEDOUT;
+}
+
+static void ican3_shutdown_module(struct ican3_dev *mod)
+{
+	ican3_msg_disconnect(mod);
+	ican3_reset_module(mod);
+}
+
+/*
+ * Startup an ICAN module, bringing it into fast mode
+ */
+static int ican3_startup_module(struct ican3_dev *mod)
+{
+	int ret;
+
+	ret = ican3_reset_module(mod);
+	if (ret) {
+		netdev_err(mod->ndev, "unable to reset module\n");
+		return ret;
+	}
+
+	/* detect firmware */
+	memcpy_fromio(mod->fwinfo, mod->dpm + FIRMWARE_STAMP, sizeof(mod->fwinfo) - 1);
+	if (strncmp(mod->fwinfo, "JANZ-ICAN3", 10)) {
+		netdev_err(mod->ndev, "ICAN3 not detected (found %s)\n", mod->fwinfo);
+		return -ENODEV;
+	}
+	if (strstr(mod->fwinfo, "CAL/CANopen"))
+		mod->fwtype = ICAN3_FWTYPE_CAL_CANOPEN;
+	else
+		mod->fwtype = ICAN3_FWTYPE_ICANOS;
+
+	/* re-enable interrupts so we can send messages */
+	iowrite8(1 << mod->num, &mod->ctrl->int_enable);
+
+	ret = ican3_msg_connect(mod);
+	if (ret) {
+		netdev_err(mod->ndev, "unable to connect to module\n");
+		return ret;
+	}
+
+	ican3_init_new_host_interface(mod);
+	ret = ican3_msg_newhostif(mod);
+	if (ret) {
+		netdev_err(mod->ndev, "unable to switch to new-style interface\n");
+		return ret;
+	}
+
+	/* default to "termination on" */
+	ret = ican3_set_termination(mod, true);
+	if (ret) {
+		netdev_err(mod->ndev, "unable to enable termination\n");
+		return ret;
+	}
+
+	/* default to "bus errors enabled" */
+	ret = ican3_set_buserror(mod, 1);
+	if (ret) {
+		netdev_err(mod->ndev, "unable to set bus-error\n");
+		return ret;
+	}
+
+	ican3_init_fast_host_interface(mod);
+	ret = ican3_msg_fasthostif(mod);
+	if (ret) {
+		netdev_err(mod->ndev, "unable to switch to fast host interface\n");
+		return ret;
+	}
+
+	ret = ican3_set_id_filter(mod, true);
+	if (ret) {
+		netdev_err(mod->ndev, "unable to set acceptance filter\n");
+		return ret;
+	}
+
+	return 0;
+}
+
+/*
+ * CAN Network Device
+ */
+
+static int ican3_open(struct net_device *ndev)
+{
+	struct ican3_dev *mod = netdev_priv(ndev);
+	int ret;
+
+	/* open the CAN layer */
+	ret = open_candev(ndev);
+	if (ret) {
+		netdev_err(mod->ndev, "unable to start CAN layer\n");
+		return ret;
+	}
+
+	/* bring the bus online */
+	ret = ican3_set_bus_state(mod, true);
+	if (ret) {
+		netdev_err(mod->ndev, "unable to set bus-on\n");
+		close_candev(ndev);
+		return ret;
+	}
+
+	/* start up the network device */
+	mod->can.state = CAN_STATE_ERROR_ACTIVE;
+	netif_start_queue(ndev);
+
+	return 0;
+}
+
+static int ican3_stop(struct net_device *ndev)
+{
+	struct ican3_dev *mod = netdev_priv(ndev);
+	int ret;
+
+	/* stop the network device xmit routine */
+	netif_stop_queue(ndev);
+	mod->can.state = CAN_STATE_STOPPED;
+
+	/* bring the bus offline, stop receiving packets */
+	ret = ican3_set_bus_state(mod, false);
+	if (ret) {
+		netdev_err(mod->ndev, "unable to set bus-off\n");
+		return ret;
+	}
+
+	/* drop all outstanding echo skbs */
+	skb_queue_purge(&mod->echoq);
+
+	/* close the CAN layer */
+	close_candev(ndev);
+	return 0;
+}
+
+static netdev_tx_t ican3_xmit(struct sk_buff *skb, struct net_device *ndev)
+{
+	struct ican3_dev *mod = netdev_priv(ndev);
+	struct can_frame *cf = (struct can_frame *)skb->data;
+	struct ican3_fast_desc desc;
+	void __iomem *desc_addr;
+	unsigned long flags;
+
+	if (can_dropped_invalid_skb(ndev, skb))
+		return NETDEV_TX_OK;
+
+	spin_lock_irqsave(&mod->lock, flags);
+
+	/* check that we can actually transmit */
+	if (!ican3_txok(mod)) {
+		netdev_err(mod->ndev, "BUG: no free descriptors\n");
+		spin_unlock_irqrestore(&mod->lock, flags);
+		return NETDEV_TX_BUSY;
+	}
+
+	/* copy the control bits of the descriptor */
+	ican3_set_page(mod, mod->fasttx_start + (mod->fasttx_num / 16));
+	desc_addr = mod->dpm + ((mod->fasttx_num % 16) * sizeof(desc));
+	memset(&desc, 0, sizeof(desc));
+	memcpy_fromio(&desc, desc_addr, 1);
+
+	/* convert the Linux CAN frame into ICAN3 format */
+	can_frame_to_ican3(mod, cf, &desc);
+
+	/*
+	 * This hardware doesn't have TX-done notifications, so we'll try and
+	 * emulate it the best we can using ECHO skbs. Add the skb to the ECHO
+	 * stack. Upon packet reception, check if the ECHO skb and received
+	 * skb match, and use that to wake the queue.
+	 */
+	ican3_put_echo_skb(mod, skb);
+
+	/*
+	 * the programming manual says that you must set the IVALID bit, then
+	 * interrupt, then set the valid bit. Quite weird, but it seems to be
+	 * required for this to work
+	 */
+	desc.control |= DESC_IVALID;
+	memcpy_toio(desc_addr, &desc, sizeof(desc));
+
+	/* generate a MODULbus interrupt to the microcontroller */
+	iowrite8(0x01, &mod->dpmctrl->interrupt);
+
+	desc.control ^= DESC_VALID;
+	memcpy_toio(desc_addr, &desc, sizeof(desc));
+
+	/* update the next buffer pointer */
+	mod->fasttx_num = (desc.control & DESC_WRAP) ? 0
+						     : (mod->fasttx_num + 1);
+
+	/* if there is no free descriptor space, stop the transmit queue */
+	if (!ican3_txok(mod))
+		netif_stop_queue(ndev);
+
+	spin_unlock_irqrestore(&mod->lock, flags);
+	return NETDEV_TX_OK;
+}
+
+static const struct net_device_ops ican3_netdev_ops = {
+	.ndo_open	= ican3_open,
+	.ndo_stop	= ican3_stop,
+	.ndo_start_xmit	= ican3_xmit,
+	.ndo_change_mtu = can_change_mtu,
+};
+
+/*
+ * Low-level CAN Device
+ */
+
+/* This structure was stolen from drivers/net/can/sja1000/sja1000.c */
+static const struct can_bittiming_const ican3_bittiming_const = {
+	.name = DRV_NAME,
+	.tseg1_min = 1,
+	.tseg1_max = 16,
+	.tseg2_min = 1,
+	.tseg2_max = 8,
+	.sjw_max = 4,
+	.brp_min = 1,
+	.brp_max = 64,
+	.brp_inc = 1,
+};
+
+static int ican3_set_mode(struct net_device *ndev, enum can_mode mode)
+{
+	struct ican3_dev *mod = netdev_priv(ndev);
+	int ret;
+
+	if (mode != CAN_MODE_START)
+		return -ENOTSUPP;
+
+	/* bring the bus online */
+	ret = ican3_set_bus_state(mod, true);
+	if (ret) {
+		netdev_err(ndev, "unable to set bus-on\n");
+		return ret;
+	}
+
+	/* start up the network device */
+	mod->can.state = CAN_STATE_ERROR_ACTIVE;
+
+	if (netif_queue_stopped(ndev))
+		netif_wake_queue(ndev);
+
+	return 0;
+}
+
+static int ican3_get_berr_counter(const struct net_device *ndev,
+				  struct can_berr_counter *bec)
+{
+	struct ican3_dev *mod = netdev_priv(ndev);
+	int ret;
+
+	ret = ican3_send_inquiry(mod, INQUIRY_STATUS);
+	if (ret)
+		return ret;
+
+	if (!wait_for_completion_timeout(&mod->buserror_comp, HZ)) {
+		netdev_info(mod->ndev, "%s timed out\n", __func__);
+		return -ETIMEDOUT;
+	}
+
+	bec->rxerr = mod->bec.rxerr;
+	bec->txerr = mod->bec.txerr;
+	return 0;
+}
+
+/*
+ * Sysfs Attributes
+ */
+
+static ssize_t termination_show(struct device *dev,
+				struct device_attribute *attr,
+				char *buf)
+{
+	struct ican3_dev *mod = netdev_priv(to_net_dev(dev));
+	int ret;
+
+	ret = ican3_send_inquiry(mod, INQUIRY_TERMINATION);
+	if (ret)
+		return ret;
+
+	if (!wait_for_completion_timeout(&mod->termination_comp, HZ)) {
+		netdev_info(mod->ndev, "%s timed out\n", __func__);
+		return -ETIMEDOUT;
+	}
+
+	return sysfs_emit(buf, "%u\n", mod->termination_enabled);
+}
+
+static ssize_t termination_store(struct device *dev,
+				 struct device_attribute *attr,
+				 const char *buf, size_t count)
+{
+	struct ican3_dev *mod = netdev_priv(to_net_dev(dev));
+	unsigned long enable;
+	int ret;
+
+	if (kstrtoul(buf, 0, &enable))
+		return -EINVAL;
+
+	ret = ican3_set_termination(mod, enable);
+	if (ret)
+		return ret;
+
+	return count;
+}
+
+static ssize_t fwinfo_show(struct device *dev,
+			   struct device_attribute *attr,
+			   char *buf)
+{
+	struct ican3_dev *mod = netdev_priv(to_net_dev(dev));
+
+	return scnprintf(buf, PAGE_SIZE, "%s\n", mod->fwinfo);
+}
+
+static DEVICE_ATTR_RW(termination);
+static DEVICE_ATTR_RO(fwinfo);
+
+static struct attribute *ican3_sysfs_attrs[] = {
+	&dev_attr_termination.attr,
+	&dev_attr_fwinfo.attr,
+	NULL,
+};
+
+static const struct attribute_group ican3_sysfs_attr_group = {
+	.attrs = ican3_sysfs_attrs,
+};
+
+/*
+ * PCI Subsystem
+ */
+
+static int ican3_probe(struct platform_device *pdev)
+{
+	struct janz_platform_data *pdata;
+	struct net_device *ndev;
+	struct ican3_dev *mod;
+	struct resource *res;
+	struct device *dev;
+	int ret;
+
+	pdata = dev_get_platdata(&pdev->dev);
+	if (!pdata)
+		return -ENXIO;
+
+	dev_dbg(&pdev->dev, "probe: module number %d\n", pdata->modno);
+
+	/* save the struct device for printing */
+	dev = &pdev->dev;
+
+	/* allocate the CAN device and private data */
+	ndev = alloc_candev(sizeof(*mod), 0);
+	if (!ndev) {
+		dev_err(dev, "unable to allocate CANdev\n");
+		ret = -ENOMEM;
+		goto out_return;
+	}
+
+	platform_set_drvdata(pdev, ndev);
+	mod = netdev_priv(ndev);
+	mod->ndev = ndev;
+	mod->num = pdata->modno;
+	netif_napi_add(ndev, &mod->napi, ican3_napi, ICAN3_RX_BUFFERS);
+	skb_queue_head_init(&mod->echoq);
+	spin_lock_init(&mod->lock);
+	init_completion(&mod->termination_comp);
+	init_completion(&mod->buserror_comp);
+
+	/* setup device-specific sysfs attributes */
+	ndev->sysfs_groups[0] = &ican3_sysfs_attr_group;
+
+	/* the first unallocated page in the DPM is 9 */
+	mod->free_page = DPM_FREE_START;
+
+	ndev->netdev_ops = &ican3_netdev_ops;
+	ndev->flags |= IFF_ECHO;
+	SET_NETDEV_DEV(ndev, &pdev->dev);
+
+	mod->can.clock.freq = ICAN3_CAN_CLOCK;
+	mod->can.bittiming_const = &ican3_bittiming_const;
+	mod->can.do_set_mode = ican3_set_mode;
+	mod->can.do_get_berr_counter = ican3_get_berr_counter;
+	mod->can.ctrlmode_supported = CAN_CTRLMODE_3_SAMPLES
+				    | CAN_CTRLMODE_BERR_REPORTING
+				    | CAN_CTRLMODE_ONE_SHOT;
+
+	/* find our IRQ number */
+	mod->irq = platform_get_irq(pdev, 0);
+	if (mod->irq < 0) {
+		ret = -ENODEV;
+		goto out_free_ndev;
+	}
+
+	ndev->irq = mod->irq;
+
+	/* get access to the MODULbus registers for this module */
+	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+	if (!res) {
+		dev_err(dev, "MODULbus registers not found\n");
+		ret = -ENODEV;
+		goto out_free_ndev;
+	}
+
+	mod->dpm = ioremap(res->start, resource_size(res));
+	if (!mod->dpm) {
+		dev_err(dev, "MODULbus registers not ioremap\n");
+		ret = -ENOMEM;
+		goto out_free_ndev;
+	}
+
+	mod->dpmctrl = mod->dpm + DPM_PAGE_SIZE;
+
+	/* get access to the control registers for this module */
+	res = platform_get_resource(pdev, IORESOURCE_MEM, 1);
+	if (!res) {
+		dev_err(dev, "CONTROL registers not found\n");
+		ret = -ENODEV;
+		goto out_iounmap_dpm;
+	}
+
+	mod->ctrl = ioremap(res->start, resource_size(res));
+	if (!mod->ctrl) {
+		dev_err(dev, "CONTROL registers not ioremap\n");
+		ret = -ENOMEM;
+		goto out_iounmap_dpm;
+	}
+
+	/* disable our IRQ, then hookup the IRQ handler */
+	iowrite8(1 << mod->num, &mod->ctrl->int_disable);
+	ret = request_irq(mod->irq, ican3_irq, IRQF_SHARED, DRV_NAME, mod);
+	if (ret) {
+		dev_err(dev, "unable to request IRQ\n");
+		goto out_iounmap_ctrl;
+	}
+
+	/* reset and initialize the CAN controller into fast mode */
+	napi_enable(&mod->napi);
+	ret = ican3_startup_module(mod);
+	if (ret) {
+		dev_err(dev, "%s: unable to start CANdev\n", __func__);
+		goto out_free_irq;
+	}
+
+	/* register with the Linux CAN layer */
+	ret = register_candev(ndev);
+	if (ret) {
+		dev_err(dev, "%s: unable to register CANdev\n", __func__);
+		goto out_free_irq;
+	}
+
+	netdev_info(mod->ndev, "module %d: registered CAN device\n", pdata->modno);
+	return 0;
+
+out_free_irq:
+	napi_disable(&mod->napi);
+	iowrite8(1 << mod->num, &mod->ctrl->int_disable);
+	free_irq(mod->irq, mod);
+out_iounmap_ctrl:
+	iounmap(mod->ctrl);
+out_iounmap_dpm:
+	iounmap(mod->dpm);
+out_free_ndev:
+	free_candev(ndev);
+out_return:
+	return ret;
+}
+
+static int ican3_remove(struct platform_device *pdev)
+{
+	struct net_device *ndev = platform_get_drvdata(pdev);
+	struct ican3_dev *mod = netdev_priv(ndev);
+
+	/* unregister the netdevice, stop interrupts */
+	unregister_netdev(ndev);
+	napi_disable(&mod->napi);
+	iowrite8(1 << mod->num, &mod->ctrl->int_disable);
+	free_irq(mod->irq, mod);
+
+	/* put the module into reset */
+	ican3_shutdown_module(mod);
+
+	/* unmap all registers */
+	iounmap(mod->ctrl);
+	iounmap(mod->dpm);
+
+	free_candev(ndev);
+
+	return 0;
+}
+
+static struct platform_driver ican3_driver = {
+	.driver		= {
+		.name	= DRV_NAME,
+	},
+	.probe		= ican3_probe,
+	.remove		= ican3_remove,
+};
+
+module_platform_driver(ican3_driver);
+
+MODULE_AUTHOR("Ira W. Snyder <iws@ovro.caltech.edu>");
+MODULE_DESCRIPTION("Janz MODULbus VMOD-ICAN3 Driver");
+MODULE_LICENSE("GPL");
+MODULE_ALIAS("platform:janz-ican3");

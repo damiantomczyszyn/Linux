@@ -1,2 +1,1 @@
-e/linux/rwlock.h \
-    $(wildca
+// SPDX-License-Identifier: GPL

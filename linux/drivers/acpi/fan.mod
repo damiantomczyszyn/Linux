@@ -1,2 +1,2 @@
-config/X86_P6_NOP) \
-    $(wildcard include/confi
+] IR controller */
+		allowed_protos = RC_PROTO_BI

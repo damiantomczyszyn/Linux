@@ -1,1 +1,5 @@
-cmd_drivers/media/radio/radio-ma901.mod := { echo  drivers/media/radio/radio-ma901.o;  echo; } > drivers/media/radio/radio-ma901.mod
+// SPDX-License-Identifier: GPL-2.0-or-later
+/*
+ *  Driver for the Conexant CX23885 PCIe bridge
+ *
+ *  Copyright (c) 2006 Steven Toth

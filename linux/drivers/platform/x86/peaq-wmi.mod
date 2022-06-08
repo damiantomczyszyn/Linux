@@ -1,2 +1,1 @@
-nux/ktime.h \
-  include/linux/tim
+// SPDX-License-Identifier: GPL-2

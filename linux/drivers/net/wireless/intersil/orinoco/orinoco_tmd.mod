@@ -1,2 +1,2 @@
-nfig/GENERIC_IOREMAP) \
-    $(wildcard include/config
+			/* attach tuner */
+			memset(&ts2020_config, 0, si

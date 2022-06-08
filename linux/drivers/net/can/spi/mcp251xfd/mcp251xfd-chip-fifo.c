@@ -1,77 +1,119 @@
-fig/GENERIC_ATOMIC64) \
-  include/linux/atomic/atomic-long.h \
-  include/linux/atomic/atomic-instrumented.h \
-  include/linux/bug.h \
-    $(wildcard include/config/BUG_ON_DATA_CORRUPTION) \
-  arch/x86/include/asm/bug.h \
-    $(wildcard include/config/DEBUG_BUGVERBOSE) \
-  include/linux/instrumentation.h \
-    $(wildcard include/config/DEBUG_ENTRY) \
-  include/asm-generic/bug.h \
-    $(wildcard include/config/BUG) \
-    $(wildcard include/config/GENERIC_BUG_RELATIVE_POINTERS) \
-  arch/x86/include/uapi/asm/msr.h \
-  include/linux/tracepoint-defs.h \
-  arch/x86/include/asm/special_insns.h \
-  include/linux/irqflags.h \
-    $(wildcard include/config/TRACE_IRQFLAGS) \
-    $(wildcard include/config/PREEMPT_RT) \
-    $(wildcard include/config/IRQSOFF_TRACER) \
-    $(wildcard include/config/PREEMPT_TRACER) \
-    $(wildcard include/config/DEBUG_IRQFLAGS) \
-    $(wildcard include/config/TRACE_IRQFLAGS_SUPPORT) \
-  arch/x86/include/asm/irqflags.h \
-  arch/x86/include/asm/fpu/types.h \
-  arch/x86/include/asm/vmxfeatures.h \
-  arch/x86/include/asm/vdso/processor.h \
-  include/linux/personality.h \
-  include/uapi/linux/personality.h \
-  arch/x86/include/asm/tsc.h \
-  arch/x86/include/asm/cpufeature.h \
-    $(wildcard include/config/X86_FEATURE_NAMES) \
-  include/vdso/time32.h \
-  include/vdso/time.h \
-  include/linux/uidgid.h \
-    $(wildcard include/config/MULTIUSER) \
-    $(wildcard include/config/USER_NS) \
-  include/linux/highuid.h \
-  include/linux/buildid.h \
-    $(wildcard include/config/CRASH_CORE) \
-  include/linux/mm_types.h \
-    $(wildcard include/config/HAVE_ALIGNED_STRUCT_PAGE) \
-    $(wildcard include/config/MEMCG) \
-    $(wildcard include/config/USERFAULTFD) \
-    $(wildcard include/config/SWAP) \
-    $(wildcard include/config/NUMA) \
-    $(wildcard include/config/HAVE_ARCH_COMPAT_MMAP_BASES) \
-    $(wildcard include/config/MEMBARRIER) \
-    $(wildcard include/config/AIO) \
-    $(wildcard include/config/MMU_NOTIFIER) \
-    $(wildcard include/config/TRANSPARENT_HUGEPAGE) \
-    $(wildcard include/config/NUMA_BALANCING) \
-    $(wildcard include/config/ARCH_WANT_BATCHED_UNMAP_TLB_FLUSH) \
-    $(wildcard include/config/HUGETLB_PAGE) \
-    $(wildcard include/config/IOMMU_SVA) \
-  include/linux/mm_types_task.h \
-    $(wildcard include/config/SPLIT_PTLOCK_CPUS) \
-    $(wildcard include/config/ARCH_ENABLE_SPLIT_PMD_PTLOCK) \
-  arch/x86/include/asm/tlbbatch.h \
-  include/linux/auxvec.h \
-  include/uapi/linux/auxvec.h \
-  arch/x86/include/uapi/asm/auxvec.h \
-  include/linux/kref.h \
-  include/linux/spinlock.h \
-    $(wildcard include/config/PREEMPTION) \
-  include/linux/preempt.h \
-    $(wildcard include/config/PREEMPT_COUNT) \
-    $(wildcard include/config/TRACE_PREEMPT_TOGGLE) \
-    $(wildcard include/config/PREEMPT_NOTIFIERS) \
-  arch/x86/include/asm/preempt.h \
-  include/linux/thread_info.h \
-    $(wildcard include/config/THREAD_INFO_IN_TASK) \
-    $(wildcard include/config/GENERIC_ENTRY) \
-    $(wildcard include/config/HAVE_ARCH_WITHIN_STACK_FRAMES) \
-    $(wildcard include/config/HARDENED_USERCOPY) \
-  include/linux/restart_block.h \
-  arch/x86/include/asm/thread_info.h \
-    $(wildcard include/config/CO
+// SPDX-License-Identifier: GPL-2.0
+//
+// mcp251xfd - Microchip MCP251xFD Family CAN controller driver
+//
+// Copyright (c) 2019, 2020, 2021 Pengutronix,
+//               Marc Kleine-Budde <kernel@pengutronix.de>
+//
+// Based on:
+//
+// CAN bus driver for Microchip 25XXFD CAN Controller with SPI Interface
+//
+// Copyright (c) 2019 Martin Sperl <kernel@martin.sperl.org>
+//
+
+#include <linux/bitfield.h>
+
+#include "mcp251xfd.h"
+
+static int
+mcp251xfd_chip_rx_fifo_init_one(const struct mcp251xfd_priv *priv,
+				const struct mcp251xfd_rx_ring *ring)
+{
+	u32 fifo_con;
+
+	/* Enable RXOVIE on _all_ RX FIFOs, not just the last one.
+	 *
+	 * FIFOs hit by a RX MAB overflow and RXOVIE enabled will
+	 * generate a RXOVIF, use this to properly detect RX MAB
+	 * overflows.
+	 */
+	fifo_con = FIELD_PREP(MCP251XFD_REG_FIFOCON_FSIZE_MASK,
+			      ring->obj_num - 1) |
+		MCP251XFD_REG_FIFOCON_RXTSEN |
+		MCP251XFD_REG_FIFOCON_RXOVIE |
+		MCP251XFD_REG_FIFOCON_TFNRFNIE;
+
+	if (mcp251xfd_is_fd_mode(priv))
+		fifo_con |= FIELD_PREP(MCP251XFD_REG_FIFOCON_PLSIZE_MASK,
+				       MCP251XFD_REG_FIFOCON_PLSIZE_64);
+	else
+		fifo_con |= FIELD_PREP(MCP251XFD_REG_FIFOCON_PLSIZE_MASK,
+				       MCP251XFD_REG_FIFOCON_PLSIZE_8);
+
+	return regmap_write(priv->map_reg,
+			    MCP251XFD_REG_FIFOCON(ring->fifo_nr), fifo_con);
+}
+
+static int
+mcp251xfd_chip_rx_filter_init_one(const struct mcp251xfd_priv *priv,
+				  const struct mcp251xfd_rx_ring *ring)
+{
+	u32 fltcon;
+
+	fltcon = MCP251XFD_REG_FLTCON_FLTEN(ring->nr) |
+		MCP251XFD_REG_FLTCON_FBP(ring->nr, ring->fifo_nr);
+
+	return regmap_update_bits(priv->map_reg,
+				  MCP251XFD_REG_FLTCON(ring->nr >> 2),
+				  MCP251XFD_REG_FLTCON_FLT_MASK(ring->nr),
+				  fltcon);
+}
+
+int mcp251xfd_chip_fifo_init(const struct mcp251xfd_priv *priv)
+{
+	const struct mcp251xfd_tx_ring *tx_ring = priv->tx;
+	const struct mcp251xfd_rx_ring *rx_ring;
+	u32 val;
+	int err, n;
+
+	/* TEF */
+	val = FIELD_PREP(MCP251XFD_REG_TEFCON_FSIZE_MASK,
+			 tx_ring->obj_num - 1) |
+		MCP251XFD_REG_TEFCON_TEFTSEN |
+		MCP251XFD_REG_TEFCON_TEFOVIE |
+		MCP251XFD_REG_TEFCON_TEFNEIE;
+
+	err = regmap_write(priv->map_reg, MCP251XFD_REG_TEFCON, val);
+	if (err)
+		return err;
+
+	/* TX FIFO */
+	val = FIELD_PREP(MCP251XFD_REG_FIFOCON_FSIZE_MASK,
+			 tx_ring->obj_num - 1) |
+		MCP251XFD_REG_FIFOCON_TXEN |
+		MCP251XFD_REG_FIFOCON_TXATIE;
+
+	if (mcp251xfd_is_fd_mode(priv))
+		val |= FIELD_PREP(MCP251XFD_REG_FIFOCON_PLSIZE_MASK,
+				  MCP251XFD_REG_FIFOCON_PLSIZE_64);
+	else
+		val |= FIELD_PREP(MCP251XFD_REG_FIFOCON_PLSIZE_MASK,
+				  MCP251XFD_REG_FIFOCON_PLSIZE_8);
+
+	if (priv->can.ctrlmode & CAN_CTRLMODE_ONE_SHOT)
+		val |= FIELD_PREP(MCP251XFD_REG_FIFOCON_TXAT_MASK,
+				  MCP251XFD_REG_FIFOCON_TXAT_ONE_SHOT);
+	else
+		val |= FIELD_PREP(MCP251XFD_REG_FIFOCON_TXAT_MASK,
+				  MCP251XFD_REG_FIFOCON_TXAT_UNLIMITED);
+
+	err = regmap_write(priv->map_reg,
+			   MCP251XFD_REG_FIFOCON(priv->tx->fifo_nr),
+			   val);
+	if (err)
+		return err;
+
+	/* RX FIFOs */
+	mcp251xfd_for_each_rx_ring(priv, rx_ring, n) {
+		err = mcp251xfd_chip_rx_fifo_init_one(priv, rx_ring);
+		if (err)
+			return err;
+
+		err = mcp251xfd_chip_rx_filter_init_one(priv, rx_ring);
+		if (err)
+			return err;
+	}
+
+	return 0;
+}

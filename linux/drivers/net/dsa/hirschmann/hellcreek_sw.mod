@@ -1,3 +1,2 @@
-ildcard include/config/LATENCYTOP) \
-    $(wildcard include/config/KUNIT) \
-    $(wildcard include/config/FUNCTION_GRAPH_TRACER) \
+drivers/net/dsa/hirschmann/hellcreek.o drivers/net/dsa/hirschmann/hellcreek_ptp.o drivers/net/dsa/hirschmann/hellcreek_hwtstamp.o
+

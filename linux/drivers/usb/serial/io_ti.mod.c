@@ -1,61 +1,87 @@
-lude/config/SHMEM) \
-    $(wildcard include/config/ARCH_HAS_PTE_SPECIAL) \
-    $(wildcard include/config/ARCH_HAS_PTE_DEVMAP) \
-    $(wildcard include/config/DEBUG_VM_RB) \
-    $(wildcard include/config/PAGE_POISONING) \
-    $(wildcard include/config/INIT_ON_ALLOC_DEFAULT_ON) \
-    $(wildcard include/config/INIT_ON_FREE_DEFAULT_ON) \
-    $(wildcard include/config/DEBUG_PAGEALLOC) \
-    $(wildcard include/config/HUGETLBFS) \
-    $(wildcard include/config/MAPPING_DIRTY_HELPERS) \
-    $(wildcard include/config/ANON_VMA_NAME) \
-  include/linux/mmap_lock.h \
-  include/linux/page_ext.h \
-  include/linux/stacktrace.h \
-    $(wildcard include/config/ARCH_STACKWALK) \
-    $(wildcard include/config/STACKTRACE) \
-    $(wildcard include/config/HAVE_RELIABLE_STACKTRACE) \
-  include/linux/stackdepot.h \
-    $(wildcard include/config/STACKDEPOT_ALWAYS_INIT) \
-  include/linux/page_ref.h \
-    $(wildcard include/config/DEBUG_PAGE_REF) \
-  include/linux/sizes.h \
-  include/linux/pgtable.h \
-    $(wildcard include/config/HIGHPTE) \
-    $(wildcard include/config/GUP_GET_PTE_LOW_HIGH) \
-    $(wildcard include/config/HAVE_ARCH_SOFT_DIRTY) \
-    $(wildcard include/config/ARCH_ENABLE_THP_MIGRATION) \
-    $(wildcard include/config/X86_ESPFIX64) \
-  arch/x86/include/asm/pgtable.h \
-    $(wildcard include/config/DEBUG_WX) \
-    $(wildcard include/config/PAGE_TABLE_CHECK) \
-  arch/x86/include/asm/pkru.h \
-  arch/x86/include/asm/fpu/api.h \
-    $(wildcard include/config/X86_DEBUG_FPU) \
-  arch/x86/include/asm/coco.h \
-  include/asm-generic/pgtable_uffd.h \
-  include/linux/page_table_check.h \
-  arch/x86/include/asm/pgtable_32.h \
-  arch/x86/include/asm/pgtable-3level.h \
-  arch/x86/include/asm/pgtable-invert.h \
-  include/linux/huge_mm.h \
-  include/linux/sched/coredump.h \
-    $(wildcard include/config/CORE_DUMP_DEFAULT_ELF_HEADERS) \
-  include/linux/vmstat.h \
-    $(wildcard include/config/VM_EVENT_COUNTERS) \
-  include/linux/writeback.h \
-  include/linux/flex_proportions.h \
-  include/linux/backing-dev-defs.h \
-    $(wildcard include/config/DEBUG_FS) \
-  include/linux/blk_types.h \
-    $(wildcard include/config/FAIL_MAKE_REQUEST) \
-    $(wildcard include/config/BLK_CGROUP_IOCOST) \
-    $(wildcard include/config/BLK_INLINE_ENCRYPTION) \
-    $(wildcard include/config/BLK_DEV_INTEGRITY) \
-  include/linux/bvec.h \
-  include/linux/highmem.h \
-  include/linux/cacheflush.h \
-  arch/x86/include/asm/cacheflush.h \
-  include/asm-generic/cacheflush.h \
-  include/linux/highmem-internal.h \
- 
+UGE_HVR1500:
+	case CX23885_BOARD_MPX885:
+	case CX23885_BOARD_MYGICA_X8507:
+	case CX23885_BOARD_TERRATEC_CINERGY_T_PCIE_DUAL:
+	case CX23885_BOARD_AVERMEDIA_HC81R:
+	case CX23885_BOARD_TBS_6980:
+	case CX23885_BOARD_TBS_6981:
+	case CX23885_BOARD_DVBSKY_T9580:
+	case CX23885_BOARD_DVBSKY_T980C:
+	case CX23885_BOARD_DVBSKY_S950C:
+	case CX23885_BOARD_TT_CT2_4500_CI:
+	case CX23885_BOARD_DVBSKY_S950:
+	case CX23885_BOARD_DVBSKY_S952:
+	case CX23885_BOARD_DVBSKY_T982:
+	case CX23885_BOARD_VIEWCAST_260E:
+	case CX23885_BOARD_VIEWCAST_460E:
+	case CX23885_BOARD_AVERMEDIA_CE310B:
+		dev->sd_cx25840 = v4l2_i2c_new_subdev(&dev->v4l2_dev,
+				&dev->i2c_bus[2].i2c_adap,
+				"cx25840", 0x88 >> 1, NULL);
+		if (dev->sd_cx25840) {
+			/* set host data for clk_freq configuration */
+			v4l2_set_subdev_hostdata(dev->sd_cx25840,
+						&dev->clk_freq);
+
+			dev->sd_cx25840->grp_id = CX23885_HW_AV_CORE;
+			v4l2_subdev_call(dev->sd_cx25840, core, load_fw);
+		}
+		break;
+	}
+
+	switch (dev->board) {
+	case CX23885_BOARD_VIEWCAST_260E:
+		v4l2_i2c_new_subdev(&dev->v4l2_dev,
+				&dev->i2c_bus[0].i2c_adap,
+				"cs3308", 0x82 >> 1, NULL);
+		break;
+	case CX23885_BOARD_VIEWCAST_460E:
+		/* This cs3308 controls the audio from the breakout cable */
+		v4l2_i2c_new_subdev(&dev->v4l2_dev,
+				&dev->i2c_bus[0].i2c_adap,
+				"cs3308", 0x80 >> 1, NULL);
+		/* This cs3308 controls the audio from the onboard header */
+		v4l2_i2c_new_subdev(&dev->v4l2_dev,
+				&dev->i2c_bus[0].i2c_adap,
+				"cs3308", 0x82 >> 1, NULL);
+		break;
+	}
+
+	/* AUX-PLL 27MHz CLK */
+	switch (dev->board) {
+	case CX23885_BOARD_NETUP_DUAL_DVBS2_CI:
+		netup_initialize(dev);
+		break;
+	case CX23885_BOARD_NETUP_DUAL_DVB_T_C_CI_RF: {
+		int ret;
+		const struct firmware *fw;
+		const char *filename = "dvb-netup-altera-01.fw";
+		char *action = "configure";
+		static struct netup_card_info cinfo;
+		struct altera_config netup_config = {
+			.dev = dev,
+			.action = action,
+			.jtag_io = netup_jtag_io,
+		};
+
+		netup_initialize(dev);
+
+		netup_get_card_info(&dev->i2c_bus[0].i2c_adap, &cinfo);
+		if (netup_card_rev)
+			cinfo.rev = netup_card_rev;
+
+		switch (cinfo.rev) {
+		case 0x4:
+			filename = "dvb-netup-altera-04.fw";
+			break;
+		default:
+			filename = "dvb-netup-altera-01.fw";
+			break;
+		}
+		pr_info("NetUP card rev=0x%x fw_filename=%s\n",
+			cinfo.rev, filename);
+
+		ret = request_firmware(&fw, filename, &dev->pci->dev);
+		if (ret != 0)
+			pr_err("did not find the firmware file '%s'. You can use <kernel_dir>/scripts/get_dvb_firmware to get the firmware.",
+			 

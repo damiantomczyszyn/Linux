@@ -1,2 +1,2 @@
- $(wildcard include/config/GENERIC_IOMAP) \
-    $(wildcard i
+ntf(vfd->name, sizeof(vfd->name), "%s (%s)",
+		 cx23885_boar

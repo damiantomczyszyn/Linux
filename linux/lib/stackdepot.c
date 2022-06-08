@@ -1,225 +1,414 @@
-config/ARCH_WANTS_DYNAMIC_TASK_STRUCT) \
-    $(wildcard include/config/HAVE_ARCH_THREAD_STRUCT_WHITELIST) \
-  include/linux/cred.h \
-    $(wildcard include/config/DEBUG_CREDENTIALS) \
-  include/linux/key.h \
-    $(wildcard include/config/KEY_NOTIFICATIONS) \
-    $(wildcard include/config/NET) \
-  include/linux/assoc_array.h \
-    $(wildcard include/config/ASSOCIATIVE_ARRAY) \
-  include/linux/sched/user.h \
-    $(wildcard include/config/WATCH_QUEUE) \
-  include/linux/percpu_counter.h \
-  include/linux/rcu_sync.h \
-  include/linux/delayed_call.h \
-  include/linux/errseq.h \
-  include/linux/ioprio.h \
-  include/linux/sched/rt.h \
-  include/linux/iocontext.h \
-    $(wildcard include/config/BLK_ICQ) \
-  include/uapi/linux/ioprio.h \
-  include/linux/fs_types.h \
-  include/linux/mount.h \
-  include/linux/mnt_idmapping.h \
-  include/uapi/linux/fs.h \
-  include/linux/quota.h \
-    $(wildcard include/config/QUOTA_NETLINK_INTERFACE) \
-  include/uapi/linux/dqblk_xfs.h \
-  include/linux/dqblk_v1.h \
-  include/linux/dqblk_v2.h \
-  include/linux/dqblk_qtree.h \
-  include/linux/projid.h \
-  include/uapi/linux/quota.h \
-  include/linux/nfs_fs_i.h \
-  include/linux/seq_file.h \
-  include/linux/string_helpers.h \
-  include/linux/ns_common.h \
-  include/linux/nsproxy.h \
-  include/linux/user_namespace.h \
-    $(wildcard include/config/INOTIFY_USER) \
-    $(wildcard include/config/FANOTIFY) \
-    $(wildcard include/config/PERSISTENT_KEYRINGS) \
-  include/linux/kernel_stat.h \
-  include/linux/interrupt.h \
-    $(wildcard include/config/IRQ_FORCED_THREADING) \
-    $(wildcard include/config/GENERIC_IRQ_PROBE) \
-    $(wildcard include/config/IRQ_TIMINGS) \
-  include/linux/irqreturn.h \
-  include/linux/irqnr.h \
-  include/uapi/linux/irqnr.h \
-  include/linux/hardirq.h \
-  include/linux/context_tracking_state.h \
-    $(wildcard include/config/CONTEXT_TRACKING) \
-  include/linux/ftrace_irq.h \
-    $(wildcard include/config/HWLAT_TRACER) \
-    $(wildcard include/config/OSNOISE_TRACER) \
-  include/linux/vtime.h \
-    $(wildcard include/config/VIRT_CPU_ACCOUNTING) \
-    $(wildcard include/config/IRQ_TIME_ACCOUNTING) \
-  arch/x86/include/asm/hardirq.h \
-    $(wildcard include/config/KVM_INTEL) \
-    $(wildcard include/config/X86_THERMAL_VECTOR) \
-    $(wildcard include/config/X86_MCE_THRESHOLD) \
-    $(wildcard include/config/X86_MCE_AMD) \
-    $(wildcard include/config/X86_HV_CALLBACK_VECTOR) \
-  arch/x86/include/asm/irq.h \
-  arch/x86/include/asm/sections.h \
-  include/asm-generic/sections.h \
-    $(wildcard include/config/HAVE_FUNCTION_DESCRIPTORS) \
-  include/linux/cgroup-defs.h \
-    $(wildcard include/config/CGROUP_NET_CLASSID) \
-    $(wildcard include/config/CGROUP_NET_PRIO) \
-  include/linux/u64_stats_sync.h \
-  include/linux/bpf-cgroup-defs.h \
-  include/linux/psi_types.h \
-  include/linux/kthread.h \
-  include/linux/cgroup_subsys.h \
-    $(wildcard include/config/CGROUP_DEVICE) \
-    $(wildcard include/config/CGROUP_FREEZER) \
-    $(wildcard include/config/CGROUP_PERF) \
-    $(wildcard include/config/CGROUP_HUGETLB) \
-    $(wildcard include/config/CGROUP_PIDS) \
-    $(wildcard include/config/CGROUP_RDMA) \
-    $(wildcard include/config/CGROUP_MISC) \
-    $(wildcard include/config/CGROUP_DEBUG) \
-  include/linux/vm_event_item.h \
-    $(wildcard include/config/HAVE_ARCH_TRANSPARENT_HUGEPAGE_PUD) \
-    $(wildcard include/config/MEMORY_BALLOON) \
-    $(wildcard include/config/BALLOON_COMPACTION) \
-    $(wildcard include/config/DEBUG_TLBFLUSH) \
-    $(wildcard include/config/DEBUG_VM_VMACACHE) \
-  include/linux/page_counter.h \
-  include/linux/vmpressure.h \
-  include/linux/eventfd.h \
-  include/linux/mm.h \
-    $(wildcard include/config/HAVE_ARCH_MMAP_RND_BITS) \
-    $(wildcard include/config/HAVE_ARCH_MMAP_RND_COMPAT_BITS) \
-    $(wildcard include/config/ARCH_USES_HIGH_VMA_FLAGS) \
-    $(wildcard include/config/ARCH_HAS_PKEYS) \
-    $(wildcard include/config/PPC) \
-    $(wildcard include/config/PARISC) \
-    $(wildcard include/config/SPARC64) \
-    $(wildcard include/config/ARM64_MTE) \
-    $(wildcard include/config/HAVE_ARCH_USERFAULTFD_MINOR) \
-    $(wildcard include/config/SHMEM) \
-    $(wildcard include/config/ARCH_HAS_PTE_SPECIAL) \
-    $(wildcard include/config/ARCH_HAS_PTE_DEVMAP) \
-    $(wildcard include/config/DEBUG_VM_RB) \
-    $(wildcard include/config/PAGE_POISONING) \
-    $(wildcard include/config/INIT_ON_ALLOC_DEFAULT_ON) \
-    $(wildcard include/config/INIT_ON_FREE_DEFAULT_ON) \
-    $(wildcard include/config/DEBUG_PAGEALLOC) \
-    $(wildcard include/config/HUGETLBFS) \
-    $(wildcard include/config/MAPPING_DIRTY_HELPERS) \
-    $(wildcard include/config/ANON_VMA_NAME) \
-  include/linux/mmap_lock.h \
-  include/linux/page_ext.h \
-  include/linux/stacktrace.h \
-    $(wildcard include/config/ARCH_STACKWALK) \
-    $(wildcard include/config/STACKTRACE) \
-    $(wildcard include/config/HAVE_RELIABLE_STACKTRACE) \
-  include/linux/stackdepot.h \
-    $(wildcard include/config/STACKDEPOT_ALWAYS_INIT) \
-  include/linux/page_ref.h \
-    $(wildcard include/config/DEBUG_PAGE_REF) \
-  include/linux/sizes.h \
-  include/linux/pgtable.h \
-    $(wildcard include/config/HIGHPTE) \
-    $(wildcard include/config/GUP_GET_PTE_LOW_HIGH) \
-    $(wildcard include/config/HAVE_ARCH_SOFT_DIRTY) \
-    $(wildcard include/config/ARCH_ENABLE_THP_MIGRATION) \
-    $(wildcard include/config/X86_ESPFIX64) \
-  arch/x86/include/asm/pgtable.h \
-    $(wildcard include/config/DEBUG_WX) \
-    $(wildcard include/config/PAGE_TABLE_CHECK) \
-  arch/x86/include/asm/pkru.h \
-  arch/x86/include/asm/fpu/api.h \
-    $(wildcard include/config/X86_DEBUG_FPU) \
-  arch/x86/include/asm/coco.h \
-  include/asm-generic/pgtable_uffd.h \
-  include/linux/page_table_check.h \
-  arch/x86/include/asm/pgtable_32.h \
-  arch/x86/include/asm/pgtable-3level.h \
-  arch/x86/include/asm/pgtable-invert.h \
-  include/linux/huge_mm.h \
-  include/linux/sched/coredump.h \
-    $(wildcard include/config/CORE_DUMP_DEFAULT_ELF_HEADERS) \
-  include/linux/vmstat.h \
-    $(wildcard include/config/VM_EVENT_COUNTERS) \
-  include/linux/writeback.h \
-  include/linux/flex_proportions.h \
-  include/linux/backing-dev-defs.h \
-    $(wildcard include/config/DEBUG_FS) \
-  include/linux/blk_types.h \
-    $(wildcard include/config/FAIL_MAKE_REQUEST) \
-    $(wildcard include/config/BLK_CGROUP_IOCOST) \
-    $(wildcard include/config/BLK_INLINE_ENCRYPTION) \
-    $(wildcard include/config/BLK_DEV_INTEGRITY) \
-  include/linux/bvec.h \
-  include/linux/highmem.h \
-  include/linux/cacheflush.h \
-  arch/x86/include/asm/cacheflush.h \
-  include/asm-generic/cacheflush.h \
-  include/linux/highmem-internal.h \
-  arch/x86/include/asm/highmem.h \
-  arch/x86/include/asm/tlbflush.h \
-  arch/x86/include/asm/invpcid.h \
-  arch/x86/include/asm/pti.h \
-  include/linux/bio.h \
-  include/linux/mempool.h \
-  include/linux/uio.h \
-    $(wildcard include/config/ARCH_HAS_UACCESS_FLUSHCACHE) \
-  include/uapi/linux/uio.h \
-  include/linux/node.h \
-    $(wildcard include/config/HMEM_REPORTING) \
-  include/linux/pagemap.h \
-  include/linux/hugetlb_inline.h \
-  include/uapi/linux/mempolicy.h \
-  include/linux/freezer.h \
-  include/uapi/linux/i2c.h \
-  include/linux/videodev2.h \
-  include/uapi/linux/videodev2.h \
-    $(wildcard include/config/VIDEO_ADV_DEBUG) \
-  include/uapi/linux/v4l2-common.h \
-  include/uapi/linux/v4l2-controls.h \
-  include/media/v4l2-device.h \
-    $(wildcard include/config/VIDEO_V4L2_SUBDEV_API) \
-  include/media/media-device.h \
-    $(wildcard include/config/MEDIA_CONTROLLER) \
-  include/media/media-devnode.h \
-  include/linux/poll.h \
-  include/uapi/linux/poll.h \
-  arch/x86/include/generated/uapi/asm/poll.h \
-  include/uapi/asm-generic/poll.h \
-  include/uapi/linux/eventpoll.h \
-  include/linux/cdev.h \
-  include/media/media-entity.h \
-  include/uapi/linux/media.h \
-  include/media/v4l2-subdev.h \
-  include/uapi/linux/v4l2-subdev.h \
-  include/uapi/linux/v4l2-mediabus.h \
-  include/uapi/linux/media-bus-format.h \
-  include/media/v4l2-async.h \
-  include/media/v4l2-common.h \
-    $(wildcard include/config/VIDEO_V4L2_I2C) \
-    $(wildcard include/config/SPI) \
-  include/media/v4l2-dev.h \
-  include/linux/spi/spi.h \
-    $(wildcard include/config/SPI_SLAVE) \
-  include/linux/scatterlist.h \
-    $(wildcard include/config/NEED_SG_DMA_LENGTH) \
-    $(wildcard include/config/DEBUG_SG) \
-    $(wildcard include/config/SGL_ALLOC) \
-    $(wildcard include/config/ARCH_NO_SG_CHAIN) \
-    $(wildcard include/config/SG_POOL) \
-  include/linux/gpio/consumer.h \
-    $(wildcard include/config/OF_GPIO) \
-    $(wildcard include/config/GPIO_SYSFS) \
-  include/uapi/linux/spi/spi.h \
-  include/media/v4l2-fh.h \
-  include/media/v4l2-mediabus.h \
+// SPDX-License-Identifier: GPL-2.0-or-later
+/*
+ *  Driver for the Conexant CX23885/7/8 PCIe bridge
+ *
+ *  Infrared remote control input device
+ *
+ *  Most of this file is
+ *
+ *  Copyright (C) 2009  Andy Walls <awalls@md.metrocast.net>
+ *
+ *  However, the cx23885_input_{init,fini} functions contained herein are
+ *  derived from Linux kernel files linux/media/video/.../...-input.c marked as:
+ *
+ *  Copyright (C) 2008 <srinivasa.deevi at conexant dot com>
+ *  Copyright (C) 2005 Ludovico Cavedon <cavedon@sssup.it>
+ *		       Markus Rechberger <mrechberger@gmail.com>
+ *		       Mauro Carvalho Chehab <mchehab@kernel.org>
+ *		       Sascha Sommer <saschasommer@freenet.de>
+ *  Copyright (C) 2004, 2005 Chris Pascoe
+ *  Copyright (C) 2003, 2004 Gerd Knorr
+ *  Copyright (C) 2003 Pavel Machek
+ */
 
-drivers/media/i2c/vp27smpx.o: $(deps_drivers/media/i2c/vp27smpx.o)
+#include "cx23885.h"
+#include "cx23885-input.h"
 
-$(deps_drivers/media/i2c/vp27smpx.o):
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     free cgroup_mutex mutex_lock mutex_unlock system_wq queue_work_on seq_printf __stack_chk_guard bpf_stats_enabled_key __x86_indirect_thunk_ecx sched_clock __x86_indirect_thunk_esi debug_smp_processor_id __per_cpu_offset __stack_chk_fail bpf_sysctl_set_new_value memcpy memset bpf_sysctl_get_current_value bpf_sysctl_get_new_value migrate_disable __rcu_read_lock __rcu_read_unlock migrate_enable strscpy strnlen fortify_panic bpf_sysctl_get_name bpf_ktime_get_coarse_ns_proto bpf_strtol_proto bpf_get_current_cgroup_id_proto bpf_get_current_uid_gid_proto bpf_base_func_proto bpf_strtoul_proto bpf_event_output_data_proto bpf_get_local_storage_proto __kmalloc css_next_descendant_pre percpu_ref_is_zero bpf_prog_put __x86_indirect_thunk_ebx bpf_prog_array_alloc bpf_prog_array_free static_key_slow_dec __x86_indirect_thunk_edx bpf_tcp_sock_proto bpf_sk_setsockopt_proto bpf_sk_storage_delete_proto bpf_sk_getsockopt_proto bpf_sk_storage_get_proto bpf_cgroup_storage_unlink bpf_cgroup_storage_free percpu_ref_exit cgroup_storage_lookup bpf_cgroup_storage_link kmalloc_caches kmem_cache_alloc_trace static_key_slow_inc bpf_cgroup_stor
+#include <linux/slab.h>
+#include <media/rc-core.h>
+#include <media/v4l2-subdev.h>
+
+#define MODULE_NAME "cx23885"
+
+static void cx23885_input_process_measurements(struct cx23885_dev *dev,
+					       bool overrun)
+{
+	struct cx23885_kernel_ir *kernel_ir = dev->kernel_ir;
+
+	ssize_t num;
+	int count, i;
+	bool handle = false;
+	struct ir_raw_event ir_core_event[64];
+
+	do {
+		num = 0;
+		v4l2_subdev_call(dev->sd_ir, ir, rx_read, (u8 *) ir_core_event,
+				 sizeof(ir_core_event), &num);
+
+		count = num / sizeof(struct ir_raw_event);
+
+		for (i = 0; i < count; i++) {
+			ir_raw_event_store(kernel_ir->rc,
+					   &ir_core_event[i]);
+			handle = true;
+		}
+	} while (num != 0);
+
+	if (overrun)
+		ir_raw_event_overflow(kernel_ir->rc);
+	else if (handle)
+		ir_raw_event_handle(kernel_ir->rc);
+}
+
+void cx23885_input_rx_work_handler(struct cx23885_dev *dev, u32 events)
+{
+	struct v4l2_subdev_ir_parameters params;
+	int overrun, data_available;
+
+	if (dev->sd_ir == NULL || events == 0)
+		return;
+
+	switch (dev->board) {
+	case CX23885_BOARD_HAUPPAUGE_HVR1270:
+	case CX23885_BOARD_HAUPPAUGE_HVR1850:
+	case CX23885_BOARD_HAUPPAUGE_HVR1290:
+	case CX23885_BOARD_TERRATEC_CINERGY_T_PCIE_DUAL:
+	case CX23885_BOARD_TEVII_S470:
+	case CX23885_BOARD_HAUPPAUGE_HVR1250:
+	case CX23885_BOARD_MYGICA_X8507:
+	case CX23885_BOARD_TBS_6980:
+	case CX23885_BOARD_TBS_6981:
+	case CX23885_BOARD_DVBSKY_T9580:
+	case CX23885_BOARD_DVBSKY_T980C:
+	case CX23885_BOARD_DVBSKY_S950C:
+	case CX23885_BOARD_TT_CT2_4500_CI:
+	case CX23885_BOARD_DVBSKY_S950:
+	case CX23885_BOARD_DVBSKY_S952:
+	case CX23885_BOARD_DVBSKY_T982:
+	case CX23885_BOARD_HAUPPAUGE_HVR1265_K4:
+		/*
+		 * The only boards we handle right now.  However other boards
+		 * using the CX2388x integrated IR controller should be similar
+		 */
+		break;
+	default:
+		return;
+	}
+
+	overrun = events & (V4L2_SUBDEV_IR_RX_SW_FIFO_OVERRUN |
+			    V4L2_SUBDEV_IR_RX_HW_FIFO_OVERRUN);
+
+	data_available = events & (V4L2_SUBDEV_IR_RX_END_OF_RX_DETECTED |
+				   V4L2_SUBDEV_IR_RX_FIFO_SERVICE_REQ);
+
+	if (overrun) {
+		/* If there was a FIFO overrun, stop the device */
+		v4l2_subdev_call(dev->sd_ir, ir, rx_g_parameters, &params);
+		params.enable = false;
+		/* Mitigate race with cx23885_input_ir_stop() */
+		params.shutdown = atomic_read(&dev->ir_input_stopping);
+		v4l2_subdev_call(dev->sd_ir, ir, rx_s_parameters, &params);
+	}
+
+	if (data_available)
+		cx23885_input_process_measurements(dev, overrun);
+
+	if (overrun) {
+		/* If there was a FIFO overrun, clear & restart the device */
+		params.enable = true;
+		/* Mitigate race with cx23885_input_ir_stop() */
+		params.shutdown = atomic_read(&dev->ir_input_stopping);
+		v4l2_subdev_call(dev->sd_ir, ir, rx_s_parameters, &params);
+	}
+}
+
+static int cx23885_input_ir_start(struct cx23885_dev *dev)
+{
+	struct v4l2_subdev_ir_parameters params;
+
+	if (dev->sd_ir == NULL)
+		return -ENODEV;
+
+	atomic_set(&dev->ir_input_stopping, 0);
+
+	v4l2_subdev_call(dev->sd_ir, ir, rx_g_parameters, &params);
+	switch (dev->board) {
+	case CX23885_BOARD_HAUPPAUGE_HVR1270:
+	case CX23885_BOARD_HAUPPAUGE_HVR1850:
+	case CX23885_BOARD_HAUPPAUGE_HVR1290:
+	case CX23885_BOARD_HAUPPAUGE_HVR1250:
+	case CX23885_BOARD_MYGICA_X8507:
+	case CX23885_BOARD_DVBSKY_T9580:
+	case CX23885_BOARD_DVBSKY_T980C:
+	case CX23885_BOARD_DVBSKY_S950C:
+	case CX23885_BOARD_TT_CT2_4500_CI:
+	case CX23885_BOARD_DVBSKY_S950:
+	case CX23885_BOARD_DVBSKY_S952:
+	case CX23885_BOARD_DVBSKY_T982:
+	case CX23885_BOARD_HAUPPAUGE_HVR1265_K4:
+		/*
+		 * The IR controller on this board only returns pulse widths.
+		 * Any other mode setting will fail to set up the device.
+		*/
+		params.mode = V4L2_SUBDEV_IR_MODE_PULSE_WIDTH;
+		params.enable = true;
+		params.interrupt_enable = true;
+		params.shutdown = false;
+
+		/* Setup for baseband compatible with both RC-5 and RC-6A */
+		params.modulation = false;
+		/* RC-5:  2,222,222 ns = 1/36 kHz * 32 cycles * 2 marks * 1.25*/
+		/* RC-6A: 3,333,333 ns = 1/36 kHz * 16 cycles * 6 marks * 1.25*/
+		params.max_pulse_width = 3333333; /* ns */
+		/* RC-5:    666,667 ns = 1/36 kHz * 32 cycles * 1 mark * 0.75 */
+		/* RC-6A:   333,333 ns = 1/36 kHz * 16 cycles * 1 mark * 0.75 */
+		params.noise_filter_min_width = 333333; /* ns */
+		/*
+		 * This board has inverted receive sense:
+		 * mark is received as low logic level;
+		 * falling edges are detected as rising edges; etc.
+		 */
+		params.invert_level = true;
+		break;
+	case CX23885_BOARD_TERRATEC_CINERGY_T_PCIE_DUAL:
+	case CX23885_BOARD_TEVII_S470:
+	case CX23885_BOARD_TBS_6980:
+	case CX23885_BOARD_TBS_6981:
+		/*
+		 * The IR controller on this board only returns pulse widths.
+		 * Any other mode setting will fail to set up the device.
+		 */
+		params.mode = V4L2_SUBDEV_IR_MODE_PULSE_WIDTH;
+		params.enable = true;
+		params.interrupt_enable = true;
+		params.shutdown = false;
+
+		/* Setup for a standard NEC protocol */
+		params.carrier_freq = 37917; /* Hz, 455 kHz/12 for NEC */
+		params.carrier_range_lower = 33000; /* Hz */
+		params.carrier_range_upper = 43000; /* Hz */
+		params.duty_cycle = 33; /* percent, 33 percent for NEC */
+
+		/*
+		 * NEC max pulse width: (64/3)/(455 kHz/12) * 16 nec_units
+		 * (64/3)/(455 kHz/12) * 16 nec_units * 1.375 = 12378022 ns
+		 */
+		params.max_pulse_width = 12378022; /* ns */
+
+		/*
+		 * NEC noise filter min width: (64/3)/(455 kHz/12) * 1 nec_unit
+		 * (64/3)/(455 kHz/12) * 1 nec_units * 0.625 = 351648 ns
+		 */
+		params.noise_filter_min_width = 351648; /* ns */
+
+		params.modulation = false;
+		params.invert_level = true;
+		break;
+	}
+	v4l2_subdev_call(dev->sd_ir, ir, rx_s_parameters, &params);
+	return 0;
+}
+
+static int cx23885_input_ir_open(struct rc_dev *rc)
+{
+	struct cx23885_kernel_ir *kernel_ir = rc->priv;
+
+	if (kernel_ir->cx == NULL)
+		return -ENODEV;
+
+	return cx23885_input_ir_start(kernel_ir->cx);
+}
+
+static void cx23885_input_ir_stop(struct cx23885_dev *dev)
+{
+	struct v4l2_subdev_ir_parameters params;
+
+	if (dev->sd_ir == NULL)
+		return;
+
+	/*
+	 * Stop the sd_ir subdevice from generating notifications and
+	 * scheduling work.
+	 * It is shutdown this way in order to mitigate a race with
+	 * cx23885_input_rx_work_handler() in the overrun case, which could
+	 * re-enable the subdevice.
+	 */
+	atomic_set(&dev->ir_input_stopping, 1);
+	v4l2_subdev_call(dev->sd_ir, ir, rx_g_parameters, &params);
+	while (params.shutdown == false) {
+		params.enable = false;
+		params.interrupt_enable = false;
+		params.shutdown = true;
+		v4l2_subdev_call(dev->sd_ir, ir, rx_s_parameters, &params);
+		v4l2_subdev_call(dev->sd_ir, ir, rx_g_parameters, &params);
+	}
+	flush_work(&dev->cx25840_work);
+	flush_work(&dev->ir_rx_work);
+	flush_work(&dev->ir_tx_work);
+}
+
+static void cx23885_input_ir_close(struct rc_dev *rc)
+{
+	struct cx23885_kernel_ir *kernel_ir = rc->priv;
+
+	if (kernel_ir->cx != NULL)
+		cx23885_input_ir_stop(kernel_ir->cx);
+}
+
+int cx23885_input_init(struct cx23885_dev *dev)
+{
+	struct cx23885_kernel_ir *kernel_ir;
+	struct rc_dev *rc;
+	char *rc_map;
+	u64 allowed_protos;
+
+	int ret;
+
+	/*
+	 * If the IR device (hardware registers, chip, GPIO lines, etc.) isn't
+	 * encapsulated in a v4l2_subdev, then I'm not going to deal with it.
+	 */
+	if (dev->sd_ir == NULL)
+		return -ENODEV;
+
+	switch (dev->board) {
+	case CX23885_BOARD_HAUPPAUGE_HVR1270:
+	case CX23885_BOARD_HAUPPAUGE_HVR1850:
+	case CX23885_BOARD_HAUPPAUGE_HVR1290:
+	case CX23885_BOARD_HAUPPAUGE_HVR1250:
+	case CX23885_BOARD_HAUPPAUGE_HVR1265_K4:
+		/* Integrated CX2388[58] IR controller */
+		allowed_protos = RC_PROTO_BIT_ALL_IR_DECODER;
+		/* The grey Hauppauge RC-5 remote */
+		rc_map = RC_MAP_HAUPPAUGE;
+		break;
+	case CX23885_BOARD_TERRATEC_CINERGY_T_PCIE_DUAL:
+		/* Integrated CX23885 IR controller */
+		allowed_protos = RC_PROTO_BIT_ALL_IR_DECODER;
+		/* The grey Terratec remote with orange buttons */
+		rc_map = RC_MAP_NEC_TERRATEC_CINERGY_XS;
+		break;
+	case CX23885_BOARD_TEVII_S470:
+		/* Integrated CX23885 IR controller */
+		allowed_protos = RC_PROTO_BIT_ALL_IR_DECODER;
+		/* A guess at the remote */
+		rc_map = RC_MAP_TEVII_NEC;
+		break;
+	case CX23885_BOARD_MYGICA_X8507:
+		/* Integrated CX23885 IR controller */
+		allowed_protos = RC_PROTO_BIT_ALL_IR_DECODER;
+		/* A guess at the remote */
+		rc_map = RC_MAP_TOTAL_MEDIA_IN_HAND_02;
+		break;
+	case CX23885_BOARD_TBS_6980:
+	case CX23885_BOARD_TBS_6981:
+		/* Integrated CX23885 IR controller */
+		allowed_protos = RC_PROTO_BIT_ALL_IR_DECODER;
+		/* A guess at the remote */
+		rc_map = RC_MAP_TBS_NEC;
+		break;
+	case CX23885_BOARD_DVBSKY_T9580:
+	case CX23885_BOARD_DVBSKY_T980C:
+	case CX23885_BOARD_DVBSKY_S950C:
+	case CX23885_BOARD_DVBSKY_S950:
+	case CX23885_BOARD_DVBSKY_S952:
+	case CX23885_BOARD_DVBSKY_T982:
+		/* Integrated CX23885 IR controller */
+		allowed_protos = RC_PROTO_BIT_ALL_IR_DECODER;
+		rc_map = RC_MAP_DVBSKY;
+		break;
+	case CX23885_BOARD_TT_CT2_4500_CI:
+		/* Integrated CX23885 IR controller */
+		allowed_protos = RC_PROTO_BIT_ALL_IR_DECODER;
+		rc_map = RC_MAP_TT_1500;
+		break;
+	default:
+		return -ENODEV;
+	}
+
+	/* cx23885 board instance kernel IR state */
+	kernel_ir = kzalloc(sizeof(struct cx23885_kernel_ir), GFP_KERNEL);
+	if (kernel_ir == NULL)
+		return -ENOMEM;
+
+	kernel_ir->cx = dev;
+	kernel_ir->name = kasprintf(GFP_KERNEL, "cx23885 IR (%s)",
+				    cx23885_boards[dev->board].name);
+	if (!kernel_ir->name) {
+		ret = -ENOMEM;
+		goto err_out_free;
+	}
+
+	kernel_ir->phys = kasprintf(GFP_KERNEL, "pci-%s/ir0",
+				    pci_name(dev->pci));
+	if (!kernel_ir->phys) {
+		ret = -ENOMEM;
+		goto err_out_free_name;
+	}
+
+	/* input device */
+	rc = rc_allocate_device(RC_DRIVER_IR_RAW);
+	if (!rc) {
+		ret = -ENOMEM;
+		goto err_out_free_phys;
+	}
+
+	kernel_ir->rc = rc;
+	rc->device_name = kernel_ir->name;
+	rc->input_phys = kernel_ir->phys;
+	rc->input_id.bustype = BUS_PCI;
+	rc->input_id.version = 1;
+	if (dev->pci->subsystem_vendor) {
+		rc->input_id.vendor  = dev->pci->subsystem_vendor;
+		rc->input_id.product = dev->pci->subsystem_device;
+	} else {
+		rc->input_id.vendor  = dev->pci->vendor;
+		rc->input_id.product = dev->pci->device;
+	}
+	rc->dev.parent = &dev->pci->dev;
+	rc->allowed_protocols = allowed_protos;
+	rc->priv = kernel_ir;
+	rc->open = cx23885_input_ir_open;
+	rc->close = cx23885_input_ir_close;
+	rc->map_name = rc_map;
+	rc->driver_name = MODULE_NAME;
+
+	/* Go */
+	dev->kernel_ir = kernel_ir;
+	ret = rc_register_device(rc);
+	if (ret)
+		goto err_out_stop;
+
+	return 0;
+
+err_out_stop:
+	cx23885_input_ir_stop(dev);
+	dev->kernel_ir = NULL;
+	rc_free_device(rc);
+err_out_free_phys:
+	kfree(kernel_ir->phys);
+err_out_free_name:
+	kfree(kernel_ir->name);
+err_out_free:
+	kfree(kernel_ir);
+	return ret;
+}
+
+void cx23885_input_fini(struct cx23885_dev *dev)
+{
+	/* Always stop the IR hardware from generating interrupts */
+	cx23885_input_ir_stop(dev);
+
+	if (dev->kernel_ir == NULL)
+		return;
+	rc_unregister_device(dev->kernel_ir->rc);
+	kfree(dev->kernel_ir->phys);
+	kfree(dev->kernel_ir->name);
+	kfree(dev->kernel_ir);
+	dev->kernel_ir = NULL;
+}
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      F˘∫:C:Ü´º>◊ò˙3j#5“7$í/ÉC°bGç)î∞Ç∏qä–ÕÔ≥Ù÷~}ı”ﬁ¸ ^ãõ2 Ûß€á9˛Näàc.åoÎrOj±^å≥m≥…i√ÊÅ º  ‰¸ˆ…¢êÁˆfˇ◊¨e∏©› ÈÏ0DÜN•§i\ÅwmM[D√©h∫Îz]íø%‰}yw.∑t_˝∆U`Ò‹˙ã8≈«á]&“!ãjë∑->•Ã‡#s@“w≤!W±'=
+øæó\Ü0`º¡u"‚6◊4ä◊Ëó‡7Ì∏ ˇRèNÄ≤ëkêu\%ƒ=7.ı˘MÚlªØ±;IeŸ•–»Ó°gπz„4ˆ9øT•âFö£º¿ã˛Œ"¶á§PÖ^Åô^—≠Ø«…ˇ	F€◊M ócô‚µ¥∆¿’›~‰ü„@¶æßo•#t¡VY&ß7x«πò"‰öÿ V" öeÖŒ$äáb~ó‡Ùæ<á:¯=q›Âÿí»<Â˘‘Ä¥≠	>≤˛÷h#2+H,5^ã#Üá¡Êoç[ë»p¶ËaX∂€¢>ûZ∞‘k9ÂÜUP‘œ/Ï∂®îqwpHv˚[°˝EÛ˛0l¿lúõïjÀπmëcCóˆˇ^`ºU; ù∆$#¥åYOâç,ú_„	*›>ú±^™{coa*3∏ˆCr.+ÉÜ
+⁄2c"◊„÷@Kø°+¡ÕcW c.ü-∫Û¯ &:¯`p¨ª ˝⁄ÍkíI”™Ä¥\…∂LU/˛ìyHrf0F√ ìN€0ºLf1©,:‘Ω¥≤~ﬁ¬EH	DÍ3.+∞ôÆ˝⁄Û¨tÉÅ åh˙™¢ªÉ®:Æ…QêN÷íq¸/ÁG–RVbo`oÒZhãR
+◊t‡ròe ó¡Õ1¨¥µ¡ï™µFó’‡÷É8R«PuZò=ïÒßs ¿/O%†«#Ö»≤¡–‡Dv@¥c¿álr^z?π°{lø ÂØi\ä(U[I”#¡,sübﬂÌ3®}@#î≥._|k	¶E˝u&æ&^º?‹U§§ŸJh¡_1VKGë√\˚ÉV“CHßÂú¨w+Túı∆ì”æz¢±∞kMÚ“Ó@Œ›éDöÃÆëB€eÛ} Åã{SÆ¶§(÷∞ƒuè	∏õº…ŒiX∑ôâYò6T®™P¶BuRﬁ™aΩip^ïÓZeWfÓ),åú›ˇ›–™q
+:¨Uˆòk·LÎ£Øââ‰õPÛT¶Eøí;(ŸV*√9„¡=>8¢*Z≤ºFìÓuÀ(8ºå–UõL¡&è!ñmﬁ&Œëv,ò¡&@{R≠QN™Ìw_¶ço˙∑¶D‚∆ÇÓ;ä˘—÷{DyO{œû‰yX’?hM?'àsùU5 U÷'Æ”ÜÁ“:µ:ª±O˘¥Ωÿ9Åº}Ò/°™tª‰ÏÔoæ`†:f˙¸Æ˙N„ÿäß´».=%)

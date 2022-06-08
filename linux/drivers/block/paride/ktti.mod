@@ -1,1 +1,1 @@
-config/ARCH_WANTS_DYNAMIC_TAS
+/* SPDX-License-Identifier: G

@@ -1,2 +1,1 @@
-h \
-    $(wildcard include/config/VIDEO_V4L
+// SPDX-License-Identifier: GPL-2.0-or-late

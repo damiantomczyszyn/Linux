@@ -1,3 +1,2 @@
-EAF) \
-  include/linux/page-flags-layout.h \
-    $(wildcar
+/* SPDX-License-Identifier: GPL-2.0 */
+extern int f300_set

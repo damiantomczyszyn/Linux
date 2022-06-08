@@ -1,2 +1,2 @@
-i/linux/edd.h \
-  arch/x86/include
+00000);
+	cx_write(PAD_CTRL, 0x0050

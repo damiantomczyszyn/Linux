@@ -1,21 +1,21 @@
-		seq_printf(m, "[%p] ", class->key);
-		print_name(m, class);
-		seq_puts(m, "\n");
-	}
-	seq_puts(m, "\n");
 
-	return 0;
-}
 
-static const struct seq_operations lockdep_chains_ops = {
-	.start	= lc_start,
-	.next	= lc_next,
-	.stop	= lc_stop,
-	.show	= lc_show,
-};
-#endif /* CONFIG_PROVE_LOCKING */
+/*
+ * period over which we measure -rt task CPU usage in us.
+ * default: 1s
+ */
+unsigned int sysctl_sched_rt_period = 1000000;
 
-static void lockdep_stats_debug_show(struct seq_file *m)
+__read_mostly int scheduler_running;
+
+#ifdef CONFIG_SCHED_CORE
+
+DEFINE_STATIC_KEY_FALSE(__sched_core_enabled);
+
+/* kernel prio, less is more */
+static inline int __task_prio(struct task_struct *p)
 {
-#ifdef CONFIG_DEBUG_LOCKDEP
-	unsigned long long hi1 = debug_atomic_read(hardi
+	if (p->sched_class == &stop_sched_class) /* trumps deadline */
+		return -2;
+
+	if (rt_prio(p->prio

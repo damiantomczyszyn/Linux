@@ -1,1 +1,2 @@
-de/generated/asm/early_i
+= 1,
+	.agc = &xc3028_agc

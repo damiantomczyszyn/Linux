@@ -1,73 +1,81 @@
-ip)
-{
-	if (unlikely(!debug_locks))
-		return;
-
-	/*
-	 * NMIs do not (and cannot) track lock dependencies, nothing to do.
-	 */
-	if (unlikely(in_nmi()))
-		return;
-
-	if (unlikely(this_cpu_read(lockdep_recursion)))
-		return;
-
-	if (unlikely(lockdep_hardirqs_enabled())) {
+ (!cpumask_subset(new_mask, cpus_allowed)) {
 		/*
-		 * Neither irq nor preemption are disabled here
-		 * so this is racy by nature but losing one hit
-		 * in a stat is not a big deal.
+		 * We must have raced with a concurrent cpuset update.
+		 * Just reset the cpumask to the cpuset's cpus_allowed.
 		 */
-		__debug_atomic_inc(redundant_hardirqs_on);
-		return;
+		cpumask_copy(new_mask, cpus_allowed);
+		goto again;
 	}
 
-	/*
-	 * We're enabling irqs and according to our state above irqs weren't
-	 * already enabled, yet we find the hardware thinks they are in fact
-	 * enabled.. someone messed up their IRQ state tracing.
-	 */
-	if (DEBUG_LOCKS_WARN_ON(!irqs_disabled()))
-		return;
-
-	/*
-	 * See the fine text that goes along with this variable definition.
-	 */
-	if (DEBUG_LOCKS_WARN_ON(early_boot_irqs_disabled))
-		return;
-
-	/*
-	 * Can't allow enabling interrupts while in an interrupt handler,
-	 * that's general bad form and such. Recursion, limited stack etc..
-	 */
-	if (DEBUG_LOCKS_WARN_ON(lockdep_hardirq_context()))
-		return;
-
-	current->hardirq_chain_key = current->curr_chain_key;
-
-	lockdep_recursion_inc();
-	__trace_hardirqs_on_caller();
-	lockdep_recursion_finish();
+out_free_new_mask:
+	free_cpumask_var(new_mask);
+out_free_cpus_allowed:
+	free_cpumask_var(cpus_allowed);
+	return retval;
 }
-EXPORT_SYMBOL_GPL(lockdep_hardirqs_on_prepare);
 
-void noinstr lockdep_hardirqs_on(unsigned long ip)
+long sched_setaffinity(pid_t pid, const struct cpumask *in_mask)
 {
-	struct irqtrace_events *trace = &current->irqtrace;
+	struct task_struct *p;
+	int retval;
 
-	if (unlikely(!debug_locks))
-		return;
+	rcu_read_lock();
 
-	/*
-	 * NMIs can happen in the middle of local_irq_{en,dis}able() where the
-	 * tracking state and hardware state are out of sync.
-	 *
-	 * NMIs must save lockdep_hardirqs_enabled() to restore IRQ state from,
-	 * and not rely on hardware state like normal interrupts.
-	 */
-	if (unlikely(in_nmi())) {
-		if (!IS_ENABLED(CONFIG_TRACE_IRQFLAGS_NMI))
-			return;
+	p = find_process_by_pid(pid);
+	if (!p) {
+		rcu_read_unlock();
+		return -ESRCH;
+	}
 
-		/*
-		 * Skip
+	/* Prevent p going away */
+	get_task_struct(p);
+	rcu_read_unlock();
+
+	if (p->flags & PF_NO_SETAFFINITY) {
+		retval = -EINVAL;
+		goto out_put_task;
+	}
+
+	if (!check_same_owner(p)) {
+		rcu_read_lock();
+		if (!ns_capable(__task_cred(p)->user_ns, CAP_SYS_NICE)) {
+			rcu_read_unlock();
+			retval = -EPERM;
+			goto out_put_task;
+		}
+		rcu_read_unlock();
+	}
+
+	retval = security_task_setscheduler(p);
+	if (retval)
+		goto out_put_task;
+
+	retval = __sched_setaffinity(p, in_mask);
+out_put_task:
+	put_task_struct(p);
+	return retval;
+}
+
+static int get_user_cpu_mask(unsigned long __user *user_mask_ptr, unsigned len,
+			     struct cpumask *new_mask)
+{
+	if (len < cpumask_size())
+		cpumask_clear(new_mask);
+	else if (len > cpumask_size())
+		len = cpumask_size();
+
+	return copy_from_user(new_mask, user_mask_ptr, len) ? -EFAULT : 0;
+}
+
+/**
+ * sys_sched_setaffinity - set the CPU affinity of a process
+ * @pid: pid of the process
+ * @len: length in bytes of the bitmask pointed to by user_mask_ptr
+ * @user_mask_ptr: user-space pointer to the new CPU mask
+ *
+ * Return: 0 on success. An error code otherwise.
+ */
+SYSCALL_DEFINE3(sched_setaffinity, pid_t, pid, unsigned int, len,
+		unsigned long __user *, user_mask_ptr)
+{
+	cpumask_var_t new_mas

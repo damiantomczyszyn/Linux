@@ -1,2 +1,1 @@
-onfig/MODULE_SIG) \
-    $(wildcard i
+cmd_drivers/media/pci/cx18/cx18-alsa

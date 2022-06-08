@@ -1,5 +1,3 @@
-_percpu_address(addr))
-		return 1;
-
-	/*
-	 * module static or percpu var?
+ET_SEQ_END:
+		return  "GET_SEQ_END";
+	case CX2341X_ENC_SET_PGM_INDEX_INFO

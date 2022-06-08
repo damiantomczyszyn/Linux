@@ -1,4 +1,3 @@
-ude/config/PARAVIRT_XXL) \
-  arch/x86/include/asm/disabled-features.h \
-    $(wildcard include/config/X86_SMAP) \
-    $(wildcard include
+# SPDX-License-Identifier: GPL-2.0
+# Any varying coverage in these files is non-deterministic
+# and is generally not a function of syste

@@ -1,2 +1,2 @@
-lude/config/SHMEM) \
-    $(wildcard i
+ET_SEQ_END:
+		return  "GET_SEQ_END";

@@ -1,4 +1,11 @@
- $(wildcard include/config/GENERIC_IOMAP) \
-    $(wildcard include/config/GENERIC_IOREMAP) \
-    $(wildcard include/config/VIRT_TO_BUS) \
-    $(wildcard include/config/GENERIC_DEVME
+t_task_stack(prev);
+
+		put_task_struct_rcu_user(prev);
+	}
+
+	return rq;
+}
+
+/**
+ * schedule_tail - first thing a freshly forked thread must call.
+ * @prev: the thread we just switched

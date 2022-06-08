@@ -1,660 +1,1395 @@
-e/config/ACPI_APEI_GHES) \
-    $(wildcard include/config/INTEL_TXT) \
-  arch/x86/include/generated/asm/kmap_size.h \
-  include/asm-generic/kmap_size.h \
-    $(wildcard include/config/DEBUG_KMAP_LOCAL) \
-  include/asm-generic/fixmap.h \
-  arch/x86/include/asm/irq_vectors.h \
-    $(wildcard include/config/HAVE_KVM) \
-    $(wildcard include/config/HYPERV) \
-    $(wildcard include/config/PCI_MSI) \
-  arch/x86/include/asm/cpu_entry_area.h \
-  arch/x86/include/asm/intel_ds.h \
-  arch/x86/include/asm/pgtable_areas.h \
-  arch/x86/include/asm/pgtable_32_areas.h \
-  include/uapi/linux/elf.h \
-  include/uapi/linux/elf-em.h \
-  include/linux/kobject.h \
-    $(wildcard include/config/UEVENT_HELPER) \
-    $(wildcard include/config/DEBUG_KOBJECT_RELEASE) \
-  include/linux/sysfs.h \
-  include/linux/kernfs.h \
-    $(wildcard include/config/KERNFS) \
-  include/linux/idr.h \
-  include/linux/radix-tree.h \
-  include/linux/xarray.h \
-    $(wildcard include/config/XARRAY_MULTI) \
-  include/linux/kconfig.h \
-  include/linux/kobject_ns.h \
-  include/linux/moduleparam.h \
-    $(wildcard include/config/ALPHA) \
-    $(wildcard include/config/IA64) \
-    $(wildcard include/config/PPC64) \
-  include/linux/rbtree_latch.h \
-  include/linux/error-injection.h \
-  include/asm-generic/error-injection.h \
-  include/linux/cfi.h \
-    $(wildcard include/config/CFI_CLANG_SHADOW) \
-  arch/x86/include/asm/module.h \
-    $(wildcard include/config/UNWINDER_ORC) \
-  include/asm-generic/module.h \
-    $(wildcard include/config/HAVE_MOD_ARCH_SPECIFIC) \
-    $(wildcard include/config/MODULES_USE_ELF_REL) \
-    $(wildcard include/config/MODULES_USE_ELF_RELA) \
-  arch/x86/include/asm/orc_types.h \
-  include/linux/delay.h \
-  include/linux/sched.h \
-    $(wildcard include/config/VIRT_CPU_ACCOUNTING_NATIVE) \
-    $(wildcard include/config/SCHED_INFO) \
-    $(wildcard include/config/SCHEDSTATS) \
-    $(wildcard include/config/SCHED_CORE) \
-    $(wildcard include/config/FAIR_GROUP_SCHED) \
-    $(wildcard include/config/RT_GROUP_SCHED) \
-    $(wildcard include/config/RT_MUTEXES) \
-    $(wildcard include/config/UCLAMP_TASK) \
-    $(wildcard include/config/UCLAMP_BUCKETS_COUNT) \
-    $(wildcard include/config/CGROUP_SCHED) \
-    $(wildcard include/config/BLK_DEV_IO_TRACE) \
-    $(wildcard include/config/PSI) \
-    $(wildcard include/config/COMPAT_BRK) \
-    $(wildcard include/config/CGROUPS) \
-    $(wildcard include/config/BLK_CGROUP) \
-    $(wildcard include/config/PAGE_OWNER) \
-    $(wildcard include/config/EVENTFD) \
-    $(wildcard include/config/ARCH_HAS_SCALED_CPUTIME) \
-    $(wildcard include/config/VIRT_CPU_ACCOUNTING_GEN) \
-    $(wildcard include/config/POSIX_CPUTIMERS) \
-    $(wildcard include/config/POSIX_CPU_TIMERS_TASK_WORK) \
-    $(wildcard include/config/KEYS) \
-    $(wildcard include/config/SYSVIPC) \
-    $(wildcard include/config/DETECT_HUNG_TASK) \
-    $(wildcard include/config/IO_URING) \
-    $(wildcard include/config/AUDIT) \
-    $(wildcard include/config/AUDITSYSCALL) \
-    $(wildcard include/config/UBSAN) \
-    $(wildcard include/config/UBSAN_TRAP) \
-    $(wildcard include/config/TASK_XACCT) \
-    $(wildcard include/config/CPUSETS) \
-    $(wildcard include/config/X86_CPU_RESCTRL) \
-    $(wildcard include/config/FUTEX) \
-    $(wildcard include/config/PERF_EVENTS) \
-    $(wildcard include/config/RSEQ) \
-    $(wildcard include/config/TASK_DELAY_ACCT) \
-    $(wildcard include/config/FAULT_INJECTION) \
-    $(wildcard include/config/LATENCYTOP) \
-    $(wildcard include/config/KUNIT) \
-    $(wildcard include/config/FUNCTION_GRAPH_TRACER) \
-    $(wildcard include/config/BCACHE) \
-    $(wildcard include/config/VMAP_STACK) \
-    $(wildcard include/config/SECURITY) \
-    $(wildcard include/config/BPF_SYSCALL) \
-    $(wildcard include/config/GCC_PLUGIN_STACKLEAK) \
-    $(wildcard include/config/X86_MCE) \
-    $(wildcard include/config/KRETPROBES) \
-    $(wildcard include/config/RETHOOK) \
-    $(wildcard include/config/ARCH_HAS_PARANOID_L1D_FLUSH) \
-    $(wildcard include/config/ARCH_TASK_STRUCT_ON_STACK) \
-    $(wildcard include/config/DEBUG_RSEQ) \
-  include/uapi/linux/sched.h \
-  include/linux/pid.h \
-  include/linux/rculist.h \
-    $(wildcard include/config/PROVE_RCU_LIST) \
-  include/linux/sem.h \
-  include/uapi/linux/sem.h \
-  include/linux/ipc.h \
-  include/linux/rhashtable-types.h \
-  include/uapi/linux/ipc.h \
-  arch/x86/include/generated/uapi/asm/ipcbuf.h \
-  include/uapi/asm-generic/ipcbuf.h \
-  arch/x86/include/uapi/asm/sembuf.h \
-  include/linux/shm.h \
-  include/uapi/linux/shm.h \
-  include/uapi/asm-generic/hugetlb_encode.h \
-  arch/x86/include/uapi/asm/shmbuf.h \
-  include/uapi/asm-generic/shmbuf.h \
-  arch/x86/include/asm/shmparam.h \
-  include/linux/plist.h \
-    $(wildcard include/config/DEBUG_PLIST) \
-  include/linux/hrtimer.h \
-    $(wildcard include/config/HIGH_RES_TIMERS) \
-    $(wildcard include/config/TIME_LOW_RES) \
-    $(wildcard include/config/TIMERFD) \
-  include/linux/hrtimer_defs.h \
-  include/linux/timerqueue.h \
-  include/linux/seccomp.h \
-    $(wildcard include/config/SECCOMP) \
-    $(wildcard include/config/HAVE_ARCH_SECCOMP_FILTER) \
-    $(wildcard include/config/SECCOMP_FILTER) \
-    $(wildcard include/config/CHECKPOINT_RESTORE) \
-    $(wildcard include/config/SECCOMP_CACHE_DEBUG) \
-  include/uapi/linux/seccomp.h \
-  arch/x86/include/asm/seccomp.h \
-  arch/x86/include/asm/unistd.h \
-  arch/x86/include/uapi/asm/unistd.h \
-  arch/x86/include/generated/uapi/asm/unistd_32.h \
-  include/asm-generic/seccomp.h \
-  include/uapi/linux/unistd.h \
-  include/linux/resource.h \
-  include/uapi/linux/resource.h \
-  arch/x86/include/generated/uapi/asm/resource.h \
-  include/asm-generic/resource.h \
-  include/uapi/asm-generic/resource.h \
-  include/linux/latencytop.h \
-  include/linux/sched/prio.h \
-  include/linux/sched/types.h \
-  include/linux/signal_types.h \
-    $(wildcard include/config/OLD_SIGACTION) \
-  include/uapi/linux/signal.h \
-  arch/x86/include/asm/signal.h \
-  arch/x86/include/uapi/asm/signal.h \
-  include/uapi/asm-generic/signal-defs.h \
-  arch/x86/include/uapi/asm/siginfo.h \
-  include/uapi/asm-generic/siginfo.h \
-  include/linux/syscall_user_dispatch.h \
-  include/linux/task_io_accounting.h \
-    $(wildcard include/config/TASK_IO_ACCOUNTING) \
-  include/linux/posix-timers.h \
-  include/linux/alarmtimer.h \
-    $(wildcard include/config/RTC_CLASS) \
-  include/uapi/linux/rseq.h \
-  include/linux/kcsan.h \
-  arch/x86/include/asm/delay.h \
-  include/asm-generic/delay.h \
-  include/linux/slab.h \
-    $(wildcard include/config/DEBUG_SLAB) \
-    $(wildcard include/config/FAILSLAB) \
-    $(wildcard include/config/MEMCG_KMEM) \
-    $(wildcard include/config/KASAN) \
-    $(wildcard include/config/SLAB) \
-    $(wildcard include/config/SLUB) \
-    $(wildcard include/config/SLOB) \
-  include/linux/overflow.h \
-  include/linux/percpu-refcount.h \
-  include/linux/kasan.h \
-    $(wildcard include/config/KASAN_STACK) \
-    $(wildcard include/config/KASAN_VMALLOC) \
-    $(wildcard include/config/KASAN_INLINE) \
-  include/linux/kasan-enabled.h \
-  include/linux/uaccess.h \
-  include/linux/fault-inject-usercopy.h \
-    $(wildcard include/config/FAULT_INJECTION_USERCOPY) \
-  arch/x86/include/asm/uaccess.h \
-    $(wildcard include/config/CC_HAS_ASM_GOTO_OUTPUT) \
-    $(wildcard include/config/CC_HAS_ASM_GOTO_TIED_OUTPUT) \
-    $(wildcard include/config/ARCH_HAS_COPY_MC) \
-    $(wildcard include/config/X86_INTEL_USERCOPY) \
-  arch/x86/include/asm/smap.h \
-  arch/x86/include/asm/extable.h \
-    $(wildcard include/config/BPF_JIT) \
-  include/asm-generic/access_ok.h \
-    $(wildcard include/config/ALTERNATE_USER_ADDRESS_SPACE) \
-  arch/x86/include/asm/uaccess_32.h \
-  include/linux/i2c.h \
-    $(wildcard include/config/I2C) \
-    $(wildcard include/config/I2C_SLAVE) \
-    $(wildcard include/config/I2C_BOARDINFO) \
-    $(wildcard include/config/I2C_MUX) \
-    $(wildcard include/config/OF) \
-    $(wildcard include/config/ACPI) \
-  include/linux/acpi.h \
-    $(wildcard include/config/ACPI_DEBUGGER) \
-    $(wildcard include/config/ACPI_TABLE_LIB) \
-    $(wildcard include/config/LOONGARCH) \
-    $(wildcard include/config/ARM64) \
-    $(wildcard include/config/ACPI_PROCESSOR_CSTATE) \
-    $(wildcard include/config/ACPI_HOTPLUG_CPU) \
-    $(wildcard include/config/ACPI_HOTPLUG_IOAPIC) \
-    $(wildcard include/config/PCI) \
-    $(wildcard include/config/ACPI_WMI) \
-    $(wildcard include/config/ACPI_NUMA) \
-    $(wildcard include/config/HIBERNATION) \
-    $(wildcard include/config/ACPI_HOTPLUG_MEMORY) \
-    $(wildcard include/config/ACPI_CONTAINER) \
-    $(wildcard include/config/ACPI_GTDT) \
-    $(wildcard include/config/PM) \
-    $(wildcard include/config/GPIOLIB) \
-    $(wildcard include/config/ACPI_TABLE_UPGRADE) \
-    $(wildcard include/config/ACPI_WATCHDOG) \
-    $(wildcard include/config/ACPI_SPCR_TABLE) \
-    $(wildcard include/config/ACPI_GENERIC_GSI) \
-    $(wildcard include/config/ACPI_LPIT) \
-    $(wildcard include/config/ACPI_PPTT) \
-    $(wildcard include/config/ACPI_PCC) \
-  include/linux/ioport.h \
-  include/linux/irqdomain.h \
-    $(wildcard include/config/IRQ_DOMAIN_HIERARCHY) \
-    $(wildcard include/config/GENERIC_IRQ_DEBUGFS) \
-    $(wildcard include/config/IRQ_DOMAIN) \
-    $(wildcard include/config/IRQ_DOMAIN_NOMAP) \
-  include/linux/irqhandler.h \
-  include/linux/of.h \
-    $(wildcard include/config/OF_DYNAMIC) \
-    $(wildcard include/config/SPARC) \
-    $(wildcard include/config/OF_PROMTREE) \
-    $(wildcard include/config/OF_KOBJ) \
-    $(wildcard include/config/OF_NUMA) \
-    $(wildcard include/config/OF_OVERLAY) \
-  include/linux/mod_devicetable.h \
-  include/linux/uuid.h \
-  include/uapi/linux/uuid.h \
-  include/linux/property.h \
-  include/linux/fwnode.h \
-  include/linux/resource_ext.h \
-  include/linux/device.h \
-    $(wildcard include/config/GENERIC_MSI_IRQ_DOMAIN) \
-    $(wildcard include/config/GENERIC_MSI_IRQ) \
-    $(wildcard include/config/ENERGY_MODEL) \
-    $(wildcard include/config/PINCTRL) \
-    $(wildcard include/config/DMA_OPS) \
-    $(wildcard include/config/DMA_DECLARE_COHERENT) \
-    $(wildcard include/config/DMA_CMA) \
-    $(wildcard include/config/SWIOTLB) \
-    $(wildcard include/config/ARCH_HAS_SYNC_DMA_FOR_DEVICE) \
-    $(wildcard include/config/ARCH_HAS_SYNC_DMA_FOR_CPU) \
-    $(wildcard include/config/ARCH_HAS_SYNC_DMA_FOR_CPU_ALL) \
-    $(wildcard include/config/DMA_OPS_BYPASS) \
-    $(wildcard include/config/DEVTMPFS) \
-    $(wildcard include/config/SYSFS_DEPRECATED) \
-  include/linux/dev_printk.h \
-  include/linux/ratelimit.h \
-  include/linux/energy_model.h \
-  include/linux/sched/cpufreq.h \
-    $(wildcard include/config/CPU_FREQ) \
-  include/linux/sched/topology.h \
-    $(wildcard include/config/SCHED_DEBUG) \
-    $(wildcard include/config/SCHED_MC) \
-    $(wildcard include/config/CPU_FREQ_GOV_SCHEDUTIL) \
-  include/linux/sched/idle.h \
-  include/linux/sched/sd_flags.h \
-  include/linux/klist.h \
-  include/linux/pm.h \
-    $(wildcard include/config/VT_CONSOLE_SLEEP) \
-    $(wildcard include/config/PM_CLK) \
-    $(wildcard include/config/PM_GENERIC_DOMAINS) \
-  include/linux/device/bus.h \
-  include/linux/device/class.h \
-  include/linux/device/driver.h \
-  arch/x86/include/asm/device.h \
-  include/linux/pm_wakeup.h \
-  include/acpi/acpi.h \
-  include/acpi/platform/acenv.h \
-  include/acpi/platform/acgcc.h \
-  include/acpi/platform/aclinux.h \
-    $(wildcard include/config/ACPI_REDUCED_HARDWARE_ONLY) \
-    $(wildcard include/config/ACPI_DEBUG) \
-  include/linux/ctype.h \
-  arch/x86/include/asm/acenv.h \
-  include/acpi/acnames.h \
-  include/acpi/actypes.h \
-  include/acpi/acexcep.h \
-  include/acpi/actbl.h \
-  include/acpi/actbl1.h \
-  include/acpi/actbl2.h \
-  include/acpi/actbl3.h \
-  include/acpi/acrestyp.h \
-  include/acpi/platform/acenvex.h \
-  include/acpi/platform/aclinuxex.h \
-  include/acpi/platform/acgccex.h \
-  include/acpi/acoutput.h \
-  include/acpi/acpiosxf.h \
-  include/acpi/acpixf.h \
-  include/acpi/acconfig.h \
-  include/acpi/acbuffer.h \
-  include/linux/dynamic_debug.h \
-  include/acpi/acpi_bus.h \
-    $(wildcard include/config/X86_ANDROID_TABLETS) \
-    $(wildcard include/config/ACPI_SYSTEM_POWER_STATES_SUPPORT) \
-    $(wildcard include/config/ACPI_SLEEP) \
-  include/acpi/acpi_drivers.h \
-    $(wildcard include/config/ACPI_DOCK) \
-  include/acpi/acpi_numa.h \
-    $(wildcard include/config/ACPI_HMAT) \
-  include/acpi/acpi_io.h \
-  include/linux/io.h \
-    $(wildcard include/config/HAS_IOPORT_MAP) \
-  arch/x86/include/asm/io.h \
-    $(wildcard include/config/MTRR) \
-    $(wildcard include/config/X86_PAT) \
-  arch/x86/include/generated/asm/early_ioremap.h \
-  include/asm-generic/early_ioremap.h \
-    $(wildcard include/config/GENERIC_EARLY_IOREMAP) \
-  include/asm-generic/iomap.h \
-  include/asm-generic/pci_iomap.h \
-    $(wildcard include/config/NO_GENERIC_PCI_IOPORT_MAP) \
-    $(wildcard include/config/GENERIC_PCI_IOMAP) \
-  include/asm-generic/io.h \
-    $(wildcard include/config/GENERIC_IOMAP) \
-    $(wildcard include/config/GENERIC_IOREMAP) \
-    $(wildcard include/config/VIRT_TO_BUS) \
-    $(wildcard include/config/GENERIC_DEVMEM_IS_ALLOWED) \
-  include/linux/logic_pio.h \
-    $(wildcard include/config/INDIRECT_PIO) \
-  include/linux/vmalloc.h \
-    $(wildcard include/config/HAVE_ARCH_HUGE_VMALLOC) \
-  arch/x86/include/asm/vmalloc.h \
-    $(wildcard include/config/HAVE_ARCH_HUGE_VMAP) \
-  arch/x86/include/asm/acpi.h \
-    $(wildcard include/config/ACPI_APEI) \
-  include/acpi/pdc_intel.h \
-  arch/x86/include/asm/numa.h \
-    $(wildcard include/config/NUMA_EMU) \
-  arch/x86/include/asm/numa_32.h \
-  include/linux/regulator/consumer.h \
-    $(wildcard include/config/REGULATOR) \
-  include/linux/suspend.h \
-    $(wildcard include/config/VT) \
-    $(wildcard include/config/SUSPEND) \
-    $(wildcard include/config/HIBERNATION_SNAPSHOT_DEV) \
-    $(wildcard include/config/PM_SLEEP_DEBUG) \
-    $(wildcard include/config/PM_AUTOSLEEP) \
-  include/linux/swap.h \
-    $(wildcard include/config/DEVICE_PRIVATE) \
-    $(wildcard include/config/MIGRATION) \
-    $(wildcard include/config/FRONTSWAP) \
-    $(wildcard include/config/THP_SWAP) \
-    $(wildcard include/config/MEMCG_SWAP) \
-  include/linux/memcontrol.h \
-    $(wildcard include/config/CGROUP_WRITEBACK) \
-  include/linux/cgroup.h \
-    $(wildcard include/config/CGROUP_CPUACCT) \
-    $(wildcard include/config/SOCK_CGROUP_DATA) \
-    $(wildcard include/config/CGROUP_DATA) \
-    $(wildcard include/config/CGROUP_BPF) \
-  include/uapi/linux/cgroupstats.h \
-  include/uapi/linux/taskstats.h \
-  include/linux/fs.h \
-    $(wildcard include/config/READ_ONLY_THP_FOR_FS) \
-    $(wildcard include/config/FS_POSIX_ACL) \
-    $(wildcard include/config/IMA) \
-    $(wildcard include/config/FILE_LOCKING) \
-    $(wildcard include/config/FSNOTIFY) \
-    $(wildcard include/config/FS_ENCRYPTION) \
-    $(wildcard include/config/FS_VERITY) \
-    $(wildcard include/config/EPOLL) \
-    $(wildcard include/config/UNICODE) \
-    $(wildcard include/config/QUOTA) \
-    $(wildcard include/config/FS_DAX) \
-    $(wildcard include/config/BLOCK) \
-  include/linux/wait_bit.h \
-  include/linux/kdev_t.h \
-  include/uapi/linux/kdev_t.h \
-  include/linux/dcache.h \
-  include/linux/rculist_bl.h \
-  include/linux/list_bl.h \
-  include/linux/bit_spinlock.h \
-  include/linux/lockref.h \
-    $(wildcard include/config/ARCH_USE_CMPXCHG_LOCKREF) \
-  include/linux/stringhash.h \
-    $(wildcard include/config/DCACHE_WORD_ACCESS) \
-  include/linux/hash.h \
-    $(wildcard include/config/HAVE_ARCH_HASH) \
-  include/linux/path.h \
-  include/linux/list_lru.h \
-  include/linux/shrinker.h \
-  include/linux/capability.h \
-  include/uapi/linux/capability.h \
-  include/linux/semaphore.h \
-  include/linux/fcntl.h \
-    $(wildcard include/config/ARCH_32BIT_OFF_T) \
-  include/uapi/linux/fcntl.h \
-  arch/x86/include/generated/uapi/asm/fcntl.h \
-  include/uapi/asm-generic/fcntl.h \
-  include/uapi/linux/openat2.h \
-  include/linux/migrate_mode.h \
-  include/linux/percpu-rwsem.h \
-  include/linux/rcuwait.h \
-  include/linux/sched/signal.h \
-    $(wildcard include/config/SCHED_AUTOGROUP) \
-    $(wildcard include/config/BSD_PROCESS_ACCT) \
-    $(wildcard include/config/TASKSTATS) \
-    $(wildcard include/config/STACK_GROWSUP) \
-  include/linux/signal.h \
-    $(wildcard include/config/DYNAMIC_SIGFRAME) \
-  include/linux/sched/jobctl.h \
-  include/linux/sched/task.h \
-    $(wildcard include/config/HAVE_EXIT_THREAD) \
-    $(wildcard include/config/ARCH_WANTS_DYNAMIC_TASK_STRUCT) \
-    $(wildcard include/config/HAVE_ARCH_THREAD_STRUCT_WHITELIST) \
-  include/linux/cred.h \
-    $(wildcard include/config/DEBUG_CREDENTIALS) \
-  include/linux/key.h \
-    $(wildcard include/config/KEY_NOTIFICATIONS) \
-    $(wildcard include/config/NET) \
-  include/linux/assoc_array.h \
-    $(wildcard include/config/ASSOCIATIVE_ARRAY) \
-  include/linux/sched/user.h \
-    $(wildcard include/config/WATCH_QUEUE) \
-  include/linux/percpu_counter.h \
-  include/linux/rcu_sync.h \
-  include/linux/delayed_call.h \
-  include/linux/errseq.h \
-  include/linux/ioprio.h \
-  include/linux/sched/rt.h \
-  include/linux/iocontext.h \
-    $(wildcard include/config/BLK_ICQ) \
-  include/uapi/linux/ioprio.h \
-  include/linux/fs_types.h \
-  include/linux/mount.h \
-  include/linux/mnt_idmapping.h \
-  include/uapi/linux/fs.h \
-  include/linux/quota.h \
-    $(wildcard include/config/QUOTA_NETLINK_INTERFACE) \
-  include/uapi/linux/dqblk_xfs.h \
-  include/linux/dqblk_v1.h \
-  include/linux/dqblk_v2.h \
-  include/linux/dqblk_qtree.h \
-  include/linux/projid.h \
-  include/uapi/linux/quota.h \
-  include/linux/nfs_fs_i.h \
-  include/linux/seq_file.h \
-  include/linux/string_helpers.h \
-  include/linux/ns_common.h \
-  include/linux/nsproxy.h \
-  include/linux/user_namespace.h \
-    $(wildcard include/config/INOTIFY_USER) \
-    $(wildcard include/config/FANOTIFY) \
-    $(wildcard include/config/PERSISTENT_KEYRINGS) \
-  include/linux/kernel_stat.h \
-  include/linux/interrupt.h \
-    $(wildcard include/config/IRQ_FORCED_THREADING) \
-    $(wildcard include/config/GENERIC_IRQ_PROBE) \
-    $(wildcard include/config/IRQ_TIMINGS) \
-  include/linux/irqreturn.h \
-  include/linux/irqnr.h \
-  include/uapi/linux/irqnr.h \
-  include/linux/hardirq.h \
-  include/linux/context_tracking_state.h \
-    $(wildcard include/config/CONTEXT_TRACKING) \
-  include/linux/ftrace_irq.h \
-    $(wildcard include/config/HWLAT_TRACER) \
-    $(wildcard include/config/OSNOISE_TRACER) \
-  include/linux/vtime.h \
-    $(wildcard include/config/VIRT_CPU_ACCOUNTING) \
-    $(wildcard include/config/IRQ_TIME_ACCOUNTING) \
-  arch/x86/include/asm/hardirq.h \
-    $(wildcard include/config/KVM_INTEL) \
-    $(wildcard include/config/X86_THERMAL_VECTOR) \
-    $(wildcard include/config/X86_MCE_THRESHOLD) \
-    $(wildcard include/config/X86_MCE_AMD) \
-    $(wildcard include/config/X86_HV_CALLBACK_VECTOR) \
-  arch/x86/include/asm/irq.h \
-  arch/x86/include/asm/sections.h \
-  include/asm-generic/sections.h \
-    $(wildcard include/config/HAVE_FUNCTION_DESCRIPTORS) \
-  include/linux/cgroup-defs.h \
-    $(wildcard include/config/CGROUP_NET_CLASSID) \
-    $(wildcard include/config/CGROUP_NET_PRIO) \
-  include/linux/u64_stats_sync.h \
-  include/linux/bpf-cgroup-defs.h \
-  include/linux/psi_types.h \
-  include/linux/kthread.h \
-  include/linux/cgroup_subsys.h \
-    $(wildcard include/config/CGROUP_DEVICE) \
-    $(wildcard include/config/CGROUP_FREEZER) \
-    $(wildcard include/config/CGROUP_PERF) \
-    $(wildcard include/config/CGROUP_HUGETLB) \
-    $(wildcard include/config/CGROUP_PIDS) \
-    $(wildcard include/config/CGROUP_RDMA) \
-    $(wildcard include/config/CGROUP_MISC) \
-    $(wildcard include/config/CGROUP_DEBUG) \
-  include/linux/vm_event_item.h \
-    $(wildcard include/config/HAVE_ARCH_TRANSPARENT_HUGEPAGE_PUD) \
-    $(wildcard include/config/MEMORY_BALLOON) \
-    $(wildcard include/config/BALLOON_COMPACTION) \
-    $(wildcard include/config/DEBUG_TLBFLUSH) \
-    $(wildcard include/config/DEBUG_VM_VMACACHE) \
-  include/linux/page_counter.h \
-  include/linux/vmpressure.h \
-  include/linux/eventfd.h \
-  include/linux/mm.h \
-    $(wildcard include/config/HAVE_ARCH_MMAP_RND_BITS) \
-    $(wildcard include/config/HAVE_ARCH_MMAP_RND_COMPAT_BITS) \
-    $(wildcard include/config/ARCH_USES_HIGH_VMA_FLAGS) \
-    $(wildcard include/config/ARCH_HAS_PKEYS) \
-    $(wildcard include/config/PPC) \
-    $(wildcard include/config/PARISC) \
-    $(wildcard include/config/SPARC64) \
-    $(wildcard include/config/ARM64_MTE) \
-    $(wildcard include/config/HAVE_ARCH_USERFAULTFD_MINOR) \
-    $(wildcard include/config/SHMEM) \
-    $(wildcard include/config/ARCH_HAS_PTE_SPECIAL) \
-    $(wildcard include/config/ARCH_HAS_PTE_DEVMAP) \
-    $(wildcard include/config/DEBUG_VM_RB) \
-    $(wildcard include/config/PAGE_POISONING) \
-    $(wildcard include/config/INIT_ON_ALLOC_DEFAULT_ON) \
-    $(wildcard include/config/INIT_ON_FREE_DEFAULT_ON) \
-    $(wildcard include/config/DEBUG_PAGEALLOC) \
-    $(wildcard include/config/HUGETLBFS) \
-    $(wildcard include/config/MAPPING_DIRTY_HELPERS) \
-    $(wildcard include/config/ANON_VMA_NAME) \
-  include/linux/mmap_lock.h \
-  include/linux/page_ext.h \
-  include/linux/stacktrace.h \
-    $(wildcard include/config/ARCH_STACKWALK) \
-    $(wildcard include/config/STACKTRACE) \
-    $(wildcard include/config/HAVE_RELIABLE_STACKTRACE) \
-  include/linux/stackdepot.h \
-    $(wildcard include/config/STACKDEPOT_ALWAYS_INIT) \
-  include/linux/page_ref.h \
-    $(wildcard include/config/DEBUG_PAGE_REF) \
-  include/linux/sizes.h \
-  include/linux/pgtable.h \
-    $(wildcard include/config/HIGHPTE) \
-    $(wildcard include/config/GUP_GET_PTE_LOW_HIGH) \
-    $(wildcard include/config/HAVE_ARCH_SOFT_DIRTY) \
-    $(wildcard include/config/ARCH_ENABLE_THP_MIGRATION) \
-    $(wildcard include/config/X86_ESPFIX64) \
-  arch/x86/include/asm/pgtable.h \
-    $(wildcard include/config/DEBUG_WX) \
-    $(wildcard include/config/PAGE_TABLE_CHECK) \
-  arch/x86/include/asm/pkru.h \
-  arch/x86/include/asm/fpu/api.h \
-    $(wildcard include/config/X86_DEBUG_FPU) \
-  arch/x86/include/asm/coco.h \
-  include/asm-generic/pgtable_uffd.h \
-  include/linux/page_table_check.h \
-  arch/x86/include/asm/pgtable_32.h \
-  arch/x86/include/asm/pgtable-3level.h \
-  arch/x86/include/asm/pgtable-invert.h \
-  include/linux/huge_mm.h \
-  include/linux/sched/coredump.h \
-    $(wildcard include/config/CORE_DUMP_DEFAULT_ELF_HEADERS) \
-  include/linux/vmstat.h \
-    $(wildcard include/config/VM_EVENT_COUNTERS) \
-  include/linux/writeback.h \
-  include/linux/flex_proportions.h \
-  include/linux/backing-dev-defs.h \
-    $(wildcard include/config/DEBUG_FS) \
-  include/linux/blk_types.h \
-    $(wildcard include/config/FAIL_MAKE_REQUEST) \
-    $(wildcard include/config/BLK_CGROUP_IOCOST) \
-    $(wildcard include/config/BLK_INLINE_ENCRYPTION) \
-    $(wildcard include/config/BLK_DEV_INTEGRITY) \
-  include/linux/bvec.h \
-  include/linux/highmem.h \
-  include/linux/cacheflush.h \
-  arch/x86/include/asm/cacheflush.h \
-  include/asm-generic/cacheflush.h \
-  include/linux/highmem-internal.h \
-  arch/x86/include/asm/highmem.h \
-  arch/x86/include/asm/tlbflush.h \
-  arch/x86/include/asm/invpcid.h \
-  arch/x86/include/asm/pti.h \
-  include/linux/bio.h \
-  include/linux/mempool.h \
-  include/linux/uio.h \
-    $(wildcard include/config/ARCH_HAS_UACCESS_FLUSHCACHE) \
-  include/uapi/linux/uio.h \
-  include/linux/node.h \
-    $(wildcard include/config/HMEM_REPORTING) \
-  include/linux/pagemap.h \
-  include/linux/hugetlb_inline.h \
-  include/uapi/linux/mempolicy.h \
-  include/linux/freezer.h \
-  include/uapi/linux/i2c.h \
-  include/linux/videodev2.h \
-  include/uapi/linux/videodev2.h \
-    $(wildcard include/config/VIDEO_ADV_DEBUG) \
-  include/uapi/linux/v4l2-common.h \
-  include/uapi/linux/v4l2-controls.h \
-  include/media/v4l2-device.h \
-    $(wildcard include/config/VIDEO_V4L2_SUBDEV_API) \
-  include/media/media-device.h \
-    $(wildcard include/config/MEDIA_CONTROLLER) \
-  include/media/media-devnode.h \
-  include/linux/poll.h \
-  include/uapi/linux/poll.h \
-  arch/x86/include/generated/uapi/asm/poll.h \
-  include/uapi/asm-generic/poll.h \
-  include/uapi/linux/eventpoll.h \
-  include/linux/cdev.h \
-  include/media/media-entity.h \
-  include/uapi/linux/media.h \
-  include/media/v4l2-subdev.h \
-  include/uapi/linux/v4l2-subdev.h \
-  include/uapi/linux/v4l2-mediabus.h \
-  include/uapi/linux/media-bus-format.h \
-  include/media/v4l2-async.h \
-  include/media/v4l2-common.h \
-    $(wildcard include/config/VIDEO_V4L2_I2C) \
-    $(wildcard include/config/SPI) \
-  include/media/v4l2-dev.h \
-  include/linux/spi/spi.h \
-    $(wildcard include/config/SPI_SLAVE) \
-  include/linux/scatterlist.h \
-    $(wildcard include/config/NEED_SG_DMA_LENGTH) \
-    $(wildcard include/config/DEBUG_SG) \
-    $(wildcard include/config/SGL_ALLOC) \
-    $(wildcard include/config/ARCH_NO_SG_CHAIN) \
-    $(wildcard include/config/SG_POOL) \
-  include/linux/gpio/consumer.h \
-    $(wildcard include/config/OF_GPIO) \
-    $(wildcard include/config/GPIO_SYSFS) \
-  include/uapi/linux/spi/spi.h \
-  include/media/v4l2-fh.h \
-  include/media/v4l2-mediabus.h \
-  include/media/v4l2-ctrls.h \
-  include/media/media-request.h \
-  include/media/hevc-ctrls.h \
+/*
+ * CAN bus driver for Bosch C_CAN controller
+ *
+ * Copyright (C) 2010 ST Microelectronics
+ * Bhupesh Sharma <bhupesh.sharma@st.com>
+ *
+ * Borrowed heavily from the C_CAN driver originally written by:
+ * Copyright (C) 2007
+ * - Sascha Hauer, Marc Kleine-Budde, Pengutronix <s.hauer@pengutronix.de>
+ * - Simon Kallweit, intefo AG <simon.kallweit@intefo.ch>
+ *
+ * TX and RX NAPI implementation has been borrowed from at91 CAN driver
+ * written by:
+ * Copyright
+ * (C) 2007 by Hans J. Koch <hjk@hansjkoch.de>
+ * (C) 2008, 2009 by Marc Kleine-Budde <kernel@pengutronix.de>
+ *
+ * Bosch C_CAN controller is compliant to CAN protocol version 2.0 part A and B.
+ * Bosch C_CAN user manual can be obtained from:
+ * http://www.semiconductors.bosch.de/media/en/pdf/ipmodules_1/c_can/
+ * users_manual_c_can.pdf
+ *
+ * This file is licensed under the terms of the GNU General Public
+ * License version 2. This program is licensed "as is" without any
+ * warranty of any kind, whether express or implied.
+ */
 
-drivers/media/i2c/vpx3220.o: $(deps_drivers/media/i2c/vpx3220.o)
+#include <linux/kernel.h>
+#include <linux/module.h>
+#include <linux/interrupt.h>
+#include <linux/delay.h>
+#include <linux/netdevice.h>
+#include <linux/if_arp.h>
+#include <linux/if_ether.h>
+#include <linux/list.h>
+#include <linux/io.h>
+#include <linux/pm_runtime.h>
+#include <linux/pinctrl/consumer.h>
 
-$(deps_drivers/media/i2c/vpx3220.o):
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       ELF                      L"      4     (               Ë¸ˇˇˇãÖ¿uãAÉ¯wã≈¨  âA1¿√∏Íˇˇˇ√ç¥&    çv Ë¸ˇˇˇâ¬â»ãIÖ…upãä8  âHãä<  âHãä@  âHãäD  âHãäH  âHãäL  âHãäP  âH ãäT  âH$ãäX  âH(ãä\  âH,ãä`  âH0ãíd  âP41¿√ê∏Íˇˇˇ√ç¥&    çv Ë¸ˇˇˇãà4  âJãÄ0  âB1¿√ç∂    Ë¸ˇˇˇSãX\âÿË¸ˇˇˇãClË¸ˇˇˇ1¿[√çt& Ë¸ˇˇˇÉÏãÄî   dã    âL$1…πÄˇˇfâL$Ö“t7∆D$j π   çT$Ë¸ˇˇˇX∏ºç Ë¸ˇˇˇãD$d+    u1¿Éƒ√çt& ∆D$Î«Ë¸ˇˇˇçt& Ë¸ˇˇˇSâ√ÉÏãJd°    âD$1¿Ö…tãBÖ¿Öﬂ   «B   ∏   «B   âÉ0  ãB∫Äˇˇπ   fâT$âÉ4  ãÉî   ∆D$ j çT$Ë¸ˇˇˇãì0  πÅˇˇãÉî   fâL$π   àt$j çT$	Ë¸ˇˇˇãì0  πÇˇˇãÉî   fâL$	π   àT$j çT$Ë¸ˇˇˇãì4  ãÉî   ªÑˇˇfâ\$π   àT$j çT$Ë¸ˇˇˇÉƒãD$d+    uÉƒ1¿[√çv k…9»Ü)ˇˇˇÈˇˇˇË¸ˇˇˇçv Ë¸ˇˇˇUâ≈WVSÉÏd°    âD$ãEãPãRË¸ˇˇˇ®Ñ)  ãEXâ$Ö¿Ñ"  h    çuãπ   âË¸ˇˇˇâ√XÖ€Ö¸ˇˇˇ∏d   Ë¸ˇˇˇπ¿  ∫l  âË¸ˇˇˇâ√Ö¿Ñ„  π@   âÍæ†  Ë¸ˇˇˇπ   ∫ÅˇˇÎê∑Nf¡¬àL$ãÉî   É∆fâT$π   j çT$	Ë¸ˇˇˇ∑XfÖ“uÕ∫¿  ∆D$ãÉî   π   fâT$j çT$	Ë¸ˇˇˇπ¿D  ãÉî   fâL$	π   ∆D$j çT$Ë¸ˇˇˇπ   ∫¯*  ∏'  Ë¸ˇˇˇπ   ^∫oÄˇˇ_æ|  Îçt& ∑Nf¡¬àL$ãÉî   É∆fâT$π   j çT$	Ë¸ˇˇˇ∑XfÖ“uÕ∫Ñ   æ¥  ø@  Îçt& ∑Wf¡∆àT$É«π   fât$ãÉî   j çT$	Ë¸ˇˇˇ∑7XfÖˆuÕ∫%Üˇˇ∆D$ãÉî   π   fâT$ø‡  j çT$	Ë¸ˇˇˇ∫  YÎçv ∑wf¡¬âÒãÉî   É«fâT$àL$π   j çT$	Ë¸ˇˇˇ∑XfÖ“uÀ∫Äˇˇ∆D$ π   ãÉî   fâT$æÇˇˇøÑˇˇ«É0     «É4     j çT$	Ë¸ˇˇˇãì0  πÅˇˇãÉî   fâL$	π   àt$j çT$Ë¸ˇˇˇãì0  ãÉî   π   fât$ç≥¿   àT$j çT$Ë¸ˇˇˇãì4  ãÉî   π   fâ|$çª8  àT$j çT$Ë¸ˇˇˇ1¿π   ∑UÛ´ãD$«É8  Ä  «É<  ‡  «É@     «ÉD     «ÉH     ã âÉh  ãEçà  QçQRˇ∞   ãETˇ0h,   Ë¸ˇˇˇ1…∫   âÉƒ(j Ë¸ˇˇˇπ	ò ∫0  âj há   j jj hˇ   j j Ë¸ˇˇˇπ	ò ∫0  âÉƒ$j jxj jj hˇ   j j Ë¸ˇˇˇπ	ò ∫0  âÉƒ j j j jj jj j Ë¸ˇˇˇπ	ò ∫0  âÉƒ j j j jj jj j Ë¸ˇˇˇâslãõ¸   âÉƒ Ö€u6Ë¸ˇˇˇâ√Ö¿uãD$d+    u:Éƒâÿ[^_]√çt& âË¸ˇˇˇÎ‹ç¥&    Ë¸ˇˇˇÎŒª˚ˇˇˇÎ«ªÍˇˇˇÎ¿ªÙˇˇˇÎπË¸ˇˇˇç¥&    ç¥&    êË¸ˇˇˇSÉÏãHdã    âT$1“ãP(Å˙	ò Ñê   wNÅ˙	ò tnÅ˙	ò u^∫∂ˇˇãY‘ã@|fâT$àD$π   âÿj çT$Ë¸ˇˇˇX1¿ãT$d+    uZÉƒ[√çv Å˙	ò u∫ºˇˇãY‘ã@|fâT$Î∏ç∂    ∏ÍˇˇˇÎƒêãY‘π¥ˇˇã@|fâL$Îòç∂    ãY‘π∫ˇˇã@|fâL$ÎÄË¸ˇˇˇêË¸ˇˇˇUWVâ∆SÉÏd°    âD$1¿ãAÖ¿Öé   ãAâ◊âÀçê˙ﬂˇˇÉ‚˝Ñ%  =  Ñ*  «A   π   ãCãk«C   âKâ¬É‚¸=Å  ∏Ä  C–âËÉ‡¸Å˝·  Ω‡  C≈ã+âSâCÖÌtEãC=   Ñó  =   ÑD  =  tu∏ÍˇˇˇãT$d+    Ö¬  Éƒ[^_]√ç¥&    ãâãSâPãSâPãSâPãSâPãSâPãS âPãS$âPãS(âP ãS,âP$ãS0âP(ãS4âP,1¿Îñç∂    ∫∞ˇˇç|$∆D$ãÜî   fâT$π   â˙j Ë¸ˇˇˇπ%îˇˇãÜî   fâL$∆D$ j π   â˙Ë¸ˇˇˇãCY]ãÆî   =Ä  Ñ∏  =@  ÖÌ  Å{   Ñ⁄  ∏Äˇˇ∆D$π   â˙fâD$âËΩÑˇˇj Ë¸ˇˇˇãSπÉˇˇãÜî   fâL$π   àt$â˙j Ë¸ˇˇˇãSãÜî   π   fâl$	ΩàˇˇàT$â˙j Ë¸ˇˇˇãSπáˇˇãÜî   fâL$π   àt$â˙j Ë¸ˇˇˇãSãÜî   π   fâl$àT$â˙j Ë¸ˇˇˇ∫ûˇˇãÜî   π   fâT$â˙∆D$j Ë¸ˇˇˇÉƒãCâÜ8  ãCâÜ<  ãCâÜ@  ãCâÜD  ãCâÜH  ãCâÜL  ãC âÜP  ãC$âÜT  ãC(âÜX  ãC,âÜ\  ãC0âÜ`  ãC4âÜd  1¿ÈÃ˝ˇˇçt& ø∞ˇˇ∆D$ ãÜî   π   fâ|$ç|$Ω%ñˇˇj â˙Ë¸ˇˇˇãÜî   fâl$∆D$È3˛ˇˇç¥&    ∫∞ˇˇç|$∆D$ ãÜî   fâT$π   â˙j Ë¸ˇˇˇπ%ñˇˇãÜî   fâL$∆D$ÈÎ˝ˇˇç¥&    =†   u!É{xÖ˛ˇˇ∏Äˇˇ∆D$fâD$Î~ç∂    =`  u!Å{   Ö‰˝ˇˇ∏Äˇˇ∆D$fâD$ÎSçv =∞   u!Å{ê   Öº˝ˇˇ∏Äˇˇ∆D$fâD$Î+çv É¯XÖü˝ˇˇÉ{HÖï˝ˇˇπÄˇˇ∆D$fâL$ç∂    j π   â˙âËË¸ˇˇˇXÈC˛ˇˇç¥&    çv Å{‡  ÖS˝ˇˇ∫Äˇˇ∆D$fâT$Î¬fêπ   ÈË˚ˇˇç∂    π   Èÿ˚ˇˇ∏Äˇˇ∆D$fâD$ÎïË¸ˇˇˇ                    ê  ‡                                                                                                                          0   ¿   ‡      p  ê    ‡      VS6624 Chip Enable vs6624   3%s %d-%04x: failed to request GPIO %d
-    6%s %d-%04x: chip found @ 0x%02x (%s)
- ã$ˇ0∑EPãEˇ∞   ãETˇ0h    Ë¸ˇˇˇÉƒÈ±  Ë¸ˇˇˇ∫    ∏    È¸ˇˇˇ∏    È¸ˇˇˇlicense=GPL v2 author=Scott Jiang <Scott.Jiang.Linux@gmail.com> description=VS6624 sensor driver                                vs6624                                                                     †               `                   0   ‡                                                                                         ¿   p                                                                                                        ¥Ñ ∂u ∏ 4Ñ 6u 8 ÇÄ ÑÄ ÜÄ Ä ê˛ Ç  Äd     ( ∫  º  ã  å è  ê ï  ñ ô  ö  Ñ%! Ä  Ñ Ç Ç  ∞  ñ% Ä                            <  f e — f b      &  & &c &— &h &› &: &  Ä$  ä0 ëb íJ ïe ñ °: ¢∏  
-
- :  ; Ö 	; 
-Ö :  0 è      oÄ å                             Å Å  … …G … …Ä …: :ê ;êG <ê …1 	…‹ 
-…Ä …D Dê Eê1 Fê‚ … …‡ …Ä …G Gêê HêÉ IêÅ Jê‡ Kê` Lê Mêê Nê¿ OêC Pêt Qê Rê SêÄ Tê Uê‰ Vêê Wê¿ XêC Yê Zê [ê \êÏ …] …  …Ä …] ]ê£ ^ê _ê `ê£ aê bê cê" …r …í …Ä …d dêt eê fê gêr hêï …G …Ú …Å …i iët jë kë lëÏ më¥ në oë
- pëê qëÄ rë së‡ tëp uë vëê wë” xëƒ yë zë" …
- …æ …Ä …s sê¸ tê£ uê‡ vêı wêÇ xêå yêÉ zê£ {ê£ |ê‡ }ê¸ ~ê£ ê‡ Äê√ Åêü Çêˇ ÉêÏ Ñêû Öê˛ Üê áê
- àêÍ  …G !…8 "…Ä #…â âêÏ äê” ãêî åê  çê@ éê èê êêê ëê” íê‘ ìêÏ îê ïê ñêG óê= $…E %…  &…Ä '…ò òê ôêw öê÷ õê úêE ùêÕ (…  )…’ *…Ä +…û ûêê üêÇ †ê °ê‡ ¢ê¥ £ê §ê •êê ¶êÉ ßêø ®ê‡ ©ê` ™ê ´êê ¨êÅ ≠ê¸ Æê‡ Øêˇ ∞ê√ ±ê ≤ê ≥êê ¥êÅ µê¸ ∂ê‡ ∑êˇ ∏ê πê  ∫ê⁄ ,…p -…º .…Ä /…ª ªêê ºêÇ Ωê æê‡ øê¥ ¿ê ¡ê ¬êê √ê¡ ƒê ≈êt ∆ê «ê »êê …ê”  ê† Àê Ãêp Õêø 0…r 1…! 2…Å 3…; ;ë} <ë =ë >ë{ ?ë @ër Aë% 4…( 5…Æ 6…Ä 7…“ “ê ”êê ‘ê“ ’ê
- ÷ê ◊ê( ÿê¥ 8…( 9…± :…Ä ;…Ÿ Ÿêê ⁄êÉ €ê∫ ‹ê‡ ›êˇ ﬁêê ﬂê“ ‡ê ·ê‡ ‚ê‰ „êÔ ‰ê Âê£ Êê‡ Áêt Ëêˇ Èê Íêê Îê“ Ïê
- Ìê Óê( Ôê¥ <…) =…y >…Ä ?… ê Òêê Úê“ Ûê Ùê ıê) ˆê @…) A…| B…Ä C…˜ ˜êê ¯êÉ ˘ê∫ ˙ê‡ ˚êˇ ¸êê ˝ê“ ˛ê ˇê‡  ë‰ ëÔ ë ë£ ë‡ ët ëˇ ë ëê 	ë“ 
-ë ë ë) ë D…* E…B F…Å G… ë ëê ë“ ë ë ë* ëH H…* I…E J…Å K… ëê ëÉ ë∫ ë‡ ëˇ ëê ë“ ë ë‡ ë‰ ëÔ  ë !ë£ "ë‡ #ët $ëˇ %ë &ëê 'ë“ (ë )ë *ë* +ëH  …                       GCC: (GNU) 11.2.0           GNU  ¿       ¿                                  Òˇ                            
-       &         ¨       /   0   Ü     >   ¿        V   ‡        d      l     t   p                                 	              
- å   ê  q    ô   @         §   †      Æ   |       ∏   @  å     «   ‡  ú     ÿ   0       Ë       *    
- ˙     œ       ‡  ê                             *      Ä     8      
-     K           b     1     x  @   !     ì      0                   ù     0     ≠  †   P     æ  `   @     Õ             ÿ             ˆ                                       9             H             Y             r             à             è             ú             ±             ƒ             Ã             È             ˚                          !             5           A             P      
-     _      0      vs6624.c vs6624_enum_mbus_code vs6624_formats vs6624_get_fmt vs6624_g_frame_interval vs6624_remove vs6624_s_stream vs6624_s_frame_interval vs6624_probe vs6624_ops vs6624_p1 vs6624_p2 vs6624_default vs6624_run_setup vs6624_ctrl_ops vs6624_probe.cold vs6624_s_ctrl vs6624_set_fmt vs6624_driver_init vs6624_driver vs6624_driver_exit
+#include <linux/can.h>
+#include <linux/can/dev.h>
+#include <linux/can/error.h>
+#include <linux/can/led.h>
+
+#include "c_can.h"
+
+/* Number of interface registers */
+#define IF_ENUM_REG_LEN		11
+#define C_CAN_IFACE(reg, iface)	(C_CAN_IF1_##reg + (iface) * IF_ENUM_REG_LEN)
+
+/* control extension register D_CAN specific */
+#define CONTROL_EX_PDR		BIT(8)
+
+/* control register */
+#define CONTROL_SWR		BIT(15)
+#define CONTROL_TEST		BIT(7)
+#define CONTROL_CCE		BIT(6)
+#define CONTROL_DISABLE_AR	BIT(5)
+#define CONTROL_ENABLE_AR	(0 << 5)
+#define CONTROL_EIE		BIT(3)
+#define CONTROL_SIE		BIT(2)
+#define CONTROL_IE		BIT(1)
+#define CONTROL_INIT		BIT(0)
+
+#define CONTROL_IRQMSK		(CONTROL_EIE | CONTROL_IE | CONTROL_SIE)
+
+/* test register */
+#define TEST_RX			BIT(7)
+#define TEST_TX1		BIT(6)
+#define TEST_TX2		BIT(5)
+#define TEST_LBACK		BIT(4)
+#define TEST_SILENT		BIT(3)
+#define TEST_BASIC		BIT(2)
+
+/* status register */
+#define STATUS_PDA		BIT(10)
+#define STATUS_BOFF		BIT(7)
+#define STATUS_EWARN		BIT(6)
+#define STATUS_EPASS		BIT(5)
+#define STATUS_RXOK		BIT(4)
+#define STATUS_TXOK		BIT(3)
+
+/* error counter register */
+#define ERR_CNT_TEC_MASK	0xff
+#define ERR_CNT_TEC_SHIFT	0
+#define ERR_CNT_REC_SHIFT	8
+#define ERR_CNT_REC_MASK	(0x7f << ERR_CNT_REC_SHIFT)
+#define ERR_CNT_RP_SHIFT	15
+#define ERR_CNT_RP_MASK		(0x1 << ERR_CNT_RP_SHIFT)
+
+/* bit-timing register */
+#define BTR_BRP_MASK		0x3f
+#define BTR_BRP_SHIFT		0
+#define BTR_SJW_SHIFT		6
+#define BTR_SJW_MASK		(0x3 << BTR_SJW_SHIFT)
+#define BTR_TSEG1_SHIFT		8
+#define BTR_TSEG1_MASK		(0xf << BTR_TSEG1_SHIFT)
+#define BTR_TSEG2_SHIFT		12
+#define BTR_TSEG2_MASK		(0x7 << BTR_TSEG2_SHIFT)
+
+/* interrupt register */
+#define INT_STS_PENDING		0x8000
+
+/* brp extension register */
+#define BRP_EXT_BRPE_MASK	0x0f
+#define BRP_EXT_BRPE_SHIFT	0
+
+/* IFx command request */
+#define IF_COMR_BUSY		BIT(15)
+
+/* IFx command mask */
+#define IF_COMM_WR		BIT(7)
+#define IF_COMM_MASK		BIT(6)
+#define IF_COMM_ARB		BIT(5)
+#define IF_COMM_CONTROL		BIT(4)
+#define IF_COMM_CLR_INT_PND	BIT(3)
+#define IF_COMM_TXRQST		BIT(2)
+#define IF_COMM_CLR_NEWDAT	IF_COMM_TXRQST
+#define IF_COMM_DATAA		BIT(1)
+#define IF_COMM_DATAB		BIT(0)
+
+/* TX buffer setup */
+#define IF_COMM_TX		(IF_COMM_ARB | IF_COMM_CONTROL | \
+				 IF_COMM_TXRQST |		 \
+				 IF_COMM_DATAA | IF_COMM_DATAB)
+
+/* For the low buffers we clear the interrupt bit, but keep newdat */
+#define IF_COMM_RCV_LOW		(IF_COMM_MASK | IF_COMM_ARB | \
+				 IF_COMM_CONTROL | IF_COMM_CLR_INT_PND | \
+				 IF_COMM_DATAA | IF_COMM_DATAB)
+
+/* For the high buffers we clear the interrupt bit and newdat */
+#define IF_COMM_RCV_HIGH	(IF_COMM_RCV_LOW | IF_COMM_CLR_NEWDAT)
+
+/* Receive setup of message objects */
+#define IF_COMM_RCV_SETUP	(IF_COMM_MASK | IF_COMM_ARB | IF_COMM_CONTROL)
+
+/* Invalidation of message objects */
+#define IF_COMM_INVAL		(IF_COMM_ARB | IF_COMM_CONTROL)
+
+/* IFx arbitration */
+#define IF_ARB_MSGVAL		BIT(31)
+#define IF_ARB_MSGXTD		BIT(30)
+#define IF_ARB_TRANSMIT		BIT(29)
+
+/* IFx message control */
+#define IF_MCONT_NEWDAT		BIT(15)
+#define IF_MCONT_MSGLST		BIT(14)
+#define IF_MCONT_INTPND		BIT(13)
+#define IF_MCONT_UMASK		BIT(12)
+#define IF_MCONT_TXIE		BIT(11)
+#define IF_MCONT_RXIE		BIT(10)
+#define IF_MCONT_RMTEN		BIT(9)
+#define IF_MCONT_TXRQST		BIT(8)
+#define IF_MCONT_EOB		BIT(7)
+#define IF_MCONT_DLC_MASK	0xf
+
+#define IF_MCONT_RCV		(IF_MCONT_RXIE | IF_MCONT_UMASK)
+#define IF_MCONT_RCV_EOB	(IF_MCONT_RCV | IF_MCONT_EOB)
+
+#define IF_MCONT_TX		(IF_MCONT_TXIE | IF_MCONT_EOB)
+
+/* Use IF1 in NAPI path and IF2 in TX path */
+#define IF_NAPI			0
+#define IF_TX			1
+
+/* minimum timeout for checking BUSY status */
+#define MIN_TIMEOUT_VALUE	6
+
+/* Wait for ~1 sec for INIT bit */
+#define INIT_WAIT_MS		1000
+
+/* c_can lec values */
+enum c_can_lec_type {
+	LEC_NO_ERROR = 0,
+	LEC_STUFF_ERROR,
+	LEC_FORM_ERROR,
+	LEC_ACK_ERROR,
+	LEC_BIT1_ERROR,
+	LEC_BIT0_ERROR,
+	LEC_CRC_ERROR,
+	LEC_UNUSED,
+	LEC_MASK = LEC_UNUSED,
+};
+
+/* c_can error types:
+ * Bus errors (BUS_OFF, ERROR_WARNING, ERROR_PASSIVE) are supported
+ */
+enum c_can_bus_error_types {
+	C_CAN_NO_ERROR = 0,
+	C_CAN_BUS_OFF,
+	C_CAN_ERROR_WARNING,
+	C_CAN_ERROR_PASSIVE,
+};
+
+static const struct can_bittiming_const c_can_bittiming_const = {
+	.name = KBUILD_MODNAME,
+	.tseg1_min = 2,		/* Time segment 1 = prop_seg + phase_seg1 */
+	.tseg1_max = 16,
+	.tseg2_min = 1,		/* Time segment 2 = phase_seg2 */
+	.tseg2_max = 8,
+	.sjw_max = 4,
+	.brp_min = 1,
+	.brp_max = 1024,	/* 6-bit BRP field + 4-bit BRPE field*/
+	.brp_inc = 1,
+};
+
+static inline void c_can_pm_runtime_get_sync(const struct c_can_priv *priv)
+{
+	if (priv->device)
+		pm_runtime_get_sync(priv->device);
+}
+
+static inline void c_can_pm_runtime_put_sync(const struct c_can_priv *priv)
+{
+	if (priv->device)
+		pm_runtime_put_sync(priv->device);
+}
+
+static inline void c_can_reset_ram(const struct c_can_priv *priv, bool enable)
+{
+	if (priv->raminit)
+		priv->raminit(priv, enable);
+}
+
+static void c_can_irq_control(struct c_can_priv *priv, bool enable)
+{
+	u32 ctrl = priv->read_reg(priv,	C_CAN_CTRL_REG) & ~CONTROL_IRQMSK;
+
+	if (enable)
+		ctrl |= CONTROL_IRQMSK;
+
+	priv->write_reg(priv, C_CAN_CTRL_REG, ctrl);
+}
+
+static void c_can_obj_update(struct net_device *dev, int iface, u32 cmd, u32 obj)
+{
+	struct c_can_priv *priv = netdev_priv(dev);
+	int cnt, reg = C_CAN_IFACE(COMREQ_REG, iface);
+
+	priv->write_reg32(priv, reg, (cmd << 16) | obj);
+
+	for (cnt = MIN_TIMEOUT_VALUE; cnt; cnt--) {
+		if (!(priv->read_reg(priv, reg) & IF_COMR_BUSY))
+			return;
+		udelay(1);
+	}
+	netdev_err(dev, "Updating object timed out\n");
+}
+
+static inline void c_can_object_get(struct net_device *dev, int iface,
+				    u32 obj, u32 cmd)
+{
+	c_can_obj_update(dev, iface, cmd, obj);
+}
+
+static inline void c_can_object_put(struct net_device *dev, int iface,
+				    u32 obj, u32 cmd)
+{
+	c_can_obj_update(dev, iface, cmd | IF_COMM_WR, obj);
+}
+
+/* Note: According to documentation clearing TXIE while MSGVAL is set
+ * is not allowed, but works nicely on C/DCAN. And that lowers the I/O
+ * load significantly.
+ */
+static void c_can_inval_tx_object(struct net_device *dev, int iface, int obj)
+{
+	struct c_can_priv *priv = netdev_priv(dev);
+
+	priv->write_reg(priv, C_CAN_IFACE(MSGCTRL_REG, iface), 0);
+	c_can_object_put(dev, iface, obj, IF_COMM_INVAL);
+}
+
+static void c_can_inval_msg_object(struct net_device *dev, int iface, int obj)
+{
+	struct c_can_priv *priv = netdev_priv(dev);
+
+	priv->write_reg32(priv, C_CAN_IFACE(ARB1_REG, iface), 0);
+	c_can_inval_tx_object(dev, iface, obj);
+}
+
+static void c_can_setup_tx_object(struct net_device *dev, int iface,
+				  struct can_frame *frame, int idx)
+{
+	struct c_can_priv *priv = netdev_priv(dev);
+	u16 ctrl = IF_MCONT_TX | frame->len;
+	bool rtr = frame->can_id & CAN_RTR_FLAG;
+	u32 arb = IF_ARB_MSGVAL;
+	int i;
+
+	if (frame->can_id & CAN_EFF_FLAG) {
+		arb |= frame->can_id & CAN_EFF_MASK;
+		arb |= IF_ARB_MSGXTD;
+	} else {
+		arb |= (frame->can_id & CAN_SFF_MASK) << 18;
+	}
+
+	if (!rtr)
+		arb |= IF_ARB_TRANSMIT;
+
+	/* If we change the DIR bit, we need to invalidate the buffer
+	 * first, i.e. clear the MSGVAL flag in the arbiter.
+	 */
+	if (rtr != (bool)test_bit(idx, &priv->tx_dir)) {
+		u32 obj = idx + priv->msg_obj_tx_first;
+
+		c_can_inval_msg_object(dev, iface, obj);
+		change_bit(idx, &priv->tx_dir);
+	}
+
+	priv->write_reg32(priv, C_CAN_IFACE(ARB1_REG, iface), arb);
+
+	priv->write_reg(priv, C_CAN_IFACE(MSGCTRL_REG, iface), ctrl);
+
+	if (priv->type == BOSCH_D_CAN) {
+		u32 data = 0, dreg = C_CAN_IFACE(DATA1_REG, iface);
+
+		for (i = 0; i < frame->len; i += 4, dreg += 2) {
+			data = (u32)frame->data[i];
+			data |= (u32)frame->data[i + 1] << 8;
+			data |= (u32)frame->data[i + 2] << 16;
+			data |= (u32)frame->data[i + 3] << 24;
+			priv->write_reg32(priv, dreg, data);
+		}
+	} else {
+		for (i = 0; i < frame->len; i += 2) {
+			priv->write_reg(priv,
+					C_CAN_IFACE(DATA1_REG, iface) + i / 2,
+					frame->data[i] |
+					(frame->data[i + 1] << 8));
+		}
+	}
+}
+
+static int c_can_handle_lost_msg_obj(struct net_device *dev,
+				     int iface, int objno, u32 ctrl)
+{
+	struct net_device_stats *stats = &dev->stats;
+	struct c_can_priv *priv = netdev_priv(dev);
+	struct can_frame *frame;
+	struct sk_buff *skb;
+
+	ctrl &= ~(IF_MCONT_MSGLST | IF_MCONT_INTPND | IF_MCONT_NEWDAT);
+	priv->write_reg(priv, C_CAN_IFACE(MSGCTRL_REG, iface), ctrl);
+	c_can_object_put(dev, iface, objno, IF_COMM_CONTROL);
+
+	stats->rx_errors++;
+	stats->rx_over_errors++;
+
+	/* create an error msg */
+	skb = alloc_can_err_skb(dev, &frame);
+	if (unlikely(!skb))
+		return 0;
+
+	frame->can_id |= CAN_ERR_CRTL;
+	frame->data[1] = CAN_ERR_CRTL_RX_OVERFLOW;
+
+	netif_receive_skb(skb);
+	return 1;
+}
+
+static int c_can_read_msg_object(struct net_device *dev, int iface, u32 ctrl)
+{
+	struct net_device_stats *stats = &dev->stats;
+	struct c_can_priv *priv = netdev_priv(dev);
+	struct can_frame *frame;
+	struct sk_buff *skb;
+	u32 arb, data;
+
+	skb = alloc_can_skb(dev, &frame);
+	if (!skb) {
+		stats->rx_dropped++;
+		return -ENOMEM;
+	}
+
+	frame->len = can_cc_dlc2len(ctrl & 0x0F);
+
+	arb = priv->read_reg32(priv, C_CAN_IFACE(ARB1_REG, iface));
+
+	if (arb & IF_ARB_MSGXTD)
+		frame->can_id = (arb & CAN_EFF_MASK) | CAN_EFF_FLAG;
+	else
+		frame->can_id = (arb >> 18) & CAN_SFF_MASK;
+
+	if (arb & IF_ARB_TRANSMIT) {
+		frame->can_id |= CAN_RTR_FLAG;
+	} else {
+		int i, dreg = C_CAN_IFACE(DATA1_REG, iface);
+
+		if (priv->type == BOSCH_D_CAN) {
+			for (i = 0; i < frame->len; i += 4, dreg += 2) {
+				data = priv->read_reg32(priv, dreg);
+				frame->data[i] = data;
+				frame->data[i + 1] = data >> 8;
+				frame->data[i + 2] = data >> 16;
+				frame->data[i + 3] = data >> 24;
+			}
+		} else {
+			for (i = 0; i < frame->len; i += 2, dreg++) {
+				data = priv->read_reg(priv, dreg);
+				frame->data[i] = data;
+				frame->data[i + 1] = data >> 8;
+			}
+		}
+
+		stats->rx_bytes += frame->len;
+	}
+	stats->rx_packets++;
+
+	netif_receive_skb(skb);
+	return 0;
+}
+
+static void c_can_setup_receive_object(struct net_device *dev, int iface,
+				       u32 obj, u32 mask, u32 id, u32 mcont)
+{
+	struct c_can_priv *priv = netdev_priv(dev);
+
+	mask |= BIT(29);
+	priv->write_reg32(priv, C_CAN_IFACE(MASK1_REG, iface), mask);
+
+	id |= IF_ARB_MSGVAL;
+	priv->write_reg32(priv, C_CAN_IFACE(ARB1_REG, iface), id);
+
+	priv->write_reg(priv, C_CAN_IFACE(MSGCTRL_REG, iface), mcont);
+	c_can_object_put(dev, iface, obj, IF_COMM_RCV_SETUP);
+}
+
+static bool c_can_tx_busy(const struct c_can_priv *priv,
+			  const struct c_can_tx_ring *tx_ring)
+{
+	if (c_can_get_tx_free(tx_ring) > 0)
+		return false;
+
+	netif_stop_queue(priv->dev);
+
+	/* Memory barrier before checking tx_free (head and tail) */
+	smp_mb();
+
+	if (c_can_get_tx_free(tx_ring) == 0) {
+		netdev_dbg(priv->dev,
+			   "Stopping tx-queue (tx_head=0x%08x, tx_tail=0x%08x, len=%d).\n",
+			   tx_ring->head, tx_ring->tail,
+			   tx_ring->head - tx_ring->tail);
+		return true;
+	}
+
+	netif_start_queue(priv->dev);
+	return false;
+}
+
+static netdev_tx_t c_can_start_xmit(struct sk_buff *skb,
+				    struct net_device *dev)
+{
+	struct can_frame *frame = (struct can_frame *)skb->data;
+	struct c_can_priv *priv = netdev_priv(dev);
+	struct c_can_tx_ring *tx_ring = &priv->tx;
+	u32 idx, obj, cmd = IF_COMM_TX;
+
+	if (can_dropped_invalid_skb(dev, skb))
+		return NETDEV_TX_OK;
+
+	if (c_can_tx_busy(priv, tx_ring))
+		return NETDEV_TX_BUSY;
+
+	idx = c_can_get_tx_head(tx_ring);
+	tx_ring->head++;
+	if (c_can_get_tx_free(tx_ring) == 0)
+		netif_stop_queue(dev);
+
+	if (idx < c_can_get_tx_tail(tx_ring))
+		cmd &= ~IF_COMM_TXRQST; /* Cache the message */
+
+	/* Store the message in the interface so we can call
+	 * can_put_echo_skb(). We must do this before we enable
+	 * transmit as we might race against do_tx().
+	 */
+	c_can_setup_tx_object(dev, IF_TX, frame, idx);
+	can_put_echo_skb(skb, dev, idx, 0);
+	obj = idx + priv->msg_obj_tx_first;
+	c_can_object_put(dev, IF_TX, obj, cmd);
+
+	return NETDEV_TX_OK;
+}
+
+static int c_can_wait_for_ctrl_init(struct net_device *dev,
+				    struct c_can_priv *priv, u32 init)
+{
+	int retry = 0;
+
+	while (init != (priv->read_reg(priv, C_CAN_CTRL_REG) & CONTROL_INIT)) {
+		udelay(10);
+		if (retry++ > 1000) {
+			netdev_err(dev, "CCTRL: set CONTROL_INIT failed\n");
+			return -EIO;
+		}
+	}
+	return 0;
+}
+
+static int c_can_set_bittiming(struct net_device *dev)
+{
+	unsigned int reg_btr, reg_brpe, ctrl_save;
+	u8 brp, brpe, sjw, tseg1, tseg2;
+	u32 ten_bit_brp;
+	struct c_can_priv *priv = netdev_priv(dev);
+	const struct can_bittiming *bt = &priv->can.bittiming;
+	int res;
+
+	/* c_can provides a 6-bit brp and 4-bit brpe fields */
+	ten_bit_brp = bt->brp - 1;
+	brp = ten_bit_brp & BTR_BRP_MASK;
+	brpe = ten_bit_brp >> 6;
+
+	sjw = bt->sjw - 1;
+	tseg1 = bt->prop_seg + bt->phase_seg1 - 1;
+	tseg2 = bt->phase_seg2 - 1;
+	reg_btr = brp | (sjw << BTR_SJW_SHIFT) | (tseg1 << BTR_TSEG1_SHIFT) |
+			(tseg2 << BTR_TSEG2_SHIFT);
+	reg_brpe = brpe & BRP_EXT_BRPE_MASK;
+
+	netdev_info(dev,
+		    "setting BTR=%04x BRPE=%04x\n", reg_btr, reg_brpe);
+
+	ctrl_save = priv->read_reg(priv, C_CAN_CTRL_REG);
+	ctrl_save &= ~CONTROL_INIT;
+	priv->write_reg(priv, C_CAN_CTRL_REG, CONTROL_CCE | CONTROL_INIT);
+	res = c_can_wait_for_ctrl_init(dev, priv, CONTROL_INIT);
+	if (res)
+		return res;
+
+	priv->write_reg(priv, C_CAN_BTR_REG, reg_btr);
+	priv->write_reg(priv, C_CAN_BRPEXT_REG, reg_brpe);
+	priv->write_reg(priv, C_CAN_CTRL_REG, ctrl_save);
+
+	return c_can_wait_for_ctrl_init(dev, priv, 0);
+}
+
+/* Configure C_CAN message objects for Tx and Rx purposes:
+ * C_CAN provides a total of 32 message objects that can be configured
+ * either for Tx or Rx purposes. Here the first 16 message objects are used as
+ * a reception FIFO. The end of reception FIFO is signified by the EoB bit
+ * being SET. The remaining 16 message objects are kept aside for Tx purposes.
+ * See user guide document for further details on configuring message
+ * objects.
+ */
+static void c_can_configure_msg_objects(struct net_device *dev)
+{
+	struct c_can_priv *priv = netdev_priv(dev);
+	int i;
+
+	/* first invalidate all message objects */
+	for (i = priv->msg_obj_rx_first; i <= priv->msg_obj_num; i++)
+		c_can_inval_msg_object(dev, IF_NAPI, i);
+
+	/* setup receive message objects */
+	for (i = priv->msg_obj_rx_first; i < priv->msg_obj_rx_last; i++)
+		c_can_setup_receive_object(dev, IF_NAPI, i, 0, 0, IF_MCONT_RCV);
+
+	c_can_setup_receive_object(dev, IF_NAPI, priv->msg_obj_rx_last, 0, 0,
+				   IF_MCONT_RCV_EOB);
+}
+
+static int c_can_software_reset(struct net_device *dev)
+{
+	struct c_can_priv *priv = netdev_priv(dev);
+	int retry = 0;
+
+	if (priv->type != BOSCH_D_CAN)
+		return 0;
+
+	priv->write_reg(priv, C_CAN_CTRL_REG, CONTROL_SWR | CONTROL_INIT);
+	while (priv->read_reg(priv, C_CAN_CTRL_REG) & CONTROL_SWR) {
+		msleep(20);
+		if (retry++ > 100) {
+			netdev_err(dev, "CCTRL: software reset failed\n");
+			return -EIO;
+		}
+	}
+
+	return 0;
+}
+
+/* Configure C_CAN chip:
+ * - enable/disable auto-retransmission
+ * - set operating mode
+ * - configure message objects
+ */
+static int c_can_chip_config(struct net_device *dev)
+{
+	struct c_can_priv *priv = netdev_priv(dev);
+	struct c_can_tx_ring *tx_ring = &priv->tx;
+	int err;
+
+	err = c_can_software_reset(dev);
+	if (err)
+		return err;
+
+	/* enable automatic retransmission */
+	priv->write_reg(priv, C_CAN_CTRL_REG, CONTROL_ENABLE_AR);
+
+	if ((priv->can.ctrlmode & CAN_CTRLMODE_LISTENONLY) &&
+	    (priv->can.ctrlmode & CAN_CTRLMODE_LOOPBACK)) {
+		/* loopback + silent mode : useful for hot self-test */
+		priv->write_reg(priv, C_CAN_CTRL_REG, CONTROL_TEST);
+		priv->write_reg(priv, C_CAN_TEST_REG, TEST_LBACK | TEST_SILENT);
+	} else if (priv->can.ctrlmode & CAN_CTRLMODE_LOOPBACK) {
+		/* loopback mode : useful for self-test function */
+		priv->write_reg(priv, C_CAN_CTRL_REG, CONTROL_TEST);
+		priv->write_reg(priv, C_CAN_TEST_REG, TEST_LBACK);
+	} else if (priv->can.ctrlmode & CAN_CTRLMODE_LISTENONLY) {
+		/* silent mode : bus-monitoring mode */
+		priv->write_reg(priv, C_CAN_CTRL_REG, CONTROL_TEST);
+		priv->write_reg(priv, C_CAN_TEST_REG, TEST_SILENT);
+	}
+
+	/* configure message objects */
+	c_can_configure_msg_objects(dev);
+
+	/* set a `lec` value so that we can check for updates later */
+	priv->write_reg(priv, C_CAN_STS_REG, LEC_UNUSED);
+
+	/* Clear all internal status */
+	tx_ring->head = 0;
+	tx_ring->tail = 0;
+	priv->tx_dir = 0;
+
+	/* set bittiming params */
+	return c_can_set_bittiming(dev);
+}
+
+static int c_can_start(struct net_device *dev)
+{
+	struct c_can_priv *priv = netdev_priv(dev);
+	int err;
+	struct pinctrl *p;
+
+	/* basic c_can configuration */
+	err = c_can_chip_config(dev);
+	if (err)
+		return err;
+
+	/* Setup the command for new messages */
+	priv->comm_rcv_high = priv->type != BOSCH_D_CAN ?
+		IF_COMM_RCV_LOW : IF_COMM_RCV_HIGH;
+
+	priv->can.state = CAN_STATE_ERROR_ACTIVE;
+
+	/* Attempt to use "active" if available else use "default" */
+	p = pinctrl_get_select(priv->device, "active");
+	if (!IS_ERR(p))
+		pinctrl_put(p);
+	else
+		pinctrl_pm_select_default_state(priv->device);
+
+	return 0;
+}
+
+static void c_can_stop(struct net_device *dev)
+{
+	struct c_can_priv *priv = netdev_priv(dev);
+
+	c_can_irq_control(priv, false);
+
+	/* put ctrl to init on stop to end ongoing transmission */
+	priv->write_reg(priv, C_CAN_CTRL_REG, CONTROL_INIT);
+
+	/* deactivate pins */
+	pinctrl_pm_select_sleep_state(dev->dev.parent);
+	priv->can.state = CAN_STATE_STOPPED;
+}
+
+static int c_can_set_mode(struct net_device *dev, enum can_mode mode)
+{
+	struct c_can_priv *priv = netdev_priv(dev);
+	int err;
+
+	switch (mode) {
+	case CAN_MODE_START:
+		err = c_can_start(dev);
+		if (err)
+			return err;
+		netif_wake_queue(dev);
+		c_can_irq_control(priv, true);
+		break;
+	default:
+		return -EOPNOTSUPP;
+	}
+
+	return 0;
+}
+
+static int __c_can_get_berr_counter(const struct net_device *dev,
+				    struct can_berr_counter *bec)
+{
+	unsigned int reg_err_counter;
+	struct c_can_priv *priv = netdev_priv(dev);
+
+	reg_err_counter = priv->read_reg(priv, C_CAN_ERR_CNT_REG);
+	bec->rxerr = (reg_err_counter & ERR_CNT_REC_MASK) >>
+				ERR_CNT_REC_SHIFT;
+	bec->txerr = reg_err_counter & ERR_CNT_TEC_MASK;
+
+	return 0;
+}
+
+static int c_can_get_berr_counter(const struct net_device *dev,
+				  struct can_berr_counter *bec)
+{
+	struct c_can_priv *priv = netdev_priv(dev);
+	int err;
+
+	c_can_pm_runtime_get_sync(priv);
+	err = __c_can_get_berr_counter(dev, bec);
+	c_can_pm_runtime_put_sync(priv);
+
+	return err;
+}
+
+static void c_can_do_tx(struct net_device *dev)
+{
+	struct c_can_priv *priv = netdev_priv(dev);
+	struct c_can_tx_ring *tx_ring = &priv->tx;
+	struct net_device_stats *stats = &dev->stats;
+	u32 idx, obj, pkts = 0, bytes = 0, pend;
+	u8 tail;
+
+	if (priv->msg_obj_tx_last > 32)
+		pend = priv->read_reg32(priv, C_CAN_INTPND3_REG);
+	else
+		pend = priv->read_reg(priv, C_CAN_INTPND2_REG);
+
+	while ((idx = ffs(pend))) {
+		idx--;
+		pend &= ~BIT(idx);
+		obj = idx + priv->msg_obj_tx_first;
+
+		/* We use IF_NAPI interface instead of IF_TX because we
+		 * are called from c_can_poll(), which runs inside
+		 * NAPI. We are not transmitting.
+		 */
+		c_can_inval_tx_object(dev, IF_NAPI, obj);
+		bytes += can_get_echo_skb(dev, idx, NULL);
+		pkts++;
+	}
+
+	if (!pkts)
+		return;
+
+	tx_ring->tail += pkts;
+	if (c_can_get_tx_free(tx_ring)) {
+		/* Make sure that anybody stopping the queue after
+		 * this sees the new tx_ring->tail.
+		 */
+		smp_mb();
+		netif_wake_queue(priv->dev);
+	}
+
+	stats->tx_bytes += bytes;
+	stats->tx_packets += pkts;
+	can_led_event(dev, CAN_LED_EVENT_TX);
+
+	tail = c_can_get_tx_tail(tx_ring);
+
+	if (tail == 0) {
+		u8 head = c_can_get_tx_head(tx_ring);
+
+		/* Start transmission for all cached messages */
+		for (idx = tail; idx < head; idx++) {
+			obj = idx + priv->msg_obj_tx_first;
+			c_can_object_put(dev, IF_NAPI, obj, IF_COMM_TXRQST);
+		}
+	}
+}
+
+/* If we have a gap in the pending bits, that means we either
+ * raced with the hardware or failed to readout all upper
+ * objects in the last run due to quota limit.
+ */
+static u32 c_can_adjust_pending(u32 pend, u32 rx_mask)
+{
+	u32 weight, lasts;
+
+	if (pend == rx_mask)
+		return pend;
+
+	/* If the last set bit is larger than the number of pending
+	 * bits we have a gap.
+	 */
+	weight = hweight32(pend);
+	lasts = fls(pend);
+
+	/* If the bits are linear, nothing to do */
+	if (lasts == weight)
+		return pend;
+
+	/* Find the first set bit after the gap. We walk backwards
+	 * from the last set bit.
+	 */
+	for (lasts--; pend & BIT(lasts - 1); lasts--)
+		;
+
+	return pend & ~GENMASK(lasts - 1, 0);
+}
+
+static inline void c_can_rx_object_get(struct net_device *dev,
+				       struct c_can_priv *priv, u32 obj)
+{
+	c_can_object_get(dev, IF_NAPI, obj, priv->comm_rcv_high);
+}
+
+static inline void c_can_rx_finalize(struct net_device *dev,
+				     struct c_can_priv *priv, u32 obj)
+{
+	if (priv->type != BOSCH_D_CAN)
+		c_can_object_get(dev, IF_NAPI, obj, IF_COMM_CLR_NEWDAT);
+}
+
+static int c_can_read_objects(struct net_device *dev, struct c_can_priv *priv,
+			      u32 pend, int quota)
+{
+	u32 pkts = 0, ctrl, obj;
+
+	while ((obj = ffs(pend)) && quota > 0) {
+		pend &= ~BIT(obj - 1);
+
+		c_can_rx_object_get(dev, priv, obj);
+		ctrl = priv->read_reg(priv, C_CAN_IFACE(MSGCTRL_REG, IF_NAPI));
+
+		if (ctrl & IF_MCONT_MSGLST) {
+			int n;
+
+			n = c_can_handle_lost_msg_obj(dev, IF_NAPI, obj, ctrl);
+
+			pkts += n;
+			quota -= n;
+			continue;
+		}
+
+		/* This really should not happen, but this covers some
+		 * odd HW behaviour. Do not remove that unless you
+		 * want to brick your machine.
+		 */
+		if (!(ctrl & IF_MCONT_NEWDAT))
+			continue;
+
+		/* read the data from the message object */
+		c_can_read_msg_object(dev, IF_NAPI, ctrl);
+
+		c_can_rx_finalize(dev, priv, obj);
+
+		pkts++;
+		quota--;
+	}
+
+	return pkts;
+}
+
+static inline u32 c_can_get_pending(struct c_can_priv *priv)
+{
+	u32 pend;
+
+	if (priv->msg_obj_rx_last > 16)
+		pend = priv->read_reg32(priv, C_CAN_NEWDAT1_REG);
+	else
+		pend = priv->read_reg(priv, C_CAN_NEWDAT1_REG);
+
+	return pend;
+}
+
+/* theory of operation:
+ *
+ * c_can core saves a received CAN message into the first free message
+ * object it finds free (starting with the lowest). Bits NEWDAT and
+ * INTPND are set for this message object indicating that a new message
+ * has arrived.
+ *
+ * We clear the newdat bit right away.
+ *
+ * This can result in packet reordering when the readout is slow.
+ */
+static int c_can_do_rx_poll(struct net_device *dev, int quota)
+{
+	struct c_can_priv *priv = netdev_priv(dev);
+	u32 pkts = 0, pend = 0, toread, n;
+
+	while (quota > 0) {
+		if (!pend) {
+			pend = c_can_get_pending(priv);
+			if (!pend)
+				break;
+			/* If the pending field has a gap, handle the
+			 * bits above the gap first.
+			 */
+			toread = c_can_adjust_pending(pend,
+						      priv->msg_obj_rx_mask);
+		} else {
+			toread = pend;
+		}
+		/* Remove the bits from pend */
+		pend &= ~toread;
+		/* Read the objects */
+		n = c_can_read_objects(dev, priv, toread, quota);
+		pkts += n;
+		quota -= n;
+	}
+
+	if (pkts)
+		can_led_event(dev, CAN_LED_EVENT_RX);
+
+	return pkts;
+}
+
+static int c_can_handle_state_change(struct net_device *dev,
+				     enum c_can_bus_error_types error_type)
+{
+	unsigned int reg_err_counter;
+	unsigned int rx_err_passive;
+	struct c_can_priv *priv = netdev_priv(dev);
+	struct can_frame *cf;
+	struct sk_buff *skb;
+	struct can_berr_counter bec;
+
+	switch (error_type) {
+	case C_CAN_NO_ERROR:
+		priv->can.state = CAN_STATE_ERROR_ACTIVE;
+		break;
+	case C_CAN_ERROR_WARNING:
+		/* error warning state */
+		priv->can.can_stats.error_warning++;
+		priv->can.state = CAN_STATE_ERROR_WARNING;
+		break;
+	case C_CAN_ERROR_PASSIVE:
+		/* error passive state */
+		priv->can.can_stats.error_passive++;
+		priv->can.state = CAN_STATE_ERROR_PASSIVE;
+		break;
+	case C_CAN_BUS_OFF:
+		/* bus-off state */
+		priv->can.state = CAN_STATE_BUS_OFF;
+		priv->can.can_stats.bus_off++;
+		break;
+	default:
+		break;
+	}
+
+	/* propagate the error condition to the CAN stack */
+	skb = alloc_can_err_skb(dev, &cf);
+	if (unlikely(!skb))
+		return 0;
+
+	__c_can_get_berr_counter(dev, &bec);
+	reg_err_counter = priv->read_reg(priv, C_CAN_ERR_CNT_REG);
+	rx_err_passive = (reg_err_counter & ERR_CNT_RP_MASK) >>
+				ERR_CNT_RP_SHIFT;
+
+	switch (error_type) {
+	case C_CAN_NO_ERROR:
+		/* error warning state */
+		cf->can_id |= CAN_ERR_CRTL;
+		cf->data[1] = CAN_ERR_CRTL_ACTIVE;
+		cf->data[6] = bec.txerr;
+		cf->data[7] = bec.rxerr;
+		break;
+	case C_CAN_ERROR_WARNING:
+		/* error warning state */
+		cf->can_id |= CAN_ERR_CRTL;
+		cf->data[1] = (bec.txerr > bec.rxerr) ?
+			CAN_ERR_CRTL_TX_WARNING :
+			CAN_ERR_CRTL_RX_WARNING;
+		cf->data[6] = bec.txerr;
+		cf->data[7] = bec.rxerr;
+
+		break;
+	case C_CAN_ERROR_PASSIVE:
+		/* error passive state */
+		cf->can_id |= CAN_ERR_CRTL;
+		if (rx_err_passive)
+			cf->data[1] |= CAN_ERR_CRTL_RX_PASSIVE;
+		if (bec.txerr > 127)
+			cf->data[1] |= CAN_ERR_CRTL_TX_PASSIVE;
+
+		cf->data[6] = bec.txerr;
+		cf->data[7] = bec.rxerr;
+		break;
+	case C_CAN_BUS_OFF:
+		/* bus-off state */
+		cf->can_id |= CAN_ERR_BUSOFF;
+		can_bus_off(dev);
+		break;
+	default:
+		break;
+	}
+
+	netif_receive_skb(skb);
+
+	return 1;
+}
+
+static int c_can_handle_bus_err(struct net_device *dev,
+				enum c_can_lec_type lec_type)
+{
+	struct c_can_priv *priv = netdev_priv(dev);
+	struct net_device_stats *stats = &dev->stats;
+	struct can_frame *cf;
+	struct sk_buff *skb;
+
+	/* early exit if no lec update or no error.
+	 * no lec update means that no CAN bus event has been detected
+	 * since CPU wrote 0x7 value to status reg.
+	 */
+	if (lec_type == LEC_UNUSED || lec_type == LEC_NO_ERROR)
+		return 0;
+
+	if (!(priv->can.ctrlmode & CAN_CTRLMODE_BERR_REPORTING))
+		return 0;
+
+	/* common for all type of bus errors */
+	priv->can.can_stats.bus_error++;
+	stats->rx_errors++;
+
+	/* propagate the error condition to the CAN stack */
+	skb = alloc_can_err_skb(dev, &cf);
+	if (unlikely(!skb))
+		return 0;
+
+	/* check for 'last error code' which tells us the
+	 * type of the last error to occur on the CAN bus
+	 */
+	cf->can_id |= CAN_ERR_PROT | CAN_ERR_BUSERROR;
+
+	switch (lec_type) {
+	case LEC_STUFF_ERROR:
+		netdev_dbg(dev, "stuff error\n");
+		cf->data[2] |= CAN_ERR_PROT_STUFF;
+		break;
+	case LEC_FORM_ERROR:
+		netdev_dbg(dev, "form error\n");
+		cf->data[2] |= CAN_ERR_PROT_FORM;
+		break;
+	case LEC_ACK_ERROR:
+		netdev_dbg(dev, "ack error\n");
+		cf->data[3] = CAN_ERR_PROT_LOC_ACK;
+		break;
+	case LEC_BIT1_ERROR:
+		netdev_dbg(dev, "bit1 error\n");
+		cf->data[2] |= CAN_ERR_PROT_BIT1;
+		break;
+	case LEC_BIT0_ERROR:
+		netdev_dbg(dev, "bit0 error\n");
+		cf->data[2] |= CAN_ERR_PROT_BIT0;
+		break;
+	case LEC_CRC_ERROR:
+		netdev_dbg(dev, "CRC error\n");
+		cf->data[3] = CAN_ERR_PROT_LOC_CRC_SEQ;
+		break;
+	default:
+		break;
+	}
+
+	netif_receive_skb(skb);
+	return 1;
+}
+
+static int c_can_poll(struct napi_struct *napi, int quota)
+{
+	struct net_device *dev = napi->dev;
+	struct c_can_priv *priv = netdev_priv(dev);
+	u16 curr, last = priv->last_status;
+	int work_done = 0;
+
+	/* Only read the status register if a status interrupt was pending */
+	if (atomic_xchg(&priv->sie_pending, 0)) {
+		priv->last_status = priv->read_reg(priv, C_CAN_STS_REG);
+		curr = priv->last_status;
+		/* Ack status on C_CAN. D_CAN is self clearing */
+		if (priv->type != BOSCH_D_CAN)
+			priv->write_reg(priv, C_CAN_STS_REG, LEC_UNUSED);
+	} else {
+		/* no change detected ... */
+		curr = last;
+	}
+
+	/* handle state changes */
+	if ((curr & STATUS_EWARN) && (!(last & STATUS_EWARN))) {
+		netdev_dbg(dev, "entered error warning state\n");
+		work_done += c_can_handle_state_change(dev, C_CAN_ERROR_WARNING);
+	}
+
+	if ((curr & STATUS_EPASS) && (!(last & STATUS_EPASS))) {
+		netdev_dbg(dev, "entered error passive state\n");
+		work_done += c_can_handle_state_change(dev, C_CAN_ERROR_PASSIVE);
+	}
+
+	if ((curr & STATUS_BOFF) && (!(last & STATUS_BOFF))) {
+		netdev_dbg(dev, "entered bus off state\n");
+		work_done += c_can_handle_state_change(dev, C_CAN_BUS_OFF);
+		goto end;
+	}
+
+	/* handle bus recovery events */
+	if ((!(curr & STATUS_BOFF)) && (last & STATUS_BOFF)) {
+		netdev_dbg(dev, "left bus off state\n");
+		work_done += c_can_handle_state_change(dev, C_CAN_ERROR_PASSIVE);
+	}
+
+	if ((!(curr & STATUS_EPASS)) && (last & STATUS_EPASS)) {
+		netdev_dbg(dev, "left error passive state\n");
+		work_done += c_can_handle_state_change(dev, C_CAN_ERROR_WARNING);
+	}
+
+	if ((!(curr & STATUS_EWARN)) && (last & STATUS_EWARN)) {
+		netdev_dbg(dev, "left error warning state\n");
+		work_done += c_can_handle_state_change(dev, C_CAN_NO_ERROR);
+	}
+
+	/* handle lec errors on the bus */
+	work_done += c_can_handle_bus_err(dev, curr & LEC_MASK);
+
+	/* Handle Tx/Rx events. We do this unconditionally */
+	work_done += c_can_do_rx_poll(dev, (quota - work_done));
+	c_can_do_tx(dev);
+
+end:
+	if (work_done < quota) {
+		napi_complete_done(napi, work_done);
+		/* enable all IRQs if we are not in bus off state */
+		if (priv->can.state != CAN_STATE_BUS_OFF)
+			c_can_irq_control(priv, true);
+	}
+
+	return work_done;
+}
+
+static irqreturn_t c_can_isr(int irq, void *dev_id)
+{
+	struct net_device *dev = (struct net_device *)dev_id;
+	struct c_can_priv *priv = netdev_priv(dev);
+	int reg_int;
+
+	reg_int = priv->read_reg(priv, C_CAN_INT_REG);
+	if (!reg_int)
+		return IRQ_NONE;
+
+	/* save for later use */
+	if (reg_int & INT_STS_PENDING)
+		atomic_set(&priv->sie_pending, 1);
+
+	/* disable all interrupts and schedule the NAPI */
+	c_can_irq_control(priv, false);
+	napi_schedule(&priv->napi);
+
+	return IRQ_HANDLED;
+}
+
+static int c_can_open(struct net_device *dev)
+{
+	int err;
+	struct c_can_priv *priv = netdev_priv(dev);
+
+	c_can_pm_runtime_get_sync(priv);
+	c_can_reset_ram(priv, true);
+
+	/* open the can device */
+	err = open_candev(dev);
+	if (err) {
+		netdev_err(dev, "failed to open can device\n");
+		goto exit_open_fail;
+	}
+
+	/* register interrupt handler */
+	err = request_irq(dev->irq, &c_can_isr, IRQF_SHARED, dev->name,
+			  dev);
+	if (err < 0) {
+		netdev_err(dev, "failed to request interrupt\n");
+		goto exit_irq_fail;
+	}
+
+	/* start the c_can controller */
+	err = c_can_start(dev);
+	if (err)
+		goto exit_start_fail;
+
+	can_led_event(dev, CAN_LED_EVENT_OPEN);
+
+	napi_enable(&priv->napi);
+	/* enable status change, error and module interrupts */
+	c_can_irq_control(priv, true);
+	netif_start_queue(dev);
+
+	return 0;
+
+exit_start_fail:
+	free_irq(dev->irq, dev);
+exit_irq_fail:
+	close_candev(dev);
+exit_open_fail:
+	c_can_reset_ram(priv, false);
+	c_can_pm_runtime_put_sync(priv);
+	return err;
+}
+
+static int c_can_close(struct net_device *dev)
+{
+	struct c_can_priv *priv = netdev_priv(dev);
+
+	netif_stop_queue(dev);
+	napi_disable(&priv->napi);
+	c_can_stop(dev);
+	free_irq(dev->irq, dev);
+	close_candev(dev);
+
+	c_can_reset_ram(priv, false);
+	c_can_pm_runtime_put_sync(priv);
+
+	can_led_event(dev, CAN_LED_EVENT_STOP);
+
+	return 0;
+}
+
+struct net_device *alloc_c_can_dev(int msg_obj_num)
+{
+	struct net_device *dev;
+	struct c_can_priv *priv;
+	int msg_obj_tx_num = msg_obj_num / 2;
+
+	dev = alloc_candev(sizeof(*priv), msg_obj_tx_num);
+	if (!dev)
+		return NULL;
+
+	priv = netdev_priv(dev);
+	priv->msg_obj_num = msg_obj_num;
+	priv->msg_obj_rx_num = msg_obj_num - msg_obj_tx_num;
+	priv->msg_obj_rx_first = 1;
+	priv->msg_obj_rx_last =
+		priv->msg_obj_rx_first + priv->msg_obj_rx_num - 1;
+	priv->msg_obj_rx_mask = GENMASK(priv->msg_obj_rx_num - 1, 0);
+
+	priv->msg_obj_tx_num = msg_obj_tx_num;
+	priv->msg_obj_tx_first = priv->msg_obj_rx_last + 1;
+	priv->msg_obj_tx_last =
+		priv->msg_obj_tx_first + priv->msg_obj_tx_num - 1;
+
+	priv->tx.head = 0;
+	priv->tx.tail = 0;
+	priv->tx.obj_num = msg_obj_tx_num;
+
+	netif_napi_add(dev, &priv->napi, c_can_poll, priv->msg_obj_rx_num);
+
+	priv->dev = dev;
+	priv->can.bittiming_const = &c_can_bittiming_const;
+	priv->can.do_set_mode = c_can_set_mode;
+	priv->can.do_get_berr_counter = c_can_get_berr_counter;
+	priv->can.ctrlmode_supported = CAN_CTRLMODE_LOOPBACK |
+					CAN_CTRLMODE_LISTENONLY |
+					CAN_CTRLMODE_BERR_REPORTING;
+
+	return dev;
+}
+EXPORT_SYMBOL_GPL(alloc_c_can_dev);
+
+#ifdef CONFIG_PM
+int c_can_power_down(struct net_device *dev)
+{
+	u32 val;
+	unsigned long time_out;
+	struct c_can_priv *priv = netdev_priv(dev);
+
+	if (!(dev->flags & IFF_UP))
+		return 0;
+
+	WARN_ON(priv->type != BOSCH_D_CAN);
+
+	/* set PDR value so the device goes to power down mode */
+	val = priv->read_reg(priv, C_CAN_CTRL_EX_REG);
+	val |= CONTROL_EX_PDR;
+	priv->write_reg(priv, C_CAN_CTRL_EX_REG, val);
+
+	/* Wait for the PDA bit to get set */
+	time_out = jiffies + msecs_to_jiffies(INIT_WAIT_MS);
+	while (!(priv->read_reg(priv, C_CAN_STS_REG) & STATUS_PDA) &&
+	       time_after(time_out, jiffies))
+		cpu_relax();
+
+	if (time_after(jiffies, time_out))
+		return -ETIMEDOUT;
+
+	c_can_stop(dev);
+
+	c_can_reset_ram(priv, false);
+	c_can_pm_runtime_put_sync(priv);
+
+	return 0;
+}
+EXPORT_SYMBOL_GPL(c_can_power_down);
+
+int c_can_power_up(struct net_device *dev)
+{
+	u32 val;
+	unsigned long time_out;
+	struct c_can_priv *priv = netdev_priv(dev);
+	int ret;
+
+	if (!(dev->flags & IFF_UP))
+		return 0;
+
+	WARN_ON(priv->type != BOSCH_D_CAN);
+
+	c_can_pm_runtime_get_sync(priv);
+	c_can_reset_ram(priv, true);
+
+	/* Clear PDR and INIT bits */
+	val = priv->read_reg(priv, C_CAN_CTRL_EX_REG);
+	val &= ~CONTROL_EX_PDR;
+	priv->write_reg(priv, C_CAN_CTRL_EX_REG, val);
+	val = priv->read_reg(priv, C_CAN_CTRL_REG);
+	val &= ~CONTROL_INIT;
+	priv->write_reg(priv, C_CAN_CTRL_REG, val);
+
+	/* Wait for the PDA bit to get clear */
+	time_out = jiffies + msecs_to_jiffies(INIT_WAIT_MS);
+	while ((priv->read_reg(priv, C_CAN_STS_REG) & STATUS_PDA) &&
+	       time_after(time_out, jiffies))
+		cpu_relax();
+
+	if (time_after(jiffies, time_out)) {
+		ret = -ETIMEDOUT;
+		goto err_out;
+	}
+
+	ret = c_can_start(dev);
+	if (ret)
+		goto err_out;
+
+	c_can_irq_control(priv, true);
+
+	return 0;
+
+err_out:
+	c_can_reset_ram(priv, false);
+	c_can_pm_runtime_put_sync(priv);
+
+	return ret;
+}
+EXPORT_SYMBOL_GPL(c_can_power_up);
+#endif
+
+void free_c_can_dev(struct net_device *dev)
+{
+	struct c_can_priv *priv = netdev_priv(dev);
+
+	netif_napi_del(&priv->napi);
+	free_candev(dev);
+}
+EXPORT_SYMBOL_GPL(free_c_can_dev);
+
+static const struct net_device_ops c_can_netdev_ops = {
+	.ndo_open = c_can_open,
+	.ndo_stop = c_can_close,
+	.ndo_start_xmit = c_can_start_xmit,
+	.ndo_change_mtu = can_change_mtu,
+};
+
+int register_c_can_dev(struct net_device *dev)
+{
+	int err;
+
+	/* Deactivate pins to prevent DRA7 DCAN IP from being
+	 * stuck in transition when module is disabled.
+	 * Pins are activated in c_can_start() and deactivated
+	 * in c_can_stop()
+	 */
+	pinctrl_pm_select_sleep_state(dev->dev.parent);
+
+	dev->flags |= IFF_ECHO;	/* we support local echo */
+	dev->netdev_ops = &c_can_netdev_ops;
+	c_can_set_ethtool_ops(dev);
+
+	err = register_candev(dev);
+	if (!err)
+		devm_can_led_init(dev);
+	return err;
+}
+EXPORT_SYMBOL_GPL(register_c_can_dev);
+
+void unregister_c_can_dev(struct net_device *dev)
+{
+	unregister_candev(dev);
+}
+EXPORT_SYMBOL_GPL(unregister_c_can_dev);
+
+MODULE_AUTHOR("Bhupesh Sharma <bhupesh.sharma@st.com>");
+MODULE_LICENSE("GPL v2");
+MODULE_DESCRIPTION("CAN bus driver for Bosch C_CAN controller");

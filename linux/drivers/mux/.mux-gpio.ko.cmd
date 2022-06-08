@@ -1,7 +1,1 @@
-) \
-  include/acpi/acpi_io.h \
-  include/linux/io.h \
-    $(wildcard include/config/HAS_IOPORT_MAP) \
-  arch/x86/include/asm/io.h \
-    $(wildcard include/config/MTRR) \
-  
+cmd_drivers/mux/mux-gpio.ko := ld -r -m elf_i386 --build-id=sha1  -T scripts/module.lds -o drivers/mux/mux-gpio.ko drivers/mux/mux-gpio.o drivers/mux/mux-gpio.mod.o;  true

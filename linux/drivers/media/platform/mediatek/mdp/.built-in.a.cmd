@@ -1,1 +1,6 @@
-cmd_drivers/media/i2c/tvp5150.o := gcc -Wp,-MMD,drivers/media/i2c/.tvp5150.o.d -nostdinc -I./arch/x86/include -I./arch/x86/include/generated  -I./include -I./arch/x86/include/uapi -I.
+  include/uapi/linux/byteorder/little_endian.h \
+  include/linux/swab.h \
+  include/uapi/linux/swab.h \
+  arch/x86/include/uapi/asm/swab.h \
+  include/linux/byteorder/generic.h \
+  in

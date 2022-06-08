@@ -1,1460 +1,1705 @@
-(likely(hlock_class(this)->usage_mask & new_mask))
+f (should_resched(0)) {
+		preempt_schedule_common();
 		return 1;
+	}
+	/*
+	 * In preemptible kernels, ->rcu_read_lock_nesting tells the tick
+	 * whether the current CPU is in an RCU read-side critical section,
+	 * so the tick can report quiescent states even for CPUs looping
+	 * in kernel context.  In contrast, in non-preemptible kernels,
+	 * RCU readers leave no in-memory hints, which means that CPU-bound
+	 * processes executing in kernel context might never report an
+	 * RCU quiescent state.  Therefore, the following code causes
+	 * cond_resched() to report a quiescent state, but only when RCU
+	 * is in urgent need of one.
+	 */
+#ifndef CONFIG_PREEMPT_RCU
+	rcu_all_qs();
+#endif
+	return 0;
+}
+EXPORT_SYMBOL(__cond_resched);
+#endif
 
-	if (!graph_lock())
+#ifdef CONFIG_PREEMPT_DYNAMIC
+#if defined(CONFIG_HAVE_PREEMPT_DYNAMIC_CALL)
+#define cond_resched_dynamic_enabled	__cond_resched
+#define cond_resched_dynamic_disabled	((void *)&__static_call_return0)
+DEFINE_STATIC_CALL_RET0(cond_resched, __cond_resched);
+EXPORT_STATIC_CALL_TRAMP(cond_resched);
+
+#define might_resched_dynamic_enabled	__cond_resched
+#define might_resched_dynamic_disabled	((void *)&__static_call_return0)
+DEFINE_STATIC_CALL_RET0(might_resched, __cond_resched);
+EXPORT_STATIC_CALL_TRAMP(might_resched);
+#elif defined(CONFIG_HAVE_PREEMPT_DYNAMIC_KEY)
+static DEFINE_STATIC_KEY_FALSE(sk_dynamic_cond_resched);
+int __sched dynamic_cond_resched(void)
+{
+	if (!static_branch_unlikely(&sk_dynamic_cond_resched))
 		return 0;
+	return __cond_resched();
+}
+EXPORT_SYMBOL(dynamic_cond_resched);
+
+static DEFINE_STATIC_KEY_FALSE(sk_dynamic_might_resched);
+int __sched dynamic_might_resched(void)
+{
+	if (!static_branch_unlikely(&sk_dynamic_might_resched))
+		return 0;
+	return __cond_resched();
+}
+EXPORT_SYMBOL(dynamic_might_resched);
+#endif
+#endif
+
+/*
+ * __cond_resched_lock() - if a reschedule is pending, drop the given lock,
+ * call schedule, and on return reacquire the lock.
+ *
+ * This works OK both with and without CONFIG_PREEMPTION. We do strange low-level
+ * operations here to prevent schedule() from being called twice (once via
+ * spin_unlock(), once by hand).
+ */
+int __cond_resched_lock(spinlock_t *lock)
+{
+	int resched = should_resched(PREEMPT_LOCK_OFFSET);
+	int ret = 0;
+
+	lockdep_assert_held(lock);
+
+	if (spin_needbreak(lock) || resched) {
+		spin_unlock(lock);
+		if (!_cond_resched())
+			cpu_relax();
+		ret = 1;
+		spin_lock(lock);
+	}
+	return ret;
+}
+EXPORT_SYMBOL(__cond_resched_lock);
+
+int __cond_resched_rwlock_read(rwlock_t *lock)
+{
+	int resched = should_resched(PREEMPT_LOCK_OFFSET);
+	int ret = 0;
+
+	lockdep_assert_held_read(lock);
+
+	if (rwlock_needbreak(lock) || resched) {
+		read_unlock(lock);
+		if (!_cond_resched())
+			cpu_relax();
+		ret = 1;
+		read_lock(lock);
+	}
+	return ret;
+}
+EXPORT_SYMBOL(__cond_resched_rwlock_read);
+
+int __cond_resched_rwlock_write(rwlock_t *lock)
+{
+	int resched = should_resched(PREEMPT_LOCK_OFFSET);
+	int ret = 0;
+
+	lockdep_assert_held_write(lock);
+
+	if (rwlock_needbreak(lock) || resched) {
+		write_unlock(lock);
+		if (!_cond_resched())
+			cpu_relax();
+		ret = 1;
+		write_lock(lock);
+	}
+	return ret;
+}
+EXPORT_SYMBOL(__cond_resched_rwlock_write);
+
+#ifdef CONFIG_PREEMPT_DYNAMIC
+
+#ifdef CONFIG_GENERIC_ENTRY
+#include <linux/entry-common.h>
+#endif
+
+/*
+ * SC:cond_resched
+ * SC:might_resched
+ * SC:preempt_schedule
+ * SC:preempt_schedule_notrace
+ * SC:irqentry_exit_cond_resched
+ *
+ *
+ * NONE:
+ *   cond_resched               <- __cond_resched
+ *   might_resched              <- RET0
+ *   preempt_schedule           <- NOP
+ *   preempt_schedule_notrace   <- NOP
+ *   irqentry_exit_cond_resched <- NOP
+ *
+ * VOLUNTARY:
+ *   cond_resched               <- __cond_resched
+ *   might_resched              <- __cond_resched
+ *   preempt_schedule           <- NOP
+ *   preempt_schedule_notrace   <- NOP
+ *   irqentry_exit_cond_resched <- NOP
+ *
+ * FULL:
+ *   cond_resched               <- RET0
+ *   might_resched              <- RET0
+ *   preempt_schedule           <- preempt_schedule
+ *   preempt_schedule_notrace   <- preempt_schedule_notrace
+ *   irqentry_exit_cond_resched <- irqentry_exit_cond_resched
+ */
+
+enum {
+	preempt_dynamic_undefined = -1,
+	preempt_dynamic_none,
+	preempt_dynamic_voluntary,
+	preempt_dynamic_full,
+};
+
+int preempt_dynamic_mode = preempt_dynamic_undefined;
+
+int sched_dynamic_mode(const char *str)
+{
+	if (!strcmp(str, "none"))
+		return preempt_dynamic_none;
+
+	if (!strcmp(str, "voluntary"))
+		return preempt_dynamic_voluntary;
+
+	if (!strcmp(str, "full"))
+		return preempt_dynamic_full;
+
+	return -EINVAL;
+}
+
+#if defined(CONFIG_HAVE_PREEMPT_DYNAMIC_CALL)
+#define preempt_dynamic_enable(f)	static_call_update(f, f##_dynamic_enabled)
+#define preempt_dynamic_disable(f)	static_call_update(f, f##_dynamic_disabled)
+#elif defined(CONFIG_HAVE_PREEMPT_DYNAMIC_KEY)
+#define preempt_dynamic_enable(f)	static_key_enable(&sk_dynamic_##f.key)
+#define preempt_dynamic_disable(f)	static_key_disable(&sk_dynamic_##f.key)
+#else
+#error "Unsupported PREEMPT_DYNAMIC mechanism"
+#endif
+
+void sched_dynamic_update(int mode)
+{
 	/*
-	 * Make sure we didn't race:
+	 * Avoid {NONE,VOLUNTARY} -> FULL transitions from ever ending up in
+	 * the ZERO state, which is invalid.
 	 */
-	if (unlikely(hlock_class(this)->usage_mask & new_mask))
-		goto unlock;
+	preempt_dynamic_enable(cond_resched);
+	preempt_dynamic_enable(might_resched);
+	preempt_dynamic_enable(preempt_schedule);
+	preempt_dynamic_enable(preempt_schedule_notrace);
+	preempt_dynamic_enable(irqentry_exit_cond_resched);
 
-	if (!hlock_class(this)->usage_mask)
-		debug_atomic_dec(nr_unused_locks);
+	switch (mode) {
+	case preempt_dynamic_none:
+		preempt_dynamic_enable(cond_resched);
+		preempt_dynamic_disable(might_resched);
+		preempt_dynamic_disable(preempt_schedule);
+		preempt_dynamic_disable(preempt_schedule_notrace);
+		preempt_dynamic_disable(irqentry_exit_cond_resched);
+		pr_info("Dynamic Preempt: none\n");
+		break;
 
-	hlock_class(this)->usage_mask |= new_mask;
+	case preempt_dynamic_voluntary:
+		preempt_dynamic_enable(cond_resched);
+		preempt_dynamic_enable(might_resched);
+		preempt_dynamic_disable(preempt_schedule);
+		preempt_dynamic_disable(preempt_schedule_notrace);
+		preempt_dynamic_disable(irqentry_exit_cond_resched);
+		pr_info("Dynamic Preempt: voluntary\n");
+		break;
 
-	if (new_bit < LOCK_TRACE_STATES) {
-		if (!(hlock_class(this)->usage_traces[new_bit] = save_trace()))
-			return 0;
+	case preempt_dynamic_full:
+		preempt_dynamic_disable(cond_resched);
+		preempt_dynamic_disable(might_resched);
+		preempt_dynamic_enable(preempt_schedule);
+		preempt_dynamic_enable(preempt_schedule_notrace);
+		preempt_dynamic_enable(irqentry_exit_cond_resched);
+		pr_info("Dynamic Preempt: full\n");
+		break;
 	}
 
-	if (new_bit < LOCK_USED) {
-		ret = mark_lock_irq(curr, this, new_bit);
-		if (!ret)
-			return 0;
+	preempt_dynamic_mode = mode;
+}
+
+static int __init setup_preempt_mode(char *str)
+{
+	int mode = sched_dynamic_mode(str);
+	if (mode < 0) {
+		pr_warn("Dynamic Preempt: unsupported mode: %s\n", str);
+		return 0;
 	}
 
-unlock:
-	graph_unlock();
+	sched_dynamic_update(mode);
+	return 1;
+}
+__setup("preempt=", setup_preempt_mode);
+
+static void __init preempt_dynamic_init(void)
+{
+	if (preempt_dynamic_mode == preempt_dynamic_undefined) {
+		if (IS_ENABLED(CONFIG_PREEMPT_NONE)) {
+			sched_dynamic_update(preempt_dynamic_none);
+		} else if (IS_ENABLED(CONFIG_PREEMPT_VOLUNTARY)) {
+			sched_dynamic_update(preempt_dynamic_voluntary);
+		} else {
+			/* Default static call setting, nothing to do */
+			WARN_ON_ONCE(!IS_ENABLED(CONFIG_PREEMPT));
+			preempt_dynamic_mode = preempt_dynamic_full;
+			pr_info("Dynamic Preempt: full\n");
+		}
+	}
+}
+
+#else /* !CONFIG_PREEMPT_DYNAMIC */
+
+static inline void preempt_dynamic_init(void) { }
+
+#endif /* #ifdef CONFIG_PREEMPT_DYNAMIC */
+
+/**
+ * yield - yield the current processor to other threads.
+ *
+ * Do not ever use this function, there's a 99% chance you're doing it wrong.
+ *
+ * The scheduler is at all times free to pick the calling task as the most
+ * eligible task to run, if removing the yield() call from your code breaks
+ * it, it's already broken.
+ *
+ * Typical broken usage is:
+ *
+ * while (!event)
+ *	yield();
+ *
+ * where one assumes that yield() will let 'the other' process run that will
+ * make event true. If the current task is a SCHED_FIFO task that will never
+ * happen. Never use yield() as a progress guarantee!!
+ *
+ * If you want to use yield() to wait for something, use wait_event().
+ * If you want to use yield() to be 'nice' for others, use cond_resched().
+ * If you still want to use yield(), do not!
+ */
+void __sched yield(void)
+{
+	set_current_state(TASK_RUNNING);
+	do_sched_yield();
+}
+EXPORT_SYMBOL(yield);
+
+/**
+ * yield_to - yield the current processor to another thread in
+ * your thread group, or accelerate that thread toward the
+ * processor it's on.
+ * @p: target task
+ * @preempt: whether task preemption is allowed or not
+ *
+ * It's the caller's job to ensure that the target task struct
+ * can't go away on us before we can do any checks.
+ *
+ * Return:
+ *	true (>0) if we indeed boosted the target task.
+ *	false (0) if we failed to boost the target.
+ *	-ESRCH if there's no task to yield to.
+ */
+int __sched yield_to(struct task_struct *p, bool preempt)
+{
+	struct task_struct *curr = current;
+	struct rq *rq, *p_rq;
+	unsigned long flags;
+	int yielded = 0;
+
+	local_irq_save(flags);
+	rq = this_rq();
+
+again:
+	p_rq = task_rq(p);
+	/*
+	 * If we're the only runnable task on the rq and target rq also
+	 * has only one task, there's absolutely no point in yielding.
+	 */
+	if (rq->nr_running == 1 && p_rq->nr_running == 1) {
+		yielded = -ESRCH;
+		goto out_irq;
+	}
+
+	double_rq_lock(rq, p_rq);
+	if (task_rq(p) != p_rq) {
+		double_rq_unlock(rq, p_rq);
+		goto again;
+	}
+
+	if (!curr->sched_class->yield_to_task)
+		goto out_unlock;
+
+	if (curr->sched_class != p->sched_class)
+		goto out_unlock;
+
+	if (task_running(p_rq, p) || !task_is_running(p))
+		goto out_unlock;
+
+	yielded = curr->sched_class->yield_to_task(rq, p);
+	if (yielded) {
+		schedstat_inc(rq->yld_count);
+		/*
+		 * Make p's CPU reschedule; pick_next_entity takes care of
+		 * fairness.
+		 */
+		if (preempt && rq != p_rq)
+			resched_curr(p_rq);
+	}
+
+out_unlock:
+	double_rq_unlock(rq, p_rq);
+out_irq:
+	local_irq_restore(flags);
+
+	if (yielded > 0)
+		schedule();
+
+	return yielded;
+}
+EXPORT_SYMBOL_GPL(yield_to);
+
+int io_schedule_prepare(void)
+{
+	int old_iowait = current->in_iowait;
+
+	current->in_iowait = 1;
+	blk_flush_plug(current->plug, true);
+	return old_iowait;
+}
+
+void io_schedule_finish(int token)
+{
+	current->in_iowait = token;
+}
+
+/*
+ * This task is about to go to sleep on IO. Increment rq->nr_iowait so
+ * that process accounting knows that this is a task in IO wait state.
+ */
+long __sched io_schedule_timeout(long timeout)
+{
+	int token;
+	long ret;
+
+	token = io_schedule_prepare();
+	ret = schedule_timeout(timeout);
+	io_schedule_finish(token);
+
+	return ret;
+}
+EXPORT_SYMBOL(io_schedule_timeout);
+
+void __sched io_schedule(void)
+{
+	int token;
+
+	token = io_schedule_prepare();
+	schedule();
+	io_schedule_finish(token);
+}
+EXPORT_SYMBOL(io_schedule);
+
+/**
+ * sys_sched_get_priority_max - return maximum RT priority.
+ * @policy: scheduling class.
+ *
+ * Return: On success, this syscall returns the maximum
+ * rt_priority that can be used by a given scheduling class.
+ * On failure, a negative error code is returned.
+ */
+SYSCALL_DEFINE1(sched_get_priority_max, int, policy)
+{
+	int ret = -EINVAL;
+
+	switch (policy) {
+	case SCHED_FIFO:
+	case SCHED_RR:
+		ret = MAX_RT_PRIO-1;
+		break;
+	case SCHED_DEADLINE:
+	case SCHED_NORMAL:
+	case SCHED_BATCH:
+	case SCHED_IDLE:
+		ret = 0;
+		break;
+	}
+	return ret;
+}
+
+/**
+ * sys_sched_get_priority_min - return minimum RT priority.
+ * @policy: scheduling class.
+ *
+ * Return: On success, this syscall returns the minimum
+ * rt_priority that can be used by a given scheduling class.
+ * On failure, a negative error code is returned.
+ */
+SYSCALL_DEFINE1(sched_get_priority_min, int, policy)
+{
+	int ret = -EINVAL;
+
+	switch (policy) {
+	case SCHED_FIFO:
+	case SCHED_RR:
+		ret = 1;
+		break;
+	case SCHED_DEADLINE:
+	case SCHED_NORMAL:
+	case SCHED_BATCH:
+	case SCHED_IDLE:
+		ret = 0;
+	}
+	return ret;
+}
+
+static int sched_rr_get_interval(pid_t pid, struct timespec64 *t)
+{
+	struct task_struct *p;
+	unsigned int time_slice;
+	struct rq_flags rf;
+	struct rq *rq;
+	int retval;
+
+	if (pid < 0)
+		return -EINVAL;
+
+	retval = -ESRCH;
+	rcu_read_lock();
+	p = find_process_by_pid(pid);
+	if (!p)
+		goto out_unlock;
+
+	retval = security_task_getscheduler(p);
+	if (retval)
+		goto out_unlock;
+
+	rq = task_rq_lock(p, &rf);
+	time_slice = 0;
+	if (p->sched_class->get_rr_interval)
+		time_slice = p->sched_class->get_rr_interval(rq, p);
+	task_rq_unlock(rq, p, &rf);
+
+	rcu_read_unlock();
+	jiffies_to_timespec64(time_slice, t);
+	return 0;
+
+out_unlock:
+	rcu_read_unlock();
+	return retval;
+}
+
+/**
+ * sys_sched_rr_get_interval - return the default timeslice of a process.
+ * @pid: pid of the process.
+ * @interval: userspace pointer to the timeslice value.
+ *
+ * this syscall writes the default timeslice value of a given process
+ * into the user-space timespec buffer. A value of '0' means infinity.
+ *
+ * Return: On success, 0 and the timeslice is in @interval. Otherwise,
+ * an error code.
+ */
+SYSCALL_DEFINE2(sched_rr_get_interval, pid_t, pid,
+		struct __kernel_timespec __user *, interval)
+{
+	struct timespec64 t;
+	int retval = sched_rr_get_interval(pid, &t);
+
+	if (retval == 0)
+		retval = put_timespec64(&t, interval);
+
+	return retval;
+}
+
+#ifdef CONFIG_COMPAT_32BIT_TIME
+SYSCALL_DEFINE2(sched_rr_get_interval_time32, pid_t, pid,
+		struct old_timespec32 __user *, interval)
+{
+	struct timespec64 t;
+	int retval = sched_rr_get_interval(pid, &t);
+
+	if (retval == 0)
+		retval = put_old_timespec32(&t, interval);
+	return retval;
+}
+#endif
+
+void sched_show_task(struct task_struct *p)
+{
+	unsigned long free = 0;
+	int ppid;
+
+	if (!try_get_task_stack(p))
+		return;
+
+	pr_info("task:%-15.15s state:%c", p->comm, task_state_to_char(p));
+
+	if (task_is_running(p))
+		pr_cont("  running task    ");
+#ifdef CONFIG_DEBUG_STACK_USAGE
+	free = stack_not_used(p);
+#endif
+	ppid = 0;
+	rcu_read_lock();
+	if (pid_alive(p))
+		ppid = task_pid_nr(rcu_dereference(p->real_parent));
+	rcu_read_unlock();
+	pr_cont(" stack:%5lu pid:%5d ppid:%6d flags:0x%08lx\n",
+		free, task_pid_nr(p), ppid,
+		read_task_thread_flags(p));
+
+	print_worker_info(KERN_INFO, p);
+	print_stop_info(KERN_INFO, p);
+	show_stack(p, NULL, KERN_INFO);
+	put_task_stack(p);
+}
+EXPORT_SYMBOL_GPL(sched_show_task);
+
+static inline bool
+state_filter_match(unsigned long state_filter, struct task_struct *p)
+{
+	unsigned int state = READ_ONCE(p->__state);
+
+	/* no filter, everything matches */
+	if (!state_filter)
+		return true;
+
+	/* filter, but doesn't match */
+	if (!(state & state_filter))
+		return false;
 
 	/*
-	 * We must printk outside of the graph_lock:
+	 * When looking for TASK_UNINTERRUPTIBLE skip TASK_IDLE (allows
+	 * TASK_KILLABLE).
 	 */
-	if (ret == 2) {
-		printk("\nmarked lock as {%s}:\n", usage_str[new_bit]);
-		print_lock(this);
-		print_irqtrace_events(curr);
-		dump_stack();
+	if (state_filter == TASK_UNINTERRUPTIBLE && state == TASK_IDLE)
+		return false;
+
+	return true;
+}
+
+
+void show_state_filter(unsigned int state_filter)
+{
+	struct task_struct *g, *p;
+
+	rcu_read_lock();
+	for_each_process_thread(g, p) {
+		/*
+		 * reset the NMI-timeout, listing all files on a slow
+		 * console might take a lot of time:
+		 * Also, reset softlockup watchdogs on all CPUs, because
+		 * another CPU might be blocked waiting for us to process
+		 * an IPI.
+		 */
+		touch_nmi_watchdog();
+		touch_all_softlockup_watchdogs();
+		if (state_filter_match(state_filter, p))
+			sched_show_task(p);
 	}
+
+#ifdef CONFIG_SCHED_DEBUG
+	if (!state_filter)
+		sysrq_sched_debug_show();
+#endif
+	rcu_read_unlock();
+	/*
+	 * Only show locks if all tasks are dumped:
+	 */
+	if (!state_filter)
+		debug_show_all_locks();
+}
+
+/**
+ * init_idle - set up an idle thread for a given CPU
+ * @idle: task in question
+ * @cpu: CPU the idle task belongs to
+ *
+ * NOTE: this function does not set the idle thread's NEED_RESCHED
+ * flag, to make booting more robust.
+ */
+void __init init_idle(struct task_struct *idle, int cpu)
+{
+	struct rq *rq = cpu_rq(cpu);
+	unsigned long flags;
+
+	__sched_fork(0, idle);
+
+	raw_spin_lock_irqsave(&idle->pi_lock, flags);
+	raw_spin_rq_lock(rq);
+
+	idle->__state = TASK_RUNNING;
+	idle->se.exec_start = sched_clock();
+	/*
+	 * PF_KTHREAD should already be set at this point; regardless, make it
+	 * look like a proper per-CPU kthread.
+	 */
+	idle->flags |= PF_IDLE | PF_KTHREAD | PF_NO_SETAFFINITY;
+	kthread_set_per_cpu(idle, cpu);
+
+#ifdef CONFIG_SMP
+	/*
+	 * It's possible that init_idle() gets called multiple times on a task,
+	 * in that case do_set_cpus_allowed() will not do the right thing.
+	 *
+	 * And since this is boot we can forgo the serialization.
+	 */
+	set_cpus_allowed_common(idle, cpumask_of(cpu), 0);
+#endif
+	/*
+	 * We're having a chicken and egg problem, even though we are
+	 * holding rq->lock, the CPU isn't yet set to this CPU so the
+	 * lockdep check in task_group() will fail.
+	 *
+	 * Similar case to sched_fork(). / Alternatively we could
+	 * use task_rq_lock() here and obtain the other rq->lock.
+	 *
+	 * Silence PROVE_RCU
+	 */
+	rcu_read_lock();
+	__set_task_cpu(idle, cpu);
+	rcu_read_unlock();
+
+	rq->idle = idle;
+	rcu_assign_pointer(rq->curr, idle);
+	idle->on_rq = TASK_ON_RQ_QUEUED;
+#ifdef CONFIG_SMP
+	idle->on_cpu = 1;
+#endif
+	raw_spin_rq_unlock(rq);
+	raw_spin_unlock_irqrestore(&idle->pi_lock, flags);
+
+	/* Set the preempt count _outside_ the spinlocks! */
+	init_idle_preempt_count(idle, cpu);
+
+	/*
+	 * The idle tasks have their own, simple scheduling class:
+	 */
+	idle->sched_class = &idle_sched_class;
+	ftrace_graph_init_idle_task(idle, cpu);
+	vtime_init_idle(idle, cpu);
+#ifdef CONFIG_SMP
+	sprintf(idle->comm, "%s/%d", INIT_TASK_COMM, cpu);
+#endif
+}
+
+#ifdef CONFIG_SMP
+
+int cpuset_cpumask_can_shrink(const struct cpumask *cur,
+			      const struct cpumask *trial)
+{
+	int ret = 1;
+
+	if (cpumask_empty(cur))
+		return ret;
+
+	ret = dl_cpuset_cpumask_can_shrink(cur, trial);
 
 	return ret;
 }
 
-static inline short task_wait_context(struct task_struct *curr)
+int task_can_attach(struct task_struct *p,
+		    const struct cpumask *cs_cpus_allowed)
 {
-	/*
-	 * Set appropriate wait type for the context; for IRQs we have to take
-	 * into account force_irqthread as that is implied by PREEMPT_RT.
-	 */
-	if (lockdep_hardirq_context()) {
-		/*
-		 * Check if force_irqthreads will run us threaded.
-		 */
-		if (curr->hardirq_threaded || curr->irq_config)
-			return LD_WAIT_CONFIG;
+	int ret = 0;
 
-		return LD_WAIT_SPIN;
-	} else if (curr->softirq_context) {
-		/*
-		 * Softirqs are always threaded.
-		 */
-		return LD_WAIT_CONFIG;
+	/*
+	 * Kthreads which disallow setaffinity shouldn't be moved
+	 * to a new cpuset; we don't want to change their CPU
+	 * affinity and isolating such threads by their set of
+	 * allowed nodes is unnecessary.  Thus, cpusets are not
+	 * applicable for such threads.  This prevents checking for
+	 * success of set_cpus_allowed_ptr() on all attached tasks
+	 * before cpus_mask may be changed.
+	 */
+	if (p->flags & PF_NO_SETAFFINITY) {
+		ret = -EINVAL;
+		goto out;
 	}
 
-	return LD_WAIT_MAX;
+	if (dl_task(p) && !cpumask_intersects(task_rq(p)->rd->span,
+					      cs_cpus_allowed)) {
+		int cpu = cpumask_any_and(cpu_active_mask, cs_cpus_allowed);
+
+		ret = dl_cpu_busy(cpu, p);
+	}
+
+out:
+	return ret;
 }
 
-static int
-print_lock_invalid_wait_context(struct task_struct *curr,
-				struct held_lock *hlock)
+bool sched_smp_initialized __read_mostly;
+
+#ifdef CONFIG_NUMA_BALANCING
+/* Migrate current task p to target_cpu */
+int migrate_task_to(struct task_struct *p, int target_cpu)
 {
-	short curr_inner;
+	struct migration_arg arg = { p, target_cpu };
+	int curr_cpu = task_cpu(p);
 
-	if (!debug_locks_off())
+	if (curr_cpu == target_cpu)
 		return 0;
-	if (debug_locks_silent)
-		return 0;
 
-	pr_warn("\n");
-	pr_warn("=============================\n");
-	pr_warn("[ BUG: Invalid wait context ]\n");
-	print_kernel_ident();
-	pr_warn("-----------------------------\n");
+	if (!cpumask_test_cpu(target_cpu, p->cpus_ptr))
+		return -EINVAL;
 
-	pr_warn("%s/%d is trying to lock:\n", curr->comm, task_pid_nr(curr));
-	print_lock(hlock);
+	/* TODO: This is not properly updating schedstats */
 
-	pr_warn("other info that might help us debug this:\n");
+	trace_sched_move_numa(p, curr_cpu, target_cpu);
+	return stop_one_cpu(curr_cpu, migration_cpu_stop, &arg);
+}
 
-	curr_inner = task_wait_context(curr);
-	pr_warn("context-{%d:%d}\n", curr_inner, curr_inner);
+/*
+ * Requeue a task on a given node and accurately track the number of NUMA
+ * tasks on the runqueues
+ */
+void sched_setnuma(struct task_struct *p, int nid)
+{
+	bool queued, running;
+	struct rq_flags rf;
+	struct rq *rq;
 
-	lockdep_print_held_locks(curr);
+	rq = task_rq_lock(p, &rf);
+	queued = task_on_rq_queued(p);
+	running = task_current(rq, p);
 
-	pr_warn("stack backtrace:\n");
-	dump_stack();
+	if (queued)
+		dequeue_task(rq, p, DEQUEUE_SAVE);
+	if (running)
+		put_prev_task(rq, p);
+
+	p->numa_preferred_nid = nid;
+
+	if (queued)
+		enqueue_task(rq, p, ENQUEUE_RESTORE | ENQUEUE_NOCLOCK);
+	if (running)
+		set_next_task(rq, p);
+	task_rq_unlock(rq, p, &rf);
+}
+#endif /* CONFIG_NUMA_BALANCING */
+
+#ifdef CONFIG_HOTPLUG_CPU
+/*
+ * Ensure that the idle task is using init_mm right before its CPU goes
+ * offline.
+ */
+void idle_task_exit(void)
+{
+	struct mm_struct *mm = current->active_mm;
+
+	BUG_ON(cpu_online(smp_processor_id()));
+	BUG_ON(current != this_rq()->idle);
+
+	if (mm != &init_mm) {
+		switch_mm(mm, &init_mm, current);
+		finish_arch_post_lock_switch();
+	}
+
+	/* finish_cpu(), as ran on the BP, will clean up the active_mm state */
+}
+
+static int __balance_push_cpu_stop(void *arg)
+{
+	struct task_struct *p = arg;
+	struct rq *rq = this_rq();
+	struct rq_flags rf;
+	int cpu;
+
+	raw_spin_lock_irq(&p->pi_lock);
+	rq_lock(rq, &rf);
+
+	update_rq_clock(rq);
+
+	if (task_rq(p) == rq && task_on_rq_queued(p)) {
+		cpu = select_fallback_rq(rq->cpu, p);
+		rq = __migrate_task(rq, &rf, p, cpu);
+	}
+
+	rq_unlock(rq, &rf);
+	raw_spin_unlock_irq(&p->pi_lock);
+
+	put_task_struct(p);
 
 	return 0;
 }
 
+static DEFINE_PER_CPU(struct cpu_stop_work, push_work);
+
 /*
- * Verify the wait_type context.
+ * Ensure we only run per-cpu kthreads once the CPU goes !active.
  *
- * This check validates we take locks in the right wait-type order; that is it
- * ensures that we do not take mutexes inside spinlocks and do not attempt to
- * acquire spinlocks inside raw_spinlocks and the sort.
- *
- * The entire thing is slightly more complex because of RCU, RCU is a lock that
- * can be taken from (pretty much) any context but also has constraints.
- * However when taken in a stricter environment the RCU lock does not loosen
- * the constraints.
- *
- * Therefore we must look for the strictest environment in the lock stack and
- * compare that to the lock we're trying to acquire.
+ * This is enabled below SCHED_AP_ACTIVE; when !cpu_active(), but only
+ * effective when the hotplug motion is down.
  */
-static int check_wait_context(struct task_struct *curr, struct held_lock *next)
+static void balance_push(struct rq *rq)
 {
-	u8 next_inner = hlock_class(next)->wait_type_inner;
-	u8 next_outer = hlock_class(next)->wait_type_outer;
-	u8 curr_inner;
-	int depth;
+	struct task_struct *push_task = rq->curr;
 
-	if (!next_inner || next->trylock)
-		return 0;
-
-	if (!next_outer)
-		next_outer = next_inner;
+	lockdep_assert_rq_held(rq);
 
 	/*
-	 * Find start of current irq_context..
+	 * Ensure the thing is persistent until balance_push_set(.on = false);
 	 */
-	for (depth = curr->lockdep_depth - 1; depth >= 0; depth--) {
-		struct held_lock *prev = curr->held_locks + depth;
-		if (prev->irq_context != next->irq_context)
-			break;
+	rq->balance_callback = &balance_push_callback;
+
+	/*
+	 * Only active while going offline and when invoked on the outgoing
+	 * CPU.
+	 */
+	if (!cpu_dying(rq->cpu) || rq != this_rq())
+		return;
+
+	/*
+	 * Both the cpu-hotplug and stop task are in this case and are
+	 * required to complete the hotplug process.
+	 */
+	if (kthread_is_per_cpu(push_task) ||
+	    is_migration_disabled(push_task)) {
+
+		/*
+		 * If this is the idle task on the outgoing CPU try to wake
+		 * up the hotplug control thread which might wait for the
+		 * last task to vanish. The rcuwait_active() check is
+		 * accurate here because the waiter is pinned on this CPU
+		 * and can't obviously be running in parallel.
+		 *
+		 * On RT kernels this also has to check whether there are
+		 * pinned and scheduled out tasks on the runqueue. They
+		 * need to leave the migrate disabled section first.
+		 */
+		if (!rq->nr_running && !rq_has_pinned_tasks(rq) &&
+		    rcuwait_active(&rq->hotplug_wait)) {
+			raw_spin_rq_unlock(rq);
+			rcuwait_wake_up(&rq->hotplug_wait);
+			raw_spin_rq_lock(rq);
+		}
+		return;
 	}
-	depth++;
 
-	curr_inner = task_wait_context(curr);
+	get_task_struct(push_task);
+	/*
+	 * Temporarily drop rq->lock such that we can wake-up the stop task.
+	 * Both preemption and IRQs are still disabled.
+	 */
+	raw_spin_rq_unlock(rq);
+	stop_one_cpu_nowait(rq->cpu, __balance_push_cpu_stop, push_task,
+			    this_cpu_ptr(&push_work));
+	/*
+	 * At this point need_resched() is true and we'll take the loop in
+	 * schedule(). The next pick is obviously going to be the stop task
+	 * which kthread_is_per_cpu() and will push this task away.
+	 */
+	raw_spin_rq_lock(rq);
+}
 
-	for (; depth < curr->lockdep_depth; depth++) {
-		struct held_lock *prev = curr->held_locks + depth;
-		u8 prev_inner = hlock_class(prev)->wait_type_inner;
+static void balance_push_set(int cpu, bool on)
+{
+	struct rq *rq = cpu_rq(cpu);
+	struct rq_flags rf;
 
-		if (prev_inner) {
-			/*
-			 * We can have a bigger inner than a previous one
-			 * when outer is smaller than inner, as with RCU.
-			 *
-			 * Also due to trylocks.
-			 */
-			curr_inner = min(curr_inner, prev_inner);
+	rq_lock_irqsave(rq, &rf);
+	if (on) {
+		WARN_ON_ONCE(rq->balance_callback);
+		rq->balance_callback = &balance_push_callback;
+	} else if (rq->balance_callback == &balance_push_callback) {
+		rq->balance_callback = NULL;
+	}
+	rq_unlock_irqrestore(rq, &rf);
+}
+
+/*
+ * Invoked from a CPUs hotplug control thread after the CPU has been marked
+ * inactive. All tasks which are not per CPU kernel threads are either
+ * pushed off this CPU now via balance_push() or placed on a different CPU
+ * during wakeup. Wait until the CPU is quiescent.
+ */
+static void balance_hotplug_wait(void)
+{
+	struct rq *rq = this_rq();
+
+	rcuwait_wait_event(&rq->hotplug_wait,
+			   rq->nr_running == 1 && !rq_has_pinned_tasks(rq),
+			   TASK_UNINTERRUPTIBLE);
+}
+
+#else
+
+static inline void balance_push(struct rq *rq)
+{
+}
+
+static inline void balance_push_set(int cpu, bool on)
+{
+}
+
+static inline void balance_hotplug_wait(void)
+{
+}
+
+#endif /* CONFIG_HOTPLUG_CPU */
+
+void set_rq_online(struct rq *rq)
+{
+	if (!rq->online) {
+		const struct sched_class *class;
+
+		cpumask_set_cpu(rq->cpu, rq->rd->online);
+		rq->online = 1;
+
+		for_each_class(class) {
+			if (class->rq_online)
+				class->rq_online(rq);
 		}
 	}
-
-	if (next_outer > curr_inner)
-		return print_lock_invalid_wait_context(curr, next);
-
-	return 0;
 }
 
-#else /* CONFIG_PROVE_LOCKING */
-
-static inline int
-mark_usage(struct task_struct *curr, struct held_lock *hlock, int check)
+void set_rq_offline(struct rq *rq)
 {
-	return 1;
-}
+	if (rq->online) {
+		const struct sched_class *class;
 
-static inline unsigned int task_irq_context(struct task_struct *task)
-{
-	return 0;
-}
+		for_each_class(class) {
+			if (class->rq_offline)
+				class->rq_offline(rq);
+		}
 
-static inline int separate_irq_context(struct task_struct *curr,
-		struct held_lock *hlock)
-{
-	return 0;
+		cpumask_clear_cpu(rq->cpu, rq->rd->online);
+		rq->online = 0;
+	}
 }
-
-static inline int check_wait_context(struct task_struct *curr,
-				     struct held_lock *next)
-{
-	return 0;
-}
-
-#endif /* CONFIG_PROVE_LOCKING */
 
 /*
- * Initialize a lock instance's lock-class mapping info:
+ * used to mark begin/end of suspend/resume:
  */
-void lockdep_init_map_type(struct lockdep_map *lock, const char *name,
-			    struct lock_class_key *key, int subclass,
-			    u8 inner, u8 outer, u8 lock_type)
+static int num_cpus_frozen;
+
+/*
+ * Update cpusets according to cpu_active mask.  If cpusets are
+ * disabled, cpuset_update_active_cpus() becomes a simple wrapper
+ * around partition_sched_domains().
+ *
+ * If we come here as part of a suspend/resume, don't touch cpusets because we
+ * want to restore it back to its original state upon resume anyway.
+ */
+static void cpuset_cpu_active(void)
 {
-	int i;
+	if (cpuhp_tasks_frozen) {
+		/*
+		 * num_cpus_frozen tracks how many CPUs are involved in suspend
+		 * resume sequence. As long as this is not the last online
+		 * operation in the resume sequence, just build a single sched
+		 * domain, ignoring cpusets.
+		 */
+		partition_sched_domains(1, NULL, NULL);
+		if (--num_cpus_frozen)
+			return;
+		/*
+		 * This is the last CPU online operation. So fall through and
+		 * restore the original sched domains by considering the
+		 * cpuset configurations.
+		 */
+		cpuset_force_rebuild();
+	}
+	cpuset_update_active_cpus();
+}
 
-	for (i = 0; i < NR_LOCKDEP_CACHING_CLASSES; i++)
-		lock->class_cache[i] = NULL;
+static int cpuset_cpu_inactive(unsigned int cpu)
+{
+	if (!cpuhp_tasks_frozen) {
+		int ret = dl_cpu_busy(cpu, NULL);
 
-#ifdef CONFIG_LOCK_STAT
-	lock->cpu = raw_smp_processor_id();
+		if (ret)
+			return ret;
+		cpuset_update_active_cpus();
+	} else {
+		num_cpus_frozen++;
+		partition_sched_domains(1, NULL, NULL);
+	}
+	return 0;
+}
+
+int sched_cpu_activate(unsigned int cpu)
+{
+	struct rq *rq = cpu_rq(cpu);
+	struct rq_flags rf;
+
+	/*
+	 * Clear the balance_push callback and prepare to schedule
+	 * regular tasks.
+	 */
+	balance_push_set(cpu, false);
+
+#ifdef CONFIG_SCHED_SMT
+	/*
+	 * When going up, increment the number of cores with SMT present.
+	 */
+	if (cpumask_weight(cpu_smt_mask(cpu)) == 2)
+		static_branch_inc_cpuslocked(&sched_smt_present);
+#endif
+	set_cpu_active(cpu, true);
+
+	if (sched_smp_initialized) {
+		sched_update_numa(cpu, true);
+		sched_domains_numa_masks_set(cpu);
+		cpuset_cpu_active();
+	}
+
+	/*
+	 * Put the rq online, if not already. This happens:
+	 *
+	 * 1) In the early boot process, because we build the real domains
+	 *    after all CPUs have been brought up.
+	 *
+	 * 2) At runtime, if cpuset_cpu_active() fails to rebuild the
+	 *    domains.
+	 */
+	rq_lock_irqsave(rq, &rf);
+	if (rq->rd) {
+		BUG_ON(!cpumask_test_cpu(cpu, rq->rd->span));
+		set_rq_online(rq);
+	}
+	rq_unlock_irqrestore(rq, &rf);
+
+	return 0;
+}
+
+int sched_cpu_deactivate(unsigned int cpu)
+{
+	struct rq *rq = cpu_rq(cpu);
+	struct rq_flags rf;
+	int ret;
+
+	/*
+	 * Remove CPU from nohz.idle_cpus_mask to prevent participating in
+	 * load balancing when not active
+	 */
+	nohz_balance_exit_idle(rq);
+
+	set_cpu_active(cpu, false);
+
+	/*
+	 * From this point forward, this CPU will refuse to run any task that
+	 * is not: migrate_disable() or KTHREAD_IS_PER_CPU, and will actively
+	 * push those tasks away until this gets cleared, see
+	 * sched_cpu_dying().
+	 */
+	balance_push_set(cpu, true);
+
+	/*
+	 * We've cleared cpu_active_mask / set balance_push, wait for all
+	 * preempt-disabled and RCU users of this state to go away such that
+	 * all new such users will observe it.
+	 *
+	 * Specifically, we rely on ttwu to no longer target this CPU, see
+	 * ttwu_queue_cond() and is_cpu_allowed().
+	 *
+	 * Do sync before park smpboot threads to take care the rcu boost case.
+	 */
+	synchronize_rcu();
+
+	rq_lock_irqsave(rq, &rf);
+	if (rq->rd) {
+		update_rq_clock(rq);
+		BUG_ON(!cpumask_test_cpu(cpu, rq->rd->span));
+		set_rq_offline(rq);
+	}
+	rq_unlock_irqrestore(rq, &rf);
+
+#ifdef CONFIG_SCHED_SMT
+	/*
+	 * When going down, decrement the number of cores with SMT present.
+	 */
+	if (cpumask_weight(cpu_smt_mask(cpu)) == 2)
+		static_branch_dec_cpuslocked(&sched_smt_present);
+
+	sched_core_cpu_deactivate(cpu);
 #endif
 
-	/*
-	 * Can't be having no nameless bastards around this place!
-	 */
-	if (DEBUG_LOCKS_WARN_ON(!name)) {
-		lock->name = "NULL";
-		return;
-	}
-
-	lock->name = name;
-
-	lock->wait_type_outer = outer;
-	lock->wait_type_inner = inner;
-	lock->lock_type = lock_type;
-
-	/*
-	 * No key, no joy, we need to hash something.
-	 */
-	if (DEBUG_LOCKS_WARN_ON(!key))
-		return;
-	/*
-	 * Sanity check, the lock-class key must either have been allocated
-	 * statically or must have been registered as a dynamic key.
-	 */
-	if (!static_obj(key) && !is_dynamic_key(key)) {
-		if (debug_locks)
-			printk(KERN_ERR "BUG: key %px has not been registered!\n", key);
-		DEBUG_LOCKS_WARN_ON(1);
-		return;
-	}
-	lock->key = key;
-
-	if (unlikely(!debug_locks))
-		return;
-
-	if (subclass) {
-		unsigned long flags;
-
-		if (DEBUG_LOCKS_WARN_ON(!lockdep_enabled()))
-			return;
-
-		raw_local_irq_save(flags);
-		lockdep_recursion_inc();
-		register_lock_class(lock, subclass, 1);
-		lockdep_recursion_finish();
-		raw_local_irq_restore(flags);
-	}
-}
-EXPORT_SYMBOL_GPL(lockdep_init_map_type);
-
-struct lock_class_key __lockdep_no_validate__;
-EXPORT_SYMBOL_GPL(__lockdep_no_validate__);
-
-static void
-print_lock_nested_lock_not_held(struct task_struct *curr,
-				struct held_lock *hlock,
-				unsigned long ip)
-{
-	if (!debug_locks_off())
-		return;
-	if (debug_locks_silent)
-		return;
-
-	pr_warn("\n");
-	pr_warn("==================================\n");
-	pr_warn("WARNING: Nested lock was not taken\n");
-	print_kernel_ident();
-	pr_warn("----------------------------------\n");
-
-	pr_warn("%s/%d is trying to lock:\n", curr->comm, task_pid_nr(curr));
-	print_lock(hlock);
-
-	pr_warn("\nbut this task is not holding:\n");
-	pr_warn("%s\n", hlock->nest_lock->name);
-
-	pr_warn("\nstack backtrace:\n");
-	dump_stack();
-
-	pr_warn("\nother info that might help us debug this:\n");
-	lockdep_print_held_locks(curr);
-
-	pr_warn("\nstack backtrace:\n");
-	dump_stack();
-}
-
-static int __lock_is_held(const struct lockdep_map *lock, int read);
-
-/*
- * This gets called for every mutex_lock*()/spin_lock*() operation.
- * We maintain the dependency maps and validate the locking attempt:
- *
- * The callers must make sure that IRQs are disabled before calling it,
- * otherwise we could get an interrupt which would want to take locks,
- * which would end up in lockdep again.
- */
-static int __lock_acquire(struct lockdep_map *lock, unsigned int subclass,
-			  int trylock, int read, int check, int hardirqs_off,
-			  struct lockdep_map *nest_lock, unsigned long ip,
-			  int references, int pin_count)
-{
-	struct task_struct *curr = current;
-	struct lock_class *class = NULL;
-	struct held_lock *hlock;
-	unsigned int depth;
-	int chain_head = 0;
-	int class_idx;
-	u64 chain_key;
-
-	if (unlikely(!debug_locks))
+	if (!sched_smp_initialized)
 		return 0;
 
-	if (!prove_locking || lock->key == &__lockdep_no_validate__)
-		check = 0;
-
-	if (subclass < NR_LOCKDEP_CACHING_CLASSES)
-		class = lock->class_cache[subclass];
-	/*
-	 * Not cached?
-	 */
-	if (unlikely(!class)) {
-		class = register_lock_class(lock, subclass, 0);
-		if (!class)
-			return 0;
+	sched_update_numa(cpu, false);
+	ret = cpuset_cpu_inactive(cpu);
+	if (ret) {
+		balance_push_set(cpu, false);
+		set_cpu_active(cpu, true);
+		sched_update_numa(cpu, true);
+		return ret;
 	}
+	sched_domains_numa_masks_clear(cpu);
+	return 0;
+}
 
-	debug_class_ops_inc(class);
+static void sched_rq_cpu_starting(unsigned int cpu)
+{
+	struct rq *rq = cpu_rq(cpu);
 
-	if (very_verbose(class)) {
-		printk("\nacquire class [%px] %s", class->key, class->name);
-		if (class->name_version > 1)
-			printk(KERN_CONT "#%d", class->name_version);
-		printk(KERN_CONT "\n");
-		dump_stack();
+	rq->calc_load_update = calc_load_update;
+	update_max_interval();
+}
+
+int sched_cpu_starting(unsigned int cpu)
+{
+	sched_core_cpu_starting(cpu);
+	sched_rq_cpu_starting(cpu);
+	sched_tick_start(cpu);
+	return 0;
+}
+
+#ifdef CONFIG_HOTPLUG_CPU
+
+/*
+ * Invoked immediately before the stopper thread is invoked to bring the
+ * CPU down completely. At this point all per CPU kthreads except the
+ * hotplug thread (current) and the stopper thread (inactive) have been
+ * either parked or have been unbound from the outgoing CPU. Ensure that
+ * any of those which might be on the way out are gone.
+ *
+ * If after this point a bound task is being woken on this CPU then the
+ * responsible hotplug callback has failed to do it's job.
+ * sched_cpu_dying() will catch it with the appropriate fireworks.
+ */
+int sched_cpu_wait_empty(unsigned int cpu)
+{
+	balance_hotplug_wait();
+	return 0;
+}
+
+/*
+ * Since this CPU is going 'away' for a while, fold any nr_active delta we
+ * might have. Called from the CPU stopper task after ensuring that the
+ * stopper is the last running task on the CPU, so nr_active count is
+ * stable. We need to take the teardown thread which is calling this into
+ * account, so we hand in adjust = 1 to the load calculation.
+ *
+ * Also see the comment "Global load-average calculations".
+ */
+static void calc_load_migrate(struct rq *rq)
+{
+	long delta = calc_load_fold_active(rq, 1);
+
+	if (delta)
+		atomic_long_add(delta, &calc_load_tasks);
+}
+
+static void dump_rq_tasks(struct rq *rq, const char *loglvl)
+{
+	struct task_struct *g, *p;
+	int cpu = cpu_of(rq);
+
+	lockdep_assert_rq_held(rq);
+
+	printk("%sCPU%d enqueued tasks (%u total):\n", loglvl, cpu, rq->nr_running);
+	for_each_process_thread(g, p) {
+		if (task_cpu(p) != cpu)
+			continue;
+
+		if (!task_on_rq_queued(p))
+			continue;
+
+		printk("%s\tpid: %d, name: %s\n", loglvl, p->pid, p->comm);
 	}
+}
+
+int sched_cpu_dying(unsigned int cpu)
+{
+	struct rq *rq = cpu_rq(cpu);
+	struct rq_flags rf;
+
+	/* Handle pending wakeups and then migrate everything off */
+	sched_tick_stop(cpu);
+
+	rq_lock_irqsave(rq, &rf);
+	if (rq->nr_running != 1 || rq_has_pinned_tasks(rq)) {
+		WARN(true, "Dying CPU not properly vacated!");
+		dump_rq_tasks(rq, KERN_WARNING);
+	}
+	rq_unlock_irqrestore(rq, &rf);
+
+	calc_load_migrate(rq);
+	update_max_interval();
+	hrtick_clear(rq);
+	sched_core_cpu_dying(cpu);
+	return 0;
+}
+#endif
+
+void __init sched_init_smp(void)
+{
+	sched_init_numa(NUMA_NO_NODE);
 
 	/*
-	 * Add the lock to the list of currently held locks.
-	 * (we dont increase the depth just yet, up until the
-	 * dependency checks are done)
+	 * There's no userspace yet to cause hotplug operations; hence all the
+	 * CPU masks are stable and all blatant races in the below code cannot
+	 * happen.
 	 */
-	depth = curr->lockdep_depth;
-	/*
-	 * Ran out of static storage for our per-task lock stack again have we?
-	 */
-	if (DEBUG_LOCKS_WARN_ON(depth >= MAX/dqblk_xfs.h \
-  include/linux/dqblk_v1.h \
-  include/linux/dqblk_v2.h \
-  include/linux/dqblk_qtree.h \
-  include/linux/projid.h \
-  include/uapi/linux/quota.h \
-  include/linux/nfs_fs_i.h \
-  include/linux/seq_file.h \
-  include/linux/string_helpers.h \
-  include/linux/ctype.h \
-  include/linux/kernfs.h \
-    $(wildcard include/config/KERNFS) \
-  include/linux/idr.h \
-  include/linux/ns_common.h \
-  include/linux/nsproxy.h \
-  include/linux/user_namespace.h \
-    $(wildcard include/config/INOTIFY_USER) \
-    $(wildcard include/config/FANOTIFY) \
-    $(wildcard include/config/PERSISTENT_KEYRINGS) \
-  include/linux/kernel_stat.h \
-  include/linux/interrupt.h \
-    $(wildcard include/config/IRQ_FORCED_THREADING) \
-    $(wildcard include/config/GENERIC_IRQ_PROBE) \
-    $(wildcard include/config/IRQ_TIMINGS) \
-  include/linux/irqreturn.h \
-  include/linux/irqnr.h \
-  include/uapi/linux/irqnr.h \
-  include/linux/hardirq.h \
-  include/linux/context_tracking_state.h \
-    $(wildcard include/config/CONTEXT_TRACKING) \
-  include/linux/ftrace_irq.h \
-    $(wildcard include/config/HWLAT_TRACER) \
-    $(wildcard include/config/OSNOISE_TRACER) \
-  include/linux/vtime.h \
-    $(wildcard include/config/VIRT_CPU_ACCOUNTING) \
-    $(wildcard include/config/IRQ_TIME_ACCOUNTING) \
-  arch/x86/include/asm/hardirq.h \
-    $(wildcard include/config/KVM_INTEL) \
-    $(wildcard include/config/HAVE_KVM) \
-    $(wildcard include/config/X86_THERMAL_VECTOR) \
-    $(wildcard include/config/X86_MCE_THRESHOLD) \
-    $(wildcard include/config/X86_MCE_AMD) \
-    $(wildcard include/config/X86_HV_CALLBACK_VECTOR) \
-    $(wildcard include/config/HYPERV) \
-  arch/x86/include/asm/irq.h \
-  arch/x86/include/asm/irq_vectors.h \
-    $(wildcard include/config/X86_IO_APIC) \
-    $(wildcard include/config/PCI_MSI) \
-  arch/x86/include/asm/sections.h \
-  include/asm-generic/sections.h \
-    $(wildcard include/config/HAVE_FUNCTION_DESCRIPTORS) \
-  include/linux/cgroup-defs.h \
-    $(wildcard include/config/CGROUP_NET_CLASSID) \
-    $(wildcard include/config/CGROUP_NET_PRIO) \
-  include/linux/u64_stats_sync.h \
-  include/linux/bpf-cgroup-defs.h \
-  include/linux/psi_types.h \
-  include/linux/kthread.h \
-  include/linux/cgroup_subsys.h \
-    $(wildcard include/config/CGROUP_DEVICE) \
-    $(wildcard include/config/CGROUP_FREEZER) \
-    $(wildcard include/config/CGROUP_PERF) \
-    $(wildcard include/config/CGROUP_HUGETLB) \
-    $(wildcard include/config/CGROUP_PIDS) \
-    $(wildcard include/config/CGROUP_RDMA) \
-    $(wildcard include/config/CGROUP_MISC) \
-    $(wildcard include/config/CGROUP_DEBUG) \
-  include/linux/filter.h \
-    $(wildcard include/config/BPF_JIT_ALWAYS_ON) \
-    $(wildcard include/config/HAVE_EBPF_JIT) \
-    $(wildcard include/config/IPV6) \
-  include/linux/bpf.h \
-  include/uapi/linux/bpf.h \
-    $(wildcard include/config/BPF_LIRC_MODE2) \
-    $(wildcard include/config/EFFICIENT_UNALIGNED_ACCESS) \
-    $(wildcard include/config/IP_ROUTE_CLASSID) \
-    $(wildcard include/config/BPF_KPROBE_OVERRIDE) \
-    $(wildcard include/config/FUNCTION_ERROR_INJECTION) \
-    $(wildcard include/config/XFRM) \
-  include/uapi/linux/bpf_common.h \
-  include/linux/file.h \
-  include/linux/rbtree_latch.h \
-  include/linux/module.h \
-    $(wildcard include/config/MODULES_TREE_LOOKUP) \
-    $(wildcard include/config/STACKTRACE_BUILD_ID) \
-    $(wildcard include/config/MODULE_SIG) \
-    $(wildcard include/config/KALLSYMS) \
-    $(wildcard include/config/BPF_EVENTS) \
-    $(wildcard include/config/DEBUG_INFO_BTF_MODULES) \
-    $(wildcard include/config/EVENT_TRACING) \
-    $(wildcard include/config/MODULE_UNLOAD) \
-    $(wildcard include/config/CONSTRUCTORS) \
-  include/linux/buildid.h \
-    $(wildcard include/config/CRASH_CORE) \
-  include/linux/kmod.h \
-  include/linux/umh.h \
-  include/linux/elf.h \
-    $(wildcard include/config/ARCH_USE_GNU_PROPERTY) \
-    $(wildcard include/config/ARCH_HAVE_ELF_PROT) \
-  arch/x86/include/asm/elf.h \
-    $(wildcard include/config/X86_X32_ABI) \
-  arch/x86/include/asm/user.h \
-  arch/x86/include/asm/user_32.h \
-  arch/x86/include/asm/fsgELF                      °      4     (               èüÿÿÿS‹X\‰ØèüÿÿÿƒÀ   èüÿÿÿ1À[ÃèüÿÿÿS‹P(‹Xú	˜ tú	˜ tT¹êÿÿÿú 	˜ t'‰È[Ãv ¶H|‹CÔº   èüÿÿÿ1É[‰ÈÃ´&    f¶H|‹CÔº   èüÿÿÿ1É[‰ÈÃ´&    f¶H|‹CÔº   èüÿÿÿ1É[‰ÈÃ´&    fèüÿÿÿ‹€”   º   ƒÉ@¶Éèüÿÿÿ1ÀÃ´&    ´&    èüÿÿÿUWVS‰Ã‹@‹P‹Rèüÿÿÿ%   =   „7   ¾ûÿÿÿ[‰ğ^_]Ã´&    t& èüÿÿÿUöÆù‰ÍW‰×º   V‰Æ¸    S»   DØƒÃë´&    ¶SƒÃ„Òt¶‹†”   èüÿÿÿ…Àyã[‰¾0  1À‰®4  ^_]Ã    à                                                                                                                                  °       à          6%s: Standard: %d Hz
- tw9906 èüÿÿÿS‰Ã‹€0  % ù  ƒøÀƒàöƒÀ<PCpPh    èüÿÿÿ‰Øèüÿÿÿ1ÀƒÄ[Ã‹S·CŠ  Q QPÿ²   ‹CTÿ0h    èüÿÿÿC¹À  º8  èüÿÿÿ‰ÇƒÄ…Àu
-¾ôÿÿÿé
-  ¹`   ‰Ú¯À   èüÿÿÿ1Éº   ‰èj èüÿÿÿ¹ 	˜ º  ‰èj j j jj jjÿj€èüÿÿÿ¹	˜ º  ‰èƒÄ$j j`j jj hÿ   j j èüÿÿÿ¹	˜ º  ‰èƒÄ j j j jj jjÿj€èüÿÿÿ‹·ü   ‰olƒÄ …öt‰èèüÿÿÿé
-  Ç‡0   °  ½   º   Ç‡4      ¶M‹‡”   èüÿÿÿ…ÀyƒÃ¾êÿÿÿSh(   èüÿÿÿXZé
-  ¶UƒÅ„ÒuÈé
-   6%s %d-%04x: chip found @ 0x%02x (%s)
- 3%s: error initializing TW9906
- èüÿÿÿº    ¸    éüÿÿÿ¸    éüÿÿÿ                 	     	ğ            tw9906                                                          à           €                   °                                                                                                                                                              @¢	ğ
-Ğ   `~~ W@)U k&l6mğnAo­p  license=GPL v2 description=TW9906 I2C subdev driver  GCC: (GNU) 11.2.0             GNU  À       À                                  ñÿ                            
-                   ‡     &   °   !                                	 =       ;    	               O   à   5     \   ;   R   	 n   `         y          ‰      :     ›      `     ¨       
-     ¶      
-                   Ä            ×       €     å       
-                   ø       0       à   0       €   P     #           :     %     U             `             ~             •             ¯             ·             Ó             ì             ù                          +             =             K             _           k             z      
-     ‰      0      tw9906.c tw9906_remove tw9906_s_ctrl tw9906_s_video_routing tw9906_log_status tw9906_probe tw9906_probe.cold tw9906_ops tw9906_ctrl_ops initial_registers tw9906_s_std config_50hz.2 config_60hz.1 tw9906_driver_init tw9906_driver tw9906_driver_exit tw9906_id tw9906_core_ops tw9906_video_ops __UNIQUE_ID_license267 __UNIQUE_ID_description266 __fentry__ v4l2_device_unregister_subdev v4l2_ctrl_handler_free i2c_smbus_write_byte_data _printk v4l2_ctrl_subdev_log_status __x86_indirect_thunk_edx devm_kmalloc v4l2_i2c_subdev_init v4l2_ctrl_handler_init_class v4l2_ctrl_new_std __this_module i2c_register_driver init_module i2c_del_driver cleanup_module __mod_i2c__tw9906_id_device_table                 !     ]      }            ±     Ê      á     õ   #  !    7    =    e                        h                                              $     )   !  0   "  Z   
-  _   !  q   $  ‰     –   %  ¦   &  °     Ç   '  Ñ     î   '  ø       '  )    =    [     m  
-  r  !  „     .    y    ‰                 (     )          +  `     l     €     Œ     à          .symtab .strtab .shstrtab .rel.text .rel.data .bss .rel__mcount_loc .rodata.str1.1 .rel.text.unlikely .rodata.str1.4 .rel.init.text .rel.exit.text .rel.rodata .modinfo .comment .note.GNU-stack .note.gnu.property                                                         @   €                    	   @       Ø  €               )             À  €                   %   	   @       X                  /             @                     8             @                    4   	   @       x  8               E      2       \                   X             z                   T   	   @       °  È      	         g      2         I                 z             Q                    v   	   @       x                  ‰             e  
-                  …   	   @       ˜                 ˜             €  Z                  ”   	   @       ¨  0                             Ú  4                  ©      0                          ²              !                     Â             $  (                                L  à              	              ,	  «                               Ø  Õ                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          sbase.h \
-  arch/x86/include/asm/vdso.h \
-  arch/x86/include/asm/desc.h \
-  arch/x86/include/asm/fixmap.h \
-    $(wildcard include/config/DEBUG_KMAP_LOCAL_FORCE_MAP) \
-    $(wildcard include/config/X86_VSYSCALL_EMULATION) \
-    $(wildcard include/config/PROVIDE_OHCI1394_DMA_INIT) \
-    $(wildcard include/config/PCI_MMCONFIG) \
-    $(wildcard include/config/ACPI_APEI_GHES) \
-    $(wildcard include/config/INTEL_TXT) \
-  include/asm-generic/fixmap.h \
-  arch/x86/include/asm/cpu_entry_area.h \
-  arch/x86/include/asm/intel_ds.h \
-  arch/x86/include/asm/pgtable_areas.h \
-  arch/x86/include/asm/pgtable_32_areas.h \
-  include/uapi/linux/elf.h \
-  include/uapi/linux/elf-em.h \
-  include/linux/kobject.h \
-    $(wildcard include/config/UEVENT_HELPER) \
-    $(wildcard include/config/DEBUG_KOBJECT_RELEASE) \
-  include/linux/sysfs.h \
-  include/linux/kobject_ns.h \
-  include/linux/moduleparam.h \
-    $(wildcard include/config/ALPHA) \
-    $(wildcard include/config/IA64) \
-    $(wildcard include/config/PPC64) \
-  include/linux/error-injection.h \
-  include/asm-generic/error-injection.h \
-  include/linux/cfi.h \
-    $(wildcard include/config/CFI_CLANG_SHADOW) \
-  arch/x86/include/asm/module.h \
-    $(wildcard include/config/UNWINDER_ORC) \
-  include/asm-generic/module.h \
-    $(wildcard include/config/HAVE_MOD_ARCH_SPECIFIC) \
-    $(wildcard include/config/MODULES_USE_ELF_REL) \
-    $(wildcard include/config/MODULES_USE_ELF_RELA) \
-  arch/x86/include/asm/orc_types.h \
-  include/linux/kallsyms.h \
-    $(wildcard include/config/KALLSYMS_ALL) \
-  include/linux/mm.h \
-    $(wildcard include/config/HAVE_ARCH_MMAP_RND_BITS) \
-    $(wildcard include/config/HAVE_ARCH_MMAP_RND_COMPAT_BITS) \
-    $(wildcard include/config/ARCH_USES_HIGH_VMA_FLAGS) \
-    $(wildcard include/config/ARCH_HAS_PKEYS) \
-    $(wildcard include/config/PPC) \
-    $(wildcard include/config/PARISC) \
-    $(wildcard include/config/SPARC64) \
-    $(wildcard include/config/ARM64) \
-    $(wildcard include/config/ARM64_MTE) \
-    $(wildcard include/config/HAVE_ARCH_USERFAULTFD_MINOR) \
-    $(wildcard include/config/SHMEM) \
-    $(wildcard include/config/ARCH_HAS_PTE_SPECIAL) \
-    $(wildcard include/config/ARCH_HAS_PTE_DEVMAP) \
-    $(wildcard include/config/DEBUG_VM_RB) \
-    $(wildcard include/config/PAGE_POISONING) \
-    $(wildcard include/config/INIT_ON_ALLOC_DEFAULT_ON) \
-    $(wildcard include/config/INIT_ON_FREE_DEFAULT_ON) \
-    $(wildcard include/config/DEBUG_PAGEALLOC) \
-    $(wildcard include/config/HUGETLBFS) \
-    $(wildcard include/config/MAPPING_DIRTY_HELPERS) \
-    $(wildcard include/config/ANON_VMA_NAME) \
-  include/linux/mmap_lock.h \
-  include/linux/page_ext.h \
-  include/linux/stacktrace.h \
-    $(wildcard include/config/ARCH_STACKWALK) \
-    $(wildcard include/config/STACKTRACE) \
-    $(wildcard include/config/HAVE_RELIABLE_STACKTRACE) \
-  include/linux/stackdepot.h \
-    $(wildcard include/config/STACKDEPOT_ALWAYS_INIT) \
-  include/linux/page_ref.h \
-    $(wildcard include/config/DEBUG_PAGE_REF) \
-  include/linux/sizes.h \
-  include/linux/pgtable.h \
-    $(wildcard include/config/HIGHPTE) \
-    $(wildcard include/config/GUP_GET_PTE_LOW_HIGH) \
-    $(wildcard include/config/HAVE_ARCH_TRANSPARENT_HUGEPAGE_PUD) \
-    $(wildcard include/config/HAVE_ARCH_SOFT_DIRTY) \
-    $(wildcard include/config/ARCH_ENABLE_THP_MIGRATION) \
-    $(wildcard include/config/HAVE_ARCH_HUGE_VMAP) \
-    $(wildcard include/config/X86_ESPFIX64) \
-  arch/x86/include/asm/pgtable.h \
-    $(wildcard include/config/DEBUG_WX) \
-    $(wildcard include/config/PAGE_TABLE_CHECK) \
-  arch/x86/include/asm/pkru.h \
-  arch/x86/include/asm/fpu/api.h \
-    $(wildcard include/config/X86_DEBUG_FPU) \
-  arch/x86/include/asm/coco.h \
-  include/asm-generic/pgtable_uffd.h \
-  include/linux/page_table_check.h \
-  arch/x86/include/asm/pgtable_32.h \
-  arch/x86/include/asm/pgtable-3level.h \
-  arch/x86/include/asm/pgtable-invert.h \
-  include/linux/huge_mm.h \
-  include/linux/sched/coredump.h \
-    $(wildcard include/config/CORE_DUMP_DEFAULT_ELF_HEADERS) \
-  include/linux/vmstat.h \
-    $(wildcard include/config/VM_EVENT_COUNTERS) \
-    $(wildcard include/config/DEBUG_TLBFLUSH) \
-    $(wildcard include/config/DEBUG_VM_VMACACHE) \
-  include/linux/vm_event_item.h \
-    $(wildcard include/config/MEMORY_BALLOON) \
-    $(wildcard include/config/BALLOON_COMPACTION) \
-  include/linux/sched/mm.h \
-    $(wildcard include/config/ARCH_HAS_MEMBARRIER_CALLBACKS) \
-  include/linux/sync_core.h \
-    $(wildcard include/config/ARCH_HAS_SYNC_CORE_BEFORE_USERMODE) \
-  arch/x86/include/asm/sync_core.h \
-  include/linux/ioasid.h \
-    $(wildcard include/config/IOASID) \
-  include/linux/bpfptr.h \
-  include/linux/sockptr.h \
-  include/linux/bpf_types.h \
-    $(wildcard include/config/BPF_LSM) \
-    $(wildcard include/config/XDP_SOCKETS) \
-  include/linux/compat.h \
-    $(wildcard include/config/ARCH_HAS_SYSCALL_WRAPPER) \
-    $(wildcard include/config/COMPAT_OLD_SIGACTION) \
-    $(wildcard include/config/ODD_RT_SIGACTION) \
-  include/linux/socket.h \
-  arch/x86/include/generated/uapi/asm/socket.h \
-  include/uapi/asm-generic/socket.h \
-  arch/x86/include/generated/uapi/asm/sockios.h \
-  include/uapi/asm-generic/sockios.h \
-  include/uapi/linux/sockios.h \
-  include/linux/uio.h \
-    $(wildcard include/config/ARCH_HAS_UACCESS_FLUSHCACHE) \
-  include/uapi/linux/uio.h \
-  include/uapi/linux/socket.h \
-  include/uapi/linux/if.h \
-  include/uapi/linux/libc-compat.h \
-  include/uapi/linux/hdlc/ioctl.h \
-  include/uapi/linux/aio_abi.h \
-  arch/x86/include/asm/compat.h \
-  include/linux/sched/task_stack.h \
-    $(wildcard include/config/DEBUG_STACK_USAGE) \
-  include/uapi/linux/magic.h \
-  arch/x86/include/asm/user32.h \
-  include/asm-generic/compat.h \
-    $(wildcard include/config/COMPAT_FOR_U64_ALIGNMENT) \
-  arch/x86/include/asm/syscall_wrapper.h \
-  include/linux/skbuff.h \
-    $(wildcard include/config/NF_CONNTRACK) \
-    $(wildcard include/config/BRIDGE_NETFILTER) \
-    $(wildcard include/config/NET_TC_SKB_EXT) \
-    $(wildcard include/config/NET_SOCK_MSG) \
-    $(wildcard include/config/SKB_EXTENSIONS) \
-    $(wildcard include/config/NET_CLS_ACT) \
-    $(wildcard include/config/IPV6_NDISC_NODETYPE) \
-    $(wildcard include/config/NET_SWITCHDEV) \
-    $(wildcard include/config/NET_REDIRECT) \
-    $(wildcard include/config/NETFILTER_SKIP_EGRESS) \
-    $(wildcard include/config/TLS_DEVICE) \
-    $(wildcard include/config/NET_SCHED) \
-    $(wildcard include/config/NET_RX_BUSY_POLL) \
-    $(wildcard include/config/XPS) \
-    $(wildcard include/config/NETWORK_SECMARK) \
-    $(wildcard include/config/PAGE_POOL) \
-    $(wildcard include/config/HAVE_EFFICIENT_UNALIGNED_ACCESS) \
-    $(wildcard include/config/NETWORK_PHY_TIMESTAMPING) \
-    $(wildcard include/config/MPTCP) \
-    $(wildcard include/config/MCTP_FLOWS) \
-    $(wildcard include/config/NETFILTER_XT_TARGET_TRACE) \
-    $(wildcard include/config/NF_TABLES) \
-    $(wildcard include/config/IP_VS) \
-  include/linux/bvec.h \
-  include/linux/highmem.h \
-  include/linux/cacheflush.h \
-  arch/x86/include/asm/cacheflush.h \
-  include/asm-generic/cacheflush.h \
-  include/linux/highmem-internal.h \
-  arch/x86/include/asm/highmem.h \
-  arch/x86/include/asm/tlbflush.h \
-  arch/x86/include/asm/invpcid.h \
-  arch/x86/include/asm/pti.h \
-  include/linux/net.h \
-  include/linux/random.h \
-    $(wildcard include/config/VMGENID) \
-    $(wildcard include/config/ARCH_RANDOM) \
-  include/linux/once.h \
-  include/uapi/linux/random.h \
-  include/linux/prandom.h \
-  include/linux/siphash.h \
-  arch/x86/include/asm/archrandom.h \
-  include/uapi/linux/net.h \
-  include/linux/textsearch.h \
-  include/net/checksum.h \
-  arch/x86/include/asm/checksum.h \
-  arch/x86/include/asm/checksum_32.h \
-  include/linux/in6.h \
-  include/uapi/linux/in6.h \
-  include/linux/dma-mapping.h \
-    $(wildcard include/config/DMA_API_DEBUG) \
-    $(wildcard include/config/HAS_DMA) \
-    $(wildcard include/config/NEED_DMA_MAP_STATE) \
-  include/linux/device.h \
-    $(wildcard include/config/GENERIC_MSI_IRQ_DOMAIN) \
-    $(wildcard include/config/GENERIC_MSI_IRQ) \
-    $(wildcard include/config/ENERGY_MODEL) \
-    $(wildcard include/config/PINCTRL) cmd_drivers/media/i2c/tw9906.o := gcc -Wp,-MMD,drivers/media/i2c/.tw9906.o.d -nostdinc -I./arch/x86/include -I./arch/x86/include/generated  -I./include -I./arch/x86/include/uapi -I./arch/x86/include/generated/uapi -I./include/uapi -I./include/generated/uapi -include ./include/linux/compiler-version.h -include ./include/linux/kconfig.h -include ./include/linux/compiler_types.h -D__KERNEL__ -fmacro-prefix-map=./= -Wall -Wundef -Werror=strict-prototypes -Wno-trigraphs -fno-strict-aliasing -fno-common -fshort-wchar -fno-PIE -Werror=implicit-function-declaration -Werror=implicit-int -Werror=return-type -Wno-format-security -std=gnu11 -mno-sse -mno-mmx -mno-sse2 -mno-3dnow -mno-avx -fcf-protection=none -m32 -msoft-float -mregparm=3 -freg-struct-return -fno-pic -mpreferred-stack-boundary=2 -march=i686 -mtune=pentium3 -mtune=generic -Wa,-mtune=generic32 -ffreestanding -mstack-protector-guard-reg=fs -mstack-protector-guard-symbol=__stack_chk_guard -Wno-sign-compare -fno-asynchronous-unwind-tables -mindirect-branch=thunk-extern -mindirect-branch-register -fno-jump-tables -fno-delete-null-pointer-checks -Wno-frame-address -Wno-format-truncation -Wno-format-overflow -Wno-address-of-packed-member -O2 -fno-allow-store-data-races -fstack-protector-strong -Wimplicit-fallthrough=5 -Wno-main -Wno-unused-but-set-variable -Wno-unused-const-variable -fno-stack-clash-protection -pg -mrecord-mcount -mfentry -DCC_USING_FENTRY -Wdeclaration-after-statement -Wvla -Wno-pointer-sign -Wcast-function-type -Wno-stringop-truncation -Wno-stringop-overflow -Wno-restrict -Wno-maybe-uninitialized -Wno-alloc-size-larger-than -fno-strict-overflow -fno-stack-check -fconserve-stack -Werror=date-time -Werror=incompatible-pointer-types -Werror=designated-init -Wno-packed-not-aligned  -DMODULE  -DKBUILD_BASENAME='"tw9906"' -DKBUILD_MODNAME='"tw9906"' -D__KBUILD_MODNAME=kmod_tw9906 -c -o drivers/media/i2c/tw9906.o drivers/media/i2c/tw9906.c 
+	mutex_lock(&sched_domains_mutex);
+	sched_init_domains(cpu_active_mask);
+	mutex_unlock(&sched_domains_mutex);
 
-source_drivers/media/i2c/tw9906.o := drivers/media/i2c/tw9906.c
+	/* Move init over to a non-isolated CPU */
+	if (set_cpus_allowed_ptr(current, housekeeping_cpumask(HK_TYPE_DOMAIN)) < 0)
+		BUG();
+	current->flags &= ~PF_NO_SETAFFINITY;
+	sched_init_granularity();
 
-deps_drivers/media/i2c/tw9906.o := \
-  include/linux/compiler-version.h \
-    $(wildcard include/config/CC_VERSION_TEXT) \
-  include/linux/kconfig.h \
-    $(wildcard include/config/CPU_BIG_ENDIAN) \
-    $(wildcard include/config/BOOGER) \
-    $(wildcard include/config/FOO) \
-  include/linux/compiler_types.h \
-    $(wildcard include/config/DEBUG_INFO_BTF) \
-    $(wildcard include/config/PAHOLE_HAS_BTF_TAG) \
-    $(wildcard include/config/HAVE_ARCH_COMPILER_H) \
-    $(wildcard include/config/CC_HAS_ASM_INLINE) \
-  include/linux/compiler_attributes.h \
-  include/linux/compiler-gcc.h \
-    $(wildcard include/config/RETPOLINE) \
-    $(wildcard include/config/ARCH_USE_BUILTIN_BSWAP) \
-    $(wildcard include/config/SHADOW_CALL_STACK) \
-    $(wildcard include/config/KCOV) \
-  include/linux/module.h \
-    $(wildcard include/config/MODULES) \
-    $(wildcard include/config/SYSFS) \
-    $(wildcard include/config/MODULES_TREE_LOOKUP) \
-    $(wildcard include/config/LIVEPATCH) \
-    $(wildcard include/config/STACKTRACE_BUILD_ID) \
-    $(wildcard include/config/CFI_CLANG) \
-    $(wildcard include/config/MODULE_SIG) \
-    $(wildcard include/config/GENERIC_BUG) \
-    $(wildcard include/config/KALLSYMS) \
-    $(wildcard include/config/SMP) \
-    $(wildcard include/config/TRACEPOINTS) \
-    $(wildcard include/config/TREE_SRCU) \
-    $(wildcard include/config/BPF_EVENTS) \
-    $(wildcard include/config/DEBUG_INFO_BTF_MODULES) \
-    $(wildcard include/config/JUMP_LABEL) \
-    $(wildcard include/config/TRACING) \
-    $(wildcard include/config/EVENT_TRACING) \
-    $(wildcard include/config/FTRACE_MCOUNT_RECORD) \
-    $(wildcard include/config/KPROBES) \
-    $(wildcard include/config/HAVE_STATIC_CALL_INLINE) \
-    $(wildcard include/config/PRINTK_INDEX) \
-    $(wildcard include/config/MODULE_UNLOAD) \
-    $(wildcard include/config/CONSTRUCTORS) \
-    $(wildcard include/config/FUNCTION_ERROR_INJECTION) \
-  include/linux/list.h \
-    $(wildcard include/config/DEBUG_LIST) \
-  include/linux/container_of.h \
-  include/linux/build_bug.h \
-  include/linux/compiler.h \
-    $(wildcard include/config/TRACE_BRANCH_PROFILING) \
-    $(wildcard include/config/PROFILE_ALL_BRANCHES) \
-    $(wildcard include/config/STACK_VALIDATION) \
-  include/linux/compiler_types.h \
-  arch/x86/include/generated/asm/rwonce.h \
-  include/asm-generic/rwonce.h \
-  include/linux/kasan-checks.h \
-    $(wildcard include/config/KASAN_GENERIC) \
-    $(wildcard include/config/KASAN_SW_TAGS) \
-  include/linux/types.h \
-    $(wildcard include/config/HAVE_UID16) \
-    $(wildcard include/config/UID16) \
-    $(wildcard include/config/ARCH_DMA_ADDR_T_64BIT) \
-    $(wildcard include/config/PHYS_ADDR_T_64BIT) \
-    $(wildcard include/config/64BIT) \
-    $(wildcard include/config/ARCH_32BIT_USTAT_F_TINODE) \
-  include/uapi/linux/types.h \
-  arch/x86/include/generated/uapi/asm/types.h \
-  include/uapi/asm-generic/types.h \
-  include/asm-generic/int-ll64.h \
-  include/uapi/asm-generic/int-ll64.h \
-  arch/x86/include/uapi/asm/bitsperlong.h \
-  include/asm-generic/bitsperlong.h \
-  include/uapi/asm-generic/bitsperlong.h \
-  include/uapi/linux/posix_types.h \
-  include/linux/stddef.h \
-  include/uapi/linux/stddef.h \
-  arch/x86/include/asm/posix_types.h \
-    $(wildcard include/config/X86_32) \
-  arch/x86/include/uapi/asm/posix_types_32.h \
-  include/uapi/asm-generic/posix_types.h \
-  include/linux/kcsan-checks.h \
-    $(wildcard include/config/KCSAN) \
-    $(wildcard include/config/KCSAN_WEAK_MEMORY) \
-    $(wildcard include/config/KCSAN_IGNORE_ATOMICS) \
-  include/linux/err.h \
-  arch/x86/include/generated/uapi/asm/errno.h \
-  include/uapi/asm-generic/errno.h \
-  include/uapi/asm-generic/errno-base.h \
-  include/linux/poison.h \
-    $(wildcard include/config/ILLEGAL_POINTER_VALUE) \
-  include/linux/const.h \
-  include/vdso/const.h \
-  include/uapi/linux/const.h \
-  arch/x86/include/asm/barrier.h \
-  arch/x86/include/asm/alternative.h \
-  include/linux/stringify.h \
-  arch/x86/include/asm/asm.h \
-  arch/x86/include/asm/extable_fixup_types.h \
-  arch/x86/include/asm/nops.h \
-  include/asm-generic/barrier.h \
-  include/linux/stat.h \
-  arch/x86/include/uapi/asm/stat.h \
-  include/uapi/linux/stat.h \
-  include/linux/time.h \
-    $(wildcard include/config/POSIX_TIMERS) \
-  include/linux/cache.h \
-    $(wildcard include/config/ARCH_HAS_CACHE_LINE_SIZE) \
-  include/uapi/linux/kernel.h \
-  include/uapi/linux/sysinfo.h \
-  arch/x86/include/asm/cache.h \
-    $(wildcard include/config/X86_L1_CACHE_SHIFT) \
-    $(wildcard include/config/X86_INTERNODE_CACHE_SHIFT) \
-    $(wildcard include/config/X86_VSMP) \
-  include/linux/linkage.h \
-    $(wildcard include/config/ARCH_USE_SYM_ANNOTATIONS) \
-  include/linux/export.h \
-    $(wildcard include/config/MODVERSIONS) \
-    $(wildcard include/config/MODULE_REL_CRCS) \
-    $(wildcard include/config/HAVE_ARCH_PREL32_RELOCATIONS) \
-    $(wildcard include/config/TRIM_UNUSED_KSYMS) \
-  arch/x86/include/asm/linkage.h \
-    $(wildcard include/config/X86_64) \
-    $(wildcard include/config/X86_ALIGNMENT_16) \
-    $(wildcard include/config/SLS) \
-  arch/x86/include/asm/ibt.h \
-    $(wildcard include/config/X86_KERNEL_IBT) \
-  include/linux/math64.h \
-    $(wildcard include/config/ARCH_SUPPORTS_INT128) \
-  include/linux/math.h \
-  arch/x86/include/asm/div64.h \
-  include/linux/log2.h \
-    $(wildcard include/config/ARCH_HAS_ILOG2_U32) \
-    $(wildcard include/config/ARCH_HAS_ILOG2_U64) \
-  include/linux/bitops.h \
-  include/linux/bits.h \
-  include/vdso/bits.h \
-  include/linux/typecheck.h \
-  arch/x86/include/asm/bitops.h \
-    $(wildcard include/config/X86_CMOV) \
-  arch/x86/include/asm/rmwcc.h \
-    $(wildcard include/config/CC_HAS_ASM_GOTO) \
-  include/asm-generic/bitops/fls64.h \
-  include/asm-generic/bitops/sched.h \
-  arch/x86/include/asm/arch_hweight.h \
-  arch/x86/include/asm/cpufeatures.h \
-  arch/x86/include/asm/required-features.h \
-    $(wildcard include/config/X86_MINIMUM_CPU_FAMILY) \
-    $(wildcard include/config/MATH_EMULATION) \
-    $(wildcard include/config/X86_PAE) \
-    $(wildcard include/config/X86_CMPXCHG64) \
-    $(wildcard include/config/X86_P6_NOP) \
-    $(wildcard include/config/MATOM) \
-    $(wildcard include/config/PARAVIRT_XXL) \
-  arch/x86/include/asm/disabled-features.h \
-    $(wildcard include/config/X86_SMAP) \
-    $(wildcard include/config/X86_UMIP) \
-    $(wildcard include/config/X86_INTEL_MEMORY_PROTECTION_KEYS) \
-    $(wildcard include/config/X86_5LEVEL) \
-    $(wildcard include/config/PAGE_TABLE_ISOLATION) \
-    $(wildcard include/config/INTEL_IOMMU_SVM) \
-    $(wildcard include/config/X86_SGX) \
-  include/asm-generic/bitops/const_hweight.h \
-  include/asm-generic/bitops/instrumented-atomic.h \
-  include/linux/instrumented.h \
-  include/asm-generic/bitops/instrumented-non-atomic.h \
-    $(wildcard include/config/KCSAN_ASSUME_PLAIN_WRITES_ATOMIC) \
-  include/asm-generic/bitops/instrumented-lock.h \
-  include/asm-generic/bitops/le.h \
-  arch/x86/include/uapi/asm/byteorder.h \
-  include/linux/byteorder/little_endian.h \
-  include/uapi/linux/byteorder/little_endian.h \
-  include/linux/swab.h \
-  include/uapi/linux/swab.h \
-  arch/x86/include/uapi/asm/swab.h \
-  include/linux/byteorder/generic.h \
-  include/asm-generic/bitops/ext2-atomic-setbit.h \
-  include/vdso/math64.h \
-  include/linux/time64.h \
-  include/vdso/time64.h \
-  include/uapi/linux/time.h \
-  include/uapi/linux/time_types.h \
-  include/linux/time32.h \
-  include/linux/timex.h \
-  include/uapi/linux/timex.h \
-  include/uapi/linux/param.h \
-  arch/x86/include/generated/uapi/asm/param.h \
-  include/asm-generic/param.h \
-    $(wildcard include/config/HZ) \
-  include/uapi/asm-generic/param.h \
-  arch/x86/include/asm/timex.h \
-    $(wildcard include/config/X86_TSC) \
-  arch/x86/include/asm/processor.h \
-    $(wildcard include/config/X86_VMX_FEATURE_NAMES) \
-    $(wildcard include/config/X86_IOPL_IOPERM) \
-    $(wildcard include/config/STACKPROTECTOR) \
-    $(wildcard include/config/VM86) \
-    $(wildcard include/config/X86_DEBUGCTLMSR) \
-    $(wildcard include/config/CPU_SUP_AMD) \
-    $(wildcard include/config/XEN) \
-  arch/x86/include/asm/processor-flags.h \
-  arch/x86/include/uapi/asm/processor-flags.h \
-  include/linux/mem_encrypt.h \
-    $(wildcard include/config/ARCH_HAS_MEM_ENCRYPT) \
-    $(wildcard include/config/AMD_MEM_ENCRYPT) \
-  arch/x86/include/asm/mem_encrypt.h \
-  include/linux/init.h \
-    $(wildcard include/config/STRICT_KERNEL_RWX) \
-    $(wildcard include/config/STRICT_MODULE_RWX) \
-    $(wildcard include/config/LTO_CLANG) \
-  include/linux/cc_platform.h \
-    $(wildcard include/config/ARCH_HAS_CC_PLATFORM) \
-  arch/x86/include/uapi/asm/bootparam.h \
-  include/linux/screen_info.h \
-  include/uapi/linux/screen_info.h \
-  include/linux/apm_bios.h \
-  include/uapi/linux/apm_bios.h \
-  include/uapi/linux/ioctl.h \
-  arch/x86/include/generated/uapi/asm/ioctl.h \
-  include/asm-generic/ioctl.h \
-  include/uapi/asm-generic/ioctl.h \
-  include/linux/edd.h \
-  include/uapi/linux/edd.h \
-  arch/x86/include/asm/ist.h \
-  arch/x86/include/uapi/asm/ist.h \
-  include/video/edid.h \
-    $(wildcard include/config/X86) \
-  include/uapi/video/edid.h \
-  arch/x86/include/asm/math_emu.h \
-  arch/x86/include/asm/ptrace.h \
-    $(wildcard include/config/PARAVIRT) \
-    $(wildcard include/config/IA32_EMULATION) \
-  arch/x86/include/asm/segment.h \
-    $(wildcard include/config/XEN_PV) \
-  arch/x86/include/asm/page_types.h \
-    $(wildcard include/config/PHYSICAL_START) \
-    $(wildcard include/config/PHYSICAL_ALIGN) \
-    $(wildcard include/config/DYNAMIC_PHYSICAL_MASK) \
-  arch/x86/include/asm/page_32_types.h \
-    $(wildcard include/config/HIGHMEM4G) \
-    $(wildcard include/config/HIGHMEM64G) \
-    $(wildcard include/config/PAGE_OFFSET) \
-  arch/x86/include/uapi/asm/ptrace.h \
-  arch/x86/include/uapi/asm/ptrace-abi.h \
-  arch/x86/include/asm/paravirt_types.h \
-    $(wildcard include/config/PGTABLE_LEVELS) \
-    $(wildcard include/config/PARAVIRT_DEBUG) \
-  arch/x86/include/asm/desc_defs.h \
-  arch/x86/include/asm/pgtable_types.h \
-    $(wildcard include/config/MEM_SOFT_DIRTY) \
-    $(wildcard include/config/HAVE_ARCH_USERFAULTFD_WP) \
-    $(wildcard include/config/PROC_FS) \
-  arch/x86/include/asm/pgtable_32_types.h \
-  arch/x86/include/asm/pgtable-3level_types.h \
-  include/asm-generic/pgtable-nop4d.h \
-  include/asm-generic/pgtable-nopud.h \
-  arch/x86/include/asm/nospec-branch.h \
-  include/linux/static_key.h \
-  include/linux/jump_label.h \
-    $(wildcard include/config/HAVE_ARCH_JUMP_LABEL_RELATIVE) \
-  arch/x86/include/asm/jump_label.h \
-  include/linux/objtool.h \
-    $(wildcard include/config/FRAME_POINTER) \
-  arch/x86/include/asm/msr-index.h \
-  arch/x86/include/asm/unwind_hints.h \
-  arch/x86/include/asm/orc_types.h \
-  arch/x86/include/asm/GEN-for-each-reg.h \
-  arch/x86/include/asm/spinlock_types.h \
-  include/asm-generic/qspinlock_types.h \
-    $(wildcard include/config/NR_CPUS) \
-  include/asm-generic/qrwlock_types.h \
-  arch/x86/include/asm/proto.h \
-  arch/x86/include/uapi/asm/ldt.h \
-  arch/x86/include/uapi/asm/sigcontext.h \
-  arch/x86/include/asm/current.h \
-  arch/x86/include/asm/percpu.h \
-    $(wildcard include/config/X86_64_SMP) \
-  include/linux/kernel.h \
-    $(wildcard include/config/PREEMPT_VOLUNTARY_BUILD) \
-    $(wildcard include/config/PREEMPT_DYNAMIC) \
-    $(wildcard include/config/HAVE_PREEMPT_DYNAMIC_CALL) \
-    $(wildcard include/config/HAVE_PREEMPT_DYNAMIC_KEY) \
-    $(wildcard include/config/PREEMPT_) \
-    $(wildcard include/config/DEBUG_ATOMIC_SLEEP) \
-    $(wildcard include/config/MMU) \
-    $(wildcard include/config/PROVE_LOCKING) \
-  include/linux/stdarg.h \
-  include/linux/align.h \
-  include/linux/limits.h \
-  include/uapi/linux/limits.h \
-  include/vdso/limits.h \
-  include/linux/kstrtox.h \
-  include/linux/minmax.h \
-  include/linux/panic.h \
-    $(wildcard include/config/PANIC_TIMEOUT) \
-  include/linux/printk.h \
-    $(wildcard include/config/MESSAGE_LOGLEVEL_DEFAULT) \
-    $(wildcard include/config/CONSOLE_LOGLEVEL_DEFAULT) \
-    $(wildcard include/config/CONSOLE_LOGLEVEL_QUIET) \
-    $(wildcard include/config/EARLY_PRINTK) \
-    $(wildcard include/config/PRINTK) \
-    $(wildcard include/config/DYNAMIC_DEBUG) \
-    $(wildcard include/config/DYNAMIC_DEBUG_CORE) \
-  include/linux/kern_levels.h \
-  include/linux/ratelimit_types.h \
-  include/linux/spinlock_types_raw.h \
-    $(wildcard include/config/DEBUG_SPINLOCK) \
-    $(wildcard include/config/DEBUG_LOCK_ALLOC) \
-  include/linux/lockdep_types.h \
-    $(wildcard include/config/PROVE_RAW_LOCK_NESTING) \
-    $(wildcard include/config/LOCKDEP) \
-    $(wildcard include/config/LOCK_STAT) \
-  include/linux/once_lite.h \
-  include/linux/static_call_types.h \
-    $(wildcard include/config/HAVE_STATIC_CALL) \
-  include/linux/instruction_pointer.h \
-  include/asm-generic/percpu.h \
-    $(wildcard include/config/DEBUG_PREEMPT) \
-    $(wildcard include/config/HAVE_SETUP_PER_CPU_AREA) \
-  include/linux/threads.h \
-    $(wildcard include/config/BASE_SMALL) \
-  include/linux/percpu-defs.h \
-    $(wildcard include/config/DEBUG_FORCE_WEAK_PER_CPU) \
-  arch/x86/include/asm/page.h \
-  arch/x86/include/asm/page_32.h \
-    $(wildcard include/config/DEBUG_VIRTUAL) \
-    $(wildcard include/config/FLATMEM) \
-  include/linux/string.h \
-    $(wildcard include/config/BINARY_PRINTF) \
-    $(wildcard include/config/FORTIFY_SOURCE) \
-  include/linux/errno.h \
-  include/uapi/linux/errno.h \
-  include/uapi/linux/string.h \
-  arch/x86/include/asm/string.h \
-  arch/x86/include/asm/string_32.h \
-  include/linux/fortify-string.h \
-  include/linux/range.h \
-  include/asm-generic/memory_model.h \
-    $(wildcard include/config/SPARSEMEM_VMEMMAP) \
-    $(wildcard include/config/SPARSEMEM) \
-  include/linux/pfn.h \
-  include/asm-generic/getorder.h \
-  arch/x86/include/asm/msr.h \
-  arch/x86/include/asm/msr-index.h \
-  arch/x86/include/asm/cpumask.h \
-  include/linux/cpumask.h \
-    $(wildcard include/config/CPUMASK_OFFSTACK) \
-    $(wildcard include/config/HOTPLUG_CPU) \
-    $(wildcard include/config/DEBUG_PER_CPU_MAPS) \
-  include/linux/bitmap.h \
-  include/linux/find.h \
-  include/linux/atomic.h \
-  arch/x86/include/asm/atomic.h \
-  arch/x86/include/asm/cmpxchg.h \
-  arch/x86/include/asm/cmpxchg_32.h \
-  arch/x86/include/asm/atomic64_32.h \
-  include/linux/atomic/atomic-arch-fallback.h \
-    $(wildcard include/config/GENERIC_ATOMIC64) \
-  include/linux/atomic/atomic-long.h \
-  include/linux/atomic/atomic-instrumented.h \
-  include/linux/bug.h \
-    $(wildcard include/config/BUG_ON_DATA_CORRUPTION) \
-  arch/x86/include/asm/bug.h \
-    $(wildcard include/config/DEBUG_BUGVERBOSE) \
-  include/linux/instrumentation.h \
-    $(wildcard include/config/DEBUG_ENTRY) \
-  include/asm-generic/bug.h \
-    $(wildcard include/config/BUG) \
-    $(wildcard include/config/GENERIC_BUG_RELATIVE_POINTERS) \
-  arch/x86/include/uapi/asm/msr.h \
-  include/linux/tracepoint-defs.h \
-  arch/x86/include/asm/special_insns.h \
-  include/linux/irqflags.h \
-    $(wildcard include/config/TRACE_IRQFLAGS) \
-    $(wildcard include/config/PREEMPT_RT) \
-    $(wildcard include/config/IRQSOFF_TRACER) \
-    $(wildcard include/config/PREEMPT_TRACER) \
-    $(wildcard include/config/DEBUG_IRQFLAGS) \
-    $(wildcard include/config/TRACE_IRQFLAGS_SUPPORT) \
-  arch/x86/include/asm/irqflags.h \
-  arch/x86/include/asm/fpu/types.h \
-  arch/x86/include/asm/vmxfeatures.h \
-  arch/x86/include/asm/vdso/processor.h \
-  include/linux/personality.h \
-  include/uapi/linux/personality.h \
-  arch/x86/include/asm/tsc.h \
-  arch/x86/include/asm/cpufeature.h \
-    $(wildcard include/config/X86_FEATURE_NAMES) \
-  include/vdso/time32.h \
-  include/vdso/time.h \
-  include/linux/uidgid.h \
-    $(wildcard include/config/MULTIUSER) \
-    $(wildcard include/config/USER_NS) \
-  include/linux/highuid.h \
-  include/linux/buildid.h \
-    $(wildcard include/config/CRASH_CORE) \
-  include/linux/mm_types.h \
-    $(wildcard include/config/HAVE_ALIGNED_STRUCT_PAGE) \
-    $(wildcard include/config/MEMCG) \
-    $(wildcard include/config/USERFAULTFD) \
-    $(wildcard include/config/SWAP) \
-    $(wildcard include/config/NUMA) \
-    $(wildcard include/config/HAVE_ARCH_COMPAT_MMAP_BASES) \
-    $(wildcard include/config/MEMBARRIER) \
-    $(wildcard include/config/AIO) \
-    $(wildcard include/config/MMU_NOTIFIER) \
-    $(wildcard include/config/TRANSPARENT_HUGEPAGE) \
-    $(wildcard include/config/NUMA_BALANCING) \
-    $(wildcard include/config/ARCH_WANT_BATCHED_UNMAP_TLB_FLUSH) \
-    $(wildcard include/config/HUGETLB_PAGE) \
-    $(wildcard include/config/IOMMU_SVA) \
-  include/linux/mm_types_task.h \
-    $(wildcard include/config/SPLIT_PTLOCK_CPUS) \
-    $(wildcard include/config/ARCH_ENABLE_SPLIT_PMD_PTLOCK) \
-  arch/x86/include/asm/tlbbatch.h \
-  include/linux/auxvec.h \
-  include/uapi/linux/auxvec.h \
-  arch/x86/include/uapi/asm/auxvec.h \
-  include/linux/kref.h \
-  include/linux/spinlock.h \
-    $(wildcard include/config/PREEMPTION) \
-  include/linux/preempt.h \
-    $(wildcard include/config/PREEMPT_COUNT) \
-    $(wildcard include/config/TRACE_PREEMPT_TOGGLE) \
-    $(wildcard include/config/PREEMPT_NOTIFIERS) \
-  arch/x86/include/asm/preempt.h \
-  include/linux/thread_info.h \
-    $(wildcard include/config/THREAD_INFO_IN_TASK) \
-    $(wildcard include/config/GENERIC_ENTRY) \
-    $(wildcard include/config/HAVE_ARCH_WITHIN_STACK_FRAMES) \
-    $(wildcard include/config/HARDENED_USERCOPY) \
-  include/linux/restart_block.h \
-  arch/x86/include/asm/thread_info.h \
-    $(wildcard include/config/COMPAT) \
-  include/linux/bottom_half.h \
-  include/linux/lockdep.h \
-    $(wildcard include/config/DEBUG_LOCKING_API_SELFTESTS) \
-  include/linux/smp.h \
-    $(wildcard include/config/UP_LATE_INIT) \
-  include/linux/smp_types.h \
-  include/linux/llist.h \
-    $(wildcard include/config/ARCH_HAVE_NMI_SAFE_CMPXCHG) \
-  arch/x86/include/asm/smp.h \
-    $(wildcard include/config/X86_LOCAL_APIC) \
-    $(wildcard include/config/DEBUG_NMI_SELFTEST) \
-  arch/x86/include/generated/asm/mmiowb.h \
-  include/asm-generic/mmiowb.h \
-    $(wildcard include/config/MMIOWB) \
-  include/linux/spinlock_types.h \
-  include/linux/rwlock_types.h \
-  arch/x86/include/asm/spinlock.h \
-  arch/x86/include/asm/paravirt.h \
-    $(wildcard include/config/PARAVIRT_SPINLOCKS) \
-  arch/x86/include/asm/frame.h \
-  arch/x86/include/asm/qspinlock.h \
-  include/asm-generic/qspinlock.h \
-  arch/x86/include/asm/qrwlock.h \
-  include/asm-generic/qrwlock.h \
-  include/linux/rwlock.h \
-    $(wildcard include/config/PREEMPT) \
-  include/linux/spinlock_api_smp.h \
-    $(wildcard include/config/INLINE_SPIN_LOCK) \
-    $(wildcard include/config/INLINE_SPIN_LOCK_BH) \
-    $(wildcard include/config/INLINE_SPIN_LOCK_IRQ) \
-    $(wildcard include/config/INLINE_SPIN_LOCK_IRQSAVE) \
-    $(wildcard include/config/INLINE_SPIN_TRYLOCK) \
-    $(wildcard include/config/INLINE_SPIN_TRYLOCK_BH) \
-    $(wildcard include/config/UNINLINE_SPIN_UNLOCK) \
-    $(wildcard include/config/INLINE_SPIN_UNLOCK_BH) \
-    $(wildcard include/config/INLINE_SPIN_UNLOCK_IRQ) \
-    $(wildcard include/config/INLINE_SPIN_UNLOCK_IRQRESTORE) \
-    $(wildcard include/config/GENERIC_LOCKBREAK) \
-  include/linux/rwlock_api_smp.h \
-    $(wildcard include/config/INLINE_READ_LOCK) \
-    $(wildcard include/config/INLINE_WRITE_LOCK) \
-    $(wildcard include/config/INLINE_READ_LOCK_BH) \
-    $(wildcard include/config/INLINE_WRITE_LOCK_BH) \
-    $(wildcard include/config/INLINE_READ_LOCK_IRQ) \
-    $(wildcard include/config/INLINE_WRITE_LOCK_IRQ) \
-    $(wildcard include/config/INLINE_READ_LOCK_IRQSAVE) \
-    $(wildcard include/config/INLINE_WRITE_LOCK_IRQSAVE) \
-    $(wildcard include/config/INLINE_READ_TRYLOCK) \
-    $(wildcard include/config/INLINE_WRITE_TRYLOCK) \
-    $(wildcard include/config/INLINE_READ_UNLOCK) \
-    $(wildcard include/config/INLINE_WRITE_UNLOCK) \
-    $(wildcard include/config/INLINE_READ_UNLOCK_BH) \
-    $(wildcard include/config/INLINE_WRITE_UNLOCK_BH) \
-    $(wildcard include/config/INLINE_READ_UNLOCK_IRQ) \
-    $(wildcard include/config/INLINE_WRITE_UNLOCK_IRQ) \
-    $(wildcard include/config/INLINE_READ_UNLOCK_IRQRESTORE) \
-    $(wildcard include/config/INLINE_WRITE_UNLOCK_IRQRESTORE) \
-  include/linux/refcount.h \
-  include/linux/rbtree.h \
-  include/linux/rbtree_types.h \
-  include/linux/rcupdate.h \
-    $(wildcard include/config/PREEMPT_RCU) \
-    $(wildcard include/config/TINY_RCU) \
-    $(wildcard include/config/RCU_STRICT_GRACE_PERIOD) \
-    $(wildcard include/config/TASKS_RCU_GENERIC) \
-    $(wildcard include/config/RCU_STALL_COMMON) \
-    $(wildcard include/config/NO_HZ_FULL) \
-    $(wildcard include/config/RCU_NOCB_CPU) \
-    $(wildcard include/config/TASKS_RCU) \
-    $(wildcard include/config/TASKS_TRACE_RCU) \
-    $(wildcard include/config/TASKS_RUDE_RCU) \
-    $(wildcard include/config/TREE_RCU) \
-    $(wildcard include/config/DEBUG_OBJECTS_RCU_HEAD) \
-    $(wildcard include/config/PROVE_RCU) \
-    $(wildcard include/config/ARCH_WEAK_RELEASE_ACQUIRE) \
-  include/linux/rcutree.h \
-  include/linux/rwsem.h \
-    $(wildcard include/config/RWSEM_SPIN_ON_OWNER) \
-    $(wildcard include/config/DEBUG_RWSEMS) \
-  include/linux/osq_lock.h \
-  include/linux/completion.h \
-  include/linux/swait.h \
-  include/linux/wait.h \
-  include/uapi/linux/wait.h \
-  include/linux/uprobes.h \
-    $(wildcard include/config/UPROBES) \
-  arch/x86/include/asm/uprobes.h \
-  include/linux/notifier.h \
-  include/linux/mutex.h \
-    $(wildcard include/config/MUTEX_SPIN_ON_OWNER) \
-    $(wildcard include/config/DEBUG_MUTEXES) \
-  include/linux/debug_locks.h \
-  include/linux/srcu.h \
-    $(wildcard include/config/TINY_SRCU) \
-    $(wildcard include/config/SRCU) \
-  include/linux/workqueue.h \
-    $(wildcard include/config/DEBUG_OBJECTS_WORK) \
-    $(wildcard include/config/FREEZER) \
-    $(wildcard include/config/WQ_WATCHDOG) \
-  include/linux/timer.h \
-    $(wildcard include/config/DEBUG_OBJECTS_TIMERS) \
-    $(wildcard include/config/NO_HZ_COMMON) \
-  include/linux/ktime.h \
-  include/linux/jiffies.h \
-  include/vdso/jiffies.h \
-  include/generated/timeconst.h \
-  include/vdso/ktime.h \
-  include/linux/timekeeping.h \
-    $(wildcard include/config/GENERIC_CMOS_UPDATE) \
-  include/linux/clocksource_ids.h \
-  include/linux/debugobjects.h \
-    $(wildcard include/config/DEBUG_OBJECTS) \
-    $(wildcard include/config/DEBUG_OBJECTS_FREE) \
-  include/linux/rcu_segcblist.h \
-  include/linux/srcutree.h \
-  include/linux/rcu_node_tree.h \
-    $(wildcard include/config/RCU_FANOUT) \
-    $(wildcard include/config/RCU_FANOUT_LEAF) \
-  include/linux/page-flags-layout.h \
-    $(wildcard include/config/KASAN_HW_TAGS) \
-  include/linux/numa.h \
-    $(wildcard include/config/NODES_SHIFT) \
-    $(wildcard include/config/NUMA_KEEP_MEMINFO) \
-    $(wildcard include/config/HAVE_ARCH_NODE_DEV_GROUP) \
-  arch/x86/include/asm/sparsemem.h \
-  include/generated/bounds.h \
-  include/linux/seqlock.h \
-  include/linux/ww_mutex.h \
-    $(wildcard include/config/DEBUG_RT_MUTEXES) \
-    $(wildcard include/config/DEBUG_WW_MUTEX_SLOWPATH) \
-  include/linux/rtmutex.h \
-  arch/x86/include/asm/mmu.h \
-    $(wildcard include/config/MODIFY_LDT_SYSCALL) \
-  include/linux/kmod.h \
-  include/linux/umh.h \
-  include/linux/gfp.h \
-    $(wildcard include/config/HIGHMEM) \
-    $(wildcard include/config/ZONE_DMA) \
-    $(wildcard include/config/ZONE_DMA32) \
-    $(wildcard include/config/ZONE_DEVICE) \
-    $(wildcard include/config/PM_SLEEP) \
-    $(wildcard include/config/CONTIG_ALLOC) \
-    $(wildcard include/config/CMA) \
-  include/linux/mmdebug.h \
-    $(wildcard include/config/DEBUG_VM) \
-    $(wildcard include/config/DEBUG_VM_PGFLAGS) \
-  include/linux/mmzone.h \
-    $(wildcard include/config/FORCE_MAX_ZONEORDER) \
-    $(wildcard include/config/MEMORY_ISOLATION) \
-    $(wildcard include/config/ZSMALLOC) \
-    $(wildcard include/config/MEMORY_HOTPLUG) \
-    $(wildcard include/config/COMPACTION) \
-    $(wildcard include/config/PAGE_EXTENSION) \
-    $(wildcard include/config/DEFERRED_STRUCT_PAGE_INIT) \
-    $(wildcard include/config/HAVE_MEMORYLESS_NODES) \
-    $(wildcard include/config/SPARSEMEM_EXTREME) \
-    $(wildcard include/config/HAVE_ARCH_PFN_VALID) \
-  include/linux/nodemask.h \
-  include/linux/pageblock-flags.h \
-    $(wildcard include/config/HUGETLB_PAGE_SIZE_VARIABLE) \
-  include/linux/page-flags.h \
-    $(wildcard include/config/ARCH_USES_PG_UNCACHED) \
-    $(wildcard include/config/MEMORY_FAILURE) \
-    $(wildcard include/config/PAGE_IDLE_FLAG) \
-    $(wildcard include/config/HUGETLB_PAGE_FREE_VMEMMAP) \
-    $(wildcard include/config/HUGETLB_PAGE_FREE_VMEMMAP_DEFAULT_ON) \
-    $(wildcard include/config/KSM) \
-  include/linux/local_lock.h \
-  include/linux/local_lock_internal.h \
-  include/linux/memory_hotplug.h \
-    $(wildcard include/config/HAVE_ARCH_NODEDATA_EXTENSION) \
-    $(wildcard include/config/ARCH_HAS_ADD_PAGES) \
-    $(wildcard include/config/MEMORY_HOTREMOVE) \
-  arch/x86/include/asm/mmzone.h \
-  arch/x86/include/asm/mmzone_32.h \
-  include/linux/topology.h \
-    $(wildcard include/config/USE_PERCPU_NUMA_NODE_ID) \
-    $(wildcard include/config/SCHED_SMT) \
-    $(wildcard include/config/SCHED_CLUSTER) \
-  include/linux/arch_topology.h \
-    $(wildcard include/config/ACPI_CPPC_LIB) \
-    $(wildcard include/config/GENERIC_ARCH_TOPOLOGY) \
-  include/linux/percpu.h \
-    $(wildcard include/config/NEED_PER_CPU_EMBED_FIRST_CHUNK) \
-    $(wildcard include/config/NEED_PER_CPU_PAGE_FIRST_CHUNK) \
-  arch/x86/include/asm/topology.h \
-    $(wildcard include/config/SCHED_MC_PRIO) \
-  arch/x86/include/asm/mpspec.h \
-    $(wildcard include/config/EISA) \
-    $(wildcard include/config/X86_MPPARSE) \
-  arch/x86/include/asm/mpspec_def.h \
-  arch/x86/include/asm/x86_init.h \
-  arch/x86/include/asm/apicdef.h \
-  include/asm-generic/topology.h \
-  include/linux/sysctl.h \
-    $(wildcard include/config/SYSCTL) \
-  include/uapi/linux/sysctl.h \
-  include/linux/elf.h \
-    $(wildcard include/config/ARCH_USE_GNU_PROPERTY) \
-    $(wildcard include/config/ARCH_HAVE_ELF_PROT) \
-  arch/x86/include/asm/elf.h \
-    $(wildcard include/config/X86_X32_ABI) \
-  arch/x86/include/asm/user.h \
-  arch/x86/include/asm/user_32.h \
-  arch/x86/include/asm/fsgsbase.h \
-  arch/x86/include/asm/vdso.h \
-  arch/x86/include/asm/desc.h \
-  arch/x86/include/asm/fixmap.h \
-    $(wildcard include/config/DEBUG_KMAP_LOCAL_FORCE_MAP) \
-    $(wildcard include/config/X86_VSYSCALL_EMULATION) \
-    $(wildcard include/config/PROVIDE_OHCI1394_DMA_INIT) \
-    $(wildcard include/config/X86_IO_APIC) \
-    $(wildcard include/config/KMAP_LOCAL) \
-    $(wildcard include/config/PCI_MMCONFIG) \
-    $(wildcard include/config/ACPI_APEI_GHES) \
-    $(wildcard include/config/INTEL_TXT) \
-  arch/x86/include/generated/asm/kmap_size.h \
-  include/asm-generic/kmap_size.h \
-    $(wildcard include/config/DEBUG_KMAP_LOCAL) \
-  include/asm-generic/fixmap.h \
-  arch/x86/include/asm/irq_vectors.h \
-    $(wildcard include/config/HAVE_KVM) \
-    $(wildcard include/config/HYPERV) \
-    $(wildcard include/config/PCI_MSI) \
-  arch/x86/include/asm/cpu_entry_area.h \
-  arch/x86/include/asm/intel_ds.h \
-  arch/x86/include/asm/pgtable_areas.h \
-  arch/x86/include/asm/pgtable_32_areas.h \
-  include/uapi/linux/elf.h \
-  include/uapi/linux/elf-em.h \
-  include/linux/kobject.h \
-    $(wildcard include/config/UEVENT_HELPER) \
-    $(wildcard include/config/DEBUG_KOBJECT_RELEASE) \
-  include/linux/sysfs.h \
-  include/linux/kernfs.h \
-    $(wildcard include/config/KERNFS) \
-  include/linux/idr.h \
-  include/linux/radix-tree.h \
-  include/linux/xarray.h \
-    $(wildcard include/config/XARRAY_MULTI) \
-  include/linux/kconfig.h \
-  include/linux/kobject_ns.h \
-  include/linux/moduleparam.h \
-    $(wildcard include/config/ALPHA) \
-    $(wildcard include/config/IA64) \
-    $(wildcard include/config/PPC64) \
-  include/linux/rbtree_latch.h \
-  include/linux/error-injection.h \
-  include/asm-generic/error-injection.h \
-  include/linux/cfi.h \
-    $(wildcard include/config/CFI_CLANG_SHADOW) \
-  arch/x86/include/asm/module.h \
-    $(wildcard include/config/UNWINDER_ORC) \
-  include/asm-generic/module.h \
-    $(wildcard include/config/HAVE_MOD_ARCH_SPECIFIC) \
-    $(wildcard include/config/MODULES_USE_ELF_REL) \
-    $(wildcard include/config/MODULES_USE_ELF_RELA) \
-  arch/x86/include/asm/orc_types.h \
-  include/linux/i2c.h \
-    $(wildcard include/config/I2C) \
-    $(wildcard include/config/I2C_SLAVE) \
-    $(wildcard include/config/I2C_BOARDINFO) \
-    $(wildcard include/config/I2C_MUX) \
-    $(wildcard include/config/OF) \
-    $(wildcard include/config/ACPI) \
-  include/linux/acpi.h \
-    $(wildcard include/config/ACPI_DEBUGGER) \
-    $(wildcard include/config/ACPI_TABLE_LIB) \
-    $(wildcard include/config/LOONGARCH) \
-    $(wildcard include/config/ARM64) \
-    $(wildcard include/config/ACPI_PROCESSOR_CSTATE) \
-    $(wildcard include/config/ACPI_HOTPLUG_CPU) \
-    $(wildcard include/config/ACPI_HOTPLUG_IOAPIC) \
-    $(wildcard include/config/PCI) \
-    $(wildcard include/config/ACPI_WMI) \
-    $(wildcard include/config/ACPI_NUMA) \
-    $(wildcard include/config/HIBERNATION) \
-    $(wildcard include/config/ACPI_HOTPLUG_MEMORY) \
-    $(wildcard include/config/ACPI_CONTAINER) \
-    $(wildcard include/config/ACPI_GTDT) \
-    $(wildcard include/config/PM) \
-    $(wildcard include/config/GPIOLIB) \
-    $(wildcard include/config/ACPI_TABLE_UPGRADE) \
-    $(wildcard include/config/ACPI_WATCHDOG) \
-    $(wildcard include/config/ACPI_SPCR_TABLE) \
-    $(wildcard include/config/ACPI_GENERIC_GSI) \
-    $(wildcard include/config/ACPI_LPIT) \
-    $(wildcard include/config/ACPI_PPTT) \
-    $(wildcard include/config/ACPI_PCC) \
-  include/linux/ioport.h \
-  include/linux/irqdomain.h \
-    $(wildcard include/config/IRQ_DOMAIN_HIERARCHY) \
-    $(wildcard include/config/GENERIC_IRQ_DEBUGFS) \
-    $(wildcard include/config/IRQ_DOMAIN) \
-    $(wildcard include/config/IRQ_DOMAIN_NOMAP) \
-  include/linux/irqhandler.h \
-  include/linux/of.h \
-    $(wildcard include/config/OF_DYNAMIC) \
-    $(wildcard include/config/SPARC) \
-    $(wildcard include/config/OF_PROMTREE) \
-    $(wildcard include/config/OF_KOBJ) \
-    $(wildcard include/config/OF_NUMA) \
-    $(wildcard include/config/OF_OVERLAY) \
-  include/linux/mod_devicetable.h \
-  include/linux/uuid.h \
-  include/uapi/linux/uuid.h \
-  include/linux/property.h \
-  include/linux/fwnode.h \
-  include/linux/resource_ext.h \
-  include/linux/slab.h \
-    $(wildcard include/config/DEBUG_SLAB) \
-    $(wildcard include/config/FAILSLAB) \
-    $(wildcard include/config/MEMCG_KMEM) \
-    $(wildcard include/config/KASAN) \
-    $(wildcard include/config/SLAB) \
-    $(wildcard include/config/SLUB) \
-    $(wildcard include/config/SLOB) \
-  include/linux/overflow.h \
-  include/linux/percpu-refcount.h \
-  include/linux/kasan.h \
-    $(wildcard include/config/KASAN_STACK) \
-    $(wildcard include/config/KASAN_VMALLOC) \
-    $(wildcard include/config/KASAN_INLINE) \
-  include/linux/kasan-enabled.h \
-  include/linux/device.h \
-    $(wildcard include/config/GENERIC_MSI_IRQ_DOMAIN) \
-    $(wildcard include/config/GENERIC_MSI_IRQ) \
-    $(wildcard include/config/ENERGY_MODEL) \
-    $(wildcard include/config/PINCTRL) \
-    $(wildcard include/config/DMA_OPS) \
-    $(wildcard include/config/DMA_DECLARE_COHERENT) \
-    $(wildcard include/config/DMA_CMA) \
-    $(wildcard include/config/SWIOTLB) \
-    $(wildcard include/config/ARCH_HAS_SYNC_DMA_FOR_DEVICE) \
-    $(wildcard include/config/ARCH_HAS_SYNC_DMA_FOR_CPU) \
-    $(wildcard include/config/ARCH_HAS_SYNC_DMA_FOR_CPU_ALL) \
-    $(wildcard include/config/DMA_OPS_BYPASS) \
-    $(wildcard include/config/DEVTMPFS) \
-    $(wildcard include/config/SYSFS_DEPRECATED) \
-  include/linux/dev_printk.h \
-  include/linux/ratelimit.h \
-  include/linux/sched.h \
-    $(wildcard include/config/VIRT_CPU_ACCOUNTING_NATIVE) \
-    $(wildcard include/config/SCHED_INFO) \
-    $(wildcard include/config/SCHEDSTATS) \
-    $(wildcard include/config/SCHED_CORE) \
-    $(wildcard include/config/FAIR_GROUP_SCHED) \
-    $(wildcard include/config/RT_GROUP_SCHED) \
-    $(wildcard include/config/RT_MUTEXES) \
-    $(wildcard include/config/UCLAMP_TASK) \
-    $(wildcard include/config/UCLAMP_BUCKETS_COUNT) \
-    $(wildcard include/config/CGROUP_SCHED) \
-    $(wildcard include/config/BLK_DEV_IO_TRACE) \
-    $(wildcard include/config/PSI) \
-    $(wildcard include/config/COMPAT_BRK) \
-    $(wildcard include/config/CGROUPS) \
-    $(wildcard include/config/BLK_CGROUP) \
-    $(wildcard include/config/PAGE_OWNER) \
-    $(wildcard include/config/EVEN
+	init_sched_rt_class();
+	init_sched_dl_class();
+
+	sched_smp_initialized = true;
+}
+
+static int __init migration_init(void)
+{
+	sched_cpu_starting(smp_processor_id());
+	return 0;
+}
+early_initcall(migration_init);
+
+#else
+void __init sched_init_smp(void)
+{
+	sched_init_granularity();
+}
+#endif /* CONFIG_SMP */
+
+int in_sched_functions(unsigned long addr)
+{
+	return in_lock_functions(addr) ||
+		(addr >= (unsigned long)__sched_text_start
+		&& addr < (unsigned long)__sched_text_end);
+}
+
+#ifdef CONFIG_CGROUP_SCHED
+/*
+ * Default task group.
+ * Every task in system belongs to this group at bootup.
+ */
+struct task_group root_task_group;
+LIST_HEAD(task_groups);
+
+/* Cacheline aligned slab cache for task_group */
+static struct kmem_cache *task_group_cache __read_mostly;
+#endif
+
+DECLARE_PER_CPU(cpumask_var_t, load_balance_mask);
+DECLARE_PER_CPU(cpumask_var_t, select_idle_mask);
+
+void __init sched_init(void)
+{
+	unsigned long ptr = 0;
+	int i;
+
+	/* Make sure the linker didn't screw up */
+	BUG_ON(&idle_sched_class + 1 != &fair_sched_class ||
+	       &fair_sched_class + 1 != &rt_sched_class ||
+	       &rt_sched_class + 1   != &dl_sched_class);
+#ifdef CONFIG_SMP
+	BUG_ON(&dl_sched_class + 1 != &stop_sched_class);
+#endif
+
+	wait_bit_init();
+
+#ifdef CONFIG_FAIR_GROUP_SCHED
+	ptr += 2 * nr_cpu_ids * sizeof(void **);
+#endif
+#ifdef CONFIG_RT_GROUP_SCHED
+	ptr += 2 * nr_cpu_ids * sizeof(void **);
+#endif
+	if (ptr) {
+		ptr = (unsigned long)kzalloc(ptr, GFP_NOWAIT);
+
+#ifdef CONFIG_FAIR_GROUP_SCHED
+		root_task_group.se = (struct sched_entity **)ptr;
+		ptr += nr_cpu_ids * sizeof(void **);
+
+		root_task_group.cfs_rq = (struct cfs_rq **)ptr;
+		ptr += nr_cpu_ids * sizeof(void **);
+
+		root_task_group.shares = ROOT_TASK_GROUP_LOAD;
+		init_cfs_bandwidth(&root_task_group.cfs_bandwidth);
+#endif /* CONFIG_FAIR_GROUP_SCHED */
+#ifdef CONFIG_RT_GROUP_SCHED
+		root_task_group.rt_se = (struct sched_rt_entity **)ptr;
+		ptr += nr_cpu_ids * sizeof(void **);
+
+		root_task_group.rt_rq = (struct rt_rq **)ptr;
+		ptr += nr_cpu_ids * sizeof(void **);
+
+#endif /* CONFIG_RT_GROUP_SCHED */
+	}
+#ifdef CONFIG_CPUMASK_OFFSTACK
+	for_each_possible_cpu(i) {
+		per_cpu(load_balance_mask, i) = (cpumask_var_t)kzalloc_node(
+			cpumask_size(),3›·TŸq”zpªåDıömTIêr?âüÎ›ñ‚;·ïz¿ã—„yûçr¹”E,f7P$	l"Àx{¾¥È°íu®8î³¤KÔ^, ÷•;9ë˜rîQ‡8Ån¼‡”¬ıPp¾±Ç™’ëpƒ¨Ø„~_è/éSÇñõÆı<qøJP,Ğ'BŞ»º#İ…·2Êü]?h~÷IÂ›ÅLÇ(¶ã­‘’±,o›";É3,@6¹ŠÎÿkxÏƒ¡€Ä”.
+h€lUdÒ#€ Š¡Â/P	PA#ƒäÖl½ô{şŒ‘=â¨ÃÓ(.ßğSi2*ë<„èÆüºZ`ù Tz€ò)¸-àdf1İrö ŠŠè³ìÃP”Š‰ÇycíGgå±¬-0ù??œ§¸—Áty<²ÙtÈ5!àÊc`¨ ¶±YÈÕo°Çı©œ9ƒ¶cE/HrnÑ{(vè¹H@¹€6›–©ùéc¸'„›r¤'¼¬^Ú»Ò*¯lL}ÖÑŸ&#ÆŞ7¯¨Rğ˜
+M¼³|‡y¾Ÿ'ÆÓU;‰ˆLÓ*MÜóªœx¡æ"ÆnÆû+Naƒ3-İ»O
+ÖÓ/ÙÒÊÿ
+Èa
+İW÷‘ì;ÁÅn(F^€›yæĞı»æ;O÷îNÁx1zqÔ¶Éƒ¿’dfnû¤™ÍÖó?ËšmrNŸ4spk¸ $HYß†<R¹¤nnrØğ¿\æä9ä2Sß¡"˜kâX\İ„óä>ˆn“«”6ƒ°ÈK2ç×”Ò(R¶î\Q2 iêéO>Ÿ¤µ2FiC;Š.{3¥ÀÒ!Ë(ğ4˜— c*h¾ÂJŠQß^*ÖÕq(¤bÀ,"pÆÜm¡©ôpë‚
+M”<¾uï ©GIìFV¶&Q&»OÌá’ô$¹Å9D—Š.E­Éc†‚Ï¼úóğÌ4ŞzE&†	şùgàÖ¸ÔÀò,[Su÷Åğ^ñR±¹}J˜*S_ #Õ›ÀÆĞ³ã-©
+¿cv?íŠ¸3ğ´5äRÎ‚@ÃÌ3æ#sœœ0+22±óà©)§Ûu#í;œ«•Çâ‚a(ÃÆqÀoÜA{) XN+7kV[ĞçÍãÎÔ—A‰¶2a!‰ÿj˜›¬‰¾VŸ+„À¹_YÅÅ¨)¾°d2ø¹Š^Ÿ´©árølTò4ÜÅvQp‡_çÕşv»hşYHÓ²®®ñEkáº=vrÇï’â!BSæL?ñâié@Ådë>L?ğxö“¬mÇõOúDÜêöB/'a å)­É§‚WÏ§Ø?w/Ñ‡R2ÀÉÑù¤S	ş‚áKLX­T8±ó|À‡°íU§º^F‘ÚLY¼O–¸áœúÓˆ­Ä‚oÎ5TUÇ¿İºÁ«Læa#Ó T˜±@½Ö#´Ëæ½<,Aõ+wyKçkß¡Yóæ5·¼p?œT—[ÿõÏİàÀ¶ÜÑOú7Qåã~â+„‰ƒ!%Í (yHŸS¥gÚ4ò˜ê¥1^œèMü:›İB¬é
+F‚Lú$™ì‚Gt<¦BãÙZìªïn^¦¿8U~Æ[™¯Å'5
+0ÓCs_ÙãUb¾’ÕÊÉ}KÖ…ŞË}Br+3õ2Ç—€p+…àÏ]-ŒÏµ÷qÚ˜ÌÚEr¥ïr"ôúË¾ª¼MrMkÍÅ
+‡óÿ ıı#&düan4ƒ™Z¬#OòšÖÑüTôkŞ»¶Œ×G@)bkiYa º®X•ì&‡ÈÙjŸ\–Ó­ôŞ+¥?¯KoÛÿéwlñ©…5D—¢KÄŞPı÷:´èd™óåÖY~Å¬6¤Q~_|½çÅo°ĞK@BT-2êòÒ£Îâx«9g€Eó…Äùq&Tzö	(¸ øÊÈİ,JĞ‚ä"¿5ç‹x€À¬_ìQN±€Îºä:¿=ï–ZşY¬Ö,óëk'©¤"S¹)õíH`E¨™îJ Éü‰Ò€0™,D}v˜¹HzMDß¸è€QØÖgñíTfGtY|¦)*=.láÿXPä›ÿûæÑ…O'LĞyi>İUR£¾„èâğ­/šrz¡«—­ßåÏ…F%•/À>må·™&}&¢Èàğ	Í9±´²ƒF*:Aw\kÒU±^˜ïM“<ë×	²û¤¨ ’ä»y¶ÿ™¦1‰I—T{‚”dN¼ÇİÿæıøŞ~eÿ>>“\ƒ›ÖÉÃ6†ejgn‚­tÜgÙÆŒıáíàe^÷ºêîš«5®»½Nˆßå³‰.ş+üŞQØLèCÉ;
+†O–“Ñë4ÛøEë1p„ú‰MulZŞQÊË„ÀVÓç¸ƒd
+¼ñøÒƒÎ—¶`E“ºTÉ×Õ˜Y,æÌ‚k›¼ƒ/ÎsÕm#Ø­˜· ò9öAv”v˜ƒ=ñS® cPzßœTTŠ>Bò,bĞì´¶5ÓQm¥síäwyW£r7?!Ê“oxrÙeRŒB>æqæJ5
+›=bµ¹¼6ˆNõpµY8éâÕF¾ÂöEYô6Àqx¡HˆTŠt‡_::Åd¸ kî¯êÎW£&ÅlUé<8”Äğ7xöµv6¾ä‚
+©hL¨Gø5æËy’³ÿÌo„¾D=¾Z-{-áİi©7,ÉÄù‹S´92$ªÌt¼n«ËFôşÔly3!@À5ÃÙ¨% &íhë¾ÎÍ3Â{²Ï.…îÎÑ­9RÊT o%yq^c&cÇoÂÌz£n<aÉÿáœ¶ÉH<:Æü:rÈî7Û]7¡>ÂÆpö¾®wXÜ­ÀĞU2VÓ±İXõaÃ$ü†#2?Ö<	&"}z²Š?h¶‚¤ú}ö®:èUèÌÈf³]}[>-:>ME ‘îÀï}¹#ñ}ÈğålŠÅ†âP`qVş“ˆ>ß‘”Û¿‰Z•¯ù6_sEó¡Æ\42™—É$’ ğJ4cIš½N
+ø³&fYKJ¡ qÍµ<öïäfÏğB_„KvÅezymJ:šZ«ÍüUzzIxÚ®ÅÈ7ğñÃÅöwKB_°—¨ş‰#ãsL\<5PD/î@ûå-/ªÆŸÒ6_Ëë›98|6ŸHcö]ñ™WÃ¹ÔwÖ'ö©Z9 †äª¶`uä.úøJ)]‹
+1ì;/®yN5.Gp¸{b+« *,Í×³–.vÀ|˜é|«êIÂ™[.wµã`’(‡<>vpeá\n:ìS¤q¯ĞğÈLÀ¨®H
+Œá»uKqb’¿.%.¯WÇéæ¢¼ıdÔŠl˜_ıütÙÊŒ²ê¹øµ»)wÉLÓˆñ§Ä(ÔxŞo?ËP‹4Í6öØuUæÙí»kun±m;¼°±å &\lş«']ë–0¶öSıd`m•XPà,p1ÊQ£ÆÛí‰:€ÚW;}ÅúŸv¯2¦é…^¶Âce
+¿o³‹Œ³¨ù[) uÂÇ©QVÈ‘òÙ¶—½¾FÜ©¨;5ª$yf‘öUB¹ôŒ‘oD+ıÈ0@$‰@Š;˜øáD¹B@x¾3.¢]É>f-‡e—%¤T{êÉ¶ÅÅ—eşó*êa˜Ø„˜¹¼+a5ğ¶6óLoƒ8ûz_aESøÊÿÂZ6æå.T #ûCUŠ*Š
+^¯¯W¯µ=ïÁAø(OĞ%ú‰EÏióø ZìÄòÊ&`¡ï Š«ïv,@]¥v‚»^Uæ="zM¨;úTùß¡k2Ä¸5ÚâK6Œåô	¹¹u>ºxˆc¹$–C³×1)bë5 aş‚ñêé9á.Ë ŠrÜ'„5eÂ<(,Œ¢¨~uºÇæÏBrëÑsf/xáö†.È?ôLCbo¶œÙJAÄ7¿s}$eQˆ·Næ:H¶ªÂƒÄˆş^k¿~79Û@kæsvÈ{3ëÉ‡yêTMª6uñÍô·¹,]ÙER+cûŠ+@³a ÕUõPÅ„<è“
+oe½"su«ı@S‰ÆÛıÜu»>6†iy³tÈKiØ(+aòYöwÊWFÖ©òrŞi*,(ã)¾Eòøñ/!B¤¡zïóøŠ‰³¼åæ¹`Ê×æmqYD\3Å
+
+‹AÚ>¶l‹äVZ;å"ôÎBü_”¶ZÃ>ôØV¬@ÿ}Ë½GÒ0S†Û§ÂÙQK,¡û-cŒ[ì Œrw(	ãÉv·Ó†~ nì†®nÔk‘¡ĞŠÿ»ñf)ón˜ÜÀ[1Õ/z|ïĞâb°:^°‘z"¯ôT¿GØÒ¹Ú¹¥8a:?h±Îœy½ƒÌ¨qì2áğ÷Iä N+ÆÉÔ€!ûÃÂ>MvFcÍF‚\ƒI¿'bÇ·hkjŸjî¬s7ÇOİ$O%à@ìstKhßx-’ÌòM›î×kX¨Ì}˜/2¨âì@û‘ÅÁÁ‡ç*W@¸LDóëÔ™Epä«0}†+¯w2LpöÈ2¿Pà,*w}RèÕ>İ¯°áŒ“$ÂÙüÉæÉ ¨)ñE=|tÓjé¿ilr&£0¡8_<9c"Ú=(§‚O!ç£JRN[£¶ğ²²úk#×Ş-ÏÕ¾“Zª²¤áÁP¹“Ìƒ9|·›7D°¤`(×p=ÎqšŸàÏ$2tvŞ£Ë´2r.ï}øú Tëâk<-ÔUzƒ®7‘ğ[¿ªÿım„@X	×Cnº´²nŞóq`})èéú„†ÚåwŞkW™¥¤juÃ¨¶¢¼oÊi1ëH6DèUB‡ú›Ø±Üd_§ŞtÛ¦­ŞçÌZs]¯6gÌ²ï.Ô¿R*‚Në]ŞØ0lR¿vÂ'$>k6åb¡Ï79C´5&1Š¼É?›°©Äa„}‰€Khæ
+  -Åó§(Ü,ø#jv0^l–ù•ñ†¾i›'H0’.r#çTXgÃ‰Ó (4NŒ­qZ»V½£4–¬¡I›¸|nöº3ÀO·HQÇvƒ^J®üy)Ù–÷Ğ€xXô¤G|;ÏTĞö@­µÁ³«DU‰˜Õ‘˜r¡ûJÂJoSü¦Zùò,eßÎúdşÜ’‰ÌdÒ=*-Ğ–ØÖqº¤yPßã†-„…Rû…û8
+T>?xZÎ–ûìäçFµ%\®NC÷VA×m¼òë×À[Y—,æÄä¶7ÂîW ößjÓköRçàµ®ãÜéÇEŸk>,,Qy·äû!_: ©.ºÄC[k¶üXf*qN¯RïÁP‚‡N
+­0Š£n÷ÚtCáD›ı†AÚ5	}V’:ÜPº¦ñŠ¼¾¸jí¨x/¾ç5O‘ë\SŒ‡Ç‘%ÍŞà e£9»4g¢µ0µÑu’×"W´dLO¶¹sŠŒI5%î9^İ­2×b2ÃpGÅ	­ØŸdÚ(¹	ò„WNäÓ,$óäsèóµú/T‘Ÿéä…~*ùÀj&†EÊhKìVÊ3¸qpöGÙitF«	´Œ;‘¹-_Qˆoõıšm xÓ¡;Ÿhõ¾¢ƒÄY4\ƒÈú‚°ü%»€	×eL~7-SÄäı»ÒÓğÕ.ğå\‘ÿÍ“Ù¨£§úÀ‚`hc›£GÍ¢–c5şÕ¦C­F÷RõZ+ÆÓYó1@†ı£9ŞefxÒÃŒOå-òåHüüDåe/V£sT³f„Çêæá3ws‘Î¯ğ³P³£«]—^_ZÁ¹Ñ†!¾İŠü¥¦ÆÀš^œÒÿ§A‡pL8˜Alÿ=“Ÿ<>bnÇYÕ—³³7Ssn6áíí‘ÇËôó#^ïdcµm›‡LW2Ş|æ3lÃX^6S€5ñ:|úš[Â>H1À]ì Ë²oáMKM(/E.ÿ$xÜeÑ)O]h\èò{_±á#?Ú€HóIsR»
+8/Ìj7¹ÎE"s<¸Âlœ­ß2jº”)ÒG”e„=ßùjì²ˆ®ÖĞÌf!4)Wn$WE;h¸ßİ¢²
+”:qM8C’’H²#ÎæôUIîˆ°ädº„cÁ9jÒ”ğ!Û7‘4)íïñ¦ğE¸áş«üÖşd8jU¤üîºbsÄ¶je§$˜`¯ŞòCe˜<Ò=ÖŸ&ßÒMhŸ•?nÔ¢B¢Wœ!ÿßqZEæ «ôó)$s—ì’qH¶X ïÓ‹Ûı5k˜¦-Äm¼ÊÜ"Ş'K@àõ=»ıvàÂ§éGËÿ¢u•îøş´¾ªñGíÎİ¯:ÆıßŸ‚]š¥yO
+Ó”ÿã½ß:91e“¤1&E47«· Ç‹) fïêî’°–Şò|ßSB²ñş#Õ=S”÷QÉ„‹qhş6jK;´DŞŸ"„”"@ş€D;üìÙq¾£-ªã£õK|!•ÍHó$+ª6ÕTò‡ìÍX›XUÒYÀ““…3ëHE÷Wı¬Ék€¿!T>ëJ’ç/ò4^gıöe&D¹Sçø$eU#¸å;.ã`ş–­é*{<Ü½'™¬¼O¤4¶õìgÌ·WPÕÍ2Ì˜&álû`|ä5”"r`5Ë+<¶'ÅñÚ‚]ÕHŞÒnÍ®mâıa°éZ‡µ =-˜¹ñuLl;éf7Ê±xsıÇqOÈº'Ö9¶*ŞAÊ½ê>ZQŸ{Ê4Åt†ßPÙµ—–ÃÆÕÀÙ(^³HL–ÈuÁfš… Íû;[´X;³–dË·İM×@õf7ÒÓŠ?C:;ˆrŒ|!Õ¯ä
+xÑ‰^Ø¡Š¬êÆë÷¬i3	 Ô¸˜@<È>£œúg£Â}2ä&› ™˜`ÑQLû k29&ÂyàÂ¾;ò
+& ‘7;6¦€§ÚßKĞóÿš¨&ŸQ6”({)Â¦§bkÖ:¥ªº«¦Ü<gÁó××‡‘wÈj~Øl'Ç«3óĞ²ìÕ_…e’²~Tº°ú¢Uå_ô»x­RJJÍı¬Ió½İ^#4‰V˜9Gü¨ÃÒx²{»0ˆ^d‚LÛqOªë^äÇd`>¥Õ†$'°ŒÄ„hLçá( ÁÁª707' moæ)EùC–¸P+w„@ÉéT“ îÚ_€…Ó+©‘…V²¿V©Ü-êÊWLÀ~OíÀ{R	èz6ısFoR‚Ûç]Ô3^³'ı¼(¡:5«Vd]l£„ˆ0‚ÕÆK_;Já;‚qìÖ WÆ»y¨‡™Ç\IÒt×råú”œo—”50µ¶dŞî÷ïÒ^º±°ƒU§.äÃ?‘fæ0û	†TÀãAæ?‹wHl: À‚ÎBŠ9Œ–:[]ññ`ÅŒ¹˜|qôm]Í'RÛ@71÷œ7HO¼*ä+R}*EM4°Âó%P-ÜW™,Ë¤Á*_™””uµNs…UÄijL‡¢¢Ç}ñFN¯›] ÿvfŞ°k&_QÂÇ†µDs§?óµìtÁÅ²)¨œ¦ÿ1<¯–ênæ»éÂÂÈ©ÈQĞ0¬H8/ì’\ò©¼£fõĞgõª„rmø¢må«z›—u”œñ>¾ÀÈQ’OãÄ¦ĞÑãRì¹åÆşb›g'C.‡"{õM€rA_°Of¬¢×È#îƒä»Õµeo•¥Ñœ>Ç¯»,Qq;hyéÌ(aÌğóo-$šÏî£bß%Ôé‚Ò‘-†Í­÷-´ğ|ùE2cfá¥eİŸ„-È
+EÀ·0äìoq7«7„3,÷‚ €Q»½e€E¥ºóT¿uA$Ò§c×k?\Vıëÿøé‰2Ò´åğ4şÛüÇ€šèÎCåâ=Ê;(¹Ö¾­0Y¹‘§Ûø'•5|¦y7ŒÙÕOÅyˆ àr›&EŒè’‚óæ«ûkîĞq–ı^9ûyñ8‹‘D`ÿi°	`$`wmrÍ.¤œnx4sAèv¦şÓªö•Eu
+¬!ı!«¡I¾Ç:¾„ Y®É Éu¾4EÈ¦uÅ/àÿ,Á¿UURÊ¼[Ç‘†)Eø/1üîÀİ&5¹Á-é±-'ª™å‹1Àé|ú2ÙPŸbáøæÜ¿¦•„ùi_"À6¥Îôü(ü›7ºâ­xÇ´D¿wÄSíQü·#uN}Cûa»]ø‹¡øÔ¥´°èI˜E¶öû\ıfÆ2:XØ¶Œ)Ò2äÙNÅ/ÓíŸà}Î¬1€ê¤›Ë"©µ¤KÒ”¼“ëÍV_Ç(Ö³Ã3óÑ³ôëtHö¹ã–íÅ·ñá"Yq-íÒuûM‡äQËÛèŠùàg½Şà:º>ªµf–’€T°= İ</ñY1Yµ™s!cT£ô,ø^®8{WËíÅ‚¶Á§ì§HDû~ğ{
+sîç×x'B°Êiš ç+*¾à±pÚåùŒFúD•.Õ÷QªEô—rÇ‘ç¯ñ<±¼—ÄZ¶5·SâO8b¯ò(¿aTLêëkÄü1ÑK×øÓÁS®ˆWñ4`-f|¶Oô[°é[ôåY9ò<˜Õ\áªÎËö%£ê-‰3®8" ë	Ø$ÆFsV–Ê*³#(¾Ø>!EÍäB¾VÂMˆaVDH&a?'Äl+Ôêcd^.·së„€ô€]t
+­´"ü!¿Í1í
+Lãí¸Ägï™¹`äáR9İNïÆ0À7C‚l2f¶XG;qô¢Äß0ú¼¬à`Ò¿ˆ…úŞÔÂQ™~†Ï3úpzğ*p	Éä+	‹Îî7a÷=RİÃÏhØ)—Ö©f&‰ı¥."qõjiŒÍÌÀYŞè[û?ênå™‚¿e›sYÄcMÔB–kÖšn±yÏ²špºÑ›%Öxê¿[w.Ì1©¢
+ì% )([`kBåû4‹Àñx•ÿÈ£öã›ğµŸ×ô,+ç®6~¨Ÿ)ÈuøûP}‰ß0P‹ÖÆÂ‡K‘2wK×oıÂCjÒö(]ÓD±Ú‹nÀ@ä…é"‚õ+,İñÜ’~X
+¬”ï¢uô¼y]6+§UÔæšî¨h¿JºN~Iß°)ì™f!(÷Ï¼Çõ£ ğD²n[–RYÖÚ{buöÔÌ+'™¤ÍµXë£W	OòlLS¼š0"&^Xûœo9­2p0ñhõür²WKB‘8 ™l1µë,ÎƒÛo²PÍM	æ×ˆ»$ˆ8œvt°¹Ê&Ã¬ºÎ¿b!3#qàñÛ(¹‹†‡æã²T¨õ¹½ .‡ÔÏ"’:ßÑ”|aò$IÒö±“	æî0sàŠGÊMôÊHú5àˆı}b¨Ã'´oÔ/e0¿=ø™ñn!Šà:è9ƒ·Ö­åå€Êª-IÉÙæ·†>Ø´Jˆ:(³7KqU‰‡‹ñ$Œœ«Ü^)Ş©¬QÉ…/Œû	lÿR·XS›Dz¥#+†’áüd>HÜÈÒ_íâJÙ<Zè2uSF­ÖLó´#p¾pøQ†±nrÀØjäô³Äç—öõøô™`·C°ÅÎÙA ’C†[_@by…!B×˜38O™cƒ—iØÓZšÎ³Î÷¸¼PD›ÄJCóGùHIYâ’äWB8‘ ø‘,×W0º,O‘&L;·EÚ‘ÎN*qBcúÍ“ëæüÆé
+Z·(T6ˆ
+–)èF³b;Î)Kc±(—¶äõ¢óG…‰ŸÍq–‚'IŞ.= ‡; vîzg;õ€óÁäK!Xß¿¿á’ŞŒ4q’cİs
+©°VP;Ô‘§-W#€cıCõNbHïİëÇ-g±âÃØÕì$êÚ\-¶ªñˆaƒ½³½ ëJŠÌ}ïò†ìWGàŞHYfM¦2ôs¦ÚÔû^²Ê‚ïÃtŒj,W¬mKTxk%ğå]vzm¼½ÔiŸR›Fé¦7‹ù’9¹Xœg¨÷(11.DÛõ¬âÀ"ÖæzÏ´¿³¾ÁdÍn1|C_¬ewÂpn¢øÿé¸—?Â¦•NaÛ&“¿^ÅÖ~•¾ÆıôÆÚ9¨„ş^ê&Êò¯H©'ô¼º¡A]ËK[šÍ¦ÓU©kõœ‰ÔYd—º8ÔDï–MVX¡¡~E_×†ŞœéÀ#a‘6u`/IŠhƒHôæFo’¡ª$´¼‰‡3¡%)ZŒQì) Øé*Wò—¼ f×ŠM[®ŞG.pgêTpƒ©9›É°+ ¥Koí,9¤QbÑwù<»Û9¥øüüÌı_Í>‡_=y©Zç+³„ÜW™Ûê!dUÌò=«ÅëØÒjµ¬l#1’ù­€@øE`,„ÄÇœï5ÉHU6‘¬ÎÆN»mVV{mãG[R|éj·„Œ1°)ÃTád«*àpn!•r.½YYkW{ô9Aï…ŠŠæ.·,Z ˆPıç<¡+3B§É(=!<çöZ$™'×,á[Õ~Ñà0Íƒ…½3vJu”u3ª²¯ØaØÙˆˆQVW5 ¹H¿3œˆªJÀÄ?B›Ûªº7ŒlÈõi!¼ ÿ*Öt¼ëÊŸp70¨d1µ~8EMXıœÚ ëŒÍö¼¦œÉ²Œœ@	YVºÂ6-ëqm¹ŸÇ…Y1×7Mb¥Ü®Æ’XÅ™¾Œå7qKX"¹pããÄ,Ó>ä& i•WÚH+†3Ş]6CƒâÜïüÛİRä(VAkÎ´ÕÛs¹šÉŞ¬Qà9 }}å¹;Å#x‰ü.Õä§¾şJBäx§rÔ>Ú*—ˆhIü5Úç+âQ·©¶ƒ‰°ä·••qù·@}yaj(íQUÇoG‹3y¤Àğê¶)ğç‚iZÇÆw[Å¿ôÉ@—¸ÌĞóîª¥<X©Òû!DÂÛGn±#Ê8Ï“ìÒx™Z"·{ÁmÙz£E>«¤\ïv{,/69¤p7ì^iÿ2²Ş­_åÙKŠêsÎç×Ô;dª¹UâNÕÈ—§
+O¿zM""eõiÕ®ïV¸:Â…N20Èo-%TØc=ŸÁ’euDF¡ÀKNW;?â/4b<›=“¯ƒÂË­±¢ÃeÇ)©¸d6l¤h#Î_ô‰ƒ6£H2¢âwÕbnÏËu·n[ò2T^väŠ¥DŸ)	àÔÂË(r‹XuE15€~/ˆ|¸å†8tø°ª!\±u'm¯of¾­\â
+ÊÁò–ºsB2AÃ¤=Ğ†Ùßfç‡Á=ÿ3lÛrk |>i\Ô
+â2´™KöÕE_DŸÛ®»oqA¾´TH`_¸²¿4™_ã;{ ~ìÊ—!$œÿÃWºÄz…éP¾‚ÔÜ|@=ŸÇ½\a°àg7úîºDGÑf“¼¯î)c"{p^³ûÔŸÏ3ú'pÎ§ˆx'JpüòŸ€ıÔ3ä8. Gk÷O©#øfg3zm³‰ËxAÅœÒíçjù¿ŞÚÆ8ŞÕÆ‰\IHë·²~`cfŞèÎVâôñ»ˆ_¬Ï^±¿Sdi
+Å\şmq-µæV{	XÕHÅ½8İÇˆ˜ @mĞrPæM(ŠÎ$ıQøú¼¯Ğ°¾ ÚÍ‰Ø¢Ü#…LÜÔÃÅøFô > M2¸çõoÔr æN4Î$ıš€((*sóÂWuzÕjéÉhàôÃH¥üòf×é¿6À§]ªK;GŠ©ô¶úÈsšrEYşyA¥•$İŒÚœUl^üü¾Ó,m—Ò9©ş»ïŠfzŠêó*º/ÙÌ]j’8lWJ„òˆt©$‡Ã¸’ µ~®Œ”`Äš[å¡"™‰Ú Œş´£1D›¨0ı‡r«Ô¥İ4îb6ÚİE\O0+;½n^ı•9ÒÅJô@*¥ã>m1AeZ§î¡k~ú>ğ¦Œo(åõg'.ßÜBï…18ÓÉÇ)S¾êjùš@©3¤+ÀõàW¤¥°k*¹ü\á§ÿù×ıÓ+)uÔú§ãµüëNM8ã·9!ùg‰ñX9¾˜·‡e4ÇG VM?fålc²¤ë·L,sµ¾×f¾İKëNšj’Õöó_¿
+Uw•æòÕ­ö¥™g	Æ">}¢5Û=V±då^ù¾R^°«¼á Âéª>ÖHÜÎ9vÄpÂIa¦®(ÆB6uy.U¸ÌüaM3‡2úÓ…~r„à€9.ÛÀ1AGé$UÍ‰Æ™(İ¦uÀ‚Y!{™É§¹Ó
+·»ĞO~Ìo8:A:K0›%`ù:6V€ÅaÔàKµ»73\hÂ]–¦t¶-©\á"-ì¿ºHß2³ºÎ´k‹2qíjeçåC8ßPÈq»²8ÍRÖ¤åø}°»"ì »ïá"˜øaò€b	(\ä'T/3Ş¨ÏÙ‹É¦·£bA/qª%…x¡³pgÓ:BE[„Z=´¾ë0€ €iS¬%ºa]Öâp‹F#à@pzÜnƒQ®Ö/•‚YÏ[ŞµHı38?z)Ä¤Ï’uN”$S·Ê0Ùš‹ŸßÕ³«Lï%Ó3ôÀø w~ÅK¸œQ<Fõ9MÂEGe`İûÔ?Vê’±ZLkÅ‡![4iå§âä¨«÷¹bµ,ÿXË[·È]¤kkZ„}M<¥¹„Ätß’íú.Ô•îñ,sQ g7…’«JóW83Ç<	Åİ|õ¨ø¾ìH’_ş<± ğÌ®Ì|aù¥6»`æœ6×p='úˆğP"î+ã¬U!$äëBJŞ8 ²´Wa’qÑƒ9İ"RAïßğÜXj˜¶`gùğS]ƒOlªÇNZ‘&}%Mz¹p1É)LCÆcÍCşŠ½‘z^ñ§[Î× \kycÅ‰×c4Ä_¾b‘Zœ•øHm”.)+?}f6œy!H#—d0Œ@ï`õ¯ê¼ˆ¦›ğŸùGâpdiB°éä"[‰’}„¡SĞ¬»5­ágD–zo5™èË-×.%á†3%èÉş¾¤­œÇ§\dor#ÎÅJNĞÿaD™½Ùµıå)ï
+†şt©KÍ£ášøi¾æqå|_;™bª$;Ømä6À³ãÂÜ»´xŠ3" Ä–® ô»mK´ìüçi·ÈÏ·Ş¦ÀÔø.5@‰f¦§T™ü».‰?k§~ CôCv2*Òˆl/³¾ ´q­íC“Uı».D¬M€8ŸN$ïKBKšÎ°ÀrnÊ´WÁìœ¼¿GÎROeXnòwĞ[Åø‘ËUÀÛBÒ§¹Hb|f±Œá¼$^a"¤ƒF¶•÷]Ç%•Ô*lùƒåÿcr½p».(3Ïóíƒtÿ(ÇLœUCl¬ÏE YÏİÄÓ~³k¼™³nCx¹‹Íœ!<C÷¬ºÆ¿ü"}$Ìf¢Î;9¬¥Ièp\3Ï_±ÛüD±XU‰Æ_Lùı~Ãô›„ˆêöYcòÂ{kÿòi&–9¼å.lxpµ+ZgĞ)_ıDåD
+ãI™*«|Ì/Kp-iVe!øÚ„+]¡±¬©‹•kõ¶C?0ğ`í-éâ•Aıy9óU¼=ˆŠêÍå‰,)f”DÒQå‚îtŸæMæwÅôJ0BŞ6Ç=WPS,‹ ,	N Up¥®}Dûa¿liİ8
+æ;]aAv™I\ß¢ü„¸i 3Ë)»Ş™Õ?ó£¢ªuÑÔ0d{øµl{ğ]ê7eÖEQ]²­ìñüıÃ3` W\ã>Äz¸eMÒŠò.ŞÒO¬…!ì•×¿ukØ }Î!É	å{å×µ*DF—¼hÙÊ'EL¯õ†\©U¬*àºğlY¯ORNsnù¹l<B9t ÷LßûOë·[”myPh˜+ÚıÀMXsîa!¹ğÈĞèPhƒ¾nğ—Ó ”šÍ@êbí<£«k«LÈ4¬sç®”%[Å,è_ÑfÀ9ÏEªl®Ö’†ÕŸ¸G€*“œ:_0g•5şdSû€a }«Q8•¡áÕJï ha@©{ŠJ11r3E5iqxÄóÓÑìÚŞJÊ«D¨íË…Ì©“dÑé<¸ñ&…L®aÍ†£UèÜWYÔ½ÉÛ„rÚFÌòo˜ºğ`;zSg `4T'AñX³d2DåÄÊßZKb“|.¥²à½Fûâw>„‘d®M½³ê»AQçÜ^æ7Šş¶ç©ˆ`àDI¤ï{Xû`¦ş­’Âà
+­”}KHú¼Œ<ıaº[ˆ~Wêï‹{EuÚ Œ:_N`æüµ+"áß9s?¦@1Kíª“ûŞWìmîÂl­¨ÿ¡	Ëks¸˜Òã,×k('áDÉş)™h@şŸ„‹I‘-±(ˆ5İ‹tp(
+XB°¨¹n)©>GÀÅEi#
+H•’ÉÙ!UÒ°´è±H2•¤!˜¸í&5WlšîÏ2À$tÁŠ ¼§b©«Hzãàê¬Í,Ğâk¤¬¿½ş%¡îü0hVİ«-ò z”4»îi²xS¡€n;h&”CúÁHÕÏÿ/(®
+ıÆ°4rÂŠet}é¹I•2c©¢5‚ Ş‹[9;B–n6 ã/M¶Ôé»ñZaßó¹hÓºT")zPˆ{”sÁf‰F+ED1³«- ŒajI/0Bñ;^	´yıµ-o$ïRDáİÊ/æÛÅYÿØ=Eú	½G¿”ìì£7,¬F±^¬İhÌzıE‹ì	;§4ñÄÂ§8!ZŸÌØĞ‰â›åj>f’Gğ¹>Sæ›G5´fzõ¼x†g]¸ZLYr„’eÍ` /aB•'U§]Ú—z:A™Ò‘ì#â÷CùíÑ 5eÔåªVîWA¢ºÌçOš‹U”!¼Ób»<	‰c,×'–€là1n¯2ş_‘.Ã-´z‚ÆıIÕKåH‚%S¶İ¸Ï´‰Îâ–¯e/‹|ê¸Ü]Õï[:T×
+Åù‹<a†t'P<fŠŒíùu ÆUvŸ¶¹7>³ıF2‚g›gZ‹ë®Á¢(XM¤ óÁÔ#*ô’”J™à®‰‘Ø|Íy~3 ¥¸ß²ÚvZ¿b|oLåCô8
+ŒLç¾ñú^ewkÜággGîÑ+Ã±[‹­G¸§ÀñKú“B|wBÌÖ­¶áÔÀ¹O
+»ÈlßSÆåŠ+şîøWü,Guğ>ö´HE€¼§iSC>˜QäıÆ#hÙìoéA»jQYAIûWåe,Cš ïJ+cİ”$¸œsêÿ\îÎçö Ÿ£8ó<oc‰‹7îüĞØ´E‘ŸÇBT,Ñ7ˆªá*.j.9Ri”‘ÓÕ€[ê`Æê¡2t×«±F™
+eC‰¯z	:Ñd~aJ"Ş
+¯ÜM8
+Û¼ŠÃëÂ„–lL'Õ%dûuÀ$7å6ûÓ†#±m?Ì_é^;…ÔµàĞÈ7$Á„ßà½ów>$È•xz¾­R¬\bCkHxĞ¯],­D;#X+/°ˆë¥NIüiĞÖ"›ŠyÒGQœ¶
+[ş¤&ö¢áœy˜ıÏånİagG!Ï°:nWèÿª!ùD32ß<¥Ìx†©OIx¨Ö™«;úÛ¦ÊĞı(3~ôpÊ¬«ŞÆ(¼Ü^³şÒä!VLŠ¿®Q
+,”¼ıÕõÖL+Q‘+KdÙ€İÙgõ÷ú/(æGñŒ2=^…rC²uİîó‚1Á‡H)9aŠ±~)hè£™ÙÆ'Çe6y\TÕEÂ‡7Î9@•W‘Åa:Ò†ŸCšZm*óôÉH$Ïåb ÿğn\ro~.&¿·ş˜C~×f		Ó8$û4İÁããõ w,Æ[RËä0+Ñ¿²õºQ½&Ë’a£›‡¢PĞ²˜!Ï‹ Ò?3}OÁÃÁ'³yb£ÛEyE«wA~Û¿¡v*õVî«ëË‚ÈŒMıJ®@İchÈ†0HyûF²½éìğ~Äh¯ÂöÈLAt“C"Õ2n²‡ĞÙ	~ùgZ_ˆû%¢Z'ÙÛbœ×£ºd«n“nÚÒÓli@,•©5r®­~s¯NVöP|5¶ou(/Üı˜/oËpiïFÙ¶Ûêâüítü*q_];VÑ£ÀqmûU.n
+!A[«æŠó†bšó-ŸŒª0âÌŒl´¡Š=!Š‰&Ş[G.\/M‘åø7Jğ±¤Ç­„›H‘…Æô‘hı©Wİœ»|Œ¹ÔbM!û’-nÃ·áğp¶‚hÿƒc ÈÚÆºÏ8_ãT³ş8SŞÓHfámû	é`²_bL¼.?‰¤¼âËq!p¼cK™#!Ä€À2Õ’Ôˆ¿3^D ôeœQ¼‚°§Òn³ÉÁ³½|B0/‘XZ	¡´ÔRŸ iºI ŞıjFM½¹ß€â¯Ÿ{ğ}}äÙö³62™§ÿwH*	1º¸Ä..N[ÜÔ_íè>¦”Èy$ûxÄËağÃ´É"`Ôªïhš…#ÿÆ£œ÷ğÛ•ùWb­Êz«ŒƒŒ,[&²h.°ò?Ô3•+«®%_5Ww å­´Í”“ëc±)Şº…ı*·²)‘86œ»sÖô,IÈÜÃ‰ö$ì1­ú˜‘ñdÄ(_¦¦¦A4šßEÛövÜ›ş Œ‡?@ÎHb* ³ÎÚbs¥+hˆ·VßŞ
+ct#mˆÁ8ü’]j=$D×QÚñd–fb7-5]G®w
+¦³&7§ï8`Ô”õÊy«ó™ïW'Ç¬^ğÑBt¡İ‡pÛoXõù‚t47—y‹áŠAP-RuÒç39eåßé±Úø•™3ãPîƒÛHÃø˜ì¹wî[õVLK­Y}³Ñ<½?QÓ‹Ãì°ïYd³¥E¶Ÿ&©hÌ(~b6_@µ‹¤—9v„Ğu,SİøB«çİâf÷!Ğì‰ML¯Úİ 9Ø‚Í¸RåóU¬kŒK+¡
+ë®/ô:˜G½²IÄÓ£k®àÌ6ü¤¯œVSHÎŞC(WD§’Oc	ñ†@
+Vbˆ»%äé{{ÒÃ&¿dÂÙ<",{tBºú»áVİ£Ïí`È³;/ÏiÉÆ‹ô‡â³&ªÌÆÇ£ 1-0‘4Ê½ã<–‹„%üiÈe@ÔòWõÔÃ#iB—ß$u\+&³v	í<"ªn}zXL˜+â^I*m1¥\k{eYÌIp§Úüï96`µ“ddàüQZ¸”ûQn…—ı¹^6áÄ'¤ºõ9æ3şèGa¼È°p·Ú «yv|¥%Ï\¢œY&.Æ)%MXäÂ{ÁTƒSMP“²äˆ¾¸AØ`T0[P‰Te(bB€8“#^¶?vM®‹V‚8ıEÖÄ6ü8Vôé” !úSÎ®×&êK'Ñı9ª¤¸i‹w~Xdn¬Éş³O]Q‚ÛG‘4Jšr4õØˆŸCº`¶şg‹(Ô>Áşñ8yØ¸ñë.h‘_O¬uõğ–î ıØG0ûì¤ÁïİÉ€7¡å '\Iñ£U]¯‰»e,¸ty–z`1 å‡œâSoË¥0¬öºûxNZFxÔ®ï Fô3Ó®IáÒä†£…+‚’ÂÃ¾Hyû#>;Èmà(BòÓ¶,çAI)ñ,ó‡z¯"é;2´©@Õs p“^J‘?„µ×ë+÷ƒ›¤»¤/»²HVØV&ªL f,5™ËS!k±¥©o2‰ÕÈÕkÓ
+\›ö…H÷Ï{!²KÔ&M!F2%§(×t7÷I]İƒO	 d•¯—wƒAd*Ÿé$´r¼)aPu1}¸Øº‰Pï	òáHùj&#^ÍbûÈæ!+ "“*OpñFA±Ô–A¡V×Q1•,OZAÿŠbCX ğ‰ë§İ¤Ä[J‚ƒ–=ŠRºÚPsîçsQ’Ç…ïW–á˜©kl­G6ŞIMXz¸w•Ú…ÑµtxŸ ·ªÔìrÉ^úÇ)E;—Ğ§à.=Yv|¶Ñ/J
+"/[`Œ,·°¥ûUtâ+k“¼%şØ‡—%C³ÑÖY¡Uø:À+ŠW‘°Bëƒ¼t©¦ÆÍ¶KÜ›à"ÏJ&6U!z²¿+2¸Íö»—m0N7Éıxd¼UğÔÜ$ï—›”IÚnÒ Æ™{÷šİÕ¯Q"ÇÎ¯AÃµlbÃh%¬zQİÍFènâ¢ìAÍi^7ğƒc‘Aö÷O»×I‚&âAõÊ¤zæBãKjÛé½GJ>Ü¥]6eæÆèézQ
+“/Iª,\ôîÃ¹Â°Ò¢wŒê&/u$‰«ÃîFRÖ’¾bñÎŠßµ"—OíYa’oâñ(«»»NÎôâëÌ_bŸ­tğZd+oMÔ×†t€Ö¡™ƒ©¾QEÜ(["PL|eÍf­İ…æ®˜e|HµAËİpÉ¸ÀÖCAŒ)1±j5<˜bËbºÚ›w_[|±Bj”n¯¢+ÀÍõ X[1nSüh“i*6¡É19Ã°alæEâÂÅ8ˆÄOy³	å×>aºŸ(S¾‰öÕVÿGLÑüØÁSê=ÓıWâˆi_¢?õ$®
+«ƒxy|MI¨›5A^IKmè	 ¡ˆŸVjØÇ‡ù{Æ…Òv:µ-]ñ{T$†7óë>[ ìdDX~üü
+ûC:¢ús™+WçZ–+|—DÛ ÔÚré©iX›9®ÈÓ":%DşŠ“PYVF
+Ó9Ÿy2ÉQÏ9>EB22Z;vRUgÿûmD-ÜM%ŒØö
+Û Êƒ D¯¶z>ö)µ· A6h–MO?ßVæ B¢G5ô5Ç/J}N<èáÇ#‘CIò—)š=…OçY%ôÛDénêØ¾Û®#ëAˆ{&”YõºæNÇ|1	mµ!»N^¬üƒméŸş6úØùî¾bu®œßâ‡ä?æùÂ[Õ,~F¿j€HY'iU­|¢o<Šš«ˆ/	ÜOiu£ï$, 
+Œ¥$»dr½àÁN³YßJŞDqF¹ãèò¦J¦ùı5fWY ÙIŠTÓ
+ºÁ²»'0ë8Ò¹)¥yƒÈŠk£‚]Ù`¥„@GªS#ÌÊÒ|µ1"„a³ëù$ÄP½‡™+°Ù®Æª…‰s_‘eZ¡Û‚i‚lœÄeÊ¾·,ÊhR6[‡¿ËâŠ@Îˆ¾XGª—
+&å(D&9£ªÖŠ]2«K6á÷~™†$Æ1$ı]*tã©gt;TlÔlM,]½ér{¹‡'Iº… ÜN-ŞÂ†³CCTä#}¿DJV`bÒÊ/”2¡-cßOš:jYÃEB#¹Úk2‡ÖSœÏb
+×5
+B~Á:q,é á¿˜KÍbN`à$I¦àJ%·S°ğ/åD7lÉ±f	`pvÖƒZZM+|ö"û–\eL“Ñ›.ÇÆúéÌ®y]˜Â‰ıéÈÓ´êÅ¬lMXcI—ÇG’Cw•Ed¤ûÛ´ÚËµğ:ÍúÀ^”3GA“ l˜p>5ç’¬L‹„£PzHPÅ}‹lëØî›èMİUšÔDíoãê<´9Ú3{¯N&°8T1ÆÑ5¼çÆ–òRr'ŞúSy~kbi÷‘nP8ÊPQªÆrBòÃ.¸I°îT|ĞœW(qMõ¿€’¨ŸmQtcqEs7UóV-©o"!cÀ
+ó2ƒøP<´¨7‡V®Z˜/#ô6âˆ‰òÎÃS¦Ç…«B¥Æè³–±åÒ~Ükéµ_Ò·ÁÁõĞlVZ‰hÚC3[âí~¥^˜ƒ=r!$t_WÉIÏğSÙ¦º9ÁÒ·Õ¦ÄÚV9h\ë=wñ­<lT8J¯ı„–¤9¦ú1¯¹Â¯ãGÿÏ0”9¦òÊ~«!£\/ó;fíyQ—ÌÂ7¶¢Šyje=/nKt$Wh\Ã^«ºmù6
+µĞe˜¡Å#àı¬°×y<D<j1XâJŒëoÃ;”(=İµ9¦pJ½÷ŞM>½Ëúü‘íÑİ#4wyôì|†Ö².? ËÉ>6-g»ñ– ´ÉMÏıÕ*æ7î°I.@ÁHÁ×|4b sú
+c()WwÉşÂø>#"®WUZ'(¯‘]cÙÅ–Uê@t+UŠ’şYÄ›¦U…¨Ï}ÌÍÑÖHù†¤Ûyøxû«Eû(ŸŸ<û*äv5ÿ´o¹xKPs,Æ\ù6;j½åV÷×Â}1›ÔñøöÆLûpæOFF=ÅÎ5¦n€à+İ’ıµZ†Òğ	…RÖámOh7Nè.š”ÎXĞºŸf§F††÷€veZ„‡ĞPù¸—×•	ï.ÓEÙ§sà2Põ®~KsAj­ÿhdmÀâ\EB™l]rv¯·ádòÂƒHIa_HÊºu½¹A_[U“1ß¥®(yn>¬³.İ\}»´B·üœzƒ¢®ƒÌkN÷¬WM.Ş\^|`šš<VN‚Sr¢ÈÈ†W¨¿ &Q‚ª}®QáÎÇÒ[…—b§J lŞã´4’xµ¥a	¦o0E½Â¾.k	/Ø•Z¥İtÙ¾|ŒÜ7 §t^€÷7ü¾9‹mÄ¿¸è`'â6¬ë[Øô]òNYÊM0u3¦­1PÒKúÖÁĞH¨Oû²xö„¡©FOI¸Ü—_8	ï[d½uZ.ãJ*¤cµ|b¼Iÿåu÷N¶æò7&)} -.y5æ@LM§R€h×jı)/•é+ÚJq½¨›	‘DûuÖŸs_ìWìZ¹ö™){V‰‹äc[Œ!‡ĞÅÈ&ÙdfÎS]°àÚ‰¡®,»´}2
+ô¤Ê+¦W¬å¿ZF§-Óq$O¶Å'-äJ+D‚è÷¬¿DoŸRùÃOrø©”|™£¿eu–$Ñ´R9ãT•ªzWN9q”EU
+ÓhEãÑ‚ß’]HÑ6ò¸àjc£>")Ùcàx”},mÆ#´Çºš¿E™´[õ©=ÇÜ±&Œ¤¡ö6$Š}ÆYu¢ûÔítü°Ù”z‰] ÏNa5ğ«¦]š®ÍÁ„üô5Iñv´ÀricÕ!#JT´ŸÂß×Oüàû.­8ŸŒ2Ø·B7½q×np»g|zí!ˆ]HÔ)üİ	C)Aûù@MÿÚEÊ€û]©Â3®<k¤@ªÌÃ­fÏ|»x¼=Î‘Dí2Ò<ô»Y{t'DÅ8cif¶ıÚWS›ÌÏ4ªŒ-SXE]¦(xâ·©P ª×*Û øâDİëıüG+!Öa·ÒAì¾àõÖsÀfK+™¼]í+½×³>2í9Yk¨H¢^1¤üPvD!V+®Ù¡-´L3!{6°%0Q.¼z¹’€	»™õ—ˆ¨Œ &tx»x‹ô[
+ÇÚ?|¢:K¼ ¿ìßƒ§ıhXhÌÆ<«‘F9NHá·`5ÑDeo¢ºğGƒ(úë2—¹†‹C–- Á~·ÌƒÏNt™Û6È´D*—u5uåT ÂÍÛQªûê'eCU4TÎ¥á0Ş1_!•€ö*  Şf<ÜOVËÍr"6ÉíğÙÙ•[T(níWM¯Š²ù÷Î‰ÓI¤‰L{-²­õ*å³Iş(¥¯%Yo},ûóoA&|
+ÈX#,“BÂÉÉûB‡Ã^BÆıã<@şòBqdÉvÎY™Vç°şêâu‡n	F'/Ù+Â€pI¤´¯ø…gí¿wÙx…û4)/ êÏÌVÓx"6¤¥\©`-¦×Ó?é¤‚Vgû"dVR'"ñ”»äq¬ô·o<c¨u“òÉ¶j* YíWêÒ-.­û³z§…ÓşCÃwş}¬¼Ó([5ÑÈP¬cšdìV¢ÇXÇQ–¿Ë·YŒ¯pØ?Pš•á‡væád™šèã}¤*Uyv>ğÈ5†dğ¤Ö2ÓK`êù|ÌY$M¬Æˆ<;¥üoGıÛÑšÀ¼
+ƒØï-(l;mi±¶é¾·tOgªìÂ¡Ï›ä/a7Û÷BR4Pà³;—/IÑE¯1Â_ÕJ¼5EW‚¯ÍsŠÂ…p,uİ<xêCpöoWıÔ[º`ÑJƒ57—ÎB%¾Áp#ÓNä”>#;CS3r?DÓ İŞÔ®ç‡µ&RAV/LKŸ©–î²ÊV©x"BœÔêé‘U«¨Ï6È•Ä¤ÔŠ¸¥êVšMªlhç|½lo],Hz0.µQğ HË#Îs¶ÓL««‹7Ğÿ¾í-OåQ#9|^¶{³ª¬l}×H)F»4ô’‰78Ö‘ÆKÔR KŞ@¸tîÌG±Ôú¹Bã6sgn·`Úİ"X«PÇuèò­ä¶NÆHZSAÖ ±">Â51ôÛÑø
+Ó$}.êD±_#‡-”&heKgf•ˆ‡@‘òğœÚ|ğÇáÌuR*±‡s‰ñÙ³,Í·å\i3r†}A'¯*×£Â¶›
+VKá™b…)¼~Å·}!]l=¯ëy¦nÛ{âöä“ÎkÕ•TæÄal9à-Ú´añ‡]b$(vëÔ@ø:Z9œ0,ÆÖÓGÅRty¹‰“úZÀnã«ÙDŸşdoÏşî\"D˜&ïñÔ0$”-	”)ÕÄuüÔ^6‰ã“XèîH%»äƒzyì5¨¦L“¸n¹M&¤nÈ#pEß‡ßx©I-Å¤ıäH±˜e %Ò~b5õ¶¨ÀİÍ÷û#Î§-JÍ¿]¥¦ø%{v
+—Ïqı<ù¡Bølùu]t£“æ¤sXzZhÖ"-ƒ¶üz,»Ò§{ŞfõÏPE‰—Ş¹e0´X~'qL\O2÷5¨'®*©$#Õ¼@9àºağª©¦Bj‘	¿˜@ÓškÛqüÂ¨ŠÌbóEÎ:Á×*<’k‚p<ûl*ôgŸâÿ[brîŸ‰:œîÒó2Ì-óü6Ò”ÎX/œlU×ê{›ş=³‰núÉJ{V°œ&émM ×&ãÃ
+‹MÑºó`ÖBWª{ùûÊF‡•9ÿ¨;ö>sÇšÀD‘f¡ª¾y*~hº)1Ü—ğ¨x
+JñÜà¢q>t(|?8¹·îeZ]ÜilYX*ò[•Á©KsÓM¯€&üQãk#œÌ8ñ¥Ş,9ÛY#ŒzÓÌ÷aì3’ª'¨Zc.}í§mÎ«ÂÆÃ‚"r·K"ÿfœ¬}–ò pƒú°¼¿ÙJşºí…!Ç¬á¥ıºàLdì)·Şô×¤"“9[²âº~n`Ø¼·Ë,rjïŒÔpO/-d™²&"†`ødeOaBŒí?/ªGqûnr£D'˜R›£p{EgW”ˆJ…õÈ[,ykŸl>1­|‹¦†©ÍD­]¯ü:m¥%ú:ÄY†{¿È³z·~	éø÷à‡Eû°oÒ—ArÎòZ¿¬ÍR‹×èşÉ¯
+¯ó.KYnp¢zn‰}
+%Ô¿Œå×û™›:›XàêdÿZ—QÎ”Ø0>dÿ{¡ãÚ!Ò5/f0öĞ2Síÿ¾mæÅG’FU¬AüjŸR€PlX¯;™rË².™ª¸Œ5ùUë°,ca`ü¤bÉ¶éÅaáJ•èùÎÃ½m½w…øüÌ¤e7z#ÁSæÎ`¶w
+v(#.Ã=ê;ä«ÇÌ‚’ aYAålşÒº‡¤Y2V!º=ğ“K­+3K¿Ø¦À7/fë¼9­Û­îH|ØKƒRN€ñ1¸uöÚä_†4èÓß;ËÊ»;_Íò^Ãíy&)Óîê¬Üƒf¾u–Áó½«0(S÷7×L<" ×¼‡t›ìıÉú`*>yh¦eœæáw2İÈèøA‰^Ø_8sN4¾2(z¨K=µûşU÷e‘æÀî—½K	²	lófÇvÖ£î¼RºÁ(®Lñük†ÔšÜ"Z%õ8¿íu«?_+UŞX–­
+OÅ‘¬<Yß*Oå”ÜÖ}|âWvOfc»qOl ıûL‡¥ÿÕæ")—Öl B´•È*n9/m5/›½USÒJÅÔÄ =µä,Zó}ËU)3ÉK"C º/D6ñM~Ğv }B¶PÂm&êÄ+n©Ş®h†ê#hpN;lÊ’9°œºÿ£ £ŒC³v2`/Wæ×9^ä1Ş1ÇÚìïğs‡«¢•omgB=ÉGEAxCkù|!ıåàâno-ƒä‰(ù´. ¨£õİDşp	Tê/T·{t„æIöG´NùÆ]¼q ‰Ñ±Hgª?v’#ó‘Æ8‚:%ö¡+âÔ	éêğèxyêmtHÅo90\0r
+öã:ı‰	©÷å8Ûºœ¹iÒ†w ¸€véòÓÃÚÛŠeü¶é
+¼êJšÔ!\~) û—ÕQºA?– F0øœë««õ‹ç\VD‹¬²“-F­øeµ<d1ÑÆ½i.ıÙCÈÍNëÌï$Y¯9o‰·…ÊşÒæ»„ÃN·Ğé‘}#ú@_»ôX™r/XT&"©<Å¼#§Ôú8©ÂÄè&@2Íxä¾ªûQo¤HĞ"„§5|ì…kÑÅ‚²ânı[ÈıùÌ£ÃL ˜Âd÷S	yEêimÃ?Ç“_e‡ä-„©|ÏÛ/.HBìéBlqPÍ»aî ©1DY¡„ßügp—Pf·1¤ºî;SKŒOqŸ#¦ÚöÔ®‘Îˆ3×ZHLö‰Q›Î‘ÿÂ1Ã¢øŸãŞÕ@{7eí?½ãæÏ7À^dşi»=™úd‰bo×Ûy DğgSƒ‘RèíŒËzr÷×<äí¸†ÿëx‰œ>fw¶
+ëÚÓÀ{ú9É£ böz~‰AhUxêMÛLÑ=Bèi•}†G¥sµ—ûİz(y,¯LyÁc¤¨s²[¸»EËØsKş$‰+ÙoCañfÙaä›Ç_	İ©F¯º‡;á!«1ˆJ·ÇÛdoåpŠÙÂÔC¨÷Ç@¯¥ïÇ¦TÌï”Ç’£PĞ	öR¬&ŒD/ğtiµcå\OT!•f6Y‹ØÉ˜*^lmµ£F2‰•‘S1èê?e8çÎWP0ÑóûèüµÎwËzôxCÄ4}\™îí8X%¨Š–uwR_fû’\¾¹‰’h
+:¿­Ì¾Ï]³à  ¡•Zí^<ş/»½n3“zYuÕa‡f×"¨SËœÀ[UÃ¦Şò¤Q2#=D,†Á?81®%FÆ¡²]‰áæ¦x§ÛºÏ¡)~.|Ìàûœ5'æ´>ÛìÊ4â>3lURş™ÔÖñ‚I4nvª¹Æ‘I:b%ğ“{¾/SÁ-uîkÖı´×ØCQW¾½ÙEwtÆPnèº”ÁT|Ôiù¥Aj—™ùŠga¾"â[¸plz$HêWµÜòöõMàİ”Ä¶§x¡m¶6)½&W°7%{˜iö[°
+V*Èl®cQ’´Ç×©ñWçZP+×ªQ2§†óÜ ş6(£‰“ä¿É:„BÜb‡(YMN‰—È÷§ÔË¡†”ÿ ±¡ÇAkóíJbáò¹»˜Ï¨9`Çì0ÄêçSrØ”¡X‹ë}<¶¨!§³©›#É7ÈÌT›t¸ö—Æxğ&ó Å«…Y	«Qs ª‰5a„ét¤†>ˆ…×¨Ÿ’+ÉÒg•ÙÓeïÅIulLWÑuSòÜªbõ´¢©şäÕ½òláÉ”@íQuPB«ì†‚$·°™vBc“«¬NêõGÜIiÓ™¿üñ>ú”DãÍàx¤Ê´ˆ˜YjF“â`„¬R’;è*‚,V.«ÊË²¤ãÙ½.Û£ø…DrŞCÎí·<$¯n’ÍÍalÇ…]×b–[ÆLh3¦o
+±İz5Ü
+@×)HÛVJZªÁ	Bİ,Gwì‘\ötª‘|ˆ€ñÈÜ‚7C.õ2Mûš4Wøı	ŠĞR|/1;ûªd¾´²•ØÄ¶8Ä¹ˆ«Ş´OQ¬ p‰}Xõ£{Øİ¡ùA—JcLs7ùï4›ÎİJÿ[vœyĞyï ,N÷sã¾€Y)nïìFltip0âmZyB/ŸQ]a9ôG_«÷`éõ…e“Å†vâ”ì}f’?Õg:æ:42ôÒIŞË¦ñpEP-”%?Ñ‡®Îº"-(–÷L‡c1m '4iANc
+ØèòjLB«D'ù×ëXô1dfz>®YtÄ)‘«¸à6KLÛ3IïGí…?ğ„ø‡e6Ds#"¥	•ƒhF«œKØªA@ ·*“ïĞ@øãáÈÉz×‰ôËq»’ŸóZwY{â*ğ
+µ]”( šœ8ä…ÒA¨ÖèŠ¥¥cVÅK%DJ–Ci7‘k˜K©ô:ü'h…äÊæAÂ`¯¸Úq•p+Ÿ¡!72êçP(ĞO²>àS¤$Êğ"Çzò´^cÆ»1êx˜}¹JoİùKu|Îwoâ4â2(Ó¨ØfùFpè´^›4¸†Ï¿Œôi–PCÔ²e²cfãOå¢Ö
+’î,'ª' ‚•NìG¶ÛÛ_®Pl•85d§î\ûÔ)¹QÜŞ	fèDa%EXy™*8w«3Ü<£Qº´é—çÀ%ì•Áj3 \Ê:µçÄ‹ÊXùJ ;wOûL…zk{F°%Ô9í¶»°[XÀ,Äeqk¯ø2¤®¾Îÿ¤1©o¡a)ûH·Ã?´Foñ|š–ìÿC¦šOea¨ânµX Z;ÿÒ¸“ìç‘ë¯±‰qÓ%R=£€EÂc/‹aEH•™ÒÑM°ûO{1ÙtÄĞo´óşz¦ëÿ$vÀ‡r ¶TÀ¬}«ú"Ì²3áíĞÂÓ@Sh¥N‡>k'. øìÏáIJèw­Òš.Pö®?úHÌ÷Hg·Z$ò¬}úæ}ñ ×;é=jİÛŒÓÜŸ×|3¦PÌgí8‚óUÚ†á[¤õÿyşuP¥+şü„-"Ú}WßÜ¥5" Ÿj×®pÃ~²_ª}¸—´@r7´èê×Ck· ‡r¨^)•7¤’¯ZC¹ˆ5Á•TÊ2_dêÁ•tŠ˜B£
+×ë['VIï(äI¦>	xO¢¹x›-Üü£ÅJ½{x¤{©VÌƒÂ¢²H}Í¿ØÛmÊQ/`T‰&š•¬óÅ–Ç»Ÿ/æZÇ Ì|Öÿœt$?TZ ¦şÅîÅBWÛÿ	3Âõê…âîê„óIÊ"@¶d ?ùÉX³Áôä}Iƒµ©I>	}Ï´-é\ÿôŞènê/K}ìG;‚Õ†Ç-f¨$³šˆÂ¤¸\í¡a/"[ï½ÇTĞ2Çø•ø$“·¿i!#ü×åqè™D0;;>
+NU ¢ÓçŸ)•`v•ÜMU@(O¼÷¨‹^Äfj»Y+/FD(Rsum ’¥S‡Nì¡yp"}yr…pÑ÷?€ÚÊ4•·¦9ªw–tô#t”YÑXhô6W™‰ä/Ú¿X¼¼‘¡…§ÇT›.‡ºıüßÑŠ¬bÅópZpa¬¿#Àe¿B°ôQ—PÍï¨Ğéz¤ØûW ş!Ó›µøÚG/(;{hÚfij…µmËx|Ôú‘†ı9BÎ ÅˆÄğ‚	¶Š<5MeßŞ<½vIµÑ$©Ã¡‡q=ßË•HıRf>kâñ}×Ö»ÇV+IÊØ½ƒğFeYÄ­68wQƒ‡´¡íıî%]ºë´W6–©œ£w	ĞjsT„Ğ¾ØèÆû3H›B‚UTlob@0íÜ›h‡(ÃÅ›CMLFA-òÀp&Ïˆ«ffI÷Ë*1ñÿ‚¼1#ŸûwŒ–îæ=#èâ7Uw)xåwvY¤'Ş”é‡Õ	5ıH–[ÛK“ÃÏÂØ“«œ1w…Ö9°uµ0&{¼Ñç#mÿêl£Vól7ÌáhÁ“îo`Àå6şO)3xŸ0F¿Ê¾Å|¯©Ú–#'áS„â D÷äC
+Gò¥w0Ó\’¯ñ‚ñıÆhÎöH<Jja¹|ZÆaÀ¹ˆ`]öš—é8™æKä}³£zyå]0»;">±g:0Ó3œâ™Ñó]•â¿°}>¡\£u*$òF$gˆßd>Cá*ğî‰ƒ•yÉõS€²bPÏ5ì¹!1­d¢–è¤/ŞÈºó$˜ ,kjÛñp¥xö™+‰PŞiZè˜Y‹hşÌÈçt’kd ÁzM<±â¿Õ@…n*Ç‘D*Z¦ùJ„\Æpëõû{•zìÑ¢­R†å¦s´˜çÊ†»¥¼yáI)…N(ÃjjÖ”¿gŞÆT„²§øıs}ÃDÊ?˜]áü&QÊ”êãúµ´†c¸èõ2fcF	ï¦ŒHŸ+t5]ïrª€X.á·SWØ†MN¿Û¢–;b¿W€Íæ¸“—Û•éò¼z~eÛ
+ËfOûhbûfˆÓ>}/Äoç¤q—2/â€Ò;»8Xß"®–*Df ñ<ÆÓ0‰ óñÉ­ÂZçÄŞªÒ' S|háLË½½¿I^j_j&’J|‚¸_f”Ïà?6¸ÿ»İhA´ È‚5n ^]æÎâ>¸zhE&Q>s5x\=#Iîâ}@<–ÇˆkO^ÀÀw"ğNĞ•rH¸ò â†²;ß|‰?¹xérhgŞh!
+|½íåÑ@RÊêyëp?ht"jèõ“[|Ç¿#´óÑšÓŠc!hTe¥¬I·)mû9ûób¿ç=ö©é-ÆÌü-»v›»âz¼_%óôGåÏ’©èiÕãüÎc Œi¬95cKƒŸD¯™Bmİ‰ŞR‰»ÿTÜFâœØ+E¾}½M¯ûê“K[¿Gj	°Èr\•™q
+áŸhµ¤.Zgd¢÷sl†8\ÚîŒô5âÅ9çR™™ÁI‚$æÅ ÓûÚş
+<@ğÛ'ÊA<7<kcò¾KO6T¾ `ÅêdIl@2¥›çØ^ë ’b³W@•#¢sÖ¸ ¥Có®F™KİÃáp?fT­¢ÄçõzŸËş2ë|Îš'é¨ÂîËË[Â3²Ìó+“dWÅ*Õ#®²ò-1…Í ğäH|­ô4é%ÿ÷¯-vÓšÚ¦àI?®|@’òÜ•0Å-=t™Ø×LÔcjT×]ª~Šd#øó„àmËŠ9R–ædÜ¡lÇqb8Ÿ®‘ÌÉAäè@£©ÇÚ^!VC6¤Íÿ¯[`ª”gJ|ğ#ş›@»ËzPY»™˜ÌúKÓ $Øtb­æ(êİ£fı˜Š1Âµnx%Mıø¢‰hîVjj˜O½ÅTM}ápÇ*²ˆ¬ŞH¹]kGBex*ÀG¿¾±­ğa(L$„…Uşºjå%üVöm=ĞwÊVyEºÃòä/Õ†ºñÎƒ<ıt¡Zá3“7,f¶mîGæz­-è»‡5Dy$e×­& øÖæõÈ¡[C"@ÃM9QªK'™øø+Á¼ _l›Dõ€5%!`BéL7"Šs˜Ö9Œ`V_ıì#?%j §7ZnB©q„l£Âè± DĞß,Í‰/ÌÁ=Ã˜Mo…néqŸÕL	Ø*ôv«:Q)ÿñúıÂkªE#>;Ú|Ì% ñzÜèÎ—h@U=UZ»oÖ‘Æì´­ºêwé*sÓòÚ1ÌÀæ_óßši&Aæn²4Œu~‚ú[u‹œbıË¥Âa!2å»X!?q'Å>Š·’%Úi{ˆ!hşÅÈÏNµ…´û´!û,4ÔŞğQ&Fà7&L*ûÛ½3@<ªi}ä–[§Ñkİxiş[L’nQ,d"éÛ³Qÿµ§’hfÒá6ô|ÅV1¶›p˜ĞœÚñaHNó8c•E‘óœ ‰ÉVB_áÀ=á³†`êoç…‰Şz´æu³L`–¼&Ÿ[m°D6b—ßƒ¤XJ!o¹¯ØpËZõÒ†³íÜgNÇ­xæWå¿ÃOüió™nXägLòGœa¦µI¼/ÂËÆ™Î>vè7È`î
+)Š]šµ Ç{Pëv‰³½çû0JDÄ÷‹Hî„ßÃ=„Ä“â™ˆüéšİr{(áozS‚Jiöu®”¸G‚¾âÂ’Ÿk—èµÍT¾k«†°Z¨…w°ËuC¿©§ç®‰õ¦Ôè%¶= G‘D×œ¥)áAÒĞa,¦¦\è™Šdñ™ÒXÙU¾Š*kİjvßX>ï/!ğ Y}¶’Êls‹¶òEÖ.˜z-è;¯±Q[ãh†ÇQgáQ’7â{\C­“ËÓnûwR
+é$-çy¢Û®8Y³í^5~#£ó.æ³‚îğ1“lŞÓ213K¾:KM¶¸İ…5ÖÜõCN§ú=ËÏTÍ’pÚ`Ôdb”Ô|.ÖJÂ°Eç<^…?]´IÏ?ÔúŸØl›ò9†.kĞ+Aíóö¦ÖkJİ²}aŞŠ‚ùæ	Q’±1{d–İWÆ^+šo‹H¿ÖÑÆ…Œàe¥>½Ø+2$§ÔîçW·¡Ú±y—¨ù lÂÒ†‹|½«][Eµw>Ç¯A}Ò`ã­p°av°ğ%^¨.Ø-µùAQ±u‰»eZû2}2$6!å,UÉ…íMÎ¢†íähí¡Ää€Ó3ã”€ç‚lµ«.1Q•g< ãŒ
+bPMã/-SÚ‚CÜßÊ{J;{–Gq>e›Âx#^÷)fm!BV,ËÙ¥ªÅçxh'İ$@- ®YŠ¶¿…K8{ˆØi4[¹-î4›û˜"nı­òEã—lyx¬ìòtô)´Ñá=ºŠÚØ—'PørÀ^ŒjLØ‡¿‰m€®7çRË;ã™vŒ(ç-^|4is–¨Ïé@¾´E¾7×.÷¼lÕ¿dV´BßçT²İ¥ná_ÃvZ³ßc(+š)±:Äá÷OX6rÊéXÖ{¸³‹sÍWî~Ñme%±od–qÔqëÕâ¨~²F·x¿§*\’Ô!ÇÜ!ëÉBC§TI’% = ğ ¡GÀáN¹­&d+gP~K]¥xqåto©ì"ñ	kÅÀãjsò3¸ˆÜ¡"û°ÃeıPGãPQí²¸á!³çó³#®%§ğ[ø/+5mº¦Ñ`Ş=ÒsS¥Ú<)ÔTá”a
+Èñ¦¯&Ömås>Pù‰:Q Ú¡Òİ2& ¨”JôK¨©oüÈ{5ò&ŠlEÜ8:„ÈMögõènO@‰û5Fo!öàŞbß3aÿi]äş÷aß¥¶IY9Cˆ15¸Ü}	<¸»pƒ#o'dq«˜@7,¸’Ä1<¿ÍÌâ'æÅ?ß¸B˜ßÓ¡Kå«çzËH:Ç-b]oiB#gk/ı?0¢œË³Ëˆºûëïwo.Îõ&>@oÅ`åŠ¤;ğêã¥ç"üH+|®}–$®Ö‰ĞTZK¬vzhè“{šÚQ€½ú›®›HºØ«z€!wã~İŞó€½ ·ìlXìä-˜w¿<,çpu#1‘ó!}|˜î€Õß	Ş5ezqàm¶CSı™¿ùéé<"ˆ‰op±šL!ÁÚÀ1¿^1Tø¾RTeË¦¡Ò­î9*zˆò' Ñzº9ŸhÈëÛWì5aìßôWÛ¨]âC{Ò(¿c¹I~§TşÛécQŠÔ>{É”âëïXCóß5³±sâLVïß<„
+q„aãú×l¹¨CäW‹Á¥?âèÀåÃşÊ)!Ë,Gàs×]~ÄbŸ“3Œ.¬ßiK.BŒ¯²³lÿE6åpd!{ÜÉ:Ñ0©Ù<ı[Eµ2 _]?a&Ãœƒ#'³O¢}¾ã •u|lÔºÄô¯U:oDØš,D7ŒÇvÛ}"¾ô.¾Ä]õ// SPDX-License-Identifier: GPL-2.0-or-later
+/*
+ *  Driver for the Conexant CX23885 PCIe bridge
+ *
+ *  Copyright (c) 2006 Steven Toth <stoth@linuxtv.org>
+ */
+
+#include "cx23885.h"
+
+#include <linux/init.h>
+#include <linux/list.h>
+#include <linux/module.h>
+#include <linux/moduleparam.h>
+#include <linux/kmod.h>
+#include <linux/kernel.h>
+#include <linux/pci.h>
+#include <linux/slab.h>
+#include <linux/interrupt.h>
+#include <linux/delay.h>
+#include <asm/div64.h>
+#include <linux/firmware.h>
+
+#include "cimax2.h"
+#include "altera-ci.h"
+#include "cx23888-ir.h"
+#include "cx23885-ir.h"
+#include "cx23885-av.h"
+#include "cx23885-input.h"
+
+MODULE_DESCRIPTION("Driver for cx23885 based TV cards");
+MODULE_AUTHOR("Steven Toth <stoth@linuxtv.org>");
+MODULE_LICENSE("GPL");
+MODULE_VERSION(CX23885_VERSION);
+
+/*
+ * Some platforms have been found to require periodic resetting of the DMA
+ * engine. Ryzen and XEON platforms are known to be affected. The symptom
+ * encountered is "mpeg risc op code error". Only Ryzen platforms employ
+ * this workaround if the option equals 1. The workaround can be explicitly
+ * disabled for all platforms by setting to 0, the workaround can be forced
+ * on for any platform by setting to 2.
+ */
+static unsigned int dma_reset_workaround = 1;
+module_param(dma_reset_workaround, int, 0644);
+MODULE_PARM_DESC(dma_reset_workaround, "periodic RiSC dma engine reset; 0-force disable, 1-driver detect (default), 2-force enable");
+
+static unsigned int debug;
+module_param(debug, int, 0644);
+MODULE_PARM_DESC(debug, "enable debug messages");
+
+static unsigned int card[]  = {[0 ... (CX23885_MAXBOARDS - 1)] = UNSET };
+module_param_array(card,  int, NULL, 0444);
+MODULE_PARM_DESC(card, "card type");
+
+#define dprintk(level, fmt, arg...)\
+	do { if (debug >= level)\
+		printk(KERN_DEBUG pr_fmt("%s: " fmt), \
+		       __func__, ##arg); \
+	} while (0)
+
+static unsigned int cx23885_devcount;
+
+#define NO_SYNC_LINE (-1U)
+
+/* FIXME, these allocations will change when
+ * analog arrives. The be reviewed.
+ * CX23887 Assumptions
+ * 1 line = 16 bytes of CDT
+ * cmds size = 80
+ * cdt size = 16 * linesize
+ * iqsize = 64
+ * maxlines = 6
+ *
+ * Address Space:
+ * 0x00000000 0x00008fff FIFO clusters
+ * 0x00010000 0x000104af Channel Management Data Structures
+ * 0x000104b0 0x000104ff Free
+ * 0x00010500 0x000108bf 15 channels * iqsize
+ * 0x000108c0 0x000108ff Free
+ * 0x00010900 0x00010e9f IQ's + Cluster Descriptor Tables
+ *                       15 channels * (iqsize + (maxlines * linesize))
+ * 0x00010ea0 0x00010xxx Free
+ */
+
+static struct sram_channel cx23885_sram_channels[] = {
+	[SRAM_CH01] = {
+		.name		= "VID A",
+		.cmds_start	= 0x10000,
+		.ctrl_start	= 0x10380,
+		.cdt		= 0x104c0,
+		.fifo_start	= 0x40,
+		.fifo_size	= 0x2800,
+		.ptr1_reg	= DMA1_PTR1,
+		.ptr2_reg	= DMA1_PTR2,
+		.cnt1_reg	= DMA1_CNT1,
+		.cnt2_reg	= DMA1_CNT2,
+	},
+	[SRAM_CH02] = {
+		.name		= "ch2",
+		.cmds_start	= 0x0,
+		.ctrl_start	= 0x0,
+		.cdt		= 0x0,
+		.fifo_start	= 0x0,
+		.fifo_size	= 0x0,
+		.ptr1_reg	= DMA2_PTR1,
+		.ptr2_reg	= DMA2_PTR2,
+		.cnt1_reg	= DMA2_CNT1,
+		.cnt2_reg	= DMA2_CNT2,
+	},
+	[SRAM_CH03] = {
+		.name		= "TS1 B",
+		.cmds_start	= 0x100A0,
+		.ctrl_start	= 0x10400,
+		.cdt		= 0x10580,
+		.fifo_start	= 0x5000,
+		.fifo_size	= 0x1000,
+		.ptr1_reg	= DMA3_PTR1,
+		.ptr2_reg	= DMA3_PTR2,
+		.cnt1_reg	= DMA3_CNT1,
+		.cnt2_reg	= DMA3_CNT2,
+	},
+	[SRAM_CH04] = {
+		.name		= "ch4",
+		.cmds_start	= 0x0,
+		.ctrl_start	= 0x0,
+		.cdt		= 0x0,
+		.fifo_start	= 0x0,
+		.fifo_size	= 0x0,
+		.ptr1_reg	= DMA4_PTR1,
+		.ptr2_reg	= DMA4_PTR2,
+		.cnt1_reg	= DMA4_CNT1,
+		.cnt2_reg	= DMA4_CNT2,
+	},
+	[SRAM_CH05] = {
+		.name		= "ch5",
+		.cmds_start	= 0x0,
+		.ctrl_start	= 0x0,
+		.cdt		= 0x0,
+		.fifo_start	= 0x0,
+		.fifo_size	= 0x0,
+		.ptr1_reg	= DMA5_PTR1,
+		.ptr2_reg	= DMA5_PTR2,
+		.cnt1_reg	= DMA5_CNT1,
+		.cnt2_reg	= DMA5_CNT2,
+	},
+	[SRAM_CH06] = {
+		.name		= "TS2 C",
+		.cmds_start	= 0x10140,
+		.ctrl_start	= 0x10440,
+		.cdt		= 0x105e0,
+		.fifo_start	= 0x6000,
+		.fifo_size	= 0x1000,
+		.ptr1_reg	= DMA5_PTR1,
+		.ptr2_reg	= DMA5_PTR2,
+		.cnt1_reg	= DMA5_CNT1,
+		.cnt2_reg	= DMA5_CNT2,
+	},
+	[SRAM_CH07] = {
+		.name		= "TV Audio",
+		.cmds_start	= 0x10190,
+		.ctrl_start	= 0x10480,
+		.cdt		= 0x10a00,
+		.fifo_start	= 0x7000,
+		.fifo_size	= 0x1000,
+		.ptr1_reg	= DMA6_PTR1,
+		.ptr2_reg	= DMA6_PTR2,
+		.cnt1_reg	= DMA6_CNT1,
+		.cnt2_reg	= DMA6_CNT2,
+	},
+	[SRAM_CH08] = {
+		.name		= "ch8",
+		.cmds_start	= 0x0,
+		.ctrl_start	= 0x0,
+		.cdt		= 0x0,
+		.fifo_start	= 0x0,
+		.fifo_size	= 0x0,
+		.ptr1_reg	= DMA7_PTR1,
+		.ptr2_reg	= DMA7_PTR2,
+		.cnt1_reg	= DMA7_CNT1,
+		.cnt2_reg	= DMA7_CNT2,
+	},
+	[SRAM_CH09] = {
+		.name		= "ch9",
+		.cmds_start	= 0x0,
+		.ctrl_start	= 0x0,
+		.cdt		= 0x0,
+		.fifo_start	= 0x0,
+		.fifo_size	= 0x0,
+		.ptr1_reg	= DMA8_PTR1,
+		.ptr2_reg	= DMA8_PTR2,
+		.cnt1_reg	= DMA8_CNT1,
+		.cnt2_reg	= DMA8_CNT2,
+	},
+};
+
+static struct sram_channel cx23887_sram_channels[] = {
+	[SRAM_CH01] = {
+		.name		= "VID A",
+		.cmds_start	= 0x10000,
+		.ctrl_start	= 0x105b0,
+		.cdt		= 0x107b0,
+		.fifo_start	= 0x40,
+		.fifo_size	= 0x2800,
+		.ptr1_reg	= DMA1_PTR1,
+		.ptr2_reg	= DMA1_PTR2,
+		.cnt1_reg	= DMA1_CNT1,
+		.cnt2_reg	= DMA1_CNT2,
+	},
+	[SRAM_CH02] = {
+		.name		= "VID A (VBI)",
+		.cmds_start	= 0x10050,
+		.ctrl_start	= 0x105F0,
+		.cdt		= 0x10810,
+		.fifo_start	= 0x3000,
+		.fifo_size	= 0x1000,
+		.ptr1_reg	= DMA2_PTR1,
+		.ptr2_reg	= DMA2_PTR2,
+		.cnt1_reg	= DMA2_CNT1,
+		.cnt2_reg	= DMA2_CNT2,
+	},
+	[SRAM_CH03] = {
+		.name		= "TS1 B",
+		.cmds_start	= 0x100A0,
+		.ctrl_start	= 0x10630,
+		.cdt		= 0x10870,
+		.fifo_start	= 0x5000,
+		.fifo_size	= 0x1000,
+		.ptr1_reg	= DMA3_PTR1,
+		.ptr2_reg	= DMA3_PTR2,
+		.cnt1_reg	= DMA3_CNT1,
+		.cnt2_reg	= DMA3_CNT2,
+	},
+	[SRAM_CH04] = {
+		.name		= "ch4",
+		.cmds_start	= 0x0,
+		.ctrl_start	= 0x0,
+		.cdt		= 0x0,
+		.fifo_start	= 0x0,
+		.fifo_size	= 0x0,
+		.ptr1_reg	= DMA4_PTR1,
+		.ptr2_reg	= DMA4_PTR2,
+		.cnt1_reg	= DMA4_CNT1,
+		.cnt2_reg	= DMA4_CNT2,
+	},
+	[SRAM_CH05] = {
+		.name		= "ch5",
+		.

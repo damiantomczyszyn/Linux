@@ -1,2 +1,2 @@
-x/build_bug.h \
-  include/linux/co
+D_DVB:
+	case CX23885_BOARD_HAUPPAU

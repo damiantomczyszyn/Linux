@@ -1,8 +1,20 @@
-ldcard include/config/SHMEM) \
-    $(wildcard include/config/ARCH_HAS_PTE_SPECIAL) \
-    $(wildcard include/config/ARCH_HAS_PTE_DEVMAP) \
-    $(wildcard include/config/DEBUG_VM_RB) \
-    $(wildcard include/config/PAGE_POISONING) \
-    $(wildcard include/config/INIT_ON_ALLOC_DEFAULT_ON) \
-    $(wildcard include/config/INIT_ON_FREE_DEFAULT_ON) \
-    $(wildc
+
+
+	return bus->i2c_rc;
+}
+
+int cx23885_i2c_unregister(struct cx23885_i2c *bus)
+{
+	i2c_del_adapter(&bus->i2c_adap);
+	return 0;
+}
+
+void cx23885_av_clk(struct cx23885_dev *dev, int enable)
+{
+	/* write 0 to bus 2 addr 0x144 via i2x_xfer() */
+	char buffer[3];
+	struct i2c_msg msg;
+	dprintk(1, "%s(enabled = %d)\n", __func__, enable);
+
+	/* Register 0x144 */
+	buffe

@@ -1,1 +1,6 @@
-cmd_drivers/media/radio/radio-sf16fmi.mod := { echo  drivers/media/radio/radio-sf16fmi.o;  echo; } > drivers/media/radio/radio-sf16fmi.mod
+C417_RWD, regval);
+
+	/* Wait for the trans to complete (MC417_MIRDY asserted). */
+	retval = mc417_wait_ready(dev);
+
+	/* switch the DAT0-7 G

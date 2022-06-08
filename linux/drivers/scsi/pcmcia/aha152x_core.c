@@ -1,3 +1,3 @@
-86/include/asm/qrwlock.h \
-  include/asm-generic/qrwlock.h \
-  includ
+reg_dma_ctl;
+	u32                        reg_lngth;
+	u32             

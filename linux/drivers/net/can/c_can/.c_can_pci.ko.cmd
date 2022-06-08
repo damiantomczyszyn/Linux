@@ -1,6 +1,1 @@
-LE_UPGRADE) \
-    $(wildcard include/config/ACPI_WATCHDOG) \
-    $(wildcard include/config/ACPI_SPCR_TABLE) \
-    $(wildcard include/config/ACPI_GENERIC_GSI) \
-    $(wildcard include/config/ACPI_LPIT) \
-    $(wildcar
+cmd_drivers/net/can/c_can/c_can_pci.ko := ld -r -m elf_i386 --build-id=sha1  -T scripts/module.lds -o drivers/net/can/c_can/c_can_pci.ko drivers/net/can/c_can/c_can_pci.o drivers/net/can/c_can/c_can_pci.mod.o;  true

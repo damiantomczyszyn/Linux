@@ -1,3 +1,4 @@
+return cx_read(addr);
+}
 
-    $(wildcard include/config/PARAVIRT_XXL) \
-  arch/x86/include/asm/disabled-features.
+static inline int cx23888_ir_and_or4(struct cx23885_dev *dev, u

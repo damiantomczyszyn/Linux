@@ -1,2 +1,3 @@
-onfig/TRACE_BRANCH_PROFILING) \
-    $
+,
+			.amux   = CX25840_AUDIO8,
+		} },

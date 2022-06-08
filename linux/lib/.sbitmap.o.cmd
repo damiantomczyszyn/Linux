@@ -1,355 +1,1087 @@
-$(wildcard include/config/X86_INTEL_USERCOPY) \
-  arch/x86/include/asm/smap.h \
-  arch/x86/include/asm/extable.h \
-    $(wildcard include/config/BPF_JIT) \
-  include/asm-generic/access_ok.h \
-    $(wildcard include/config/ALTERNATE_USER_ADDRESS_SPACE) \
-  arch/x86/include/asm/uaccess_32.h \
-  include/linux/cred.h \
-    $(wildcard include/config/DEBUG_CREDENTIALS) \
-  include/linux/key.h \
-    $(wildcard include/config/KEY_NOTIFICATIONS) \
-    $(wildcard include/config/NET) \
-  include/linux/assoc_array.h \
-    $(wildcard include/config/ASSOCIATIVE_ARRAY) \
-  include/linux/sched/user.h \
-    $(wildcard include/config/WATCH_QUEUE) \
-  include/linux/percpu_counter.h \
-  include/linux/rcu_sync.h \
-  include/linux/delayed_call.h \
-  include/linux/errseq.h \
-  include/linux/ioprio.h \
-  include/linux/sched/rt.h \
-  include/linux/iocontext.h \
-    $(wildcard include/config/BLK_ICQ) \
-  include/uapi/linux/ioprio.h \
-  include/linux/fs_types.h \
-  include/linux/mount.h \
-  include/linux/mnt_idmapping.h \
-  include/uapi/linux/fs.h \
-  include/linux/quota.h \
-    $(wildcard include/config/QUOTA_NETLINK_INTERFACE) \
-  include/uapi/linux/dqblk_xfs.h \
-  include/linux/dqblk_v1.h \
-  include/linux/dqblk_v2.h \
-  include/linux/dqblk_qtree.h \
-  include/linux/projid.h \
-  include/uapi/linux/quota.h \
-  include/linux/nfs_fs_i.h \
-  include/linux/seq_file.h \
-  include/linux/string_helpers.h \
-  include/linux/ns_common.h \
-  include/linux/nsproxy.h \
-  include/linux/user_namespace.h \
-    $(wildcard include/config/INOTIFY_USER) \
-    $(wildcard include/config/FANOTIFY) \
-    $(wildcard include/config/PERSISTENT_KEYRINGS) \
-  include/linux/kernel_stat.h \
-  include/linux/interrupt.h \
-    $(wildcard include/config/IRQ_FORCED_THREADING) \
-    $(wildcard include/config/GENERIC_IRQ_PROBE) \
-    $(wildcard include/config/IRQ_TIMINGS) \
-  include/linux/irqreturn.h \
-  include/linux/irqnr.h \
-  include/uapi/linux/irqnr.h \
-  include/linux/hardirq.h \
-  include/linux/context_tracking_state.h \
-    $(wildcard include/config/CONTEXT_TRACKING) \
-  include/linux/ftrace_irq.h \
-    $(wildcard include/config/HWLAT_TRACER) \
-    $(wildcard include/config/OSNOISE_TRACER) \
-  include/linux/vtime.h \
-    $(wildcard include/config/VIRT_CPU_ACCOUNTING) \
-    $(wildcard include/config/IRQ_TIME_ACCOUNTING) \
-  arch/x86/include/asm/hardirq.h \
-    $(wildcard include/config/KVM_INTEL) \
-    $(wildcard include/config/X86_THERMAL_VECTOR) \
-    $(wildcard include/config/X86_MCE_THRESHOLD) \
-    $(wildcard include/config/X86_MCE_AMD) \
-    $(wildcard include/config/X86_HV_CALLBACK_VECTOR) \
-  arch/x86/include/asm/irq.h \
-  arch/x86/include/asm/sections.h \
-  include/asm-generic/sections.h \
-    $(wildcard include/config/HAVE_FUNCTION_DESCRIPTORS) \
-  include/linux/cgroup-defs.h \
-    $(wildcard include/config/CGROUP_NET_CLASSID) \
-    $(wildcard include/config/CGROUP_NET_PRIO) \
-  include/linux/u64_stats_sync.h \
-  include/linux/bpf-cgroup-defs.h \
-  include/linux/psi_types.h \
-  include/linux/kthread.h \
-  include/linux/cgroup_subsys.h \
-    $(wildcard include/config/CGROUP_DEVICE) \
-    $(wildcard include/config/CGROUP_FREEZER) \
-    $(wildcard include/config/CGROUP_PERF) \
-    $(wildcard include/config/CGROUP_HUGETLB) \
-    $(wildcard include/config/CGROUP_PIDS) \
-    $(wildcard include/config/CGROUP_RDMA) \
-    $(wildcard include/config/CGROUP_MISC) \
-    $(wildcard include/config/CGROUP_DEBUG) \
-  include/linux/vm_event_item.h \
-    $(wildcard include/config/HAVE_ARCH_TRANSPARENT_HUGEPAGE_PUD) \
-    $(wildcard include/config/MEMORY_BALLOON) \
-    $(wildcard include/config/BALLOON_COMPACTION) \
-    $(wildcard include/config/DEBUG_TLBFLUSH) \
-    $(wildcard include/config/DEBUG_VM_VMACACHE) \
-  include/linux/page_counter.h \
-  include/linux/vmpressure.h \
-  include/linux/eventfd.h \
-  include/linux/mm.h \
-    $(wildcard include/config/HAVE_ARCH_MMAP_RND_BITS) \
-    $(wildcard include/config/HAVE_ARCH_MMAP_RND_COMPAT_BITS) \
-    $(wildcard include/config/ARCH_USES_HIGH_VMA_FLAGS) \
-    $(wildcard include/config/ARCH_HAS_PKEYS) \
-    $(wildcard include/config/PPC) \
-    $(wildcard include/config/PARISC) \
-    $(wildcard include/config/SPARC64) \
-    $(wildcard include/config/ARM64_MTE) \
-    $(wildcard include/config/HAVE_ARCH_USERFAULTFD_MINOR) \
-    $(wildcard include/config/SHMEM) \
-    $(wildcard include/config/ARCH_HAS_PTE_SPECIAL) \
-    $(wildcard include/config/ARCH_HAS_PTE_DEVMAP) \
-    $(wildcard include/config/DEBUG_VM_RB) \
-    $(wildcard include/config/PAGE_POISONING) \
-    $(wildcard include/config/INIT_ON_ALLOC_DEFAULT_ON) \
-    $(wildcard include/config/INIT_ON_FREE_DEFAULT_ON) \
-    $(wildcard include/config/DEBUG_PAGEALLOC) \
-    $(wildcard include/config/HUGETLBFS) \
-    $(wildcard include/config/MAPPING_DIRTY_HELPERS) \
-    $(wildcard include/config/ANON_VMA_NAME) \
-  include/linux/mmap_lock.h \
-  include/linux/page_ext.h \
-  include/linux/stacktrace.h \
-    $(wildcard include/config/ARCH_STACKWALK) \
-    $(wildcard include/config/STACKTRACE) \
-    $(wildcard include/config/HAVE_RELIABLE_STACKTRACE) \
-  include/linux/stackdepot.h \
-    $(wildcard include/config/STACKDEPOT_ALWAYS_INIT) \
-  include/linux/page_ref.h \
-    $(wildcard include/config/DEBUG_PAGE_REF) \
-  include/linux/sizes.h \
-  include/linux/pgtable.h \
-    $(wildcard include/config/HIGHPTE) \
-    $(wildcard include/config/GUP_GET_PTE_LOW_HIGH) \
-    $(wildcard include/config/HAVE_ARCH_SOFT_DIRTY) \
-    $(wildcard include/config/ARCH_ENABLE_THP_MIGRATION) \
-    $(wildcard include/config/X86_ESPFIX64) \
-  arch/x86/include/asm/pgtable.h \
-    $(wildcard include/config/DEBUG_WX) \
-    $(wildcard include/config/PAGE_TABLE_CHECK) \
-  arch/x86/include/asm/pkru.h \
-  arch/x86/include/asm/fpu/api.h \
-    $(wildcard include/config/X86_DEBUG_FPU) \
-  arch/x86/include/asm/coco.h \
-  include/asm-generic/pgtable_uffd.h \
-  include/linux/page_table_check.h \
-  arch/x86/include/asm/pgtable_32.h \
-  arch/x86/include/asm/pgtable-3level.h \
-  arch/x86/include/asm/pgtable-invert.h \
-  include/linux/huge_mm.h \
-  include/linux/sched/coredump.h \
-    $(wildcard include/config/CORE_DUMP_DEFAULT_ELF_HEADERS) \
-  include/linux/vmstat.h \
-    $(wildcard include/config/VM_EVENT_COUNTERS) \
-  include/linux/writeback.h \
-  include/linux/flex_proportions.h \
-  include/linux/backing-dev-defs.h \
-    $(wildcard include/config/DEBUG_FS) \
-  include/linux/blk_types.h \
-    $(wildcard include/config/FAIL_MAKE_REQUEST) \
-    $(wildcard include/config/BLK_CGROUP_IOCOST) \
-    $(wildcard include/config/BLK_INLINE_ENCRYPTION) \
-    $(wildcard include/config/BLK_DEV_INTEGRITY) \
-  include/linux/bvec.h \
-  include/linux/highmem.h \
-  include/linux/cacheflush.h \
-  arch/x86/include/asm/cacheflush.h \
-  include/asm-generic/cacheflush.h \
-  include/linux/highmem-internal.h \
-  arch/x86/include/asm/highmem.h \
-  arch/x86/include/asm/tlbflush.h \
-  arch/x86/include/asm/invpcid.h \
-  arch/x86/include/asm/pti.h \
-  include/linux/bio.h \
-  include/linux/mempool.h \
-  include/linux/uio.h \
-    $(wildcard include/config/ARCH_HAS_UACCESS_FLUSHCACHE) \
-  include/uapi/linux/uio.h \
-  include/linux/node.h \
-    $(wildcard include/config/HMEM_REPORTING) \
-  include/linux/pagemap.h \
-  include/linux/hugetlb_inline.h \
-  include/uapi/linux/mempolicy.h \
-  include/linux/freezer.h \
-  include/uapi/linux/i2c.h \
-  include/linux/videodev2.h \
-  include/uapi/linux/videodev2.h \
-  include/uapi/linux/v4l2-common.h \
-  include/uapi/linux/v4l2-controls.h \
-  include/linux/delay.h \
-  arch/x86/include/asm/delay.h \
-  include/asm-generic/delay.h \
-  include/linux/gpio/consumer.h \
-    $(wildcard include/config/OF_GPIO) \
-    $(wildcard include/config/GPIO_SYSFS) \
-  include/linux/of_graph.h \
-  include/linux/pm_runtime.h \
-  include/linux/regmap.h \
-    $(wildcard include/config/REGMAP) \
-  include/linux/iopoll.h \
-  include/media/v4l2-async.h \
-  include/media/v4l2-device.h \
-  include/media/media-device.h \
-  include/media/media-devnode.h \
-  include/linux/poll.h \
-  include/uapi/linux/poll.h \
-  arch/x86/include/generated/uapi/asm/poll.h \
-  include/uapi/asm-generic/poll.h \
-  include/uapi/linux/eventpoll.h \
-  include/linux/cdev.h \
-  include/media/media-entity.h \
-  include/uapi/linux/media.h \
-  include/media/v4l2-subdev.h \
-  include/uapi/linux/v4l2-subdev.h \
-  include/uapi/linux/v4l2-mediabus.h \
-  include/uapi/linux/media-bus-format.h \
-  include/media/v4l2-common.h \
-    $(wildcard include/config/VIDEO_V4L2_I2C) \
-    $(wildcard include/config/SPI) \
-  include/media/v4l2-dev.h \
-  include/linux/spi/spi.h \
-    $(wildcard include/config/SPI_SLAVE) \
-  include/linux/scatterlist.h \
-    $(wildcard include/config/NEED_SG_DMA_LENGTH) \
-    $(wildcard include/config/DEBUG_SG) \
-    $(wildcard include/config/SGL_ALLOC) \
-    $(wildcard include/config/ARCH_NO_SG_CHAIN) \
-    $(wildcard include/config/SG_POOL) \
-  include/uapi/linux/spi/spi.h \
-  include/media/v4l2-fh.h \
-  include/media/v4l2-mediabus.h \
-  include/media/v4l2-event.h \
-  include/media/v4l2-ctrls.h \
-  include/media/media-request.h \
-  include/media/hevc-ctrls.h \
-  include/media/v4l2-fwnode.h \
-  include/media/v4l2-mc.h \
-  include/media/v4l2-rect.h \
-  drivers/media/i2c/tvp5150_reg.h \
+just need the target to call irq_exit() and re-evaluate
+	 * the next tick. The nohz full kick at least implies that.
+	 * If needed we can still optimize that later with an
+	 * empty IRQ.
+	 */
+	if (cpu_is_offline(cpu))
+		return true;  /* Don't try to wake offline CPUs. */
+	if (tick_nohz_full_cpu(cpu)) {
+		if (cpu != smp_processor_id() ||
+		    tick_nohz_tick_stopped())
+			tick_nohz_full_kick_cpu(cpu);
+		return true;
+	}
 
-drivers/media/i2c/tvp5150.o: $(deps_drivers/media/i2c/tvp5150.o)
+	return false;
+}
 
-$(deps_drivers/media/i2c/tvp5150.o):
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        EMMAP_DEFAULT_ON) \
-    $(wildcard include/config/KSM) \
-  include/linux/local_lock.h \
-  include/linux/local_lock_internal.h \
-  include/linux/memory_hotplug.h \
-    $(wildcard include/config/HAVE_ARCH_NODEDATA_EXTENSION) \
-    $(wildcard include/config/ARCH_HAS_ADD_PAGES) \
-    $(wildcard include/config/MEMORY_HOTREMOVE) \
-  arch/x86/include/asm/mmzone.h \
-  arch/x86/include/asm/mmzone_32.h \
-  include/linux/topology.h \
-    $(wildcard include/config/USE_PERCPU_NUMA_NODE_ID) \
-    $(wildcard include/config/SCHED_SMT) \
-    $(wildcard include/config/SCHED_CLUSTER) \
-  include/linux/arch_topology.h \
-    $(wildcard include/config/ACPI_CPPC_LIB) \
-    $(wildcard include/config/GENERIC_ARCH_TOPOLOGY) \
-  arch/x86/include/asm/topology.h \
-    $(wildcard include/config/SCHED_MC_PRIO) \
-  arch/x86/include/asm/mpspec.h \
-    $(wildcard include/config/EISA) \
-    $(wildcard include/config/X86_MPPARSE) \
-  arch/x86/include/asm/mpspec_def.h \
-  arch/x86/include/asm/x86_init.h \
-  arch/x86/include/asm/apicdef.h \
-  include/asm-generic/topology.h \
-  include/linux/xarray.h \
-    $(wildcard include/config/XARRAY_MULTI) \
-  include/linux/kconfig.h \
-  include/linux/kobject_ns.h \
-  include/linux/stat.h \
-  arch/x86/include/uapi/asm/stat.h \
-  include/uapi/linux/stat.h \
-  include/linux/sched/cpufreq.h \
-    $(wildcard include/config/CPU_FREQ) \
-  include/linux/sched/topology.h \
-    $(wildcard include/config/SCHED_DEBUG) \
-    $(wildcard include/config/SCHED_MC) \
-    $(wildcard include/config/CPU_FREQ_GOV_SCHEDUTIL) \
-  include/linux/sched/idle.h \
-  include/linux/sched/sd_flags.h \
-  include/linux/ioport.h \
-  include/linux/klist.h \
-  include/linux/pm.h \
-    $(wildcard include/config/VT_CONSOLE_SLEEP) \
-    $(wildcard include/config/PM) \
-    $(wildcard include/config/PM_CLK) \
-    $(wildcard include/config/PM_GENERIC_DOMAINS) \
-  include/linux/overflow.h \
-  include/linux/device/bus.h \
-    $(wildcard include/config/ACPI) \
-  include/linux/device/class.h \
-  include/linux/device/driver.h \
-  include/linux/module.h \
-    $(wildcard include/config/MODULES_TREE_LOOKUP) \
-    $(wildcard include/config/STACKTRACE_BUILD_ID) \
-    $(wildcard include/config/MODULE_SIG) \
-    $(wildcard include/config/KALLSYMS) \
-    $(wildcard include/config/BPF_EVENTS) \
-    $(wildcard include/config/DEBUG_INFO_BTF_MODULES) \
-    $(wildcard include/config/EVENT_TRACING) \
+/*
+ * Wake up the specified CPU.  If the CPU is going offline, it is the
+ * caller's responsibility to deal with the lost wakeup, for example,
+ * by hooking into the CPU_DEAD notifier like timers and hrtimers do.
+ */
+void wake_up_nohz_cpu(int cpu)
+{
+	if (!wake_up_full_nohz_cpu(cpu))
+		wake_up_idle_cpu(cpu);
+}
+
+static void nohz_csd_func(void *info)
+{
+	struct rq *rq = info;
+	int cpu = cpu_of(rq);
+	unsigned int flags;
+
+	/*
+	 * Release the rq::nohz_csd.
+	 */
+	flags = atomic_fetch_andnot(NOHZ_KICK_MASK | NOHZ_NEWILB_KICK, nohz_flags(cpu));
+	WARN_ON(!(flags & NOHZ_KICK_MASK));
+
+	rq->idle_balance = idle_cpu(cpu);
+	if (rq->idle_balance && !need_resched()) {
+		rq->nohz_idle_balance = flags;
+		raise_softirq_irqoff(SCHED_SOFTIRQ);
+	}
+}
+
+#endif /* CONFIG_NO_HZ_COMMON */
+
+#ifdef CONFIG_NO_HZ_FULL
+bool sched_can_stop_tick(struct rq *rq)
+{
+	int fifo_nr_running;
+
+	/* Deadline tasks, even if single, need the tick */
+	if (rq->dl.dl_nr_running)
+		return false;
+
+	/*
+	 * If there are more than one RR tasks, we need the tick to affect the
+	 * actual RR behaviour.
+	 */
+	if (rq->rt.rr_nr_running) {
+		if (rq->rt.rr_nr_running == 1)
+			return true;
+		else
+			return false;
+	}
+
+	/*
+	 * If there's no RR tasks, but FIFO tasks, we can skip the tick, no
+	 * forced preemption between FIFO tasks.
+	 */
+	fifo_nr_running = rq->rt.rt_nr_running - rq->rt.rr_nr_running;
+	if (fifo_nr_running)
+		return true;
+
+	/*
+	 * If there are no DL,RR/FIFO tasks, there must only be CFS tasks left;
+	 * if there's more than one we need the tick for involuntary
+	 * preemption.
+	 */
+	if (rq->nr_running > 1)
+		return false;
+
+	return true;
+}
+#endif /* CONFIG_NO_HZ_FULL */
+#endif /* CONFIG_SMP */
+
+#if defined(CONFIG_RT_GROUP_SCHED) || (defined(CONFIG_FAIR_GROUP_SCHED) && \
+			(defined(CONFIG_SMP) || defined(CONFIG_CFS_BANDWIDTH)))
+/*
+ * Iterate task_group tree rooted at *from, calling @down when first entering a
+ * node and @up when leaving it for the final time.
+ *
+ * Caller must hold rcu_lock or sufficient equivalent.
+ */
+int walk_tg_tree_from(struct task_group *from,
+			     tg_visitor down, tg_visitor up, void *data)
+{
+	struct task_group *parent, *child;
+	int ret;
+
+	parent = from;
+
+down:
+	ret = (*down)(parent, data);
+	if (ret)
+		goto out;
+	list_for_each_entry_rcu(child, &parent->children, siblings) {
+		parent = child;
+		goto down;
+
+up:
+		continue;
+	}
+	ret = (*up)(parent, data);
+	if (ret || parent == from)
+		goto out;
+
+	child = parent;
+	parent = parent->parent;
+	if (parent)
+		goto up;
+out:
+	return ret;
+}
+
+int tg_nop(struct task_group *tg, void *data)
+{
+	return 0;
+}
+#endif
+
+static void set_load_weight(struct task_struct *p, bool update_load)
+{
+	int prio = p->static_prio - MAX_RT_PRIO;
+	struct load_weight *load = &p->se.load;
+
+	/*
+	 * SCHED_IDLE tasks get minimal weight:
+	 */
+	if (task_has_idle_policy(p)) {
+		load->weight = scale_load(WEIGHT_IDLEPRIO);
+		load->inv_weight = WMULT_IDLEPRIO;
+		return;
+	}
+
+	/*
+	 * SCHED_OTHER tasks have to update their load when changing their
+	 * weight
+	 */
+	if (update_load && p->sched_class == &fair_sched_class) {
+		reweight_task(p, prio);
+	} else {
+		load->weight = scale_load(sched_prio_to_weight[prio]);
+		load->inv_weight = sched_prio_to_wmult[prio];
+	}
+}
+
+#ifdef CONFIG_UCLAMP_TASK
+/*
+ * Serializes updates of utilization clamp values
+ *
+ * The (slow-path) user-space triggers utilization clamp value updates which
+ * can require updates on (fast-path) scheduler's data structures used to
+ * support enqueue/dequeue operations.
+ * While the per-CPU rq lock protects fast-path update operations, user-space
+ * requests are serialized using a mutex to reduce the risk of conflicting
+ * updates or API abuses.
+ */
+static DEFINE_MUTEX(uclamp_mutex);
+
+/* Max allowed minimum utilization */
+unsigned int sysctl_sched_uclamp_util_min = SCHED_CAPACITY_SCALE;
+
+/* Max allowed maximum utilization */
+unsigned int sysctl_sched_uclamp_util_max = SCHED_CAPACITY_SCALE;
+
+/*
+ * By default RT tasks run at the maximum performance point/capacity of the
+ * system. Uclamp enforces this by always setting UCLAMP_MIN of RT tasks to
+ * SCHED_CAPACITY_SCALE.
+ *
+ * This knob allows admins to change the default behavior when uclamp is being
+ * used. In battery powered devices, particularly, running at the maximum
+ * capacity and frequency will increase energy consumption and shorten the
+ * battery life.
+ *
+ * This knob only affects RT tasks that their uclamp_se->user_defined == false.
+ *
+ * This knob will not override the system default sched_util_clamp_min defined
+ * above.
+ */
+unsigned int sysctl_sched_uclamp_util_min_rt_default = SCHED_CAPACITY_SCALE;
+
+/* All clamps are required to be less or equal than these values */
+static struct uclamp_se uclamp_default[UCLAMP_CNT];
+
+/*
+ * This static key is used to reduce the uclamp overhead in the fast path. It
+ * primarily disables the call to uclamp_rq_{inc, dec}() in
+ * enqueue/dequeue_task().
+ *
+ * This allows users to continue to enable uclamp in their kernel config with
+ * minimum uclamp overhead in the fast path.
+ *
+ * As soon as userspace modifies any of the uclamp knobs, the static key is
+ * enabled, since we have an actual users that make use of uclamp
+ * functionality.
+ *
+ * The knobs that would enable this static key are:
+ *
+ *   * A task modifying its uclamp value with sched_setattr().
+ *   * An admin modifying the sysctl_sched_uclamp_{min, max} via procfs.
+ *   * An admin modifying the cgroup cpu.uclamp.{min, max}
+ */
+DEFINE_STATIC_KEY_FALSE(sched_uclamp_used);
+
+/* Integer rounded range for each bucket */
+#define UCLAMP_BUCKET_DELTA DIV_ROUND_CLOSEST(SCHED_CAPACITY_SCALE, UCLAMP_BUCKETS)
+
+#define for_each_clamp_id(clamp_id) \
+	for ((clamp_id) = 0; (clamp_id) < UCLAMP_CNT; (clamp_id)++)
+
+static inline unsigned int uclamp_bucket_id(unsigned int clamp_value)
+{
+	return min_t(unsigned int, clamp_value / UCLAMP_BUCKET_DELTA, UCLAMP_BUCKETS - 1);
+}
+
+static inline unsigned int uclamp_none(enum uclamp_id clamp_id)
+{
+	if (clamp_id == UCLAMP_MIN)
+		return 0;
+	return SCHED_CAPACITY_SCALE;
+}
+
+static inline void uclamp_se_set(struct uclamp_se *uc_se,
+				 unsigned int value, bool user_defined)
+{
+	uc_se->value = value;
+	uc_se->bucket_id = uclamp_bucket_id(value);
+	uc_se->user_defined = user_defined;
+}
+
+static inline unsigned int
+uclamp_idle_value(struct rq *rq, enum uclamp_id clamp_id,
+		  unsigned int clamp_value)
+{
+	/*
+	 * Avoid blocked utilization pushing up the frequency when we go
+	 * idle (which drops the max-clamp) by retaining the last known
+	 * max-clamp.
+	 */
+	if (clamp_id == UCLAMP_MAX) {
+		rq->uclamp_flags |= UCLAMP_FLAG_IDLE;
+		return clamp_value;
+	}
+
+	return uclamp_none(UCLAMP_MIN);
+}
+
+static inline void uclamp_idle_reset(struct rq *rq, enum uclamp_id clamp_id,
+				     unsigned int clamp_value)
+{
+	/* Reset max-clamp retention only on idle exit */
+	if (!(rq->uclamp_flags & UCLAMP_FLAG_IDLE))
+		return;
+
+	WRITE_ONCE(rq->uclamp[clamp_id].value, clamp_value);
+}
+
+static inline
+unsigned int uclamp_rq_max_value(struct rq *rq, enum uclamp_id clamp_id,
+				   unsigned int clamp_value)
+{
+	struct uclamp_bucket *bucket = rq->uclamp[clamp_id].bucket;
+	int bucket_id = UCLAMP_BUCKETS - 1;
+
+	/*
+	 * Since both min and max clamps are max aggregated, find the
+	 * top most bucket with tasks in.
+	 */
+	for ( ; bucket_id >= 0; bucket_id--) {
+		if (!bucket[bucket_id].tasks)
+			continue;
+		return bucket[bucket_id].value;
+	}
+
+	/* No tasks -- default clamp values */
+	return uclamp_idle_value(rq, clamp_id, clamp_value);
+}
+
+static void __uclamp_update_util_min_rt_default(struct task_struct *p)
+{
+	unsigned int default_util_min;
+	struct uclamp_se *uc_se;
+
+	lockdep_assert_held(&p->pi_lock);
+
+	uc_se = &p->uclamp_req[UCLAMP_MIN];
+
+	/* Only sync if user didn't override the default */
+	if (uc_se->user_defined)
+		return;
+
+	default_util_min = sysctl_sched_uclamp_util_min_rt_default;
+	uclamp_se_set(uc_se, default_util_min, false);
+}
+
+static void uclamp_update_util_min_rt_default(struct task_struct *p)
+{
+	struct rq_flags rf;
+	struct rq *rq;
+
+	if (!rt_task(p))
+		return;
+
+	/* Protect updates to p->uclamp_* */
+	rq = task_rq_lock(p, &rf);
+	__uclamp_update_util_min_rt_default(p);
+	task_rq_unlock(rq, p, &rf);
+}
+
+static void uclamp_sync_util_min_rt_default(void)
+{
+	struct task_struct *g, *p;
+
+	/*
+	 * copy_process()			sysctl_uclamp
+	 *					  uclamp_min_rt = X;
+	 *   write_lock(&tasklist_lock)		  read_lock(&tasklist_lock)
+	 *   // link thread			  smp_mb__after_spinlock()
+	 *   write_unlock(&tasklist_lock)	  read_unlock(&tasklist_lock);
+	 *   sched_post_fork()			  for_each_process_thread()
+	 *     __uclamp_sync_rt()		    __uclamp_sync_rt()
+	 *
+	 * Ensures that either sched_post_fork() will observe the new
+	 * uclamp_min_rt or for_each_process_thread() will observe the new
+	 * task.
+	 */
+	read_lock(&tasklist_lock);
+	smp_mb__after_spinlock();
+	read_unlock(&tasklist_lock);
+
+	rcu_read_lock();
+	for_each_process_thread(g, p)
+		uclamp_update_util_min_rt_default(p);
+	rcu_read_unlock();
+}
+
+static inline struct uclamp_se
+uclamp_tg_restrict(struct task_struct *p, enum uclamp_id clamp_id)
+{
+	/* Copy by value as we could modify it */
+	struct uclamp_se uc_req = p->uclamp_req[clamp_id];
+#ifdef CONFIG_UCLAMP_TASK_GROUP
+	unsigned int tg_min, tg_max, value;
+
+	/*
+	 * Tasks in autogroups or root task group will be
+	 * restricted by system defaults.
+	 */
+	if (task_group_is_autogroup(task_group(p)))
+		return uc_req;
+	if (task_group(p) == &root_task_group)
+		return uc_req;
+
+	tg_min = task_group(p)->uclamp[UCLAMP_MIN].value;
+	tg_max = task_group(p)->uclamp[UCLAMP_MAX].value;
+	value = uc_req.value;
+	value = clamp(value, tg_min, tg_max);
+	uclamp_se_set(&uc_req, value, false);
+#endif
+
+	return uc_req;
+}
+
+/*
+ * The effective clamp bucket index of a task depends on, by increasing
+ * priority:
+ * - the task specific clamp value, when explicitly requested from userspace
+ * - the task group effective clamp value, for tasks not either in the root
+ *   group or in an autogroup
+ * - the system default clamp value, defined by the sysadmin
+ */
+static inline struct uclamp_se
+uclamp_eff_get(struct task_struct *p, enum uclamp_id clamp_id)
+{
+	struct uclamp_se uc_req = uclamp_tg_restrict(p, clamp_id);
+	struct uclamp_se uc_max = uclamp_default[clamp_id];
+
+	/* System default restrictions always apply */
+	if (unlikely(uc_req.value > uc_max.value))
+		return uc_max;
+
+	return uc_req;
+}
+
+unsigned long uclamp_eff_value(struct task_struct *p, enum uclamp_id clamp_id)
+{
+	struct uclamp_se uc_eff;
+
+	/* Task currently refcounted: use back-annotated (effective) value */
+	if (p->uclamp[clamp_id].active)
+		return (unsigned long)p->uclamp[clamp_id].value;
+
+	uc_eff = uclamp_eff_get(p, clamp_id);
+
+	return (unsigned long)uc_eff.value;
+}
+
+/*
+ * When a task is enqueued on a rq, the clamp bucket currently defined by the
+ * task's uclamp::bucket_id is refcounted on that rq. This also immediately
+ * updates the rq's clamp value if required.
+ *
+ * Tasks can have a task-specific value requested from user-space, track
+ * within each bucket the maximum value for tasks refcounted in it.
+ * This "local max aggregation" allows to track the exact "requested" value
+ * for each bucket when all its RUNNABLE tasks require the same clamp.
+ */
+static inline void uclamp_rq_inc_id(struct rq *rq, struct task_struct *p,
+				    enum uclamp_id clamp_id)
+{
+	struct uclamp_rq *uc_rq = &rq->uclamp[clamp_id];
+	struct uclamp_se *uc_se = &p->uclamp[clamp_id];
+	struct uclamp_bucket *bucket;
+
+	lockdep_assert_rq_held(rq);
+
+	/* Update task effective clamp */
+	p->uclamp[clamp_id] = uclamp_eff_get(p, clamp_id);
+
+	bucket = &uc_rq->bucket[uc_se->bucket_id];
+	bucket->tasks++;
+	uc_se->active = true;
+
+	uclamp_idle_reset(rq, clamp_id, uc_se->value);
+
+	/*
+	 * Local max aggregation: rq buckets always track the max
+	 * "requested" clamp value of its RUNNABLE tasks.
+	 */
+	if (bucket->tasks == 1 || uc_se->value > bucket->value)
+		bucket->value = uc_se->value;
+
+	if (uc_se->value > READ_ONCE(uc_rq->value))
+		WRITE_ONCE(uc_rq->value, uc_se->value);
+}
+
+/*
+ * When a task is dequeued from a rq, the clamp bucket refcounted by the task
+ * is released. If this is the last task reference counting the rq's max
+ * active clamp value, then the rq's clamp value is updated.
+ *
+ * Both refcounted tasks and rq's cached clamp values are expected to be
+ * always valid. If it's detected they are not, as defensive programming,
+ * enforce the expected state and warn.
+ */
+static inline void uclamp_rq_dec_id(struct rq *rq, struct task_struct *p,
+				    enum uclamp_id clamp_id)
+{
+	struct uclamp_rq *uc_rq = &rq->uclamp[clamp_id];
+	struct uclamp_se *uc_se = &p->uclamp[clamp_id];
+	struct uclamp_bucket *bucket;
+	unsigned int bkt_clamp;
+	unsigned int rq_clamp;
+
+	lockdep_assert_rq_held(rq);
+
+	/*
+	 * If sched_uclamp_used was enabled after task @p was enqueued,
+	 * we could end up with unbalanced call to uclamp_rq_dec_id().
+	 *
+	 * In this case the uc_se->active flag should be false since no uclamp
+	 * accounting was performed at enqueue time and we can just return
+	 * here.
+	 *
+	 * Need to be careful of the following enqueue/dequeue ordering
+	 * problem too
+	 *
+	 *	enqueue(taskA)
+	 *	// sched_uclamp_used gets enabled
+	 *	enqueue(taskB)
+	 *	dequeue(taskA)
+	 *	// Must not decrement bucket->tasks here
+	 *	dequeue(taskB)
+	 *
+	 * where we could end up with stale data in uc_se and
+	 * bucket[uc_se->bucket_id].
+	 *
+	 * The following check here eliminates the possibility of such race.
+	 */
+	if (unlikely(!uc_se->active))
+		return;
+
+	bucket = &uc_rq->bucket[uc_se->bucket_id];
+
+	SCHED_WARN_ON(!bucket->tasks);
+	if (likely(bucket->tasks))
+		bucket->tasks--;
+
+	uc_se->active = false;
+
+	/*
+	 * Keep "local max aggregation" simple and accept to (possibly)
+	 * overboost some RUNNABLE tasks in the same bucket.
+	 * The rq clamp bucket value is reset to its base value whenever
+	 * there are no more RUNNABLE tasks refcounting it.
+	 */
+	if (likely(bucket->tasks))
+		return;
+
+	rq_clamp = READ_ONCE(uc_rq->value);
+	/*
+	 * Defensive programming: this should never happen. If it happens,
+	 * e.g. due to future modification, warn and fixup the expected value.
+	 */
+	SCHED_WARN_ON(bucket->value > rq_clamp);
+	if (bucket->value >= rq_clamp) {
+		bkt_clamp = uclamp_rq_max_value(rq, clamp_id, uc_se->value);
+		WRITE_ONCE(uc_rq->value, bkt_clamp);
+	}
+}
+
+static inline void uclamp_rq_inc(struct rq *rq, struct task_struct *p)
+{
+	enum uclamp_id clamp_id;
+
+	/*
+	 * Avoid any overhead until uclamp is actually used by the userspace.
+	 *
+	 * The condition is constructed such that a NOP is generated when
+	 * sched_uclamp_used is disabled.
+	 */
+	if (!static_branch_unlikely(&sched_uclamp_used))
+		return;
+
+	if (unlikely(!p->sched_class->uclamp_enabled))
+		return;
+
+	for_each_clamp_id(clamp_id)
+		uclamp_rq_inc_id(rq, p, clamp_id);
+
+	/* Reset clamp idle holding when there is one RUNNABLE task */
+	if (rq->uclamp_flags & UCLAMP_FLAG_IDLE)
+		rq->uclamp_flags &= ~UCLAMP_FLAG_IDLE;
+}
+
+static inline void uclamp_rq_dec(struct rq *rq, struct task_struct *p)
+{
+	enum uclamp_id clamp_id;
+
+	/*
+	 * Avoid any overhead until uclamp is actually used by the userspace.
+	 *
+	 * The condition is constructed such that a NOP is generated when
+	 * sched_uclamp_used is disabled.
+	 */
+	if (!static_branch_unlikely(&sched_uclamp_used))
+		return;
+
+	if (unlikely(!p->sched_class->uclamp_enabled))
+		return;
+
+	for_each_clamp_id(clamp_id)
+		uclamp_rq_dec_id(rq, p, clamp_id);
+}
+
+static inline void uclamp_rq_reinc_id(struct rq *rq, struct task_struct *p,
+				      enum uclamp_id clamp_id)
+{
+	if (!p->uclamp[clamp_id].active)
+		return;
+
+	uclamp_rq_dec_id(rq, p, clamp_id);
+	uclamp_rq_inc_id(rq, p, clamp_id);
+
+	/*
+	 * Make sure to clear the idle flag if we've transiently reached 0
+	 * active tasks on rq.
+	 */
+	if (clamp_id == UCLAMP_MAX && (rq->uclamp_flags & UCLAMP_FLAG_IDLE))
+		rq->uclamp_flags &= ~UCLAMP_FLAG_IDLE;
+}
+
+static inline void
+uclamp_update_active(struct task_struct *p)
+{
+	enum uclamp_id clamp_id;
+	struct rq_flags rf;
+	struct rq *rq;
+
+	/*
+	 * Lock the task and the rq where the task is (or was) queued.
+	 *
+	 * We might lock the (previous) rq of a !RUNNABLE task, but that's the
+	 * price to pay to safely serialize util_{min,max} updates with
+	 * enqueues, dequeues and migration operations.
+	 * This is the same locking schema used by __set_cpus_allowed_ptr().
+	 */
+	rq = task_rq_lock(p, &rf);
+
+	/*
+	 * Setting the clamp bucket is serialized by task_rq_lock().
+	 * If the task is not yet RUNNABLE and its task_struct is not
+	 * affecting a valid clamp bucket, the next time it's enqueued,
+	 * it will already see the updated clamp bucket value.
+	 */
+	for_each_clamp_id(clamp_id)
+		uclamp_rq_reinc_id(rq, p, clamp_id);
+
+	task_rq_unlock(rq, p, &rf);
+}
+
+#ifdef CONFIG_UCLAMP_TASK_GROUP
+static inline void
+uclamp_update_active_tasks(struct cgroup_subsys_state *css)
+{
+	struct css_task_iter it;
+	struct task_struct *p;
+
+	css_task_iter_start(css, 0, &it);
+	while ((p = css_task_iter_next(&it)))
+		uclamp_update_active(p);
+	css_task_iter_end(&it);
+}
+
+static void cpu_util_update_eff(struct cgroup_subsys_state *css);
+static void uclamp_update_root_tg(void)
+{
+	struct task_group *tg = &root_task_group;
+
+	uclamp_se_set(&tg->uclamp_req[UCLAMP_MIN],
+		      sysctl_sched_uclamp_util_min, false);
+	uclamp_se_set(&tg->uclamp_req[UCLAMP_MAX],
+		      sysctl_sched_uclamp_util_max, false);
+
+	rcu_read_lock();
+	cpu_util_update_eff(&root_task_group.css);
+	rcu_read_unlock();
+}
+#else
+static void uclamp_update_root_tg(void) { }
+#endif
+
+int sysctl_sched_uclamp_handler(struct ctl_table *table, int write,
+				void *buffer, size_t *lenp, loff_t *ppos)
+{
+	bool update_root_tg = false;
+	int old_min, old_max, old_min_rt;
+	int result;
+
+	mutex_lock(&uclamp_mutex);
+	old_min = sysctl_sched_uclamp_util_min;
+	old_max = sysctl_sched_uclamp_util_max;
+	old_min_rt = sysctl_sched_uclamp_util_min_rt_default;
+
+	result = proc_dointvec(table, write, buffer, lenp, ppos);
+	if (result)
+		goto undo;
+	if (!write)
+		goto done;
+
+	if (sysctl_sched_uclamp_util_min > sysctl_sched_uclamp_util_max ||
+	    sysctl_sched_uclamp_util_max > SCHED_CAPACITY_SCALE	||
+	    sysctl_sched_uclamp_util_min_rt_default > SCHED_CAPACITY_SCALE) {
+
+		result = -EINVAL;
+		goto undo;
+	}
+
+	if (old_min != sysctl_sched_uclamp_util_min) {
+		uclamp_se_set(&uclamp_default[UCLAMP_MIN],
+			      sysctl_sched_uclamp_util_min, false);
+		update_root_tg = true;
+	}
+	if (old_max != sysctl_sched_uclamp_util_max) {
+		uclamp_se_set(&uclamp_default[UCLAMP_MAX],
+			      sysctl_sched_uclamp_util_max, false);
+		update_root_tg = true;
+	}
+
+	if (update_root_tg) {
+		static_branch_enable(&sched_uclamp_used);
+		uclamp_update_root_tg();
+	}
+
+	if (old_min_rt != sysctl_sched_uclamp_util_min_rt_default) {
+		static_branch_enable(&sched_uclamp_used);
+		uclamp_sync_util_min_rt_default();
+	}
+
+	/*
+	 * We update all RUNNABLE tasks only when task groups are in use.
+	 * Otherwise, keep it simple and do just a lazy update at each next
+	 * task enqueue time.
+	 */
+
+	goto done;
+
+undo:
+	sysctl_sched_uclamp_util_min = old_min;
+	sysctl_sched_uclamp_util_max = old_max;
+	sysctl_sched_uclamp_util_min_rt_default = old_min_rt;
+done:
+	mutex_unlock(&uclamp_mutex);
+
+	return result;
+}
+
+static int uclamp_validate(struct task_struct *p,
+			   const struct sched_attr *attr)
+{
+	int util_min = p->uclamp_req[UCLAMP_MIN].value;
+	int util_max = p->uclamp_req[UCLAMP_MAX].value;
+
+	if (attr->sched_flags & SCHED_FLAG_UTIL_CLAMP_MIN) {
+		util_min = attr->sched_util_min;
+
+		if (util_min + 1 > SCHED_CAPACITY_SCALE + 1)
+			return -EINVAL;
+	}
+
+	if (attr->sched_flags & SCHED_FLAG_UTIL_CLAMP_MAX) {
+		util_max = attr->sched_util_max;
+
+		if (util_max + 1 > SCHED_CAPACITY_SCALE + 1)
+			return -EINVAL;
+	}
+
+	if (util_min != -1 && util_max != -1 && util_min > util_max)
+		return -EINVAL;
+
+	/*
+	 * We have valid uclamp attributes; make sure uclamp is enabled.
+	 *
+	 * We need to do that here, because enabling static branches is a
+	 * blocking operation which obviously cannot be done while holding
+	 * scheduler locks.
+	 */
+	static_branch_enable(&sched_uclamp_used);
+
+	return 0;
+}
+
+static bool uclamp_reset(const struct sched_attr *attr,
+			 enum uclamp_id clamp_id,
+			 struct uclamp_se *uc_se)
+{
+	/* Reset on sched class change for a non user-defined clamp value. */
+	if (likely(!(attr->sched_flags & SCHED_FLAG_UTIL_CLAMP)) &&
+	    !uc_se->user_defined)
+		return true;
+
+	/* Reset on sched_util_{min,max} == -1. */
+	if (clamp_id == UCLAMP_MIN &&
+	    attr->sched_flags & SCHED_FLAG_UTIL_CLAMP_MIN &&
+	    attr->sched_util_min == -1) {
+		return true;
+	}
+
+	if (clamp_id == UCLAMP_MAX &&
+	    attr->sched_flags & SCHED_FLAG_UTIL_CLAMP_MAX &&
+	    attr->sched_util_max == -1) {
+		return true;
+	}
+
+	return false;
+}
+
+static void __setscheduler_uclamp(struct task_struct *p,
+				  const struct sched_attr *attr)
+{
+	enum uclamp_id clamp_id;
+
+	for_each_clamp_id(clamp_id) {
+		struct uclamp_se *uc_se = &p->uclamp_req[clamp_id];
+		unsigned int value;
+
+		if (!uclamp_reset(attr, clamp_id, uc_se))
+			continue;
+
+		/*
+		 * RT by default have a 100% boost value that could be modified
+		 * at runtime.
+		 */
+		if (unlikely(rt_task(p) && clamp_id == UCLAMP_MIN))
+			value = sysctl_sched_uclamp_util_min_rt_default;
+		else
+			value = uclamp_none(clamp_id);
+
+		uclamp_se_set(uc_se, value, false);
+
+	}
+
+	if (likely(!(attr->sched_flags & SCHED_FLAG_UTIL_CLAMP)))
+		return;
+
+	if (attr->sched_flags & SCHED_FLAG_UTIL_CLAMP_MIN &&
+	    attr->sched_util_min != -1) {
+		uclamp_se_set(&p->uclamp_req[UCLAMP_MIN],
+			      attr->sched_util_min, true);
+	}
+
+	if (attr->sched_flags & SCHED_FLAG_UTIL_CLAMP_MAX &&
+	    attr->sched_util_max != -1) {
+		uclamp_se_set(&p->uclamp_req[UCLAMP_MAX],
+			      attr->sched_util_max, true);
+	}
+}
+
+static void uclamp_fork(struct task_struct *p)
+{
+	enum uclamp_id clamp_id;
+
+	/*
+	 * We don't need to hold task_rq_lock() when updating p->uclamp_* here
+	 * as the task is still at its early fork stages.
+	 */
+	for_each_clamp_id(clamp_id)
+		p->uclamp[clamp_id].active = false;
+
+	if (likely(!p->sched_reset_on_fork))
+		return;
+
+	for_each_clamp_id(clamp_id) {
+		uclamp_se_set(&p->uclamp_req[clamp_id],
+			      uclamp_none(clamp_id), false);
+	}
+}
+
+static void uclamp_post_fork(struct task_struct *p)
+{
+	uclamp_update_util_min_rt_default(p);
+}
+
+static void __init init_uclamp_rq(struct rq *rq)
+{
+	enum uclamp_id clamp_id;
+	struct uclamp_rq *uc_rq = rq->uclamp;
+
+	for_each_clamp_id(clamp_id) {
+		uc_rq[clamp_id] = (struct uclamp_rq) {
+			.value = uclamp_none(clamp_id)
+		};
+	}
+
+	rq->uclamp_flags = UCLAMP_FLAG_IDLE;
+}
+
+static void __init init_uclamp(void)
+{
+	struct uclamp_se uc_max = {};
+	enum uclamp_id clamp_id;
+	int cpu;
+
+	for_each_possible_cpu(cpu)
+		init_uclamp_rq(cpu_rq(cpu));
+
+	for_each_clamp_id(clamp_id) {
+		uclamp_se_set(&init_task.uclamp_req[clamp_id],
+			      uclamp_none(clamp_id), false);
+	}
+
+	/* System defaults allow max clamp values for both indexes */
+	uclamp_se_set(&uc_max, uclamp_none(UCLAMP_MAX), false);
+	for_each_clamp_id(clamp_id) {
+		uclamp_default[clamp_id] = uc_max;
+#ifdef CONFIG_UCLAMP_TASK_GROUP
+		root_task_group.uclamp_req[clamp_id] = uc_max;
+		root_task_group.uclamp[clamp_id] = uc_max;
+#endif
+	}
+}
+
+#else /* CONFIG_UCLAMP_TASK */
+static inline void uclamp_rq_inc(struct rq *rq, struct task_struct *p) { }
+static inline void uclamp_rq_dec(struct rq *rq, struct task_struct *p) { }
+static inline int uclamp_validate(struct task_struct *p,
+				  const struct sched_attr *attr)
+{
+	return -EOPNOTSUPP;
+}
+static void __setscheduler_uclamp(struct task_struct *p,
+				  const struct sched_attr *attr) { }
+static inline void uclamp_fork(struct task_struct *p) { }
+static inline void uclamp_post_fork(struct task_struct *p) { }
+static inline void init_uclamp(void) { }
+#endif /* CONFIG_UCLAMP_TASK */
+
+bool sched_task_on_rq(struct task_struct *p)
+{
+	return task_on_rq_queued(p);
+}
+
+unsigned long get_wchan(struct task_struct *p)
+{
+	unsigned long ip = 0;
+	unsigned int state;
+
+	if (!p || p == current)
+		return 0;
+
+	/* Only get wchan if task is blocked and we can keep it that way. */
+	raw_spin_lock_irq(&p->pi_lock);
+	state = READ_ONCE(p->__state);
+	smp_rmb(); /* see try_to_wake_up() */
+	if (state != TASK_RUNNING && state != TASK_WAKING && !p->on_rq)
+		ip = __get_wchan(p);
+	raw_spin_unlock_irq(&p->pi_lock);
+
+	return ip;
+}
+
+static inline void enqueue_task(struct rq *rq, struct task_struct *p, int flags)
+{
+	if (!(flags & ENQUEUE_NOCLOCK))
+		update_rq_clock(rq);
+
+	if (!(flags & ENQUEUE_RESTORE)) {
+		sched_info_enqueue(rq, p);
+		psi_enqueue(p, flags & ENQUEUE_WAKEUP);
+	}
+
+	uclamp_rq_inc(rq, p);
+	p->sched_class->enqueue_task(rq, p, flags);
+
+	if (sched_core_enabled(rq))
+		sched_core_enqueue(rq, p);
+}
+
+static inline void dequeue_task(struct rq *rq, struct task_struct *p, int flags)
+{
+	if (sched_core_enabled(rq))
+		sched_core_dequeue(rq, p, flags);
+
+	if (!(flags & DEQUEUE_NOCLOCK))
+		update_rq_clock(rq);
+
+	if (!(flags & DEQUEUE_SAVE)) {
+		sched_info_dequeue(rq, p);
+		psi_dequeue(p, flags & DEQUEUE_SLEEP);
+	}
+
+	uclamp_rq_dec(rq, p);
+	p->sched_class->dequeue_task(rq, p, flags);
+}
+
+void activate_task(struct rq *rq, struct task_struct *p, int flags)
+{
+	enqueue_task(rq, p, flags);
+
+	p->on_rq = TASK_ON_RQ_QUEUED;
+}
+
+void deactivate_task(struct rq *rq, struct task_struct *p, int flags)
+{
+	p->on_rq = (flags & DEQUEUE_SLEEP) ? 0 : TASK_ON_RQ_MIGRATING;
+
+	dequeue_task(rq, p, flags);
+}
+
+static inline int __normal_prio(int policy, int rt_prio, int nice)
+{
+	int prio;
+
+	if (dl_policy(policy))
+		prio = MAX_DL_PRIO - 1;
+	else if (rt_policy(policy))
+		prio = MAX_RT_PRIO - 1 - rt_prio;
+	else
+		prio = NICE_TO_PRIO(nice);
+
+	return prio;
+}
+
+/*
+ * Calculate the expected normal priority: i.e. priority
+ * without taking RT-inheritance into account. Might be
+ * boosted by interactivity modifiers. Changes upon fork,
+ * setprio syscalls, and whenever the interactivity
+ * estimator recalculates.
+ */
+static inline int normal_prio(struct task_struct *p)
+{
+	return __normal_prio(p->policy, p->rt_priority, PRIO_TO_NICE(p->static_prio));
+}
+
+/*
+ * Calculate the current priority, i.e. the priority
+ * taken into account by the scheduler. This value might
+ * be boosted by RT tasks, or might be boosted by
+ * interactivity modifiers. Will be RT if the task got
+ * RT-boosted. If not then it returns p->normal_prio.
+ */
+static int effective_prio(struct task_struct *p)
+{
+	p->normal_prio = normal_prio(p);
+	/*
+	 * If we are RT tasks or we were boosted to RT priority,
+	 * keep the priority unchanged. Otherwise, update priority
+	 * to the normal priority:
+	 */
+	if (!rt_prio(p->prio))
+		return p->normal_prio;
+	return p->prio;
+}
+
+/**
+ * task_curr - is this task currently executing on a CPU?
+ * @p: the task in question.
+ *
+ * Return: 1 if the task is currently executing. 0 otherwise.
+ */
+inline int task_curr(const struct task_struct *p)
+{
+	return cpu_curr(task_cpu(p)) == p;
+}
+
+/*
+ * switched_from, switched_to and prio_changed must _NOT_ drop rq->lock,
+ * use the balance_callback list if you want balancing.
+ *
+ * this means any call to check_class_changed() must be followed by a call to
+ * balance_callback().
+ */
+static inline void check_class_changed(struct rq *rq, struct task_struct *p,
+				       const struct sched_class *prev_class,
+				       int oldprio)
+{
+	if (prev_class != p->sched_class) {
+		if (prev_class->switched_from)
+			prev_class->switched_from(rq, p);
+
+		p->sched_class->switched_to(rq, p);
+	} else if (oldprio != p->prio || dl_task(p))
+		p->sched_class->prio_changed(rq, p, oldprio);
+}
+
+void check_preempt_curr(struct rq *rq, struct task_struct *p, int flags)
+{
+	if (p->sched_class == rq->curr->sched_class)
+		rq->curr->sched_class->check_preempt_curr(rq, p, flags);
+	else if (p->sched_class > rq->curr->sched_class)
+		resched_curr(rq);
+
+	/*
+	 * A queue event has occurred, and we're going to schedule.  In
+	 * this case, we can save a useless back to back clock update.
+	 */
+	if (task_on_rq_queued(rq->curr) && test_tsk_need_resched(rq->curr))
+		rq_clock_skip_update(rq);
+}
+
+#ifdef CONFIG_SMP
+
+static void
+__do_set_cpus_allowed(struct task_struct *p, const struct cpumask *new_mask, u32 flags);
+
+static int __set_cpus_allowed_ptr(struct task_struct *p,
+				  const struct cpumask *new_mask,
+				  u32 flags);
+
+static void migrate_disable_switch(struct rq *rq, struct task_struct *p)
+{
+	if (likely(!p->migration_disabled))
+		return;
+
+	if (p->cpus_ptr != &p->cpus_mask)
+		return;
+
+	/*
+	 * Violates locking rules! see comment in __do_set_cpus_allowed().
+	 */
+	_cmd_drivers/media/pci/cx18/cx18.mod.o := gcc -Wp,-MMD,drivers/media/pci/cx18/.cx18.mod.o.d -nostdinc -I./arch/x86/include -I./arch/x86/include/generated -I./include -I./arch/x86/include/uapi -I./arch/x86/include/generated/uapi -I./include/uapi -I./include/generated/uapi -include ./include/linux/compiler-version.h -include ./include/linux/kconfig.h -include ./include/linux/compiler_types.h -D__KERNEL__ -fmacro-prefix-map=./= -Wall -Wundef -Werror=strict-prototypes -Wno-trigraphs -fno-strict-aliasing -fno-common -fshort-wchar -fno-PIE -Werror=implicit-function-declaration -Werror=implicit-int -Werror=return-type -Wno-format-security -std=gnu11 -mno-sse -mno-mmx -mno-sse2 -mno-3dnow -mno-avx -fcf-protection=none -m32 -msoft-float -mregparm=3 -freg-struct-return -fno-pic -mpreferred-stack-boundary=2 -march=i686 -mtune=pentium3 -mtune=generic -Wa,-mtune=generic32 -ffreestanding -mstack-protector-guard-reg=fs -mstack-protector-guard-symbol=__stack_chk_guard -Wno-sign-compare -fno-asynchronous-unwind-tables -mindirect-branch=thunk-extern -mindirect-branch-register -fno-jump-tables -fno-delete-null-pointer-checks -Wno-frame-address -Wno-format-truncation -Wno-format-overflow -Wno-address-of-packed-member -O2 -fno-allow-store-data-races -fstack-protector-strong -Wimplicit-fallthrough=5 -Wno-main -Wno-unused-but-set-variable -Wno-unused-const-variable -fno-stack-clash-protection -pg -mrecord-mcount -mfentry -DCC_USING_FENTRY -Wdeclaration-after-statement -Wvla -Wno-pointer-sign -Wcast-function-type -Wno-stringop-truncation -Wno-stringop-overflow -Wno-restrict -Wno-maybe-uninitialized -Wno-alloc-size-larger-than -fno-strict-overflow -fno-stack-check -fconserve-stack -Werror=date-time -Werror=incompatible-pointer-types -Werror=designated-init -Wno-packed-not-aligned -DMODULE -DKBUILD_BASENAME='"cx18.mod"' -DKBUILD_MODNAME='"cx18"' -D__KBUILD_MODNAME=kmod_cx18 -c -o drivers/media/pci/cx18/cx18.mod.o drivers/media/pci/cx18/cx18.mod.c
+
+source_drivers/media/pci/cx18/cx18.mod.o := drivers/media/pci/cx18/cx18.mod.c
+
+deps_drivers/media/pci/cx18/cx18.mod.o := \
     $(wildcard include/config/MODULE_UNLOAD) \
-    $(wildcard include/config/CONSTRUCTORS) \
-    $(wildcard include/config/FUNCTION_ERROR_INJECTION) \
-  include/linux/buildid.h \
-    $(wildcard include/config/CRASH_CORE) \
-  include/linux/kmod.h \
-  include/linux/umh.h \
-  include/linux/sysctl.h \
-    $(wildcard include/config/SYSCTL) \
-  include/uapi/linux/sysctl.h \
-  include/linux/elf.h \
-    $(wildcard include/config/ARCH_USE_GNU_PROPERTY) \
-    $(wildcard include/config/ARCH_HAVE_ELF_PROT) \
-  arch/x86/include/asm/elf.h \
-    $(wildcard include/config/X86_X32_ABI) \
-  arch/x86/include/asm/user.h \
-  arch/x86/include/asm/user_32.h \
-  arch/x86/include/asm/fsgsbase.h \
-  arch/x86/include/asm/vdso.h \
-  arch/x86/include/asm/desc.h \
-  arch/x86/include/asm/fixmap.h \
-    $(wildcard include/config/DEBUG_KMAP_LOCAL_FORCE_MAP) \
-    $(wildcard include/config/X86_VSYSCALL_EMULATION) \
-    $(wildcard include/config/PROVIDE_OHCI1394_DMA_INIT) \
-    $(wildcard include/config/X86_IO_APIC) \
-    $(wildcard include/config/PCI_MMCONFIG) \
-    $(wildcard include/config/ACPI_APEI_GHES) \
-    $(wildcard include/config/INTEL_TXT) \
-  include/asm-generic/fixmap.h \
-  arch/x86/include/asm/irq_vectors.h \
-    $(wildcard include/config/HAVE_KVM) \
-    $(wildcard include/config/HYPERV) \
-    $(wildcard include/config/PCI_MSI) \
-  arch/x86/include/asm/cpu_entry_area.h \
-  arch/x86/include/asm/intel_ds.h \
-  arch/x86/include/asm/pgtable_areas.h \
-  arch/x86/include/asm/pgtable_32_areas.h \
-  include/uapi/linux/elf.h \
-  include/uapi/linux/elf-em.h \
-  include/linux/moduleparam.h \
-    $(wildcard include/config/ALPHA) \
-    $(wildcard include/config/IA64) \
-    $(wildcard include/config/PPC64) \
-  include/cmd_kernel/irq/cpuhotplug.o := gcc -Wp,-MMD,kernel/irq/.cpuhotplug.o.d -nostdinc -I./arch/x86/include -I./arch/x86/include/generated  -I./include -I./arch/x86/include/uapi -I./arch/x86/include/generated/uapi -I./include/uapi -I./include/generated/uapi -include ./include/linux/compiler-version.h -include ./include/linux/kconfig.h -include ./include/linux/compiler_types.h -D__KERNEL__ -fmacro-prefix-map=./= -Wall -Wundef -Werror=strict-prototypes -Wno-trigraphs -fno-strict-aliasing -fno-common -fshort-wchar -fno-PIE -Werror=implicit-function-declaration -Werror=implicit-int -Werror=return-type -Wno-format-security -std=gnu11 -mno-sse -mno-mmx -mno-sse2 -mno-3dnow -mno-avx -fcf-protection=none -m32 -msoft-float -mregparm=3 -freg-struct-return -fno-pic -mpreferred-stack-boundary=2 -march=i686 -mtune=pentium3 -mtune=generic -Wa,-mtune=generic32 -ffreestanding -mstack-protector-guard-reg=fs -mstack-protector-guard-symbol=__stack_chk_guard -Wno-sign-compare -fno-asynchronous-unwind-tables -mindirect-branch=thunk-extern -mindirect-branch-register -fno-jump-tables -fno-delete-null-pointer-checks -Wno-frame-address -Wno-format-truncation -Wno-format-overflow -Wno-address-of-packed-member -O2 -fno-allow-store-data-races -fstack-protector-strong -Wimplicit-fallthrough=5 -Wno-main -Wno-unused-but-set-variable -Wno-unused-const-variable -fno-stack-clash-protection -pg -mrecord-mcount -mfentry -DCC_USING_FENTRY -Wdeclaration-after-statement -Wvla -Wno-pointer-sign -Wcast-function-type -Wno-stringop-truncation -Wno-stringop-overflow -Wno-restrict -Wno-maybe-uninitialized -Wno-alloc-size-larger-than -fno-strict-overflow -fno-stack-check -fconserve-stack -Werror=date-time -Werror=incompatible-pointer-types -Werror=designated-init -Wno-packed-not-aligned    -DKBUILD_MODFILE='"kernel/irq/cpuhotplug"' -DKBUILD_BASENAME='"cpuhotplug"' -DKBUILD_MODNAME='"cpuhotplug"' -D__KBUILD_MODNAME=kmod_cpuhotplug -c -o kernel/irq/cpuhotplug.o kernel/irq/cpuhotplug.c 
-
-source_kernel/irq/cpuhotplug.o := kernel/irq/cpuhotplug.c
-
-deps_kernel/irq/cpuhotplug.o := \
-    $(wildcard include/config/GENERIC_IRQ_EFFECTIVE_AFF_MASK) \
+    $(wildcard include/config/RETPOLINE) \
   include/linux/compiler-version.h \
     $(wildcard include/config/CC_VERSION_TEXT) \
   include/linux/kconfig.h \
@@ -363,36 +1095,47 @@ deps_kernel/irq/cpuhotplug.o := \
     $(wildcard include/config/CC_HAS_ASM_INLINE) \
   include/linux/compiler_attributes.h \
   include/linux/compiler-gcc.h \
-    $(wildcard include/config/RETPOLINE) \
     $(wildcard include/config/ARCH_USE_BUILTIN_BSWAP) \
     $(wildcard include/config/SHADOW_CALL_STACK) \
     $(wildcard include/config/KCOV) \
-  include/linux/interrupt.h \
-    $(wildcard include/config/LOCKDEP) \
+  include/linux/module.h \
+    $(wildcard include/config/MODULES) \
+    $(wildcard include/config/SYSFS) \
+    $(wildcard include/config/MODULES_TREE_LOOKUP) \
+    $(wildcard include/config/LIVEPATCH) \
+    $(wildcard include/config/STACKTRACE_BUILD_ID) \
+    $(wildcard include/config/CFI_CLANG) \
+    $(wildcard include/config/MODULE_SIG) \
+    $(wildcard include/config/GENERIC_BUG) \
+    $(wildcard include/config/KALLSYMS) \
     $(wildcard include/config/SMP) \
-    $(wildcard include/config/IRQ_FORCED_THREADING) \
-    $(wildcard include/config/PREEMPT_RT) \
-    $(wildcard include/config/GENERIC_IRQ_PROBE) \
-    $(wildcard include/config/PROC_FS) \
-    $(wildcard include/config/IRQ_TIMINGS) \
-  include/linux/kernel.h \
-    $(wildcard include/config/PREEMPT_VOLUNTARY_BUILD) \
-    $(wildcard include/config/PREEMPT_DYNAMIC) \
-    $(wildcard include/config/HAVE_PREEMPT_DYNAMIC_CALL) \
-    $(wildcard include/config/HAVE_PREEMPT_DYNAMIC_KEY) \
-    $(wildcard include/config/PREEMPT_) \
-    $(wildcard include/config/DEBUG_ATOMIC_SLEEP) \
-    $(wildcard include/config/MMU) \
-    $(wildcard include/config/PROVE_LOCKING) \
+    $(wildcard include/config/TRACEPOINTS) \
+    $(wildcard include/config/TREE_SRCU) \
+    $(wildcard include/config/BPF_EVENTS) \
+    $(wildcard include/config/DEBUG_INFO_BTF_MODULES) \
+    $(wildcard include/config/JUMP_LABEL) \
     $(wildcard include/config/TRACING) \
+    $(wildcard include/config/EVENT_TRACING) \
     $(wildcard include/config/FTRACE_MCOUNT_RECORD) \
-  include/linux/stdarg.h \
-  include/linux/align.h \
-  include/linux/const.h \
-  include/vdso/const.h \
-  include/uapi/linux/const.h \
-  include/linux/limits.h \
-  include/uapi/linux/limits.h \
+    $(wildcard include/config/KPROBES) \
+    $(wildcard include/config/HAVE_STATIC_CALL_INLINE) \
+    $(wildcard include/config/PRINTK_INDEX) \
+    $(wildcard include/config/CONSTRUCTORS) \
+    $(wildcard include/config/FUNCTION_ERROR_INJECTION) \
+  include/linux/list.h \
+    $(wildcard include/config/DEBUG_LIST) \
+  include/linux/container_of.h \
+  include/linux/build_bug.h \
+  include/linux/compiler.h \
+    $(wildcard include/config/TRACE_BRANCH_PROFILING) \
+    $(wildcard include/config/PROFILE_ALL_BRANCHES) \
+    $(wildcard include/config/STACK_VALIDATION) \
+  include/linux/compiler_types.h \
+  arch/x86/include/generated/asm/rwonce.h \
+  include/asm-generic/rwonce.h \
+  include/linux/kasan-checks.h \
+    $(wildcard include/config/KASAN_GENERIC) \
+    $(wildcard include/config/KASAN_SW_TAGS) \
   include/linux/types.h \
     $(wildcard include/config/HAVE_UID16) \
     $(wildcard include/config/UID16) \
@@ -411,64 +1154,71 @@ deps_kernel/irq/cpuhotplug.o := \
   include/uapi/linux/posix_types.h \
   include/linux/stddef.h \
   include/uapi/linux/stddef.h \
-  include/linux/compiler_types.h \
   arch/x86/include/asm/posix_types.h \
     $(wildcard include/config/X86_32) \
   arch/x86/include/uapi/asm/posix_types_32.h \
   include/uapi/asm-generic/posix_types.h \
-  include/vdso/limits.h \
-  include/linux/linkage.h \
-    $(wildcard include/config/ARCH_USE_SYM_ANNOTATIONS) \
-  include/linux/stringify.h \
-  include/linux/export.h \
-    $(wildcard include/config/MODVERSIONS) \
-    $(wildcard include/config/MODULE_REL_CRCS) \
-    $(wildcard include/config/HAVE_ARCH_PREL32_RELOCATIONS) \
-    $(wildcard include/config/MODULES) \
-    $(wildcard include/config/TRIM_UNUSED_KSYMS) \
-  include/linux/compiler.h \
-    $(wildcard include/config/TRACE_BRANCH_PROFILING) \
-    $(wildcard include/config/PROFILE_ALL_BRANCHES) \
-    $(wildcard include/config/STACK_VALIDATION) \
-    $(wildcard include/config/CFI_CLANG) \
-  arch/x86/include/generated/asm/rwonce.h \
-  include/asm-generic/rwonce.h \
-  include/linux/kasan-checks.h \
-    $(wildcard include/config/KASAN_GENERIC) \
-    $(wildcard include/config/KASAN_SW_TAGS) \
   include/linux/kcsan-checks.h \
     $(wildcard include/config/KCSAN) \
     $(wildcard include/config/KCSAN_WEAK_MEMORY) \
     $(wildcard include/config/KCSAN_IGNORE_ATOMICS) \
+  include/linux/err.h \
+  arch/x86/include/generated/uapi/asm/errno.h \
+  include/uapi/asm-generic/errno.h \
+  include/uapi/asm-generic/errno-base.h \
+  include/linux/poison.h \
+    $(wildcard include/config/ILLEGAL_POINTER_VALUE) \
+  include/linux/const.h \
+  include/vdso/const.h \
+  include/uapi/linux/const.h \
+  arch/x86/include/asm/barrier.h \
+  arch/x86/include/asm/alternative.h \
+  include/linux/stringify.h \
+  arch/x86/include/asm/asm.h \
+  arch/x86/include/asm/extable_fixup_types.h \
+  arch/x86/include/asm/nops.h \
+  include/asm-generic/barrier.h \
+  include/linux/stat.h \
+  arch/x86/include/uapi/asm/stat.h \
+  include/uapi/linux/stat.h \
+  include/linux/time.h \
+    $(wildcard include/config/POSIX_TIMERS) \
+  include/linux/cache.h \
+    $(wildcard include/config/ARCH_HAS_CACHE_LINE_SIZE) \
+  include/uapi/linux/kernel.h \
+  include/uapi/linux/sysinfo.h \
+  arch/x86/include/asm/cache.h \
+    $(wildcard include/config/X86_L1_CACHE_SHIFT) \
+    $(wildcard include/config/X86_INTERNODE_CACHE_SHIFT) \
+    $(wildcard include/config/X86_VSMP) \
+  include/linux/linkage.h \
+    $(wildcard include/config/ARCH_USE_SYM_ANNOTATIONS) \
+  include/linux/export.h \
+    $(wildcard include/config/MODVERSIONS) \
+    $(wildcard include/config/MODULE_REL_CRCS) \
+    $(wildcard include/config/HAVE_ARCH_PREL32_RELOCATIONS) \
+    $(wildcard include/config/TRIM_UNUSED_KSYMS) \
   arch/x86/include/asm/linkage.h \
     $(wildcard include/config/X86_64) \
     $(wildcard include/config/X86_ALIGNMENT_16) \
     $(wildcard include/config/SLS) \
   arch/x86/include/asm/ibt.h \
     $(wildcard include/config/X86_KERNEL_IBT) \
-  include/linux/container_of.h \
-  include/linux/build_bug.h \
-  include/linux/err.h \
-  arch/x86/include/generated/uapi/asm/errno.h \
-  include/uapi/asm-generic/errno.h \
-  include/uapi/asm-generic/errno-base.h \
+  include/linux/math64.h \
+    $(wildcard include/config/ARCH_SUPPORTS_INT128) \
+  include/linux/math.h \
+  arch/x86/include/asm/div64.h \
+  include/linux/log2.h \
+    $(wildcard include/config/ARCH_HAS_ILOG2_U32) \
+    $(wildcard include/config/ARCH_HAS_ILOG2_U64) \
   include/linux/bitops.h \
   include/linux/bits.h \
   include/vdso/bits.h \
   include/linux/typecheck.h \
-  include/uapi/linux/kernel.h \
-  include/uapi/linux/sysinfo.h \
   arch/x86/include/asm/bitops.h \
     $(wildcard include/config/X86_CMOV) \
-  arch/x86/include/asm/alternative.h \
-  arch/x86/include/asm/asm.h \
-    $(wildcard include/config/KPROBES) \
-  arch/x86/include/asm/extable_fixup_types.h \
   arch/x86/include/asm/rmwcc.h \
     $(wildcard include/config/CC_HAS_ASM_GOTO) \
-  arch/x86/include/asm/barrier.h \
-  arch/x86/include/asm/nops.h \
-  include/asm-generic/barrier.h \
   include/asm-generic/bitops/fls64.h \
   include/asm-generic/bitops/sched.h \
   arch/x86/include/asm/arch_hweight.h \
@@ -486,72 +1236,4 @@ deps_kernel/irq/cpuhotplug.o := \
     $(wildcard include/config/X86_UMIP) \
     $(wildcard include/config/X86_INTEL_MEMORY_PROTECTION_KEYS) \
     $(wildcard include/config/X86_5LEVEL) \
-    $(wildcard include/config/PAGE_TABLE_ISOLATION) \
-    $(wildcard include/config/INTEL_IOMMU_SVM) \
-    $(wildcard include/config/X86_SGX) \
-  include/asm-generic/bitops/const_hweight.h \
-  include/asm-generic/bitops/instrumented-atomic.h \
-  include/linux/instrumented.h \
-  include/asm-generic/bitops/instrumented-non-atomic.h \
-    $(wildcard include/config/KCSAN_ASSUME_PLAIN_WRITES_ATOMIC) \
-  include/asm-generic/bitops/instrumented-lock.h \
-  include/asm-generic/bitops/le.h \
-  arch/x86/inclu%(*qìSÜ˜eáŞ]îZ¬}‹³G»˜¤cdq2°­‘ÆÙ¿
-+“ş»¿ş”„íÓ
-¥òİ•‘™!÷¦š­¥c¢B/ë×"B¤Ú¸:®»4…ª%	şH££³ìâDèì¼(¡¾@÷ÍYĞ‚¹èJ/ÛVéz-ŞmNâİ…
-äxJ93H¾N ©AœÇé·Kµ21ÀÊ²qzÔ´#ÉµØ:rÍ±ŞW£\¶Lá$v[M˜Âj	›ÉÊ¤¾@[\ñnvÎ§cnvj”o”¢KQéIÇ©K`2Â˜§È!¸ğ
-Ñ_î ³2¦·6#(û&æa«5—!º;;âì¡j¡ÆÍà>OÏ±3…Ãëô¢oZ’&rdj!²dD÷4vN–UÅºÖn!¹	ì2eÎWªö€åã?§dK2¡ÙX^#_bº¶£Œ€¦—Y"aÔì¤ÜµFG[û8`õê°AaEÙOåôÙÄ"}YJñÅíã=Ç´ğ×´Q/Èó¹Y¬ëFJéHÛZåêC ñsÏ[}&ÜIø¤ßáaâ×ƒWèm'Œ±¨œÙ“‘ÏQ”ƒ-£–§C#% RÓÑ,õä9:Ù@x§˜3Qj;Ş3ÎYcD	3ø/tkèºUuİÛã„zzcœê'6<\•d´…rS¶b±l_ME\ËÚÖ*te7 êÕ+ûlÅcåÇÁ0ê CE¦Ø€6±!uµÉõR®¿eäp¥Ü¬-
-WÀQŞ{xßÍ‹]¸¯U¤ÌÖºLµ”âÙİ¯¯_ªAˆÔ%?ø®jŠÒòÃëØÛª£ëR
-Ó¯xØ-Êé–… ÛM¹ïı,­½%3rÂÛ€Eï\N«¥„ú[ç 3šLaò¥˜/	¾@…ªâµJ”|”¼xË°_ zIĞ10)B®í½‡/ÙñÒL:A¼à{uç:ş›<g§' ëúMŸ/êÿÎuSÈqHOe€ÜRJF`µT×)?ä€›y Éši°—(loıû¢k“óq¦Š)ô½‡£f[óêÙ6Ú2…Ï )8ı ˆH[©î3™$à´lùS­ËzŸ[%a`$¤4êœkğíúS]vO;“ÓxZ5x™¡jItmşÕÙúÄM
-âdM÷<ÕTf
-ÍÒ¦,ä5¿¢Íä¢#È+ª•İĞ•¨×™VëË ¨‘Ùöá0¹>õ»Õ÷ÕÏì	Ä=¬IıúQeÈÍ&#÷}+‹œ~ÄOàWwØ˜y]’¿‘ÿ– deHšQl™ÙÕ9ÚZwA¹Ù õÔ|C¬Ñ{LËÍùQÔéx¶¸Â¶)Çh	kd·1fo¨;ğƒşµfâÙÜT×fÆúp¥µ)pqmCMïı‡;ßËÂÉH9®Û´&Pr¢Âì¿$æRÉÓı„äàû…¬?ÒÙ©Ë¼‡É7pÑŠã@K¼«gapgUšY´lW³Ò}t @òŸ VŠµIûİ-m#ĞQ$.6=Ü‹=ÙÈçÓŠ8ÈPâ{I{a£uÓY6‰Ş£lŒº…©ù™(+ãWıˆ»[gÅºow‹æ­‚3î€k™‰Ã‘
-ğÔr„ ùsì“g¦?ĞB!¼™±…2´)Ñh¦ÄÙ‚pÜqŠÚ™“€8}nëh—:Õ£Şõ.ªè‘ûJœ$.§°y›Z#ò#fˆõ_šŞßœÌÃËLÀ÷€{vNE*:m·ºŞ%A6ö•®P´ÒâÛêü½Û4x\d¿ÎX8¯°IiŸÜT&g-FÔâ‚ıç8‡Ú£' Æ+,÷Ô…—cı7~´áZiêÃúÌg«…á³¯4’Cş¾×a˜<à¸S²ÅŞüh6(
-*ÿ¢k3›â
-€zàc Q•tìáX`iıÔêQ4FÌŒàº&áş]GçÓ,CRğZM4ÙÇxší!!'b:ƒê
-ÆŒæïÍÌŒíÿ¿n~Ú¨KÑ]Ûl·U1Û`Ø÷¬İá#’Ù®&ºnPèÌ­²4K™ùù§8KkIE_ûÛd÷béª”«@#«$şÕÂyş|U\HPèm-ÆÄ1Üö«—ap‹;)X=İó‚¯‘÷úÿ¿eBêó¨®üÌd%Å5ü`A=ÿü‘õ#i3|ÇšA’GÏ~"€qqĞ{}Ú”H¼£ëOÆ¦¹ØGíë<¸~¡øîğÀe( á4¸Òô¥£)$ú)ïº¨Eæ!ï4¥›“´z*9Ê¢Uíi©jäJ?î&˜¦1nÅ‡Yt6-¦t,™qz•˜©<bïöB±¥98Fƒ×áµ¦:íãz©°Q…‘’ºı”
->—>àÃÚÍGëÜhòSìæ%wg‘è™¨làÛë\‚cá&'˜0åa–»!_.bˆ‰B 7ÛAğåì_Ñ#Yİ°ùwfÍ<ı	•s)!€;‹Pµ×*éË‰3ÌÑ¹Úvïf¤Q¡E¢îd^¦fN`W)NÊ´@°¹šµVBÖ(®c¥È¡^/ÍiÙó>>¥`B—:N?É! 51JC©alºğ¨ŠÃ?Â,m+Ïå—A™‚±£`ÿ-s¿%ım»Å4æéI	J³X"\FúH™-sV´w}qê
-p¥j¹Ù¥Ê£Î‚Ö£åË11ÏÁ‘SËË†¯K¨áòEùÌ2¦ˆÍ­JhXNêgİüÆ{Œª­YÉ¦˜&Yµš[[ #ÖÖÕT«S«xz5D\3B;ÊÂ:¹H:6ß¸ÓÅ…foŞ“éav¥³dµÖËnµÀÙ»Ñ™!ø‰õVB¤òë^<°Äíf3vy&PÕ5·ì$)š)Š2;?w,›rËÍœ|V ~ Ğ€F¿<¤¤&©µKFÄoPìŞ±‹[ø‘ş¶ÜôMƒÓØÁ.T
-‰şTH¨æŒØ…º AtbÙ´}ËÅåRúoRŒÿïÖ‘ĞÁVğ· F, ÒÄFÏ™)xÑÇ2!çŒÚ\¡X‘ôf*NğììaaXà/{ë~=l…DÉşÊp"}<l¶â¶ßfIì†’ívœèË¼ºÎE˜ÿ†«'LhÙó œÃâVèÄ¤ê´äYÕW$,wípºJÇ™¤qGTm¸ÙiÚ¯xGk½9µı³ÁZ¦]ÁJSxëÈZDc Ì˜p'z¢BT`Ctî´f°ñ™œÍë¼M˜–¦ÆhÎ±bïQeNO‚„H²YØA¹oWAàºô.¼ÜGöT>W¬”àO¨\.ú‘?o÷»cm*›òàÈ¾²ì3÷Û¯f´^”OE	BÅSã¬×¥öÙ%Môã~¹á˜é9Á5ü~?Siÿ`9WqGæÕ<†íñHE_$Ñ2ˆ2´®&¤í¦	‰Ïl:àÁ$òc9³›ÕõÏN$É;N?´™€…æ•é„$õªá(³¥Uè_’íŞ ÔñçØõ”#|’PR<°™íÙİ¿ÌŒ‰øÂ»SÃ!u³„÷ëlöZ´5®:&+J9Ç3‘œ Š 0/Š'¼[?äJ!(œ>dŞøíD8sãN¦ê­èÕıwuğ‰J_³ñ…‚ÑR‰¶£^?zm~ÚÑà¿¤*RLñuFàˆ“ùô^ŒÅœ0ãó[ìİ“M³5'ôÚÿÛë	9¤ÑcÎ	ukA\Û÷}Ï1Ş½ËşÙ©yÊ´Rv:[8ÜT‘ş7‘S#eI‰…
-µ½?E˜î„…>1ëìr¨ÁXêû_NQ¹¢ebŠü^?8vßÕÔ"Œ?YìéŞ•h-dHö0»ø7Ô]·ê-£Í<"è}©¤4À†5®°J;Pİ?KW›ˆ¢hhú7¥3•X­&­ZRog_ó=»CúGùA&|’<7£›áÆÖ@-Q±ãÅ¬)kÑ±Øu,%à-Â¨şÎ˜!ŸÇ,’2 ˜,c„Bvº¤‚,:Ë¶‰¢Ğ\(eQ>Œ Zq·~`¯Õ;±)³/ìcÃ|?t^¸dñÎ¬wDû/­M-N; RFmÔxzaÊ8æ‚4zrÎô,O7F/­Äu‘õãSO¢N¹`wè“ Rœ—T(Ã`™eÆja/Ò£û	Š,/P· „Ã%´—õ,Ğú¨GW€¶R·$%QĞw| Âò`±6ô>`ï8ƒr€èÀ@¹øínŸä
-%Ù õ„½uWçA´Sğ½>Å[¼y‡…YJ¾^Á -–…Úı
-òşp½½¸¹Ğ:9Ê¿sÊ³ˆBFRØG¡úl5éVdó«’’†JÚài5T•˜ŒÔà‹ğƒ†÷z.t@ÊÚÜòcÚ·ëÿ;ÈPÈ¶¢9¿ÒÕµ’(~Ú©[û;v0ˆ>qşÜNàİÈ>Q4‡ó»wjDÏÅõUÕºjØİ»tÌVq.&;´^İ[,#äB­V~ş&eú$Œ…œˆà(~¡D]—™Ö»Ä2¶‰‹\Ï­ÙØÑ—L/ıZ»x¿ú©Xjz64#_3ûYJ¿¨£VšıKtïi29F©ˆÿ·C³á‹:š}ÀIÎóFşEoZX^)u	š,ÌHÀÈ­İQÓ|ÊŸ—Ó8ÜGYoC1A¿g.7ŒÆé-ü_|„e’–~GîIãî–UÕç,½=€ûº ãõÌ<† _PÆsÌş¢é?—R¼2O¨ß¥]÷ì„àX‘šÇ³#èøiW˜P£ ²Ò— ÍÍîQF¸Ä›@T;‡¿‰Àö>Ü$µyÄ®ùq°ÛÑ˜&Š(|m÷—€¥É 
-2œ9AbçJò¯âİµë'û(0Õ£}L¯YÃÉAØ	Ie#\&ÒKêĞÁô{ÊZ)œÙ[ué"ëç%tšjç#§ŒlãW˜•7}»®´æl=¤Kíˆ¾	gâ¸N›¾Ÿûã“Ã¨o 8Óçœgé=:¬­%û±„õ/÷ç÷LØ¶NBnõQNúÃBWOè3H‡˜ë4ÂwÉÄÒÙûj.û't)å£WtVºÙ]ociê'E
-sèS¸æí¯	S_óbıã[˜~9M½ûälÏû3dVßÑ®ğ5$0¶9_èQ â=hOË‡…`ûôÉ^Ö±Ü„Ãû<œ¶0³4_s½%ºĞPÍ˜3ÈL!m{Ò8:±Ø'ÛµiĞHï2d	¶HK¦N§úÓ‘-²ñU‡»EKó"ÊÛ4ò¶F_Û<¥ŞiY§ËıÓùc3H_sšÿ¯k¥’ÇâmWT±å€FwüÂìİ«aàCZcN;l)Øãøá¾„rÑÄ´Ç¼cÅôÎö´¼/[¤f¾
-Í*®	zõ±}û9Ç$Æ÷+­”Y0‡nÍ¹WÌ¼Í'{‘-İª ÷’äİ`Båæ;rĞ•Ö·Ä2G“•±²wÖÓ±î/a#ÆSM2»üˆÂêùQ*Bèì[
-¥ñ+òï.÷Êh 4ö"s¤"3%ÅË8Û¥Õ ¾f¾Séù@A8I6 IOdÚg’¼g­ÈvŸ.1q¡Óî(Àëh‚ò"WÕ½$™ŒEtwÈVWú´“#Eä¹µø7¶HÎ†Ri2Š¡Êˆì'9/êŒÎ‰ÓgC;ö§;¬î,º§ò…Š48cdA	b)BSrØÒãŞŸ¤d,ä@rª›yõšòJÀE+rãûpò§‰>9€GmÃVíE8o™+O¨Úß\ŸØ"ŸÖoh´åËªÕ‹Ëa9Ïá{TZ"G‡~İ|V}A"7$y&×HÈ>"ÉHqXïÅUûSb•Z«¾é¬­‡¸AÔl¨3m>üivï{Rµù9{A(=£$^O`¼+s>ÓïÏá¾ákŞAÔ¨$[}‘Ìï)gc˜?şéf“Ë4·:êú]²Ï	ºç¢ÂßcOÀ ˆBV»¶ZåeˆÉÌ„/ZŸç–h[ÁÈµèCE4}Èu ¬}Ob$¨şÄövÕ‚0ü±—tæOÉ‡ß¦ÌÌC6ä0YşBb¥	ğ±^pšÑ{ºÁgE`á»†õuKE.Å»ª£¥ÒVê}$²´ÎæY©ûÙ+îsÉ‡£©¦—S¿•øè‚Æ3˜fD›,+–¸øD‡u×²oŠ"ö¤š^¶ap^'mS]ˆZpn¬P?ÅİyĞÑ“ ¥|b`÷ãìúL&bœ^]Ì}dÜÅ5úDÙ«ä£Êê$c³ó+ùífü%¬™"# ‚=Syrív÷.ßRâµ©ŠJK„xšâ2ØÀÏJÑpOwªËÀ‹sAQÂÏ›âˆE•¹à‹åÄµÓ²Atå;ë©ñf€­ …ÑÃq	îªİ¯éq/öŸÍ­Æ¤¥û.µVK6Á]¡Q&ÄÅƒáÓ!Ølı‹= É’
-âuFëTr£zæwô§^hÚº¢3´™“Š~ú­àÕƒ_OÇÙƒLfÿêuS1ÉKO¼ÎƒĞgø„…™ZDÂ!pNXX…œ•oL±¯%Xøºsİ<—;7ŸCaœÃE“0´>q5÷û]»yM°'ÇÏc³õúò_‡µ@ÃC¾,vö,Ã|Åß×$¡§ßPæÆÛªSw[—ÖÇä°
-BÆİÊªeñáeuæ£ _ËŞ|:Ô¾\7*2û„Hœ²^â±¿¹'-¹~~NU:‡U¶*”HæïÎ0uğ‡§IÒFö^[–îàúëªrÿ
-÷TÖ4Îñ¨ñCÇí‡/úDWXxaëÍuÆ[îÕòÓjñ5C‡L?L†²ém!ZûŒ;b›N…mÙ|7],7ã€Û•ˆC…QÒf.Ye^…·	' Uc»ÕG*ÈÉI^.;Z+¾–qœíÊ¨©£pÀ„\I„\·	zCY=“–?›@#b¨ßìà`0=BÄGJÆsÕvx”c-0 ÷ôÜ´­Îãià^ Î<“}‹sU»ÕîÖÊ¡yÈ(â´cóÄmã‚„ç&
-Ÿ_M*<s’Ÿ?ÇÂyaz¶ôìË´,eg²€¶Ü3TØcÏ£u{b(ÇWo˜N‚İZ}…%6Ó½MöÏÀD× îŞ½œQ¿|9YrË)Ä
-¬r±	rD’ª«u´MXéw·ÿH5Õú¸°½ó Ô*‰ş¶¤]R&¸:Xp! z6«nV¬$^`›hx†!ÃogrGöGlÂñ«“xScÃ¸ìTËpÊš¥€ı¡ÛöÊ#Hlä¡õb÷Ü$ßôî6Ìì¸¦Ì3û‚?2ƒWUı.òºıc*Ij“mbæYŞÒq÷‚W D3—ğ´îï×Á„Ú ÙÖ]Ù½NÍt´İ/-ÂQ>¨1ı+…
-jèĞšê—¶	Á§('o)Ô›‰‡ğÓè&Ôòdƒ	jHÃœNJÜY0¿z–++šãJkŸ›=Xçé¤6ÏT
-‡Òê‡÷ E †Gb©, ‘1E?Öº¸.wa{¯_~æ1Êî7¸ìàLªdP2`ùÌ•R&qŞŸ=k0¼j"KÇ.‘‚Zı±4pHd‚Û[;d$µaÑm,ßÖ¾LÚ¤&¼‚û‘'yÒïŠMWÈÊÚı4{ä³@ÆSçTe{è¶ŞrbĞ&s·Æé˜qÆÖ}9	pƒä==‰*O!lb!9”ß iéõE£²Ù¶È&'âµÄÂìe#[Ã¾—y– Då-¹S¨	9L;ëKw#‰ÖLÉ
-(ÿdL2lvíT*„ÎğsëĞğßŞ¬—=]@_™Z
-¿©TÛM¿}ÌÿªÖB’t×7c°_“/Ulí=†Ø‘#CÅ±c_2”É¥G6V¯@©+}ÎÕ>ÕVãe0îdáÖ„‘ùG½ĞxÑ-÷ª©IÎî7¼e	¦!7ÊíwxÙfxèšcü‚Xm¡¿J"¸âü+±R˜uw2©!fš5!Îe½ÆãúEâ$2/ä†~ŠÕŒ¢Ò–…°_”Àê%mVey·†“{ù¾-TìÎ4TÁ]—Œx<×U mödXçOÉB‘"UhİYeŸıcŠ~~„Ì'/|Å»9Şì?o}JàYÄEdø‰¸J$gÁşê\
-¿ .ŞÕ±±ìI•·¼ÕEØòR#š£	Rf–r@`:ÛÓÆøˆNt‹sÁåSI‡$>`Û0MŠòVü}¬:kK€9F×^Ó&LÄË£u;ìO)T©ğíkM®yÅÇÔ¬µánÊX'Á0vîÈ%'qô§ÁÒÔåêò¢ş£Ñ_)´ÜÚú~KÒt“Ö¨ıƒ¾>-n×ıe—™¹ª<!YKˆw#;‚ºzƒï‹øìY0öë‡DÕ†
-åõÊ,øí³ßò79B¦À	Ù˜±À-ûø7J÷WËçûŠXƒ¸äÈÔ‰a±óÏ»ùUüÁÈRd&,·‚¿#´°›Ä!@gÿ)à?eÖ¾–0xR ÅŠ©ƒÊú—V£]›êÆ£©¯9:êRÀXù™Ój€]åÍ4à}|åóXPŸ^¡}O{ü[3¿e±ãò*ƒ3=öãÉtã*$ñh-ÏÍI×ç¨ânÄ Sí¬ı”èjTı7änoPÅK¨÷T¤ôkÚ#j0¹$ÓÙb(õÍ°3¹VÂ„ªf€ï™ğ>1ÕXH5­p;;èX%a N§“ä9
-ëöğ‡tÊ`È^µ`·çŸŞş_IÜÑŸ< ÿ0TÎN]`¿@DjŒ'ÅĞ¸ğÂ…ÀK*©®/’‡(ï;î¸ˆ®÷I3µ- Éã¿UùR>£ÖÂ’Ô¤U,nh1öm_•²’-$ß‘şr´u%•Ú\~jFïç§è€£w4ø."êšL¢ÁWx h#®)ä•|úİ¬kL‰à÷”¦
-Ûàzy …ïçtN—}!qZŸ?`€ª­ÔşğCs->ÉØÚ€Îd"4©†¼ûl©›İeúÏÈ´7æ­Ø‰Yçû^7¸…ŒZk„ -ò	-Q†lyäRÖhï•¦Õíd”È¼RÚ@vòÕœï‰u–D…júJ ÷ÂU˜¸??$Ò{‡èœ«ï,^tãõ‡ò¹ôkÇ)I³+ ï4„<séy¯à}AhL[¾VÀ°³çª(âÓ@2.	?ÅÎŞ²‰@#ÀèÃ_ÂG¶Bñ´Ùˆ |4Ã"o+†G¨˜Çxh×Bè)<”bQÂ{Æp£áÇdü­·)Äb¶ËÀàƒÉµ‹;ƒº¸Ÿ9OÛ}n¢óO¨º:šõßÈµu‘xcè—~«×•Ì‡Îÿëm ×³{fd½ÈÏ÷0(¯/(V%ÏôÍEÚüN½àâ<ÌN¬ş!£ğùÖ¤‰Ïg i8÷Pä‡VˆøÒŒ“~İX±]5AGá°ìâ¼ÚËˆñê!KMº·GD£ òâ–‘bsÅ‘o¸dfx¤Ék" "ş4kØpFƒ¿ãÇ"àÿÉÓ²H‰÷¬2õµzSYšÙ¨i¾^i‰‚J/ä²ßJ˜j‚VZP#ÒğuÆgÆyY?º“ı–ÑE8>&…ÆAÕjÑ‹İ!ÙĞN\Ùı†´M1ğ¬ÃrÕi¥Ğç5Ï|Î(ãÉ¤œ™ÆAæ\O(ñ„ä²WË¿LµR^:øù6Î¬ŠâŠxfÀíXf)åÁÚ±JÉ}Î”F)8«8ğôSÊVÃlöeÿkYKÆ€4¥¨ë–²Ñj*S«8rt„à„*}¢…8fNÿ"02QµKŠ—mı†ÌLÿQçQ×&2•ËÇ+S—Eº£‘Uz~©¼^Å=Fj¹ŞxœìYİV/Üò-Fâ÷oºÆx(¼ÏÍÌ`˜„Şà± Ÿìà›{:‹Ó“â |};ş£ò—‘	ö‹•vô*Ï¬®
-Ã^°kØ!ÏâÒ÷çÛ$ÿÕ7òk¿‹Š{HoK”Vú™(v¢:±Ò.ëëäÖé—ôÀ÷ı¯«8ßV#^ƒ?3‡âñoLKX_±ëS÷
->Sşr?ĞÚ}ÚÃpÃÀ(‰ªœû‚Æ"sİ¬OÜÿ6…§û†ğWáNú[Z†öøMê§‹o(Ÿà¿ì¯Cúâ¬Å–V ]÷Aç&ÇCšT’˜°r4fò*ÒÑøZ+İ:e~œ:[&òÅ,}¡İPÔEl&×øMT 9kDú}¯(|Oì5wÕsü´ˆ³_İ”•ÄyŞ¿åX¤ªi[L¿Š| ûï8(Ó$,lğ‹/e4N•/—ƒàÀàVŸ¾®êTÉpøèHĞxÚ’XkHï YÏ%=ôçÑßÅ®d¨•4ÇöšÍÊÚëê"ò:¸Q¾a¡Iº€Ö‹˜^yÂë€Êà©A»şI§3îd6ì@ÔÚÈ'äÓ¤À· ó£Ü|—ö·s^9•g:§R:ÄK§S)§®ºşZşß«wO~&„ß¾Yd.Df–5®7‹—p¡”¤sEÏ¢ICq‹¶È[•CöP¾J§†WÀ^ÛUOêÆ<\;C8@?”AÑ´¢˜CuGÆ6Ñ‹ñoà˜¼)ñ£vù,ÑÆLyœÄÔ ıl®;Ä-?ŞÛõÉFxeŒµ¾)O¨+ 
-XËtAÎ0*¿—{J³™oQÇOàÍ(MÃÏaË%aMZ™üô…§Ij­'L‡3Xu{äìù#o#(·”N§Ëˆz±Ü›“…Z”ßs{g¦‚–gÆëVå‹0ñöŠæ·5|³TFf¯(Dä÷‰ñë…¹ßdRZëV¤è ¢ZØ‡úÈç(±8VÀN·Û¨×43§‡>ğ  
-êª´²`!B–¡3É÷Ê*†\e&kIï/9“7[îÑ_„<ªG¤\aàMn5Cc:Úf°û÷rÖº;à%Pœ˜Âüs)±ÚQ8{á©ß§¾¾òœ}ççb10^%mY«cB¦”‰Œ>Eğ¡dt£C>–wP)ıÊ'»J¸Eî½,cç>Ï]âÄ±C=@ß+ëre­2„N6HˆÓ’»6“Ã^éA†iu1<·Ş“Ü‰eÁİí÷Ä)>=ˆîã>nZÈÕb,~Ï=µ±‘ÔıÊşğ€¤ü C¼÷ÛÁ>Œ¶ª?nÆËWÇıö@^eD7÷ƒÊØ€©İôä2Ğ:ÿ¦»vN"¶WÒèÿN1˜½¨©¶ò†#ÑG˜´) m–rP*s‰X¤i­:Fÿ< –qj¨9reJàiäÕ£3êÖ>”ZKÛü¡Qœ”1ÜÏBfŞ8‡Ê2HòÄõ³®µ§|¡ÚœÖ—.ÿ˜_£ÚAé¯ 
-]ï±!±´ÑqÁÿc‡i·îynNş&’’>„0¿bû³¶èçîE4l‚mì-°oê˜j‡A4ìy:¼Ş_å(*(A/ß.-ã,tÀkIE}Ag0`‘Òß
-Ëä ¸4èÖÆÁvÖ~>Ë.f<UÈ
-.°2èâ«Îş^¹›.l¹¹²mœg¬¯)óÊu›¸mYx‚á¾íåSdf©ŸÚİ÷êöà‚YæN‰ËC€‡’i §»s\™‰tJ¦d\¶Ou¿,HÛS}Ú*¸ù¦s¾õU,nEC˜©ìr€S¤"–"Ïâ¤L<uVÄ›¬VÌ&\W“äñ[#Èô=¤`>¼$>M„3)ª­iÜ~2åäf!Ékâ ó³¶‡?­Ÿ]ë¹+«clSú·ır°öZB-=—c=ç{K–Úƒ’“9ë`¨Pdû‡ÖÂx@•gñ½!ßÿ´íX¼&Ïæ¦Y1ëx¤U†^a>Ÿhpæ¤Ñ÷¿xÖÖ¨Œã¡£~Dkz¾˜‡ i­€MèGÜú¸JÎƒušÒ]’}¦ÉnüßùÈƒèıñ<xxˆ.,À'¸Q¿œœ:"Ö[ÌycşÜPL4k_XAû5RÙƒµà˜y‡kËô~Ó°Ÿ;I3%à‘¿äëâ:GÍX2€¼İı É™[a& åÔR”tÑììC¼ßM›©qµV?.WHòó"¯ef²á¡¹î)ˆ¶èE(\ÉT|Î(„
-ò¸©Şp× 27§¬dKïO{zJ™\#™u6ç§æiİGwu§>OGØ¾ùæ¨İÒøäØY•JÍ(õ÷ ÙİT‡Å¢Ö[û#ªtU+e%~ÛV
-.Q‡mã3;NwÚëßì²£çĞMõ(¿˜4Ñ]³''8qşº=å»“¸=G ò¹^5@Õ÷ß?”féaŠïröîÛ–=€şÏéE¬’9Â°7I®¬‰*äc/q1×¿x+!TÔK£ÅiÊ0N´(Õ4º=»ã<x°Ì/¼NÂWØ>Ç­G¾Îˆ¼	É„cÒ=åÈôºŠPÉR‚&gşà+[\´~D"¤…VviS’¤‹@ìäÒÈ°ûô\XÃÍ fkfY£{³Üï…Ïz<sC€õDĞm"ÿxİéM
-^P´¼\‹T´‡"ÌM>$~eF ƒbazOÎŠŸÉbµÌ "OÂÇ@°N6^²+_ı:3Ï\CKİ\B÷ÖV¬-å(2Òzî|„‰•üİs¸¸ÅË‰k¦s¬m²c¬Ü·Œ\àÑ.· Çò¯Æ]	ÚéÉSYš u+­H÷ú0$|±å;¯°öíªYÙŠ^dÕõãN–Q°ş6nyÂßMè$õ[Üœjz½lö™°@»¡ºêÇ¬—”â¿2Ä`gˆô‡	@af¶$ ICztm1=Nß„…U_%Î®–ã)Ó­­Û=`¬ÙïÑ`Òî™1sú7xı«wt[$vl÷c'‘m?gğ„,€Š6÷¶òÃs¼À·)Ã€jÖÚ
-'4éU÷3F]µÿL›Šø^éãdˆ«æ»?àÍ8JçÉ,¯r{µa“9çï$¸œØºÁ'0}EÇ}0W=té“Á®cùYvs¾3ÑB§…ìyôRfÓGØÅu`Õ`î’¶Ëtc¨OR†c/_]!³“ãL·¿ó @[ä˜Œ;2ôş‰?E7^Ì«C¾E9Ãç*ß…ìv¬o8 ¬WKïËX	c¿Üà‡”ŠøB­ÃìóAŞ`„Qu›	ñH#3e_’ }rlÿù‹ÿC•I÷ÔğYòpuå!áFÚ×xqcpM†õ‚ò $Yğm[v ]%Fé<I¹X/ÈŸÃÉ¹ÇB½âgà‡·´RWôqwnpâªÔãö™¡°JŞ;)ñV%à{! ’Y½h¹‚~`E5Ğ˜úğÕ‹·ºy[ªH"ê$áŞî>)ª3 ';¿Ã:¹ÏùÓS"øW¨üÜé×O³÷ÜÓ•BGğ./SÃÙvH^w;|ÛtsI[šÎM%œø¤“d…‰×+}e®WÅ­|)bN‹›},êwŒŞšLzğÏhä¯–Ãî465÷§†¥
-”z.=?ê§r
-a“¯“NmÚƒãp©°®Æ±K×]–fMX|E0¾yXÅKéfgêØ%à™§º¡Šû½1¡¥ºË5*”
-6£Ê¿ÚôcK4j#1,nËGY˜RXow×ôú6Ü_¿vg&áÒ}|z¼B>Ó¼))¦–˜A8ËGâ=½ğïYs†ñÈuÎâÍhşl)±¼ÑóZòŞå}“û…DWçµÍP8rÓÎµŞà?¥‡ƒYúJáTœ-,&@ÀÈ1œ÷*şÚÂÃE¸ê~‘Ô´s!£y$M[ê#SÖIwdîô©ğÏb6ûåä(ªc§ne®uqÆ»ÔbÔ–ç¤WºœüêğgY³wûuÊÒlïƒ*Q÷\ò§£Ù§	 _sÄüuS°ZW±*¦¢™-|(d‘.5nş|wG14‡ååªÀ¡«'¢¨2!
-·5@~2¯ş§Lğ¦İAöA¶H{j<’÷RoçbFŠu1|gğ 90òÈúÍÌëa¼²bÿ§½ùs>Í^+û-kÚ>PkqøµğgõmK_fAÈ)tNep»$0áòÏ‘ş‡Új!O9±Yí1Î)n&0!C¨Šº÷‹×Rëq×3°üGÍÊ-ê1Ç±ÑT‘"™}h…ÑŸ ¼ĞÓ`'w~×0‘[±jwÑòóßµ(bk2 ĞšµS+	»ì„{}íHÓàŞ°(¶µÊ£~vŞ3
-sŞfùQà´ å(÷ZLeZBÍ„…]DjbLŒìÄ–ùzó”^gÇĞª_øİXO7—®rŸy¬Ûk²L*–AÚ‹ˆÆ7äŒ76£Ù”áé£›ÙùUm0Â{1­UŒÈ¹g`GÚîŠ‹B=_¯á×³> ñ7Óºyq5ğ{?‰‡¾Œî³oÜºã}Ÿ°C¹¬ì‘øüş
-û_K¦¸™®
-0kŞ‚ˆ+?áÃ|+JûÚ¾IùèÔ˜€Sƒ²0ï¶SÓŸ¢‡	\Êòa¦Mµlk5U.×OïFJ¢mnsÑs.·]g/,¢Œ×NŠ`¿I— jaÎô%•ÓÊ˜^kŸ¬˜Ox63=é}0´¶ˆ°›°(ßCÎ% ¾òsc³Ö@V¢¶âæ%¹ª2á"æT^¸jĞrV<h£ä'’Åß2¥&›¦NšÒI‘ŸaxÁ‚½ÅÅr^ç2–w‚™4»ˆ’©ü˜RÄ$ÂuËVÉá€’y×Ü­$”Œ–5D%¥TU•Q‡¹1Ê4™	­µŸ¤WK;kâ&-­yÆº\†ì3_³aÓî®°§w3«=v7û¸ğÌOó…õ*¼ÈÄOkÉ
-µ'Yœƒ¼‘ÚˆÄ°Å
-ÛëÙ¹¢T¶_…o$íÉLFI”Oò­8¾ô‹È3g&µ9/Ó³b=n—ax`X…„8%t’6Í÷æ”×¦é»/ûši7­¼$Ö³\­t\‡â ÁÏİ¾‹Çº¨sòğ{AOe£‰-	%osˆ‡v·ğHDœ“ÒQ§ƒİ-jÁ!Ò¹RŞŸ*2Úg†P*LoÊÓŸ£ë.F,Á£Ü$H^ªÅÎ´¼ÿâZÚ0™°÷gÂÀ1›Q­³ÔKˆb²Åºƒˆ­XEµ¤‰X>L(èËïzËuFƒFŠ1¼Œ2#²ÜŞe]MóÌİë¤q<ğ>Ô÷Ñx~PR{`/díÈë÷<œ4æ9Í)2ğO/ÂÌ4áâlÄj}AnÁDgõxômø_]Ì˜-Ÿ¨šT(Vz~3¨›|#Ç}‘¢î£U¼&Ì™cÙÇÏsîNV8À°á<–ÎL¤ñ6=î+Éy”%új‹nŞÔIê%sIgÿFÔPIÙ—¯ÉÙ‘ ½np¨Xµ»6ƒœ_Ì°şÿ+ÀS‹<%;Uˆ‚¼ú«SØèÏ¹#?q^]®N/kµ»¥j–¢ùÍKk¢ã­ü¿‘Q{GÅ¦ˆ¬]}‰„ZŒÛUcİ‚ÛœáE£ˆ– 1ToP8½DlÏòC…çŞ²İoã²ú3İ€Úmñ®@¼‰Î¾Àqš[æí¶›Ø—6à0¸ @R®c£é6RÅò}L3ÄÑÅº‘ìRA€¼E>%Àƒ¶„Ì1“Zm®¡ìñİÒ»£á¢ÚîgaN(´û³dìWÚó­/ ?¯¶ÊVkBÓ	<zÓ˜,ûÂ¦ò3#<éŒ18$ë½	WÓ= ıu˜^}¸m­‘ƒ`KBm?Ì’œWu±™}XáwĞ€ S®{{s´‘0ÖLÜ ï¼t¸sI–.ÅÌ×‰‚0–FĞBlz'GGa†Ól}éº=ïšfsóÑU	1×›ò—İçµNtcÚƒÿ³Pw7-9•A
-dá½J|èäÏ‘kŞà3EÇ±fì‘Z‡2Ií
-º§-0€›Cv³b‘Y3ƒè†ı"­*ñ[Ø)_Oï¿‚Ş1{Å,\rÅ~ó®ìàh½|EœâJki)·ä\K¢hi¾PÉ¤b¥gOÚ[yêşÑëµı9hJ±¹'b2¦÷ìz¤"ÔÜà~ßW´•îY¾·ø¼ôù®~İ“„}lZb†xV•kàƒL²¤X5„’í–hªö?Rúñûâj…a'“] ¾`‘å¡H¡?–Ê(£F”Î!·pÙ€ M‘¥7ˆo9)ş¶(ÅÙ+G
-@q„Û^g<™¶*+úµàÀáJ­ÆrSw÷JöQUTU9ñzj²á'¼´.šNpÇŞˆÒ…d>íoÉz4}	Ü­szé;÷u›ˆ•…éÈNÉµÅxÿ%<œ"êÚXê¶Şÿ\$/ˆ˜”C÷„ŒI Ò•Ûjz-ÃK­¸N\7?™«ó’ı:j&pÍ=•yâ<¿~ 3êùäkDË<#Xvò÷mG!ã6«êb‡D×• yÛ†ë£uá‡¢èEE³÷õ5ş|Ä¬aÒàëªá‡½hÿ7Æ$LùXæ'a‰¡1X³ÕP š(÷°4j¤kÖ0ÖÇ!Çá[kkuÌ#-É[Q¢ =Í—6
+    $(wildcard include/config/PAGE_TABLE_ISOLATION)

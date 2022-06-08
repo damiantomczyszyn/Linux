@@ -1,1 +1,2 @@
-cmd_drivers/media/i2c/vp27smpx.o := gc
+drivers/net/can/sja1000/kvaser_pci.o
+

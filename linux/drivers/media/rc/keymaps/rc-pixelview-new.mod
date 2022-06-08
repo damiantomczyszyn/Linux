@@ -1,2 +1,2 @@
-drivers/media/rc/keymaps/rc-pixelview-new.o
-
+er->owner);
+				i2c_unregister_device(client_

@@ -1,1 +1,3 @@
-cmd_drivers/media/i2c/tw2804.o := gcc
+ity *cap)
+{
+	struct cx23885_dev *dev 

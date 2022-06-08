@@ -1,6 +1,16 @@
-ldcard include/config/SHMEM) \
-    $(wildcard include/config/ARCH_HAS_PTE_SPECIAL) \
-    $(wildcard include/config/ARCH_HAS_PTE_DEVMAP) \
-    $(wildcard include/config/DEBUG_VM_RB) \
-    $(wildcard include/config/PAGE_POISONING) \
-    $(wildcard include/config/INIT_ON_ALLOC_DEFAULT_ON) 
+
+	}
+
+	for (cnt = 0; cnt < msg->len; cnt++) {
+
+		ctrl = bus->i2c_period | (1 << 12) | (1 << 2) | 1;
+
+		if (cnt < msg->len - 1)
+			ctrl |= I2C_NOSTOP | I2C_EXTEND;
+
+		cx_write(bus->reg_addr, msg->addr << 25);
+		cx_write(bus->reg_ctrl, ctrl);
+
+		if (!i2c_wait_done(i2c_adap))
+			goto eio;
+	

@@ -1,3 +1,1 @@
-ude/asm/pgtable_32_types.h \
-  arch/x86/include/asm/pgtable-3level_types.h \
-  include/asm-generic/pgtable-nop4d
+cmd_drivers/net/dsa/dsa_loop.mod := { echo  drivers/net/dsa/dsa_loop.o;  echo; } > drivers/net/dsa/dsa_loop.mod

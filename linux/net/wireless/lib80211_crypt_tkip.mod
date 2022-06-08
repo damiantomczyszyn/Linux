@@ -1,1 +1,2 @@
-cmd_kernel/bpf/cgroup.o := gcc -Wp,-
+uted by a highprio stopper thread
+ *

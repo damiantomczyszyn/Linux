@@ -1,2 +1,1 @@
-d include/config/GENERIC_IOMAP) \
-    $(wildcard
+/* SPDX-License-Identifier: GPL-2.0-or-later */

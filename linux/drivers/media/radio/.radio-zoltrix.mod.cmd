@@ -1,1 +1,5 @@
-cmd_drivers/media/radio/radio-zoltrix.mod := { echo  drivers/media/radio/radio-zoltrix.o;  echo; } > drivers/media/radio/radio-zoltrix.mod
+truct cx23885_audio_dev *chip = snd_pcm_substream_chip(substream);
+	struct snd_pcm_runtime *runtime = substream->runtime;
+	int err;
+
+	if (!

@@ -1,6 +1,6 @@
-tic void zap_class(struct pending_free *pf, struct lock_class *class)
-{
-	struct lock_list *entry;
-	int i;
+_do_set_cpus_allowed(p, cpumask_of(rq->cpu), SCA_MIGRATE_DISABLE);
+}
 
-	WARN_ON_ONC
+void migrate_disable(void)
+{
+	struct task_struct 

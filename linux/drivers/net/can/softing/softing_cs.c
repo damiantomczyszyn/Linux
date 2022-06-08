@@ -1,220 +1,335 @@
-ldcard include/config/X86_P6_NOP) \
-    $(wildcard include/config/MATOM) \
-    $(wildcard include/config/PARAVIRT_XXL) \
-  arch/x86/include/asm/disabled-features.h \
-    $(wildcard include/config/X86_SMAP) \
-    $(wildcard include/config/X86_UMIP) \
-    $(wildcard include/config/X86_INTEL_MEMORY_PROTECTION_KEYS) \
-    $(wildcard include/config/X86_5LEVEL) \
-    $(wildcard include/config/PAGE_TABLE_ISOLATION) \
-    $(wildcard include/config/INTEL_IOMMU_SVM) \
-    $(wildcard include/config/X86_SGX) \
-  include/asm-generic/bitops/const_hweight.h \
-  include/asm-generic/bitops/instrumented-atomic.h \
-  include/linux/instrumented.h \
-  include/asm-generic/bitops/instrumented-non-atomic.h \
-    $(wildcard include/config/KCSAN_ASSUME_PLAIN_WRITES_ATOMIC) \
-  include/asm-generic/bitops/instrumented-lock.h \
-  include/asm-generic/bitops/le.h \
-  arch/x86/include/uapi/asm/byteorder.h \
-  include/linux/byteorder/little_endian.h \
-  include/uapi/linux/byteorder/little_endian.h \
-  include/linux/swab.h \
-  include/uapi/linux/swab.h \
-  arch/x86/include/uapi/asm/swab.h \
-  include/linux/byteorder/generic.h \
-  include/asm-generic/bitops/ext2-atomic-setbit.h \
-  include/linux/kobject.h \
-    $(wildcard include/config/UEVENT_HELPER) \
-    $(wildcard include/config/DEBUG_KOBJECT_RELEASE) \
-  include/linux/list.h \
-    $(wildcard include/config/DEBUG_LIST) \
-  include/linux/container_of.h \
-  include/linux/err.h \
-  include/linux/poison.h \
-    $(wildcard include/config/ILLEGAL_POINTER_VALUE) \
-  include/linux/sysfs.h \
-    $(wildcard include/config/DEBUG_LOCK_ALLOC) \
-    $(wildcard include/config/SYSFS) \
-  include/linux/kernfs.h \
-    $(wildcard include/config/KERNFS) \
-  include/linux/mutex.h \
-    $(wildcard include/config/PREEMPT_RT) \
-    $(wildcard include/config/MUTEX_SPIN_ON_OWNER) \
-    $(wildcard include/config/DEBUG_MUTEXES) \
-  arch/x86/include/asm/current.h \
-  arch/x86/include/asm/percpu.h \
-    $(wildcard include/config/X86_64_SMP) \
-  include/linux/kernel.h \
-    $(wildcard include/config/PREEMPT_VOLUNTARY_BUILD) \
-    $(wildcard include/config/PREEMPT_DYNAMIC) \
-    $(wildcard include/config/HAVE_PREEMPT_DYNAMIC_CALL) \
-    $(wildcard include/config/HAVE_PREEMPT_DYNAMIC_KEY) \
-    $(wildcard include/config/PREEMPT_) \
-    $(wildcard include/config/DEBUG_ATOMIC_SLEEP) \
-    $(wildcard include/config/MMU) \
-    $(wildcard include/config/PROVE_LOCKING) \
-    $(wildcard include/config/TRACING) \
-    $(wildcard include/config/FTRACE_MCOUNT_RECORD) \
-  include/linux/stdarg.h \
-  include/linux/align.h \
-  include/linux/limits.h \
-  include/uapi/linux/limits.h \
-  include/vdso/limits.h \
-  include/linux/linkage.h \
-    $(wildcard include/config/ARCH_USE_SYM_ANNOTATIONS) \
-  include/linux/export.h \
-    $(wildcard include/config/MODVERSIONS) \
-    $(wildcard include/config/MODULE_REL_CRCS) \
-    $(wildcard include/config/HAVE_ARCH_PREL32_RELOCATIONS) \
-    $(wildcard include/config/MODULES) \
-    $(wildcard include/config/TRIM_UNUSED_KSYMS) \
-  arch/x86/include/asm/linkage.h \
-    $(wildcard include/config/X86_ALIGNMENT_16) \
-    $(wildcard include/config/SLS) \
-  arch/x86/include/asm/ibt.h \
-    $(wildcard include/config/X86_KERNEL_IBT) \
-  include/linux/kstrtox.h \
-  include/linux/log2.h \
-    $(wildcard include/config/ARCH_HAS_ILOG2_U32) \
-    $(wildcard include/config/ARCH_HAS_ILOG2_U64) \
-  include/linux/math.h \
-  arch/x86/include/asm/div64.h \
-  include/linux/panic.h \
-    $(wildcard include/config/PANIC_TIMEOUT) \
-  include/linux/printk.h \
-    $(wildcard include/config/MESSAGE_LOGLEVEL_DEFAULT) \
-    $(wildcard include/config/CONSOLE_LOGLEVEL_DEFAULT) \
-    $(wildcard include/config/CONSOLE_LOGLEVEL_QUIET) \
-    $(wildcard include/config/EARLY_PRINTK) \
-    $(wildcard include/config/PRINTK) \
-    $(wildcard include/config/PRINTK_INDEX) \
-    $(wildcard include/config/DYNAMIC_DEBUG_CORE) \
-  include/linux/init.h \
-    $(wildcard include/config/STRICT_KERNEL_RWX) \
-    $(wildcard include/config/STRICT_MODULE_RWX) \
-    $(wildcard include/config/LTO_CLANG) \
-  include/linux/kern_levels.h \
-  include/linux/cache.h \
-    $(wildcard include/config/ARCH_HAS_CACHE_LINE_SIZE) \
-  arch/x86/include/asm/cache.h \
-    $(wildcard include/config/X86_L1_CACHE_SHIFT) \
-    $(wildcard include/config/X86_INTERNODE_CACHE_SHIFT) \
-    $(wildcard include/config/X86_VSMP) \
-  include/linux/ratelimit_types.h \
-  include/uapi/linux/param.h \
-  arch/x86/include/generated/uapi/asm/param.h \
-  include/asm-generic/param.h \
-    $(wildcard include/config/HZ) \
-  include/uapi/asm-generic/param.h \
-  include/linux/spinlock_types_raw.h \
-    $(wildcard include/config/DEBUG_SPINLOCK) \
-  arch/x86/include/asm/spinlock_types.h \
-  include/asm-generic/qspinlock_types.h \
-    $(wildcard include/config/NR_CPUS) \
-  include/asm-generic/qrwlock_types.h \
-  include/linux/lockdep_types.h \
-    $(wildcard include/config/PROVE_RAW_LOCK_NESTING) \
-    $(wildcard include/config/LOCKDEP) \
-    $(wildcard include/config/LOCK_STAT) \
-  include/linux/once_lite.h \
-  include/linux/static_call_types.h \
-    $(wildcard include/config/HAVE_STATIC_CALL) \
-    $(wildcard include/config/HAVE_STATIC_CALL_INLINE) \
-  include/linux/instruction_pointer.h \
-  include/asm-generic/percpu.h \
-    $(wildcard include/config/DEBUG_PREEMPT) \
-    $(wildcard include/config/HAVE_SETUP_PER_CPU_AREA) \
-  include/linux/threads.h \
-    $(wildcard include/config/BASE_SMALL) \
-  include/linux/percpu-defs.h \
-    $(wildcard include/config/DEBUG_FORCE_WEAK_PER_CPU) \
-    $(wildcard include/config/AMD_MEM_ENCRYPT) \
-  include/linux/spinlock_types.h \
-  include/linux/rwlock_types.h \
-  include/linux/lockdep.h \
-    $(wildcard include/config/DEBUG_LOCKING_API_SELFTESTS) \
-    $(wildcard include/config/PREEMPT_COUNT) \
-  include/linux/smp.h \
-    $(wildcard include/config/UP_LATE_INIT) \
-  include/linux/cpumask.h \
-    $(wildcard include/config/CPUMASK_OFFSTACK) \
-    $(wildcard include/config/HOTPLUG_CPU) \
-    $(wildcard include/config/DEBUG_PER_CPU_MAPS) \
-  include/linux/bitmap.h \
-  include/linux/find.h \
-  include/linux/string.h \
-    $(wildcard include/config/BINARY_PRINTF) \
-    $(wildcard include/config/FORTIFY_SOURCE) \
-  include/uapi/linux/string.h \
-  arch/x86/include/asm/string.h \
-  arch/x86/include/asm/string_32.h \
-  include/linux/fortify-string.h \
-  include/linux/atomic.h \
-  arch/x86/include/asm/atomic.h \
-  arch/x86/include/asm/cmpxchg.h \
-  arch/x86/include/asm/cmpxchg_32.h \
-  arch/x86/include/asm/atomic64_32.h \
-  include/linux/atomic/atomic-arch-fallback.h \
-    $(wildcard include/config/GENERIC_ATOMIC64) \
-  include/linux/atomic/atomic-long.h \
-  include/linux/atomic/atomic-instrumented.h \
-  include/linux/bug.h \
-    $(wildcard include/config/GENERIC_BUG) \
-    $(wildcard include/config/BUG_ON_DATA_CORRUPTION) \
-  arch/x86/include/asm/bug.h \
-    $(wildcard include/config/DEBUG_BUGVERBOSE) \
-  include/linux/instrumentation.h \
-    $(wildcard include/config/DEBUG_ENTRY) \
-  include/linux/objtool.h \
-    $(wildcard include/config/FRAME_POINTER) \
-  include/asm-generic/bug.h \
-    $(wildcard include/config/BUG) \
-    $(wildcard include/config/GENERIC_BUG_RELATIVE_POINTERS) \
-  include/linux/smp_types.h \
-  include/linux/llist.h \
-    $(wildcard include/config/ARCH_HAVE_NMI_SAFE_CMPXCHG) \
-  include/linux/preempt.h \
-    $(wildcard include/config/TRACE_PREEMPT_TOGGLE) \
-    $(wildcard include/config/PREEMPTION) \
-    $(wildcard include/config/PREEMPT_NOTIFIERS) \
-  arch/x86/include/asm/preempt.h \
-  include/linux/thread_info.h \
-    $(wildcard include/config/THREAD_INFO_IN_TASK) \
-    $(wildcard include/config/GENERIC_ENTRY) \
-    $(wildcard include/config/HAVE_ARCH_WITHIN_STACK_FRAMES) \
-    $(wildcard include/config/HARDENED_USERCOPY) \
-  include/linux/restart_block.h \
-  include/linux/time64.h \
-  include/linux/math64.h \
-    $(wildcard include/config/ARCH_SUPPORTS_INT128) \
-  include/vdso/math64.h \
-  include/vdso/time64.h \
-  include/uapi/linux/time.h \
-  include/uapi/linux/time_types.h \
-  arch/x86/include/asm/thread_info.h \
-    $(wildcard include/config/VM86) \
-    $(wildcard include/config/X86_IOPL_IOPERM) \
-    $(wildcard include/config/COMPAT) \
-    $(wildcard include/config/IA32_EMULATION) \
-  arch/x86/include/asm/page.h \
-  arch/x86/include/asm/page_types.h \
-    $(wildcard include/config/PHYSICAL_START) \
-    $(wildcard include/config/PHYSICAL_ALIGN) \
-    $(wildcard include/config/DYNAMIC_PHYSICAL_MASK) \
-  include/linux/mem_encrypt.h \
-    $(wildcard include/config/ARCH_HAS_MEM_ENCRYPT) \
-  arch/x86/include/asm/mem_encrypt.h \
-  include/linux/cc_platform.h \
-    $(wildcard include/config/ARCH_HAS_CC_PLATFORM) \
-  arch/x86/include/uapi/asm/bootparam.h \
-  include/linux/screen_info.h \
-  include/uapi/linux/screen_info.h \
-  include/linux/apm_bios.h \
-  include/uapi/linux/apm_bios.h \
-  include/uapi/linux/ioctl.h \
-  arch/x86/include/generated/uapi/asm/ioctl.h \
-  include/asm-generic/ioctl.h \
-  include/uapi/asm-generic/ioctl.h \
-  include/linux/edd.h \
-  include/uapi
+// SPDX-License-Identifier: GPL-2.0-only
+/*
+ * Copyright (C) 2008-2010
+ *
+ * - Kurt Van Dijck, EIA Electronics
+ */
+
+#include <linux/module.h>
+#include <linux/kernel.h>
+#include <linux/slab.h>
+
+#include <pcmcia/cistpl.h>
+#include <pcmcia/ds.h>
+
+#include "softing_platform.h"
+
+static int softingcs_index;
+static DEFINE_SPINLOCK(softingcs_index_lock);
+
+static int softingcs_reset(struct platform_device *pdev, int v);
+static int softingcs_enable_irq(struct platform_device *pdev, int v);
+
+/*
+ * platform_data descriptions
+ */
+#define MHZ (1000*1000)
+static const struct softing_platform_data softingcs_platform_data[] = {
+{
+	.name = "CANcard",
+	.manf = 0x0168, .prod = 0x001,
+	.generation = 1,
+	.nbus = 2,
+	.freq = 16 * MHZ, .max_brp = 32, .max_sjw = 4,
+	.dpram_size = 0x0800,
+	.boot = {0x0000, 0x000000, fw_dir "bcard.bin",},
+	.load = {0x0120, 0x00f600, fw_dir "ldcard.bin",},
+	.app = {0x0010, 0x0d0000, fw_dir "cancard.bin",},
+	.reset = softingcs_reset,
+	.enable_irq = softingcs_enable_irq,
+}, {
+	.name = "CANcard-NEC",
+	.manf = 0x0168, .prod = 0x002,
+	.generation = 1,
+	.nbus = 2,
+	.freq = 16 * MHZ, .max_brp = 32, .max_sjw = 4,
+	.dpram_size = 0x0800,
+	.boot = {0x0000, 0x000000, fw_dir "bcard.bin",},
+	.load = {0x0120, 0x00f600, fw_dir "ldcard.bin",},
+	.app = {0x0010, 0x0d0000, fw_dir "cancard.bin",},
+	.reset = softingcs_reset,
+	.enable_irq = softingcs_enable_irq,
+}, {
+	.name = "CANcard-SJA",
+	.manf = 0x0168, .prod = 0x004,
+	.generation = 1,
+	.nbus = 2,
+	.freq = 20 * MHZ, .max_brp = 32, .max_sjw = 4,
+	.dpram_size = 0x0800,
+	.boot = {0x0000, 0x000000, fw_dir "bcard.bin",},
+	.load = {0x0120, 0x00f600, fw_dir "ldcard.bin",},
+	.app = {0x0010, 0x0d0000, fw_dir "cansja.bin",},
+	.reset = softingcs_reset,
+	.enable_irq = softingcs_enable_irq,
+}, {
+	.name = "CANcard-2",
+	.manf = 0x0168, .prod = 0x005,
+	.generation = 2,
+	.nbus = 2,
+	.freq = 24 * MHZ, .max_brp = 64, .max_sjw = 4,
+	.dpram_size = 0x1000,
+	.boot = {0x0000, 0x000000, fw_dir "bcard2.bin",},
+	.load = {0x0120, 0x00f600, fw_dir "ldcard2.bin",},
+	.app = {0x0010, 0x0d0000, fw_dir "cancrd2.bin",},
+	.reset = softingcs_reset,
+	.enable_irq = NULL,
+}, {
+	.name = "Vector-CANcard",
+	.manf = 0x0168, .prod = 0x081,
+	.generation = 1,
+	.nbus = 2,
+	.freq = 16 * MHZ, .max_brp = 64, .max_sjw = 4,
+	.dpram_size = 0x0800,
+	.boot = {0x0000, 0x000000, fw_dir "bcard.bin",},
+	.load = {0x0120, 0x00f600, fw_dir "ldcard.bin",},
+	.app = {0x0010, 0x0d0000, fw_dir "cancard.bin",},
+	.reset = softingcs_reset,
+	.enable_irq = softingcs_enable_irq,
+}, {
+	.name = "Vector-CANcard-SJA",
+	.manf = 0x0168, .prod = 0x084,
+	.generation = 1,
+	.nbus = 2,
+	.freq = 20 * MHZ, .max_brp = 32, .max_sjw = 4,
+	.dpram_size = 0x0800,
+	.boot = {0x0000, 0x000000, fw_dir "bcard.bin",},
+	.load = {0x0120, 0x00f600, fw_dir "ldcard.bin",},
+	.app = {0x0010, 0x0d0000, fw_dir "cansja.bin",},
+	.reset = softingcs_reset,
+	.enable_irq = softingcs_enable_irq,
+}, {
+	.name = "Vector-CANcard-2",
+	.manf = 0x0168, .prod = 0x085,
+	.generation = 2,
+	.nbus = 2,
+	.freq = 24 * MHZ, .max_brp = 64, .max_sjw = 4,
+	.dpram_size = 0x1000,
+	.boot = {0x0000, 0x000000, fw_dir "bcard2.bin",},
+	.load = {0x0120, 0x00f600, fw_dir "ldcard2.bin",},
+	.app = {0x0010, 0x0d0000, fw_dir "cancrd2.bin",},
+	.reset = softingcs_reset,
+	.enable_irq = NULL,
+}, {
+	.name = "EDICcard-NEC",
+	.manf = 0x0168, .prod = 0x102,
+	.generation = 1,
+	.nbus = 2,
+	.freq = 16 * MHZ, .max_brp = 64, .max_sjw = 4,
+	.dpram_size = 0x0800,
+	.boot = {0x0000, 0x000000, fw_dir "bcard.bin",},
+	.load = {0x0120, 0x00f600, fw_dir "ldcard.bin",},
+	.app = {0x0010, 0x0d0000, fw_dir "cancard.bin",},
+	.reset = softingcs_reset,
+	.enable_irq = softingcs_enable_irq,
+}, {
+	.name = "EDICcard-2",
+	.manf = 0x0168, .prod = 0x105,
+	.generation = 2,
+	.nbus = 2,
+	.freq = 24 * MHZ, .max_brp = 64, .max_sjw = 4,
+	.dpram_size = 0x1000,
+	.boot = {0x0000, 0x000000, fw_dir "bcard2.bin",},
+	.load = {0x0120, 0x00f600, fw_dir "ldcard2.bin",},
+	.app = {0x0010, 0x0d0000, fw_dir "cancrd2.bin",},
+	.reset = softingcs_reset,
+	.enable_irq = NULL,
+}, {
+	0, 0,
+},
+};
+
+MODULE_FIRMWARE(fw_dir "bcard.bin");
+MODULE_FIRMWARE(fw_dir "ldcard.bin");
+MODULE_FIRMWARE(fw_dir "cancard.bin");
+MODULE_FIRMWARE(fw_dir "cansja.bin");
+
+MODULE_FIRMWARE(fw_dir "bcard2.bin");
+MODULE_FIRMWARE(fw_dir "ldcard2.bin");
+MODULE_FIRMWARE(fw_dir "cancrd2.bin");
+
+static const struct softing_platform_data
+*softingcs_find_platform_data(unsigned int manf, unsigned int prod)
+{
+	const struct softing_platform_data *lp;
+
+	for (lp = softingcs_platform_data; lp->manf; ++lp) {
+		if ((lp->manf == manf) && (lp->prod == prod))
+			return lp;
+	}
+	return NULL;
+}
+
+/*
+ * platformdata callbacks
+ */
+static int softingcs_reset(struct platform_device *pdev, int v)
+{
+	struct pcmcia_device *pcmcia = to_pcmcia_dev(pdev->dev.parent);
+
+	dev_dbg(&pdev->dev, "pcmcia config [2] %02x\n", v ? 0 : 0x20);
+	return pcmcia_write_config_byte(pcmcia, 2, v ? 0 : 0x20);
+}
+
+static int softingcs_enable_irq(struct platform_device *pdev, int v)
+{
+	struct pcmcia_device *pcmcia = to_pcmcia_dev(pdev->dev.parent);
+
+	dev_dbg(&pdev->dev, "pcmcia config [0] %02x\n", v ? 0x60 : 0);
+	return pcmcia_write_config_byte(pcmcia, 0, v ? 0x60 : 0);
+}
+
+/*
+ * pcmcia check
+ */
+static int softingcs_probe_config(struct pcmcia_device *pcmcia, void *priv_data)
+{
+	struct softing_platform_data *pdat = priv_data;
+	struct resource *pres;
+	int memspeed = 0;
+
+	WARN_ON(!pdat);
+	pres = pcmcia->resource[PCMCIA_IOMEM_0];
+	if (resource_size(pres) < 0x1000)
+		return -ERANGE;
+
+	pres->flags |= WIN_MEMORY_TYPE_CM | WIN_ENABLE;
+	if (pdat->generation < 2) {
+		pres->flags |= WIN_USE_WAIT | WIN_DATA_WIDTH_8;
+		memspeed = 3;
+	} else {
+		pres->flags |= WIN_DATA_WIDTH_16;
+	}
+	return pcmcia_request_window(pcmcia, pres, memspeed);
+}
+
+static void softingcs_remove(struct pcmcia_device *pcmcia)
+{
+	struct platform_device *pdev = pcmcia->priv;
+
+	/* free bits */
+	platform_device_unregister(pdev);
+	/* release pcmcia stuff */
+	pcmcia_disable_device(pcmcia);
+}
+
+/*
+ * platform_device wrapper
+ * pdev->resource has 2 entries: io & irq
+ */
+static void softingcs_pdev_release(struct device *dev)
+{
+	struct platform_device *pdev = to_platform_device(dev);
+	kfree(pdev);
+}
+
+static int softingcs_probe(struct pcmcia_device *pcmcia)
+{
+	int ret;
+	struct platform_device *pdev;
+	const struct softing_platform_data *pdat;
+	struct resource *pres;
+	struct dev {
+		struct platform_device pdev;
+		struct resource res[2];
+	} *dev;
+
+	/* find matching platform_data */
+	pdat = softingcs_find_platform_data(pcmcia->manf_id, pcmcia->card_id);
+	if (!pdat)
+		return -ENOTTY;
+
+	/* setup pcmcia device */
+	pcmcia->config_flags |= CONF_ENABLE_IRQ | CONF_AUTO_SET_IOMEM |
+		CONF_AUTO_SET_VPP | CONF_AUTO_CHECK_VCC;
+	ret = pcmcia_loop_config(pcmcia, softingcs_probe_config, (void *)pdat);
+	if (ret)
+		goto pcmcia_failed;
+
+	ret = pcmcia_enable_device(pcmcia);
+	if (ret < 0)
+		goto pcmcia_failed;
+
+	pres = pcmcia->resource[PCMCIA_IOMEM_0];
+	if (!pres) {
+		ret = -EBADF;
+		goto pcmcia_bad;
+	}
+
+	/* create softing platform device */
+	dev = kzalloc(sizeof(*dev), GFP_KERNEL);
+	if (!dev) {
+		ret = -ENOMEM;
+		goto mem_failed;
+	}
+	dev->pdev.resource = dev->res;
+	dev->pdev.num_resources = ARRAY_SIZE(dev->res);
+	dev->pdev.dev.release = softingcs_pdev_release;
+
+	pdev = &dev->pdev;
+	pdev->dev.platform_data = (void *)pdat;
+	pdev->dev.parent = &pcmcia->dev;
+	pcmcia->priv = pdev;
+
+	/* platform device resources */
+	pdev->resource[0].flags = IORESOURCE_MEM;
+	pdev->resource[0].start = pres->start;
+	pdev->resource[0].end = pres->end;
+
+	pdev->resource[1].flags = IORESOURCE_IRQ;
+	pdev->resource[1].start = pcmcia->irq;
+	pdev->resource[1].end = pdev->resource[1].start;
+
+	/* platform device setup */
+	spin_lock(&softingcs_index_lock);
+	pdev->id = softingcs_index++;
+	spin_unlock(&softingcs_index_lock);
+	pdev->name = "softing";
+	dev_set_name(&pdev->dev, "softingcs.%i", pdev->id);
+	ret = platform_device_register(pdev);
+	if (ret < 0)
+		goto platform_failed;
+
+	dev_info(&pcmcia->dev, "created %s\n", dev_name(&pdev->dev));
+	return 0;
+
+platform_failed:
+	platform_device_put(pdev);
+mem_failed:
+pcmcia_bad:
+pcmcia_failed:
+	pcmcia_disable_device(pcmcia);
+	pcmcia->priv = NULL;
+	return ret;
+}
+
+static const struct pcmcia_device_id softingcs_ids[] = {
+	/* softing */
+	PCMCIA_DEVICE_MANF_CARD(0x0168, 0x0001),
+	PCMCIA_DEVICE_MANF_CARD(0x0168, 0x0002),
+	PCMCIA_DEVICE_MANF_CARD(0x0168, 0x0004),
+	PCMCIA_DEVICE_MANF_CARD(0x0168, 0x0005),
+	/* vector, manufacturer? */
+	PCMCIA_DEVICE_MANF_CARD(0x0168, 0x0081),
+	PCMCIA_DEVICE_MANF_CARD(0x0168, 0x0084),
+	PCMCIA_DEVICE_MANF_CARD(0x0168, 0x0085),
+	/* EDIC */
+	PCMCIA_DEVICE_MANF_CARD(0x0168, 0x0102),
+	PCMCIA_DEVICE_MANF_CARD(0x0168, 0x0105),
+	PCMCIA_DEVICE_NULL,
+};
+
+MODULE_DEVICE_TABLE(pcmcia, softingcs_ids);
+
+static struct pcmcia_driver softingcs_driver = {
+	.owner		= THIS_MODULE,
+	.name		= "softingcs",
+	.id_table	= softingcs_ids,
+	.probe		= softingcs_probe,
+	.remove		= softingcs_remove,
+};
+
+module_pcmcia_driver(softingcs_driver);
+
+MODULE_DESCRIPTION("softing CANcard driver"
+		", links PCMCIA card to softing driver");
+MODULE_LICENSE("GPL v2");

@@ -1,4 +1,1 @@
-ig/SPI_SLAVE) \
-  include/linux/scatterlist.h \
-    $(wildcard include/config/NEED_SG_DMA_LENGTH) \
-    $(wildcard inc
+cmd_drivers/net/dsa/qca/ar9331.mod := { echo  drivers/net/dsa/qca/ar9331.o;  echo; } > drivers/net/dsa/qca/ar9331.mod

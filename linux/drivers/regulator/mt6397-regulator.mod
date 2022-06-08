@@ -1,2 +1,4 @@
-e/linux/rwlock.h \
-    $(wildcard incl
+DING,
+};
+enum cx23885_copyright {
+	CX2

@@ -1,7 +1,1 @@
-fig/GENERIC_ATOMIC64) \
-  include/linux/atomic/atomic-long.h \
-  include/linux/atomic/atomic-instrumented.h \
-  include/linux/bug.h \
-    $(wildcard include/config/BUG_ON_DATA_CORRUPTION) \
-  arch/x86/include/asm/bug.h \
-    $(wildcard include/
+cmd_drivers/net/can/peak_canfd/peak_pciefd.ko := ld -r -m elf_i386 --build-id=sha1  -T scripts/module.lds -o drivers/net/can/peak_canfd/peak_pciefd.ko drivers/net/can/peak_canfd/peak_pciefd.o drivers/net/can/peak_canfd/peak_pciefd.mod.o;  true

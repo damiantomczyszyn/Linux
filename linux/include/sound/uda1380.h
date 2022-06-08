@@ -1,8 +1,15 @@
-dcard include/config/PARAVIRT_XXL) \
-  arch/x86/include/asm/disabled-features.h \
-    $(wildcard include/config/X86_SMAP) \
-    $(wildcard include/config/X86_UMIP) \
-    $(wildcard include/config/X86_INTEL_MEMORY_PROTECTION_KEYS) \
-    $(wildcard include/config/X86_5LEVEL) \
-    $(wildcard include/config/PAGE_TABLE_ISOLATION) \
-    $
+cx23885_irq_add_enable(dev, PCI_MSK_GPIO0);
+		break;
+	}
+
+	/*
+	 * The CX2388[58] IR controller can start firing interrupts when
+	 * enabled, so these have to take place after the cx23885_irq() handler
+	 * is hooked up by the call to request_irq() above.
+	 */
+	cx23885_ir_pci_int_enable(dev);
+	cx23885_input_init(dev);
+
+	return 0;
+
+fail_

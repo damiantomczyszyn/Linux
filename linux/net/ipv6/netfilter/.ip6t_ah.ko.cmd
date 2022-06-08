@@ -1,8 +1,5 @@
-debugfs_create_file(lockevent_names[LOCKEVENT_reset_cnts], 0200,
-				 d_counts, (void *)(long)LOCKEVENT_reset_cnts,
-				 &fops_lockevent))
-		goto fail_undo;
-
-	return 0;
-fail_undo:
-	debugfs_remove_
+/* SPDX-License-Identifier: GPL-2.0 */
+/*
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Fre

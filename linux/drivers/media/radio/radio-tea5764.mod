@@ -1,2 +1,1 @@
-drivers/media/radio/radio-tea5764.o
-
+egval = MC417_SPD_CTL(MC417_SPD_CTL_F

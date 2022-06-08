@@ -1,2 +1,3 @@
-onfig/TRACE_BRANCH_PROFILING) \
-    $(wildcard include/config/PROFILE_ALL_BRANCHE
+i/cx18/cx18-av-core.h \
+  include/media/v4l2-ctrls.h \
+  include/media/media-requ

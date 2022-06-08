@@ -1,389 +1,387 @@
-NTRIES);
-	seq_printf(m, " indirect dependencies:         %11lu\n",
-			sum_forward_deps);
-
-	/*
-	 * Total number of dependencies:
-	 *
-	 * All irq-safe locks may nest inside irq-unsafe locks,
-	 * plus all the other known dependencies:
-	 */
-	seq_printf(m, " all direct dependencies:       %11lu\n",
-			nr_irq_unsafe * nr_irq_safe +
-			nr_hardirq_unsafe * nr_hardirq_safe +
-			nr_list_entries);
-
-#ifdef CONFIG_PROVE_LOCKING
-	seq_printf(m, " dependency chains:             %11lu [max: %lu]\n",
-			lock_chain_count(), MAX_LOCKDEP_CHAINS);
-	seq_printf(m, " dependency chain hlocks used:  %11lu [max: %lu]\n",
-			MAX_LOCKDEP_CHAIN_HLOCKS -
-			(nr_free_chain_hlocks + nr_lost_chain_hlocks),
-			MAX_LOCKDEP_CHAIN_HLOCKS);
-	seq_printf(m, " dependency chain hlocks lost:  %11u\n",
-			nr_lost_chain_hlocks);
-#endif
-
-#ifdef CONFIG_TRACE_IRQFLAGS
-	seq_printf(m, " in-hardirq chains:             %11u\n",
-			nr_hardirq_chains);
-	seq_printf(m, " in-softirq chains:             %11u\n",
-			nr_softirq_chains);
-#endif
-	seq_printf(m, " in-process chains:             %11u\n",
-			nr_process_chains);
-	seq_printf(m, " stack-trace entries:           %11lu [max: %lu]\n",
-			nr_stack_trace_entries, MAX_STACK_TRACE_ENTRIES);
-#if defined(CONFIG_TRACE_IRQFLAGS) && defined(CONFIG_PROVE_LOCKING)
-	seq_printf(m, " number of stack traces:        %11llu\n",
-		   lockdep_stack_trace_count());
-	seq_printf(m, " number of stack hash chains:   %11llu\n",
-		   lockdep_stack_hash_count());
-#endif
-	seq_printf(m, " combined max dependencies:     %11u\n",
-			(nr_hardirq_chains + 1) *
-			(nr_softirq_chains + 1) *
-			(nr_process_chains + 1)
-	);
-	seq_printf(m, " hardirq-safe locks:            %11lu\n",
-			nr_hardirq_safe);
-	seq_printf(m, " hardirq-unsafe locks:          %11lu\n",
-			nr_hardirq_unsafe);
-	seq_printf(m, " softirq-safe locks:            %11lu\n",
-			nr_softirq_safe);
-	seq_printf(m, " softirq-unsafe locks:          %11lu\n",
-			nr_softirq_unsafe);
-	seq_printf(m, " irq-safe locks:                %11lu\n",
-			nr_irq_safe);
-	seq_printf(m, " irq-unsafe locks:              %11lu\n",
-			nr_irq_unsafe);
-
-	seq_printf(m, " hardirq-read-safe locks:       %11lu\n",
-			nr_hardirq_read_safe);
-	seq_printf(m, " hardirq-read-unsafe locks:     %11lu\n",
-			nr_hardirq_read_unsafe);
-	seq_printf(m, " softirq-read-safe locks:       %11lu\n",
-			nr_softirq_read_safe);
-	seq_printf(m, " softirq-read-unsafe locks:     %11lu\n",
-			nr_softirq_read_unsafe);
-	seq_printf(m, " irq-read-safe locks:           %11lu\n",
-			nr_irq_read_safe);
-	seq_printf(m, " irq-read-unsafe locks:         %11lu\n",
-			nr_irq_read_unsafe);
-
-	seq_printf(m, " uncategorized locks:           %11lu\n",
-			nr_uncategorized);
-	seq_printf(m, " unused locks:                  %11lu\n",
-			nr_unused);
-	seq_printf(m, " max locking depth:             %11u\n",
-			max_lockdep_depth);
-#ifdef CONFIG_PROVE_LOCKING
-	seq_printf(m, " max bfs queue depth:           %11u\n",
-			max_bfs_queue_depth);
-#endif
-	seq_printf(m, " max lock class index:          %11lu\n",
-			max_lock_class_idx);
-	lockdep_stats_debug_show(m);
-	seq_printf(m, " debug_locks:                   %11u\n",
-			debug_locks);
-
-	/*
-	 * Zapped classes and lockdep data buffers reuse statistics.
-	 */
-	seq_puts(m, "\n");
-	seq_printf(m, " zapped classes:                %11lu\n",
-			nr_zapped_classes);
-#ifdef CONFIG_PROVE_LOCKING
-	seq_printf(m, " zapped lock chains:            %11lu\n",
-			nr_zapped_lock_chains);
-	seq_printf(m, " large chain blocks:            %11u\n",
-			nr_large_chain_blocks);
-#endif
-	return 0;
+RRAY_SIZE(lock_classes); i++) {
+		class = &lock_classes[i];
+		if (in_list(e, &class->locks_after) ||
+		    in_list(e, &class->locks_before))
+			return true;
+	}
+	return false;
 }
 
-#ifdef CONFIG_LOCK_STAT
-
-struct lock_stat_data {
-	struct lock_class *class;
-	struct lock_class_stats stats;
-};
-
-struct lock_stat_seq {
-	struct lock_stat_data *iter_end;
-	struct lock_stat_data stats[MAX_LOCKDEP_KEYS];
-};
-
-/*
- * sort on absolute number of contentions
- */
-static int lock_stat_cmp(const void *l, const void *r)
+static bool class_lock_list_valid(struct lock_class *c, struct list_head *h)
 {
-	const struct lock_stat_data *dl = l, *dr = r;
-	unsigned long nl, nr;
+	struct lock_list *e;
 
-	nl = dl->stats.read_waittime.nr + dl->stats.write_waittime.nr;
-	nr = dr->stats.read_waittime.nr + dr->stats.write_waittime.nr;
-
-	return nr - nl;
+	list_for_each_entry(e, h, entry) {
+		if (e->links_to != c) {
+			printk(KERN_INFO "class %s: mismatch for lock entry %ld; class %s <> %s",
+			       c->name ? : "(?)",
+			       (unsigned long)(e - list_entries),
+			       e->links_to && e->links_to->name ?
+			       e->links_to->name : "(?)",
+			       e->class && e->class->name ? e->class->name :
+			       "(?)");
+			return false;
+		}
+	}
+	return true;
 }
 
-static void seq_line(struct seq_file *m, char c, int offset, int length)
+#ifdef CONFIG_PROVE_LOCKING
+static u16 chain_hlocks[MAX_LOCKDEP_CHAIN_HLOCKS];
+#endif
+
+static bool check_lock_chain_key(struct lock_chain *chain)
 {
+#ifdef CONFIG_PROVE_LOCKING
+	u64 chain_key = INITIAL_CHAIN_KEY;
 	int i;
 
-	for (i = 0; i < offset; i++)
-		seq_puts(m, " ");
-	for (i = 0; i < length; i++)
-		seq_printf(m, "%c", c);
-	seq_puts(m, "\n");
+	for (i = chain->base; i < chain->base + chain->depth; i++)
+		chain_key = iterate_chain_key(chain_key, chain_hlocks[i]);
+	/*
+	 * The 'unsigned long long' casts avoid that a compiler warning
+	 * is reported when building tools/lib/lockdep.
+	 */
+	if (chain->chain_key != chain_key) {
+		printk(KERN_INFO "chain %lld: key %#llx <> %#llx\n",
+		       (unsigned long long)(chain - lock_chains),
+		       (unsigned long long)chain->chain_key,
+		       (unsigned long long)chain_key);
+		return false;
+	}
+#endif
+	return true;
 }
 
-static void snprint_time(char *buf, size_t bufsiz, s64 nr)
+static bool in_any_zapped_class_list(struct lock_class *class)
 {
-	s64 div;
-	s32 rem;
+	struct pending_free *pf;
+	int i;
 
-	nr += 5; /* for display rounding */
-	div = div_s64_rem(nr, 1000, &rem);
-	snprintf(buf, bufsiz, "%lld.%02d", (long long)div, (int)rem/10);
+	for (i = 0, pf = delayed_free.pf; i < ARRAY_SIZE(delayed_free.pf); i++, pf++) {
+		if (in_list(&class->lock_entry, &pf->zapped))
+			return true;
+	}
+
+	return false;
 }
 
-static void seq_time(struct seq_file *m, s64 time)
+static bool __check_data_structures(void)
 {
-	char num[15];
-
-	snprint_time(num, sizeof(num), time);
-	seq_printf(m, " %14s", num);
-}
-
-static void seq_lock_time(struct seq_file *m, struct lock_time *lt)
-{
-	seq_printf(m, "%14lu", lt->nr);
-	seq_time(m, lt->min);
-	seq_time(m, lt->max);
-	seq_time(m, lt->total);
-	seq_time(m, lt->nr ? div64_u64(lt->total, lt->nr) : 0);
-}
-
-static void seq_stats(struct seq_file *m, struct lock_stat_data *data)
-{
-	const struct lockdep_subclass_key *ckey;
-	struct lock_class_stats *stats;
 	struct lock_class *class;
-	const char *cname;
-	int i, namelen;
-	char name[39];
+	struct lock_chain *chain;
+	struct hlist_head *head;
+	struct lock_list *e;
+	int i;
 
-	class = data->class;
-	stats = &data->stats;
+	/* Check whether all classes occur in a lock list. */
+	for (i = 0; i < ARRAY_SIZE(lock_classes); i++) {
+		class = &lock_classes[i];
+		if (!in_list(&class->lock_entry, &all_lock_classes) &&
+		    !in_list(&class->lock_entry, &free_lock_classes) &&
+		    !in_any_zapped_class_list(class)) {
+			printk(KERN_INFO "class %px/%s is not in any class list\n",
+			       class, class->name ? : "(?)");
+			return false;
+		}
+	}
 
-	namelen = 38;
-	if (class->name_version > 1)
-		namelen -= 2; /* XXX truncates versions > 9 */
-	if (class->subclass)
-		namelen -= 2;
+	/* Check whether all classes have valid lock lists. */
+	for (i = 0; i < ARRAY_SIZE(lock_classes); i++) {
+		class = &lock_classes[i];
+		if (!class_lock_list_valid(class, &class->locks_before))
+			return false;
+		if (!class_lock_list_valid(class, &class->locks_after))
+			return false;
+	}
 
-	rcu_read_lock_sched();
-	cname = rcu_dereference_sched(class->name);
-	ckey  = rcu_dereference_sched(class->key);
+	/* Check the chain_key of all lock chains. */
+	for (i = 0; i < ARRAY_SIZE(chainhash_table); i++) {
+		head = chainhash_table + i;
+		hlist_for_each_entry_rcu(chain, head, entry) {
+			if (!check_lock_chain_key(chain))
+				return false;
+		}
+	}
 
-	if (!cname && !ckey) {
-		rcu_read_unlock_sched();
+	/*
+	 * Check whether all list entries that are in use occur in a class
+	 * lock list.
+	 */
+	for_each_set_bit(i, list_entries_in_use, ARRAY_SIZE(list_entries)) {
+		e = list_entries + i;
+		if (!in_any_class_list(&e->entry)) {
+			printk(KERN_INFO "list entry %d is not in any class list; class %s <> %s\n",
+			       (unsigned int)(e - list_entries),
+			       e->class->name ? : "(?)",
+			       e->links_to->name ? : "(?)");
+			return false;
+		}
+	}
+
+	/*
+	 * Check whether all list entries that are not in use do not occur in
+	 * a class lock list.
+	 */
+	for_each_clear_bit(i, list_entries_in_use, ARRAY_SIZE(list_entries)) {
+		e = list_entries + i;
+		if (in_any_class_list(&e->entry)) {
+			printk(KERN_INFO "list entry %d occurs in a class list; class %s <> %s\n",
+			       (unsigned int)(e - list_entries),
+			       e->class && e->class->name ? e->class->name :
+			       "(?)",
+			       e->links_to && e->links_to->name ?
+			       e->links_to->name : "(?)");
+			return false;
+		}
+	}
+
+	return true;
+}
+
+int check_consistency = 0;
+module_param(check_consistency, int, 0644);
+
+static void check_data_structures(void)
+{
+	static bool once = false;
+
+	if (check_consistency && !once) {
+		if (!__check_data_structures()) {
+			once = true;
+			WARN_ON(once);
+		}
+	}
+}
+
+#else /* CONFIG_DEBUG_LOCKDEP */
+
+static inline void check_data_structures(void) { }
+
+#endif /* CONFIG_DEBUG_LOCKDEP */
+
+static void init_chain_block_buckets(void);
+
+/*
+ * Initialize the lock_classes[] array elements, the free_lock_classes list
+ * and also the delayed_free structure.
+ */
+static void init_data_structures_once(void)
+{
+	static bool __read_mostly ds_initialized, rcu_head_initialized;
+	int i;
+
+	if (likely(rcu_head_initialized))
 		return;
 
-	} else if (!cname) {
-		char str[KSYM_NAME_LEN];
-		const char *key_name;
-
-		key_name = __get_key_name(ckey, str);
-		snprintf(name, namelen, "%s", key_name);
-	} else {
-		snprintf(name, namelen, "%s", cname);
-	}
-	rcu_read_unlock_sched();
-
-	namelen = strlen(name);
-	if (class->name_version > 1) {
-		snprintf(name+namelen, 3, "#%d", class->name_version);
-		namelen += 2;
-	}
-	if (class->subclass) {
-		snprintf(name+namelen, 3, "/%d", class->subclass);
-		namelen += 2;
+	if (system_state >= SYSTEM_SCHEDULING) {
+		init_rcu_head(&delayed_free.rcu_head);
+		rcu_head_initialized = true;
 	}
 
-	if (stats->write_holdtime.nr) {
-		if (stats->read_holdtime.nr)
-			seq_printf(m, "%38s-W:", name);
-		else
-			seq_printf(m, "%40s:", name);
-
-		seq_printf(m, "%14lu ", stats->bounces[bounce_contended_write]);
-		seq_lock_time(m, &stats->write_waittime);
-		seq_printf(m, " %14lu ", stats->bounces[bounce_acquired_write]);
-		seq_lock_time(m, &stats->write_holdtime);
-		seq_puts(m, "\n");
-	}
-
-	if (stats->read_holdtime.nr) {
-		seq_printf(m, "%38s-R:", name);
-		seq_printf(m, "%14lu ", stats->bounces[bounce_contended_read]);
-		seq_lock_time(m, &stats->read_waittime);
-		seq_printf(m, " %14lu ", stats->bounces[bounce_acquired_read]);
-		seq_lock_time(m, &stats->read_holdtime);
-		seq_puts(m, "\n");
-	}
-
-	if (stats->read_waittime.nr + stats->write_waittime.nr == 0)
+	if (ds_initialized)
 		return;
 
-	if (stats->read_holdtime.nr)
-		namelen += 2;
+	ds_initialized = true;
 
-	for (i = 0; i < LOCKSTAT_POINTS; i++) {
-		char ip[32];
+	INIT_LIST_HEAD(&delayed_free.pf[0].zapped);
+	INIT_LIST_HEAD(&delayed_free.pf[1].zapped);
 
-		if (class->contention_point[i] == 0)
+	for (i = 0; i < ARRAY_SIZE(lock_classes); i++) {
+		list_add_tail(&lock_classes[i].lock_entry, &free_lock_classes);
+		INIT_LIST_HEAD(&lock_classes[i].locks_after);
+		INIT_LIST_HEAD(&lock_classes[i].locks_before);
+	}
+	init_chain_block_buckets();
+}
+
+static inline struct hlist_head *keyhashentry(const struct lock_class_key *key)
+{
+	unsigned long hash = hash_long((uintptr_t)key, KEYHASH_BITS);
+
+	return lock_keys_hash + hash;
+}
+
+/* Register a dynamically allocated key. */
+void lockdep_register_key(struct lock_class_key *key)
+{
+	struct hlist_head *hash_head;
+	struct lock_class_key *k;
+	unsigned long flags;
+
+	if (WARN_ON_ONCE(static_obj(key)))
+		return;
+	hash_head = keyhashentry(key);
+
+	raw_local_irq_save(flags);
+	if (!graph_lock())
+		goto restore_irqs;
+	hlist_for_each_entry_rcu(k, hash_head, hash_entry) {
+		if (WARN_ON_ONCE(k == key))
+			goto out_unlock;
+	}
+	hlist_add_head_rcu(&key->hash_entry, hash_head);
+out_unlock:
+	graph_unlock();
+restore_irqs:
+	raw_local_irq_restore(flags);
+}
+EXPORT_SYMBOL_GPL(lockdep_register_key);
+
+/* Check whether a key has been registered as a dynamic key. */
+static bool is_dynamic_key(const struct lock_class_key *key)
+{
+	struct hlist_head *hash_head;
+	struct lock_class_key *k;
+	bool found = false;
+
+	if (WARN_ON_ONCE(static_obj(key)))
+		return false;
+
+	/*
+	 * If lock debugging is disabled lock_keys_hash[] may contain
+	 * pointers to memory that has already been freed. Avoid triggering
+	 * a use-after-free in that case by returning early.
+	 */
+	if (!debug_locks)
+		return true;
+
+	hash_head = keyhashentry(key);
+
+	rcu_read_lock();
+	hlist_for_each_entry_rcu(k, hash_head, hash_entry) {
+		if (k == key) {
+			found = true;
 			break;
-
-		if (!i)
-			seq_line(m, '-', 40-namelen, namelen);
-
-		snprintf(ip, sizeof(ip), "[<%p>]",
-				(void *)class->contention_point[i]);
-		seq_printf(m, "%40s %14lu %29s %pS\n",
-			   name, stats->contention_point[i],
-			   ip, (void *)class->contention_point[i]);
+		}
 	}
-	for (i = 0; i < LOCKSTAT_POINTS; i++) {
-		char ip[32];
+	rcu_read_unlock();
 
-		if (class->contending_point[i] == 0)
-			break;
-
-		if (!i)
-			seq_line(m, '-', 40-namelen, namelen);
-
-		snprintf(ip, sizeof(ip), "[<%p>]",
-				(void *)class->contending_point[i]);
-		seq_printf(m, "%40s %14lu %29s %pS\n",
-			   name, stats->contending_point[i],
-			   ip, (void *)class->contending_point[i]);
-	}
-	if (i) {
-		seq_puts(m, "\n");
-		seq_line(m, '.', 0, 40 + 1 + 12 * (14 + 1));
-		seq_puts(m, "\n");
-	}
+	return found;
 }
 
-static void seq_header(struct seq_file *m)
+/*
+ * Register a lock's class in the hash-table, if the class is not present
+ * yet. Otherwise we look it up. We cache the result in the lock object
+ * itself, so actual lookup of the hash should be once per lock object.
+ */
+static struct lock_class *
+register_lock_class(struct lockdep_map *lock, unsigned int subclass, int force)
 {
-	seq_puts(m, "lock_stat version 0.4\n");
-
-	if (unlikely(!debug_locks))
-		seq_printf(m, "*WARNING* lock debugging disabled!! - possibly due to a lockdep warning\n");
-
-	seq_line(m, '-', 0, 40 + 1 + 12 * (14 + 1));
-	seq_printf(m, "%40s %14s %14s %14s %14s %14s %14s %14s %14s %14s %14s "
-			"%14s %14s\n",
-			"class name",
-			"con-bounces",
-			"contentions",
-			"waittime-min",
-			"waittime-max",
-			"waittime-total",
-			"waittime-avg",
-			"acq-bounces",
-			"acquisitions",
-			"holdtime-min",
-			"holdtime-max",
-			"holdtime-total",
-			"holdtime-avg");
-	seq_line(m, '-', 0, 40 + 1 + 12 * (14 + 1));
-	seq_printf(m, "\n");
-}
-
-static void *ls_start(struct seq_file *m, loff_t *pos)
-{
-	struct lock_stat_seq *data = m->private;
-	struct lock_stat_data *iter;
-
-	if (*pos == 0)
-		return SEQ_START_TOKEN;
-
-	iter = data->stats + (*pos - 1);
-	if (iter >= data->iter_end)
-		iter = NULL;
-
-	return iter;
-}
-
-static void *ls_next(struct seq_file *m, void *v, loff_t *pos)
-{
-	(*pos)++;
-	return ls_start(m, pos);
-}
-
-static void ls_stop(struct seq_file *m, void *v)
-{
-}
-
-static int ls_show(struct seq_file *m, void *v)
-{
-	if (v == SEQ_START_TOKEN)
-		seq_header(m);
-	else
-		seq_stats(m, v);
-
-	return 0;
-}
-
-static const struct seq_operations lockstat_ops = {
-	.start	= ls_start,
-	.next	= ls_next,
-	.stop	= ls_stop,
-	.show	= ls_show,
-};
-
-static int lock_stat_open(struct inode *inode, struct file *file)
-{
-	int res;
+	struct lockdep_subclass_key *key;
+	struct hlist_head *hash_head;
 	struct lock_class *class;
-	struct lock_stat_seq *data = vmalloc(sizeof(struct lock_stat_seq));
+	int idx;
 
-	if (!data)
-		return -ENOMEM;
+	DEBUG_LOCKS_WARN_ON(!irqs_disabled());
 
-	res = seq_open(file, &lockstat_ops);
-	if (!res) {
-		struct lock_stat_data *iter = data->stats;
-		struct seq_file *m = file->private_data;
-		unsigned long idx;
+	class = look_up_lock_class(lock, subclass);
+	if (likely(class))
+		goto out_set_class_cache;
 
-		iterate_lock_classes(idx, class) {
-			if (!test_bit(idx, lock_classes_in_use))
-				continue;
-			iter->class = class;
-			iter->stats = lock_stats(class);
-			iter++;
+	if (!lock->key) {
+		if (!assign_lock_key(lock))
+			return NULL;
+	} else if (!static_obj(lock->key) && !is_dynamic_key(lock->key)) {
+		return NULL;
+	}
+
+	key = lock->key->subkeys + subclass;
+	hash_head = classhashentry(key);
+
+	if (!graph_lock()) {
+		return NULL;
+	}
+	/*
+	 * We have to do the hash-walk again, to avoid races
+	 * with another CPU:
+	 */
+	hlist_for_each_entry_rcu(class, hash_head, hash_entry) {
+		if (class->key == key)
+			goto out_unlock_set;
+	}
+
+	init_data_structures_once();
+
+	/* Allocate a new lock class and add it to the hash. */
+	class = list_first_entry_or_null(&free_lock_classes, typeof(*class),
+					 lock_entry);
+	if (!class) {
+		if (!debug_locks_off_graph_unlock()) {
+			return NULL;
 		}
 
-		data->iter_end = iter;
+		print_lockdep_off("BUG: MAX_LOCKDEP_KEYS too low!");
+		dump_stack();
+		return NULL;
+	}
+	nr_lock_classes++;
+	__set_bit(class - lock_classes, lock_classes_in_use);
+	debug_atomic_inc(nr_unused_locks);
+	class->key = key;
+	class->name = lock->name;
+	class->subclass = subclass;
+	WARN_ON_ONCE(!list_empty(&class->locks_before));
+	WARN_ON_ONCE(!list_empty(&class->locks_after));
+	class->name_version = count_matching_names(class);
+	class->wait_type_inner = lock->wait_type_inner;
+	class->wait_type_outer = lock->wait_type_outer;
+	class->lock_type = lock->lock_type;
+	/*
+	 * We use RCU's safe list-add method to make
+	 * parallel walking of the hash-list safe:
+	 */
+	hlist_add_head_rcu(&class->hash_entry, hash_head);
+	/*
+	 * Remove the class from the free list and add it to the global list
+	 * of classes.
+	 */
+	list_move_tail(&class->lock_entry, &all_lock_classes);
+	idx = class - lock_classes;
+	if (idx > max_lock_class_idx)
+		max_lock_class_idx = idx;
 
-		sort(data->stats, data->iter_end - data->stats,
-				sizeof(struct lock_stat_data),
-				lock_stat_cmp, NULL);
+	if (verbose(class)) {
+		graph_unlock();
 
-		m->private = data;
-	} else
-		vfree(data);
+		printk("\nnew class %px: %s", class->key, class->name);
+		if (class->name_version > 1)
+			printk(KERN_CONT "#%d", class->name_version);
+		printk(KERN_CONT "\n");
+		dump_stack();
 
-	return res;
+		if (!graph_lock()) {
+			return NULL;
+		}
+	}
+out_unlock_set:
+	graph_unlock();
+
+out_set_class_cache:
+	if (!subclass || force)
+		lock->class_cache[0] = class;
+	else if (subclass < NR_LOCKDEP_CACHING_CLASSES)
+		lock->class_cache[subclass] = class;
+
+	/*
+	 * Hash collision, did we smoke some? We found a class with a matching
+	 * hash but the subclass -- which is hashed in -- didn't match.
+	 */
+	if (DEBUG_LOCKS_WARN_ON(class->subclass != subclass))
+		return NULL;
+
+	return class;
 }
 
-static ssize_t lock_stat_write(struct file *file, const char __user *buf,
-			       size_t count, loff_t *ppos)
+#ifdef CONFIG_PROVE_LOCKING
+/*
+ * Allocate a lockdep entry. (assumes the graph_lock held, returns
+ * with NULL on failure)
+ */
+static struct lock_list *alloc_list_entry(void)
 {
-	struct
+	int idx = find_first_zero_bit(list_entries_in_use,
+				      ARRAY_SIZE(list_entries));
+
+	if (idx >= ARRAY_SIZE(list_entries)) {
+		if (!debug_locks_off_graph_unlock())

@@ -1,30 +1,31 @@
-();
-}
-
-/*
- * Print out an error if an invalid bit is set:
- */
-static inline int
-valid_state(struct task_struct *curr, struct held_lock *this,
-	    enum lock_usage_bit new_bit, enum lock_usage_bit bad_bit)
+er *uattr, struct sched_attr *attr)
 {
-	if (unlikely(hlock_class(this)->usage_mask & (1 << bad_bit))) {
-		graph_unlock();
-		print_usage_bug(curr, this, bad_bit, new_bit);
-		return 0;
+	u32 size;
+	int ret;
+
+	/* Zero the full structure, so that a short copy will be nice: */
+	memset(attr, 0, sizeof(*attr));
+
+	ret = get_user(size, &uattr->size);
+	if (ret)
+		return ret;
+
+	/* ABI compatibility quirk: */
+	if (!size)
+		size = SCHED_ATTR_SIZE_VER0;
+	if (size < SCHED_ATTR_SIZE_VER0 || size > PAGE_SIZE)
+		goto err_size;
+
+	ret = copy_struct_from_user(attr, sizeof(*attr), uattr, size);
+	if (ret) {
+		if (ret == -E2BIG)
+			goto err_size;
+		return ret;
 	}
-	return 1;
-}
 
+	if ((attr->sched_flags & SCHED_FLAG_UTIL_CLAMP) &&
+	    size < SCHED_ATTR_SIZE_VER1)
+		return -EINVAL;
 
-/*
- * print irq inversion bug:
- */
-static void
-print_irq_inversion_bug(struct task_struct *curr,
-			struct lock_list *root, struct lock_list *other,
-			struct held_lock *this, int forwards,
-			const char *irqclass)
-{
-	struct lock_list *entry = other;
-	struct lock_list *middle = 
+	/*
+	 * XXX: Do we want to be lenient li

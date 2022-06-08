@@ -1,2 +1,2 @@
-drivers/media/rc/keymaps/rc-winfast-usbii-deluxe.o
-
+"Television",
+		[CX23885_VMUX_CABLE]      = "Cable T

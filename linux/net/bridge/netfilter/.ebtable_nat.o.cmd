@@ -1,1040 +1,1117 @@
-e/linux/rwlock.h \
-    $(wildcard include/config/PREEMPT) \
-  include/linux/spinlock_api_smp.h \
-    $(wildcard include/config/INLINE_SPIN_LOCK) \
-    $(wildcard include/config/INLINE_SPIN_LOCK_BH) \
-    $(wildcard include/config/INLINE_SPIN_LOCK_IRQ) \
-    $(wildcard include/config/INLINE_SPIN_LOCK_IRQSAVE) \
-    $(wildcard include/config/INLINE_SPIN_TRYLOCK) \
-    $(wildcard include/config/INLINE_SPIN_TRYLOCK_BH) \
-    $(wildcard include/config/UNINLINE_SPIN_UNLOCK) \
-    $(wildcard include/config/INLINE_SPIN_UNLOCK_BH) \
-    $(wildcard include/config/INLINE_SPIN_UNLOCK_IRQ) \
-    $(wildcard include/config/INLINE_SPIN_UNLOCK_IRQRESTORE) \
-    $(wildcard include/config/GENERIC_LOCKBREAK) \
-  include/linux/rwlock_api_smp.h \
-    $(wildcard include/config/INLINE_READ_LOCK) \
-    $(wildcard include/config/INLINE_WRITE_LOCK) \
-    $(wildcard include/config/INLINE_READ_LOCK_BH) \
-    $(wildcard include/config/INLINE_WRITE_LOCK_BH) \
-    $(wildcard include/config/INLINE_READ_LOCK_IRQ) \
-    $(wildcard include/config/INLINE_WRITE_LOCK_IRQ) \
-    $(wildcard include/config/INLINE_READ_LOCK_IRQSAVE) \
-    $(wildcard include/config/INLINE_WRITE_LOCK_IRQSAVE) \
-    $(wildcard include/config/INLINE_READ_TRYLOCK) \
-    $(wildcard include/config/INLINE_WRITE_TRYLOCK) \
-    $(wildcard include/config/INLINE_READ_UNLOCK) \
-    $(wildcard include/config/INLINE_WRITE_UNLOCK) \
-    $(wildcard include/config/INLINE_READ_UNLOCK_BH) \
-    $(wildcard include/config/INLINE_WRITE_UNLOCK_BH) \
-    $(wildcard include/config/INLINE_READ_UNLOCK_IRQ) \
-    $(wildcard include/config/INLINE_WRITE_UNLOCK_IRQ) \
-    $(wildcard include/config/INLINE_READ_UNLOCK_IRQRESTORE) \
-    $(wildcard include/config/INLINE_WRITE_UNLOCK_IRQRESTORE) \
-  include/linux/refcount.h \
-  include/linux/rbtree.h \
-  include/linux/rbtree_types.h \
-  include/linux/rcupdate.h \
-    $(wildcard include/config/PREEMPT_RCU) \
-    $(wildcard include/config/TINY_RCU) \
-    $(wildcard include/config/RCU_STRICT_GRACE_PERIOD) \
-    $(wildcard include/config/TASKS_RCU_GENERIC) \
-    $(wildcard include/config/RCU_STALL_COMMON) \
-    $(wildcard include/config/NO_HZ_FULL) \
-    $(wildcard include/config/RCU_NOCB_CPU) \
-    $(wildcard include/config/TASKS_RCU) \
-    $(wildcard include/config/TASKS_TRACE_RCU) \
-    $(wildcard include/config/TASKS_RUDE_RCU) \
-    $(wildcard include/config/TREE_RCU) \
-    $(wildcard include/config/DEBUG_OBJECTS_RCU_HEAD) \
-    $(wildcard include/config/PROVE_RCU) \
-    $(wildcard include/config/ARCH_WEAK_RELEASE_ACQUIRE) \
-  include/linux/rcutree.h \
-  include/linux/rwsem.h \
-    $(wildcard include/config/RWSEM_SPIN_ON_OWNER) \
-    $(wildcard include/config/DEBUG_RWSEMS) \
-  include/linux/osq_lock.h \
-  include/linux/completion.h \
-  include/linux/swait.h \
-  include/linux/wait.h \
-  include/uapi/linux/wait.h \
-  include/linux/uprobes.h \
-    $(wildcard include/config/UPROBES) \
-  arch/x86/include/asm/uprobes.h \
-  include/linux/notifier.h \
-  include/linux/mutex.h \
-    $(wildcard include/config/MUTEX_SPIN_ON_OWNER) \
-    $(wildcard include/config/DEBUG_MUTEXES) \
-  include/linux/debug_locks.h \
-  include/linux/srcu.h \
-    $(wildcard include/config/TINY_SRCU) \
-    $(wildcard include/config/SRCU) \
-  include/linux/workqueue.h \
-    $(wildcard include/config/DEBUG_OBJECTS_WORK) \
-    $(wildcard include/config/FREEZER) \
-    $(wildcard include/config/WQ_WATCHDOG) \
-  include/linux/timer.h \
-    $(wildcard include/config/DEBUG_OBJECTS_TIMERS) \
-    $(wildcard include/config/NO_HZ_COMMON) \
-  include/linux/ktime.h \
-  include/linux/jiffies.h \
-  include/vdso/jiffies.h \
-  include/generated/timeconst.h \
-  include/vdso/ktime.h \
-  include/linux/timekeeping.h \
-    $(wildcard include/config/GENERIC_CMOS_UPDATE) \
-  include/linux/clocksource_ids.h \
-  include/linux/debugobjects.h \
-    $(wildcard include/config/DEBUG_OBJECTS) \
-    $(wildcard include/config/DEBUG_OBJECTS_FREE) \
-  include/linux/rcu_segcblist.h \
-  include/linux/srcutree.h \
-  include/linux/rcu_node_tree.h \
-    $(wildcard include/config/RCU_FANOUT) \
-    $(wildcard include/config/RCU_FANOUT_LEAF) \
-  include/linux/page-flags-layout.h \
-    $(wildcard include/config/KASAN_HW_TAGS) \
-  include/linux/numa.h \
-    $(wildcard include/config/NODES_SHIFT) \
-    $(wildcard include/config/NUMA_KEEP_MEMINFO) \
-    $(wildcard include/config/HAVE_ARCH_NODE_DEV_GROUP) \
-  arch/x86/include/asm/sparsemem.h \
-  include/generated/bounds.h \
-  include/linux/seqlock.h \
-  include/linux/ww_mutex.h \
-    $(wildcard include/config/DEBUG_RT_MUTEXES) \
-    $(wildcard include/config/DEBUG_WW_MUTEX_SLOWPATH) \
-  include/linux/rtmutex.h \
-  arch/x86/include/asm/mmu.h \
-    $(wildcard include/config/MODIFY_LDT_SYSCALL) \
-  include/linux/kmod.h \
-  include/linux/umh.h \
-  include/linux/gfp.h \
-    $(wildcard include/config/HIGHMEM) \
-    $(wildcard include/config/ZONE_DMA) \
-    $(wildcard include/config/ZONE_DMA32) \
-    $(wildcard include/config/ZONE_DEVICE) \
-    $(wildcard include/config/PM_SLEEP) \
-    $(wildcard include/config/CONTIG_ALLOC) \
-    $(wildcard include/config/CMA) \
-  include/linux/mmdebug.h \
-    $(wildcard include/config/DEBUG_VM) \
-    $(wildcard include/config/DEBUG_VM_PGFLAGS) \
-  include/linux/mmzone.h \
-    $(wildcard include/config/FORCE_MAX_ZONEORDER) \
-    $(wildcard include/config/MEMORY_ISOLATION) \
-    $(wildcard include/config/ZSMALLOC) \
-    $(wildcard include/config/MEMORY_HOTPLUG) \
-    $(wildcard include/config/COMPACTION) \
-    $(wildcard include/config/PAGE_EXTENSION) \
-    $(wildcard include/config/DEFERRED_STRUCT_PAGE_INIT) \
-    $(wildcard include/config/HAVE_MEMORYLESS_NODES) \
-    $(wildcard include/config/SPARSEMEM_EXTREME) \
-    $(wildcard include/config/HAVE_ARCH_PFN_VALID) \
-  include/linux/nodemask.h \
-  include/linux/pageblock-flags.h \
-    $(wildcard include/config/HUGETLB_PAGE_SIZE_VARIABLE) \
-  include/linux/page-flags.h \
-    $(wildcard include/config/ARCH_USES_PG_UNCACHED) \
-    $(wildcard include/config/MEMORY_FAILURE) \
-    $(wildcard include/config/PAGE_IDLE_FLAG) \
-    $(wildcard include/config/HUGETLB_PAGE_FREE_VMEMMAP) \
-    $(wildcard include/config/HUGETLB_PAGE_FREE_VMEMMAP_DEFAULT_ON) \
-    $(wildcard include/config/KSM) \
-  include/linux/local_lock.h \
-  include/linux/local_lock_internal.h \
-  include/linux/memory_hotplug.h \
-    $(wildcard include/config/HAVE_ARCH_NODEDATA_EXTENSION) \
-    $(wildcard include/config/ARCH_HAS_ADD_PAGES) \
-    $(wildcard include/config/MEMORY_HOTREMOVE) \
-  arch/x86/include/asm/mmzone.h \
-  arch/x86/include/asm/mmzone_32.h \
-  include/linux/topology.h \
-    $(wildcard include/config/USE_PERCPU_NUMA_NODE_ID) \
-    $(wildcard include/config/SCHED_SMT) \
-    $(wildcard include/config/SCHED_CLUSTER) \
-  include/linux/arch_topology.h \
-    $(wildcard include/config/ACPI_CPPC_LIB) \
-    $(wildcard include/config/GENERIC_ARCH_TOPOLOGY) \
-  include/linux/percpu.h \
-    $(wildcard include/config/NEED_PER_CPU_EMBED_FIRST_CHUNK) \
-    $(wildcard include/config/NEED_PER_CPU_PAGE_FIRST_CHUNK) \
-  arch/x86/include/asm/topology.h \
-    $(wildcard include/config/SCHED_MC_PRIO) \
-  arch/x86/include/asm/mpspec.h \
-    $(wildcard include/config/EISA) \
-    $(wildcard include/config/X86_MPPARSE) \
-  arch/x86/include/asm/mpspec_def.h \
-  arch/x86/include/asm/x86_init.h \
-  arch/x86/include/asm/apicdef.h \
-  include/asm-generic/topology.h \
-  include/linux/sysctl.h \
-    $(wildcard include/config/SYSCTL) \
-  include/uapi/linux/sysctl.h \
-  include/linux/elf.h \
-    $(wildcard include/config/ARCH_USE_GNU_PROPERTY) \
-    $(wildcard include/config/ARCH_HAVE_ELF_PROT) \
-  arch/x86/include/asm/elf.h \
-    $(wildcard include/config/X86_X32_ABI) \
-  arch/x86/include/asm/user.h \
-  arch/x86/include/asm/user_32.h \
-  arch/x86/include/asm/fsgsbase.h \
-  arch/x86/include/asm/vdso.h \
-  arch/x86/include/asm/desc.h \
-  arch/x86/include/asm/fixmap.h \
-    $(wildcard include/config/DEBUG_KMAP_LOCAL_FORCE_MAP) \
-    $(wildcard include/config/X86_VSYSCALL_EMULATION) \
-    $(wildcard include/config/PROVIDE_OHCI1394_DMA_INIT) \
-    $(wildcard include/config/X86_IO_APIC) \
-    $(wildcard include/config/KMAP_LOCAL) \
-    $(wildcard include/config/PCI_MMCONFIG) \
-    $(wildcard include/config/ACPI_APEI_GHES) \
-    $(wildcard include/config/INTEL_TXT) \
-  arch/x86/include/generated/asm/kmap_size.h \
-  include/asm-generic/kmap_size.h \
-    $(wildcard include/config/DEBUG_KMAP_LOCAL) \
-  include/asm-generic/fixmap.h \
-  arch/x86/include/asm/irq_vectors.h \
-    $(wildcard include/config/HAVE_KVM) \
-    $(wildcard include/config/HYPERV) \
-    $(wildcard include/config/PCI_MSI) \
-  arch/x86/include/asm/cpu_entry_area.h \
-  arch/x86/include/asm/intel_ds.h \
-  arch/x86/include/asm/pgtable_areas.h \
-  arch/x86/include/asm/pgtable_32_areas.h \
-  include/uapi/linux/elf.h \
-  include/uapi/linux/elf-em.h \
-  include/linux/kobject.h \
-    $(wildcard include/config/UEVENT_HELPER) \
-    $(wildcard include/config/DEBUG_KOBJECT_RELEASE) \
-  include/linux/sysfs.h \
-  include/linux/kernfs.h \
-    $(wildcard include/config/KERNFS) \
-  include/linux/idr.h \
-  include/linux/radix-tree.h \
-  include/linux/xarray.h \
-    $(wildcard include/config/XARRAY_MULTI) \
-  include/linux/kconfig.h \
-  include/linux/kobject_ns.h \
-  include/linux/moduleparam.h \
-    $(wildcard include/config/ALPHA) \
-    $(wildcard include/config/IA64) \
-    $(wildcard include/config/PPC64) \
-  include/linux/rbtree_latch.h \
-  include/linux/error-injection.h \
-  include/asm-generic/error-injection.h \
-  include/linux/cfi.h \
-    $(wildcard include/config/CFI_CLANG_SHADOW) \
-  arch/x86/include/asm/module.h \
-    $(wildcard include/config/UNWINDER_ORC) \
-  include/asm-generic/module.h \
-    $(wildcard include/config/HAVE_MOD_ARCH_SPECIFIC) \
-    $(wildcard include/config/MODULES_USE_ELF_REL) \
-    $(wildcard include/config/MODULES_USE_ELF_RELA) \
-  arch/x86/include/asm/orc_types.h \
-  include/linux/i2c.h \
-    $(wildcard include/config/I2C) \
-    $(wildcard include/config/I2C_SLAVE) \
-    $(wildcard include/config/I2C_BOARDINFO) \
-    $(wildcard include/config/I2C_MUX) \
-    $(wildcard include/config/OF) \
-    $(wildcard include/config/ACPI) \
-  include/linux/acpi.h \
-    $(wildcard include/config/ACPI_DEBUGGER) \
-    $(wildcard include/config/ACPI_TABLE_LIB) \
-    $(wildcard include/config/LOONGARCH) \
-    $(wildcard include/config/ARM64) \
-    $(wildcard include/config/ACPI_PROCESSOR_CSTATE) \
-    $(wildcard include/config/ACPI_HOTPLUG_CPU) \
-    $(wildcard include/config/ACPI_HOTPLUG_IOAPIC) \
-    $(wildcard include/config/PCI) \
-    $(wildcard include/config/ACPI_WMI) \
-    $(wildcard include/config/ACPI_NUMA) \
-    $(wildcard include/config/HIBERNATION) \
-    $(wildcard include/config/ACPI_HOTPLUG_MEMORY) \
-    $(wildcard include/config/ACPI_CONTAINER) \
-    $(wildcard include/config/ACPI_GTDT) \
-    $(wildcard include/config/PM) \
-    $(wildcard include/config/GPIOLIB) \
-    $(wildcard include/config/ACPI_TABLE_UPGRADE) \
-    $(wildcard include/config/ACPI_WATCHDOG) \
-    $(wildcard include/config/ACPI_SPCR_TABLE) \
-    $(wildcard include/config/ACPI_GENERIC_GSI) \
-    $(wildcard include/config/ACPI_LPIT) \
-    $(wildcard include/config/ACPI_PPTT) \
-    $(wildcard include/config/ACPI_PCC) \
-  include/linux/ioport.h \
-  include/linux/irqdomain.h \
-    $(wildcard include/config/IRQ_DOMAIN_HIERARCHY) \
-    $(wildcard include/config/GENERIC_IRQ_DEBUGFS) \
-    $(wildcard include/config/IRQ_DOMAIN) \
-    $(wildcard include/config/IRQ_DOMAIN_NOMAP) \
-  include/linux/irqhandler.h \
-  include/linux/of.h \
-    $(wildcard include/config/OF_DYNAMIC) \
-    $(wildcard include/config/SPARC) \
-    $(wildcard include/config/OF_PROMTREE) \
-    $(wildcard include/config/OF_KOBJ) \
-    $(wildcard include/config/OF_NUMA) \
-    $(wildcard include/config/OF_OVERLAY) \
-  include/linux/mod_devicetable.h \
-  include/linux/uuid.h \
-  include/uapi/linux/uuid.h \
-  include/linux/property.h \
-  include/linux/fwnode.h \
-  include/linux/resource_ext.h \
-  include/linux/slab.h \
-    $(wildcard include/config/DEBUG_SLAB) \
-    $(wildcard include/config/FAILSLAB) \
-    $(wildcard include/config/MEMCG_KMEM) \
-    $(wildcard include/config/KASAN) \
-    $(wildcard include/config/SLAB) \
-    $(wildcard include/config/SLUB) \
-    $(wildcard include/config/SLOB) \
-  include/linux/overflow.h \
-  include/linux/percpu-refcount.h \
-  include/linux/kasan.h \
-    $(wildcard include/config/KASAN_STACK) \
-    $(wildcard include/config/KASAN_VMALLOC) \
-    $(wildcard include/config/KASAN_INLINE) \
-  include/linux/kasan-enabled.h \
-  include/linux/device.h \
-    $(wildcard include/config/GENERIC_MSI_IRQ_DOMAIN) \
-    $(wildcard include/config/GENERIC_MSI_IRQ) \
-    $(wildcard include/config/ENERGY_MODEL) \
-    $(wildcard include/config/PINCTRL) \
-    $(wildcard include/config/DMA_OPS) \
-    $(wildcard include/config/DMA_DECLARE_COHERENT) \
-    $(wildcard include/config/DMA_CMA) \
-    $(wildcard include/config/SWIOTLB) \
-    $(wildcard include/config/ARCH_HAS_SYNC_DMA_FOR_DEVICE) \
-    $(wildcard include/config/ARCH_HAS_SYNC_DMA_FOR_CPU) \
-    $(wildcard include/config/ARCH_HAS_SYNC_DMA_FOR_CPU_ALL) \
-    $(wildcard include/config/DMA_OPS_BYPASS) \
-    $(wildcard include/config/DEVTMPFS) \
-    $(wildcard include/config/SYSFS_DEPRECATED) \
-  include/linux/dev_printk.h \
-  include/linux/ratelimit.h \
-  include/linux/sched.h \
-    $(wildcard include/config/VIRT_CPU_ACCOUNTING_NATIVE) \
-    $(wildcard include/config/SCHED_INFO) \
-    $(wildcard include/config/SCHEDSTATS) \
-    $(wildcard include/config/SCHED_CORE) \
-    $(wildcard include/config/FAIR_GROUP_SCHED) \
-    $(wildcard include/config/RT_GROUP_SCHED) \
-    $(wildcard include/config/RT_MUTEXES) \
-    $(wildcard include/config/UCLAMP_TASK) \
-    $(wildcard include/config/UCLAMP_BUCKETS_COUNT) \
-    $(wildcard include/config/CGROUP_SCHED) \
-    $(wildcard include/config/BLK_DEV_IO_TRACE) \
-    $(wildcard include/config/PSI) \
-    $(wildcard include/config/COMPAT_BRK) \
-    $(wildcard include/config/CGROUPS) \
-    $(wildcard include/config/BLK_CGROUP) \
-    $(wildcard include/config/PAGE_OWNER) \
-    $(wildcard include/config/EVENTFD) \
-    $(wildcard include/config/ARCH_HAS_SCALED_CPUTIME) \
-    $(wildcard include/config/VIRT_CPU_ACCOUNTING_GEN) \
-    $(wildcard include/config/POSIX_CPUTIMERS) \
-    $(wildcard include/config/POSIX_CPU_TIMERS_TASK_WORK) \
-    $(wildcard include/config/KEYS) \
-    $(wildcard include/config/SYSVIPC) \
-    $(wildcard include/config/DETECT_HUNG_TASK) \
-    $(wildcard include/config/IO_URING) \
-    $(wildcard include/config/AUDIT) \
-    $(wildcard include/config/AUDITSYSCALL) \
-    $(wildcard include/config/UBSAN) \
-    $(wildcard include/config/UBSAN_TRAP) \
-    $(wildcard include/config/TASK_XACCT) \
-    $(wildcard include/config/CPUSETS) \
-    $(wildcard include/config/X86_CPU_RESCTRL) \
-    $(wildcard include/config/FUTEX) \
-    $(wildcard include/config/PERF_EVENTS) \
-    $(wildcard include/config/RSEQ) \
-    $(wildcard include/config/TASK_DELAY_ACCT) \
-    $(wildcard include/config/FAULT_INJECTION) \
-    $(wildcard include/config/LATENCYTOP) \
-    $(wildcard include/config/KUNIT) \
-    $(wildcard include/config/FUNCTION_GRAPH_TRACER) \
-    $(wildcard include/config/BCACHE) \
-    $(wildcard include/config/VMAP_STACK) \
-    $(wildcard include/config/SECURITY) \
-    $(wildcard include/config/BPF_SYSCALL) \
-    $(wildcard include/config/GCC_PLUGIN_STACKLEAK) \
-    $(wildcard include/config/X86_MCE) \
-    $(wildcard include/config/KRETPROBES) \
-    $(wildcard include/config/RETHOOK) \
-    $(wildcard include/config/ARCH_HAS_PARANOID_L1D_FLUSH) \
-    $(wildcard include/config/ARCH_TASK_STRUCT_ON_STACK) \
-    $(wildcard include/config/DEBUG_RSEQ) \
-  include/uapi/linux/sched.h \
-  include/linux/pid.h \
-  include/linux/rculist.h \
-    $(wildcard include/config/PROVE_RCU_LIST) \
-  include/linux/sem.h \
-  include/uapi/linux/sem.h \
-  include/linux/ipc.h \
-  include/linux/rhashtable-types.h \
-  include/uapi/linux/ipc.h \
-  arch/x86/include/generated/uapi/asm/ipcbuf.h \
-  include/uapi/asm-generic/ipcbuf.h \
-  arch/x86/include/uapi/asm/sembuf.h \
-  include/linux/shm.h \
-  include/uapi/linux/shm.h \
-  include/uapi/asm-generic/hugetlb_encode.h \
-  arch/x86/include/uapi/asm/shmbuf.h \
-  include/uapi/asm-generic/shmbuf.h \
-  arch/x86/include/asm/shmparam.h \
-  include/linux/plist.h \
-    $(wildcard include/config/DEBUG_PLIST) \
-  include/linux/hrtimer.h \
-    $(wildcard include/config/HIGH_RES_TIMERS) \
-    $(wildcard include/config/TIME_LOW_RES) \
-    $(wildcard include/config/TIMERFD) \
-  include/linux/hrtimer_defs.h \
-  include/linux/timerqueue.h \
-  include/linux/seccomp.h \
-    $(wildcard include/config/SECCOMP) \
-    $(wildcard include/config/HAVE_ARCH_SECCOMP_FILTER) \
-    $(wildcard include/config/SECCOMP_FILTER) \
-    $(wildcard include/config/CHECKPOINT_RESTORE) \
-    $(wildcard include/config/SECCOMP_CACHE_DEBUG) \
-  include/uapi/linux/seccomp.h \
-  arch/x86/include/asm/seccomp.h \
-  arch/x86/include/asm/unistd.h \
-  arch/x86/include/uapi/asm/unistd.h \
-  arch/x86/include/generated/uapi/asm/unistd_32.h \
-  include/asm-generic/seccomp.h \
-  include/uapi/linux/unistd.h \
-  include/linux/resource.h \
-  include/uapi/linux/resource.h \
-  arch/x86/include/generated/uapi/asm/resource.h \
-  include/asm-generic/resource.h \
-  include/uapi/asm-generic/resource.h \
-  include/linux/latencytop.h \
-  include/linux/sched/prio.h \
-  include/linux/sched/types.h \
-  include/linux/signal_types.h \
-    $(wildcard include/config/OLD_SIGACTION) \
-  include/uapi/linux/signal.h \
-  arch/x86/include/asm/signal.h \
-  arch/x86/include/uapi/asm/signal.h \
-  include/uapi/asm-generic/signal-defs.h \
-  arch/x86/include/uapi/asm/siginfo.h \
-  include/uapi/asm-generic/siginfo.h \
-  include/linux/syscall_user_dispatch.h \
-  include/linux/task_io_accounting.h \
-    $(wildcard include/config/TASK_IO_ACCOUNTING) \
-  include/linux/posix-timers.h \
-  include/linux/alarmtimer.h \
-    $(wildcard include/config/RTC_CLASS) \
-  include/uapi/linux/rseq.h \
-  include/linux/kcsan.h \
-  include/linux/energy_model.h \
-  include/linux/sched/cpufreq.h \
-    $(wildcard include/config/CPU_FREQ) \
-  include/linux/sched/topology.h \
-    $(wildcard include/config/SCHED_DEBUG) \
-    $(wildcard include/config/SCHED_MC) \
-    $(wildcard include/config/CPU_FREQ_GOV_SCHEDUTIL) \
-  include/linux/sched/idle.h \
-  include/linux/sched/sd_flags.h \
-  include/linux/klist.h \
-  include/linux/pm.h \
-    $(wildcard include/config/VT_CONSOLE_SLEEP) \
-    $(wildcard include/config/PM_CLK) \
-    $(wildcard include/config/PM_GENERIC_DOMAINS) \
-  include/linux/device/bus.h \
-  include/linux/device/class.h \
-  include/linux/device/driver.h \
-  arch/x86/include/asm/device.h \
-  include/linux/pm_wakeup.h \
-  include/acpi/acpi.h \
-  include/acpi/platform/acenv.h \
-  include/acpi/platform/acgcc.h \
-  include/acpi/platform/aclinux.h \
-    $(wildcard include/config/ACPI_REDUCED_HARDWARE_ONLY) \
-    $(wildcard include/config/ACPI_DEBUG) \
-  include/linux/ctype.h \
-  arch/x86/include/asm/acenv.h \
-  include/acpi/acnames.h \
-  include/acpi/actypes.h \
-  include/acpi/acexcep.h \
-  include/acpi/actbl.h \
-  include/acpi/actbl1.h \
-  include/acpi/actbl2.h \
-  include/acpi/actbl3.h \
-  include/acpi/acrestyp.h \
-  include/acpi/platform/acenvex.h \
-  include/acpi/platform/aclinuxex.h \
-  include/acpi/platform/acgccex.h \
-  include/acpi/acoutput.h \
-  include/acpi/acpiosxf.h \
-  include/acpi/acpixf.h \
-  include/acpi/acconfig.h \
-  include/acpi/acbuffer.h \
-  include/linux/dynamic_debug.h \
-  include/acpi/acpi_bus.h \
-    $(wildcard include/config/X86_ANDROID_TABLETS) \
-    $(wildcard include/config/ACPI_SYSTEM_POWER_STATES_SUPPORT) \
-    $(wildcard include/config/ACPI_SLEEP) \
-  include/acpi/acpi_drivers.h \
-    $(wildcard include/config/ACPI_DOCK) \
-  include/acpi/acpi_numa.h \
-    $(wildcard include/config/ACPI_HMAT) \
-  include/acpi/acpi_io.h \
-  include/linux/io.h \
-    $(wildcard include/config/HAS_IOPORT_MAP) \
-  arch/x86/include/asm/io.h \
-    $(wildcard include/config/MTRR) \
-    $(wildcard include/config/X86_PAT) \
-  arch/x86/include/generated/asm/early_ioremap.h \
-  include/asm-generic/early_ioremap.h \
-    $(wildcard include/config/GENERIC_EARLY_IOREMAP) \
-  include/asm-generic/iomap.h \
-  include/asm-generic/pci_iomap.h \
-    $(wildcard include/config/NO_GENERIC_PCI_IOPORT_MAP) \
-    $(wildcard include/config/GENERIC_PCI_IOMAP) \
-  include/asm-generic/io.h \
-    $(wildcard include/config/GENERIC_IOMAP) \
-    $(wildcard include/config/GENERIC_IOREMAP) \
-    $(wildcard include/config/VIRT_TO_BUS) \
-    $(wildcard include/config/GENERIC_DEVMEM_IS_ALLOWED) \
-  include/linux/logic_pio.h \
-    $(wildcard include/config/INDIRECT_PIO) \
-  include/linux/vmalloc.h \
-    $(wildcard include/config/HAVE_ARCH_HUGE_VMALLOC) \
-  arch/x86/include/asm/vmalloc.h \
-    $(wildcard include/config/HAVE_ARCH_HUGE_VMAP) \
-  arch/x86/include/asm/acpi.h \
-    $(wildcard include/config/ACPI_APEI) \
-  include/acpi/pdc_intel.h \
-  arch/x86/include/asm/numa.h \
-    $(wildcard include/config/NUMA_EMU) \
-  arch/x86/include/asm/numa_32.h \
-  include/linux/regulator/consumer.h \
-    $(wildcard include/config/REGULATOR) \
-  include/linux/suspend.h \
-    $(wildcard include/config/VT) \
-    $(wildcard include/config/SUSPEND) \
-    $(wildcard include/config/HIBERNATION_SNAPSHOT_DEV) \
-    $(wildcard include/config/PM_SLEEP_DEBUG) \
-    $(wildcard include/config/PM_AUTOSLEEP) \
-  include/linux/swap.h \
-    $(wildcard include/config/DEVICE_PRIVATE) \
-    $(wildcard include/config/MIGRATION) \
-    $(wildcard include/config/FRONTSWAP) \
-    $(wildcard include/config/THP_SWAP) \
-    $(wildcard include/config/MEMCG_SWAP) \
-  include/linux/memcontrol.h \
-    $(wildcard include/config/CGROUP_WRITEBACK) \
-  include/linux/cgroup.h \
-    $(wildcard include/config/CGROUP_CPUACCT) \
-    $(wildcard include/config/SOCK_CGROUP_DATA) \
-    $(wildcard include/config/CGROUP_DATA) \
-    $(wildcard include/config/CGROUP_BPF) \
-  include/uapi/linux/cgroupstats.h \
-  include/uapi/linux/taskstats.h \
-  include/linux/fs.h \
-    $(wildcard include/config/READ_ONLY_THP_FOR_FS) \
-    $(wildcard include/config/FS_POSIX_ACL) \
-    $(wildcard include/config/IMA) \
-    $(wildcard include/config/FILE_LOCKING) \
-    $(wildcard include/config/FSNOTIFY) \
-    $(wildcard include/config/FS_ENCRYPTION) \
-    $(wildcard include/config/FS_VERITY) \
-    $(wildcard include/config/EPOLL) \
-    $(wildcard include/config/UNICODE) \
-    $(wildcard include/config/QUOTA) \
-    $(wildcard include/config/FS_DAX) \
-    $(wildcard include/config/BLOCK) \
-  include/linux/wait_bit.h \
-  include/linux/kdev_t.h \
-  include/uapi/linux/kdev_t.h \
-  include/linux/dcache.h \
-  include/linux/rculist_bl.h \
-  include/linux/list_bl.h \
-  include/linux/bit_spinlock.h \
-  include/linux/lockref.h \
-    $(wildcard include/config/ARCH_USE_CMPXCHG_LOCKREF) \
-  include/linux/stringhash.h \
-    $(wildcard include/config/DCACHE_WORD_ACCESS) \
-  include/linux/hash.h \
-    $(wildcard include/config/HAVE_ARCH_HASH) \
-  include/linux/path.h \
-  include/linux/list_lru.h \
-  include/linux/shrinker.h \
-  include/linux/capability.h \
-  include/uapi/linux/capability.h \
-  include/linux/semaphore.h \
-  include/linux/fcntl.h \
-    $(wildcard include/config/ARCH_32BIT_OFF_T) \
-  include/uapi/linux/fcntl.h \
-  arch/x86/include/generated/uapi/asm/fcntl.h \
-  include/uapi/asm-generic/fcntl.h \
-  include/uapi/linux/openat2.h \
-  include/linux/migrate_mode.h \
-  include/linux/percpu-rwsem.h \
-  include/linux/rcuwait.h \
-  include/linux/sched/signal.h \
-    $(wildcard include/config/SCHED_AUTOGROUP) \
-    $(wildcard include/config/BSD_PROCESS_ACCT) \
-    $(wildcard include/config/TASKSTATS) \
-    $(wildcard include/config/STACK_GROWSUP) \
-  include/linux/signal.h \
-    $(wildcard include/config/DYNAMIC_SIGFRAME) \
-  include/linux/sched/jobctl.h \
-  include/linux/sched/task.h \
-    $(wildcard include/config/HAVE_EXIT_THREAD) \
-    $(wildcard include/config/ARCH_WANTS_DYNAMIC_TASK_STRUCT) \
-    $(wildcard include/config/HAVE_ARCH_THREAD_STRUCT_WHITELIST) \
-  include/linux/uaccess.h \
-  include/linux/fault-inject-usercopy.h \
-    $(wildcard include/config/FAULT_INJECTION_USERCOPY) \
-  arch/x86/include/asm/uaccess.h \
-    $(wildcard include/config/CC_HAS_ASM_GOTO_OUTPUT) \
-    $(wildcard include/config/CC_HAS_ASM_GOTO_TIED_OUTPUT) \
-    $(wildcard include/config/ARCH_HAS_COPY_MC) \
-    $(wildcard include/config/X86_INTEL_USERCOPY) \
-  arch/x86/include/asm/smap.h \
-  arch/x86/include/asm/extable.h \
-    $(wildcard include/config/BPF_JIT) \
-  include/asm-generic/access_ok.h \
-    $(wildcard include/config/ALTERNATE_USER_ADDRESS_SPACE) \
-  arch/x86/include/asm/uaccess_32.h \
-  include/linux/cred.h \
-    $(wildcard include/config/DEBUG_CREDENTIALS) \
-  include/linux/key.h \
-    $(wildcard include/config/KEY_NOTIFICATIONS) \
-    $(wildcard include/config/NET) \
-  include/linux/assoc_array.h \
-    $(wildcard include/config/ASSOCIATIVE_ARRAY) \
-  include/linux/sched/user.h \
-    $(wildcard include/config/WATCH_QUEUE) \
-  include/linux/percpu_counter.h \
-  include/linux/rcu_sync.h \
-  include/linux/delayed_call.h \
-  include/linux/errseq.h \
-  include/linux/ioprio.h \
-  include/linux/sched/rt.h \
-  include/linux/iocontext.h \
-    $(wildcard include/config/BLK_ICQ) \
-  include/uapi/linux/ioprio.h \
-  include/linux/fs_types.h \
-  include/linux/mount.h \
-  include/linux/mnt_idmapping.h \
-  include/uapi/linux/fs.h \
-  include/linux/quota.h \
-    $(wildcard include/config/QUOTA_NETLINK_INTERFACE) \
-  include/uapi/linux/dqblk_xfs.h \
-  include/linux/dqblk_v1.h \
-  include/linux/dqblk_v2.h \
-  include/linux/dqblk_qtree.h \
-  include/linux/projid.h \
-  include/uapi/linux/quota.h \
-  include/linux/nfs_fs_i.h \
-  include/linux/seq_file.h \
-  include/linux/string_helpers.h \
-  include/linux/ns_common.h \
-  include/linux/nsproxy.h \
-  include/linux/user_namespace.h \
-    $(wildcard include/config/INOTIFY_USER) \
-    $(wildcard include/config/FANOTIFY) \
-    $(wildcard include/config/PERSISTENT_KEYRINGS) \
-  include/linux/kernel_stat.h \
-  include/linux/interrupt.h \
-    $(wildcard include/config/IRQ_FORCED_THREADING) \
-    $(wildcard include/config/GENERIC_IRQ_PROBE) \
-    $(wildcard include/config/IRQ_TIMINGS) \
-  include/linux/irqreturn.h \
-  include/linux/irqnr.h \
-  include/uapi/linux/irqnr.h \
-  include/linux/hardirq.h \
-  include/linux/context_tracking_state.h \
-    $(wildcard include/config/CONTEXT_TRACKING) \
-  include/linux/ftrace_irq.h \
-    $(wildcard include/config/HWLAT_TRACER) \
-    $(wildcard include/config/OSNOISE_TRACER) \
-  include/linux/vtime.h \
-    $(wildcard include/config/VIRT_CPU_ACCOUNTING) \
-    $(wildcard include/config/IRQ_TIME_ACCOUNTING) \
-  arch/x86/include/asm/hardirq.h \
-    $(wildcard include/config/KVM_INTEL) \
-    $(wildcard include/config/X86_THERMAL_VECTOR) \
-    $(wildcard include/config/X86_MCE_THRESHOLD) \
-    $(wildcard include/config/X86_MCE_AMD) \
-    $(wildcard include/config/X86_HV_CALLBACK_VECTOR) \
-  arch/x86/include/asm/irq.h \
-  arch/x86/include/asm/sections.h \
-  include/asm-generic/sections.h \
-    $(wildcard include/config/HAVE_FUNCTION_DESCRIPTORS) \
-  include/linux/cgroup-defs.h \
-    $(wildcard include/config/CGROUP_NET_CLASSID) \
-    $(wildcard include/config/CGROUP_NET_PRIO) \
-  include/linux/u64_stats_sync.h \
-  include/linux/bpf-cgroup-defs.h \
-  include/linux/psi_types.h \
-  include/linux/kthread.h \
-  include/linux/cgroup_subsys.h \
-    $(wildcard include/config/CGROUP_DEVICE) \
-    $(wildcard include/config/CGROUP_FREEZER) \
-    $(wildcard include/config/CGROUP_PERF) \
-    $(wildcard include/config/CGROUP_HUGETLB) \
-    $(wildcard include/config/CGROUP_PIDS) \
-    $(wildcard include/config/CGROUP_RDMA) \
-    $(wildcard include/config/CGROUP_MISC) \
-    $(wildcard include/config/CGROUP_DEBUG) \
-  include/linux/vm_event_item.h \
-    $(wildcard include/config/HAVE_ARCH_TRANSPARENT_HUGEPAGE_PUD) \
-    $(wildcard include/config/MEMORY_BALLOON) \
-    $(wildcard include/config/BALLOON_COMPACTION) \
-    $(wildcard include/config/DEBUG_TLBFLUSH) \
-    $(wildcard include/config/DEBUG_VM_VMACACHE) \
-  include/linux/page_counter.h \
-  include/linux/vmpressure.h \
-  include/linux/eventfd.h \
-  include/linux/mm.h \
-    $(wildcard include/config/HAVE_ARCH_MMAP_RND_BITS) \
-    $(wildcard include/config/HAVE_ARCH_MMAP_RND_COMPAT_BITS) \
-    $(wildcard include/config/ARCH_USES_HIGH_VMA_FLAGS) \
-    $(wildcard include/config/ARCH_HAS_PKEYS) \
-    $(wildcard include/config/PPC) \
-    $(wildcard include/config/PARISC) \
-    $(wildcard include/config/SPARC64) \
-    $(wildcard include/config/ARM64_MTE) \
-    $(wildcard include/config/HAVE_ARCH_USERFAULTFD_MINOR) \
-    $(wildcard include/config/SHMEM) \
-    $(wildcard include/config/ARCH_HAS_PTE_SPECIAL) \
-    $(wildcard include/config/ARCH_HAS_PTE_DEVMAP) \
-    $(wildcard include/config/DEBUG_VM_RB) \
-    $(wildcard include/config/PAGE_POISONING) \
-    $(wildcard include/config/INIT_ON_ALLOC_DEFAULT_ON) \
-    $(wildcard include/config/INIT_ON_FREE_DEFAULT_ON) \
-    $(wildcard include/config/DEBUG_PAGEALLOC) \
-    $(wildcard include/config/HUGETLBFS) \
-    $(wildcard include/config/MAPPING_DIRTY_HELPERS) \
-    $(wildcard include/config/ANON_VMA_NAME) \
-  include/linux/mmap_lock.h \
-  include/linux/page_ext.h \
-  include/linux/stacktrace.h \
-    $(wildcard include/config/ARCH_STACKWALK) \
-    $(wildcard include/config/STACKTRACE) \
-    $(wildcard include/config/HAVE_RELIABLE_STACKTRACE) \
-  include/linux/stackdepot.h \
-    $(wildcard include/config/STACKDEPOT_ALWAYS_INIT) \
-  include/linux/page_ref.h \
-    $(wildcard include/config/DEBUG_PAGE_REF) \
-  include/linux/sizes.h \
-  include/linux/pgtable.h \
-    $(wildcard include/config/HIGHPTE) \
-    $(wildcard include/config/GUP_GET_PTE_LOW_HIGH) \
-    $(wildcard include/config/HAVE_ARCH_SOFT_DIRTY) \
-    $(wildcard include/config/ARCH_ENABLE_THP_MIGRATION) \
-    $(wildcard include/config/X86_ESPFIX64) \
-  arch/x86/include/asm/pgtable.h \
-    $(wildcard include/config/DEBUG_WX) \
-    $(wildcard include/config/PAGE_TABLE_CHECK) \
-  arch/x86/include/asm/pkru.h \
-  arch/x86/include/asm/fpu/api.h \
-    $(wildcard include/config/X86_DEBUG_FPU) \
-  arch/x86/include/asm/coco.h \
-  include/asm-generic/pgtable_uffd.h \
-  include/linux/page_table_check.h \
-  arch/x86/include/asm/pgtable_32.h \
-  arch/x86/include/asm/pgtable-3level.h \
-  arch/x86/include/asm/pgtable-invert.h \
-  include/linux/huge_mm.h \
-  include/linux/sched/coredump.h \
-    $(wildcard include/config/CORE_DUMP_DEFAULT_ELF_HEADERS) \
-  include/linux/vmstat.h \
-    $(wildcard include/config/VM_EVENT_COUNTERS) \
-  include/linux/writeback.h \
-  include/linux/flex_proportions.h \
-  include/linux/backing-dev-defs.h \
-    $(wildcard include/config/DEBUG_FS) \
-  include/linux/blk_types.h \
-    $(wildcard include/config/FAIL_MAKE_REQUEST) \
-    $(wildcard include/config/BLK_CGROUP_IOCOST) \
-    $(wildcard include/config/BLK_INLINE_ENCRYPTION) \
-    $(wildcard include/config/BLK_DEV_INTEGRITY) \
-  include/linux/bvec.h \
-  include/linux/highmem.h \
-  include/linux/cacheflush.h \
-  arch/x86/include/asm/cacheflush.h \
-  include/asm-generic/cacheflush.h \
-  include/linux/highmem-internal.h \
-  arch/x86/include/asm/highmem.h \
-  arch/x86/include/asm/tlbflush.h \
-  arch/x86/include/asm/invpcid.h \
-  arch/x86/include/asm/pti.h \
-  include/linux/bio.h \
-  include/linux/mempool.h \
-  include/linux/uio.h \
-    $(wildcard include/config/ARCH_HAS_UACCESS_FLUSHCACHE) \
-  include/uapi/linux/uio.h \
-  include/linux/node.h \
-    $(wildcard include/config/HMEM_REPORTING) \
-  include/linux/pagemap.h \
-  include/linux/hugetlb_inline.h \
-  include/uapi/linux/mempolicy.h \
-  include/linux/freezer.h \
-  include/uapi/linux/i2c.h \
-  include/linux/videodev2.h \
-  include/uapi/linux/videodev2.h \
-    $(wildcard include/config/VIDEO_ADV_DEBUG) \
-  include/uapi/linux/v4l2-common.h \
-  include/uapi/linux/v4l2-controls.h \
-  include/media/v4l2-device.h \
-    $(wildcard include/config/VIDEO_V4L2_SUBDEV_API) \
-  include/media/media-device.h \
-    $(wildcard include/config/MEDIA_CONTROLLER) \
-  include/media/media-devnode.h \
-  include/linux/poll.h \
-  include/uapi/linux/poll.h \
-  arch/x86/include/generated/uapi/asm/poll.h \
-  include/uapi/asm-generic/poll.h \
-  include/uapi/linux/eventpoll.h \
-  include/linux/cdev.h \
-  include/media/media-entity.h \
-  include/uapi/linux/media.h \
-  include/media/v4l2-subdev.h \
-  include/uapi/linux/v4l2-subdev.h \
-  include/uapi/linux/v4l2-mediabus.h \
-  include/uapi/linux/media-bus-format.h \
-  include/media/v4l2-async.h \
-  include/media/v4l2-common.h \
-    $(wildcard include/config/VIDEO_V4L2_I2C) \
-    $(wildcard include/config/SPI) \
-  include/media/v4l2-dev.h \
-  include/linux/spi/spi.h \
-    $(wildcard include/config/SPI_SLAVE) \
-  include/linux/scatterlist.h \
-    $(wildcard include/config/NEED_SG_DMA_LENGTH) \
-    $(wildcard include/config/DEBUG_SG) \
-    $(wildcard include/config/SGL_ALLOC) \
-    $(wildcard include/config/ARCH_NO_SG_CHAIN) \
-    $(wildcard include/config/SG_POOL) \
-  include/linux/gpio/consumer.h \
-    $(wildcard include/config/OF_GPIO) \
-    $(wildcard include/config/GPIO_SYSFS) \
-  include/uapi/linux/spi/spi.h \
-  include/media/v4l2-fh.h \
-  include/media/v4l2-mediabus.h \
-  include/media/v4l2-ctrls.h \
-  include/media/media-request.h \
-  include/media/hevc-ctrls.h \
+dev->board == CX23885_BOARD_HAUPPAUGE_HVR1275)
+			cx23885_set_frontend_hook(port, fe0->dvb.frontend);
+		break;
+	case CX23885_BOARD_HAUPPAUGE_HVR1255:
+	case CX23885_BOARD_HAUPPAUGE_HVR1255_22111:
+		i2c_bus = &dev->i2c_bus[0];
+		fe0->dvb.frontend = dvb_attach(s5h1411_attach,
+					       &hcw_s5h1411_config,
+					       &i2c_bus->i2c_adap);
+		if (fe0->dvb.frontend == NULL)
+			break;
 
-drivers/media/i2c/tw9906.o: $(deps_drivers/media/i2c/tw9906.o)
+		dvb_attach(tda18271_attach, fe0->dvb.frontend,
+			   0x60, &dev->i2c_bus[1].i2c_adap,
+			   &hauppauge_tda18271_config);
 
-$(deps_drivers/media/i2c/tw9906.o):
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               \
-    $(wildcard include/config/DMA_OPS) \
-    $(wildcard include/config/DMA_DECLARE_COHERENT) \
-    $(wildcard include/config/DMA_CMA) \
-    $(wildcard include/config/SWIOTLB) \
-    $(wildcard include/config/ARCH_HAS_SYNC_DMA_FOR_DEVICE) \
-    $(wildcard include/config/ARCH_HAS_SYNC_DMA_FOR_CPU) \
-    $(wildcard include/config/ARCH_HAS_SYNC_DMA_FOR_CPU_ALL) \
-    $(wildcard include/config/DMA_OPS_BYPASS) \
-    $(wildcard include/config/OF) \
-    $(wildcard include/config/DEVTMPFS) \
-    $(wildcard include/config/SYSFS_DEPRECATED) \
-  include/linux/dev_printk.h \
-  include/linux/energy_model.h \
-  include/linux/sched/cpufreq.h \
-    $(wildcard include/config/CPU_FREQ) \
-  include/linux/sched/topology.h \
-    $(wildcard include/config/SCHED_DEBUG) \
-    $(wildcard include/config/SCHED_MC) \
-    $(wildcard include/config/CPU_FREQ_GOV_SCHEDUTIL) \
-  include/linux/sched/idle.h \
-  include/linux/sched/sd_flags.h \
-  include/linux/ioport.h \
-  include/linux/klist.h \
-  include/linux/pm.h \
-    $(wildcard include/config/VT_CONSOLE_SLEEP) \
-    $(wildcard include/config/PM) \
-    $(wildcard include/config/PM_CLK) \
-    $(wildcard include/config/PM_GENERIC_DOMAINS) \
-  include/linux/device/bus.h \
-    $(wildcard include/config/ACPI) \
-  include/linux/device/class.h \
-  include/linux/device/driver.h \
-  arch/x86/include/asm/device.h \
-  include/linux/pm_wakeup.h \
-  include/linux/dma-direction.h \
-  include/linux/scatterlist.h \
-    $(wildcard include/config/NEED_SG_DMA_LENGTH) \
-    $(wildcard include/config/DEBUG_SG) \
-    $(wildcard include/config/SGL_ALLOC) \
-    $(wildcard include/config/ARCH_NO_SG_CHAIN) \
-    $(wildcard include/config/SG_POOL) \
-  arch/x86/include/asm/io.h \
-    $(wildcard include/config/MTRR) \
-    $(wildcard include/config/X86_PAT) \
-  arch/x86/include/generated/asm/early_ioremap.h \
-  include/asm-generic/early_ioremap.h \
-    $(wildcard include/config/GENERIC_EARLY_IOREMAP) \
-  include/asm-generic/iomap.h \
-    $(wildcard include/config/HAS_IOPORT_MAP) \
-  include/asm-generic/pci_iomap.h \
-    $(wildcard include/config/PCI) \
-    $(wildcard include/config/NO_GENERIC_PCI_IOPORT_MAP) \
-    $(wildcard include/config/GENERIC_PCI_IOMAP) \
-  include/asm-generic/io.h \
-    $(wildcard include/config/GENERIC_IOMAP) \
-    $(wildcard include/config/GENERIC_IOREMAP) \
-    $(wildcard include/config/VIRT_TO_BUS) \
-    $(wildcard include/config/GENERIC_DEVMEM_IS_ALLOWED) \
-  include/linux/logic_pio.h \
-    $(wildcard include/config/INDIRECT_PIO) \
-  include/linux/fwnode.h \
-  include/linux/vmalloc.h \
-    $(wildcard include/config/HAVE_ARCH_HUGE_VMALLOC) \
-  arch/x86/include/asm/vmalloc.h \
-  include/linux/netdev_features.h \
-  include/linux/sched/clock.h \
-    $(wildcard include/config/HAVE_UNSTABLE_SCHED_CLOCK) \
-  include/net/flow_dissector.h \
-  include/uapi/linux/if_ether.h \
-  include/linux/splice.h \
-  include/linux/pipe_fs_i.h \
-  include/uapi/linux/if_packet.h \
-  include/net/flow.h \
-  include/net/page_pool.h \
-    $(wildcard include/config/PAGE_POOL_STATS) \
-  include/linux/ptr_ring.h \
-  include/linux/netfilter/nf_conntrack_common.h \
-  include/uapi/linux/netfilter/nf_conntrack_common.h \
-  include/linux/set_memory.h \
-    $(wildcard include/config/ARCH_HAS_SET_MEMORY) \
-    $(wildcard include/config/ARCH_HAS_SET_DIRECT_MAP) \
-  arch/x86/include/asm/set_memory.h \
-  include/asm-generic/set_memory.h \
-  include/linux/if_vlan.h \
-    $(wildcard include/config/VLAN_8021Q) \
-    $(wildcard include/config/NET_POLL_CONTROLLER) \
-  include/linux/netdevice.h \
-    $(wildcard include/config/DCB) \
-    $(wildcard include/config/HYPERV_NET) \
-    $(wildcard include/config/WLAN) \
-    $(wildcard include/config/AX25) \
-    $(wildcard include/config/MAC80211_MESH) \
-    $(wildcard include/config/NET_IPIP) \
-    $(wildcard include/config/NET_IPGRE) \
-    $(wildcard include/config/IPV6_SIT) \
-    $(wildcard include/config/IPV6_TUNNEL) \
-    $(wildcard include/config/RPS) \
-    $(wildcard include/config/NETPOLL) \
-    $(wildcard include/config/BQL) \
-    $(wildcard include/config/RFS_ACCEL) \
-    $(wildcard include/config/Fâƒ:‡=#„—ŞÕ…èiÄP@Á|2øbbÖUÑi.•;7Ç–¼WN3'˜·87¼„JBÊíhe.ÕxèZ—è`¡µ-'Dş	5|3£ë¢"Òd’„–BšgˆÁYº«.ğ«¹¾È—J÷æ²Î=S
-ó­_S-`£Ô³„jª¤…òÜ6¬ÚËm,ˆ%•Dç0â.=4AÍfAzÄ	ä QôÔÏÂ}”ÊQÖÿÄ—Ú¼4ä¨mÁ•‹ûFKßIı ‘ÏÚZ2gV›¢íôR×=£80†«{²Ò]ö¶”“2èê¬—ª.GÄÙÅî$‚3^j†" »e×vZ1ÊUP51¸MA<p¦ÔŠëÎ€/‰é8‹b¹w¾ÄKŸÒõ…|s€o[^ EPT"ã£"ÑYmIPDõÜ.âwW^Õx6é0`
-z`˜O%9• 4E¬mÁ¿T‹TMññ_¶Ï]Be-Ö^z™q†«ÛŠœ‹²	¯ÖhlÈ^!à>wèTâØÙ^Õ	#cXµäKõ3 SÆ€İ=*<d4+˜ÒU~Ü|½U°µB4ÊèŒİ¤Û³½m;­{O;)•Bu(imJ{6«&¡5¦ªÙ¡*q¨¥öADŸ˜fgF¾¿£]}F—ÇY,ÉŸÉ3Kne³àV\îÃAª­PÇL–ÎiÑ„`uíÏÙÈ[V[óè9*•Ô“e”`(+[HPwäK¨HH)”ËiÕ•”Ñ
-àªNm^±´7ş/yÀœavÒi£½ü›1×Àgei¡¬ú£6W™¡ÿ²İ}¦äúS­S™aõò×G#3vıfå˜Y¶0u­ÉÛ¾>©`ŸŒöB‚Îİo›j!¸ÓÛ>š8›èØ~¿NKı‰¬G×ĞXÒE¦}èÓÈÂÔAœÿµx#è©FÙ±GT-·½tÃH•H4´ [vNë,\Óói¬Şª
- @ŸÎoĞX†3Î®Z	ëÇÆ h.^ö±´Ä.Vk. ã(…È#~3 Îé. ÔñæÊ“¸9^¨|s*š=µ[É8†VÜAÒ>ÚYB(;Gónáâ“£±Î5WÀëãVZËbjf™×.—Wúz®Á¨,_3›ØIç¤.Ì×(õç\mÛ^?Ô¼PŠ‹qÖH­1'2YX‰Ö‡³rVùˆL¸Ÿ(Iæ3WÙ`§‡Àß@˜WÊúsçŞÑ··¨JuRvó­zFnsqTHµªûz¦&è#ZÃâƒïÓÆUrï×»"b¹zçÍLÊëˆÙ•®"`à-3hi×“€rmğ€`Az¶Ã2Ñı‹5«koÄarsƒÒç_«3û'.Åw<F3]Ş]BŞÀºã"ëtp´‡jÑÓ¶üë@¯ã	…»\J_6ò“…Xsq>>›á‚¦½^ùşØÏ§‰®—ÑÒ¶
-c9êÛp•Qf¸²Ì'b_cùº0Ç‡:QF5[ì¦)¸†%ï8ÅÊ€+‚¯VïB§¾ıUæ…_|rÎ¾döñÚÁi®ÿ\U·FÑsœÒ´mÊõ<èá?°œÃ+I®ÎAÕ¨[ñ93ièæÓrŸºLc¶ğé+Ãå(¿Jú#WÀZÏıeÔ.%E!âQté{šÓßîĞ¶'~ÏYİõ-ºñ‹=¾)¼%ŒZ¼,ÔŠ©D·	¿‚ÕH¿2&¼…T—ÂZ!‘Eoóšº†ÊJÃVãğ÷ûÖ6…­^›ó£1éÉå;"×}¿•®<[õ¬J¢{æxrm*ƒœ9Odö!wÕØÙÛ¡=M-ˆ)ú·,´¿Â¤ÃKä•ÍqÏ¼ı¸VÓ…YÚwËØ¶ïx€¯İ&?rÎê‰sİpª	ÃÂÇQ\\¥±„¤š[áj’â YGgÖë…¹ïV6P<NšÉñu¬3ŒëUî¾¦ÓYÄì—„®ŞøÇ–¨^?ıûŞqİú™…†šMDú¼nØ¿î`Òğf‡“–âİG-TE,sâé:éCk´Ê·Xc=d"(Á7s'gÆ¾ƒ^g3‰‚×Ókïš³î“å€%¦¿Ş1uïû®ãuÍtİëcµaÂÜ ÿKótÔÕÈ¨nA\AaqÛï¶fÜêå{¿¤Äè‹Œô–ìıWWø’k+ƒ¼·ªí« ¢_F¢/êÆœZ;Î8µA\l÷;»<½šØŸÒeÒ ºVÓYô˜µà°iyUÛñN5­—x–Ñrëé£4‚¶®GuNÄ½Ñšä$«ªc¢§Á„ÌÚ‡S­eEæp»2¼Æñ\›ó.A"õ±Lİ¥º)œ¦zôú9ÜèjgÑ«g·I™È SåšPŠzÑf5±o÷k¡´á÷ré‘1Ó_Ö’j¾ ®˜¨Ç|!aM$Ì­É=0Ó#€øzÿÖ÷·0Õ•YX¿CáãÛ™’<È[ÿ6¬³ÙP!i—¢ŒÃ †oDŒrMÔ¸_o˜XÁÖºÙLg pc²¿®h†)¼€Å³Jy85üBñ  †ì²}>ôuÌÿ¡i¯Mùa¿:Ï•ÏòtzèÍ%1½:ùëo›™jÜT‰Ø†îŠJ9Éå¥Ä±ÓtÙ‚ıÓ[Fê„š¾ÈUIUˆJùçB*Ù6^JQ¸i’,éçİBÈ(ÇçDêv¹ãí?åÙ‚mÁÊ]6G=î zL^ŒKónƒ`¦4Ò‹ñºK­ pv„- uÖÁhAÑ´(°î~»Î~¬GL7O<4×+t[g®¹bSu¦è
-ÆØ},ìiêıkRqIĞÈãp‚+æ];º«¸‰k>:Gv¡“ˆ¿x“1=Tº3eà”ñØr”@öe–€ßIQ”
-ÎY7Õ”G€qWÆ‘ùıb…–Ğãß\,,œ…¸Ÿ$‰İuÚu„ùÁ™«÷À¯àÄ Ñí±ü
-¸ÑüRjŞß»ß˜ŒÒŠœ3|á ­ß^t/1t¥1­©UÇÑ˜Z©»9ŠT‹Ãh$­aG^â5Í¬H#CX8©U…Ó·kôC=X‹ùÒ2²€úì¤„/i‰-[İóWó…L´‹Pû™#µòƒ*†çô¼N•{ÚWÓØ’½Õ‚ş)‹Ü·õğ5CŞ miy­b¥^è%¾[
-…6F•Åz€0ÏjëêgŠO#âk¿Z}¹]-æ¦È<Kğ¶¸e³y(hç'tâ±©ck³ÛÆX.9Èqo
-b0.†;İ:YXv]Ñfñ¾_"¾:¡GUR –v0As‹ş·{²Â÷y-¾Á€ !Ì¸i:ÚÑ´“Izƒ§¬æƒMÔ<dÁáI<óº]áÁÀp­zƒŒuî³°‡ïßH½ P¿ dNX3ØºM“wÿHÏp¨± İ˜Lt¾QUİ±ıqŒ¬iy–¹™A–¯Éµ'r¤é¹uwpÈ[Œ×‡“ªÜâÇDJVô3ÃÔÜ½¯mB½Ud ïSÔ^z6*!ÉO>Ï8âÒ¶Å¼pD¼½?ĞÚ“ßËç]qÀ#S¶°cà»TØ1ş•,-ÆçYz«D››µô»uÒ&Æû’´¨Û1d¬’*Ğòu„Ò™ó¹#aS~Ş	üÕñ7×ô¢1æªH©ˆ¦ŞßZ
-G*HœNãäpÅ«©^‚†%Û^ü¡ßWÉì!Bÿuút]dÄ¶:BWi–ë´ãpÁÖ ¦$)ğñûMÊê’—¨ºğû±2¸{¡jíGİ{‘‰Ø©ºÔMZ£$ÀRPtË };ÌuÜã,²ç¯àÌ4¸ºÍïóß‚C)UanœÎcÍi¯´'O;S2ëƒ'™”ï[ÔìëkÑ¼†5¯v‘/<\%°ã«_*®&¬#LôEuúIHûêâpM„õÍ¦¦ÜX{ûtW(6HoõPò¢wø^nQ,u®ÚÒv¥W7@;ÍÑg;¾ÚÕßm‘‰QÊü£^ø)¨6 5¨ùÖe4j(aš¸ƒæå)U•AˆZÌ‘ C‰\ œğûÄYj9µxtö)^ç–>Òjp:
-ô'€gO·‚GéÇ¥‡àFÆQ×ØşN„£qíõ^ŸüN}…©üIfÍå†WŞäCDı.ÇÆ±©‹ |Ô§±#øîÁ8{
-é/$8ÕŞ\b](ÃjFÀÏÂ)Â¿œÇ1—1=âB¡IOÿÈƒ¾Í*¦ˆ¯OËşõ®ùñ+Gú•¿ŞÃô)ÔZ2)Ğ:2ï*×këêÓáMRƒ¿“Îç…ïêô+D•|Ig~Ù3åcëÑA1˜²ÃæDMª«yµë–Í“ëínÈa5"u×®Œé¸ÇkOáÅ¨·(ÔìÒÇ_<½|WóT¼\­HõåğğzNÃšçVD|j!I:2:W××/G¼ÓP9æ3q?7ğ5iŸ´\#öÎkŸ”¼Fı+<"íg)ÿ¾Ô·V6Ôdš*¢Ã:\9Kšn?åGË·İ¬ÈNbÜG‹bz[çJ F£É±1dğº$uBıaİÙÖfcg´råÜÂ¿ˆ7H³lŸÔíCÌÌ Å±zÂ.:Å‡
-{S,ßØy)´ V,sç«ök#á$ EqÔ%×†FX‰õ•;ƒ˜¨3¹ùËœ`’ã·ÍfßLCÔşËÂeì‚{Ó8³ë§f!±…'I
-¸ş÷M ”Úİ+ï+”,ÀIIMøû/Âõ©ÃƒtŠÉ@Lç;lÊÛ7%U^=‚étr«….Ë©å)ì«[î’ÿ"ÅñĞÛ­tåØíØ“FšÒ«¿ŞközhpÀáyFë?,~Çş0Ä99ø;ıµƒxVz‘êÄŞıéø­#ˆ+Øøã¯È+1*a x/~ån¿‡òÄ®4]nüí„A¿W‘áÈÊäS>„êh¤8"ÃÅ,›ÓrÅAÕ‚rW×p¡H:SÑ”lbÀg_ÏkÖ·Øp^ªh³¶Z|²êã £ÿv5èş3_|Ìó¡.ù/Iø0_T,RuşÆKŒÓõÎô0õlà²@‡®Ÿú»Òˆ¢JË”ói„Œÿ²xãÙ¢ ¹Í³¬àUMä?OË,Råˆ‡GËtd·ÿ¥Bj>ÜpGp[ge3© ÛßÌz\ƒˆ‘iğâ¶·«Zö—òoõ%‹dú_ÒÅø}væRıafzõa®]1°Sæ€š„Ã[;5‹×€7§Šóş?æ{{Bo ’Zˆh—HÿÎhßJŞ¨:‘I„®·MQ™–ëæââÖÀûÛUñü „á¤â‚„ng½
-ì}kZ|ãIçôë+Â?«&çÉÚö‘'À±øæóš\o½Á-oçİx-Š¸èÍ7Ïûê“¨Ü`¤ÌZ¾6ù;\Å›ª¤ô«Æí+Ê× ú—şƒY­é‰H˜óRcSîµæf ı—J`=ŒÛ®gÇŞ‘m {°¿ÙTçN¼zõ¨‰KûQçnæá•FB&¾h#Øxüéœ)ÖHÎi9Éf»dÔş²›ªK®ÿ±¯¥9gı!ÄÛëÚÃÖÂÄ¥Ë$¨¥3ÛX¨§¢[¥ÎZøè`ÇŠ]‹ÿû6)ä4¢?JÕú' «²ZÔû\DÔÚåÖ»ÈÿÒ-œééµ¢‚ï\Azã+şup3ºÍ„I†~Cij_L›®ÛÖ€§Ğ«M’
-ç›5Ç4.»ÌÍÛÙ; ‹Î’Ã“N[C¢âªD…N¦Á9öD×²U±~±ùêğE‹Îf>¬µYÙ¾&]úñ†Çæˆ€ÓiªÓ{n²Oûp]Ê›œ·¡zÌ ŞEÉ«¨¨W—"]/P™ò‹““ã¿q‰J5Aaç÷Ób¬•ÆX…‰Àô„ª@#ê4´eğ@4óŞQ¶ø9Ù»ö„Øø^¡>°œ™¸˜€KnŸ>n¤İ/Ss ¼®^ÁlFñálö1Ú¶	îö™âl«§ŞEV—êEÂ3Qzs7b@&>1­ş›”ÿWòË.·áKm4<št‰ñk¾0šL5¬‚LñmC»óv›ö‰3`ˆM0iç¤œ(¾*„ˆA¡É½LôPI&Vÿ_KQÉ&Õ¬µ_'„5Ûçï^ª½Ùf¶àô¹ÓjN® <{á4Y8t^–7:Îé’ıLÊùÖxù-J)¶ZÛÇJ¤L³JÁÍmº|VšªKÿ‰xt>Ÿ÷MŒê¼#Ñ$¶Æ	ß>°
-Ok—
-ô…¶>à©ù&Ü?-?r‰iÌòi¶ó§×¿#OÌXe—ÔIıƒ›fı)ÌRküœŒšåëæ÷VıÏ%Hw¦&ºº,=¿ºïó’—Æç.w‰`–Èµ?ò6q³Œÿd§Ûßá‡hZô²Àã@	ùÍÚñÅâğ×R®İOÉ‘¥Ğ+%úÆ#¼_N¦›üö;ÏS¿íøæK2O-¡òlÒıxføa4Wû{–ªIYÎÈ7E§îõÙ Ÿ‘gãB
-‚Dœ`½rüp®‚Sä®"!J
-¡/©ùßèÈ×8işG	Å33Ï——öëÿJœ}A3/#£$“c9·öµ^oÈ¼¥BËsÙ‚-š’?!GQ@|£½œ&ÊÓ,ÛdÏM!G†ÿ‹ê;"²ÜšË¾ë„^¤´x6êV»êi²`õ•I‚#,Î•G¨¢¼\É&’]”ïëİdù_ù?}KÃ¯doäï’"©+â’q¢;è…!%˜+ãK^Ç#§^½Ú?ê¯?ÿíf'í7¾ú%²æ'$Á›ùÎÕ"n`UÈJ¥År4œÕéåªôü1âÏÛáĞŒbVÈÙ'ƒ8ÚjšÛÅ…/'ÃmNòó¼Áƒ	U 2LjFÖJËôŸáhBA· ‹rÁ\hÚ§8UÎ&Ùèâ 3¯
-ÁÌƒË-ú]k	ü¥ìš›¤Ä%õ¬Q…ƒ{©ŞíŠ™›Û
-¯!?òÛ"__Æ1	¥6=f§´ú9î¸›j¢KîH‚T}Ğikz6
-ÜªdØt»<7S‡YüÚ“Ê·&	1M‘*“É…×Eîp×ê&ê˜!v¿‰3î ‘ =u³½ıœG„áû:[}#?BÒIûòÁ~%š‡Ïş¾ ÷‹€ıÙ½İ–·?èUuí³›º$„Âß¢Ò¾Ì‹v1ìDõj¹ëÚKi‹:²ƒOöÚÇÉåWtJNÄ¥=HÄsôøjMÏÊ`üûfıÈÙÉ5«.„„IPÚ0ßQÃ—›èŠ5»Ã$£fjB¯–nW´
-Q8sŠ¦	|Ti–Åû8¦‡;¨…‚&ó´Ä>Ñ7eˆËñóêN+	LçtÉ°Z ®ñz†Ÿä!Í‚.]¢3%`¸kİµHyà¢M7×³¯ë DRÛa8­Ñ1Nmh«Æ/ºyr2bV#£ÛÜ¡áÉqõirMd›nrÈ)¸âD¾”KHÄG¾>E¹®!.˜Lƒc4€\¤ÎıÀ—çTK¨kQ½`©+³äV–ÁKÆËÚßEÿ‡÷ĞfxDZú•©2p‚ôÎø*k2h§–\%NjnXø|÷ãnÎŸÄi'€Ú‡\R\è$@y«xU–H	tØ	ÓèíZ%œOñ¥pƒ–çÿï¡rvÒóÆš@ôêöåö•‡¾tFÕœ(;9”ïöQ‰ØßVğÄ>0x¾KÌ•ô.$N¡ÈÁ*ç 5©•-8-üÜóÖÍÜ»K˜}ftb‹ŒãÜ.-‚ãQgÌŞ‡w¯øöS'rPo™Ôå,ÎüÅBa“dqãmÈ­‘óÿ„oa_Äæ)Tt^T[Hïì:îÕ°eZ¦æºÎ[AÀñÌA<ŠŒ‰%Õê{‘}_3…:£¶hî˜pá<ëê®Åkƒô˜Î-¥'áCÂÄí€Z§yLwÿˆˆZš_ĞÏ7‡(£ñSúTĞW¹# ÒíK‘v+)û»m&ÕÔ\>—"’D2EùúBväi£êè„ÀÏÙá7CÏqwzj—:F‰$yU4±³ºçK
-a$¤âà x5ß~¹¶%í™úKª23·YÛÖ‚õBš˜? ßwÜÜæÃİÓµô"Ğ>î¢hOT%æò1o¯ßqNsVSm9‡©äşYÍjI½
-mş¡'`×ĞS…·‰ÀúúNvW:CÉÓâP1m³0Ÿ­rìã²ç»‡	}GØ„J^LŠv_2Èü—Ë%³Rû³áÃV˜HàŠ•%šs©ÿÌ—§Ğ³#·¹Ğ½TkP%9,°öOÃÉâÌ‚–£nmJ•¸e;.>(·äGqÜ†\¶n/[ìçÚ¹7Ã ×S¤Ûr'â«dd\¿]¼›T.|Må}¿5®p 
-U"~	bÎ	È›Šbú ³ºÊ´a?tJĞ÷»ş¬zmğR­ƒ¨Êónáúç­Xã˜Tı^>W"LÉ<ÅU½¯ÅåE›‰?­şÒ”¤T•"ˆ÷ûLboø§İøYaÔ»ğĞø7È˜—öÁ¢MJå7[yÂ99V{ZÛU4YBñÕ
-ÍØ.à‹ˆ—¡O }åUJ8'a&E[ıøÓÔe— ›sGHÛ1Ø®s)<"}Ø;ÚUÿ*òŒ¿®g‚r7GÇ?PÇ˜GáîıĞnv§öthëƒDªS0â€—LÄ~.Ryâ~Î’d+’óvK¡›#µ/	&Wï¸·×ÍÆDÆ6”`—(å—ÜÀS9Â$Ö…>¬‚2[‚³6½Ó¾	ˆahkÚüRÓÏÅ^Ûã'ã¯Ïñê²ÿµ9Z057XÃÙ–1/s‡TmXóP¨±ZÊ‚xÕ=bŠR\lw=­Ì Ñ­ RÎ«ı›ñµÙj/Iú¸"Œõ‡G™‰}!ÃF#oø[9›¹Î- ú[•ŠI¢·Sxä¥À²«ÖéµàçDœŸ_½ê¥ÇŠACÒ:Î¹Ê…ĞC—?°dQ°ß)¯_rFZ!ÿªdŞ4Z”…ê‚!NÄ§w4˜¥€¨\-ivb¬¥–.š‡=oIœ¦	5Q#à,¼ĞÛ(«øXu·ü…} øHAØìû&y¸ì_ŞxƒòêöxS“İˆœş|%[dåQwyJ¡ƒ¼ÉİµÁA‘í9ÎT>ÕÏ1î™½ÀªGßàe}T¸¡j.°Ø¬"i›UDµâ¹¶-—(NÒ^‰>¥W”wM#‚`ÑûÔëÄÕË
-êlCÇĞÏ4€ƒA"ËZhK@z€¡1“Æ{çŸw;î!`1¯ü©åO,İÀaySçµò·aêÌ©ÄM·;HŞÏ¡áµ˜H)¨<qeyÛÎo»„ïÈ>õ<¡ã(B-‚Zx’ÌU°\}&æ®ĞFÃÅ'Ò˜Ä!ˆÅ–©*wr¯ø±™ğø&Kâ ®H<’ŸqƒF‘lÑ\Å¬²5®5è¯ı
-‡Ã–}ÛòUışid–H?„_o¦»óä^"l°tnHßóR`UAU„‘dİÏ]€¡ÔœÖ>5>.9*â.ÂP4œ£Áœé¯DñÿÿÑ««ó>ƒfÍh-èú‡ERWÉÈÉ–çğúaøĞkoX†¾G,©=â¯ G@3Ér3ñÇ&®!­é†ÄMU ²ÒÄ)	ß!Åéğ<ªT!¼óå†çî(Mwù>±¬9óŸo–Â1ÜÓ/bk…bëóÛg#à›Ky÷ó“Gˆ%\Ş]Oƒ€êÌë'ï»Á«@|öŠu&õl.\<;¾šNLÜ\r¨r§cLçš$ø¾~½Ç3uxt5¤ÄÑ§'eƒ—K8¢}Är/“ód<†â¿ÿé§¾²Q6û –Íz€D1_D<7í¯OBM¿+£ºQrğ¤¾‹±Lk™Ê$KÜ*ÖÌÌü,^MØà4º±,ÏFÅ¤%Š¹Ğ«ÛâáÅÎS´2¿0qŞu ‡~Á¶#ÿ'Ç{~“a*şVB†³cµÔÓ­ÛÕh_y#A{‹– å+¿n©ş°&9œşô$OY¶_ÍM½Nó«Vp.+&,ş˜ŒCSûªœ‰­zŒ©ÍV8N»zä1'¬¸y–ò5v§#¹®S2‡(eå¯WI¿{xªÂÌŠ£ğÙl&C’|G¤Çt ©Ó^e‡à\³O&5Ê5à_úV-\ú»ù‚EÄ»#:¦Ëô	u¸çdVVs¶Í³­6û~ät1ÃÔ©†N€ı˜ €î)'Î¿<ğÌ:8*õä¥%
-7›KOâ!—ÁÙeC¼³×|ˆo²zò²&›ÏŠÍœP#ÆÌSaPöŸZşª$$…Sx.¸7‡©’ÛZOVoa^b,‰ÅYŞ9*¬±~y®•"ˆ§VÄÕŞM>*‡SÌ.Ñ4Å©}'„¶Aª²´\L¥é"§øä®5Ú¿À^Õ.¼÷ú*£±dê;>^“GLrìm­İ5ò­*ï&£í$6ôMeØšÆô?[i?/Ïzâ:Dİ#«lÏåñõ s¾-·Ó©×‹ ®6ÁÉÇûşÖD¬_jX?‹îÆ;P4¶™õop¯¬©cûÛÁ·¶U÷Iab×FìGÉİv4+NNÛ^M—Ëÿ„ÄØ¹Lgbú†Ü#F§2d9Û2ÙBè?[KêRÿBÏ·Ûğé£ÿYê\H’õä¹M£µ§«m„‹E¬ğ^ñ'¡Š
-èŠúÄòr;­ëÅÿÛLûáWŸp6ä!Ä½Ó¡÷õ"_ÇrÂ;SØÜ_ã2¯‡ho[¼~$ásX¥†ñ®RèÓïhÛ¿›Ô5nŸÌ[‹‹^aŒ>]¢_³ûáİô×)™±.?Ö(SŞšY¨)õ4Ù$ˆlÀ8˜WQæ:oyAkˆ/7\ÑO ©„şüE:àC¯|¸á¨q–X9I><·Ü/7Ûø¼„5j´òsjÈ‚¨MCÚ™Å0Ù¨åU\ºnüp£Ò#È¸#Â3™ e¸ĞMÍ±,S¦:‚ÂöAœjdmh|³Ó-ş»<IİäFghµÑï”<FÃ.¿%2°¿ËÔ¢÷şl×]¯¬ Í,»Ûv†vıL®!Â‚+ûª™0§ùŒWªšrD¾»ÕGÇ˜»Ûã+\±Ìƒ×xn-Ù†˜zKÃ"ßOÎ~Ñ-¬d(*lÃr1—º¸j~I€P²s:$|ÕNœ{¹#îŸà¯š:Õ,•§¦ØxŠC8×n>ñ¿¡ˆÉ~å2±í=²ŠÇ'‘iï&$Òİzg¸õ5|Rö#Réì¦‹J° R=BUóK$º
-İ¡É’™zQôbÓÆ‰KØs_ææòNï
-\Î^åê<ê¹í€¹†Ò|˜(Ş~L$Øğ¹x1;ÌQ•óVŞsØ/]íï¯ëš¤…éıtXn†”«—ïÏğ’(‘"YÑ“[ÑtG*„¼ËJkQÆß_¢âİõEypDS¤'Ûìõ‰œÇ®Úäb2ì€ú§ &ÖW÷ó9èx	2(Â¸^L¶¢”Nt8î)zÔé «s.üÃğ‰=Éı×>êIgBÖ‹±iLÇR=>¹«œzüÕÿ¦åL-VõVğkÒ!HKeßŒvNÊG¬Q1Ò·€86fC§œût_¨O„ˆƒ"WËRî¥¹…¹I(zt$‚
-|	: q] i9Í_R•aÏF$iùFşœÎHF-~ì™cß².
-vJŸ&Ç‚ĞˆÓÔ-#ªØõ8á7zÓ}0ºŸ'ØÎ³ÇjÔĞ4åJëV…;õ1iâwæû;¸wÁ¿á­QµÚ—icĞ6z+UË°¬~%@j³ÎŒÍ­k(­¦:P$o	]m@r’Êöšƒ„#ÉÃ6#¹·,Gí¶4u¥Â3<AÑ—P1„æûl•V	$éFÊ› Òè3ñâ2Ğ¦hÑëœPÁ‚¤œcÚ»,’U&Cí†\ã1Lì%iA´Ìk;­N8È^íå~#¥L rqÊ@æh›ZªÀÅ“ç² JÏSÒ#ZR´)ŒüÁE”ò-â_›ÜÔ‚SPLrûXàånLªR²†GÓŞÏ­…ÉÌ\±?³m-°Eì ïñc]«d5µÓ£¿£³Ó¤À$‰_ÄX–äò’¾í]»ö¤CºT-À®¶dâ–ğ&½‰7{”ßÂ»¨Ñš9ÀU¢y²–2¶hdEÍÈ»Y=ìªr”SæšƒP!(Ú8Ft«W™„uÌœİ»Û7†ò[&KÁ:©.R»i?¶é®]œ‘ó‡)íEFÜ
-iI@¸" ¡ IAËM´È)}–Û‚Fùñ^5Ôoõ.àG ‰k œöÁí²™¡Šè6ÛiÀûà=Íz£“úÁU!Ø˜¤z¬:"òÎï.’MÎÍÁhûé‘'ş£,»¼Œ!Œ§âÆâ>,¥çê§NjÛø{sv05âås0x™7Sğáh0ãázÍ‹¤/îB©|}N•:k-%ãÜü¬‚£&êm.Çg4`%æ ãÊ
-’ŞrÏ.O¨A¯¤7ó€¢Y6€"éòpÓpPéêÆpÔ('c´‡³}é—ô£"e¶ŠóRˆ·+8×Õš?§jZ,ßt²‚„‚Ñ36¦À¬Px„œ’®ÉĞˆ:®Mİe:ğXi¯„6î–ÃN<§	Yİyóå÷7¶¶e áÜ¬u=¨ÌnåX·;y£S»#VKê…R èÃWôÕŒ´’^§ûŒ š7©rÕYJÃ$u“–ç« È®0¯ÔƒÀ(¸MßĞÆE©önoæŒ
-0ŸĞ°d‘Y&Vù¬…İ[büÌ*xœê¾){Ñ*%ºıĞ1ÖNğœ?¤1WÛs».ıB‚iTîd(çõ„3Ø%5ğÀñ¶i&||ÿ¢Øî©º>èQò
->©ìo	£k:ì¸€Ë_¡b!©—ş¸*ö=„»ì5S{K;ğJ³Î‡UQ¶àŸ¸®(şÂQœ÷<Íµg¥P#òY[™ñ`¦¤—Úü¡g‰p¢xA;äùhÚ®ŞÏ•LÙ™¡Cgw´ò¥éŞ›ÔÏˆËl‘:6-:Rñ–ØåM03f4¿ÉÓiğ‚sçXæéÆ¹@Î"J“©?™x;P1Š¢9™üÀU #2şô©Æ+¡óİqD<—ÇÃ5B›qñıÈ†%*zŒ[ğ†‚‰Lc†·"±¼E»ÕÉ9äçôv©÷öŒoË…µÀ{iilOÉO,]Sü‹2†íáaJÒ[ñˆ1ñƒW(.Ôà‰]“§§¬˜ûs³o±sÛœ0 -×ŸŒ­¡"¼y‚îÂx°rŠ3¾2õ\>V–ëŸ
-Âõ8Û±;:p×Ç™nV„  zĞ(ZÚMV³íf¨XAúc“áüİ˜œeİ¨÷”Ì¹Ğø‹%*å•Ş¶œ“ìEùKïSh£Ö×¹ñmı!£Ñ	J¦4´i±_ûÊ´v§¯ø1Êl–thãR‹"X‹Jx'óVPı*„8€jKTÁaÎ”{f>Òh¹Ù!Û?÷	)lâñ¼jğfªË°‚’F²ÒP1‡µ]ÛiñÎ9xt‘Åò¡7£ò–0Æ Lç…ô”qQº.|İÇ˜9 Â"„’5í³9¨½P”òÕQÔ÷Áp#?#¡‚ÌäZs%I+~?gÕùG„ØüS‘Ë0=ô¾y•}|k<És¼:m®
-ü{ÆŒÏ¸=œÔªvòÿ˜*ßTÓ±%SlèÅÉTRÀfø%DñT“]û¸vÍÌtZ4æà*n†A5 ¾>îõà‚K-U©§üÎzó	s¥v|6MıN‘ŞÛ°“?ÏxzŠö‹SĞl·³Ëæ[³ŠÕÚNúÄ¢½dÏ`*C¬pØv?Üq½NËtB'ş‰QMås6‘tg.¶ åUÅ´„ázÈ`–Hïyd1ú.ã'5ï¹Ç»ûK`q©¬3zí‡ÜÅ¨ `Mà£\uÙÏ)*èÃ1,*ºnjÁ\jf*·ĞJF@/¦MÏŠ@ÆÑ 8{´\Òl·_'5ÁÉ7@>¢ÜOcAZ?ËÌôŸJaÔ)ÅòµÑ`½oi=saù™›Êv'Jş…ÜÒâ„–Š±gBp†8³/YÜÉv‹±-À»pX§a_½à†·_S1¬™pèåÕbª¼ß0S 0'Èd•`Q|Q$ø³âÌ¼RoW¼Œ€T"Cìú=Qâ³õGaÍÈùôdÙf0÷g÷º€dC­TËaÕÔja' 5ü½‘³d?8T‰‰´…¬Œyâôõ÷=ÉJYì³[ğÔç–æ¢`‡Ãtmfõ#†ÒRŸğ†ø~T$Œ?ÈsĞÊ6©õ´ÓşÌ‹Ã’ë()gq=‚vlñİêùÊ
-2ó)*¦òÈ< ëE3œk7Uøœ—Q6¥<'…‹îÒÀ8ã5©±/œ[öí¤ +íc”Oª£Æ?Ksg€CÃŒMà†8!è–>.ó`ú¹P5ª©1çŒ„úœ/’
-ºšJMo ‚K[f¬ûÙÇËíáàŸ´ï} ¢ívK2H¶`êë”ˆú|<Æáo	\e6J­Ò¯\ˆ\›³âI‚ëb³¿—İ§É`§î`Ú“Ù7áuÛ	õ¡Í¦òO,1Zt¼ú`¢çè©!İi\š1ªq©ş¼£îagPÒ¯.-ŸÎ¨Ò!ÕòÏìLá!ÃÍ ±‰ğoÙ›!çªÖÒ­-ä/»¿/ÿ±Ty·,€
-ıFL–•T7¥“”©èNñ˜ıgéçÜ|ÒFIî¶$âoÇ:Ñú!–„5‚:°˜Ir|=;øA”éY$Ø(ûŠ]Ü=âØĞ>õ×U?mÅ‡Î¢‡^(j¿k¢:½)af¿ü…`¹6;Iö¯±œ¶ÓçtE#ì˜ÜÃ»ó‰±¼©r®ç’NR‡,L¦ şRWHÅQºÑAp|ƒV–¤å¶Ï$%ãJöµ/Ü†FLÛ2¥=T=s:#ÏzAk«$R´„•gòÍ+‡êÉ.}£ğ
-‘ `[@ğ£Ab¹4RQi¶£¹wk“>-£‡ªò—h"U(äÍÜšA*#ÅàhÄ}a%ã‰Ùî:^œ¯÷N±Kô½UÍpyª91CG5–ƒêJFÛ`l5ºÑr•\ `c3ÎÈ³ËdÖ¹{¾¼°DyøĞúîe</³ ºZÔ±d¸ªÇ«eÑq 0~Ze–m'ËŞIåKíöá0úÇĞì»¬j
-FÓ_ô|›"¯Üz¤q#ğ?h†X+WüPR[_B	,dÜ]Œ²÷–›Å¾3mYù»Æ~6Ï=ãÃ¿M–u%Ÿ<oˆ4c”¢{cc­[È¹±PjuÄC¿—ÑS»ä·é8¿,Z¨…ÔRwŒ¸$Õ|ptı;ÚTlLÍÀî1”;3¬fßµFß©9Ìõƒc<Pt–bOk
-XOÄÌ{ÎR­øN]¶W2Ï¿ó{rİêÒ°Ö6Ê—.&”£UÅÏ Ï• ¡kB®ˆëál‘ôD¶CB¶0O,|aXÿĞ×´ÑËø¦›6Hº˜Ìâ35áŞã¨zìo·ù2Ş9“a@1Ÿ…ˆˆpµjË{A”qİÿ—>”ÒÎ» ‹–ûó¤CÀµ…[W[æé]×ø2LO]¾çÕ „¾Xm‰W$TÊU€Ÿ§#[`c£ÒÃö¹‘r%«>ÒsDIiYb<¹àõ¡ºm×	İm|> „˜ıèeˆ'È@âkX]¼4ÉíÃ(Âfcúø_Uà3ÄÜŞ#©Ê»4|Qëâ)šÖ£½XÀc¦ÏıjÊıYòã6ä-ğjäzië<í@VyšFü%.Vƒ–ş¾25·ÛŸ¬ÍÑ¡°Ù“4Ê|hıwA¯¾ıÄÿ·´´Œİá´ JÏ~UB‘‘à~ØòZH{X´™Şe£Ÿ¸…–äÓ5(«0ƒgIğ”oe†èO×ŒÈ.ÛxU×ã)$å³GEÏûÌÂ›QÂS­™“‹Eà=`ı¬;ËŸgh=PÑs=R8yúuÌŞØiÌh¿&÷“w£/v~v~¶Äğœ]²4“1†¶">L_Ü!EgTl›²+n‹Ş )c¤nNë;BÀ¦a
-èŒçRm-Èìcµ¨^  ( ´	î³ª3‚İ›<¼A~-îÒ$)÷ƒBZ`ïj´q< ›Æ@ÔF\“y(Ï–e:aÅBØĞÉĞÍv@œŠR¡‰Û­tªìò(¥¤Óe8ª*‚ëåÍ=í4.2’•°s¼"Åş.~àŠZ ßëú8U´<©úN
-şñpW3½ÜÌÃªöb±fUŸ¹BWÆÓœ·èˆ¿·»ï[ˆ<?˜'M‘R”â­GhÚå@t#DìS'Q¾s$Él5^GË…<ëõwİå°*\–*@Ûu5ælı Iæ`¬ˆ€5ÿX]^Fòñ2	¯Î1Jz`­ Uí.‡qßğjøT.{R…k×Ågøf‰e‘<r¡‘èoiH8Ç÷EÇ’]ªtsª(6^&ş#.›#ÊvêaJá–FêŸÔŸV¨|½5m­T$~›¢¨Ltåi#šq‚[Âów{Ì˜ÿnø™\£-ãL»öNœËò‘TMDäSi šÖu²ˆ¦…ê%‘Ô¶¹Í[Ì™S¡Œ¼36¼’ÑVÈX	ÑgK7•hAÙàš¬¦Ô4¿ÉGé‚jõÀÉ«çÂ	,óéç ·$© ŒOlKºBhmwéÔšä9ÊxıX.‰ªvæƒ Ó9*±²ğ‰ngm’6mğä1¨¾8JûÄØ:¯ñp;T±²ÆÁN¤İ=5Ë8[N¤j³Œ)‚î™ë½ÇM$=qØæS±|A&¿Ö½›<>æ]æs;ºKÄ›Soe
-­VP	áqÒğ 2²$İ…?x×š1š†ú“™#û›n{½4•m—û9œJÜ
-Ø^v`IˆÓ“®ùäñ#˜ê.ëªÔ•¿Õ”(ôt¾4új ²%«í’4‡;L›&Ÿl1İéoa²ºªÑx7{]3aæyÄçDw-*…,n ÑçHè$«@—G±J¬LáÈ=Ïëë-°vË¢ 9v¼•mÙï´‚­@£ÏjáRË#BŞ¦îkªæãY7MH[Írîlj2ìa‘<v¼Š§ÌwÉÊôúT#<p˜¼0ÍLgzÃÉpPog€öW;´¸§“ã…!ÃõctA“Šæƒÿ8X¦cš\?e‰Ş`sWÀ³'×İicÇP(›İ±Ü³e”§Ûz÷’(ÒEÍ'Â¼hÿFtVŠ¥dí£Û›NĞZĞÀìşs^‘š¸yƒ•	¤[Z•iS°ƒ¸°9Ö­H¾±Y âÓö£Æˆ1c‹éª†Y”¹
-çÈM+ú­üÚöºlc¨«&†:$o×–BU÷P¥¼Ğ—}É‡?ÕXùÀºg¬RÉ’V0yYjlMZ‡¯§GŠD•Düiú–ÁğšaÒ(ÔCäô@…Eï’îôy‘ÑDEË¯ä‹$ñ‚KoaÕöÖŞ§\÷š{Æv/ø£•ËixxTÈ\İ ÅbˆÃ$ÊÉsÌŞyíËà½F„Ê «®³ÃöÃDë
-)’:UßG´L×ØĞZaªâU9è,ãüiÙ|:bŒÂ—?q2 Â´İ°ÈÈÛ7ñ\B ƒ9*I¨¯B¦‰3ì­%ayz/Ä|wb}Ş#ºì‰;©`3jÅ1$Ñ$ÇpÓáûÇ¿ôfÆmz`ÃÂ}5|‡yÉÀ]e#¸¯0Eã¯)î9ü»~eq¥ÏK\P¨Õé#m—Ï ¹JCª÷ºÈTÙ"H[Ò;âvÒEOö}ü„­©\BAZÂnî8	#ååÁœqèFQæ 	X;é\Œ3	°‹ëÖ;jº~ÂnÓ.ÙŞôéÈd 8lüÆT›¥v{ûŞ1W<;^”Î.©@9÷çµêªöí©5Î÷”İKóéôİø F,4ÛGFo®¸½°~Ò6©vÉÂ9&åüBí´ıŸö:µR+gú
-/ôLWˆx~é*c,¹?|z²û	7âÌPÊ¿ #66+Ÿˆ¸ëU<±éøkÏ§üyóÏáP@G€¢É _7Ò6DZÓÛ]¥»Ş¥1v­é²Ã|%š
-œÄ—Ûå‘bË=×håüÊş|Eùx‚>åÌø«=c^¬É¯`¼[hû.ò0Î"ÄáÕ.·HºßÅø¶Ï¥³‡%ó'»;	m€4yl²FF§¾•‡•ÙûvHB\¶™öÁOŠ›ü$¯3³|‡«oL @qº!:àkZ³q\(º‡ÁLéLt¨¶uóèv¥ª#j^©ILj‘vCËL®&Ôå¿Én~§	ÿ#T¥é:ƒwšü$Ã*ˆ¤¸k}d‡^oL?s¾¬Bµ[6qHÊJÎü¾´}SŞ³µÛ Ú>D)cáØ^|$ssj¾^4<Ûİ/Ğ¿s¹éÜtÒÌóïMŸm\­0Ñğ¤†¼ÜP†Ü´ŸKùæp·ˆ ÛÿûÔÉî¨ÙÃ±÷µNŸ²^|p¼¾™dr}à†Äºßğ;¯}°	 !"àvè×ñ	­fÃîq¯’G?Ëü İ8bC~aEL=œ:¢­ámğºİŠş {};úxı» q´Ê¥Éf\	uÙùtªÏÉ·J9©ô¦'-®Â=´ ©&/o­FÑ,ë3eÒ¬ÄÍ1p*\æ®§ü|‚i`xƒ7L«Ç–ì¢<¿ĞFÓãÁİ•›éâ‹
-ÿ”ğPPõ‚ë³w}à6Å)ç,ÀW‘ N²è-İ#¿'üIÇ€HX'$†;éš¬*ú‚±ÔĞóµrh×F;ìğæ9“zë"7l"nÆóÄîĞºu‡b²€m²r\rlgè'ìüø°¹•ª÷LV.ñÌÍÎÇ7‘5Áv$»Ñİ÷ 41c1_(h´×~i+2w‰v„„@œ-âff~OO ÿÚBØùbM“×2	m·Ct9ga9a¹øüV1ÑïVÔ©îÿhŠZ÷ŞÌ%bÏï~`°·ZP$øl0ÔYÌtİ,Â§rYÄ‘{Ç¨ék—IÓ"Æ …§ª &C?FXEŸÉÉhrà.|¸›L’µÖ|(¼sûìa,[¸TØ?"šŞH9KXE”ãBT©¿—;ˆŸ0ÑĞ1DæãÆ%±mìBÁ¸H‹ñÓ[î¼Ìƒkkä×ï9„ÛŠ²®kÎ),`¤ß}fQòÔîÇÙiÉILŒSXí½ËÜÃ,Ràõı¿ğù±¿’Á b™kˆÿ«\°YÚS·eßrÓ·Òšm{‚³ÁlúÖ{Àr"p²ô—/¨ÀÙŸO´R¼6fÅ¾X ÑôÓ1ŒjLk³I–¬—ÑÏ)é«´Ö.,e^ˆ÷IÏû3­Qèè´
-tƒ]±Y"Ã´¥—¸Ñ}¦Qd›àÌ±¬yIš*ÕZÁ6™ş²ÛÛÿªà\À|L¶l‰në•¯®SóG¬è“«”±\ôŸ—H¦Mğ¦Ë8¦ô³‰Ä]×6z5™\”‡W˜œ?¹«;dÅùA )fO ï¨FqdzAÑøôOø=pŞ¦N)‡w¸8¢«ş¶­óÛ”Câ/Ddşã¬àğÌ2yn´jW.ÑÃˆbTŸñFpŠ„oã¥ÖÒ¡moÊâ³“ %)5ºïÓ!Zd2â¤7˜È’Ø,Z•©PîâEN’ÕÜF%Ÿå÷î%¦²3»ó“4µ©õ pÒ÷²SıÇ×é¼L“`1oª.v“ÚEòJs±ï8ük9’Rv„‹®ŞáCô;Sq$1 ±­¨hI2£yĞû³ÉLêd²Îc["(S›Ä¾u“5zM²‚Ÿ)b5èØdYY`^(Ò±5«exæ?‚HæWºÓj›5¸º¿ù”ã/\İKÈH¤xåÙxteåX]Ä…ÆMÀì2\1½ªb€N-4-]FÇéJz5½o|ëş£Ä2Îbõ7õl¤Õ=„ÀÒßœşT‹ÆŞâBı=õz‰–§×ŸaÙTàövbMCvaÄãGÕWªó¾ë%\w‰-­é!Õ	ßãx¹âıĞäêEÎƒñ¤ËêÚ›c¡-äÙ•)2-á¯¦ÙÀµ“”3G¸ÿ3ğHdMKRC´z÷&L©f‡$»÷I-G;,¢°ùƒ™Vˆâ*Ìfı‡úœ«|`_‹ «k0¨:g6¸Â¬Òuü!]]iA[¹§­;m–ü5hùNj©üÒÀ9P;¿ğV¤­¿Ç‹ï˜ú¥ù#¾6XÉñ`fÿ;w;ˆéâóEqg‚É®ÔÒ‘vŸ½ãÖİ‘‘k*ÿ }åFëÕÆI5ÒâHV”z7I>	~Lš‰eù<?©Al¥o$go¸kV%Eùp=/ğÉŞ¢Â³`<K“=/u–Ş›*+¡`ƒ°Ür¬2‰=>XÑ]R\¼•U›ÿˆ~ÁØ#{Ê‹LÂz½Q¡-WxZ…“ +.PÂElbÏjp5î‚V{ïÏ¹³­©WSõ¸_l*"£¢Š‘Rç­Td;R[ÂÉNÆO Ì-Òô kÂŒ´ 
-ıO 5ûgê‡ª#+}[ÿ’Âi8wMoZ^ÀÒà£áÕsënô;ƒ¿TQ[%€®`b`¨jøàçi7sì}¡L¸ç'w±Fÿ oÈT®Óı¼.St¶lI®ú>ó $vÊ…ò³pnÂ¢£×¾Äâ?½!¥ ĞàÙ]©Áµö©I:h ô:¦ƒÓÎ";òäı†Ç¼0-¦¡§¼•2`ïü.áNMöÀ,kÕ ‚›–ôòøX3´;s|Ü1'ƒ-^Ÿìë Ó©S—lN]Já+¯_l¹õgCq‹ë½
-0êçd)®w–öÅœ V®6*õpSíÇíNµîuG‰‘Üe‚4;iJ%F ‰]‰ü‹âö^fmsF–êzHXÄ„ŒGØ«˜²!‡íßôŒÎIá%Ğç>Ñƒ?åÔÖ›Ö´˜XÔnüt(ó›ÌånwÃİG—¾ÅğkµØc¸åù&ïxYèmÊ3a$-kıÇ¾­ÒlSän¼;¤„0`}ç
-]îª¡²ûò/ÚÀîI¨úÁíİ¥ôßIœ´®¦ÒLs¦	7*í:ÿì<WÜ>Á¼Cœ/6¼Ã,ï„‚ÅÚæàÜm·ôûcµ/’TQD½5÷¯¶C4aö@Ô<(:Ô\FÑÚô­”DYÓÏ—‘×0qzóÍÙÎ!Y¶O‰¶¯Nº£ö5ÉM¤™(Å{~îvn:ğBºóCÌ×Ù’yÆo?²u¢è¡£^4ùÇÀš·y// SPDX-License-Identifier: GPL-2.0-only
-/*
- * kernel/lockdep.c
- *
- * Runtime locking correctness validator
- *
- * Started by Ingo Molnar:
- *
- *  Copyright (C) 2006,2007 Red Hat, Inc., Ingo Molnar <mingo@redhat.com>
- *  Copyright (C) 2007 Red Hat, Inc., Peter Zijlstra
- *
- * this code maps all the lock dependencies as they occur in a live kernel
- * and will warn about the following classes of locking bugs:
- *
- * - lock inversion scenarios
- * - circular lock dependencies
- * - hardirq/softirq safe/unsafe locking bugs
- *
- * Bugs are reported even if the current locking scenario does not cause
- * any deadlock at this point.
- *
- * I.e. if anytime in the past two locks were taken in a different order,
- * even if it happened for another task, even if those were different
- * locks (but of the same class as this lock), this code will detect it.
- *
- * Thanks to Arjan van de Ven for coming up with the initial idea of
- * mapping lock dependencies runtime.
- */
-#define DISABLE_BRANCH_PROFILING
-#include <linux/mutex.h>
-#include <linux/sched.h>
-#include <linux/sched/clock.h>
-#include <linux/sched/task.h>
-#include <linux/sched/mm.h>
-#include <linux/delay.h>
-#include <linux/module.h>
-#include <linux/proc_fs.h>
-#include <linux/seq_file.h>
-#include <linux/spinlock.h>
-#include <linux/kallsyms.h>
-#include <linux/interrupt.h>
-#include <linux/stacktrace.h>
-#include <linux/debug_locks.h>
-#include <linux/irqflags.h>
-#include <linux/utsname.h>
-#include <linux/hash.h>
-#include <linux/ftrace.h>
-#include <linux/stringify.h>
+		tda18271_attach(&dev->ts1.analog_fe,
+			0x60, &dev->i2c_bus[1].i2c_adap,
+			&hauppauge_tda18271_config);
+
+		break;
+	case CX23885_BOARD_HAUPPAUGE_HVR1800:
+		i2c_bus = &dev->i2c_bus[0];
+		switch (alt_tuner) {
+		case 1:
+			fe0->dvb.frontend =
+				dvb_attach(s5h1409_attach,
+					   &hauppauge_ezqam_config,
+					   &i2c_bus->i2c_adap);
+			if (fe0->dvb.frontend == NULL)
+				break;
+
+			dvb_attach(tda829x_attach, fe0->dvb.frontend,
+				   &dev->i2c_bus[1].i2c_adap, 0x42,
+				   &tda829x_no_probe);
+			dvb_attach(tda18271_attach, fe0->dvb.frontend,
+				   0x60, &dev->i2c_bus[1].i2c_adap,
+				   &hauppauge_tda18271_config);
+			break;
+		case 0:
+		default:
+			fe0->dvb.frontend =
+				dvb_attach(s5h1409_attach,
+					   &hauppauge_generic_config,
+					   &i2c_bus->i2c_adap);
+			if (fe0->dvb.frontend == NULL)
+				break;
+			dvb_attach(mt2131_attach, fe0->dvb.frontend,
+				   &i2c_bus->i2c_adap,
+				   &hauppauge_generic_tunerconfig, 0);
+		}
+		break;
+	case CX23885_BOARD_HAUPPAUGE_HVR1800lp:
+		i2c_bus = &dev->i2c_bus[0];
+		fe0->dvb.frontend = dvb_attach(s5h1409_attach,
+						&hauppauge_hvr1800lp_config,
+						&i2c_bus->i2c_adap);
+		if (fe0->dvb.frontend == NULL)
+			break;
+		dvb_attach(mt2131_attach, fe0->dvb.frontend,
+			   &i2c_bus->i2c_adap,
+			   &hauppauge_generic_tunerconfig, 0);
+		break;
+	case CX23885_BOARD_DVICO_FUSIONHDTV_5_EXP:
+		i2c_bus = &dev->i2c_bus[0];
+		fe0->dvb.frontend = dvb_attach(lgdt330x_attach,
+					       &fusionhdtv_5_express,
+					       0x0e,
+					       &i2c_bus->i2c_adap);
+		if (fe0->dvb.frontend == NULL)
+			break;
+		dvb_attach(simple_tuner_attach, fe0->dvb.frontend,
+			   &i2c_bus->i2c_adap, 0x61,
+			   TUNER_LG_TDVS_H06XF);
+		break;
+	case CX23885_BOARD_HAUPPAUGE_HVR1500Q:
+		i2c_bus = &dev->i2c_bus[1];
+		fe0->dvb.frontend = dvb_attach(s5h1409_attach,
+						&hauppauge_hvr1500q_config,
+						&dev->i2c_bus[0].i2c_adap);
+		if (fe0->dvb.frontend == NULL)
+			break;
+		dvb_attach(xc5000_attach, fe0->dvb.frontend,
+			   &i2c_bus->i2c_adap,
+			   &hauppauge_hvr1500q_tunerconfig);
+		break;
+	case CX23885_BOARD_HAUPPAUGE_HVR1500:
+		i2c_bus = &dev->i2c_bus[1];
+		fe0->dvb.frontend = dvb_attach(s5h1409_attach,
+						&hauppauge_hvr1500_config,
+						&dev->i2c_bus[0].i2c_adap);
+		if (fe0->dvb.frontend != NULL) {
+			struct dvb_frontend *fe;
+			struct xc2028_config cfg = {
+				.i2c_adap  = &i2c_bus->i2c_adap,
+				.i2c_addr  = 0x61,
+			};
+			static struct xc2028_ctrl ctl = {
+				.fname       = XC2028_DEFAULT_FIRMWARE,
+				.max_len     = 64,
+				.demod       = XC3028_FE_OREN538,
+			};
+
+			fe = dvb_attach(xc2028_attach,
+					fe0->dvb.frontend, &cfg);
+			if (fe != NULL && fe->ops.tuner_ops.set_config != NULL)
+				fe->ops.tuner_ops.set_config(fe, &ctl);
+		}
+		break;
+	case CX23885_BOARD_HAUPPAUGE_HVR1200:
+	case CX23885_BOARD_HAUPPAUGE_HVR1700:
+		i2c_bus = &dev->i2c_bus[0];
+		fe0->dvb.frontend = dvb_attach(tda10048_attach,
+			&hauppauge_hvr1200_config,
+			&i2c_bus->i2c_adap);
+		if (fe0->dvb.frontend == NULL)
+			break;
+		dvb_attach(tda829x_attach, fe0->dvb.frontend,
+			   &dev->i2c_bus[1].i2c_adap, 0x42,
+			   &tda829x_no_probe);
+		dvb_attach(tda18271_attach, fe0->dvb.frontend,
+			   0x60, &dev->i2c_bus[1].i2c_adap,
+			   &hauppauge_hvr1200_tuner_config);
+		break;
+	case CX23885_BOARD_HAUPPAUGE_HVR1210:
+		i2c_bus = &dev->i2c_bus[0];
+		fe0->dvb.frontend = dvb_attach(tda10048_attach,
+			&hauppauge_hvr1210_config,
+			&i2c_bus->i2c_adap);
+		if (fe0->dvb.frontend != NULL) {
+			dvb_attach(tda18271_attach, fe0->dvb.frontend,
+				0x60, &dev->i2c_bus[1].i2c_adap,
+				&hauppauge_hvr1210_tuner_config);
+		}
+		break;
+	case CX23885_BOARD_HAUPPAUGE_HVR1400:
+		i2c_bus = &dev->i2c_bus[0];
+
+		if (!dvb_attach(dib7000p_attach, &dib7000p_ops))
+			return -ENODEV;
+
+		fe0->dvb.frontend = dib7000p_ops.init(&i2c_bus->i2c_adap,
+			0x12, &hauppauge_hvr1400_dib7000_config);
+		if (fe0->dvb.frontend != NULL) {
+			struct dvb_frontend *fe;
+			struct xc2028_config cfg = {
+				.i2c_adap  = &dev->i2c_bus[1].i2c_adap,
+				.i2c_addr  = 0x64,
+			};
+			static struct xc2028_ctrl ctl = {
+				.fname   = XC3028L_DEFAULT_FIRMWARE,
+				.max_len = 64,
+				.demod   = XC3028_FE_DIBCOM52,
+				/* This is true for all demods with
+					v36 firmware? */
+				.type    = XC2028_D2633,
+			};
+
+			fe = dvb_attach(xc2028_attach,
+					fe0->dvb.frontend, &cfg);
+			if (fe != NULL && fe->ops.tuner_ops.set_config != NULL)
+				fe->ops.tuner_ops.set_config(fe, &ctl);
+		}
+		break;
+	case CX23885_BOARD_DVICO_FUSIONHDTV_7_DUAL_EXP:
+		i2c_bus = &dev->i2c_bus[port->nr - 1];
+
+		fe0->dvb.frontend = dvb_attach(s5h1409_attach,
+						&dvico_s5h1409_config,
+						&i2c_bus->i2c_adap);
+		if (fe0->dvb.frontend == NULL)
+			fe0->dvb.frontend = dvb_attach(s5h1411_attach,
+							&dvico_s5h1411_config,
+							&i2c_bus->i2c_adap);
+		if (fe0->dvb.frontend != NULL)
+			dvb_attach(xc5000_attach, fe0->dvb.frontend,
+				   &i2c_bus->i2c_adap,
+				   &dvico_xc5000_tunerconfig);
+		break;
+	case CX23885_BOARD_DVICO_FUSIONHDTV_DVB_T_DUAL_EXP: {
+		i2c_bus = &dev->i2c_bus[port->nr - 1];
+
+		fe0->dvb.frontend = dvb_attach(zl10353_attach,
+					       &dvico_fusionhdtv_xc3028,
+					       &i2c_bus->i2c_adap);
+		if (fe0->dvb.frontend != NULL) {
+			struct dvb_frontend      *fe;
+			struct xc2028_config	  cfg = {
+				.i2c_adap  = &i2c_bus->i2c_adap,
+				.i2c_addr  = 0x61,
+			};
+			static struct xc2028_ctrl ctl = {
+				.fname       = XC2028_DEFAULT_FIRMWARE,
+				.max_len     = 64,
+				.demod       = XC3028_FE_ZARLINK456,
+			};
+
+			fe = dvb_attach(xc2028_attach, fe0->dvb.frontend,
+					&cfg);
+			if (fe != NULL && fe->ops.tuner_ops.set_config != NULL)
+				fe->ops.tuner_ops.set_config(fe, &ctl);
+		}
+		break;
+	}
+	case CX23885_BOARD_DVICO_FUSIONHDTV_DVB_T_DUAL_EXP2: {
+		i2c_bus = &dev->i2c_bus[port->nr - 1];
+		/* cxusb_ctrl_msg(adap->dev, CMD_DIGITAL, NULL, 0, NULL, 0); */
+		/* cxusb_bluebird_gpio_pulse(adap->dev, 0x02, 1); */
+
+		if (!dvb_attach(dib7000p_attach, &dib7000p_ops))
+			return -ENODEV;
+
+		if (dib7000p_ops.i2c_enumeration(&i2c_bus->i2c_adap, 1, 0x12, &dib7070p_dib7000p_config) < 0) {
+			pr_warn("Unable to enumerate dib7000p\n");
+			return -ENODEV;
+		}
+		fe0->dvb.frontend = dib7000p_ops.init(&i2c_bus->i2c_adap, 0x80, &dib7070p_dib7000p_config);
+		if (fe0->dvb.frontend != NULL) {
+			struct i2c_adapter *tun_i2c;
+
+			fe0->dvb.frontend->sec_priv = kmemdup(&dib7000p_ops, sizeof(dib7000p_ops), GFP_KERNEL);
+			if (!fe0->dvb.frontend->sec_priv)
+				return -ENOMEM;
+			tun_i2c = dib7000p_ops.get_i2c_master(fe0->dvb.frontend, DIBX000_I2C_INTERFACE_TUNER, 1);
+			if (!dvb_attach(dib0070_attach, fe0->dvb.frontend, tun_i2c, &dib7070p_dib0070_config))
+				return -ENODEV;
+		}
+		break;
+	}
+	case CX23885_BOARD_LEADTEK_WINFAST_PXDVR3200_H:
+	case CX23885_BOARD_COMPRO_VIDEOMATE_E650F:
+	case CX23885_BOARD_COMPRO_VIDEOMATE_E800:
+		i2c_bus = &dev->i2c_bus[0];
+
+		fe0->dvb.frontend = dvb_attach(zl10353_attach,
+			&dvico_fusionhdtv_xc3028,
+			&i2c_bus->i2c_adap);
+		if (fe0->dvb.frontend != NULL) {
+			struct dvb_frontend      *fe;
+			struct xc2028_config	  cfg = {
+				.i2c_adap  = &dev->i2c_bus[1].i2c_adap,
+				.i2c_addr  = 0x61,
+			};
+			static struct xc2028_ctrl ctl = {
+				.fname       = XC2028_DEFAULT_FIRMWARE,
+				.max_len     = 64,
+				.demod       = XC3028_FE_ZARLINK456,
+			};
+
+			fe = dvb_attach(xc2028_attach, fe0->dvb.frontend,
+				&cfg);
+			if (fe != NULL && fe->ops.tuner_ops.set_config != NULL)
+				fe->ops.tuner_ops.set_config(fe, &ctl);
+		}
+		break;
+	case CX23885_BOARD_LEADTEK_WINFAST_PXDVR3200_H_XC4000:
+		i2c_bus = &dev->i2c_bus[0];
+
+		fe0->dvb.frontend = dvb_attach(zl10353_attach,
+					       &dvico_fusionhdtv_xc3028,
+					       &i2c_bus->i2c_adap);
+		if (fe0->dvb.frontend != NULL) {
+			struct dvb_frontend	*fe;
+			struct xc4000_config	cfg = {
+				.i2c_address	  = 0x61,
+				.default_pm	  = 0,
+				.dvb_amplitude	  = 134,
+				.set_smoothedcvbs = 1,
+				.if_khz		  = 4560
+			};
+
+			fe = dvb_attach(xc4000_attach, fe0->dvb.frontend,
+					&dev->i2c_bus[1].i2c_adap, &cfg);
+			if (!fe) {
+				pr_err("%s/2: xc4000 attach failed\n",
+				       dev->name);
+				goto frontend_detach;
+			}
+		}
+		break;
+	case CX23885_BOARD_TBS_6920:
+		i2c_bus = &dev->i2c_bus[1];
+
+		fe0->dvb.frontend = dvb_attach(cx24116_attach,
+					&tbs_cx24116_config,
+					&i2c_bus->i2c_adap);
+		if (fe0->dvb.frontend != NULL)
+			fe0->dvb.frontend->ops.set_voltage = f300_set_voltage;
+
+		break;
+	case CX23885_BOARD_TBS_6980:
+	case CX23885_BOARD_TBS_6981:
+		i2c_bus = &dev->i2c_bus[1];
+
+		switch (port->nr) {
+		/* PORT B */
+		case 1:
+			fe0->dvb.frontend = dvb_attach(cx24117_attach,
+					&tbs_cx24117_config,
+					&i2c_bus->i2c_adap);
+			break;
+		/* PORT C */
+		case 2:
+			fe0->dvb.frontend = dvb_attach(cx24117_attach,
+					&tbs_cx24117_config,
+					&i2c_bus->i2c_adap);
+			break;
+		}
+		break;
+	case CX23885_BOARD_TEVII_S470:
+		i2c_bus = &dev->i2c_bus[1];
+
+		fe0->dvb.frontend = dvb_attach(ds3000_attach,
+					&tevii_ds3000_config,
+					&i2c_bus->i2c_adap);
+		if (fe0->dvb.frontend != NULL) {
+			dvb_attach(ts2020_attach, fe0->dvb.frontend,
+				&tevii_ts2020_config, &i2c_bus->i2c_adap);
+			fe0->dvb.frontend->ops.set_voltage = f300_set_voltage;
+		}
+
+		break;
+	case CX23885_BOARD_DVBWORLD_2005:
+		i2c_bus = &dev->i2c_bus[1];
+
+		fe0->dvb.frontend = dvb_attach(cx24116_attach,
+			&dvbworld_cx24116_config,
+			&i2c_bus->i2c_adap);
+		break;
+	case CX23885_BOARD_NETUP_DUAL_DVBS2_CI:
+		i2c_bus = &dev->i2c_bus[0];
+		switch (port->nr) {
+		/* port B */
+		case 1:
+			fe0->dvb.frontend = dvb_attach(stv0900_attach,
+							&netup_stv0900_config,
+							&i2c_bus->i2c_adap, 0);
+			if (fe0->dvb.frontend != NULL) {
+				if (dvb_attach(stv6110_attach,
+						fe0->dvb.frontend,
+						&netup_stv6110_tunerconfig_a,
+						&i2c_bus->i2c_adap)) {
+					if (!dvb_attach(lnbh24_attach,
+							fe0->dvb.frontend,
+							&i2c_bus->i2c_adap,
+							LNBH24_PCL | LNBH24_TTX,
+							LNBH24_TEN, 0x09))
+						pr_err("No LNBH24 found!\n");
+
+				}
+			}
+			break;
+		/* port C */
+		case 2:
+			fe0->dvb.frontend = dvb_attach(stv0900_attach,
+							&netup_stv0900_config,
+							&i2c_bus->i2c_adap, 1);
+			if (fe0->dvb.frontend != NULL) {
+				if (dvb_attach(stv6110_attach,
+						fe0->dvb.frontend,
+						&netup_stv6110_tunerconfig_b,
+						&i2c_bus->i2c_adap)) {
+					if (!dvb_attach(lnbh24_attach,
+							fe0->dvb.frontend,
+							&i2c_bus->i2c_adap,
+							LNBH24_PCL | LNBH24_TTX,
+							LNBH24_TEN, 0x0a))
+						pr_err("No LNBH24 found!\n");
+
+				}
+			}
+			break;
+		}
+		break;
+	case CX23885_BOARD_MYGICA_X8506:
+		i2c_bus = &dev->i2c_bus[0];
+		i2c_bus2 = &dev->i2c_bus[1];
+		fe0->dvb.frontend = dvb_attach(lgs8gxx_attach,
+			&mygica_x8506_lgs8gl5_config,
+			&i2c_bus->i2c_adap);
+		if (fe0->dvb.frontend == NULL)
+			break;
+		dvb_attach(xc5000_attach, fe0->dvb.frontend,
+			   &i2c_bus2->i2c_adap, &mygica_x8506_xc5000_config);
+		cx23885_set_frontend_hook(port, fe0->dvb.frontend);
+		break;
+	case CX23885_BOARD_MYGICA_X8507:
+		i2c_bus = &dev->i2c_bus[0];
+		i2c_bus2 = &dev->i2c_bus[1];
+		fe0->dvb.frontend = dvb_attach(mb86a20s_attach,
+			&mygica_x8507_mb86a20s_config,
+			&i2c_bus->i2c_adap);
+		if (fe0->dvb.frontend == NULL)
+			break;
+
+		dvb_attach(xc5000_attach, fe0->dvb.frontend,
+			   &i2c_bus2->i2c_adap,
+			   &mygica_x8507_xc5000_config);
+		cx23885_set_frontend_hook(port, fe0->dvb.frontend);
+		break;
+	case CX23885_BOARD_MAGICPRO_PROHDTVE2:
+		i2c_bus = &dev->i2c_bus[0];
+		i2c_bus2 = &dev->i2c_bus[1];
+		fe0->dvb.frontend = dvb_attach(lgs8gxx_attach,
+			&magicpro_prohdtve2_lgs8g75_config,
+			&i2c_bus->i2c_adap);
+		if (fe0->dvb.frontend == NULL)
+			break;
+		dvb_attach(xc5000_attach, fe0->dvb.frontend,
+			   &i2c_bus2->i2c_adap,
+			   &magicpro_prohdtve2_xc5000_config);
+		cx23885_set_frontend_hook(port, fe0->dvb.frontend);
+		break;
+	case CX23885_BOARD_HAUPPAUGE_HVR1850:
+		i2c_bus = &dev->i2c_bus[0];
+		fe0->dvb.frontend = dvb_attach(s5h1411_attach,
+			&hcw_s5h1411_config,
+			&i2c_bus->i2c_adap);
+		if (fe0->dvb.frontend == NULL)
+			break;
+		dvb_attach(tda18271_attach, fe0->dvb.frontend,
+			   0x60, &dev->i2c_bus[0].i2c_adap,
+			   &hauppauge_tda18271_config);
+
+		tda18271_attach(&dev->ts1.analog_fe,
+			0x60, &dev->i2c_bus[1].i2c_adap,
+			&hauppauge_tda18271_config);
+
+		break;
+	case CX23885_BOARD_HAUPPAUGE_HVR1290:
+		i2c_bus = &dev->i2c_bus[0];
+		fe0->dvb.frontend = dvb_attach(s5h1411_attach,
+			&hcw_s5h1411_config,
+			&i2c_bus->i2c_adap);
+		if (fe0->dvb.frontend == NULL)
+			break;
+		dvb_attach(tda18271_attach, fe0->dvb.frontend,
+			   0x60, &dev->i2c_bus[0].i2c_adap,
+			   &hauppauge_tda18271_config);
+		break;
+	case CX23885_BOARD_MYGICA_X8558PRO:
+		switch (port->nr) {
+		/* port B */
+		case 1:
+			i2c_bus = &dev->i2c_bus[0];
+			fe0->dvb.frontend = dvb_attach(atbm8830_attach,
+				&mygica_x8558pro_atbm8830_cfg1,
+				&i2c_bus->i2c_adap);
+			if (fe0->dvb.frontend == NULL)
+				break;
+			dvb_attach(max2165_attach, fe0->dvb.frontend,
+				   &i2c_bus->i2c_adap,
+				   &mygic_x8558pro_max2165_cfg1);
+			break;
+		/* port C */
+		case 2:
+			i2c_bus = &dev->i2c_bus[1];
+			fe0->dvb.frontend = dvb_attach(atbm8830_attach,
+				&mygica_x8558pro_atbm8830_cfg2,
+				&i2c_bus->i2c_adap);
+			if (fe0->dvb.frontend == NULL)
+				break;
+			dvb_attach(max2165_attach, fe0->dvb.frontend,
+				   &i2c_bus->i2c_adap,
+				   &mygic_x8558pro_max2165_cfg2);
+		}
+		break;
+	case CX23885_BOARD_NETUP_DUAL_DVB_T_C_CI_RF:
+		if (port->nr > 2)
+			return 0;
+
+		i2c_bus = &dev->i2c_bus[0];
+		mfe_shared = 1;/* MFE */
+		port->frontends.gate = 0;/* not clear for me yet */
+		/* ports B, C */
+		/* MFE frontend 1 DVB-T */
+		fe0->dvb.frontend = dvb_attach(stv0367ter_attach,
+					&netup_stv0367_config[port->nr - 1],
+					&i2c_bus->i2c_adap);
+		if (fe0->dvb.frontend == NULL)
+			break;
+		if (NULL == dvb_attach(xc5000_attach, fe0->dvb.frontend,
+					&i2c_bus->i2c_adap,
+					&netup_xc5000_config[port->nr - 1]))
+			goto frontend_detach;
+		/* load xc5000 firmware */
+		fe0->dvb.frontend->ops.tuner_ops.init(fe0->dvb.frontend);
+
+		/* MFE frontend 2 */
+		fe1 = vb2_dvb_get_frontend(&port->frontends, 2);
+		if (fe1 == NULL)
+			goto frontend_detach;
+		/* DVB-C init */
+		fe1->dvb.frontend = dvb_attach(stv0367cab_attach,
+					&netup_stv0367_config[port->nr - 1],
+					&i2c_bus->i2c_adap);
+		if (fe1->dvb.frontend == NULL)
+			break;
+
+		fe1->dvb.frontend->id = 1;
+		if (NULL == dvb_attach(xc5000_attach,
+				       fe1->dvb.frontend,
+				       &i2c_bus->i2c_adap,
+				       &netup_xc5000_config[port->nr - 1]))
+			goto frontend_detach;
+		break;
+	case CX23885_BOARD_TERRATEC_CINERGY_T_PCIE_DUAL:
+		i2c_bus = &dev->i2c_bus[0];
+		i2c_bus2 = &dev->i2c_bus[1];
+
+		switch (port->nr) {
+		/* port b */
+		case 1:
+			fe0->dvb.frontend = dvb_attach(drxk_attach,
+					&terratec_drxk_config[0],
+					&i2c_bus->i2c_adap);
+			if (fe0->dvb.frontend == NULL)
+				break;
+			if (!dvb_attach(mt2063_attach,
+					fe0->dvb.frontend,
+					&terratec_mt2063_config[0],
+					&i2c_bus2->i2c_adap))
+				goto frontend_detach;
+			break;
+		/* port c */
+		case 2:
+			fe0->dvb.frontend = dvb_attach(drxk_attach,
+					&terratec_drxk_config[1],
+					&i2c_bus->i2c_adap);
+			if (fe0->dvb.frontend == NULL)
+				break;
+			if (!dvb_attach(mt2063_attach,
+					fe0->dvb.frontend,
+					&terratec_mt2063_config[1],
+					&i2c_bus2->i2c_adap))
+				goto frontend_detach;
+			break;
+		}
+		break;
+	case CX23885_BOARD_TEVII_S471:
+		i2c_bus = &dev->i2c_bus[1];
+
+		fe0->dvb.frontend = dvb_attach(ds3000_attach,
+					&tevii_ds3000_config,
+					&i2c_bus->i2c_adap);
+		if (fe0->dvb.frontend == NULL)
+			break;
+		dvb_attach(ts2020_attach, fe0->dvb.frontend,
+			   &tevii_ts2020_config, &i2c_bus->i2c_adap);
+		break;
+	case CX23885_BOARD_PROF_8000:
+		i2c_bus = &dev->i2c_bus[0];
+
+		fe0->dvb.frontend = dvb_attach(stv090x_attach,
+						&prof_8000_stv090x_config,
+						&i2c_bus->i2c_adap,
+						STV090x_DEMODULATOR_0);
+		if (fe0->dvb.frontend == NULL)
+			break;
+		if (!dvb_attach(stb6100_attach,
+				fe0->dvb.frontend,
+				&prof_8000_stb6100_config,
+				&i2c_bus->i2c_adap))
+			goto frontend_detach;
+
+		fe0->dvb.frontend->ops.set_voltage = p8000_set_voltage;
+		break;
+	case CX23885_BOARD_HAUPPAUGE_HVR4400: {
+		struct tda10071_platform_data tda10071_pdata = hauppauge_tda10071_pdata;
+		struct a8293_platform_data a8293_pdata = {};
+
+		i2c_bus = &dev->i2c_bus[0];
+		i2c_bus2 = &dev->i2c_bus[1];
+		switch (port->nr) {
+		/* port b */
+		case 1:
+			/* attach demod + tuner combo */
+			memset(&info, 0, sizeof(info));
+			strscpy(info.type, "tda10071_cx24118", I2C_NAME_SIZE);
+			info.addr = 0x05;
+			info.platform_data = &tda10071_pdata;
+			request_module("tda10071");
+			client_demod = i2c_new_client_device(&i2c_bus->i2c_adap, &info);
+			if (!i2c_client_has_driver(client_demod))
+				goto frontend_detach;
+			if (!try_module_get(client_demod->dev.driver->owner)) {
+				i2c_unregister_device(client_demod);
+				goto frontend_detach;
+			}
+			fe0->dvb.frontend = tda10071_pdata.get_dvb_frontend(client_demod);
+			port->i2c_client_demod = client_demod;
+
+			/* attach SEC */
+			a8293_pdata.dvb_frontend = fe0->dvb.frontend;
+			memset(&info, 0, sizeof(info));
+			strscpy(info.type, "a8293", I2C_NAME_SIZE);
+			info.addr = 0x0b;
+			info.platform_data = &a8293_pdata;
+			request_module("a8293");
+			client_sec = i2c_new_client_device(&i2c_bus->i2c_adap, &info);
+			if (!i2c_client_has_driver(client_sec))
+				goto frontend_detach;
+			if (!try_module_get(client_sec->dev.driver->owner)) {
+				i2c_unregister_device(client_sec);
+				goto frontend_detach;
+			}
+			port->i2c_client_sec = client_sec;
+			break;
+		/* port c */
+		case 2:
+			/* attach frontend */
+			memset(&si2165_pdata, 0, sizeof(si2165_pdata));
+			si2165_pdata.fe = &fe0->dvb.frontend;
+			si2165_pdata.chip_mode = SI2165_MODE_PLL_XTAL;
+			si2165_pdata.ref_freq_hz = 16000000;
+			memset(&info, 0, sizeof(struct i2c_board_info));
+			strscpy(info.type, "si2165", I2C_NAME_SIZE);
+			info.addr = 0x64;
+			info.platform_data = &si2165_pdata;
+			request_module(info.type);
+			client_demod = i2c_new_client_device(&i2c_bus->i2c_adap, &info);
+			if (!i2c_client_has_driver(client_demod))
+				goto frontend_detach;
+			if (!try_module_get(client_demod->dev.driver->owner)) {
+				i2c_unregister_device(client_demod);
+				goto frontend_detach;
+			}
+			port->i2c_client_demod = client_demod;
+
+			if (fe0->dvb.frontend == NULL)
+				break;
+			fe0->dvb.frontend->ops.i2c_gate_ctrl = NULL;
+			if (!dvb_attach(tda18271_attach,
+					fe0->dvb.frontend,
+					0x60, &i2c_bus2->i2c_adap,
+				  &hauppauge_hvr4400_tuner_config))
+				goto frontend_detach;
+			break;
+		}
+		break;
+	}
+	case CX23885_BOARD_HAUPPAUGE_STARBURST: {
+		struct tda10071_platform_data tda10071_pdata = hauppauge_tda10071_pdata;
+		struct a8293_platform_data a8293_pdata = {};
+
+		i2c_bus = &dev->i2c_bus[0];
+
+		/* attach demod + tuner combo */
+		memset(&info, 0, sizeof(info));
+		strscpy(info.type, "tda10071_cx24118", I2C_NAME_SIZE);
+		info.addr = 0x05;
+		info.platform_data = &tda10071_pdata;
+		request_module("tda10071");
+		client_demod = i2c_new_client_device(&i2c_bus->i2c_adap, &info);
+		if (!i2c_client_has_driver(client_demod))
+			goto frontend_detach;
+		if (!try_module_get(client_demod->dev.driver->owner)) {
+			i2c_unregister_device(client_demod);
+			goto frontend_detach;
+		}
+		fe0->dvb.frontend = tda10071_pdata.get_dvb_frontend(client_demod);
+		port->i2c_client_demod = client_demod;
+
+		/* attach SEC */
+		a8293_pdata.dvb_frontend = fe0->dvb.frontend;
+		memset(&info, 0, sizeof(info));
+		strscpy(info.type, "a8293", I2C_NAME_SIZE);
+		info.addr = 0x0b;
+		info.platform_data = &a8293_pdata;
+		request_module("a8293");
+		client_sec = i2c_new_client_device(&i2c_bus->i2c_adap, &info);
+		if (!i2c_client_has_driver(client_sec))
+			goto frontend_detach;
+		if (!try_module_get(client_sec->dev.driver->owner)) {
+			i2c_unregister_device(client_sec);
+			goto frontend_detach;
+		}
+		port->i2c_client_sec = client_sec;
+		break;
+	}
+	case CX23885_BOARD_DVBSKY_T9580:
+	case CX23885_BOARD_DVBSKY_S950:
+		i2c_bus = &dev->i2c_bus[0];
+		i2c_bus2 = &dev->i2c_bus[1];
+		switch (port->nr) {
+		/* port b - satellite */
+		case 1:
+			/* attach frontend */
+			fe0->dvb.frontend = dvb_attach(m88ds3103_attach,
+					&dvbsky_t9580_m88ds3103_config,
+					&i2c_bus2->i2c_adap, &adapter);
+			if (fe0->dvb.frontend == NULL)
+				break;
+
+			/* attach tuner */
+			memset(&ts2020_config, 0, sizeof(ts2020_config));
+			ts2020_config.fe = fe0->dvb.frontend;
+			ts2020_config.get_agc_pwm = m88ds3103_get_agc_pwm;
+			memset(&info, 0, sizeof(struct i2c_board_info));
+			strscpy(info.type, "ts2020", I2C_NAME_SIZE);
+			info.addr = 0x60;
+			info.platform_data = &ts2020_config;
+			request_module(info.type);
+			client_tuner = i2c_new_client_device(adapter, &info);
+			if (!i2c_client_has_driver(client_tuner))
+				goto frontend_detach;
+			if (!try_module_get(client_tuner->dev.driver->owner)) {
+				i2c_unregister_device(client_tuner);
+				goto frontend_detach;
+			}
+
+			/* delegate signal strength measurement to tuner */
+			fe0->dvb.frontend->ops.read_signal_strength =
+				fe0->dvb.frontend->ops.tuner_ops.get_rf_strength;
+
+			/*
+			 * for setting the voltage we need to set GPIOs on
+			 * the card.
+			 */
+			port->fe_set_voltage =
+				fe0->dvb.frontend->ops.set_voltage;
+			fe0->dvb.frontend->ops.set_voltage =
+				dvbsky_t9580_set_voltage;
+
+			port->i2c_client_tuner = client_tuner;
+
+			break;
+		/* port c - terrestrial/cable */
+		case 2:
+			/* attach frontend */
+			memset(&si2168_config, 0, sizeof(si2168_config));
+			si2168_config.i2c_adapter = &adapter;
+			si2168_config.fe = &fe0->dvb.frontend;
+			si2168_config.ts_mode = SI2168_TS_SERIAL;
+			memset(&info, 0, sizeof(struct i2c_board_info));
+			strscpy(info.type, "si2168", I2C_NAME_SIZE);
+			info.addr = 0x64;
+			info.platform_data = &si2168_config;
+			request_module(info.type);
+			client_demod = i2c_new_client_device(&i2c_bus->i2c_adap, &info);
+			if (!i2c_client_has_driver(client_demod))
+				goto frontend_detach;
+			if (!try_module_get(client_demod->dev.driver->owner)) {
+				i2c_unregister_device(client_demod);
+				goto frontend_detach;
+			}
+			port->i2c_client_demod = client_demod;
+
+			/* attach tuner */
+			memset(&si2157_config, 0, sizeof(si2157_config));
+			si2157_config.fe = fe0->dvb.frontend;
+			si2157_config.if_port = 1;
+			memset(&info, 0, sizeof(struct i2c_board_info));
+			strscpy(info.type, "si2157", I2C_NAME_SIZE);
+			info.addr = 0x60;
+			info.platform_data = &si2157_config;
+			request_module(info.type);
+			client_tuner = i2c_new_client_device(adapter, &info);
+			if (!i2c_client_has_driver(client_tuner))
+				goto frontend_detach;
+
+			if (!try_module_get(client_tuner->dev.driver->owner)) {
+				i2c_unregister_device(client_tuner);
+				goto frontend_detach;
+			}
+			port->i2c_client_tuner = client_tuner;
+			break;
+		}
+		break;
+	case CX23885_BOARD_DVBSKY_T980C:
+	case CX23885_BOARD_TT_CT2_4500_CI:
+		i2c_bus = &dev->i2c_bus[0];
+		i2c_bus2 = &dev->i2c_bus[1];
+
+		/* attach frontend */
+		memset(&si2168_config, 0, sizeof(si2168_config));
+		si2168_config.i2c_adapter = &adapter;
+		si2168_config.fe = &fe0->dvb.frontend;
+		si2168_config.ts_mode = SI2168_TS_PARALLEL;
+		memset(&info, 0, sizeof(struct i2c_board_info));
+		strscpy(info.type, "si2168", I2C_NAME_SIZE);
+		info.addr = 0x64;
+		info.platform_data = &si2168_config;
+		request_module(info.type);
+		client_demod = i2c_new_client_device(&i2c_bus2->i2c_adap, &info);
+		if (!i2c_client_has_driver(client_demod))
+			goto frontend_detach;
+		if (!try_module_get(client_demod->dev.driver->owner)) {
+			i2c_unregister_device(client_demod);
+			goto frontend_detach;
+		}
+		port->i2c_client_demod = client_demod;
+
+		/* attach tuner */
+		memset(&si2157_config, 0, sizeof(si2157_config));
+		si2157_config.fe = fe0->dvb.frontend;
+		si2157_config.if_port = 1;
+		memset(&info, 0, sizeof(struct i2c_board_info));
+		strscpy(info.type, "si2157", I2C_NAME_SIZE);
+		info.addr = 0x60;
+		info.platform_data = &si2157_config;
+		request_module(info.type);
+		client_tuner = i2c_new_client_device(adapter, &info);
+		if (!i2c_client_has_driver(client_tuner))
+			goto frontend_detach;
+		if (!try_module_get(client_tuner->dev.driver->owner)) {
+			i2c_unregister_device(client_tuner);
+			goto frontend_detach;
+		}
+		port->i2c_client_tuner = client_tuner;
+		break;
+	case CX23885_BOARD_DVBSKY_S950C:
+		i2c_bus = &dev->i2c_bus[0];
+		i2c_bus2 = &dev->i2c_bus[1];
+
+		/* attach frontend */
+		fe0->dvb.frontend = dvb_attach(m88ds3103_attach,
+				&dvbsky_s950c_m88ds3103_config,
+				&i2c_bus2->i2c_adap, &adapter);
+		if (fe0->dvb.frontend == NULL)
+			break;
+
+		/* attach tuner */
+		memset(&ts2020_config, 0, sizeof(ts2020_config));
+		ts2020_config.fe = fe0->dvb.frontend;
+		ts2020_config.get_agc_pwm = m88ds3103_get_agc_pwm;
+		memset(&info, 0, sizeof(struct i2c_board_info));
+		strscpy(info.type, "ts2020", I2C_NAME_SIZE);
+		info.addr = 0x60;
+		info.platform_data = &ts2020_config;
+		request_module(info.type);
+		client_tuner = i2c_new_client_device(adapter, &info);
+		if (!i2c_client_has_driver(client_tuner))
+			goto frontend_detach;
+		if (!try_module_get(client_tuner->dev.driver->owner)) {
+			i2c_unregister_device(client_tuner);
+			goto frontend_detach;
+		}
+
+		/* delegate signal strength measurement to tuner */
+		fe0->dvb.frontend->ops.read_signal_strength =
+			fe0->dvb.frontend->ops.tuner_ops.get_rf_strength;
+
+		port->i2c_client_tuner = client_tuner;
+		break;
+	case CX23885_BOARD_DVBSKY_S952:
+		/* attach frontend */
+		memset(&m88ds3103_pdata, 0, sizeof(m88ds3103_pdata));
+		m88ds3103_pdata.clk = 27000000;
+		m88ds3103_pdata.i2c_wr_max = 33;
+		m88ds3103_pdata.agc = 0x99;
+		m88ds3103_pdata.clk_out = M88DS3103_CLOCK_OUT_DISABLED;
+		m88ds3103_pdata.lnb_en_pol = 1;
+
+		switch (port->nr) {
+		/* port b */
+		case 1:
+			i2c_bus = &dev->i2c_bus[1];
+			m88ds3103_pdata.ts_mode = M88DS3103_TS_PARALLEL;
+			m88ds3103_pdata.ts_clk = 16000;
+			m88ds3103_pdata.ts_clk_pol = 1;
+			p_set_voltage = dvbsky_t9580_set_voltage;
+			break;
+		/* port c */
+		case 2:
+			i2c_bus = &dev->i2c_bus[0];
+			m88ds3103_pdata.ts_mode = M88DS3103_TS_SERIAL;
+			m88ds3103_pdata.ts_clk = 96000;
+			m88ds3103_pdata.ts_clk_pol = 0;
+			p_set_voltage = dvbsky_s952_portc_set_voltage;
+			break;
+		default:
+			return 0;
+		}
+
+		memset(&info, 0, sizeof(info));
+		strscpy(info.type, "m88ds3103", I2C_NAME_SIZE);
+		info.addr = 0x68;
+		info.platform_data = &m88ds3103_pdata;
+		request_module(info.type);
+		client_demod = i2c_new_client_device(&i2c_bus->i2c_adap, &info);
+		if (!i2c_client_has_driver(client_demod))
+			goto frontend_detach;
+		if (!try_module_get(client_demod->dev.driver->owner)) {
+			i2c_unregister_device(client_demod);
+			goto frontend_detach;
+		}
+		port->i2c_client_demod = client_demod;
+		adapter = m88ds3103_pdata.get_i2c_adapter(client_demod);
+		fe0->dvb.frontend = m88ds3103_pdata.get_dvb_frontend(client_demod);
+
+		/* attach tuner */
+		memset(&ts2020_config, 0, sizeof(ts2020_config));
+		ts2020_config.fe = fe0->dvb.frontend;
+		ts2020_config.get_agc_pwm = m88ds3103_get_agc_pwm;
+		memset(&info, 0, sizeof(struct i2c_board_info));
+		strscpy(info.type, "ts2020", I2C_NAME_SIZE);
+		info.addr = 0x60;
+		info.platform_data = &ts2020_config;
+		request_module(info.type);
+		client_tuner = i2c_new_client_device(adapter, &info);
+		if (!i2c_client_has_driver(client_tuner))
+			goto frontend_detach;
+		if (!try_module_get(client_tuner->dev.driver->owner)) {
+			i2c_unregister_device(client_tuner);
+			goto frontend_detach;
+		}
+
+		/* delegate signal strength measurement to tuner */
+		fe0->dvb.frontend->ops.read_signal_strength =
+			fe0->dvb.frontend->ops.tuner_ops.get_rf_strength;
+
+		/*
+		 * for setting the voltage we need to set GPIOs on
+		 * the card.
+		 */
+		port->fe_set_voltage =
+			fe0->dvb.frontend->ops.set_voltage;
+		fe0->dvb.frontend->ops.set_voltage = p_set_voltage;
+
+		port->i2c_client_tuner = client_tuner;
+		break;
+	case CX23885_BOARD_DVBSKY_T982:
+		memset(&si2168_config, 0, sizeof(si2168_config));
+		switch (port->nr) {
+		/* port b */
+		case 1:
+			i2c_bus = &dev->i2c_bus[1];
+			si2168_config.ts_mode = SI2168_TS_PARALLEL;
+			break;
+		/* port c */
+		case 2:
+			i2c_bus = &dev->i2c_bus[0];
+			si2168_config.ts_mode = SI2168_TS_SERIAL;
+			break;
+		}
+
+		/* attach frontend */
+		si2168_config.i2c_adapter = &adapter;
+		si2168_config.fe = &fe0->dvb.frontend;
+		memset(&info, 0, sizeof(struct i2c_board_info));
+		strscpy(info.type, "si2168", I2C_NAME_SIZE);
+		info.addr = 0x64;
+		info.platform_data = &si2168_config;
+		request_module(info.type);
+		client_demod = i2c_new_client_device(&i2c_bus->i2c_adap, &info);
+		if (!i2c_client_has_driver(cla@<ˆnooÔZâ‹?¶‰jÉB®
+}3aaN÷S¾å5¼@¤e0ÜN´¥*Ì/‘¼"vQŸŞ>‹)*=‡xÀ}´Æ¦*À#úzyÔä¾òÒuÊ\…tà]/e”BæƒÑÊ‡³ãŞPßïØÔúJ^IèÒ>±ã\]±–ÊEíæ•¯_9züÕTEÎzsôŒ7-Ø&$Í˜¦zÕ9Å°úäØ¹(¨a{¼‘deù0q«Íè|Ğ©âœ#Záü®{$`¤Âv±¬[o<©xfÉ>¿·Ò İÛRÁm´ÆÏËúF	t¦(Ÿ)Y•6‹F¼XüaXDÿ^û—lˆèm¶pË$ŸƒÓy×ˆ~%øf,Bî½&¾¢2ÊhÔpÑ§]¡,MjVjE])¨·ôúÈÓè$*4l2©Zµı5ÂqÉäï–b§GÈ\7Ó1DO#×M6<Ü·ûmBoacùŸì(ä"«-fBoe|Zò'-"À’Á$7Á?ğAR¾T;=£Fä‡8NÏv’›rP‚HMA›dáØ×ÆÒ«|³™²×ÚÛ+p¨Í¯z$#¡‰az°½éºÆ~˜/ú}Ìm,+µ€Y^]¶s3$âB©§
+íüE&½
+]–(ãÀÉ¬ÚáYoeÜBÈæ9wÓA)z!±p‰‚ŒK;¨o(ÕÇ€Yï÷±}õ{ØÂ8% z§¤y¿²¢Èw&êÍHÙôp‰€˜è÷¤°ñAGyOÁMeŠøGXÿÚà©€+¼LçN öøàáàRxÅÑ)},)f¨
+1şÑ§tr§\rŒA³ƒæ°§ê)òCGxÎºvŞÄ¿_¢Ô|h*Œï`,©»to4Ä˜sÊ9o>ª5Ñ•„`+Úƒ	SGs.aÁ›ßôb"h·g‹`›Ò‰¢ÍJçd;Á
+ò^A]­S)I-_1/@/üV@(á Ÿ’nÒô…i½ïLÄR¢¶+ñæÚ‚²h\"2ÂX{Şøê»d+C‹›ò#ğTù²#@®3›İó§ÑŸù,“oCg_K	ÅÎ`?|—Îçk˜ÙŞ¦ÃvJvZÒ0:D²H(m8kdÙÇğÑéçñü28Úì§±ÕL¬dLå2#êà¶åEmys4UA<ËAz[Gx¨Ñév·eñ1ÃÈ9Æ@øÎÕš ø!Õ¢[$\ÅÇwıf»‹ÉŞËPpz¸aò4¤.còJ¡¯ û{I¯yÄ²ïË:½SöCácıÂÚ·pØ±²)Åğ€d~Ê/ÆYì¡(AÚ G´ùw‰¯æŞ¯ñ£KÜe0™ ßŠàş=zz¬³B\‹«¸nùvj­Áıu¼ë{\æsÅ‰ ¤)‚´­˜n&\pÁ­í5)üÂÉœrş¦ıRgZÇe„”Id¯Ë÷|mæB?ƒÅhñßañÉX =¯._–a÷†UôqĞ[ÀŞÂ–/š•şD)£VL·gøc…£ÍL};R+ı·zÇ#L¬XEÆˆº«mËùf“(dÍGç¯‚³"	%¥îª9âîSÑf"é¸‹sÍ„kÚdôä©ÁR¢‚ø?vk[û¿ÎØé…¡^êçÛ=
+„Èç°—ñş'ZÊöÍ’”;úı )<$'Ôö@&Ã¨Y¢‘³MşÃì©‹1”xïgò)Ÿ¤¬ªNL”M^²ûKZ6æ>Kµü!$ÓñÒ[LÓ9#mpÙ¢N
+lˆÄ ökyÕ
+å7Eqû HSØ	YdöÁë¶tëãƒS‰ÆŞÿOÓAÔéù½$õk%ÑdêQH"jÓo2ø'NOm"AÕ9|ØAAúh­pøA»óÃT9Š­»Ù¹OuÕ²¶RÑ+àÌu>ºèJ…á”Y‰½O®C–F–hizy1k@„]LéáŞuÜğüf¢Zpê7øÂzlöEq7xÓ=%•‘T“ÍRqäDK2åÚµİºN>ş{	Ú€î¡ç‰"|„ñÄ`á/,¹e}./Ír+›¶é¥\2÷©/Özf«äj+<ñß›¡¨Ös™Ã'Rì¨Ø:ƒØ‰’“|Èœ¦,tàhöŒœƒ^Ï#ñÇ	;‡ÿÆªõôaõqİ51æ;­_9 ÿë…Ãİ?Nï¥tŠWø§QèÖ.Øë<í‘zw#]ı
+ÿƒ5‹1Ô’)y¼1ëàıIæÃ¨:*ıo@§V@â§Ø¢UJ«I/ôcÉ½¾.Æ?Å­i•e(@ü™Yğd h“òÀª=÷†OŒ6À_Rcê6Úá§¾µ» ,UGÃã„şáL@@ª°Ã»d>ÑœÕ²MFÅ£ènüN?Û¿û%#M›Ñ­™îVæİŒN-GÖC@3vR°º@ê"}ÀóUü6Ô',‹İÊnfœ¾§É×P¿@w0n´8Ëac;ÃX©çšŸµ®ãuYæ,×2Ô´^uà½l"š[¤áxB‹¤)%¿ˆ× áƒ“?T”Œ²yÔYöÙÜ±ÃCpÊ"„röA¶×ÏJ`€9¿§œõûÁà<Y1¹tj;†—^®]ÜœŸìH™§UD¯ñ¤y9†ÛI¡ãí6»¶Uµ(Å¡ç·t¦¤ú‡Ûl}’×Bü$s‰|b††ûİ´JŞ–<f{Ê¶¦Š]ãÑ(wàæîeÈ°Gƒêøÿà ÊÙW´bs(¹!%#Ã÷i&8îù—Ôşñ_ÈÈ}ÒT]³AG,ÚZ„ÿFmÒ_,íÅí*É<â°7‡ˆ”K,§áXâÖ+s«¬8q5œ?Z.TUk6½E?z=ËpÜİ<½ş)Å³Š2%E†ç”­ö4CµÜíÚÏ í—†T¬ş»¯dCùæÄà½ÅWDìVc2ÅLX£˜+á3˜TÁÕMúlìY‚¯”ã]™ O“¬ÄdÁ”ë&mòC€6¦ôŒ©©jìA3ç+>;öåç
+Ï“PJØîR’€Ï¾²qm¿SM~Î¢EšÓÓc&–dGözï¤"[QÊ45Øòá»Ü¢ª*\ï#Ó1tŞª,¤ÌOÔ&Ë2^y¢÷uø„FTØÖúÏ)‰Úpæ0Eu	ÓóÄòGe^HWğß×¥ k—yvQA-Î°[ıÀª*¦=ˆÊÒ‘-2=˜¿ÂUòJ0²ëÎÒóQãÓV•WÿÁËNá·­Ó‚ª9:¥Á#ï3*~™"1A À¶ŸPXÉgú;%°Òö?ØwƒŞ«°n]!Á;¸dÎÊÌ°µ0_ú®áeö Ë–§¿Šş9˜Ÿ3O$ƒ[¾ÔÓã
+š¦Ìlx;(šI[;ÌÉQü~¶v¨—rÇ:Íem»[px,([R£ yÿÆöÚ§BıcšÒ¤­ë¥É[p³æqcbÅ$+4¹+‘İ‹]GN×zÆp„Í!¾c(4ùóû»‹¾M=¹»ÈdËğ0à2„½¿ûNGÄ_ØĞ,„~Ÿ«»"<‚´n—ç¹KRŠÕx¨ÂŒT<Å¯ıTb>®K2ØÕ¢D ,6¢„¢ÆŠ'Ş=p‘vÿNt´PBu¢Zíë:ìÑ³±J»ª?SPı5¯q—UÁÔ	lO{5ú×£ Œ8z'8_Mc7¢&Éã2óQŒãE(Õ¡î«iğ”Úõ$×íE)ºù¹Å{t²ÂYPw|¦;!¤çd’#‘ÿO[Ş­÷	ùF+^ÀÒqÎoûGs³ı¯ùJÃË «å(8;b«á¼¦:Ï‹js^gZfË„À„ÊF²~¿iWûäúù@5›T.B€Şüqæc`éFBçÉ·&dñ÷´{	§Hi…{/C)¼‹3Å‡Ö^ºå£”x¶w§Á•P-¡Lû³à¹·tQOï›‰y8TÌXöà¦`1ö&†öŸhïÁéV»p{Vš¸Ô[=£(9 Xºû[RM ´á€Z{Ç…GWb'n:¿¢în[MĞn{	Ê~Ë0k_-è½õGbS)ËöÿW´ëøTÖ¤µåô;œ:®ß¦C‡Ì´‘#‹‡V¿üÓÁæZ%tr&9 IÎr¯Úƒ‰5şX™ÒƒKôÓîP”Ôã±6¬@3á>8«ï, áğ~ônPğXÃHAPªĞ¤éÃô‡a5Š§hE¯zÚÂá™ıDpXœ(Aá­:0Gc¹Ğ±oÈDGŞÙ	š¿Õ<4€“˜
+kLå›¼Ş9qÌôûøù†¼Ô( Îeœ9á9	Ôn¼…±“@NPô—ºÉ¯ÕŠ­*ò¾µíbï}Æ¦˜’HÌ­«P\‹ô‚ÁG`O“7&b;¤C–l(í28ı~Œ‰5‹¬e4à£ÊÒ{€ùæ¹?„ôD7iÏ6è;„ÌYyõÅif[DÆnK?”4Äæüä,†ú±`hnÅ¢¸tÉmÁÈKõ¶ad‚e»K;‘JF2/½õ¹;Ësé¼òáfbÍøSpÒ€hvB|Übjƒo;vmM€œd¡lHë|$±Õ$É …CGÅ}Ro‰^³~<Á,,=ÜŒ$¶TÜşôÓa}¤çÂ´05!'Yì¢hıáôÙ˜üĞªÿ:›Gç:[ö¢®d>²Õ¤SÒ=zöÛrRi‘ß'Ö-•eO¢vŒ‹¼&”üXß+†¿<øŸ¸FÛYB™@AN$ôÍ™•š¸<=T˜ª£Çıwí[çL`_ƒÀ­úÜ«¹¢V‰ÓA ¸†2ÄÆiÅbc™ø¦€ğŒ‘{ÒÎí³(²–ùÊg‹OE3ÜÓÙ`ÎÛP3ôH|Å˜‡R)6ÛRˆ˜•ŒzŒ± :qÊÓ;ûá_e­¼Ö
+ ^zbj›[@Ğlœ¶$¥V-êÊÓïşÛ(vYãDÙ2$~ê!NhøêQ X­lˆE:y&o”óKßí?2s§öï1Å‚d
+P¦‰*ì@/ÃÕĞ%‘ùÌ!~VY_çy÷l-§Qª±úA&2–µ—#,Â–Ç°æ€Ÿr²ß–šÙÚ1gzOM”ÄÌUÈ^sDJ+a}¡ÈëšŸÅÌ«ĞhƒT•§rx¬Oü[¥ñIÌqAÕ>'?Ÿ¶¯ìŠ˜ü
+»ÿ-Ôî£á5«ÆÏìmu(:&8ÚÚšº±?åºA¨Ş&÷†£dABÁù\ùÓ»Òó[£FùÉyämÇ&üqë6¦‘zJ)À@)oúó'±şÎÖ¬Zgş!rÂÖ™*šSBóÒ¨åpO­g}ûw¨FèC” &XÃª6¯ê÷À¤_ŞyàÅ×È	H¶¼›îQ¶lE[¬ó‚ÈMÇZ#½`yÿS)6v;) æÁã%õâDÕÁ6er->owner);
+				i2c_unregister_device(client_demod);
+				port->i2c_client_demod = NULL;
+				goto frontend_detach;
+			}
+			port->i2c_client_tuner = client_tuner;
+
+			dev->ts1.analog_fe.tuner_priv = client_tuner;
+			memcpy(&dev->ts1.analog_fe.ops.tuner_ops,
+			       &fe0->dvb.frontend->ops.tuner_ops,
+			       sizeof(struct dvb_tuner_ops));
+
+			break;
+		}
+		break;
+	case CX23885_BOARD_HAUPPAUGE_QUADHD_DVB:
+	case CX23885_BOARD_HAUPPAUGE_QUADHD_DVB_885:
+		pr_info("%s(): board=%d port=%d\n", __func__,
+			dev->board, port->nr);
+		switch (port->nr) {
+		/* port b - Terrestrial/cable */
+		case 1:
+			/* attach frontend */
+			memset(&si2168_config, 0, sizeof(si2168_config));
+			si2168_config.i2c_adapter = &adapter;
+			si2168_config.fe = &fe0->dvb.frontend;
+			si2168_config.ts_mode = SI2168_TS_SERIAL;
+			memset(&info, 0, sizeof(struct i2c_board_info));
+			strscpy(info.type, "si2168", I2C_NAME_SIZE);
+			info.addr = 0x64;
+			info.platform_data = &si2168_config;
+			request_module("%s", info.type);
+			client_demod = i2c_new_client_device(&dev->i2c_bus[0].i2c_adap, &info);
+			if (!i2c_client_has_driver(client_demod))
+				goto frontend_detach;
+			if (!try_module_get(client_demod->dev.driver->owner)) {
+				i2c_unregister_device(client_demod);
+				goto frontend_detach;
+			}
+			port->i2c_client_demod = client_demod;
+
+			/* attach tuner */
+			memset(&si2157_config, 0, sizeof(si2157_config));
+			si2157_config.fe = fe0->dvb.frontend;
+			si2157_config.if_port = 1;
+			memset(&info, 0, sizeof(struct i2c_board_info));
+			strscpy(info.type, "si2157", I2C_NAME_SIZE);
+			info.addr = 0x60;
+			info.platform_data = &si2157_config;
+			request_module("%s", info.type);
+			client_tuner = i2c_new_client_device(&dev->i2c_bus[1].i2c_adap, &info);
+			if (!i2c_client_has_driver(client_tuner)) {
+				module_put(client_demod->dev.driver->owner);
+				i2c_unregister_device(client_demod);
+				port->i2c_client_demod = NULL;
+				goto frontend_detach;
+			}
+			if (!try_module_get(client_tuner->dev.driver->owner)) {
+				i2c_unregister_device(client_tuner);
+				module_put(client_demod->dev.driver->owner);
+				i2c_unregister_device(client_demod);
+				port->i2c_client_demod = NULL;
+				goto frontend_detach;
+			}
+			port->i2c_client_tuner = client_tuner;
+
+			/* we only attach tuner for analog on the 888 version */
+			if (dev->board == CX23885_BOARD_HAUPPAUGE_QUADHD_DVB) {
+				pr_info("%s(): QUADHD_DVB analog setup\n",
+					__func__);
+				dev->ts1.analog_fe.tuner_priv = client_tuner;
+				memcpy(&dev->ts1.analog_fe.ops.tuner_ops,
+				       &fe0->dvb.frontend->ops.tuner_ops,
+				       sizeof(struct dvb_tuner_ops));
+			}
+			break;
+
+		/* port c - terrestrial/cable */
+		case 2:
+			/* attach frontend */
+			memset(&si2168_config, 0, sizeof(si2168_config));
+			si2168_config.i2c_adapter = &adapter;
+			si2168_config.fe = &fe0->dvb.frontend;
+			si2168_config.ts_mode = SI2168_TS_SERIAL;
+			memset(&info, 0, sizeof(struct i2c_board_info));
+			strscpy(info.type, "si2168", I2C_NAME_SIZE);
+			info.addr = 0x66;
+			info.platform_data = &si2168_config;
+			request_module("%s", info.type);
+			client_demod = i2c_new_client_device(&dev->i2c_bus[0].i2c_adap, &info);
+			if (!i2c_client_has_driver(client_demod))
+				goto frontend_detach;
+			if (!try_module_get(client_demod->dev.driver->owner)) {
+				i2c_unregister_device(client_demod);
+				goto frontend_detach;
+			}
+			port->i2c_client_demod = client_demod;
+
+			/* attach tuner */
+			memset(&si2157_config, 0, sizeof(si2157_config));
+			si2157_config.fe = fe0->dvb.frontend;
+			si2157_config.if_port = 1;
+			memset(&info, 0, sizeof(struct i2c_board_info));
+			strscpy(info.type, "si2157", I2C_NAME_SIZE);
+			info.addr = 0x62;
+			info.platform_data = &si2157_config;
+			request_module("%s", info.type);
+			client_tuner = i2c_new_client_device(&dev->i2c_bus[1].i2c_adap, &info);
+			if (!i2c_client_has_driver(client_tuner)) {
+				module_put(client_demod->dev.driver->owner);
+				i2c_unregister_device(client_demod);
+				port->i2c_client_demod = NULL;
+				goto frontend_detach;
+			}
+			if (!try_module_get(client_tuner->dev.driver->owner)) {
+				i2c_unregister_device(cl$Få‘íAJë4ò¦eÙÈïÑÚ†ºX^è(”LzKIt-yÌqãÀÙöŸM–9ÿÿÆÿ„ùšóßG3ş‡ó½şTû^j˜Õ¾Mİtgüx•oÛCJˆğöİCÏZi7›'ì+æß<7âQN?¼œ‡m•~4yóeÿH§¤ÚûèD¦p¿„9Iã®y?X ¾kü=NT§èåBù(C7N@G,æX»Œ—¹r¬êßH«‚Ã³ĞÒæÂ€!bŸo®“ƒWá£i©Vv·—ëŸÚßfäòÚ9à†5<	bÕç³ìˆCEƒãˆd6m=`-l3$±DÂä¦Ôş­òd©Õ“ãFG‘m`ª¯,szkuÄçåîıN{z«w…İŠªc/ÇeY”LMë‘Yç×§mG‡uõ­ë™›­ŒHBpK¬Ù	°şæ¦Îô[¿J_;õ`¹Ø&$¬ò È	é7§jl’’vA²£?/°N
+„¶Ğ,©Ì‘:o©V›4]¤<Co¨Û4¡¹ÑÑµB=ÇáyáŞ	‹zÔ‘[B½yÆìÿ‡»Ï¦†â³œt—1)ƒ´Ï{*ÉÑ)ûŠ†õõgôÉd*iM	•î´/õ?­0ÿi-!F^6¢ˆ8½ô™’áŠó•¨ ömÂÓÊ¿¡Ö¯ï+ˆ#¡½5Ç”°eìŠ¿0,²¦­åoú­xEñS3Ë®¢P"}ô7á·;ôV¦?ù"ÅD^ ¡£úÒRæOEºemŸ ê¹2	+¿Øšáµà<üóƒ ]İ‚ƒ4@K^5³¯€¾ÍRışŠó¿7hT†â>7ªÔw•´.£51‹ıêF¤ƒ¸b’çÇü˜“MÁM`ºãıÑÿ€0y_˜#Œ{Ñ
+ZŠZ¬lï›ô:Ú^ç¥òp”4ë·š[N'Í¯ñw QpG·¬—2¢l>Ú¤4 ¬o‡\ŸsÁOˆ ™Z|
+XQxL·‘(]è%†ˆ‘Ú+I÷{/ZÂ…vqC- »¹·Ñ¶MmÄÊİñ_^ û~Ş“cº2,)qã^˜ºåé‰Å	¦@@L°•¡\Õå9¬u,§1v$ô_ÄöQ¯KèUá·mçÀÖ-1‹öcIlšdj7¯T0«_ 6Á!A³FË.æš ñoC«Ñ#N Ÿ.êşšù1# 	÷ˆw0>$„œîK¼goš€şî•Î¼Â¯üi-$÷~×®wi&ÂºsQ˜
+ı–¯¿ü/!ÂC“ÚF¨ªØ*q8ìÑÛ¬îøî3É>€{Sq]Ö’DLKÓøuüÍ=ôÏwÉ×S2-s#T²XÂ
+­pjC€”[Úp…wìÉà°í5¢òCµa~÷pt¦‘VÜ¢h¯Ñ¬»L	ùô1a…1qµSûŠ>(<m?üâûæà?ğC“Ñ]7?àá_pİ›8§ ß»rfìs­ “ò,1^döXéÄuŠ=´éÂ%k¨İmQAÎ‹G…\ˆË’òrùÜÉ$êµ8"×-µE,Q\xq9@31	=m|_ºıN¥ø RÃä°{I@ob¸ŞØiÑ?‘.Œ…°4á´ßø{Vtæƒ‡?DäàÓ8|•9ÖFßEjlùcõ*å–…8Ü¹bW.o¤Æs ²
+.oí¥nqr‚n]¿'4¹Ø’ø›Â>İXÇYB,4ÙgĞ+|~,Ã%9‡¶Ûàµ1+ğŸÅÄaHòĞğÍQl×ï!;áË˜è"*pˆ)é…±]kK0­šO|÷Wğô¢.]ªy¤èŠÆ\DTºGhÁ9®Ó²q?•{aÉj€9v¾lİ AÈ,1è…‘.Š:K\
+.ÄxÃ§á¡õ|GŸÖ<¿i÷´F‹õ"á¢š}ß
+£gÊ4€O
+°§S‹gÿIÄmÈ$V,ª¸îètp/f^ŞÇ1'jÃó¤üC#øÓçˆ1J¦Õ›óårìªí×!'µ
+ ")uÿz£Zs¢¹ñØ¶õ[oË‘ê~¿Ê¤‰¼Av(ÍÛ5å!Áˆ£j½–Z2a	!L5 R.%³›ÙØ$,ï½îß°cÌ´U.†0	…0Î­Õğ±ö˜Şçjx¥|+1lS¬¤r_:şµø%•_L’²“ì4qT¤>u\½u{&-)8|'­ƒO£.óBó¼9'Ã¨ĞdÑæ©3Êóß¢	³	ÉÇ€\â´•¤2Å¼·ôKœ^¢ğİÄLVF²¢|¼I²tj%'=ærtO¾êuäpkrqèıYœg^“µ>.€‡Ê2G7@£Wß¿·ÀªRù:æĞW$Œüë”C[‘Y m³òØ)¡Ë›šöTŒ~Øó©Â¨ëÏ“lÚ ñæº“uŸ-õ¼OHT¹b:‡£T§L¡ÿ  c¼Ô) R8ûv{¡RÎ¶xkHºß‹şŞ#ºí2ÍËp:t%¨\+1ıùB¹¨^˜Ú] gRtuƒ_yş…ïÅïy²v>8GVHC³Ş{œø™}@“Gõ ”×°¤(5½_µ^êIû2³ãNü<ØÍ«¾iPk0JæØ“Á-Š¿ë½ZXò‹²d»e)‰†ì[ù!Q¿¬¥n»ÇıüÿÉn¦M<Ï<¡=Ô­ºJuåÀŞ
+Ôƒ¯
+*N$'›<¿1¼°OŒ±9h<'!³yåWl¥NDÁüÏÅ
+ãÇ)NŠ˜ã+?¦ëçõp~ØMBè½ÈPZ›üc€¬Ì XFôîÉ®7~-öáà¡¼bŸq
+¹‹Ä×‹ÎÏ>fíDç©Ö)MHÒ¬ŞiB\¢ì,¯z,İ9Û"PhÔMôT…²j§‚£Åõ_3Âá(K$#òÓ:Cñƒö:±*‘KmŠ‚ ÕDÍÓL¤‚Ÿdzk·|FÒ¹ƒó°mZ);­3€^ku|`k*˜FõÓĞ!ËP“¼'¾Å1•¿ïUSMb‡ „GLÅPqÙ ×"I@+kFº
+NºËp«á†ì;Ø†¥‡4¤¸fª«KoáF&iÈÊô¸°ìAU|myµ¡;%İc´IcËÄ!—˜šYˆh(Áˆ¶.Ÿ@rÖ2Ì»°qR™É˜Å` 'qågx¥fŸcÿÜÃ,®zØÊ·Ø.Å0Qê6a‡ÆF[øg+KY`~.1H '®Ğ€øuÓ1%ôt´üÔB˜J¡4TJÔ¯ÈbaÚTZ¿!pT¦ñ9~fl'Sƒ=:õ•sÉóœIwßÔ½ó2³ËZÀ×¨U†?kN^C5Ûeü“t´&²…^kßm­Ş¦£X fJ&÷ã|äNàù¾EY3×ÿÜ¯üÛW‡Cá"ŠûM@Ë¤f8ezO-c@#ÚH=’˜ÜÈdá£ò„Ú=Lã/–ëşB´óo•M“•OŒp,ìÔÉa¢LõÓ‰áì(w¬ä™âT½ó9dMª¹dÛÎŞ´ÛËà-Q¿??Í›2Õ›$ï{?¢ûdÁZÃ—²E•€î~HçF}[­a´Jt>²Ã%
+Á=¦ªÎôÀ"éØTòWƒK?\®l;MğÓJWÿœáãée+†t›”P‰gÏàèHÀ’¬“¹† ™¸Ï ·€¯İĞ†ñ³Äi^Û²±xJÕÑéŠªidq¼Ò_®VÄò?óo«äµè/ÙğTtŠm-­jWKêË˜ªDáš£bÆKKæ
+Ç¼Ø&…˜?h@°C2PB¬`~,g?æ?ÅÓ½Wş,ªJrœ¹«zøÌ¡wßIdÁg¶y3—åªİ×Uø|²+ùæ	Û¥ãZ†!FfF»Z÷…/GœÑ’Áüåh¡ÔıÛ´âÛSrÉUşÄš?Cÿ¹€mçZCUÿ-Ô““Z3^È„uê	Gôù\
+õAÇp¾I˜‹Ûí³pråw‚…g©f9GIá¤Ì4j?¡ú/ûÆ£7hL5ÚÈs[€'rVzûX<eéHÚ×:FÆñZÿêŸx-ô’ãš†wÍÁQ+¥Ô.ƒ?ÔÛAûvvM»Ó,ä†‡1LfDÌæş…Ç½ìøëg.±1M
+ró1×e|˜Âê‡
+f°µz)&ó@İÊ6òÈò‡
+¯æÅ ­3>°f@Œ^ /­^>ëK¢‡¹ıÎ¦]t;QCÛÄ?_d1ß *LıËp—Í”—U¿-ÎgµìÈ(U½DL
+8ØÄÇQn>)ÚH=§Ô½]üªš?òHh‹Üu àÛ‘YókFø üÓT¸„ŠlKRt²ËÇefÚ¥~³êÍªk™ÏĞ5º.â#ß¾š½â#	6©±/·A¬Î¾QO{/L$ÏY<z®IIPnhò_è¬¹'È¼ÓöŒ¡~/Zu¤\ĞnŞúã’œ€ÕtÄ
+ª»*R]@Y_Ü_…±éµİqITj0»7ŒŸ-¨²áAÀöì©%ÎÏfxq8o•Ñ3tí7Š´2IGIÃ1ªóN£g€ñ`Ğ½›qö>)Ú‘¢¡şÓÅ5%«5A/sµô¼8i z´eZh¿fH­Si³ùyïO{ÊH}-ç {ûbK-¾Á¬SÌu.5B>k¬öH[¸6h,÷e¹¾£¬šâèp+céƒdÄMëò‰R²©‡ğUø4™3ÏuõÉİÄØ˜3ãîé#¦£v£®˜˜QÈ¦–oŸy
+ m±pM‘äâ¸>İŒú´Œm™Âj%C—åIp‘HH¡iï$(cU›°ú×hb]##0nqº|q2|‰zËû¾´G@’sqÿùS‰Õıêuì1‰rÁ{aˆ6şCĞÁY¾u:´*^—½ıec½·’\‰#{£~ JÌ™õşç$£Î>qÒÂ†÷)e¹@—¢w·ÿbjì"<ûúİ^Hó²ˆ³¶f–‘P:i¾™]Â¦İyƒß} ê'7ŞĞ5Ãt0pÀşšŠ{°5‡ë+XÿğDCP;Ê '¨ÿ/»/^•}¤ÌŞiÆà|¸+¡!o:
+ÉÈ­×ˆj6 -tÆ6&
+lecğG®Ñ 'd{ô<iø­…½J\i:-9eŸW­`ÖŠãÕ_rvÛõfÓ3VûˆŞn†	ãKåoÙ5ÇY§£S ‡I·T_Q¦Vï€DlÌcqT8ƒJ¿bgĞpóÏšŸå~´¥ª”£qxXùø/ÿbÒñ-¬¸Ôi“Z¯4l†Zí›Ü¨ˆğQİù½–A¿Ví.fSªÉ:Ñ«É-™½…‚_ëU¬0³ZÖàúTµû¤ì9“ó—¿.†åŠì6”ğ^B\…æwüé3wD    S‹p‰Ã‰ğèüÿÿÿ‰Â‹C	F0‰ğèüÿÿÿ1À[^Ã´&    t& èüÿÿÿ‰Â¸   V•    S‹p‰Ã‰ğèüÿÿÿ‰Â‹C÷Ğ!F0‰ğèüÿÿÿ1À[^Ã´&    fèüÿÿÿU¹   WVS‰Ëƒì…    €{ …á   ‹s‹{ÆCœ]ú1Àº   ğ±@º …J  ‰$èüÿÿÿ‹$…    ‹˜   ¨„²   ¸¹ èüÿÿÿ‰ğèüÿÿÿ‹F	ø‰F¸¹ èüÿÿÿ‹F(‰Â	ú‰V(…ø”À¶À¹ £¹ ‹‹FÂÿÿÿ?9Âˆ‡   ‹‹ì  ‘ÿÿÿ?9Âxg¡@¹ ‰ƒø  ·X¹ f‰ƒü  ‰ø#Fuw‰ğèüÿÿÿå   Æ@º  uğƒD$ü ƒÄ[^_]Ãv ûëìt& ¸   èl4  é?ÿÿÿ´&    fÿÿÿ?‰ƒì  ëŒv ‹‹ì  ÆC‹F‘ÿÿÿ?9Â‰nÿÿÿëÓv œXúÆƒ    ‰òÆƒœ    ‹NP‰øè0§ÿÿXéjÿÿÿ´&    v ‰Â¸@º èüÿÿÿ¹   é şÿÿ´&    v èüÿÿÿUWVS»   …    ‹ƒÀ  ‹{è]–ÿÿ‹S‹CÆC	 ¹   èù”ÿÿd¡    è®µÿÿ‹sœ]ú1Àº   ğ±@º uw‰øèüÿÿÿ‰Â¡@¹ ‰ƒğ  ·X¹ f‰ƒô  ‰ğ#Gu.÷Ö#w‰ø‰wèüÿÿÿå   Æ@º  tûÆC [^_]Ã¶    ‹OR‰ğ‰úèC¦ÿÿ‰øèüÿÿÿ‰ÂXë¹´&    ‰Â¸@º èüÿÿÿéxÿÿÿ´&    ´&    èüÿÿÿU‰ÁWVS»   ‰Şƒì4    ‰D$d¡    ‰D$1À¶Fx¨…   ‹F@…À„  ¸¹ èüÿÿÿ‰D$‹F‹@#F…Ğ  ‰ğè©­ÿÿèüÿÿÿ…    ¶Cx‹k¨tƒÌ   èüÿÿÿ‹=    ¶CxS@‰$¨…¯  ‰è~@èüÿÿÿ¶Fx‰øèüÿÿÿ„À„º   ‹U‰øèüÿÿÿ‰ò‰èè?‰ÿÿ„À„Ÿ   ‹$‰úèüÿÿÿ¸¹ èüÿÿÿÇ$   ‰øèüÿÿÿ‹C@‹Sd…Ò”Â…À”À8Â…  ¶Cx¨…á   ¶Cx¨…Å   ‹T$‰èèüÿÿÿ‹$…À…ü   ‹Fd…Àtx€=”    „Ÿ  v ‹D$d+    …Î  ƒÄ[^_]Ã´&    ¶Cx‹$èüÿÿÿ„ÀuH‹$‰úèüÿÿÿ¸¹ èüÿÿÿ¶Cx‹$èüÿÿÿ„À…ğ   Ç$    é8ÿÿÿt& ‹F@…À…}ÿÿÿë‹v ‹U‹$èüÿÿÿ‰Ú‰èè,ˆÿÿ„À…íşÿÿëšfƒÌ   èüÿÿÿé+ÿÿÿ‰èèüÿÿÿ‹ƒÈ   …À„«   €=4$   …   ‹L$‰Øº   èåÿÿ‹$…À„ÿÿÿènÿÿéúşÿÿ´&    f¶Cx‰Øè•ƒÿÿ¶Cx¨u¶Cx“D  1ÉD$èüÿÿÿ‹$T$èüÿÿÿ‰»P  ƒ@  èüÿÿÿéşÿÿt& ‹U‹$èüÿÿÿ‰Ú‰èè\‡ÿÿ¶À‰$é5şÿÿ¶Cx¨u÷D$   „`şÿÿûéZşÿÿt& ‹T$ƒÌ   èüÿÿÿéBşÿÿ‰øÆ”   èüÿÿÿ‰Â‹FdRPÿt$h„2 èüÿÿÿƒÄé7şÿÿ´&    éäıÿÿé)ıÿÿèüÿÿÿt& èüÿÿÿ¡    ƒøu!èüÿÿÿ	Âu(èüÿÿÿÇ       éüÿÿÿt& èüÿÿÿ	Âtİt& ëÔ´&    t& èüÿÿÿWVSƒìd¡    ‰D$¡    €=àr  t-9Ür …™   ‹D$d+    …   ƒÄ[^_Ã´&    f‰Â£Ür ÁêÆàr ƒÂƒ= ´ ÿtCƒ=´ ÿt2‹´ ƒúÿ„á»  ‰ s ‹€º ƒú…´»  ƒø té´»  t& ‰´ ëÆƒ=´ ÿ‰ ´ u·ëç´&    é`ÿÿÿèüÿÿÿ´&    t& èüÿÿÿ¡    SƒøHÇ       ºĞ  ¡    ğƒD$ü ‹@¹ 1ÉƒãtğƒD$ü ‹ä¹ )È)Ğ÷ĞÁè‰Á‰È[Ã¶    =,  ~Ç    ,  º|’  ë¯iĞè  ¸Ğ  Áú9ÂBĞëš´&    t& èüÿÿÿ¡    …Àu
+Ç       Ã´&    èüÿÿÿƒ=    tÃÇ        Ãt& èüÿÿÿ¡    ƒø!Ç       ¸¸  ‹    Ğ£ô¹ Ãt& =,  ~!Ç    ,  ¸à“ ‹    Ğ£ô¹ Ãt& iÀè  ‹    Ğ£ô¹ Ãt& èüÿÿÿ£ør ’ÀÃèüÿÿÿd¡    ‹ˆd  d  9Ñu‹\  …ÒuKÃ´&    v Ç€\     Æ€`  d‹    ƒª\  u
+‹‚`  …Àu!d¡    éÚ®ÿÿ´&    v Ç€\     ëÅ‰ĞèM¯ÿÿëÖfffffèüÿÿÿÇ     ‰@Ç@    Ã´&    v èüÿÿÿ‹H‰‹H‰PQ‰PÃ´&    fèüÿÿÿVS‰Ã‰Ğ‹‰Ş‰…Òt‹p‰s‹P‰S…ÉtÇ    [‰^‰HÇ@   Ã¶    [^Ç     ‰@Ç@    Ã´&    ¶    èüÿÿÿ‹…Òtƒh‹
+‰…Ét	‰ĞÃ¶    ‰@‰ĞÃ´&    v èüÿÿÿ‹P(‹H,Ê‹H0‹@4ÊĞÃ´&    èüÿÿÿğP$Ã¶    èüÿÿÿğƒ@$Ãt& èüÿÿÿ¶P8Ç@(    Ç     ƒÊÇ@,    ‰@Ç@0    ‰@Ç@4    ‰@Ç@$    ‰@ˆP8Ã´&    t& èüÿÿÿ‹…Òu‹P$…Òu¶P8ƒâşˆP8Ãv ‹P$…Òté¶P8ƒâşˆP8Ã´&    v èüÿÿÿ‰Ñ¶P8„ÉtƒÊ$ˆP8Ã´&    v ƒâßˆP8Ã´&    fèüÿÿÿ‰Â¶@8ƒàt‹B9Â•ÀÃ´&    èüÿÿÿ‰Á¶@8ƒàt
+‹A‹ …À•ÀÃt& èüÿÿÿ¶P8ƒât
+‹ Ã´&    1ÀÃt& èüÿÿÿ¶P8ƒât
+‹@‹ Ãt& 1ÀÃt& èüÿÿÿ‰Á¶@8ƒàtS‹Y‹…Ût‹I[‰
+Ã´&    Ã´&    1À[Ã´&    t& èüÿÿÿğƒ@$‹H4ƒÁ‰H4Ç    ‹H‰‰PÃ´&    ´&    èüÿÿÿ‰Á‹@$…ÀtRVSğƒA$ğƒD$ü Ç    ‹A;Au?;AuB9A•À¶À‹s(ƒÆ‰s(‹[‰‰TƒÀƒøuô¸   [^Ãt& 1ÀÃt& ¸   ëÈ¸   ëÀ´&    fèüÿÿÿ¶H8ƒáuÃ‹H9ÈtI‹H(S‰J‹J‹‰‹H‹‰Ç    ‹H‰Jº   ‹H9LtƒêsòÇ@(    [Ãt& ‰DëèfÃ´&    ´&    èüÿÿÿ¶H8ƒáuÃ‹H‹	…ÉtOÇB    ‹JVS‹X‹‰‹H‰J‹HÇ    ¹   ˆƒÁ‹s(r‹p‰sÇC(    ƒùuâ[^Ã´&    Ã´&    èüÿÿÿ‹RğP$Ãv èüÿÿÿ‹
+…Ét=‰ÑS‹P(Q‹‰P(‹Q‰‹‰1Ò9Du‹Y‰\ƒÂƒúuëÇ    ‰I[Ãt& Ã´&    èüÿÿÿ‹
+…ÉtS‹H4J‰H4‹H‹‰‹R[‰PÃt& Ã´&    èüÿÿÿ¶H8ƒá„~   ‹H‹	…Étp;Pxk‹H‰H‹H,…ÉtH(‰H(Ç@,    ;Px!‹P‰P‹H0…ÉtH(‰H(Ç@0    ‰P‰PÃ‹P‰P9Pt ‹P‰P‹P0…ÒtP,‰P,Ç@0    ‹P‰PÃt& é{ÿÿÿ´&    fèüÿÿÿUWVSƒì¶H8ƒá„¯   ‹H‹	…É„   ‹X9Xt9Px}1É;Xt‹H)ÑÁéˆ‹s‹>1ö…ÿtJyi‰<$‰ù9Íty‹t¸…öts,‰s,ÇD¸    ƒùu+‹Hƒ<$‰S‰Kt	‹H‰P‰H¾   ƒÄ‰ğ[^_]Ãt& ¹   ë¬‹@‹ ƒÄ1ö[‰ğ^_]Ã´&    éJÿÿÿèüÿÿÿWV‰ÆS‰Óƒìd¡    ‰D$1Àèüÿÿÿ‰Ø|$‰â‰d$‰|$Ç$    ÇD$    ÇD$    ÇD$    èüÿÿÿ‰Ø‰úèüÿÿÿÇC$    ‹D$ğF$‹D$ğF$‰â‰ğèüÿÿÿ‹T$…Òt‹F4D$‰F4‹F‰‹D$‰F¶C8ÇC(    Ç    ƒÈÇC,    ‰[ÇC0    ‰[ÇC4    ‰[ÇC$    ‰[ˆC8‹D$d+    uƒÄ[^_Ãèüÿÿÿffffffèüÿÿÿ‹T  …Òt‹RX…Òtéüÿÿÿt& ‹    …Òuå1ÀÃv èüÿÿÿW‰Ï‹ˆT  V‰ÖS…Ét
+ƒ|$vƒ|$‹    wğ…Éu[^_Ãv ‹Y4…Ûtòÿt$‰ò‰ùÿt$ÿt$èüÿÿÿƒÄëØ´&    èüÿÿÿV‰ÖS‹T  ‹\$…ÒD    ƒûwGƒ¸X   tF…ÒuRÿt$‰òSèüÿÿÿZY…À~[^Ãt& Pƒúw
+¹şûıÿ£Ñsæ¸ûÿÿÿ[^Ãt& ¶    1ÀëÊ´&    v ÿt$S‹Z(‰òèüÿÿÿ[^ë©´&    ¶    èüÿÿÿÿt$ÿt$èNÿÿÿ1Ò…ÀHÂZYÃt& èüÿÿÿS‰Ó‰Êÿt$‹KR‹è'ÿÿÿZY…Àx‰C1À[Ã´&    v èüÿÿÿWVS‹˜T  ‹t$‹|$…Ûtƒşv!´&    ‹    ƒşwì…Ûu	[^_éüÿÿÿ‹[,…Ût	WVèüÿÿÿXZ[^_Ã´&    t& èüÿÿÿU‰åWV}Sƒì‹7‰uğ‹w‹‰}ì‹¸T  …ÿD=    ƒşw‹˜X  …Ût…ÿu/eô[^_]éüÿÿÿv ¶    ¸ÿÿÿÿºÿÿÿÿeô[^_]Ãt& ‹_0…ÛtÿuìVÿuğèüÿÿÿƒÄëÜ´&    ¸ÿÿÿÿºÿÿÿÿëÈt& èüÿÿÿVS‹˜T  ‹t$…Ûtƒşv&t& ‹    ƒşwï…Ûu[^éüÿÿÿ´&    v ‹[@…ÛtVèüÿÿÿX[^Ã´&    ´&    èüÿÿÿVS‹˜T  ‹t$…Ûtƒşv&t& ‹    ƒşwï…Ûu[^éüÿÿÿ´&    v ‹[D…ÛtVèüÿÿÿX[^Ã´&    ´&    èüÿÿÿUWVSƒì‹\$$‹|$‹l$‹t$ ‰$‹˜T  …Ût'‹[…Ût6ÿ4$VUWèüÿÿÿƒÄƒÄ[^_]Ã´&    v ‹    …ÛuÏƒÄ[^_]éüÿÿÿ¸úÿÿÿëÑv èüÿÿÿ‹T  …Òt‹B…À•ÀÃ´&    ‹    …ÒuåéüÿÿÿèüÿÿÿUWVSƒì‹\$$‹|$‹l$‹t$ ‰$‹˜T  …Ût'‹[…Ût6ÿ4$VUWèüÿÿÿƒÄƒÄ[^_]Ã´&    v ‹    …ÛuÏƒÄ[^_]éüÿÿÿ¸úÿÿÿëÑv èüÿÿÿU‹T  ‰å…Òt‹RP…Òt]éüÿÿÿ‹    …Òuè]éüÿÿÿ¸ÿÿÿÿ1Ò]Ã´&    èüÿÿÿUWVS‰Óƒì‹\  ‹°T  ‹|$‹¨`  ‰$‹T$ƒâø…öt,$u1ët& ,$‹5    tì…öu‰|$‰T$ƒÄ‰Ú[^_]éüÿÿÿv ‹6…ötWR‰ÚèüÿÿÿZYƒÄ[^_]Ã1Àëô´&    t& èüÿÿÿU‰ÍW‰×º   V‰Æ¸à6 SƒìhpË  jÿ‹L$ èüÿÿÿY[…Àt]ÿt$‰é‰ú‰Ãÿt$‰ğèüÿÿÿ‰ÁXZ…Ét1‹E ‹U‰K‰;‰C‹D$‰S‰Ú‰C‰ğ‰$èüÿÿÿ‹$ƒÄ‰È[^_]Ã‰Ø‰$èüÿÿÿ‹$ëç1Éëã´&    ¶    èüÿÿÿUWVS‰Ãƒì‹D$ ‹|$‹l$‰$‹ƒT  …ÀD    œ^æ   tJ…Ét<…Àu"‹$‰|$‰l$‰D$ ƒÄ‰Ø[^_]éüÿÿÿt& ‹p…ötÿ4$‰ØUWèüÿÿÿƒÄƒÄ[^_]Ãfë²´&    t& èüÿÿÿWVS‰Ãƒìd¡    ‰D$1À‹t$(‹|$,‰$‰L$‰ØÇD$    ‰t$‰|$j WVèüÿÿÿ¹@, ºà6 D$P‰ØèüÿÿÿƒÄ…Àu‹D$d+    uƒÄ[^_Ãt& ëäèüÿÿÿ´&    ´&    èüÿÿÿUWVS‰Ã‰Ğ‹l$‹³T  ‹“`  ‹|$…öD5    “\  t&÷Ç   u.ÿ  â ğÿÿ…öu&‰Ø[^_]éüÿÿÿv 1À[^_]Ã´&    1Àëîf‹v…ötW‰ØUèüÿÿÿZYëØ1ÀëÔ´&    èüÿÿÿéfÿÿÿ¶    èüÿÿÿUÁÿ  WÁéVS‹zP‹D$9ÏsS‰Ó‹)ù‹s)Ö‰õÁí9ér?‹æ ğÿÿÿs(ÿs$ÁéV‹,Í    ƒåà)è‰Á‰ØÁùiÉÍÌÌÌùèüÿÿÿƒÄ[^_]Ãt& ¸úÿÿÿëï´&    fèüÿÿÿUWVS‰Ëƒì‹¸T  ‹L$ ‰<$…ÿt!‹<$‹w…öt.Q‰ÙèüÿÿÿƒÄ[^_]Ã´&    ‹5    ‰4$…ötc‹4$‹v…öuÒ‹3Âÿ  â ğÿÿ‹~‹n‰|$‹<$‰l$‹6ƒæü‰õ‹w…ötQ‰éÿt$ÿt$èüÿÿÿƒÄ‰Øèüÿÿÿ‰ØƒÄ[^_]éüÿÿÿt& ‹;Âÿ  â ğÿÿ‹7Qÿwÿwƒæü‰ñèüÿÿÿƒÄëÁ´&    v èüÿÿÿU‰ÍW‰ÇV‰ÖS‹T$‹€T  ‰Ñ€á…Àt^…É…ö   ‹X…Ût`R‰ø‰ò‰éÿt$èüÿÿÿ^‰Ã_…Àt.ÇC   ‰Ø[^_]Ã´&    f‰Øèüÿÿÿ´&    f‰Øèüÿÿÿ1Û‰Ø[^_]Ã¡    …É…“   …Àu™‹D$% @ …   kÀ8‹T$¹   ‹€   èüÿÿÿ‰Ã…Àtº‹L$º   èüÿÿÿ…Àu¡‹ÿt$‰òUH‰øèıÿÿZY…À„tÿÿÿ‹Æÿ  æ ğÿÿ‹ƒâ¨uU	ÂÇA    ‰‰q‹‹P‰Pé+ÿÿÿf1Û‰Ø[^_]Ãt& ¸   öD$…`ÿÿÿ1ÀöD$•ÀƒÀéNÿÿÿ¶    ¶    èüÿÿÿV‰ÎS‹€T  …Àt‹X…Ûu&‹[^‹ ƒàüéüÿÿÿ´&    ¡    …Àtá‹X…ÛtÚ¡    Âÿ  Áê%c  ‰Á¡   %   €‰Ã‹FSQ¹   èüÿÿÿZY[^Ã´&    t& èüÿÿÿ‹ˆT  …Ét‹A…Àt‰Ğéüÿÿÿv ‹    …ÉuåÃt& èüÿÿÿS‹˜T  …Ût‹[L…Ûtèüÿÿÿ[Ãf‹    …Ûuæ[éüÿÿÿ¸   [Ã´&    fèüÿÿÿ‹T  …Òt‹RT…Òtéüÿÿÿt& ‹    …Òuåéüÿÿÿ¸ÿÿÿÿÃ´&    v èüÿÿÿW‰ÏV‹ˆT  …Ét‹Q8¸   …Òt!^_Ã¶    ‹    …Éuá‰ù^_éüÿÿÿt& ‹A<…À•ÀëÕ¶    èüÿÿÿS1À‹Y9Zt[Ã¶    ‹9t¸   [Ã´&    f‹B3A‹R3Q‰Á¸   	Êu×[Ã´&    èüÿÿÿWVS‰Ã‰Ğ‹t$‹“T  …Òt6‹R…Òt9Áÿ  ‹XPÁé9ÙvG‹P‰Ï+Áê)ß9úw7‹V[^_éüÿÿÿt& ‹    …ÒuÀ‹‹ƒâü‰T$‰Â‰Ø[^_éÿúÿÿ´&    [¸úÿÿÿ^_Ã´&    ´&    èüÿÿÿW|$ƒäøÿwüU‰åWVS‰û‰Çƒì<‰EÌ‹‹s‰EÄ‹C‰u¼‰E¸d¡    ‰Eì‹‡T  …ÀD    ƒş‡¾  ‹]Ì‹›X  ‰]À…Û„²  …À…"  ‹Áè‹Å    ƒãà)Ú1ÛÁúiÂÍÌÌÌ1Ò¤ÂÁàÁ‹EÌÓ‹°l  ‹€€  ‰EÈ…ö…§   ‹EÈ‰Mä‰]è…Àt‹EÈ€x) …  ‹EÄ1Ò‰MØ‰]ÜƒÀÿƒÒÿÈÚ‰EĞ‰UÔ‹UÀ‹}Ì‹‹r‹—d  ‰Eà‹‡h  ‰uÈuàt‰Ç	×„î   ‹uÈ9Uà‰÷ÇBUàBÆ‹uĞ‹}Ô9òø‚˜   ‹Eìd+    …ú  ‹EØ‹UÜeô[^_]gø_Ãv ‹F‹~‰Â	útI‰uØ‰}Ğ‰Eàv ‹EØ‰ß‹P‹ 9Á×r‰Î‰ß)Æ×;uà‰øEĞ‚š   ƒEØ ‹EØ‹P‹@‰EĞ	Ğ‰UàuÃ‹UÈÇEäÿÿÿÿÇEèÿÿÿÿ…Òt	‹EÈ€x) uƒ=    „à   ÿu¸‹EÌ‰Ê‰Ùÿu¼ÿuÄèüÿÿÿ‰EØƒÄ‰UÜé8ÿÿÿt& ‹Uà‹EÈéÿÿÿt& ¶    ÇEØÿÿÿÿÇEÜÿÿÿÿéÿÿÿv ‹uØ‰È‰Ú+FV‹uÈ‰EØ‰UÜ‰Eä‰Uè…öt‹EÈ€x) …{ÿÿÿ‹EÄ‹uØ1Ò‹}ÜƒÀÿƒÒÿğ‰EĞ‰ğú!ø‰UÔƒøÿ…aşÿÿéAÿÿÿ¶    ÿu¸ÿu¼ÿuÄ‹X ‹EÌèüÿÿÿ‰EØƒÄ‰UÜéşÿÿ¶    €=–    ÇEØÿÿÿÿÇEÜÿÿÿÿ…`şÿÿ‹EÀ‹]ÌÆ–   ‹P‹ ‹³d  ‹»h  ‰EØ‰Ø‹[,‰UÜ…Ûu‹‹EÌèüÿÿÿMäWVÿuÜÿuØÿuÄQSPhø8 èüÿÿÿÇEØÿÿÿÿƒÄ$ÇEÜÿÿÿÿéöıÿÿèüÿÿÿ´&    ´&    èüÿÿÿUW‰ÏV‰ÖSƒì0‹\$D‹L$L‰D$‹€T  ‰\$(‹\$H‰L$‰\$ …Àtƒ|$ †ß  t& ¡    ƒûwï…À…Æ  ‹\$‹ƒl  ‹›€  ‰\$‹\$‰D$,ƒã ‰\$$…À„Ë  ‹P‹X‰Ñ‰\$	Ù‰T$„ì  ‰$‰İ‰T$´&    v ‹$‹H‹X‰ø9ÎØr‰ğ‰ú)ÈÚ9è‰ĞD$‚™  ƒ$ ‹$‹h‹@‰Â‰D$	êuÂÇ$ÿÿÿÿÇD$ÿÿÿÿ‹D$$‹l$,…À„   ‹L$…É„*  ‹|$‹‹W‹<$‹l$9Ç‰èĞ‚  ‹D$‰ú‰é;x‰ïxƒø   ‹D$ƒÈ ‰D$L‹D$ ‰D$H‹D$(‰D$D‹D$ƒÄ0[^_]éüÿÿÿ´&    v ‹E4‹U0ƒÅ ‰Á‰T$	Ñ‰D$„rÿÿÿ‹E‹U‰û9ÆÓr×‰ñ‰û)ÁÓ;L$‰ØD$sÃu}‹L$…Étx‹‹Q‰û9ÆÓ‚Fÿÿÿ‹\$‰ù;sKƒ4ÿÿÿÿt$ ‰ù‰òÿt$,‹|$ ‰øèüÿÿÿ‹‡€  ‰D$[^é÷şÿÿ´&    v ‹X$…Ûtÿt$‰ò‰ùÿt$$ÿt$0‹D$$èüÿÿÿƒÄƒÄ0[^_]Ãt& ‹T$$‰4$‰|$…Ò…ªşÿÿé[ÿÿÿ´&    ‹$‰ò‰ùPH‰$‰L$étşÿÿÇ$ÿÿÿÿÇD$ÿÿÿÿépşÿÿv èüÿÿÿUW‰ÏV‰ÖSƒì‹\$(‰D$‹€T  ‰\$‹\$,‰\$…Àtƒ|$†×   t& ¡    ƒûwï…À…¾   ‹D$‹€l  …Àti‹h‹P‰ë	ÓtF‰$‰T$t& ‹$‹H‹X‰ø9ÎØr‰ğ‰ú)ÈÚ;D$‰Ğèr%ƒ$ ‹$‹h‹P‰è‰T$	ĞuÆƒÄ[^_]Ã¶    ‹$px‹D$‹€€  …ÀtÛ;0‰ûXrÒ;p‰ûXsÈ‹D$‰ò‰ù‰D$,‹D$‰D$(‹D$ƒÄ[^_]éüÿÿÿf‹X<…Ût›ÿt$‰ò‰ùÿt$‹D$èüÿÿÿXZéÿÿÿ´&    ¶    èüÿÿÿUW‰ÏV‰ÖSƒì‹\$(‰D$‹€T  ‰\$‹\$,‰\$…Àtƒ|$†×   t& ¡    ƒûwï…À…¾   ‹D$‹€l  …Àti‹h‹P‰ë	ÓtF‰$‰T$t& ‹$‹H‹X‰ø9ÎØr‰ğ‰ú)ÈÚ;D$‰Ğèr%ƒ$ ‹$‹h‹P‰è‰T$	ĞuÆƒÄ[^_]Ã¶    ‹$px‹D$‹€€  …ÀtÛ;0‰ûXrÒ;p‰ûXsÈ‹D$‰ò‰ù‰D$,‹D$‰D$(‹D$ƒÄ[^_]éüÿÿÿf‹X8…Ût›ÿt$‰ò‰ùÿt$‹D$èüÿÿÿXZéÿÿÿ´&    ¶    èüÿÿÿUÂÿ  Wâ ğÿÿ‰ÏV‹°T  S‹L$‹\$‹l$…öt#‹v…ötUSQ‰ùèüÿÿÿƒÄ[^_]Ã´&    v ‹5    …öuÓ[‰ù^_]éüÿÿÿ´&    t& èüÿÿÿUW‰ÏV‰ÖS‰Ã‹€T  …Àt/‹hL…ít‰ò‰ù‰Øèüÿÿÿ…Àt1‰³\  1À‰»`  [^_]Ã¶    ¡    …ÀuÈ‰ØèüÿÿÿëÑ¶    ¸ûÿÿÿëÖ´&    fèüÿÿÿUWVS‰Ã‹€X  …ÀtS‰Ö‹“T  ‰Ï…Òt-‹jL…ít‰ò‰ù‰Øèüÿÿÿ…Àt/‹ƒX  ‰0‰x1À[^_]Ãt& ‹    …ÒuÉ‰ò‰ØèüÿÿÿëĞv ¸ûÿÿÿë×èüÿÿÿUWVS‰Ãƒì‹‹j‹r‹z‰$‹ƒT  ‹J…ÀD    œZ€æt+…Ét…Àu+U‰ØWV‹T$èüÿÿÿƒÄƒÄ[^_]Ã´&    v ëÑt& ‹@‰D$…ÀtÛU‰ØWV‹T$‹|$èüÿÿÿƒÄëÄ¶    èüÿÿÿ‰Ğ‰ÊÃfffèüÿÿÿUW‰ÏV‰ÖSƒì‰D$‹€l  …ÀuZ‹D$ ‹L$1ÒƒÀÿ‹™d  ƒÒÿğ‹±`  ú‹¹\  ‹‰h  ‰õ	ıu9ÃÑ“ÀƒÄ[^_]Ã‰Í	İtr9ß‰õÍBßBÎëÜt& ‹h‹P‰ë	ÓtE‰$‰T$t& ‹$‹‹X‰ø9ÎØr‰ğ‰ú)ÈÚ;D$‰Ğèr6ƒ$ ‹$‹h‹P‰è‰T$	ĞuÇ1ÀƒÄ[^_]Ãt& ‰û‰ñéoÿÿÿ´&    ‹$+px‰ğ!øƒøÿ… ÿÿÿ1ÀëÉ´&    ´&    èüÿÿÿUWVSƒì‰D$‹€Œ  ‰T$âÿ  ‰L$‰D$…B  ‹|$‹‡`  ‹—\  ‹·d  ‹¿h  ‰Ã	Ót‰û	ó„F  9ò‰ÃûBòBø‹D$‹€l  …Àtu‹h‹P‰ë	ÓtJ‰$‰T$´&    f‹$‹H‹X‰ø9ÎØr‰ğ‰ú)ÈÚ;D$‰Ğèr-ƒ$ ‹$‹h‹X‰è‰\$	ØuÆƒ=    @uNƒL$ëG¶    ‹$px‹    ƒù@tß1À1ÒöÁ ”À•ÂÓàÓâƒÀÿƒÒÿ9ğ‰ĞøsÀ1À…ÿ”ÀÁà	D$‹l$‹L$‹T$‰èèüÿÿÿ‰Ã…À„   ‹ ‰Şÿt$1ÿÁè‹Å    ƒàà)Æ‰èÁşiöÍÌÌÌ¤÷Áæ‰ò‰ùè~ıÿÿZ„Àt9ÿt$‹D$‰ò‰ùèhıÿÿZ„À„   ƒÄ‰Ø[^_]Ãt& ‰Ö‰Çé½şÿÿ´&    ‹L$‹D$‰Úèüÿÿÿ‹D$¹ÿÿÿÿƒèÁè½ĞDÑ‹D$ƒÂ‰Áƒøÿt~j ‹D$èüÿÿÿ^‰Ã…Àt\‹ ‰Ş1ÿÁè‹Å    ƒàà)ÆÁşiöÍÌÌÌ¤÷ÁæéYÿÿÿf‹D$‹L$‰Úèüÿÿÿ‹D$¨uƒàúƒÈ‰D$éyÿÿÿ´&    v ƒÄ1Û‰Ø[^_]Ãt& d‹    évÿÿÿt& é·ıÿÿ´&    fèüÿÿÿU‰Á1Ò‰åWVSƒäøƒì¡    ‹±l  ƒè¤ÂÁà‰$‰T$…öuC‹D$…À…“   ¸ÿÿÿÿ½$DÈ¸   1Ò1Û¥ÂÓàöÁ EĞEÃƒÀÿƒÒÿeô[^_]Ã¶    ‹~‹^‰ø	ØtK‰t$‰\$t& ‹D$‹$‹t$‹‹H‰ğ9ÓÈr)ÓÎ;\$‰ğør:ƒD$ ‹D$‹x‹p‰ø‰t$	ğuÁ¸ÿÿÿÿºÿÿÿÿ½ÈDÊƒÁ éfÿÿÿ´&    f‹t$‹N‹^)$\$é/ÿÿÿ´&    v èüÿÿÿUWºÿ  Vç ğÿÿS‰Ã‰úƒì‰L$‹L$$‹l$(‰È€Ì ÷Å   EÈ‰Ø€åş÷Å   …é   è$üÿÿ‰Æ…À„
+  ‹ Áèƒàƒøt}ƒøth‰ğèüÿÿÿ‰D$‹D$‰ù1Ò1ÿèüÿÿÿ‹Áè‹Å    ƒàà)Æ‹ƒl  ÁşiöÍÌÌÌ¤÷Áæ…À…7  ‹D$‰0‰x‹D$ƒÄ[^_]Ã´&    v ƒ=    u´&    U‹    ‰Ø‹   âc  á   €èüÿÿÿÿt$$R‰úP‰ğèüÿÿÿ‰D$ƒÄ…À…Uÿÿÿ‰ù‰ò‰Øèüÿÿÿët& è;ûÿÿ‰D$…À„  ‹|$‹‰$Áè‹Å    ‰øƒâà)Ğ1ÒÁøiÀÍÌÌÌ¤ÂÁà‰Æ‹ƒl  ‰×…À„2ÿÿÿ‹h‹P‰ë	ÓtJ‰$‰T$¶    ‹$‹‹X‰ø9ÎØr‰ğ‰ú)ÈÚ;D$‰Ğè‚’   ƒ$ ‹$‹h‹P‰è‰T$	ĞuÃ¾ÿÿÿÿ¿ÿÿÿÿéÍşÿÿt& ‹h‹P‰ë	Ótá‰$‰T$t& ‹$‹‹X‰ø9ÎØr‰ğ‰ú)ÈÚ;D$‰Ğèr.ƒ$ ‹$‹h‹X‰è‰\$	ØuÇ¾ÿÿÿÿ¿ÿÿÿÿéişÿÿ´&    ‹$+pxéSşÿÿfÇD$    éMşÿÿv èüÿÿÿUWVS‰Ë‰Ñƒì‹t$$‹|$(‰T$‰Ú‰D$öD$,…²   ‰Øèüÿÿÿ„À…´   ‹D$‹€l  …Àtg‹h‹P‰ë	ÓtD‰$‰T$v ‹$‹H‹X‰ø9ÎØr‰ğ‰ú)ÈÚ;D$‰Ğèr%ƒ$ ‹$‹h‹X‰è‰\$	ØuÆ¹Øÿÿÿ1Àë-t& ‹$px‰ğ¬ø‰Â€ÁêÁá=ÿÿÿ wBÕ    ‹‹D$ƒâàÊ‹L$ƒÄ[^_]éüÿÿÿt& ‰Øèüÿÿÿ‹D$‹€l  …À…Aÿÿÿë¦1ÀëÁèüÿÿÿUWV‰ÖS‰Ãƒì‰L$‹L$(èÓøÿÿ‰D$…Àtp‹ ‰$Áèƒàƒø„`¼  ƒø„Æ   ‹|$‰øèüÿÿÿ‰ñ1Òèüÿÿÿ‹‰$Áè‹Å    ‰øƒâà)Ğ1ÒÁøiÀÍÌÌÌ¤ÂÁà‰Æ‹ƒl  ‰×…Àu‹D$‰0‰x‹D$ƒÄ[^_]Ã´&    ‹h‹P‰ë	ÓtE‰$‰T$t& ‹$‹‹X‰ø9ÎØr‰ğ‰ú)ÈÚ;D$‰Ğèr>ƒ$ ‹$‹h‹X‰è‰\$	ØuÇ¾ÿÿÿÿ¿ÿÿÿÿë‡v ƒ=    …-ÿÿÿé`¼  ¶    ‹$+pxé^ÿÿÿfèüÿÿÿW‰×V‰Æ‰ÈS‰Ëèüÿÿÿ‰ù‰Ú‰ğ[^_éüÿÿÿ´&    ¶    èüÿÿÿUWVSƒì‰D$‰T$‰L$…Éš   ÇD$    ´&    ‹D$‹p‹x‹D$‹€l  …À„…   ‹h‹P‰ë	ÓtB‰$‰T$‹$‹H‹X‰ø9ÎØr‰ğ‰ú)ÈÚ;D$‰ĞèrEƒ$ ‹$‹h‹P‰è‰T$	ĞuÆ‹D$ƒD$‹\$èüÿÿÿ‰D$9\$…vÿÿÿƒÄ[^_]Ã¶    ‹$px‹D$‹€€  …Àt»;0‰ûXr²;p‰ûXs¨ÿt$,‹D$‰ò‰ùÿp‹D$èüÿÿÿXZëŒfèüÿÿÿUWVSƒì‰D$‰T$‰L$…Éš   ÇD$    ´&    ‹D$‹p‹x‹D$‹€l  …À„…   ‹h‹P‰ë	ÓtB‰$‰T$‹$‹H‹X‰ø9ÎØr‰ğ‰ú)ÈÚ;D$‰ĞèrEƒ$ ‹$‹h‹P‰è‰T$	ĞuÆ‹D$ƒD$‹\$èüÿÿÿ‰D$9\$…vÿÿÿƒÄ[^_]Ã¶    ‹$px‹D$‹€€  …Àt»;0‰ûXr²;p‰ûXs¨ÿt$,‹D$‰ò‰ùÿp‹D$èüÿÿÿXZëŒfèüÿÿÿUWVSƒì8‰D$ ‹D$P‰T$‰ÇƒÈ ‰L$,ƒç ÇD$    ‰|$0‰D$4…É,  t& ‹D$‹\$ ‹x‹p‰|$$‹x‹ƒl  ‹›€  ‰D$(‰\$…À„Ÿ  ‹P‹X‰Ñ‰\$	Ù‰T$„¸  ‰$‰İ‰T$¶    ‹$‹H‹X‰ø9ÎØr‰ğ‰ú)ÈÚ9è‰ĞD$‚i  ƒ$ ‹$‹h‹@‰Â‰D$	êuÂÇ$ÿÿÿÿÇD$ÿÿÿÿ‹T$0‹l$(…Ò„–   ‹\$…ÛtK‹|$‹‹W‹<$‹l$9Ç‰èĞr3‹t$‰ø;~‰ï~s#ÿt$4‰Â‰éÿt$Pÿt$,‹D$,èüÿÿÿƒÄ´&    ‹D$ƒD$‹|$èüÿÿÿ‰D$9|$,…ØşÿÿƒÄ8[^_]Ã‹E4‹]0ƒÅ ‰Á‰\$	Ù‰D$„jÿÿÿ‹E‹U‰û9ÆÓr×‰ñ‰û)ÁÓ;L$‰ØD$sÃu}‹\$…Ût‹‹S‰û9ÆÓ‚:ÿÿÿ‹\$‰ù;sKƒ(ÿÿÿÿt$L‰ù‰òÿt$(‹|$(‰øèüÿÿÿ‹‡€  ‰D$$^_éïşÿÿ´&    v ‹L$0‰4$‰|$…É…Òşÿÿëv ‹$‰ò‰ùPH‰$‰L$é¤şÿÿÇ$ÿÿÿÿÇD$ÿÿÿÿé şÿÿ´&    t& èüÿÿÿUWVSƒì8‰D$ ‰T$(‰L$$d¡    ‰D$41À‰T$ÇD$    …É   é«  v ‹D$‰t$,‰|$0…À„œ  ‹D$€x) „  ÿt$P‰ù‰òÿt$Pÿt$‹D$,èüÿÿÿ‹|$ƒÄ‰W!Â‰Gƒúÿ„4  ‹D$‹@‰D$‹D$‹|$ƒD$‹\$‰xèüÿÿÿ‰D$9\$$„#  ‹|$‹\$ ‹G‹w‰D$‹1ÿ‰$ƒàü‹Áê‹Õ    ƒâà)Ğ1ÒÁøiÀÍÌÌÌ¤ÂÁàÆ‹ƒl  ‹›€  ×‰\$…À„ ÿÿÿ‹h‹P‰é	ÑtI‰$‰T$t& ‹$‹‹X‰ø9ÎØr‰ğ‰ú)ÈÚ;D$‰Ğè‚"  ƒ$ ‹$‹h‹X‰è‰\$	ØuÃ‹T$ÇD$,ÿÿÿÿÇD$0ÿÿÿÿ…Òt‹D$€x) …Çşÿÿƒ=    …ºşÿÿ€=—    „P  ‹D$Ç@ÿÿÿÿÇ@ÿÿÿÿ‹D$PƒÈ Pÿt$P‹L$ ‹D$(‹T$0èüÿÿÿ¸ûÿÿÿY[éü   ‹D$1Ò‰4$‰|$ƒÀÿƒÒÿğú‰D$‰T$‹T$ ‹‚X  ‹‹h‰Ğ‹€h  ‹’d  ‰\$	ët‰Á	Ñt>‹\$‰é9ÓÁBÓBÅ‹L$‹\$9ÊØ‚?ÿÿÿ‹D$‹<$‹l$‰x‰hé,şÿÿ¶    ‹T$‰èëÊ‹$‹l$‰ñ‰û+HX‰$‰\$‰L$,‰\$0…ít‹D$€x) …°ıÿÿ‹D$‹$1Ò‹\$ƒÀÿƒÒÿÈ‰D$‰ÈÚ!Ø‰T$ƒøÿ…1ÿÿÿé¸şÿÿt& ‹D$$‹T$4d+    …€   ƒÄ8[^_]Ã‹T$ Æ—   ‹‚X  ‹j,‹²d  ‹ºh  ‹‹X…íu‹*‹D$ ‰$‰\$èüÿÿÿWV‹L$‹\$SQÿt$$T$@RUPh\9 èüÿÿÿ‹D$4ƒÄ$Ç@ÿÿÿÿÇ@ÿÿÿÿéJşÿÿèüÿÿÿ´&    ´&    èüÿÿÿW|$ƒäøÿwüU‰åWV‰ÖS‰û‰Ïƒì,‹‰]Ìd‹    ‰Uì1Ò‰Mè‰Ù1ÛƒÁÿ‰ò‰uäƒÓÿñû!ú‰MĞ‰]Ôƒúÿ„™   ‹X  ‹Z‹
+‹d  ‰]Ø‹˜h  ‰Uà‰]Ü‰ËMØu2‹]Ô‹UÜ‹MĞ9MàÚrb‹Eìd+    uteô‰ğ‰ú[^_]gø_Ã¶    ‹MÜ	Ñ‰Út'‹Mà9Ë‹MØ‹]ØMÜCUàC]Ü‰Uà‰]Üë§´&    f‰]à‹]Ø‰]Üë“t& €=P$   „‡¼  ¾ÿÿÿÿ¿ÿÿÿÿé€ÿÿÿèüÿÿÿ´&    ¶    èüÿÿÿUWVSƒì‹€l  ‰$…Àu0ëSt& ‹X‹|$‹H9L$ßr‹t$‹|$)Îß9Ö‰ûërƒÀ ‹h‹P‰ë	ÓuË»Øÿÿÿ1Àë5f‹P‹@D$T$‹T$‹D$¬Ğ‰Â€ÁêÁã=ÿÿÿ wSÕ    ‹<$‹0¹À  º   ‰øèüÿÿÿ…Àu*‹ƒæàŞ‹ÇA    ƒâ	ò‹t$ ‰–ÿ  â ğÿÿ‰QƒÄ[^_]Ã1Àë°´&    ¶    èüÿÿÿ¸   Ãt& èüÿÿÿU‰ÁWVSƒì$‹t$8‹|$<‰D$‹D$D‰T$‰D$‹B+‰Ã‰D$ ‹D$@Áëÿ  ‰\$Áè‰D$‹l  …À„Ê   ‹h‹P‰ë	ÓtL‰$‰T$´&    ‹$‹H‹X‰ø9ÎØr‰ğ‰ú)ÈÚ;D$‰Ğè‚™   ƒ$ ‹$‹h‹P‰è‰T$	ĞuÂ»ÿÿÿÿ‹|$‹G$‹W(‰$‰Ñ‰T$‰Âÿt$‹D$èüÿÿÿ‹OP‰G$‰W(^‹t$9ñs])Î;t$rU‰D$<‹D$ Ù‰T$@% ğÿÿ‰D$8‹ƒÄ$‰ø[^_]éüÿÿÿ´&    v ‰ğ¬ø‰Ãë‰¶    ‹$px‰ó¬ûéoÿÿÿƒÄ$¸úÿÿÿ[^_]Ã´&    ´&    èüÿÿÿUWVS‰Óƒì‰T$ºşÿÿÿ9Úº    ‰L$Ê‚Ö   ‹=    ‰ÅWÿ1ÿÁâ‰Ö‹    ƒú@t/‰Ñ¸   1Ò1Û¥ÂÓàöÁ EĞEÃ‰Á‰ÓƒÁÿƒÓÿ9ñ‰ÚúBñBû‹…l  …Àu ‹D$9t$ø“ÀƒÄ[¶À^_]Ã´&    ‹h‹P‰ë	ÓtE‰$‰T$t& ‹$‹‹X‰ø9ÎØr‰ğ‰ú)ÈÚ;D$‰Ğèr6ƒ$ ‹$‹h‹X‰è‰\$	ØuÇ¾ÿÿÿÿ¿ÿÿÿÿëƒv ƒÄ¸   [^_]Ãv ‹$+pxébÿÿÿfèüÿÿÿWVS‰Ãèüÿÿÿ„Àu[¸ÿÿÿÿ^_Ãt& ‹ƒX  …Àt‹p‹8‰ğ	øu¿ÿÿÿÿ1ö‹ƒh  ‹“d  ‰Á	Ñt9ú‰ÁñBúBğ‰Øèüÿÿÿ9ÇÖr‹ƒ€  …Àt¢€x) tœ‰Ø[^_éüÿÿÿ´&    ´&    èüÿÿÿUW‰ÏV‰ÖSƒì‰D$‹€l  …Àtk‹h‹P‰ë	ÓtH‰$‰T$´&    ‹$‹H‹X‰ø9ÎØr‰ğ‰ú)ÈÚ;D$‰Ğèr%ƒ$ ‹$‹h‹X‰è‰\$	ØuÆ1ÒƒÄ‰Ğ[^_]Ãf‹$px‹D$1Ò‹€€  …ÀtÛ;0‰ûXrÒ;px’ÂƒÄ[‰Ğ^_]Ã´&    t& èüÿÿÿUWV‰ÖS‰Ã‰Ğ‰Êƒì‹»l  +D$T$ ‰$‰T$…ÿ…¿¼  ‹D$1í$‰ÏuƒÄ‰è[^_]Ã´&    ¡   ¹@   ºÀ  èüÿÿÿ…Àt>‹$‹L$‰0‰x‹t$‹|$ ‰P‰p‹t$$‰x‹|$(‰H‰p‰x‰ƒl  ƒÄ‰è[^_]Ã½ôÿÿÿë‘fèüÿÿÿV‰È‰ÖS‰Ëèüÿÿÿ„ÀujÃ   @‰ØÁëÁè›‹Å    ƒààĞ¹À  º   ‰ğèüÿÿÿ…Àu*‹L$‹6‘ÿ  ‹â ğÿÿƒáöÃu+	ÙÇF    ‰‰V[^Ã´&    v ‰Øèüÿÿÿ‰Ãë©t& ´&    ´&    èüÿÿÿUWV‰ÖS‰Ëƒì‹zP‰D$‹D$0‰D$‹B+‰ÅÁè‰D$‹D$,ÿ  Áè‰$‰Èèüÿÿÿ„À…   Ã   @‰ØÁëÁè›‹Å    ƒààĞ‹N(‹V$ÿt$‹D$èüÿÿÿY‹$‰F$‰V(9ùv^)ù;L$rV‹‰D$(‰è% ğÿÿ‰T$,‹Áé‰D$$‰ğ‹<Í    ƒçà)û‰ÙÁùiÉÍÌÌÌNPƒÄ[^_]éüÿÿÿt& ‰Øèüÿÿÿ‰Ãë†t& ƒÄ¸úÿÿÿ[^_]Ã´&    t& èüÿÿÿUW‰×V‰ÆSƒì‹¨T  ‰$‹L$…íD-    èüÿÿÿ‰Ã…ÀtGj 1É‰Ú‰ğÿt$W‹m èüÿÿÿ‹L$ƒÄ‰!Ğ‰Qƒøÿtg‰Øèüÿÿÿ‰ù1ÒèüÿÿÿƒÄ‰Ø[^_]Ãt& Gÿ¹ÿÿÿÿÁè½ĞDÑ‹Œ  ƒÂƒùÿtj ‹D$ èüÿÿÿ‰ÃX…Ûuˆë¾t& d‹    ëŞ´&    ‰Ú‰ù‰ğ1ÛèüÿÿÿëšèüÿÿÿUW‰ÏV‰ÖS‰Ã‹T$‹«T  ‹D$‹L$…íD-    ‹m$…ítj Q‰Ñ‰Â‰ØVèüÿÿÿƒÄ‰ñ‰ú‰Ø[^_]éüÿÿÿfffffffèüÿÿÿ¸úÿÿÿÃt& èüÿÿÿU¸ÿÿÿÿºÿÿÿÿ‰å]Ã´&    t& èüÿÿÿ¸êÿÿÿÃt& èüÿÿÿ1ÀÃffffèüÿÿÿW¿ÿÿÿÿVrÿSÁî‰Ã‰È½ÎDÏ¾   ƒÁ9ñOÎÁèƒàÁêP‰ØèüÿÿÿZ[^_ÃèüÿÿÿÃ´&    v èüÿÿÿS»   9ÙGË¶\$…Àt‹€|  …Àt‰\$[éüÿÿÿv ¡    ‰\$[éüÿÿÿèüÿÿÿ…Àt‹€|  …Àtéüÿÿÿ´&    ¡    éüÿÿÿ¶    èüÿÿÿöÅt&‹€|  …Àuú   v¡    …Àtéÿÿÿ¶    1ÀÃ´&    ¶    èüÿÿÿV‰ÖS‹€|  ‰ËÁÿ  Áé…Àt2èüÿÿÿ„Àu!ƒë¸ÿÿÿÿÁë½ÓDĞ‰ğ[ƒÂ^éüÿÿÿt& [^Ãt& ¡    ëÇffffèüÿÿÿUWVS‹    ‹l$‹|$ …Ût'‰Öv ‹‹CƒÃW‰òUÿt$ ÿt$ èüÿÿÿ‹ƒÄ…ÀuŞ[1À^_]Ã´&    èüÿÿÿ¡   …ÀEts Ã´&    t& èüÿÿÿ‹€€  …Àt‹@…À•ÀÃ´&    1ÀÃ´&    ¶    V‰ÊS‰Ã‹°x   èüÿÿÿƒøt
+[^Ã´&    ‹V C@¹€°  èüÿÿÿPÿvÿvÿvÿvÿv·FÆVh(: Sèüÿÿÿƒ`  ƒÄ$[^éüÿÿÿ´&    ´&    W1ÿ1ÉV‹t$W1ÿV‹t$WVÿt$ ÿt$ èüÿÿÿƒÄ^_Ã´&    fèüÿÿÿUW‰ÇVS‰Ë‰Ñƒì(‹·€  ‹D$<‰L$‹V‰\$‰D$‹D$@‰T$‰D$‹)Á‰D$Ó‰È¬ØÁàF,‹v‹‹X‰t$ ‰$‹4$‰\$#t$‹X‹L$ƒşÿt3‹‡p  ‰Íåÿ

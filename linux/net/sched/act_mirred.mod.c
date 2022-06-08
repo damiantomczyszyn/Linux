@@ -1,30 +1,24 @@
-k.hardirqs_off = true;
-			hlock.references = 0;
+// SPDX-License-Identifier: GPL-2.0-or-later
+/*
+ *  Driver for the Conexant CX23885 PCIe bridge
+ *
+ *  Copyright (c) 2007 Steven Toth <stoth@linuxtv.org>
+ */
 
-			verify_lock_unused(lock, &hlock, subclass);
-		}
-		return;
-	}
+#include "cx23885.h"
 
-	raw_local_irq_save(flags);
-	check_flags(flags);
+#include <linux/kernel.h>
+#include <linux/module.h>
+#include <linux/moduleparam.h>
+#include <linux/init.h>
 
-	lockdep_recursion_inc();
-	__lock_acquire(lock, subclass, trylock, read, check,
-		       irqs_disabled_flags(flags), nest_lock, ip, 0, 0);
-	lockdep_recursion_finish();
-	raw_local_irq_restore(flags);
-}
-EXPORT_SYMBOL_GPL(lock_acquire);
+static unsigned int vbibufs = 4;
+module_param(vbibufs, int, 0644);
+MODULE_PARM_DESC(vbibufs, "number of vbi buffers, range 2-32");
 
-void lock_release(struct lockdep_map *lock, unsigned long ip)
-{
-	unsigned long flags;
+static unsigned int vbi_debug;
+module_param(vbi_debug, int, 0644);
+MODULE_PARM_DESC(vbi_debug, "enable debug messages [vbi]");
 
-	trace_lock_release(lock, ip);
-
-	if (unlikely(!lockdep_enabled()))
-		return;
-
-	raw_local_irq_save(flags);
-	check_flags(fla
+#define dprintk(level, fmt, arg...)\
+	do { if (vbi_debug >=

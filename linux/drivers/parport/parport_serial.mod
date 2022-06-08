@@ -1,2 +1,1 @@
-ated/bounds.h \
-  include/linux/mm
+// SPDX-License-Identifier: GPL-2.

@@ -1,204 +1,378 @@
-IC_IOREMAP) \
-    $(wildcard include/config/VIRT_TO_BUS) \
-    $(wildcard include/config/GENERIC_DEVMEM_IS_ALLOWED) \
-  include/linux/logic_pio.h \
-    $(wildcard include/config/INDIRECT_PIO) \
-  include/linux/vmalloc.h \
-    $(wildcard include/config/HAVE_ARCH_HUGE_VMALLOC) \
-  arch/x86/include/asm/vmalloc.h \
-    $(wildcard include/config/HAVE_ARCH_HUGE_VMAP) \
-  arch/x86/include/asm/acpi.h \
-    $(wildcard include/config/ACPI_APEI) \
-  include/acpi/pdc_intel.h \
-  arch/x86/include/asm/numa.h \
-    $(wildcard include/config/NUMA_EMU) \
-  arch/x86/include/asm/numa_32.h \
-  include/linux/regulator/consumer.h \
-    $(wildcard include/config/REGULATOR) \
-  include/linux/suspend.h \
-    $(wildcard include/config/VT) \
-    $(wildcard include/config/SUSPEND) \
-    $(wildcard include/config/HIBERNATION_SNAPSHOT_DEV) \
-    $(wildcard include/config/PM_SLEEP_DEBUG) \
-    $(wildcard include/config/PM_AUTOSLEEP) \
-  include/linux/swap.h \
-    $(wildcard include/config/DEVICE_PRIVATE) \
-    $(wildcard include/config/MIGRATION) \
-    $(wildcard include/config/FRONTSWAP) \
-    $(wildcard include/config/THP_SWAP) \
-    $(wildcard include/config/MEMCG_SWAP) \
-  include/linux/memcontrol.h \
-    $(wildcard include/config/CGROUP_WRITEBACK) \
-  include/linux/cgroup.h \
-    $(wildcard include/config/CGROUP_CPUACCT) \
-    $(wildcard include/config/SOCK_CGROUP_DATA) \
-    $(wildcard include/config/CGROUP_DATA) \
-    $(wildcard include/config/CGROUP_BPF) \
-  include/uapi/linux/cgroupstats.h \
-  include/uapi/linux/taskstats.h \
-  include/linux/fs.h \
-    $(wildcard include/config/READ_ONLY_THP_FOR_FS) \
-    $(wildcard include/config/FS_POSIX_ACL) \
-    $(wildcard include/config/IMA) \
-    $(wildcard include/config/FILE_LOCKING) \
-    $(wildcard include/config/FSNOTIFY) \
-    $(wildcard include/config/FS_ENCRYPTION) \
-    $(wildcard include/config/FS_VERITY) \
-    $(wildcard include/config/EPOLL) \
-    $(wildcard include/config/UNICODE) \
-    $(wildcard include/config/QUOTA) \
-    $(wildcard include/config/FS_DAX) \
-    $(wildcard include/config/BLOCK) \
-  include/linux/wait_bit.h \
-  include/linux/kdev_t.h \
-  include/uapi/linux/kdev_t.h \
-  include/linux/dcache.h \
-  include/linux/rculist_bl.h \
-  include/linux/list_bl.h \
-  include/linux/bit_spinlock.h \
-  include/linux/lockref.h \
-    $(wildcard include/config/ARCH_USE_CMPXCHG_LOCKREF) \
-  include/linux/stringhash.h \
-    $(wildcard include/config/DCACHE_WORD_ACCESS) \
-  include/linux/hash.h \
-    $(wildcard include/config/HAVE_ARCH_HASH) \
-  include/linux/path.h \
-  include/linux/list_lru.h \
-  include/linux/shrinker.h \
-  include/linux/capability.h \
-  include/uapi/linux/capability.h \
-  include/linux/semaphore.h \
-  include/linux/fcntl.h \
-    $(wildcard include/config/ARCH_32BIT_OFF_T) \
-  include/uapi/linux/fcntl.h \
-  arch/x86/include/generated/uapi/asm/fcntl.h \
-  include/uapi/asm-generic/fcntl.h \
-  include/uapi/linux/openat2.h \
-  include/linux/migrate_mode.h \
-  include/linux/percpu-rwsem.h \
-  include/linux/rcuwait.h \
-  include/linux/sched/signal.h \
-    $(wildcard include/config/SCHED_AUTOGROUP) \
-    $(wildcard include/config/BSD_PROCESS_ACCT) \
-    $(wildcard include/config/TASKSTATS) \
-    $(wildcard include/config/STACK_GROWSUP) \
-  include/linux/signal.h \
-    $(wildcard include/config/DYNAMIC_SIGFRAME) \
-  include/linux/sched/jobctl.h \
-  include/linux/sched/task.h \
-    $(wildcard include/config/HAVE_EXIT_THREAD) \
-    $(wildcard include/config/ARCH_WANTS_DYNAMIC_TASK_STRUCT) \
-    $(wildcard include/config/HAVE_ARCH_THREAD_STRUCT_WHITELIST) \
-  include/linux/uaccess.h \
-  include/linux/fault-inject-usercopy.h \
-    $(wildcard include/config/FAULT_INJECTION_USERCOPY) \
-  arch/x86/include/asm/uaccess.h \
-    $(wildcard include/config/CC_HAS_ASM_GOTO_OUTPUT) \
-    $(wildcard include/config/CC_HAS_ASM_GOTO_TIED_OUTPUT) \
-    $(wildcard include/config/ARCH_HAS_COPY_MC) \
-    $(wildcard include/config/X86_INTEL_USERCOPY) \
-  arch/x86/include/asm/smap.h \
-  arch/x86/include/asm/extable.h \
-    $(wildcard include/config/BPF_JIT) \
-  include/asm-generic/access_ok.h \
-    $(wildcard include/config/ALTERNATE_USER_ADDRESS_SPACE) \
-  arch/x86/include/asm/uaccess_32.h \
-  include/linux/cred.h \
-    $(wildcard include/config/DEBUG_CREDENTIALS) \
-  include/linux/key.h \
-    $(wildcard include/config/KEY_NOTIFICATIONS) \
-    $(wildcard include/config/NET) \
-  include/linux/assoc_array.h \
-    $(wildcard include/config/ASSOCIATIVE_ARRAY) \
-  include/linux/sched/user.h \
-    $(wildcard include/config/WATCH_QUEUE) \
-  include/linux/percpu_counter.h \
-  include/linux/rcu_sync.h \
-  include/linux/delayed_call.h \
-  include/linux/errseq.h \
-  include/linux/ioprio.h \
-  include/linux/sched/rt.h \
-  include/linux/iocontext.h \
-    $(wildcard include/config/BLK_ICQ) \
-  include/uapi/linux/ioprio.h \
-  include/linux/fs_types.h \
-  include/linux/mount.h \
-  include/linux/mnt_idmapping.h \
-  include/uapi/linux/fs.h \
-  include/linux/quota.h \
-    $(wildcard include/config/QUOTA_NETLINK_INTERFACE) \
-  include/uapi/linux/dqblk_xfs.h \
-  include/linux/dqblk_v1.h \
-  include/linux/dqblk_v2.h \
-  include/linux/dqblk_qtree.h \
-  include/linux/projid.h \
-  include/uapi/linux/quota.h \
-  include/linux/nfs_fs_i.h \
-  include/linux/seq_file.h \
-  include/linux/string_helpers.h \
-  include/linux/ns_common.h \
-  include/linux/nsproxy.h \
-  include/linux/user_namespace.h \
-    $(wildcard include/config/INOTIFY_USER) \
-    $(wildcard include/config/FANOTIFY) \
-    $(wildcard include/config/PERSISTENT_KEYRINGS) \
-  include/linux/kernel_stat.h \
-  include/linux/interrupt.h \
-    $(wildcard include/config/IRQ_FORCED_THREADING) \
-    $(wildcard include/config/GENERIC_IRQ_PROBE) \
-    $(wildcard include/config/IRQ_TIMINGS) \
-  include/linux/irqreturn.h \
-  include/linux/irqnr.h \
-  include/uapi/linux/irqnr.h \
-  include/linux/hardirq.h \
-  include/linux/context_tracking_state.h \
-    $(wildcard include/config/CONTEXT_TRACKING) \
-  include/linux/ftrace_irq.h \
-    $(wildcard include/config/HWLAT_TRACER) \
-    $(wildcard include/config/OSNOISE_TRACER) \
-  include/linux/vtime.h \
-    $(wildcard include/config/VIRT_CPU_ACCOUNTING) \
-    $(wildcard include/config/IRQ_TIME_ACCOUNTING) \
-  arch/x86/include/asm/hardirq.h \
-    $(wildcard include/config/KVM_INTEL) \
-    $(wildcard include/config/X86_THERMAL_VECTOR) \
-    $(wildcard include/config/X86_MCE_THRESHOLD) \
-    $(wildcard include/config/X86_MCE_AMD) \
-    $(wildcard include/config/X86_HV_CALLBACK_VECTOR) \
-  arch/x86/include/asm/irq.h \
-  arch/x86/include/asm/sections.h \
-  include/asm-generic/sections.h \
-    $(wildcard include/config/HAVE_FUNCTION_DESCRIPTORS) \
-  include/linux/cgroup-defs.h \
-    $(wildcard include/config/CGROUP_NET_CLASSID) \
-    $(wildcard include/config/CGROUP_NET_PRIO) \
-  include/linux/u64_stats_sync.h \
-  include/linux/bpf-cgroup-defs.h \
-  include/linux/psi_types.h \
-  include/linux/kthread.h \
-  include/linux/cgroup_subsys.h \
-    $(wildcard include/config/CGROUP_DEVICE) \
-    $(wildcard include/config/CGROUP_FREEZER) \
-    $(wildcard include/config/CGROUP_PERF) \
-    $(wildcard include/config/CGROUP_HUGETLB) \
-    $(wildcard include/config/CGROUP_PIDS) \
-    $(wildcard include/config/CGROUP_RDMA) \
-    $(wildcard include/config/CGROUP_MISC) \
-    $(wildcard include/config/CGROUP_DEBUG) \
-  include/linux/vm_event_item.h \
-    $(wildcard include/config/HAVE_ARCH_TRANSPARENT_HUGEPAGE_PUD) \
-    $(wildcard include/config/MEMORY_BALLOON) \
-    $(wildcard include/config/BALLOON_COMPACTION) \
-    $(wildcard include/config/DEBUG_TLBFLUSH) \
-    $(wildcard include/config/DEBUG_VM_VMACACHE) \
-  include/linux/page_counter.h \
-  include/linux/vmpressure.h \
-  include/linux/eventfd.h \
-  include/linux/mm.h \
-    $(wildcard include/config/HAVE_ARCH_MMAP_RND_BITS) \
-    $(wildcard include/config/HAVE_ARCH_MMAP_RND_COMPAT_BITS) \
-    $(wildcard include/config/ARCH_USES_HIGH_VMA_FLAGS) \
-    $(wildcard include/config/ARCH_HAS_PKEYS) \
-    $(wildcard include/config/PPC) \
-    $(wildcard include/config/PARISC) \
-   
+/*
+ * B53 register access through SPI
+ *
+ * Copyright (C) 2011-2013 Jonas Gorski <jogo@openwrt.org>
+ *
+ * Permission to use, copy, modify, and/or distribute this software for any
+ * purpose with or without fee is hereby granted, provided that the above
+ * copyright notice and this permission notice appear in all copies.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+ * WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+ * MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
+ * ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+ * WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+ * ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
+ * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+ */
+
+#include <asm/unaligned.h>
+
+#include <linux/delay.h>
+#include <linux/kernel.h>
+#include <linux/module.h>
+#include <linux/spi/spi.h>
+#include <linux/platform_data/b53.h>
+
+#include "b53_priv.h"
+
+#define B53_SPI_DATA		0xf0
+
+#define B53_SPI_STATUS		0xfe
+#define B53_SPI_CMD_SPIF	BIT(7)
+#define B53_SPI_CMD_RACK	BIT(5)
+
+#define B53_SPI_CMD_READ	0x00
+#define B53_SPI_CMD_WRITE	0x01
+#define B53_SPI_CMD_NORMAL	0x60
+#define B53_SPI_CMD_FAST	0x10
+
+#define B53_SPI_PAGE_SELECT	0xff
+
+static inline int b53_spi_read_reg(struct spi_device *spi, u8 reg, u8 *val,
+				   unsigned int len)
+{
+	u8 txbuf[2];
+
+	txbuf[0] = B53_SPI_CMD_NORMAL | B53_SPI_CMD_READ;
+	txbuf[1] = reg;
+
+	return spi_write_then_read(spi, txbuf, 2, val, len);
+}
+
+static inline int b53_spi_clear_status(struct spi_device *spi)
+{
+	unsigned int i;
+	u8 rxbuf;
+	int ret;
+
+	for (i = 0; i < 10; i++) {
+		ret = b53_spi_read_reg(spi, B53_SPI_STATUS, &rxbuf, 1);
+		if (ret)
+			return ret;
+
+		if (!(rxbuf & B53_SPI_CMD_SPIF))
+			break;
+
+		mdelay(1);
+	}
+
+	if (i == 10)
+		return -EIO;
+
+	return 0;
+}
+
+static inline int b53_spi_set_page(struct spi_device *spi, u8 page)
+{
+	u8 txbuf[3];
+
+	txbuf[0] = B53_SPI_CMD_NORMAL | B53_SPI_CMD_WRITE;
+	txbuf[1] = B53_SPI_PAGE_SELECT;
+	txbuf[2] = page;
+
+	return spi_write(spi, txbuf, sizeof(txbuf));
+}
+
+static inline int b53_prepare_reg_access(struct spi_device *spi, u8 page)
+{
+	int ret = b53_spi_clear_status(spi);
+
+	if (ret)
+		return ret;
+
+	return b53_spi_set_page(spi, page);
+}
+
+static int b53_spi_prepare_reg_read(struct spi_device *spi, u8 reg)
+{
+	u8 rxbuf;
+	int retry_count;
+	int ret;
+
+	ret = b53_spi_read_reg(spi, reg, &rxbuf, 1);
+	if (ret)
+		return ret;
+
+	for (retry_count = 0; retry_count < 10; retry_count++) {
+		ret = b53_spi_read_reg(spi, B53_SPI_STATUS, &rxbuf, 1);
+		if (ret)
+			return ret;
+
+		if (rxbuf & B53_SPI_CMD_RACK)
+			break;
+
+		mdelay(1);
+	}
+
+	if (retry_count == 10)
+		return -EIO;
+
+	return 0;
+}
+
+static int b53_spi_read(struct b53_device *dev, u8 page, u8 reg, u8 *data,
+			unsigned int len)
+{
+	struct spi_device *spi = dev->priv;
+	int ret;
+
+	ret = b53_prepare_reg_access(spi, page);
+	if (ret)
+		return ret;
+
+	ret = b53_spi_prepare_reg_read(spi, reg);
+	if (ret)
+		return ret;
+
+	return b53_spi_read_reg(spi, B53_SPI_DATA, data, len);
+}
+
+static int b53_spi_read8(struct b53_device *dev, u8 page, u8 reg, u8 *val)
+{
+	return b53_spi_read(dev, page, reg, val, 1);
+}
+
+static int b53_spi_read16(struct b53_device *dev, u8 page, u8 reg, u16 *val)
+{
+	__le16 value;
+	int ret;
+
+	ret = b53_spi_read(dev, page, reg, (u8 *)&value, 2);
+
+	if (!ret)
+		*val = le16_to_cpu(value);
+
+	return ret;
+}
+
+static int b53_spi_read32(struct b53_device *dev, u8 page, u8 reg, u32 *val)
+{
+	__le32 value;
+	int ret;
+
+	ret = b53_spi_read(dev, page, reg, (u8 *)&value, 4);
+
+	if (!ret)
+		*val = le32_to_cpu(value);
+
+	return ret;
+}
+
+static int b53_spi_read48(struct b53_device *dev, u8 page, u8 reg, u64 *val)
+{
+	__le64 value;
+	int ret;
+
+	*val = 0;
+	ret = b53_spi_read(dev, page, reg, (u8 *)&value, 6);
+	if (!ret)
+		*val = le64_to_cpu(value);
+
+	return ret;
+}
+
+static int b53_spi_read64(struct b53_device *dev, u8 page, u8 reg, u64 *val)
+{
+	__le64 value;
+	int ret;
+
+	ret = b53_spi_read(dev, page, reg, (u8 *)&value, 8);
+
+	if (!ret)
+		*val = le64_to_cpu(value);
+
+	return ret;
+}
+
+static int b53_spi_write8(struct b53_device *dev, u8 page, u8 reg, u8 value)
+{
+	struct spi_device *spi = dev->priv;
+	int ret;
+	u8 txbuf[3];
+
+	ret = b53_prepare_reg_access(spi, page);
+	if (ret)
+		return ret;
+
+	txbuf[0] = B53_SPI_CMD_NORMAL | B53_SPI_CMD_WRITE;
+	txbuf[1] = reg;
+	txbuf[2] = value;
+
+	return spi_write(spi, txbuf, sizeof(txbuf));
+}
+
+static int b53_spi_write16(struct b53_device *dev, u8 page, u8 reg, u16 value)
+{
+	struct spi_device *spi = dev->priv;
+	int ret;
+	u8 txbuf[4];
+
+	ret = b53_prepare_reg_access(spi, page);
+	if (ret)
+		return ret;
+
+	txbuf[0] = B53_SPI_CMD_NORMAL | B53_SPI_CMD_WRITE;
+	txbuf[1] = reg;
+	put_unaligned_le16(value, &txbuf[2]);
+
+	return spi_write(spi, txbuf, sizeof(txbuf));
+}
+
+static int b53_spi_write32(struct b53_device *dev, u8 page, u8 reg, u32 value)
+{
+	struct spi_device *spi = dev->priv;
+	int ret;
+	u8 txbuf[6];
+
+	ret = b53_prepare_reg_access(spi, page);
+	if (ret)
+		return ret;
+
+	txbuf[0] = B53_SPI_CMD_NORMAL | B53_SPI_CMD_WRITE;
+	txbuf[1] = reg;
+	put_unaligned_le32(value, &txbuf[2]);
+
+	return spi_write(spi, txbuf, sizeof(txbuf));
+}
+
+static int b53_spi_write48(struct b53_device *dev, u8 page, u8 reg, u64 value)
+{
+	struct spi_device *spi = dev->priv;
+	int ret;
+	u8 txbuf[10];
+
+	ret = b53_prepare_reg_access(spi, page);
+	if (ret)
+		return ret;
+
+	txbuf[0] = B53_SPI_CMD_NORMAL | B53_SPI_CMD_WRITE;
+	txbuf[1] = reg;
+	put_unaligned_le64(value, &txbuf[2]);
+
+	return spi_write(spi, txbuf, sizeof(txbuf) - 2);
+}
+
+static int b53_spi_write64(struct b53_device *dev, u8 page, u8 reg, u64 value)
+{
+	struct spi_device *spi = dev->priv;
+	int ret;
+	u8 txbuf[10];
+
+	ret = b53_prepare_reg_access(spi, page);
+	if (ret)
+		return ret;
+
+	txbuf[0] = B53_SPI_CMD_NORMAL | B53_SPI_CMD_WRITE;
+	txbuf[1] = reg;
+	put_unaligned_le64(value, &txbuf[2]);
+
+	return spi_write(spi, txbuf, sizeof(txbuf));
+}
+
+static const struct b53_io_ops b53_spi_ops = {
+	.read8 = b53_spi_read8,
+	.read16 = b53_spi_read16,
+	.read32 = b53_spi_read32,
+	.read48 = b53_spi_read48,
+	.read64 = b53_spi_read64,
+	.write8 = b53_spi_write8,
+	.write16 = b53_spi_write16,
+	.write32 = b53_spi_write32,
+	.write48 = b53_spi_write48,
+	.write64 = b53_spi_write64,
+};
+
+static int b53_spi_probe(struct spi_device *spi)
+{
+	struct b53_device *dev;
+	int ret;
+
+	dev = b53_switch_alloc(&spi->dev, &b53_spi_ops, spi);
+	if (!dev)
+		return -ENOMEM;
+
+	if (spi->dev.platform_data)
+		dev->pdata = spi->dev.platform_data;
+
+	ret = b53_switch_register(dev);
+	if (ret)
+		return ret;
+
+	spi_set_drvdata(spi, dev);
+
+	return 0;
+}
+
+static void b53_spi_remove(struct spi_device *spi)
+{
+	struct b53_device *dev = spi_get_drvdata(spi);
+
+	if (dev)
+		b53_switch_remove(dev);
+
+	spi_set_drvdata(spi, NULL);
+}
+
+static void b53_spi_shutdown(struct spi_device *spi)
+{
+	struct b53_device *dev = spi_get_drvdata(spi);
+
+	if (dev)
+		b53_switch_shutdown(dev);
+
+	spi_set_drvdata(spi, NULL);
+}
+
+static const struct of_device_id b53_spi_of_match[] = {
+	{ .compatible = "brcm,bcm5325" },
+	{ .compatible = "brcm,bcm5365" },
+	{ .compatible = "brcm,bcm5395" },
+	{ .compatible = "brcm,bcm5397" },
+	{ .compatible = "brcm,bcm5398" },
+	{ .compatible = "brcm,bcm53115" },
+	{ .compatible = "brcm,bcm53125" },
+	{ .compatible = "brcm,bcm53128" },
+	{ /* sentinel */ }
+};
+MODULE_DEVICE_TABLE(of, b53_spi_of_match);
+
+static const struct spi_device_id b53_spi_ids[] = {
+	{ .name = "bcm5325" },
+	{ .name = "bcm5365" },
+	{ .name = "bcm5395" },
+	{ .name = "bcm5397" },
+	{ .name = "bcm5398" },
+	{ .name = "bcm53115" },
+	{ .name = "bcm53125" },
+	{ .name = "bcm53128" },
+	{ /* sentinel */ }
+};
+MODULE_DEVICE_TABLE(spi, b53_spi_ids);
+
+static struct spi_driver b53_spi_driver = {
+	.driver = {
+		.name	= "b53-switch",
+		.of_match_table = b53_spi_of_match,
+	},
+	.probe	= b53_spi_probe,
+	.remove	= b53_spi_remove,
+	.shutdown = b53_spi_shutdown,
+	.id_table = b53_spi_ids,
+};
+
+module_spi_driver(b53_spi_driver);
+
+MODULE_AUTHOR("Jonas Gorski <jogo@openwrt.org>");
+MODULE_DESCRIPTION("B53 SPI access driver");
+MODULE_LICENSE("Dual BSD/GPL");

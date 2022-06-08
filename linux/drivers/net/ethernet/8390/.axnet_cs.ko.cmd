@@ -1,6 +1,1 @@
-_BITS) \
-    $(wildcard include/config/HAVE_ARCH_MMAP_RND_COMPAT_BITS) \
-    $(wildcard include/config/ARCH_USES_HIGH_VMA_FLAGS) \
-    $(wildcard include/config/ARCH_HAS_PKEYS) \
-    $(wildcard include/config/PPC) \
-    $(wildca
+cmd_drivers/net/ethernet/8390/axnet_cs.ko := ld -r -m elf_i386 --build-id=sha1  -T scripts/module.lds -o drivers/net/ethernet/8390/axnet_cs.ko drivers/net/ethernet/8390/axnet_cs.o drivers/net/ethernet/8390/axnet_cs.mod.o;  true

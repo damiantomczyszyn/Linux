@@ -1,64 +1,53 @@
-// SPDX-License-Identifier: GPL-2.0-only
-/*
- * kernel/lockdep.c
+d to userspace.
  *
- * Runtime locking correctness validator
+ * It also sets the final jump of the previous buffer to the start of the new
+ * buffer, thus chaining the new buffer into the DMA chain. This is a single
+ * atomic u32 write, so there is no race condition.
  *
- * Started by Ingo Molnar:
- *
- *  Copyright (C) 2006,2007 Red Hat, Inc., Ingo Molnar <mingo@redhat.com>
- *  Copyright (C) 2007 Red Hat, Inc., Peter Zijlstra
- *
- * this code maps all the lock dependencies as they occur in a live kernel
- * and will warn about the following classes of locking bugs:
- *
- * - lock inversion scenarios
- * - circular lock dependencies
- * - hardirq/softirq safe/unsafe locking bugs
- *
- * Bugs are reported even if the current locking scenario does not cause
- * any deadlock at this point.
- *
- * I.e. if anytime in the past two locks were taken in a different order,
- * even if it happened for another task, even if those were different
- * locks (but of the same class as this lock), this code will detect it.
- *
- * Thanks to Arjan van de Ven for coming up with the initial idea of
- * mapping lock dependencies runtime.
+ * The end-result of all this that you only get an interrupt when a buffer
+ * is ready, so the control flow is very easy.
  */
-#define DISABLE_BRANCH_PROFILING
-#include <linux/mutex.h>
-#include <linux/sched.h>
-#include <linux/sched/clock.h>
-#include <linux/sched/task.h>
-#include <linux/sched/mm.h>
-#include <linux/delay.h>
-#include <linux/module.h>
-#include <linux/proc_fs.h>
-#include <linux/seq_file.h>
-#include <linux/spinlock.h>
-#include <linux/kallsyms.h>
-#include <linux/interrupt.h>
-#include <linux/stacktrace.h>
-#include <linux/debug_locks.h>
-#include <linux/irqflags.h>
-#include <linux/utsname.h>
-#include <linux/hash.h>
-#include <linux/ftrace.h>
-#include <linux/stringify.h>
-#include <linux/bitmap.h>
-#include <linux/bitops.h>
-#include <linux/gfp.h>
-#include <linux/random.h>
-#include <linux/jhash.h>
-#include <linux/nmi.h>
-#include <linux/rcupdate.h>
-#include <linux/kprobes.h>
-#include <linux/lockdep.h>
+void cx23885_buf_queue(struct cx23885_tsport *port, struct cx23885_buffer *buf)
+{
+	struct cx23885_buffer    *prev;
+	struct cx23885_dev *dev = port->dev;
+	struct cx23885_dmaqueue  *cx88q = &port->mpegq;
+	unsigned long flags;
 
-#include <asm/sections.h>
+	buf->risc.cpu[1] = cpu_to_le32(buf->risc.dma + 12);
+	buf->risc.jmp[0] = cpu_to_le32(RISC_JUMP | RISC_CNT_INC);
+	buf->risc.jmp[1] = cpu_to_le32(buf->risc.dma + 12);
+	buf->risc.jmp[2] = cpu_to_le32(0); /* bits 63-32 */
 
-#include "lockdep_internals.h"
+	spin_lock_irqsave(&dev->slock, flags);
+	if (list_empty(&cx88q->active)) {
+		list_add_tail(&buf->queue, &cx88q->active);
+		dprintk(1, "[%p/%d] %s - first active\n",
+			buf, buf->vb.vb2_buf.index, __func__);
+	} else {
+		buf->risc.cpu[0] |= cpu_to_le32(RISC_IRQ1);
+		prev = list_entry(cx88q->active.prev, struct cx23885_buffer,
+				  queue);
+		list_add_tail(&buf->queue, &cx88q->active);
+		prev->risc.jmp[1] = cpu_to_le32(buf->risc.dma);
+		dprintk(1, "[%p/%d] %s - append to active\n",
+			 buf, buf->vb.vb2_buf.index, __func__);
+	}
+	spin_unlock_irqrestore(&dev->slock, flags);
+}
 
-#define CREATE_TRACE_POINTS
-#include <tra
+/* ----------------------------------------------------------- */
+
+static void do_cancel_buffers(struct cx23885_tsport *port, char *reason)
+{
+	struct cx23885_dmaqueue *q = &port->mpegq;
+	struct cx23885_buffer *buf;
+	unsigned long flags;
+
+	spin_lock_irqsave(&port->slock, flags);
+	while (!list_empty(&q->active)) {
+		buf = list_entry(q->active.next, struct cx23885_buffer,
+				 queue);
+		list_del(&buf->queue);
+		vb2_buffer_done(&buf->vb.vb2_buf, VB2_BUF_STATE_ERROR);
+		dpr

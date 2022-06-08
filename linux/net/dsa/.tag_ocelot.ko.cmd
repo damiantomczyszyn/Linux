@@ -1,8 +1,5 @@
- 0, 40 + 1 + 12 * (14 + 1));
-	seq_printf(m, "\n");
-}
-
-static void *ls_start(struct seq_file *m, loff_t *pos)
-{
-	struct lock_stat_seq *data = m->private;
-	struct loc
+MMCONFIG) \
+    $(wildcard include/config/ACPI_APEI_GHES) \
+    $(wildcard include/config/INTEL_TXT) \
+  arch/x86/include/generated/asm/kmap_size.h \
+  include/asm-

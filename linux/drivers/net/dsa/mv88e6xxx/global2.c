@@ -1,350 +1,1194 @@
-nfig/GENERIC_IOREMAP) \
-    $(wildcard include/config/VIRT_TO_BUS) \
-    $(wildcard include/config/GENERIC_DEVMEM_IS_ALLOWED) \
-  include/linux/logic_pio.h \
-    $(wildcard include/config/INDIRECT_PIO) \
-  include/linux/vmalloc.h \
-    $(wildcard include/config/HAVE_ARCH_HUGE_VMALLOC) \
-  arch/x86/include/asm/vmalloc.h \
-    $(wildcard include/config/HAVE_ARCH_HUGE_VMAP) \
-  arch/x86/include/asm/acpi.h \
-    $(wildcard include/config/ACPI_APEI) \
-  include/acpi/pdc_intel.h \
-  arch/x86/include/asm/numa.h \
-    $(wildcard include/config/NUMA_EMU) \
-  arch/x86/include/asm/numa_32.h \
-  include/linux/regulator/consumer.h \
-    $(wildcard include/config/REGULATOR) \
-  include/linux/suspend.h \
-    $(wildcard include/config/VT) \
-    $(wildcard include/config/SUSPEND) \
-    $(wildcard include/config/HIBERNATION_SNAPSHOT_DEV) \
-    $(wildcard include/config/PM_SLEEP_DEBUG) \
-    $(wildcard include/config/PM_AUTOSLEEP) \
-  include/linux/swap.h \
-    $(wildcard include/config/DEVICE_PRIVATE) \
-    $(wildcard include/config/MIGRATION) \
-    $(wildcard include/config/FRONTSWAP) \
-    $(wildcard include/config/THP_SWAP) \
-    $(wildcard include/config/MEMCG_SWAP) \
-  include/linux/memcontrol.h \
-    $(wildcard include/config/CGROUP_WRITEBACK) \
-  include/linux/cgroup.h \
-    $(wildcard include/config/CGROUP_CPUACCT) \
-    $(wildcard include/config/SOCK_CGROUP_DATA) \
-    $(wildcard include/config/CGROUP_DATA) \
-    $(wildcard include/config/CGROUP_BPF) \
-  include/uapi/linux/cgroupstats.h \
-  include/uapi/linux/taskstats.h \
-  include/linux/fs.h \
-    $(wildcard include/config/READ_ONLY_THP_FOR_FS) \
-    $(wildcard include/config/FS_POSIX_ACL) \
-    $(wildcard include/config/IMA) \
-    $(wildcard include/config/FILE_LOCKING) \
-    $(wildcard include/config/FSNOTIFY) \
-    $(wildcard include/config/FS_ENCRYPTION) \
-    $(wildcard include/config/FS_VERITY) \
-    $(wildcard include/config/EPOLL) \
-    $(wildcard include/config/UNICODE) \
-    $(wildcard include/config/QUOTA) \
-    $(wildcard include/config/FS_DAX) \
-    $(wildcard include/config/BLOCK) \
-  include/linux/wait_bit.h \
-  include/linux/kdev_t.h \
-  include/uapi/linux/kdev_t.h \
-  include/linux/dcache.h \
-  include/linux/rculist_bl.h \
-  include/linux/list_bl.h \
-  include/linux/bit_spinlock.h \
-  include/linux/lockref.h \
-    $(wildcard include/config/ARCH_USE_CMPXCHG_LOCKREF) \
-  include/linux/stringhash.h \
-    $(wildcard include/config/DCACHE_WORD_ACCESS) \
-  include/linux/hash.h \
-    $(wildcard include/config/HAVE_ARCH_HASH) \
-  include/linux/path.h \
-  include/linux/list_lru.h \
-  include/linux/shrinker.h \
-  include/linux/capability.h \
-  include/uapi/linux/capability.h \
-  include/linux/semaphore.h \
-  include/linux/fcntl.h \
-    $(wildcard include/config/ARCH_32BIT_OFF_T) \
-  include/uapi/linux/fcntl.h \
-  arch/x86/include/generated/uapi/asm/fcntl.h \
-  include/uapi/asm-generic/fcntl.h \
-  include/uapi/linux/openat2.h \
-  include/linux/migrate_mode.h \
-  include/linux/percpu-rwsem.h \
-  include/linux/rcuwait.h \
-  include/linux/sched/signal.h \
-    $(wildcard include/config/SCHED_AUTOGROUP) \
-    $(wildcard include/config/BSD_PROCESS_ACCT) \
-    $(wildcard include/config/TASKSTATS) \
-    $(wildcard include/config/STACK_GROWSUP) \
-  include/linux/signal.h \
-    $(wildcard include/config/DYNAMIC_SIGFRAME) \
-  include/linux/sched/jobctl.h \
-  include/linux/sched/task.h \
-    $(wildcard include/config/HAVE_EXIT_THREAD) \
-    $(wildcard include/config/ARCH_WANTS_DYNAMIC_TASK_STRUCT) \
-    $(wildcard include/config/HAVE_ARCH_THREAD_STRUCT_WHITELIST) \
-  include/linux/uaccess.h \
-  include/linux/fault-inject-usercopy.h \
-    $(wildcard include/config/FAULT_INJECTION_USERCOPY) \
-  arch/x86/include/asm/uaccess.h \
-    $(wildcard include/config/CC_HAS_ASM_GOTO_OUTPUT) \
-    $(wildcard include/config/CC_HAS_ASM_GOTO_TIED_OUTPUT) \
-    $(wildcard include/config/ARCH_HAS_COPY_MC) \
-    $(wildcard include/config/X86_INTEL_USERCOPY) \
-  arch/x86/include/asm/smap.h \
-  arch/x86/include/asm/extable.h \
-    $(wildcard include/config/BPF_JIT) \
-  include/asm-generic/access_ok.h \
-    $(wildcard include/config/ALTERNATE_USER_ADDRESS_SPACE) \
-  arch/x86/include/asm/uaccess_32.h \
-  include/linux/cred.h \
-    $(wildcard include/config/DEBUG_CREDENTIALS) \
-  include/linux/key.h \
-    $(wildcard include/config/KEY_NOTIFICATIONS) \
-    $(wildcard include/config/NET) \
-  include/linux/assoc_array.h \
-    $(wildcard include/config/ASSOCIATIVE_ARRAY) \
-  include/linux/sched/user.h \
-    $(wildcard include/config/WATCH_QUEUE) \
-  include/linux/percpu_counter.h \
-  include/linux/rcu_sync.h \
-  include/linux/delayed_call.h \
-  include/linux/errseq.h \
-  include/linux/ioprio.h \
-  include/linux/sched/rt.h \
-  include/linux/iocontext.h \
-    $(wildcard include/config/BLK_ICQ) \
-  include/uapi/linux/ioprio.h \
-  include/linux/fs_types.h \
-  include/linux/mount.h \
-  include/linux/mnt_idmapping.h \
-  include/uapi/linux/fs.h \
-  include/linux/quota.h \
-    $(wildcard include/config/QUOTA_NETLINK_INTERFACE) \
-  include/uapi/linux/dqblk_xfs.h \
-  include/linux/dqblk_v1.h \
-  include/linux/dqblk_v2.h \
-  include/linux/dqblk_qtree.h \
-  include/linux/projid.h \
-  include/uapi/linux/quota.h \
-  include/linux/nfs_fs_i.h \
-  include/linux/seq_file.h \
-  include/linux/string_helpers.h \
-  include/linux/ns_common.h \
-  include/linux/nsproxy.h \
-  include/linux/user_namespace.h \
-    $(wildcard include/config/INOTIFY_USER) \
-    $(wildcard include/config/FANOTIFY) \
-    $(wildcard include/config/PERSISTENT_KEYRINGS) \
-  include/linux/kernel_stat.h \
-  include/linux/interrupt.h \
-    $(wildcard include/config/IRQ_FORCED_THREADING) \
-    $(wildcard include/config/GENERIC_IRQ_PROBE) \
-    $(wildcard include/config/IRQ_TIMINGS) \
-  include/linux/irqreturn.h \
-  include/linux/irqnr.h \
-  include/uapi/linux/irqnr.h \
-  include/linux/hardirq.h \
-  include/linux/context_tracking_state.h \
-    $(wildcard include/config/CONTEXT_TRACKING) \
-  include/linux/ftrace_irq.h \
-    $(wildcard include/config/HWLAT_TRACER) \
-    $(wildcard include/config/OSNOISE_TRACER) \
-  include/linux/vtime.h \
-    $(wildcard include/config/VIRT_CPU_ACCOUNTING) \
-    $(wildcard include/config/IRQ_TIME_ACCOUNTING) \
-  arch/x86/include/asm/hardirq.h \
-    $(wildcard include/config/KVM_INTEL) \
-    $(wildcard include/config/X86_THERMAL_VECTOR) \
-    $(wildcard include/config/X86_MCE_THRESHOLD) \
-    $(wildcard include/config/X86_MCE_AMD) \
-    $(wildcard include/config/X86_HV_CALLBACK_VECTOR) \
-  arch/x86/include/asm/irq.h \
-  arch/x86/include/asm/sections.h \
-  include/asm-generic/sections.h \
-    $(wildcard include/config/HAVE_FUNCTION_DESCRIPTORS) \
-  include/linux/cgroup-defs.h \
-    $(wildcard include/config/CGROUP_NET_CLASSID) \
-    $(wildcard include/config/CGROUP_NET_PRIO) \
-  include/linux/u64_stats_sync.h \
-  include/linux/bpf-cgroup-defs.h \
-  include/linux/psi_types.h \
-  include/linux/kthread.h \
-  include/linux/cgroup_subsys.h \
-    $(wildcard include/config/CGROUP_DEVICE) \
-    $(wildcard include/config/CGROUP_FREEZER) \
-    $(wildcard include/config/CGROUP_PERF) \
-    $(wildcard include/config/CGROUP_HUGETLB) \
-    $(wildcard include/config/CGROUP_PIDS) \
-    $(wildcard include/config/CGROUP_RDMA) \
-    $(wildcard include/config/CGROUP_MISC) \
-    $(wildcard include/config/CGROUP_DEBUG) \
-  include/linux/vm_event_item.h \
-    $(wildcard include/config/HAVE_ARCH_TRANSPARENT_HUGEPAGE_PUD) \
-    $(wildcard include/config/MEMORY_BALLOON) \
-    $(wildcard include/config/BALLOON_COMPACTION) \
-    $(wildcard include/config/DEBUG_TLBFLUSH) \
-    $(wildcard include/config/DEBUG_VM_VMACACHE) \
-  include/linux/page_counter.h \
-  include/linux/vmpressure.h \
-  include/linux/eventfd.h \
-  include/linux/mm.h \
-    $(wildcard include/config/HAVE_ARCH_MMAP_RND_BITS) \
-    $(wildcard include/config/HAVE_ARCH_MMAP_RND_COMPAT_BITS) \
-    $(wildcard include/config/ARCH_USES_HIGH_VMA_FLAGS) \
-    $(wildcard include/config/ARCH_HAS_PKEYS) \
-    $(wildcard include/config/PPC) \
-    $(wildcard include/config/PARISC) \
-    $(wildcard include/config/SPARC64) \
-    $(wildcard include/config/ARM64_MTE) \
-    $(wildcard include/config/HAVE_ARCH_USERFAULTFD_MINOR) \
-    $(wildcard include/config/SHMEM) \
-    $(wildcard include/config/ARCH_HAS_PTE_SPECIAL) \
-    $(wildcard include/config/ARCH_HAS_PTE_DEVMAP) \
-    $(wildcard include/config/DEBUG_VM_RB) \
-    $(wildcard include/config/PAGE_POISONING) \
-    $(wildcard include/config/INIT_ON_ALLOC_DEFAULT_ON) \
-    $(wildcard include/config/INIT_ON_FREE_DEFAULT_ON) \
-    $(wildcard include/config/DEBUG_PAGEALLOC) \
-    $(wildcard include/config/HUGETLBFS) \
-    $(wildcard include/config/MAPPING_DIRTY_HELPERS) \
-    $(wildcard include/config/ANON_VMA_NAME) \
-  include/linux/mmap_lock.h \
-  include/linux/page_ext.h \
-  include/linux/stacktrace.h \
-    $(wildcard include/config/ARCH_STACKWALK) \
-    $(wildcard include/config/STACKTRACE) \
-    $(wildcard include/config/HAVE_RELIABLE_STACKTRACE) \
-  include/linux/stackdepot.h \
-    $(wildcard include/config/STACKDEPOT_ALWAYS_INIT) \
-  include/linux/page_ref.h \
-    $(wildcard include/config/DEBUG_PAGE_REF) \
-  include/linux/sizes.h \
-  include/linux/pgtable.h \
-    $(wildcard include/config/HIGHPTE) \
-    $(wildcard include/config/GUP_GET_PTE_LOW_HIGH) \
-    $(wildcard include/config/HAVE_ARCH_SOFT_DIRTY) \
-    $(wildcard include/config/ARCH_ENABLE_THP_MIGRATION) \
-    $(wildcard include/config/X86_ESPFIX64) \
-  arch/x86/include/asm/pgtable.h \
-    $(wildcard include/config/DEBUG_WX) \
-    $(wildcard include/config/PAGE_TABLE_CHECK) \
-  arch/x86/include/asm/pkru.h \
-  arch/x86/include/asm/fpu/api.h \
-    $(wildcard include/config/X86_DEBUG_FPU) \
-  arch/x86/include/asm/coco.h \
-  include/asm-generic/pgtable_uffd.h \
-  include/linux/page_table_check.h \
-  arch/x86/include/asm/pgtable_32.h \
-  arch/x86/include/asm/pgtable-3level.h \
-  arch/x86/include/asm/pgtable-invert.h \
-  include/linux/huge_mm.h \
-  include/linux/sched/coredump.h \
-    $(wildcard include/config/CORE_DUMP_DEFAULT_ELF_HEADERS) \
-  include/linux/vmstat.h \
-    $(wildcard include/config/VM_EVENT_COUNTERS) \
-  include/linux/writeback.h \
-  include/linux/flex_proportions.h \
-  include/linux/backing-dev-defs.h \
-    $(wildcard include/config/DEBUG_FS) \
-  include/linux/blk_types.h \
-    $(wildcard include/config/FAIL_MAKE_REQUEST) \
-    $(wildcard include/config/BLK_CGROUP_IOCOST) \
-    $(wildcard include/config/BLK_INLINE_ENCRYPTION) \
-    $(wildcard include/config/BLK_DEV_INTEGRITY) \
-  include/linux/bvec.h \
-  include/linux/highmem.h \
-  include/linux/cacheflush.h \
-  arch/x86/include/asm/cacheflush.h \
-  include/asm-generic/cacheflush.h \
-  include/linux/highmem-internal.h \
-  arch/x86/include/asm/highmem.h \
-  arch/x86/include/asm/tlbflush.h \
-  arch/x86/include/asm/invpcid.h \
-  arch/x86/include/asm/pti.h \
-  include/linux/bio.h \
-  include/linux/mempool.h \
-  include/linux/uio.h \
-    $(wildcard include/config/ARCH_HAS_UACCESS_FLUSHCACHE) \
-  include/uapi/linux/uio.h \
-  include/linux/node.h \
-    $(wildcard include/config/HMEM_REPORTING) \
-  include/linux/pagemap.h \
-  include/linux/hugetlb_inline.h \
-  include/uapi/linux/mempolicy.h \
-  include/linux/freezer.h \
-  include/uapi/linux/i2c.h \
-  include/linux/videodev2.h \
-  include/uapi/linux/videodev2.h \
-    $(wildcard include/config/VIDEO_ADV_DEBUG) \
-  include/uapi/linux/v4l2-common.h \
-  include/uapi/linux/v4l2-controls.h \
-  include/media/v4l2-device.h \
-    $(wildcard include/config/VIDEO_V4L2_SUBDEV_API) \
-  include/media/media-device.h \
-    $(wildcard include/config/MEDIA_CONTROLLER) \
-  include/media/media-devnode.h \
-  include/linux/poll.h \
-  include/uapi/linux/poll.h \
-  arch/x86/include/generated/uapi/asm/poll.h \
-  include/uapi/asm-generic/poll.h \
-  include/uapi/linux/eventpoll.h \
-  include/linux/cdev.h \
-  include/media/media-entity.h \
-  include/uapi/linux/media.h \
-  include/media/v4l2-subdev.h \
-  include/uapi/linux/v4l2-subdev.h \
-  include/uapi/linux/v4l2-mediabus.h \
-  include/uapi/linux/media-bus-format.h \
-  include/media/v4l2-async.h \
-  include/media/v4l2-common.h \
-    $(wildcard include/config/VIDEO_V4L2_I2C) \
-    $(wildcard include/config/SPI) \
-  include/media/v4l2-dev.h \
-  include/linux/spi/spi.h \
-    $(wildcard include/config/SPI_SLAVE) \
-  include/linux/scatterlist.h \
-    $(wildcard include/config/NEED_SG_DMA_LENGTH) \
-    $(wildcard include/config/DEBUG_SG) \
-    $(wildcard include/config/SGL_ALLOC) \
-    $(wildcard include/config/ARCH_NO_SG_CHAIN) \
-    $(wildcard include/config/SG_POOL) \
-  include/linux/gpio/consumer.h \
-    $(wildcard include/config/OF_GPIO) \
-    $(wildcard include/config/GPIO_SYSFS) \
-  include/uapi/linux/spi/spi.h \
-  include/media/v4l2-fh.h \
-  include/media/v4l2-mediabus.h \
-  include/media/i2c/uda1342.h \
+// SPDX-License-Identifier: GPL-2.0-or-later
+/*
+ * Marvell 88E6xxx Switch Global 2 Registers support
+ *
+ * Copyright (c) 2008 Marvell Semiconductor
+ *
+ * Copyright (c) 2016-2017 Savoir-faire Linux Inc.
+ *	Vivien Didelot <vivien.didelot@savoirfairelinux.com>
+ */
 
-drivers/media/i2c/uda1342.o: $(deps_drivers/media/i2c/uda1342.o)
+#include <linux/bitfield.h>
+#include <linux/interrupt.h>
+#include <linux/irqdomain.h>
 
-$(deps_drivers/media/i2c/uda1342.o):
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  ELF                             4     (               Ë¸ˇˇˇã@\Ë¸ˇˇˇ1¿√Ë¸ˇˇˇVπ   Sâ√É√pÉÏd°    âD$ãC$jçT$Ë¸ˇˇˇãC$∂t$π   jçT$
-Ë¸ˇˇˇâ∂V∂D$PSh    Ë¸ˇˇˇÉƒãD$d+    uÉƒ1¿[^√Ë¸ˇˇˇç¥&    êË¸ˇˇˇUWâœVâ÷Sâ√ÉÏã´î   d°    âD$1¿àL$ã    àT$Ö…è   j π   âËçT$Ë¸ˇˇˇZÉ¯Ö¸ˇˇˇãD$d+    uÉƒ[^_]√Ë¸ˇˇˇË¸ˇˇˇã    VSâ√∂∞¿   Ö…è>   âÒâÿ1“É…∂…ËaˇˇˇâÒâÿ1“Å·Ô   ËPˇˇˇ1¿[^√ç¥&    çt& Ë¸ˇˇˇUWVSâ√ã@ãPãRË¸ˇˇˇ%   =   ÑS   ∏˚ˇˇˇ[^_]√ç¥&    ç∂    Ë¸ˇˇˇUâ’¡ÂWÉÂ¿Vç4SâÈâ√ÉÊ àã—   âÒâ–¡‚àã“   ∂ã¿   ¡‡É‚Ä	÷àÉ–   âœàì”   É·?1“ÉÁ_	¡âÿ	˜∂≥»   ∂…Ëò˛ˇˇâ¯∫   ÉÊ?∂»âÿËÑ˛ˇˇ	Ó∫   â∂»âÿËq˛ˇˇã    ∂≥¿   Ö…è‡   âÒâÿ1“É…∂…ËK˛ˇˇâÒâÿ1“Å·Ô   Ë:˛ˇˇ1¿[^_]√       P                                                                                                                                 ê      P  ê      6%s: Status: SA00=0x%02x SA01=0x%02x
-  7%s: write reg: %02X val: %02X
-    3%s: I/O error write 0x%02x/0x%02x
-    7%s: changed input or channel
- 6%s %d-%04x: chip found @ 0x%x (%s)
- â¯É√p∂¯â∂WVShL   Ë¸ˇˇˇÉƒÈ‚   â¯∂¿P∂¬PçCpPh(   Ë¸ˇˇˇÉƒÈ∆   ç@pPht   Ë¸ˇˇˇXZÈ  ãS∑Cçä  Qç QPˇ≤   ãCTˇ0hî   Ë¸ˇˇˇçCπ¿  ∫‘   Ë¸ˇˇˇâ≈ÉƒÖ¿u
-∏ÙˇˇˇÈz  π`   â⁄çΩ¿   1€Ë¸ˇˇˇæ    π   Û•∂å¿   â⁄âËÉ√Ëå   É˚uÁ1¿Èz  çCpPht   Ë¸ˇˇˇXZÈ0                    ∏H“ÊØ  ^ – Ä              upd64031a                                                          ‡       Ä                   ê                                                                                                                                                                                                            debug Ë¸ˇˇˇ∫    ∏    È¸ˇˇˇ∏    È¸ˇˇˇupd64031a parm=debug:Debug level (0-1) parmtype=debug:int license=GPL author=T. Adachi, Takeru KOMORIYA, Hans Verkuil description=uPD64031A driver  P          §ˇ      GCC: (GNU) 11.2.0           GNU  ¿        ¿                                  Òˇ                                                                          x                  	 3   ê   p     §           C       B    	 X      E     n   B       	               â   P  3     ô   W   ç    	 Æ   `         º   ê  Õ     –   ‰       	               È            ˇ       Ä           
-                   &      0     3     0     F  ‡   ,     Z  Ä   P     n           É          ú           ™  P       º  0        ”  <   0     È  l                                  -             ?             Y             a             r             ã             ò             ≠             ª             œ           €             Í      
-     ˘      0                   upd64031a.c upd64031a_remove upd64031a_log_status upd64031a_write upd64031a_write.cold upd64031a_s_frequency upd64031a_s_frequency.cold upd64031a_probe upd64031a_probe.cold upd64031a_ops upd64031a_s_routing upd64031a_s_routing.cold upd64031a_driver_init upd64031a_driver upd64031a_driver_exit upd64031a_id upd64031a_core_ops upd64031a_tuner_ops upd64031a_video_ops __UNIQUE_ID_debug270 __UNIQUE_ID_debugtype269 __param_debug __param_str_debug __UNIQUE_ID_license268 __UNIQUE_ID_author267 __UNIQUE_ID_description266 __fentry__ v4l2_device_unregister_subdev __stack_chk_guard i2c_transfer_buffer_flags _printk __stack_chk_fail __x86_indirect_thunk_edx devm_kmalloc v4l2_i2c_subdev_init __this_module i2c_register_driver init_module i2c_del_driver cleanup_module __mod_i2c__upd64031a_id_device_table param_ops_int    $  	   %     $  &   &  8   '  P   '  b     g   (  u   &  Ñ   )  ë   $  ™   &  ∫     ÿ   '  Ì   &  ¸   )    $      Q  $  e  *  ë  $  !    ∆     ‚         u    0                   h                                                 (  1     6   (  G     L   (  v     {   (  ç   +  •     ¥   ,  π     ‘     È     Ó   (       >     S     †     ‡     ı     `     d     l     Ä     Ë             $          -     .          0           -     3        .symtab .strtab .shstrtab .rel.text .rel.data .bss .rel__mcount_loc .rodata.str1.4 .rel.text.unlikely .rel.rodata .rel.init.text .rel.exit.text .rodata.str1.1 .modinfo .rel__param .comment .note.GNU-stack .note.gnu.property                                                         @   ]                    	   @       ƒ  ÿ               )             †  Ä                   %   	   @       ú                  /                                  8                                  4   	   @       º  8               E      2       <  ∫                 X             ˆ  ˘                  T   	   @       Ù  ®      	         k                V                  g   	   @       ú  0               w             V                    s   	   @       Ã                  Ü             j  
-                  Ç   	   @       Ï                 ë      2       t  
-                 †             ~  â                  ≠                                 ©   	   @       ¸                  µ      0                          æ              /                     Œ             0  (                                X  @     $         	              ò
-  ,                                 ·                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          ELF                             4     (               Ë¸ˇˇˇã@\Ë¸ˇˇˇ1¿√Ë¸ˇˇˇVπ   Sâ√É√pÉÏd°    âD$ãC$jçT$Ë¸ˇˇˇãC$∂t$π   jçT$
-Ë¸ˇˇˇâ∂V∂D$PSh    Ë¸ˇˇˇÉƒãD$d+    uÉƒ1¿[^√Ë¸ˇˇˇç¥&    êË¸ˇˇˇUWâœVâ÷Sâ√ÉÏã´î   d°    âD$1¿àL$ã    àT$Ö…è   j π   âËçT$Ë¸ˇˇˇZÉ¯Ö¸ˇˇˇãD$d+    uÉƒ[^_]√Ë¸ˇˇˇË¸ˇˇˇã    VSâ√∂∞¿   Ö…è>   âÒâÿ1“É…∂…ËaˇˇˇâÒâÿ1“Å·Ô   ËPˇˇˇ1¿[^√ç¥&    çt& Ë¸ˇˇˇUWVSâ√ã@ãPãRË¸ˇˇˇ%   =   ÑS   ∏˚ˇˇˇ[^_]√ç¥&    ç∂    Ë¸ˇˇˇUâ’¡ÂWÉÂ¿Vç4SâÈâ√ÉÊ àã—   âÒâ–¡‚àã“   ∂ã¿   ¡‡É‚Ä	÷àÉ–   âœàì”   É·?1“ÉÁ_	¡âÿ	˜∂≥»   ∂…Ëò˛ˇˇâ¯∫   ÉÊ?∂»âÿËÑ˛ˇˇ	Ó∫   â∂»âÿËq˛ˇˇã    ∂≥¿   Ö…è‡   âÒâÿ1“É…∂…ËK˛ˇˇâÒâÿ1“Å·Ô   Ë:˛ˇˇ1¿[^_]√       P                                                                                                                                 ê      P  ê      6%s: Status: SA00=0x%02x SA01=0x%02x
-  7%s: write reg: %02X val: %02X
-    3%s: I/O error write 0x%02x/0x%02x
-    7%s: changed input or channel
- 6%s %d-%04x: chip found @ 0x%x (%s)
- â¯É√p∂¯â∂WVShL   Ë¸ˇˇˇÉƒÈ‚   â¯∂¿P∂¬PçCpPh(   Ë¸ˇˇˇÉƒÈ∆   ç@pPht   Ë¸ˇˇˇXZÈ  ãS∑Cçä  Qç QPˇ≤   ãCTˇ0hî   Ë¸ˇˇˇçCπ¿  ∫‘   Ë¸ˇˇˇâ≈ÉƒÖ¿u
-∏ÙˇˇˇÈz  π`   â⁄çΩ¿   1€Ë¸ˇˇˇæ    π   Û•∂å¿   â⁄âËÉ√Ëå   É˚uÁ1¿Èz  çCpPht   Ë¸ˇˇˇXZÈ0                    ∏H“ÊØ  ^ – Ä              upd64031a                                                          ‡       Ä                   ê                                                                                                                                                                                                            debug Ë¸ˇˇˇ∫    ∏    È¸ˇˇˇ∏    È¸ˇˇˇupd64031a parm=debug:Debug level (0-1) parmtype=debug:int license=GPL author=T. Adachi, Takeru KOMORIYA, Hans Verkuil description=uPD64031A driver  P          §ˇ      GCC: (GNU) 11.2.0           GNU  ¿        ¿                                  Òˇ                                                                          x                  	 3   ê   p     §           C       B    	 X      E     n   B       	               â   P  3     ô   W   ç    	 Æ   `         º   ê  Õ     –   ‰       	               È            ˇ       Ä           
-                   &      0     3     0     F  ‡   ,     Z  Ä   P     n           É          ú           ™  P       º  0        ”  <   0     È  l                                  -             ?             Y             a             r             ã             ò             ≠             ª             œ           €             Í      
-     ˘      0                   upd64031a.c upd64031a_remove upd64031a_log_status upd64031a_write upd64031a_write.cold upd64031a_s_frequency upd64031a_s_frequency.cold upd64031a_probe upd64031a_probe.cold upd64031a_ops upd64031a_s_routing upd64031a_s_routing.cold upd64031a_driver_init upd64031a_driver upd64031a_driver_exit upd64031a_id upd64031a_core_ops upd64031a_tuner_ops upd64031a_video_ops __UNIQUE_ID_debug270 __UNIQUE_ID_debugtype269 __param_debug __param_str_debug __UNIQUE_ID_license268 __UNIQUE_ID_author267 __UNIQUE_ID_description266 __fentry__ v4l2_device_unregister_subdev __stack_chk_guard i2c_transfer_buffer_flags _printk __stack_chk_fail __x86_indirect_thunk_edx devm_kmalloc v4l2_i2c_subdev_init __this_module i2c_register_driver init_module i2c_del_driver cleanup_module __mod_i2c__upd64031a_id_device_table param_ops_int    $  	   %     $  &   &  8   ' 
+#include "chip.h"
+#include "global1.h" /* for MV88E6XXX_G1_STS_IRQ_DEVICE */
+#include "global2.h"
+
+int mv88e6xxx_g2_read(struct mv88e6xxx_chip *chip, int reg, u16 *val)
+{
+	return mv88e6xxx_read(chip, chip->info->global2_addr, reg, val);
+}
+
+int mv88e6xxx_g2_write(struct mv88e6xxx_chip *chip, int reg, u16 val)
+{
+	return mv88e6xxx_write(chip, chip->info->global2_addr, reg, val);
+}
+
+int mv88e6xxx_g2_wait_bit(struct mv88e6xxx_chip *chip, int reg, int
+			  bit, int val)
+{
+	return mv88e6xxx_wait_bit(chip, chip->info->global2_addr, reg,
+				  bit, val);
+}
+
+/* Offset 0x00: Interrupt Source Register */
+
+static int mv88e6xxx_g2_int_source(struct mv88e6xxx_chip *chip, u16 *src)
+{
+	/* Read (and clear most of) the Interrupt Source bits */
+	return mv88e6xxx_g2_read(chip, MV88E6XXX_G2_INT_SRC, src);
+}
+
+/* Offset 0x01: Interrupt Mask Register */
+
+static int mv88e6xxx_g2_int_mask(struct mv88e6xxx_chip *chip, u16 mask)
+{
+	return mv88e6xxx_g2_write(chip, MV88E6XXX_G2_INT_MASK, mask);
+}
+
+/* Offset 0x02: Management Enable 2x */
+
+static int mv88e6xxx_g2_mgmt_enable_2x(struct mv88e6xxx_chip *chip, u16 en2x)
+{
+	return mv88e6xxx_g2_write(chip, MV88E6XXX_G2_MGMT_EN_2X, en2x);
+}
+
+/* Offset 0x03: Management Enable 0x */
+
+static int mv88e6xxx_g2_mgmt_enable_0x(struct mv88e6xxx_chip *chip, u16 en0x)
+{
+	return mv88e6xxx_g2_write(chip, MV88E6XXX_G2_MGMT_EN_0X, en0x);
+}
+
+/* Offset 0x05: Switch Management Register */
+
+static int mv88e6xxx_g2_switch_mgmt_rsvd2cpu(struct mv88e6xxx_chip *chip,
+					     bool enable)
+{
+	u16 val;
+	int err;
+
+	err = mv88e6xxx_g2_read(chip, MV88E6XXX_G2_SWITCH_MGMT, &val);
+	if (err)
+		return err;
+
+	if (enable)
+		val |= MV88E6XXX_G2_SWITCH_MGMT_RSVD2CPU;
+	else
+		val &= ~MV88E6XXX_G2_SWITCH_MGMT_RSVD2CPU;
+
+	return mv88e6xxx_g2_write(chip, MV88E6XXX_G2_SWITCH_MGMT, val);
+}
+
+int mv88e6185_g2_mgmt_rsvd2cpu(struct mv88e6xxx_chip *chip)
+{
+	int err;
+
+	/* Consider the frames with reserved multicast destination
+	 * addresses matching 01:80:c2:00:00:0x as MGMT.
+	 */
+	err = mv88e6xxx_g2_mgmt_enable_0x(chip, 0xffff);
+	if (err)
+		return err;
+
+	return mv88e6xxx_g2_switch_mgmt_rsvd2cpu(chip, true);
+}
+
+int mv88e6352_g2_mgmt_rsvd2cpu(struct mv88e6xxx_chip *chip)
+{
+	int err;
+
+	/* Consider the frames with reserved multicast destination
+	 * addresses matching 01:80:c2:00:00:2x as MGMT.
+	 */
+	err = mv88e6xxx_g2_mgmt_enable_2x(chip, 0xffff);
+	if (err)
+		return err;
+
+	return mv88e6185_g2_mgmt_rsvd2cpu(chip);
+}
+
+/* Offset 0x06: Device Mapping Table register */
+
+int mv88e6xxx_g2_device_mapping_write(struct mv88e6xxx_chip *chip, int target,
+				      int port)
+{
+	u16 val = (target << 8) | (port & 0x1f);
+	/* Modern chips use 5 bits to define a device mapping port,
+	 * but bit 4 is reserved on older chips, so it is safe to use.
+	 */
+
+	return mv88e6xxx_g2_write(chip, MV88E6XXX_G2_DEVICE_MAPPING,
+				  MV88E6XXX_G2_DEVICE_MAPPING_UPDATE | val);
+}
+
+/* Offset 0x07: Trunk Mask Table register */
+
+int mv88e6xxx_g2_trunk_mask_write(struct mv88e6xxx_chip *chip, int num,
+				  bool hash, u16 mask)
+{
+	u16 val = (num << 12) | (mask & mv88e6xxx_port_mask(chip));
+
+	if (hash)
+		val |= MV88E6XXX_G2_TRUNK_MASK_HASH;
+
+	return mv88e6xxx_g2_write(chip, MV88E6XXX_G2_TRUNK_MASK,
+				  MV88E6XXX_G2_TRUNK_MASK_UPDATE | val);
+}
+
+/* Offset 0x08: Trunk Mapping Table register */
+
+int mv88e6xxx_g2_trunk_mapping_write(struct mv88e6xxx_chip *chip, int id,
+				     u16 map)
+{
+	const u16 port_mask = BIT(mv88e6xxx_num_ports(chip)) - 1;
+	u16 val = (id << 11) | (map & port_mask);
+
+	return mv88e6xxx_g2_write(chip, MV88E6XXX_G2_TRUNK_MAPPING,
+				  MV88E6XXX_G2_TRUNK_MAPPING_UPDATE | val);
+}
+
+int mv88e6xxx_g2_trunk_clear(struct mv88e6xxx_chip *chip)
+{
+	const u16 port_mask = BIT(mv88e6xxx_num_ports(chip)) - 1;
+	int i, err;
+
+	/* Clear all eight possible Trunk Mask vectors */
+	for (i = 0; i < 8; ++i) {
+		err = mv88e6xxx_g2_trunk_mask_write(chip, i, false, port_mask);
+		if (err)
+			return err;
+	}
+
+	/* Clear all sixteen possible Trunk ID routing vectors */
+	for (i = 0; i < 16; ++i) {
+		err = mv88e6xxx_g2_trunk_mapping_write(chip, i, 0);
+		if (err)
+			return err;
+	}
+
+	return 0;
+}
+
+/* Offset 0x09: Ingress Rate Command register
+ * Offset 0x0A: Ingress Rate Data register
+ */
+
+static int mv88e6xxx_g2_irl_wait(struct mv88e6xxx_chip *chip)
+{
+	int bit = __bf_shf(MV88E6XXX_G2_IRL_CMD_BUSY);
+
+	return mv88e6xxx_g2_wait_bit(chip, MV88E6XXX_G2_IRL_CMD, bit, 0);
+}
+
+static int mv88e6xxx_g2_irl_op(struct mv88e6xxx_chip *chip, u16 op, int port,
+			       int res, int reg)
+{
+	int err;
+
+	err = mv88e6xxx_g2_write(chip, MV88E6XXX_G2_IRL_CMD,
+				 MV88E6XXX_G2_IRL_CMD_BUSY | op | (port << 8) |
+				 (res << 5) | reg);
+	if (err)
+		return err;
+
+	return mv88e6xxx_g2_irl_wait(chip);
+}
+
+int mv88e6352_g2_irl_init_all(struct mv88e6xxx_chip *chip, int port)
+{
+	return mv88e6xxx_g2_irl_op(chip, MV88E6352_G2_IRL_CMD_OP_INIT_ALL, port,
+				   0, 0);
+}
+
+int mv88e6390_g2_irl_init_all(struct mv88e6xxx_chip *chip, int port)
+{
+	return mv88e6xxx_g2_irl_op(chip, MV88E6390_G2_IRL_CMD_OP_INIT_ALL, port,
+				   0, 0);
+}
+
+/* Offset 0x0B: Cross-chip Port VLAN (Addr) Register
+ * Offset 0x0C: Cross-chip Port VLAN Data Register
+ */
+
+static int mv88e6xxx_g2_pvt_op_wait(struct mv88e6xxx_chip *chip)
+{
+	int bit = __bf_shf(MV88E6XXX_G2_PVT_ADDR_BUSY);
+
+	return mv88e6xxx_g2_wait_bit(chip, MV88E6XXX_G2_PVT_ADDR, bit, 0);
+}
+
+static int mv88e6xxx_g2_pvt_op(struct mv88e6xxx_chip *chip, int src_dev,
+			       int src_port, u16 op)
+{
+	int err;
+
+	/* 9-bit Cross-chip PVT pointer: with MV88E6XXX_G2_MISC_5_BIT_PORT
+	 * cleared, source device is 5-bit, source port is 4-bit.
+	 */
+	op |= MV88E6XXX_G2_PVT_ADDR_BUSY;
+	op |= (src_dev & 0x1f) << 4;
+	op |= (src_port & 0xf);
+
+	err = mv88e6xxx_g2_write(chip, MV88E6XXX_G2_PVT_ADDR, op);
+	if (err)
+		return err;
+
+	return mv88e6xxx_g2_pvt_op_wait(chip);
+}
+
+int mv88e6xxx_g2_pvt_read(struct mv88e6xxx_chip *chip, int src_dev,
+			  int src_port, u16 *data)
+{
+	int err;
+
+	err = mv88e6xxx_g2_pvt_op_wait(chip);
+	if (err)
+		return err;
+
+	err = mv88e6xxx_g2_pvt_op(chip, src_dev, src_port,
+				  MV88E6XXX_G2_PVT_ADDR_OP_READ);
+	if (err)
+		return err;
+
+	return mv88e6xxx_g2_read(chip, MV88E6XXX_G2_PVT_DATA, data);
+}
+
+int mv88e6xxx_g2_pvt_write(struct mv88e6xxx_chip *chip, int src_dev,
+			   int src_port, u16 data)
+{
+	int err;
+
+	err = mv88e6xxx_g2_pvt_op_wait(chip);
+	if (err)
+		return err;
+
+	err = mv88e6xxx_g2_write(chip, MV88E6XXX_G2_PVT_DATA, data);
+	if (err)
+		return err;
+
+	return mv88e6xxx_g2_pvt_op(chip, src_dev, src_port,
+				   MV88E6XXX_G2_PVT_ADDR_OP_WRITE_PVLAN);
+}
+
+/* Offset 0x0D: Switch MAC/WoL/WoF register */
+
+static int mv88e6xxx_g2_switch_mac_write(struct mv88e6xxx_chip *chip,
+					 unsigned int pointer, u8 data)
+{
+	u16 val = (pointer << 8) | data;
+
+	return mv88e6xxx_g2_write(chip, MV88E6XXX_G2_SWITCH_MAC,
+				  MV88E6XXX_G2_SWITCH_MAC_UPDATE | val);
+}
+
+int mv88e6xxx_g2_set_switch_mac(struct mv88e6xxx_chip *chip, u8 *addr)
+{
+	int i, err;
+
+	for (i = 0; i < 6; i++) {
+		err = mv88e6xxx_g2_switch_mac_write(chip, i, addr[i]);
+		if (err)
+			break;
+	}
+
+	return err;
+}
+
+/* Offset 0x0E: ATU Statistics */
+
+int mv88e6xxx_g2_atu_stats_set(struct mv88e6xxx_chip *chip, u16 kind, u16 bin)
+{
+	return mv88e6xxx_g2_write(chip, MV88E6XXX_G2_ATU_STATS,
+				  kind | bin);
+}
+
+int mv88e6xxx_g2_atu_stats_get(struct mv88e6xxx_chip *chip, u16 *stats)
+{
+	return mv88e6xxx_g2_read(chip, MV88E6XXX_G2_ATU_STATS, stats);
+}
+
+/* Offset 0x0F: Priority Override Table */
+
+static int mv88e6xxx_g2_pot_write(struct mv88e6xxx_chip *chip, int pointer,
+				  u8 data)
+{
+	u16 val = (pointer << 8) | (data & 0x7);
+
+	return mv88e6xxx_g2_write(chip, MV88E6XXX_G2_PRIO_OVERRIDE,
+				  MV88E6XXX_G2_PRIO_OVERRIDE_UPDATE | val);
+}
+
+int mv88e6xxx_g2_pot_clear(struct mv88e6xxx_chip *chip)
+{
+	int i, err;
+
+	/* Clear all sixteen possible Priority Override entries */
+	for (i = 0; i < 16; i++) {
+		err = mv88e6xxx_g2_pot_write(chip, i, 0);
+		if (err)
+			break;
+	}
+
+	return err;
+}
+
+/* Offset 0x14: EEPROM Command
+ * Offset 0x15: EEPROM Data (for 16-bit data access)
+ * Offset 0x15: EEPROM Addr (for 8-bit data access)
+ */
+
+static int mv88e6xxx_g2_eeprom_wait(struct mv88e6xxx_chip *chip)
+{
+	int bit = __bf_shf(MV88E6XXX_G2_EEPROM_CMD_BUSY);
+	int err;
+
+	err = mv88e6xxx_g2_wait_bit(chip, MV88E6XXX_G2_EEPROM_CMD, bit, 0);
+	if (err)
+		return err;
+
+	bit = __bf_shf(MV88E6XXX_G2_EEPROM_CMD_RUNNING);
+
+	return mv88e6xxx_g2_wait_bit(chip, MV88E6XXX_G2_EEPROM_CMD, bit, 0);
+}
+
+static int mv88e6xxx_g2_eeprom_cmd(struct mv88e6xxx_chip *chip, u16 cmd)
+{
+	int err;
+
+	err = mv88e6xxx_g2_write(chip, MV88E6XXX_G2_EEPROM_CMD,
+				 MV88E6XXX_G2_EEPROM_CMD_BUSY | cmd);
+	if (err)
+		return err;
+
+	return mv88e6xxx_g2_eeprom_wait(chip);
+}
+
+static int mv88e6xxx_g2_eeprom_read8(struct mv88e6xxx_chip *chip,
+				     u16 addr, u8 *data)
+{
+	u16 cmd = MV88E6XXX_G2_EEPROM_CMD_OP_READ;
+	int err;
+
+	err = mv88e6xxx_g2_eeprom_wait(chip);
+	if (err)
+		return err;
+
+	err = mv88e6xxx_g2_write(chip, MV88E6390_G2_EEPROM_ADDR, addr);
+	if (err)
+		return err;
+
+	err = mv88e6xxx_g2_eeprom_cmd(chip, cmd);
+	if (err)
+		return err;
+
+	err = mv88e6xxx_g2_read(chip, MV88E6XXX_G2_EEPROM_CMD, &cmd);
+	if (err)
+		return err;
+
+	*data = cmd & 0xff;
+
+	return 0;
+}
+
+static int mv88e6xxx_g2_eeprom_write8(struct mv88e6xxx_chip *chip,
+				      u16 addr, u8 data)
+{
+	u16 cmd = MV88E6XXX_G2_EEPROM_CMD_OP_WRITE |
+		MV88E6XXX_G2_EEPROM_CMD_WRITE_EN;
+	int err;
+
+	err = mv88e6xxx_g2_eeprom_wait(chip);
+	if (err)
+		return err;
+
+	err = mv88e6xxx_g2_write(chip, MV88E6390_G2_EEPROM_ADDR, addr);
+	if (err)
+		return err;
+
+	return mv88e6xxx_g2_eeprom_cmd(chip, cmd | data);
+}
+
+static int mv88e6xxx_g2_eeprom_read16(struct mv88e6xxx_chip *chip,
+				      u8 addr, u16 *data)
+{
+	u16 cmd = MV88E6XXX_G2_EEPROM_CMD_OP_READ | addr;
+	int err;
+
+	err = mv88e6xxx_g2_eeprom_wait(chip);
+	if (err)
+		return err;
+
+	err = mv88e6xxx_g2_eeprom_cmd(chip, cmd);
+	if (err)
+		return err;
+
+	return mv88e6xxx_g2_read(chip, MV88E6352_G2_EEPROM_DATA, data);
+}
+
+static int mv88e6xxx_g2_eeprom_write16(struct mv88e6xxx_chip *chip,
+				       u8 addr, u16 data)
+{
+	u16 cmd = MV88E6XXX_G2_EEPROM_CMD_OP_WRITE | addr;
+	int err;
+
+	err = mv88e6xxx_g2_eeprom_wait(chip);
+	if (err)
+		return err;
+
+	err = mv88e6xxx_g2_write(chip, MV88E6352_G2_EEPROM_DATA, data);
+	if (err)
+		return err;
+
+	return mv88e6xxx_g2_eeprom_cmd(chip, cmd);
+}
+
+int mv88e6xxx_g2_get_eeprom8(struct mv88e6xxx_chip *chip,
+			     struct ethtool_eeprom *eeprom, u8 *data)
+{
+	unsigned int offset = eeprom->offset;
+	unsigned int len = eeprom->len;
+	int err;
+
+	eeprom->len = 0;
+
+	while (len) {
+		err = mv88e6xxx_g2_eeprom_read8(chip, offset, data);
+		if (err)
+			return err;
+
+		eeprom->len++;
+		offset++;
+		data++;
+		len--;
+	}
+
+	return 0;
+}
+
+int mv88e6xxx_g2_set_eeprom8(struct mv88e6xxx_chip *chip,
+			     struct ethtool_eeprom *eeprom, u8 *data)
+{
+	unsigned int offset = eeprom->offset;
+	unsigned int len = eeprom->len;
+	int err;
+
+	eeprom->len = 0;
+
+	while (len) {
+		err = mv88e6xxx_g2_eeprom_write8(chip, offset, *data);
+		if (err)
+			return err;
+
+		eeprom->len++;
+		offset++;
+		data++;
+		len--;
+	}
+
+	return 0;
+}
+
+int mv88e6xxx_g2_get_eeprom16(struct mv88e6xxx_chip *chip,
+			      struct ethtool_eeprom *eeprom, u8 *data)
+{
+	unsigned int offset = eeprom->offset;
+	unsigned int len = eeprom->len;
+	u16 val;
+	int err;
+
+	eeprom->len = 0;
+
+	if (offset & 1) {
+		err = mv88e6xxx_g2_eeprom_read16(chip, offset >> 1, &val);
+		if (err)
+			return err;
+
+		*data++ = (val >> 8) & 0xff;
+
+		offset++;
+		len--;
+		eeprom->len++;
+	}
+
+	while (len >= 2) {
+		err = mv88e6xxx_g2_eeprom_read16(chip, offset >> 1, &val);
+		if (err)
+			return err;
+
+		*data++ = val & 0xff;
+		*data++ = (val >> 8) & 0xff;
+
+		offset += 2;
+		len -= 2;
+		eeprom->len += 2;
+	}
+
+	if (len) {
+		err = mv88e6xxx_g2_eeprom_read16(chip, offset >> 1, &val);
+		if (err)
+			return err;
+
+		*data++ = val & 0xff;
+
+		offset++;
+		len--;
+		eeprom->len++;
+	}
+
+	return 0;
+}
+
+int mv88e6xxx_g2_set_eeprom16(struct mv88e6xxx_chip *chip,
+			      struct ethtool_eeprom *eeprom, u8 *data)
+{
+	unsigned int offset = eeprom->offset;
+	unsigned int len = eeprom->len;
+	u16 val;
+	int err;
+
+	/* Ensure the RO WriteEn bit is set */
+	err = mv88e6xxx_g2_read(chip, MV88E6XXX_G2_EEPROM_CMD, &val);
+	if (err)
+		return err;
+
+	if (!(val & MV88E6XXX_G2_EEPROM_CMD_WRITE_EN))
+		return -EROFS;
+
+	eeprom->len = 0;
+
+	if (offset & 1) {
+		err = mv88e6xxx_g2_eeprom_read16(chip, offset >> 1, &val);
+		if (err)
+			return err;
+
+		val = (*data++ << 8) | (val & 0xff);
+
+		err = mv88e6xxx_g2_eeprom_write16(chip, offset >> 1, val);
+		if (err)
+			return err;
+
+		offset++;
+		len--;
+		eeprom->len++;
+	}
+
+	while (len >= 2) {
+		val = *data++;
+		val |= *data++ << 8;
+
+		err = mv88e6xxx_g2_eeprom_write16(chip, offset >> 1, val);
+		if (err)
+			return err;
+
+		offset += 2;
+		len -= 2;
+		eeprom->len += 2;
+	}
+
+	if (len) {
+		err = mv88e6xxx_g2_eeprom_read16(chip, offset >> 1, &val);
+		if (err)
+			return err;
+
+		val = (val & 0xff00) | *data++;
+
+		err = mv88e6xxx_g2_eeprom_write16(chip, offset >> 1, val);
+		if (err)
+			return err;
+
+		offset++;
+		len--;
+		eeprom->len++;
+	}
+
+	return 0;
+}
+
+/* Offset 0x18: SMI PHY Command Register
+ * Offset 0x19: SMI PHY Data Register
+ */
+
+static int mv88e6xxx_g2_smi_phy_wait(struct mv88e6xxx_chip *chip)
+{
+	int bit = __bf_shf(MV88E6XXX_G2_SMI_PHY_CMD_BUSY);
+
+	return mv88e6xxx_g2_wait_bit(chip, MV88E6XXX_G2_SMI_PHY_CMD, bit, 0);
+}
+
+static int mv88e6xxx_g2_smi_phy_cmd(struct mv88e6xxx_chip *chip, u16 cmd)
+{
+	int err;
+
+	err = mv88e6xxx_g2_write(chip, MV88E6XXX_G2_SMI_PHY_CMD,
+				 MV88E6XXX_G2_SMI_PHY_CMD_BUSY | cmd);
+	if (err)
+		return err;
+
+	return mv88e6xxx_g2_smi_phy_wait(chip);
+}
+
+static int mv88e6xxx_g2_smi_phy_access(struct mv88e6xxx_chip *chip,
+				       bool external, bool c45, u16 op, int dev,
+				       int reg)
+{
+	u16 cmd = op;
+
+	if (external)
+		cmd |= MV88E6390_G2_SMI_PHY_CMD_FUNC_EXTERNAL;
+	else
+		cmd |= MV88E6390_G2_SMI_PHY_CMD_FUNC_INTERNAL; /* empty mask */
+
+	if (c45)
+		cmd |= MV88E6XXX_G2_SMI_PHY_CMD_MODE_45; /* empty mask */
+	else
+		cmd |= MV88E6XXX_G2_SMI_PHY_CMD_MODE_22;
+
+	dev <<= __bf_shf(MV88E6XXX_G2_SMI_PHY_CMD_DEV_ADDR_MASK);
+	cmd |= dev & MV88E6XXX_G2_SMI_PHY_CMD_DEV_ADDR_MASK;
+	cmd |= reg & MV88E6XXX_G2_SMI_PHY_CMD_REG_ADDR_MASK;
+
+	return mv88e6xxx_g2_smi_phy_cmd(chip, cmd);
+}
+
+static int mv88e6xxx_g2_smi_phy_access_c22(struct mv88e6xxx_chip *chip,
+					   bool external, u16 op, int dev,
+					   int reg)
+{
+	return mv88e6xxx_g2_smi_phy_access(chip, external, false, op, dev, reg);
+}
+
+/* IEEE 802.3 Clause 22 Read Data Register */
+static int mv88e6xxx_g2_smi_phy_read_data_c22(struct mv88e6xxx_chip *chip,
+					      bool external, int dev, int reg,
+					      u16 *data)
+{
+	u16 op = MV88E6XXX_G2_SMI_PHY_CMD_OP_22_READ_DATA;
+	int err;
+
+	err = mv88e6xxx_g2_smi_phy_wait(chip);
+	if (err)
+		return err;
+
+	err = mv88e6xxx_g2_smi_phy_access_c22(chip, external, op, dev, reg);
+	if (err)
+		return err;
+
+	return mv88e6xxx_g2_read(chip, MV88E6XXX_G2_SMI_PHY_DATA, data);
+}
+
+/* IEEE 802.3 Clause 22 Write Data Register */
+static int mv88e6xxx_g2_smi_phy_write_data_c22(struct mv88e6xxx_chip *chip,
+					       bool external, int dev, int reg,
+					       u16 data)
+{
+	u16 op = MV88E6XXX_G2_SMI_PHY_CMD_OP_22_WRITE_DATA;
+	int err;
+
+	err = mv88e6xxx_g2_smi_phy_wait(chip);
+	if (err)
+		return err;
+
+	err = mv88e6xxx_g2_write(chip, MV88E6XXX_G2_SMI_PHY_DATA, data);
+	if (err)
+		return err;
+
+	return mv88e6xxx_g2_smi_phy_access_c22(chip, external, op, dev, reg);
+}
+
+static int mv88e6xxx_g2_smi_phy_access_c45(struct mv88e6xxx_chip *chip,
+					   bool external, u16 op, int port,
+					   int dev)
+{
+	return mv88e6xxx_g2_smi_phy_access(chip, external, true, op, port, dev);
+}
+
+/* IEEE 802.3 Clause 45 Write Address Register */
+static int mv88e6xxx_g2_smi_phy_write_addr_c45(struct mv88e6xxx_chip *chip,
+					       bool external, int port, int dev,
+					       int addr)
+{
+	u16 op = MV88E6XXX_G2_SMI_PHY_CMD_OP_45_WRITE_ADDR;
+	int err;
+
+	err = mv88e6xxx_g2_smi_phy_wait(chip);
+	if (err)
+		return err;
+
+	err = mv88e6xxx_g2_write(chip, MV88E6XXX_G2_SMI_PHY_DATA, addr);
+	if (err)
+		return err;
+
+	return mv88e6xxx_g2_smi_phy_access_c45(chip, external, op, port, dev);
+}
+
+/* IEEE 802.3 Clause 45 Read Data Register */
+static int mv88e6xxx_g2_smi_phy_read_data_c45(struct mv88e6xxx_chip *chip,
+					      bool external, int port, int dev,
+					      u16 *data)
+{
+	u16 op = MV88E6XXX_G2_SMI_PHY_CMD_OP_45_READ_DATA;
+	int err;
+
+	err = mv88e6xxx_g2_smi_phy_access_c45(chip, external, op, port, dev);
+	if (err)
+		return err;
+
+	return mv88e6xxx_g2_read(chip, MV88E6XXX_G2_SMI_PHY_DATA, data);
+}
+
+static int mv88e6xxx_g2_smi_phy_read_c45(struct mv88e6xxx_chip *chip,
+					 bool external, int port, int reg,
+					 u16 *data)
+{
+	int dev = (reg >> 16) & 0x1f;
+	int addr = reg & 0xffff;
+	int err;
+
+	err = mv88e6xxx_g2_smi_phy_write_addr_c45(chip, external, port, dev,
+						  addr);
+	if (err)
+		return err;
+
+	return mv88e6xxx_g2_smi_phy_read_data_c45(chip, external, port, dev,
+						  data);
+}
+
+/* IEEE 802.3 Clause 45 Write Data Register */
+static int mv88e6xxx_g2_smi_phy_write_data_c45(struct mv88e6xxx_chip *chip,
+					       bool external, int port, int dev,
+					       u16 data)
+{
+	u16 op = MV88E6XXX_G2_SMI_PHY_CMD_OP_45_WRITE_DATA;
+	int err;
+
+	err = mv88e6xxx_g2_write(chip, MV88E6XXX_G2_SMI_PHY_DATA, data);
+	if (err)
+		return err;
+
+	return mv88e6xxx_g2_smi_phy_access_c45(chip, external, op, port, dev);
+}
+
+static int mv88e6xxx_g2_smi_phy_write_c45(struct mv88e6xxx_chip *chip,
+					  bool external, int port, int reg,
+					  u16 data)
+{
+	int dev = (reg >> 16) & 0x1f;
+	int addr = reg & 0xffff;
+	int err;
+
+	err = mv88e6xxx_g2_smi_phy_write_addr_c45(chip, external, port, dev,
+						  addr);
+	if (err)
+		return err;
+
+	return mv88e6xxx_g2_smi_phy_write_data_c45(chip, external, port, dev,
+						   data);
+}
+
+int mv88e6xxx_g2_smi_phy_read(struct mv88e6xxx_chip *chip, struct mii_bus *bus,
+			      int addr, int reg, u16 *val)
+{
+	struct mv88e6xxx_mdio_bus *mdio_bus = bus->priv;
+	bool external = mdio_bus->external;
+
+	if (reg & MII_ADDR_C45)
+		return mv88e6xxx_g2_smi_phy_read_c45(chip, external, addr, reg,
+						     val);
+
+	return mv88e6xxx_g2_smi_phy_read_data_c22(chip, external, addr, reg,
+						  val);
+}
+
+int mv88e6xxx_g2_smi_phy_write(struct mv88e6xxx_chip *chip, struct mii_bus *bus,
+			       int addr, int reg, u16 val)
+{
+	struct mv88e6xxx_mdio_bus *mdio_bus = bus->priv;
+	bool external = mdio_bus->external;
+
+	if (reg & MII_ADDR_C45)
+		return mv88e6xxx_g2_smi_phy_write_c45(chip, external, addr, reg,
+						      val);
+
+	return mv88e6xxx_g2_smi_phy_write_data_c22(chip, external, addr, reg,
+						   val);
+}
+
+/* Offset 0x1B: Watchdog Control */
+static int mv88e6097_watchdog_action(struct mv88e6xxx_chip *chip, int irq)
+{
+	u16 reg;
+
+	mv88e6xxx_g2_read(chip, MV88E6352_G2_WDOG_CTL, &reg);
+
+	dev_info(chip->dev, "Watchdog event: 0x%04x", reg);
+
+	return IRQ_HANDLED;
+}
+
+static void mv88e6097_watchdog_free(struct mv88e6xxx_chip *chip)
+{
+	u16 reg;
+
+	mv88e6xxx_g2_read(chip, MV88E6352_G2_WDOG_CTL, &reg);
+
+	reg &= ~(MV88E6352_G2_WDOG_CTL_EGRESS_ENABLE |
+		 MV88E6352_G2_WDOG_CTL_QC_ENABLE);
+
+	mv88e6xxx_g2_write(chip, MV88E6352_G2_WDOG_CTL, reg);
+}
+
+static int mv88e6097_watchdog_setup(struct mv88e6xxx_chip *chip)
+{
+	return mv88e6xxx_g2_write(chip, MV88E6352_G2_WDOG_CTL,
+				  MV88E6352_G2_WDOG_CTL_EGRESS_ENABLE |
+				  MV88E6352_G2_WDOG_CTL_QC_ENABLE |
+				  MV88E6352_G2_WDOG_CTL_SWRESET);
+}
+
+const struct mv88e6xxx_irq_ops mv88e6097_watchdog_ops = {
+	.irq_action = mv88e6097_watchdog_action,
+	.irq_setup = mv88e6097_watchdog_setup,
+	.irq_free = mv88e6097_watchdog_free,
+};
+
+static void mv88e6250_watchdog_free(struct mv88e6xxx_chip *chip)
+{
+	u16 reg;
+
+	mv88e6xxx_g2_read(chip, MV88E6250_G2_WDOG_CTL, &reg);
+
+	reg &= ~(MV88E6250_G2_WDOG_CTL_EGRESS_ENABLE |
+		 MV88E6250_G2_WDOG_CTL_QC_ENABLE);
+
+	mv88e6xxx_g2_write(chip, MV88E6250_G2_WDOG_CTL, reg);
+}
+
+static int mv88e6250_watchdog_setup(struct mv88e6xxx_chip *chip)
+{
+	return mv88e6xxx_g2_write(chip, MV88E6250_G2_WDOG_CTL,
+				  MV88E6250_G2_WDOG_CTL_EGRESS_ENABLE |
+				  MV88E6250_G2_WDOG_CTL_QC_ENABLE |
+				  MV88E6250_G2_WDOG_CTL_SWRESET);
+}
+
+const struct mv88e6xxx_irq_ops mv88e6250_watchdog_ops = {
+	.irq_action = mv88e6097_watchdog_action,
+	.irq_setup = mv88e6250_watchdog_setup,
+	.irq_free = mv88e6250_watchdog_free,
+};
+
+static int mv88e6390_watchdog_setup(struct mv88e6xxx_chip *chip)
+{
+	return mv88e6xxx_g2_write(chip, MV88E6390_G2_WDOG_CTL,
+				  MV88E6390_G2_WDOG_CTL_UPDATE |
+				  MV88E6390_G2_WDOG_CTL_PTR_INT_ENABLE |
+				  MV88E6390_G2_WDOG_CTL_CUT_THROUGH |
+				  MV88E6390_G2_WDOG_CTL_QUEUE_CONTROLLER |
+				  MV88E6390_G2_WDOG_CTL_EGRESS |
+				  MV88E6390_G2_WDOG_CTL_FORCE_IRQ);
+}
+
+static int mv88e6390_watchdog_action(struct mv88e6xxx_chip *chip, int irq)
+{
+	u16 reg;
+
+	mv88e6xxx_g2_write(chip, MV88E6390_G2_WDOG_CTL,
+			   MV88E6390_G2_WDOG_CTL_PTR_EVENT);
+	mv88e6xxx_g2_read(chip, MV88E6390_G2_WDOG_CTL, &reg);
+
+	dev_info(chip->dev, "Watchdog event: 0x%04x",
+		 reg & MV88E6390_G2_WDOG_CTL_DATA_MASK);
+
+	mv88e6xxx_g2_write(chip, MV88E6390_G2_WDOG_CTL,
+			   MV88E6390_G2_WDOG_CTL_PTR_HISTORY);
+	mv88e6xxx_g2_read(chip, MV88E6390_G2_WDOG_CTL, &reg);
+
+	dev_info(chip->dev, "Watchdog history: 0x%04x",
+		 reg & MV88E6390_G2_WDOG_CTL_DATA_MASK);
+
+	/* Trigger a software reset to try to recover the switch */
+	if (chip->info->ops->reset)
+		chip->info->ops->reset(chip);
+
+	mv88e6390_watchdog_setup(chip);
+
+	return IRQ_HANDLED;
+}
+
+static void mv88e6390_watchdog_free(struct mv88e6xxx_chip *chip)
+{
+	mv88e6xxx_g2_write(chip, MV88E6390_G2_WDOG_CTL,
+			   MV88E6390_G2_WDOG_CTL_UPDATE |
+			   MV88E6390_G2_WDOG_CTL_PTR_INT_ENABLE);
+}
+
+const struct mv88e6xxx_irq_ops mv88e6390_watchdog_ops = {
+	.irq_action = mv88e6390_watchdog_action,
+	.irq_setup = mv88e6390_watchdog_setup,
+	.irq_free = mv88e6390_watchdog_free,
+};
+
+static irqreturn_t mv88e6xxx_g2_watchdog_thread_fn(int irq, void *dev_id)
+{
+	struct mv88e6xxx_chip *chip = dev_id;
+	irqreturn_t ret = IRQ_NONE;
+
+	mv88e6xxx_reg_lock(chip);
+	if (chip->info->ops->watchdog_ops->irq_action)
+		ret = chip->info->ops->watchdog_ops->irq_action(chip, irq);
+	mv88e6xxx_reg_unlock(chip);
+
+	return ret;
+}
+
+static void mv88e6xxx_g2_watchdog_free(struct mv88e6xxx_chip *chip)
+{
+	mv88e6xxx_reg_lock(chip);
+	if (chip->info->ops->watchdog_ops->irq_free)
+		chip->info->ops->watchdog_ops->irq_free(chip);
+	mv88e6xxx_reg_unlock(chip);
+
+	free_irq(chip->watchdog_irq, chip);
+	irq_dispose_mapping(chip->watchdog_irq);
+}
+
+static int mv88e6xxx_g2_watchdog_setup(struct mv88e6xxx_chip *chip)
+{
+	int err;
+
+	chip->watchdog_irq = irq_find_mapping(chip->g2_irq.domain,
+					      MV88E6XXX_G2_INT_SOURCE_WATCHDOG);
+	if (chip->watchdog_irq < 0)
+		return chip->watchdog_irq;
+
+	snprintf(chip->watchdog_irq_name, sizeof(chip->watchdog_irq_name),
+		 "mv88e6xxx-%s-watchdog", dev_name(chip->dev));
+
+	err = request_threaded_irq(chip->watchdog_irq, NULL,
+				   mv88e6xxx_g2_watchdog_thread_fn,
+				   IRQF_ONESHOT | IRQF_TRIGGER_FALLING,
+				   chip->watchdog_irq_name, chip);
+	if (err)
+		return err;
+
+	mv88e6xxx_reg_lock(chip);
+	if (chip->info->ops->watchdog_ops->irq_setup)
+		err = chip->info->ops->watchdog_ops->irq_setup(chip);
+	mv88e6xxx_reg_unlock(chip);
+
+	return err;
+}
+
+/* Offset 0x1D: Misc Register */
+
+static int mv88e6xxx_g2_misc_5_bit_port(struct mv88e6xxx_chip *chip,
+					bool port_5_bit)
+{
+	u16 val;
+	int err;
+
+	err = mv88e6xxx_g2_read(chip, MV88E6XXX_G2_MISC, &val);
+	if (err)
+		return err;
+
+	if (port_5_bit)
+		val |= MV88E6XXX_G2_MISC_5_BIT_PORT;
+	else
+		val &= ~MV88E6XXX_G2_MISC_5_BIT_PORT;
+
+	return mv88e6xxx_g2_write(chip, MV88E6XXX_G2_MISC, val);
+}
+
+int mv88e6xxx_g2_misc_4_bit_port(struct mv88e6xxx_chip *chip)
+{
+	return mv88e6xxx_g2_misc_5_bit_port(chip, false);
+}
+
+static void mv88e6xxx_g2_irq_mask(struct irq_data *d)
+{
+	struct mv88e6xxx_chip *chip = irq_data_get_irq_chip_data(d);
+	unsigned int n = d->hwirq;
+
+	chip->g2_irq.masked |= (1 << n);
+}
+
+static void mv88e6xxx_g2_irq_unmask(struct irq_data *d)
+{
+	struct mv88e6xxx_chip *chip = irq_data_get_irq_chip_data(d);
+	unsigned int n = d->hwirq;
+
+	chip->g2_irq.masked &= ~(1 << n);
+}
+
+static irqreturn_t mv88e6xxx_g2_irq_thread_fn(int irq, void *dev_id)
+{
+	struct mv88e6xxx_chip *chip = dev_id;
+	unsigned int nhandled = 0;
+	unsigned int sub_irq;
+	unsigned int n;
+	int err;
+	u16 reg;
+
+	mv88e6xxx_reg_lock(chip);
+	err = mv88e6xxx_g2_int_source(chip, &reg);
+	mv88e6xxx_reg_unlock(chip);
+	if (err)
+		goto out;
+
+	for (n = 0; n < 16; ++n) {
+		if (reg & (1 << n)) {
+			sub_irq = irq_find_mapping(chip->g2_irq.domain, n);
+			handle_nested_irq(sub_irq);
+			++nhandled;
+		}
+	}
+out:
+	return (nhandled > 0 ? IRQ_HANDLED : IRQ_NONE);
+}
+
+static void mv88e6xxx_g2_irq_bus_lock(struct irq_data *d)
+{
+	struct mv88e6xxx_chip *chip = irq_data_get_irq_chip_data(d);
+
+	mv88e6xxx_reg_lock(chip);
+}
+
+static void mv88e6xxx_g2_irq_bus_sync_unlock(struct irq_data *d)
+{
+	struct mv88e6xxx_chip *chip = irq_data_get_irq_chip_data(d);
+	int err;
+
+	err = mv88e6xxx_g2_int_mask(chip, ~chip->g2_irq.masked);
+	if (err)
+		dev_err(chip->dev, "failed to mask interrupts\n");
+
+	mv88e6xxx_reg_unlock(chip);
+}
+
+static const struct irq_chip mv88e6xxx_g2_irq_chip = {
+	.name			= "mv88e6xxx-g2",
+	.irq_mask		= mv88e6xxx_g2_irq_mask,
+	.irq_unmask		= mv88e6xxx_g2_irq_unmask,
+	.irq_bus_lock		= mv88e6xxx_g2_irq_bus_lock,
+	.irq_bus_sync_unlock	= mv88e6xxx_g2_irq_bus_sync_unlock,
+};
+
+static int mv88e6xxx_g2_irq_domain_map(struct irq_domain *d,
+				       unsigned int irq,
+				       irq_hw_number_t hwirq)
+{
+	struct mv88e6xxx_chip *chip = d->host_data;
+
+	irq_set_chip_data(irq, d->host_data);
+	irq_set_chip_and_handler(irq, &chip->g2_irq.chip, handle_level_irq);
+	irq_set_noprobe(irq);
+
+	return 0;
+}
+
+static const struct irq_domain_ops mv88e6xxx_g2_irq_domain_ops = {
+	.map	= mv88e6xxx_g2_irq_domain_map,
+	.xlate	= irq_domain_xlate_twocell,
+};
+
+void mv88e6xxx_g2_irq_free(struct mv88e6xxx_chip *chip)
+{
+	int irq, virq;
+
+	mv88e6xxx_g2_watchdog_free(chip);
+
+	free_irq(chip->device_irq, chip);
+	irq_dispose_mapping(chip->device_irq);
+
+	for (irq = 0; irq < 16; irq++) {
+		virq = irq_find_mapping(chip->g2_irq.domain, irq);
+		irq_dispose_mapping(virq);
+	}
+
+	irq_domain_remove(chip->g2_irq.domain);
+}
+
+int mv88e6xxx_g2_irq_setup(struct mv88e6xxx_chip *chip)
+{
+	int err, irq, virq;
+
+	chip->g2_irq.masked = ~0;
+	mv88e6xxx_reg_lock(chip);
+	err = mv88e6xxx_g2_int_mask(chip, ~chip->g2_irq.masked);
+	mv88e6xxx_reg_unlock(chip);
+	if (err)
+		return err;
+
+	chip->g2_irq.domain = irq_domain_add_simple(
+		chip->dev->of_node, 16, 0, &mv88e6xxx_g2_irq_domain_ops, chip);
+	if (!chip->g2_irq.domain)
+		return -ENOMEM;
+
+	for (irq = 0; irq < 16; irq++)
+		irq_create_mapping(chip->g2_irq.domain, irq);
+
+	chip->g2_irq.chip = mv88e6xxx_g2_irq_chip;
+
+	chip->device_irq = irq_find_mapping(chip->g1_irq.domain,
+					    MV88E6XXX_G1_STS_IRQ_DEVICE);
+	if (chip->device_irq < 0) {
+		err = chip->device_irq;
+		goto out;
+	}
+
+	snprintf(chip->device_irq_name, sizeof(chip->device_irq_name),
+		 "mv88e6xxx-%s-g2", dev_name(chip->dev));
+
+	err = request_threaded_irq(chip->device_irq, NULL,
+				   mv88e6xxx_g2_irq_thread_fn,
+				   IRQF_ONESHOT, chip->device_irq_name, chip);
+	if (err)
+		goto out;
+
+	return mv88e6xxx_g2_watchdog_setup(chip);
+
+out:
+	for (irq = 0; irq < 16; irq++) {
+		virq = irq_find_mapping(chip->g2_irq.domain, irq);
+		irq_dispose_mapping(virq);
+	}
+
+	irq_domain_remove(chip->g2_irq.domain);
+
+	return err;
+}
+
+int mv88e6xxx_g2_irq_mdio_setup(struct mv88e6xxx_chip *chip,
+				struct mii_bus *bus)
+{
+	int phy, irq, err, err_phy;
+
+	for (phy = 0; phy < chip->info->num_internal_phys; phy++) {
+		irq = irq_find_mapping(chip->g2_irq.domain, phy);
+		if (irq < 0) {
+			err = irq;
+			goto out;
+		}
+		bus->irq[chip->info->phy_base_addr + phy] = irq;
+	}
+	return 0;
+out:
+	err_phy = phy;
+
+	for (phy = 0; phy < err_phy; phy++)
+		irq_dispose_mapping(bus->irq[phy]);
+
+	return err;
+}
+
+void mv88e6xxx_g2_irq_mdio_free(struct mv88e6xxx_chip *chip,
+				struct mii_bus *bus)
+{
+	int phy;
+
+	for (phy = 0; phy < chip->info->num_internal_phys; phy++)
+		irq_dispose_mapping(bus->irq[phy]);
+}

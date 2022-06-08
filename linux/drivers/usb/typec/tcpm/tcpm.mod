@@ -1,2 +1,2 @@
-lude/config/SHMEM) \
-    $(wild
+TEK WinFast PxTV1200",
+		.porta

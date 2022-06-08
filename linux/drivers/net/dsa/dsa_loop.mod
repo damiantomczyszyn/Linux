@@ -1,2 +1,2 @@
-_P6_NOP) \
-    $(wildcard in
+drivers/net/dsa/dsa_loop.o
+

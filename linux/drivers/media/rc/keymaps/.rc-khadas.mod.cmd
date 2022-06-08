@@ -1,1 +1,8 @@
-cmd_drivers/media/rc/keymaps/rc-khadas.mod := { echo  drivers/media/rc/keymaps/rc-khadas.o;  echo; } > drivers/media/rc/keymaps/rc-khadas.mod
+		sn);
+}
+
+static void hauppauge_eeprom(struct cx23885_dev *dev, u8 *eeprom_data)
+{
+	struct tveeprom tv;
+
+	tveeprom_hauppauge_analog(&tv, eepro

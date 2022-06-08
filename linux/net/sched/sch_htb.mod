@@ -1,1 +1,1 @@
-lude/linux/percpu-ref
+taval = tempval & 0x0

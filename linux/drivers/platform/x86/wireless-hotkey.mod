@@ -1,1 +1,3 @@
-cmd_drivers/media/i2c/tw9906.o := gcc -W
+h->cmds_start + i, 0);
+
+	/* fill registe

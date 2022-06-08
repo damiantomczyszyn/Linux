@@ -1,3 +1,3 @@
-clude/linux/build_bug.h \
-  include/linux/compiler.h \
-    $(wildcard include/c
+/* SPDX-License-Identifier: GPL-2.0-or-later */
+/*
+ *  Driver for the Conexant 

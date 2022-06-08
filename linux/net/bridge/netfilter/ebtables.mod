@@ -1,4 +1,1 @@
-it(void)
-{
-	int i, j;
-	int firste
+// SPDX-License-Identifier: GPL-2

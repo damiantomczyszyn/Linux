@@ -1,2 +1,4 @@
-drivers/media/rc/keymaps/rc-ct-90405.o
-
+t_nr)
+{
+	if (temp_int == NULL)
+		return 

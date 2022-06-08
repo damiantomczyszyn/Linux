@@ -1,788 +1,1107 @@
--3level_types.h \
-  include/asm-generic/pgtable-nop4d.h \
-  include/asm-generic/pgtable-nopud.h \
-  arch/x86/include/asm/nospec-branch.h \
-  include/linux/static_key.h \
-  include/linux/jump_label.h \
-    $(wildcard include/config/HAVE_ARCH_JUMP_LABEL_RELATIVE) \
-  arch/x86/include/asm/jump_label.h \
-  include/linux/objtool.h \
-    $(wildcard include/config/FRAME_POINTER) \
-  arch/x86/include/asm/msr-index.h \
-  arch/x86/include/asm/unwind_hints.h \
-  arch/x86/include/asm/orc_types.h \
-  arch/x86/include/asm/GEN-for-each-reg.h \
-  arch/x86/include/asm/spinlock_types.h \
-  include/asm-generic/qspinlock_types.h \
-    $(wildcard include/config/NR_CPUS) \
-  include/asm-generic/qrwlock_types.h \
-  arch/x86/include/asm/proto.h \
-  arch/x86/include/uapi/asm/ldt.h \
-  arch/x86/include/uapi/asm/sigcontext.h \
-  arch/x86/include/asm/current.h \
-  arch/x86/include/asm/percpu.h \
-    $(wildcard include/config/X86_64_SMP) \
-  include/linux/kernel.h \
-    $(wildcard include/config/PREEMPT_VOLUNTARY_BUILD) \
-    $(wildcard include/config/PREEMPT_DYNAMIC) \
-    $(wildcard include/config/HAVE_PREEMPT_DYNAMIC_CALL) \
-    $(wildcard include/config/HAVE_PREEMPT_DYNAMIC_KEY) \
-    $(wildcard include/config/PREEMPT_) \
-    $(wildcard include/config/DEBUG_ATOMIC_SLEEP) \
-    $(wildcard include/config/MMU) \
-    $(wildcard include/config/PROVE_LOCKING) \
-  include/linux/stdarg.h \
-  include/linux/align.h \
-  include/linux/limits.h \
-  include/uapi/linux/limits.h \
-  include/vdso/limits.h \
-  include/linux/kstrtox.h \
-  include/linux/minmax.h \
-  include/linux/panic.h \
-    $(wildcard include/config/PANIC_TIMEOUT) \
-  include/linux/printk.h \
-    $(wildcard include/config/MESSAGE_LOGLEVEL_DEFAULT) \
-    $(wildcard include/config/CONSOLE_LOGLEVEL_DEFAULT) \
-    $(wildcard include/config/CONSOLE_LOGLEVEL_QUIET) \
-    $(wildcard include/config/EARLY_PRINTK) \
-    $(wildcard include/config/PRINTK) \
-    $(wildcard include/config/DYNAMIC_DEBUG) \
-    $(wildcard include/config/DYNAMIC_DEBUG_CORE) \
-  include/linux/kern_levels.h \
-  include/linux/ratelimit_types.h \
-  include/linux/spinlock_types_raw.h \
-    $(wildcard include/config/DEBUG_SPINLOCK) \
-    $(wildcard include/config/DEBUG_LOCK_ALLOC) \
-  include/linux/lockdep_types.h \
-    $(wildcard include/config/PROVE_RAW_LOCK_NESTING) \
-    $(wildcard include/config/LOCKDEP) \
-    $(wildcard include/config/LOCK_STAT) \
-  include/linux/once_lite.h \
-  include/linux/static_call_types.h \
-    $(wildcard include/config/HAVE_STATIC_CALL) \
-  include/linux/instruction_pointer.h \
-  include/asm-generic/percpu.h \
-    $(wildcard include/config/DEBUG_PREEMPT) \
-    $(wildcard include/config/HAVE_SETUP_PER_CPU_AREA) \
-  include/linux/threads.h \
-    $(wildcard include/config/BASE_SMALL) \
-  include/linux/percpu-defs.h \
-    $(wildcard include/config/DEBUG_FORCE_WEAK_PER_CPU) \
-  arch/x86/include/asm/page.h \
-  arch/x86/include/asm/page_32.h \
-    $(wildcard include/config/DEBUG_VIRTUAL) \
-    $(wildcard include/config/FLATMEM) \
-  include/linux/string.h \
-    $(wildcard include/config/BINARY_PRINTF) \
-    $(wildcard include/config/FORTIFY_SOURCE) \
-  include/linux/errno.h \
-  include/uapi/linux/errno.h \
-  include/uapi/linux/string.h \
-  arch/x86/include/asm/string.h \
-  arch/x86/include/asm/string_32.h \
-  include/linux/fortify-string.h \
-  include/linux/range.h \
-  include/asm-generic/memory_model.h \
-    $(wildcard include/config/SPARSEMEM_VMEMMAP) \
-    $(wildcard include/config/SPARSEMEM) \
-  include/linux/pfn.h \
-  include/asm-generic/getorder.h \
-  arch/x86/include/asm/msr.h \
-  arch/x86/include/asm/msr-index.h \
-  arch/x86/include/asm/cpumask.h \
-  include/linux/cpumask.h \
-    $(wildcard include/config/CPUMASK_OFFSTACK) \
-    $(wildcard include/config/HOTPLUG_CPU) \
-    $(wildcard include/config/DEBUG_PER_CPU_MAPS) \
-  include/linux/bitmap.h \
-  include/linux/find.h \
-  include/linux/atomic.h \
-  arch/x86/include/asm/atomic.h \
-  arch/x86/include/asm/cmpxchg.h \
-  arch/x86/include/asm/cmpxchg_32.h \
-  arch/x86/include/asm/atomic64_32.h \
-  include/linux/atomic/atomic-arch-fallback.h \
-    $(wildcard include/config/GENERIC_ATOMIC64) \
-  include/linux/atomic/atomic-long.h \
-  include/linux/atomic/atomic-instrumented.h \
-  include/linux/bug.h \
-    $(wildcard include/config/BUG_ON_DATA_CORRUPTION) \
-  arch/x86/include/asm/bug.h \
-    $(wildcard include/config/DEBUG_BUGVERBOSE) \
-  include/linux/instrumentation.h \
-    $(wildcard include/config/DEBUG_ENTRY) \
-  include/asm-generic/bug.h \
-    $(wildcard include/config/BUG) \
-    $(wildcard include/config/GENERIC_BUG_RELATIVE_POINTERS) \
-  arch/x86/include/uapi/asm/msr.h \
-  include/linux/tracepoint-defs.h \
-  arch/x86/include/asm/special_insns.h \
-  include/linux/irqflags.h \
-    $(wildcard include/config/TRACE_IRQFLAGS) \
-    $(wildcard include/config/PREEMPT_RT) \
-    $(wildcard include/config/IRQSOFF_TRACER) \
-    $(wildcard include/config/PREEMPT_TRACER) \
-    $(wildcard include/config/DEBUG_IRQFLAGS) \
-    $(wildcard include/config/TRACE_IRQFLAGS_SUPPORT) \
-  arch/x86/include/asm/irqflags.h \
-  arch/x86/include/asm/fpu/types.h \
-  arch/x86/include/asm/vmxfeatures.h \
-  arch/x86/include/asm/vdso/processor.h \
-  include/linux/personality.h \
-  include/uapi/linux/personality.h \
-  arch/x86/include/asm/tsc.h \
-  arch/x86/include/asm/cpufeature.h \
-    $(wildcard include/config/X86_FEATURE_NAMES) \
-  include/vdso/time32.h \
-  include/vdso/time.h \
-  include/linux/uidgid.h \
-    $(wildcard include/config/MULTIUSER) \
-    $(wildcard include/config/USER_NS) \
-  include/linux/highuid.h \
-  include/linux/buildid.h \
-    $(wildcard include/config/CRASH_CORE) \
-  include/linux/mm_types.h \
-    $(wildcard include/config/HAVE_ALIGNED_STRUCT_PAGE) \
-    $(wildcard include/config/MEMCG) \
-    $(wildcard include/config/USERFAULTFD) \
-    $(wildcard include/config/SWAP) \
-    $(wildcard include/config/NUMA) \
-    $(wildcard include/config/HAVE_ARCH_COMPAT_MMAP_BASES) \
-    $(wildcard include/config/MEMBARRIER) \
-    $(wildcard include/config/AIO) \
-    $(wildcard include/config/MMU_NOTIFIER) \
-    $(wildcard include/config/TRANSPARENT_HUGEPAGE) \
-    $(wildcard include/config/NUMA_BALANCING) \
-    $(wildcard include/config/ARCH_WANT_BATCHED_UNMAP_TLB_FLUSH) \
-    $(wildcard include/config/HUGETLB_PAGE) \
-    $(wildcard include/config/IOMMU_SVA) \
-  include/linux/mm_types_task.h \
-    $(wildcard include/config/SPLIT_PTLOCK_CPUS) \
-    $(wildcard include/config/ARCH_ENABLE_SPLIT_PMD_PTLOCK) \
-  arch/x86/include/asm/tlbbatch.h \
-  include/linux/auxvec.h \
-  include/uapi/linux/auxvec.h \
-  arch/x86/include/uapi/asm/auxvec.h \
-  include/linux/kref.h \
-  include/linux/spinlock.h \
-    $(wildcard include/config/PREEMPTION) \
-  include/linux/preempt.h \
-    $(wildcard include/config/PREEMPT_COUNT) \
-    $(wildcard include/config/TRACE_PREEMPT_TOGGLE) \
-    $(wildcard include/config/PREEMPT_NOTIFIERS) \
-  arch/x86/include/asm/preempt.h \
-  include/linux/thread_info.h \
-    $(wildcard include/config/THREAD_INFO_IN_TASK) \
-    $(wildcard include/config/GENERIC_ENTRY) \
-    $(wildcard include/config/HAVE_ARCH_WITHIN_STACK_FRAMES) \
-    $(wildcard include/config/HARDENED_USERCOPY) \
-  include/linux/restart_block.h \
-  arch/x86/include/asm/thread_info.h \
-    $(wildcard include/config/COMPAT) \
-  include/linux/bottom_half.h \
-  include/linux/lockdep.h \
-    $(wildcard include/config/DEBUG_LOCKING_API_SELFTESTS) \
-  include/linux/smp.h \
-    $(wildcard include/config/UP_LATE_INIT) \
-  include/linux/smp_types.h \
-  include/linux/llist.h \
-    $(wildcard include/config/ARCH_HAVE_NMI_SAFE_CMPXCHG) \
-  arch/x86/include/asm/smp.h \
-    $(wildcard include/config/X86_LOCAL_APIC) \
-    $(wildcard include/config/DEBUG_NMI_SELFTEST) \
-  arch/x86/include/generated/asm/mmiowb.h \
-  include/asm-generic/mmiowb.h \
-    $(wildcard include/config/MMIOWB) \
-  include/linux/spinlock_types.h \
-  include/linux/rwlock_types.h \
-  arch/x86/include/asm/spinlock.h \
-  arch/x86/include/asm/paravirt.h \
-    $(wildcard include/config/PARAVIRT_SPINLOCKS) \
-  arch/x86/include/asm/frame.h \
-  arch/x86/include/asm/qspinlock.h \
-  include/asm-generic/qspinlock.h \
-  arch/x86/include/asm/qrwlock.h \
-  include/asm-generic/qrwlock.h \
-  include/linux/rwlock.h \
-    $(wildcard include/config/PREEMPT) \
-  include/linux/spinlock_api_smp.h \
-    $(wildcard include/config/INLINE_SPIN_LOCK) \
-    $(wildcard include/config/INLINE_SPIN_LOCK_BH) \
-    $(wildcard include/config/INLINE_SPIN_LOCK_IRQ) \
-    $(wildcard include/config/INLINE_SPIN_LOCK_IRQSAVE) \
-    $(wildcard include/config/INLINE_SPIN_TRYLOCK) \
-    $(wildcard include/config/INLINE_SPIN_TRYLOCK_BH) \
-    $(wildcard include/config/UNINLINE_SPIN_UNLOCK) \
-    $(wildcard include/config/INLINE_SPIN_UNLOCK_BH) \
-    $(wildcard include/config/INLINE_SPIN_UNLOCK_IRQ) \
-    $(wildcard include/config/INLINE_SPIN_UNLOCK_IRQRESTORE) \
-    $(wildcard include/config/GENERIC_LOCKBREAK) \
-  include/linux/rwlock_api_smp.h \
-    $(wildcard include/config/INLINE_READ_LOCK) \
-    $(wildcard include/config/INLINE_WRITE_LOCK) \
-    $(wildcard include/config/INLINE_READ_LOCK_BH) \
-    $(wildcard include/config/INLINE_WRITE_LOCK_BH) \
-    $(wildcard include/config/INLINE_READ_LOCK_IRQ) \
-    $(wildcard include/config/INLINE_WRITE_LOCK_IRQ) \
-    $(wildcard include/config/INLINE_READ_LOCK_IRQSAVE) \
-    $(wildcard include/config/INLINE_WRITE_LOCK_IRQSAVE) \
-    $(wildcard include/config/INLINE_READ_TRYLOCK) \
-    $(wildcard include/config/INLINE_WRITE_TRYLOCK) \
-    $(wildcard include/config/INLINE_READ_UNLOCK) \
-    $(wildcard include/config/INLINE_WRITE_UNLOCK) \
-    $(wildcard include/config/INLINE_READ_UNLOCK_BH) \
-    $(wildcard include/config/INLINE_WRITE_UNLOCK_BH) \
-    $(wildcard include/config/INLINE_READ_UNLOCK_IRQ) \
-    $(wildcard include/config/INLINE_WRITE_UNLOCK_IRQ) \
-    $(wildcard include/config/INLINE_READ_UNLOCK_IRQRESTORE) \
-    $(wildcard include/config/INLINE_WRITE_UNLOCK_IRQRESTORE) \
-  include/linux/refcount.h \
-  include/linux/rbtree.h \
-  include/linux/rbtree_types.h \
-  include/linux/rcupdate.h \
-    $(wildcard include/config/PREEMPT_RCU) \
-    $(wildcard include/config/TINY_RCU) \
-    $(wildcard include/config/RCU_STRICT_GRACE_PERIOD) \
-    $(wildcard include/config/TASKS_RCU_GENERIC) \
-    $(wildcard include/config/RCU_STALL_COMMON) \
-    $(wildcard include/config/NO_HZ_FULL) \
-    $(wildcard include/config/RCU_NOCB_CPU) \
-    $(wildcard include/config/TASKS_RCU) \
-    $(wildcard include/config/TASKS_TRACE_RCU) \
-    $(wildcard include/config/TASKS_RUDE_RCU) \
-    $(wildcard include/config/TREE_RCU) \
-    $(wildcard include/config/DEBUG_OBJECTS_RCU_HEAD) \
-    $(wildcard include/config/PROVE_RCU) \
-    $(wildcard include/config/ARCH_WEAK_RELEASE_ACQUIRE) \
-  include/linux/rcutree.h \
-  include/linux/rwsem.h \
-    $(wildcard include/config/RWSEM_SPIN_ON_OWNER) \
-    $(wildcard include/config/DEBUG_RWSEMS) \
-  include/linux/osq_lock.h \
-  include/linux/completion.h \
-  include/linux/swait.h \
-  include/linux/wait.h \
-  include/uapi/linux/wait.h \
-  include/linux/uprobes.h \
-    $(wildcard include/config/UPROBES) \
-  arch/x86/include/asm/uprobes.h \
-  include/linux/notifier.h \
-  include/linux/mutex.h \
-    $(wildcard include/config/MUTEX_SPIN_ON_OWNER) \
-    $(wildcard include/config/DEBUG_MUTEXES) \
-  include/linux/debug_locks.h \
-  include/linux/srcu.h \
-    $(wildcard include/config/TINY_SRCU) \
-    $(wildcard include/config/SRCU) \
-  include/linux/workqueue.h \
-    $(wildcard include/config/DEBUG_OBJECTS_WORK) \
-    $(wildcard include/config/FREEZER) \
-    $(wildcard include/config/WQ_WATCHDOG) \
-  include/linux/timer.h \
-    $(wildcard include/config/DEBUG_OBJECTS_TIMERS) \
-    $(wildcard include/config/NO_HZ_COMMON) \
-  include/linux/ktime.h \
-  include/linux/jiffies.h \
-  include/vdso/jiffies.h \
-  include/generated/timeconst.h \
-  include/vdso/ktime.h \
-  include/linux/timekeeping.h \
-    $(wildcard include/config/GENERIC_CMOS_UPDATE) \
-  include/linux/clocksource_ids.h \
-  include/linux/debugobjects.h \
-    $(wildcard include/config/DEBUG_OBJECTS) \
-    $(wildcard include/config/DEBUG_OBJECTS_FREE) \
-  include/linux/rcu_segcblist.h \
-  include/linux/srcutree.h \
-  include/linux/rcu_node_tree.h \
-    $(wildcard include/config/RCU_FANOUT) \
-    $(wildcard include/config/RCU_FANOUT_LEAF) \
-  include/linux/page-flags-layout.h \
-    $(wildcard include/config/KASAN_HW_TAGS) \
-  include/linux/numa.h \
-    $(wildcard include/config/NODES_SHIFT) \
-    $(wildcard include/config/NUMA_KEEP_MEMINFO) \
-    $(wildcard include/config/HAVE_ARCH_NODE_DEV_GROUP) \
-  arch/x86/include/asm/sparsemem.h \
-  include/generated/bounds.h \
-  include/linux/seqlock.h \
-  include/linux/ww_mutex.h \
-    $(wildcard include/config/DEBUG_RT_MUTEXES) \
-    $(wildcard include/config/DEBUG_WW_MUTEX_SLOWPATH) \
-  include/linux/rtmutex.h \
-  arch/x86/include/asm/mmu.h \
-    $(wildcard include/config/MODIFY_LDT_SYSCALL) \
-  include/linux/kmod.h \
-  include/linux/umh.h \
-  include/linux/gfp.h \
-    $(wildcard include/config/HIGHMEM) \
-    $(wildcard include/config/ZONE_DMA) \
-    $(wildcard include/config/ZONE_DMA32) \
-    $(wildcard include/config/ZONE_DEVICE) \
-    $(wildcard include/config/PM_SLEEP) \
-    $(wildcard include/config/CONTIG_ALLOC) \
-    $(wildcard include/config/CMA) \
-  include/linux/mmdebug.h \
-    $(wildcard include/config/DEBUG_VM) \
-    $(wildcard include/config/DEBUG_VM_PGFLAGS) \
-  include/linux/mmzone.h \
-    $(wildcard include/config/FORCE_MAX_ZONEORDER) \
-    $(wildcard include/config/MEMORY_ISOLATION) \
-    $(wildcard include/config/ZSMALLOC) \
-    $(wildcard include/config/MEMORY_HOTPLUG) \
-    $(wildcard include/config/COMPACTION) \
-    $(wildcard include/config/PAGE_EXTENSION) \
-    $(wildcard include/config/DEFERRED_STRUCT_PAGE_INIT) \
-    $(wildcard include/config/HAVE_MEMORYLESS_NODES) \
-    $(wildcard include/config/SPARSEMEM_EXTREME) \
-    $(wildcard include/config/HAVE_ARCH_PFN_VALID) \
-  include/linux/nodemask.h \
-  include/linux/pageblock-flags.h \
-    $(wildcard include/config/HUGETLB_PAGE_SIZE_VARIABLE) \
-  include/linux/page-flags.h \
-    $(wildcard include/config/ARCH_USES_PG_UNCACHED) \
-    $(wildcard include/config/MEMORY_FAILURE) \
-    $(wildcard include/config/PAGE_IDLE_FLAG) \
-    $(wildcard include/config/HUGETLB_PAGE_FREE_VMEMMAP) \
-    $(wildcard include/config/HUGETLB_PAGE_FREE_VMEMMAP_DEFAULT_ON) \
-    $(wildcard include/config/KSM) \
-  include/linux/local_lock.h \
-  include/linux/local_lock_internal.h \
-  include/linux/memory_hotplug.h \
-    $(wildcard include/config/HAVE_ARCH_NODEDATA_EXTENSION) \
-    $(wildcard include/config/ARCH_HAS_ADD_PAGES) \
-    $(wildcard include/config/MEMORY_HOTREMOVE) \
-  arch/x86/include/asm/mmzone.h \
-  arch/x86/include/asm/mmzone_32.h \
-  include/linux/topology.h \
-    $(wildcard include/config/USE_PERCPU_NUMA_NODE_ID) \
-    $(wildcard include/config/SCHED_SMT) \
-    $(wildcard include/config/SCHED_CLUSTER) \
-  include/linux/arch_topology.h \
-    $(wildcard include/config/ACPI_CPPC_LIB) \
-    $(wildcard include/config/GENERIC_ARCH_TOPOLOGY) \
-  include/linux/percpu.h \
-    $(wildcard include/config/NEED_PER_CPU_EMBED_FIRST_CHUNK) \
-    $(wildcard include/config/NEED_PER_CPU_PAGE_FIRST_CHUNK) \
-  arch/x86/include/asm/topology.h \
-    $(wildcard include/config/SCHED_MC_PRIO) \
-  arch/x86/include/asm/mpspec.h \
-    $(wildcard include/config/EISA) \
-    $(wildcard include/config/X86_MPPARSE) \
-  arch/x86/include/asm/mpspec_def.h \
-  arch/x86/include/asm/x86_init.h \
-  arch/x86/include/asm/apicdef.h \
-  include/asm-generic/topology.h \
-  include/linux/sysctl.h \
-    $(wildcard include/config/SYSCTL) \
-  include/uapi/linux/sysctl.h \
-  include/linux/elf.h \
-    $(wildcard include/config/ARCH_USE_GNU_PROPERTY) \
-    $(wildcard include/config/ARCH_HAVE_ELF_PROT) \
-  arch/x86/include/asm/elf.h \
-    $(wildcard include/config/X86_X32_ABI) \
-  arch/x86/include/asm/user.h \
-  arch/x86/include/asm/user_32.h \
-  arch/x86/include/asm/fsgsbase.h \
-  arch/x86/include/asm/vdso.h \
-  arch/x86/include/asm/desc.h \
-  arch/x86/include/asm/fixmap.h \
-    $(wildcard include/config/DEBUG_KMAP_LOCAL_FORCE_MAP) \
-    $(wildcard include/config/X86_VSYSCALL_EMULATION) \
-    $(wildcard include/config/PROVIDE_OHCI1394_DMA_INIT) \
-    $(wildcard include/config/X86_IO_APIC) \
-    $(wildcard include/config/KMAP_LOCAL) \
-    $(wildcard include/config/PCI_MMCONFIG) \
-    $(wildcard include/config/ACPI_APEI_GHES) \
-    $(wildcard include/config/INTEL_TXT) \
-  arch/x86/include/generated/asm/kmap_size.h \
-  include/asm-generic/kmap_size.h \
-    $(wildcard include/config/DEBUG_KMAP_LOCAL) \
-  include/asm-generic/fixmap.h \
-  arch/x86/include/asm/irq_vectors.h \
-    $(wildcard include/config/HAVE_KVM) \
-    $(wildcard include/config/HYPERV) \
-    $(wildcard include/config/PCI_MSI) \
-  arch/x86/include/asm/cpu_entry_area.h \
-  arch/x86/include/asm/intel_ds.h \
-  arch/x86/include/asm/pgtable_areas.h \
-  arch/x86/include/asm/pgtable_32_areas.h \
-  include/uapi/linux/elf.h \
-  include/uapi/linux/elf-em.h \
-  include/linux/kobject.h \
-    $(wildcard include/config/UEVENT_HELPER) \
-    $(wildcard include/config/DEBUG_KOBJECT_RELEASE) \
-  include/linux/sysfs.h \
-  include/linux/kernfs.h \
-    $(wildcard include/config/KERNFS) \
-  include/linux/idr.h \
-  include/linux/radix-tree.h \
-  include/linux/xarray.h \
-    $(wildcard include/config/XARRAY_MULTI) \
-  include/linux/kconfig.h \
-  include/linux/kobject_ns.h \
-  include/linux/moduleparam.h \
-    $(wildcard include/config/ALPHA) \
-    $(wildcard include/config/IA64) \
-    $(wildcard include/config/PPC64) \
-  include/linux/rbtree_latch.h \
-  include/linux/error-injection.h \
-  include/asm-generic/error-injection.h \
-  include/linux/cfi.h \
-    $(wildcard include/config/CFI_CLANG_SHADOW) \
-  arch/x86/include/asm/module.h \
-    $(wildcard include/config/UNWINDER_ORC) \
-  include/asm-generic/module.h \
-    $(wildcard include/config/HAVE_MOD_ARCH_SPECIFIC) \
-    $(wildcard include/config/MODULES_USE_ELF_REL) \
-    $(wildcard include/config/MODULES_USE_ELF_RELA) \
-  arch/x86/include/asm/orc_types.h \
-  include/linux/i2c.h \
-    $(wildcard include/config/I2C) \
-    $(wildcard include/config/I2C_SLAVE) \
-    $(wildcard include/config/I2C_BOARDINFO) \
-    $(wildcard include/config/I2C_MUX) \
-    $(wildcard include/config/OF) \
-    $(wildcard include/config/ACPI) \
-  include/linux/acpi.h \
-    $(wildcard include/config/ACPI_DEBUGGER) \
-    $(wildcard include/config/ACPI_TABLE_LIB) \
-    $(wildcard include/config/LOONGARCH) \
-    $(wildcard include/config/ARM64) \
-    $(wildcard include/config/ACPI_PROCESSOR_CSTATE) \
-    $(wildcard include/config/ACPI_HOTPLUG_CPU) \
-    $(wildcard include/config/ACPI_HOTPLUG_IOAPIC) \
-    $(wildcard include/config/PCI) \
-    $(wildcard include/config/ACPI_WMI) \
-    $(wildcard include/config/ACPI_NUMA) \
-    $(wildcard include/config/HIBERNATION) \
-    $(wildcard include/config/ACPI_HOTPLUG_MEMORY) \
-    $(wildcard include/config/ACPI_CONTAINER) \
-    $(wildcard include/config/ACPI_GTDT) \
-    $(wildcard include/config/PM) \
-    $(wildcard include/config/GPIOLIB) \
-    $(wildcard include/config/ACPI_TABLE_UPGRADE) \
-    $(wildcard include/config/ACPI_WATCHDOG) \
-    $(wildcard include/config/ACPI_SPCR_TABLE) \
-    $(wildcard include/config/ACPI_GENERIC_GSI) \
-    $(wildcard include/config/ACPI_LPIT) \
-    $(wildcard include/config/ACPI_PPTT) \
-    $(wildcard include/config/ACPI_PCC) \
-  include/linux/ioport.h \
-  include/linux/irqdomain.h \
-    $(wildcard include/config/IRQ_DOMAIN_HIERARCHY) \
-    $(wildcard include/config/GENERIC_IRQ_DEBUGFS) \
-    $(wildcard include/config/IRQ_DOMAIN) \
-    $(wildcard include/config/IRQ_DOMAIN_NOMAP) \
-  include/linux/irqhandler.h \
-  include/linux/of.h \
-    $(wildcard include/config/OF_DYNAMIC) \
-    $(wildcard include/config/SPARC) \
-    $(wildcard include/config/OF_PROMTREE) \
-    $(wildcard include/config/OF_KOBJ) \
-    $(wildcard include/config/OF_NUMA) \
-    $(wildcard include/config/OF_OVERLAY) \
-  include/linux/mod_devicetable.h \
-  include/linux/uuid.h \
-  include/uapi/linux/uuid.h \
-  include/linux/property.h \
-  include/linux/fwnode.h \
-  include/linux/resource_ext.h \
-  include/linux/slab.h \
-    $(wildcard include/config/DEBUG_SLAB) \
-    $(wildcard include/config/FAILSLAB) \
-    $(wildcard include/config/MEMCG_KMEM) \
-    $(wildcard include/config/KASAN) \
-    $(wildcard include/config/SLAB) \
-    $(wildcard include/config/SLUB) \
-    $(wildcard include/config/SLOB) \
-  include/linux/overflow.h \
-  include/linux/percpu-refcount.h \
-  include/linux/kasan.h \
-    $(wildcard include/config/KASAN_STACK) \
-    $(wildcard include/config/KASAN_VMALLOC) \
-    $(wildcard include/config/KASAN_INLINE) \
-  include/linux/kasan-enabled.h \
-  include/linux/device.h \
-    $(wildcard include/config/GENERIC_MSI_IRQ_DOMAIN) \
-    $(wildcard include/config/GENERIC_MSI_IRQ) \
-    $(wildcard include/config/ENERGY_MODEL) \
-    $(wildcard include/config/PINCTRL) \
-    $(wildcard include/config/DMA_OPS) \
-    $(wildcard include/config/DMA_DECLARE_COHERENT) \
-    $(wildcard include/config/DMA_CMA) \
-    $(wildcard include/config/SWIOTLB) \
-    $(wildcard include/config/ARCH_HAS_SYNC_DMA_FOR_DEVICE) \
-    $(wildcard include/config/ARCH_HAS_SYNC_DMA_FOR_CPU) \
-    $(wildcard include/config/ARCH_HAS_SYNC_DMA_FOR_CPU_ALL) \
-    $(wildcard include/config/DMA_OPS_BYPASS) \
-    $(wildcard include/config/DEVTMPFS) \
-    $(wildcard include/config/SYSFS_DEPRECATED) \
-  include/linux/dev_printk.h \
-  include/linux/ratelimit.h \
-  include/linux/sched.h \
-    $(wildcard include/config/VIRT_CPU_ACCOUNTING_NATIVE) \
-    $(wildcard include/config/SCHED_INFO) \
-    $(wildcard include/config/SCHEDSTATS) \
-    $(wildcard include/config/SCHED_CORE) \
-    $(wildcard include/config/FAIR_GROUP_SCHED) \
-    $(wildcard include/config/RT_GROUP_SCHED) \
-    $(wildcard include/config/RT_MUTEXES) \
-    $(wildcard include/config/UCLAMP_TASK) \
-    $(wildcard include/config/UCLAMP_BUCKETS_COUNT) \
-    $(wildcard include/config/CGROUP_SCHED) \
-    $(wildcard include/config/BLK_DEV_IO_TRACE) \
-    $(wildcard include/config/PSI) \
-    $(wildcard include/config/COMPAT_BRK) \
-    $(wildcard include/config/CGROUPS) \
-    $(wildcard include/config/BLK_CGROUP) \
-    $(wildcard include/config/PAGE_OWNER) \
-    $(wildcard include/config/EVENTFD) \
-    $(wildcard include/config/ARCH_HAS_SCALED_CPUTIME) \
-    $(wildcard include/config/VIRT_CPU_ACCOUNTING_GEN) \
-    $(wildcard include/config/POSIX_CPUTIMERS) \
-    $(wildcard include/config/POSIX_CPU_TIMERS_TASK_WORK) \
-    $(wildcard include/config/KEYS) \
-    $(wildcard include/config/SYSVIPC) \
-    $(wildcard include/config/DETECT_HUNG_TASK) \
-    $(wildcard include/config/IO_URING) \
-    $(wildcard include/config/AUDIT) \
-    $(wildcard include/config/AUDITSYSCALL) \
-    $(wildcard include/config/UBSAN) \
-    $(wildcard include/config/UBSAN_TRAP) \
-    $(wildcard include/config/TASK_XACCT) \
-    $(wildcard include/config/CPUSETS) \
-    $(wildcard include/config/X86_CPU_RESCTRL) \
-    $(wildcard include/config/FUTEX) \
-    $(wildcard include/config/PERF_EVENTS) \
-    $(wildcard include/config/RSEQ) \
-    $(wildcard include/config/TASK_DELAY_ACCT) \
-    $(wildcard include/config/FAULT_INJECTION) \
-    $(wildcard include/config/LATENCYTOP) \
-    $(wildcard include/config/KUNIT) \
-    $(wildcard include/config/FUNCTION_GRAPH_TRACER) \
-    $(wildcard include/config/BCACHE) \
-    $(wildcard include/config/VMAP_STACK) \
-    $(wildcard include/config/SECURITY) \
-    $(wildcard include/config/BPF_SYSCALL) \
-    $(wildcard include/config/GCC_PLUGIN_STACKLEAK) \
-    $(wildcard include/config/X86_MCE) \
-    $(wildcard include/config/KRETPROBES) \
-    $(wildcard include/config/RETHOOK) \
-    $(wildcard include/config/ARCH_HAS_PARANOID_L1D_FLUSH) \
-    $(wildcard include/config/ARCH_TASK_STRUCT_ON_STACK) \
-    $(wildcard include/config/DEBUG_RSEQ) \
-  include/uapi/linux/sched.h \
-  include/linux/pid.h \
-  include/linux/rculist.h \
-    $(wildcard include/config/PROVE_RCU_LIST) \
-  include/linux/sem.h \
-  include/uapi/linux/sem.h \
-  include/linux/ipc.h \
-  include/linux/rhashtable-types.h \
-  include/uapi/linux/ipc.h \
-  arch/x86/include/generated/uapi/asm/ipcbuf.h \
-  include/uapi/asm-generic/ipcbuf.h \
-  arch/x86/include/uapi/asm/sembuf.h \
-  include/linux/shm.h \
-  include/uapi/linux/shm.h \
-  include/uapi/asm-generic/hugetlb_encode.h \
-  arch/x86/include/uapi/asm/shmbuf.h \
-  include/uapi/asm-generic/shmbuf.h \
-  arch/x86/include/asm/shmparam.h \
-  include/linux/plist.h \
-    $(wildcard include/config/DEBUG_PLIST) \
-  include/linux/hrtimer.h \
-    $(wildcard include/config/HIGH_RES_TIMERS) \
-    $(wildcard include/config/TIME_LOW_RES) \
-    $(wildcard include/config/TIMERFD) \
-  include/linux/hrtimer_defs.h \
-  include/linux/timerqueue.h \
-  include/linux/seccomp.h \
-    $(wildcard include/config/SECCOMP) \
-    $(wildcard include/config/HAVE_ARCH_SECCOMP_FILTER) \
-    $(wildcard include/config/SECCOMP_FILTER) \
-    $(wildcard include/config/CHECKPOINT_RESTORE) \
-    $(wildcard include/config/SECCOMP_CACHE_DEBUG) \
-  include/uapi/linux/seccomp.h \
-  arch/x86/include/asm/seccomp.h \
-  arch/x86/include/asm/unistd.h \
-  arch/x86/include/uapi/asm/unistd.h \
-  arch/x86/include/generated/uapi/asm/unistd_32.h \
-  include/asm-generic/seccomp.h \
-  include/uapi/linux/unistd.h \
-  include/linux/resource.h \
-  include/uapi/linux/resource.h \
-  arch/x86/include/generated/uapi/asm/resource.h \
-  include/asm-generic/resource.h \
-  include/uapi/asm-generic/resource.h \
-  include/linux/latencytop.h \
-  include/linux/sched/prio.h \
-  include/linux/sched/types.h \
-  include/linux/signal_types.h \
-    $(wildcard include/config/OLD_SIGACTION) \
-  include/uapi/linux/signal.h \
-  arch/x86/include/asm/signal.h \
-  arch/x86/include/uapi/asm/signal.h \
-  include/uapi/asm-generic/signal-defs.h \
-  arch/x86/include/uapi/asm/siginfo.h \
-  include/uapi/asm-generic/siginfo.h \
-  include/linux/syscall_user_dispatch.h \
-  include/linux/task_io_accounting.h \
-    $(wildcard include/config/TASK_IO_ACCOUNTING) \
-  include/linux/posix-timers.h \
-  include/linux/alarmtimer.h \
-    $(wildcard include/config/RTC_CLASS) \
-  include/uapi/linux/rseq.h \
-  include/linux/kcsan.h \
-  include/linux/energy_model.h \
-  include/linux/sched/cpufreq.h \
-    $(wildcard include/config/CPU_FREQ) \
-  include/linux/sched/topology.h \
-    $(wildcard include/config/SCHED_DEBUG) \
-    $(wildcard include/config/SCHED_MC) \
-    $(wildcard include/config/CPU_FREQ_GOV_SCHEDUTIL) \
-  include/linux/sched/idle.h \
-  include/linux/sched/sd_flags.h \
-  include/linux/klist.h \
-  include/linux/pm.h \
-    $(wildcard include/config/VT_CONSOLE_SLEEP) \
-    $(wildcard include/config/PM_CLK) \
-    $(wildcard include/config/PM_GENERIC_DOMAINS) \
-  include/linux/device/bus.h \
-  include/linux/device/class.h \
-  include/linux/device/driver.h \
-  arch/x86/include/asm/device.h \
-  include/linux/pm_wakeup.h \
-  include/acpi/acpi.h \
-  include/acpi/platform/acenv.h \
-  include/acpi/platform/acgcc.h \
-  include/acpi/platform/aclinux.h \
-    $(wildcard include/config/ACPI_REDUCED_HARDWARE_ONLY) \
-    $(wildcard include/config/ACPI_DEBUG) \
-  include/linux/ctype.h \
-  arch/x86/include/asm/acenv.h \
-  include/acpi/acnames.h \
-  include/acpi/actypes.h \
-  include/acpi/acexcep.h \
-  include/acpi/actbl.h \
-  include/acpi/actbl1.h \
-  include/acpi/actbl2.h \
-  include/acpi/actbl3.h \
-  include/acpi/acrestyp.h \
-  include/acpi/platform/acenvex.h \
-  include/acpi/platform/aclinuxex.h \
-  include/acpi/platform/acgccex.h \
-  include/acpi/acoutput.h \
-  include/acpi/acpiosxf.h \
-  include/acpi/acpixf.h \
-  include/acpi/acconfig.h \
-  include/acpi/acbuffer.h \
-  include/linux/dynamic_debug.h \
-  include/acpi/acpi_bus.h \
-    $(wildcard include/config/X86_ANDROID_TABLETS) \
-    $(wildcard include/config/ACPI_SYSTEM_POWER_STATES_SUPPORT) \
-    $(wildcard include/config/ACPI_SLEEP) \
-  include/acpi/acpi_drivers.h \
-    $(wildcard include/config/ACPI_DOCK) \
-  include/acpi/acpi_numa.h \
-    $(wildcard include/config/ACPI_HMAT) \
-  include/acpi/acpi_io.h \
-  include/linux/io.h \
-    $(wildcard include/config/HAS_IOPORT_MAP) \
-  arch/x86/include/asm/io.h \
-    $(wildcard include/config/MTRR) \
-    $(wildcard include/config/X86_PAT) \
-  arch/x86/include/generated/asm/early_ioremap.h \
-  include/asm-generic/early_ioremap.h \
-    $(wildcard include/config/GENERIC_EARLY_IOREMAP) \
-  include/asm-generic/iomap.h \
-  include/asm-generic/pci_iomap.h \
-    $(wildcard include/config/NO_GENERIC_PCI_IOPORT_MAP) \
-    $(wildcard include/config/GENERIC_PCI_IOMAP) \
-  include/asm-generic/io.h \
-    $(wildcard include/config/GENERIC_IOMAP) \
-    $(wildcard include/config/GENERIC_IOREMAP) \
-    $(wildcard include/config/VIRT_TO_BUS) \
-    $(wildcard include/config/GENERIC_DEVMEM_IS_ALLOWED) \
-  include/linux/logic_pio.h \
-    $(wildcard include/config/INDIRECT_PIO) \
-  include/linux/vmalloc.h \
-    $(wildcard include/config/HAVE_ARCH_HUGE_VMALLOC) \
-  arch/x86/include/asm/vmalloc.h \
-    $(wildcard include/config/HAVE_ARCH_HUGE_VMAP) \
-  arch/x86/include/asm/acpi.h \
-    $(wildcard include/config/ACPI_APEI) \
-  include/acpi/pdc_intel.h \
-  arch/x86/include/asm/numa.h \
-    $(wildcard include/config/NUMA_EMU) \
-  arch/x86/include/asm/numa_32.h \
-  include/linux/regulator/consumer.h \
-    $(wildcard include/config/REGULATOR) \
-  include/linux/suspend.h \
-    $(wildcard include/config/VT) \
-    $(wildcard include/config/SUSPEND) \
-    $(wildcard include/config/HIBERNATION_SNAPSHOT_DEV) \
-    $(wildcard include/config/PM_SLEEP_DEBUG) \
-    $(wildcard include/config/PM_AUTOSLEEP) \
-  include/linux/swap.h \
-    $(wildcard include/config/DEVICE_PRIVATE) \
-    $(wildcard include/config/MIGRATION) \
-    $(wildcard include/config/FRONTSWAP) \
-    $(wildcard include/config/THP_SWAP) \
-    $(wildcard include/config/MEMCG_SWAP) \
-  include/linux/memcontrol.h \
-    $(wildcard include/config/CGROUP_WRITEBACK) \
-  include/linux/cgroup.h \
-    $(wildcard include/config/CGROUP_CPUACCT) \
-    $(wildcard include/config/SOCK_CGROUP_DATA) \
-    $(wildcard include/config/CGROUP_DATA) \
-    $(wildcard include/config/CGROUP_BPF) \
-  include/uapi/linux/cgroupstats.h \
-  include/uapi/linux/taskstats.h \
-  include/linux/fs.h \
-    $(wildcard include/config/READ_ONLY_THP_FOR_FS) \
-    $(wildcard include/config/FS_POSIX_ACL) \
-    $(wildcard include/config/IMA) \
-    $(wildcard include/config/FILE_LOCKING) \
-    $(wildcard include/config/FSNOTIFY) \
-    $(wildcard include/config/FS_ENCRYPTION) \
-    $(wildcard include/config/FS_VERITY) \
-    $(wildcard include/config/EPOLL) \
-    $(wildcard include/config/UNICODE) \
-    $(wildcard include/config/QUOTA) \
-    $(wildcard include/config/FS_DAX) \
-    $(wildcard include/config/BLOCK) \
-  include/linux/wait_bit.h \
-  include/linux/kdev_t.h \
-  include/uapi/linux/kdev_t.h \
-  include/linux/dcache.h \
-  include/linux/rculist_bl.h \
-  include/linux/list_bl.h \
-  include/linux/bit_spinlock.h \
-  include/linux/lockref.h \
-    $(wildcard include/config/ARCH_USE_CMPXCHG_LOCKREF) \
-  include/linux/stringhash.h \
-    $(wildcard include/config/DCACHE_WORD_ACCESS) \
-  include/linux/hash.h \
-    $(wildcard include/config/HAVE_ARCH_HASH) \
-  include/linux/path.h \
-  include/linux/list_lru.h \
-  include/linux/shrinker.h \
-  include/linux/capability.h \
-  include/uapi/linux/capability.h \
-  include/linux/semaphore.h \
-  include/linux/fcntl.h \
-    $(wildcard include/config/ARCH_32BIT_OFF_T) \
-  include/uapi/linux/fcntl.h \
-  arch/x86/include/generated/uapi/asm/fcntl.h \
-  include/uapi/asm-generic/fcntl.h \
-  include/uapi/linux/openat2.h \
-  include/linux/migrate_mode.h \
-  include/linux/percpu-rwsem.h \
-  include/linux/rcuwait.h \
-  include/linux/sched/signal.h \
-    $(wildcard include/config/SCHED_AUTOGROUP) \
-    $(wildcard include/config/BSD_PROCESS_ACCT) \
-    $(wildcard include/config/TASKSTATS) \
-    $(wildcard incl
+// SPDX-License-Identifier: GPL-2.0-only
+// Copyright (c) 2019 Pengutronix, Oleksij Rempel <kernel@pengutronix.de>
+/*
+ *                   +----------------------+
+ * GMAC1----RGMII----|--MAC0                |
+ *      \---MDIO1----|--REGs                |----MDIO3----\
+ *                   |                      |             |  +------+
+ *                   |                      |             +--|      |
+ *                   |                 MAC1-|----RMII--M-----| PHY0 |-o P0
+ *                   |                      |          |  |  +------+
+ *                   |                      |          |  +--|      |
+ *                   |                 MAC2-|----RMII--------| PHY1 |-o P1
+ *                   |                      |          |  |  +------+
+ *                   |                      |          |  +--|      |
+ *                   |                 MAC3-|----RMII--------| PHY2 |-o P2
+ *                   |                      |          |  |  +------+
+ *                   |                      |          |  +--|      |
+ *                   |                 MAC4-|----RMII--------| PHY3 |-o P3
+ *                   |                      |          |  |  +------+
+ *                   |                      |          |  +--|      |
+ *                   |                 MAC5-|--+-RMII--M-----|-PHY4-|-o P4
+ *                   |                      |  |       |     +------+
+ *                   +----------------------+  |       \--CFG_SW_PHY_SWAP
+ * GMAC0---------------RMII--------------------/        \-CFG_SW_PHY_ADDR_SWAP
+ *      \---MDIO0--NC
+ *
+ * GMAC0 and MAC5 are connected together and use same PHY. Depending on
+ * configuration it can be PHY4 (default) or PHY0. Only GMAC0 or MAC5 can be
+ * used at same time. If GMAC0 is used (default) then MAC5 should be disabled.
+ *
+ * CFG_SW_PHY_SWAP - swap connections of PHY0 and PHY4. If this bit is not set
+ * PHY4 is connected to GMAC0/MAC5 bundle and PHY0 is connected to MAC1. If this
+ * bit is set, PHY4 is connected to MAC1 and PHY0 is connected to GMAC0/MAC5
+ * bundle.
+ *
+ * CFG_SW_PHY_ADDR_SWAP - swap addresses of PHY0 and PHY4
+ *
+ * CFG_SW_PHY_SWAP and CFG_SW_PHY_ADDR_SWAP are part of SoC specific register
+ * set and not related to switch internal registers.
+ */
+
+#include <linux/bitfield.h>
+#include <linux/module.h>
+#include <linux/of_irq.h>
+#include <linux/of_mdio.h>
+#include <linux/regmap.h>
+#include <linux/reset.h>
+#include <net/dsa.h>
+
+#define AR9331_SW_NAME				"ar9331_switch"
+#define AR9331_SW_PORTS				6
+
+/* dummy reg to change page */
+#define AR9331_SW_REG_PAGE			0x40000
+
+/* Global Interrupt */
+#define AR9331_SW_REG_GINT			0x10
+#define AR9331_SW_REG_GINT_MASK			0x14
+#define AR9331_SW_GINT_PHY_INT			BIT(2)
+
+#define AR9331_SW_REG_FLOOD_MASK		0x2c
+#define AR9331_SW_FLOOD_MASK_BROAD_TO_CPU	BIT(26)
+
+#define AR9331_SW_REG_GLOBAL_CTRL		0x30
+#define AR9331_SW_GLOBAL_CTRL_MFS_M		GENMASK(13, 0)
+
+#define AR9331_SW_REG_MDIO_CTRL			0x98
+#define AR9331_SW_MDIO_CTRL_BUSY		BIT(31)
+#define AR9331_SW_MDIO_CTRL_MASTER_EN		BIT(30)
+#define AR9331_SW_MDIO_CTRL_CMD_READ		BIT(27)
+#define AR9331_SW_MDIO_CTRL_PHY_ADDR_M		GENMASK(25, 21)
+#define AR9331_SW_MDIO_CTRL_REG_ADDR_M		GENMASK(20, 16)
+#define AR9331_SW_MDIO_CTRL_DATA_M		GENMASK(16, 0)
+
+#define AR9331_SW_REG_PORT_STATUS(_port)	(0x100 + (_port) * 0x100)
+
+/* FLOW_LINK_EN - enable mac flow control config auto-neg with phy.
+ * If not set, mac can be config by software.
+ */
+#define AR9331_SW_PORT_STATUS_FLOW_LINK_EN	BIT(12)
+
+/* LINK_EN - If set, MAC is configured from PHY link status.
+ * If not set, MAC should be configured by software.
+ */
+#define AR9331_SW_PORT_STATUS_LINK_EN		BIT(9)
+#define AR9331_SW_PORT_STATUS_DUPLEX_MODE	BIT(6)
+#define AR9331_SW_PORT_STATUS_RX_FLOW_EN	BIT(5)
+#define AR9331_SW_PORT_STATUS_TX_FLOW_EN	BIT(4)
+#define AR9331_SW_PORT_STATUS_RXMAC		BIT(3)
+#define AR9331_SW_PORT_STATUS_TXMAC		BIT(2)
+#define AR9331_SW_PORT_STATUS_SPEED_M		GENMASK(1, 0)
+#define AR9331_SW_PORT_STATUS_SPEED_1000	2
+#define AR9331_SW_PORT_STATUS_SPEED_100		1
+#define AR9331_SW_PORT_STATUS_SPEED_10		0
+
+#define AR9331_SW_PORT_STATUS_MAC_MASK \
+	(AR9331_SW_PORT_STATUS_TXMAC | AR9331_SW_PORT_STATUS_RXMAC)
+
+#define AR9331_SW_PORT_STATUS_LINK_MASK \
+	(AR9331_SW_PORT_STATUS_DUPLEX_MODE | \
+	 AR9331_SW_PORT_STATUS_RX_FLOW_EN | AR9331_SW_PORT_STATUS_TX_FLOW_EN | \
+	 AR9331_SW_PORT_STATUS_SPEED_M)
+
+#define AR9331_SW_REG_PORT_CTRL(_port)			(0x104 + (_port) * 0x100)
+#define AR9331_SW_PORT_CTRL_HEAD_EN			BIT(11)
+#define AR9331_SW_PORT_CTRL_PORT_STATE			GENMASK(2, 0)
+#define AR9331_SW_PORT_CTRL_PORT_STATE_DISABLED		0
+#define AR9331_SW_PORT_CTRL_PORT_STATE_BLOCKING		1
+#define AR9331_SW_PORT_CTRL_PORT_STATE_LISTENING	2
+#define AR9331_SW_PORT_CTRL_PORT_STATE_LEARNING		3
+#define AR9331_SW_PORT_CTRL_PORT_STATE_FORWARD		4
+
+#define AR9331_SW_REG_PORT_VLAN(_port)			(0x108 + (_port) * 0x100)
+#define AR9331_SW_PORT_VLAN_8021Q_MODE			GENMASK(31, 30)
+#define AR9331_SW_8021Q_MODE_SECURE			3
+#define AR9331_SW_8021Q_MODE_CHECK			2
+#define AR9331_SW_8021Q_MODE_FALLBACK			1
+#define AR9331_SW_8021Q_MODE_NONE			0
+#define AR9331_SW_PORT_VLAN_PORT_VID_MEMBER		GENMASK(25, 16)
+
+/* MIB registers */
+#define AR9331_MIB_COUNTER(x)			(0x20000 + ((x) * 0x100))
+
+/* Phy bypass mode
+ * ------------------------------------------------------------------------
+ * Bit:   | 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 |10 |11 |12 |13 |14 |15 |
+ *
+ * real   | start |   OP  | PhyAddr           |  Reg Addr         |  TA   |
+ * atheros| start |   OP  | 2'b00 |PhyAdd[2:0]|  Reg Addr[4:0]    |  TA   |
+ *
+ *
+ * Bit:   |16 |17 |18 |19 |20 |21 |22 |23 |24 |25 |26 |27 |28 |29 |30 |31 |
+ * real   |  Data                                                         |
+ * atheros|  Data                                                         |
+ *
+ * ------------------------------------------------------------------------
+ * Page address mode
+ * ------------------------------------------------------------------------
+ * Bit:   | 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 |10 |11 |12 |13 |14 |15 |
+ * real   | start |   OP  | PhyAddr           |  Reg Addr         |  TA   |
+ * atheros| start |   OP  | 2'b11 |                          8'b0 |  TA   |
+ *
+ * Bit:   |16 |17 |18 |19 |20 |21 |22 |23 |24 |25 |26 |27 |28 |29 |30 |31 |
+ * real   |  Data                                                         |
+ * atheros|                       | Page [9:0]                            |
+ */
+/* In case of Page Address mode, Bit[18:9] of 32 bit register address should be
+ * written to bits[9:0] of mdio data register.
+ */
+#define AR9331_SW_ADDR_PAGE			GENMASK(18, 9)
+
+/* ------------------------------------------------------------------------
+ * Normal register access mode
+ * ------------------------------------------------------------------------
+ * Bit:   | 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 |10 |11 |12 |13 |14 |15 |
+ * real   | start |   OP  | PhyAddr           |  Reg Addr         |  TA   |
+ * atheros| start |   OP  | 2'b10 |  low_addr[7:0]                |  TA   |
+ *
+ * Bit:   |16 |17 |18 |19 |20 |21 |22 |23 |24 |25 |26 |27 |28 |29 |30 |31 |
+ * real   |  Data                                                         |
+ * atheros|  Data                                                         |
+ * ------------------------------------------------------------------------
+ */
+#define AR9331_SW_LOW_ADDR_PHY			GENMASK(8, 6)
+#define AR9331_SW_LOW_ADDR_REG			GENMASK(5, 1)
+
+#define AR9331_SW_MDIO_PHY_MODE_M		GENMASK(4, 3)
+#define AR9331_SW_MDIO_PHY_MODE_PAGE		3
+#define AR9331_SW_MDIO_PHY_MODE_REG		2
+#define AR9331_SW_MDIO_PHY_MODE_BYPASS		0
+#define AR9331_SW_MDIO_PHY_ADDR_M		GENMASK(2, 0)
+
+/* Empirical determined values */
+#define AR9331_SW_MDIO_POLL_SLEEP_US		1
+#define AR9331_SW_MDIO_POLL_TIMEOUT_US		20
+
+/* The interval should be small enough to avoid overflow of 32bit MIBs */
+/*
+ * FIXME: until we can read MIBs from stats64 call directly (i.e. sleep
+ * there), we have to poll stats more frequently then it is actually needed.
+ * For overflow protection, normally, 100 sec interval should have been OK.
+ */
+#define STATS_INTERVAL_JIFFIES			(3 * HZ)
+
+struct ar9331_sw_stats_raw {
+	u32 rxbroad;			/* 0x00 */
+	u32 rxpause;			/* 0x04 */
+	u32 rxmulti;			/* 0x08 */
+	u32 rxfcserr;			/* 0x0c */
+	u32 rxalignerr;			/* 0x10 */
+	u32 rxrunt;			/* 0x14 */
+	u32 rxfragment;			/* 0x18 */
+	u32 rx64byte;			/* 0x1c */
+	u32 rx128byte;			/* 0x20 */
+	u32 rx256byte;			/* 0x24 */
+	u32 rx512byte;			/* 0x28 */
+	u32 rx1024byte;			/* 0x2c */
+	u32 rx1518byte;			/* 0x30 */
+	u32 rxmaxbyte;			/* 0x34 */
+	u32 rxtoolong;			/* 0x38 */
+	u32 rxgoodbyte;			/* 0x3c */
+	u32 rxgoodbyte_hi;
+	u32 rxbadbyte;			/* 0x44 */
+	u32 rxbadbyte_hi;
+	u32 rxoverflow;			/* 0x4c */
+	u32 filtered;			/* 0x50 */
+	u32 txbroad;			/* 0x54 */
+	u32 txpause;			/* 0x58 */
+	u32 txmulti;			/* 0x5c */
+	u32 txunderrun;			/* 0x60 */
+	u32 tx64byte;			/* 0x64 */
+	u32 tx128byte;			/* 0x68 */
+	u32 tx256byte;			/* 0x6c */
+	u32 tx512byte;			/* 0x70 */
+	u32 tx1024byte;			/* 0x74 */
+	u32 tx1518byte;			/* 0x78 */
+	u32 txmaxbyte;			/* 0x7c */
+	u32 txoversize;			/* 0x80 */
+	u32 txbyte;			/* 0x84 */
+	u32 txbyte_hi;
+	u32 txcollision;		/* 0x8c */
+	u32 txabortcol;			/* 0x90 */
+	u32 txmulticol;			/* 0x94 */
+	u32 txsinglecol;		/* 0x98 */
+	u32 txexcdefer;			/* 0x9c */
+	u32 txdefer;			/* 0xa0 */
+	u32 txlatecol;			/* 0xa4 */
+};
+
+struct ar9331_sw_port {
+	int idx;
+	struct delayed_work mib_read;
+	struct rtnl_link_stats64 stats;
+	struct spinlock stats_lock;
+};
+
+struct ar9331_sw_priv {
+	struct device *dev;
+	struct dsa_switch ds;
+	struct dsa_switch_ops ops;
+	struct irq_domain *irqdomain;
+	u32 irq_mask;
+	struct mutex lock_irq;
+	struct mii_bus *mbus; /* mdio master */
+	struct mii_bus *sbus; /* mdio slave */
+	struct regmap *regmap;
+	struct reset_control *sw_reset;
+	struct ar9331_sw_port port[AR9331_SW_PORTS];
+};
+
+static struct ar9331_sw_priv *ar9331_sw_port_to_priv(struct ar9331_sw_port *port)
+{
+	struct ar9331_sw_port *p = port - port->idx;
+
+	return (struct ar9331_sw_priv *)((void *)p -
+					 offsetof(struct ar9331_sw_priv, port));
+}
+
+/* Warning: switch reset will reset last AR9331_SW_MDIO_PHY_MODE_PAGE request
+ * If some kind of optimization is used, the request should be repeated.
+ */
+static int ar9331_sw_reset(struct ar9331_sw_priv *priv)
+{
+	int ret;
+
+	ret = reset_control_assert(priv->sw_reset);
+	if (ret)
+		goto error;
+
+	/* AR9331 doc do not provide any information about proper reset
+	 * sequence. The AR8136 (the closes switch to the AR9331) doc says:
+	 * reset duration should be greater than 10ms. So, let's use this value
+	 * for now.
+	 */
+	usleep_range(10000, 15000);
+	ret = reset_control_deassert(priv->sw_reset);
+	if (ret)
+		goto error;
+	/* There is no information on how long should we wait after reset.
+	 * AR8136 has an EEPROM and there is an Interrupt for EEPROM load
+	 * status. AR9331 has no EEPROM support.
+	 * For now, do not wait. In case AR8136 will be needed, the after
+	 * reset delay can be added as well.
+	 */
+
+	return 0;
+error:
+	dev_err_ratelimited(priv->dev, "%s: %i\n", __func__, ret);
+	return ret;
+}
+
+static int ar9331_sw_mbus_write(struct mii_bus *mbus, int port, int regnum,
+				u16 data)
+{
+	struct ar9331_sw_priv *priv = mbus->priv;
+	struct regmap *regmap = priv->regmap;
+	u32 val;
+	int ret;
+
+	ret = regmap_write(regmap, AR9331_SW_REG_MDIO_CTRL,
+			   AR9331_SW_MDIO_CTRL_BUSY |
+			   AR9331_SW_MDIO_CTRL_MASTER_EN |
+			   FIELD_PREP(AR9331_SW_MDIO_CTRL_PHY_ADDR_M, port) |
+			   FIELD_PREP(AR9331_SW_MDIO_CTRL_REG_ADDR_M, regnum) |
+			   FIELD_PREP(AR9331_SW_MDIO_CTRL_DATA_M, data));
+	if (ret)
+		goto error;
+
+	ret = regmap_read_poll_timeout(regmap, AR9331_SW_REG_MDIO_CTRL, val,
+				       !(val & AR9331_SW_MDIO_CTRL_BUSY),
+				       AR9331_SW_MDIO_POLL_SLEEP_US,
+				       AR9331_SW_MDIO_POLL_TIMEOUT_US);
+	if (ret)
+		goto error;
+
+	return 0;
+error:
+	dev_err_ratelimited(priv->dev, "PHY write error: %i\n", ret);
+	return ret;
+}
+
+static int ar9331_sw_mbus_read(struct mii_bus *mbus, int port, int regnum)
+{
+	struct ar9331_sw_priv *priv = mbus->priv;
+	struct regmap *regmap = priv->regmap;
+	u32 val;
+	int ret;
+
+	ret = regmap_write(regmap, AR9331_SW_REG_MDIO_CTRL,
+			   AR9331_SW_MDIO_CTRL_BUSY |
+			   AR9331_SW_MDIO_CTRL_MASTER_EN |
+			   AR9331_SW_MDIO_CTRL_CMD_READ |
+			   FIELD_PREP(AR9331_SW_MDIO_CTRL_PHY_ADDR_M, port) |
+			   FIELD_PREP(AR9331_SW_MDIO_CTRL_REG_ADDR_M, regnum));
+	if (ret)
+		goto error;
+
+	ret = regmap_read_poll_timeout(regmap, AR9331_SW_REG_MDIO_CTRL, val,
+				       !(val & AR9331_SW_MDIO_CTRL_BUSY),
+				       AR9331_SW_MDIO_POLL_SLEEP_US,
+				       AR9331_SW_MDIO_POLL_TIMEOUT_US);
+	if (ret)
+		goto error;
+
+	ret = regmap_read(regmap, AR9331_SW_REG_MDIO_CTRL, &val);
+	if (ret)
+		goto error;
+
+	return FIELD_GET(AR9331_SW_MDIO_CTRL_DATA_M, val);
+
+error:
+	dev_err_ratelimited(priv->dev, "PHY read error: %i\n", ret);
+	return ret;
+}
+
+static int ar9331_sw_mbus_init(struct ar9331_sw_priv *priv)
+{
+	struct device *dev = priv->dev;
+	struct mii_bus *mbus;
+	struct device_node *np, *mnp;
+	int ret;
+
+	np = dev->of_node;
+
+	mbus = devm_mdiobus_alloc(dev);
+	if (!mbus)
+		return -ENOMEM;
+
+	mbus->name = np->full_name;
+	snprintf(mbus->id, MII_BUS_ID_SIZE, "%pOF", np);
+
+	mbus->read = ar9331_sw_mbus_read;
+	mbus->write = ar9331_sw_mbus_write;
+	mbus->priv = priv;
+	mbus->parent = dev;
+
+	mnp = of_get_child_by_name(np, "mdio");
+	if (!mnp)
+		return -ENODEV;
+
+	ret = devm_of_mdiobus_register(dev, mbus, mnp);
+	of_node_put(mnp);
+	if (ret)
+		return ret;
+
+	priv->mbus = mbus;
+
+	return 0;
+}
+
+static int ar9331_sw_setup_port(struct dsa_switch *ds, int port)
+{
+	struct ar9331_sw_priv *priv = (struct ar9331_sw_priv *)ds->priv;
+	struct regmap *regmap = priv->regmap;
+	u32 port_mask, port_ctrl, val;
+	int ret;
+
+	/* Generate default port settings */
+	port_ctrl = FIELD_PREP(AR9331_SW_PORT_CTRL_PORT_STATE,
+			       AR9331_SW_PORT_CTRL_PORT_STATE_FORWARD);
+
+	if (dsa_is_cpu_port(ds, port)) {
+		/* CPU port should be allowed to communicate with all user
+		 * ports.
+		 */
+		port_mask = dsa_user_ports(ds);
+		/* Enable Atheros header on CPU port. This will allow us
+		 * communicate with each port separately
+		 */
+		port_ctrl |= AR9331_SW_PORT_CTRL_HEAD_EN;
+	} else if (dsa_is_user_port(ds, port)) {
+		/* User ports should communicate only with the CPU port.
+		 */
+		port_mask = BIT(dsa_upstream_port(ds, port));
+	} else {
+		/* Other ports do not need to communicate at all */
+		port_mask = 0;
+	}
+
+	val = FIELD_PREP(AR9331_SW_PORT_VLAN_8021Q_MODE,
+			 AR9331_SW_8021Q_MODE_NONE) |
+		FIELD_PREP(AR9331_SW_PORT_VLAN_PORT_VID_MEMBER, port_mask);
+
+	ret = regmap_write(regmap, AR9331_SW_REG_PORT_VLAN(port), val);
+	if (ret)
+		goto error;
+
+	ret = regmap_write(regmap, AR9331_SW_REG_PORT_CTRL(port), port_ctrl);
+	if (ret)
+		goto error;
+
+	return 0;
+error:
+	dev_err(priv->dev, "%s: error: %i\n", __func__, ret);
+
+	return ret;
+}
+
+static int ar9331_sw_setup(struct dsa_switch *ds)
+{
+	struct ar9331_sw_priv *priv = (struct ar9331_sw_priv *)ds->priv;
+	struct regmap *regmap = priv->regmap;
+	int ret, i;
+
+	ret = ar9331_sw_reset(priv);
+	if (ret)
+		return ret;
+
+	/* Reset will set proper defaults. CPU - Port0 will be enabled and
+	 * configured. All other ports (ports 1 - 5) are disabled
+	 */
+	ret = ar9331_sw_mbus_init(priv);
+	if (ret)
+		return ret;
+
+	/* Do not drop broadcast frames */
+	ret = regmap_write_bits(regmap, AR9331_SW_REG_FLOOD_MASK,
+				AR9331_SW_FLOOD_MASK_BROAD_TO_CPU,
+				AR9331_SW_FLOOD_MASK_BROAD_TO_CPU);
+	if (ret)
+		goto error;
+
+	/* Set max frame size to the maximum supported value */
+	ret = regmap_write_bits(regmap, AR9331_SW_REG_GLOBAL_CTRL,
+				AR9331_SW_GLOBAL_CTRL_MFS_M,
+				AR9331_SW_GLOBAL_CTRL_MFS_M);
+	if (ret)
+		goto error;
+
+	for (i = 0; i < ds->num_ports; i++) {
+		ret = ar9331_sw_setup_port(ds, i);
+		if (ret)
+			goto error;
+	}
+
+	ds->configure_vlan_while_not_filtering = false;
+
+	return 0;
+error:
+	dev_err_ratelimited(priv->dev, "%s: %i\n", __func__, ret);
+	return ret;
+}
+
+static void ar9331_sw_port_disable(struct dsa_switch *ds, int port)
+{
+	struct ar9331_sw_priv *priv = (struct ar9331_sw_priv *)ds->priv;
+	struct regmap *regmap = priv->regmap;
+	int ret;
+
+	ret = regmap_write(regmap, AR9331_SW_REG_PORT_STATUS(port), 0);
+	if (ret)
+		dev_err_ratelimited(priv->dev, "%s: %i\n", __func__, ret);
+}
+
+static enum dsa_tag_protocol ar9331_sw_get_tag_protocol(struct dsa_switch *ds,
+							int port,
+							enum dsa_tag_protocol m)
+{
+	return DSA_TAG_PROTO_AR9331;
+}
+
+static void ar9331_sw_phylink_get_caps(struct dsa_switch *ds, int port,
+				       struct phylink_config *config)
+{
+	config->mac_capabilities = MAC_ASYM_PAUSE | MAC_SYM_PAUSE |
+		MAC_10 | MAC_100;
+
+	switch (port) {
+	case 0:
+		__set_bit(PHY_INTERFACE_MODE_GMII,
+			  config->supported_interfaces);
+		config->mac_capabilities |= MAC_1000;
+		break;
+	case 1:
+	case 2:
+	case 3:
+	case 4:
+	case 5:
+		__set_bit(PHY_INTERFACE_MODE_INTERNAL,
+			  config->supported_interfaces);
+		break;
+	}
+}
+
+static void ar9331_sw_phylink_mac_config(struct dsa_switch *ds, int port,
+					 unsigned int mode,
+					 const struct phylink_link_state *state)
+{
+	struct ar9331_sw_priv *priv = (struct ar9331_sw_priv *)ds->priv;
+	struct regmap *regmap = priv->regmap;
+	int ret;
+
+	ret = regmap_update_bits(regmap, AR9331_SW_REG_PORT_STATUS(port),
+				 AR9331_SW_PORT_STATUS_LINK_EN |
+				 AR9331_SW_PORT_STATUS_FLOW_LINK_EN, 0);
+	if (ret)
+		dev_err_ratelimited(priv->dev, "%s: %i\n", __func__, ret);
+}
+
+static void ar9331_sw_phylink_mac_link_down(struct dsa_switch *ds, int port,
+					    unsigned int mode,
+					    phy_interface_t interface)
+{
+	struct ar9331_sw_priv *priv = (struct ar9331_sw_priv *)ds->priv;
+	struct ar9331_sw_port *p = &priv->port[port];
+	struct regmap *regmap = priv->regmap;
+	int ret;
+
+	ret = regmap_update_bits(regmap, AR9331_SW_REG_PORT_STATUS(port),
+				 AR9331_SW_PORT_STATUS_MAC_MASK, 0);
+	if (ret)
+		dev_err_ratelimited(priv->dev, "%s: %i\n", __func__, ret);
+
+	cancel_delayed_work_sync(&p->mib_read);
+}
+
+static void ar9331_sw_phylink_mac_link_up(struct dsa_switch *ds, int port,
+					  unsigned int mode,
+					  phy_interface_t interface,
+					  struct phy_device *phydev,
+					  int speed, int duplex,
+					  bool tx_pause, bool rx_pause)
+{
+	struct ar9331_sw_priv *priv = (struct ar9331_sw_priv *)ds->priv;
+	struct ar9331_sw_port *p = &priv->port[port];
+	struct regmap *regmap = priv->regmap;
+	u32 val;
+	int ret;
+
+	schedule_delayed_work(&p->mib_read, 0);
+
+	val = AR9331_SW_PORT_STATUS_MAC_MASK;
+	switch (speed) {
+	case SPEED_1000:
+		val |= AR9331_SW_PORT_STATUS_SPEED_1000;
+		break;
+	case SPEED_100:
+		val |= AR9331_SW_PORT_STATUS_SPEED_100;
+		break;
+	case SPEED_10:
+		val |= AR9331_SW_PORT_STATUS_SPEED_10;
+		break;
+	default:
+		return;
+	}
+
+	if (duplex)
+		val |= AR9331_SW_PORT_STATUS_DUPLEX_MODE;
+
+	if (tx_pause)
+		val |= AR9331_SW_PORT_STATUS_TX_FLOW_EN;
+
+	if (rx_pause)
+		val |= AR9331_SW_PORT_STATUS_RX_FLOW_EN;
+
+	ret = regmap_update_bits(regmap, AR9331_SW_REG_PORT_STATUS(port),
+				 AR9331_SW_PORT_STATUS_MAC_MASK |
+				 AR9331_SW_PORT_STATUS_LINK_MASK,
+				 val);
+	if (ret)
+		dev_err_ratelimited(priv->dev, "%s: %i\n", __func__, ret);
+}
+
+static void ar9331_read_stats(struct ar9331_sw_port *port)
+{
+	struct ar9331_sw_priv *priv = ar9331_sw_port_to_priv(port);
+	struct rtnl_link_stats64 *stats = &port->stats;
+	struct ar9331_sw_stats_raw raw;
+	int ret;
+
+	/* Do the slowest part first, to avoid needless locking for long time */
+	ret = regmap_bulk_read(priv->regmap, AR9331_MIB_COUNTER(port->idx),
+			       &raw, sizeof(raw) / sizeof(u32));
+	if (ret) {
+		dev_err_ratelimited(priv->dev, "%s: %i\n", __func__, ret);
+		return;
+	}
+	/* All MIB counters are cleared automatically on read */
+
+	spin_lock(&port->stats_lock);
+
+	stats->rx_bytes += raw.rxgoodbyte;
+	stats->tx_bytes += raw.txbyte;
+
+	stats->rx_packets += raw.rx64byte + raw.rx128byte + raw.rx256byte +
+		raw.rx512byte + raw.rx1024byte + raw.rx1518byte + raw.rxmaxbyte;
+	stats->tx_packets += raw.tx64byte + raw.tx128byte + raw.tx256byte +
+		raw.tx512byte + raw.tx1024byte + raw.tx1518byte + raw.txmaxbyte;
+
+	stats->rx_length_errors += raw.rxrunt + raw.rxfragment + raw.rxtoolong;
+	stats->rx_crc_errors += raw.rxfcserr;
+	stats->rx_frame_errors += raw.rxalignerr;
+	stats->rx_missed_errors += raw.rxoverflow;
+	stats->rx_dropped += raw.filtered;
+	stats->rx_errors += raw.rxfcserr + raw.rxalignerr + raw.rxrunt +
+		raw.rxfragment + raw.rxoverflow + raw.rxtoolong;
+
+	stats->tx_window_errors += raw.txlatecol;
+	stats->tx_fifo_errors += raw.txunderrun;
+	stats->tx_aborted_errors += raw.txabortcol;
+	stats->tx_errors += raw.txoversize + raw.txabortcol + raw.txunderrun +
+		raw.txlatecol;
+
+	stats->multicast += raw.rxmulti;
+	stats->collisions += raw.txcollision;
+
+	spin_unlock(&port->stats_lock);
+}
+
+static void ar9331_do_stats_poll(struct work_struct *work)
+{
+	struct ar9331_sw_port *port = container_of(work, struct ar9331_sw_port,
+						   mib_read.work);
+
+	ar9331_read_stats(port);
+
+	schedule_delayed_work(&port->mib_read, STATS_INTERVAL_JIFFIES);
+}
+
+static void ar9331_get_stats64(struct dsa_switch *ds, int port,
+			       struct rtnl_link_stats64 *s)
+{
+	struct ar9331_sw_priv *priv = (struct ar9331_sw_priv *)ds->priv;
+	struct ar9331_sw_port *p = &priv->port[port];
+
+	spin_lock(&p->stats_lock);
+	memcpy(s, &p->stats, sizeof(*s));
+	spin_unlock(&p->stats_lock);
+}
+
+static const struct dsa_switch_ops ar9331_sw_ops = {
+	.get_tag_protocol	= ar9331_sw_get_tag_protocol,
+	.setup			= ar9331_sw_setup,
+	.port_disable		= ar9331_sw_port_disable,
+	.phylink_get_caps	= ar9331_sw_phylink_get_caps,
+	.phylink_mac_config	= ar9331_sw_phylink_mac_config,
+	.phylink_mac_link_down	= ar9331_sw_phylink_mac_link_down,
+	.phylink_mac_link_up	= ar9331_sw_phylink_mac_link_up,
+	.get_stats64		= ar9331_get_stats64,
+};
+
+static irqreturn_t ar9331_sw_irq(int irq, void *data)
+{
+	struct ar9331_sw_priv *priv = data;
+	struct regmap *regmap = priv->regmap;
+	u32 stat;
+	int ret;
+
+	ret = regmap_read(regmap, AR9331_SW_REG_GINT, &stat);
+	if (ret) {
+		dev_err(priv->dev, "can't read interrupt status\n");
+		return IRQ_NONE;
+	}
+
+	if (!stat)
+		return IRQ_NONE;
+
+	if (stat & AR9331_SW_GINT_PHY_INT) {
+		int child_irq;
+
+		child_irq = irq_find_mapping(priv->irqdomain, 0);
+		handle_nested_irq(child_irq);
+	}
+
+	ret = regmap_write(regmap, AR9331_SW_REG_GINT, stat);
+	if (ret) {
+		dev_err(priv->dev, "can't write interrupt status\n");
+		return IRQ_NONE;
+	}
+
+	return IRQ_HANDLED;
+}
+
+static void ar9331_sw_mask_irq(struct irq_data *d)
+{
+	struct ar9331_sw_priv *priv = irq_data_get_irq_chip_data(d);
+
+	priv->irq_mask = 0;
+}
+
+static void ar9331_sw_unmask_irq(struct irq_data *d)
+{
+	struct ar9331_sw_priv *priv = irq_data_get_irq_chip_data(d);
+
+	priv->irq_mask = AR9331_SW_GINT_PHY_INT;
+}
+
+static void ar9331_sw_irq_bus_lock(struct irq_data *d)
+{
+	struct ar9331_sw_priv *priv = irq_data_get_irq_chip_data(d);
+
+	mutex_lock(&priv->lock_irq);
+}
+
+static void ar9331_sw_irq_bus_sync_unlock(struct irq_data *d)
+{
+	struct ar9331_sw_priv *priv = irq_data_get_irq_chip_data(d);
+	struct regmap *regmap = priv->regmap;
+	int ret;
+
+	ret = regmap_update_bits(regmap, AR9331_SW_REG_GINT_MASK,
+				 AR9331_SW_GINT_PHY_INT, priv->irq_mask);
+	if (ret)
+		dev_err(priv->dev, "failed to change IRQ mask\n");
+
+	mutex_unlock(&priv->lock_irq);
+}
+
+static struct irq_chip ar9331_sw_irq_chip = {
+	.name = AR9331_SW_NAME,
+	.irq_mask = ar9331_sw_mask_irq,
+	.irq_unmask = ar9331_sw_unmask_irq,
+	.irq_bus_lock = ar9331_sw_irq_bus_lock,
+	.irq_bus_sync_unlock = ar9331_sw_irq_bus_sync_unlock,
+};
+
+static int ar9331_sw_irq_map(struct irq_domain *domain, unsigned int irq,
+			     irq_hw_number_t hwirq)
+{
+	irq_set_chip_data(irq, domain->host_data);
+	irq_set_chip_and_handler(irq, &ar9331_sw_irq_chip, handle_simple_irq);
+	irq_set_nested_thread(irq, 1);
+	irq_set_noprobe(irq);
+
+	return 0;
+}
+
+static void ar9331_sw_irq_unmap(struct irq_domain *d, unsigned int irq)
+{
+	irq_set_nested_thread(irq, 0);
+	irq_set_chip_and_handler(irq, NULL, NULL);
+	irq_set_chip_data(irq, NULL);
+}
+
+static const struct irq_domain_ops ar9331_sw_irqdomain_ops = {
+	.map = ar9331_sw_irq_map,
+	.unmap = ar9331_sw_irq_unmap,
+	.xlate = irq_domain_xlate_onecell,
+};
+
+static int ar9331_sw_irq_init(struct ar9331_sw_priv *priv)
+{
+	struct device_node *np = priv->dev->of_node;
+	struct device *dev = priv->dev;
+	int ret, irq;
+
+	irq = of_irq_get(np, 0);
+	if (irq <= 0) {
+		dev_err(dev, "failed to get parent IRQ\n");
+		return irq ? irq : -EINVAL;
+	}
+
+	mutex_init(&priv->lock_irq);
+	ret = devm_request_threaded_irq(dev, irq, NULL, ar9331_sw_irq,
+					IRQF_ONESHOT, AR9331_SW_NAME, priv);
+	if (ret) {
+		dev_err(dev, "unable to request irq: %d\n", ret);
+		return ret;
+	}
+
+	priv->irqdomain = irq_domain_add_linear(np, 1, &ar9331_sw_irqdomain_ops,
+						priv);
+	if (!priv->irqdomain) {
+		dev_err(dev, "failed to create IRQ domain\n");
+		return -EINVAL;
+	}
+
+	irq_set_parent(irq_create_mapping(priv->irqdomain, 0), irq);
+
+	return 0;
+}
+
+static int __ar9331_mdio_write(struct mii_bus *sbus, u8 mode, u16 reg, u16 val)
+{
+	u8 r, p;
+
+	p = FIELD_PREP(AR9331_SW_MDIO_PHY_MODE_M, mode) |
+		FIELD_GET(AR9331_SW_LOW_ADDR_PHY, reg);
+	r = FIELD_GET(AR9331_SW_LOW_ADDR_REG, reg);
+
+	return mdiobus_write(sbus, p, r, val);
+}
+
+static int __ar9331_mdio_read(struct mii_bus *sbus, u16 reg)
+{
+	u8 r, p;
+
+	p = FIELD_PREP(AR9331_SW_MDIO_PHY_MODE_M, AR9331_SW_MDIO_PHY_MODE_REG) |
+		FIELD_GET(AR9331_SW_LOW_ADDR_PHY, reg);
+	r = FIELD_GET(AR9331_SW_LOW_ADDR_REG, reg);
+
+	return mdiobus_read(sbus, p, r);
+}
+
+static int ar9331_mdio_read(void *ctx, const void *reg_buf, size_t reg_len,
+			    void *val_buf, size_t val_len)
+{
+	struct ar9331_sw_priv *priv = ctx;
+	struct mii_bus *sbus = priv->sbus;
+	u32 reg = *(u32 *)reg_buf;
+	int ret;
+
+	if (reg == AR9331_SW_REG_PAGE) {
+		/* We cannot read the page selector register from hardware and
+		 * we cache its value in regmap. Return all bits set here,
+		 * that regmap will always write the page on first use.
+		 */
+		*(u32 *)val_buf = GENMASK(9, 0);
+		return 0;
+	}
+
+	ret = __ar9331_mdio_read(sbus, reg);
+	if (ret < 0)
+		goto error;
+
+	*(u32 *)val_buf = ret;
+	ret = __ar9331_mdio_read(sbus, reg + 2);
+	if (ret < 0)
+		goto error;
+
+	*(u32 *)val_buf |= ret << 16;
+
+	return 0;
+error:
+	dev_err_ratelimited(&sbus->dev, "Bus error. Failed to read register.\n");
+	return ret;
+}
+
+static int ar9331_mdio_write(void *ctx, u32 reg, u32 val)
+{
+	struct ar9331_sw_priv *priv = (struct ar9331_sw_priv *)ctx;
+	struct mii_bus *sbus = priv->sbus;
+	int ret;
+
+	if (reg == AR9331_SW_REG_PAGE) {
+		ret = __ar9331_mdio_write(sbus, AR9331_SW_MDIO_PHY_MODE_PAGE,
+					  0, val);
+		if (ret < 0)
+			goto error;
+
+		return 0;
+	}
+
+	/* In case of this switch we work with 32bit registers on top of 16bit
+	 * bus. Some registers (for example access to forwarding database) have
+	 * trigger bit on the first 16bit half of request, the result and
+	 * configuration of request in the second half.
+	 * To make it work properly, we should do the second part of transfer
+	 * before the first one is done.
+	 */
+	ret = __ar9331_mdio_write(sbus, AR9331_SW_MDIO_PHY_MODE_REG, reg + 2,
+				  val >> 16);
+	if (ret < 0)
+		goto error;
+
+	ret = __ar9331_mdio_write(sbus, AR9331_SW_MDIO_PHY_MODE_REG, reg, val);
+	if (ret < 0)
+		goto error;
+
+	return 0;
+
+error:
+	dev_err_ratelimited(&sbus->dev, "Bus error. Failed to write register.\n");
+	return ret;
+}
+
+static int ar9331_sw_bus_write(void *context, const void *data, size_t count)
+{
+	u32 reg = *(u32 *)data;
+	u32 val = *((u32 *)data + 1);
+
+	return ar9331_mdio_write(context, reg, val);
+}
+
+static const struct regmap_range ar9331_valid_regs[] = {
+	regmap_reg_range(0x0, 0x0),
+	regmap_reg_range(0x10, 0x14),
+	regmap_reg_range(0x20, 0x24),
+	regmap_reg_range(0x2c, 0x30),
+	regmap_reg_range(0x40, 0x44),
+	regmap_reg_range(0x50, 0x78),
+	regmap_reg_range(0x80, 0x98),
+
+	regmap_reg_range(0x100, 0x120),
+	regmap_reg_range(0x200, 0x220),
+	regmap_reg_range(0x300, 0x320),
+	regmap_reg_range(0x400, 0x420),
+	regmap_reg_range(0x500, 0x520),
+	regmap_reg_range(0x600, 0x620),
+
+	regmap_reg_range(0x20000, 0x200a4),
+	regmap_reg_range(0x20100, 0x201a4),
+	regmap_reg_range(0x20200, 0x202a4),
+	regmap_reg_range(0x20300, 0x203a4),
+	regmap_reg_range(0x20400, 0x204a4),
+	regmap_reg_range(0x20500, 0x205a4),
+
+	/* dummy page selector reg */
+	regmap_reg_range(AR9331_SW_REG_PAGE, AR9331_SW_REG_PAGE),
+};
+
+static const struct regmap_range ar9331_nonvolatile_regs[] = {
+	regmap_reg_range(AR9331_SW_REG_PAGE, AR9331_SW_REG_PAGE),
+};
+
+static const struct regmap_range_cfg ar9331_regmap_range[] = {
+	{
+		.selector_reg = AR9331_SW_REG_PAGE,
+		.selector_mask = GENMASK(9, 0),
+		.selector_shift = 0,
+
+		.window_start = 0,
+		.window_len = 512,
+
+		.range_min = 0,
+		.range_max = AR9331_SW_REG_PAGE - 4,
+	},
+};
+
+static const struct regmap_access_table ar9331_register_set = {
+	.yes_ranges = ar9331_valid_regs,
+	.n_yes_ranges = ARRAY_SIZE(ar9331_valid_regs),
+};
+
+static const struct regmap_access_table ar9331_volatile_set = {
+	.no_ranges = ar9331_nonvolatile_regs,
+	.n_no_ranges = ARRAY_SIZE(ar9331_nonvolatile_regs),
+};
+
+static const struct regmap_config ar9331_mdio_regmap_config = {
+	.reg_bits = 32,
+	.val_bits = 32,
+	.reg_stride = 4,
+	.max_register = AR9331_SW_REG_PAGE,
+
+	.ranges = ar9331_regmap_range,
+	.num_ranges = ARRAY_SIZE(ar9331_regmap_range),
+
+	.volatile_table = &ar9331_volatile_set,
+	.wr_table = &ar9331_register_set,
+	.rd_table = &ar9331_register_set,
+
+	.cache_type = REGCACHE_RBTREE,
+};
+
+static struct regmap_bus ar9331_sw_bus = {
+	.reg_format_endian_default = REGMAP_ENDIAN_NATIVE,
+	.val_format_endian_default = REGMAP_ENDIAN_NATIVE,
+	.read = ar9331_mdio_read,
+	.write = ar9331_sw_bus_write,
+	.max_raw_read = 4,
+	.max_raw_write = 4,
+};
+
+static int ar9331_sw_probe(struct mdio_device *mdiodev)
+{
+	struct ar9331_sw_priv *priv;
+	struct dsa_switch *ds;
+	int ret, i;
+
+	priv = devm_kzalloc(&mdiodev->dev, sizeof(*priv), GFP_KERNEL);
+	if (!priv)
+		return -ENOMEM;
+
+	priv->regmap = devm_regmap_init(&mdiodev->dev, &ar9331_sw_bus, priv,
+					&ar9331_mdio_regmap_config);
+	if (IS_ERR(priv->regmap)) {
+		ret = PTR_ERR(priv->regmap);
+		dev_err(&mdiodev->dev, "regmap init failed: %d\n", ret);
+		return ret;
+	}
+
+	priv->sw_reset = devm_reset_control_get(&mdiodev->dev, "switch");
+	if (IS_ERR(priv->sw_reset)) {
+		dev_err(&mdiodev->dev, "missing switch reset\n");
+		return PTR_ERR(priv->sw_reset);
+	}
+
+	priv->sbus = mdiodev->bus;
+	priv->dev = &mdiodev->dev;
+
+	ret = ar9331_sw_irq_init(priv);
+	if (ret)
+		return ret;
+
+	ds = &priv->ds;
+	ds->dev = &mdiodev->dev;
+	ds->num_ports = AR9331_SW_PORTS;
+	ds->priv = priv;
+	priv->ops = ar9331_sw_ops;
+	ds->ops = &priv->ops;
+	dev_set_drvdata(&mdiodev->dev, priv);
+
+	for (i = 0; i < ARRAY_SIZE(priv->port); i++) {
+		struct ar9331_sw_port *port = &priv->port[i];
+
+		port->idx = i;
+		spin_lock_init(&port->stats_lock);
+		INIT_DELAYED_WORK(&port->mib_read, ar9331_do_stats_poll);
+	}
+
+	ret = dsa_register_switch(ds);
+	if (ret)
+		goto err_remove_irq;
+
+	return 0;
+
+err_remove_irq:
+	irq_domain_remove(priv->irqdomain);
+
+	return ret;
+}
+
+static void ar9331_sw_remove(struct mdio_device *mdiodev)
+{
+	struct ar9331_sw_priv *priv = dev_get_drvdata(&mdiodev->dev);
+	unsigned int i;
+
+	if (!priv)
+		return;
+
+	for (i = 0; i < ARRAY_SIZE(priv->port); i++) {
+		struct ar9331_sw_port *port = &priv->port[i];
+
+		cancel_delayed_work_sync(&port->mib_read);
+	}
+
+	irq_domain_remove(priv->irqdomain);
+	dsa_unregister_switch(&priv->ds);
+
+	reset_control_assert(priv->sw_reset);
+
+	dev_set_drvdata(&mdiodev->dev, NULL);
+}
+
+static void ar9331_sw_shutdown(struct mdio_device *mdiodev)
+{
+	struct ar9331_sw_priv *priv = dev_get_drvdata(&mdiodev->dev);
+
+	if (!priv)
+		return;
+
+	dsa_switch_shutdown(&priv->ds);
+
+	dev_set_drvdata(&mdiodev->dev, NULL);
+}
+
+static const struct of_device_id ar9331_sw_of_match[] = {
+	{ .compatible = "qca,ar9331-switch" },
+	{ },
+};
+
+static struct mdio_driver ar9331_sw_mdio_driver = {
+	.probe = ar9331_sw_probe,
+	.remove = ar9331_sw_remove,
+	.shutdown = ar9331_sw_shutdown,
+	.mdiodrv.driver = {
+		.name = AR9331_SW_NAME,
+		.of_match_table = ar9331_sw_of_match,
+	},
+};
+
+mdio_module_driver(ar9331_sw_mdio_driver);
+
+MODULE_AUTHOR("Oleksij Rempel <kernel@pengutronix.de>");
+MODULE_DESCRIPTION("Driver for Atheros AR9331 switch");
+MODULE_LICENSE("GPL v2");

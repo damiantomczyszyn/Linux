@@ -1,1 +1,5 @@
-cmd_drivers/media/radio/radio-isa.mod := { echo  drivers/media/radio/radio-isa.o;  echo; } > drivers/media/radio/radio-isa.mod
+// SPDX-License-Identifier: GPL-2.0-or-later
+/*
+ * cimax2.c
+ *
+ * CIMax2(R) SP2 driver in conjunction with NetUp Dual DVB-S2 CI

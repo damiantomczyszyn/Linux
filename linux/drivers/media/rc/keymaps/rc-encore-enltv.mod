@@ -1,2 +1,2 @@
-drivers/media/rc/keymaps/rc-encore-enltv.o
 
+	dprintk(1, "%s() status = %d, seq = %d\n",

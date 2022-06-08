@@ -1,2 +1,3 @@
-move lock classes from memory that is going to be
- * freed; and possibl
+nput)->amux == CX25840_AUDIO6)
+		cx23885_flatiron_mux(dev, 2);
+	else {

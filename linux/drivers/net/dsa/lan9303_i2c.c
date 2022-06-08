@@ -1,72 +1,122 @@
-nclude/config/GENERIC_ATOMIC64) \
-  include/linux/atomic/atomic-long.h \
-  include/linux/atomic/atomic-instrumented.h \
-  include/linux/bug.h \
-    $(wildcard include/config/BUG_ON_DATA_CORRUPTION) \
-  arch/x86/include/asm/bug.h \
-    $(wildcard include/config/DEBUG_BUGVERBOSE) \
-  include/linux/instrumentation.h \
-    $(wildcard include/config/DEBUG_ENTRY) \
-  include/asm-generic/bug.h \
-    $(wildcard include/config/BUG) \
-    $(wildcard include/config/GENERIC_BUG_RELATIVE_POINTERS) \
-  arch/x86/include/uapi/asm/msr.h \
-  include/linux/tracepoint-defs.h \
-  arch/x86/include/asm/special_insns.h \
-  include/linux/irqflags.h \
-    $(wildcard include/config/TRACE_IRQFLAGS) \
-    $(wildcard include/config/PREEMPT_RT) \
-    $(wildcard include/config/IRQSOFF_TRACER) \
-    $(wildcard include/config/PREEMPT_TRACER) \
-    $(wildcard include/config/DEBUG_IRQFLAGS) \
-    $(wildcard include/config/TRACE_IRQFLAGS_SUPPORT) \
-  arch/x86/include/asm/irqflags.h \
-  arch/x86/include/asm/fpu/types.h \
-  arch/x86/include/asm/vmxfeatures.h \
-  arch/x86/include/asm/vdso/processor.h \
-  include/linux/personality.h \
-  include/uapi/linux/personality.h \
-  arch/x86/include/asm/tsc.h \
-  arch/x86/include/asm/cpufeature.h \
-    $(wildcard include/config/X86_FEATURE_NAMES) \
-  include/vdso/time32.h \
-  include/vdso/time.h \
-  include/linux/uidgid.h \
-    $(wildcard include/config/MULTIUSER) \
-    $(wildcard include/config/USER_NS) \
-  include/linux/highuid.h \
-  include/linux/buildid.h \
-    $(wildcard include/config/CRASH_CORE) \
-  include/linux/mm_types.h \
-    $(wildcard include/config/HAVE_ALIGNED_STRUCT_PAGE) \
-    $(wildcard include/config/MEMCG) \
-    $(wildcard include/config/USERFAULTFD) \
-    $(wildcard include/config/SWAP) \
-    $(wildcard include/config/NUMA) \
-    $(wildcard include/config/HAVE_ARCH_COMPAT_MMAP_BASES) \
-    $(wildcard include/config/MEMBARRIER) \
-    $(wildcard include/config/AIO) \
-    $(wildcard include/config/MMU_NOTIFIER) \
-    $(wildcard include/config/TRANSPARENT_HUGEPAGE) \
-    $(wildcard include/config/NUMA_BALANCING) \
-    $(wildcard include/config/ARCH_WANT_BATCHED_UNMAP_TLB_FLUSH) \
-    $(wildcard include/config/HUGETLB_PAGE) \
-    $(wildcard include/config/IOMMU_SVA) \
-  include/linux/mm_types_task.h \
-    $(wildcard include/config/SPLIT_PTLOCK_CPUS) \
-    $(wildcard include/config/ARCH_ENABLE_SPLIT_PMD_PTLOCK) \
-  arch/x86/include/asm/tlbbatch.h \
-  include/linux/auxvec.h \
-  include/uapi/linux/auxvec.h \
-  arch/x86/include/uapi/asm/auxvec.h \
-  include/linux/kref.h \
-  include/linux/spinlock.h \
-    $(wildcard include/config/PREEMPTION) \
-  include/linux/preempt.h \
-    $(wildcard include/config/PREEMPT_COUNT) \
-    $(wildcard include/config/TRACE_PREEMPT_TOGGLE) \
-    $(wildcard include/config/PREEMPT_NOTIFIERS) \
-  arch/x86/include/asm/preempt.h \
-  include/linux/thread_info.h \
-    $(wildcard include/config/THREAD_INFO_IN_TASK) \
-    $(wildcard i
+// SPDX-License-Identifier: GPL-2.0-only
+/*
+ * Copyright (C) 2017 Pengutronix, Juergen Borleis <kernel@pengutronix.de>
+ */
+#include <linux/kernel.h>
+#include <linux/module.h>
+#include <linux/i2c.h>
+#include <linux/of.h>
+
+#include "lan9303.h"
+
+struct lan9303_i2c {
+	struct i2c_client *device;
+	struct lan9303 chip;
+};
+
+static const struct regmap_config lan9303_i2c_regmap_config = {
+	.reg_bits = 8,
+	.val_bits = 32,
+	.reg_stride = 1,
+	.can_multi_write = true,
+	.max_register = 0x0ff, /* address bits 0..1 are not used */
+	.reg_format_endian = REGMAP_ENDIAN_LITTLE,
+
+	.volatile_table = &lan9303_register_set,
+	.wr_table = &lan9303_register_set,
+	.rd_table = &lan9303_register_set,
+
+	.cache_type = REGCACHE_NONE,
+};
+
+static int lan9303_i2c_probe(struct i2c_client *client,
+			     const struct i2c_device_id *id)
+{
+	struct lan9303_i2c *sw_dev;
+	int ret;
+
+	sw_dev = devm_kzalloc(&client->dev, sizeof(struct lan9303_i2c),
+			      GFP_KERNEL);
+	if (!sw_dev)
+		return -ENOMEM;
+
+	sw_dev->chip.regmap = devm_regmap_init_i2c(client,
+						   &lan9303_i2c_regmap_config);
+	if (IS_ERR(sw_dev->chip.regmap)) {
+		ret = PTR_ERR(sw_dev->chip.regmap);
+		dev_err(&client->dev, "Failed to allocate register map: %d\n",
+			ret);
+		return ret;
+	}
+
+	/* link forward and backward */
+	sw_dev->device = client;
+	i2c_set_clientdata(client, sw_dev);
+	sw_dev->chip.dev = &client->dev;
+
+	sw_dev->chip.ops = &lan9303_indirect_phy_ops;
+
+	ret = lan9303_probe(&sw_dev->chip, client->dev.of_node);
+	if (ret != 0)
+		return ret;
+
+	dev_info(&client->dev, "LAN9303 I2C driver loaded successfully\n");
+
+	return 0;
+}
+
+static int lan9303_i2c_remove(struct i2c_client *client)
+{
+	struct lan9303_i2c *sw_dev = i2c_get_clientdata(client);
+
+	if (!sw_dev)
+		return 0;
+
+	lan9303_remove(&sw_dev->chip);
+
+	i2c_set_clientdata(client, NULL);
+
+	return 0;
+}
+
+static void lan9303_i2c_shutdown(struct i2c_client *client)
+{
+	struct lan9303_i2c *sw_dev = i2c_get_clientdata(client);
+
+	if (!sw_dev)
+		return;
+
+	lan9303_shutdown(&sw_dev->chip);
+
+	i2c_set_clientdata(client, NULL);
+}
+
+/*-------------------------------------------------------------------------*/
+
+static const struct i2c_device_id lan9303_i2c_id[] = {
+	{ "lan9303", 0 },
+	{ /* sentinel */ }
+};
+MODULE_DEVICE_TABLE(i2c, lan9303_i2c_id);
+
+static const struct of_device_id lan9303_i2c_of_match[] = {
+	{ .compatible = "smsc,lan9303-i2c", },
+	{ /* sentinel */ },
+};
+MODULE_DEVICE_TABLE(of, lan9303_i2c_of_match);
+
+static struct i2c_driver lan9303_i2c_driver = {
+	.driver = {
+		.name = "LAN9303_I2C",
+		.of_match_table = of_match_ptr(lan9303_i2c_of_match),
+	},
+	.probe = lan9303_i2c_probe,
+	.remove = lan9303_i2c_remove,
+	.shutdown = lan9303_i2c_shutdown,
+	.id_table = lan9303_i2c_id,
+};
+module_i2c_driver(lan9303_i2c_driver);
+
+MODULE_AUTHOR("Juergen Borleis <kernel@pengutronix.de>");
+MODULE_DESCRIPTION("Driver for SMSC/Microchip LAN9303 three port ethernet switch in I2C managed mode");
+MODULE_LICENSE("GPL v2");

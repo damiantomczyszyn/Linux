@@ -1,1 +1,6 @@
-ldcard include/config/X86_INT
+tate);
+		}
+	}
+
+}
+EXPORT_SYMBO

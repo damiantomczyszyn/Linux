@@ -1,2 +1,1 @@
-h \
-    $(wildcard include/co
+/* SPDX-License-Identifier: G

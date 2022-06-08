@@ -1,1 +1,2 @@
-nclude/config/GENERIC_AT
+		mem &= ~ALT_DATA;
+		me

@@ -1,134 +1,205 @@
-drivers/media/rc/keymaps/rc-adstech-dvb-t-pci.ko
-drivers/media/rc/keymaps/rc-alink-dtu-m.ko
-drivers/media/rc/keymaps/rc-anysee.ko
-drivers/media/rc/keymaps/rc-apac-viewcomp.ko
-drivers/media/rc/keymaps/rc-astrometa-t2hybrid.ko
-drivers/media/rc/keymaps/rc-asus-pc39.ko
-drivers/media/rc/keymaps/rc-asus-ps3-100.ko
-drivers/media/rc/keymaps/rc-ati-tv-wonder-hd-600.ko
-drivers/media/rc/keymaps/rc-ati-x10.ko
-drivers/media/rc/keymaps/rc-avermedia-a16d.ko
-drivers/media/rc/keymaps/rc-avermedia-cardbus.ko
-drivers/media/rc/keymaps/rc-avermedia-dvbt.ko
-drivers/media/rc/keymaps/rc-avermedia-m135a.ko
-drivers/media/rc/keymaps/rc-avermedia-m733a-rm-k6.ko
-drivers/media/rc/keymaps/rc-avermedia.ko
-drivers/media/rc/keymaps/rc-avermedia-rm-ks.ko
-drivers/media/rc/keymaps/rc-avertv-303.ko
-drivers/media/rc/keymaps/rc-azurewave-ad-tu700.ko
-drivers/media/rc/keymaps/rc-beelink-gs1.ko
-drivers/media/rc/keymaps/rc-behold-columbus.ko
-drivers/media/rc/keymaps/rc-behold.ko
-drivers/media/rc/keymaps/rc-budget-ci-old.ko
-drivers/media/rc/keymaps/rc-cinergy-1400.ko
-drivers/media/rc/keymaps/rc-cinergy.ko
-drivers/media/rc/keymaps/rc-ct-90405.ko
-drivers/media/rc/keymaps/rc-d680-dmb.ko
-drivers/media/rc/keymaps/rc-delock-61959.ko
-drivers/media/rc/keymaps/rc-dib0700-nec.ko
-drivers/media/rc/keymaps/rc-dib0700-rc5.ko
-drivers/media/rc/keymaps/rc-digitalnow-tinytwin.ko
-drivers/media/rc/keymaps/rc-digittrade.ko
-drivers/media/rc/keymaps/rc-dm1105-nec.ko
-drivers/media/rc/keymaps/rc-dntv-live-dvb-t.ko
-drivers/media/rc/keymaps/rc-dntv-live-dvbt-pro.ko
-drivers/media/rc/keymaps/rc-dtt200u.ko
-drivers/media/rc/keymaps/rc-dvbsky.ko
-drivers/media/rc/keymaps/rc-dvico-mce.ko
-drivers/media/rc/keymaps/rc-dvico-portable.ko
-drivers/media/rc/keymaps/rc-em-terratec.ko
-drivers/media/rc/keymaps/rc-encore-enltv2.ko
-drivers/media/rc/keymaps/rc-encore-enltv-fm53.ko
-drivers/media/rc/keymaps/rc-encore-enltv.ko
-drivers/media/rc/keymaps/rc-evga-indtube.ko
-drivers/media/rc/keymaps/rc-eztv.ko
-drivers/media/rc/keymaps/rc-flydvb.ko
-drivers/media/rc/keymaps/rc-flyvideo.ko
-drivers/media/rc/keymaps/rc-fusionhdtv-mce.ko
-drivers/media/rc/keymaps/rc-gadmei-rm008z.ko
-drivers/media/rc/keymaps/rc-geekbox.ko
-drivers/media/rc/keymaps/rc-genius-tvgo-a11mce.ko
-drivers/media/rc/keymaps/rc-gotview7135.ko
-drivers/media/rc/keymaps/rc-hauppauge.ko
-drivers/media/rc/keymaps/rc-hisi-poplar.ko
-drivers/media/rc/keymaps/rc-hisi-tv-demo.ko
-drivers/media/rc/keymaps/rc-imon-mce.ko
-drivers/media/rc/keymaps/rc-imon-pad.ko
-drivers/media/rc/keymaps/rc-imon-rsc.ko
-drivers/media/rc/keymaps/rc-iodata-bctv7e.ko
-drivers/media/rc/keymaps/rc-it913x-v1.ko
-drivers/media/rc/keymaps/rc-it913x-v2.ko
-drivers/media/rc/keymaps/rc-kaiomy.ko
-drivers/media/rc/keymaps/rc-khadas.ko
-drivers/media/rc/keymaps/rc-khamsin.ko
-drivers/media/rc/keymaps/rc-kworld-315u.ko
-drivers/media/rc/keymaps/rc-kworld-pc150u.ko
-drivers/media/rc/keymaps/rc-kworld-plus-tv-analog.ko
-drivers/media/rc/keymaps/rc-leadtek-y04g0051.ko
-drivers/media/rc/keymaps/rc-lme2510.ko
-drivers/media/rc/keymaps/rc-manli.ko
-drivers/media/rc/keymaps/rc-mecool-kiii-pro.ko
-drivers/media/rc/keymaps/rc-mecool-kii-pro.ko
-drivers/media/rc/keymaps/rc-medion-x10-digitainer.ko
-drivers/media/rc/keymaps/rc-medion-x10.ko
-drivers/media/rc/keymaps/rc-medion-x10-or2x.ko
-drivers/media/rc/keymaps/rc-minix-neo.ko
-drivers/media/rc/keymaps/rc-msi-digivox-iii.ko
-drivers/media/rc/keymaps/rc-msi-digivox-ii.ko
-drivers/media/rc/keymaps/rc-msi-tvanywhere.ko
-drivers/media/rc/keymaps/rc-msi-tvanywhere-plus.ko
-drivers/media/rc/keymaps/rc-nebula.ko
-drivers/media/rc/keymaps/rc-nec-terratec-cinergy-xs.ko
-drivers/media/rc/keymaps/rc-norwood.ko
-drivers/media/rc/keymaps/rc-npgtech.ko
-drivers/media/rc/keymaps/rc-odroid.ko
-drivers/media/rc/keymaps/rc-pctv-sedna.ko
-drivers/media/rc/keymaps/rc-pine64.ko
-drivers/media/rc/keymaps/rc-pinnacle-color.ko
-drivers/media/rc/keymaps/rc-pinnacle-grey.ko
-drivers/media/rc/keymaps/rc-pinnacle-pctv-hd.ko
-drivers/media/rc/keymaps/rc-pixelview-002t.ko
-drivers/media/rc/keymaps/rc-pixelview-mk12.ko
-drivers/media/rc/keymaps/rc-pixelview-new.ko
-drivers/media/rc/keymaps/rc-pixelview.ko
-drivers/media/rc/keymaps/rc-powercolor-real-angel.ko
-drivers/media/rc/keymaps/rc-proteus-2309.ko
-drivers/media/rc/keymaps/rc-purpletv.ko
-drivers/media/rc/keymaps/rc-pv951.ko
-drivers/media/rc/keymaps/rc-rc6-mce.ko
-drivers/media/rc/keymaps/rc-real-audio-220-32-keys.ko
-drivers/media/rc/keymaps/rc-reddo.ko
-drivers/media/rc/keymaps/rc-snapstream-firefly.ko
-drivers/media/rc/keymaps/rc-streamzap.ko
-drivers/media/rc/keymaps/rc-su3000.ko
-drivers/media/rc/keymaps/rc-tanix-tx3mini.ko
-drivers/media/rc/keymaps/rc-tanix-tx5max.ko
-drivers/media/rc/keymaps/rc-tbs-nec.ko
-drivers/media/rc/keymaps/rc-technisat-ts35.ko
-drivers/media/rc/keymaps/rc-technisat-usb2.ko
-drivers/media/rc/keymaps/rc-terratec-cinergy-c-pci.ko
-drivers/media/rc/keymaps/rc-terratec-cinergy-s2-hd.ko
-drivers/media/rc/keymaps/rc-terratec-cinergy-xs.ko
-drivers/media/rc/keymaps/rc-terratec-slim-2.ko
-drivers/media/rc/keymaps/rc-terratec-slim.ko
-drivers/media/rc/keymaps/rc-tevii-nec.ko
-drivers/media/rc/keymaps/rc-tivo.ko
-drivers/media/rc/keymaps/rc-total-media-in-hand-02.ko
-drivers/media/rc/keymaps/rc-total-media-in-hand.ko
-drivers/media/rc/keymaps/rc-trekstor.ko
-drivers/media/rc/keymaps/rc-tt-1500.ko
-drivers/media/rc/keymaps/rc-twinhan1027.ko
-drivers/media/rc/keymaps/rc-twinhan-dtv-cab-ci.ko
-drivers/media/rc/keymaps/rc-vega-s9x.ko
-drivers/media/rc/keymaps/rc-videomate-m1f.ko
-drivers/media/rc/keymaps/rc-videomate-s350.ko
-drivers/media/rc/keymaps/rc-videomate-tv-pvr.ko
-drivers/media/rc/keymaps/rc-videostrong-kii-pro.ko
-drivers/media/rc/keymaps/rc-wetek-hub.ko
-drivers/media/rc/keymaps/rc-wetek-play2.ko
-drivers/media/rc/keymaps/rc-winfast.ko
-drivers/media/rc/keymaps/rc-winfast-usbii-deluxe.ko
-drivers/media/rc/keymaps/rc-x96max.ko
-drivers/media/rc/keymaps/rc-xbox-360.ko
-drivers/media/rc/keymaps/rc-xbox-dvd.ko
-drivers/media/rc/keymaps/rc-zx-irdec.ko
+reg_dma_ctl;
+	u32                        reg_lngth;
+	u32                        reg_hw_sop_ctrl;
+	u32                        reg_gen_ctrl;
+	u32                        reg_bd_pkt_status;
+	u32                        reg_sop_status;
+	u32                        reg_fifo_ovfl_stat;
+	u32                        reg_vld_misc;
+	u32                        reg_ts_clk_en;
+	u32                        reg_ts_int_msk;
+	u32                        reg_ts_int_stat;
+	u32                        reg_src_sel;
+
+	/* Default register vals */
+	int                        pci_irqmask;
+	u32                        dma_ctl_val;
+	u32                        ts_int_msk_val;
+	u32                        gen_ctrl_val;
+	u32                        ts_clk_en_val;
+	u32                        src_sel_val;
+	u32                        vld_misc_val;
+	u32                        hw_sop_ctrl_val;
+
+	/* Allow a single tsport to have multiple frontends */
+	u32                        num_frontends;
+	void                (*gate_ctrl)(struct cx23885_tsport *port, int open);
+	void                       *port_priv;
+
+	/* Workaround for a temp dvb_frontend that the tuner can attached to */
+	struct dvb_frontend analog_fe;
+
+	struct i2c_client *i2c_client_demod;
+	struct i2c_client *i2c_client_tuner;
+	struct i2c_client *i2c_client_sec;
+	struct i2c_client *i2c_client_ci;
+
+	int (*set_frontend)(struct dvb_frontend *fe);
+	int (*fe_set_voltage)(struct dvb_frontend *fe,
+			      enum fe_sec_voltage voltage);
+};
+
+struct cx23885_kernel_ir {
+	struct cx23885_dev	*cx;
+	char			*name;
+	char			*phys;
+
+	struct rc_dev		*rc;
+};
+
+struct cx23885_audio_buffer {
+	unsigned int		bpl;
+	struct cx23885_riscmem	risc;
+	void			*vaddr;
+	struct scatterlist	*sglist;
+	int			sglen;
+	unsigned long		nr_pages;
+};
+
+struct cx23885_audio_dev {
+	struct cx23885_dev	*dev;
+
+	struct pci_dev		*pci;
+
+	struct snd_card		*card;
+
+	spinlock_t		lock;
+
+	atomic_t		count;
+
+	unsigned int		dma_size;
+	unsigned int		period_size;
+	unsigned int		num_periods;
+
+	struct cx23885_audio_buffer   *buf;
+
+	struct snd_pcm_substream *substream;
+};
+
+struct cx23885_dev {
+	atomic_t                   refcount;
+	struct v4l2_device	   v4l2_dev;
+	struct v4l2_ctrl_handler   ctrl_handler;
+
+	/* pci stuff */
+	struct pci_dev             *pci;
+	unsigned char              pci_rev, pci_lat;
+	int                        pci_bus, pci_slot;
+	u32                        __iomem *lmmio;
+	u8                         __iomem *bmmio;
+	int                        pci_irqmask;
+	spinlock_t		   pci_irqmask_lock; /* protects mask reg too */
+	int                        hwrevision;
+
+	/* This valud is board specific and is used to configure the
+	 * AV core so we see nice clean and stable video and audio. */
+	u32                        clk_freq;
+
+	/* I2C adapters: Master 1 & 2 (External) & Master 3 (Internal only) */
+	struct cx23885_i2c         i2c_bus[3];
+
+	int                        nr;
+	struct mutex               lock;
+	struct mutex               gpio_lock;
+
+	/* board details */
+	unsigned int               board;
+	char                       name[32];
+
+	struct cx23885_tsport      ts1, ts2;
+
+	/* sram configuration */
+	struct sram_channel        *sram_channels;
+
+	enum {
+		CX23885_BRIDGE_UNDEFINED = 0,
+		CX23885_BRIDGE_885 = 885,
+		CX23885_BRIDGE_887 = 887,
+		CX23885_BRIDGE_888 = 888,
+	} bridge;
+
+	/* Analog video */
+	unsigned int               input;
+	unsigned int               audinput; /* Selectable audio input */
+	u32                        tvaudio;
+	v4l2_std_id                tvnorm;
+	unsigned int               tuner_type;
+	unsigned char              tuner_addr;
+	unsigned int               tuner_bus;
+	unsigned int               radio_type;
+	unsigned char              radio_addr;
+	struct v4l2_subdev	   *sd_cx25840;
+	struct work_struct	   cx25840_work;
+
+	/* Infrared */
+	struct v4l2_subdev         *sd_ir;
+	struct work_struct	   ir_rx_work;
+	unsigned long		   ir_rx_notifications;
+	struct work_struct	   ir_tx_work;
+	unsigned long		   ir_tx_notifications;
+
+	struct cx23885_kernel_ir   *kernel_ir;
+	atomic_t		   ir_input_stopping;
+
+	/* V4l */
+	u32                        freq;
+	struct video_device        *video_dev;
+	struct video_device        *vbi_dev;
+
+	/* video capture */
+	struct cx23885_fmt         *fmt;
+	unsigned int               width, height;
+	unsigned		   field;
+
+	struct cx23885_dmaqueue    vidq;
+	struct vb2_queue           vb2_vidq;
+	struct cx23885_dmaqueue    vbiq;
+	struct vb2_queue           vb2_vbiq;
+
+	spinlock_t                 slock;
+
+	/* MPEG Encoder ONLY settings */
+	u32                        cx23417_mailbox;
+	struct cx2341x_handler     cxhdl;
+	struct video_device        *v4l_device;
+	struct vb2_queue           vb2_mpegq;
+	struct cx23885_tvnorm      encodernorm;
+
+	/* Analog raw audio */
+	struct cx23885_audio_dev   *audio_dev;
+
+	/* Does the system require periodic DMA resets? */
+	unsigned int		need_dma_reset:1;
+};
+
+static inline struct cx23885_dev *to_cx23885(struct v4l2_device *v4l2_dev)
+{
+	return container_of(v4l2_dev, struct cx23885_dev, v4l2_dev);
+}
+
+#define call_all(dev, o, f, args...) \
+	v4l2_device_call_all(&dev->v4l2_dev, 0, o, f, ##args)
+
+#define CX23885_HW_888_IR  (1 << 0)
+#define CX23885_HW_AV_CORE (1 << 1)
+
+#define call_hw(dev, grpid, o, f, args...) \
+	v4l2_device_call_all(&dev->v4l2_dev, grpid, o, f, ##args)
+
+extern struct v4l2_subdev *cx23885_find_hw(struct cx23885_dev *dev, u32 hw);
+
+#define SRAM_CH01  0 /* Video A */
+#define SRAM_CH02  1 /* VBI A */
+#define SRAM_CH03  2 /* Video B */
+#define SRAM_CH04  3 /* Transport via B */
+#define SRAM_CH05  4 /* VBI B */
+#define SRAM_CH06  5 /* Video C */
+#define SRAM_CH07  6 /* Transport via C */
+#define SRAM_CH08  7 /* Audio Internal A */
+#define SRAM_CH09  8 /* Audio Internal B */
+#define SRAM_CH10  9 /* Audio External */
+#define SRAM_CH11 10 /* COMB_3D_N */
+#define SRAM_CH12 11 /* Comb 3D N1 */
+#define SRAM_CH13 12 /* Comb 3D N2 */
+#define SRAM_CH14 13 /* MOE Vid */
+#define SRAM_CH15 1

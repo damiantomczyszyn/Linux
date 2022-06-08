@@ -1,3 +1,2 @@
-h \
-    $(wildcard include/config/VIDEO_V4L2_I2C) \
-    $(wildcard include/co
+drivers/net/can/softing/softing_main.o drivers/net/can/softing/softing_fw.o
+

@@ -1,2 +1,1 @@
-clude/linux/build_bug.h \
-  inc
+drivers/net/can/dev/can-dev.ko

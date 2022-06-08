@@ -1,1201 +1,1061 @@
-// SPDX-License-Identifier: GPL-2.0-or-later
-/*
- * driver for ENE KB3926 B/C/D/E/F CIR (pnp id: ENE0XXX)
- *
- * Copyright (C) 2010 Maxim Levitsky <maximlevitsky@gmail.com>
- *
- * Special thanks to:
- *   Sami R. <maesesami@gmail.com> for lot of help in debugging and therefore
- *    bringing to life support for transmission & learning mode.
- *
- *   Charlie Andrews <charliethepilot@googlemail.com> for lots of help in
- *   bringing up the support of new firmware buffer that is popular
- *   on latest notebooks
- *
- *   ENE for partial device documentation
- */
-
-#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
-
-#include <linux/kernel.h>
-#include <linux/module.h>
-#include <linux/pnp.h>
-#include <linux/io.h>
-#include <linux/interrupt.h>
-#include <linux/sched.h>
-#include <linux/slab.h>
-#include <media/rc-core.h>
-#include "ene_ir.h"
-
-static int sample_period;
-static bool learning_mode_force;
-static int debug;
-static bool txsim;
-
-static void ene_set_reg_addr(struct ene_device *dev, u16 reg)
-{
-	outb(reg >> 8, dev->hw_io + ENE_ADDR_HI);
-	outb(reg & 0xFF, dev->hw_io + ENE_ADDR_LO);
-}
-
-/* read a hardware register */
-static u8 ene_read_reg(struct ene_device *dev, u16 reg)
-{
-	u8 retval;
-	ene_set_reg_addr(dev, reg);
-	retval = inb(dev->hw_io + ENE_IO);
-	dbg_regs("reg %04x == %02x", reg, retval);
-	return retval;
-}
-
-/* write a hardware register */
-static void ene_write_reg(struct ene_device *dev, u16 reg, u8 value)
-{
-	dbg_regs("reg %04x <- %02x", reg, value);
-	ene_set_reg_addr(dev, reg);
-	outb(value, dev->hw_io + ENE_IO);
-}
-
-/* Set bits in hardware register */
-static void ene_set_reg_mask(struct ene_device *dev, u16 reg, u8 mask)
-{
-	dbg_regs("reg %04x |= %02x", reg, mask);
-	ene_set_reg_addr(dev, reg);
-	outb(inb(dev->hw_io + ENE_IO) | mask, dev->hw_io + ENE_IO);
-}
-
-/* Clear bits in hardware register */
-static void ene_clear_reg_mask(struct ene_device *dev, u16 reg, u8 mask)
-{
-	dbg_regs("reg %04x &= ~%02x ", reg, mask);
-	ene_set_reg_addr(dev, reg);
-	outb(inb(dev->hw_io + ENE_IO) & ~mask, dev->hw_io + ENE_IO);
-}
-
-/* A helper to set/clear a bit in register according to boolean variable */
-static void ene_set_clear_reg_mask(struct ene_device *dev, u16 reg, u8 mask,
-								bool set)
-{
-	if (set)
-		ene_set_reg_mask(dev, reg, mask);
-	else
-		ene_clear_reg_mask(dev, reg, mask);
-}
-
-/* detect hardware features */
-static int ene_hw_detect(struct ene_device *dev)
-{
-	u8 chip_major, chip_minor;
-	u8 hw_revision, old_ver;
-	u8 fw_reg2, fw_reg1;
-
-	ene_clear_reg_mask(dev, ENE_ECSTS, ENE_ECSTS_RSRVD);
-	chip_major = ene_read_reg(dev, ENE_ECVER_MAJOR);
-	chip_minor = ene_read_reg(dev, ENE_ECVER_MINOR);
-	ene_set_reg_mask(dev, ENE_ECSTS, ENE_ECSTS_RSRVD);
-
-	hw_revision = ene_read_reg(dev, ENE_ECHV);
-	old_ver = ene_read_reg(dev, ENE_HW_VER_OLD);
-
-	dev->pll_freq = (ene_read_reg(dev, ENE_PLLFRH) << 4) +
-		(ene_read_reg(dev, ENE_PLLFRL) >> 4);
-
-	if (sample_period != ENE_DEFAULT_SAMPLE_PERIOD)
-		dev->rx_period_adjust =
-			dev->pll_freq == ENE_DEFAULT_PLL_FREQ ? 2 : 4;
-
-	if (hw_revision == 0xFF) {
-		pr_warn("device seems to be disabled\n");
-		pr_warn("send a mail to lirc-list@lists.sourceforge.net\n");
-		pr_warn("please attach output of acpidump and dmidecode\n");
-		return -ENODEV;
+TRL, reg);
 	}
 
-	pr_notice("chip is 0x%02x%02x - kbver = 0x%02x, rev = 0x%02x\n",
-		  chip_major, chip_minor, old_ver, hw_revision);
-
-	pr_notice("PLL freq = %d\n", dev->pll_freq);
-
-	if (chip_major == 0x33) {
-		pr_warn("chips 0x33xx aren't supported\n");
-		return -ENODEV;
+	/* Set VIDC pins to input */
+	if (cx23885_boards[dev->board].portc == CX23885_MPEG_DVB) {
+		reg = cx_read(PAD_CTRL);
+		reg &= ~0x4; /* Clear TS2_SOP_OE */
+		cx_write(PAD_CTRL, reg);
 	}
 
-	if (chip_major == 0x39 && chip_minor == 0x26 && hw_revision == 0xC0) {
-		dev->hw_revision = ENE_HW_C;
-		pr_notice("KB3926C detected\n");
-	} else if (old_ver == 0x24 && hw_revision == 0xC0) {
-		dev->hw_revision = ENE_HW_B;
-		pr_notice("KB3926B detected\n");
-	} else {
-		dev->hw_revision = ENE_HW_D;
-		pr_notice("KB3926D or higher detected\n");
-	}
-
-	/* detect features hardware supports */
-	if (dev->hw_revision < ENE_HW_C)
-		return 0;
-
-	fw_reg1 = ene_read_reg(dev, ENE_FW1);
-	fw_reg2 = ene_read_reg(dev, ENE_FW2);
-
-	pr_notice("Firmware regs: %02x %02x\n", fw_reg1, fw_reg2);
-
-	dev->hw_use_gpio_0a = !!(fw_reg2 & ENE_FW2_GP0A);
-	dev->hw_learning_and_tx_capable = !!(fw_reg2 & ENE_FW2_LEARNING);
-	dev->hw_extra_buffer = !!(fw_reg1 & ENE_FW1_HAS_EXTRA_BUF);
-
-	if (dev->hw_learning_and_tx_capable)
-		dev->hw_fan_input = !!(fw_reg2 & ENE_FW2_FAN_INPUT);
-
-	pr_notice("Hardware features:\n");
-
-	if (dev->hw_learning_and_tx_capable) {
-		pr_notice("* Supports transmitting & learning mode\n");
-		pr_notice("   This feature is rare and therefore,\n");
-		pr_notice("   you are welcome to test it,\n");
-		pr_notice("   and/or contact the author via:\n");
-		pr_notice("   lirc-list@lists.sourceforge.net\n");
-		pr_notice("   or maximlevitsky@gmail.com\n");
-
-		pr_notice("* Uses GPIO %s for IR raw input\n",
-			  dev->hw_use_gpio_0a ? "40" : "0A");
-
-		if (dev->hw_fan_input)
-			pr_notice("* Uses unused fan feedback input as source of demodulated IR data\n");
-	}
-
-	if (!dev->hw_fan_input)
-		pr_notice("* Uses GPIO %s for IR demodulated input\n",
-			  dev->hw_use_gpio_0a ? "0A" : "40");
-
-	if (dev->hw_extra_buffer)
-		pr_notice("* Uses new style input buffer\n");
-	return 0;
-}
-
-/* Read properties of hw sample buffer */
-static void ene_rx_setup_hw_buffer(struct ene_device *dev)
-{
-	u16 tmp;
-
-	ene_rx_read_hw_pointer(dev);
-	dev->r_pointer = dev->w_pointer;
-
-	if (!dev->hw_extra_buffer) {
-		dev->buffer_len = ENE_FW_PACKET_SIZE * 2;
-		return;
-	}
-
-	tmp = ene_read_reg(dev, ENE_FW_SAMPLE_BUFFER);
-	tmp |= ene_read_reg(dev, ENE_FW_SAMPLE_BUFFER+1) << 8;
-	dev->extra_buf1_address = tmp;
-
-	dev->extra_buf1_len = ene_read_reg(dev, ENE_FW_SAMPLE_BUFFER + 2);
-
-	tmp = ene_read_reg(dev, ENE_FW_SAMPLE_BUFFER + 3);
-	tmp |= ene_read_reg(dev, ENE_FW_SAMPLE_BUFFER + 4) << 8;
-	dev->extra_buf2_address = tmp;
-
-	dev->extra_buf2_len = ene_read_reg(dev, ENE_FW_SAMPLE_BUFFER + 5);
-
-	dev->buffer_len = dev->extra_buf1_len + dev->extra_buf2_len + 8;
-
-	pr_notice("Hardware uses 2 extended buffers:\n");
-	pr_notice("  0x%04x - len : %d\n",
-		  dev->extra_buf1_address, dev->extra_buf1_len);
-	pr_notice("  0x%04x - len : %d\n",
-		  dev->extra_buf2_address, dev->extra_buf2_len);
-
-	pr_notice("Total buffer len = %d\n", dev->buffer_len);
-
-	if (dev->buffer_len > 64 || dev->buffer_len < 16)
-		goto error;
-
-	if (dev->extra_buf1_address > 0xFBFC ||
-					dev->extra_buf1_address < 0xEC00)
-		goto error;
-
-	if (dev->extra_buf2_address > 0xFBFC ||
-					dev->extra_buf2_address < 0xEC00)
-		goto error;
-
-	if (dev->r_pointer > dev->buffer_len)
-		goto error;
-
-	ene_set_reg_mask(dev, ENE_FW1, ENE_FW1_EXTRA_BUF_HND);
-	return;
-error:
-	pr_warn("Error validating extra buffers, device probably won't work\n");
-	dev->hw_extra_buffer = false;
-	ene_clear_reg_mask(dev, ENE_FW1, ENE_FW1_EXTRA_BUF_HND);
-}
-
-
-/* Restore the pointers to extra buffers - to make module reload work*/
-static void ene_rx_restore_hw_buffer(struct ene_device *dev)
-{
-	if (!dev->hw_extra_buffer)
-		return;
-
-	ene_write_reg(dev, ENE_FW_SAMPLE_BUFFER + 0,
-				dev->extra_buf1_address & 0xFF);
-	ene_write_reg(dev, ENE_FW_SAMPLE_BUFFER + 1,
-				dev->extra_buf1_address >> 8);
-	ene_write_reg(dev, ENE_FW_SAMPLE_BUFFER + 2, dev->extra_buf1_len);
-
-	ene_write_reg(dev, ENE_FW_SAMPLE_BUFFER + 3,
-				dev->extra_buf2_address & 0xFF);
-	ene_write_reg(dev, ENE_FW_SAMPLE_BUFFER + 4,
-				dev->extra_buf2_address >> 8);
-	ene_write_reg(dev, ENE_FW_SAMPLE_BUFFER + 5,
-				dev->extra_buf2_len);
-	ene_clear_reg_mask(dev, ENE_FW1, ENE_FW1_EXTRA_BUF_HND);
-}
-
-/* Read hardware write pointer */
-static void ene_rx_read_hw_pointer(struct ene_device *dev)
-{
-	if (dev->hw_extra_buffer)
-		dev->w_pointer = ene_read_reg(dev, ENE_FW_RX_POINTER);
-	else
-		dev->w_pointer = ene_read_reg(dev, ENE_FW2)
-			& ENE_FW2_BUF_WPTR ? 0 : ENE_FW_PACKET_SIZE;
-
-	dbg_verbose("RB: HW write pointer: %02x, driver read pointer: %02x",
-		dev->w_pointer, dev->r_pointer);
-}
-
-/* Gets address of next sample from HW ring buffer */
-static int ene_rx_get_sample_reg(struct ene_device *dev)
-{
-	int r_pointer;
-
-	if (dev->r_pointer == dev->w_pointer) {
-		dbg_verbose("RB: hit end, try update w_pointer");
-		ene_rx_read_hw_pointer(dev);
-	}
-
-	if (dev->r_pointer == dev->w_pointer) {
-		dbg_verbose("RB: end of data at %d", dev->r_pointer);
-		return 0;
-	}
-
-	dbg_verbose("RB: reading at offset %d", dev->r_pointer);
-	r_pointer = dev->r_pointer;
-
-	dev->r_pointer++;
-	if (dev->r_pointer == dev->buffer_len)
-		dev->r_pointer = 0;
-
-	dbg_verbose("RB: next read will be from offset %d", dev->r_pointer);
-
-	if (r_pointer < 8) {
-		dbg_verbose("RB: read at main buffer at %d", r_pointer);
-		return ENE_FW_SAMPLE_BUFFER + r_pointer;
-	}
-
-	r_pointer -= 8;
-
-	if (r_pointer < dev->extra_buf1_len) {
-		dbg_verbose("RB: read at 1st extra buffer at %d", r_pointer);
-		return dev->extra_buf1_address + r_pointer;
-	}
-
-	r_pointer -= dev->extra_buf1_len;
-
-	if (r_pointer < dev->extra_buf2_len) {
-		dbg_verbose("RB: read at 2nd extra buffer at %d", r_pointer);
-		return dev->extra_buf2_address + r_pointer;
-	}
-
-	dbg("attempt to read beyond ring buffer end");
-	return 0;
-}
-
-/* Sense current received carrier */
-static void ene_rx_sense_carrier(struct ene_device *dev)
-{
-	int carrier, duty_cycle;
-	int period = ene_read_reg(dev, ENE_CIRCAR_PRD);
-	int hperiod = ene_read_reg(dev, ENE_CIRCAR_HPRD);
-
-	if (!(period & ENE_CIRCAR_PRD_VALID))
-		return;
-
-	period &= ~ENE_CIRCAR_PRD_VALID;
-
-	if (!period)
-		return;
-
-	dbg("RX: hardware carrier period = %02x", period);
-	dbg("RX: hardware carrier pulse period = %02x", hperiod);
-
-	carrier = 2000000 / period;
-	duty_cycle = (hperiod * 100) / period;
-	dbg("RX: sensed carrier = %d Hz, duty cycle %d%%",
-						carrier, duty_cycle);
-	if (dev->carrier_detect_enabled) {
-		struct ir_raw_event ev = {
-			.carrier_report = true,
-			.carrier = carrier,
-			.duty_cycle = duty_cycle
-		};
-		ir_raw_event_store(dev->rdev, &ev);
-	}
-}
-
-/* this enables/disables the CIR RX engine */
-static void ene_rx_enable_cir_engine(struct ene_device *dev, bool enable)
-{
-	ene_set_clear_reg_mask(dev, ENE_CIRCFG,
-			ENE_CIRCFG_RX_EN | ENE_CIRCFG_RX_IRQ, enable);
-}
-
-/* this selects input for CIR engine. Ether GPIO 0A or GPIO40*/
-static void ene_rx_select_input(struct ene_device *dev, bool gpio_0a)
-{
-	ene_set_clear_reg_mask(dev, ENE_CIRCFG2, ENE_CIRCFG2_GPIO0A, gpio_0a);
-}
-
-/*
- * this enables alternative input via fan tachometer sensor and bypasses
- * the hw CIR engine
- */
-static void ene_rx_enable_fan_input(struct ene_device *dev, bool enable)
-{
-	if (!dev->hw_fan_input)
-		return;
-
-	if (!enable)
-		ene_write_reg(dev, ENE_FAN_AS_IN1, 0);
-	else {
-		ene_write_reg(dev, ENE_FAN_AS_IN1, ENE_FAN_AS_IN1_EN);
-		ene_write_reg(dev, ENE_FAN_AS_IN2, ENE_FAN_AS_IN2_EN);
-	}
-}
-
-/* setup the receiver for RX*/
-static void ene_rx_setup(struct ene_device *dev)
-{
-	bool learning_mode = dev->learning_mode_enabled ||
-					dev->carrier_detect_enabled;
-	int sample_period_adjust = 0;
-
-	dbg("RX: setup receiver, learning mode = %d", learning_mode);
-
-
-	/* This selects RLC input and clears CFG2 settings */
-	ene_write_reg(dev, ENE_CIRCFG2, 0x00);
-
-	/* set sample period*/
-	if (sample_period == ENE_DEFAULT_SAMPLE_PERIOD)
-		sample_period_adjust =
-			dev->pll_freq == ENE_DEFAULT_PLL_FREQ ? 1 : 2;
-
-	ene_write_reg(dev, ENE_CIRRLC_CFG,
-			(sample_period + sample_period_adjust) |
-						ENE_CIRRLC_CFG_OVERFLOW);
-	/* revB doesn't support inputs */
-	if (dev->hw_revision < ENE_HW_C)
-		goto select_timeout;
-
-	if (learning_mode) {
-
-		WARN_ON(!dev->hw_learning_and_tx_capable);
-
-		/* Enable the opposite of the normal input
-		That means that if GPIO40 is normally used, use GPIO0A
-		and vice versa.
-		This input will carry non demodulated
-		signal, and we will tell the hw to demodulate it itself */
-		ene_rx_select_input(dev, !dev->hw_use_gpio_0a);
-		dev->rx_fan_input_inuse = false;
-
-		/* Enable carrier demodulation */
-		ene_set_reg_mask(dev, ENE_CIRCFG, ENE_CIRCFG_CARR_DEMOD);
-
-		/* Enable carrier detection */
-		ene_write_reg(dev, ENE_CIRCAR_PULS, 0x63);
-		ene_set_clear_reg_mask(dev, ENE_CIRCFG2, ENE_CIRCFG2_CARR_DETECT,
-			dev->carrier_detect_enabled || debug);
-	} else {
-		if (dev->hw_fan_input)
-			dev->rx_fan_input_inuse = true;
-		else
-			ene_rx_select_input(dev, dev->hw_use_gpio_0a);
-
-		/* Disable carrier detection & demodulation */
-		ene_clear_reg_mask(dev, ENE_CIRCFG, ENE_CIRCFG_CARR_DEMOD);
-		ene_clear_reg_mask(dev, ENE_CIRCFG2, ENE_CIRCFG2_CARR_DETECT);
-	}
-
-select_timeout:
-	if (dev->rx_fan_input_inuse) {
-		dev->rdev->rx_resolution = ENE_FW_SAMPLE_PERIOD_FAN;
-
-		/* Fan input doesn't support timeouts, it just ends the
-			input with a maximum sample */
-		dev->rdev->min_timeout = dev->rdev->max_timeout =
-			ENE_FW_SMPL_BUF_FAN_MSK *
-				ENE_FW_SAMPLE_PERIOD_FAN;
-	} else {
-		dev->rdev->rx_resolution = sample_period;
-
-		/* Theoreticly timeout is unlimited, but we cap it
-		 * because it was seen that on one device, it
-		 * would stop sending spaces after around 250 msec.
-		 * Besides, this is close to 2^32 anyway and timeout is u32.
+	if (cx23885_boards[dev->board].portb == CX23885_MPEG_ENCODER) {
+
+		reg = cx_read(PAD_CTRL);
+		reg = reg & ~0x1;    /* Clear TS1_OE */
+
+		/* FIXME, bit 2 writing here is questionable */
+		/* set TS1_SOP_OE and TS1_OE_HI */
+		reg = reg | 0xa;
+		cx_write(PAD_CTRL, reg);
+
+		/* Sets MOE_CLK_DIS to disable MoE clock */
+		/* sets MCLK_DLY_SEL/BCLK_DLY_SEL to 1 buffer delay each */
+		cx_write(CLK_DELAY, cx_read(CLK_DELAY) | 0x80000011);
+
+		/* ALT_GPIO_ALT_SET: GPIO[0]
+		 * IR_ALT_TX_SEL: GPIO[1]
+		 * GPIO1_ALT_SEL: VIP_656_DATA[0]
+		 * GPIO0_ALT_SEL: VIP_656_CLK
 		 */
-		dev->rdev->min_timeout = 127 * sample_period;
-		dev->rdev->max_timeout = 200000;
+		cx_write(ALT_PIN_OUT_SEL, 0x10100045);
 	}
 
-	if (dev->hw_learning_and_tx_capable)
-		dev->rdev->tx_resolution = sample_period;
+	switch (dev->bridge) {
+	case CX23885_BRIDGE_885:
+	case CX23885_BRIDGE_887:
+	case CX23885_BRIDGE_888:
+		/* enable irqs */
+		dprintk(1, "%s() enabling TS int's and DMA\n", __func__);
+		/* clear dma in progress */
+		cx23885_clear_bridge_error(dev);
+		cx_set(port->reg_ts_int_msk,  port->ts_int_msk_val);
+		cx_set(port->reg_dma_ctl, port->dma_ctl_val);
 
-	if (dev->rdev->timeout > dev->rdev->max_timeout)
-		dev->rdev->timeout = dev->rdev->max_timeout;
-	if (dev->rdev->timeout < dev->rdev->min_timeout)
-		dev->rdev->timeout = dev->rdev->min_timeout;
-}
+		/* clear dma in progress */
+		cx23885_clear_bridge_error(dev);
+		cx23885_irq_add(dev, port->pci_irqmask);
+		cx23885_irq_enable_all(dev);
 
-/* Enable the device for receive */
-static void ene_rx_enable_hw(struct ene_device *dev)
-{
-	u8 reg_value;
-
-	/* Enable system interrupt */
-	if (dev->hw_revision < ENE_HW_C) {
-		ene_write_reg(dev, ENEB_IRQ, dev->irq << 1);
-		ene_write_reg(dev, ENEB_IRQ_UNK1, 0x01);
-	} else {
-		reg_value = ene_read_reg(dev, ENE_IRQ) & 0xF0;
-		reg_value |= ENE_IRQ_UNK_EN;
-		reg_value &= ~ENE_IRQ_STATUS;
-		reg_value |= (dev->irq & ENE_IRQ_MASK);
-		ene_write_reg(dev, ENE_IRQ, reg_value);
+		/* clear dma in progress */
+		cx23885_clear_bridge_error(dev);
+		break;
+	default:
+		BUG();
 	}
 
-	/* Enable inputs */
-	ene_rx_enable_fan_input(dev, dev->rx_fan_input_inuse);
-	ene_rx_enable_cir_engine(dev, !dev->rx_fan_input_inuse);
+	cx_set(DEV_CNTRL2, (1<<5)); /* Enable RISC controller */
+	/* clear dma in progress */
+	cx23885_clear_bridge_error(dev);
 
-	/* ack any pending irqs - just in case */
-	ene_irq_status(dev);
+	if (cx23885_boards[dev->board].portb == CX23885_MPEG_ENCODER)
+		cx23885_av_clk(dev, 1);
 
-	/* enable firmware bits */
-	ene_set_reg_mask(dev, ENE_FW1, ENE_FW1_ENABLE | ENE_FW1_IRQ);
+	if (debug > 4)
+		cx23885_tsport_reg_dump(port);
 
-	/* enter idle mode */
-	ir_raw_event_set_idle(dev->rdev, true);
+	cx23885_irq_get_mask(dev);
+
+	/* clear dma in progress */
+	cx23885_clear_bridge_error(dev);
+
+	return 0;
 }
 
-/* Enable the device for receive - wrapper to track the state*/
-static void ene_rx_enable(struct ene_device *dev)
+static int cx23885_stop_dma(struct cx23885_tsport *port)
 {
-	ene_rx_enable_hw(dev);
-	dev->rx_enabled = true;
-}
+	struct cx23885_dev *dev = port->dev;
+	u32 reg;
+	int delay = 0;
+	uint32_t reg1_val;
+	uint32_t reg2_val;
 
-/* Disable the device receiver */
-static void ene_rx_disable_hw(struct ene_device *dev)
-{
-	/* disable inputs */
-	ene_rx_enable_cir_engine(dev, false);
-	ene_rx_enable_fan_input(dev, false);
+	dprintk(1, "%s()\n", __func__);
 
-	/* disable hardware IRQ and firmware flag */
-	ene_clear_reg_mask(dev, ENE_FW1, ENE_FW1_ENABLE | ENE_FW1_IRQ);
-	ir_raw_event_set_idle(dev->rdev, true);
-}
-
-/* Disable the device receiver - wrapper to track the state */
-static void ene_rx_disable(struct ene_device *dev)
-{
-	ene_rx_disable_hw(dev);
-	dev->rx_enabled = false;
-}
-
-/* This resets the receiver. Useful to stop stream of spaces at end of
- * transmission
- */
-static void ene_rx_reset(struct ene_device *dev)
-{
-	ene_clear_reg_mask(dev, ENE_CIRCFG, ENE_CIRCFG_RX_EN);
-	ene_set_reg_mask(dev, ENE_CIRCFG, ENE_CIRCFG_RX_EN);
-}
-
-/* Set up the TX carrier frequency and duty cycle */
-static void ene_tx_set_carrier(struct ene_device *dev)
-{
-	u8 tx_puls_width;
-	unsigned long flags;
-
-	spin_lock_irqsave(&dev->hw_lock, flags);
-
-	ene_set_clear_reg_mask(dev, ENE_CIRCFG,
-		ENE_CIRCFG_TX_CARR, dev->tx_period > 0);
-
-	if (!dev->tx_period)
-		goto unlock;
-
-	BUG_ON(dev->tx_duty_cycle >= 100 || dev->tx_duty_cycle <= 0);
-
-	tx_puls_width = dev->tx_period / (100 / dev->tx_duty_cycle);
-
-	if (!tx_puls_width)
-		tx_puls_width = 1;
-
-	dbg("TX: pulse distance = %d * 500 ns", dev->tx_period);
-	dbg("TX: pulse width = %d * 500 ns", tx_puls_width);
-
-	ene_write_reg(dev, ENE_CIRMOD_PRD, dev->tx_period | ENE_CIRMOD_PRD_POL);
-	ene_write_reg(dev, ENE_CIRMOD_HPRD, tx_puls_width);
-unlock:
-	spin_unlock_irqrestore(&dev->hw_lock, flags);
-}
-
-/* Enable/disable transmitters */
-static void ene_tx_set_transmitters(struct ene_device *dev)
-{
-	unsigned long flags;
-
-	spin_lock_irqsave(&dev->hw_lock, flags);
-	ene_set_clear_reg_mask(dev, ENE_GPIOFS8, ENE_GPIOFS8_GPIO41,
-					!!(dev->transmitter_mask & 0x01));
-	ene_set_clear_reg_mask(dev, ENE_GPIOFS1, ENE_GPIOFS1_GPIO0D,
-					!!(dev->transmitter_mask & 0x02));
-	spin_unlock_irqrestore(&dev->hw_lock, flags);
-}
-
-/* prepare transmission */
-static void ene_tx_enable(struct ene_device *dev)
-{
-	u8 conf1 = ene_read_reg(dev, ENE_CIRCFG);
-	u8 fwreg2 = ene_read_reg(dev, ENE_FW2);
-
-	dev->saved_conf1 = conf1;
-
-	/* Show information about currently connected transmitter jacks */
-	if (fwreg2 & ENE_FW2_EMMITER1_CONN)
-		dbg("TX: Transmitter #1 is connected");
-
-	if (fwreg2 & ENE_FW2_EMMITER2_CONN)
-		dbg("TX: Transmitter #2 is connected");
-
-	if (!(fwreg2 & (ENE_FW2_EMMITER1_CONN | ENE_FW2_EMMITER2_CONN)))
-		pr_warn("TX: transmitter cable isn't connected!\n");
-
-	/* disable receive on revc */
-	if (dev->hw_revision == ENE_HW_C)
-		conf1 &= ~ENE_CIRCFG_RX_EN;
-
-	/* Enable TX engine */
-	conf1 |= ENE_CIRCFG_TX_EN | ENE_CIRCFG_TX_IRQ;
-	ene_write_reg(dev, ENE_CIRCFG, conf1);
-}
-
-/* end transmission */
-static void ene_tx_disable(struct ene_device *dev)
-{
-	ene_write_reg(dev, ENE_CIRCFG, dev->saved_conf1);
-	dev->tx_buffer = NULL;
-}
-
-
-/* TX one sample - must be called with dev->hw_lock*/
-static void ene_tx_sample(struct ene_device *dev)
-{
-	u8 raw_tx;
-	u32 sample;
-	bool pulse = dev->tx_sample_pulse;
-
-	if (!dev->tx_buffer) {
-		pr_warn("TX: BUG: attempt to transmit NULL buffer\n");
-		return;
-	}
-
-	/* Grab next TX sample */
-	if (!dev->tx_sample) {
-
-		if (dev->tx_pos == dev->tx_len) {
-			if (!dev->tx_done) {
-				dbg("TX: no more data to send");
-				dev->tx_done = true;
-				goto exit;
-			} else {
-				dbg("TX: last sample sent by hardware");
-				ene_tx_disable(dev);
-				complete(&dev->tx_complete);
-				return;
-			}
-		}
-
-		sample = dev->tx_buffer[dev->tx_pos++];
-		dev->tx_sample_pulse = !dev->tx_sample_pulse;
-
-		dev->tx_sample = DIV_ROUND_CLOSEST(sample, sample_period);
-
-		if (!dev->tx_sample)
-			dev->tx_sample = 1;
-	}
-
-	raw_tx = min(dev->tx_sample , (unsigned int)ENE_CIRRLC_OUT_MASK);
-	dev->tx_sample -= raw_tx;
-
-	dbg("TX: sample %8d (%s)", raw_tx * sample_period,
-						pulse ? "pulse" : "space");
-	if (pulse)
-		raw_tx |= ENE_CIRRLC_OUT_PULSE;
-
-	ene_write_reg(dev,
-		dev->tx_reg ? ENE_CIRRLC_OUT1 : ENE_CIRRLC_OUT0, raw_tx);
-
-	dev->tx_reg = !dev->tx_reg;
-exit:
-	/* simulate TX done interrupt */
-	if (txsim)
-		mod_timer(&dev->tx_sim_timer, jiffies + HZ / 500);
-}
-
-/* timer to simulate tx done interrupt */
-static void ene_tx_irqsim(struct timer_list *t)
-{
-	struct ene_device *dev = from_timer(dev, t, tx_sim_timer);
-	unsigned long flags;
-
-	spin_lock_irqsave(&dev->hw_lock, flags);
-	ene_tx_sample(dev);
-	spin_unlock_irqrestore(&dev->hw_lock, flags);
-}
-
-
-/* read irq status and ack it */
-static int ene_irq_status(struct ene_device *dev)
-{
-	u8 irq_status;
-	u8 fw_flags1, fw_flags2;
-	int retval = 0;
-
-	fw_flags2 = ene_read_reg(dev, ENE_FW2);
-
-	if (dev->hw_revision < ENE_HW_C) {
-		irq_status = ene_read_reg(dev, ENEB_IRQ_STATUS);
-
-		if (!(irq_status & ENEB_IRQ_STATUS_IR))
-			return 0;
-
-		ene_clear_reg_mask(dev, ENEB_IRQ_STATUS, ENEB_IRQ_STATUS_IR);
-		return ENE_IRQ_RX;
-	}
-
-	irq_status = ene_read_reg(dev, ENE_IRQ);
-	if (!(irq_status & ENE_IRQ_STATUS))
-		return 0;
-
-	/* original driver does that twice - a workaround ? */
-	ene_write_reg(dev, ENE_IRQ, irq_status & ~ENE_IRQ_STATUS);
-	ene_write_reg(dev, ENE_IRQ, irq_status & ~ENE_IRQ_STATUS);
-
-	/* check RX interrupt */
-	if (fw_flags2 & ENE_FW2_RXIRQ) {
-		retval |= ENE_IRQ_RX;
-		ene_write_reg(dev, ENE_FW2, fw_flags2 & ~ENE_FW2_RXIRQ);
-	}
-
-	/* check TX interrupt */
-	fw_flags1 = ene_read_reg(dev, ENE_FW1);
-	if (fw_flags1 & ENE_FW1_TXIRQ) {
-		ene_write_reg(dev, ENE_FW1, fw_flags1 & ~ENE_FW1_TXIRQ);
-		retval |= ENE_IRQ_TX;
-	}
-
-	return retval;
-}
-
-/* interrupt handler */
-static irqreturn_t ene_isr(int irq, void *data)
-{
-	u16 hw_value, reg;
-	int hw_sample, irq_status;
-	bool pulse;
-	unsigned long flags;
-	irqreturn_t retval = IRQ_NONE;
-	struct ene_device *dev = (struct ene_device *)data;
-	struct ir_raw_event ev = {};
-
-	spin_lock_irqsave(&dev->hw_lock, flags);
-
-	dbg_verbose("ISR called");
-	ene_rx_read_hw_pointer(dev);
-	irq_status = ene_irq_status(dev);
-
-	if (!irq_status)
-		goto unlock;
-
-	retval = IRQ_HANDLED;
-
-	if (irq_status & ENE_IRQ_TX) {
-		dbg_verbose("TX interrupt");
-		if (!dev->hw_learning_and_tx_capable) {
-			dbg("TX interrupt on unsupported device!");
-			goto unlock;
-		}
-		ene_tx_sample(dev);
-	}
-
-	if (!(irq_status & ENE_IRQ_RX))
-		goto unlock;
-
-	dbg_verbose("RX interrupt");
-
-	if (dev->hw_learning_and_tx_capable)
-		ene_rx_sense_carrier(dev);
-
-	/* On hardware that don't support extra buffer we need to trust
-		the interrupt and not track the read pointer */
-	if (!dev->hw_extra_buffer)
-		dev->r_pointer = dev->w_pointer == 0 ? ENE_FW_PACKET_SIZE : 0;
-
-	while (1) {
-
-		reg = ene_rx_get_sample_reg(dev);
-
-		dbg_verbose("next sample to read at: %04x", reg);
-		if (!reg)
+	/* Stop interrupts and DMA */
+	cx_clear(port->reg_ts_int_msk, port->ts_int_msk_val);
+	cx_clear(port->reg_dma_ctl, port->dma_ctl_val);
+	/* just in case wait for any dma to complete before allowing dealloc */
+	mdelay(20);
+	for (delay = 0; delay < 100; delay++) {
+		reg1_val = cx_read(TC_REQ);
+		reg2_val = cx_read(TC_REQ_SET);
+		if (reg1_val == 0 || reg2_val == 0)
 			break;
+		mdelay(1);
+	}
+	dev_dbg(&dev->pci->dev, "delay=%d reg1=0x%08x reg2=0x%08x\n",
+		delay, reg1_val, reg2_val);
 
-		hw_value = ene_read_reg(dev, reg);
+	if (cx23885_boards[dev->board].portb == CX23885_MPEG_ENCODER) {
+		reg = cx_read(PAD_CTRL);
 
-		if (dev->rx_fan_input_inuse) {
+		/* Set TS1_OE */
+		reg = reg | 0x1;
 
-			int offset = ENE_FW_SMPL_BUF_FAN - ENE_FW_SAMPLE_BUFFER;
-
-			/* read high part of the sample */
-			hw_value |= ene_read_reg(dev, reg + offset) << 8;
-			pulse = hw_value & ENE_FW_SMPL_BUF_FAN_PLS;
-
-			/* clear space bit, and other unused bits */
-			hw_value &= ENE_FW_SMPL_BUF_FAN_MSK;
-			hw_sample = hw_value * ENE_FW_SAMPLE_PERIOD_FAN;
-
-		} else {
-			pulse = !(hw_value & ENE_FW_SAMPLE_SPACE);
-			hw_value &= ~ENE_FW_SAMPLE_SPACE;
-			hw_sample = hw_value * sample_period;
-
-			if (dev->rx_period_adjust) {
-				hw_sample *= 100;
-				hw_sample /= (100 + dev->rx_period_adjust);
-			}
-		}
-
-		if (!dev->hw_extra_buffer && !hw_sample) {
-			dev->r_pointer = dev->w_pointer;
-			continue;
-		}
-
-		dbg("RX: %d (%s)", hw_sample, pulse ? "pulse" : "space");
-
-		ev.duration = hw_sample;
-		ev.pulse = pulse;
-		ir_raw_event_store_with_filter(dev->rdev, &ev);
+		/* clear TS1_SOP_OE and TS1_OE_HI */
+		reg = reg & ~0xa;
+		cx_write(PAD_CTRL, reg);
+		cx_write(port->reg_src_sel, 0);
+		cx_write(port->reg_gen_ctrl, 8);
 	}
 
-	ir_raw_event_handle(dev->rdev);
-unlock:
-	spin_unlock_irqrestore(&dev->hw_lock, flags);
-	return retval;
-}
+	if (cx23885_boards[dev->board].portb == CX23885_MPEG_ENCODER)
+		cx23885_av_clk(dev, 0);
 
-/* Initialize default settings */
-static void ene_setup_default_settings(struct ene_device *dev)
-{
-	dev->tx_period = 32;
-	dev->tx_duty_cycle = 50; /*%*/
-	dev->transmitter_mask = 0x03;
-	dev->learning_mode_enabled = learning_mode_force;
-
-	/* Set reasonable default timeout */
-	dev->rdev->timeout = MS_TO_US(150);
-}
-
-/* Upload all hardware settings at once. Used at load and resume time */
-static void ene_setup_hw_settings(struct ene_device *dev)
-{
-	if (dev->hw_learning_and_tx_capable) {
-		ene_tx_set_carrier(dev);
-		ene_tx_set_transmitters(dev);
-	}
-
-	ene_rx_setup(dev);
-}
-
-/* outside interface: called on first open*/
-static int ene_open(struct rc_dev *rdev)
-{
-	struct ene_device *dev = rdev->priv;
-	unsigned long flags;
-
-	spin_lock_irqsave(&dev->hw_lock, flags);
-	ene_rx_enable(dev);
-	spin_unlock_irqrestore(&dev->hw_lock, flags);
 	return 0;
 }
 
-/* outside interface: called on device close*/
-static void ene_close(struct rc_dev *rdev)
+/* ------------------------------------------------------------------ */
+
+int cx23885_buf_prepare(struct cx23885_buffer *buf, struct cx23885_tsport *port)
 {
-	struct ene_device *dev = rdev->priv;
-	unsigned long flags;
-	spin_lock_irqsave(&dev->hw_lock, flags);
+	struct cx23885_dev *dev = port->dev;
+	int size = port->ts_packet_size * port->ts_packet_count;
+	struct sg_table *sgt = vb2_dma_sg_plane_desc(&buf->vb.vb2_buf, 0);
 
-	ene_rx_disable(dev);
-	spin_unlock_irqrestore(&dev->hw_lock, flags);
-}
-
-/* outside interface: set transmitter mask */
-static int ene_set_tx_mask(struct rc_dev *rdev, u32 tx_mask)
-{
-	struct ene_device *dev = rdev->priv;
-	dbg("TX: attempt to set transmitter mask %02x", tx_mask);
-
-	/* invalid txmask */
-	if (!tx_mask || tx_mask & ~0x03) {
-		dbg("TX: invalid mask");
-		/* return count of transmitters */
-		return 2;
-	}
-
-	dev->transmitter_mask = tx_mask;
-	ene_tx_set_transmitters(dev);
-	return 0;
-}
-
-/* outside interface : set tx carrier */
-static int ene_set_tx_carrier(struct rc_dev *rdev, u32 carrier)
-{
-	struct ene_device *dev = rdev->priv;
-	u32 period;
-
-	dbg("TX: attempt to set tx carrier to %d kHz", carrier);
-	if (carrier == 0)
+	dprintk(1, "%s: %p\n", __func__, buf);
+	if (vb2_plane_size(&buf->vb.vb2_buf, 0) < size)
 		return -EINVAL;
+	vb2_set_plane_payload(&buf->vb.vb2_buf, 0, size);
 
-	period = 2000000 / carrier;
-	if (period && (period > ENE_CIRMOD_PRD_MAX ||
-			period < ENE_CIRMOD_PRD_MIN)) {
-
-		dbg("TX: out of range %d-%d kHz carrier",
-			2000 / ENE_CIRMOD_PRD_MIN, 2000 / ENE_CIRMOD_PRD_MAX);
-		return -EINVAL;
-	}
-
-	dev->tx_period = period;
-	ene_tx_set_carrier(dev);
+	cx23885_risc_databuffer(dev->pci, &buf->risc,
+				sgt->sgl,
+				port->ts_packet_size, port->ts_packet_count, 0);
 	return 0;
 }
 
-/*outside interface : set tx duty cycle */
-static int ene_set_tx_duty_cycle(struct rc_dev *rdev, u32 duty_cycle)
+/*
+ * The risc program for each buffer works as follows: it starts with a simple
+ * 'JUMP to addr + 12', which is effectively a NOP. Then the code to DMA the
+ * buffer follows and at the end we have a JUMP back to the start + 12 (skipping
+ * the initial JUMP).
+ *
+ * This is the risc program of the first buffer to be queued if the active list
+ * is empty and it just keeps DMAing this buffer without generating any
+ * interrupts.
+ *
+ * If a new buffer is added then the initial JUMP in the code for that buffer
+ * will generate an interrupt which signals that the previous buffer has been
+ * DMAed successfully and that it can be returned to userspace.
+ *
+ * It also sets the final jump of the previous buffer to the start of the new
+ * buffer, thus chaining the new buffer into the DMA chain. This is a single
+ * atomic u32 write, so there is no race condition.
+ *
+ * The end-result of all this that you only get an interrupt when a buffer
+ * is ready, so the control flow is very easy.
+ */
+void cx23885_buf_queue(struct cx23885_tsport *port, struct cx23885_buffer *buf)
 {
-	struct ene_device *dev = rdev->priv;
-	dbg("TX: setting duty cycle to %d%%", duty_cycle);
-	dev->tx_duty_cycle = duty_cycle;
-	ene_tx_set_carrier(dev);
-	return 0;
-}
-
-/* outside interface: enable learning mode */
-static int ene_set_learning_mode(struct rc_dev *rdev, int enable)
-{
-	struct ene_device *dev = rdev->priv;
-	unsigned long flags;
-	if (enable == dev->learning_mode_enabled)
-		return 0;
-
-	spin_lock_irqsave(&dev->hw_lock, flags);
-	dev->learning_mode_enabled = enable;
-	ene_rx_disable(dev);
-	ene_rx_setup(dev);
-	ene_rx_enable(dev);
-	spin_unlock_irqrestore(&dev->hw_lock, flags);
-	return 0;
-}
-
-static int ene_set_carrier_report(struct rc_dev *rdev, int enable)
-{
-	struct ene_device *dev = rdev->priv;
+	struct cx23885_buffer    *prev;
+	struct cx23885_dev *dev = port->dev;
+	struct cx23885_dmaqueue  *cx88q = &port->mpegq;
 	unsigned long flags;
 
-	if (enable == dev->carrier_detect_enabled)
-		return 0;
+	buf->risc.cpu[1] = cpu_to_le32(buf->risc.dma + 12);
+	buf->risc.jmp[0] = cpu_to_le32(RISC_JUMP | RISC_CNT_INC);
+	buf->risc.jmp[1] = cpu_to_le32(buf->risc.dma + 12);
+	buf->risc.jmp[2] = cpu_to_le32(0); /* bits 63-32 */
 
-	spin_lock_irqsave(&dev->hw_lock, flags);
-	dev->carrier_detect_enabled = enable;
-	ene_rx_disable(dev);
-	ene_rx_setup(dev);
-	ene_rx_enable(dev);
-	spin_unlock_irqrestore(&dev->hw_lock, flags);
-	return 0;
-}
-
-/* outside interface: enable or disable idle mode */
-static void ene_set_idle(struct rc_dev *rdev, bool idle)
-{
-	struct ene_device *dev = rdev->priv;
-
-	if (idle) {
-		ene_rx_reset(dev);
-		dbg("RX: end of data");
+	spin_lock_irqsave(&dev->slock, flags);
+	if (list_empty(&cx88q->active)) {
+		list_add_tail(&buf->queue, &cx88q->active);
+		dprintk(1, "[%p/%d] %s - first active\n",
+			buf, buf->vb.vb2_buf.index, __func__);
+	} else {
+		buf->risc.cpu[0] |= cpu_to_le32(RISC_IRQ1);
+		prev = list_entry(cx88q->active.prev, struct cx23885_buffer,
+				  queue);
+		list_add_tail(&buf->queue, &cx88q->active);
+		prev->risc.jmp[1] = cpu_to_le32(buf->risc.dma);
+		dprintk(1, "[%p/%d] %s - append to active\n",
+			 buf, buf->vb.vb2_buf.index, __func__);
 	}
+	spin_unlock_irqrestore(&dev->slock, flags);
 }
 
-/* outside interface: transmit */
-static int ene_transmit(struct rc_dev *rdev, unsigned *buf, unsigned n)
+/* ----------------------------------------------------------- */
+
+static void do_cancel_buffers(struct cx23885_tsport *port, char *reason)
 {
-	struct ene_device *dev = rdev->priv;
+	struct cx23885_dmaqueue *q = &port->mpegq;
+	struct cx23885_buffer *buf;
 	unsigned long flags;
 
-	dev->tx_buffer = buf;
-	dev->tx_len = n;
-	dev->tx_pos = 0;
-	dev->tx_reg = 0;
-	dev->tx_done = 0;
-	dev->tx_sample = 0;
-	dev->tx_sample_pulse = false;
-
-	dbg("TX: %d samples", dev->tx_len);
-
-	spin_lock_irqsave(&dev->hw_lock, flags);
-
-	ene_tx_enable(dev);
-
-	/* Transmit first two samples */
-	ene_tx_sample(dev);
-	ene_tx_sample(dev);
-
-	spin_unlock_irqrestore(&dev->hw_lock, flags);
-
-	if (wait_for_completion_timeout(&dev->tx_complete, 2 * HZ) == 0) {
-		dbg("TX: timeout");
-		spin_lock_irqsave(&dev->hw_lock, flags);
-		ene_tx_disable(dev);
-		spin_unlock_irqrestore(&dev->hw_lock, flags);
-	} else
-		dbg("TX: done");
-	return n;
+	spin_lock_irqsave(&port->slock, flags);
+	while (!list_empty(&q->active)) {
+		buf = list_entry(q->active.next, struct cx23885_buffer,
+				 queue);
+		list_del(&buf->queue);
+		vb2_buffer_done(&buf->vb.vb2_buf, VB2_BUF_STATE_ERROR);
+		dprintk(1, "[%p/%d] %s - dma=0x%08lx\n",
+			buf, buf->vb.vb2_buf.index, reason,
+			(unsigned long)buf->risc.dma);
+	}
+	spin_unlock_irqrestore(&port->slock, flags);
 }
 
-/* probe entry */
-static int ene_probe(struct pnp_dev *pnp_dev, const struct pnp_device_id *id)
+void cx23885_cancel_buffers(struct cx23885_tsport *port)
 {
-	int error = -ENOMEM;
-	struct rc_dev *rdev;
-	struct ene_device *dev;
+	dprintk(1, "%s()\n", __func__);
+	cx23885_stop_dma(port);
+	do_cancel_buffers(port, "cancel");
+}
 
-	/* allocate memory */
-	dev = kzalloc(sizeof(struct ene_device), GFP_KERNEL);
-	rdev = rc_allocate_device(RC_DRIVER_IR_RAW);
-	if (!dev || !rdev)
-		goto exit_free_dev_rdev;
+int cx23885_irq_417(struct cx23885_dev *dev, u32 status)
+{
+	/* FIXME: port1 assumption here. */
+	struct cx23885_tsport *port = &dev->ts1;
+	int count = 0;
+	int handled = 0;
 
-	/* validate resources */
-	error = -ENODEV;
+	if (status == 0)
+		return handled;
 
-	/* init these to -1, as 0 is valid for both */
-	dev->hw_io = -1;
-	dev->irq = -1;
+	count = cx_read(port->reg_gpcnt);
+	dprintk(7, "status: 0x%08x  mask: 0x%08x count: 0x%x\n",
+		status, cx_read(port->reg_ts_int_msk), count);
 
-	if (!pnp_port_valid(pnp_dev, 0) ||
-	    pnp_port_len(pnp_dev, 0) < ENE_IO_SIZE)
-		goto exit_free_dev_rdev;
+	if ((status & VID_B_MSK_BAD_PKT)         ||
+		(status & VID_B_MSK_OPC_ERR)     ||
+		(status & VID_B_MSK_VBI_OPC_ERR) ||
+		(status & VID_B_MSK_SYNC)        ||
+		(status & VID_B_MSK_VBI_SYNC)    ||
+		(status & VID_B_MSK_OF)          ||
+		(status & VID_B_MSK_VBI_OF)) {
+		pr_err("%s: V4L mpeg risc op code error, status = 0x%x\n",
+		       dev->name, status);
+		if (status & VID_B_MSK_BAD_PKT)
+			dprintk(1, "        VID_B_MSK_BAD_PKT\n");
+		if (status & VID_B_MSK_OPC_ERR)
+			dprintk(1, "        VID_B_MSK_OPC_ERR\n");
+		if (status & VID_B_MSK_VBI_OPC_ERR)
+			dprintk(1, "        VID_B_MSK_VBI_OPC_ERR\n");
+		if (status & VID_B_MSK_SYNC)
+			dprintk(1, "        VID_B_MSK_SYNC\n");
+		if (status & VID_B_MSK_VBI_SYNC)
+			dprintk(1, "        VID_B_MSK_VBI_SYNC\n");
+		if (status & VID_B_MSK_OF)
+			dprintk(1, "        VID_B_MSK_OF\n");
+		if (status & VID_B_MSK_VBI_OF)
+			dprintk(1, "        VID_B_MSK_VBI_OF\n");
 
-	if (!pnp_irq_valid(pnp_dev, 0))
-		goto exit_free_dev_rdev;
-
-	spin_lock_init(&dev->hw_lock);
-
-	dev->hw_io = pnp_port_start(pnp_dev, 0);
-	dev->irq = pnp_irq(pnp_dev, 0);
-
-
-	pnp_set_drvdata(pnp_dev, dev);
-	dev->pnp_dev = pnp_dev;
-
-	/* don't allow too short/long sample periods */
-	if (sample_period < 5 || sample_period > 0x7F)
-		sample_period = ENE_DEFAULT_SAMPLE_PERIOD;
-
-	/* detect hardware version and features */
-	error = ene_hw_detect(dev);
-	if (error)
-		goto exit_free_dev_rdev;
-
-	if (!dev->hw_learning_and_tx_capable && txsim) {
-		dev->hw_learning_and_tx_capable = true;
-		timer_setup(&dev->tx_sim_timer, ene_tx_irqsim, 0);
-		pr_warn("Simulation of TX activated\n");
+		cx_clear(port->reg_dma_ctl, port->dma_ctl_val);
+		cx23885_sram_channel_dump(dev,
+			&dev->sram_channels[port->sram_chno]);
+		cx23885_417_check_encoder(dev);
+	} else if (status & VID_B_MSK_RISCI1) {
+		dprintk(7, "        VID_B_MSK_RISCI1\n");
+		spin_lock(&port->slock);
+		cx23885_wakeup(port, &port->mpegq, count);
+		spin_unlock(&port->slock);
+	}
+	if (status) {
+		cx_write(port->reg_ts_int_stat, status);
+		handled = 1;
 	}
 
-	if (!dev->hw_learning_and_tx_capable)
-		learning_mode_force = false;
+	return handled;
+}
 
-	rdev->allowed_protocols = RC_PROTO_BIT_ALL_IR_DECODER;
-	rdev->priv = dev;
-	rdev->open = ene_open;
-	rdev->close = ene_close;
-	rdev->s_idle = ene_set_idle;
-	rdev->driver_name = ENE_DRIVER_NAME;
-	rdev->map_name = RC_MAP_RC6_MCE;
-	rdev->device_name = "ENE eHome Infrared Remote Receiver";
+static int cx23885_irq_ts(struct cx23885_tsport *port, u32 status)
+{
+	struct cx23885_dev *dev = port->dev;
+	int handled = 0;
+	u32 count;
 
-	if (dev->hw_learning_and_tx_capable) {
-		rdev->s_wideband_receiver = ene_set_learning_mode;
-		init_completion(&dev->tx_complete);
-		rdev->tx_ir = ene_transmit;
-		rdev->s_tx_mask = ene_set_tx_mask;
-		rdev->s_tx_carrier = ene_set_tx_carrier;
-		rdev->s_tx_duty_cycle = ene_set_tx_duty_cycle;
-		rdev->s_carrier_report = ene_set_carrier_report;
-		rdev->device_name = "ENE eHome Infrared Remote Transceiver";
+	if ((status & VID_BC_MSK_OPC_ERR) ||
+		(status & VID_BC_MSK_BAD_PKT) ||
+		(status & VID_BC_MSK_SYNC) ||
+		(status & VID_BC_MSK_OF)) {
+
+		if (status & VID_BC_MSK_OPC_ERR)
+			dprintk(7, " (VID_BC_MSK_OPC_ERR 0x%08x)\n",
+				VID_BC_MSK_OPC_ERR);
+
+		if (status & VID_BC_MSK_BAD_PKT)
+			dprintk(7, " (VID_BC_MSK_BAD_PKT 0x%08x)\n",
+				VID_BC_MSK_BAD_PKT);
+
+		if (status & VID_BC_MSK_SYNC)
+			dprintk(7, " (VID_BC_MSK_SYNC    0x%08x)\n",
+				VID_BC_MSK_SYNC);
+
+		if (status & VID_BC_MSK_OF)
+			dprintk(7, " (VID_BC_MSK_OF      0x%08x)\n",
+				VID_BC_MSK_OF);
+
+		pr_err("%s: mpeg risc op code error\n", dev->name);
+
+		cx_clear(port->reg_dma_ctl, port->dma_ctl_val);
+		cx23885_sram_channel_dump(dev,
+			&dev->sram_channels[port->sram_chno]);
+
+	} else if (status & VID_BC_MSK_RISCI1) {
+
+		dprintk(7, " (RISCI1            0x%08x)\n", VID_BC_MSK_RISCI1);
+
+		spin_lock(&port->slock);
+		count = cx_read(port->reg_gpcnt);
+		cx23885_wakeup(port, &port->mpegq, count);
+		spin_unlock(&port->slock);
+
+	}
+	if (status) {
+		cx_write(port->reg_ts_int_stat, status);
+		handled = 1;
 	}
 
-	dev->rdev = rdev;
+	return handled;
+}
 
-	ene_rx_setup_hw_buffer(dev);
-	ene_setup_default_settings(dev);
-	ene_setup_hw_settings(dev);
+static irqreturn_t cx23885_irq(int irq, void *dev_id)
+{
+	struct cx23885_dev *dev = dev_id;
+	struct cx23885_tsport *ts1 = &dev->ts1;
+	struct cx23885_tsport *ts2 = &dev->ts2;
+	u32 pci_status, pci_mask;
+	u32 vida_status, vida_mask;
+	u32 audint_status, audint_mask;
+	u32 ts1_status, ts1_mask;
+	u32 ts2_status, ts2_mask;
+	int vida_count = 0, ts1_count = 0, ts2_count = 0, handled = 0;
+	int audint_count = 0;
+	bool subdev_handled;
 
-	device_set_wakeup_capable(&pnp_dev->dev, true);
-	device_set_wakeup_enable(&pnp_dev->dev, true);
-
-	error = rc_register_device(rdev);
-	if (error < 0)
-		goto exit_free_dev_rdev;
-
-	/* claim the resources */
-	error = -EBUSY;
-	if (!request_region(dev->hw_io, ENE_IO_SIZE, ENE_DRIVER_NAME)) {
-		goto exit_unregister_device;
+	pci_status = cx_read(PCI_INT_STAT);
+	pci_mask = cx23885_irq_get_mask(dev);
+	if ((pci_status & pci_mask) == 0) {
+		dprintk(7, "pci_status: 0x%08x  pci_mask: 0x%08x\n",
+			pci_status, pci_mask);
+		goto out;
 	}
 
-	if (request_irq(dev->irq, ene_isr,
-			IRQF_SHARED, ENE_DRIVER_NAME, (void *)dev)) {
-		goto exit_release_hw_io;
+	vida_status = cx_read(VID_A_INT_STAT);
+	vida_mask = cx_read(VID_A_INT_MSK);
+	audint_status = cx_read(AUDIO_INT_INT_STAT);
+	audint_mask = cx_read(AUDIO_INT_INT_MSK);
+	ts1_status = cx_read(VID_B_INT_STAT);
+	ts1_mask = cx_read(VID_B_INT_MSK);
+	ts2_status = cx_read(VID_C_INT_STAT);
+	ts2_mask = cx_read(VID_C_INT_MSK);
+
+	if (((pci_status & pci_mask) == 0) &&
+		((ts2_status & ts2_mask) == 0) &&
+		((ts1_status & ts1_mask) == 0))
+		goto out;
+
+	vida_count = cx_read(VID_A_GPCNT);
+	audint_count = cx_read(AUD_INT_A_GPCNT);
+	ts1_count = cx_read(ts1->reg_gpcnt);
+	ts2_count = cx_read(ts2->reg_gpcnt);
+	dprintk(7, "pci_status: 0x%08x  pci_mask: 0x%08x\n",
+		pci_status, pci_mask);
+	dprintk(7, "vida_status: 0x%08x vida_mask: 0x%08x count: 0x%x\n",
+		vida_status, vida_mask, vida_count);
+	dprintk(7, "audint_status: 0x%08x audint_mask: 0x%08x count: 0x%x\n",
+		audint_status, audint_mask, audint_count);
+	dprintk(7, "ts1_status: 0x%08x  ts1_mask: 0x%08x count: 0x%x\n",
+		ts1_status, ts1_mask, ts1_count);
+	dprintk(7, "ts2_status: 0x%08x  ts2_mask: 0x%08x count: 0x%x\n",
+		ts2_status, ts2_mask, ts2_count);
+
+	if (pci_status & (PCI_MSK_RISC_RD | PCI_MSK_RISC_WR |
+			  PCI_MSK_AL_RD   | PCI_MSK_AL_WR   | PCI_MSK_APB_DMA |
+			  PCI_MSK_VID_C   | PCI_MSK_VID_B   | PCI_MSK_VID_A   |
+			  PCI_MSK_AUD_INT | PCI_MSK_AUD_EXT |
+			  PCI_MSK_GPIO0   | PCI_MSK_GPIO1   |
+			  PCI_MSK_AV_CORE | PCI_MSK_IR)) {
+
+		if (pci_status & PCI_MSK_RISC_RD)
+			dprintk(7, " (PCI_MSK_RISC_RD   0x%08x)\n",
+				PCI_MSK_RISC_RD);
+
+		if (pci_status & PCI_MSK_RISC_WR)
+			dprintk(7, " (PCI_MSK_RISC_WR   0x%08x)\n",
+				PCI_MSK_RISC_WR);
+
+		if (pci_status & PCI_MSK_AL_RD)
+			dprintk(7, " (PCI_MSK_AL_RD     0x%08x)\n",
+				PCI_MSK_AL_RD);
+
+		if (pci_status & PCI_MSK_AL_WR)
+			dprintk(7, " (PCI_MSK_AL_WR     0x%08x)\n",
+				PCI_MSK_AL_WR);
+
+		if (pci_status & PCI_MSK_APB_DMA)
+			dprintk(7, " (PCI_MSK_APB_DMA   0x%08x)\n",
+				PCI_MSK_APB_DMA);
+
+		if (pci_status & PCI_MSK_VID_C)
+			dprintk(7, " (PCI_MSK_VID_C     0x%08x)\n",
+				PCI_MSK_VID_C);
+
+		if (pci_status & PCI_MSK_VID_B)
+			dprintk(7, " (PCI_MSK_VID_B     0x%08x)\n",
+				PCI_MSK_VID_B);
+
+		if (pci_status & PCI_MSK_VID_A)
+			dprintk(7, " (PCI_MSK_VID_A     0x%08x)\n",
+				PCI_MSK_VID_A);
+
+		if (pci_status & PCI_MSK_AUD_INT)
+			dprintk(7, " (PCI_MSK_AUD_INT   0x%08x)\n",
+				PCI_MSK_AUD_INT);
+
+		if (pci_status & PCI_MSK_AUD_EXT)
+			dprintk(7, " (PCI_MSK_AUD_EXT   0x%08x)\n",
+				PCI_MSK_AUD_EXT);
+
+		if (pci_status & PCI_MSK_GPIO0)
+			dprintk(7, " (PCI_MSK_GPIO0     0x%08x)\n",
+				PCI_MSK_GPIO0);
+
+		if (pci_status & PCI_MSK_GPIO1)
+			dprintk(7, " (PCI_MSK_GPIO1     0x%08x)\n",
+				PCI_MSK_GPIO1);
+
+		if (pci_status & PCI_MSK_AV_CORE)
+			dprintk(7, " (PCI_MSK_AV_CORE   0x%08x)\n",
+				PCI_MSK_AV_CORE);
+
+		if (pci_status & PCI_MSK_IR)
+			dprintk(7, " (PCI_MSK_IR        0x%08x)\n",
+				PCI_MSK_IR);
 	}
 
-	pr_notice("driver has been successfully loaded\n");
+	if (cx23885_boards[dev->board].ci_type == 1 &&
+			(pci_status & (PCI_MSK_GPIO1 | PCI_MSK_GPIO0)))
+		handled += netup_ci_slot_status(dev, pci_status);
+
+	if (cx23885_boards[dev->board].ci_type == 2 &&
+			(pci_status & PCI_MSK_GPIO0))
+		handled += altera_ci_irq(dev);
+
+	if (ts1_status) {
+		if (cx23885_boards[dev->board].portb == CX23885_MPEG_DVB)
+			handled += cx23885_irq_ts(ts1, ts1_status);
+		else
+		if (cx23885_boards[dev->board].portb == CX23885_MPEG_ENCODER)
+			handled += cx23885_irq_417(dev, ts1_status);
+	}
+
+	if (ts2_status) {
+		if (cx23885_boards[dev->board].portc == CX23885_MPEG_DVB)
+			handled += cx23885_irq_ts(ts2, ts2_status);
+		else
+		if (cx23885_boards[dev->board].portc == CX23885_MPEG_ENCODER)
+			handled += cx23885_irq_417(dev, ts2_status);
+	}
+
+	if (vida_status)
+		handled += cx23885_video_irq(dev, vida_status);
+
+	if (audint_status)
+		handled += cx23885_audio_irq(dev, audint_status, audint_mask);
+
+	if (pci_status & PCI_MSK_IR) {
+		subdev_handled = false;
+		v4l2_subdev_call(dev->sd_ir, core, interrupt_service_routine,
+				 pci_status, &subdev_handled);
+		if (subdev_handled)
+			handled++;
+	}
+
+	if ((pci_status & pci_mask) & PCI_MSK_AV_CORE) {
+		cx23885_irq_disable(dev, PCI_MSK_AV_CORE);
+		schedule_work(&dev->cx25840_work);
+		handled++;
+	}
+
+	if (handled)
+		cx_write(PCI_INT_STAT, pci_status & pci_mask);
+out:
+	return IRQ_RETVAL(handled);
+}
+
+static void cx23885_v4l2_dev_notify(struct v4l2_subdev *sd,
+				    unsigned int notification, void *arg)
+{
+	struct cx23885_dev *dev;
+
+	if (sd == NULL)
+		return;
+
+	dev = to_cx23885(sd->v4l2_dev);
+
+	switch (notification) {
+	case V4L2_SUBDEV_IR_RX_NOTIFY: /* Possibly called in an IRQ context */
+		if (sd == dev->sd_ir)
+			cx23885_ir_rx_v4l2_dev_notify(sd, *(u32 *)arg);
+		break;
+	case V4L2_SUBDEV_IR_TX_NOTIFY: /* Possibly called in an IRQ context */
+		if (sd == dev->sd_ir)
+			cx23885_ir_tx_v4l2_dev_notify(sd, *(u32 *)arg);
+		break;
+	}
+}
+
+static void cx23885_v4l2_dev_notify_init(struct cx23885_dev *dev)
+{
+	INIT_WORK(&dev->cx25840_work, cx23885_av_work_handler);
+	INIT_WORK(&dev->ir_rx_work, cx23885_ir_rx_work_handler);
+	INIT_WORK(&dev->ir_tx_work, cx23885_ir_tx_work_handler);
+	dev->v4l2_dev.notify = cx23885_v4l2_dev_notify;
+}
+
+static inline int encoder_on_portb(struct cx23885_dev *dev)
+{
+	return cx23885_boards[dev->board].portb == CX23885_MPEG_ENCODER;
+}
+
+static inline int encoder_on_portc(struct cx23885_dev *dev)
+{
+	return cx23885_boards[dev->board].portc == CX23885_MPEG_ENCODER;
+}
+
+/* Mask represents 32 different GPIOs, GPIO's are split into multiple
+ * registers depending on the board configuration (and whether the
+ * 417 encoder (wi it's own GPIO's) are present. Each GPIO bit will
+ * be pushed into the correct hardware register, regardless of the
+ * physical location. Certain registers are shared so we sanity check
+ * and report errors if we think we're tampering with a GPIo that might
+ * be assigned to the encoder (and used for the host bus).
+ *
+ * GPIO  2 through  0 - On the cx23885 bridge
+ * GPIO 18 through  3 - On the cx23417 host bus interface
+ * GPIO 23 through 19 - On the cx25840 a/v core
+ */
+void cx23885_gpio_set(struct cx23885_dev *dev, u32 mask)
+{
+	if (mask & 0x7)
+		cx_set(GP0_IO, mask & 0x7);
+
+	if (mask & 0x0007fff8) {
+		if (encoder_on_portb(dev) || encoder_on_portc(dev))
+			pr_err("%s: Setting GPIO on encoder ports\n",
+				dev->name);
+		cx_set(MC417_RWD, (mask & 0x0007fff8) >> 3);
+	}
+
+	/* TODO: 23-19 */
+	if (mask & 0x00f80000)
+		pr_info("%s: Unsupported\n", dev->name);
+}
+
+void cx23885_gpio_clear(struct cx23885_dev *dev, u32 mask)
+{
+	if (mask & 0x00000007)
+		cx_clear(GP0_IO, mask & 0x7);
+
+	if (mask & 0x0007fff8) {
+		if (encoder_on_portb(dev) || encoder_on_portc(dev))
+			pr_err("%s: Clearing GPIO moving on encoder ports\n",
+				dev->name);
+		cx_clear(MC417_RWD, (mask & 0x7fff8) >> 3);
+	}
+
+	/* TODO: 23-19 */
+	if (mask & 0x00f80000)
+		pr_info("%s: Unsupported\n", dev->name);
+}
+
+u32 cx23885_gpio_get(struct cx23885_dev *dev, u32 mask)
+{
+	if (mask & 0x00000007)
+		return (cx_read(GP0_IO) >> 8) & mask & 0x7;
+
+	if (mask & 0x0007fff8) {
+		if (encoder_on_portb(dev) || encoder_on_portc(dev))
+			pr_err("%s: Reading GPIO moving on encoder ports\n",
+				dev->name);
+		return (cx_read(MC417_RWD) & ((mask & 0x7fff8) >> 3)) << 3;
+	}
+
+	/* TODO: 23-19 */
+	if (mask & 0x00f80000)
+		pr_info("%s: Unsupported\n", dev->name);
+
 	return 0;
-
-exit_release_hw_io:
-	release_region(dev->hw_io, ENE_IO_SIZE);
-exit_unregister_device:
-	rc_unregister_device(rdev);
-	rdev = NULL;
-exit_free_dev_rdev:
-	rc_free_device(rdev);
-	kfree(dev);
-	return error;
 }
 
-/* main unload function */
-static void ene_remove(struct pnp_dev *pnp_dev)
+void cx23885_gpio_enable(struct cx23885_dev *dev, u32 mask, int asoutput)
 {
-	struct ene_device *dev = pnp_get_drvdata(pnp_dev);
-	unsigned long flags;
+	if ((mask & 0x00000007) && asoutput)
+		cx_set(GP0_IO, (mask & 0x7) << 16);
+	else if ((mask & 0x00000007) && !asoutput)
+		cx_clear(GP0_IO, (mask & 0x7) << 16);
 
-	spin_lock_irqsave(&dev->hw_lock, flags);
-	ene_rx_disable(dev);
-	ene_rx_restore_hw_buffer(dev);
-	spin_unlock_irqrestore(&dev->hw_lock, flags);
+	if (mask & 0x0007fff8) {
+		if (encoder_on_portb(dev) || encoder_on_portc(dev))
+			pr_err("%s: Enabling GPIO on encoder ports\n",
+				dev->name);
+	}
 
-	free_irq(dev->irq, dev);
-	release_region(dev->hw_io, ENE_IO_SIZE);
-	rc_unregister_device(dev->rdev);
-	kfree(dev);
+	/* MC417_OEN is active low for output, write 1 for an input */
+	if ((mask & 0x0007fff8) && asoutput)
+		cx_clear(MC417_OEN, (mask & 0x7fff8) >> 3);
+
+	else if ((mask & 0x0007fff8) && !asoutput)
+		cx_set(MC417_OEN, (mask & 0x7fff8) >> 3);
+
+	/* TODO: 23-19 */
 }
 
-/* enable wake on IR (wakes on specific button on original remote) */
-static void ene_enable_wake(struct ene_device *dev, bool enable)
-{
-	dbg("wake on IR %s", enable ? "enabled" : "disabled");
-	ene_set_clear_reg_mask(dev, ENE_FW1, ENE_FW1_WAKE, enable);
-}
-
-#ifdef CONFIG_PM
-static int ene_suspend(struct pnp_dev *pnp_dev, pm_message_t state)
-{
-	struct ene_device *dev = pnp_get_drvdata(pnp_dev);
-	bool wake = device_may_wakeup(&dev->pnp_dev->dev);
-
-	if (!wake && dev->rx_enabled)
-		ene_rx_disable_hw(dev);
-
-	ene_enable_wake(dev, wake);
-	return 0;
-}
-
-static int ene_resume(struct pnp_dev *pnp_dev)
-{
-	struct ene_device *dev = pnp_get_drvdata(pnp_dev);
-	ene_setup_hw_settings(dev);
-
-	if (dev->rx_enabled)
-		ene_rx_enable(dev);
-
-	ene_enable_wake(dev, false);
-	return 0;
-}
-#endif
-
-static void ene_shutdown(struct pnp_dev *pnp_dev)
-{
-	struct ene_device *dev = pnp_get_drvdata(pnp_dev);
-	ene_enable_wake(dev, true);
-}
-
-static const struct pnp_device_id ene_ids[] = {
-	{.id = "ENE0100",},
-	{.id = "ENE0200",},
-	{.id = "ENE0201",},
-	{.id = "ENE0202",},
-	{},
+static struct {
+	int vendor, dev;
+} const broken_dev_id[] = {
+	/* According with
+	 * https://openbenchmarking.org/system/1703021-RI-AMDZEN08075/Ryzen%207%201800X/lspci,
+	 * 0x1451 is PCI ID for the IOMMU found on Ryzen
+	 */
+	{ PCI_VENDOR_ID_AMD, 0x1451 },
+	/* According to sudo lspci -nn,
+	 * 0x1423 is the PCI ID for the IOMMU found on Kaveri
+	 */
+	{ PCI_VENDOR_ID_AMD, 0x1423 },
+	/* 0x1481 is the PCI ID for the IOMMU found on Starship/Matisse
+	 */
+	{ PCI_VENDOR_ID_AMD, 0x1481 },
+	/* 0x1419 is the PCI ID for the IOMMU found on 15h (Models 10h-1fh) family
+	 */
+	{ PCI_VENDOR_ID_AMD, 0x1419 },
+	/* 0x5a23 is the PCI ID for the IOMMU found on RD890S/RD990
+	 */
+	{ PCI_VENDOR_ID_ATI, 0x5a23 },
 };
 
-static struct pnp_driver ene_driver = {
-	.name = ENE_DRIVER_NAME,
-	.id_table = ene_ids,
-	.flags = PNP_DRIVER_RES_DO_NOT_CHANGE,
+static bool cx23885_does_need_dma_reset(void)
+{
+	int i;
+	struct pci_dev *pdev = NULL;
 
-	.probe = ene_probe,
-	.remove = ene_remove,
-#ifdef CONFIG_PM
-	.suspend = ene_suspend,
-	.resume = ene_resume,
-#endif
-	.shutdown = ene_shutdown,
+	if (dma_reset_workaround == 0)
+		return false;
+	else if (dma_reset_workaround == 2)
+		return true;
+
+	for (i = 0; i < ARRAY_SIZE(broken_dev_id); i++) {
+		pdev = pci_get_device(broken_dev_id[i].vendor,
+				      broken_dev_id[i].dev, NULL);
+		if (pdev) {
+			pci_dev_put(pdev);
+			return true;
+		}
+	}
+	return false;
+}
+
+static int cx23885_initdev(struct pci_dev *pci_dev,
+			   const struct pci_device_id *pci_id)
+{
+	struct cx23885_dev *dev;
+	struct v4l2_ctrl_handler *hdl;
+	int err;
+
+	dev = kzalloc(sizeof(*dev), GFP_KERNEL);
+	if (NULL == dev)
+		return -ENOMEM;
+
+	dev->need_dma_reset = cx23885_does_need_dma_reset();
+
+	err = v4l2_device_register(&pci_dev->dev, &dev->v4l2_dev);
+	if (err < 0)
+		goto fail_free;
+
+	hdl = &dev->ctrl_handler;
+	v4l2_ctrl_handler_init(hdl, 6);
+	if (hdl->error) {
+		err = hdl->error;
+		goto fail_ctrl;
+	}
+	dev->v4l2_dev.ctrl_handler = hdl;
+
+	/* Prepare to handle notifications from subdevices */
+	cx23885_v4l2_dev_notify_init(dev);
+
+	/* pci init */
+	dev->pci = pci_dev;
+	if (pci_enable_device(pci_dev)) {
+		err = -EIO;
+		goto fail_ctrl;
+	}
+
+	if (cx23885_dev_setup(dev) < 0) {
+		err = -EINVAL;
+		goto fail_ctrl;
+	}
+
+	/* print pci info */
+	dev->pci_rev = pci_dev->revision;
+	pci_read_config_byte(pci_dev, PCI_LATENCY_TIMER,  &dev->pci_lat);
+	pr_info("%s/0: found at %s, rev: %d, irq: %d, latency: %d, mmio: 0x%llx\n",
+	       dev->name,
+	       pci_name(pci_dev), dev->pci_rev, pci_dev->irq,
+	       dev->pci_lat,
+		(unsigned long long)pci_resource_start(pci_dev, 0));
+
+	pci_set_master(pci_dev);
+	err = dma_set_mask(&pci_dev->dev, 0xffffffff);
+	if (err) {
+		pr_err("%s/0: Oops: no 32bit PCI DMA ???\n", dev->name);
+		goto fail_ctrl;
+	}
+
+	err = request_irq(pci_dev->irq, cx23885_irq,
+			  IRQF_SHARED, dev->name, dev);
+	if (err < 0) {
+		pr_err("%s: can't get IRQ %d\n",
+		       dev->name, pci_dev->irq);
+		goto fail_irq;
+	}
+
+	switch (dev->board) {
+	case CX23885_BOARD_NETUP_DUAL_DVBS2_CI:
+		cx23885_irq_add_enable(dev, PCI_MSK_GPIO1 | PCI_MSK_GPIO0);
+		break;
+	case CX23885_BOARD_NETUP_DUAL_DVB_T_C_CI_RF:
+		cx23885_irq_add_enable(dev, PCI_MSK_GPIO0);
+		break;
+	}
+
+	/*
+	 * The CX2388[58] IR controller can start firing interrupts when
+	 * enabled, so these have to take place after the cx23885_irq() handler
+	 * is hooked up by the call to request_irq() above.
+	 */
+	cx23885_ir_pci_int_enable(dev);
+	cx23885_input_init(dev);
+
+	return 0;
+
+fail_irq:
+	cx23885_dev_unregister(dev);
+fail_ctrl:
+	v4l2_ctrl_handler_free(hdl);
+	v4l2_device_unregister(&dev->v4l2_dev);
+fail_free:
+	kfree(dev);
+	return err;
+}
+
+static void cx23885_finidev(struct pci_dev *pci_dev)
+{
+	struct v4l2_device *v4l2_dev = pci_get_drvdata(pci_dev);
+	struct cx23885_dev *dev = to_cx23885(v4l2_dev);
+
+	cx23885_input_fini(dev);
+	cx23885_ir_fini(dev);
+
+	cx23885_shutdown(dev);
+
+	/* unregister stuff */
+	free_irq(pci_dev->irq, dev);
+
+	pci_disable_device(pci_dev);
+
+	cx23885_dev_unregister(dev);
+	v4l2_ctrl_handler_free(&dev->ctrl_handler);
+	v4l2_device_unregister(v4l2_dev);
+	kfree(dev);
+}
+
+static const struct pci_device_id cx23885_pci_tbl[] = {
+	{
+		/* CX23885 */
+		.vendor       = 0x14f1,
+		.device       = 0x8852,
+		.subvendor    = PCI_ANY_ID,
+		.subdevice    = PCI_ANY_ID,
+	}, {
+		/* CX23887 Rev 2 */
+		.vendor       = 0x14f1,
+		.device       = 0x8880,
+		.subvendor    = PCI_ANY_ID,
+		.subdevice    = PCI_ANY_ID,
+	}, {
+		/* --- end of list --- */
+	}
+};
+MODULE_DEVICE_TABLE(pci, cx23885_pci_tbl);
+
+static struct pci_driver cx23885_pci_driver = {
+	.name     = "cx23885",
+	.id_table = cx23885_pci_tbl,
+	.probe    = cx23885_initdev,
+	.remove   = cx23885_finidev,
 };
 
-module_param(sample_period, int, S_IRUGO);
-MODULE_PARM_DESC(sample_period, "Hardware sample period (50 us default)");
+static int __init cx23885_init(void)
+{
+	pr_info("cx23885 driver version %s loaded\n",
+		CX23885_VERSION);
+	return pci_register_driver(&cx23885_pci_driver);
+}
 
-module_param(learning_mode_force, bool, S_IRUGO);
-MODULE_PARM_DESC(learning_mode_force, "Enable learning mode by default");
+static void __exit cx23885_fini(void)
+{
+	pci_unregister_driver(&cx23885_pci_driver);
+}
 
-module_param(debug, int, S_IRUGO | S_IWUSR);
-MODULE_PARM_DESC(debug, "Debug level");
+module_init(cx23885_init);
+module_exit(cx23885_fini);
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    // SPDX-License-Identifier: GPL-2.0-or-later
+/*
+ *  Driver for the Conexant CX23885 PCIe bridge
+ *
+ *  Copyright (c) 2006 Steven Toth <stoth@linuxtv.org>
+ */
 
-module_param(txsim, bool, S_IRUGO);
-MODULE_PARM_DESC(txsim,
-	"Simulate TX features on unsupported hardware (dangerous)");
+#include "cx23885.h"
 
-MODULE_DEVICE_TABLE(pnp, ene_ids);
-MODULE_DESCRIPTION
-	("Infrared input driver for KB3926B/C/D/E/F (aka ENE0100/ENE0200/ENE0201/ENE0202) CIR port");
+#include <linux/module.h>
+#include <linux/init.h>
+#include <linux/device.h>
+#include <linux/fs.h>
+#include <linux/kthread.h>
+#include <linux/file.h>
+#include <linux/suspend.h>
 
-MODULE_AUTHOR("Maxim Levitsky");
-MODULE_LICENSE("GPL");
+#include <media/v4l2-common.h>
 
-module_pnp_driver(ene_driver);
+#include <media/dvb_ca_en50221.h>
+#include "s5h1409.h"
+#include "s5h1411.h"
+#include "mt2131.h"
+#include "tda8290.h"
+#include "tda18271.h"
+#include "lgdt330x.h"
+#include "xc4000.h"
+#include "xc5000.h"
+#include "max2165.h"
+#include "tda10048.h"
+#include "xc2028.h"
+#include "tuner-simple.h"
+#include "dib7000p.h"
+#include "dib0070.h"
+#include "dibx000_common.h"
+#include "zl10353.h"
+#include "stv0900.h"
+#include "stv0900_reg.h"
+#include "stv6110.h"
+#include "lnbh24.h"
+#include "cx24116.h"
+#include "cx24117.h"
+#include "cimax2.h"
+#include "lgs8gxx.h"
+#include "netup-eeprom.h"
+#include "netup-init.h"
+#include "lgdt3305.h"
+#include "atbm8830.h"
+#include "ts2020.h"
+#include "ds3000.h"
+#include "cx23885-f300.h"
+#include "altera-ci.h"
+#include "stv0367.h"
+#include "drxk.h"
+#include "mt2063.h"
+#include "stv090x.h"
+#include "stb6100.h"
+#include "stb6100_cfg.h"
+#include "tda10071.h"
+#include "a8293.h"
+#include "mb86a20s.h"
+#include "si2165.h"
+#include "si2168.h"
+#include "si2157.h"
+#include "sp2.h"
+#include "m88ds3103.h"
+#include "m88rs6000t.h"
+#include "lgdt3306a.h"
+
+static unsigned int debug;
+
+#define dprintk(level, fmt, arg...)\
+	do { if (debug >= level)\
+		printk(KERN_DEBUG pr_fmt("%s dvb: " fmt), \
+			__func__, ##arg); \
+	} while (0)
+
+/* ------------------------------------------------------------------ */
+
+static unsigned int alt_tuner;
+module_param(alt_tuner, int, 0644);
+MODULE_PARM_DESC(alt_tuner, "Enable alternate tuner configuration");
+
+DVB_DEFINE_MOD_OPT_ADAPTER_NR(adapter_nr);
+
+/* ------------------------------------------------------------------ */
+
+static int queue_setup(struct vb2_queue *q,
+			   unsigned int *num_buffers, unsigned int *num_planes,
+			   unsigned int sizes[], struct device *alloc_devs[])
+{
+	struct cx23885_tsport *port = q->drv_priv;
+
+	port->ts_packet_size  = 188 * 4;
+	port->ts_packet_count = 32;
+	*num_planes = 1;
+	sizes[0] = port->ts_packet_size * port->ts_packet_count;
+	*num_buffers = 32;
+	return 0;
+}
+
+
+static int buffer_prepare(struct vb2_buffer *vb)
+{
+	struct vb2_v4l2_buffer *vbuf = to_vb2_v4l2_buffer(vb);
+	struct cx23885_tsport *port = vb->vb2_queue->drv_priv;
+	struct cx23885_buffer *buf =
+		container_of(vbuf, struct cx23885_buffer, vb);
+
+	return cx23885_buf_prepare(buf, port);
+}
+
+static void buffer_finish(struct vb2_buffer *vb)
+{
+	struct vb2_v4l2_buffer *vbuf = to_vb2_v4l2_buffer(vb);
+	struct cx23885_tsport *port = vb->vb2_queue->drv_priv;
+	struct cx23885_dev *dev = port->dev;
+	struct cx23885_buffer *buf = container_of(vbuf,
+		struct cx23885_buffer, vb);
+
+	cx23885_free_buffer(dev, buf);
+}
+
+static void buffer_queue(struct vb2_buffer *vb)
+{
+	struct vb2_v4l2_buffer *vbuf = to_vb2_v4l2_buffer(vb);
+	struct cx23885_tsport *port = vb->vb2_queue->drv_priv;
+	struct cx23885_buffer   *buf = container_of(vbuf,
+		struct cx23885_buffer, vb);
+
+	cx23885_buf_queue(port, buf);
+}
+
+static void cx23885_dvb_gate_ctrl(struct cx23885_tsport  *port, int open)
+{
+	struct vb2_dvb_frontends *f;
+	struct vb2_dvb_frontend *fe;
+
+	f = &port->frontends;
+
+	if (f->gate <= 1) /* undefined or fe0 */
+		fe = vb2_dvb_get_frontend(f, 1);
+	else
+		fe = vb2_dvb_get_frontend(f, f->gate);
+
+	if (fe && fe->dvb.frontend && fe->dvb.frontend->ops.i2c_gate_ctrl)
+		fe->dvb.frontend->ops.i2c_gate_ctrl(fe->dvb.frontend, open);
+}
+
+static int cx23885_start_streaming(struct vb2_queue *q, unsigned int count)
+{
+	struct cx23885_tsport *port = q->drv_priv;
+	struct cx23885_dmaqueue *dmaq = &port->mpegq;
+	struct cx23885_buffer *buf = list_entry(dmaq->active.next,
+			struct cx23885_buffer, queue);
+
+	cx23885_start_dma(port, dmaq, buf);
+	return 0;
+}
+
+static void cx23885_stop_streaming(struct vb2_queue *q)
+{
+	struct cx23885_tsport *port = q->drv_priv;
+
+	cx23885_cancel_buffers(port);
+}
+
+static const struct vb2_ops dvb_qops = {
+	.queue_setup    = queue_setup,
+	.buf_prepare  = buffer_prepare,
+	.buf_finish = buffer_finish,
+	.buf_queue    = buffer_queue,
+	.wait_prepare = vb2_ops_wait_prepare,
+	.wait_finish = vb2_ops_wait_finish,
+	.start_streaming = cx23885_start_streaming,
+	.stop_streaming = cx23885_stop_streaming,
+};
+
+static struct s5h1409_config hauppauge_generic_config = {
+	.demod_address = 0x32 >> 1,
+	.output_mode   = S5H1409_SERIAL_OUTPUT,
+	.gpio          = S5H1409_GPIO_ON,
+	.qam_if        = 44000,
+	.inversion     = S5H1409_INVERSION_OFF,
+	.status_mode   = S5H1409_DEMODLOCKING,
+	.mpeg_timing   = S5H1409_MPEGTIMING_CONTINUOUS_NONINVERTING_CLOCK,
+};
+
+static struct tda10048_config hauppauge_hvr1200_config = {
+	.demod_address    = 0x10 >> 1,
+	.output_mode      = TDA10048_SERIAL_OUTPUT,
+	.fwbulkwritelen   = TDA10048_BULKWRITE_200,
+	.inversion        = TDA10048_INVERSION_ON,
+	.dtv6_if_freq_khz = TDA10048_IF_3300,
+	.dtv7_if_freq_khz = TDA10048_IF_3800,
+	.dtv8_if_freq_khz = TDA10048_IF_4300,
+	.clk_freq_khz     = TDA10048_CLK_16000,
+};
+
+static struct tda10048_config hauppauge_hvr1210_config = {
+	.demod_address    = 0x10 >> 1,
+	.output_mode      = TDA10048_SERIAL_OUTPUT,
+	.fwbulkwritelen   = TDA10048_BULKWRITE_200,
+	.inversion        = TDA10048_INVERSION_ON,
+	.dtv6_if_freq_khz = TDA10048_IF_3300,
+	.dtv7_if_freq_khz = TDA10048_IF_3500,
+	.dtv8_if_freq_khz = TDA10048_IF_4000,
+	.clk_freq_khz     = TDA10048_CLK_16000,
+};
+
+static struct s5h1409_config hauppauge_ezqam_config = {
+	.demod_address = 0x32 >> 1,
+	.output_mode   = S5H1409_SERIAL_OUTPUT,
+	.gpio          = S5H1409_GPIO_OFF,
+	.qam_if        = 4000,
+	.inversion     = S5H1409_INVERSION_ON,
+	.status_mode   = S5H1409_DEMODLOCKING,
+	.mpeg_timing   = S5H1409_MPEGTIMING_CONTINUOUS_NONINVERTING_CLOCK,
+};
+
+static struct s5h1409_config hauppauge_hvr1800lp_config = {
+	.demod_address = 0x32 >> 1,
+	.output_mode   = S5H1409_SERIAL_OUTPUT,
+	.gpio          = S5H1409_GPIO_OFF,
+	.qam_if        = 44000,
+	.inversion     = S5H1409_INVERSION_OFF,
+	.status_mode   = S5H1409_DEMODLOCKING,
+	.mpeg_timing   = S5H1409_MPEGTIMING_CONTINUOUS_NONINVERTING_CLOCK,
+};
+
+static struct s5h1409_config hauppauge_hvr1500_config = {
+	.demod_address = 0x32 >> 1,
+	.output_mode   = S5H1409_SERIAL_OUTPUT,
+	.gpio          = S5H1409_GPIO_OFF,
+	.inversion     = S5H1409_INVERSION_OFF,
+	.status_mode   = S5H1409_DEMODLOCKING,
+	.mpeg_timing   = S5H1409_MPEGTIMING_CONTINUOUS_NONINVERTING_CLOCK,
+};
+
+static struct mt2131_config hauppauge_generic_tunerconfig = {
+	0x61
+};
+
+static struct lgdt330x_config fusionhdtv_5_express = {
+	.demod_chip = LGDT3303,
+	.serial_mpeg = 0x40,
+};
+
+s

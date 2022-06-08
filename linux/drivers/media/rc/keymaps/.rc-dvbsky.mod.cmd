@@ -1,1 +1,7 @@
-cmd_drivers/media/rc/keymaps/rc-dvbsky.mod := { echo  drivers/media/rc/keymaps/rc-dvbsky.o;  echo; } > drivers/media/rc/keymaps/rc-dvbsky.mod
+
+	dprintk(1, "%s() status = %d, seq = %d\n", __func__, status, seq);
+}
+
+static void cx23885_codec_settings(struct cx23885_dev *dev)
+{
+	dprintk

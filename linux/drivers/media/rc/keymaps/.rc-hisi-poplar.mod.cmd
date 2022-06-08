@@ -1,1 +1,5 @@
-cmd_drivers/media/rc/keymaps/rc-hisi-poplar.mod := { echo  drivers/media/rc/keymaps/rc-hisi-poplar.o;  echo; } > drivers/media/rc/keymaps/rc-hisi-poplar.mod
+-T/C/S2, IR) */
+	}, {
+		.subvendor = 0x0070,
+		.subdevice = 0xc12a,
+		.card      = CX23885_BOARD_HAUPPAUGE_STARBURST, /* Hauppauge WinTV Starburst (Model 121

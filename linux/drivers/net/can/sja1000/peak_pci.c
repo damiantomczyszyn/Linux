@@ -1,395 +1,781 @@
-rd include/config/ALTERNATE_USER_ADDRESS_SPACE) \
-  arch/x86/include/asm/uaccess_32.h \
-  include/linux/cred.h \
-    $(wildcard include/config/DEBUG_CREDENTIALS) \
-  include/linux/key.h \
-    $(wildcard include/config/KEY_NOTIFICATIONS) \
-    $(wildcard include/config/NET) \
-  include/linux/assoc_array.h \
-    $(wildcard include/config/ASSOCIATIVE_ARRAY) \
-  include/linux/sched/user.h \
-    $(wildcard include/config/WATCH_QUEUE) \
-  include/linux/percpu_counter.h \
-  include/linux/rcu_sync.h \
-  include/linux/delayed_call.h \
-  include/linux/errseq.h \
-  include/linux/ioprio.h \
-  include/linux/sched/rt.h \
-  include/linux/iocontext.h \
-    $(wildcard include/config/BLK_ICQ) \
-  include/uapi/linux/ioprio.h \
-  include/linux/fs_types.h \
-  include/linux/mount.h \
-  include/linux/mnt_idmapping.h \
-  include/uapi/linux/fs.h \
-  include/linux/quota.h \
-    $(wildcard include/config/QUOTA_NETLINK_INTERFACE) \
-  include/uapi/linux/dqblk_xfs.h \
-  include/linux/dqblk_v1.h \
-  include/linux/dqblk_v2.h \
-  include/linux/dqblk_qtree.h \
-  include/linux/projid.h \
-  include/uapi/linux/quota.h \
-  include/linux/nfs_fs_i.h \
-  include/linux/seq_file.h \
-  include/linux/string_helpers.h \
-  include/linux/ns_common.h \
-  include/linux/nsproxy.h \
-  include/linux/user_namespace.h \
-    $(wildcard include/config/INOTIFY_USER) \
-    $(wildcard include/config/FANOTIFY) \
-    $(wildcard include/config/PERSISTENT_KEYRINGS) \
-  include/linux/kernel_stat.h \
-  include/linux/interrupt.h \
-    $(wildcard include/config/IRQ_FORCED_THREADING) \
-    $(wildcard include/config/GENERIC_IRQ_PROBE) \
-    $(wildcard include/config/IRQ_TIMINGS) \
-  include/linux/irqreturn.h \
-  include/linux/irqnr.h \
-  include/uapi/linux/irqnr.h \
-  include/linux/hardirq.h \
-  include/linux/context_tracking_state.h \
-    $(wildcard include/config/CONTEXT_TRACKING) \
-  include/linux/ftrace_irq.h \
-    $(wildcard include/config/HWLAT_TRACER) \
-    $(wildcard include/config/OSNOISE_TRACER) \
-  include/linux/vtime.h \
-    $(wildcard include/config/VIRT_CPU_ACCOUNTING) \
-    $(wildcard include/config/IRQ_TIME_ACCOUNTING) \
-  arch/x86/include/asm/hardirq.h \
-    $(wildcard include/config/KVM_INTEL) \
-    $(wildcard include/config/X86_THERMAL_VECTOR) \
-    $(wildcard include/config/X86_MCE_THRESHOLD) \
-    $(wildcard include/config/X86_MCE_AMD) \
-    $(wildcard include/config/X86_HV_CALLBACK_VECTOR) \
-  arch/x86/include/asm/irq.h \
-  arch/x86/include/asm/sections.h \
-  include/asm-generic/sections.h \
-    $(wildcard include/config/HAVE_FUNCTION_DESCRIPTORS) \
-  include/linux/cgroup-defs.h \
-    $(wildcard include/config/CGROUP_NET_CLASSID) \
-    $(wildcard include/config/CGROUP_NET_PRIO) \
-  include/linux/u64_stats_sync.h \
-  include/linux/bpf-cgroup-defs.h \
-  include/linux/psi_types.h \
-  include/linux/kthread.h \
-  include/linux/cgroup_subsys.h \
-    $(wildcard include/config/CGROUP_DEVICE) \
-    $(wildcard include/config/CGROUP_FREEZER) \
-    $(wildcard include/config/CGROUP_PERF) \
-    $(wildcard include/config/CGROUP_HUGETLB) \
-    $(wildcard include/config/CGROUP_PIDS) \
-    $(wildcard include/config/CGROUP_RDMA) \
-    $(wildcard include/config/CGROUP_MISC) \
-    $(wildcard include/config/CGROUP_DEBUG) \
-  include/linux/vm_event_item.h \
-    $(wildcard include/config/HAVE_ARCH_TRANSPARENT_HUGEPAGE_PUD) \
-    $(wildcard include/config/MEMORY_BALLOON) \
-    $(wildcard include/config/BALLOON_COMPACTION) \
-    $(wildcard include/config/DEBUG_TLBFLUSH) \
-    $(wildcard include/config/DEBUG_VM_VMACACHE) \
-  include/linux/page_counter.h \
-  include/linux/vmpressure.h \
-  include/linux/eventfd.h \
-  include/linux/mm.h \
-    $(wildcard include/config/HAVE_ARCH_MMAP_RND_BITS) \
-    $(wildcard include/config/HAVE_ARCH_MMAP_RND_COMPAT_BITS) \
-    $(wildcard include/config/ARCH_USES_HIGH_VMA_FLAGS) \
-    $(wildcard include/config/ARCH_HAS_PKEYS) \
-    $(wildcard include/config/PPC) \
-    $(wildcard include/config/PARISC) \
-    $(wildcard include/config/SPARC64) \
-    $(wildcard include/config/ARM64_MTE) \
-    $(wildcard include/config/HAVE_ARCH_USERFAULTFD_MINOR) \
-    $(wildcard include/config/SHMEM) \
-    $(wildcard include/config/ARCH_HAS_PTE_SPECIAL) \
-    $(wildcard include/config/ARCH_HAS_PTE_DEVMAP) \
-    $(wildcard include/config/DEBUG_VM_RB) \
-    $(wildcard include/config/PAGE_POISONING) \
-    $(wildcard include/config/INIT_ON_ALLOC_DEFAULT_ON) \
-    $(wildcard include/config/INIT_ON_FREE_DEFAULT_ON) \
-    $(wildcard include/config/DEBUG_PAGEALLOC) \
-    $(wildcard include/config/HUGETLBFS) \
-    $(wildcard include/config/MAPPING_DIRTY_HELPERS) \
-    $(wildcard include/config/ANON_VMA_NAME) \
-  include/linux/mmap_lock.h \
-  include/linux/page_ext.h \
-  include/linux/stacktrace.h \
-    $(wildcard include/config/ARCH_STACKWALK) \
-    $(wildcard include/config/STACKTRACE) \
-    $(wildcard include/config/HAVE_RELIABLE_STACKTRACE) \
-  include/linux/stackdepot.h \
-    $(wildcard include/config/STACKDEPOT_ALWAYS_INIT) \
-  include/linux/page_ref.h \
-    $(wildcard include/config/DEBUG_PAGE_REF) \
-  include/linux/sizes.h \
-  include/linux/pgtable.h \
-    $(wildcard include/config/HIGHPTE) \
-    $(wildcard include/config/GUP_GET_PTE_LOW_HIGH) \
-    $(wildcard include/config/HAVE_ARCH_SOFT_DIRTY) \
-    $(wildcard include/config/ARCH_ENABLE_THP_MIGRATION) \
-    $(wildcard include/config/X86_ESPFIX64) \
-  arch/x86/include/asm/pgtable.h \
-    $(wildcard include/config/DEBUG_WX) \
-    $(wildcard include/config/PAGE_TABLE_CHECK) \
-  arch/x86/include/asm/pkru.h \
-  arch/x86/include/asm/fpu/api.h \
-    $(wildcard include/config/X86_DEBUG_FPU) \
-  arch/x86/include/asm/coco.h \
-  include/asm-generic/pgtable_uffd.h \
-  include/linux/page_table_check.h \
-  arch/x86/include/asm/pgtable_32.h \
-  arch/x86/include/asm/pgtable-3level.h \
-  arch/x86/include/asm/pgtable-invert.h \
-  include/linux/huge_mm.h \
-  include/linux/sched/coredump.h \
-    $(wildcard include/config/CORE_DUMP_DEFAULT_ELF_HEADERS) \
-  include/linux/vmstat.h \
-    $(wildcard include/config/VM_EVENT_COUNTERS) \
-  include/linux/writeback.h \
-  include/linux/flex_proportions.h \
-  include/linux/backing-dev-defs.h \
-    $(wildcard include/config/DEBUG_FS) \
-  include/linux/blk_types.h \
-    $(wildcard include/config/FAIL_MAKE_REQUEST) \
-    $(wildcard include/config/BLK_CGROUP_IOCOST) \
-    $(wildcard include/config/BLK_INLINE_ENCRYPTION) \
-    $(wildcard include/config/BLK_DEV_INTEGRITY) \
-  include/linux/bvec.h \
-  include/linux/highmem.h \
-  include/linux/cacheflush.h \
-  arch/x86/include/asm/cacheflush.h \
-  include/asm-generic/cacheflush.h \
-  include/linux/highmem-internal.h \
-  arch/x86/include/asm/highmem.h \
-  arch/x86/include/asm/tlbflush.h \
-  arch/x86/include/asm/invpcid.h \
-  arch/x86/include/asm/pti.h \
-  include/linux/bio.h \
-  include/linux/mempool.h \
-  include/linux/uio.h \
-    $(wildcard include/config/ARCH_HAS_UACCESS_FLUSHCACHE) \
-  include/uapi/linux/uio.h \
-  include/linux/node.h \
-    $(wildcard include/config/HMEM_REPORTING) \
-  include/linux/pagemap.h \
-  include/linux/hugetlb_inline.h \
-  include/uapi/linux/mempolicy.h \
-  include/linux/freezer.h \
-  include/uapi/linux/i2c.h \
-  include/linux/videodev2.h \
-  include/uapi/linux/videodev2.h \
-    $(wildcard include/config/VIDEO_ADV_DEBUG) \
-  include/uapi/linux/v4l2-common.h \
-  include/uapi/linux/v4l2-controls.h \
-  include/media/v4l2-device.h \
-    $(wildcard include/config/VIDEO_V4L2_SUBDEV_API) \
-  include/media/media-device.h \
-    $(wildcard include/config/MEDIA_CONTROLLER) \
-  include/media/media-devnode.h \
-  include/linux/poll.h \
-  include/uapi/linux/poll.h \
-  arch/x86/include/generated/uapi/asm/poll.h \
-  include/uapi/asm-generic/poll.h \
-  include/uapi/linux/eventpoll.h \
-  include/linux/cdev.h \
-  include/media/media-entity.h \
-  include/uapi/linux/media.h \
-  include/media/v4l2-subdev.h \
-  include/uapi/linux/v4l2-subdev.h \
-  include/uapi/linux/v4l2-mediabus.h \
-  include/uapi/linux/media-bus-format.h \
-  include/media/v4l2-async.h \
-  include/media/v4l2-common.h \
-    $(wildcard include/config/VIDEO_V4L2_I2C) \
-    $(wildcard include/config/SPI) \
-  include/media/v4l2-dev.h \
-  include/linux/spi/spi.h \
-    $(wildcard include/config/SPI_SLAVE) \
-  include/linux/scatterlist.h \
-    $(wildcard include/config/NEED_SG_DMA_LENGTH) \
-    $(wildcard include/config/DEBUG_SG) \
-    $(wildcard include/config/SGL_ALLOC) \
-    $(wildcard include/config/ARCH_NO_SG_CHAIN) \
-    $(wildcard include/config/SG_POOL) \
-  include/linux/gpio/consumer.h \
-    $(wildcard include/config/OF_GPIO) \
-    $(wildcard include/config/GPIO_SYSFS) \
-  include/uapi/linux/spi/spi.h \
-  include/media/v4l2-fh.h \
-  include/media/v4l2-mediabus.h \
-  include/media/v4l2-ctrls.h \
-  include/media/media-request.h \
-  include/media/hevc-ctrls.h \
+// SPDX-License-Identifier: GPL-2.0-only
+/*
+ * Copyright (C) 2007, 2011 Wolfgang Grandegger <wg@grandegger.com>
+ * Copyright (C) 2012 Stephane Grosjean <s.grosjean@peak-system.com>
+ *
+ * Derived from the PCAN project file driver/src/pcan_pci.c:
+ *
+ * Copyright (C) 2001-2006  PEAK System-Technik GmbH
+ */
 
-drivers/media/i2c/tw9903.o: $(deps_drivers/media/i2c/tw9903.o)
+#include <linux/kernel.h>
+#include <linux/module.h>
+#include <linux/interrupt.h>
+#include <linux/netdevice.h>
+#include <linux/delay.h>
+#include <linux/pci.h>
+#include <linux/io.h>
+#include <linux/i2c.h>
+#include <linux/i2c-algo-bit.h>
+#include <linux/can.h>
+#include <linux/can/dev.h>
 
-$(deps_drivers/media/i2c/tw9903.o):
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               cmd_drivers/media/i2c/tw9903.o := gcc -Wp,-MMD,drivers/media/i2c/.tw9903.o.d -nostdinc -I./arch/x86/include -I./arch/x86/include/generated  -I./include -I./arch/x86/include/uapi -I./arch/x86/include/generated/uapi -I./include/uapi -I./include/generated/uapi -include ./include/linux/compiler-version.h -include ./include/linux/kconfig.h -include ./include/linux/compiler_types.h -D__KERNEL__ -fmacro-prefix-map=./= -Wall -Wundef -Werror=strict-prototypes -Wno-trigraphs -fno-strict-aliasing -fno-common -fshort-wchar -fno-PIE -Werror=implicit-function-declaration -Werror=implicit-int -Werror=return-type -Wno-format-security -std=gnu11 -mno-sse -mno-mmx -mno-sse2 -mno-3dnow -mno-avx -fcf-protection=none -m32 -msoft-float -mregparm=3 -freg-struct-return -fno-pic -mpreferred-stack-boundary=2 -march=i686 -mtune=pentium3 -mtune=generic -Wa,-mtune=generic32 -ffreestanding -mstack-protector-guard-reg=fs -mstack-protector-guard-symbol=__stack_chk_guard -Wno-sign-compare -fno-asynchronous-unwind-tables -mindirect-branch=thunk-extern -mindirect-branch-register -fno-jump-tables -fno-delete-null-pointer-checks -Wno-frame-address -Wno-format-truncation -Wno-format-overflow -Wno-address-of-packed-member -O2 -fno-allow-store-data-races -fstack-protector-strong -Wimplicit-fallthrough=5 -Wno-main -Wno-unused-but-set-variable -Wno-unused-const-variable -fno-stack-clash-protection -pg -mrecord-mcount -mfentry -DCC_USING_FENTRY -Wdeclaration-after-statement -Wvla -Wno-pointer-sign -Wcast-function-type -Wno-stringop-truncation -Wno-stringop-overflow -Wno-restrict -Wno-maybe-uninitialized -Wno-alloc-size-larger-than -fno-strict-overflow -fno-stack-check -fconserve-stack -Werror=date-time -Werror=incompatible-pointer-types -Werror=designated-init -Wno-packed-not-aligned  -DMODULE  -DKBUILD_BASENAME='"tw9903"' -DKBUILD_MODNAME='"tw9903"' -D__KBUILD_MODNAME=kmod_tw9903 -c -o drivers/media/i2c/tw9903.o drivers/media/i2c/tw9903.c 
+#include "sja1000.h"
 
-source_drivers/media/i2c/tw9903.o := drivers/media/i2c/tw9903.c
+MODULE_AUTHOR("Stephane Grosjean <s.grosjean@peak-system.com>");
+MODULE_DESCRIPTION("Socket-CAN driver for PEAK PCAN PCI family cards");
+MODULE_LICENSE("GPL v2");
 
-deps_drivers/media/i2c/tw9903.o := \
-  include/linux/compiler-version.h \
-    $(wildcard include/config/CC_VERSION_TEXT) \
-  include/linux/kconfig.h \
-    $(wildcard include/config/CPU_BIG_ENDIAN) \
-    $(wildcard include/config/BOOGER) \
-    $(wildcard include/config/FOO) \
-  include/linux/compiler_types.h \
-    $(wildcard include/config/DEBUG_INFO_BTF) \
-    $(wildcard include/config/PAHOLE_HAS_BTF_TAG) \
-    $(wildcard include/config/HAVE_ARCH_COMPILER_H) \
-    $(wildcard include/config/CC_HAS_ASM_INLINE) \
-  include/linux/compiler_attributes.h \
-  include/linux/compiler-gcc.h \
-    $(wildcard include/config/RETPOLINE) \
-    $(wildcard include/config/ARCH_USE_BUILTIN_BSWAP) \
-    $(wildcard include/config/SHADOW_CALL_STACK) \
-    $(wildcard include/config/KCOV) \
-  include/linux/module.h \
-    $(wildcard include/config/MODULES) \
-    $(wildcard include/config/SYSFS) \
-    $(wildcard include/config/MODULES_TREE_LOOKUP) \
-    $(wildcard include/config/LIVEPATCH) \
-    $(wildcard include/config/STACKTRACE_BUILD_ID) \
-    $(wildcard include/config/CFI_CLANG) \
-    $(wildcard include/config/MODULE_SIG) \
-    $(wildcard include/config/GENERIC_BUG) \
-    $(wildcard include/config/KALLSYMS) \
-    $(wildcard include/config/SMP) \
-    $(wildcard include/config/TRACEPOINTS) \
-    $(wildcard include/config/TREE_SRCU) \
-    $(wildcard include/config/BPF_EVENTS) \
-    $(wildcard include/config/DEBUG_INFO_BTF_MODULES) \
-    $(wildcard include/config/JUMP_LABEL) \
-    $(wildcard include/config/TRACING) \
-    $(wildcard include/config/EVENT_TRACING) \
-    $(wildcard include/config/FTRACE_MCOUNT_RECORD) \
-    $(wildcard include/config/KPROBES) \
-    $(wildcard include/config/HAVE_STATIC_CALL_INLINE) \
-    $(wildcard include/config/PRINTK_INDEX) \
-    $(wildcard include/config/MODULE_UNLOAD) \
-    $(wildcard include/config/CONSTRUCTORS) \
-    $(wildcard include/config/FUNCTION_ERROR_INJECTION) \
-  include/linux/list.h \
-    $(wildcard include/config/DEBUG_LIST) \
-  include/linux/container_of.h \
-  include/linux/build_bug.h \
-  include/linux/compiler.h \
-    $(wildcard include/config/TRACE_BRANCH_PROFILING) \
-    $(wildcard include/config/PROFILE_ALL_BRANCHES) \
-    $(wildcard include/config/STACK_VALIDATION) \
-  include/linux/compiler_types.h \
-  arch/x86/include/generated/asm/rwonce.h \
-  include/asm-generic/rwonce.h \
-  include/linux/kasan-checks.h \
-    $(wildcard include/config/KASAN_GENERIC) \
-    $(wildcard include/config/KASAN_SW_TAGS) \
-  include/linux/types.h \
-    $(wildcard include/config/HAVE_UID16) \
-    $(wildcard include/config/UID16) \
-    $(wildcard include/config/ARCH_DMA_ADDR_T_64BIT) \
-    $(wildcard include/config/PHYS_ADDR_T_64BIT) \
-    $(wildcard include/config/64BIT) \
-    $(wildcard include/config/ARCH_32BIT_USTAT_F_TINODE) \
-  include/uapi/linux/types.h \
-  arch/x86/include/generated/uapi/asm/types.h \
-  include/uapi/asm-generic/types.h \
-  include/asm-generic/int-ll64.h \
-  include/uapi/asm-generic/int-ll64.h \
-  arch/x86/include/uapi/asm/bitsperlong.h \
-  include/asm-generic/bitsperlong.h \
-  include/uapi/asm-generic/bitsperlong.h \
-  include/uapi/linux/posix_types.h \
-  include/linux/stddef.h \
-  include/uapi/linux/stddef.h \
-  arch/x86/include/asm/posix_types.h \
-    $(wildcard include/config/X86_32) \
-  arch/x86/include/uapi/asm/posix_types_32.h \
-  include/uapi/asm-generic/posix_types.h \
-  include/linux/kcsan-checks.h \
-    $(wildcard include/config/KCSAN) \
-    $(wildcard include/config/KCSAN_WEAK_MEMORY) \
-    $(wildcard include/config/KCSAN_IGNORE_ATOMICS) \
-  include/linux/err.h \
-  arch/x86/include/generated/uapi/asm/errno.h \
-  include/uapi/asm-generic/errno.h \
-  include/uapi/asm-generic/errno-base.h \
-  include/linux/poison.h \
-    $(wildcard include/config/ILLEGAL_POINTER_VALUE) \
-  include/linux/const.h \
-  include/vdso/const.h \
-  include/uapi/linux/const.h \
-  arch/x86/include/asm/barrier.h \
-  arch/x86/include/asm/alternative.h \
-  include/linux/stringify.h \
-  arch/x86/include/asm/asm.h \
-  arch/x86/include/asm/extable_fixup_types.h \
-  arch/x86/include/asm/nops.h \
-  include/asm-generic/barrier.h \
-  include/linux/stat.h \
-  arch/x86/include/uapi/asm/stat.h \
-  include/uapi/linux/stat.h \
-  include/linux/time.h \
-    $(wildcard include/config/POSIX_TIMERS) \
-  include/linux/cache.h \
-    $(wildcard include/config/ARCH_HAS_CACHE_LINE_SIZE) \
-  include/uapi/linux/kernel.h \
-  include/uapi/linux/sysinfo.h \
-  arch/x86/include/asm/cache.h \
-    $(wildcard include/config/X86_L1_CACHE_SHIFT) \
-    $(wildcard include/config/X86_INTERNODE_CACHE_SHIFT) \
-    $(wildcard include/config/X86_VSMP) \
-  include/linux/linkage.h \
-    $(wildcard include/config/ARCH_USE_SYM_ANNOTATIONS) \
-  include/linux/export.h \
-    $(wildcard include/config/MODVERSIONS) \
-    $(wildcard include/config/MODULE_REL_CRCS) \
-    $(wildcard include/config/HAVE_ARCH_PREL32_RELOCATIONS) \
-    $(wildcard include/config/TRIM_UNUSED_KSYMS) \
-  arch/x86/include/asm/linkage.h \
-    $(wildcard include/config/X86_64) \
-    $(wildcard include/config/X86_ALIGNMENT_16) \
-    $(wildcard include/config/SLS) \
-  arch/x86/include/asm/ibt.h \
-    $(wildcard include/config/X86_KERNEL_IBT) \
-  include/linux/math64.h \
-    $(wildcard include/config/ARCH_SUPPORTS_INT128) \
-  include/linux/math.h \
-  arch/x86/include/asm/div64.h \
-  include/linux/log2.h \
-    $(wildcard include/config/ARCH_HAS_ILOG2_U32) \
-    $(wildcard include/config/ARCH_HAS_ILOG2_U64) \
-  include/linux/bitops.h \
-  include/linux/bits.h \
-  include/vdso/bits.h \
-  include/linux/typecheck.h \
-  arch/x86/include/asm/bitops.h \
-    $(wildcard include/config/X86_CMOV) \
-  arch/x86/include/asm/rmwcc.h \
-    $(wildcard include/config/CC_HAS_ASM_GOTO) \
-  include/asm-generic/bitops/fls64.h \
-  include/asm-generic/bitops/sched.h \
-  arch/x86/include/asm/arch_hweight.h \
-  arch/x86/include/asm/cpufeatures.h \
-  arch/x86/include/asm/required-features.h \
-    $(wildcard include/config/X86_MINIMUM_CPU_FAMILY) \
-    $(wildcard include/config/MATH_EMULATION) \
-    $(wildcard include/config/X86_PAE) \
-    $(wildcard include/config/X86_CMPXCHG64) \
-    $(wildcard include/config/X86_P6_NOP) \
-    $(wildcard include/config/MATOM) \
-    $(wildcard include/config/PARAVIRT_XXL) \
-  arch/x86/include/asm/disabled-features.h \
-    $(wildcard include/config/X86_SMAP) \
-    $(wildcard include/config/X86_UMIP) \
-    $(wildcard include/config/X86_INTEL_MEMORY_PROTECTION_KEYS) \
-    $(wildcard include/config/X86_5LEVEL) \
-    $(wildcard include/config/PAGE_TABLE_ISOLATION) \
-    $(wildcard include/config/INTEL_IOMMU_SVM) \
-    $(wildcard include/config/X86_SGX) \
-  include/asm-generic/bitops/const_hweight.h \
-  include/asm-generic/bitops/instrumented-atomic.h \
-  include/linux/instrumented.h \
-  i
+#define DRV_NAME  "peak_pci"
+
+/* FPGA cards FW version registers */
+#define PEAK_VER_REG1		0x40
+#define PEAK_VER_REG2		0x44
+
+struct peak_pciec_card;
+struct peak_pci_chan {
+	void __iomem *cfg_base;		/* Common for all channels */
+	struct net_device *prev_dev;	/* Chain of network devices */
+	u16 icr_mask;			/* Interrupt mask for fast ack */
+	struct peak_pciec_card *pciec_card;	/* only for PCIeC LEDs */
+};
+
+#define PEAK_PCI_CAN_CLOCK	(16000000 / 2)
+
+#define PEAK_PCI_CDR		(CDR_CBP | CDR_CLKOUT_MASK)
+#define PEAK_PCI_OCR		OCR_TX0_PUSHPULL
+
+/* Important PITA registers */
+#define PITA_ICR		0x00	/* Interrupt control register */
+#define PITA_GPIOICR		0x18	/* GPIO interface control register */
+#define PITA_MISC		0x1C	/* Miscellaneous register */
+
+#define PEAK_PCI_CFG_SIZE	0x1000	/* Size of the config PCI bar */
+#define PEAK_PCI_CHAN_SIZE	0x0400	/* Size used by the channel */
+
+#define PEAK_PCI_VENDOR_ID	0x001C	/* The PCI device and vendor IDs */
+#define PEAK_PCI_DEVICE_ID	0x0001	/* for PCI/PCIe slot cards */
+#define PEAK_PCIEC_DEVICE_ID	0x0002	/* for ExpressCard slot cards */
+#define PEAK_PCIE_DEVICE_ID	0x0003	/* for nextgen PCIe slot cards */
+#define PEAK_CPCI_DEVICE_ID	0x0004	/* for nextgen cPCI slot cards */
+#define PEAK_MPCI_DEVICE_ID	0x0005	/* for nextgen miniPCI slot cards */
+#define PEAK_PC_104P_DEVICE_ID	0x0006	/* PCAN-PC/104+ cards */
+#define PEAK_PCI_104E_DEVICE_ID	0x0007	/* PCAN-PCI/104 Express cards */
+#define PEAK_MPCIE_DEVICE_ID	0x0008	/* The miniPCIe slot cards */
+#define PEAK_PCIE_OEM_ID	0x0009	/* PCAN-PCI Express OEM */
+#define PEAK_PCIEC34_DEVICE_ID	0x000A	/* PCAN-PCI Express 34 (one channel) */
+
+#define PEAK_PCI_CHAN_MAX	4
+
+static const u16 peak_pci_icr_masks[PEAK_PCI_CHAN_MAX] = {
+	0x02, 0x01, 0x40, 0x80
+};
+
+static const struct pci_device_id peak_pci_tbl[] = {
+	{
+		PEAK_PCI_VENDOR_ID, PEAK_PCI_DEVICE_ID, PCI_ANY_ID, PCI_ANY_ID,
+		.driver_data = (kernel_ulong_t)"PCAN-PCI",
+	}, {
+		PEAK_PCI_VENDOR_ID, PEAK_PCIE_DEVICE_ID, PCI_ANY_ID, PCI_ANY_ID,
+		.driver_data = (kernel_ulong_t)"PCAN-PCI Express",
+	}, {
+		PEAK_PCI_VENDOR_ID, PEAK_MPCI_DEVICE_ID, PCI_ANY_ID, PCI_ANY_ID,
+		.driver_data = (kernel_ulong_t)"PCAN-miniPCI",
+	}, {
+		PEAK_PCI_VENDOR_ID, PEAK_MPCIE_DEVICE_ID, PCI_ANY_ID, PCI_ANY_ID,
+		.driver_data = (kernel_ulong_t)"PCAN-miniPCIe",
+	}, {
+		PEAK_PCI_VENDOR_ID, PEAK_PC_104P_DEVICE_ID, PCI_ANY_ID, PCI_ANY_ID,
+		.driver_data = (kernel_ulong_t)"PCAN-PC/104-Plus Quad",
+	}, {
+		PEAK_PCI_VENDOR_ID, PEAK_PCI_104E_DEVICE_ID, PCI_ANY_ID, PCI_ANY_ID,
+		.driver_data = (kernel_ulong_t)"PCAN-PCI/104-Express",
+	}, {
+		PEAK_PCI_VENDOR_ID, PEAK_CPCI_DEVICE_ID, PCI_ANY_ID, PCI_ANY_ID,
+		.driver_data = (kernel_ulong_t)"PCAN-cPCI",
+	}, {
+		PEAK_PCI_VENDOR_ID, PEAK_PCIE_OEM_ID, PCI_ANY_ID, PCI_ANY_ID,
+		.driver_data = (kernel_ulong_t)"PCAN-Chip PCIe",
+	},
+#ifdef CONFIG_CAN_PEAK_PCIEC
+	{
+		PEAK_PCI_VENDOR_ID, PEAK_PCIEC_DEVICE_ID, PCI_ANY_ID, PCI_ANY_ID,
+		.driver_data = (kernel_ulong_t)"PCAN-ExpressCard",
+	}, {
+		PEAK_PCI_VENDOR_ID, PEAK_PCIEC34_DEVICE_ID, PCI_ANY_ID, PCI_ANY_ID,
+		.driver_data = (kernel_ulong_t)"PCAN-ExpressCard 34",
+	},
+#endif
+	{ /* sentinel */ }
+};
+
+MODULE_DEVICE_TABLE(pci, peak_pci_tbl);
+
+#ifdef CONFIG_CAN_PEAK_PCIEC
+/* PCAN-ExpressCard needs I2C bit-banging configuration option. */
+
+/* GPIOICR byte access offsets */
+#define PITA_GPOUT		0x18	/* GPx output value */
+#define PITA_GPIN		0x19	/* GPx input value */
+#define PITA_GPOEN		0x1A	/* configure GPx as output pin */
+
+/* I2C GP bits */
+#define PITA_GPIN_SCL		0x01	/* Serial Clock Line */
+#define PITA_GPIN_SDA		0x04	/* Serial DAta line */
+
+#define PCA9553_1_SLAVEADDR	(0xC4 >> 1)
+
+/* PCA9553 LS0 fields values */
+enum {
+	PCA9553_LOW,
+	PCA9553_HIGHZ,
+	PCA9553_PWM0,
+	PCA9553_PWM1
+};
+
+/* LEDs control */
+#define PCA9553_ON		PCA9553_LOW
+#define PCA9553_OFF		PCA9553_HIGHZ
+#define PCA9553_SLOW		PCA9553_PWM0
+#define PCA9553_FAST		PCA9553_PWM1
+
+#define PCA9553_LED(c)		(1 << (c))
+#define PCA9553_LED_STATE(s, c)	((s) << ((c) << 1))
+
+#define PCA9553_LED_ON(c)	PCA9553_LED_STATE(PCA9553_ON, c)
+#define PCA9553_LED_OFF(c)	PCA9553_LED_STATE(PCA9553_OFF, c)
+#define PCA9553_LED_SLOW(c)	PCA9553_LED_STATE(PCA9553_SLOW, c)
+#define PCA9553_LED_FAST(c)	PCA9553_LED_STATE(PCA9553_FAST, c)
+#define PCA9553_LED_MASK(c)	PCA9553_LED_STATE(0x03, c)
+
+#define PCA9553_LED_OFF_ALL	(PCA9553_LED_OFF(0) | PCA9553_LED_OFF(1))
+
+#define PCA9553_LS0_INIT	0x40 /* initial value (!= from 0x00) */
+
+struct peak_pciec_chan {
+	struct net_device *netdev;
+	unsigned long prev_rx_bytes;
+	unsigned long prev_tx_bytes;
+};
+
+struct peak_pciec_card {
+	void __iomem *cfg_base;		/* Common for all channels */
+	void __iomem *reg_base;		/* first channel base address */
+	u8 led_cache;			/* leds state cache */
+
+	/* PCIExpressCard i2c data */
+	struct i2c_algo_bit_data i2c_bit;
+	struct i2c_adapter led_chip;
+	struct delayed_work led_work;	/* led delayed work */
+	int chan_count;
+	struct peak_pciec_chan channel[PEAK_PCI_CHAN_MAX];
+};
+
+/* "normal" pci register write callback is overloaded for leds control */
+static void peak_pci_write_reg(const struct sja1000_priv *priv,
+			       int port, u8 val);
+
+static inline void pita_set_scl_highz(struct peak_pciec_card *card)
+{
+	u8 gp_outen = readb(card->cfg_base + PITA_GPOEN) & ~PITA_GPIN_SCL;
+
+	writeb(gp_outen, card->cfg_base + PITA_GPOEN);
+}
+
+static inline void pita_set_sda_highz(struct peak_pciec_card *card)
+{
+	u8 gp_outen = readb(card->cfg_base + PITA_GPOEN) & ~PITA_GPIN_SDA;
+
+	writeb(gp_outen, card->cfg_base + PITA_GPOEN);
+}
+
+static void peak_pciec_init_pita_gpio(struct peak_pciec_card *card)
+{
+	/* raise SCL & SDA GPIOs to high-Z */
+	pita_set_scl_highz(card);
+	pita_set_sda_highz(card);
+}
+
+static void pita_setsda(void *data, int state)
+{
+	struct peak_pciec_card *card = (struct peak_pciec_card *)data;
+	u8 gp_out, gp_outen;
+
+	/* set output sda always to 0 */
+	gp_out = readb(card->cfg_base + PITA_GPOUT) & ~PITA_GPIN_SDA;
+	writeb(gp_out, card->cfg_base + PITA_GPOUT);
+
+	/* control output sda with GPOEN */
+	gp_outen = readb(card->cfg_base + PITA_GPOEN);
+	if (state)
+		gp_outen &= ~PITA_GPIN_SDA;
+	else
+		gp_outen |= PITA_GPIN_SDA;
+
+	writeb(gp_outen, card->cfg_base + PITA_GPOEN);
+}
+
+static void pita_setscl(void *data, int state)
+{
+	struct peak_pciec_card *card = (struct peak_pciec_card *)data;
+	u8 gp_out, gp_outen;
+
+	/* set output scl always to 0 */
+	gp_out = readb(card->cfg_base + PITA_GPOUT) & ~PITA_GPIN_SCL;
+	writeb(gp_out, card->cfg_base + PITA_GPOUT);
+
+	/* control output scl with GPOEN */
+	gp_outen = readb(card->cfg_base + PITA_GPOEN);
+	if (state)
+		gp_outen &= ~PITA_GPIN_SCL;
+	else
+		gp_outen |= PITA_GPIN_SCL;
+
+	writeb(gp_outen, card->cfg_base + PITA_GPOEN);
+}
+
+static int pita_getsda(void *data)
+{
+	struct peak_pciec_card *card = (struct peak_pciec_card *)data;
+
+	/* set tristate */
+	pita_set_sda_highz(card);
+
+	return (readb(card->cfg_base + PITA_GPIN) & PITA_GPIN_SDA) ? 1 : 0;
+}
+
+static int pita_getscl(void *data)
+{
+	struct peak_pciec_card *card = (struct peak_pciec_card *)data;
+
+	/* set tristate */
+	pita_set_scl_highz(card);
+
+	return (readb(card->cfg_base + PITA_GPIN) & PITA_GPIN_SCL) ? 1 : 0;
+}
+
+/* write commands to the LED chip though the I2C-bus of the PCAN-PCIeC */
+static int peak_pciec_write_pca9553(struct peak_pciec_card *card,
+				    u8 offset, u8 data)
+{
+	u8 buffer[2] = {
+		offset,
+		data
+	};
+	struct i2c_msg msg = {
+		.addr = PCA9553_1_SLAVEADDR,
+		.len = 2,
+		.buf = buffer,
+	};
+	int ret;
+
+	/* cache led mask */
+	if (offset == 5 && data == card->led_cache)
+		return 0;
+
+	ret = i2c_transfer(&card->led_chip, &msg, 1);
+	if (ret < 0)
+		return ret;
+
+	if (offset == 5)
+		card->led_cache = data;
+
+	return 0;
+}
+
+/* delayed work callback used to control the LEDs */
+static void peak_pciec_led_work(struct work_struct *work)
+{
+	struct peak_pciec_card *card =
+		container_of(work, struct peak_pciec_card, led_work.work);
+	struct net_device *netdev;
+	u8 new_led = card->led_cache;
+	int i, up_count = 0;
+
+	/* first check what is to do */
+	for (i = 0; i < card->chan_count; i++) {
+		/* default is: not configured */
+		new_led &= ~PCA9553_LED_MASK(i);
+		new_led |= PCA9553_LED_ON(i);
+
+		netdev = card->channel[i].netdev;
+		if (!netdev || !(netdev->flags & IFF_UP))
+			continue;
+
+		up_count++;
+
+		/* no activity (but configured) */
+		new_led &= ~PCA9553_LED_MASK(i);
+		new_led |= PCA9553_LED_SLOW(i);
+
+		/* if bytes counters changed, set fast blinking led */
+		if (netdev->stats.rx_bytes != card->channel[i].prev_rx_bytes) {
+			card->channel[i].prev_rx_bytes = netdev->stats.rx_bytes;
+			new_led &= ~PCA9553_LED_MASK(i);
+			new_led |= PCA9553_LED_FAST(i);
+		}
+		if (netdev->stats.tx_bytes != card->channel[i].prev_tx_bytes) {
+			card->channel[i].prev_tx_bytes = netdev->stats.tx_bytes;
+			new_led &= ~PCA9553_LED_MASK(i);
+			new_led |= PCA9553_LED_FAST(i);
+		}
+	}
+
+	/* check if LS0 settings changed, only update i2c if so */
+	peak_pciec_write_pca9553(card, 5, new_led);
+
+	/* restart timer (except if no more configured channels) */
+	if (up_count)
+		schedule_delayed_work(&card->led_work, HZ);
+}
+
+/* set LEDs blinking state */
+static void peak_pciec_set_leds(struct peak_pciec_card *card, u8 led_mask, u8 s)
+{
+	u8 new_led = card->led_cache;
+	int i;
+
+	/* first check what is to do */
+	for (i = 0; i < card->chan_count; i++)
+		if (led_mask & PCA9553_LED(i)) {
+			new_led &= ~PCA9553_LED_MASK(i);
+			new_led |= PCA9553_LED_STATE(s, i);
+		}
+
+	/* check if LS0 settings changed, only update i2c if so */
+	peak_pciec_write_pca9553(card, 5, new_led);
+}
+
+/* start one second delayed work to control LEDs */
+static void peak_pciec_start_led_work(struct peak_pciec_card *card)
+{
+	schedule_delayed_work(&card->led_work, HZ);
+}
+
+/* stop LEDs delayed work */
+static void peak_pciec_stop_led_work(struct peak_pciec_card *card)
+{
+	cancel_delayed_work_sync(&card->led_work);
+}
+
+/* initialize the PCA9553 4-bit I2C-bus LED chip */
+static int peak_pciec_init_leds(struct peak_pciec_card *card)
+{
+	int err;
+
+	/* prescaler for frequency 0: "SLOW" = 1 Hz = "44" */
+	err = peak_pciec_write_pca9553(card, 1, 44 / 1);
+	if (err)
+		return err;
+
+	/* duty cycle 0: 50% */
+	err = peak_pciec_write_pca9553(card, 2, 0x80);
+	if (err)
+		return err;
+
+	/* prescaler for frequency 1: "FAST" = 5 Hz */
+	err = peak_pciec_write_pca9553(card, 3, 44 / 5);
+	if (err)
+		return err;
+
+	/* duty cycle 1: 50% */
+	err = peak_pciec_write_pca9553(card, 4, 0x80);
+	if (err)
+		return err;
+
+	/* switch LEDs to initial state */
+	return peak_pciec_write_pca9553(card, 5, PCA9553_LS0_INIT);
+}
+
+/* restore LEDs state to off peak_pciec_leds_exit */
+static void peak_pciec_leds_exit(struct peak_pciec_card *card)
+{
+	/* switch LEDs to off */
+	peak_pciec_write_pca9553(card, 5, PCA9553_LED_OFF_ALL);
+}
+
+/* normal write sja1000 register method overloaded to catch when controller
+ * is started or stopped, to control leds
+ */
+static void peak_pciec_write_reg(const struct sja1000_priv *priv,
+				 int port, u8 val)
+{
+	struct peak_pci_chan *chan = priv->priv;
+	struct peak_pciec_card *card = chan->pciec_card;
+	int c = (priv->reg_base - card->reg_base) / PEAK_PCI_CHAN_SIZE;
+
+	/* sja1000 register changes control the leds state */
+	if (port == SJA1000_MOD)
+		switch (val) {
+		case MOD_RM:
+			/* Reset Mode: set led on */
+			peak_pciec_set_leds(card, PCA9553_LED(c), PCA9553_ON);
+			break;
+		case 0x00:
+			/* Normal Mode: led slow blinking and start led timer */
+			peak_pciec_set_leds(card, PCA9553_LED(c), PCA9553_SLOW);
+			peak_pciec_start_led_work(card);
+			break;
+		default:
+			break;
+		}
+
+	/* call base function */
+	peak_pci_write_reg(priv, port, val);
+}
+
+static const struct i2c_algo_bit_data peak_pciec_i2c_bit_ops = {
+	.setsda	= pita_setsda,
+	.setscl	= pita_setscl,
+	.getsda	= pita_getsda,
+	.getscl	= pita_getscl,
+	.udelay	= 10,
+	.timeout = HZ,
+};
+
+static int peak_pciec_probe(struct pci_dev *pdev, struct net_device *dev)
+{
+	struct sja1000_priv *priv = netdev_priv(dev);
+	struct peak_pci_chan *chan = priv->priv;
+	struct peak_pciec_card *card;
+	int err;
+
+	/* copy i2c object address from 1st channel */
+	if (chan->prev_dev) {
+		struct sja1000_priv *prev_priv = netdev_priv(chan->prev_dev);
+		struct peak_pci_chan *prev_chan = prev_priv->priv;
+
+		card = prev_chan->pciec_card;
+		if (!card)
+			return -ENODEV;
+
+	/* channel is the first one: do the init part */
+	} else {
+		/* create the bit banging I2C adapter structure */
+		card = kzalloc(sizeof(*card), GFP_KERNEL);
+		if (!card)
+			return -ENOMEM;
+
+		card->cfg_base = chan->cfg_base;
+		card->reg_base = priv->reg_base;
+
+		card->led_chip.owner = THIS_MODULE;
+		card->led_chip.dev.parent = &pdev->dev;
+		card->led_chip.algo_data = &card->i2c_bit;
+		strncpy(card->led_chip.name, "peak_i2c",
+			sizeof(card->led_chip.name));
+
+		card->i2c_bit = peak_pciec_i2c_bit_ops;
+		card->i2c_bit.udelay = 10;
+		card->i2c_bit.timeout = HZ;
+		card->i2c_bit.data = card;
+
+		peak_pciec_init_pita_gpio(card);
+
+		err = i2c_bit_add_bus(&card->led_chip);
+		if (err) {
+			dev_err(&pdev->dev, "i2c init failed\n");
+			goto pciec_init_err_1;
+		}
+
+		err = peak_pciec_init_leds(card);
+		if (err) {
+			dev_err(&pdev->dev, "leds hardware init failed\n");
+			goto pciec_init_err_2;
+		}
+
+		INIT_DELAYED_WORK(&card->led_work, peak_pciec_led_work);
+		/* PCAN-ExpressCard needs its own callback for leds */
+		priv->write_reg = peak_pciec_write_reg;
+	}
+
+	chan->pciec_card = card;
+	card->channel[card->chan_count++].netdev = dev;
+
+	return 0;
+
+pciec_init_err_2:
+	i2c_del_adapter(&card->led_chip);
+
+pciec_init_err_1:
+	peak_pciec_init_pita_gpio(card);
+	kfree(card);
+
+	return err;
+}
+
+static void peak_pciec_remove(struct peak_pciec_card *card)
+{
+	peak_pciec_stop_led_work(card);
+	peak_pciec_leds_exit(card);
+	i2c_del_adapter(&card->led_chip);
+	peak_pciec_init_pita_gpio(card);
+	kfree(card);
+}
+
+#else /* CONFIG_CAN_PEAK_PCIEC */
+
+/* Placebo functions when PCAN-ExpressCard support is not selected */
+static inline int peak_pciec_probe(struct pci_dev *pdev, struct net_device *dev)
+{
+	return -ENODEV;
+}
+
+static inline void peak_pciec_remove(struct peak_pciec_card *card)
+{
+}
+#endif /* CONFIG_CAN_PEAK_PCIEC */
+
+static u8 peak_pci_read_reg(const struct sja1000_priv *priv, int port)
+{
+	return readb(priv->reg_base + (port << 2));
+}
+
+static void peak_pci_write_reg(const struct sja1000_priv *priv,
+			       int port, u8 val)
+{
+	writeb(val, priv->reg_base + (port << 2));
+}
+
+static void peak_pci_post_irq(const struct sja1000_priv *priv)
+{
+	struct peak_pci_chan *chan = priv->priv;
+	u16 icr;
+
+	/* Select and clear in PITA stored interrupt */
+	icr = readw(chan->cfg_base + PITA_ICR);
+	if (icr & chan->icr_mask)
+		writew(chan->icr_mask, chan->cfg_base + PITA_ICR);
+}
+
+static int peak_pci_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
+{
+	struct sja1000_priv *priv;
+	struct peak_pci_chan *chan;
+	struct net_device *dev, *prev_dev;
+	void __iomem *cfg_base, *reg_base;
+	u16 sub_sys_id, icr;
+	int i, err, channels;
+	char fw_str[14] = "";
+
+	err = pci_enable_device(pdev);
+	if (err)
+		return err;
+
+	err = pci_request_regions(pdev, DRV_NAME);
+	if (err)
+		goto failure_disable_pci;
+
+	err = pci_read_config_word(pdev, 0x2e, &sub_sys_id);
+	if (err)
+		goto failure_release_regions;
+
+	dev_dbg(&pdev->dev, "probing device %04x:%04x:%04x\n",
+		pdev->vendor, pdev->device, sub_sys_id);
+
+	err = pci_write_config_word(pdev, 0x44, 0);
+	if (err)
+		goto failure_release_regions;
+
+	if (sub_sys_id >= 12)
+		channels = 4;
+	else if (sub_sys_id >= 10)
+		channels = 3;
+	else if (sub_sys_id >= 4)
+		channels = 2;
+	else
+		channels = 1;
+
+	cfg_base = pci_iomap(pdev, 0, PEAK_PCI_CFG_SIZE);
+	if (!cfg_base) {
+		dev_err(&pdev->dev, "failed to map PCI resource #0\n");
+		err = -ENOMEM;
+		goto failure_release_regions;
+	}
+
+	reg_base = pci_iomap(pdev, 1, PEAK_PCI_CHAN_SIZE * channels);
+	if (!reg_base) {
+		dev_err(&pdev->dev, "failed to map PCI resource #1\n");
+		err = -ENOMEM;
+		goto failure_unmap_cfg_base;
+	}
+
+	/* Set GPIO control register */
+	writew(0x0005, cfg_base + PITA_GPIOICR + 2);
+	/* Enable all channels of this card */
+	writeb(0x00, cfg_base + PITA_GPIOICR);
+	/* Toggle reset */
+	writeb(0x05, cfg_base + PITA_MISC + 3);
+	usleep_range(5000, 6000);
+	/* Leave parport mux mode */
+	writeb(0x04, cfg_base + PITA_MISC + 3);
+
+	/* FPGA equipped card if not 0 */
+	if (readl(cfg_base + PEAK_VER_REG1)) {
+		/* FPGA card: display version of the running firmware */
+		u32 fw_ver = readl(cfg_base + PEAK_VER_REG2);
+
+		snprintf(fw_str, sizeof(fw_str), " FW v%u.%u.%u",
+			 (fw_ver >> 12) & 0xf,
+			 (fw_ver >> 8) & 0xf,
+			 (fw_ver >> 4) & 0xf);
+	}
+
+	/* Display commercial name (and, eventually, FW version) of the card */
+	dev_info(&pdev->dev, "%ux CAN %s%s\n",
+		 channels, (const char *)ent->driver_data, fw_str);
+
+	icr = readw(cfg_base + PITA_ICR + 2);
+
+	for (i = 0; i < channels; i++) {
+		dev = alloc_sja1000dev(sizeof(struct peak_pci_chan));
+		if (!dev) {
+			err = -ENOMEM;
+			goto failure_remove_channels;
+		}
+
+		priv = netdev_priv(dev);
+		chan = priv->priv;
+
+		chan->cfg_base = cfg_base;
+		priv->reg_base = reg_base + i * PEAK_PCI_CHAN_SIZE;
+
+		priv->read_reg = peak_pci_read_reg;
+		priv->write_reg = peak_pci_write_reg;
+		priv->post_irq = peak_pci_post_irq;
+
+		priv->can.clock.freq = PEAK_PCI_CAN_CLOCK;
+		priv->ocr = PEAK_PCI_OCR;
+		priv->cdr = PEAK_PCI_CDR;
+		/* Neither a slave nor a single device distributes the clock */
+		if (channels == 1 || i > 0)
+			priv->cdr |= CDR_CLK_OFF;
+
+		/* Setup interrupt handling */
+		priv->irq_flags = IRQF_SHARED;
+		dev->irq = pdev->irq;
+
+		chan->icr_mask = peak_pci_icr_masks[i];
+		icr |= chan->icr_mask;
+
+		SET_NETDEV_DEV(dev, &pdev->dev);
+		dev->dev_id = i;
+
+		/* Create chain of SJA1000 devices */
+		chan->prev_dev = pci_get_drvdata(pdev);
+		pci_set_drvdata(pdev, dev);
+
+		/* PCAN-ExpressCard needs some additional i2c init.
+		 * This must be done *before* register_sja1000dev() but
+		 * *after* devices linkage
+		 */
+		if (pdev->device == PEAK_PCIEC_DEVICE_ID ||
+		    pdev->device == PEAK_PCIEC34_DEVICE_ID) {
+			err = peak_pciec_probe(pdev, dev);
+			if (err) {
+				dev_err(&pdev->dev,
+					"failed to probe device (err %d)\n",
+					err);
+				goto failure_free_dev;
+			}
+		}
+
+		err = register_sja1000dev(dev);
+		if (err) {
+			dev_err(&pdev->dev, "failed to register device\n");
+			goto failure_free_dev;
+		}
+
+		dev_info(&pdev->dev,
+			 "%s at reg_base=0x%p cfg_base=0x%p irq=%d\n",
+			 dev->name, priv->reg_base, chan->cfg_base, dev->irq);
+	}
+
+	/* Enable interrupts */
+	writew(icr, cfg_base + PITA_ICR + 2);
+
+	return 0;
+
+failure_free_dev:
+	pci_set_drvdata(pdev, chan->prev_dev);
+	free_sja1000dev(dev);
+
+failure_remove_channels:
+	/* Disable interrupts */
+	writew(0x0, cfg_base + PITA_ICR + 2);
+
+	chan = NULL;
+	for (dev = pci_get_drvdata(pdev); dev; dev = prev_dev) {
+		priv = netdev_priv(dev);
+		chan = priv->priv;
+		prev_dev = chan->prev_dev;
+
+		unregister_sja1000dev(dev);
+		free_sja1000dev(dev);
+	}
+
+	/* free any PCIeC resources too */
+	if (chan && chan->pciec_card)
+		peak_pciec_remove(chan->pciec_card);
+
+	pci_iounmap(pdev, reg_base);
+
+failure_unmap_cfg_base:
+	pci_iounmap(pdev, cfg_base);
+
+failure_release_regions:
+	pci_release_regions(pdev);
+
+failure_disable_pci:
+	pci_disable_device(pdev);
+
+	/* pci_xxx_config_word() return positive PCIBIOS_xxx error codes while
+	 * the probe() function must return a negative errno in case of failure
+	 * (err is unchanged if negative)
+	 */
+	return pcibios_err_to_errno(err);
+}
+
+static void peak_pci_remove(struct pci_dev *pdev)
+{
+	struct net_device *dev = pci_get_drvdata(pdev); /* Last device */
+	struct sja1000_priv *priv = netdev_priv(dev);
+	struct peak_pci_chan *chan = priv->priv;
+	void __iomem *cfg_base = chan->cfg_base;
+	void __iomem *reg_base = priv->reg_base;
+
+	/* Disable interrupts */
+	writew(0x0, cfg_base + PITA_ICR + 2);
+
+	/* Loop over all registered devices */
+	while (1) {
+		struct net_device *prev_dev = chan->prev_dev;
+
+		dev_info(&pdev->dev, "removing device %s\n", dev->name);
+		/* do that only for first channel */
+		if (!prev_dev && chan->pciec_card)
+			peak_pciec_remove(chan->pciec_card);
+		unregister_sja1000dev(dev);
+		free_sja1000dev(dev);
+		dev = prev_dev;
+
+		if (!dev)
+			break;
+		priv = netdev_priv(dev);
+		chan = priv->priv;
+	}
+
+	pci_iounmap(pdev, reg_base);
+	pci_iounmap(pdev, cfg_base);
+	pci_release_regions(pdev);
+	pci_disable_device(pdev);
+}
+
+static struct pci_driver peak_pci_driver = {
+	.name = DRV_NAME,
+	.id_table = peak_pci_tbl,
+	.probe = peak_pci_probe,
+	.remove = peak_pci_remove,
+};
+
+module_pci_driver(peak_pci_driver);

@@ -1,2 +1,1 @@
-EAF) \
-  include/linux/p
+dev->board == CX23885_BO

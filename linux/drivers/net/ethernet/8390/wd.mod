@@ -1,1 +1,2 @@
-    $(wildcard include/config/HI
+drivers/net/ethernet/8390/wd.o
+

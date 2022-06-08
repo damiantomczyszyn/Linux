@@ -1,1 +1,2 @@
-ard include/config/ACPI_APEI_GHES)
+885_video_template = {
+	.name     

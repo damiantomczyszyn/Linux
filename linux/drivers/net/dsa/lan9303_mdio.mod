@@ -1,2 +1,2 @@
-x/build_bug.h \
-  include/linux/
+drivers/net/dsa/lan9303_mdio.o
+

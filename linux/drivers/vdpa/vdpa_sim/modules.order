@@ -1,1 +1,1 @@
-ldcard include/config/PCI_MMCONFIG
+cx23885-cards.c                   

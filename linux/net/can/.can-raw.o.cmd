@@ -1,3 +1,2 @@
-x86/include/uapi/asm/auxvec.h \
-  include/linux/kref.h \
-  include/linux/refcoun
+hed_uclamp_util_min_rt_default;
+	uclamp_se_set(uc_se, default_util_min, false);

@@ -1,1 +1,2 @@
-wildcard include/config/GENERIC
+his means we can special
+		 * c

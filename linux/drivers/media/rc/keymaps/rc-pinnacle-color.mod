@@ -1,2 +1,2 @@
-drivers/media/rc/keymaps/rc-pinnacle-color.o
-
+		mem &= ~ALT_DATA;
+		mem |= (data & ALT_DATA)

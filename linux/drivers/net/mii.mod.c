@@ -1,14 +1,16 @@
-t.h \
-    $(wildcard include/config/DEBUG_PLIST) \
-  include/linux/hrtimer.h \
-    $(wildcard include/config/HIGH_RES_TIMERS) \
-    $(wildcard include/config/TIME_LOW_RES) \
-    $(wildcard include/config/TIMERFD) \
-  include/linux/hrtimer_defs.h \
-  include/linux/timerqueue.h \
-  include/linux/seccomp.h \
-    $(wildcard include/config/SECCOMP) \
-    $(wildcard include/config/HAVE_ARCH_SECCOMP_FILTER) \
-    $(wildcard include/config/SECCOMP_FILTER) \
-    $(wildcard include/config/CHECKPOINT_RESTORE) \
-    $(wildcard inclu
+/* SPDX-License-Identifier: GPL-2.0-or-later */
+/*
+ *  Driver for the Conexant CX23885/7/8 PCIe bridge
+ *
+ *  Infrared device support routines - non-input, non-vl42_subdev routines
+ *
+ *  Copyright (C) 2009  Andy Walls <awalls@md.metrocast.net>
+ */
+
+#ifndef _CX23885_IR_H_
+#define _CX23885_IR_H_
+void cx23885_ir_rx_v4l2_dev_notify(struct v4l2_subdev *sd, u32 events);
+void cx23885_ir_tx_v4l2_dev_notify(struct v4l2_subdev *sd, u32 events);
+
+void cx23885_ir_rx_work_handler(struct work_struct *work);
+void cx23885_ir_tx_work_ha

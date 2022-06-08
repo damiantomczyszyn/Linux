@@ -1,4 +1,3 @@
- -> @hlock and @hlock -> <whatever __bfs() found> is not -(*R)->
- * and -(S*)->.
- */
-sta
+e leaf
+ * rcu_node structure's ->lock be held.  It consults the cached value
+ * of ->gp_

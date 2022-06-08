@@ -1,2 +1,1 @@
-
-			       &hlock_class(prev)->loc
+// SPDX-License-Identifier: GPL-2.

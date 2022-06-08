@@ -1,28 +1,30 @@
-fig/GENERIC_ATOMIC64) \
-  include/linux/atomic/atomic-long.h \
-  include/linux/atomic/atomic-instrumented.h \
-  include/linux/bug.h \
-    $(wildcard include/config/BUG_ON_DATA_CORRUPTION) \
-  arch/x86/include/asm/bug.h \
-    $(wildcard include/config/DEBUG_BUGVERBOSE) \
-  include/linux/instrumentation.h \
-    $(wildcard include/config/DEBUG_ENTRY) \
-  include/asm-generic/bug.h \
-    $(wildcard include/config/BUG) \
-    $(wildcard include/config/GENERIC_BUG_RELATIVE_POINTERS) \
-  arch/x86/include/uapi/asm/msr.h \
-  include/linux/tracepoint-defs.h \
-  arch/x86/include/asm/special_insns.h \
-  include/linux/irqflags.h \
-    $(wildcard include/config/TRACE_IRQFLAGS) \
-    $(wildcard include/config/PREEMPT_RT) \
-    $(wildcard include/config/IRQSOFF_TRACER) \
-    $(wildcard include/config/PREEMPT_TRACER) \
-    $(wildcard include/config/DEBUG_IRQFLAGS) \
-    $(wildcard include/config/TRACE_IRQFLAGS_SUPPORT) \
-  arch/x86/include/asm/irqflags.h \
-  arch/x86/include/asm/fpu/types.h \
-  arch/x86/include/asm/vmxfeatures.h \
-  arch/x86/include/asm/vdso/processor.h \
-  include/linux/personality.h \
-  include/uapi/linux/pe
+# SPDX-License-Identifier: GPL-2.0-only
+config VIDEO_CX23885
+	tristate "Conexant cx23885 (2388x successor) support"
+	depends on DVB_CORE && VIDEO_DEV && PCI && I2C && INPUT && SND
+	select SND_PCM
+	select I2C_ALGOBIT
+	select VIDEO_TUNER
+	select VIDEO_TVEEPROM
+	depends on RC_CORE
+	select VIDEOBUF2_DVB
+	select VIDEOBUF2_DMA_SG
+	select VIDEO_CX25840
+	select VIDEO_CX2341X
+	select VIDEO_CS3308
+	select DVB_DIB7000P if MEDIA_SUBDRV_AUTOSELECT
+	select DVB_DRXK if MEDIA_SUBDRV_AUTOSELECT
+	select DVB_S5H1409 if MEDIA_SUBDRV_AUTOSELECT
+	select DVB_S5H1411 if MEDIA_SUBDRV_AUTOSELECT
+	select DVB_LGDT330X if MEDIA_SUBDRV_AUTOSELECT
+	select DVB_ZL10353 if MEDIA_SUBDRV_AUTOSELECT
+	select DVB_TDA10048 if MEDIA_SUBDRV_AUTOSELECT
+	select DVB_LNBP21 if MEDIA_SUBDRV_AUTOSELECT
+	select DVB_STV090x if MEDIA_SUBDRV_AUTOSELECT
+	select DVB_STB6100 if MEDIA_SUBDRV_AUTOSELECT
+	select DVB_STV6110 if MEDIA_SUBDRV_AUTOSELECT
+	select DVB_CX24116 if MEDIA_SUBDRV_AUTOSELECT
+	select DVB_CX24117 if MEDIA_SUBDRV_AUTOSELECT
+	select DVB_STV0900 if MEDIA_SUBDRV_AUTOSELECT
+	select DVB_DS3000 if MEDIA_SUBDRV_AUTOSELECT
+	select DVB_TS2020 if MEDIA_SUB

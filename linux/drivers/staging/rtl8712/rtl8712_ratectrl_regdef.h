@@ -1,40 +1,58 @@
-    $(wildcard include/config/HAVE_ARCH_USERFAULTFD_MINOR) \
-    $(wildcard include/config/SHMEM) \
-    $(wildcard include/config/ARCH_HAS_PTE_SPECIAL) \
-    $(wildcard include/config/ARCH_HAS_PTE_DEVMAP) \
-    $(wildcard include/config/DEBUG_VM_RB) \
-    $(wildcard include/config/PAGE_POISONING) \
-    $(wildcard include/config/INIT_ON_ALLOC_DEFAULT_ON) \
-    $(wildcard include/config/INIT_ON_FREE_DEFAULT_ON) \
-    $(wildcard include/config/DEBUG_PAGEALLOC) \
-    $(wildcard include/config/HUGETLBFS) \
-    $(wildcard include/config/MAPPING_DIRTY_HELPERS) \
-    $(wildcard include/config/ANON_VMA_NAME) \
-  include/linux/mmap_lock.h \
-  include/linux/page_ext.h \
-  include/linux/stacktrace.h \
-    $(wildcard include/config/ARCH_STACKWALK) \
-    $(wildcard include/config/STACKTRACE) \
-    $(wildcard include/config/HAVE_RELIABLE_STACKTRACE) \
-  include/linux/stackdepot.h \
-    $(wildcard include/config/STACKDEPOT_ALWAYS_INIT) \
-  include/linux/page_ref.h \
-    $(wildcard include/config/DEBUG_PAGE_REF) \
-  include/linux/sizes.h \
-  include/linux/pgtable.h \
-    $(wildcard include/config/HIGHPTE) \
-    $(wildcard include/config/GUP_GET_PTE_LOW_HIGH) \
-    $(wildcard include/config/HAVE_ARCH_SOFT_DIRTY) \
-    $(wildcard include/config/ARCH_ENABLE_THP_MIGRATION) \
-    $(wildcard include/config/X86_ESPFIX64) \
-  arch/x86/include/asm/pgtable.h \
-    $(wildcard include/config/DEBUG_WX) \
-    $(wildcard include/config/PAGE_TABLE_CHECK) \
-  arch/x86/include/asm/pkru.h \
-  arch/x86/include/asm/fpu/api.h \
-    $(wildcard include/config/X86_DEBUG_FPU) \
-  arch/x86/include/asm/coco.h \
-  include/asm-generic/pgtable_uffd.h \
-  include/linux/page_table_check.h \
-  arch/x86/include/asm/pgtable_32.h \
-  arch/x86/include/asm/pgtab
+// SPDX-License-Identifier: GPL-2.0-or-later
+/*
+ *  Driver for the Conexant CX23885/7/8 PCIe bridge
+ *
+ *  Infrared device support routines - non-input, non-vl42_subdev routines
+ *
+ *  Copyright (C) 2009  Andy Walls <awalls@md.metrocast.net>
+ */
+
+#include "cx23885.h"
+#include "cx23885-ir.h"
+#include "cx23885-input.h"
+
+#include <media/v4l2-device.h>
+
+#define CX23885_IR_RX_FIFO_SERVICE_REQ		0
+#define CX23885_IR_RX_END_OF_RX_DETECTED	1
+#define CX23885_IR_RX_HW_FIFO_OVERRUN		2
+#define CX23885_IR_RX_SW_FIFO_OVERRUN		3
+
+#define CX23885_IR_TX_FIFO_SERVICE_REQ		0
+
+
+void cx23885_ir_rx_work_handler(struct work_struct *work)
+{
+	struct cx23885_dev *dev =
+			     container_of(work, struct cx23885_dev, ir_rx_work);
+	u32 events = 0;
+	unsigned long *notifications = &dev->ir_rx_notifications;
+
+	if (test_and_clear_bit(CX23885_IR_RX_SW_FIFO_OVERRUN, notifications))
+		events |= V4L2_SUBDEV_IR_RX_SW_FIFO_OVERRUN;
+	if (test_and_clear_bit(CX23885_IR_RX_HW_FIFO_OVERRUN, notifications))
+		events |= V4L2_SUBDEV_IR_RX_HW_FIFO_OVERRUN;
+	if (test_and_clear_bit(CX23885_IR_RX_END_OF_RX_DETECTED, notifications))
+		events |= V4L2_SUBDEV_IR_RX_END_OF_RX_DETECTED;
+	if (test_and_clear_bit(CX23885_IR_RX_FIFO_SERVICE_REQ, notifications))
+		events |= V4L2_SUBDEV_IR_RX_FIFO_SERVICE_REQ;
+
+	if (events == 0)
+		return;
+
+	if (dev->kernel_ir)
+		cx23885_input_rx_work_handler(dev, events);
+}
+
+void cx23885_ir_tx_work_handler(struct work_struct *work)
+{
+	struct cx23885_dev *dev =
+			     container_of(work, struct cx23885_dev, ir_tx_work);
+	u32 events = 0;
+	unsigned long *notifications = &dev->ir_tx_notifications;
+
+	if (test_and_clear_bit(CX23885_IR_TX_FIFO_SERVICE_REQ, notifications))
+		events |= V4L2_SUBDEV_IR_TX_FIFO_SERVICE_REQ;
+
+	if (events == 0)
+		ret

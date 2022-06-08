@@ -1,78 +1,52 @@
-// SPDX-License-Identifier: GPL-2.0+
-// pixelview.h - Keytable for pixelview Remote Controller
-//
-// keymap imported from ir-keymaps.c
-//
-// Copyright (c) 2010 by Mauro Carvalho Chehab
+de/linux/ptr_ring.h \
+  include/linux/seq_file_net.h \
+  include/net/netprio_cgroup.h \
+  include/net/xdp.h \
+  include/uapi/linux/neighbour.h \
+  include/linux/netlink.h \
+  include/net/scm.h \
+    $(wildcard include/config/SECURITY_NETWORK) \
+  include/linux/security.h \
+    $(wildcard include/config/SECURITY_INFINIBAND) \
+    $(wildcard include/config/SECURITY_NETWORK_XFRM) \
+    $(wildcard include/config/SECURITY_PATH) \
+    $(wildcard include/config/SECURITYFS) \
+  include/linux/kernel_read_file.h \
+  include/uapi/linux/netlink.h \
+  include/uapi/linux/netdevice.h \
+  include/uapi/linux/if.h \
+  include/uapi/linux/hdlc/ioctl.h \
+  include/linux/if_ether.h \
+  include/linux/if_link.h \
+  include/uapi/linux/if_link.h \
+  include/uapi/linux/if_bonding.h \
+  include/uapi/linux/pkt_cls.h \
+  include/uapi/linux/pkt_sched.h \
+  include/linux/hashtable.h \
+  include/linux/inetdevice.h \
+    $(wildcard include/config/INET) \
+  include/linux/ip.h \
+  include/uapi/linux/ip.h \
+  include/linux/rtnetlink.h \
+    $(wildcard include/config/NET_INGRESS) \
+    $(wildcard include/config/NET_EGRESS) \
+  include/uapi/linux/rtnetlink.h \
+  include/uapi/linux/if_addr.h \
+  include/linux/etherdevice.h \
+  include/linux/crc32.h \
+  include/linux/bitrev.h \
+    $(wildcard include/config/HAVE_ARCH_BITREVERSE) \
+  arch/x86/include/generated/asm/unaligned.h \
+  include/asm-generic/unaligned.h \
+  include/linux/unaligned/packed_struct.h \
+  include/media/videobuf-core.h \
+  include/media/videobuf-vmalloc.h \
+  drivers/media/pci/cx18/cx18-queue.h \
+  drivers/media/pci/cx18/cx18-streams.h \
+  drivers/media/pci/cx18/cx18-fileops.h \
+  drivers/media/pci/cx18/cx18-alsa.h \
+  drivers/media/pci/cx18/cx18-alsa-pcm.h \
 
-#include <media/rc-map.h>
-#include <linux/module.h>
+drivers/media/pci/cx18/cx18-alsa-pcm.o: $(deps_drivers/media/pci/cx18/cx18-alsa-pcm.o)
 
-static struct rc_map_table pixelview[] = {
-
-	{ 0x1e, KEY_POWER },	/* power */
-	{ 0x07, KEY_VIDEO },	/* source */
-	{ 0x1c, KEY_SEARCH },	/* scan */
-
-
-	{ 0x03, KEY_TUNER },		/* TV/FM */
-
-	{ 0x00, KEY_RECORD },
-	{ 0x08, KEY_STOP },
-	{ 0x11, KEY_PLAY },
-
-	{ 0x1a, KEY_PLAYPAUSE },	/* freeze */
-	{ 0x19, KEY_ZOOM },		/* zoom */
-	{ 0x0f, KEY_TEXT },		/* min */
-
-	{ 0x01, KEY_NUMERIC_1 },
-	{ 0x0b, KEY_NUMERIC_2 },
-	{ 0x1b, KEY_NUMERIC_3 },
-	{ 0x05, KEY_NUMERIC_4 },
-	{ 0x09, KEY_NUMERIC_5 },
-	{ 0x15, KEY_NUMERIC_6 },
-	{ 0x06, KEY_NUMERIC_7 },
-	{ 0x0a, KEY_NUMERIC_8 },
-	{ 0x12, KEY_NUMERIC_9 },
-	{ 0x02, KEY_NUMERIC_0 },
-	{ 0x10, KEY_LAST },		/* +100 */
-	{ 0x13, KEY_LIST },		/* recall */
-
-	{ 0x1f, KEY_CHANNELUP },	/* chn down */
-	{ 0x17, KEY_CHANNELDOWN },	/* chn up */
-	{ 0x16, KEY_VOLUMEUP },		/* vol down */
-	{ 0x14, KEY_VOLUMEDOWN },	/* vol up */
-
-	{ 0x04, KEY_KPMINUS },		/* <<< */
-	{ 0x0e, KEY_SETUP },		/* function */
-	{ 0x0c, KEY_KPPLUS },		/* >>> */
-
-	{ 0x0d, KEY_GOTO },		/* mts */
-	{ 0x1d, KEY_REFRESH },		/* reset */
-	{ 0x18, KEY_MUTE },		/* mute/unmute */
-};
-
-static struct rc_map_list pixelview_map = {
-	.map = {
-		.scan     = pixelview,
-		.size     = ARRAY_SIZE(pixelview),
-		.rc_proto = RC_PROTO_UNKNOWN,	/* Legacy IR type */
-		.name     = RC_MAP_PIXELVIEW,
-	}
-};
-
-static int __init init_rc_map_pixelview(void)
-{
-	return rc_map_register(&pixelview_map);
-}
-
-static void __exit exit_rc_map_pixelview(void)
-{
-	rc_map_unregister(&pixelview_map);
-}
-
-module_init(init_rc_map_pixelview)
-module_exit(exit_rc_map_pixelview)
-
-MODULE_LICENSE("GPL");
-MODULE_AUTHOR("Mauro Carvalho Chehab");
+$(deps_drivers/media/pci/c

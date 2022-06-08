@@ -1,2 +1,2 @@
-lude/linux/percpu-refcount.h \
-  include
+] = {
+		.name		= "Hauppauge WinTV-HVR150

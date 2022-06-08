@@ -1,54 +1,74 @@
- -> @hlock and @hlock -> <whatever __bfs() found> is not -(*R)->
- * and -(S*)->.
- */
-static inline void bfs_init_root(struct lock_list *lock,
-				 struct held_lock *hlock)
-{
-	__bfs_init_root(lock, hlock_class(hlock));
-	lock->only_xr = (hlock->read == 2);
-}
+g
+		 * any task-queue locks at all. We'll only try to get
+		 * the runqueue lock when things look like they will
+		 * work out!
+		 */
+		rq = task_rq(p);
 
-/*
- * Similar to bfs_init_root() but initialize the root for backwards BFS.
- *
- * ->only_xr of the initial lock node is set to @hlock->read != 0, to make sure
- * that <next> -> @hlock and @hlock -> <whatever backwards BFS found> is not
- * -(*S)-> and -(R*)-> (reverse order of -(*R)-> and -(S*)->).
- */
-static inline void bfs_init_rootb(struct lock_list *lock,
-				  struct held_lock *hlock)
-{
-	__bfs_init_root(lock, hlock_class(hlock));
-	lock->only_xr = (hlock->read != 0);
-}
+		/*
+		 * If the task is actively running on another CPU
+		 * still, just relax and busy-wait without holding
+		 * any locks.
+		 *
+		 * NOTE! Since we don't hold any locks, it's not
+		 * even sure that "rq" stays as the right runqueue!
+		 * But we don't care, since "task_running()" will
+		 * return false if the runqueue has changed and p
+		 * is actually now running somewhere else!
+		 */
+		while (task_running(rq, p)) {
+			if (match_state && unlikely(READ_ONCE(p->__state) != match_state))
+				return 0;
+			cpu_relax();
+		}
 
-static inline struct lock_list *__bfs_next(struct lock_list *lock, int offset)
-{
-	if (!lock || !lock->parent)
-		return NULL;
+		/*
+		 * Ok, time to look more closely! We need the rq
+		 * lock now, to be *sure*. If we're wrong, we'll
+		 * just go back and repeat.
+		 */
+		rq = task_rq_lock(p, &rf);
+		trace_sched_wait_task(p);
+		running = task_running(rq, p);
+		queued = task_on_rq_queued(p);
+		ncsw = 0;
+		if (!match_state || READ_ONCE(p->__state) == match_state)
+			ncsw = p->nvcsw | LONG_MIN; /* sets MSB */
+		task_rq_unlock(rq, p, &rf);
 
-	return list_next_or_null_rcu(get_dep_list(lock->parent, offset),
-				     &lock->entry, struct lock_list, entry);
-}
+		/*
+		 * If it changed from the expected state, bail out now.
+		 */
+		if (unlikely(!ncsw))
+			break;
 
-/*
- * Breadth-First Search to find a strong path in the dependency graph.
- *
- * @source_entry: the source of the path we are searching for.
- * @data: data used for the second parameter of @match function
- * @match: match function for the search
- * @target_entry: pointer to the target of a matched path
- * @offset: the offset to struct lock_class to determine whether it is
- *          locks_after or locks_before
- *
- * We may have multiple edges (considering different kinds of dependencies,
- * e.g. ER and SN) between two nodes in the dependency graph. But
- * only the strong dependency path in the graph is relevant to deadlocks. A
- * strong dependency path is a dependency path that doesn't have two adjacent
- * dependencies as -(*R)-> -(S*)->, please see:
- *
- *         Documentation/locking/lockdep-design.rst
- *
- * for more explanation of the definition of strong dependency paths
- *
- * In __bfs(), we only traverse in the st
+		/*
+		 * Was it really running after all now that we
+		 * checked with the proper locks actually held?
+		 *
+		 * Oops. Go back and try again..
+		 */
+		if (unlikely(running)) {
+			cpu_relax();
+			continue;
+		}
+
+		/*
+		 * It's not enough that it's not actively running,
+		 * it must be off the runqueue _entirely_, and not
+		 * preempted!
+		 *
+		 * So if it was still runnable (but just not actively
+		 * running right now), it's preempted, and we should
+		 * yield - it could be a while.
+		 */
+		if (unlikely(queued)) {
+			ktime_t to = NSEC_PER_SEC / HZ;
+
+			set_current_state(TASK_UNINTERRUPTIBLE);
+			schedule_hrtimeout(&to, HRTIMER_MODE_REL_HARD);
+			continue;
+		}
+
+		/*
+		 * Ahh, all good. It wasn't running,

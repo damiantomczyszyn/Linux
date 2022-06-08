@@ -1,2 +1,2 @@
-odule.h \
-    $(wildcard include/config/MODULES_TR
+# SPDX-License-Identifier: GPL-2.0-only
+config VID

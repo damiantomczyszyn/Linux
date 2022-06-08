@@ -1,2 +1,6 @@
-drivers/media/rc/keymaps/rc-d680-dmb.o
+tate);
+		}
+	}
 
+}
+EXPORT_SYMBOL(altera_ci

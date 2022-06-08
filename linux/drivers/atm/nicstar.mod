@@ -1,1 +1,2 @@
-nclude/config/GENERIC_A
+  = 0x61,
+	.if_khz     

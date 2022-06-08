@@ -1,2 +1,2 @@
-lude/config/SPI) \
-  include/media/v4l2-dev
+dcard include/config/X86_P6_NOP) \
+    $(wi

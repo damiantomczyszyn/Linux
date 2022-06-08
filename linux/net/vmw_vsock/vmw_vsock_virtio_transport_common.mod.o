@@ -1,61 +1,72 @@
-// SPDX-License-Identifier: GPL-2.0-only
-/*
- * kernel/lockdep.c
- *
- * Runtime locking correctness validator
- *
- * Started by Ingo Molnar:
- *
- *  Copyright (C) 2006,2007 Red Hat, Inc., Ingo Molnar <mingo@redhat.com>
- *  Copyright (C) 2007 Red Hat, Inc., Peter Zijlstra
- *
- * this code maps all the lock dependencies as they occur in a live kernel
- * and will warn about the following classes of locking bugs:
- *
- * - lock inversion scenarios
- * - circular lock dependencies
- * - hardirq/softirq safe/unsafe locking bugs
- *
- * Bugs are reported even if the current locking scenario does not cause
- * any deadlock at this point.
- *
- * I.e. if anytime in the past two locks were taken in a different order,
- * even if it happened for another task, even if those were different
- * locks (but of the same class as this lock), this code will detect it.
- *
- * Thanks to Arjan van de Ven for coming up with the initial idea of
- * mapping lock dependencies runtime.
- */
-#define DISABLE_BRANCH_PROFILING
-#include <linux/mutex.h>
-#include <linux/sched.h>
-#include <linux/sched/clock.h>
-#include <linux/sched/task.h>
-#include <linux/sched/mm.h>
-#include <linux/delay.h>
-#include <linux/module.h>
-#include <linux/proc_fs.h>
-#include <linux/seq_file.h>
-#include <linux/spinlock.h>
-#include <linux/kallsyms.h>
-#include <linux/interrupt.h>
-#include <linux/stacktrace.h>
-#include <linux/debug_locks.h>
-#include <linux/irqflags.h>
-#include <linux/utsname.h>
-#include <linux/hash.h>
-#include <linux/ftrace.h>
-#include <linux/stringify.h>
-#include <linux/bitmap.h>
-#include <linux/bitops.h>
-#include <linux/gfp.h>
-#include <linux/random.h>
-#include <linux/jhash.h>
-#include <linux/nmi.h>
-#include <linux/rcupdate.h>
-#include <linux/kprobes.h>
-#include <linux/lockdep.h>
+ine void cx23885_irq_disable_all(struct cx23885_dev *dev)
+{
+	cx23885_irq_disable(dev, 0xffffffff);
+}
 
-#include <asm/sections.h>
+void cx23885_irq_remove(struct cx23885_dev *dev, u32 mask)
+{
+	unsigned long flags;
+	spin_lock_irqsave(&dev->pci_irqmask_lock, flags);
 
-#include "lockdep_internals.h"
+	dev->pci_irqmask &= ~mask;
+	cx_clear(PCI_INT_MSK, mask);
+
+	spin_unlock_irqrestore(&dev->pci_irqmask_lock, flags);
+}
+
+static u32 cx23885_irq_get_mask(struct cx23885_dev *dev)
+{
+	u32 v;
+	unsigned long flags;
+	spin_lock_irqsave(&dev->pci_irqmask_lock, flags);
+
+	v = cx_read(PCI_INT_MSK);
+
+	spin_unlock_irqrestore(&dev->pci_irqmask_lock, flags);
+	return v;
+}
+
+static int cx23885_risc_decode(u32 risc)
+{
+	static char *instr[16] = {
+		[RISC_SYNC    >> 28] = "sync",
+		[RISC_WRITE   >> 28] = "write",
+		[RISC_WRITEC  >> 28] = "writec",
+		[RISC_READ    >> 28] = "read",
+		[RISC_READC   >> 28] = "readc",
+		[RISC_JUMP    >> 28] = "jump",
+		[RISC_SKIP    >> 28] = "skip",
+		[RISC_WRITERM >> 28] = "writerm",
+		[RISC_WRITECM >> 28] = "writecm",
+		[RISC_WRITECR >> 28] = "writecr",
+	};
+	static int incr[16] = {
+		[RISC_WRITE   >> 28] = 3,
+		[RISC_JUMP    >> 28] = 3,
+		[RISC_SKIP    >> 28] = 1,
+		[RISC_SYNC    >> 28] = 1,
+		[RISC_WRITERM >> 28] = 3,
+		[RISC_WRITECM >> 28] = 3,
+		[RISC_WRITECR >> 28] = 4,
+	};
+	static char *bits[] = {
+		"12",   "13",   "14",   "resync",
+		"cnt0", "cnt1", "18",   "19",
+		"20",   "21",   "22",   "23",
+		"irq1", "irq2", "eol",  "sol",
+	};
+	int i;
+
+	printk(KERN_DEBUG "0x%08x [ %s", risc,
+	       instr[risc >> 28] ? instr[risc >> 28] : "INVALID");
+	for (i = ARRAY_SIZE(bits) - 1; i >= 0; i--)
+		if (risc & (1 << (i + 12)))
+			pr_cont(" %s", bits[i]);
+	pr_cont(" count=%d ]\n", risc & 0xfff);
+	return incr[risc >> 28] ? incr[risc >> 28] : 1;
+}
+
+static void cx23885_wakeup(struct cx23885_tsport *port,
+			   struct cx23885_dmaqueue *q, u32 count)
+{
+	

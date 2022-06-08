@@ -1,2 +1,3 @@
-drivers/media/rc/keymaps/rc-encore-enltv2.o
+taval = tempval & 0x000000FF;
 
+	/* Bring CS a

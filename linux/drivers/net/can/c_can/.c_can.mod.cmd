@@ -1,5 +1,1 @@
- include/config/PM) \
-    $(wildcard include/config/GPIOLIB) \
-    $(wildcard include/config/ACPI_TABLE_UPGRADE) \
-    $(wildcard include/config/ACPI_WATCHDOG) \
-  
+cmd_drivers/net/can/c_can/c_can.mod := { echo  drivers/net/can/c_can/c_can_ethtool.o drivers/net/can/c_can/c_can_main.o;  echo; } > drivers/net/can/c_can/c_can.mod

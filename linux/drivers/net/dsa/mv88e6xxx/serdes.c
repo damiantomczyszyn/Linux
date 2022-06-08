@@ -1,880 +1,1606 @@
- $(wildcard include/config/SLOB) \
-  include/linux/overflow.h \
-  include/linux/percpu-refcount.h \
-  include/linux/kasan.h \
-    $(wildcard include/config/KASAN_STACK) \
-    $(wildcard include/config/KASAN_VMALLOC) \
-    $(wildcard include/config/KASAN_INLINE) \
-  include/linux/kasan-enabled.h \
-  include/linux/device.h \
-    $(wildcard include/config/GENERIC_MSI_IRQ_DOMAIN) \
-    $(wildcard include/config/GENERIC_MSI_IRQ) \
-    $(wildcard include/config/ENERGY_MODEL) \
-    $(wildcard include/config/PINCTRL) \
-    $(wildcard include/config/DMA_OPS) \
-    $(wildcard include/config/DMA_DECLARE_COHERENT) \
-    $(wildcard include/config/DMA_CMA) \
-    $(wildcard include/config/SWIOTLB) \
-    $(wildcard include/config/ARCH_HAS_SYNC_DMA_FOR_DEVICE) \
-    $(wildcard include/config/ARCH_HAS_SYNC_DMA_FOR_CPU) \
-    $(wildcard include/config/ARCH_HAS_SYNC_DMA_FOR_CPU_ALL) \
-    $(wildcard include/config/DMA_OPS_BYPASS) \
-    $(wildcard include/config/DEVTMPFS) \
-    $(wildcard include/config/SYSFS_DEPRECATED) \
-  include/linux/dev_printk.h \
-  include/linux/ratelimit.h \
-  include/linux/sched.h \
-    $(wildcard include/config/VIRT_CPU_ACCOUNTING_NATIVE) \
-    $(wildcard include/config/SCHED_INFO) \
-    $(wildcard include/config/SCHEDSTATS) \
-    $(wildcard include/config/SCHED_CORE) \
-    $(wildcard include/config/FAIR_GROUP_SCHED) \
-    $(wildcard include/config/RT_GROUP_SCHED) \
-    $(wildcard include/config/RT_MUTEXES) \
-    $(wildcard include/config/UCLAMP_TASK) \
-    $(wildcard include/config/UCLAMP_BUCKETS_COUNT) \
-    $(wildcard include/config/CGROUP_SCHED) \
-    $(wildcard include/config/BLK_DEV_IO_TRACE) \
-    $(wildcard include/config/PSI) \
-    $(wildcard include/config/COMPAT_BRK) \
-    $(wildcard include/config/CGROUPS) \
-    $(wildcard include/config/BLK_CGROUP) \
-    $(wildcard include/config/PAGE_OWNER) \
-    $(wildcard include/config/EVENTFD) \
-    $(wildcard include/config/ARCH_HAS_SCALED_CPUTIME) \
-    $(wildcard include/config/VIRT_CPU_ACCOUNTING_GEN) \
-    $(wildcard include/config/POSIX_CPUTIMERS) \
-    $(wildcard include/config/POSIX_CPU_TIMERS_TASK_WORK) \
-    $(wildcard include/config/KEYS) \
-    $(wildcard include/config/SYSVIPC) \
-    $(wildcard include/config/DETECT_HUNG_TASK) \
-    $(wildcard include/config/IO_URING) \
-    $(wildcard include/config/AUDIT) \
-    $(wildcard include/config/AUDITSYSCALL) \
-    $(wildcard include/config/UBSAN) \
-    $(wildcard include/config/UBSAN_TRAP) \
-    $(wildcard include/config/TASK_XACCT) \
-    $(wildcard include/config/CPUSETS) \
-    $(wildcard include/config/X86_CPU_RESCTRL) \
-    $(wildcard include/config/FUTEX) \
-    $(wildcard include/config/PERF_EVENTS) \
-    $(wildcard include/config/RSEQ) \
-    $(wildcard include/config/TASK_DELAY_ACCT) \
-    $(wildcard include/config/FAULT_INJECTION) \
-    $(wildcard include/config/LATENCYTOP) \
-    $(wildcard include/config/KUNIT) \
-    $(wildcard include/config/FUNCTION_GRAPH_TRACER) \
-    $(wildcard include/config/BCACHE) \
-    $(wildcard include/config/VMAP_STACK) \
-    $(wildcard include/config/SECURITY) \
-    $(wildcard include/config/BPF_SYSCALL) \
-    $(wildcard include/config/GCC_PLUGIN_STACKLEAK) \
-    $(wildcard include/config/X86_MCE) \
-    $(wildcard include/config/KRETPROBES) \
-    $(wildcard include/config/RETHOOK) \
-    $(wildcard include/config/ARCH_HAS_PARANOID_L1D_FLUSH) \
-    $(wildcard include/config/ARCH_TASK_STRUCT_ON_STACK) \
-    $(wildcard include/config/DEBUG_RSEQ) \
-  include/uapi/linux/sched.h \
-  include/linux/pid.h \
-  include/linux/rculist.h \
-    $(wildcard include/config/PROVE_RCU_LIST) \
-  include/linux/sem.h \
-  include/uapi/linux/sem.h \
-  include/linux/ipc.h \
-  include/linux/rhashtable-types.h \
-  include/uapi/linux/ipc.h \
-  arch/x86/include/generated/uapi/asm/ipcbuf.h \
-  include/uapi/asm-generic/ipcbuf.h \
-  arch/x86/include/uapi/asm/sembuf.h \
-  include/linux/shm.h \
-  include/uapi/linux/shm.h \
-  include/uapi/asm-generic/hugetlb_encode.h \
-  arch/x86/include/uapi/asm/shmbuf.h \
-  include/uapi/asm-generic/shmbuf.h \
-  arch/x86/include/asm/shmparam.h \
-  include/linux/plist.h \
-    $(wildcard include/config/DEBUG_PLIST) \
-  include/linux/hrtimer.h \
-    $(wildcard include/config/HIGH_RES_TIMERS) \
-    $(wildcard include/config/TIME_LOW_RES) \
-    $(wildcard include/config/TIMERFD) \
-  include/linux/hrtimer_defs.h \
-  include/linux/timerqueue.h \
-  include/linux/seccomp.h \
-    $(wildcard include/config/SECCOMP) \
-    $(wildcard include/config/HAVE_ARCH_SECCOMP_FILTER) \
-    $(wildcard include/config/SECCOMP_FILTER) \
-    $(wildcard include/config/CHECKPOINT_RESTORE) \
-    $(wildcard include/config/SECCOMP_CACHE_DEBUG) \
-  include/uapi/linux/seccomp.h \
-  arch/x86/include/asm/seccomp.h \
-  arch/x86/include/asm/unistd.h \
-  arch/x86/include/uapi/asm/unistd.h \
-  arch/x86/include/generated/uapi/asm/unistd_32.h \
-  include/asm-generic/seccomp.h \
-  include/uapi/linux/unistd.h \
-  include/linux/resource.h \
-  include/uapi/linux/resource.h \
-  arch/x86/include/generated/uapi/asm/resource.h \
-  include/asm-generic/resource.h \
-  include/uapi/asm-generic/resource.h \
-  include/linux/latencytop.h \
-  include/linux/sched/prio.h \
-  include/linux/sched/types.h \
-  include/linux/signal_types.h \
-    $(wildcard include/config/OLD_SIGACTION) \
-  include/uapi/linux/signal.h \
-  arch/x86/include/asm/signal.h \
-  arch/x86/include/uapi/asm/signal.h \
-  include/uapi/asm-generic/signal-defs.h \
-  arch/x86/include/uapi/asm/siginfo.h \
-  include/uapi/asm-generic/siginfo.h \
-  include/linux/syscall_user_dispatch.h \
-  include/linux/task_io_accounting.h \
-    $(wildcard include/config/TASK_IO_ACCOUNTING) \
-  include/linux/posix-timers.h \
-  include/linux/alarmtimer.h \
-    $(wildcard include/config/RTC_CLASS) \
-  include/uapi/linux/rseq.h \
-  include/linux/kcsan.h \
-  include/linux/energy_model.h \
-  include/linux/sched/cpufreq.h \
-    $(wildcard include/config/CPU_FREQ) \
-  include/linux/sched/topology.h \
-    $(wildcard include/config/SCHED_DEBUG) \
-    $(wildcard include/config/SCHED_MC) \
-    $(wildcard include/config/CPU_FREQ_GOV_SCHEDUTIL) \
-  include/linux/sched/idle.h \
-  include/linux/sched/sd_flags.h \
-  include/linux/klist.h \
-  include/linux/pm.h \
-    $(wildcard include/config/VT_CONSOLE_SLEEP) \
-    $(wildcard include/config/PM_CLK) \
-    $(wildcard include/config/PM_GENERIC_DOMAINS) \
-  include/linux/device/bus.h \
-  include/linux/device/class.h \
-  include/linux/device/driver.h \
-  arch/x86/include/asm/device.h \
-  include/linux/pm_wakeup.h \
-  include/acpi/acpi.h \
-  include/acpi/platform/acenv.h \
-  include/acpi/platform/acgcc.h \
-  include/acpi/platform/aclinux.h \
-    $(wildcard include/config/ACPI_REDUCED_HARDWARE_ONLY) \
-    $(wildcard include/config/ACPI_DEBUG) \
-  include/linux/ctype.h \
-  arch/x86/include/asm/acenv.h \
-  include/acpi/acnames.h \
-  include/acpi/actypes.h \
-  include/acpi/acexcep.h \
-  include/acpi/actbl.h \
-  include/acpi/actbl1.h \
-  include/acpi/actbl2.h \
-  include/acpi/actbl3.h \
-  include/acpi/acrestyp.h \
-  include/acpi/platform/acenvex.h \
-  include/acpi/platform/aclinuxex.h \
-  include/acpi/platform/acgccex.h \
-  include/acpi/acoutput.h \
-  include/acpi/acpiosxf.h \
-  include/acpi/acpixf.h \
-  include/acpi/acconfig.h \
-  include/acpi/acbuffer.h \
-  include/linux/dynamic_debug.h \
-  include/acpi/acpi_bus.h \
-    $(wildcard include/config/X86_ANDROID_TABLETS) \
-    $(wildcard include/config/ACPI_SYSTEM_POWER_STATES_SUPPORT) \
-    $(wildcard include/config/ACPI_SLEEP) \
-  include/acpi/acpi_drivers.h \
-    $(wildcard include/config/ACPI_DOCK) \
-  include/acpi/acpi_numa.h \
-    $(wildcard include/config/ACPI_HMAT) \
-  include/acpi/acpi_io.h \
-  include/linux/io.h \
-    $(wildcard include/config/HAS_IOPORT_MAP) \
-  arch/x86/include/asm/io.h \
-    $(wildcard include/config/MTRR) \
-    $(wildcard include/config/X86_PAT) \
-  arch/x86/include/generated/asm/early_ioremap.h \
-  include/asm-generic/early_ioremap.h \
-    $(wildcard include/config/GENERIC_EARLY_IOREMAP) \
-  include/asm-generic/iomap.h \
-  include/asm-generic/pci_iomap.h \
-    $(wildcard include/config/NO_GENERIC_PCI_IOPORT_MAP) \
-    $(wildcard include/config/GENERIC_PCI_IOMAP) \
-  include/asm-generic/io.h \
-    $(wildcard include/config/GENERIC_IOMAP) \
-    $(wildcard include/config/GENERIC_IOREMAP) \
-    $(wildcard include/config/VIRT_TO_BUS) \
-    $(wildcard include/config/GENERIC_DEVMEM_IS_ALLOWED) \
-  include/linux/logic_pio.h \
-    $(wildcard include/config/INDIRECT_PIO) \
-  include/linux/vmalloc.h \
-    $(wildcard include/config/HAVE_ARCH_HUGE_VMALLOC) \
-  arch/x86/include/asm/vmalloc.h \
-    $(wildcard include/config/HAVE_ARCH_HUGE_VMAP) \
-  arch/x86/include/asm/acpi.h \
-    $(wildcard include/config/ACPI_APEI) \
-  include/acpi/pdc_intel.h \
-  arch/x86/include/asm/numa.h \
-    $(wildcard include/config/NUMA_EMU) \
-  arch/x86/include/asm/numa_32.h \
-  include/linux/regulator/consumer.h \
-    $(wildcard include/config/REGULATOR) \
-  include/linux/suspend.h \
-    $(wildcard include/config/VT) \
-    $(wildcard include/config/SUSPEND) \
-    $(wildcard include/config/HIBERNATION_SNAPSHOT_DEV) \
-    $(wildcard include/config/PM_SLEEP_DEBUG) \
-    $(wildcard include/config/PM_AUTOSLEEP) \
-  include/linux/swap.h \
-    $(wildcard include/config/DEVICE_PRIVATE) \
-    $(wildcard include/config/MIGRATION) \
-    $(wildcard include/config/FRONTSWAP) \
-    $(wildcard include/config/THP_SWAP) \
-    $(wildcard include/config/MEMCG_SWAP) \
-  include/linux/memcontrol.h \
-    $(wildcard include/config/CGROUP_WRITEBACK) \
-  include/linux/cgroup.h \
-    $(wildcard include/config/CGROUP_CPUACCT) \
-    $(wildcard include/config/SOCK_CGROUP_DATA) \
-    $(wildcard include/config/CGROUP_DATA) \
-    $(wildcard include/config/CGROUP_BPF) \
-  include/uapi/linux/cgroupstats.h \
-  include/uapi/linux/taskstats.h \
-  include/linux/fs.h \
-    $(wildcard include/config/READ_ONLY_THP_FOR_FS) \
-    $(wildcard include/config/FS_POSIX_ACL) \
-    $(wildcard include/config/IMA) \
-    $(wildcard include/config/FILE_LOCKING) \
-    $(wildcard include/config/FSNOTIFY) \
-    $(wildcard include/config/FS_ENCRYPTION) \
-    $(wildcard include/config/FS_VERITY) \
-    $(wildcard include/config/EPOLL) \
-    $(wildcard include/config/UNICODE) \
-    $(wildcard include/config/QUOTA) \
-    $(wildcard include/config/FS_DAX) \
-    $(wildcard include/config/BLOCK) \
-  include/linux/wait_bit.h \
-  include/linux/kdev_t.h \
-  include/uapi/linux/kdev_t.h \
-  include/linux/dcache.h \
-  include/linux/rculist_bl.h \
-  include/linux/list_bl.h \
-  include/linux/bit_spinlock.h \
-  include/linux/lockref.h \
-    $(wildcard include/config/ARCH_USE_CMPXCHG_LOCKREF) \
-  include/linux/stringhash.h \
-    $(wildcard include/config/DCACHE_WORD_ACCESS) \
-  include/linux/hash.h \
-    $(wildcard include/config/HAVE_ARCH_HASH) \
-  include/linux/path.h \
-  include/linux/list_lru.h \
-  include/linux/shrinker.h \
-  include/linux/capability.h \
-  include/uapi/linux/capability.h \
-  include/linux/semaphore.h \
-  include/linux/fcntl.h \
-    $(wildcard include/config/ARCH_32BIT_OFF_T) \
-  include/uapi/linux/fcntl.h \
-  arch/x86/include/generated/uapi/asm/fcntl.h \
-  include/uapi/asm-generic/fcntl.h \
-  include/uapi/linux/openat2.h \
-  include/linux/migrate_mode.h \
-  include/linux/percpu-rwsem.h \
-  include/linux/rcuwait.h \
-  include/linux/sched/signal.h \
-    $(wildcard include/config/SCHED_AUTOGROUP) \
-    $(wildcard include/config/BSD_PROCESS_ACCT) \
-    $(wildcard include/config/TASKSTATS) \
-    $(wildcard include/config/STACK_GROWSUP) \
-  include/linux/signal.h \
-    $(wildcard include/config/DYNAMIC_SIGFRAME) \
-  include/linux/sched/jobctl.h \
-  include/linux/sched/task.h \
-    $(wildcard include/config/HAVE_EXIT_THREAD) \
-    $(wildcard include/config/ARCH_WANTS_DYNAMIC_TASK_STRUCT) \
-    $(wildcard include/config/HAVE_ARCH_THREAD_STRUCT_WHITELIST) \
-  include/linux/uaccess.h \
-  include/linux/fault-inject-usercopy.h \
-    $(wildcard include/config/FAULT_INJECTION_USERCOPY) \
-  arch/x86/include/asm/uaccess.h \
-    $(wildcard include/config/CC_HAS_ASM_GOTO_OUTPUT) \
-    $(wildcard include/config/CC_HAS_ASM_GOTO_TIED_OUTPUT) \
-    $(wildcard include/config/ARCH_HAS_COPY_MC) \
-    $(wildcard include/config/X86_INTEL_USERCOPY) \
-  arch/x86/include/asm/smap.h \
-  arch/x86/include/asm/extable.h \
-    $(wildcard include/config/BPF_JIT) \
-  include/asm-generic/access_ok.h \
-    $(wildcard include/config/ALTERNATE_USER_ADDRESS_SPACE) \
-  arch/x86/include/asm/uaccess_32.h \
-  include/linux/cred.h \
-    $(wildcard include/config/DEBUG_CREDENTIALS) \
-  include/linux/key.h \
-    $(wildcard include/config/KEY_NOTIFICATIONS) \
-    $(wildcard include/config/NET) \
-  include/linux/assoc_array.h \
-    $(wildcard include/config/ASSOCIATIVE_ARRAY) \
-  include/linux/sched/user.h \
-    $(wildcard include/config/WATCH_QUEUE) \
-  include/linux/percpu_counter.h \
-  include/linux/rcu_sync.h \
-  include/linux/delayed_call.h \
-  include/linux/errseq.h \
-  include/linux/ioprio.h \
-  include/linux/sched/rt.h \
-  include/linux/iocontext.h \
-    $(wildcard include/config/BLK_ICQ) \
-  include/uapi/linux/ioprio.h \
-  include/linux/fs_types.h \
-  include/linux/mount.h \
-  include/linux/mnt_idmapping.h \
-  include/uapi/linux/fs.h \
-  include/linux/quota.h \
-    $(wildcard include/config/QUOTA_NETLINK_INTERFACE) \
-  include/uapi/linux/dqblk_xfs.h \
-  include/linux/dqblk_v1.h \
-  include/linux/dqblk_v2.h \
-  include/linux/dqblk_qtree.h \
-  include/linux/projid.h \
-  include/uapi/linux/quota.h \
-  include/linux/nfs_fs_i.h \
-  include/linux/seq_file.h \
-  include/linux/string_helpers.h \
-  include/linux/ns_common.h \
-  include/linux/nsproxy.h \
-  include/linux/user_namespace.h \
-    $(wildcard include/config/INOTIFY_USER) \
-    $(wildcard include/config/FANOTIFY) \
-    $(wildcard include/config/PERSISTENT_KEYRINGS) \
-  include/linux/kernel_stat.h \
-  include/linux/interrupt.h \
-    $(wildcard include/config/IRQ_FORCED_THREADING) \
-    $(wildcard include/config/GENERIC_IRQ_PROBE) \
-    $(wildcard include/config/IRQ_TIMINGS) \
-  include/linux/irqreturn.h \
-  include/linux/irqnr.h \
-  include/uapi/linux/irqnr.h \
-  include/linux/hardirq.h \
-  include/linux/context_tracking_state.h \
-    $(wildcard include/config/CONTEXT_TRACKING) \
-  include/linux/ftrace_irq.h \
-    $(wildcard include/config/HWLAT_TRACER) \
-    $(wildcard include/config/OSNOISE_TRACER) \
-  include/linux/vtime.h \
-    $(wildcard include/config/VIRT_CPU_ACCOUNTING) \
-    $(wildcard include/config/IRQ_TIME_ACCOUNTING) \
-  arch/x86/include/asm/hardirq.h \
-    $(wildcard include/config/KVM_INTEL) \
-    $(wildcard include/config/X86_THERMAL_VECTOR) \
-    $(wildcard include/config/X86_MCE_THRESHOLD) \
-    $(wildcard include/config/X86_MCE_AMD) \
-    $(wildcard include/config/X86_HV_CALLBACK_VECTOR) \
-  arch/x86/include/asm/irq.h \
-  arch/x86/include/asm/sections.h \
-  include/asm-generic/sections.h \
-    $(wildcard include/config/HAVE_FUNCTION_DESCRIPTORS) \
-  include/linux/cgroup-defs.h \
-    $(wildcard include/config/CGROUP_NET_CLASSID) \
-    $(wildcard include/config/CGROUP_NET_PRIO) \
-  include/linux/u64_stats_sync.h \
-  include/linux/bpf-cgroup-defs.h \
-  include/linux/psi_types.h \
-  include/linux/kthread.h \
-  include/linux/cgroup_subsys.h \
-    $(wildcard include/config/CGROUP_DEVICE) \
-    $(wildcard include/config/CGROUP_FREEZER) \
-    $(wildcard include/config/CGROUP_PERF) \
-    $(wildcard include/config/CGROUP_HUGETLB) \
-    $(wildcard include/config/CGROUP_PIDS) \
-    $(wildcard include/config/CGROUP_RDMA) \
-    $(wildcard include/config/CGROUP_MISC) \
-    $(wildcard include/config/CGROUP_DEBUG) \
-  include/linux/vm_event_item.h \
-    $(wildcard include/config/HAVE_ARCH_TRANSPARENT_HUGEPAGE_PUD) \
-    $(wildcard include/config/MEMORY_BALLOON) \
-    $(wildcard include/config/BALLOON_COMPACTION) \
-    $(wildcard include/config/DEBUG_TLBFLUSH) \
-    $(wildcard include/config/DEBUG_VM_VMACACHE) \
-  include/linux/page_counter.h \
-  include/linux/vmpressure.h \
-  include/linux/eventfd.h \
-  include/linux/mm.h \
-    $(wildcard include/config/HAVE_ARCH_MMAP_RND_BITS) \
-    $(wildcard include/config/HAVE_ARCH_MMAP_RND_COMPAT_BITS) \
-    $(wildcard include/config/ARCH_USES_HIGH_VMA_FLAGS) \
-    $(wildcard include/config/ARCH_HAS_PKEYS) \
-    $(wildcard include/config/PPC) \
-    $(wildcard include/config/PARISC) \
-    $(wildcard include/config/SPARC64) \
-    $(wildcard include/config/ARM64_MTE) \
-    $(wildcard include/config/HAVE_ARCH_USERFAULTFD_MINOR) \
-    $(wildcard include/config/SHMEM) \
-    $(wildcard include/config/ARCH_HAS_PTE_SPECIAL) \
-    $(wildcard include/config/ARCH_HAS_PTE_DEVMAP) \
-    $(wildcard include/config/DEBUG_VM_RB) \
-    $(wildcard include/config/PAGE_POISONING) \
-    $(wildcard include/config/INIT_ON_ALLOC_DEFAULT_ON) \
-    $(wildcard include/config/INIT_ON_FREE_DEFAULT_ON) \
-    $(wildcard include/config/DEBUG_PAGEALLOC) \
-    $(wildcard include/config/HUGETLBFS) \
-    $(wildcard include/config/MAPPING_DIRTY_HELPERS) \
-    $(wildcard include/config/ANON_VMA_NAME) \
-  include/linux/mmap_lock.h \
-  include/linux/page_ext.h \
-  include/linux/stacktrace.h \
-    $(wildcard include/config/ARCH_STACKWALK) \
-    $(wildcard include/config/STACKTRACE) \
-    $(wildcard include/config/HAVE_RELIABLE_STACKTRACE) \
-  include/linux/stackdepot.h \
-    $(wildcard include/config/STACKDEPOT_ALWAYS_INIT) \
-  include/linux/page_ref.h \
-    $(wildcard include/config/DEBUG_PAGE_REF) \
-  include/linux/sizes.h \
-  include/linux/pgtable.h \
-    $(wildcard include/config/HIGHPTE) \
-    $(wildcard include/config/GUP_GET_PTE_LOW_HIGH) \
-    $(wildcard include/config/HAVE_ARCH_SOFT_DIRTY) \
-    $(wildcard include/config/ARCH_ENABLE_THP_MIGRATION) \
-    $(wildcard include/config/X86_ESPFIX64) \
-  arch/x86/include/asm/pgtable.h \
-    $(wildcard include/config/DEBUG_WX) \
-    $(wildcard include/config/PAGE_TABLE_CHECK) \
-  arch/x86/include/asm/pkru.h \
-  arch/x86/include/asm/fpu/api.h \
-    $(wildcard include/config/X86_DEBUG_FPU) \
-  arch/x86/include/asm/coco.h \
-  include/asm-generic/pgtable_uffd.h \
-  include/linux/page_table_check.h \
-  arch/x86/include/asm/pgtable_32.h \
-  arch/x86/include/asm/pgtable-3level.h \
-  arch/x86/include/asm/pgtable-invert.h \
-  include/linux/huge_mm.h \
-  include/linux/sched/coredump.h \
-    $(wildcard include/config/CORE_DUMP_DEFAULT_ELF_HEADERS) \
-  include/linux/vmstat.h \
-    $(wildcard include/config/VM_EVENT_COUNTERS) \
-  include/linux/writeback.h \
-  include/linux/flex_proportions.h \
-  include/linux/backing-dev-defs.h \
-    $(wildcard include/config/DEBUG_FS) \
-  include/linux/blk_types.h \
-    $(wildcard include/config/FAIL_MAKE_REQUEST) \
-    $(wildcard include/config/BLK_CGROUP_IOCOST) \
-    $(wildcard include/config/BLK_INLINE_ENCRYPTION) \
-    $(wildcard include/config/BLK_DEV_INTEGRITY) \
-  include/linux/bvec.h \
-  include/linux/highmem.h \
-  include/linux/cacheflush.h \
-  arch/x86/include/asm/cacheflush.h \
-  include/asm-generic/cacheflush.h \
-  include/linux/highmem-internal.h \
-  arch/x86/include/asm/highmem.h \
-  arch/x86/include/asm/tlbflush.h \
-  arch/x86/include/asm/invpcid.h \
-  arch/x86/include/asm/pti.h \
-  include/linux/bio.h \
-  include/linux/mempool.h \
-  include/linux/uio.h \
-    $(wildcard include/config/ARCH_HAS_UACCESS_FLUSHCACHE) \
-  include/uapi/linux/uio.h \
-  include/linux/node.h \
-    $(wildcard include/config/HMEM_REPORTING) \
-  include/linux/pagemap.h \
-  include/linux/hugetlb_inline.h \
-  include/uapi/linux/mempolicy.h \
-  include/linux/freezer.h \
-  include/uapi/linux/i2c.h \
-  include/linux/videodev2.h \
-  include/uapi/linux/videodev2.h \
-  include/uapi/linux/v4l2-common.h \
-  include/uapi/linux/v4l2-controls.h \
-  include/media/v4l2-device.h \
-    $(wildcard include/config/VIDEO_V4L2_SUBDEV_API) \
-  include/media/media-device.h \
-    $(wildcard include/config/MEDIA_CONTROLLER) \
-  include/media/media-devnode.h \
-  include/linux/poll.h \
-  include/uapi/linux/poll.h \
-  arch/x86/include/generated/uapi/asm/poll.h \
-  include/uapi/asm-generic/poll.h \
-  include/uapi/linux/eventpoll.h \
-  include/linux/cdev.h \
-  include/media/media-entity.h \
-  include/uapi/linux/media.h \
-  include/media/v4l2-subdev.h \
-  include/uapi/linux/v4l2-subdev.h \
-  include/uapi/linux/v4l2-mediabus.h \
-  include/uapi/linux/media-bus-format.h \
-  include/media/v4l2-async.h \
-  include/media/v4l2-common.h \
-    $(wildcard include/config/VIDEO_V4L2_I2C) \
-    $(wildcard include/config/SPI) \
-  include/media/v4l2-dev.h \
-  include/linux/spi/spi.h \
-    $(wildcard include/config/SPI_SLAVE) \
-  include/linux/scatterlist.h \
-    $(wildcard include/config/NEED_SG_DMA_LENGTH) \
-    $(wildcard include/config/DEBUG_SG) \
-    $(wildcard include/config/SGL_ALLOC) \
-    $(wildcard include/config/ARCH_NO_SG_CHAIN) \
-    $(wildcard include/config/SG_POOL) \
-  include/linux/gpio/consumer.h \
-    $(wildcard include/config/OF_GPIO) \
-    $(wildcard include/config/GPIO_SYSFS) \
-  include/uapi/linux/spi/spi.h \
-  include/media/v4l2-fh.h \
-  include/media/v4l2-mediabus.h \
-  include/media/i2c/upd64083.h \
+// SPDX-License-Identifier: GPL-2.0-or-later
+/*
+ * Marvell 88E6xxx SERDES manipulation, via SMI bus
+ *
+ * Copyright (c) 2008 Marvell Semiconductor
+ *
+ * Copyright (c) 2017 Andrew Lunn <andrew@lunn.ch>
+ */
 
-drivers/media/i2c/upd64083.o: $(deps_drivers/media/i2c/upd64083.o)
+#include <linux/interrupt.h>
+#include <linux/irqdomain.h>
+#include <linux/mii.h>
 
-$(deps_drivers/media/i2c/upd64083.o):
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    cmd_drivers/media/i2c/upd64083.o := gcc -Wp,-MMD,drivers/media/i2c/.upd64083.o.d -nostdinc -I./arch/x86/include -I./arch/x86/include/generated  -I./include -I./arch/x86/include/uapi -I./arch/x86/include/generated/uapi -I./include/uapi -I./include/generated/uapi -include ./include/linux/compiler-version.h -include ./include/linux/kconfig.h -include ./include/linux/compiler_types.h -D__KERNEL__ -fmacro-prefix-map=./= -Wall -Wundef -Werror=strict-prototypes -Wno-trigraphs -fno-strict-aliasing -fno-common -fshort-wchar -fno-PIE -Werror=implicit-function-declaration -Werror=implicit-int -Werror=return-type -Wno-format-security -std=gnu11 -mno-sse -mno-mmx -mno-sse2 -mno-3dnow -mno-avx -fcf-protection=none -m32 -msoft-float -mregparm=3 -freg-struct-return -fno-pic -mpreferred-stack-boundary=2 -march=i686 -mtune=pentium3 -mtune=generic -Wa,-mtune=generic32 -ffreestanding -mstack-protector-guard-reg=fs -mstack-protector-guard-symbol=__stack_chk_guard -Wno-sign-compare -fno-asynchronous-unwind-tables -mindirect-branch=thunk-extern -mindirect-branch-register -fno-jump-tables -fno-delete-null-pointer-checks -Wno-frame-address -Wno-format-truncation -Wno-format-overflow -Wno-address-of-packed-member -O2 -fno-allow-store-data-races -fstack-protector-strong -Wimplicit-fallthrough=5 -Wno-main -Wno-unused-but-set-variable -Wno-unused-const-variable -fno-stack-clash-protection -pg -mrecord-mcount -mfentry -DCC_USING_FENTRY -Wdeclaration-after-statement -Wvla -Wno-pointer-sign -Wcast-function-type -Wno-stringop-truncation -Wno-stringop-overflow -Wno-restrict -Wno-maybe-uninitialized -Wno-alloc-size-larger-than -fno-strict-overflow -fno-stack-check -fconserve-stack -Werror=date-time -Werror=incompatible-pointer-types -Werror=designated-init -Wno-packed-not-aligned  -DMODULE  -DKBUILD_BASENAME='"upd64083"' -DKBUILD_MODNAME='"upd64083"' -D__KBUILD_MODNAME=kmod_upd64083 -c -o drivers/media/i2c/upd64083.o drivers/media/i2c/upd64083.c 
+#include "chip.h"
+#include "global2.h"
+#include "phy.h"
+#include "port.h"
+#include "serdes.h"
 
-source_drivers/media/i2c/upd64083.o := drivers/media/i2c/upd64083.c
+static int mv88e6352_serdes_read(struct mv88e6xxx_chip *chip, int reg,
+				 u16 *val)
+{
+	return mv88e6xxx_phy_page_read(chip, MV88E6352_ADDR_SERDES,
+				       MV88E6352_SERDES_PAGE_FIBER,
+				       reg, val);
+}
 
-deps_drivers/media/i2c/upd64083.o := \
-    $(wildcard include/config/VIDEO_ADV_DEBUG) \
-  include/linux/compiler-version.h \
-    $(wildcard include/config/CC_VERSION_TEXT) \
-  include/linux/kconfig.h \
-    $(wildcard include/config/CPU_BIG_ENDIAN) \
-    $(wildcard include/config/BOOGER) \
-    $(wildcard include/config/FOO) \
-  include/linux/compiler_types.h \
-    $(wildcard include/config/DEBUG_INFO_BTF) \
-    $(wildcard include/config/PAHOLE_HAS_BTF_TAG) \
-    $(wildcard include/config/HAVE_ARCH_COMPILER_H) \
-    $(wildcard include/config/CC_HAS_ASM_INLINE) \
-  include/linux/compiler_attributes.h \
-  include/linux/compiler-gcc.h \
-    $(wildcard include/config/RETPOLINE) \
-    $(wildcard include/config/ARCH_USE_BUILTIN_BSWAP) \
-    $(wildcard include/config/SHADOW_CALL_STACK) \
-    $(wildcard include/config/KCOV) \
-  include/linux/module.h \
-    $(wildcard include/config/MODULES) \
-    $(wildcard include/config/SYSFS) \
-    $(wildcard include/config/MODULES_TREE_LOOKUP) \
-    $(wildcard include/config/LIVEPATCH) \
-    $(wildcard include/config/STACKTRACE_BUILD_ID) \
-    $(wildcard include/config/CFI_CLANG) \
-    $(wildcard include/config/MODULE_SIG) \
-    $(wildcard include/config/GENERIC_BUG) \
-    $(wildcard include/config/KALLSYMS) \
-    $(wildcard include/config/SMP) \
-    $(wildcard include/config/TRACEPOINTS) \
-    $(wildcard include/config/TREE_SRCU) \
-    $(wildcard include/config/BPF_EVENTS) \
-    $(wildcard include/config/DEBUG_INFO_BTF_MODULES) \
-    $(wildcard include/config/JUMP_LABEL) \
-    $(wildcard include/config/TRACING) \
-    $(wildcard include/config/EVENT_TRACING) \
-    $(wildcard include/config/FTRACE_MCOUNT_RECORD) \
-    $(wildcard include/config/KPROBES) \
-    $(wildcard include/config/HAVE_STATIC_CALL_INLINE) \
-    $(wildcard include/config/PRINTK_INDEX) \
-    $(wildcard include/config/MODULE_UNLOAD) \
-    $(wildcard include/config/CONSTRUCTORS) \
-    $(wildcard include/config/FUNCTION_ERROR_INJECTION) \
-  include/linux/list.h \
-    $(wildcard include/config/DEBUG_LIST) \
-  include/linux/container_of.h \
-  include/linux/build_bug.h \
-  include/linux/compiler.h \
-    $(wildcard include/config/TRACE_BRANCH_PROFILING) \
-    $(wildcard include/config/PROFILE_ALL_BRANCHES) \
-    $(wildcard include/config/STACK_VALIDATION) \
-  include/linux/compiler_types.h \
-  arch/x86/include/generated/asm/rwonce.h \
-  include/asm-generic/rwonce.h \
-  include/linux/kasan-checks.h \
-    $(wildcard include/config/KASAN_GENERIC) \
-    $(wildcard include/config/KASAN_SW_TAGS) \
-  include/linux/types.h \
-    $(wildcard include/config/HAVE_UID16) \
-    $(wildcard include/config/UID16) \
-    $(wildcard include/config/ARCH_DMA_ADDR_T_64BIT) \
-    $(wildcard include/config/PHYS_ADDR_T_64BIT) \
-    $(wildcard include/config/64BIT) \
-    $(wildcard include/config/ARCH_32BIT_USTAT_F_TINODE) \
-  include/uapi/linux/types.h \
-  arch/x86/include/generated/uapi/asm/types.h \
-  include/uapi/asm-generic/types.h \
-  include/asm-generic/int-ll64.h \
-  include/uapi/asm-generic/int-ll64.h \
-  arch/x86/include/uapi/asm/bitsperlong.h \
-  include/asm-generic/bitsperlong.h \
-  include/uapi/asm-generic/bitsperlong.h \
-  include/uapi/linux/posix_types.h \
-  include/linux/stddef.h \
-  include/uapi/linux/stddef.h \
-  arch/x86/include/asm/posix_types.h \
-    $(wildcard include/config/X86_32) \
-  arch/x86/include/uapi/asm/posix_types_32.h \
-  include/uapi/asm-generic/posix_types.h \
-  include/linux/kcsan-checks.h \
-    $(wildcard include/config/KCSAN) \
-    $(wildcard include/config/KCSAN_WEAK_MEMORY) \
-    $(wildcard include/config/KCSAN_IGNORE_ATOMICS) \
-  include/linux/err.h \
-  arch/x86/include/generated/uapi/asm/errno.h \
-  include/uapi/asm-generic/errno.h \
-  include/uapi/asm-generic/errno-base.h \
-  include/linux/poison.h \
-    $(wildcard include/config/ILLEGAL_POINTER_VALUE) \
-  include/linux/const.h \
-  include/vdso/const.h \
-  include/uapi/linux/const.h \
-  arch/x86/include/asm/barrier.h \
-  arch/x86/include/asm/alternative.h \
-  include/linux/stringify.h \
-  arch/x86/include/asm/asm.h \
-  arch/x86/include/asm/extable_fixup_types.h \
-  arch/x86/include/asm/nops.h \
-  include/asm-generic/barrier.h \
-  include/linux/stat.h \
-  arch/x86/include/uapi/asm/stat.h \
-  include/uapi/linux/stat.h \
-  include/linux/time.h \
-    $(wildcard include/config/POSIX_TIMERS) \
-  include/linux/cache.h \
-    $(wildcard include/config/ARCH_HAS_CACHE_LINE_SIZE) \
-  include/uapi/linux/kernel.h \
-  include/uapi/linux/sysinfo.h \
-  arch/x86/include/asm/cache.h \
-    $(wildcard include/config/X86_L1_CACHE_SHIFT) \
-    $(wildcard include/config/X86_INTERNODE_CACHE_SHIFT) \
-    $(wildcard include/config/X86_VSMP) \
-  include/linux/linkage.h \
-    $(wildcard include/config/ARCH_USE_SYM_ANNOTATIONS) \
-  include/linux/export.h \
-    $(wildcard include/config/MODVERSIONS) \
-    $(wildcard include/config/MODULE_REL_CRCS) \
-    $(wildcard include/config/HAVE_ARCH_PREL32_RELOCATIONS) \
-    $(wildcard include/config/TRIM_UNUSED_KSYMS) \
-  arch/x86/include/asm/linkage.h \
-    $(wildcard include/config/X86_64) \
-    $(wildcard include/config/X86_ALIGNMENT_16) \
-    $(wildcard include/config/SLS) \
-  arch/x86/include/asm/ibt.h \
-    $(wildcard include/config/X86_KERNEL_IBT) \
-  include/linux/math64.h \
-    $(wildcard include/config/ARCH_SUPPORTS_INT128) \
-  include/linux/math.h \
-  arch/x86/include/asm/div64.h \
-  include/linux/log2.h \
-    $(wildcard include/config/ARCH_HAS_ILOG2_U32) \
-    $(wildcard include/config/ARCH_HAS_ILOG2_U64) \
-  include/linux/bitops.h \
-  include/linux/bits.h \
-  include/vdso/bits.h \
-  include/linux/typecheck.h \
-  arch/x86/include/asm/bitops.h \
-    $(wildcard include/config/X86_CMOV) \
-  arch/x86/include/asm/rmwcc.h \
-    $(wildcard include/config/CC_HAS_ASM_GOTO) \
-  include/asm-generic/bitops/fls64.h \
-  include/asm-generic/bitops/sched.h \
-  arch/x86/include/asm/arch_hweight.h \
-  arch/x86/include/asm/cpufeatures.h \
-  arch/x86/include/asm/required-features.h \
-    $(wildcard include/config/X86_MINIMUM_CPU_FAMILY) \
-    $(wildcard include/config/MATH_EMULATION) \
-    $(wildcard include/config/X86_PAE) \
-    $(wildcard include/config/X86_CMPXCHG64) \
-    $(wildcard include/config/X86_P6_NOP) \
-    $(wildcard include/config/MATOM) \
-    $(wildcard include/config/PARAVIRT_XXL) \
-  arch/x86/include/asm/disabled-features.h \
-    $(wildcard include/config/X86_SMAP) \
-    $(wildcard include/config/X86_UMIP) \
-    $(wildcard include/config/X86_INTEL_MEMORY_PROTECTION_KEYS) \
-    $(wildcard include/config/X86_5LEVEL) \
-    $(wildcard include/config/PAGE_TABLE_ISOLATION) \
-    $(wildcard include/config/INTEL_IOMMU_SVM) \
-    $(wildcard include/config/X86_SGX) \
-  include/asm-generic/bitops/const_hweight.h \
-  include/asm-generic/bitops/instrumented-atomic.h \
-  include/linux/instrumented.h \
-  include/asm-generic/bitops/instrumented-non-atomic.h \
-    $(wildcard include/config/KCSAN_ASSUME_PLAIN_WRITES_ATOMIC) \
-  include/asm-generic/bitops/instrumented-lock.h \
-  include/asm-generic/bitops/le.h \
-  arch/x86/include/uapi/asm/byteorder.h \
-  include/linux/byteorder/little_endian.h \
-  include/uapi/linux/byteorder/little_endian.h \
-  include/linux/swab.h \
-  include/uapi/linux/swab.h \
-  arch/x86/include/uapi/asm/swab.h \
-  include/linux/byteorder/generic.h \
-  include/asm-generic/bitops/ext2-atomic-setbit.h \
-  include/vdso/math64.h \
-  include/linux/time64.h \
-  include/vdso/time64.h \
-  include/uapi/linux/time.h \
-  include/uapi/linux/time_types.h \
-  include/linux/time32.h \
-  include/linux/timex.h \
-  include/uapi/linux/timex.h \
-  include/uapi/linux/param.h \
-  arch/x86/include/generated/uapi/asm/param.h \
-  include/asm-generic/param.h \
-    $(wildcard include/config/HZ) \
-  include/uapi/asm-generic/param.h \
-  arch/x86/include/asm/timex.h \
-    $(wildcard include/config/X86_TSC) \
-  arch/x86/include/asm/processor.h \
-    $(wildcard include/config/X86_VMX_FEATURE_NAMES) \
-    $(wildcard include/config/X86_IOPL_IOPERM) \
-    $(wildcard include/config/STACKPROTECTOR) \
-    $(wildcard include/config/VM86) \
-    $(wildcard include/config/X86_DEBUGCTLMSR) \
-    $(wildcard include/config/CPU_SUP_AMD) \
-    $(wildcard include/config/XEN) \
-  arch/x86/include/asm/processor-flags.h \
-  arch/x86/include/uapi/asm/processor-flags.h \
-  include/linux/mem_encrypt.h \
-    $(wildcard include/config/ARCH_HAS_MEM_ENCRYPT) \
-    $(wildcard include/config/AMD_MEM_ENCRYPT) \
-  arch/x86/include/asm/mem_encrypt.h \
-  include/linux/init.h \
-    $(wildcard include/config/STRICT_KERNEL_RWX) \
-    $(wildcard include/config/STRICT_MODULE_RWX) \
-    $(wildcard include/config/LTO_CLANG) \
-  include/linux/cc_platform.h \
-    $(wildcard include/config/ARCH_HAS_CC_PLATFORM) \
-  arch/x86/include/uapi/asm/bootparam.h \
-  include/linux/screen_info.h \
-  include/uapi/linux/screen_info.h \
-  include/linux/apm_bios.h \
-  include/uapi/linux/apm_bios.h \
-  include/uapi/linux/ioctl.h \
-  arch/x86/include/generated/uapi/asm/ioctl.h \
-  include/asm-generic/ioctl.h \
-  include/uapi/asm-generic/ioctl.h \
-  include/linux/edd.h \
-  include/uapi/linux/edd.h \
-  arch/x86/include/asm/ist.h \
-  arch/x86/include/uapi/asm/ist.h \
-  include/video/edid.h \
-    $(wildcard include/config/X86) \
-  include/uapi/video/edid.h \
-  arch/x86/include/asm/math_emu.h \
-  arch/x86/include/asm/ptrace.h \
-    $(wildcard include/config/PARAVIRT) \
-    $(wildcard include/config/IA32_EMULATION) \
-  arch/x86/include/asm/segment.h \
-    $(wildcard include/config/XEN_PV) \
-  arch/x86/include/asm/page_types.h \
-    $(wildcard include/config/PHYSICAL_START) \
-    $(wildcard include/config/PHYSICAL_ALIGN) \
-    $(wildcard include/config/DYNAMIC_PHYSICAL_MASK) \
-  arch/x86/include/asm/page_32_types.h \
-    $(wildcard include/config/HIGHMEM4G) \
-    $(wildcard include/config/HIGHMEM64G) \
-    $(wildcard include/config/PAGE_OFFSET) \
-  arch/x86/include/uapi/asm/ptrace.h \
-  arch/x86/include/uapi/asm/ptrace-abi.h \
-  arch/x86/include/asm/paravirt_types.h \
-    $(wildcard include/config/PGTABLE_LEVELS) \
-    $(wildcard include/config/PARAVIRT_DEBUG) \
-  arch/x86/include/asm/desc_defs.h \
-  arch/x86/include/asm/pgtable_types.h \
-    $(wildcard include/config/MEM_SOFT_DIRTY) \
-    $(wildcard include/config/HAVE_ARCH_USERFAULTFD_WP) \
-    $(wildcard include/config/PROC_FS) \
-  arch/x86/include/asm/pgtable_32_types.h \
-  arch/x86/include/asm/pgtable-3level_types.h \
-  include/asm-generic/pgtable-nop4d.h \
-  include/asm-generic/pgtable-nopud.h \
-  arch/x86/include/asm/nospec-branch.h \
-  include/linux/static_key.h \
-  include/linux/jump_label.h \
-    $(wildcard include/config/HAVE_ARCH_JUMP_LABEL_RELATIVE) \
-  arch/x86/include/asm/jump_label.h \
-  include/linux/objtool.h \
-    $(wildcard include/config/FRAME_POINTER) \
-  arch/x86/include/asm/msr-index.h \
-  arch/x86/include/asm/unwind_hints.h \
-  arch/x86/include/asm/orc_types.h \
-  arch/x86/include/asm/GEN-for-each-reg.h \
-  arch/x86/include/asm/spinlock_types.h \
-  include/asm-generic/qspinlock_types.h \
-    $(wildcard include/config/NR_CPUS) \
-  include/asm-generic/qrwlock_types.h \
-  arch/x86/include/asm/proto.h \
-  arch/x86/include/uapi/asm/ldt.h \
-  arch/x86/include/uapi/asm/sigcontext.h \
-  arch/x86/include/asm/current.h \
-  arch/x86/include/asm/percpu.h \
-    $(wildcard include/config/X86_64_SMP) \
-  include/linux/kernel.h \
-    $(wildcard include/config/PREEMPT_VOLUNTARY_BUILD) \
-    $(wildcard include/config/PREEMPT_DYNAMIC) \
-    $(wildcard include/config/HAVE_PREEMPT_DYNAMIC_CALL) \
-    $(wildcard include/config/HAVE_PREEMPT_DYNAMIC_KEY) \
-    $(wildcard include/config/PREEMPT_) \
-    $(wildcard include/config/DEBUG_ATOMIC_SLEEP) \
-    $(wildcard include/config/MMU) \
-    $(wildcard include/config/PROVE_LOCKING) \
-  include/linux/stdarg.h \
-  include/linux/align.h \
-  include/linux/limits.h \
-  include/uapi/linux/limits.h \
-  include/vdso/limits.h \
-  include/linux/kstrtox.h \
-  include/linux/minmax.h \
-  include/linux/panic.h \
-    $(wildcard include/config/PANIC_TIMEOUT) \
-  include/linux/printk.h \
-    $(wildcard include/config/MESSAGE_LOGLEVEL_DEFAULT) \
-    $(wildcard include/config/CONSOLE_LOGLEVEL_DEFAULT) \
-    $(wildcard include/config/CONSOLE_LOGLEVEL_QUIET) \
-    $(wildcard include/config/EARLY_PRINTK) \
-    $(wildcard include/config/PRINTK) \
-    $(wildcard include/config/DYNAMIC_DEBUG) \
-    $(wildcard include/config/DYNAMIC_DEBUG_CORE) \
-  include/linux/kern_levels.h \
-  include/linux/ratelimit_types.h \
-  include/linux/spinlock_types_raw.h \
-    $(wildcard include/config/DEBUG_SPINLOCK) \
-    $(wildcard include/config/DEBUG_LOCK_ALLOC) \
-  include/linux/lockdep_types.h \
-    $(wildcard include/config/PROVE_RAW_LOCK_NESTING) \
-    $(wildcard include/config/LOCKDEP) \
-    $(wildcard include/config/LOCK_STAT) \
-  include/linux/once_lite.h \
-  include/linux/static_call_types.h \
-    $(wildcard include/config/HAVE_STATIC_CALL) \
-  include/linux/instruction_pointer.h \
-  include/asm-generic/percpu.h \
-    $(wildcard include/config/DEBUG_PREEMPT) \
-    $(wildcard include/config/HAVE_SETUP_PER_CPU_AREA) \
-  include/linux/threads.h \
-    $(wildcard include/config/BASE_SMALL) \
-  include/linux/percpu-defs.h \
-    $(wildcard include/config/DEBUG_FORCE_WEAK_PER_CPU) \
-  arch/x86/include/asm/page.h \
-  arch/x86/include/asm/page_32.h \
-    $(wildcard include/config/DEBUG_VIRTUAL) \
-    $(wildcard include/config/FLATMEM) \
-  include/linux/string.h \
-    $(wildcard include/config/BINARY_PRINTF) \
-    $(wildcard include/config/FORTIFY_SOURCE) \
-  include/linux/errno.h \
-  include/uapi/linux/errno.h \
-  include/uapi/linux/string.h \
-  arch/x86/include/asm/string.h \
-  arch/x86/include/asm/string_32.h \
-  include/linux/fortify-string.h \
-  include/linux/range.h \
-  include/asm-generic/memory_model.h \
-    $(wildcard include/config/SPARSEMEM_VMEMMAP) \
-    $(wildcard include/config/SPARSEMEM) \
-  include/linux/pfn.h \
-  include/asm-generic/getorder.h \
-  arch/x86/include/a
+static int mv88e6352_serdes_write(struct mv88e6xxx_chip *chip, int reg,
+				  u16 val)
+{
+	return mv88e6xxx_phy_page_write(chip, MV88E6352_ADDR_SERDES,
+					MV88E6352_SERDES_PAGE_FIBER,
+					reg, val);
+}
+
+static int mv88e6390_serdes_read(struct mv88e6xxx_chip *chip,
+				 int lane, int device, int reg, u16 *val)
+{
+	int reg_c45 = MII_ADDR_C45 | device << 16 | reg;
+
+	return mv88e6xxx_phy_read(chip, lane, reg_c45, val);
+}
+
+static int mv88e6390_serdes_write(struct mv88e6xxx_chip *chip,
+				  int lane, int device, int reg, u16 val)
+{
+	int reg_c45 = MII_ADDR_C45 | device << 16 | reg;
+
+	return mv88e6xxx_phy_write(chip, lane, reg_c45, val);
+}
+
+static int mv88e6xxx_serdes_pcs_get_state(struct mv88e6xxx_chip *chip,
+					  u16 ctrl, u16 status, u16 lpa,
+					  struct phylink_link_state *state)
+{
+	state->link = !!(status & MV88E6390_SGMII_PHY_STATUS_LINK);
+
+	if (status & MV88E6390_SGMII_PHY_STATUS_SPD_DPL_VALID) {
+		/* The Spped and Duplex Resolved register is 1 if AN is enabled
+		 * and complete, or if AN is disabled. So with disabled AN we
+		 * still get here on link up. But we want to set an_complete
+		 * only if AN was enabled, thus we look at BMCR_ANENABLE.
+		 * (According to 802.3-2008 section 22.2.4.2.10, we should be
+		 *  able to get this same value from BMSR_ANEGCAPABLE, but tests
+		 *  show that these Marvell PHYs don't conform to this part of
+		 *  the specificaion - BMSR_ANEGCAPABLE is simply always 1.)
+		 */
+		state->an_complete = !!(ctrl & BMCR_ANENABLE);
+		state->duplex = status &
+				MV88E6390_SGMII_PHY_STATUS_DUPLEX_FULL ?
+			                         DUPLEX_FULL : DUPLEX_HALF;
+
+		if (status & MV88E6390_SGMII_PHY_STATUS_TX_PAUSE)
+			state->pause |= MLO_PAUSE_TX;
+		if (status & MV88E6390_SGMII_PHY_STATUS_RX_PAUSE)
+			state->pause |= MLO_PAUSE_RX;
+
+		switch (status & MV88E6390_SGMII_PHY_STATUS_SPEED_MASK) {
+		case MV88E6390_SGMII_PHY_STATUS_SPEED_1000:
+			if (state->interface == PHY_INTERFACE_MODE_2500BASEX)
+				state->speed = SPEED_2500;
+			else
+				state->speed = SPEED_1000;
+			break;
+		case MV88E6390_SGMII_PHY_STATUS_SPEED_100:
+			state->speed = SPEED_100;
+			break;
+		case MV88E6390_SGMII_PHY_STATUS_SPEED_10:
+			state->speed = SPEED_10;
+			break;
+		default:
+			dev_err(chip->dev, "invalid PHY speed\n");
+			return -EINVAL;
+		}
+	} else if (state->link &&
+		   state->interface != PHY_INTERFACE_MODE_SGMII) {
+		/* If Speed and Duplex Resolved register is 0 and link is up, it
+		 * means that AN was enabled, but link partner had it disabled
+		 * and the PHY invoked the Auto-Negotiation Bypass feature and
+		 * linked anyway.
+		 */
+		state->duplex = DUPLEX_FULL;
+		if (state->interface == PHY_INTERFACE_MODE_2500BASEX)
+			state->speed = SPEED_2500;
+		else
+			state->speed = SPEED_1000;
+	} else {
+		state->link = false;
+	}
+
+	if (state->interface == PHY_INTERFACE_MODE_2500BASEX)
+		mii_lpa_mod_linkmode_x(state->lp_advertising, lpa,
+				       ETHTOOL_LINK_MODE_2500baseX_Full_BIT);
+	else if (state->interface == PHY_INTERFACE_MODE_1000BASEX)
+		mii_lpa_mod_linkmode_x(state->lp_advertising, lpa,
+				       ETHTOOL_LINK_MODE_1000baseX_Full_BIT);
+
+	return 0;
+}
+
+int mv88e6352_serdes_power(struct mv88e6xxx_chip *chip, int port, int lane,
+			   bool up)
+{
+	u16 val, new_val;
+	int err;
+
+	err = mv88e6352_serdes_read(chip, MII_BMCR, &val);
+	if (err)
+		return err;
+
+	if (up)
+		new_val = val & ~BMCR_PDOWN;
+	else
+		new_val = val | BMCR_PDOWN;
+
+	if (val != new_val)
+		err = mv88e6352_serdes_write(chip, MII_BMCR, new_val);
+
+	return err;
+}
+
+int mv88e6352_serdes_pcs_config(struct mv88e6xxx_chip *chip, int port,
+				int lane, unsigned int mode,
+				phy_interface_t interface,
+				const unsigned long *advertise)
+{
+	u16 adv, bmcr, val;
+	bool changed;
+	int err;
+
+	switch (interface) {
+	case PHY_INTERFACE_MODE_SGMII:
+		adv = 0x0001;
+		break;
+
+	case PHY_INTERFACE_MODE_1000BASEX:
+		adv = linkmode_adv_to_mii_adv_x(advertise,
+					ETHTOOL_LINK_MODE_1000baseX_Full_BIT);
+		break;
+
+	default:
+		return 0;
+	}
+
+	err = mv88e6352_serdes_read(chip, MII_ADVERTISE, &val);
+	if (err)
+		return err;
+
+	changed = val != adv;
+	if (changed) {
+		err = mv88e6352_serdes_write(chip, MII_ADVERTISE, adv);
+		if (err)
+			return err;
+	}
+
+	err = mv88e6352_serdes_read(chip, MII_BMCR, &val);
+	if (err)
+		return err;
+
+	if (phylink_autoneg_inband(mode))
+		bmcr = val | BMCR_ANENABLE;
+	else
+		bmcr = val & ~BMCR_ANENABLE;
+
+	if (bmcr == val)
+		return changed;
+
+	return mv88e6352_serdes_write(chip, MII_BMCR, bmcr);
+}
+
+int mv88e6352_serdes_pcs_get_state(struct mv88e6xxx_chip *chip, int port,
+				   int lane, struct phylink_link_state *state)
+{
+	u16 lpa, status, ctrl;
+	int err;
+
+	err = mv88e6352_serdes_read(chip, MII_BMCR, &ctrl);
+	if (err) {
+		dev_err(chip->dev, "can't read Serdes PHY control: %d\n", err);
+		return err;
+	}
+
+	err = mv88e6352_serdes_read(chip, 0x11, &status);
+	if (err) {
+		dev_err(chip->dev, "can't read Serdes PHY status: %d\n", err);
+		return err;
+	}
+
+	err = mv88e6352_serdes_read(chip, MII_LPA, &lpa);
+	if (err) {
+		dev_err(chip->dev, "can't read Serdes PHY LPA: %d\n", err);
+		return err;
+	}
+
+	return mv88e6xxx_serdes_pcs_get_state(chip, ctrl, status, lpa, state);
+}
+
+int mv88e6352_serdes_pcs_an_restart(struct mv88e6xxx_chip *chip, int port,
+				    int lane)
+{
+	u16 bmcr;
+	int err;
+
+	err = mv88e6352_serdes_read(chip, MII_BMCR, &bmcr);
+	if (err)
+		return err;
+
+	return mv88e6352_serdes_write(chip, MII_BMCR, bmcr | BMCR_ANRESTART);
+}
+
+int mv88e6352_serdes_pcs_link_up(struct mv88e6xxx_chip *chip, int port,
+				 int lane, int speed, int duplex)
+{
+	u16 val, bmcr;
+	int err;
+
+	err = mv88e6352_serdes_read(chip, MII_BMCR, &val);
+	if (err)
+		return err;
+
+	bmcr = val & ~(BMCR_SPEED100 | BMCR_FULLDPLX | BMCR_SPEED1000);
+	switch (speed) {
+	case SPEED_1000:
+		bmcr |= BMCR_SPEED1000;
+		break;
+	case SPEED_100:
+		bmcr |= BMCR_SPEED100;
+		break;
+	case SPEED_10:
+		break;
+	}
+
+	if (duplex == DUPLEX_FULL)
+		bmcr |= BMCR_FULLDPLX;
+
+	if (bmcr == val)
+		return 0;
+
+	return mv88e6352_serdes_write(chip, MII_BMCR, bmcr);
+}
+
+int mv88e6352_serdes_get_lane(struct mv88e6xxx_chip *chip, int port)
+{
+	u8 cmode = chip->ports[port].cmode;
+	int lane = -ENODEV;
+
+	if ((cmode == MV88E6XXX_PORT_STS_CMODE_100BASEX) ||
+	    (cmode == MV88E6XXX_PORT_STS_CMODE_1000BASEX) ||
+	    (cmode == MV88E6XXX_PORT_STS_CMODE_SGMII))
+		lane = 0xff; /* Unused */
+
+	return lane;
+}
+
+struct mv88e6352_serdes_hw_stat {
+	char string[ETH_GSTRING_LEN];
+	int sizeof_stat;
+	int reg;
+};
+
+static struct mv88e6352_serdes_hw_stat mv88e6352_serdes_hw_stats[] = {
+	{ "serdes_fibre_rx_error", 16, 21 },
+	{ "serdes_PRBS_error", 32, 24 },
+};
+
+int mv88e6352_serdes_get_sset_count(struct mv88e6xxx_chip *chip, int port)
+{
+	int err;
+
+	err = mv88e6352_g2_scratch_port_has_serdes(chip, port);
+	if (err <= 0)
+		return err;
+
+	return ARRAY_SIZE(mv88e6352_serdes_hw_stats);
+}
+
+int mv88e6352_serdes_get_strings(struct mv88e6xxx_chip *chip,
+				 int port, uint8_t *data)
+{
+	struct mv88e6352_serdes_hw_stat *stat;
+	int err, i;
+
+	err = mv88e6352_g2_scratch_port_has_serdes(chip, port);
+	if (err <= 0)
+		return err;
+
+	for (i = 0; i < ARRAY_SIZE(mv88e6352_serdes_hw_stats); i++) {
+		stat = &mv88e6352_serdes_hw_stats[i];
+		memcpy(data + i * ETH_GSTRING_LEN, stat->string,
+		       ETH_GSTRING_LEN);
+	}
+	return ARRAY_SIZE(mv88e6352_serdes_hw_stats);
+}
+
+static uint64_t mv88e6352_serdes_get_stat(struct mv88e6xxx_chip *chip,
+					  struct mv88e6352_serdes_hw_stat *stat)
+{
+	u64 val = 0;
+	u16 reg;
+	int err;
+
+	err = mv88e6352_serdes_read(chip, stat->reg, &reg);
+	if (err) {
+		dev_err(chip->dev, "failed to read statistic\n");
+		return 0;
+	}
+
+	val = reg;
+
+	if (stat->sizeof_stat == 32) {
+		err = mv88e6352_serdes_read(chip, stat->reg + 1, &reg);
+		if (err) {
+			dev_err(chip->dev, "failed to read statistic\n");
+			return 0;
+		}
+		val = val << 16 | reg;
+	}
+
+	return val;
+}
+
+int mv88e6352_serdes_get_stats(struct mv88e6xxx_chip *chip, int port,
+			       uint64_t *data)
+{
+	struct mv88e6xxx_port *mv88e6xxx_port = &chip->ports[port];
+	struct mv88e6352_serdes_hw_stat *stat;
+	int i, err;
+	u64 value;
+
+	err = mv88e6352_g2_scratch_port_has_serdes(chip, port);
+	if (err <= 0)
+		return err;
+
+	BUILD_BUG_ON(ARRAY_SIZE(mv88e6352_serdes_hw_stats) >
+		     ARRAY_SIZE(mv88e6xxx_port->serdes_stats));
+
+	for (i = 0; i < ARRAY_SIZE(mv88e6352_serdes_hw_stats); i++) {
+		stat = &mv88e6352_serdes_hw_stats[i];
+		value = mv88e6352_serdes_get_stat(chip, stat);
+		mv88e6xxx_port->serdes_stats[i] += value;
+		data[i] = mv88e6xxx_port->serdes_stats[i];
+	}
+
+	return ARRAY_SIZE(mv88e6352_serdes_hw_stats);
+}
+
+static void mv88e6352_serdes_irq_link(struct mv88e6xxx_chip *chip, int port)
+{
+	u16 bmsr;
+	int err;
+
+	/* If the link has dropped, we want to know about it. */
+	err = mv88e6352_serdes_read(chip, MII_BMSR, &bmsr);
+	if (err) {
+		dev_err(chip->dev, "can't read Serdes BMSR: %d\n", err);
+		return;
+	}
+
+	dsa_port_phylink_mac_change(chip->ds, port, !!(bmsr & BMSR_LSTATUS));
+}
+
+irqreturn_t mv88e6352_serdes_irq_status(struct mv88e6xxx_chip *chip, int port,
+					int lane)
+{
+	irqreturn_t ret = IRQ_NONE;
+	u16 status;
+	int err;
+
+	err = mv88e6352_serdes_read(chip, MV88E6352_SERDES_INT_STATUS, &status);
+	if (err)
+		return ret;
+
+	if (status & MV88E6352_SERDES_INT_LINK_CHANGE) {
+		ret = IRQ_HANDLED;
+		mv88e6352_serdes_irq_link(chip, port);
+	}
+
+	return ret;
+}
+
+int mv88e6352_serdes_irq_enable(struct mv88e6xxx_chip *chip, int port, int lane,
+				bool enable)
+{
+	u16 val = 0;
+
+	if (enable)
+		val |= MV88E6352_SERDES_INT_LINK_CHANGE;
+
+	return mv88e6352_serdes_write(chip, MV88E6352_SERDES_INT_ENABLE, val);
+}
+
+unsigned int mv88e6352_serdes_irq_mapping(struct mv88e6xxx_chip *chip, int port)
+{
+	return irq_find_mapping(chip->g2_irq.domain, MV88E6352_SERDES_IRQ);
+}
+
+int mv88e6352_serdes_get_regs_len(struct mv88e6xxx_chip *chip, int port)
+{
+	int err;
+
+	mv88e6xxx_reg_lock(chip);
+	err = mv88e6352_g2_scratch_port_has_serdes(chip, port);
+	mv88e6xxx_reg_unlock(chip);
+	if (err <= 0)
+		return err;
+
+	return 32 * sizeof(u16);
+}
+
+void mv88e6352_serdes_get_regs(struct mv88e6xxx_chip *chip, int port, void *_p)
+{
+	u16 *p = _p;
+	u16 reg;
+	int err;
+	int i;
+
+	err = mv88e6352_g2_scratch_port_has_serdes(chip, port);
+	if (err <= 0)
+		return;
+
+	for (i = 0 ; i < 32; i++) {
+		err = mv88e6352_serdes_read(chip, i, &reg);
+		if (!err)
+			p[i] = reg;
+	}
+}
+
+int mv88e6341_serdes_get_lane(struct mv88e6xxx_chip *chip, int port)
+{
+	u8 cmode = chip->ports[port].cmode;
+	int lane = -ENODEV;
+
+	switch (port) {
+	case 5:
+		if (cmode == MV88E6XXX_PORT_STS_CMODE_1000BASEX ||
+		    cmode == MV88E6XXX_PORT_STS_CMODE_SGMII ||
+		    cmode == MV88E6XXX_PORT_STS_CMODE_2500BASEX)
+			lane = MV88E6341_PORT5_LANE;
+		break;
+	}
+
+	return lane;
+}
+
+int mv88e6185_serdes_power(struct mv88e6xxx_chip *chip, int port, int lane,
+			   bool up)
+{
+	/* The serdes power can't be controlled on this switch chip but we need
+	 * to supply this function to avoid returning -EOPNOTSUPP in
+	 * mv88e6xxx_serdes_power_up/mv88e6xxx_serdes_power_down
+	 */
+	return 0;
+}
+
+int mv88e6185_serdes_get_lane(struct mv88e6xxx_chip *chip, int port)
+{
+	/* There are no configurable serdes lanes on this switch chip but we
+	 * need to return a non-negative lane number so that callers of
+	 * mv88e6xxx_serdes_get_lane() know this is a serdes port.
+	 */
+	switch (chip->ports[port].cmode) {
+	case MV88E6185_PORT_STS_CMODE_SERDES:
+	case MV88E6185_PORT_STS_CMODE_1000BASE_X:
+		return 0;
+	default:
+		return -ENODEV;
+	}
+}
+
+int mv88e6185_serdes_pcs_get_state(struct mv88e6xxx_chip *chip, int port,
+				   int lane, struct phylink_link_state *state)
+{
+	int err;
+	u16 status;
+
+	err = mv88e6xxx_port_read(chip, port, MV88E6XXX_PORT_STS, &status);
+	if (err)
+		return err;
+
+	state->link = !!(status & MV88E6XXX_PORT_STS_LINK);
+
+	if (state->link) {
+		state->duplex = status & MV88E6XXX_PORT_STS_DUPLEX ? DUPLEX_FULL : DUPLEX_HALF;
+
+		switch (status &  MV88E6XXX_PORT_STS_SPEED_MASK) {
+		case MV88E6XXX_PORT_STS_SPEED_1000:
+			state->speed = SPEED_1000;
+			break;
+		case MV88E6XXX_PORT_STS_SPEED_100:
+			state->speed = SPEED_100;
+			break;
+		case MV88E6XXX_PORT_STS_SPEED_10:
+			state->speed = SPEED_10;
+			break;
+		default:
+			dev_err(chip->dev, "invalid PHY speed\n");
+			return -EINVAL;
+		}
+	} else {
+		state->duplex = DUPLEX_UNKNOWN;
+		state->speed = SPEED_UNKNOWN;
+	}
+
+	return 0;
+}
+
+int mv88e6097_serdes_irq_enable(struct mv88e6xxx_chip *chip, int port, int lane,
+				bool enable)
+{
+	u8 cmode = chip->ports[port].cmode;
+
+	/* The serdes interrupts are enabled in the G2_INT_MASK register. We
+	 * need to return 0 to avoid returning -EOPNOTSUPP in
+	 * mv88e6xxx_serdes_irq_enable/mv88e6xxx_serdes_irq_disable
+	 */
+	switch (cmode) {
+	case MV88E6185_PORT_STS_CMODE_SERDES:
+	case MV88E6185_PORT_STS_CMODE_1000BASE_X:
+		return 0;
+	}
+
+	return -EOPNOTSUPP;
+}
+
+static void mv88e6097_serdes_irq_link(struct mv88e6xxx_chip *chip, int port)
+{
+	u16 status;
+	int err;
+
+	err = mv88e6xxx_port_read(chip, port, MV88E6XXX_PORT_STS, &status);
+	if (err) {
+		dev_err(chip->dev, "can't read port status: %d\n", err);
+		return;
+	}
+
+	dsa_port_phylink_mac_change(chip->ds, port, !!(status & MV88E6XXX_PORT_STS_LINK));
+}
+
+irqreturn_t mv88e6097_serdes_irq_status(struct mv88e6xxx_chip *chip, int port,
+					int lane)
+{
+	u8 cmode = chip->ports[port].cmode;
+
+	switch (cmode) {
+	case MV88E6185_PORT_STS_CMODE_SERDES:
+	case MV88E6185_PORT_STS_CMODE_1000BASE_X:
+		mv88e6097_serdes_irq_link(chip, port);
+		return IRQ_HANDLED;
+	}
+
+	return IRQ_NONE;
+}
+
+int mv88e6390_serdes_get_lane(struct mv88e6xxx_chip *chip, int port)
+{
+	u8 cmode = chip->ports[port].cmode;
+	int lane = -ENODEV;
+
+	switch (port) {
+	case 9:
+		if (cmode == MV88E6XXX_PORT_STS_CMODE_1000BASEX ||
+		    cmode == MV88E6XXX_PORT_STS_CMODE_SGMII ||
+		    cmode == MV88E6XXX_PORT_STS_CMODE_2500BASEX)
+			lane = MV88E6390_PORT9_LANE0;
+		break;
+	case 10:
+		if (cmode == MV88E6XXX_PORT_STS_CMODE_1000BASEX ||
+		    cmode == MV88E6XXX_PORT_STS_CMODE_SGMII ||
+		    cmode == MV88E6XXX_PORT_STS_CMODE_2500BASEX)
+			lane = MV88E6390_PORT10_LANE0;
+		break;
+	}
+
+	return lane;
+}
+
+int mv88e6390x_serdes_get_lane(struct mv88e6xxx_chip *chip, int port)
+{
+	u8 cmode_port = chip->ports[port].cmode;
+	u8 cmode_port10 = chip->ports[10].cmode;
+	u8 cmode_port9 = chip->ports[9].cmode;
+	int lane = -ENODEV;
+
+	switch (port) {
+	case 2:
+		if (cmode_port9 == MV88E6XXX_PORT_STS_CMODE_1000BASEX ||
+		    cmode_port9 == MV88E6XXX_PORT_STS_CMODE_SGMII ||
+		    cmode_port9 == MV88E6XXX_PORT_STS_CMODE_2500BASEX)
+			if (cmode_port == MV88E6XXX_PORT_STS_CMODE_1000BASEX)
+				lane = MV88E6390_PORT9_LANE1;
+		break;
+	case 3:
+		if (cmode_port9 == MV88E6XXX_PORT_STS_CMODE_1000BASEX ||
+		    cmode_port9 == MV88E6XXX_PORT_STS_CMODE_SGMII ||
+		    cmode_port9 == MV88E6XXX_PORT_STS_CMODE_2500BASEX ||
+		    cmode_port9 == MV88E6XXX_PORT_STS_CMODE_RXAUI)
+			if (cmode_port == MV88E6XXX_PORT_STS_CMODE_1000BASEX)
+				lane = MV88E6390_PORT9_LANE2;
+		break;
+	case 4:
+		if (cmode_port9 == MV88E6XXX_PORT_STS_CMODE_1000BASEX ||
+		    cmode_port9 == MV88E6XXX_PORT_STS_CMODE_SGMII ||
+		    cmode_port9 == MV88E6XXX_PORT_STS_CMODE_2500BASEX ||
+		    cmode_port9 == MV88E6XXX_PORT_STS_CMODE_RXAUI)
+			if (cmode_port == MV88E6XXX_PORT_STS_CMODE_1000BASEX)
+				lane = MV88E6390_PORT9_LANE3;
+		break;
+	case 5:
+		if (cmode_port10 == MV88E6XXX_PORT_STS_CMODE_1000BASEX ||
+		    cmode_port10 == MV88E6XXX_PORT_STS_CMODE_SGMII ||
+		    cmode_port10 == MV88E6XXX_PORT_STS_CMODE_2500BASEX)
+			if (cmode_port == MV88E6XXX_PORT_STS_CMODE_1000BASEX)
+				lane = MV88E6390_PORT10_LANE1;
+		break;
+	case 6:
+		if (cmode_port10 == MV88E6XXX_PORT_STS_CMODE_1000BASEX ||
+		    cmode_port10 == MV88E6XXX_PORT_STS_CMODE_SGMII ||
+		    cmode_port10 == MV88E6XXX_PORT_STS_CMODE_2500BASEX ||
+		    cmode_port10 == MV88E6XXX_PORT_STS_CMODE_RXAUI)
+			if (cmode_port == MV88E6XXX_PORT_STS_CMODE_1000BASEX)
+				lane = MV88E6390_PORT10_LANE2;
+		break;
+	case 7:
+		if (cmode_port10 == MV88E6XXX_PORT_STS_CMODE_1000BASEX ||
+		    cmode_port10 == MV88E6XXX_PORT_STS_CMODE_SGMII ||
+		    cmode_port10 == MV88E6XXX_PORT_STS_CMODE_2500BASEX ||
+		    cmode_port10 == MV88E6XXX_PORT_STS_CMODE_RXAUI)
+			if (cmode_port == MV88E6XXX_PORT_STS_CMODE_1000BASEX)
+				lane = MV88E6390_PORT10_LANE3;
+		break;
+	case 9:
+		if (cmode_port9 == MV88E6XXX_PORT_STS_CMODE_1000BASEX ||
+		    cmode_port9 == MV88E6XXX_PORT_STS_CMODE_SGMII ||
+		    cmode_port9 == MV88E6XXX_PORT_STS_CMODE_2500BASEX ||
+		    cmode_port9 == MV88E6XXX_PORT_STS_CMODE_XAUI ||
+		    cmode_port9 == MV88E6XXX_PORT_STS_CMODE_RXAUI)
+			lane = MV88E6390_PORT9_LANE0;
+		break;
+	case 10:
+		if (cmode_port10 == MV88E6XXX_PORT_STS_CMODE_1000BASEX ||
+		    cmode_port10 == MV88E6XXX_PORT_STS_CMODE_SGMII ||
+		    cmode_port10 == MV88E6XXX_PORT_STS_CMODE_2500BASEX ||
+		    cmode_port10 == MV88E6XXX_PORT_STS_CMODE_XAUI ||
+		    cmode_port10 == MV88E6XXX_PORT_STS_CMODE_RXAUI)
+			lane = MV88E6390_PORT10_LANE0;
+		break;
+	}
+
+	return lane;
+}
+
+/* Only Ports 0, 9 and 10 have SERDES lanes. Return the SERDES lane address
+ * a port is using else Returns -ENODEV.
+ */
+int mv88e6393x_serdes_get_lane(struct mv88e6xxx_chip *chip, int port)
+{
+	u8 cmode = chip->ports[port].cmode;
+	int lane = -ENODEV;
+
+	if (port != 0 && port != 9 && port != 10)
+		return -EOPNOTSUPP;
+
+	if (cmode == MV88E6XXX_PORT_STS_CMODE_1000BASEX ||
+	    cmode == MV88E6XXX_PORT_STS_CMODE_SGMII ||
+	    cmode == MV88E6XXX_PORT_STS_CMODE_2500BASEX ||
+	    cmode == MV88E6393X_PORT_STS_CMODE_5GBASER ||
+	    cmode == MV88E6393X_PORT_STS_CMODE_10GBASER)
+		lane = port;
+
+	return lane;
+}
+
+/* Set power up/down for 10GBASE-R and 10GBASE-X4/X2 */
+static int mv88e6390_serdes_power_10g(struct mv88e6xxx_chip *chip, int lane,
+				      bool up)
+{
+	u16 val, new_val;
+	int err;
+
+	err = mv88e6390_serdes_read(chip, lane, MDIO_MMD_PHYXS,
+				    MV88E6390_10G_CTRL1, &val);
+
+	if (err)
+		return err;
+
+	if (up)
+		new_val = val & ~(MDIO_CTRL1_RESET |
+				  MDIO_PCS_CTRL1_LOOPBACK |
+				  MDIO_CTRL1_LPOWER);
+	else
+		new_val = val | MDIO_CTRL1_LPOWER;
+
+	if (val != new_val)
+		err = mv88e6390_serdes_write(chip, lane, MDIO_MMD_PHYXS,
+					     MV88E6390_10G_CTRL1, new_val);
+
+	return err;
+}
+
+/* Set power up/down for SGMII and 1000Base-X */
+static int mv88e6390_serdes_power_sgmii(struct mv88e6xxx_chip *chip, int lane,
+					bool up)
+{
+	u16 val, new_val;
+	int err;
+
+	err = mv88e6390_serdes_read(chip, lane, MDIO_MMD_PHYXS,
+				    MV88E6390_SGMII_BMCR, &val);
+	if (err)
+		return err;
+
+	if (up)
+		new_val = val & ~(BMCR_RESET | BMCR_LOOPBACK | BMCR_PDOWN);
+	else
+		new_val = val | BMCR_PDOWN;
+
+	if (val != new_val)
+		err = mv88e6390_serdes_write(chip, lane, MDIO_MMD_PHYXS,
+					     MV88E6390_SGMII_BMCR, new_val);
+
+	return err;
+}
+
+struct mv88e6390_serdes_hw_stat {
+	char string[ETH_GSTRING_LEN];
+	int reg;
+};
+
+static struct mv88e6390_serdes_hw_stat mv88e6390_serdes_hw_stats[] = {
+	{ "serdes_rx_pkts", 0xf021 },
+	{ "serdes_rx_bytes", 0xf024 },
+	{ "serdes_rx_pkts_error", 0xf027 },
+};
+
+int mv88e6390_serdes_get_sset_count(struct mv88e6xxx_chip *chip, int port)
+{
+	if (mv88e6xxx_serdes_get_lane(chip, port) < 0)
+		return 0;
+
+	return ARRAY_SIZE(mv88e6390_serdes_hw_stats);
+}
+
+int mv88e6390_serdes_get_strings(struct mv88e6xxx_chip *chip,
+				 int port, uint8_t *data)
+{
+	struct mv88e6390_serdes_hw_stat *stat;
+	int i;
+
+	if (mv88e6xxx_serdes_get_lane(chip, port) < 0)
+		return 0;
+
+	for (i = 0; i < ARRAY_SIZE(mv88e6390_serdes_hw_stats); i++) {
+		stat = &mv88e6390_serdes_hw_stats[i];
+		memcpy(data + i * ETH_GSTRING_LEN, stat->string,
+		       ETH_GSTRING_LEN);
+	}
+	return ARRAY_SIZE(mv88e6390_serdes_hw_stats);
+}
+
+static uint64_t mv88e6390_serdes_get_stat(struct mv88e6xxx_chip *chip, int lane,
+					  struct mv88e6390_serdes_hw_stat *stat)
+{
+	u16 reg[3];
+	int err, i;
+
+	for (i = 0; i < 3; i++) {
+		err = mv88e6390_serdes_read(chip, lane, MDIO_MMD_PHYXS,
+					    stat->reg + i, &reg[i]);
+		if (err) {
+			dev_err(chip->dev, "failed to read statistic\n");
+			return 0;
+		}
+	}
+
+	return reg[0] | ((u64)reg[1] << 16) | ((u64)reg[2] << 32);
+}
+
+int mv88e6390_serdes_get_stats(struct mv88e6xxx_chip *chip, int port,
+			       uint64_t *data)
+{
+	struct mv88e6390_serdes_hw_stat *stat;
+	int lane;
+	int i;
+
+	lane = mv88e6xxx_serdes_get_lane(chip, port);
+	if (lane < 0)
+		return 0;
+
+	for (i = 0; i < ARRAY_SIZE(mv88e6390_serdes_hw_stats); i++) {
+		stat = &mv88e6390_serdes_hw_stats[i];
+		data[i] = mv88e6390_serdes_get_stat(chip, lane, stat);
+	}
+
+	return ARRAY_SIZE(mv88e6390_serdes_hw_stats);
+}
+
+static int mv88e6390_serdes_enable_checker(struct mv88e6xxx_chip *chip, int lane)
+{
+	u16 reg;
+	int err;
+
+	err = mv88e6390_serdes_read(chip, lane, MDIO_MMD_PHYXS,
+				    MV88E6390_PG_CONTROL, &reg);
+	if (err)
+		return err;
+
+	reg |= MV88E6390_PG_CONTROL_ENABLE_PC;
+	return mv88e6390_serdes_write(chip, lane, MDIO_MMD_PHYXS,
+				      MV88E6390_PG_CONTROL, reg);
+}
+
+int mv88e6390_serdes_power(struct mv88e6xxx_chip *chip, int port, int lane,
+			   bool up)
+{
+	u8 cmode = chip->ports[port].cmode;
+	int err;
+
+	switch (cmode) {
+	case MV88E6XXX_PORT_STS_CMODE_SGMII:
+	case MV88E6XXX_PORT_STS_CMODE_1000BASEX:
+	case MV88E6XXX_PORT_STS_CMODE_2500BASEX:
+		err = mv88e6390_serdes_power_sgmii(chip, lane, up);
+		break;
+	case MV88E6XXX_PORT_STS_CMODE_XAUI:
+	case MV88E6XXX_PORT_STS_CMODE_RXAUI:
+		err = mv88e6390_serdes_power_10g(chip, lane, up);
+		break;
+	default:
+		err = -EINVAL;
+		break;
+	}
+
+	if (!err && up)
+		err = mv88e6390_serdes_enable_checker(chip, lane);
+
+	return err;
+}
+
+int mv88e6390_serdes_pcs_config(struct mv88e6xxx_chip *chip, int port,
+				int lane, unsigned int mode,
+				phy_interface_t interface,
+				const unsigned long *advertise)
+{
+	u16 val, bmcr, adv;
+	bool changed;
+	int err;
+
+	switch (interface) {
+	case PHY_INTERFACE_MODE_SGMII:
+		adv = 0x0001;
+		break;
+
+	case PHY_INTERFACE_MODE_1000BASEX:
+		adv = linkmode_adv_to_mii_adv_x(advertise,
+					ETHTOOL_LINK_MODE_1000baseX_Full_BIT);
+		break;
+
+	case PHY_INTERFACE_MODE_2500BASEX:
+		adv = linkmode_adv_to_mii_adv_x(advertise,
+					ETHTOOL_LINK_MODE_2500baseX_Full_BIT);
+		break;
+
+	default:
+		return 0;
+	}
+
+	err = mv88e6390_serdes_read(chip, lane, MDIO_MMD_PHYXS,
+				    MV88E6390_SGMII_ADVERTISE, &val);
+	if (err)
+		return err;
+
+	changed = val != adv;
+	if (changed) {
+		err = mv88e6390_serdes_write(chip, lane, MDIO_MMD_PHYXS,
+					     MV88E6390_SGMII_ADVERTISE, adv);
+		if (err)
+			return err;
+	}
+
+	err = mv88e6390_serdes_read(chip, lane, MDIO_MMD_PHYXS,
+				    MV88E6390_SGMII_BMCR, &val);
+	if (err)
+		return err;
+
+	if (phylink_autoneg_inband(mode))
+		bmcr = val | BMCR_ANENABLE;
+	else
+		bmcr = val & ~BMCR_ANENABLE;
+
+	/* setting ANENABLE triggers a restart of negotiation */
+	if (bmcr == val)
+		return changed;
+
+	return mv88e6390_serdes_write(chip, lane, MDIO_MMD_PHYXS,
+				      MV88E6390_SGMII_BMCR, bmcr);
+}
+
+static int mv88e6390_serdes_pcs_get_state_sgmii(struct mv88e6xxx_chip *chip,
+	int port, int lane, struct phylink_link_state *state)
+{
+	u16 lpa, status, ctrl;
+	int err;
+
+	err = mv88e6390_serdes_read(chip, lane, MDIO_MMD_PHYXS,
+				    MV88E6390_SGMII_BMCR, &ctrl);
+	if (err) {
+		dev_err(chip->dev, "can't read Serdes PHY control: %d\n", err);
+		return err;
+	}
+
+	err = mv88e6390_serdes_read(chip, lane, MDIO_MMD_PHYXS,
+				    MV88E6390_SGMII_PHY_STATUS, &status);
+	if (err) {
+		dev_err(chip->dev, "can't read Serdes PHY status: %d\n", err);
+		return err;
+	}
+
+	err = mv88e6390_serdes_read(chip, lane, MDIO_MMD_PHYXS,
+				    MV88E6390_SGMII_LPA, &lpa);
+	if (err) {
+		dev_err(chip->dev, "can't read Serdes PHY LPA: %d\n", err);
+		return err;
+	}
+
+	return mv88e6xxx_serdes_pcs_get_state(chip, ctrl, status, lpa, state);
+}
+
+static int mv88e6390_serdes_pcs_get_state_10g(struct mv88e6xxx_chip *chip,
+	int port, int lane, struct phylink_link_state *state)
+{
+	u16 status;
+	int err;
+
+	err = mv88e6390_serdes_read(chip, lane, MDIO_MMD_PHYXS,
+				    MV88E6390_10G_STAT1, &status);
+	if (err)
+		return err;
+
+	state->link = !!(status & MDIO_STAT1_LSTATUS);
+	if (state->link) {
+		state->speed = SPEED_10000;
+		state->duplex = DUPLEX_FULL;
+	}
+
+	return 0;
+}
+
+static int mv88e6393x_serdes_pcs_get_state_10g(struct mv88e6xxx_chip *chip,
+					       int port, int lane,
+					       struct phylink_link_state *state)
+{
+	u16 status;
+	int err;
+
+	err = mv88e6390_serdes_read(chip, lane, MDIO_MMD_PHYXS,
+				    MV88E6390_10G_STAT1, &status);
+	if (err)
+		return err;
+
+	state->link = !!(status & MDIO_STAT1_LSTATUS);
+	if (state->link) {
+		if (state->interface == PHY_INTERFACE_MODE_5GBASER)
+			state->speed = SPEED_5000;
+		else
+			state->speed = SPEED_10000;
+		state->duplex = DUPLEX_FULL;
+	}
+
+	return 0;
+}
+
+int mv88e6390_serdes_pcs_get_state(struct mv88e6xxx_chip *chip, int port,
+				   int lane, struct phylink_link_state *state)
+{
+	switch (state->interface) {
+	case PHY_INTERFACE_MODE_SGMII:
+	case PHY_INTERFACE_MODE_1000BASEX:
+	case PHY_INTERFACE_MODE_2500BASEX:
+		return mv88e6390_serdes_pcs_get_state_sgmii(chip, port, lane,
+							    state);
+	case PHY_INTERFACE_MODE_XAUI:
+	case PHY_INTERFACE_MODE_RXAUI:
+		return mv88e6390_serdes_pcs_get_state_10g(chip, port, lane,
+							  state);
+
+	default:
+		return -EOPNOTSUPP;
+	}
+}
+
+int mv88e6393x_serdes_pcs_get_state(struct mv88e6xxx_chip *chip, int port,
+				    int lane, struct phylink_link_state *state)
+{
+	switch (state->interface) {
+	case PHY_INTERFACE_MODE_SGMII:
+	case PHY_INTERFACE_MODE_1000BASEX:
+	case PHY_INTERFACE_MODE_2500BASEX:
+		return mv88e6390_serdes_pcs_get_state_sgmii(chip, port, lane,
+							    state);
+	case PHY_INTERFACE_MODE_5GBASER:
+	case PHY_INTERFACE_MODE_10GBASER:
+		return mv88e6393x_serdes_pcs_get_state_10g(chip, port, lane,
+							   state);
+
+	default:
+		return -EOPNOTSUPP;
+	}
+}
+
+int mv88e6390_serdes_pcs_an_restart(struct mv88e6xxx_chip *chip, int port,
+				    int lane)
+{
+	u16 bmcr;
+	int err;
+
+	err = mv88e6390_serdes_read(chip, lane, MDIO_MMD_PHYXS,
+				    MV88E6390_SGMII_BMCR, &bmcr);
+	if (err)
+		return err;
+
+	return mv88e6390_serdes_write(chip, lane, MDIO_MMD_PHYXS,
+				      MV88E6390_SGMII_BMCR,
+				      bmcr | BMCR_ANRESTART);
+}
+
+int mv88e6390_serdes_pcs_link_up(struct mv88e6xxx_chip *chip, int port,
+				 int lane, int speed, int duplex)
+{
+	u16 val, bmcr;
+	int err;
+
+	err = mv88e6390_serdes_read(chip, lane, MDIO_MMD_PHYXS,
+				    MV88E6390_SGMII_BMCR, &val);
+	if (err)
+		return err;
+
+	bmcr = val & ~(BMCR_SPEED100 | BMCR_FULLDPLX | BMCR_SPEED1000);
+	switch (speed) {
+	case SPEED_2500:
+	case SPEED_1000:
+		bmcr |= BMCR_SPEED1000;
+		break;
+	case SPEED_100:
+		bmcr |= BMCR_SPEED100;
+		break;
+	case SPEED_10:
+		break;
+	}
+
+	if (duplex == DUPLEX_FULL)
+		bmcr |= BMCR_FULLDPLX;
+
+	if (bmcr == val)
+		return 0;
+
+	return mv88e6390_serdes_write(chip, lane, MDIO_MMD_PHYXS,
+				      MV88E6390_SGMII_BMCR, bmcr);
+}
+
+static void mv88e6390_serdes_irq_link_sgmii(struct mv88e6xxx_chip *chip,
+					    int port, int lane)
+{
+	u16 bmsr;
+	int err;
+
+	/* If the link has dropped, we want to know about it. */
+	err = mv88e6390_serdes_read(chip, lane, MDIO_MMD_PHYXS,
+				    MV88E6390_SGMII_BMSR, &bmsr);
+	if (err) {
+		dev_err(chip->dev, "can't read Serdes BMSR: %d\n", err);
+		return;
+	}
+
+	dsa_port_phylink_mac_change(chip->ds, port, !!(bmsr & BMSR_LSTATUS));
+}
+
+static void mv88e6393x_serdes_irq_link_10g(struct mv88e6xxx_chip *chip,
+					   int port, u8 lane)
+{
+	u16 status;
+	int err;
+
+	/* If the link has dropped, we want to know about it. */
+	err = mv88e6390_serdes_read(chip, lane, MDIO_MMD_PHYXS,
+				    MV88E6390_10G_STAT1, &status);
+	if (err) {
+		dev_err(chip->dev, "can't read Serdes STAT1: %d\n", err);
+		return;
+	}
+
+	dsa_port_phylink_mac_change(chip->ds, port, !!(status & MDIO_STAT1_LSTATUS));
+}
+
+static int mv88e6390_serdes_irq_enable_sgmii(struct mv88e6xxx_chip *chip,
+					     int lane, bool enable)
+{
+	u16 val = 0;
+
+	if (enable)
+		val |= MV88E6390_SGMII_INT_LINK_DOWN |
+			MV88E6390_SGMII_INT_LINK_UP;
+
+	return mv88e6390_serdes_write(chip, lane, MDIO_MMD_PHYXS,
+				      MV88E6390_SGMII_INT_ENABLE, val);
+}
+
+int mv88e6390_serdes_irq_enable(struct mv88e6xxx_chip *chip, int port, int lane,
+				bool enable)
+{
+	u8 cmode = chip->ports[port].cmode;
+
+	switch (cmode) {
+	case MV88E6XXX_PORT_STS_CMODE_SGMII:
+	case MV88E6XXX_PORT_STS_CMODE_1000BASEX:
+	case MV88E6XXX_PORT_STS_CMODE_2500BASEX:
+		return mv88e6390_serdes_irq_enable_sgmii(chip, lane, enable);
+	}
+
+	return 0;
+}
+
+static int mv88e6390_serdes_irq_status_sgmii(struct mv88e6xxx_chip *chip,
+					     int lane, u16 *status)
+{
+	int err;
+
+	err = mv88e6390_serdes_read(chip, lane, MDIO_MMD_PHYXS,
+				    MV88E6390_SGMII_INT_STATUS, status);
+
+	return err;
+}
+
+static int mv88e6393x_serdes_irq_enable_10g(struct mv88e6xxx_chip *chip,
+					    u8 lane, bool enable)
+{
+	u16 val = 0;
+
+	if (enable)
+		val |= MV88E6393X_10G_INT_LINK_CHANGE;
+
+	return mv88e6390_serdes_write(chip, lane, MDIO_MMD_PHYXS,
+				      MV88E6393X_10G_INT_ENABLE, val);
+}
+
+int mv88e6393x_serdes_irq_enable(struct mv88e6xxx_chip *chip, int port,
+				 int lane, bool enable)
+{
+	u8 cmode = chip->ports[port].cmode;
+
+	switch (cmode) {
+	case MV88E6XXX_PORT_STS_CMODE_SGMII:
+	case MV88E6XXX_PORT_STS_CMODE_1000BASEX:
+	case MV88E6XXX_PORT_STS_CMODE_2500BASEX:
+		return mv88e6390_serdes_irq_enable_sgmii(chip, lane, enable);
+	case MV88E6393X_PORT_STS_CMODE_5GBASER:
+	case MV88E6393X_PORT_STS_CMODE_10GBASER:
+		return mv88e6393x_serdes_irq_enable_10g(chip, lane, enable);
+	}
+
+	return 0;
+}
+
+static int mv88e6393x_serdes_irq_status_10g(struct mv88e6xxx_chip *chip,
+					    u8 lane, u16 *status)
+{
+	int err;
+
+	err = mv88e6390_serdes_read(chip, lane, MDIO_MMD_PHYXS,
+				    MV88E6393X_10G_INT_STATUS, status);
+
+	return err;
+}
+
+irqreturn_t mv88e6393x_serdes_irq_status(struct mv88e6xxx_chip *chip, int port,
+					 int lane)
+{
+	u8 cmode = chip->ports[port].cmode;
+	irqreturn_t ret = IRQ_NONE;
+	u16 status;
+	int err;
+
+	switch (cmode) {
+	case MV88E6XXX_PORT_STS_CMODE_SGMII:
+	case MV88E6XXX_PORT_STS_CMODE_1000BASEX:
+	case MV88E6XXX_PORT_STS_CMODE_2500BASEX:
+		err = mv88e6390_serdes_irq_status_sgmii(chip, lane, &status);
+		if (err)
+			return ret;
+		if (status & (MV88E6390_SGMII_INT_LINK_DOWN |
+			      MV88E6390_SGMII_INT_LINK_UP)) {
+			ret = IRQ_HANDLED;
+			mv88e6390_serdes_irq_link_sgmii(chip, port, lane);
+		}
+		break;
+	case MV88E6393X_PORT_STS_CMODE_5GBASER:
+	case MV88E6393X_PORT_STS_CMODE_10GBASER:
+		err = mv88e6393x_serdes_irq_status_10g(chip, lane, &status);
+		if (err)
+			return err;
+		if (status & MV88E6393X_10G_INT_LINK_CHANGE) {
+			ret = IRQ_HANDLED;
+			mv88e6393x_serdes_irq_link_10g(chip, port, lane);
+		}
+		break;
+	}
+
+	return ret;
+}
+
+irqreturn_t mv88e6390_serdes_irq_status(struct mv88e6xxx_chip *chip, int port,
+					int lane)
+{
+	u8 cmode = chip->ports[port].cmode;
+	irqreturn_t ret = IRQ_NONE;
+	u16 status;
+	int err;
+
+	switch (cmode) {
+	case MV88E6XXX_PORT_STS_CMODE_SGMII:
+	case MV88E6XXX_PORT_STS_CMODE_1000BASEX:
+	case MV88E6XXX_PORT_STS_CMODE_2500BASEX:
+		err = mv88e6390_serdes_irq_status_sgmii(chip, lane, &status);
+		if (err)
+			return ret;
+		if (status & (MV88E6390_SGMII_INT_LINK_DOWN |
+			      MV88E6390_SGMII_INT_LINK_UP)) {
+			ret = IRQ_HANDLED;
+			mv88e6390_serdes_irq_link_sgmii(chip, port, lane);
+		}
+	}
+
+	return ret;
+}
+
+unsigned int mv88e6390_serdes_irq_mapping(struct mv88e6xxx_chip *chip, int port)
+{
+	return irq_find_mapping(chip->g2_irq.domain, port);
+}
+
+static const u16 mv88e6390_serdes_regs[] = {
+	/* SERDES common registers */
+	0xf00a, 0xf00b, 0xf00c,
+	0xf010, 0xf011, 0xf012, 0xf013,
+	0xf016, 0xf017, 0xf018,
+	0xf01b, 0xf01c, 0xf01d, 0xf01e, 0xf01f,
+	0xf020, 0xf021, 0xf022, 0xf023, 0xf024, 0xf025, 0xf026, 0xf027,
+	0xf028, 0xf029,
+	0xf030, 0xf031, 0xf032, 0xf033, 0xf034, 0xf035, 0xf036, 0xf037,
+	0xf038, 0xf039,
+	/* SGMII */
+	0x2000, 0x2001, 0x2002, 0x2003, 0x2004, 0x2005, 0x2006, 0x2007,
+	0x2008,
+	0x200f,
+	0xa000, 0xa001, 0xa002, 0xa003,
+	/* 10Gbase-X */
+	0x1000, 0x1001, 0x1002, 0x1003, 0x1004, 0x1005, 0x1006, 0x1007,
+	0x1008,
+	0x100e, 0x100f,
+	0x1018, 0x1019,
+	0x9000, 0x9001, 0x9002, 0x9003, 0x9004,
+	0x9006,
+	0x9010, 0x9011, 0x9012, 0x9013, 0x9014, 0x9015, 0x9016,
+	/* 10Gbase-R */
+	0x1020, 0x1021, 0x1022, 0x1023, 0x1024, 0x1025, 0x1026, 0x1027,
+	0x1028, 0x1029, 0x102a, 0x102b,
+};
+
+int mv88e6390_serdes_get_regs_len(struct mv88e6xxx_chip *chip, int port)
+{
+	if (mv88e6xxx_serdes_get_lane(chip, port) < 0)
+		return 0;
+
+	return ARRAY_SIZE(mv88e6390_serdes_regs) * sizeof(u16);
+}
+
+void mv88e6390_serdes_get_regs(struct mv88e6xxx_chip *chip, int port, void *_p)
+{
+	u16 *p = _p;
+	int lane;
+	u16 reg;
+	int err;
+	int i;
+
+	lane = mv88e6xxx_serdes_get_lane(chip, port);
+	if (lane < 0)
+		return;
+
+	for (i = 0 ; i < ARRAY_SIZE(mv88e6390_serdes_regs); i++) {
+		err = mv88e6390_serdes_read(chip, lane, MDIO_MMD_PHYXS,
+					    mv88e6390_serdes_regs[i], &reg);
+		if (!err)
+			p[i] = reg;
+	}
+}
+
+static const int mv88e6352_serdes_p2p_to_reg[] = {
+	/* Index of value in microvolts corresponds to the register value */
+	14000, 112000, 210000, 308000, 406000, 504000, 602000, 700000,
+};
+
+int mv88e6352_serdes_set_tx_amplitude(struct mv88e6xxx_chip *chip, int port,
+				      int val)
+{
+	bool found = false;
+	u16 ctrl, reg;
+	int err;
+	int i;
+
+	err = mv88e6352_g2_scratch_port_has_serdes(chip, port);
+	if (err <= 0)
+		return err;
+
+	for (i = 0; i < ARRAY_SIZE(mv88e6352_serdes_p2p_to_reg); ++i) {
+		if (mv88e6352_serdes_p2p_to_reg[i] == val) {
+			reg = i;
+			found = true;
+			break;
+		}
+	}
+
+	if (!found)
+		return -EINVAL;
+
+	err = mv88e6352_serdes_read(chip, MV88E6352_SERDES_SPEC_CTRL2, &ctrl);
+	if (err)
+		return err;
+
+	ctrl &= ~MV88E6352_SERDES_OUT_AMP_MASK;
+	ctrl |= reg;
+
+	return mv88e6352_serdes_write(chip, MV88E6352_SERDES_SPEC_CTRL2, ctrl);
+}
+
+static int mv88e6393x_serdes_power_lane(struct mv88e6xxx_chip *chip, int lane,
+					bool on)
+{
+	u16 reg;
+	int err;
+
+	err = mv88e6390_serdes_read(chip, lane, MDIO_MMD_PHYXS,
+				    MV88E6393X_SERDES_CTRL1, &reg);
+	if (err)
+		return err;
+
+	if (on)
+		reg &= ~(MV88E6393X_SERDES_CTRL1_TX_PDOWN |
+			 MV88E6393X_SERDES_CTRL1_RX_PDOWN);
+	else
+		reg |= MV88E6393X_SERDES_CTRL1_TX_PDOWN |
+		       MV88E6393X_SERDES_CTRL1_RX_PDOWN;
+
+	return mv88e6390_serdes_write(chip, lane, MDIO_MMD_PHYXS,
+				      MV88E6393X_SERDES_CTRL1, reg);
+}
+
+static int mv88e6393x_serdes_erratum_4_6(struct mv88e6xxx_chip *chip, int lane)
+{
+	u16 reg;
+	int err;
+
+	/* mv88e6393x family errata 4.6:
+	 * Cannot clear PwrDn bit on SERDES if device is configured CPU_MGD
+	 * mode or P0_mode is configured for [x]MII.
+	 * Workaround: Set SERDES register 4.F002 bit 5=0 and bit 15=1.
+	 *
+	 * It seems that after this workaround the SERDES is automatically
+	 * powered up (the bit is cleared), so power it down.
+	 */
+	err = mv88e6390_serdes_read(chip, lane, MDIO_MMD_PHYXS,
+				    MV88E6393X_SERDES_POC, &reg);
+	if (err)
+		return err;
+
+	reg &= ~MV88E6393X_SERDES_POC_PDOWN;
+	reg |= MV88E6393X_SERDES_POC_RESET;
+
+	err = mv88e6390_serdes_write(chip, lane, MDIO_MMD_PHYXS,
+				     MV88E6393X_SERDES_POC, reg);
+	if (err)
+		return err;
+
+	err = mv88e6390_serdes_power_sgmii(chip, lane, false);
+	if (err)
+		return err;
+
+	return mv88e6393x_serdes_power_lane(chip, lane, false);
+}
+
+int mv88e6393x_serdes_setup_errata(struct mv88e6xxx_chip *chip)
+{
+	int err;
+
+	err = mv88e6393x_serdes_erratum_4_6(chip, MV88E6393X_PORT0_LANE);
+	if (err)
+		return err;
+
+	err = mv88e6393x_serdes_erratum_4_6(chip, MV88E6393X_PORT9_LANE);
+	if (err)
+		return err;
+
+	return mv88e6393x_serdes_erratum_4_6(chip, MV88E6393X_PORT10_LANE);
+}
+
+static int mv88e6393x_serdes_erratum_4_8(struct mv88e6xxx_chip *chip, int lane)
+{
+	u16 reg, pcs;
+	int err;
+
+	/* mv88e6393x family errata 4.8:
+	 * When a SERDES port is operating in 1000BASE-X or SGMII mode link may
+	 * not come up after hardware reset or software reset of SERDES core.
+	 * Workaround is to write SERDES register 4.F074.14=1 for only those
+	 * modes and 0 in all other modes.
+	 */
+	err = mv88e6390_serdes_read(chip, lane, MDIO_MMD_PHYXS,
+				    MV88E6393X_SERDES_POC, &pcs);
+	if (err)
+		return err;
+
+	pcs &= MV88E6393X_SERDES_POC_PCS_MASK;
+
+	err = mv88e6390_serdes_read(chip, lane, MDIO_MMD_PHYXS,
+				    MV88E6393X_ERRATA_4_8_REG, &reg);
+	if (err)
+		return err;
+
+	if (pcs == MV88E6393X_SERDES_POC_PCS_1000BASEX ||
+	    pcs == MV88E6393X_SERDES_POC_PCS_SGMII_PHY ||
+	    pcs == MV88E6393X_SERDES_POC_PCS_SGMII_MAC)
+		reg |= MV88E6393X_ERRATA_4_8_BIT;
+	else
+		reg &= ~MV88E6393X_ERRATA_4_8_BIT;
+
+	return mv88e6390_serdes_write(chip, lane, MDIO_MMD_PHYXS,
+				      MV88E6393X_ERRATA_4_8_REG, reg);
+}
+
+static int mv88e6393x_serdes_erratum_5_2(struct mv88e6xxx_chip *chip, int lane,
+					 u8 cmode)
+{
+	static const struct {
+		u16 dev, reg, val, mask;
+	} fixes[] = {
+		{ MDIO_MMD_VEND1, 0x8093, 0xcb5a, 0xffff },
+		{ MDIO_MMD_VEND1, 0x8171, 0x7088, 0xffff },
+		{ MDIO_MMD_VEND1, 0x80c9, 0x311a, 0xffff },
+		{ MDIO_MMD_VEND1, 0x80a2, 0x8000, 0xff7f },
+		{ MDIO_MMD_VEND1, 0x80a9, 0x0000, 0xfff0 },
+		{ MDIO_MMD_VEND1, 0x80a3, 0x0000, 0xf8ff },
+		{ MDIO_MMD_PHYXS, MV88E6393X_SERDES_POC,
+		  MV88E6393X_SERDES_POC_RESET, MV88E6393X_SERDES_POC_RESET },
+	};
+	int err, i;
+	u16 reg;
+
+	/* mv88e6393x family errata 5.2:
+	 * For optimal signal integrity the following sequence should be applied
+	 * to SERDES operating in 10G mode. These registers only apply to 10G
+	 * operation and have no effect on other speeds.
+	 */
+	if (cmode != MV88E6393X_PORT_STS_CMODE_10GBASER)
+		return 0;
+
+	for (i = 0; i < ARRAY_SIZE(fixes); ++i) {
+		err = mv88e6390_serdes_read(chip, lane, fixes[i].dev,
+					    fixes[i].reg, &reg);
+		if (err)
+			return err;
+
+		reg &= ~fixes[i].mask;
+		reg |= fixes[i].val;
+
+		err = mv88e6390_serdes_write(chip, lane, fixes[i].dev,
+					     fixes[i].reg, reg);
+		if (err)
+			return err;
+	}
+
+	return 0;
+}
+
+static int mv88e6393x_serdes_fix_2500basex_an(struct mv88e6xxx_chip *chip,
+					      int lane, u8 cmode, bool on)
+{
+	u16 reg;
+	int err;
+
+	if (cmode != MV88E6XXX_PORT_STS_CMODE_2500BASEX)
+		return 0;
+
+	/* Inband AN is broken on Amethyst in 2500base-x mode when set by
+	 * standard mechanism (via cmode).
+	 * We can get around this by configuring the PCS mode to 1000base-x
+	 * and then writing value 0x58 to register 1e.8000. (This must be done
+	 * while SerDes receiver and transmitter are disabled, which is, when
+	 * this function is called.)
+	 * It seem that when we do this configuration to 2500base-x mode (by
+	 * changing PCS mode to 1000base-x and frequency to 3.125 GHz from
+	 * 1.25 GHz) and then configure to sgmii or 1000base-x, the device
+	 * thinks that it already has SerDes at 1.25 GHz and does not change
+	 * the 1e.8000 register, leaving SerDes at 3.125 GHz.
+	 * To avoid this, change PCS mode back to 2500base-x when disabling
+	 * SerDes from 2500base-x mode.
+	 */
+	err = mv88e6390_serdes_read(chip, lane, MDIO_MMD_PHYXS,
+				    MV88E6393X_SERDES_POC, &reg);
+	if (err)
+		return err;
+
+	reg &= ~(MV88E6393X_SERDES_POC_PCS_MASK | MV88E6393X_SERDES_POC_AN);
+	if (on)
+		reg |= MV88E6393X_SERDES_POC_PCS_1000BASEX |
+		       MV88E6393X_SERDES_POC_AN;
+	else
+		reg |= MV88E6393X_SERDES_POC_PCS_2500BASEX;
+	reg |= MV88E6393X_SERDES_POC_RESET;
+
+	err = mv88e6390_serdes_write(chip, lane, MDIO_MMD_PHYXS,
+				     MV88E6393X_SERDES_POC, reg);
+	if (err)
+		return err;
+
+	err = mv88e6390_serdes_write(chip, lane, MDIO_MMD_VEND1, 0x8000, 0x58);
+	if (err)
+		return err;
+
+	return 0;
+}
+
+int mv88e6393x_serdes_power(struct mv88e6xxx_chip *chip, int port, int lane,
+			    bool on)
+{
+	u8 cmode = chip->ports[port].cmode;
+	int err;
+
+	if (port != 0 && port != 9 && port != 10)
+		return -EOPNOTSUPP;
+
+	if (on) {
+		err = mv88e6393x_serdes_erratum_4_8(chip, lane);
+		if (err)
+			return err;
+
+		err = mv88e6393x_serdes_erratum_5_2(chip, lane, cmode);
+		if (err)
+			return err;
+
+		err = mv88e6393x_serdes_fix_2500basex_an(chip, lane, cmode,
+							 true);
+		if (err)
+			return err;
+
+		err = mv88e6393x_serdes_power_lane(chip, lane, true);
+		if (err)
+			return err;
+	}
+
+	switch (cmode) {
+	case MV88E6XXX_PORT_STS_CMODE_SGMII:
+	case MV88E6XXX_PORT_STS_CMODE_1000BASEX:
+	case MV88E6XXX_PORT_STS_CMODE_2500BASEX:
+		err = mv88e6390_serdes_power_sgmii(chip, lane, on);
+		break;
+	case MV88E6393X_PORT_STS_CMODE_5GBASER:
+	case MV88E6393X_PORT_STS_CMODE_10GBASER:
+		err = mv88e6390_serdes_power_10g(chip, lane, on);
+		break;
+	default:
+		err = -EINVAL;
+		break;
+	}
+
+	if (err)
+		return err;
+
+	if (!on) {
+		err = mv88e6393x_serdes_power_lane(chip, lane, false);
+		if (err)
+			return err;
+
+		err = mv88e6393x_serdes_fix_2500basex_an(chip, lane, cmode,
+							 false);
+	}
+
+	return err;
+}

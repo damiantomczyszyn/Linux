@@ -1,14 +1,21 @@
-# SPDX-License-Identifier: GPL-2.0
-img-ir-y			:= img-ir-core.o
-img-ir-$(CONFIG_IR_IMG_RAW)	+= img-ir-raw.o
-img-ir-$(CONFIG_IR_IMG_HW)	+= img-ir-hw.o
-img-ir-$(CONFIG_IR_IMG_NEC)	+= img-ir-nec.o
-img-ir-$(CONFIG_IR_IMG_JVC)	+= img-ir-jvc.o
-img-ir-$(CONFIG_IR_IMG_SONY)	+= img-ir-sony.o
-img-ir-$(CONFIG_IR_IMG_SHARP)	+= img-ir-sharp.o
-img-ir-$(CONFIG_IR_IMG_SANYO)	+= img-ir-sanyo.o
-img-ir-$(CONFIG_IR_IMG_RC5)	+= img-ir-rc5.o
-img-ir-$(CONFIG_IR_IMG_RC6)	+= img-ir-rc6.o
-img-ir-objs			:= $(img-ir-y)
+  = 0x61,
+	.if_khz           = 5380,
+};
 
-obj-$(CONFIG_IR_IMG)		+= img-ir.o
+static struct xc5000_config dvico_xc5000_tunerconfig = {
+	.i2c_address      = 0x64,
+	.if_khz           = 5380,
+};
+
+static struct tda829x_config tda829x_no_probe = {
+	.probe_tuner = TDA829X_DONT_PROBE,
+};
+
+static struct tda18271_std_map hauppauge_tda18271_std_map = {
+	.atsc_6   = { .if_freq = 5380, .agc_mode = 3, .std = 3,
+		      .if_lvl = 6, .rfagc_top = 0x37 },
+	.qam_6    = { .if_freq = 4000, .agc_mode = 3, .std = 0,
+		      .if_lvl = 6, .rfagc_top = 0x37 },
+};
+
+static struct tda1827

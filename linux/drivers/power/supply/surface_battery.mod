@@ -1,2 +1,3 @@
-lude/config/SHMEM) \
-    $(wildcard incl
+dio",
+		.cmds_start	= 0x10190,
+		.ctrl_s

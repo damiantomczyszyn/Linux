@@ -1,560 +1,454 @@
-// SPDX-License-Identifier: GPL-2.0-or-later
-
+/* SPDX-License-Identifier: GPL-2.0-or-later */
 /*
- * Infrared Toy and IR Droid RC core driver
+ *  Driver for the Conexant CX23885 PCIe bridge
  *
- * Copyright (C) 2020 Sean Young <sean@mess.org>
- *
- * http://dangerousprototypes.com/docs/USB_IR_Toy:_Sampling_mode
- *
- * This driver is based on the lirc driver which can be found here:
- * https://sourceforge.net/p/lirc/git/ci/master/tree/plugins/irtoy.c
- * Copyright (C) 2011 Peter Kooiman <pkooiman@gmail.com>
+ *  Copyright (c) 2006 Steven Toth <stoth@linuxtv.org>
  */
 
-#include <asm/unaligned.h>
-#include <linux/completion.h>
-#include <linux/kernel.h>
-#include <linux/module.h>
-#include <linux/usb.h>
-#include <linux/slab.h>
-#include <linux/usb/input.h>
+#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
 
+#include <linux/pci.h>
+#include <linux/i2c.h>
+#include <linux/kdev_t.h>
+#include <linux/slab.h>
+
+#include <media/v4l2-device.h>
+#include <media/v4l2-fh.h>
+#include <media/v4l2-ctrls.h>
+#include <media/tuner.h>
+#include <media/tveeprom.h>
+#include <media/videobuf2-dma-sg.h>
+#include <media/videobuf2-dvb.h>
 #include <media/rc-core.h>
 
-static const u8 COMMAND_VERSION[] = { 'v' };
-// End transmit and repeat reset command so we exit sump mode
-static const u8 COMMAND_RESET[] = { 0xff, 0xff, 0, 0, 0, 0, 0 };
-static const u8 COMMAND_SMODE_ENTER[] = { 's' };
-static const u8 COMMAND_SMODE_EXIT[] = { 0 };
-static const u8 COMMAND_TXSTART[] = { 0x26, 0x24, 0x25, 0x03 };
+#include "cx23885-reg.h"
+#include "media/drv-intf/cx2341x.h"
 
-#define REPLY_XMITCOUNT 't'
-#define REPLY_XMITSUCCESS 'C'
-#define REPLY_VERSION 'V'
-#define REPLY_SAMPLEMODEPROTO 'S'
+#include <linux/mutex.h>
 
-#define TIMEOUT 500
+#define CX23885_VERSION "0.0.4"
 
-#define LEN_XMITRES 3
-#define LEN_VERSION 4
-#define LEN_SAMPLEMODEPROTO 3
+#define UNSET (-1U)
 
-#define MIN_FW_VERSION 20
-#define UNIT_US 21
-#define MAX_TIMEOUT_US (UNIT_US * U16_MAX)
+#define CX23885_MAXBOARDS 8
 
-#define MAX_PACKET 64
+/* Max number of inputs by card */
+#define MAX_CX23885_INPUT 8
+#define INPUT(nr) (&cx23885_boards[dev->board].input[nr])
 
-enum state {
-	STATE_IRDATA,
-	STATE_COMMAND_NO_RESP,
-	STATE_COMMAND,
-	STATE_TX,
+#define BUFFER_TIMEOUT     (HZ)  /* 0.5 seconds */
+
+#define CX23885_BOARD_NOAUTO               UNSET
+#define CX23885_BOARD_UNKNOWN                  0
+#define CX23885_BOARD_HAUPPAUGE_HVR1800lp      1
+#define CX23885_BOARD_HAUPPAUGE_HVR1800        2
+#define CX23885_BOARD_HAUPPAUGE_HVR1250        3
+#define CX23885_BOARD_DVICO_FUSIONHDTV_5_EXP   4
+#define CX23885_BOARD_HAUPPAUGE_HVR1500Q       5
+#define CX23885_BOARD_HAUPPAUGE_HVR1500        6
+#define CX23885_BOARD_HAUPPAUGE_HVR1200        7
+#define CX23885_BOARD_HAUPPAUGE_HVR1700        8
+#define CX23885_BOARD_HAUPPAUGE_HVR1400        9
+#define CX23885_BOARD_DVICO_FUSIONHDTV_7_DUAL_EXP 10
+#define CX23885_BOARD_DVICO_FUSIONHDTV_DVB_T_DUAL_EXP 11
+#define CX23885_BOARD_LEADTEK_WINFAST_PXDVR3200_H 12
+#define CX23885_BOARD_COMPRO_VIDEOMATE_E650F   13
+#define CX23885_BOARD_TBS_6920                 14
+#define CX23885_BOARD_TEVII_S470               15
+#define CX23885_BOARD_DVBWORLD_2005            16
+#define CX23885_BOARD_NETUP_DUAL_DVBS2_CI      17
+#define CX23885_BOARD_HAUPPAUGE_HVR1270        18
+#define CX23885_BOARD_HAUPPAUGE_HVR1275        19
+#define CX23885_BOARD_HAUPPAUGE_HVR1255        20
+#define CX23885_BOARD_HAUPPAUGE_HVR1210        21
+#define CX23885_BOARD_MYGICA_X8506             22
+#define CX23885_BOARD_MAGICPRO_PROHDTVE2       23
+#define CX23885_BOARD_HAUPPAUGE_HVR1850        24
+#define CX23885_BOARD_COMPRO_VIDEOMATE_E800    25
+#define CX23885_BOARD_HAUPPAUGE_HVR1290        26
+#define CX23885_BOARD_MYGICA_X8558PRO          27
+#define CX23885_BOARD_LEADTEK_WINFAST_PXTV1200 28
+#define CX23885_BOARD_GOTVIEW_X5_3D_HYBRID     29
+#define CX23885_BOARD_NETUP_DUAL_DVB_T_C_CI_RF 30
+#define CX23885_BOARD_LEADTEK_WINFAST_PXDVR3200_H_XC4000 31
+#define CX23885_BOARD_MPX885                   32
+#define CX23885_BOARD_MYGICA_X8507             33
+#define CX23885_BOARD_TERRATEC_CINERGY_T_PCIE_DUAL 34
+#define CX23885_BOARD_TEVII_S471               35
+#define CX23885_BOARD_HAUPPAUGE_HVR1255_22111  36
+#define CX23885_BOARD_PROF_8000                37
+#define CX23885_BOARD_HAUPPAUGE_HVR4400        38
+#define CX23885_BOARD_AVERMEDIA_HC81R          39
+#define CX23885_BOARD_TBS_6981                 40
+#define CX23885_BOARD_TBS_6980                 41
+#define CX23885_BOARD_LEADTEK_WINFAST_PXPVR2200 42
+#define CX23885_BOARD_HAUPPAUGE_IMPACTVCBE     43
+#define CX23885_BOARD_DVICO_FUSIONHDTV_DVB_T_DUAL_EXP2 44
+#define CX23885_BOARD_DVBSKY_T9580             45
+#define CX23885_BOARD_DVBSKY_T980C             46
+#define CX23885_BOARD_DVBSKY_S950C             47
+#define CX23885_BOARD_TT_CT2_4500_CI           48
+#define CX23885_BOARD_DVBSKY_S950              49
+#define CX23885_BOARD_DVBSKY_S952              50
+#define CX23885_BOARD_DVBSKY_T982              51
+#define CX23885_BOARD_HAUPPAUGE_HVR5525        52
+#define CX23885_BOARD_HAUPPAUGE_STARBURST      53
+#define CX23885_BOARD_VIEWCAST_260E            54
+#define CX23885_BOARD_VIEWCAST_460E            55
+#define CX23885_BOARD_HAUPPAUGE_QUADHD_DVB     56
+#define CX23885_BOARD_HAUPPAUGE_QUADHD_ATSC    57
+#define CX23885_BOARD_HAUPPAUGE_HVR1265_K4     58
+#define CX23885_BOARD_HAUPPAUGE_STARBURST2     59
+#define CX23885_BOARD_HAUPPAUGE_QUADHD_DVB_885 60
+#define CX23885_BOARD_HAUPPAUGE_QUADHD_ATSC_885 61
+#define CX23885_BOARD_AVERMEDIA_CE310B         62
+
+#define GPIO_0 0x00000001
+#define GPIO_1 0x00000002
+#define GPIO_2 0x00000004
+#define GPIO_3 0x00000008
+#define GPIO_4 0x00000010
+#define GPIO_5 0x00000020
+#define GPIO_6 0x00000040
+#define GPIO_7 0x00000080
+#define GPIO_8 0x00000100
+#define GPIO_9 0x00000200
+#define GPIO_10 0x00000400
+#define GPIO_11 0x00000800
+#define GPIO_12 0x00001000
+#define GPIO_13 0x00002000
+#define GPIO_14 0x00004000
+#define GPIO_15 0x00008000
+
+/* Currently unsupported by the driver: PAL/H, NTSC/Kr, SECAM B/G/H/LC */
+#define CX23885_NORMS (\
+	V4L2_STD_NTSC_M |  V4L2_STD_NTSC_M_JP |  V4L2_STD_NTSC_443 | \
+	V4L2_STD_PAL_BG |  V4L2_STD_PAL_DK    |  V4L2_STD_PAL_I    | \
+	V4L2_STD_PAL_M  |  V4L2_STD_PAL_N     |  V4L2_STD_PAL_Nc   | \
+	V4L2_STD_PAL_60 |  V4L2_STD_SECAM_L   |  V4L2_STD_SECAM_DK)
+
+struct cx23885_fmt {
+	u32   fourcc;          /* v4l2 format id */
+	int   depth;
+	int   flags;
+	u32   cxformat;
 };
 
-struct irtoy {
-	struct device *dev;
-	struct usb_device *usbdev;
-
-	struct rc_dev *rc;
-	struct urb *urb_in, *urb_out;
-
-	u8 *in;
-	u8 *out;
-	struct completion command_done;
-
-	bool pulse;
-	enum state state;
-
-	void *tx_buf;
-	uint tx_len;
-
-	uint emitted;
-	uint hw_version;
-	uint sw_version;
-	uint proto_version;
-
-	char phys[64];
+struct cx23885_tvnorm {
+	char		*name;
+	v4l2_std_id	id;
+	u32		cxiformat;
+	u32		cxoformat;
 };
 
-static void irtoy_response(struct irtoy *irtoy, u32 len)
-{
-	switch (irtoy->state) {
-	case STATE_COMMAND:
-		if (len == LEN_VERSION && irtoy->in[0] == REPLY_VERSION) {
-			uint version;
-
-			irtoy->in[LEN_VERSION] = 0;
-
-			if (kstrtouint(irtoy->in + 1, 10, &version)) {
-				dev_err(irtoy->dev, "invalid version %*phN. Please make sure you are using firmware v20 or higher",
-					LEN_VERSION, irtoy->in);
-				break;
-			}
-
-			dev_dbg(irtoy->dev, "version %s\n", irtoy->in);
-
-			irtoy->hw_version = version / 100;
-			irtoy->sw_version = version % 100;
-
-			irtoy->state = STATE_IRDATA;
-			complete(&irtoy->command_done);
-		} else if (len == LEN_SAMPLEMODEPROTO &&
-			   irtoy->in[0] == REPLY_SAMPLEMODEPROTO) {
-			uint version;
-
-			irtoy->in[LEN_SAMPLEMODEPROTO] = 0;
-
-			if (kstrtouint(irtoy->in + 1, 10, &version)) {
-				dev_err(irtoy->dev, "invalid sample mode response %*phN",
-					LEN_SAMPLEMODEPROTO, irtoy->in);
-				return;
-			}
-
-			dev_dbg(irtoy->dev, "protocol %s\n", irtoy->in);
-
-			irtoy->proto_version = version;
-
-			irtoy->state = STATE_IRDATA;
-			complete(&irtoy->command_done);
-		} else {
-			dev_err(irtoy->dev, "unexpected response to command: %*phN\n",
-				len, irtoy->in);
-		}
-		break;
-	case STATE_COMMAND_NO_RESP:
-	case STATE_IRDATA: {
-		struct ir_raw_event rawir = { .pulse = irtoy->pulse };
-		__be16 *in = (__be16 *)irtoy->in;
-		int i;
-
-		for (i = 0; i < len / sizeof(__be16); i++) {
-			u16 v = be16_to_cpu(in[i]);
-
-			if (v == 0xffff) {
-				rawir.pulse = false;
-			} else {
-				rawir.duration = v * UNIT_US;
-				ir_raw_event_store_with_timeout(irtoy->rc,
-								&rawir);
-			}
-
-			rawir.pulse = !rawir.pulse;
-		}
-
-		irtoy->pulse = rawir.pulse;
-
-		ir_raw_event_handle(irtoy->rc);
-		break;
-	}
-	case STATE_TX:
-		if (irtoy->tx_len == 0) {
-			if (len == LEN_XMITRES &&
-			    irtoy->in[0] == REPLY_XMITCOUNT) {
-				u16 emitted = get_unaligned_be16(irtoy->in + 1);
-
-				dev_dbg(irtoy->dev, "emitted:%u\n", emitted);
-
-				irtoy->emitted = emitted;
-			} else if (len == 1 &&
-				   irtoy->in[0] == REPLY_XMITSUCCESS) {
-				irtoy->state = STATE_IRDATA;
-				complete(&irtoy->command_done);
-			}
-		} else {
-			// send next part of tx buffer
-			uint space = irtoy->in[0];
-			uint buf_len;
-			int err;
-
-			if (len != 1 || space > MAX_PACKET || space == 0) {
-				dev_dbg(irtoy->dev, "packet length expected: %*phN\n",
-					len, irtoy->in);
-				break;
-			}
-
-			buf_len = min(space, irtoy->tx_len);
-
-			dev_dbg(irtoy->dev, "remaining:%u sending:%u\n",
-				irtoy->tx_len, buf_len);
-
-			memcpy(irtoy->out, irtoy->tx_buf, buf_len);
-			irtoy->urb_out->transfer_buffer_length = buf_len;
-			err = usb_submit_urb(irtoy->urb_out, GFP_ATOMIC);
-			if (err != 0) {
-				dev_err(irtoy->dev, "fail to submit tx buf urb: %d\n",
-					err);
-				irtoy->state = STATE_IRDATA;
-				complete(&irtoy->command_done);
-				break;
-			}
-
-			irtoy->tx_buf += buf_len;
-			irtoy->tx_len -= buf_len;
-		}
-		break;
-	}
-}
-
-static void irtoy_out_callback(struct urb *urb)
-{
-	struct irtoy *irtoy = urb->context;
-
-	if (urb->status == 0) {
-		if (irtoy->state == STATE_COMMAND_NO_RESP)
-			complete(&irtoy->command_done);
-	} else {
-		dev_warn(irtoy->dev, "out urb status: %d\n", urb->status);
-	}
-}
-
-static void irtoy_in_callback(struct urb *urb)
-{
-	struct irtoy *irtoy = urb->context;
-	int ret;
-
-	switch (urb->status) {
-	case 0:
-		irtoy_response(irtoy, urb->actual_length);
-		break;
-	case -ECONNRESET:
-	case -ENOENT:
-	case -ESHUTDOWN:
-	case -EPROTO:
-	case -EPIPE:
-		usb_unlink_urb(urb);
-		return;
-	default:
-		dev_dbg(irtoy->dev, "in urb status: %d\n", urb->status);
-	}
-
-	ret = usb_submit_urb(urb, GFP_ATOMIC);
-	if (ret && ret != -ENODEV)
-		dev_warn(irtoy->dev, "failed to resubmit urb: %d\n", ret);
-}
-
-static int irtoy_command(struct irtoy *irtoy, const u8 *cmd, int cmd_len,
-			 enum state state)
-{
-	int err;
-
-	init_completion(&irtoy->command_done);
-
-	irtoy->state = state;
-
-	memcpy(irtoy->out, cmd, cmd_len);
-	irtoy->urb_out->transfer_buffer_length = cmd_len;
-
-	err = usb_submit_urb(irtoy->urb_out, GFP_KERNEL);
-	if (err != 0)
-		return err;
-
-	if (!wait_for_completion_timeout(&irtoy->command_done,
-					 msecs_to_jiffies(TIMEOUT))) {
-		usb_kill_urb(irtoy->urb_out);
-		return -ETIMEDOUT;
-	}
-
-	return 0;
-}
-
-static int irtoy_setup(struct irtoy *irtoy)
-{
-	int err;
-
-	err = irtoy_command(irtoy, COMMAND_RESET, sizeof(COMMAND_RESET),
-			    STATE_COMMAND_NO_RESP);
-	if (err != 0) {
-		dev_err(irtoy->dev, "could not write reset command: %d\n",
-			err);
-		return err;
-	}
-
-	usleep_range(50, 50);
-
-	// get version
-	err = irtoy_command(irtoy, COMMAND_VERSION, sizeof(COMMAND_VERSION),
-			    STATE_COMMAND);
-	if (err) {
-		dev_err(irtoy->dev, "could not write version command: %d\n",
-			err);
-		return err;
-	}
-
-	// enter sample mode
-	err = irtoy_command(irtoy, COMMAND_SMODE_ENTER,
-			    sizeof(COMMAND_SMODE_ENTER), STATE_COMMAND);
-	if (err)
-		dev_err(irtoy->dev, "could not write sample command: %d\n",
-			err);
-
-	return err;
-}
-
-/*
- * When sending IR, it is imperative that we send the IR data as quickly
- * as possible to the device, so it does not run out of IR data and
- * introduce gaps. Allocate the buffer here, and then feed the data from
- * the urb callback handler.
- */
-static int irtoy_tx(struct rc_dev *rc, uint *txbuf, uint count)
-{
-	struct irtoy *irtoy = rc->priv;
-	unsigned int i, size;
-	__be16 *buf;
-	int err;
-
-	size = sizeof(u16) * (count + 1);
-	buf = kmalloc(size, GFP_KERNEL);
-	if (!buf)
-		return -ENOMEM;
-
-	for (i = 0; i < count; i++) {
-		u16 v = DIV_ROUND_CLOSEST(txbuf[i], UNIT_US);
-
-		if (!v)
-			v = 1;
-		buf[i] = cpu_to_be16(v);
-	}
-
-	buf[count] = cpu_to_be16(0xffff);
-
-	irtoy->tx_buf = buf;
-	irtoy->tx_len = size;
-	irtoy->emitted = 0;
-
-	// There is an issue where if the unit is receiving IR while the
-	// first TXSTART command is sent, the device might end up hanging
-	// with its led on. It does not respond to any command when this
-	// happens. To work around this, re-enter sample mode.
-	err = irtoy_command(irtoy, COMMAND_SMODE_EXIT,
-			    sizeof(COMMAND_SMODE_EXIT), STATE_COMMAND_NO_RESP);
-	if (err) {
-		dev_err(irtoy->dev, "exit sample mode: %d\n", err);
-		return err;
-	}
-
-	err = irtoy_command(irtoy, COMMAND_SMODE_ENTER,
-			    sizeof(COMMAND_SMODE_ENTER), STATE_COMMAND);
-	if (err) {
-		dev_err(irtoy->dev, "enter sample mode: %d\n", err);
-		return err;
-	}
-
-	err = irtoy_command(irtoy, COMMAND_TXSTART, sizeof(COMMAND_TXSTART),
-			    STATE_TX);
-	kfree(buf);
-
-	if (err) {
-		dev_err(irtoy->dev, "failed to send tx start command: %d\n",
-			err);
-		// not sure what state the device is in, reset it
-		irtoy_setup(irtoy);
-		return err;
-	}
-
-	if (size != irtoy->emitted) {
-		dev_err(irtoy->dev, "expected %u emitted, got %u\n", size,
-			irtoy->emitted);
-		// not sure what state the device is in, reset it
-		irtoy_setup(irtoy);
-		return -EINVAL;
-	}
-
-	return count;
-}
-
-static int irtoy_tx_carrier(struct rc_dev *rc, uint32_t carrier)
-{
-	struct irtoy *irtoy = rc->priv;
-	u8 buf[3];
-	int err;
-
-	if (carrier < 11800)
-		return -EINVAL;
-
-	buf[0] = 0x06;
-	buf[1] = DIV_ROUND_CLOSEST(48000000, 16 * carrier) - 1;
-	buf[2] = 0;
-
-	err = irtoy_command(irtoy, buf, sizeof(buf), STATE_COMMAND_NO_RESP);
-	if (err)
-		dev_err(irtoy->dev, "could not write carrier command: %d\n",
-			err);
-
-	return err;
-}
-
-static int irtoy_probe(struct usb_interface *intf,
-		       const struct usb_device_id *id)
-{
-	struct usb_host_interface *idesc = intf->cur_altsetting;
-	struct usb_device *usbdev = interface_to_usbdev(intf);
-	struct usb_endpoint_descriptor *ep_in = NULL;
-	struct usb_endpoint_descriptor *ep_out = NULL;
-	struct usb_endpoint_descriptor *ep = NULL;
-	struct irtoy *irtoy;
-	struct rc_dev *rc;
-	struct urb *urb;
-	int i, pipe, err = -ENOMEM;
-
-	for (i = 0; i < idesc->desc.bNumEndpoints; i++) {
-		ep = &idesc->endpoint[i].desc;
-
-		if (!ep_in && usb_endpoint_is_bulk_in(ep) &&
-		    usb_endpoint_maxp(ep) == MAX_PACKET)
-			ep_in = ep;
-
-		if (!ep_out && usb_endpoint_is_bulk_out(ep) &&
-		    usb_endpoint_maxp(ep) == MAX_PACKET)
-			ep_out = ep;
-	}
-
-	if (!ep_in || !ep_out) {
-		dev_err(&intf->dev, "required endpoints not found\n");
-		return -ENODEV;
-	}
-
-	irtoy = kzalloc(sizeof(*irtoy), GFP_KERNEL);
-	if (!irtoy)
-		return -ENOMEM;
-
-	irtoy->in = kmalloc(MAX_PACKET,  GFP_KERNEL);
-	if (!irtoy->in)
-		goto free_irtoy;
-
-	irtoy->out = kmalloc(MAX_PACKET,  GFP_KERNEL);
-	if (!irtoy->out)
-		goto free_irtoy;
-
-	rc = rc_allocate_device(RC_DRIVER_IR_RAW);
-	if (!rc)
-		goto free_irtoy;
-
-	urb = usb_alloc_urb(0, GFP_KERNEL);
-	if (!urb)
-		goto free_rcdev;
-
-	pipe = usb_rcvbulkpipe(usbdev, ep_in->bEndpointAddress);
-	usb_fill_bulk_urb(urb, usbdev, pipe, irtoy->in, MAX_PACKET,
-			  irtoy_in_callback, irtoy);
-	irtoy->urb_in = urb;
-
-	urb = usb_alloc_urb(0, GFP_KERNEL);
-	if (!urb)
-		goto free_rcdev;
-
-	pipe = usb_sndbulkpipe(usbdev, ep_out->bEndpointAddress);
-	usb_fill_bulk_urb(urb, usbdev, pipe, irtoy->out, MAX_PACKET,
-			  irtoy_out_callback, irtoy);
-
-	irtoy->dev = &intf->dev;
-	irtoy->usbdev = usbdev;
-	irtoy->rc = rc;
-	irtoy->urb_out = urb;
-	irtoy->pulse = true;
-
-	err = usb_submit_urb(irtoy->urb_in, GFP_KERNEL);
-	if (err != 0) {
-		dev_err(irtoy->dev, "fail to submit in urb: %d\n", err);
-		goto free_rcdev;
-	}
-
-	err = irtoy_setup(irtoy);
-	if (err)
-		goto free_rcdev;
-
-	dev_info(irtoy->dev, "version: hardware %u, firmware %u.%u, protocol %u",
-		 irtoy->hw_version, irtoy->sw_version / 10,
-		 irtoy->sw_version % 10, irtoy->proto_version);
-
-	if (irtoy->sw_version < MIN_FW_VERSION) {
-		dev_err(irtoy->dev, "need firmware V%02u or higher",
-			MIN_FW_VERSION);
-		err = -ENODEV;
-		goto free_rcdev;
-	}
-
-	usb_make_path(usbdev, irtoy->phys, sizeof(irtoy->phys));
-
-	rc->device_name = "Infrared Toy";
-	rc->driver_name = KBUILD_MODNAME;
-	rc->input_phys = irtoy->phys;
-	usb_to_input_id(usbdev, &rc->input_id);
-	rc->dev.parent = &intf->dev;
-	rc->priv = irtoy;
-	rc->tx_ir = irtoy_tx;
-	rc->s_tx_carrier = irtoy_tx_carrier;
-	rc->allowed_protocols = RC_PROTO_BIT_ALL_IR_DECODER;
-	rc->map_name = RC_MAP_RC6_MCE;
-	rc->rx_resolution = UNIT_US;
-	rc->timeout = IR_DEFAULT_TIMEOUT;
-
-	/*
-	 * end of transmission is detected by absence of a usb packet
-	 * with more pulse/spaces. However, each usb packet sent can
-	 * contain 32 pulse/spaces, which can be quite lengthy, so there
-	 * can be a delay between usb packets. For example with nec there is a
-	 * 17ms gap between packets.
+enum cx23885_itype {
+	CX23885_VMUX_COMPOSITE1 = 1,
+	CX23885_VMUX_COMPOSITE2,
+	CX23885_VMUX_COMPOSITE3,
+	CX23885_VMUX_COMPOSITE4,
+	CX23885_VMUX_SVIDEO,
+	CX23885_VMUX_COMPONENT,
+	CX23885_VMUX_TELEVISION,
+	CX23885_VMUX_CABLE,
+	CX23885_VMUX_DVB,
+	CX23885_VMUX_DEBUG,
+	CX23885_RADIO,
+};
+
+enum cx23885_src_sel_type {
+	CX23885_SRC_SEL_EXT_656_VIDEO = 0,
+	CX23885_SRC_SEL_PARALLEL_MPEG_VIDEO
+};
+
+struct cx23885_riscmem {
+	unsigned int   size;
+	__le32         *cpu;
+	__le32         *jmp;
+	dma_addr_t     dma;
+};
+
+/* buffer for one video frame */
+struct cx23885_buffer {
+	/* common v4l buffer stuff -- must be first */
+	struct vb2_v4l2_buffer vb;
+	struct list_head queue;
+
+	/* cx23885 specific */
+	unsigned int           bpl;
+	struct cx23885_riscmem risc;
+	struct cx23885_fmt     *fmt;
+	u32                    count;
+};
+
+struct cx23885_input {
+	enum cx23885_itype type;
+	unsigned int    vmux;
+	unsigned int    amux;
+	u32             gpio0, gpio1, gpio2, gpio3;
+};
+
+typedef enum {
+	CX23885_MPEG_UNDEFINED = 0,
+	CX23885_MPEG_DVB,
+	CX23885_ANALOG_VIDEO,
+	CX23885_MPEG_ENCODER,
+} port_t;
+
+struct cx23885_board {
+	char                    *name;
+	port_t			porta, portb, portc;
+	int		num_fds_portb, num_fds_portc;
+	unsigned int		tuner_type;
+	unsigned int		radio_type;
+	unsigned char		tuner_addr;
+	unsigned char		radio_addr;
+	unsigned int		tuner_bus;
+
+	/* Vendors can and do run the PCIe bridge at different
+	 * clock rates, driven physically by crystals on the PCBs.
+	 * The core has to accommodate this. This allows the user
+	 * to add new boards with new frequencys. The value is
+	 * expressed in Hz.
 	 *
-	 * So, make timeout a largish minimum which works with most protocols.
+	 * The core framework will default this value based on
+	 * current designs, but it can vary.
 	 */
-	rc->min_timeout = MS_TO_US(40);
-	rc->max_timeout = MAX_TIMEOUT_US;
+	u32			clk_freq;
+	struct cx23885_input    input[MAX_CX23885_INPUT];
+	int			ci_type; /* for NetUP */
+	/* Force bottom field first during DMA (888 workaround) */
+	u32                     force_bff;
+};
 
-	err = rc_register_device(rc);
-	if (err)
-		goto free_rcdev;
+struct cx23885_subid {
+	u16     subvendor;
+	u16     subdevice;
+	u32     card;
+};
 
-	usb_set_intfdata(intf, irtoy);
+struct cx23885_i2c {
+	struct cx23885_dev *dev;
 
-	return 0;
+	int                        nr;
 
-free_rcdev:
-	usb_kill_urb(irtoy->urb_out);
-	usb_free_urb(irtoy->urb_out);
-	usb_kill_urb(irtoy->urb_in);
-	usb_free_urb(irtoy->urb_in);
-	rc_free_device(rc);
-free_irtoy:
-	kfree(irtoy->in);
-	kfree(irtoy->out);
-	kfree(irtoy);
-	return err;
-}
+	/* i2c i/o */
+	struct i2c_adapter         i2c_adap;
+	struct i2c_client          i2c_client;
+	u32                        i2c_rc;
 
-static void irtoy_disconnect(struct usb_interface *intf)
+	/* 885 registers used for raw address */
+	u32                        i2c_period;
+	u32                        reg_ctrl;
+	u32                        reg_stat;
+	u32                        reg_addr;
+	u32                        reg_rdata;
+	u32                        reg_wdata;
+};
+
+struct cx23885_dmaqueue {
+	struct list_head       active;
+	u32                    count;
+};
+
+struct cx23885_tsport {
+	struct cx23885_dev *dev;
+
+	unsigned                   nr;
+	int                        sram_chno;
+
+	struct vb2_dvb_frontends   frontends;
+
+	/* dma queues */
+	struct cx23885_dmaqueue    mpegq;
+	u32                        ts_packet_size;
+	u32                        ts_packet_count;
+
+	int                        width;
+	int                        height;
+
+	spinlock_t                 slock;
+
+	/* registers */
+	u32                        reg_gpcnt;
+	u32                        reg_gpcnt_ctl;
+	u32                        reg_dma_ctl;
+	u32                        reg_lngth;
+	u32                        reg_hw_sop_ctrl;
+	u32                        reg_gen_ctrl;
+	u32                        reg_bd_pkt_status;
+	u32                        reg_sop_status;
+	u32                        reg_fifo_ovfl_stat;
+	u32                        reg_vld_misc;
+	u32                        reg_ts_clk_en;
+	u32                        reg_ts_int_msk;
+	u32                        reg_ts_int_stat;
+	u32                        reg_src_sel;
+
+	/* Default register vals */
+	int                        pci_irqmask;
+	u32                        dma_ctl_val;
+	u32                        ts_int_msk_val;
+	u32                        gen_ctrl_val;
+	u32                        ts_clk_en_val;
+	u32                        src_sel_val;
+	u32                        vld_misc_val;
+	u32                        hw_sop_ctrl_val;
+
+	/* Allow a single tsport to have multiple frontends */
+	u32                        num_frontends;
+	void                (*gate_ctrl)(struct cx23885_tsport *port, int open);
+	void                       *port_priv;
+
+	/* Workaround for a temp dvb_frontend that the tuner can attached to */
+	struct dvb_frontend analog_fe;
+
+	struct i2c_client *i2c_client_demod;
+	struct i2c_client *i2c_client_tuner;
+	struct i2c_client *i2c_client_sec;
+	struct i2c_client *i2c_client_ci;
+
+	int (*set_frontend)(struct dvb_frontend *fe);
+	int (*fe_set_voltage)(struct dvb_frontend *fe,
+			      enum fe_sec_voltage voltage);
+};
+
+struct cx23885_kernel_ir {
+	struct cx23885_dev	*cx;
+	char			*name;
+	char			*phys;
+
+	struct rc_dev		*rc;
+};
+
+struct cx23885_audio_buffer {
+	unsigned int		bpl;
+	struct cx23885_riscmem	risc;
+	void			*vaddr;
+	struct scatterlist	*sglist;
+	int			sglen;
+	unsigned long		nr_pages;
+};
+
+struct cx23885_audio_dev {
+	struct cx23885_dev	*dev;
+
+	struct pci_dev		*pci;
+
+	struct snd_card		*card;
+
+	spinlock_t		lock;
+
+	atomic_t		count;
+
+	unsigned int		dma_size;
+	unsigned int		period_size;
+	unsigned int		num_periods;
+
+	struct cx23885_audio_buffer   *buf;
+
+	struct snd_pcm_substream *substream;
+};
+
+struct cx23885_dev {
+	atomic_t                   refcount;
+	struct v4l2_device	   v4l2_dev;
+	struct v4l2_ctrl_handler   ctrl_handler;
+
+	/* pci stuff */
+	struct pci_dev             *pci;
+	unsigned char              pci_rev, pci_lat;
+	int                        pci_bus, pci_slot;
+	u32                        __iomem *lmmio;
+	u8                         __iomem *bmmio;
+	int                        pci_irqmask;
+	spinlock_t		   pci_irqmask_lock; /* protects mask reg too */
+	int                        hwrevision;
+
+	/* This valud is board specific and is used to configure the
+	 * AV core so we see nice clean and stable video and audio. */
+	u32                        clk_freq;
+
+	/* I2C adapters: Master 1 & 2 (External) & Master 3 (Internal only) */
+	struct cx23885_i2c         i2c_bus[3];
+
+	int                        nr;
+	struct mutex               lock;
+	struct mutex               gpio_lock;
+
+	/* board details */
+	unsigned int               board;
+	char                       name[32];
+
+	struct cx23885_tsport      ts1, ts2;
+
+	/* sram configuration */
+	struct sram_channel        *sram_channels;
+
+	enum {
+		CX23885_BRIDGE_UNDEFINED = 0,
+		CX23885_BRIDGE_885 = 885,
+		CX23885_BRIDGE_887 = 887,
+		CX23885_BRIDGE_888 = 888,
+	} bridge;
+
+	/* Analog video */
+	unsigned int               input;
+	unsigned int               audinput; /* Selectable audio input */
+	u32                        tvaudio;
+	v4l2_std_id                tvnorm;
+	unsigned int               tuner_type;
+	unsigned char              tuner_addr;
+	unsigned int               tuner_bus;
+	unsigned int               radio_type;
+	unsigned char              radio_addr;
+	struct v4l2_subdev	   *sd_cx25840;
+	struct work_struct	   cx25840_work;
+
+	/* Infrared */
+	struct v4l2_subdev         *sd_ir;
+	struct work_struct	   ir_rx_work;
+	unsigned long		   ir_rx_notifications;
+	struct work_struct	   ir_tx_work;
+	unsigned long		   ir_tx_notifications;
+
+	struct cx23885_kernel_ir   *kernel_ir;
+	atomic_t		   ir_input_stopping;
+
+	/* V4l */
+	u32                        freq;
+	struct video_device        *video_dev;
+	struct video_device        *vbi_dev;
+
+	/* video capture */
+	struct cx23885_fmt         *fmt;
+	unsigned int               width, height;
+	unsigned		   field;
+
+	struct cx23885_dmaqueue    vidq;
+	struct vb2_queue           vb2_vidq;
+	struct cx23885_dmaqueue    vbiq;
+	struct vb2_queue           vb2_vbiq;
+
+	spinlock_t                 slock;
+
+	/* MPEG Encoder ONLY settings */
+	u32                        cx23417_mailbox;
+	struct cx2341x_handler     cxhdl;
+	struct video_device        *v4l_device;
+	struct vb2_queue           vb2_mpegq;
+	struct cx23885_tvnorm      encodernorm;
+
+	/* Analog raw audio */
+	struct cx23885_audio_dev   *audio_dev;
+
+	/* Does the system require periodic DMA resets? */
+	unsigned int		need_dma_reset:1;
+};
+
+static inline struct cx23885_dev *to_cx23885(struct v4l2_device *v4l2_dev)
 {
-	struct irtoy *ir = usb_get_intfdata(intf);
-
-	rc_unregister_device(ir->rc);
-	usb_set_intfdata(intf, NULL);
-	usb_kill_urb(ir->urb_out);
-	usb_free_urb(ir->urb_out);
-	usb_kill_urb(ir->urb_in);
-	usb_free_urb(ir->urb_in);
-	kfree(ir->in);
-	kfree(ir->out);
-	kfree(ir);
+	return container_of(v4l2_dev, struct cx23885_dev, v4l2_dev);
 }
 
-static const struct usb_device_id irtoy_table[] = {
-	{ USB_DEVICE_INTERFACE_CLASS(0x04d8, 0xfd08, USB_CLASS_CDC_DATA) },
-	{ USB_DEVICE_INTERFACE_CLASS(0x04d8, 0xf58b, USB_CLASS_CDC_DATA) },
-	{ }
-};
-
-static struct usb_driver irtoy_driver = {
-	.name = KBUILD_MODNAME,
-	.probe = irtoy_probe,
-	.disconnect = irtoy_disconnect,
-	.id_table = irtoy_table,
-};
-
-module_usb_driver(irtoy_driver);
-
-MODULE_AUTHOR("Sean Young <sean@mess.org>");
-MODULE_DESCRIPTION("Infrared Toy and IR Droid driver");
-MODULE_LICENSE("GPL");
-MODULE_DEVICE_TABLE(usb, irtoy_table);
+#define call_all(dev, o, f, args...) \
+	v4l2_device_call_all(&dev->v4l2_dev, 0, o, f, ##

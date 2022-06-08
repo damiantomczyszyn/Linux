@@ -1,284 +1,542 @@
-cmd_drivers/media/i2c/vs6624.o := gcc -Wp,-MMD,drivers/media/i2c/.vs6624.o.d -nostdinc -I./arch/x86/include -I./arch/x86/include/generated  -I./include -I./arch/x86/include/uapi -I./arch/x86/include/generated/uapi -I./include/uapi -I./include/generated/uapi -include ./include/linux/compiler-version.h -include ./include/linux/kconfig.h -include ./include/linux/compiler_types.h -D__KERNEL__ -fmacro-prefix-map=./= -Wall -Wundef -Werror=strict-prototypes -Wno-trigraphs -fno-strict-aliasing -fno-common -fshort-wchar -fno-PIE -Werror=implicit-function-declaration -Werror=implicit-int -Werror=return-type -Wno-format-security -std=gnu11 -mno-sse -mno-mmx -mno-sse2 -mno-3dnow -mno-avx -fcf-protection=none -m32 -msoft-float -mregparm=3 -freg-struct-return -fno-pic -mpreferred-stack-boundary=2 -march=i686 -mtune=pentium3 -mtune=generic -Wa,-mtune=generic32 -ffreestanding -mstack-protector-guard-reg=fs -mstack-protector-guard-symbol=__stack_chk_guard -Wno-sign-compare -fno-asynchronous-unwind-tables -mindirect-branch=thunk-extern -mindirect-branch-register -fno-jump-tables -fno-delete-null-pointer-checks -Wno-frame-address -Wno-format-truncation -Wno-format-overflow -Wno-address-of-packed-member -O2 -fno-allow-store-data-races -fstack-protector-strong -Wimplicit-fallthrough=5 -Wno-main -Wno-unused-but-set-variable -Wno-unused-const-variable -fno-stack-clash-protection -pg -mrecord-mcount -mfentry -DCC_USING_FENTRY -Wdeclaration-after-statement -Wvla -Wno-pointer-sign -Wcast-function-type -Wno-stringop-truncation -Wno-stringop-overflow -Wno-restrict -Wno-maybe-uninitialized -Wno-alloc-size-larger-than -fno-strict-overflow -fno-stack-check -fconserve-stack -Werror=date-time -Werror=incompatible-pointer-types -Werror=designated-init -Wno-packed-not-aligned  -DMODULE  -DKBUILD_BASENAME='"vs6624"' -DKBUILD_MODNAME='"vs6624"' -D__KBUILD_MODNAME=kmod_vs6624 -c -o drivers/media/i2c/vs6624.o drivers/media/i2c/vs6624.c 
+// SPDX-License-Identifier: GPL-2.0
+/* Copyright 2020 NXP
+ */
+#include "sja1105.h"
+#include "sja1105_vl.h"
 
-source_drivers/media/i2c/vs6624.o := drivers/media/i2c/vs6624.c
+struct sja1105_rule *sja1105_rule_find(struct sja1105_private *priv,
+				       unsigned long cookie)
+{
+	struct sja1105_rule *rule;
 
-deps_drivers/media/i2c/vs6624.o := \
-    $(wildcard include/config/VIDEO_ADV_DEBUG) \
-  include/linux/compiler-version.h \
-    $(wildcard include/config/CC_VERSION_TEXT) \
-  include/linux/kconfig.h \
-    $(wildcard include/config/CPU_BIG_ENDIAN) \
-    $(wildcard include/config/BOOGER) \
-    $(wildcard include/config/FOO) \
-  include/linux/compiler_types.h \
-    $(wildcard include/config/DEBUG_INFO_BTF) \
-    $(wildcard include/config/PAHOLE_HAS_BTF_TAG) \
-    $(wildcard include/config/HAVE_ARCH_COMPILER_H) \
-    $(wildcard include/config/CC_HAS_ASM_INLINE) \
-  include/linux/compiler_attributes.h \
-  include/linux/compiler-gcc.h \
-    $(wildcard include/config/RETPOLINE) \
-    $(wildcard include/config/ARCH_USE_BUILTIN_BSWAP) \
-    $(wildcard include/config/SHADOW_CALL_STACK) \
-    $(wildcard include/config/KCOV) \
-  include/linux/delay.h \
-  include/linux/math.h \
-  include/linux/types.h \
-    $(wildcard include/config/HAVE_UID16) \
-    $(wildcard include/config/UID16) \
-    $(wildcard include/config/ARCH_DMA_ADDR_T_64BIT) \
-    $(wildcard include/config/PHYS_ADDR_T_64BIT) \
-    $(wildcard include/config/64BIT) \
-    $(wildcard include/config/ARCH_32BIT_USTAT_F_TINODE) \
-  include/uapi/linux/types.h \
-  arch/x86/include/generated/uapi/asm/types.h \
-  include/uapi/asm-generic/types.h \
-  include/asm-generic/int-ll64.h \
-  include/uapi/asm-generic/int-ll64.h \
-  arch/x86/include/uapi/asm/bitsperlong.h \
-  include/asm-generic/bitsperlong.h \
-  include/uapi/asm-generic/bitsperlong.h \
-  include/uapi/linux/posix_types.h \
-  include/linux/stddef.h \
-  include/uapi/linux/stddef.h \
-  include/linux/compiler_types.h \
-  arch/x86/include/asm/posix_types.h \
-    $(wildcard include/config/X86_32) \
-  arch/x86/include/uapi/asm/posix_types_32.h \
-  include/uapi/asm-generic/posix_types.h \
-  arch/x86/include/asm/div64.h \
-  include/linux/log2.h \
-    $(wildcard include/config/ARCH_HAS_ILOG2_U32) \
-    $(wildcard include/config/ARCH_HAS_ILOG2_U64) \
-  include/linux/bitops.h \
-  include/linux/bits.h \
-  include/linux/const.h \
-  include/vdso/const.h \
-  include/uapi/linux/const.h \
-  include/vdso/bits.h \
-  include/linux/build_bug.h \
-  include/linux/compiler.h \
-    $(wildcard include/config/TRACE_BRANCH_PROFILING) \
-    $(wildcard include/config/PROFILE_ALL_BRANCHES) \
-    $(wildcard include/config/STACK_VALIDATION) \
-    $(wildcard include/config/CFI_CLANG) \
-  arch/x86/include/generated/asm/rwonce.h \
-  include/asm-generic/rwonce.h \
-  include/linux/kasan-checks.h \
-    $(wildcard include/config/KASAN_GENERIC) \
-    $(wildcard include/config/KASAN_SW_TAGS) \
-  include/linux/kcsan-checks.h \
-    $(wildcard include/config/KCSAN) \
-    $(wildcard include/config/KCSAN_WEAK_MEMORY) \
-    $(wildcard include/config/KCSAN_IGNORE_ATOMICS) \
-  include/linux/typecheck.h \
-  include/uapi/linux/kernel.h \
-  include/uapi/linux/sysinfo.h \
-  arch/x86/include/asm/bitops.h \
-    $(wildcard include/config/X86_64) \
-    $(wildcard include/config/X86_CMOV) \
-  arch/x86/include/asm/alternative.h \
-    $(wildcard include/config/SMP) \
-  include/linux/stringify.h \
-  arch/x86/include/asm/asm.h \
-    $(wildcard include/config/KPROBES) \
-  arch/x86/include/asm/extable_fixup_types.h \
-  arch/x86/include/asm/rmwcc.h \
-    $(wildcard include/config/CC_HAS_ASM_GOTO) \
-  arch/x86/include/asm/barrier.h \
-  arch/x86/include/asm/nops.h \
-  include/asm-generic/barrier.h \
-  include/asm-generic/bitops/fls64.h \
-  include/asm-generic/bitops/sched.h \
-  arch/x86/include/asm/arch_hweight.h \
-  arch/x86/include/asm/cpufeatures.h \
-  arch/x86/include/asm/required-features.h \
-    $(wildcard include/config/X86_MINIMUM_CPU_FAMILY) \
-    $(wildcard include/config/MATH_EMULATION) \
-    $(wildcard include/config/X86_PAE) \
-    $(wildcard include/config/X86_CMPXCHG64) \
-    $(wildcard include/config/X86_P6_NOP) \
-    $(wildcard include/config/MATOM) \
-    $(wildcard include/config/PARAVIRT_XXL) \
-  arch/x86/include/asm/disabled-features.h \
-    $(wildcard include/config/X86_SMAP) \
-    $(wildcard include/config/X86_UMIP) \
-    $(wildcard include/config/X86_INTEL_MEMORY_PROTECTION_KEYS) \
-    $(wildcard include/config/X86_5LEVEL) \
-    $(wildcard include/config/PAGE_TABLE_ISOLATION) \
-    $(wildcard include/config/INTEL_IOMMU_SVM) \
-    $(wildcard include/config/X86_SGX) \
-  include/asm-generic/bitops/const_hweight.h \
-  include/asm-generic/bitops/instrumented-atomic.h \
-  include/linux/instrumented.h \
-  include/asm-generic/bitops/instrumented-non-atomic.h \
-    $(wildcard include/config/KCSAN_ASSUME_PLAIN_WRITES_ATOMIC) \
-  include/asm-generic/bitops/instrumented-lock.h \
-  include/asm-generic/bitops/le.h \
-  arch/x86/include/uapi/asm/byteorder.h \
-  include/linux/byteorder/little_endian.h \
-  include/uapi/linux/byteorder/little_endian.h \
-  include/linux/swab.h \
-  include/uapi/linux/swab.h \
-  arch/x86/include/uapi/asm/swab.h \
-  include/linux/byteorder/generic.h \
-  include/asm-generic/bitops/ext2-atomic-setbit.h \
-  include/linux/sched.h \
-    $(wildcard include/config/DEBUG_ATOMIC_SLEEP) \
-    $(wildcard include/config/PREEMPT_RT) \
-    $(wildcard include/config/VIRT_CPU_ACCOUNTING_NATIVE) \
-    $(wildcard include/config/SCHED_INFO) \
-    $(wildcard include/config/SCHEDSTATS) \
-    $(wildcard include/config/SCHED_CORE) \
-    $(wildcard include/config/FAIR_GROUP_SCHED) \
-    $(wildcard include/config/RT_GROUP_SCHED) \
-    $(wildcard include/config/RT_MUTEXES) \
-    $(wildcard include/config/UCLAMP_TASK) \
-    $(wildcard include/config/UCLAMP_BUCKETS_COUNT) \
-    $(wildcard include/config/KMAP_LOCAL) \
-    $(wildcard include/config/THREAD_INFO_IN_TASK) \
-    $(wildcard include/config/CGROUP_SCHED) \
-    $(wildcard include/config/PREEMPT_NOTIFIERS) \
-    $(wildcard include/config/BLK_DEV_IO_TRACE) \
-    $(wildcard include/config/PREEMPT_RCU) \
-    $(wildcard include/config/TASKS_RCU) \
-    $(wildcard include/config/TASKS_TRACE_RCU) \
-    $(wildcard include/config/PSI) \
-    $(wildcard include/config/MEMCG) \
-    $(wildcard include/config/COMPAT_BRK) \
-    $(wildcard include/config/CGROUPS) \
-    $(wildcard include/config/BLK_CGROUP) \
-    $(wildcard include/config/PAGE_OWNER) \
-    $(wildcard include/config/EVENTFD) \
-    $(wildcard include/config/IOMMU_SVA) \
-    $(wildcard include/config/STACKPROTECTOR) \
-    $(wildcard include/config/ARCH_HAS_SCALED_CPUTIME) \
-    $(wildcard include/config/VIRT_CPU_ACCOUNTING_GEN) \
-    $(wildcard include/config/NO_HZ_FULL) \
-    $(wildcard include/config/POSIX_CPUTIMERS) \
-    $(wildcard include/config/POSIX_CPU_TIMERS_TASK_WORK) \
-    $(wildcard include/config/KEYS) \
-    $(wildcard include/config/SYSVIPC) \
-    $(wildcard include/config/DETECT_HUNG_TASK) \
-    $(wildcard include/config/IO_URING) \
-    $(wildcard include/config/AUDIT) \
-    $(wildcard include/config/AUDITSYSCALL) \
-    $(wildcard include/config/DEBUG_MUTEXES) \
-    $(wildcard include/config/TRACE_IRQFLAGS) \
-    $(wildcard include/config/LOCKDEP) \
-    $(wildcard include/config/UBSAN) \
-    $(wildcard include/config/UBSAN_TRAP) \
-    $(wildcard include/config/COMPACTION) \
-    $(wildcard include/config/TASK_XACCT) \
-    $(wildcard include/config/CPUSETS) \
-    $(wildcard include/config/X86_CPU_RESCTRL) \
-    $(wildcard include/config/FUTEX) \
-    $(wildcard include/config/COMPAT) \
-    $(wildcard include/config/PERF_EVENTS) \
-    $(wildcard include/config/DEBUG_PREEMPT) \
-    $(wildcard include/config/NUMA) \
-    $(wildcard include/config/NUMA_BALANCING) \
-    $(wildcard include/config/RSEQ) \
-    $(wildcard include/config/TASK_DELAY_ACCT) \
-    $(wildcard include/config/FAULT_INJECTION) \
-    $(wildcard include/config/LATENCYTOP) \
-    $(wildcard include/config/KUNIT) \
-    $(wildcard include/config/FUNCTION_GRAPH_TRACER) \
-    $(wildcard include/config/TRACING) \
-    $(wildcard include/config/UPROBES) \
-    $(wildcard include/config/BCACHE) \
-    $(wildcard include/config/MMU) \
-    $(wildcard include/config/VMAP_STACK) \
-    $(wildcard include/config/LIVEPATCH) \
-    $(wildcard include/config/SECURITY) \
-    $(wildcard include/config/BPF_SYSCALL) \
-    $(wildcard include/config/GCC_PLUGIN_STACKLEAK) \
-    $(wildcard include/config/X86_MCE) \
-    $(wildcard include/config/KRETPROBES) \
-    $(wildcard include/config/RETHOOK) \
-    $(wildcard include/config/ARCH_HAS_PARANOID_L1D_FLUSH) \
-    $(wildcard include/config/ARCH_TASK_STRUCT_ON_STACK) \
-    $(wildcard include/config/PREEMPTION) \
-    $(wildcard include/config/PREEMPT_DYNAMIC) \
-    $(wildcard include/config/HAVE_PREEMPT_DYNAMIC_CALL) \
-    $(wildcard include/config/HAVE_PREEMPT_DYNAMIC_KEY) \
-    $(wildcard include/config/DEBUG_RSEQ) \
-  include/uapi/linux/sched.h \
-  arch/x86/include/asm/current.h \
-  arch/x86/include/asm/percpu.h \
-    $(wildcard include/config/X86_64_SMP) \
-  include/linux/kernel.h \
-    $(wildcard include/config/PREEMPT_VOLUNTARY_BUILD) \
-    $(wildcard include/config/PREEMPT_) \
-    $(wildcard include/config/PROVE_LOCKING) \
-    $(wildcard include/config/FTRACE_MCOUNT_RECORD) \
-  include/linux/stdarg.h \
-  include/linux/align.h \
-  include/linux/limits.h \
-  include/uapi/linux/limits.h \
-  include/vdso/limits.h \
-  include/linux/linkage.h \
-    $(wildcard include/config/ARCH_USE_SYM_ANNOTATIONS) \
-  include/linux/export.h \
-    $(wildcard include/config/MODVERSIONS) \
-    $(wildcard include/config/MODULE_REL_CRCS) \
-    $(wildcard include/config/HAVE_ARCH_PREL32_RELOCATIONS) \
-    $(wildcard include/config/MODULES) \
-    $(wildcard include/config/TRIM_UNUSED_KSYMS) \
-  arch/x86/include/asm/linkage.h \
-    $(wildcard include/config/X86_ALIGNMENT_16) \
-    $(wildcard include/config/SLS) \
-  arch/x86/include/asm/ibt.h \
-    $(wildcard include/config/X86_KERNEL_IBT) \
-  include/linux/container_of.h \
-  include/linux/err.h \
-  arch/x86/include/generated/uapi/asm/errno.h \
-  include/uapi/asm-generic/errno.h \
-  include/uapi/asm-generic/errno-base.h \
-  include/linux/kstrtox.h \
-  include/linux/minmax.h \
-  include/linux/panic.h \
-    $(wildcard include/config/PANIC_TIMEOUT) \
-  include/linux/printk.h \
-    $(wildcard include/config/MESSAGE_LOGLEVEL_DEFAULT) \
-    $(wildcard include/config/CONSOLE_LOGLEVEL_DEFAULT) \
-    $(wildcard include/config/CONSOLE_LOGLEVEL_QUIET) \
-    $(wildcard include/config/EARLY_PRINTK) \
-    $(wildcard include/config/PRINTK) \
-    $(wildcard include/config/PRINTK_INDEX) \
-    $(wildcard include/config/DYNAMIC_DEBUG) \
-    $(wildcard include/config/DYNAMIC_DEBUG_CORE) \
-  include/linux/init.h \
-    $(wildcard include/config/STRICT_KERNEL_RWX) \
-    $(wildcard include/config/STRICT_MODULE_RWX) \
-    $(wildcard include/config/LTO_CLANG) \
-  include/linux/kern_levels.h \
-  include/linux/cache.h \
-    $(wildcard include/config/ARCH_HAS_CACHE_LINE_SIZE) \
-  arch/x86/include/asm/cache.h \
-    $(wildcard include/config/X86_L1_CACHE_SHIFT) \
-    $(wildcard include/config/X86_INTERNODE_CACHE_SHIFT) \
-    $(wildcard include/config/X86_VSMP) \
-  include/linux/ratelimit_types.h \
-  include/uapi/linux/param.h \
-  arch/x86/include/generated/uapi/asm/param.h \
-  include/asm-generic/param.h \
-    $(wildcard include/config/HZ) \
-  include/uapi/asm-generic/param.h \
-  include/linux/spinlock_types_raw.h \
-    $(wildcard include/config/DEBUG_SPINLOCK) \
-    $(wildcard include/config/DEBUG_LOCK_ALLOC) \
-  arch/x86/include/asm/spinlock_types.h \
-  include/asm-generic/qspinlock_types.h \
-    $(wildcard include/config/NR_CPUS) \
-  include/asm-generic/qrwlock_types.h \
-  include/linux/lockdep_types.h \
-    $(wildcard include/config/PROVE_RAW_LOCK_NESTING) \
-    $(wildcard include/config/LOCK_STAT) \
-  include/linux/once_lite.h \
-  include/linux/static_call_types.h \
-    $(wildcard include/config/HAVE_STATIC_CALL) \
-    $(wildcard include/config/HAVE_STATIC_CALL_INLINE) \
-  include/linux/instruction_pointer.h \
-  include/asm-generic/percpu.h \
-    $(wildcard include/config/HAVE_SETUP_PER_CPU_AREA)
+	list_for_each_entry(rule, &priv->flow_block.rules, list)
+		if (rule->cookie == cookie)
+			return rule;
+
+	return NULL;
+}
+
+static int sja1105_find_free_l2_policer(struct sja1105_private *priv)
+{
+	int i;
+
+	for (i = 0; i < SJA1105_NUM_L2_POLICERS; i++)
+		if (!priv->flow_block.l2_policer_used[i])
+			return i;
+
+	return -1;
+}
+
+static int sja1105_setup_bcast_policer(struct sja1105_private *priv,
+				       struct netlink_ext_ack *extack,
+				       unsigned long cookie, int port,
+				       u64 rate_bytes_per_sec,
+				       u32 burst)
+{
+	struct sja1105_rule *rule = sja1105_rule_find(priv, cookie);
+	struct sja1105_l2_policing_entry *policing;
+	struct dsa_switch *ds = priv->ds;
+	bool new_rule = false;
+	unsigned long p;
+	int rc;
+
+	if (!rule) {
+		rule = kzalloc(sizeof(*rule), GFP_KERNEL);
+		if (!rule)
+			return -ENOMEM;
+
+		rule->cookie = cookie;
+		rule->type = SJA1105_RULE_BCAST_POLICER;
+		rule->bcast_pol.sharindx = sja1105_find_free_l2_policer(priv);
+		rule->key.type = SJA1105_KEY_BCAST;
+		new_rule = true;
+	}
+
+	if (rule->bcast_pol.sharindx == -1) {
+		NL_SET_ERR_MSG_MOD(extack, "No more L2 policers free");
+		rc = -ENOSPC;
+		goto out;
+	}
+
+	policing = priv->static_config.tables[BLK_IDX_L2_POLICING].entries;
+
+	if (policing[(ds->num_ports * SJA1105_NUM_TC) + port].sharindx != port) {
+		NL_SET_ERR_MSG_MOD(extack,
+				   "Port already has a broadcast policer");
+		rc = -EEXIST;
+		goto out;
+	}
+
+	rule->port_mask |= BIT(port);
+
+	/* Make the broadcast policers of all ports attached to this block
+	 * point to the newly allocated policer
+	 */
+	for_each_set_bit(p, &rule->port_mask, SJA1105_MAX_NUM_PORTS) {
+		int bcast = (ds->num_ports * SJA1105_NUM_TC) + p;
+
+		policing[bcast].sharindx = rule->bcast_pol.sharindx;
+	}
+
+	policing[rule->bcast_pol.sharindx].rate = div_u64(rate_bytes_per_sec *
+							  512, 1000000);
+	policing[rule->bcast_pol.sharindx].smax = burst;
+
+	/* TODO: support per-flow MTU */
+	policing[rule->bcast_pol.sharindx].maxlen = VLAN_ETH_FRAME_LEN +
+						    ETH_FCS_LEN;
+
+	rc = sja1105_static_config_reload(priv, SJA1105_BEST_EFFORT_POLICING);
+
+out:
+	if (rc == 0 && new_rule) {
+		priv->flow_block.l2_policer_used[rule->bcast_pol.sharindx] = true;
+		list_add(&rule->list, &priv->flow_block.rules);
+	} else if (new_rule) {
+		kfree(rule);
+	}
+
+	return rc;
+}
+
+static int sja1105_setup_tc_policer(struct sja1105_private *priv,
+				    struct netlink_ext_ack *extack,
+				    unsigned long cookie, int port, int tc,
+				    u64 rate_bytes_per_sec,
+				    u32 burst)
+{
+	struct sja1105_rule *rule = sja1105_rule_find(priv, cookie);
+	struct sja1105_l2_policing_entry *policing;
+	bool new_rule = false;
+	unsigned long p;
+	int rc;
+
+	if (!rule) {
+		rule = kzalloc(sizeof(*rule), GFP_KERNEL);
+		if (!rule)
+			return -ENOMEM;
+
+		rule->cookie = cookie;
+		rule->type = SJA1105_RULE_TC_POLICER;
+		rule->tc_pol.sharindx = sja1105_find_free_l2_policer(priv);
+		rule->key.type = SJA1105_KEY_TC;
+		rule->key.tc.pcp = tc;
+		new_rule = true;
+	}
+
+	if (rule->tc_pol.sharindx == -1) {
+		NL_SET_ERR_MSG_MOD(extack, "No more L2 policers free");
+		rc = -ENOSPC;
+		goto out;
+	}
+
+	policing = priv->static_config.tables[BLK_IDX_L2_POLICING].entries;
+
+	if (policing[(port * SJA1105_NUM_TC) + tc].sharindx != port) {
+		NL_SET_ERR_MSG_MOD(extack,
+				   "Port-TC pair already has an L2 policer");
+		rc = -EEXIST;
+		goto out;
+	}
+
+	rule->port_mask |= BIT(port);
+
+	/* Make the policers for traffic class @tc of all ports attached to
+	 * this block point to the newly allocated policer
+	 */
+	for_each_set_bit(p, &rule->port_mask, SJA1105_MAX_NUM_PORTS) {
+		int index = (p * SJA1105_NUM_TC) + tc;
+
+		policing[index].sharindx = rule->tc_pol.sharindx;
+	}
+
+	policing[rule->tc_pol.sharindx].rate = div_u64(rate_bytes_per_sec *
+						       512, 1000000);
+	policing[rule->tc_pol.sharindx].smax = burst;
+
+	/* TODO: support per-flow MTU */
+	policing[rule->tc_pol.sharindx].maxlen = VLAN_ETH_FRAME_LEN +
+						 ETH_FCS_LEN;
+
+	rc = sja1105_static_config_reload(priv, SJA1105_BEST_EFFORT_POLICING);
+
+out:
+	if (rc == 0 && new_rule) {
+		priv->flow_block.l2_policer_used[rule->tc_pol.sharindx] = true;
+		list_add(&rule->list, &priv->flow_block.rules);
+	} else if (new_rule) {
+		kfree(rule);
+	}
+
+	return rc;
+}
+
+static int sja1105_flower_policer(struct sja1105_private *priv, int port,
+				  struct netlink_ext_ack *extack,
+				  unsigned long cookie,
+				  struct sja1105_key *key,
+				  u64 rate_bytes_per_sec,
+				  u32 burst)
+{
+	switch (key->type) {
+	case SJA1105_KEY_BCAST:
+		return sja1105_setup_bcast_policer(priv, extack, cookie, port,
+						   rate_bytes_per_sec, burst);
+	case SJA1105_KEY_TC:
+		return sja1105_setup_tc_policer(priv, extack, cookie, port,
+						key->tc.pcp, rate_bytes_per_sec,
+						burst);
+	default:
+		NL_SET_ERR_MSG_MOD(extack, "Unknown keys for policing");
+		return -EOPNOTSUPP;
+	}
+}
+
+static int sja1105_flower_parse_key(struct sja1105_private *priv,
+				    struct netlink_ext_ack *extack,
+				    struct flow_cls_offload *cls,
+				    struct sja1105_key *key)
+{
+	struct flow_rule *rule = flow_cls_offload_flow_rule(cls);
+	struct flow_dissector *dissector = rule->match.dissector;
+	bool is_bcast_dmac = false;
+	u64 dmac = U64_MAX;
+	u16 vid = U16_MAX;
+	u16 pcp = U16_MAX;
+
+	if (dissector->used_keys &
+	    ~(BIT(FLOW_DISSECTOR_KEY_BASIC) |
+	      BIT(FLOW_DISSECTOR_KEY_CONTROL) |
+	      BIT(FLOW_DISSECTOR_KEY_VLAN) |
+	      BIT(FLOW_DISSECTOR_KEY_ETH_ADDRS))) {
+		NL_SET_ERR_MSG_MOD(extack,
+				   "Unsupported keys used");
+		return -EOPNOTSUPP;
+	}
+
+	if (flow_rule_match_key(rule, FLOW_DISSECTOR_KEY_BASIC)) {
+		struct flow_match_basic match;
+
+		flow_rule_match_basic(rule, &match);
+		if (match.key->n_proto) {
+			NL_SET_ERR_MSG_MOD(extack,
+					   "Matching on protocol not supported");
+			return -EOPNOTSUPP;
+		}
+	}
+
+	if (flow_rule_match_key(rule, FLOW_DISSECTOR_KEY_ETH_ADDRS)) {
+		u8 bcast[] = {0xff, 0xff, 0xff, 0xff, 0xff, 0xff};
+		u8 null[] = {0x00, 0x00, 0x00, 0x00, 0x00, 0x00};
+		struct flow_match_eth_addrs match;
+
+		flow_rule_match_eth_addrs(rule, &match);
+
+		if (!ether_addr_equal_masked(match.key->src, null,
+					     match.mask->src)) {
+			NL_SET_ERR_MSG_MOD(extack,
+					   "Matching on source MAC not supported");
+			return -EOPNOTSUPP;
+		}
+
+		if (!ether_addr_equal(match.mask->dst, bcast)) {
+			NL_SET_ERR_MSG_MOD(extack,
+					   "Masked matching on MAC not supported");
+			return -EOPNOTSUPP;
+		}
+
+		dmac = ether_addr_to_u64(match.key->dst);
+		is_bcast_dmac = ether_addr_equal(match.key->dst, bcast);
+	}
+
+	if (flow_rule_match_key(rule, FLOW_DISSECTOR_KEY_VLAN)) {
+		struct flow_match_vlan match;
+
+		flow_rule_match_vlan(rule, &match);
+
+		if (match.mask->vlan_id &&
+		    match.mask->vlan_id != VLAN_VID_MASK) {
+			NL_SET_ERR_MSG_MOD(extack,
+					   "Masked matching on VID is not supported");
+			return -EOPNOTSUPP;
+		}
+
+		if (match.mask->vlan_priority &&
+		    match.mask->vlan_priority != 0x7) {
+			NL_SET_ERR_MSG_MOD(extack,
+					   "Masked matching on PCP is not supported");
+			return -EOPNOTSUPP;
+		}
+
+		if (match.mask->vlan_id)
+			vid = match.key->vlan_id;
+		if (match.mask->vlan_priority)
+			pcp = match.key->vlan_priority;
+	}
+
+	if (is_bcast_dmac && vid == U16_MAX && pcp == U16_MAX) {
+		key->type = SJA1105_KEY_BCAST;
+		return 0;
+	}
+	if (dmac == U64_MAX && vid == U16_MAX && pcp != U16_MAX) {
+		key->type = SJA1105_KEY_TC;
+		key->tc.pcp = pcp;
+		return 0;
+	}
+	if (dmac != U64_MAX && vid != U16_MAX && pcp != U16_MAX) {
+		key->type = SJA1105_KEY_VLAN_AWARE_VL;
+		key->vl.dmac = dmac;
+		key->vl.vid = vid;
+		key->vl.pcp = pcp;
+		return 0;
+	}
+	if (dmac != U64_MAX) {
+		key->type = SJA1105_KEY_VLAN_UNAWARE_VL;
+		key->vl.dmac = dmac;
+		return 0;
+	}
+
+	NL_SET_ERR_MSG_MOD(extack, "Not matching on any known key");
+	return -EOPNOTSUPP;
+}
+
+static int sja1105_policer_validate(const struct flow_action *action,
+				    const struct flow_action_entry *act,
+				    struct netlink_ext_ack *extack)
+{
+	if (act->police.exceed.act_id != FLOW_ACTION_DROP) {
+		NL_SET_ERR_MSG_MOD(extack,
+				   "Offload not supported when exceed action is not drop");
+		return -EOPNOTSUPP;
+	}
+
+	if (act->police.notexceed.act_id != FLOW_ACTION_PIPE &&
+	    act->police.notexceed.act_id != FLOW_ACTION_ACCEPT) {
+		NL_SET_ERR_MSG_MOD(extack,
+				   "Offload not supported when conform action is not pipe or ok");
+		return -EOPNOTSUPP;
+	}
+
+	if (act->police.notexceed.act_id == FLOW_ACTION_ACCEPT &&
+	    !flow_action_is_last_entry(action, act)) {
+		NL_SET_ERR_MSG_MOD(extack,
+				   "Offload not supported when conform action is ok, but action is not last");
+		return -EOPNOTSUPP;
+	}
+
+	if (act->police.peakrate_bytes_ps ||
+	    act->police.avrate || act->police.overhead) {
+		NL_SET_ERR_MSG_MOD(extack,
+				   "Offload not supported when peakrate/avrate/overhead is configured");
+		return -EOPNOTSUPP;
+	}
+
+	if (act->police.rate_pkt_ps) {
+		NL_SET_ERR_MSG_MOD(extack,
+				   "QoS offload not support packets per second");
+		return -EOPNOTSUPP;
+	}
+
+	return 0;
+}
+
+int sja1105_cls_flower_add(struct dsa_switch *ds, int port,
+			   struct flow_cls_offload *cls, bool ingress)
+{
+	struct flow_rule *rule = flow_cls_offload_flow_rule(cls);
+	struct netlink_ext_ack *extack = cls->common.extack;
+	struct sja1105_private *priv = ds->priv;
+	const struct flow_action_entry *act;
+	unsigned long cookie = cls->cookie;
+	bool routing_rule = false;
+	struct sja1105_key key;
+	bool gate_rule = false;
+	bool vl_rule = false;
+	int rc, i;
+
+	rc = sja1105_flower_parse_key(priv, extack, cls, &key);
+	if (rc)
+		return rc;
+
+	flow_action_for_each(i, act, &rule->action) {
+		switch (act->id) {
+		case FLOW_ACTION_POLICE:
+			rc = sja1105_policer_validate(&rule->action, act, extack);
+			if (rc)
+				goto out;
+
+			rc = sja1105_flower_policer(priv, port, extack, cookie,
+						    &key,
+						    act->police.rate_bytes_ps,
+						    act->police.burst);
+			if (rc)
+				goto out;
+			break;
+		case FLOW_ACTION_TRAP: {
+			int cpu = dsa_upstream_port(ds, port);
+
+			routing_rule = true;
+			vl_rule = true;
+
+			rc = sja1105_vl_redirect(priv, port, extack, cookie,
+						 &key, BIT(cpu), true);
+			if (rc)
+				goto out;
+			break;
+		}
+		case FLOW_ACTION_REDIRECT: {
+			struct dsa_port *to_dp;
+
+			to_dp = dsa_port_from_netdev(act->dev);
+			if (IS_ERR(to_dp)) {
+				NL_SET_ERR_MSG_MOD(extack,
+						   "Destination not a switch port");
+				return -EOPNOTSUPP;
+			}
+
+			routing_rule = true;
+			vl_rule = true;
+
+			rc = sja1105_vl_redirect(priv, port, extack, cookie,
+						 &key, BIT(to_dp->index), true);
+			if (rc)
+				goto out;
+			break;
+		}
+		case FLOW_ACTION_DROP:
+			vl_rule = true;
+
+			rc = sja1105_vl_redirect(priv, port, extack, cookie,
+						 &key, 0, false);
+			if (rc)
+				goto out;
+			break;
+		case FLOW_ACTION_GATE:
+			gate_rule = true;
+			vl_rule = true;
+
+			rc = sja1105_vl_gate(priv, port, extack, cookie,
+					     &key, act->hw_index,
+					     act->gate.prio,
+					     act->gate.basetime,
+					     act->gate.cycletime,
+					     act->gate.cycletimeext,
+					     act->gate.num_entries,
+					     act->gate.entries);
+			if (rc)
+				goto out;
+			break;
+		default:
+			NL_SET_ERR_MSG_MOD(extack,
+					   "Action not supported");
+			rc = -EOPNOTSUPP;
+			goto out;
+		}
+	}
+
+	if (vl_rule && !rc) {
+		/* Delay scheduling configuration until DESTPORTS has been
+		 * populated by all other actions.
+		 */
+		if (gate_rule) {
+			if (!routing_rule) {
+				NL_SET_ERR_MSG_MOD(extack,
+						   "Can only offload gate action together with redirect or trap");
+				return -EOPNOTSUPP;
+			}
+			rc = sja1105_init_scheduling(priv);
+			if (rc)
+				goto out;
+		}
+
+		rc = sja1105_static_config_reload(priv, SJA1105_VIRTUAL_LINKS);
+	}
+
+out:
+	return rc;
+}
+
+int sja1105_cls_flower_del(struct dsa_switch *ds, int port,
+			   struct flow_cls_offload *cls, bool ingress)
+{
+	struct sja1105_private *priv = ds->priv;
+	struct sja1105_rule *rule = sja1105_rule_find(priv, cls->cookie);
+	struct sja1105_l2_policing_entry *policing;
+	int old_sharindx;
+
+	if (!rule)
+		return 0;
+
+	if (rule->type == SJA1105_RULE_VL)
+		return sja1105_vl_delete(priv, port, rule, cls->common.extack);
+
+	policing = priv->static_config.tables[BLK_IDX_L2_POLICING].entries;
+
+	if (rule->type == SJA1105_RULE_BCAST_POLICER) {
+		int bcast = (ds->num_ports * SJA1105_NUM_TC) + port;
+
+		old_sharindx = policing[bcast].sharindx;
+		policing[bcast].sharindx = port;
+	} else if (rule->type == SJA1105_RULE_TC_POLICER) {
+		int index = (port * SJA1105_NUM_TC) + rule->key.tc.pcp;
+
+		old_sharindx = policing[index].sharindx;
+		policing[index].sharindx = port;
+	} else {
+		return -EINVAL;
+	}
+
+	rule->port_mask &= ~BIT(port);
+	if (!rule->port_mask) {
+		priv->flow_block.l2_policer_used[old_sharindx] = false;
+		list_del(&rule->list);
+		kfree(rule);
+	}
+
+	return sja1105_static_config_reload(priv, SJA1105_BEST_EFFORT_POLICING);
+}
+
+int sja1105_cls_flower_stats(struct dsa_switch *ds, int port,
+			     struct flow_cls_offload *cls, bool ingress)
+{
+	struct sja1105_private *priv = ds->priv;
+	struct sja1105_rule *rule = sja1105_rule_find(priv, cls->cookie);
+	int rc;
+
+	if (!rule)
+		return 0;
+
+	if (rule->type != SJA1105_RULE_VL)
+		return 0;
+
+	rc = sja1105_vl_stats(priv, port, rule, &cls->stats,
+			      cls->common.extack);
+	if (rc)
+		return rc;
+
+	return 0;
+}
+
+void sja1105_flower_setup(struct dsa_switch *ds)
+{
+	struct sja1105_private *priv = ds->priv;
+	int port;
+
+	INIT_LIST_HEAD(&priv->flow_block.rules);
+
+	for (port = 0; port < ds->num_ports; port++)
+		priv->flow_block.l2_policer_used[port] = true;
+}
+
+void sja1105_flower_teardown(struct dsa_switch *ds)
+{
+	struct sja1105_private *priv = ds->priv;
+	struct sja1105_rule *rule;
+	struct list_head *pos, *n;
+
+	list_for_each_safe(pos, n, &priv->flow_block.rules) {
+		rule = list_entry(pos, struct sja1105_rule, list);
+		list_del(&rule->list);
+		kfree(rule);
+	}
+}

@@ -1,1 +1,2 @@
-cmd_drivers/media/i2c/tw9910.o := 
+drivers/net/dsa/b53/b53_common.o
+

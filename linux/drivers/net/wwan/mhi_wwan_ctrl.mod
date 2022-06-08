@@ -1,2 +1,2 @@
-CPI_APEI_GHES) \
-    $(wildcard in
+pauge WinTV-HVR1275",
+		.portc		= 

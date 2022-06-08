@@ -1,27 +1,16 @@
-it(void)
-{
-	int i, j;
-	int firsterr = 0;
-	static struct lock_torture_ops *torture_ops[] = {
-		&lock_busted_ops,
-		&spin_lock_ops, &spin_lock_irq_ops,
-		&rw_lock_ops, &rw_lock_irq_ops,
-		&mutex_lock_ops,
-		&ww_mutex_lock_ops,
-#ifdef CONFIG_RT_MUTEXES
-		&rtmutex_lock_ops,
-#endif
-		&rwsem_lock_ops,
-		&percpu_rwsem_lock_ops,
-	};
+/* SPDX-License-Identifier: GPL-2.0 */
+/*
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * Authors: Waiman Long <longman@redhat.com>
+ */
 
-	if (!torture_init_begin(torture_type, verbose))
-		return -EBUSY;
-
-	/* Process args and tell the world that the torturer is on the job. */
-	for (i = 0; i < ARRAY_SIZE(torture_ops); i++) {
-		cxt.cur_ops = torture_ops[i];
-		if (strcmp(torture_type, cxt.cur_ops->name) == 0)
-			break;
-	}
-	if 
+#ifndef __LOCKING_LOC

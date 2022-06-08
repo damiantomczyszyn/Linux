@@ -1,2 +1,2 @@
-nux/pid.h \
-  include/linux/rculist.
+#include <linux/module.h>
+#define IN

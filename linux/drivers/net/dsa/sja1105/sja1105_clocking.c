@@ -1,503 +1,855 @@
-TATE) \
-    $(wildcard include/config/ACPI_HOTPLUG_CPU) \
-    $(wildcard include/config/ACPI_HOTPLUG_IOAPIC) \
-    $(wildcard include/config/PCI) \
-    $(wildcard include/config/ACPI_WMI) \
-    $(wildcard include/config/ACPI_NUMA) \
-    $(wildcard include/config/HIBERNATION) \
-    $(wildcard include/config/ACPI_HOTPLUG_MEMORY) \
-    $(wildcard include/config/ACPI_CONTAINER) \
-    $(wildcard include/config/ACPI_GTDT) \
-    $(wildcard include/config/PM) \
-    $(wildcard include/config/GPIOLIB) \
-    $(wildcard include/config/ACPI_TABLE_UPGRADE) \
-    $(wildcard include/config/ACPI_WATCHDOG) \
-    $(wildcard include/config/ACPI_SPCR_TABLE) \
-    $(wildcard include/config/ACPI_GENERIC_GSI) \
-    $(wildcard include/config/ACPI_LPIT) \
-    $(wildcard include/config/ACPI_PPTT) \
-    $(wildcard include/config/ACPI_PCC) \
-  include/linux/ioport.h \
-  include/linux/irqdomain.h \
-    $(wildcard include/config/IRQ_DOMAIN_HIERARCHY) \
-    $(wildcard include/config/GENERIC_IRQ_DEBUGFS) \
-    $(wildcard include/config/IRQ_DOMAIN) \
-    $(wildcard include/config/IRQ_DOMAIN_NOMAP) \
-  include/linux/irqhandler.h \
-  include/linux/of.h \
-    $(wildcard include/config/OF_DYNAMIC) \
-    $(wildcard include/config/SPARC) \
-    $(wildcard include/config/OF_PROMTREE) \
-    $(wildcard include/config/OF_KOBJ) \
-    $(wildcard include/config/OF_NUMA) \
-    $(wildcard include/config/OF_OVERLAY) \
-  include/linux/mod_devicetable.h \
-  include/linux/uuid.h \
-  include/uapi/linux/uuid.h \
-  include/linux/property.h \
-  include/linux/fwnode.h \
-  include/linux/resource_ext.h \
-  include/linux/device.h \
-    $(wildcard include/config/GENERIC_MSI_IRQ_DOMAIN) \
-    $(wildcard include/config/GENERIC_MSI_IRQ) \
-    $(wildcard include/config/ENERGY_MODEL) \
-    $(wildcard include/config/PINCTRL) \
-    $(wildcard include/config/DMA_OPS) \
-    $(wildcard include/config/DMA_DECLARE_COHERENT) \
-    $(wildcard include/config/DMA_CMA) \
-    $(wildcard include/config/SWIOTLB) \
-    $(wildcard include/config/ARCH_HAS_SYNC_DMA_FOR_DEVICE) \
-    $(wildcard include/config/ARCH_HAS_SYNC_DMA_FOR_CPU) \
-    $(wildcard include/config/ARCH_HAS_SYNC_DMA_FOR_CPU_ALL) \
-    $(wildcard include/config/DMA_OPS_BYPASS) \
-    $(wildcard include/config/DEVTMPFS) \
-    $(wildcard include/config/SYSFS_DEPRECATED) \
-  include/linux/dev_printk.h \
-  include/linux/ratelimit.h \
-  include/linux/energy_model.h \
-  include/linux/sched/cpufreq.h \
-    $(wildcard include/config/CPU_FREQ) \
-  include/linux/sched/topology.h \
-    $(wildcard include/config/SCHED_DEBUG) \
-    $(wildcard include/config/SCHED_MC) \
-    $(wildcard include/config/CPU_FREQ_GOV_SCHEDUTIL) \
-  include/linux/sched/idle.h \
-  include/linux/sched/sd_flags.h \
-  include/linux/klist.h \
-  include/linux/pm.h \
-    $(wildcard include/config/VT_CONSOLE_SLEEP) \
-    $(wildcard include/config/PM_CLK) \
-    $(wildcard include/config/PM_GENERIC_DOMAINS) \
-  include/linux/device/bus.h \
-  include/linux/device/class.h \
-  include/linux/device/driver.h \
-  arch/x86/include/asm/device.h \
-  include/linux/pm_wakeup.h \
-  include/acpi/acpi.h \
-  include/acpi/platform/acenv.h \
-  include/acpi/platform/acgcc.h \
-  include/acpi/platform/aclinux.h \
-    $(wildcard include/config/ACPI_REDUCED_HARDWARE_ONLY) \
-    $(wildcard include/config/ACPI_DEBUG) \
-  include/linux/ctype.h \
-  arch/x86/include/asm/acenv.h \
-  include/acpi/acnames.h \
-  include/acpi/actypes.h \
-  include/acpi/acexcep.h \
-  include/acpi/actbl.h \
-  include/acpi/actbl1.h \
-  include/acpi/actbl2.h \
-  include/acpi/actbl3.h \
-  include/acpi/acrestyp.h \
-  include/acpi/platform/acenvex.h \
-  include/acpi/platform/aclinuxex.h \
-  include/acpi/platform/acgccex.h \
-  include/acpi/acoutput.h \
-  include/acpi/acpiosxf.h \
-  include/acpi/acpixf.h \
-  include/acpi/acconfig.h \
-  include/acpi/acbuffer.h \
-  include/linux/dynamic_debug.h \
-  include/acpi/acpi_bus.h \
-    $(wildcard include/config/X86_ANDROID_TABLETS) \
-    $(wildcard include/config/ACPI_SYSTEM_POWER_STATES_SUPPORT) \
-    $(wildcard include/config/ACPI_SLEEP) \
-  include/acpi/acpi_drivers.h \
-    $(wildcard include/config/ACPI_DOCK) \
-  include/acpi/acpi_numa.h \
-    $(wildcard include/config/ACPI_HMAT) \
-  include/acpi/acpi_io.h \
-  include/linux/io.h \
-    $(wildcard include/config/HAS_IOPORT_MAP) \
-  arch/x86/include/asm/io.h \
-    $(wildcard include/config/MTRR) \
-    $(wildcard include/config/X86_PAT) \
-  arch/x86/include/generated/asm/early_ioremap.h \
-  include/asm-generic/early_ioremap.h \
-    $(wildcard include/config/GENERIC_EARLY_IOREMAP) \
-  include/asm-generic/iomap.h \
-  include/asm-generic/pci_iomap.h \
-    $(wildcard include/config/NO_GENERIC_PCI_IOPORT_MAP) \
-    $(wildcard include/config/GENERIC_PCI_IOMAP) \
-  include/asm-generic/io.h \
-    $(wildcard include/config/GENERIC_IOMAP) \
-    $(wildcard include/config/GENERIC_IOREMAP) \
-    $(wildcard include/config/VIRT_TO_BUS) \
-    $(wildcard include/config/GENERIC_DEVMEM_IS_ALLOWED) \
-  include/linux/logic_pio.h \
-    $(wildcard include/config/INDIRECT_PIO) \
-  include/linux/vmalloc.h \
-    $(wildcard include/config/HAVE_ARCH_HUGE_VMALLOC) \
-  arch/x86/include/asm/vmalloc.h \
-    $(wildcard include/config/HAVE_ARCH_HUGE_VMAP) \
-  arch/x86/include/asm/acpi.h \
-    $(wildcard include/config/ACPI_APEI) \
-  include/acpi/pdc_intel.h \
-  arch/x86/include/asm/numa.h \
-    $(wildcard include/config/NUMA_EMU) \
-  arch/x86/include/asm/numa_32.h \
-  include/linux/regulator/consumer.h \
-    $(wildcard include/config/REGULATOR) \
-  include/linux/suspend.h \
-    $(wildcard include/config/VT) \
-    $(wildcard include/config/SUSPEND) \
-    $(wildcard include/config/HIBERNATION_SNAPSHOT_DEV) \
-    $(wildcard include/config/PM_SLEEP_DEBUG) \
-    $(wildcard include/config/PM_AUTOSLEEP) \
-  include/linux/swap.h \
-    $(wildcard include/config/DEVICE_PRIVATE) \
-    $(wildcard include/config/MIGRATION) \
-    $(wildcard include/config/FRONTSWAP) \
-    $(wildcard include/config/THP_SWAP) \
-    $(wildcard include/config/MEMCG_SWAP) \
-  include/linux/memcontrol.h \
-    $(wildcard include/config/CGROUP_WRITEBACK) \
-  include/linux/cgroup.h \
-    $(wildcard include/config/CGROUP_CPUACCT) \
-    $(wildcard include/config/SOCK_CGROUP_DATA) \
-    $(wildcard include/config/CGROUP_DATA) \
-    $(wildcard include/config/CGROUP_BPF) \
-  include/uapi/linux/cgroupstats.h \
-  include/uapi/linux/taskstats.h \
-  include/linux/fs.h \
-    $(wildcard include/config/READ_ONLY_THP_FOR_FS) \
-    $(wildcard include/config/FS_POSIX_ACL) \
-    $(wildcard include/config/IMA) \
-    $(wildcard include/config/FILE_LOCKING) \
-    $(wildcard include/config/FSNOTIFY) \
-    $(wildcard include/config/FS_ENCRYPTION) \
-    $(wildcard include/config/FS_VERITY) \
-    $(wildcard include/config/EPOLL) \
-    $(wildcard include/config/UNICODE) \
-    $(wildcard include/config/QUOTA) \
-    $(wildcard include/config/FS_DAX) \
-    $(wildcard include/config/BLOCK) \
-  include/linux/wait_bit.h \
-  include/linux/kdev_t.h \
-  include/uapi/linux/kdev_t.h \
-  include/linux/dcache.h \
-  include/linux/rculist_bl.h \
-  include/linux/list_bl.h \
-  include/linux/bit_spinlock.h \
-  include/linux/lockref.h \
-    $(wildcard include/config/ARCH_USE_CMPXCHG_LOCKREF) \
-  include/linux/stringhash.h \
-    $(wildcard include/config/DCACHE_WORD_ACCESS) \
-  include/linux/hash.h \
-    $(wildcard include/config/HAVE_ARCH_HASH) \
-  include/linux/path.h \
-  include/linux/list_lru.h \
-  include/linux/shrinker.h \
-  include/linux/capability.h \
-  include/uapi/linux/capability.h \
-  include/linux/semaphore.h \
-  include/linux/fcntl.h \
-    $(wildcard include/config/ARCH_32BIT_OFF_T) \
-  include/uapi/linux/fcntl.h \
-  arch/x86/include/generated/uapi/asm/fcntl.h \
-  include/uapi/asm-generic/fcntl.h \
-  include/uapi/linux/openat2.h \
-  include/linux/migrate_mode.h \
-  include/linux/percpu-rwsem.h \
-  include/linux/rcuwait.h \
-  include/linux/sched/signal.h \
-    $(wildcard include/config/SCHED_AUTOGROUP) \
-    $(wildcard include/config/BSD_PROCESS_ACCT) \
-    $(wildcard include/config/TASKSTATS) \
-    $(wildcard include/config/STACK_GROWSUP) \
-  include/linux/signal.h \
-    $(wildcard include/config/DYNAMIC_SIGFRAME) \
-  include/linux/sched/jobctl.h \
-  include/linux/sched/task.h \
-    $(wildcard include/config/HAVE_EXIT_THREAD) \
-    $(wildcard include/config/ARCH_WANTS_DYNAMIC_TASK_STRUCT) \
-    $(wildcard include/config/HAVE_ARCH_THREAD_STRUCT_WHITELIST) \
-  include/linux/cred.h \
-    $(wildcard include/config/DEBUG_CREDENTIALS) \
-  include/linux/key.h \
-    $(wildcard include/config/KEY_NOTIFICATIONS) \
-    $(wildcard include/config/NET) \
-  include/linux/assoc_array.h \
-    $(wildcard include/config/ASSOCIATIVE_ARRAY) \
-  include/linux/sched/user.h \
-    $(wildcard include/config/WATCH_QUEUE) \
-  include/linux/percpu_counter.h \
-  include/linux/rcu_sync.h \
-  include/linux/delayed_call.h \
-  include/linux/errseq.h \
-  include/linux/ioprio.h \
-  include/linux/sched/rt.h \
-  include/linux/iocontext.h \
-    $(wildcard include/config/BLK_ICQ) \
-  include/uapi/linux/ioprio.h \
-  include/linux/fs_types.h \
-  include/linux/mount.h \
-  include/linux/mnt_idmapping.h \
-  include/uapi/linux/fs.h \
-  include/linux/quota.h \
-    $(wildcard include/config/QUOTA_NETLINK_INTERFACE) \
-  include/uapi/linux/dqblk_xfs.h \
-  include/linux/dqblk_v1.h \
-  include/linux/dqblk_v2.h \
-  include/linux/dqblk_qtree.h \
-  include/linux/projid.h \
-  include/uapi/linux/quota.h \
-  include/linux/nfs_fs_i.h \
-  include/linux/seq_file.h \
-  include/linux/string_helpers.h \
-  include/linux/ns_common.h \
-  include/linux/nsproxy.h \
-  include/linux/user_namespace.h \
-    $(wildcard include/config/INOTIFY_USER) \
-    $(wildcard include/config/FANOTIFY) \
-    $(wildcard include/config/PERSISTENT_KEYRINGS) \
-  include/linux/kernel_stat.h \
-  include/linux/interrupt.h \
-    $(wildcard include/config/IRQ_FORCED_THREADING) \
-    $(wildcard include/config/GENERIC_IRQ_PROBE) \
-    $(wildcard include/config/IRQ_TIMINGS) \
-  include/linux/irqreturn.h \
-  include/linux/irqnr.h \
-  include/uapi/linux/irqnr.h \
-  include/linux/hardirq.h \
-  include/linux/context_tracking_state.h \
-    $(wildcard include/config/CONTEXT_TRACKING) \
-  include/linux/ftrace_irq.h \
-    $(wildcard include/config/HWLAT_TRACER) \
-    $(wildcard include/config/OSNOISE_TRACER) \
-  include/linux/vtime.h \
-    $(wildcard include/config/VIRT_CPU_ACCOUNTING) \
-    $(wildcard include/config/IRQ_TIME_ACCOUNTING) \
-  arch/x86/include/asm/hardirq.h \
-    $(wildcard include/config/KVM_INTEL) \
-    $(wildcard include/config/X86_THERMAL_VECTOR) \
-    $(wildcard include/config/X86_MCE_THRESHOLD) \
-    $(wildcard include/config/X86_MCE_AMD) \
-    $(wildcard include/config/X86_HV_CALLBACK_VECTOR) \
-  arch/x86/include/asm/irq.h \
-  arch/x86/include/asm/sections.h \
-  include/asm-generic/sections.h \
-    $(wildcard include/config/HAVE_FUNCTION_DESCRIPTORS) \
-  include/linux/cgroup-defs.h \
-    $(wildcard include/config/CGROUP_NET_CLASSID) \
-    $(wildcard include/config/CGROUP_NET_PRIO) \
-  include/linux/u64_stats_sync.h \
-  include/linux/bpf-cgroup-defs.h \
-  include/linux/psi_types.h \
-  include/linux/kthread.h \
-  include/linux/cgroup_subsys.h \
-    $(wildcard include/config/CGROUP_DEVICE) \
-    $(wildcard include/config/CGROUP_FREEZER) \
-    $(wildcard include/config/CGROUP_PERF) \
-    $(wildcard include/config/CGROUP_HUGETLB) \
-    $(wildcard include/config/CGROUP_PIDS) \
-    $(wildcard include/config/CGROUP_RDMA) \
-    $(wildcard include/config/CGROUP_MISC) \
-    $(wildcard include/config/CGROUP_DEBUG) \
-  include/linux/vm_event_item.h \
-    $(wildcard include/config/HAVE_ARCH_TRANSPARENT_HUGEPAGE_PUD) \
-    $(wildcard include/config/MEMORY_BALLOON) \
-    $(wildcard include/config/BALLOON_COMPACTION) \
-    $(wildcard include/config/DEBUG_TLBFLUSH) \
-    $(wildcard include/config/DEBUG_VM_VMACACHE) \
-  include/linux/page_counter.h \
-  include/linux/vmpressure.h \
-  include/linux/eventfd.h \
-  include/linux/mm.h \
-    $(wildcard include/config/HAVE_ARCH_MMAP_RND_BITS) \
-    $(wildcard include/config/HAVE_ARCH_MMAP_RND_COMPAT_BITS) \
-    $(wildcard include/config/ARCH_USES_HIGH_VMA_FLAGS) \
-    $(wildcard include/config/ARCH_HAS_PKEYS) \
-    $(wildcard include/config/PPC) \
-    $(wildcard include/config/PARISC) \
-    $(wildcard include/config/SPARC64) \
-    $(wildcard include/config/ARM64_MTE) \
-    $(wildcard include/config/HAVE_ARCH_USERFAULTFD_MINOR) \
-    $(wildcard include/config/SHMEM) \
-    $(wildcard include/config/ARCH_HAS_PTE_SPECIAL) \
-    $(wildcard include/config/ARCH_HAS_PTE_DEVMAP) \
-    $(wildcard include/config/DEBUG_VM_RB) \
-    $(wildcard include/config/PAGE_POISONING) \
-    $(wildcard include/config/INIT_ON_ALLOC_DEFAULT_ON) \
-    $(wildcard include/config/INIT_ON_FREE_DEFAULT_ON) \
-    $(wildcard include/config/DEBUG_PAGEALLOC) \
-    $(wildcard include/config/HUGETLBFS) \
-    $(wildcard include/config/MAPPING_DIRTY_HELPERS) \
-    $(wildcard include/config/ANON_VMA_NAME) \
-  include/linux/mmap_lock.h \
-  include/linux/page_ext.h \
-  include/linux/stacktrace.h \
-    $(wildcard include/config/ARCH_STACKWALK) \
-    $(wildcard include/config/STACKTRACE) \
-    $(wildcard include/config/HAVE_RELIABLE_STACKTRACE) \
-  include/linux/stackdepot.h \
-    $(wildcard include/config/STACKDEPOT_ALWAYS_INIT) \
-  include/linux/page_ref.h \
-    $(wildcard include/config/DEBUG_PAGE_REF) \
-  include/linux/sizes.h \
-  include/linux/pgtable.h \
-    $(wildcard include/config/HIGHPTE) \
-    $(wildcard include/config/GUP_GET_PTE_LOW_HIGH) \
-    $(wildcard include/config/HAVE_ARCH_SOFT_DIRTY) \
-    $(wildcard include/config/ARCH_ENABLE_THP_MIGRATION) \
-    $(wildcard include/config/X86_ESPFIX64) \
-  arch/x86/include/asm/pgtable.h \
-    $(wildcard include/config/DEBUG_WX) \
-    $(wildcard include/config/PAGE_TABLE_CHECK) \
-  arch/x86/include/asm/pkru.h \
-  arch/x86/include/asm/fpu/api.h \
-    $(wildcard include/config/X86_DEBUG_FPU) \
-  arch/x86/include/asm/coco.h \
-  include/asm-generic/pgtable_uffd.h \
-  include/linux/page_table_check.h \
-  arch/x86/include/asm/pgtable_32.h \
-  arch/x86/include/asm/pgtable-3level.h \
-  arch/x86/include/asm/pgtable-invert.h \
-  include/linux/huge_mm.h \
-  include/linux/sched/coredump.h \
-    $(wildcard include/config/CORE_DUMP_DEFAULT_ELF_HEADERS) \
-  include/linux/vmstat.h \
-    $(wildcard include/config/VM_EVENT_COUNTERS) \
-  include/linux/writeback.h \
-  include/linux/flex_proportions.h \
-  include/linux/backing-dev-defs.h \
-    $(wildcard include/config/DEBUG_FS) \
-  include/linux/blk_types.h \
-    $(wildcard include/config/FAIL_MAKE_REQUEST) \
-    $(wildcard include/config/BLK_CGROUP_IOCOST) \
-    $(wildcard include/config/BLK_INLINE_ENCRYPTION) \
-    $(wildcard include/config/BLK_DEV_INTEGRITY) \
-  include/linux/bvec.h \
-  include/linux/highmem.h \
-  include/linux/cacheflush.h \
-  arch/x86/include/asm/cacheflush.h \
-  include/asm-generic/cacheflush.h \
-  include/linux/highmem-internal.h \
-  arch/x86/include/asm/highmem.h \
-  arch/x86/include/asm/tlbflush.h \
-  arch/x86/include/asm/invpcid.h \
-  arch/x86/include/asm/pti.h \
-  include/linux/bio.h \
-  include/linux/mempool.h \
-  include/linux/uio.h \
-    $(wildcard include/config/ARCH_HAS_UACCESS_FLUSHCACHE) \
-  include/uapi/linux/uio.h \
-  include/linux/node.h \
-    $(wildcard include/config/HMEM_REPORTING) \
-  include/linux/pagemap.h \
-  include/linux/hugetlb_inline.h \
-  include/uapi/linux/mempolicy.h \
-  include/linux/freezer.h \
-  include/uapi/linux/i2c.h \
-  include/linux/videodev2.h \
-  include/uapi/linux/videodev2.h \
-    $(wildcard include/config/VIDEO_ADV_DEBUG) \
-  include/uapi/linux/v4l2-common.h \
-  include/uapi/linux/v4l2-controls.h \
-  include/media/v4l2-device.h \
-    $(wildcard include/config/VIDEO_V4L2_SUBDEV_API) \
-  include/media/media-device.h \
-    $(wildcard include/config/MEDIA_CONTROLLER) \
-  include/media/media-devnode.h \
-  include/linux/poll.h \
-  include/uapi/linux/poll.h \
-  arch/x86/include/generated/uapi/asm/poll.h \
-  include/uapi/asm-generic/poll.h \
-  include/uapi/linux/eventpoll.h \
-  include/linux/cdev.h \
-  include/media/media-entity.h \
-  include/uapi/linux/media.h \
-  include/media/v4l2-subdev.h \
-  include/uapi/linux/v4l2-subdev.h \
-  include/uapi/linux/v4l2-mediabus.h \
-  include/uapi/linux/media-bus-format.h \
-  include/media/v4l2-async.h \
-  include/media/v4l2-common.h \
-    $(wildcard include/config/VIDEO_V4L2_I2C) \
-    $(wildcard include/config/SPI) \
-  include/media/v4l2-dev.h \
-  include/linux/spi/spi.h \
-    $(wildcard include/config/SPI_SLAVE) \
-  include/linux/scatterlist.h \
-    $(wildcard include/config/NEED_SG_DMA_LENGTH) \
-    $(wildcard include/config/DEBUG_SG) \
-    $(wildcard include/config/SGL_ALLOC) \
-    $(wildcard include/config/ARCH_NO_SG_CHAIN) \
-    $(wildcard include/config/SG_POOL) \
-  include/linux/gpio/consumer.h \
-    $(wildcard include/config/OF_GPIO) \
-    $(wildcard include/config/GPIO_SYSFS) \
-  include/uapi/linux/spi/spi.h \
-  include/media/v4l2-fh.h \
-  include/media/v4l2-mediabus.h \
-  include/media/v4l2-ctrls.h \
-  include/media/media-request.h \
-  include/media/hevc-ctrls.h \
+// SPDX-License-Identifier: BSD-3-Clause
+/* Copyright 2016-2018 NXP
+ * Copyright (c) 2018-2019, Vladimir Oltean <olteanv@gmail.com>
+ */
+#include <linux/packing.h>
+#include "sja1105.h"
 
-drivers/media/i2c/vpx3220.o: $(deps_drivers/media/i2c/vpx3220.o)
+#define SJA1105_SIZE_CGU_CMD	4
+#define SJA1110_BASE_MCSS_CLK	SJA1110_CGU_ADDR(0x70)
+#define SJA1110_BASE_TIMER_CLK	SJA1110_CGU_ADDR(0x74)
 
-$(deps_drivers/media/i2c/vpx3220.o):
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       cmd_drivers/media/i2c/vpx3220.o := gcc -Wp,-MMD,drivers/media/i2c/.vpx3220.o.d -nostdinc -I./arch/x86/include -I./arch/x86/include/generated  -I./include -I./arch/x86/include/uapi -I./arch/x86/include/generated/uapi -I./include/uapi -I./include/generated/uapi -include ./include/linux/compiler-version.h -include ./include/linux/kconfig.h -include ./include/linux/compiler_types.h -D__KERNEL__ -fmacro-prefix-map=./= -Wall -Wundef -Werror=strict-prototypes -Wno-trigraphs -fno-strict-aliasing -fno-common -fshort-wchar -fno-PIE -Werror=implicit-function-declaration -Werror=implicit-int -Werror=return-type -Wno-format-security -std=gnu11 -mno-sse -mno-mmx -mno-sse2 -mno-3dnow -mno-avx -fcf-protection=none -m32 -msoft-float -mregparm=3 -freg-struct-return -fno-pic -mpreferred-stack-boundary=2 -march=i686 -mtune=pentium3 -mtune=generic -Wa,-mtune=generic32 -ffreestanding -mstack-protector-guard-reg=fs -mstack-protector-guard-symbol=__stack_chk_guard -Wno-sign-compare -fno-asynchronous-unwind-tables -mindirect-branch=thunk-extern -mindirect-branch-register -fno-jump-tables -fno-delete-null-pointer-checks -Wno-frame-address -Wno-format-truncation -Wno-format-overflow -Wno-address-of-packed-member -O2 -fno-allow-store-data-races -fstack-protector-strong -Wimplicit-fallthrough=5 -Wno-main -Wno-unused-but-set-variable -Wno-unused-const-variable -fno-stack-clash-protection -pg -mrecord-mcount -mfentry -DCC_USING_FENTRY -Wdeclaration-after-statement -Wvla -Wno-pointer-sign -Wcast-function-type -Wno-stringop-truncation -Wno-stringop-overflow -Wno-restrict -Wno-maybe-uninitialized -Wno-alloc-size-larger-than -fno-strict-overflow -fno-stack-check -fconserve-stack -Werror=date-time -Werror=incompatible-pointer-types -Werror=designated-init -Wno-packed-not-aligned  -DMODULE  -DKBUILD_BASENAME='"vpx3220"' -DKBUILD_MODNAME='"vpx3220"' -D__KBUILD_MODNAME=kmod_vpx3220 -c -o drivers/media/i2c/vpx3220.o drivers/media/i2c/vpx3220.c 
+/* Common structure for CFG_PAD_MIIx_RX and CFG_PAD_MIIx_TX */
+struct sja1105_cfg_pad_mii {
+	u64 d32_os;
+	u64 d32_ih;
+	u64 d32_ipud;
+	u64 d10_ih;
+	u64 d10_os;
+	u64 d10_ipud;
+	u64 ctrl_os;
+	u64 ctrl_ih;
+	u64 ctrl_ipud;
+	u64 clk_os;
+	u64 clk_ih;
+	u64 clk_ipud;
+};
 
-source_drivers/media/i2c/vpx3220.o := drivers/media/i2c/vpx3220.c
+struct sja1105_cfg_pad_mii_id {
+	u64 rxc_stable_ovr;
+	u64 rxc_delay;
+	u64 rxc_bypass;
+	u64 rxc_pd;
+	u64 txc_stable_ovr;
+	u64 txc_delay;
+	u64 txc_bypass;
+	u64 txc_pd;
+};
 
-deps_drivers/media/i2c/vpx3220.o := \
-  include/linux/compiler-version.h \
-    $(wildcard include/config/CC_VERSION_TEXT) \
-  include/linux/kconfig.h \
-    $(wildcard include/config/CPU_BIG_ENDIAN) \
-    $(wildcard include/config/BOOGER) \
-    $(wildcard include/config/FOO) \
-  include/linux/compiler_types.h \
-    $(wildcard include/config/DEBUG_INFO_BTF) \
-    $(wildcard include/config/PAHOLE_HAS_BTF_TAG) \
-    $(wildcard include/config/HAVE_ARCH_COMPILER_H) \
-    $(wildcard include/config/CC_HAS_ASM_INLINE) \
-  include/linux/compiler_attributes.h \
-  include/linux/compiler-gcc.h \
-    $(wildcard include/config/RETPOLINE) \
-    $(wildcard include/config/ARCH_USE_BUILTIN_BSWAP) \
-    $(wildcard include/config/SHADOW_CALL_STACK) \
-    $(wildcard include/config/KCOV) \
-  include/linux/module.h \
-    $(wildcard include/config/MODULES) \
-    $(wildcard include/config/SYSFS) \
-    $(wildcard include/config/MODULES_TREE_LOOKUP) \
-    $(wildcard include/config/LIVEPATCH) \
-    $(wildcard include/config/STACKTRACE_BUILD_ID) \
-    $(wildcard include/config/CFI_CLANG) \
-    $(wildcard include/config/MODULE_SIG) \
-    $(wildcard include/config/GENERIC_BUG) \
-    $(wildcard include/config/KALLSYMS) \
-    $(wildcard include/config/SMP) \
-    $(wildcard include/config/TRACEPOINTS) \
-    $(wildcard include/config/TREE_SRCU) \
-    $(wildcard include/config/BPF_EVENTS) \
-    $(wildcard include/config/DEBUG_INFO_BTF_MODULES) \
-    $(wildcard include/config/JUMP_LABEL) \
-    $(wildcard include/config/TRACING) \
-    $(wildcard include/config/EVENT_TRACING) \
-    $(wildcard include/config/FTRACE_MCOUNT_RECORD) \
-    $(wildcard include/config/KPROBES) \
-    $(wildcard include/config/HAVE_STATIC_CALL_INLINE) \
-    $(wildcard include/config/PRINTK_INDEX) \
-    $(wildcard include/config/MODULE_UNLOAD) \
-    $(wildcard include/config/CONSTRUCTORS) \
-    $(wildcard include/config/FUNCTION_ERROR_INJECTION) \
-  include/linux/list.h \
-    $(wildcard include/config/DEBUG_LIST) \
-  include/linux/container_of.h \
-  include/linux/build_bug.h \
-  include/linux/compiler.h \
-    $(wildcard include/config/TRACE_BRANCH_PROFILING) \
-    $(wildcard include/config/PROFILE_ALL_BRANCHES) \
-    $(wildcard include/config/STACK_VALIDATION) \
-  include/linux/compiler_types.h \
-  arch/x86/include/generated/asm/rwonce.h \
-  include/asm-generic/rwonce.h \
-  include/linux/kasan-checks.h \
-    $(wildcard include/config/KASAN_GENERIC) \
-    $(wildcard include/config/KASAN_SW_TAGS) \
-  include/linux/types.h \
-    $(wildcard include/config/HAVE_UID16) \
-    $(wildcard include/config/
+/* UM10944 Table 82.
+ * IDIV_0_C to IDIV_4_C control registers
+ * (addr. 10000Bh to 10000Fh)
+ */
+struct sja1105_cgu_idiv {
+	u64 clksrc;
+	u64 autoblock;
+	u64 idiv;
+	u64 pd;
+};
+
+/* PLL_1_C control register
+ *
+ * SJA1105 E/T: UM10944 Table 81 (address 10000Ah)
+ * SJA1105 P/Q/R/S: UM11040 Table 116 (address 10000Ah)
+ */
+struct sja1105_cgu_pll_ctrl {
+	u64 pllclksrc;
+	u64 msel;
+	u64 autoblock;
+	u64 psel;
+	u64 direct;
+	u64 fbsel;
+	u64 bypass;
+	u64 pd;
+};
+
+struct sja1110_cgu_outclk {
+	u64 clksrc;
+	u64 autoblock;
+	u64 pd;
+};
+
+enum {
+	CLKSRC_MII0_TX_CLK	= 0x00,
+	CLKSRC_MII0_RX_CLK	= 0x01,
+	CLKSRC_MII1_TX_CLK	= 0x02,
+	CLKSRC_MII1_RX_CLK	= 0x03,
+	CLKSRC_MII2_TX_CLK	= 0x04,
+	CLKSRC_MII2_RX_CLK	= 0x05,
+	CLKSRC_MII3_TX_CLK	= 0x06,
+	CLKSRC_MII3_RX_CLK	= 0x07,
+	CLKSRC_MII4_TX_CLK	= 0x08,
+	CLKSRC_MII4_RX_CLK	= 0x09,
+	CLKSRC_PLL0		= 0x0B,
+	CLKSRC_PLL1		= 0x0E,
+	CLKSRC_IDIV0		= 0x11,
+	CLKSRC_IDIV1		= 0x12,
+	CLKSRC_IDIV2		= 0x13,
+	CLKSRC_IDIV3		= 0x14,
+	CLKSRC_IDIV4		= 0x15,
+};
+
+/* UM10944 Table 83.
+ * MIIx clock control registers 1 to 30
+ * (addresses 100013h to 100035h)
+ */
+struct sja1105_cgu_mii_ctrl {
+	u64 clksrc;
+	u64 autoblock;
+	u64 pd;
+};
+
+static void sja1105_cgu_idiv_packing(void *buf, struct sja1105_cgu_idiv *idiv,
+				     enum packing_op op)
+{
+	const int size = 4;
+
+	sja1105_packing(buf, &idiv->clksrc,    28, 24, size, op);
+	sja1105_packing(buf, &idiv->autoblock, 11, 11, size, op);
+	sja1105_packing(buf, &idiv->idiv,       5,  2, size, op);
+	sja1105_packing(buf, &idiv->pd,         0,  0, size, op);
+}
+
+static int sja1105_cgu_idiv_config(struct sja1105_private *priv, int port,
+				   bool enabled, int factor)
+{
+	const struct sja1105_regs *regs = priv->info->regs;
+	struct device *dev = priv->ds->dev;
+	struct sja1105_cgu_idiv idiv;
+	u8 packed_buf[SJA1105_SIZE_CGU_CMD] = {0};
+
+	if (regs->cgu_idiv[port] == SJA1105_RSV_ADDR)
+		return 0;
+
+	if (enabled && factor != 1 && factor != 10) {
+		dev_err(dev, "idiv factor must be 1 or 10\n");
+		return -ERANGE;
+	}
+
+	/* Payload for packed_buf */
+	idiv.clksrc    = 0x0A;            /* 25MHz */
+	idiv.autoblock = 1;               /* Block clk automatically */
+	idiv.idiv      = factor - 1;      /* Divide by 1 or 10 */
+	idiv.pd        = enabled ? 0 : 1; /* Power down? */
+	sja1105_cgu_idiv_packing(packed_buf, &idiv, PACK);
+
+	return sja1105_xfer_buf(priv, SPI_WRITE, regs->cgu_idiv[port],
+				packed_buf, SJA1105_SIZE_CGU_CMD);
+}
+
+static void
+sja1105_cgu_mii_control_packing(void *buf, struct sja1105_cgu_mii_ctrl *cmd,
+				enum packing_op op)
+{
+	const int size = 4;
+
+	sja1105_packing(buf, &cmd->clksrc,    28, 24, size, op);
+	sja1105_packing(buf, &cmd->autoblock, 11, 11, size, op);
+	sja1105_packing(buf, &cmd->pd,         0,  0, size, op);
+}
+
+static int sja1105_cgu_mii_tx_clk_config(struct sja1105_private *priv,
+					 int port, sja1105_mii_role_t role)
+{
+	const struct sja1105_regs *regs = priv->info->regs;
+	struct sja1105_cgu_mii_ctrl mii_tx_clk;
+	const int mac_clk_sources[] = {
+		CLKSRC_MII0_TX_CLK,
+		CLKSRC_MII1_TX_CLK,
+		CLKSRC_MII2_TX_CLK,
+		CLKSRC_MII3_TX_CLK,
+		CLKSRC_MII4_TX_CLK,
+	};
+	const int phy_clk_sources[] = {
+		CLKSRC_IDIV0,
+		CLKSRC_IDIV1,
+		CLKSRC_IDIV2,
+		CLKSRC_IDIV3,
+		CLKSRC_IDIV4,
+	};
+	u8 packed_buf[SJA1105_SIZE_CGU_CMD] = {0};
+	int clksrc;
+
+	if (regs->mii_tx_clk[port] == SJA1105_RSV_ADDR)
+		return 0;
+
+	if (role == XMII_MAC)
+		clksrc = mac_clk_sources[port];
+	else
+		clksrc = phy_clk_sources[port];
+
+	/* Payload for packed_buf */
+	mii_tx_clk.clksrc    = clksrc;
+	mii_tx_clk.autoblock = 1;  /* Autoblock clk while changing clksrc */
+	mii_tx_clk.pd        = 0;  /* Power Down off => enabled */
+	sja1105_cgu_mii_control_packing(packed_buf, &mii_tx_clk, PACK);
+
+	return sja1105_xfer_buf(priv, SPI_WRITE, regs->mii_tx_clk[port],
+				packed_buf, SJA1105_SIZE_CGU_CMD);
+}
+
+static int
+sja1105_cgu_mii_rx_clk_config(struct sja1105_private *priv, int port)
+{
+	const struct sja1105_regs *regs = priv->info->regs;
+	struct sja1105_cgu_mii_ctrl mii_rx_clk;
+	u8 packed_buf[SJA1105_SIZE_CGU_CMD] = {0};
+	const int clk_sources[] = {
+		CLKSRC_MII0_RX_CLK,
+		CLKSRC_MII1_RX_CLK,
+		CLKSRC_MII2_RX_CLK,
+		CLKSRC_MII3_RX_CLK,
+		CLKSRC_MII4_RX_CLK,
+	};
+
+	if (regs->mii_rx_clk[port] == SJA1105_RSV_ADDR)
+		return 0;
+
+	/* Payload for packed_buf */
+	mii_rx_clk.clksrc    = clk_sources[port];
+	mii_rx_clk.autoblock = 1;  /* Autoblock clk while changing clksrc */
+	mii_rx_clk.pd        = 0;  /* Power Down off => enabled */
+	sja1105_cgu_mii_control_packing(packed_buf, &mii_rx_clk, PACK);
+
+	return sja1105_xfer_buf(priv, SPI_WRITE, regs->mii_rx_clk[port],
+				packed_buf, SJA1105_SIZE_CGU_CMD);
+}
+
+static int
+sja1105_cgu_mii_ext_tx_clk_config(struct sja1105_private *priv, int port)
+{
+	const struct sja1105_regs *regs = priv->info->regs;
+	struct sja1105_cgu_mii_ctrl mii_ext_tx_clk;
+	u8 packed_buf[SJA1105_SIZE_CGU_CMD] = {0};
+	const int clk_sources[] = {
+		CLKSRC_IDIV0,
+		CLKSRC_IDIV1,
+		CLKSRC_IDIV2,
+		CLKSRC_IDIV3,
+		CLKSRC_IDIV4,
+	};
+
+	if (regs->mii_ext_tx_clk[port] == SJA1105_RSV_ADDR)
+		return 0;
+
+	/* Payload for packed_buf */
+	mii_ext_tx_clk.clksrc    = clk_sources[port];
+	mii_ext_tx_clk.autoblock = 1; /* Autoblock clk while changing clksrc */
+	mii_ext_tx_clk.pd        = 0; /* Power Down off => enabled */
+	sja1105_cgu_mii_control_packing(packed_buf, &mii_ext_tx_clk, PACK);
+
+	return sja1105_xfer_buf(priv, SPI_WRITE, regs->mii_ext_tx_clk[port],
+				packed_buf, SJA1105_SIZE_CGU_CMD);
+}
+
+static int
+sja1105_cgu_mii_ext_rx_clk_config(struct sja1105_private *priv, int port)
+{
+	const struct sja1105_regs *regs = priv->info->regs;
+	struct sja1105_cgu_mii_ctrl mii_ext_rx_clk;
+	u8 packed_buf[SJA1105_SIZE_CGU_CMD] = {0};
+	const int clk_sources[] = {
+		CLKSRC_IDIV0,
+		CLKSRC_IDIV1,
+		CLKSRC_IDIV2,
+		CLKSRC_IDIV3,
+		CLKSRC_IDIV4,
+	};
+
+	if (regs->mii_ext_rx_clk[port] == SJA1105_RSV_ADDR)
+		return 0;
+
+	/* Payload for packed_buf */
+	mii_ext_rx_clk.clksrc    = clk_sources[port];
+	mii_ext_rx_clk.autoblock = 1; /* Autoblock clk while changing clksrc */
+	mii_ext_rx_clk.pd        = 0; /* Power Down off => enabled */
+	sja1105_cgu_mii_control_packing(packed_buf, &mii_ext_rx_clk, PACK);
+
+	return sja1105_xfer_buf(priv, SPI_WRITE, regs->mii_ext_rx_clk[port],
+				packed_buf, SJA1105_SIZE_CGU_CMD);
+}
+
+static int sja1105_mii_clocking_setup(struct sja1105_private *priv, int port,
+				      sja1105_mii_role_t role)
+{
+	struct device *dev = priv->ds->dev;
+	int rc;
+
+	dev_dbg(dev, "Configuring MII-%s clocking\n",
+		(role == XMII_MAC) ? "MAC" : "PHY");
+	/* If role is MAC, disable IDIV
+	 * If role is PHY, enable IDIV and configure for 1/1 divider
+	 */
+	rc = sja1105_cgu_idiv_config(priv, port, (role == XMII_PHY), 1);
+	if (rc < 0)
+		return rc;
+
+	/* Configure CLKSRC of MII_TX_CLK_n
+	 *   * If role is MAC, select TX_CLK_n
+	 *   * If role is PHY, select IDIV_n
+	 */
+	rc = sja1105_cgu_mii_tx_clk_config(priv, port, role);
+	if (rc < 0)
+		return rc;
+
+	/* Configure CLKSRC of MII_RX_CLK_n
+	 * Select RX_CLK_n
+	 */
+	rc = sja1105_cgu_mii_rx_clk_config(priv, port);
+	if (rc < 0)
+		return rc;
+
+	if (role == XMII_PHY) {
+		/* Per MII spec, the PHY (which is us) drives the TX_CLK pin */
+
+		/* Configure CLKSRC of EXT_TX_CLK_n
+		 * Select IDIV_n
+		 */
+		rc = sja1105_cgu_mii_ext_tx_clk_config(priv, port);
+		if (rc < 0)
+			return rc;
+
+		/* Configure CLKSRC of EXT_RX_CLK_n
+		 * Select IDIV_n
+		 */
+		rc = sja1105_cgu_mii_ext_rx_clk_config(priv, port);
+		if (rc < 0)
+			return rc;
+	}
+	return 0;
+}
+
+static void
+sja1105_cgu_pll_control_packing(void *buf, struct sja1105_cgu_pll_ctrl *cmd,
+				enum packing_op op)
+{
+	const int size = 4;
+
+	sja1105_packing(buf, &cmd->pllclksrc, 28, 24, size, op);
+	sja1105_packing(buf, &cmd->msel,      23, 16, size, op);
+	sja1105_packing(buf, &cmd->autoblock, 11, 11, size, op);
+	sja1105_packing(buf, &cmd->psel,       9,  8, size, op);
+	sja1105_packing(buf, &cmd->direct,     7,  7, size, op);
+	sja1105_packing(buf, &cmd->fbsel,      6,  6, size, op);
+	sja1105_packing(buf, &cmd->bypass,     1,  1, size, op);
+	sja1105_packing(buf, &cmd->pd,         0,  0, size, op);
+}
+
+static int sja1105_cgu_rgmii_tx_clk_config(struct sja1105_private *priv,
+					   int port, u64 speed)
+{
+	const struct sja1105_regs *regs = priv->info->regs;
+	struct sja1105_cgu_mii_ctrl txc;
+	u8 packed_buf[SJA1105_SIZE_CGU_CMD] = {0};
+	int clksrc;
+
+	if (regs->rgmii_tx_clk[port] == SJA1105_RSV_ADDR)
+		return 0;
+
+	if (speed == priv->info->port_speed[SJA1105_SPEED_1000MBPS]) {
+		clksrc = CLKSRC_PLL0;
+	} else {
+		int clk_sources[] = {CLKSRC_IDIV0, CLKSRC_IDIV1, CLKSRC_IDIV2,
+				     CLKSRC_IDIV3, CLKSRC_IDIV4};
+		clksrc = clk_sources[port];
+	}
+
+	/* RGMII: 125MHz for 1000, 25MHz for 100, 2.5MHz for 10 */
+	txc.clksrc = clksrc;
+	/* Autoblock clk while changing clksrc */
+	txc.autoblock = 1;
+	/* Power Down off => enabled */
+	txc.pd = 0;
+	sja1105_cgu_mii_control_packing(packed_buf, &txc, PACK);
+
+	return sja1105_xfer_buf(priv, SPI_WRITE, regs->rgmii_tx_clk[port],
+				packed_buf, SJA1105_SIZE_CGU_CMD);
+}
+
+/* AGU */
+static void
+sja1105_cfg_pad_mii_packing(void *buf, struct sja1105_cfg_pad_mii *cmd,
+			    enum packing_op op)
+{
+	const int size = 4;
+
+	sja1105_packing(buf, &cmd->d32_os,   28, 27, size, op);
+	sja1105_packing(buf, &cmd->d32_ih,   26, 26, size, op);
+	sja1105_packing(buf, &cmd->d32_ipud, 25, 24, size, op);
+	sja1105_packing(buf, &cmd->d10_os,   20, 19, size, op);
+	sja1105_packing(buf, &cmd->d10_ih,   18, 18, size, op);
+	sja1105_packing(buf, &cmd->d10_ipud, 17, 16, size, op);
+	sja1105_packing(buf, &cmd->ctrl_os,  12, 11, size, op);
+	sja1105_packing(buf, &cmd->ctrl_ih,  10, 10, size, op);
+	sja1105_packing(buf, &cmd->ctrl_ipud, 9,  8, size, op);
+	sja1105_packing(buf, &cmd->clk_os,    4,  3, size, op);
+	sja1105_packing(buf, &cmd->clk_ih,    2,  2, size, op);
+	sja1105_packing(buf, &cmd->clk_ipud,  1,  0, size, op);
+}
+
+static int sja1105_rgmii_cfg_pad_tx_config(struct sja1105_private *priv,
+					   int port)
+{
+	const struct sja1105_regs *regs = priv->info->regs;
+	struct sja1105_cfg_pad_mii pad_mii_tx = {0};
+	u8 packed_buf[SJA1105_SIZE_CGU_CMD] = {0};
+
+	if (regs->pad_mii_tx[port] == SJA1105_RSV_ADDR)
+		return 0;
+
+	/* Payload */
+	pad_mii_tx.d32_os    = 3; /* TXD[3:2] output stage: */
+				  /*          high noise/high speed */
+	pad_mii_tx.d10_os    = 3; /* TXD[1:0] output stage: */
+				  /*          high noise/high speed */
+	pad_mii_tx.d32_ipud  = 2; /* TXD[3:2] input stage: */
+				  /*          plain input (default) */
+	pad_mii_tx.d10_ipud  = 2; /* TXD[1:0] input stage: */
+				  /*          plain input (default) */
+	pad_mii_tx.ctrl_os   = 3; /* TX_CTL / TX_ER output stage */
+	pad_mii_tx.ctrl_ipud = 2; /* TX_CTL / TX_ER input stage (default) */
+	pad_mii_tx.clk_os    = 3; /* TX_CLK output stage */
+	pad_mii_tx.clk_ih    = 0; /* TX_CLK input hysteresis (default) */
+	pad_mii_tx.clk_ipud  = 2; /* TX_CLK input stage (default) */
+	sja1105_cfg_pad_mii_packing(packed_buf, &pad_mii_tx, PACK);
+
+	return sja1105_xfer_buf(priv, SPI_WRITE, regs->pad_mii_tx[port],
+				packed_buf, SJA1105_SIZE_CGU_CMD);
+}
+
+static int sja1105_cfg_pad_rx_config(struct sja1105_private *priv, int port)
+{
+	const struct sja1105_regs *regs = priv->info->regs;
+	struct sja1105_cfg_pad_mii pad_mii_rx = {0};
+	u8 packed_buf[SJA1105_SIZE_CGU_CMD] = {0};
+
+	if (regs->pad_mii_rx[port] == SJA1105_RSV_ADDR)
+		return 0;
+
+	/* Payload */
+	pad_mii_rx.d32_ih    = 0; /* RXD[3:2] input stage hysteresis: */
+				  /*          non-Schmitt (default) */
+	pad_mii_rx.d32_ipud  = 2; /* RXD[3:2] input weak pull-up/down */
+				  /*          plain input (default) */
+	pad_mii_rx.d10_ih    = 0; /* RXD[1:0] input stage hysteresis: */
+				  /*          non-Schmitt (default) */
+	pad_mii_rx.d10_ipud  = 2; /* RXD[1:0] input weak pull-up/down */
+				  /*          plain input (default) */
+	pad_mii_rx.ctrl_ih   = 0; /* RX_DV/CRS_DV/RX_CTL and RX_ER */
+				  /* input stage hysteresis: */
+				  /* non-Schmitt (default) */
+	pad_mii_rx.ctrl_ipud = 3; /* RX_DV/CRS_DV/RX_CTL and RX_ER */
+				  /* input stage weak pull-up/down: */
+				  /* pull-down */
+	pad_mii_rx.clk_os    = 2; /* RX_CLK/RXC output stage: */
+				  /* medium noise/fast speed (default) */
+	pad_mii_rx.clk_ih    = 0; /* RX_CLK/RXC input hysteresis: */
+				  /* non-Schmitt (default) */
+	pad_mii_rx.clk_ipud  = 2; /* RX_CLK/RXC input pull-up/down: */
+				  /* plain input (default) */
+	sja1105_cfg_pad_mii_packing(packed_buf, &pad_mii_rx, PACK);
+
+	return sja1105_xfer_buf(priv, SPI_WRITE, regs->pad_mii_rx[port],
+				packed_buf, SJA1105_SIZE_CGU_CMD);
+}
+
+static void
+sja1105_cfg_pad_mii_id_packing(void *buf, struct sja1105_cfg_pad_mii_id *cmd,
+			       enum packing_op op)
+{
+	const int size = SJA1105_SIZE_CGU_CMD;
+
+	sja1105_packing(buf, &cmd->rxc_stable_ovr, 15, 15, size, op);
+	sja1105_packing(buf, &cmd->rxc_delay,      14, 10, size, op);
+	sja1105_packing(buf, &cmd->rxc_bypass,      9,  9, size, op);
+	sja1105_packing(buf, &cmd->rxc_pd,          8,  8, size, op);
+	sja1105_packing(buf, &cmd->txc_stable_ovr,  7,  7, size, op);
+	sja1105_packing(buf, &cmd->txc_delay,       6,  2, size, op);
+	sja1105_packing(buf, &cmd->txc_bypass,      1,  1, size, op);
+	sja1105_packing(buf, &cmd->txc_pd,          0,  0, size, op);
+}
+
+static void
+sja1110_cfg_pad_mii_id_packing(void *buf, struct sja1105_cfg_pad_mii_id *cmd,
+			       enum packing_op op)
+{
+	const int size = SJA1105_SIZE_CGU_CMD;
+	u64 range = 4;
+
+	/* Fields RXC_RANGE and TXC_RANGE select the input frequency range:
+	 * 0 = 2.5MHz
+	 * 1 = 25MHz
+	 * 2 = 50MHz
+	 * 3 = 125MHz
+	 * 4 = Automatically determined by port speed.
+	 * There's no point in defining a structure different than the one for
+	 * SJA1105, so just hardcode the frequency range to automatic, just as
+	 * before.
+	 */
+	sja1105_packing(buf, &cmd->rxc_stable_ovr, 26, 26, size, op);
+	sja1105_packing(buf, &cmd->rxc_delay,      25, 21, size, op);
+	sja1105_packing(buf, &range,               20, 18, size, op);
+	sja1105_packing(buf, &cmd->rxc_bypass,     17, 17, size, op);
+	sja1105_packing(buf, &cmd->rxc_pd,         16, 16, size, op);
+	sja1105_packing(buf, &cmd->txc_stable_ovr, 10, 10, size, op);
+	sja1105_packing(buf, &cmd->txc_delay,       9,  5, size, op);
+	sja1105_packing(buf, &range,                4,  2, size, op);
+	sja1105_packing(buf, &cmd->txc_bypass,      1,  1, size, op);
+	sja1105_packing(buf, &cmd->txc_pd,          0,  0, size, op);
+}
+
+/* The RGMII delay setup procedure is 2-step and gets called upon each
+ * .phylink_mac_config. Both are strategic.
+ * The reason is that the RX Tunable Delay Line of the SJA1105 MAC has issues
+ * with recovering from a frequency change of the link partner's RGMII clock.
+ * The easiest way to recover from this is to temporarily power down the TDL,
+ * as it will re-lock at the new frequency afterwards.
+ */
+int sja1105pqrs_setup_rgmii_delay(const void *ctx, int port)
+{
+	const struct sja1105_private *priv = ctx;
+	const struct sja1105_regs *regs = priv->info->regs;
+	struct sja1105_cfg_pad_mii_id pad_mii_id = {0};
+	int rx_delay = priv->rgmii_rx_delay_ps[port];
+	int tx_delay = priv->rgmii_tx_delay_ps[port];
+	u8 packed_buf[SJA1105_SIZE_CGU_CMD] = {0};
+	int rc;
+
+	if (rx_delay)
+		pad_mii_id.rxc_delay = SJA1105_RGMII_DELAY_PS_TO_HW(rx_delay);
+	if (tx_delay)
+		pad_mii_id.txc_delay = SJA1105_RGMII_DELAY_PS_TO_HW(tx_delay);
+
+	/* Stage 1: Turn the RGMII delay lines off. */
+	pad_mii_id.rxc_bypass = 1;
+	pad_mii_id.rxc_pd = 1;
+	pad_mii_id.txc_bypass = 1;
+	pad_mii_id.txc_pd = 1;
+	sja1105_cfg_pad_mii_id_packing(packed_buf, &pad_mii_id, PACK);
+
+	rc = sja1105_xfer_buf(priv, SPI_WRITE, regs->pad_mii_id[port],
+			      packed_buf, SJA1105_SIZE_CGU_CMD);
+	if (rc < 0)
+		return rc;
+
+	/* Stage 2: Turn the RGMII delay lines on. */
+	if (rx_delay) {
+		pad_mii_id.rxc_bypass = 0;
+		pad_mii_id.rxc_pd = 0;
+	}
+	if (tx_delay) {
+		pad_mii_id.txc_bypass = 0;
+		pad_mii_id.txc_pd = 0;
+	}
+	sja1105_cfg_pad_mii_id_packing(packed_buf, &pad_mii_id, PACK);
+
+	return sja1105_xfer_buf(priv, SPI_WRITE, regs->pad_mii_id[port],
+				packed_buf, SJA1105_SIZE_CGU_CMD);
+}
+
+int sja1110_setup_rgmii_delay(const void *ctx, int port)
+{
+	const struct sja1105_private *priv = ctx;
+	const struct sja1105_regs *regs = priv->info->regs;
+	struct sja1105_cfg_pad_mii_id pad_mii_id = {0};
+	int rx_delay = priv->rgmii_rx_delay_ps[port];
+	int tx_delay = priv->rgmii_tx_delay_ps[port];
+	u8 packed_buf[SJA1105_SIZE_CGU_CMD] = {0};
+
+	pad_mii_id.rxc_pd = 1;
+	pad_mii_id.txc_pd = 1;
+
+	if (rx_delay) {
+		pad_mii_id.rxc_delay = SJA1105_RGMII_DELAY_PS_TO_HW(rx_delay);
+		/* The "BYPASS" bit in SJA1110 is actually a "don't bypass" */
+		pad_mii_id.rxc_bypass = 1;
+		pad_mii_id.rxc_pd = 0;
+	}
+
+	if (tx_delay) {
+		pad_mii_id.txc_delay = SJA1105_RGMII_DELAY_PS_TO_HW(tx_delay);
+		pad_mii_id.txc_bypass = 1;
+		pad_mii_id.txc_pd = 0;
+	}
+
+	sja1110_cfg_pad_mii_id_packing(packed_buf, &pad_mii_id, PACK);
+
+	return sja1105_xfer_buf(priv, SPI_WRITE, regs->pad_mii_id[port],
+				packed_buf, SJA1105_SIZE_CGU_CMD);
+}
+
+static int sja1105_rgmii_clocking_setup(struct sja1105_private *priv, int port,
+					sja1105_mii_role_t role)
+{
+	struct device *dev = priv->ds->dev;
+	struct sja1105_mac_config_entry *mac;
+	u64 speed;
+	int rc;
+
+	mac = priv->static_config.tables[BLK_IDX_MAC_CONFIG].entries;
+	speed = mac[port].speed;
+
+	dev_dbg(dev, "Configuring port %d RGMII at speed %lldMbps\n",
+		port, speed);
+
+	if (speed == priv->info->port_speed[SJA1105_SPEED_1000MBPS]) {
+		/* 1000Mbps, IDIV disabled (125 MHz) */
+		rc = sja1105_cgu_idiv_config(priv, port, false, 1);
+	} else if (speed == priv->info->port_speed[SJA1105_SPEED_100MBPS]) {
+		/* 100Mbps, IDIV enabled, divide by 1 (25 MHz) */
+		rc = sja1105_cgu_idiv_config(priv, port, true, 1);
+	} else if (speed == priv->info->port_speed[SJA1105_SPEED_10MBPS]) {
+		/* 10Mbps, IDIV enabled, divide by 10 (2.5 MHz) */
+		rc = sja1105_cgu_idiv_config(priv, port, true, 10);
+	} else if (speed == priv->info->port_speed[SJA1105_SPEED_AUTO]) {
+		/* Skip CGU configuration if there is no speed available
+		 * (e.g. link is not established yet)
+		 */
+		dev_dbg(dev, "Speed not available, skipping CGU config\n");
+		return 0;
+	} else {
+		rc = -EINVAL;
+	}
+
+	if (rc < 0) {
+		dev_err(dev, "Failed to configure idiv\n");
+		return rc;
+	}
+	rc = sja1105_cgu_rgmii_tx_clk_config(priv, port, speed);
+	if (rc < 0) {
+		dev_err(dev, "Failed to configure RGMII Tx clock\n");
+		return rc;
+	}
+	rc = sja1105_rgmii_cfg_pad_tx_config(priv, port);
+	if (rc < 0) {
+		dev_err(dev, "Failed to configure Tx pad registers\n");
+		return rc;
+	}
+
+	if (!priv->info->setup_rgmii_delay)
+		return 0;
+
+	return priv->info->setup_rgmii_delay(priv, port);
+}
+
+static int sja1105_cgu_rmii_ref_clk_config(struct sja1105_private *priv,
+					   int port)
+{
+	const struct sja1105_regs *regs = priv->info->regs;
+	struct sja1105_cgu_mii_ctrl ref_clk;
+	u8 packed_buf[SJA1105_SIZE_CGU_CMD] = {0};
+	const int clk_sources[] = {
+		CLKSRC_MII0_TX_CLK,
+		CLKSRC_MII1_TX_CLK,
+		CLKSRC_MII2_TX_CLK,
+		CLKSRC_MII3_TX_CLK,
+		CLKSRC_MII4_TX_CLK,
+	};
+
+	if (regs->rmii_ref_clk[port] == SJA1105_RSV_ADDR)
+		return 0;
+
+	/* Payload for packed_buf */
+	ref_clk.clksrc    = clk_sources[port];
+	ref_clk.autoblock = 1;      /* Autoblock clk while changing clksrc */
+	ref_clk.pd        = 0;      /* Power Down off => enabled */
+	sja1105_cgu_mii_control_packing(packed_buf, &ref_clk, PACK);
+
+	return sja1105_xfer_buf(priv, SPI_WRITE, regs->rmii_ref_clk[port],
+				packed_buf, SJA1105_SIZE_CGU_CMD);
+}
+
+static int
+sja1105_cgu_rmii_ext_tx_clk_config(struct sja1105_private *priv, int port)
+{
+	const struct sja1105_regs *regs = priv->info->regs;
+	struct sja1105_cgu_mii_ctrl ext_tx_clk;
+	u8 packed_buf[SJA1105_SIZE_CGU_CMD] = {0};
+
+	if (regs->rmii_ext_tx_clk[port] == SJA1105_RSV_ADDR)
+		return 0;
+
+	/* Payload for packed_buf */
+	ext_tx_clk.clksrc    = CLKSRC_PLL1;
+	ext_tx_clk.autoblock = 1;   /* Autoblock clk while changing clksrc */
+	ext_tx_clk.pd        = 0;   /* Power Down off => enabled */
+	sja1105_cgu_mii_control_packing(packed_buf, &ext_tx_clk, PACK);
+
+	return sja1105_xfer_buf(priv, SPI_WRITE, regs->rmii_ext_tx_clk[port],
+				packed_buf, SJA1105_SIZE_CGU_CMD);
+}
+
+static int sja1105_cgu_rmii_pll_config(struct sja1105_private *priv)
+{
+	const struct sja1105_regs *regs = priv->info->regs;
+	u8 packed_buf[SJA1105_SIZE_CGU_CMD] = {0};
+	struct sja1105_cgu_pll_ctrl pll = {0};
+	struct device *dev = priv->ds->dev;
+	int rc;
+
+	if (regs->rmii_pll1 == SJA1105_RSV_ADDR)
+		return 0;
+
+	/* PLL1 must be enabled and output 50 Mhz.
+	 * This is done by writing first 0x0A010941 to
+	 * the PLL_1_C register and then deasserting
+	 * power down (PD) 0x0A010940.
+	 */
+
+	/* Step 1: PLL1 setup for 50Mhz */
+	pll.pllclksrc = 0xA;
+	pll.msel      = 0x1;
+	pll.autoblock = 0x1;
+	pll.psel      = 0x1;
+	pll.direct    = 0x0;
+	pll.fbsel     = 0x1;
+	pll.bypass    = 0x0;
+	pll.pd        = 0x1;
+
+	sja1105_cgu_pll_control_packing(packed_buf, &pll, PACK);
+	rc = sja1105_xfer_buf(priv, SPI_WRITE, regs->rmii_pll1, packed_buf,
+			      SJA1105_SIZE_CGU_CMD);
+	if (rc < 0) {
+		dev_err(dev, "failed to configure PLL1 for 50MHz\n");
+		return rc;
+	}
+
+	/* Step 2: Enable PLL1 */
+	pll.pd = 0x0;
+
+	sja1105_cgu_pll_control_packing(packed_buf, &pll, PACK);
+	rc = sja1105_xfer_buf(priv, SPI_WRITE, regs->rmii_pll1, packed_buf,
+			      SJA1105_SIZE_CGU_CMD);
+	if (rc < 0) {
+		dev_err(dev, "failed to enable PLL1\n");
+		return rc;
+	}
+	return rc;
+}
+
+static int sja1105_rmii_clocking_setup(struct sja1105_private *priv, int port,
+				       sja1105_mii_role_t role)
+{
+	struct device *dev = priv->ds->dev;
+	int rc;
+
+	dev_dbg(dev, "Configuring RMII-%s clocking\n",
+		(role == XMII_MAC) ? "MAC" : "PHY");
+	/* AH1601.pdf chapter 2.5.1. Sources */
+	if (role == XMII_MAC) {
+		/* Configure and enable PLL1 for 50Mhz output */
+		rc = sja1105_cgu_rmii_pll_config(priv);
+		if (rc < 0)
+			return rc;
+	}
+	/* Disable IDIV for this port */
+	rc = sja1105_cgu_idiv_config(priv, port, false, 1);
+	if (rc < 0)
+		return rc;
+	/* Source to sink mappings */
+	rc = sja1105_cgu_rmii_ref_clk_config(priv, port);
+	if (rc < 0)
+		return rc;
+	if (role == XMII_MAC) {
+		rc = sja1105_cgu_rmii_ext_tx_clk_config(priv, port);
+		if (rc < 0)
+			return rc;
+	}
+	return 0;
+}
+
+int sja1105_clocking_setup_port(struct sja1105_private *priv, int port)
+{
+	struct sja1105_xmii_params_entry *mii;
+	struct device *dev = priv->ds->dev;
+	sja1105_phy_interface_t phy_mode;
+	sja1105_mii_role_t role;
+	int rc;
+
+	mii = priv->static_config.tables[BLK_IDX_XMII_PARAMS].entries;
+
+	/* RGMII etc */
+	phy_mode = mii->xmii_mode[port];
+	/* MAC or PHY, for applicable types (not RGMII) */
+	role = mii->phy_mac[port];
+
+	switch (phy_mode) {
+	case XMII_MODE_MII:
+		rc = sja1105_mii_clocking_setup(priv, port, role);
+		break;
+	case XMII_MODE_RMII:
+		rc = sja1105_rmii_clocking_setup(priv, port, role);
+		break;
+	case XMII_MODE_RGMII:
+		rc = sja1105_rgmii_clocking_setup(priv, port, role);
+		break;
+	case XMII_MODE_SGMII:
+		/* Nothing to do in the CGU for SGMII */
+		rc = 0;
+		break;
+	default:
+		dev_err(dev, "Invalid interface mode specified: %d\n",
+			phy_mode);
+		return -EINVAL;
+	}
+	if (rc) {
+		dev_err(dev, "Clocking setup for port %d failed: %d\n",
+			port, rc);
+		return rc;
+	}
+
+	/* Internally pull down the RX_DV/CRS_DV/RX_CTL and RX_ER inputs */
+	return sja1105_cfg_pad_rx_config(priv, port);
+}
+
+int sja1105_clocking_setup(struct sja1105_private *priv)
+{
+	struct dsa_switch *ds = priv->ds;
+	int port, rc;
+
+	for (port = 0; port < ds->num_ports; port++) {
+		rc = sja1105_clocking_setup_port(priv, port);
+		if (rc < 0)
+			return rc;
+	}
+	return 0;
+}
+
+static void
+sja1110_cgu_outclk_packing(void *buf, struct sja1110_cgu_outclk *outclk,
+			   enum packing_op op)
+{
+	const int size = 4;
+
+	sja1105_packing(buf, &outclk->clksrc,    27, 24, size, op);
+	sja1105_packing(buf, &outclk->autoblock, 11, 11, size, op);
+	sja1105_packing(buf, &outclk->pd,         0,  0, size, op);
+}
+
+int sja1110_disable_microcontroller(struct sja1105_private *priv)
+{
+	u8 packed_buf[SJA1105_SIZE_CGU_CMD] = {0};
+	struct sja1110_cgu_outclk outclk_6_c = {
+		.clksrc = 0x3,
+		.pd = true,
+	};
+	struct sja1110_cgu_outclk outclk_7_c = {
+		.clksrc = 0x5,
+		.pd = true,
+	};
+	int rc;
+
+	/* Power down the BASE_TIMER_CLK to disable the watchdog timer */
+	sja1110_cgu_outclk_packing(packed_buf, &outclk_7_c, PACK);
+
+	rc = sja1105_xfer_buf(priv, SPI_WRITE, SJA1110_BASE_TIMER_CLK,
+			      packed_buf, SJA1105_SIZE_CGU_CMD);
+	if (rc)
+		return rc;
+
+	/* Power down the BASE_MCSS_CLOCK to gate the microcontroller off */
+	sja1110_cgu_outclk_packing(packed_buf, &outclk_6_c, PACK);
+
+	return sja1105_xfer_buf(priv, SPI_WRITE, SJA1110_BASE_MCSS_CLK,
+				packed_buf, SJA1105_SIZE_CGU_CMD);
+}

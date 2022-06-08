@@ -1,169 +1,214 @@
-/* SPDX-License-Identifier: GPL-2.0-or-later */
+// SPDX-License-Identifier: GPL-2.0-or-later
 /*
- * ImgTec IR Decoder found in PowerDown Controller.
+ *  Driver for the Conexant CX23885 PCIe bridge
  *
- * Copyright 2010-2014 Imagination Technologies Ltd.
+ *  Copyright (c) 2006 Steven Toth <stoth@linuxtv.org>
  */
 
-#ifndef _IMG_IR_H_
-#define _IMG_IR_H_
+#include "cx23885.h"
 
-#include <linux/io.h>
-#include <linux/spinlock.h>
+#include <linux/module.h>
+#include <linux/init.h>
+#include <linux/delay.h>
+#include <asm/io.h>
 
-#include "img-ir-raw.h"
-#include "img-ir-hw.h"
+#include <media/v4l2-common.h>
 
-/* registers */
+static unsigned int i2c_debug;
+module_param(i2c_debug, int, 0644);
+MODULE_PARM_DESC(i2c_debug, "enable debug messages [i2c]");
 
-/* relative to the start of the IR block of registers */
-#define IMG_IR_CONTROL		0x00
-#define IMG_IR_STATUS		0x04
-#define IMG_IR_DATA_LW		0x08
-#define IMG_IR_DATA_UP		0x0c
-#define IMG_IR_LEAD_SYMB_TIMING	0x10
-#define IMG_IR_S00_SYMB_TIMING	0x14
-#define IMG_IR_S01_SYMB_TIMING	0x18
-#define IMG_IR_S10_SYMB_TIMING	0x1c
-#define IMG_IR_S11_SYMB_TIMING	0x20
-#define IMG_IR_FREE_SYMB_TIMING	0x24
-#define IMG_IR_POW_MOD_PARAMS	0x28
-#define IMG_IR_POW_MOD_ENABLE	0x2c
-#define IMG_IR_IRQ_MSG_DATA_LW	0x30
-#define IMG_IR_IRQ_MSG_DATA_UP	0x34
-#define IMG_IR_IRQ_MSG_MASK_LW	0x38
-#define IMG_IR_IRQ_MSG_MASK_UP	0x3c
-#define IMG_IR_IRQ_ENABLE	0x40
-#define IMG_IR_IRQ_STATUS	0x44
-#define IMG_IR_IRQ_CLEAR	0x48
-#define IMG_IR_IRCORE_ID	0xf0
-#define IMG_IR_CORE_REV		0xf4
-#define IMG_IR_CORE_DES1	0xf8
-#define IMG_IR_CORE_DES2	0xfc
+static unsigned int i2c_scan;
+module_param(i2c_scan, int, 0444);
+MODULE_PARM_DESC(i2c_scan, "scan i2c bus at insmod time");
 
+#define dprintk(level, fmt, arg...)\
+	do { if (i2c_debug >= level)\
+		printk(KERN_DEBUG pr_fmt("%s: i2c:" fmt), \
+			__func__, ##arg); \
+	} while (0)
 
-/* field masks */
+#define I2C_WAIT_DELAY 32
+#define I2C_WAIT_RETRY 64
 
-/* IMG_IR_CONTROL */
-#define IMG_IR_DECODEN		0x40000000
-#define IMG_IR_CODETYPE		0x30000000
-#define IMG_IR_CODETYPE_SHIFT		28
-#define IMG_IR_HDRTOG		0x08000000
-#define IMG_IR_LDRDEC		0x04000000
-#define IMG_IR_DECODINPOL	0x02000000	/* active high */
-#define IMG_IR_BITORIEN		0x01000000	/* MSB first */
-#define IMG_IR_D1VALIDSEL	0x00008000
-#define IMG_IR_BITINV		0x00000040	/* don't invert */
-#define IMG_IR_DECODEND2	0x00000010
-#define IMG_IR_BITORIEND2	0x00000002	/* MSB first */
-#define IMG_IR_BITINVD2		0x00000001	/* don't invert */
+#define I2C_EXTEND  (1 << 3)
+#define I2C_NOSTOP  (1 << 4)
 
-/* IMG_IR_STATUS */
-#define IMG_IR_RXDVALD2		0x00001000
-#define IMG_IR_IRRXD		0x00000400
-#define IMG_IR_TOGSTATE		0x00000200
-#define IMG_IR_RXDVAL		0x00000040
-#define IMG_IR_RXDLEN		0x0000003f
-#define IMG_IR_RXDLEN_SHIFT		0
-
-/* IMG_IR_LEAD_SYMB_TIMING, IMG_IR_Sxx_SYMB_TIMING */
-#define IMG_IR_PD_MAX		0xff000000
-#define IMG_IR_PD_MAX_SHIFT		24
-#define IMG_IR_PD_MIN		0x00ff0000
-#define IMG_IR_PD_MIN_SHIFT		16
-#define IMG_IR_W_MAX		0x0000ff00
-#define IMG_IR_W_MAX_SHIFT		8
-#define IMG_IR_W_MIN		0x000000ff
-#define IMG_IR_W_MIN_SHIFT		0
-
-/* IMG_IR_FREE_SYMB_TIMING */
-#define IMG_IR_MAXLEN		0x0007e000
-#define IMG_IR_MAXLEN_SHIFT		13
-#define IMG_IR_MINLEN		0x00001f00
-#define IMG_IR_MINLEN_SHIFT		8
-#define IMG_IR_FT_MIN		0x000000ff
-#define IMG_IR_FT_MIN_SHIFT		0
-
-/* IMG_IR_POW_MOD_PARAMS */
-#define IMG_IR_PERIOD_LEN	0x3f000000
-#define IMG_IR_PERIOD_LEN_SHIFT		24
-#define IMG_IR_PERIOD_DUTY	0x003f0000
-#define IMG_IR_PERIOD_DUTY_SHIFT	16
-#define IMG_IR_STABLE_STOP	0x00003f00
-#define IMG_IR_STABLE_STOP_SHIFT	8
-#define IMG_IR_STABLE_START	0x0000003f
-#define IMG_IR_STABLE_START_SHIFT	0
-
-/* IMG_IR_POW_MOD_ENABLE */
-#define IMG_IR_POWER_OUT_EN	0x00000002
-#define IMG_IR_POWER_MOD_EN	0x00000001
-
-/* IMG_IR_IRQ_ENABLE, IMG_IR_IRQ_STATUS, IMG_IR_IRQ_CLEAR */
-#define IMG_IR_IRQ_DEC2_ERR	0x00000080
-#define IMG_IR_IRQ_DEC_ERR	0x00000040
-#define IMG_IR_IRQ_ACT_LEVEL	0x00000020
-#define IMG_IR_IRQ_FALL_EDGE	0x00000010
-#define IMG_IR_IRQ_RISE_EDGE	0x00000008
-#define IMG_IR_IRQ_DATA_MATCH	0x00000004
-#define IMG_IR_IRQ_DATA2_VALID	0x00000002
-#define IMG_IR_IRQ_DATA_VALID	0x00000001
-#define IMG_IR_IRQ_ALL		0x000000ff
-#define IMG_IR_IRQ_EDGE		(IMG_IR_IRQ_FALL_EDGE | IMG_IR_IRQ_RISE_EDGE)
-
-/* IMG_IR_CORE_ID */
-#define IMG_IR_CORE_ID		0x00ff0000
-#define IMG_IR_CORE_ID_SHIFT		16
-#define IMG_IR_CORE_CONFIG	0x0000ffff
-#define IMG_IR_CORE_CONFIG_SHIFT	0
-
-/* IMG_IR_CORE_REV */
-#define IMG_IR_DESIGNER		0xff000000
-#define IMG_IR_DESIGNER_SHIFT		24
-#define IMG_IR_MAJOR_REV	0x00ff0000
-#define IMG_IR_MAJOR_REV_SHIFT		16
-#define IMG_IR_MINOR_REV	0x0000ff00
-#define IMG_IR_MINOR_REV_SHIFT		8
-#define IMG_IR_MAINT_REV	0x000000ff
-#define IMG_IR_MAINT_REV_SHIFT		0
-
-struct device;
-struct clk;
-
-/**
- * struct img_ir_priv - Private driver data.
- * @dev:		Platform device.
- * @irq:		IRQ number.
- * @clk:		Input clock.
- * @sys_clk:		System clock.
- * @reg_base:		Iomem base address of IR register block.
- * @lock:		Protects IR registers and variables in this struct.
- * @raw:		Driver data for raw decoder.
- * @hw:			Driver data for hardware decoder.
- */
-struct img_ir_priv {
-	struct device		*dev;
-	int			irq;
-	struct clk		*clk;
-	struct clk		*sys_clk;
-	void __iomem		*reg_base;
-	spinlock_t		lock;
-
-	struct img_ir_priv_raw	raw;
-	struct img_ir_priv_hw	hw;
-};
-
-/* Hardware access */
-
-static inline void img_ir_write(struct img_ir_priv *priv,
-				unsigned int reg_offs, unsigned int data)
+static inline int i2c_slave_did_ack(struct i2c_adapter *i2c_adap)
 {
-	iowrite32(data, priv->reg_base + reg_offs);
+	struct cx23885_i2c *bus = i2c_adap->algo_data;
+	struct cx23885_dev *dev = bus->dev;
+	return cx_read(bus->reg_stat) & 0x01;
 }
 
-static inline unsigned int img_ir_read(struct img_ir_priv *priv,
-				       unsigned int reg_offs)
+static inline int i2c_is_busy(struct i2c_adapter *i2c_adap)
 {
-	return ioread32(priv->reg_base + reg_offs);
+	struct cx23885_i2c *bus = i2c_adap->algo_data;
+	struct cx23885_dev *dev = bus->dev;
+	return cx_read(bus->reg_stat) & 0x02 ? 1 : 0;
 }
 
-#endif /* _IMG_IR_H_ */
+static int i2c_wait_done(struct i2c_adapter *i2c_adap)
+{
+	int count;
+
+	for (count = 0; count < I2C_WAIT_RETRY; count++) {
+		if (!i2c_is_busy(i2c_adap))
+			break;
+		udelay(I2C_WAIT_DELAY);
+	}
+
+	if (I2C_WAIT_RETRY == count)
+		return 0;
+
+	return 1;
+}
+
+static int i2c_sendbytes(struct i2c_adapter *i2c_adap,
+			 const struct i2c_msg *msg, int joined_rlen)
+{
+	struct cx23885_i2c *bus = i2c_adap->algo_data;
+	struct cx23885_dev *dev = bus->dev;
+	u32 wdata, addr, ctrl;
+	int retval, cnt;
+
+	if (joined_rlen)
+		dprintk(1, "%s(msg->wlen=%d, nextmsg->rlen=%d)\n", __func__,
+			msg->len, joined_rlen);
+	else
+		dprintk(1, "%s(msg->len=%d)\n", __func__, msg->len);
+
+	/* Deal with i2c probe functions with zero payload */
+	if (msg->len == 0) {
+		cx_write(bus->reg_addr, msg->addr << 25);
+		cx_write(bus->reg_ctrl, bus->i2c_period | (1 << 2));
+		if (!i2c_wait_done(i2c_adap))
+			return -EIO;
+		if (!i2c_slave_did_ack(i2c_adap))
+			return -ENXIO;
+
+		dprintk(1, "%s() returns 0\n", __func__);
+		return 0;
+	}
+
+
+	/* dev, reg + first byte */
+	addr = (msg->addr << 25) | msg->buf[0];
+	wdata = msg->buf[0];
+	ctrl = bus->i2c_period | (1 << 12) | (1 << 2);
+
+	if (msg->len > 1)
+		ctrl |= I2C_NOSTOP | I2C_EXTEND;
+	else if (joined_rlen)
+		ctrl |= I2C_NOSTOP;
+
+	cx_write(bus->reg_addr, addr);
+	cx_write(bus->reg_wdata, wdata);
+	cx_write(bus->reg_ctrl, ctrl);
+
+	if (!i2c_wait_done(i2c_adap))
+		goto eio;
+	if (i2c_debug) {
+		printk(KERN_DEBUG " <W %02x %02x", msg->addr << 1, msg->buf[0]);
+		if (!(ctrl & I2C_NOSTOP))
+			pr_cont(" >\n");
+	}
+
+	for (cnt = 1; cnt < msg->len; cnt++) {
+		/* following bytes */
+		wdata = msg->buf[cnt];
+		ctrl = bus->i2c_period | (1 << 12) | (1 << 2);
+
+		if (cnt < msg->len - 1)
+			ctrl |= I2C_NOSTOP | I2C_EXTEND;
+		else if (joined_rlen)
+			ctrl |= I2C_NOSTOP;
+
+		cx_write(bus->reg_addr, addr);
+		cx_write(bus->reg_wdata, wdata);
+		cx_write(bus->reg_ctrl, ctrl);
+
+		if (!i2c_wait_done(i2c_adap))
+			goto eio;
+		if (i2c_debug) {
+			pr_cont(" %02x", msg->buf[cnt]);
+			if (!(ctrl & I2C_NOSTOP))
+				pr_cont(" >\n");
+		}
+	}
+	return msg->len;
+
+ eio:
+	retval = -EIO;
+	if (i2c_debug)
+		pr_err(" ERR: %d\n", retval);
+	return retval;
+}
+
+static int i2c_readbytes(struct i2c_adapter *i2c_adap,
+			 const struct i2c_msg *msg, int joined)
+{
+	struct cx23885_i2c *bus = i2c_adap->algo_data;
+	struct cx23885_dev *dev = bus->dev;
+	u32 ctrl, cnt;
+	int retval;
+
+
+	if (i2c_debug && !joined)
+		dprintk(1, "%s(msg->len=%d)\n", __func__, msg->len);
+
+	/* Deal with i2c probe functions with zero payload */
+	if (msg->len == 0) {
+		cx_write(bus->reg_addr, msg->addr << 25);
+		cx_write(bus->reg_ctrl, bus->i2c_period | (1 << 2) | 1);
+		if (!i2c_wait_done(i2c_adap))
+			return -EIO;
+		if (!i2c_slave_did_ack(i2c_adap))
+			return -ENXIO;
+
+
+		dprintk(1, "%s() returns 0\n", __func__);
+		return 0;
+	}
+
+	if (i2c_debug) {
+		if (joined)
+			dprintk(1, " R");
+		else
+			dprintk(1, " <R %02x", (msg->addr << 1) + 1);
+	}
+
+	for (cnt = 0; cnt < msg->len; cnt++) {
+
+		ctrl = bus->i2c_period | (1 << 12) | (1 << 2) | 1;
+
+		if (cnt < msg->len - 1)
+			ctrl |= I2C_NOSTOP | I2C_EXTEND;
+
+		cx_write(bus->reg_addr, msg->addr << 25);
+		cx_write(bus->reg_ctrl, ctrl);
+
+		if (!i2c_wait_done(i2c_adap))
+			goto eio;
+		msg->buf[cnt] = cx_read(bus->reg_rdata) & 0xff;
+		if (i2c_debug) {
+			dprintk(1, " %02x", msg->buf[cnt]);
+			if (!(ctrl & I2C_NOSTOP))
+				dprintk(1, " >\n");
+		}
+	}
+	return msg->len;
+
+ eio:
+	retval = -EIO;
+	if (i2c_debug)
+		pr_err(" ERR: %d\n", retval);
+	return retval;
+}
+
+static int i2c_xfer(struct i2c_adapter *i2c_adap,
+		    struct i2c_msg *msgs, int num)
+{
+	int i, retval = 0;
+
+	dprintk(1, 

@@ -1,1 +1,2 @@
-ude/config/PARAVIRT_XXL) 
+,
+			.amux   = CX25840_AU

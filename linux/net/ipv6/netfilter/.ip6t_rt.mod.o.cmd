@@ -1,429 +1,922 @@
-d include/config/GENERIC_IOMAP) \
-    $(wildcard include/config/GENERIC_IOREMAP) \
-    $(wildcard include/config/VIRT_TO_BUS) \
-    $(wildcard include/config/GENERIC_DEVMEM_IS_ALLOWED) \
-  include/linux/logic_pio.h \
-    $(wildcard include/config/INDIRECT_PIO) \
-  include/linux/vmalloc.h \
-    $(wildcard include/config/HAVE_ARCH_HUGE_VMALLOC) \
-  arch/x86/include/asm/vmalloc.h \
-    $(wildcard include/config/HAVE_ARCH_HUGE_VMAP) \
-  arch/x86/include/asm/acpi.h \
-    $(wildcard include/config/ACPI_APEI) \
-  include/acpi/pdc_intel.h \
-  arch/x86/include/asm/numa.h \
-    $(wildcard include/config/NUMA_EMU) \
-  arch/x86/include/asm/numa_32.h \
-  include/linux/regulator/consumer.h \
-    $(wildcard include/config/REGULATOR) \
-  include/linux/suspend.h \
-    $(wildcard include/config/VT) \
-    $(wildcard include/config/SUSPEND) \
-    $(wildcard include/config/HIBERNATION_SNAPSHOT_DEV) \
-    $(wildcard include/config/PM_SLEEP_DEBUG) \
-    $(wildcard include/config/PM_AUTOSLEEP) \
-  include/linux/swap.h \
-    $(wildcard include/config/DEVICE_PRIVATE) \
-    $(wildcard include/config/MIGRATION) \
-    $(wildcard include/config/FRONTSWAP) \
-    $(wildcard include/config/THP_SWAP) \
-    $(wildcard include/config/MEMCG_SWAP) \
-  include/linux/memcontrol.h \
-    $(wildcard include/config/CGROUP_WRITEBACK) \
-  include/linux/cgroup.h \
-    $(wildcard include/config/CGROUP_CPUACCT) \
-    $(wildcard include/config/SOCK_CGROUP_DATA) \
-    $(wildcard include/config/CGROUP_DATA) \
-    $(wildcard include/config/CGROUP_BPF) \
-  include/uapi/linux/cgroupstats.h \
-  include/uapi/linux/taskstats.h \
-  include/linux/fs.h \
-    $(wildcard include/config/READ_ONLY_THP_FOR_FS) \
-    $(wildcard include/config/FS_POSIX_ACL) \
-    $(wildcard include/config/IMA) \
-    $(wildcard include/config/FILE_LOCKING) \
-    $(wildcard include/config/FSNOTIFY) \
-    $(wildcard include/config/FS_ENCRYPTION) \
-    $(wildcard include/config/FS_VERITY) \
-    $(wildcard include/config/EPOLL) \
-    $(wildcard include/config/UNICODE) \
-    $(wildcard include/config/QUOTA) \
-    $(wildcard include/config/FS_DAX) \
-    $(wildcard include/config/BLOCK) \
-  include/linux/wait_bit.h \
-  include/linux/kdev_t.h \
-  include/uapi/linux/kdev_t.h \
-  include/linux/dcache.h \
-  include/linux/rculist_bl.h \
-  include/linux/list_bl.h \
-  include/linux/bit_spinlock.h \
-  include/linux/lockref.h \
-    $(wildcard include/config/ARCH_USE_CMPXCHG_LOCKREF) \
-  include/linux/stringhash.h \
-    $(wildcard include/config/DCACHE_WORD_ACCESS) \
-  include/linux/hash.h \
-    $(wildcard include/config/HAVE_ARCH_HASH) \
-  include/linux/path.h \
-  include/linux/list_lru.h \
-  include/linux/shrinker.h \
-  include/linux/capability.h \
-  include/uapi/linux/capability.h \
-  include/linux/semaphore.h \
-  include/linux/fcntl.h \
-    $(wildcard include/config/ARCH_32BIT_OFF_T) \
-  include/uapi/linux/fcntl.h \
-  arch/x86/include/generated/uapi/asm/fcntl.h \
-  include/uapi/asm-generic/fcntl.h \
-  include/uapi/linux/openat2.h \
-  include/linux/migrate_mode.h \
-  include/linux/percpu-rwsem.h \
-  include/linux/rcuwait.h \
-  include/linux/sched/signal.h \
-    $(wildcard include/config/SCHED_AUTOGROUP) \
-    $(wildcard include/config/BSD_PROCESS_ACCT) \
-    $(wildcard include/config/TASKSTATS) \
-    $(wildcard include/config/STACK_GROWSUP) \
-  include/linux/signal.h \
-    $(wildcard include/config/DYNAMIC_SIGFRAME) \
-  include/linux/sched/jobctl.h \
-  include/linux/sched/task.h \
-    $(wildcard include/config/HAVE_EXIT_THREAD) \
-    $(wildcard include/config/ARCH_WANTS_DYNAMIC_TASK_STRUCT) \
-    $(wildcard include/config/HAVE_ARCH_THREAD_STRUCT_WHITELIST) \
-  include/linux/uaccess.h \
-  include/linux/fault-inject-usercopy.h \
-    $(wildcard include/config/FAULT_INJECTION_USERCOPY) \
-  arch/x86/include/asm/uaccess.h \
-    $(wildcard include/config/CC_HAS_ASM_GOTO_OUTPUT) \
-    $(wildcard include/config/CC_HAS_ASM_GOTO_TIED_OUTPUT) \
-    $(wildcard include/config/ARCH_HAS_COPY_MC) \
-    $(wildcard include/config/X86_INTEL_USERCOPY) \
-  arch/x86/include/asm/smap.h \
-  arch/x86/include/asm/extable.h \
-    $(wildcard include/config/BPF_JIT) \
-  include/asm-generic/access_ok.h \
-    $(wildcard include/config/ALTERNATE_USER_ADDRESS_SPACE) \
-  arch/x86/include/asm/uaccess_32.h \
-  include/linux/cred.h \
-    $(wildcard include/config/DEBUG_CREDENTIALS) \
-  include/linux/key.h \
-    $(wildcard include/config/KEY_NOTIFICATIONS) \
-    $(wildcard include/config/NET) \
-  include/linux/assoc_array.h \
-    $(wildcard include/config/ASSOCIATIVE_ARRAY) \
-  include/linux/sched/user.h \
-    $(wildcard include/config/WATCH_QUEUE) \
-  include/linux/percpu_counter.h \
-  include/linux/rcu_sync.h \
-  include/linux/delayed_call.h \
-  include/linux/errseq.h \
-  include/linux/ioprio.h \
-  include/linux/sched/rt.h \
-  include/linux/iocontext.h \
-    $(wildcard include/config/BLK_ICQ) \
-  include/uapi/linux/ioprio.h \
-  include/linux/fs_types.h \
-  include/linux/mount.h \
-  include/linux/mnt_idmapping.h \
-  include/uapi/linux/fs.h \
-  include/linux/quota.h \
-    $(wildcard include/config/QUOTA_NETLINK_INTERFACE) \
-  include/uapi/linux/dqblk_xfs.h \
-  include/linux/dqblk_v1.h \
-  include/linux/dqblk_v2.h \
-  include/linux/dqblk_qtree.h \
-  include/linux/projid.h \
-  include/uapi/linux/quota.h \
-  include/linux/nfs_fs_i.h \
-  include/linux/seq_file.h \
-  include/linux/string_helpers.h \
-  include/linux/ns_common.h \
-  include/linux/nsproxy.h \
-  include/linux/user_namespace.h \
-    $(wildcard include/config/INOTIFY_USER) \
-    $(wildcard include/config/FANOTIFY) \
-    $(wildcard include/config/PERSISTENT_KEYRINGS) \
-  include/linux/kernel_stat.h \
-  include/linux/interrupt.h \
-    $(wildcard include/config/IRQ_FORCED_THREADING) \
-    $(wildcard include/config/GENERIC_IRQ_PROBE) \
-    $(wildcard include/config/IRQ_TIMINGS) \
-  include/linux/irqreturn.h \
-  include/linux/irqnr.h \
-  include/uapi/linux/irqnr.h \
-  include/linux/hardirq.h \
-  include/linux/context_tracking_state.h \
-    $(wildcard include/config/CONTEXT_TRACKING) \
-  include/linux/ftrace_irq.h \
-    $(wildcard include/config/HWLAT_TRACER) \
-    $(wildcard include/config/OSNOISE_TRACER) \
-  include/linux/vtime.h \
-    $(wildcard include/config/VIRT_CPU_ACCOUNTING) \
-    $(wildcard include/config/IRQ_TIME_ACCOUNTING) \
-  arch/x86/include/asm/hardirq.h \
-    $(wildcard include/config/KVM_INTEL) \
-    $(wildcard include/config/X86_THERMAL_VECTOR) \
-    $(wildcard include/config/X86_MCE_THRESHOLD) \
-    $(wildcard include/config/X86_MCE_AMD) \
-    $(wildcard include/config/X86_HV_CALLBACK_VECTOR) \
-  arch/x86/include/asm/irq.h \
-  arch/x86/include/asm/sections.h \
-  include/asm-generic/sections.h \
-    $(wildcard include/config/HAVE_FUNCTION_DESCRIPTORS) \
-  include/linux/cgroup-defs.h \
-    $(wildcard include/config/CGROUP_NET_CLASSID) \
-    $(wildcard include/config/CGROUP_NET_PRIO) \
-  include/linux/u64_stats_sync.h \
-  include/linux/bpf-cgroup-defs.h \
-  include/linux/psi_types.h \
-  include/linux/kthread.h \
-  include/linux/cgroup_subsys.h \
-    $(wildcard include/config/CGROUP_DEVICE) \
-    $(wildcard include/config/CGROUP_FREEZER) \
-    $(wildcard include/config/CGROUP_PERF) \
-    $(wildcard include/config/CGROUP_HUGETLB) \
-    $(wildcard include/config/CGROUP_PIDS) \
-    $(wildcard include/config/CGROUP_RDMA) \
-    $(wildcard include/config/CGROUP_MISC) \
-    $(wildcard include/config/CGROUP_DEBUG) \
-  include/linux/vm_event_item.h \
-    $(wildcard include/config/HAVE_ARCH_TRANSPARENT_HUGEPAGE_PUD) \
-    $(wildcard include/config/MEMORY_BALLOON) \
-    $(wildcard include/config/BALLOON_COMPACTION) \
-    $(wildcard include/config/DEBUG_TLBFLUSH) \
-    $(wildcard include/config/DEBUG_VM_VMACACHE) \
-  include/linux/page_counter.h \
-  include/linux/vmpressure.h \
-  include/linux/eventfd.h \
-  include/linux/mm.h \
-    $(wildcard include/config/HAVE_ARCH_MMAP_RND_BITS) \
-    $(wildcard include/config/HAVE_ARCH_MMAP_RND_COMPAT_BITS) \
-    $(wildcard include/config/ARCH_USES_HIGH_VMA_FLAGS) \
-    $(wildcard include/config/ARCH_HAS_PKEYS) \
-    $(wildcard include/config/PPC) \
-    $(wildcard include/config/PARISC) \
-    $(wildcard include/config/SPARC64) \
-    $(wildcard include/config/ARM64_MTE) \
-    $(wildcard include/config/HAVE_ARCH_USERFAULTFD_MINOR) \
-    $(wildcard include/config/SHMEM) \
-    $(wildcard include/config/ARCH_HAS_PTE_SPECIAL) \
-    $(wildcard include/config/ARCH_HAS_PTE_DEVMAP) \
-    $(wildcard include/config/DEBUG_VM_RB) \
-    $(wildcard include/config/PAGE_POISONING) \
-    $(wildcard include/config/INIT_ON_ALLOC_DEFAULT_ON) \
-    $(wildcard include/config/INIT_ON_FREE_DEFAULT_ON) \
-    $(wildcard include/config/DEBUG_PAGEALLOC) \
-    $(wildcard include/config/HUGETLBFS) \
-    $(wildcard include/config/MAPPING_DIRTY_HELPERS) \
-    $(wildcard include/config/ANON_VMA_NAME) \
-  include/linux/mmap_lock.h \
-  include/linux/page_ext.h \
-  include/linux/stacktrace.h \
-    $(wildcard include/config/ARCH_STACKWALK) \
-    $(wildcard include/config/STACKTRACE) \
-    $(wildcard include/config/HAVE_RELIABLE_STACKTRACE) \
-  include/linux/stackdepot.h \
-    $(wildcard include/config/STACKDEPOT_ALWAYS_INIT) \
-  include/linux/page_ref.h \
-    $(wildcard include/config/DEBUG_PAGE_REF) \
-  include/linux/sizes.h \
-  include/linux/pgtable.h \
-    $(wildcard include/config/HIGHPTE) \
-    $(wildcard include/config/GUP_GET_PTE_LOW_HIGH) \
-    $(wildcard include/config/HAVE_ARCH_SOFT_DIRTY) \
-    $(wildcard include/config/ARCH_ENABLE_THP_MIGRATION) \
-    $(wildcard include/config/X86_ESPFIX64) \
-  arch/x86/include/asm/pgtable.h \
-    $(wildcard include/config/DEBUG_WX) \
-    $(wildcard include/config/PAGE_TABLE_CHECK) \
-  arch/x86/include/asm/pkru.h \
-  arch/x86/include/asm/fpu/api.h \
-    $(wildcard include/config/X86_DEBUG_FPU) \
-  arch/x86/include/asm/coco.h \
-  include/asm-generic/pgtable_uffd.h \
-  include/linux/page_table_check.h \
-  arch/x86/include/asm/pgtable_32.h \
-  arch/x86/include/asm/pgtable-3level.h \
-  arch/x86/include/asm/pgtable-invert.h \
-  include/linux/huge_mm.h \
-  include/linux/sched/coredump.h \
-    $(wildcard include/config/CORE_DUMP_DEFAULT_ELF_HEADERS) \
-  include/linux/vmstat.h \
-    $(wildcard include/config/VM_EVENT_COUNTERS) \
-  include/linux/writeback.h \
-  include/linux/flex_proportions.h \
-  include/linux/backing-dev-defs.h \
-    $(wildcard include/config/DEBUG_FS) \
-  include/linux/blk_types.h \
-    $(wildcard include/config/FAIL_MAKE_REQUEST) \
-    $(wildcard include/config/BLK_CGROUP_IOCOST) \
-    $(wildcard include/config/BLK_INLINE_ENCRYPTION) \
-    $(wildcard include/config/BLK_DEV_INTEGRITY) \
-  include/linux/bvec.h \
-  include/linux/highmem.h \
-  include/linux/cacheflush.h \
-  arch/x86/include/asm/cacheflush.h \
-  include/asm-generic/cacheflush.h \
-  include/linux/highmem-internal.h \
-  arch/x86/include/asm/highmem.h \
-  arch/x86/include/asm/tlbflush.h \
-  arch/x86/include/asm/invpcid.h \
-  arch/x86/include/asm/pti.h \
-  include/linux/bio.h \
-  include/linux/mempool.h \
-  include/linux/uio.h \
-    $(wildcard include/config/ARCH_HAS_UACCESS_FLUSHCACHE) \
-  include/uapi/linux/uio.h \
-  include/linux/node.h \
-    $(wildcard include/config/HMEM_REPORTING) \
-  include/linux/pagemap.h \
-  include/linux/hugetlb_inline.h \
-  include/uapi/linux/mempolicy.h \
-  include/linux/freezer.h \
-  include/uapi/linux/i2c.h \
-  include/linux/videodev2.h \
-  include/uapi/linux/videodev2.h \
-  include/uapi/linux/v4l2-common.h \
-  include/uapi/linux/v4l2-controls.h \
-  include/media/v4l2-device.h \
-    $(wildcard include/config/VIDEO_V4L2_SUBDEV_API) \
-  include/media/media-device.h \
-    $(wildcard include/config/MEDIA_CONTROLLER) \
-  include/media/media-devnode.h \
-  include/linux/poll.h \
-  include/uapi/linux/poll.h \
-  arch/x86/include/generated/uapi/asm/poll.h \
-  include/uapi/asm-generic/poll.h \
-  include/uapi/linux/eventpoll.h \
-  include/linux/cdev.h \
-  include/media/media-entity.h \
-  include/uapi/linux/media.h \
-  include/media/v4l2-subdev.h \
-  include/uapi/linux/v4l2-subdev.h \
-  include/uapi/linux/v4l2-mediabus.h \
-  include/uapi/linux/media-bus-format.h \
-  include/media/v4l2-async.h \
-  include/media/v4l2-common.h \
-    $(wildcard include/config/VIDEO_V4L2_I2C) \
-    $(wildcard include/config/SPI) \
-  include/media/v4l2-dev.h \
-  include/linux/spi/spi.h \
-    $(wildcard include/config/SPI_SLAVE) \
-  include/linux/scatterlist.h \
-    $(wildcard include/config/NEED_SG_DMA_LENGTH) \
-    $(wildcard include/config/DEBUG_SG) \
-    $(wildcard include/config/SGL_ALLOC) \
-    $(wildcard include/config/ARCH_NO_SG_CHAIN) \
-    $(wildcard include/config/SG_POOL) \
-  include/linux/gpio/consumer.h \
-    $(wildcard include/config/OF_GPIO) \
-    $(wildcard include/config/GPIO_SYSFS) \
-  include/uapi/linux/spi/spi.h \
-  include/media/v4l2-fh.h \
-  include/media/v4l2-mediabus.h \
-  include/media/i2c/upd64083.h \
+K_RCD + 1)
+		count = RXCLK_RCD;
+	else if (count < 2)
+		count = 1;
+	else
+		count--;
+	return (u16) count;
+}
 
-drivers/media/i2c/upd64083.o: $(deps_drivers/media/i2c/upd64083.o)
+/*
+ * IR Control Register helpers
+ */
+enum tx_fifo_watermark {
+	TX_FIFO_HALF_EMPTY = 0,
+	TX_FIFO_EMPTY      = CNTRL_TIC,
+};
 
-$(deps_drivers/media/i2c/upd64083.o):
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    cmd_kernel/bpf/cgroup.o := gcc -Wp,-MMD,kernel/bpf/.cgroup.o.d -nostdinc -I./arch/x86/include -I./arch/x86/include/generated  -I./include -I./arch/x86/include/uapi -I./arch/x86/include/generated/uapi -I./include/uapi -I./include/generated/uapi -include ./include/linux/compiler-version.h -include ./include/linux/kconfig.h -include ./include/linux/compiler_types.h -D__KERNEL__ -fmacro-prefix-map=./= -Wall -Wundef -Werror=strict-prototypes -Wno-trigraphs -fno-strict-aliasing -fno-common -fshort-wchar -fno-PIE -Werror=implicit-function-declaration -Werror=implicit-int -Werror=return-type -Wno-format-security -std=gnu11 -mno-sse -mno-mmx -mno-sse2 -mno-3dnow -mno-avx -fcf-protection=none -m32 -msoft-float -mregparm=3 -freg-struct-return -fno-pic -mpreferred-stack-boundary=2 -march=i686 -mtune=pentium3 -mtune=generic -Wa,-mtune=generic32 -ffreestanding -mstack-protector-guard-reg=fs -mstack-protector-guard-symbol=__stack_chk_guard -Wno-sign-compare -fno-asynchronous-unwind-tables -mindirect-branch=thunk-extern -mindirect-branch-register -fno-jump-tables -fno-delete-null-pointer-checks -Wno-frame-address -Wno-format-truncation -Wno-format-overflow -Wno-address-of-packed-member -O2 -fno-allow-store-data-races -fstack-protector-strong -Wimplicit-fallthrough=5 -Wno-main -Wno-unused-but-set-variable -Wno-unused-const-variable -fno-stack-clash-protection -pg -mrecord-mcount -mfentry -DCC_USING_FENTRY -Wdeclaration-after-statement -Wvla -Wno-pointer-sign -Wcast-function-type -Wno-stringop-truncation -Wno-stringop-overflow -Wno-restrict -Wno-maybe-uninitialized -Wno-alloc-size-larger-than -fno-strict-overflow -fno-stack-check -fconserve-stack -Werror=date-time -Werror=incompatible-pointer-types -Werror=designated-init -Wno-packed-not-aligned    -DKBUILD_MODFILE='"kernel/bpf/cgroup"' -DKBUILD_BASENAME='"cgroup"' -DKBUILD_MODNAME='"cgroup"' -D__KBUILD_MODNAME=kmod_cgroup -c -o kernel/bpf/cgroup.o kernel/bpf/cgroup.c 
+enum rx_fifo_watermark {
+	RX_FIFO_HALF_FULL = 0,
+	RX_FIFO_NOT_EMPTY = CNTRL_RIC,
+};
 
-source_kernel/bpf/cgroup.o := kernel/bpf/cgroup.c
+static inline void control_tx_irq_watermark(struct cx23885_dev *dev,
+					    enum tx_fifo_watermark level)
+{
+	cx23888_ir_and_or4(dev, CX23888_IR_CNTRL_REG, ~CNTRL_TIC, level);
+}
 
-deps_kernel/bpf/cgroup.o := \
-    $(wildcard include/config/NET) \
-    $(wildcard include/config/INET) \
-  include/linux/compiler-version.h \
-    $(wildcard include/config/CC_VERSION_TEXT) \
-  include/linux/kconfig.h \
-    $(wildcard include/config/CPU_BIG_ENDIAN) \
-    $(wildcard include/config/BOOGER) \
-    $(wildcard include/config/FOO) \
-  include/linux/compiler_types.h \
-    $(wildcard include/config/DEBUG_INFO_BTF) \
-    $(wildcard include/config/PAHOLE_HAS_BTF_TAG) \
-    $(wildcard include/config/HAVE_ARCH_COMPILER_H) \
-    $(wildcard include/config/CC_HAS_ASM_INLINE) \
-  include/linux/compiler_attributes.h \
-  include/linux/compiler-gcc.h \
-    $(wildcard include/config/RETPOLINE) \
-    $(wildcard include/config/ARCH_USE_BUILTIN_BSWAP) \
-    $(wildcard include/config/SHADOW_CALL_STACK) \
-    $(wildcard include/config/KCOV) \
-  include/linux/kernel.h \
-    $(wildcard include/config/PREEMPT_VOLUNTARY_BUILD) \
-    $(wildcard include/config/PREEMPT_DYNAMIC) \
-    $(wildcard include/config/HAVE_PREEMPT_DYNAMIC_CALL) \
-    $(wildcard include/config/HAVE_PREEMPT_DYNAMIC_KEY) \
-    $(wildcard include/config/PREEMPT_) \
-    $(wildcard include/config/DEBUG_ATOMIC_SLEEP) \
-    $(wildcard include/config/SMP) \
-    $(wildcard include/config/MMU) \
-    $(wildcard include/config/PROVE_LOCKING) \
-    $(wildcard include/config/TRACING) \
-    $(wildcard include/config/FTRACE_MCOUNT_RECORD) \
-  include/linux/stdarg.h \
-  include/linux/align.h \
-  include/linux/const.h \
-  include/vdso/const.h \
-  include/uapi/linux/const.h \
-  include/linux/limits.h \
-  include/uapi/linux/limits.h \
-  include/linux/types.h \
-    $(wildcard include/config/HAVE_UID16) \
-    $(wildcard include/config/UID16) \
-    $(wildcard include/config/ARCH_DMA_ADDR_T_64BIT) \
-    $(wildcard include/config/PHYS_ADDR_T_64BIT) \
-    $(wildcard include/config/64BIT) \
-    $(wildcard include/config/ARCH_32BIT_USTAT_F_TINODE) \
-  include/uapi/linux/types.h \
-  arch/x86/include/generated/uapi/asm/types.h \
-  include/uapi/asm-generic/types.h \
-  include/asm-generic/int-ll64.h \
-  include/uapi/asm-generic/int-ll64.h \
-  arch§ÛŒßõÂ§¹ Š“i£g‚g]®“ò3;mî¶"êğW]é.XÏ¢1Œ@ÖõêKÈwBŒh2™™š	0[ŸŒ£®—ä@ıª[Õ€{ Ø¢”—ÕxÿÑHôA•Q~rb)€Ao–ÊXš+úû–{ğP€²fÃ’—ñäq$§6dq%G4dˆãŸ)£ G
-·‹%<´nÕä9Å•òqEÔ^Ç¦AçGWØÖ-`pw·ùßÎÉ®ğvu\ç<“H‹¶´-Bç†©ÎÂ&&ÏGFFòÃ´ÓßbïZĞX²¹iA˜·œì¯tË¶B£’&$í¦l^—Ù2p³*ì*É'Lô/>‡˜\põê{î~…iû‡êá›•Äp¸×&^Ô"«Ë¦°€Sı²¢rDÀ‹®À¹’l‰ãÑÛ"¨“¯2Væ%RÂHHnGrv;éPÄ8âÀsğ3¿u[Íün05¨J¶aµR;™Œ:#w”}”ÎıùTŞ/­'ZÔvs9Tô•š¾±ôÌ=„´óO„:Àš[^$ª˜¶… ‰«Ëû®‰¤‰¬~ízê†(.°ºóV(na	›ò±´m[»w=-ã•øõ÷Ş½ûõÈÚ
-È¤@Ğ5F.”øØÚ¶QŸ:sˆ!ßæ>f¦„ö¿A;ª†i’ØÒ„ïâ]˜Z÷¾s\ÎÒ°úµ…¤'Áï Ë©iLX×M¡IKÅ	é§ ı­p“Eƒ›İsór\Õ“iªv’g×ÕzC”½zÙ a
-ªRss„äÈîG¨ì+M4HŸqWònÒ&´×Ààñ¢JFÊÿÊj©DjjÌ	pÌ¸ş7KÚ[ù´É¤!Ëõ1ò?ú×<[:Ù*^>›ú=–^rì˜8ü´®jÎ4óY–ôÄøN«•¦ãØ¼‹§:©9í­ÀRq"%£©A–‡æıãİ¼ ;Éš
-öˆy¶¿å^šº¦ªú1»ÑÆ$Î
-QnMrwÛ4–V0ãÀ¸Gú½¶œõµÎ¾•å(vJ]€â¾H”RÓƒ¹[šÑ™}Á=-h1§'´®RôÖ‹xŸ¾:ÁÛ%]ÅGn<˜[eú·‚—îÚ®^5>$Éš>Ş"´péÊ À9+çDÂÛ×2º„7|ˆü\3\ûæ?&§BC÷
-†ñ¤¼äÎÔÿ)?ÿ‚vMK‡a5Ê¤WóÚ¢WÕÿÏßõêûGV
-„¢ÌŸYm"Í†'ó”¢z÷t:¾)4÷ü$²ü,î P‘š>b—^RŒ•Ÿu‘ÜV)¾uœ:—·Gg»j­s<nt7ƒ•O­€@ÚÖ„Ó¾¼,õòõ¥Åÿ8Ta&léô£Ëkê„mè–ˆRèq?N.Åx½ÍcD8%-]ÏØ!EgXĞ_¶FÃƒŞ¶tnM
-T`~­¥oá›ƒÖÃûÂÌPb z@CuâƒGÿ*Â†g,ÆÑC¬ˆÕ h}>Xzâ2£÷ºq“U!(>®ÆlŸ3îÌÖÈØ÷
-Î¤ıÏ	jSÂÊõõ¬WÔ·ìºüy:úf{]0D•1ïÅ=½¶ßÂ·¼ã,K=óÿîuhøxÓïx&5Ñn’¬–º}I¦Œ,"A³X^C¿A!ßVÓeQp»©`Ñ!škêktl»}	é‘ñsä€âp$jD[H—]®À‚ÓH!ùµ\¯0·Û¿ˆ‚74"æ‡­—EÖÖyíİ4pèÓgs£*‡dÜ’–Â³+P·ïõw\çNe«dK½ş¡¢™»œi)N¾Átql~±÷‘8©ùòÔÏ_šd+N‘$%ı8Ì¯¼Ò<¹„Æß¦ô&Ni€L[Û°_"Âë°ò±İ¤§[s«e=ˆ2E{ CA4«X°¤ø$‹I9¼Amtˆ‘h²EêÃkÅ~>%îs•ÙéA‘èIoqÎùm‚ÇÊeõÎşF°ÔyX‰	Ÿ-u@ñ§Ì0òş”w|K`FkxœESBœ¯G}Í¸Ù¡Z,j‡ H •öÈ5.ša.-ÁEÕ’Â-Ü*l¨guy´bçèåµşeL±âÉ³ºûÉx*Š4¥:ÄÚÔGOÑìïp?ş*¤diçå«¶DÆ½ó+Âğ{µİíØƒOáã™m\NYm@+ˆ½G²ÑÏóBŠ,e½>aòÑx7¨æ|gÚ¨(ÿk<ÊE/ôÃ‹Ğæ’W6Û›¼Õq×6(Cá=¥S…<+;Åß§®o*Úf»ém²ÿÎªê¨avl&p†Ò^-Àõ?ÃO±Sf2òd]x Ğ_·
-F>%ñ®&ÌsèãÉé­•:¡F<5{,ü(ï(AælÈb›Á²$ş¬E©s”^ ÍŸóÁDBûf‘æ€y‘{é»PÜc·,|Ï–L•g5‘—6ÿ†,5š>–<³T­3Ù2•'&Z"ÉÃæ†4qı4œÒ9¹DØ©ÿÆÑ
-üÚ½uùuŸTåuñ­Ó€6o‹É¦ä˜r4A¶²)HmıÇ“»xó¡_U'h…	¦a¯†ÇœMìğ3Ÿ/m`?ŠáÊèŒñ† Æf(}'G‡\´ÜÓ°ùÚ¢7æc°ï
-ZBCÎ¿Õé+4óWSe"«ApêY€=IúTxQ®éV'}pŒñÑ¬PZ=Oçğ°!ç^h¬<¸£cˆ¾2x‘èÖA1Âˆ¢ŠI#µ7æø·5SÖÙüÏÉûç¥jæ¬ÇşÓN ÔŞÚøûh:ÉKƒU$5=ÿ9eĞ°F½Ì}|Êò8hªÏ`Å¡\~³ß¾‰ıàËÀxµöáX:;•úĞšÏ¾¨g'x“Y´Lo4§5~4†?k@D]‹ãÛô×â§¼ªÎvMİEer”	íâ%ÅîOcøªá—;kM¤`~8Ÿ6tµ¡‘?fØ+ğB¾·™eæsr»NTN¾™¼bÀxµ>°Tx×#±ÚÜ«FÆÿo ÿ6-×Õûg–›qZ‚HÄ¾YÈ@ÏvæƒŒê¼Ù°Ù4ËáGÔA©2Dš3›†µ³p.6}S_12‚ä×çæZƒÆ¦ÖÊÆO`<²>hÓÛ)ğöGT!O§Ù;ÚÆ)ğ\¨€‰åd ¶Îvb#·²ƒdP…Lí§ÁWSw‘j; h^©di ”vQYõ¤j¤Ëy™M%¨ÉòC´~N}LíGZÛAHØRĞ‰¿ÙûÅ“µwÃËèyÉm°b ±`Ÿs‰éOŞŠ—LÖ›¬s(“ƒ»ê“—K[LÒ6f¨8”¸ms‹Õ)5ÏÇ_³¡>çª¼—FÙ.íĞş`}G¶Îrv@ld£6åÕÛıú¶?UU¦·CaÛ¬1Ï,à†-0…­tTÄNlï@ÿã DÌ—V4™İ;ADuÚ/qšL“6X«‡“ııŠ9wµëA2Šµ–œ`W¤’Ÿ‹°¸u.=ö¡µ!.piÍúÒfc­üÿ¡¿õlua4@“@×]`‚÷ÿ8V-¹…Â5>Œşı°¼{áÙ5"!X¶oê¦ïá=ÁÈT,4¿ƒ&€çgå•J& t±¹‚ÏfzŠ$µÊÒ1Ò–€‚ô¨SA©¹8š ë<¼ÉÓŸ­DšuMÅw`Có5Ìä™àç–8nª*0û|û åıÑş,áhËu½MV.|h)Q«Fc1$9Èw•–Xò¸Ímüë´ÿ£ƒˆÛF@1U—M=µâß,éÒ0B_,3©=V‹³…ªÏq%í’R4€½}|%#Áò^&,ƒı|i{¬İLz7„²¸gb¨7`Kls¸£_,ScÅ¸çmİ4#¹•Â8ÎÍ@Ìw’æÄß6\Ö@™F0mÜŸO8‡Ïêu¢4ªry){‹YLw¾jDM=2Úß’?ä i«²¯sF1h­= iLË!ê{pV˜ ˜jTÈ¤£ìÜRb ÊYÃlH9«> só§(¿JÉ˜7iO„_ÁÑÔé]•€DsRPP#T#LX’ÊŸ<RşÊsN¬ÄÈà$€*ªûepzãP T9]5ÂlìÖ—e2?*îf3±gˆÏ£S0B˜¸m‡¨¿N=…ék[­« ¥#$œ—pbO®QÔ¥JÁn´õè}j©W™1å/Ìïb*‡ñüáyt-×âksÙ£MÕàR'—Á9›HMv·>š†ÍpãŒ Á3”†Ü²Œ§´D¬Æ²ù’3É¡¶û¼ó
-Óqòö›K€¥X»ü •ğ—¨ş–MGàw&E.4 š>EÿxZşÉ!.á&°ìë{>ù_¼`h¢)lUD¬¸qÆ´ñI<>öPµI×E5±]Y	ItÇğ1àÃ®Å$¯Ÿ]Š°-Gå	¥7¸Qê;L2Æ¤ áŞï3ğp¥ŠîtÓúƒ^<±ÚËÔ¢Än[¬É×’¼+#ÉOLvbYíËöKR8˜(•ìF?DÏ„Ò•¬õ°mÏÑˆB‡ölÆÊçkûÛ.²ÏRånçÈ&‰½a\r^øzöbğCmà‘E™ª*+¬ÁOÌ^åO.IÓ5Ù‰@‚©(Û~‹?j–Éˆ—¤ĞÅ÷Ï¨xD+š–R$—“=ÅõH~¸İS¾égËjÁÉî|ÎêcenU¸ï.»>Ë]dÎºèÉçápGk$áIÚrtÚãÁb'éÌ… ÓÓ|ş¢'½ö\M•¦N›ãŠÖ¿³ÌÃDŞÛñS5#³Ô,Pm46z\™Şb¢aö	h$b­ë‹ˆ:‡ûÏº½GG#°UBzø½"XüFèÇñ/r‚Ò·>^È©Ë ¬\Ke-·æ›’àÍP„¼\)¬ËûwM˜e·eFŞ§J€œó—"˜X9½éöÅò‚ò÷“~İÑxr–íßõIÒq§»ôb‘É=ÿl¶+8™q&\eÍ,sØåó°u»À®ë
-‚ÿ6£•€ò³ ¥°ÖØ¶J²:VèBÌ'A´VÇÉƒ8Æ¬ü‰=H¤¸ìs¾mÃÂyÑè=Ò…åE"ê_4oóÏ›
-XáLÃ	 acl§ö0Dƒ èW2-‘¼7(æ*	êîı‡=¬Lé ÅäŸ×Èóøü¬®†GaJy½v[‡ìõ³ı·0Æ¼´|J«úé;¶lïn»ìô•9g-Õjªdğ G+Öö‡y‘TG¬ÌªhîøÀÙÀ-ÎPkz?=ÕLÙ¾¥0›£<é„ƒ¼œN~ê]sÍ\J^¥æÀYTl°áœ:öuÄrM4œe‰.4ëk„ÎA”¢idÆSÌm+Ç¤©P‰ØrÑÃ Ü"7Âee]›ödª&¼?ÄÍ)%ÄÙšöÇŸ®HÁœğvu˜Úøˆ9êğyè¹„ökM¢¿­ó…1©øÅ¥ü‘Ï…7%ûš«A~ôµŸt%R}™€ıÔ(k}KUpÇ5µø'’ÓSğUaã’Š"ù³¥j1QúåHqßiBèŒÏ6$SŸ{eüŠÑ‘Ç\¿WéìŠ¦¿L¼z˜«%’“T\¾üyMUtÍµJù÷3Ÿ`Ù˜é‰ÁºÇşª[ù;ğã{n•¦1:›Sõ+®CòÏP“[?eš÷ÇQå9İFO­©µ¬!9ƒ5*ŸN9òfñŞ1ãÖè±¨ĞK“?“Ÿ£É]qgÛP&|ûèr[±µaØsjTßWv”^ğjğŸ@$T}õËFÅş6œ_( Ğ ø(%ó¬Jiäâ–÷2ûêøBó?ÙK–¾ûYgØç"kgo©åpÚ"n94’@ÌI%[Ê¬^¶åCy“İTIZ©ğ©`ìøF]¢š±m#ìãè.¶ÑÁBxƒ¥Mš²ÂÈ?ÀéÇÁÎîÄnò½û„†(Év•pscÂFué-³êJ–ˆnÌ¯$ëCÊó[ilDc-¢¾¾Örê™jY$.K9ù}W05ë®Šqc¦}Çƒ;©iÜŞ²`Y`›ïÌ‡ap`¤æZ¥Iæ/½;áx|ŸŞp¥}V¹nô_4ª^1"£`í…¤¨¨ç« A’„í0u Zš¢yu¢æ~õĞÓäw$ï¬ñŸôRE<r­j8²ş¨Éñ»ê'¸jÿaÀzB†ßšK®6ˆ	&tK´dŒHj“ö@™Òİ}]§$¾É§;éEŒ®û0Ş§ò£râyùa}Ø>9ù}¸¬)øŸ\»çâúŞİ¤&&ª0W‰üÈLgfOÚâ#ƒVl˜U”Fğô1AgÄ>mıNVf-ÀBš×‰"8pÿÖÖ½ôŞYÒnGÑ …O¿ËZÄEfzrì‰'ìeù%q¯0r§fKùtÈy‘UM=ßœàQgÒ5à;F…ˆıQÜ¹W³Ò#'µå|G#Òq]%œÀ;úòR('¢òişwúßâÄlšPàÓ¬VĞ_ôâ<'$ù·•o¦Ÿ8å*¢ñkê:z‚U““™"R8 Ä`^Bäı¸sİ{éÚ1=9³”ÜŞw[ğ\6:7ÜuÔÊız«tƒª»¶…ÿJbcFB½P˜â×‘üF [­goóh@ì¿îÌ•RÂG
-×ŸLİOZ–»@•3‹rQXM!RÛ¡?qLHğ^©q_îˆ#f!,¤lQ(E*£øûæ/®Ô¼TI{aòÀ8/İŸûp=îø"ÎÀ>Î<p‹¿]/WQ,2‰PRk¦ƒÄ;{FÚ¸½øƒjOx-‹Ã¯X	´	C‘¿s`ÿ ­LÂBKæ0±ö½è9IÖ9KÂõTD‘+3 S$²7İ³{×1İænwücçº‹;gá&LkÕÕÃ"<õºu&÷¹êş°iÅ½Z˜îË‰İ¿w-aUœa½vs@˜ıFAP•¿4±¤J¼ê¨¦Zè2—‡‰p¶«Lu8ßğ& )	y 53áÂ «B>ŒëRîÌ’1_CÖ”vJrµÒĞ“²ÄÎÃq0²8ÿ…¥Î£Ô*ãƒ\Ü5p0×˜M^qÍŸf`Æ.sGÌw‡ŞoPm“Õ><2”vÕª¾nHUîİg mÜñ	ÀUÅM<Å'X3åğ-?`ÖqRÏêù4mYÂÌæ…#q£ë&i“ŒÀhcísÛ*XZ-¹«X²÷€¢{c;Ë¸I¢±5Y…T€(ÑæÁœXµåFì€êgÍÏ
-àÓmÔVŞç>5˜‹Æ‰öÀã øálƒiŸqæ~ÛLJ~Ì¬ÈpºÓâz‚eÂotØ4¨N–¼(Æèe×ÌœÑ‰©í5—A(!ÆGè º-j1kèeØÔ‹J»@üyNÙ$é1·¬×Nõj,H6§	.dú00„ujeñ•¼ÜP_‰EğV~Î×
-¸p%kÛÀ*Ÿ„ÄØğ¡Œ€x’HT(LÔÈ§u°OW“z›k4_hb
-ØI¶BğŸ5‘‚Q1ÄİI5ç„şHı«VÏ˜şî+„Â+Gº‡Î_¨[ vÒè3ŒèºÒáöVá2zÊãm]$8À­zİšFÙ•:Ö]G‹ê^äm¡€p²Ş~M­×Õ#3{ PŠ	¤éÁË¥ÎD3÷Ä¢~ÎŞ” ¾x¾ì<¸iº¤~ëYbó¯b¿^Mû±ÙI|ttë~›JÃèİ«s'Ñ8³ìrã /%‡qFÚ+ÎàXÆ@+‰às¢h“×î*â¬é}M‚ÄoËÿÎ±å<Sênvı Ûè<ÔU4ouß‡-n/Ú	’ÎŸ/9K&‘BS¹‚¥–ÿ`ÃIiª~Gf™9,»6®@
-ÊcÓ‚ò¿…¼86RDëâóš[ù†!|8â|u[æM}Kä:.©À¬²´Ğ5şPäİ4n¬Õñ»ÚÔ5‹jŞØ}ˆƒqa—ÿÍú‡Â±š	‘îm„îWÂÏZjL)-óè&I®À2Îhtˆ[” Ñ3vì3i²éGŸ_·‹ûz£VPv™8vQ±¢oÉP_$ÂHPªZîP5WI®%]*ÓÚ}=áÀİmÀ2¤2+Ìkø6«oEÏÿóÜwm?ŒF%èLè~»y§àzcwsù‰ªÎGÏ¾-’<[Ã@856Ôıÿı$üÔìQÌïT»±;y¨¨ò›®Li‰pêàºÜÚwG¢òë»2#ë¢a”|R74`İñ_Ú9Q/ÚöÅw–/z;BÛïrÛ -:Ö*NÒßSd@èñ‡D^Aµ=ºQT«à*‹=·@È÷YÊÖÍÔ'bİñâ\s™L´¶NW5À 'AÌr8{aä,ÀFfmyæ³sË5Èí”[Î›Úïd)–i×—ÌåEçPùö@üEM™ËÑÏÔCM²Œ.>òñÃ“ã©õT¾}­X' ‚ƒ?ëì¹¤NQxZj:—:UÊ+ü…8½Ç“" Ÿşl‚r]ğñW´1âÏ3£­ó!ü¼×\Ãt±Ûd¯÷FÑåûÛL-±ªIƒ6ãx†Üš¿9MÄÇìıâ@àüŠšd«±=f8Xbze*÷Û‡# OdÅVóûÁô®kpú@T˜W{!N ©VÇÒ’}¬?m7
-häp;!d«%èóšdØ#´tÆçšN¹9XˆÙx€ÜÂ¦o`ÔVu™Éj0y«æ¿qı<GXÉúAöXŒŒØŒKãévÂ1_#Ñ®Ï‘¿êí®
-ØÄc—4z.¢p*P½Û—™¦`ì5q)uèçp8}Úé´,
-a “qßùTN“x¼ø0qÇ1­–”+äÀ“îÅÏş&ÑP‚¿~ä¬Öø§îö2ÏXùFæˆ¾g9u€F<	[‚XyÎ:›ô{f>ò_H([ù ¸ä0ÖiØËœÖ[xçK	L'.jkø`0¿$SD'cËêüÒş[˜ƒôŸÛx„Ñö1óÜçQ+nxÈ
-0¥Éí§_YˆCk³$õ¢ß¶6åSó8©²eOËtkHd–ĞÓ(RªK¯·ä}´kn×ú§Ó)ˆm¥ Ñ³â
-tZ
-E?§äŠC	˜Õ{‡rçjE¥²¨½I]•şñ¦ö—ïÿ¼¬A+t½‘ˆÌ"™Ï¼nEQú©•²‰j_Qm~ã¶™#ì›;lÇ]j2PœûQóá<v6Ë~-(ğÏHùa+ï6``99zVÛq¶Q[‡º?ëìDî…Ò±íÓä6]Ö~XÍÌ_,\Ùók®öJ7"§Z¡¼€?ÇÿşJ‡	U‰i´˜•â7È2È¾%ëÄË)ø®€š|w™ñ+öf#BøÿÓ¹)«B\SFÏÉó+0EAñØä|(‘àRë{Ñ†²¤UÚc×*¶¯\2.vw&©)¼h!çÔCmÛg€VªÎNsĞ¢•
-˜-´Ô%q†·P$8[‹RD´¹WÏ!ç5¬÷ê.]˜–VÙ0	Câb'Ì½"w3üô@¼EÌu¢í˜y½«ÅuØH‰¾¹aK1®5mÅõz€i™É¼O„”Šï†dB5´/…ô5ÕãÈ\÷Şfä÷‡X”¸K/(Üc8nÎSœ:øóªŞªM<Lz5›yôæƒgk}áz%ÒrP½p]
-cµª,µ·ßL pFÒê,‚÷Cş øÕAƒüñ'È>rğ…ş¥~×ú$P•	0ÇÔŒ9Ÿ¡­-Í¤Måıôâ‘„ğÜÖ£ûë2|&ix(›ëXÓyT›£?^İ§ºÊñVúì×oÃ£Š<lJ²Z"ƒìØí–BÉßtŠÕÑ¶c?i:	dîÃ/’Øş&`w7wì;š+”¶Ç¬Ï”èÕªÖòÃ/–Î#ÊÌ¯k,³Àj/‹~o],ì¯á½íİ¶TPÒò(
-í•KÄ¥¨wÄÅUEb³Jr_N,‡’‹…ˆ	–$9(96ÿ™ÉI\–o>5ÔèlÇÃ% 4«ov˜/¾ûüc+D"àY|ˆ
-İòçùüJëU¸ktÉ‡Ò‹Ì§ú¡””g?¶x6æ<Æ,Óz—WZêBÔš š*`'aè1gW9 !!>Üá{T~éúƒ‚Ë5sË† È¦rîAÁ¢J‹Y¶˜@ü5`eÖØ€Á¥R §€/ãuiKÑú0Š­útıØ0r~“+£!šSŞ€vr9ª_ïFåS£Ö¤\Ij€H¹©ş–&óO¶Zæ@œÀ…®@w#}¨tµ²I&ßVXL†Ø5@XdcÔÓÏtÌ?%bÜÂÉ¬u½'´&­š~ƒ|êK®j4—İ’Ú°íëŠ"ÁéÇ½õHÄã5™LX¼0'À«„7òk2¥uÀD Õ{«,[€÷çĞìnÊ¢Sg­9¦.3›¦»¦oSÓ>;+.­êÄ#_Ãó´!œê_WèƒØjSUPwé&ÏU'}9Egîš9|xl=JÕ÷B„.íıcw—®KPp¾–v’¹
-‰«ÉD§Äé89Ét~}ÄH²ˆ•˜ÕùURE˜¬s`2Ú´c¬¢û-Gt³OƒÑ ÇG»¯9±Ãa¹üŠúÚêœğ4INš(ù®©ä½İG6„×pl"ûqk:\óÁNö	÷Ô=Rrº†A{×%kÚ=í[ÀTãÁû9"ûÇ¤À(L>päĞAĞ2ÊXR«ƒw–ì5{5OY„ëqDÆÙ
-Ò²&à"œµ#ë8%W¯Şâˆ‹1866Øó"Rœb;)¤‘å#)[(ª}ÛÃâfïK+ğÒß	/59‰Ú,UG¢!pÎãöºr Rú¤$m Iü»©Ei|¡¸\ulÄ4CÔj°|H;i[ xXÑ´m«˜#DeÁJšLÔ¥¨üŠ"%ÛáíŠ†ılÑT)xşôYä;˜Ù¿¯‰âÌ·İîM´#¬3)èR´³´~SğÑSWtê‘¤û‡ûğÁ×Ç¥i›&ß=hõSÁ°ÒœdOÛ‡clrÚó´¯zj;•ç»†{-üKH]_‰"¹Q;y`‚b:æÑDø®R×Eº<…Gbòh¥ÈµÕï\"¦Ä;$|Ş¨k©JÖ|Î„$ ˆœÚ@h9&[êÂ›/¬ÑL;øh@Ÿ&x&ß2ËÔñd–[j„xŒÃ˜Ú°˜Ã¼…«™7Ú¥ÔªkØ…‡&’„‹ƒäÿuj‰Šr·~Š»B§·q}1œn/ÛÌHÒ™Nl4Ë®kNé+u™ûó6EPÀÀY	²RV—Š‰’ªq™eï@c!+™Eƒƒa+¨yÔ*J‚(Tx²ãgú÷‚d÷y/ÚEœ…A kzşwrn(ªü»t+è+Tİ./Z
-¯}©>Ï´Tğ~ü=ä=<Šß+c)cPhÑ|4™İèbTˆã
-ÒĞ«X;`ÎÕÏñ@Ã~!ôÄĞm‡Së]ãñÿ‡£#Kx’áŸğ=Q›µF cO§•0Êè4{kšqøÕd|ˆĞ$ãci¦!6ÖıûLCî¬@g
-D|sÀ¹K}Ù)¿ÿ¨ªºSŞŠâ7‹¬šYåKqËäxáBÏ×*¿oöa2|¹S#‰EİD¡å¬XWF/§U}ë^< $B(šS—¨ šÃQ¹|npßÁ1÷òŠ¤Åj&—®§Çå!A?ROW'{
-ÚWàú²ÏíJ‘üu‡;{İÎ~ŒßõtóL2WT3DA?¦£ö…oÕZµª3•´“ ¾6QJ'º„ìZˆ7>‚ş¾f<[;‰pÑş(t6)å½Q¸zËg±DKÍg÷v¦[Sú}‰¦L­ rU»õĞÅ×CùÍL¥aFÌò†ÿ0DÃät³0êª*®‚ã5‘À_'Û4±¸É4Â)tç`ä‡v¼“¤¤[<õÄµDù0Òd1·±LEÚ}±÷n–b»LU°`t‹‡KkÕ„c'–HŞÂæ#\—D,ú¦¦zq¸»û©–oµIn0tW¡ŠÈ%Ás\æƒüâ@}}±ÆâÎšÅ	Ïø¡³£Ú@Cè®ÈlñÒçußL“?gb :qº|r7x÷Š³]‚>Ş¢†õğ‘ˆdë[¬ºvfâ#ÚÇ¾é°ô;èØ#ÈNSe¦_@U–Á1˜¹Äcş;¬²|‰'gSaÄJl“ŠäÅÔ']i}Â6ãİ©¿L¹Ã¦gWo¤Ìs³\’U)¦òâ.çqFÍ ëÍ#Sª|/dëÖù-!ˆBØ<h YrJùuµû£Ïæ>6d¸=ªÍku@Ÿ³©ío+mT.ã/‡òô NXStö[kŸpp÷›ş*¤~ã¾AmX(œÂ›ƒCBxToJ©íÖÙš­šEıèrŒ®¨şôTxU½"¹ÓË±•_’®eØ¶ûpT¢Û/´©œ»ˆÓÁ{À›=^59‹Y‚z?Ø&œ2ÃÒİo9I0ğkƒÚÓòãFÊfB™à¹m©õnĞ¬”Sóvw¥G¨ÜoCa•—µ‘^rx* p†D•ÿ1ø¿³=ïš Àã?g˜ÄˆB£m	L=›ŒÙñ—4ÕxÙ ­`,&ªnşñ81ìØÌL^tƒ>\ÿk_AÎ¢|GâJØ† ì°MÈ½0ŠßO2‰xµd³ÿm‰¾ñ0¾„.f=<ÕÄbaÕIÅ%Nò¸òh¹V“İôg>º‹Í]¼ä‹ıxô•FMW»Z É"‡ÒÏœS•=7$6V©ó°æøj¥Ú ˜I–~=XH3×Ìki•>qq‘t;¢_k×;åĞ'2”?®îVoŠPÆ–ÛØĞuÃ‘z°ª~Ÿš4úÁ9Q°îñÇìe}5%ª€ÆW—T\pÈÑvÕâ´
-EÇ©¡3SŒ…İøZìæÒöK·CT¬YÛrC *çøUeé+¿ÍÊ{Jr©ö?ƒ{4îZ€PÖA—èóæd”U¾°p½•å‚å÷sÂ˜o½J¸=¹½yÒQŸ-±™¯#¿Sœv:ŠVöt
- Ş–ØÉÃ*’ìÎ¶âDUâq´	Ş˜‡²ùw6…ûİõq0ú¦•Ğcî5ÇôÚ_2J†şÇv
-zÉÀ·#i"¿2Ò¢Ââ^æèÉD×k+½­PPp~ŒLá.Ä­·ğ‹W¸âÚ
-eo{Í:T³DL
-@Ğ*¾ü¨9I½ï+RéWQğëîW±|‰ËÙ^“{n‡kfÖ¸…®ëI™ëßyoƒ}ü)SÇ0£ÿA…ĞGëCğ$¨Œ¦Ÿ[œcXXÈ6šúêî-&2tsÕ”ó:F]BF·«6í»ËßÄê©Õ1œ2¹­”¦LO?+MB˜éÛdÆ8Q|Í; ÙÛ×ĞÄrVñM™*8	Òà ÕÅpÂ@÷±†fãâŞuù<šYÂaDSŸ)¿Ê†p§—vq)¯+*êĞnøSò%È±¯<äûÖ’˜ ¥ŞÚ?j`µË‘íóH€GÉGvÕÏ¶n§³0šøJ¨Ê"jøŠ½å!Ñ:·'1­]H
-A‡Ï{h€éµ”²`ìú?Ÿ¶õ²«®M–‹…rXµêe¿TÿŠß\òˆ._åÌq'm@]u¾K®Üšk×}å]wådf'Ÿos;ƒÃ-Ğ–G®¿1¶¯s }ùÃn¦…“x }Zlv_ŸóE™õ tÅp©#fMî#]ÂÌ\÷ú/P¿¸#ÀLÂR×8±L
-ë*«j)ôÂkzW}¬8•”½iuùDÂAz¥XŠß<wçÒ jÖí'Bd#ÄnIuÍÔ‘2îó¸ı¸lJ¯ÿC?ÔOÃ¦MqŞ$·¯Q:¼¥ôë|;Äøõ9ÃƒÌôa»I¶c)˜×'°.;lÁ·µÃ6ÿù±Û¡ß}6Ô)©U‡±Æ:Æï2æwÅÀB‹å¼w‘ûGíšT@$]+ƒE{	­Æ*§¥üy¡€“CòNMuãÏÂµ7Ç1üxQ­Q7ÂTÖ­Ç!…†ˆïXN'{çEh›‰e«¦i+`€éû:F*uzÅ°·Ñ:uÂ@œäœÁ§³‹¢C/‰é6èö‹lë—\‹tLZGI5“±mJ[cĞ}Á-¾.ÁÙú#jçù%3O¹28’åó¬}ÂÖtqH)ƒÂ*@"Dä¹hÂ_•›·t‡O³İÂ¥q3™Úúß‡ìq4®u„!Dà•Õhjœ–
- †®¦ºYÕ§:u«€Ş©t†0ˆbŒ¯Ü0Ò´„)w4&]è³½f{ûí^·D$Æã‹+Ã·ND#ke7j…]Ø‘Èk+B¸‡ˆŞ•B[Ç"üÀ_a´.Çæ>Âÿ>'”Á‰ÃbDzÕî‡JPš"š2üp‰`yH³#*mHŠ¨ZVV'‚}7À?sA¸E—,J;Äÿşj¡ÕğÛ¢ÄvKèçU©BÍ#(6¾Ÿ6ß³ÇåßQX·º„´qP´àIÔş»‘tDx-1İÏq GôºşòÌçÕƒóŸŒ½Né'«K÷éy%è9ˆİ-õ ş23EDGÚíòOiÅ!^1ĞÆwrJı™Äõô f½˜¶£¶»l¾”ê~lraÛGDwä8¬¬„F¦]™7?C1-uµ(í¨LüŸéŠÇıù„?Å#I;öe”›í¯
-â4,tÃ¡)K”[ø,P´3ÙR2oæ5GªÑz›¤,KöcI ×¨¦NwqA&\©GôÆd<J%ŠëÕ¾ÅÜÒƒ®•ÂvÍUrU(fàgMÑá “nL
+static inline void control_rx_irq_watermark(struct cx23885_dev *dev,
+					    enum rx_fifo_watermark level)
+{
+	cx23888_ir_and_or4(dev, CX23888_IR_CNTRL_REG, ~CNTRL_RIC, level);
+}
+
+static inline void control_tx_enable(struct cx23885_dev *dev, bool enable)
+{
+	cx23888_ir_and_or4(dev, CX23888_IR_CNTRL_REG, ~(CNTRL_TXE | CNTRL_TFE),
+			   enable ? (CNTRL_TXE | CNTRL_TFE) : 0);
+}
+
+static inline void control_rx_enable(struct cx23885_dev *dev, bool enable)
+{
+	cx23888_ir_and_or4(dev, CX23888_IR_CNTRL_REG, ~(CNTRL_RXE | CNTRL_RFE),
+			   enable ? (CNTRL_RXE | CNTRL_RFE) : 0);
+}
+
+static inline void control_tx_modulation_enable(struct cx23885_dev *dev,
+						bool enable)
+{
+	cx23888_ir_and_or4(dev, CX23888_IR_CNTRL_REG, ~CNTRL_MOD,
+			   enable ? CNTRL_MOD : 0);
+}
+
+static inline void control_rx_demodulation_enable(struct cx23885_dev *dev,
+						  bool enable)
+{
+	cx23888_ir_and_or4(dev, CX23888_IR_CNTRL_REG, ~CNTRL_DMD,
+			   enable ? CNTRL_DMD : 0);
+}
+
+static inline void control_rx_s_edge_detection(struct cx23885_dev *dev,
+					       u32 edge_types)
+{
+	cx23888_ir_and_or4(dev, CX23888_IR_CNTRL_REG, ~CNTRL_EDG_BOTH,
+			   edge_types & CNTRL_EDG_BOTH);
+}
+
+static void control_rx_s_carrier_window(struct cx23885_dev *dev,
+					unsigned int carrier,
+					unsigned int *carrier_range_low,
+					unsigned int *carrier_range_high)
+{
+	u32 v;
+	unsigned int c16 = carrier * 16;
+
+	if (*carrier_range_low < DIV_ROUND_CLOSEST(c16, 16 + 3)) {
+		v = CNTRL_WIN_3_4;
+		*carrier_range_low = DIV_ROUND_CLOSEST(c16, 16 + 4);
+	} else {
+		v = CNTRL_WIN_3_3;
+		*carrier_range_low = DIV_ROUND_CLOSEST(c16, 16 + 3);
+	}
+
+	if (*carrier_range_high > DIV_ROUND_CLOSEST(c16, 16 - 3)) {
+		v |= CNTRL_WIN_4_3;
+		*carrier_range_high = DIV_ROUND_CLOSEST(c16, 16 - 4);
+	} else {
+		v |= CNTRL_WIN_3_3;
+		*carrier_range_high = DIV_ROUND_CLOSEST(c16, 16 - 3);
+	}
+	cx23888_ir_and_or4(dev, CX23888_IR_CNTRL_REG, ~CNTRL_WIN, v);
+}
+
+static inline void control_tx_polarity_invert(struct cx23885_dev *dev,
+					      bool invert)
+{
+	cx23888_ir_and_or4(dev, CX23888_IR_CNTRL_REG, ~CNTRL_CPL,
+			   invert ? CNTRL_CPL : 0);
+}
+
+static inline void control_tx_level_invert(struct cx23885_dev *dev,
+					  bool invert)
+{
+	cx23888_ir_and_or4(dev, CX23888_IR_CNTRL_REG, ~CNTRL_IVO,
+			   invert ? CNTRL_IVO : 0);
+}
+
+/*
+ * IR Rx & Tx Clock Register helpers
+ */
+static unsigned int txclk_tx_s_carrier(struct cx23885_dev *dev,
+				       unsigned int freq,
+				       u16 *divider)
+{
+	*divider = carrier_freq_to_clock_divider(freq);
+	cx23888_ir_write4(dev, CX23888_IR_TXCLK_REG, *divider);
+	return clock_divider_to_carrier_freq(*divider);
+}
+
+static unsigned int rxclk_rx_s_carrier(struct cx23885_dev *dev,
+				       unsigned int freq,
+				       u16 *divider)
+{
+	*divider = carrier_freq_to_clock_divider(freq);
+	cx23888_ir_write4(dev, CX23888_IR_RXCLK_REG, *divider);
+	return clock_divider_to_carrier_freq(*divider);
+}
+
+static u32 txclk_tx_s_max_pulse_width(struct cx23885_dev *dev, u32 ns,
+				      u16 *divider)
+{
+	u64 pulse_clocks;
+
+	if (ns > IR_MAX_DURATION)
+		ns = IR_MAX_DURATION;
+	pulse_clocks = ns_to_pulse_clocks(ns);
+	*divider = pulse_clocks_to_clock_divider(pulse_clocks);
+	cx23888_ir_write4(dev, CX23888_IR_TXCLK_REG, *divider);
+	return (u32) pulse_width_count_to_ns(FIFO_RXTX, *divider);
+}
+
+static u32 rxclk_rx_s_max_pulse_width(struct cx23885_dev *dev, u32 ns,
+				      u16 *divider)
+{
+	u64 pulse_clocks;
+
+	if (ns > IR_MAX_DURATION)
+		ns = IR_MAX_DURATION;
+	pulse_clocks = ns_to_pulse_clocks(ns);
+	*divider = pulse_clocks_to_clock_divider(pulse_clocks);
+	cx23888_ir_write4(dev, CX23888_IR_RXCLK_REG, *divider);
+	return (u32) pulse_width_count_to_ns(FIFO_RXTX, *divider);
+}
+
+/*
+ * IR Tx Carrier Duty Cycle register helpers
+ */
+static unsigned int cduty_tx_s_duty_cycle(struct cx23885_dev *dev,
+					  unsigned int duty_cycle)
+{
+	u32 n;
+	n = DIV_ROUND_CLOSEST(duty_cycle * 100, 625); /* 16ths of 100% */
+	if (n != 0)
+		n--;
+	if (n > 15)
+		n = 15;
+	cx23888_ir_write4(dev, CX23888_IR_CDUTY_REG, n);
+	return DIV_ROUND_CLOSEST((n + 1) * 100, 16);
+}
+
+/*
+ * IR Filter Register helpers
+ */
+static u32 filter_rx_s_min_width(struct cx23885_dev *dev, u32 min_width_ns)
+{
+	u32 count = ns_to_lpf_count(min_width_ns);
+	cx23888_ir_write4(dev, CX23888_IR_FILTR_REG, count);
+	return lpf_count_to_ns(count);
+}
+
+/*
+ * IR IRQ Enable Register helpers
+ */
+static inline void irqenable_rx(struct cx23885_dev *dev, u32 mask)
+{
+	mask &= (IRQEN_RTE | IRQEN_ROE | IRQEN_RSE);
+	cx23888_ir_and_or4(dev, CX23888_IR_IRQEN_REG,
+			   ~(IRQEN_RTE | IRQEN_ROE | IRQEN_RSE), mask);
+}
+
+static inline void irqenable_tx(struct cx23885_dev *dev, u32 mask)
+{
+	mask &= IRQEN_TSE;
+	cx23888_ir_and_or4(dev, CX23888_IR_IRQEN_REG, ~IRQEN_TSE, mask);
+}
+
+/*
+ * V4L2 Subdevice IR Ops
+ */
+static int cx23888_ir_irq_handler(struct v4l2_subdev *sd, u32 status,
+				  bool *handled)
+{
+	struct cx23888_ir_state *state = to_state(sd);
+	struct cx23885_dev *dev = state->dev;
+	unsigned long flags;
+
+	u32 cntrl = cx23888_ir_read4(dev, CX23888_IR_CNTRL_REG);
+	u32 irqen = cx23888_ir_read4(dev, CX23888_IR_IRQEN_REG);
+	u32 stats = cx23888_ir_read4(dev, CX23888_IR_STATS_REG);
+
+	union cx23888_ir_fifo_rec rx_data[FIFO_RX_DEPTH];
+	unsigned int i, j, k;
+	u32 events, v;
+	int tsr, rsr, rto, ror, tse, rse, rte, roe, kror;
+
+	tsr = stats & STATS_TSR; /* Tx FIFO Service Request */
+	rsr = stats & STATS_RSR; /* Rx FIFO Service Request */
+	rto = stats & STATS_RTO; /* Rx Pulse Width Timer Time Out */
+	ror = stats & STATS_ROR; /* Rx FIFO Over Run */
+
+	tse = irqen & IRQEN_TSE; /* Tx FIFO Service Request IRQ Enable */
+	rse = irqen & IRQEN_RSE; /* Rx FIFO Service Request IRQ Enable */
+	rte = irqen & IRQEN_RTE; /* Rx Pulse Width Timer Time Out IRQ Enable */
+	roe = irqen & IRQEN_ROE; /* Rx FIFO Over Run IRQ Enable */
+
+	*handled = false;
+	v4l2_dbg(2, ir_888_debug, sd, "IRQ Status:  %s %s %s %s %s %s\n",
+		 tsr ? "tsr" : "   ", rsr ? "rsr" : "   ",
+		 rto ? "rto" : "   ", ror ? "ror" : "   ",
+		 stats & STATS_TBY ? "tby" : "   ",
+		 stats & STATS_RBY ? "rby" : "   ");
+
+	v4l2_dbg(2, ir_888_debug, sd, "IRQ Enables: %s %s %s %s\n",
+		 tse ? "tse" : "   ", rse ? "rse" : "   ",
+		 rte ? "rte" : "   ", roe ? "roe" : "   ");
+
+	/*
+	 * Transmitter interrupt service
+	 */
+	if (tse && tsr) {
+		/*
+		 * TODO:
+		 * Check the watermark threshold setting
+		 * Pull FIFO_TX_DEPTH or FIFO_TX_DEPTH/2 entries from tx_kfifo
+		 * Push the data to the hardware FIFO.
+		 * If there was nothing more to send in the tx_kfifo, disable
+		 *	the TSR IRQ and notify the v4l2_device.
+		 * If there was something in the tx_kfifo, check the tx_kfifo
+		 *      level and notify the v4l2_device, if it is low.
+		 */
+		/* For now, inhibit TSR interrupt until Tx is implemented */
+		irqenable_tx(dev, 0);
+		events = V4L2_SUBDEV_IR_TX_FIFO_SERVICE_REQ;
+		v4l2_subdev_notify(sd, V4L2_SUBDEV_IR_TX_NOTIFY, &events);
+		*handled = true;
+	}
+
+	/*
+	 * Receiver interrupt service
+	 */
+	kror = 0;
+	if ((rse && rsr) || (rte && rto)) {
+		/*
+		 * Receive data on RSR to clear the STATS_RSR.
+		 * Receive data on RTO, since we may not have yet hit the RSR
+		 * watermark when we receive the RTO.
+		 */
+		for (i = 0, v = FIFO_RX_NDV;
+		     (v & FIFO_RX_NDV) && !kror; i = 0) {
+			for (j = 0;
+			     (v & FIFO_RX_NDV) && j < FIFO_RX_DEPTH; j++) {
+				v = cx23888_ir_read4(dev, CX23888_IR_FIFO_REG);
+				rx_data[i].hw_fifo_data = v & ~FIFO_RX_NDV;
+				i++;
+			}
+			if (i == 0)
+				break;
+			j = i * sizeof(union cx23888_ir_fifo_rec);
+			k = kfifo_in_locked(&state->rx_kfifo,
+				      (unsigned char *) rx_data, j,
+				      &state->rx_kfifo_lock);
+			if (k != j)
+				kror++; /* rx_kfifo over run */
+		}
+		*handled = true;
+	}
+
+	events = 0;
+	v = 0;
+	if (kror) {
+		events |= V4L2_SUBDEV_IR_RX_SW_FIFO_OVERRUN;
+		v4l2_err(sd, "IR receiver software FIFO overrun\n");
+	}
+	if (roe && ror) {
+		/*
+		 * The RX FIFO Enable (CNTRL_RFE) must be toggled to clear
+		 * the Rx FIFO Over Run status (STATS_ROR)
+		 */
+		v |= CNTRL_RFE;
+		events |= V4L2_SUBDEV_IR_RX_HW_FIFO_OVERRUN;
+		v4l2_err(sd, "IR receiver hardware FIFO overrun\n");
+	}
+	if (rte && rto) {
+		/*
+		 * The IR Receiver Enable (CNTRL_RXE) must be toggled to clear
+		 * the Rx Pulse Width Timer Time Out (STATS_RTO)
+		 */
+		v |= CNTRL_RXE;
+		events |= V4L2_SUBDEV_IR_RX_END_OF_RX_DETECTED;
+	}
+	if (v) {
+		/* Clear STATS_ROR & STATS_RTO as needed by resetting hardware */
+		cx23888_ir_write4(dev, CX23888_IR_CNTRL_REG, cntrl & ~v);
+		cx23888_ir_write4(dev, CX23888_IR_CNTRL_REG, cntrl);
+		*handled = true;
+	}
+
+	spin_lock_irqsave(&state->rx_kfifo_lock, flags);
+	if (kfifo_len(&state->rx_kfifo) >= CX23888_IR_RX_KFIFO_SIZE / 2)
+		events |= V4L2_SUBDEV_IR_RX_FIFO_SERVICE_REQ;
+	spin_unlock_irqrestore(&state->rx_kfifo_lock, flags);
+
+	if (events)
+		v4l2_subdev_notify(sd, V4L2_SUBDEV_IR_RX_NOTIFY, &events);
+	return 0;
+}
+
+/* Receiver */
+static int cx23888_ir_rx_read(struct v4l2_subdev *sd, u8 *buf, size_t count,
+			      ssize_t *num)
+{
+	struct cx23888_ir_state *state = to_state(sd);
+	bool invert = (bool) atomic_read(&state->rx_invert);
+	u16 divider = (u16) atomic_read(&state->rxclk_divider);
+
+	unsigned int i, n;
+	union cx23888_ir_fifo_rec *p;
+	unsigned u, v, w;
+
+	n = count / sizeof(union cx23888_ir_fifo_rec)
+		* sizeof(union cx23888_ir_fifo_rec);
+	if (n == 0) {
+		*num = 0;
+		return 0;
+	}
+
+	n = kfifo_out_locked(&state->rx_kfifo, buf, n, &state->rx_kfifo_lock);
+
+	n /= sizeof(union cx23888_ir_fifo_rec);
+	*num = n * sizeof(union cx23888_ir_fifo_rec);
+
+	for (p = (union cx23888_ir_fifo_rec *) buf, i = 0; i < n; p++, i++) {
+
+		if ((p->hw_fifo_data & FIFO_RXTX_RTO) == FIFO_RXTX_RTO) {
+			/* Assume RTO was because of no IR light input */
+			u = 0;
+			w = 1;
+		} else {
+			u = (p->hw_fifo_data & FIFO_RXTX_LVL) ? 1 : 0;
+			if (invert)
+				u = u ? 0 : 1;
+			w = 0;
+		}
+
+		v = (unsigned) pulse_width_count_to_ns(
+				  (u16)(p->hw_fifo_data & FIFO_RXTX), divider) / 1000;
+		if (v > IR_MAX_DURATION)
+			v = IR_MAX_DURATION;
+
+		p->ir_core_data = (struct ir_raw_event)
+			{ .pulse = u, .duration = v, .timeout = w };
+
+		v4l2_dbg(2, ir_888_debug, sd, "rx read: %10u ns  %s  %s\n",
+			 v, u ? "mark" : "space", w ? "(timed out)" : "");
+		if (w)
+			v4l2_dbg(2, ir_888_debug, sd, "rx read: end of rx\n");
+	}
+	return 0;
+}
+
+static int cx23888_ir_rx_g_parameters(struct v4l2_subdev *sd,
+				      struct v4l2_subdev_ir_parameters *p)
+{
+	struct cx23888_ir_state *state = to_state(sd);
+	mutex_lock(&state->rx_params_lock);
+	memcpy(p, &state->rx_params, sizeof(struct v4l2_subdev_ir_parameters));
+	mutex_unlock(&state->rx_params_lock);
+	return 0;
+}
+
+static int cx23888_ir_rx_shutdown(struct v4l2_subdev *sd)
+{
+	struct cx23888_ir_state *state = to_state(sd);
+	struct cx23885_dev *dev = state->dev;
+
+	mutex_lock(&state->rx_params_lock);
+
+	/* Disable or slow down all IR Rx circuits and counters */
+	irqenable_rx(dev, 0);
+	control_rx_enable(dev, false);
+	control_rx_demodulation_enable(dev, false);
+	control_rx_s_edge_detection(dev, CNTRL_EDG_NONE);
+	filter_rx_s_min_width(dev, 0);
+	cx23888_ir_write4(dev, CX23888_IR_RXCLK_REG, RXCLK_RCD);
+
+	state->rx_params.shutdown = true;
+
+	mutex_unlock(&state->rx_params_lock);
+	return 0;
+}
+
+static int cx23888_ir_rx_s_parameters(struct v4l2_subdev *sd,
+				      struct v4l2_subdev_ir_parameters *p)
+{
+	struct cx23888_ir_state *state = to_state(sd);
+	struct cx23885_dev *dev = state->dev;
+	struct v4l2_subdev_ir_parameters *o = &state->rx_params;
+	u16 rxclk_divider;
+
+	if (p->shutdown)
+		return cx23888_ir_rx_shutdown(sd);
+
+	if (p->mode != V4L2_SUBDEV_IR_MODE_PULSE_WIDTH)
+		return -ENOSYS;
+
+	mutex_lock(&state->rx_params_lock);
+
+	o->shutdown = p->shutdown;
+
+	o->mode = p->mode = V4L2_SUBDEV_IR_MODE_PULSE_WIDTH;
+
+	o->bytes_per_data_element = p->bytes_per_data_element
+				  = sizeof(union cx23888_ir_fifo_rec);
+
+	/* Before we tweak the hardware, we have to disable the receiver */
+	irqenable_rx(dev, 0);
+	control_rx_enable(dev, false);
+
+	control_rx_demodulation_enable(dev, p->modulation);
+	o->modulation = p->modulation;
+
+	if (p->modulation) {
+		p->carrier_freq = rxclk_rx_s_carrier(dev, p->carrier_freq,
+						     &rxclk_divider);
+
+		o->carrier_freq = p->carrier_freq;
+
+		o->duty_cycle = p->duty_cycle = 50;
+
+		control_rx_s_carrier_window(dev, p->carrier_freq,
+					    &p->carrier_range_lower,
+					    &p->carrier_range_upper);
+		o->carrier_range_lower = p->carrier_range_lower;
+		o->carrier_range_upper = p->carrier_range_upper;
+
+		p->max_pulse_width =
+			(u32) pulse_width_count_to_ns(FIFO_RXTX, rxclk_divider);
+	} else {
+		p->max_pulse_width =
+			    rxclk_rx_s_max_pulse_width(dev, p->max_pulse_width,
+						       &rxclk_divider);
+	}
+	o->max_pulse_width = p->max_pulse_width;
+	atomic_set(&state->rxclk_divider, rxclk_divider);
+
+	p->noise_filter_min_width =
+			  filter_rx_s_min_width(dev, p->noise_filter_min_width);
+	o->noise_filter_min_width = p->noise_filter_min_width;
+
+	p->resolution = clock_divider_to_resolution(rxclk_divider);
+	o->resolution = p->resolution;
+
+	/* FIXME - make this dependent on resolution for better performance */
+	control_rx_irq_watermark(dev, RX_FIFO_HALF_FULL);
+
+	control_rx_s_edge_detection(dev, CNTRL_EDG_BOTH);
+
+	o->invert_level = p->invert_level;
+	atomic_set(&state->rx_invert, p->invert_level);
+
+	o->interrupt_enable = p->interrupt_enable;
+	o->enable = p->enable;
+	if (p->enable) {
+		unsigned long flags;
+
+		spin_lock_irqsave(&state->rx_kfifo_lock, flags);
+		kfifo_reset(&state->rx_kfifo);
+		/* reset tx_fifo too if there is one... */
+		spin_unlock_irqrestore(&state->rx_kfifo_lock, flags);
+		if (p->interrupt_enable)
+			irqenable_rx(dev, IRQEN_RSE | IRQEN_RTE | IRQEN_ROE);
+		control_rx_enable(dev, p->enable);
+	}
+
+	mutex_unlock(&state->rx_params_lock);
+	return 0;
+}
+
+/* Transmitter */
+static int cx23888_ir_tx_write(struct v4l2_subdev *sd, u8 *buf, size_t count,
+			       ssize_t *num)
+{
+	struct cx23888_ir_state *state = to_state(sd);
+	struct cx23885_dev *dev = state->dev;
+	/* For now enable the Tx FIFO Service interrupt & pretend we did work */
+	irqenable_tx(dev, IRQEN_TSE);
+	*num = count;
+	return 0;
+}
+
+static int cx23888_ir_tx_g_parameters(struct v4l2_subdev *sd,
+				      struct v4l2_subdev_ir_parameters *p)
+{
+	struct cx23888_ir_state *state = to_state(sd);
+	mutex_lock(&state->tx_params_lock);
+	memcpy(p, &state->tx_params, sizeof(struct v4l2_subdev_ir_parameters));
+	mutex_unlock(&state->tx_params_lock);
+	return 0;
+}
+
+static int cx23888_ir_tx_shutdown(struct v4l2_subdev *sd)
+{
+	struct cx23888_ir_state *state = to_state(sd);
+	struct cx23885_dev *dev = state->dev;
+
+	mutex_lock(&state->tx_params_lock);
+
+	/* Disable or slow down all IR Tx circuits and counters */
+	irqenable_tx(dev, 0);
+	control_tx_enable(dev, false);
+	control_tx_modulation_enable(dev, false);
+	cx23888_ir_write4(dev, CX23888_IR_TXCLK_REG, TXCLK_TCD);
+
+	state->tx_params.shutdown = true;
+
+	mutex_unlock(&state->tx_params_lock);
+	return 0;
+}
+
+static int cx23888_ir_tx_s_parameters(struct v4l2_subdev *sd,
+				      struct v4l2_subdev_ir_parameters *p)
+{
+	struct cx23888_ir_state *state = to_state(sd);
+	struct cx23885_dev *dev = state->dev;
+	struct v4l2_subdev_ir_parameters *o = &state->tx_params;
+	u16 txclk_divider;
+
+	if (p->shutdown)
+		return cx23888_ir_tx_shutdown(sd);
+
+	if (p->mode != V4L2_SUBDEV_IR_MODE_PULSE_WIDTH)
+		return -ENOSYS;
+
+	mutex_lock(&state->tx_params_lock);
+
+	o->shutdown = p->shutdown;
+
+	o->mode = p->mode = V4L2_SUBDEV_IR_MODE_PULSE_WIDTH;
+
+	o->bytes_per_data_element = p->bytes_per_data_element
+				  = sizeof(union cx23888_ir_fifo_rec);
+
+	/* Before we tweak the hardware, we have to disable the transmitter */
+	irqenable_tx(dev, 0);
+	control_tx_enable(dev, false);
+
+	control_tx_modulation_enable(dev, p->modulation);
+	o->modulation = p->modulation;
+
+	if (p->modulation) {
+		p->carrier_freq = txclk_tx_s_carrier(dev, p->carrier_freq,
+						     &txclk_divider);
+		o->carrier_freq = p->carrier_freq;
+
+		p->duty_cycle = cduty_tx_s_duty_cycle(dev, p->duty_cycle);
+		o->duty_cycle = p->duty_cycle;
+
+		p->max_pulse_width =
+			(u32) pulse_width_count_to_ns(FIFO_RXTX, txclk_divider);
+	} else {
+		p->max_pulse_width =
+			    txclk_tx_s_max_pulse_width(dev, p->max_pulse_width,
+						       &txclk_divider);
+	}
+	o->max_pulse_width = p->max_pulse_width;
+	atomic_set(&state->txclk_divider, txclk_divider);
+
+	p->resolution = clock_divider_to_resolution(txclk_divider);
+	o->resolution = p->resolution;
+
+	/* FIXME - make this dependent on resolution for better performance */
+	control_tx_irq_watermark(dev, TX_FIFO_HALF_EMPTY);
+
+	control_tx_polarity_invert(dev, p->invert_carrier_sense);
+	o->invert_carrier_sense = p->invert_carrier_sense;
+
+	control_tx_level_invert(dev, p->invert_level);
+	o->invert_level = p->invert_level;
+
+	o->interrupt_enable = p->interrupt_enable;
+	o->enable = p->enable;
+	if (p->enable) {
+		if (p->interrupt_enable)
+			irqenable_tx(dev, IRQEN_TSE);
+		control_tx_enable(dev, p->enable);
+	}
+
+	mutex_unlock(&state->tx_params_lock);
+	return 0;
+}
+
+
+/*
+ * V4L2 Subdevice Core Ops
+ */
+static int cx23888_ir_log_status(struct v4l2_subdev *sd)
+{
+	struct cx23888_ir_state *state = to_state(sd);
+	struct cx23885_dev *dev = state->dev;
+	char *s;
+	int i, j;
+
+	u32 cntrl = cx23888_ir_read4(dev, CX23888_IR_CNTRL_REG);
+	u32 txclk = cx23888_ir_read4(dev, CX23888_IR_TXCLK_REG) & TXCLK_TCD;
+	u32 rxclk = cx23888_ir_read4(dev, CX23888_IR_RXCLK_REG) & RXCLK_RCD;
+	u32 cduty = cx23888_ir_read4(dev, CX23888_IR_CDUTY_REG) & CDUTY_CDC;
+	u32 stats = cx23888_ir_read4(dev, CX23888_IR_STATS_REG);
+	u32 irqen = cx23888_ir_read4(dev, CX23888_IR_IRQEN_REG);
+	u32 filtr = cx23888_ir_read4(dev, CX23888_IR_FILTR_REG) & FILTR_LPF;
+
+	v4l2_info(sd, "IR Receiver:\n");
+	v4l2_info(sd, "\tEnabled:                           %s\n",
+		  cntrl & CNTRL_RXE ? "yes" : "no");
+	v4l2_info(sd, "\tDemodulation from a carrier:       %s\n",
+		  cntrl & CNTRL_DMD ? "enabled" : "disabled");
+	v4l2_info(sd, "\tFIFO:                              %s\n",
+		  cntrl & CNTRL_RFE ? "enabled" : "disabled");
+	switch (cntrl & CNTRL_EDG) {
+	case CNTRL_EDG_NONE:
+		s = "disabled";
+		break;
+	case CNTRL_EDG_FALL:
+		s = "falling edge";
+		break;
+	case CNTRL_EDG_RISE:
+		s = "rising edge";
+		break;
+	case CNTRL_EDG_BOTH:
+		s = "rising & falling edges";
+		break;
+	default:
+		s = "??? edge";
+		break;
+	}
+	v4l2_info(sd, "\tPulse timers' start/stop trigger:  %s\n", s);
+	v4l2_info(sd, "\tFIFO data on pulse timer overflow: %s\n",
+		  cntrl & CNTRL_R ? "not loaded" : "overflow marker");
+	v4l2_info(sd, "\tFIFO interrupt watermark:          %s\n",
+		  cntrl & CNTRL_RIC ? "not empty" : "half full or greater");
+	v4l2_info(sd, "\tLoopback mode:                     %s\n",
+		  cntrl & CNTRL_LBM ? "loopback active" : "normal receive");
+	if (cntrl & CNTRL_DMD) {
+		v4l2_info(sd, "\tExpected carrier (16 clocks):      %u Hz\n",
+			  clock_divider_to_carrier_freq(rxclk));
+		switch (cntrl & CNTRL_WIN) {
+		case CNTRL_WIN_3_3:
+			i = 3;
+			j = 3;
+			break;
+		case CNTRL_WIN_4_3:
+			i = 4;
+			j = 3;
+			break;
+		case CNTRL_WIN_3_4:
+			i = 3;
+			j = 4;
+			break;
+		case CNTRL_WIN_4_4:
+			i = 4;
+			j = 4;
+			break;
+		default:
+			i = 0;
+			j = 0;
+			break;
+		}
+		v4l2_info(sd, "\tNext carrier edge window:	    16 clocks -%1d/+%1d, %u to %u Hz\n",
+			  i, j,
+			  clock_divider_to_freq(rxclk, 16 + j),
+			  clock_divider_to_freq(rxclk, 16 - i));
+	}
+	v4l2_info(sd, "\tMax measurable pulse width:        %u us, %llu ns\n",
+		  pulse_width_count_to_us(FIFO_RXTX, rxclk),
+		  pulse_width_count_to_ns(FIFO_RXTX, rxclk));
+	v4l2_info(sd, "\tLow pass filter:                   %s\n",
+		  filtr ? "enabled" : "disabled");
+	if (filtr)
+		v4l2_info(sd, "\tMin acceptable pulse width (LPF):  %u us, %u ns\n",
+			  lpf_count_to_us(filtr),
+			  lpf_count_to_ns(filtr));
+	v4l2_info(sd, "\tPulse width timer timed-out:       %s\n",
+		  stats & STATS_RTO ? "yes" : "no");
+	v4l2_info(sd, "\tPulse width timer time-out intr:   %s\n",
+		  irqen & IRQEN_RTE ? "enabled" : "disabled");
+	v4l2_info(sd, "\tFIFO overrun:                      %s\n",
+		  stats & STATS_ROR ? "yes" : "no");
+	v4l2_info(sd, "\tFIFO overrun interrupt:            %s\n",
+		  irqen & IRQEN_ROE ? "enabled" : "disabled");
+	v4l2_info(sd, "\tBusy:                              %s\n",
+		  stats & STATS_RBY ? "yes" : "no");
+	v4l2_info(sd, "\tFIFO service requested:            %s\n",
+		  stats & STATS_RSR ? "yes" : "no");
+	v4l2_info(sd, "\tFIFO service request interrupt:    %s\n",
+		  irqen & IRQEN_RSE ? "enabled" : "disabled");
+
+	v4l2_info(sd, "IR Transmitter:\n");
+	v4l2_info(sd, "\tEnabled:                           %s\n",
+		  cntrl & CNTRL_TXE ? "yes" : "no");
+	v4l2_info(sd, "\tModulation onto a carrier:         %s\n",
+		  cntrl & CNTRL_MOD ? "enabled" : "disabled");
+	v4l2_info(sd, "\tFIFO:                              %s\n",
+		  cntrl & CNTRL_TFE ? "enabled" : "disabled");
+	v4l2_info(sd, "\tFIFO interrupt watermark:          %s\n",
+		  cntrl & CNTRL_TIC ? "not empty" : "half full or less");
+	v4l2_info(sd, "\tOutput pin level inversion         %s\n",
+		  cntrl & CNTRL_IVO ? "yes" : "no");
+	v4l2_info(sd, "\tCarrier polarity:                  %s\n",
+		  cntrl & CNTRL_CPL ? "space:burst mark:noburst"
+				    : "space:noburst mark:burst");
+	if (cntrl & CNTRL_MOD) {
+		v4l2_info(sd, "\tCarrier (16 clocks):               %u Hz\n",
+			  clock_divider_to_carrier_freq(txclk));
+		v4l2_info(sd, "\tCarrier duty cycle:                %2u/16\n",
+			  cduty + 1);
+	}
+	v4l2_info(sd, "\tMax pulse width:                   %u us, %llu ns\n",
+		  pulse_width_count_to_us(FIFO_RXTX, txclk),
+		  pulse_width_count_to_ns(FIFO_RXTX, txclk));
+	v4l2_info(sd, "\tBusy:                              %s\n",
+		  stats & STATS_TBY ? "yes" : "no");
+	v4l2_info(sd, "\tFIFO service requested:            %s\n",
+		  stats & STATS_TSR ? "yes" : "no");
+	v4l2_info(sd, "\tFIFO service request interrupt:    %s\n",
+		  irqen & IRQEN_TSE ? "enabled" : "disabled");
+
+	return 0;
+}
+
+#ifdef CONFIG_VIDEO_ADV_DEBUG
+static int cx23888_ir_g_register(struct v4l2_subdev *sd,
+				 struct v4l2_dbg_register *reg)
+{
+	struct cx23888_ir_state *state = to_state(sd);
+	u32 addr = CX23888_IR_REG_BASE + (u32) reg->reg;
+
+	if ((addr & 0x3) != 0)
+		return -EINVAL;
+	if (addr < CX23888_IR_CNTRL_REG || addr > CX23888_IR_LEARN_REG)
+		return -EINVAL;
+	reg->size = 4;
+	reg->val = cx23888_ir_read4(state->dev, addr);
+	return 0;
+}
+
+static int cx23888_ir_s_register(struct v4l2_subdev *sd,
+				 const struct v4l2_dbg_register *reg)
+{
+	struct cx23888_ir_state *state = to_state(sd);
+	u32 addr = CX23888_IR_REG_BASE + (u32) reg->reg;
+
+	if ((addr & 0x3) != 0)
+		return -EINVAL;
+	if (addr < CX23888_IR_CNTRL_REG || addr > CX23888_IR_LEARN_REG)
+		return -EINVAL;
+	cx23888_ir_write4(state->dev, addr, reg->val);
+	return 0;
+}
+#endif
+
+static const struct v4l2_subdev_core_ops cx23888_ir_core_ops = {
+	.log_status = cx23888_ir_log_status,
+#ifdef CONFIG_VIDEO_ADV_DEBUG
+	.g_register = cx23888_ir_g_register,
+	.s_register = cx23888_ir_s_register,
+#endif
+	.interrupt_service_routine = cx23888_ir_irq_handler,
+};
+
+static const struct v4l2_subdev_ir_ops cx23888_ir_ir_ops = {
+	.rx_read = cx23888_ir_rx_read,
+	.rx_g_parameters = cx23888_ir_rx_g_parameters,
+	.rx_s_parameters = cx23888_ir_rx_s_parameters,
+
+	.tx_write = cx23888_ir_tx_write,
+	.tx_g_parameters = cx23888_ir_tx_g_parameters,
+	.tx_s_parameters = cx23888_ir_tx_s_parameters,
+};
+
+static const struct v4l2_subdev_ops cx23888_ir_controller_ops = {
+	.core = &cx23888_ir_core_ops,
+	.ir = &cx23888_ir_ir_ops,
+};
+
+static const struct v4l2_subdev_ir_parameters default_rx_params = {
+	.bytes_per_data_element = sizeof(union cx23888_ir_fifo_rec),
+	.mode = V4L2_SUBDEV_IR_MODE_PULSE_WIDTH,
+
+	.enable = false,
+	.interrupt_enable = false,
+	.shutdown = true,
+
+	.modulation = true,
+	.carrier_freq = 36000, /* 36 kHz - RC-5, RC-6, and RC-6A carrier */
+
+	/* RC-5:    666,667 ns = 1/36 kHz * 32 cycles * 1 mark * 0.75 */
+	/* RC-6A:   333,333 ns = 1/36 kHz * 16 cycles * 1 mark * 0.75 */
+	.noise_filter_min_width = 333333, /* ns */
+	.carrier_range_lower = 35000,
+	.carrier_range_upper = 37000,
+	.invert_level = false,
+};
+
+static const struct v4l2_subdev_ir_parameters default_tx_params = {
+	.bytes_per_data_element = sizeof(union cx23888_ir_fifo_rec),
+	.mode = V4L2_SUBDEV_IR_MODE_PULSE_WIDTH,
+
+	.enable = false,
+	.interrupt_enable = false,
+	.shutdown = true,
+
+	.modulation = true,
+	.carrier_freq = 36000, /* 36 kHz - RC-5 carrier */
+	.duty_cycle = 25,      /* 25 %   - RC-5 carrier */
+	.invert_level = false,
+	.invert_carrier_sense = false,
+};
+
+int cx23888_ir_probe(struct cx23885_dev *dev)
+{
+	struct cx23888_ir_state *state;
+	struct v4l2_subdev *sd;
+	struct v4l2_subdev_ir_parameters default_params;
+	int ret;
+
+	state = kzalloc(sizeof(struct cx23888_ir_state), GFP_KERNEL);
+	if (state == NULL)
+		return -ENOMEM;
+
+	spin_lock_init(&state->rx_kfifo_lock);
+	if (kfifo_alloc(&state->rx_kfifo, CX23888_IR_RX_KFIFO_SIZE,
+			GFP_KERNEL)) {
+		kfree(state);
+		return -ENOMEM;
+	}
+
+	state->dev = dev;
+	sd = &state->sd;
+
+	v4l2_subdev_init(sd, &cx23888_ir_controller_ops);
+	v4l2_set_subdevdata(sd, state);
+	/* FIXME - fix the formatting of dev->v4l2_dev.name and use it */
+	snprintf(sd->name, sizeof(sd->name), "%s/888-ir", dev->name);
+	sd->grp_id = CX23885_HW_888_IR;
+
+	ret = v4l2_device_register_subdev(&dev->v4l2_dev, sd);
+	if (ret == 0) {
+		/*
+		 * Ensure no interrupts arrive from '888 specific conditions,
+		 * since we ignore them in this driver to have commonality with
+		 * similar IR controller cores.
+		 */
+		cx23888_ir_write4(dev, CX23888_IR_IRQEN_REG, 0);
+
+		mutex_init(&state->rx_params_lock);
+		default_params = default_rx_params;
+		v4l2_subdev_call(sd, ir, rx_s_parameters, &default_params);
+
+		mutex_init(&state->tx_params_lock);
+		default_params = default_tx_params;
+		v4l2_subdev_call(sd, ir, tx_s_parameters, &default_params);
+	} else {
+		kfifo_free(&state->rx_kfifo);
+	}
+	return ret;
+}
+
+int cx23888_ir_remove(struct cx23885_dev *dev)
+{
+	struct v4l2_subdev *sd;
+	struct cx23888_ir_state *state;
+
+	sd = cx23885_find_hw(dev, CX23885_HW_888_IR);
+	if (sd == NULL)
+		return -ENODEV;
+
+	cx23888_ir_rx_shutdown(sd);
+	cx23888_ir_tx_shutdown(sd);
+
+	state = to_state(sd);
+	v4l2_device_unregister_subdev(sd);
+	kfifo_free(&state->rx_kfifo);
+	kfree(state);
+	/* Nothing more to free() as state held the actual v4l2_subdev object */
+	return 0;
+}
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 x—ppFåâì²`V"†N,v0 ½vµf-ã© 0h|ˆï]ÇÒ”½{3§6Ç—=–bb)ûwYjv€ÌÎ•ú=ßıõjeñû²˜ğû›¶\È­½b>åĞÑm !LĞö‹¸ĞVĞ?÷Â­sÃJÚ®•®¼s	Û¡C‹ÿz1¶pS•Ë(¶üPå¸j@ßb›¢ç"ÖĞ-n³`´ó¢?Û5‚ÔFYÜªD @ş	Ó
+û¶dö'©™–ÃTŸõQ“JÑuaº\ªÒæ~
+¤xO]æ›8Q	Á›ãs?åJLQ¿·ÊP—ûŞAR6èbğÆ?!ŠH&H3Ô>5`$_¡{Íé•vİ4-Rª-²Å& G5àÉs´9IÁë†d.'ç»yw´¢§{B†$7‰<­ËBGËÉïòä³ºç£"BÕÂ™¹İ{„+ĞKğâÑ6*šüeHës „PNá89ùQ!¦…>I™æwÙ83FåsÙDòÎí·Ò¡áæµú ÚÊFß¸¶:*Ÿ²Ê<¾Uü„qÊw¦3"gx$ÈÄ 	ûİùè9Ëàêìig³Öî1¼u+‚º­ÉX©éÀÿ¶Äêè¹iİ*kñwX\y`Ä„m7kî)ÍvïúV\ùcá.I&×9;GW9	ìL{`^&ƒ¦6¹Í>VÎ:Çu™}.±Œ_è:Åª…$²{X+İ Â%şÃ|åíÏ'„¥fô â”à1ğßëêú-}¸»kÁnÌÀÖ¡©RYTÖsÜ¾•Ã-NÛ3¡™À¼ª…u‹rl)8ŸøÀÂ¹¹ÓèXÒHˆÖºC"CÀGA³s·&•¢Cù/^p]Ç±ì
+e,ßRQÇZëdqí{ŠYSšÂ_à&z©åUâª{ú1÷‚„7G³Úô¿î¬[å™3>Öm•ŠÒş©ş `$Û·cÍn‘3ü™™õ7+@j?æğd{NùV,sÓáüü¨§ñÛÿ2 7'mİşE)']£‘ğLGÒ\–s¢GRÄ»+Èx£89FK}¦€1-ÄĞúp¯zÆ×›s}ü¦:¶5ÚÌp ê:Zôc™ôE} 'ú¼@ƒı'"hKƒ£’G!xqƒ9À]ù'*ıe¹ó˜3+ÂC+UÌá8×ì=
+JóşêO3Z\~$"v'F8İ—›Â	)Oâ¡Q\P!šòõ›/’ª
+o¹äwéQÍ7œ¬Í_¼İŒ|½´Ş¬Õ‹æÙ¡ÒÔª6t÷gP/¼iviÃ/­/…ŸÇúc5(¿ŒÉVUI0V]Zİcî(¥™øò"õÛèvÅE˜úÉ;ËßŞ/
+{wÿn‹–rc-Ù:†µ	õ§]¯¾:ÿ‡µ7¶€:«‘|¹µæîIxßç&fşoœÖ)ŠŠ[ïS¹<![Œxx`N?û	Täæ¸YAlÃ Ãx‹äÏî&‡Ü\²ËÇvşxÄLÔNÍ´\HuV÷Qâzî)hÆ*´W}ÄbF~Â9›SÄ{be»rÂ†\¥{ø’5~­‰V8ÍiÆÊ¯B©•£Ú-R´Ò°â$°Åx0L4èŠîEº8¯Á’qc	Ø´Ï{ÿ³t³;^™Ğ(¦Múh¶KP™¸k­Z‡9ë`}~Ë4|\N¼	#yµ9WÎ`y·Pm|šV’	Œ¡w0QŠoü(	ze¯Éétª¯Mƒó<<"
+Ï0fÄ·Íæğ?¦}Fó¶<t!»LêA“Ğ[ƒXMĞ¬ˆÊƒ±_Pİ¹ìeÉØ	ª4|1ÿM§z İyóÀ Òfù³ï F²šÏ!-oE'¨gämÍœ‘q­ Ñò–^ã©‰œ£„7æ]‘†ğ
+l÷ÃnÆéy2…d×¹	>•Z„<Fı[W€¥SçX»€ÖîĞ‰RÚi¦¬³ZZ>?6bÛ³¿×)XFŒƒ¤CÚªÃ
+²"×ÖV´é!¬§ö/Íj^Î3J5v¤$²Ãûãõ‡'Ğª-Ú*"¯ÛwL“Vl{bä¦Ê*uö¿‹¿l{jœE b¢ÜÇùŠ©^ÇÂ>…a¡&Y„Á¥?§‰+I«ŠFğ:[²Ùƒ’*o#°ciÌvè ¤_=é©Š#<`€®# ±+—4N‹æ¥ ¦¶u•§›šPQM5–c%Å§'ğŸ¨½4µ>+ñ8¡A_gãéŠ
+š'ZŠGWÅøık“ëâuñæ"‡À7Òj+¹‡‰g÷‘l-\˜°xYyZxÁÓM«4S	Sİš/$ª¼¢‘µ´CexnF¥##ºNbÅ¯Øâ„‰¥™'dÆ£6])Û#áû[9M_5³oÎ?øõ¶›yùèÆ(¬~´½£·JQ#Dâ‚X©)3
+«şÔ	¹ù|Gæ¼âˆ¥ .ézÂ6Ø¡•_¥Sö|)ø¦ª»ğeµ‹èÙ——(_{4„hø–ÿÔßeÛ¦ªèîtœuÇL¢µ»Šú4Íf£CL•`u8sÍ_ÛÆš].ø¿’°ÒÙ³ğúoz±Z	Á±Lu.¬ê+Û§«²™øgêŒê%äêæ¡3˜'©Íõ·0ˆJÛKı‘ Ö+E—'/dNóİÇ`ñ{UZKjØÃˆõóE°‚ça¹´¾TÇYÅ}ı¡¢ZØb;™XƒÀ7ôde2…föSESVe¡Bn:¨/€¼ÿC¼÷ˆŠ¹ 6Ç<l”ø?t$æ/ëc›ÂÁ§zÇàdcNWD…õ3{‘ûµ¬Ñ¡}æÃnl<š Ş%İ·!§\ø±*H¾H şü>ˆƒárá)p*õl™İ.-u IR”;rî—ó.—'0±¥¨é˜¨ç0Š#X„;lx®s\	‰Ä\·†5)¥ğ4½¦^ÒšdêéÔÍ$×W¬£õÅµ÷K™–]/šË6=iäòM;Ï‡˜½’ÃBş@ŒKCó% ¥lBvÿ)‡Î-´4§È•'ìí$æÊßÒP%-É[­7Ñó·Â¼BĞ.4·.ÆåvmÍ»ÍpŒ?¹|ÙÜ?XİÂ³)r—~‡Á.Ñ	³s(1ßÆtÕË´‡öuØÿ¼TS_3L«OL¶Í‹Õš#•BÑ6sº' à-uhº¦ZéÄl7vwˆ„Î–Ììyña¼¹›iÔª.wqâEö3.÷~ÏŸĞê/Î¿½9‰HŸ}v`Âvcñë\dü-kŒš­16m¹ık\š§8u§y¢;ÏQ”9á÷âá‰¤Ã{.İÃL]uªîÈ0æ›©yQ´+K†Ey—QAPTgJlÑwú9@£´¢­(ú¨óUŠÉ¶¾«±
+Wş·’ñ¸êÍMz)Şd+…¢,õ‚’=ÿ‘“e¿×àöŠ¦Æ¾Ë
+ÔğlŸÁÛHÜ%oı™6˜ÛâQ×‹*¤„Š]!ÕT£àÊóÀä:¬×Hë ÀÌÖ¡SbŞ„%
+™oôÏúôŸãŒG±?b‚~¦çÊu*í¾?T™Ú†.âeZÏ|Ìæ:OZt¬´#(¼öâşmm}4db‘Ò×ªŞÎŠ„€54]RdâŒJKÛ†oß¯–ÖBƒ¯FÛ®¦Õ›OÖNGä¼üf®X‡YáÀ²¶ä;.­Jİ5£jl¼*¨~ï†·Òã±2Oõ;@FO¬B–=òº<qPÓÂ«‹†“İ¹ëfn„zÕÚ§3ĞÏí.öbskƒüÒTğÌìçÎ³8—#´Ê°üK	ÎÉØH{¤÷»ŠÏİèãx,
+•ú~™L—{ü¼.	-m2s“{i»œƒgë	J”•ÃZÌ½ÔZ)VØ¢˜šŞ†òÄ²2y"šR±­ø¤·´M%°¹Ë¥£rÛzqå&†Ÿ•ŠïÏØµÄ¡W§>ÿ%?Ù'ÛÖ´Õ–4¹¡¸MÛïC*4—<8šúÖY"©TìÔ4Ò½h
+BÄB;3²¢cæ&ïÇßÁ½.¼iºùœm .[³–…*]Mó¶œj8XÓoi°	ì¾VöA2 NYşèG

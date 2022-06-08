@@ -1,1 +1,1 @@
-ig/NF_CT_PROTO
+.duty_cycle = 

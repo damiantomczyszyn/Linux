@@ -1,2 +1,1 @@
-drivers/media/rc/keymaps/rc-zx-irdec.o
-
+/* SPDX-License-Identifier: GPL-2.0-or-l

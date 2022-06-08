@@ -1,8 +1,8 @@
-();
+		sn);
 }
 
-/*
- * Print out an error if an invalid bit is set:
- */
-static inline int
-valid_state(struct task_st
+static void hauppauge_eeprom(struct cx23885_dev *dev, u8 *eeprom_data)
+{
+	struct tveeprom tv;
+
+	

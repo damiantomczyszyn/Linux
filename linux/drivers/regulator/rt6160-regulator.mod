@@ -1,2 +1,1 @@
-pes.h \
-  include/asm-generic/pgtable-
+truct cx23885_audio_dev *chip = snd_pc

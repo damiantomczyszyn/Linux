@@ -1,6 +1,1 @@
-e/linux/rwlock.h \
-    $(wildcard include/config/PREEMPT) \
-  include/linux/spinlock_api_smp.h \
-    $(wildcard include/config/INLINE_SPIN_LOCK) \
-    $(wildcard include/config/INLINE_SPIN_LOCK_BH) \
-    $(wildcard i
+cmd_drivers/net/can/cc770/cc770_isa.ko := ld -r -m elf_i386 --build-id=sha1  -T scripts/module.lds -o drivers/net/can/cc770/cc770_isa.ko drivers/net/can/cc770/cc770_isa.o drivers/net/can/cc770/cc770_isa.mod.o;  true

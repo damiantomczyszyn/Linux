@@ -1,2 +1,1 @@
-lude/linux/atomic/atomic-arch-fallback.h \
-    $
+/* SPDX-License-Identifier: GPL-2.0-or-later */

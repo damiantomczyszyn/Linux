@@ -1,8 +1,2 @@
-_name(read_bit));
-	}
-
-	return 0;
-}
-
-void print_irqtrace_events(struct task_struct *curr)
-{
+t this point we're no longer running the old task and
+	 * sending an IPI (below) ensures th

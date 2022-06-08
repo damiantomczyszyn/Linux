@@ -1,2 +1,3 @@
-drivers/media/rc/keymaps/rc-imon-mce.o
-
+ of reset */
+		break;
+	case CX23885_BOAR

@@ -1,2 +1,3 @@
-drivers/media/rc/keymaps/rc-videostrong-kii-pro.o
-
+D_DVB:
+	case CX23885_BOARD_HAUPPAUGE_QUADHD_ATSC:
+	

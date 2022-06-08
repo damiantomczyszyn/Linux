@@ -1,4 +1,1 @@
-ig/SPI_SLAVE) \
-  include/linux/scatterlist.h \
-    $(wildcard include/config/NEED_SG_DMA_LENGTH) \
-    $(wildcard include/config/
+cmd_drivers/net/arcnet/com20020_cs.mod := { echo  drivers/net/arcnet/com20020_cs.o;  echo; } > drivers/net/arcnet/com20020_cs.mod

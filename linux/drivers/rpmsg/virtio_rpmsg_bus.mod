@@ -1,2 +1,1 @@
-U_FANOUT_LEAF) \
-  include/linux/p
+// SPDX-License-Identifier: GPL-2.

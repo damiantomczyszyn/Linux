@@ -1,1032 +1,1614 @@
-x/build_bug.h \
-  include/linux/compiler.h \
-    $(wildcard include/config/TRACE_BRANCH_PROFILING) \
-    $(wildcard include/config/PROFILE_ALL_BRANCHES) \
-    $(wildcard include/config/STACK_VALIDATION) \
-  include/linux/compiler_types.h \
-  arch/x86/include/generated/asm/rwonce.h \
-  include/asm-generic/rwonce.h \
-  include/linux/kasan-checks.h \
-    $(wildcard include/config/KASAN_GENERIC) \
-    $(wildcard include/config/KASAN_SW_TAGS) \
-  include/linux/types.h \
-    $(wildcard include/config/HAVE_UID16) \
-    $(wildcard include/config/UID16) \
-    $(wildcard include/config/ARCH_DMA_ADDR_T_64BIT) \
-    $(wildcard include/config/PHYS_ADDR_T_64BIT) \
-    $(wildcard include/config/64BIT) \
-    $(wildcard include/config/ARCH_32BIT_USTAT_F_TINODE) \
-  include/uapi/linux/types.h \
-  arch/x86/include/generated/uapi/asm/types.h \
-  include/uapi/asm-generic/types.h \
-  include/asm-generic/int-ll64.h \
-  include/uapi/asm-generic/int-ll64.h \
-  arch/x86/include/uapi/asm/bitsperlong.h \
-  include/asm-generic/bitsperlong.h \
-  include/uapi/asm-generic/bitsperlong.h \
-  include/uapi/linux/posix_types.h \
-  include/linux/stddef.h \
-  include/uapi/linux/stddef.h \
-  arch/x86/include/asm/posix_types.h \
-    $(wildcard include/config/X86_32) \
-  arch/x86/include/uapi/asm/posix_types_32.h \
-  include/uapi/asm-generic/posix_types.h \
-  include/linux/kcsan-checks.h \
-    $(wildcard include/config/KCSAN) \
-    $(wildcard include/config/KCSAN_WEAK_MEMORY) \
-    $(wildcard include/config/KCSAN_IGNORE_ATOMICS) \
-  include/linux/err.h \
-  arch/x86/include/generated/uapi/asm/errno.h \
-  include/uapi/asm-generic/errno.h \
-  include/uapi/asm-generic/errno-base.h \
-  include/linux/poison.h \
-    $(wildcard include/config/ILLEGAL_POINTER_VALUE) \
-  include/linux/const.h \
-  include/vdso/const.h \
-  include/uapi/linux/const.h \
-  arch/x86/include/asm/barrier.h \
-  arch/x86/include/asm/alternative.h \
-  include/linux/stringify.h \
-  arch/x86/include/asm/asm.h \
-  arch/x86/include/asm/extable_fixup_types.h \
-  arch/x86/include/asm/nops.h \
-  include/asm-generic/barrier.h \
-  include/linux/stat.h \
-  arch/x86/include/uapi/asm/stat.h \
-  include/uapi/linux/stat.h \
-  include/linux/time.h \
-    $(wildcard include/config/POSIX_TIMERS) \
-  include/linux/cache.h \
-    $(wildcard include/config/ARCH_HAS_CACHE_LINE_SIZE) \
-  include/uapi/linux/kernel.h \
-  include/uapi/linux/sysinfo.h \
-  arch/x86/include/asm/cache.h \
-    $(wildcard include/config/X86_L1_CACHE_SHIFT) \
-    $(wildcard include/config/X86_INTERNODE_CACHE_SHIFT) \
-    $(wildcard include/config/X86_VSMP) \
-  include/linux/linkage.h \
-    $(wildcard include/config/ARCH_USE_SYM_ANNOTATIONS) \
-  include/linux/export.h \
-    $(wildcard include/config/MODVERSIONS) \
-    $(wildcard include/config/MODULE_REL_CRCS) \
-    $(wildcard include/config/HAVE_ARCH_PREL32_RELOCATIONS) \
-    $(wildcard include/config/TRIM_UNUSED_KSYMS) \
-  arch/x86/include/asm/linkage.h \
-    $(wildcard include/config/X86_64) \
-    $(wildcard include/config/X86_ALIGNMENT_16) \
-    $(wildcard include/config/SLS) \
-  arch/x86/include/asm/ibt.h \
-    $(wildcard include/config/X86_KERNEL_IBT) \
-  include/linux/math64.h \
-    $(wildcard include/config/ARCH_SUPPORTS_INT128) \
-  include/linux/math.h \
-  arch/x86/include/asm/div64.h \
-  include/linux/log2.h \
-    $(wildcard include/config/ARCH_HAS_ILOG2_U32) \
-    $(wildcard include/config/ARCH_HAS_ILOG2_U64) \
-  include/linux/bitops.h \
-  include/linux/bits.h \
-  include/vdso/bits.h \
-  include/linux/typecheck.h \
-  arch/x86/include/asm/bitops.h \
-    $(wildcard include/config/X86_CMOV) \
-  arch/x86/include/asm/rmwcc.h \
-    $(wildcard include/config/CC_HAS_ASM_GOTO) \
-  include/asm-generic/bitops/fls64.h \
-  include/asm-generic/bitops/sched.h \
-  arch/x86/include/asm/arch_hweight.h \
-  arch/x86/include/asm/cpufeatures.h \
-  arch/x86/include/asm/required-features.h \
-    $(wildcard include/config/X86_MINIMUM_CPU_FAMILY) \
-    $(wildcard include/config/MATH_EMULATION) \
-    $(wildcard include/config/X86_PAE) \
-    $(wildcard include/config/X86_CMPXCHG64) \
-    $(wildcard include/config/X86_P6_NOP) \
-    $(wildcard include/config/MATOM) \
-    $(wildcard include/config/PARAVIRT_XXL) \
-  arch/x86/include/asm/disabled-features.h \
-    $(wildcard include/config/X86_SMAP) \
-    $(wildcard include/config/X86_UMIP) \
-    $(wildcard include/config/X86_INTEL_MEMORY_PROTECTION_KEYS) \
-    $(wildcard include/config/X86_5LEVEL) \
-    $(wildcard include/config/PAGE_TABLE_ISOLATION) \
-    $(wildcard include/config/INTEL_IOMMU_SVM) \
-    $(wildcard include/config/X86_SGX) \
-  include/asm-generic/bitops/const_hweight.h \
-  include/asm-generic/bitops/instrumented-atomic.h \
-  include/linux/instrumented.h \
-  include/asm-generic/bitops/instrumented-non-atomic.h \
-    $(wildcard include/config/KCSAN_ASSUME_PLAIN_WRITES_ATOMIC) \
-  include/asm-generic/bitops/instrumented-lock.h \
-  include/asm-generic/bitops/le.h \
-  arch/x86/include/uapi/asm/byteorder.h \
-  include/linux/byteorder/little_endian.h \
-  include/uapi/linux/byteorder/little_endian.h \
-  include/linux/swab.h \
-  include/uapi/linux/swab.h \
-  arch/x86/include/uapi/asm/swab.h \
-  include/linux/byteorder/generic.h \
-  include/asm-generic/bitops/ext2-atomic-setbit.h \
-  include/vdso/math64.h \
-  include/linux/time64.h \
-  include/vdso/time64.h \
-  include/uapi/linux/time.h \
-  include/uapi/linux/time_types.h \
-  include/linux/time32.h \
-  include/linux/timex.h \
-  include/uapi/linux/timex.h \
-  include/uapi/linux/param.h \
-  arch/x86/include/generated/uapi/asm/param.h \
-  include/asm-generic/param.h \
-    $(wildcard include/config/HZ) \
-  include/uapi/asm-generic/param.h \
-  arch/x86/include/asm/timex.h \
-    $(wildcard include/config/X86_TSC) \
-  arch/x86/include/asm/processor.h \
-    $(wildcard include/config/X86_VMX_FEATURE_NAMES) \
-    $(wildcard include/config/X86_IOPL_IOPERM) \
-    $(wildcard include/config/STACKPROTECTOR) \
-    $(wildcard include/config/VM86) \
-    $(wildcard include/config/X86_DEBUGCTLMSR) \
-    $(wildcard include/config/CPU_SUP_AMD) \
-    $(wildcard include/config/XEN) \
-  arch/x86/include/asm/processor-flags.h \
-  arch/x86/include/uapi/asm/processor-flags.h \
-  include/linux/mem_encrypt.h \
-    $(wildcard include/config/ARCH_HAS_MEM_ENCRYPT) \
-    $(wildcard include/config/AMD_MEM_ENCRYPT) \
-  arch/x86/include/asm/mem_encrypt.h \
-  include/linux/init.h \
-    $(wildcard include/config/STRICT_KERNEL_RWX) \
-    $(wildcard include/config/STRICT_MODULE_RWX) \
-    $(wildcard include/config/LTO_CLANG) \
-  include/linux/cc_platform.h \
-    $(wildcard include/config/ARCH_HAS_CC_PLATFORM) \
-  arch/x86/include/uapi/asm/bootparam.h \
-  include/linux/screen_info.h \
-  include/uapi/linux/screen_info.h \
-  include/linux/apm_bios.h \
-  include/uapi/linux/apm_bios.h \
-  include/uapi/linux/ioctl.h \
-  arch/x86/include/generated/uapi/asm/ioctl.h \
-  include/asm-generic/ioctl.h \
-  include/uapi/asm-generic/ioctl.h \
-  include/linux/edd.h \
-  include/uapi/linux/edd.h \
-  arch/x86/include/asm/ist.h \
-  arch/x86/include/uapi/asm/ist.h \
-  include/video/edid.h \
-    $(wildcard include/config/X86) \
-  include/uapi/video/edid.h \
-  arch/x86/include/asm/math_emu.h \
-  arch/x86/include/asm/ptrace.h \
-    $(wildcard include/config/PARAVIRT) \
-    $(wildcard include/config/IA32_EMULATION) \
-  arch/x86/include/asm/segment.h \
-    $(wildcard include/config/XEN_PV) \
-  arch/x86/include/asm/page_types.h \
-    $(wildcard include/config/PHYSICAL_START) \
-    $(wildcard include/config/PHYSICAL_ALIGN) \
-    $(wildcard include/config/DYNAMIC_PHYSICAL_MASK) \
-  arch/x86/include/asm/page_32_types.h \
-    $(wildcard include/config/HIGHMEM4G) \
-    $(wildcard include/config/HIGHMEM64G) \
-    $(wildcard include/config/PAGE_OFFSET) \
-  arch/x86/include/uapi/asm/ptrace.h \
-  arch/x86/include/uapi/asm/ptrace-abi.h \
-  arch/x86/include/asm/paravirt_types.h \
-    $(wildcard include/config/PGTABLE_LEVELS) \
-    $(wildcard include/config/PARAVIRT_DEBUG) \
-  arch/x86/include/asm/desc_defs.h \
-  arch/x86/include/asm/pgtable_types.h \
-    $(wildcard include/config/MEM_SOFT_DIRTY) \
-    $(wildcard include/config/HAVE_ARCH_USERFAULTFD_WP) \
-    $(wildcard include/config/PROC_FS) \
-  arch/x86/include/asm/pgtable_32_types.h \
-  arch/x86/include/asm/pgtable-3level_types.h \
-  include/asm-generic/pgtable-nop4d.h \
-  include/asm-generic/pgtable-nopud.h \
-  arch/x86/include/asm/nospec-branch.h \
-  include/linux/static_key.h \
-  include/linux/jump_label.h \
-    $(wildcard include/config/HAVE_ARCH_JUMP_LABEL_RELATIVE) \
-  arch/x86/include/asm/jump_label.h \
-  include/linux/objtool.h \
-    $(wildcard include/config/FRAME_POINTER) \
-  arch/x86/include/asm/msr-index.h \
-  arch/x86/include/asm/unwind_hints.h \
-  arch/x86/include/asm/orc_types.h \
-  arch/x86/include/asm/GEN-for-each-reg.h \
-  arch/x86/include/asm/spinlock_types.h \
-  include/asm-generic/qspinlock_types.h \
-    $(wildcard include/config/NR_CPUS) \
-  include/asm-generic/qrwlock_types.h \
-  arch/x86/include/asm/proto.h \
-  arch/x86/include/uapi/asm/ldt.h \
-  arch/x86/include/uapi/asm/sigcontext.h \
-  arch/x86/include/asm/current.h \
-  arch/x86/include/asm/percpu.h \
-    $(wildcard include/config/X86_64_SMP) \
-  include/linux/kernel.h \
-    $(wildcard include/config/PREEMPT_VOLUNTARY_BUILD) \
-    $(wildcard include/config/PREEMPT_DYNAMIC) \
-    $(wildcard include/config/HAVE_PREEMPT_DYNAMIC_CALL) \
-    $(wildcard include/config/HAVE_PREEMPT_DYNAMIC_KEY) \
-    $(wildcard include/config/PREEMPT_) \
-    $(wildcard include/config/DEBUG_ATOMIC_SLEEP) \
-    $(wildcard include/config/MMU) \
-    $(wildcard include/config/PROVE_LOCKING) \
-  include/linux/stdarg.h \
-  include/linux/align.h \
-  include/linux/limits.h \
-  include/uapi/linux/limits.h \
-  include/vdso/limits.h \
-  include/linux/kstrtox.h \
-  include/linux/minmax.h \
-  include/linux/panic.h \
-    $(wildcard include/config/PANIC_TIMEOUT) \
-  include/linux/printk.h \
-    $(wildcard include/config/MESSAGE_LOGLEVEL_DEFAULT) \
-    $(wildcard include/config/CONSOLE_LOGLEVEL_DEFAULT) \
-    $(wildcard include/config/CONSOLE_LOGLEVEL_QUIET) \
-    $(wildcard include/config/EARLY_PRINTK) \
-    $(wildcard include/config/PRINTK) \
-    $(wildcard include/config/DYNAMIC_DEBUG) \
-    $(wildcard include/config/DYNAMIC_DEBUG_CORE) \
-  include/linux/kern_levels.h \
-  include/linux/ratelimit_types.h \
-  include/linux/spinlock_types_raw.h \
-    $(wildcard include/config/DEBUG_SPINLOCK) \
-    $(wildcard include/config/DEBUG_LOCK_ALLOC) \
-  include/linux/lockdep_types.h \
-    $(wildcard include/config/PROVE_RAW_LOCK_NESTING) \
-    $(wildcard include/config/LOCKDEP) \
-    $(wildcard include/config/LOCK_STAT) \
-  include/linux/once_lite.h \
-  include/linux/static_call_types.h \
-    $(wildcard include/config/HAVE_STATIC_CALL) \
-  include/linux/instruction_pointer.h \
-  include/asm-generic/percpu.h \
-    $(wildcard include/config/DEBUG_PREEMPT) \
-    $(wildcard include/config/HAVE_SETUP_PER_CPU_AREA) \
-  include/linux/threads.h \
-    $(wildcard include/config/BASE_SMALL) \
-  include/linux/percpu-defs.h \
-    $(wildcard include/config/DEBUG_FORCE_WEAK_PER_CPU) \
-  arch/x86/include/asm/page.h \
-  arch/x86/include/asm/page_32.h \
-    $(wildcard include/config/DEBUG_VIRTUAL) \
-    $(wildcard include/config/FLATMEM) \
-  include/linux/string.h \
-    $(wildcard include/config/BINARY_PRINTF) \
-    $(wildcard include/config/FORTIFY_SOURCE) \
-  include/linux/errno.h \
-  include/uapi/linux/errno.h \
-  include/uapi/linux/string.h \
-  arch/x86/include/asm/string.h \
-  arch/x86/include/asm/string_32.h \
-  include/linux/fortify-string.h \
-  include/linux/range.h \
-  include/asm-generic/memory_model.h \
-    $(wildcard include/config/SPARSEMEM_VMEMMAP) \
-    $(wildcard include/config/SPARSEMEM) \
-  include/linux/pfn.h \
-  include/asm-generic/getorder.h \
-  arch/x86/include/asm/msr.h \
-  arch/x86/include/asm/msr-index.h \
-  arch/x86/include/asm/cpumask.h \
-  include/linux/cpumask.h \
-    $(wildcard include/config/CPUMASK_OFFSTACK) \
-    $(wildcard include/config/HOTPLUG_CPU) \
-    $(wildcard include/config/DEBUG_PER_CPU_MAPS) \
-  include/linux/bitmap.h \
-  include/linux/find.h \
-  include/linux/atomic.h \
-  arch/x86/include/asm/atomic.h \
-  arch/x86/include/asm/cmpxchg.h \
-  arch/x86/include/asm/cmpxchg_32.h \
-  arch/x86/include/asm/atomic64_32.h \
-  include/linux/atomic/atomic-arch-fallback.h \
-    $(wildcard include/config/GENERIC_ATOMIC64) \
-  include/linux/atomic/atomic-long.h \
-  include/linux/atomic/atomic-instrumented.h \
-  include/linux/bug.h \
-    $(wildcard include/config/BUG_ON_DATA_CORRUPTION) \
-  arch/x86/include/asm/bug.h \
-    $(wildcard include/config/DEBUG_BUGVERBOSE) \
-  include/linux/instrumentation.h \
-    $(wildcard include/config/DEBUG_ENTRY) \
-  include/asm-generic/bug.h \
-    $(wildcard include/config/BUG) \
-    $(wildcard include/config/GENERIC_BUG_RELATIVE_POINTERS) \
-  arch/x86/include/uapi/asm/msr.h \
-  include/linux/tracepoint-defs.h \
-  arch/x86/include/asm/special_insns.h \
-  include/linux/irqflags.h \
-    $(wildcard include/config/TRACE_IRQFLAGS) \
-    $(wildcard include/config/PREEMPT_RT) \
-    $(wildcard include/config/IRQSOFF_TRACER) \
-    $(wildcard include/config/PREEMPT_TRACER) \
-    $(wildcard include/config/DEBUG_IRQFLAGS) \
-    $(wildcard include/config/TRACE_IRQFLAGS_SUPPORT) \
-  arch/x86/include/asm/irqflags.h \
-  arch/x86/include/asm/fpu/types.h \
-  arch/x86/include/asm/vmxfeatures.h \
-  arch/x86/include/asm/vdso/processor.h \
-  include/linux/personality.h \
-  include/uapi/linux/personality.h \
-  arch/x86/include/asm/tsc.h \
-  arch/x86/include/asm/cpufeature.h \
-    $(wildcard include/config/X86_FEATURE_NAMES) \
-  include/vdso/time32.h \
-  include/vdso/time.h \
-  include/linux/uidgid.h \
-    $(wildcard include/config/MULTIUSER) \
-    $(wildcard include/config/USER_NS) \
-  include/linux/highuid.h \
-  include/linux/buildid.h \
-    $(wildcard include/config/CRASH_CORE) \
-  include/linux/mm_types.h \
-    $(wildcard include/config/HAVE_ALIGNED_STRUCT_PAGE) \
-    $(wildcard include/config/MEMCG) \
-    $(wildcard include/config/USERFAULTFD) \
-    $(wildcard include/config/SWAP) \
-    $(wildcard include/config/NUMA) \
-    $(wildcard include/config/HAVE_ARCH_COMPAT_MMAP_BASES) \
-    $(wildcard include/config/MEMBARRIER) \
-    $(wildcard include/config/AIO) \
-    $(wildcard include/config/MMU_NOTIFIER) \
-    $(wildcard include/config/TRANSPARENT_HUGEPAGE) \
-    $(wildcard include/config/NUMA_BALANCING) \
-    $(wildcard include/config/ARCH_WANT_BATCHED_UNMAP_TLB_FLUSH) \
-    $(wildcard include/config/HUGETLB_PAGE) \
-    $(wildcard include/config/IOMMU_SVA) \
-  include/linux/mm_types_task.h \
-    $(wildcard include/config/SPLIT_PTLOCK_CPUS) \
-    $(wildcard include/config/ARCH_ENABLE_SPLIT_PMD_PTLOCK) \
-  arch/x86/include/asm/tlbbatch.h \
-  include/linux/auxvec.h \
-  include/uapi/linux/auxvec.h \
-  arch/x86/include/uapi/asm/auxvec.h \
-  include/linux/kref.h \
-  include/linux/spinlock.h \
-    $(wildcard include/config/PREEMPTION) \
-  include/linux/preempt.h \
-    $(wildcard include/config/PREEMPT_COUNT) \
-    $(wildcard include/config/TRACE_PREEMPT_TOGGLE) \
-    $(wildcard include/config/PREEMPT_NOTIFIERS) \
-  arch/x86/include/asm/preempt.h \
-  include/linux/thread_info.h \
-    $(wildcard include/config/THREAD_INFO_IN_TASK) \
-    $(wildcard include/config/GENERIC_ENTRY) \
-    $(wildcard include/config/HAVE_ARCH_WITHIN_STACK_FRAMES) \
-    $(wildcard include/config/HARDENED_USERCOPY) \
-  include/linux/restart_block.h \
-  arch/x86/include/asm/thread_info.h \
-    $(wildcard include/config/COMPAT) \
-  include/linux/bottom_half.h \
-  include/linux/lockdep.h \
-    $(wildcard include/config/DEBUG_LOCKING_API_SELFTESTS) \
-  include/linux/smp.h \
-    $(wildcard include/config/UP_LATE_INIT) \
-  include/linux/smp_types.h \
-  include/linux/llist.h \
-    $(wildcard include/config/ARCH_HAVE_NMI_SAFE_CMPXCHG) \
-  arch/x86/include/asm/smp.h \
-    $(wildcard include/config/X86_LOCAL_APIC) \
-    $(wildcard include/config/DEBUG_NMI_SELFTEST) \
-  arch/x86/include/generated/asm/mmiowb.h \
-  include/asm-generic/mmiowb.h \
-    $(wildcard include/config/MMIOWB) \
-  include/linux/spinlock_types.h \
-  include/linux/rwlock_types.h \
-  arch/x86/include/asm/spinlock.h \
-  arch/x86/include/asm/paravirt.h \
-    $(wildcard include/config/PARAVIRT_SPINLOCKS) \
-  arch/x86/include/asm/frame.h \
-  arch/x86/include/asm/qspinlock.h \
-  include/asm-generic/qspinlock.h \
-  arch/x86/include/asm/qrwlock.h \
-  include/asm-generic/qrwlock.h \
-  include/linux/rwlock.h \
-    $(wildcard include/config/PREEMPT) \
-  include/linux/spinlock_api_smp.h \
-    $(wildcard include/config/INLINE_SPIN_LOCK) \
-    $(wildcard include/config/INLINE_SPIN_LOCK_BH) \
-    $(wildcard include/config/INLINE_SPIN_LOCK_IRQ) \
-    $(wildcard include/config/INLINE_SPIN_LOCK_IRQSAVE) \
-    $(wildcard include/config/INLINE_SPIN_TRYLOCK) \
-    $(wildcard include/config/INLINE_SPIN_TRYLOCK_BH) \
-    $(wildcard include/config/UNINLINE_SPIN_UNLOCK) \
-    $(wildcard include/config/INLINE_SPIN_UNLOCK_BH) \
-    $(wildcard include/config/INLINE_SPIN_UNLOCK_IRQ) \
-    $(wildcard include/config/INLINE_SPIN_UNLOCK_IRQRESTORE) \
-    $(wildcard include/config/GENERIC_LOCKBREAK) \
-  include/linux/rwlock_api_smp.h \
-    $(wildcard include/config/INLINE_READ_LOCK) \
-    $(wildcard include/config/INLINE_WRITE_LOCK) \
-    $(wildcard include/config/INLINE_READ_LOCK_BH) \
-    $(wildcard include/config/INLINE_WRITE_LOCK_BH) \
-    $(wildcard include/config/INLINE_READ_LOCK_IRQ) \
-    $(wildcard include/config/INLINE_WRITE_LOCK_IRQ) \
-    $(wildcard include/config/INLINE_READ_LOCK_IRQSAVE) \
-    $(wildcard include/config/INLINE_WRITE_LOCK_IRQSAVE) \
-    $(wildcard include/config/INLINE_READ_TRYLOCK) \
-    $(wildcard include/config/INLINE_WRITE_TRYLOCK) \
-    $(wildcard include/config/INLINE_READ_UNLOCK) \
-    $(wildcard include/config/INLINE_WRITE_UNLOCK) \
-    $(wildcard include/config/INLINE_READ_UNLOCK_BH) \
-    $(wildcard include/config/INLINE_WRITE_UNLOCK_BH) \
-    $(wildcard include/config/INLINE_READ_UNLOCK_IRQ) \
-    $(wildcard include/config/INLINE_WRITE_UNLOCK_IRQ) \
-    $(wildcard include/config/INLINE_READ_UNLOCK_IRQRESTORE) \
-    $(wildcard include/config/INLINE_WRITE_UNLOCK_IRQRESTORE) \
-  include/linux/refcount.h \
-  include/linux/rbtree.h \
-  include/linux/rbtree_types.h \
-  include/linux/rcupdate.h \
-    $(wildcard include/config/PREEMPT_RCU) \
-    $(wildcard include/config/TINY_RCU) \
-    $(wildcard include/config/RCU_STRICT_GRACE_PERIOD) \
-    $(wildcard include/config/TASKS_RCU_GENERIC) \
-    $(wildcard include/config/RCU_STALL_COMMON) \
-    $(wildcard include/config/NO_HZ_FULL) \
-    $(wildcard include/config/RCU_NOCB_CPU) \
-    $(wildcard include/config/TASKS_RCU) \
-    $(wildcard include/config/TASKS_TRACE_RCU) \
-    $(wildcard include/config/TASKS_RUDE_RCU) \
-    $(wildcard include/config/TREE_RCU) \
-    $(wildcard include/config/DEBUG_OBJECTS_RCU_HEAD) \
-    $(wildcard include/config/PROVE_RCU) \
-    $(wildcard include/config/ARCH_WEAK_RELEASE_ACQUIRE) \
-  include/linux/rcutree.h \
-  include/linux/rwsem.h \
-    $(wildcard include/config/RWSEM_SPIN_ON_OWNER) \
-    $(wildcard include/config/DEBUG_RWSEMS) \
-  include/linux/osq_lock.h \
-  include/linux/completion.h \
-  include/linux/swait.h \
-  include/linux/wait.h \
-  include/uapi/linux/wait.h \
-  include/linux/uprobes.h \
-    $(wildcard include/config/UPROBES) \
-  arch/x86/include/asm/uprobes.h \
-  include/linux/notifier.h \
-  include/linux/mutex.h \
-    $(wildcard include/config/MUTEX_SPIN_ON_OWNER) \
-    $(wildcard include/config/DEBUG_MUTEXES) \
-  include/linux/debug_locks.h \
-  include/linux/srcu.h \
-    $(wildcard include/config/TINY_SRCU) \
-    $(wildcard include/config/SRCU) \
-  include/linux/workqueue.h \
-    $(wildcard include/config/DEBUG_OBJECTS_WORK) \
-    $(wildcard include/config/FREEZER) \
-    $(wildcard include/config/WQ_WATCHDOG) \
-  include/linux/timer.h \
-    $(wildcard include/config/DEBUG_OBJECTS_TIMERS) \
-    $(wildcard include/config/NO_HZ_COMMON) \
-  include/linux/ktime.h \
-  include/linux/jiffies.h \
-  include/vdso/jiffies.h \
-  include/generated/timeconst.h \
-  include/vdso/ktime.h \
-  include/linux/timekeeping.h \
-    $(wildcard include/config/GENERIC_CMOS_UPDATE) \
-  include/linux/clocksource_ids.h \
-  include/linux/debugobjects.h \
-    $(wildcard include/config/DEBUG_OBJECTS) \
-    $(wildcard include/config/DEBUG_OBJECTS_FREE) \
-  include/linux/rcu_segcblist.h \
-  include/linux/srcutree.h \
-  include/linux/rcu_node_tree.h \
-    $(wildcard include/config/RCU_FANOUT) \
-    $(wildcard include/config/RCU_FANOUT_LEAF) \
-  include/linux/page-flags-layout.h \
-    $(wildcard include/config/KASAN_HW_TAGS) \
-  include/linux/numa.h \
-    $(wildcard include/config/NODES_SHIFT) \
-    $(wildcard include/config/NUMA_KEEP_MEMINFO) \
-    $(wildcard include/config/HAVE_ARCH_NODE_DEV_GROUP) \
-  arch/x86/include/asm/sparsemem.h \
-  include/generated/bounds.h \
-  include/linux/seqlock.h \
-  include/linux/ww_mutex.h \
-    $(wildcard include/config/DEBUG_RT_MUTEXES) \
-    $(wildcard include/config/DEBUG_WW_MUTEX_SLOWPATH) \
-  include/linux/rtmutex.h \
-  arch/x86/include/asm/mmu.h \
-    $(wildcard include/config/MODIFY_LDT_SYSCALL) \
-  include/linux/kmod.h \
-  include/linux/umh.h \
-  include/linux/gfp.h \
-    $(wildcard include/config/HIGHMEM) \
-    $(wildcard include/config/ZONE_DMA) \
-    $(wildcard include/config/ZONE_DMA32) \
-    $(wildcard include/config/ZONE_DEVICE) \
-    $(wildcard include/config/PM_SLEEP) \
-    $(wildcard include/config/CONTIG_ALLOC) \
-    $(wildcard include/config/CMA) \
-  include/linux/mmdebug.h \
-    $(wildcard include/config/DEBUG_VM) \
-    $(wildcard include/config/DEBUG_VM_PGFLAGS) \
-  include/linux/mmzone.h \
-    $(wildcard include/config/FORCE_MAX_ZONEORDER) \
-    $(wildcard include/config/MEMORY_ISOLATION) \
-    $(wildcard include/config/ZSMALLOC) \
-    $(wildcard include/config/MEMORY_HOTPLUG) \
-    $(wildcard include/config/COMPACTION) \
-    $(wildcard include/config/PAGE_EXTENSION) \
-    $(wildcard include/config/DEFERRED_STRUCT_PAGE_INIT) \
-    $(wildcard include/config/HAVE_MEMORYLESS_NODES) \
-    $(wildcard include/config/SPARSEMEM_EXTREME) \
-    $(wildcard include/config/HAVE_ARCH_PFN_VALID) \
-  include/linux/nodemask.h \
-  include/linux/pageblock-flags.h \
-    $(wildcard include/config/HUGETLB_PAGE_SIZE_VARIABLE) \
-  include/linux/page-flags.h \
-    $(wildcard include/config/ARCH_USES_PG_UNCACHED) \
-    $(wildcard include/config/MEMORY_FAILURE) \
-    $(wildcard include/config/PAGE_IDLE_FLAG) \
-    $(wildcard include/config/HUGETLB_PAGE_FREE_VMEMMAP) \
-    $(wildcard include/config/HUGETLB_PAGE_FREE_VMEMMAP_DEFAULT_ON) \
-    $(wildcard include/config/KSM) \
-  include/linux/local_lock.h \
-  include/linux/local_lock_internal.h \
-  include/linux/memory_hotplug.h \
-    $(wildcard include/config/HAVE_ARCH_NODEDATA_EXTENSION) \
-    $(wildcard include/config/ARCH_HAS_ADD_PAGES) \
-    $(wildcard include/config/MEMORY_HOTREMOVE) \
-  arch/x86/include/asm/mmzone.h \
-  arch/x86/include/asm/mmzone_32.h \
-  include/linux/topology.h \
-    $(wildcard include/config/USE_PERCPU_NUMA_NODE_ID) \
-    $(wildcard include/config/SCHED_SMT) \
-    $(wildcard include/config/SCHED_CLUSTER) \
-  include/linux/arch_topology.h \
-    $(wildcard include/config/ACPI_CPPC_LIB) \
-    $(wildcard include/config/GENERIC_ARCH_TOPOLOGY) \
-  include/linux/percpu.h \
-    $(wildcard include/config/NEED_PER_CPU_EMBED_FIRST_CHUNK) \
-    $(wildcard include/config/NEED_PER_CPU_PAGE_FIRST_CHUNK) \
-  arch/x86/include/asm/topology.h \
-    $(wildcard include/config/SCHED_MC_PRIO) \
-  arch/x86/include/asm/mpspec.h \
-    $(wildcard include/config/EISA) \
-    $(wildcard include/config/X86_MPPARSE) \
-  arch/x86/include/asm/mpspec_def.h \
-  arch/x86/include/asm/x86_init.h \
-  arch/x86/include/asm/apicdef.h \
-  include/asm-generic/topology.h \
-  include/linux/sysctl.h \
-    $(wildcard include/config/SYSCTL) \
-  include/uapi/linux/sysctl.h \
-  include/linux/elf.h \
-    $(wildcard include/config/ARCH_USE_GNU_PROPERTY) \
-    $(wildcard include/config/ARCH_HAVE_ELF_PROT) \
-  arch/x86/include/asm/elf.h \
-    $(wildcard include/config/X86_X32_ABI) \
-  arch/x86/include/asm/user.h \
-  arch/x86/include/asm/user_32.h \
-  arch/x86/include/asm/fsgsbase.h \
-  arch/x86/include/asm/vdso.h \
-  arch/x86/include/asm/desc.h \
-  arch/x86/include/asm/fixmap.h \
-    $(wildcard include/config/DEBUG_KMAP_LOCAL_FORCE_MAP) \
-    $(wildcard include/config/X86_VSYSCALL_EMULATION) \
-    $(wildcard include/config/PROVIDE_OHCI1394_DMA_INIT) \
-    $(wildcard include/config/X86_IO_APIC) \
-    $(wildcard include/config/KMAP_LOCAL) \
-    $(wildcard include/config/PCI_MMCONFIG) \
-    $(wildcard include/config/ACPI_APEI_GHES) \
-    $(wildcard include/config/INTEL_TXT) \
-  arch/x86/include/generated/asm/kmap_size.h \
-  include/asm-generic/kmap_size.h \
-    $(wildcard include/config/DEBUG_KMAP_LOCAL) \
-  include/asm-generic/fixmap.h \
-  arch/x86/include/asm/irq_vectors.h \
-    $(wildcard include/config/HAVE_KVM) \
-    $(wildcard include/config/HYPERV) \
-    $(wildcard include/config/PCI_MSI) \
-  arch/x86/include/asm/cpu_entry_area.h \
-  arch/x86/include/asm/intel_ds.h \
-  arch/x86/include/asm/pgtable_areas.h \
-  arch/x86/include/asm/pgtable_32_areas.h \
-  include/uapi/linux/elf.h \
-  include/uapi/linux/elf-em.h \
-  include/linux/kobject.h \
-    $(wildcard include/config/UEVENT_HELPER) \
-    $(wildcard include/config/DEBUG_KOBJECT_RELEASE) \
-  include/linux/sysfs.h \
-  include/linux/kernfs.h \
-    $(wildcard include/config/KERNFS) \
-  include/linux/idr.h \
-  include/linux/radix-tree.h \
-  include/linux/xarray.h \
-    $(wildcard include/config/XARRAY_MULTI) \
-  include/linux/kconfig.h \
-  include/linux/kobject_ns.h \
-  include/linux/moduleparam.h \
-    $(wildcard include/config/ALPHA) \
-    $(wildcard include/config/IA64) \
-    $(wildcard include/config/PPC64) \
-  include/linux/rbtree_latch.h \
-  include/linux/error-injection.h \
-  include/asm-generic/error-injection.h \
-  include/linux/cfi.h \
-    $(wildcard include/config/CFI_CLANG_SHADOW) \
-  arch/x86/include/asm/module.h \
-    $(wildcard include/config/UNWINDER_ORC) \
-  include/asm-generic/module.h \
-    $(wildcard include/config/HAVE_MOD_ARCH_SPECIFIC) \
-    $(wildcard include/config/MODULES_USE_ELF_REL) \
-    $(wildcard include/config/MODULES_USE_ELF_RELA) \
-  arch/x86/include/asm/orc_types.h \
-  include/linux/i2c.h \
-    $(wildcard include/config/I2C) \
-    $(wildcard include/config/I2C_SLAVE) \
-    $(wildcard include/config/I2C_BOARDINFO) \
-    $(wildcard include/config/I2C_MUX) \
-    $(wildcard include/config/OF) \
-    $(wildcard include/config/ACPI) \
-  include/linux/acpi.h \
-    $(wildcard include/config/ACPI_DEBUGGER) \
-    $(wildcard include/config/ACPI_TABLE_LIB) \
-    $(wildcard include/config/LOONGARCH) \
-    $(wildcard include/config/ARM64) \
-    $(wildcard include/config/ACPI_PROCESSOR_CSTATE) \
-    $(wildcard include/config/ACPI_HOTPLUG_CPU) \
-    $(wildcard include/config/ACPI_HOTPLUG_IOAPIC) \
-    $(wildcard include/config/PCI) \
-    $(wildcard include/config/ACPI_WMI) \
-    $(wildcard include/config/ACPI_NUMA) \
-    $(wildcard include/config/HIBERNATION) \
-    $(wildcard include/config/ACPI_HOTPLUG_MEMORY) \
-    $(wildcard include/config/ACPI_CONTAINER) \
-    $(wildcard include/config/ACPI_GTDT) \
-    $(wildcard include/config/PM) \
-    $(wildcard include/config/GPIOLIB) \
-    $(wildcard include/config/ACPI_TABLE_UPGRADE) \
-    $(wildcard include/config/ACPI_WATCHDOG) \
-    $(wildcard include/config/ACPI_SPCR_TABLE) \
-    $(wildcard include/config/ACPI_GENERIC_GSI) \
-    $(wildcard include/config/ACPI_LPIT) \
-    $(wildcard include/config/ACPI_PPTT) \
-    $(wildcard include/config/ACPI_PCC) \
-  include/linux/ioport.h \
-  include/linux/irqdomain.h \
-    $(wildcard include/config/IRQ_DOMAIN_HIERARCHY) \
-    $(wildcard include/config/GENERIC_IRQ_DEBUGFS) \
-    $(wildcard include/config/IRQ_DOMAIN) \
-    $(wildcard include/config/IRQ_DOMAIN_NOMAP) \
-  include/linux/irqhandler.h \
-  include/linux/of.h \
-    $(wildcard include/config/OF_DYNAMIC) \
-    $(wildcard include/config/SPARC) \
-    $(wildcard include/config/OF_PROMTREE) \
-    $(wildcard include/config/OF_KOBJ) \
-    $(wildcard include/config/OF_NUMA) \
-    $(wildcard include/config/OF_OVERLAY) \
-  include/linux/mod_devicetable.h \
-  include/linux/uuid.h \
-  include/uapi/linux/uuid.h \
-  include/linux/property.h \
-  include/linux/fwnode.h \
-  include/linux/resource_ext.h \
-  include/linux/slab.h \
-    $(wildcard include/config/DEBUG_SLAB) \
-    $(wildcard include/config/FAILSLAB) \
-    $(wildcard include/config/MEMCG_KMEM) \
-    $(wildcard include/config/KASAN) \
-    $(wildcard include/config/SLAB) \
-    $(wildcard include/config/SLUB) \
-    $(wildcard include/config/SLOB) \
-  include/linux/overflow.h \
-  include/linux/percpu-refcount.h \
-  include/linux/kasan.h \
-    $(wildcard include/config/KASAN_STACK) \
-    $(wildcard include/config/KASAN_VMALLOC) \
-    $(wildcard include/config/KASAN_INLINE) \
-  include/linux/kasan-enabled.h \
-  include/linux/device.h \
-    $(wildcard include/config/GENERIC_MSI_IRQ_DOMAIN) \
-    $(wildcard include/config/GENERIC_MSI_IRQ) \
-    $(wildcard include/config/ENERGY_MODEL) \
-    $(wildcard include/config/PINCTRL) \
-    $(wildcard include/config/DMA_OPS) \
-    $(wildcard include/config/DMA_DECLARE_COHERENT) \
-    $(wildcard include/config/DMA_CMA) \
-    $(wildcard include/config/SWIOTLB) \
-    $(wildcard include/config/ARCH_HAS_SYNC_DMA_FOR_DEVICE) \
-    $(wildcard include/config/ARCH_HAS_SYNC_DMA_FOR_CPU) \
-    $(wildcard include/config/ARCH_HAS_SYNC_DMA_FOR_CPU_ALL) \
-    $(wildcard include/config/DMA_OPS_BYPASS) \
-    $(wildcard include/config/DEVTMPFS) \
-    $(wildcard include/config/SYSFS_DEPRECATED) \
-  include/linux/dev_printk.h \
-  include/linux/ratelimit.h \
-  include/linux/sched.h \
-    $(wildcard include/config/VIRT_CPU_ACCOUNTING_NATIVE) \
-    $(wildcard include/config/SCHED_INFO) \
-    $(wildcard include/config/SCHEDSTATS) \
-    $(wildcard include/config/SCHED_CORE) \
-    $(wildcard include/config/FAIR_GROUP_SCHED) \
-    $(wildcard include/config/RT_GROUP_SCHED) \
-    $(wildcard include/config/RT_MUTEXES) \
-    $(wildcard include/config/UCLAMP_TASK) \
-    $(wildcard include/config/UCLAMP_BUCKETS_COUNT) \
-    $(wildcard include/config/CGROUP_SCHED) \
-    $(wildcard include/config/BLK_DEV_IO_TRACE) \
-    $(wildcard include/config/PSI) \
-    $(wildcard include/config/COMPAT_BRK) \
-    $(wildcard include/config/CGROUPS) \
-    $(wildcard include/config/BLK_CGROUP) \
-    $(wildcard include/config/PAGE_OWNER) \
-    $(wildcard include/config/EVENTFD) \
-    $(wildcard include/config/ARCH_HAS_SCALED_CPUTIME) \
-    $(wildcard include/config/VIRT_CPU_ACCOUNTING_GEN) \
-    $(wildcard include/config/POSIX_CPUTIMERS) \
-    $(wildcard include/config/POSIX_CPU_TIMERS_TASK_WORK) \
-    $(wildcard include/config/KEYS) \
-    $(wildcard include/config/SYSVIPC) \
-    $(wildcard include/config/DETECT_HUNG_TASK) \
-    $(wildcard include/config/IO_URING) \
-    $(wildcard include/config/AUDIT) \
-    $(wildcard include/config/AUDITSYSCALL) \
-    $(wildcard include/config/UBSAN) \
-    $(wildcard include/config/UBSAN_TRAP) \
-    $(wildcard include/config/TASK_XACCT) \
-    $(wildcard include/config/CPUSETS) \
-    $(wildcard include/config/X86_CPU_RESCTRL) \
-    $(wildcard include/config/FUTEX) \
-    $(wildcard include/config/PERF_EVENTS) \
-    $(wildcard include/config/RSEQ) \
-    $(wildcard include/config/TASK_DELAY_ACCT) \
-    $(wildcard include/config/FAULT_INJECTION) \
-    $(wildcard include/config/LATENCYTOP) \
-    $(wildcard include/config/KUNIT) \
-    $(wildcard include/config/FUNCTION_GRAPH_TRACER) \
-    $(wildcard include/config/BCACHE) \
-    $(wildcard include/config/VMAP_STACK) \
-    $(wildcard include/config/SECURITY) \
-    $(wildcard include/config/BPF_SYSCALL) \
-    $(wildcard include/config/GCC_PLUGIN_STACKLEAK) \
-    $(wildcard include/config/X86_MCE) \
-    $(wildcard include/config/KRETPROBES) \
-    $(wildcard include/config/RETHOOK) \
-    $(wildcard include/config/ARCH_HAS_PARANOID_L1D_FLUSH) \
-    $(wildcard include/config/ARCH_TASK_STRUCT_ON_STACK) \
-    $(wildcard include/config/DEBUG_RSEQ) \
-  include/uapi/linux/sched.h \
-  include/linux/pid.h \
-  include/linux/rculist.h \
-    $(wildcard include/config/PROVE_RCU_LIST) \
-  include/linux/sem.h \
-  include/uapi/linux/sem.h \
-  include/linux/ipc.h \
-  include/linux/rhashtable-types.h \
-  include/uapi/linux/ipc.h \
-  arch/x86/include/generated/uapi/asm/ipcbuf.h \
-  include/uapi/asm-generic/ipcbuf.h \
-  arch/x86/include/uapi/asm/sembuf.h \
-  include/linux/shm.h \
-  include/uapi/linux/shm.h \
-  include/uapi/asm-generic/hugetlb_encode.h \
-  arch/x86/include/uapi/asm/shmbuf.h \
-  include/uapi/asm-generic/shmbuf.h \
-  arch/x86/include/asm/shmparam.h \
-  include/linux/plist.h \
-    $(wildcard include/config/DEBUG_PLIST) \
-  include/linux/hrtimer.h \
-    $(wildcard include/config/HIGH_RES_TIMERS) \
-    $(wildcard include/config/TIME_LOW_RES) \
-    $(wildcard include/config/TIMERFD) \
-  include/linux/hrtimer_defs.h \
-  include/linux/timerqueue.h \
-  include/linux/seccomp.h \
-    $(wildcard include/config/SECCOMP) \
-    $(wildcard include/config/HAVE_ARCH_SECCOMP_FILTER) \
-    $(wildcard include/config/SECCOMP_FILTER) \
-    $(wildcard include/config/CHECKPOINT_RESTORE) \
-    $(wildcard include/config/SECCOMP_CACHE_DEBUG) \
-  include/uapi/linux/seccomp.h \
-  arch/x86/include/asm/seccomp.h \
-  arch/x86/include/asm/unistd.h \
-  arch/x86/include/uapi/asm/unistd.h \
-  arch/x86/include/generated/uapi/asm/unistd_32.h \
-  include/asm-generic/seccomp.h \
-  include/uapi/linux/unistd.h \
-  include/linux/resource.h \
-  include/uapi/linux/resource.h \
-  arch/x86/include/generated/uapi/asm/resource.h \
-  include/asm-generic/resource.h \
-  include/uapi/asm-generic/resource.h \
-  include/linux/latencytop.h \
-  include/linux/sched/prio.h \
-  include/linux/sched/types.h \
-  include/linux/signal_types.h \
-    $(wildcard include/config/OLD_SIGACTION) \
-  include/uapi/linux/signal.h \
-  arch/x86/include/asm/signal.h \
-  arch/x86/include/uapi/asm/signal.h \
-  include/uapi/asm-generic/signal-defs.h \
-  arch/x86/include/uapi/asm/siginfo.h \
-  include/uapi/asm-generic/siginfo.h \
-  include/linux/syscall_user_dispatch.h \
-  include/linux/task_io_accounting.h \
-    $(wildcard include/config/TASK_IO_ACCOUNTING) \
-  include/linux/posix-timers.h \
-  include/linux/alarmtimer.h \
-    $(wildcard include/config/RTC_CLASS) \
-  include/uapi/linux/rseq.h \
-  include/linux/kcsan.h \
-  include/linux/energy_model.h \
-  include/linux/sched/cpufreq.h \
-    $(wildcard include/config/CPU_FREQ) \
-  include/linux/sched/topology.h \
-    $(wildcard include/config/SCHED_DEBUG) \
-    $(wildcard include/config/SCHED_MC) \
-    $(wildcard include/config/CPU_FREQ_GOV_SCHEDUTIL) \
-  include/linux/sched/idle.h \
-  include/linux/sched/sd_flags.h \
-  include/linux/klist.h \
-  include/linux/pm.h \
-    $(wildcard include/config/VT_CONSOLE_SLEEP) \
-    $(wildcard include/config/PM_CLK) \
-    $(wildcard include/config/PM_GENERIC_DOMAINS) \
-  include/linux/device/bus.h \
-  include/linux/device/class.h \
-  include/linux/device/driver.h \
-  arch/x86/include/asm/device.h \
-  include/linux/pm_wakeup.h \
-  include/acpi/acpi.h \
-  include/acpi/platform/acenv.h \
-  include/acpi/platform/acgcc.h \
-  include/acpi/platform/aclinux.h \
-    $(wildcard include/config/ACPI_REDUCED_HARDWARE_ONLY) \
-    $(wildcard include/config/ACPI_DEBUG) \
-  include/linux/ctype.h \
-  arch/x86/include/asm/acenv.h \
-  include/acpi/acnames.h \
-  include/acpi/actypes.h \
-  include/acpi/acexcep.h \
-  include/acpi/actbl.h \
-  include/acpi/actbl1.h \
-  include/acpi/actbl2.h \
-  include/acpi/actbl3.h \
-  include/acpi/acrestyp.h \
-  include/acpi/platform/acenvex.h \
-  include/acpi/platform/aclinuxex.h \
-  include/acpi/platform/acgccex.h \
-  include/acpi/acoutput.h \
-  include/acpi/acpiosxf.h \
-  include/acpi/acpixf.h \
-  include/acpi/acconfig.h \
-  include/acpi/acbuffer.h \
-  include/linux/dynamic_debug.h \
-  include/acpi/acpi_bus.h \
-    $(wildcard include/config/X86_ANDROID_TABLETS) \
-    $(wildcard include/config/ACPI_SYSTEM_POWER_STATES_SUPPORT) \
-    $(wildcard include/config/ACPI_SLEEP) \
-  include/acpi/acpi_drivers.h \
-    $(wildcard include/config/ACPI_DOCK) \
-  include/acpi/acpi_numa.h \
-    $(wildcard include/config/ACPI_HMAT) \
-  include/acpi/acpi_io.h \
-  include/linux/io.h \
-    $(wildcard include/config/HAS_IOPORT_MAP) \
-  arch/x86/include/asm/io.h \
-    $(wildcard include/config/MTRR) \
-    $(wildcard include/config/X86_PAT) \
-  arch/x86/include/generated/asm/early_ioremap.h \
-  include/asm-generic/early_ioremap.h \
-    $(wildcard include/config/GENERIC_EARLY_IOREMAP) \
-  include/asm-generic/iomap.h \
-  include/asm-generic/pci_iomap.h \
-    $(wildcard include/config/NO_GENERIC_PCI_IOPORT_MAP) \
-    $(wildcard include/config/GENERIC_PCI_IOMAP) \
-  include/asm-generic/io.h \
-    $(wildcard include/config/GENERIC_IOMAP) \
-    $(wildcard include/config/GENERIC_IOREMAP) \
-    $(wildcard include/config/VIRT_TO_BUS) \
-    $(wildcard include/config/GENERIC_DEVMEM_IS_ALLOWED) \
-  include/linux/logic_pio.h \
-    $(wildcard include/config/INDIRECT_PIO) \
-  include/linux/vmalloc.h \
-    $(wildcard include/config/HAVE_ARCH_HUGE_VMALLOC) \
-  arch/x86/include/asm/vmalloc.h \
-    $(wildcard include/config/HAVE_ARCH_HUGE_VMAP) \
-  arch/x86/include/asm/acpi.h \
-    $(wildcard include/config/ACPI_APEI) \
-  include/acpi/pdc_intel.h \
-  arch/x86/include/asm/numa.h \
-    $(wildcard include/config/NUMA_EMU) \
-  arch/x86/include/asm/numa_32.h \
-  include/linux/regulator/consumer.h \
-    $(wildcard include/config/REGULATOR) \
-  include/linux/suspend.h \
-    $(wildcard include/config/VT) \
-    $(wildcard include/config/SUSPEND) \
-    $(wildcard include/config/HIBERNATION_SNAPSHOT_DEV) \
-    $(wildcard include/config/PM_SLEEP_DEBUG) \
-    $(wildcard include/config/PM_AUTOSLEEP) \
-  include/linux/swap.h \
-    $(wildcard include/config/DEVICE_PRIVATE) \
-    $(wildcard include/config/MIGRATION) \
-    $(wildcard include/config/FRONTSWAP) \
-    $(wildcard include/config/THP_SWAP) \
-    $(wildcard include/config/MEMCG_SWAP) \
-  include/linux/memcontrol.h \
-    $(wildcard include/config/CGROUP_WRITEBACK) \
-  include/linux/cgroup.h \
-    $(wildcard include/config/CGROUP_CPUACCT) \
-    $(wildcard include/config/SOCK_CGROUP_DATA) \
-    $(wildcard include/config/CGROUP_DATA) \
-    $(wildcard include/config/CGROUP_BPF) \
-  include/uapi/linux/cgroupstats.h \
-  include/uapi/linux/taskstats.h \
-  include/linux/fs.h \
-    $(wildcard include/config/READ_ONLY_THP_FOR_FS) \
-    $(wildcard include/config/FS_POSIX_ACL) \
-    $(wildcard include/config/IMA) \
-    $(wildcard include/config/FILE_LOCKING) \
-    $(wildcard include/config/FSNOTIFY) \
-    $(wildcard include/config/FS_ENCRYPTION) \
-    $(wildcard include/config/FS_VERITY) \
-    $(wildcard include/config/EPOLL) \
-    $(wildcard include/config/UNICODE) \
-    $(wildcard include/config/QUOTA) \
-    $(wildcard include/config/FS_DAX) \
-    $(wildcard include/config/BLOCK) \
-  include/linux/wait_bit.h \
-  include/linux/kdev_t.h \
-  include/uapi/linux/kdev_t.h \
-  include/linux/dcache.h \
-  include/linux/rculist_bl.h \
-  include/linux/list_bl.h \
-  include/linux/bit_spinlock.h \
-  include/linux/lockref.h \
-    $(wildcard include/config/ARCH_USE_CMPXCHG_LOCKREF) \
-  include/linux/stringhash.h \
-    $(wildcard include/config/DCACHE_WORD_ACCESS) \
-  include/linux/hash.h \
-    $(wildcard include/config/HAVE_ARCH_HASH) \
-  include/linux/path.h \
-  include/linux/list_lru.h \
-  include/linux/shrinker.h \
-  include/linux/capability.h \
-  include/uapi/linux/capability.h \
-  include/linux/semaphore.h \
-  include/linux/fcntl.h \
-    $(wildcard include/config/ARCH_32BIT_OFF_T) \
-  include/uapi/linux/fcntl.h \
-  arch/x86/include/generated/uapi/asm/fcntl.h \
-  include/uapi/asm-generic/fcntl.h \
-  include/uapi/linux/openat2.h \
-  include/linux/migrate_mode.h \
-  include/linux/percpu-rwsem.h \
-  include/linux/rcuwait.h \
-  include/linux/sched/signal.h \
-    $(wildcard include/config/SCHED_AUTOGROUP) \
-    $(wildcard include/config/BSD_PROCESS_ACCT) \
-    $(wildcard include/config/TASKSTATS) \
-    $(wildcard include/config/STACK_GROWSUP) \
-  include/linux/signal.h \
-    $(wildcard include/config/DYNAMIC_SIGFRAME) \
-  include/linux/sched/jobctl.h \
-  include/linux/sched/task.h \
-    $(wildcard include/config/HAVE_EXIT_THREAD) \
-    $(wildcard include/config/ARCH_WANTS_DYNAMIC_TASK_STRUCT) \
-    $(wildcard include/config/HAVE_ARCH_THREAD_STRUCT_WHITELIST) \
-  include/linux/uaccess.h \
-  include/linux/fault-inject-usercopy.h \
-    $(wildcard include/config/FAULT_INJECTION_USERCOPY) \
-  arch/x86/include/asm/uaccess.h \
-    $(wildcard include/config/CC_HAS_ASM_GOTO_OUTPUT) \
-    $(wildcard include/config/CC_HAS_ASM_GOTO_TIED_OUTPUT) \
-    $(wildcard include/config/ARCH_HAS_COPY_MC) \
-    $(wildcard include/config/X86_INTEL_USERCOPY) \
-  arch/x86/include/asm/smap.h \
-  arch/x86/include/asm/extable.h \
-    $(wildcard include/config/BPF_JIT) \
-  include/asm-generic/access_ok.h \
-    $(wildcard include/config/ALTERNATE_USER_ADDRESS_SPACE) \
-  arch/x86/include/asm/uaccess_32.h \
-  include/linux/cred.h \
-    $(wildcard include/config/DEBUG_CREDENTIALS) \
-  include/linux/key.h \
-    $(wildcard include/config/KEY_NOTIFICATIONS) \
-    $(wildcard include/config/NET) \
-  include/linux/assoc_array.h \
-    $(wildcard include/config/ASSOCIATIVE_ARRAY) \
-  include/linux/sched/user.h \
-    $(wildcard include/config/WATCH_QUEUE) \
-  include/linux/percpu_counter.h \
-  include/linux/rcu_sync.h \
-  include/linux/delayed_call.h \
-  include/linux/errseq.h \
-  include/linux/ioprio.h \
-  include/linux/sched/rt.h \
-  include/linux/iocontext.h \
-    $(wildcard include/config/BLK_ICQ) \
-  include/uapi/linux/io
+// SPDX-License-Identifier: GPL-2.0-or-later
+/*
+ * Broadcom Starfighter 2 DSA switch driver
+ *
+ * Copyright (C) 2014, Broadcom Corporation
+ */
+
+#include <linux/list.h>
+#include <linux/module.h>
+#include <linux/netdevice.h>
+#include <linux/interrupt.h>
+#include <linux/platform_device.h>
+#include <linux/phy.h>
+#include <linux/phy_fixed.h>
+#include <linux/phylink.h>
+#include <linux/mii.h>
+#include <linux/clk.h>
+#include <linux/of.h>
+#include <linux/of_irq.h>
+#include <linux/of_address.h>
+#include <linux/of_net.h>
+#include <linux/of_mdio.h>
+#include <net/dsa.h>
+#include <linux/ethtool.h>
+#include <linux/if_bridge.h>
+#include <linux/brcmphy.h>
+#include <linux/etherdevice.h>
+#include <linux/platform_data/b53.h>
+
+#include "bcm_sf2.h"
+#include "bcm_sf2_regs.h"
+#include "b53/b53_priv.h"
+#include "b53/b53_regs.h"
+
+static u16 bcm_sf2_reg_rgmii_cntrl(struct bcm_sf2_priv *priv, int port)
+{
+	switch (priv->type) {
+	case BCM4908_DEVICE_ID:
+		switch (port) {
+		case 7:
+			return REG_RGMII_11_CNTRL;
+		default:
+			break;
+		}
+		break;
+	default:
+		switch (port) {
+		case 0:
+			return REG_RGMII_0_CNTRL;
+		case 1:
+			return REG_RGMII_1_CNTRL;
+		case 2:
+			return REG_RGMII_2_CNTRL;
+		default:
+			break;
+		}
+	}
+
+	WARN_ONCE(1, "Unsupported port %d\n", port);
+
+	/* RO fallback reg */
+	return REG_SWITCH_STATUS;
+}
+
+static u16 bcm_sf2_reg_led_base(struct bcm_sf2_priv *priv, int port)
+{
+	switch (port) {
+	case 0:
+		return REG_LED_0_CNTRL;
+	case 1:
+		return REG_LED_1_CNTRL;
+	case 2:
+		return REG_LED_2_CNTRL;
+	}
+
+	switch (priv->type) {
+	case BCM4908_DEVICE_ID:
+		switch (port) {
+		case 3:
+			return REG_LED_3_CNTRL;
+		case 7:
+			return REG_LED_4_CNTRL;
+		default:
+			break;
+		}
+		break;
+	default:
+		break;
+	}
+
+	WARN_ONCE(1, "Unsupported port %d\n", port);
+
+	/* RO fallback reg */
+	return REG_SWITCH_STATUS;
+}
+
+/* Return the number of active ports, not counting the IMP (CPU) port */
+static unsigned int bcm_sf2_num_active_ports(struct dsa_switch *ds)
+{
+	struct bcm_sf2_priv *priv = bcm_sf2_to_priv(ds);
+	unsigned int port, count = 0;
+
+	for (port = 0; port < ds->num_ports; port++) {
+		if (dsa_is_cpu_port(ds, port))
+			continue;
+		if (priv->port_sts[port].enabled)
+			count++;
+	}
+
+	return count;
+}
+
+static void bcm_sf2_recalc_clock(struct dsa_switch *ds)
+{
+	struct bcm_sf2_priv *priv = bcm_sf2_to_priv(ds);
+	unsigned long new_rate;
+	unsigned int ports_active;
+	/* Frequenty in Mhz */
+	static const unsigned long rate_table[] = {
+		59220000,
+		60820000,
+		62500000,
+		62500000,
+	};
+
+	ports_active = bcm_sf2_num_active_ports(ds);
+	if (ports_active == 0 || !priv->clk_mdiv)
+		return;
+
+	/* If we overflow our table, just use the recommended operational
+	 * frequency
+	 */
+	if (ports_active > ARRAY_SIZE(rate_table))
+		new_rate = 90000000;
+	else
+		new_rate = rate_table[ports_active - 1];
+	clk_set_rate(priv->clk_mdiv, new_rate);
+}
+
+static void bcm_sf2_imp_setup(struct dsa_switch *ds, int port)
+{
+	struct bcm_sf2_priv *priv = bcm_sf2_to_priv(ds);
+	unsigned int i;
+	u32 reg, offset;
+
+	/* Enable the port memories */
+	reg = core_readl(priv, CORE_MEM_PSM_VDD_CTRL);
+	reg &= ~P_TXQ_PSM_VDD(port);
+	core_writel(priv, reg, CORE_MEM_PSM_VDD_CTRL);
+
+	/* Enable forwarding */
+	core_writel(priv, SW_FWDG_EN, CORE_SWMODE);
+
+	/* Enable IMP port in dumb mode */
+	reg = core_readl(priv, CORE_SWITCH_CTRL);
+	reg |= MII_DUMB_FWDG_EN;
+	core_writel(priv, reg, CORE_SWITCH_CTRL);
+
+	/* Configure Traffic Class to QoS mapping, allow each priority to map
+	 * to a different queue number
+	 */
+	reg = core_readl(priv, CORE_PORT_TC2_QOS_MAP_PORT(port));
+	for (i = 0; i < SF2_NUM_EGRESS_QUEUES; i++)
+		reg |= i << (PRT_TO_QID_SHIFT * i);
+	core_writel(priv, reg, CORE_PORT_TC2_QOS_MAP_PORT(port));
+
+	b53_brcm_hdr_setup(ds, port);
+
+	if (port == 8) {
+		if (priv->type == BCM4908_DEVICE_ID ||
+		    priv->type == BCM7445_DEVICE_ID)
+			offset = CORE_STS_OVERRIDE_IMP;
+		else
+			offset = CORE_STS_OVERRIDE_IMP2;
+
+		/* Force link status for IMP port */
+		reg = core_readl(priv, offset);
+		reg |= (MII_SW_OR | LINK_STS);
+		if (priv->type == BCM4908_DEVICE_ID)
+			reg |= GMII_SPEED_UP_2G;
+		else
+			reg &= ~GMII_SPEED_UP_2G;
+		core_writel(priv, reg, offset);
+
+		/* Enable Broadcast, Multicast, Unicast forwarding to IMP port */
+		reg = core_readl(priv, CORE_IMP_CTL);
+		reg |= (RX_BCST_EN | RX_MCST_EN | RX_UCST_EN);
+		reg &= ~(RX_DIS | TX_DIS);
+		core_writel(priv, reg, CORE_IMP_CTL);
+	} else {
+		reg = core_readl(priv, CORE_G_PCTL_PORT(port));
+		reg &= ~(RX_DIS | TX_DIS);
+		core_writel(priv, reg, CORE_G_PCTL_PORT(port));
+	}
+
+	priv->port_sts[port].enabled = true;
+}
+
+static void bcm_sf2_gphy_enable_set(struct dsa_switch *ds, bool enable)
+{
+	struct bcm_sf2_priv *priv = bcm_sf2_to_priv(ds);
+	u32 reg;
+
+	reg = reg_readl(priv, REG_SPHY_CNTRL);
+	if (enable) {
+		reg |= PHY_RESET;
+		reg &= ~(EXT_PWR_DOWN | IDDQ_BIAS | IDDQ_GLOBAL_PWR | CK25_DIS);
+		reg_writel(priv, reg, REG_SPHY_CNTRL);
+		udelay(21);
+		reg = reg_readl(priv, REG_SPHY_CNTRL);
+		reg &= ~PHY_RESET;
+	} else {
+		reg |= EXT_PWR_DOWN | IDDQ_BIAS | PHY_RESET;
+		reg_writel(priv, reg, REG_SPHY_CNTRL);
+		mdelay(1);
+		reg |= CK25_DIS;
+	}
+	reg_writel(priv, reg, REG_SPHY_CNTRL);
+
+	/* Use PHY-driven LED signaling */
+	if (!enable) {
+		u16 led_ctrl = bcm_sf2_reg_led_base(priv, 0);
+
+		if (priv->type == BCM7278_DEVICE_ID ||
+		    priv->type == BCM7445_DEVICE_ID) {
+			reg = reg_led_readl(priv, led_ctrl, 0);
+			reg |= LED_CNTRL_SPDLNK_SRC_SEL;
+			reg_led_writel(priv, reg, led_ctrl, 0);
+		}
+	}
+}
+
+static inline void bcm_sf2_port_intr_enable(struct bcm_sf2_priv *priv,
+					    int port)
+{
+	unsigned int off;
+
+	switch (port) {
+	case 7:
+		off = P7_IRQ_OFF;
+		break;
+	case 0:
+		/* Port 0 interrupts are located on the first bank */
+		intrl2_0_mask_clear(priv, P_IRQ_MASK(P0_IRQ_OFF));
+		return;
+	default:
+		off = P_IRQ_OFF(port);
+		break;
+	}
+
+	intrl2_1_mask_clear(priv, P_IRQ_MASK(off));
+}
+
+static inline void bcm_sf2_port_intr_disable(struct bcm_sf2_priv *priv,
+					     int port)
+{
+	unsigned int off;
+
+	switch (port) {
+	case 7:
+		off = P7_IRQ_OFF;
+		break;
+	case 0:
+		/* Port 0 interrupts are located on the first bank */
+		intrl2_0_mask_set(priv, P_IRQ_MASK(P0_IRQ_OFF));
+		intrl2_0_writel(priv, P_IRQ_MASK(P0_IRQ_OFF), INTRL2_CPU_CLEAR);
+		return;
+	default:
+		off = P_IRQ_OFF(port);
+		break;
+	}
+
+	intrl2_1_mask_set(priv, P_IRQ_MASK(off));
+	intrl2_1_writel(priv, P_IRQ_MASK(off), INTRL2_CPU_CLEAR);
+}
+
+static int bcm_sf2_port_setup(struct dsa_switch *ds, int port,
+			      struct phy_device *phy)
+{
+	struct bcm_sf2_priv *priv = bcm_sf2_to_priv(ds);
+	unsigned int i;
+	u32 reg;
+
+	if (!dsa_is_user_port(ds, port))
+		return 0;
+
+	priv->port_sts[port].enabled = true;
+
+	bcm_sf2_recalc_clock(ds);
+
+	/* Clear the memory power down */
+	reg = core_readl(priv, CORE_MEM_PSM_VDD_CTRL);
+	reg &= ~P_TXQ_PSM_VDD(port);
+	core_writel(priv, reg, CORE_MEM_PSM_VDD_CTRL);
+
+	/* Enable Broadcom tags for that port if requested */
+	if (priv->brcm_tag_mask & BIT(port))
+		b53_brcm_hdr_setup(ds, port);
+
+	/* Configure Traffic Class to QoS mapping, allow each priority to map
+	 * to a different queue number
+	 */
+	reg = core_readl(priv, CORE_PORT_TC2_QOS_MAP_PORT(port));
+	for (i = 0; i < SF2_NUM_EGRESS_QUEUES; i++)
+		reg |= i << (PRT_TO_QID_SHIFT * i);
+	core_writel(priv, reg, CORE_PORT_TC2_QOS_MAP_PORT(port));
+
+	/* Re-enable the GPHY and re-apply workarounds */
+	if (priv->int_phy_mask & 1 << port && priv->hw_params.num_gphy == 1) {
+		bcm_sf2_gphy_enable_set(ds, true);
+		if (phy) {
+			/* if phy_stop() has been called before, phy
+			 * will be in halted state, and phy_start()
+			 * will call resume.
+			 *
+			 * the resume path does not configure back
+			 * autoneg settings, and since we hard reset
+			 * the phy manually here, we need to reset the
+			 * state machine also.
+			 */
+			phy->state = PHY_READY;
+			phy_init_hw(phy);
+		}
+	}
+
+	/* Enable MoCA port interrupts to get notified */
+	if (port == priv->moca_port)
+		bcm_sf2_port_intr_enable(priv, port);
+
+	/* Set per-queue pause threshold to 32 */
+	core_writel(priv, 32, CORE_TXQ_THD_PAUSE_QN_PORT(port));
+
+	/* Set ACB threshold to 24 */
+	for (i = 0; i < SF2_NUM_EGRESS_QUEUES; i++) {
+		reg = acb_readl(priv, ACB_QUEUE_CFG(port *
+						    SF2_NUM_EGRESS_QUEUES + i));
+		reg &= ~XOFF_THRESHOLD_MASK;
+		reg |= 24;
+		acb_writel(priv, reg, ACB_QUEUE_CFG(port *
+						    SF2_NUM_EGRESS_QUEUES + i));
+	}
+
+	return b53_enable_port(ds, port, phy);
+}
+
+static void bcm_sf2_port_disable(struct dsa_switch *ds, int port)
+{
+	struct bcm_sf2_priv *priv = bcm_sf2_to_priv(ds);
+	u32 reg;
+
+	/* Disable learning while in WoL mode */
+	if (priv->wol_ports_mask & (1 << port)) {
+		reg = core_readl(priv, CORE_DIS_LEARN);
+		reg |= BIT(port);
+		core_writel(priv, reg, CORE_DIS_LEARN);
+		return;
+	}
+
+	if (port == priv->moca_port)
+		bcm_sf2_port_intr_disable(priv, port);
+
+	if (priv->int_phy_mask & 1 << port && priv->hw_params.num_gphy == 1)
+		bcm_sf2_gphy_enable_set(ds, false);
+
+	b53_disable_port(ds, port);
+
+	/* Power down the port memory */
+	reg = core_readl(priv, CORE_MEM_PSM_VDD_CTRL);
+	reg |= P_TXQ_PSM_VDD(port);
+	core_writel(priv, reg, CORE_MEM_PSM_VDD_CTRL);
+
+	priv->port_sts[port].enabled = false;
+
+	bcm_sf2_recalc_clock(ds);
+}
+
+
+static int bcm_sf2_sw_indir_rw(struct bcm_sf2_priv *priv, int op, int addr,
+			       int regnum, u16 val)
+{
+	int ret = 0;
+	u32 reg;
+
+	reg = reg_readl(priv, REG_SWITCH_CNTRL);
+	reg |= MDIO_MASTER_SEL;
+	reg_writel(priv, reg, REG_SWITCH_CNTRL);
+
+	/* Page << 8 | offset */
+	reg = 0x70;
+	reg <<= 2;
+	core_writel(priv, addr, reg);
+
+	/* Page << 8 | offset */
+	reg = 0x80 << 8 | regnum << 1;
+	reg <<= 2;
+
+	if (op)
+		ret = core_readl(priv, reg);
+	else
+		core_writel(priv, val, reg);
+
+	reg = reg_readl(priv, REG_SWITCH_CNTRL);
+	reg &= ~MDIO_MASTER_SEL;
+	reg_writel(priv, reg, REG_SWITCH_CNTRL);
+
+	return ret & 0xffff;
+}
+
+static int bcm_sf2_sw_mdio_read(struct mii_bus *bus, int addr, int regnum)
+{
+	struct bcm_sf2_priv *priv = bus->priv;
+
+	/* Intercept reads from Broadcom pseudo-PHY address, else, send
+	 * them to our master MDIO bus controller
+	 */
+	if (addr == BRCM_PSEUDO_PHY_ADDR && priv->indir_phy_mask & BIT(addr))
+		return bcm_sf2_sw_indir_rw(priv, 1, addr, regnum, 0);
+	else
+		return mdiobus_read_nested(priv->master_mii_bus, addr, regnum);
+}
+
+static int bcm_sf2_sw_mdio_write(struct mii_bus *bus, int addr, int regnum,
+				 u16 val)
+{
+	struct bcm_sf2_priv *priv = bus->priv;
+
+	/* Intercept writes to the Broadcom pseudo-PHY address, else,
+	 * send them to our master MDIO bus controller
+	 */
+	if (addr == BRCM_PSEUDO_PHY_ADDR && priv->indir_phy_mask & BIT(addr))
+		return bcm_sf2_sw_indir_rw(priv, 0, addr, regnum, val);
+	else
+		return mdiobus_write_nested(priv->master_mii_bus, addr,
+				regnum, val);
+}
+
+static irqreturn_t bcm_sf2_switch_0_isr(int irq, void *dev_id)
+{
+	struct dsa_switch *ds = dev_id;
+	struct bcm_sf2_priv *priv = bcm_sf2_to_priv(ds);
+
+	priv->irq0_stat = intrl2_0_readl(priv, INTRL2_CPU_STATUS) &
+				~priv->irq0_mask;
+	intrl2_0_writel(priv, priv->irq0_stat, INTRL2_CPU_CLEAR);
+
+	return IRQ_HANDLED;
+}
+
+static irqreturn_t bcm_sf2_switch_1_isr(int irq, void *dev_id)
+{
+	struct dsa_switch *ds = dev_id;
+	struct bcm_sf2_priv *priv = bcm_sf2_to_priv(ds);
+
+	priv->irq1_stat = intrl2_1_readl(priv, INTRL2_CPU_STATUS) &
+				~priv->irq1_mask;
+	intrl2_1_writel(priv, priv->irq1_stat, INTRL2_CPU_CLEAR);
+
+	if (priv->irq1_stat & P_LINK_UP_IRQ(P7_IRQ_OFF)) {
+		priv->port_sts[7].link = true;
+		dsa_port_phylink_mac_change(ds, 7, true);
+	}
+	if (priv->irq1_stat & P_LINK_DOWN_IRQ(P7_IRQ_OFF)) {
+		priv->port_sts[7].link = false;
+		dsa_port_phylink_mac_change(ds, 7, false);
+	}
+
+	return IRQ_HANDLED;
+}
+
+static int bcm_sf2_sw_rst(struct bcm_sf2_priv *priv)
+{
+	unsigned int timeout = 1000;
+	u32 reg;
+	int ret;
+
+	/* The watchdog reset does not work on 7278, we need to hit the
+	 * "external" reset line through the reset controller.
+	 */
+	if (priv->type == BCM7278_DEVICE_ID) {
+		ret = reset_control_assert(priv->rcdev);
+		if (ret)
+			return ret;
+
+		return reset_control_deassert(priv->rcdev);
+	}
+
+	reg = core_readl(priv, CORE_WATCHDOG_CTRL);
+	reg |= SOFTWARE_RESET | EN_CHIP_RST | EN_SW_RESET;
+	core_writel(priv, reg, CORE_WATCHDOG_CTRL);
+
+	do {
+		reg = core_readl(priv, CORE_WATCHDOG_CTRL);
+		if (!(reg & SOFTWARE_RESET))
+			break;
+
+		usleep_range(1000, 2000);
+	} while (timeout-- > 0);
+
+	if (timeout == 0)
+		return -ETIMEDOUT;
+
+	return 0;
+}
+
+static void bcm_sf2_crossbar_setup(struct bcm_sf2_priv *priv)
+{
+	struct device *dev = priv->dev->ds->dev;
+	int shift;
+	u32 mask;
+	u32 reg;
+	int i;
+
+	mask = BIT(priv->num_crossbar_int_ports) - 1;
+
+	reg = reg_readl(priv, REG_CROSSBAR);
+	switch (priv->type) {
+	case BCM4908_DEVICE_ID:
+		shift = CROSSBAR_BCM4908_INT_P7 * priv->num_crossbar_int_ports;
+		reg &= ~(mask << shift);
+		if (0) /* FIXME */
+			reg |= CROSSBAR_BCM4908_EXT_SERDES << shift;
+		else if (priv->int_phy_mask & BIT(7))
+			reg |= CROSSBAR_BCM4908_EXT_GPHY4 << shift;
+		else if (phy_interface_mode_is_rgmii(priv->port_sts[7].mode))
+			reg |= CROSSBAR_BCM4908_EXT_RGMII << shift;
+		else if (WARN(1, "Invalid port mode\n"))
+			return;
+		break;
+	default:
+		return;
+	}
+	reg_writel(priv, reg, REG_CROSSBAR);
+
+	reg = reg_readl(priv, REG_CROSSBAR);
+	for (i = 0; i < priv->num_crossbar_int_ports; i++) {
+		shift = i * priv->num_crossbar_int_ports;
+
+		dev_dbg(dev, "crossbar int port #%d - ext port #%d\n", i,
+			(reg >> shift) & mask);
+	}
+}
+
+static void bcm_sf2_intr_disable(struct bcm_sf2_priv *priv)
+{
+	intrl2_0_mask_set(priv, 0xffffffff);
+	intrl2_0_writel(priv, 0xffffffff, INTRL2_CPU_CLEAR);
+	intrl2_1_mask_set(priv, 0xffffffff);
+	intrl2_1_writel(priv, 0xffffffff, INTRL2_CPU_CLEAR);
+}
+
+static void bcm_sf2_identify_ports(struct bcm_sf2_priv *priv,
+				   struct device_node *dn)
+{
+	struct device *dev = priv->dev->ds->dev;
+	struct bcm_sf2_port_status *port_st;
+	struct device_node *port;
+	unsigned int port_num;
+	struct property *prop;
+	int err;
+
+	priv->moca_port = -1;
+
+	for_each_available_child_of_node(dn, port) {
+		if (of_property_read_u32(port, "reg", &port_num))
+			continue;
+
+		if (port_num >= DSA_MAX_PORTS) {
+			dev_err(dev, "Invalid port number %d\n", port_num);
+			continue;
+		}
+
+		port_st = &priv->port_sts[port_num];
+
+		/* Internal PHYs get assigned a specific 'phy-mode' property
+		 * value: "internal" to help flag them before MDIO probing
+		 * has completed, since they might be turned off at that
+		 * time
+		 */
+		err = of_get_phy_mode(port, &port_st->mode);
+		if (err)
+			continue;
+
+		if (port_st->mode == PHY_INTERFACE_MODE_INTERNAL)
+			priv->int_phy_mask |= 1 << port_num;
+
+		if (port_st->mode == PHY_INTERFACE_MODE_MOCA)
+			priv->moca_port = port_num;
+
+		if (of_property_read_bool(port, "brcm,use-bcm-hdr"))
+			priv->brcm_tag_mask |= 1 << port_num;
+
+		/* Ensure that port 5 is not picked up as a DSA CPU port
+		 * flavour but a regular port instead. We should be using
+		 * devlink to be able to set the port flavour.
+		 */
+		if (port_num == 5 && priv->type == BCM7278_DEVICE_ID) {
+			prop = of_find_property(port, "ethernet", NULL);
+			if (prop)
+				of_remove_property(port, prop);
+		}
+	}
+}
+
+static int bcm_sf2_mdio_register(struct dsa_switch *ds)
+{
+	struct bcm_sf2_priv *priv = bcm_sf2_to_priv(ds);
+	struct device_node *dn, *child;
+	struct phy_device *phydev;
+	struct property *prop;
+	static int index;
+	int err, reg;
+
+	/* Find our integrated MDIO bus node */
+	dn = of_find_compatible_node(NULL, NULL, "brcm,unimac-mdio");
+	priv->master_mii_bus = of_mdio_find_bus(dn);
+	if (!priv->master_mii_bus) {
+		of_node_put(dn);
+		return -EPROBE_DEFER;
+	}
+
+	get_device(&priv->master_mii_bus->dev);
+	priv->master_mii_dn = dn;
+
+	priv->slave_mii_bus = mdiobus_alloc();
+	if (!priv->slave_mii_bus) {
+		of_node_put(dn);
+		return -ENOMEM;
+	}
+
+	priv->slave_mii_bus->priv = priv;
+	priv->slave_mii_bus->name = "sf2 slave mii";
+	priv->slave_mii_bus->read = bcm_sf2_sw_mdio_read;
+	priv->slave_mii_bus->write = bcm_sf2_sw_mdio_write;
+	snprintf(priv->slave_mii_bus->id, MII_BUS_ID_SIZE, "sf2-%d",
+		 index++);
+	priv->slave_mii_bus->dev.of_node = dn;
+
+	/* Include the pseudo-PHY address to divert reads towards our
+	 * workaround. This is only required for 7445D0, since 7445E0
+	 * disconnects the internal switch pseudo-PHY such that we can use the
+	 * regular SWITCH_MDIO master controller instead.
+	 *
+	 * Here we flag the pseudo PHY as needing special treatment and would
+	 * otherwise make all other PHY read/writes go to the master MDIO bus
+	 * controller that comes with this switch backed by the "mdio-unimac"
+	 * driver.
+	 */
+	if (of_machine_is_compatible("brcm,bcm7445d0"))
+		priv->indir_phy_mask |= (1 << BRCM_PSEUDO_PHY_ADDR) | (1 << 0);
+	else
+		priv->indir_phy_mask = 0;
+
+	ds->phys_mii_mask = priv->indir_phy_mask;
+	ds->slave_mii_bus = priv->slave_mii_bus;
+	priv->slave_mii_bus->parent = ds->dev->parent;
+	priv->slave_mii_bus->phy_mask = ~priv->indir_phy_mask;
+
+	/* We need to make sure that of_phy_connect() will not work by
+	 * removing the 'phandle' and 'linux,phandle' properties and
+	 * unregister the existing PHY device that was already registered.
+	 */
+	for_each_available_child_of_node(dn, child) {
+		if (of_property_read_u32(child, "reg", &reg) ||
+		    reg >= PHY_MAX_ADDR)
+			continue;
+
+		if (!(priv->indir_phy_mask & BIT(reg)))
+			continue;
+
+		prop = of_find_property(child, "phandle", NULL);
+		if (prop)
+			of_remove_property(child, prop);
+
+		prop = of_find_property(child, "linux,phandle", NULL);
+		if (prop)
+			of_remove_property(child, prop);
+
+		phydev = of_phy_find_device(child);
+		if (phydev)
+			phy_device_remove(phydev);
+	}
+
+	err = mdiobus_register(priv->slave_mii_bus);
+	if (err && dn) {
+		mdiobus_free(priv->slave_mii_bus);
+		of_node_put(dn);
+	}
+
+	return err;
+}
+
+static void bcm_sf2_mdio_unregister(struct bcm_sf2_priv *priv)
+{
+	mdiobus_unregister(priv->slave_mii_bus);
+	mdiobus_free(priv->slave_mii_bus);
+	of_node_put(priv->master_mii_dn);
+}
+
+static u32 bcm_sf2_sw_get_phy_flags(struct dsa_switch *ds, int port)
+{
+	struct bcm_sf2_priv *priv = bcm_sf2_to_priv(ds);
+
+	/* The BCM7xxx PHY driver expects to find the integrated PHY revision
+	 * in bits 15:8 and the patch level in bits 7:0 which is exactly what
+	 * the REG_PHY_REVISION register layout is.
+	 */
+	if (priv->int_phy_mask & BIT(port))
+		return priv->hw_params.gphy_rev;
+	else
+		return PHY_BRCM_AUTO_PWRDWN_ENABLE |
+		       PHY_BRCM_DIS_TXCRXC_NOENRGY |
+		       PHY_BRCM_IDDQ_SUSPEND;
+}
+
+static void bcm_sf2_sw_get_caps(struct dsa_switch *ds, int port,
+				struct phylink_config *config)
+{
+	unsigned long *interfaces = config->supported_interfaces;
+	struct bcm_sf2_priv *priv = bcm_sf2_to_priv(ds);
+
+	if (priv->int_phy_mask & BIT(port)) {
+		__set_bit(PHY_INTERFACE_MODE_INTERNAL, interfaces);
+	} else if (priv->moca_port == port) {
+		__set_bit(PHY_INTERFACE_MODE_MOCA, interfaces);
+	} else {
+		__set_bit(PHY_INTERFACE_MODE_MII, interfaces);
+		__set_bit(PHY_INTERFACE_MODE_REVMII, interfaces);
+		__set_bit(PHY_INTERFACE_MODE_GMII, interfaces);
+		phy_interface_set_rgmii(interfaces);
+	}
+
+	config->mac_capabilities = MAC_ASYM_PAUSE | MAC_SYM_PAUSE |
+		MAC_10 | MAC_100 | MAC_1000;
+}
+
+static void bcm_sf2_sw_mac_config(struct dsa_switch *ds, int port,
+				  unsigned int mode,
+				  const struct phylink_link_state *state)
+{
+	struct bcm_sf2_priv *priv = bcm_sf2_to_priv(ds);
+	u32 id_mode_dis = 0, port_mode;
+	u32 reg_rgmii_ctrl;
+	u32 reg;
+
+	if (port == core_readl(priv, CORE_IMP0_PRT_ID))
+		return;
+
+	switch (state->interface) {
+	case PHY_INTERFACE_MODE_RGMII:
+		id_mode_dis = 1;
+		fallthrough;
+	case PHY_INTERFACE_MODE_RGMII_TXID:
+		port_mode = EXT_GPHY;
+		break;
+	case PHY_INTERFACE_MODE_MII:
+		port_mode = EXT_EPHY;
+		break;
+	case PHY_INTERFACE_MODE_REVMII:
+		port_mode = EXT_REVMII;
+		break;
+	default:
+		/* Nothing required for all other PHYs: internal and MoCA */
+		return;
+	}
+
+	reg_rgmii_ctrl = bcm_sf2_reg_rgmii_cntrl(priv, port);
+
+	/* Clear id_mode_dis bit, and the existing port mode, let
+	 * RGMII_MODE_EN bet set by mac_link_{up,down}
+	 */
+	reg = reg_readl(priv, reg_rgmii_ctrl);
+	reg &= ~ID_MODE_DIS;
+	reg &= ~(PORT_MODE_MASK << PORT_MODE_SHIFT);
+
+	reg |= port_mode;
+	if (id_mode_dis)
+		reg |= ID_MODE_DIS;
+
+	reg_writel(priv, reg, reg_rgmii_ctrl);
+}
+
+static void bcm_sf2_sw_mac_link_set(struct dsa_switch *ds, int port,
+				    phy_interface_t interface, bool link)
+{
+	struct bcm_sf2_priv *priv = bcm_sf2_to_priv(ds);
+	u32 reg_rgmii_ctrl;
+	u32 reg;
+
+	if (!phy_interface_mode_is_rgmii(interface) &&
+	    interface != PHY_INTERFACE_MODE_MII &&
+	    interface != PHY_INTERFACE_MODE_REVMII)
+		return;
+
+	reg_rgmii_ctrl = bcm_sf2_reg_rgmii_cntrl(priv, port);
+
+	/* If the link is down, just disable the interface to conserve power */
+	reg = reg_readl(priv, reg_rgmii_ctrl);
+	if (link)
+		reg |= RGMII_MODE_EN;
+	else
+		reg &= ~RGMII_MODE_EN;
+	reg_writel(priv, reg, reg_rgmii_ctrl);
+}
+
+static void bcm_sf2_sw_mac_link_down(struct dsa_switch *ds, int port,
+				     unsigned int mode,
+				     phy_interface_t interface)
+{
+	struct bcm_sf2_priv *priv = bcm_sf2_to_priv(ds);
+	u32 reg, offset;
+
+	if (priv->wol_ports_mask & BIT(port))
+		return;
+
+	if (port != core_readl(priv, CORE_IMP0_PRT_ID)) {
+		if (priv->type == BCM4908_DEVICE_ID ||
+		    priv->type == BCM7445_DEVICE_ID)
+			offset = CORE_STS_OVERRIDE_GMIIP_PORT(port);
+		else
+			offset = CORE_STS_OVERRIDE_GMIIP2_PORT(port);
+
+		reg = core_readl(priv, offset);
+		reg &= ~LINK_STS;
+		core_writel(priv, reg, offset);
+	}
+
+	bcm_sf2_sw_mac_link_set(ds, port, interface, false);
+}
+
+static void bcm_sf2_sw_mac_link_up(struct dsa_switch *ds, int port,
+				   unsigned int mode,
+				   phy_interface_t interface,
+				   struct phy_device *phydev,
+				   int speed, int duplex,
+				   bool tx_pause, bool rx_pause)
+{
+	struct bcm_sf2_priv *priv = bcm_sf2_to_priv(ds);
+	struct ethtool_eee *p = &priv->dev->ports[port].eee;
+
+	bcm_sf2_sw_mac_link_set(ds, port, interface, true);
+
+	if (port != core_readl(priv, CORE_IMP0_PRT_ID)) {
+		u32 reg_rgmii_ctrl = 0;
+		u32 reg, offset;
+
+		if (priv->type == BCM4908_DEVICE_ID ||
+		    priv->type == BCM7445_DEVICE_ID)
+			offset = CORE_STS_OVERRIDE_GMIIP_PORT(port);
+		else
+			offset = CORE_STS_OVERRIDE_GMIIP2_PORT(port);
+
+		if (interface == PHY_INTERFACE_MODE_RGMII ||
+		    interface == PHY_INTERFACE_MODE_RGMII_TXID ||
+		    interface == PHY_INTERFACE_MODE_MII ||
+		    interface == PHY_INTERFACE_MODE_REVMII) {
+			reg_rgmii_ctrl = bcm_sf2_reg_rgmii_cntrl(priv, port);
+			reg = reg_readl(priv, reg_rgmii_ctrl);
+			reg &= ~(RX_PAUSE_EN | TX_PAUSE_EN);
+
+			if (tx_pause)
+				reg |= TX_PAUSE_EN;
+			if (rx_pause)
+				reg |= RX_PAUSE_EN;
+
+			reg_writel(priv, reg, reg_rgmii_ctrl);
+		}
+
+		reg = SW_OVERRIDE | LINK_STS;
+		switch (speed) {
+		case SPEED_1000:
+			reg |= SPDSTS_1000 << SPEED_SHIFT;
+			break;
+		case SPEED_100:
+			reg |= SPDSTS_100 << SPEED_SHIFT;
+			break;
+		}
+
+		if (duplex == DUPLEX_FULL)
+			reg |= DUPLX_MODE;
+
+		core_writel(priv, reg, offset);
+	}
+
+	if (mode == MLO_AN_PHY && phydev)
+		p->eee_enabled = b53_eee_init(ds, port, phydev);
+}
+
+static void bcm_sf2_sw_fixed_state(struct dsa_switch *ds, int port,
+				   struct phylink_link_state *status)
+{
+	struct bcm_sf2_priv *priv = bcm_sf2_to_priv(ds);
+
+	status->link = false;
+
+	/* MoCA port is special as we do not get link status from CORE_LNKSTS,
+	 * which means that we need to force the link at the port override
+	 * level to get the data to flow. We do use what the interrupt handler
+	 * did determine before.
+	 *
+	 * For the other ports, we just force the link status, since this is
+	 * a fixed PHY device.
+	 */
+	if (port == priv->moca_port) {
+		status->link = priv->port_sts[port].link;
+		/* For MoCA interfaces, also force a link down notification
+		 * since some version of the user-space daemon (mocad) use
+		 * cmd->autoneg to force the link, which messes up the PHY
+		 * state machine and make it go in PHY_FORCING state instead.
+		 */
+		if (!status->link)
+			netif_carrier_off(dsa_to_port(ds, port)->slave);
+		status->duplex = DUPLEX_FULL;
+	} else {
+		status->link = true;
+	}
+}
+
+static void bcm_sf2_enable_acb(struct dsa_switch *ds)
+{
+	struct bcm_sf2_priv *priv = bcm_sf2_to_priv(ds);
+	u32 reg;
+
+	/* Enable ACB globally */
+	reg = acb_readl(priv, ACB_CONTROL);
+	reg |= (ACB_FLUSH_MASK << ACB_FLUSH_SHIFT);
+	acb_writel(priv, reg, ACB_CONTROL);
+	reg &= ~(ACB_FLUSH_MASK << ACB_FLUSH_SHIFT);
+	reg |= ACB_EN | ACB_ALGORITHM;
+	acb_writel(priv, reg, ACB_CONTROL);
+}
+
+static int bcm_sf2_sw_suspend(struct dsa_switch *ds)
+{
+	struct bcm_sf2_priv *priv = bcm_sf2_to_priv(ds);
+	unsigned int port;
+
+	bcm_sf2_intr_disable(priv);
+
+	/* Disable all ports physically present including the IMP
+	 * port, the other ones have already been disabled during
+	 * bcm_sf2_sw_setup
+	 */
+	for (port = 0; port < ds->num_ports; port++) {
+		if (dsa_is_user_port(ds, port) || dsa_is_cpu_port(ds, port))
+			bcm_sf2_port_disable(ds, port);
+	}
+
+	if (!priv->wol_ports_mask)
+		clk_disable_unprepare(priv->clk);
+
+	return 0;
+}
+
+static int bcm_sf2_sw_resume(struct dsa_switch *ds)
+{
+	struct bcm_sf2_priv *priv = bcm_sf2_to_priv(ds);
+	int ret;
+
+	if (!priv->wol_ports_mask)
+		clk_prepare_enable(priv->clk);
+
+	ret = bcm_sf2_sw_rst(priv);
+	if (ret) {
+		pr_err("%s: failed to software reset switch\n", __func__);
+		return ret;
+	}
+
+	bcm_sf2_crossbar_setup(priv);
+
+	ret = bcm_sf2_cfp_resume(ds);
+	if (ret)
+		return ret;
+
+	if (priv->hw_params.num_gphy == 1)
+		bcm_sf2_gphy_enable_set(ds, true);
+
+	ds->ops->setup(ds);
+
+	return 0;
+}
+
+static void bcm_sf2_sw_get_wol(struct dsa_switch *ds, int port,
+			       struct ethtool_wolinfo *wol)
+{
+	struct net_device *p = dsa_to_port(ds, port)->cpu_dp->master;
+	struct bcm_sf2_priv *priv = bcm_sf2_to_priv(ds);
+	struct ethtool_wolinfo pwol = { };
+
+	/* Get the parent device WoL settings */
+	if (p->ethtool_ops->get_wol)
+		p->ethtool_ops->get_wol(p, &pwol);
+
+	/* Advertise the parent device supported settings */
+	wol->supported = pwol.supported;
+	memset(&wol->sopass, 0, sizeof(wol->sopass));
+
+	if (pwol.wolopts & WAKE_MAGICSECURE)
+		memcpy(&wol->sopass, pwol.sopass, sizeof(wol->sopass));
+
+	if (priv->wol_ports_mask & (1 << port))
+		wol->wolopts = pwol.wolopts;
+	else
+		wol->wolopts = 0;
+}
+
+static int bcm_sf2_sw_set_wol(struct dsa_switch *ds, int port,
+			      struct ethtool_wolinfo *wol)
+{
+	struct net_device *p = dsa_to_port(ds, port)->cpu_dp->master;
+	struct bcm_sf2_priv *priv = bcm_sf2_to_priv(ds);
+	s8 cpu_port = dsa_to_port(ds, port)->cpu_dp->index;
+	struct ethtool_wolinfo pwol =  { };
+
+	if (p->ethtool_ops->get_wol)
+		p->ethtool_ops->get_wol(p, &pwol);
+	if (wol->wolopts & ~pwol.supported)
+		return -EINVAL;
+
+	if (wol->wolopts)
+		priv->wol_ports_mask |= (1 << port);
+	else
+		priv->wol_ports_mask &= ~(1 << port);
+
+	/* If we have at least one port enabled, make sure the CPU port
+	 * is also enabled. If the CPU port is the last one enabled, we disable
+	 * it since this configuration does not make sense.
+	 */
+	if (priv->wol_ports_mask && priv->wol_ports_mask != (1 << cpu_port))
+		priv->wol_ports_mask |= (1 << cpu_port);
+	else
+		priv->wol_ports_mask &= ~(1 << cpu_port);
+
+	return p->ethtool_ops->set_wol(p, wol);
+}
+
+static int bcm_sf2_sw_setup(struct dsa_switch *ds)
+{
+	struct bcm_sf2_priv *priv = bcm_sf2_to_priv(ds);
+	unsigned int port;
+
+	/* Enable all valid ports and disable those unused */
+	for (port = 0; port < priv->hw_params.num_ports; port++) {
+		/* IMP port receives special treatment */
+		if (dsa_is_user_port(ds, port))
+			bcm_sf2_port_setup(ds, port, NULL);
+		else if (dsa_is_cpu_port(ds, port))
+			bcm_sf2_imp_setup(ds, port);
+		else
+			bcm_sf2_port_disable(ds, port);
+	}
+
+	b53_configure_vlan(ds);
+	bcm_sf2_enable_acb(ds);
+
+	return b53_setup_devlink_resources(ds);
+}
+
+static void bcm_sf2_sw_teardown(struct dsa_switch *ds)
+{
+	dsa_devlink_resources_unregister(ds);
+}
+
+/* The SWITCH_CORE register space is managed by b53 but operates on a page +
+ * register basis so we need to translate that into an address that the
+ * bus-glue understands.
+ */
+#define SF2_PAGE_REG_MKADDR(page, reg)	((page) << 10 | (reg) << 2)
+
+static int bcm_sf2_core_read8(struct b53_device *dev, u8 page, u8 reg,
+			      u8 *val)
+{
+	struct bcm_sf2_priv *priv = dev->priv;
+
+	*val = core_readl(priv, SF2_PAGE_REG_MKADDR(page, reg));
+
+	return 0;
+}
+
+static int bcm_sf2_core_read16(struct b53_device *dev, u8 page, u8 reg,
+			       u16 *val)
+{
+	struct bcm_sf2_priv *priv = dev->priv;
+
+	*val = core_readl(priv, SF2_PAGE_REG_MKADDR(page, reg));
+
+	return 0;
+}
+
+static int bcm_sf2_core_read32(struct b53_device *dev, u8 page, u8 reg,
+			       u32 *val)
+{
+	struct bcm_sf2_priv *priv = dev->priv;
+
+	*val = core_readl(priv, SF2_PAGE_REG_MKADDR(page, reg));
+
+	return 0;
+}
+
+static int bcm_sf2_core_read64(struct b53_device *dev, u8 page, u8 reg,
+			       u64 *val)
+{
+	struct bcm_sf2_priv *priv = dev->priv;
+
+	*val = core_readq(priv, SF2_PAGE_REG_MKADDR(page, reg));
+
+	return 0;
+}
+
+static int bcm_sf2_core_write8(struct b53_device *dev, u8 page, u8 reg,
+			       u8 value)
+{
+	struct bcm_sf2_priv *priv = dev->priv;
+
+	core_writel(priv, value, SF2_PAGE_REG_MKADDR(page, reg));
+
+	return 0;
+}
+
+static int bcm_sf2_core_write16(struct b53_device *dev, u8 page, u8 reg,
+				u16 value)
+{
+	struct bcm_sf2_priv *priv = dev->priv;
+
+	core_writel(priv, value, SF2_PAGE_REG_MKADDR(page, reg));
+
+	return 0;
+}
+
+static int bcm_sf2_core_write32(struct b53_device *dev, u8 page, u8 reg,
+				u32 value)
+{
+	struct bcm_sf2_priv *priv = dev->priv;
+
+	core_writel(priv, value, SF2_PAGE_REG_MKADDR(page, reg));
+
+	return 0;
+}
+
+static int bcm_sf2_core_write64(struct b53_device *dev, u8 page, u8 reg,
+				u64 value)
+{
+	struct bcm_sf2_priv *priv = dev->priv;
+
+	core_writeq(priv, value, SF2_PAGE_REG_MKADDR(page, reg));
+
+	return 0;
+}
+
+static const struct b53_io_ops bcm_sf2_io_ops = {
+	.read8	= bcm_sf2_core_read8,
+	.read16	= bcm_sf2_core_read16,
+	.read32	= bcm_sf2_core_read32,
+	.read48	= bcm_sf2_core_read64,
+	.read64	= bcm_sf2_core_read64,
+	.write8	= bcm_sf2_core_write8,
+	.write16 = bcm_sf2_core_write16,
+	.write32 = bcm_sf2_core_write32,
+	.write48 = bcm_sf2_core_write64,
+	.write64 = bcm_sf2_core_write64,
+};
+
+static void bcm_sf2_sw_get_strings(struct dsa_switch *ds, int port,
+				   u32 stringset, uint8_t *data)
+{
+	int cnt = b53_get_sset_count(ds, port, stringset);
+
+	b53_get_strings(ds, port, stringset, data);
+	bcm_sf2_cfp_get_strings(ds, port, stringset,
+				data + cnt * ETH_GSTRING_LEN);
+}
+
+static void bcm_sf2_sw_get_ethtool_stats(struct dsa_switch *ds, int port,
+					 uint64_t *data)
+{
+	int cnt = b53_get_sset_count(ds, port, ETH_SS_STATS);
+
+	b53_get_ethtool_stats(ds, port, data);
+	bcm_sf2_cfp_get_ethtool_stats(ds, port, data + cnt);
+}
+
+static int bcm_sf2_sw_get_sset_count(struct dsa_switch *ds, int port,
+				     int sset)
+{
+	int cnt = b53_get_sset_count(ds, port, sset);
+
+	if (cnt < 0)
+		return cnt;
+
+	cnt += bcm_sf2_cfp_get_sset_count(ds, port, sset);
+
+	return cnt;
+}
+
+static const struct dsa_switch_ops bcm_sf2_ops = {
+	.get_tag_protocol	= b53_get_tag_protocol,
+	.setup			= bcm_sf2_sw_setup,
+	.teardown		= bcm_sf2_sw_teardown,
+	.get_strings		= bcm_sf2_sw_get_strings,
+	.get_ethtool_stats	= bcm_sf2_sw_get_ethtool_stats,
+	.get_sset_count		= bcm_sf2_sw_get_sset_count,
+	.get_ethtool_phy_stats	= b53_get_ethtool_phy_stats,
+	.get_phy_flags		= bcm_sf2_sw_get_phy_flags,
+	.phylink_get_caps	= bcm_sf2_sw_get_caps,
+	.phylink_mac_config	= bcm_sf2_sw_mac_config,
+	.phylink_mac_link_down	= bcm_sf2_sw_mac_link_down,
+	.phylink_mac_link_up	= bcm_sf2_sw_mac_link_up,
+	.phylink_fixed_state	= bcm_sf2_sw_fixed_state,
+	.suspend		= bcm_sf2_sw_suspend,
+	.resume			= bcm_sf2_sw_resume,
+	.get_wol		= bcm_sf2_sw_get_wol,
+	.set_wol		= bcm_sf2_sw_set_wol,
+	.port_enable		= bcm_sf2_port_setup,
+	.port_disable		= bcm_sf2_port_disable,
+	.get_mac_eee		= b53_get_mac_eee,
+	.set_mac_eee		= b53_set_mac_eee,
+	.port_bridge_join	= b53_br_join,
+	.port_bridge_leave	= b53_br_leave,
+	.port_pre_bridge_flags	= b53_br_flags_pre,
+	.port_bridge_flags	= b53_br_flags,
+	.port_stp_state_set	= b53_br_set_stp_state,
+	.port_fast_age		= b53_br_fast_age,
+	.port_vlan_filtering	= b53_vlan_filtering,
+	.port_vlan_add		= b53_vlan_add,
+	.port_vlan_del		= b53_vlan_del,
+	.port_fdb_dump		= b53_fdb_dump,
+	.port_fdb_add		= b53_fdb_add,
+	.port_fdb_del		= b53_fdb_del,
+	.get_rxnfc		= bcm_sf2_get_rxnfc,
+	.set_rxnfc		= bcm_sf2_set_rxnfc,
+	.port_mirror_add	= b53_mirror_add,
+	.port_mirror_del	= b53_mirror_del,
+	.port_mdb_add		= b53_mdb_add,
+	.port_mdb_del		= b53_mdb_del,
+};
+
+struct bcm_sf2_of_data {
+	u32 type;
+	const u16 *reg_offsets;
+	unsigned int core_reg_align;
+	unsigned int num_cfp_rules;
+	unsigned int num_crossbar_int_ports;
+};
+
+static const u16 bcm_sf2_4908_reg_offsets[] = {
+	[REG_SWITCH_CNTRL]	= 0x00,
+	[REG_SWITCH_STATUS]	= 0x04,
+	[REG_DIR_DATA_WRITE]	= 0x08,
+	[REG_DIR_DATA_READ]	= 0x0c,
+	[REG_SWITCH_REVISION]	= 0x10,
+	[REG_PHY_REVISION]	= 0x14,
+	[REG_SPHY_CNTRL]	= 0x24,
+	[REG_CROSSBAR]		= 0xc8,
+	[REG_RGMII_11_CNTRL]	= 0x014c,
+	[REG_LED_0_CNTRL]		= 0x40,
+	[REG_LED_1_CNTRL]		= 0x4c,
+	[REG_LED_2_CNTRL]		= 0x58,
+	[REG_LED_3_CNTRL]		= 0x64,
+	[REG_LED_4_CNTRL]		= 0x88,
+	[REG_LED_5_CNTRL]		= 0xa0,
+	[REG_LED_AGGREGATE_CTRL]	= 0xb8,
+
+};
+
+static const struct bcm_sf2_of_data bcm_sf2_4908_data = {
+	.type		= BCM4908_DEVICE_ID,
+	.core_reg_align	= 0,
+	.reg_offsets	= bcm_sf2_4908_reg_offsets,
+	.num_cfp_rules	= 256,
+	.num_crossbar_int_ports = 2,
+};
+
+/* Register offsets for the SWITCH_REG_* block */
+static const u16 bcm_sf2_7445_reg_offsets[] = {
+	[REG_SWITCH_CNTRL]	= 0x00,
+	[REG_SWITCH_STATUS]	= 0x04,
+	[REG_DIR_DATA_WRITE]	= 0x08,
+	[REG_DIR_DATA_READ]	= 0x0C,
+	[REG_SWITCH_REVISION]	= 0x18,
+	[REG_PHY_REVISION]	= 0x1C,
+	[REG_SPHY_CNTRL]	= 0x2C,
+	[REG_RGMII_0_CNTRL]	= 0x34,
+	[REG_RGMII_1_CNTRL]	= 0x40,
+	[REG_RGMII_2_CNTRL]	= 0x4c,
+	[REG_LED_0_CNTRL]	= 0x90,
+	[REG_LED_1_CNTRL]	= 0x94,
+	[REG_LED_2_CNTRL]	= 0x98,
+};
+
+static const struct bcm_sf2_of_data bcm_sf2_7445_data = {
+	.type		= BCM7445_DEVICE_ID,
+	.core_reg_align	= 0,
+	.reg_offsets	= bcm_sf2_7445_reg_offsets,
+	.num_cfp_rules	= 256,
+};
+
+static const u16 bcm_sf2_7278_reg_offsets[] = {
+	[REG_SWITCH_CNTRL]	= 0x00,
+	[REG_SWITCH_STATUS]	= 0x04,
+	[REG_DIR_DATA_WRITE]	= 0x08,
+	[REG_DIR_DATA_READ]	= 0x0c,
+	[REG_SWITCH_REVISION]	= 0x10,
+	[REG_PHY_REVISION]	= 0x14,
+	[REG_SPHY_CNTRL]	= 0x24,
+	[REG_RGMII_0_CNTRL]	= 0xe0,
+	[REG_RGMII_1_CNTRL]	= 0xec,
+	[REG_RGMII_2_CNTRL]	= 0xf8,
+	[REG_LED_0_CNTRL]	= 0x40,
+	[REG_LED_1_CNTRL]	= 0x4c,
+	[REG_LED_2_CNTRL]	= 0x58,
+};
+
+static const struct bcm_sf2_of_data bcm_sf2_7278_data = {
+	.type		= BCM7278_DEVICE_ID,
+	.core_reg_align	= 1,
+	.reg_offsets	= bcm_sf2_7278_reg_offsets,
+	.num_cfp_rules	= 128,
+};
+
+static const struct of_device_id bcm_sf2_of_match[] = {
+	{ .compatible = "brcm,bcm4908-switch",
+	  .data = &bcm_sf2_4908_data
+	},
+	{ .compatible = "brcm,bcm7445-switch-v4.0",
+	  .data = &bcm_sf2_7445_data
+	},
+	{ .compatible = "brcm,bcm7278-switch-v4.0",
+	  .data = &bcm_sf2_7278_data
+	},
+	{ .compatible = "brcm,bcm7278-switch-v4.8",
+	  .data = &bcm_sf2_7278_data
+	},
+	{ /* sentinel */ },
+};
+MODULE_DEVICE_TABLE(of, bcm_sf2_of_match);
+
+static int bcm_sf2_sw_probe(struct platform_device *pdev)
+{
+	const char *reg_names[BCM_SF2_REGS_NUM] = BCM_SF2_REGS_NAME;
+	struct device_node *dn = pdev->dev.of_node;
+	const struct of_device_id *of_id = NULL;
+	const struct bcm_sf2_of_data *data;
+	struct b53_platform_data *pdata;
+	struct dsa_switch_ops *ops;
+	struct device_node *ports;
+	struct bcm_sf2_priv *priv;
+	struct b53_device *dev;
+	struct dsa_switch *ds;
+	void __iomem **base;
+	unsigned int i;
+	u32 reg, rev;
+	int ret;
+
+	priv = devm_kzalloc(&pdev->dev, sizeof(*priv), GFP_KERNEL);
+	if (!priv)
+		return -ENOMEM;
+
+	ops = devm_kzalloc(&pdev->dev, sizeof(*ops), GFP_KERNEL);
+	if (!ops)
+		return -ENOMEM;
+
+	dev = b53_switch_alloc(&pdev->dev, &bcm_sf2_io_ops, priv);
+	if (!dev)
+		return -ENOMEM;
+
+	pdata = devm_kzalloc(&pdev->dev, sizeof(*pdata), GFP_KERNEL);
+	if (!pdata)
+		return -ENOMEM;
+
+	of_id = of_match_node(bcm_sf2_of_match, dn);
+	if (!of_id || !of_id->data)
+		return -EINVAL;
+
+	data = of_id->data;
+
+	/* Set SWITCH_REG register offsets and SWITCH_CORE align factor */
+	priv->type = data->type;
+	priv->reg_offsets = data->reg_offsets;
+	priv->core_reg_align = data->core_reg_align;
+	priv->num_cfp_rules = data->num_cfp_rules;
+	priv->num_crossbar_int_ports = data->num_crossbar_int_ports;
+
+	priv->rcdev = devm_reset_control_get_optional_exclusive(&pdev->dev,
+								"switch");
+	if (IS_ERR(priv->rcdev))
+		return PTR_ERR(priv->rcdev);
+
+	/* Auto-detection using standard registers will not work, so
+	 * provide an indication of what kind of device we are for
+	 * b53_common to work with
+	 */
+	pdata->chip_id = priv->type;
+	dev->pdata = pdata;
+
+	priv->dev = dev;
+	ds = dev->ds;
+	ds->ops = &bcm_sf2_ops;
+
+	/* Advertise the 8 egress queues */
+	ds->num_tx_queues = SF2_NUM_EGRESS_QUEUES;
+
+	dev_set_drvdata(&pdev->dev, priv);
+
+	spin_lock_init(&priv->indir_lock);
+	mutex_init(&priv->cfp.lock);
+	INIT_LIST_HEAD(&priv->cfp.rules_list);
+
+	/* CFP rule #0 cannot be used for specific classifications, flag it as
+	 * permanently used
+	 */
+	set_bit(0, priv->cfp.used);
+	set_bit(0, priv->cfp.unique);
+
+	/* Balance of_node_put() done by of_find_node_by_name() */
+	of_node_get(dn);
+	ports = of_find_node_by_name(dn, "ports");
+	if (ports) {
+		bcm_sf2_identify_ports(priv, ports);
+		of_node_put(ports);
+	}
+
+	priv->irq0 = irq_of_parse_and_map(dn, 0);
+	priv->irq1 = irq_of_parse_and_map(dn, 1);
+
+	base = &priv->core;
+	for (i = 0; i < BCM_SF2_REGS_NUM; i++) {
+		*base = devm_platform_ioremap_resource(pdev, i);
+		if (IS_ERR(*base)) {
+			pr_err("unable to find register: %s\n", reg_names[i]);
+			return PTR_ERR(*base);
+		}
+		base++;
+	}
+
+	priv->clk = devm_clk_get_optional(&pdev->dev, "sw_switch");
+	if (IS_ERR(priv->clk))
+		return PTR_ERR(priv->clk);
+
+	clk_prepare_enable(priv->clk);
+
+	priv->clk_mdiv = devm_clk_get_optional(&pdev->dev, "sw_switch_mdiv");
+	if (IS_ERR(priv->clk_mdiv)) {
+		ret = PTR_ERR(priv->clk_mdiv);
+		goto out_clk;
+	}
+
+	clk_prepare_enable(priv->clk_mdiv);
+
+	ret = bcm_sf2_sw_rst(priv);
+	if (ret) {
+		pr_err("unable to software reset switch: %d\n", ret);
+		goto out_clk_mdiv;
+	}
+
+	bcm_sf2_crossbar_setup(priv);
+
+	bcm_sf2_gphy_enable_set(priv->dev->ds, true);
+
+	ret = bcm_sf2_mdio_register(ds);
+	if (ret) {
+		pr_err("failed to register MDIO bus\n");
+		goto out_clk_mdiv;
+	}
+
+	bcm_sf2_gphy_enable_set(priv->dev->ds, false);
+
+	ret = bcm_sf2_cfp_rst(priv);
+	if (ret) {
+		pr_err("failed to reset CFP\n");
+		goto out_mdio;
+	}
+
+	/* Disable all interrupts and request them */
+	bcm_sf2_intr_disable(priv);
+
+	ret = devm_request_irq(&pdev->dev, priv->irq0, bcm_sf2_switch_0_isr, 0,
+			       "switch_0", ds);
+	if (ret < 0) {
+		pr_err("failed to request switch_0 IRQ\n");
+		goto out_mdio;
+	}
+
+	ret = devm_request_irq(&pdev->dev, priv->irq1, bcm_sf2_switch_1_isr, 0,
+			       "switch_1", ds);
+	if (ret < 0) {
+		pr_err("failed to request switch_1 IRQ\n");
+		goto out_mdio;
+	}
+
+	/* Reset the MIB counters */
+	reg = core_readl(priv, CORE_GMNCFGCFG);
+	reg |= RST_MIB_CNT;
+	core_writel(priv, reg, CORE_GMNCFGCFG);
+	reg &= ~RST_MIB_CNT;
+	core_writel(priv, reg, CORE_GMNCFGCFG);
+
+	/* Get the maximum number of ports for this switch */
+	priv->hw_params.num_ports = core_readl(priv, CORE_IMP0_PRT_ID) + 1;
+	if (priv->hw_params.num_ports > DSA_MAX_PORTS)
+		priv->hw_params.num_ports = DSA_MAX_PORTS;
+
+	/* Assume a single GPHY setup if we can't read that property */
+	if (of_property_read_u32(dn, "brcm,num-gphy",
+				 &priv->hw_params.num_gphy))
+		priv->hw_params.num_gphy = 1;
+
+	rev = reg_readl(priv, REG_SWITCH_REVISION);
+	priv->hw_params.top_rev = (rev >> SWITCH_TOP_REV_SHIFT) &
+					SWITCH_TOP_REV_MASK;
+	priv->hw_params.core_rev = (rev & SF2_REV_MASK);
+
+	rev = reg_readl(priv, REG_PHY_REVISION);
+	priv->hw_params.gphy_rev = rev & PHY_REVISION_MASK;
+
+	ret = b53_switch_register(dev);
+	if (ret)
+		goto out_mdio;
+
+	dev_info(&pdev->dev,
+		 "Starfighter 2 top: %x.%02x, core: %x.%02x, IRQs: %d, %d\n",
+		 priv->hw_params.top_rev >> 8, priv->hw_params.top_rev & 0xff,
+		 priv->hw_params.core_rev >> 8, priv->hw_params.core_rev & 0xff,
+		 priv->irq0, priv->irq1);
+
+	return 0;
+
+out_mdio:
+	bcm_sf2_mdio_unregister(priv);
+out_clk_mdiv:
+	clk_disable_unprepare(priv->clk_mdiv);
+out_clk:
+	clk_disable_unprepare(priv->clk);
+	return ret;
+}
+
+static int bcm_sf2_sw_remove(struct platform_device *pdev)
+{
+	struct bcm_sf2_priv *priv = platform_get_drvdata(pdev);
+
+	if (!priv)
+		return 0;
+
+	priv->wol_ports_mask = 0;
+	/* Disable interrupts */
+	bcm_sf2_intr_disable(priv);
+	dsa_unregister_switch(priv->dev->ds);
+	bcm_sf2_cfp_exit(priv->dev->ds);
+	bcm_sf2_mdio_unregister(priv);
+	clk_disable_unprepare(priv->clk_mdiv);
+	clk_disable_unprepare(priv->clk);
+	if (priv->type == BCM7278_DEVICE_ID)
+		reset_control_assert(priv->rcdev);
+
+	platform_set_drvdata(pdev, NULL);
+
+	return 0;
+}
+
+static void bcm_sf2_sw_shutdown(struct platform_device *pdev)
+{
+	struct bcm_sf2_priv *priv = platform_get_drvdata(pdev);
+
+	if (!priv)
+		return;
+
+	/* For a kernel about to be kexec'd we want to keep the GPHY on for a
+	 * successful MDIO bus scan to occur. If we did turn off the GPHY
+	 * before (e.g: port_disable), this will also power it back on.
+	 *
+	 * Do not rely on kexec_in_progress, just power the PHY on.
+	 */
+	if (priv->hw_params.num_gphy == 1)
+		bcm_sf2_gphy_enable_set(priv->dev->ds, true);
+
+	dsa_switch_shutdown(priv->dev->ds);
+
+	platform_set_drvdata(pdev, NULL);
+}
+
+#ifdef CONFIG_PM_SLEEP
+static int bcm_sf2_suspend(struct device *dev)
+{
+	struct bcm_sf2_priv *priv = dev_get_drvdata(dev);
+
+	return dsa_switch_suspend(priv->dev->ds);
+}
+
+static int bcm_sf2_resume(struct device *dev)
+{
+	struct bcm_sf2_priv *priv = dev_get_drvdata(dev);
+
+	return dsa_switch_resume(priv->dev->ds);
+}
+#endif /* CONFIG_PM_SLEEP */
+
+static SIMPLE_DEV_PM_OPS(bcm_sf2_pm_ops,
+			 bcm_sf2_suspend, bcm_sf2_resume);
+
+
+static struct platform_driver bcm_sf2_driver = {
+	.probe	= bcm_sf2_sw_probe,
+	.remove	= bcm_sf2_sw_remove,
+	.shutdown = bcm_sf2_sw_shutdown,
+	.driver = {
+		.name = "brcm-sf2",
+		.of_match_table = bcm_sf2_of_match,
+		.pm = &bcm_sf2_pm_ops,
+	},
+};
+module_platform_driver(bcm_sf2_driver);
+
+MODULE_AUTHOR("Broadcom Corporation");
+MODULE_DESCRIPTION("Driver for Broadcom Starfighter 2 ethernet switch chip");
+MODULE_LICENSE("GPL");
+MODULE_ALIAS("platform:brcm-sf2");

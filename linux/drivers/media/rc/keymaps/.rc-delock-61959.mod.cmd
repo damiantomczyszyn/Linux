@@ -1,1 +1,7 @@
-cmd_drivers/media/rc/keymaps/rc-delock-61959.mod := { echo  drivers/media/rc/keymaps/rc-delock-61959.o;  echo; } > drivers/media/rc/keymaps/rc-delock-61959.mod
+/* SPDX-License-Identifier: GPL-2.0-or-later */
+/*
+ * altera-ci.c
+ *
+ *  CI driver in conjunction with NetUp Dual DVB-T/C RF CI card
+ *
+ * Copyright (C) 2010 Ne

@@ -1,1 +1,5 @@
-âƒ:‡=#„—ŞÕ…èiÄP@Á|2øbbÖUÑi.•;7Ç–¼WN3'˜·87¼„JBÊíhe.ÕxèZ—è`¡µ-'Dş	5|3£ë¢"Òd’„–BšgˆÁYº«.ğ«¹¾
+00000);
+	cx_write(PAD_CTRL, 0x00500300);
+
+	/* clear dma in progress */
+	cx23885_clear_bridge_error(dev)

@@ -1,2 +1,2 @@
-lude/config/SHMEM) \
-    
+,
+			.amux   = CX25840_AU

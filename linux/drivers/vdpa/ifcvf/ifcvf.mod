@@ -1,2 +1,3 @@
-lude/config/SHMEM) \
-    $(wildcard include/config/ARCH_HAS_PTE_S
+>drv_priv;
+	struct cx23885_buffer *buf = container_of(vbuf,
+		str

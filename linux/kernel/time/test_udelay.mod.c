@@ -1,27 +1,29 @@
-/*
-	 * I took it apart and put it back together again, except now I have
-	 * these 'spare' parts.. where shall I put them.
-	 */
-	if (DEBUG_LOCKS_WARN_ON(curr->lockdep_depth != depth))
-		return 0;
+t empty, or NULL if otherwise.
+ */
+static inline struct lock_list * __cq_dequeue(struct circular_queue *cq)
+{
+	struct lock_list * lock;
 
-	return 1;
+	if (__cq_empty(cq))
+		return NULL;
+
+	lock = cq->element[cq->front];
+	cq->front = (cq->front + 1) & CQ_MASK;
+
+	return lock;
 }
 
-/*
- * Remove the lock from the list of currently held locks - this gets
- * called on mutex_unlock()/spin_unlock*() (or on a failed
- * mutex_lock_interruptible()).
- */
-static int
-__lock_release(struct lockdep_map *lock, unsigned long ip)
+static inline unsigned int  __cq_get_elem_count(struct circular_queue *cq)
 {
-	struct task_struct *curr = current;
-	unsigned int depth, merged = 1;
-	struct held_lock *hlock;
-	int i;
+	return (cq->rear - cq->front) & CQ_MASK;
+}
 
-	if (unlikely(!debug_locks))
-		return 0;
+static inline void mark_lock_accessed(struct lock_list *lock)
+{
+	lock->class->dep_gen_id = lockdep_dependency_gen_id;
+}
 
-	depth = cu
+static inline void visit_lock_entry(struct lock_list *lock,
+				    struct lock_list *parent)
+{
+	lock

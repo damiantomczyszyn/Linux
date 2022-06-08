@@ -1,58 +1,115 @@
-e/linux/gfp.h \
-    $(wildcard include/config/KASAN_HW_TAGS) \
-    $(wildcard include/config/HIGHMEM) \
-    $(wildcard include/config/ZONE_DMA) \
-    $(wildcard include/config/ZONE_DMA32) \
-    $(wildcard include/config/ZONE_DEVICE) \
-    $(wildcard include/config/CONTIG_ALLOC) \
-    $(wildcard include/config/CMA) \
-  include/linux/mmdebug.h \
-    $(wildcard include/config/DEBUG_VM) \
-    $(wildcard include/config/DEBUG_VM_PGFLAGS) \
-  include/linux/mmzone.h \
-    $(wildcard include/config/FORCE_MAX_ZONEORDER) \
-    $(wildcard include/config/MEMORY_ISOLATION) \
-    $(wildcard include/config/ZSMALLOC) \
-    $(wildcard include/config/SWAP) \
-    $(wildcard include/config/NUMA_BALANCING) \
-    $(wildcard include/config/TRANSPARENT_HUGEPAGE) \
-    $(wildcard include/config/MEMCG) \
-    $(wildcard include/config/COMPACTION) \
-    $(wildcard include/config/PAGE_EXTENSION) \
-    $(wildcard include/config/DEFERRED_STRUCT_PAGE_INIT) \
-    $(wildcard include/config/HAVE_MEMORYLESS_NODES) \
-    $(wildcard include/config/SPARSEMEM_EXTREME) \
-    $(wildcard include/config/HAVE_ARCH_PFN_VALID) \
-  include/linux/spinlock.h \
-  include/linux/bottom_half.h \
-  arch/x86/include/generated/asm/mmiowb.h \
-  include/asm-generic/mmiowb.h \
-    $(wildcard include/config/MMIOWB) \
-  arch/x86/include/asm/spinlock.h \
-  arch/x86/include/asm/paravirt.h \
-    $(wildcard include/config/PARAVIRT_SPINLOCKS) \
-  arch/x86/include/asm/frame.h \
-  arch/x86/include/asm/qspinlock.h \
-  include/asm-generic/qspinlock.h \
-  arch/x86/include/asm/qrwlock.h \
-  include/asm-generic/qrwlock.h \
-  include/linux/rwlock.h \
-    $(wildcard include/config/PREEMPT) \
-  include/linux/spinlock_api_smp.h \
-    $(wildcard include/config/INLINE_SPIN_LOCK) \
-    $(wildcard include/config/INLINE_SPIN_LOCK_BH) \
-    $(wildcard include/config/INLINE_SPIN_LOCK_IRQ) \
-    $(wildcard include/config/INLINE_SPIN_LOCK_IRQSAVE) \
-    $(wildcard include/config/INLINE_SPIN_TRYLOCK) \
-    $(wildcard include/config/INLINE_SPIN_TRYLOCK_BH) \
-    $(wildcard include/config/UNINLINE_SPIN_UNLOCK) \
-    $(wildcard include/config/INLINE_SPIN_UNLOCK_BH) \
-    $(wildcard include/config/INLINE_SPIN_UNLOCK_IRQ) \
-    $(wildcard include/config/INLINE_SPIN_UNLOCK_IRQRESTORE) \
-    $(wildcard include/config/GENERIC_LOCKBREAK) \
-  include/linux/rwlock_api_smp.h \
-    $(wildcard include/config/INLINE_READ_LOCK) \
-    $(wildcard include/config/INLINE_WRITE_LOCK) \
-    $(wildcard include/config/INLINE_READ_LOCK_BH) \
-    $(wildcard include/config/INLINE_WRITE_LOCK_BH) \
-    $(wildcard include/config/INLINE_REA
+// SPDX-License-Identifier: GPL-2.0
+/*
+ * Microchip KSZ9477 series register access through I2C
+ *
+ * Copyright (C) 2018-2019 Microchip Technology Inc.
+ */
+
+#include <linux/i2c.h>
+#include <linux/kernel.h>
+#include <linux/module.h>
+#include <linux/regmap.h>
+
+#include "ksz_common.h"
+
+KSZ_REGMAP_TABLE(ksz9477, not_used, 16, 0, 0);
+
+static int ksz9477_i2c_probe(struct i2c_client *i2c,
+			     const struct i2c_device_id *i2c_id)
+{
+	struct regmap_config rc;
+	struct ksz_device *dev;
+	int i, ret;
+
+	dev = ksz_switch_alloc(&i2c->dev, i2c);
+	if (!dev)
+		return -ENOMEM;
+
+	for (i = 0; i < ARRAY_SIZE(ksz9477_regmap_config); i++) {
+		rc = ksz9477_regmap_config[i];
+		rc.lock_arg = &dev->regmap_mutex;
+		dev->regmap[i] = devm_regmap_init_i2c(i2c, &rc);
+		if (IS_ERR(dev->regmap[i])) {
+			ret = PTR_ERR(dev->regmap[i]);
+			dev_err(&i2c->dev,
+				"Failed to initialize regmap%i: %d\n",
+				ksz9477_regmap_config[i].val_bits, ret);
+			return ret;
+		}
+	}
+
+	if (i2c->dev.platform_data)
+		dev->pdata = i2c->dev.platform_data;
+
+	ret = ksz9477_switch_register(dev);
+
+	/* Main DSA driver may not be started yet. */
+	if (ret)
+		return ret;
+
+	i2c_set_clientdata(i2c, dev);
+
+	return 0;
+}
+
+static int ksz9477_i2c_remove(struct i2c_client *i2c)
+{
+	struct ksz_device *dev = i2c_get_clientdata(i2c);
+
+	if (dev)
+		ksz_switch_remove(dev);
+
+	i2c_set_clientdata(i2c, NULL);
+
+	return 0;
+}
+
+static void ksz9477_i2c_shutdown(struct i2c_client *i2c)
+{
+	struct ksz_device *dev = i2c_get_clientdata(i2c);
+
+	if (!dev)
+		return;
+
+	if (dev->dev_ops->shutdown)
+		dev->dev_ops->shutdown(dev);
+
+	dsa_switch_shutdown(dev->ds);
+
+	i2c_set_clientdata(i2c, NULL);
+}
+
+static const struct i2c_device_id ksz9477_i2c_id[] = {
+	{ "ksz9477-switch", 0 },
+	{},
+};
+
+MODULE_DEVICE_TABLE(i2c, ksz9477_i2c_id);
+
+static const struct of_device_id ksz9477_dt_ids[] = {
+	{ .compatible = "microchip,ksz9477" },
+	{ .compatible = "microchip,ksz9897" },
+	{ .compatible = "microchip,ksz9893" },
+	{ .compatible = "microchip,ksz9563" },
+	{ .compatible = "microchip,ksz9567" },
+	{ .compatible = "microchip,ksz8563" },
+	{},
+};
+MODULE_DEVICE_TABLE(of, ksz9477_dt_ids);
+
+static struct i2c_driver ksz9477_i2c_driver = {
+	.driver = {
+		.name	= "ksz9477-switch",
+		.of_match_table = of_match_ptr(ksz9477_dt_ids),
+	},
+	.probe	= ksz9477_i2c_probe,
+	.remove	= ksz9477_i2c_remove,
+	.shutdown = ksz9477_i2c_shutdown,
+	.id_table = ksz9477_i2c_id,
+};
+
+module_i2c_driver(ksz9477_i2c_driver);
+
+MODULE_AUTHOR("Tristram Ha <Tristram.Ha@microchip.com>");
+MODULE_DESCRIPTION("Microchip KSZ9477 Series Switch I2C access Driver");
+MODULE_LICENSE("GPL v2");

@@ -1,1235 +1,16 @@
-de/linux/objtool.h \
-    $(wildcard include/config/FRAME_POINTER) \
-  include/asm-generic/bug.h \
-    $(wildcard include/config/GENERIC_BUG_RELATIVE_POINTERS) \
-  include/linux/restart_block.h \
-  include/linux/time64.h \
-  include/linux/math64.h \
-    $(wildcard include/config/ARCH_SUPPORTS_INT128) \
-  include/vdso/math64.h \
-  include/vdso/time64.h \
-  include/uapi/linux/time.h \
-  include/uapi/linux/time_types.h \
-  include/linux/errno.h \
-  include/uapi/linux/errno.h \
-  arch/x86/include/asm/current.h \
-  arch/x86/include/asm/thread_info.h \
-    $(wildcard include/config/VM86) \
-    $(wildcard include/config/X86_IOPL_IOPERM) \
-    $(wildcard include/config/COMPAT) \
-    $(wildcard include/config/IA32_EMULATION) \
-  arch/x86/include/asm/page.h \
-  arch/x86/include/asm/page_types.h \
-    $(wildcard include/config/PHYSICAL_START) \
-    $(wildcard include/config/PHYSICAL_ALIGN) \
-    $(wildcard include/config/DYNAMIC_PHYSICAL_MASK) \
-  include/linux/mem_encrypt.h \
-    $(wildcard include/config/ARCH_HAS_MEM_ENCRYPT) \
-  arch/x86/include/asm/mem_encrypt.h \
-  include/linux/cc_platform.h \
-    $(wildcard include/config/ARCH_HAS_CC_PLATFORM) \
-  arch/x86/include/uapi/asm/bootparam.h \
-  include/linux/screen_info.h \
-  include/uapi/linux/screen_info.h \
-  include/linux/apm_bios.h \
-  include/uapi/linux/apm_bios.h \
-  include/uapi/linux/ioctl.h \
-  arch/x86/include/generated/uapi/asm/ioctl.h \
-  include/asm-generic/ioctl.h \
-  include/uapi/asm-generic/ioctl.h \
-  include/linux/edd.h \
-  include/uapi/linux/edd.h \
-  arch/x86/include/asm/ist.h \
-  arch/x86/include/uapi/asm/ist.h \
-  include/video/edid.h \
-    $(wildcard include/config/X86) \
-  include/uapi/video/edid.h \
-  arch/x86/include/asm/page_32_types.h \
-    $(wildcard include/config/HIGHMEM4G) \
-    $(wildcard include/config/HIGHMEM64G) \
-    $(wildcard include/config/PAGE_OFFSET) \
-  arch/x86/include/asm/page_32.h \
-    $(wildcard include/config/DEBUG_VIRTUAL) \
-    $(wildcard include/config/FLATMEM) \
-  include/linux/string.h \
-    $(wildcard include/config/BINARY_PRINTF) \
-    $(wildcard include/config/FORTIFY_SOURCE) \
-  include/uapi/linux/string.h \
-  arch/x86/include/asm/string.h \
-  arch/x86/include/asm/string_32.h \
-  include/linux/fortify-string.h \
-  include/linux/range.h \
-  include/asm-generic/memory_model.h \
-    $(wildcard include/config/SPARSEMEM_VMEMMAP) \
-    $(wildcard include/config/SPARSEMEM) \
-  include/linux/pfn.h \
-  include/asm-generic/getorder.h \
-  arch/x86/include/asm/cpufeature.h \
-    $(wildcard include/config/X86_FEATURE_NAMES) \
-  arch/x86/include/asm/processor.h \
-    $(wildcard include/config/X86_VMX_FEATURE_NAMES) \
-    $(wildcard include/config/STACKPROTECTOR) \
-    $(wildcard include/config/X86_DEBUGCTLMSR) \
-    $(wildcard include/config/CPU_SUP_AMD) \
-    $(wildcard include/config/XEN) \
-  arch/x86/include/asm/processor-flags.h \
-  arch/x86/include/uapi/asm/processor-flags.h \
-  arch/x86/include/asm/math_emu.h \
-  arch/x86/include/asm/ptrace.h \
-    $(wildcard include/config/PARAVIRT) \
-  arch/x86/include/asm/segment.h \
-    $(wildcard include/config/XEN_PV) \
-  arch/x86/include/uapi/asm/ptrace.h \
-  arch/x86/include/uapi/asm/ptrace-abi.h \
-  arch/x86/include/asm/paravirt_types.h \
-    $(wildcard include/config/PGTABLE_LEVELS) \
-    $(wildcard include/config/PARAVIRT_DEBUG) \
-  arch/x86/include/asm/desc_defs.h \
-  arch/x86/include/asm/pgtable_types.h \
-    $(wildcard include/config/MEM_SOFT_DIRTY) \
-    $(wildcard include/config/HAVE_ARCH_USERFAULTFD_WP) \
-    $(wildcard include/config/PROC_FS) \
-  arch/x86/include/asm/pgtable_32_types.h \
-  arch/x86/include/asm/pgtable-3level_types.h \
-  include/asm-generic/pgtable-nop4d.h \
-  include/asm-generic/pgtable-nopud.h \
-  arch/x86/include/asm/nospec-branch.h \
-  include/linux/static_key.h \
-  include/linux/jump_label.h \
-    $(wildcard include/config/JUMP_LABEL) \
-    $(wildcard include/config/HAVE_ARCH_JUMP_LABEL_RELATIVE) \
-  arch/x86/include/asm/jump_label.h \
-  arch/x86/include/asm/msr-index.h \
-  arch/x86/include/asm/unwind_hints.h \
-  arch/x86/include/asm/orc_types.h \
-  arch/x86/include/asm/GEN-for-each-reg.h \
-  arch/x86/include/asm/proto.h \
-  arch/x86/include/uapi/asm/ldt.h \
-  arch/x86/include/uapi/asm/sigcontext.h \
-  arch/x86/include/asm/msr.h \
-    $(wildcard include/config/TRACEPOINTS) \
-  arch/x86/include/asm/msr-index.h \
-  arch/x86/include/asm/cpumask.h \
-  include/linux/cpumask.h \
-    $(wildcard include/config/CPUMASK_OFFSTACK) \
-    $(wildcard include/config/HOTPLUG_CPU) \
-    $(wildcard include/config/DEBUG_PER_CPU_MAPS) \
-  include/linux/bitmap.h \
-  include/linux/find.h \
-  include/linux/atomic.h \
-  arch/x86/include/asm/atomic.h \
-  arch/x86/include/asm/cmpxchg.h \
-  arch/x86/include/asm/cmpxchg_32.h \
-  arch/x86/include/asm/atomic64_32.h \
-  include/linux/atomic/atomic-arch-fallback.h \
-    $(wildcard include/config/GENERIC_ATOMIC64) \
-  include/linux/atomic/atomic-long.h \
-  include/linux/atomic/atomic-instrumented.h \
-  arch/x86/include/uapi/asm/msr.h \
-  include/linux/tracepoint-defs.h \
-  arch/x86/include/asm/special_insns.h \
-  include/linux/irqflags.h \
-    $(wildcard include/config/TRACE_IRQFLAGS) \
-    $(wildcard include/config/IRQSOFF_TRACER) \
-    $(wildcard include/config/PREEMPT_TRACER) \
-    $(wildcard include/config/DEBUG_IRQFLAGS) \
-    $(wildcard include/config/TRACE_IRQFLAGS_SUPPORT) \
-  arch/x86/include/asm/irqflags.h \
-  arch/x86/include/asm/fpu/types.h \
-  arch/x86/include/asm/vmxfeatures.h \
-  arch/x86/include/asm/vdso/processor.h \
-  include/linux/personality.h \
-  include/uapi/linux/personality.h \
-  include/linux/bottom_half.h \
-  include/linux/lockdep.h \
-    $(wildcard include/config/DEBUG_LOCKING_API_SELFTESTS) \
-  include/linux/smp.h \
-    $(wildcard include/config/UP_LATE_INIT) \
-  include/linux/smp_types.h \
-  include/linux/llist.h \
-    $(wildcard include/config/ARCH_HAVE_NMI_SAFE_CMPXCHG) \
-  arch/x86/include/asm/smp.h \
-    $(wildcard include/config/X86_LOCAL_APIC) \
-    $(wildcard include/config/DEBUG_NMI_SELFTEST) \
-  arch/x86/include/generated/asm/mmiowb.h \
-  include/asm-generic/mmiowb.h \
-    $(wildcard include/config/MMIOWB) \
-  include/linux/spinlock_types.h \
-  include/linux/rwlock_types.h \
-  arch/x86/include/asm/spinlock.h \
-  arch/x86/include/asm/paravirt.h \
-    $(wildcard include/config/PARAVIRT_SPINLOCKS) \
-  arch/x86/include/asm/frame.h \
-  arch/x86/include/asm/qspinlock.h \
-  include/asm-generic/qspinlock.h \
-  arch/x86/include/asm/qrwlock.h \
-  include/asm-generic/qrwlock.h \
-  include/linux/rwlock.h \
-    $(wildcard include/config/PREEMPT) \
-  include/linux/spinlock_api_smp.h \
-    $(wildcard include/config/INLINE_SPIN_LOCK) \
-    $(wildcard include/config/INLINE_SPIN_LOCK_BH) \
-    $(wildcard include/config/INLINE_SPIN_LOCK_IRQ) \
-    $(wildcard include/config/INLINE_SPIN_LOCK_IRQSAVE) \
-    $(wildcard include/config/INLINE_SPIN_TRYLOCK) \
-    $(wildcard include/config/INLINE_SPIN_TRYLOCK_BH) \
-    $(wildcard include/config/UNINLINE_SPIN_UNLOCK) \
-    $(wildcard include/config/INLINE_SPIN_UNLOCK_BH) \
-    $(wildcard include/config/INLINE_SPIN_UNLOCK_IRQ) \
-    $(wildcard include/config/INLINE_SPIN_UNLOCK_IRQRESTORE) \
-    $(wildcard include/config/GENERIC_LOCKBREAK) \
-  include/linux/rwlock_api_smp.h \
-    $(wildcard include/config/INLINE_READ_LOCK) \
-    $(wildcard include/config/INLINE_WRITE_LOCK) \
-    $(wildcard include/config/INLINE_READ_LOCK_BH) \
-    $(wildcard include/config/INLINE_WRITE_LOCK_BH) \
-    $(wildcard include/config/INLINE_READ_LOCK_IRQ) \
-    $(wildcard include/config/INLINE_WRITE_LOCK_IRQ) \
-    $(wildcard include/config/INLINE_READ_LOCK_IRQSAVE) \
-    $(wildcard include/config/INLINE_WRITE_LOCK_IRQSAVE) \
-    $(wildcard include/config/INLINE_READ_TRYLOCK) \
-    $(wildcard include/config/INLINE_WRITE_TRYLOCK) \
-    $(wildcard include/config/INLINE_READ_UNLOCK) \
-    $(wildcard include/config/INLINE_WRITE_UNLOCK) \
-    $(wildcard include/config/INLINE_READ_UNLOCK_BH) \
-    $(wildcard include/config/INLINE_WRITE_UNLOCK_BH) \
-    $(wildcard include/config/INLINE_READ_UNLOCK_IRQ) \
-    $(wildcard include/config/INLINE_WRITE_UNLOCK_IRQ) \
-    $(wildcard include/config/INLINE_READ_UNLOCK_IRQRESTORE) \
-    $(wil/* SPDX-License-Identifier: GPL-2.0 */
-/*
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * Authors: Waiman Long <waiman.long@hpe.com>
- */
-
-/*
- * Collect locking event counts
- */
-#include <linux/debugfs.h>
-#include <linux/sched.h>
-#include <linux/sched/clock.h>
-#include <linux/fs.h>
-
-#include "lock_events.h"
-
-#undef  LOCK_EVENT
-#define LOCK_EVENT(name)	[LOCKEVENT_ ## name] = #name,
-
-#define LOCK_EVENTS_DIR		"lock_event_counts"
-
-/*
- * When CONFIG_LOCK_EVENT_COUNTS is enabled, event counts of different
- * types of locks will be reported under the <debugfs>/lock_event_counts/
- * directory. See lock_events_list.h for the list of available locking
- * events.
- *
- * Writing to the special ".reset_counts" file will reset all the above
- * locking event counts. This is a very slow operation and so should not
- * be done frequently.
- *
- * These event counts are implemented as per-cpu variables which are
- * summed and computed whenever the corresponding debugfs files are read. This
- * minimizes added overhead making the counts usable even in a production
- * environment.
- */
-static const char * const lockevent_names[lockevent_num + 1] = {
-
-#include "lock_events_list.h"
-
-	[LOCKEVENT_reset_cnts] = ".reset_counts",
-};
-
-/*
- * Per-cpu counts
- */
-DEFINE_PER_CPU(unsigned long, lockevents[lockevent_num]);
-
-/*
- * The lockevent_read() function can be overridden.
- */
-ssize_t __weak lockevent_read(struct file *file, char __user *user_buf,
-			      size_t count, loff_t *ppos)
-{
-	char buf[64];
-	int cpu, id, len;
-	u64 sum = 0;
-
-	/*
-	 * Get the counter ID stored in file->f_inode->i_private
-	 */
-	id = (long)file_inode(file)->i_private;
-
-	if (id >= lockevent_num)
-		return -EBADF;
-
-	for_each_possible_cpu(cpu)
-		sum += per_cpu(lockevents[id], cpu);
-	len = snprintf(buf, sizeof(buf) - 1, "%llu\n", sum);
-
-	return simple_read_from_buffer(user_buf, count, ppos, buf, len);
-}
-
-/*
- * Function to handle write request
- *
- * When idx = reset_cnts, reset all the counts.
- */
-static ssize_t lockevent_write(struct file *file, const char __user *user_buf,
-			   size_t count, loff_t *ppos)
-{
-	int cpu;
-
-	/*
-	 * Get the counter ID stored in file->f_inode->i_private
-	 */
-	if ((long)file_inode(file)->i_private != LOCKEVENT_reset_cnts)
-		return count;
-
-	for_each_possible_cpu(cpu) {
-		int i;
-		unsigned long *ptr = per_cpu_ptr(lockevents, cpu);
-
-		for (i = 0 ; i < lockevent_num; i++)
-			WRITE_ONCE(ptr[i], 0);
-	}
-	return count;
-}
-
-/*
- * Debugfs data structures
- */
-static const struct file_operations fops_lockevent = {
-	.read = lockevent_read,
-	.write = lockevent_write,
-	.llseek = default_llseek,
-};
-
-#ifdef CONFIG_PARAVIRT_SPINLOCKS
-#include <asm/paravirt.h>
-
-static bool __init skip_lockevent(const char *name)
-{
-	static int pv_on __initdata = -1;
-
-	if (pv_on < 0)
-		pv_on = !pv_is_native_spin_unlock();
-	/*
-	 * Skip PV qspinlock events on bare metal.
-	 */
-	if (!pv_on && !memcmp(name, "pv_", 3))
-		return true;
-	return false;
-}
-#else
-static inline bool skip_lockevent(const char *name)
-{
-	return false;
-}
-#endif
-
-/*
- * Initialize debugfs for the locking event counts.
- */
-static int __init init_lockevent_counts(void)
-{
-	struct dentry *d_counts = debugfs_create_dir(LOCK_EVENTS_DIR, NULL);
-	int i;
-
-	if (!d_counts)
-		goto out;
-
-	/*
-	 * Create the debugfs files
-	 *
-	 * As reading from and writing to the stat files can be slow, only
-	 * root is allowed to do the read/write to limit impact to system
-	 * performance.
-	 */
-	for (i = 0; i < lockevent_num; i++) {
-		if (skip_lockevent(lockevent_names[i]))
-			continue;
-		if (!debugfs_create_file(lockevent_names[i], 0400, d_counts,
-					 (void *)(long)i, &fops_lockevent))
-			goto fail_undo;
-	}
-
-	if (!debugfs_create_file(lockevent_names[LOCKEVENT_reset_cnts], 0200,
-				 d_counts, (void *)(long)LOCKEVENT_reset_cnts,
-				 &fops_lockevent))
-		goto fail_undo;
-
-	return 0;
-fail_undo:
-	debugfs_remove_recursive(d_counts);
-out:
-	pr_warn("Could not create '%s' debugfs entries\n", LOCK_EVENTS_DIR);
-	return -ENOMEM;
-}
-fs_initcall(init_lockevent_counts);
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     /* SPDX-License-Identifier: GPL-2.0 */
-/*
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * Authors: Waiman Long <longman@redhat.com>
- */
-
-#ifndef __LOCKING_LOCK_EVENTS_H
-#define __LOCKING_LOCK_EVENTS_H
-
-enum lock_events {
-
-#include "lock_events_list.h"
-
-	lockevent_num,	/* Total number of lock event counts */
-	LOCKEVENT_reset_cnts = lockevent_num,
-};
-
-#ifdef CONFIG_LOCK_EVENT_COUNTS
-/*
- * Per-cpu counters
- */
-DECLARE_PER_CPU(unsigned long, lockevents[lockevent_num]);
-
-/*
- * Increment the statistical counters. use raw_cpu_inc() because of lower
- * overhead and we don't care if we loose the occasional update.
- */
-static inline void __lockevent_inc(enum lock_events event, bool cond)
-{
-	if (cond)
-		raw_cpu_inc(lockevents[event]);
-}
-
-#define lockevent_inc(ev)	  __lockevent_inc(LOCKEVENT_ ##ev, true)
-#define lockevent_cond_inc(ev, c) __lockevent_inc(LOCKEVENT_ ##ev, c)
-
-static inline void __lockevent_add(enum lock_events event, int inc)
-{
-	raw_cpu_add(lockevents[event], inc);
-}
-
-#define lockevent_add(ev, c)	__lockevent_add(LOCKEVENT_ ##ev, c)
-
-#else  /* CONFIG_LOCK_EVENT_COUNTS */
-
-#define lockevent_inc(ev)
-#define lockevent_add(ev, c)
-#define lockevent_cond_inc(ev, c)
-
-#endif /* CONFIG_LOCK_EVENT_COUNTS */
-#endif /* __LOCKING_LOCK_EVENTS_H */
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             /* SPDX-License-Identifier: GPL-2.0 */
-/*
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * Authors: Waiman Long <longman@redhat.com>
- */
-
-#ifndef __LOCKING_LOCK_EVENTS_H
-#define __LOCKING_LOCK_EVENTS_H
-
-enum lock_events {
-
-#include "lock_events_list.h"
-
-	lockevent_num,	/* Total number of lock event counts */
-	LOCKEVENT_reset_cnts = lockevent_num,
-};
-
-#ifdef CONFIG_LOCK_EVENT_COUNTS
-/*
- * Per-cpu counters
- */
-DECLARE_PER_CPU(unsigned long, lockevents[lockevent_num]);
-
-/*
- * Increment the statistical counters. use raw_cpu_inc() because of lower
- * overhead and we don't care if we loose the occasional update.
- */
-static inline void __lockevent_inc(enum lock_events event, bool cond)
-{
-	if (cond)
-		raw_cpu_inc(lockevents[event]);
-}
-
-#define lockevent_inc(ev)	  __lockevent_inc(LOCKEVENT_ ##ev, true)
-#define lockevent_cond_inc(ev, c) __lockevent_inc(LOCKEVENT_ ##ev, c)
-
-static inline void __lockevent_add(enum lock_events event, int inc)
-{
-	raw_cpu_add(lockevents[event], inc);
-}
-
-#define lockevent_add(ev, c)	__lockevent_add(LOCKEVENT_ ##ev, c)
-
-#else  /* CONFIG_LOCK_EVENT_COUNTS */
-
-#define lockevent_inc(ev)
-#define lockevent_add(ev, c)
-#define lockevent_cond_inc(ev, c)
-
-#endif /* CONFIG_LOCK_EVENT_COUNTS */
-#endif /* __LOCKING_LOCK_EVENTS_H */
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             /* SPDX-License-Identifier: GPL-2.0 */
-/*
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * Authors: Waiman Long <longman@redhat.com>
- */
-
-#ifndef LOCK_EVENT
-#define LOCK_EVENT(name)	LOCKEVENT_ ## name,
-#endif
-
-#ifdef CONFIG_QUEUED_SPINLOCKS
-#ifdef CONFIG_PARAVIRT_SPINLOCKS
-/*
- * Locking events for PV qspinlock.
- */
-LOCK_EVENT(pv_hash_hops)	/* Average # of hops per hashing operation */
-LOCK_EVENT(pv_kick_unlock)	/* # of vCPU kicks issued at unlock time   */
-LOCK_EVENT(pv_kick_wake)	/* # of vCPU kicks for pv_latency_wake	   */
-LOCK_EVENT(pv_latency_kick)	/* Average latency (ns) of vCPU kick	   */
-LOCK_EVENT(pv_latency_wake)	/* Average latency (ns) of kick-to-wakeup  */
-LOCK_EVENT(pv_lock_stealing)	/* # of lock stealing operations	   */
-LOCK_EVENT(pv_spurious_wakeup)	/* # of spurious wakeups in non-head vCPUs */
-LOCK_EVENT(pv_wait_again)	/* # of wait's after queue head vCPU kick  */
-LOCK_EVENT(pv_wait_early)	/* # of early vCPU wait's		   */
-LOCK_EVENT(pv_wait_head)	/* # of vCPU wait's at the queue head	   */
-LOCK_EVENT(pv_wait_node)	/* # of vCPU wait's at non-head queue node */
-#endif /* CONFIG_PARAVIRT_SPINLOCKS */
-
-/*
- * Locking events for qspinlock
- *
- * Subtracting lock_use_node[234] from lock_slowpath will give you
- * lock_use_node1.
- */
-LOCK_EVENT(lock_pending)	/* # of locking ops via pending code	     */
-LOCK_EVENT(lock_slowpath)	/* # of locking ops via MCS lock queue	     */
-LOCK_EVENT(lock_use_node2)	/* # of locking ops that use 2nd percpu node */
-LOCK_EVENT(lock_use_node3)	/* # of locking ops that use 3rd percpu node */
-LOCK_EVENT(lock_use_node4)	/* # of locking ops that use 4th percpu node */
-LOCK_EVENT(lock_no_node)	/* # of locking ops w/o using percpu node    */
-#endif /* CONFIG_QUEUED_SPINLOCKS */
-
-/*
- * Locking events for rwsem
- */
-LOCK_EVENT(rwsem_sleep_reader)	/* # of reader sleeps			*/
-LOCK_EVENT(rwsem_sleep_writer)	/* # of writer sleeps			*/
-LOCK_EVENT(rwsem_wake_reader)	/* # of reader wakeups			*/
-LOCK_EVENT(rwsem_wake_writer)	/* # of writer wakeups			*/
-LOCK_EVENT(rwsem_opt_lock)	/* # of opt-acquired write locks	*/
-LOCK_EVENT(rwsem_opt_fail)	/* # of failed optspins			*/
-LOCK_EVENT(rwsem_opt_nospin)	/* # of disabled optspins		*/
-LOCK_EVENT(rwsem_rlock)		/* # of read locks acquired		*/
-LOCK_EVENT(rwsem_rlock_steal)	/* # of read locks by lock stealing	*/
-LOCK_EVENT(rwsem_rlock_fast)	/* # of fast read locks acquired	*/
-LOCK_EVENT(rwsem_rlock_fail)	/* # of failed read lock acquisitions	*/
-LOCK_EVENT(rwsem_rlock_handoff)	/* # of read lock handoffs		*/
-LOCK_EVENT(rwsem_wlock)		/* # of write locks acquired		*/
-LOCK_EVENT(rwsem_wlock_fail)	/* # of failed write lock acquisitions	*/
-LOCK_EVENT(rwsem_wlock_handoff)	/* # of write lock handoffs		*/
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         /* SPDX-License-Identifier: GPL-2.0 */
-/*
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * Authors: Waiman Long <longman@redhat.com>
- */
-
-#ifndef LOCK_EVENT
-#define LOCK_EVENT(name)	LOCKEVENT_ ## name,
-#endif
-
-#ifdef CONFIG_QUEUED_SPINLOCKS
-#ifdef CONFIG_PARAVIRT_SPINLOCKS
-/*
- * Locking events for PV qspinlock.
- */
-LOCK_EVENT(pv_hash_hops)	/* Average # of hops per hashing operation */
-LOCK_EVENT(pv_kick_unlock)	/* # of vCPU kicks issued at unlock time   */
-LOCK_EVENT(pv_kick_wake)	/* # of vCPU kicks for pv_latency_wake	   */
-LOCK_EVENT(pv_latency_kick)	/* Average latency (ns) of vCPU kick	   */
-LOCK_EVENT(pv_latency_wake)	/* Average latency (ns) of kick-to-wakeup  */
-LOCK_EVENT(pv_lock_stealing)	/* # of lock stealing operations	   */
-LOCK_EVENT(pv_spurious_wakeup)	/* # of spurious wakeups in non-head vCPUs */
-LOCK_EVENT(pv_wait_again)	/* # of wait's after queue head vCPU kick  */
-LOCK_EVENT(pv_wait_early)	/* # of early vCPU wait's		   */
-LOCK_EVENT(pv_wait_head)	/* # of vCPU wait's at the queue head	   */
-LOCK_EVENT(pv_wait_node)	/* # of vCPU wait's at non-head queue node */
-#endif /* CONFIG_PARAVIRT_SPINLOCKS */
-
-/*
- * Locking events for qspinlock
- *
- * Subtracting lock_use_node[234] from lock_slowpath will give you
- * lock_use_node1.
- */
-LOCK_EVENT(lock_pending)	/* # of locking ops via pending code	     */
-LOCK_EVENT(lock_slowpath)	/* # of locking ops via MCS lock queue	     */
-LOCK_EVENT(lock_use_node2)	/* # of locking ops that use 2nd percpu node */
-LOCK_EVENT(lock_use_node3)	/* # of locking ops that use 3rd percpu node */
-LOCK_EVENT(lock_use_node4)	/* # of locking ops that use 4th percpu node */
-LOCK_EVENT(lock_no_node)	/* # of locking ops w/o using percpu node    */
-#endif /* CONFIG_QUEUED_SPINLOCKS */
-
-/*
- * Locking events for rwsem
- */
-LOCK_EVENT(rwsem_sleep_reader)	/* # of reader sleeps			*/
-LOCK_EVENT(rwsem_sleep_writer)	/* # of writer sleeps			*/
-LOCK_EVENT(rwsem_wake_reader)	/* # of reader wakeups			*/
-LOCK_EVENT(rwsem_wake_writer)	/* # of writer wakeups			*/
-LOCK_EVENT(rwsem_opt_lock)	/* # of opt-acquired write locks	*/
-LOCK_EVENT(rwsem_opt_fail)	/* # of failed optspins			*/
-LOCK_EVENT(rwsem_opt_nospin)	/* # of disabled optspins		*/
-LOCK_EVENT(rwsem_rlock)		/* # of read locks acquired		*/
-LOCK_EVENT(rwsem_rlock_steal)	/* # of read locks by lock stealing	*/
-LOCK_EVENT(rwsem_rlock_fast)	/* # of fast read locks acquired	*/
-LOCK_EVENT(rwsem_rlock_fail)	/* # of failed read lock acquisitions	*/
-LOCK_EVENT(rwsem_rlock_handoff)	/* # of read lock handoffs		*/
-LOCK_EVENT(rwsem_wlock)		/* # of write locks acquired		*/
-LOCK_EVENT(rwsem_wlock_fail)	/* # of failed write lock acquisitions	*/
-LOCK_EVENT(rwsem_wlock_handoff)	/* # of write lock handoffs		*/
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         // SPDX-License-Identifier: GPL-2.0-only
-/*
- * kernel/lockdep.c
- *
- * Runtime locking correctness validator
- *
- * Started by Ingo Molnar:
- *
- *  Copyright (C) 2006,2007 Red Hat, Inc., Ingo Molnar <mingo@redhat.com>
- *  Copyright (C) 2007 Red Hat, Inc., Peter Zijlstra
- *
- * this code maps all the lock dependencies as they occur in a live kernel
- * and will warn about the following classes of locking bugs:
- *
- * - lock inversion scenarios
- * - circular lock dependencies
- * - hardirq/softirq safe/unsafe locking bugs
- *
- * Bugs are reported even if the current locking scenario does not cause
- * any deadlock at this point.
- *
- * I.e. if anytime in the past two locks were taken in a different order,
- * even if it happened for another task, even if those were different
- * locks (but of the same class as this lock), this code will detect it.
- *
- * Thanks to Arjan van de Ven for coming up with the initial idea of
- * mapping lock dependencies runtime.
- */
-#define DISABLE_BRANCH_PROFILING
-#include <linux/mutex.h>
-#include <linux/sched.h>
-#include <linux/sched/clock.h>
-#include <linux/sched/task.h>
-#include <linux/sched/mm.h>
-#include <linux/delay.h>
-#include <linux/module.h>
-#include <linux/proc_fs.h>
-#include <linux/seq_file.h>
-#include <linux/spinlock.h>
-#include <linux/kallsyms.h>
-#include <linux/interrupt.h>
-#include <linux/stacktrace.h>
-#include <linux/debug_locks.h>
-#include <linux/irqflags.h>
-#include <linux/utsname.h>
-#include <linux/hash.h>
-#include <linux/ftrace.h>
-#include <linux/stringify.h>
-#include <linux/bitmap.h>
-#include <linux/bitops.h>
-#include <linux/gfp.h>
-#include <linux/random.h>
-#include <linux/jhash.h>
-#include <linux/nmi.h>
-#include <linux/rcupdate.h>
-#include <linux/kprobes.h>
-#include <linux/lockdep.h>
-
-#include <asm/sections.h>
-
-#include "lockdep_internals.h"
-
-#define CREATE_TRACE_POINTS
-#include <trace/events/lock.h>
-
-#ifdef CONFIG_PROVE_LOCKING
-int prove_locking = 1;
-module_param(prove_locking, int, 0644);
-#else
-#define prove_locking 0
-#endif
-
-#ifdef CONFIG_LOCK_STAT
-int lock_stat = 1;
-module_param(lock_stat, int, 0644);
-#else
-#define lock_stat 0
-#endif
-
-DEFINE_PER_CPU(unsigned int, lockdep_recursion);
-EXPORT_PER_CPU_SYMBOL_GPL(lockdep_recursion);
-
-static __always_inline bool lockdep_enabled(void)
-{
-	if (!debug_locks)
-		return false;
-
-	if (this_cpu_read(lockdep_recursion))
-		return false;
-
-	if (current->lockdep_recursion)
-		return false;
-
-	return true;
-}
-
-/*
- * lockdep_lock: protects the lockdep graph, the hashes and the
- *               class/list/hash allocators.
- *
- * This is one of the rare exceptions where it's justified
- * to use a raw spinlock - we really dont want the spinlock
- * code to recurse back into the lockdep code...
- */
-static arch_spinlock_t __lock = (arch_spinlock_t)__ARCH_SPIN_LOCK_UNLOCKED;
-static struct task_struct *__owner;
-
-static inline void lockdep_lock(void)
-{
-	DEBUG_LOCKS_WARN_ON(!irqs_disabled());
-
-	__this_cpu_inc(lockdep_recursion);
-	arch_spin_lock(&__lock);
-	__owner = current;
-}
-
-static inline void lockdep_unlock(void)
-{
-	DEBUG_LOCKS_WARN_ON(!irqs_disabled());
-
-	if (debug_locks && DEBUG_LOCKS_WARN_ON(__owner != current))
-		return;
-
-	__owner = NULL;
-	arch_spin_unlock(&__lock);
-	__this_cpu_dec(lockdep_recursion);
-}
-
-static inline bool lockdep_assert_locked(void)
-{
-	return DEBUG_LOCKS_WARN_ON(__owner != current);
-}
-
-static struct task_struct *lockdep_selftest_task_struct;
-
-
-static int graph_lock(void)
-{
-	lockdep_lock();
-	/*
-	 * Make sure that if another CPU detected a bug while
-	 * walking the graph we dont change it (while the other
-	 * CPU is busy printing out stuff with the graph lock
-	 * dropped already)
-	 */
-	if (!debug_locks) {
-		lockdep_unlock();
-		return 0;
-	}
-	return 1;
-}
-
-static inline void graph_unlock(void)
-{
-	lockdep_unlock();
-}
-
-/*
- * Turn lock debugging off and return with 0 if it was off already,
- * and also release the graph lock:
- */
-static inline int debug_locks_off_graph_unlock(void)
-{
-	int ret = debug_locks_off();
-
-	lockdep_unlock();
-
-	return ret;
-}
-
-unsigned long nr_list_entries;
-static struct lock_list list_entries[MAX_LOCKDEP_ENTRIES];
-static DECLARE_BITMAP(list_entries_in_use, MAX_LOCKDEP_ENTRIES);
-
-/*
- * All data structures here are protected by the global debug_lock.
- *
- * nr_lock_classes is the number of elements of lock_classes[] that is
- * in use.
- */
-#define KEYHASH_BITS		(MAX_LOCKDEP_KEYS_BITS - 1)
-#define KEYHASH_SIZE		(1UL << KEYHASH_BITS)
-static struct hlist_head lock_keys_hash[KEYHASH_SIZE];
-unsigned long nr_lock_classes;
-unsigned long nr_zapped_classes;
-unsigned long max_lock_class_idx;
-struct lock_class lock_classes[MAX_LOCKDEP_KEYS];
-DECLARE_BITMAP(lock_classes_in_use, MAX_LOCKDEP_KEYS);
-
-static inline struct lock_class *hlock_class(struct held_lock *hlock)
-{
-	unsigned int class_idx = hlock->class_idx;
-
-	/* Don't re-read hlock->class_idx, can't use READ_ONCE() on bitfield */
-	barrier();
-
-	if (!test_bit(class_idx, lock_classes_in_use)) {
-		/*
-		 * Someone passed in garbage, we give up.
-		 */
-		DEBUG_LOCKS_WARN_ON(1);
-		return NULL;
-	}
-
-	/*
-	 * At this point, if the passed hlock->class_idx is still garbage,
-	 * we just have to live with it
-	 */
-	return lock_classes + class_idx;
-}
-
-#ifdef CONFIG_LOCK_STAT
-static DEFINE_PER_CPU(struct lock_class_stats[MAX_LOCKDEP_KEYS], cpu_lock_stats);
-
-static inline u64 lockstat_clock(void)
-{
-	return local_clock();
-}
-
-static int lock_point(unsigned long points[], unsigned long ip)
-{
-	int i;
-
-	for (i = 0; i < LOCKSTAT_POINTS; i++) {
-		if (points[i] == 0) {
-			points[i] = ip;
-			break;
-		}
-		if (points[i] == ip)
-			break;
-	}
-
-	return i;
-}
-
-static void lock_time_inc(struct lock_time *lt, u64 time)
-{
-	if (time > lt->max)
-		lt->max = time;
-
-	if (time < lt->min || !lt->nr)
-		lt->min = time;
-
-	lt->total += time;
-	lt->nr++;
-}
-
-static inline void lock_time_add(struct lock_time *src, struct lock_time *dst)
-{
-	if (!src->nr)
-		return;
-
-	if (src->max > dst->max)
-		dst->max = src->max;
-
-	if (src->min < dst->min || !dst->nr)
-		dst->min = src->min;
-
-	dst->total += src->total;
-	dst->nr += src->nr;
-}
-
-struct lock_class_stats lock_stats(struct lock_class *class)
-{
-	struct lock_class_stats stats;
-	int cpu, i;
-
-	memset(&stats, 0, sizeof(struct lock_class_stats));
-	for_each_possible_cpu(cpu) {
-		struct lock_class_stats *pcs =
-			&per_cpu(cpu_lock_stats, cpu)[class - lock_classes];
-
-		for (i = 0; i < ARRAY_SIZE(stats.contention_point); i++)
-			stats.contention_point[i] += pcs->contention_point[i];
-
-		for (i = 0; i < ARRAY_SIZE(stats.contending_point); i++)
-			stats.contending_point[i] += pcs->contending_point[i];
-
-		lock_time_add(&pcs->read_waittime, &stats.read_waittime);
-		lock_time_add(&pcs->write_waittime, &stats.write_waittime);
-
-		lock_time_add(&pcs->read_holdtime, &stats.read_holdtime);
-		lock_time_add(&pcs->write_holdtime, &stats.write_holdtime);
-
-		for (i = 0; i < ARRAY_SIZE(stats.bounces); i++)
-			stats.bounces[i] += pcs->bounces[i];
-	}
-
-	return stats;
-}
-
-void clear_lock_stats(struct lock_class *class)
-{
-	int cpu;
-
-	for_each_possible_cpu(cpu) {
-		struct lock_class_stats *cpu_stats =
-			&per_cpu(cpu_lock_stats, cpu)[class - lock_classes];
-
-		memset(cpu_stats, 0, sizeof(struct lock_class_stats));
-	}
-	memset(class->contention_point, 0, sizeof(class->contention_point));
-	memset(class->contending_point, 0, sizeof(class->contending_point));
-}
-
-static struct lock_class_stats *get_lock_stats(struct lock_class *class)
-{
-	return &this_cpu_ptr(cpu_lock_stats)[class - lock_classes];
-}
-
-static void lock_release_holdtime(struct held_lock *hlock)
-{
-	struct lock_class_stats *stats;
-	u64 holdtime;
-
-	if (!lock_stat)
-		return;
-
-	holdtime = lockstat_clock() - hlock->holdtime_stamp;
-
-	stats = get_lock_stats(hlock_class(hlock));
-	if (hlock->read)
-		lock_time_inc(&stats->read_holdtime, holdtime);
-	else
-		lock_time_inc(&stats->write_holdtime, holdtime);
-}
-#else
-static inline void lock_release_holdtime(struct held_lock *hlock)
-{
-}
-#endif
-
-/*
- * We keep a global list of all lock classes. The list is only accessed with
- * the lockdep spinlock lock held. free_lock_classes is a list with free
- * elements. These elements are linked together by the lock_entry member in
- * struct lock_class.
- */
-static LIST_HEAD(all_lock_classes);
-static LIST_HEAD(free_lock_classedcard include/config/INLINE_WRITE_UNLOCK_IRQRESTORE) \
-  include/linux/irqhandler.h \
-  include/linux/irqreturn.h \
-  include/linux/irqnr.h \
-  include/uapi/linux/irqnr.h \
-  include/linux/topology.h \
-    $(wildcard include/config/USE_PERCPU_NUMA_NODE_ID) \
-    $(wildcard include/config/HAVE_MEMORYLESS_NODES) \
-    $(wildcard include/config/SCHED_SMT) \
-    $(wildcard include/config/SCHED_CLUSTER) \
-  include/linux/arch_topology.h \
-    $(wildcard include/config/ACPI_CPPC_LIB) \
-    $(wildcard include/config/GENERIC_ARCH_TOPOLOGY) \
-  include/linux/percpu.h \
-    $(wildcard include/config/NEED_PER_CPU_EMBED_FIRST_CHUNK) \
-    $(wildcard include/config/NEED_PER_CPU_PAGE_FIRST_CHUNK) \
-  include/linux/mmdebug.h \
-    $(wildcard include/config/DEBUG_VM) \
-    $(wildcard include/config/DEBUG_VM_PGFLAGS) \
-  include/linux/mmzone.h \
-    $(wildcard include/config/FORCE_MAX_ZONEORDER) \
-    $(wildcard include/config/CMA) \
-    $(wildcard include/config/MEMORY_ISOLATION) \
-    $(wildcard include/config/ZSMALLOC) \
-    $(wildcard include/config/SWAP) \
-    $(wildcard include/config/NUMA_BALANCING) \
-    $(wildcard include/config/TRANSPARENT_HUGEPAGE) \
-    $(wildcard include/config/MEMCG) \
-    $(wildcard include/config/ZONE_DMA) \
-    $(wildcard include/config/ZONE_DMA32) \
-    $(wildcard include/config/HIGHMEM) \
-    $(wildcard include/config/ZONE_DEVICE) \
-    $(wildcard include/config/MEMORY_HOTPLUG) \
-    $(wildcard include/config/COMPACTION) \
-    $(wildcard include/config/PAGE_EXTENSION) \
-    $(wildcard include/config/DEFERRED_STRUCT_PAGE_INIT) \
-    $(wildcard include/config/SPARSEMEM_EXTREME) \
-    $(wildcard include/config/HAVE_ARCH_PFN_VALID) \
-  include/linux/wait.h \
-  include/uapi/linux/wait.h \
-  include/linux/numa.h \
-    $(wildcard include/config/NODES_SHIFT) \
-    $(wildcard include/config/NUMA_KEEP_MEMINFO) \
-    $(wildcard include/config/HAVE_ARCH_NODE_DEV_GROUP) \
-  arch/x86/include/asm/sparsemem.h \
-  include/linux/seqlock.h \
-  include/linux/mutex.h \
-    $(wildcard include/config/MUTEX_SPIN_ON_OWNER) \
-    $(wildcard include/config/DEBUG_MUTEXES) \
-  include/linux/osq_lock.h \
-  include/linux/debug_locks.h \
-  include/linux/ww_mutex.h \
-    $(wildcard include/config/DEBUG_RT_MUTEXES) \
-    $(wildcard include/config/DEBUG_WW_MUTEX_SLOWPATH) \
-  include/linux/rtmutex.h \
-  include/linux/rbtree_types.h \
-  include/linux/nodemask.h \
-  include/linux/pageblock-flags.h \
-    $(wildcard include/config/HUGETLB_PAGE) \
-    $(wildcard include/config/HUGETLB_PAGE_SIZE_VARIABLE) \
-  include/linux/page-flags-layout.h \
-    $(wildcard include/config/KASAN_HW_TAGS) \
-  include/generated/bounds.h \
-  include/linux/mm_types.h \
-    $(wildcard include/config/HAVE_ALIGNED_STRUCT_PAGE) \
-    $(wildcard include/config/USERFAULTFD) \
-    $(wildcard include/config/HAVE_ARCH_COMPAT_MMAP_BASES) \
-    $(wildcard include/config/MEMBARRIER) \
-    $(wildcard include/config/AIO) \
-    $(wildcard include/config/MMU_NOTIFIER) \
-    $(wildcard include/config/ARCH_WANT_BATCHED_UNMAP_TLB_FLUSH) \
-    $(wildcard include/config/IOMMU_SVA) \
-  include/linux/mm_types_task.h \
-    $(wildcard include/config/SPLIT_PTLOCK_CPUS) \
-    $(wildcard include/config/ARCH_ENABLE_SPLIT_PMD_PTLOCK) \
-  arch/x86/include/asm/tlbbatch.h \
-  include/linux/auxvec.h \
-  include/uapi/linux/auxvec.h \
-  arch/x86/include/uapi/asm/auxvec.h \
-  include/linux/kref.h \
-  include/linux/refcount.h \
-  include/linux/rbtree.h \
-  include/linux/rcupdate.h \
-    $(wildcard include/config/PREEMPT_RCU) \
-    $(wildcard include/config/TINY_RCU) \
-    $(wildcard include/config/RCU_STRICT_GRACE_PERIOD) \
-    $(wildcard include/config/TASKS_RCU_GENERIC) \
-    $(wildcard include/config/RCU_STALL_COMMON) \
-    $(wildcard include/config/NO_HZ_FULL) \
-    $(wildcard include/config/RCU_NOCB_CPU) \
-    $(wildcard include/config/TASKS_RCU) \
-    $(wildcard include/config/TASKS_TRACE_RCU) \
-    $(wildcard include/config/TASKS_RUDE_RCU) \
-    $(wildcard include/config/TREE_RCU) \
-    $(wildcard include/config/DEBUG_OBJECTS_RCU_HEAD) \
-    $(wildcard include/config/PROVE_RCU) \
-    $(wildcard include/config/ARCH_WEAK_RELEASE_ACQUIRE) \
-  include/linux/rcutree.h \
-  include/linux/rwsem.h \
-    $(wildcard include/config/RWSEM_SPIN_ON_OWNER) \
-    $(wildcard include/config/DEBUG_RWSEMS) \
-  include/linux/completion.h \
-  include/linux/swait.h \
-  include/linux/uprobes.h \
-    $(wildcard include/config/UPROBES) \
-  arch/x86/include/asm/uprobes.h \
-  include/linux/notifier.h \
-    $(wildcard include/config/TREE_SRCU) \
-  include/linux/srcu.h \
-    $(wildcard include/config/TINY_SRCU) \
-    $(wildcard include/config/SRCU) \
-  include/linux/workqueue.h \
-    $(wildcard include/config/DEBUG_OBJECTS_WORK) \
-    $(wildcard include/config/FREEZER) \
-    $(wildcard include/config/SYSFS) \
-    $(wildcard include/config/WQ_WATCHDOG) \
-  include/linux/timer.h \
-    $(wildcard include/config/DEBUG_OBJECTS_TIMERS) \
-    $(wildcard include/config/NO_HZ_COMMON) \
-  include/linux/ktime.h \
-  include/linux/time.h \
-    $(wildcard include/config/POSIX_TIMERS) \
-  include/linux/time32.h \
-  include/linux/timex.h \
-  include/uapi/linux/timex.h \
-  arch/x86/include/asm/timex.h \
-    $(wildcard include/config/X86_TSC) \
-  arch/x86/include/asm/tsc.h \
-  include/vdso/time32.h \
-  include/vdso/time.h \
-  include/linux/jiffies.h \
-  include/vdso/jiffies.h \
-  include/generated/timeconst.h \
-  include/vdso/ktime.h \
-  include/linux/timekeeping.h \
-    $(wildcard include/config/GENERIC_CMOS_UPDATE) \
-  include/linux/clocksource_ids.h \
-  include/linux/debugobjects.h \
-    $(wildcard include/config/DEBUG_OBJECTS) \
-    $(wildcard include/config/DEBUG_OBJECTS_FREE) \
-  include/linux/rcu_segcblist.h \
-  include/linux/srcutree.h \
-  include/linux/rcu_node_tree.h \
-    $(wildcard include/config/RCU_FANOUT) \
-    $(wildcard include/config/RCU_FANOUT_LEAF) \
-  arch/x86/include/asm/mmu.h \
-    $(wildcard include/config/MODIFY_LDT_SYSCALL) \
-  include/linux/page-flags.h \
-    $(wildcard include/config/ARCH_USES_PG_UNCACHED) \
-    $(wildcard include/config/MEMORY_FAILURE) \
-    $(wildcard include/config/PAGE_IDLE_FLAG) \
-    $(wildcard include/config/HUGETLB_PAGE_FREE_VMEMMAP) \
-    $(wildcard include/config/HUGETLB_PAGE_FREE_VMEMMAP_DEFAULT_ON) \
-    $(wildcard include/config/KSM) \
-  include/linux/local_lock.h \
-  include/linux/local_lock_internal.h \
-  include/linux/memory_hotplug.h \
-    $(wildcard include/config/HAVE_ARCH_NODEDATA_EXTENSION) \
-    $(wildcard include/config/ARCH_HAS_ADD_PAGES) \
-    $(wildcard include/config/MEMORY_HOTREMOVE) \
-  arch/x86/include/asm/mmzone.h \
-  arch/x86/include/asm/mmzone_32.h \
-  arch/x86/include/asm/topology.h \
-    $(wildcard include/config/SCHED_MC_PRIO) \
-  arch/x86/include/asm/mpspec.h \
-    $(wildcard include/config/EISA) \
-    $(wildcard include/config/X86_MPPARSE) \
-  arch/x86/include/asm/mpspec_def.h \
-  arch/x86/include/asm/x86_init.h \
-  arch/x86/include/asm/apicdef.h \
-  include/asm-generic/topology.h \
-  include/linux/io.h \
-    $(wildcard include/config/HAS_IOPORT_MAP) \
-    $(wildcard include/config/PCI) \
-  arch/x86/include/asm/io.h \
-    $(wildcard include/config/MTRR) \
-    $(wildcard include/config/X86_PAT) \
-  arch/x86/include/generated/asm/early_ioremap.h \
-  include/asm-generic/early_ioremap.h \
-    $(wildcard include/config/GENERIC_EARLY_IOREMAP) \
-  include/asm-generic/iomap.h \
-  include/asm-generic/pci_iomap.h \
-    $(wildcard include/config/NO_GENERIC_PCI_IOPORT_MAP) \
-    $(wildcard include/config/GENERIC_PCI_IOMAP) \
-  include/asm-generic/io.h \
-    $(wildcard include/config/GENERIC_IOMAP) \
-    $(wildcard include/config/GENERIC_IOREMAP) \
-    $(wildcard include/config/VIRT_TO_BUS) \
-    $(wildcard include/config/GENERIC_DEVMEM_IS_ALLOWED) \
-  include/linux/logic_pio.h \
-    $(wildcard include/config/INDIRECT_PIO) \
-  include/linux/fwnode.h \
-  include/linux/vmalloc.h \
-    $(wildcard include/config/KASAN_VMALLOC) \
-    $(wildcard include/config/HAVE_ARCH_HUGE_VMALLOC) \
-  include/linux/overflow.h \
-  arch/x86/include/asm/vmalloc.h \
-    $(wildcard include/config/HAVE_ARCH_HUGE_VMAP) \
-  arch/x86/include/asm/pgtable_areas.h \
-  arch/x86/include/asm/pgtable_32_areas.h \
-  arch/x8
-    $(wildcard include/config/CONTEXT_TRACKING) \
-  include/linux/ftrace_irq.h \
-    $(wildcard include/config/HWLAT_TRACER) \
-    $(wildcard include/config/OSNOISE_TRACER) \
-  include/linux/vtime.h \
-    $(wildcard include/config/VIRT_CPU_ACCOUNTING) \
-    $(wildcard include/config/IRQ_TIME_ACCOUNTING) \
-  arch/x86/include/asm/hardirq.h \
-    $(wildcard include/config/KVM_INTEL) \
-    $(wildcard include/config/X86_THERMAL_VECTOR) \
-    $(wildcard include/config/X86_MCE_THRESHOLD) \
-    $(wildcard include/config/X86_MCE_AMD) \
-    $(wildcard include/config/X86_HV_CALLBACK_VECTOR) \
-  include/linux/highmem-internal.h \
-  arch/x86/include/asm/highmem.h \
-  include/linux/interrupt.h \
-    $(wildcard include/config/IRQ_FORCED_THREADING) \
-    $(wildcard include/config/GENERIC_IRQ_PROBE) \
-    $(wildcard include/config/IRQ_TIMINGS) \
-  include/linux/irqreturn.h \
-  include/linux/irqnr.h \
-  include/uapi/linux/irqnr.h \
-  arch/x86/include/asm/irq.h \
-  arch/x86/include/asm/tlbflush.h \
-  arch/x86/include/asm/invpcid.h \
-  arch/x86/include/asm/pti.h \
-  include/linux/socket.h \
-  arch/x86/include/generated/uapi/asm/socket.h \
-  include/uapi/asm-generic/socket.h \
-  arch/x86/include/generated/uapi/asm/sockios.h \
-  include/uapi/asm-generic/sockios.h \
-  include/uapi/linux/sockios.h \
-  include/linux/uio.h \
-    $(wildcard include/config/ARCH_HAS_UACCESS_FLUSHCACHE) \
-  include/uapi/linux/uio.h \
-  include/uapi/linux/socket.h \
-  include/linux/net.h \
-  include/linux/random.h \
-    $(wildcard include/config/VMGENID) \
-    $(wildcard include/config/ARCH_RANDOM) \
-  include/linux/once.h \
-  include/uapi/linux/random.h \
-  include/linux/prandom.h \
-  include/linux/siphash.h \
-  arch/x86/include/asm/archrandom.h \
-  include/uapi/linux/net.h \
-  include/linux/textsearch.h \
-  include/net/checksum.h \
-  arch/x86/include/asm/checksum.h \
-  arch/x86/include/asm/checksum_32.h \
-  include/linux/in6.h \
-  include/uapi/linux/in6.h \
-  include/uapi/linux/libc-compat.h \
-  include/linux/dma-mapping.h \
-    $(wildcard include/config/DMA_API_DEBUG) \
-    $(wildcard include/config/HAS_DMA) \
-    $(wildcard include/config/NEED_DMA_MAP_STATE) \
+\
+    $(wildcard include/config/QUOTA_NETLINK_INTERFACE) \
+  include/uapi/linux/dqblk_xfs.h \
+  include/linux/dqblk_v1.h \
+  include/linux/dqblk_v2.h \
+  include/linux/dqblk_qtree.h \
+  include/linux/projid.h \
+  include/uapi/linux/quota.h \
+  include/linux/nfs_fs_i.h \
+  include/uapi/linux/poll.h \
+  arch/x86/include/generated/uapi/asm/poll.h \
+  include/uapi/asm-generic/poll.h \
+  include/uapi/linux/eventpoll.h \
   include/linux/device.h \
     $(wildcard include/config/GENERIC_MSI_IRQ_DOMAIN) \
     $(wildcard include/config/GENERIC_MSI_IRQ) \
@@ -1248,6 +29,14 @@ static LIST_HEAD(free_lock_classedcard include/config/INLINE_WRITE_UNLOCK_IRQRES
     $(wildcard include/config/SYSFS_DEPRECATED) \
   include/linux/dev_printk.h \
   include/linux/energy_model.h \
+  include/linux/kobject.h \
+    $(wildcard include/config/UEVENT_HELPER) \
+    $(wildcard include/config/DEBUG_KOBJECT_RELEASE) \
+  include/linux/sysfs.h \
+  include/linux/kernfs.h \
+    $(wildcard include/config/KERNFS) \
+  include/linux/idr.h \
+  include/linux/kobject_ns.h \
   include/linux/sched/cpufreq.h \
     $(wildcard include/config/CPU_FREQ) \
   include/linux/sched/topology.h \
@@ -1267,28 +56,1227 @@ static LIST_HEAD(free_lock_classedcard include/config/INLINE_WRITE_UNLOCK_IRQRES
     $(wildcard include/config/ACPI) \
   include/linux/device/class.h \
   include/linux/device/driver.h \
+  include/linux/module.h \
+    $(wildcard include/config/MODULES_TREE_LOOKUP) \
+    $(wildcard include/config/STACKTRACE_BUILD_ID) \
+    $(wildcard include/config/MODULE_SIG) \
+    $(wildcard include/config/KALLSYMS) \
+    $(wildcard include/config/BPF_EVENTS) \
+    $(wildcard include/config/DEBUG_INFO_BTF_MODULES) \
+    $(wildcard include/config/EVENT_TRACING) \
+    $(wildcard include/config/MODULE_UNLOAD) \
+    $(wildcard include/config/CONSTRUCTORS) \
+    $(wildcard include/config/FUNCTION_ERROR_INJECTION) \
+  include/linux/buildid.h \
+    $(wildcard include/config/CRASH_CORE) \
+  include/linux/kmod.h \
+  include/linux/umh.h \
+  include/linux/elf.h \
+    $(wildcard include/config/ARCH_USE_GNU_PROPERTY) \
+    $(wildcard include/config/ARCH_HAVE_ELF_PROT) \
+  arch/x86/include/asm/elf.h \
+    $(wildcard include/config/X86_X32_ABI) \
+  arch/x86/include/asm/user.h \
+  arch/x86/include/asm/user_32.h \
+  arch/x86/include/asm/fsgsbase.h \
+  arch/x86/include/asm/vdso.h \
+  arch/x86/include/asm/desc.h \
+  arch/x86/include/asm/fixmap.h \
+    $(wildcard include/config/DEBUG_KMAP_LOCAL_FORCE_MAP) \
+    $(wildcard include/config/X86_VSYSCALL_EMULATION) \
+    $(wildcard include/config/PROVIDE_OHCI1394_DMA_INIT) \
+    $(wildcard include/config/X86_IO_APIC) \
+    $(wildcard include/config/PCI_MMCONFIG) \
+    $(wildcard include/config/ACPI_APEI_GHES) \
+    $(wildcard include/config/INTEL_TXT) \
+  include/asm-generic/fixmap.h \
+  arch/x86/include/asm/irq_vectors.h \
+    $(wildcard include/config/HAVE_KVM) \
+    $(wildcard include/config/HYPERV) \
+    $(wildcard include/config/PCI_MSI) \
+  arch/x86/include/asm/cpu_entry_area.h \
+  arch/x86/include/asm/intel_ds.h \
+  arch/x86/include/asm/pgtable_areas.h \
+  arch/x86/include/asm/pgtable_32_areas.h \
+  include/uapi/linux/elf.h \
+  include/uapi/linux/elf-em.h \
+  include/linux/moduleparam.h \
+    $(wildcard include/config/ALPHA) \
+    $(wildcard include/config/IA64) \
+    $(wildcard include/config/PPC64) \
+  include/linux/rbtree_latch.h \
+  include/linux/error-injection.h \
+  include/asm-generic/error-injection.h \
+  include/linux/cfi.h \
+    $(wildcard include/config/CFI_CLANG_SHADOW) \
+  arch/x86/include/asm/module.h \
+    $(wildcard include/config/UNWINDER_ORC) \
+  include/asm-generic/module.h \
+    $(wildcard include/config/HAVE_MOD_ARCH_SPECIFIC) \
+    $(wildcard include/config/MODULES_USE_ELF_REL) \
+    $(wildcard include/config/MODULES_USE_ELF_RELA) \
+  arch/x86/include/asm/orc_types.h \
   arch/x86/include/asm/device.h \
   include/linux/pm_wakeup.h \
-  include/linux/dma-direction.h \
+  include/linux/cdev.h \
+  include/media/media-entity.h \
+  include/linux/fwnode.h \
+  include/uapi/linux/media.h \
+  include/media/v4l2-subdev.h \
+    $(wildcard include/config/VIDEO_ADV_DEBUG) \
+  include/uapi/linux/v4l2-subdev.h \
+  include/uapi/linux/v4l2-common.h \
+  include/uapi/linux/v4l2-mediabus.h \
+  include/uapi/linux/media-bus-format.h \
+  include/linux/videodev2.h \
+  include/uapi/linux/videodev2.h \
+  include/uapi/linux/v4l2-controls.h \
+  include/media/v4l2-async.h \
+  include/media/v4l2-common.h \
+    $(wildcard include/config/VIDEO_V4L2_I2C) \
+    $(wildcard include/config/SPI) \
+  include/media/v4l2-dev.h \
+  include/linux/i2c.h \
+    $(wildcard include/config/I2C) \
+    $(wildcard include/config/I2C_SLAVE) \
+    $(wildcard include/config/I2C_BOARDINFO) \
+    $(wildcard include/config/I2C_MUX) \
+  include/linux/acpi.h \
+    $(wildcard include/config/ACPI_DEBUGGER) \
+    $(wildcard include/config/ACPI_TABLE_LIB) \
+    $(wildcard include/config/LOONGARCH) \
+    $(wildcard include/config/ARM64) \
+    $(wildcard include/config/ACPI_PROCESSOR_CSTATE) \
+    $(wildcard include/config/ACPI_HOTPLUG_CPU) \
+    $(wildcard include/config/ACPI_HOTPLUG_IOAPIC) \
+    $(wildcard include/config/PCI) \
+    $(wildcard include/config/ACPI_WMI) \
+    $(wildcard include/config/ACPI_NUMA) \
+    $(wildcard include/config/HIBERNATION) \
+    $(wildcard include/config/ACPI_HOTPLUG_MEMORY) \
+    $(wildcard include/config/ACPI_CONTAINER) \
+    $(wildcard include/config/ACPI_GTDT) \
+    $(wildcard include/config/GPIOLIB) \
+    $(wildcard include/config/ACPI_TABLE_UPGRADE) \
+    $(wildcard include/config/ACPI_WATCHDOG) \
+    $(wildcard include/config/ACPI_SPCR_TABLE) \
+    $(wildcard include/config/ACPI_GENERIC_GSI) \
+    $(wildcard include/config/ACPI_LPIT) \
+    $(wildcard include/config/ACPI_PPTT) \
+    $(wildcard include/config/ACPI_PCC) \
+  include/linux/irqdomain.h \
+    $(wildcard include/config/IRQ_DOMAIN_HIERARCHY) \
+    $(wildcard include/config/GENERIC_IRQ_DEBUGFS) \
+    $(wildcard include/config/IRQ_DOMAIN) \
+    $(wildcard include/config/IRQ_DOMAIN_NOMAP) \
+  include/linux/irqhandler.h \
+  include/linux/of.h \
+    $(wildcard include/config/OF_DYNAMIC) \
+    $(wildcard include/config/SPARC) \
+    $(wildcard include/config/OF_PROMTREE) \
+    $(wildcard include/config/OF_KOBJ) \
+    $(wildcard include/config/OF_NUMA) \
+    $(wildcard include/config/OF_OVERLAY) \
+  include/linux/mod_devicetable.h \
+  include/linux/property.h \
+  include/linux/resource_ext.h \
+  include/acpi/acpi.h \
+  include/acpi/platform/acenv.h \
+  include/acpi/platform/acgcc.h \
+  include/acpi/platform/aclinux.h \
+    $(wildcard include/config/ACPI_REDUCED_HARDWARE_ONLY) \
+    $(wildcard include/config/ACPI_DEBUG) \
+  include/linux/ctype.h \
+  arch/x86/include/asm/acenv.h \
+  include/acpi/acnames.h \
+  include/acpi/actypes.h \
+  include/acpi/acexcep.h \
+  include/acpi/actbl.h \
+  include/acpi/actbl1.h \
+  include/acpi/actbl2.h \
+  include/acpi/actbl3.h \
+  include/acpi/acrestyp.h \
+  include/acpi/platform/acenvex.h \
+  include/acpi/platform/aclinuxex.h \
+  include/acpi/platform/acgccex.h \
+  include/acpi/acoutput.h \
+  include/acpi/acpiosxf.h \
+  include/acpi/acpixf.h \
+  include/acpi/acconfig.h \
+  include/acpi/acbuffer.h \
+  include/linux/dynamic_debug.h \
+  include/acpi/acpi_bus.h \
+    $(wildcard include/config/X86_ANDROID_TABLETS) \
+    $(wildcard include/config/ACPI_SYSTEM_POWER_STATES_SUPPORT) \
+    $(wildcard include/config/ACPI_SLEEP) \
+  include/acpi/acpi_drivers.h \
+    $(wildcard include/config/ACPI_DOCK) \
+  include/acpi/acpi_numa.h \
+    $(wildcard include/config/ACPI_HMAT) \
+  include/acpi/acpi_io.h \
+  include/linux/io.h \
+    $(wildcard include/config/HAS_IOPORT_MAP) \
+  arch/x86/include/asm/io.h \
+    $(wildcard include/config/MTRR) \
+    $(wildcard include/config/X86_PAT) \
+  arch/x86/include/generated/asm/early_ioremap.h \
+  include/asm-generic/early_ioremap.h \
+    $(wildcard include/config/GENERIC_EARLY_IOREMAP) \
+  include/asm-generic/iomap.h \
+  include/asm-generic/pci_iomap.h \
+    $(wildcard include/config/NO_GENERIC_PCI_IOPORT_MAP) \
+    $(wildcard include/config/GENERIC_PCI_IOMAP) \
+  include/asm-generic/io.h \
+    $(wildcard include/config/GENERIC_IOMAP) \
+    $(wildcard include/config/GENERIC_IOREMAP) \
+    $(wildcard include/config/VIRT_TO_BUS) \
+    $(wildcard include/config/GENERIC_DEVMEM_IS_ALLOWED) \
+  include/linux/logic_pio.h \
+    $(wildcard include/config/INDIRECT_PIO) \
+  include/linux/vmalloc.h \
+    $(wildcard include/config/HAVE_ARCH_HUGE_VMALLOC) \
+  arch/x86/include/asm/vmalloc.h \
+    $(wildcard include/config/HAVE_ARCH_HUGE_VMAP) \
+  arch/x86/include/asm/acpi.h \
+    $(wildcard include/config/ACPI_APEI) \
+  include/acpi/pdc_intel.h \
+  arch/x86/include/asm/numa.h \
+    $(wildcard include/config/NUMA_EMU) \
+  arch/x86/include/asm/numa_32.h \
+  include/linux/regulator/consumer.h \
+    $(wildcard include/config/REGULATOR) \
+  include/linux/suspend.h \
+    $(wildcard include/config/VT) \
+    $(wildcard include/config/SUSPEND) \
+    $(wildcard include/config/HIBERNATION_SNAPSHOT_DEV) \
+    $(wildcard include/config/PM_SLEEP_DEBUG) \
+    $(wildcard include/config/PM_AUTOSLEEP) \
+  include/linux/swap.h \
+    $(wildcard include/config/DEVICE_PRIVATE) \
+    $(wildcard include/config/FRONTSWAP) \
+    $(wildcard include/config/THP_SWAP) \
+    $(wildcard include/config/MEMCG_SWAP) \
+  include/linux/memcontrol.h \
+  include/linux/cgroup.h \
+    $(wildcard include/config/CGROUP_CPUACCT) \
+    $(wildcard include/config/SOCK_CGROUP_DATA) \
+    $(wildcard include/config/CGROUP_DATA) \
+    $(wildcard include/config/CGROUP_BPF) \
+  include/uapi/linux/cgroupstats.h \
+  include/uapi/linux/taskstats.h \
+  include/linux/seq_file.h \
+  include/linux/string_helpers.h \
+  include/linux/ns_common.h \
+  include/linux/nsproxy.h \
+  include/linux/user_namespace.h \
+    $(wildcard include/config/INOTIFY_USER) \
+    $(wildcard include/config/FANOTIFY) \
+    $(wildcard include/config/PERSISTENT_KEYRINGS) \
+  include/linux/kernel_stat.h \
+  include/linux/interrupt.h \
+    $(wildcard include/config/IRQ_FORCED_THREADING) \
+    $(wildcard include/config/GENERIC_IRQ_PROBE) \
+    $(wildcard include/config/IRQ_TIMINGS) \
+  include/linux/irqreturn.h \
+  include/linux/irqnr.h \
+  include/uapi/linux/irqnr.h \
+  include/linux/hardirq.h \
+  include/linux/context_tracking_state.h \
+    $(wildcard include/config/CONTEXT_TRACKING) \
+  include/linux/ftrace_irq.h \
+    $(wildcard include/config/HWLAT_TRACER) \
+    $(wildcard include/config/OSNOISE_TRACER) \
+  include/linux/vtime.h \
+    $(wildcard include/config/VIRT_CPU_ACCOUNTING) \
+    $(wildcard include/config/IRQ_TIME_ACCOUNTING) \
+  arch/x86/include/asm/hardirq.h \
+    $(wildcard include/config/KVM_INTEL) \
+    $(wildcard include/config/X86_THERMAL_VECTOR) \
+    $(wildcard include/config/X86_MCE_THRESHOLD) \
+    $(wildcard include/config/X86_MCE_AMD) \
+    $(wildcard include/config/X86_HV_CALLBACK_VECTOR) \
+  arch/x86/include/asm/irq.h \
+  arch/x86/include/asm/sections.h \
+  include/asm-generic/sections.h \
+    $(wildcard include/config/HAVE_FUNCTION_DESCRIPTORS) \
+  include/linux/cgroup-defs.h \
+    $(wildcard include/config/CGROUP_NET_CLASSID) \
+    $(wildcard include/config/CGROUP_NET_PRIO) \
+  include/linux/u64_stats_sync.h \
+  include/linux/bpf-cgroup-defs.h \
+  include/linux/psi_types.h \
+  include/linux/kthread.h \
+  include/linux/cgroup_subsys.h \
+    $(wildcard include/config/CGROUP_DEVICE) \
+    $(wildcard include/config/CGROUP_FREEZER) \
+    $(wildcard include/config/CGROUP_PERF) \
+    $(wildcard include/config/CGROUP_HUGETLB) \
+    $(wildcard include/config/CGROUP_PIDS) \
+    $(wildcard include/config/CGROUP_RDMA) \
+    $(wildcard include/config/CGROUP_MISC) \
+    $(wildcard include/config/CGROUP_DEBUG) \
+  include/linux/vm_event_item.h \
+    $(wildcard include/config/HAVE_ARCH_TRANSPARENT_HUGEPAGE_PUD) \
+    $(wildcard include/config/MEMORY_BALLOON) \
+    $(wildcard include/config/BALLOON_COMPACTION) \
+    $(wildcard include/config/DEBUG_TLBFLUSH) \
+    $(wildcard include/config/DEBUG_VM_VMACACHE) \
+  include/linux/page_counter.h \
+  include/linux/vmpressure.h \
+  include/linux/eventfd.h \
+  include/linux/mm.h \
+    $(wildcard include/config/HAVE_ARCH_MMAP_RND_BITS) \
+    $(wildcard include/config/HAVE_ARCH_MMAP_RND_COMPAT_BITS) \
+    $(wildcard include/config/ARCH_USES_HIGH_VMA_FLAGS) \
+    $(wildcard include/config/ARCH_HAS_PKEYS) \
+    $(wildcard include/config/PPC) \
+    $(wildcard include/config/PARISC) \
+    $(wildcard include/config/SPARC64) \
+    $(wildcard include/config/ARM64_MTE) \
+    $(wildcard include/config/HAVE_ARCH_USERFAULTFD_MINOR) \
+    $(wildcard include/config/SHMEM) \
+    $(wildcard include/config/ARCH_HAS_PTE_SPECIAL) \
+    $(wildcard include/config/ARCH_HAS_PTE_DEVMAP) \
+    $(wildcard include/config/DEBUG_VM_RB) \
+    $(wildcard include/config/PAGE_POISONING) \
+    $(wildcard include/config/INIT_ON_ALLOC_DEFAULT_ON) \
+    $(wildcard include/config/INIT_ON_FREE_DEFAULT_ON) \
+    $(wildcard include/config/DEBUG_PAGEALLOC) \
+    $(wildcard include/config/HUGETLBFS) \
+    $(wildcard include/config/MAPPING_DIRTY_HELPERS) \
+    $(wildcard include/config/ANON_VMA_NAME) \
+  include/linux/mmap_lock.h \
+  include/linux/page_ext.h \
+  include/linux/stacktrace.h \
+    $(wildcard include/config/ARCH_STACKWALK) \
+    $(wildcard include/config/STACKTRACE) \
+    $(wildcard include/config/HAVE_RELIABLE_STACKTRACE) \
+  include/linux/stackdepot.h \
+    $(wildcard include/config/STACKDEPOT_ALWAYS_INIT) \
+  include/linux/page_ref.h \
+    $(wildcard include/config/DEBUG_PAGE_REF) \
+  include/linux/sizes.h \
+  include/linux/pgtable.h \
+    $(wildcard include/config/HIGHPTE) \
+    $(wildcard include/config/GUP_GET_PTE_LOW_HIGH) \
+    $(wildcard include/config/HAVE_ARCH_SOFT_DIRTY) \
+    $(wildcard include/config/ARCH_ENABLE_THP_MIGRATION) \
+    $(wildcard include/config/X86_ESPFIX64) \
+  arch/x86/include/asm/pgtable.h \
+    $(wildcard include/config/DEBUG_WX) \
+    $(wildcard include/config/PAGE_TABLE_CHECK) \
+  arch/x86/include/asm/pkru.h \
+  arch/x86/include/asm/fpu/api.h \
+    $(wildcard include/config/X86_DEBUG_FPU) \
+  arch/x86/include/asm/coco.h \
+  include/asm-generic/pgtable_uffd.h \
+  include/linux/page_table_check.h \
+  arch/x86/include/asm/pgtable_32.h \
+  arch/x86/include/asm/pgtable-3level.h \
+  arch/x86/include/asm/pgtable-invert.h \
+  include/linux/huge_mm.h \
+  include/linux/sched/coredump.h \
+    $(wildcard include/config/CORE_DUMP_DEFAULT_ELF_HEADERS) \
+  include/linux/vmstat.h \
+    $(wildcard include/config/VM_EVENT_COUNTERS) \
+  include/linux/writeback.h \
+  include/linux/flex_proportions.h \
+  include/linux/backing-dev-defs.h \
+    $(wildcard include/config/DEBUG_FS) \
+  include/linux/blk_types.h \
+    $(wildcard include/config/FAIL_MAKE_REQUEST) \
+    $(wildcard include/config/BLK_CGROUP_IOCOST) \
+    $(wildcard include/config/BLK_INLINE_ENCRYPTION) \
+    $(wildcard include/config/BLK_DEV_INTEGRITY) \
+  include/linux/bvec.h \
+  include/linux/highmem.h \
+  include/linux/cacheflush.h \
+  arch/x86/include/asm/cacheflush.h \
+  include/asm-generic/cacheflush.h \
+  include/linux/highmem-internal.h \
+  arch/x86/include/asm/highmem.h \
+  arch/x86/include/asm/tlbflush.h \
+  arch/x86/include/asm/invpcid.h \
+  arch/x86/include/asm/pti.h \
+  include/linux/bio.h \
+  include/linux/mempool.h \
+  include/linux/uio.h \
+    $(wildcard include/config/ARCH_HAS_UACCESS_FLUSHCACHE) \
+  include/uapi/linux/uio.h \
+  include/linux/node.h \
+    $(wildcard include/config/HMEM_REPORTING) \
+  include/linux/pagemap.h \
+  include/linux/hugetlb_inline.h \
+  include/uapi/linux/mempolicy.h \
+  include/linux/freezer.h \
+  include/uapi/linux/i2c.h \
+  include/linux/spi/spi.h \
+    $(wildcard include/config/SPI_SLAVE) \
   include/linux/scatterlist.h \
     $(wildcard include/config/NEED_SG_DMA_LENGTH) \
     $(wildcard include/config/DEBUG_SG) \
     $(wildcard include/config/SGL_ALLOC) \
     $(wildcard include/config/ARCH_NO_SG_CHAIN) \
     $(wildcard include/config/SG_POOL) \
-  arch/x86/include/asm/io.h \
-    $(wildcard includeELF                      L"      4     (               Ë¸ˇˇˇãÖ¿uãAÉ¯wã≈¨  âA1¿√∏Íˇˇˇ√ç¥&    çv Ë¸ˇˇˇâ¬â»ãIÖ…upãä8  âHãä<  âHãä@  âHãäD  âHãäH  âHãäL  âHãäP  âH ãäT  âH$ãäX  âH(ãä\  âH,ãä`  âH0ãíd  âP41¿√ê∏Íˇˇˇ√ç¥&    çv Ë¸ˇˇˇãà4  âJãÄ0  âB1¿√ç∂    Ë¸ˇˇˇSãX\âÿË¸ˇˇˇãClË¸ˇˇˇ1¿[√çt& Ë¸ˇˇˇÉÏãÄî   dã    âL$1…πÄˇˇfâL$Ö“t7∆D$j π   çT$Ë¸ˇˇˇX∏ºç Ë¸ˇˇˇãD$d+    u1¿Éƒ√çt& ∆D$Î«Ë¸ˇˇˇçt& Ë¸ˇˇˇSâ√ÉÏãJd°    âD$1¿Ö…tãBÖ¿Öﬂ   «B   ∏   «B   âÉ0  ãB∫Äˇˇπ   fâT$âÉ4  ãÉî   ∆D$ j çT$Ë¸ˇˇˇãì0  πÅˇˇãÉî   fâL$π   àt$j çT$	Ë¸ˇˇˇãì0  πÇˇˇãÉî   fâL$	π   àT$j çT$Ë¸ˇˇˇãì4  ãÉî   ªÑˇˇfâ\$π   àT$j çT$Ë¸ˇˇˇÉƒãD$d+    uÉƒ1¿[√çv k…9»Ü)ˇˇˇÈˇˇˇË¸ˇˇˇçv Ë¸ˇˇˇUâ≈WVSÉÏd°    âD$ãEãPãRË¸ˇˇˇ®Ñ)  ãEXâ$Ö¿Ñ"  h    çuãπ   âË¸ˇˇˇâ√XÖ€Ö¸ˇˇˇ∏d   Ë¸ˇˇˇπ¿  ∫l  âË¸ˇˇˇâ√Ö¿Ñ„  π@   âÍæ†  Ë¸ˇˇˇπ   ∫ÅˇˇÎê∑Nf¡¬àL$ãÉî   É∆fâT$π   j çT$	Ë¸ˇˇˇ∑XfÖ“uÕ∫¿  ∆D$ãÉî   π   fâT$j çT$	Ë¸ˇˇˇπ¿D  ãÉî   fâL$	π   ∆D$j çT$Ë¸ˇˇˇπ   ∫¯*  ∏'  Ë¸ˇˇˇπ   ^∫oÄˇˇ_æ|  Îçt& ∑Nf¡¬àL$ãÉî   É∆fâT$π   j çT$	Ë¸ˇˇˇ∑XfÖ“uÕ∫Ñ   æ¥  ø@  Îçt& ∑Wf¡∆àT$É«π   fât$ãÉî   j çT$	Ë¸ˇˇˇ∑7XfÖˆuÕ∫%Üˇˇ∆D$ãÉî   π   fâT$ø‡  j çT$	Ë¸ˇˇˇ∫  YÎçv ∑wf¡¬âÒãÉî   É«fâT$àL$π   j çT$	Ë¸ˇˇˇ∑XfÖ“uÀ∫Äˇˇ∆D$ π   ãÉî   fâT$æÇˇˇøÑˇˇ«É0     «É4     j çT$	Ë¸ˇˇˇãì0  πÅˇˇãÉî   fâL$	π   àt$j çT$Ë¸ˇˇˇãì0  ãÉî   π   fât$ç≥¿   àT$j çT$Ë¸ˇˇˇãì4  ãÉî   π   fâ|$çª8  àT$j çT$Ë¸ˇˇˇ1¿π   ∑UÛ´ãD$«É8  Ä  «É<  ‡  «É@     «ÉD     «ÉH     ã âÉh  ãEçà  QçQRˇ∞   ãETˇ0h,   Ë¸ˇˇˇ1…∫   âÉƒ(j Ë¸ˇˇˇπ	ò ∫0  âj há   j jj hˇ   j j Ë¸ˇˇˇπ	ò ∫0  âÉƒ$j jxj jj hˇ   j j Ë¸ˇˇˇπ	ò ∫0  âÉƒ j j j jj jj j Ë¸ˇˇˇπ	ò ∫0  âÉƒ j j j jj jj j Ë¸ˇˇˇâslãõ¸   âÉƒ Ö€u6Ë¸ˇˇˇâ√Ö¿uãD$d+    u:Éƒâÿ[^_]√çt& âË¸ˇˇˇÎ‹ç¥&    Ë¸ˇˇˇÎŒª˚ˇˇˇÎ«ªÍˇˇˇÎ¿ªÙˇˇˇÎπË¸ˇˇˇç¥&    ç¥&    êË¸ˇˇˇSÉÏãHdã    âT$1“ãP(Å˙	ò Ñê   wNÅ˙	ò tnÅ˙	ò u^∫∂ˇˇãY‘ã@|fâT$àD$π   âÿj çT$Ë¸ˇˇˇX1¿ãT$d+    uZÉƒ[√çv Å˙	ò u∫ºˇˇãY‘ã@|fâT$Î∏ç∂    ∏ÍˇˇˇÎƒêãY‘π¥ˇˇã@|fâL$Îòç∂    ãY‘π∫ˇˇã@|fâL$ÎÄË¸ˇˇˇêË¸ˇˇˇUWVâ∆SÉÏd°    âD$1¿ãAÖ¿Öé   ãAâ◊âÀçê˙ﬂˇˇÉ‚˝Ñ%  =  Ñ*  «A   π   ãCãk«C   âKâ¬É‚¸=Å  ∏Ä  C–âËÉ‡¸Å˝·  Ω‡  C≈ã+âSâCÖÌtEãC=   Ñó  =   ÑD  =  tu∏ÍˇˇˇãT$d+    Ö¬  Éƒ[^_]√ç¥&    ãâãSâPãSâPãSâPãSâPãSâPãS âPãS$âPãS(âP ãS,âP$ãS0âP(ãS4âP,1¿Îñç∂    ∫∞ˇˇç|$∆D$ãÜî   fâT$π   â˙j Ë¸ˇˇˇπ%îˇˇãÜî   fâL$∆D$ j π   â˙Ë¸ˇˇˇãCY]ãÆî   =Ä  Ñ∏  =@  ÖÌ  Å{   Ñ⁄  ∏Äˇˇ∆D$π   â˙fâD$âËΩÑˇˇj Ë¸ˇˇˇãSπÉˇˇãÜî   fâL$π   àt$â˙j Ë¸ˇˇˇãSãÜî   π   fâl$	ΩàˇˇàT$â˙j Ë¸ˇˇˇãSπáˇˇãÜî   fâL$π   àt$â˙j Ë¸ˇˇˇãSãÜî   π   fâl$àT$â˙j Ë¸ˇˇˇ∫ûˇˇãÜî   π   fâT$â˙∆D$j Ë¸ˇˇˇÉƒãCâÜ8  ãCâÜ<  ãCâÜ@  ãCâÜD  ãCâÜH  ãCâÜL  ãC âÜP  ãC$âÜT  ãC(âÜX  ãC,âÜ\  ãC0âÜ`  ãC4âÜd  1¿ÈÃ˝ˇˇçt& ø∞ˇˇ∆D$ ãÜî   π   fâ|$ç|$Ω%ñˇˇj â˙Ë¸ˇˇˇãÜî   fâl$∆D$È3˛ˇˇç¥&    ∫∞ˇˇç|$∆D$ ãÜî   fâT$π   â˙j Ë¸ˇˇˇπ%ñˇˇãÜî   fâL$∆D$ÈÎ˝ˇˇç¥&    =†   u!É{xÖ˛ˇˇ∏Äˇˇ∆D$fâD$Î~ç∂    =`  u!Å{   Ö‰˝ˇˇ∏Äˇˇ∆D$fâD$ÎSçv =∞   u!Å{ê   Öº˝ˇˇ∏Äˇˇ∆D$fâD$Î+çv É¯XÖü˝ˇˇÉ{HÖï˝ˇˇπÄˇˇ∆D$fâL$ç∂    j π   â˙âËË¸ˇˇˇXÈC˛ˇˇç¥&    çv Å{‡  ÖS˝ˇˇ∫Äˇˇ∆D$fâT$Î¬fêπ   ÈË˚ˇˇç∂    π   Èÿ˚ˇˇ∏Äˇˇ∆D$fâD$ÎïË¸ˇˇˇ                    ê  ‡                                                                                                                          0   ¿   ‡      p  ê    ‡      VS6624 Chip Enable vs6624   3%s %d-%04x: failed to request GPIO %d
-    6%s %d-%04x: chip found @ 0x%02x (%s)
- ã$ˇ0∑EPãEˇ∞   ãETˇ0h    Ë¸ˇˇˇÉƒÈ±  Ë¸ˇˇˇ∫    ∏    È¸ˇˇˇ∏    È¸ˇˇˇlicense=GPL v2 author=Scott Jiang <Scott.Jiang.Linux@gmail.com> description=VS6624 sensor driver                                vs6624                                                                     †               `                   0   ‡                                                                                         ¿   p                                                                                                        ¥Ñ ∂u ∏ 4Ñ 6u 8 ÇÄ ÑÄ ÜÄ Ä ê˛ Ç  Äd     ( ∫  º  ã  å è  ê ï  ñ ô  ö  Ñ%! Ä  Ñ Ç Ç  ∞  ñ% Ä                            <  f e — f b      &  & &c &— &h &› &: &  Ä$  ä0 ëb íJ ïe ñ °: ¢∏  
-
- :  ; Ö 	; 
-Ö :  0 è      oÄ å                             Å Å  … …G … …Ä …: :ê ;êG <ê …1 	…‹ 
-…Ä …D Dê Eê1 Fê‚ … …‡ …Ä …G Gêê HêÉ IêÅ Jê‡ Kê` Lê Mêê Nê¿ OêC Pêt Qê Rê SêÄ Tê Uê‰ Vêê Wê¿ XêC Yê Zê [ê \êÏ …] …  …Ä …] ]ê£ ^ê _ê `ê£ aê bê cê" …r …í …Ä …d dêt eê fê gêr hêï …G …Ú …Å …i iët jë kë lëÏ më¥ në oë
- pëê qëÄ rë së‡ tëp uë vëê wë” xëƒ yë zë" …
- …æ …Ä …s sê¸ tê£ uê‡ vêı wêÇ xêå yêÉ zê£ {ê£ |ê‡ }ê¸ ~ê£ ê‡ Äê√ Åêü Çêˇ ÉêÏ Ñêû Öê˛ Üê áê
- àêÍ  …G !…8 "…Ä #…â âêÏ äê” ãêî åê  çê@ éê èê êêê ëê” íê‘ ìêÏ îê ïê ñêG óê= $…E %…  &…Ä '…ò òê ôêw öê÷ õê úêE ùêÕ (…  )…’ *…Ä +…û ûêê üêÇ †ê °ê‡ ¢ê¥ £ê §ê •êê ¶êÉ ßêø ®ê‡ ©ê` ™ê ´êê ¨êÅ ≠ê¸ Æê‡ Øêˇ ∞ê√ ±ê ≤ê ≥êê ¥êÅ µê¸ ∂ê‡ ∑êˇ ∏ê πê  ∫ê⁄ ,…p -…º .…Ä /…ª ªêê ºêÇ Ωê æê‡ øê¥ ¿ê ¡ê ¬êê √ê¡ ƒê ≈êt ∆ê «ê »êê …ê”  ê† Àê Ãêp Õêø 0…r 1…! 2…Å 3…; ;ë} <ë =ë >ë{ ?ë @ër Aë% 4…( 5…Æ 6…Ä 7…“ “ê ”êê ‘ê“ ’ê
- ÷ê ◊ê( ÿê¥ 8…( 9…± :…Ä ;…Ÿ Ÿêê ⁄êÉ €ê∫ ‹ê‡ ›êˇ ﬁêê ﬂê“ ‡ê ·ê‡ ‚ê‰ „êÔ ‰ê Âê£ Êê‡ Áêt Ëêˇ Èê Íêê Îê“ Ïê
- Ìê Óê( Ôê¥ <…) =…y >…Ä ?… ê Òêê Úê“ Ûê Ùê ıê) ˆê @…) A…| B…Ä C…˜ ˜êê ¯êÉ ˘ê∫ ˙ê‡ ˚êˇ ¸êê ˝ê“ ˛ê ˇê‡  ë‰ ëÔ ë ë£ ë‡ ët ëˇ ë ëê 	ë“ 
-ë ë ë) ë D…* E…B F…Å G… ë ëê ë“ ë ë ë* ëH H…* I…E J…Å K… ëê ëÉ ë∫ ë‡ ëˇ ëê ë“ ë ë‡ ë‰ ëÔ  ë !ë£ "ë‡ #ët $ëˇ %ë &ëê 'ë“ (ë )ë *ë* +ëH  …                       GCC: (GNU) 11.2.0           GNU  ¿       ¿                                  Òˇ                            
-       &         ¨       /   0   Ü     >   ¿        V   ‡        d      l     t   p                                 	              
- å   ê  q    ô   @         §   †      Æ   |
+  include/linux/gpio/consumer.h \
+    $(wildcard include/config/OF_GPIO) \
+    $(wildcard include/config/GPIO_SYSFS) \
+  include/uapi/linux/spi/spi.h \
+  include/media/v4l2-fh.h \
+  include/media/v4l2-mediabus.h \
+  include/sound/core.h \
+    $(wildcard include/config/SND_DYNAMIC_MINORS) \
+    $(wildcard include/config/SND_MAX_CARDS) \
+    $(wildcard include/config/SND_MAJOR) \
+    $(wildcard include/config/SND_DEBUG) \
+    $(wildcard include/config/SND_MIXER_OSS) \
+    $(wildcard include/config/SND_OSSEMUL) \
+    $(wildcard include/config/ISA_DMA_API) \
+    $(wildcard include/config/SND_VERBOSE_PRINTK) \
+    $(wildcard include/config/SND_DEBUG_VERBOSE) \
+    $(wildcard include/config/GAMEPORT) \
+  include/sound/pcm.h \
+    $(wildcard include/config/SND_PCM_OSS) \
+    $(wildcard include/config/SND_VERBOSE_PROCFS) \
+    $(wildcard include/config/SND_PCM_XRUN_DEBUG) \
+  include/sound/asound.h \
+  include/uapi/sound/asound.h \
+  include/sound/memalloc.h \
+    $(wildcard include/config/GENERIC_ALLOCATOR) \
+    $(wildcard include/config/SND_DMA_SGBUF) \
+    $(wildcard include/config/HAS_DMA) \
+  include/linux/dma-direction.h \
+  include/sound/minors.h \
+  include/linux/pm_qos.h \
+    $(wildcard include/config/CPU_IDLE) \
+  include/sound/pcm_oss.h \
+    $(wildcard include/config/SND_PCM_OSS_PLUGINS) \
+  drivers/media/pci/cx18/cx18-driver.h \
+  include/linux/delay.h \
+  arch/x86/include/asm/delay.h \
+  include/asm-generic/delay.h \
+  include/linux/pci.h \
+    $(wildcard include/config/PCI_IOV) \
+    $(wildcard include/config/PCIEAER) \
+    $(wildcard include/config/PCIEPORTBUS) \
+    $(wildcard include/config/PCIEASPM) \
+    $(wildcard include/config/HOTPLUG_PCI_PCIE) \
+    $(wildcard include/config/PCIE_PTM) \
+    $(wildcard include/config/PCIE_DPC) \
+    $(wildcard include/config/PCI_ATS) \
+    $(wildcard include/config/PCI_PRI) \
+    $(wildcard include/config/PCI_PASID) \
+    $(wildcard include/config/PCI_P2PDMA) \
+    $(wildcard include/config/PCI_DOMAINS_GENERIC) \
+    $(wildcard include/config/PCI_DOMAINS) \
+    $(wildcard include/config/PCI_QUIRKS) \
+    $(wildcard include/config/ACPI_MCFG) \
+    $(wildcard include/config/HOTPLUG_PCI) \
+    $(wildcard include/config/EEH) \
+  include/uapi/linux/pci.h \
+  include/uapi/linux/pci_regs.h \
+  include/linux/pci_ids.h \
+  include/linux/dmapool.h \
+  arch/x86/include/asm/pci.h \
+    $(wildcard include/config/PCI_MSI_IRQ_DOMAIN) \
+    $(wildcard include/config/VMD) \
+  arch/x86/include/asm/memtype.h \
+  include/asm-generic/pci.h \
+  include/linux/dma-mapping.h \
+    $(wildcard include/config/DMA_API_DEBUG) \
+    $(wildcard include/config/NEED_DMA_MAP_STATE) \
+  include/linux/i2c-algo-bit.h \
+  include/media/v4l2-ioctl.h \
+  include/media/tuner.h \
+  include/media/v4l2-mc.h \
+  include/media/i2c/ir-kbd-i2c.h \
+  include/media/rc-core.h \
+    $(wildcard include/config/LIRC) \
+  include/linux/kfifo.h \
+  include/media/rc-map.h \
+    $(wildcard include/config/IR_RC5_DECODER) \
+    $(wildcard include/config/IR_JVC_DECODER) \
+    $(wildcard include/config/IR_SONY_DECODER) \
+    $(wildcard include/config/IR_NEC_DECODER) \
+    $(wildcard include/config/IR_SANYO_DECODER) \
+    $(wildcard include/config/IR_MCE_KBD_DECODER) \
+    $(wildcard include/config/IR_RC6_DECODER) \
+    $(wildcard include/config/IR_SHARP_DECODER) \
+    $(wildcard include/config/IR_XMP_DECODER) \
+    $(wildcard include/config/IR_IMON_DECODER) \
+    $(wildcard include/config/IR_RCMM_DECODER) \
+    $(wildcard include/config/MEDIA_CEC_RC) \
+  include/linux/input.h \
+  include/uapi/linux/input.h \
+  include/uapi/linux/input-event-codes.h \
+  include/uapi/linux/lirc.h \
+  drivers/media/pci/cx18/cx18-mailbox.h \
+  drivers/media/pci/cx18/cx18-av-core.h \
+  include/media/v4l2-ctrls.h \
+  include/media/media-request.h \
+  include/media/hevc-ctrls.h \
+  drivers/media/pci/cx18/cx23418.h \
+  include/media/drv-intf/cx2341x.h \
+  include/media/demux.h \
+  include/uapi/linux/dvb/dmx.h \
+  include/media/dmxdev.h \
+  include/media/dvbdev.h \
+    $(wildcard include/config/DVB_MAX_ADAPTERS) \
+    $(wildcard include/config/MEDIA_CONTROLLER_DVB) \
+    $(wildcard include/config/MEDIA_ATTACH) \
+  include/media/dvb_ringbuffer.h \
+  include/media/dvb_vb2.h \
+    $(wildcard include/config/DVB_MMAP) \
+  include/media/videobuf2-core.h \
+  include/linux/dma-buf.h \
+    $(wildcard include/config/DMABUF_SYSFS_STATS) \
+  include/linux/iosys-map.h \
+  include/linux/file.h \
+  include/linux/dma-fence.h \
+  include/media/frame_vector.h \
+  include/media/videobuf2-dma-contig.h \
+  include/media/videobuf2-v4l2.h \
+  include/media/videobuf2-vmalloc.h \
+  include/media/dvb_demux.h \
+  include/media/dvb_frontend.h \
+  include/uapi/linux/dvb/frontend.h \
+  include/media/dvb_net.h \
+    $(wildcard include/config/DVB_NET) \
+  include/linux/netdevice.h \
+    $(wildcard include/config/DCB) \
+    $(wildcard include/config/HYPERV_NET) \
+    $(wildcard include/config/WLAN) \
+    $(wildcard include/config/AX25) \
+    $(wildcard include/config/MAC80211_MESH) \
+    $(wildcard include/config/NET_IPIP) \
+    $(wildcard include/config/NET_IPGRE) \
+    $(wildcard include/config/IPV6_SIT) \
+    $(wildcard include/config/IPV6_TUNNEL) \
+    $(wildcard include/config/RPS) \
+    $(wildcard include/config/NETPOLL) \
+    $(wildcard include/config/XPS) \
+    $(wildcard include/config/XDP_SOCKETS) \
+    $(wildcard include/config/BQL) \
+    $(wildcard include/config/RFS_ACCEL) \
+    $(wildcard include/config/FCOE) \
+    $(wildcard include/config/XFRM_OFFLOAD) \
+    $(wildcard include/config/NET_POLL_CONTROLLER) \
+    $(wildcard include/config/LIBFCOE) \
+    $(wildcard include/config/WIRELESS_EXT) \
+    $(wildcard include/config/NET_L3_MASTER_DEV) \
+    $(wildcard include/config/IPV6) \
+    $(wildcard include/config/TLS_DEVICE) \
+    $(wildcard include/config/VLAN_8021Q) \
+    $(wildcard include/config/NET_DSA) \
+    $(wildcard include/config/TIPC) \
+    $(wildcard include/config/ATALK) \
+    $(wildcard include/config/DECNET) \
+    $(wildcard include/config/MPLS_ROUTING) \
+    $(wildcard include/config/MCTP) \
+    $(wildcard include/config/NET_CLS_ACT) \
+    $(wildcard include/config/NETFILTER_INGRESS) \
+    $(wildcard include/config/NETFILTER_EGRESS) \
+    $(wildcard include/config/NET_SCHED) \
+    $(wildcard include/config/PCPU_DEV_REFCNT) \
+    $(wildcard include/config/GARP) \
+    $(wildcard include/config/MRP) \
+    $(wildcard include/config/NET_DROP_MONITOR) \
+    $(wildcard include/config/MACSEC) \
+    $(wildcard include/config/NET_FLOW_LIMIT) \
+    $(wildcard include/config/NET_DEV_REFCNT_TRACKER) \
+    $(wildcard include/config/ETHTOOL_NETLINK) \
+  include/linux/prefetch.h \
+  arch/x86/include/asm/local.h \
+  include/linux/dynamic_queue_limits.h \
+  include/net/net_namespace.h \
+    $(wildcard include/config/NF_CONNTRACK) \
+    $(wildcard include/config/IEEE802154_6LOWPAN) \
+    $(wildcard include/config/IP_SCTP) \
+    $(wildcard include/config/NETFILTER) \
+    $(wildcard include/config/NF_TABLES) \
+    $(wildcard include/config/WEXT_CORE) \
+    $(wildcard include/config/XFRM) \
+    $(wildcard include/config/IP_VS) \
+    $(wildcard include/config/MPLS) \
+    $(wildcard include/config/CAN) \
+    $(wildcard include/config/CRYPTO_USER) \
+    $(wildcard include/config/SMC) \
+    $(wildcard include/config/NET_NS) \
+    $(wildcard include/config/NET_NS_REFCNT_TRACKER) \
+  include/net/flow.h \
+  include/linux/socket.h \
+  arch/x86/include/generated/uapi/asm/socket.h \
+  include/uapi/asm-generic/socket.h \
+  arch/x86/include/generated/uapi/asm/sockios.h \
+  include/uapi/asm-generic/sockios.h \
+  include/uapi/linux/sockios.h \
+  include/uapi/linux/socket.h \
+  include/linux/in6.h \
+  include/uapi/linux/in6.h \
+  include/uapi/linux/libc-compat.h \
+  include/net/flow_dissector.h \
+  include/linux/siphash.h G¸Aêü¥p]ÛZs◊–*‰ûî/AÿP3ın€±*v˚¶
++‘;˙X”¸ñ∑ol4√ Å:VŸ*ÄÅπ(äwzËß˛Q·)ãX9<≥ˇ
+[:2”Iç‘‡W—nrVKç∏“R£	´≈Œõ±€òÇ+‰PïIﬁ´Æ˚â|ª’?éü d∑¡««ˆü Õ(¸,7“SC∂L7h‘ß≥w≠;º´%ı⁄#4á¨ªÖyøΩ]⁄dÎT9\)ﬁ+.ùˆÛßnK¶œÀËMãOÌ4†©$Ç2T…§yBKå6ò@≈·≤éÄ;ÿ[§¢Ô√ÿ~.Ã˜m°ı5›ÆŒ«p◊˚í„ﬂ∫á÷!ÒåFï±Ïsf Ñ;X8ÏgA°[à~±µ7¯ûvµÛ+û äøõÔˇ 9º–Å„∆Áf†¨Ò]kOY0Ì Vπ	~£±∑∏ ß⁄iŒ~ﬂ_£5Èóç¸ø*Àˆ˙ŸM–∑ÄØ,v*f
+˙RŒ°˝±›∏•B
+k±öÃVˆ(‰’ÑÂ=∫∏]÷Õ
+ÒÂàpPlÈ}∫—ñ5exû∑Ôfá≥é|™\Z\?_∏JV`u4»‰c∑q+Iãã)‡8ÊüÕs8ë7y≤wÁ€^ÚnCÏQùrx*%˛≠í[¸ÂÂ† ≥?E.#˚é~râ9hOQg°!fMû…‘√(ÿ	µ«¬‚ﬁö˙/˜Aß§ôx¢™_˝Ôä+xPüvûoÍüùl©Ì„R˚‡÷ˇåZP’ØYít™´ﬂ€ñ~∫Ω!•®ˇÅÚ¿kx2:1_éû5¯”®ˆ|√›[{2é“Z#˛óˇ+M88‚˛Äí‡äîæ-‘µ$ w∆ﬂìIb-$pjÏ…°¡ÖüúyjJo€#pûI,ëÛ∆}·gûù<ÑÕ≠Í\YfY#H”ΩÏ&UuDhIÜÈd56õÏÄ¬ñ∏ oi(}OZ	h≈¶¢Dv˝§A~‡ eLM!^6Ca.ò˚V≤J)∆^D†ïmŸÇ:ÀÁ„’=‡°k.#2◊∏'hÁÃm/+k:ê›'yeuıìÌ” BËëâAÈ"µ)MbÙß∑›ó|^ƒT*÷ÀºÂˇ¿} àúSeDF“}µ/#ÓQÍyó≥«¥©+ÏΩ.Ø©ó´˚R5gº¸£ëÑuD¿R»˜Éf¨∑G‡2”úç©oıç∏M¿éè„d~¿'œ∑ôL´§Á4⁄Ö>ˇz‹ë˙Bj˛†–~9Ogï.W√4ò£e©•]wõØœöL≥»ÑáëÁ(™>>≤∆Ëô0+ËÌîdØEÜÆ“0ﬁ¶p;Ü≈!–w^}E)M5"√Ã-Ÿ1R…èøw",~EÓŒ1‹œA)∂„\)Km3x÷ì»|Í>hfØdº%¡Ì…Çfo*+Îπ˛Û˛y’’–µ∆¬UdNLDn'Qâ¬Ë˙Ü∑*Æ•.ªnÊ¡õCâïHà¨ˆÁ7âi&7NØ„÷ÜúX´hVàùœáF•âá‡ﬂ÷€N± §+GhE~ï7À*E¡ ‘ÆAÛl+3s2–}èÉ¯n/"’çÓö›¶sk=
+ãµÃQŸ„@‘1¥U—UG${¶õ@a®81	<Ãµ)Ø›≠9‚Ÿ˘H7PÓ˜Òy~$ÎœO∂˛úÉ0;∏˛aÏÔÚÆ])ÍÉ@Ä≤µg¬IA	1Nw_Ê}?fˆë:~nëÕµbrˆ|!eôMêûSª=ÆìSr-1è)]#@§°≥&%vz;ƒ3o˚≠¡≠ZÃ5ÏÒu˝‰⁄∞Ω…4ÁÉ|÷"Æ±’·r≤Ößbiz9Á"T±*ﬂb%m(πÇœs“z woÍÚ]ˆ •≤]Çj”JìjK≈UA∑Â≠ÁZL Ô≠û°sA¶Ao%ïcÓ†n%¿ØL+∞"â∫l	{÷?ô!ΩgGgõ«—6o”‹ÜÇŒäºOûÛü—Õ¡Œ¶zπ˙∑ P∏ò_¡'öSﬂ•¡Ì≤L e>gbˇâB√p¥°NÄŸ˝ZO€CA¬sz	∆C≈SöÍqb≥óòﬂ—∂>Z8xpJ⁄ﬁUÜhÇñ¬…òb^ƒ'3Àùø(ﬂSG/ss≈)å$ƒSÉ„…˝PÕG•‰4cë] ß+Ïoi@6ÇÃJ;ÿz†©g)Ò÷yÃ∑oON◊»67èóÆqÊˆu›©Ω>‰r≤lÑ;XäDc!’z“Ã∂˙^¸
+º†ÔR™µ3CYPŒ”˙ü¶M•0$Á∫ı-)ÿ%¡ÍT_.ì´ÛÒ∞ÇÓ◊öPíDYÎ{∏ôÌCVåÛ‘¬8|äP92Ø¨±A(é∏˘1ÃÕ]Œâb’á,ç∏|⁄;>è–íÌägÿsa∂≥0êD'“Ï4ªCX˜Økû\¢tûUWú˚Y‹oÙ_¡·Y∂"'a†V∫~ÃZ—7ëŒ0]ì>∆èÌH≈j°ΩÎ,,pë˝≤≈G<C‰wÔ®ÀNäÙ‹˜∑7Z¥§Å%)õ0´
+Ù 3û√ÙH·Ö÷áú/—(.Ã∑	êRt8J/ƒ¨Î÷)iæ∑?7Gq5°˝Åv8Ω≈Lì◊pïv∞›AªÆ‘qs.âAäÁ ¡sˆ™*∆*π‹˙⁄ÜÖ‚Rî.˝»›uà&µlNıEkä{5w¡ﬂÜ|ª‚ÏÒc!¶i∏Í 8ó,ïÁö˝`™UNvÎ›ÃMÃ-ÌÁÃ¥É>·≥/_!óE÷√&„•ÿä¯|ˇë≤‚®Ë_hå`É$⁄6Y{¨@2âE,¡Ø+[Ô;/ìx©zUm®Ωd ù⁄ÛBâ(≤jÏódcVÅkyqÉwH\@Í¶øÈÕ q!˛£SÒÆæŸßàç‰›◊D›Hw<iZÓø“¿sÂùb≤&˘A“5÷ˇ—Ú◊Ç€ Aj˜â±n'çG§{q Gë˛/Lô©©éå"˛∏¨JC5çÕì;'Øgπ◊=û\~q$€úx,gb…ü˛£~ˇ1ΩÄ:N/ûﬂT6öôZ∂WŒ<±•\Ë,≤6€≤O/´"ê\Kü¡ß±ò˜ÉFä|wE)¶Ö£‚ÈÈ”Ev4aDä\Ùß§Ç·:\d«2Lœ ¯mH˚©˛o4B°÷ïøUb„ g]@T^§“jé$4¶JÂëÃ€ﬁH Û∑úµôéJ}œÉ(ø∞‹ñÏ≥‡.Ûﬁ>äHQ4ŒµÓ~∫ƒqù,÷÷$ˇ°$Vvî(PO-‹.πQÈæÔ5S è·à^¬.∑Bú3Út„Nâ|¢X†D`˚¸øLˇ&@≤8œ∑WÂåµÿ√ƒ[ËcÚÏ≤"(xﬁ∆√Á<|[5k-…ÚÔÙ∂ (Ye—GJT†B™~,˜›îÊÄ™òänN:≠k∑ç¨Àº°ï¢œViÁÏ¬˜˚û_	háÕ.=fíWçèÜ≈“5ıÕ∆ô˛œhµ<d∞kÈ¿«œVÁ≠IÛ}öÑ¸◊?>¸ø¶Ùπ¿(R∑Uÿìs˙sè‚ˇ…kNXÈrßk˚’Qî•ÊÖ£Áå∑Ìù£ë¢j>«rËëI√d◊ˇ‰÷ß`ÚÄ/êÙƒºgÕïø,cyvèEH™ÎÔ†lˆ÷Í¸˝”`»Q¬K'-c{”÷ı°h∞”¿:‹abOv›∂xÏuX©Î@w„Àa◊f˜(P5[J I∆=∫B˚çJ#Æ∫O#•ÁÁ¶ÓGÒèzè2ãæ5{aocxvÉ¸⁄qkÙ>J3ç˛=TÎ„yô∏_ÖtÃ
+∏‘≤‚¯‘ÛbS^π™ÓHÀ}i˜uKN¸_‚q}£$ÅË&õΩ[”‹‚˙WG‚EÎvÑ›K†ˆÜpVùÏ∑ˆl/`'⁄XêÛ€W!dRã^k[ø‘úR5@˜á„h{ız†9Y–(Ò(´™ˇë¨ÚZÆ‘ÔSÀ-±úCv,s]xÕ™Ú)}»Ü´ºe<1-Ò◊Å˝˘\OÄHÒ»âG©%1@{π€éU»r5Wøìv6+t“ò¯∫íØ6K+p∞°oÇòidΩ/q–DG» ã”»Ækﬁ£≈qY7ÏÛ¿π4¨œ“"‡‹è&àƒùBÖ®[æÂàDG*·˘KYÇ‡6AÓºâËß–Úï–ºí3Ü£ƒO§?¡ﬂ0π»ëu!/–æò‘I_¨≈¥ ø@k‡MïGŸJc––F˚;Fù(_≈éoFﬂ$⁄ﬂºy¿‚≈` )ã∫ m¥y¸œ+Ä≈iàX†¢_”F«ãòWÊrÖœ{∫T•∑¿JIßO’–Ã2Û:)£◊
+oqΩ|€9H,IÔ÷ÏCzÉlŒhê±ëßuﬁƒjV˚œk6^HØÑ1à-dú{µh{ªª‡òMúafµWn{ÈçÎorÈ*≠vÔí£ò©GÙlxoÆ™Ï*Ó?{pÈ	É^%õê$-"Œj(Ï™…Çt·o©ôå⁄Í^;¿Í§∞,n.…Ó–™ôãÀ#ê&M ‡æﬂy{cuÉsù`¡ü∞X‚Ÿ£\`Ø·˙ì ›Ó<ª‚‹À…∂ÙÑ0ñ]¿Pj.ØYÒUo ˛k}üvüé:·DT≠2c‹‰ röÄsÙ	`›] §oà˝ﬂÏæU8ΩM¨üÕ√‘1TåaàÈ~'¯8IÌíQ7≠í¡ájóºùÿ·V:ÊÏiâõ¡â•ŒkPöÒH˘=ﬁ˛Uy†‹	∫dôπ¿Ω§1<Lå∞≥∞i›≤∞y$Àg¥‡¯Ω€ºg@I_≤Ú5ıè‘¿öîŸ:µ£¿∑ÉÛÏÚ2K´	›ö£¡jìLíØñKÙΩ£≥¢„ˇùÖkV/ÖÏäæ÷æå¡Ñt€íˇ€Y1‚–BYPÓE¿^Z±MlèÌ“Ò)ΩW–®∆©LØvpÏàG'(I˙IZ›ÚT‡1|
+Æ l¿W»$I&µæ,
+»K¯@ã|),î@=Ω„´-Öﬂi’Z≤F(ç’C{A¬ˆr≠ê¨œzCÒÊÆAßÜNl˙‰ï∏p¯~q©∫õ\?N¢~Î€d˙¬NO„1Ïµ,a¸≈©Ãõ˜í``∏K8TÔ}fÒi˛E‡4«´†V9ΩLsÚeèÁˆ¶Sm%…∂?xE_¬7¡6S_%º¨PÆùpõç?.]FPÍVVõlüOıåq˚öL*Pq‚;ºb°ë»nÌ“æì-⁄Ñ™d«A Ê«π<◊Ò“Î¯ŸqoÂÕZ	0hÃw0#ä £^‡ÒÂ“¢ŸèΩ„πØxw4ﬁ˙SzP0¯âféª∆Äæ§Ñ•πá*.ﬁºêlà`π= ©∑<õu[è|]µiÈû€Î»!)ª∫{mrÀy´+@Ìëéáÿ:Vˇı,wX”JÊΩÄM™3V&YêÔ;Ôye´)òyë!~q»ÏGy’À≠í”Àd.7‚ ª›F¡¿s˝~ù1só∞ö>´ç·Ê de/linux/ptr_ring.h \
+  include/linux/seq_file_net.h \
+  include/net/netprio_cgroup.h \
+  include/net/xdp.h \
+  include/uapi/linux/neighbour.h \
+  include/linux/netlink.h \
+  include/net/scm.h \
+    $(wildcard include/config/SECURITY_NETWORK) \
+  include/linux/security.h \
+    $(wildcard include/config/SECURITY_INFINIBAND) \
+    $(wildcard include/config/SECURITY_NETWORK_XFRM) \
+    $(wildcard include/config/SECURITY_PATH) \
+    $(wildcard include/config/SECURITYFS) \
+  include/linux/kernel_read_file.h \
+  include/uapi/linux/netlink.h \
+  include/uapi/linux/netdevice.h \
+  include/uapi/linux/if.h \
+  include/uapi/linux/hdlc/ioctl.h \
+  include/linux/if_ether.h \
+  include/linux/if_link.h \
+  include/uapi/linux/if_link.h \
+  include/uapi/linux/if_bonding.h \
+  include/uapi/linux/pkt_cls.h \
+  include/uapi/linux/pkt_sched.h \
+  include/linux/hashtable.h \
+  include/linux/inetdevice.h \
+    $(wildcard include/config/INET) \
+  include/linux/ip.h \
+  include/uapi/linux/ip.h \
+  include/linux/rtnetlink.h \
+    $(wildcard include/config/NET_INGRESS) \
+    $(wildcard include/config/NET_EGRESS) \
+  include/uapi/linux/rtnetlink.h \
+  include/uapi/linux/if_addr.h \
+  include/linux/etherdevice.h \
+  include/linux/crc32.h \
+  include/linux/bitrev.h \
+    $(wildcard include/config/HAVE_ARCH_BITREVERSE) \
+  arch/x86/include/generated/asm/unaligned.h \
+  include/asm-generic/unaligned.h \
+  include/linux/unaligned/packed_struct.h \
+  include/media/videobuf-core.h \
+  include/media/videobuf-vmalloc.h \
+  drivers/media/pci/cx18/cx18-queue.h \
+  drivers/media/pci/cx18/cx18-streams.h \
+  drivers/media/pci/cx18/cx18-fileops.h \
+  drivers/media/pci/cx18/cx18-alsa.h \
+  drivers/media/pci/cx18/cx18-alsa-pcm.h \
+
+drivers/media/pci/cx18/cx18-alsa-pcm.o: $(deps_drivers/media/pci/cx18/cx18-alsa-pcm.o)
+
+$(deps_drivers/media/pci/cx18/cx18-alsa-pcm.o):
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   ›Ë∫õı\·)M_1~+j:p¡ƒäó«uJßq%›âU È`¢MÏUjÛ‰FØUYÚäÜ#ª41∏q§u≤ÑÌo„≈á∞a—Ê¸Iæ9:¿˘◊÷ßOf ˝P>0À<Ã¢ÓjÕ'S–>˘7%˜õ‰Å∂x(Çÿb%ü}•¯ÚW˝p!Û!HøEbñı‹âL*Ç.Îâ´ëS÷ÆçQ^∂Óa¿ôı&+Ó*Å@{S∑˙ºhP≈{|ÅYe¢•|&ﬁWF\Ë≈˜Úœ´ƒ<b$˝y¢ç˛cxl>ì<∆»Öë|Ô¥^%”ï~iO1Cx’ûéÃ˜í_…àÂ«∫>äÕÿ◊∫_Ö⁄ÉGÛg]ˇˆèrw≤à„‘Œ2\fì‘•éÂ»Lsü?*ç',Èm(KLÜîô5d:≥ﬁEÆnˇÔ⁄ıÿ5≤ß	F¬+G=t0y∑˚π√jTÏWæıd±™˚]ü*=wqL*Y‘[/mNÎ|ƒö[ôµ•!aXd<™÷¥Pr·Tèoÿ∞Á¸‹˝ø|?–ÿŸ0[o=Y†K6Ê>¡«}§4n˘9µ9⁄≠ÌÎ´Ìã…vı„ã™˙Õï¥°á°¡ª’1+%Ô]¥Œúó(êPu_7ﬁ9•ET4ëG‰áó|¢A≤˚ü` °õ÷
+BÄìä∞9>µ≈™ˆCM≠O¬$(9	Ø>7Ü˙9ûÁå[û˚$1üPá<ÑQ-≤{ç¥ß2TO¯W±7âZÁ3µ*≤3'‰¨@∫TZH¨ìwFIπÄæ∏txËsøtªº+Jƒ∆ˇªÁ+ì√6Êäé^∂-[ÿ·c]»Öë‡˛¡@;ªaÙÑljgÌ˙>Ëfñ?]í≠›=‡¿∞–h¬◊¸ÒÔÏÓ
+ó§h~¯[BD"ﬂiàuzvb◊X>dòBÒ˛Z)ímTƒb¯\Ò')®Ë∫X˙e'üJ{∞√U›ªIÿ%∏SZíÄ’”¬M¶eºLÁÕ_ê÷sòqª£;IjÉﬂ2§$Öñ∞ÍeRQ+’Ë_ZÙÈü #ïhÊp˛Üò‡ÀLïÓ8?3Œo±˚øÓ¬`U@Ëıåø!÷∞Ï°”HoÒ[˙n∫òô¬Ô–FÑ{RWcrsÿî÷Ú(Â∑Z‹aÙz∫#¿w‹2›8 ¯ızeB¡Ë : øÑiÎÜì9°")à…§E¶*±ﬂ<¿Í‹÷Æ‹◊Ûa ¬4ﬂ^——x∏.¡9DÛ{3kºÊÙ≠‡€øÇÂ2ûK8Í7F£tëóö·¢1M…◊T“+†8ù∑o«íπ#¬(r:ÙífLvH–õ&G«ggﬂ=Ù›ıÓ6é&znÂ§%+ŒTiEÑ≤…§QÎùLâ}ﬂ%≠@ |lÖz‹^ÎFN§0l•"Té?Û¡p	JÉG7ª3ÚÉDcüp‹`?TîwîŸÁπ™¯ï`â7èm≤ù|,—Áù˙‰^êÄ%¿†<œ€:N?È—sﬁ†O∂O+»¨52äÔÕøH¿yE—Zj©{4—≠JâïÀıW–-Î$b€3ƒÉK˚µ‚3Áaë Í¬GD7VöCÄ  exŒ+íúQ’∂öÖóV\§KŒO.0®rË·=Ë74)ÏÄ(Ÿó«+Ñà#prV^0gNÑÛgdÜ$_A˜N¡	“08&ãBk3 ›¸[U˚(>"„€dﬁ©,bbßÌ4Æf‰‘‰ˇKkYîq¥Û˙Ãõ^ V√Åz¢˙ŸxPƒ”˜€Ê<;a¬k≥ÃÕ;+å	HM¨∂ó‰Ô÷ëiº°£X‰4†Œ}ÄæÄÏ7”Àd”x«h∂5ŸºHKæôæÿØ°∏¯2„ O(ëﬂ¢°(xHi ÌíÂ≤¶kﬁÌNì§\7c9[UU√%¯/§´•<¨‹~p„ß	ù\…ã/ÿœô&q["∂ÁÌRoï{wkCHShyâ„ âeYDnÔ“!ë{UkÉîƒIµ¢%∆~8’Œ)#◊$6z‘,k«l˛
+i$ÈêUÁÀe?ÁQ[ü±"5äœsaﬂèôÓ&*IØÓ<≠k'ﬂJ*>Üáˆ:bB>a)ÎŸ¯\≠'ÍW˙¶~zÕ·NAjf@2À ˛Sˆó¶Q^íå«õjÛAæ·nÓ›Vö°mj»Y#ç;_œΩ3õﬁ>6Kò}È=mkk.Ú≠jΩ{<‹≤π„ë7§õÅ—˛ÓŒFmü˝*ƒO.Q÷–ÔÏTÔºVegP¥b„ÓÍf˚Z,EFNΩ¿∑‡eõë˛ÍÁë§øZ”uÅæy5—6vn+„ä≠œÕìùΩì^óÖ;∑—óAJ?Q¯B	¿≥‡ƒg8}!Äëù_‚>¥f‘–€RÖîΩ≤s2çPBX{¶‹W°ÿp4ã,òA˜8¡^!*çè(˘ç‚≠¡8°zø%5ß·ØÄıP¸Äü6’‡hAîp«9í*Ïr∫qÊa+y&aÎ—éFä/ˆ6bwïÜJ6‰mLÔGL⁄Oúb⁄s?´3Œ9◊êH¿ÄõGë˙P01Â'ú'0JÍdº®¿£¡‡ÉR°»\í%±éG∏MãáÈŒÛ‹†fNZWÇa•+nd]µ›ZYÂ4¥iÂe 8HÖÕf√N’ã®ú‹˘J›ÒfÄz¸Â_6è~,‘t˜˛´F?Æ∂Ê¯%í÷E∞…SIí5±R≤≈äÀÂﬂ\µE§È»€0ëb(Sâ™ı∏z|ô*•$)íé)}∫hïÏ\dè¸Ú† ïﬂ©•qŒQ∞‰Ç#}gÈÿÛPGGvG9ÉëSÀ˝vU£ñ8û´î}ä+kÔ)ÉäP≈¶èW«ÿ†∆|øVπn<∆È‡ﬂ[õU·2ùÜúÜº‹Õˇ≠\›ΩÉáNt˚∏(j*ÔõL™óM8¥$Ë˘ºÔ’bI}B˚7'&FøZÒπWˆ«;‚
+5JùG‚õ–Ù3’Ë?†…áô…˚ÿAa¬Z•`‡ÌES‹Å2{ﬂß(Y¸›ôÚì™1Œ°Ê<Ö
+Bï†S‘üA∫ú˝[˝J€©¥hµ¸hGB
+Ë\ù‰”Bª∏7‚"¯TÃ&ÈÕAÙ¬»ä˜õ≠óX≠ñóŒí$°™lbY3ﬁ•Ì	¬¸5È5°Œ^.”'e%i+Ü´ SäÂ§´„◊:YÅ}€ñL=zßè(+∏¨∂ø5¯øäãp>¿æ”…ı,JΩ ctÛó¢x]såÊX¬ô˝˙≥ºjºÖ∑nETÏâ€bÿ«Ï ¢]E“XÿD°ÁaRòZ™-øâ‹4√ﬂ€£é¡…Ã≠#±Â Óe◊’®¬gu»Êu˝´˝Vxı.∫ãø@ì©q«∆©ßüSûÓùQÁ€≠¡¿“s´Èí°=VkÁeêÿgÃì'OÜ˛ñ?5ƒ≤ù¿^cü9¿§⁄€3<&ÛS¯éöy %XÒÃ%1êRFƒºCú˚ó≈∑ÛMNﬁ˘ÿﬁÌÓ	%M∏DÁƒáÓΩÊ1ø∆`õT˜Ú¥Gb~°$@“VÕZèˇ_:µ–;ËÌ›F>&˝U∂Ccƒôíº"'∏¬Ø£∏‚ìY‡◊!ƒÇOÕ∂^
+á˙ãBŸ	∏é•ù‚H˚É˚ÊqqU|êä·q!¿ï¨”iUóàkÒáÙ˘F#}eLn…Ë$q‰9Ø;≤oz*·æ@Sè|w.a7†|Ï<ô∆Ä√-–ƒë–EΩá'ÜS^∆ÿ^=!¨fÜïı˛ôÜ>*Âºaj—™’∫¨Ë–û∑y‘∞–ä»Ö{:Wˇ¬zﬂÇ*◊¡-"7Üå£|¸°§œåÿÓ˘ÁâRE;ﬁÑ`÷ç¸4zŸmÚﬁ¡g\~9	€ƒ
+û%ˇGÀ÷=hQEªˇôÔnŸÀ^® ˘”;G0¬3XπI§¿Là;r_®ˇ;4Z†÷„¸∏I¨∂‡¿Û‰pr∆nêl,ÌyÍ?o|£i,’ƒú h†mdä´”ˇ∞:™YC˙ÔO„L=k'Û}k0bè=x@u$ﬁ€^O!E4CÃõê©Vg 	âY,∏àæI—]Û0·
+›∂ö4FÖj∆¶∫´d’GÌ6êÿXg;çÆ∏≤	(õx@ÔiÖ˘yà:àC-√·∆ﬁ˜0îE–Kˆƒ±£â≥ëƒÄr
+œî!ˇ™B	{¶¥Jf>4ŒP_j…∆ØæóÃÈ≠Æî(S	”u(±Y˘…±•EX÷lH© 9˙úHê%SEa¿·nZ ÔƒÒ0Ô®wF˘è÷ÛZã7Ÿú„ÿÍy Ã∑·ßYŸˆìF&≥â=ÒgÇÄ≠ ¬ˆ.ÛúàG·OÔS÷‚ ›À†Û≥eÉË»†≥ŸVzÍñ}%¡˘ÊÙ≠‘ß:Á∆Çç£*yà¯:SÌD¡zöÓXµ˚EÑ9m9∫,%€X)ﬁπÍ@‘
+÷_Ì;Ú†AKöæªKÂ-ÇUˆ·ù´ |3‹%œ∏¥;gjAcÛ¥ÀcÄ˚ûãøÛ€,=—
+h¡pµläG+´C‘AsÒiDôx±˝(¢ñ&ºhY È~5∂"]Ïw◊‹πø“◊µ‘Å—Xﬁßch¡gõ≥‰˘&ﬁy° k‹∞Z˘Ω>∂˝*∂DNZ‚⁄dÎ–q=∆ñ±yKò‰Sµå$¯Rd«AˆÍn‡cŒ{=2äèÏ:F*≈£¢O∆¬±,wı
+Q–õ€–ì‰ºlñ,˝Ì&;òΩ21I«v™Ÿ÷≠Î#]‚%Å¸OAi)1˙\äF«òàTâ‚”ø0ÈÚZ 4Ñ∏≥®K&‡@"AnFZ9ü@æ<à#îÚEB÷wØ¿ΩjZ?-„ï{¯4µ∞mËF◊CÁà÷‘„}|ôb~
+^î…¿u"$<≥∫¶©{^@ë±˙LZŒ%.+≠TÂCï>’1ˇdùñH"ÿºx_ÌÙ;_5≤⁄˝4‡üÿ¸Ï2ÃµÜO&u„aÕÙÇÁGï)5¨¥¬˘¥¿)¶3RAMûOEEõ∏I
+´ﬂ)—Àvó‰˙∑ûM.‹|ÛüqõF%[¬AS9_„6âﬂ.Ü}õ‡†\ûâ:Ù&ì¥X§FùS´ﬂñH N]ÙD∫<_¨p™O{3àlrœK®&Ì∆UOUfí˘˘d˙Ç£“	˛‡∞	}JZàî‚EÒƒò{—¸_ø¿}*lÃ∂)V©L.ïY?∂LC[z≤é||îÆWíﬁ∞~„^í—˜eö≠$xe=π›<|¥AóN¢®_ñÖÿﬂx£N⁄(n@Ÿ4ΩÚ!ºuŒÌh2˚¯4jR.ô◊*(Ä€Oc$˜ﬁò<⁄íÖ†i!Qï˝b©ﬂm}Ï
+ˆ@#˙•∂z™Åﬁ›{Bß7B˚Ô™Å=g∑"l∫‚ùàı.÷ù)]©}Vù%‹–ßxFAƒC˙ü†de~¬aò¬'ª'õ;Üî<z‡≥†ed¥ãÁ0D¯®æ?∂√ïr¶◊ºh‚	¢“™hŒ«>Éòßv_;ÿX!úbIKHÿ^8|/ ±{ﬂÁK<r†Áv®WPêjÈÍBÊ Ö¨ç4¢ãÌ>ÏÚày˙˛OîeÂï%ØªèÈ!ˇÍ∏`•Ôr‡]`X…LÚ[Á2÷ú_W<qY	°˝bkª&ü∂F‘cSPO.«	&¢«œaÃÓ†ÎÔúåVÂ«˚o∂F}è`˜’˛Ÿ+p∂Ñ±"ü÷Æ–ßß—RÿI!⁄
+MJÅ§Nu ìﬁ∞(pÈ∆ﬁ»—ºÅïìo,üqñ±%{Ñ†«≈@ú◊á)Ÿko—¡‚⁄ ∞s`„\‘¢2•oz∂$&Õ0vRoóı∏ ùù∑ AI&„ç∏¥@V◊C?≈ıó‹T∏yü∆^ÄpbCR‰$◊[f@\˙gz-bGü˜K€ß +Ì2üT∞H≈bì˙KI¡÷ŒÌ4ó˛ïá‚WJMÓâíÉuèà§$qg#N(6è¯}ıªÕ≈∏*sÂBÕpö˛:¬dâïÛhˆ£Ä÷!ú=)?∂tùªå≈ˆmﬁud	∂Zñ%|*ÎCêÛú‡¸∆Ø.ÇÉˇíÃ-ÚDœ÷≈Ås∏iΩmM”Íbi‰Ú⁄Ω¡ì3é"ÏÕ/Ã˝⁄%ÔÅ£Ñ£Èœ.¡◊…ˇSy8
+ç‹0zÀ8£BÄ=rÓ◊⁄Ñ |Ø∏K¯ıeMˆ÷CÜÊ¥C9≥∫ˆK^Ò±OVD±Yºû5Bbò=Õê˛/¿Ô≥y®7◊)aU3T @Œ,UXXgÚd2.Ω∞˛Ì*◊KπÌÂ˘çAæ‰CË8›2¬*›‡Tp¿ÆRﬁªRe=∏‹CK±‚PÉÏoÛQ'∆lˇ∆Œ–Çõ5
+ô33∑ıÂ√ôI–¬Ã
+Æí∑h#EÀ'/ä™Â
+qÙ‰–‡DLãJ"◊‹˝@cƒÙŒµ«pv√	¯√)U¨È˛⁄¬◊ßÉπZDkÎ.‚ïU1!ØIÂ•([N«‹ª†"≥N|ø™GÖnSu°Dn÷n‡V1Í‘s¸∆„2‡É4õê˘±±(ˇ{ËÚçÂœÂò∏ƒ4ëm=·2ÌLÎÀÛçu¶∆Y5›œDÍ#Aœn¬]´[?†ul„ mÿË,ÍRlm»µ‚,£3J™ë|
+Á÷»,z/GÜÈ;VÕ6±=léc¶˘°—ÈπUû £Z˜3Œn&sE)ïÎ˚÷≠UD∫Gﬂî∞≥?RRÙ(Öø”z ¥H<bjß5o+÷ÑYj·7B8˘*‰≤]‘%.πá®9¢üØ–C–•Æ<Eç©q¶B"¢x«OoˇÛ¯LÄ0∆!Ì¸¯Ç|%û∂ù.uı≤ËíY˘*®•.ê¸Ú[Ã
+.˛Ö“≈Y()pìüÒI≥ë»~õ€PQà[ñ_∂cMUÆ9∂9I¿o,çØŸ¡û‡QÂΩøS∆≠âc!{Ï	—˘Mﬂ˜´Nä¶3_Ÿç6çË¡zp3û¬™˜ºÊÄ+îHˆQh£G˘‡üÿ,µ5€L∂œ»E—»)F∏okñ˜áö%œJÇôÖ:∆≤{Ç±‡ÎBih›&xÆÅN$˝St)Øt£ÛÛ…ì]µGﬂ˚”ê0Éît¶ÒÎç…ˆ£È‹•t¯{“)˙LôŸ–kâ(èCãÒD©ãzz∫ÃJ^ˇøœk˙tÊ≥2œúÒ“]√Îä#xLv8àeÅˇª‡Tie2πé÷5ÔYÀÄpª$wUI·& zXˆ˚ôÁ≠òÖÙ±.∫Pf∞≥m∆‰∏™Ë>i|E)í¶‰éáÉΩOm €ÇÈéjΩ¬xõ2y#ë©áìI”iÒ`ÁËq=îmÓ¸ÍeË·‰@äU)«∏æÃ:RvÉV‘¶≥–i;¸ÉBƒëº˙.≠Ò:ì¨ÊEccóL≥ëv√T-ﬂDb2öcÃG_ˆM'[&˚ùç"§ác"\w◊bPÄ˜RÎç≈ˇêòq['∏\,>Ïoq+:“œ¨°ú•]∑©‰ç˜ıë‚˚lÄ˛$¿°°V˙Ëﬁ~DE⁄È–;¥v5bÒ®Rj§´®;c`[„á‰”ˆøéìrÄd\“„—ñÃË≥á∂/tˆÃybn◊ôºØZ)F‡ıˇUNΩA8b#„<iä;ö∆q≥∆%&æ ãûh°cav-!®ëM©Ì1/˚HAc∫‡nBÒ)ÇFÜ8úôôÉÊiêˆ>ŸµS"°R$£üL˛úU≠‡ÚFkYÿ\ƒ!“èJ«Ç»‘úU÷¨–ÛŸ¨JÑ2ﬂì"¬"π?Œ:;MméR¢≠’ã‹bÏ}ƒQp}ÓıË‚˜ cÚUD%¯¢S8á|¢Ω◊äö»}ƒr[IVäÃVá3Lâ…C„’î9T©FÙ:*≤∫9WÅ…ûˆlIK%÷!dım)8«≤µQ¶˙Ë ØäSi|·í6\«!Ë Üi∞Ω’u◊W‹$ü!	µ“2`\ìQî∫O±ÅŸd'Àz.8òHë=7ˇÍ∞%·@Î}ç¥ıÎ¥l2°÷≈ ◊¶åWîÏ¥[⁄[˚Ô«pdõ[`«#Ôp˘!~â∫Òàâhº¶ÖNa◊>8=\ò…`Gàuı%˛DW”§∏ˇ›G≠KJyß)µÒ˜á{ﬂV≈ì#N&÷¶≈[ﬂ√˘∂<E'ËÄâó˙|«ﬁ0Í]?6GÑw`™ÏBÜUÀ0‡ﬂ…`Ià`”Zm®ü ñ“·øMÈﬂˆÇ∑¯„¬Øˆ¨•—ñÇ´7·ø——N ¬y‹V∑]Ö÷J#k9Îº«†}˘WÇ≈#ïöQ‚4&ç*î¥¨`Ωe|f'Ixtå}Øf^’<ûFË£vÏp‰ãN4õâ≈aéî©ö‡ÔE‡°ÔôwU]&â¬◊æ9˜´˙Ü9©ØVìv˙1\Éœ=n‚*Œƒ?‘‹ßqØﬂtåpÈôDíørkzP1¸çºØ!Wÿ/˘k"ì·J¨¢~˝Æ≠>‰M°Û9pf˘’IÖ'∑ûjáà»°uwã*o	«√ß£é‡'AAΩ√À∏©GÁ	/"€É9·*Då8HùUNò¯fC1·…øûM15ÆAf≤Vw‹—Ãçøì¬6ùÜîÂhb·Xƒ|5<ŒÉQÉ™†Â—`>MD —?DèPigäòûrç.éq~õîI≤™Î/ˆÎ9ras"ª2°W≥≤Ó	‡x§C$0’ÌP$JÜ+í3SÙY˙Vú≥‹A”«J1ã“√ØÏóÄÿDrdƒù 3Ù}f
+Hì:e¨ %∏òœÈ⁄‚.„ni ùóã“±BXÍ°˛¢ÖÎ˜h…sƒ´ıÿ´…âm∫ü|π‚?ùü Raà¢€°zÂ≈ã€Ú⁄ŸdV’6stΩ∆[˚[q‰IIü5<å Los,ﬁ<ôT!ıH∂0GzÈˇœÇ≤"SIÎãMø¶Zâ'Ö~ˆ∞>7ﬂ"‹‹Fºa¿7æ≥?ÿò˜˚ıÉ`˛Zıû?ÿÇ\	•ÄÙøPQ-÷ó«%ﬁö⁄%∆|OÚNLkÆÂÉ`—¬^ÉDπûöeOw"%qC8‡±zÓ9∏ñ1ˆó[˚◊ù$⁄´y¢Dõã>= |^üFù∂ Än~B¯cÍ¢¶¶§«@éMÒ“§}lA«0g>¥À^åãKÅIörO˚‡˚Ü¿Â\»jQ)†≥¯÷bX<Ë›wôßQ˝G‰\Ë9"u‹6PSC?¸ıà¶ƒXqò≤n|Ä¥(˛y∂¬°JÍ¬lÍË/ÈÕ{RIÊ¸TKVy”ïiX
+πﬁÉ:ˇÂ=pπÏÒN⁄‰€™C	\
+”≈@[ˇﬂüöo •ö1Ÿª∑ÄO:IçY"{2≠˜»m)§ÆÅÎûr£ñ,¬*– Ì√‚ÔQm40`gÂ$ô#ﬂvqáÈß%Ê|ô∑Î¢Ø)5∞}±ˇÁÈd˘™T^ı8$ˇkX∆ƒ≤?ÀvKIír«∫s4ÊUsÈªn<lò¥É}≠q„ºÓFéºÊ•>ŸRØ#∑ß0'õL˚ÚIœ‚ÇÊsXh†∆©íìNDµ∑Cè;“ÿ2oû¿åÛëØÓ0¡]˝’íI;7Ÿ
+œåëGQyÚF™YdÕy≤[k"É§hgÛÊ∂F⁄⁄≤¿t…F…£%MÀ˚¨f*–-‰3°∆√Cw	â•-6•—Ô⁄/y øÏ…ÒÍ‰¶»7m‰¸qÎ!˙)xÈuTµê¡◊‘]ºtë|D”…6Yö»3å¥ÜbÙzﬁ|hÎPÇÄ:∂X‘Wg+Ÿ≠2˚"∆p¸÷kR:ÖRWÙ2/˚MñE.ÏO€ÉVr3Ê<˚ÚºÏÅÛïlô·Ï7ﬂ{úïá¿ëPj£í9ã&<3†r[<Yz_Áér≥Œ_mS/à˜	mˇ‡ë$*.Q˜√´õµXÁMäìêº‹lBËΩjàC{>Ñ¨á”‡√C≈r≤x⁄“◊1Raê˛˜ïv$ =¥SÕ!h˜k⁄÷vÍ∆√‡jí«ƒ¯!å&	D‹˛k ÏC˙MŸüEaÎˇ’kVD¬åx∆ÙïŒ∏Ê8ÆÊùï§•8k2¸˜ÜP~V‡Ë/µÔ‰a¥N˘ÍπkÖµôENäåahÙÜ·˘Æ°⁄-±¸, M3≠#öoXN2¡ áAµŸ¡ﬁ¥;ùØG>˙ Î∑ı√%..9WaQµ∏80ìHöΩ8/tΩS∑Ø“ZöñnR3èüECã†‚8WÑ"ÃÑ±ƒq–g?≥∂±∫í'©0–¡)‰ÊJ ?qÓ]{!Ò9Ío˛èõ—«˚ÿè|ÜÆKôPü≥∆åXØÀÿÜ_•ì+˜—cÇàø[»–˛˘ıa‘D¡Çë}˜íèõ¡Ç0-Y˛ál3|‡õ‘üïÅüe°qUÌ{
+Íú”©Q-A¶©òÍZÓ‡ÓE¢1fﬁÿï5πˆÕÉRÜ>D˙Íûep≈ü·’7Ìt5hSü´˜‰c¢÷$J	˙‘·˚çÿ¨êﬂ™G`,•ûòN[ ?zeÑM™D)N(ﬂÓk∫aq¨£ç1/å!^Dm-ó)=ñejUx¥¶¥’ı´!ÇïYÂÜ%‹vfŒÁ=x}uL›5Jõmû5◊y™√Õ ≥ë.˛Wy0}¶`aÕ≤(ZQªF![˜tû6†u∞·"WW˙/Ú#Fûˆ?iO†Ñ≠ÔÆpÈ«\„Iì/>KëÎ4≠ı& *øäÙÅLﬂ']r“Yf|Êj&V≥˙h¶;ìñgÂ∏i–¸(L"*ñ ¢¿ñJ¥\ÎÁérbä˘õaWÛ9†∏Vø±¡õøBãHê*A¸tPgXM¥˚ ÌÊd¨ê› 0OF`V`Î@£ør¯™°0$åﬂº7ËËˆp¥jﬂ<7Ëwìﬁ´oﬂ’|#`3oêÙ∂ò^ﬁF√Ú-S‹òz–∏≥s∆8ÃP&áK™"ï|E’˛gpÂ‹	”Ìm∂u‡-TD°O∏Ñ$à∞=˛≈í*¯ÎI©-¢(èga	$!–Wî£y«ähÇcgÇx¿≤k`2Ù‘>Æ¯'≤M+∑˜)=¡ı*n"˝>⁄_¡˝]DJ8xeÙ88:ÍØjn~\„Të⁄ sÑØÎ–ŸPaîjr∏W1o]^ '∏íõ“‹k3c◊óU≠¨k<:√dÇÃëM¯jô0}Ω‚ë<ö®Ög∂√Ÿù6V∂í˛µƒîàT6ˇ%œ“bbíXA-Â⁄Ùc;¬ÜÏ¥ﬁ<¥Õ|πØ?◊U5ßﬁ]˚–’˘t[WK#tŒ£9S⁄⁄Ù¥2ñt(Á}D»Í≥Úõ£ ÚV˝ÚÉ«ù⁄U:ƒ±$µ≤U#±∫Ï Ñ @C…¨˚]^qtÔb”~}æûLqWXa>RﬂÁY¿ﬂ kBe≠ÊæájüØ´>–c¬œ£¸cµÓƒû°<ZÀTIÉ≈à…AÉBtÓ"w≥áÔèW¥éÙÇD≈f”‹x¢jÏ37ù*uØ‚]a%œ%(QmRÍ‰Q$ú∞ƒJsF8xî”°RÒÜêUêåé“Èh© ‡∑2PÑ¢\$LÀ^7≠·pÍö;ÂÂIí.¿Rﬁ¬⁄j˘_œÿ˛ùwÿã%ﬁ;cçsYËx2m“ ˝!¸ ›÷√]p∑ƒ≤g—bˇÓ#§XHùÓÌç¢SÊU!ØcÏÒàA˙H;§~ûsU@[¢>∞—˚†g 8ó“
+ YeøﬁÂZU1âg$Ô"6=Bˇﬁ§JÒ≤ëu+…á-NÄﬁaO˜ŒÍá—£~¿˜ãÑÓT‰+JıÚ®eRCKÓJ“õeê@ŸWÁÛdÉH≠U∂Ä™Í|·íc÷ñœ=∂ˇ}±˙ÊÊlwÒlì _sÌ√^ìº?j˝ı<@Lô7e~dõ|!˜m´aëÛÓ≈±fï⁄Txc»ü£B°éûƒ	Âgtcº&øGı“˙È=†I'∂I9ûDœMÏqπªÁÎÃΩ4ºaû€Mc‚Ømy'¶Ú"ä%yKçÿ∏I: ä2J9ç?øD•®)õ“g;$2†”Hê∂ﬁÆOw[U]˙hD¢†Ñõi˘Yò0‚ˇ∑Ij«ä∫ˆuÇ©KÜ&é"ø©u”:›63n˝44‘uﬁÚÌœöS˜¶“ci„K»{™<û˘ΩÓ∑èÎyÊ˝O˚Ú˜*π‰ß(‹≠‡Ë'Û8™™≤åC»ˇù.˜πùˆF/¿3:BØ˚!≠1!≤ó €FfTtùå75RdØ?å(£G
+
+‹¡◊««Añ∑˘ˆu£…˜nM!iûyŸ“~CO∂‰û⁄"|∞I´DÇØ’.EÓ©ÆãcFΩ[òcç|.S©:∑bæ∆PB ≤◊√ûwI5oç˜]OÛ◊˙;Î7wÇëF'ì ªæl‰UkS≠µ?≠‰)}Kz≠°ÜDõ4|{ËeÒÊ€‡hç|è¢7∆a◊≥ó€ÊÖW!Ó<Ê¥◊ÓπG…¨Æ?Í!<¸@)Yò…«Î^∞úË,g@,Ç†;Q	.~å»≤œÊˆo`«Ä©ßÄˆGŒ.Ùà	£Ñ»¡ßÖj$ÀÈxΩ"ûÒﬁ„T=
+B^”Àÿ∂Âò‚QªÒõJRm¨.vË¶ÁLÓ⁄|yœ@G√)Ò\_y[è?ﬁªøÛ®´=Û@~‡›Lú;k~ÉóoeKÓÙπQwbøúS6ô<+i^ëQù|ÑvÈKﬁò⁄]U?:¥Î‡0%¢KäE))ùîx¯(Ì.mqÓÇ˜bÅmiÈ:ÓJ¡ïì•ÌñÜSÕC„ôì#ƒ÷¬~´GFƒ[‰oòπä:ÜˆP»F¥Ø)Ò$”˜Æ∑
+«q±Á?áPrœç3Ë˘`ä—"üDjJ.ß◊˘¨NÖ:˜˙vÿ£^—bE!Éüè–,*:¸)Ò∑≈tZ¬-)®g•¯Ò|ÆÉ_%ÃÉ0yUå∫uŸpé˜∏√˘zD0lFÁ\;ET¨†8⁄ ^x€≤(\nA¥˛•gJûL°ì	’ÊJ©X§ÓT"πG7?Ä¸¨Q&∞˜yØISêïˇæ ŸûﬁRG˙∑a¸ŒZ±@≤˚t-Sƒ ”aOÎ' ∆4•l˙-:e√ÿ6c2¢o¥#b∆"sãD◊ÔZ®.ò˛¢ïÑœà\`iDˆH“Eál«B!©7/k ?≥ny“&/áZØ°ﬁ1BêŸﬁ—˝ä˛ÿ˘Å´ÁˆÿêbÈ{ˆj@ëÜ4Œ–¸_nÚ∞çF”êÎè $ƒñ,ñﬂ;‹“O!°⁄uµﬂ<>–“aÍÛŒ?‰ù(†u;â*ç{ﬂL™ã¯ˆÙiÔô›NîyºkYÒ ú=0S˙√ˆ˝ºc5/7ZõÂV˛’`/µ°7Ä≥®—∑ÿ¥¥Á—Ç„‹5:EÖ‚6ﬂ∂√C√"∞ÿ§Nﬁ˝&Pü'†oPÁÂ—∏’•"ÁB9ÔT†Ø«u¢ò∆E‡NM‘<Ç™@ÂÍV6î‚Ï~¨øÎ|[•üÔR¢√LµCìötCJ˚T¿Îë¸’(¿‰T`!ó,tr[ßO≈dÍA˙πt˜)ï…Œ\4»†±«†-¥ù.•∂å÷m5Ågπ∆Ö}Ñïs∫:JÈ/EaπóÖû˘ûò‡Î∆u‹Ó¬]>ØÍÀEú§‹O√i˚ïJ‘’ßˆO>2}Ê§˚;ê#R˚#©x/JJø¬»Pµ^¯!ÀèJûƒgzj›7’ùZKL!Ÿ’≥≈©KzY-øﬂ~§¸>Ê"Ò˜àãY%aâΩÍL∂oÇ@'Ωæ¸È"˝≠ä/3≠∫™ÇÄ2Oı	ƒOIz¸ √º6·_0óz˝y’àÙÍZﬂ´‰èu/˝⁄É0Œ≈
+ÙâkﬁƒˇSÏS÷÷ÉÍ-≠g#´mÿ:˝*‹‰ñ
+b"ïMxÚ®=£nY‡tÃ)©7Î7ﬂs8N^7‰ £¡©_p`œ£ÿ¬ﬂ«;x¸É›°Áâ¡÷Ç;2È35D|¶*¥é”≈[ '„Nt® ÑêÚã∫¸wLrÍá}µ8Ï3Ò/á äív]‰ÿ`Î^ÅËó∞*Öä˜Ωï~◊?œäéπB∑1ˆ`\Í_mnL]}!“yÄ~XâH92/û’—"Xˇ≥váÄÎÿ≤\˙õ◊`⁄Ìé ‚G-#Q˙Í›–:aWÒ∂.¶”Æ)◊oÀ¬©‚6\US65	'÷rµÀ⁄≥I¡Dá˝ﬁ}çÍ≥áz!Hsb„Ó.W<ÒÑAV’ﬁ‚ecæh5’tpô‚”@ÓmïÊCödAc@ˇ:§Y˙w1«=|‘˘≤ó Û•AöÔíªY;ƒ¡ê#Ú’ëÒúi:ã¥/@ZÖÊlt—J˘)M5ø÷Íˆ4"[;=l≈E@√=ÉÕø™oŒ€è∂ëÄ¸;Aé.®}˘«∞–J*I“≈a∂˚Q@◊oè”nO•È¡∏qÀ®≠®Æ‰–DËÕPíø«‹ ∑Àf‘Ú"©C%1‰^vEÀÁ˛àHLÛ@UÌËÀìª/˚V6f“˜ ®rXpÕû∫˛√ÆßË:x˝ç[Ä%∞úÅ_Ä.<ã"¡röVZX“í`oC¬rsÒCn´bnπ*äﬁá0Í’õ®(zH—Kv˙∑Ùﬁk"ÜµkA¬{∏AUãË2ñXúè¶®R•ÎaL¬:≈s-oÜæ‚ﬂÃÇ[ª∏î(ﬁ”&dõ„‚¢'%]ÛáÖ08u[⁄ÚÃÃPôˆ≠—∫ÓJ<?œﬂ∂Ô√∑x£~.a ﬂ4K ﬁ+°QäÈÊ‚B%ˆ”y[ª¸F'??æqö¶2ÌƒXAˇ«˙\Àwgç€9Ø’±Á)J.#67ß©ç2IXÄ≤‰¬åÕ<7T6ÏZó™bïÌ ﬁ©≠ÿ≤h7¬¬ﬁ7ËzÈﬁÀ¯IÕ|É'8Á√û@i‘6¯°≠Í—“˛UkûPBºë–Å¡áéò@/≥Î´zÊæ,ãl>ôaæ√$ §‡;–(	kçßRà”]Kå4óHÊµPG–zRÉ{éâZ
+Áå-ì•I≥5DóÊ/¶ Uãÿ{1∂¸%›∞b∂˜	H}êÛ≠3œÑwmHÏrJŸ«∏Tˇ¿·R£ ñBbIvfjõ‡⁄πé®k2ÌóZ«ƒˇvæóπ’¡ùô\€·H}4bÿ©ÄÊYP/•≥ÿ£œdñÁÍ<%DN¶9Ü˜qM√¸À$¥’ªÓ ∫πn•Ω¿©yl≥”¿Ø°V»≤®@u‚µÃ∏nÅ‘Ê‰äÂè#P
+ƒ∑©€Küsˆæ¬˛ºÂ^í6À\µn÷V∂>÷ùìtÄÚàK&òÚ©ï§)Ü∫T[èÄBE˘G4~ù¬»ÿG˙P!!†“Pª^Ë¬µU≈∑¯âÖ0R/e"‹TW∆®¥†r„∫Ü·ª’eﬂö≥™y¨>°å?û´_W]l:ã
+!]T•¯≠±7˝Ÿhsä%‚ˆ*Û°†3Z ÖˇÏœZÖQ'±¡‰Ö.õ]
+RXVƒ~˜;dﬁﬂ…Á ∆/r¥%ñ».Ï1é»U¿Ä;]@8hk√˚Ó-—G∆™â©˙‚‰Ên7P+p2Ì;°æT=µ@˙5¶ÜDÆ.øªØj{WâÍ!Vñ©8dòCíörKD˝(Kx h5˚î‹ﬁDmÊõêË±gı«“—7∑é®ò±É◊≤Ã˝î‚∫
+alKˇp 6?íéΩMÃdOõVÎ◊≤√@lTWs·,ùI’ø™4{x0z≈˚XÁ˘X ÀU€1FC‰ˆñÒgˆ?	qΩR7
+“≠÷V|˙R¿‘•Œ~Éb‚ÊÈ8ˇªàvo!Ω@Ë≠æ0WfHÿY‰æ>Õ≠ü ˜WÁŸ˜ñ'+`‡L4zØÅÆÀ6í.∫£QÊ)†jy%ï;]˛≥jXÚæ qs?É‰3°,/∞2öç.•ˇS∏I<ÆÌ¯ˆ$ﬂñ·!Bá‹gÑˆ«•¯úª•~⁄Ë%Za¥Ïì:Ú¢‹`ﬁ5d≤}÷(ØLÈ¥ÔaGAcs3Ë&ˆX¢-√∑V èZ$gsL·|U\iÔâí'å¡Œh%Ω•QáÃk´¶Å6ƒ±≥*I–DtOâ^Ûm B ∞”%·qæ⁄ôF‹ôın^4Íé;€´úç1ÜWZ’VY^«ΩŸ6∫ß?}z^“¸Ä∏À”Ìæ7XÏI*a¿ÜW£˙-€ı+?rVµ2êÍ¬Ì…*ËèœYïµ√oœπ.√eizTÛ
+ åû‘ÁØÖíR…ívïQü©*V≤]˘,)æô„BöÙ<ÊjÜ®çº¶öf4y!/Obcî°ÃV∂æzÚ\;ÑËH,zP(duo~ç3oË"‡ñU◊p3xpíÏÉ/GïÍj'[Í÷Â¯ÙøáóIÈ-ÑÜs‹óc¢n¨àR∆>2Á•e–ﬂ‰†\ﬁßÌ_SV$ßdhÉë™s);
+
+/**
+ * struct pending_free - information about data structures about to be freed
+ * @zapped: Head of a list with struct lock_class elements.
+ * @lock_chains_being_freed: Bitmap that indicates which lock_chains[] elements
+ *	are about to be freed.
+ */
+struct pending_free {
+	struct list_head zapped;
+	DECLARE_BITMAP(lock_chains_being_freed, MAX_LOCKDEP_CHAINS);
+};
+
+/**
+ * struct delayed_free - data structures used for delayed freeing
+ *
+ * A data structure for delayed freeing of data structures that may be
+ * accessed by RCU readers at the time these were freed.
+ *
+ * @rcu_head:  Used to schedule an RCU callback for freeing data structures.
+ * @index:     Index of @pf to which freed data structures are added.
+ * @scheduled: Whether or not an RCU callback has been scheduled.
+ * @pf:        Array with information about data structures about to be freed.
+ */
+static struct delayed_free {
+	struct rcu_head		rcu_head;
+	int			index;
+	int			scheduled;
+	struct pending_free	pf[2];
+} delayed_free;
+
+/*
+ * The lockdep classes are in a hash-table as well, for fast lookup:
+ */
+#define CLASSHASH_BITS		(MAX_LOCKDEP_KEYS_BITS - 1)
+#define CLASSHASH_SIZE		(1UL << CLASSHASH_BITS)
+#define __classhashfn(key)	hash_long((unsigned long)key, CLASSHASH_BITS)
+#define classhashentry(key)	(classhash_table + __classhashfn((key)))
+
+static struct hlist_head classhash_table[CLASSHASH_SIZE];
+
+/*
+ * We put the lock dependency chains into a hash-table as well, to cache
+ * their existence:
+ */
+#define CHAINHASH_BITS		(MAX_LOCKDEP_CHAINS_BITS-1)
+#define CHAINHASH_SIZE		(1UL << CHAINHASH_BITS)
+#define __chainhashfn(chain)	hash_long(chain, CHAINHASH_BITS)
+#define chainhashentry(chain)	(chainhash_table + __chainhashfn((chain)))
+
+static struct hlist_head chainhash_table[CHAINHASH_SIZE];
+
+/*
+ * the id of held_lock
+ */
+static inline u16 hlock_id(struct held_lock *hlock)
+{
+	BUILD_BUG_ON(MAX_LOCKDEP_KEYS_BITS + 2 > 16);
+
+	return (hlock->class_idx | (hlock->read << MAX_LOCKDEP_KEYS_BITS));
+}
+
+static inline unsigned int chain_hlock_class_idx(u16 hlock_id)
+{
+	return hlock_id & (MAX_LOCKDEP_KEYS - 1);
+}
+
+/*
+ * The hash key of the lock dependency chains is a hash itself too:
+ * it's a hash of all locks taken up to that lock, including that lock.
+ * It's a 64-bit hash, because it's important for the keys to be
+ * unique.
+ */
+static inline u64 iterate_chain_key(u64 key, u32 idx)
+{
+	u32 k0 = key, k1 = key >> 32;
+
+	__jhash_mix(idx, k0, k1); /* Macro that modifies arguments! */
+
+	return k0 | (u64)k1 << 32;
+}
+
+void lockdep_init_task(struct task_struct *task)
+{
+	task->lockdep_depth = 0; /* no locks held yet */
+	task->curr_chain_key = INITIAL_CHAIN_KEY;
+	task->lockdep_recursion = 0;
+}
+
+static __always_inline void lockdep_recursion_inc(void)
+{
+	__this_cpu_inc(lockdep_recursion);
+}
+
+static __always_inline void lockdep_recursion_finish(void)
+{
+	if (WARN_ON_ONCE(__this_cpu_dec_return(lockdep_recursion)))
+		__this_cpu_write(lockdep_recursion, 0);
+}
+
+void lockdep_set_selftest_task(struct task_struct *task)
+{
+	lockdep_selftest_task_struct = task;
+}
+
+/*
+ * Debugging switches:
+ */
+
+#define VERBOSE			0
+#define VERY_VERBOSE		0
+
+#if VERBOSE
+# define HARDIRQ_VERBOSE	1
+# define SOFTIRQ_VERBOSE	1
+#else
+# define HARDIRQ_VERBOSE	0
+# define SOFTIRQ_VERBOSE	0
+#endif
+
+#if VERBOSE || HARDIRQ_VERBOSE || SOFTIRQ_VERBOSE
+/*
+ * Quick filtering for interesting events:
+ */
+static int class_filter(struct lock_class *class)
+{
+#if 0
+	/* Example */
+	if (class->name_version == 1 &&
+			!strcmp(class->name, "lockname"))
+		return 1;
+	if (class->name_version == 1 &&
+			!strcmp(class->name, "&struct->lockfield"))
+		return 1;
+#endif
+	/* Filter everything else. 1 would be to allow everything else */
+	return 0;
+}
+#endif
+
+static int verbose(struct lock_class *class)
+{
+#if VERBOSE
+	return class_filter(class);
+#endif
+	return 0;
+}
+
+static void print_lockdep_off(const char *bug_msg)
+{
+	printk(KERN_DEBUG "%s\n", bug_msg);
+	printk(KERN_DEBUG "turning off the locking correctness validator.\n");
+#ifdef CONFIG_LOCK_STAT
+	printk(KERN_DEBUG "Please attach the output of /proc/lock_stat to the bug report\n");
+#endif
+}
+
+unsigned long nr_stack_trace_entries;
+
+#ifdef CONFIG_PROVE_LOCKING
+/**
+ * struct lock_trace - single stack backtrace
+ * @hash_entry:	Entry in a stack_trace_hash[] list.
+ * @hash:	jhash() of @entries.
+ * @nr_entries:	Number of entries in @entries.
+ * @entries:	Actual stack backtrace.
+ */
+struct lock_trace {
+	struct hlist_node	hash_entry;
+	u32			hash;
+	u32			nr_entries;
+	unsigned long		entries[] __aligned(sizeof(unsigned long));
+};
+#define LOCK_TRACE_SIZE_IN_LONGS				\
+	(sizeof(struct lock_trace) / sizeof(unsigned long))
+/*
+ * Stack-trace: sequence of lock_trace structures. Protected by the graph_lock.
+ */
+static unsigned long stack_trace[MAX_STACK_TRACE_ENTRIES];
+static struct hlist_head stack_trace_hash[STACK_TRACE_HASH_SIZE];
+
+static bool traces_identical(struct lock_trace *t1, struct lock_trace *t2)
+{
+	return t1->hash == t2->hash && t1->nr_entries == t2->nr_entries &&
+		memcmp(t1->entries, t2->entries,
+		       t1->nr_entries * sizeof(t1->entries[0])) == 0;
+}
+
+static struct lock_trace *save_trace(void)
+{
+	struct lock_trace *trace, *t2;
+	struct hlist_head *hash_head;
+	u32 hash;
+	int max_entries;
+
+	BUILD_BUG_ON_NOT_POWER_OF_2(STACK_TRACE_HASH_SIZE);
+	BUILD_BUG_ON(LOCK_TRACE_SIZE_IN_LONGS >= MAX_STACK_TRACE_ENTRIES);
+
+	trace = (struct lock_trace *)(stack_trace + nr_stack_trace_entries);
+	max_entries = MAX_STACK_TRACE_ENTRIES - nr_stack_trace_entries -
+		LOCK_TRACE_SIZE_IN_LONGS;
+
+	if (max_entries <= 0) {
+		if (!debug_locks_off_graph_unlock())
+			return NULL;
+
+		print_lockdep_off("BUG: MAX_STACK_TRACE_ENTRIES too low!");
+		dump_stack();
+
+		return NULL;
+	}
+	trace->nr_entries = stack_trace_save(trace->entries, max_entries, 3);
+
+	hash = jhash(trace->entries, trace->nr_entries *
+		     sizeof(trace->entries[0]), 0);
+	trace->hash = hash;
+	hash_head = stack_trace_hash + (hash & (STACK_TRACE_HASH_SIZE - 1));
+	hlist_for_each_entry(t2, hash_head, hash_entry) {
+		if (traces_identical(trace, t2))
+			return t2;
+	}
+	nr_stack_trace_entries += LOCK_TRACE_SIZE_IN_LONGS + trace->nr_entries;
+	hlist_add_head(&trace->hash_entry, hash_head);
+
+	return trace;
+}
+
+/* Return the number of stack traces in the stack_trace[] array. */
+u64 lockdep_stack_trace_count(void)
+{
+	struct lock_trace *trace;
+	u64 c = 0;
+	int i;
+
+	for (i = 0; i < ARRAY_SIZE(stack_trace_hash); i++) {
+		hlist_for_each_entry(trace, &stack_trace_hash[i], hash_entry) {
+			c++;
+		}
+	}
+
+	return c;
+}
+
+/* Return the number of stack hash chains that have at least one stack trace. */
+u64 lockdep_stack_hash_count(void)
+{
+	u64 c = 0;
+	int i;
+
+	for (i = 0; i < ARRAY_SIZE(stack_trace_hash); i++)
+		if (!hlist_empty(&stack_trace_hash[i]))
+			c++;
+
+	return c;
+}
+#endif
+
+unsigned int nr_hardirq_chains;
+unsigned int nr_softirq_chains;
+unsigned int nr_process_chains;
+unsigned int max_lockdep_depth;
+
+#ifdef CONFIG_DEBUG_LOCKDEP
+/*
+ * Various lockdep statistics:
+ */
+DEFINE_PER_CPU(struct lockdep_stats, lockdep_stats);
+#endif
+
+#ifdef CONFIG_PROVE_LOCKING
+/*
+ * Locking printouts:
+ */
+
+#define __USAGE(__STATE)						\
+	[LOCK_USED_IN_##__STATE] = "IN-"__stringify(__STATE)"-W",	\
+	[LOCK_ENABLED_##__STATE] = __stringify(__STATE)"-ON-W",		\
+	[LOCK_USED_IN_##__STATE##_READ] = "IN-"__stringify(__STATE)"-R",\
+	[LOCK_ENABLED_##__STATE##_READ] = __stringify(__STATE)"-ON-R",
+
+static const char *usage_str[] =
+{
+#define LOCKDEP_STATE(__STATE) __USAGE(__STATE)
+#include "lockdep_states.h"
+#undef LOCKDEP_STATE
+	[LOCK_USED] = "INITIAL USE",
+	[LOCK_USED_READ] = "INITIAL READ USE",
+	/* abused as string storage for verify_lock_unused() */
+	[LOCK_USAGE_STATES] = "IN-NMI",
+};
+#endif
+
+const char *__get_key_name(const struct lockdep_subclass_key *key, char *str)
+{
+	return kallsyms_lookup((unsigned long)key, NULL, NULL, NULL, str);
+}
+
+static inline unsigned long lock_flag(enum lock_usage_bit bit)
+{
+	return 1UL << bit;
+}
+
+static char get_usage_char(struct lock_class *class, enum lock_usage_bit bit)
+{
+	/*
+	 * The usage character defaults to '.' (i.e., irqs disabled and not in
+	 * irq context), which is the safest usage category.
+	 */
+	char c = '.';
+
+	/*
+	 * The order of the following usage checks matters, which will
+	 * result in the outcome character as follows:
+	 *
+	 * - '+': irq is enabled and not in irq context
+	 * - '-': in irq context and irq is disabled
+	 * - '?': in irq context and irq is enabled
+	 */
+	if (class->usage_mask & lock_flag(bit + LOCK_USAGE_DIR_MASK)) {
+		c = '+';
+		if (class->usage_mask & lock_flag(bit))
+			c = '?';
+	} else if (class->usage_mask & lock_flag(bit))
+		c = '-';
+
+	return c;
+}
+
+void get_usage_chars(struct lock_class *class, char usage[LOCK_USAGE_CHARS])
+{
+	int i = 0;
+
+#define LOCKDEP_STATE(__STATE) 						\
+	usage[i++] = get_usage_char(class, LOCK_USED_IN_##__STATE);	\
+	usage[i++] = get_usage_char(class, LOCK_USED_IN_##__STATE##_READ);
+#include "lockdep_states.h"
+#undef LOCKDEP_STATE
+
+	usage[i] = '\0';
+}
+
+static void __print_lock_name(struct lock_class *class)
+{
+	char str[KSYM_NAME_LEN];
+	const char *name;
+
+	name = class->name;
+	if (!name) {
+		name = __get_key_name(class->key, str);
+		printk(KERN_CONT "%s", name);
+	} else {
+		printk(KERN_CONT "%s", name);
+		if (class->name_version > 1)
+			printk(KERN_CONT "#%d", class->name_version);
+		if (class->subclass)
+			printk(KERN_CONT "/%d", class->subclass);
+	}
+}
+
+static void print_lock_name(struct lock_class *class)
+{
+	char usage[LOCK_USAGE_CHARS];
+
+	get_usage_chars(class, usage);
+
+	printk(KERN_CONT " (");
+	__print_lock_name(class);
+	printk(KERN_CONT "){%s}-{%d:%d}", usage,
+			class->wait_type_outer ?: class->wait_type_inner,
+			class->wait_type_inner);
+}
+
+static void print_lockdep_cache(struct lockdep_map *lock)
+{
+	const char *name;
+	char str[KSYM_NAME_LEN];
+
+	name = lock->name;
+	if (!name)
+		name = __get_key_name(lock->key->subkeys, str);
+
+	printk(KERN_CONT "%s", name);
+}
+
+static void print_lock(struct held_lock *hlock)
+{
+	/*
+	 * We can be called locklessly through debug_show_all_locks() so be
+	 * extra careful, the hlock might have been released and cleared.
+	 *
+	 * If this indeed happens, lets pretend it does not hurt to continue
+	 * to print the lock unless the hlock class_idx does not point to a
+	 * registered class. The rationale here is: since we don't attempt
+	 * to distinguish whether we are in this situation, if it just
+	 * happened we can't count on class_idx to tell either.
+	 */
+	struct lock_class *lock = hlock_class(hlock);
+
+	if (!lock) {
+		printk(KERN_CONT "<RELEASED>\n");
+		return;
+	}
+
+	printk(KERN_CONT "%px", hlock->instance);
+	print_lock_name(lock);
+	printk(KERN_CONT ", at: %pS\n", (void *)hlock->acquire_ip);
+}
+
+static void lockdep_print_held_locks(struct task_struct *p)
+{
+	int i, depth = READ_ONCE(p->lockdep_depth);
+
+	if (!depth)
+		printk("no locks held by %s/%d.\n", p->comm, task_pid_nr(p));
+	else
+		printk("%d lock%s held by %s/%d:\n", depth,
+		       depth > 1 ? "s" : "", p->comm, task_pid_nr(p));
+	/*
+	 * It's not reliable to print a task's held locks if it's not sleeping
+	 * and it's not the current task.
+	 */
+	if (p != current && task_is_running(p))
+		return;
+	for (i = 0; i < depth; i++) {
+		printk(" #%d: ", i);
+		print_lock(p->held_locks + i);
+	}
+}
+
+static void print_kernel_ident(void)
+{
+	printk("%s %.*s %s\n", init_utsname()->release,
+		(int)strcspn(init_utsname()->version, " "),
+		init_utsname()->version,
+		print_tainted());
+}
+
+static int very_verbose(struct lock_class *class)
+{
+#if VERY_VERBOSE
+	return class_filter(class);
+#endif
+	return 0;
+}
+
+/*
+ * Is this the address of a static object:
+ */
+#ifdef __KERNEL__
+/*
+ * Check if an address is part of freed initmem. After initmem is freed,
+ * memory can be allocated from it, and such allocations would then have
+ * addresses within the range [_stext, _end].
+ */
+#ifndef arch_is_kernel_initmem_freed
+static int arch_is_kernel_initmem_freed(unsigned long addr)
+{
+	if (system_state < SYSTEM_FREEING_INITMEM)
+		return 0;
+
+	return init_section_contains((void *)addr, 1);
+}
+#endif
+
+static int static_obj(const void *obj)
+{
+	unsigned long start = (unsigned long) &_stext,
+		      end   = (unsigned long) &_end,
+		      addr  = (unsigned long) obj;
+
+	if (arch_is_kernel_initmem_freed(addr))
+		return 0;
+
+	/*
+	 * static variable?
+	 */
+	if ((addr >= start) && (addr < end))
+		return 1;
+
+	/*
+	 * in-kernel percpu var?
+	 */
+	if (is_kernel_percpu_address(addr))
+		return 1;
+
+	/*
+	 * module static or percpu var?
+	 */
+	return is_module_address(addr) || is_module_percpu_address(addr);
+}
+#endif
+
+/*
+ * To make lock name printouts unique, we calculate a unique
+ * class->name_version generation counter. The caller must hold the graph
+ * lock.
+ */
+static int count_matching_names(struct lock_class *new_class)
+{
+	struct lock_class *class;
+	int count = 0;
+
+	if (!new_class->name)
+		return 0;
+
+	list_for_each_entry(class, &all_lock_classes, lock_entry) {
+		if (new_class->key - new_class->subclass == class->key)
+			return class->name_version;
+		if (class->name && !strcmp(class->name, new_class->name))
+			count = max(count, class->name_version);
+	}
+
+	return count + 1;
+}
+
+/* used from NMI context -- must be lockless */
+static noinstr struct lock_class *
+look_up_lock_class(const struct lockdep_map *lock, unsigned int subclass)
+{
+	struct lockdep_subclass_key *key;
+	struct hlist_head *hash_head;
+	struct lock_class *class;
+
+	if (unlikely(subclass >= MAX_LOCKDEP_SUBCLASSES)) {
+		instrumentation_begin();
+		debug_locks_off();
+		printk(KERN_ERR
+			"BUG: looking up invalid subclass: %u\n", subclass);
+		printk(KERN_ERR
+			"turning off the locking correctness validator.\n");
+		dump_stack();
+		instrumentation_end();
+		return NULL;
+	}
+
+	/*
+	 * If it is not initialised then it has never been locked,
+	 * so it won't be present in the hash table.
+	 */
+	if (unlikely(!lock->key))
+		return NULL;
+
+	/*
+	 * NOTE: the class-key must be unique. For dynamic locks, a static
+	 * lock_class_key variable is passed in through the mutex_init()
+	 * (or spin_lock_init()) call - which acts as the key. For static
+	 * locks we use the lock object itself as the key.
+	 */
+	BUILD_BUG_ON(sizeof(struct lock_class_key) >
+			sizeof(struct lockdep_map));
+
+	key = lock->key->subkeys + subclass;
+
+	hash_head = classhashentry(key);
+
+	/*
+	 * We do an RCU walk of the hash, see lockdep_free_key_range().
+	 */
+	if (DEBUG_LOCKS_WARN_ON(!irqs_disa

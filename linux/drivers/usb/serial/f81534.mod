@@ -1,2 +1,1 @@
-/config/GENERIC_IOMAP) \
-    
+cmd_drivers/media/pci/cx18/cx

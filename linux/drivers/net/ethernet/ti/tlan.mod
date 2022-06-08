@@ -1,2 +1,2 @@
- \
-    $(wildcard include/config
+c/qspinlock.h \
+  arch/x86/inclu

@@ -1,20 +1,41 @@
-ldcard include/config/X86_P6_NOP) \
-    $(wildcard include/config/MATOM) \
-    $(wildcard include/config/PARAVIRT_XXL) \
-  arch/x86/include/asm/disabled-features.h \
-    $(wildcard include/config/X86_SMAP) \
-    $(wildcard include/config/X86_UMIP) \
-    $(wildcard include/config/X86_INTEL_MEMORY_PROTECTION_KEYS) \
-    $(wildcard include/config/X86_5LEVEL) \
-    $(wildcard include/config/PAGE_TABLE_ISOLATION) \
-    $(wildcard include/config/INTEL_IOMMU_SVM) \
-    $(wildcard include/config/X86_SGX) \
-  include/asm-generic/bitops/const_hweight.h \
-  include/asm-generic/bitops/instrumented-atomic.h \
-  include/linux/instrumented.h \
-  include/asm-generic/bitops/instrumented-non-atomic.h \
-    $(wildcard include/config/KCSAN_ASSUME_PLAIN_WRITES_ATOMIC) \
-  include/asm-generic/bitops/instrumented-lock.h \
-  include/asm-generic/bitops/le.h \
-  arch/x86/include/uapi/asm/byteorder.h \
-  include/linux/byte
+/* SPDX-License-Identifier: GPL-2.0 */
+
+#include <linux/platform_device.h>
+
+#ifndef _SOFTING_DEVICE_H_
+#define _SOFTING_DEVICE_H_
+
+/* softing firmware directory prefix */
+#define fw_dir "softing-4.6/"
+
+struct softing_platform_data {
+	unsigned int manf;
+	unsigned int prod;
+	/*
+	 * generation
+	 * 1st with NEC or SJA1000
+	 * 8bit, exclusive interrupt, ...
+	 * 2nd only SJA1000
+	 * 16bit, shared interrupt
+	 */
+	int generation;
+	int nbus; /* # buses on device */
+	unsigned int freq; /* operating frequency in Hz */
+	unsigned int max_brp;
+	unsigned int max_sjw;
+	unsigned long dpram_size;
+	const char *name;
+	struct {
+		unsigned long offs;
+		unsigned long addr;
+		const char *fw;
+	} boot, load, app;
+	/*
+	 * reset() function
+	 * bring pdev in or out of reset, depending on value
+	 */
+	int (*reset)(struct platform_device *pdev, int value);
+	int (*enable_irq)(struct platform_device *pdev, int value);
+};
+
+#endif

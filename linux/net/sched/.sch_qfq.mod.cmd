@@ -1,1 +1,4 @@
-¶N,G«±ü·¹ÚŸÇŽ„‰KL—ÃîÊ*þ?í¼½ÉGœë’Tö(Ïýùò£œÏä¥"Jµ#7‘xþ¤Þ:/nxõƒí£ºÞ.!Ã¨œ{BJ´‘
+ of reset */
+		break;
+	case CX23885_BOARD_HAUPPAUGE_HVR1500:
+		/* GPIO-0 cx24227 demodulato

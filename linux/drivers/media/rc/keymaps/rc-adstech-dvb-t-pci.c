@@ -1,85 +1,77 @@
-// SPDX-License-Identifier: GPL-2.0+
-// adstech-dvb-t-pci.h - Keytable for adstech_dvb_t_pci Remote Controller
-//
-// keymap imported from ir-keymaps.c
-//
-// Copyright (c) 2010 by Mauro Carvalho Chehab
+// SPDX-License-Identifier: GPL-2.0-or-later
+/*
+ *  Driver for the Conexant CX23885/7/8 PCIe bridge
+ *
+ *  CX23888 Integrated Consumer Infrared Controller
+ *
+ *  Copyright (C) 2009  Andy Walls <awalls@md.metrocast.net>
+ */
 
-#include <media/rc-map.h>
-#include <linux/module.h>
+#include "cx23885.h"
+#include "cx23888-ir.h"
 
-/* ADS Tech Instant TV DVB-T PCI Remote */
+#include <linux/kfifo.h>
+#include <linux/slab.h>
 
-static struct rc_map_table adstech_dvb_t_pci[] = {
-	/* Keys 0 to 9 */
-	{ 0x4d, KEY_NUMERIC_0 },
-	{ 0x57, KEY_NUMERIC_1 },
-	{ 0x4f, KEY_NUMERIC_2 },
-	{ 0x53, KEY_NUMERIC_3 },
-	{ 0x56, KEY_NUMERIC_4 },
-	{ 0x4e, KEY_NUMERIC_5 },
-	{ 0x5e, KEY_NUMERIC_6 },
-	{ 0x54, KEY_NUMERIC_7 },
-	{ 0x4c, KEY_NUMERIC_8 },
-	{ 0x5c, KEY_NUMERIC_9 },
+#include <media/v4l2-device.h>
+#include <media/rc-core.h>
 
-	{ 0x5b, KEY_POWER },
-	{ 0x5f, KEY_MUTE },
-	{ 0x55, KEY_GOTO },
-	{ 0x5d, KEY_SEARCH },
-	{ 0x17, KEY_EPG },		/* Guide */
-	{ 0x1f, KEY_MENU },
-	{ 0x0f, KEY_UP },
-	{ 0x46, KEY_DOWN },
-	{ 0x16, KEY_LEFT },
-	{ 0x1e, KEY_RIGHT },
-	{ 0x0e, KEY_SELECT },		/* Enter */
-	{ 0x5a, KEY_INFO },
-	{ 0x52, KEY_EXIT },
-	{ 0x59, KEY_PREVIOUS },
-	{ 0x51, KEY_NEXT },
-	{ 0x58, KEY_REWIND },
-	{ 0x50, KEY_FORWARD },
-	{ 0x44, KEY_PLAYPAUSE },
-	{ 0x07, KEY_STOP },
-	{ 0x1b, KEY_RECORD },
-	{ 0x13, KEY_TUNER },		/* Live */
-	{ 0x0a, KEY_A },
-	{ 0x12, KEY_B },
-	{ 0x03, KEY_RED },		/* 1 */
-	{ 0x01, KEY_GREEN },		/* 2 */
-	{ 0x00, KEY_YELLOW },		/* 3 */
-	{ 0x06, KEY_DVD },
-	{ 0x48, KEY_AUX },		/* Photo */
-	{ 0x40, KEY_VIDEO },
-	{ 0x19, KEY_AUDIO },		/* Music */
-	{ 0x0b, KEY_CHANNELUP },
-	{ 0x08, KEY_CHANNELDOWN },
-	{ 0x15, KEY_VOLUMEUP },
-	{ 0x1c, KEY_VOLUMEDOWN },
-};
+static unsigned int ir_888_debug;
+module_param(ir_888_debug, int, 0644);
+MODULE_PARM_DESC(ir_888_debug, "enable debug messages [CX23888 IR controller]");
 
-static struct rc_map_list adstech_dvb_t_pci_map = {
-	.map = {
-		.scan     = adstech_dvb_t_pci,
-		.size     = ARRAY_SIZE(adstech_dvb_t_pci),
-		.rc_proto = RC_PROTO_UNKNOWN,	/* Legacy IR type */
-		.name     = RC_MAP_ADSTECH_DVB_T_PCI,
-	}
-};
+#define CX23888_IR_REG_BASE	0x170000
+/*
+ * These CX23888 register offsets have a straightforward one to one mapping
+ * to the CX23885 register offsets of 0x200 through 0x218
+ */
+#define CX23888_IR_CNTRL_REG	0x170000
+#define CNTRL_WIN_3_3	0x00000000
+#define CNTRL_WIN_4_3	0x00000001
+#define CNTRL_WIN_3_4	0x00000002
+#define CNTRL_WIN_4_4	0x00000003
+#define CNTRL_WIN	0x00000003
+#define CNTRL_EDG_NONE	0x00000000
+#define CNTRL_EDG_FALL	0x00000004
+#define CNTRL_EDG_RISE	0x00000008
+#define CNTRL_EDG_BOTH	0x0000000C
+#define CNTRL_EDG	0x0000000C
+#define CNTRL_DMD	0x00000010
+#define CNTRL_MOD	0x00000020
+#define CNTRL_RFE	0x00000040
+#define CNTRL_TFE	0x00000080
+#define CNTRL_RXE	0x00000100
+#define CNTRL_TXE	0x00000200
+#define CNTRL_RIC	0x00000400
+#define CNTRL_TIC	0x00000800
+#define CNTRL_CPL	0x00001000
+#define CNTRL_LBM	0x00002000
+#define CNTRL_R		0x00004000
+/* CX23888 specific control flag */
+#define CNTRL_IVO	0x00008000
 
-static int __init init_rc_map_adstech_dvb_t_pci(void)
-{
-	return rc_map_register(&adstech_dvb_t_pci_map);
-}
+#define CX23888_IR_TXCLK_REG	0x170004
+#define TXCLK_TCD	0x0000FFFF
 
-static void __exit exit_rc_map_adstech_dvb_t_pci(void)
-{
-	rc_map_unregister(&adstech_dvb_t_pci_map);
-}
+#define CX23888_IR_RXCLK_REG	0x170008
+#define RXCLK_RCD	0x0000FFFF
 
-module_init(init_rc_map_adstech_dvb_t_pci)
-module_exit(exit_rc_map_adstech_dvb_t_pci)
+#define CX23888_IR_CDUTY_REG	0x17000C
+#define CDUTY_CDC	0x0000000F
 
-MODULE_LICENSE("GPL");
-MODULE_AUTHOR("Mauro Carvalho Chehab");
+#define CX23888_IR_STATS_REG	0x170010
+#define STATS_RTO	0x00000001
+#define STATS_ROR	0x00000002
+#define STATS_RBY	0x00000004
+#define STATS_TBY	0x00000008
+#define STATS_RSR	0x00000010
+#define STATS_TSR	0x00000020
+
+#define CX23888_IR_IRQEN_REG	0x170014
+#define IRQEN_RTE	0x00000001
+#define IRQEN_ROE	0x00000002
+#define IRQEN_RSE	0x00000010
+#define IRQEN_TSE	0x00000020
+
+#define CX23888_IR_FILTR_REG	0x170018
+#define F

@@ -1,2 +1,1 @@
-fig/GENERIC_ATOMIC64) \
-  include/linux/atomic/atomic-long.h 
+cmd_drivers/media/pci/cx18/cx18.o := ld -m elf_i386   -r -o d

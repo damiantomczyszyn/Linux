@@ -1,2 +1,2 @@
-drivers/media/rc/keymaps/rc-it913x-v1.o
-
+] = {
+		.name		= "Hauppauge WinTV-HVR1500

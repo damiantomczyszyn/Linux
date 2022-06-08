@@ -1,1 +1,1 @@
-h/x86/include/asm/pgtable_32_
+// SPDX-License-Identifier: G

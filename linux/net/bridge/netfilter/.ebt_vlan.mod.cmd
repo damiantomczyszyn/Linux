@@ -1,5 +1,6 @@
-p_next_lockchain(long i);
-unsigned long lock_chain_count(void);
-extern unsigned long nr_stack_trace_entries;
-
-extern unsigned i
+ue of having been offline.
+ */
+static int rcu_implicit_dynticks_qs(struct rcu_data *rdp)
+{
+	unsigned long jtsq;
+	struct rcu_nod

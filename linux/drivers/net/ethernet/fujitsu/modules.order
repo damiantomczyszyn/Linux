@@ -1,3 +1,4 @@
-qrwlock.h \
-  include/linux/rwlock.h \
-    
+dth_count_to_ns(FIFO_RXTX, *divider);
+}
+
+/*

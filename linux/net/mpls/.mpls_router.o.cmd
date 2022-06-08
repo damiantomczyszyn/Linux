@@ -1,3 +1,4 @@
-d include/config/NO_HZ_FULL) \
-    $(wildcard include/config/POSIX_CPUTIMERS) \
-    $(wildcard 
+k_struct *curr,
+				 struct task_struct *next)
+{
+	if (static_branch_unlikely(&preempt_notifier_

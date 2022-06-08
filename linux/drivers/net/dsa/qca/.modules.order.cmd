@@ -1,4 +1,1 @@
-clude/linux/build_bug.h \
-  include/linux/compiler.h \
-    $(wildcard include/config/TRACE_BRANCH_PROFILING) \
-    $(wildcard include/config/P
+cmd_drivers/net/dsa/qca/modules.order := {   echo drivers/net/dsa/qca/ar9331.ko; :; } | awk '!x[$$0]++' - > drivers/net/dsa/qca/modules.order

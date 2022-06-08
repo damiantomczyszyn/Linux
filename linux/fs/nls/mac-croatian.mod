@@ -1,1 +1,2 @@
-cmd_drivers/media/i2c/u
+,
+				&dvbsky_s950c_m88

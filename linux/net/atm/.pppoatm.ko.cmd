@@ -1,7 +1,9 @@
-/* SPDX-License-Identifier: GPL-2.0 */
-/*
- * kernel/lockdep_internals.h
- *
- * Runtime locking correctness validator
- *
- * lockdep subsystem internal fun
+e = "stat",
+		.seq_show = cpu_cfs_stat_show,
+	},
+#endif
+#ifdef CONFIG_RT_GROUP_SCHED
+	{
+		.name = "rt_runtime_us",
+		.read_s64 = cpu_rt_runtime_read,
+		

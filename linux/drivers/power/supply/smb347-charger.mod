@@ -1,2 +1,1 @@
-ude/config/PARAVIRT_XXL) \
-  arch/x86/i
+TV-HVR1700 (PCIe, OEM, No IR, full heig

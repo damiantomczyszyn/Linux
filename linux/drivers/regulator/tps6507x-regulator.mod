@@ -1,1 +1,2 @@
-    $(wildcard include/config/HIGH_RES_T
+3885_BOARD_DVBSKY_T980C:
+	case CX23885_B

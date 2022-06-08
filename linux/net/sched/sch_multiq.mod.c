@@ -1,19 +1,20 @@
-_name(read_bit));
-	}
+ueue:
 
-	return 0;
+	/*
+	 * Run the remote tick once per second (1Hz). This arbitrary
+	 * frequency is large enough to avoid overload but short enough
+	 * to keep scheduler internal stats reasonably up to date.  But
+	 * first update state to reflect hotplug activity if required.
+	 */
+	os = atomic_fetch_add_unless(&twork->state, -1, TICK_SCHED_REMOTE_RUNNING);
+	WARN_ON_ONCE(os == TICK_SCHED_REMOTE_OFFLINE);
+	if (os == TICK_SCHED_REMOTE_RUNNING)
+		queue_delayed_work(system_unbound_wq, dwork, HZ);
 }
 
-void print_irqtrace_events(struct task_struct *curr)
+static void sched_tick_start(int cpu)
 {
-	const struct irqtrace_events *trace = &curr->irqtrace;
+	int os;
+	struct tick_work *twork;
 
-	printk("irq event stamp: %u\n", trace->irq_events);
-	printk("hardirqs last  enabled at (%u): [<%px>] %pS\n",
-		trace->hardirq_enable_event, (void *)trace->hardirq_enable_ip,
-		(void *)trace->hardirq_enable_ip);
-	printk("hardirqs last disabled at (%u): [<%px>] %pS\n",
-		trace->hardirq_disable_event, (void *)trace->hardirq_disable_ip,
-		(void *)trace->hardirq_disable_ip);
-	printk("softirqs last  enabled at (%u): [<%px>] %pS\n",
-		trace->softirq_enable_event
+	if (housekeeping_cpu(cpu, HK_TYPE_TICK))

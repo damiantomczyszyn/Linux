@@ -1,3 +1,3 @@
-e/config/ACPI_APEI_GHES) \
-    $(wildcard include/config/INTEL_TXT) \
-  arch/x86/include
+d to userspace.
+ *
+ * It also sets the final jump of the previous buffer to the start of

@@ -1,2 +1,1 @@
-VE) \
-  include/linux/s
+// SPDX-License-Identif

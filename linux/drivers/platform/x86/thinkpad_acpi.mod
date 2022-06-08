@@ -1,2 +1,1 @@
-nclude/linux/page-flags-layout.h \
-   
+/* SPDX-License-Identifier: GPL-2.0-or

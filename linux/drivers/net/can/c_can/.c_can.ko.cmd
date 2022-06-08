@@ -1,5 +1,1 @@
-onfig/MODULE_SIG) \
-    $(wildcard include/config/KALLSYMS) \
-    $(wildcard include/config/BPF_EVENTS) \
-    $(wildcard include/config/DEBUG_INFO_BTF_MODULES) \
-    $(wildcard include/config/EVENT_TR
+cmd_drivers/net/can/c_can/c_can.ko := ld -r -m elf_i386 --build-id=sha1  -T scripts/module.lds -o drivers/net/can/c_can/c_can.ko drivers/net/can/c_can/c_can.o drivers/net/can/c_can/c_can.mod.o;  true

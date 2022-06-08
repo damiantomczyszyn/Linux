@@ -1,179 +1,285 @@
-nclude/linux/page-flags-layout.h \
-    $(wildcard include/config/KASAN_HW_TAGS) \
-  include/linux/numa.h \
-    $(wildcard include/config/NODES_SHIFT) \
-    $(wildcard include/config/NUMA_KEEP_MEMINFO) \
-    $(wildcard include/config/HAVE_ARCH_NODE_DEV_GROUP) \
-  arch/x86/include/asm/sparsemem.h \
-  include/generated/bounds.h \
-  include/linux/seqlock.h \
-  include/linux/ww_mutex.h \
-    $(wildcard include/config/DEBUG_RT_MUTEXES) \
-    $(wildcard include/config/DEBUG_WW_MUTEX_SLOWPATH) \
-  include/linux/rtmutex.h \
-  arch/x86/include/asm/mmu.h \
-    $(wildcard include/config/MODIFY_LDT_SYSCALL) \
-  include/linux/kmod.h \
-  include/linux/umh.h \
-  include/linux/gfp.h \
-    $(wildcard include/config/HIGHMEM) \
-    $(wildcard include/config/ZONE_DMA) \
-    $(wildcard include/config/ZONE_DMA32) \
-    $(wildcard include/config/ZONE_DEVICE) \
-    $(wildcard include/config/PM_SLEEP) \
-    $(wildcard include/config/CONTIG_ALLOC) \
-    $(wildcard include/config/CMA) \
-  include/linux/mmdebug.h \
-    $(wildcard include/config/DEBUG_VM) \
-    $(wildcard include/config/DEBUG_VM_PGFLAGS) \
-  include/linux/mmzone.h \
-    $(wildcard include/config/FORCE_MAX_ZONEORDER) \
-    $(wildcard include/config/MEMORY_ISOLATION) \
-    $(wildcard include/config/ZSMALLOC) \
-    $(wildcard include/config/MEMORY_HOTPLUG) \
-    $(wildcard include/config/COMPACTION) \
-    $(wildcard include/config/PAGE_EXTENSION) \
-    $(wildcard include/config/DEFERRED_STRUCT_PAGE_INIT) \
-    $(wildcard include/config/HAVE_MEMORYLESS_NODES) \
-    $(wildcard include/config/SPARSEMEM_EXTREME) \
-    $(wildcard include/config/HAVE_ARCH_PFN_VALID) \
-  include/linux/nodemask.h \
-  include/linux/pageblock-flags.h \
-    $(wildcard include/config/HUGETLB_PAGE_SIZE_VARIABLE) \
-  include/linux/page-flags.h \
-    $(wildcard include/config/ARCH_USES_PG_UNCACHED) \
-    $(wildcard include/config/MEMORY_FAILURE) \
-    $(wildcard include/config/PAGE_IDLE_FLAG) \
-    $(wildcard include/config/HUGETLB_PAGE_FREE_VMEMMAP) \
-    $(wildcard include/config/HUGETLB_PAGE_FREE_VMEMMAP_DEFAULT_ON) \
-    $(wildcard include/config/KSM) \
-  include/linux/local_lock.h \
-  include/linux/local_lock_internal.h \
-  include/linux/memory_hotplug.h \
-    $(wildcard include/config/HAVE_ARCH_NODEDATA_EXTENSION) \
-    $(wildcard include/config/ARCH_HAS_ADD_PAGES) \
-    $(wildcard include/config/MEMORY_HOTREMOVE) \
-  arch/x86/include/asm/mmzone.h \
-  arch/x86/include/asm/mmzone_32.h \
-  include/linux/topology.h \
-    $(wildcard include/config/USE_PERCPU_NUMA_NODE_ID) \
-    $(wildcard include/config/SCHED_SMT) \
-    $(wildcard include/config/SCHED_CLUSTER) \
-  include/linux/arch_topology.h \
-    $(wildcard include/config/ACPI_CPPC_LIB) \
-    $(wildcard include/config/GENERIC_ARCH_TOPOLOGY) \
-  include/linux/percpu.h \
-    $(wildcard include/config/NEED_PER_CPU_EMBED_FIRST_CHUNK) \
-    $(wildcard include/config/NEED_PER_CPU_PAGE_FIRST_CHUNK) \
-  arch/x86/include/asm/topology.h \
-    $(wildcard include/config/SCHED_MC_PRIO) \
-  arch/x86/include/asm/mpspec.h \
-    $(wildcard include/config/EISA) \
-    $(wildcard include/config/X86_MPPARSE) \
-  arch/x86/include/asm/mpspec_def.h \
-  arch/x86/include/asm/x86_init.h \
-  arch/x86/include/asm/apicdef.h \
-  include/asm-generic/topology.h \
-  include/linux/sysctl.h \
-    $(wildcard include/config/SYSCTL) \
-  include/uapi/linux/sysctl.h \
-  include/linux/elf.h \
-    $(wildcard include/config/ARCH_USE_GNU_PROPERTY) \
-    $(wildcard include/config/ARCH_HAVE_ELF_PROT) \
-  arch/x86/include/asm/elf.h \
-    $(wildcard include/config/X86_X32_ABI) \
-  arch/x86/include/asm/user.h \
-  arch/x86/include/asm/user_32.h \
-  arch/x86/include/asm/fsgsbase.h \
-  arch/x86/include/asm/vdso.h \
-  arch/x86/include/asm/desc.h \
-  arch/x86/include/asm/fixmap.h \
-    $(wildcard include/config/DEBUG_KMAP_LOCAL_FORCE_MAP) \
-    $(wildcard include/config/X86_VSYSCALL_EMULATION) \
-    $(wildcard include/config/PROVIDE_OHCI1394_DMA_INIT) \
-    $(wildcard include/config/X86_IO_APIC) \
-    $(wildcard include/config/KMAP_LOCAL) \
-    $(wildcard include/config/PCI_MMCONFIG) \
-    $(wildcard include/config/ACPI_APEI_GHES) \
-    $(wildcard include/config/INTEL_TXT) \
-  arch/x86/include/generated/asm/kmap_size.h \
-  include/asm-generic/kmap_size.h \
-    $(wildcard include/config/DEBUG_KMAP_LOCAL) \
-  include/asm-generic/fixmap.h \
-  arch/x86/include/asm/irq_vectors.h \
-    $(wildcard include/config/HAVE_KVM) \
-    $(wildcard include/config/HYPERV) \
-    $(wildcard include/config/PCI_MSI) \
-  arch/x86/include/asm/cpu_entry_area.h \
-  arch/x86/include/asm/intel_ds.h \
-  arch/x86/include/asm/pgtable_areas.h \
-  arch/x86/include/asm/pgtable_32_areas.h \
-  include/uapi/linux/elf.h \
-  include/uapi/linux/elf-em.h \
-  include/linux/kobject.h \
-    $(wildcard include/config/UEVENT_HELPER) \
-    $(wildcard include/config/DEBUG_KOBJECT_RELEASE) \
-  include/linux/sysfs.h \
-  include/linux/kernfs.h \
-    $(wildcard include/config/KERNFS) \
-  include/linux/idr.h \
-  include/linux/radix-tree.h \
-  include/linux/xarray.h \
-    $(wildcard include/config/XARRAY_MULTI) \
-  include/linux/kconfig.h \
-  include/linux/kobject_ns.h \
-  include/linux/moduleparam.h \
-    $(wildcard include/config/ALPHA) \
-    $(wildcard include/config/IA64) \
-    $(wildcard include/config/PPC64) \
-  include/linux/rbtree_latch.h \
-  include/linux/error-injection.h \
-  include/asm-generic/error-injection.h \
-  include/linux/cfi.h \
-    $(wildcard include/config/CFI_CLANG_SHADOW) \
-  arch/x86/include/asm/module.h \
-    $(wildcard include/config/UNWINDER_ORC) \
-  include/asm-generic/module.h \
-    $(wildcard include/config/HAVE_MOD_ARCH_SPECIFIC) \
-    $(wildcard include/config/MODULES_USE_ELF_REL) \
-    $(wildcard include/config/MODULES_USE_ELF_RELA) \
-  arch/x86/include/asm/orc_types.h \
-  include/linux/i2c.h \
-    $(wildcard include/config/I2C) \
-    $(wildcard include/config/I2C_SLAVE) \
-    $(wildcard include/config/I2C_BOARDINFO) \
-    $(wildcard include/config/I2C_MUX) \
-    $(wildcard include/config/OF) \
-    $(wildcard include/config/ACPI) \
-  include/linux/acpi.h \
-    $(wildcard include/config/ACPI_DEBUGGER) \
-    $(wildcard include/config/ACPI_TABLE_LIB) \
-    $(wildcard include/config/LOONGARCH) \
-    $(wildcard include/config/ARM64) \
-    $(wildcard include/config/ACPI_PROCESSOR_CSTATE) \
-    $(wildcard include/config/ACPI_HOTPLUG_CPU) \
-    $(wildcard include/config/ACPI_HOTPLUG_IOAPIC) \
-    $(wildcard include/config/PCI) \
-    $(wildcard include/config/ACPI_WMI) \
-    $(wildcard include/config/ACPI_NUMA) \
-    $(wildcard include/config/HIBERNATION) \
-    $(wildcard include/config/ACPI_HOTPLUG_MEMORY) \
-    $(wildcard include/config/ACPI_CONTAINER) \
-    $(wildcard include/config/ACPI_GTDT) \
-    $(wildcard include/config/PM) \
-    $(wildcard include/config/GPIOLIB) \
-    $(wildcard include/config/ACPI_TABLE_UPGRADE) \
-    $(wildcard include/config/ACPI_WATCHDOG) \
-    $(wildcard include/config/ACPI_SPCR_TABLE) \
-    $(wildcard include/config/ACPI_GENERIC_GSI) \
-    $(wildcard include/config/ACPI_LPIT) \
-    $(wildcard include/config/ACPI_PPTT) \
-    $(wildcard include/config/ACPI_PCC) \
-  include/linux/ioport.h \
-  include/linux/irqdomain.h \
-    $(wildcard include/config/IRQ_DOMAIN_HIERARCHY) \
-    $(wildcard include/config/GENERIC_IRQ_DEBUGFS) \
-    $(wildcard include/config/IRQ_DOMAIN) \
-    $(wildcard include/config/IRQ_DOMAIN_NOMAP) \
-  include/linux/irqhandler.h \
-  incl
+// SPDX-License-Identifier: GPL-2.0
+//
+// mcp251xfd - Microchip MCP251xFD Family CAN controller driver
+//
+// Copyright (c) 2020, 2021 Pengutronix,
+//               Marc Kleine-Budde <kernel@pengutronix.de>
+// Copyright (C) 2015-2018 Etnaviv Project
+//
+
+#include <linux/devcoredump.h>
+
+#include "mcp251xfd.h"
+#include "mcp251xfd-dump.h"
+
+struct mcp251xfd_dump_iter {
+	void *start;
+	struct mcp251xfd_dump_object_header *hdr;
+	void *data;
+};
+
+struct mcp251xfd_dump_reg_space {
+	u16 base;
+	u16 size;
+};
+
+struct mcp251xfd_dump_ring {
+	enum mcp251xfd_dump_object_ring_key key;
+	u32 val;
+};
+
+static const struct mcp251xfd_dump_reg_space mcp251xfd_dump_reg_space[] = {
+	{
+		.base = MCP251XFD_REG_CON,
+		.size = MCP251XFD_REG_FLTOBJ(32) - MCP251XFD_REG_CON,
+	}, {
+		.base = MCP251XFD_RAM_START,
+		.size = MCP251XFD_RAM_SIZE,
+	}, {
+		.base = MCP251XFD_REG_OSC,
+		.size = MCP251XFD_REG_DEVID - MCP251XFD_REG_OSC,
+	},
+};
+
+static void mcp251xfd_dump_header(struct mcp251xfd_dump_iter *iter,
+				  enum mcp251xfd_dump_object_type object_type,
+				  const void *data_end)
+{
+	struct mcp251xfd_dump_object_header *hdr = iter->hdr;
+	unsigned int len;
+
+	len = data_end - iter->data;
+	if (!len)
+		return;
+
+	hdr->magic = cpu_to_le32(MCP251XFD_DUMP_MAGIC);
+	hdr->type = cpu_to_le32(object_type);
+	hdr->offset = cpu_to_le32(iter->data - iter->start);
+	hdr->len = cpu_to_le32(len);
+
+	iter->hdr++;
+	iter->data += len;
+}
+
+static void mcp251xfd_dump_registers(const struct mcp251xfd_priv *priv,
+				     struct mcp251xfd_dump_iter *iter)
+{
+	const int val_bytes = regmap_get_val_bytes(priv->map_rx);
+	struct mcp251xfd_dump_object_reg *reg = iter->data;
+	unsigned int i, j;
+	int err;
+
+	for (i = 0; i < ARRAY_SIZE(mcp251xfd_dump_reg_space); i++) {
+		const struct mcp251xfd_dump_reg_space *reg_space;
+		void *buf;
+
+		reg_space = &mcp251xfd_dump_reg_space[i];
+
+		buf = kmalloc(reg_space->size, GFP_KERNEL);
+		if (!buf)
+			goto out;
+
+		err = regmap_bulk_read(priv->map_reg, reg_space->base,
+				       buf, reg_space->size / val_bytes);
+		if (err) {
+			kfree(buf);
+			continue;
+		}
+
+		for (j = 0; j < reg_space->size; j += sizeof(u32), reg++) {
+			reg->reg = cpu_to_le32(reg_space->base + j);
+			reg->val = cpu_to_le32p(buf + j);
+		}
+
+		kfree(buf);
+	}
+
+ out:
+	mcp251xfd_dump_header(iter, MCP251XFD_DUMP_OBJECT_TYPE_REG, reg);
+}
+
+static void mcp251xfd_dump_ring(struct mcp251xfd_dump_iter *iter,
+				enum mcp251xfd_dump_object_type object_type,
+				const struct mcp251xfd_dump_ring *dump_ring,
+				unsigned int len)
+{
+	struct mcp251xfd_dump_object_reg *reg = iter->data;
+	unsigned int i;
+
+	for (i = 0; i < len; i++, reg++) {
+		reg->reg = cpu_to_le32(dump_ring[i].key);
+		reg->val = cpu_to_le32(dump_ring[i].val);
+	}
+
+	mcp251xfd_dump_header(iter, object_type, reg);
+}
+
+static void mcp251xfd_dump_tef_ring(const struct mcp251xfd_priv *priv,
+				    struct mcp251xfd_dump_iter *iter)
+{
+	const struct mcp251xfd_tef_ring *tef = priv->tef;
+	const struct mcp251xfd_tx_ring *tx = priv->tx;
+	const struct mcp251xfd_dump_ring dump_ring[] = {
+		{
+			.key = MCP251XFD_DUMP_OBJECT_RING_KEY_HEAD,
+			.val = tef->head,
+		}, {
+			.key = MCP251XFD_DUMP_OBJECT_RING_KEY_TAIL,
+			.val = tef->tail,
+		}, {
+			.key = MCP251XFD_DUMP_OBJECT_RING_KEY_BASE,
+			.val = 0,
+		}, {
+			.key = MCP251XFD_DUMP_OBJECT_RING_KEY_NR,
+			.val = 0,
+		}, {
+			.key = MCP251XFD_DUMP_OBJECT_RING_KEY_FIFO_NR,
+			.val = 0,
+		}, {
+			.key = MCP251XFD_DUMP_OBJECT_RING_KEY_OBJ_NUM,
+			.val = tx->obj_num,
+		}, {
+			.key = MCP251XFD_DUMP_OBJECT_RING_KEY_OBJ_SIZE,
+			.val = sizeof(struct mcp251xfd_hw_tef_obj),
+		},
+	};
+
+	mcp251xfd_dump_ring(iter, MCP251XFD_DUMP_OBJECT_TYPE_TEF,
+			    dump_ring, ARRAY_SIZE(dump_ring));
+}
+
+static void mcp251xfd_dump_rx_ring_one(const struct mcp251xfd_priv *priv,
+				       struct mcp251xfd_dump_iter *iter,
+				       const struct mcp251xfd_rx_ring *rx)
+{
+	const struct mcp251xfd_dump_ring dump_ring[] = {
+		{
+			.key = MCP251XFD_DUMP_OBJECT_RING_KEY_HEAD,
+			.val = rx->head,
+		}, {
+			.key = MCP251XFD_DUMP_OBJECT_RING_KEY_TAIL,
+			.val = rx->tail,
+		}, {
+			.key = MCP251XFD_DUMP_OBJECT_RING_KEY_BASE,
+			.val = rx->base,
+		}, {
+			.key = MCP251XFD_DUMP_OBJECT_RING_KEY_NR,
+			.val = rx->nr,
+		}, {
+			.key = MCP251XFD_DUMP_OBJECT_RING_KEY_FIFO_NR,
+			.val = rx->fifo_nr,
+		}, {
+			.key = MCP251XFD_DUMP_OBJECT_RING_KEY_OBJ_NUM,
+			.val = rx->obj_num,
+		}, {
+			.key = MCP251XFD_DUMP_OBJECT_RING_KEY_OBJ_SIZE,
+			.val = rx->obj_size,
+		},
+	};
+
+	mcp251xfd_dump_ring(iter, MCP251XFD_DUMP_OBJECT_TYPE_RX,
+			    dump_ring, ARRAY_SIZE(dump_ring));
+}
+
+static void mcp251xfd_dump_rx_ring(const struct mcp251xfd_priv *priv,
+				   struct mcp251xfd_dump_iter *iter)
+{
+	struct mcp251xfd_rx_ring *rx_ring;
+	unsigned int i;
+
+	mcp251xfd_for_each_rx_ring(priv, rx_ring, i)
+		mcp251xfd_dump_rx_ring_one(priv, iter, rx_ring);
+}
+
+static void mcp251xfd_dump_tx_ring(const struct mcp251xfd_priv *priv,
+				   struct mcp251xfd_dump_iter *iter)
+{
+	const struct mcp251xfd_tx_ring *tx = priv->tx;
+	const struct mcp251xfd_dump_ring dump_ring[] = {
+		{
+			.key = MCP251XFD_DUMP_OBJECT_RING_KEY_HEAD,
+			.val = tx->head,
+		}, {
+			.key = MCP251XFD_DUMP_OBJECT_RING_KEY_TAIL,
+			.val = tx->tail,
+		}, {
+			.key = MCP251XFD_DUMP_OBJECT_RING_KEY_BASE,
+			.val = tx->base,
+		}, {
+			.key = MCP251XFD_DUMP_OBJECT_RING_KEY_NR,
+			.val = tx->nr,
+		}, {
+			.key = MCP251XFD_DUMP_OBJECT_RING_KEY_FIFO_NR,
+			.val = tx->fifo_nr,
+		}, {
+			.key = MCP251XFD_DUMP_OBJECT_RING_KEY_OBJ_NUM,
+			.val = tx->obj_num,
+		}, {
+			.key = MCP251XFD_DUMP_OBJECT_RING_KEY_OBJ_SIZE,
+			.val = tx->obj_size,
+		},
+	};
+
+	mcp251xfd_dump_ring(iter, MCP251XFD_DUMP_OBJECT_TYPE_TX,
+			    dump_ring, ARRAY_SIZE(dump_ring));
+}
+
+static void mcp251xfd_dump_end(const struct mcp251xfd_priv *priv,
+			       struct mcp251xfd_dump_iter *iter)
+{
+	struct mcp251xfd_dump_object_header *hdr = iter->hdr;
+
+	hdr->magic = cpu_to_le32(MCP251XFD_DUMP_MAGIC);
+	hdr->type = cpu_to_le32(MCP251XFD_DUMP_OBJECT_TYPE_END);
+	hdr->offset = cpu_to_le32(0);
+	hdr->len = cpu_to_le32(0);
+
+	/* provoke NULL pointer access, if used after END object */
+	iter->hdr = NULL;
+}
+
+void mcp251xfd_dump(const struct mcp251xfd_priv *priv)
+{
+	struct mcp251xfd_dump_iter iter;
+	unsigned int rings_num, obj_num;
+	unsigned int file_size = 0;
+	unsigned int i;
+
+	/* register space + end marker */
+	obj_num = 2;
+
+	/* register space */
+	for (i = 0; i < ARRAY_SIZE(mcp251xfd_dump_reg_space); i++)
+		file_size += mcp251xfd_dump_reg_space[i].size / sizeof(u32) *
+			sizeof(struct mcp251xfd_dump_object_reg);
+
+	/* TEF ring, RX ring, TX rings */
+	rings_num = 1 + priv->rx_ring_num + 1;
+	obj_num += rings_num;
+	file_size += rings_num * __MCP251XFD_DUMP_OBJECT_RING_KEY_MAX  *
+		sizeof(struct mcp251xfd_dump_object_reg);
+
+	/* size of the headers */
+	file_size += sizeof(*iter.hdr) * obj_num;
+
+	/* allocate the file in vmalloc memory, it's likely to be big */
+	iter.start = __vmalloc(file_size, GFP_KERNEL | __GFP_NOWARN |
+			       __GFP_ZERO | __GFP_NORETRY);
+	if (!iter.start) {
+		netdev_warn(priv->ndev, "Failed to allocate devcoredump file.\n");
+		return;
+	}
+
+	/* point the data member after the headers */
+	iter.hdr = iter.start;
+	iter.data = &iter.hdr[obj_num];
+
+	mcp251xfd_dump_registers(priv, &iter);
+	mcp251xfd_dump_tef_ring(priv, &iter);
+	mcp251xfd_dump_rx_ring(priv, &iter);
+	mcp251xfd_dump_tx_ring(priv, &iter);
+	mcp251xfd_dump_end(priv, &iter);
+
+	dev_coredumpv(&priv->spi->dev, iter.start,
+		      iter.data - iter.start, GFP_KERNEL);
+}

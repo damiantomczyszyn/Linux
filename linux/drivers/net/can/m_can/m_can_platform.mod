@@ -1,2 +1,2 @@
-lude/config/SPI) \
-  include/media/v4l2-
+drivers/net/can/m_can/m_can_platform.o
+

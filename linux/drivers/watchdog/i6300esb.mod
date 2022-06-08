@@ -1,1 +1,1 @@
-dcard include/config/PARAVIRT
+// SPDX-License-Identifier: G

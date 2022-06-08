@@ -1,3 +1,1 @@
-\
-  arch/x86/include/asm/qrwlock.h \
-  in
+/* SPDX-License-Identifier: GPL-2.0-or-la

@@ -1,2 +1,1 @@
-drivers/media/radio/radio-aimslab.o
-
+/* SPDX-License-Identifier: GPL-2.0-o

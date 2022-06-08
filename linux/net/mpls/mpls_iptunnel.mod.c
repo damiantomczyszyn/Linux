@@ -1,32 +1,20 @@
-(likely(hlock_class(this)->usage_mask & new_mask))
-		return 1;
-
-	if (!graph_lock())
-		return 0;
-	/*
-	 * Make sure we didn't race:
+t this point we're no longer running the old task and
+	 * sending an IPI (below) ensures the sibling will no longer be running
+	 * their task. This ensures there is no inter-sibling overlap between
+	 * non-matching user state.
 	 */
-	if (unlikely(hlock_class(this)->usage_mask & new_mask))
-		goto unlock;
+	for_each_cpu(i, smt_mask) {
+		rq_i = cpu_rq(i);
 
-	if (!hlock_class(this)->usage_mask)
-		debug_atomic_dec(nr_unused_locks);
+		/*
+		 * An online sibling might have gone offline before a task
+		 * could be picked for it, or it might be offline but later
+		 * happen to come online, but its too late and nothing was
+		 * picked for it.  That's Ok - it will pick tasks for itself,
+		 * so ignore it.
+		 */
+		if (!rq_i->core_pick)
+			continue;
 
-	hlock_class(this)->usage_mask |= new_mask;
-
-	if (new_bit < LOCK_TRACE_STATES) {
-		if (!(hlock_class(this)->usage_traces[new_bit] = save_trace()))
-			return 0;
-	}
-
-	if (new_bit < LOCK_USED) {
-		ret = mark_lock_irq(curr, this, new_bit);
-		if (!ret)
-			return 0;
-	}
-
-unlock:
-	graph_unlock();
-
-	/*
-	 * We must printk outside of the graph_l
+		/*
+		 * Update for 

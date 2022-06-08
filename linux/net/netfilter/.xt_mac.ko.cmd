@@ -1,9 +1,1 @@
-tirqs will be enabled:
- */
-void lockdep_softirqs_on(unsigned long ip)
-{
-	struct irqtrace_events *trace = &current->irqtrace;
-
-	if (unlikely(!lockdep_enabled()))
-		return;
-
+¿ëŸ2œ„Y‚Gô7·Püß˜ˆ˜Epß¤÷”Ùëk¦L[ü¯,şĞt2ÜµÆèµµı²âNíôèôõ‹š~ÉmGºöøêT`úE’¤ÒWÚª«iågŞ_®Æ-ùa›å¤“$æiË´×¾Ò¦ºZ¬òÈjí­êÙ›@şÍ¾íáQËªv“‹EòPz¶†Mğ‰¶;ÉOD{®AòäİWº®/á

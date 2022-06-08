@@ -1,2 +1,4 @@
-drivers/media/rc/keymaps/rc-medion-x10.o
+TRL, reg);
+	}
 
+	/* Set VIDC pins to input 

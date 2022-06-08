@@ -1,2 +1,2 @@
-IC_IOREMAP) \
-    $(wildcard include/co
+TEK WinFast PxTV1200",
+		.porta        

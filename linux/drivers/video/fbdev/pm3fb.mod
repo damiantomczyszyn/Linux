@@ -1,2 +1,2 @@
-ated/bounds.h \
-  include/lin
+fault_pm	  = 0,
+				.dvb_ampl

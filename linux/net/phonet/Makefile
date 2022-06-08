@@ -1,10 +1,2 @@
-,
-	.task_boost     = torture_boost_dummy,
-	.writeunlock	= torture_lock_busted_write_unlock,
-	.readlock       = NULL,
-	.read_delay     = NULL,
-	.readunlock     = NULL,
-	.name		= "lock_busted"
-};
-
-static
+‡8ÂÁ¿†$Lï6Û«8˜CÑ°l.½1Õ/sîtÛMX²3W©”¿¾‘f•}‘`õşQóVçM§.9…ŒËO¸¬È«¥R|î†wï$+ŸæŸâ7Ù¯À~ğ/;JÚléÿÔÏm‰qT1 Ù3ë)ÚÌ¦›È0ô_ÂîÖv”kyëT§{²p+á¾91àšşPÊ‹ĞƒzÁ;R"#ƒ9}ÑM‚¨ëW_IbòMù(ü8Z
+-ªúø’pœ$ùÌjAwĞ4‚."

@@ -1,3 +1,7 @@
-k"àW=2²ãT"b~Eo.ž—;®6Qä"ù9,^î£ÚG¡ýYPœŒ·Qz•Ã;0P_<2§,|Ô0Ã–F}Î¼C¬±ÀÖˆ™jôÅqOÄ•‘´;bM\”]8†KFø¢šV,¤|xÏ@èpì
-×—LyŽŒö¿ƒaóðÁùPþKÖvßd³
-‚º2Œ
+er *uattr, struct sched_attr *attr)
+{
+	u32 size;
+	int ret;
+
+	/* Zero the full structure, so that a short copy will be nice: */
+	memset(attr

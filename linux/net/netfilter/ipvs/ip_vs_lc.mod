@@ -1,1 +1,2 @@
-(void *)&count, noop_count, NUL
+K_RCD + 1)
+		count = RXCLK_RCD;

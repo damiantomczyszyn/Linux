@@ -1,2 +1,1 @@
-EAF) \
-  include/linux/page-flags-
+!try_module_get(client_tuner->dev.

@@ -1,2 +1,9 @@
-âƒ:‡=#„—ÞÕ…èiÄP@Á|2øbbÖUÑi.•;7Ç–¼WN3'˜ž·87¼„JBÊíhe.ÕxèZ—è`¡µ-'Dþ	5|3£ë¢"Òd’„–BšgˆŽÁYº«.ð«¹¾È—J÷æ²Î=S
-ó­_S-`£Ô³„jª¤…òÜ6¬ÚËm,ˆ%•Dç0â.=4AÍfAzÄ	ä QôžÔÏÂ}”ÊQÖÿÄ—Ú¼4ä¨mÁ
+ze, &risc->dma,
+				       GFP_KERNEL);
+	if (risc->cpu == NULL)
+		return -ENOMEM;
+
+	/* write risc instructions */
+	rp = risc->cpu;
+	if (UNSET != top_offset)
+		rp = cx23885_risc_field(rp, s

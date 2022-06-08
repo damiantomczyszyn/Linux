@@ -1,92 +1,17 @@
-/* SPDX-License-Identifier: GPL-2.0 */
-/*
- * kernel/lockdep_internals.h
- *
- * Runtime locking correctness validator
- *
- * lockdep subsystem internal functions and variables.
- */
+cmd_drivers/media/pci/cx18/cx18.mod.o := gcc -Wp,-MMD,drivers/media/pci/cx18/.cx18.mod.o.d -nostdinc -I./arch/x86/include -I./arch/x86/include/generated -I./include -I./arch/x86/include/uapi -I./arch/x86/include/generated/uapi -I./include/uapi -I./include/generated/uapi -include ./include/linux/compiler-version.h -include ./include/linux/kconfig.h -include ./include/linux/compiler_types.h -D__KERNEL__ -fmacro-prefix-map=./= -Wall -Wundef -Werror=strict-prototypes -Wno-trigraphs -fno-strict-aliasing -fno-common -fshort-wchar -fno-PIE -Werror=implicit-function-declaration -Werror=implicit-int -Werror=return-type -Wno-format-security -std=gnu11 -mno-sse -mno-mmx -mno-sse2 -mno-3dnow -mno-avx -fcf-protection=none -m32 -msoft-float -mregparm=3 -freg-struct-return -fno-pic -mpreferred-stack-boundary=2 -march=i686 -mtune=pentium3 -mtune=generic -Wa,-mtune=generic32 -ffreestanding -mstack-protector-guard-reg=fs -mstack-protector-guard-symbol=__stack_chk_guard -Wno-sign-compare -fno-asynchronous-unwind-tables -mindirect-branch=thunk-extern -mindirect-branch-register -fno-jump-tables -fno-delete-null-pointer-checks -Wno-frame-address -Wno-format-truncation -Wno-format-overflow -Wno-address-of-packed-member -O2 -fno-allow-store-data-races -fstack-protector-strong -Wimplicit-fallthrough=5 -Wno-main -Wno-unused-but-set-variable -Wno-unused-const-variable -fno-stack-clash-protection -pg -mrecord-mcount -mfentry -DCC_USING_FENTRY -Wdeclaration-after-statement -Wvla -Wno-pointer-sign -Wcast-function-type -Wno-stringop-truncation -Wno-stringop-overflow -Wno-restrict -Wno-maybe-uninitialized -Wno-alloc-size-larger-than -fno-strict-overflow -fno-stack-check -fconserve-stack -Werror=date-time -Werror=incompatible-pointer-types -Werror=designated-init -Wno-packed-not-aligned -DMODULE -DKBUILD_BASENAME='"cx18.mod"' -DKBUILD_MODNAME='"cx18"' -D__KBUILD_MODNAME=kmod_cx18 -c -o drivers/media/pci/cx18/cx18.mod.o drivers/media/pci/cx18/cx18.mod.c
 
-/*
- * Lock-class usage-state bits:
- */
-enum lock_usage_bit {
-#define LOCKDEP_STATE(__STATE)		\
-	LOCK_USED_IN_##__STATE,		\
-	LOCK_USED_IN_##__STATE##_READ,	\
-	LOCK_ENABLED_##__STATE,		\
-	LOCK_ENABLED_##__STATE##_READ,
-#include "lockdep_states.h"
-#undef LOCKDEP_STATE
-	LOCK_USED,
-	LOCK_USED_READ,
-	LOCK_USAGE_STATES,
-};
+source_drivers/media/pci/cx18/cx18.mod.o := drivers/media/pci/cx18/cx18.mod.c
 
-/* states after LOCK_USED_READ are not traced and printed */
-static_assert(LOCK_TRACE_STATES == LOCK_USAGE_STATES);
-
-#define LOCK_USAGE_READ_MASK 1
-#define LOCK_USAGE_DIR_MASK  2
-#define LOCK_USAGE_STATE_MASK (~(LOCK_USAGE_READ_MASK | LOCK_USAGE_DIR_MASK))
-
-/*
- * Usage-state bitmasks:
- */
-#define __LOCKF(__STATE)	LOCKF_##__STATE = (1 << LOCK_##__STATE),
-
-enum {
-#define LOCKDEP_STATE(__STATE)						\
-	__LOCKF(USED_IN_##__STATE)					\
-	__LOCKF(USED_IN_##__STATE##_READ)				\
-	__LOCKF(ENABLED_##__STATE)					\
-	__LOCKF(ENABLED_##__STATE##_READ)
-#include "lockdep_states.h"
-#undef LOCKDEP_STATE
-	__LOCKF(USED)
-	__LOCKF(USED_READ)
-};
-
-#define LOCKDEP_STATE(__STATE)	LOCKF_ENABLED_##__STATE |
-static const unsigned long LOCKF_ENABLED_IRQ =
-#include "lockdep_states.h"
-	0;
-#undef LOCKDEP_STATE
-
-#define LOCKDEP_STATE(__STATE)	LOCKF_USED_IN_##__STATE |
-static const unsigned long LOCKF_USED_IN_IRQ =
-#include "lockdep_states.h"
-	0;
-#undef LOCKDEP_STATE
-
-#define LOCKDEP_STATE(__STATE)	LOCKF_ENABLED_##__STATE##_READ |
-static const unsigned long LOCKF_ENABLED_IRQ_READ =
-#include "lockdep_states.h"
-	0;
-#undef LOCKDEP_STATE
-
-#define LOCKDEP_STATE(__STATE)	LOCKF_USED_IN_##__STATE##_READ |
-static const unsigned long LOCKF_USED_IN_IRQ_READ =
-#include "lockdep_states.h"
-	0;
-#undef LOCKDEP_STATE
-
-#define LOCKF_ENABLED_IRQ_ALL (LOCKF_ENABLED_IRQ | LOCKF_ENABLED_IRQ_READ)
-#define LOCKF_USED_IN_IRQ_ALL (LOCKF_USED_IN_IRQ | LOCKF_USED_IN_IRQ_READ)
-
-#define LOCKF_IRQ (LOCKF_ENABLED_IRQ | LOCKF_USED_IN_IRQ)
-#define LOCKF_IRQ_READ (LOCKF_ENABLED_IRQ_READ | LOCKF_USED_IN_IRQ_READ)
-
-/*
- * CONFIG_LOCKDEP_SMALL is defined for sparc. Sparc requires .text,
- * .data and .bss to fit in required 32MB limit for the kernel. With
- * CONFIG_LOCKDEP we could go over this limit and cause system boot-up problems.
- * So, reduce the static allocations for lockdeps related structures so that
- * everything fits in current required size limit.
- */
-#ifdef CONFIG_LOCKDEP_SMALL
-/*
- * MAX_LOCKDEP_ENTRIES is the maximum number of lock dependencies
- * we track.
- *
- * We use the per-lock dependenc
+deps_drivers/media/pci/cx18/cx18.mod.o := \
+    $(wildcard include/config/MODULE_UNLOAD) \
+    $(wildcard include/config/RETPOLINE) \
+  include/linux/compiler-version.h \
+    $(wildcard include/config/CC_VERSION_TEXT) \
+  include/linux/kconfig.h \
+    $(wildcard include/config/CPU_BIG_ENDIAN) \
+    $(wildcard include/config/BOOGER) \
+    $(wildcard include/config/FOO) \
+  include/linux/compiler_types.h \
+    $(wildcard include/config/DEBUG_INFO_BTF) \
+    $(wildcard include/config/PAHOLE_HAS_BTF_TAG) \
+    $(wildcard include/con

@@ -1,177 +1,319 @@
-e/linux/rwlock.h \
-    $(wildcard include/config/PREEMPT) \
-  include/linux/spinlock_api_smp.h \
-    $(wildcard include/config/INLINE_SPIN_LOCK) \
-    $(wildcard include/config/INLINE_SPIN_LOCK_BH) \
-    $(wildcard include/config/INLINE_SPIN_LOCK_IRQ) \
-    $(wildcard include/config/INLINE_SPIN_LOCK_IRQSAVE) \
-    $(wildcard include/config/INLINE_SPIN_TRYLOCK) \
-    $(wildcard include/config/INLINE_SPIN_TRYLOCK_BH) \
-    $(wildcard include/config/UNINLINE_SPIN_UNLOCK) \
-    $(wildcard include/config/INLINE_SPIN_UNLOCK_BH) \
-    $(wildcard include/config/INLINE_SPIN_UNLOCK_IRQ) \
-    $(wildcard include/config/INLINE_SPIN_UNLOCK_IRQRESTORE) \
-    $(wildcard include/config/GENERIC_LOCKBREAK) \
-  include/linux/rwlock_api_smp.h \
-    $(wildcard include/config/INLINE_READ_LOCK) \
-    $(wildcard include/config/INLINE_WRITE_LOCK) \
-    $(wildcard include/config/INLINE_READ_LOCK_BH) \
-    $(wildcard include/config/INLINE_WRITE_LOCK_BH) \
-    $(wildcard include/config/INLINE_READ_LOCK_IRQ) \
-    $(wildcard include/config/INLINE_WRITE_LOCK_IRQ) \
-    $(wildcard include/config/INLINE_READ_LOCK_IRQSAVE) \
-    $(wildcard include/config/INLINE_WRITE_LOCK_IRQSAVE) \
-    $(wildcard include/config/INLINE_READ_TRYLOCK) \
-    $(wildcard include/config/INLINE_WRITE_TRYLOCK) \
-    $(wildcard include/config/INLINE_READ_UNLOCK) \
-    $(wildcard include/config/INLINE_WRITE_UNLOCK) \
-    $(wildcard include/config/INLINE_READ_UNLOCK_BH) \
-    $(wildcard include/config/INLINE_WRITE_UNLOCK_BH) \
-    $(wildcard include/config/INLINE_READ_UNLOCK_IRQ) \
-    $(wildcard include/config/INLINE_WRITE_UNLOCK_IRQ) \
-    $(wildcard include/config/INLINE_READ_UNLOCK_IRQRESTORE) \
-    $(wildcard include/config/INLINE_WRITE_UNLOCK_IRQRESTORE) \
-  include/linux/refcount.h \
-  include/linux/rbtree.h \
-  include/linux/rbtree_types.h \
-  include/linux/rcupdate.h \
-    $(wildcard include/config/PREEMPT_RCU) \
-    $(wildcard include/config/TINY_RCU) \
-    $(wildcard include/config/RCU_STRICT_GRACE_PERIOD) \
-    $(wildcard include/config/TASKS_RCU_GENERIC) \
-    $(wildcard include/config/RCU_STALL_COMMON) \
-    $(wildcard include/config/NO_HZ_FULL) \
-    $(wildcard include/config/RCU_NOCB_CPU) \
-    $(wildcard include/config/TASKS_RCU) \
-    $(wildcard include/config/TASKS_TRACE_RCU) \
-    $(wildcard include/config/TASKS_RUDE_RCU) \
-    $(wildcard include/config/TREE_RCU) \
-    $(wildcard include/config/DEBUG_OBJECTS_RCU_HEAD) \
-    $(wildcard include/config/PROVE_RCU) \
-    $(wildcard include/config/ARCH_WEAK_RELEASE_ACQUIRE) \
-  include/linux/rcutree.h \
-  include/linux/rwsem.h \
-    $(wildcard include/config/RWSEM_SPIN_ON_OWNER) \
-    $(wildcard include/config/DEBUG_RWSEMS) \
-  include/linux/osq_lock.h \
-  include/linux/completion.h \
-  include/linux/swait.h \
-  include/linux/wait.h \
-  include/uapi/linux/wait.h \
-  include/linux/uprobes.h \
-    $(wildcard include/config/UPROBES) \
-  arch/x86/include/asm/uprobes.h \
-  include/linux/notifier.h \
-  include/linux/mutex.h \
-    $(wildcard include/config/MUTEX_SPIN_ON_OWNER) \
-    $(wildcard include/config/DEBUG_MUTEXES) \
-  include/linux/debug_locks.h \
-  include/linux/srcu.h \
-    $(wildcard include/config/TINY_SRCU) \
-    $(wildcard include/config/SRCU) \
-  include/linux/workqueue.h \
-    $(wildcard include/config/DEBUG_OBJECTS_WORK) \
-    $(wildcard include/config/FREEZER) \
-    $(wildcard include/config/WQ_WATCHDOG) \
-  include/linux/timer.h \
-    $(wildcard include/config/DEBUG_OBJECTS_TIMERS) \
-    $(wildcard include/config/NO_HZ_COMMON) \
-  include/linux/ktime.h \
-  include/linux/jiffies.h \
-  include/vdso/jiffies.h \
-  include/generated/timeconst.h \
-  include/vdso/ktime.h \
-  include/linux/timekeeping.h \
-    $(wildcard include/config/GENERIC_CMOS_UPDATE) \
-  include/linux/clocksource_ids.h \
-  include/linux/debugobjects.h \
-    $(wildcard include/config/DEBUG_OBJECTS) \
-    $(wildcard include/config/DEBUG_OBJECTS_FREE) \
-  include/linux/rcu_segcblist.h \
-  include/linux/srcutree.h \
-  include/linux/rcu_node_tree.h \
-    $(wildcard include/config/RCU_FANOUT) \
-    $(wildcard include/config/RCU_FANOUT_LEAF) \
-  include/linux/page-flags-layout.h \
-    $(wildcard include/config/KASAN_HW_TAGS) \
-  include/linux/numa.h \
-    $(wildcard include/config/NODES_SHIFT) \
-    $(wildcard include/config/NUMA_KEEP_MEMINFO) \
-    $(wildcard include/config/HAVE_ARCH_NODE_DEV_GROUP) \
-  arch/x86/include/asm/sparsemem.h \
-  include/generated/bounds.h \
-  include/linux/seqlock.h \
-  include/linux/ww_mutex.h \
-    $(wildcard include/config/DEBUG_RT_MUTEXES) \
-    $(wildcard include/config/DEBUG_WW_MUTEX_SLOWPATH) \
-  include/linux/rtmutex.h \
-  arch/x86/include/asm/mmu.h \
-    $(wildcard include/config/MODIFY_LDT_SYSCALL) \
-  include/linux/kmod.h \
-  include/linux/umh.h \
-  include/linux/gfp.h \
-    $(wildcard include/config/HIGHMEM) \
-    $(wildcard include/config/ZONE_DMA) \
-    $(wildcard include/config/ZONE_DMA32) \
-    $(wildcard include/config/ZONE_DEVICE) \
-    $(wildcard include/config/PM_SLEEP) \
-    $(wildcard include/config/CONTIG_ALLOC) \
-    $(wildcard include/config/CMA) \
-  include/linux/mmdebug.h \
-    $(wildcard include/config/DEBUG_VM) \
-    $(wildcard include/config/DEBUG_VM_PGFLAGS) \
-  include/linux/mmzone.h \
-    $(wildcard include/config/FORCE_MAX_ZONEORDER) \
-    $(wildcard include/config/MEMORY_ISOLATION) \
-    $(wildcard include/config/ZSMALLOC) \
-    $(wildcard include/config/MEMORY_HOTPLUG) \
-    $(wildcard include/config/COMPACTION) \
-    $(wildcard include/config/PAGE_EXTENSION) \
-    $(wildcard include/config/DEFERRED_STRUCT_PAGE_INIT) \
-    $(wildcard include/config/HAVE_MEMORYLESS_NODES) \
-    $(wildcard include/config/SPARSEMEM_EXTREME) \
-    $(wildcard include/config/HAVE_ARCH_PFN_VALID) \
-  include/linux/nodemask.h \
-  include/linux/pageblock-flags.h \
-    $(wildcard include/config/HUGETLB_PAGE_SIZE_VARIABLE) \
-  include/linux/page-flags.h \
-    $(wildcard include/config/ARCH_USES_PG_UNCACHED) \
-    $(wildcard include/config/MEMORY_FAILURE) \
-    $(wildcard include/config/PAGE_IDLE_FLAG) \
-    $(wildcard include/config/HUGETLB_PAGE_FREE_VMEMMAP) \
-    $(wildcard include/config/HUGETLB_PAGE_FREE_VMEMMAP_DEFAULT_ON) \
-    $(wildcard include/config/KSM) \
-  include/linux/local_lock.h \
-  include/linux/local_lock_internal.h \
-  include/linux/memory_hotplug.h \
-    $(wildcard include/config/HAVE_ARCH_NODEDATA_EXTENSION) \
-    $(wildcard include/config/ARCH_HAS_ADD_PAGES) \
-    $(wildcard include/config/MEMORY_HOTREMOVE) \
-  arch/x86/include/asm/mmzone.h \
-  arch/x86/include/asm/mmzone_32.h \
-  include/linux/topology.h \
-    $(wildcard include/config/USE_PERCPU_NUMA_NODE_ID) \
-    $(wildcard include/config/SCHED_SMT) \
-    $(wildcard include/config/SCHED_CLUSTER) \
-  include/linux/arch_topology.h \
-    $(wildcard include/config/ACPI_CPPC_LIB) \
-    $(wildcard include/config/GENERIC_ARCH_TOPOLOGY) \
-  include/linux/percpu.h \
-    $(wildcard include/config/NEED_PER_CPU_EMBED_FIRST_CHUNK) \
-    $(wildcard include/config/NEED_PER_CPU_PAGE_FIRST_CHUNK) \
-  arch/x86/include/asm/topology.h \
-    $(wildcard include/config/SCHED_MC_PRIO) \
-  arch/x86/include/asm/mpspec.h \
-    $(wildcard include/config/EISA) \
-    $(wildcard include/config/X86_MPPARSE) \
-  arch/x86/include/asm/mpspec_def.h \
-  arch/x86/include/asm/x86_init.h \
-  arch/x86/include/asm/apicdef.h \
-  include/asm-generic/topology.h \
-  include/linux/sysctl.h \
-    $(wildcard include/config/SYSCTL) \
-  include/uapi/linux/sysctl.h \
-  include/linux/elf.h \
-    $(wildcard include/config/ARCH_USE_GNU_PROPERTY) \
-    $(wildcard include/config/ARCH_HAVE_ELF_PROT) \
-  arch/x86/include/asm/elf
+// SPDX-License-Identifier: GPL-2.0-only
+/*
+ * Copyright (C) 2005 Sascha Hauer, Pengutronix
+ * Copyright (C) 2007 Wolfgang Grandegger <wg@grandegger.com>
+ */
+
+#include <linux/kernel.h>
+#include <linux/module.h>
+#include <linux/interrupt.h>
+#include <linux/netdevice.h>
+#include <linux/delay.h>
+#include <linux/pci.h>
+#include <linux/platform_device.h>
+#include <linux/irq.h>
+#include <linux/can/dev.h>
+#include <linux/can/platform/sja1000.h>
+#include <linux/io.h>
+#include <linux/of.h>
+#include <linux/of_device.h>
+
+#include "sja1000.h"
+
+#define DRV_NAME "sja1000_platform"
+#define SP_CAN_CLOCK  (16000000 / 2)
+
+MODULE_AUTHOR("Sascha Hauer <s.hauer@pengutronix.de>");
+MODULE_AUTHOR("Wolfgang Grandegger <wg@grandegger.com>");
+MODULE_DESCRIPTION("Socket-CAN driver for SJA1000 on the platform bus");
+MODULE_ALIAS("platform:" DRV_NAME);
+MODULE_LICENSE("GPL v2");
+
+struct sja1000_of_data {
+	size_t  priv_sz;
+	int     (*init)(struct sja1000_priv *priv, struct device_node *of);
+};
+
+struct technologic_priv {
+	spinlock_t      io_lock;
+};
+
+static u8 sp_read_reg8(const struct sja1000_priv *priv, int reg)
+{
+	return ioread8(priv->reg_base + reg);
+}
+
+static void sp_write_reg8(const struct sja1000_priv *priv, int reg, u8 val)
+{
+	iowrite8(val, priv->reg_base + reg);
+}
+
+static u8 sp_read_reg16(const struct sja1000_priv *priv, int reg)
+{
+	return ioread8(priv->reg_base + reg * 2);
+}
+
+static void sp_write_reg16(const struct sja1000_priv *priv, int reg, u8 val)
+{
+	iowrite8(val, priv->reg_base + reg * 2);
+}
+
+static u8 sp_read_reg32(const struct sja1000_priv *priv, int reg)
+{
+	return ioread8(priv->reg_base + reg * 4);
+}
+
+static void sp_write_reg32(const struct sja1000_priv *priv, int reg, u8 val)
+{
+	iowrite8(val, priv->reg_base + reg * 4);
+}
+
+static u8 sp_technologic_read_reg16(const struct sja1000_priv *priv, int reg)
+{
+	struct technologic_priv *tp = priv->priv;
+	unsigned long flags;
+	u8 val;
+
+	spin_lock_irqsave(&tp->io_lock, flags);
+	iowrite16(reg, priv->reg_base + 0);
+	val = ioread16(priv->reg_base + 2);
+	spin_unlock_irqrestore(&tp->io_lock, flags);
+
+	return val;
+}
+
+static void sp_technologic_write_reg16(const struct sja1000_priv *priv,
+				       int reg, u8 val)
+{
+	struct technologic_priv *tp = priv->priv;
+	unsigned long flags;
+
+	spin_lock_irqsave(&tp->io_lock, flags);
+	iowrite16(reg, priv->reg_base + 0);
+	iowrite16(val, priv->reg_base + 2);
+	spin_unlock_irqrestore(&tp->io_lock, flags);
+}
+
+static int sp_technologic_init(struct sja1000_priv *priv, struct device_node *of)
+{
+	struct technologic_priv *tp = priv->priv;
+
+	priv->read_reg = sp_technologic_read_reg16;
+	priv->write_reg = sp_technologic_write_reg16;
+	spin_lock_init(&tp->io_lock);
+
+	return 0;
+}
+
+static void sp_populate(struct sja1000_priv *priv,
+			struct sja1000_platform_data *pdata,
+			unsigned long resource_mem_flags)
+{
+	/* The CAN clock frequency is half the oscillator clock frequency */
+	priv->can.clock.freq = pdata->osc_freq / 2;
+	priv->ocr = pdata->ocr;
+	priv->cdr = pdata->cdr;
+
+	switch (resource_mem_flags & IORESOURCE_MEM_TYPE_MASK) {
+	case IORESOURCE_MEM_32BIT:
+		priv->read_reg = sp_read_reg32;
+		priv->write_reg = sp_write_reg32;
+		break;
+	case IORESOURCE_MEM_16BIT:
+		priv->read_reg = sp_read_reg16;
+		priv->write_reg = sp_write_reg16;
+		break;
+	case IORESOURCE_MEM_8BIT:
+	default:
+		priv->read_reg = sp_read_reg8;
+		priv->write_reg = sp_write_reg8;
+		break;
+	}
+}
+
+static void sp_populate_of(struct sja1000_priv *priv, struct device_node *of)
+{
+	int err;
+	u32 prop;
+
+	err = of_property_read_u32(of, "reg-io-width", &prop);
+	if (err)
+		prop = 1; /* 8 bit is default */
+
+	switch (prop) {
+	case 4:
+		priv->read_reg = sp_read_reg32;
+		priv->write_reg = sp_write_reg32;
+		break;
+	case 2:
+		priv->read_reg = sp_read_reg16;
+		priv->write_reg = sp_write_reg16;
+		break;
+	case 1:
+	default:
+		priv->read_reg = sp_read_reg8;
+		priv->write_reg = sp_write_reg8;
+	}
+
+	err = of_property_read_u32(of, "nxp,external-clock-frequency", &prop);
+	if (!err)
+		priv->can.clock.freq = prop / 2;
+	else
+		priv->can.clock.freq = SP_CAN_CLOCK; /* default */
+
+	err = of_property_read_u32(of, "nxp,tx-output-mode", &prop);
+	if (!err)
+		priv->ocr |= prop & OCR_MODE_MASK;
+	else
+		priv->ocr |= OCR_MODE_NORMAL; /* default */
+
+	err = of_property_read_u32(of, "nxp,tx-output-config", &prop);
+	if (!err)
+		priv->ocr |= (prop << OCR_TX_SHIFT) & OCR_TX_MASK;
+	else
+		priv->ocr |= OCR_TX0_PULLDOWN; /* default */
+
+	err = of_property_read_u32(of, "nxp,clock-out-frequency", &prop);
+	if (!err && prop) {
+		u32 divider = priv->can.clock.freq * 2 / prop;
+
+		if (divider > 1)
+			priv->cdr |= divider / 2 - 1;
+		else
+			priv->cdr |= CDR_CLKOUT_MASK;
+	} else {
+		priv->cdr |= CDR_CLK_OFF; /* default */
+	}
+
+	if (!of_property_read_bool(of, "nxp,no-comparator-bypass"))
+		priv->cdr |= CDR_CBP; /* default */
+}
+
+static struct sja1000_of_data technologic_data = {
+	.priv_sz = sizeof(struct technologic_priv),
+	.init = sp_technologic_init,
+};
+
+static const struct of_device_id sp_of_table[] = {
+	{ .compatible = "nxp,sja1000", .data = NULL, },
+	{ .compatible = "technologic,sja1000", .data = &technologic_data, },
+	{ /* sentinel */ },
+};
+MODULE_DEVICE_TABLE(of, sp_of_table);
+
+static int sp_probe(struct platform_device *pdev)
+{
+	int err, irq = 0;
+	void __iomem *addr;
+	struct net_device *dev;
+	struct sja1000_priv *priv;
+	struct resource *res_mem, *res_irq = NULL;
+	struct sja1000_platform_data *pdata;
+	struct device_node *of = pdev->dev.of_node;
+	const struct of_device_id *of_id;
+	const struct sja1000_of_data *of_data = NULL;
+	size_t priv_sz = 0;
+
+	pdata = dev_get_platdata(&pdev->dev);
+	if (!pdata && !of) {
+		dev_err(&pdev->dev, "No platform data provided!\n");
+		return -ENODEV;
+	}
+
+	res_mem = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+	if (!res_mem)
+		return -ENODEV;
+
+	if (!devm_request_mem_region(&pdev->dev, res_mem->start,
+				     resource_size(res_mem), DRV_NAME))
+		return -EBUSY;
+
+	addr = devm_ioremap(&pdev->dev, res_mem->start,
+				    resource_size(res_mem));
+	if (!addr)
+		return -ENOMEM;
+
+	if (of) {
+		irq = platform_get_irq(pdev, 0);
+		if (irq < 0)
+			return irq;
+	} else {
+		res_irq = platform_get_resource(pdev, IORESOURCE_IRQ, 0);
+		if (!res_irq)
+			return -ENODEV;
+	}
+
+	of_id = of_match_device(sp_of_table, &pdev->dev);
+	if (of_id && of_id->data) {
+		of_data = of_id->data;
+		priv_sz = of_data->priv_sz;
+	}
+
+	dev = alloc_sja1000dev(priv_sz);
+	if (!dev)
+		return -ENOMEM;
+	priv = netdev_priv(dev);
+
+	if (res_irq) {
+		irq = res_irq->start;
+		priv->irq_flags = res_irq->flags & IRQF_TRIGGER_MASK;
+		if (res_irq->flags & IORESOURCE_IRQ_SHAREABLE)
+			priv->irq_flags |= IRQF_SHARED;
+	} else {
+		priv->irq_flags = IRQF_SHARED;
+	}
+
+	dev->irq = irq;
+	priv->reg_base = addr;
+
+	if (of) {
+		sp_populate_of(priv, of);
+
+		if (of_data && of_data->init) {
+			err = of_data->init(priv, of);
+			if (err)
+				goto exit_free;
+		}
+	} else {
+		sp_populate(priv, pdata, res_mem->flags);
+	}
+
+	platform_set_drvdata(pdev, dev);
+	SET_NETDEV_DEV(dev, &pdev->dev);
+
+	err = register_sja1000dev(dev);
+	if (err) {
+		dev_err(&pdev->dev, "registering %s failed (err=%d)\n",
+			DRV_NAME, err);
+		goto exit_free;
+	}
+
+	dev_info(&pdev->dev, "%s device registered (reg_base=%p, irq=%d)\n",
+		 DRV_NAME, priv->reg_base, dev->irq);
+	return 0;
+
+ exit_free:
+	free_sja1000dev(dev);
+	return err;
+}
+
+static int sp_remove(struct platform_device *pdev)
+{
+	struct net_device *dev = platform_get_drvdata(pdev);
+
+	unregister_sja1000dev(dev);
+	free_sja1000dev(dev);
+
+	return 0;
+}
+
+static struct platform_driver sp_driver = {
+	.probe = sp_probe,
+	.remove = sp_remove,
+	.driver = {
+		.name = DRV_NAME,
+		.of_match_table = sp_of_table,
+	},
+};
+
+module_platform_driver(sp_driver);

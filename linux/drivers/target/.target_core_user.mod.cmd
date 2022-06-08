@@ -1,5 +1,1 @@
-lude/config/SPI) \
-  include/media/v4l2-dev.h \
-  include/linux/spi/spi.h \
-    $(wildcard include/config/SPI_SLAVE) \
-  include/linu
+cmd_drivers/media/pci/cx18/cx18-alsa.mod := { echo  drivers/media/pci/cx18/cx18-alsa-main.o drivers/media/pci/cx18/cx18-alsa-pcm.o;  

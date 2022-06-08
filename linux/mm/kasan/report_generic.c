@@ -1,266 +1,350 @@
-		seq_printf(m, "[%p] ", class->key);
-		print_name(m, class);
-		seq_puts(m, "\n");
-	}
-	seq_puts(m, "\n");
+ */
 
-	return 0;
-}
+static inline void check_data_structures(void) { }
 
-static const struct seq_operations lockdep_chains_ops = {
-	.start	= lc_start,
-	.next	= lc_next,
-	.stop	= lc_stop,
-	.show	= lc_show,
-};
-#endif /* CONFIG_PROVE_LOCKING */
+#endif /* CONFIG_DEBUG_LOCKDEP */
 
-static void lockdep_stats_debug_show(struct seq_file *m)
-{
-#ifdef CONFIG_DEBUG_LOCKDEP
-	unsigned long long hi1 = debug_atomic_read(hardirqs_on_events),
-			   hi2 = debug_atomic_read(hardirqs_off_events),
-			   hr1 = debug_atomic_read(redundant_hardirqs_on),
-			   hr2 = debug_atomic_read(redundant_hardirqs_off),
-			   si1 = debug_atomic_read(softirqs_on_events),
-			   si2 = debug_atomic_read(softirqs_off_events),
-			   sr1 = debug_atomic_read(redundant_softirqs_on),
-			   sr2 = debug_atomic_read(redundant_softirqs_off);
-
-	seq_printf(m, " chain lookup misses:           %11llu\n",
-		debug_atomic_read(chain_lookup_misses));
-	seq_printf(m, " chain lookup hits:             %11llu\n",
-		debug_atomic_read(chain_lookup_hits));
-	seq_printf(m, " cyclic checks:                 %11llu\n",
-		debug_atomic_read(nr_cyclic_checks));
-	seq_printf(m, " redundant checks:              %11llu\n",
-		debug_atomic_read(nr_redundant_checks));
-	seq_printf(m, " redundant links:               %11llu\n",
-		debug_atomic_read(nr_redundant));
-	seq_printf(m, " find-mask forwards checks:     %11llu\n",
-		debug_atomic_read(nr_find_usage_forwards_checks));
-	seq_printf(m, " find-mask backwards checks:    %11llu\n",
-		debug_atomic_read(nr_find_usage_backwards_checks));
-
-	seq_printf(m, " hardirq on events:             %11llu\n", hi1);
-	seq_printf(m, " hardirq off events:            %11llu\n", hi2);
-	seq_printf(m, " redundant hardirq ons:         %11llu\n", hr1);
-	seq_printf(m, " redundant hardirq offs:        %11llu\n", hr2);
-	seq_printf(m, " softirq on events:             %11llu\n", si1);
-	seq_printf(m, " softirq off events:            %11llu\n", si2);
-	seq_printf(m, " redundant softirq ons:         %11llu\n", sr1);
-	seq_printf(m, " redundant softirq offs:        %11llu\n", sr2);
-#endif
-}
-
-static int lockdep_stats_show(struct seq_file *m, void *v)
-{
-	unsigned long nr_unused = 0, nr_uncategorized = 0,
-		      nr_irq_safe = 0, nr_irq_unsafe = 0,
-		      nr_softirq_safe = 0, nr_softirq_unsafe = 0,
-		      nr_hardirq_safe = 0, nr_hardirq_unsafe = 0,
-		      nr_irq_read_safe = 0, nr_irq_read_unsafe = 0,
-		      nr_softirq_read_safe = 0, nr_softirq_read_unsafe = 0,
-		      nr_hardirq_read_safe = 0, nr_hardirq_read_unsafe = 0,
-		      sum_forward_deps = 0;
-
-#ifdef CONFIG_PROVE_LOCKING
-	struct lock_class *class;
-	unsigned long idx;
-
-	iterate_lock_classes(idx, class) {
-		if (!test_bit(idx, lock_classes_in_use))
-			continue;
-
-		if (class->usage_mask == 0)
-			nr_unused++;
-		if (class->usage_mask == LOCKF_USED)
-			nr_uncategorized++;
-		if (class->usage_mask & LOCKF_USED_IN_IRQ)
-			nr_irq_safe++;
-		if (class->usage_mask & LOCKF_ENABLED_IRQ)
-			nr_irq_unsafe++;
-		if (class->usage_mask & LOCKF_USED_IN_SOFTIRQ)
-			nr_softirq_safe++;
-		if (class->usage_mask & LOCKF_ENABLED_SOFTIRQ)
-			nr_softirq_unsafe++;
-		if (class->usage_mask & LOCKF_USED_IN_HARDIRQ)
-			nr_hardirq_safe++;
-		if (class->usage_mask & LOCKF_ENABLED_HARDIRQ)
-			nr_hardirq_unsafe++;
-		if (class->usage_mask & LOCKF_USED_IN_IRQ_READ)
-			nr_irq_read_safe++;
-		if (class->usage_mask & LOCKF_ENABLED_IRQ_READ)
-			nr_irq_read_unsafe++;
-		if (class->usage_mask & LOCKF_USED_IN_SOFTIRQ_READ)
-			nr_softirq_read_safe++;
-		if (class->usage_mask & LOCKF_ENABLED_SOFTIRQ_READ)
-			nr_softirq_read_unsafe++;
-		if (class->usage_mask & LOCKF_USED_IN_HARDIRQ_READ)
-			nr_hardirq_read_safe++;
-		if (class->usage_mask & LOCKF_ENABLED_HARDIRQ_READ)
-			nr_hardirq_read_unsafe++;
-
-		sum_forward_deps += lockdep_count_forward_deps(class);
-	}
-
-#ifdef CONFIG_DEBUG_LOCKDEP
-	DEBUG_LOCKS_WARN_ON(debug_atomic_read(nr_unused_locks) != nr_unused);
-#endif
-
-#endif
-	seq_printf(m, " lock-classes:                  %11lu [max: %lu]\n",
-			nr_lock_classes, MAX_LOCKDEP_KEYS);
-	seq_printf(m, " direct dependencies:           %11lu [max: %lu]\n",
-			nr_list_entries, MAX_LOCKDEP_ENTRIES);
-	seq_printf(m, " indirect dependencies:         %11lu\n",
-			sum_forward_deps);
-
-	/*
-	 * Total number of dependencies:
-	 *
-	 * All irq-safe locks may nest inside irq-unsafe locks,
-	 * plus all the other known dependencies:
-	 */
-	seq_printf(m, " all direct dependencies:       %11lu\n",
-			nr_irq_unsafe * nr_irq_safe +
-			nr_hardirq_unsafe * nr_hardirq_safe +
-			nr_list_entries);
-
-#ifdef CONFIG_PROVE_LOCKING
-	seq_printf(m, " dependency chains:             %11lu [max: %lu]\n",
-			lock_chain_count(), MAX_LOCKDEP_CHAINS);
-	seq_printf(m, " dependency chain hlocks used:  %11lu [max: %lu]\n",
-			MAX_LOCKDEP_CHAIN_HLOCKS -
-			(nr_free_chain_hlocks + nr_lost_chain_hlocks),
-			MAX_LOCKDEP_CHAIN_HLOCKS);
-	seq_printf(m, " dependency chain hlocks lost:  %11u\n",
-			nr_lost_chain_hlocks);
-#endif
-
-#ifdef CONFIG_TRACE_IRQFLAGS
-	seq_printf(m, " in-hardirq chains:             %11u\n",
-			nr_hardirq_chains);
-	seq_printf(m, " in-softirq chains:             %11u\n",
-			nr_softirq_chains);
-#endif
-	seq_printf(m, " in-process chains:             %11u\n",
-			nr_process_chains);
-	seq_printf(m, " stack-trace entries:           %11lu [max: %lu]\n",
-			nr_stack_trace_entries, MAX_STACK_TRACE_ENTRIES);
-#if defined(CONFIG_TRACE_IRQFLAGS) && defined(CONFIG_PROVE_LOCKING)
-	seq_printf(m, " number of stack traces:        %11llu\n",
-		   lockdep_stack_trace_count());
-	seq_printf(m, " number of stack hash chains:   %11llu\n",
-		   lockdep_stack_hash_count());
-#endif
-	seq_printf(m, " combined max dependencies:     %11u\n",
-			(nr_hardirq_chains + 1) *
-			(nr_softirq_chains + 1) *
-			(nr_process_chains + 1)
-	);
-	seq_printf(m, " hardirq-safe locks:            %11lu\n",
-			nr_hardirq_safe);
-	seq_printf(m, " hardirq-unsafe locks:          %11lu\n",
-			nr_hardirq_unsafe);
-	seq_printf(m, " softirq-safe locks:            %11lu\n",
-			nr_softirq_safe);
-	seq_printf(m, " softirq-unsafe locks:          %11lu\n",
-			nr_softirq_unsafe);
-	seq_printf(m, " irq-safe locks:                %11lu\n",
-			nr_irq_safe);
-	seq_printf(m, " irq-unsafe locks:              %11lu\n",
-			nr_irq_unsafe);
-
-	seq_printf(m, " hardirq-read-safe locks:       %11lu\n",
-			nr_hardirq_read_safe);
-	seq_printf(m, " hardirq-read-unsafe locks:     %11lu\n",
-			nr_hardirq_read_unsafe);
-	seq_printf(m, " softirq-read-safe locks:       %11lu\n",
-			nr_softirq_read_safe);
-	seq_printf(m, " softirq-read-unsafe locks:     %11lu\n",
-			nr_softirq_read_unsafe);
-	seq_printf(m, " irq-read-safe locks:           %11lu\n",
-			nr_irq_read_safe);
-	seq_printf(m, " irq-read-unsafe locks:         %11lu\n",
-			nr_irq_read_unsafe);
-
-	seq_printf(m, " uncategorized locks:           %11lu\n",
-			nr_uncategorized);
-	seq_printf(m, " unused locks:                  %11lu\n",
-			nr_unused);
-	seq_printf(m, " max locking depth:             %11u\n",
-			max_lockdep_depth);
-#ifdef CONFIG_PROVE_LOCKING
-	seq_printf(m, " max bfs queue depth:           %11u\n",
-			max_bfs_queue_depth);
-#endif
-	seq_printf(m, " max lock class index:          %11lu\n",
-			max_lock_class_idx);
-	lockdep_stats_debug_show(m);
-	seq_printf(m, " debug_locks:                   %11u\n",
-			debug_locks);
-
-	/*
-	 * Zapped classes and lockdep data buffers reuse statistics.
-	 */
-	seq_puts(m, "\n");
-	seq_printf(m, " zapped classes:                %11lu\n",
-			nr_zapped_classes);
-#ifdef CONFIG_PROVE_LOCKING
-	seq_printf(m, " zapped lock chains:            %11lu\n",
-			nr_zapped_lock_chains);
-	seq_printf(m, " large chain blocks:            %11u\n",
-			nr_large_chain_blocks);
-#endif
-	return 0;
-}
-
-#ifdef CONFIG_LOCK_STAT
-
-struct lock_stat_data {
-	struct lock_class *class;
-	struct lock_class_stats stats;
-};
-
-struct lock_stat_seq {
-	struct lock_stat_data *iter_end;
-	struct lock_stat_data stats[MAX_LOCKDEP_KEYS];
-};
+static void init_chain_block_buckets(void);
 
 /*
- * sort on absolute number of contentions
+ * Initialize the lock_classes[] array elements, the free_lock_classes list
+ * and also the delayed_free structure.
  */
-static int lock_stat_cmp(const void *l, const void *r)
+static void init_data_structures_once(void)
 {
-	const struct lock_stat_data *dl = l, *dr = r;
-	unsigned long nl, nr;
-
-	nl = dl->stats.read_waittime.nr + dl->stats.write_waittime.nr;
-	nr = dr->stats.read_waittime.nr + dr->stats.write_waittime.nr;
-
-	return nr - nl;
-}
-
-static void seq_line(struct seq_file *m, char c, int offset, int length)
-{
+	static bool __read_mostly ds_initialized, rcu_head_initialized;
 	int i;
 
-	for (i = 0; i < offset; i++)
-		seq_puts(m, " ");
-	for (i = 0; i < length; i++)
-		seq_printf(m, "%c", c);
-	seq_puts(m, "\n");
+	if (likely(rcu_head_initialized))
+		return;
+
+	if (system_state >= SYSTEM_SCHEDULING) {
+		init_rcu_head(&delayed_free.rcu_head);
+		rcu_head_initialized = true;
+	}
+
+	if (ds_initialized)
+		return;
+
+	ds_initialized = true;
+
+	INIT_LIST_HEAD(&delayed_free.pf[0].zapped);
+	INIT_LIST_HEAD(&delayed_free.pf[1].zapped);
+
+	for (i = 0; i < ARRAY_SIZE(lock_classes); i++) {
+		list_add_tail(&lock_classes[i].lock_entry, &free_lock_classes);
+		INIT_LIST_HEAD(&lock_classes[i].locks_after);
+		INIT_LIST_HEAD(&lock_classes[i].locks_before);
+	}
+	init_chain_block_buckets();
 }
 
-static void snprint_time(char *buf, size_t bufsiz, s64 nr)
+static inline struct hlist_head *keyhashentry(const struct lock_class_key *key)
 {
-	s64 div;
-	s32 rem;
+	unsigned long hash = hash_long((uintptr_t)key, KEYHASH_BITS);
 
-	nr += 5; /* for display rounding */
-	div = div_s64_rem(nr, 1000, &rem);
-	snprintf(buf, bufsiz, "%lld.%02d", (long long)div, (int)rem/10);
+	return lock_keys_hash + hash;
 }
 
-static void seq_time(struct seq_file *
+/* Register a dynamically allocated key. */
+void lockdep_register_key(struct lock_class_key *key)
+{
+	struct hlist_head *hash_head;
+	struct lock_class_key *k;
+	unsigned long flags;
+
+	if (WARN_ON_ONCE(static_obj(key)))
+		return;
+	hash_head = keyhashentry(key);
+
+	raw_local_irq_save(flags);
+	if (!graph_lock())
+		goto restore_irqs;
+	hlist_for_each_entry_rcu(k, hash_head, hash_entry) {
+		if (WARN_ON_ONCE(k == key))
+			goto out_unlock;
+	}
+	hlist_add_head_rcu(&key->hash_entry, hash_head);
+out_unlock:
+	graph_unlock();
+restore_irqs:
+	raw_local_irq_restore(flags);
+}
+EXPORT_SYMBOL_GPL(lockdep_register_key);
+
+/* Check whether a key has been registered as a dynamic key. */
+static bool is_dynamic_key(const struct lock_class_key *key)
+{
+	struct hlist_head *hash_head;
+	struct lock_class_key *k;
+	bool found = false;
+
+	if (WARN_ON_ONCE(static_obj(key)))
+		return false;
+
+	/*
+	 * If lock debugging is disabled lock_keys_hash[] may contain
+	 * pointers to memory that has already been freed. Avoid triggering
+	 * a use-after-free in that case by returning early.
+	 */
+	if (!debug_locks)
+		return true;
+
+	hash_head = keyhashentry(key);
+
+	rcu_read_lock();
+	hlist_for_each_entry_rcu(k, hash_head, hash_entry) {
+		if (k == key) {
+			found = true;
+			break;
+		}
+	}
+	rcu_read_unlock();
+
+	return found;
+}
+
+/*
+ * Register a lock's class in the hash-table, if the class is not present
+ * yet. Otherwise we look it up. We cache the result in the lock object
+ * itself, so actual lookup of the hash should be once per lock object.
+ */
+static struct lock_class *
+register_lock_class(struct lockdep_map *lock, unsigned int subclass, int force)
+{
+	struct lockdep_subclass_key *key;
+	struct hlist_head *hash_head;
+	struct lock_class *class;
+	int idx;
+
+	DEBUG_LOCKS_WARN_ON(!irqs_disabled());
+
+	class = look_up_lock_class(lock, subclass);
+	if (likely(class))
+		goto out_set_class_cache;
+
+	if (!lock->key) {
+		if (!assign_lock_key(lock))
+			return NULL;
+	} else if (!static_obj(lock->key) && !is_dynamic_key(lock->key)) {
+		return NULL;
+	}
+
+	key = lock->key->subkeys + subclass;
+	hash_head = classhashentry(key);
+
+	if (!graph_lock()) {
+		return NULL;
+	}
+	/*
+	 * We have to do the hash-walk again, to avoid races
+	 * with another CPU:
+	 */
+	hlist_for_each_entry_rcu(class, hash_head, hash_entry) {
+		if (class->key == key)
+			goto out_unlock_set;
+	}
+
+	init_data_structures_once();
+
+	/* Allocate a new lock class and add it to the hash. */
+	class = list_first_entry_or_null(&free_lock_classes, typeof(*class),
+					 lock_entry);
+	if (!class) {
+		if (!debug_locks_off_graph_unlock()) {
+			return NULL;
+		}
+
+		print_lockdep_off("BUG: MAX_LOCKDEP_KEYS too low!");
+		dump_stack();
+		return NULL;
+	}
+	nr_lock_classes++;
+	__set_bit(class - lock_classes, lock_classes_in_use);
+	debug_atomic_inc(nr_unused_locks);
+	class->key = key;
+	class->name = lock->name;
+	class->subclass = subclass;
+	WARN_ON_ONCE(!list_empty(&class->locks_before));
+	WARN_ON_ONCE(!list_empty(&class->locks_after));
+	class->name_version = count_matching_names(class);
+	class->wait_type_inner = lock->wait_type_inner;
+	class->wait_type_outer = lock->wait_type_outer;
+	class->lock_type = lock->lock_type;
+	/*
+	 * We use RCU's safe list-add method to make
+	 * parallel walking of the hash-list safe:
+	 */
+	hlist_add_head_rcu(&class->hash_entry, hash_head);
+	/*
+	 * Remove the class from the free list and add it to the global list
+	 * of classes.
+	 */
+	list_move_tail(&class->lock_entry, &all_lock_classes);
+	idx = class - lock_classes;
+	if (idx > max_lock_class_idx)
+		max_lock_class_idx = idx;
+
+	if (verbose(class)) {
+		graph_unlock();
+
+		printk("\nnew class %px: %s", class->key, class->name);
+		if (class->name_version > 1)
+			printk(KERN_CONT "#%d", class->name_version);
+		printk(KERN_CONT "\n");
+		dump_stack();
+
+		if (!graph_lock()) {
+			return NULL;
+		}
+	}
+out_unlock_set:
+	graph_unlock();
+
+out_set_class_cache:
+	if (!subclass || force)
+		lock->class_cache[0] = class;
+	else if (subclass < NR_LOCKDEP_CACHING_CLASSES)
+		lock->class_cache[subclass] = class;
+
+	/*
+	 * Hash collision, did we smoke some? We found a class with a matching
+	 * hash but the subclass -- which is hashed in -- didn't match.
+	 */
+	if (DEBUG_LOCKS_WARN_ON(class->subclass != subclass))
+		return NULL;
+
+	return class;
+}
+
+#ifdef CONFIG_PROVE_LOCKING
+/*
+ * Allocate a lockdep entry. (assumes the graph_lock held, returns
+ * with NULL on failure)
+ */
+static struct lock_list *alloc_list_entry(void)
+{
+	int idx = find_first_zero_bit(list_entries_in_use,
+				      ARRAY_SIZE(list_entries));
+
+	if (idx >= ARRAY_SIZE(list_entries)) {
+		if (!debug_locks_off_graph_unlock())
+			return NULL;
+
+		print_lockdep_off("BUG: MAX_LOCKDEP_ENTRIES too low!");
+		dump_stack();
+		return NULL;
+	}
+	nr_list_entries++;
+	__set_bit(idx, list_entries_in_use);
+	return list_entries + idx;
+}
+
+/*
+ * Add a new dependency to the head of the list:
+ */
+static int add_lock_to_list(struct lock_class *this,
+			    struct lock_class *links_to, struct list_head *head,
+			    unsigned long ip, u16 distance, u8 dep,
+			    const struct lock_trace *trace)
+{
+	struct lock_list *entry;
+	/*
+	 * Lock not present yet - get a new dependency struct and
+	 * add it to the list:
+	 */
+	entry = alloc_list_entry();
+	if (!entry)
+		return 0;
+
+	entry->class = this;
+	entry->links_to = links_to;
+	entry->dep = dep;
+	entry->distance = distance;
+	entry->trace = trace;
+	/*
+	 * Both allocation and removal are done under the graph lock; but
+	 * iteration is under RCU-sched; see look_up_lock_class() and
+	 * lockdep_free_key_range().
+	 */
+	list_add_tail_rcu(&entry->entry, head);
+
+	return 1;
+}
+
+/*
+ * For good efficiency of modular, we use power of 2
+ */
+#define MAX_CIRCULAR_QUEUE_SIZE		(1UL << CONFIG_LOCKDEP_CIRCULAR_QUEUE_BITS)
+#define CQ_MASK				(MAX_CIRCULAR_QUEUE_SIZE-1)
+
+/*
+ * The circular_queue and helpers are used to implement graph
+ * breadth-first search (BFS) algorithm, by which we can determine
+ * whether there is a path from a lock to another. In deadlock checks,
+ * a path from the next lock to be acquired to a previous held lock
+ * indicates that adding the <prev> -> <next> lock dependency will
+ * produce a circle in the graph. Breadth-first search instead of
+ * depth-first search is used in order to find the shortest (circular)
+ * path.
+ */
+struct circular_queue {
+	struct lock_list *element[MAX_CIRCULAR_QUEUE_SIZE];
+	unsigned int  front, rear;
+};
+
+static struct circular_queue lock_cq;
+
+unsigned int max_bfs_queue_depth;
+
+static unsigned int lockdep_dependency_gen_id;
+
+static inline void __cq_init(struct circular_queue *cq)
+{
+	cq->front = cq->rear = 0;
+	lockdep_dependency_gen_id++;
+}
+
+static inline int __cq_empty(struct circular_queue *cq)
+{
+	return (cq->front == cq->rear);
+}
+
+static inline int __cq_full(struct circular_queue *cq)
+{
+	return ((cq->rear + 1) & CQ_MASK) == cq->front;
+}
+
+static inline int __cq_enqueue(struct circular_queue *cq, struct lock_list *elem)
+{
+	if (__cq_full(cq))
+		return -1;
+
+	cq->element[cq->rear] = elem;
+	cq->rear = (cq->rear + 1) & CQ_MASK;
+	return 0;
+}
+
+/*
+ * Dequeue an element from the circular_queue, return a lock_list if
+ * the queue is not empty, or NULL if otherwise.
+ */
+static inline struct lock_list * __cq_dequeue(struct circular_queue *cq)
+{
+	struct lock_list * lock;
+
+	if (__cq_empty(cq))
+		return NULL;
+
+	lock = cq->element[cq->front];
+	cq->front = (cq->front + 1) & CQ_MASK;
+
+	return lock;
+}
+
+static inline unsigned int  __cq_get_elem_count(struct circular_queue *cq)
+{
+	return (cq->rear - cq->front) & CQ_MASK;
+}
+
+static inline void mark_lock_accessed(struct lock_l

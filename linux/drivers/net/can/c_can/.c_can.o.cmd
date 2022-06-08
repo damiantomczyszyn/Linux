@@ -1,5 +1,1 @@
-e/config/ACPI_APEI_GHES) \
-    $(wildcard include/config/INTEL_TXT) \
-  arch/x86/include/generated/asm/kmap_size.h \
-  include/asm-generic/kmap_size.h \
-    $(wild
+cmd_drivers/net/can/c_can/c_can.o := ld -m elf_i386   -r -o drivers/net/can/c_can/c_can.o drivers/net/can/c_can/c_can_ethtool.o drivers/net/can/c_can/c_can_main.o

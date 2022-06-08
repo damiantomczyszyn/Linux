@@ -1,2 +1,3 @@
-nclude/config/GENERIC_ATOMIC64) \
-  in
+= 1,
+	.agc = &xc3028_agc_config,
+	.bw 

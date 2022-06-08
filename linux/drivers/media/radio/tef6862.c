@@ -1,197 +1,143 @@
-// SPDX-License-Identifier: GPL-2.0-only
-/*
- * tef6862.c Philips TEF6862 Car Radio Enhanced Selectivity Tuner
- * Copyright (c) 2009 Intel Corporation
- */
+ (0x9d << 24); /* 100kHz */
 
-#include <linux/module.h>
-#include <linux/init.h>
-#include <linux/errno.h>
-#include <linux/kernel.h>
-#include <linux/interrupt.h>
-#include <linux/i2c.h>
-#include <linux/slab.h>
-#include <media/v4l2-ioctl.h>
-#include <media/v4l2-device.h>
+	/* External Master 2 Bus */
+	dev->i2c_bus[1].nr = 1;
+	dev->i2c_bus[1].dev = dev;
+	dev->i2c_bus[1].reg_stat  = I2C2_STAT;
+	dev->i2c_bus[1].reg_ctrl  = I2C2_CTRL;
+	dev->i2c_bus[1].reg_addr  = I2C2_ADDR;
+	dev->i2c_bus[1].reg_rdata = I2C2_RDATA;
+	dev->i2c_bus[1].reg_wdata = I2C2_WDATA;
+	dev->i2c_bus[1].i2c_period = (0x9d << 24); /* 100kHz */
 
-#define DRIVER_NAME "tef6862"
+	/* Internal Master 3 Bus */
+	dev->i2c_bus[2].nr = 2;
+	dev->i2c_bus[2].dev = dev;
+	dev->i2c_bus[2].reg_stat  = I2C3_STAT;
+	dev->i2c_bus[2].reg_ctrl  = I2C3_CTRL;
+	dev->i2c_bus[2].reg_addr  = I2C3_ADDR;
+	dev->i2c_bus[2].reg_rdata = I2C3_RDATA;
+	dev->i2c_bus[2].reg_wdata = I2C3_WDATA;
+	dev->i2c_bus[2].i2c_period = (0x07 << 24); /* 1.95MHz */
 
-#define FREQ_MUL 16000
+	if ((cx23885_boards[dev->board].portb == CX23885_MPEG_DVB) ||
+		(cx23885_boards[dev->board].portb == CX23885_MPEG_ENCODER))
+		cx23885_init_tsport(dev, &dev->ts1, 1);
 
-#define TEF6862_LO_FREQ (875U * FREQ_MUL / 10)
-#define TEF6862_HI_FREQ (108U * FREQ_MUL)
+	if ((cx23885_boards[dev->board].portc == CX23885_MPEG_DVB) ||
+		(cx23885_boards[dev->board].portc == CX23885_MPEG_ENCODER))
+		cx23885_init_tsport(dev, &dev->ts2, 2);
 
-/* Write mode sub addresses */
-#define WM_SUB_BANDWIDTH	0x0
-#define WM_SUB_PLLM		0x1
-#define WM_SUB_PLLL		0x2
-#define WM_SUB_DAA		0x3
-#define WM_SUB_AGC		0x4
-#define WM_SUB_BAND		0x5
-#define WM_SUB_CONTROL		0x6
-#define WM_SUB_LEVEL		0x7
-#define WM_SUB_IFCF		0x8
-#define WM_SUB_IFCAP		0x9
-#define WM_SUB_ACD		0xA
-#define WM_SUB_TEST		0xF
+	if (get_resources(dev) < 0) {
+		pr_err("CORE %s No more PCIe resources for subsystem: %04x:%04x\n",
+		       dev->name, dev->pci->subsystem_vendor,
+		       dev->pci->subsystem_device);
 
-/* Different modes of the MSA register */
-#define MSA_MODE_BUFFER		0x0
-#define MSA_MODE_PRESET		0x1
-#define MSA_MODE_SEARCH		0x2
-#define MSA_MODE_AF_UPDATE	0x3
-#define MSA_MODE_JUMP		0x4
-#define MSA_MODE_CHECK		0x5
-#define MSA_MODE_LOAD		0x6
-#define MSA_MODE_END		0x7
-#define MSA_MODE_SHIFT		5
+		cx23885_devcount--;
+		return -ENODEV;
+	}
 
-struct tef6862_state {
-	struct v4l2_subdev sd;
-	unsigned long freq;
-};
+	/* PCIe stuff */
+	dev->lmmio = ioremap(pci_resource_start(dev->pci, 0),
+			     pci_resource_len(dev->pci, 0));
 
-static inline struct tef6862_state *to_state(struct v4l2_subdev *sd)
-{
-	return container_of(sd, struct tef6862_state, sd);
-}
+	dev->bmmio = (u8 __iomem *)dev->lmmio;
 
-static u16 tef6862_sigstr(struct i2c_client *client)
-{
-	u8 buf[4];
-	int err = i2c_master_recv(client, buf, sizeof(buf));
-	if (err == sizeof(buf))
-		return buf[3] << 8;
-	return 0;
-}
+	pr_info("CORE %s: subsystem: %04x:%04x, board: %s [card=%d,%s]\n",
+		dev->name, dev->pci->subsystem_vendor,
+		dev->pci->subsystem_device, cx23885_boards[dev->board].name,
+		dev->board, card[dev->nr] == dev->board ?
+		"insmod option" : "autodetected");
 
-static int tef6862_g_tuner(struct v4l2_subdev *sd, struct v4l2_tuner *v)
-{
-	if (v->index > 0)
-		return -EINVAL;
+	cx23885_pci_quirks(dev);
 
-	/* only support FM for now */
-	strscpy(v->name, "FM", sizeof(v->name));
-	v->type = V4L2_TUNER_RADIO;
-	v->rangelow = TEF6862_LO_FREQ;
-	v->rangehigh = TEF6862_HI_FREQ;
-	v->rxsubchans = V4L2_TUNER_SUB_MONO;
-	v->capability = V4L2_TUNER_CAP_LOW;
-	v->audmode = V4L2_TUNER_MODE_STEREO;
-	v->signal = tef6862_sigstr(v4l2_get_subdevdata(sd));
+	/* Assume some sensible defaults */
+	dev->tuner_type = cx23885_boards[dev->board].tuner_type;
+	dev->tuner_addr = cx23885_boards[dev->board].tuner_addr;
+	dev->tuner_bus = cx23885_boards[dev->board].tuner_bus;
+	dev->radio_type = cx23885_boards[dev->board].radio_type;
+	dev->radio_addr = cx23885_boards[dev->board].radio_addr;
 
-	return 0;
-}
+	dprintk(1, "%s() tuner_type = 0x%x tuner_addr = 0x%x tuner_bus = %d\n",
+		__func__, dev->tuner_type, dev->tuner_addr, dev->tuner_bus);
+	dprintk(1, "%s() radio_type = 0x%x radio_addr = 0x%x\n",
+		__func__, dev->radio_type, dev->radio_addr);
 
-static int tef6862_s_tuner(struct v4l2_subdev *sd, const struct v4l2_tuner *v)
-{
-	return v->index ? -EINVAL : 0;
-}
+	/* The cx23417 encoder has GPIO's that need to be initialised
+	 * before DVB, so that demodulators and tuners are out of
+	 * reset before DVB uses them.
+	 */
+	if ((cx23885_boards[dev->board].portb == CX23885_MPEG_ENCODER) ||
+		(cx23885_boards[dev->board].portc == CX23885_MPEG_ENCODER))
+			cx23885_mc417_init(dev);
 
-static int tef6862_s_frequency(struct v4l2_subdev *sd, const struct v4l2_frequency *f)
-{
-	struct tef6862_state *state = to_state(sd);
-	struct i2c_client *client = v4l2_get_subdevdata(sd);
-	unsigned freq = f->frequency;
-	u16 pll;
-	u8 i2cmsg[3];
-	int err;
+	/* init hardware */
+	cx23885_reset(dev);
 
-	if (f->tuner != 0)
-		return -EINVAL;
+	cx23885_i2c_register(&dev->i2c_bus[0]);
+	cx23885_i2c_register(&dev->i2c_bus[1]);
+	cx23885_i2c_register(&dev->i2c_bus[2]);
+	cx23885_card_setup(dev);
+	call_all(dev, tuner, standby);
+	cx23885_ir_init(dev);
 
-	freq = clamp(freq, TEF6862_LO_FREQ, TEF6862_HI_FREQ);
-	pll = 1964 + ((freq - TEF6862_LO_FREQ) * 20) / FREQ_MUL;
-	i2cmsg[0] = (MSA_MODE_PRESET << MSA_MODE_SHIFT) | WM_SUB_PLLM;
-	i2cmsg[1] = (pll >> 8) & 0xff;
-	i2cmsg[2] = pll & 0xff;
+	if (dev->board == CX23885_BOARD_VIEWCAST_460E) {
+		/*
+		 * GPIOs 9/8 are input detection bits for the breakout video
+		 * (gpio 8) and audio (gpio 9) cables. When they're attached,
+		 * this gpios are pulled high. Make sure these GPIOs are marked
+		 * as inputs.
+		 */
+		cx23885_gpio_enable(dev, 0x300, 0);
+	}
 
-	err = i2c_master_send(client, i2cmsg, sizeof(i2cmsg));
-	if (err != sizeof(i2cmsg))
-		return err < 0 ? err : -EIO;
+	if (cx23885_boards[dev->board].porta == CX23885_ANALOG_VIDEO) {
+		if (cx23885_video_register(dev) < 0) {
+			pr_err("%s() Failed to register analog video adapters on VID_A\n",
+			       __func__);
+		}
+	}
 
-	state->freq = freq;
-	return 0;
-}
+	if (cx23885_boards[dev->board].portb == CX23885_MPEG_DVB) {
+		if (cx23885_boards[dev->board].num_fds_portb)
+			dev->ts1.num_frontends =
+				cx23885_boards[dev->board].num_fds_portb;
+		if (cx23885_dvb_register(&dev->ts1) < 0) {
+			pr_err("%s() Failed to register dvb adapters on VID_B\n",
+			       __func__);
+		}
+	} else
+	if (cx23885_boards[dev->board].portb == CX23885_MPEG_ENCODER) {
+		if (cx23885_417_register(dev) < 0) {
+			pr_err("%s() Failed to register 417 on VID_B\n",
+			       __func__);
+		}
+	}
 
-static int tef6862_g_frequency(struct v4l2_subdev *sd, struct v4l2_frequency *f)
-{
-	struct tef6862_state *state = to_state(sd);
+	if (cx23885_boards[dev->board].portc == CX23885_MPEG_DVB) {
+		if (cx23885_boards[dev->board].num_fds_portc)
+			dev->ts2.num_frontends =
+				cx23885_boards[dev->board].num_fds_portc;
+		if (cx23885_dvb_register(&dev->ts2) < 0) {
+			pr_err("%s() Failed to register dvb on VID_C\n",
+			       __func__);
+		}
+	} else
+	if (cx23885_boards[dev->board].portc == CX23885_MPEG_ENCODER) {
+		if (cx23885_417_register(dev) < 0) {
+			pr_err("%s() Failed to register 417 on VID_C\n",
+			       __func__);
+		}
+	}
 
-	if (f->tuner != 0)
-		return -EINVAL;
-	f->type = V4L2_TUNER_RADIO;
-	f->frequency = state->freq;
-	return 0;
-}
+	cx23885_dev_checkrevision(dev);
 
-static const struct v4l2_subdev_tuner_ops tef6862_tuner_ops = {
-	.g_tuner = tef6862_g_tuner,
-	.s_tuner = tef6862_s_tuner,
-	.s_frequency = tef6862_s_frequency,
-	.g_frequency = tef6862_g_frequency,
-};
+	/* disable MSI for NetUP cards, otherwise CI is not working */
+	if (cx23885_boards[dev->board].ci_type > 0)
+		cx_clear(RDR_RDRCTL1, 1 << 8);
 
-static const struct v4l2_subdev_ops tef6862_ops = {
-	.tuner = &tef6862_tuner_ops,
-};
-
-/*
- * Generic i2c probe
- * concerning the addresses: i2c wants 7 bit (without the r/w bit), so '>>1'
- */
-
-static int tef6862_probe(struct i2c_client *client,
-			 const struct i2c_device_id *id)
-{
-	struct tef6862_state *state;
-	struct v4l2_subdev *sd;
-
-	/* Check if the adapter supports the needed features */
-	if (!i2c_check_functionality(client->adapter, I2C_FUNC_SMBUS_BYTE_DATA))
-		return -EIO;
-
-	v4l_info(client, "chip found @ 0x%02x (%s)\n",
-			client->addr << 1, client->adapter->name);
-
-	state = kzalloc(sizeof(struct tef6862_state), GFP_KERNEL);
-	if (state == NULL)
-		return -ENOMEM;
-	state->freq = TEF6862_LO_FREQ;
-
-	sd = &state->sd;
-	v4l2_i2c_subdev_init(sd, client, &tef6862_ops);
-
-	return 0;
-}
-
-static int tef6862_remove(struct i2c_client *client)
-{
-	struct v4l2_subdev *sd = i2c_get_clientdata(client);
-
-	v4l2_device_unregister_subdev(sd);
-	kfree(to_state(sd));
-	return 0;
-}
-
-static const struct i2c_device_id tef6862_id[] = {
-	{DRIVER_NAME, 0},
-	{},
-};
-
-MODULE_DEVICE_TABLE(i2c, tef6862_id);
-
-static struct i2c_driver tef6862_driver = {
-	.driver = {
-		.name	= DRIVER_NAME,
-	},
-	.probe		= tef6862_probe,
-	.remove		= tef6862_remove,
-	.id_table	= tef6862_id,
-};
-
-module_i2c_driver(tef6862_driver);
-
-MODULE_DESCRIPTION("TEF6862 Car Radio Enhanced Selectivity Tuner");
-MODULE_AUTHOR("Mocean Laboratories");
-MODULE_LICENSE("GPL v2");
+	switch (dev->board) {
+	case CX23885_BOARD_TEVII_S470:
+	case CX23885_BOARD_TEVII_S471:
+		cx_clear(RDR_RDRCTL1, 1 << 8);
+		break

@@ -1,5 +1,3 @@
-de/linux/bits.h \
-  include/linux/const.h \
-  include/vdso/const.h \
-  include/uapi/linux/const.h \
-  include/vdso/bi
+# SPDX-License-Identifier: GPL-2.0
+cx23885-objs	:= cx23885-cards.o cx23885-video.o cx23885-vbi.o \
+		    cx23885-core

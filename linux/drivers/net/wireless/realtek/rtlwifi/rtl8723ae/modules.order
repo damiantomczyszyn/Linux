@@ -1,1 +1,6 @@
-cmd_drivers/media/i2c/tvp7002.o := gcc -Wp,-MMD,drivers/medi
+t_nr)
+{
+	if (temp_int == NULL)
+		return NULL;
+
+	if ((temp_in

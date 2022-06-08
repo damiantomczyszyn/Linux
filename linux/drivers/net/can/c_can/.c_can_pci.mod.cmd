@@ -1,5 +1,1 @@
-lude/config/SPI) \
-  include/media/v4l2-dev.h \
-  include/linux/spi/spi.h \
-    $(wildcard include/config/SPI_SLAVE) \
-  include/linu
+cmd_drivers/net/can/c_can/c_can_pci.mod := { echo  drivers/net/can/c_can/c_can_pci.o;  echo; } > drivers/net/can/c_can/c_can_pci.mod

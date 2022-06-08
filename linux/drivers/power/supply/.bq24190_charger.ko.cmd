@@ -1,8 +1,5 @@
-h \
-    $(wildcard include/config/VIDEO_V4L2_I2C) \
-    $(wildcard include/config/SPI) \
-  include/media/v4l2-dev.h \
-  include/linux/spi/spi.h \
-    $(wildcard include/config/SPI_SLAVE) \
-  include/linux/scatterlist.h \
-    $(wildcard 
+# SPDX-License-Identifier: GPL-2.0
+cx23885-objs	:= cx23885-cards.o cx23885-video.o cx23885-vbi.o \
+		    cx23885-core.o cx23885-i2c.o cx23885-dvb.o cx23885-417.o \
+		    cx23885-ioctl.o cx23885-ir.o cx23885-av.o cx23885-input.o \
+		    

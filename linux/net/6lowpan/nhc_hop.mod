@@ -1,1 +1,2 @@
- -> @hlock and @hlock -
+  = 0x61,
+	.if_khz     

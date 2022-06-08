@@ -1,2 +1,1 @@
-_BITS) \
-    $(wildcard include/con
+        = LGDT3306A_TPCLK_RISING_ED

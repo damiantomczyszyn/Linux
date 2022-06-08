@@ -1,2 +1,2 @@
-linux/log2.h \
-    $(wild
+		mem &= ~ALT_DATA;
+		mem

@@ -1,68 +1,119 @@
-nfig/GENERIC_IOREMAP) \
-    $(wildcard include/config/VIRT_TO_BUS) \
-    $(wildcard include/config/GENERIC_DEVMEM_IS_ALLOWED) \
-  include/linux/logic_pio.h \
-    $(wildcard include/config/INDIRECT_PIO) \
-  include/linux/vmalloc.h \
-    $(wildcard include/config/HAVE_ARCH_HUGE_VMALLOC) \
-  arch/x86/include/asm/vmalloc.h \
-    $(wildcard include/config/HAVE_ARCH_HUGE_VMAP) \
-  arch/x86/include/asm/acpi.h \
-    $(wildcard include/config/ACPI_APEI) \
-  include/acpi/pdc_intel.h \
-  arch/x86/include/asm/numa.h \
-    $(wildcard include/config/NUMA_EMU) \
-  arch/x86/include/asm/numa_32.h \
-  include/linux/regulator/consumer.h \
-    $(wildcard include/config/REGULATOR) \
-  include/linux/suspend.h \
-    $(wildcard include/config/VT) \
-    $(wildcard include/config/SUSPEND) \
-    $(wildcard include/config/HIBERNATION_SNAPSHOT_DEV) \
-    $(wildcard include/config/PM_SLEEP_DEBUG) \
-    $(wildcard include/config/PM_AUTOSLEEP) \
-  include/linux/swap.h \
-    $(wildcard include/config/DEVICE_PRIVATE) \
-    $(wildcard include/config/MIGRATION) \
-    $(wildcard include/config/FRONTSWAP) \
-    $(wildcard include/config/THP_SWAP) \
-    $(wildcard include/config/MEMCG_SWAP) \
-  include/linux/memcontrol.h \
-    $(wildcard include/config/CGROUP_WRITEBACK) \
-  include/linux/cgroup.h \
-    $(wildcard include/config/CGROUP_CPUACCT) \
-    $(wildcard include/config/SOCK_CGROUP_DATA) \
-    $(wildcard include/config/CGROUP_DATA) \
-    $(wildcard include/config/CGROUP_BPF) \
-  include/uapi/linux/cgroupstats.h \
-  include/uapi/linux/taskstats.h \
-  include/linux/fs.h \
-    $(wildcard include/config/READ_ONLY_THP_FOR_FS) \
-    $(wildcard include/config/FS_POSIX_ACL) \
-    $(wildcard include/config/IMA) \
-    $(wildcard include/config/FILE_LOCKING) \
-    $(wildcard include/config/FSNOTIFY) \
-    $(wildcard include/config/FS_ENCRYPTION) \
-    $(wildcard include/config/FS_VERITY) \
-    $(wildcard include/config/EPOLL) \
-    $(wildcard include/config/UNICODE) \
-    $(wildcard include/config/QUOTA) \
-    $(wildcard include/config/FS_DAX) \
-    $(wildcard include/config/BLOCK) \
-  include/linux/wait_bit.h \
-  include/linux/kdev_t.h \
-  include/uapi/linux/kdev_t.h \
-  include/linux/dcache.h \
-  include/linux/rculist_bl.h \
-  include/linux/list_bl.h \
-  include/linux/bit_spinlock.h \
-  include/linux/lockref.h \
-    $(wildcard include/config/ARCH_USE_CMPXCHG_LOCKREF) \
-  include/linux/stringhash.h \
-    $(wildcard include/config/DCACHE_WORD_ACCESS) \
-  include/linux/hash.h \
-    $(wildcard include/config/HAVE_ARCH_HASH) \
-  include/linux/path.h \
-  include/linux/list_lru.h \
-  include/linux/shrinker.h \
-  include/linux/capabili
+// SPDX-License-Identifier: GPL-2.0-or-later
+/*
+ * Driver for Silicon Labs C8051F300 microcontroller.
+ *
+ * It is used for LNB power control in TeVii S470,
+ * TBS 6920 PCIe DVB-S2 cards.
+ *
+ * Microcontroller connected to cx23885 GPIO pins:
+ * GPIO0 - data		- P0.3 F300
+ * GPIO1 - reset	- P0.2 F300
+ * GPIO2 - clk		- P0.1 F300
+ * GPIO3 - busy		- P0.0 F300
+ *
+ * Copyright (C) 2009 Igor M. Liplianin <liplianin@me.by>
+ */
+
+#include "cx23885.h"
+#include "cx23885-f300.h"
+
+#define F300_DATA	GPIO_0
+#define F300_RESET	GPIO_1
+#define F300_CLK	GPIO_2
+#define F300_BUSY	GPIO_3
+
+static void f300_set_line(struct cx23885_dev *dev, u32 line, u8 lvl)
+{
+	cx23885_gpio_enable(dev, line, 1);
+	if (lvl == 1)
+		cx23885_gpio_set(dev, line);
+	else
+		cx23885_gpio_clear(dev, line);
+}
+
+static u8 f300_get_line(struct cx23885_dev *dev, u32 line)
+{
+	cx23885_gpio_enable(dev, line, 0);
+
+	return cx23885_gpio_get(dev, line);
+}
+
+static void f300_send_byte(struct cx23885_dev *dev, u8 dta)
+{
+	u8 i;
+
+	for (i = 0; i < 8; i++) {
+		f300_set_line(dev, F300_CLK, 0);
+		udelay(30);
+		f300_set_line(dev, F300_DATA, (dta & 0x80) >> 7);/* msb first */
+		udelay(30);
+		dta <<= 1;
+		f300_set_line(dev, F300_CLK, 1);
+		udelay(30);
+	}
+}
+
+static u8 f300_get_byte(struct cx23885_dev *dev)
+{
+	u8 i, dta = 0;
+
+	for (i = 0; i < 8; i++) {
+		f300_set_line(dev, F300_CLK, 0);
+		udelay(30);
+		dta <<= 1;
+		f300_set_line(dev, F300_CLK, 1);
+		udelay(30);
+		dta |= f300_get_line(dev, F300_DATA);/* msb first */
+
+	}
+
+	return dta;
+}
+
+static u8 f300_xfer(struct dvb_frontend *fe, u8 *buf)
+{
+	struct cx23885_tsport *port = fe->dvb->priv;
+	struct cx23885_dev *dev = port->dev;
+	u8 i, temp, ret = 0;
+
+	temp = buf[0];
+	for (i = 0; i < buf[0]; i++)
+		temp += buf[i + 1];
+	temp = (~temp + 1);/* get check sum */
+	buf[1 + buf[0]] = temp;
+
+	f300_set_line(dev, F300_RESET, 1);
+	f300_set_line(dev, F300_CLK, 1);
+	udelay(30);
+	f300_set_line(dev, F300_DATA, 1);
+	msleep(1);
+
+	/* question: */
+	f300_set_line(dev, F300_RESET, 0);/* begin to send data */
+	msleep(1);
+
+	f300_send_byte(dev, 0xe0);/* the slave address is 0xe0, write */
+	msleep(1);
+
+	temp = buf[0];
+	temp += 2;
+	for (i = 0; i < temp; i++)
+		f300_send_byte(dev, buf[i]);
+
+	f300_set_line(dev, F300_RESET, 1);/* sent data over */
+	f300_set_line(dev, F300_DATA, 1);
+
+	/* answer: */
+	temp = 0;
+	for (i = 0; ((i < 8) & (temp == 0)); i++) {
+		msleep(1);
+		if (f300_get_line(dev, F300_BUSY) == 0)
+			temp = 1;
+	}
+
+	if (i > 7) {
+		pr_err("%s: timeout, the slave no response\n",
+								__func__);
+		ret = 1; /* timeout, the slave no response */
+	} else { /* the slave not busy, prepare for getting data */
+		f300_set_line(dev, F300_RESET, 0);/*re

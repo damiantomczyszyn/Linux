@@ -1,720 +1,1860 @@
-INJECTION) \
-    $(wildcard include/config/LATENCYTOP) \
-    $(wildcard include/config/KUNIT) \
-    $(wildcard include/config/FUNCTION_GRAPH_TRACER) \
-    $(wildcard include/config/BCACHE) \
-    $(wildcard include/config/VMAP_STACK) \
-    $(wildcard include/config/SECURITY) \
-    $(wildcard include/config/BPF_SYSCALL) \
-    $(wildcard include/config/GCC_PLUGIN_STACKLEAK) \
-    $(wildcard include/config/X86_MCE) \
-    $(wildcard include/config/KRETPROBES) \
-    $(wildcard include/config/RETHOOK) \
-    $(wildcard include/config/ARCH_HAS_PARANOID_L1D_FLUSH) \
-    $(wildcard include/config/ARCH_TASK_STRUCT_ON_STACK) \
-    $(wildcard include/config/DEBUG_RSEQ) \
-  include/uapi/linux/sched.h \
-  include/linux/pid.h \
-  include/linux/rculist.h \
-    $(wildcard include/config/PROVE_RCU_LIST) \
-  include/linux/sem.h \
-  include/uapi/linux/sem.h \
-  include/linux/ipc.h \
-  include/linux/rhashtable-types.h \
-  include/uapi/linux/ipc.h \
-  arch/x86/include/generated/uapi/asm/ipcbuf.h \
-  include/uapi/asm-generic/ipcbuf.h \
-  arch/x86/include/uapi/asm/sembuf.h \
-  include/linux/shm.h \
-  include/uapi/linux/shm.h \
-  include/uapi/asm-generic/hugetlb_encode.h \
-  arch/x86/include/uapi/asm/shmbuf.h \
-  include/uapi/asm-generic/shmbuf.h \
-  arch/x86/include/asm/shmparam.h \
-  include/linux/plist.h \
-    $(wildcard include/config/DEBUG_PLIST) \
-  include/linux/hrtimer.h \
-    $(wildcard include/config/HIGH_RES_TIMERS) \
-    $(wildcard include/config/TIME_LOW_RES) \
-    $(wildcard include/config/TIMERFD) \
-  include/linux/hrtimer_defs.h \
-  include/linux/timerqueue.h \
-  include/linux/seccomp.h \
-    $(wildcard include/config/SECCOMP) \
-    $(wildcard include/config/HAVE_ARCH_SECCOMP_FILTER) \
-    $(wildcard include/config/SECCOMP_FILTER) \
-    $(wildcard include/config/CHECKPOINT_RESTORE) \
-    $(wildcard include/config/SECCOMP_CACHE_DEBUG) \
-  include/uapi/linux/seccomp.h \
-  arch/x86/include/asm/seccomp.h \
-  arch/x86/include/asm/unistd.h \
-  arch/x86/include/uapi/asm/unistd.h \
-  arch/x86/include/generated/uapi/asm/unistd_32.h \
-  include/asm-generic/seccomp.h \
-  include/uapi/linux/unistd.h \
-  include/linux/resource.h \
-  include/uapi/linux/resource.h \
-  arch/x86/include/generated/uapi/asm/resource.h \
-  include/asm-generic/resource.h \
-  include/uapi/asm-generic/resource.h \
-  include/linux/latencytop.h \
-  include/linux/sched/prio.h \
-  include/linux/sched/types.h \
-  include/linux/signal_types.h \
-    $(wildcard include/config/OLD_SIGACTION) \
-  include/uapi/linux/signal.h \
-  arch/x86/include/asm/signal.h \
-  arch/x86/include/uapi/asm/signal.h \
-  include/uapi/asm-generic/signal-defs.h \
-  arch/x86/include/uapi/asm/siginfo.h \
-  include/uapi/asm-generic/siginfo.h \
-  include/linux/syscall_user_dispatch.h \
-  include/linux/task_io_accounting.h \
-    $(wildcard include/config/TASK_IO_ACCOUNTING) \
-  include/linux/posix-timers.h \
-  include/linux/alarmtimer.h \
-    $(wildcard include/config/RTC_CLASS) \
-  include/uapi/linux/rseq.h \
-  include/linux/kcsan.h \
-  arch/x86/include/asm/uaccess.h \
-    $(wildcard include/config/CC_HAS_ASM_GOTO_OUTPUT) \
-    $(wildcard include/config/CC_HAS_ASM_GOTO_TIED_OUTPUT) \
-    $(wildcard include/config/ARCH_HAS_COPY_MC) \
-    $(wildcard include/config/X86_INTEL_USERCOPY) \
-  arch/x86/include/asm/smap.h \
-  arch/x86/include/asm/extable.h \
-    $(wildcard include/config/BPF_JIT) \
-  include/asm-generic/access_ok.h \
-    $(wildcard include/config/ALTERNATE_USER_ADDRESS_SPACE) \
-  arch/x86/include/asm/uaccess_32.h \
-  include/linux/i2c.h \
-    $(wildcard include/config/I2C) \
-    $(wildcard include/config/I2C_SLAVE) \
-    $(wildcard include/config/I2C_BOARDINFO) \
-    $(wildcard include/config/I2C_MUX) \
-    $(wildcard include/config/OF) \
-    $(wildcard include/config/ACPI) \
-  include/linux/acpi.h \
-    $(wildcard include/config/ACPI_DEBUGGER) \
-    $(wildcard include/config/ACPI_TABLE_LIB) \
-    $(wildcard include/config/LOONGARCH) \
-    $(wildcard include/config/ARM64) \
-    $(wildcard include/config/ACPI_PROCESSOR_CSTATE) \
-    $(wildcard include/config/ACPI_HOTPLUG_CPU) \
-    $(wildcard include/config/ACPI_HOTPLUG_IOAPIC) \
-    $(wildcard include/config/PCI) \
-    $(wildcard include/config/ACPI_WMI) \
-    $(wildcard include/config/ACPI_NUMA) \
-    $(wildcard include/config/HIBERNATION) \
-    $(wildcard include/config/ACPI_HOTPLUG_MEMORY) \
-    $(wildcard include/config/ACPI_CONTAINER) \
-    $(wildcard include/config/ACPI_GTDT) \
-    $(wildcard include/config/PM) \
-    $(wildcard include/config/GPIOLIB) \
-    $(wildcard include/config/ACPI_TABLE_UPGRADE) \
-    $(wildcard include/config/ACPI_WATCHDOG) \
-    $(wildcard include/config/ACPI_SPCR_TABLE) \
-    $(wildcard include/config/ACPI_GENERIC_GSI) \
-    $(wildcard include/config/ACPI_LPIT) \
-    $(wildcard include/config/ACPI_PPTT) \
-    $(wildcard include/config/ACPI_PCC) \
-  include/linux/ioport.h \
-  include/linux/irqdomain.h \
-    $(wildcard include/config/IRQ_DOMAIN_HIERARCHY) \
-    $(wildcard include/config/GENERIC_IRQ_DEBUGFS) \
-    $(wildcard include/config/IRQ_DOMAIN) \
-    $(wildcard include/config/IRQ_DOMAIN_NOMAP) \
-  include/linux/irqhandler.h \
-  include/linux/of.h \
-    $(wildcard include/config/OF_DYNAMIC) \
-    $(wildcard include/config/SPARC) \
-    $(wildcard include/config/OF_PROMTREE) \
-    $(wildcard include/config/OF_KOBJ) \
-    $(wildcard include/config/OF_NUMA) \
-    $(wildcard include/config/OF_OVERLAY) \
-  include/linux/mod_devicetable.h \
-  include/linux/uuid.h \
-  include/uapi/linux/uuid.h \
-  include/linux/property.h \
-  include/linux/fwnode.h \
-  include/linux/resource_ext.h \
-  include/linux/device.h \
-    $(wildcard include/config/GENERIC_MSI_IRQ_DOMAIN) \
-    $(wildcard include/config/GENERIC_MSI_IRQ) \
-    $(wildcard include/config/ENERGY_MODEL) \
-    $(wildcard include/config/PINCTRL) \
-    $(wildcard include/config/DMA_OPS) \
-    $(wildcard include/config/DMA_DECLARE_COHERENT) \
-    $(wildcard include/config/DMA_CMA) \
-    $(wildcard include/config/SWIOTLB) \
-    $(wildcard include/config/ARCH_HAS_SYNC_DMA_FOR_DEVICE) \
-    $(wildcard include/config/ARCH_HAS_SYNC_DMA_FOR_CPU) \
-    $(wildcard include/config/ARCH_HAS_SYNC_DMA_FOR_CPU_ALL) \
-    $(wildcard include/config/DMA_OPS_BYPASS) \
-    $(wildcard include/config/DEVTMPFS) \
-    $(wildcard include/config/SYSFS_DEPRECATED) \
-  include/linux/dev_printk.h \
-  include/linux/ratelimit.h \
-  include/linux/energy_model.h \
-  include/linux/sched/cpufreq.h \
-    $(wildcard include/config/CPU_FREQ) \
-  include/linux/sched/topology.h \
-    $(wildcard include/config/SCHED_DEBUG) \
-    $(wildcard include/config/SCHED_MC) \
-    $(wildcard include/config/CPU_FREQ_GOV_SCHEDUTIL) \
-  include/linux/sched/idle.h \
-  include/linux/sched/sd_flags.h \
-  include/linux/klist.h \
-  include/linux/pm.h \
-    $(wildcard include/config/VT_CONSOLE_SLEEP) \
-    $(wildcard include/config/PM_CLK) \
-    $(wildcard include/config/PM_GENERIC_DOMAINS) \
-  include/linux/device/bus.h \
-  include/linux/device/class.h \
-  include/linux/device/driver.h \
-  arch/x86/include/asm/device.h \
-  include/linux/pm_wakeup.h \
-  include/acpi/acpi.h \
-  include/acpi/platform/acenv.h \
-  include/acpi/platform/acgcc.h \
-  include/acpi/platform/aclinux.h \
-    $(wildcard include/config/ACPI_REDUCED_HARDWARE_ONLY) \
-    $(wildcard include/config/ACPI_DEBUG) \
-  include/linux/ctype.h \
-  arch/x86/include/asm/acenv.h \
-  include/acpi/acnames.h \
-  include/acpi/actypes.h \
-  include/acpi/acexcep.h \
-  include/acpi/actbl.h \
-  include/acpi/actbl1.h \
-  include/acpi/actbl2.h \
-  include/acpi/actbl3.h \
-  include/acpi/acrestyp.h \
-  include/acpi/platform/acenvex.h \
-  include/acpi/platform/aclinuxex.h \
-  include/acpi/platform/acgccex.h \
-  include/acpi/acoutput.h \
-  include/acpi/acpiosxf.h \
-  include/acpi/acpixf.h \
-  include/acpi/acconfig.h \
-  include/acpi/acbuffer.h \
-  include/linux/dynamic_debug.h \
-  include/acpi/acpi_bus.h \
-    $(wildcard include/config/X86_ANDROID_TABLETS) \
-    $(wildcard include/config/ACPI_SYSTEM_POWER_STATES_SUPPORT) \
-    $(wildcard include/config/ACPI_SLEEP) \
-  include/acpi/acpi_drivers.h \
-    $(wildcard include/config/ACPI_DOCK) \
-  include/acpi/acpi_numa.h \
-    $(wildcard include/config/ACPI_HMAT) \
-  include/acpi/acpi_io.h \
-  include/linux/io.h \
-    $(wildcard include/config/HAS_IOPORT_MAP) \
-  arch/x86/include/asm/io.h \
-    $(wildcard include/config/MTRR) \
-    $(wildcard include/config/X86_PAT) \
-  arch/x86/include/generated/asm/early_ioremap.h \
-  include/asm-generic/early_ioremap.h \
-    $(wildcard include/config/GENERIC_EARLY_IOREMAP) \
-  include/asm-generic/iomap.h \
-  include/asm-generic/pci_iomap.h \
-    $(wildcard include/config/NO_GENERIC_PCI_IOPORT_MAP) \
-    $(wildcard include/config/GENERIC_PCI_IOMAP) \
-  include/asm-generic/io.h \
-    $(wildcard include/config/GENERIC_IOMAP) \
-    $(wildcard include/config/GENERIC_IOREMAP) \
-    $(wildcard include/config/VIRT_TO_BUS) \
-    $(wildcard include/config/GENERIC_DEVMEM_IS_ALLOWED) \
-  include/linux/logic_pio.h \
-    $(wildcard include/config/INDIRECT_PIO) \
-  include/linux/vmalloc.h \
-    $(wildcard include/config/HAVE_ARCH_HUGE_VMALLOC) \
-  arch/x86/include/asm/vmalloc.h \
-    $(wildcard include/config/HAVE_ARCH_HUGE_VMAP) \
-  arch/x86/include/asm/acpi.h \
-    $(wildcard include/config/ACPI_APEI) \
-  include/acpi/pdc_intel.h \
-  arch/x86/include/asm/numa.h \
-    $(wildcard include/config/NUMA_EMU) \
-  arch/x86/include/asm/numa_32.h \
-  include/linux/regulator/consumer.h \
-    $(wildcard include/config/REGULATOR) \
-  include/linux/suspend.h \
-    $(wildcard include/config/VT) \
-    $(wildcard include/config/SUSPEND) \
-    $(wildcard include/config/HIBERNATION_SNAPSHOT_DEV) \
-    $(wildcard include/config/PM_SLEEP_DEBUG) \
-    $(wildcard include/config/PM_AUTOSLEEP) \
-  include/linux/swap.h \
-    $(wildcard include/config/DEVICE_PRIVATE) \
-    $(wildcard include/config/MIGRATION) \
-    $(wildcard include/config/FRONTSWAP) \
-    $(wildcard include/config/THP_SWAP) \
-    $(wildcard include/config/MEMCG_SWAP) \
-  include/linux/memcontrol.h \
-    $(wildcard include/config/CGROUP_WRITEBACK) \
-  include/linux/cgroup.h \
-    $(wildcard include/config/CGROUP_CPUACCT) \
-    $(wildcard include/config/SOCK_CGROUP_DATA) \
-    $(wildcard include/config/CGROUP_DATA) \
-    $(wildcard include/config/CGROUP_BPF) \
-  include/uapi/linux/cgroupstats.h \
-  include/uapi/linux/taskstats.h \
-  include/linux/fs.h \
-    $(wildcard include/config/READ_ONLY_THP_FOR_FS) \
-    $(wildcard include/config/FS_POSIX_ACL) \
-    $(wildcard include/config/IMA) \
-    $(wildcard include/config/FILE_LOCKING) \
-    $(wildcard include/config/FSNOTIFY) \
-    $(wildcard include/config/FS_ENCRYPTION) \
-    $(wildcard include/config/FS_VERITY) \
-    $(wildcard include/config/EPOLL) \
-    $(wildcard include/config/UNICODE) \
-    $(wildcard include/config/QUOTA) \
-    $(wildcard include/config/FS_DAX) \
-    $(wildcard include/config/BLOCK) \
-  include/linux/wait_bit.h \
-  include/linux/kdev_t.h \
-  include/uapi/linux/kdev_t.h \
-  include/linux/dcache.h \
-  include/linux/rculist_bl.h \
-  include/linux/list_bl.h \
-  include/linux/bit_spinlock.h \
-  include/linux/lockref.h \
-    $(wildcard include/config/ARCH_USE_CMPXCHG_LOCKREF) \
-  include/linux/stringhash.h \
-    $(wildcard include/config/DCACHE_WORD_ACCESS) \
-  include/linux/hash.h \
-    $(wildcard include/config/HAVE_ARCH_HASH) \
-  include/linux/path.h \
-  include/linux/list_lru.h \
-  include/linux/shrinker.h \
-  include/linux/capability.h \
-  include/uapi/linux/capability.h \
-  include/linux/semaphore.h \
-  include/linux/fcntl.h \
-    $(wildcard include/config/ARCH_32BIT_OFF_T) \
-  include/uapi/linux/fcntl.h \
-  arch/x86/include/generated/uapi/asm/fcntl.h \
-  include/uapi/asm-generic/fcntl.h \
-  include/uapi/linux/openat2.h \
-  include/linux/migrate_mode.h \
-  include/linux/percpu-rwsem.h \
-  include/linux/rcuwait.h \
-  include/linux/sched/signal.h \
-    $(wildcard include/config/SCHED_AUTOGROUP) \
-    $(wildcard include/config/BSD_PROCESS_ACCT) \
-    $(wildcard include/config/TASKSTATS) \
-    $(wildcard include/config/STACK_GROWSUP) \
-  include/linux/signal.h \
-    $(wildcard include/config/DYNAMIC_SIGFRAME) \
-  include/linux/sched/jobctl.h \
-  include/linux/sched/task.h \
-    $(wildcard include/config/HAVE_EXIT_THREAD) \
-    $(wildcard include/config/ARCH_WANTS_DYNAMIC_TASK_STRUCT) \
-    $(wildcard include/config/HAVE_ARCH_THREAD_STRUCT_WHITELIST) \
-  include/linux/cred.h \
-    $(wildcard include/config/DEBUG_CREDENTIALS) \
-  include/linux/key.h \
-    $(wildcard include/config/KEY_NOTIFICATIONS) \
-    $(wildcard include/config/NET) \
-  include/linux/assoc_array.h \
-    $(wildcard include/config/ASSOCIATIVE_ARRAY) \
-  include/linux/sched/user.h \
-    $(wildcard include/config/WATCH_QUEUE) \
-  include/linux/percpu_counter.h \
-  include/linux/rcu_sync.h \
-  include/linux/delayed_call.h \
-  include/linux/errseq.h \
-  include/linux/ioprio.h \
-  include/linux/sched/rt.h \
-  include/linux/iocontext.h \
-    $(wildcard include/config/BLK_ICQ) \
-  include/uapi/linux/ioprio.h \
-  include/linux/fs_types.h \
-  include/linux/mount.h \
-  include/linux/mnt_idmapping.h \
-  include/uapi/linux/fs.h \
-  include/linux/quota.h \
-    $(wildcard include/config/QUOTA_NETLINK_INTERFACE) \
-  include/uapi/linux/dqblk_xfs.h \
-  include/linux/dqblk_v1.h \
-  include/linux/dqblk_v2.h \
-  include/linux/dqblk_qtree.h \
-  include/linux/projid.h \
-  include/uapi/linux/quota.h \
-  include/linux/nfs_fs_i.h \
-  include/linux/seq_file.h \
-  include/linux/string_helpers.h \
-  include/linux/ns_common.h \
-  include/linux/nsproxy.h \
-  include/linux/user_namespace.h \
-    $(wildcard include/config/INOTIFY_USER) \
-    $(wildcard include/config/FANOTIFY) \
-    $(wildcard include/config/PERSISTENT_KEYRINGS) \
-  include/linux/kernel_stat.h \
-  include/linux/interrupt.h \
-    $(wildcard include/config/IRQ_FORCED_THREADING) \
-    $(wildcard include/config/GENERIC_IRQ_PROBE) \
-    $(wildcard include/config/IRQ_TIMINGS) \
-  include/linux/irqreturn.h \
-  include/linux/irqnr.h \
-  include/uapi/linux/irqnr.h \
-  include/linux/hardirq.h \
-  include/linux/context_tracking_state.h \
-    $(wildcard include/config/CONTEXT_TRACKING) \
-  include/linux/ftrace_irq.h \
-    $(wildcard include/config/HWLAT_TRACER) \
-    $(wildcard include/config/OSNOISE_TRACER) \
-  include/linux/vtime.h \
-    $(wildcard include/config/VIRT_CPU_ACCOUNTING) \
-    $(wildcard include/config/IRQ_TIME_ACCOUNTING) \
-  arch/x86/include/asm/hardirq.h \
-    $(wildcard include/config/KVM_INTEL) \
-    $(wildcard include/config/X86_THERMAL_VECTOR) \
-    $(wildcard include/config/X86_MCE_THRESHOLD) \
-    $(wildcard include/config/X86_MCE_AMD) \
-    $(wildcard include/config/X86_HV_CALLBACK_VECTOR) \
-  arch/x86/include/asm/irq.h \
-  arch/x86/include/asm/sections.h \
-  include/asm-generic/sections.h \
-    $(wildcard include/config/HAVE_FUNCTION_DESCRIPTORS) \
-  include/linux/cgroup-defs.h \
-    $(wildcard include/config/CGROUP_NET_CLASSID) \
-    $(wildcard include/config/CGROUP_NET_PRIO) \
-  include/linux/u64_stats_sync.h \
-  include/linux/bpf-cgroup-defs.h \
-  include/linux/psi_types.h \
-  include/linux/kthread.h \
-  include/linux/cgroup_subsys.h \
-    $(wildcard include/config/CGROUP_DEVICE) \
-    $(wildcard include/config/CGROUP_FREEZER) \
-    $(wildcard include/config/CGROUP_PERF) \
-    $(wildcard include/config/CGROUP_HUGETLB) \
-    $(wildcard include/config/CGROUP_PIDS) \
-    $(wildcard include/config/CGROUP_RDMA) \
-    $(wildcard include/config/CGROUP_MISC) \
-    $(wildcard include/config/CGROUP_DEBUG) \
-  include/linux/vm_event_item.h \
-    $(wildcard include/config/HAVE_ARCH_TRANSPARENT_HUGEPAGE_PUD) \
-    $(wildcard include/config/MEMORY_BALLOON) \
-    $(wildcard include/config/BALLOON_COMPACTION) \
-    $(wildcard include/config/DEBUG_TLBFLUSH) \
-    $(wildcard include/config/DEBUG_VM_VMACACHE) \
-  include/linux/page_counter.h \
-  include/linux/vmpressure.h \
-  include/linux/eventfd.h \
-  include/linux/mm.h \
-    $(wildcard include/config/HAVE_ARCH_MMAP_RND_BITS) \
-    $(wildcard include/config/HAVE_ARCH_MMAP_RND_COMPAT_BITS) \
-    $(wildcard include/config/ARCH_USES_HIGH_VMA_FLAGS) \
-    $(wildcard include/config/ARCH_HAS_PKEYS) \
-    $(wildcard include/config/PPC) \
-    $(wildcard include/config/PARISC) \
-    $(wildcard include/config/SPARC64) \
-    $(wildcard include/config/ARM64_MTE) \
-    $(wildcard include/config/HAVE_ARCH_USERFAULTFD_MINOR) \
-    $(wildcard include/config/SHMEM) \
-    $(wildcard include/config/ARCH_HAS_PTE_SPECIAL) \
-    $(wildcard include/config/ARCH_HAS_PTE_DEVMAP) \
-    $(wildcard include/config/DEBUG_VM_RB) \
-    $(wildcard include/config/PAGE_POISONING) \
-    $(wildcard include/config/INIT_ON_ALLOC_DEFAULT_ON) \
-    $(wildcard include/config/INIT_ON_FREE_DEFAULT_ON) \
-    $(wildcard include/config/DEBUG_PAGEALLOC) \
-    $(wildcard include/config/HUGETLBFS) \
-    $(wildcard include/config/MAPPING_DIRTY_HELPERS) \
-    $(wildcard include/config/ANON_VMA_NAME) \
-  include/linux/mmap_lock.h \
-  include/linux/page_ext.h \
-  include/linux/stacktrace.h \
-    $(wildcard include/config/ARCH_STACKWALK) \
-    $(wildcard include/config/STACKTRACE) \
-    $(wildcard include/config/HAVE_RELIABLE_STACKTRACE) \
-  include/linux/stackdepot.h \
-    $(wildcard include/config/STACKDEPOT_ALWAYS_INIT) \
-  include/linux/page_ref.h \
-    $(wildcard include/config/DEBUG_PAGE_REF) \
-  include/linux/sizes.h \
-  include/linux/pgtable.h \
-    $(wildcard include/config/HIGHPTE) \
-    $(wildcard include/config/GUP_GET_PTE_LOW_HIGH) \
-    $(wildcard include/config/HAVE_ARCH_SOFT_DIRTY) \
-    $(wildcard include/config/ARCH_ENABLE_THP_MIGRATION) \
-    $(wildcard include/config/X86_ESPFIX64) \
-  arch/x86/include/asm/pgtable.h \
-    $(wildcard include/config/DEBUG_WX) \
-    $(wildcard include/config/PAGE_TABLE_CHECK) \
-  arch/x86/include/asm/pkru.h \
-  arch/x86/include/asm/fpu/api.h \
-    $(wildcard include/config/X86_DEBUG_FPU) \
-  arch/x86/include/asm/coco.h \
-  include/asm-generic/pgtable_uffd.h \
-  include/linux/page_table_check.h \
-  arch/x86/include/asm/pgtable_32.h \
-  arch/x86/include/asm/pgtable-3level.h \
-  arch/x86/include/asm/pgtable-invert.h \
-  include/linux/huge_mm.h \
-  include/linux/sched/coredump.h \
-    $(wildcard include/config/CORE_DUMP_DEFAULT_ELF_HEADERS) \
-  include/linux/vmstat.h \
-    $(wildcard include/config/VM_EVENT_COUNTERS) \
-  include/linux/writeback.h \
-  include/linux/flex_proportions.h \
-  include/linux/backing-dev-defs.h \
-    $(wildcard include/config/DEBUG_FS) \
-  include/linux/blk_types.h \
-    $(wildcard include/config/FAIL_MAKE_REQUEST) \
-    $(wildcard include/config/BLK_CGROUP_IOCOST) \
-    $(wildcard include/config/BLK_INLINE_ENCRYPTION) \
-    $(wildcard include/config/BLK_DEV_INTEGRITY) \
-  include/linux/bvec.h \
-  include/linux/highmem.h \
-  include/linux/cacheflush.h \
-  arch/x86/include/asm/cacheflush.h \
-  include/asm-generic/cacheflush.h \
-  include/linux/highmem-internal.h \
-  arch/x86/include/asm/highmem.h \
-  arch/x86/include/asm/tlbflush.h \
-  arch/x86/include/asm/invpcid.h \
-  arch/x86/include/asm/pti.h \
-  include/linux/bio.h \
-  include/linux/mempool.h \
-  include/linux/uio.h \
-    $(wildcard include/config/ARCH_HAS_UACCESS_FLUSHCACHE) \
-  include/uapi/linux/uio.h \
-  include/linux/node.h \
-    $(wildcard include/config/HMEM_REPORTING) \
-  include/linux/pagemap.h \
-  include/linux/hugetlb_inline.h \
-  include/uapi/linux/mempolicy.h \
-  include/linux/freezer.h \
-  include/uapi/linux/i2c.h \
-  include/linux/videodev2.h \
-  include/uapi/linux/videodev2.h \
-    $(wildcard include/config/VIDEO_ADV_DEBUG) \
-  include/uapi/linux/v4l2-common.h \
-  include/uapi/linux/v4l2-controls.h \
-  include/media/v4l2-device.h \
-    $(wildcard include/config/VIDEO_V4L2_SUBDEV_API) \
-  include/media/media-device.h \
-    $(wildcard include/config/MEDIA_CONTROLLER) \
-  include/media/media-devnode.h \
-  include/linux/poll.h \
-  include/uapi/linux/poll.h \
-  arch/x86/include/generated/uapi/asm/poll.h \
-  include/uapi/asm-generic/poll.h \
-  include/uapi/linux/eventpoll.h \
-  include/linux/cdev.h \
-  include/media/media-entity.h \
-  include/uapi/linux/media.h \
-  include/media/v4l2-subdev.h \
-  include/uapi/linux/v4l2-subdev.h \
-  include/uapi/linux/v4l2-mediabus.h \
-  include/uapi/linux/media-bus-format.h \
-  include/media/v4l2-async.h \
-  include/media/v4l2-common.h \
-    $(wildcard include/config/VIDEO_V4L2_I2C) \
-    $(wildcard include/config/SPI) \
-  include/media/v4l2-dev.h \
-  include/linux/spi/spi.h \
-    $(wildcard include/config/SPI_SLAVE) \
-  include/linux/scatterlist.h \
-    $(wildcard include/config/NEED_SG_DMA_LENGTH) \
-    $(wildcard include/config/DEBUG_SG) \
-    $(wildcard include/config/SGL_ALLOC) \
-    $(wildcard include/config/ARCH_NO_SG_CHAIN) \
-    $(wildcard include/config/SG_POOL) \
-  include/linux/gpio/consumer.h \
-    $(wildcard include/config/OF_GPIO) \
-    $(wildcard include/config/GPIO_SYSFS) \
-  include/uapi/linux/spi/spi.h \
-  include/media/v4l2-fh.h \
-  include/media/v4l2-mediabus.h \
+// SPDX-License-Identifier: GPL-2.0
+/* Realtek SMI subdriver for the Realtek RTL8366RB ethernet switch
+ *
+ * This is a sparsely documented chip, the only viable documentation seems
+ * to be a patched up code drop from the vendor that appear in various
+ * GPL source trees.
+ *
+ * Copyright (C) 2017 Linus Walleij <linus.walleij@linaro.org>
+ * Copyright (C) 2009-2010 Gabor Juhos <juhosg@openwrt.org>
+ * Copyright (C) 2010 Antti Sepp√§l√§ <a.seppala@gmail.com>
+ * Copyright (C) 2010 Roman Yeryomin <roman@advem.lv>
+ * Copyright (C) 2011 Colin Leitner <colin.leitner@googlemail.com>
+ */
 
-drivers/media/i2c/vp27smpx.o: $(deps_drivers/media/i2c/vp27smpx.o)
+#include <linux/bitops.h>
+#include <linux/etherdevice.h>
+#include <linux/if_bridge.h>
+#include <linux/interrupt.h>
+#include <linux/irqdomain.h>
+#include <linux/irqchip/chained_irq.h>
+#include <linux/of_irq.h>
+#include <linux/regmap.h>
 
-$(deps_drivers/media/i2c/vp27smpx.o):
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     ELF                      "      4     (               Ë¸ˇˇˇSãX\âÿË¸ˇˇˇçÉ¿   Ë¸ˇˇˇ1¿[√êË¸ˇˇˇWVâ∆Sª
-   dã=    ç¥&    çv ãÜî   ∫)   Ë¸ˇˇˇÉ‡t∏∆ß  Ë¸ˇˇˇã®uÉÎu÷∏ˇˇˇˇ[^_√çt& êË¸ˇˇˇÎÊêË¸ˇˇˇVf¡¬Sã∞î   â√∑ ∫&   âË¸ˇˇˇÉ¯ˇt)âÿËrˇˇˇÖ¿x+∫(   âË¸ˇˇˇfÉ¯ˇtf¡¿∑¿[^√fê°    Ö¿è¸ˇˇˇ∏ˇˇˇˇÎÁç¥&    çt& êË¸ˇˇˇUWâ«Vâ÷SâÀÉÏÖ…Ññ   ãAã)â$∫Û   â¯Ëbˇˇˇâ¡°    Ö¿è   Ö…x)â»É‡ t0«$    1Ì∏   Ö€tã<$â+â{1…ÖˆtâÉƒâ»[^_]√çt& É·∫   ”‚˜¬ uVÅ‚  u6É˘uø«$    ÅÂ  ˇ Î∞ç¥&    çv «$    Ωˇˇˇ Èaˇˇˇç¥&    «$    ÅÂ ∞  È|ˇˇˇç∂    âÍ«$    ∂ÍÈeˇˇˇç¥&    ç¥&    êË¸ˇˇˇSâ√ÉÏã    Ö…è9   Éƒâÿ1…[È⁄˛ˇˇç¥&    çv Ë¸ˇˇˇSâ√â—ÉÏ°    Ö¿èT   Éƒâÿ1“[È©˛ˇˇç¥&    fêË¸ˇˇˇWf¡¬Vâ∆Sã∏î   âÀâ—Å· ˇ  ∫'   â¯Ë¸ˇˇˇÉ¯ˇt1âËö˝ˇˇÖ¿xf¡√∫(   â¯∑ÀË¸ˇˇˇÉ¯ˇt[^_√ç¥&    çv °    Ö¿èo   Î„êË¸ˇˇˇVâ∆â—SÉÏ°    Ö¿èä   1€Ö…t
-ª   π   ãÜî   ãP\àö"  ∫Ú   Ë¸ˇˇˇ1¿Éƒ[^√çt& Ë¸ˇˇˇÉ˙wvVâ÷Sâ√°    Ö¿è∑   ãÉî   ãı    ãP\àäc  ∫3   ∂…Ë¸ˇˇˇ∫Ú   âÿË$˝ˇˇÉ‡ﬂx*ãı   ∫Ú   ¡·	¡âÿÉ…∑…Ë—˛ˇˇ∏∆ß  Ë¸ˇˇˇ1¿[^√fê∏Íˇˇˇ√ç¥&    çv Ë¸ˇˇˇVSãXãP(ç≥@ˇˇˇÅ˙	ò Ñâ   w7Å˙ 	ò tWÅ˙	ò uGãH|ãC‘ãP\ÉÈ@àä  ∂…∫Á   Ë¸ˇˇˇ1¿[^√çv Å˙	ò u∑H|∫   âË@˛ˇˇ1¿[^√çv ∏Íˇˇˇ[^√ãH|ãC‘ãP\àä  ∂…∫Ê   Ë¸ˇˇˇ1¿[^√ç¥&    ∑H|∫†   âË¯˝ˇˇ1¿[^√çv Ë¸ˇˇˇUâÕWâ◊∫Ú   Vâ∆SÉÏË¸ˇˇã    â$Ö€è  â¯% ∞  Öﬁ   â¯Ñ¿Öå   â¯%  ˇ Ñ  ∏   ∫à   ª‡  ∑»Î
-çv ∑∑KÉ√∂“âËt˝ˇˇÅ˚  u‰ã    Ö…è‘   âæ0  ∑<$∫Ú   ââÆ4  Éœ∑œË<˝ˇˇ∏∆ß  Ë¸ˇˇˇ1¿Éƒ[^_]√ç¥&    ê∏   ∫à   ª   ∑»Îçt& ∑∑KÉ√∂“âËÙ¸ˇˇÅ˚H  u‰°    Ö¿~ÖÈÈ   ç∂    1…∫   ª`  Îç¥&    çv ∑∑KÉ√∂“âË¨¸ˇˇÅ˚å  u‰ã    Ö…é8ˇˇˇÈ˛   ê∏ÍˇˇˇÈVˇˇˇç∂    Ë¸ˇˇˇW1…∫Ú   Vâ∆Sª†  Îç¥&    ê∂∂KãÜî   É√ãx\àå0  Ë¸ˇˇˇÖ¿xÅ˚ƒ  u’1…∫Y   ª`  Îç¥&    ∑∑KÉ√∂“âË¸ˇˇÅ˚à  u‰ãÜ0  ˆƒ∞Ö}   π   ∫à   Ñ¿u?©  ˇ Ñ§   ª‡  Îçt& ê∑∑KÉ√∂“âËº˚ˇˇÅ˚  u‰[1¿^_√ç∂    ª   Îê∑∑KÉ√∂“âËå˚ˇˇÅ˚H  u‰[1¿^_√ç∂    1…∫   ª`  Îç¥&    çv ∑∑KÉ√∂“âËL˚ˇˇÅ˚å  u‰[1¿^_√ç∂    ª   Îê∑∑KÉ√∂“âË˚ˇˇÅ˚H  u‰[1¿^_√ç¥&    ç¥&    Ë¸ˇˇˇUWVâ∆SÉÏã@ãPãRË¸ˇˇˇ%  x =  x Öd  çFπ¿  ∫@  Ë¸ˇˇˇâ√Ö¿ÑO  π†   âÚçª¿   Ë¸ˇˇˇ1…∫   â¯j «É0  ˇ   «É4      «É8      «É<     Ë¸ˇˇˇπ 	ò ∫P  â¯j j j jj jjˇjÄË¸ˇˇˇπ	ò ∫P  â¯Éƒ$j j j jj j?j j Ë¸ˇˇˇπ	ò ∫P  â¯Éƒ j h   j jj hˇ  j j Ë¸ˇˇˇπ	ò ∫P  â¯Éƒ j j j jj hˇ  jˇh ˛ˇˇË¸ˇˇˇã´¸   â{lâ¯Éƒ ÖÌuCË¸ˇˇˇ1“âË¸ˇˇˇ∫   â$âË¸ˇˇˇ∫   â«âË¸ˇˇˇ¡Áâ¬â¯–Ä<$ÏÖP  È+  Ë¸ˇˇˇÉƒâË[^_]√êΩÌˇˇˇÎÓΩÙˇˇˇÎÁ                      P                      $                                                                          @                               Ä           P  ¿    †  `  –  P      7%s: %s: failed
- 7%s: status: 0x%04x
- 7%s: g_input_status
- 7%s: querystd
- on off 7%s: s_stream %s
- 7%s: input switched to %s
- 7%s: s_std %llx
- 7%s: norm switched to NTSC
- 7%s: norm switched to PAL
- 7%s: norm switched to SECAM
- vpx3214c vpx3216b vpx3220a 6%s: %s found @ 0x%x (%s)
- vpx3220 internal composite svideo É√ph   Sh    Ë¸ˇˇˇÉ»ˇÉƒÈ«   QÉ«pâL$Wh   Ë¸ˇˇˇãL$ÉƒÈ)  ç@pâ$Ph(   Ë¸ˇˇˇXZã$È  çCpâ$Ph>   Ë¸ˇˇˇXZã$È6  É∆ph(   Vh    Ë¸ˇˇˇÉƒÈû  â$Ö“∏N   ∫Q   D¬PçFpPhU   Ë¸ˇˇˇãL$ÉƒÈ◊  çCpˇ4ïå  Phh   Ë¸ˇˇˇÉƒÈ)  çFpPhœ   Ë¸ˇˇˇXZÈÓ  çFpPh≥   Ë¸ˇˇˇ[XÈÓ  çFpPhñ   Ë¸ˇˇˇXZÈÓ  çFpUWPhÑ   Ë¸ˇˇˇÉƒÈâ  f=ÄFÑ≥   f=`BÑ‚   ∫Ì   f=ÄBÑù   ãN∑¿çë  R∑V1ˆ“RP∂|$çCpWPh    Ë¸ˇˇˇÉƒãÉî   ∂é°  ∂ñ†  ãx\àå0  Ë¸ˇˇˇÖ¿yq1ˆ∑éb  ∂ñ`  âÿÉ∆ËL  É˛(u„1ˆ∑é"  ∂ñ   âÿÉ∆ËL  É˛(u„È—  ∫ˇ   ãF  P∑F1ˆ¿PçCpRPh  Ë¸ˇˇˇÉƒÈhˇˇˇÉ∆É˛$táÈ[ˇˇˇ∫ˆ   Î√6%s: chip (%02x:%04x) found @ 0x%x (%s)
- Ë¸ˇˇˇ∫    ∏    È¸ˇˇˇ∏    È¸ˇˇˇ                                vpx3220_fp_read vpx3220_fp_write        vpx3220a                vpx3216b                vpx3214c                                                   ¿                             `                       ¿                                                              –                                              †      Y   † £   §   ®  ≤  æ  X   &   K ò                        Ú 3ÿ® ‡ˇ· ‚„Ä‰ÂÄÊ Á‡Ë¯ÍäÒ¯˘$                            à  â  ä  ã  å  ç è   w Ú ’Á A                        à  â  ä  ã  å  ç è   w Ú —Á A                           à  â  ä  ã   å Äç Äè   s Ú  Á ·,  5  ?  debug parm=debug:Debug level (0-1) parmtype=debug:int license=GPL author=Laurent Pinchart description=vpx3220a/vpx3216b/vpx3214c video decoder driver   ò            ˇ      GCC: (GNU) 11.2.0           GNU  ¿       ¿                                  Òˇ                                                             _                                	 ,   Ä   d     ≈           <           	 Q           \      Ò     k          	      &     ñ   =       	 ≤      '     √   X       	 Ÿ   P  o     Ò   s       	   (          ¿  L     *  é   -    	 @    Ü     R           _  ª       	 v  å       }  †  Ω     å  `  j    ö  ‡  (     •     (     Æ  `  ,     ∏  ÿ   W    	 À  –  r    ÿ  †  $     ‰  `  (                   Ï  P  û    ˙  †           P         /  ˇ    	               *           >      Ä     M      
-                   a  @   `     l     0     }  ¿   P     è           §          Ω           À  ò       ›  0        Ù  <        
-  T   <     %             0             N             e             r             ã             ö             Æ             »             ·             È                                       )             >             [             m             Ö             ì             ß           ≥             ¬      
-     —  @   `     Ù              vpx3220.c vpx3220_remove vpx3220_fp_status vpx3220_fp_read vpx3220_fp_read.cold __func__.2 vpx3220_status vpx3220_status.cold vpx3220_g_input_status vpx3220_g_input_status.cold vpx3220_querystd vpx3220_querystd.cold vpx3220_fp_write.isra.0 vpx3220_fp_write.isra.0.cold __func__.1 vpx3220_s_stream vpx3220_s_stream.cold vpx3220_s_routing input_vals.3 vpx3220_s_routing.cold inputs vpx3220_s_ctrl vpx3220_s_std init_secam init_pal init_ntsc vpx3220_s_std.cold vpx3220_init init_common init_fp vpx3220_probe vpx3220_ops vpx3220_ctrl_ops vpx3220_probe.cold vpx3220_driver_init vpx3220_driver vpx3220_driver_exit vpx3220_id vpx3220_core_ops vpx3220_video_ops __UNIQUE_ID_debug270 __UNIQUE_ID_debugtype269 __param_debug __param_str_debug __UNIQUE_ID_license268 __UNIQUE_ID_author267 __UNIQUE_ID_description266 __fentry__ v4l2_device_unregister_subdev v4l2_ctrl_handler_free current_task i2c_smbus_read_byte_data __const_udelay __SCT__cond_resched i2c_smbus_write_word_data i2c_smbus_read_word_data _printk i2c_smbus_write_byte_data __x86_indirect_thunk_edx devm_kmalloc v4l2_i2c_subdev_init v4l2_ctrl_handler_init_class v4l2_ctrl_new_std v4l2_ctrl_handler_setup __this_module i2c_register_driver init_module i2c_del_driver cleanup_module __mod_i2c__vpx3220_id_device_table param_ops_int      9     :     ;  !   9  2   <  L   =  [   >  y   ?  Å   9  û   @  ∫   A  —     Ò   9  !    Ò  9  ˝    !  9  .    Q  9  v  @  ô  @  ±    ¡  9  œ       C    9  !    6  .  L  C  d  .  Ö  >  °  9  Ï  C  8  C  a  9  ~    º  .  ﬁ  .  Ê      >  ;  .  ^  .  e    Ä  .  ¶  .  Æ    —  9  ‚  .    C    .  #  .  F  .  u  .  ñ  .  ©  .  ∆  .  ‡  .    .    .  6  .  Q  9  h  D  ä  E  ô  .  ¶  F  ﬁ  G  Ë  .  ˇ  H  	  .  #  H  -  .  M  H  W  .  w  H  é  I  ó  =  ¶  =  ¥  =  —  ;  Ÿ     )        6    π    ◊    )    â    Ó    n    ª    «    Ã                   h   .                                                 $     (     ,     0     4   *     .  
-        B  (     -   B  E     J   B  `     e   B  w   .  }     Ç   B  î     ô     ¶     ´   B  ¡   .  «     Ã   B  ›     ‚   B  Ú     ˜   B        B      #  B  F    v  %  {  B  ã  .  í  .  °  C  Æ  .  µ  .  ø    Õ  .  ‘  .  ﬁ    Ì    	      B  (         9     T     o     ä     ∑     ‘     È     ˛         +    Ë       9          J     K          M  †   .  ¨   .  ¿     Ã     ÿ     ‰     Ë     (    X    å    ê    î        .     J     P        .symtab .strtab .shstrtab .rel.text .rel.data .bss .rel__mcount_loc .rodata.str1.1 .rel.text.unlikely .rodata.str1.4 .rel.init.text .rel.exit.text .rel.rodata .modinfo .rel__param .comment .note.GNU-stack .note.gnu.property                                                         @   Ó                    	   @       T  ‡              )             @	  Ä                   %   	   @       4                  /             ¿	                    8             ¿	  8                  4   	   @       T  p               E      2       ¯	  F                X             >  .                 T   	   @       ƒ  ∏     	         g      2       l  *                 z             ñ                    v   	   @       |                   â             ™  
-                  Ö   	   @       ú                  ò             ¿  û                  î   	   @       ¨   `               †             ^  ê                  ≠                                 ©   	   @       !                  µ      0                          æ                                   Œ               (                                @       9         	              P                                 ,!  ·                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          ELF                      "      4     (               Ë¸ˇˇˇSãX\âÿË¸ˇˇˇçÉ¿   Ë¸ˇˇˇ1¿[√êË¸ˇˇˇWVâ∆Sª
-   dã=    ç¥&    çv ãÜî   ∫)   Ë¸ˇˇˇÉ‡t∏∆ß  Ë¸ˇˇˇã®uÉÎu÷∏ˇˇˇˇ[^_√çt& êË¸ˇˇˇÎÊêË¸ˇˇˇVf¡¬Sã∞î   â√∑ ∫&   âË¸ˇˇˇÉ¯ˇt)âÿËrˇˇˇÖ¿x+∫(   âË¸ˇˇˇfÉ¯ˇtf¡¿∑¿[^√fê°    Ö¿è¸ˇˇˇ∏ˇˇˇˇÎÁç¥&    çt& êË¸ˇˇˇUWâ«Vâ÷SâÀÉÏÖ…Ññ   ãAã)â$∫Û   â¯Ëbˇˇˇâ¡°    Ö¿è   Ö…x)â»É‡ t0«$    1Ì∏   Ö€tã<$â+â{1…ÖˆtâÉƒâ»[^_]√çt& É·∫   ”‚˜¬ uVÅ‚  u6É˘uø«$    ÅÂ  ˇ Î∞ç¥&    çv «$    Ωˇˇˇ Èaˇˇˇç¥&    «$    ÅÂ ∞  È|ˇˇˇç∂    âÍ«$    ∂ÍÈeˇˇˇç¥&    ç¥&    êË¸ˇˇˇSâ√ÉÏã    Ö…è9   Éƒâÿ1…[È⁄˛ˇˇç¥&    çv Ë¸ˇˇˇSâ√â—ÉÏ°    Ö¿èT   Éƒâÿ1“[È©˛ˇˇç¥&    fêË¸ˇˇˇWf¡¬Vâ∆Sã∏î   âÀâ—Å· ˇ  ∫'   â¯Ë¸ˇˇˇÉ¯ˇt1âËö˝ˇˇÖ¿xf¡√∫(   â¯∑ÀË¸ˇˇˇÉ¯ˇt[^_√ç¥&    çv °    Ö¿èo   Î„êË¸ˇˇˇVâ∆â—SÉÏ°    Ö¿èä   1€Ö…t
-ª   π   ãÜî   ãP\àö"  ∫Ú   Ë¸ˇˇˇ1¿Éƒ[^√çt& Ë¸ˇˇˇÉ˙wvVâ÷Sâ√°    Ö¿è∑   ãÉî   ãı    ãP\àäc  ∫3   ∂…Ë¸ˇˇˇ∫Ú   âÿË$˝ˇˇÉ‡ﬂx*ãı   ∫Ú   ¡·	¡âÿÉ…∑…Ë—˛ˇˇ∏∆ß  Ë¸ˇˇˇ1¿[^√fê∏Íˇˇˇ√ç¥&    çv Ë¸ˇˇˇVSãXãP(ç≥@ˇˇˇÅ˙	ò Ñâ   w7Å˙ 	ò tWÅ˙	ò uGãH|ãC‘ãP\ÉÈ@àä  ∂…∫Á   Ë¸ˇˇˇ1¿[^√çv Å˙	ò u∑H|∫   âË@˛ˇˇ1¿[^√çv ∏Íˇˇˇ[^√ãH|ãC‘ãP\àä  ∂…∫Ê   Ë¸ˇˇˇ1¿[^√ç¥&    ∑H|∫†   âË¯˝ˇˇ1¿[^√çv Ë¸ˇˇˇUâÕWâ◊∫Ú   Vâ∆SÉÏË¸ˇˇã    â$Ö€è  â¯% ∞  Öﬁ   â¯Ñ¿Öå   â¯%  ˇ Ñ  ∏   ∫à   ª‡  ∑»Î
-çv ∑∑KÉ√∂“âËt˝ˇˇÅ˚  u‰ã    Ö…è‘   âæ0  ∑<$∫Ú   ââÆ4  Éœ∑œË<˝ˇˇ∏∆ß  Ë¸ˇˇˇ1¿Éƒ[^_]√ç¥&    ê∏   ∫à   ª   ∑»Îçt& ∑∑KÉ√∂“âËÙ¸ˇˇÅ˚H  u‰°    Ö¿~ÖÈÈ   ç∂    1…∫   ª`  Îç¥&    çv ∑∑KÉ√∂“âË¨¸ˇˇÅ˚å  u‰ã    Ö…é8ˇˇˇÈ˛   ê∏ÍˇˇˇÈVˇˇˇç∂    Ë¸ˇˇˇW1…∫Ú   Vâ∆Sª†  Îç¥&    ê∂∂KãÜî   É√ãx\àå0  Ë¸ˇˇˇÖ¿xÅ˚ƒ  u’1…∫Y   ª`  Îç¥&    ∑∑KÉ√∂“âË¸ˇˇÅ˚à  u‰ãÜ0  ˆƒ∞Ö}   π   ∫à   Ñ¿u?©  ˇ Ñ§   ª‡  Îçt& ê∑∑KÉ√∂“âËº˚ˇˇÅ˚  u‰[1¿^_√ç∂    ª   Îê∑∑KÉ√∂“âËå˚ˇˇÅ˚H  u‰[1¿^_√ç∂    1…∫   ª`  Îç¥&    çv ∑∑KÉ√∂“âËL˚ˇˇÅ˚å  u‰[1¿^_√ç∂    ª   Îê∑∑KÉ√∂“âË˚ˇˇÅ˚H  u‰[1¿^_√ç¥&    ç¥&    Ë¸ˇˇˇUWVâ∆SÉÏã@ãPãRË¸ˇˇˇ%  x =  x Öd  çFπ¿  ∫@  Ë¸ˇˇˇâ√Ö¿ÑO  π†   âÚçª¿   Ë¸ˇˇˇ1…∫   â¯j «É0  ˇ   «É4      «É8      «É<     Ë¸ˇˇˇπ 	ò ∫P  â¯j j j jj jjˇjÄË¸ˇˇˇπ	ò ∫P  â¯Éƒ$j j j jj j?j j Ë¸ˇˇˇπ	ò ∫P  â¯Éƒ j h   j jj hˇ  j j Ë¸ˇˇˇπ	ò ∫P  â¯Éƒ j j j jj hˇ  jˇh ˛ˇˇË¸ˇˇˇã´¸   â{lâ¯Éƒ ÖÌuCË¸ˇˇˇ1“âË¸ˇˇˇ∫   â$âË¸ˇˇˇ∫   â«âË¸ˇˇˇ¡Áâ¬â¯–Ä<$ÏÖP  È+  Ë¸ˇˇˇÉƒâË[^_]√êΩÌˇˇˇÎÓΩÙˇˇˇÎÁ                      P                      $                                                                          @                               Ä           P  ¿    †  `  –  P      7%s: %s: failed
- 7%s: status: 0x%04x
- 7%s: g_input_status
- 7%s: querystd
- on off 7%s: s_stream %s
- 7%s: input switched to %s
- 7%s: s_std %llx
- 7%s: norm switched to NTSC
- 7%s: norm switched to PAL
- 7%s: norm switched to SECAM
- vpx3214c vpx3216b vpx3220a 6%s: %s found @ 0x%x (%s)
- vpx3220 internal composite svideo É√ph   Sh    Ë¸ˇˇˇÉ»ˇÉƒÈ«   QÉ«pâL$Wh   Ë¸ˇˇˇãL$ÉƒÈ)  ç@pâ$Ph(   Ë¸ˇˇˇXZã$È  çCpâ$Ph>   Ë¸ˇˇˇXZã$È6  É∆ph(   Vh    Ë¸ˇˇˇÉƒÈû  â$Ö“∏N   ∫Q   D¬PçFpPhU   Ë¸ˇˇˇãL$ÉƒÈ◊  çCpˇ4ïå  Phh   Ë¸ˇˇˇÉƒÈ)  çFpPhœ   Ë¸ˇˇˇXZÈÓ  çFpPh≥   Ë¸ˇˇˇ[XÈÓ  çFpPhñ   Ë¸ˇˇˇXZÈÓ  çFpUWPhÑ   Ë¸ˇˇˇÉƒÈâ  f=ÄFÑ≥   f=`BÑ‚   ∫Ì   f=ÄBÑù   ãN∑¿çë  R∑V1ˆ“RP∂|$çCpWPh    Ë¸ˇˇˇÉƒãÉî   ∂é°  ∂ñ†  ãx\àå0  Ë¸ˇˇˇÖ¿yq1ˆ∑éb  ∂ñ`  âÿÉ∆ËL  É˛(u„1ˆ∑é"  ∂ñ   âÿÉ∆ËL  É˛(u„È—  ∫ˇ   ãF  P∑F1ˆ¿PçCpRPh  Ë¸ˇˇˇÉƒÈhˇˇˇÉ∆É˛$táÈ[ˇˇˇ∫ˆ   Î√6%s: chip (%02x:%04x) found @ 0x%x (%s)
- Ë¸ˇˇˇ∫    ∏    È¸ˇˇˇ∏    È¸ˇˇˇ                                vpx3220_fp_read vpx3220_fp_write        vpx3220a                vpx3216b                vpx3214c                                                   ¿                             `                       ¿                                                              –                                              †      Y   † £   §   ®  ≤  æ  X   &   K ò                        Ú 3ÿ® ‡ˇ· ‚„Ä‰ÂÄÊ Á‡Ë¯ÍäÒ¯˘$                            à  â  ä  ã  å  ç è   w Ú ’Á A                        à  â  ä  ã  å  ç è   w Ú —Á A                           à  â  ä  ã   å Äç Äè   s Ú  Á ·,  5  ?  debug parm=debug:Debug level (0-1) parmtype=debug:int license=GPL author=Laurent Pinchart description=vpx3220a/vpx3216b/vpx3214c video decoder driver   ò            ˇ      GCC: (GNU) 11.2.0           GNU  ¿       ¿                                  Òˇ                                                             _                                	 ,   Ä   d     ≈           <           	 Q           \      Ò     k          	      &     ñ   =       	 ≤      '     √   X       	 Ÿ   P  o     Ò   s       	   (          ¿  L     *  é   -    	 @    Ü     R           _  ª       	 v  å       }  †  Ω     å  `  j    ö  ‡  (     •     (     Æ  `  ,     ∏  ÿ   W    	 À  –  r    ÿ  †  $     ‰  `  (                   Ï  P  û    ˙  †           P         /  ˇ    	               *           >      Ä     M      
-                   a  @   `     l     0     }  ¿   P     è           §          Ω           À  ò       ›  0        Ù  <        
-  T   <     %             0             N             e             r             ã             ö             Æ             »             ·             È                                       )             >             [             m             Ö             ì             ß           ≥             ¬      
-     —  @   `     Ù              vpx3220.c vpx3220_remove vpx3220_fp_status vpx3220_fp_read vpx3220_fp_read.cold __func__.2 vpx3220_status vpx3220_status.cold vpx3220_g_input_status vpx3220_g_input_status.cold vpx3220_querystd vpx3220_querystd.cold vpx3220_fp_write.isra.0 vpx3220_fp_write.isra.0.cold __func__.1 vpx3220_s_stream vpx3220_s_stream.cold vpx3220_s_routing input_vals.3 vpx3220_s_routing.cold inputs vpx3220_s_ctrl vpx3220_s_std init_secam init_pal init_ntsc vpx3220_s_std.cold vpx3220_init init_common init_fp vpx3220_probe vpx3220_ops vpx3220_ctrl_ops vpx3220_probe.cold vpx3220_driver_init vpx3220_driver vpx3220_driver_exit vpx3220_id vpx3220_core_ops vpx3220_video_ops __UNIQUE_ID_debug270 __UNIQUE_ID_debugtype269 __param_debug __param_str_debug __UNIQUE_ID_license268 __UNIQUE_ID_author267 __UNIQUE_ID_description266 __fentry__ v4l2_device_unregister_subdev v4l2_ctrl_handler_free current_task i2c_smbus_read_byte_data __const_udelay __SCT__cond_resched i2c_smbus_write_word_data i2c_smbus_read_word_data _printk i2c_smbus_write_byte_data __x86_indirect_thunk_edx devm_kmalloc v4l2_i2c_subdev_init v4l2_ctrl_handler_init_class v4l2_ctrl_new_std v4l2_ctrl_handler_setup __this_module i2c_register_driver init_module i2c_del_driver cleanup_module __mod_i2c__vpx3220_id_device_table param_ops_int      9     :     ;  !   9  2   <  L   =  [   >  y   ?  Å   9  û   @  ∫   A  —     Ò   9  !    Ò  9  ˝    !  9  .    Q  9  v  @  ô  @  ±    ¡  9  œ       C    9  !    6  .  L  C  d  .  Ö  >  °  9  Ï  C  8  C  a  9  ~    º  .  ﬁ  .  Ê      >  ;  .  ^  .  e    Ä  .  ¶  .  Æ    —  9  ‚  .    C    .  #  .  F  .  u  .  ñ  .  ©  .  ∆  .  ‡  .    .    .  6  .  Q  9  h  D  ä  E  ô  .  ¶  F  ﬁ  G  Ë  .  ˇ  H  	  .  #  H  -  .  M  H  W  .  w  H  é  I  ó  =  ¶  =  ¥  =  —  ;  Ÿ     )        6    π    ◊    )    â    Ó    n    ª    «    Ã                   h   .                                                 $     (     ,     0     4   *     .  
-        B  (     -   B  E     J   B  `     e   B  w   .  }     Ç   B  î     ô     ¶     ´   B  ¡   .  «     Ã   B  ›     ‚   B  Ú     ˜   B        B      #  B  F    v  %  {  B  ã  .  í  .  °  C  Æ  .  µ  .  ø    Õ  .  ‘  .  ﬁ    Ì    	      B  (         9     T     o     ä     ∑     ‘     È     ˛         +    Ë       9          J     K          M  †   .  ¨   .  ¿     Ã     ÿ     ‰     Ë     (    X    å    ê    î        .     J     P        .symtab .strtab .shstrtab .rel.text .rel.data .bss .rel__mcount_loc .rodata.str1.1 .rel.text.unlikely .rodata.str1.4 .rel.init.text .rel.exit.text .rel.rodata .modinfo .rel__param .comment .note.GNU-stack .note.gnu.property                                                         @   Ó                    	   @       T  ‡              )             @	  Ä                   %   	   @       4                  /             ¿	                    8             ¿	  8                  4   	   @       T  p               E      2       ¯	  F                X             >  .                 T   	   @       ƒ  ∏     	         g      2       l  *                 z             ñ                    v   	   @       |                   â             ™  
-                  Ö   	   @       ú                  ò             ¿  û                  î   	   @       ¨   `               †             ^  ê                  ≠                                 ©   	   @       !                  µ      0                          æ                                   Œ               (                                @       9         	              P                                 ,!  ·                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          cmd_drivers/media/i2c/vpx3220.o := gcc -Wp,-MMD,drivers/media/i2c/.vpx3220.o.d -nostdinc -I./arch/x86/include -I./arch/x86/include/generated  -I./include -I./arch/x86/include/uapi -I./arch/x86/include/generated/uapi -I./include/uapi -I./include/generated/uapi -include ./include/linux/compiler-version.h -include ./include/linux/kconfig.h -include ./include/linux/compiler_types.h -D__KERNEL__ -fmacro-prefix-map=./= -Wall -Wundef -Werror=strict-prototypes -Wno-trigraphs -fno-strict-aliasing -fno-common -fshort-wchar -fno-PIE -Werror=implicit-function-declaration -Werror=implicit-int -Werror=return-type -Wno-format-security -std=gnu11 -mno-sse -mno-mmx -mno-sse2 -mno-3dnow -mno-avx -fcf-protection=none -m32 -msoft-float -mregparm=3 -freg-struct-return -fno-pic -mpreferred-stack-boundary=2 -march=i686 -mtune=pentium3 -mtune=generic -Wa,-mtune=generic32 -ffreestanding -mstack-protector-guard-reg=fs -mstack-protector-guard-symbol=__stack_chk_guard -Wno-sign-compare -fno-asynchronous-unwind-tables -mindirect-branch=thunk-extern -mindirect-branch-register -fno-jump-tables -fno-delete-null-pointer-checks -Wno-frame-address -Wno-format-truncation -Wno-format-overflow -Wno-address-of-packed-member -O2 -fno-allow-store-data-races -fstack-protector-strong -Wimplicit-fallthrough=5 -Wno-main -Wno-unused-but-set-variable -Wno-unused-const-variable -fno-stack-clash-protection -pg -mrecord-mcount -mfentry -DCC_USING_FENTRY -Wdeclaration-after-statement -Wvla -Wno-pointer-sign -Wcast-function-type -Wno-stringop-truncation -Wno-stringop-overflow -Wno-restrict -Wno-maybe-uninitialized -Wno-alloc-size-larger-than -fno-strict-overflow -fno-stack-check -fconserve-stack -Werror=date-time -Werror=incompatible-pointer-types -Werror=designated-init -Wno-packed-not-aligned  -DMODULE  -DKBUILD_BASENAME='"vpx3220"' -DKBUILD_MODNAME='"vpx3220"' -D__KBUILD_MODNAME=kmod_vpx3220 -c -o drivers/media/i2c/vpx3220.o drivers/media/i2c/vpx3220.c 
+#include "realtek.h"
 
-source_drivers/media/i2c/vpx3220.o := drivers/media/i2c/vpx3220.c
+#define RTL8366RB_PORT_NUM_CPU		5
+#define RTL8366RB_NUM_PORTS		6
+#define RTL8366RB_PHY_NO_MAX		4
+#define RTL8366RB_PHY_ADDR_MAX		31
 
-deps_drivers/media/i2c/vpx3220.o := \
-  include/linux/compiler-version.h \
-    $(wildcard include/config/CC_VERSION_TEXT) \
-  include/linux/kconfig.h \
-    $(wildcard include/config/CPU_BIG_ENDIAN) \
-    $(wildcard include/config/BOOGER) \
-    $(wildcard include/config/FOO) \
-  include/linux/compiler_types.h \
-    $(wildcard include/config/DEBUG_INFO_BTF) \
-    $(wildcard include/config/PAHOLE_HAS_BTF_TAG) \
-    $(wildcard include/config/HAVE_ARCH_COMPILER_H) \
-    $(wildcard include/config/CC_HAS_ASM_INLINE) \
-  include/linux/compiler_attributes.h \
-  include/linux/compiler-gcc.h \
-    $(wildcard include/config/RETPOLINE) \
-    $(wildcard include/config/ARCH_USE_BUILTIN_BSWAP) \
-    $(wildcard include/config/SHADOW_CALL_STACK) \
-    $(wildcard include/config/KCOV) \
-  include/linux/module.h \
-    $(wildcard include/config/MODULES) \
-    $(wildcard include/config/SYSFS) \
-    $(wildcard include/config/MODULES_TREE_LOOKUP) \
-    $(wildcard include/config/LIVEPATCH) \
-    $(wildcard include/config/STACKTRACE_BUILD_ID) \
-    $(wildcard include/config/CFI_CLANG) \
-    $(wildcard include/config/MODULE_SIG) \
-    $(wildcard include/config/GENERIC_BUG) \
-    $(wildcard include/config/KALLSYMS) \
-    $(wildcard include/config/SMP) \
-    $(wildcard include/config/TRACEPOINTS) \
-    $(wildcard include/config/TREE_SRCU) \
-    $(wildcard include/config/BPF_EVENTS) \
-    $(wildcard include/config/DEBUG_INFO_BTF_MODULES) \
-    $(wildcard include/config/JUMP_LABEL) \
-    $(wildcard include/config/TRACING) \
-    $(wildcard include/config/EVENT_TRACING) \
-    $(wildcard include/config/FTRACE_MCOUNT_RECORD) \
-    $(wildcard include/config/KPROBES) \
-    $(wildcard include/config/HAVE_STATIC_CALL_INLINE) \
-    $(wildcard include/config/PRINTK_INDEX) \
-    $(wildcard include/config/MODULE_UNLOAD) \
-    $(wildcard include/config/CONSTRUCTORS) \
-    $(wildcard include/config/FUNCTION_ERROR_INJECTION) \
-  include/linux/list.h \
-    $(wildcard include/config/DEBUG_LIST) \
-  include/linux/container_of.h \
-  include/linux/build_bug.h \
-  include/linux/compiler.h \
-    $(wildcard include/config/TRACE_BRANCH_PROFILING) \
-    $(wildcard include/config/PROFILE_ALL_BRANCHES) \
-    $(wildcard include/config/STACK_VALIDATION) \
-  include/linux/compiler_types.h \
-  arch/x86/include/generated/asm/rwonce.h \
-  include/asm-generic/rwonce.h \
-  include/linux/kasan-checks.h \
-    $(wildcard include/config/KASAN_GENERIC) \
-    $(wildcard include/config/KASAN_SW_TAGS) \
-  include/linux/types.h \
-    $(wildcard include/config/HAVE_UID16) \
-    $(wildcard include/config/UID16) \
-    $(wildcard include/config/ARCH_DMA_ADDR_T_64BIT) \
-    $(wildcard include/config/PHYS_ADDR_T_64BIT) \
-    $(wildcard include/config/64BIT) \
-    $(wildcard include/config/ARCH_32BIT_USTAT_F_TINODE) \
-  include/uapi/linux/types.h \
-  arch/x86/include/generated/uapi/asm/types.h \
-  include/uapi/asm-generic/types.h \
-  include/asm-generic/int-ll64.h \
-  include/uapi/asm-generic/int-ll64.h \
-  arch/x86/include/uapi/asm/bitsperlong.h \
-  include/asm-generic/bitsperlong.h \
-  include/uapi/asm-generic/bitsperlong.h \
-  include/uapi/linux/posix_types.h \
-  include/linux/stddef.h \
-  include/uapi/linux/stddef.h \
-  arch/x86/include/asm/posix_types.h \
-    $(wildcard include/config/X86_32) \
-  arch/x86/include/uapi/asm/posix_types_32.h \
-  include/uapi/asm-generic/posix_types.h \
-  include/linux/kcsan-checks.h \
-    $(wildcard include/config/KCSAN) \
-    $(wildcard include/config/KCSAN_WEAK_MEMORY) \
-    $(wildcard include/config/KCSAN_IGNORE_ATOMICS) \
-  include/linux/err.h \
-  arch/x86/include/generated/uapi/asm/errno.h \
-  include/uapi/asm-generic/errno.h \
-  include/uapi/asm-generic/errno-base.h \
-  include/linux/poison.h \
-    $(wildcard include/config/ILLEGAL_POINTER_VALUE) \
-  include/linux/const.h \
-  include/vdso/const.h \
-  include/uapi/linux/const.h \
-  arch/x86/include/asm/barrier.h \
-  arch/x86/include/asm/alternative.h \
-  include/linux/stringify.h \
-  arch/x86/include/asm/asm.h \
-  arch/x86/include/asm/extable_fixup_types.h \
-  arch/x86/include/asm/nops.h \
-  include/asm-generic/barrier.h \
-  include/linux/stat.h \
-  arch/x86/include/uapi/asm/stat.h \
-  include/uapi/linux/stat.h \
-  include/linux/time.h \
-    $(wildcard include/config/POSIX_TIMERS) \
-  include/linux/cache.h \
-    $(wildcard include/config/ARCH_HAS_CACHE_LINE_SIZE) \
-  include/uapi/linux/kernel.h \
-  include/uapi/linux/sysinfo.h \
-  arch/x86/include/asm/cache.h \
-    $(wildcard include/config/X86_L1_CACHE_SHIFT) \
-    $(wildcard include/config/X86_INTERNODE_CACHE_SHIFT) \
-    $(wildcard include/config/X86_VSMP) \
-  include/linux/linkage.h \
-    $(wildcard include/config/ARCH_USE_SYM_ANNOTATIONS) \
-  include/linux/export.h \
-    $(wildcard include/config/MODVERSIONS) \
-    $(wildcard include/config/MODULE_REL_CRCS) \
-    $(wildcard include/config/HAVE_ARCH_PREL32_RELOCATIONS) \
-    $(wildcard include/config/TRIM_UNUSED_KSYMS) \
-  arch/x86/include/asm/linkage.h \
-    $(wildcard include/config/X86_64) \
-    $(wildcard include/config/X86_ALIGNMENT_16) \
-    $(wildcard include/config/SLS) \
-  arch/x86/include/asm/ibt.h \
-    $(wildcard include/config/X86_KERNEL_IBT) \
-  include/linux/math64.h \
-    $(wildcard include/config/ARCH_SUPPORTS_INT128) \
-  include/linux/math.h \
-  arch/x86/include/asm/div64.h \
-  include/linux/log2.h \
-    $(wildcard include/config/ARCH_HAS_ILOG2_U32) \
-    $(wildcard include/config/ARCH_HAS_ILOG2_U64) \
-  include/linux/bitops.h \
-  include/linux/bits.h \
-  include/vdso/bits.h \
-  include/linux/typecheck.h \
-  arch/x86/include/asm/bitops.h \
-    $(wildcard include/config/X86_CMOV) \
-  arch/x86/incl
+/* Switch Global Configuration register */
+#define RTL8366RB_SGCR				0x0000
+#define RTL8366RB_SGCR_EN_BC_STORM_CTRL		BIT(0)
+#define RTL8366RB_SGCR_MAX_LENGTH(a)		((a) << 4)
+#define RTL8366RB_SGCR_MAX_LENGTH_MASK		RTL8366RB_SGCR_MAX_LENGTH(0x3)
+#define RTL8366RB_SGCR_MAX_LENGTH_1522		RTL8366RB_SGCR_MAX_LENGTH(0x0)
+#define RTL8366RB_SGCR_MAX_LENGTH_1536		RTL8366RB_SGCR_MAX_LENGTH(0x1)
+#define RTL8366RB_SGCR_MAX_LENGTH_1552		RTL8366RB_SGCR_MAX_LENGTH(0x2)
+#define RTL8366RB_SGCR_MAX_LENGTH_16000		RTL8366RB_SGCR_MAX_LENGTH(0x3)
+#define RTL8366RB_SGCR_EN_VLAN			BIT(13)
+#define RTL8366RB_SGCR_EN_VLAN_4KTB		BIT(14)
+
+/* Port Enable Control register */
+#define RTL8366RB_PECR				0x0001
+
+/* Switch per-port learning disablement register */
+#define RTL8366RB_PORT_LEARNDIS_CTRL		0x0002
+
+/* Security control, actually aging register */
+#define RTL8366RB_SECURITY_CTRL			0x0003
+
+#define RTL8366RB_SSCR2				0x0004
+#define RTL8366RB_SSCR2_DROP_UNKNOWN_DA		BIT(0)
+
+/* Port Mode Control registers */
+#define RTL8366RB_PMC0				0x0005
+#define RTL8366RB_PMC0_SPI			BIT(0)
+#define RTL8366RB_PMC0_EN_AUTOLOAD		BIT(1)
+#define RTL8366RB_PMC0_PROBE			BIT(2)
+#define RTL8366RB_PMC0_DIS_BISR			BIT(3)
+#define RTL8366RB_PMC0_ADCTEST			BIT(4)
+#define RTL8366RB_PMC0_SRAM_DIAG		BIT(5)
+#define RTL8366RB_PMC0_EN_SCAN			BIT(6)
+#define RTL8366RB_PMC0_P4_IOMODE_SHIFT		7
+#define RTL8366RB_PMC0_P4_IOMODE_MASK		GENMASK(9, 7)
+#define RTL8366RB_PMC0_P5_IOMODE_SHIFT		10
+#define RTL8366RB_PMC0_P5_IOMODE_MASK		GENMASK(12, 10)
+#define RTL8366RB_PMC0_SDSMODE_SHIFT		13
+#define RTL8366RB_PMC0_SDSMODE_MASK		GENMASK(15, 13)
+#define RTL8366RB_PMC1				0x0006
+
+/* Port Mirror Control Register */
+#define RTL8366RB_PMCR				0x0007
+#define RTL8366RB_PMCR_SOURCE_PORT(a)		(a)
+#define RTL8366RB_PMCR_SOURCE_PORT_MASK		0x000f
+#define RTL8366RB_PMCR_MONITOR_PORT(a)		((a) << 4)
+#define RTL8366RB_PMCR_MONITOR_PORT_MASK	0x00f0
+#define RTL8366RB_PMCR_MIRROR_RX		BIT(8)
+#define RTL8366RB_PMCR_MIRROR_TX		BIT(9)
+#define RTL8366RB_PMCR_MIRROR_SPC		BIT(10)
+#define RTL8366RB_PMCR_MIRROR_ISO		BIT(11)
+
+/* bits 0..7 = port 0, bits 8..15 = port 1 */
+#define RTL8366RB_PAACR0		0x0010
+/* bits 0..7 = port 2, bits 8..15 = port 3 */
+#define RTL8366RB_PAACR1		0x0011
+/* bits 0..7 = port 4, bits 8..15 = port 5 */
+#define RTL8366RB_PAACR2		0x0012
+#define RTL8366RB_PAACR_SPEED_10M	0
+#define RTL8366RB_PAACR_SPEED_100M	1
+#define RTL8366RB_PAACR_SPEED_1000M	2
+#define RTL8366RB_PAACR_FULL_DUPLEX	BIT(2)
+#define RTL8366RB_PAACR_LINK_UP		BIT(4)
+#define RTL8366RB_PAACR_TX_PAUSE	BIT(5)
+#define RTL8366RB_PAACR_RX_PAUSE	BIT(6)
+#define RTL8366RB_PAACR_AN		BIT(7)
+
+#define RTL8366RB_PAACR_CPU_PORT	(RTL8366RB_PAACR_SPEED_1000M | \
+					 RTL8366RB_PAACR_FULL_DUPLEX | \
+					 RTL8366RB_PAACR_LINK_UP | \
+					 RTL8366RB_PAACR_TX_PAUSE | \
+					 RTL8366RB_PAACR_RX_PAUSE)
+
+/* bits 0..7 = port 0, bits 8..15 = port 1 */
+#define RTL8366RB_PSTAT0		0x0014
+/* bits 0..7 = port 2, bits 8..15 = port 3 */
+#define RTL8366RB_PSTAT1		0x0015
+/* bits 0..7 = port 4, bits 8..15 = port 5 */
+#define RTL8366RB_PSTAT2		0x0016
+
+#define RTL8366RB_POWER_SAVING_REG	0x0021
+
+/* Spanning tree status (STP) control, two bits per port per FID */
+#define RTL8366RB_STP_STATE_BASE	0x0050 /* 0x0050..0x0057 */
+#define RTL8366RB_STP_STATE_DISABLED	0x0
+#define RTL8366RB_STP_STATE_BLOCKING	0x1
+#define RTL8366RB_STP_STATE_LEARNING	0x2
+#define RTL8366RB_STP_STATE_FORWARDING	0x3
+#define RTL8366RB_STP_MASK		GENMASK(1, 0)
+#define RTL8366RB_STP_STATE(port, state) \
+	((state) << ((port) * 2))
+#define RTL8366RB_STP_STATE_MASK(port) \
+	RTL8366RB_STP_STATE((port), RTL8366RB_STP_MASK)
+
+/* CPU port control reg */
+#define RTL8368RB_CPU_CTRL_REG		0x0061
+#define RTL8368RB_CPU_PORTS_MSK		0x00FF
+/* Disables inserting custom tag length/type 0x8899 */
+#define RTL8368RB_CPU_NO_TAG		BIT(15)
+
+#define RTL8366RB_SMAR0			0x0070 /* bits 0..15 */
+#define RTL8366RB_SMAR1			0x0071 /* bits 16..31 */
+#define RTL8366RB_SMAR2			0x0072 /* bits 32..47 */
+
+#define RTL8366RB_RESET_CTRL_REG		0x0100
+#define RTL8366RB_CHIP_CTRL_RESET_HW		BIT(0)
+#define RTL8366RB_CHIP_CTRL_RESET_SW		BIT(1)
+
+#define RTL8366RB_CHIP_ID_REG			0x0509
+#define RTL8366RB_CHIP_ID_8366			0x5937
+#define RTL8366RB_CHIP_VERSION_CTRL_REG		0x050A
+#define RTL8366RB_CHIP_VERSION_MASK		0xf
+
+/* PHY registers control */
+#define RTL8366RB_PHY_ACCESS_CTRL_REG		0x8000
+#define RTL8366RB_PHY_CTRL_READ			BIT(0)
+#define RTL8366RB_PHY_CTRL_WRITE		0
+#define RTL8366RB_PHY_ACCESS_BUSY_REG		0x8001
+#define RTL8366RB_PHY_INT_BUSY			BIT(0)
+#define RTL8366RB_PHY_EXT_BUSY			BIT(4)
+#define RTL8366RB_PHY_ACCESS_DATA_REG		0x8002
+#define RTL8366RB_PHY_EXT_CTRL_REG		0x8010
+#define RTL8366RB_PHY_EXT_WRDATA_REG		0x8011
+#define RTL8366RB_PHY_EXT_RDDATA_REG		0x8012
+
+#define RTL8366RB_PHY_REG_MASK			0x1f
+#define RTL8366RB_PHY_PAGE_OFFSET		5
+#define RTL8366RB_PHY_PAGE_MASK			(0xf << 5)
+#define RTL8366RB_PHY_NO_OFFSET			9
+#define RTL8366RB_PHY_NO_MASK			(0x1f << 9)
+
+/* VLAN Ingress Control Register 1, one bit per port.
+ * bit 0 .. 5 will make the switch drop ingress frames without
+ * VID such as untagged or priority-tagged frames for respective
+ * port.
+ * bit 6 .. 11 will make the switch drop ingress frames carrying
+ * a C-tag with VID != 0 for respective port.
+ */
+#define RTL8366RB_VLAN_INGRESS_CTRL1_REG	0x037E
+#define RTL8366RB_VLAN_INGRESS_CTRL1_DROP(port)	(BIT((port)) | BIT((port) + 6))
+
+/* VLAN Ingress Control Register 2, one bit per port.
+ * bit0 .. bit5 will make the switch drop all ingress frames with
+ * a VLAN classification that does not include the port is in its
+ * member set.
+ */
+#define RTL8366RB_VLAN_INGRESS_CTRL2_REG	0x037f
+
+/* LED control registers */
+#define RTL8366RB_LED_BLINKRATE_REG		0x0430
+#define RTL8366RB_LED_BLINKRATE_MASK		0x0007
+#define RTL8366RB_LED_BLINKRATE_28MS		0x0000
+#define RTL8366RB_LED_BLINKRATE_56MS		0x0001
+#define RTL8366RB_LED_BLINKRATE_84MS		0x0002
+#define RTL8366RB_LED_BLINKRATE_111MS		0x0003
+#define RTL8366RB_LED_BLINKRATE_222MS		0x0004
+#define RTL8366RB_LED_BLINKRATE_446MS		0x0005
+
+#define RTL8366RB_LED_CTRL_REG			0x0431
+#define RTL8366RB_LED_OFF			0x0
+#define RTL8366RB_LED_DUP_COL			0x1
+#define RTL8366RB_LED_LINK_ACT			0x2
+#define RTL8366RB_LED_SPD1000			0x3
+#define RTL8366RB_LED_SPD100			0x4
+#define RTL8366RB_LED_SPD10			0x5
+#define RTL8366RB_LED_SPD1000_ACT		0x6
+#define RTL8366RB_LED_SPD100_ACT		0x7
+#define RTL8366RB_LED_SPD10_ACT			0x8
+#define RTL8366RB_LED_SPD100_10_ACT		0x9
+#define RTL8366RB_LED_FIBER			0xa
+#define RTL8366RB_LED_AN_FAULT			0xb
+#define RTL8366RB_LED_LINK_RX			0xc
+#define RTL8366RB_LED_LINK_TX			0xd
+#define RTL8366RB_LED_MASTER			0xe
+#define RTL8366RB_LED_FORCE			0xf
+#define RTL8366RB_LED_0_1_CTRL_REG		0x0432
+#define RTL8366RB_LED_1_OFFSET			6
+#define RTL8366RB_LED_2_3_CTRL_REG		0x0433
+#define RTL8366RB_LED_3_OFFSET			6
+
+#define RTL8366RB_MIB_COUNT			33
+#define RTL8366RB_GLOBAL_MIB_COUNT		1
+#define RTL8366RB_MIB_COUNTER_PORT_OFFSET	0x0050
+#define RTL8366RB_MIB_COUNTER_BASE		0x1000
+#define RTL8366RB_MIB_CTRL_REG			0x13F0
+#define RTL8366RB_MIB_CTRL_USER_MASK		0x0FFC
+#define RTL8366RB_MIB_CTRL_BUSY_MASK		BIT(0)
+#define RTL8366RB_MIB_CTRL_RESET_MASK		BIT(1)
+#define RTL8366RB_MIB_CTRL_PORT_RESET(_p)	BIT(2 + (_p))
+#define RTL8366RB_MIB_CTRL_GLOBAL_RESET		BIT(11)
+
+#define RTL8366RB_PORT_VLAN_CTRL_BASE		0x0063
+#define RTL8366RB_PORT_VLAN_CTRL_REG(_p)  \
+		(RTL8366RB_PORT_VLAN_CTRL_BASE + (_p) / 4)
+#define RTL8366RB_PORT_VLAN_CTRL_MASK		0xf
+#define RTL8366RB_PORT_VLAN_CTRL_SHIFT(_p)	(4 * ((_p) % 4))
+
+#define RTL8366RB_VLAN_TABLE_READ_BASE		0x018C
+#define RTL8366RB_VLAN_TABLE_WRITE_BASE		0x0185
+
+#define RTL8366RB_TABLE_ACCESS_CTRL_REG		0x0180
+#define RTL8366RB_TABLE_VLAN_READ_CTRL		0x0E01
+#define RTL8366RB_TABLE_VLAN_WRITE_CTRL		0x0F01
+
+#define RTL8366RB_VLAN_MC_BASE(_x)		(0x0020 + (_x) * 3)
+
+#define RTL8366RB_PORT_LINK_STATUS_BASE		0x0014
+#define RTL8366RB_PORT_STATUS_SPEED_MASK	0x0003
+#define RTL8366RB_PORT_STATUS_DUPLEX_MASK	0x0004
+#define RTL8366RB_PORT_STATUS_LINK_MASK		0x0010
+#define RTL8366RB_PORT_STATUS_TXPAUSE_MASK	0x0020
+#define RTL8366RB_PORT_STATUS_RXPAUSE_MASK	0x0040
+#define RTL8366RB_PORT_STATUS_AN_MASK		0x0080
+
+#define RTL8366RB_NUM_VLANS		16
+#define RTL8366RB_NUM_LEDGROUPS		4
+#define RTL8366RB_NUM_VIDS		4096
+#define RTL8366RB_PRIORITYMAX		7
+#define RTL8366RB_NUM_FIDS		8
+#define RTL8366RB_FIDMAX		7
+
+#define RTL8366RB_PORT_1		BIT(0) /* In userspace port 0 */
+#define RTL8366RB_PORT_2		BIT(1) /* In userspace port 1 */
+#define RTL8366RB_PORT_3		BIT(2) /* In userspace port 2 */
+#define RTL8366RB_PORT_4		BIT(3) /* In userspace port 3 */
+#define RTL8366RB_PORT_5		BIT(4) /* In userspace port 4 */
+
+#define RTL8366RB_PORT_CPU		BIT(5) /* CPU port */
+
+#define RTL8366RB_PORT_ALL		(RTL8366RB_PORT_1 |	\
+					 RTL8366RB_PORT_2 |	\
+					 RTL8366RB_PORT_3 |	\
+					 RTL8366RB_PORT_4 |	\
+					 RTL8366RB_PORT_5 |	\
+					 RTL8366RB_PORT_CPU)
+
+#define RTL8366RB_PORT_ALL_BUT_CPU	(RTL8366RB_PORT_1 |	\
+					 RTL8366RB_PORT_2 |	\
+					 RTL8366RB_PORT_3 |	\
+					 RTL8366RB_PORT_4 |	\
+					 RTL8366RB_PORT_5)
+
+#define RTL8366RB_PORT_ALL_EXTERNAL	(RTL8366RB_PORT_1 |	\
+					 RTL8366RB_PORT_2 |	\
+					 RTL8366RB_PORT_3 |	\
+					 RTL8366RB_PORT_4)
+
+#define RTL8366RB_PORT_ALL_INTERNAL	 RTL8366RB_PORT_CPU
+
+/* First configuration word per member config, VID and prio */
+#define RTL8366RB_VLAN_VID_MASK		0xfff
+#define RTL8366RB_VLAN_PRIORITY_SHIFT	12
+#define RTL8366RB_VLAN_PRIORITY_MASK	0x7
+/* Second configuration word per member config, member and untagged */
+#define RTL8366RB_VLAN_UNTAG_SHIFT	8
+#define RTL8366RB_VLAN_UNTAG_MASK	0xff
+#define RTL8366RB_VLAN_MEMBER_MASK	0xff
+/* Third config word per member config, STAG currently unused */
+#define RTL8366RB_VLAN_STAG_MBR_MASK	0xff
+#define RTL8366RB_VLAN_STAG_MBR_SHIFT	8
+#define RTL8366RB_VLAN_STAG_IDX_MASK	0x7
+#define RTL8366RB_VLAN_STAG_IDX_SHIFT	5
+#define RTL8366RB_VLAN_FID_MASK		0x7
+
+/* Port ingress bandwidth control */
+#define RTL8366RB_IB_BASE		0x0200
+#define RTL8366RB_IB_REG(pnum)		(RTL8366RB_IB_BASE + (pnum))
+#define RTL8366RB_IB_BDTH_MASK		0x3fff
+#define RTL8366RB_IB_PREIFG		BIT(14)
+
+/* Port egress bandwidth control */
+#define RTL8366RB_EB_BASE		0x02d1
+#define RTL8366RB_EB_REG(pnum)		(RTL8366RB_EB_BASE + (pnum))
+#define RTL8366RB_EB_BDTH_MASK		0x3fff
+#define RTL8366RB_EB_PREIFG_REG		0x02f8
+#define RTL8366RB_EB_PREIFG		BIT(9)
+
+#define RTL8366RB_BDTH_SW_MAX		1048512 /* 1048576? */
+#define RTL8366RB_BDTH_UNIT		64
+#define RTL8366RB_BDTH_REG_DEFAULT	16383
+
+/* QOS */
+#define RTL8366RB_QOS			BIT(15)
+/* Include/Exclude Preamble and IFG (20 bytes). 0:Exclude, 1:Include. */
+#define RTL8366RB_QOS_DEFAULT_PREIFG	1
+
+/* Interrupt handling */
+#define RTL8366RB_INTERRUPT_CONTROL_REG	0x0440
+#define RTL8366RB_INTERRUPT_POLARITY	BIT(0)
+#define RTL8366RB_P4_RGMII_LED		BIT(2)
+#define RTL8366RB_INTERRUPT_MASK_REG	0x0441
+#define RTL8366RB_INTERRUPT_LINK_CHGALL	GENMASK(11, 0)
+#define RTL8366RB_INTERRUPT_ACLEXCEED	BIT(8)
+#define RTL8366RB_INTERRUPT_STORMEXCEED	BIT(9)
+#define RTL8366RB_INTERRUPT_P4_FIBER	BIT(12)
+#define RTL8366RB_INTERRUPT_P4_UTP	BIT(13)
+#define RTL8366RB_INTERRUPT_VALID	(RTL8366RB_INTERRUPT_LINK_CHGALL | \
+					 RTL8366RB_INTERRUPT_ACLEXCEED | \
+					 RTL8366RB_INTERRUPT_STORMEXCEED | \
+					 RTL8366RB_INTERRUPT_P4_FIBER | \
+					 RTL8366RB_INTERRUPT_P4_UTP)
+#define RTL8366RB_INTERRUPT_STATUS_REG	0x0442
+#define RTL8366RB_NUM_INTERRUPT		14 /* 0..13 */
+
+/* Port isolation registers */
+#define RTL8366RB_PORT_ISO_BASE		0x0F08
+#define RTL8366RB_PORT_ISO(pnum)	(RTL8366RB_PORT_ISO_BASE + (pnum))
+#define RTL8366RB_PORT_ISO_EN		BIT(0)
+#define RTL8366RB_PORT_ISO_PORTS_MASK	GENMASK(7, 1)
+#define RTL8366RB_PORT_ISO_PORTS(pmask)	((pmask) << 1)
+
+/* bits 0..5 enable force when cleared */
+#define RTL8366RB_MAC_FORCE_CTRL_REG	0x0F11
+
+#define RTL8366RB_OAM_PARSER_REG	0x0F14
+#define RTL8366RB_OAM_MULTIPLEXER_REG	0x0F15
+
+#define RTL8366RB_GREEN_FEATURE_REG	0x0F51
+#define RTL8366RB_GREEN_FEATURE_MSK	0x0007
+#define RTL8366RB_GREEN_FEATURE_TX	BIT(0)
+#define RTL8366RB_GREEN_FEATURE_RX	BIT(2)
+
+/**
+ * struct rtl8366rb - RTL8366RB-specific data
+ * @max_mtu: per-port max MTU setting
+ * @pvid_enabled: if PVID is set for respective port
+ */
+struct rtl8366rb {
+	unsigned int max_mtu[RTL8366RB_NUM_PORTS];
+	bool pvid_enabled[RTL8366RB_NUM_PORTS];
+};
+
+static struct rtl8366_mib_counter rtl8366rb_mib_counters[] = {
+	{ 0,  0, 4, "IfInOctets"				},
+	{ 0,  4, 4, "EtherStatsOctets"				},
+	{ 0,  8, 2, "EtherStatsUnderSizePkts"			},
+	{ 0, 10, 2, "EtherFragments"				},
+	{ 0, 12, 2, "EtherStatsPkts64Octets"			},
+	{ 0, 14, 2, "EtherStatsPkts65to127Octets"		},
+	{ 0, 16, 2, "EtherStatsPkts128to255Octets"		},
+	{ 0, 18, 2, "EtherStatsPkts256to511Octets"		},
+	{ 0, 20, 2, "EtherStatsPkts512to1023Octets"		},
+	{ 0, 22, 2, "EtherStatsPkts1024to1518Octets"		},
+	{ 0, 24, 2, "EtherOversizeStats"			},
+	{ 0, 26, 2, "EtherStatsJabbers"				},
+	{ 0, 28, 2, "IfInUcastPkts"				},
+	{ 0, 30, 2, "EtherStatsMulticastPkts"			},
+	{ 0, 32, 2, "EtherStatsBroadcastPkts"			},
+	{ 0, 34, 2, "EtherStatsDropEvents"			},
+	{ 0, 36, 2, "Dot3StatsFCSErrors"			},
+	{ 0, 38, 2, "Dot3StatsSymbolErrors"			},
+	{ 0, 40, 2, "Dot3InPauseFrames"				},
+	{ 0, 42, 2, "Dot3ControlInUnknownOpcodes"		},
+	{ 0, 44, 4, "IfOutOctets"				},
+	{ 0, 48, 2, "Dot3StatsSingleCollisionFrames"		},
+	{ 0, 50, 2, "Dot3StatMultipleCollisionFrames"		},
+	{ 0, 52, 2, "Dot3sDeferredTransmissions"		},
+	{ 0, 54, 2, "Dot3StatsLateCollisions"			},
+	{ 0, 56, 2, "EtherStatsCollisions"			},
+	{ 0, 58, 2, "Dot3StatsExcessiveCollisions"		},
+	{ 0, 60, 2, "Dot3OutPauseFrames"			},
+	{ 0, 62, 2, "Dot1dBasePortDelayExceededDiscards"	},
+	{ 0, 64, 2, "Dot1dTpPortInDiscards"			},
+	{ 0, 66, 2, "IfOutUcastPkts"				},
+	{ 0, 68, 2, "IfOutMulticastPkts"			},
+	{ 0, 70, 2, "IfOutBroadcastPkts"			},
+};
+
+static int rtl8366rb_get_mib_counter(struct realtek_priv *priv,
+				     int port,
+				     struct rtl8366_mib_counter *mib,
+				     u64 *mibvalue)
+{
+	u32 addr, val;
+	int ret;
+	int i;
+
+	addr = RTL8366RB_MIB_COUNTER_BASE +
+		RTL8366RB_MIB_COUNTER_PORT_OFFSET * (port) +
+		mib->offset;
+
+	/* Writing access counter address first
+	 * then ASIC will prepare 64bits counter wait for being retrived
+	 */
+	ret = regmap_write(priv->map, addr, 0); /* Write whatever */
+	if (ret)
+		return ret;
+
+	/* Read MIB control register */
+	ret = regmap_read(priv->map, RTL8366RB_MIB_CTRL_REG, &val);
+	if (ret)
+		return -EIO;
+
+	if (val & RTL8366RB_MIB_CTRL_BUSY_MASK)
+		return -EBUSY;
+
+	if (val & RTL8366RB_MIB_CTRL_RESET_MASK)
+		return -EIO;
+
+	/* Read each individual MIB 16 bits at the time */
+	*mibvalue = 0;
+	for (i = mib->length; i > 0; i--) {
+		ret = regmap_read(priv->map, addr + (i - 1), &val);
+		if (ret)
+			return ret;
+		*mibvalue = (*mibvalue << 16) | (val & 0xFFFF);
+	}
+	return 0;
+}
+
+static u32 rtl8366rb_get_irqmask(struct irq_data *d)
+{
+	int line = irqd_to_hwirq(d);
+	u32 val;
+
+	/* For line interrupts we combine link down in bits
+	 * 6..11 with link up in bits 0..5 into one interrupt.
+	 */
+	if (line < 12)
+		val = BIT(line) | BIT(line + 6);
+	else
+		val = BIT(line);
+	return val;
+}
+
+static void rtl8366rb_mask_irq(struct irq_data *d)
+{
+	struct realtek_priv *priv = irq_data_get_irq_chip_data(d);
+	int ret;
+
+	ret = regmap_update_bits(priv->map, RTL8366RB_INTERRUPT_MASK_REG,
+				 rtl8366rb_get_irqmask(d), 0);
+	if (ret)
+		dev_err(priv->dev, "could not mask IRQ\n");
+}
+
+static void rtl8366rb_unmask_irq(struct irq_data *d)
+{
+	struct realtek_priv *priv = irq_data_get_irq_chip_data(d);
+	int ret;
+
+	ret = regmap_update_bits(priv->map, RTL8366RB_INTERRUPT_MASK_REG,
+				 rtl8366rb_get_irqmask(d),
+				 rtl8366rb_get_irqmask(d));
+	if (ret)
+		dev_err(priv->dev, "could not unmask IRQ\n");
+}
+
+static irqreturn_t rtl8366rb_irq(int irq, void *data)
+{
+	struct realtek_priv *priv = data;
+	u32 stat;
+	int ret;
+
+	/* This clears the IRQ status register */
+	ret = regmap_read(priv->map, RTL8366RB_INTERRUPT_STATUS_REG,
+			  &stat);
+	if (ret) {
+		dev_err(priv->dev, "can't read interrupt status\n");
+		return IRQ_NONE;
+	}
+	stat &= RTL8366RB_INTERRUPT_VALID;
+	if (!stat)
+		return IRQ_NONE;
+	while (stat) {
+		int line = __ffs(stat);
+		int child_irq;
+
+		stat &= ~BIT(line);
+		/* For line interrupts we combine link down in bits
+		 * 6..11 with link up in bits 0..5 into one interrupt.
+		 */
+		if (line < 12 && line > 5)
+			line -= 5;
+		child_irq = irq_find_mapping(priv->irqdomain, line);
+		handle_nested_irq(child_irq);
+	}
+	return IRQ_HANDLED;
+}
+
+static struct irq_chip rtl8366rb_irq_chip = {
+	.name = "RTL8366RB",
+	.irq_mask = rtl8366rb_mask_irq,
+	.irq_unmask = rtl8366rb_unmask_irq,
+};
+
+static int rtl8366rb_irq_map(struct irq_domain *domain, unsigned int irq,
+			     irq_hw_number_t hwirq)
+{
+	irq_set_chip_data(irq, domain->host_data);
+	irq_set_chip_and_handler(irq, &rtl8366rb_irq_chip, handle_simple_irq);
+	irq_set_nested_thread(irq, 1);
+	irq_set_noprobe(irq);
+
+	return 0;
+}
+
+static void rtl8366rb_irq_unmap(struct irq_domain *d, unsigned int irq)
+{
+	irq_set_nested_thread(irq, 0);
+	irq_set_chip_and_handler(irq, NULL, NULL);
+	irq_set_chip_data(irq, NULL);
+}
+
+static const struct irq_domain_ops rtl8366rb_irqdomain_ops = {
+	.map = rtl8366rb_irq_map,
+	.unmap = rtl8366rb_irq_unmap,
+	.xlate  = irq_domain_xlate_onecell,
+};
+
+static int rtl8366rb_setup_cascaded_irq(struct realtek_priv *priv)
+{
+	struct device_node *intc;
+	unsigned long irq_trig;
+	int irq;
+	int ret;
+	u32 val;
+	int i;
+
+	intc = of_get_child_by_name(priv->dev->of_node, "interrupt-controller");
+	if (!intc) {
+		dev_err(priv->dev, "missing child interrupt-controller node\n");
+		return -EINVAL;
+	}
+	/* RB8366RB IRQs cascade off this one */
+	irq = of_irq_get(intc, 0);
+	if (irq <= 0) {
+		dev_err(priv->dev, "failed to get parent IRQ\n");
+		ret = irq ? irq : -EINVAL;
+		goto out_put_node;
+	}
+
+	/* This clears the IRQ status register */
+	ret = regmap_read(priv->map, RTL8366RB_INTERRUPT_STATUS_REG,
+			  &val);
+	if (ret) {
+		dev_err(priv->dev, "can't read interrupt status\n");
+		goto out_put_node;
+	}
+
+	/* Fetch IRQ edge information from the descriptor */
+	irq_trig = irqd_get_trigger_type(irq_get_irq_data(irq));
+	switch (irq_trig) {
+	case IRQF_TRIGGER_RISING:
+	case IRQF_TRIGGER_HIGH:
+		dev_info(priv->dev, "active high/rising IRQ\n");
+		val = 0;
+		break;
+	case IRQF_TRIGGER_FALLING:
+	case IRQF_TRIGGER_LOW:
+		dev_info(priv->dev, "active low/falling IRQ\n");
+		val = RTL8366RB_INTERRUPT_POLARITY;
+		break;
+	}
+	ret = regmap_update_bits(priv->map, RTL8366RB_INTERRUPT_CONTROL_REG,
+				 RTL8366RB_INTERRUPT_POLARITY,
+				 val);
+	if (ret) {
+		dev_err(priv->dev, "could not configure IRQ polarity\n");
+		goto out_put_node;
+	}
+
+	ret = devm_request_threaded_irq(priv->dev, irq, NULL,
+					rtl8366rb_irq, IRQF_ONESHOT,
+					"RTL8366RB", priv);
+	if (ret) {
+		dev_err(priv->dev, "unable to request irq: %d\n", ret);
+		goto out_put_node;
+	}
+	priv->irqdomain = irq_domain_add_linear(intc,
+						RTL8366RB_NUM_INTERRUPT,
+						&rtl8366rb_irqdomain_ops,
+						priv);
+	if (!priv->irqdomain) {
+		dev_err(priv->dev, "failed to create IRQ domain\n");
+		ret = -EINVAL;
+		goto out_put_node;
+	}
+	for (i = 0; i < priv->num_ports; i++)
+		irq_set_parent(irq_create_mapping(priv->irqdomain, i), irq);
+
+out_put_node:
+	of_node_put(intc);
+	return ret;
+}
+
+static int rtl8366rb_set_addr(struct realtek_priv *priv)
+{
+	u8 addr[ETH_ALEN];
+	u16 val;
+	int ret;
+
+	eth_random_addr(addr);
+
+	dev_info(priv->dev, "set MAC: %02X:%02X:%02X:%02X:%02X:%02X\n",
+		 addr[0], addr[1], addr[2], addr[3], addr[4], addr[5]);
+	val = addr[0] << 8 | addr[1];
+	ret = regmap_write(priv->map, RTL8366RB_SMAR0, val);
+	if (ret)
+		return ret;
+	val = addr[2] << 8 | addr[3];
+	ret = regmap_write(priv->map, RTL8366RB_SMAR1, val);
+	if (ret)
+		return ret;
+	val = addr[4] << 8 | addr[5];
+	ret = regmap_write(priv->map, RTL8366RB_SMAR2, val);
+	if (ret)
+		return ret;
+
+	return 0;
+}
+
+/* Found in a vendor driver */
+
+/* Struct for handling the jam tables' entries */
+struct rtl8366rb_jam_tbl_entry {
+	u16 reg;
+	u16 val;
+};
+
+/* For the "version 0" early silicon, appear in most source releases */
+static const struct rtl8366rb_jam_tbl_entry rtl8366rb_init_jam_ver_0[] = {
+	{0x000B, 0x0001}, {0x03A6, 0x0100}, {0x03A7, 0x0001}, {0x02D1, 0x3FFF},
+	{0x02D2, 0x3FFF}, {0x02D3, 0x3FFF}, {0x02D4, 0x3FFF}, {0x02D5, 0x3FFF},
+	{0x02D6, 0x3FFF}, {0x02D7, 0x3FFF}, {0x02D8, 0x3FFF}, {0x022B, 0x0688},
+	{0x022C, 0x0FAC}, {0x03D0, 0x4688}, {0x03D1, 0x01F5}, {0x0000, 0x0830},
+	{0x02F9, 0x0200}, {0x02F7, 0x7FFF}, {0x02F8, 0x03FF}, {0x0080, 0x03E8},
+	{0x0081, 0x00CE}, {0x0082, 0x00DA}, {0x0083, 0x0230}, {0xBE0F, 0x2000},
+	{0x0231, 0x422A}, {0x0232, 0x422A}, {0x0233, 0x422A}, {0x0234, 0x422A},
+	{0x0235, 0x422A}, {0x0236, 0x422A}, {0x0237, 0x422A}, {0x0238, 0x422A},
+	{0x0239, 0x422A}, {0x023A, 0x422A}, {0x023B, 0x422A}, {0x023C, 0x422A},
+	{0x023D, 0x422A}, {0x023E, 0x422A}, {0x023F, 0x422A}, {0x0240, 0x422A},
+	{0x0241, 0x422A}, {0x0242, 0x422A}, {0x0243, 0x422A}, {0x0244, 0x422A},
+	{0x0245, 0x422A}, {0x0246, 0x422A}, {0x0247, 0x422A}, {0x0248, 0x422A},
+	{0x0249, 0x0146}, {0x024A, 0x0146}, {0x024B, 0x0146}, {0xBE03, 0xC961},
+	{0x024D, 0x0146}, {0x024E, 0x0146}, {0x024F, 0x0146}, {0x0250, 0x0146},
+	{0xBE64, 0x0226}, {0x0252, 0x0146}, {0x0253, 0x0146}, {0x024C, 0x0146},
+	{0x0251, 0x0146}, {0x0254, 0x0146}, {0xBE62, 0x3FD0}, {0x0084, 0x0320},
+	{0x0255, 0x0146}, {0x0256, 0x0146}, {0x0257, 0x0146}, {0x0258, 0x0146},
+	{0x0259, 0x0146}, {0x025A, 0x0146}, {0x025B, 0x0146}, {0x025C, 0x0146},
+	{0x025D, 0x0146}, {0x025E, 0x0146}, {0x025F, 0x0146}, {0x0260, 0x0146},
+	{0x0261, 0xA23F}, {0x0262, 0x0294}, {0x0263, 0xA23F}, {0x0264, 0x0294},
+	{0x0265, 0xA23F}, {0x0266, 0x0294}, {0x0267, 0xA23F}, {0x0268, 0x0294},
+	{0x0269, 0xA23F}, {0x026A, 0x0294}, {0x026B, 0xA23F}, {0x026C, 0x0294},
+	{0x026D, 0xA23F}, {0x026E, 0x0294}, {0x026F, 0xA23F}, {0x0270, 0x0294},
+	{0x02F5, 0x0048}, {0xBE09, 0x0E00}, {0xBE1E, 0x0FA0}, {0xBE14, 0x8448},
+	{0xBE15, 0x1007}, {0xBE4A, 0xA284}, {0xC454, 0x3F0B}, {0xC474, 0x3F0B},
+	{0xBE48, 0x3672}, {0xBE4B, 0x17A7}, {0xBE4C, 0x0B15}, {0xBE52, 0x0EDD},
+	{0xBE49, 0x8C00}, {0xBE5B, 0x785C}, {0xBE5C, 0x785C}, {0xBE5D, 0x785C},
+	{0xBE61, 0x368A}, {0xBE63, 0x9B84}, {0xC456, 0xCC13}, {0xC476, 0xCC13},
+	{0xBE65, 0x307D}, {0xBE6D, 0x0005}, {0xBE6E, 0xE120}, {0xBE2E, 0x7BAF},
+};
+
+/* This v1 init sequence is from Belkin F5D8235 U-Boot release */
+static const struct rtl8366rb_jam_tbl_entry rtl8366rb_init_jam_ver_1[] = {
+	{0x0000, 0x0830}, {0x0001, 0x8000}, {0x0400, 0x8130}, {0xBE78, 0x3C3C},
+	{0x0431, 0x5432}, {0xBE37, 0x0CE4}, {0x02FA, 0xFFDF}, {0x02FB, 0xFFE0},
+	{0xC44C, 0x1585}, {0xC44C, 0x1185}, {0xC44C, 0x1585}, {0xC46C, 0x1585},
+	{0xC46C, 0x1185}, {0xC46C, 0x1585}, {0xC451, 0x2135}, {0xC471, 0x2135},
+	{0xBE10, 0x8140}, {0xBE15, 0x0007}, {0xBE6E, 0xE120}, {0xBE69, 0xD20F},
+	{0xBE6B, 0x0320}, {0xBE24, 0xB000}, {0xBE23, 0xFF51}, {0xBE22, 0xDF20},
+	{0xBE21, 0x0140}, {0xBE20, 0x00BB}, {0xBE24, 0xB800}, {0xBE24, 0x0000},
+	{0xBE24, 0x7000}, {0xBE23, 0xFF51}, {0xBE22, 0xDF60}, {0xBE21, 0x0140},
+	{0xBE20, 0x0077}, {0xBE24, 0x7800}, {0xBE24, 0x0000}, {0xBE2E, 0x7B7A},
+	{0xBE36, 0x0CE4}, {0x02F5, 0x0048}, {0xBE77, 0x2940}, {0x000A, 0x83E0},
+	{0xBE79, 0x3C3C}, {0xBE00, 0x1340},
+};
+
+/* This v2 init sequence is from Belkin F5D8235 U-Boot release */
+static const struct rtl8366rb_jam_tbl_entry rtl8366rb_init_jam_ver_2[] = {
+	{0x0450, 0x0000}, {0x0400, 0x8130}, {0x000A, 0x83ED}, {0x0431, 0x5432},
+	{0xC44F, 0x6250}, {0xC46F, 0x6250}, {0xC456, 0x0C14}, {0xC476, 0x0C14},
+	{0xC44C, 0x1C85}, {0xC44C, 0x1885}, {0xC44C, 0x1C85}, {0xC46C, 0x1C85},
+	{0xC46C, 0x1885}, {0xC46C, 0x1C85}, {0xC44C, 0x0885}, {0xC44C, 0x0881},
+	{0xC44C, 0x0885}, {0xC46C, 0x0885}, {0xC46C, 0x0881}, {0xC46C, 0x0885},
+	{0xBE2E, 0x7BA7}, {0xBE36, 0x1000}, {0xBE37, 0x1000}, {0x8000, 0x0001},
+	{0xBE69, 0xD50F}, {0x8000, 0x0000}, {0xBE69, 0xD50F}, {0xBE6E, 0x0320},
+	{0xBE77, 0x2940}, {0xBE78, 0x3C3C}, {0xBE79, 0x3C3C}, {0xBE6E, 0xE120},
+	{0x8000, 0x0001}, {0xBE15, 0x1007}, {0x8000, 0x0000}, {0xBE15, 0x1007},
+	{0xBE14, 0x0448}, {0xBE1E, 0x00A0}, {0xBE10, 0x8160}, {0xBE10, 0x8140},
+	{0xBE00, 0x1340}, {0x0F51, 0x0010},
+};
+
+/* Appears in a DDWRT code dump */
+static const struct rtl8366rb_jam_tbl_entry rtl8366rb_init_jam_ver_3[] = {
+	{0x0000, 0x0830}, {0x0400, 0x8130}, {0x000A, 0x83ED}, {0x0431, 0x5432},
+	{0x0F51, 0x0017}, {0x02F5, 0x0048}, {0x02FA, 0xFFDF}, {0x02FB, 0xFFE0},
+	{0xC456, 0x0C14}, {0xC476, 0x0C14}, {0xC454, 0x3F8B}, {0xC474, 0x3F8B},
+	{0xC450, 0x2071}, {0xC470, 0x2071}, {0xC451, 0x226B}, {0xC471, 0x226B},
+	{0xC452, 0xA293}, {0xC472, 0xA293}, {0xC44C, 0x1585}, {0xC44C, 0x1185},
+	{0xC44C, 0x1585}, {0xC46C, 0x1585}, {0xC46C, 0x1185}, {0xC46C, 0x1585},
+	{0xC44C, 0x0185}, {0xC44C, 0x0181}, {0xC44C, 0x0185}, {0xC46C, 0x0185},
+	{0xC46C, 0x0181}, {0xC46C, 0x0185}, {0xBE24, 0xB000}, {0xBE23, 0xFF51},
+	{0xBE22, 0xDF20}, {0xBE21, 0x0140}, {0xBE20, 0x00BB}, {0xBE24, 0xB800},
+	{0xBE24, 0x0000}, {0xBE24, 0x7000}, {0xBE23, 0xFF51}, {0xBE22, 0xDF60},
+	{0xBE21, 0x0140}, {0xBE20, 0x0077}, {0xBE24, 0x7800}, {0xBE24, 0x0000},
+	{0xBE2E, 0x7BA7}, {0xBE36, 0x1000}, {0xBE37, 0x1000}, {0x8000, 0x0001},
+	{0xBE69, 0xD50F}, {0x8000, 0x0000}, {0xBE69, 0xD50F}, {0xBE6B, 0x0320},
+	{0xBE77, 0x2800}, {0xBE78, 0x3C3C}, {0xBE79, 0x3C3C}, {0xBE6E, 0xE120},
+	{0x8000, 0x0001}, {0xBE10, 0x8140}, {0x8000, 0x0000}, {0xBE10, 0x8140},
+	{0xBE15, 0x1007}, {0xBE14, 0x0448}, {0xBE1E, 0x00A0}, {0xBE10, 0x8160},
+	{0xBE10, 0x8140}, {0xBE00, 0x1340}, {0x0450, 0x0000}, {0x0401, 0x0000},
+};
+
+/* Belkin F5D8235 v1, "belkin,f5d8235-v1" */
+static const struct rtl8366rb_jam_tbl_entry rtl8366rb_init_jam_f5d8235[] = {
+	{0x0242, 0x02BF}, {0x0245, 0x02BF}, {0x0248, 0x02BF}, {0x024B, 0x02BF},
+	{0x024E, 0x02BF}, {0x0251, 0x02BF}, {0x0254, 0x0A3F}, {0x0256, 0x0A3F},
+	{0x0258, 0x0A3F}, {0x025A, 0x0A3F}, {0x025C, 0x0A3F}, {0x025E, 0x0A3F},
+	{0x0263, 0x007C}, {0x0100, 0x0004}, {0xBE5B, 0x3500}, {0x800E, 0x200F},
+	{0xBE1D, 0x0F00}, {0x8001, 0x5011}, {0x800A, 0xA2F4}, {0x800B, 0x17A3},
+	{0xBE4B, 0x17A3}, {0xBE41, 0x5011}, {0xBE17, 0x2100}, {0x8000, 0x8304},
+	{0xBE40, 0x8304}, {0xBE4A, 0xA2F4}, {0x800C, 0xA8D5}, {0x8014, 0x5500},
+	{0x8015, 0x0004}, {0xBE4C, 0xA8D5}, {0xBE59, 0x0008}, {0xBE09, 0x0E00},
+	{0xBE36, 0x1036}, {0xBE37, 0x1036}, {0x800D, 0x00FF}, {0xBE4D, 0x00FF},
+};
+
+/* DGN3500, "netgear,dgn3500", "netgear,dgn3500b" */
+static const struct rtl8366rb_jam_tbl_entry rtl8366rb_init_jam_dgn3500[] = {
+	{0x0000, 0x0830}, {0x0400, 0x8130}, {0x000A, 0x83ED}, {0x0F51, 0x0017},
+	{0x02F5, 0x0048}, {0x02FA, 0xFFDF}, {0x02FB, 0xFFE0}, {0x0450, 0x0000},
+	{0x0401, 0x0000}, {0x0431, 0x0960},
+};
+
+/* This jam table activates "green ethernet", which means low power mode
+ * and is claimed to detect the cable length and not use more power than
+ * necessary, and the ports should enter power saving mode 10 seconds after
+ * a cable is disconnected. Seems to always be the same.
+ */
+static const struct rtl8366rb_jam_tbl_entry rtl8366rb_green_jam[] = {
+	{0xBE78, 0x323C}, {0xBE77, 0x5000}, {0xBE2E, 0x7BA7},
+	{0xBE59, 0x3459}, {0xBE5A, 0x745A}, {0xBE5B, 0x785C},
+	{0xBE5C, 0x785C}, {0xBE6E, 0xE120}, {0xBE79, 0x323C},
+};
+
+/* Function that jams the tables in the proper registers */
+static int rtl8366rb_jam_table(const struct rtl8366rb_jam_tbl_entry *jam_table,
+			       int jam_size, struct realtek_priv *priv,
+			       bool write_dbg)
+{
+	u32 val;
+	int ret;
+	int i;
+
+	for (i = 0; i < jam_size; i++) {
+		if ((jam_table[i].reg & 0xBE00) == 0xBE00) {
+			ret = regmap_read(priv->map,
+					  RTL8366RB_PHY_ACCESS_BUSY_REG,
+					  &val);
+			if (ret)
+				return ret;
+			if (!(val & RTL8366RB_PHY_INT_BUSY)) {
+				ret = regmap_write(priv->map,
+						   RTL8366RB_PHY_ACCESS_CTRL_REG,
+						   RTL8366RB_PHY_CTRL_WRITE);
+				if (ret)
+					return ret;
+			}
+		}
+		if (write_dbg)
+			dev_dbg(priv->dev, "jam %04x into register %04x\n",
+				jam_table[i].val,
+				jam_table[i].reg);
+		ret = regmap_write(priv->map,
+				   jam_table[i].reg,
+				   jam_table[i].val);
+		if (ret)
+			return ret;
+	}
+	return 0;
+}
+
+static int rtl8366rb_setup(struct dsa_switch *ds)
+{
+	struct realtek_priv *priv = ds->priv;
+	const struct rtl8366rb_jam_tbl_entry *jam_table;
+	struct rtl8366rb *rb;
+	u32 chip_ver = 0;
+	u32 chip_id = 0;
+	int jam_size;
+	u32 val;
+	int ret;
+	int i;
+
+	rb = priv->chip_data;
+
+	ret = regmap_read(priv->map, RTL8366RB_CHIP_ID_REG, &chip_id);
+	if (ret) {
+		dev_err(priv->dev, "unable to read chip id\n");
+		return ret;
+	}
+
+	switch (chip_id) {
+	case RTL8366RB_CHIP_ID_8366:
+		break;
+	default:
+		dev_err(priv->dev, "unknown chip id (%04x)\n", chip_id);
+		return -ENODEV;
+	}
+
+	ret = regmap_read(priv->map, RTL8366RB_CHIP_VERSION_CTRL_REG,
+			  &chip_ver);
+	if (ret) {
+		dev_err(priv->dev, "unable to read chip version\n");
+		return ret;
+	}
+
+	dev_info(priv->dev, "RTL%04x ver %u chip found\n",
+		 chip_id, chip_ver & RTL8366RB_CHIP_VERSION_MASK);
+
+	/* Do the init dance using the right jam table */
+	switch (chip_ver) {
+	case 0:
+		jam_table = rtl8366rb_init_jam_ver_0;
+		jam_size = ARRAY_SIZE(rtl8366rb_init_jam_ver_0);
+		break;
+	case 1:
+		jam_table = rtl8366rb_init_jam_ver_1;
+		jam_size = ARRAY_SIZE(rtl8366rb_init_jam_ver_1);
+		break;
+	case 2:
+		jam_table = rtl8366rb_init_jam_ver_2;
+		jam_size = ARRAY_SIZE(rtl8366rb_init_jam_ver_2);
+		break;
+	default:
+		jam_table = rtl8366rb_init_jam_ver_3;
+		jam_size = ARRAY_SIZE(rtl8366rb_init_jam_ver_3);
+		break;
+	}
+
+	/* Special jam tables for special routers
+	 * TODO: are these necessary? Maintainers, please test
+	 * without them, using just the off-the-shelf tables.
+	 */
+	if (of_machine_is_compatible("belkin,f5d8235-v1")) {
+		jam_table = rtl8366rb_init_jam_f5d8235;
+		jam_size = ARRAY_SIZE(rtl8366rb_init_jam_f5d8235);
+	}
+	if (of_machine_is_compatible("netgear,dgn3500") ||
+	    of_machine_is_compatible("netgear,dgn3500b")) {
+		jam_table = rtl8366rb_init_jam_dgn3500;
+		jam_size = ARRAY_SIZE(rtl8366rb_init_jam_dgn3500);
+	}
+
+	ret = rtl8366rb_jam_table(jam_table, jam_size, priv, true);
+	if (ret)
+		return ret;
+
+	/* Isolate all user ports so they can only send packets to itself and the CPU port */
+	for (i = 0; i < RTL8366RB_PORT_NUM_CPU; i++) {
+		ret = regmap_write(priv->map, RTL8366RB_PORT_ISO(i),
+				   RTL8366RB_PORT_ISO_PORTS(BIT(RTL8366RB_PORT_NUM_CPU)) |
+				   RTL8366RB_PORT_ISO_EN);
+		if (ret)
+			return ret;
+	}
+	/* CPU port can send packets to all ports */
+	ret = regmap_write(priv->map, RTL8366RB_PORT_ISO(RTL8366RB_PORT_NUM_CPU),
+			   RTL8366RB_PORT_ISO_PORTS(dsa_user_ports(ds)) |
+			   RTL8366RB_PORT_ISO_EN);
+	if (ret)
+		return ret;
+
+	/* Set up the "green ethernet" feature */
+	ret = rtl8366rb_jam_table(rtl8366rb_green_jam,
+				  ARRAY_SIZE(rtl8366rb_green_jam), priv, false);
+	if (ret)
+		return ret;
+
+	ret = regmap_write(priv->map,
+			   RTL8366RB_GREEN_FEATURE_REG,
+			   (chip_ver == 1) ? 0x0007 : 0x0003);
+	if (ret)
+		return ret;
+
+	/* Vendor driver sets 0x240 in registers 0xc and 0xd (undocumented) */
+	ret = regmap_write(priv->map, 0x0c, 0x240);
+	if (ret)
+		return ret;
+	ret = regmap_write(priv->map, 0x0d, 0x240);
+	if (ret)
+		return ret;
+
+	/* Set some random MAC address */
+	ret = rtl8366rb_set_addr(priv);
+	if (ret)
+		return ret;
+
+	/* Enable CPU port with custom DSA tag 8899.
+	 *
+	 * If you set RTL8368RB_CPU_NO_TAG (bit 15) in this registers
+	 * the custom tag is turned off.
+	 */
+	ret = regmap_update_bits(priv->map, RTL8368RB_CPU_CTRL_REG,
+				 0xFFFF,
+				 BIT(priv->cpu_port));
+	if (ret)
+		return ret;
+
+	/* Make sure we default-enable the fixed CPU port */
+	ret = regmap_update_bits(priv->map, RTL8366RB_PECR,
+				 BIT(priv->cpu_port),
+				 0);
+	if (ret)
+		return ret;
+
+	/* Set maximum packet length to 1536 bytes */
+	ret = regmap_update_bits(priv->map, RTL8366RB_SGCR,
+				 RTL8366RB_SGCR_MAX_LENGTH_MASK,
+				 RTL8366RB_SGCR_MAX_LENGTH_1536);
+	if (ret)
+		return ret;
+	for (i = 0; i < RTL8366RB_NUM_PORTS; i++)
+		/* layer 2 size, see rtl8366rb_change_mtu() */
+		rb->max_mtu[i] = 1532;
+
+	/* Disable learning for all ports */
+	ret = regmap_write(priv->map, RTL8366RB_PORT_LEARNDIS_CTRL,
+			   RTL8366RB_PORT_ALL);
+	if (ret)
+		return ret;
+
+	/* Enable auto ageing for all ports */
+	ret = regmap_write(priv->map, RTL8366RB_SECURITY_CTRL, 0);
+	if (ret)
+		return ret;
+
+	/* Port 4 setup: this enables Port 4, usually the WAN port,
+	 * common PHY IO mode is apparently mode 0, and this is not what
+	 * the port is initialized to. There is no explanation of the
+	 * IO modes in the Realtek source code, if your WAN port is
+	 * connected to something exotic such as fiber, then this might
+	 * be worth experimenting with.
+	 */
+	ret = regmap_update_bits(priv->map, RTL8366RB_PMC0,
+				 RTL8366RB_PMC0_P4_IOMODE_MASK,
+				 0 << RTL8366RB_PMC0_P4_IOMODE_SHIFT);
+	if (ret)
+		return ret;
+
+	/* Accept all packets by default, we enable filtering on-demand */
+	ret = regmap_write(priv->map, RTL8366RB_VLAN_INGRESS_CTRL1_REG,
+			   0);
+	if (ret)
+		return ret;
+	ret = regmap_write(priv->map, RTL8366RB_VLAN_INGRESS_CTRL2_REG,
+			   0);
+	if (ret)
+		return ret;
+
+	/* Don't drop packets whose DA has not been learned */
+	ret = regmap_update_bits(priv->map, RTL8366RB_SSCR2,
+				 RTL8366RB_SSCR2_DROP_UNKNOWN_DA, 0);
+	if (ret)
+		return ret;
+
+	/* Set blinking, TODO: make this configurable */
+	ret = regmap_update_bits(priv->map, RTL8366RB_LED_BLINKRATE_REG,
+				 RTL8366RB_LED_BLINKRATE_MASK,
+				 RTL8366RB_LED_BLINKRATE_56MS);
+	if (ret)
+		return ret;
+
+	/* Set up LED activity:
+	 * Each port has 4 LEDs, we configure all ports to the same
+	 * behaviour (no individual config) but we can set up each
+	 * LED separately.
+	 */
+	if (priv->leds_disabled) {
+		/* Turn everything off */
+		regmap_update_bits(priv->map,
+				   RTL8366RB_LED_0_1_CTRL_REG,
+				   0x0FFF, 0);
+		regmap_update_bits(priv->map,
+				   RTL8366RB_LED_2_3_CTRL_REG,
+				   0x0FFF, 0);
+		regmap_update_bits(priv->map,
+				   RTL8366RB_INTERRUPT_CONTROL_REG,
+				   RTL8366RB_P4_RGMII_LED,
+				   0);
+		val = RTL8366RB_LED_OFF;
+	} else {
+		/* TODO: make this configurable per LED */
+		val = RTL8366RB_LED_FORCE;
+	}
+	for (i = 0; i < 4; i++) {
+		ret = regmap_update_bits(priv->map,
+					 RTL8366RB_LED_CTRL_REG,
+					 0xf << (i * 4),
+					 val << (i * 4));
+		if (ret)
+			return ret;
+	}
+
+	ret = rtl8366_reset_vlan(priv);
+	if (ret)
+		return ret;
+
+	ret = rtl8366rb_setup_cascaded_irq(priv);
+	if (ret)
+		dev_info(priv->dev, "no interrupt support\n");
+
+	if (priv->setup_interface) {
+		ret = priv->setup_interface(ds);
+		if (ret) {
+			dev_err(priv->dev, "could not set up MDIO bus\n");
+			return -ENODEV;
+		}
+	}
+
+	return 0;
+}
+
+static enum dsa_tag_protocol rtl8366_get_tag_protocol(struct dsa_switch *ds,
+						      int port,
+						      enum dsa_tag_protocol mp)
+{
+	/* This switch uses the 4 byte protocol A Realtek DSA tag */
+	return DSA_TAG_PROTO_RTL4_A;
+}
+
+static void
+rtl8366rb_mac_link_up(struct dsa_switch *ds, int port, unsigned int mode,
+		      phy_interface_t interface, struct phy_device *phydev,
+		      int speed, int duplex, bool tx_pause, bool rx_pause)
+{
+	struct realtek_priv *priv = ds->priv;
+	int ret;
+
+	if (port != priv->cpu_port)
+		return;
+
+	dev_dbg(priv->dev, "MAC link up on CPU port (%d)\n", port);
+
+	/* Force the fixed CPU port into 1Gbit mode, no autonegotiation */
+	ret = regmap_update_bits(priv->map, RTL8366RB_MAC_FORCE_CTRL_REG,
+				 BIT(port), BIT(port));
+	if (ret) {
+		dev_err(priv->dev, "failed to force 1Gbit on CPU port\n");
+		return;
+	}
+
+	ret = regmap_update_bits(priv->map, RTL8366RB_PAACR2,
+				 0xFF00U,
+				 RTL8366RB_PAACR_CPU_PORT << 8);
+	if (ret) {
+		dev_err(priv->dev, "failed to set PAACR on CPU port\n");
+		return;
+	}
+
+	/* Enable the CPU port */
+	ret = regmap_update_bits(priv->map, RTL8366RB_PECR, BIT(port),
+				 0);
+	if (ret) {
+		dev_err(priv->dev, "failed to enable the CPU port\n");
+		return;
+	}
+}
+
+static void
+rtl8366rb_mac_link_down(struct dsa_switch *ds, int port, unsigned int mode,
+			phy_interface_t interface)
+{
+	struct realtek_priv *priv = ds->priv;
+	int ret;
+
+	if (port != priv->cpu_port)
+		return;
+
+	dev_dbg(priv->dev, "MAC link down on CPU port (%d)\n", port);
+
+	/* Disable the CPU port */
+	ret = regmap_update_bits(priv->map, RTL8366RB_PECR, BIT(port),
+				 BIT(port));
+	if (ret) {
+		dev_err(priv->dev, "failed to disable the CPU port\n");
+		return;
+	}
+}
+
+static void rb8366rb_set_port_led(struct realtek_priv *priv,
+				  int port, bool enable)
+{
+	u16 val = enable ? 0x3f : 0;
+	int ret;
+
+	if (priv->leds_disabled)
+		return;
+
+	switch (port) {
+	case 0:
+		ret = regmap_update_bits(priv->map,
+					 RTL8366RB_LED_0_1_CTRL_REG,
+					 0x3F, val);
+		break;
+	case 1:
+		ret = regmap_update_bits(priv->map,
+					 RTL8366RB_LED_0_1_CTRL_REG,
+					 0x3F << RTL8366RB_LED_1_OFFSET,
+					 val << RTL8366RB_LED_1_OFFSET);
+		break;
+	case 2:
+		ret = regmap_update_bits(priv->map,
+					 RTL8366RB_LED_2_3_CTRL_REG,
+					 0x3F, val);
+		break;
+	case 3:
+		ret = regmap_update_bits(priv->map,
+					 RTL8366RB_LED_2_3_CTRL_REG,
+					 0x3F << RTL8366RB_LED_3_OFFSET,
+					 val << RTL8366RB_LED_3_OFFSET);
+		break;
+	case 4:
+		ret = regmap_update_bits(priv->map,
+					 RTL8366RB_INTERRUPT_CONTROL_REG,
+					 RTL8366RB_P4_RGMII_LED,
+					 enable ? RTL8366RB_P4_RGMII_LED : 0);
+		break;
+	default:
+		dev_err(priv->dev, "no LED for port %d\n", port);
+		return;
+	}
+	if (ret)
+		dev_err(priv->dev, "error updating LED on port %d\n", port);
+}
+
+static int
+rtl8366rb_port_enable(struct dsa_switch *ds, int port,
+		      struct phy_device *phy)
+{
+	struct realtek_priv *priv = ds->priv;
+	int ret;
+
+	dev_dbg(priv->dev, "enable port %d\n", port);
+	ret = regmap_update_bits(priv->map, RTL8366RB_PECR, BIT(port),
+				 0);
+	if (ret)
+		return ret;
+
+	rb8366rb_set_port_led(priv, port, true);
+	return 0;
+}
+
+static void
+rtl8366rb_port_disable(struct dsa_switch *ds, int port)
+{
+	struct realtek_priv *priv = ds->priv;
+	int ret;
+
+	dev_dbg(priv->dev, "disable port %d\n", port);
+	ret = regmap_update_bits(priv->map, RTL8366RB_PECR, BIT(port),
+				 BIT(port));
+	if (ret)
+		return;
+
+	rb8366rb_set_port_led(priv, port, false);
+}
+
+static int
+rtl8366rb_port_bridge_join(struct dsa_switch *ds, int port,
+			   struct dsa_bridge bridge,
+			   bool *tx_fwd_offload,
+			   struct netlink_ext_ack *extack)
+{
+	struct realtek_priv *priv = ds->priv;
+	unsigned int port_bitmap = 0;
+	int ret, i;
+
+	/* Loop over all other ports than the current one */
+	for (i = 0; i < RTL8366RB_PORT_NUM_CPU; i++) {
+		/* Current port handled last */
+		if (i == port)
+			continue;
+		/* Not on this bridge */
+		if (!dsa_port_offloads_bridge(dsa_to_port(ds, i), &bridge))
+			continue;
+		/* Join this port to each other port on the bridge */
+		ret = regmap_update_bits(priv->map, RTL8366RB_PORT_ISO(i),
+					 RTL8366RB_PORT_ISO_PORTS(BIT(port)),
+					 RTL8366RB_PORT_ISO_PORTS(BIT(port)));
+		if (ret)
+			dev_err(priv->dev, "failed to join port %d\n", port);
+
+		port_bitmap |= BIT(i);
+	}
+
+	/* Set the bits for the ports we can access */
+	return regmap_update_bits(priv->map, RTL8366RB_PORT_ISO(port),
+				  RTL8366RB_PORT_ISO_PORTS(port_bitmap),
+				  RTL8366RB_PORT_ISO_PORTS(port_bitmap));
+}
+
+static void
+rtl8366rb_port_bridge_leave(struct dsa_switch *ds, int port,
+			    struct dsa_bridge bridge)
+{
+	struct realtek_priv *priv = ds->priv;
+	unsigned int port_bitmap = 0;
+	int ret, i;
+
+	/* Loop over all other ports than this one */
+	for (i = 0; i < RTL8366RB_PORT_NUM_CPU; i++) {
+		/* Current port handled last */
+		if (i == port)
+			continue;
+		/* Not on this bridge */
+		if (!dsa_port_offloads_bridge(dsa_to_port(ds, i), &bridge))
+			continue;
+		/* Remove this port from any other port on the bridge */
+		ret = regmap_update_bits(priv->map, RTL8366RB_PORT_ISO(i),
+					 RTL8366RB_PORT_ISO_PORTS(BIT(port)), 0);
+		if (ret)
+			dev_err(priv->dev, "failed to leave port %d\n", port);
+
+		port_bitmap |= BIT(i);
+	}
+
+	/* Clear the bits for the ports we can not access, leave ourselves */
+	regmap_update_bits(priv->map, RTL8366RB_PORT_ISO(port),
+			   RTL8366RB_PORT_ISO_PORTS(port_bitmap), 0);
+}
+
+/**
+ * rtl8366rb_drop_untagged() - make the switch drop untagged and C-tagged frames
+ * @priv: SMI state container
+ * @port: the port to drop untagged and C-tagged frames on
+ * @drop: whether to drop or pass untagged and C-tagged frames
+ *
+ * Return: zero for success, a negative number on error.
+ */
+static int rtl8366rb_drop_untagged(struct realtek_priv *priv, int port, bool drop)
+{
+	return regmap_update_bits(priv->map, RTL8366RB_VLAN_INGRESS_CTRL1_REG,
+				  RTL8366RB_VLAN_INGRESS_CTRL1_DROP(port),
+				  drop ? RTL8366RB_VLAN_INGRESS_CTRL1_DROP(port) : 0);
+}
+
+static int rtl8366rb_vlan_filtering(struct dsa_switch *ds, int port,
+				    bool vlan_filtering,
+				    struct netlink_ext_ack *extack)
+{
+	struct realtek_priv *priv = ds->priv;
+	struct rtl8366rb *rb;
+	int ret;
+
+	rb = priv->chip_data;
+
+	dev_dbg(priv->dev, "port %d: %s VLAN filtering\n", port,
+		vlan_filtering ? "enable" : "disable");
+
+	/* If the port is not in the member set, the frame will be dropped */
+	ret = regmap_update_bits(priv->map, RTL8366RB_VLAN_INGRESS_CTRL2_REG,
+				 BIT(port), vlan_filtering ? BIT(port) : 0);
+	if (ret)
+		return ret;
+
+	/* If VLAN filtering is enabled and PVID is also enabled, we must
+	 * not drop any untagged or C-tagged frames. If we turn off VLAN
+	 * filtering on a port, we need to accept any frames.
+	 */
+	if (vlan_filtering)
+		ret = rtl8366rb_drop_untagged(priv, port, !rb->pvid_enabled[port]);
+	else
+		ret = rtl8366rb_drop_untagged(priv, port, false);
+
+	return ret;
+}
+
+static int
+rtl8366rb_port_pre_bridge_flags(struct dsa_switch *ds, int port,
+				struct switchdev_brport_flags flags,
+				struct netlink_ext_ack *extack)
+{
+	/* We support enabling/disabling learning */
+	if (flags.mask & ~(BR_LEARNING))
+		return -EINVAL;
+
+	return 0;
+}
+
+static int
+rtl8366rb_port_bridge_flags(struct dsa_switch *ds, int port,
+			    struct switchdev_brport_flags flags,
+			    struct netlink_ext_ack *extack)
+{
+	struct realtek_priv *priv = ds->priv;
+	int ret;
+
+	if (flags.mask & BR_LEARNING) {
+		ret = regmap_update_bits(priv->map, RTL8366RB_PORT_LEARNDIS_CTRL,
+					 BIT(port),
+					 (flags.val & BR_LEARNING) ? 0 : BIT(port));
+		if (ret)
+			return ret;
+	}
+
+	return 0;
+}
+
+static void
+rtl8366rb_port_stp_state_set(struct dsa_switch *ds, int port, u8 state)
+{
+	struct realtek_priv *priv = ds->priv;
+	u32 val;
+	int i;
+
+	switch (state) {
+	case BR_STATE_DISABLED:
+		val = RTL8366RB_STP_STATE_DISABLED;
+		break;
+	case BR_STATE_BLOCKING:
+	case BR_STATE_LISTENING:
+		val = RTL8366RB_STP_STATE_BLOCKING;
+		break;
+	case BR_STATE_LEARNING:
+		val = RTL8366RB_STP_STATE_LEARNING;
+		break;
+	case BR_STATE_FORWARDING:
+		val = RTL8366RB_STP_STATE_FORWARDING;
+		break;
+	default:
+		dev_err(priv->dev, "unknown bridge state requested\n");
+		return;
+	}
+
+	/* Set the same status for the port on all the FIDs */
+	for (i = 0; i < RTL8366RB_NUM_FIDS; i++) {
+		regmap_update_bits(priv->map, RTL8366RB_STP_STATE_BASE + i,
+				   RTL8366RB_STP_STATE_MASK(port),
+				   RTL8366RB_STP_STATE(port, val));
+	}
+}
+
+static void
+rtl8366rb_port_fast_age(struct dsa_switch *ds, int port)
+{
+	struct realtek_priv *priv = ds->priv;
+
+	/* This will age out any learned L2 entries */
+	regmap_update_bits(priv->map, RTL8366RB_SECURITY_CTRL,
+			   BIT(port), BIT(port));
+	/* Restore the normal state of things */
+	regmap_update_bits(priv->map, RTL8366RB_SECURITY_CTRL,
+			   BIT(port), 0);
+}
+
+static int rtl8366rb_change_mtu(struct dsa_switch *ds, int port, int new_mtu)
+{
+	struct realtek_priv *priv = ds->priv;
+	struct rtl8366rb *rb;
+	unsigned int max_mtu;
+	u32 len;
+	int i;
+
+	/* Cache the per-port MTU setting */
+	rb = priv->chip_data;
+	rb->max_mtu[port] = new_mtu;
+
+	/* Roof out the MTU for the entire switch to the greatest
+	 * common denominator: the biggest set for any one port will
+	 * be the biggest MTU for the switch.
+	 *
+	 * The first setting, 1522 bytes, is max IP packet 1500 bytes,
+	 * plus ethernet header, 1518 bytes, plus CPU tag, 4 bytes.
+	 * This function should consider the parameter an SDU, so the
+	 * MTU passed for this setting is 1518 bytes. The same logic
+	 * of subtracting the DSA tag of 4 bytes apply to the other
+	 * settings.
+	 */
+	max_mtu = 1518;
+	for (i = 0; i < RTL8366RB_NUM_PORTS; i++) {
+		if (rb->max_mtu[i] > max_mtu)
+			max_mtu = rb->max_mtu[i];
+	}
+	if (max_mtu <= 1518)
+		len = RTL8366RB_SGCR_MAX_LENGTH_1522;
+	else if (max_mtu > 1518 && max_mtu <= 1532)
+		len = RTL8366RB_SGCR_MAX_LENGTH_1536;
+	else if (max_mtu > 1532 && max_mtu <= 1548)
+		len = RTL8366RB_SGCR_MAX_LENGTH_1552;
+	else
+		len = RTL8366RB_SGCR_MAX_LENGTH_16000;
+
+	return regmap_update_bits(priv->map, RTL8366RB_SGCR,
+				  RTL8366RB_SGCR_MAX_LENGTH_MASK,
+				  len);
+}
+
+static int rtl8366rb_max_mtu(struct dsa_switch *ds, int port)
+{
+	/* The max MTU is 16000 bytes, so we subtract the CPU tag
+	 * and the max presented to the system is 15996 bytes.
+	 */
+	return 15996;
+}
+
+static int rtl8366rb_get_vlan_4k(struct realtek_priv *priv, u32 vid,
+				 struct rtl8366_vlan_4k *vlan4k)
+{
+	u32 data[3];
+	int ret;
+	int i;
+
+	memset(vlan4k, '\0', sizeof(struct rtl8366_vlan_4k));
+
+	if (vid >= RTL8366RB_NUM_VIDS)
+		return -EINVAL;
+
+	/* write VID */
+	ret = regmap_write(priv->map, RTL8366RB_VLAN_TABLE_WRITE_BASE,
+			   vid & RTL8366RB_VLAN_VID_MASK);
+	if (ret)
+		return ret;
+
+	/* write table access control word */
+	ret = regmap_write(priv->map, RTL8366RB_TABLE_ACCESS_CTRL_REG,
+			   RTL8366RB_TABLE_VLAN_READ_CTRL);
+	if (ret)
+		return ret;
+
+	for (i = 0; i < 3; i++) {
+		ret = regmap_read(priv->map,
+				  RTL8366RB_VLAN_TABLE_READ_BASE + i,
+				  &data[i]);
+		if (ret)
+			return ret;
+	}
+
+	vlan4k->vid = vid;
+	vlan4k->untag = (data[1] >> RTL8366RB_VLAN_UNTAG_SHIFT) &
+			RTL8366RB_VLAN_UNTAG_MASK;
+	vlan4k->member = data[1] & RTL8366RB_VLAN_MEMBER_MASK;
+	vlan4k->fid = data[2] & RTL8366RB_VLAN_FID_MASK;
+
+	return 0;
+}
+
+static int rtl8366rb_set_vlan_4k(struct realtek_priv *priv,
+				 const struct rtl8366_vlan_4k *vlan4k)
+{
+	u32 data[3];
+	int ret;
+	int i;
+
+	if (vlan4k->vid >= RTL8366RB_NUM_VIDS ||
+	    vlan4k->member > RTL8366RB_VLAN_MEMBER_MASK ||
+	    vlan4k->untag > RTL8366RB_VLAN_UNTAG_MASK ||
+	    vlan4k->fid > RTL8366RB_FIDMAX)
+		return -EINVAL;
+
+	data[0] = vlan4k->vid & RTL8366RB_VLAN_VID_MASK;
+	data[1] = (vlan4k->member & RTL8366RB_VLAN_MEMBER_MASK) |
+		  ((vlan4k->untag & RTL8366RB_VLAN_UNTAG_MASK) <<
+			RTL8366RB_VLAN_UNTAG_SHIFT);
+	data[2] = vlan4k->fid & RTL8366RB_VLAN_FID_MASK;
+
+	for (i = 0; i < 3; i++) {
+		ret = regmap_write(priv->map,
+				   RTL8366RB_VLAN_TABLE_WRITE_BASE + i,
+				   data[i]);
+		if (ret)
+			return ret;
+	}
+
+	/* write table access control word */
+	ret = regmap_write(priv->map, RTL8366RB_TABLE_ACCESS_CTRL_REG,
+			   RTL8366RB_TABLE_VLAN_WRITE_CTRL);
+
+	return ret;
+}
+
+static int rtl8366rb_get_vlan_mc(struct realtek_priv *priv, u32 index,
+				 struct rtl8366_vlan_mc *vlanmc)
+{
+	u32 data[3];
+	int ret;
+	int i;
+
+	memset(vlanmc, '\0', sizeof(struct rtl8366_vlan_mc));
+
+	if (index >= RTL8366RB_NUM_VLANS)
+		return -EINVAL;
+
+	for (i = 0; i < 3; i++) {
+		ret = regmap_read(priv->map,
+				  RTL8366RB_VLAN_MC_BASE(index) + i,
+				  &data[i]);
+		if (ret)
+			return ret;
+	}
+
+	vlanmc->vid = data[0] & RTL8366RB_VLAN_VID_MASK;
+	vlanmc->priority = (data[0] >> RTL8366RB_VLAN_PRIORITY_SHIFT) &
+		RTL8366RB_VLAN_PRIORITY_MASK;
+	vlanmc->untag = (data[1] >> RTL8366RB_VLAN_UNTAG_SHIFT) &
+		RTL8366RB_VLAN_UNTAG_MASK;
+	vlanmc->member = data[1] & RTL8366RB_VLAN_MEMBER_MASK;
+	vlanmc->fid = data[2] & RTL8366RB_VLAN_FID_MASK;
+
+	return 0;
+}
+
+static int rtl8366rb_set_vlan_mc(struct realtek_priv *priv, u32 index,
+				 const struct rtl8366_vlan_mc *vlanmc)
+{
+	u32 data[3];
+	int ret;
+	int i;
+
+	if (index >= RTL8366RB_NUM_VLANS ||
+	    vlanmc->vid >= RTL8366RB_NUM_VIDS ||
+	    vlanmc->priority > RTL8366RB_PRIORITYMAX ||
+	    vlanmc->member > RTL8366RB_VLAN_MEMBER_MASK ||
+	    vlanmc->untag > RTL8366RB_VLAN_UNTAG_MASK ||
+	    vlanmc->fid > RTL8366RB_FIDMAX)
+		return -EINVAL;
+
+	data[0] = (vlanmc->vid & RTL8366RB_VLAN_VID_MASK) |
+		  ((vlanmc->priority & RTL8366RB_VLAN_PRIORITY_MASK) <<
+			RTL8366RB_VLAN_PRIORITY_SHIFT);
+	data[1] = (vlanmc->member & RTL8366RB_VLAN_MEMBER_MASK) |
+		  ((vlanmc->untag & RTL8366RB_VLAN_UNTAG_MASK) <<
+			RTL8366RB_VLAN_UNTAG_SHIFT);
+	data[2] = vlanmc->fid & RTL8366RB_VLAN_FID_MASK;
+
+	for (i = 0; i < 3; i++) {
+		ret = regmap_write(priv->map,
+				   RTL8366RB_VLAN_MC_BASE(index) + i,
+				   data[i]);
+		if (ret)
+			return ret;
+	}
+
+	return 0;
+}
+
+static int rtl8366rb_get_mc_index(struct realtek_priv *priv, int port, int *val)
+{
+	u32 data;
+	int ret;
+
+	if (port >= priv->num_ports)
+		return -EINVAL;
+
+	ret = regmap_read(priv->map, RTL8366RB_PORT_VLAN_CTRL_REG(port),
+			  &data);
+	if (ret)
+		return ret;
+
+	*val = (data >> RTL8366RB_PORT_VLAN_CTRL_SHIFT(port)) &
+		RTL8366RB_PORT_VLAN_CTRL_MASK;
+
+	return 0;
+}
+
+static int rtl8366rb_set_mc_index(struct realtek_priv *priv, int port, int index)
+{
+	struct rtl8366rb *rb;
+	bool pvid_enabled;
+	int ret;
+
+	rb = priv->chip_data;
+	pvid_enabled = !!index;
+
+	if (port >= priv->num_ports || index >= RTL8366RB_NUM_VLANS)
+		return -EINVAL;
+
+	ret = regmap_update_bits(priv->map, RTL8366RB_PORT_VLAN_CTRL_REG(port),
+				 RTL8366RB_PORT_VLAN_CTRL_MASK <<
+					RTL8366RB_PORT_VLAN_CTRL_SHIFT(port),
+				 (index & RTL8366RB_PORT_VLAN_CTRL_MASK) <<
+					RTL8366RB_PORT_VLAN_CTRL_SHIFT(port));
+	if (ret)
+		return ret;
+
+	rb->pvid_enabled[port] = pvid_enabled;
+
+	/* If VLAN filtering is enabled and PVID is also enabled, we must
+	 * not drop any untagged or C-tagged frames. Make sure to update the
+	 * filtering setting.
+	 */
+	if (dsa_port_is_vlan_filtering(dsa_to_port(priv->ds, port)))
+		ret = rtl8366rb_drop_untagged(priv, port, !pvid_enabled);
+
+	return ret;
+}
+
+static bool rtl8366rb_is_vlan_valid(struct realtek_priv *priv, unsigned int vlan)
+{
+	unsigned int max = RTL8366RB_NUM_VLANS - 1;
+
+	if (priv->vlan4k_enabled)
+		max = RTL8366RB_NUM_VIDS - 1;
+
+	if (vlan > max)
+		return false;
+
+	return true;
+}
+
+static int rtl8366rb_enable_vlan(struct realtek_priv *priv, bool enable)
+{
+	dev_dbg(priv->dev, "%s VLAN\n", enable ? "enable" : "disable");
+	return regmap_update_bits(priv->map,
+				  RTL8366RB_SGCR, RTL8366RB_SGCR_EN_VLAN,
+				  enable ? RTL8366RB_SGCR_EN_VLAN : 0);
+}
+
+static int rtl8366rb_enable_vlan4k(struct realtek_priv *priv, bool enable)
+{
+	dev_dbg(priv->dev, "%s VLAN 4k\n", enable ? "enable" : "disable");
+	return regmap_update_bits(priv->map, RTL8366RB_SGCR,
+				  RTL8366RB_SGCR_EN_VLAN_4KTB,
+				  enable ? RTL8366RB_SGCR_EN_VLAN_4KTB : 0);
+}
+
+static int rtl8366rb_phy_read(struct realtek_priv *priv, int phy, int regnum)
+{
+	u32 val;
+	u32 reg;
+	int ret;
+
+	if (phy > RTL8366RB_PHY_NO_MAX)
+		return -EINVAL;
+
+	ret = regmap_write(priv->map, RTL8366RB_PHY_ACCESS_CTRL_REG,
+			   RTL8366RB_PHY_CTRL_READ);
+	if (ret)
+		return ret;
+
+	reg = 0x8000 | (1 << (phy + RTL8366RB_PHY_NO_OFFSET)) | regnum;
+
+	ret = regmap_write(priv->map, reg, 0);
+	if (ret) {
+		dev_err(priv->dev,
+			"failed to write PHY%d reg %04x @ %04x, ret %d\n",
+			phy, regnum, reg, ret);
+		return ret;
+	}
+
+	ret = regmap_read(priv->map, RTL8366RB_PHY_ACCESS_DATA_REG, &val);
+	if (ret)
+		return ret;
+
+	dev_dbg(priv->dev, "read PHY%d register 0x%04x @ %08x, val <- %04x\n",
+		phy, regnum, reg, val);
+
+	return val;
+}
+
+static int rtl8366rb_phy_write(struct realtek_priv *priv, int phy, int regnum,
+			       u16 val)
+{
+	u32 reg;
+	int ret;
+
+	if (phy > RTL8366RB_PHY_NO_MAX)
+		return -EINVAL;
+
+	ret = regmap_write(priv->map, RTL8366RB_PHY_ACCESS_CTRL_REG,
+			   RTL8366RB_PHY_CTRL_WRITE);
+	if (ret)
+		return ret;
+
+	reg = 0x8000 | (1 << (phy + RTL8366RB_PHY_NO_OFFSET)) | regnum;
+
+	dev_dbg(priv->dev, "write PHY%d register 0x%04x @ %04x, val -> %04x\n",
+		phy, regnum, reg, val);
+
+	ret = regmap_write(priv->map, reg, val);
+	if (ret)
+		return ret;
+
+	return 0;
+}
+
+static int rtl8366rb_dsa_phy_read(struct dsa_switch *ds, int phy, int regnum)
+{
+	return rtl8366rb_phy_read(ds->priv, phy, regnum);
+}
+
+static int rtl8366rb_dsa_phy_write(struct dsa_switch *ds, int phy, int regnum,
+				   u16 val)
+{
+	return rtl8366rb_phy_write(ds->priv, phy, regnum, val);
+}
+
+static int rtl8366rb_reset_chip(struct realtek_priv *priv)
+{
+	int timeout = 10;
+	u32 val;
+	int ret;
+
+	priv->write_reg_noack(priv, RTL8366RB_RESET_CTRL_REG,
+			      RTL8366RB_CHIP_CTRL_RESET_HW);
+	do {
+		usleep_range(20000, 25000);
+		ret = regmap_read(priv->map, RTL8366RB_RESET_CTRL_REG, &val);
+		if (ret)
+			return ret;
+
+		if (!(val & RTL8366RB_CHIP_CTRL_RESET_HW))
+			break;
+	} while (--timeout);
+
+	if (!timeout) {
+		dev_err(priv->dev, "timeout waiting for the switch to reset\n");
+		return -EIO;
+	}
+
+	return 0;
+}
+
+static int rtl8366rb_detect(struct realtek_priv *priv)
+{
+	struct device *dev = priv->dev;
+	int ret;
+	u32 val;
+
+	/* Detect device */
+	ret = regmap_read(priv->map, 0x5c, &val);
+	if (ret) {
+		dev_err(dev, "can't get chip ID (%d)\n", ret);
+		return ret;
+	}
+
+	switch (val) {
+	case 0x6027:
+		dev_info(dev, "found an RTL8366S switch\n");
+		dev_err(dev, "this switch is not yet supported, submit patches!\n");
+		return -ENODEV;
+	case 0x5937:
+		dev_info(dev, "found an RTL8366RB switch\n");
+		priv->cpu_port = RTL8366RB_PORT_NUM_CPU;
+		priv->num_ports = RTL8366RB_NUM_PORTS;
+		priv->num_vlan_mc = RTL8366RB_NUM_VLANS;
+		priv->mib_counters = rtl8366rb_mib_counters;
+		priv->num_mib_counters = ARRAY_SIZE(rtl8366rb_mib_counters);
+		break;
+	default:
+		dev_info(dev, "found an Unknown Realtek switch (id=0x%04x)\n",
+			 val);
+		break;
+	}
+
+	ret = rtl8366rb_reset_chip(priv);
+	if (ret)
+		return ret;
+
+	return 0;
+}
+
+static const struct dsa_switch_ops rtl8366rb_switch_ops_smi = {
+	.get_tag_protocol = rtl8366_get_tag_protocol,
+	.setup = rtl8366rb_setup,
+	.phylink_mac_link_up = rtl8366rb_mac_link_up,
+	.phylink_mac_link_down = rtl8366rb_mac_link_down,
+	.get_strings = rtl8366_get_strings,
+	.get_ethtool_stats = rtl8366_get_ethtool_stats,
+	.get_sset_count = rtl8366_get_sset_count,
+	.port_bridge_join = rtl8366rb_port_bridge_join,
+	.port_bridge_leave = rtl8366rb_port_bridge_leave,
+	.port_vlan_filtering = rtl8366rb_vlan_filtering,
+	.port_vlan_add = rtl8366_vlan_add,
+	.port_vlan_del = rtl8366_vlan_del,
+	.port_enable = rtl8366rb_port_enable,
+	.port_disable = rtl8366rb_port_disable,
+	.port_pre_bridge_flags = rtl8366rb_port_pre_bridge_flags,
+	.port_bridge_flags = rtl8366rb_port_bridge_flags,
+	.port_stp_state_set = rtl8366rb_port_stp_state_set,
+	.port_fast_age = rtl8366rb_port_fast_age,
+	.port_change_mtu = rtl8366rb_change_mtu,
+	.port_max_mtu = rtl8366rb_max_mtu,
+};
+
+static const struct dsa_switch_ops rtl8366rb_switch_ops_mdio = {
+	.get_tag_protocol = rtl8366_get_tag_protocol,
+	.setup = rtl8366rb_setup,
+	.phy_read = rtl8366rb_dsa_phy_read,
+	.phy_write = rtl8366rb_dsa_phy_write,
+	.phylink_mac_link_up = rtl8366rb_mac_link_up,
+	.phylink_mac_link_down = rtl8366rb_mac_link_down,
+	.get_strings = rtl8366_get_strings,
+	.get_ethtool_stats = rtl8366_get_ethtool_stats,
+	.get_sset_count = rtl8366_get_sset_count,
+	.port_bridge_join = rtl8366rb_port_bridge_join,
+	.port_bridge_leave = rtl8366rb_port_bridge_leave,
+	.port_vlan_filtering = rtl8366rb_vlan_filtering,
+	.port_vlan_add = rtl8366_vlan_add,
+	.port_vlan_del = rtl8366_vlan_del,
+	.port_enable = rtl8366rb_port_enable,
+	.port_disable = rtl8366rb_port_disable,
+	.port_pre_bridge_flags = rtl8366rb_port_pre_bridge_flags,
+	.port_bridge_flags = rtl8366rb_port_bridge_flags,
+	.port_stp_state_set = rtl8366rb_port_stp_state_set,
+	.port_fast_age = rtl8366rb_port_fast_age,
+	.port_change_mtu = rtl8366rb_change_mtu,
+	.port_max_mtu = rtl8366rb_max_mtu,
+};
+
+static const struct realtek_ops rtl8366rb_ops = {
+	.detect		= rtl8366rb_detect,
+	.get_vlan_mc	= rtl8366rb_get_vlan_mc,
+	.set_vlan_mc	= rtl8366rb_set_vlan_mc,
+	.get_vlan_4k	= rtl8366rb_get_vlan_4k,
+	.set_vlan_4k	= rtl8366rb_set_vlan_4k,
+	.get_mc_index	= rtl8366rb_get_mc_index,
+	.set_mc_index	= rtl8366rb_set_mc_index,
+	.get_mib_counter = rtl8366rb_get_mib_counter,
+	.is_vlan_valid	= rtl8366rb_is_vlan_valid,
+	.enable_vlan	= rtl8366rb_enable_vlan,
+	.enable_vlan4k	= rtl8366rb_enable_vlan4k,
+	.phy_read	= rtl8366rb_phy_read,
+	.phy_write	= rtl8366rb_phy_write,
+};
+
+const struct realtek_variant rtl8366rb_variant = {
+	.ds_ops_smi = &rtl8366rb_switch_ops_smi,
+	.ds_ops_mdio = &rtl8366rb_switch_ops_mdio,
+	.ops = &rtl8366rb_ops,
+	.clk_delay = 10,
+	.cmd_read = 0xa9,
+	.cmd_write = 0xa8,
+	.chip_data_sz = sizeof(struct rtl8366rb),
+};
+EXPORT_SYMBOL_GPL(rtl8366rb_variant);
+
+MODULE_AUTHOR("Linus Walleij <linus.walleij@linaro.org>");
+MODULE_DESCRIPTION("Driver for RTL8366RB ethernet switch");
+MODULE_LICENSE("GPL");

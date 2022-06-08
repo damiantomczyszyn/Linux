@@ -1,1 +1,8 @@
-cmd_drivers/media/rc/keymaps/rc-evga-indtube.mod := { echo  drivers/media/rc/keymaps/rc-evga-indtube.o;  echo; } > drivers/media/rc/keymaps/rc-evga-indtube.mod
+         = &mpeg_fops,
+	.ioctl_ops     = &mpeg_ioctl_ops,
+	.tvnorms       = CX23885_NORMS,
+};
+
+void cx23885_417_unregister(struct cx23885_dev *dev)
+{
+	dprintk(1

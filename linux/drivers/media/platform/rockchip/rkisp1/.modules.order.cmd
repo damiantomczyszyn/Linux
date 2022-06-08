@@ -1,1 +1,8 @@
-cmd_drivers/media/i2c/tvaudio.o := gcc -Wp,-MMD,drivers/media/i2c/.tvaudio.o.d -nostdinc -I./arch/x86/include -I./arch/x86/include/generated  -
+// SPDX-License-Identifier: GPL-2.0-or-later
+/*
+ * netup-init.c
+ *
+ * NetUP Dual DVB-S2 CI driver
+ *
+ * Copyright (C) 2009 NetUP Inc.
+ * Copyri

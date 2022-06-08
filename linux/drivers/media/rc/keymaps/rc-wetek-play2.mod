@@ -1,2 +1,1 @@
-drivers/media/rc/keymaps/rc-wetek-play2.o
-
+ntf(vfd->name, sizeof(vfd->name), "%s (%s)"

@@ -1,2 +1,1 @@
-de/uapi/linux/swab.h \
-  ar
+ (0x9d << 24); /* 100kHz */

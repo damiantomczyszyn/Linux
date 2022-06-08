@@ -1,1 +1,7 @@
-cmd_drivers/media/rc/keymaps/rc-pinnacle-pctv-hd.mod := { echo  drivers/media/rc/keymaps/rc-pinnacle-pctv-hd.o;  echo; } > drivers/media/rc/keymaps/rc-pinnacle-pctv-hd.mod
+
+			break;
+		dvb_attach(tda18271_attach, fe0->dvb.frontend,
+			   0x60, &dev->i2c_bus[0].i2c_adap,
+			   &hauppauge_tda18271_config);
+
+		tda18271_attach(&dev->ts1.analog_fe

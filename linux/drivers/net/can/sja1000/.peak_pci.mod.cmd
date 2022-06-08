@@ -1,4 +1,1 @@
-sm/pgtable-3level_types.h \
-  include/asm-generic/pgtable-nop4d.h \
-  include/asm-generic/pgtable-nopud.h \
-  arch/x86/include/asm/nospe
+cmd_drivers/net/can/sja1000/peak_pci.mod := { echo  drivers/net/can/sja1000/peak_pci.o;  echo; } > drivers/net/can/sja1000/peak_pci.mod

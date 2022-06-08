@@ -1,1 +1,4 @@
-config/ACPI_HOTPLUG_IOAPIC) \
+return cx_read(addr);
+}
+
+stat

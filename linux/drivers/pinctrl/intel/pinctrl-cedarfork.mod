@@ -1,2 +1,1 @@
-onfig/TRACE_BRANCH_PROFILING) \
-    $(wildc
+x], Reg=[0x%02x], data=%02x, TS config = %0

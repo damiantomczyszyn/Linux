@@ -1,2 +1,2 @@
-/DEBUG_SG) \
-    $(wildcard inc
+>drv_priv;
+	struct cx23885_buff

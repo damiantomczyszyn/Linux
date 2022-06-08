@@ -1,59 +1,90 @@
-		seq_printf(m, "[%p] ", class->key);
-		print_name(m, class);
-		seq_puts(m, "\n");
-	}
-	seq_puts(m, "\n");
+// SPDX-License-Identifier: GPL-2.0-only
+/*
+ *  kernel/sched/core.c
+ *
+ *  Core kernel scheduler code and related syscalls
+ *
+ *  Copyright (C) 1991-2002  Linus Torvalds
+ */
+#include <linux/highmem.h>
+#include <linux/hrtimer_api.h>
+#include <linux/ktime_api.h>
+#include <linux/sched/signal.h>
+#include <linux/syscalls_api.h>
+#include <linux/debug_locks.h>
+#include <linux/prefetch.h>
+#include <linux/capability.h>
+#include <linux/pgtable_api.h>
+#include <linux/wait_bit.h>
+#include <linux/jiffies.h>
+#include <linux/spinlock_api.h>
+#include <linux/cpumask_api.h>
+#include <linux/lockdep_api.h>
+#include <linux/hardirq.h>
+#include <linux/softirq.h>
+#include <linux/refcount_api.h>
+#include <linux/topology.h>
+#include <linux/sched/clock.h>
+#include <linux/sched/cond_resched.h>
+#include <linux/sched/debug.h>
+#include <linux/sched/isolation.h>
+#include <linux/sched/loadavg.h>
+#include <linux/sched/mm.h>
+#include <linux/sched/nohz.h>
+#include <linux/sched/rseq_api.h>
+#include <linux/sched/rt.h>
 
-	return 0;
-}
+#include <linux/blkdev.h>
+#include <linux/context_tracking.h>
+#include <linux/cpuset.h>
+#include <linux/delayacct.h>
+#include <linux/init_task.h>
+#include <linux/interrupt.h>
+#include <linux/ioprio.h>
+#include <linux/kallsyms.h>
+#include <linux/kcov.h>
+#include <linux/kprobes.h>
+#include <linux/llist_api.h>
+#include <linux/mmu_context.h>
+#include <linux/mmzone.h>
+#include <linux/mutex_api.h>
+#include <linux/nmi.h>
+#include <linux/nospec.h>
+#include <linux/perf_event_api.h>
+#include <linux/profile.h>
+#include <linux/psi.h>
+#include <linux/rcuwait_api.h>
+#include <linux/sched/wake_q.h>
+#include <linux/scs.h>
+#include <linux/slab.h>
+#include <linux/syscalls.h>
+#include <linux/vtime.h>
+#include <linux/wait_api.h>
+#include <linux/workqueue_api.h>
 
-static const struct seq_operations lockdep_chains_ops = {
-	.start	= lc_start,
-	.next	= lc_next,
-	.stop	= lc_stop,
-	.show	= lc_show,
-};
-#endif /* CONFIG_PROVE_LOCKING */
-
-static void lockdep_stats_debug_show(struct seq_file *m)
-{
-#ifdef CONFIG_DEBUG_LOCKDEP
-	unsigned long long hi1 = debug_atomic_read(hardirqs_on_events),
-			   hi2 = debug_atomic_read(hardirqs_off_events),
-			   hr1 = debug_atomic_read(redundant_hardirqs_on),
-			   hr2 = debug_atomic_read(redundant_hardirqs_off),
-			   si1 = debug_atomic_read(softirqs_on_events),
-			   si2 = debug_atomic_read(softirqs_off_events),
-			   sr1 = debug_atomic_read(redundant_softirqs_on),
-			   sr2 = debug_atomic_read(redundant_softirqs_off);
-
-	seq_printf(m, " chain lookup misses:           %11llu\n",
-		debug_atomic_read(chain_lookup_misses));
-	seq_printf(m, " chain lookup hits:             %11llu\n",
-		debug_atomic_read(chain_lookup_hits));
-	seq_printf(m, " cyclic checks:                 %11llu\n",
-		debug_atomic_read(nr_cyclic_checks));
-	seq_printf(m, " redundant checks:              %11llu\n",
-		debug_atomic_read(nr_redundant_checks));
-	seq_printf(m, " redundant links:               %11llu\n",
-		debug_atomic_read(nr_redundant));
-	seq_printf(m, " find-mask forwards checks:     %11llu\n",
-		debug_atomic_read(nr_find_usage_forwards_checks));
-	seq_printf(m, " find-mask backwards checks:    %11llu\n",
-		debug_atomic_read(nr_find_usage_backwards_checks));
-
-	seq_printf(m, " hardirq on events:             %11llu\n", hi1);
-	seq_printf(m, " hardirq off events:            %11llu\n", hi2);
-	seq_printf(m, " redundant hardirq ons:         %11llu\n", hr1);
-	seq_printf(m, " redundant hardirq offs:        %11llu\n", hr2);
-	seq_printf(m, " softirq on events:             %11llu\n", si1);
-	seq_printf(m, " softirq off events:            %11llu\n", si2);
-	seq_printf(m, " redundant softirq ons:         %11llu\n", sr1);
-	seq_printf(m, " redundant softirq offs:        %11llu\n", sr2);
+#ifdef CONFIG_PREEMPT_DYNAMIC
+# ifdef CONFIG_GENERIC_ENTRY
+#  include <linux/entry-common.h>
+# endif
 #endif
-}
 
-static int lockdep_stats_show(struct seq_file *m, void *v)
-{
-	unsigned long nr_unused = 0, nr_uncategorized = 0,
-		      nr_irq_safe = 0, nr_irq_unsafe =
+#include <uapi/linux/sched/types.h>
+
+#include <asm/switch_to.h>
+#include <asm/tlb.h>
+
+#define CREATE_TRACE_POINTS
+#include <linux/sched/rseq_api.h>
+#include <trace/events/sched.h>
+#undef CREATE_TRACE_POINTS
+
+#include "sched.h"
+#include "stats.h"
+#include "autogroup.h"
+
+#include "autogroup.h"
+#include "pelt.h"
+#include "smp.h"
+#include "stats.h"
+
+#include "../work

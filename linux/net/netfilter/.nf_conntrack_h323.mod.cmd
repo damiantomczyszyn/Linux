@@ -1,10 +1,7 @@
+nnel *audio_ch =
+		&dev->sram_channels[AUDIO_SRAM_CHANNEL];
 
-			       &hlock_class(prev)->locks_after,
-			       next->acquire_ip, distance,
-			       calc_dep(prev, next),
-			       *trace);
+	dprintk(1, "%s()\n", __func__);
 
-	if (!ret)
-		return 0;
-
-	ret = add_lock_to_
+	/* Make sure RISC/FIFO are off before changing FIFO/RISC settings */
+	cx_clear(AU

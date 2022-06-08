@@ -1,1 +1,8 @@
-cmd_drivers/media/rc/keymaps/rc-ct-90405.mod := { echo  drivers/media/rc/keymaps/rc-ct-90405.o;  echo; } > drivers/media/rc/keymaps/rc-ct-90405.mod
+t("%s\n", __func__);
+
+	if (0 != slot)
+		return -EINVAL;
+
+	mutex_lock(&inter->fpga_mutex);
+
+	ret = netup_fpga_op_rw(inter, NETUP_CI_BUSCTRL, 0, NETUP

@@ -1,4 +1,6 @@
-\
-  include/uapi/linux/media.h \
-  include/media/v4l2-subdev.h \
-  include/uapi/l
+if (__wake_q_add(head, task))
+		get_task_struct(task);
+}
+
+/**
+ * wake_q_add_safe(

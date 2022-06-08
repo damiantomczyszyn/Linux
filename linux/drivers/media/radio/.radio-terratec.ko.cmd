@@ -1,1 +1,6 @@
-cmd_drivers/media/radio/radio-terratec.ko := ld -r -m elf_i386 --build-id=sha1  -T scripts/module.lds -o drivers/media/radio/radio-terratec.ko drivers/media/radio/radio-terratec.o drivers/media/radio/radio-terratec.mod.o;  true
+rch-fallback.h \
+    $(wildcard include/config/GENERIC_ATOMIC64) \
+  include/linux/atomic/atomic-long.h \
+  include/linux/atomic/atomic-instrumented.h \
+  include/linux/bug.h \
+    $(wildcard include/config/BUG_ON_DATA_CORRUPTIO

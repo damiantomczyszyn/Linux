@@ -1,244 +1,171 @@
-/* SPDX-License-Identifier: GPL-2.0 */
-/*
- * kernel/lockdep_internals.h
- *
- * Runtime locking correctness validator
- *
- * lockdep subsystem internal functions and variables.
- */
-
-/*
- * Lock-class usage-state bits:
- */
-enum lock_usage_bit {
-#define LOCKDEP_STATE(__STATE)		\
-	LOCK_USED_IN_##__STATE,		\
-	LOCK_USED_IN_##__STATE##_READ,	\
-	LOCK_ENABLED_##__STATE,		\
-	LOCK_ENABLED_##__STATE##_READ,
-#include "lockdep_states.h"
-#undef LOCKDEP_STATE
-	LOCK_USED,
-	LOCK_USED_READ,
-	LOCK_USAGE_STATES,
-};
-
-/* states after LOCK_USED_READ are not traced and printed */
-static_assert(LOCK_TRACE_STATES == LOCK_USAGE_STATES);
-
-#define LOCK_USAGE_READ_MASK 1
-#define LOCK_USAGE_DIR_MASK  2
-#define LOCK_USAGE_STATE_MASK (~(LOCK_USAGE_READ_MASK | LOCK_USAGE_DIR_MASK))
-
-/*
- * Usage-state bitmasks:
- */
-#define __LOCKF(__STATE)	LOCKF_##__STATE = (1 << LOCK_##__STATE),
-
-enum {
-#define LOCKDEP_STATE(__STATE)						\
-	__LOCKF(USED_IN_##__STATE)					\
-	__LOCKF(USED_IN_##__STATE##_READ)				\
-	__LOCKF(ENABLED_##__STATE)					\
-	__LOCKF(ENABLED_##__STATE##_READ)
-#include "lockdep_states.h"
-#undef LOCKDEP_STATE
-	__LOCKF(USED)
-	__LOCKF(USED_READ)
-};
-
-#define LOCKDEP_STATE(__STATE)	LOCKF_ENABLED_##__STATE |
-static const unsigned long LOCKF_ENABLED_IRQ =
-#include "lockdep_states.h"
-	0;
-#undef LOCKDEP_STATE
-
-#define LOCKDEP_STATE(__STATE)	LOCKF_USED_IN_##__STATE |
-static const unsigned long LOCKF_USED_IN_IRQ =
-#include "lockdep_states.h"
-	0;
-#undef LOCKDEP_STATE
-
-#define LOCKDEP_STATE(__STATE)	LOCKF_ENABLED_##__STATE##_READ |
-static const unsigned long LOCKF_ENABLED_IRQ_READ =
-#include "lockdep_states.h"
-	0;
-#undef LOCKDEP_STATE
-
-#define LOCKDEP_STATE(__STATE)	LOCKF_USED_IN_##__STATE##_READ |
-static const unsigned long LOCKF_USED_IN_IRQ_READ =
-#include "lockdep_states.h"
-	0;
-#undef LOCKDEP_STATE
-
-#define LOCKF_ENABLED_IRQ_ALL (LOCKF_ENABLED_IRQ | LOCKF_ENABLED_IRQ_READ)
-#define LOCKF_USED_IN_IRQ_ALL (LOCKF_USED_IN_IRQ | LOCKF_USED_IN_IRQ_READ)
-
-#define LOCKF_IRQ (LOCKF_ENABLED_IRQ | LOCKF_USED_IN_IRQ)
-#define LOCKF_IRQ_READ (LOCKF_ENABLED_IRQ_READ | LOCKF_USED_IN_IRQ_READ)
-
-/*
- * CONFIG_LOCKDEP_SMALL is defined for sparc. Sparc requires .text,
- * .data and .bss to fit in required 32MB limit for the kernel. With
- * CONFIG_LOCKDEP we could go over this limit and cause system boot-up problems.
- * So, reduce the static allocations for lockdeps related structures so that
- * everything fits in current required size limit.
- */
-#ifdef CONFIG_LOCKDEP_SMALL
-/*
- * MAX_LOCKDEP_ENTRIES is the maximum number of lock dependencies
- * we track.
- *
- * We use the per-lock dependency maps in two ways: we grow it by adding
- * every to-be-taken lock to all currently held lock's own dependency
- * table (if it's not there yet), and we check it for lock order
- * conflicts and deadlocks.
- */
-#define MAX_LOCKDEP_ENTRIES	16384UL
-#define MAX_LOCKDEP_CHAINS_BITS	15
-#define MAX_STACK_TRACE_ENTRIES	262144UL
-#define STACK_TRACE_HASH_SIZE	8192
-#else
-#define MAX_LOCKDEP_ENTRIES	(1UL << CONFIG_LOCKDEP_BITS)
-
-#define MAX_LOCKDEP_CHAINS_BITS	CONFIG_LOCKDEP_CHAINS_BITS
-
-/*
- * Stack-trace: tightly packed array of stack backtrace
- * addresses. Protected by the hash_lock.
- */
-#define MAX_STACK_TRACE_ENTRIES	(1UL << CONFIG_LOCKDEP_STACK_TRACE_BITS)
-#define STACK_TRACE_HASH_SIZE	(1 << CONFIG_LOCKDEP_STACK_TRACE_HASH_BITS)
-#endif
-
-/*
- * Bit definitions for lock_chain.irq_context
- */
-#define LOCK_CHAIN_SOFTIRQ_CONTEXT	(1 << 0)
-#define LOCK_CHAIN_HARDIRQ_CONTEXT	(1 << 1)
-
-#define MAX_LOCKDEP_CHAINS	(1UL << MAX_LOCKDEP_CHAINS_BITS)
-
-#define MAX_LOCKDEP_CHAIN_HLOCKS (MAX_LOCKDEP_CHAINS*5)
-
-extern struct lock_chain lock_chains[];
-
-#define LOCK_USAGE_CHARS (2*XXX_LOCK_USAGE_STATES + 1)
-
-extern void get_usage_chars(struct lock_class *class,
-			    char usage[LOCK_USAGE_CHARS]);
-
-extern const char *__get_key_name(const struct lockdep_subclass_key *key,
-				  char *str);
-
-struct lock_class *lock_chain_get_class(struct lock_chain *chain, int i);
-
-extern unsigned long nr_lock_classes;
-extern unsigned long nr_zapped_classes;
-extern unsigned long nr_zapped_lock_chains;
-extern unsigned long nr_list_entries;
-long lockdep_next_lockchain(long i);
-unsigned long lock_chain_count(void);
-extern unsigned long nr_stack_trace_entries;
-
-extern unsigned int nr_hardirq_chains;
-extern unsigned int nr_softirq_chains;
-extern unsigned int nr_process_chains;
-extern unsigned int nr_free_chain_hlocks;
-extern unsigned int nr_lost_chain_hlocks;
-extern unsigned int nr_large_chain_blocks;
-
-extern unsigned int max_lockdep_depth;
-extern unsigned int max_bfs_queue_depth;
-extern unsigned long max_lock_class_idx;
-
-extern struct lock_class lock_classes[MAX_LOCKDEP_KEYS];
-extern unsigned long lock_classes_in_use[];
-
-#ifdef CONFIG_PROVE_LOCKING
-extern unsigned long lockdep_count_forward_deps(struct lock_class *);
-extern unsigned long lockdep_count_backward_deps(struct lock_class *);
-#ifdef CONFIG_TRACE_IRQFLAGS
-u64 lockdep_stack_trace_count(void);
-u64 lockdep_stack_hash_count(void);
-#endif
-#else
-static inline unsigned long
-lockdep_count_forward_deps(struct lock_class *class)
-{
-	return 0;
-}
-static inline unsigned long
-lockdep_count_backward_deps(struct lock_class *class)
-{
-	return 0;
-}
-#endif
-
-#ifdef CONFIG_DEBUG_LOCKDEP
-
-#include <asm/local.h>
-/*
- * Various lockdep statistics.
- * We want them per cpu as they are often accessed in fast path
- * and we want to avoid too much cache bouncing.
- */
-struct lockdep_stats {
-	unsigned long  chain_lookup_hits;
-	unsigned int   chain_lookup_misses;
-	unsigned long  hardirqs_on_events;
-	unsigned long  hardirqs_off_events;
-	unsigned long  redundant_hardirqs_on;
-	unsigned long  redundant_hardirqs_off;
-	unsigned long  softirqs_on_events;
-	unsigned long  softirqs_off_events;
-	unsigned long  redundant_softirqs_on;
-	unsigned long  redundant_softirqs_off;
-	int            nr_unused_locks;
-	unsigned int   nr_redundant_checks;
-	unsigned int   nr_redundant;
-	unsigned int   nr_cyclic_checks;
-	unsigned int   nr_find_usage_forwards_checks;
-	unsigned int   nr_find_usage_backwards_checks;
-
-	/*
-	 * Per lock class locking operation stat counts
-	 */
-	unsigned long lock_class_ops[MAX_LOCKDEP_KEYS];
-};
-
-DECLARE_PER_CPU(struct lockdep_stats, lockdep_stats);
-
-#define __debug_atomic_inc(ptr)					\
-	this_cpu_inc(lockdep_stats.ptr);
-
-#define debug_atomic_inc(ptr)			{		\
-	WARN_ON_ONCE(!irqs_disabled());				\
-	__this_cpu_inc(lockdep_stats.ptr);			\
-}
-
-#define debug_atomic_dec(ptr)			{		\
-	WARN_ON_ONCE(!irqs_disabled());				\
-	__this_cpu_dec(lockdep_stats.ptr);			\
-}
-
-#define debug_atomic_read(ptr)		({				\
-	struct lockdep_stats *__cpu_lockdep_stats;			\
-	unsigned long long __total = 0;					\
-	int __cpu;							\
-	for_each_possible_cpu(__cpu) {					\
-		__cpu_lockdep_stats = &per_cpu(lockdep_stats, __cpu);	\
-		__total += __cpu_lockdep_stats->ptr;			\
-	}								\
-	__total;							\
-})
-
-static inline void debug_class_ops_inc(struct lock_class *class)
-{
-	int idx;
-
-	idx = class - lock_classes;
-	__debug_atomic_inc(lock_class_ops[idx]);
-}
-
-static in
+dcard include/config/RCU_FANOUT_LEAF) \
+  include/linux/page-flags-layout.h \
+    $(wildcard include/config/KASAN_HW_TAGS) \
+  include/linux/numa.h \
+    $(wildcard include/config/NODES_SHIFT) \
+    $(wildcard include/config/NUMA_KEEP_MEMINFO) \
+    $(wildcard include/config/HAVE_ARCH_NODE_DEV_GROUP) \
+  arch/x86/include/asm/sparsemem.h \
+  include/generated/bounds.h \
+  include/linux/seqlock.h \
+  include/linux/ww_mutex.h \
+    $(wildcard include/config/DEBUG_RT_MUTEXES) \
+    $(wildcard include/config/DEBUG_WW_MUTEX_SLOWPATH) \
+  include/linux/rtmutex.h \
+  arch/x86/include/asm/mmu.h \
+    $(wildcard include/config/MODIFY_LDT_SYSCALL) \
+  include/linux/kmod.h \
+  include/linux/umh.h \
+  include/linux/gfp.h \
+    $(wildcard include/config/HIGHMEM) \
+    $(wildcard include/config/ZONE_DMA) \
+    $(wildcard include/config/ZONE_DMA32) \
+    $(wildcard include/config/ZONE_DEVICE) \
+    $(wildcard include/config/PM_SLEEP) \
+    $(wildcard include/config/CONTIG_ALLOC) \
+    $(wildcard include/config/CMA) \
+  include/linux/mmdebug.h \
+    $(wildcard include/config/DEBUG_VM) \
+    $(wildcard include/config/DEBUG_VM_PGFLAGS) \
+  include/linux/mmzone.h \
+    $(wildcard include/config/FORCE_MAX_ZONEORDER) \
+    $(wildcard include/config/MEMORY_ISOLATION) \
+    $(wildcard include/config/ZSMALLOC) \
+    $(wildcard include/config/MEMORY_HOTPLUG) \
+    $(wildcard include/config/COMPACTION) \
+    $(wildcard include/config/PAGE_EXTENSION) \
+    $(wildcard include/config/DEFERRED_STRUCT_PAGE_INIT) \
+    $(wildcard include/config/HAVE_MEMORYLESS_NODES) \
+    $(wildcard include/config/SPARSEMEM_EXTREME) \
+    $(wildcard include/config/HAVE_ARCH_PFN_VALID) \
+  include/linux/nodemask.h \
+  include/linux/pageblock-flags.h \
+    $(wildcard include/config/HUGETLB_PAGE_SIZE_VARIABLE) \
+  include/linux/page-flags.h \
+    $(wildcard include/config/ARCH_USES_PG_UNCACHED) \
+    $(wildcard include/config/MEMORY_FAILURE) \
+    $(wildcard include/config/PAGE_IDLE_FLAG) \
+    $(wildcard include/config/HUGETLB_PAGE_FREE_VMEMMAP) \
+    $(wildcard include/config/HUGETLB_PAGE_FREE_VMEMMAP_DEFAULT_ON) \
+    $(wildcard include/config/KSM) \
+  include/linux/local_lock.h \
+  include/linux/local_lock_internal.h \
+  include/linux/memory_hotplug.h \
+    $(wildcard include/config/HAVE_ARCH_NODEDATA_EXTENSION) \
+    $(wildcard include/config/ARCH_HAS_ADD_PAGES) \
+    $(wildcard include/config/MEMORY_HOTREMOVE) \
+  arch/x86/include/asm/mmzone.h \
+  arch/x86/include/asm/mmzone_32.h \
+  include/linux/topology.h \
+    $(wildcard include/config/USE_PERCPU_NUMA_NODE_ID) \
+    $(wildcard include/config/SCHED_SMT) \
+    $(wildcard include/config/SCHED_CLUSTER) \
+  include/linux/arch_topology.h \
+    $(wildcard include/config/ACPI_CPPC_LIB) \
+    $(wildcard include/config/GENERIC_ARCH_TOPOLOGY) \
+  include/linux/percpu.h \
+    $(wildcard include/config/NEED_PER_CPU_EMBED_FIRST_CHUNK) \
+    $(wildcard include/config/NEED_PER_CPU_PAGE_FIRST_CHUNK) \
+  arch/x86/include/asm/topology.h \
+    $(wildcard include/config/SCHED_MC_PRIO) \
+  arch/x86/include/asm/mpspec.h \
+    $(wildcard include/config/EISA) \
+    $(wildcard include/config/X86_MPPARSE) \
+  arch/x86/include/asm/mpspec_def.h \
+  arch/x86/include/asm/x86_init.h \
+  arch/x86/include/asm/apicdef.h \
+  include/asm-generic/topology.h \
+  include/linux/sysctl.h \
+    $(wildcard include/config/SYSCTL) \
+  include/uapi/linux/sysctl.h \
+  include/linux/elf.h \
+    $(wildcard include/config/ARCH_USE_GNU_PROPERTY) \
+    $(wildcard include/config/ARCH_HAVE_ELF_PROT) \
+  arch/x86/include/asm/elf.h \
+    $(wildcard include/config/X86_X32_ABI) \
+  arch/x86/include/asm/user.h \
+  arch/x86/include/asm/user_32.h \
+  arch/x86/include/asm/fsgsbase.h \
+  arch/x86/include/asm/vdso.h \
+  arch/x86/include/asm/desc.h \
+  arch/x86/include/asm/fixmap.h \
+    $(wildcard include/config/DEBUG_KMAP_LOCAL_FORCE_MAP) \
+    $(wildcard include/config/X86_VSYSCALL_EMULATION) \
+    $(wildcard include/config/PROVIDE_OHCI1394_DMA_INIT) \
+    $(wildcard include/config/X86_IO_APIC) \
+    $(wildcard include/config/KMAP_LOCAL) \
+    $(wildcard include/config/PCI_MMCONFIG) \
+    $(wildcard include/config/ACPI_APEI_GHES) \
+    $(wildcard include/config/INTEL_TXT) \
+  arch/x86/include/generated/asm/kmap_size.h \
+  include/asm-generic/kmap_size.h \
+    $(wildcard include/config/DEBUG_KMAP_LOCAL) \
+  include/asm-generic/fixmap.h \
+  arch/x86/include/asm/irq_vectors.h \
+    $(wildcard include/config/HAVE_KVM) \
+    $(wildcard include/config/HYPERV) \
+    $(wildcard include/config/PCI_MSI) \
+  arch/x86/include/asm/cpu_entry_area.h \
+  arch/x86/include/asm/intel_ds.h \
+  arch/x86/include/asm/pgtable_areas.h \
+  arch/x86/include/asm/pgtable_32_areas.h \
+  include/uapi/linux/elf.h \
+  include/uapi/linux/elf-em.h \
+  include/linux/kobject.h \
+    $(wildcard include/config/UEVENT_HELPER) \
+    $(wildcard include/config/DEBUG_KOBJECT_RELEASE) \
+  include/linux/sysfs.h \
+  include/linux/kernfs.h \
+    $(wildcard include/config/KERNFS) \
+  include/linux/idr.h \
+  include/linux/radix-tree.h \
+  include/linux/xarray.h \
+    $(wildcard include/config/XARRAY_MULTI) \
+  include/linux/kconfig.h \
+  include/linux/kobject_ns.h \
+  include/linux/moduleparam.h \
+    $(wildcard include/config/ALPHA) \
+    $(wildcard include/config/IA64) \
+    $(wildcard include/config/PPC64) \
+  include/linux/rbtree_latch.h \
+  include/linux/error-injection.h \
+  include/asm-generic/error-injection.h \
+  include/linux/cfi.h \
+    $(wildcard include/config/CFI_CLANG_SHADOW) \
+  arch/x86/include/asm/module.h \
+    $(wildcard include/config/UNWINDER_ORC) \
+  include/asm-generic/module.h \
+    $(wildcard include/config/HAVE_MOD_ARCH_SPECIFIC) \
+    $(wildcard include/config/MODULES_USE_ELF_REL) \
+    $(wildcard include/config/MODULES_USE_ELF_RELA) \
+  arch/x86/include/asm/orc_types.h \
+  include/linux/build-salt.h \
+    $(wildcard include/config/BUILD_SALT) \
+  include/linux/elfnote.h \
+  include/linux/elfnote-lto.h \
+    $(wildcard include/config/LTO) \
+  include/linux/vermagic.h \
+    $(wildcard include/config/PREEMPT_BUILD) \
+  include/generated/utsrelease.h \
+  arch/x86/include/asm/vermagic.h \
+    $(wildcard include/config/M486SX) \
+    $(wildcard include/config/M486) \
+    $(wildcard include/config/M586) \
+    $(wildcard include/config/M586TSC) \
+    $(wildcard include/config/M586MMX) \
+    $(wildcard include/config/MCORE2) \
+    $(wildcard include/config/M686) \
+    $(wildcard include/config/MPENTIUMII) \
+    $(wildcard include/config/MPENTIUMIII) \
+    $(wildcard include/config/MPENTIUMM) \
+    $(wildcard include/config/MPENTIUM4) \
+    $(wildcard include/config/MK6) \
+    $(wildcard include/config/MK7) \
+    $(wildcard include/config/MK8) \
+    $(wildcard include/config/MELAN) \
+    $(wildcard include/config/MCRUSOE) \
+    $(wildcard include/config/MEFFICEON) \
+    $(wildcard include/config/MWINCHIPC6) \
+    $(wildcard include/config/MWINCHIP3D) \
+    $(wildcard include/config/MCYRIXIII) \
+    $(

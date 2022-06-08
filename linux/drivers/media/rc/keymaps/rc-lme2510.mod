@@ -1,2 +1,1 @@
-drivers/media/rc/keymaps/rc-lme2510.o
-
+// SPDX-License-Identifier: GPL-2.0-or-

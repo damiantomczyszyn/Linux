@@ -1,2 +1,2 @@
-e/linux/rwlock.h \
-    $(w
+\
+  include/uapi/asm-gener

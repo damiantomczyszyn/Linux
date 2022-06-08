@@ -1,2 +1,1 @@
-UMA) \
-    $(wildcard include
+dev->board == CX23885_BOARD_H

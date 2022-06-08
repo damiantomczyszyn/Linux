@@ -1,3 +1,2 @@
-.h \
-  include/linux/percpu-refcount.h \
-  include/linux
+nnel *audio_ch =
+		&dev->sram_channels[AUDIO_SRAM_CHANNE

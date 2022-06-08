@@ -1,4 +1,1 @@
-ude/config/PARAVIRT_XXL) \
-  arch/x86/include/asm/disabled-features.h \
-    $(wildcard include/config/X86_SMAP) \
-    $(wildcard include/confi
+cmd_drivers/net/ethernet/8390/ne2k-pci.mod := { echo  drivers/net/ethernet/8390/ne2k-pci.o;  echo; } > drivers/net/ethernet/8390/ne2k-pci.mod

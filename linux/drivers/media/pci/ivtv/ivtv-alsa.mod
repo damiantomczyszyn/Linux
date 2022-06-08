@@ -1,3 +1,3 @@
-CPI_APEI_GHES) \
-    $(wildcard include/config/INTEL_TXT) \
-  arch/x86/include/g
+rch-fallback.h \
+    $(wildcard include/config/GENERIC_ATOMIC64) \
+  include/lin

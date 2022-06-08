@@ -1,4 +1,4 @@
-e/linux/gfp.h \
-    $(wildcard include/config/KASAN_HW_TAGS) \
-    $(wildcard include/config/HIGHMEM) \
-    $(wildcard include/conf
+# SPDX-License-Identifier: GPL-2.0-only
+
+obj-$(CONFIG_CAN_MPC5XXX)	+= mscan-mpc5xxx.o
+mscan-mpc5xxx-objs		:= mscan.o mpc5xxx_can.o

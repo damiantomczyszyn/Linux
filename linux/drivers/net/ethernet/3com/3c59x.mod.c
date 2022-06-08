@@ -1,62 +1,70 @@
-.h \
-  include/linux/percpu-refcount.h \
-  include/linux/kasan.h \
-    $(wildcard include/config/KASAN_STACK) \
-    $(wildcard include/config/KASAN_VMALLOC) \
-    $(wildcard include/config/KASAN_INLINE) \
-  include/linux/kasan-enabled.h \
-  include/linux/device.h \
-    $(wildcard include/config/GENERIC_MSI_IRQ_DOMAIN) \
-    $(wildcard include/config/GENERIC_MSI_IRQ) \
-    $(wildcard include/config/ENERGY_MODEL) \
-    $(wildcard include/config/PINCTRL) \
-    $(wildcard include/config/DMA_OPS) \
-    $(wildcard include/config/DMA_DECLARE_COHERENT) \
-    $(wildcard include/config/DMA_CMA) \
-    $(wildcard include/config/SWIOTLB) \
-    $(wildcard include/config/ARCH_HAS_SYNC_DMA_FOR_DEVICE) \
-    $(wildcard include/config/ARCH_HAS_SYNC_DMA_FOR_CPU) \
-    $(wildcard include/config/ARCH_HAS_SYNC_DMA_FOR_CPU_ALL) \
-    $(wildcard include/config/DMA_OPS_BYPASS) \
-    $(wildcard include/config/DEVTMPFS) \
-    $(wildcard include/config/SYSFS_DEPRECATED) \
-  include/linux/dev_printk.h \
-  include/linux/ratelimit.h \
-  include/linux/sched.h \
-    $(wildcard include/config/VIRT_CPU_ACCOUNTING_NATIVE) \
-    $(wildcard include/config/SCHED_INFO) \
-    $(wildcard include/config/SCHEDSTATS) \
-    $(wildcard include/config/SCHED_CORE) \
-    $(wildcard include/config/FAIR_GROUP_SCHED) \
-    $(wildcard include/config/RT_GROUP_SCHED) \
-    $(wildcard include/config/RT_MUTEXES) \
-    $(wildcard include/config/UCLAMP_TASK) \
-    $(wildcard include/config/UCLAMP_BUCKETS_COUNT) \
-    $(wildcard include/config/CGROUP_SCHED) \
-    $(wildcard include/config/BLK_DEV_IO_TRACE) \
-    $(wildcard include/config/PSI) \
-    $(wildcard include/config/COMPAT_BRK) \
-    $(wildcard include/config/CGROUPS) \
-    $(wildcard include/config/BLK_CGROUP) \
-    $(wildcard include/config/PAGE_OWNER) \
-    $(wildcard include/config/EVENTFD) \
-    $(wildcard include/config/ARCH_HAS_SCALED_CPUTIME) \
-    $(wildcard include/config/VIRT_CPU_ACCOUNTING_GEN) \
-    $(wildcard include/config/POSIX_CPUTIMERS) \
-    $(wildcard include/config/POSIX_CPU_TIMERS_TASK_WORK) \
-    $(wildcard include/config/KEYS) \
-    $(wildcard include/config/SYSVIPC) \
-    $(wildcard include/config/DETECT_HUNG_TASK) \
-    $(wildcard include/config/IO_URING) \
-    $(wildcard include/config/AUDIT) \
-    $(wildcard include/config/AUDITSYSCALL) \
-    $(wildcard include/config/UBSAN) \
-    $(wildcard include/config/UBSAN_TRAP) \
-    $(wildcard include/config/TASK_XACCT) \
-    $(wildcard include/config/CPUSETS) \
-    $(wildcard include/config/X86_CPU_RESCTRL) \
-    $(wildcard include/config/FUTEX) \
-    $(wildcard include/config/PERF_EVENTS) \
-    $(wildcard include/config/RSEQ) \
-    $(wildcard include/config/TASK_DELAY_ACCT) \
-    $(wildcard include/c
+#include <linux/module.h>
+#define INCLUDE_VERMAGIC
+#include <linux/build-salt.h>
+#include <linux/elfnote-lto.h>
+#include <linux/vermagic.h>
+#include <linux/compiler.h>
+
+BUILD_SALT;
+BUILD_LTO_INFO;
+
+MODULE_INFO(vermagic, VERMAGIC_STRING);
+MODULE_INFO(name, KBUILD_MODNAME);
+
+__visible struct module __this_module
+__section(".gnu.linkonce.this_module") = {
+	.name = KBUILD_MODNAME,
+	.init = init_module,
+#ifdef CONFIG_MODULE_UNLOAD
+	.exit = cleanup_module,
+#endif
+	.arch = MODULE_ARCH_INIT,
+};
+
+MODULE_INFO(intree, "Y");
+
+#ifdef CONFIG_RETPOLINE
+MODULE_INFO(retpoline, "Y");
+#endif
+
+MODULE_INFO(depends, "mii");
+
+MODULE_ALIAS("pci:v000010B7d00005900sv*sd*bc*sc*i*");
+MODULE_ALIAS("pci:v000010B7d00005920sv*sd*bc*sc*i*");
+MODULE_ALIAS("pci:v000010B7d00005970sv*sd*bc*sc*i*");
+MODULE_ALIAS("pci:v000010B7d00005950sv*sd*bc*sc*i*");
+MODULE_ALIAS("pci:v000010B7d00005951sv*sd*bc*sc*i*");
+MODULE_ALIAS("pci:v000010B7d00005952sv*sd*bc*sc*i*");
+MODULE_ALIAS("pci:v000010B7d00009000sv*sd*bc*sc*i*");
+MODULE_ALIAS("pci:v000010B7d00009001sv*sd*bc*sc*i*");
+MODULE_ALIAS("pci:v000010B7d00009004sv*sd*bc*sc*i*");
+MODULE_ALIAS("pci:v000010B7d00009005sv*sd*bc*sc*i*");
+MODULE_ALIAS("pci:v000010B7d00009006sv*sd*bc*sc*i*");
+MODULE_ALIAS("pci:v000010B7d0000900Asv*sd*bc*sc*i*");
+MODULE_ALIAS("pci:v000010B7d00009050sv*sd*bc*sc*i*");
+MODULE_ALIAS("pci:v000010B7d00009051sv*sd*bc*sc*i*");
+MODULE_ALIAS("pci:v000010B7d00009054sv*sd*bc*sc*i*");
+MODULE_ALIAS("pci:v000010B7d00009055sv*sd*bc*sc*i*");
+MODULE_ALIAS("pci:v000010B7d00009058sv*sd*bc*sc*i*");
+MODULE_ALIAS("pci:v000010B7d0000905Asv*sd*bc*sc*i*");
+MODULE_ALIAS("pci:v000010B7d00009200sv*sd*bc*sc*i*");
+MODULE_ALIAS("pci:v000010B7d00009202sv*sd*bc*sc*i*");
+MODULE_ALIAS("pci:v000010B7d00009800sv*sd*bc*sc*i*");
+MODULE_ALIAS("pci:v000010B7d00009805sv*sd*bc*sc*i*");
+MODULE_ALIAS("pci:v000010B7d00007646sv*sd*bc*sc*i*");
+MODULE_ALIAS("pci:v000010B7d00005055sv*sd*bc*sc*i*");
+MODULE_ALIAS("pci:v000010B7d00006055sv*sd*bc*sc*i*");
+MODULE_ALIAS("pci:v000010B7d00006056sv*sd*bc*sc*i*");
+MODULE_ALIAS("pci:v000010B7d00005B57sv*sd*bc*sc*i*");
+MODULE_ALIAS("pci:v000010B7d00005057sv*sd*bc*sc*i*");
+MODULE_ALIAS("pci:v000010B7d00005157sv*sd*bc*sc*i*");
+MODULE_ALIAS("pci:v000010B7d00005257sv*sd*bc*sc*i*");
+MODULE_ALIAS("pci:v000010B7d00006560sv*sd*bc*sc*i*");
+MODULE_ALIAS("pci:v000010B7d00006562sv*sd*bc*sc*i*");
+MODULE_ALIAS("pci:v000010B7d00006564sv*sd*bc*sc*i*");
+MODULE_ALIAS("pci:v000010B7d00004500sv*sd*bc*sc*i*");
+MODULE_ALIAS("pci:v000010B7d00009201sv*sd*bc*sc*i*");
+MODULE_ALIAS("pci:v000010B7d00001201sv*sd*bc*sc*i*");
+MODULE_ALIAS("pci:v000010B7d00001202sv*sd*bc*sc*i*");
+MODULE_ALIAS("pci:v000010B7d00009056sv*sd*bc*sc*i*");
+MODULE_ALIAS("pci:v000010B7d00009210sv*sd*bc*sc*i*");

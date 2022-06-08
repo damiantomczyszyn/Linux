@@ -1,1 +1,7 @@
-Æ{’ÜŒhÀ¬+Kö1Fû¹†³S¥u<’5‰­â¿[ÿï1ZUï#ÿ±Å?"5‰aÕJÏ·	pøıq•Æd	faƒñ?ø°7”\á´VNùyĞèZŞ;
+t("%s\n", __func__);
+
+	if (0 != slot)
+		return -EINVAL;
+
+	mutex_lock(&inter->fpga_mutex);
+

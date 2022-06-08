@@ -1,2 +1,2 @@
-$(wildcard include/config/TRACE_BRANCH_PROFILING) \
-    $(wildcard
+.duty_cycle = 25,      /* 25 %   - RC-5 carrier */
+	.invert_level 

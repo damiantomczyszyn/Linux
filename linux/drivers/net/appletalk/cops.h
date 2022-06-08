@@ -1,1 +1,61 @@
-cmd_drivers/media/i2c/vs6624.o := gcc -Wp,-MMD,drivers/media/i2c/.vs6624.o.d -nostdinc -I./arch/x86/include -I./arch/x86/include/generated  -I./include -I./arch/x86/include/uapi -I./arch/x86/include/generated/uapi -I./include/uapi -I./include/generated/uapi -include ./include/linux/compiler-version.h -include ./include/linux/kconfig.h -include ./include/linux/compiler_types.h -D__KERNEL__ -fmacro-prefix-map=./= -Wall -Wundef -Werror=strict-prototypes -Wno-trigraphs -fno-strict-aliasing -fno-common -fshort-wchar -fno-PIE -Werror=implicit-function-declaration -Werror=implicit-int -Werror=return-type -Wno-format-security -std=gnu11 -mno-sse -mno-mmx -mno-sse2 -mno-3dnow -mno-avx -fcf-protection=none -m32 -msoft-float -mregparm=3 -freg-struct-return -fno-pic -mpreferred-stack-boundary=2 -march=i686 -mtune=pentium3 -mtune=generic -Wa,-mtune=generic32 -ffreestanding -mstack-protector-guard-reg=fs -mstack-protector-guard-symbol=__stack_chk_guard -Wno-sign-compare -fno-asynchronous-unwind-tables -mindirect-branch=thunk-extern -mindirect-branch-register -fno-jump-tables -fno-delete-null-pointer-checks -Wno-frame-address -Wno-format-truncation -Wno-format-overflow -Wno-address-of-packed-member -O2 -fno-allow-store-data-races -fstack-protector-strong -Wimplicit-fallthrough=5 -Wno-main -Wno-unused-but-set-variable -Wno-unused-const-variable -fno-stack-clash-protection -pg -mrecord-mcount -mfentry -DCC_USING_FENTRY -Wdeclaration
+/* SPDX-License-Identifier: GPL-2.0 */
+/*      cops.h: LocalTalk driver for Linux.
+ *
+ *      Authors:
+ *      - Jay Schulist <jschlst@samba.org>
+ */
+
+#ifndef __LINUX_COPSLTALK_H
+#define __LINUX_COPSLTALK_H
+
+#ifdef __KERNEL__
+
+/* Max LLAP size we will accept. */
+#define MAX_LLAP_SIZE		603
+
+/* Tangent */
+#define TANG_CARD_STATUS        1
+#define TANG_CLEAR_INT          1
+#define TANG_RESET              3
+
+#define TANG_TX_READY           1
+#define TANG_RX_READY           2
+
+/* Dayna */
+#define DAYNA_CMD_DATA          0
+#define DAYNA_CLEAR_INT         1
+#define DAYNA_CARD_STATUS       2
+#define DAYNA_INT_CARD          3
+#define DAYNA_RESET             4
+
+#define DAYNA_RX_READY          0
+#define DAYNA_TX_READY          1
+#define DAYNA_RX_REQUEST        3
+
+/* Same on both card types */
+#define COPS_CLEAR_INT  1
+
+/* LAP response codes received from the cards. */
+#define LAP_INIT        1       /* Init cmd */
+#define LAP_INIT_RSP    2       /* Init response */
+#define LAP_WRITE       3       /* Write cmd */
+#define DATA_READ       4       /* Data read */
+#define LAP_RESPONSE    4       /* Received ALAP frame response */
+#define LAP_GETSTAT     5       /* Get LAP and HW status */
+#define LAP_RSPSTAT     6       /* Status response */
+
+#endif
+
+/*
+ *	Structure to hold the firmware information.
+ */
+struct ltfirmware
+{
+        unsigned int length;
+        const unsigned char *data;
+};
+
+#define DAYNA 1
+#define TANGENT 2
+
+#endif

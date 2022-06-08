@@ -1,94 +1,143 @@
-dcard include/config/PARAVIRT_XXL) \
-  arch/x86/include/asm/disabled-features.h \
-    $(wildcard include/config/X86_SMAP) \
-    $(wildcard include/config/X86_UMIP) \
-    $(wildcard include/config/X86_INTEL_MEMORY_PROTECTION_KEYS) \
-    $(wildcard include/config/X86_5LEVEL) \
-    $(wildcard include/config/PAGE_TABLE_ISOLATION) \
-    $(wildcard include/config/INTEL_IOMMU_SVM) \
-    $(wildcard include/config/X86_SGX) \
-  include/asm-generic/bitops/const_hweight.h \
-  include/asm-generic/bitops/instrumented-atomic.h \
-  include/linux/instrumented.h \
-  include/asm-generic/bitops/instrumented-non-atomic.h \
-    $(wildcard include/config/KCSAN_ASSUME_PLAIN_WRITES_ATOMIC) \
-  include/asm-generic/bitops/instrumented-lock.h \
-  include/asm-generic/bitops/le.h \
-  arch/x86/include/uapi/asm/byteorder.h \
-  include/linux/byteorder/little_endian.h \
-  include/uapi/linux/byteorder/little_endian.h \
-  include/linux/swab.h \
-  include/uapi/linux/swab.h \
-  arch/x86/include/uapi/asm/swab.h \
-  include/linux/byteorder/generic.h \
-  include/asm-generic/bitops/ext2-atomic-setbit.h \
-  include/vdso/math64.h \
-  include/linux/time64.h \
-  include/vdso/time64.h \
-  include/uapi/linux/time.h \
-  include/uapi/linux/time_types.h \
-  include/linux/time32.h \
-  include/linux/timex.h \
-  include/uapi/linux/timex.h \
-  include/uapi/linux/param.h \
-  arch/x86/include/generated/uapi/asm/param.h \
-  include/asm-generic/param.h \
-    $(wildcard include/config/HZ) \
-  include/uapi/asm-generic/param.h \
-  arch/x86/include/asm/timex.h \
-    $(wildcard include/config/X86_TSC) \
-  arch/x86/include/asm/processor.h \
-    $(wildcard include/config/X86_VMX_FEATURE_NAMES) \
-    $(wildcard include/config/X86_IOPL_IOPERM) \
-    $(wildcard include/config/STACKPROTECTOR) \
-    $(wildcard include/config/VM86) \
-    $(wildcard include/config/X86_DEBUGCTLMSR) \
-    $(wildcard include/config/CPU_SUP_AMD) \
-    $(wildcard include/config/XEN) \
-  arch/x86/include/asm/processor-flags.h \
-  arch/x86/include/uapi/asm/processor-flags.h \
-  include/linux/mem_encrypt.h \
-    $(wildcard include/config/ARCH_HAS_MEM_ENCRYPT) \
-    $(wildcard include/config/AMD_MEM_ENCRYPT) \
-  arch/x86/include/asm/mem_encrypt.h \
-  include/linux/init.h \
-    $(wildcard include/config/STRICT_KERNEL_RWX) \
-    $(wildcard include/config/STRICT_MODULE_RWX) \
-    $(wildcard include/config/LTO_CLANG) \
-  include/linux/cc_platform.h \
-    $(wildcard include/config/ARCH_HAS_CC_PLATFORM) \
-  arch/x86/include/uapi/asm/bootparam.h \
-  include/linux/screen_info.h \
-  include/uapi/linux/screen_info.h \
-  include/linux/apm_bios.h \
-  include/uapi/linux/apm_bios.h \
-  include/uapi/linux/ioctl.h \
-  arch/x86/include/generated/uapi/asm/ioctl.h \
-  include/asm-generic/ioctl.h \
-  include/uapi/asm-generic/ioctl.h \
-  include/linux/edd.h \
-  include/uapi/linux/edd.h \
-  arch/x86/include/asm/ist.h \
-  arch/x86/include/uapi/asm/ist.h \
-  include/video/edid.h \
-    $(wildcard include/config/X86) \
-  include/uapi/video/edid.h \
-  arch/x86/include/asm/math_emu.h \
-  arch/x86/include/asm/ptrace.h \
-    $(wildcard include/config/PARAVIRT) \
-    $(wildcard include/config/IA32_EMULATION) \
-  arch/x86/include/asm/segment.h \
-    $(wildcard include/config/XEN_PV) \
-  arch/x86/include/asm/page_types.h \
-    $(wildcard include/config/PHYSICAL_START) \
-    $(wildcard include/config/PHYSICAL_ALIGN) \
-    $(wildcard include/config/DYNAMIC_PHYSICAL_MASK) \
-  arch/x86/include/asm/page_32_types.h \
-    $(wildcard include/config/HIGHMEM4G) \
-    $(wildcard include/config/HIGHMEM64G) \
-    $(wildcard include/config/PAGE_OFFSET) \
-  arch/x86/include/uapi/asm/ptrace.h \
-  arch/x86/include/uapi/asm/ptrace-abi.h \
-  arch/x86/include/asm/paravirt_types.h \
-    $(wildcard include/config/PGTABLE_LEVELS) \
-    $(wildcard include/config/
+// SPDX-License-Identifier: GPL-2.0
+/* Copyright (c) 2018-2019, Vladimir Oltean <olteanv@gmail.com>
+ * Copyright 2020 NXP
+ */
+#include "sja1105.h"
+
+/* Since devlink regions have a fixed size and the static config has a variable
+ * size, we need to calculate the maximum possible static config size by
+ * creating a dummy config with all table entries populated to the max, and get
+ * its packed length. This is done dynamically as opposed to simply hardcoding
+ * a number, since currently not all static config tables are implemented, so
+ * we are avoiding a possible code desynchronization.
+ */
+static size_t sja1105_static_config_get_max_size(struct sja1105_private *priv)
+{
+	struct sja1105_static_config config;
+	enum sja1105_blk_idx blk_idx;
+	int rc;
+
+	rc = sja1105_static_config_init(&config,
+					priv->info->static_ops,
+					priv->info->device_id);
+	if (rc)
+		return 0;
+
+	for (blk_idx = 0; blk_idx < BLK_IDX_MAX; blk_idx++) {
+		struct sja1105_table *table = &config.tables[blk_idx];
+
+		table->entry_count = table->ops->max_entry_count;
+	}
+
+	return sja1105_static_config_get_length(&config);
+}
+
+static int
+sja1105_region_static_config_snapshot(struct devlink *dl,
+				      const struct devlink_region_ops *ops,
+				      struct netlink_ext_ack *extack,
+				      u8 **data)
+{
+	struct dsa_switch *ds = dsa_devlink_to_ds(dl);
+	struct sja1105_private *priv = ds->priv;
+	size_t max_len, len;
+
+	len = sja1105_static_config_get_length(&priv->static_config);
+	max_len = sja1105_static_config_get_max_size(priv);
+
+	*data = kcalloc(max_len, sizeof(u8), GFP_KERNEL);
+	if (!*data)
+		return -ENOMEM;
+
+	return static_config_buf_prepare_for_upload(priv, *data, len);
+}
+
+static struct devlink_region_ops sja1105_region_static_config_ops = {
+	.name = "static-config",
+	.snapshot = sja1105_region_static_config_snapshot,
+	.destructor = kfree,
+};
+
+enum sja1105_region_id {
+	SJA1105_REGION_STATIC_CONFIG = 0,
+};
+
+struct sja1105_region {
+	const struct devlink_region_ops *ops;
+	size_t (*get_size)(struct sja1105_private *priv);
+};
+
+static struct sja1105_region sja1105_regions[] = {
+	[SJA1105_REGION_STATIC_CONFIG] = {
+		.ops = &sja1105_region_static_config_ops,
+		.get_size = sja1105_static_config_get_max_size,
+	},
+};
+
+static int sja1105_setup_devlink_regions(struct dsa_switch *ds)
+{
+	int i, num_regions = ARRAY_SIZE(sja1105_regions);
+	struct sja1105_private *priv = ds->priv;
+	const struct devlink_region_ops *ops;
+	struct devlink_region *region;
+	u64 size;
+
+	priv->regions = kcalloc(num_regions, sizeof(struct devlink_region *),
+				GFP_KERNEL);
+	if (!priv->regions)
+		return -ENOMEM;
+
+	for (i = 0; i < num_regions; i++) {
+		size = sja1105_regions[i].get_size(priv);
+		ops = sja1105_regions[i].ops;
+
+		region = dsa_devlink_region_create(ds, ops, 1, size);
+		if (IS_ERR(region)) {
+			while (i-- >= 0)
+				dsa_devlink_region_destroy(priv->regions[i]);
+			return PTR_ERR(region);
+		}
+
+		priv->regions[i] = region;
+	}
+
+	return 0;
+}
+
+static void sja1105_teardown_devlink_regions(struct dsa_switch *ds)
+{
+	int i, num_regions = ARRAY_SIZE(sja1105_regions);
+	struct sja1105_private *priv = ds->priv;
+
+	for (i = 0; i < num_regions; i++)
+		dsa_devlink_region_destroy(priv->regions[i]);
+
+	kfree(priv->regions);
+}
+
+int sja1105_devlink_info_get(struct dsa_switch *ds,
+			     struct devlink_info_req *req,
+			     struct netlink_ext_ack *extack)
+{
+	struct sja1105_private *priv = ds->priv;
+	int rc;
+
+	rc = devlink_info_driver_name_put(req, "sja1105");
+	if (rc)
+		return rc;
+
+	rc = devlink_info_version_fixed_put(req,
+					    DEVLINK_INFO_VERSION_GENERIC_ASIC_ID,
+					    priv->info->name);
+	return rc;
+}
+
+int sja1105_devlink_setup(struct dsa_switch *ds)
+{
+	return sja1105_setup_devlink_regions(ds);
+}
+
+void sja1105_devlink_teardown(struct dsa_switch *ds)
+{
+	sja1105_teardown_devlink_regions(ds);
+}

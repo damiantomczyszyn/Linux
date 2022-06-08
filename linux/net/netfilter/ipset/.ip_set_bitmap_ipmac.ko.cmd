@@ -1,9 +1,7 @@
-// SPDX-License-Identifier: GPL-2.0+
-/*
- * Module-based torture test facility for locking
- *
- * Copyright (C) IBM Corporation, 2014
- *
- * Authors: Paul E. McKenney <paulmck@linux.ibm.com>
- *          Davidlohr Bueso <dave@stgolabs.net>
- *	Based on 
+er_of.h \
+  include/linux/build_bug.h \
+  include/linux/compiler.h \
+    $(wildcard include/config/TRACE_BRANCH_PROFILING) \
+    $(wildcard include/config/PROFILE_ALL_BRANCHES) \
+    $(wildcard include/config/STACK_VALIDATION) \
+  include/linux/com

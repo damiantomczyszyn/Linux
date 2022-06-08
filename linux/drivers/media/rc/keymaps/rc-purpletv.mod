@@ -1,2 +1,2 @@
-drivers/media/rc/keymaps/rc-purpletv.o
-
+        = LGDT3306A_TPCLK_RISING_EDGE,
+	

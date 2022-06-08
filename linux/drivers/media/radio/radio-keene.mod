@@ -1,2 +1,1 @@
-drivers/media/radio/radio-keene.o
-
+// SPDX-License-Identifier: GPL-2.0

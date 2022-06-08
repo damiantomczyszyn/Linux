@@ -1,1 +1,4 @@
-ŒIgj[jƒ>k­ªø1J³&'`\ínjáî¨7ƒy«•ïÔ[Ö¤Éÿ}±iÇ¬Os3—nOŠÔğÜÔãë!‘pÅŸ¨Õk¬t\m2”ÜîÉC@,¤œúL
+nt_modules();
+	if (irqs_disabled())
+		print_irqtrace_events(prev);
+	if (IS_ENABLED(CONFIG_D

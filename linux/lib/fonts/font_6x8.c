@@ -1,815 +1,1505 @@
-config/ARCH_WANTS_DYNAMIC_TASK_STRUCT) \
-    $(wildcard include/config/HAVE_ARCH_THREAD_STRUCT_WHITELIST) \
-  include/linux/cred.h \
-    $(wildcard include/config/DEBUG_CREDENTIALS) \
-  include/linux/key.h \
-    $(wildcard include/config/KEY_NOTIFICATIONS) \
-    $(wildcard include/config/NET) \
-  include/linux/assoc_array.h \
-    $(wildcard include/config/ASSOCIATIVE_ARRAY) \
-  include/linux/sched/user.h \
-    $(wildcard include/config/WATCH_QUEUE) \
-  include/linux/percpu_counter.h \
-  include/linux/rcu_sync.h \
-  include/linux/delayed_call.h \
-  include/linux/errseq.h \
-  include/linux/ioprio.h \
-  include/linux/sched/rt.h \
-  include/linux/iocontext.h \
-    $(wildcard include/config/BLK_ICQ) \
-  include/uapi/linux/ioprio.h \
-  include/linux/fs_types.h \
-  include/linux/mount.h \
-  include/linux/mnt_idmapping.h \
-  include/uapi/linux/fs.h \
-  include/linux/quota.h \
-    $(wildcard include/config/QUOTA_NETLINK_INTERFACE) \
-  include/uapi/linux/dqblk_xfs.h \
-  include/linux/dqblk_v1.h \
-  include/linux/dqblk_v2.h \
-  include/linux/dqblk_qtree.h \
-  include/linux/projid.h \
-  include/uapi/linux/quota.h \
-  include/linux/nfs_fs_i.h \
-  include/linux/seq_file.h \
-  include/linux/string_helpers.h \
-  include/linux/ns_common.h \
-  include/linux/nsproxy.h \
-  include/linux/user_namespace.h \
-    $(wildcard include/config/INOTIFY_USER) \
-    $(wildcard include/config/FANOTIFY) \
-    $(wildcard include/config/PERSISTENT_KEYRINGS) \
-  include/linux/kernel_stat.h \
-  include/linux/interrupt.h \
-    $(wildcard include/config/IRQ_FORCED_THREADING) \
-    $(wildcard include/config/GENERIC_IRQ_PROBE) \
-    $(wildcard include/config/IRQ_TIMINGS) \
-  include/linux/irqreturn.h \
-  include/linux/irqnr.h \
-  include/uapi/linux/irqnr.h \
-  include/linux/hardirq.h \
-  include/linux/context_tracking_state.h \
-    $(wildcard include/config/CONTEXT_TRACKING) \
-  include/linux/ftrace_irq.h \
-    $(wildcard include/config/HWLAT_TRACER) \
-    $(wildcard include/config/OSNOISE_TRACER) \
-  include/linux/vtime.h \
-    $(wildcard include/config/VIRT_CPU_ACCOUNTING) \
-    $(wildcard include/config/IRQ_TIME_ACCOUNTING) \
-  arch/x86/include/asm/hardirq.h \
-    $(wildcard include/config/KVM_INTEL) \
-    $(wildcard include/config/X86_THERMAL_VECTOR) \
-    $(wildcard include/config/X86_MCE_THRESHOLD) \
-    $(wildcard include/config/X86_MCE_AMD) \
-    $(wildcard include/config/X86_HV_CALLBACK_VECTOR) \
-  arch/x86/include/asm/irq.h \
-  arch/x86/include/asm/sections.h \
-  include/asm-generic/sections.h \
-    $(wildcard include/config/HAVE_FUNCTION_DESCRIPTORS) \
-  include/linux/cgroup-defs.h \
-    $(wildcard include/config/CGROUP_NET_CLASSID) \
-    $(wildcard include/config/CGROUP_NET_PRIO) \
-  include/linux/u64_stats_sync.h \
-  include/linux/bpf-cgroup-defs.h \
-  include/linux/psi_types.h \
-  include/linux/kthread.h \
-  include/linux/cgroup_subsys.h \
-    $(wildcard include/config/CGROUP_DEVICE) \
-    $(wildcard include/config/CGROUP_FREEZER) \
-    $(wildcard include/config/CGROUP_PERF) \
-    $(wildcard include/config/CGROUP_HUGETLB) \
-    $(wildcard include/config/CGROUP_PIDS) \
-    $(wildcard include/config/CGROUP_RDMA) \
-    $(wildcard include/config/CGROUP_MISC) \
-    $(wildcard include/config/CGROUP_DEBUG) \
-  include/linux/vm_event_item.h \
-    $(wildcard include/config/HAVE_ARCH_TRANSPARENT_HUGEPAGE_PUD) \
-    $(wildcard include/config/MEMORY_BALLOON) \
-    $(wildcard include/config/BALLOON_COMPACTION) \
-    $(wildcard include/config/DEBUG_TLBFLUSH) \
-    $(wildcard include/config/DEBUG_VM_VMACACHE) \
-  include/linux/page_counter.h \
-  include/linux/vmpressure.h \
-  include/linux/eventfd.h \
-  include/linux/mm.h \
-    $(wildcard include/config/HAVE_ARCH_MMAP_RND_BITS) \
-    $(wildcard include/config/HAVE_ARCH_MMAP_RND_COMPAT_BITS) \
-    $(wildcard include/config/ARCH_USES_HIGH_VMA_FLAGS) \
-    $(wildcard include/config/ARCH_HAS_PKEYS) \
-    $(wildcard include/config/PPC) \
-    $(wildcard include/config/PARISC) \
-    $(wildcard include/config/SPARC64) \
-    $(wildcard include/config/ARM64_MTE) \
-    $(wildcard include/config/HAVE_ARCH_USERFAULTFD_MINOR) \
-    $(wildcard include/config/SHMEM) \
-    $(wildcard include/config/ARCH_HAS_PTE_SPECIAL) \
-    $(wildcard include/config/ARCH_HAS_PTE_DEVMAP) \
-    $(wildcard include/config/DEBUG_VM_RB) \
-    $(wildcard include/config/PAGE_POISONING) \
-    $(wildcard include/config/INIT_ON_ALLOC_DEFAULT_ON) \
-    $(wildcard include/config/INIT_ON_FREE_DEFAULT_ON) \
-    $(wildcard include/config/DEBUG_PAGEALLOC) \
-    $(wildcard include/config/HUGETLBFS) \
-    $(wildcard include/config/MAPPING_DIRTY_HELPERS) \
-    $(wildcard include/config/ANON_VMA_NAME) \
-  include/linux/mmap_lock.h \
-  include/linux/page_ext.h \
-  include/linux/stacktrace.h \
-    $(wildcard include/config/ARCH_STACKWALK) \
-    $(wildcard include/config/STACKTRACE) \
-    $(wildcard include/config/HAVE_RELIABLE_STACKTRACE) \
-  include/linux/stackdepot.h \
-    $(wildcard include/config/STACKDEPOT_ALWAYS_INIT) \
-  include/linux/page_ref.h \
-    $(wildcard include/config/DEBUG_PAGE_REF) \
-  include/linux/sizes.h \
-  include/linux/pgtable.h \
-    $(wildcard include/config/HIGHPTE) \
-    $(wildcard include/config/GUP_GET_PTE_LOW_HIGH) \
-    $(wildcard include/config/HAVE_ARCH_SOFT_DIRTY) \
-    $(wildcard include/config/ARCH_ENABLE_THP_MIGRATION) \
-    $(wildcard include/config/X86_ESPFIX64) \
-  arch/x86/include/asm/pgtable.h \
-    $(wildcard include/config/DEBUG_WX) \
-    $(wildcard include/config/PAGE_TABLE_CHECK) \
-  arch/x86/include/asm/pkru.h \
-  arch/x86/include/asm/fpu/api.h \
-    $(wildcard include/config/X86_DEBUG_FPU) \
-  arch/x86/include/asm/coco.h \
-  include/asm-generic/pgtable_uffd.h \
-  include/linux/page_table_check.h \
-  arch/x86/include/asm/pgtable_32.h \
-  arch/x86/include/asm/pgtable-3level.h \
-  arch/x86/include/asm/pgtable-invert.h \
-  include/linux/huge_mm.h \
-  include/linux/sched/coredump.h \
-    $(wildcard include/config/CORE_DUMP_DEFAULT_ELF_HEADERS) \
-  include/linux/vmstat.h \
-    $(wildcard include/config/VM_EVENT_COUNTERS) \
-  include/linux/writeback.h \
-  include/linux/flex_proportions.h \
-  include/linux/backing-dev-defs.h \
-    $(wildcard include/config/DEBUG_FS) \
-  include/linux/blk_types.h \
-    $(wildcard include/config/FAIL_MAKE_REQUEST) \
-    $(wildcard include/config/BLK_CGROUP_IOCOST) \
-    $(wildcard include/config/BLK_INLINE_ENCRYPTION) \
-    $(wildcard include/config/BLK_DEV_INTEGRITY) \
-  include/linux/bvec.h \
-  include/linux/highmem.h \
-  include/linux/cacheflush.h \
-  arch/x86/include/asm/cacheflush.h \
-  include/asm-generic/cacheflush.h \
-  include/linux/highmem-internal.h \
-  arch/x86/include/asm/highmem.h \
-  arch/x86/include/asm/tlbflush.h \
-  arch/x86/include/asm/invpcid.h \
-  arch/x86/include/asm/pti.h \
-  include/linux/bio.h \
-  include/linux/mempool.h \
-  include/linux/uio.h \
-    $(wildcard include/config/ARCH_HAS_UACCESS_FLUSHCACHE) \
-  include/uapi/linux/uio.h \
-  include/linux/node.h \
-    $(wildcard include/config/HMEM_REPORTING) \
-  include/linux/pagemap.h \
-  include/linux/hugetlb_inline.h \
-  include/uapi/linux/mempolicy.h \
-  include/linux/freezer.h \
-  include/uapi/linux/i2c.h \
-  include/linux/videodev2.h \
-  include/uapi/linux/videodev2.h \
-    $(wildcard include/config/VIDEO_ADV_DEBUG) \
-  include/uapi/linux/v4l2-common.h \
-  include/uapi/linux/v4l2-controls.h \
-  include/media/v4l2-device.h \
-    $(wildcard include/config/VIDEO_V4L2_SUBDEV_API) \
-  include/media/media-device.h \
-    $(wildcard include/config/MEDIA_CONTROLLER) \
-  include/media/media-devnode.h \
-  include/linux/poll.h \
-  include/uapi/linux/poll.h \
-  arch/x86/include/generated/uapi/asm/poll.h \
-  include/uapi/asm-generic/poll.h \
-  include/uapi/linux/eventpoll.h \
-  include/linux/cdev.h \
-  include/media/media-entity.h \
-  include/uapi/linux/media.h \
-  include/media/v4l2-subdev.h \
-  include/uapi/linux/v4l2-subdev.h \
-  include/uapi/linux/v4l2-mediabus.h \
-  include/uapi/linux/media-bus-format.h \
-  include/media/v4l2-async.h \
-  include/media/v4l2-common.h \
-    $(wildcard include/config/VIDEO_V4L2_I2C) \
-    $(wildcard include/config/SPI) \
-  include/media/v4l2-dev.h \
-  include/linux/spi/spi.h \
-    $(wildcard include/config/SPI_SLAVE) \
-  include/linux/scatterlist.h \
-    $(wildcard include/config/NEED_SG_DMA_LENGTH) \
-    $(wildcard include/config/DEBUG_SG) \
-    $(wildcard include/config/SGL_ALLOC) \
-    $(wildcard include/config/ARCH_NO_SG_CHAIN) \
-    $(wildcard include/config/SG_POOL) \
-  include/linux/gpio/consumer.h \
-    $(wildcard include/config/OF_GPIO) \
-    $(wildcard include/config/GPIO_SYSFS) \
-  include/uapi/linux/spi/spi.h \
-  include/media/v4l2-fh.h \
-  include/media/v4l2-mediabus.h \
+// SPDX-License-Identifier: GPL-2.0-or-later
+/*
+ *  Driver for the Conexant CX23885/7/8 PCIe bridge
+ *
+ *  Infrared remote control input device
+ *
+ *  Most of this file is
+ *
+ *  Copyright (C) 2009  Andy Walls <awalls@md.metrocast.net>
+ *
+ *  However, the cx23885_input_{init,fini} functions contained herein are
+ *  derived from Linux kernel files linux/media/video/.../...-input.c marked as:
+ *
+ *  Copyright (C) 2008 <srinivasa.deevi at conexant dot com>
+ *  Copyright (C) 2005 Ludovico Cavedon <cavedon@sssup.it>
+ *		       Markus Rechberger <mrechberger@gmail.com>
+ *		       Mauro Carvalho Chehab <mchehab@kernel.org>
+ *		       Sascha Sommer <saschasommer@freenet.de>
+ *  Copyright (C) 2004, 2005 Chris Pascoe
+ *  Copyright (C) 2003, 2004 Gerd Knorr
+ *  Copyright (C) 2003 Pavel Machek
+ */
 
-drivers/media/i2c/vp27smpx.o: $(deps_drivers/media/i2c/vp27smpx.o)
+#include "cx23885.h"
+#include "cx23885-input.h"
 
-$(deps_drivers/media/i2c/vp27smpx.o):
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     free cgroup_mutex mutex_lock mutex_unlock system_wq queue_work_on seq_printf __stack_chk_guard bpf_stats_enabled_key __x86_indirect_thunk_ecx sched_clock __x86_indirect_thunk_esi debug_smp_processor_id __per_cpu_offset __stack_chk_fail bpf_sysctl_set_new_value memcpy memset bpf_sysctl_get_current_value bpf_sysctl_get_new_value migrate_disable __rcu_read_lock __rcu_read_unlock migrate_enable strscpy strnlen fortify_panic bpf_sysctl_get_name bpf_ktime_get_coarse_ns_proto bpf_strtol_proto bpf_get_current_cgroup_id_proto bpf_get_current_uid_gid_proto bpf_base_func_proto bpf_strtoul_proto bpf_event_output_data_proto bpf_get_local_storage_proto __kmalloc css_next_descendant_pre percpu_ref_is_zero bpf_prog_put __x86_indirect_thunk_ebx bpf_prog_array_alloc bpf_prog_array_free static_key_slow_dec __x86_indirect_thunk_edx bpf_tcp_sock_proto bpf_sk_setsockopt_proto bpf_sk_storage_delete_proto bpf_sk_getsockopt_proto bpf_sk_storage_get_proto bpf_cgroup_storage_unlink bpf_cgroup_storage_free percpu_ref_exit cgroup_storage_lookup bpf_cgroup_storage_link kmalloc_caches kmem_cache_alloc_trace static_key_slow_inc bpf_cgroup_storage_alloc cgroup_bpf_offline percpu_ref_kill_and_confirm cgroup_bpf_inherit percpu_ref_init cgroup_bpf_prog_attach cgroup_get_from_fd bpf_prog_get_type_dev cgroup_bpf_prog_detach cgroup_bpf_link_attach bpf_link_init bpf_link_prime bpf_link_settle bpf_link_cleanup cgroup_bpf_prog_query bpf_prog_array_length bpf_prog_array_copy_to_user __cgroup_bpf_check_dev_permission __cgroup_bpf_run_filter_sysctl __kmalloc_track_caller __x86_indirect_thunk_edi __cgroup_bpf_run_filter_setsockopt __check_object_size _copy_from_user lock_sock_nested release_sock __cgroup_bpf_run_filter_getsockopt __get_user_4 __put_user_4 __cgroup_bpf_run_filter_getsockopt_kern cg_sockopt_prog_ops cg_sockopt_verifier_ops cg_sysctl_prog_ops cg_sysctl_verifier_ops cg_dev_verifier_ops cg_dev_prog_ops      F     G  !   F  *   G  A   F  ñ  F    J  1  F  Q  F  a  F  q  F  {  L  ƒ  M  ›  L     N  Ñ  F  ê  O  ñ      F    L    M  +  L  0  N  :    @  Q  m  R    T  ¦  R  Á  U  Ò  V  Ü  W  ã  X  ø  U  ¡  Y  ±  F  	  [  A  F  j  [  Š  \  §  \  Á  F  ñ  F  	  \  a	  F  x	  R  
-  _  
-  `  %
-  G  m
-  G  x
-  a  }
-  b  ´
-  R  ÿ
-  _    `    G  g  G  r  a  w  b  ³  Y  Á  F  í  c  	      d  7    <  c    F  —  R  ¼  c  Ï  R    Y  !  F  ‘  F  !  F  !  F  :  :  V  g  b  h  z  :  ‰  :  Ÿ  i  ©  j  Á  l  Ñ  :  á  :  ñ  :    m    n  !  F  b  o  ¡  F  °  L  ¸  M  æ  :  N  p  v  p  ‹  q  ¶  L  »  N  1  p  F  r  q  F  ‡  R  ¡  _  ¦  `  ¯  G  â  T    G    a    b  -  R  A  U  R  V  \  W  c  X  x  U  ¢  Y  ±  F  À  R  Ş  _  ã  `  ì  G  "  T  N  G  Y  a  ^  b  m  R    U  ’  V  œ  W  £  X  ¸  U  â  Y  ñ  F  
-  R  p  _  u  `  ~  G  ´  T  å  G  ğ  a  õ  b    R  !  U  4  s  >  W  E  X  Z  U  Ÿ  Y  ±  F  Â  i  ß  :  ñ  j    :    m  !  n  1  F  Ë  t  q  F  ‚  p  —  q  ½  p  Ò  p  ï  p     q    u  *  p  E  p  W  u  j  p    F  ¥  :  º  K  Ó  r  Ü  @  á  v    F    L    M  F  L  K  N  a  `  ‚  L  «  w  Á  F  á  F    F    x  3  :  J  y  a  z  u  {  —  :  ­  i  »  j  Ñ  |  á  :  ñ  m    n    F    @  /  L  4  M  l  K  s  v  œ  r  ¸  `  Õ  a  í  u  ü  @  #  }  ,  ~  >  L  C  N  V  `  h  a  {    ª  T  ·  `  ô  w  !  w  1  F  M  R  Ô  :  ¹!  €  ô!  R  ‰"  r  "    ¬"    ¶"  ‚  Å"  ƒ  *#  @  /#  „  E#  …  ‹#  ~  ”#  ~  Ü#  ~  å#  ~  $  K   $  ~  )$  ~  =$  Y  Q$  F  q$  `  €$  a  ±$  F  ¼$    Ê$  R  ë$  ‰  %  `  %  a  v%  u  †%  `  ˜%  a  ¬%    ·%  R  ñ%  u  /&  w  9&  Y  A&  F  U&  ‹  t&  L  &  M  ˜&  L  &  N  À&  Œ  Ñ&  L  Ü&  M  õ&  L  ú&  N  '  r  '  `  "'  a  Q'  `  `'  a  7¼ÄÜg0idÀ?½ÕvJù¬‰E(Yí.¬èA”¸q¼ğd_(ñõD4:Fİ¤DçY¾©z¸ÎßÁ3ÅÕ ÇSêï‚»©ÙY*t—oé2…)lï.şJa6ÙQxè» !£°«­)R.qCN¼×]•t¯ïc8-KÅ&ì¸oÇs™ë-a¢†}6H/“ïx¨9º,¼ËÃõÈÉ­k››‰ûœ_oxÚ,w PU:üå$uùÍD™“‹Éq5-°œ4ÚLšŞ§Éè(Ïàájj#Í[ïÿÓÍãƒH]½ƒ~8Ü§E‹´+Qö+†"JƒY—p2r¸S²R¤½ZÕ[™¼^…rşò½/ˆüÏt Ê+]\!õ‹øV²¤jFö¶W~\èfäDõÜ|~`8Äİè¦“¤ òc}Ò¡h‡‰Fñ½ ÚP2Pˆğ¹¹ŞCÍø·Ÿâ«­¥6uCšşî®gwÔ2“Æ‹ñ%¬í6T\{ç§,ş¼wfícw˜]ÌšqÈ»ƒ“e½¥RmÖsôæ¯„x€–Ì»ÕşÆçÛÃQË’U‘òZRR RíÓ¸‘úífEuz´¸ˆ¯æ*Ù˜Åã—ß2Şqf]m9e-(”İk™ÌÜ!h1áã¼Ö›9~U{•)0W©³¶»/Å=5ÒŸ1¤mï‹õ1ÜÂYËuLñvıÀê™e•z×†—ï‚x$ßúvß‹(çNoƒÏ	ÖèxmÀCò3G¢è97lKqßÀÍĞHMåÔ9g“k!®À[%CµégÔ–XdCY#I¸›1YÑö5OeDTÚaK‹ÇŞµÛTpûKß®£åO[›ç]“'üg9DÁÏ@à@W"cd“”í¬¨NÅR7á¾x›İXÍ)H¨å…ÜÂ'€·–ip/
-Í•;…tO)®v0%¼ş?9* ıİlîğIXJ&ö¶–aĞ©KÃĞËQZ@ÓæÜ›h<_\XàøÆÿXH¾òúÄ¨ÓÉ¶à•U­ÖØ‡wñI›ó9O?  Ÿ#‘äØ¾ûÔ&_3‹C°ş(	ÌŞ¯yÉ§İ MN#)P(ÙOÔêª¸ÀõN™œfqœ†‹¿i/]&°]ãaŒ©g†WÂßitI¼Ñ=©L¡¦½1¶ísWh
-æ%†{ÀLÿşR¸Ù-OCÿ
-´®¶˜Q<vIèÛº/A½ÖœpŞlïµŒ•Ù/)seŞ?P­PßÑpw2³gå-’·&Œ´³Wì8fOıä:ìGc‹›ÉŒÕšÀciL÷Â±h¦ÖS¡·¬ÿ‡3G7^{ãPxãù&ıĞşvßiŒRHG—œ”F•==4i+E{ƒ˜²rÂS:~]ÎN7oõ¨ÿÑŒs¾Ót©jè×qÛ”î].=aˆ<GÎZàşê<yO2Q±¢“ÜiÇD{Vï´Vdp·bO§7îÄ²~¿¾{™•y‹òh‰ÆÍMPèGåÂù§rÍ]>£‚Ó5o¶h‡UÄ¶h÷àƒçwwxd-œ#XØx‰ÓX®Ö¤²_ßm˜b'±'¸,T°X¨ãÏ12O¯[ôkQ¦ë’EL¥ )ÜcRŠıù¤¾
-Œ0\CŞÈ”—SMwÀçLUÁÇmDÆóÉàY9L‰‹ju…‚Àé5Iˆ­÷I£%Uö$v¢Â©"ı,ç,GÇ™´áí~ _ÄyœÉas.«˜ Ô”Âİ8e¬¤Op¶AµÑİ£@\èqjÿ†+eš\Ë«hm¥ò)Ü²ê¼æ¡Şè=›d¾†?]5ôxœ¤Œ3™¹G›¤Høë„ßDM{ãÉ::	=7lˆØu½˜u¡òĞt0¦ü‘aí{†‘á ¯çŸDª ¥¡ç×ŸÈœº¥0g6•ú»Õö(ËÔüol
-Ë8Çd¯ —ğÍWC¯Ğı·…0ÌùëÍ­`V¾ìrØyä7‹ú°¾}œĞ«@2¼Ø©Ã3ä´?ÏZÒ3á	òìØD(0wú°å÷?¶ÀÿuAšwƒn,‡ı²Ü)–Z+k£óŠïz–ÖüøÃ.­¬ÆÜŠNo2„7:¹ƒ:<ÿîõ¿‹Á²·ªNÏé&XÉ<˜Xc(^F{Â}…èF-
-7èkN‚Ë~7=(eywÃŸ“¡€š)‡†å1ÏüàÜÜKŠËC0…¼Ò¼ëFÒÉÿf`¡{ú4ŒØ±í[D6¬ÁT[¦u}/œÌg€'Ò–8Ì¡Ñ¬€(õn”óŸT[Ÿ¬'óÚ~H&)zc0w]Îï¿moÏ ò~p)s.#µÜ'-™ö„GùÜ™eU¢~¸œäKõPYC;k{?`ì7ÛÕp£áò—|¨RçÓJş6Bêz[°Ú0tí
-`ü£İZO\/¥Ä4¦ˆhÀàeĞâˆæiÚÈ=&èŞ­ª‚µ`×Â_óÔˆeB?¾„ÀdÑ{}]Ûm¤³yºªP·ÃKcGöJ>ª›M®	a·,¾Â1üÂC9¦ ª‡‰„G‡Rëùi?Ãª_QÊRLA†‰ç·Ÿ’{ğN_u2äõÄ²¼í2}1©ğòc:FÈ
-[Éô.x¬áË´Sß®%'Oó³èP•@qğ…†åÄM¬Â×–ûÉ0F\»™_´D–£ ºJ}ô¾5iv³˜=ïğ>¤ïDñ2İyí¾|òÄ®Bô¸îô¢)7K”€S«RO¼LĞ÷Â5nD‰•¬ci´¨ À şÑèÈ[ÒºŸ\-=F×d—ºá`Ù¾¨¬YÃıÒlé„¼‡Ê®I2š£ä²¯Õ¥gmš –›"4WÕ_CYZd€ÔO‚Ú¦¤¯5ªÄª±Š÷ßwH—ÂS½òÙ7Fq´ÀĞÚ>ïïåŸ6 ÷7)!{ÌF}(†.
-.c+äYò¦È·=|–‘hn°’w¸Ïz­¡‚nY6údğßÌÌü[-ğ ö&Äpk_ƒ\¦¬”ECÈÕÃ/UóOÈÒ"úôÂhƒ0Ú#üûSˆ>T‰äÕ6_zı*#çÌNŒ*†—ÂĞ…¾b)JßTcqV­»b*Ã› åj“ç‘Õ„ä1tBÃrÓŸ	xUl#W¾²ó´ònĞ>‰™K·Gˆ,Bd¿^ğ¤$¾¯‚Â?¸A»Æ¨º6¬Qû€<fl[_È¼ƒpk«^83Nôq×köÌvAÔÿÔı(å*òsÉ÷òò“5.ßƒş/Ng4ÅÈ–&²°¿ª¯nÁ]·bpBÉÊì’ÕGyÑ_¿‚dk8²†ú_d¯õ_UÅYN·(iêá&ÑÕ3¤Âªrwë<Î"m$ÀÜã#ı¬<£lÿå¿Œ¤FÇ"ºaª6éˆ»AÖ˜ë¯¸\0ò’@‘×§Ç…tML\ò…!×©y«'\à
-¿ev†%ï9}Ãí8x€µ•†ªBo—–ÍåŒ½]Ñ!“çJŞà
-enö2+|'"úÒD(lş_­\rŸe3ˆeX}.¥ÿ,f¥#©‘7°6‰³IfY‚»LÒÔ=gŒ€°æRëQé2Ææ˜Bœ«%Ô7¶l{ ¯5C÷V:¼Õ((R¬í3BevÔĞv%,Fa±¹m½PB0g˜ÁW^ûœúûGOD4¹ÏL`?ı¨Œ´ûşÖ>'ëŠ›u™üoVI|½&$A—q=«§HzüÛ~ºUEğ­ ‹E¢»‚×Dšè“Õ8¾vFÀ”d§+9ô>(OB"÷YdÕµDfyµQ¢§³e"N3×5 `YĞ—’2z‘"råòw­PœŸüõ1âöt¥)‰vÆã{K3²·Ù«
-BŸî&P4z–éjPápŒ‹Äsælwûò®sÿOÊË¨HU“o)Ÿ>&²hm¸“¡ÿ©fû—r"£t,-%$pŸÁ|SƒÎù
-#â_üLYõûÓU.ØÉ[ãéÛÿ®„î¦Ÿİvæ§©şó"³xb|óœÎó@ğ÷ğÔÊ+ò†ö3Y&K^]?‰5ü8š]âò8^(K0¢p`tÊ¥â<öj8-imÈ²˜Mç¿Ì£é…ê‰XÊÈòÖyŸ1×{)kIÛZYxFF>)Ÿ eé¥=€¬z}A9,_T~Bï»Ğ5Iá€N¹K¼ı`üâ;%Ë¿ÕŸë5‹ßì'1P+R·qaq÷A9EW
-G6‰ı»¥û~	¡C™TÕÃ=Kïeÿ~ß‘u]ÇÇ?‰$£åi£ÉÄà×5ğ4ìä‹»¹óù*¦ùµ´phÌ¯Œ9ËÉüˆA~Mš…†Ş”ÁF¤'õ5?ÂjSuFVÏbÒ(EX%ş%†åJğ„õî‰ÍµàQ‰îIÕïW¾ø¶ÿm ‚g¾}ešR!;¬õrgü‰QIËÈ¶¹(s×Ğã_Á*HdNjà5ÄÇ,XéWÌ‚SbóŸªæ¡º|tFÒ‡L_†;/f7£/Ù¯Eå„Œ`€!Qè«‰ğáğä®®xg]~³ )Î~=˜­[—É§Ÿ!,—Gj÷ºµ¥dc”ÛÖ(Ïšğï’Ïå:|V<Éÿw«àPø[Èßœ©*ıÿ1hm7%Ú¼5áVBnO¨Áp&ß# $T`ñçÂWßŒg¯/
--¼‘h>ÁımÇ‰‘ÖŠ¢)íE‹UŠ#¬ŞAm¢„Ş•6ºæÑ#Y%š
-|#’Cû ìÙñå—6¦}-Ç´ûNÿ<-o›Cå€qr&¢ıPÑòVVíqGV8ó)aÁø,ÛÀ›[,z•bŞZÈïoOGö(ÆŠia}Äg]\ÆwuÌ‰¾
-œ`ıœ·Nì§ö”9¦@Ylµ£º?î·wE÷×\ôöoi2}—…ran-Ò&äÃJ áQ]Õ	Ş¾#·ç2İx@~z~Ç‹,·ç ¿°Äy½ÁÍ,ÉâÑT0úŸâºN˜µR¨P~‡â˜PêEßä
-Ææƒ˜ònF‰ŠDlÎ!{°9ò"é÷ı/i™ÆhI¸k~Jõeıä‡ÂdÔ†g!HÔÛĞ¦“RóğíœY0¬¥#şÌÈÌ-Èş÷
-Y¯(s=¥´Z¡ñTî}òCs‹f§œº‰DñTMœê ÉfC÷)M<§7»£Õ ^9ÜØ¯±oU‘ô plîŞ¿Â{öôšá›ğ†^…¼%ˆ>:*—$÷V¸=ÂÇU¹/uV[-–†ÎŒ•=©X¸Dƒ5Z0Û¸Tí•Ê˜z×	cyN,I"cÓåk­	ê;€æÚÁÊeµMò(@ÏD˜Ø‰ß›İ•/ÜÊ¯š+¦“°$òëEøÇÓ*.]âãRîÏ2R«çQØA²	7—Ø÷Á`ñEC*jèB!"5Œ7h­ ÿ†f¸³ruúáokx¢¸‚­‹CQ˜Şşr»¬k}Ó4bRÚ¢‘È©øO*vø©ætÜR´\æİÃ7	5ğ_e9ÒÎ¯@†v×‚$m¡‡¶ö7·ÎŸ‘—oÁtØ]êº	Rum¨!DŞñF9 q>‚Ø©ÀB…÷W£ZiO âDU{Œ Ÿ%­7¿¨T]‡-`¼Êd0¤uëè.A…c§á B®HÛÊ`šS	Ğ‚3YiØ¨o¾­ÔºmYé??âÒ½«O*0µıªú¢#¹_ø˜ãã¦ı«ütBûÂb wÀ£ïãÚ šŒÆädËÙBU!š`FiåhÍ…Ùİ.Ô‘Lcµ¤qñ——÷)©â°nšÑ.¤‹Á[î–‡ÁT?Zm¯P·1Ñ]‹Š:I1ÛbAÈ¶‰ADPƒz—úšŠ\¦¢~Öz–¬Ğ³z?ÀV¨kğ¸Ø>Š™½~;m3n¤Øåä½.c!!Ÿqão9Š÷œ”LQûöÈu¨V—+ZÇcY\²½Ø(ƒ½éqÄŒ¢ãs»X„I]doü½¢Y	r*ua#¡Ö\æm÷­ÄKÈMÌ—æ$k0/ƒÆá;ÍI‰ëGd%üÏ×ËûXŞü!ÃPªz¾ô¹Ô¸ŠB·d¤˜B¦ÿ¶dş)g	{§£‘±	+áé2#Ùîâ‹õ,¾‡Àå¿ÕküQB@:¢_N­	[{”æNN'+ÕÄÒ~&D=ÂQ5Oı°Tûÿ	|Ÿ(‡Õçµ$Mmm»â:vB~yı•ÿÜæ¾$¾«aDa¤PØt{Vê®Q0——aí‘WÄj¸EÜ3U'käÇ÷˜}©ë‹x qbÛ˜)s!:gœÜ‘e ?Ç•—8áğ£´)š´eÓE§Õ£|†]³z‘C7—{Ê=Ş™ˆezäk]½í<W†İ§“cäádxV´wÈ‚XÎn_ÆıW±AÚÉ´•+K·Ä¾¥Côè¦â½¾íœAüOÊ3GÙµôB!WA6 ¾Y‘êöÌ EœáN5ÃT}Ùşà^í»Áf!ë¡z²¨¶;nà·Èğå‹ñÄ¤SŸğÇÈˆ˜Ç–%‹"›Sí+	‰|ïLTÚQi_Vú”Mó9åÈ{YáoúQ(Ê8wLí“‡V*H·D$-# %UÌ8HlB0&Åk#g;}FpCÇ“N}®EŠf…ÉÑáíËˆÖß€Šãká*yË@$ÿ¤ÇĞÓMctÑN–‹5‹®Ö«miù•ß®Z'	Ïµbÿ—ÕDk7UA3"*üSÕúœÜ“?m8d²¯‘µKü/»ùùÂ <->ÕÏöÓıyRª¦X±Ğ1G—ã©§e|íÎs$BOÌê7
-Ê¦â¶ÜöF˜L…úÉ£ÅóC]­q‘“À–[èß)İÄL¤Ê¹ñGÀı*cœ+[D¦’ûŞ°…ó+0?1SZ¥gHXÆşúÃßâh8[B#B¯Ÿ˜ÊU!iÿi”!Ïù xòò,šZĞË=X„Mm0H¥÷k×PÚVá“ğÈÒµ=)‰Ö2ô¡sÔÿ{«£yéîŠÓuN‘ŸÆ}@²fåg "İ¦ŠM­´¾8ßQ0{t°=¨Y¨U8×=sn^ïl³O³ñª³2ö*à„Ò ƒüx<Buu;hQmŒ¹ßYÙ!P²xB‹ÃøÜüã4á%r7]º¢^W!î<IA—YĞuÉIAäõ¶r¨Ã§
-Ço#¹aMi¼£20v€²Ù–CÁË[ı•ÇtàÖéğÒêG8¡uú^
-æäÇÜ–şY;­ø¤¢Ì²†e'òr‡$—†õÜc?g’APªŒ¡’CŸ~¬#ñÃ±—Õû¬ë¸2f(ÓÕbı®Y ät7BªL§]09şÇlÚ¶‹¹×,r+ßş×=²=ŒÅĞj§j}Âıè¡h±vêEw¸^Hj©ÔÎ–ûâPvŸ¯£w$‘úçb–éœçÖl•+Ôıia~jŞˆY.¥¡È©™›PÎ§ïÒè±/xW¨*”3BãSgd²l:ÉTBÖáü!FƒVşê_è±‘™:»·WWx«,ĞæráÍ¨ğóİ}È9¢¨fïˆ•è5Šğ2œÆZÛê‰eğ–¡b]¹q#‡-ŒhßÏ]iÔ±àüÅZö®½Htaàkdï*­ëk®KŠó¾Vî‚C¯lØÿlã%9½ ’m%·Q‚ozŒ3a]×~+/+(\t›&ûú`#¶”÷ÌK-ÓŞeÂÅ÷KèĞàçÑ—ì¹¶!ílæ¸9GŞÕë—Â­&£r–Çæ”Ìàì+/œNİ®rƒ†·27BâÀ¼}1½Ë©5Û˜¹M—r'ªØÛC¼o_EVˆŒÇ$…>?g‹3¼D`Í;õ|§_İò$šM·eeXySmÖbÍ†å‡òËhxêÏgPËØ¾‡–ËÅòdmYqHhÅõuú6{êö)/şû½ëË¬Â†A‚‚ù¦Y%}ß&´¾<?ù¶€P`ÖWÃÏ/ËI³aèÄè!=˜4)rbóÓe·thzCÿQ•9˜ØH47÷Ëw/I1“ì‹…wïyÒÑâ½ï#~ñ`¡ÑJ\^B@Q%JI6ÿjxæDÈ4gbáEÚçî¶Í§Y2I¹J„ˆzçÊsƒ+õlí0Ó9äñ
-àß”zË•e–Ü÷¿”Ä©ÆIjÇÙé«@Ki-9ö’PYN¨İY†0N†ßƒ¥‰Aˆa> Å.i›BCMà¡ã5l”ÎÓâ´"
-ìyÃ“8Ü¦Õ“’“jËS
-áf½;œğƒoÔRôOÏ^¸n?–[,)ƒ¼{¾ƒüÄ[3SÅÔ<?†«´ğƒí (aßâÏY7ä>ş
-ÿj<Ğ 1©—åqç½‰o\.PêÌ<„W2zŠ\¡	geªhï¦løƒàÿ·«µ®ü#Ê&¥/û#úx\ûòàs˜FàOnÁh"ıúå¸¬%„ô‡Elš€Ÿ?ñ9kÇyi;5ÿ„¤¥>s3ÿ æzÄİ¥üZ·J‘jq“è¦Å=nÕCÚ¥øò³Qz·O¹ñ›ê+€ÃÃ2sğtÒTøóHÖìÙ^m-±å6Ô’Âµ¡=Š² °Œ<Z$’qí{7Ò¼•ÿZ¢é¯æE>»T1Hùı{y¿{¥™(ÔEô!#Ã
-DK…ŒÌGµD÷6]°NùÑN[¹ãPÍğÓ¼4#c¶x~8“Üîö]\F›{Ï‹=4“k	ñSıÎJzEI’†X}ªpfüî?şêÑâ^í’O Ú;	
-Jg$…´ï‹¯Õ ùx± ×òŞ´€PÁ'Ü{¼.“>”}ª9¬ñÚúZ5ë1ON>ó¬&†Ê"·.â'6y;d´w[à0ğÉrj¿ªóÎ.-vï)¼‰Q_ ÷’­‹ˆñau¬ã @Ğì˜£z'ì¬ –b6U ¸>$3è4±÷>£,¦Ö,.ƒ‘í;0 O/Nx¸JÀzñXIi‡­„íŒ;)ïÒ|Ë©Q3—ëÜ”fûìgÃÅlF‚/¤2X­tÕ;{(|»MÜ¶Ö=üE.C5áQ²şá¤^èÓ_IeP§§ig‹Ô`ê8RÜµe¢¹£e§md¨œĞ•R"€Ìl,^Ö'—¸”}[¢³YÕpæá­Ka£·FîİÅ
-4×µd$U/ãWÇÛøwÂÊä¶b¦4Æïhå½ƒˆLWô¥$»qtÔqÓåªW`©ùN 2»Œ–«0Y3ğÌq¤¸î©ıÓfUÓ#IÕ‡zYvZ‘ïRÛøu9M³œŠÅÆé#úåÛØ¶¿6®(ä¥ºGñÛ#I9p6f_<UÜzÌú¾1ËÅÚGHªûİz“O´„2V@jÙÒÂàNÔ
-.Ë5\ÅÙÕf÷wñ8C”—sŒôG\Ûø±•“ 1¬*?.ö’C2Å<FŸ=‹¦[,T¼k\j½‚ˆÍc™Œp ~ã/KŠ°ö‚M[¾4¨ë©­…ìã	¶Ì‹ópBÅ¡k\ÀŠ’LŸîâ«!vÁº ¸¶J(0ò9Î÷'Jómn—k-‘…Dk'ÌëV¡+–¨şP­qT//ıYÓóÑLZCv¸¹1¼q˜Ï.ü(0…ädïpÁJù¶9úˆÏ8µünoİ[»iÅa¦!â%µôNşˆDHyJ"BáÛ’øxpñ<ègŠVê­=ì¾pÕ&`qòp/ş Ñ×®ŒJÚg]A=
-– ¤õöh=®…ˆYÚ˜…Sç·sB››[øÇæ1uÓs ×ƒ»qäG ¾ÁØy2¥930ù|-ã¹‡òæ­í{z;KNAq$Ğ=`*™ nú¦~f’8¬5÷b'N¦ç©¯ç ÿ†]*Í^[c/5Ç—ö‹™*óì‹_ğŒ{ú+¬Ç÷œí,´äÔÒ‘à”6§FÏç<Ç-¤¨Z¤®Œ² Ò€¥Ö«Ìµ£\°ÖÑCûwâè5”tª<).¿á£!Ş†¸geÀåŠ.Ğ£WVPıî…¥„´m§[‚¦­`zŸà$Å—ÍNH…›¼”#Š\®íæô;ÒŠİŒÃÒ“ÖÏKËÿÏœGŒS[œw9˜Á`[Â$A×ÜX‘S$®©5Ôª½êµ )%ËÓK)Òp©HKÍUˆë(ÿIïiŸ>mN0ÀŞ}óıÕLÍ”i™Åwó÷Q—~½»â©¦ò¼¨vô7—ÓÆ.!=!yè@0ÿß¯WÇÕ# Ÿ)l†ÂNöŞj3j¶®Š¹ŸõÅÆ²Ör7	Û8ÔRøù¸Ú¢‚³ éGµéŞM$× ±]ŒAnº„®=Ãàô§ğlÿTÆWyGˆ<‚H¤~¨Bç:ßJ"8Ï›öO™WóKï)èæáôH[è0°Ù,‚	íéy%å¢·FÄ¸* àï›¸VY;}äƒÉ]Päaİ{)(P¾ÍpL:Ji'l™@[;-Áw• juÌ.¦àdæ0_Œ@9=±«šHŞÜlj£T‘eêŞŠÔ@GIµÁ×cR ²öf»ó¿k)†¯ğàØğ*ãÀG1r—qğh`û°)2„ñLß‚*ªÇ3q·ÔvèT2¦ZM6B·pRÄåÀê¤OŒ†½¢7¾ß>;½æƒ‰m=İˆ"!¬ĞO¯ßÊ³Ë’§pÙÆÓ‰#½iÌ¸äGÜ@nLĞü:"·caÓ×.×O8£´]!oR9C=3Ó €h T¸U¶»³ÇÆÏ61³JÉÑ+³Ï°j*|¬…
-;!˜A¨ÚF|(gz=0ÿpÌõÖ2¾ÚÿÃèçµ¶ˆbáœ¥ÎÓ@nÙutr;vèú •´PÍoµÃèÀËyÂË
-8m›_é‘%ÃÏs/Ó:ûÔR h {ØîßÖ :7«§ìB}m½ç”Ù¦¢<Û$fÎmF—õu`cI5W†¸¬cLÅ–{áSb3şcà78Äñ^ \ÔNÄ˜\ç'Hb©õØŠ/>“§@ĞfÜŞÁ<¾¹–%‡–÷8ï.MCk`eO/“n$5šÑÌvÜ£%œFOÚr\ªXçv’.ıGU%æyê…Àxè •Û0üøJµĞDÃÚq¾q™gÂë£t€V³õâøj­ö`oí\Û¬Û¯àÒJ’éUÁ "äÙ0^†÷Y©##×]eE’Óä2<ğœ°i?ÍµPqtR%õŒTèÜÑbÃ„ˆ»Œì^÷“]ÄÓó:Á~•Jİ‹Œı
-}Dëö5è‚ç¬ôÔ4
-ÔqS*•ôzY‹¯è1‡ö‹¹?¦+;$)œ‚œ ¶ÙTTg7c.*Ëİ"UÒ„$âĞY%¤¤JÕ¥¶L,[Î˜ø¦ Ğba…¤iM]ı…«Çu;¦b,jÁOæVc~¤KbÃ­ÿ‘3ÙvÜÂryYw)k-Ê¸†û^Ò3fGQ1·Êæ­=`¯!îv—1†UVİEâ—:¦l9G)©Ë/Ç¡?€=<»×¾V¨>”	k;W¶û*ÍÚÄº[LVN´VAs’yĞåÆDtØ½ªS¯+#¬@’Oc¢»³ò)²>›È×$&Ü™cü-:‹M… `¢;?`ørJ!Jt°Õÿ8«tîÖQÓ×J¹ÄÒEUıZİ<ÌûT€®°aõb%Ò¸¨uåÖV)ÃŞ˜tŞÒÍ-Ã›'¶mL@´ã’JP@‡–Lªèñ\R0!‡"1#h…Eö~YY2dÿi·7£2ñÃ\©uÉÜv’#«IãDìî,3İ3·ôMN…s—2ñ^á±f&iÓR¨ïÄ¬~]Q¢CÒG=#ÿ
-%Q›t–»û™ZÀ ‹¬f{ ]1,²7* J8’ĞùÅ“jßÈ™Ñ„jG<¼:ªuşEm8X|X7ú|~¥ó€áÈø>Yˆ§‹ßü€SBrõR…rµ'Ö”KLÇI„jä¾’ÖÍøÚWqÍE¬Ã•¤0¸$î.]D|º®kÙqlÁèş¢ĞÆv"×ËÓ×5´èøX<ïl˜2@dtù€@m„²R±îù­_÷q‘Í9°£`#Î±µ5»tß“µ(c~D7ïN?_?ù]Ò=4Ø/Íş±ù˜÷÷I®4^+6FûïÎ‡àîÙ åş¯<D)…Ü€Ênšz	¸Ñ3ä=‹‚J¿òl|ÊíR&Õt›ú-D…ÎmãpV…;Úì;u©ÿ*[Ggú&ÄÿiÍ5¯o YkÓr(¡¿¤ªáµo‡¸HMÉqPO°¦áIä¤¼—–ÿØ2çÖ §añ:ç£oës€H¶oŞœ-ÍqK¥ÄÕÑ›P6 „&FÂäez·Ê×êªÜ¹ğÖóŠÆ÷ä
-R{äü±:èìdöÅZı8˜‰nV0)¦-­Ú8Ä3&ïÒ·©à(ñ‡	ã¿Ğî¶ğŞ¥¯E+£¢ÿfZ’É¾LESfÄØ`†(ºlˆ§SñÀX·ë´şĞé5/üÁ,fü6„Aü+´¡€Ş½¸°v›Õiék†6J°£GÒû °#6·(Ù9„¡g'8›—âÏG>wÂù†òÒÂÂç´;1”É›.]…Q}ülå,N¹1¶ Ñ#(Àa¼ë„Ò61œß"THÁé±»RªÏ™paÌ¾-ÙSÜŸ@8'ßD^öNça*•µ)ïEb+q*²ÂXbÕİ6–ôŞ\4ß¹ïÃ™Å\šĞ¼›˜½§åö±!«Wß.é‰üiv{E³¥KÓw‹£ÚÈÛ…ÛŸv1H‡Ä¬W•¶5k+µæ·h7íğKúr;ÜÃ¥è¦~¬»Z×DÇ HHvb$ÇÀa…ı”ÍNò[@ØíÔ{¾åO¨Çn
-ëòrQÊp“¨1y×öLçd zŒé›h5ˆÃº§şÃbJ]ŠËr9gşó·1H–ŞĞ©½§ªÏ†ÖíƒÒ8CËOu<±ö	ÔÚÄ;ØQRÄ”@¸ıwsœŸòŠ¶b ·¡]úÙ‰‰ë•ÖÔÔ¸g` ínC_Öıˆ°Å)Ä‹/õGâ¶ı!‘«uxş{,„ÌğKùF&SaFlíÖ\úC*0'NÕ,’¿G¿ÃçV½Áe/í2Ødúù]úBz'çúó©5pœn9t†ª?Û‚òš'fİ1Ú¹|Ñµò¡¨`Š6ãşÀ~ˆ¦Ò°O8a0pïÖš´¡çSk”’ìTúhNÚ„æ0nÏÉ¨(P¶è‰İªŞ<"RõT2x{%Tw¦~Û4V¶8ßWõÖfp–$ÏCµ/,’î›xAÊRû 3ÁÒŸ@ª-ÔqÒzÚÅCÔò©ta¾ò´™,IûF¦„äÇ\½K'@ÿ3+ªçÖß)_¸‰Ö^áÛ=6	o(æá›Íø8j"õIh°V,n´u÷Ó<¸¹bó#h>Ì?ö…;ÍîÓÖúò¼{€ÎVÙû”£VäX¡œ«£Â¨×<ÃÎ$||Uj]ó(U5°X-M”²¦î’»vëMõ÷ğç¯Æ™c›c–¤aç4¦óiyŸô­”€°°™˜2İ©T6!ğåè´ğIE;+No§²$jˆkÏ•6]BqY-D‡®«»ºÿ—*W‰…Ëøb¯r_i.Éhü/EâĞ±0†·¢^ŒºZUspçÜşºt"p}G[Ã>m_çoı¬”a¨
- —ªcö‹HÁîÜl4Šæ‡ÕiÌ8Lù N&Í~0õúóO’+ã¨¨s€Ñ–¡Ü¾Ù›ØĞTTqâp–ˆó…l™»ZJÁõB'ü†·Æô˜$·±t´.Qj:Á¿PÚ3G4®(üìu:]Æt›ëq©vPaJÓ ­S:J¬£×ü¸Ì§iK¼òùÉ f¤ÕºBZµNp§6ÉöûYmûÃ‰ç¦!å?ä¼Bç—¢ƒèN²d!;;SÂÜ
-æ[ˆ8(|Hc÷=Ç³…ºeŠ¯ï÷•’¤.ÃcÓ>}Å^FkµÉ³i+Ìœa#­ï‚Ùˆ>e¡y—oKhœ?’G§s²¾ÈS‘I3_‡8C‚ëåÇËGÆRöşSÚZ¢&Ê›óS\1Ês»ü&‡ú•ÄãÆ&YW+†Å
-½>Xù¥:aAÇ|5xÓ²%à¦ŸXÔJnûş'ÅÏ¼NÕqsäĞèh&I/ã†tTH2ßÆõ&&G½VƒNocæ2’ÌiÒª1ˆyŸy˜_/µ)í2ø¹›z1Ô`ÈEÁ$L·S'Ó¯Û7b:¿äØÊ¥»4Îà„(Ê§€°ß™mBd·ÁÄÒ8X`‰|´š°-–Bs‚¡Úeâ„HEô´@–;¤Êâ%¦NO+É¨j¹u„ZiTÈá—|çûœk@fÍïkê6?’õ¬b—ƒ)êĞ¼é,P±¾nŸ[Öz-Dİ5ª€WÒ#Ó™‹¨LoÄ–BqIéô™š1¥ˆÖ½¿<\Ê+VRæyaGeg9Œ	»<©÷‘PßêäEÎ%Ğ¶€E¡¤+a` @¼}f¯
-‡ñ8}é^~ÿC•İhf­)Â)`ñ\<wÜH™àfÓr»+›&q²ğ:F ï&giùŸ0è=UWØ¦º?i¤H‚R?Š³¿óÍ*4Õ¸O!;âŠ€8.AICb<~jœÄÇó½ó~3õ$F>],2Êä­9ñ]3AR´}7Œ{N÷ú¶¬<«]‘ê$?†%yâ\p—'ÄÊÚjĞåÆªÿÈ©Oz’ö©NŠj˜®™ĞÁïM•ÅVì²ªu*ïB"a.îñ1¾1W4È6Y–ú¬ìw¥XÕ©ñâİçM\Cšu;<rœŠ¯y¹­o>Dmó±Ké¸d¿#˜ÂË[¹¾:ß:]wı}„C3Š+/‚2È!Æ?iË ±ĞâèÌÿû2{m`Ó
-—šßğ””k*ÍÒ£l©˜#;­´í/W)Ôğ9Z™‰QŠSLœ¡IcQ@:†²ê(½Ä°e£,±HÜzwãøb3X«FèjğTT‡ı¤l*yl@uØ)f˜mûßï¼•ïÿµUGÌ½Òl¨.dÊ”,ÀÃtc/kyBnÏğHB‰Û¹y–‚ô¨¤ß×v]4vö¡‚§dqŠ~×¨5›‰c¹ôu÷S÷ˆşMñ¯†É2²wË¸ò¯âÙ¦x%&E¾hú5¦œyAtÆ<Ôñ„U›4mäÌzÙ0T`Zgy¥°û4>{¼"v 
-î?­wKx%÷€Î,1E*X~òı—’svxğè^R’}å¨qÚî
-JçóŒğ…X¨½n"\]îÃ-´&³Š[Çß©ßûXis.‹h@ND¦™Ï1°;éœ­º–ëˆ~ÊMßù‘Å+ú¯_ /|’Ïçêx\I	Ú³ÿÕ^=æù«»¨KãîÌó®–3ÛR‡]´lj:0:£l-şÎÅ÷@kV)_(mÑæMe6–øºêÀâ>–º¹\xíòhøöÉVà3N—ı·1ÍÖL€"Í_Œğ}æÏú÷°;¡,I[$m •l—İÄsù·aª¡m'“÷ê[Ö¬m¯I«|(
-ÁÕ‡A¶ô©:Š†®l%I¢	°éê6<èû]cyiĞD×<ïİ!}ÄfÈïq0¸ÈŠ«<èÎ}Ê€\¾ÃİàÌr´¾tğêrÕØiKÕÜ\%{ø]$qÇS©òs·ÿÉ¬dB[ÒÛŞqsæd›·¨;…BÂšÊ¹96ÄøQ‘@v(Š.·Úœ‹Úò~yzÕS¢"ÜI×·úf¦IÓı7O{¦W%IltÔXàc†‡ŒÆ2·ç¡@ùÊ%KG>‰o/díÆ,Ä‚çÆ—†füDX/´ƒÜeZh‘ÍOñİÃzTJù‚Z4?C@_*eOTÍÉ1‚i«ùED$¸‹/½¸¯hañ»C ØÀñ°¦qØqOjÜ›¥|•}`…aWd Å¾ì§”bÚgŠ,çÖ×]Àè³ñ¤½y>ô‚yeÈ°j^eõŸ¬¾W¿~½0RâBÒV1Éğòu”%ACôëùìåüÎ·ÿ²œ\j8”ÒS>Z…YHÕ’ğô /ŒâecÌåcÏÓÈš¢#\;æ†ßs5+»§å¹›÷„E#7VgŸœwdWİ›g¾Î ˜cq´šÕiÒØ+2ÜêÍ
-U©gP&“íQgÊÙz¾ï
-U¸€v‚ù¦%ü6 ¾+Ç˜¨)¹qêì„ÏÅ9ùß-®’Ù\äŒù¡×À>øBG1MËú¯l’	hÌø*™ıÀ;aM¶)ùm¢–G€paN°?ŠÙw ûYCè‰mXÓãÒÓÉ0(›c³yNŞïR<%ùø.~Â,ƒ‡G~è÷2bJ¯‰
-ok¯'ÙÎºY÷š¡¶à¥Ü^Ïñ©Sñ^­·,—¥‚´şw!»Á×‹ÆËyUv‚¸Ö›ƒÚÉÅ¦†”rÙØ‡}Š—«låwCì±ŞÓëÙnép‡®ÙÅÿF+ĞÚJ¾•‹è*Îl64ÈÃ~dAûH º±Â]a¦o/i(úr}€Œ¨á;»‰|aQŠ"¦ú¡: æC<`í²(n	æcÿîB!—©”Ş/ãÉ	ë@nù…¤Eõ"ÃŒ¯ ‡ R§(Æ±vnk…Œ—ğâX¾hXlÛ®ı¨¨Î
-7¤ş|¬±¸c<÷¨g•,9jÚãógß“Q=*ÎEÚâüˆÃªÛ I ºu“½nÂ€SoıË¤»@*Vì *Œ4<ê§Z<sëÎùÅL~1±«8/Š©^déUH{~4¶G)Ãö?ê³`Ÿ°Û´&{¢™øáÑ3î´"Ç=‘±yUZ:ó#Ô;?ÙwÛDÉ¥`”*îSiV\ë/«‹°¹=Z÷!ç«¼¤rçF«†øĞw‚¤İ$9q {x†uÃÄlÍYàAN|lû™¶6ŠSŸqîV¾Ôğ¹ú½˜fĞ/ğäÒ4w×v|ùuGo†®$¤ÅWØñ¸tkhÉB#=vT3{dW¨™şùå0¯S#¤ÌÚØ9®ê$İ¼ ş)šíÅÌ÷ØTCí›>ŞúuÕ;f¾G"ü×0*NÎ	lUÕ2õ	´:¼Æñÿ°°ó, ëbØé]B¹Ğî`³‹'Dã~¶íM.ëÆ±‰ õœä™DØnÒ@{Ä0ËùkIi(X!’=š'Àı¤@ş03ÈÕ,Ø=»Mç%vÅhY¦íìïRrÈ²ñÀÊjî†¥‰4ö’^M7‰Q9¬¨úOëíöiÂK°^>.¦( Cú­	ò*÷'7B<8Ì³o§¾±A8ßo-9Ğ)Øô..ò7i:DT$‡£9~8Ò†\Lêd4@ÔûÕÆı€2«ë—sæu G©áÄ‡­‰8À¸fÂà9MvwÆL·Jq	5”ŠŠ½Í@ŞÍ¾”š~§ñWø¼â€CöáIR;`_?Uüˆ”÷>áó¨‚•’¶í{ïåuPqVBš¥¾æcî¬P û¨É—x{òCdFsŸİ¤8øö»®R·(¾j\ğÇ…À‹È™P&fO¶Ô1êhËŠ#cĞVW-q‡Ğ¬G#›86)ğùŸ ª¸_¦àÑæÕˆO0¦”†À<…+‘Ò“U– j6şš=¼QuÚÖÂ…RÀxÔ¦Räƒ¨dãSH»€¸êuê…Ø_ËEï‰0î4§`YÕĞñÓrXƒµBci¾ÖËÂiTI§ t1â–„ñÑ\JÜq5ù
-¾:CälTt>ÒõVÛ>”d‰&3Ğ×*` Ü3Ï"ÉnŒÚdrCãû_Èöóo¨k‹œôtš™ÍØYø@ñcÈ;Œ$-G Ê›·¯XW‰ª	t³ş-ëio×rmt^`¿âë¾÷×‡×ğÀ`gÚôh‰xVzz[]#’+÷ˆ}cU®…%Ço’ƒ³}ÄpCq•b'MÜgh€Fİ ŠVâchSWšnƒş²6˜*qÖ6ªw€ú İ¸6dOe'«¿c²E[mÅ>b@EIqÇĞß“u©õ]C•ü˜%ş_¶;æ&Êÿ4Åß6´,¼¿]mÔúwÚF›Şé#F”îQ|r	ßÉ²7ÃBB_•3ëd‡ÌKU³÷¹àMÇŸUû ¨İa«6CJŒü›/Wæò”‰ÎØŸ•²‡Ü¼£ø•7Ùµ “¤Ü¨€l<‰Çô-éWš2kùŒ'¤ÊæjÃn3Æ·ôLgÜ#›*’ĞÛXÒ6İ½WoÎ#NœO­´7ÖäLÛÏhc¬W«–àœ’âDŒÑæÂ’¿ş(Á°×âRıxÉVâ½‰b|NIÇŒÀ”)Ûuµ¢¤Î ĞíêÛñ=,(»·@Ë‹Œ\P=»j“§UKYz­Í^4³-äƒX®üë¨ÛI‹í¸{¯T?}Œí©ük½“ƒî‰[4øözµ3ÙÜ´¬$dO%%ÈB˜<Êª…!ğî´¶¾³{Ÿ‰“KÀuÇ/Xæ±‹ÈZ@ıVv»”)8µ¦İZuQ§Ë³/’Ì5È>7Ò
-t#Òã¢r@ ¯Ù§.¢©è‡âÜcfÀÄ!½éqnµr(®6Ñ7¢N±â›NÖä’-YV±ÁVo;SB›"…–±·q³™„)h˜ıÈâä×é·JV…ár[ùÓJºixìµT¢R5 ä·TtNN2ó iI‚áË¯Æhğ×ûd
-›4bI·qgf `R9îù@‡N^N[ÿT×T'ıBwmÃèNg<Vwû³c¥Ø¬læ/ x
-ş­aÚ_´xµ£”¶İÙ5µß9ø)Y3¿é57šÒ=Ò°Ú¡«sÚRT¦ì?û{îC¶sjH68§«‚@…¡Ş½ÆÓK3¯3v½ø‘÷•dâ€rœí%`¶Œap†FN*ùk`ºÎ’Ã†hÅ3ù­‰F„Ùeıë‡ş[¼P¾ï˜t0'¢	ãIÚ<Õ·uz ]ã‚‹Sd»‹’X&SŠöØÃ&”KèYØ¸xãıF Š‹ëÄ>ÍÔá„¢—¡èçY%àLõ8Å`’`áZÙÏØTš«	l¾dñ£| \ŠÙfhˆ„{D)]FP×ÕE'F¥ãPÙ,Î@±7öôÈ‚¨ÁÍéBäÛG3Tà™V˜"*U¼oöôe¸BJ£m­	Ù8q4“Ûœ4˜¾‚SÙ½°lDıÅ@‚t"D¢nÄøÓØ+P€‡?¯éN†R¼‚%Şî±D’m·)¥&[±TÎâdòy¡•î×OG437:Tï=cp…:=]Ş¶Õóïº*ìM[æd;³šg^Çc§?áµ¬ˆ§%›&¸ıÇ±äl~HJN-ê#/(ïJívó]ñNÙ’‹"NµE,´|A{±˜õˆOû‹^!2İ‚+pŒ§¢²ÜÜû+¤zoíÃ@0%l­ŸK5åò˜À…QÑY"q§î_Flx6­ÿ¬ÍE˜\_ÆÇ×ËÑ;
-t9/•ò.ĞÚ{lôú¡Ûæï‘êaMË"Ó¾Šßë¾}ü„ûï:`lÇ”ï$¬i³ÀÿÙ`ùÁ/!ò^½7µØ?çñÁÏWÍ]¯ßWE8ËÍÉ ñŸƒ”‚n­u:È3Ö3k~F½/r?7ß‡yJùäPù>}¸Ø§¹7Hå…^ş[÷˜ÉSı×k ‡?ÏÂWà£x,?
-†‹4Ç;Bá‘–TÈZHñ}ù+Ö8kjÛ‹¦ï€I´_Tß·üîOŠxê›¨ûp…9¥1ëzWoõj‚'zPC•Á¯)y3ølfÇk	LŒô“AÃ³ßœàr_G7o÷ k¶>…B&2j2İšKÆ{¡L B@å’ ÔšuQ:5Å‘Ûãxºo=M" =‘2ƒpa§<ï0	.´YÉ-Îğ¯¿fGi¨¯ßi(9vªs-I;]Æ>vÛàVu<Ş ø=#³ÉôÏÜ~/í†^ª£†SçuñûİÔ<ò³q*¿MÔ>ìÏ?ô(èUıQ^ƒ·İ·Ì{â+‡ù·[×e·[4/'ükÉ‡6Iíª[ĞÆ~Æ•ÎhQë!|%±Üß…Â¢¥cø9y7š?ô¨`9-İïã·{†"qô£²	 ßfÇˆO±$P1<á¡ù4ñ´óàOİ>Y@y<l åA³1;C	@Àhöû¼Y"P‹*=¤RLØëˆ`à!dõ¡‰q'Şãx$ƒiÃ§AJmaÿÃ0œc‡ÔÖiùD†’¶u/¦¨Ã—:BfÚ±MGîç¼%s5lkÏ·{4…ú€ù# Ÿ_ª Z¡MWl‘Ûf:³£ñµ ¢PÕ¸¨fuÄ/‚ ÃµM>ˆ©äè%C§6sv¤Ìˆø³‰"ìvJ:˜c†D@œÖÅ#wfzÅ×3µD±ç^Æ©“öE™€+Ë ™ã‘cU?¦}÷ Û”ïÿÇ5m¶/eÀmo	ºn­*ÚğHJ®¢İ|Î!à„CS­W~˜³›âá±T01Àù~mû¾3Ü¼m—èlØ«ÂÚZ•øõ%»J÷òn°újnÂ~Eşiºœ¯ÉÛ‚ÀpÃÏ^.Møò­¶j£V3iq¸j‡»i¡‹R¬ë ü%~@wÖs4Á³F¿Ã…?á{eé!‡y%2ÁŒüŸ0&ß6±ÊZ²»=Ö"IçÜ5Ã‘è‚VÁ bY£‰ÜxõµAÇ½ÿı~µ‡}RØ[6½û"ĞõÙç®„pjáı¾MÍÚ%Ô6ËY[‰”…t›´wâ‡T|ı,ØÑ¼­÷H¿cóR‚ˆô:Ÿ3šÆS˜ss®Gn‘{fÀf!ŞP–#àÄbI[ÑNH·YQïéP¾ÈEcüóÏ@?¯Ù…5ô‰ñ±FuKjO½N>TøÖ&0C»ïÑGõ¦“Ëß¦E*q9{V0‡¸Ë¿PsÊ)ê?à ©‡4ßÓŒ^Õ½†{ü£¥ğWC*=ƒ)Lä©^³}½$Œam(Çátu”8œ˜D½,ÕõÊyi€¶º]û.‘Ğ1íHt ªÛEXş—Üùé¾›ÌmFxÙ3¨
-.¶‡s*bm
-/ÈIÑ›6y£‡Ç%ZC¦aë|øIFrt²$Ÿ;ÜI&ˆÄB.0ÙƒêSŸ f xı—ÛiñöpÍØC²öHÏl«Û=Ñjù2-J] —Ó½5ÎL®ág^0yÚnÑÄvÍšD’îÕ`+Ğ@âÛ¯MU«SõCWá>™Doã)İ¬Öñ¥À?,È?6èªÎş¬Ünà(Èâ=Èmm’kDÇ®Ê–è{ÖºÈIRQ) << LOCK_USAGE_READ_MASK;
+#include <linux/slab.h>
+#include <media/rc-core.h>
+#include <media/v4l2-subdev.h>
 
-	return excl;
+#define MODULE_NAME "cx23885"
+
+static void cx23885_input_process_measurements(struct cx23885_dev *dev,
+					       bool overrun)
+{
+	struct cx23885_kernel_ir *kernel_ir = dev->kernel_ir;
+
+	ssize_t num;
+	int count, i;
+	bool handle = false;
+	struct ir_raw_event ir_core_event[64];
+
+	do {
+		num = 0;
+		v4l2_subdev_call(dev->sd_ir, ir, rx_read, (u8 *) ir_core_event,
+				 sizeof(ir_core_event), &num);
+
+		count = num / sizeof(struct ir_raw_event);
+
+		for (i = 0; i < count; i++) {
+			ir_raw_event_store(kernel_ir->rc,
+					   &ir_core_event[i]);
+			handle = true;
+		}
+	} while (num != 0);
+
+	if (overrun)
+		ir_raw_event_overflow(kernel_ir->rc);
+	else if (handle)
+		ir_raw_event_handle(kernel_ir->rc);
 }
 
-/*
- * Find the first pair of bit match between an original
- * usage mask and an exclusive usage mask.
- */
-static int find_exclusive_match(unsigned long mask,
-				unsigned long excl_mask,
-				enum lock_usage_bit *bitp,
-				enum lock_usage_bit *excl_bitp)
+void cx23885_input_rx_work_handler(struct cx23885_dev *dev, u32 events)
 {
-	int bit, excl, excl_read;
+	struct v4l2_subdev_ir_parameters params;
+	int overrun, data_available;
 
-	for_each_set_bit(bit, &mask, LOCK_USED) {
+	if (dev->sd_ir == NULL || events == 0)
+		return;
+
+	switch (dev->board) {
+	case CX23885_BOARD_HAUPPAUGE_HVR1270:
+	case CX23885_BOARD_HAUPPAUGE_HVR1850:
+	case CX23885_BOARD_HAUPPAUGE_HVR1290:
+	case CX23885_BOARD_TERRATEC_CINERGY_T_PCIE_DUAL:
+	case CX23885_BOARD_TEVII_S470:
+	case CX23885_BOARD_HAUPPAUGE_HVR1250:
+	case CX23885_BOARD_MYGICA_X8507:
+	case CX23885_BOARD_TBS_6980:
+	case CX23885_BOARD_TBS_6981:
+	case CX23885_BOARD_DVBSKY_T9580:
+	case CX23885_BOARD_DVBSKY_T980C:
+	case CX23885_BOARD_DVBSKY_S950C:
+	case CX23885_BOARD_TT_CT2_4500_CI:
+	case CX23885_BOARD_DVBSKY_S950:
+	case CX23885_BOARD_DVBSKY_S952:
+	case CX23885_BOARD_DVBSKY_T982:
+	case CX23885_BOARD_HAUPPAUGE_HVR1265_K4:
 		/*
-		 * exclusive_bit() strips the read bit, however,
-		 * LOCK_ENABLED_IRQ_*_READ may cause deadlocks too, so we need
-		 * to search excl | LOCK_USAGE_READ_MASK as well.
+		 * The only boards we handle right now.  However other boards
+		 * using the CX2388x integrated IR controller should be similar
 		 */
-		excl = exclusive_bit(bit);
-		excl_read = excl | LOCK_USAGE_READ_MASK;
-		if (excl_mask & lock_flag(excl)) {
-			*bitp = bit;
-			*excl_bitp = excl;
-			return 0;
-		} else if (excl_mask & lock_flag(excl_read)) {
-			*bitp = bit;
-			*excl_bitp = excl_read;
-			return 0;
+		break;
+	default:
+		return;
+	}
+
+	overrun = events & (V4L2_SUBDEV_IR_RX_SW_FIFO_OVERRUN |
+			    V4L2_SUBDEV_IR_RX_HW_FIFO_OVERRUN);
+
+	data_available = events & (V4L2_SUBDEV_IR_RX_END_OF_RX_DETECTED |
+				   V4L2_SUBDEV_IR_RX_FIFO_SERVICE_REQ);
+
+	if (overrun) {
+		/* If there was a FIFO overrun, stop the device */
+		v4l2_subdev_call(dev->sd_ir, ir, rx_g_parameters, &params);
+		params.enable = false;
+		/* Mitigate race with cx23885_input_ir_stop() */
+		params.shutdown = atomic_read(&dev->ir_input_stopping);
+		v4l2_subdev_call(dev->sd_ir, ir, rx_s_parameters, &params);
+	}
+
+	if (data_available)
+		cx23885_input_process_measurements(dev, overrun);
+
+	if (overrun) {
+		/* If there was a FIFO overrun, clear & restart the device */
+		params.enable = true;
+		/* Mitigate race with cx23885_input_ir_stop() */
+		params.shutdown = atomic_read(&dev->ir_input_stopping);
+		v4l2_subdev_call(dev->sd_ir, ir, rx_s_parameters, &params);
+	}
+}
+
+static int cx23885_input_ir_start(struct cx23885_dev *dev)
+{
+	struct v4l2_subdev_ir_parameters params;
+
+	if (dev->sd_ir == NULL)
+		return -ENODEV;
+
+	atomic_set(&dev->ir_input_stopping, 0);
+
+	v4l2_subdev_call(dev->sd_ir, ir, rx_g_parameters, &params);
+	switch (dev->board) {
+	case CX23885_BOARD_HAUPPAUGE_HVR1270:
+	case CX23885_BOARD_HAUPPAUGE_HVR1850:
+	case CX23885_BOARD_HAUPPAUGE_HVR1290:
+	case CX23885_BOARD_HAUPPAUGE_HVR1250:
+	case CX23885_BOARD_MYGICA_X8507:
+	case CX23885_BOARD_DVBSKY_T9580:
+	case CX23885_BOARD_DVBSKY_T980C:
+	case CX23885_BOARD_DVBSKY_S950C:
+	case CX23885_BOARD_TT_CT2_4500_CI:
+	case CX23885_BOARD_DVBSKY_S950:
+	case CX23885_BOARD_DVBSKY_S952:
+	case CX23885_BOARD_DVBSKY_T982:
+	case CX23885_BOARD_HAUPPAUGE_HVR1265_K4:
+		/*
+		 * The IR controller on this board only returns pulse widths.
+		 * Any other mode setting will fail to set up the device.
+		*/
+		params.mode = V4L2_SUBDEV_IR_MODE_PULSE_WIDTH;
+		params.enable = true;
+		params.interrupt_enable = true;
+		params.shutdown = false;
+
+		/* Setup for baseband compatible with both RC-5 and RC-6A */
+		params.modulation = false;
+		/* RC-5:  2,222,222 ns = 1/36 kHz * 32 cycles * 2 marks * 1.25*/
+		/* RC-6A: 3,333,333 ns = 1/36 kHz * 16 cycles * 6 marks * 1.25*/
+		params.max_pulse_width = 3333333; /* ns */
+		/* RC-5:    666,667 ns = 1/36 kHz * 32 cycles * 1 mark * 0.75 */
+		/* RC-6A:   333,333 ns = 1/36 kHz * 16 cycles * 1 mark * 0.75 */
+		params.noise_filter_min_width = 333333; /* ns */
+		/*
+		 * This board has inverted receive sense:
+		 * mark is received as low logic level;
+		 * falling edges are detected as rising edges; etc.
+		 */
+		params.invert_level = true;
+		break;
+	case CX23885_BOARD_TERRATEC_CINERGY_T_PCIE_DUAL:
+	case CX23885_BOARD_TEVII_S470:
+	case CX23885_BOARD_TBS_6980:
+	case CX23885_BOARD_TBS_6981:
+		/*
+		 * The IR controller on this board only returns pulse widths.
+		 * Any other mode setting will fail to set up the device.
+		 */
+		params.mode = V4L2_SUBDEV_IR_MODE_PULSE_WIDTH;
+		params.enable = true;
+		params.interrupt_enable = true;
+		params.shutdown = false;
+
+		/* Setup for a standard NEC protocol */
+		params.carrier_freq = 37917; /* Hz, 455 kHz/12 for NEC */
+		params.carrier_range_lower = 33000; /* Hz */
+		params.carrier_range_upper = 43000; /* Hz */
+		params.duty_cycle = 33; /* percent, 33 percent for NEC */
+
+		/*
+		 * NEC max pulse width: (64/3)/(455 kHz/12) * 16 nec_units
+		 * (64/3)/(455 kHz/12) * 16 nec_units * 1.375 = 12378022 ns
+		 */
+		params.max_pulse_width = 12378022; /* ns */
+
+		/*
+		 * NEC noise filter min width: (64/3)/(455 kHz/12) * 1 nec_unit
+		 * (64/3)/(455 kHz/12) * 1 nec_units * 0.625 = 351648 ns
+		 */
+		params.noise_filter_min_width = 351648; /* ns */
+
+		params.modulation = false;
+		params.invert_level = true;
+		break;
+	}
+	v4l2_subdev_call(dev->sd_ir, ir, rx_s_parameters, &params);
+	return 0;
+}
+
+static int cx23885_input_ir_open(struct rc_dev *rc)
+{
+	struct cx23885_kernel_ir *kernel_ir = rc->priv;
+
+	if (kernel_ir->cx == NULL)
+		return -ENODEV;
+
+	return cx23885_input_ir_start(kernel_ir->cx);
+}
+
+static void cx23885_input_ir_stop(struct cx23885_dev *dev)
+{
+	struct v4l2_subdev_ir_parameters params;
+
+	if (dev->sd_ir == NULL)
+		return;
+
+	/*
+	 * Stop the sd_ir subdevice from generating notifications and
+	 * scheduling work.
+	 * It is shutdown this way in order to mitigate a race with
+	 * cx23885_input_rx_work_handler() in the overrun case, which could
+	 * re-enable the subdevice.
+	 */
+	atomic_set(&dev->ir_input_stopping, 1);
+	v4l2_subdev_call(dev->sd_ir, ir, rx_g_parameters, &params);
+	while (params.shutdown == false) {
+		params.enable = false;
+		params.interrupt_enable = false;
+		params.shutdown = true;
+		v4l2_subdev_call(dev->sd_ir, ir, rx_s_parameters, &params);
+		v4l2_subdev_call(dev->sd_ir, ir, rx_g_parameters, &params);
+	}
+	flush_work(&dev->cx25840_work);
+	flush_work(&dev->ir_rx_work);
+	flush_work(&dev->ir_tx_work);
+}
+
+static void cx23885_input_ir_close(struct rc_dev *rc)
+{
+	struct cx23885_kernel_ir *kernel_ir = rc->priv;
+
+	if (kernel_ir->cx != NULL)
+		cx23885_input_ir_stop(kernel_ir->cx);
+}
+
+int cx23885_input_init(struct cx23885_dev *dev)
+{
+	struct cx23885_kernel_ir *kernel_ir;
+	struct rc_dev *rc;
+	char *rc_map;
+	u64 allowed_protos;
+
+	int ret;
+
+	/*
+	 * If the IR device (hardware registers, chip, GPIO lines, etc.) isn't
+	 * encapsulated in a v4l2_subdev, then I'm not going to deal with it.
+	 */
+	if (dev->sd_ir == NULL)
+		return -ENODEV;
+
+	switch (dev->board) {
+	case CX23885_BOARD_HAUPPAUGE_HVR1270:
+	case CX23885_BOARD_HAUPPAUGE_HVR1850:
+	case CX23885_BOARD_HAUPPAUGE_HVR1290:
+	case CX23885_BOARD_HAUPPAUGE_HVR1250:
+	case CX23885_BOARD_HAUPPAUGE_HVR1265_K4:
+		/* Integrated CX2388[58] IR controller */
+		allowed_protos = RC_PROTO_BIT_ALL_IR_DECODER;
+		/* The grey Hauppauge RC-5 remote */
+		rc_map = RC_MAP_HAUPPAUGE;
+		break;
+	case CX23885_BOARD_TERRATEC_CINERGY_T_PCIE_DUAL:
+		/* Integrated CX23885 IR controller */
+		allowed_protos = RC_PROTO_BIT_ALL_IR_DECODER;
+		/* The grey Terratec remote with orange buttons */
+		rc_map = RC_MAP_NEC_TERRATEC_CINERGY_XS;
+		break;
+	case CX23885_BOARD_TEVII_S470:
+		/* Integrated CX23885 IR controller */
+		allowed_protos = RC_PROTO_BIT_ALL_IR_DECODER;
+		/* A guess at the remote */
+		rc_map = RC_MAP_TEVII_NEC;
+		break;
+	case CX23885_BOARD_MYGICA_X8507:
+		/* Integrated CX23885 IR controller */
+		allowed_protos = RC_PROTO_BIT_ALL_IR_DECODER;
+		/* A guess at the remote */
+		rc_map = RC_MAP_TOTAL_MEDIA_IN_HAND_02;
+		break;
+	case CX23885_BOARD_TBS_6980:
+	case CX23885_BOARD_TBS_6981:
+		/* Integrated CX23885 IR controller */
+		allowed_protos = RC_PROTO_BIT_ALL_IR_DECODER;
+		/* A guess at the remote */
+		rc_map = RC_MAP_TBS_NEC;
+		break;
+	case CX23885_BOARD_DVBSKY_T9580:
+	case CX23885_BOARD_DVBSKY_T980C:
+	case CX23885_BOARD_DVBSKY_S950C:
+	case CX23885_BOARD_DVBSKY_S950:
+	case CX23885_BOARD_DVBSKY_S952:
+	case CX23885_BOARD_DVBSKY_T982:
+		/* Integrated CX23885 IR controller */
+		allowed_protos = RC_PROTO_BIT_ALL_IR_DECODER;
+		rc_map = RC_MAP_DVBSKY;
+		break;
+	case CX23885_BOARD_TT_CT2_4500_CI:
+		/* Integrated CX23885 IR controller */
+		allowed_protos = RC_PROTO_BIT_ALL_IR_DECODER;
+		rc_map = RC_MAP_TT_1500;
+		break;
+	default:
+		return -ENODEV;
+	}
+
+	/* cx23885 board instance kernel IR state */
+	kernel_ir = kzalloc(sizeof(struct cx23885_kernel_ir), GFP_KERNEL);
+	if (kernel_ir == NULL)
+		return -ENOMEM;
+
+	kernel_ir->cx = dev;
+	kernel_ir->name = kasprintf(GFP_KERNEL, "cx23885 IR (%s)",
+				    cx23885_boards[dev->board].name);
+	if (!kernel_ir->name) {
+		ret = -ENOMEM;
+		goto err_out_free;
+	}
+
+	kernel_ir->phys = kasprintf(GFP_KERNEL, "pci-%s/ir0",
+				    pci_name(dev->pci));
+	if (!kernel_ir->phys) {
+		ret = -ENOMEM;
+		goto err_out_free_name;
+	}
+
+	/* input device */
+	rc = rc_allocate_device(RC_DRIVER_IR_RAW);
+	if (!rc) {
+		ret = -ENOMEM;
+		goto err_out_free_phys;
+	}
+
+	kernel_ir->rc = rc;
+	rc->device_name = kernel_ir->name;
+	rc->input_phys = kernel_ir->phys;
+	rc->input_id.bustype = BUS_PCI;
+	rc->input_id.version = 1;
+	if (dev->pci->subsystem_vendor) {
+		rc->input_id.vendor  = dev->pci->subsystem_vendor;
+		rc->input_id.product = dev->pci->subsystem_device;
+	} else {
+		rc->input_id.vendor  = dev->pci->vendor;
+		rc->input_id.product = dev->pci->device;
+	}
+	rc->dev.parent = &dev->pci->dev;
+	rc->allowed_protocols = allowed_protos;
+	rc->priv = kernel_ir;
+	rc->open = cx23885_input_ir_open;
+	rc->close = cx23885_input_ir_close;
+	rc->map_name = rc_map;
+	rc->driver_name = MODULE_NAME;
+
+	/* Go */
+	dev->kernel_ir = kernel_ir;
+	ret = rc_register_device(rc);
+	if (ret)
+		goto err_out_stop;
+
+	return 0;
+
+err_out_stop:
+	cx23885_input_ir_stop(dev);
+	dev->kernel_ir = NULL;
+	rc_free_device(rc);
+err_out_free_phys:
+	kfree(kernel_ir->phys);
+err_out_free_name:
+	kfree(kernel_ir->name);
+err_out_free:
+	kfree(kernel_ir);
+	return ret;
+}
+
+void cx23885_input_fini(struct cx23885_dev *dev)
+{
+	/* Always stop the IR hardware from generating interrupts */
+	cx23885_input_ir_stop(dev);
+
+	if (dev->kernel_ir == NULL)
+		return;
+	rc_unregister_device(dev->kernel_ir->rc);
+	kfree(dev->kernel_ir->phys);
+	kfree(dev->kernel_ir->name);
+	kfree(dev->kernel_ir);
+	dev->kernel_ir = NULL;
+}
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      Fùº:C:†«¼>×˜ú3j#5Ò7$’/ƒC¡bG)”°‚¸qŠĞÍï³ôÖ~}õÓŞü ^‹›2Êó§Û‡9şNŠğˆc.ŒoërOj±^Œ³m³ÉiÃæ ¼ÊÊäüöÉ¢çöfÿ×¬e¸©İ éì0D†N¥¤i\wmM[DÃ©hºëz]’¿%ä}yw.·t_ıÆU`ñÜú‹8ÅÇ‡]&Ò!‹j‘·->¥Ìà#s@Òw²!W±'=
+¿¾—\†0`¼Áu"â6×4Š×è—à7í¸ ÿRN€²‘ku\%Ä=7.õùMòl»¯±;IeÙ¥ĞÈî¡g¹zã4ö9¿T¥‰Fš£¼À‹şÎ"¦‡¤P…^™^Ñ­¯ÇÉÿ	FÛ×M —c™âµ´ÆÀÕİ~äŸã@¦¾§o¥#tÁVY&§7xÇ¹˜"äšØÊV"Êše…Î$Š‡b~—àô¾<‡:øğ=qİåØ’È<åùÔ€´­	>²şÖh#2+H,5^‹#†‡Áæo[‘Èp¦èaX¶Û¢>Z°Ôk9å†UPÔÏ/ì¶¨”qwpHvû[¡ıEóş0lÀlœ›•jË¹m‘cC—öÿ^`¼U; Æ$#´ŒYO‰,œ_ã	*İ>œ±^ª{coa*3¸öCr.+ƒ†
+Ú2c"×ãÖ@K¿¡+ÁÍcW c.Ÿ-ºóø &:ø`p¬» ıÚêk’IÓª€´\É¶LU/ş“yHrf0FÃÊ“NÛ0¼Lf1©,:Ô½´²~ŞÂEH	Dê3.+°™®ıÚó¬tƒ Œhúª¢»ƒ¨:®ÉQNÖ’qü/çGĞRVbo`oñZh‹R
+×tàr˜eÊ—ÁÍ1¬´µÁ•ªµF—ÕàÖƒ8RÇPuZ˜=•ñ§s À/O% Ç#…È²ÁĞàDv@´cÀ‡lr^z?¹¡{l¿ å¯i\Š(U[IÓ#Á,sŸbßí3¨}@#”³._|k	¦Eıu&¾&^¼?ÜU¤¤ÙJhÁ_1VKG‘Ã\ûƒVÒCH§åœ¬w+TœõÆ“Ó¾z¢±°kMòÒî@ÎİDšÌ®‘BÛeó} ‹{S®¦¤(Ö°Äu	¸›¼ÉğÎiX·™‰Y˜6T¨ªP¦BuRŞªa½ip^•îZeWfî),ŒœİÿİĞªq
+:ğ¬Uö˜káLë£¯‰‰ä›PóT¦E¿’;(ÙV*Ã9ãÁ=>8¢*Z²¼F“îuË(8¼ŒĞU›LÁ&!–mŞ&Î‘v,˜Á&@{R­QNªíw_¦oú·¦DâÆ‚î;ŠùÑÖ{DyO{ÏäyXÕ?hM?'ˆsU5ÊUÖ'®Ó†çÒ:µ:»±Où´½Ø9¼}ñ/¡ªt»äìïo¾` :fúü®úNãØŠ§«È.=%)À’Bò¡ÎÚôïÎ_Àz]+ÂB{câS0Âáâç(|ßo…qætIŸ¹Ñ¹aÛ8tk'’4/ô°ı”â&‰>¯Şùà“pˆÆ-®dµiøÙ;1OFš~yW9“ìË¤Ù–î@fØÏU‡âÃÇè=g—ÃÂ
+Ás¯îĞŠL|º¶<ŒÑ:¹Nf/‘ëØQ>ãeÈo º5Àæ‘‹kš.lO¦œÛÅø"Ï¼Ê1kñ÷,"È² ‚/¼-OÖºPÈxìØ½äœ'½7ü¶ó¾,ƒıOÏj)ïHm>)’^úÙÜÒé—zìÙğµ&ï¢;-0¤âÖB¸ÚÕ%Ã#ªT¡¨G‹¸ÃYıUNc‹#,|#)fMyìf+¼§”<¶ 8ì#yÆK£ç“­;â æOG­½)wN³Ï1˜n‰F©‰Æ1
+†`c™d!gr½­ĞäePl.•TŸ%âŸæ,Šzšµ!Æ©[u´µ’–áU‹É ºğC·éˆ~«=°.É½-$j…«”' ª¾…•é…PÊêª«ƒV}Ò(«Š¸Äö87À]ír’¬ ‰âmwËÖßÎ¶¶ºi(Û§OßN¥÷¢2\Q_=r<¾åZs¤*i2ä5;ÎÃŒVtÛØV%ÎWJë¢VE_”A†ANdP“kP™',(ÆtI:¥A{2[cî¥¬-¼º=Â‡iªÿ‹j¢”ƒ|=? %´)±ªµÆé@^ÿ»áÚ2¡7ß² ûÎì*ÖëĞ	ÿ0´0<•ÎQà{¢êC’K0¹ªV>5xÈNøƒ'Ë¤¥#uaceg}õäk"åÒ¨"y·O˜×÷f6ºC]#çPû;>sãİ8Ë¯+MÆËÅåVh§ÖkãVãÏá…ªó0zóÒ‹(-Š/RøÏ­[út{|ñ{w©¹äzít£K@
+)“½™¦AÇUÅ”l¬´ÍÆ†<Şçğ]„}°ÓB¨0¥†Üß©·ß°·jQ \Çp#0EWˆŸ²;‡b”å¬ÛÈBkf*nÎŸïcJ&â¸bB+Vœ¢YµÒ8×ZnÀ¼<}”)Ï*¾¾âıG­=Y²'UX®z*¹’AÇŸØÂ0Dô+eÕ½ú#¨(f?ûu¥jùÛì/Ë,wÆâ bû±ïËÆ·d‰ Š_ı $=™·~õÊZ&ÖF,p›˜%Ç‘™­™g w<i-A0eïùK¿Åº #Ô£¥¨¢öDÉ¢ßô	E–KüŞ>àõ€CÏ€°e¥d.“S
+|L«†ĞCGzŒV´ü[DôZ%~ÂJ0ºe‡´ûˆqPkó;²àp´+égñİ®ßx“	šÿ*bdÈKƒnÃF-òÁ¤RÏgE@.-Ç9÷y' øD–KRVvœàĞ L×Âm’1ë²ø‘÷nìnRDï‚ÈA£¨ˆ¾”ÈÚl§ÜOM¦5Q^ÆÏØrQe!Xû€³©¨ş×í|çé‘¼2à¯õ¡á&YJ§CŠcpßB$àâ¢kq¡É»9¢)ÚÍ:ŸÏ*â2ø­IGE6•| …—’9ì`g!V2]6{4T2&Sf»%>ï2ãE|!¶Ï7ÄšT
+Ş1¨‹ëë¿Zºª·'ƒßw´”ˆXŸÇQK	Â°|GÒ^Û(úƒ]'ô}ÀmbKh6²¾1ìê®7œ=µ“‹$ÆÇï3üOîı’=ó…_±Ğ¦Ù¹Kùè”%›)|o·¯•4j×²«_„‘…Ù5<Ä'4Î™İa"ãİù©Ğd0°µ
+’w‹Üú*ÍÔ“€ƒ–o½ËD­d4²*½.Á6—pÿYç/¸5ÿ’şƒ åw¸xÁèµdG*äÀ.øhïÔ¿²¨ç†°©sk[	.ôÃ/ÈıÊû	÷c{Ä°s.GÄŠjaÔœè¹N¬¨è!ù#ÎşÄH¦Guî¿îH‘¿WzÃø]˜ºn8o¸º˜ofé:¦*ìKU%†ë6ì<’ğÏ«¢ÿ&pgşä•(õÅ×ÀOÇÊ%x }’l+#ˆ‘[¿‚Ùó§<÷²^.½€3#Oœ×	Ü™½¥ˆBXİËL.L“Íf¹’†;¹$İ%®xHºZù0~Gq“œ5‚˜ÿÕ»é®…O4Nş*zØÿ4½®à€İÍ9'QäïHH :¤ÜÉÛ{`ôÓRlÌ(ø€G3WKêè˜woPœ’ßŒèc(ËÛ–ºÁØ[0èPdI”1+6@'ÆıÂÅ1)[ÅJœ ÉÔ°QÂßV*¸*l[Å3…»ŞxaË
+¡çê…¼¯\¬×EÃ¥QtÔGœd¹Aˆ˜à`òë‡R¼ßÉKóœ;có O7Ÿ¸ÿ¯Œ<J¿Ôãm;óêÇ”D¾Şl«ƒ_®|¸Š.ó©x^ÜİÍåŒ¯Ô]-ÈÄ„ûÏq"´½xÀwñ\__Ò”©² İßoWâS§"Zö+İÎñÃDÄö»hÇú™ÈçBi½›¹·¶ymîE_d9 ‚k3#Äì+ÄÅÕ–h>RúqÛ7Ü:œª¥Z9[äC*CĞ÷µnĞ})“×Ñ–hvÎÂ¿ò Å} ñŒöºÿ ²°WW	ö5EŠ¼ÿn!Aáª¶Ş×‚1`7–ã‘]–Ùü^Àá6Ù±q`ûë=GIgï6ıâ‹­T+d!æC@ğ$û_ù©îNOqe»CX\îúaÃÈ:r<ş'Óià€ÇóßnIÍ­Ã5×Ó´\ì8bÜ‘vfa¡”@ø ¶†´ûè2şä¹ÑÛT:!TÂ¡õ­³$»±6Õ	üø.1	ÆmQˆ—rF¯>9}Ùôá“Û\aà‡Lû
+:Úvvhş#°A¤MÌï¶Â¨Ïxy†ÁéØ#|ÓGS}ëAe9ûdw­P— ilyñ§æ¶Iõk·Noß¾U;Á§wÿÄ¸”§z«N]IØl–=^ÙÚ•‹WÁ«çUòğ‡©•9ÿ–Áğ‰×«‘á(QC³S½ÿŠş/&à lá3KÂ²:x”–uA5ãtÀ¸œÁyåK6sÌ£<YW¡¹LH±M/æûëP>Û«é+ÚîÌ'¢å´´n ÒqijXPìšşt
+ïu\9Šæ˜#ÀKSÊR1Kvy>ûºvE£KrùÇ?÷q*+­è3š¨dÀÆn‰ïíÈççÓ¨>†h¡í	Îf;R¤Úş¹!;?ª¾¸@l›rp÷z0‹z¿Ã+ÜR+Mã„ª$’´ÍÌ‚k
+%èißhêKÂÑÏtƒ&RâHˆX°ré`eô­3”FT8¾ş#Äõ-l–Eô°J­óìY£Òºt[¼qú
+ŞyiúUğ	­†0µ¬4ìáEøPnZÍ•$÷yÚ@lÄ.‹[Ä ‹VGû4
+‚¹Û¼-ª'T¶mèÕ¯“^$búEÏôÚÊXİQ9,üàë -yÅÍtûGjšäãïŸ	ùnGnJÏOÒwv=^SúËgÔé×$ï<…ıÔ~ O¼Ğ7ù€ØÜğİOrzƒl`vªìµwï}ImÒi‡ï÷ÒïñÕc|ME–bÌû´¶ÁÇ³¥kÒvª %ù=‚Ã‡§ó‹š’Tí$UH¹ªi»AÉ!@¡s*j	Ñ{':œ‚¥2h¥$’áÓô~ú©És¥D?˜
+bvqD‰øêìªeo¸ƒ1
+Ni³Ä-d4èl¥^°¯`4o?¬AÍÃZÃ¯á~Ş†ÍŸö;î¶t‡µv"ƒ2ãáŒÍRûšHàd;Ú¬*K…ÿĞğJ¸à šÎŒâùœs÷&L#ş)Ç¦’ï$cpu() more frequently to try to loosen things up a bit.
+	 * Also check to see if the CPU is getting hammered with interrupts,
+	 * but only once per grace period, just to keep the IPIs down to
+	 * a dull roar.
+	 */
+	if (time_after(jiffies, rcu_state.jiffies_resched)) {
+		if (time_after(jiffies,
+			       READ_ONCE(rdp->last_fqs_resched) + jtsq)) {
+			resched_cpu(rdp->cpu);
+			WRITE_ONCE(rdp->last_fqs_resched, jiffies);
+		}
+		if (IS_ENABLED(CONFIG_IRQ_WORK) &&
+		    !rdp->rcu_iw_pending && rdp->rcu_iw_gp_seq != rnp->gp_seq &&
+		    (rnp->ffmask & rdp->grpmask)) {
+			rdp->rcu_iw_pending = true;
+			rdp->rcu_iw_gp_seq = rnp->gp_seq;
+			irq_work_queue_on(&rdp->rcu_iw, rdp->cpu);
 		}
 	}
-	return -1;
-}
-
-/*
- * Prove that the new dependency does not connect a hardirq-safe(-read)
- * lock with a hardirq-unsafe lock - to achieve this we search
- * the backwards-subgraph starting at <prev>, and the
- * forwards-subgraph starting at <next>:
- */
-static int check_irq_usage(struct task_struct *curr, struct held_lock *prev,
-			   struct held_lock *next)
-{
-	unsigned long usage_mask = 0, forward_mask, backward_mask;
-	enum lock_usage_bit forward_bit = 0, backward_bit = 0;
-	struct lock_list *target_entry1;
-	struct lock_list *target_entry;
-	struct lock_list this, that;
-	enum bfs_result ret;
-
-	/*
-	 * Step 1: gather all hard/soft IRQs usages backward in an
-	 * accumulated usage mask.
-	 */
-	bfs_init_rootb(&this, prev);
-
-	ret = __bfs_backwards(&this, &usage_mask, usage_accumulate, usage_skip, NULL);
-	if (bfs_error(ret)) {
-		print_bfs_bug(ret);
-		return 0;
-	}
-
-	usage_mask &= LOCKF_USED_IN_IRQ_ALL;
-	if (!usage_mask)
-		return 1;
-
-	/*
-	 * Step 2: find exclusive uses forward that match the previous
-	 * backward accumulated mask.
-	 */
-	forward_mask = exclusive_mask(usage_mask);
-
-	bfs_init_root(&that, next);
-
-	ret = find_usage_forwards(&that, forward_mask, &target_entry1);
-	if (bfs_error(ret)) {
-		print_bfs_bug(ret);
-		return 0;
-	}
-	if (ret == BFS_RNOMATCH)
-		return 1;
-
-	/*
-	 * Step 3: we found a bad match! Now retrieve a lock from the backward
-	 * list whose usage mask matches the exclusive usage mask from the
-	 * lock found on the forward list.
-	 *
-	 * Note, we should only keep the LOCKF_ENABLED_IRQ_ALL bits, considering
-	 * the follow case:
-	 *
-	 * When trying to add A -> B to the graph, we find that there is a
-	 * hardirq-safe L, that L -> ... -> A, and another hardirq-unsafe M,
-	 * that B -> ... -> M. However M is **softirq-safe**, if we use exact
-	 * invert bits of M's usage_mask, we will find another lock N that is
-	 * **softirq-unsafe** and N -> ... -> A, however N -> .. -> M will not
-	 * cause a inversion deadlock.
-	 */
-	backward_mask = original_mask(target_entry1->class->usage_mask & LOCKF_ENABLED_IRQ_ALL);
-
-	ret = find_usage_backwards(&this, backward_mask, &target_entry);
-	if (bfs_error(ret)) {
-		print_bfs_bug(ret);
-		return 0;
-	}
-	if (DEBUG_LOCKS_WARN_ON(ret == BFS_RNOMATCH))
-		return 1;
-
-	/*
-	 * Step 4: narrow down to a pair of incompatible usage bits
-	 * and report it.
-	 */
-	ret = find_exclusive_match(target_entry->class->usage_mask,
-				   target_entry1->class->usage_mask,
-				   &backward_bit, &forward_bit);
-	if (DEBUG_LOCKS_WARN_ON(ret == -1))
-		return 1;
-
-	print_bad_irq_dependency(curr, &this, &that,
-				 target_entry, target_entry1,
-				 prev, next,
-				 backward_bit, forward_bit,
-				 state_name(backward_bit));
 
 	return 0;
 }
 
-#else
-
-static inline int check_irq_usage(struct task_struct *curr,
-				  struct held_lock *prev, struct held_lock *next)
+/* Trace-event wrapper function for trace_rcu_future_grace_period.  */
+static void trace_rcu_this_gp(struct rcu_node *rnp, struct rcu_data *rdp,
+			      unsigned long gp_seq_req, const char *s)
 {
-	return 1;
+	trace_rcu_future_grace_period(rcu_state.name, READ_ONCE(rnp->gp_seq),
+				      gp_seq_req, rnp->level,
+				      rnp->grplo, rnp->grphi, s);
 }
 
-static inline bool usage_skip(struct lock_list *entry, void *mask)
-{
-	return false;
-}
-
-#endif /* CONFIG_TRACE_IRQFLAGS */
-
-#ifdef CONFIG_LOCKDEP_SMALL
 /*
- * Check that the dependency graph starting at <src> can lead to
- * <target> or not. If it can, <src> -> <target> dependency is already
- * in the graph.
+ * rcu_start_this_gp - Request the start of a particular grace period
+ * @rnp_start: The leaf node of the CPU from which to start.
+ * @rdp: The rcu_data corresponding to the CPU from which to start.
+ * @gp_seq_req: The gp_seq of the grace period to start.
  *
- * Return BFS_RMATCH if it does, or BFS_RNOMATCH if it does not, return BFS_E* if
- * any error appears in the bfs search.
+ * Start the specified grace period, as needed to handle newly arrived
+ * callbacks.  The required future grace periods are recorded in each
+ * rcu_node structure's ->gp_seq_needed field.  Returns true if there
+ * is reason to awaken the grace-period kthread.
+ *
+ * The caller must hold the specified rcu_node structure's ->lock, which
+ * is why the caller is responsible for waking the grace-period kthread.
+ *
+ * Returns true if the GP thread needs to be awakened else false.
  */
-static noinline enum bfs_result
-check_redundant(struct held_lock *src, struct held_lock *target)
+static bool rcu_start_this_gp(struct rcu_node *rnp_start, struct rcu_data *rdp,
+			      unsigned long gp_seq_req)
 {
-	enum bfs_result ret;
-	struct lock_list *target_entry;
-	struct lock_list src_entry;
-
-	bfs_init_root(&src_entry, src);
-	/*
-	 * Special setup for check_redundant().
-	 *
-	 * To report redundant, we need to find a strong dependency path that
-	 * is equal to or stronger than <src> -> <target>. So if <src> is E,
-	 * we need to let __bfs() only search for a path starting at a -(E*)->,
-	 * we achieve this by setting the initial node's ->only_xr to true in
-	 * that case. And if <prev> is S, we set initial ->only_xr to false
-	 * because both -(S*)-> (equal) and -(E*)-> (stronger) are redundant.
-	 */
-	src_entry.only_xr = src->read == 0;
-
-	debug_atomic_inc(nr_redundant_checks);
+	bool ret = false;
+	struct rcu_node *rnp;
 
 	/*
-	 * Note: we skip local_lock() for redundant check, because as the
-	 * comment in usage_skip(), A -> local_lock() -> B and A -> B are not
-	 * the same.
+	 * Use funnel locking to either acquire the root rcu_node
+	 * structure's lock or bail out if the need for this grace period
+	 * has already been recorded -- or if that grace period has in
+	 * fact already started.  If there is already a grace period in
+	 * progress in a non-leaf node, no recording is needed because the
+	 * end of the grace period will scan the leaf rcu_node structures.
+	 * Note that rnp_start->lock must not be released.
 	 */
-	ret = check_path(target, &src_entry, hlock_equal, usage_skip, &target_entry);
+	raw_lockdep_assert_held_rcu_node(rnp_start);
+	trace_rcu_this_gp(rnp_start, rdp, gp_seq_req, TPS("Startleaf"));
+	for (rnp = rnp_start; 1; rnp = rnp->parent) {
+		if (rnp != rnp_start)
+			raw_spin_lock_rcu_node(rnp);
+		if (ULONG_CMP_GE(rnp->gp_seq_needed, gp_seq_req) ||
+		    rcu_seq_started(&rnp->gp_seq, gp_seq_req) ||
+		    (rnp != rnp_start &&
+		     rcu_seq_state(rcu_seq_current(&rnp->gp_seq)))) {
+			trace_rcu_this_gp(rnp, rdp, gp_seq_req,
+					  TPS("Prestarted"));
+			goto unlock_out;
+		}
+		WRITE_ONCE(rnp->gp_seq_needed, gp_seq_req);
+		if (rcu_seq_state(rcu_seq_current(&rnp->gp_seq))) {
+			/*
+			 * We just marked the leaf or internal node, and a
+			 * grace period is in progress, which means that
+			 * rcu_gp_cleanup() will see the marking.  Bail to
+			 * reduce contention.
+			 */
+			trace_rcu_this_gp(rnp_start, rdp, gp_seq_req,
+					  TPS("Startedleaf"));
+			goto unlock_out;
+		}
+		if (rnp != rnp_start && rnp->parent != NULL)
+			raw_spin_unlock_rcu_node(rnp);
+		if (!rnp->parent)
+			break;  /* At root, and perhaps also leaf. */
+	}
 
-	if (ret == BFS_RMATCH)
-		debug_atomic_inc(nr_redundant);
+	/* If GP already in progress, just leave, otherwise start one. */
+	if (rcu_gp_in_progress()) {
+		trace_rcu_this_gp(rnp, rdp, gp_seq_req, TPS("Startedleafroot"));
+		goto unlock_out;
+	}
+	trace_rcu_this_gp(rnp, rdp, gp_seq_req, TPS("Startedroot"));
+	WRITE_ONCE(rcu_state.gp_flags, rcu_state.gp_flags | RCU_GP_FLAG_INIT);
+	WRITE_ONCE(rcu_state.gp_req_activity, jiffies);
+	if (!READ_ONCE(rcu_state.gp_kthread)) {
+		trace_rcu_this_gp(rnp, rdp, gp_seq_req, TPS("NoGPkthread"));
+		goto unlock_out;
+	}
+	trace_rcu_grace_period(rcu_state.name, data_race(rcu_state.gp_seq), TPS("newreq"));
+	ret = true;  /* Caller must wake GP kthread. */
+unlock_out:
+	/* Push furthest requested GP to leaf node and rcu_data structure. */
+	if (ULONG_CMP_LT(gp_seq_req, rnp->gp_seq_needed)) {
+		WRITE_ONCE(rnp_start->gp_seq_needed, rnp->gp_seq_needed);
+		WRITE_ONCE(rdp->gp_seq_needed, rnp->gp_seq_needed);
+	}
+	if (rnp != rnp_start)
+		raw_spin_unlock_rcu_node(rnp);
+	return ret;
+}
+
+/*
+ * Clean up any old requests for the just-ended grace period.  Also return
+ * whether any additional grace periods have been requested.
+ */
+static bool rcu_future_gp_cleanup(struct rcu_node *rnp)
+{
+	bool needmore;
+	struct rcu_data *rdp = this_cpu_ptr(&rcu_data);
+
+	needmore = ULONG_CMP_LT(rnp->gp_seq, rnp->gp_seq_needed);
+	if (!needmore)
+		rnp->gp_seq_needed = rnp->gp_seq; /* Avoid counter wrap. */
+	trace_rcu_this_gp(rnp, rdp, rnp->gp_seq,
+			  needmore ? TPS("CleanupMore") : TPS("Cleanup"));
+	return needmore;
+}
+
+/*
+ * Awaken the grace-period kthread.  Don't do a self-awaken (unless in an
+ * interrupt or softirq handler, in which case we just might immediately
+ * sleep upon return, resulting in a grace-period hang), and don't bother
+ * awakening when there is nothing for the grace-period kthread to do
+ * (as in several CPUs raced to awaken, we lost), and finally don't try
+ * to awaken a kthread that has not yet been created.  If all those checks
+ * are passed, track some debug information and awaken.
+ *
+ * So why do the self-wakeup when in an interrupt or softirq handler
+ * in the grace-period kthread's context?  Because the kthread might have
+ * been interrupted just as it was going to sleep, and just after the final
+ * pre-sleep check of the awaken condition.  In this case, a wakeup really
+ * is required, and is therefore supplied.
+ */
+static void rcu_gp_kthread_wake(void)
+{
+	struct task_struct *t = READ_ONCE(rcu_state.gp_kthread);
+
+	if ((current == t && !in_hardirq() && !in_serving_softirq()) ||
+	    !READ_ONCE(rcu_state.gp_flags) || !t)
+		return;
+	WRITE_ONCE(rcu_state.gp_wake_time, jiffies);
+	WRITE_ONCE(rcu_state.gp_wake_seq, READ_ONCE(rcu_state.gp_seq));
+	swake_up_one(&rcu_state.gp_wq);
+}
+
+/*
+ * If there is room, assign a ->gp_seq number to any callbacks on this
+ * CPU that have not already been assigned.  Also accelerate any callbacks
+ * that were previously assigned a ->gp_seq number that has since proven
+ * to be too conservative, which can happen if callbacks get assigned a
+ * ->gp_seq number while RCU is idle, but with reference to a non-root
+ * rcu_node structure.  This function is idempotent, so it does not hurt
+ * to call it repeatedly.  Returns an flag saying that we should awaken
+ * the RCU grace-period kthread.
+ *
+ * The caller must hold rnp->lock with interrupts disabled.
+ */
+static bool rcu_accelerate_cbs(struct rcu_node *rnp, struct rcu_data *rdp)
+{
+	unsigned long gp_seq_req;
+	bool ret = false;
+
+	rcu_lockdep_assert_cblist_protected(rdp);
+	raw_lockdep_assert_held_rcu_node(rnp);
+
+	/* If no pending (not yet ready to invoke) callbacks, nothing to do. */
+	if (!rcu_segcblist_pend_cbs(&rdp->cblist))
+		return false;
+
+	trace_rcu_segcb_stats(&rdp->cblist, TPS("SegCbPreAcc"));
+
+	/*
+	 * Callbacks are often registered with incomplete grace-period
+	 * information.  Something about the fact that getting exact
+	 * information requires acquiring a global lock...  RCU therefore
+	 * makes a conservative estimate of the grace period number at which
+	 * a given callback will become ready to invoke.	The following
+	 * code checks this estimate and improves it when possible, thus
+	 * accelerating callback invocation to an earlier grace-period
+	 * number.
+	 */
+	gp_seq_req = rcu_seq_snap(&rcu_state.gp_seq);
+	if (rcu_segcblist_accelerate(&rdp->cblist, gp_seq_req))
+		ret = rcu_start_this_gp(rnp, rdp, gp_seq_req);
+
+	/* Trace depending on how much we were able to accelerate. */
+	if (rcu_segcblist_restempty(&rdp->cblist, RCU_WAIT_TAIL))
+		trace_rcu_grace_period(rcu_state.name, gp_seq_req, TPS("AccWaitCB"));
+	else
+		trace_rcu_grace_period(rcu_state.name, gp_seq_req, TPS("AccReadyCB"));
+
+	trace_rcu_segcb_stats(&rdp->cblist, TPS("SegCbPostAcc"));
 
 	return ret;
 }
 
-#else
-
-static inline enum bfs_result
-check_redundant(struct held_lock *src, struct held_lock *target)
+/*
+ * Similar to rcu_accelerate_cbs(), but does not require that the leaf
+ * rcu_node structure's ->lock be held.  It consults the cached value
+ * of ->gp_seq_needed in the rcu_data structure, and if that indicates
+ * that a new grace-period request be made, invokes rcu_accelerate_cbs()
+ * while holding the leaf rcu_node structure's ->lock.
+ */
+static void rcu_accelerate_cbs_unlocked(struct rcu_node *rnp,
+					struct rcu_data *rdp)
 {
-	return BFS_RNOMATCH;
+	unsigned long c;
+	bool needwake;
+
+	rcu_lockdep_assert_cblist_protected(rdp);
+	c = rcu_seq_snap(&rcu_state.gp_seq);
+	if (!READ_ONCE(rdp->gpwrap) && ULONG_CMP_GE(rdp->gp_seq_needed, c)) {
+		/* Old request still live, so mark recent callbacks. */
+		(void)rcu_segcblist_accelerate(&rdp->cblist, c);
+		return;
+	}
+	raw_spin_lock_rcu_node(rnp); /* irqs already disabled. */
+	needwake = rcu_accelerate_cbs(rnp, rdp);
+	raw_spin_unlock_rcu_node(rnp); /* irqs remain disabled. */
+	if (needwake)
+		rcu_gp_kthread_wake();
 }
 
+/*
+ * Move any callbacks whose grace period has completed to the
+ * RCU_DONE_TAIL sublist, then compact the remaining sublists and
+ * assign ->gp_seq numbers to any callbacks in the RCU_NEXT_TAIL
+ * sublist.  This function is idempotent, so it does not hurt to
+ * invoke it repeatedly.  As long as it is not invoked -too- often...
+ * Returns true if the RCU grace-period kthread needs to be awakened.
+ *
+ * The caller must hold rnp->lock with interrupts disabled.
+ */
+static bool rcu_advance_cbs(struct rcu_node *rnp, struct rcu_data *rdp)
+{
+	rcu_lockdep_assert_cblist_protected(rdp);
+	raw_lockdep_assert_held_rcu_node(rnp);
+
+	/* If no pending (not yet ready to invoke) callbacks, nothing to do. */
+	if (!rcu_segcblist_pend_cbs(&rdp->cblist))
+		return false;
+
+	/*
+	 * Find all callbacks whose ->gp_seq numbers indicate that they
+	 * are ready to invoke, and put them into the RCU_DONE_TAIL sublist.
+	 */
+	rcu_segcblist_advance(&rdp->cblist, rnp->gp_seq);
+
+	/* Classify any remaining callbacks. */
+	return rcu_accelerate_cbs(rnp, rdp);
+}
+
+/*
+ * Move and classify callbacks, but only if doing so won't require
+ * that the RCU grace-period kthread be awakened.
+ */
+static void __maybe_unused rcu_advance_cbs_nowake(struct rcu_node *rnp,
+						  struct rcu_data *rdp)
+{
+	rcu_lockdep_assert_cblist_protected(rdp);
+	if (!rcu_seq_state(rcu_seq_current(&rnp->gp_seq)) || !raw_spin_trylock_rcu_node(rnp))
+		return;
+	// The grace period cannot end while we hold the rcu_node lock.
+	if (rcu_seq_state(rcu_seq_current(&rnp->gp_seq)))
+		WARN_ON_ONCE(rcu_advance_cbs(rnp, rdp));
+	raw_spin_unlock_rcu_node(rnp);
+}
+
+/*
+ * In CONFIG_RCU_STRICT_GRACE_PERIOD=y kernels, attempt to generate a
+ * quiescent state.  This is intended to be invoked when the CPU notices
+ * a new grace period.
+ */
+static void rcu_strict_gp_check_qs(void)
+{
+	if (IS_ENABLED(CONFIG_RCU_STRICT_GRACE_PERIOD)) {
+		rcu_read_lock();
+		rcu_read_unlock();
+	}
+}
+
+/*
+ * Update CPU-local rcu_data state to record the beginnings and ends of
+ * grace periods.  The caller must hold the ->lock of the leaf rcu_node
+ * structure corresponding to the current CPU, and must have irqs disabled.
+ * Returns true if the grace-period kthread needs to be awakened.
+ */
+static bool __note_gp_changes(struct rcu_node *rnp, struct rcu_data *rdp)
+{
+	bool ret = false;
+	bool need_qs;
+	const bool offloaded = rcu_rdp_is_offloaded(rdp);
+
+	raw_lockdep_assert_held_rcu_node(rnp);
+
+	if (rdp->gp_seq == rnp->gp_seq)
+		return false; /* Nothing to do. */
+
+	/* Handle the ends of any preceding grace periods first. */
+	if (rcu_seq_completed_gp(rdp->gp_seq, rnp->gp_seq) ||
+	    unlikely(READ_ONCE(rdp->gpwrap))) {
+		if (!offloaded)
+			ret = rcu_advance_cbs(rnp, rdp); /* Advance CBs. */
+		rdp->core_needs_qs = false;
+		trace_rcu_grace_period(rcu_state.name, rdp->gp_seq, TPS("cpuend"));
+	} else {
+		if (!offloaded)
+			ret = rcu_accelerate_cbs(rnp, rdp); /* Recent CBs. */
+		if (rdp->core_needs_qs)
+			rdp->core_needs_qs = !!(rnp->qsmask & rdp->grpmask);
+	}
+
+	/* Now handle the beginnings of any new-to-this-CPU grace periods. */
+	if (rcu_seq_new_gp(rdp->gp_seq, rnp->gp_seq) ||
+	    unlikely(READ_ONCE(rdp->gpwrap))) {
+		/*
+		 * If the current grace period is waiting for this CPU,
+		 * set up to detect a quiescent state, otherwise don't
+		 * go looking for one.
+		 */
+		trace_rcu_grace_period(rcu_state.name, rnp->gp_seq, TPS("cpustart"));
+		need_qs = !!(rnp->qsmask & rdp->grpmask);
+		rdp->cpu_no_qs.b.norm = need_qs;
+		rdp->core_needs_qs = need_qs;
+		zero_cpu_stall_ticks(rdp);
+	}
+	rdp->gp_seq = rnp->gp_seq;  /* Remember new grace-period state. */
+	if (ULONG_CMP_LT(rdp->gp_seq_needed, rnp->gp_seq_needed) || rdp->gpwrap)
+		WRITE_ONCE(rdp->gp_seq_needed, rnp->gp_seq_needed);
+	WRITE_ONCE(rdp->gpwrap, false);
+	rcu_gpnum_ovf(rnp, rdp);
+	return ret;
+}
+
+static void note_gp_changes(struct rcu_data *rdp)
+{
+	unsigned long flags;
+	bool needwake;
+	struct rcu_node *rnp;
+
+	local_irq_save(flags);
+	rnp = rdp->mynode;
+	if ((rdp->gp_seq == rcu_seq_current(&rnp->gp_seq) &&
+	     !unlikely(READ_ONCE(rdp->gpwrap))) || /* w/out lock. */
+	    !raw_spin_trylock_rcu_node(rnp)) { /* irqs already off, so later. */
+		local_irq_restore(flags);
+		return;
+	}
+	needwake = __note_gp_changes(rnp, rdp);
+	raw_spin_unlock_irqrestore_rcu_node(rnp, flags);
+	rcu_strict_gp_check_qs();
+	if (needwake)
+		rcu_gp_kthread_wake();
+}
+
+static void rcu_gp_slow(int delay)
+{
+	if (delay > 0 &&
+	    !(rcu_seq_ctr(rcu_state.gp_seq) %
+	      (rcu_num_nodes * PER_RCU_NODE_PERIOD * delay)))
+		schedule_timeout_idle(delay);
+}
+
+static unsigned long sleep_duration;
+
+/* Allow rcutorture to stall the grace-period kthread. */
+void rcu_gp_set_torture_wait(int duration)
+{
+	if (IS_ENABLED(CONFIG_RCU_TORTURE_TEST) && duration > 0)
+		WRITE_ONCE(sleep_duration, duration);
+}
+EXPORT_SYMBOL_GPL(rcu_gp_set_torture_wait);
+
+/* Actually implement the aforementioned wait. */
+static void rcu_gp_torture_wait(void)
+{
+	unsigned long duration;
+
+	if (!IS_ENABLED(CONFIG_RCU_TORTURE_TEST))
+		return;
+	duration = xchg(&sleep_duration, 0UL);
+	if (duration > 0) {
+		pr_alert("%s: Waiting %lu jiffies\n", __func__, duration);
+		schedule_timeout_idle(duration);
+		pr_alert("%s: Wait complete\n", __func__);
+	}
+}
+
+/*
+ * Handler for on_each_cpu() to invoke the target CPU's RCU core
+ * processing.
+ */
+static void rcu_strict_gp_boundary(void *unused)
+{
+	invoke_rcu_core();
+}
+
+/*
+ * Initialize a new grace period.  Return false if no grace period required.
+ */
+static noinline_for_stack bool rcu_gp_init(void)
+{
+	unsigned long flags;
+	unsigned long oldmask;
+	unsigned long mask;
+	struct rcu_data *rdp;
+	struct rcu_node *rnp = rcu_get_root();
+
+	WRITE_ONCE(rcu_state.gp_activity, jiffies);
+	raw_spin_lock_irq_rcu_node(rnp);
+	if (!READ_ONCE(rcu_state.gp_flags)) {
+		/* Spurious wakeup, tell caller to go back to sleep.  */
+		raw_spin_unlock_irq_rcu_node(rnp);
+		return false;
+	}
+	WRITE_ONCE(rcu_state.gp_flags, 0); /* Clear all flags: New GP. */
+
+	if (WARN_ON_ONCE(rcu_gp_in_progress())) {
+		/*
+		 * Grace period already in progress, don't start another.
+		 * Not supposed to be able to happen.
+		 */
+		raw_spin_unlock_irq_rcu_node(rnp);
+		return false;
+	}
+
+	/* Advance to a new grace period and initialize state. */
+	record_gp_stall_check_time();
+	/* Record GP times before starting GP, hence rcu_seq_start(). */
+	rcu_seq_start(&rcu_state.gp_seq);
+	ASSERT_EXCLUSIVE_WRITER(rcu_state.gp_seq);
+	trace_rcu_grace_period(rcu_state.name, rcu_state.gp_seq, TPS("start"));
+	raw_spin_unlock_irq_rcu_node(rnp);
+
+	/*
+	 * Apply per-leaf buffered online and offline operations to
+	 * the rcu_node tree. Note that this new grace period need not
+	 * wait for subsequent online CPUs, and that RCU hooks in the CPU
+	 * offlining path, when combined with checks in this function,
+	 * will handle CPUs that are currently going offline or that will
+	 * go offline later.  Please also refer to "Hotplug CPU" section
+	 * of RCU's Requirements documentation.
+	 */
+	WRITE_ONCE(rcu_state.gp_state, RCU_GP_ONOFF);
+	/* Exclude CPU hotplug operations. */
+	rcu_for_each_leaf_node(rnp) {
+		local_irq_save(flags);
+		arch_spin_lock(&rcu_state.ofl_lock);
+		raw_spin_lock_rcu_node(rnp);
+		if (rnp->qsmaskinit == rnp->qsmaskinitnext &&
+		    !rnp->wait_blkd_tasks) {
+			/* Nothing to do on this leaf rcu_node structure. */
+			raw_spin_unlock_rcu_node(rnp);
+			arch_spin_unlock(&rcu_stant_modules();
+	if (irqs_disabled())
+		print_irqtrace_events(prev);
+	if (IS_ENABLED(CONFIG_DEBUG_PREEMPT)
+	    && in_atomic_preempt_off()) {
+		pr_err("Preemption disabled at:");
+		print_ip_sym(KERN_ERR, preempt_disable_ip);
+	}
+	if (panic_on_warn)
+		panic("scheduling while atomic\n");
+
+	dump_stack();
+	add_taint(TAINT_WARN, LOCKDEP_STILL_OK);
+}
+
+/*
+ * Various schedule()-time debugging checks and statistics:
+ */
+static inline void schedule_debug(struct task_struct *prev, bool preempt)
+{
+#ifdef CONFIG_SCHED_STACK_END_CHECK
+	if (task_stack_end_corrupted(prev))
+		panic("corrupted stack end detected inside scheduler\n");
+
+	if (task_scs_end_corrupted(prev))
+		panic("corrupted shadow stack detected inside scheduler\n");
 #endif
 
-static void inc_chains(int irq_context)
-{
-	if (irq_context & LOCK_CHAIN_HARDIRQ_CONTEXT)
-		nr_hardirq_chains++;
-	else if (irq_context & LOCK_CHAIN_SOFTIRQ_CONTEXT)
-		nr_softirq_chains++;
-	else
-		nr_process_chains++;
+#ifdef CONFIG_DEBUG_ATOMIC_SLEEP
+	if (!preempt && READ_ONCE(prev->__state) && prev->non_block_count) {
+		printk(KERN_ERR "BUG: scheduling in a non-blocking section: %s/%d/%i\n",
+			prev->comm, prev->pid, prev->non_block_count);
+		dump_stack();
+		add_taint(TAINT_WARN, LOCKDEP_STILL_OK);
+	}
+#endif
+
+	if (unlikely(in_atomic_preempt_off())) {
+		__schedule_bug(prev);
+		preempt_count_set(PREEMPT_DISABLED);
+	}
+	rcu_sleep_check();
+	SCHED_WARN_ON(ct_state() == CONTEXT_USER);
+
+	profile_hit(SCHED_PROFILING, __builtin_return_address(0));
+
+	schedstat_inc(this_rq()->sched_count);
 }
 
-static void dec_chains(int irq_context)
+static void put_prev_task_balance(struct rq *rq, struct task_struct *prev,
+				  struct rq_flags *rf)
 {
-	if (irq_context & LOCK_CHAIN_HARDIRQ_CONTEXT)
-		nr_hardirq_chains--;
-	else if (irq_context & LOCK_CHAIN_SOFTIRQ_CONTEXT)
-		nr_softirq_chains--;
-	else
-		nr_process_chains--;
-}
+#ifdef CONFIG_SMP
+	const struct sched_class *class;
+	/*
+	 * We must do the balancing pass before put_prev_task(), such
+	 * that when we release the rq->lock the task is in the same
+	 * state as before we took rq->lock.
+	 *
+	 * We can terminate the balance pass as soon as we know there is
+	 * a runnable task of @class priority or higher.
+	 */
+	for_class_range(class, prev->sched_class, &idle_sched_class) {
+		if (class->balance(rq, prev, rf))
+			break;
+	}
+#endif
 
-static void
-print_deadlock_scenario(struct held_lock *nxt, struct held_lock *prv)
-{
-	struct lock_class *next = hlock_class(nxt);
-	struct lock_class *prev = hlock_class(prv);
-
-	printk(" Possible unsafe locking scenario:\n\n");
-	printk("       CPU0\n");
-	printk("       ----\n");
-	printk("  lock(");
-	__print_lock_name(prev);
-	printk(KERN_CONT ");\n");
-	printk("  lock(");
-	__print_lock_name(next);
-	printk(KERN_CONT ");\n");
-	printk("\n *** DEADLOCK ***\n\n");
-	printk(" May be due to missing lock nesting notation\n\n");
-}
-
-static void
-print_deadlock_bug(struct task_struct *curr, struct held_lock *prev,
-		   struct held_lock *next)
-{
-	if (!debug_locks_off_graph_unlock() || debug_locks_silent)
-		return;
-
-	pr_warn("\n");
-	pr_warn("============================================\n");
-	pr_warn("WARNING: possible recursive locking detected\n");
-	print_kernel_ident();
-	pr_warn("--------------------------------------------\n");
-	pr_warn("%s/%d is trying to acquire lock:\n",
-		curr->comm, task_pid_nr(curr));
-	print_lock(next);
-	pr_warn("\nbut task is already holding lock:\n");
-	print_lock(prev);
-
-	pr_warn("\nother info that might help us debug this:\n");
-	print_deadlock_scenario(next, prev);
-	lockdep_print_held_locks(curr);
-
-	pr_warn("\nstack backtrace:\n");
-	dump_stack();
+	put_prev_task(rq, prev);
 }
 
 /*
- * Check whether we are holding such a class already.
- *
- * (Note that this has to be done separately, because the graph cannot
- * detect such classes of deadlocks.)
- *
- * Returns: 0 on deadlock detected, 1 on OK, 2 if another lock with the same
- * lock class is held but nest_lock is also held, i.e. we rely on the
- * nest_lock to avoid the deadlock.
+ * Pick up the highest-prio task:
  */
-static int
-check_deadlock(struct task_struct *curr, struct held_lock *next)
+static inline struct task_struct *
+__pick_next_task(struct rq *rq, struct task_struct *prev, struct rq_flags *rf)
 {
-	struct held_lock *prev;
-	struct held_lock *nest = NULL;
+	const struct sched_class *class;
+	struct task_struct *p;
+
+	/*
+	 * Optimization: we know that if all tasks are in the fair class we can
+	 * call that function directly, but only if the @prev task wasn't of a
+	 * higher scheduling class, because otherwise those lose the
+	 * opportunity to pull in more work from other CPUs.
+	 */
+	if (likely(prev->sched_class <= &fair_sched_class &&
+		   rq->nr_running == rq->cfs.h_nr_running)) {
+
+		p = pick_next_task_fair(rq, prev, rf);
+		if (unlikely(p == RETRY_TASK))
+			goto restart;
+
+		/* Assume the next prioritized class is idle_sched_class */
+		if (!p) {
+			put_prev_task(rq, prev);
+			p = pick_next_task_idle(rq);
+		}
+
+		return p;
+	}
+
+restart:
+	put_prev_task_balance(rq, prev, rf);
+
+	for_each_class(class) {
+		p = class->pick_next_task(rq);
+		if (p)
+			return p;
+	}
+
+	BUG(); /* The idle class should always have a runnable task. */
+}
+
+#ifdef CONFIG_SCHED_CORE
+static inline bool is_task_rq_idle(struct task_struct *t)
+{
+	return (task_rq(t)->idle == t);
+}
+
+static inline bool cookie_equals(struct task_struct *a, unsigned long cookie)
+{
+	return is_task_rq_idle(a) || (a->core_cookie == cookie);
+}
+
+static inline bool cookie_match(struct task_struct *a, struct task_struct *b)
+{
+	if (is_task_rq_idle(a) || is_task_rq_idle(b))
+		return true;
+
+	return a->core_cookie == b->core_cookie;
+}
+
+static inline struct task_struct *pick_task(struct rq *rq)
+{
+	const struct sched_class *class;
+	struct task_struct *p;
+
+	for_each_class(class) {
+		p = class->pick_task(rq);
+		if (p)
+			return p;
+	}
+
+	BUG(); /* The idle class should always have a runnable task. */
+}
+
+extern void task_vruntime_update(struct rq *rq, struct task_struct *p, bool in_fi);
+
+static void queue_core_balance(struct rq *rq);
+
+static struct task_struct *
+pick_next_task(struct rq *rq, struct task_struct *prev, struct rq_flags *rf)
+{
+	struct task_struct *next, *p, *max = NULL;
+	const struct cpumask *smt_mask;
+	bool fi_before = false;
+	bool core_clock_updated = (rq == rq->core);
+	unsigned long cookie;
+	int i, cpu, occ = 0;
+	struct rq *rq_i;
+	bool need_sync;
+
+	if (!sched_core_enabled(rq))
+		return __pick_next_task(rq, prev, rf);
+
+	cpu = cpu_of(rq);
+
+	/* Stopper task is switching into idle, no need core-wide selection. */
+	if (cpu_is_offline(cpu)) {
+		/*
+		 * Reset core_pick so that we don't enter the fastpath when
+		 * coming online. core_pick would already be migrated to
+		 * another cpu during offline.
+		 */
+		rq->core_pick = NULL;
+		return __pick_next_task(rq, prev, rf);
+	}
+
+	/*
+	 * If there were no {en,de}queues since we picked (IOW, the task
+	 * pointers are all still valid), and we haven't scheduled the last
+	 * pick yet, do so now.
+	 *
+	 * rq->core_pick can be NULL if no selection was made for a CPU because
+	 * it was either offline or went offline during a sibling's core-wide
+	 * selection. In this case, do a core-wide selection.
+	 */
+	if (rq->core->core_pick_seq == rq->core->core_task_seq &&
+	    rq->core->core_pick_seq != rq->core_sched_seq &&
+	    rq->core_pick) {
+		WRITE_ONCE(rq->core_sched_seq, rq->core->core_pick_seq);
+
+		next = rq->core_pick;
+		if (next != prev) {
+			put_prev_task(rq, prev);
+			set_next_task(rq, next);
+		}
+
+		rq->core_pick = NULL;
+		goto out;
+	}
+
+	put_prev_task_balance(rq, prev, rf);
+
+	smt_mask = cpu_smt_mask(cpu);
+	need_sync = !!rq->core->core_cookie;
+
+	/* reset state */
+	rq->core->core_cookie = 0UL;
+	if (rq->core->core_forceidle_count) {
+		if (!core_clock_updated) {
+			update_rq_clock(rq->core);
+			core_clock_updated = true;
+		}
+		sched_core_account_forceidle(rq);
+		/* reset after accounting force idle */
+		rq->core->core_forceidle_start = 0;
+		rq->core->core_forceidle_count = 0;
+		rq->core->core_forceidle_occupation = 0;
+		need_sync = true;
+		fi_before = true;
+	}
+
+	/*
+	 * core->core_task_seq, core->core_pick_seq, rq->core_sched_seq
+	 *
+	 * @task_seq guards the task state ({en,de}queues)
+	 * @pick_seq is the @task_seq we did a selection on
+	 * @sched_seq is the @pick_seq we scheduled
+	 *
+	 * However, preemptions can cause multiple picks on the same task set.
+	 * 'Fix' this by also increasing @task_seq for every pick.
+	 */
+	rq->core->core_task_seq++;
+
+	/*
+	 * Optimize for common case where this CPU has no cookies
+	 * and there are no cookied tasks running on siblings.
+	 */
+	if (!need_sync) {
+		next = pick_task(rq);
+		if (!next->core_cookie) {
+			rq->core_pick = NULL;
+			/*
+			 * For robustness, update the min_vruntime_fi for
+			 * unconstrained picks as well.
+			 */
+			WARN_ON_ONCE(fi_before);
+			task_vruntime_update(rq, next, false);
+			goto out_set_next;
+		}
+	}
+
+	/*
+	 * For each thread: do the regular task pick and find the max prio task
+	 * amongst them.
+	 *
+	 * Tie-break prio towards the current CPU
+	 */
+	for_each_cpu_wrap(i, smt_mask, cpu) {
+		rq_i = cpu_rq(i);
+
+		/*
+		 * Current cpu always has its clock updated on entrance to
+		 * pick_next_task(). If the current cpu is not the core,
+		 * the core may also have been updated above.
+		 */
+		if (i != cpu && (rq_i != rq->core || !core_clock_updated))
+			update_rq_clock(rq_i);
+
+		p = rq_i->core_pick = pick_task(rq_i);
+		if (!max || prio_less(max, p, fi_before))
+			max = p;
+	}
+
+	cookie = rq->core->core_cookie = max->core_cookie;
+
+	/*
+	 * For each thread: try and find a runnable task that matches @max or
+	 * force idle.
+	 */
+	for_each_cpu(i, smt_mask) {
+		rq_i = cpu_rq(i);
+		p = rq_i->core_pick;
+
+		if (!cookie_equals(p, cookie)) {
+			p = NULL;
+			if (cookie)
+				p = sched_core_find(rq_i, cookie);
+			if (!p)
+				p = idle_sched_class.pick_task(rq_i);
+		}
+
+		rq_i->core_pick = p;
+
+		if (p == rq_i->idle) {
+			if (rq_i->nr_running) {
+				rq->core->core_forceidle_count++;
+				if (!fi_before)
+					rq->core->core_forceidle_seq++;
+			}
+		} else {
+			occ++;
+		}
+	}
+
+	if (schedstat_enabled() && rq->core->core_forceidle_count) {
+		rq->core->core_forceidle_start = rq_clock(rq->core);
+		rq->core->core_forceidle_occupation = occ;
+	}
+
+	rq->core->core_pick_seq = rq->core->core_task_seq;
+	next = rq->core_pick;
+	rq->core_sched_seq = rq->core->core_pick_seq;
+
+	/* Something should have been selected for current CPU */
+	WARN_ON_ONCE(!next);
+
+	/*
+	 * Reschedule siblings
+	 *
+	 * NOTE: L1TF -- at this point we're no longer running the old task and
+	 * sending an IPI (below) ensures the sibling will no longer be running
+	 * their task. This ensures there is no inter-sibling overlap between
+	 * non-matching user state.
+	 */
+	for_each_cpu(i, smt_mask) {
+		rq_i = cpu_rq(i);
+
+		/*
+		 * An online sibling might have gone offline before a task
+		 * could be picked for it, or it might be offline but later
+		 * happen to come online, but its too late and nothing was
+		 * picked for it.  That's Ok - it will pick tasks for itself,
+		 * so ignore it.
+		 */
+		if (!rq_i->core_pick)
+			continue;
+
+		/*
+		 * Update for new !FI->FI transitions, or if continuing to be in !FI:
+		 * fi_before     fi      update?
+		 *  0            0       1
+		 *  0            1       1
+		 *  1            0       1
+		 *  1            1       0
+		 */
+		if (!(fi_before && rq->core->core_forceidle_count))
+			task_vruntime_update(rq_i, rq_i->core_pick, !!rq->core->core_forceidle_count);
+
+		rq_i->core_pick->core_occupation = occ;
+
+		if (i == cpu) {
+			rq_i->core_pick = NULL;
+			continue;
+		}
+
+		/* Did we break L1TF mitigation requirements? */
+		WARN_ON_ONCE(!cookie_match(next, rq_i->core_pick));
+
+		if (rq_i->curr == rq_i->core_pick) {
+			rq_i->core_pick = NULL;
+			continue;
+		}
+
+		resched_curr(rq_i);
+	}
+
+out_set_next:
+	set_next_task(rq, next);
+out:
+	if (rq->core->core_forceidle_count && next == rq->idle)
+		queue_core_balance(rq);
+
+	return next;
+}
+
+static bool try_steal_cookie(int this, int that)
+{
+	struct rq *dst = cpu_rq(this), *src = cpu_rq(that);
+	struct task_struct *p;
+	unsigned long cookie;
+	bool success = false;
+
+	local_irq_disable();
+	double_rq_lock(dst, src);
+
+	cookie = dst->core->core_cookie;
+	if (!cookie)
+		goto unlock;
+
+	if (dst->curr != dst->idle)
+		goto unlock;
+
+	p = sched_core_find(src, cookie);
+	if (p == src->idle)
+		goto unlock;
+
+	do {
+		if (p == src->core_pick || p == src->curr)
+			goto next;
+
+		if (!is_cpu_allowed(p, this))
+			goto next;
+
+		if (p->core_occupation > dst->idle->core_occupation)
+			goto next;
+
+		deactivate_task(src, p, 0);
+		set_task_cpu(p, this);
+		activate_task(dst, p, 0);
+
+		resched_curr(dst);
+
+		success = true;
+		break;
+
+next:
+		p = sched_core_next(p, cookie);
+	} while (p);
+
+unlock:
+	double_rq_unlock(dst, src);
+	local_irq_enable();
+
+	return success;
+}
+
+static bool steal_cookie_task(int cpu, struct sched_domain *sd)
+{
 	int i;
 
-	for (i = 0; i < curr->lockdep_depth; i++) {
-		prev = curr->held_locks + i;
-
-		if (prev->instance == next->nest_lock)
-			nest = prev;
-
-		if (hlock_class(prev) != hlock_class(next))
+	for_each_cpu_wrap(i, sched_domain_span(sd), cpu) {
+		if (i == cpu)
 			continue;
 
-		/*
-		 * Allow read-after-read recursion of the same
-		 * lock class (i.e. read_lock(lock)+read_lock(lock)):
-		 */
-		if ((next->read == 2) && prev->read)
-			continue;
+		if (need_resched())
+			break;
 
-		/*
-		 * We're holding the nest_lock, which serializes this lock's
-		 * nesting behaviour.
-		 */
-		if (nest)
-			return 2;
-
-		print_deadlock_bug(curr, prev, next);
-		return 0;
+		if (try_steal_cookie(cpu, i))
+			return true;
 	}
-	return 1;
+
+	return false;
 }
 
-/*
- * There was a chain-cache miss, and we are about to add a new dependency
- * to a previous lock. We validate the following rules:
- *
- *  - would the adding of the <prev> -> <next> dependency create a
- *    circular dependency in the graph? [== circular deadlock]
- *
- *  - does the new prev->next dependency connect any hardirq-safe lock
- *    (in the full backwards-subgraph starting at <prev>) with any
- *    hardirq-unsafe lock (in the full forwards-subgraph starting at
- *    <next>)? [== illegal lock inversion with hardirq contexts]
- *
- *  - does the new prev->next dependency connect any softirq-safe lock
- *    (in the full backwards-subgraph starting at <prev>) with any
- *    softirq-unsafe lock (in the full forwards-subgraph starting at
- *    <next>)? [== illegal lock inversion with softirq contexts]
- *
- * any of these scenarios could lead to a deadlock.
- *
- * Then if all the validations pass, we add the forwards and backwards
- * dependency.
- */
-static int
-check_prev_add(struct task_struct *curr, struct held_lock *prev,
-	       struct held_lock *next, u16 distance,
-	       struct lock_trace **const trace)
+static void sched_core_balance(struct rq *rq)
 {
-	struct lock_list *entry;
-	enum bfs_result ret;
+	struct sched_domain *sd;
+	int cpu = cpu_of(rq);
 
-	if (!hlock_class(prev)->key || !hlock_class(next)->key) {
-		/*
-		 * The warning statements below may trigger a use-after-free
-		 * of the class name. It is better to trigger a use-after free
-		 * and to have the class name most of the time instead of not
-		 * having the class name available.
-		 */
-		WARN_ONCE(!debug_locks_silent && !hlock_class(prev)->key,
-			  "Detected use-after-free of lock class %px/%s\n",
-			  hlock_class(prev),
-			  hlock_class(prev)->name);
-		WARN_ONCE(!debug_locks_silent && !hlock_class(next)->key,
-			  "Detected use-after-free of lock class %px/%s\n",
-			  hlock_class(next),
-			  hlock_class(next)->name);
-		return 2;
+	preempt_disable();
+	rcu_read_lock();
+	raw_spin_rq_unlock_irq(rq);
+	for_each_domain(cpu, sd) {
+		if (need_resched())
+			break;
+
+		if (steal_cookie_task(cpu, sd))
+			break;
 	}
+	raw_spin_rq_lock_irq(rq);
+	rcu_read_unlock();
+	preempt_enable();
+}
 
-	/*
-	 * Prove that the new <prev> -> <next> dependency would not
-	 * create a circular dependency in the graph. (We do this by
-	 * a breadth-first search into the graph starting at <next>,
-	 * and check whether we can reach <prev>.)
-	 *
-	 * The search is limited by the size of the circular queue (i.e.,
-	 * MAX_CIRCULAR_QUEUE_SIZE) which keeps track of a breadth of nodes
-	 * in the graph whose neighbours are to be checked.
-	 */
-	ret = check_noncircular(next, prev, trace);
-	if (unlikely(bfs_error(ret) || ret == BFS_RMATCH))
-		return 0;
+static DEFINE_PER_CPU(struct callback_head, core_balance_head);
 
-	if (!check_irq_usage(curr, prev, next))
-		return 0;
+static void queue_core_balance(struct rq *rq)
+{
+	if (!sched_core_enabled(rq))
+		return;
 
-	/*
-	 * Is the <prev> -> <next> dependency already present?
-	 *
-	 * (this may occur even though this is a new chain: consider
-	 *  e.g. the L1 -> L2 -> L3 -> L4 and the L5 -> L1 -> L2 -> L3
-	 *  chains - the second one will be new, but L1 already has
-	 *  L2 added to its dependency list, due to the first chain.)
-	 */
-	list_for_each_entry(entry, &hlock_class(prev)->locks_after, entry) {
-		if (entry->class == hlock_class(next)) {
-			if (distance == 1)
-				entry->distance = 1;
-			entry->dep |= calc_dep(prev, next);
+	if (!rq->core->core_cookie)
+		return;
 
-			/*
-			 * Also, update the reverse dependency in @next's
-			 * ->locks_before list.
-			 *
-			 *  Here we reuse @entry as the cursor, which is fine
-			 *  because we won't go to the next iteration of the
-			 *  outer loop:
-			 *
-			 *  For normal cases, we return in the inner loop.
-			 *
-			 *  If we fail to return, we have inconsistency, i.e.
-			 *  <prev>::locks_after contains <next> while
-			 *  <next>::locks_before doesn't contain <prev>. In
-			 *  that case, we return after the inner and indicate
-			 *  something is wrong.
-			 */
-			list_for_each_entry(entry, &hlock_class(next)->locks_before, entry) {
-				if (entry->class == hlock_class(prev)) {
-					if (distance == 1)
-						entry->distance = 1;
-					entry->dep |= calc_depb(prev, next);
-					return 1;
-				}
-			}
+	if (!rq->nr_running) /* not forced idle */
+		return;
 
-			/* <prev> is not found in <next>::locks_before */
-			return 0;
+	queue_balance_callback(rq, &per_cpu(core_balance_head, rq->cpu), sched_core_balance);
+}
+
+static void sched_core_cpu_starting(unsigned int cpu)
+{
+	const struct cpumask *smt_mask = cpu_smt_mask(cpu);
+	struct rq *rq = cpu_rq(cpu), *core_rq = NULL;
+	unsigned long flags;
+	int t;
+
+	sched_core_lock(cpu, &flags);
+
+	WARN_ON_ONCE(rq->core != rq);
+
+	/* if we're the first, we'll be our own leader */
+	if (cpumask_weight(smt_mask) == 1)
+		goto unlock;
+
+	/* find the leader */
+	for_each_cpu(t, smt_mask) {
+		if (t == cpu)
+			continue;
+		rq = cpu_rq(t);
+		if (rq->core == rq) {
+			core_rq = rq;
+			break;
 		}
 	}
 
-	/*
-	 * Is the <prev> -> <next> link redundant?
-	 */
-	ret = check_redundant(prev, next);
-	if (bfs_error(ret))
-		return 0;
-	else if (ret == BFS_RMATCH)
-		return 2;
+	if (WARN_ON_ONCE(!core_rq)) /* whoopsie */
+		goto unlock;
 
-	if (!*trace) {
-		*trace = save_trace();
-		if (!*trace)
-			return 0;
+	/* install and validate core_rq */
+	for_each_cpu(t, smt_mask) {
+		rq = cpu_rq(t);
+
+		if (t == cpu)
+			rq->core = core_rq;
+
+		WARN_ON_ONCE(rq->core != core_rq);
 	}
 
-	/*
-	 * Ok, all validations passed, add the new lock
-	 * to the previous lock's dependency list:
-	 */
-	ret = add_lock_to_list(hlock_class(next), hlock_class(prev),
-			       &hlock_class(prev)->locks_after,
-			       next->acquire_ip, distance,
-			       calc_dep(prev, next),
-			       *trace);
-
-	if (!ret)
-		return 0;
-
-	ret = add_lock_to_list(hlock_class(prev), hlock_class(next),
-			       &hlock_class(next)->locks_before,
-			       next->acquire_ip, distance,
-			       calc_depb(prev, next),
-			       *trace);
-	if (!ret)
-		return 0;
-
-	return 2;
+unlock:
+	sched_core_unlock(cpu, &flags);
 }
 
-/*
- * Add the dependency to all directly-previous locks that are 'relevant'.
- * The ones that are relevant are (in increasing distance from curr):
- * all consecutive trylock entries and the final non-trylock entry - or
- * the end of this context's lock-chain - whichever comes first.
- */
-static int
-check_prevs_add(struct task_struct *curr, struct held_lock *next)
+static void sched_core_cpu_deactivate(unsigned int cpu)
 {
-	struct lock_trace *trace = NULL;
-	int depth = curr->lockdep_depth;
-	struct held_lock *hlock;
+	const struct cpumask *smt_mask = cpu_smt_mask(cpu);
+	struct rq *rq = cpu_rq(cpu), *core_rq = NULL;
+	unsigned long flags;
+	int t;
 
-	/*
-	 * Debugging checks.
-	 *
-	 * Depth must not be zero for a non-head lock:
-	 */
-	if (!depth)
-		goto out_bug;
-	/*
-	 * At least two relevant locks must exist for this
-	 * to be a head:
-	 */
-	if (curr->held_locks[depth].irq_context !=
-			curr->held_locks[depth-1].irq_context)
-		goto out_bug;
+	sched_core_lock(cpu, &flags);
 
-	for (;;) {
-		u16 distance = curr->lockdep_depth - depth + 1;
-		hlock = curr->held_locks + depth - 1;
-
-		if (hlock->check) {
-			int ret = check_prev_add(curr, hlock, next, distance, &trace);
-			if (!ret)
-				return 0;
-
-			/*
-			 * Stop after the first non-trylock entry,
-			 * as non-trylock entries have added their
-			 * own direct dependencies already, so this
-			 * lock is connected to them indirectly:
-			 */
-			if (!hlock->trylock)
-				break;
-		}
-
-		depth--;
-		/*
-		 * End of lock-stack?
-		 */
-		if (!depth)
-			break;
-		/*
-		 * Stop the search if we cross into another context:
-		 */
-		if (curr->held_locks[depth].irq_context !=
-				curr->held_locks[depth-1].irq_context)
-			break;
+	/* if we're the last man standing, nothing to do */
+	if (cpumask_weight(smt_mask) == 1) {
+		WARN_ON_ONCE(rq->core != rq);
+		goto unlock;
 	}
-	return 1;
-out_bug:
-	if (!debug_locks_off_graph_unlock())
-		return 0;
+
+	/* if we're not the leader, nothing to do */
+	if (rq->core != rq)
+		goto unlock;
+
+	/* find a new leader */
+	for_each_cpu(t, smt_mask) {
+		if (t == cpu)
+			continue;
+		core_rq = cpu_rq(t);
+		break;
+	}
+
+	if (WARN_ON_ONCE(!core_rq)) /* impossible */
+		goto unlock;
+
+	/* copy the shared state to the new leader */
+	core_rq->core_task_seq             = rq->core_task_seq;
+	core_rq->core_pick_seq             = rq->core_pick_seq;
+	core_rq->core_cookie               = rq->core_cookie;
+	core_rq->core_forceidle_count      = rq->core_forceidle_count;
+	core_rq->core_forceidle_seq        = rq->core_forceidle_seq;
+	core_rq->core_forceidle_occupation = rq->core_forceidle_occupation;
 
 	/*
-	
+	 * Accounting edge for forced idle is handled in pick_next_task().
+	 * Don't need another one here, since the hotplug thread shouldn't
+	 * have a cookie.
+	 */
+	core_rq->core_forceidle_start = 0;
+
+	/* install new leader */
+	for_each_cpu(t, smt_mask) {
+		rq = cpu_rq(t);
+		rq->core = core_rq;
+	}
+
+unlock:
+	sched_core_unlock(cpu, &flags);
+}
+
+static inline void sched_core_cpu_dying(unsigned int cpu)
+{
+	struct rq *rq = cpu_rq(cpu);
+
+	if (rq->core != rq)
+		rq->core = rq;
+}
+
+#else /* !CONFIG_SCHED_CORE */
+
+static inline void sched_core_cpu_starting(unsigned int cpu) {}
+static inline void sched_core_cpu_deactivate(unsigned int cpu) {}
+static inline void sched_core_cpu_dying(unsigned int cpu) {}
+
+static struct task_struct *
+pick_next_task(struct rq *rq, struct task_struct *prev, struct rq_flags *rf)
+{
+	return __pick_next_task(rq, prev, rf);
+}
+
+#endif /* CONFIG_SCHED_CORE */
+
+/*
+ * Constants for the sched_mode argument of __schedule().
+ *
+ * The mode

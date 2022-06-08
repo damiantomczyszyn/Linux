@@ -1,7 +1,1 @@
-ig/RCU_FANOUT) \
-    $(wildcard include/config/RCU_FANOUT_LEAF) \
-  include/linux/page-flags-layout.h \
-    $(wildcard include/config/KASAN_HW_TAGS) \
-  include/linux/numa.h \
-    $(wildcard include/config/NODES_SHIFT) \
-    $(w
+cmd_drivers/net/ethernet/3com/3c574_cs.ko := ld -r -m elf_i386 --build-id=sha1  -T scripts/module.lds -o drivers/net/ethernet/3com/3c574_cs.ko drivers/net/ethernet/3com/3c574_cs.o drivers/net/ethernet/3com/3c574_cs.mod.o;  true

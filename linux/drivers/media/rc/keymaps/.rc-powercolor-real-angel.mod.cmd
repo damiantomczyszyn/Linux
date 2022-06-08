@@ -1,1 +1,8 @@
-cmd_drivers/media/rc/keymaps/rc-powercolor-real-angel.mod := { echo  drivers/media/rc/keymaps/rc-powercolor-real-angel.o;  echo; } > drivers/media/rc/keymaps/rc-powercolor-real-angel.mod
+}
+
+static const struct vb2_ops dvb_qops = {
+	.queue_setup    = queue_setup,
+	.buf_prepare  = buffer_prepare,
+	.buf_finish = buffer_finish,
+	.buf_queue    = buffer_queue,
+	.wait_prepare = 

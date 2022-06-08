@@ -1,23 +1,27 @@
- */
-
-static inline void check_data_structures(void) { }
-
-#endif /* CONFIG_DEBUG_LOCKDEP */
-
-static void init_chain_block_buckets(void);
-
-/*
- * Initialize the lock_classes[] array elements, the free_lock_classes list
- * and also the delayed_free structure.
- */
-static void init_data_structures_once(void)
+ int cpu, int wake_flags)
 {
-	static bool __read_mostly ds_initialized, rcu_head_initialized;
-	int i;
+	struct rq *rq = cpu_rq(cpu);
 
-	if (likely(rcu_head_initialized))
-		return;
+	p->sched_remote_wakeup = !!(wake_flags & WF_MIGRATED);
 
-	if (system_state >= SYSTEM_SCHEDULING) {
-		init_rcu_head(&delayed_free.rcu_head);
-		rcu_head_initia
+	WRITE_ONCE(rq->ttwu_pending, 1);
+	__smp_call_single_queue(cpu, &p->wake_entry.llist);
+}
+
+void wake_up_if_idle(int cpu)
+{
+	struct rq *rq = cpu_rq(cpu);
+	struct rq_flags rf;
+
+	rcu_read_lock();
+
+	if (!is_idle_task(rcu_dereference(rq->curr)))
+		goto out;
+
+	rq_lock_irqsave(rq, &rf);
+	if (is_idle_task(rq->curr))
+		resched_curr(rq);
+	/* Else CPU is not idle, do nothing here: */
+	rq_unlock_irqrestore(rq, &rf);
+
+ou

@@ -1,2 +1,1 @@
-EAF) \
-  include/linux
+!try_module_get(client

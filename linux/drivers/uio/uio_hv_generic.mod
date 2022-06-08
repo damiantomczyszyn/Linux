@@ -1,1 +1,1 @@
-h/x86/include/asm/pgtable_32_t
+ in both TC_REQ and TC_REQ_SET

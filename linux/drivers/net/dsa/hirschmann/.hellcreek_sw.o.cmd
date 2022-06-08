@@ -1,7 +1,1 @@
-CPI_APEI_GHES) \
-    $(wildcard include/config/INTEL_TXT) \
-  arch/x86/include/generated/asm/kmap_size.h \
-  include/asm-generic/kmap_size.h \
-    $(wildcard include/config/DEBUG_KMAP_LOCAL) \
-  include/asm-generic/fixmap.h \
-  arch/x86/include
+cmd_drivers/net/dsa/hirschmann/hellcreek_sw.o := ld -m elf_i386   -r -o drivers/net/dsa/hirschmann/hellcreek_sw.o drivers/net/dsa/hirschmann/hellcreek.o drivers/net/dsa/hirschmann/hellcreek_ptp.o drivers/net/dsa/hirschmann/hellcreek_hwtstamp.o

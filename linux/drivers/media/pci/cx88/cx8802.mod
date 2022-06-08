@@ -1,1 +1,1 @@
-ildcard include/config/LATENCYTOP) \
+// SPDX-License-Identifier: GPL-2.0-

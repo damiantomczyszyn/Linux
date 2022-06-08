@@ -1,1 +1,1 @@
-dcard include/config/PAR
+        = LGDT3306A_TPCL

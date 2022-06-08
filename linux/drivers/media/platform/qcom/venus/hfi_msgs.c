@@ -1,95 +1,4 @@
-ux/module.h \
-    $(wildcard include/config/MODULES_TREE_LOOKUP) \
-    $(wildcard include/config/STACKTRACE_BUILD_ID) \
-    $(wildcard include/config/MODULE_SIG) \
-    $(wildcard include/config/KALLSYMS) \
-    $(wildcard include/config/BPF_EVENTS) \
-    $(wildcard include/config/DEBUG_INFO_BTF_MODULES) \
-    $(wildcard include/config/EVENT_TRACING) \
-    $(wildcard include/config/MODULE_UNLOAD) \
-    $(wildcard include/config/CONSTRUCTORS) \
-    $(wildcard include/config/FUNCTION_ERROR_INJECTION) \
-  include/linux/buildid.h \
-    $(wildcard include/config/CRASH_CORE) \
-  include/linux/kmod.h \
-  include/linux/umh.h \
-  include/linux/sysctl.h \
-    $(wildcard include/config/SYSCTL) \
-  include/uapi/linux/sysctl.h \
-  include/linux/elf.h \
-    $(wildcard include/config/ARCH_USE_GNU_PROPERTY) \
-    $(wildcard include/config/ARCH_HAVE_ELF_PROT) \
-  arch/x86/include/asm/elf.h \
-    $(wildcard include/config/X86_X32_ABI) \
-  arch/x86/include/asm/user.h \
-  arch/x86/include/asm/user_32.h \
-  arch/x86/include/asm/fsgsbase.h \
-  arch/x86/include/asm/vdso.h \
-  arch/x86/include/asm/desc.h \
-  arch/x86/include/asm/fixmap.h \
-    $(wildcard include/config/DEBUG_KMAP_LOCAL_FORCE_MAP) \
-    $(wildcard include/config/X86_VSYSCALL_EMULATION) \
-    $(wildcard include/config/PROVIDE_OHCI1394_DMA_INIT) \
-    $(wildcard include/config/PCI_MMCONFIG) \
-    $(wildcard include/config/ACPI_APEI_GHES) \
-    $(wildcard include/config/INTEL_TXT) \
-  include/asm-generic/fixmap.h \
-  arch/x86/include/asm/irq_vectors.h \
-    $(wildcard include/config/HAVE_KVM) \
-    $(wildcard include/config/HYPERV) \
-    $(wildcard include/config/PCI_MSI) \
-  arch/x86/include/asm/cpu_entry_area.h \
-  arch/x86/include/asm/intel_ds.h \
-  arch/x86/include/asm/pgtable_areas.h \
-  arch/x86/include/asm/pgtable_32_areas.h \
-  include/uapi/linux/elf.h \
-  include/uapi/linux/elf-em.h \
-  include/linux/moduleparam.h \
-    $(wildcard include/config/ALPHA) \
-    $(wildcard include/config/PPC64) \
-  include/linux/rbtree_latch.h \
-  include/linux/error-injection.h \
-  include/asm-generic/error-injection.h \
-  include/linux/cfi.h \
-    $(wildcard include/config/CFI_CLANG_SHADOW) \
-  arch/x86/include/asm/module.h \
-    $(wildcard include/config/UNWINDER_ORC) \
-  include/asm-generic/module.h \
-    $(wildcard include/config/HAVE_MOD_ARCH_SPECIFIC) \
-    $(wildcard include/config/MODULES_USE_ELF_REL) \
-    $(wildcard include/config/MODULES_USE_ELF_RELA) \
-  arch/x86/include/asm/orc_types.h \
-  arch/x86/include/asm/device.h \
-  include/linux/pm_wakeup.h \
-  include/acpi/acpi.h \
-  include/acpi/platform/acenv.h \
-  include/acpi/platform/acgcc.h \
-  include/acpi/platform/aclinux.h \
-    $(wildcard include/config/ACPI_REDUCED_HARDWARE_ONLY) \
-    $(wildcard include/config/ACPI_DEBUG) \
-  include/linux/ctype.h \
-  arch/x86/include/asm/acenv.h \
-  include/acpi/acnames.h \
-  include/acpi/actypes.h \
-  include/acpi/acexcep.h \
-  include/acpi/actbl.h \
-  include/acpi/actbl1.h \
-  include/acpi/actbl2.h \
-  include/acpi/actbl3.h \
-  include/acpi/acrestyp.h \
-  include/acpi/platform/acenvex.h \
-  include/acpi/platform/aclinuxex.h \
-  include/acpi/platform/acgccex.h \
-  include/acpi/acoutput.h \
-  include/acpi/acpiosxf.h \
-  include/acpi/acpixf.h \
-  include/acpi/acconfig.h \
-  include/acpi/acbuffer.h \
-  include/linux/dynamic_debug.h \
-  include/acpi/acpi_bus.h \
-    $(wildcard include/config/X86_ANDROID_TABLETS) \
-    $(wildcard include/config/ACPI_SYSTEM_POWER_STATES_SUPPORT) \
-    $(wildcard include/config/ACPI_SLEEP) \
+   $(wildcard include/config/ACPI_SLEEP) \
   include/acpi/acpi_drivers.h \
     $(wildcard include/config/ACPI_DOCK) \
   include/acpi/acpi_numa.h \
@@ -134,12 +43,10 @@ ux/module.h \
     $(wildcard include/config/PM_AUTOSLEEP) \
   include/linux/swap.h \
     $(wildcard include/config/DEVICE_PRIVATE) \
-    $(wildcard include/config/MIGRATION) \
     $(wildcard include/config/FRONTSWAP) \
     $(wildcard include/config/THP_SWAP) \
     $(wildcard include/config/MEMCG_SWAP) \
   include/linux/memcontrol.h \
-    $(wildcard include/config/CGROUP_WRITEBACK) \
   include/linux/cgroup.h \
     $(wildcard include/config/CGROUP_CPUACCT) \
     $(wildcard include/config/SOCK_CGROUP_DATA) \
@@ -147,104 +54,6 @@ ux/module.h \
     $(wildcard include/config/CGROUP_BPF) \
   include/uapi/linux/cgroupstats.h \
   include/uapi/linux/taskstats.h \
-  include/linux/fs.h \
-    $(wildcard include/config/READ_ONLY_THP_FOR_FS) \
-    $(wildcard include/config/FS_POSIX_ACL) \
-    $(wildcard include/config/IMA) \
-    $(wildcard include/config/FILE_LOCKING) \
-    $(wildcard include/config/FSNOTIFY) \
-    $(wildcard include/config/FS_ENCRYPTION) \
-    $(wildcard include/config/FS_VERITY) \
-    $(wildcard include/config/EPOLL) \
-    $(wildcard include/config/UNICODE) \
-    $(wildcard include/config/QUOTA) \
-    $(wildcard include/config/FS_DAX) \
-    $(wildcard include/config/BLOCK) \
-  include/linux/wait_bit.h \
-  include/linux/kdev_t.h \
-  include/uapi/linux/kdev_t.h \
-  include/linux/dcache.h \
-  include/linux/rculist_bl.h \
-  include/linux/list_bl.h \
-  include/linux/bit_spinlock.h \
-  include/linux/lockref.h \
-    $(wildcard include/config/ARCH_USE_CMPXCHG_LOCKREF) \
-  include/linux/stringhash.h \
-    $(wildcard include/config/DCACHE_WORD_ACCESS) \
-  include/linux/hash.h \
-    $(wildcard include/config/HAVE_ARCH_HASH) \
-  include/linux/path.h \
-  include/linux/list_lru.h \
-  include/linux/shrinker.h \
-  include/linux/capability.h \
-  include/uapi/linux/capability.h \
-  include/linux/semaphore.h \
-  include/linux/fcntl.h \
-    $(wildcard include/config/ARCH_32BIT_OFF_T) \
-  include/uapi/linux/fcntl.h \
-  arch/x86/include/generated/uapi/asm/fcntl.h \
-  include/uapi/asm-generic/fcntl.h \
-  include/uapi/linux/openat2.h \
-  include/linux/migrate_mode.h \
-  include/linux/percpu-rwsem.h \
-  include/linux/rcuwait.h \
-  include/linux/sched/signal.h \
-    $(wildcard include/config/SCHED_AUTOGROUP) \
-    $(wildcard include/config/BSD_PROCESS_ACCT) \
-    $(wildcard include/config/TASKSTATS) \
-    $(wildcard include/config/STACK_GROWSUP) \
-  include/linux/signal.h \
-    $(wildcard include/config/DYNAMIC_SIGFRAME) \
-  include/linux/sched/jobctl.h \
-  include/linux/sched/task.h \
-    $(wildcard include/config/HAVE_EXIT_THREAD) \
-    $(wildcard include/config/ARCH_WANTS_DYNAMIC_TASK_STRUCT) \
-    $(wildcard include/config/HAVE_ARCH_THREAD_STRUCT_WHITELIST) \
-  include/linux/uaccess.h \
-  include/linux/fault-inject-usercopy.h \
-    $(wildcard include/config/FAULT_INJECTION_USERCOPY) \
-  arch/x86/include/asm/uaccess.h \
-    $(wildcard include/config/CC_HAS_ASM_GOTO_OUTPUT) \
-    $(wildcard include/config/CC_HAS_ASM_GOTO_TIED_OUTPUT) \
-    $(wildcard include/config/ARCH_HAS_COPY_MC) \
-    $(wildcard include/config/X86_INTEL_USERCOPY) \
-  arch/x86/include/asm/smap.h \
-  arch/x86/include/asm/extable.h \
-    $(wildcard include/config/BPF_JIT) \
-  include/asm-generic/access_ok.h \
-    $(wildcard include/config/ALTERNATE_USER_ADDRESS_SPACE) \
-  arch/x86/include/asm/uaccess_32.h \
-  include/linux/cred.h \
-    $(wildcard include/config/DEBUG_CREDENTIALS) \
-  include/linux/key.h \
-    $(wildcard include/config/KEY_NOTIFICATIONS) \
-    $(wildcard include/config/NET) \
-  include/linux/assoc_array.h \
-    $(wildcard include/config/ASSOCIATIVE_ARRAY) \
-  include/linux/sched/user.h \
-    $(wildcard include/config/WATCH_QUEUE) \
-  include/linux/percpu_counter.h \
-  include/linux/rcu_sync.h \
-  include/linux/delayed_call.h \
-  include/linux/errseq.h \
-  include/linux/ioprio.h \
-  include/linux/sched/rt.h \
-  include/linux/iocontext.h \
-    $(wildcard include/config/BLK_ICQ) \
-  include/uapi/linux/ioprio.h \
-  include/linux/fs_types.h \
-  include/linux/mount.h \
-  include/linux/mnt_idmapping.h \
-  include/uapi/linux/fs.h \
-  include/linux/quota.h \
-    $(wildcard include/config/QUOTA_NETLINK_INTERFACE) \
-  include/uapi/linux/dqblk_xfs.h \
-  include/linux/dqblk_v1.h \
-  include/linux/dqblk_v2.h \
-  include/linux/dqblk_qtree.h \
-  include/linux/projid.h \
-  include/uapi/linux/quota.h \
-  include/linux/nfs_fs_i.h \
   include/linux/seq_file.h \
   include/linux/string_helpers.h \
   include/linux/ns_common.h \
@@ -391,41 +200,6 @@ ux/module.h \
   include/uapi/linux/mempolicy.h \
   include/linux/freezer.h \
   include/uapi/linux/i2c.h \
-  include/linux/videodev2.h \
-  include/uapi/linux/videodev2.h \
-  include/uapi/linux/v4l2-common.h \
-  include/uapi/linux/v4l2-controls.h \
-  include/linux/delay.h \
-  arch/x86/include/asm/delay.h \
-  include/asm-generic/delay.h \
-  include/linux/gpio/consumer.h \
-    $(wildcard include/config/OF_GPIO) \
-    $(wildcard include/config/GPIO_SYSFS) \
-  include/linux/of_graph.h \
-  include/linux/pm_runtime.h \
-  include/linux/regmap.h \
-    $(wildcard include/config/REGMAP) \
-  include/linux/iopoll.h \
-  include/media/v4l2-async.h \
-  include/media/v4l2-device.h \
-  include/media/media-device.h \
-  include/media/media-devnode.h \
-  include/linux/poll.h \
-  include/uapi/linux/poll.h \
-  arch/x86/include/generated/uapi/asm/poll.h \
-  include/uapi/asm-generic/poll.h \
-  include/uapi/linux/eventpoll.h \
-  include/linux/cdev.h \
-  include/media/media-entity.h \
-  include/uapi/linux/media.h \
-  include/media/v4l2-subdev.h \
-  include/uapi/linux/v4l2-subdev.h \
-  include/uapi/linux/v4l2-mediabus.h \
-  include/uapi/linux/media-bus-format.h \
-  include/media/v4l2-common.h \
-    $(wildcard include/config/VIDEO_V4L2_I2C) \
-    $(wildcard include/config/SPI) \
-  include/media/v4l2-dev.h \
   include/linux/spi/spi.h \
     $(wildcard include/config/SPI_SLAVE) \
   include/linux/scatterlist.h \
@@ -434,19 +208,319 @@ ux/module.h \
     $(wildcard include/config/SGL_ALLOC) \
     $(wildcard include/config/ARCH_NO_SG_CHAIN) \
     $(wildcard include/config/SG_POOL) \
+  include/linux/gpio/consumer.h \
+    $(wildcard include/config/OF_GPIO) \
+    $(wildcard include/config/GPIO_SYSFS) \
   include/uapi/linux/spi/spi.h \
   include/media/v4l2-fh.h \
   include/media/v4l2-mediabus.h \
-  include/media/v4l2-event.h \
+  include/sound/core.h \
+    $(wildcard include/config/SND_DYNAMIC_MINORS) \
+    $(wildcard include/config/SND_MAX_CARDS) \
+    $(wildcard include/config/SND_MAJOR) \
+    $(wildcard include/config/SND_DEBUG) \
+    $(wildcard include/config/SND_MIXER_OSS) \
+    $(wildcard include/config/SND_OSSEMUL) \
+    $(wildcard include/config/ISA_DMA_API) \
+    $(wildcard include/config/SND_VERBOSE_PRINTK) \
+    $(wildcard include/config/SND_DEBUG_VERBOSE) \
+    $(wildcard include/config/GAMEPORT) \
+  include/sound/pcm.h \
+    $(wildcard include/config/SND_PCM_OSS) \
+    $(wildcard include/config/SND_VERBOSE_PROCFS) \
+    $(wildcard include/config/SND_PCM_XRUN_DEBUG) \
+  include/sound/asound.h \
+  include/uapi/sound/asound.h \
+  include/sound/memalloc.h \
+    $(wildcard include/config/GENERIC_ALLOCATOR) \
+    $(wildcard include/config/SND_DMA_SGBUF) \
+    $(wildcard include/config/HAS_DMA) \
+  include/linux/dma-direction.h \
+  include/sound/minors.h \
+  include/linux/pm_qos.h \
+    $(wildcard include/config/CPU_IDLE) \
+  include/sound/pcm_oss.h \
+    $(wildcard include/config/SND_PCM_OSS_PLUGINS) \
+  drivers/media/pci/cx18/cx18-driver.h \
+  include/linux/delay.h \
+  arch/x86/include/asm/delay.h \
+  include/asm-generic/delay.h \
+  include/linux/pci.h \
+    $(wildcard include/config/PCI_IOV) \
+    $(wildcard include/config/PCIEAER) \
+    $(wildcard include/config/PCIEPORTBUS) \
+    $(wildcard include/config/PCIEASPM) \
+    $(wildcard include/config/HOTPLUG_PCI_PCIE) \
+    $(wildcard include/config/PCIE_PTM) \
+    $(wildcard include/config/PCIE_DPC) \
+    $(wildcard include/config/PCI_ATS) \
+    $(wildcard include/config/PCI_PRI) \
+    $(wildcard include/config/PCI_PASID) \
+    $(wildcard include/config/PCI_P2PDMA) \
+    $(wildcard include/config/PCI_DOMAINS_GENERIC) \
+    $(wildcard include/config/PCI_DOMAINS) \
+    $(wildcard include/config/PCI_QUIRKS) \
+    $(wildcard include/config/ACPI_MCFG) \
+    $(wildcard include/config/HOTPLUG_PCI) \
+    $(wildcard include/config/EEH) \
+  include/uapi/linux/pci.h \
+  include/uapi/linux/pci_regs.h \
+  include/linux/pci_ids.h \
+  include/linux/dmapool.h \
+  arch/x86/include/asm/pci.h \
+    $(wildcard include/config/PCI_MSI_IRQ_DOMAIN) \
+    $(wildcard include/config/VMD) \
+  arch/x86/include/asm/memtype.h \
+  include/asm-generic/pci.h \
+  include/linux/dma-mapping.h \
+    $(wildcard include/config/DMA_API_DEBUG) \
+    $(wildcard include/config/NEED_DMA_MAP_STATE) \
+  include/linux/i2c-algo-bit.h \
+  include/media/v4l2-ioctl.h \
+  include/media/tuner.h \
+  include/media/v4l2-mc.h \
+  include/media/i2c/ir-kbd-i2c.h \
+  include/media/rc-core.h \
+    $(wildcard include/config/LIRC) \
+  include/linux/kfifo.h \
+  include/media/rc-map.h \
+    $(wildcard include/config/IR_RC5_DECODER) \
+    $(wildcard include/config/IR_JVC_DECODER) \
+    $(wildcard include/config/IR_SONY_DECODER) \
+    $(wildcard include/config/IR_NEC_DECODER) \
+    $(wildcard include/config/IR_SANYO_DECODER) \
+    $(wildcard include/config/IR_MCE_KBD_DECODER) \
+    $(wildcard include/config/IR_RC6_DECODER) \
+    $(wildcard include/config/IR_SHARP_DECODER) \
+    $(wildcard include/config/IR_XMP_DECODER) \
+    $(wildcard include/config/IR_IMON_DECODER) \
+    $(wildcard include/config/IR_RCMM_DECODER) \
+    $(wildcard include/config/MEDIA_CEC_RC) \
+  include/linux/input.h \
+  include/uapi/linux/input.h \
+  include/uapi/linux/input-event-codes.h \
+  include/uapi/linux/lirc.h \
+  drivers/media/pci/cx18/cx18-mailbox.h \
+  drivers/media/pci/cx18/cx18-av-core.h \
   include/media/v4l2-ctrls.h \
   include/media/media-request.h \
   include/media/hevc-ctrls.h \
-  include/media/v4l2-fwnode.h \
-  include/media/v4l2-mc.h \
-  include/media/v4l2-rect.h \
-  drivers/media/i2c/tvp5150_reg.h \
-
-drivers/media/i2c/tvp5150.o: $(deps_drivers/media/i2c/tvp5150.o)
-
-$(deps_drivers/media/i2c/tvp5150.o):
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        cmd_drivers/media/i2c/tvp5150.o := gcc -Wp,-MMD,drivers/media/i2c/.tvp5150.o.d -nostdinc -I./arch/x86/include -I./arch/x86/include/generated  -I./include -I./arch/x86/include/uapi -I./arch/x86/include/generated/uapi -I./include/uapi -I./include/generated/uapi -include ./include/linux/compiler-version.h -include ./include/linux/kconfig.h -include ./include/linux/compiler_types.h -D__KERNEL__ -fmacro-prefix-map=./= -Wall -Wundef -Werror=strict-prototypes -Wno-trigraphs -fno-strict-aliasing -fno-common -fshort-wchar -fno-PIE -Werror=implicit-function-declaration -Werror=i
+  drivers/media/pci/cx18/cx23418.h \
+  include/media/drv-intf/cx2341x.h \
+  include/media/demux.h \
+  include/uapi/linux/dvb/dmx.h \
+  include/media/dmxdev.h \
+  include/media/dvbdev.h \
+    $(wildcard include/config/DVB_MAX_ADAPTERS) \
+    $(wildcard include/config/MEDIA_CONTROLLER_DVB) \
+    $(wildcard include/config/MEDIA_ATTACH) \
+  include/media/dvb_ringbuffer.h \
+  include/media/dvb_vb2.h \
+    $(wildcard include/config/DVB_MMAP) \
+  include/media/videobuf2-core.h \
+  include/linux/dma-buf.h \
+    $(wildcard include/config/DMABUF_SYSFS_STATS) \
+  include/linux/iosys-map.h \
+  include/linux/file.h \
+  include/linux/dma-fence.h \
+  include/media/frame_vector.h \
+  include/media/videobuf2-dma-contig.h \
+  include/media/videobuf2-v4l2.h \
+  include/media/videobuf2-vmalloc.h \
+  include/media/dvb_demux.h \
+  include/media/dvb_frontend.h \
+  include/uapi/linux/dvb/frontend.h \
+  include/media/dvb_net.h \
+    $(wildcard include/config/DVB_NET) \
+  include/linux/netdevice.h \
+    $(wildcard include/config/DCB) \
+    $(wildcard include/config/HYPERV_NET) \
+    $(wildcard include/config/WLAN) \
+    $(wildcard include/config/AX25) \
+    $(wildcard include/config/MAC80211_MESH) \
+    $(wildcard include/config/NET_IPIP) \
+    $(wildcard include/config/NET_IPGRE) \
+    $(wildcard include/config/IPV6_SIT) \
+    $(wildcard include/config/IPV6_TUNNEL) \
+    $(wildcard include/config/RPS) \
+    $(wildcard include/config/NETPOLL) \
+    $(wildcard include/config/XPS) \
+    $(wildcard include/config/XDP_SOCKETS) \
+    $(wildcard include/config/BQL) \
+    $(wildcard include/config/RFS_ACCEL) \
+    $(wildcard include/config/FCOE) \
+    $(wildcard include/config/XFRM_OFFLOAD) \
+    $(wildcard include/config/NET_POLL_CONTROLLER) \
+    $(wildcard include/config/LIBFCOE) \
+    $(wildcard include/config/WIRELESS_EXT) \
+    $(wildcard include/config/NET_L3_MASTER_DEV) \
+    $(wildcard include/config/IPV6) \
+    $(wildcard include/config/TLS_DEVICE) \
+    $(wildcard include/config/VLAN_8021Q) \
+    $(wildcard include/config/NET_DSA) \
+    $(wildcard include/config/TIPC) \
+    $(wildcard include/config/ATALK) \
+    $(wildcard include/config/DECNET) \
+    $(wildcard include/config/MPLS_ROUTING) \
+    $(wildcard include/config/MCTP) \
+    $(wildcard include/config/NET_CLS_ACT) \
+    $(wildcard include/config/NETFILTER_INGRESS) \
+    $(wildcard include/config/NETFILTER_EGRESS) \
+    $(wildcard include/config/NET_SCHED) \
+    $(wildcard include/config/PCPU_DEV_REFCNT) \
+    $(wildcard include/config/GARP) \
+    $(wildcard include/config/MRP) \
+    $(wildcard include/config/NET_DROP_MONITOR) \
+    $(wildcard include/config/MACSEC) \
+    $(wildcard include/config/NET_FLOW_LIMIT) \
+    $(wildcard include/config/NET_DEV_REFCNT_TRACKER) \
+    $(wildcard include/config/ETHTOOL_NETLINK) \
+  include/linux/prefetch.h \
+  arch/x86/include/asm/local.h \
+  include/linux/dynamic_queue_limits.h \
+  include/net/net_namespace.h \
+    $(wildcard include/config/NF_CONNTRACK) \
+    $(wildcard include/config/IEEE802154_6LOWPAN) \
+    $(wildcard include/config/IP_SCTP) \
+    $(wildcard include/config/NETFILTER) \
+    $(wildcard include/config/NF_TABLES) \
+    $(wildcard include/config/WEXT_CORE) \
+    $(wildcard include/config/XFRM) \
+    $(wildcard include/config/IP_VS) \
+    $(wildcard include/config/MPLS) \
+    $(wildcard include/config/CAN) \
+    $(wildcard include/config/CRYPTO_USER) \
+    $(wildcard include/config/SMC) \
+    $(wildcard include/config/NET_NS) \
+    $(wildcard include/config/NET_NS_REFCNT_TRACKER) \
+  include/net/flow.h \
+  include/linux/socket.h \
+  arch/x86/include/generated/uapi/asm/socket.h \
+  include/uapi/asm-generic/socket.h \
+  arch/x86/include/generated/uapi/asm/sockios.h \
+  include/uapi/asm-generic/sockios.h \
+  include/uapi/linux/sockios.h \
+  include/uapi/linux/socket.h \
+  include/linux/in6.h \
+  include/uapi/linux/in6.h \
+  include/uapi/linux/libc-compat.h \
+  include/net/flow_dissector.h \
+  include/linux/siphash.h \
+    $(wildcard include/config/HAVE_EFFICIENT_UNALIGNED_ACCESS) \
+  include/uapi/linux/if_ether.h \
+  include/net/netns/core.h \
+  include/net/netns/mib.h \
+    $(wildcard include/config/XFRM_STATISTICS) \
+    $(wildcard include/config/TLS) \
+    $(wildcard include/config/MPTCP) \
+  include/net/snmp.h \
+  include/uapi/linux/snmp.h \
+  include/net/netns/unix.h \
+  include/net/netns/packet.h \
+  include/net/netns/ipv4.h \
+    $(wildcard include/config/IP_MULTIPLE_TABLES) \
+    $(wildcard include/config/IP_ROUTE_CLASSID) \
+    $(wildcard include/config/IP_MROUTE) \
+    $(wildcard include/config/IP_MROUTE_MULTIPLE_TABLES) \
+    $(wildcard include/config/IP_ROUTE_MULTIPATH) \
+  include/net/inet_frag.h \
+  include/net/netns/ipv6.h \
+    $(wildcard include/config/IPV6_MULTIPLE_TABLES) \
+    $(wildcard include/config/IPV6_SUBTREES) \
+    $(wildcard include/config/IPV6_MROUTE) \
+    $(wildcard include/config/IPV6_MROUTE_MULTIPLE_TABLES) \
+    $(wildcard include/config/NF_DEFRAG_IPV6) \
+  include/net/dst_ops.h \
+  include/uapi/linux/icmpv6.h \
+  include/net/netns/nexthop.h \
+  include/net/netns/ieee802154_6lowpan.h \
+  include/net/netns/sctp.h \
+  include/net/netns/netfilter.h \
+    $(wildcard include/config/NETFILTER_FAMILY_ARP) \
+    $(wildcard include/config/NETFILTER_FAMILY_BRIDGE) \
+    $(wildcard include/config/NF_DEFRAG_IPV4) \
+  include/linux/netfilter_defs.h \
+  include/uapi/linux/netfilter.h \
+  include/linux/in.h \
+  include/uapi/linux/in.h \
+  include/net/netns/conntrack.h \
+    $(wildcard include/config/NF_CT_PROTO_DCCP) \
+    $(wildcard include/config/NF_CT_PROTO_SCTP) \
+    $(wildcard include/config/NF_FLOW_TABLE) \
+    $(wildcard include/config/NF_CT_PROTO_GRE) \
+    $(wildcard include/config/NF_CONNTRACK_EVENTS) \
+    $(wildcard include/config/NF_CONNTRACK_LABELS) \
+  include/linux/list_nulls.h \
+  include/linux/netfilter/nf_conntrack_tcp.h \
+  include/uapi/linux/netfilter/nf_conntrack_tcp.h \
+  include/linux/netfilter/nf_conntrack_dccp.h \
+  include/uapi/linux/netfilter/nf_conntrack_tuple_common.h \
+  include/linux/netfilter/nf_conntrack_common.h \
+  include/uapi/linux/netfilter/nf_conntrack_common.h \
+  include/linux/netfilter/nf_conntrack_sctp.h \
+  include/uapi/linux/netfilter/nf_conntrack_sctp.h \
+  include/net/netns/nftables.h \
+  include/net/netns/xfrm.h \
+  include/uapi/linux/xfrm.h \
+  include/net/netns/mpls.h \
+  include/net/netns/can.h \
+  include/net/netns/xdp.h \
+  include/net/netns/smc.h \
+  include/net/netns/bpf.h \
+  include/net/netns/mctp.h \
+  include/net/net_trackers.h \
+  include/linux/ref_tracker.h \
+    $(wildcard include/config/REF_TRACKER) \
+  include/linux/skbuff.h \
+    $(wildcard include/config/BRIDGE_NETFILTER) \
+    $(wildcard include/config/NET_TC_SKB_EXT) \
+    $(wildcard include/config/NET_SOCK_MSG) \
+    $(wildcard include/config/SKB_EXTENSIONS) \
+    $(wildcard include/config/IPV6_NDISC_NODETYPE) \
+    $(wildcard include/config/NET_SWITCHDEV) \
+    $(wildcard include/config/NET_REDIRECT) \
+    $(wildcard include/config/NETFILTER_SKIP_EGRESS) \
+    $(wildcard include/config/NET_RX_BUSY_POLL) \
+    $(wildcard include/config/NETWORK_SECMARK) \
+    $(wildcard include/config/PAGE_POOL) \
+    $(wildcard include/config/NETWORK_PHY_TIMESTAMPING) \
+    $(wildcard include/config/MCTP_FLOWS) \
+    $(wildcard include/config/NETFILTER_XT_TARGET_TRACE) \
+  include/linux/net.h \
+  include/linux/random.h \
+    $(wildcard include/config/VMGENID) \
+    $(wildcard include/config/ARCH_RANDOM) \
+  include/linux/once.h \
+  include/uapi/linux/random.h \
+  include/linux/prandom.h \
+  arch/x86/include/asm/archrandom.h \
+  include/linux/sockptr.h \
+  include/uapi/linux/net.h \
+  include/linux/textsearch.h \
+  include/net/checksum.h \
+  arch/x86/include/asm/checksum.h \
+  arch/x86/include/asm/checksum_32.h \
+  include/linux/netdev_features.h \
+  include/linux/sched/clock.h \
+    $(wildcard include/config/HAVE_UNSTABLE_SCHED_CLOCK) \
+  include/linux/splice.h \
+  include/linux/pipe_fs_i.h \
+  include/uapi/linux/if_packet.h \
+  include/net/page_pool.h \
+    $(wildcard include/config/PAGE_POOL_STATS) \
+  include/linux/ptr_ring.h \
+  include/linux/seq_file_net.h \
+  include/net/netprio_cgroup.h \
+  include/net/xdp.h \
+  include/uapi/linux/neighbour.h \
+  include/linux/netlink.h \
+  include/net/scm.h \
+    $(wildcard include/config/SECURITY_NETWORK) \
+  include/linux/security.h \
+    $(wildcard include/config/SECURITY_INFINIBAND) \
+    $(wildcard include/config/SECURITY_NETWORK_XFRM) \
+    $(wildcard include/config/SECURITY_PATH) \
+    $(wildcard include/config/SECURITYFS) \
+  include/linux/kernel_read_file.h \
+  include/uapi/linux/netlink.h \
+  include/uapi/linux/netdevice.h

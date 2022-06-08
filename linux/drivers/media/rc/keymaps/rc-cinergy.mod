@@ -1,2 +1,2 @@
-drivers/media/rc/keymaps/rc-cinergy.o
-
+filt->nr = hw_filt_nr - 1;
+	/* store ol

@@ -1,7 +1,6 @@
-(int offset, int next, int bucket, int size)
-{
-	chain_hlocks[offset] = (next >> 16) | CHAIN_BLK_FLAG;
-	chain_hlocks[offset + 1] = (u16)next;
+truct cx23885_audio_dev *chip = snd_pcm_substream_chip(substream);
+	struct snd_pcm_runtime *runtime = substream->runtime;
+	int err;
 
-	if (size && !bucket) {
-		chain_hlocks[off
+	if (!chip) {
+		pr_err("BUG: cx23885 can't find dev

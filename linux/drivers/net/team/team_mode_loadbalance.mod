@@ -1,2 +1,1 @@
-t.h \
-    $(wildcard include/config/DEBUG_
+/* SPDX-License-Identifier: GPL-2.0-or-lat

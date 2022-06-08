@@ -1,2 +1,2 @@
-drivers/media/rc/keymaps/rc-xbox-dvd.o
-
+885_video_template = {
+	.name           

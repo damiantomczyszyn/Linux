@@ -1,2 +1,3 @@
-_P6_NOP) \
-    $(wildcard inc
+k_struct *p, int flags)
+{
+	if

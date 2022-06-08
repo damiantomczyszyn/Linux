@@ -1,2 +1,1 @@
-clude/linux/build_bug.h \
-  include/linu
+/* SPDX-License-Identifier: GPL-2.0-or-l

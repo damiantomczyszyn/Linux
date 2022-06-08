@@ -1,2 +1,2 @@
-ldcard include/config/PCI_MMCONFIG) \
- 
+reg_dma_ctl;
+	u32                      

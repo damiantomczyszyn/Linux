@@ -1,3 +1,2 @@
-config/X86_P6_NOP) \
-    $(wildcard include/config/MATOM) \
-    $(wildcard incl
+!try_module_get(client_tuner->dev.driver->owner)) {
+				i2c_unregister_device(c

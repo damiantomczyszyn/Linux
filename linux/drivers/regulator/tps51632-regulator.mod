@@ -1,2 +1,3 @@
-/DEBUG_SG) \
-    $(wildcard include/conf
+ity *cap)
+{
+	struct cx23885_dev *dev = v

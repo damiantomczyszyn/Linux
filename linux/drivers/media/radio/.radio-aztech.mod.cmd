@@ -1,1 +1,1 @@
-cmd_drivers/media/radio/radio-aztech.mod := { echo  drivers/media/radio/radio-aztech.o;  echo; } > drivers/media/radio/radio-aztech.mod
+cmd_drivers/media/pci/cx18/cx18.ko := ld -r -m elf_i386 --build-id=sha1  -T scripts/module.lds -o drivers/media/pci/cx18/cx18.ko drivers

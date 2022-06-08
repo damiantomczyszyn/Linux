@@ -1,34 +1,49 @@
-dcard include/config/PARAVIRT_XXL) \
-  arch/x86/include/asm/disabled-features.h \
-    $(wildcard include/config/X86_SMAP) \
-    $(wildcard include/config/X86_UMIP) \
-    $(wildcard include/config/X86_INTEL_MEMORY_PROTECTION_KEYS) \
-    $(wildcard include/config/X86_5LEVEL) \
-    $(wildcard include/config/PAGE_TABLE_ISOLATION) \
-    $(wildcard include/config/INTEL_IOMMU_SVM) \
-    $(wildcard include/config/X86_SGX) \
-  include/asm-generic/bitops/const_hweight.h \
-  include/asm-generic/bitops/instrumented-atomic.h \
-  include/linux/instrumented.h \
-  include/asm-generic/bitops/instrumented-non-atomic.h \
-    $(wildcard include/config/KCSAN_ASSUME_PLAIN_WRITES_ATOMIC) \
-  include/asm-generic/bitops/instrumented-lock.h \
-  include/asm-generic/bitops/le.h \
-  arch/x86/include/uapi/asm/byteorder.h \
-  include/linux/byteorder/little_endian.h \
-  include/uapi/linux/byteorder/little_endian.h \
-  include/linux/swab.h \
-  include/uapi/linux/swab.h \
-  arch/x86/include/uapi/asm/swab.h \
-  include/linux/byteorder/generic.h \
-  include/asm-generic/bitops/ext2-atomic-setbit.h \
-  include/vdso/math64.h \
-  include/linux/time64.h \
-  include/vdso/time64.h \
-  include/uapi/linux/time.h \
-  include/uapi/linux/time_types.h \
-  include/linux/time32.h \
-  include/linux/timex.h \
-  include/uapi/linux/timex.h \
-  include/uapi/linux/param.h \
-  
+#include <linux/module.h>
+#define INCLUDE_VERMAGIC
+#include <linux/build-salt.h>
+#include <linux/elfnote-lto.h>
+#include <linux/vermagic.h>
+#include <linux/compiler.h>
+
+BUILD_SALT;
+BUILD_LTO_INFO;
+
+MODULE_INFO(vermagic, VERMAGIC_STRING);
+MODULE_INFO(name, KBUILD_MODNAME);
+
+__visible struct module __this_module
+__section(".gnu.linkonce.this_module") = {
+	.name = KBUILD_MODNAME,
+	.init = init_module,
+#ifdef CONFIG_MODULE_UNLOAD
+	.exit = cleanup_module,
+#endif
+	.arch = MODULE_ARCH_INIT,
+};
+
+MODULE_INFO(intree, "Y");
+
+#ifdef CONFIG_RETPOLINE
+MODULE_INFO(retpoline, "Y");
+#endif
+
+MODULE_INFO(depends, "libphy,b53_common,dsa_core");
+
+MODULE_ALIAS("of:N*T*Cbrcm,bcm5325");
+MODULE_ALIAS("of:N*T*Cbrcm,bcm5325C*");
+MODULE_ALIAS("of:N*T*Cbrcm,bcm53115");
+MODULE_ALIAS("of:N*T*Cbrcm,bcm53115C*");
+MODULE_ALIAS("of:N*T*Cbrcm,bcm53125");
+MODULE_ALIAS("of:N*T*Cbrcm,bcm53125C*");
+MODULE_ALIAS("of:N*T*Cbrcm,bcm53128");
+MODULE_ALIAS("of:N*T*Cbrcm,bcm53128C*");
+MODULE_ALIAS("of:N*T*Cbrcm,bcm5365");
+MODULE_ALIAS("of:N*T*Cbrcm,bcm5365C*");
+MODULE_ALIAS("of:N*T*Cbrcm,bcm5389");
+MODULE_ALIAS("of:N*T*Cbrcm,bcm5389C*");
+MODULE_ALIAS("of:N*T*Cbrcm,bcm5395");
+MODULE_ALIAS("of:N*T*Cbrcm,bcm5395C*");
+MODULE_ALIAS("of:N*T*Cbrcm,bcm5397");
+MODULE_ALIAS("of:N*T*Cbrcm,bcm5397C*");
+MODULE_ALIAS("of:N*T*Cbrcm,bcm5398");
+MODULE_ALIAS("of:N*T*Cbrcm,bcm5398C*");

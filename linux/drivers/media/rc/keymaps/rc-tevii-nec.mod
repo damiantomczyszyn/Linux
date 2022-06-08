@@ -1,2 +1,1 @@
-drivers/media/rc/keymaps/rc-tevii-nec.o
-
+/* SPDX-License-Identifier: GPL-2.0-or-la

@@ -1,2 +1,1 @@
-drivers/media/radio/radio-isa.o
-
+# SPDX-License-Identifier: GPL-2.

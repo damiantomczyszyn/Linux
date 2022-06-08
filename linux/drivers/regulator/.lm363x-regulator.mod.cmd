@@ -1,4 +1,3 @@
- $(wildcard include/config/PAGE_OWNER) \
-    $(wildcard include/config/EVENTFD) \
-    $(wildcard include/config/IOMMU_SVA) \
-    $(wildcard in
+# SPDX-License-Identifier: GPL-2.0
+cx23885-objs	:= cx23885-cards.o cx23885-video.o cx23885-vbi.o \
+		    cx23885-core.o cx23885-i2c.o cx23885-

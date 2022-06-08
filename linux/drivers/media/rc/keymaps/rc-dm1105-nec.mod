@@ -1,2 +1,1 @@
-drivers/media/rc/keymaps/rc-dm1105-nec.o
-
+/* SPDX-License-Identifier: GPL-2.0-or-lat

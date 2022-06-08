@@ -1,2 +1,1 @@
-x/scatterlist.h \
-    $(wildcard include/config/
+ine void cx23885_irq_disable_all(struct cx23885_

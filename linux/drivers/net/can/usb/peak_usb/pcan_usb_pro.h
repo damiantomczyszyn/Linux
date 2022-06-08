@@ -1,105 +1,190 @@
-/HUGETLB_PAGE_SIZE_VARIABLE) \
-  include/linux/page-flags-layout.h \
-  include/generated/bounds.h \
-  include/linux/mm_types.h \
-    $(wildcard include/config/HAVE_ALIGNED_STRUCT_PAGE) \
-    $(wildcard include/config/USERFAULTFD) \
-    $(wildcard include/config/HAVE_ARCH_COMPAT_MMAP_BASES) \
-    $(wildcard include/config/MEMBARRIER) \
-    $(wildcard include/config/AIO) \
-    $(wildcard include/config/MMU_NOTIFIER) \
-    $(wildcard include/config/ARCH_WANT_BATCHED_UNMAP_TLB_FLUSH) \
-    $(wildcard include/config/IOMMU_SVA) \
-  include/linux/mm_types_task.h \
-    $(wildcard include/config/SPLIT_PTLOCK_CPUS) \
-    $(wildcard include/config/ARCH_ENABLE_SPLIT_PMD_PTLOCK) \
-  arch/x86/include/asm/tlbbatch.h \
-  include/linux/auxvec.h \
-  include/uapi/linux/auxvec.h \
-  arch/x86/include/uapi/asm/auxvec.h \
-  include/linux/kref.h \
-  include/linux/refcount.h \
-  include/linux/rbtree.h \
-  include/linux/rcupdate.h \
-    $(wildcard include/config/PREEMPT_RCU) \
-    $(wildcard include/config/TINY_RCU) \
-    $(wildcard include/config/RCU_STRICT_GRACE_PERIOD) \
-    $(wildcard include/config/TASKS_RCU_GENERIC) \
-    $(wildcard include/config/RCU_STALL_COMMON) \
-    $(wildcard include/config/NO_HZ_FULL) \
-    $(wildcard include/config/RCU_NOCB_CPU) \
-    $(wildcard include/config/TASKS_RCU) \
-    $(wildcard include/config/TASKS_TRACE_RCU) \
-    $(wildcard include/config/TASKS_RUDE_RCU) \
-    $(wildcard include/config/TREE_RCU) \
-    $(wildcard include/config/DEBUG_OBJECTS_RCU_HEAD) \
-    $(wildcard include/config/PROVE_RCU) \
-    $(wildcard include/config/ARCH_WEAK_RELEASE_ACQUIRE) \
-  include/linux/rcutree.h \
-  include/linux/rwsem.h \
-    $(wildcard include/config/RWSEM_SPIN_ON_OWNER) \
-    $(wildcard include/config/DEBUG_RWSEMS) \
-  include/linux/completion.h \
-  include/linux/swait.h \
-  include/linux/uprobes.h \
-    $(wildcard include/config/UPROBES) \
-  arch/x86/include/asm/uprobes.h \
-  include/linux/notifier.h \
-    $(wildcard include/config/TREE_SRCU) \
-  include/linux/srcu.h \
-    $(wildcard include/config/TINY_SRCU) \
-    $(wildcard include/config/SRCU) \
-  include/linux/workqueue.h \
-    $(wildcard include/config/DEBUG_OBJECTS_WORK) \
-    $(wildcard include/config/FREEZER) \
-    $(wildcard include/config/WQ_WATCHDOG) \
-  include/linux/timer.h \
-    $(wildcard include/config/DEBUG_OBJECTS_TIMERS) \
-    $(wildcard include/config/NO_HZ_COMMON) \
-  include/linux/ktime.h \
-  include/linux/time.h \
-    $(wildcard include/config/POSIX_TIMERS) \
-  include/linux/time32.h \
-  include/linux/timex.h \
-  include/uapi/linux/timex.h \
-  arch/x86/include/asm/timex.h \
-    $(wildcard include/config/X86_TSC) \
-  arch/x86/include/asm/tsc.h \
-  include/vdso/time32.h \
-  include/vdso/time.h \
-  include/linux/jiffies.h \
-  include/vdso/jiffies.h \
-  include/generated/timeconst.h \
-  include/vdso/ktime.h \
-  include/linux/timekeeping.h \
-    $(wildcard include/config/GENERIC_CMOS_UPDATE) \
-  include/linux/clocksource_ids.h \
-  include/linux/debugobjects.h \
-    $(wildcard include/config/DEBUG_OBJECTS) \
-    $(wildcard include/config/DEBUG_OBJECTS_FREE) \
-  include/linux/rcu_segcblist.h \
-  include/linux/srcutree.h \
-  include/linux/rcu_node_tree.h \
-    $(wildcard include/config/RCU_FANOUT) \
-    $(wildcard include/config/RCU_FANOUT_LEAF) \
-  arch/x86/include/asm/mmu.h \
-    $(wildcard include/config/MODIFY_LDT_SYSCALL) \
-  include/linux/page-flags.h \
-    $(wildcard include/config/ARCH_USES_PG_UNCACHED) \
-    $(wildcard include/config/MEMORY_FAILURE) \
-    $(wildcard include/config/PAGE_IDLE_FLAG) \
-    $(wildcard include/config/HUGETLB_PAGE_FREE_VMEMMAP) \
-    $(wildcard include/config/HUGETLB_PAGE_FREE_VMEMMAP_DEFAULT_ON) \
-    $(wildcard include/config/KSM) \
-  include/linux/local_lock.h \
-  include/linux/local_lock_internal.h \
-  include/linux/memory_hotplug.h \
-    $(wildcard include/config/HAVE_ARCH_NODEDATA_EXTENSION) \
-    $(wildcard include/config/ARCH_HAS_ADD_PAGES) \
-  arch/x86/include/asm/mmzone.h \
-  arch/x86/include/asm/mmzone_32.h \
-  include/linux/topology.h \
-    $(wildcard include/config/USE_PERCPU_NUMA_NODE_ID) \
-    $(wildcard include/config/SCHED_SMT) \
-    $(wildcard include/config/SCHED_CLUSTER) \
- 
+/* SPDX-License-Identifier: GPL-2.0-only */
+/*
+ * CAN driver for PEAK System PCAN-USB Pro adapter
+ * Derived from the PCAN project file driver/src/pcan_usbpro_fw.h
+ *
+ * Copyright (C) 2003-2011 PEAK System-Technik GmbH
+ * Copyright (C) 2011-2012 Stephane Grosjean <s.grosjean@peak-system.com>
+ */
+#ifndef PCAN_USB_PRO_H
+#define PCAN_USB_PRO_H
+
+/*
+ * USB Vendor request data types
+ */
+#define PCAN_USBPRO_REQ_INFO		0
+#define PCAN_USBPRO_REQ_FCT		2
+
+/* Vendor Request value for XXX_INFO */
+#define PCAN_USBPRO_INFO_BL		0
+#define PCAN_USBPRO_INFO_FW		1
+
+/* PCAN-USB Pro (FD) Endpoints */
+#define PCAN_USBPRO_EP_CMDOUT		1
+#define PCAN_USBPRO_EP_CMDIN		(PCAN_USBPRO_EP_CMDOUT | USB_DIR_IN)
+#define PCAN_USBPRO_EP_MSGOUT_0		2
+#define PCAN_USBPRO_EP_MSGIN		(PCAN_USBPRO_EP_MSGOUT_0 | USB_DIR_IN)
+#define PCAN_USBPRO_EP_MSGOUT_1		3
+#define PCAN_USBPRO_EP_UNUSED		(PCAN_USBPRO_EP_MSGOUT_1 | USB_DIR_IN)
+
+/* Vendor Request value for XXX_FCT */
+#define PCAN_USBPRO_FCT_DRVLD		5 /* tell device driver is loaded */
+#define PCAN_USBPRO_FCT_DRVLD_REQ_LEN	16
+
+/* PCAN_USBPRO_INFO_BL vendor request record type */
+struct __packed pcan_usb_pro_blinfo {
+	__le32 ctrl_type;
+	u8 version[4];
+	u8 day;
+	u8 month;
+	u8 year;
+	u8 dummy;
+	__le32 serial_num_hi;
+	__le32 serial_num_lo;
+	__le32 hw_type;
+	__le32 hw_rev;
+};
+
+/* PCAN_USBPRO_INFO_FW vendor request record type */
+struct __packed pcan_usb_pro_fwinfo {
+	__le32 ctrl_type;
+	u8 version[4];
+	u8 day;
+	u8 month;
+	u8 year;
+	u8 dummy;
+	__le32 fw_type;
+};
+
+/*
+ * USB Command record types
+ */
+#define PCAN_USBPRO_SETBTR	0x02
+#define PCAN_USBPRO_SETBUSACT	0x04
+#define PCAN_USBPRO_SETSILENT	0x05
+#define PCAN_USBPRO_SETFILTR	0x0a
+#define PCAN_USBPRO_SETTS	0x10
+#define PCAN_USBPRO_GETDEVID	0x12
+#define PCAN_USBPRO_SETLED	0x1C
+#define PCAN_USBPRO_RXMSG8	0x80
+#define PCAN_USBPRO_RXMSG4	0x81
+#define PCAN_USBPRO_RXMSG0	0x82
+#define PCAN_USBPRO_RXRTR	0x83
+#define PCAN_USBPRO_RXSTATUS	0x84
+#define PCAN_USBPRO_RXTS	0x85
+#define PCAN_USBPRO_TXMSG8	0x41
+#define PCAN_USBPRO_TXMSG4	0x42
+#define PCAN_USBPRO_TXMSG0	0x43
+
+/* record structures */
+struct __packed pcan_usb_pro_btr {
+	u8 data_type;
+	u8 channel;
+	__le16 dummy;
+	__le32 CCBT;
+};
+
+struct __packed pcan_usb_pro_busact {
+	u8 data_type;
+	u8 channel;
+	__le16 onoff;
+};
+
+struct __packed pcan_usb_pro_silent {
+	u8 data_type;
+	u8 channel;
+	__le16 onoff;
+};
+
+struct __packed pcan_usb_pro_filter {
+	u8 data_type;
+	u8 dummy;
+	__le16 filter_mode;
+};
+
+struct __packed pcan_usb_pro_setts {
+	u8 data_type;
+	u8 dummy;
+	__le16 mode;
+};
+
+struct __packed pcan_usb_pro_devid {
+	u8 data_type;
+	u8 channel;
+	__le16 dummy;
+	__le32 serial_num;
+};
+
+#define PCAN_USBPRO_LED_DEVICE		0x00
+#define PCAN_USBPRO_LED_BLINK_FAST	0x01
+#define PCAN_USBPRO_LED_BLINK_SLOW	0x02
+#define PCAN_USBPRO_LED_ON		0x03
+#define PCAN_USBPRO_LED_OFF		0x04
+
+struct __packed pcan_usb_pro_setled {
+	u8 data_type;
+	u8 channel;
+	__le16 mode;
+	__le32 timeout;
+};
+
+struct __packed pcan_usb_pro_rxmsg {
+	u8 data_type;
+	u8 client;
+	u8 flags;
+	u8 len;
+	__le32 ts32;
+	__le32 id;
+
+	u8 data[8];
+};
+
+#define PCAN_USBPRO_STATUS_ERROR	0x0001
+#define PCAN_USBPRO_STATUS_BUS		0x0002
+#define PCAN_USBPRO_STATUS_OVERRUN	0x0004
+#define PCAN_USBPRO_STATUS_QOVERRUN	0x0008
+
+struct __packed pcan_usb_pro_rxstatus {
+	u8 data_type;
+	u8 channel;
+	__le16 status;
+	__le32 ts32;
+	__le32 err_frm;
+};
+
+struct __packed pcan_usb_pro_rxts {
+	u8 data_type;
+	u8 dummy[3];
+	__le32 ts64[2];
+};
+
+struct __packed pcan_usb_pro_txmsg {
+	u8 data_type;
+	u8 client;
+	u8 flags;
+	u8 len;
+	__le32 id;
+	u8 data[8];
+};
+
+union pcan_usb_pro_rec {
+	u8				data_type;
+	struct pcan_usb_pro_btr		btr;
+	struct pcan_usb_pro_busact	bus_act;
+	struct pcan_usb_pro_silent	silent_mode;
+	struct pcan_usb_pro_filter	filter_mode;
+	struct pcan_usb_pro_setts	ts;
+	struct pcan_usb_pro_devid	dev_id;
+	struct pcan_usb_pro_setled	set_led;
+	struct pcan_usb_pro_rxmsg	rx_msg;
+	struct pcan_usb_pro_rxstatus	rx_status;
+	struct pcan_usb_pro_rxts	rx_ts;
+	struct pcan_usb_pro_txmsg	tx_msg;
+};
+
+int pcan_usb_pro_probe(struct usb_interface *intf);
+int pcan_usb_pro_send_req(struct peak_usb_device *dev, int req_id,
+			  int req_value, void *req_addr, int req_size);
+void pcan_usb_pro_restart_complete(struct urb *urb);
+
+#endif

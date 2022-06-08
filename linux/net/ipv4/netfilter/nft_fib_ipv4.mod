@@ -1,2 +1,1 @@
-pes.h \
-  include/asm-generic/pgtab
+TV-HVR1700 (PCIe, OEM, No IR, full 

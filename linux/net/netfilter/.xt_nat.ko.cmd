@@ -1,10 +1,9 @@
-atic inline int check_wait_context(struct task_struct *curr,
-				     struct held_lock *next)
-{
-	return 0;
-}
+reempt_dynamic_undefined = -1,
+	preempt_dynamic_none,
+	preempt_dynamic_voluntary,
+	preempt_dynamic_full,
+};
 
-#endif /* CONFIG_PROVE_LOCKING */
+int preempt_dynamic_mode = preempt_dynamic_undefined;
 
-/*
- * Initialize a lock ins
+int sche

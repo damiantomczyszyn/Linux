@@ -1,1 +1,2 @@
-rd include/config/ALTERNATE_USER_ADDRES
+pauge WinTV-HVR1275",
+		.portc		= CX238

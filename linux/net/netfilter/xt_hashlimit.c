@@ -1,795 +1,1166 @@
-haracter as follows:
-	 *
-	 * - '+': irq is enabled and not in irq context
-	 * - '-': in irq context and irq is disabled
-	 * - '?': in irq context and irq is enabled
+r enqueuing work.
+ * @cpu: the CPU in question.
+ *
+ * Return: 1 if the CPU is currently idle. 0 otherwise.
+ */
+int available_idle_cpu(int cpu)
+{
+	if (!idle_cpu(cpu))
+		return 0;
+
+	if (vcpu_is_preempted(cpu))
+		return 0;
+
+	return 1;
+}
+
+/**
+ * idle_task - return the idle task for a given CPU.
+ * @cpu: the processor in question.
+ *
+ * Return: The idle task for the CPU @cpu.
+ */
+struct task_struct *idle_task(int cpu)
+{
+	return cpu_rq(cpu)->idle;
+}
+
+#ifdef CONFIG_SMP
+/*
+ * This function computes an effective utilization for the given CPU, to be
+ * used for frequency selection given the linear relation: f = u * f_max.
+ *
+ * The scheduler tracks the following metrics:
+ *
+ *   cpu_util_{cfs,rt,dl,irq}()
+ *   cpu_bw_dl()
+ *
+ * Where the cfs,rt and dl util numbers are tracked with the same metric and
+ * synchronized windows and are thus directly comparable.
+ *
+ * The cfs,rt,dl utilization are the running times measured with rq->clock_task
+ * which excludes things like IRQ and steal-time. These latter are then accrued
+ * in the irq utilization.
+ *
+ * The DL bandwidth number otoh is not a measured metric but a value computed
+ * based on the task model parameters and gives the minimal utilization
+ * required to meet deadlines.
+ */
+unsigned long effective_cpu_util(int cpu, unsigned long util_cfs,
+				 unsigned long max, enum cpu_util_type type,
+				 struct task_struct *p)
+{
+	unsigned long dl_util, util, irq;
+	struct rq *rq = cpu_rq(cpu);
+
+	if (!uclamp_is_used() &&
+	    type == FREQUENCY_UTIL && rt_rq_is_runnable(&rq->rt)) {
+		return max;
+	}
+
+	/*
+	 * Early check to see if IRQ/steal time saturates the CPU, can be
+	 * because of inaccuracies in how we track these -- see
+	 * update_irq_load_avg().
 	 */
-	if (class->usage_mask & lock_flag(bit + LOCK_USAGE_DIR_MASK)) {
-		c = '+';
-		if (class->usage_mask & lock_flag(bit))
-			c = '?';
-	} else if (class->usage_mask & lock_flag(bit))
-		c = '-';
+	irq = cpu_util_irq(rq);
+	if (unlikely(irq >= max))
+		return max;
 
-	return c;
+	/*
+	 * Because the time spend on RT/DL tasks is visible as 'lost' time to
+	 * CFS tasks and we use the same metric to track the effective
+	 * utilization (PELT windows are synchronized) we can directly add them
+	 * to obtain the CPU's actual utilization.
+	 *
+	 * CFS and RT utilization can be boosted or capped, depending on
+	 * utilization clamp constraints requested by currently RUNNABLE
+	 * tasks.
+	 * When there are no CFS RUNNABLE tasks, clamps are released and
+	 * frequency will be gracefully reduced with the utilization decay.
+	 */
+	util = util_cfs + cpu_util_rt(rq);
+	if (type == FREQUENCY_UTIL)
+		util = uclamp_rq_util_with(rq, util, p);
+
+	dl_util = cpu_util_dl(rq);
+
+	/*
+	 * For frequency selection we do not make cpu_util_dl() a permanent part
+	 * of this sum because we want to use cpu_bw_dl() later on, but we need
+	 * to check if the CFS+RT+DL sum is saturated (ie. no idle time) such
+	 * that we select f_max when there is no idle time.
+	 *
+	 * NOTE: numerical errors or stop class might cause us to not quite hit
+	 * saturation when we should -- something for later.
+	 */
+	if (util + dl_util >= max)
+		return max;
+
+	/*
+	 * OTOH, for energy computation we need the estimated running time, so
+	 * include util_dl and ignore dl_bw.
+	 */
+	if (type == ENERGY_UTIL)
+		util += dl_util;
+
+	/*
+	 * There is still idle time; further improve the number by using the
+	 * irq metric. Because IRQ/steal time is hidden from the task clock we
+	 * need to scale the task numbers:
+	 *
+	 *              max - irq
+	 *   U' = irq + --------- * U
+	 *                 max
+	 */
+	util = scale_irq_capacity(util, irq, max);
+	util += irq;
+
+	/*
+	 * Bandwidth required by DEADLINE must always be granted while, for
+	 * FAIR and RT, we use blocked utilization of IDLE CPUs as a mechanism
+	 * to gracefully reduce the frequency when no tasks show up for longer
+	 * periods of time.
+	 *
+	 * Ideally we would like to set bw_dl as min/guaranteed freq and util +
+	 * bw_dl as requested freq. However, cpufreq is not yet ready for such
+	 * an interface. So, we only do the latter for now.
+	 */
+	if (type == FREQUENCY_UTIL)
+		util += cpu_bw_dl(rq);
+
+	return min(max, util);
 }
 
-void get_usage_chars(struct lock_class *class, char usage[LOCK_USAGE_CHARS])
+unsigned long sched_cpu_util(int cpu, unsigned long max)
 {
-	int i = 0;
+	return effective_cpu_util(cpu, cpu_util_cfs(cpu), max,
+				  ENERGY_UTIL, NULL);
+}
+#endif /* CONFIG_SMP */
 
-#define LOCKDEP_STATE(__STATE) 						\
-	usage[i++] = get_usage_char(class, LOCK_USED_IN_##__STATE);	\
-	usage[i++] = get_usage_char(class, LOCK_USED_IN_##__STATE##_READ);
-#include "lockdep_states.h"
-#undef LOCKDEP_STATE
-
-	usage[i] = '\0';
+/**
+ * find_process_by_pid - find a process with a matching PID value.
+ * @pid: the pid in question.
+ *
+ * The task of @pid, if found. %NULL otherwise.
+ */
+static struct task_struct *find_process_by_pid(pid_t pid)
+{
+	return pid ? find_task_by_vpid(pid) : current;
 }
 
-static void __print_lock_name(struct lock_class *class)
-{
-	char str[KSYM_NAME_LEN];
-	const char *name;
+/*
+ * sched_setparam() passes in -1 for its policy, to let the functions
+ * it calls know not to change it.
+ */
+#define SETPARAM_POLICY	-1
 
-	name = class->name;
-	if (!name) {
-		name = __get_key_name(class->key, str);
-		printk(KERN_CONT "%s", name);
+static void __setscheduler_params(struct task_struct *p,
+		const struct sched_attr *attr)
+{
+	int policy = attr->sched_policy;
+
+	if (policy == SETPARAM_POLICY)
+		policy = p->policy;
+
+	p->policy = policy;
+
+	if (dl_policy(policy))
+		__setparam_dl(p, attr);
+	else if (fair_policy(policy))
+		p->static_prio = NICE_TO_PRIO(attr->sched_nice);
+
+	/*
+	 * __sched_setscheduler() ensures attr->sched_priority == 0 when
+	 * !rt_policy. Always setting this ensures that things like
+	 * getparam()/getattr() don't report silly values for !rt tasks.
+	 */
+	p->rt_priority = attr->sched_priority;
+	p->normal_prio = normal_prio(p);
+	set_load_weight(p, true);
+}
+
+/*
+ * Check the target process has a UID that matches the current process's:
+ */
+static bool check_same_owner(struct task_struct *p)
+{
+	const struct cred *cred = current_cred(), *pcred;
+	bool match;
+
+	rcu_read_lock();
+	pcred = __task_cred(p);
+	match = (uid_eq(cred->euid, pcred->euid) ||
+		 uid_eq(cred->euid, pcred->uid));
+	rcu_read_unlock();
+	return match;
+}
+
+static int __sched_setscheduler(struct task_struct *p,
+				const struct sched_attr *attr,
+				bool user, bool pi)
+{
+	int oldpolicy = -1, policy = attr->sched_policy;
+	int retval, oldprio, newprio, queued, running;
+	const struct sched_class *prev_class;
+	struct callback_head *head;
+	struct rq_flags rf;
+	int reset_on_fork;
+	int queue_flags = DEQUEUE_SAVE | DEQUEUE_MOVE | DEQUEUE_NOCLOCK;
+	struct rq *rq;
+
+	/* The pi code expects interrupts enabled */
+	BUG_ON(pi && in_interrupt());
+recheck:
+	/* Double check policy once rq lock held: */
+	if (policy < 0) {
+		reset_on_fork = p->sched_reset_on_fork;
+		policy = oldpolicy = p->policy;
 	} else {
-		printk(KERN_CONT "%s", name);
-		if (class->name_version > 1)
-			printk(KERN_CONT "#%d", class->name_version);
-		if (class->subclass)
-			printk(KERN_CONT "/%d", class->subclass);
+		reset_on_fork = !!(attr->sched_flags & SCHED_FLAG_RESET_ON_FORK);
+
+		if (!valid_policy(policy))
+			return -EINVAL;
 	}
-}
 
-static void print_lock_name(struct lock_class *class)
-{
-	char usage[LOCK_USAGE_CHARS];
+	if (attr->sched_flags & ~(SCHED_FLAG_ALL | SCHED_FLAG_SUGOV))
+		return -EINVAL;
 
-	get_usage_chars(class, usage);
-
-	printk(KERN_CONT " (");
-	__print_lock_name(class);
-	printk(KERN_CONT "){%s}-{%d:%d}", usage,
-			class->wait_type_outer ?: class->wait_type_inner,
-			class->wait_type_inner);
-}
-
-static void print_lockdep_cache(struct lockdep_map *lock)
-{
-	const char *name;
-	char str[KSYM_NAME_LEN];
-
-	name = lock->name;
-	if (!name)
-		name = __get_key_name(lock->key->subkeys, str);
-
-	printk(KERN_CONT "%s", name);
-}
-
-static void print_lock(struct held_lock *hlock)
-{
 	/*
-	 * We can be called locklessly through debug_show_all_locks() so be
-	 * extra careful, the hlock might have been released and cleared.
+	 * Valid priorities for SCHED_FIFO and SCHED_RR are
+	 * 1..MAX_RT_PRIO-1, valid priority for SCHED_NORMAL,
+	 * SCHED_BATCH and SCHED_IDLE is 0.
+	 */
+	if (attr->sched_priority > MAX_RT_PRIO-1)
+		return -EINVAL;
+	if ((dl_policy(policy) && !__checkparam_dl(attr)) ||
+	    (rt_policy(policy) != (attr->sched_priority != 0)))
+		return -EINVAL;
+
+	/*
+	 * Allow unprivileged RT tasks to decrease priority:
+	 */
+	if (user && !capable(CAP_SYS_NICE)) {
+		if (fair_policy(policy)) {
+			if (attr->sched_nice < task_nice(p) &&
+			    !can_nice(p, attr->sched_nice))
+				return -EPERM;
+		}
+
+		if (rt_policy(policy)) {
+			unsigned long rlim_rtprio =
+					task_rlimit(p, RLIMIT_RTPRIO);
+
+			/* Can't set/change the rt policy: */
+			if (policy != p->policy && !rlim_rtprio)
+				return -EPERM;
+
+			/* Can't increase priority: */
+			if (attr->sched_priority > p->rt_priority &&
+			    attr->sched_priority > rlim_rtprio)
+				return -EPERM;
+		}
+
+		 /*
+		  * Can't set/change SCHED_DEADLINE policy at all for now
+		  * (safest behavior); in the future we would like to allow
+		  * unprivileged DL tasks to increase their relative deadline
+		  * or reduce their runtime (both ways reducing utilization)
+		  */
+		if (dl_policy(policy))
+			return -EPERM;
+
+		/*
+		 * Treat SCHED_IDLE as nice 20. Only allow a switch to
+		 * SCHED_NORMAL if the RLIMIT_NICE would normally permit it.
+		 */
+		if (task_has_idle_policy(p) && !idle_policy(policy)) {
+			if (!can_nice(p, task_nice(p)))
+				return -EPERM;
+		}
+
+		/* Can't change other user's priorities: */
+		if (!check_same_owner(p))
+			return -EPERM;
+
+		/* Normal users shall not reset the sched_reset_on_fork flag: */
+		if (p->sched_reset_on_fork && !reset_on_fork)
+			return -EPERM;
+	}
+
+	if (user) {
+		if (attr->sched_flags & SCHED_FLAG_SUGOV)
+			return -EINVAL;
+
+		retval = security_task_setscheduler(p);
+		if (retval)
+			return retval;
+	}
+
+	/* Update task specific "requested" clamps */
+	if (attr->sched_flags & SCHED_FLAG_UTIL_CLAMP) {
+		retval = uclamp_validate(p, attr);
+		if (retval)
+			return retval;
+	}
+
+	if (pi)
+		cpuset_read_lock();
+
+	/*
+	 * Make sure no PI-waiters arrive (or leave) while we are
+	 * changing the priority of the task:
 	 *
-	 * If this indeed happens, lets pretend it does not hurt to continue
-	 * to print the lock unless the hlock class_idx does not point to a
-	 * registered class. The rationale here is: since we don't attempt
-	 * to distinguish whether we are in this situation, if it just
-	 * happened we can't count on class_idx to tell either.
+	 * To be able to change p->policy safely, the appropriate
+	 * runqueue lock must be held.
 	 */
-	struct lock_class *lock = hlock_class(hlock);
+	rq = task_rq_lock(p, &rf);
+	update_rq_clock(rq);
 
-	if (!lock) {
-		printk(KERN_CONT "<RELEASED>\n");
-		return;
-	}
-
-	printk(KERN_CONT "%px", hlock->instance);
-	print_lock_name(lock);
-	printk(KERN_CONT ", at: %pS\n", (void *)hlock->acquire_ip);
-}
-
-static void lockdep_print_held_locks(struct task_struct *p)
-{
-	int i, depth = READ_ONCE(p->lockdep_depth);
-
-	if (!depth)
-		printk("no locks held by %s/%d.\n", p->comm, task_pid_nr(p));
-	else
-		printk("%d lock%s held by %s/%d:\n", depth,
-		       depth > 1 ? "s" : "", p->comm, task_pid_nr(p));
 	/*
-	 * It's not reliable to print a task's held locks if it's not sleeping
-	 * and it's not the current task.
+	 * Changing the policy of the stop threads its a very bad idea:
 	 */
-	if (p != current && task_is_running(p))
-		return;
-	for (i = 0; i < depth; i++) {
-		printk(" #%d: ", i);
-		print_lock(p->held_locks + i);
+	if (p == rq->stop) {
+		retval = -EINVAL;
+		goto unlock;
 	}
-}
 
-static void print_kernel_ident(void)
-{
-	printk("%s %.*s %s\n", init_utsname()->release,
-		(int)strcspn(init_utsname()->version, " "),
-		init_utsname()->version,
-		print_tainted());
-}
+	/*
+	 * If not changing anything there's no need to proceed further,
+	 * but store a possible modification of reset_on_fork.
+	 */
+	if (unlikely(policy == p->policy)) {
+		if (fair_policy(policy) && attr->sched_nice != task_nice(p))
+			goto change;
+		if (rt_policy(policy) && attr->sched_priority != p->rt_priority)
+			goto change;
+		if (dl_policy(policy) && dl_param_changed(p, attr))
+			goto change;
+		if (attr->sched_flags & SCHED_FLAG_UTIL_CLAMP)
+			goto change;
 
-static int very_verbose(struct lock_class *class)
-{
-#if VERY_VERBOSE
-	return class_filter(class);
+		p->sched_reset_on_fork = reset_on_fork;
+		retval = 0;
+		goto unlock;
+	}
+change:
+
+	if (user) {
+#ifdef CONFIG_RT_GROUP_SCHED
+		/*
+		 * Do not allow realtime tasks into groups that have no runtime
+		 * assigned.
+		 */
+		if (rt_bandwidth_enabled() && rt_policy(policy) &&
+				task_group(p)->rt_bandwidth.rt_runtime == 0 &&
+				!task_group_is_autogroup(task_group(p))) {
+			retval = -EPERM;
+			goto unlock;
+		}
 #endif
+#ifdef CONFIG_SMP
+		if (dl_bandwidth_enabled() && dl_policy(policy) &&
+				!(attr->sched_flags & SCHED_FLAG_SUGOV)) {
+			cpumask_t *span = rq->rd->span;
+
+			/*
+			 * Don't allow tasks with an affinity mask smaller than
+			 * the entire root_domain to become SCHED_DEADLINE. We
+			 * will also fail if there's no bandwidth available.
+			 */
+			if (!cpumask_subset(span, p->cpus_ptr) ||
+			    rq->rd->dl_bw.bw == 0) {
+				retval = -EPERM;
+				goto unlock;
+			}
+		}
+#endif
+	}
+
+	/* Re-check policy now with rq lock held: */
+	if (unlikely(oldpolicy != -1 && oldpolicy != p->policy)) {
+		policy = oldpolicy = -1;
+		task_rq_unlock(rq, p, &rf);
+		if (pi)
+			cpuset_read_unlock();
+		goto recheck;
+	}
+
+	/*
+	 * If setscheduling to SCHED_DEADLINE (or changing the parameters
+	 * of a SCHED_DEADLINE task) we need to check if enough bandwidth
+	 * is available.
+	 */
+	if ((dl_policy(policy) || dl_task(p)) && sched_dl_overflow(p, policy, attr)) {
+		retval = -EBUSY;
+		goto unlock;
+	}
+
+	p->sched_reset_on_fork = reset_on_fork;
+	oldprio = p->prio;
+
+	newprio = __normal_prio(policy, attr->sched_priority, attr->sched_nice);
+	if (pi) {
+		/*
+		 * Take priority boosted tasks into account. If the new
+		 * effective priority is unchanged, we just store the new
+		 * normal parameters and do not touch the scheduler class and
+		 * the runqueue. This will be done when the task deboost
+		 * itself.
+		 */
+		newprio = rt_effective_prio(p, newprio);
+		if (newprio == oldprio)
+			queue_flags &= ~DEQUEUE_MOVE;
+	}
+
+	queued = task_on_rq_queued(p);
+	running = task_current(rq, p);
+	if (queued)
+		dequeue_task(rq, p, queue_flags);
+	if (running)
+		put_prev_task(rq, p);
+
+	prev_class = p->sched_class;
+
+	if (!(attr->sched_flags & SCHED_FLAG_KEEP_PARAMS)) {
+		__setscheduler_params(p, attr);
+		__setscheduler_prio(p, newprio);
+	}
+	__setscheduler_uclamp(p, attr);
+
+	if (queued) {
+		/*
+		 * We enqueue to tail when the priority of a task is
+		 * increased (user space view).
+		 */
+		if (oldprio < p->prio)
+			queue_flags |= ENQUEUE_HEAD;
+
+		enqueue_task(rq, p, queue_flags);
+	}
+	if (running)
+		set_next_task(rq, p);
+
+	check_class_changed(rq, p, prev_class, oldprio);
+
+	/* Avoid rq from going away on us: */
+	preempt_disable();
+	head = splice_balance_callbacks(rq);
+	task_rq_unlock(rq, p, &rf);
+
+	if (pi) {
+		cpuset_read_unlock();
+		rt_mutex_adjust_pi(p);
+	}
+
+	/* Run balance callbacks after we've adjusted the PI chain: */
+	balance_callbacks(rq, head);
+	preempt_enable();
+
+	return 0;
+
+unlock:
+	task_rq_unlock(rq, p, &rf);
+	if (pi)
+		cpuset_read_unlock();
+	return retval;
+}
+
+static int _sched_setscheduler(struct task_struct *p, int policy,
+			       const struct sched_param *param, bool check)
+{
+	struct sched_attr attr = {
+		.sched_policy   = policy,
+		.sched_priority = param->sched_priority,
+		.sched_nice	= PRIO_TO_NICE(p->static_prio),
+	};
+
+	/* Fixup the legacy SCHED_RESET_ON_FORK hack. */
+	if ((policy != SETPARAM_POLICY) && (policy & SCHED_RESET_ON_FORK)) {
+		attr.sched_flags |= SCHED_FLAG_RESET_ON_FORK;
+		policy &= ~SCHED_RESET_ON_FORK;
+		attr.sched_policy = policy;
+	}
+
+	return __sched_setscheduler(p, &attr, check, true);
+}
+/**
+ * sched_setscheduler - change the scheduling policy and/or RT priority of a thread.
+ * @p: the task in question.
+ * @policy: new policy.
+ * @param: structure containing the new RT priority.
+ *
+ * Use sched_set_fifo(), read its comment.
+ *
+ * Return: 0 on success. An error code otherwise.
+ *
+ * NOTE that the task may be already dead.
+ */
+int sched_setscheduler(struct task_struct *p, int policy,
+		       const struct sched_param *param)
+{
+	return _sched_setscheduler(p, policy, param, true);
+}
+
+int sched_setattr(struct task_struct *p, const struct sched_attr *attr)
+{
+	return __sched_setscheduler(p, attr, true, true);
+}
+
+int sched_setattr_nocheck(struct task_struct *p, const struct sched_attr *attr)
+{
+	return __sched_setscheduler(p, attr, false, true);
+}
+EXPORT_SYMBOL_GPL(sched_setattr_nocheck);
+
+/**
+ * sched_setscheduler_nocheck - change the scheduling policy and/or RT priority of a thread from kernelspace.
+ * @p: the task in question.
+ * @policy: new policy.
+ * @param: structure containing the new RT priority.
+ *
+ * Just like sched_setscheduler, only don't bother checking if the
+ * current context has permission.  For example, this is needed in
+ * stop_machine(): we create temporary high priority worker threads,
+ * but our caller might not have that capability.
+ *
+ * Return: 0 on success. An error code otherwise.
+ */
+int sched_setscheduler_nocheck(struct task_struct *p, int policy,
+			       const struct sched_param *param)
+{
+	return _sched_setscheduler(p, policy, param, false);
+}
+
+/*
+ * SCHED_FIFO is a broken scheduler model; that is, it is fundamentally
+ * incapable of resource management, which is the one thing an OS really should
+ * be doing.
+ *
+ * This is of course the reason it is limited to privileged users only.
+ *
+ * Worse still; it is fundamentally impossible to compose static priority
+ * workloads. You cannot take two correctly working static prio workloads
+ * and smash them together and still expect them to work.
+ *
+ * For this reason 'all' FIFO tasks the kernel creates are basically at:
+ *
+ *   MAX_RT_PRIO / 2
+ *
+ * The administrator _MUST_ configure the system, the kernel simply doesn't
+ * know enough information to make a sensible choice.
+ */
+void sched_set_fifo(struct task_struct *p)
+{
+	struct sched_param sp = { .sched_priority = MAX_RT_PRIO / 2 };
+	WARN_ON_ONCE(sched_setscheduler_nocheck(p, SCHED_FIFO, &sp) != 0);
+}
+EXPORT_SYMBOL_GPL(sched_set_fifo);
+
+/*
+ * For when you don't much care about FIFO, but want to be above SCHED_NORMAL.
+ */
+void sched_set_fifo_low(struct task_struct *p)
+{
+	struct sched_param sp = { .sched_priority = 1 };
+	WARN_ON_ONCE(sched_setscheduler_nocheck(p, SCHED_FIFO, &sp) != 0);
+}
+EXPORT_SYMBOL_GPL(sched_set_fifo_low);
+
+void sched_set_normal(struct task_struct *p, int nice)
+{
+	struct sched_attr attr = {
+		.sched_policy = SCHED_NORMAL,
+		.sched_nice = nice,
+	};
+	WARN_ON_ONCE(sched_setattr_nocheck(p, &attr) != 0);
+}
+EXPORT_SYMBOL_GPL(sched_set_normal);
+
+static int
+do_sched_setscheduler(pid_t pid, int policy, struct sched_param __user *param)
+{
+	struct sched_param lparam;
+	struct task_struct *p;
+	int retval;
+
+	if (!param || pid < 0)
+		return -EINVAL;
+	if (copy_from_user(&lparam, param, sizeof(struct sched_param)))
+		return -EFAULT;
+
+	rcu_read_lock();
+	retval = -ESRCH;
+	p = find_process_by_pid(pid);
+	if (likely(p))
+		get_task_struct(p);
+	rcu_read_unlock();
+
+	if (likely(p)) {
+		retval = sched_setscheduler(p, policy, &lparam);
+		put_task_struct(p);
+	}
+
+	return retval;
+}
+
+/*
+ * Mimics kernel/events/core.c perf_copy_attr().
+ */
+static int sched_copy_attr(struct sched_attr __user *uattr, struct sched_attr *attr)
+{
+	u32 size;
+	int ret;
+
+	/* Zero the full structure, so that a short copy will be nice: */
+	memset(attr, 0, sizeof(*attr));
+
+	ret = get_user(size, &uattr->size);
+	if (ret)
+		return ret;
+
+	/* ABI compatibility quirk: */
+	if (!size)
+		size = SCHED_ATTR_SIZE_VER0;
+	if (size < SCHED_ATTR_SIZE_VER0 || size > PAGE_SIZE)
+		goto err_size;
+
+	ret = copy_struct_from_user(attr, sizeof(*attr), uattr, size);
+	if (ret) {
+		if (ret == -E2BIG)
+			goto err_size;
+		return ret;
+	}
+
+	if ((attr->sched_flags & SCHED_FLAG_UTIL_CLAMP) &&
+	    size < SCHED_ATTR_SIZE_VER1)
+		return -EINVAL;
+
+	/*
+	 * XXX: Do we want to be lenient like existing syscalls; or do we want
+	 * to be strict and return an error on out-of-bounds values?
+	 */
+	attr->sched_nice = clamp(attr->sched_nice, MIN_NICE, MAX_NICE);
+
+	return 0;
+
+err_size:
+	put_user(sizeof(*attr), &uattr->size);
+	return -E2BIG;
+}
+
+static void get_params(struct task_struct *p, struct sched_attr *attr)
+{
+	if (task_has_dl_policy(p))
+		__getparam_dl(p, attr);
+	else if (task_has_rt_policy(p))
+		attr->sched_priority = p->rt_priority;
+	else
+		attr->sched_nice = task_nice(p);
+}
+
+/**
+ * sys_sched_setscheduler - set/change the scheduler policy and RT priority
+ * @pid: the pid in question.
+ * @policy: new policy.
+ * @param: structure containing the new RT priority.
+ *
+ * Return: 0 on success. An error code otherwise.
+ */
+SYSCALL_DEFINE3(sched_setscheduler, pid_t, pid, int, policy, struct sched_param __user *, param)
+{
+	if (policy < 0)
+		return -EINVAL;
+
+	return do_sched_setscheduler(pid, policy, param);
+}
+
+/**
+ * sys_sched_setparam - set/change the RT priority of a thread
+ * @pid: the pid in question.
+ * @param: structure containing the new RT priority.
+ *
+ * Return: 0 on success. An error code otherwise.
+ */
+SYSCALL_DEFINE2(sched_setparam, pid_t, pid, struct sched_param __user *, param)
+{
+	return do_sched_setscheduler(pid, SETPARAM_POLICY, param);
+}
+
+/**
+ * sys_sched_setattr - same as above, but with extended sched_attr
+ * @pid: the pid in question.
+ * @uattr: structure containing the extended parameters.
+ * @flags: for future extension.
+ */
+SYSCALL_DEFINE3(sched_setattr, pid_t, pid, struct sched_attr __user *, uattr,
+			       unsigned int, flags)
+{
+	struct sched_attr attr;
+	struct task_struct *p;
+	int retval;
+
+	if (!uattr || pid < 0 || flags)
+		return -EINVAL;
+
+	retval = sched_copy_attr(uattr, &attr);
+	if (retval)
+		return retval;
+
+	if ((int)attr.sched_policy < 0)
+		return -EINVAL;
+	if (attr.sched_flags & SCHED_FLAG_KEEP_POLICY)
+		attr.sched_policy = SETPARAM_POLICY;
+
+	rcu_read_lock();
+	retval = -ESRCH;
+	p = find_process_by_pid(pid);
+	if (likely(p))
+		get_task_struct(p);
+	rcu_read_unlock();
+
+	if (likely(p)) {
+		if (attr.sched_flags & SCHED_FLAG_KEEP_PARAMS)
+			get_params(p, &attr);
+		retval = sched_setattr(p, &attr);
+		put_task_struct(p);
+	}
+
+	return retval;
+}
+
+/**
+ * sys_sched_getscheduler - get the policy (scheduling class) of a thread
+ * @pid: the pid in question.
+ *
+ * Return: On success, the policy of the thread. Otherwise, a negative error
+ * code.
+ */
+SYSCALL_DEFINE1(sched_getscheduler, pid_t, pid)
+{
+	struct task_struct *p;
+	int retval;
+
+	if (pid < 0)
+		return -EINVAL;
+
+	retval = -ESRCH;
+	rcu_read_lock();
+	p = find_process_by_pid(pid);
+	if (p) {
+		retval = security_task_getscheduler(p);
+		if (!retval)
+			retval = p->policy
+				| (p->sched_reset_on_fork ? SCHED_RESET_ON_FORK : 0);
+	}
+	rcu_read_unlock();
+	return retval;
+}
+
+/**
+ * sys_sched_getparam - get the RT priority of a thread
+ * @pid: the pid in question.
+ * @param: structure containing the RT priority.
+ *
+ * Return: On success, 0 and the RT priority is in @param. Otherwise, an error
+ * code.
+ */
+SYSCALL_DEFINE2(sched_getparam, pid_t, pid, struct sched_param __user *, param)
+{
+	struct sched_param lp = { .sched_priority = 0 };
+	struct task_struct *p;
+	int retval;
+
+	if (!param || pid < 0)
+		return -EINVAL;
+
+	rcu_read_lock();
+	p = find_process_by_pid(pid);
+	retval = -ESRCH;
+	if (!p)
+		goto out_unlock;
+
+	retval = security_task_getscheduler(p);
+	if (retval)
+		goto out_unlock;
+
+	if (task_has_rt_policy(p))
+		lp.sched_priority = p->rt_priority;
+	rcu_read_unlock();
+
+	/*
+	 * This one might sleep, we cannot do it with a spinlock held ...
+	 */
+	retval = copy_to_user(param, &lp, sizeof(*param)) ? -EFAULT : 0;
+
+	return retval;
+
+out_unlock:
+	rcu_read_unlock();
+	return retval;
+}
+
+/*
+ * Copy the kernel size attribute structure (which might be larger
+ * than what user-space knows about) to user-space.
+ *
+ * Note that all cases are valid: user-space buffer can be larger or
+ * smaller than the kernel-space buffer. The usual case is that both
+ * have the same size.
+ */
+static int
+sched_attr_copy_to_user(struct sched_attr __user *uattr,
+			struct sched_attr *kattr,
+			unsigned int usize)
+{
+	unsigned int ksize = sizeof(*kattr);
+
+	if (!access_ok(uattr, usize))
+		return -EFAULT;
+
+	/*
+	 * sched_getattr() ABI forwards and backwards compatibility:
+	 *
+	 * If usize == ksize then we just copy everything to user-space and all is good.
+	 *
+	 * If usize < ksize then we only copy as much as user-space has space for,
+	 * this keeps ABI compatibility as well. We skip the rest.
+	 *
+	 * If usize > ksize then user-space is using a newer version of the ABI,
+	 * which part the kernel doesn't know about. Just ignore it - tooling can
+	 * detect the kernel's knowledge of attributes from the attr->size value
+	 * which is set to ksize in this case.
+	 */
+	kattr->size = min(usize, ksize);
+
+	if (copy_to_user(uattr, kattr, kattr->size))
+		return -EFAULT;
+
 	return 0;
 }
 
-/*
- * Is this the address of a static object:
+/**
+ * sys_sched_getattr - similar to sched_getparam, but with sched_attr
+ * @pid: the pid in question.
+ * @uattr: structure containing the extended parameters.
+ * @usize: sizeof(attr) for fwd/bwd comp.
+ * @flags: for future extension.
  */
-#ifdef __KERNEL__
-/*
- * Check if an address is part of freed initmem. After initmem is freed,
- * memory can be allocated from it, and such allocations would then have
- * addresses within the range [_stext, _end].
- */
-#ifndef arch_is_kernel_initmem_freed
-static int arch_is_kernel_initmem_freed(unsigned long addr)
+SYSCALL_DEFINE4(sched_getattr, pid_t, pid, struct sched_attr __user *, uattr,
+		unsigned int, usize, unsigned int, flags)
 {
-	if (system_state < SYSTEM_FREEING_INITMEM)
-		return 0;
-
-	return init_section_contains((void *)addr, 1);
-}
-#endif
-
-static int static_obj(const void *obj)
-{
-	unsigned long start = (unsigned long) &_stext,
-		      end   = (unsigned long) &_end,
-		      addr  = (unsigned long) obj;
-
-	if (arch_is_kernel_initmem_freed(addr))
-		return 0;
-
-	/*
-	 * static variable?
-	 */
-	if ((addr >= start) && (addr < end))
-		return 1;
-
-	/*
-	 * in-kernel percpu var?
-	 */
-	if (is_kernel_percpu_address(addr))
-		return 1;
-
-	/*
-	 * module static or percpu var?
-	 */
-	return is_module_address(addr) || is_module_percpu_address(addr);
-}
-#endif
-
-/*
- * To make lock name printouts unique, we calculate a unique
- * class->name_version generation counter. The caller must hold the graph
- * lock.
- */
-static int count_matching_names(struct lock_class *new_class)
-{
-	struct lock_class *class;
-	int count = 0;
-
-	if (!new_class->name)
-		return 0;
-
-	list_for_each_entry(class, &all_lock_classes, lock_entry) {
-		if (new_class->key - new_class->subclass == class->key)
-			return class->name_version;
-		if (class->name && !strcmp(class->name, new_class->name))
-			count = max(count, class->name_version);
-	}
-
-	return count + 1;
-}
-
-/* used from NMI context -- must be lockless */
-static noinstr struct lock_class *
-look_up_lock_class(const struct lockdep_map *lock, unsigned int subclass)
-{
-	struct lockdep_subclass_key *key;
-	struct hlist_head *hash_head;
-	struct lock_class *class;
-
-	if (unlikely(subclass >= MAX_LOCKDEP_SUBCLASSES)) {
-		instrumentation_begin();
-		debug_locks_off();
-		printk(KERN_ERR
-			"BUG: looking up invalid subclass: %u\n", subclass);
-		printk(KERN_ERR
-			"turning off the locking correctness validator.\n");
-		dump_stack();
-		instrumentation_end();
-		return NULL;
-	}
-
-	/*
-	 * If it is not initialised then it has never been locked,
-	 * so it won't be present in the hash table.
-	 */
-	if (unlikely(!lock->key))
-		return NULL;
-
-	/*
-	 * NOTE: the class-key must be unique. For dynamic locks, a static
-	 * lock_class_key variable is passed in through the mutex_init()
-	 * (or spin_lock_init()) call - which acts as the key. For static
-	 * locks we use the lock object itself as the key.
-	 */
-	BUILD_BUG_ON(sizeof(struct lock_class_key) >
-			sizeof(struct lockdep_map));
-
-	key = lock->key->subkeys + subclass;
-
-	hash_head = classhashentry(key);
-
-	/*
-	 * We do an RCU walk of the hash, see lockdep_free_key_range().
-	 */
-	if (DEBUG_LOCKS_WARN_ON(!irqs_disabled()))
-		return NULL;
-
-	hlist_for_each_entry_rcu_notrace(class, hash_head, hash_entry) {
-		if (class->key == key) {
-			/*
-			 * Huh! same key, different name? Did someone trample
-			 * on some memory? We're most confused.
-			 */
-			WARN_ON_ONCE(class->name != lock->name &&
-				     lock->key != &__lockdep_no_validate__);
-			return class;
-		}
-	}
-
-	return NULL;
-}
-
-/*
- * Static locks do not have their class-keys yet - for them the key is
- * the lock object itself. If the lock is in the per cpu area, the
- * canonical address of the lock (per cpu offset removed) is used.
- */
-static bool assign_lock_key(struct lockdep_map *lock)
-{
-	unsigned long can_addr, addr = (unsigned long)lock;
-
-#ifdef __KERNEL__
-	/*
-	 * lockdep_free_key_range() assumes that struct lock_class_key
-	 * objects do not overlap. Since we use the address of lock
-	 * objects as class key for static objects, check whether the
-	 * size of lock_class_key objects does not exceed the size of
-	 * the smallest lock object.
-	 */
-	BUILD_BUG_ON(sizeof(struct lock_class_key) > sizeof(raw_spinlock_t));
-#endif
-
-	if (__is_kernel_percpu_address(addr, &can_addr))
-		lock->key = (void *)can_addr;
-	else if (__is_module_percpu_address(addr, &can_addr))
-		lock->key = (void *)can_addr;
-	else if (static_obj(lock))
-		lock->key = (void *)lock;
-	else {
-		/* Debug-check: all keys must be persistent! */
-		debug_locks_off();
-		pr_err("INFO: trying to register non-static key.\n");
-		pr_err("The code is fine but needs lockdep annotation, or maybe\n");
-		pr_err("you didn't initialize this object before use?\n");
-		pr_err("turning off the locking correctness validator.\n");
-		dump_stack();
-		return false;
-	}
-
-	return true;
-}
-
-#ifdef CONFIG_DEBUG_LOCKDEP
-
-/* Check whether element @e occurs in list @h */
-static bool in_list(struct list_head *e, struct list_head *h)
-{
-	struct list_head *f;
-
-	list_for_each(f, h) {
-		if (e == f)
-			return true;
-	}
-
-	return false;
-}
-
-/*
- * Check whether entry @e occurs in any of the locks_after or locks_before
- * lists.
- */
-static bool in_any_class_list(struct list_head *e)
-{
-	struct lock_class *class;
-	int i;
-
-	for (i = 0; i < ARRAY_SIZE(lock_classes); i++) {
-		class = &lock_classes[i];
-		if (in_list(e, &class->locks_after) ||
-		    in_list(e, &class->locks_before))
-			return true;
-	}
-	return false;
-}
-
-static bool class_lock_list_valid(struct lock_class *c, struct list_head *h)
-{
-	struct lock_list *e;
-
-	list_for_each_entry(e, h, entry) {
-		if (e->links_to != c) {
-			printk(KERN_INFO "class %s: mismatch for lock entry %ld; class %s <> %s",
-			       c->name ? : "(?)",
-			       (unsigned long)(e - list_entries),
-			       e->links_to && e->links_to->name ?
-			       e->links_to->name : "(?)",
-			       e->class && e->class->name ? e->class->name :
-			       "(?)");
-			return false;
-		}
-	}
-	return true;
-}
-
-#ifdef CONFIG_PROVE_LOCKING
-static u16 chain_hlocks[MAX_LOCKDEP_CHAIN_HLOCKS];
-#endif
-
-static bool check_lock_chain_key(struct lock_chain *chain)
-{
-#ifdef CONFIG_PROVE_LOCKING
-	u64 chain_key = INITIAL_CHAIN_KEY;
-	int i;
-
-	for (i = chain->base; i < chain->base + chain->depth; i++)
-		chain_key = iterate_chain_key(chain_key, chain_hlocks[i]);
-	/*
-	 * The 'unsigned long long' casts avoid that a compiler warning
-	 * is reported when building tools/lib/lockdep.
-	 */
-	if (chain->chain_key != chain_key) {
-		printk(KERN_INFO "chain %lld: key %#llx <> %#llx\n",
-		       (unsigned long long)(chain - lock_chains),
-		       (unsigned long long)chain->chain_key,
-		       (unsigned long long)chain_key);
-		return false;
-	}
-#endif
-	return true;
-}
-
-static bool in_any_zapped_class_list(struct lock_class *class)
-{
-	struct pending_free *pf;
-	int i;
-
-	for (i = 0, pf = delayed_free.pf; i < ARRAY_SIZE(delayed_free.pf); i++, pf++) {
-		if (in_list(&class->lock_entry, &pf->zapped))
-			return true;
-	}
-
-	return false;
-}
-
-static bool __check_data_structures(void)
-{
-	struct lock_class *class;
-	struct lock_chain *chain;
-	struct hlist_head *head;
-	struct lock_list *e;
-	int i;
-
-	/* Check whether all classes occur in a lock list. */
-	for (i = 0; i < ARRAY_SIZE(lock_classes); i++) {
-		class = &lock_classes[i];
-		if (!in_list(&class->lock_entry, &all_lock_classes) &&
-		    !in_list(&class->lock_entry, &free_lock_classes) &&
-		    !in_any_zapped_class_list(class)) {
-			printk(KERN_INFO "class %px/%s is not in any class list\n",
-			       class, class->name ? : "(?)");
-			return false;
-		}
-	}
-
-	/* Check whether all classes have valid lock lists. */
-	for (i = 0; i < ARRAY_SIZE(lock_classes); i++) {
-		class = &lock_classes[i];
-		if (!class_lock_list_valid(class, &class->locks_before))
-			return false;
-		if (!class_lock_list_valid(class, &class->locks_after))
-			return false;
-	}
-
-	/* Check the chain_key of all lock chains. */
-	for (i = 0; i < ARRAY_SIZE(chainhash_table); i++) {
-		head = chainhash_table + i;
-		hlist_for_each_entry_rcu(chain, head, entry) {
-			if (!check_lock_chain_key(chain))
-				return false;
-		}
-	}
-
-	/*
-	 * Check whether all list entries that are in use occur in a class
-	 * lock list.
-	 */
-	for_each_set_bit(i, list_entries_in_use, ARRAY_SIZE(list_entries)) {
-		e = list_entries + i;
-		if (!in_any_class_list(&e->entry)) {
-			printk(KERN_INFO "list entry %d is not in any class list; class %s <> %s\n",
-			       (unsigned int)(e - list_entries),
-			       e->class->name ? : "(?)",
-			       e->links_to->name ? : "(?)");
-			return false;
-		}
-	}
-
-	/*
-	 * Check whether all list entries that are not in use do not occur in
-	 * a class lock list.
-	 */
-	for_each_clear_bit(i, list_entries_in_use, ARRAY_SIZE(list_entries)) {
-		e = list_entries + i;
-		if (in_any_class_list(&e->entry)) {
-			printk(KERN_INFO "list entry %d occurs in a class list; class %s <> %s\n",
-			       (unsigned int)(e - list_entries),
-			       e->class && e->class->name ? e->class->name :
-			       "(?)",
-			       e->links_to && e->links_to->name ?
-			       e->links_to->name : "(?)");
-			return false;
-		}
-	}
-
-	return true;
-}
-
-int check_consistency = 0;
-module_param(check_consistency, int, 0644);
-
-static void check_data_structures(void)
-{
-	static bool once = false;
-
-	if (check_consistency && !once) {
-		if (!__check_data_structures()) {
-			once = true;
-			WARN_ON(once);
-		}
-	}
-}
-
-#else /* CONFIG_DEBUG_LOCKDEP */
-
-static inline void check_data_structures(void) { }
-
-#endif /* CONFIG_DEBUG_LOCKDEP */
-
-static void init_chain_block_buckets(void);
-
-/*
- * Initialize the lock_classes[] array elements, the free_lock_classes list
- * and also the delayed_free structure.
- */
-static void init_data_structures_once(void)
-{
-	static bool __read_mostly ds_initialized, rcu_head_initialized;
-	int i;
-
-	if (likely(rcu_head_initialized))
-		return;
-
-	if (system_state >= SYSTEM_SCHEDULING) {
-		init_rcu_head(&delayed_free.rcu_head);
-		rcu_head_initialized = true;
-	}
-
-	if (ds_initialized)
-		return;
-
-	ds_initialized = true;
-
-	INIT_LIST_HEAD(&delayed_free.pf[0].zapped);
-	INIT_LIST_HEAD(&delayed_free.pf[1].zapped);
-
-	for (i = 0; i < ARRAY_SIZE(lock_classes); i++) {
-		list_add_tail(&lock_classes[i].lock_entry, &free_lock_classes);
-		INIT_LIST_HEAD(&lock_classes[i].locks_after);
-		INIT_LIST_HEAD(&lock_classes[i].locks_before);
-	}
-	init_chain_block_buckets();
-}
-
-static inline struct hlist_head *keyhashentry(const struct lock_class_key *key)
-{
-	unsigned long hash = hash_long((uintptr_t)key, KEYHASH_BITS);
-
-	return lock_keys_hash + hash;
-}
-
-/* Register a dynamically allocated key. */
-void lockdep_register_key(struct lock_class_key *key)
-{
-	struct hlist_head *hash_head;
-	struct lock_class_key *k;
-	unsigned long flags;
-
-	if (WARN_ON_ONCE(static_obj(key)))
-		return;
-	hash_head = keyhashentry(key);
-
-	raw_local_irq_save(flags);
-	if (!graph_lock())
-		goto restore_irqs;
-	hlist_for_each_entry_rcu(k, hash_head, hash_entry) {
-		if (WARN_ON_ONCE(k == key))
-			goto out_unlock;
-	}
-	hlist_add_head_rcu(&key->hash_entry, hash_head);
-out_unlock:
-	graph_unlock();
-restore_irqs:
-	raw_local_irq_restore(flags);
-}
-EXPORT_SYMBOL_GPL(lockdep_register_key);
-
-/* Check whether a key has been registered as a dynamic key. */
-static bool is_dynamic_key(const struct lock_class_key *key)
-{
-	struct hlist_head *hash_head;
-	struct lock_class_key *k;
-	bool found = false;
-
-	if (WARN_ON_ONCE(static_obj(key)))
-		return false;
-
-	/*
-	 * If lock debugging is disabled lock_keys_hash[] may contain
-	 * pointers to memory that has already been freed. Avoid triggering
-	 * a use-after-free in that case by returning early.
-	 */
-	if (!debug_locks)
-		return true;
-
-	hash_head = keyhashentry(key);
+	struct sched_attr kattr = { };
+	struct task_struct *p;
+	int retval;
+
+	if (!uattr || pid < 0 || usize > PAGE_SIZE ||
+	    usize < SCHED_ATTR_SIZE_VER0 || flags)
+		return -EINVAL;
 
 	rcu_read_lock();
-	hlist_for_each_entry_rcu(k, hash_head, hash_entry) {
-		if (k == key) {
-			found = true;
-			break;
-		}
-	}
+	p = find_process_by_pid(pid);
+	retval = -ESRCH;
+	if (!p)
+		goto out_unlock;
+
+	retval = security_task_getscheduler(p);
+	if (retval)
+		goto out_unlock;
+
+	kattr.sched_policy = p->policy;
+	if (p->sched_reset_on_fork)
+		kattr.sched_flags |= SCHED_FLAG_RESET_ON_FORK;
+	get_params(p, &kattr);
+	kattr.sched_flags &= SCHED_FLAG_ALL;
+
+#ifdef CONFIG_UCLAMP_TASK
+	/*
+	 * This could race with another potential updater, but this is fine
+	 * because it'll correctly read the old or the new value. We don't need
+	 * to guarantee who wins the race as long as it doesn't return garbage.
+	 */
+	kattr.sched_util_min = p->uclamp_req[UCLAMP_MIN].value;
+	kattr.sched_util_max = p->uclamp_req[UCLAMP_MAX].value;
+#endif
+
 	rcu_read_unlock();
 
-	return found;
+	return sched_attr_copy_to_user(uattr, &kattr, usize);
+
+out_unlock:
+	rcu_read_unlock();
+	return retval;
 }
 
-/*
- * Register a lock's class in the hash-table, if the class is not present
- * yet. Otherwise we look it up. We cache the result in the lock object
- * itself, so actual lookup of the hash should be once per lock object.
- */
-static struct lock_class *
-register_lock_class(struct lockdep_map *lock, unsigned int subclass, int force)
+#ifdef CONFIG_SMP
+int dl_task_check_affinity(struct task_struct *p, const struct cpumask *mask)
 {
-	struct lockdep_subclass_key *key;
-	struct hlist_head *hash_head;
-	struct lock_class *class;
-	int idx;
+	int ret = 0;
 
-	DEBUG_LOCKS_WARN_ON(!irqs_disabled());
-
-	class = look_up_lock_class(lock, subclass);
-	if (likely(class))
-		goto out_set_class_cache;
-
-	if (!lock->key) {
-		if (!assign_lock_key(lock))
-			return NULL;
-	} else if (!static_obj(lock->key) && !is_dynamic_key(lock->key)) {
-		return NULL;
-	}
-
-	key = lock->key->subkeys + subclass;
-	hash_head = classhashentry(key);
-
-	if (!graph_lock()) {
-		return NULL;
-	}
 	/*
-	 * We have to do the hash-walk again, to avoid races
-	 * with another CPU:
+	 * If the task isn't a deadline task or admission control is
+	 * disabled then we don't care about affinity changes.
 	 */
-	hlist_for_each_entry_rcu(class, hash_head, hash_entry) {
-		if (class->key == key)
-			goto out_unlock_set;
+	if (!task_has_dl_policy(p) || !dl_bandwidth_enabled())
+		return 0;
+
+	/*
+	 * Since bandwidth control happens on root_domain basis,
+	 * if admission test is enabled, we only admit -deadline
+	 * tasks allowed to run on all the CPUs in the task's
+	 * root_domain.
+	 */
+	rcu_read_lock();
+	if (!cpumask_subset(task_rq(p)->rd->span, mask))
+		ret = -EBUSY;
+	rcu_read_unlock();
+	return ret;
+}
+#endif
+
+static int
+__sched_setaffinity(struct task_struct *p, const struct cpumask *mask)
+{
+	int retval;
+	cpumask_var_t cpus_allowed, new_mask;
+
+	if (!alloc_cpumask_var(&cpus_allowed, GFP_KERNEL))
+		return -ENOMEM;
+
+	if (!alloc_cpumask_var(&new_mask, GFP_KERNEL)) {
+		retval = -ENOMEM;
+		goto out_free_cpus_allowed;
 	}
 
-	init_data_structures_once();
+	cpuset_cpus_allowed(p, cpus_allowed);
+	cpumask_and(new_mask, mask, cpus_allowed);
 
-	/* Allocate a new lock class and add it to the hash. */
-	class = list_first_entry_or_null(&free_lock_classes, typeof(*class),
-					 lock_entry);
-	if (!class) {
-		if (!debug_locks_off_graph_unlock()) {
-			return NULL;
+	retval = dl_task_check_affinity(p, new_mask);
+	if (retval)
+		goto out_free_new_mask;
+again:
+	retval = __set_cpus_allowed_ptr(p, new_mask, SCA_CHECK | SCA_USER);
+	if (retval)
+		goto out_free_new_mask;
+
+	cpuset_cpus_allowed(p, cpus_allowed);
+	if (!cpumask_subset(new_mask, cpus_allowed)) {
+		/*
+		 * We must have raced with a concurrent cpuset update.
+		 * Just reset the cpumask to the cpuset's cpus_allowed.
+		 */
+		cpumask_copy(new_mask, cpus_allowed);
+		goto again;
+	}
+
+out_free_new_mask:
+	free_cpumask_var(new_mask);
+out_free_cpus_allowed:
+	free_cpumask_var(cpus_allowed);
+	return retval;
+}
+
+long sched_setaffinity(pid_t pid, const struct cpumask *in_mask)
+{
+	struct task_struct *p;
+	int retval;
+
+	rcu_read_lock();
+
+	p = find_process_by_pid(pid);
+	if (!p) {
+		rcu_read_unlock();
+		return -ESRCH;
+	}
+
+	/* Prevent p going away */
+	get_task_struct(p);
+	rcu_read_unlock();
+
+	if (p->flags & PF_NO_SETAFFINITY) {
+		retval = -EINVAL;
+		goto out_put_task;
+	}
+
+	if (!check_same_owner(p)) {
+		rcu_read_lock();
+		if (!ns_capable(__task_cred(p)->user_ns, CAP_SYS_NICE)) {
+			rcu_read_unlock();
+			retval = -EPERM;
+			goto out_put_task;
 		}
-
-		print_lockdep_off("BUG: MAX_LOCKDEP_KEYS too low!");
-		dump_stack();
-		return NULL;
+		rcu_read_unlock();
 	}
-	nr_lock_classes++;
-	__set_bit(class - lock_classes, lock_classes_in_use);
-	debug_atomic_inc(nr_unused_locks);
-	class->key = key;
-	class->name = lock->name;
-	class->subclass = subclass;
-	WARN_ON_ONCE(!list_empty(&class->locks_before));
-	WARN_ON_ONCE(!list_empty(&class->locks_after));
-	class->name_version = c/x86/include/uapi/asm/bitsperlong.h \
-  include/asm-generic/bitsperlong.h \
-  include/uapi/asm-generic/bitsperlong.h \
-  include/uapi/linux/posix_types.h \
-  include/linux/stddef.h \
-  include/uapi/linux/stddef.h \
-  include/linux/compiler_types.h \
-  arch/x86/include/asm/posix_types.h \
-    $(wildcard include/config/X86_32) \
-  arch/x86/include/uapi/asm/posix_types_32.h \
-  include/uapi/asm-generic/posix_types.h \
-  include/vdso/limits.h \
-  include/linux/linkage.h \
-    $(wildcard include/config/ARCH_USE_SYM_ANNOTATIONS) \
-  include/linux/stringify.h \
-  include/linux/export.h \
-    $(wildcard include/config/MODVERSIONS) \
-    $(wildcard include/config/MODULE_REL_CRCS) \
-    $(wildcard include/config/HAVE_ARCH_PREL32_RELOCATIONS) \
-    $(wildcard include/config/MODULES) \
-    $(wildcard include/config/TRIM_UNUSED_KSYMS) \
-  include/linux/compiler.h \
-    $(wildcard include/config/TRACE_BRANCH_PROFILING) \
-    $(wildcard include/config/PROFILE_ALL_BRANCHES) \
-    $(wildcard include/config/STACK_VALIDATION) \
-    $(wildcard include/config/CFI_CLANG) \
-  arch/x86/include/generated/asm/rwonce.h \
-  include/asm-generic/rwonce.h \
-  include/linux/kasan-checks.h \
-    $(wildcard include/config/KASAN_GENERIC) \
-    $(wildcard include/config/KASAN_SW_TAGS) \
-  include/linux/kcsan-checks.h \
-    $(wildcard include/config/KCSAN) \
-    $(wildcard include/config/KCSAN_WEAK_MEMORY) \
-    $(wildcard include/config/KCSAN_IGNORE_ATOMICS) \
-  arch/x86/include/asm/linkage.h \
-    $(wildcard include/config/X86_64) \
-    $(wildcard include/config/X86_ALIGNMENT_16) \
-    $(wildcard include/config/SLS) \
-  arch/x86/include/asm/ibt.h \
-    $(wildcard include/config/X86_KERNEL_IBT) \
-  include/linux/container_of.h \
-  include/linux/build_bug.h \
-  include/linux/err.h \
-  arch/x86/include/generated/uapi/asm/errno.h \
-  include/uapi/asm-generic/errno.h \
-  include/uapi/asm-generic/errno-base.h \
-  include/linux/bitops.h \
-  include/linux/bits.h \
-  include/vdso/bits.h \
-  include/linux/typecheck.h \
-  include/uapi/linux/kernel.h \
-  include/uapi/linux/sysinfo.h \
-  arch/x86/include/asm/bitops.h \
-    $(wildcard include/config/X86_CMOV) \
-  arch/x86/include/asm/alternative.h \
-  arch/x86/include/asm/asm.h \
-    $(wildcard include/config/KPROBES) \
-  arch/x86/include/asm/extable_fixup_types.h \
-  arch/x86/include/asm/rmwcc.h \
-    $(wildcard include/config/CC_HAS_ASM_GOTO) \
-  arch/x86/include/asm/barrier.h \
-  arch/x86/include/asm/nops.h \
-  include/asm-generic/barrier.h \
-  include/asm-generic/bitops/fls64.h \
-  include/asm-generic/bitops/sched.h \
-  arch/x86/include/asm/arch_hweight.h \
-  arch/x86/include/asm/cpufeatures.h \
-  arch/x86/include/asm/required-features.h \
-    $(wildcard include/config/X86_MINIMUM_CPU_FAMILY) \
-    $(wildcard include/config/MATH_EMULATION) \
-    $(wildcard include/config/X86_PAE) \
-    $(wildcard include/config/X86_CMPXCHG64) \
-    $(wildcard include/config/X86_P6_NOP) \
-    $(wildcard include/config/MATOM) \
-    $(wildcard include/config/PARAVIRT_XXL) \
-  arch/x86/include/asm/disabled-features.h \
-    $(wildcard include/config/X86_SMAP) \
-    $(wildcard include/config/X86_UMIP) \
-    $(wildcard include/config/X86_INTEL_MEMORY_PROTECTION_KEYS) \
-    $(wildcard include/config/X86_5LEVEL) \
-    $(wildcard include/config/PAGE_TABLE_ISOLATION) \
-    $(wildcard include/config/INTEL_IOMMU_SVM) \
-    $(wildcard include/config/X86_SGX) \
-  include/asm-generic/bitops/const_hweight.h \
-  include/asm-generic/bitops/instrumented-atomic.h \
-  include/linux/instrumented.h \
-  include/asm-generic/bitops/instrumented-non-atomic.h \
-    $(wildcard include/config/KCSAN_ASSUME_PLAIN_WRITES_ATOMIC) \
-  include/asm-generic/bitops/instrumented-lock.h \
-  include/asm-generic/bitops/le.h \
-  arch/x86/include/uapi/asm/byteorder.h \
-  include/linux/byteorder/little_endian.h \
-  include/uapi/linux/byteorder/little_endian.h \
-  include/linux/swab.h \
-  include/uapi/linux/swab.h \
-  arch/x86/include/uapi/asm/swab.h \
-  include/linux/byteorder/generic.h \
-  include/asm-generic/bitops/ext2-atomic-setbit.h \
-  include/linux/kstrtox.h \
-  include/ELF                       "      4     (               èüÿÿÿS‹€”   ‹@\‹˜Ø   ‹ˆÔ   1À‰Z[‰
-Ã´&    t& èüÿÿÿ‹€”   ƒ9‹@\uMƒywGÇA    ÇA    ÷€Ô    °  tÇA€  1ÀÇAà  Ãt& ÇA   1ÀÇA@  Ã´&    ¸êÿÿÿÃ´&    v èüÿÿÿ‹…Òu‹A…ÀuÇA   1ÀÃt& ¸êÿÿÿÃ´&    v èüÿÿÿÇÿ°  1ÀÇB    Ã´&    t& èüÿÿÿS‹X\‹ƒÈ   …Àtèüÿÿÿ‹ƒÀ   èüÿÿÿ‰Øèüÿÿÿ1À[ÃfèüÿÿÿUWVS‹¨À   ‰Ã‹¸”   …ít&‰èèüÿÿÿ‰Æ…Àt[‰ğ^_]Ã‰èèüÿÿÿ‰Æ…À…¯   ‹ƒÈ   …Àt1Òèüÿÿÿ¹   ºè  ¸ô  èüÿÿÿƒÇ¹   º    ‰øèüÿÿÿ‰ƒÌ   = ğÿÿ‡üÿÿÿ1ö…Àt—º   èüÿÿÿ¸ô  ¹   ºè  èüÿÿÿ‹ƒÌ   …Àt!1Òèüÿÿÿ¸ô  ¹   ºè  èüÿÿÿ‹ƒÌ   èüÿÿÿ1ö[‰ğ^_]Ã´&    ‰èèüÿÿÿé,ÿÿÿt& èüÿÿÿVS‹€”   ‹X\…Òt‰Ø[^éãşÿÿv ‹³À   ‰ğèüÿÿÿ‰ğèüÿÿÿ‹ƒÈ   …Àtº   èüÿÿÿ¹   ºè  ¸ô  èüÿÿÿ1À[^Ã´&    ´&    èüÿÿÿUWV‰ÆS~ƒì‹nX‹@…í„g   ‹P‹Rèüÿÿÿ%   =   …P   ¹À  ºà   ‰øèüÿÿÿ‰Ã…À„û   ‰¨Ä   ¹@   ‰òèüÿÿÿº   ‰øèüÿÿÿ‰ƒÀ   ƒøş„†   = ğÿÿ‡å   ¹   º<   ‰øèüÿÿÿ‰ƒÈ   = ğÿÿ‡  ‹n\‹…Ä   ‹ ƒèƒà÷…ı   ‹…”   ‹@\è¼ıÿÿ‰Â…ÀxF1Ò‰ğèüÿÿÿ‰Â‰ÆÁúƒæƒâ‰µÜ   ƒú…†   é~   t& ÇƒÀ       évÿÿÿ´&    f‹ƒÈ   …Àt‰$èüÿÿÿ‹$‹ƒÀ   ‰$èüÿÿÿ‹$ƒÄ‰Ğ[^_]Ãºôÿÿÿëï´&    fèüÿÿÿUWVSƒì‹”   ‹i‹r\…í…À   ‹¾Ğ   ‰È…ÿt4·W‰P‹–Ğ   ·RÇ@   Ç@   ‰PÇ@	   1ÀƒÄ[^_]Ã‹–Ô   öÆ°…   „Òtm½à   ¿@  _H‰D$O‰4$‰Øë3f·Q»€  ¾à  )Ó‰Ú÷ÚHÓ·Y)Ş‰ó÷ÛHŞÚ9ês‰Õ‰ÏƒÁ9ÈuË‹4$‹D$‰¾Ğ   …ÿ…Rÿÿÿ¶    ¸êÿÿÿémÿÿÿ¶    ¿   ë†´&    fèüÿÿÿWVS‹˜”   ‹C\÷Âÿ°  „Ã   ‰Ô   €æùºU   ‰ˆØ   ‰Øusèüÿÿÿ…Àˆ“   %ï   ºU   ¿   ¾   ‰Á‰Øèüÿÿÿ…Àur‰ñº   ‰ØÁéƒáƒÉèüÿÿÿ…ÀuW‰ùº   ‰Øèüÿÿÿ…ÀuE‰ğº	   ¶È‰Ø[^_éüÿÿÿt& èüÿÿÿ…Àx$%ï   ºU   ¿   ¾ğ   ƒÈ‰Á‰Øèüÿÿÿ…Àt[^_Ã´&    ¸êÿÿÿëî´&    fèüÿÿÿWVS‹°”   ‰Ó‹F\…Ò…Å   ‹€Ü   ¿   …À…š   º   ‰ğèüÿÿÿ…Àˆ~   %ø   º   	ø‰Á‰ğèüÿÿÿ…Àxeƒûº   ‰ğÿƒçƒûÛƒã@èüÿÿÿ…ÀxE%ñ   º   	ø‰Á‰ğèüÿÿÿ…Àx,º   ‰ğèüÿÿÿ…Àx¶Û%¿   º   	Ø[‰Á‰ğ^_éüÿÿÿ[^_Ãt& ƒø…À  ¿   éSÿÿÿt& ‹ˆĞ   …É„Ú  1ÿé9ÿÿÿ´&    t& èüÿÿÿUWVS‰Ëƒì‹ˆ”   ‰D$‹C‰T$‹Q\…À…  ‹C…À„  ƒø	…ò  ‹C‹KÇC   ÇC   ‰$‹‚Ô   öÄ°…ü   „À„\  ¾@  ¸   º@  zH‰\$1í‰Ë‰|$¿ÿÿÿÿë´&    ·B·r‹$)Á‰È÷ØHÁ·Î‰Ş)Î‰ñ÷ÙHÎÈ9øs‰Õ‰ÇƒÂ9T$uË‹\$…í„ï   ·Eƒ;‰C·u‰s„ˆ   ‹|$1ö‹‰‹C‰B‹C‰B‹C‰B‹C‰B‹C‰B‹C ‰B‹C$‰B‹C(‰B ‹C,‰B$‹C0‰B(‹C4‰B,ƒÄ‰ğ[^_]Ã´&    v ÇC	   éâşÿÿt& ¾à  ¸€  º   éÿÿÿt& ‹S…Òt	ƒú	…ç  ‹|$‹¿”   ‰|$‹\‹—Ô   ‰|$öÆ°u*„Ò„®  ÇD$@  º   ¹@  ë t& ¾êÿÿÿéjÿÿÿÇD$   º€  ¹à  ‰÷‰\$)Ï‰ù÷ÙHÏ‰Ç)×‰ú÷ÚH×‹|$,OƒÇH‰<$ë-·Q‰Ã‰÷)Ó‰Ú÷ÚHÓ·Y)ß‰û÷ÛHßÚ9ês‰L$‰ÕƒÁ9$uÎ‹|$‹D$‹\$‰‡Ğ   …À„¦  ‹|$º   ‰øèüÿÿÿ…Àxƒàº   €‰Á‰øèüÿÿÿ¹   ºˆ  ¸è  èüÿÿÿ‹D$‹l$º   ‹€Ä   ‹8‰èèüÿÿÿ‰Æ…ÀˆS  1Àƒÿº   ”Àæ¿   Áà‰ñ	Á‰èèüÿÿÿ‰Æ…Àˆ(  ‹D$º   ‹€Ä   ‹xGÿƒø¸    Gø‰èèüÿÿÿ‰Æ…Àˆ÷   ƒæøº   ‰è‰ñ	ù¶Éèüÿÿÿ‰Æ…Àˆ×   ‹D$º   ‹¸Ğ   ·O
-¶G	Áùƒàƒáğ	Á‰è¶Éèüÿÿÿ‰Æ…Àˆ¡   ¶Oº   ‰èèüÿÿÿ‰Æ…Àˆ‡   ¶O
-º   ‰èèüÿÿÿ‰Æ…Àxq¹L   ºk   ‰è‹}\èüÿÿÿ‰Æ…ÀxW¹`   ºl   ‰èèüÿÿÿ‰Æ…Àx@ƒ¿Ü   „™   ‹D$‹€Ğ   ·P·@…ö…Eıÿÿ‰S‰Cé:ıÿÿ¾êÿÿÿ´&    f‹|$º   ‰øèüÿÿÿ…Àxƒàº   €‰Á‰øèüÿÿÿ¸è  ¹   ºˆ  èüÿÿÿ‹D$Ç€Ğ       éŞüÿÿÇ‡Ğ       ¾êÿÿÿë¡éıÿÿ‹|$ºN   ‰øèüÿÿÿ‰Æ…Àx„æˆ   ºN   ‰ø‰ñèüÿÿÿ‰Æ…À‰3ÿÿÿéaÿÿÿ                       ğ                   ù                                                                                                       0       Ğ   ğ           ğ  ğ  à  à      rstb Unable to get GPIO "rstb" xti Unable to get xti clock
- pdn Unable to get GPIO "pdn" bus width error
- Product ID error %x:%x
- tw9910 Product ID %0x:%0x
- un-supported revision
- norm select error
- Field type %d invalid
- drivers/media/i2c/tw9910.c tw9910 PAL SQ PAL CCIR601 PAL SQ (CIF) PAL CCIR601 (CIF) PAL SQ (QCIF) PAL CCIR601 (QCIF) NTSC SQ NTSC CCIR601 NTSC SQ (CIF) NTSC CCIR601 (CIF) NTSC SQ (QCIF) NTSC CCIR601 (QCIF) h   Wèüÿÿÿ‹³À   ‰ğèüÿÿÿ‰ğèüÿÿÿ‹ƒÈ   ZY…Àtº   èüÿÿÿ¹   ºè  ¸ô  èüÿÿÿ‹³Ì   éD  h    WèüÿÿÿXZºûÿÿÿéÒ  h    WèüÿÿÿºêÿÿÿY[éÒ  ¨„°   VRhj   Wèüÿÿÿ‹…”   ‹p\‹¾À   ‰øèüÿÿÿ‰øèüÿÿÿ‹†È   ƒÄ…Àtoº   èüÿÿÿºè  ¹   ¸ô  èüÿÿÿºíÿÿÿé¬  h#   Wèüÿÿÿ‹“À   _]éÒ  hY   WèüÿÿÿXZºíÿÿÿé¬  h@   Wèüÿÿÿ‹“È   Y^éÁ  ºíÿÿÿé¬  Vjh‚   Wèüÿÿÿ‹…”   Ç…Ô    °  Ç…Ø       Ç…Ğ      ‹p\‹¾À   ‰øèüÿÿÿ‰øèüÿÿÿ‹†È   ƒÄ…Àtº   èüÿÿÿ¹   ºè  ¸ô  èüÿÿÿ‰Øèüÿÿÿ‰Â…À„Ò  é¬  ƒÆh   Vèüÿÿÿ¸êÿÿÿ[^éœ  ƒÆh´   VèüÿÿÿXƒÈÿZéœ  ƒÁP¾êÿÿÿhÇ   QèüÿÿÿƒÄé    TW9910: missing platform data!
- I2C-Adapter doesn't support I2C_FUNC_SMBUS_BYTE_DATA
- O  Ş   	èüÿÿÿº    ¸    éüÿÿÿ¸    éüÿÿÿlicense=GPL v2 author=Kuninori Morimoto description=V4L2 driver for TW9910 video decoder                    tw9910                                                                                     `                   ğ  à  0                                                   ğ              Ğ           à                                                                                                                         @    Ğ@    €      h   2  À    @  ´                            S  €à  [  Ğà  h  @ğ   v  hğ   ‰    x   ˜  ´ x    GCC: (GNU) 11.2.0           GNU  À       À                                  ñÿ                            
-       $        0   f     ,       &     B   Ğ        S   ğ   .                                	 a      ü     q       T    	 †      a                   •     W    ¢   @         ´   T   p   	 Æ      H     Ù   ğ  ÷     è   @  H     ú   ğ  ç       à  õ       Ä  2    	 ,  à  ¯    ;  ö      	               O           f      €     x      
-                ¦          ¼  (   1     ×      0                   á     0     ø      P       `   @     &             1             ;             C             `             l             w             ‡             š             ­             »             Å             Ñ             ê             ÷                                       -             6             Q             k             y                        ™             ¨      
-     ·      0      tw9910.c tw9910_g_std tw9910_get_selection tw9910_enum_mbus_code tw9910_g_tvnorms tw9910_remove tw9910_power_on tw9910_power_on.cold tw9910_s_power tw9910_probe tw9910_subdev_ops tw9910_probe.cold tw9910_ntsc_scales tw9910_get_fmt tw9910_pal_scales tw9910_s_std tw9910_s_stream tw9910_s_stream.cold tw9910_set_fmt tw9910_set_fmt.cold tw9910_i2c_driver_init tw9910_i2c_driver tw9910_i2c_driver_exit __UNIQUE_ID_license268 __UNIQUE_ID_author267 __UNIQUE_ID_description266 tw9910_id tw9910_subdev_core_ops tw9910_subdev_video_ops tw9910_subdev_pad_ops __fentry__ gpiod_put clk_put v4l2_async_unregister_subdev clk_prepare clk_enable gpiod_set_value usleep_range_state gpiod_get_optional clk_unprepare _dev_info clk_disable __x86_indirect_thunk_edx devm_kmalloc v4l2_i2c_subdev_init clk_get i2c_smbus_read_byte_data _dev_err v4l2_async_register_subdev i2c_smbus_write_byte_data __this_module i2c_register_driver init_module i2c_del_driver cleanup_module __mod_i2c__tw9910_id_device_table       &  1   &  ¡   &  Ñ   &  ñ   &    '    (    )  !  &  >  *  S  +  n  ,  ‚  -    	  –  .  ·  ,  Ë  -  Ü  ,  ğ  -  û  '    /  !  &  I  1  P  /  d  ,  x  -  ‘  &  ¶  2  ×  3  ì  "  ó  4  ø  	  ÿ  5  #  	  *  .  o  6  ¾  '  Ï  (  ñ  &  i  "  á  "  ñ  &  &  6  K  9  f  9  x  9  ™  6  ½  9  á  &    6  3  9  S  6  l  9  |  6  á  &  W  "  K  "  ”  "  ¶  "  H	  6  _	  9  s	  -  	  6  º	  9  ë	  6  
-  9  A
-  9  [
-  9  u
-  9  
-  9  ¦
-  9  ü
-  6    9  '  -  b  6  |  9  §  
-  «  
-  Æ  
-    
-  ;  
-  R  
-  ‹  
-    
-    9  ›  9  ­  
-  Ê  
-    
-               	  h   "                                                 $     (     ,     0        	     0     1     /  1   ,  E   -  U     [   7  l     r   7     	  “   7  ©   1  °   /  Ç   ,  Û   -  ê   	  ğ   7    	    7    	    0  >  	  D  0  h  "  x  1    /  –  ,  ª  -  ±  8  È  	  Î  7  â  	  è  7     	    7  P     g     ~     å     ı         ,    6    »    À    Ú    ò                 	     &          :     ;          =  @   "  L   "  \   "  d     p     t     x     ¨     ¬     ¼     È          @  	  L  	  X  	  d  	  p  	  |  	     	  ¬  	  ¸  	  Ä  	  Ğ  	  Ü  	   .symtab .strtab .shstrtab .rel.text .rel.data .bss .rel__mcount_loc .rodata.str1.1 .rel.text.unlikely .rodata.str1.4 .rel__bug_table .rel.init.text .rel.exit.text .modinfo .rel.rodata .comment .note.GNU-stack .note.gnu.property                                                         @                       	   @       @  È              )             à  €                   %   	   @                         /             `                     8             `  4                  4   	   @       (  h               E      2       ”  ¬                X             @                   T   	   @         ˆ     	         g      2       T  V                 z             ª                    v   	   @                         Š             ¶                    †   	   @       (                   ™             Ê  
-                  •   	   @       H                  ¤             Ô  Y                  ±             @  è                  ­   	   @       X   À               ¹      0       (                   Â              ;                     Ò             <  (                                d        &         	              d  Ù                               !  å                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          ELF                      <      4     (               èüÿÿÿU1ÀWVSƒìèüÿÿÿ;    ƒ  ‰Å´&    ‰èèüÿÿÿpl‰Ã‰ğèüÿÿÿ‹S$‹{(‰$‹
-…ÿ„B  ‹G(…À„7  öÅ…V  ÷Á  @ ‰L$„F  èüÿÿÿ‹$‰D$‹J…É‹L$„;  B‰$‹T$‹$‰L$èüÿÿÿ‹    ‹L$9Ğs'‹$ÇD$    ‹ #    tó¼À‰D$;T$†   ‹$‹T$£ƒĞ   ‰Ø‰$èüÿÿÿº   ‰Øèüÿÿÿ“€   ‹$„Àu‹C$PCá € ‰$‰L$u‹O…Ét‰T$èüÿÿÿ‹T$‹¹    #    tó¼À‰Á9    w‹K$º    ‹©    …Ÿ   ‹$1Éèüÿÿÿ…Àui‹D$…Àu‹W …Òt
-‹$èüÿÿÿf‰ğèüÿÿÿEèüÿÿÿ‰Å9    ‡{şÿÿƒÄ[^_]Ãv 1Ò‰ØèüÿÿÿëÍt& ‹C$ƒÀ‰$é½şÿÿ´&    v ‰D$º    ¸    èüÿÿÿ‹L$…À„xÿÿÿéüÿÿÿt&   € ‰‰Øèüÿÿÿéuÿÿÿt& èüÿÿÿU‰ÅWVSƒìèüÿÿÿ1Àèüÿÿÿ;    s‰Ãt& ‰Øèüÿÿÿxl‰Æ‰øèüÿÿÿ‹F$÷     tB‹N@…Ét;‹V(…Òt4P£hs+‹F$‹ ©  € uw©   t`¸   ‰$èüÿÿÿ„Àu/´&    ‰øèüÿÿÿCèüÿÿÿ‰Ã9    w‡èüÿÿÿ1ÀƒÄ[^_]Ã¸   èüÿÿÿ‹V$‰Á‹ ÷Ğ#BtÀ£)‹$s¸F1Éèüÿÿÿë¬t& 1Éº   ‰ğèüÿÿÿë˜    ˆ  
-                   4Eff. affinity %*pbl of IRQ %u contains only offline CPUs after offlining CPU %u
-  4IRQ%u: set affinity failed(%d).
- QÿshT   èüÿÿÿƒÄés  ‰L$ÿt$ÿsÿt$Rh    èüÿÿÿ‹L$ƒÄéä           migrate_one_irq  GCC: (GNU) 11.2.0           GNU  À        À                                  ñÿ                                                                   
-                    <                  
- A           ^              i              z              ‚                                          ´              Ä              Ï              á              ù                           )             =             V             g             t                          ˜     ğ     °             À             Ó             è             ı                          $             <              cpuhotplug.c __func__.0 _rs.1 irq_migrate_all_off_this_cpu.cold irq_migrate_all_off_this_cpu __fentry__ irq_get_next_irq nr_irqs irq_to_desc _raw_spin_lock debug_smp_processor_id cpumask_any_but nr_cpu_ids __cpu_online_mask irq_force_complete_move irq_fixup_move_pending __x86_indirect_thunk_ecx irq_do_set_affinity __x86_indirect_thunk_edx _raw_spin_unlock ___ratelimit irq_sh
+
+	retval = security_task_setscheduler(p);
+	if (retval)
+		goto out_put_task;
+
+	retval = __sched_setaffinity(p, in_mask);
+out_put_task:
+	put_task_struct(p);
+	return retval;
+}
+
+static int get_user_cpu_mask(unsigned long __user *user_mask_ptr, unsigned len,
+			     struct cpumask *new_mask)
+{
+	if (len < cpumask_size())
+		cpumask_clear(new_mask);
+	else if (len > cpumask_size())
+		len = cpumask_size();
+
+	return copy_from_user(new_mask, user_mask_ptr, len) ? -EFAULT : 0;
+}
+
+/**
+ * sys_sched_setaffinity - set the CPU affinity of a process
+ * @pid: pid of the process
+ * @len: length in bytes of the bitmask pointed to by user_mask_ptr
+ * @user_mask_ptr: user-space pointer to the new CPU mask
+ *
+ * Return: 0 on success. An error code otherwise.
+ */
+SYSCALL_DEFINE3(sched_setaffinity, pid_t, pid, unsigned int, len,
+		unsigned long __user *, user_mask_ptr)
+{
+	cpumask_var_t new_mask;
+	int retval;
+
+	if (!alloc_cpumask_var(&new_mask, GFP_KERNEL))
+		return -ENOMEM;
+
+	retval = get_user_cpu_mask(user_mask_ptr, len, new_mask);
+	if (retval == 0)
+		retval = sched_setaffinity(pid, new_mask);
+	free_cpumask_var(new_mask);
+	return retval;
+}
+
+long sched_getaffinity(pid_t pid, struct cpumask *mask)
+{
+	struct task_struct *p;
+	unsigned long flags;
+	int retval;
+
+	rcu_read_lock();
+
+	retval = -ESRCH;
+	p = find_process_by_pid(pid);
+	if (!p)
+		goto out_unlock;
+
+	retval = security_task_getscheduler(p);
+	if (retval)
+		goto out_unlock;
+
+	raw_spin_lock_irqsave(&p->pi_lock, flags);
+	cpumask_and(mask, &p->cpus_mask, cpu_active_mask);
+	raw_spin_unlock_irqrestore(&p->pi_lock, flags);
+
+out_unlock:
+	rcu_read_unlock();
+
+	return retval;
+}
+
+/**
+ * sys_sched_getaffinity - get the CPU affinity of a process
+ * @pid: pid of the process
+ * @len: length in bytes of the bitmask pointed to by user_mask_ptr
+ * @user_mask_ptr: user-space pointer to hold the current CPU mask
+ *
+ * Return: size of CPU mask copied to user_mask_ptr on success. An
+ * error code otherwise.
+ */
+SYSCALL_DEFINE3(sched_getaffinity, pid_t, pid, unsigned int, len,
+		unsigned long __user *, user_mask_ptr)
+{
+	int ret;
+	cpumask_var_t mask;
+
+	if ((len * BITS_PER_BYTE) < nr_cpu_ids)
+		return -EINVAL;
+	if (len & (sizeof(unsigned long)-1))
+		return -EINVAL;
+
+	if (!alloc_cpumask_var(&mask, GFP_KERNEL))
+		return -ENOMEM;
+
+	ret = sched_getaffinity(pid, mask);
+	if (ret == 0) {
+		unsigned int retlen = min(len, cpumask_size());
+
+		if (copy_to_user(user_mask_ptr, mask, retlen))
+			ret = -EFAULT;
+		else
+			ret = retlen;
+	}
+	free_cpumask_var(mask);
+
+	return ret;
+}
+
+static void do_sched_yield(void)
+{
+	struct rq_flags rf;
+	struct rq *rq;
+
+	rq = this_rq_lock_irq(&rf);
+
+	schedstat_inc(rq->yld_count);
+	current->sched_class->yield_task(rq);
+
+	preempt_disable();
+	rq_unlock_irq(rq, &rf);
+	sched_preempt_enable_no_resched();
+
+	schedule();
+}
+
+/**
+ * sys_sched_yield - yield the current processor to other threads.
+ *
+ * This function yields the current CPU to other tasks. If there are no
+ * other threads running on this CPU then this function will return.
+ *
+ * Return: 0.
+ */
+SYSCALL_DEFINE0(sched_yield)
+{
+	do_sched_yield();
+	return 0;
+}
+
+#if !defined(CONFIG_PREEMPTION) || defined(CONFIG_PREEMPT_DYNAMIC)
+int __sched __cond_resched(void)
+{
+	iUóJ:Ô2ş”BÓı…Q“À ‚iãÏò-¤‘†s7XºtMg^í½06qÅEiõŸ–Ñ×³VËI*"I·äœõ×`ñ¹Ò[UÌâÖÈ;`ùâÉîú’Ä‰ˆoèXáE¦6K@ƒÕğ#…É×²ğÔ3=ëñç¥Q<Ÿ“£ÆÃG%c¯¼ÀŞ©‡Í‘ãäpéYÇ‹Y®÷ØbrˆÎêVŒ–ë#Æïı©ƒM}H6—Øï°<k B×ª@`†676‹+‡È¡Ç3±Šc!Sç;Æÿ^›·å¥»&û«ñ:e6´ş=•BWº˜%*w_qv *¯0H	Â*nÅĞÚ…3ùìû°£ p¢yI£Æçf¼2L©âU^¾õŞÑß
+¼ÿbÄœ’ê=ëÈ@=¿¤èÚcO¢‰Â(d|…®+I†È@ü¸)	Š6ëÍ¿íœ8d÷ &„ú?H¾ªHÊ¿…’@æFTˆdÆP¡˜ş®˜pW‡à_¹ƒÌjû³bùˆ¾£ a‚é0/tFÅ©XùK÷ºş]b±fÈpW¢~_qH=¾H¼–D0¡#§	 ¨m©‚ğ~¹àSé–½£%V¤!?,°ÔÒg†ë­cl¡ªõÖåw£õ¤ªŸJ®wİÄÛ­ªlÇ©‚f
+ÜAb8TÚ»E4Gğ	&}G@Xš…¬ånÈ=ÿa¨¶è]	W6X ¿½l_¦&¹ŠšçF§Â“\°	•Ş†‰÷®CÚÂ”Ù’Z°]i:k‚[$;RAnB@²‰és(†¹>óÚ=?•­4ş Ò¯`›Ù—ú|Yñu¯ ±ÿ¦Ä•ArÇÈÉ®ù×&Î
+æAZ¸±Ï&ü½k©H:šµŞ³©4Ì}nÁ/ÈQÃÏ‡ŸJãÖÔ»êÕ3!`S¥]±EŠH7‘aĞ|V_~Jš§³Çam‘·Eú«­p˜Œ')½ì{CÎ¢ãŠgÈgu)æ]?¦Õ³j3&iV™¤D×ÉØäT"É­ın
+’Ğ™héò¨‰…‡¾b—.³ÿ˜+ÂY '[jñæ™ç–†Ûğş—†-h\@0f:åôj9ğ9¿ö}ğ?¿V9† Ókbà -×ì8†¾åa"Ÿk€¥+Éc†_2Çk©ª+âIDÑ‰Ğÿäò}ÖÄ¬ººècFbk©çL>eAï)`ÖñíØRB:[ècHÎÅ$Ì¼:ÌÏäôJÙ¢ËËwòÍë“²÷€Ò&Û1c…£ÏäfétÀşpD¹eãó:D§—ù’sbˆêÕ¶èuïdº0¨˜¬‹q—©>™âkÌ|?ç¬°\gEùÿ«V¡úçŠ¡öÊñ¨mÖõÜp*
+h¿æA»ù	ïŸ¶rìÄ¼¬Ù' oÀ¦Ä}¸Ú3‹ByÃj’b·[íÙBV•nÊÔº7¶‡}Y°eX»Eâ•cŸ?ëîÕ`Û¦=M ®• å§dÃÍÛ‚¸št£é ƒôŸD¦íÚr©Hó-Y}!~ã¢DŞz,W½q]‡ÁhEå<P„†„õq˜£1ñr@ƒ)2S®Ik@ÀUCÔOP]Á‰E©0ßä{ :LAÙû“íR´QĞFûÅ6Hü¿jôê>rÎİâÑÿ‹6=©Ş°vCN2ø†÷zòc<lâ“¼R$w{&^jIi-¥ÅìĞ/šïJLË'\oz¤÷d¶¶+ï|J|.S=¥&/_[Ï´*vİé–ĞgƒÕ%WğÓ+„%Ö_Ô;íñŠõAó2SĞ³ü±ÜŞÎØX¯OºqÉ€Ş*®gú{ ÔZÚ=„SêÅ:Nzç,^ÒhEÅv#²Qz–I¶!"Åj“Ğ•â[–¸¥já¨s&Šã`T]"È/LBÖHæÎíë*¨O&šØ¦wìÎNNo¼àèš øóvn	Ë•&¦ÜrË>P¨»µ¢&s4*m–5æ(JD$íë{€V…àÔ1š¼ª2Şq­ ÿƒÛ•öšYi¢*gu.c”w|IËáÃdÍƒÈT•“¦’Ø‚ò›á3*¸)~ÀL!G?)æU ¹täØqU†ÒZz)Ù¤£§?+÷OfñÑù£4]	SÎDJHØ$ s gÒÓ6Yª•Ã×
+)ÙKC0=}ñ‡ê(¯XA$oË”ö~T§yhåœOK)~ò%iÀ­¶Íg›–ã€§¿öpXª²,@èg}EÈ?ûÊ¡±møa¡ Öj-t@döUÂSsÓ–	‚·ácÏØ©,GãÀTîöİÎŞ	>7ãgîô™6œ>Y‹^Îaä-Fü'6L22
+)D@‘«ÑËàè6ìgÉ•|•Q3H8 Q¹†'qzi‚kÜØ‹$(Ì³íâÓ~‘ı^F®Ìg‹êİB¸C¯Ü–*„L#§rß“>ô5}éï–ïŞ‘OŒ3¾‰<>½h§²ÍÉ÷á®i– ê‰ŠgÆz7anæ‚KÓ§pÏàõÍQ Se†v”™1x,æÒ¿Ëïˆñö¹¨x$áP9h¢ªÿX-4ÓÀß®÷úÎï>s ´»^]8Ş$ÃcÛ©$®Â›múÇY”İMHô¥óM!¨ãİ×ì\â	Ï½Õ#‚æ´(ÿÙ?Ö°ùš0ğV|ÜtA?ê¦Ñ‰ğ4ÇB3‚„š%ôVv¯Õ¨ntèˆ«‡À÷oVİµwâA£Tcb„êºrJ^-iPõ&C/Oî¾¢“§E¤ÒcËjft¾åGË“@}ñ7ZÁ8d‚/šzFUÿj!{äsëc†Çn†é†?+œ¼õ–0*mÑ€«2êifQ&nx[Û§X˜!Æ…çWwt?‚¹mÕ8­xbïLòÑU0üòÕœ%îcØı£f·÷iº‘EğÔÇV,À“xGµò_µå9Âä<Qx¡ª'˜ÚÑ‰Á‹ïMv¸ñ³ ×ŞåkJ}uC€JÙ`âô¬2×zß’‰àë)b9¼;÷éã!æ3/†çtàm²t9B)k¬-àëÊ‚Ã UOí‘¼+…5ä4(.èÀÓ XËƒaŞ®„O‚òÕ:SIbR
+€ëˆêÇ7½æ ?øEv£È#ák'b«ÓèÇ­ıL
+î–­â§c®Xg¼\1°öåi8`YœÂ6–øqêul,tİ´R5 ¾ù£?E„q4°"uÑø)U÷Ÿr½*dÇ§Ö Ö‚m´HwõbÀuàşø¨´$¨Xì]c*Õô	T™ûŸUbªPO
+yOYğwpš)4S%g!¢¦èq¤7ıİ¾^;0w9F•Îe\7!#Éğ2ËÚV)ÃQ³_ô‰¬b¾°y§+€6ªíê>ÈîIC)ùy–L°(t¸w½†“¹¹¸£Ñ,qââL*ÓR5ÏÖpq“êvnì+®´i^z·åÅYæé¢Íd°œGÕ©d·éi/ø8°ÛÛÿ,º„ŒrÁRMh`ğ¨;÷xsÁXãbà‘ó WfaŞ¾Áí‡ÏëÀƒšõ­+ÇFm%$…T©$?Ş²‹m•Z2µ>÷±Oª)ûµš¯äsíñ“ /6’}'ƒ>4ó›ğú^[ŞÒÈtèºÍÂùT¥“±+×Ìzl§* Âèêå»x[©ö4.èÆè)³|z¤Ã·ıÒ’›²œ›ı€†zÌy]lèpap‹1‹“
+§:JÁ©$=×ßH
+ı‰J¦Aşm\¦•ÂôÑdmõi„’¸Ó¹0ø¦q1D?ş'_g	KÕ"î[0‰’øxD®L\!pÂó®wb-§Ğ•®0Ö–íx «`Á]bœµ’˜j¹Õösã½ş™Ô9×ÖJsàeÔ©SªOÃC‹iDğåãóíŠ€‚fŠCÓc3óf(%4í©d%‰S.v»ÏŠh?†÷—ö€«,D‘és“üµ“!1nwjfÀJHïŞ:L™K©Ocy†?ª¥,§62]éî¼’°}ıÎêÿtÀPÄ1ğªˆõƒY{·² ´Ş ÛW$Æâ9|Ïı°ºniÄlØŠ¹˜Ng L¾e4aúH4ïôã?ë‹„È·k;OÊ{Ë,ô#à÷!NP¿`J!»}ìJË?uÇ	rûèaÌË
+ÉÙ=ä;âf§1[ù‹m9Ş4 %ã%;ì*DÖm;™rïD¯“âYS'å§qç(|ÙÆºúÈ²8¶ıZœ¦pj9O˜õ5„»ŸG„'íiÿo|	©‘|}–Dşwî† ¥ä™ÕvúÄUu]ë]ü©	ã›ÅxùoZ¸f&%»–s¸âá§”ÔùÒªú"TániÀØs„÷‹Œî»4ètVÕ±~PPñVÎo6»âMõÚ]şù4õ
+ºÉ
+œ’¿Tbyßb;tP-´¨Ğ,½²²@sâ¯wç![yéw‡_jœİU{Tå
+Q¸ÃárÎ„)àiÖ¥æõ(ˆffBUnÂ–^@Ïcø§;ˆŸÁÇæM.m	8_Æyœ¨œ›ÔÃ S|«¬Y9²“RÍ:…T/§súQbE™ù8êÅïAãSzNüšH‹£‘ck‡²::…¤ßÃ/Ø/Ïs£ö}Bcòd–ŒíqÊV(ïè·…öRÁÑû–´¬ôŠ+À©'™Ûv,ÿrÉÄÍ# ÕÚğÖW
+Xæ¢E&JÇWe”q´üï¼i	´7FÕõu%õpo¡-‡z ixç—FøÑ$WÎĞÏ„Ã„£A£0-õ°<q2æ“M5s•úSÇÚª¬Qx×‰%}Æ‚‘òyšŸ—y)‡Â•ŞõËmó•BÍD8ã6Sd;Y1 :ˆÃ	³	H¯ö%Õ›AËÿdD“×lP]jŞ„¸Öt†ÒÓ´TtO@rª96Cî!Ø˜İiU·Y4™fn•è»w"G&Ü5ØÛ”t8Ân:®!'“
+}G#¿1‹@Ó77ö4Y
+5ïÎ›hKûéa7Üw³5,»À€$A×ÅÒÑ¯È©sˆÈ¢àÁv~!İ9u¿­…(ÉÃòìüï‹[Ê¤Ê¤öoJ4tHu˜€DßŒ"®LÖ£ÄS—êèSHJ™¸;'?”•UÏ˜¥QõUm¢Ø¾ OÕÁÑy|ªE”ˆOxYp‹9ìÄ’^KĞÛ„—”‹²_¯«×Êß”±™…&ü§Z°«-ú1‘·¦>Új1—MÈ¨Ì·®æŒ;0}ÀªV´„aRÃ&+ÇF„3‡­UÆÙìÈÕ]ÊL¢	j ë¦që×¶É Àâ_°Š¿Àº³E§ê£ËÊ§ ²-Ş`ãÅ— @­Ì3l‹^áx–tV³€Z&¿j?™-(¤Ãw¨_ìÈRÓòôyİï$ş+ûÙÕ‡<«ŸXà9¸	c ¸|$˜C’ ½–úoä:02i<Ğ~ıÿa¸š·`62XäšêÊ=æU{!›ŒŠÄåıã|ÜcõNó®¦'=dú9£`^a³8&ˆyx˜áµ²ëE%Ëù†©àô2ÇGz´V¢ßKEyğQü´bœ 8NœÅKúCŸNÆœ[Ã9¢İT÷ö6mÍ–«r‘…8Ãos\ög´]Û&'ö”×q	Ë¢»¦å>€KÛaV›ziKx—ò¯¼w—_-÷çà‰fvÎ×;V4}u„cÛøá.Šê«s–¨³úb‚“:üŸ¨ˆ×Ì|Ø´C3jüósÚ’Ã“=>½ÿo&æï¬@×J¸ƒUS§õš	JN³$‘t‹3LOåˆl*—<`È;nÓíîß¡>Í¡ûA>x{Ñ€8+kô˜5`\©•XºT¿Ú»ÚÖsùÛ@}^1ã¿j’åæüQw$ùf*9¿ z˜±éğë’^?²ËKĞr¶î/ì½˜¹q¾ŞÈàˆcn­YÏ7ïJùŸM£¾V­Y‹éÿMÀê{¢EÊz+(£*ÿÓfÃª‚õ^<òzáL¿‘Èß ¬û±šŞ”+s 46ì@íŒ0D³}»êñÉKB ù/l¬8\NåWÚ%­‰ ‡H7ó1 ğCÕ€M˜FüÍ3‡Ë!©Âªïã(‡A îĞËErÕ Î+n8Ò÷ÚòŠ’¥Ü µhÄ8G›£$>j9M)ÙEå¾ÚÆz][Q=¢ğxÃ´z¹á=.Ò/ê´ÊÎO(ä‡4‹É¶4ÅpW‘+	`´Å÷¾;w´fó¹J•B/Ğ[~Üíäœ3	Æı!—Ø2¶-Á×Ör 2·{”	)dóc“d4†]²Ÿß,b¡ñ¶ÁP½p³,¹ô§gQoâúÓşu_¾ü;·Ú…Éâ9vøFµùš×uÁp ]Ô4/œ™ôC—à«ÏEßQwhä—Ú	%QnÄM˜–îdñ¼Ú¨=ŸzHH&FŸØ¹cî ?xfÖ"_:$_·~ï#uîk•õÃç³9úŞF‰…íü|õ‚Œ¹XŸ?YWVMöZÇı!Íí?é¸q~›·y),Lî£aÿ¹°¸NĞQ&õüâ/—N%À½=À„¡óñªZ4êÎSwt{¢•¹–QŠf3ˆÀ³Ÿì·à`hR#2ş™Éš}L›Hùm`´W˜óÂ‘$µNóûİÚÔ¯œzE‚|’e}	Rn69wË©Mââ\> ³&#ffÅôŠªÑ}”nÆÙzŞĞ1o4\ÿÕ4‚vª ]ÒÀ]ƒ!¢Š—Pèz¡ŸØ›¸Ô©¥!Öt2¥’côuş@Ó1¿yTg>üì]iSwÉ"DÒ^!ZÁ»Ô4Ê¯ÖØsx9º7§5Ø.( u0$/Ô‘•×„p@®Æ(O—Î,ú^SŒB¤E¦‹™»¦e)û‚/",CBAÆŞc»4}J¾b ˆn¦´déæn¹J²)v‡Õ‡ÒÅ8ãi[ß”$2^³´hVÈ]éÊİ¸'ã‰åZ•è3BºİMSóÑZp•½—v!A50œdx_NA6|@P“±Ã=iŞ‡øñÈ½Äÿöe	ÒCò\5-D‡
+ §;Ù v"A¼ ÈQŞ`éâŠa[Ç£€•7Ö,øó$béuÒ±ÜPÜÑµ7’ÚRÎÁºŒ»Zl]?X¯p%#k‘¯à >‚¦‰?È$L`]ChTÏË=%j1ÕRŸ6«(ÈVBƒZí{ad(ngÑ¯h
+Á:û©í(÷C3n–aêr¬øS“ÇÂà>*<LåAÔBi“¤…å"ø¤F~÷Ôƒ W}HŒÌ‹²Ş
++ ò¯ñ]şq…¾´3u€;‡ë>Õ÷Á
+5şu,€ârØ'|‚‘>§Ûs3$`ôRïUë3ì àaİ­6´¢hIRdsÜ›~tÚ¬{ÙoRX-ò¿…7cDu›áŠ×~„d„Ÿã\5öƒV@\ßówqwÌÏØÙ‡¢e/TÔEÙ‰*Höß§üÚÎ’‡LU’‡À—ÿ¬Lr©R
+™ {ŒØ&|¶¸ªW]åa¡Ë£gÓâŸ#e€ /2ØÔØ~é"¹<y6Ã)
+ÿ¢;{[Ù\o_ğíì¤ÍfÈ:‚Ç×¯	Şl*£6Ìú®×–‘—ªóFOıæŠ©0¬Ï¶‹ü¬¹“ÉAP‹X)‰¿°U*úÆü¡R»#éÔ9Ş7Ä ”k¯$2Ñ+Áã•µl×ap'†½hİ Ô¼O±×8Ì®Ñ°ÉÅUìĞ6î;-œâÿİûßyÁÔªA
+60’Mj
+ê•¿c·¨ÊÑƒª’YcÑC«Äö6Œé¨§¨)AkçÆfUù4?ã àP‘I:³= mÌ‚âï\ÀQèÇê’—ÂrEbjŠØ´"nºĞ;m7Ó¦Œ¤ƒ•óÿÚ˜¨ÅÈhQ Ì&¢®£wÊP¯êfê§ÿ‹>9ˆ$ÓÌaK›Yé.dƒŒ]é4$s?¬Ÿu»aŠ#ğ#Úì8^†°^E&€È3oˆ„ä°Îb|Şµ’VJF°lo_„,ñ$:#Îq¬˜pŞ×U¨œk‚…¥ylØÍ(çA+P

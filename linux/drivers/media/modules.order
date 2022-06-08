@@ -1,673 +1,823 @@
-drivers/media/i2c/ad5820.ko
-drivers/media/i2c/ad9389b.ko
-drivers/media/i2c/adv7170.ko
-drivers/media/i2c/adv7175.ko
-drivers/media/i2c/adv7180.ko
-drivers/media/i2c/adv7183.ko
-drivers/media/i2c/adv7343.ko
-drivers/media/i2c/adv7393.ko
-drivers/media/i2c/adv7511-v4l2.ko
-drivers/media/i2c/adv7604.ko
-drivers/media/i2c/adv7842.ko
-drivers/media/i2c/ak7375.ko
-drivers/media/i2c/ak881x.ko
-drivers/media/i2c/aptina-pll.ko
-drivers/media/i2c/bt819.ko
-drivers/media/i2c/bt856.ko
-drivers/media/i2c/bt866.ko
-drivers/media/i2c/ccs/ccs.ko
-drivers/media/i2c/ccs-pll.ko
-drivers/media/i2c/cs3308.ko
-drivers/media/i2c/cs5345.ko
-drivers/media/i2c/cs53l32a.ko
-drivers/media/i2c/cx25840/cx25840.ko
-drivers/media/i2c/dw9714.ko
-drivers/media/i2c/dw9768.ko
-drivers/media/i2c/dw9807-vcm.ko
-drivers/media/i2c/et8ek8/et8ek8.ko
-drivers/media/i2c/hi556.ko
-drivers/media/i2c/imx208.ko
-drivers/media/i2c/imx214.ko
-drivers/media/i2c/imx219.ko
-drivers/media/i2c/imx258.ko
-drivers/media/i2c/imx274.ko
-drivers/media/i2c/imx290.ko
-drivers/media/i2c/imx319.ko
-drivers/media/i2c/imx355.ko
-drivers/media/i2c/ir-kbd-i2c.ko
-drivers/media/i2c/ks0127.ko
-drivers/media/i2c/m52790.ko
-drivers/media/i2c/m5mols/m5mols.ko
-drivers/media/i2c/max9271.ko
-drivers/media/i2c/ml86v7667.ko
-drivers/media/i2c/msp3400.ko
-drivers/media/i2c/mt9m001.ko
-drivers/media/i2c/mt9m032.ko
-drivers/media/i2c/mt9m111.ko
-drivers/media/i2c/mt9p031.ko
-drivers/media/i2c/mt9t001.ko
-drivers/media/i2c/mt9t112.ko
-drivers/media/i2c/mt9v011.ko
-drivers/media/i2c/mt9v032.ko
-drivers/media/i2c/mt9v111.ko
-drivers/media/i2c/noon010pc30.ko
-drivers/media/i2c/ov02a10.ko
-drivers/media/i2c/ov13858.ko
-drivers/media/i2c/ov2640.ko
-drivers/media/i2c/ov2659.ko
-drivers/media/i2c/ov2680.ko
-drivers/media/i2c/ov2685.ko
-drivers/media/i2c/ov2740.ko
-drivers/media/i2c/ov5647.ko
-drivers/media/i2c/ov5648.ko
-drivers/media/i2c/ov5670.ko
-drivers/media/i2c/ov5675.ko
-drivers/media/i2c/ov5695.ko
-drivers/media/i2c/ov6650.ko
-drivers/media/i2c/ov7251.ko
-drivers/media/i2c/ov7640.ko
-drivers/media/i2c/ov7670.ko
-drivers/media/i2c/ov772x.ko
-drivers/media/i2c/ov7740.ko
-drivers/media/i2c/ov8856.ko
-drivers/media/i2c/ov8865.ko
-drivers/media/i2c/ov9640.ko
-drivers/media/i2c/ov9650.ko
-drivers/media/i2c/ov9734.ko
-drivers/media/i2c/rdacm20.ko
-drivers/media/i2c/rdacm21.ko
-drivers/media/i2c/rj54n1cb0c.ko
-drivers/media/i2c/s5k4ecgx.ko
-drivers/media/i2c/s5k5baf.ko
-drivers/media/i2c/s5k6a3.ko
-drivers/media/i2c/s5k6aa.ko
-drivers/media/i2c/saa6588.ko
-drivers/media/i2c/saa6752hs.ko
-drivers/media/i2c/saa7110.ko
-drivers/media/i2c/saa7115.ko
-drivers/media/i2c/saa7127.ko
-drivers/media/i2c/saa717x.ko
-drivers/media/i2c/saa7185.ko
-drivers/media/i2c/sony-btf-mpx.ko
-drivers/media/i2c/sr030pc30.ko
-drivers/media/i2c/tc358743.ko
-drivers/media/i2c/tda7432.ko
-drivers/media/i2c/tda9840.ko
-drivers/media/i2c/tea6415c.ko
-drivers/media/i2c/tea6420.ko
-drivers/media/i2c/ths8200.ko
-drivers/media/i2c/tlv320aic23b.ko
-drivers/media/i2c/tvaudio.ko
-drivers/media/i2c/tvp514x.ko
-drivers/media/i2c/tvp5150.ko
-drivers/media/i2c/tvp7002.ko
-drivers/media/i2c/tw2804.ko
-drivers/media/i2c/tw9903.ko
-drivers/media/i2c/tw9906.ko
-drivers/media/i2c/tw9910.ko
-drivers/media/i2c/uda1342.ko
-drivers/media/i2c/upd64031a.ko
-drivers/media/i2c/upd64083.ko
-drivers/media/i2c/vp27smpx.ko
-drivers/media/i2c/vpx3220.ko
-drivers/media/i2c/vs6624.ko
-drivers/media/i2c/wm8739.ko
-drivers/media/i2c/wm8775.ko
-drivers/media/tuners/e4000.ko
-drivers/media/tuners/fc0011.ko
-drivers/media/tuners/fc0012.ko
-drivers/media/tuners/fc0013.ko
-drivers/media/tuners/fc2580.ko
-drivers/media/tuners/it913x.ko
-drivers/media/tuners/m88rs6000t.ko
-drivers/media/tuners/max2165.ko
-drivers/media/tuners/mc44s803.ko
-drivers/media/tuners/mt2060.ko
-drivers/media/tuners/mt2063.ko
-drivers/media/tuners/mt20xx.ko
-drivers/media/tuners/mt2131.ko
-drivers/media/tuners/mt2266.ko
-drivers/media/tuners/mxl301rf.ko
-drivers/media/tuners/mxl5005s.ko
-drivers/media/tuners/mxl5007t.ko
-drivers/media/tuners/qm1d1b0004.ko
-drivers/media/tuners/qm1d1c0042.ko
-drivers/media/tuners/qt1010.ko
-drivers/media/tuners/r820t.ko
-drivers/media/tuners/si2157.ko
-drivers/media/tuners/tuner-simple.ko
-drivers/media/tuners/tuner-types.ko
-drivers/media/tuners/tda18212.ko
-drivers/media/tuners/tda18218.ko
-drivers/media/tuners/tda18250.ko
-drivers/media/tuners/tda18271.ko
-drivers/media/tuners/tda827x.ko
-drivers/media/tuners/tda8290.ko
-drivers/media/tuners/tda9887.ko
-drivers/media/tuners/tea5761.ko
-drivers/media/tuners/tea5767.ko
-drivers/media/tuners/tua9001.ko
-drivers/media/tuners/xc2028.ko
-drivers/media/tuners/xc4000.ko
-drivers/media/tuners/xc5000.ko
-drivers/media/rc/keymaps/rc-adstech-dvb-t-pci.ko
-drivers/media/rc/keymaps/rc-alink-dtu-m.ko
-drivers/media/rc/keymaps/rc-anysee.ko
-drivers/media/rc/keymaps/rc-apac-viewcomp.ko
-drivers/media/rc/keymaps/rc-astrometa-t2hybrid.ko
-drivers/media/rc/keymaps/rc-asus-pc39.ko
-drivers/media/rc/keymaps/rc-asus-ps3-100.ko
-drivers/media/rc/keymaps/rc-ati-tv-wonder-hd-600.ko
-drivers/media/rc/keymaps/rc-ati-x10.ko
-drivers/media/rc/keymaps/rc-avermedia-a16d.ko
-drivers/media/rc/keymaps/rc-avermedia-cardbus.ko
-drivers/media/rc/keymaps/rc-avermedia-dvbt.ko
-drivers/media/rc/keymaps/rc-avermedia-m135a.ko
-drivers/media/rc/keymaps/rc-avermedia-m733a-rm-k6.ko
-drivers/media/rc/keymaps/rc-avermedia.ko
-drivers/media/rc/keymaps/rc-avermedia-rm-ks.ko
-drivers/media/rc/keymaps/rc-avertv-303.ko
-drivers/media/rc/keymaps/rc-azurewave-ad-tu700.ko
-drivers/media/rc/keymaps/rc-beelink-gs1.ko
-drivers/media/rc/keymaps/rc-behold-columbus.ko
-drivers/media/rc/keymaps/rc-behold.ko
-drivers/media/rc/keymaps/rc-budget-ci-old.ko
-drivers/media/rc/keymaps/rc-cinergy-1400.ko
-drivers/media/rc/keymaps/rc-cinergy.ko
-drivers/media/rc/keymaps/rc-ct-90405.ko
-drivers/media/rc/keymaps/rc-d680-dmb.ko
-drivers/media/rc/keymaps/rc-delock-61959.ko
-drivers/media/rc/keymaps/rc-dib0700-nec.ko
-drivers/media/rc/keymaps/rc-dib0700-rc5.ko
-drivers/media/rc/keymaps/rc-digitalnow-tinytwin.ko
-drivers/media/rc/keymaps/rc-digittrade.ko
-drivers/media/rc/keymaps/rc-dm1105-nec.ko
-drivers/media/rc/keymaps/rc-dntv-live-dvb-t.ko
-drivers/media/rc/keymaps/rc-dntv-live-dvbt-pro.ko
-drivers/media/rc/keymaps/rc-dtt200u.ko
-drivers/media/rc/keymaps/rc-dvbsky.ko
-drivers/media/rc/keymaps/rc-dvico-mce.ko
-drivers/media/rc/keymaps/rc-dvico-portable.ko
-drivers/media/rc/keymaps/rc-em-terratec.ko
-drivers/media/rc/keymaps/rc-encore-enltv2.ko
-drivers/media/rc/keymaps/rc-encore-enltv-fm53.ko
-drivers/media/rc/keymaps/rc-encore-enltv.ko
-drivers/media/rc/keymaps/rc-evga-indtube.ko
-drivers/media/rc/keymaps/rc-eztv.ko
-drivers/media/rc/keymaps/rc-flydvb.ko
-drivers/media/rc/keymaps/rc-flyvideo.ko
-drivers/media/rc/keymaps/rc-fusionhdtv-mce.ko
-drivers/media/rc/keymaps/rc-gadmei-rm008z.ko
-drivers/media/rc/keymaps/rc-geekbox.ko
-drivers/media/rc/keymaps/rc-genius-tvgo-a11mce.ko
-drivers/media/rc/keymaps/rc-gotview7135.ko
-drivers/media/rc/keymaps/rc-hauppauge.ko
-drivers/media/rc/keymaps/rc-hisi-poplar.ko
-drivers/media/rc/keymaps/rc-hisi-tv-demo.ko
-drivers/media/rc/keymaps/rc-imon-mce.ko
-drivers/media/rc/keymaps/rc-imon-pad.ko
-drivers/media/rc/keymaps/rc-imon-rsc.ko
-drivers/media/rc/keymaps/rc-iodata-bctv7e.ko
-drivers/media/rc/keymaps/rc-it913x-v1.ko
-drivers/media/rc/keymaps/rc-it913x-v2.ko
-drivers/media/rc/keymaps/rc-kaiomy.ko
-drivers/media/rc/keymaps/rc-khadas.ko
-drivers/media/rc/keymaps/rc-khamsin.ko
-drivers/media/rc/keymaps/rc-kworld-315u.ko
-drivers/media/rc/keymaps/rc-kworld-pc150u.ko
-drivers/media/rc/keymaps/rc-kworld-plus-tv-analog.ko
-drivers/media/rc/keymaps/rc-leadtek-y04g0051.ko
-drivers/media/rc/keymaps/rc-lme2510.ko
-drivers/media/rc/keymaps/rc-manli.ko
-drivers/media/rc/keymaps/rc-mecool-kiii-pro.ko
-drivers/media/rc/keymaps/rc-mecool-kii-pro.ko
-drivers/media/rc/keymaps/rc-medion-x10-digitainer.ko
-drivers/media/rc/keymaps/rc-medion-x10.ko
-drivers/media/rc/keymaps/rc-medion-x10-or2x.ko
-drivers/media/rc/keymaps/rc-minix-neo.ko
-drivers/media/rc/keymaps/rc-msi-digivox-iii.ko
-drivers/media/rc/keymaps/rc-msi-digivox-ii.ko
-drivers/media/rc/keymaps/rc-msi-tvanywhere.ko
-drivers/media/rc/keymaps/rc-msi-tvanywhere-plus.ko
-drivers/media/rc/keymaps/rc-nebula.ko
-drivers/media/rc/keymaps/rc-nec-terratec-cinergy-xs.ko
-drivers/media/rc/keymaps/rc-norwood.ko
-drivers/media/rc/keymaps/rc-npgtech.ko
-drivers/media/rc/keymaps/rc-odroid.ko
-drivers/media/rc/keymaps/rc-pctv-sedna.ko
-drivers/media/rc/keymaps/rc-pine64.ko
-drivers/media/rc/keymaps/rc-pinnacle-color.ko
-drivers/media/rc/keymaps/rc-pinnacle-grey.ko
-drivers/media/rc/keymaps/rc-pinnacle-pctv-hd.ko
-drivers/media/rc/keymaps/rc-pixelview-002t.ko
-drivers/media/rc/keymaps/rc-pixelview-mk12.ko
-drivers/media/rc/keymaps/rc-pixelview-new.ko
-drivers/media/rc/keymaps/rc-pixelview.ko
-drivers/media/rc/keymaps/rc-powercolor-real-angel.ko
-drivers/media/rc/keymaps/rc-proteus-2309.ko
-drivers/media/rc/keymaps/rc-purpletv.ko
-drivers/media/rc/keymaps/rc-pv951.ko
-drivers/media/rc/keymaps/rc-rc6-mce.ko
-drivers/media/rc/keymaps/rc-real-audio-220-32-keys.ko
-drivers/media/rc/keymaps/rc-reddo.ko
-drivers/media/rc/keymaps/rc-snapstream-firefly.ko
-drivers/media/rc/keymaps/rc-streamzap.ko
-drivers/media/rc/keymaps/rc-su3000.ko
-drivers/media/rc/keymaps/rc-tanix-tx3mini.ko
-drivers/media/rc/keymaps/rc-tanix-tx5max.ko
-drivers/media/rc/keymaps/rc-tbs-nec.ko
-drivers/media/rc/keymaps/rc-technisat-ts35.ko
-drivers/media/rc/keymaps/rc-technisat-usb2.ko
-drivers/media/rc/keymaps/rc-terratec-cinergy-c-pci.ko
-drivers/media/rc/keymaps/rc-terratec-cinergy-s2-hd.ko
-drivers/media/rc/keymaps/rc-terratec-cinergy-xs.ko
-drivers/media/rc/keymaps/rc-terratec-slim-2.ko
-drivers/media/rc/keymaps/rc-terratec-slim.ko
-drivers/media/rc/keymaps/rc-tevii-nec.ko
-drivers/media/rc/keymaps/rc-tivo.ko
-drivers/media/rc/keymaps/rc-total-media-in-hand-02.ko
-drivers/media/rc/keymaps/rc-total-media-in-hand.ko
-drivers/media/rc/keymaps/rc-trekstor.ko
-drivers/media/rc/keymaps/rc-tt-1500.ko
-drivers/media/rc/keymaps/rc-twinhan1027.ko
-drivers/media/rc/keymaps/rc-twinhan-dtv-cab-ci.ko
-drivers/media/rc/keymaps/rc-vega-s9x.ko
-drivers/media/rc/keymaps/rc-videomate-m1f.ko
-drivers/media/rc/keymaps/rc-videomate-s350.ko
-drivers/media/rc/keymaps/rc-videomate-tv-pvr.ko
-drivers/media/rc/keymaps/rc-videostrong-kii-pro.ko
-drivers/media/rc/keymaps/rc-wetek-hub.ko
-drivers/media/rc/keymaps/rc-wetek-play2.ko
-drivers/media/rc/keymaps/rc-winfast.ko
-drivers/media/rc/keymaps/rc-winfast-usbii-deluxe.ko
-drivers/media/rc/keymaps/rc-x96max.ko
-drivers/media/rc/keymaps/rc-xbox-360.ko
-drivers/media/rc/keymaps/rc-xbox-dvd.ko
-drivers/media/rc/keymaps/rc-zx-irdec.ko
-drivers/media/rc/rc-core.ko
-drivers/media/rc/ir-imon-decoder.ko
-drivers/media/rc/ir-jvc-decoder.ko
-drivers/media/rc/ir-mce_kbd-decoder.ko
-drivers/media/rc/ir-nec-decoder.ko
-drivers/media/rc/ir-rc5-decoder.ko
-drivers/media/rc/ir-rc6-decoder.ko
-drivers/media/rc/ir-rcmm-decoder.ko
-drivers/media/rc/ir-sanyo-decoder.ko
-drivers/media/rc/ir-sharp-decoder.ko
-drivers/media/rc/ir-sony-decoder.ko
-drivers/media/rc/ir-xmp-decoder.ko
-drivers/media/rc/ene_ir.ko
-drivers/media/rc/fintek-cir.ko
-drivers/media/rc/igorplugusb.ko
-drivers/media/rc/iguanair.ko
-drivers/media/rc/imon.ko
-drivers/media/rc/imon_raw.ko
-drivers/media/rc/ite-cir.ko
-drivers/media/rc/mceusb.ko
-drivers/media/rc/nuvoton-cir.ko
-drivers/media/rc/redrat3.ko
-drivers/media/rc/serial_ir.ko
-drivers/media/rc/streamzap.ko
-drivers/media/rc/ir_toy.ko
-drivers/media/rc/ttusbir.ko
-drivers/media/rc/winbond-cir.ko
-drivers/media/rc/ati_remote.ko
-drivers/media/rc/rc-loopback.ko
-drivers/media/rc/xbox_remote.ko
-drivers/media/common/b2c2/b2c2-flexcop.ko
-drivers/media/common/saa7146/saa7146.ko
-drivers/media/common/saa7146/saa7146_vv.ko
-drivers/media/common/siano/smsmdtv.ko
-drivers/media/common/siano/smsdvb.ko
-drivers/media/common/videobuf2/videobuf2-common.ko
-drivers/media/common/videobuf2/videobuf2-dma-contig.ko
-drivers/media/common/videobuf2/videobuf2-dma-sg.ko
-drivers/media/common/videobuf2/videobuf2-dvb.ko
-drivers/media/common/videobuf2/videobuf2-memops.ko
-drivers/media/common/videobuf2/videobuf2-v4l2.ko
-drivers/media/common/videobuf2/videobuf2-vmalloc.ko
-drivers/media/common/cypress_firmware.ko
-drivers/media/common/ttpci-eeprom.ko
-drivers/media/common/cx2341x.ko
-drivers/media/common/tveeprom.ko
-drivers/media/platform/marvell/cafe_ccic.ko
-drivers/media/platform/marvell/mcam-core.ko
-drivers/media/platform/via/via-camera.ko
-drivers/media/platform/m2m-deinterlace.ko
-drivers/media/pci/ttpci/budget-core.ko
-drivers/media/pci/ttpci/budget.ko
-drivers/media/pci/ttpci/budget-av.ko
-drivers/media/pci/ttpci/budget-ci.ko
-drivers/media/pci/b2c2/b2c2-flexcop-pci.ko
-drivers/media/pci/pluto2/pluto2.ko
-drivers/media/pci/dm1105/dm1105.ko
-drivers/media/pci/pt1/earth-pt1.ko
-drivers/media/pci/pt3/earth-pt3.ko
-drivers/media/pci/mantis/mantis_core.ko
-drivers/media/pci/mantis/mantis.ko
-drivers/media/pci/mantis/hopper.ko
-drivers/media/pci/ngene/ngene.ko
-drivers/media/pci/ddbridge/ddbridge.ko
-drivers/media/pci/ddbridge/ddbridge-dummy-fe.ko
-drivers/media/pci/saa7146/mxb.ko
-drivers/media/pci/saa7146/hexium_orion.ko
-drivers/media/pci/saa7146/hexium_gemini.ko
-drivers/media/pci/smipcie/smipcie.ko
-drivers/media/pci/intel/ipu3/ipu3-cio2.ko
-drivers/media/pci/bt8xx/bttv.ko
-drivers/media/pci/bt8xx/bt878.ko
-drivers/media/pci/bt8xx/dvb-bt8xx.ko
-drivers/media/pci/bt8xx/dst.ko
-drivers/media/pci/bt8xx/dst_ca.ko
-drivers/media/pci/cx18/cx18.ko
-drivers/media/pci/cx18/cx18-alsa.ko
-drivers/media/pci/cx23885/cx23885.ko
-drivers/media/pci/cx23885/altera-ci.ko
-drivers/media/pci/cx25821/cx25821.ko
-drivers/media/pci/cx25821/cx25821-alsa.ko
-drivers/media/pci/cx88/cx88xx.ko
-drivers/media/pci/cx88/cx8800.ko
-drivers/media/pci/cx88/cx8802.ko
-drivers/media/pci/cx88/cx88-alsa.ko
-drivers/media/pci/cx88/cx88-blackbird.ko
-drivers/media/pci/cx88/cx88-dvb.ko
-drivers/media/pci/cx88/cx88-vp3054-i2c.ko
-drivers/media/pci/dt3155/dt3155.ko
-drivers/media/pci/ivtv/ivtv.ko
-drivers/media/pci/ivtv/ivtv-alsa.ko
-drivers/media/pci/ivtv/ivtvfb.ko
-drivers/media/pci/meye/meye.ko
-drivers/media/pci/saa7134/saa7134.ko
-drivers/media/pci/saa7134/saa7134-empress.ko
-drivers/media/pci/saa7134/saa7134-alsa.ko
-drivers/media/pci/saa7134/saa7134-dvb.ko
-drivers/media/pci/saa7164/saa7164.ko
-drivers/media/pci/solo6x10/solo6x10.ko
-drivers/media/pci/tw686x/tw686x.ko
-drivers/media/pci/tw68/tw68.ko
-drivers/media/usb/b2c2/b2c2-flexcop-usb.ko
-drivers/media/usb/dvb-usb/dvb-usb.ko
-drivers/media/usb/dvb-usb/dvb-usb-vp7045.ko
-drivers/media/usb/dvb-usb/dvb-usb-vp702x.ko
-drivers/media/usb/dvb-usb/dvb-usb-gp8psk.ko
-drivers/media/usb/dvb-usb/dvb-usb-dtt200u.ko
-drivers/media/usb/dvb-usb/dvb-usb-dibusb-common.ko
-drivers/media/usb/dvb-usb/dvb-usb-dibusb-mc-common.ko
-drivers/media/usb/dvb-usb/dvb-usb-a800.ko
-drivers/media/usb/dvb-usb/dvb-usb-dibusb-mb.ko
-drivers/media/usb/dvb-usb/dvb-usb-dibusb-mc.ko
-drivers/media/usb/dvb-usb/dvb-usb-nova-t-usb2.ko
-drivers/media/usb/dvb-usb/dvb-usb-umt-010.ko
-drivers/media/usb/dvb-usb/dvb-usb-m920x.ko
-drivers/media/usb/dvb-usb/dvb-usb-digitv.ko
-drivers/media/usb/dvb-usb/dvb-usb-cxusb.ko
-drivers/media/usb/dvb-usb/dvb-usb-ttusb2.ko
-drivers/media/usb/dvb-usb/dvb-usb-dib0700.ko
-drivers/media/usb/dvb-usb/dvb-usb-opera.ko
-drivers/media/usb/dvb-usb/dvb-usb-af9005.ko
-drivers/media/usb/dvb-usb/dvb-usb-af9005-remote.ko
-drivers/media/usb/dvb-usb/dvb-usb-pctv452e.ko
-drivers/media/usb/dvb-usb/dvb-usb-dw2102.ko
-drivers/media/usb/dvb-usb/dvb-usb-dtv5100.ko
-drivers/media/usb/dvb-usb/dvb-usb-cinergyT2.ko
-drivers/media/usb/dvb-usb/dvb-usb-az6027.ko
-drivers/media/usb/dvb-usb/dvb-usb-technisat-usb2.ko
-drivers/media/usb/dvb-usb-v2/dvb_usb_v2.ko
-drivers/media/usb/dvb-usb-v2/dvb-usb-af9015.ko
-drivers/media/usb/dvb-usb-v2/dvb-usb-af9035.ko
-drivers/media/usb/dvb-usb-v2/dvb-usb-anysee.ko
-drivers/media/usb/dvb-usb-v2/dvb-usb-au6610.ko
-drivers/media/usb/dvb-usb-v2/dvb-usb-az6007.ko
-drivers/media/usb/dvb-usb-v2/dvb-usb-ce6230.ko
-drivers/media/usb/dvb-usb-v2/dvb-usb-ec168.ko
-drivers/media/usb/dvb-usb-v2/dvb-usb-lmedm04.ko
-drivers/media/usb/dvb-usb-v2/dvb-usb-gl861.ko
-drivers/media/usb/dvb-usb-v2/dvb-usb-mxl111sf.ko
-drivers/media/usb/dvb-usb-v2/mxl111sf-demod.ko
-drivers/media/usb/dvb-usb-v2/mxl111sf-tuner.ko
-drivers/media/usb/dvb-usb-v2/dvb-usb-rtl28xxu.ko
-drivers/media/usb/dvb-usb-v2/dvb-usb-dvbsky.ko
-drivers/media/usb/dvb-usb-v2/zd1301.ko
-drivers/media/usb/s2255/s2255drv.ko
-drivers/media/usb/siano/smsusb.ko
-drivers/media/usb/stkwebcam/stkwebcam.ko
-drivers/media/usb/ttusb-budget/dvb-ttusb-budget.ko
-drivers/media/usb/ttusb-dec/ttusb_dec.ko
-drivers/media/usb/ttusb-dec/ttusbdecfe.ko
-drivers/media/usb/zr364xx/zr364xx.ko
-drivers/media/usb/as102/dvb-as102.ko
-drivers/media/usb/gspca/gspca_main.ko
-drivers/media/usb/gspca/gspca_benq.ko
-drivers/media/usb/gspca/gspca_conex.ko
-drivers/media/usb/gspca/gspca_cpia1.ko
-drivers/media/usb/gspca/gspca_dtcs033.ko
-drivers/media/usb/gspca/gspca_etoms.ko
-drivers/media/usb/gspca/gspca_finepix.ko
-drivers/media/usb/gspca/gspca_jeilinj.ko
-drivers/media/usb/gspca/gspca_jl2005bcd.ko
-drivers/media/usb/gspca/gspca_kinect.ko
-drivers/media/usb/gspca/gspca_konica.ko
-drivers/media/usb/gspca/gspca_mars.ko
-drivers/media/usb/gspca/gspca_mr97310a.ko
-drivers/media/usb/gspca/gspca_nw80x.ko
-drivers/media/usb/gspca/gspca_ov519.ko
-drivers/media/usb/gspca/gspca_ov534.ko
-drivers/media/usb/gspca/gspca_ov534_9.ko
-drivers/media/usb/gspca/gspca_pac207.ko
-drivers/media/usb/gspca/gspca_pac7302.ko
-drivers/media/usb/gspca/gspca_pac7311.ko
-drivers/media/usb/gspca/gspca_se401.ko
-drivers/media/usb/gspca/gspca_sn9c2028.ko
-drivers/media/usb/gspca/gspca_sn9c20x.ko
-drivers/media/usb/gspca/gspca_sonixb.ko
-drivers/media/usb/gspca/gspca_sonixj.ko
-drivers/media/usb/gspca/gspca_spca500.ko
-drivers/media/usb/gspca/gspca_spca501.ko
-drivers/media/usb/gspca/gspca_spca505.ko
-drivers/media/usb/gspca/gspca_spca506.ko
-drivers/media/usb/gspca/gspca_spca508.ko
-drivers/media/usb/gspca/gspca_spca561.ko
-drivers/media/usb/gspca/gspca_spca1528.ko
-drivers/media/usb/gspca/gspca_sq905.ko
-drivers/media/usb/gspca/gspca_sq905c.ko
-drivers/media/usb/gspca/gspca_sq930x.ko
-drivers/media/usb/gspca/gspca_sunplus.ko
-drivers/media/usb/gspca/gspca_stk014.ko
-drivers/media/usb/gspca/gspca_stk1135.ko
-drivers/media/usb/gspca/gspca_stv0680.ko
-drivers/media/usb/gspca/gspca_t613.ko
-drivers/media/usb/gspca/gspca_topro.ko
-drivers/media/usb/gspca/gspca_touptek.ko
-drivers/media/usb/gspca/gspca_tv8532.ko
-drivers/media/usb/gspca/gspca_vc032x.ko
-drivers/media/usb/gspca/gspca_vicam.ko
-drivers/media/usb/gspca/gspca_xirlink_cit.ko
-drivers/media/usb/gspca/gspca_zc3xx.ko
-drivers/media/usb/gspca/m5602/gspca_m5602.ko
-drivers/media/usb/gspca/stv06xx/gspca_stv06xx.ko
-drivers/media/usb/gspca/gl860/gspca_gl860.ko
-drivers/media/usb/pwc/pwc.ko
-drivers/media/usb/uvc/uvcvideo.ko
-drivers/media/usb/au0828/au0828.ko
-drivers/media/usb/cpia2/cpia2.ko
-drivers/media/usb/cx231xx/cx231xx.ko
-drivers/media/usb/cx231xx/cx231xx-alsa.ko
-drivers/media/usb/cx231xx/cx231xx-dvb.ko
-drivers/media/usb/em28xx/em28xx.ko
-drivers/media/usb/em28xx/em28xx-v4l.ko
-drivers/media/usb/em28xx/em28xx-alsa.ko
-drivers/media/usb/em28xx/em28xx-dvb.ko
-drivers/media/usb/em28xx/em28xx-rc.ko
-drivers/media/usb/hdpvr/hdpvr.ko
-drivers/media/usb/pvrusb2/pvrusb2.ko
-drivers/media/usb/stk1160/stk1160.ko
-drivers/media/usb/tm6000/tm6000.ko
-drivers/media/usb/tm6000/tm6000-alsa.ko
-drivers/media/usb/tm6000/tm6000-dvb.ko
-drivers/media/usb/usbtv/usbtv.ko
-drivers/media/mmc/siano/smssdio.ko
-drivers/media/firewire/firedtv.ko
-drivers/media/dvb-frontends/a8293.ko
-drivers/media/dvb-frontends/af9013.ko
-drivers/media/dvb-frontends/af9033.ko
-drivers/media/dvb-frontends/as102_fe.ko
-drivers/media/dvb-frontends/ascot2e.ko
-drivers/media/dvb-frontends/atbm8830.ko
-drivers/media/dvb-frontends/au8522_common.ko
-drivers/media/dvb-frontends/au8522_dig.ko
-drivers/media/dvb-frontends/au8522_decoder.ko
-drivers/media/dvb-frontends/bcm3510.ko
-drivers/media/dvb-frontends/cx22700.ko
-drivers/media/dvb-frontends/cx22702.ko
-drivers/media/dvb-frontends/cx24110.ko
-drivers/media/dvb-frontends/cx24116.ko
-drivers/media/dvb-frontends/cx24117.ko
-drivers/media/dvb-frontends/cx24120.ko
-drivers/media/dvb-frontends/cx24123.ko
-drivers/media/dvb-frontends/cxd2099.ko
-drivers/media/dvb-frontends/cxd2820r.ko
-drivers/media/dvb-frontends/cxd2841er.ko
-drivers/media/dvb-frontends/dib3000mb.ko
-drivers/media/dvb-frontends/dib3000mc.ko
-drivers/media/dvb-frontends/dibx000_common.ko
-drivers/media/dvb-frontends/dib7000m.ko
-drivers/media/dvb-frontends/dib7000p.ko
-drivers/media/dvb-frontends/dib8000.ko
-drivers/media/dvb-frontends/dib9000.ko
-drivers/media/dvb-frontends/drx39xyj/drx39xyj.ko
-drivers/media/dvb-frontends/drxd.ko
-drivers/media/dvb-frontends/drxk.ko
-drivers/media/dvb-frontends/ds3000.ko
-drivers/media/dvb-frontends/ec100.ko
-drivers/media/dvb-frontends/gp8psk-fe.ko
-drivers/media/dvb-frontends/helene.ko
-drivers/media/dvb-frontends/horus3a.ko
-drivers/media/dvb-frontends/isl6405.ko
-drivers/media/dvb-frontends/isl6421.ko
-drivers/media/dvb-frontends/isl6423.ko
-drivers/media/dvb-frontends/ix2505v.ko
-drivers/media/dvb-frontends/l64781.ko
-drivers/media/dvb-frontends/lg2160.ko
-drivers/media/dvb-frontends/lgdt3305.ko
-drivers/media/dvb-frontends/lgdt3306a.ko
-drivers/media/dvb-frontends/lgdt330x.ko
-drivers/media/dvb-frontends/lgs8gl5.ko
-drivers/media/dvb-frontends/lgs8gxx.ko
-drivers/media/dvb-frontends/lnbh25.ko
-drivers/media/dvb-frontends/lnbh29.ko
-drivers/media/dvb-frontends/lnbp21.ko
-drivers/media/dvb-frontends/lnbp22.ko
-drivers/media/dvb-frontends/m88ds3103.ko
-drivers/media/dvb-frontends/m88rs2000.ko
-drivers/media/dvb-frontends/mb86a16.ko
-drivers/media/dvb-frontends/mb86a20s.ko
-drivers/media/dvb-frontends/mn88443x.ko
-drivers/media/dvb-frontends/mn88472.ko
-drivers/media/dvb-frontends/mn88473.ko
-drivers/media/dvb-frontends/mt312.ko
-drivers/media/dvb-frontends/mt352.ko
-drivers/media/dvb-frontends/mxl5xx.ko
-drivers/media/dvb-frontends/mxl692.ko
-drivers/media/dvb-frontends/nxt200x.ko
-drivers/media/dvb-frontends/nxt6000.ko
-drivers/media/dvb-frontends/or51132.ko
-drivers/media/dvb-frontends/or51211.ko
-drivers/media/dvb-frontends/dvb-pll.ko
-drivers/media/dvb-frontends/rtl2830.ko
-drivers/media/dvb-frontends/rtl2832.ko
-drivers/media/dvb-frontends/s5h1409.ko
-drivers/media/dvb-frontends/s5h1411.ko
-drivers/media/dvb-frontends/s5h1420.ko
-drivers/media/dvb-frontends/s5h1432.ko
-drivers/media/dvb-frontends/s921.ko
-drivers/media/dvb-frontends/si2165.ko
-drivers/media/dvb-frontends/si2168.ko
-drivers/media/dvb-frontends/si21xx.ko
-drivers/media/dvb-frontends/sp2.ko
-drivers/media/dvb-frontends/sp887x.ko
-drivers/media/dvb-frontends/stb0899.ko
-drivers/media/dvb-frontends/stb6000.ko
-drivers/media/dvb-frontends/stb6100.ko
-drivers/media/dvb-frontends/stv0288.ko
-drivers/media/dvb-frontends/stv0297.ko
-drivers/media/dvb-frontends/stv0299.ko
-drivers/media/dvb-frontends/stv0367.ko
-drivers/media/dvb-frontends/stv0900.ko
-drivers/media/dvb-frontends/stv090x.ko
-drivers/media/dvb-frontends/stv0910.ko
-drivers/media/dvb-frontends/stv6110.ko
-drivers/media/dvb-frontends/stv6110x.ko
-drivers/media/dvb-frontends/stv6111.ko
-drivers/media/dvb-frontends/tc90522.ko
-drivers/media/dvb-frontends/tda10021.ko
-drivers/media/dvb-frontends/tda10023.ko
-drivers/media/dvb-frontends/tda10048.ko
-drivers/media/dvb-frontends/tda1004x.ko
-drivers/media/dvb-frontends/tda10071.ko
-drivers/media/dvb-frontends/tda10086.ko
-drivers/media/dvb-frontends/tda18271c2dd.ko
-drivers/media/dvb-frontends/tda665x.ko
-drivers/media/dvb-frontends/tda8083.ko
-drivers/media/dvb-frontends/tda8261.ko
-drivers/media/dvb-frontends/tda826x.ko
-drivers/media/dvb-frontends/ts2020.ko
-drivers/media/dvb-frontends/tua6100.ko
-drivers/media/dvb-frontends/cx24113.ko
-drivers/media/dvb-frontends/dib0070.ko
-drivers/media/dvb-frontends/dib0090.ko
-drivers/media/dvb-frontends/itd1000.ko
-drivers/media/dvb-frontends/ves1820.ko
-drivers/media/dvb-frontends/ves1x93.ko
-drivers/media/dvb-frontends/zd1301_demod.ko
-drivers/media/dvb-frontends/zl10036.ko
-drivers/media/dvb-frontends/zl10039.ko
-drivers/media/dvb-frontends/zl10353.ko
-drivers/media/mc/mc.ko
-drivers/media/v4l2-core/v4l2-async.ko
-drivers/media/v4l2-core/v4l2-flash-led-class.ko
-drivers/media/v4l2-core/v4l2-fwnode.ko
-drivers/media/v4l2-core/v4l2-mem2mem.ko
-drivers/media/v4l2-core/videobuf-dma-sg.ko
-drivers/media/v4l2-core/videobuf-core.ko
-drivers/media/v4l2-core/videobuf-vmalloc.ko
-drivers/media/v4l2-core/tuner.ko
-drivers/media/v4l2-core/v4l2-dv-timings.ko
-drivers/media/v4l2-core/videodev.ko
-drivers/media/dvb-core/dvb-core.ko
-drivers/media/cec/core/cec.ko
-drivers/media/cec/i2c/ch7322.ko
-drivers/media/cec/platform/cros-ec/cros-ec-cec.ko
-drivers/media/cec/platform/cec-gpio/cec-gpio.ko
-drivers/media/cec/platform/seco/seco-cec.ko
-drivers/media/cec/usb/pulse8/pulse8-cec.ko
-drivers/media/cec/usb/rainshadow/rainshadow-cec.ko
-drivers/media/radio/radio-aztech.ko
-drivers/media/radio/radio-cadet.ko
-drivers/media/radio/radio-gemtek.ko
-drivers/media/radio/radio-isa.ko
-drivers/media/radio/radio-maxiradio.ko
-drivers/media/radio/radio-miropcm20.ko
-drivers/media/radio/radio-aimslab.ko
-drivers/media/radio/saa7706h.ko
-drivers/media/radio/radio-sf16fmi.ko
-drivers/media/radio/radio-sf16fmr2.ko
-drivers/media/radio/shark2.ko
-drivers/media/radio/radio-shark.ko
-drivers/media/radio/si4713/si4713.ko
-drivers/media/radio/si4713/radio-usb-si4713.ko
-drivers/media/radio/si4713/radio-platform-si4713.ko
-drivers/media/radio/tea575x.ko
-drivers/media/radio/radio-tea5764.ko
-drivers/media/radio/tef6862.ko
-drivers/media/radio/radio-terratec.ko
-drivers/media/radio/radio-timb.ko
-drivers/media/radio/radio-trust.ko
-drivers/media/radio/radio-typhoon.ko
-drivers/media/radio/radio-wl1273.ko
-drivers/media/radio/wl128x/fm_drv.ko
-drivers/media/radio/radio-zoltrix.ko
-drivers/media/radio/dsbr100.ko
-drivers/media/radio/radio-keene.ko
-drivers/media/radio/radio-ma901.ko
-drivers/media/radio/radio-mr800.ko
-drivers/media/radio/radio-raremono.ko
+00000);
+	cx_write(PAD_CTRL, 0x00500300);
+
+	/* clear dma in progress */
+	cx23885_clear_bridge_error(dev);
+	msleep(100);
+
+	cx23885_sram_channel_setup(dev, &dev->sram_channels[SRAM_CH01],
+		720*4, 0);
+	cx23885_sram_channel_setup(dev, &dev->sram_channels[SRAM_CH02], 128, 0);
+	cx23885_sram_channel_setup(dev, &dev->sram_channels[SRAM_CH03],
+		188*4, 0);
+	cx23885_sram_channel_setup(dev, &dev->sram_channels[SRAM_CH04], 128, 0);
+	cx23885_sram_channel_setup(dev, &dev->sram_channels[SRAM_CH05], 128, 0);
+	cx23885_sram_channel_setup(dev, &dev->sram_channels[SRAM_CH06],
+		188*4, 0);
+	cx23885_sram_channel_setup(dev, &dev->sram_channels[SRAM_CH07], 128, 0);
+	cx23885_sram_channel_setup(dev, &dev->sram_channels[SRAM_CH08], 128, 0);
+	cx23885_sram_channel_setup(dev, &dev->sram_channels[SRAM_CH09], 128, 0);
+
+	cx23885_gpio_setup(dev);
+
+	cx23885_irq_get_mask(dev);
+
+	/* clear dma in progress */
+	cx23885_clear_bridge_error(dev);
+}
+
+
+static int cx23885_pci_quirks(struct cx23885_dev *dev)
+{
+	dprintk(1, "%s()\n", __func__);
+
+	/* The cx23885 bridge has a weird bug which causes NMI to be asserted
+	 * when DMA begins if RDR_TLCTL0 bit4 is not cleared. It does not
+	 * occur on the cx23887 bridge.
+	 */
+	if (dev->bridge == CX23885_BRIDGE_885)
+		cx_clear(RDR_TLCTL0, 1 << 4);
+
+	/* clear dma in progress */
+	cx23885_clear_bridge_error(dev);
+	return 0;
+}
+
+static int get_resources(struct cx23885_dev *dev)
+{
+	if (request_mem_region(pci_resource_start(dev->pci, 0),
+			       pci_resource_len(dev->pci, 0),
+			       dev->name))
+		return 0;
+
+	pr_err("%s: can't get MMIO memory @ 0x%llx\n",
+	       dev->name, (unsigned long long)pci_resource_start(dev->pci, 0));
+
+	return -EBUSY;
+}
+
+static int cx23885_init_tsport(struct cx23885_dev *dev,
+	struct cx23885_tsport *port, int portno)
+{
+	dprintk(1, "%s(portno=%d)\n", __func__, portno);
+
+	/* Transport bus init dma queue  - Common settings */
+	port->dma_ctl_val        = 0x11; /* Enable RISC controller and Fifo */
+	port->ts_int_msk_val     = 0x1111; /* TS port bits for RISC */
+	port->vld_misc_val       = 0x0;
+	port->hw_sop_ctrl_val    = (0x47 << 16 | 188 << 4);
+
+	spin_lock_init(&port->slock);
+	port->dev = dev;
+	port->nr = portno;
+
+	INIT_LIST_HEAD(&port->mpegq.active);
+	mutex_init(&port->frontends.lock);
+	INIT_LIST_HEAD(&port->frontends.felist);
+	port->frontends.active_fe_id = 0;
+
+	/* This should be hardcoded allow a single frontend
+	 * attachment to this tsport, keeping the -dvb.c
+	 * code clean and safe.
+	 */
+	if (!port->num_frontends)
+		port->num_frontends = 1;
+
+	switch (portno) {
+	case 1:
+		port->reg_gpcnt          = VID_B_GPCNT;
+		port->reg_gpcnt_ctl      = VID_B_GPCNT_CTL;
+		port->reg_dma_ctl        = VID_B_DMA_CTL;
+		port->reg_lngth          = VID_B_LNGTH;
+		port->reg_hw_sop_ctrl    = VID_B_HW_SOP_CTL;
+		port->reg_gen_ctrl       = VID_B_GEN_CTL;
+		port->reg_bd_pkt_status  = VID_B_BD_PKT_STATUS;
+		port->reg_sop_status     = VID_B_SOP_STATUS;
+		port->reg_fifo_ovfl_stat = VID_B_FIFO_OVFL_STAT;
+		port->reg_vld_misc       = VID_B_VLD_MISC;
+		port->reg_ts_clk_en      = VID_B_TS_CLK_EN;
+		port->reg_src_sel        = VID_B_SRC_SEL;
+		port->reg_ts_int_msk     = VID_B_INT_MSK;
+		port->reg_ts_int_stat    = VID_B_INT_STAT;
+		port->sram_chno          = SRAM_CH03; /* VID_B */
+		port->pci_irqmask        = 0x02; /* VID_B bit1 */
+		break;
+	case 2:
+		port->reg_gpcnt          = VID_C_GPCNT;
+		port->reg_gpcnt_ctl      = VID_C_GPCNT_CTL;
+		port->reg_dma_ctl        = VID_C_DMA_CTL;
+		port->reg_lngth          = VID_C_LNGTH;
+		port->reg_hw_sop_ctrl    = VID_C_HW_SOP_CTL;
+		port->reg_gen_ctrl       = VID_C_GEN_CTL;
+		port->reg_bd_pkt_status  = VID_C_BD_PKT_STATUS;
+		port->reg_sop_status     = VID_C_SOP_STATUS;
+		port->reg_fifo_ovfl_stat = VID_C_FIFO_OVFL_STAT;
+		port->reg_vld_misc       = VID_C_VLD_MISC;
+		port->reg_ts_clk_en      = VID_C_TS_CLK_EN;
+		port->reg_src_sel        = 0;
+		port->reg_ts_int_msk     = VID_C_INT_MSK;
+		port->reg_ts_int_stat    = VID_C_INT_STAT;
+		port->sram_chno          = SRAM_CH06; /* VID_C */
+		port->pci_irqmask        = 0x04; /* VID_C bit2 */
+		break;
+	default:
+		BUG();
+	}
+
+	return 0;
+}
+
+static void cx23885_dev_checkrevision(struct cx23885_dev *dev)
+{
+	switch (cx_read(RDR_CFG2) & 0xff) {
+	case 0x00:
+		/* cx23885 */
+		dev->hwrevision = 0xa0;
+		break;
+	case 0x01:
+		/* CX23885-12Z */
+		dev->hwrevision = 0xa1;
+		break;
+	case 0x02:
+		/* CX23885-13Z/14Z */
+		dev->hwrevision = 0xb0;
+		break;
+	case 0x03:
+		if (dev->pci->device == 0x8880) {
+			/* CX23888-21Z/22Z */
+			dev->hwrevision = 0xc0;
+		} else {
+			/* CX23885-14Z */
+			dev->hwrevision = 0xa4;
+		}
+		break;
+	case 0x04:
+		if (dev->pci->device == 0x8880) {
+			/* CX23888-31Z */
+			dev->hwrevision = 0xd0;
+		} else {
+			/* CX23885-15Z, CX23888-31Z */
+			dev->hwrevision = 0xa5;
+		}
+		break;
+	case 0x0e:
+		/* CX23887-15Z */
+		dev->hwrevision = 0xc0;
+		break;
+	case 0x0f:
+		/* CX23887-14Z */
+		dev->hwrevision = 0xb1;
+		break;
+	default:
+		pr_err("%s() New hardware revision found 0x%x\n",
+		       __func__, dev->hwrevision);
+	}
+	if (dev->hwrevision)
+		pr_info("%s() Hardware revision = 0x%02x\n",
+			__func__, dev->hwrevision);
+	else
+		pr_err("%s() Hardware revision unknown 0x%x\n",
+		       __func__, dev->hwrevision);
+}
+
+/* Find the first v4l2_subdev member of the group id in hw */
+struct v4l2_subdev *cx23885_find_hw(struct cx23885_dev *dev, u32 hw)
+{
+	struct v4l2_subdev *result = NULL;
+	struct v4l2_subdev *sd;
+
+	spin_lock(&dev->v4l2_dev.lock);
+	v4l2_device_for_each_subdev(sd, &dev->v4l2_dev) {
+		if (sd->grp_id == hw) {
+			result = sd;
+			break;
+		}
+	}
+	spin_unlock(&dev->v4l2_dev.lock);
+	return result;
+}
+
+static int cx23885_dev_setup(struct cx23885_dev *dev)
+{
+	int i;
+
+	spin_lock_init(&dev->pci_irqmask_lock);
+	spin_lock_init(&dev->slock);
+
+	mutex_init(&dev->lock);
+	mutex_init(&dev->gpio_lock);
+
+	atomic_inc(&dev->refcount);
+
+	dev->nr = cx23885_devcount++;
+	sprintf(dev->name, "cx23885[%d]", dev->nr);
+
+	/* Configure the internal memory */
+	if (dev->pci->device == 0x8880) {
+		/* Could be 887 or 888, assume an 888 default */
+		dev->bridge = CX23885_BRIDGE_888;
+		/* Apply a sensible clock frequency for the PCIe bridge */
+		dev->clk_freq = 50000000;
+		dev->sram_channels = cx23887_sram_channels;
+	} else
+	if (dev->pci->device == 0x8852) {
+		dev->bridge = CX23885_BRIDGE_885;
+		/* Apply a sensible clock frequency for the PCIe bridge */
+		dev->clk_freq = 28000000;
+		dev->sram_channels = cx23885_sram_channels;
+	} else
+		BUG();
+
+	dprintk(1, "%s() Memory configured for PCIe bridge type %d\n",
+		__func__, dev->bridge);
+
+	/* board config */
+	dev->board = UNSET;
+	if (card[dev->nr] < cx23885_bcount)
+		dev->board = card[dev->nr];
+	for (i = 0; UNSET == dev->board  &&  i < cx23885_idcount; i++)
+		if (dev->pci->subsystem_vendor == cx23885_subids[i].subvendor &&
+		    dev->pci->subsystem_device == cx23885_subids[i].subdevice)
+			dev->board = cx23885_subids[i].card;
+	if (UNSET == dev->board) {
+		dev->board = CX23885_BOARD_UNKNOWN;
+		cx23885_card_list(dev);
+	}
+
+	if (dev->pci->device == 0x8852) {
+		/* no DIF on cx23885, so no analog tuner support possible */
+		if (dev->board == CX23885_BOARD_HAUPPAUGE_QUADHD_ATSC)
+			dev->board = CX23885_BOARD_HAUPPAUGE_QUADHD_ATSC_885;
+		else if (dev->board == CX23885_BOARD_HAUPPAUGE_QUADHD_DVB)
+			dev->board = CX23885_BOARD_HAUPPAUGE_QUADHD_DVB_885;
+	}
+
+	/* If the user specific a clk freq override, apply it */
+	if (cx23885_boards[dev->board].clk_freq > 0)
+		dev->clk_freq = cx23885_boards[dev->board].clk_freq;
+
+	if (dev->board == CX23885_BOARD_HAUPPAUGE_IMPACTVCBE &&
+		dev->pci->subsystem_device == 0x7137) {
+		/* Hauppauge ImpactVCBe device ID 0x7137 is populated
+		 * with an 888, and a 25Mhz crystal, instead of the
+		 * usual third overtone 50Mhz. The default clock rate must
+		 * be overridden so the cx25840 is properly configured
+		 */
+		dev->clk_freq = 25000000;
+	}
+
+	dev->pci_bus  = dev->pci->bus->number;
+	dev->pci_slot = PCI_SLOT(dev->pci->devfn);
+	cx23885_irq_add(dev, 0x001f00);
+
+	/* External Master 1 Bus */
+	dev->i2c_bus[0].nr = 0;
+	dev->i2c_bus[0].dev = dev;
+	dev->i2c_bus[0].reg_stat  = I2C1_STAT;
+	dev->i2c_bus[0].reg_ctrl  = I2C1_CTRL;
+	dev->i2c_bus[0].reg_addr  = I2C1_ADDR;
+	dev->i2c_bus[0].reg_rdata = I2C1_RDATA;
+	dev->i2c_bus[0].reg_wdata = I2C1_WDATA;
+	dev->i2c_bus[0].i2c_period = (0x9d << 24); /* 100kHz */
+
+	/* External Master 2 Bus */
+	dev->i2c_bus[1].nr = 1;
+	dev->i2c_bus[1].dev = dev;
+	dev->i2c_bus[1].reg_stat  = I2C2_STAT;
+	dev->i2c_bus[1].reg_ctrl  = I2C2_CTRL;
+	dev->i2c_bus[1].reg_addr  = I2C2_ADDR;
+	dev->i2c_bus[1].reg_rdata = I2C2_RDATA;
+	dev->i2c_bus[1].reg_wdata = I2C2_WDATA;
+	dev->i2c_bus[1].i2c_period = (0x9d << 24); /* 100kHz */
+
+	/* Internal Master 3 Bus */
+	dev->i2c_bus[2].nr = 2;
+	dev->i2c_bus[2].dev = dev;
+	dev->i2c_bus[2].reg_stat  = I2C3_STAT;
+	dev->i2c_bus[2].reg_ctrl  = I2C3_CTRL;
+	dev->i2c_bus[2].reg_addr  = I2C3_ADDR;
+	dev->i2c_bus[2].reg_rdata = I2C3_RDATA;
+	dev->i2c_bus[2].reg_wdata = I2C3_WDATA;
+	dev->i2c_bus[2].i2c_period = (0x07 << 24); /* 1.95MHz */
+
+	if ((cx23885_boards[dev->board].portb == CX23885_MPEG_DVB) ||
+		(cx23885_boards[dev->board].portb == CX23885_MPEG_ENCODER))
+		cx23885_init_tsport(dev, &dev->ts1, 1);
+
+	if ((cx23885_boards[dev->board].portc == CX23885_MPEG_DVB) ||
+		(cx23885_boards[dev->board].portc == CX23885_MPEG_ENCODER))
+		cx23885_init_tsport(dev, &dev->ts2, 2);
+
+	if (get_resources(dev) < 0) {
+		pr_err("CORE %s No more PCIe resources for subsystem: %04x:%04x\n",
+		       dev->name, dev->pci->subsystem_vendor,
+		       dev->pci->subsystem_device);
+
+		cx23885_devcount--;
+		return -ENODEV;
+	}
+
+	/* PCIe stuff */
+	dev->lmmio = ioremap(pci_resource_start(dev->pci, 0),
+			     pci_resource_len(dev->pci, 0));
+
+	dev->bmmio = (u8 __iomem *)dev->lmmio;
+
+	pr_info("CORE %s: subsystem: %04x:%04x, board: %s [card=%d,%s]\n",
+		dev->name, dev->pci->subsystem_vendor,
+		dev->pci->subsystem_device, cx23885_boards[dev->board].name,
+		dev->board, card[dev->nr] == dev->board ?
+		"insmod option" : "autodetected");
+
+	cx23885_pci_quirks(dev);
+
+	/* Assume some sensible defaults */
+	dev->tuner_type = cx23885_boards[dev->board].tuner_type;
+	dev->tuner_addr = cx23885_boards[dev->board].tuner_addr;
+	dev->tuner_bus = cx23885_boards[dev->board].tuner_bus;
+	dev->radio_type = cx23885_boards[dev->board].radio_type;
+	dev->radio_addr = cx23885_boards[dev->board].radio_addr;
+
+	dprintk(1, "%s() tuner_type = 0x%x tuner_addr = 0x%x tuner_bus = %d\n",
+		__func__, dev->tuner_type, dev->tuner_addr, dev->tuner_bus);
+	dprintk(1, "%s() radio_type = 0x%x radio_addr = 0x%x\n",
+		__func__, dev->radio_type, dev->radio_addr);
+
+	/* The cx23417 encoder has GPIO's that need to be initialised
+	 * before DVB, so that demodulators and tuners are out of
+	 * reset before DVB uses them.
+	 */
+	if ((cx23885_boards[dev->board].portb == CX23885_MPEG_ENCODER) ||
+		(cx23885_boards[dev->board].portc == CX23885_MPEG_ENCODER))
+			cx23885_mc417_init(dev);
+
+	/* init hardware */
+	cx23885_reset(dev);
+
+	cx23885_i2c_register(&dev->i2c_bus[0]);
+	cx23885_i2c_register(&dev->i2c_bus[1]);
+	cx23885_i2c_register(&dev->i2c_bus[2]);
+	cx23885_card_setup(dev);
+	call_all(dev, tuner, standby);
+	cx23885_ir_init(dev);
+
+	if (dev->board == CX23885_BOARD_VIEWCAST_460E) {
+		/*
+		 * GPIOs 9/8 are input detection bits for the breakout video
+		 * (gpio 8) and audio (gpio 9) cables. When they're attached,
+		 * this gpios are pulled high. Make sure these GPIOs are marked
+		 * as inputs.
+		 */
+		cx23885_gpio_enable(dev, 0x300, 0);
+	}
+
+	if (cx23885_boards[dev->board].porta == CX23885_ANALOG_VIDEO) {
+		if (cx23885_video_register(dev) < 0) {
+			pr_err("%s() Failed to register analog video adapters on VID_A\n",
+			       __func__);
+		}
+	}
+
+	if (cx23885_boards[dev->board].portb == CX23885_MPEG_DVB) {
+		if (cx23885_boards[dev->board].num_fds_portb)
+			dev->ts1.num_frontends =
+				cx23885_boards[dev->board].num_fds_portb;
+		if (cx23885_dvb_register(&dev->ts1) < 0) {
+			pr_err("%s() Failed to register dvb adapters on VID_B\n",
+			       __func__);
+		}
+	} else
+	if (cx23885_boards[dev->board].portb == CX23885_MPEG_ENCODER) {
+		if (cx23885_417_register(dev) < 0) {
+			pr_err("%s() Failed to register 417 on VID_B\n",
+			       __func__);
+		}
+	}
+
+	if (cx23885_boards[dev->board].portc == CX23885_MPEG_DVB) {
+		if (cx23885_boards[dev->board].num_fds_portc)
+			dev->ts2.num_frontends =
+				cx23885_boards[dev->board].num_fds_portc;
+		if (cx23885_dvb_register(&dev->ts2) < 0) {
+			pr_err("%s() Failed to register dvb on VID_C\n",
+			       __func__);
+		}
+	} else
+	if (cx23885_boards[dev->board].portc == CX23885_MPEG_ENCODER) {
+		if (cx23885_417_register(dev) < 0) {
+			pr_err("%s() Failed to register 417 on VID_C\n",
+			       __func__);
+		}
+	}
+
+	cx23885_dev_checkrevision(dev);
+
+	/* disable MSI for NetUP cards, otherwise CI is not working */
+	if (cx23885_boards[dev->board].ci_type > 0)
+		cx_clear(RDR_RDRCTL1, 1 << 8);
+
+	switch (dev->board) {
+	case CX23885_BOARD_TEVII_S470:
+	case CX23885_BOARD_TEVII_S471:
+		cx_clear(RDR_RDRCTL1, 1 << 8);
+		break;
+	}
+
+	return 0;
+}
+
+static void cx23885_dev_unregister(struct cx23885_dev *dev)
+{
+	release_mem_region(pci_resource_start(dev->pci, 0),
+			   pci_resource_len(dev->pci, 0));
+
+	if (!atomic_dec_and_test(&dev->refcount))
+		return;
+
+	if (cx23885_boards[dev->board].porta == CX23885_ANALOG_VIDEO)
+		cx23885_video_unregister(dev);
+
+	if (cx23885_boards[dev->board].portb == CX23885_MPEG_DVB)
+		cx23885_dvb_unregister(&dev->ts1);
+
+	if (cx23885_boards[dev->board].portb == CX23885_MPEG_ENCODER)
+		cx23885_417_unregister(dev);
+
+	if (cx23885_boards[dev->board].portc == CX23885_MPEG_DVB)
+		cx23885_dvb_unregister(&dev->ts2);
+
+	if (cx23885_boards[dev->board].portc == CX23885_MPEG_ENCODER)
+		cx23885_417_unregister(dev);
+
+	cx23885_i2c_unregister(&dev->i2c_bus[2]);
+	cx23885_i2c_unregister(&dev->i2c_bus[1]);
+	cx23885_i2c_unregister(&dev->i2c_bus[0]);
+
+	iounmap(dev->lmmio);
+}
+
+static __le32 *cx23885_risc_field(__le32 *rp, struct scatterlist *sglist,
+			       unsigned int offset, u32 sync_line,
+			       unsigned int bpl, unsigned int padding,
+			       unsigned int lines,  unsigned int lpi, bool jump)
+{
+	struct scatterlist *sg;
+	unsigned int line, todo, sol;
+
+
+	if (jump) {
+		*(rp++) = cpu_to_le32(RISC_JUMP);
+		*(rp++) = cpu_to_le32(0);
+		*(rp++) = cpu_to_le32(0); /* bits 63-32 */
+	}
+
+	/* sync instruction */
+	if (sync_line != NO_SYNC_LINE)
+		*(rp++) = cpu_to_le32(RISC_RESYNC | sync_line);
+
+	/* scan lines */
+	sg = sglist;
+	for (line = 0; line < lines; line++) {
+		while (offset && offset >= sg_dma_len(sg)) {
+			offset -= sg_dma_len(sg);
+			sg = sg_next(sg);
+		}
+
+		if (lpi && line > 0 && !(line % lpi))
+			sol = RISC_SOL | RISC_IRQ1 | RISC_CNT_INC;
+		else
+			sol = RISC_SOL;
+
+		if (bpl <= sg_dma_len(sg)-offset) {
+			/* fits into current chunk */
+			*(rp++) = cpu_to_le32(RISC_WRITE|sol|RISC_EOL|bpl);
+			*(rp++) = cpu_to_le32(sg_dma_address(sg)+offset);
+			*(rp++) = cpu_to_le32(0); /* bits 63-32 */
+			offset += bpl;
+		} else {
+			/* scanline needs to be split */
+			todo = bpl;
+			*(rp++) = cpu_to_le32(RISC_WRITE|sol|
+					    (sg_dma_len(sg)-offset));
+			*(rp++) = cpu_to_le32(sg_dma_address(sg)+offset);
+			*(rp++) = cpu_to_le32(0); /* bits 63-32 */
+			todo -= (sg_dma_len(sg)-offset);
+			offset = 0;
+			sg = sg_next(sg);
+			while (todo > sg_dma_len(sg)) {
+				*(rp++) = cpu_to_le32(RISC_WRITE|
+						    sg_dma_len(sg));
+				*(rp++) = cpu_to_le32(sg_dma_address(sg));
+				*(rp++) = cpu_to_le32(0); /* bits 63-32 */
+				todo -= sg_dma_len(sg);
+				sg = sg_next(sg);
+			}
+			*(rp++) = cpu_to_le32(RISC_WRITE|RISC_EOL|todo);
+			*(rp++) = cpu_to_le32(sg_dma_address(sg));
+			*(rp++) = cpu_to_le32(0); /* bits 63-32 */
+			offset += todo;
+		}
+		offset += padding;
+	}
+
+	return rp;
+}
+
+int cx23885_risc_buffer(struct pci_dev *pci, struct cx23885_riscmem *risc,
+			struct scatterlist *sglist, unsigned int top_offset,
+			unsigned int bottom_offset, unsigned int bpl,
+			unsigned int padding, unsigned int lines)
+{
+	u32 instructions, fields;
+	__le32 *rp;
+
+	fields = 0;
+	if (UNSET != top_offset)
+		fields++;
+	if (UNSET != bottom_offset)
+		fields++;
+
+	/* estimate risc mem: worst case is one write per page border +
+	   one write per scan line + syncs + jump (all 2 dwords).  Padding
+	   can cause next bpl to start close to a page border.  First DMA
+	   region may be smaller than PAGE_SIZE */
+	/* write and jump need and extra dword */
+	instructions  = fields * (1 + ((bpl + padding) * lines)
+		/ PAGE_SIZE + lines);
+	instructions += 5;
+	risc->size = instructions * 12;
+	risc->cpu = dma_alloc_coherent(&pci->dev, risc->size, &risc->dma,
+				       GFP_KERNEL);
+	if (risc->cpu == NULL)
+		return -ENOMEM;
+
+	/* write risc instructions */
+	rp = risc->cpu;
+	if (UNSET != top_offset)
+		rp = cx23885_risc_field(rp, sglist, top_offset, 0,
+					bpl, padding, lines, 0, true);
+	if (UNSET != bottom_offset)
+		rp = cx23885_risc_field(rp, sglist, bottom_offset, 0x200,
+					bpl, padding, lines, 0, UNSET == top_offset);
+
+	/* save pointer to jmp instruction address */
+	risc->jmp = rp;
+	BUG_ON((risc->jmp - risc->cpu + 2) * sizeof(*risc->cpu) > risc->size);
+	return 0;
+}
+
+int cx23885_risc_databuffer(struct pci_dev *pci,
+				   struct cx23885_riscmem *risc,
+				   struct scatterlist *sglist,
+				   unsigned int bpl,
+				   unsigned int lines, unsigned int lpi)
+{
+	u32 instructions;
+	__le32 *rp;
+
+	/* estimate risc mem: worst case is one write per page border +
+	   one write per scan line + syncs + jump (all 2 dwords).  Here
+	   there is no padding and no sync.  First DMA region may be smaller
+	   than PAGE_SIZE */
+	/* Jump and write need an extra dword */
+	instructions  = 1 + (bpl * lines) / PAGE_SIZE + lines;
+	instructions += 4;
+
+	risc->size = instructions * 12;
+	risc->cpu = dma_alloc_coherent(&pci->dev, risc->size, &risc->dma,
+				       GFP_KERNEL);
+	if (risc->cpu == NULL)
+		return -ENOMEM;
+
+	/* write risc instructions */
+	rp = risc->cpu;
+	rp = cx23885_risc_field(rp, sglist, 0, NO_SYNC_LINE,
+				bpl, 0, lines, lpi, lpi == 0);
+
+	/* save pointer to jmp instruction address */
+	risc->jmp = rp;
+	BUG_ON((risc->jmp - risc->cpu + 2) * sizeof(*risc->cpu) > risc->size);
+	return 0;
+}
+
+int cx23885_risc_vbibuffer(struct pci_dev *pci, struct cx23885_riscmem *risc,
+			struct scatterlist *sglist, unsigned int top_offset,
+			unsigned int bottom_offset, unsigned int bpl,
+			unsigned int padding, unsigned int lines)
+{
+	u32 instructions, fields;
+	__le32 *rp;
+
+	fields = 0;
+	if (UNSET != top_offset)
+		fields++;
+	if (UNSET != bottom_offset)
+		fields++;
+
+	/* estimate risc mem: worst case is one write per page border +
+	   one write per scan line + syncs + jump (all 2 dwords).  Padding
+	   can cause next bpl to start close to a page border.  First DMA
+	   region may be smaller than PAGE_SIZE */
+	/* write and jump need and extra dword */
+	instructions  = fields * (1 + ((bpl + padding) * lines)
+		/ PAGE_SIZE + lines);
+	instructions += 5;
+	risc->size = instructions * 12;
+	risc->cpu = dma_alloc_coherent(&pci->dev, risc->size, &risc->dma,
+				       GFP_KERNEL);
+	if (risc->cpu == NULL)
+		return -ENOMEM;
+	/* write risc instructions */
+	rp = risc->cpu;
+
+	/* Sync to line 6, so US CC line 21 will appear in line '12'
+	 * in the userland vbi payload */
+	if (UNSET != top_offset)
+		rp = cx23885_risc_field(rp, sglist, top_offset, 0,
+					bpl, padding, lines, 0, true);
+
+	if (UNSET != bottom_offset)
+		rp = cx23885_risc_field(rp, sglist, bottom_offset, 0x200,
+					bpl, padding, lines, 0, UNSET == top_offset);
+
+
+
+	/* save pointer to jmp instruction address */
+	risc->jmp = rp;
+	BUG_ON((risc->jmp - risc->cpu + 2) * sizeof(*risc->cpu) > risc->size);
+	return 0;
+}
+
+
+void cx23885_free_buffer(struct cx23885_dev *dev, struct cx23885_buffer *buf)
+{
+	struct cx23885_riscmem *risc = &buf->risc;
+
+	dma_free_coherent(&dev->pci->dev, risc->size, risc->cpu, risc->dma);
+}
+
+static void cx23885_tsport_reg_dump(struct cx23885_tsport *port)
+{
+	struct cx23885_dev *dev = port->dev;
+
+	dprintk(1, "%s() Register Dump\n", __func__);
+	dprintk(1, "%s() DEV_CNTRL2               0x%08X\n", __func__,
+		cx_read(DEV_CNTRL2));
+	dprintk(1, "%s() PCI_INT_MSK              0x%08X\n", __func__,
+		cx23885_irq_get_mask(dev));
+	dprintk(1, "%s() AUD_INT_INT_MSK          0x%08X\n", __func__,
+		cx_read(AUDIO_INT_INT_MSK));
+	dprintk(1, "%s() AUD_INT_DMA_CTL          0x%08X\n", __func__,
+		cx_read(AUD_INT_DMA_CTL));
+	dprintk(1, "%s() AUD_EXT_INT_MSK          0x%08X\n", __func__,
+		cx_read(AUDIO_EXT_INT_MSK));
+	dprintk(1, "%s() AUD_EXT_DMA_CTL          0x%08X\n", __func__,
+		cx_read(AUD_EXT_DMA_CTL));
+	dprintk(1, "%s() PAD_CTRL                 0x%08X\n", __func__,
+		cx_read(PAD_CTRL));
+	dprintk(1, "%s() ALT_PIN_OUT_SEL          0x%08X\n", __func__,
+		cx_read(ALT_PIN_OUT_SEL));
+	dprintk(1, "%s() GPIO2                    0x%08X\n", __func__,
+		cx_read(GPIO2));
+	dprintk(1, "%s() gpcnt(0x%08X)          0x%08X\n", __func__,
+		port->reg_gpcnt, cx_read(port->reg_gpcnt));
+	dprintk(1, "%s() gpcnt_ctl(0x%08X)      0x%08x\n", __func__,
+		port->reg_gpcnt_ctl, cx_read(port->reg_gpcnt_ctl));
+	dprintk(1, "%s() dma_ctl(0x%08X)        0x%08x\n", __func__,
+		port->reg_dma_ctl, cx_read(port->reg_dma_ctl));
+	if (port->reg_src_sel)
+		dprintk(1, "%s() src_sel(0x%08X)        0x%08x\n", __func__,
+			port->reg_src_sel, cx_read(port->reg_src_sel));
+	dprintk(1, "%s() lngth(0x%08X)          0x%08x\n", __func__,
+		port->reg_lngth, cx_read(port->reg_lngth));
+	dprintk(1, "%s() hw_sop_ctrl(0x%08X)    0x%08x\n", __func__,
+		port->reg_hw_sop_ctrl, cx_read(port->reg_hw_sop_ctrl));
+	dprintk(1, "%s() gen_ctrl(0x%08X)       0x%08x\n", __func__,
+		port->reg_gen_ctrl, cx_read(port->reg_gen_ctrl));
+	dprintk(1, "%s() bd_pkt_status(0x%08X)  0x%08x\n", __func__,
+		port->reg_bd_pkt_status, cx_read(port->reg_bd_pkt_status));
+	dprintk(1, "%s() sop_status(0x%08X)     0x%08x\n", __func__,
+		port->reg_sop_status, cx_read(port->reg_sop_status));
+	dprintk(1, "%s() fifo_ovfl_stat(0x%08X) 0x%08x\n", __func__,
+		port->reg_fifo_ovfl_stat, cx_read(port->reg_fifo_ovfl_stat));
+	dprintk(1, "%s() vld_misc(0x%08X)       0x%08x\n", __func__,
+		port->reg_vld_misc, cx_read(port->reg_vld_misc));
+	dprintk(1, "%s() ts_clk_en(0x%08X)      0x%08x\n", __func__,
+		port->reg_ts_clk_en, cx_read(port->reg_ts_clk_en));
+	dprintk(1, "%s() ts_int_msk(0x%08X)     0x%08x\n", __func__,
+		port->reg_ts_int_msk, cx_read(port->reg_ts_int_msk));
+	dprintk(1, "%s() ts_int_status(0x%08X)  0x%08x\n", __func__,
+		port->reg_ts_int_stat, cx_read(port->reg_ts_int_stat));
+	dprintk(1, "%s() PCI_INT_STAT           0x%08X\n", __func__,
+		cx_read(PCI_INT_STAT));
+	dprintk(1, "%s() VID_B_INT_MSTAT        0x%08X\n", __func__,
+		cx_read(VID_B_INT_MSTAT));
+	dprintk(1, "%s() VID_B_INT_SSTAT        0x%08X\n", __func__,
+		cx_read(VID_B_INT_SSTAT));
+	dprintk(1, "%s() VID_C_INT_MSTAT        0x%08X\n", __func__,
+		cx_read(VID_C_INT_MSTAT));
+	dprintk(1, "%s() VID_C_INT_SSTAT        0x%08X\n", __func__,
+		cx_read(VID_C_INT_SSTAT));
+}
+
+int cx23885_start_dma(struct cx23885_tsport *port,
+			     struct cx23885_dmaqueue *q,
+			     struct cx23885_buffer   *buf)
+{
+	struct cx23885_dev *dev = port->dev;
+	u32 reg;
+
+	dprintk(1, "%s() w: %d, h: %d, f: %d\n", __func__,
+		dev->width, dev->height, dev->field);
+
+	/* clear dma in progress */
+	cx23885_clear_bridge_error(dev);
+
+	/* Stop the fifo and risc engine for this port */
+	cx_clear(port->reg_dma_ctl, port->dma_ctl_val);
+
+	/* setup fifo + format */
+	cx23885_sram_channel_setup(dev,
+				   &dev->sram_channels[port->sram_chno],
+				   port->ts_packet_size, buf->risc.dma);
+	if (debug > 5) {
+		cx23885_sram_channel_dump(dev,
+			&dev->sram_channels[port->sram_chno]);
+		cx23885_risc_disasm(port, &buf->risc);
+	}
+
+	/* write TS length to chip */
+	cx_write(port->reg_lngth, port->ts_packet_size);
+
+	if ((!(cx23885_boards[dev->board].portb & CX23885_MPEG_DVB)) &&
+		(!(cx23885_boards[dev->board].portc & CX23885_MPEG_DVB))) {
+		pr_err("%s() Unsupported .portb/c (0x%08x)/(0x%08x)\n",
+			__func__,
+			cx23885_boards[dev->board].portb,
+			cx23885_boards[dev->board].portc);
+		return -EINVAL;
+	}
+
+	if (cx23885_boards[dev->board].portb == CX23885_MPEG_ENCODER)
+		cx23885_av_clk(dev, 0);
+
+	udelay(100);
+
+	/* If the port supports SRC SELECT, configure it */
+	if (port->reg_src_sel)
+		cx_write(port->reg_src_sel, port->src_sel_val);
+
+	cx_write(port->reg_hw_sop_ctrl, port->hw_sop_ctrl_val);
+	cx_write(port->reg_ts_clk_en, port->ts_clk_en_val);
+	cx_write(port->reg_vld_misc, port->vld_misc_val);
+	cx_write(port->reg_gen_ctrl, port->gen_ctrl_val);
+	udelay(100);
+
+	/* NOTE: this is 2 (reserved) for portb, does it matter? */
+	/* reset counter to zero */
+	cx_write(port->reg_gpcnt_ctl, 3);
+	q->count = 0;
+
+	/* Set VIDB pins to input */
+	if (cx23885_boards[dev->board].portb == CX23885_MPEG_DVB) {
+		reg = cx_read(PAD_CTRL);
+		reg &= ~0x3; /* Clear TS1_OE & TS1_SOP_OE */
+		cx_write(PAD_CTRL, reg);
+	}
+
+	/* Set VIDC pins to input */
+	if (cx23885_boards[dev->board].portc == CX23885_MPEG_DVB) {
+		reg = cx_read(PAD_CTRL);
+		reg &= ~0x4; /* Clear TS2_SOP_OE */
+		cx_write(PAD_CTRL, reg);
+	}
+
+	if (cx23885_boards[dev->board].portb == CX23885_MPEG_ENCODER) {
+
+		reg = cx_read(PAD_CTRL);
+		reg = reg & ~0x1;    /* Clear TS1_OE */
+
+		/* FIXME, bit 2 writing here is questionable */
+		/* set TS1_SOP_OE and TS1_OE_HI */
+		reg = reg | 0xa;
+		cx_write(PAD_CTRL, reg);
+
+		/* Sets MOE_CLK_DIS to disable MoE clock */
+		/* sets MCLK_DLY_SEL/BCLK_DLY_SEL to 1 buffer delay each */
+		cx_write(CLK_DELAY, cx_read(CLK_DELAY) | 0x80000011);
+
+		/* ALT_GPIO_ALT_SET: GPIO[0]
+		 * IR_ALT_TX_SEL: GPIO[1]
+		 * GPIO1_ALT_SEL: VIP_656_DATA[0]
+		 * GPIO0_ALT_SEL: VIP_656_CLK
+		 */
+		cx_write(ALT_PIN_OUT_SEL, 0x10100045);
+	}
+
+	switch (dev->bridge) {
+	case CX23885_BRIDGE_885:
+	case CX23885_BRIDGE_887:
+	case CX23885_BRIDGE_888:
+		/* enable irqs */
+		dprintk(1, "%s() enabling TS int's and DMA\n", __func__);
+		/* clear

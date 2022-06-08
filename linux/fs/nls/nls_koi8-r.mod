@@ -1,2 +1,1 @@
-.h \
-  include/linux/
+        = LGDT3306A_T

@@ -1,5 +1,1 @@
-();
-}
-
-/*
- * Print out an 
+// SPDX-License-Identifier

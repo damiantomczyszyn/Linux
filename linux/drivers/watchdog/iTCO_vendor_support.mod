@@ -1,2 +1,2 @@
-.h \
-  include/linux/percpu-refcount.h \
+		mem &= ~ALT_DATA;
+		mem |= (data & ALT

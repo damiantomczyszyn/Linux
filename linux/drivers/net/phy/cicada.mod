@@ -1,2 +1,1 @@
-qrwlock.h \
-  include/linu
+/* SPDX-License-Identifier

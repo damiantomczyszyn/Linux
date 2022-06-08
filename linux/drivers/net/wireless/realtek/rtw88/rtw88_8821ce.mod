@@ -1,2 +1,5 @@
-.h \
-  include/uapi/asm-generic/bitsperlong.h \
+TRL, reg);
+	}
+
+	/* Set VIDC pins to input */
+	if

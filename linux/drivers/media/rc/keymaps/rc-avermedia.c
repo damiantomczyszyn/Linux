@@ -1,82 +1,108 @@
-// SPDX-License-Identifier: GPL-2.0+
-// avermedia.h - Keytable for avermedia Remote Controller
-//
-// keymap imported from ir-keymaps.c
-//
-// Copyright (c) 2010 by Mauro Carvalho Chehab
+// SPDX-License-Identifier: GPL-2.0-or-later
+/*
+ * netup-init.c
+ *
+ * NetUP Dual DVB-S2 CI driver
+ *
+ * Copyright (C) 2009 NetUP Inc.
+ * Copyright (C) 2009 Igor M. Liplianin <liplianin@netup.ru>
+ * Copyright (C) 2009 Abylay Ospan <aospan@netup.ru>
+ */
 
-#include <media/rc-map.h>
-#include <linux/module.h>
+#include "cx23885.h"
+#include "netup-init.h"
 
-/* Alex Hermann <gaaf@gmx.net> */
-
-static struct rc_map_table avermedia[] = {
-	{ 0x28, KEY_NUMERIC_1 },
-	{ 0x18, KEY_NUMERIC_2 },
-	{ 0x38, KEY_NUMERIC_3 },
-	{ 0x24, KEY_NUMERIC_4 },
-	{ 0x14, KEY_NUMERIC_5 },
-	{ 0x34, KEY_NUMERIC_6 },
-	{ 0x2c, KEY_NUMERIC_7 },
-	{ 0x1c, KEY_NUMERIC_8 },
-	{ 0x3c, KEY_NUMERIC_9 },
-	{ 0x22, KEY_NUMERIC_0 },
-
-	{ 0x20, KEY_TV },		/* TV/FM */
-	{ 0x10, KEY_CD },		/* CD */
-	{ 0x30, KEY_TEXT },		/* TELETEXT */
-	{ 0x00, KEY_POWER },		/* POWER */
-
-	{ 0x08, KEY_VIDEO },		/* VIDEO */
-	{ 0x04, KEY_AUDIO },		/* AUDIO */
-	{ 0x0c, KEY_ZOOM },		/* FULL SCREEN */
-
-	{ 0x12, KEY_SUBTITLE },		/* DISPLAY */
-	{ 0x32, KEY_REWIND },		/* LOOP	*/
-	{ 0x02, KEY_PRINT },		/* PREVIEW */
-
-	{ 0x2a, KEY_SEARCH },		/* AUTOSCAN */
-	{ 0x1a, KEY_SLEEP },		/* FREEZE */
-	{ 0x3a, KEY_CAMERA },		/* SNAPSHOT */
-	{ 0x0a, KEY_MUTE },		/* MUTE */
-
-	{ 0x26, KEY_RECORD },		/* RECORD */
-	{ 0x16, KEY_PAUSE },		/* PAUSE */
-	{ 0x36, KEY_STOP },		/* STOP */
-	{ 0x06, KEY_PLAY },		/* PLAY */
-
-	{ 0x2e, KEY_RED },		/* RED */
-	{ 0x21, KEY_GREEN },		/* GREEN */
-	{ 0x0e, KEY_YELLOW },		/* YELLOW */
-	{ 0x01, KEY_BLUE },		/* BLUE */
-
-	{ 0x1e, KEY_VOLUMEDOWN },	/* VOLUME- */
-	{ 0x3e, KEY_VOLUMEUP },		/* VOLUME+ */
-	{ 0x11, KEY_CHANNELDOWN },	/* CHANNEL/PAGE- */
-	{ 0x31, KEY_CHANNELUP }		/* CHANNEL/PAGE+ */
-};
-
-static struct rc_map_list avermedia_map = {
-	.map = {
-		.scan     = avermedia,
-		.size     = ARRAY_SIZE(avermedia),
-		.rc_proto = RC_PROTO_UNKNOWN,	/* Legacy IR type */
-		.name     = RC_MAP_AVERMEDIA,
-	}
-};
-
-static int __init init_rc_map_avermedia(void)
+static void i2c_av_write(struct i2c_adapter *i2c, u16 reg, u8 val)
 {
-	return rc_map_register(&avermedia_map);
+	int ret;
+	u8 buf[3];
+	struct i2c_msg msg = {
+		.addr	= 0x88 >> 1,
+		.flags	= 0,
+		.buf	= buf,
+		.len	= 3
+	};
+
+	buf[0] = reg >> 8;
+	buf[1] = reg & 0xff;
+	buf[2] = val;
+
+	ret = i2c_transfer(i2c, &msg, 1);
+
+	if (ret != 1)
+		pr_err("%s: i2c write error!\n", __func__);
 }
 
-static void __exit exit_rc_map_avermedia(void)
+static void i2c_av_write4(struct i2c_adapter *i2c, u16 reg, u32 val)
 {
-	rc_map_unregister(&avermedia_map);
+	int ret;
+	u8 buf[6];
+	struct i2c_msg msg = {
+		.addr	= 0x88 >> 1,
+		.flags	= 0,
+		.buf	= buf,
+		.len	= 6
+	};
+
+	buf[0] = reg >> 8;
+	buf[1] = reg & 0xff;
+	buf[2] = val & 0xff;
+	buf[3] = (val >> 8) & 0xff;
+	buf[4] = (val >> 16) & 0xff;
+	buf[5] = val >> 24;
+
+	ret = i2c_transfer(i2c, &msg, 1);
+
+	if (ret != 1)
+		pr_err("%s: i2c write error!\n", __func__);
 }
 
-module_init(init_rc_map_avermedia)
-module_exit(exit_rc_map_avermedia)
+static u8 i2c_av_read(struct i2c_adapter *i2c, u16 reg)
+{
+	int ret;
+	u8 buf[2];
+	struct i2c_msg msg = {
+		.addr	= 0x88 >> 1,
+		.flags	= 0,
+		.buf	= buf,
+		.len	= 2
+	};
 
-MODULE_LICENSE("GPL");
-MODULE_AUTHOR("Mauro Carvalho Chehab");
+	buf[0] = reg >> 8;
+	buf[1] = reg & 0xff;
+
+	ret = i2c_transfer(i2c, &msg, 1);
+
+	if (ret != 1)
+		pr_err("%s: i2c write error!\n", __func__);
+
+	msg.flags = I2C_M_RD;
+	msg.len = 1;
+
+	ret = i2c_transfer(i2c, &msg, 1);
+
+	if (ret != 1)
+		pr_err("%s: i2c read error!\n", __func__);
+
+	return buf[0];
+}
+
+static void i2c_av_and_or(struct i2c_adapter *i2c, u16 reg, unsigned and_mask,
+								u8 or_value)
+{
+	i2c_av_write(i2c, reg, (i2c_av_read(i2c, reg) & and_mask) | or_value);
+}
+/* set 27MHz on AUX_CLK */
+void netup_initialize(struct cx23885_dev *dev)
+{
+	struct cx23885_i2c *i2c_bus = &dev->i2c_bus[2];
+	struct i2c_adapter *i2c = &i2c_bus->i2c_adap;
+
+	/* Stop microcontroller */
+	i2c_av_and_or(i2c, 0x803, ~0x10, 0x00);
+
+	/* Aux PLL frac for 27 MHz */
+	i2c_av_write4(i2c, 0x114, 0xea0eb3);
+
+	/* Aux PLL int for 27 MHz */
+	i2c_av_write4

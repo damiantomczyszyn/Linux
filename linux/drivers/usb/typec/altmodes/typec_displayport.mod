@@ -1,2 +1,2 @@
-NAMIC_TASK_STRUCT) \
-    $(wildcard includ
+6/include/asm/mpspec.h \
+    $(wildcard in

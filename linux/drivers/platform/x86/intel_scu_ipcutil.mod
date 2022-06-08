@@ -1,2 +1,2 @@
-nclude/linux/page-flags-layout.h \
-    $(w
+_read(ALT_PIN_OUT_SEL));
+	dprintk(1, "%s()

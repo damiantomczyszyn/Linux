@@ -1,1 +1,1 @@
-d include/config/NO_HZ_FULL) \
+ct tda10071_platform_data tda10

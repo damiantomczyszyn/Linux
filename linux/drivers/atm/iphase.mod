@@ -1,1 +1,1 @@
-nfig/GENERIC_IOREMAP) 
+dev->board == CX23885_

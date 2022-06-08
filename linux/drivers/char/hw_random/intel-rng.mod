@@ -1,3 +1,1 @@
-\
-  include/linux/rwlock.h \
-    $(w
+cmd_drivers/media/pci/cx18/modules.o

@@ -1,2 +1,1 @@
-pes.h \
-  include/asm-generic/pg
+// SPDX-License-Identifier: GPL-

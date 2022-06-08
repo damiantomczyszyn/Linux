@@ -1,4 +1,1 @@
--3level_types.h \
-  include/asm-generic/pgtable-nop4d.h \
-  include/asm-generic/pgtable-nopud.h \
-  arc
+cmd_drivers/net/can/vxcan.mod := { echo  drivers/net/can/vxcan.o;  echo; } > drivers/net/can/vxcan.mod

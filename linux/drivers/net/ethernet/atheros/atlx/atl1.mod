@@ -1,1 +1,3 @@
- $(wildcard include/config/EARLY_PRINTK) \
+h->cmds_start + i, 0);
+
+	/* fill registers

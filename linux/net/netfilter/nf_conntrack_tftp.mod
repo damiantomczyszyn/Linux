@@ -1,2 +1,3 @@
-CPI_APEI_GHES) \
-    $(wildcard inc
+amux   = CX25840_AUDIO8,
+		}, {
+			

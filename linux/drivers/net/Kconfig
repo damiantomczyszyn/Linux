@@ -1,244 +1,630 @@
-config/ARCH_WANTS_DYNAMIC_TASK_STRUCT) \
-    $(wildcard include/config/HAVE_ARCH_THREAD_STRUCT_WHITELIST) \
-  include/linux/cred.h \
-    $(wildcard include/config/DEBUG_CREDENTIALS) \
-  include/linux/key.h \
-    $(wildcard include/config/KEY_NOTIFICATIONS) \
-    $(wildcard include/config/NET) \
-  include/linux/assoc_array.h \
-    $(wildcard include/config/ASSOCIATIVE_ARRAY) \
-  include/linux/sched/user.h \
-    $(wildcard include/config/WATCH_QUEUE) \
-  include/linux/percpu_counter.h \
-  include/linux/rcu_sync.h \
-  include/linux/delayed_call.h \
-  include/linux/errseq.h \
-  include/linux/ioprio.h \
-  include/linux/sched/rt.h \
-  include/linux/iocontext.h \
-    $(wildcard include/config/BLK_ICQ) \
-  include/uapi/linux/ioprio.h \
-  include/linux/fs_types.h \
-  include/linux/mount.h \
-  include/linux/mnt_idmapping.h \
-  include/uapi/linux/fs.h \
-  include/linux/quota.h \
-    $(wildcard include/config/QUOTA_NETLINK_INTERFACE) \
-  include/uapi/linux/dqblk_xfs.h \
-  include/linux/dqblk_v1.h \
-  include/linux/dqblk_v2.h \
-  include/linux/dqblk_qtree.h \
-  include/linux/projid.h \
-  include/uapi/linux/quota.h \
-  include/linux/nfs_fs_i.h \
-  include/linux/seq_file.h \
-  include/linux/string_helpers.h \
-  include/linux/ns_common.h \
-  include/linux/nsproxy.h \
-  include/linux/user_namespace.h \
-    $(wildcard include/config/INOTIFY_USER) \
-    $(wildcard include/config/FANOTIFY) \
-    $(wildcard include/config/PERSISTENT_KEYRINGS) \
-  include/linux/kernel_stat.h \
-  include/linux/interrupt.h \
-    $(wildcard include/config/IRQ_FORCED_THREADING) \
-    $(wildcard include/config/GENERIC_IRQ_PROBE) \
-    $(wildcard include/config/IRQ_TIMINGS) \
-  include/linux/irqreturn.h \
-  include/linux/irqnr.h \
-  include/uapi/linux/irqnr.h \
-  include/linux/hardirq.h \
-  include/linux/context_tracking_state.h \
-    $(wildcard include/config/CONTEXT_TRACKING) \
-  include/linux/ftrace_irq.h \
-    $(wildcard include/config/HWLAT_TRACER) \
-    $(wildcard include/config/OSNOISE_TRACER) \
-  include/linux/vtime.h \
-    $(wildcard include/config/VIRT_CPU_ACCOUNTING) \
-    $(wildcard include/config/IRQ_TIME_ACCOUNTING) \
-  arch/x86/include/asm/hardirq.h \
-    $(wildcard include/config/KVM_INTEL) \
-    $(wildcard include/config/X86_THERMAL_VECTOR) \
-    $(wildcard include/config/X86_MCE_THRESHOLD) \
-    $(wildcard include/config/X86_MCE_AMD) \
-    $(wildcard include/config/X86_HV_CALLBACK_VECTOR) \
-  arch/x86/include/asm/irq.h \
-  arch/x86/include/asm/sections.h \
-  include/asm-generic/sections.h \
-    $(wildcard include/config/HAVE_FUNCTION_DESCRIPTORS) \
-  include/linux/cgroup-defs.h \
-    $(wildcard include/config/CGROUP_NET_CLASSID) \
-    $(wildcard include/config/CGROUP_NET_PRIO) \
-  include/linux/u64_stats_sync.h \
-  include/linux/bpf-cgroup-defs.h \
-  include/linux/psi_types.h \
-  include/linux/kthread.h \
-  include/linux/cgroup_subsys.h \
-    $(wildcard include/config/CGROUP_DEVICE) \
-    $(wildcard include/config/CGROUP_FREEZER) \
-    $(wildcard include/config/CGROUP_PERF) \
-    $(wildcard include/config/CGROUP_HUGETLB) \
-    $(wildcard include/config/CGROUP_PIDS) \
-    $(wildcard include/config/CGROUP_RDMA) \
-    $(wildcard include/config/CGROUP_MISC) \
-    $(wildcard include/config/CGROUP_DEBUG) \
-  include/linux/vm_event_item.h \
-    $(wildcard include/config/HAVE_ARCH_TRANSPARENT_HUGEPAGE_PUD) \
-    $(wildcard include/config/MEMORY_BALLOON) \
-    $(wildcard include/config/BALLOON_COMPACTION) \
-    $(wildcard include/config/DEBUG_TLBFLUSH) \
-    $(wildcard include/config/DEBUG_VM_VMACACHE) \
-  include/linux/page_counter.h \
-  include/linux/vmpressure.h \
-  include/linux/eventfd.h \
-  include/linux/mm.h \
-    $(wildcard include/config/HAVE_ARCH_MMAP_RND_BITS) \
-    $(wildcard include/config/HAVE_ARCH_MMAP_RND_COMPAT_BITS) \
-    $(wildcard include/config/ARCH_USES_HIGH_VMA_FLAGS) \
-    $(wildcard include/config/ARCH_HAS_PKEYS) \
-    $(wildcard include/config/PPC) \
-    $(wildcard include/config/PARISC) \
-    $(wildcard include/config/SPARC64) \
-    $(wildcard include/config/ARM64_MTE) \
-    $(wildcard include/config/HAVE_ARCH_USERFAULTFD_MINOR) \
-    $(wildcard include/config/SHMEM) \
-    $(wildcard include/config/ARCH_HAS_PTE_SPECIAL) \
-    $(wildcard include/config/ARCH_HAS_PTE_DEVMAP) \
-    $(wildcard include/config/DEBUG_VM_RB) \
-    $(wildcard include/config/PAGE_POISONING) \
-    $(wildcard include/config/INIT_ON_ALLOC_DEFAULT_ON) \
-    $(wildcard include/config/INIT_ON_FREE_DEFAULT_ON) \
-    $(wildcard include/config/DEBUG_PAGEALLOC) \
-    $(wildcard include/config/HUGETLBFS) \
-    $(wildcard include/config/MAPPING_DIRTY_HELPERS) \
-    $(wildcard include/config/ANON_VMA_NAME) \
-  include/linux/mmap_lock.h \
-  include/linux/page_ext.h \
-  include/linux/stacktrace.h \
-    $(wildcard include/config/ARCH_STACKWALK) \
-    $(wildcard include/config/STACKTRACE) \
-    $(wildcard include/config/HAVE_RELIABLE_STACKTRACE) \
-  include/linux/stackdepot.h \
-    $(wildcard include/config/STACKDEPOT_ALWAYS_INIT) \
-  include/linux/page_ref.h \
-    $(wildcard include/config/DEBUG_PAGE_REF) \
-  include/linux/sizes.h \
-  include/linux/pgtable.h \
-    $(wildcard include/config/HIGHPTE) \
-    $(wildcard include/config/GUP_GET_PTE_LOW_HIGH) \
-    $(wildcard include/config/HAVE_ARCH_SOFT_DIRTY) \
-    $(wildcard include/config/ARCH_ENABLE_THP_MIGRATION) \
-    $(wildcard include/config/X86_ESPFIX64) \
-  arch/x86/include/asm/pgtable.h \
-    $(wildcard include/config/DEBUG_WX) \
-    $(wildcard include/config/PAGE_TABLE_CHECK) \
-  arch/x86/include/asm/pkru.h \
-  arch/x86/include/asm/fpu/api.h \
-    $(wildcard include/config/X86_DEBUG_FPU) \
-  arch/x86/include/asm/coco.h \
-  include/asm-generic/pgtable_uffd.h \
-  include/linux/page_table_check.h \
-  arch/x86/include/asm/pgtable_32.h \
-  arch/x86/include/asm/pgtable-3level.h \
-  arch/x86/include/asm/pgtable-invert.h \
-  include/linux/huge_mm.h \
-  include/linux/sched/coredump.h \
-    $(wildcard include/config/CORE_DUMP_DEFAULT_ELF_HEADERS) \
-  include/linux/vmstat.h \
-    $(wildcard include/config/VM_EVENT_COUNTERS) \
-  include/linux/writeback.h \
-  include/linux/flex_proportions.h \
-  include/linux/backing-dev-defs.h \
-    $(wildcard include/config/DEBUG_FS) \
-  include/linux/blk_types.h \
-    $(wildcard include/config/FAIL_MAKE_REQUEST) \
-    $(wildcard include/config/BLK_CGROUP_IOCOST) \
-    $(wildcard include/config/BLK_INLINE_ENCRYPTION) \
-    $(wildcard include/config/BLK_DEV_INTEGRITY) \
-  include/linux/bvec.h \
-  include/linux/highmem.h \
-  include/linux/cacheflush.h \
-  arch/x86/include/asm/cacheflush.h \
-  include/asm-generic/cacheflush.h \
-  include/linux/highmem-internal.h \
-  arch/x86/include/asm/highmem.h \
-  arch/x86/include/asm/tlbflush.h \
-  arch/x86/include/asm/invpcid.h \
-  arch/x86/include/asm/pti.h \
-  include/linux/bio.h \
-  include/linux/mempool.h \
-  include/linux/uio.h \
-    $(wildcard include/config/ARCH_HAS_UACCESS_FLUSHCACHE) \
-  include/uapi/linux/uio.h \
-  include/linux/node.h \
-    $(wildcard include/config/HMEM_REPORTING) \
-  include/linux/pagemap.h \
-  include/linux/hugetlb_inline.h \
-  include/uapi/linux/mempolicy.h \
-  include/linux/freezer.h \
-  include/uapi/linux/i2c.h \
-  include/linux/videodev2.h \
-  include/uapi/linux/videodev2.h \
-    $(wildcard include/config/VIDEO_ADV_DEBUG) \
-  include/uapi/linux/v4l2-common.h \
-  include/uapi/linux/v4l2-controls.h \
-  include/media/v4l2-device.h \
-    $(wildcard include/config/VIDEO_V4L2_SUBDEV_API) \
-  include/media/media-device.h \
-    $(wildcard include/config/MEDIA_CONTROLLER) \
-  include/media/media-devnode.h \
-  include/linux/poll.h \
-  include/uapi/linux/poll.h \
-  arch/x86/include/generated/uapi/asm/poll.h \
-  include/uapi/asm-generic/poll.h \
-  include/uapi/linux/eventpoll.h \
-  include/linux/cdev.h \
-  include/media/media-entity.h \
-  include/uapi/linux/media.h \
-  include/media/v4l2-subdev.h \
-  include/uapi/linux/v4l2-subdev.h \
-  include/uapi/linux/v4l2-mediabus.h \
-  include/uapi/linux/media-bus-format.h \
-  include/media/v4l2-async.h \
-  include/media/v4l2-common.h \
-    $(wildcard include/config/VIDEO_V4L2_I2C) \
-    $(wildcard include/config/SPI) \
-  include/media/v4l2-dev.h \
-  include/linux/spi/spi.h \
-    $(wildcard include/config/SPI_SLAVE) \
-  include/linux/scatterlist.h \
-    $(wildcard include/config/NEED_SG_DMA_LENGTH) \
-    $(wildcard include/config/DEBUG_SG) \
-    $(wildcard include/config/SGL_ALLOC) \
-    $(wildcard include/config/ARCH_NO_SG_CHAIN) \
-    $(wildcard include/config/SG_POOL) \
-  include/linux/gpio/consumer.h \
-    $(wildcard include/config/OF_GPIO) \
-    $(wildcard include/config/GPIO_SYSFS) \
-  include/uapi/linux/spi/spi.h \
-  include/media/v4l2-fh.h \
-  include/media/v4l2-mediabus.h \
+# SPDX-License-Identifier: GPL-2.0-only
+#
+# Network device configuration
+#
 
-drivers/media/i2c/vp27smpx.o: $(deps_drivers/media/i2c/vp27smpx.o)
+menuconfig NETDEVICES
+	default y if UML
+	depends on NET
+	bool "Network device support"
+	help
+	  You can say N here if you don't intend to connect your Linux box to
+	  any other computer at all.
 
-$(deps_drivers/media/i2c/vp27smpx.o):
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     ELF                      "      4     (               Ë¸ˇˇˇSãX\âÿË¸ˇˇˇçÉ¿   Ë¸ˇˇˇ1¿[√êË¸ˇˇˇWVâ∆Sª
-   dã=    ç¥&    çv ãÜî   ∫)   Ë¸ˇˇˇÉ‡t∏∆ß  Ë¸ˇˇˇã®uÉÎu÷∏ˇˇˇˇ[^_√çt& êË¸ˇˇˇÎÊêË¸ˇˇˇVf¡¬Sã∞î   â√∑ ∫&   âË¸ˇˇˇÉ¯ˇt)âÿËrˇˇˇÖ¿x+∫(   âË¸ˇˇˇfÉ¯ˇtf¡¿∑¿[^√fê°    Ö¿è¸ˇˇˇ∏ˇˇˇˇÎÁç¥&    çt& êË¸ˇˇˇUWâ«Vâ÷SâÀÉÏÖ…Ññ   ãAã)â$∫Û   â¯Ëbˇˇˇâ¡°    Ö¿è   Ö…x)â»É‡ t0«$    1Ì∏   Ö€tã<$â+â{1…ÖˆtâÉƒâ»[^_]√çt& É·∫   ”‚˜¬ uVÅ‚  u6É˘uø«$    ÅÂ  ˇ Î∞ç¥&    çv «$    Ωˇˇˇ Èaˇˇˇç¥&    «$    ÅÂ ∞  È|ˇˇˇç∂    âÍ«$    ∂ÍÈeˇˇˇç¥&    ç¥&    êË¸ˇˇˇSâ√ÉÏã    Ö…è9   Éƒâÿ1…[È⁄˛ˇˇç¥&    çv Ë¸ˇˇˇSâ√â—ÉÏ°    Ö¿èT   Éƒâÿ1“[È©˛ˇˇç¥&    fêË¸ˇˇˇWf¡¬Vâ∆Sã∏î   âÀâ—Å· ˇ  ∫'   â¯Ë¸ˇˇˇÉ¯ˇt1âËö˝ˇˇÖ¿xf¡√∫(   â¯∑ÀË¸ˇˇˇÉ¯ˇt[^_√ç¥&    çv °    Ö¿èo   Î„êË¸ˇˇˇVâ∆â—SÉÏ°    Ö¿èä   1€Ö…t
-ª   π   ãÜî   ãP\àö"  ∫Ú   Ë¸ˇˇˇ1¿Éƒ[^√çt& Ë¸ˇˇˇÉ˙wvVâ÷Sâ√°    Ö¿è∑   ãÉî   ãı    ãP\àäc  ∫3   ∂…Ë¸ˇˇˇ∫Ú   âÿË$˝ˇˇÉ‡ﬂx*ãı   ∫Ú   ¡·	¡âÿÉ…∑…Ë—˛ˇˇ∏∆ß  Ë¸ˇˇˇ1¿[^√fê∏Íˇˇˇ√ç¥&    çv Ë¸ˇˇˇVSãXãP(ç≥@ˇˇˇÅ˙	ò Ñâ   w7Å˙ 	ò tWÅ˙	ò uGãH|ãC‘ãP\ÉÈ@àä  ∂…∫Á   Ë¸ˇˇˇ1¿[^√çv Å˙	ò u∑H|∫   âË@˛ˇˇ1¿[^√çv ∏Íˇˇˇ[^√ãH|ãC‘ãP\àä  ∂…∫Ê   Ë¸ˇˇˇ1¿[^√ç¥&    ∑H|∫†   âË¯˝ˇˇ1¿[^√çv Ë¸ˇˇˇUâÕWâ◊∫Ú   Vâ∆SÉÏË¸ˇˇã    â$Ö€è  â¯% ∞  Öﬁ   â¯Ñ¿Öå   â¯%  ˇ Ñ  ∏   ∫à   ª‡  ∑»Î
-çv ∑∑KÉ√∂“âËt˝ˇˇÅ˚  u‰ã    Ö…è‘   âæ0  ∑<$∫Ú   ââÆ4  Éœ∑œË<˝ˇˇ∏∆ß  Ë¸ˇˇˇ1¿Éƒ[^_]√ç¥&    ê∏   ∫à   ª   ∑»Îçt& ∑∑KÉ√∂“âËÙ¸ˇˇÅ˚H  u‰°    Ö¿~ÖÈÈ   ç∂    1…∫   ª`  Îç¥&    çv ∑∑KÉ√∂“âË¨¸ˇˇÅ˚å  u‰ã    Ö…é8ˇˇˇÈ˛   ê∏ÍˇˇˇÈVˇˇˇç∂    Ë¸ˇˇˇW1…∫Ú   Vâ∆Sª†  Îç¥&    ê∂∂KãÜî   É√ãx\àå0  Ë¸ˇˇˇÖ¿xÅ˚ƒ  u’1…∫Y   ª`  Îç¥&    ∑∑KÉ√∂“âË¸ˇˇÅ˚à  u‰ãÜ0  ˆƒ∞Ö}   π   ∫à   Ñ¿u?©  ˇ Ñ§   ª‡  Îçt& ê∑∑KÉ√∂“âËº˚ˇˇÅ˚  u‰[1¿^_√ç∂    ª   Îê∑∑KÉ√∂“âËå˚ˇˇÅ˚H  u‰[1¿^_√ç∂    1…∫   ª`  Îç¥&    çv ∑∑KÉ√∂“âËL˚ˇˇÅ˚å  u‰[1¿^_√ç∂    ª   Îê∑∑KÉ√∂“âË˚ˇˇÅ˚H  u‰[1¿^_√ç¥&    ç¥&    Ë¸ˇˇˇUWVâ∆SÉÏã@ãPãRË¸ˇˇˇ%  x =  x Öd  çFπ¿  ∫@  Ë¸ˇˇˇâ√Ö¿ÑO  π†   âÚçª¿   Ë¸ˇˇˇ1…∫   â¯j «É0  ˇ   «É4      «É8      «É<     Ë¸ˇˇˇπ 	ò ∫P  â¯j j j jj jjˇjÄË¸ˇˇˇπ	ò ∫P  â¯Éƒ$j j j jj j?j j Ë¸ˇˇˇπ	ò ∫P  â¯Éƒ j h   j jj hˇ  j j Ë¸ˇˇˇπ	ò ∫P  â¯Éƒ j j j jj hˇ  jˇh ˛ˇˇË¸ˇˇˇã´¸   â{lâ¯Éƒ ÖÌuCË¸ˇˇˇ1“âË¸ˇˇˇ∫   â$âË¸ˇˇˇ∫   â«âË¸ˇˇˇ¡Áâ¬â¯–Ä<$ÏÖP  È+  Ë¸ˇˇˇÉƒâË[^_]√êΩÌˇˇˇÎÓΩÙˇˇˇÎÁ                      P                      $                                                                          @                               Ä           P  ¿    †  `  –  P      7%s: %s: failed
- 7%s: status: 0x%04x
- 7%s: g_input_status
- 7%s: querystd
- on off 7%s: s_stream %s
- 7%s: input switched to %s
- 7%s: s_std %llx
- 7%s: norm switched to NTSC
- 7%s: norm switched to PAL
- 7%s: norm switched to SECAM
- vpx3214c vpx3216b vpx3220a 6%s: %s found @ 0x%x (%s)
- vpx3220 internal composite svideo É√ph   Sh    Ë¸ˇˇˇÉ»ˇÉƒÈ«   QÉ«pâL$Wh   Ë¸ˇˇˇãL$ÉƒÈ)  ç@pâ$Ph(   Ë¸ˇˇˇXZã$È  çCpâ$Ph>   Ë¸ˇˇˇXZã$È6  É∆ph(   Vh    Ë¸ˇˇˇÉƒÈû  â$Ö“∏N   ∫Q   D¬PçFpPhU   Ë¸ˇˇˇãL$ÉƒÈ◊  çCpˇ4ïå  Phh   Ë¸ˇˇˇÉƒÈ)  çFpPhœ   Ë¸ˇˇˇXZÈÓ  çFpPh≥   Ë¸ˇˇˇ[XÈÓ  çFpPhñ   Ë¸ˇˇˇXZÈÓ  çFpUWPhÑ   Ë¸ˇˇˇÉƒÈâ  f=ÄFÑ≥   f=`BÑ‚   ∫Ì   f=ÄBÑù   ãN∑¿çë  R∑V1ˆ“RP∂|$çCpWPh    Ë¸ˇˇˇÉƒãÉî   ∂é°  ∂ñ†  ãx\àå0  Ë¸ˇˇˇÖ¿yq1ˆ∑éb  ∂ñ`  âÿÉ∆ËL  É˛(u„1ˆ∑é"  ∂ñ   âÿÉ∆ËL  É˛(u„È—  ∫ˇ   ãF  P∑F1ˆ¿PçCpRPh  Ë¸ˇˇˇÉƒÈhˇˇˇÉ∆É˛$táÈ[ˇˇˇ∫ˆ   Î√6%s: chip (%02x:%04x) found @ 0x%x (%s)
- Ë¸ˇˇˇ∫    ∏    È¸ˇˇˇ∏    È¸ˇˇˇ                                vpx3220_fp_read vpx3220_fp_write        vpx3220a                vpx3216b                vpx3214c                                                   ¿                             `                       ¿                                                              –                                              †      Y   † £   §   ®  ≤  æ  X   &   K ò                        Ú 3ÿ® ‡ˇ· ‚„Ä‰ÂÄÊ Á‡Ë¯ÍäÒ¯˘$                            à  â  ä  ã  å  ç è   w Ú ’Á A                        à  â  ä  ã  å  ç è   w Ú —Á A                           à  â  ä  ã   å Äç Äè   s Ú  Á ·,  5  ?  debug parm=debug:Debug level (0-1) parmtype=debug:int license=GPL author=Laurent Pinchart description=vpx3220a/vpx3216b/vpx3214c video decoder driver   ò            ˇ      GCC: (GNU) 11.2.0           GNU  ¿       ¿                                  Òˇ                                                             _                                	 ,   Ä   d     ≈           <           	 Q           \      Ò     k          	      &     ñ   =       	 ≤      '     √   X       	 Ÿ   P  o     Ò   s       	   (          ¿  L     *  é   -    	 @    Ü     R           _  ª       	 v  å       }  †  Ω     å  `  j    ö  ‡  (     •     (     Æ  `  ,     ∏  ÿ   W    	 À  –  r    ÿ  †  $     ‰  `  (                   Ï  P  û    ˙  †           P         /  ˇ    	               *           >      Ä     M      
-                   a  @   `     l     0     }  ¿   P     è           §          Ω           À  ò       ›  0        Ù  <        
-  T   <     %             0             N             e             r             ã             ö             Æ             »             ·             È                                       )             >             [             m             Ö             ì             ß           ≥             ¬      
-     —  @   `     Ù              vpx3220.c vpx3220_remove vpx3220_fp_status vpx3220_fp_read vpx3220_fp_read.cold __func__.2 vpx3220_status vpx3220_status.cold vpx3220_g_input_status vpx3220_g_input_status.cold vpx3220_querystd vpx3220_querystd.cold vpx3220_fp_write.isra.0 vpx3220_fp_write.isra.0.cold __func__.1 vpx3220_s_stream vpx3220_s_stream.cold vpx3220_s_routing input_vals.3 vpx3220_s_routing.cold inputs vpx3220_s_ctrl vpx3220_s_std init_secam init_pal init_ntsc vpx3220_s_std.cold vpx3220_init init_common init_fp vpx3220_probe vpx3220_ops vpx3220_ctrl_ops vpx3220_probe.cold vpx3220_driver_init vpx3220_driver vpx3220_driver_exit vpx3220_id vpx3220_core_ops vpx3220_video_ops __UNIQUE_ID_debug270 __UNIQUE_ID_debugtype269 __param_debug __param_str_debug __UNIQUE_ID_license268 __UNIQUE_ID_author267 __UNIQUE_ID_description266 __fentry__ v4l2_device_unregister_subdev v4l2_ctrl_handler_free current_task i2c_smbus_read_byte_data __const_udelay __SCT__cond_resched i2c_smbus_write_word_data i2c_smbus_read_word_data _printk i2c_smbus_write_byte_data __x86_indirect_thunk_edx devm_kmalloc v4l2_i2c_subdev_init v4l2_ctrl_handler_init_class v4l2_ctrl_new_std v4l2_ctrl_handler_setup __this_module i2c_register_driver init_module i2c_del_driver cleanup_module __mod_i2c__vpx3220_id_device_table param_ops_int      9     :     ;  !   9  2   <  L   =  [   >  y   ?  Å   9  û   @  ∫   A  —     Ò   9  !    Ò  9  ˝    !  9  .    Q  9  v  @  ô  @  ±    ¡  9  œ       C    9  !    6  .  L  C  d  .  Ö  >  °  9  Ï  C  8  C  a  9  ~    º  .  ﬁ  .  Ê      >  ;  .  ^  .  e    Ä  .  ¶  .  Æ    —  9  ‚  .    C    .  #  .  F  .  u  .  ñ  .  ©  .  ∆  .  ‡  .    .    .  6  .  Q  9  h  D  ä  E  ô  .  ¶  F  ﬁ  G  Ë  .  ˇ  H  	  .  #  H  -  .  M  H  W  .  w  H  é  I  ó  =  ¶  =  ¥  =  —  ;  Ÿ     )        6    π    ◊    )    â    Ó    n    ª    «    Ã                   h   .                                                 $     (     ,     0     4   *     .  
-        B  (     -   B  E     J   B  `     e   B  w   .  }     Ç   B  î     ô     ¶     ´   B  ¡   .  «     Ã   B  ›     ‚   B  Ú     ˜   B        B      #  B  F    v  %  {  B  ã  .  í  .  °  C  Æ  .  µ  .  ø    Õ  .  ‘  .  ﬁ    Ì    	      B  (         9     T     o     ä     ∑     ‘     È     ˛         +    Ë       9          J     K          M  †   .  ¨   .  ¿     Ã     ÿ     ‰     Ë     (    X    å    ê    î        .     J     P        .symtab .strtab .shstrtab .rel.text .rel.data .bss .rel__mcount_loc .rodata.str1.1 .rel.text.unlikely .rodata.str1.4 .rel.init.text .rel.exit.t
+	  You'll have to say Y if your computer contains a network card that
+	  you want to use under Linux. If you are going to run SLIP or PPP over
+	  telephone line or null modem cable you need say Y here. Connecting
+	  two machines with parallel ports using PLIP needs this, as well as
+	  AX.25/KISS for sending Internet traffic over amateur radio links.
+
+	  See also "The Linux Network Administrator's Guide" by Olaf Kirch and
+	  Terry Dawson. Available at <http://www.tldp.org/guides.html>.
+
+	  If unsure, say Y.
+
+# All the following symbols are dependent on NETDEVICES - do not repeat
+# that for each of the symbols.
+if NETDEVICES
+
+config MII
+	tristate
+
+config NET_CORE
+	default y
+	bool "Network core driver support"
+	help
+	  You can say N here if you do not intend to use any of the
+	  networking core drivers (i.e. VLAN, bridging, bonding, etc.)
+
+if NET_CORE
+
+config BONDING
+	tristate "Bonding driver support"
+	depends on INET
+	depends on IPV6 || IPV6=n
+	depends on TLS || TLS_DEVICE=n
+	help
+	  Say 'Y' or 'M' if you wish to be able to 'bond' multiple Ethernet
+	  Channels together. This is called 'Etherchannel' by Cisco,
+	  'Trunking' by Sun, 802.3ad by the IEEE, and 'Bonding' in Linux.
+
+	  The driver supports multiple bonding modes to allow for both high
+	  performance and high availability operation.
+
+	  Refer to <file:Documentation/networking/bonding.rst> for more
+	  information.
+
+	  To compile this driver as a module, choose M here: the module
+	  will be called bonding.
+
+config DUMMY
+	tristate "Dummy net driver support"
+	help
+	  This is essentially a bit-bucket device (i.e. traffic you send to
+	  this device is consigned into oblivion) with a configurable IP
+	  address. It is most commonly used in order to make your currently
+	  inactive SLIP address seem like a real address for local programs.
+	  If you use SLIP or PPP, you might want to say Y here. It won't
+	  enlarge your kernel. What a deal. Read about it in the Network
+	  Administrator's Guide, available from
+	  <http://www.tldp.org/docs.html#guide>.
+
+	  To compile this driver as a module, choose M here: the module
+	  will be called dummy.
+
+config WIREGUARD
+	tristate "WireGuard secure network tunnel"
+	depends on NET && INET
+	depends on IPV6 || !IPV6
+	select NET_UDP_TUNNEL
+	select DST_CACHE
+	select CRYPTO
+	select CRYPTO_LIB_CURVE25519
+	select CRYPTO_LIB_CHACHA20POLY1305
+	select CRYPTO_CHACHA20_X86_64 if X86 && 64BIT
+	select CRYPTO_POLY1305_X86_64 if X86 && 64BIT
+	select CRYPTO_BLAKE2S_X86 if X86 && 64BIT
+	select CRYPTO_CURVE25519_X86 if X86 && 64BIT
+	select ARM_CRYPTO if ARM
+	select ARM64_CRYPTO if ARM64
+	select CRYPTO_CHACHA20_NEON if ARM || (ARM64 && KERNEL_MODE_NEON)
+	select CRYPTO_POLY1305_NEON if ARM64 && KERNEL_MODE_NEON
+	select CRYPTO_POLY1305_ARM if ARM
+	select CRYPTO_BLAKE2S_ARM if ARM
+	select CRYPTO_CURVE25519_NEON if ARM && KERNEL_MODE_NEON
+	select CRYPTO_CHACHA_MIPS if CPU_MIPS32_R2
+	select CRYPTO_POLY1305_MIPS if MIPS
+	help
+	  WireGuard is a secure, fast, and easy to use replacement for IPSec
+	  that uses modern cryptography and clever networking tricks. It's
+	  designed to be fairly general purpose and abstract enough to fit most
+	  use cases, while at the same time remaining extremely simple to
+	  configure. See www.wireguard.com for more info.
+
+	  It's safe to say Y or M here, as the driver is very lightweight and
+	  is only in use when an administrator chooses to add an interface.
+
+config WIREGUARD_DEBUG
+	bool "Debugging checks and verbose messages"
+	depends on WIREGUARD
+	help
+	  This will write log messages for handshake and other events
+	  that occur for a WireGuard interface. It will also perform some
+	  extra validation checks and unit tests at various points. This is
+	  only useful for debugging.
+
+	  Say N here unless you know what you're doing.
+
+config EQUALIZER
+	tristate "EQL (serial line load balancing) support"
+	help
+	  If you have two serial connections to some other computer (this
+	  usually requires two modems and two telephone lines) and you use
+	  SLIP (the protocol for sending Internet traffic over telephone
+	  lines) or PPP (a better SLIP) on them, you can make them behave like
+	  one double speed connection using this driver.  Naturally, this has
+	  to be supported at the other end as well, either with a similar EQL
+	  Linux driver or with a Livingston Portmaster 2e.
+
+	  Say Y if you want this and read
+	  <file:Documentation/networking/eql.rst>.  You may also want to read
+	  section 6.2 of the NET-3-HOWTO, available from
+	  <http://www.tldp.org/docs.html#howto>.
+
+	  To compile this driver as a module, choose M here: the module
+	  will be called eql.  If unsure, say N.
+
+config NET_FC
+	bool "Fibre Channel driver support"
+	depends on SCSI && PCI
+	help
+	  Fibre Channel is a high speed serial protocol mainly used to connect
+	  large storage devices to the computer; it is compatible with and
+	  intended to replace SCSI.
+
+	  If you intend to use Fibre Channel, you need to have a Fibre channel
+	  adaptor card in your computer; say Y here and to the driver for your
+	  adaptor below. You also should have said Y to "SCSI support" and
+	  "SCSI generic support".
+
+config IFB
+	tristate "Intermediate Functional Block support"
+	depends on NET_ACT_MIRRED || NFT_FWD_NETDEV
+	select NET_REDIRECT
+	help
+	  This is an intermediate driver that allows sharing of
+	  resources.
+	  To compile this driver as a module, choose M here: the module
+	  will be called ifb.  If you want to use more than one ifb
+	  device at a time, you need to compile this driver as a module.
+	  Instead of 'ifb', the devices will then be called 'ifb0',
+	  'ifb1' etc.
+	  Look at the iproute2 documentation directory for usage etc
+
+source "drivers/net/team/Kconfig"
+
+config MACVLAN
+	tristate "MAC-VLAN support"
+	help
+	  This allows one to create virtual interfaces that map packets to
+	  or from specific MAC addresses to a particular interface.
+
+	  Macvlan devices can be added using the "ip" command from the
+	  iproute2 package starting with the iproute2-2.6.23 release:
+
+	  "ip link add link <real dev> [ address MAC ] [ NAME ] type macvlan"
+
+	  To compile this driver as a module, choose M here: the module
+	  will be called macvlan.
+
+config MACVTAP
+	tristate "MAC-VLAN based tap driver"
+	depends on MACVLAN
+	depends on INET
+	select TAP
+	help
+	  This adds a specialized tap character device driver that is based
+	  on the MAC-VLAN network interface, called macvtap. A macvtap device
+	  can be added in the same way as a macvlan device, using 'type
+	  macvtap', and then be accessed through the tap user space interface.
+
+	  To compile this driver as a module, choose M here: the module
+	  will be called macvtap.
+
+config IPVLAN_L3S
+	depends on NETFILTER
+	depends on IPVLAN
+	def_bool y
+	select NET_L3_MASTER_DEV
+
+config IPVLAN
+	tristate "IP-VLAN support"
+	depends on INET
+	depends on IPV6 || !IPV6
+	help
+	  This allows one to create virtual devices off of a main interface
+	  and packets will be delivered based on the dest L3 (IPv6/IPv4 addr)
+	  on packets. All interfaces (including the main interface) share L2
+	  making it transparent to the connected L2 switch.
+
+	  Ipvlan devices can be added using the "ip" command from the
+	  iproute2 package starting with the iproute2-3.19 release:
+
+	  "ip link add link <main-dev> [ NAME ] type ipvlan"
+
+	  To compile this driver as a module, choose M here: the module
+	  will be called ipvlan.
+
+config IPVTAP
+	tristate "IP-VLAN based tap driver"
+	depends on IPVLAN
+	depends on INET
+	select TAP
+	help
+	  This adds a specialized tap character device driver that is based
+	  on the IP-VLAN network interface, called ipvtap. An ipvtap device
+	  can be added in the same way as a ipvlan device, using 'type
+	  ipvtap', and then be accessed through the tap user space interface.
+
+	  To compile this driver as a module, choose M here: the module
+	  will be called ipvtap.
+
+config VXLAN
+	tristate "Virtual eXtensible Local Area Network (VXLAN)"
+	depends on INET
+	select NET_UDP_TUNNEL
+	select GRO_CELLS
+	help
+	  This allows one to create vxlan virtual interfaces that provide
+	  Layer 2 Networks over Layer 3 Networks. VXLAN is often used
+	  to tunnel virtual network infrastructure in virtualized environments.
+	  For more information see:
+	    http://tools.ietf.org/html/draft-mahalingam-dutt-dcops-vxlan-02
+
+	  To compile this driver as a module, choose M here: the module
+	  will be called vxlan.
+
+config GENEVE
+	tristate "Generic Network Virtualization Encapsulation"
+	depends on INET
+	depends on IPV6 || !IPV6
+	select NET_UDP_TUNNEL
+	select GRO_CELLS
+	help
+	  This allows one to create geneve virtual interfaces that provide
+	  Layer 2 Networks over Layer 3 Networks. GENEVE is often used
+	  to tunnel virtual network infrastructure in virtualized environments.
+	  For more information see:
+	    http://tools.ietf.org/html/draft-gross-geneve-02
+
+	  To compile this driver as a module, choose M here: the module
+	  will be called geneve.
+
+config BAREUDP
+	tristate "Bare UDP Encapsulation"
+	depends on INET
+	depends on IPV6 || !IPV6
+	select NET_UDP_TUNNEL
+	select GRO_CELLS
+	help
+	  This adds a bare UDP tunnel module for tunnelling different
+	  kinds of traffic like MPLS, IP, etc. inside a UDP tunnel.
+
+	  To compile this driver as a module, choose M here: the module
+	  will be called bareudp.
+
+config GTP
+	tristate "GPRS Tunneling Protocol datapath (GTP-U)"
+	depends on INET
+	select NET_UDP_TUNNEL
+	help
+	  This allows one to create gtp virtual interfaces that provide
+	  the GPRS Tunneling Protocol datapath (GTP-U). This tunneling protocol
+	  is used to prevent subscribers from accessing mobile carrier core
+	  network infrastructure. This driver requires a userspace software that
+	  implements the signaling protocol (GTP-C) to update its PDP context
+	  base, such as OpenGGSN <http://git.osmocom.org/openggsn/). This
+	  tunneling protocol is implemented according to the GSM TS 09.60 and
+	  3GPP TS 29.060 standards.
+
+	  To compile this drivers as a module, choose M here: the module
+	  will be called gtp.
+
+config AMT
+	tristate "Automatic Multicast Tunneling (AMT)"
+	depends on INET && IP_MULTICAST
+	depends on IPV6 || !IPV6
+	select NET_UDP_TUNNEL
+	help
+	  This allows one to create AMT(Automatic Multicast Tunneling)
+	  virtual interfaces that provide multicast tunneling.
+	  There are two roles, Gateway, and Relay.
+	  Gateway Encapsulates IGMP/MLD traffic from listeners to the Relay.
+	  Gateway Decapsulates multicast traffic from the Relay to Listeners.
+	  Relay Encapsulates multicast traffic from Sources to Gateway.
+	  Relay Decapsulates IGMP/MLD traffic from Gateway.
+
+	  To compile this drivers as a module, choose M here: the module
+	  will be called amt.
+
+config MACSEC
+	tristate "IEEE 802.1AE MAC-level encryption (MACsec)"
+	select CRYPTO
+	select CRYPTO_AES
+	select CRYPTO_GCM
+	select GRO_CELLS
+	help
+	   MACsec is an encryption standard for Ethernet.
+
+config NETCONSOLE
+	tristate "Network console logging support"
+	help
+	  If you want to log kernel messages over the network, enable this.
+	  See <file:Documentation/networking/netconsole.rst> for details.
+
+config NETCONSOLE_DYNAMIC
+	bool "Dynamic reconfiguration of logging targets"
+	depends on NETCONSOLE && SYSFS && CONFIGFS_FS && \
+			!(NETCONSOLE=y && CONFIGFS_FS=m)
+	help
+	  This option enables the ability to dynamically reconfigure target
+	  parameters (interface, IP addresses, port numbers, MAC addresses)
+	  at runtime through a userspace interface exported using configfs.
+	  See <file:Documentation/networking/netconsole.rst> for details.
+
+config NETPOLL
+	def_bool NETCONSOLE
+	select SRCU
+
+config NET_POLL_CONTROLLER
+	def_bool NETPOLL
+
+config NTB_NETDEV
+	tristate "Virtual Ethernet over NTB Transport"
+	depends on NTB_TRANSPORT
+
+config RIONET
+	tristate "RapidIO Ethernet over messaging driver support"
+	depends on RAPIDIO
+
+config RIONET_TX_SIZE
+	int "Number of outbound queue entries"
+	depends on RIONET
+	default "128"
+
+config RIONET_RX_SIZE
+	int "Number of inbound queue entries"
+	depends on RIONET
+	default "128"
+
+config TUN
+	tristate "Universal TUN/TAP device driver support"
+	depends on INET
+	select CRC32
+	help
+	  TUN/TAP provides packet reception and transmission for user space
+	  programs.  It can be viewed as a simple Point-to-Point or Ethernet
+	  device, which instead of receiving packets from a physical media,
+	  receives them from user space program and instead of sending packets
+	  via physical media writes them to the user space program.
+
+	  When a program opens /dev/net/tun, driver creates and registers
+	  corresponding net device tunX or tapX.  After a program closed above
+	  devices, driver will automatically delete tunXX or tapXX device and
+	  all routes corresponding to it.
+
+	  Please read <file:Documentation/networking/tuntap.rst> for more
+	  information.
+
+	  To compile this driver as a module, choose M here: the module
+	  will be called tun.
+
+	  If you don't know what to use this for, you don't need it.
+
+config TAP
+	tristate
+	help
+	  This option is selected by any driver implementing tap user space
+	  interface for a virtual interface to re-use core tap functionality.
+
+config TUN_VNET_CROSS_LE
+	bool "Support for cross-endian vnet headers on little-endian kernels"
+	default n
+	help
+	  This option allows TUN/TAP and MACVTAP device drivers in a
+	  little-endian kernel to parse vnet headers that come from a
+	  big-endian legacy virtio device.
+
+	  Userspace programs can control the feature using the TUNSETVNETBE
+	  and TUNGETVNETBE ioctls.
+
+	  Unless you have a little-endian system hosting a big-endian virtual
+	  machine with a legacy virtio NIC, you should say N.
+
+config VETH
+	tristate "Virtual ethernet pair device"
+	help
+	  This device is a local ethernet tunnel. Devices are created in pairs.
+	  When one end receives the packet it appears on its pair and vice
+	  versa.
+
+config VIRTIO_NET
+	tristate "Virtio network driver"
+	depends on VIRTIO
+	select NET_FAILOVER
+	help
+	  This is the virtual network driver for virtio.  It can be used with
+	  QEMU based VMMs (like KVM or Xen).  Say Y or M.
+
+config NLMON
+	tristate "Virtual netlink monitoring device"
+	help
+	  This option enables a monitoring net device for netlink skbs. The
+	  purpose of this is to analyze netlink messages with packet sockets.
+	  Thus applications like tcpdump will be able to see local netlink
+	  messages if they tap into the netlink device, record pcaps for further
+	  diagnostics, etc. This is mostly intended for developers or support
+	  to debug netlink issues. If unsure, say N.
+
+config NET_VRF
+	tristate "Virtual Routing and Forwarding (Lite)"
+	depends on IP_MULTIPLE_TABLES
+	depends on NET_L3_MASTER_DEV
+	depends on IPV6 || IPV6=n
+	depends on IPV6_MULTIPLE_TABLES || IPV6=n
+	help
+	  This option enables the support for mapping interfaces into VRF's. The
+	  support enables VRF devices.
+
+config VSOCKMON
+	tristate "Virtual vsock monitoring device"
+	depends on VHOST_VSOCK
+	help
+	  This option enables a monitoring net device for vsock sockets. It is
+	  mostly intended for developers or support to debug vsock issues. If
+	  unsure, say N.
+
+config MHI_NET
+	tristate "MHI network driver"
+	depends on MHI_BUS
+	help
+	  This is the network driver for MHI bus.  It can be used with
+	  QCOM based WWAN modems for IP or QMAP/rmnet protocol (like SDX55).
+	  Say Y or M.
+
+endif # NET_CORE
+
+config SUNGEM_PHY
+	tristate
+
+source "drivers/net/arcnet/Kconfig"
+
+source "drivers/atm/Kconfig"
+
+source "drivers/net/caif/Kconfig"
+
+source "drivers/net/dsa/Kconfig"
+
+source "drivers/net/ethernet/Kconfig"
+
+source "drivers/net/fddi/Kconfig"
+
+source "drivers/net/hippi/Kconfig"
+
+source "drivers/net/ipa/Kconfig"
+
+config NET_SB1000
+	tristate "General Instruments Surfboard 1000"
+	depends on PNP
+	help
+	  This is a driver for the General Instrument (also known as
+	  NextLevel) SURFboard 1000 internal
+	  cable modem. This is an ISA card which is used by a number of cable
+	  TV companies to provide cable modem access. It's a one-way
+	  downstream-only cable modem, meaning that your upstream net link is
+	  provided by your regular phone modem.
+
+	  At present this driver only compiles as a module, so say M here if
+	  you have this card. The module will be called sb1000. Then read
+	  <file:Documentation/networking/device_drivers/cable/sb1000.rst> for
+	  information on how to use this module, as it needs special ppp
+	  scripts for establishing a connection. Further documentation
+	  and the necessary scripts can be found at:
+
+	  <http://www.jacksonville.net/~fventuri/>
+	  <http://home.adelphia.net/~siglercm/sb1000.html>
+	  <http://linuxpower.cx/~cable/>
+
+	  If you don't have this card, of course say N.
+
+source "drivers/net/phy/Kconfig"
+
+source "drivers/net/mctp/Kconfig"
+
+source "drivers/net/mdio/Kconfig"
+
+source "drivers/net/pcs/Kconfig"
+
+source "drivers/net/plip/Kconfig"
+
+source "drivers/net/ppp/Kconfig"
+
+source "drivers/net/slip/Kconfig"
+
+source "drivers/s390/net/Kconfig"
+
+source "drivers/net/usb/Kconfig"
+
+source "drivers/net/wireless/Kconfig"
+
+source "drivers/net/wan/Kconfig"
+
+source "drivers/net/ieee802154/Kconfig"
+
+source "drivers/net/wwan/Kconfig"
+
+config XEN_NETDEV_FRONTEND
+	tristate "Xen network device frontend driver"
+	depends on XEN
+	select XEN_XENBUS_FRONTEND
+	select PAGE_POOL
+	default y
+	help
+	  This driver provides support for Xen paravirtual network
+	  devices exported by a Xen network driver domain (often
+	  domain 0).
+
+	  The corresponding Linux backend driver is enabled by the
+	  CONFIG_XEN_NETDEV_BACKEND option.
+
+	  If you are compiling a kernel for use as Xen guest, you
+	  should say Y here. To compile this driver as a module, chose
+	  M here: the module will be called xen-netfront.
+
+config XEN_NETDEV_BACKEND
+	tristate "Xen backend network device"
+	depends on XEN_BACKEND
+	help
+	  This driver allows the kernel to act as a Xen network driver
+	  domain which exports paravirtual network devices to other
+	  Xen domains. These devices can be accessed by any operating
+	  system that implements a compatible front end.
+
+	  The corresponding Linux frontend driver is enabled by the
+	  CONFIG_XEN_NETDEV_FRONTEND configuration option.
+
+	  The backend driver presents a standard network device
+	  endpoint for each paravirtual network device to the driver
+	  domain network stack. These can then be bridged or routed
+	  etc in order to provide full network connectivity.
+
+	  If you are compiling a kernel to run in a Xen network driver
+	  domain (often this is domain 0) you should say Y here. To
+	  compile this driver as a module, chose M here: the module
+	  will be called xen-netback.
+
+config VMXNET3
+	tristate "VMware VMXNET3 ethernet driver"
+	depends on PCI && INET
+	depends on PAGE_SIZE_LESS_THAN_64KB
+	help
+	  This driver supports VMware's vmxnet3 virtual ethernet NIC.
+	  To compile this driver as a module, choose M here: the
+	  module will be called vmxnet3.
+
+config FUJITSU_ES
+	tristate "FUJITSU Extended Socket Network Device driver"
+	depends on ACPI
+	help
+	  This driver provides support for Extended Socket network device
+	  on Extended Partitioning of FUJITSU PRIMEQUEST 2000 E2 series.
+
+config USB4_NET
+	tristate "Networking over USB4 and Thunderbolt cables"
+	depends on USB4 && INET
+	help
+	  Select this if you want to create network between two computers
+	  over a USB4 and Thunderbolt cables. The driver supports Apple
+	  ThunderboltIP protocol and allows communication with any host
+	  supporting the same protocol including Windows and macOS.
+
+	  To compile this driver a module, choose M here. The module will be
+	  called thunderbolt-net.
+
+source "drivers/net/hyperv/Kconfig"
+
+config NETDEVSIM
+	tristate "Simulated networking device"
+	depends on DEBUG_FS
+	depends on INET
+	depends on IPV6 || IPV6=n
+	depends on PSAMPLE || PSAMPLE=n
+	select NET_DEVLINK
+	help
+	  This driver is a developer testing tool and software model that can
+	  be used to test various control path networking APIs, especially
+	  HW-offload related.
+
+	  To compile this driver as a module, choose M here: the module
+	  will be called netdevsim.
+
+config NET_FAILOVER
+	tristate "Failover driver"
+	select FAILOVER
+	help
+	  This provides an automated failover mechanism via APIs to create
+	  and destroy a failover master netdev and manages a primary and
+	  standby slave netdevs that get registered via the generic failover
+	  infrastructure. This can be used by paravirtual drivers to enable
+	  an alternate low latency datapath. It also enables live migration of
+	  a VM with direct attached VF by failing over to the paravirtual
+	  datapath when the VF is unplugged.
+
+config NETDEV_LEGACY_INIT
+	bool
+	depends on ISA
+	help
+	  Drivers that call netdev_boot_setup_check() should select this
+	  symbol, everything else no longer needs it.
+
+endif # NETDEVICES

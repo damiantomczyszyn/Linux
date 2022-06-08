@@ -1,6 +1,4 @@
-ldcard include/config/X86_INTEL_USERCOPY) \
-  arch/x86/include/asm/smap.h \
-  arch/x86/include/asm/extable.h \
-    $(wildcard include/config/BPF_JIT) \
-  include/asm-generic/access_ok.h \
-    
+# SPDX-License-Identifier: GPL-2.0
+cx23885-objs	:= cx23885-cards.o cx23885-video.o cx23885-vbi.o \
+		    cx23885-core.o cx23885-i2c.o cx23885-dvb.o cx23885-417.o \
+		    cx23885-ioctl.o cx2388

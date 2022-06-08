@@ -1,4 +1,2 @@
-i/linux/edd.h \
-  arch/x86/include/asm/ist.h \
-  arch/x86/include/uapi/asm/ist.h \
-  in
+drivers/net/can/peak_canfd/peak_pciefd_main.o drivers/net/can/peak_canfd/peak_canfd.o
+

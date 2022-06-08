@@ -1,2 +1,2 @@
-nclude/linux/page-flags-layout.h \
-    $(wil
+] = {
+		.name		= "Hauppauge WinTV-HVR1500Q",

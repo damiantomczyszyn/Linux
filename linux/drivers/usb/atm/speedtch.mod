@@ -1,1 +1,3 @@
-e/config/NO_GENERIC_PCI_IOPO
+t("%s\n", __func__);
+
+	if (0

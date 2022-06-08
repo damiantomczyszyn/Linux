@@ -1,2 +1,2 @@
-drivers/media/radio/radio-zoltrix.o
-
+nnel *audio_ch =
+		&dev->sram_channel

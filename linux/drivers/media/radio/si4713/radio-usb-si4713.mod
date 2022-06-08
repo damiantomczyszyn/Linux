@@ -1,3 +1,6 @@
-RCOPY) \
-  arch/x86/include/asm/uaccess.h \
-   
+tate);
+		}
+	}
+
+}
+EXPORT_SYMBOL(altera_ci_releas

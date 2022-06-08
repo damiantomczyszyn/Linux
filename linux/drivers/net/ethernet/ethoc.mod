@@ -1,2 +1,2 @@
-x/scatterlist.h \
-    $(wildca
+00000);
+	cx_write(PAD_CTRL, 0x

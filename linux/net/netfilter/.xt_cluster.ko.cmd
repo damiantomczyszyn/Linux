@@ -1,8 +1,2 @@
-_LOCK_DEPTH))
-		return 0;
-
-	class_idx = class - lock_classes;
-
-	if (depth) { /* we're holding locks */
-		hlock = curr->held_locks + depth - 1;
-		if (hlock->class_idx == class_idx && nest_l
+¤TFK±aCòüèaeqP¼ÀÃ•¾u«giòSÓrÁîýyuæ.yá)¹ñAòäO(Äm.[Ílfì‰Ñ gé.ªû>eaƒkÇ9½ðC]ó–»ä`³º6•"|Ø¡´ÚTÐè.Æ±]8Ýt¡žBÔ1ŒÚÝøSJ*]®Ý¿ï á”¾ij.ö˜ƒ¤wÏ*‡ƒ“*L5ƒÚøƒû*Çž[îOõS¬*
+ETšfÜßïÂðXc6ƒLCG

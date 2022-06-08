@@ -1,243 +1,388 @@
-de/uapi/linux/swab.h \
-  arch/x86/include/uapi/asm/swab.h \
-  include/linux/byteorder/generic.h \
-  include/asm-generic/bitops/ext2-atomic-setbit.h \
-  include/linux/kstrtox.h \
-  include/linux/log2.h \
-    $(wildcard include/config/ARCH_HAS_ILOG2_U32) \
-    $(wildcard include/config/ARCH_HAS_ILOG2_U64) \
-  include/linux/math.h \
-  arch/x86/include/asm/div64.h \
-  include/linux/minmax.h \
-  include/linux/panic.h \
-    $(wildcard include/config/PANIC_TIMEOUT) \
-  include/linux/printk.h \
-    $(wildcard include/config/MESSAGE_LOGLEVEL_DEFAULT) \
-    $(wildcard include/config/CONSOLE_LOGLEVEL_DEFAULT) \
-    $(wildcard include/config/CONSOLE_LOGLEVEL_QUIET) \
-    $(wildcard include/config/EARLY_PRINTK) \
-    $(wildcard include/config/PRINTK) \
-    $(wildcard include/config/PRINTK_INDEX) \
-    $(wildcard include/config/DYNAMIC_DEBUG) \
-    $(wildcard include/config/DYNAMIC_DEBUG_CORE) \
-  include/linux/init.h \
-    $(wildcard include/config/STRICT_KERNEL_RWX) \
-    $(wildcard include/config/STRICT_MODULE_RWX) \
-    $(wildcard include/config/LTO_CLANG) \
-  include/linux/kern_levels.h \
-  include/linux/cache.h \
-    $(wildcard include/config/ARCH_HAS_CACHE_LINE_SIZE) \
-  arch/x86/include/asm/cache.h \
-    $(wildcard include/config/X86_L1_CACHE_SHIFT) \
-    $(wildcard include/config/X86_INTERNODE_CACHE_SHIFT) \
-    $(wildcard include/config/X86_VSMP) \
-  include/linux/ratelimit_types.h \
-  include/uapi/linux/param.h \
-  arch/x86/include/generated/uapi/asm/param.h \
-  include/asm-generic/param.h \
-    $(wildcard include/config/HZ) \
-  include/uapi/asm-generic/param.h \
-  include/linux/spinlock_types_raw.h \
-    $(wildcard include/config/DEBUG_SPINLOCK) \
-    $(wildcard include/config/DEBUG_LOCK_ALLOC) \
-  arch/x86/include/asm/spinlock_types.h \
-  include/asm-generic/qspinlock_types.h \
-    $(wildcard include/config/NR_CPUS) \
-  include/asm-generic/qrwlock_types.h \
-  include/linux/lockdep_types.h \
-    $(wildcard include/config/PROVE_RAW_LOCK_NESTING) \
-    $(wildcard include/config/LOCKDEP) \
-    $(wildcard include/config/LOCK_STAT) \
-  include/linux/once_lite.h \
-  include/linux/static_call_types.h \
-    $(wildcard include/config/HAVE_STATIC_CALL) \
-    $(wildcard include/config/HAVE_STATIC_CALL_INLINE) \
-  include/linux/instruction_pointer.h \
-  include/linux/notifier.h \
-    $(wildcard include/config/TREE_SRCU) \
-  include/linux/errno.h \
-  include/uapi/linux/errno.h \
-  include/linux/mutex.h \
-    $(wildcard include/config/PREEMPT_RT) \
-    $(wildcard include/config/MUTEX_SPIN_ON_OWNER) \
-    $(wildcard include/config/DEBUG_MUTEXES) \
-  arch/x86/include/asm/current.h \
-  arch/x86/include/asm/percpu.h \
-    $(wildcard include/config/X86_64_SMP) \
-  include/asm-generic/percpu.h \
-    $(wildcard include/config/DEBUG_PREEMPT) \
-    $(wildcard include/config/HAVE_SETUP_PER_CPU_AREA) \
-  include/linux/threads.h \
-    $(wildcard include/config/BASE_SMALL) \
-  include/linux/percpu-defs.h \
-    $(wildcard include/config/DEBUG_FORCE_WEAK_PER_CPU) \
-    $(wildcard include/config/AMD_MEM_ENCRYPT) \
-  include/linux/list.h \
-    $(wildcard include/config/DEBUG_LIST) \
-  include/linux/poison.h \
-    $(wildcard include/config/ILLEGAL_POINTER_VALUE) \
-  include/linux/spinlock_types.h \
-  include/linux/rwlock_types.h \
-  include/linux/lockdep.h \
-    $(wildcard include/config/DEBUG_LOCKING_API_SELFTESTS) \
-    $(wildcard include/config/PREEMPT_COUNT) \
-  include/linux/smp.h \
-    $(wildcard include/config/UP_LATE_INIT) \
-  include/linux/cpumask.h \
-    $(wildcard include/config/CPUMASK_OFFSTACK) \
-    $(wildcard include/config/HOTPLUG_CPU) \
-    $(wildcard include/config/DEBUG_PER_CPU_MAPS) \
-  include/linux/bitmap.h \
-  include/linux/find.h \
-  include/linux/string.h \
-    $(wildcard include/config/BINARY_PRINTF) \
-    $(wildcard include/config/FORTIFY_SOURCE) \
-  include/uapi/linux/string.h \
-  arch/x86/include/asm/string.h \
-  arch/x86/include/asm/string_32.h \
-  include/linux/fortify-string.h \
-  include/linux/atomic.h \
-  arch/x86/include/asm/atomic.h \
-  arch/x86/include/asm/cmpxchg.h \
-  arch/x86/include/asm/cmpxchg_32.h \
-  arch/x86/include/asm/atomic64_32.h \
-  include/linux/atomic/atomic-arch-fallback.h \
-    $(wildcard include/config/GENERIC_ATOMIC64) \
-  include/linux/atomic/atomic-long.h \
-  include/linux/atomic/atomic-instrumented.h \
-  include/linux/bug.h \
-    $(wildcard include/config/GENERIC_BUG) \
-    $(wildcard include/config/BUG_ON_DATA_CORRUPTION) \
-  arch/x86/include/asm/bug.h \
-    $(wildcard include/config/DEBUG_BUGVERBOSE) \
-  include/linux/instrumentation.h \
-    $(wildcard include/config/DEBUG_ENTRY) \
-  include/linux/objtool.h \
-    $(wildcard include/config/FRAME_POINTER) \
-  include/asm-generic/bug.h \
-    $(wildcard include/config/BUG) \
-    $(wildcard include/config/GENERIC_BUG_RELATIVE_POINTERS) \
-  include/linux/smp_types.h \
-  include/linux/llist.h \
-    $(wildcard include/config/ARCH_HAVE_NMI_SAFE_CMPXCHG) \
-  include/linux/preempt.h \
-    $(wildcard include/config/TRACE_PREEMPT_TOGGLE) \
-    $(wildcard include/config/PREEMPTION) \
-    $(wildcard include/config/PREEMPT_NOTIFIERS) \
-  arch/x86/include/asm/preempt.h \
-  include/linux/thread_info.h \
-    $(wildcard include/config/THREAD_INFO_IN_TASK) \
-    $(wildcard include/config/GENERIC_ENTRY) \
-    $(wildcard include/config/HAVE_ARCH_WITHIN_STACK_FRAMES) \
-    $(wildcard include/config/HARDENED_USERCOPY) \
-  include/linux/restart_block.h \
-  include/linux/time64.h \
-  include/linux/math64.h \
-    $(wildcard include/config/ARCH_SUPPORTS_INT128) \
-  include/vdso/math64.h \
-  include/vdso/time64.h \
-  include/uapi/linux/time.h \
-  include/uapi/linux/time_types.h \
-  arch/x86/include/asm/thread_info.h \
-    $(wildcard include/config/VM86) \
-    $(wildcard include/config/X86_IOPL_IOPERM) \
-    $(wildcard include/config/COMPAT) \
-    $(wildcard include/config/IA32_EMULATION) \
-  arch/x86/include/asm/page.h \
-  arch/x86/include/asm/page_types.h \
-    $(wildcard include/config/PHYSICAL_START) \
-    $(wildcard include/config/PHYSICAL_ALIGN) \
-    $(wildcard include/config/DYNAMIC_PHYSICAL_MASK) \
-  include/linux/mem_encrypt.h \
-    $(wildcard include/config/ARCH_HAS_MEM_ENCRYPT) \
-  arch/x86/include/asm/mem_encrypt.h \
-  include/linux/cc_platform.h \
-    $(wildcard include/config/ARCH_HAS_CC_PLATFORM) \
-  arch/x86/include/uapi/asm/bootparam.h \
-  include/linux/screen_info.h \
-  include/uapi/linux/screen_info.h \
-  include/linux/apm_bios.h \
-  include/uapi/linux/apm_bios.h \
-  include/uapi/linux/ioctl.h \
-  arch/x86/include/generated/uapi/asm/ioctl.h \
-  include/asm-generic/ioctl.h \
-  include/uapi/asm-generic/ioctl.h \
-  include/linux/edd.h \
-  include/uapi/linux/edd.h \
-  arch/x86/include/asm/ist.h \
-  arch/x86/include/uapi/asm/ist.h \
-  include/video/edid.h \
-    $(wildcard include/config/X86) \
-  include/uapi/video/edid.h \
-  arch/x86/include/asm/page_32_types.h \
-    $(wildcard include/config/HIGHMEM4G) \
-    $(wildcard include/config/HIGHMEM64G) \
-    $(wildcard include/config/PAGE_OFFSET) \
-  arch/x86/include/asm/page_32.h \
-    $(wildcard include/config/DEBUG_VIRTUAL) \
-    $(wildcard include/config/FLATMEM) \
-  include/linux/range.h \
-  include/asm-generic/memory_model.h \
-    $(wildcard include/config/SPARSEMEM_VMEMMAP) \
-    $(wildcard include/config/SPARSEMEM) \
-  include/linux/pfn.h \
-  include/asm-generic/getorder.h \
-  arch/x86/include/asm/cpufeature.h \
-    $(wildcard include/config/X86_FEATURE_NAMES) \
-  arch/x86/include/asm/processor.h \
-    $(wildcard include/config/X86_VMX_FEATURE_NAMES) \
-    $(wildcard include/config/STACKPROTECTOR) \
-    $(wildcard include/config/X86_DEBUGCTLMSR) \
-    $(wildcard include/config/CPU_SUP_AMD) \
-    $(wildcard include/config/XEN) \
-  arch/x86/include/asm/processor-flags.h \
-  arch/x86/include/uapi/asm/processor-flags.h \
-  arch/x86/include/asm/math_emu.h \
-  arch/x86/include/asm/ptrace.h \
-    $(wildcard include/config/PARAVIRT) \
-  arch/x86/include/asm/segment.h \
-    $(wildcard include/config/XEN_PV) \
-  arch/x86/include/uapi/asm/ptrace.h \
-  arch/x86/include/uapi/asm/ptrace-abi.h \
-  arch/x86/include/asm/paravirt_types.h \
-    $(wildcard include/config/PGTABLE_LEVELS) \
-    $(wildcard include/config/PARAVIRT_DEBUG) \
-  arch/x86/include/asm/desc_defs.h \
-  arch/x86/include/asm/pgtable_types.h \
-    $(wildcard include/config/MEM_SOFT_DIRTY) \
-    $(wildcard include/config/HAVE_ARCH_USERFAULTFD_WP) \
-    $(wildcard include/config/PROC_FS) \
-  arch/x86/include/asm/pgtable_32_types.h \
-  arch/x86/include/asm/pgtable-3level_types.h \
-  include/asm-generic/pgtable-nop4d.h \
-  include/asm-generic/pgtable-nopud.h \
-  arch/x86/include/asm/nospec-branch.h \
-  include/linux/static_key.h \
-  include/linux/jump_label.h \
-    $(wildcard include/config/JUMP_LABEL) \
-    $(wildcard include/config/HAVE_ARCH_JUMP_LABEL_RELATIVE) \
-  arch/x86/include/asm/jump_label.h \
-  arch/x86/include/asm/msr-index.h \
-  arch/x86/include/asm/unwind_hints.h \
-  arch/x86/include/asm/orc_types.h \
-  arch/x86/include/asm/GEN-for-each-reg.h \
-  arch/x86/include/asm/proto.h \
-  arch/x86/include/uapi/asm/ldt.h \
-  arch/x86/include/uapi/asm/sigcontext.h \
-  arch/x86/include/asm/msr.h \
-    $(wildcard include/config/TRACEPOINTS) \
-  arch/x86/include/asm/msr-index.h \
-  arch/x86/include/asm/cpumask.h \
-  arch/x86/include/uapi/asm/msr.h \
-  include/linux/tracepoint-defs.h \
-  arch/x86/include/asm/special_insns.h \
-  include/linux/irqflags.h \
-    $(wildcard include/config/TRACE_IRQFLAGS) \
-    $(wildcard include/config/IRQSOFF_TRACER) \
-    $(wildcard include/config/PREEMPT_TRACER) \
-    $(wildcard include/config/DEBUG_IRQFLAGS) \
-    $(wildcard include/config/TRACE_IRQFLAGS_SUPPORT) \
-  arch/x86/include/asm/irqflags.h \
-  arch/x86/include/asm/fpu/types.h \
-  arch/x86/include/asm/vmxfeatures.h \
-  arch/x86/include/asm/
+/* cnic_if.h: QLogic cnic core network driver.
+ *
+ * Copyright (c) 2006-2014 Broadcom Corporation
+ * Copyright (c) 2014-2015 QLogic Corporation
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation.
+ *
+ */
+
+
+#ifndef CNIC_IF_H
+#define CNIC_IF_H
+
+#include "bnx2x/bnx2x_mfw_req.h"
+
+#define CNIC_MODULE_VERSION	"2.5.22"
+#define CNIC_MODULE_RELDATE	"July 20, 2015"
+
+#define CNIC_ULP_RDMA		0
+#define CNIC_ULP_ISCSI		1
+#define CNIC_ULP_FCOE		2
+#define CNIC_ULP_L4		3
+#define MAX_CNIC_ULP_TYPE_EXT	3
+#define MAX_CNIC_ULP_TYPE	4
+
+/* Use CPU native page size up to 16K for cnic ring sizes.  */
+#if (PAGE_SHIFT > 14)
+#define CNIC_PAGE_BITS	14
+#else
+#define CNIC_PAGE_BITS	PAGE_SHIFT
+#endif
+#define CNIC_PAGE_SIZE	(1 << (CNIC_PAGE_BITS))
+#define CNIC_PAGE_ALIGN(addr) ALIGN(addr, CNIC_PAGE_SIZE)
+#define CNIC_PAGE_MASK	(~((CNIC_PAGE_SIZE) - 1))
+
+struct kwqe {
+	u32 kwqe_op_flag;
+
+#define KWQE_QID_SHIFT		8
+#define KWQE_OPCODE_MASK	0x00ff0000
+#define KWQE_OPCODE_SHIFT	16
+#define KWQE_OPCODE(x)		((x & KWQE_OPCODE_MASK) >> KWQE_OPCODE_SHIFT)
+#define KWQE_LAYER_MASK			0x70000000
+#define KWQE_LAYER_SHIFT		28
+#define KWQE_FLAGS_LAYER_MASK_L2	(2<<28)
+#define KWQE_FLAGS_LAYER_MASK_L3	(3<<28)
+#define KWQE_FLAGS_LAYER_MASK_L4	(4<<28)
+#define KWQE_FLAGS_LAYER_MASK_L5_RDMA	(5<<28)
+#define KWQE_FLAGS_LAYER_MASK_L5_ISCSI	(6<<28)
+#define KWQE_FLAGS_LAYER_MASK_L5_FCOE	(7<<28)
+
+	u32 kwqe_info0;
+	u32 kwqe_info1;
+	u32 kwqe_info2;
+	u32 kwqe_info3;
+	u32 kwqe_info4;
+	u32 kwqe_info5;
+	u32 kwqe_info6;
+};
+
+struct kwqe_16 {
+	u32 kwqe_info0;
+	u32 kwqe_info1;
+	u32 kwqe_info2;
+	u32 kwqe_info3;
+};
+
+struct kcqe {
+	u32 kcqe_info0;
+	u32 kcqe_info1;
+	u32 kcqe_info2;
+	u32 kcqe_info3;
+	u32 kcqe_info4;
+	u32 kcqe_info5;
+	u32 kcqe_info6;
+	u32 kcqe_op_flag;
+		#define KCQE_RAMROD_COMPLETION		(0x1<<27) /* Everest */
+		#define KCQE_FLAGS_LAYER_MASK		(0x7<<28)
+		#define KCQE_FLAGS_LAYER_MASK_MISC	(0<<28)
+		#define KCQE_FLAGS_LAYER_MASK_L2	(2<<28)
+		#define KCQE_FLAGS_LAYER_MASK_L3	(3<<28)
+		#define KCQE_FLAGS_LAYER_MASK_L4	(4<<28)
+		#define KCQE_FLAGS_LAYER_MASK_L5_RDMA	(5<<28)
+		#define KCQE_FLAGS_LAYER_MASK_L5_ISCSI	(6<<28)
+		#define KCQE_FLAGS_LAYER_MASK_L5_FCOE	(7<<28)
+		#define KCQE_FLAGS_NEXT 		(1<<31)
+		#define KCQE_FLAGS_OPCODE_MASK		(0xff<<16)
+		#define KCQE_FLAGS_OPCODE_SHIFT		(16)
+		#define KCQE_OPCODE(op)			\
+		(((op) & KCQE_FLAGS_OPCODE_MASK) >> KCQE_FLAGS_OPCODE_SHIFT)
+};
+
+#define MAX_CNIC_CTL_DATA	64
+#define MAX_DRV_CTL_DATA	64
+
+#define CNIC_CTL_STOP_CMD		1
+#define CNIC_CTL_START_CMD		2
+#define CNIC_CTL_COMPLETION_CMD		3
+#define CNIC_CTL_STOP_ISCSI_CMD		4
+#define CNIC_CTL_FCOE_STATS_GET_CMD	5
+#define CNIC_CTL_ISCSI_STATS_GET_CMD	6
+
+#define DRV_CTL_IO_WR_CMD		0x101
+#define DRV_CTL_IO_RD_CMD		0x102
+#define DRV_CTL_CTX_WR_CMD		0x103
+#define DRV_CTL_CTXTBL_WR_CMD		0x104
+#define DRV_CTL_RET_L5_SPQ_CREDIT_CMD	0x105
+#define DRV_CTL_START_L2_CMD		0x106
+#define DRV_CTL_STOP_L2_CMD		0x107
+#define DRV_CTL_RET_L2_SPQ_CREDIT_CMD	0x10c
+#define DRV_CTL_ISCSI_STOPPED_CMD	0x10d
+#define DRV_CTL_ULP_REGISTER_CMD	0x10e
+#define DRV_CTL_ULP_UNREGISTER_CMD	0x10f
+
+struct cnic_ctl_completion {
+	u32	cid;
+	u8	opcode;
+	u8	error;
+};
+
+struct cnic_ctl_info {
+	int	cmd;
+	union {
+		struct cnic_ctl_completion comp;
+		char bytes[MAX_CNIC_CTL_DATA];
+	} data;
+};
+
+struct drv_ctl_spq_credit {
+	u32	credit_count;
+};
+
+struct drv_ctl_io {
+	u32		cid_addr;
+	u32		offset;
+	u32		data;
+	dma_addr_t	dma_addr;
+};
+
+struct drv_ctl_l2_ring {
+	u32		client_id;
+	u32		cid;
+};
+
+struct drv_ctl_register_data {
+	int ulp_type;
+	struct fcoe_capabilities fcoe_features;
+};
+
+struct drv_ctl_info {
+	int	cmd;
+	int     drv_state;
+#define DRV_NOP		0
+#define DRV_ACTIVE	1
+#define DRV_INACTIVE	2
+#define DRV_UNLOADED	3
+	union {
+		struct drv_ctl_spq_credit credit;
+		struct drv_ctl_io io;
+		struct drv_ctl_l2_ring ring;
+		int ulp_type;
+		struct drv_ctl_register_data register_data;
+		char bytes[MAX_DRV_CTL_DATA];
+	} data;
+};
+
+#define MAX_NPIV_ENTRIES 64
+#define FC_NPIV_WWN_SIZE 8
+
+struct cnic_fc_npiv_tbl {
+	u8 wwpn[MAX_NPIV_ENTRIES][FC_NPIV_WWN_SIZE];
+	u8 wwnn[MAX_NPIV_ENTRIES][FC_NPIV_WWN_SIZE];
+	u32 count;
+};
+
+struct cnic_ops {
+	struct module	*cnic_owner;
+	/* Calls to these functions are protected by RCU.  When
+	 * unregistering, we wait for any calls to complete before
+	 * continuing.
+	 */
+	int		(*cnic_handler)(void *, void *);
+	int		(*cnic_ctl)(void *, struct cnic_ctl_info *);
+};
+
+#define MAX_CNIC_VEC	8
+
+struct cnic_irq {
+	unsigned int	vector;
+	void		*status_blk;
+	u32		status_blk_num;
+	u32		status_blk_num2;
+	u32		irq_flags;
+#define CNIC_IRQ_FL_MSIX		0x00000001
+};
+
+struct cnic_eth_dev {
+	struct module	*drv_owner;
+	u32		drv_state;
+#define CNIC_DRV_STATE_REGD		0x00000001
+#define CNIC_DRV_STATE_USING_MSIX	0x00000002
+#define CNIC_DRV_STATE_NO_ISCSI_OOO	0x00000004
+#define CNIC_DRV_STATE_NO_ISCSI		0x00000008
+#define CNIC_DRV_STATE_NO_FCOE		0x00000010
+#define CNIC_DRV_STATE_HANDLES_IRQ	0x00000020
+	u32		chip_id;
+	u32		max_kwqe_pending;
+	struct pci_dev	*pdev;
+	void __iomem	*io_base;
+	void __iomem	*io_base2;
+	const void	*iro_arr;
+
+	u32		ctx_tbl_offset;
+	u32		ctx_tbl_len;
+	int		ctx_blk_size;
+	u32		starting_cid;
+	u32		max_iscsi_conn;
+	u32		max_fcoe_conn;
+	u32		max_rdma_conn;
+	u32		fcoe_init_cid;
+	u32		max_fcoe_exchanges;
+	u32		fcoe_wwn_port_name_hi;
+	u32		fcoe_wwn_port_name_lo;
+	u32		fcoe_wwn_node_name_hi;
+	u32		fcoe_wwn_node_name_lo;
+
+	u16		iscsi_l2_client_id;
+	u16		iscsi_l2_cid;
+	u8		iscsi_mac[ETH_ALEN];
+
+	int		num_irq;
+	struct cnic_irq	irq_arr[MAX_CNIC_VEC];
+	int		(*drv_register_cnic)(struct net_device *,
+					     struct cnic_ops *, void *);
+	int		(*drv_unregister_cnic)(struct net_device *);
+	int		(*drv_submit_kwqes_32)(struct net_device *,
+					       struct kwqe *[], u32);
+	int		(*drv_submit_kwqes_16)(struct net_device *,
+					       struct kwqe_16 *[], u32);
+	int		(*drv_ctl)(struct net_device *, struct drv_ctl_info *);
+	int		(*drv_get_fc_npiv_tbl)(struct net_device *,
+					       struct cnic_fc_npiv_tbl *);
+	unsigned long	reserved1[2];
+	union drv_info_to_mcp	*addr_drv_info_to_mcp;
+};
+
+struct cnic_sockaddr {
+	union {
+		struct sockaddr_in	v4;
+		struct sockaddr_in6	v6;
+	} local;
+	union {
+		struct sockaddr_in	v4;
+		struct sockaddr_in6	v6;
+	} remote;
+};
+
+struct cnic_sock {
+	struct cnic_dev *dev;
+	void	*context;
+	u32	src_ip[4];
+	u32	dst_ip[4];
+	u16	src_port;
+	u16	dst_port;
+	u16	vlan_id;
+	unsigned char old_ha[ETH_ALEN];
+	unsigned char ha[ETH_ALEN];
+	u32	mtu;
+	u32	cid;
+	u32	l5_cid;
+	u32	pg_cid;
+	int	ulp_type;
+
+	u32	ka_timeout;
+	u32	ka_interval;
+	u8	ka_max_probe_count;
+	u8	tos;
+	u8	ttl;
+	u8	snd_seq_scale;
+	u32	rcv_buf;
+	u32	snd_buf;
+	u32	seed;
+
+	unsigned long	tcp_flags;
+#define SK_TCP_NO_DELAY_ACK	0x1
+#define SK_TCP_KEEP_ALIVE	0x2
+#define SK_TCP_NAGLE		0x4
+#define SK_TCP_TIMESTAMP	0x8
+#define SK_TCP_SACK		0x10
+#define SK_TCP_SEG_SCALING	0x20
+	unsigned long	flags;
+#define SK_F_INUSE		0
+#define SK_F_OFFLD_COMPLETE	1
+#define SK_F_OFFLD_SCHED	2
+#define SK_F_PG_OFFLD_COMPLETE	3
+#define SK_F_CONNECT_START	4
+#define SK_F_IPV6		5
+#define SK_F_CLOSING		7
+#define SK_F_HW_ERR		8
+
+	atomic_t ref_count;
+	u32 state;
+	struct kwqe kwqe1;
+	struct kwqe kwqe2;
+	struct kwqe kwqe3;
+};
+
+struct cnic_dev {
+	struct net_device	*netdev;
+	struct pci_dev		*pcidev;
+	void __iomem		*regview;
+	struct list_head	list;
+
+	int (*register_device)(struct cnic_dev *dev, int ulp_type,
+			       void *ulp_ctx);
+	int (*unregister_device)(struct cnic_dev *dev, int ulp_type);
+	int (*submit_kwqes)(struct cnic_dev *dev, struct kwqe *wqes[],
+				u32 num_wqes);
+	int (*submit_kwqes_16)(struct cnic_dev *dev, struct kwqe_16 *wqes[],
+				u32 num_wqes);
+
+	int (*cm_create)(struct cnic_dev *, int, u32, u32, struct cnic_sock **,
+			 void *);
+	int (*cm_destroy)(struct cnic_sock *);
+	int (*cm_connect)(struct cnic_sock *, struct cnic_sockaddr *);
+	int (*cm_abort)(struct cnic_sock *);
+	int (*cm_close)(struct cnic_sock *);
+	struct cnic_dev *(*cm_select_dev)(struct sockaddr_in *, int ulp_type);
+	int (*iscsi_nl_msg_recv)(struct cnic_dev *dev, u32 msg_type,
+				 char *data, u16 data_size);
+	int (*get_fc_npiv_tbl)(struct cnic_dev *, struct cnic_fc_npiv_tbl *);
+	unsigned long	flags;
+#define CNIC_F_CNIC_UP		1
+#define CNIC_F_BNX2_CLASS	3
+#define CNIC_F_BNX2X_CLASS	4
+	atomic_t	ref_count;
+	u8		mac_addr[ETH_ALEN];
+
+	int		max_iscsi_conn;
+	int		max_fcoe_conn;
+	int		max_rdma_conn;
+
+	int		max_fcoe_exchanges;
+
+	union drv_info_to_mcp	*stats_addr;
+	struct fcoe_capabilities	*fcoe_cap;
+
+	void		*cnic_priv;
+};
+
+#define CNIC_WR(dev, off, val)		writel(val, dev->regview + off)
+#define CNIC_WR16(dev, off, val)	writew(val, dev->regview + off)
+#define CNIC_WR8(dev, off, val)		writeb(val, dev->regview + off)
+#define CNIC_RD(dev, off)		readl(dev->regview + off)
+#define CNIC_RD16(dev, off)		readw(dev->regview + off)
+
+struct cnic_ulp_ops {
+	/* Calls to these functions are protected by RCU.  When
+	 * unregistering, we wait for any calls to complete before
+	 * continuing.
+	 */
+
+	void (*cnic_init)(struct cnic_dev *dev);
+	void (*cnic_exit)(struct cnic_dev *dev);
+	void (*cnic_start)(void *ulp_ctx);
+	void (*cnic_stop)(void *ulp_ctx);
+	void (*indicate_kcqes)(void *ulp_ctx, struct kcqe *cqes[],
+				u32 num_cqes);
+	void (*indicate_netevent)(void *ulp_ctx, unsigned long event, u16 vid);
+	void (*cm_connect_complete)(struct cnic_sock *);
+	void (*cm_close_complete)(struct cnic_sock *);
+	void (*cm_abort_complete)(struct cnic_sock *);
+	void (*cm_remote_close)(struct cnic_sock *);
+	void (*cm_remote_abort)(struct cnic_sock *);
+	int (*iscsi_nl_send_msg)(void *ulp_ctx, u32 msg_type,
+				  char *data, u16 data_size);
+	int (*cnic_get_stats)(void *ulp_ctx);
+	struct module *owner;
+	atomic_t ref_count;
+};
+
+int cnic_register_driver(int ulp_type, struct cnic_ulp_ops *ulp_ops);
+
+int cnic_unregister_driver(int ulp_type);
+
+#endif

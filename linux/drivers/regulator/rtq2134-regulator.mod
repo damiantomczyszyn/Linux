@@ -1,1 +1,1 @@
-    $(wildcard include/config/HIGH_RES_
+// SPDX-License-Identifier: GPL-2.0-or-

@@ -1,46 +1,71 @@
-(wildcard include/config/SPLIT_PTLOCK_CPUS) \
-    $(wildcard include/config/ARCH_ENABLE_SPLIT_PMD_PTLOCK) \
-  arch/x86/include/asm/tlbbatch.h \
-  include/linux/task_io_accounting.h \
-    $(wildcard include/config/TASK_IO_ACCOUNTING) \
-  include/linux/posix-timers.h \
-  include/linux/alarmtimer.h \
-    $(wildcard include/config/RTC_CLASS) \
-  include/uapi/linux/rseq.h \
-  include/linux/kcsan.h \
-  arch/x86/include/generated/asm/kmap_size.h \
-  include/asm-generic/kmap_size.h \
-    $(wildcard include/config/DEBUG_KMAP_LOCAL) \
-  arch/x86/include/asm/delay.h \
-  include/asm-generic/delay.h \
-  include/linux/gpio/consumer.h \
-    $(wildcard include/config/GPIOLIB) \
-    $(wildcard include/config/OF_GPIO) \
-    $(wildcard include/config/ACPI) \
-    $(wildcard include/config/GPIO_SYSFS) \
-  include/linux/i2c.h \
-    $(wildcard include/config/I2C) \
-    $(wildcard include/config/I2C_SLAVE) \
-    $(wildcard include/config/I2C_BOARDINFO) \
-    $(wildcard include/config/I2C_MUX) \
-  include/linux/acpi.h \
-    $(wildcard include/config/ACPI_DEBUGGER) \
-    $(wildcard include/config/ACPI_TABLE_LIB) \
-    $(wildcard include/config/IA64) \
-    $(wildcard include/config/LOONGARCH) \
-    $(wildcard include/config/ARM64) \
-    $(wildcard include/config/ACPI_PROCESSOR_CSTATE) \
-    $(wildcard include/config/ACPI_HOTPLUG_CPU) \
-    $(wildcard include/config/ACPI_HOTPLUG_IOAPIC) \
-    $(wildcard include/config/X86_IO_APIC) \
-    $(wildcard include/config/PCI) \
-    $(wildcard include/config/ACPI_WMI) \
-    $(wildcard include/config/ACPI_NUMA) \
-    $(wildcard include/config/HIBERNATION) \
-    $(wildcard include/config/PM_SLEEP) \
-    $(wildcard include/config/ACPI_HOTPLUG_MEMORY) \
-    $(wildcard include/config/ACPI_CONTAINER) \
-    $(wildcard include/config/ACPI_GTDT) \
-    $(wildcard include/config/PM) \
-    $(wildcard include/config/ACPI_TABLE_UPGRADE) \
-    $(wildcard inc
+// SPDX-License-Identifier: GPL-2.0
+//
+// mcp251xfd - Microchip MCP251xFD Family CAN controller driver
+//
+// Copyright (c) 2021 Pengutronix,
+//               Marc Kleine-Budde <kernel@pengutronix.de>
+//
+
+#include <linux/clocksource.h>
+#include <linux/workqueue.h>
+
+#include "mcp251xfd.h"
+
+static u64 mcp251xfd_timestamp_read(const struct cyclecounter *cc)
+{
+	const struct mcp251xfd_priv *priv;
+	u32 timestamp = 0;
+	int err;
+
+	priv = container_of(cc, struct mcp251xfd_priv, cc);
+	err = mcp251xfd_get_timestamp(priv, &timestamp);
+	if (err)
+		netdev_err(priv->ndev,
+			   "Error %d while reading timestamp. HW timestamps may be inaccurate.",
+			   err);
+
+	return timestamp;
+}
+
+static void mcp251xfd_timestamp_work(struct work_struct *work)
+{
+	struct delayed_work *delayed_work = to_delayed_work(work);
+	struct mcp251xfd_priv *priv;
+
+	priv = container_of(delayed_work, struct mcp251xfd_priv, timestamp);
+	timecounter_read(&priv->tc);
+
+	schedule_delayed_work(&priv->timestamp,
+			      MCP251XFD_TIMESTAMP_WORK_DELAY_SEC * HZ);
+}
+
+void mcp251xfd_skb_set_timestamp(const struct mcp251xfd_priv *priv,
+				 struct sk_buff *skb, u32 timestamp)
+{
+	struct skb_shared_hwtstamps *hwtstamps = skb_hwtstamps(skb);
+	u64 ns;
+
+	ns = timecounter_cyc2time(&priv->tc, timestamp);
+	hwtstamps->hwtstamp = ns_to_ktime(ns);
+}
+
+void mcp251xfd_timestamp_init(struct mcp251xfd_priv *priv)
+{
+	struct cyclecounter *cc = &priv->cc;
+
+	cc->read = mcp251xfd_timestamp_read;
+	cc->mask = CYCLECOUNTER_MASK(32);
+	cc->shift = 1;
+	cc->mult = clocksource_hz2mult(priv->can.clock.freq, cc->shift);
+
+	timecounter_init(&priv->tc, &priv->cc, ktime_get_real_ns());
+
+	INIT_DELAYED_WORK(&priv->timestamp, mcp251xfd_timestamp_work);
+	schedule_delayed_work(&priv->timestamp,
+			      MCP251XFD_TIMESTAMP_WORK_DELAY_SEC * HZ);
+}
+
+void mcp251xfd_timestamp_stop(struct mcp251xfd_priv *priv)
+{
+	cancel_delayed_work_sync(&priv->timestamp);
+}

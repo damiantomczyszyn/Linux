@@ -1,407 +1,365 @@
-// SPDX-License-Identifier: GPL-2.0-only
-/* ir-rc6-decoder.c - A decoder for the RC6 IR protocol
- *
- * Copyright (C) 2010 by David Härdeman <david@hardeman.nu>
- */
-
-#include "rc-core-priv.h"
-#include <linux/module.h>
-
-/*
- * This decoder currently supports:
- * RC6-0-16	(standard toggle bit in header)
- * RC6-6A-20	(no toggle bit)
- * RC6-6A-24	(no toggle bit)
- * RC6-6A-32	(MCE version with toggle bit in body)
- */
-
-#define RC6_UNIT		444	/* microseconds */
-#define RC6_HEADER_NBITS	4	/* not including toggle bit */
-#define RC6_0_NBITS		16
-#define RC6_6A_32_NBITS		32
-#define RC6_6A_NBITS		128	/* Variable 8..128 */
-#define RC6_PREFIX_PULSE	(6 * RC6_UNIT)
-#define RC6_PREFIX_SPACE	(2 * RC6_UNIT)
-#define RC6_BIT_START		(1 * RC6_UNIT)
-#define RC6_BIT_END		(1 * RC6_UNIT)
-#define RC6_TOGGLE_START	(2 * RC6_UNIT)
-#define RC6_TOGGLE_END		(2 * RC6_UNIT)
-#define RC6_SUFFIX_SPACE	(6 * RC6_UNIT)
-#define RC6_MODE_MASK		0x07	/* for the header bits */
-#define RC6_STARTBIT_MASK	0x08	/* for the header bits */
-#define RC6_6A_MCE_TOGGLE_MASK	0x8000	/* for the body bits */
-#define RC6_6A_LCC_MASK		0xffff0000 /* RC6-6A-32 long customer code mask */
-#define RC6_6A_MCE_CC		0x800f0000 /* MCE customer code */
-#define RC6_6A_ZOTAC_CC		0x80340000 /* Zotac customer code */
-#define RC6_6A_KATHREIN_CC	0x80460000 /* Kathrein RCU-676 customer code */
-#ifndef CHAR_BIT
-#define CHAR_BIT 8	/* Normally in <limits.h> */
-#endif
-
-enum rc6_mode {
-	RC6_MODE_0,
-	RC6_MODE_6A,
-	RC6_MODE_UNKNOWN,
-};
-
-enum rc6_state {
-	STATE_INACTIVE,
-	STATE_PREFIX_SPACE,
-	STATE_HEADER_BIT_START,
-	STATE_HEADER_BIT_END,
-	STATE_TOGGLE_START,
-	STATE_TOGGLE_END,
-	STATE_BODY_BIT_START,
-	STATE_BODY_BIT_END,
-	STATE_FINISHED,
-};
-
-static enum rc6_mode rc6_mode(struct rc6_dec *data)
-{
-	switch (data->header & RC6_MODE_MASK) {
-	case 0:
-		return RC6_MODE_0;
-	case 6:
-		if (!data->toggle)
-			return RC6_MODE_6A;
-		fallthrough;
-	default:
-		return RC6_MODE_UNKNOWN;
-	}
-}
-
-/**
- * ir_rc6_decode() - Decode one RC6 pulse or space
- * @dev:	the struct rc_dev descriptor of the device
- * @ev:		the struct ir_raw_event descriptor of the pulse/space
- *
- * This function returns -EINVAL if the pulse violates the state machine
- */
-static int ir_rc6_decode(struct rc_dev *dev, struct ir_raw_event ev)
-{
-	struct rc6_dec *data = &dev->raw->rc6;
-	u32 scancode;
-	u8 toggle;
-	enum rc_proto protocol;
-
-	if (!is_timing_event(ev)) {
-		if (ev.overflow)
-			data->state = STATE_INACTIVE;
-		return 0;
-	}
-
-	if (!geq_margin(ev.duration, RC6_UNIT, RC6_UNIT / 2))
-		goto out;
-
-again:
-	dev_dbg(&dev->dev, "RC6 decode started at state %i (%uus %s)\n",
-		data->state, ev.duration, TO_STR(ev.pulse));
-
-	if (!geq_margin(ev.duration, RC6_UNIT, RC6_UNIT / 2))
-		return 0;
-
-	switch (data->state) {
-
-	case STATE_INACTIVE:
-		if (!ev.pulse)
-			break;
-
-		/* Note: larger margin on first pulse since each RC6_UNIT
-		   is quite short and some hardware takes some time to
-		   adjust to the signal */
-		if (!eq_margin(ev.duration, RC6_PREFIX_PULSE, RC6_UNIT))
-			break;
-
-		data->state = STATE_PREFIX_SPACE;
-		data->count = 0;
-		return 0;
-
-	case STATE_PREFIX_SPACE:
-		if (ev.pulse)
-			break;
-
-		if (!eq_margin(ev.duration, RC6_PREFIX_SPACE, RC6_UNIT / 2))
-			break;
-
-		data->state = STATE_HEADER_BIT_START;
-		data->header = 0;
-		return 0;
-
-	case STATE_HEADER_BIT_START:
-		if (!eq_margin(ev.duration, RC6_BIT_START, RC6_UNIT / 2))
-			break;
-
-		data->header <<= 1;
-		if (ev.pulse)
-			data->header |= 1;
-		data->count++;
-		data->state = STATE_HEADER_BIT_END;
-		return 0;
-
-	case STATE_HEADER_BIT_END:
-		if (data->count == RC6_HEADER_NBITS)
-			data->state = STATE_TOGGLE_START;
-		else
-			data->state = STATE_HEADER_BIT_START;
-
-		decrease_duration(&ev, RC6_BIT_END);
-		goto again;
-
-	case STATE_TOGGLE_START:
-		if (!eq_margin(ev.duration, RC6_TOGGLE_START, RC6_UNIT / 2))
-			break;
-
-		data->toggle = ev.pulse;
-		data->state = STATE_TOGGLE_END;
-		return 0;
-
-	case STATE_TOGGLE_END:
-		if (!(data->header & RC6_STARTBIT_MASK)) {
-			dev_dbg(&dev->dev, "RC6 invalid start bit\n");
-			break;
-		}
-
-		data->state = STATE_BODY_BIT_START;
-		decrease_duration(&ev, RC6_TOGGLE_END);
-		data->count = 0;
-		data->body = 0;
-
-		switch (rc6_mode(data)) {
-		case RC6_MODE_0:
-			data->wanted_bits = RC6_0_NBITS;
-			break;
-		case RC6_MODE_6A:
-			data->wanted_bits = RC6_6A_NBITS;
-			break;
-		default:
-			dev_dbg(&dev->dev, "RC6 unknown mode\n");
-			goto out;
-		}
-		goto again;
-
-	case STATE_BODY_BIT_START:
-		if (eq_margin(ev.duration, RC6_BIT_START, RC6_UNIT / 2)) {
-			/* Discard LSB's that won't fit in data->body */
-			if (data->count++ < CHAR_BIT * sizeof data->body) {
-				data->body <<= 1;
-				if (ev.pulse)
-					data->body |= 1;
-			}
-			data->state = STATE_BODY_BIT_END;
-			return 0;
-		} else if (RC6_MODE_6A == rc6_mode(data) && !ev.pulse &&
-				geq_margin(ev.duration, RC6_SUFFIX_SPACE, RC6_UNIT / 2)) {
-			data->state = STATE_FINISHED;
-			goto again;
-		}
+D_DVB:
+	case CX23885_BOARD_HAUPPAUGE_QUADHD_ATSC:
 		break;
-
-	case STATE_BODY_BIT_END:
-		if (data->count == data->wanted_bits)
-			data->state = STATE_FINISHED;
-		else
-			data->state = STATE_BODY_BIT_START;
-
-		decrease_duration(&ev, RC6_BIT_END);
-		goto again;
-
-	case STATE_FINISHED:
-		if (ev.pulse)
-			break;
-
-		switch (rc6_mode(data)) {
-		case RC6_MODE_0:
-			scancode = data->body;
-			toggle = data->toggle;
-			protocol = RC_PROTO_RC6_0;
-			dev_dbg(&dev->dev, "RC6(0) scancode 0x%04x (toggle: %u)\n",
-				scancode, toggle);
-			break;
-
-		case RC6_MODE_6A:
-			if (data->count > CHAR_BIT * sizeof data->body) {
-				dev_dbg(&dev->dev, "RC6 too many (%u) data bits\n",
-					data->count);
-				goto out;
-			}
-
-			scancode = data->body;
-			switch (data->count) {
-			case 20:
-				protocol = RC_PROTO_RC6_6A_20;
-				toggle = 0;
-				break;
-			case 24:
-				protocol = RC_PROTO_RC6_6A_24;
-				toggle = 0;
-				break;
-			case 32:
-				switch (scancode & RC6_6A_LCC_MASK) {
-				case RC6_6A_MCE_CC:
-				case RC6_6A_KATHREIN_CC:
-				case RC6_6A_ZOTAC_CC:
-					protocol = RC_PROTO_RC6_MCE;
-					toggle = !!(scancode & RC6_6A_MCE_TOGGLE_MASK);
-					scancode &= ~RC6_6A_MCE_TOGGLE_MASK;
-					break;
-				default:
-					protocol = RC_PROTO_RC6_6A_32;
-					toggle = 0;
-					break;
-				}
-				break;
-			default:
-				dev_dbg(&dev->dev, "RC6(6A) unsupported length\n");
-				goto out;
-			}
-
-			dev_dbg(&dev->dev, "RC6(6A) proto 0x%04x, scancode 0x%08x (toggle: %u)\n",
-				protocol, scancode, toggle);
-			break;
-		default:
-			dev_dbg(&dev->dev, "RC6 unknown mode\n");
-			goto out;
-		}
-
-		rc_keydown(dev, protocol, scancode, toggle);
-		data->state = STATE_INACTIVE;
-		return 0;
-	}
-
-out:
-	dev_dbg(&dev->dev, "RC6 decode failed at state %i (%uus %s)\n",
-		data->state, ev.duration, TO_STR(ev.pulse));
-	data->state = STATE_INACTIVE;
-	return -EINVAL;
-}
-
-static const struct ir_raw_timings_manchester ir_rc6_timings[4] = {
-	{
-		.leader_pulse		= RC6_PREFIX_PULSE,
-		.leader_space		= RC6_PREFIX_SPACE,
-		.clock			= RC6_UNIT,
-		.invert			= 1,
-	},
-	{
-		.clock			= RC6_UNIT * 2,
-		.invert			= 1,
-	},
-	{
-		.clock			= RC6_UNIT,
-		.invert			= 1,
-		.trailer_space		= RC6_SUFFIX_SPACE,
-	},
-};
-
-/**
- * ir_rc6_encode() - Encode a scancode as a stream of raw events
- *
- * @protocol:	protocol to encode
- * @scancode:	scancode to encode
- * @events:	array of raw ir events to write into
- * @max:	maximum size of @events
- *
- * Returns:	The number of events written.
- *		-ENOBUFS if there isn't enough space in the array to fit the
- *		encoding. In this case all @max events will have been written.
- *		-EINVAL if the scancode is ambiguous or invalid.
- */
-static int ir_rc6_encode(enum rc_proto protocol, u32 scancode,
-			 struct ir_raw_event *events, unsigned int max)
-{
-	int ret;
-	struct ir_raw_event *e = events;
-
-	if (protocol == RC_PROTO_RC6_0) {
-		/* Modulate the header (Start Bit & Mode-0) */
-		ret = ir_raw_gen_manchester(&e, max - (e - events),
-					    &ir_rc6_timings[0],
-					    RC6_HEADER_NBITS, (1 << 3));
-		if (ret < 0)
-			return ret;
-
-		/* Modulate Trailer Bit */
-		ret = ir_raw_gen_manchester(&e, max - (e - events),
-					    &ir_rc6_timings[1], 1, 0);
-		if (ret < 0)
-			return ret;
-
-		/* Modulate rest of the data */
-		ret = ir_raw_gen_manchester(&e, max - (e - events),
-					    &ir_rc6_timings[2], RC6_0_NBITS,
-					    scancode);
-		if (ret < 0)
-			return ret;
-
-	} else {
-		int bits;
-
-		switch (protocol) {
-		case RC_PROTO_RC6_MCE:
-		case RC_PROTO_RC6_6A_32:
-			bits = 32;
-			break;
-		case RC_PROTO_RC6_6A_24:
-			bits = 24;
-			break;
-		case RC_PROTO_RC6_6A_20:
-			bits = 20;
-			break;
-		default:
+	default:
+		if (dev->tuner_type == TUNER_ABSENT)
 			return -EINVAL;
-		}
-
-		/* Modulate the header (Start Bit & Header-version 6 */
-		ret = ir_raw_gen_manchester(&e, max - (e - events),
-					    &ir_rc6_timings[0],
-					    RC6_HEADER_NBITS, (1 << 3 | 6));
-		if (ret < 0)
-			return ret;
-
-		/* Modulate Trailer Bit */
-		ret = ir_raw_gen_manchester(&e, max - (e - events),
-					    &ir_rc6_timings[1], 1, 0);
-		if (ret < 0)
-			return ret;
-
-		/* Modulate rest of the data */
-		ret = ir_raw_gen_manchester(&e, max - (e - events),
-					    &ir_rc6_timings[2],
-					    bits,
-					    scancode);
-		if (ret < 0)
-			return ret;
+		break;
 	}
+	if (0 != t->index)
+		return -EINVAL;
 
-	return e - events;
-}
+	strscpy(t->name, "Television", sizeof(t->name));
 
-static struct ir_raw_handler rc6_handler = {
-	.protocols	= RC_PROTO_BIT_RC6_0 | RC_PROTO_BIT_RC6_6A_20 |
-			  RC_PROTO_BIT_RC6_6A_24 | RC_PROTO_BIT_RC6_6A_32 |
-			  RC_PROTO_BIT_RC6_MCE,
-	.decode		= ir_rc6_decode,
-	.encode		= ir_rc6_encode,
-	.carrier	= 36000,
-	.min_timeout	= RC6_SUFFIX_SPACE,
-};
-
-static int __init ir_rc6_decode_init(void)
-{
-	ir_raw_handler_register(&rc6_handler);
-
-	printk(KERN_INFO "IR RC6 protocol handler initialized\n");
+	call_all(dev, tuner, g_tuner, t);
 	return 0;
 }
 
-static void __exit ir_rc6_decode_exit(void)
+static int vidioc_s_tuner(struct file *file, void *priv,
+				const struct v4l2_tuner *t)
 {
-	ir_raw_handler_unregister(&rc6_handler);
+	struct cx23885_dev *dev = video_drvdata(file);
+
+	switch (dev->board) { /* i2c device tuners */
+	case CX23885_BOARD_HAUPPAUGE_HVR1265_K4:
+	case CX23885_BOARD_HAUPPAUGE_HVR5525:
+	case CX23885_BOARD_HAUPPAUGE_QUADHD_DVB:
+	case CX23885_BOARD_HAUPPAUGE_QUADHD_ATSC:
+		break;
+	default:
+		if (dev->tuner_type == TUNER_ABSENT)
+			return -EINVAL;
+		break;
+	}
+	if (0 != t->index)
+		return -EINVAL;
+	/* Update the A/V core */
+	call_all(dev, tuner, s_tuner, t);
+
+	return 0;
 }
 
-module_init(ir_rc6_decode_init);
-module_exit(ir_rc6_decode_exit);
+static int vidioc_g_frequency(struct file *file, void *priv,
+				struct v4l2_frequency *f)
+{
+	struct cx23885_dev *dev = video_drvdata(file);
 
-MODULE_LICENSE("GPL");
-MODULE_AUTHOR("David Härdeman <david@hardeman.nu>");
-MODULE_DESCRIPTION("RC6 IR protocol decoder");
+	switch (dev->board) { /* i2c device tuners */
+	case CX23885_BOARD_HAUPPAUGE_HVR1265_K4:
+	case CX23885_BOARD_HAUPPAUGE_HVR5525:
+	case CX23885_BOARD_HAUPPAUGE_QUADHD_DVB:
+	case CX23885_BOARD_HAUPPAUGE_QUADHD_ATSC:
+		break;
+	default:
+		if (dev->tuner_type == TUNER_ABSENT)
+			return -EINVAL;
+		break;
+	}
+	f->type = V4L2_TUNER_ANALOG_TV;
+	f->frequency = dev->freq;
+
+	call_all(dev, tuner, g_frequency, f);
+
+	return 0;
+}
+
+static int cx23885_set_freq(struct cx23885_dev *dev, const struct v4l2_frequency *f)
+{
+	struct v4l2_ctrl *mute;
+	int old_mute_val = 1;
+
+	switch (dev->board) { /* i2c device tuners */
+	case CX23885_BOARD_HAUPPAUGE_HVR1265_K4:
+	case CX23885_BOARD_HAUPPAUGE_HVR5525:
+	case CX23885_BOARD_HAUPPAUGE_QUADHD_DVB:
+	case CX23885_BOARD_HAUPPAUGE_QUADHD_ATSC:
+		break;
+	default:
+		if (dev->tuner_type == TUNER_ABSENT)
+			return -EINVAL;
+		break;
+	}
+	if (unlikely(f->tuner != 0))
+		return -EINVAL;
+
+	dev->freq = f->frequency;
+
+	/* I need to mute audio here */
+	mute = v4l2_ctrl_find(&dev->ctrl_handler, V4L2_CID_AUDIO_MUTE);
+	if (mute) {
+		old_mute_val = v4l2_ctrl_g_ctrl(mute);
+		if (!old_mute_val)
+			v4l2_ctrl_s_ctrl(mute, 1);
+	}
+
+	call_all(dev, tuner, s_frequency, f);
+
+	/* When changing channels it is required to reset TVAUDIO */
+	msleep(100);
+
+	/* I need to unmute audio here */
+	if (old_mute_val == 0)
+		v4l2_ctrl_s_ctrl(mute, old_mute_val);
+
+	return 0;
+}
+
+static int cx23885_set_freq_via_ops(struct cx23885_dev *dev,
+	const struct v4l2_frequency *f)
+{
+	struct v4l2_ctrl *mute;
+	int old_mute_val = 1;
+	struct vb2_dvb_frontend *vfe;
+	struct dvb_frontend *fe;
+
+	struct analog_parameters params = {
+		.mode      = V4L2_TUNER_ANALOG_TV,
+		.audmode   = V4L2_TUNER_MODE_STEREO,
+		.std       = dev->tvnorm,
+		.frequency = f->frequency
+	};
+
+	dev->freq = f->frequency;
+
+	/* I need to mute audio here */
+	mute = v4l2_ctrl_find(&dev->ctrl_handler, V4L2_CID_AUDIO_MUTE);
+	if (mute) {
+		old_mute_val = v4l2_ctrl_g_ctrl(mute);
+		if (!old_mute_val)
+			v4l2_ctrl_s_ctrl(mute, 1);
+	}
+
+	/* If HVR1850 */
+	dprintk(1, "%s() frequency=%d tuner=%d std=0x%llx\n", __func__,
+		params.frequency, f->tuner, params.std);
+
+	vfe = vb2_dvb_get_frontend(&dev->ts2.frontends, 1);
+	if (!vfe) {
+		return -EINVAL;
+	}
+
+	fe = vfe->dvb.frontend;
+
+	if ((dev->board == CX23885_BOARD_HAUPPAUGE_HVR1850) ||
+	    (dev->board == CX23885_BOARD_HAUPPAUGE_HVR1255) ||
+	    (dev->board == CX23885_BOARD_HAUPPAUGE_HVR1255_22111) ||
+	    (dev->board == CX23885_BOARD_HAUPPAUGE_HVR1265_K4) ||
+	    (dev->board == CX23885_BOARD_HAUPPAUGE_HVR5525) ||
+	    (dev->board == CX23885_BOARD_HAUPPAUGE_QUADHD_DVB) ||
+	    (dev->board == CX23885_BOARD_HAUPPAUGE_QUADHD_ATSC))
+		fe = &dev->ts1.analog_fe;
+
+	if (fe && fe->ops.tuner_ops.set_analog_params) {
+		call_all(dev, video, s_std, dev->tvnorm);
+		fe->ops.tuner_ops.set_analog_params(fe, &params);
+	}
+	else
+		pr_err("%s() No analog tuner, aborting\n", __func__);
+
+	/* When changing channels it is required to reset TVAUDIO */
+	msleep(100);
+
+	/* I need to unmute audio here */
+	if (old_mute_val == 0)
+		v4l2_ctrl_s_ctrl(mute, old_mute_val);
+
+	return 0;
+}
+
+int cx23885_set_frequency(struct file *file, void *priv,
+	const struct v4l2_frequency *f)
+{
+	struct cx23885_dev *dev = video_drvdata(file);
+	int ret;
+
+	switch (dev->board) {
+	case CX23885_BOARD_HAUPPAUGE_HVR1255:
+	case CX23885_BOARD_HAUPPAUGE_HVR1255_22111:
+	case CX23885_BOARD_HAUPPAUGE_HVR1265_K4:
+	case CX23885_BOARD_HAUPPAUGE_HVR1850:
+	case CX23885_BOARD_HAUPPAUGE_HVR5525:
+	case CX23885_BOARD_HAUPPAUGE_QUADHD_DVB:
+	case CX23885_BOARD_HAUPPAUGE_QUADHD_ATSC:
+		ret = cx23885_set_freq_via_ops(dev, f);
+		break;
+	default:
+		ret = cx23885_set_freq(dev, f);
+	}
+
+	return ret;
+}
+
+static int vidioc_s_frequency(struct file *file, void *priv,
+	const struct v4l2_frequency *f)
+{
+	return cx23885_set_frequency(file, priv, f);
+}
+
+/* ----------------------------------------------------------- */
+
+int cx23885_video_irq(struct cx23885_dev *dev, u32 status)
+{
+	u32 mask, count;
+	int handled = 0;
+
+	mask   = cx_read(VID_A_INT_MSK);
+	if (0 == (status & mask))
+		return handled;
+
+	cx_write(VID_A_INT_STAT, status);
+
+	/* risc op code error, fifo overflow or line sync detection error */
+	if ((status & VID_BC_MSK_OPC_ERR) ||
+		(status & VID_BC_MSK_SYNC) ||
+		(status & VID_BC_MSK_OF)) {
+
+		if (status & VID_BC_MSK_OPC_ERR) {
+			dprintk(7, " (VID_BC_MSK_OPC_ERR 0x%08x)\n",
+				VID_BC_MSK_OPC_ERR);
+			pr_warn("%s: video risc op code error\n",
+				dev->name);
+			cx23885_sram_channel_dump(dev,
+				&dev->sram_channels[SRAM_CH01]);
+		}
+
+		if (status & VID_BC_MSK_SYNC)
+			dprintk(7, " (VID_BC_MSK_SYNC 0x%08x) video lines miss-match\n",
+				VID_BC_MSK_SYNC);
+
+		if (status & VID_BC_MSK_OF)
+			dprintk(7, " (VID_BC_MSK_OF 0x%08x) fifo overflow\n",
+				VID_BC_MSK_OF);
+
+	}
+
+	/* Video */
+	if (status & VID_BC_MSK_RISCI1) {
+		spin_lock(&dev->slock);
+		count = cx_read(VID_A_GPCNT);
+		cx23885_video_wakeup(dev, &dev->vidq, count);
+		spin_unlock(&dev->slock);
+		handled++;
+	}
+
+	/* Allow the VBI framework to process it's payload */
+	handled += cx23885_vbi_irq(dev, status);
+
+	return handled;
+}
+
+/* ----------------------------------------------------------- */
+/* exported stuff                                              */
+
+static const struct v4l2_file_operations video_fops = {
+	.owner	       = THIS_MODULE,
+	.open           = v4l2_fh_open,
+	.release        = vb2_fop_release,
+	.read           = vb2_fop_read,
+	.poll		= vb2_fop_poll,
+	.unlocked_ioctl = video_ioctl2,
+	.mmap           = vb2_fop_mmap,
+};
+
+static const struct v4l2_ioctl_ops video_ioctl_ops = {
+	.vidioc_querycap      = vidioc_querycap,
+	.vidioc_enum_fmt_vid_cap  = vidioc_enum_fmt_vid_cap,
+	.vidioc_g_fmt_vid_cap     = vidioc_g_fmt_vid_cap,
+	.vidioc_try_fmt_vid_cap   = vidioc_try_fmt_vid_cap,
+	.vidioc_s_fmt_vid_cap     = vidioc_s_fmt_vid_cap,
+	.vidioc_g_fmt_vbi_cap     = cx23885_vbi_fmt,
+	.vidioc_try_fmt_vbi_cap   = cx23885_vbi_fmt,
+	.vidioc_s_fmt_vbi_cap     = cx23885_vbi_fmt,
+	.vidioc_reqbufs       = vb2_ioctl_reqbufs,
+	.vidioc_prepare_buf   = vb2_ioctl_prepare_buf,
+	.vidioc_querybuf      = vb2_ioctl_querybuf,
+	.vidioc_qbuf          = vb2_ioctl_qbuf,
+	.vidioc_dqbuf         = vb2_ioctl_dqbuf,
+	.vidioc_streamon      = vb2_ioctl_streamon,
+	.vidioc_streamoff     = vb2_ioctl_streamoff,
+	.vidioc_g_pixelaspect = vidioc_g_pixelaspect,
+	.vidioc_g_selection   = vidioc_g_selection,
+	.vidioc_s_std         = vidioc_s_std,
+	.vidioc_g_std         = vidioc_g_std,
+	.vidioc_enum_input    = vidioc_enum_input,
+	.vidioc_g_input       = vidioc_g_input,
+	.vidioc_s_input       = vidioc_s_input,
+	.vidioc_log_status    = vidioc_log_status,
+	.vidioc_g_tuner       = vidioc_g_tuner,
+	.vidioc_s_tuner       = vidioc_s_tuner,
+	.vidioc_g_frequency   = vidioc_g_frequency,
+	.vidioc_s_frequency   = vidioc_s_frequency,
+#ifdef CONFIG_VIDEO_ADV_DEBUG
+	.vidioc_g_chip_info   = cx23885_g_chip_info,
+	.vidioc_g_register    = cx23885_g_register,
+	.vidioc_s_register    = cx23885_s_register,
+#endif
+	.vidioc_enumaudio     = vidioc_enum_audinput,
+	.vidioc_g_audio       = vidioc_g_audinput,
+	.vidioc_s_audio       = vidioc_s_audinput,
+	.vidioc_subscribe_event = v4l2_ctrl_subscribe_event,
+	.vidioc_unsubscribe_event = v4l2_event_unsubscribe,
+};
+
+static struct video_device cx23885_vbi_template;
+static struct video_device cx23885_video_template = {
+	.name                 = "cx23885-video",
+	.fops                 = &video_fops,
+	.ioctl_ops	      = &video_ioctl_ops,
+	.tvnorms              = CX23885_NORMS,
+};
+
+void cx23885_video_unregister(struct cx23885_dev *dev)
+{
+	dprintk(1, "%s()\n", __func__);
+	cx23885_irq_remove(dev, 0x01);
+
+	if (dev->vbi_dev) {
+		if (video_is_registered(dev->vbi_dev))
+			video_unregister_device(dev->vbi_dev);
+		else
+			video_device_release(dev->vbi_dev);
+		dev->vbi_dev = NULL;
+	}
+	if (dev->video_dev) {
+		if (video_is_registered(dev->video_dev))
+			video_unregister_device(dev->video_dev);
+		else
+			video_device_release(dev->video_dev);
+		dev->video_dev = NULL;
+	}
+
+	if (dev->audio_dev)
+		cx23885_audio_unregister(dev);
+}
+
+int cx23885_video_register(struct cx23885_dev *dev)
+{
+	struct vb2_queue *q;
+	int err;
+
+	dprintk(1, "%s()\n", __func__);
+
+	/* Initialize VBI template */
+	cx23885_vbi_template = cx23885_video_template;
+	strscpy(cx23885_vbi_template.name, "cx23885-vbi",
+		sizeof(cx23885_vbi_template.name));
+
+	dev->tvnorm = V4L2_STD_NTSC_M;
+	dev->fmt = format_by_fourcc(V4L2_PIX_FMT_YUYV);
+	dev->field = V4L2_FIELD_INTERLACED;
+	dev->width = 720;
+	dev->height = norm_maxh(dev->tvnorm);
+
+	/* init video dma queues */
+	INIT_LIST_HEAD(&dev->vidq.active);
+
+	/* init vbi dma queues */
+	INIT_LIST_HEAD(&dev->vbiq.active);
+
+	cx23885_irq_add_enable(dev, 0x01);
+
+	if ((TUNER_ABSENT != dev->tuner_type) &&
+			((dev->tuner_bus == 0) || (dev->tuner_bus == 1))) {
+		struct v4l2_subdev *sd = NULL;
+
+		if

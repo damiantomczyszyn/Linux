@@ -1,547 +1,549 @@
-NTRIES);
-	seq_printf(m, " indirect dependencies:         %11lu\n",
-			sum_forward_deps);
+*
+	 * Forcefully restricting the affinity of a deadline task is
+	 * likely to cause problems, so fail and noisily override the
+	 * mask entirely.
+	 */
+	if (task_has_dl_policy(p) && dl_bandwidth_enabled()) {
+		err = -EPERM;
+		goto err_unlock;
+	}
+
+	if (!cpumask_and(new_mask, &p->cpus_mask, subset_mask)) {
+		err = -EINVAL;
+		goto err_unlock;
+	}
 
 	/*
-	 * Total number of dependencies:
-	 *
-	 * All irq-safe locks may nest inside irq-unsafe locks,
-	 * plus all the other known dependencies:
+	 * We're about to butcher the task affinity, so keep track of what
+	 * the user asked for in case we're able to restore it later on.
 	 */
-	seq_printf(m, " all direct dependencies:       %11lu\n",
-			nr_irq_unsafe * nr_irq_safe +
-			nr_hardirq_unsafe * nr_hardirq_safe +
-			nr_list_entries);
+	if (user_mask) {
+		cpumask_copy(user_mask, p->cpus_ptr);
+		p->user_cpus_ptr = user_mask;
+	}
 
-#ifdef CONFIG_PROVE_LOCKING
-	seq_printf(m, " dependency chains:             %11lu [max: %lu]\n",
-			lock_chain_count(), MAX_LOCKDEP_CHAINS);
-	seq_printf(m, " dependency chain hlocks used:  %11lu [max: %lu]\n",
-			MAX_LOCKDEP_CHAIN_HLOCKS -
-			(nr_free_chain_hlocks + nr_lost_chain_hlocks),
-			MAX_LOCKDEP_CHAIN_HLOCKS);
-	seq_printf(m, " dependency chain hlocks lost:  %11u\n",
-			nr_lost_chain_hlocks);
-#endif
+	return __set_cpus_allowed_ptr_locked(p, new_mask, 0, rq, &rf);
 
-#ifdef CONFIG_TRACE_IRQFLAGS
-	seq_printf(m, " in-hardirq chains:             %11u\n",
-			nr_hardirq_chains);
-	seq_printf(m, " in-softirq chains:             %11u\n",
-			nr_softirq_chains);
-#endif
-	seq_printf(m, " in-process chains:             %11u\n",
-			nr_process_chains);
-	seq_printf(m, " stack-trace entries:           %11lu [max: %lu]\n",
-			nr_stack_trace_entries, MAX_STACK_TRACE_ENTRIES);
-#if defined(CONFIG_TRACE_IRQFLAGS) && defined(CONFIG_PROVE_LOCKING)
-	seq_printf(m, " number of stack traces:        %11llu\n",
-		   lockdep_stack_trace_count());
-	seq_printf(m, " number of stack hash chains:   %11llu\n",
-		   lockdep_stack_hash_count());
-#endif
-	seq_printf(m, " combined max dependencies:     %11u\n",
-			(nr_hardirq_chains + 1) *
-			(nr_softirq_chains + 1) *
-			(nr_process_chains + 1)
-	);
-	seq_printf(m, " hardirq-safe locks:            %11lu\n",
-			nr_hardirq_safe);
-	seq_printf(m, " hardirq-unsafe locks:          %11lu\n",
-			nr_hardirq_unsafe);
-	seq_printf(m, " softirq-safe locks:            %11lu\n",
-			nr_softirq_safe);
-	seq_printf(m, " softirq-unsafe locks:          %11lu\n",
-			nr_softirq_unsafe);
-	seq_printf(m, " irq-safe locks:                %11lu\n",
-			nr_irq_safe);
-	seq_printf(m, " irq-unsafe locks:              %11lu\n",
-			nr_irq_unsafe);
-
-	seq_printf(m, " hardirq-read-safe locks:       %11lu\n",
-			nr_hardirq_read_safe);
-	seq_printf(m, " hardirq-read-unsafe locks:     %11lu\n",
-			nr_hardirq_read_unsafe);
-	seq_printf(m, " softirq-read-safe locks:       %11lu\n",
-			nr_softirq_read_safe);
-	seq_printf(m, " softirq-read-unsafe locks:     %11lu\n",
-			nr_softirq_read_unsafe);
-	seq_printf(m, " irq-read-safe locks:           %11lu\n",
-			nr_irq_read_safe);
-	seq_printf(m, " irq-read-unsafe locks:         %11lu\n",
-			nr_irq_read_unsafe);
-
-	seq_printf(m, " uncategorized locks:           %11lu\n",
-			nr_uncategorized);
-	seq_printf(m, " unused locks:                  %11lu\n",
-			nr_unused);
-	seq_printf(m, " max locking depth:             %11u\n",
-			max_lockdep_depth);
-#ifdef CONFIG_PROVE_LOCKING
-	seq_printf(m, " max bfs queue depth:           %11u\n",
-			max_bfs_queue_depth);
-#endif
-	seq_printf(m, " max lock class index:          %11lu\n",
-			max_lock_class_idx);
-	lockdep_stats_debug_show(m);
-	seq_printf(m, " debug_locks:                   %11u\n",
-			debug_locks);
-
-	/*
-	 * Zapped classes and lockdep data buffers reuse statistics.
-	 */
-	seq_puts(m, "\n");
-	seq_printf(m, " zapped classes:                %11lu\n",
-			nr_zapped_classes);
-#ifdef CONFIG_PROVE_LOCKING
-	seq_printf(m, " zapped lock chains:            %11lu\n",
-			nr_zapped_lock_chains);
-	seq_printf(m, " large chain blocks:            %11u\n",
-			nr_large_chain_blocks);
-#endif
-	return 0;
+err_unlock:
+	task_rq_unlock(rq, p, &rf);
+	kfree(user_mask);
+	return err;
 }
-
-#ifdef CONFIG_LOCK_STAT
-
-struct lock_stat_data {
-	struct lock_class *class;
-	struct lock_class_stats stats;
-};
-
-struct lock_stat_seq {
-	struct lock_stat_data *iter_end;
-	struct lock_stat_data stats[MAX_LOCKDEP_KEYS];
-};
 
 /*
- * sort on absolute number of contentions
+ * Restrict the CPU affinity of task @p so that it is a subset of
+ * task_cpu_possible_mask() and point @p->user_cpu_ptr to a copy of the
+ * old affinity mask. If the resulting mask is empty, we warn and walk
+ * up the cpuset hierarchy until we find a suitable mask.
  */
-static int lock_stat_cmp(const void *l, const void *r)
+void force_compatible_cpus_allowed_ptr(struct task_struct *p)
 {
-	const struct lock_stat_data *dl = l, *dr = r;
-	unsigned long nl, nr;
+	cpumask_var_t new_mask;
+	const struct cpumask *override_mask = task_cpu_possible_mask(p);
 
-	nl = dl->stats.read_waittime.nr + dl->stats.write_waittime.nr;
-	nr = dr->stats.read_waittime.nr + dr->stats.write_waittime.nr;
+	alloc_cpumask_var(&new_mask, GFP_KERNEL);
 
-	return nr - nl;
+	/*
+	 * __migrate_task() can fail silently in the face of concurrent
+	 * offlining of the chosen destination CPU, so take the hotplug
+	 * lock to ensure that the migration succeeds.
+	 */
+	cpus_read_lock();
+	if (!cpumask_available(new_mask))
+		goto out_set_mask;
+
+	if (!restrict_cpus_allowed_ptr(p, new_mask, override_mask))
+		goto out_free_mask;
+
+	/*
+	 * We failed to find a valid subset of the affinity mask for the
+	 * task, so override it based on its cpuset hierarchy.
+	 */
+	cpuset_cpus_allowed(p, new_mask);
+	override_mask = new_mask;
+
+out_set_mask:
+	if (printk_ratelimit()) {
+		printk_deferred("Overriding affinity for process %d (%s) to CPUs %*pbl\n",
+				task_pid_nr(p), p->comm,
+				cpumask_pr_args(override_mask));
+	}
+
+	WARN_ON(set_cpus_allowed_ptr(p, override_mask));
+out_free_mask:
+	cpus_read_unlock();
+	free_cpumask_var(new_mask);
 }
 
-static void seq_line(struct seq_file *m, char c, int offset, int length)
+static int
+__sched_setaffinity(struct task_struct *p, const struct cpumask *mask);
+
+/*
+ * Restore the affinity of a task @p which was previously restricted by a
+ * call to force_compatible_cpus_allowed_ptr(). This will clear (and free)
+ * @p->user_cpus_ptr.
+ *
+ * It is the caller's responsibility to serialise this with any calls to
+ * force_compatible_cpus_allowed_ptr(@p).
+ */
+void relax_compatible_cpus_allowed_ptr(struct task_struct *p)
 {
+	struct cpumask *user_mask = p->user_cpus_ptr;
+	unsigned long flags;
+
+	/*
+	 * Try to restore the old affinity mask. If this fails, then
+	 * we free the mask explicitly to avoid it being inherited across
+	 * a subsequent fork().
+	 */
+	if (!user_mask || !__sched_setaffinity(p, user_mask))
+		return;
+
+	raw_spin_lock_irqsave(&p->pi_lock, flags);
+	user_mask = clear_user_cpus_ptr(p);
+	raw_spin_unlock_irqrestore(&p->pi_lock, flags);
+
+	kfree(user_mask);
+}
+
+void set_task_cpu(struct task_struct *p, unsigned int new_cpu)
+{
+#ifdef CONFIG_SCHED_DEBUG
+	unsigned int state = READ_ONCE(p->__state);
+
+	/*
+	 * We should never call set_task_cpu() on a blocked task,
+	 * ttwu() will sort out the placement.
+	 */
+	WARN_ON_ONCE(state != TASK_RUNNING && state != TASK_WAKING && !p->on_rq);
+
+	/*
+	 * Migrating fair class task must have p->on_rq = TASK_ON_RQ_MIGRATING,
+	 * because schedstat_wait_{start,end} rebase migrating task's wait_start
+	 * time relying on p->on_rq.
+	 */
+	WARN_ON_ONCE(state == TASK_RUNNING &&
+		     p->sched_class == &fair_sched_class &&
+		     (p->on_rq && !task_on_rq_migrating(p)));
+
+#ifdef CONFIG_LOCKDEP
+	/*
+	 * The caller should hold either p->pi_lock or rq->lock, when changing
+	 * a task's CPU. ->pi_lock for waking tasks, rq->lock for runnable tasks.
+	 *
+	 * sched_move_task() holds both and thus holding either pins the cgroup,
+	 * see task_group().
+	 *
+	 * Furthermore, all task_rq users should acquire both locks, see
+	 * task_rq_lock().
+	 */
+	WARN_ON_ONCE(debug_locks && !(lockdep_is_held(&p->pi_lock) ||
+				      lockdep_is_held(__rq_lockp(task_rq(p)))));
+#endif
+	/*
+	 * Clearly, migrating tasks to offline CPUs is a fairly daft thing.
+	 */
+	WARN_ON_ONCE(!cpu_online(new_cpu));
+
+	WARN_ON_ONCE(is_migration_disabled(p));
+#endif
+
+	trace_sched_migrate_task(p, new_cpu);
+
+	if (task_cpu(p) != new_cpu) {
+		if (p->sched_class->migrate_task_rq)
+			p->sched_class->migrate_task_rq(p, new_cpu);
+		p->se.nr_migrations++;
+		rseq_migrate(p);
+		perf_event_task_migrate(p);
+	}
+
+	__set_task_cpu(p, new_cpu);
+}
+
+#ifdef CONFIG_NUMA_BALANCING
+static void __migrate_swap_task(struct task_struct *p, int cpu)
+{
+	if (task_on_rq_queued(p)) {
+		struct rq *src_rq, *dst_rq;
+		struct rq_flags srf, drf;
+
+		src_rq = task_rq(p);
+		dst_rq = cpu_rq(cpu);
+
+		rq_pin_lock(src_rq, &srf);
+		rq_pin_lock(dst_rq, &drf);
+
+		deactivate_task(src_rq, p, 0);
+		set_task_cpu(p, cpu);
+		activate_task(dst_rq, p, 0);
+		check_preempt_curr(dst_rq, p, 0);
+
+		rq_unpin_lock(dst_rq, &drf);
+		rq_unpin_lock(src_rq, &srf);
+
+	} else {
+		/*
+		 * Task isn't running anymore; make it appear like we migrated
+		 * it before it went to sleep. This means on wakeup we make the
+		 * previous CPU our target instead of where it really is.
+		 */
+		p->wake_cpu = cpu;
+	}
+}
+
+struct migration_swap_arg {
+	struct task_struct *src_task, *dst_task;
+	int src_cpu, dst_cpu;
+};
+
+static int migrate_swap_stop(void *data)
+{
+	struct migration_swap_arg *arg = data;
+	struct rq *src_rq, *dst_rq;
+	int ret = -EAGAIN;
+
+	if (!cpu_active(arg->src_cpu) || !cpu_active(arg->dst_cpu))
+		return -EAGAIN;
+
+	src_rq = cpu_rq(arg->src_cpu);
+	dst_rq = cpu_rq(arg->dst_cpu);
+
+	double_raw_lock(&arg->src_task->pi_lock,
+			&arg->dst_task->pi_lock);
+	double_rq_lock(src_rq, dst_rq);
+
+	if (task_cpu(arg->dst_task) != arg->dst_cpu)
+		goto unlock;
+
+	if (task_cpu(arg->src_task) != arg->src_cpu)
+		goto unlock;
+
+	if (!cpumask_test_cpu(arg->dst_cpu, arg->src_task->cpus_ptr))
+		goto unlock;
+
+	if (!cpumask_test_cpu(arg->src_cpu, arg->dst_task->cpus_ptr))
+		goto unlock;
+
+	__migrate_swap_task(arg->src_task, arg->dst_cpu);
+	__migrate_swap_task(arg->dst_task, arg->src_cpu);
+
+	ret = 0;
+
+unlock:
+	double_rq_unlock(src_rq, dst_rq);
+	raw_spin_unlock(&arg->dst_task->pi_lock);
+	raw_spin_unlock(&arg->src_task->pi_lock);
+
+	return ret;
+}
+
+/*
+ * Cross migrate two tasks
+ */
+int migrate_swap(struct task_struct *cur, struct task_struct *p,
+		int target_cpu, int curr_cpu)
+{
+	struct migration_swap_arg arg;
+	int ret = -EINVAL;
+
+	arg = (struct migration_swap_arg){
+		.src_task = cur,
+		.src_cpu = curr_cpu,
+		.dst_task = p,
+		.dst_cpu = target_cpu,
+	};
+
+	if (arg.src_cpu == arg.dst_cpu)
+		goto out;
+
+	/*
+	 * These three tests are all lockless; this is OK since all of them
+	 * will be re-checked with proper locks held further down the line.
+	 */
+	if (!cpu_active(arg.src_cpu) || !cpu_active(arg.dst_cpu))
+		goto out;
+
+	if (!cpumask_test_cpu(arg.dst_cpu, arg.src_task->cpus_ptr))
+		goto out;
+
+	if (!cpumask_test_cpu(arg.src_cpu, arg.dst_task->cpus_ptr))
+		goto out;
+
+	trace_sched_swap_numa(cur, arg.src_cpu, p, arg.dst_cpu);
+	ret = stop_two_cpus(arg.dst_cpu, arg.src_cpu, migrate_swap_stop, &arg);
+
+out:
+	return ret;
+}
+#endif /* CONFIG_NUMA_BALANCING */
+
+/*
+ * wait_task_inactive - wait for a thread to unschedule.
+ *
+ * If @match_state is nonzero, it's the @p->state value just checked and
+ * not expected to change.  If it changes, i.e. @p might have woken up,
+ * then return zero.  When we succeed in waiting for @p to be off its CPU,
+ * we return a positive number (its total switch count).  If a second call
+ * a short while later returns the same number, the caller can be sure that
+ * @p has remained unscheduled the whole time.
+ *
+ * The caller must ensure that the task *will* unschedule sometime soon,
+ * else this function might spin for a *long* time. This function can't
+ * be called with interrupts off, or it may introduce deadlock with
+ * smp_call_function() if an IPI is sent by the same process we are
+ * waiting to become inactive.
+ */
+unsigned long wait_task_inactive(struct task_struct *p, unsigned int match_state)
+{
+	int running, queued;
+	struct rq_flags rf;
+	unsigned long ncsw;
+	struct rq *rq;
+
+	for (;;) {
+		/*
+		 * We do the initial early heuristics without holding
+		 * any task-queue locks at all. We'll only try to get
+		 * the runqueue lock when things look like they will
+		 * work out!
+		 */
+		rq = task_rq(p);
+
+		/*
+		 * If the task is actively running on another CPU
+		 * still, just relax and busy-wait without holding
+		 * any locks.
+		 *
+		 * NOTE! Since we don't hold any locks, it's not
+		 * even sure that "rq" stays as the right runqueue!
+		 * But we don't care, since "task_running()" will
+		 * return false if the runqueue has changed and p
+		 * is actually now running somewhere else!
+		 */
+		while (task_running(rq, p)) {
+			if (match_state && unlikely(READ_ONCE(p->__state) != match_state))
+				return 0;
+			cpu_relax();
+		}
+
+		/*
+		 * Ok, time to look more closely! We need the rq
+		 * lock now, to be *sure*. If we're wrong, we'll
+		 * just go back and repeat.
+		 */
+		rq = task_rq_lock(p, &rf);
+		trace_sched_wait_task(p);
+		running = task_running(rq, p);
+		queued = task_on_rq_queued(p);
+		ncsw = 0;
+		if (!match_state || READ_ONCE(p->__state) == match_state)
+			ncsw = p->nvcsw | LONG_MIN; /* sets MSB */
+		task_rq_unlock(rq, p, &rf);
+
+		/*
+		 * If it changed from the expected state, bail out now.
+		 */
+		if (unlikely(!ncsw))
+			break;
+
+		/*
+		 * Was it really running after all now that we
+		 * checked with the proper locks actually held?
+		 *
+		 * Oops. Go back and try again..
+		 */
+		if (unlikely(running)) {
+			cpu_relax();
+			continue;
+		}
+
+		/*
+		 * It's not enough that it's not actively running,
+		 * it must be off the runqueue _entirely_, and not
+		 * preempted!
+		 *
+		 * So if it was still runnable (but just not actively
+		 * running right now), it's preempted, and we should
+		 * yield - it could be a while.
+		 */
+		if (unlikely(queued)) {
+			ktime_t to = NSEC_PER_SEC / HZ;
+
+			set_current_state(TASK_UNINTERRUPTIBLE);
+			schedule_hrtimeout(&to, HRTIMER_MODE_REL_HARD);
+			continue;
+		}
+
+		/*
+		 * Ahh, all good. It wasn't running, and it wasn't
+		 * runnable, which means that it will never become
+		 * running in the future either. We're all done!
+		 */
+		break;
+	}
+
+	return ncsw;
+}
+
+/***
+ * kick_process - kick a running thread to enter/exit the kernel
+ * @p: the to-be-kicked thread
+ *
+ * Cause a process which is running on another CPU to enter
+ * kernel-mode, without any delay. (to get signals handled.)
+ *
+ * NOTE: this function doesn't have to take the runqueue lock,
+ * because all it wants to ensure is that the remote task enters
+ * the kernel. If the IPI races and the task has been migrated
+ * to another CPU then no harm is done and the purpose has been
+ * achieved as well.
+ */
+void kick_process(struct task_struct *p)
+{
+	int cpu;
+
+	preempt_disable();
+	cpu = task_cpu(p);
+	if ((cpu != smp_processor_id()) && task_curr(p))
+		smp_send_reschedule(cpu);
+	preempt_enable();
+}
+EXPORT_SYMBOL_GPL(kick_process);
+
+/*
+ * ->cpus_ptr is protected by both rq->lock and p->pi_lock
+ *
+ * A few notes on cpu_active vs cpu_online:
+ *
+ *  - cpu_active must be a subset of cpu_online
+ *
+ *  - on CPU-up we allow per-CPU kthreads on the online && !active CPU,
+ *    see __set_cpus_allowed_ptr(). At this point the newly online
+ *    CPU isn't yet part of the sched domains, and balancing will not
+ *    see it.
+ *
+ *  - on CPU-down we clear cpu_active() to mask the sched domains and
+ *    avoid the load balancer to place new tasks on the to be removed
+ *    CPU. Existing tasks will remain running there and will be taken
+ *    off.
+ *
+ * This means that fallback selection must not select !active CPUs.
+ * And can assume that any active CPU must be online. Conversely
+ * select_task_rq() below may allow selection of !active CPUs in order
+ * to satisfy the above rules.
+ */
+static int select_fallback_rq(int cpu, struct task_struct *p)
+{
+	int nid = cpu_to_node(cpu);
+	const struct cpumask *nodemask = NULL;
+	enum { cpuset, possible, fail } state = cpuset;
+	int dest_cpu;
+
+	/*
+	 * If the node that the CPU is on has been offlined, cpu_to_node()
+	 * will return -1. There is no CPU on the node, and we should
+	 * select the CPU on the other node.
+	 */
+	if (nid != -1) {
+		nodemask = cpumask_of_node(nid);
+
+		/* Look foRRAY_SIZE(lock_classes); i++) {
+		class = &lock_classes[i];
+		if (in_list(e, &class->locks_after) ||
+		    in_list(e, &class->locks_before))
+			return true;
+	}
+	return false;
+}
+
+static bool class_lock_list_valid(struct lock_class *c, struct list_head *h)
+{
+	struct lock_list *e;
+
+	list_for_each_entry(e, h, entry) {
+		if (e->links_to != c) {
+			printk(KERN_INFO "class %s: mismatch for lock entry %ld; class %s <> %s",
+			       c->name ? : "(?)",
+			       (unsigned long)(e - list_entries),
+			       e->links_to && e->links_to->name ?
+			       e->links_to->name : "(?)",
+			       e->class && e->class->name ? e->class->name :
+			       "(?)");
+			return false;
+		}
+	}
+	return true;
+}
+
+#ifdef CONFIG_PROVE_LOCKING
+static u16 chain_hlocks[MAX_LOCKDEP_CHAIN_HLOCKS];
+#endif
+
+static bool check_lock_chain_key(struct lock_chain *chain)
+{
+#ifdef CONFIG_PROVE_LOCKING
+	u64 chain_key = INITIAL_CHAIN_KEY;
 	int i;
 
-	for (i = 0; i < offset; i++)
-		seq_puts(m, " ");
-	for (i = 0; i < length; i++)
-		seq_printf(m, "%c", c);
-	seq_puts(m, "\n");
-}
-
-static void snprint_time(char *buf, size_t bufsiz, s64 nr)
-{
-	s64 div;
-	s32 rem;
-
-	nr += 5; /* for display rounding */
-	div = div_s64_rem(nr, 1000, &rem);
-	snprintf(buf, bufsiz, "%lld.%02d", (long long)div, (int)rem/10);
-}
-
-static void seq_time(struct seq_file *m, s64 time)
-{
-	char num[15];
-
-	snprint_time(num, sizeof(num), time);
-	seq_printf(m, " %14s", num);
-}
-
-static void seq_lock_time(struct seq_file *m, struct lock_time *lt)
-{
-	seq_printf(m, "%14lu", lt->nr);
-	seq_time(m, lt->min);
-	seq_time(m, lt->max);
-	seq_time(m, lt->total);
-	seq_time(m, lt->nr ? div64_u64(lt->total, lt->nr) : 0);
-}
-
-static void seq_stats(struct seq_file *m, struct lock_stat_data *data)
-{
-	const struct lockdep_subclass_key *ckey;
-	struct lock_class_stats *stats;
-	struct lock_class *class;
-	const char *cname;
-	int i, namelen;
-	char name[39];
-
-	class = data->class;
-	stats = &data->stats;
-
-	namelen = 38;
-	if (class->name_version > 1)
-		namelen -= 2; /* XXX truncates versions > 9 */
-	if (class->subclass)
-		namelen -= 2;
-
-	rcu_read_lock_sched();
-	cname = rcu_dereference_sched(class->name);
-	ckey  = rcu_dereference_sched(class->key);
-
-	if (!cname && !ckey) {
-		rcu_read_unlock_sched();
-		return;
-
-	} else if (!cname) {
-		char str[KSYM_NAME_LEN];
-		const char *key_name;
-
-		key_name = __get_key_name(ckey, str);
-		snprintf(name, namelen, "%s", key_name);
-	} else {
-		snprintf(name, namelen, "%s", cname);
+	for (i = chain->base; i < chain->base + chain->depth; i++)
+		chain_key = iterate_chain_key(chain_key, chain_hlocks[i]);
+	/*
+	 * The 'unsigned long long' casts avoid that a compiler warning
+	 * is reported when building tools/lib/lockdep.
+	 */
+	if (chain->chain_key != chain_key) {
+		printk(KERN_INFO "chain %lld: key %#llx <> %#llx\n",
+		       (unsigned long long)(chain - lock_chains),
+		       (unsigned long long)chain->chain_key,
+		       (unsigned long long)chain_key);
+		return false;
 	}
-	rcu_read_unlock_sched();
+#endif
+	return true;
+}
 
-	namelen = strlen(name);
-	if (class->name_version > 1) {
-		snprintf(name+namelen, 3, "#%d", class->name_version);
-		namelen += 2;
-	}
-	if (class->subclass) {
-		snprintf(name+namelen, 3, "/%d", class->subclass);
-		namelen += 2;
+static bool in_any_zapped_class_list(struct lock_class *class)
+{
+	struct pending_free *pf;
+	int i;
+
+	for (i = 0, pf = delayed_free.pf; i < ARRAY_SIZE(delayed_free.pf); i++, pf++) {
+		if (in_list(&class->lock_entry, &pf->zapped))
+			return true;
 	}
 
-	if (stats->write_holdtime.nr) {
-		if (stats->read_holdtime.nr)
-			seq_printf(m, "%38s-W:", name);
-		else
-			seq_printf(m, "%40s:", name);
-
-		seq_printf(m, "%14lu ", stats->bounces[bounce_contended_write]);
-		seq_lock_time(m, &stats->write_waittime);
-		seq_printf(m, " %14lu ", stats->bounces[bounce_acquired_write]);
-		seq_lock_time(m, &stats->write_holdtime);
-		seq_puts(m, "\n");
-	}
-
-	if (stats->read_holdtime.nr) {
-		seq_printf(m, "%38s-R:", name);
-		seq_printf(m, "%14lu ", stats->bounces[bounce_contended_read]);
-		seq_lock_time(m, &stats->read_waittime);
-		seq_printf(m, " %14lu ", stats->bounces[bounce_acquired_read]);
-		seq_lock_time(m, &stats->read_holdtime);
-		seq_puts(m, "\n");
-	}
-
-	if (stats->read_waittime.nr + stats->write_waittime.nr == 0)
-		return;
-
-	if (stats->read_holdtime.nr)
-		namelen += 2;
-
-	for (i = 0; i < LOCKSTAT_POINTS; i++) {
-		char ip[32];
-
-		if (class->contention_point[i] == 0)
-			break;
-
-		if (!i)
-			seq_line(m, '-', 40-namelen, namelen);
-
-		snprintf(ip, sizeof(ip), "[<%p>]",
-				(void *)class->contention_point[i]);
-		seq_printf(m, "%40s %14lu %29s %pS\n",
-			   name, stats->contention_point[i],
-			   ip, (void *)class->contention_point[i]);
-	}
-	for (i = 0; i < LOCKSTAT_POINTS; i++) {
-		char ip[32];
-
-		if (class->contending_point[i] == 0)
-			break;
-
-		if (!i)
-			seq_line(m, '-', 40-namelen, namelen);
-
-		snprintf(ip, sizeof(ip), "[<%p>]",
-				(void *)class->contending_point[i]);
-		seq_printf(m, "%40s %14lu %29s %pS\n",
-			   name, stats->contending_point[i],
-			   ip, (void *)class->contending_point[i]);
-	}
-	if (i) {
-		seq_puts(m, "\n");
-		seq_line(m, '.', 0, 40 + 1 + 12 * (14 + 1));
-		seq_puts(m, "\n");
-	}
+	return false;
 }
 
-static void seq_header(struct seq_file *m)
-{
-	seq_puts(m, "lock_stat version 0.4\n");
-
-	if (unlikely(!debug_locks))
-		seq_printf(m, "*WARNING* lock debugging disabled!! - possibly due to a lockdep warning\n");
-
-	seq_line(m, '-', 0, 40 + 1 + 12 * (14 + 1));
-	seq_printf(m, "%40s %14s %14s %14s %14s %14s %14s %14s %14s %14s %14s "
-			"%14s %14s\n",
-			"class name",
-			"con-bounces",
-			"contentions",
-			"waittime-min",
-			"waittime-max",
-			"waittime-total",
-			"waittime-avg",
-			"acq-bounces",
-			"acquisitions",
-			"holdtime-min",
-			"holdtime-max",
-			"holdtime-total",
-			"holdtime-avg");
-	seq_line(m, '-', 0, 40 + 1 + 12 * (14 + 1));
-	seq_printf(m, "\n");
-}
-
-static void *ls_start(struct seq_file *m, loff_t *pos)
-{
-	struct lock_stat_seq *data = m->private;
-	struct lock_stat_data *iter;
-
-	if (*pos == 0)
-		return SEQ_START_TOKEN;
-
-	iter = data->stats + (*pos - 1);
-	if (iter >= data->iter_end)
-		iter = NULL;
-
-	return iter;
-}
-
-static void *ls_next(struct seq_file *m, void *v, loff_t *pos)
-{
-	(*pos)++;
-	return ls_start(m, pos);
-}
-
-static void ls_stop(struct seq_file *m, void *v)
-{
-}
-
-static int ls_show(struct seq_file *m, void *v)
-{
-	if (v == SEQ_START_TOKEN)
-		seq_header(m);
-	else
-		seq_stats(m, v);
-
-	return 0;
-}
-
-static const struct seq_operations lockstat_ops = {
-	.start	= ls_start,
-	.next	= ls_next,
-	.stop	= ls_stop,
-	.show	= ls_show,
-};
-
-static int lock_stat_open(struct inode *inode, struct file *file)
-{
-	int res;
-	struct lock_class *class;
-	struct lock_stat_seq *data = vmalloc(sizeof(struct lock_stat_seq));
-
-	if (!data)
-		return -ENOMEM;
-
-	res = seq_open(file, &lockstat_ops);
-	if (!res) {
-		struct lock_stat_data *iter = data->stats;
-		struct seq_file *m = file->private_data;
-		unsigned long idx;
-
-		iterate_lock_classes(idx, class) {
-			if (!test_bit(idx, lock_classes_in_use))
-				continue;
-			iter->class = class;
-			iter->stats = lock_stats(class);
-			iter++;
-		}
-
-		data->iter_end = iter;
-
-		sort(data->stats, data->iter_end - data->stats,
-				sizeof(struct lock_stat_data),
-				lock_stat_cmp, NULL);
-
-		m->private = data;
-	} else
-		vfree(data);
-
-	return res;
-}
-
-static ssize_t lock_stat_write(struct file *file, const char __user *buf,
-			       size_t count, loff_t *ppos)
+static bool __check_data_structures(void)
 {
 	struct lock_class *class;
-	unsigned long idx;
-	char c;
+	struct lock_chain *chain;
+	struct hlist_head *head;
+	struct lock_list *e;
+	int i;
 
-	if (count) {
-		if (get_user(c, buf))
-			return -EFAULT;
-
-		if (c != '0')
-			return count;
-
-		iterate_lock_classes(idx, class) {
-			if (!test_bit(idx, lock_classes_in_use))
-				continue;
-			clear_lock_stats(class);
+	/* Check whether all classes occur in a lock list. */
+	for (i = 0; i < ARRAY_SIZE(lock_classes); i++) {
+		class = &lock_classes[i];
+		if (!in_list(&class->lock_entry, &all_lock_classes) &&
+		    !in_list(&class->lock_entry, &free_lock_classes) &&
+		    !in_any_zapped_class_list(class)) {
+			printk(KERN_INFO "class %px/%s is not in any class list\n",
+			       class, class->name ? : "(?)");
+			return false;
 		}
 	}
-	return count;
-}
 
-static int lock_stat_release(struct inode *inode, struct file *file)
-{
-	struct seq_file *seq = file->private_data;
-
-	vfree(seq->private);
-	return seq_release(inode, file);
-}
-
-static const struct proc_ops lock_stat_proc_ops = {
-	.proc_open	= lock_stat_open,
-	.proc_write	= lock_stat_write,
-	.proc_read	= seq_read,
-	.proc_lseek	= seq_lseek,
-	.proc_release	= lock_stat_release,
-};
-#endif /* CONFIG_LOCK_STAT */
-
-static int __init lockdep_proc_init(void)
-{
-	proc_create_seq("lockdep", S_IRUSR, NULL, &lockdep_ops);
-#ifdef CONFIG_PROVE_LOCKING
-	proc_create_seq("lockdep_chains", S_IRUSR, NULL, &lockdep_chains_ops);
-#endif
-	proc_create_single("lockdep_stats", S_IRUSR, NULL, lockdep_stats_show);
-#ifdef CONFIG_LOCK_STAT
-	proc_create("lock_stat", S_IRUSR | S_IWUSR, NULL, &lock_stat_proc_ops);
-#endif
-
-	return 0;
-}
-
-__initcall(lockdep_proc_init);
-
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                // SPDX-License-Identifier: GPL-2.0
-/*
- * kernel/lockdep_proc.c
- *
- * Runtime locking correctness validator
- *
- * Started by Ingo Molnar:
- *
- *  Copyright (C) 2006,2007 Red Hat, Inc., Ingo Molnar <mingo@redhat.com>
- *  Copyright (C) 2007 Red Hat, Inc., Peter Zijlstra
- *
- * Code for /proc/lockdep and /proc/lockdep_stats:
- *
- */
-#include <linux/export.h>
-#include <linux/proc_fs.h>
-#include <linux/seq_file.h>
-#include <linux/kallsyms.h>
-#include <linux/debug_locks.h>
-#include <linux/vmalloc.h>
-#include <linux/sort.h>
-#include <linux/uaccess.h>
-#include <asm/div64.h>
-
-#include "lockdep_internals.h"
-
-/*
- * Since iteration of lock_classes is done without holding the lockdep lock,
- * it is not safe to iterate all_lock_classes list directly as the iteration
- * may branch off to free_lock_classes or the zapped list. Iteration is done
- * directly on the lock_classes array by checking the lock_classes_in_use
- * bitmap and max_lock_class_idx.
- */
-#define iterate_lock_classes(idx, class)				\
-	for (idx = 0, class = lock_classes; idx <= max_lock_class_idx;	\
-	     idx++, class++)
-
-static void *l_next(struct seq_file *m, void *v, loff_t *pos)
-{
-	struct lock_class *class = v;
-
-	++class;
-	*pos = class - lock_classes;
-	return (*pos > max_lock_class_idx) ? NULL : class;
-}
-
-static void *l_start(struct seq_file *m, loff_t *pos)
-{
-	unsigned long idx = *pos;
-
-	if (idx > max_lock_class_idx)
-		return NULL;
-	return lock_classes + idx;
-}
-
-static void l_stop(struct seq_file *m, void *v)
-{
-}
-
-static void print_name(struct seq_file *m, struct lock_class *class)
-{
-	char str[KSYM_NAME_LEN];
-	const char *name = class->name;
-
-	if (!name) {
-		name = __get_key_name(class->key, str);
-		seq_printf(m, "%s", name);
-	} else{
-		seq_printf(m, "%s", name);
-		if (class->name_version > 1)
-			seq_printf(m, "#%d", class->name_version);
-		if (class->subclass)
-			seq_printf(m, "/%d", class->subclass);
-	}
-}
-
-static int l_show(struct seq_file *m, void *v)
-{
-	struct lock_class *class = v;
-	struct lock_list *entry;
-	char usage[LOCK_USAGE_CHARS];
-	int idx = class - lock_classes;
-
-	if (v == lock_classes)
-		seq_printf(m, "all lock classes:\n");
-
-	if (!test_bit(idx, lock_classes_in_use))
-		return 0;
-
-	seq_printf(m, "%p", class->key);
-#ifdef CONFIG_DEBUG_LOCKDEP
-	seq_printf(m, " OPS:%8ld", debug_class_ops_read(class));
-#endif
-	if (IS_ENABLED(CONFIG_PROVE_LOCKING)) {
-		seq_printf(m, " FD:%5ld", lockdep_count_forward_deps(class));
-		seq_printf(m, " BD:%5ld", lockdep_count_backward_deps(class));
-
-		get_usage_chars(class, usage);
-		seq_printf(m, " %s", usage);
+	/* Check whether all classes have valid lock lists. */
+	for (i = 0; i < ARRAY_SIZE(lock_classes); i++) {
+		class = &lock_classes[i];
+		if (!class_lock_list_valid(class, &class->locks_before))
+			return false;
+		if (!class_lock_list_valid(class, &class->locks_after))
+			return false;
 	}
 
-	seq_printf(m, ": ");
-	print_name(m, class);
-	seq_puts(m, "\n");
-
-	if (IS_ENABLED(CONFIG_PROVE_LOCKING)) 
+	/* Check the chain_key of all lock chains. */
+	for (i = 0; i < ARRAY_SIZE(chainhash_table);

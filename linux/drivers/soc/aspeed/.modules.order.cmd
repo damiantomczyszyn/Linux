@@ -1,4 +1,5 @@
+nable(dev, p->modulation);
+	o->modulation = p->modulation;
 
-    $(wildcard include/config/PARAVIRT_XXL) \
-  arch/x86/include/asm/disabled-features.h \
-    $(wildc
+	if (p->modulation) {
+		p->carrier_freq = r

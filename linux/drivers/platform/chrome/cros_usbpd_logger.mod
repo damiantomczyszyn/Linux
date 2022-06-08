@@ -1,2 +1,1 @@
- include/config/TRACE_BRANCH_PROFILING) \
-   
+cmd_drivers/media/pci/cx18/modules.order := {

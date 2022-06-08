@@ -1,6 +1,1 @@
-disabled-features.h \
-    $(wildcard include/config/X86_SMAP) \
-    $(wildcard include/config/X86_UMIP) \
-    $(wildcard include/config/X86_INTEL_MEMORY_PROTECTION_KEYS) \
-    $(wildcard include/config/X86_5LEVEL) \
-    $(wildcard inclu
+cmd_drivers/net/can/c_can/c_can_platform.ko := ld -r -m elf_i386 --build-id=sha1  -T scripts/module.lds -o drivers/net/can/c_can/c_can_platform.ko drivers/net/can/c_can/c_can_platform.o drivers/net/can/c_can/c_can_platform.mod.o;  true

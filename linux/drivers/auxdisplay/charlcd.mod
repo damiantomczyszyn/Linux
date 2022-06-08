@@ -1,2 +1,1 @@
-CPI_APEI_GHES) \
-    $(wildcar
+/* SPDX-License-Identifier: GP

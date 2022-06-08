@@ -1,2 +1,1 @@
-drivers/media/radio/radio-raremono.o
-
+// SPDX-License-Identifier: GPL-2.0-or

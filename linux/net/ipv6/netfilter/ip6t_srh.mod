@@ -1,1 +1,1 @@
-atic inline int check_wait_cont
+ine void cx23885_irq_disable_al

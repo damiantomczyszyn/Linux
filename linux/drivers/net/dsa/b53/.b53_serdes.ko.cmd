@@ -1,6 +1,1 @@
-86/include/asm/qrwlock.h \
-  include/asm-generic/qrwlock.h \
-  include/linux/rwlock.h \
-    $(wildcard include/config/PREEMPT) \
-  include/linux/spinlock_api_smp.h \
-    $(wildcard include/config/INLINE_SPIN_LOCK
+cmd_drivers/net/dsa/b53/b53_serdes.ko := ld -r -m elf_i386 --build-id=sha1  -T scripts/module.lds -o drivers/net/dsa/b53/b53_serdes.ko drivers/net/dsa/b53/b53_serdes.o drivers/net/dsa/b53/b53_serdes.mod.o;  true

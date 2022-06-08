@@ -1,1366 +1,816 @@
-		seq_printf(m, "[%p] ", class->key);
-		print_name(m, class);
-		seq_puts(m, "\n");
-	}
-	seq_puts(m, "\n");
+ */
 
+static inline void check_data_structures(void) { }
+
+#endif /* CONFIG_DEBUG_LOCKDEP */
+
+static void init_chain_block_buckets(void);
+
+/*
+ * Initialize the lock_classes[] array elements, the free_lock_classes list
+ * and also the delayed_free structure.
+ */
+static void init_data_structures_once(void)
+{
+	static bool __read_mostly ds_initialized, rcu_head_initialized;
+	int i;
+
+	if (likely(rcu_head_initialized))
+		return;
+
+	if (system_state >= SYSTEM_SCHEDULING) {
+		init_rcu_head(&delayed_free.rcu_head);
+		rcu_head_initialized = true;
+	}
+
+	if (ds_initialized)
+		return;
+
+	ds_initialized = true;
+
+	INIT_LIST_HEAD(&delayed_free.pf[0].zapped);
+	INIT_LIST_HEAD(&delayed_free.pf[1].zapped);
+
+	for (i = 0; i < ARRAY_SIZE(lock_classes); i++) {
+		list_add_tail(&lock_classes[i].lock_entry, &free_lock_classes);
+		INIT_LIST_HEAD(&lock_classes[i].locks_after);
+		INIT_LIST_HEAD(&lock_classes[i].locks_before);
+	}
+	init_chain_block_buckets();
+}
+
+static inline struct hlist_head *keyhashentry(const struct lock_class_key *key)
+{
+	unsigned long hash = hash_long((uintptr_t)key, KEYHASH_BITS);
+
+	return lock_keys_hash + hash;
+}
+
+/* Register a dynamically allocated key. */
+void lockdep_register_key(struct lock_class_key *key)
+{
+	struct hlist_head *hash_head;
+	struct lock_class_key *k;
+	unsigned long flags;
+
+	if (WARN_ON_ONCE(static_obj(key)))
+		return;
+	hash_head = keyhashentry(key);
+
+	raw_local_irq_save(flags);
+	if (!graph_lock())
+		goto restore_irqs;
+	hlist_for_each_entry_rcu(k, hash_head, hash_entry) {
+		if (WARN_ON_ONCE(k == key))
+			goto out_unlock;
+	}
+	hlist_add_head_rcu(&key->hash_entry, hash_head);
+out_unlock:
+	graph_unlock();
+restore_irqs:
+	raw_local_irq_restore(flags);
+}
+EXPORT_SYMBOL_GPL(lockdep_register_key);
+
+/* Check whether a key has been registered as a dynamic key. */
+static bool is_dynamic_key(const struct lock_class_key *key)
+{
+	struct hlist_head *hash_head;
+	struct lock_class_key *k;
+	bool found = false;
+
+	if (WARN_ON_ONCE(static_obj(key)))
+		return false;
+
+	/*
+	 * If lock debugging is disabled lock_keys_hash[] may contain
+	 * pointers to memory that has already been freed. Avoid triggering
+	 * a use-after-free in that case by returning early.
+	 */
+	if (!debug_locks)
+		return true;
+
+	hash_head = keyhashentry(key);
+
+	rcu_read_lock();
+	hlist_for_each_entry_rcu(k, hash_head, hash_entry) {
+		if (k == key) {
+			found = true;
+			break;
+		}
+	}
+	rcu_read_unlock();
+
+	return found;
+}
+
+/*
+ * Register a lock's class in the hash-table, if the class is not present
+ * yet. Otherwise we look it up. We cache the result in the lock object
+ * itself, so actual lookup of the hash should be once per lock object.
+ */
+static struct lock_class *
+register_lock_class(struct lockdep_map *lock, unsigned int subclass, int force)
+{
+	struct lockdep_subclass_key *key;
+	struct hlist_head *hash_head;
+	struct lock_class *class;
+	int idx;
+
+	DEBUG_LOCKS_WARN_ON(!irqs_disabled());
+
+	class = look_up_lock_class(lock, subclass);
+	if (likely(class))
+		goto out_set_class_cache;
+
+	if (!lock->key) {
+		if (!assign_lock_key(lock))
+			return NULL;
+	} else if (!static_obj(lock->key) && !is_dynamic_key(lock->key)) {
+		return NULL;
+	}
+
+	key = lock->key->subkeys + subclass;
+	hash_head = classhashentry(key);
+
+	if (!graph_lock()) {
+		return NULL;
+	}
+	/*
+	 * We have to do the hash-walk again, to avoid races
+	 * with another CPU:
+	 */
+	hlist_for_each_entry_rcu(class, hash_head, hash_entry) {
+		if (class->key == key)
+			goto out_unlock_set;
+	}
+
+	init_data_structures_once();
+
+	/* Allocate a new lock class and add it to the hash. */
+	class = list_first_entry_or_null(&free_lock_classes, typeof(*class),
+					 lock_entry);
+	if (!class) {
+		if (!debug_locks_off_graph_unlock()) {
+			return NULL;
+		}
+
+		print_lockdep_off("BUG: MAX_LOCKDEP_KEYS too low!");
+		dump_stack();
+		return NULL;
+	}
+	nr_lock_classes++;
+	__set_bit(class - lock_classes, lock_classes_in_use);
+	debug_atomic_inc(nr_unused_locks);
+	class->key = key;
+	class->name = lock->name;
+	class->subclass = subclass;
+	WARN_ON_ONCE(!list_empty(&class->locks_before));
+	WARN_ON_ONCE(!list_empty(&class->locks_after));
+	class->name_version = count_matching_names(class);
+	class->wait_type_inner = lock->wait_type_inner;
+	class->wait_type_outer = lock->wait_type_outer;
+	class->lock_type = lock->lock_type;
+	/*
+	 * We use RCU's safe list-add method to make
+	 * parallel walking of the hash-list safe:
+	 */
+	hlist_add_head_rcu(&class->hash_entry, hash_head);
+	/*
+	 * Remove the class from the free list and add it to the global list
+	 * of classes.
+	 */
+	list_move_tail(&class->lock_entry, &all_lock_classes);
+	idx = class - lock_classes;
+	if (idx > max_lock_class_idx)
+		max_lock_class_idx = idx;
+
+	if (verbose(class)) {
+		graph_unlock();
+
+		printk("\nnew class %px: %s", class->key, class->name);
+		if (class->name_version > 1)
+			printk(KERN_CONT "#%d", class->name_version);
+		printk(KERN_CONT "\n");
+		dump_stack();
+
+		if (!graph_lock()) {
+			return NULL;
+		}
+	}
+out_unlock_set:
+	graph_unlock();
+
+out_set_class_cache:
+	if (!subclass || force)
+		lock->class_cache[0] = class;
+	else if (subclass < NR_LOCKDEP_CACHING_CLASSES)
+		lock->class_cache[subclass] = class;
+
+	/*
+	 * Hash collision, did we smoke some? We found a class with a matching
+	 * hash but the subclass -- which is hashed in -- didn't match.
+	 */
+	if (DEBUG_LOCKS_WARN_ON(class->subclass != subclass))
+		return NULL;
+
+	return class;
+}
+
+#ifdef CONFIG_PROVE_LOCKING
+/*
+ * Allocate a lockdep entry. (assumes the graph_lock held, returns
+ * with NULL on failure)
+ */
+static struct lock_list *alloc_list_entry(void)
+{
+	int idx = find_first_zero_bit(list_entries_in_use,
+				      ARRAY_SIZE(list_entries));
+
+	if (idx >= ARRAY_SIZE(list_entries)) {
+		if (!debug_locks_off_graph_unlock())
+			return NULL;
+
+		print_lockdep_off("BUG: MAX_LOCKDEP_ENTRIES too low!");
+		dump_stack();
+		return NULL;
+	}
+	nr_list_entries++;
+	__set_bit(idx, list_entries_in_use);
+	return list_entries + idx;
+}
+
+/*
+ * Add a new dependency to the head of the list:
+ */
+static int add_lock_to_list(struct lock_class *this,
+			    struct lock_class *links_to, struct list_head *head,
+			    unsigned long ip, u16 distance, u8 dep,
+			    const struct lock_trace *trace)
+{
+	struct lock_list *entry;
+	/*
+	 * Lock not present yet - get a new dependency struct and
+	 * add it to the list:
+	 */
+	entry = alloc_list_entry();
+	if (!entry)
+		return 0;
+
+	entry->class = this;
+	entry->links_to = links_to;
+	entry->dep = dep;
+	entry->distance = distance;
+	entry->trace = trace;
+	/*
+	 * Both allocation and removal are done under the graph lock; but
+	 * iteration is under RCU-sched; see look_up_lock_class() and
+	 * lockdep_free_key_range().
+	 */
+	list_add_tail_rcu(&entry->entry, head);
+
+	return 1;
+}
+
+/*
+ * For good efficiency of modular, we use power of 2
+ */
+#define MAX_CIRCULAR_QUEUE_SIZE		(1UL << CONFIG_LOCKDEP_CIRCULAR_QUEUE_BITS)
+#define CQ_MASK				(MAX_CIRCULAR_QUEUE_SIZE-1)
+
+/*
+ * The circular_queue and helpers are used to implement graph
+ * breadth-first search (BFS) algorithm, by which we can determine
+ * whether there is a path from a lock to another. In deadlock checks,
+ * a path from the next lock to be acquired to a previous held lock
+ * indicates that adding the <prev> -> <next> lock dependency will
+ * produce a circle in the graph. Breadth-first search instead of
+ * depth-first search is used in order to find the shortest (circular)
+ * path.
+ */
+struct circular_queue {
+	struct lock_list *element[MAX_CIRCULAR_QUEUE_SIZE];
+	unsigned int  front, rear;
+};
+
+static struct circular_queue lock_cq;
+
+unsigned int max_bfs_queue_depth;
+
+static unsigned int lockdep_dependency_gen_id;
+
+static inline void __cq_init(struct circular_queue *cq)
+{
+	cq->front = cq->rear = 0;
+	lockdep_dependency_gen_id++;
+}
+
+static inline int __cq_empty(struct circular_queue *cq)
+{
+	return (cq->front == cq->rear);
+}
+
+static inline int __cq_full(struct circular_queue *cq)
+{
+	return ((cq->rear + 1) & CQ_MASK) == cq->front;
+}
+
+static inline int __cq_enqueue(struct circular_queue *cq, struct lock_list *elem)
+{
+	if (__cq_full(cq))
+		return -1;
+
+	cq->element[cq->rear] = elem;
+	cq->rear = (cq->rear + 1) & CQ_MASK;
 	return 0;
 }
 
-static const struct seq_operations lockdep_chains_ops = {
-	.start	= lc_start,
-	.next	= lc_next,
-	.stop	= lc_stop,
-	.show	= lc_show,
-};
-#endif /* CONFIG_PROVE_LOCKING */
-
-static void lockdep_stats_debug_show(struct seq_file *m)
+/*
+ * Dequeue an element from the circular_queue, return a lock_list if
+ * the queue is not empty, or NULL if otherwise.
+ */
+static inline struct lock_list * __cq_dequeue(struct circular_queue *cq)
 {
-#ifdef CONFIG_DEBUG_LOCKDEP
-	unsigned long long hi1 = debug_atomic_read(hardirqs_on_events),
-			   hi2 = debug_atomic_read(hardirqs_off_events),
-			   hr1 = debug_atomic_read(redundant_hardirqs_on),
-			   hr2 = debug_atomic_read(redundant_hardirqs_off),
-			   si1 = debug_atomic_read(softirqs_on_events),
-			   si2 = debug_atomic_read(softirqs_off_events),
-			   sr1 = debug_atomic_read(redundant_softirqs_on),
-			   sr2 = debug_atomic_read(redundant_softirqs_off);
+	struct lock_list * lock;
 
-	seq_printf(m, " chain lookup misses:           %11llu\n",
-		debug_atomic_read(chain_lookup_misses));
-	seq_printf(m, " chain lookup hits:             %11llu\n",
-		debug_atomic_read(chain_lookup_hits));
-	seq_printf(m, " cyclic checks:                 %11llu\n",
-		debug_atomic_read(nr_cyclic_checks));
-	seq_printf(m, " redundant checks:              %11llu\n",
-		debug_atomic_read(nr_redundant_checks));
-	seq_printf(m, " redundant links:               %11llu\n",
-		debug_atomic_read(nr_redundant));
-	seq_printf(m, " find-mask forwards checks:     %11llu\n",
-		debug_atomic_read(nr_find_usage_forwards_checks));
-	seq_printf(m, " find-mask backwards checks:    %11llu\n",
-		debug_atomic_read(nr_find_usage_backwards_checks));
+	if (__cq_empty(cq))
+		return NULL;
 
-	seq_printf(m, " hardirq on events:             %11llu\n", hi1);
-	seq_printf(m, " hardirq off events:            %11llu\n", hi2);
-	seq_printf(m, " redundant hardirq ons:         %11llu\n", hr1);
-	seq_printf(m, " redundant hardirq offs:        %11llu\n", hr2);
-	seq_printf(m, " softirq on events:             %11llu\n", si1);
-	seq_printf(m, " softirq off events:            %11llu\n", si2);
-	seq_printf(m, " redundant softirq ons:         %11llu\n", sr1);
-	seq_printf(m, " redundant softirq offs:        %11llu\n", sr2);
-#endif
+	lock = cq->element[cq->front];
+	cq->front = (cq->front + 1) & CQ_MASK;
+
+	return lock;
 }
 
-static int lockdep_stats_show(struct seq_file *m, void *v)
+static inline unsigned int  __cq_get_elem_count(struct circular_queue *cq)
 {
-	unsigned long nr_unused = 0, nr_uncategorized = 0,
-		      nr_irq_safe = 0, nr_irq_unsafe = 0,
-		      nr_softirq_safe = 0, nr_softirq_unsafe = 0,
-		      nr_hardirq_safe = 0, nr_hardirq_unsafe = 0,
-		      nr_irq_read_safe = 0, nr_irq_read_unsafe = 0,
-		      nr_softirq_read_safe = 0, nr_softirq_read_unsafe = 0,
-		      nr_hardirq_read_safe = 0, nr_hardirq_read_unsafe = 0,
-		      sum_forward_deps = 0;
+	return (cq->rear - cq->front) & CQ_MASK;
+}
 
-#ifdef CONFIG_PROVE_LOCKING
-	struct lock_class *class;
-	unsigned long idx;
+static inline void mark_lock_accessed(struct lock_list *lock)
+{
+	lock->class->dep_gen_id = lockdep_dependency_gen_id;
+}
 
-	iterate_lock_classes(idx, class) {
-		if (!test_bit(idx, lock_classes_in_use))
-			continue;
+static inline void visit_lock_entry(struct lock_list *lock,
+				    struct lock_list *parent)
+{
+	lock->parent = parent;
+}
 
-		if (class->usage_mask == 0)
-			nr_unused++;
-		if (class->usage_mask == LOCKF_USED)
-			nr_uncategorized++;
-		if (class->usage_mask & LOCKF_USED_IN_IRQ)
-			nr_irq_safe++;
-		if (class->usage_mask & LOCKF_ENABLED_IRQ)
-			nr_irq_unsafe++;
-		if (class->usage_mask & LOCKF_USED_IN_SOFTIRQ)
-			nr_softirq_safe++;
-		if (class->usage_mask & LOCKF_ENABLED_SOFTIRQ)
-			nr_softirq_unsafe++;
-		if (class->usage_mask & LOCKF_USED_IN_HARDIRQ)
-			nr_hardirq_safe++;
-		if (class->usage_mask & LOCKF_ENABLED_HARDIRQ)
-			nr_hardirq_unsafe++;
-		if (class->usage_mask & LOCKF_USED_IN_IRQ_READ)
-			nr_irq_read_safe++;
-		if (class->usage_mask & LOCKF_ENABLED_IRQ_READ)
-			nr_irq_read_unsafe++;
-		if (class->usage_mask & LOCKF_USED_IN_SOFTIRQ_READ)
-			nr_softirq_read_safe++;
-		if (class->usage_mask & LOCKF_ENABLED_SOFTIRQ_READ)
-			nr_softirq_read_unsafe++;
-		if (class->usage_mask & LOCKF_USED_IN_HARDIRQ_READ)
-			nr_hardirq_read_safe++;
-		if (class->usage_mask & LOCKF_ENABLED_HARDIRQ_READ)
-			nr_hardirq_read_unsafe++;
+static inline unsigned long lock_accessed(struct lock_list *lock)
+{
+	return lock->class->dep_gen_id == lockdep_dependency_gen_id;
+}
 
-		sum_forward_deps += lockdep_count_forward_deps(class);
+static inline struct lock_list *get_lock_parent(struct lock_list *child)
+{
+	return child->parent;
+}
+
+static inline int get_lock_depth(struct lock_list *child)
+{
+	int depth = 0;
+	struct lock_list *parent;
+
+	while ((parent = get_lock_parent(child))) {
+		child = parent;
+		depth++;
 	}
-
-#ifdef CONFIG_DEBUG_LOCKDEP
-	DEBUG_LOCKS_WARN_ON(debug_atomic_read(nr_unused_locks) != nr_unused);
-#endif
-
-#endif
-	seq_printf(m, " lock-classes:                  %11lu [max: %lu]\n",
-			nr_lock_classes, MAX_LOCKDEP_KEYS);
-	seq_printf(m, " direct dependencies:           %11lu [max: %lu]\n",
-			nr_list_entries, MAX_LOCKDEP_ENTRIES);
-	seq_printf(m, " indirect dependencies:         %11lu\n",
-			sum_forward_deps);
-
-	/*
-	 * Total number of dependencies:
-	 *
-	 * All irq-safe locks may nest inside irq-unsafe locks,
-	 * plus all the other known dependencies:
-	 */
-	seq_printf(m, " all direct dependencies:       %11lu\n",
-			nr_irq_unsafe * nr_irq_safe +
-			nr_hardirq_unsafe * nr_hardirq_safe +
-			nr_list_entries);
-
-#ifdef CONFIG_PROVE_LOCKING
-	seq_printf(m, " dependency chains:             %11lu [max: %lu]\n",
-			lock_chain_count(), MAX_LOCKDEP_CHAINS);
-	seq_printf(m, " dependency chain hlocks used:  %11lu [max: %lu]\n",
-			MAX_LOCKDEP_CHAIN_HLOCKS -
-			(nr_free_chain_hlocks + nr_lost_chain_hlocks),
-			MAX_LOCKDEP_CHAIN_HLOCKS);
-	seq_printf(m, " dependency chain hlocks lost:  %11u\n",
-			nr_lost_chain_hlocks);
-#endif
-
-#ifdef CONFIG_TRACE_IRQFLAGS
-	seq_printf(m, " in-hardirq chains:             %11u\n",
-			nr_hardirq_chains);
-	seq_printf(m, " in-softirq chains:             %11u\n",
-			nr_softirq_chains);
-#endif
-	seq_printf(m, " in-process chains:             %11u\n",
-			nr_process_chains);
-	seq_printf(m, " stack-trace entries:           %11lu [max: %lu]\n",
-			nr_stack_trace_entries, MAX_STACK_TRACE_ENTRIES);
-#if defined(CONFIG_TRACE_IRQFLAGS) && defined(CONFIG_PROVE_LOCKING)
-	seq_printf(m, " number of stack traces:        %11llu\n",
-		   lockdep_stack_trace_count());
-	seq_printf(m, " number of stack hash chains:   %11llu\n",
-		   lockdep_stack_hash_count());
-#endif
-	seq_printf(m, " combined max dependencies:     %11u\n",
-			(nr_hardirq_chains + 1) *
-			(nr_softirq_chains + 1) *
-			(nr_process_chains + 1)
-	);
-	seq_printf(m, " hardirq-safe locks:            %11lu\n",
-			nr_hardirq_safe);
-	seq_printf(m, " hardirq-unsafe locks:          %11lu\n",
-			nr_hardirq_unsafe);
-	seq_printf(m, " softirq-safe locks:            %11lu\n",
-			nr_softirq_safe);
-	seq_printf(m, " softirq-unsafe locks:          %11lu\n",
-			nr_softirq_unsafe);
-	seq_printf(m, " irq-safe locks:                %11lu\n",
-			nr_irq_safe);
-	seq_printf(m, " irq-unsafe locks:              %11lu\n",
-			nr_irq_unsafe);
-
-	seq_printf(m, " hardirq-read-safe locks:       %11lu\n",
-			nr_hardirq_read_safe);
-	seq_printf(m, " hardirq-read-unsafe locks:     %11lu\n",
-			nr_hardirq_read_unsafe);
-	seq_printf(m, " softirq-read-safe locks:       %11lu\n",
-			nr_softirq_read_safe);
-	seq_printf(m, " softirq-read-unsafe locks:     %11lu\n",
-			nr_softirq_read_unsafe);
-	seq_printf(m, " irq-read-safe locks:           %11lu\n",
-			nr_irq_read_safe);
-	seq_printf(m, " irq-read-unsafe locks:         %11lu\n",
-			nr_irq_read_unsafe);
-
-	seq_printf(m, " uncategorized locks:           %11lu\n",
-			nr_uncategorized);
-	seq_printf(m, " unused locks:                  %11lu\n",
-			nr_unused);
-	seq_printf(m, " max locking depth:             %11u\n",
-			max_lockdep_depth);
-#ifdef CONFIG_PROVE_LOCKING
-	seq_printf(m, " max bfs queue depth:           %11u\n",
-			max_bfs_queue_depth);
-#endif
-	seq_printf(m, " max lock class index:          %11lu\n",
-			max_lock_class_idx);
-	lockdep_stats_debug_show(m);
-	seq_printf(m, " debug_locks:                   %11u\n",
-			debug_locks);
-
-	/*
-	 * Zapped classes and lockdep data buffers reuse statistics.
-	 */
-	seq_puts(m, "\n");
-	seq_printf(m, " zapped classes:                %11lu\n",
-			nr_zapped_classes);
-#ifdef CONFIG_PROVE_LOCKING
-	seq_printf(m, " zapped lock chains:            %11lu\n",
-			nr_zapped_lock_chains);
-	seq_printf(m, " large chain blocks:            %11u\n",
-			nr_large_chain_blocks);
-#endif
-	return 0;
+	return depth;
 }
 
-#ifdef CONFIG_LOCK_STAT
+/*
+ * Return the forward or backward dependency list.
+ *
+ * @lock:   the lock_list to get its class's dependency list
+ * @offset: the offset to struct lock_class to determine whether it is
+ *          locks_after or locks_before
+ */
+static inline struct list_head *get_dep_list(struct lock_list *lock, int offset)
+{
+	void *lock_class = lock->class;
 
-struct lock_stat_data {
-	struct lock_class *class;
-	struct lock_class_stats stats;
-};
-
-struct lock_stat_seq {
-	struct lock_stat_data *iter_end;
-	struct lock_stat_data stats[MAX_LOCKDEP_KEYS];
+	return lock_class + offset;
+}
+/*
+ * Return values of a bfs search:
+ *
+ * BFS_E* indicates an error
+ * BFS_R* indicates a result (match or not)
+ *
+ * BFS_EINVALIDNODE: Find a invalid node in the graph.
+ *
+ * BFS_EQUEUEFULL: The queue is full while doing the bfs.
+ *
+ * BFS_RMATCH: Find the matched node in the graph, and put that node into
+ *             *@target_entry.
+ *
+ * BFS_RNOMATCH: Haven't found the matched node and keep *@target_entry
+ *               _unchanged_.
+ */
+enum bfs_result {
+	BFS_EINVALIDNODE = -2,
+	BFS_EQUEUEFULL = -1,
+	BFS_RMATCH = 0,
+	BFS_RNOMATCH = 1,
 };
 
 /*
- * sort on absolute number of contentions
+ * bfs_result < 0 means error
  */
-static int lock_stat_cmp(const void *l, const void *r)
+static inline bool bfs_error(enum bfs_result res)
 {
-	const struct lock_stat_data *dl = l, *dr = r;
-	unsigned long nl, nr;
-
-	nl = dl->stats.read_waittime.nr + dl->stats.write_waittime.nr;
-	nr = dr->stats.read_waittime.nr + dr->stats.write_waittime.nr;
-
-	return nr - nl;
+	return res < 0;
 }
 
-static void seq_line(struct seq_file *m, char c, int offset, int length)
-{
-	int i;
+/*
+ * DEP_*_BIT in lock_list::dep
+ *
+ * For dependency @prev -> @next:
+ *
+ *   SR: @prev is shared reader (->read != 0) and @next is recursive reader
+ *       (->read == 2)
+ *   ER: @prev is exclusive locker (->read == 0) and @next is recursive reader
+ *   SN: @prev is shared reader and @next is non-recursive locker (->read != 2)
+ *   EN: @prev is exclusive locker and @next is non-recursive locker
+ *
+ * Note that we define the value of DEP_*_BITs so that:
+ *   bit0 is prev->read == 0
+ *   bit1 is next->read != 2
+ */
+#define DEP_SR_BIT (0 + (0 << 1)) /* 0 */
+#define DEP_ER_BIT (1 + (0 << 1)) /* 1 */
+#define DEP_SN_BIT (0 + (1 << 1)) /* 2 */
+#define DEP_EN_BIT (1 + (1 << 1)) /* 3 */
 
-	for (i = 0; i < offset; i++)
-		seq_puts(m, " ");
-	for (i = 0; i < length; i++)
-		seq_printf(m, "%c", c);
-	seq_puts(m, "\n");
+#define DEP_SR_MASK (1U << (DEP_SR_BIT))
+#define DEP_ER_MASK (1U << (DEP_ER_BIT))
+#define DEP_SN_MASK (1U << (DEP_SN_BIT))
+#define DEP_EN_MASK (1U << (DEP_EN_BIT))
+
+static inline unsigned int
+__calc_dep_bit(struct held_lock *prev, struct held_lock *next)
+{
+	return (prev->read == 0) + ((next->read != 2) << 1);
 }
 
-static void snprint_time(char *buf, size_t bufsiz, s64 nr)
+static inline u8 calc_dep(struct held_lock *prev, struct held_lock *next)
 {
-	s64 div;
-	s32 rem;
-
-	nr += 5; /* for display rounding */
-	div = div_s64_rem(nr, 1000, &rem);
-	snprintf(buf, bufsiz, "%lld.%02d", (long long)div, (int)rem/10);
+	return 1U << __calc_dep_bit(prev, next);
 }
 
-static void seq_time(struct seq_file *m, s64 time)
+/*
+ * calculate the dep_bit for backwards edges. We care about whether @prev is
+ * shared and whether @next is recursive.
+ */
+static inline unsigned int
+__calc_dep_bitb(struct held_lock *prev, struct held_lock *next)
 {
-	char num[15];
-
-	snprint_time(num, sizeof(num), time);
-	seq_printf(m, " %14s", num);
+	return (next->read != 2) + ((prev->read == 0) << 1);
 }
 
-static void seq_lock_time(struct seq_file *m, struct lock_time *lt)
+static inline u8 calc_depb(struct held_lock *prev, struct held_lock *next)
 {
-	seq_printf(m, "%14lu", lt->nr);
-	seq_time(m, lt->min);
-	seq_time(m, lt->max);
-	seq_time(m, lt->total);
-	seq_time(m, lt->nr ? div64_u64(lt->total, lt->nr) : 0);
+	return 1U << __calc_dep_bitb(prev, next);
 }
 
-static void seq_stats(struct seq_file *m, struct lock_stat_data *data)
+/*
+ * Initialize a lock_list entry @lock belonging to @class as the root for a BFS
+ * search.
+ */
+static inline void __bfs_init_root(struct lock_list *lock,
+				   struct lock_class *class)
 {
-	const struct lockdep_subclass_key *ckey;
-	struct lock_class_stats *stats;
-	struct lock_class *class;
-	const char *cname;
-	int i, namelen;
-	char name[39];
-
-	class = data->class;
-	stats = &data->stats;
-
-	namelen = 38;
-	if (class->name_version > 1)
-		namelen -= 2; /* XXX truncates versions > 9 */
-	if (class->subclass)
-		namelen -= 2;
-
-	rcu_read_lock_sched();
-	cname = rcu_dereference_sched(class->name);
-	ckey  = rcu_dereference_sched(class->key);
-
-	if (!cname && !ckey) {
-		rcu_read_unlock_sched();
-		return;
-
-	} else if (!cname) {
-		char str[KSYM_NAME_LEN];
-		const char *key_name;
-
-		key_name = __get_key_name(ckey, str);
-		snprintf(name, namelen, "%s", key_name);
-	} else {
-		snprintf(name, namelen, "%s", cname);
-	}
-	rcu_read_unlock_sched();
-
-	namelen = strlen(name);
-	if (class->name_version > 1) {
-		snprintf(name+namelen, 3, "#%d", class->name_version);
-		namelen += 2;
-	}
-	if (class->subclass) {
-		snprintf(name+namelen, 3, "/%d", class->subclass);
-		namelen += 2;
-	}
-
-	if (stats->write_holdtime.nr) {
-		if (stats->read_holdtime.nr)
-			seq_printf(m, "%38s-W:", name);
-		else
-			seq_printf(m, "%40s:", name);
-
-		seq_printf(m, "%14lu ", stats->bounces[bounce_contended_write]);
-		seq_lock_time(m, &stats->write_waittime);
-		seq_printf(m, " %14lu ", stats->bounces[bounce_acquired_write]);
-		seq_lock_time(m, &stats->write_holdtime);
-		seq_puts(m, "\n");
-	}
-
-	if (stats->read_holdtime.nr) {
-		seq_printf(m, "%38s-R:", name);
-		seq_printf(m, "%14lu ", stats->bounces[bounce_contended_read]);
-		seq_lock_time(m, &stats->read_waittime);
-		seq_printf(m, " %14lu ", stats->bounces[bounce_acquired_read]);
-		seq_lock_time(m, &stats->read_holdtime);
-		seq_puts(m, "\n");
-	}
-
-	if (stats->read_waittime.nr + stats->write_waittime.nr == 0)
-		return;
-
-	if (stats->read_holdtime.nr)
-		namelen += 2;
-
-	for (i = 0; i < LOCKSTAT_POINTS; i++) {
-		char ip[32];
-
-		if (class->contention_point[i] == 0)
-			break;
-
-		if (!i)
-			seq_line(m, '-', 40-namelen, namelen);
-
-		snprintf(ip, sizeof(ip), "[<%p>]",
-				(void *)class->contention_point[i]);
-		seq_printf(m, "%40s %14lu %29s %pS\n",
-			   name, stats->contention_point[i],
-			   ip, (void *)class->contention_point[i]);
-	}
-	for (i = 0; i < LOCKSTAT_POINTS; i++) {
-		char ip[32];
-
-		if (class->contending_point[i] == 0)
-			break;
-
-		if (!i)
-			seq_line(m, '-', 40-namelen, namelen);
-
-		snprintf(ip, sizeof(ip), "[<%p>]",
-				(void *)class->contending_point[i]);
-		seq_printf(m, "%40s %14lu %29s %pS\n",
-			   name, stats->contending_point[i],
-			   ip, (void *)class->contending_point[i]);
-	}
-	if (i) {
-		seq_puts(m, "\n");
-		seq_line(m, '.', 0, 40 + 1 + 12 * (14 + 1));
-		seq_puts(m, "\n");
-	}
+	lock->class = class;
+	lock->parent = NULL;
+	lock->only_xr = 0;
 }
 
-static void seq_header(struct seq_file *m)
-{
-	seq_puts(m, "lock_stat version 0.4\n");
+/*
+ * Initialize a lock_list entry @lock based on a lock acquisition @hlock as the
+ * root for a BFS search.
+ *
+ * ->only_xr of the initial lock node is set to @hlock->read == 2, to make sure
+ * that <prev>ELF                      ¤"      4     (            GNU  ΐ       ΐ          θόÿÿÿ…ΐt?S‰Γ‹€  …ΐt‹…Òt
+Η‚$&      θόÿÿÿΗƒ      Ηƒ      [Γ΄&    Γ΄&    θόÿÿÿUWV‰ΖS‰χƒμd΅    ‰D$1ΐƒΗ„Ξ   ‹–  …Ò„ύ   ‹†,&  …ΐ…   ‹FΗ$    1ΙΊÿÿÿÿTj    h    θόÿÿÿƒΔ…ΐ…t   ΅   Ή   Ίΐ  ‹,$θόÿÿÿ‰Γ…ΐ„Z   ‰8Ή   Ί
+   ‰h‰…  Η…      ‹x‹(GθόÿÿÿG$ÿuψƒΗDh   j Pθόÿÿÿÿudÿuψh@  jPWθόÿÿÿ‰ΨƒΔ$θόÿÿÿ…ΐ…   ‰,&  ‹$θόÿÿÿ…ΐ…¨   φ    u-‹D$d+    uƒΔ1ΐ[^_]Γv φ    tέιόÿÿÿθόÿÿÿιδ   ffffθόÿÿÿ‹@Η@    Η@    1ΐΓ΄&    θόÿÿÿ1ΐΓ΄&    θόÿÿÿVS‹p^‰Ψθόÿÿÿ‹v‰Β‰Ψθόÿÿÿ‰π[^Γ΄&    t& θόÿÿÿUWVS‰Γƒμ‹5   ‰$‰Κ…φ…2  ‹h…ν„Β   ‹}|…ÿ„·   ‹w`Αξ„   9ς‚  ‹4  …Ι„7  ‰Π1Òχφ‹S‰D$‹GT‰D$‰Π―ΖΘ‰Ρ‰D$‹D$Π‰Β‹D$9Βsv―t$‹$‹D$‰ρθόÿÿÿ‰θθόÿÿÿ‹C‹t$π‰C‹OT‰Β)Κ9ΘCΒs‰s‰ρ‰C‹GL9Ζƒ   ƒΔ‰θ[^_]ιόÿÿÿ‹-   …ν…  ƒΔ[^_]Γ΄&    v ‰Β‰L$‹D$)Κ‰Ρ‹$―Ξ‰L$θόÿÿÿ‹D$‹L$+L$‹$Θ‹L$―ΖΚ‰Α‹‡4  θόÿÿÿιTÿÿÿ΄&    ‹   …Ϋ…   ƒΔ[^_]Γ΄&    v )Α‰θ‰Kθόÿÿÿ‰θƒΔ[^_]ιόÿÿÿ¶    ‹   …Ι„Pÿÿÿι‡  ΄&    ¶    θόÿÿÿWVS‹p‹ƒ   »T  θόÿÿÿ1Ò‰ψθόÿÿÿπ€£¨  ο‰ψθόÿÿÿΗƒ(&      ‹   θόÿÿÿ1ΐ[^_Γ΄&    ΄&    θόÿÿÿU‰ΕWVSƒμl‹u|d΅    ‰D$h‹E‹‰$Cψ‰D$‰Ηƒ   θόÿÿÿ‹ƒ<&  ‹“”  ‰|$dH‰D$\D$‰‹<&  ‰T$`θόÿÿÿ…ΐ…"  ‰Β‹ƒ¨  „ΐxƒT  ‰D$πΊ«¨  s6‹$‰T$‹    θόÿÿÿ‹T$‹D$hd+    …ς   ƒΔl‰Π[^_]Γt& ‰ΠΎψ   Ή   Ί   σ«‰πΗ†ψ    Η†ό      Η†       Η†  €   Η†  €»  Η†  €»  Η†     Η†     Η†  ¨ @Η†!  1  Η†(  b   θόÿÿÿ‹<$‹L$‰o‰π   Ηƒ(&      π€‹¨  ‹D$θόÿÿÿ‰$‹   θόÿÿÿ‹$ιÿÿÿ‹$‹    θόÿÿÿΊπÿÿÿιύώÿÿθόÿÿÿ΄&    θόÿÿÿU1ΙΊ   W‰ΗVSƒμ‹/d΅    ‰D$1ΐ‹GTjj θόÿÿÿ‰ΖƒΔ…ΐ…Τ  ΗG    ‹$Ή€   Ί   θόÿÿÿ1ΙΊ   j j ‹D$θόÿÿÿ‹\$ΊP   ΗC    ƒΓX‰»`  ‹}d‰ψθόÿÿÿ‰ΑXZƒωÿ„Κ  ƒωPtƒΑƒωP‡ΐ  ‰ϊ‰Ψθόÿÿÿ‹D$d+    u
+ƒΔ‰π[^_]ΓθόÿÿÿS‹@@…ΐuh    h    θόÿÿÿXZλ6‹$&  …Òuƒΐh    Ph0   θόÿÿÿƒΔλ‹‹BθόÿÿÿΗƒ$&      1ΐ[Γhh  θόÿÿÿΊ    Έ   θόÿÿÿ1Ι1Òh    θόÿÿÿΗ        h  θόÿÿÿƒΔΓh(   h    h`   θόÿÿÿƒΔιb  ƒΖPh   Vhl  θόÿÿÿƒΔ‹$…ΐtθόÿÿÿ‰Ψθόÿÿÿh(   Vh  θόÿÿÿƒΔιb  ƒΖjτh   Vh  θόÿÿÿƒΔλ»ƒΖPh   VhΠ   θόÿÿÿƒΔλµƒΖh(   Vh   θόÿÿÿƒΔιb  Η†,&      ƒΖPh   Vh¨  θόÿÿÿƒΔιaÿÿÿh(   h    θόÿÿÿY[ιb  h(   h    hΰ  θόÿÿÿƒΔιb  hd   hd   hp  θόÿÿÿƒΔικ  hd   hL  θόÿÿÿ^_ικ  Q‰L$ÿt$Phd   h΄  θόÿÿÿ‹k‹T$ƒΔ…νtD‹}|…ÿ…3  ƒ=    „κ  hd   h$  θόÿÿÿXZικ  hd   h  θόÿÿÿXZικ  ƒ=    „κ  hd   hό  θόÿÿÿY[ικ  ΈH   θόÿÿÿΈ@   θόÿÿÿƒΕPhP   UhΠ  θόÿÿÿƒΔιp  θόÿÿÿhH  θόÿÿÿX1ΐΗ    P   Γ           cx18_alsa_exit_callback snd_cx18_init   cx18_alsa_load  debug   strnlen strscpy snd_cx18_pcm_create cx18_alsa_announce_pcm_data   °                 ΐ      Π                              pcm_debug   3cx18-alsa: %s: struct v4l2_device * is NULL
+  4%s-alsa: %s: struct snd_cx18_card * is NULL
+  6%s: %s: PCM stream for card is disabled - skipping
+   3%s-alsa: %s: struct snd_cx18_card * already exists
+   3%s-alsa: %s: snd_card_new() failed with err %d
+   3%s-alsa: %s: snd_cx18_card_create() failed with err %d
+   CX23418 #%d %s TV/FM Radio/Line-In Capture  3%s-alsa: %s: snd_cx18_pcm_create() failed with err %d
+    3%s-alsa: %s: snd_card_register() failed with err %d
+  6%s: %s: created cx18 ALSA interface instance
+ 3%s-alsa: %s: failed to create struct snd_cx18_card
+   6cx18-alsa: module loading...
+ 6cx18-alsa: module unloading...
+   6cx18-alsa: module unload complete
+    6cx18-alsa-pcm %s: cx18 alsa announce ptr=%p data=%p num_bytes=%zu
+    6cx18-alsa-pcm %s: substream was NULL
+ 6cx18-alsa-pcm %s: runtime was NULL
+   6cx18-alsa-pcm %s: stride is zero
+ 6cx18-alsa-pcm %s: %s: length was zero
+    6cx18-alsa-pcm %s: dma area was NULL - ignoring
+   3%s-alsa: %s: snd_cx18_pcm_create() failed with err %d
+     P          ΐ  Π     °    ΐ  cx18-alsa CX23418 CX18-%d cx18 CX23418 PCM version=1.5.1 license=GPL description=CX23418 ALSA Interface author=Andy Walls parm=debug:Debug level (bitmask). Default: 0
+			  1/0x0001: warning
+			  2/0x0002: info
+ parmtype=debug:int parm=pcm_debug:enable debug messages for pcm parmtype=pcm_debug:int  8           ¤ÿ     ΐ           ¤ÿ    Χ    s   GCC: (GNU) 11.2.0  GCC: (GNU) 11.2.0                                                                                                      
+                                                                                                                                                         ρÿ       U     *           
+ 5       I     P   P   H    _           s   (       
+ ~          
+ ‰               U   ?     §            Ύ           Υ      #     π   =          O   Y       ¨        4           B  8       
+ T           ρÿd          y  ΐ         Π  %               £    ΐ     s   d       
+ Δ  °  R     ί    ©    ω  €   @    
+   Δ  0     +  H       
+ 6  @       
+ A  P       
+ L  »   -     e  θ        ‚          ”  ΐ   
+    
+ ª             ¶             Δ             Π             Ω             λ             ύ               U   ?                  !             '             >             U             c             n           z                                        ¶             Η             Ο             ά             η             χ             	                          9             X             u             “             ›             ―             ½             Κ             α           ρ     £                 $             2  ΐ  Π     F             S              cx18-alsa-main.c cx18_alsa_exit_callback __func__.7 snd_cx18_card_private_free cx18_alsa_load cx18_alsa_load.cold __func__.3 __func__.4 cx18_alsa_init cx18_alsa_exit __UNIQUE_ID_version366 __UNIQUE_ID_license365 __UNIQUE_ID_description364 __UNIQUE_ID_author363 __UNIQUE_ID_debug362 __UNIQUE_ID_debugtype361 __param_debug __param_str_debug cx18-alsa-pcm.c snd_cx18_pcm_prepare snd_cx18_pcm_trigger snd_cx18_pcm_pointer cx18_alsa_announce_pcm_data.cold snd_cx18_pcm_capture_close snd_cx18_pcm_capture_open snd_cx18_pcm_capture_ops snd_cx18_pcm_create.cold __func__.1 __func__.0 __func__.2 __UNIQUE_ID_pcm_debug362 __UNIQUE_ID_pcm_debugtype361 __param_pcm_debug __param_str_pcm_debug driver_find __this_module snd_pcm_new snprintf __stack_chk_guard snd_card_register snd_card_free cleanup_module memcpy kfree _raw_spin_lock_irqsave kmem_cache_alloc_trace fortify_panic __fentry__ init_module cx18_start_v4l2_encode_stream _printk snd_pcm_stream_unlock __stack_chk_fail strnlen snd_card_new mutex_lock snd_pcm_set_ops cx18_claim_stream cx18_release_stream _raw_spin_unlock_irqrestore snd_pcm_set_managed_buffer_all cx18_stop_v4l2_encode_stream snd_pcm_hw_constraint_integer strscpy snd_pcm_stream_lock cx18_ext_init mutex_unlock driver_for_each_device cx18_alsa_debug cx18_alsa_announce_pcm_data snd_pcm_period_elapsed param_ops_int snd_cx18_pcm_create pci_bus_type kmalloc_caches      B  '   >  Q   B  b   9  q          «   6  °   I  »     ΐ   ]  Ò   @  ά     θ   	  ϋ       R    	    8  )    1  8  ;  [  C    Q  :  Y    _  W  m  9  ‚  W        G  ”    ΅  B  Α  B  Ρ  B  ΰ  ?  μ  N    B          ™  =     S  ά  F  β    κ      =  @  =  R    Z    x  F  †  Y  ’        ±  B  Κ  J  Σ  P  β  M  ψ  U    B  #  9  C  J  m  L  ©  U  Έ  9  U  Q  o  X  €  D    U  ¦  U  µ  G  Α  B  Ι  	  Ω  9  μ  7  ω          K  &  O  I  H  V    g    p  R  {  9    G  	             E  )     /     4   E  C   ;  V     [   E  `   \  e   	  j   5  s     x   V  ~   T  ‡        E          	          E       !     '     ,   E  ;   ;  B   >  G     M     R   E  Z     d     j     o   E  }     ƒ        E  •     ›         E  ¨     »     Α     Ζ   E  Σ     Ψ     έ   E  δ     ι     ξ   	  σ     ψ   E           
+          E      !    &    +  E  2    A    F    K  E  d    j    q    v    {    €  E  ‡        ‘    –  E      £    ª    ―    ΄    Ή  E  ΐ    Ε    Κ  A  Ο    Τ  A  έ    γ    θ  E  π       B          E     T       €     „     ”                                                               $              6     Z     W          6     Z  $                      .symtab .strtab .shstrtab .note.gnu.property .rel.text .rel.exit.text .rel.text.unlikely .rel.init.text .rel.rodata .rodata.str1.4 .rel__mcount_loc .rodata.str1.1 .modinfo .rel__param .rel.smp_locks .data .bss .comment .note.GNU-stack                                                      4   (                  2             `                    .   	   @       h                <             π  ”                  8   	   @       π                 K             „  τ                 G   	   @       x  H              ^             x	                    Z   	   @       ΐ   (               m              	  Κ                   i   	   @       θ   (      
+         u      2       l
+  	                             u  (                  „   	   @       !  P               •      2         +                 ¤             Θ  ÿ                  ±             Θ  (                  ­   	   @       `!  @               ½             π                    Ή   	   @        !                 Θ             ό                     Ξ             ό                    Σ      0       ό  &                 ά              "                                   $  ΰ     5         	                b                               Έ!  μ                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              κΘΔ—‡IτA§92=υεnxsw(ΔuzΞαΌγ*¤Σγrω?/WΟ
+Πσc^|ο–‰Bƒ¬ΞλΜ0Χbν6[ΠΐGv{z—=—ΰΜQΰ5Ω(Ρ…ΕΛϊ£έ™J¥χ?£8ΦΨί†Α®Vr:9x·SsΨ?ΐN3Κ)±Cs‹Όθ’/#΄²ΣΟη#”µ"U 4ΛF?σHΡΒ5ΣV¨5ΩΝc‚ΓΧΡΧΠφϋΐAΧ6€αB-\Ι+ΙΧJ'‡1γrx:xΧήΦκ™!…ΜO	lΐs…Cƒƒυc¶	ίΉVeησ.°λ9γρCεςΦΉQr7ΆΚ'Δap«=[υmρψ®Σ‡Ά‚unRΤ^ή¦3Βμ[ΐ-ΩαqΕ²Ε=ΕLl:0θBϊwZiTX”¶΅\χ!|*"ς€›ΉηπΥρΗ*Γo°ό£A'ΔG~GΐΕ"‡’γ`g	’ΨΠΑ›ΣH¦ςeQ|k
+“mΏUPA΄!φ"‹p†άΰ+D(=Piΐ0:8:–δΝ®ψ³¤–&EbmξD>‚•…ή®ώ‹μ»2¤eΗo·yT>w,χ²l.V©u{/v‹»MΓ"¶-Λ ΞΤ«ζ&[GΫSi@?Δηύ[Bc+BU¦5ÿ“£{βόκΥ7έΖ!PΔ¦ι_D²-«_\­. =w½µJf`έ
+ΙY?[+ήG½E®C , ²Ν΅ªcW	pD4VtΝώ*ÿΪnΔ. Qΐ±m,sΝ8Ύ£J―…ξ`u£L Μ[&„h¤Q¶gμJEζ²ξJθΥ!—WΊνρx)³ό„»Έ6 ­ώςύ8kΤ±ζΣΎ‘ΈΐΞObGG΅yεP·¤AΫϊί®μΨxσι0G$ΖόςO ‚S³ΤP4w\@n Ηλ¨βoΦEQN1"z’λ|α'z‘¬iΝΈο#yQ‡Ρ„Ό8€βWρΊl—ΤΥφτΘXmΗπNοΩdΡ1ε~¶ζ^ΫΧΠΌτ’n }ΎΛL 
+―8b*πtΙWgβ… X6΄nώ‘Οªπ4yR…—°ήµΌEο¥«NLkHηΘ¨Ξη(³°AΠμ”)Λ/Wμ^QΉ΄Εµuυ=6δ"wKβjτΙa7½Θ€ªχoF#±ά-—ε2Vu}E|™Φμαuξ,ωΜhY/©%|ωTMx¶‘‡Ω—‰qΒ:±=ϋλ{RtμjSΐ“CΪδλ»1‰5ΙΣ2¤΅Ϋ<Lμ»ρ”pξδΜK‘S®Ά΄ΐ K£—ήέR#Ά'νΫkΝFΟ”…FΈ‘΄άHJΫ/!I΄ C;½ΊsBΖL_
+ίΓχΫi]*Ηc·ª†wmΔρ€Ò1ύªwPUϊφ»”+4ΞεΩ’ΐ/Jό‹…,|έέάξέ …[ ‘#mπ€#Θ$ΖΎί<Λ&ώI'MθTΈο“Y!$_Τ?§ΧΞB¨-AY^WΚρ:κW°cΪN&ΰ±`ΫFέ ΣRVς¶ϋ<†v‡έ#tƒ²ƒΩ&£ω@ΛΜC+ΦΚ}:ΰ=Bέ(Γ²(f+Oή‚΅Ό43ΟΜ%Ηκ}cΘ£¥G"Ώμ­όiΎT4<vΐG­ΦªξXϊ …
+V;
+Η…§q"Ό^Ε©γkQόΒ $U½¦8}Ί;Χβ3θ~,Ζ¦wWβΫΰΊΏό1…ΝtΎp9„ƒ-–…η ÿ"3ζ*u”\—½,B55VχξQΓ€ΙΡ?6Ί³ΉF7Γuk†0Os,ΙΰΗ΄K εΰgΚ[W™/Tκ5νKψ(jPkKώiέ%Λ)— J_j©φηΚ¨ΔΔ›μ1ƒϋΜHsS½£?9g-ΙΚΩ‘BT,Y€΄ι–#ΦτJΛπ xAΒΜ[”ƒV/ΝρϊzΕ–λUjΚΥ6oLcΘΣƒ<[zqΞv„sΏk―9έkµΛgΠε©C„a®Ql\GΓη*Γ"]Hw‘“Ήxbθζ]βΆλs8_|S5κέωΧZ¶OΏ!FσΨσΰ–JvG©’€‹,WvρΧΡÒ΅ιhΙe+ί™φW «ΝΙΈτ	w?*ιeΜ)\–»ιΛKέdλJΨNo5HΫ £ΧΌiϊ)Ίyμ!Ύ (»ΎK νP«6ΫcUΡ3$31gJ®TΜy‘DγiΡ.ξCόΧγ+Τ ^Δθcύ™¨υκ8Ak[Ι[ΣLΊ\Έ&HΩΔΠ6ΰυ³­4?&6,Έγωμ„aZΐΠσ¥\ΠΛ!‡xpΖσζSΦZψό{±BίΙ7&Ψ‹‰ΆTÒΓjΠym"GίΠΪΌ'¥Ι‚BcίƒGi­ ª;ιΐ£ίcυS({­zª,έ@S¤}EeΟjΊ΅ο©]pΌθΌÒ_Μ:bΛÒαΙ©‹¤τεΪ8}§ΥΥ²Α„« DzΈυΏC0λς!9f_’νΉη_φ―B2,ª*enƒΜ‰6€’ςcΞe=™Α•ώΫχ]DLωΌ•rωΊRλ”η4Πθ_"ΰΣ7S› κΨ+f’ÿ>ΰ"τ}θύ¶~I―ΓiνάλΊαr―΄4Έ™UXsΌg|CήI¤O–Μ(β…_―ΏXN~λjδUN+Ψ"&uΠ<-φ—ϊη>άNμ+®ΐΞήϋ¬άµτH^›―’ª°'ΆEjC³­8MχπZ”,μοmαΟµ΅m…„P‚ρ"Α**‰CTφ«Βµ)dχ¶_FΡό¨ϊ=οDwY…6μψϊƒbΞd’υ,¶q•ΩUτϊ¦xC>ς5ώX[‹λÿ—VΞ…7Ρ„Μΰ–F%©H Sp„²0ΕΪ±ήqΗΘκEÿω³―βϋΩK―M-βOE§@2΅ωw!RΟ©ζRÿ²­	k9QP(ε®`™ϊ-γτμγτ›ι`ύ»Ϋ”ύqFI$eη?΄ρd‚Ε_©›SSµ±d«½vΊ*Ο«ψw»°β–#re]α#uαhta{οvh΄†β«*υΛ@—UαFq-&¨ƒ@…€[gϋΨΒgΣ‹γ5νξYΫ]©άbή$·+ΊAέJX-#t¨Ό,ώηχuηΰΝeΖXPAξ*έ%Pα§έn?«C¤Ò―ΡfZ7±ΝJTRΫ’²’Χ<@
+φι
+4KΖΌρΨ1HΝgΡ3£Ώ­ερ6w•κwξΙΉ1Jξa‰υ§±–1¨%εο5`JιϊθB/pz3ÒΛ0ΏΈ
+`H·Ά5yxΟvΗ?Oλη'έρπΎ:Bb²τdLήΫδΨό.ΔζGΣ 9·ύi··B?ΐύ ¬ΓΒ―Άδk¬QG"®iο›;Z1―TT2V‡Βγ°αΗΦ¥¶Φ£d!;ΠbΙΟ…ςΥ·?ιΌοEΜ³δM65μήυΰΐmct© ΏtgN{έMeZDδ΅{UTT¥υ^	ΎXNCθΙ—AϋΛ†ΑϋΘΕώL–ΰ›όÿG–2KΈ„±¶fAηxOΐσ‡ ιΝΉΖΆuΎmξuvn/ΊΔHζ‡ςp·ηΙΥ­>—T8dj®~UΙ#:Ξ(―c‘%όβy8Gi§ΎεXψχο©ίoϊiέ•1ΞυHιμ«ΜδζΐB”'U\ϋ70‰Λ{w·,¨­•'’«Σÿ+I5΄6¬1ΙJUφΕdª¨./ρzγAt(βμψQΒΞ©ΥΝ%±Φ"f¤ΩζaΗ»c+Σ ›ώpP€~ 
+(SΖ:τ™7ΰψ›£O2IRη_ΦN³NΨyV8‚}ο…AAΪfίQLέή‘’Σ‚ς³s`ΊΩle©9EJZΠHV"X«ϋrk‹o›V:ªάÿVNρώ50®aΎΧΜπVΑ#ίΝ\φq@«Υ¶¨9υ—έ“kρ½ÿPvέέύmοΖN^“ΌΜ“7L~Ξ„'µ½”^ωΆ9hθτσ Φ#D²ΘqyΕI€OYqΎ1(ΐΆ–Ζθ¦λƒ	£Όρ«ζξP8‹ζ”c²Ζ:?nPGN/υA5Κ!…u"ΦΜ»ξ~ω1ξσ0φΗ…¬1Ί:#ΒοÿΤκ<…ζd’_‰Υ p8ΪVFη¤kΟΜ/™Ρ λYnοTΩÒΉζQ1ιÒQΑΚ?·>‡
+ΥζgΥB’XGΡ\ΪΌ~XϋÒ1πνy2~lpQPζ^x° »‹ώ ^¦gφZi©2\†·Y8lµƒ®ζGÒ+®q·Ρu‡%―ΔP±Y¥®DψUΫ6oςIΣ"u€9xqΓΡςU
+4Ί‹¦\tΞ7l'/™•9)Ρa#Y;IέICV?οDΆςΫτg―uO{
+½¨ΜΦ<ΨώI§Lv%V/ΚςBχο(ΨΘύΏΩWΉ=°N„ΦZ μ©‹“θΥIΡpHZ"±ΦGΕ3z¤μo –v„µΣ sΎ‘{8@ή&?\‘ªισ*άqάμxά=v¬ΧÿAμγΒς‰Ω6½πwνR£=kkjβ<@Ί Ζ!%ΫHΪ·¶„…φiD™Φ&"kεVΉΑEf8φXAHx\ΎΗ½Ψς¥#1Qk_8dnyΤφr3U·Τ½‘¤•wbmf ÿϊ“±?&€Y7΅Ϊ½K&µdα½«|ί­b^,ΈEµªhλώ•6k*xΉΙ­κ‰θ1ό_%"]7Ϊmύ‡δ.κ,lZς‡ΗC‘¬o„‚8¨ό/ξΨ»0V©Πªέ–5φβώΡΏ +JE‡“Yi³7~»―Oc΅κkrι§`V'|Kή3*hA<Ί}ήωLεΧsΕΊÿ=ιγ%™Z@Ύ‘™BpΑv8§ΨRΜ|+vΜ½]µ·ρoª‘2ÿ}yωΩ€XΝ0Òέ-ε.PΨ<Η®\0)	}»E΄NG<Tl(Έθω?¬[¬ξ΅Ϊ™Η¨TΛ=7T6$ε΄yθϊnΥB,ΰΛh΄pΪΠη‡ρ¶$a+E—ΉDd‘RφIάΩ:<`ζβμ]Ιk›>—-ΈΪΠ_xw•ϋ£α6G™wΙιΈP>ΎθIβ<Λt­~~Qh½Τ§r²‡Vi/G»ΗΟ”τzυζTΧ	T ΰ^{γ’Ò`xνcP΄Ν{©GπZι–δS‹;£NΡÒέC;ªbuΞΑ,T@E­–λ3έΚNχXϋμ kΛ(D0Mω~ή]iι-'NKέ¤@†U>δ΄|;d$γψΦΓABϊHνi`Ξd‰Γv~ΡDΠƒΒΈ?   ‹t$ΗD$$    )Π‹u 9Ψ‰χNΨ΅ u ‰T$‰\$‹\$‰D$9ΓΧ‚Ο  ΄&    v ‹\$‹D$1φ‹T$‹|$‰Ω‹l$¥ΒΣΰφΓ EΠEΖ‰ι9ΗΡ‚B  )Η‹5u ‰Ω‰|$‹=u Υ‰t$Lt ‰|$ Pt €t Έ Κ;„t ¥χ1ΫΣζφΑ ‹Xt ‰l$EώEσ5\t =`t 1Ò1ν‰5\t ¥ΒΣΰφΑ ‰ωEΠEΕ‰=`t 9Ζ‰$Ρ‰T$‚   1ν΄&    v ΅¨t ‹¬t +4$‹8u |$ƒΐ‰5\t ƒÒ ‰=`t £¨t ‰¬t …Ι…Γ  θόÿÿÿ‰Γ…ΐ…Δ  ‹5\t ‹=`t ‹$‹T$‰ϋ9ΖΣs™΅u ‹u 	l$$‰D$΅ u ‰T$ ‹u ‰D$‰T$¶L$΅u 1Ϋ‹u ¥ΒΣΰφΑ ¶t EΠEΓt ”t ‰Ζ‰Χ£t ‰”t Έ Κ;1Ò1ν¥ΒΣΰφΑ EΠEΕ9Ζ‰Α‰ψ‰ΣΠrQ΅μt ‹πt ƒΐƒÒ ΄&    f)Ξ‰$ίƒΐ‰T$‰ύƒÒ 9Ξέsη‹$‹T$‰5t ‰=”t £μt ‰πt ‹\$΅ u 1ÿ‹$u ‹t$‰Ω¥ΒΣΰφΓ EΠEΗ5u ‹|$ =u 0u ‰Ω1ν¥χΣζφΓ EώEυ)πϊ(u ,u ‹\$‹D$1φ‹T$‹|$‰Ω‹l$¥ΒΣΰφΓ EΠEΖ9Η‰οΧsƒλ‰\$‹D$‹|$‹T$‹l$9ψ‰Πθƒ;ύÿÿ‹5 u ‹$u θόÿÿÿ1Σ1Ζ	σ…³  ‹Tt ‰Λ+4u ‹=,u Αÿ;=(u ‰ϊ,u ‰ΠΑθ£4u Ψ‰Ζ‰$1ΐ)Ξ’ΐ‰D$…φ„—   ‹|$‹l$‹ u ‹u ƒώÿ„'  ƒώtE‰π‰ΪΑψ―Φ‰D$‹D$―ΑΠ‰D$‰Θ‹\$χζ‰Α‹D$Σ‰ς―Υ―ΗΠ‰D$‰ψ‹l$χζ‰ΗΥ…φ~‹t$…φ…Ζ  ‹$u u )=\t -`t £Tt ‹@t ‹B…ΐ…A  ‹Xt Έ Κ;1Ò1Ϋ‹=`t ‹5\t ¥ΒΣΰφΑ EΠEΓ‰T$‰$…ÿά  ‹$‹T$‰ω9ΖΡrq1νt& ΅¨t ‹¬t +4$‹8u |$ƒΐ‰5\t ƒÒ ‰=`t £¨t ‰¬t …Ι…+  θόÿÿÿ‰Γ…ΐ…4  ‹5\t ‹=`t ‹$‹T$‰ω9ΖΡs™	l$$ƒ@u ‹\$$Έ@t Ύ@t ‰Ϊθ	ΰÿÿΈDu Ή?   ‰Ησ¥ƒ@u …Ϋ•Γι]ϊÿÿ΄&    v Η8u     ιIόÿÿ‰Η‹5Όt ½   ‹Έt Αÿ¨t ΅΄t =¬t )Ψϊ‰χΑÿ‰Ρ‰ΒWΏ Κ;VD$Lθόÿÿÿ‹D$L‹T$P‹L$T‰D$4‰T$8‰L$<QRPΈ@t θWΧÿÿ΅Ψt ‹5\t )Ψ£Ψt χοΐt Δt £Πt ƒΔ‰Τt ‹=`t ι¦ϋÿÿ¶    Η8u     ιαώÿÿ΄&    f‰Η‹5Όt ½   ‹Έt Αÿ¨t ΅΄t =¬t )Ψϊ‰χΑÿ‰Ρ‰ΒWΏ Κ;VD$Lθόÿÿÿ‹D$L‹T$P‹L$T‰D$@‰T$D‰L$HQRPΈ@t θ—Φÿÿ΅Ψt ‹5\t )Ψ£Ψt χοΐt Δt £Πt ƒΔ‰Τt ‹=`t ι6ώÿÿΉÿÿÿÿ½ΠDΡƒΒ!ιbωÿÿ„Ϋ„ψÿÿιΏψÿÿ¶    ιSύÿÿχΩƒΣ χΫχίƒΥ χέι ύÿÿΉÿÿÿÿ½ΒDΑƒΐ!ιωψÿÿθόÿÿÿ‹0u ÿ5u 1ÿÿ5 u £ u ­Π‰$u ΣκφΑ EΒEΧ+u u θόÿÿÿ‹Tt ]‰ΓXι	όÿÿΗ8u    ΖΧ‰5\t ƒ¨t ÿ‰=`t ƒ¬t ÿιχόÿÿ‹5Tt ‹z‰σ)ϋ‰ΩχΩHΛ9Θƒ£όÿÿ€=    …–όÿÿι™Ύ  ‹D$ιψÿÿθόÿÿÿθόÿÿÿUWVSƒμ$‰D$ ‹-ΐΥ ‰θƒΰkΐ4‹θΥ ‹μΥ ΔΥ ‹ΈΜΥ ‹°ΘΥ ‰T$‹πΥ ‰L$‹τΥ ‰T$‹ΠΥ ‰L$‹ΤΥ ‹€ΔΥ ‰$‰L$‹θόÿÿÿ+$T$‰Α!ϊ!ρ¬ώΡο‰$‰π‰|$‹L$χΠ‹<$‰ΖΈ    χΡ!ώ!Ρ	ρ‰Α‹sDΟEΠ‹C‹{ ‰$‹K‰D$‹ΐΥ 9λ…;ÿÿÿ‹$‰Σ―Ωχα¶L$ΪΖΧ‹T$ 1ΐ­ώΣοƒα EχEψ…ÒtF‹D$‹T$‹\$ πϊ‰‰S‹\$ t$|$‰s‰{Μu Πu ‰C‰SƒΔ$[^_]Γt& ΅    ‹   λΒ΄&    t& θόÿÿÿƒμd΅    ‰D$΅    …ΐu‹D$d+    u0ƒΔΓt& kΐ<ΗD$    Η       ‰$Αψ‰D$‰ΰθϊρÿÿλΓθόÿÿÿv θόÿÿÿ9Du t+S1Ι‰Γ‰ΒΈPψ θόÿÿÿθόÿÿÿ1ΐ9Du [•ΐχΨΓ¶    1ΐΓt& θόÿÿÿ‹@u φΒu ΅Du ‹@D‹@u 9Κuγƒΰ Γ΄&    v σλΡ΄&    t& θόÿÿÿU‰εWV‹@u φΒu#΅Du ‹p‹x‹@u 9Κuΰ‰π‰ϊ^_]Γ¶    σλΞt& θόÿÿÿΗ     Η@    Η@    Γ¶    θόÿÿÿW|$ƒδπÿwόU‰εWVSμ   ‹Du d΅    ‰Eδ1ΐE΄θόÿÿÿθόÿÿÿθόÿÿÿΈ    θόÿÿÿƒ@u ‰…tÿÿÿ΅Du ‹θόÿÿÿ‰…xÿÿÿ‰Ρ‰•|ÿÿÿ‰Β‰Ψθόÿÿÿ‰Χ	Η…U  ‹E΄‹UΈ‹5 t ‹=$t ‰Σ9πϋ©  ‹MΌ‰ϋ+(t 9ΖΣ|…Ι  )π‰ΛϊΑϋSQ‰Ρ‰ΒEΨθόÿÿÿ‹EΨ‹Uά^_‰E€‰Eΐ‹Eΰ‰U„‰UΔ‰EΘ‹u„‹]€…φΉΎ  ‹}Θ‰½pÿÿÿÿÿΙ;‡ΉΎ  Έ}Α%9ΨΈ   πΉΎ  ¶\u ‰ψ¬u 5°u ™‰]¥ϊΣΰ‰u”‰5°u 1φφΑ EΠEΖ‰¬u ‰Ζ‰Χ5`u Έ Κ;=du 1Ò1Ϋ‰5`u ¥ΒΣΰφΑ ‰=du EΠEΓ‰Σ9Ζ‰ϊ‰ΑΪrX‹E‹U”ƒΐƒÒ ‰E‰U”t& ‹E‹U”)Ξί‰Eƒΐ‰UƒÒ 9Ξ‰E‰ψΨ‰U”sά‹E‹U‰5`u ‰=du £¬u ‰°u Έ Κ;1Ò1Ϋ‹5”u ¶u ‹=u ¥ΒΣΰφΑ EΠEΓ9Ζ‰Α‰ψ‰ΣΠrZ΅πu ‹τu ƒΐƒÒ ‰E‰U”f‹E‹U”)Ξί‰Eƒΐ‰UƒÒ 9Ξ‰E‰ψΨ‰U”sά‹E‹U‰5”u ‰=u £πu ‰τu ΅Έu +E€Ύ   ‹Όu ‹ΐu U„+pÿÿÿ‰ΛΑϋSQ‰Ρ‰ΒEΨθόÿÿÿ‹EΨ‹Uά‹Mΰ‰EΜQRPΈDu ‰UΠ‰MΤθΫΟÿÿ‹Eΐ‹MΔΊ}Α%ƒΔ‹]Θ9ΒΞ   Ί Κ;iΙ Κ;χβΚ‰Ω1ΫΘΪΜu Πu £Μu ‰Ρ‰Πu ‰ΒEθόÿÿÿ‹E£ψu ‹E£όu ‹E £ v Eΐθόÿÿÿ‹…xÿÿÿ‹•|ÿÿÿΗ,v     Η0v     £Pu ‰Tu £„u ΈDu ‰u Ί   Η        θ'Χÿÿ‹•tÿÿÿΈ    ƒ@u θόÿÿÿθόÿÿÿθόÿÿÿ‹Eδd+    uYeτ[^_]gψ_Γ¶    ‰Ρ‰ΒEθόÿÿÿ‹E‰Eΐ‹E‰EΔ‹E ‹UΔ‰EΘ‹Eΐ‰U„‰E€ιδόÿÿ΄&    fΈÿÿÿÿΊÿÿÿιθώÿÿθόÿÿÿ΄&    t& θόÿÿÿUWVSƒμd΅    ‰D$Έ t θόÿÿÿ΅$t  t …  ΅(t …ΐ…ϊ  Έ    θόÿÿÿƒ@u ‰ΓθªΧÿÿ‹Pu ‹Tu Η       ΅Du θόÿÿÿ€=,t  …Ε  Ί   ΈDu θώΥÿÿ΅Du £ΰs ΅Hu £δs ΅Lu £θs ΅Pu £μs ΅Tu £πs ΅Xu £τs ΅\u £ψs ΅`u £όs ΅du £ t ΅hu £t ΅lu £t ΅pu £t ΅tu £t ΅Du ‹θόÿÿÿΗΰs @Φ £8t ΅Δu ‰<t hu ‹Θu lu £t Έΰs ‰t ΊΐΥ θZΟÿÿ΅|u Ί@Υ Ηΰs @Φ £δs ΅€u £θs ΅„u £μs ΅u £πs ΅u £τs ΅u £ψs ΅”u £όs ΅u £ t ΅u £t ΅ u £t ΅¤u £t ΅¨u £t Έΰs θΙΞÿÿΈ    ‰Ϊƒ@u θόÿÿÿθόÿÿÿθόÿÿÿθόÿÿÿ‹D$d+    …S  ƒΔ1ΐ[^_]Γt& Ζ,t ιϊύÿÿt& ‹\u ‹du ΅`u ‹5¬u ‹=°u +5 t =$t ­ΠΣκφΑ ‰ωEΒ+(t ™R‰ςPD$θόÿÿÿ‹D$‹T$‹l$‰Ζ‰Χ+5t ‰D$=t ‰ι+t ‰T$‰Θ™R‰ςQ‰ω|$‰ψθόÿÿÿ‹D$‹|$$‹T$ ‰|$‰Ηχί‰ΡƒΡ ‰ώΏ   χΩHπHΚƒΔ9χΎ    Ξ}(‹4$‹|$‰-t ‰5t ‰=t ι]ύÿÿ΄&    v  t ‹t$$t 5(t ‰χ‰Ρ‰ΒΑÿWVD$θόÿÿÿ‹D$‹T$£ t ‹D$‰$t £(t XZιύÿÿθόÿÿÿ΄&    ΄&    θόÿÿÿ1ΐθ„μÿÿ„ΐuΓ΄&    ιόÿÿÿv θόÿÿÿ1Ò       ιόÿÿÿ΄&    θόÿÿÿU‰εWVSƒδψƒμ‰D$‰T$‰$‹@u φΓ…%  ΅hu ‹lu ‰D$΅Du ‰T$‹θόÿÿÿ+Pu Tu ‰Χ‹Hu ‹5Hu !Β΅Lu ‰T$‹T$!ψ‹=Lu ¬ώΡο‰ωχΦΏ    χΡ!Φ!Α	ρ‰ώ‹Xu DςEΗ‹|$―Θ‰πχ%Xu Κ‹\u `u du 1φ­ΠΣκφΑ EΒEΦD$T$‰Ζ‰Ρ΅ΰu 9t<‰‹|$΅Δu ‹Θu ‰‰W‹<$΅Μu ‹Πu ‰‰W‹}΅Τu ‹Ψu ‰‰W;5θu ‰Θμu },΅@u 9Γ…Ϋώÿÿeτ‰π‰Κ[^_]Γv σιΕώÿÿ΄&    f΅Δu ‹Θu ‹|$ 6eΔƒÒÿ‰‰Wλ¶fθόÿÿÿUWVS‰Γμ„   d΅    ‰„$€   ‹‰Ββ €  „β   ¨„Β  φΔ „Ι  φΔ„   Έ   θόÿÿÿ„ΐ„Γ  ‹KT‹CP…Ι  ‹‰Φζ    …ΰ  Ώ?B 9ΗΞq  €ζ„Έ  iΐθ  ‹sH‹{Ll$‰D$‰θ‰t$‰|$θέζÿÿ‰Ζ…ΐ…e  ‹D$‹T$‰D$‹D$‰T$‰D$D$u…Òt=d΅    ‹€θ  …ΐt-‹…Ιu'‹D$‹T$‹L$θόÿÿÿλ΄&    l$…ΐ…  1ΐ|$ Ή   σ«‰θθόÿÿÿΈ    θόÿÿÿƒ@u ‰$‹=άu D$ ‰κ1ν‰|$P‰ΨL$θόÿÿÿ‰Ζ‹D$Z9Ηt7Ί Κ;£άu ½   χκΔu Θu £Τu ΈDu ‰Ψu Ί   θΟÿÿθόÿÿÿ‰Ρ£θu ‰ΒχΠ‰Ο‰μu χÿÿÿ	ψt‰Π‰Κ+Δu Θu £θu ‰μu ‹$Έ    ƒ@u θόÿÿÿd΅    ‹€θ  …ΐt‹ …ΐtuχ@  u~‰θ„ΐ…   θόÿÿÿ‹„$€   d+    …ρ   Δ„   ‰π[^_]Γt& l$ιΛώÿÿ΄&    ΎÿΙ;9ΖΎ    Ξ   €ζtΧ‹sH‹{Lι ώÿÿt& D$ θόÿÿÿχ@  t‚Έ   θ5θÿÿ	Ε‰θ„ΐ„vÿÿÿ1ΐθόÿÿÿιjÿÿÿt& Έ   ‰$θόÿÿÿ„ΐtT‹φΔ@„kύÿÿ‹sX‹{\ΉΠ  ‹$ΖΨάÿÿƒΧÿ9ρϊƒJύÿÿv Ύκÿÿÿι ÿÿÿ¶    Έ   θόÿÿÿ„ΐt‹ι"ύÿÿΎÿÿÿÿιϋώÿÿθόÿÿÿffθόÿÿÿi     † ‹ v WVS‹¤v ‰Β1ΐv v ΑΣ‰ήϋη  vd‰ΨΊΣMbχβ‰ΧΑοiΗθ  )Ζ‰ψ‰ς£    ‰ΘΉθ  χρ‰ϊ‰Αΐv [Δv +Έv ‰Έv Όv ^‰=Όv £ΐv _‰Δv Γt& 1ΐ1ÿλ®΄&    v θόÿÿÿ‹    ΉΐΦ Έ    θόÿÿÿ1ΐΓv θόÿÿÿƒδΦ @Ηv     ΗάΦ  $τ ΗΨΦ  $τ θÿÿÿ΅Έv ‹Όv Η¨v     Η¬v     £ΐv ‰Δv ΗΠΦ ÿÿÿÿΗΤΦ ÿÿÿΓfθόÿÿÿ΅ΐv ‹Δv U‰ε]Γ΄&    t& θόÿÿÿƒ=°v ΈÿÿÿÿΊÿÿÿtΓ΄&    φδΦ tοU‹ΤΦ ‰εV‹5ΠΦ S»}Α%9σ»   Λ|Έ Κ;iΙ Κ;χζΚ[^]Γv θόÿÿÿW‰ΧV‰ΖSƒμ‹°v d΅    ‰D$1ΐƒϋ„ζ  ψ   ƒϋ„  ƒϋu‹δΦ ƒγ0„“  1Ϋ΅άΦ τ  = $τ   £άΦ ΅Έv ‹Όv ‹5¨v ‹=¬v ‰$΅ΰΦ ‰T$‰ϊH‰π…ÿυ   ­ΠΣϊφΑ t‰ΠΑϊ)Ζ‰5¨v ‹5v Χ$T$‰=¬v £ΐv ‰Δv …φt5ώτ  Φ   ώώÿÿβ  Ηv     ‰χ1φπϊ£ΐv ‰Δv ‹D$d+    …  ƒΔ‰Ψ[^_Γv …Ϋ„8  ƒϋ…ÿÿÿφδΦ …ª   ΗΠΦ ÿÿÿÿ1ΫΗΤΦ ÿÿÿΗ°v     ιδώÿÿt& ƒδΦ @ΗάΦ  $τ ιγώÿÿ΄&    v χΨƒÒ χΪ­ΠΣϊφΑ t‰ΠΑϊχΨƒÒ χΪιψώÿÿ¶    ξτ  Βτ  £ΐv ‰5v ‰Δv ι1ÿÿÿ¶    Η°v     ι`ώÿÿ‹ΤΦ ΅ΠΦ 1ϊ1π	Β…FώÿÿιόΎ  t& φδΦ  „)ÿÿÿ‹ΤΦ ΅ΠΦ 1ϊ1π	Β…ώÿÿιΙΎ  ΄&    ΗΠΦ ÿÿÿÿ1ΫΗΤΦ ÿÿÿΗ°v    ικύÿÿv ΅δΦ ¨…ƒ   ƒΰ ‰Γ„ΟύÿÿL$‰πΗ°v    QƒΐΉ€Q ƒÒ θόÿÿÿ‹L$‰π‰ϊ‰ΛΑϋ)ΘYΪ€Q ƒÒ £ΠΦ 1Ϋ‰ΤΦ ι‚ύÿÿv Ζτ  κτ  £ΐv ‰5v ‰Δv ιώÿÿ¶    D$Ή€Q Η°v    P‰πθόÿÿÿ‹T$‰ΡΑω)ΦΟΖ€Q ƒΧ ‰5ΠΦ ^‰=ΤΦ ιύÿÿθόÿÿÿθόÿÿÿƒμΈνÿÿÿƒΔΓ΄&    ΄&    θόÿÿÿWVSƒμd΅    ‰D$1ΐφδΦ @u¶„v ¨t‹D$d+    …`  ƒΔ[^_Γt& ‰ΰθόÿÿÿ‹$‹\$‹D$ƒΑÿƒΣÿ eΝ™R‰Κ‰ΩPD$θόÿÿÿ‹L$‹D$‹T$[^ω?KL v]ƒΐƒÒ ωΐ~N;wOθόÿÿÿΉ}Α%9ΑΉ   ΡΞ   iΚ Κ;Ί Κ;χβΚ /hYƒÒ j ‰Ρ‰ΒΈ`v j j θόÿÿÿƒΔιFÿÿÿv ‹    …Ιtk    <‰ΛΑϋ)ΘΪ‰T$‹T$1Ι‰D$ΗD$    θόÿÿÿ‰Γƒψν„ÿÿÿθόÿÿÿ‰ΖΈ}Α%9πΈ   Π|QΈ Κ;iΚ Κ;χζ‰Χ‰ΖΟ‰π‰ϊ cCÒ™   …Ϋ„`ÿÿÿ‰π‰ϊ /hYƒÒ ιOÿÿÿ¶    Έÿ.hYΊ   €ι:ÿÿÿΎÿÿÿÿΏÿÿÿλ¶θόÿÿÿ΄&    ΄&    θόÿÿÿφδΦ @u¶„v ¨tΓ¶    ‹    ΉΐΦ Έ    ιόÿÿÿ΄&    t& θόÿÿÿU‰ΥWVS‰Γƒμ,‹‰L$‹|$@d΅    ‰D$(1ΐ΅δΦ ‰$‰ΖφΖ€„  ΅v ‰D$Αψ‰D$€ζ „  ‹D$‹T$ζ    ‰t$‰C΅ v ‰S‹¤v ‰D$‰T$‹=°v χ$@  Έ   ‹T$DΗ‰|$ Ώ»I‰Α‹D$¬ΠΑϊiς»Iχης‰Χ‰ώ‰χΑÿ…ÒyχΨƒÒ χΪ‰ΠΑϊχΨƒÒ ‰ΖχΪ‰Χ΅άΦ ‰s‰{‰CΑψ‰C΅ΨΦ ΗC8   ‰C Αψ‰C$‹$ΗC<    ‰C(΅ΰΦ ΗC@  τ‰C0Αψ‰C4΅    ΗCD    ‰CX‹D$ΗC\    ‹8ΗC`    ΗCd    ‰»    ΗCh    ΗCl    ΗCp    ΗCx    ΗC|    Ηƒ€       Ηƒ„       Ηƒ       Ηƒ       Ηƒ       Ηƒ”       Ηƒ       Ηƒ       ‹E ‹U‰D$‰CH‰SL‹E‰T$‰CPΑψ‰CT‹D$…ΐu‹uΊΣMb‰πΑώχκΑϊ)ς‰SPΑϊ‰ST‹U ‹E‹5ΠΦ ‹-ΤΦ ‰T$9ς‰ΒκΑ  ‹D$(d+    …C  ƒΔ,‰Θ[^_]Γ¶    ‹¬v ΅¨v ‰L$ …Ò…Α   ‹$‹5 v ‹=¤v α    ‰t$‰L$‰|$Ίθ  iL$ θ  χβΚ‰Χ‰ΦΑÿ…ÒyχΨƒÒ χΪ‰ΠΑϊχΨƒÒ ‰ΖχΪ‰Χ‹D$…ΐt‰s‰{ι―ύÿÿfΉΣMb‰πΗC    χαΑκ‰Sι’ύÿÿt& ‹C£v ‰D$θουÿÿ‹D$‹T$‰GP‹D$‰WT‰GXΑψ‰G\ι1ύÿÿ΄&    ‰‹D$ ‹¤v ‰w ‰G΅ v ‰W‰G‰πΑψ‰G$‹D$‹ ΗGD    ‰G0Αψ‰G4΅    ‰G@‹φΑ…Ά  φΕ t$    ‹$£δΦ φΕ…­  ‹$%    ‰D$φΑt^Έ  θχcis  θ‰D$Έ ΅ ‰T$1Òt$;T$‰Ζt$MT$Ύΰ^ψÿMD$‰T$ƒϊ ‰ΒςΊ    MT$LΖ‰ v £¤v φΑt‹C£άΦ φΑt‹C £ΨΦ φΑ t%‹C0‹t$P…φDΒΊ
+   9ΠOΒ1Ò…ΐHΒ£ΰΦ φΑ€t‹S0Έ † 9ΠΈ    C4ƒµ  φΑ…τ   ‹5¬v ΅¨v ‰t$ φΕ@t‹SX‰    ‹α@  …α  ‹L$ ‹ v ‰G‰O‹¤v ‰T$‰O‰L$‹$‰W‰O(Αω‰O,‹L$‹‹    ΗGL    ‰W8Αϊ‰W<‰OHιύÿÿt& ƒ|$ „ε  ‹T$ ƒϊ…  φ$ „ύÿÿGÿ‹T$Ή   ‰ƒ    ‹D$ƒΐƒÒ ‰CH‰SLιφόÿÿ΄&    $$ÿίÿÿ‹$ΗD$    £δΦ ιCώÿÿt& φ$„ÿÿÿ‹T$‹C…ÒuΊΐ½πÿ9ΠLΒΊ@B 9ΠOΒiΐθ  Ί ›2β9Π‰ΦMπΈ eΝ9ΖOπθόÿÿÿ+v ‰ς‰$Αϊ‰t$‰T$φδΦ €…x  θόÿÿÿ‹$‰v ‹δΦ £v ‰Π€δΏ£δΦ ωÿ   ,  ƒβuω     L$$€Μ@‹T$‰L$ £δΦ ‹D$Q‹L$¤ΒΑΰθόÿÿÿ‰D$‰T$ X΅ΰΦ HΈ   Σΰ‹$9ΘOΑΉ   +ΰΦ Ιχξ1φ¥ΒΣΰφΑ EΠEΖ‰T$‹T$‰$‹D$ v ¤v ‰Ρ‰ΒΈ ΅ $L$1φ9Φ‰ΖΞΎ    MςMΑΉΰ^ψÿ‰Βƒώ ΚΊ    MΦLΑΉθ  ‰ v ‹T$ÿt$ £¤v 1ΐθόÿÿÿ‹5δΦ ‹‰T$$‰t$ζ    ‰¬v ‰t$Z£¨v ιgύÿÿt& ‹C(‰ΒƒβχΖ   „„   …Òu&Η°v     Ύ@   ΗΠΦ ÿÿÿÿΗΤΦ ÿÿÿ‰4$‹$0δβ ÿ  	Β‰$‰δΦ ιόÿÿ΄&    ‰D$θoρÿÿ‹D$ιύÿÿ¶    ƒϊ…–ϊÿÿ‹T$1θ1ς	ΠΈ   DΘιϊÿÿ…Òtθόÿÿÿ‹£v ΅δΦ ‰v ‰$‹C(ι€ÿÿÿ΄&    v φ$„EϊÿÿG‹T$Ή   ‰ƒ    ‹D$ƒΐÿƒÒÿ‰CH‰SLιϊÿÿ΄&    ‹D$‰‹ι>όÿÿv D$$ΗD$    ΗD$    ‰D$ ιϊύÿÿθόÿÿÿ%δΦ ÿΏÿÿ£v D$$‰v Η$    ΗD$    ΗD$    ‰D$ ιΌύÿÿθόÿÿÿffffθόÿÿÿ‹θόÿÿÿ£πv ‰τv Γ΄&    θόÿÿÿU½    W‰ΟVSƒμ‹t$4‰D$‰Θ‰T$χζ‰Π1Ò‰Α‰π‰Σχη€£   ‰ψ1Ò»    ΗD$    Ρθ‰T$‰D$‹D$0‰$‰D$λ	v ƒ,$tV¶$‹D$1Ϋ‹T$¥ΒΣΰφΑ EΠEΓD$T$1Ϋ‰Α…Òt‰Π1Òχχ‰Γ‰Θ‰ιχχ‰Ϊ‰Φ‰Γ­ΣΣξ1ÒφΑ EήEς‰Ω	ρu¤‹|$‹$‰‹D$‰ƒΔ[^_]Γt& ¬ΩΡλƒν‰Ψ	Θ„Jÿÿÿ¬ΩΡλƒν‰Ψ	Θuήι6ÿÿÿθόÿÿÿUWV‰ΖSθόÿÿÿ‹(w …Ò„Β   ‰Ε΅”Ω =”Ω „°   ΅”Ω xΠ=”Ω „   ΅dw ‰ρ„Ιt9ψ„ª   …νt
+φGD „   …ÿtxΊ    Έ@w θόÿÿÿƒψ ‡”   „Ώ  ‰ϋ…ΐt=΅”Ω XΠ=”Ω tZ‰π„ΐt9dw t?‹C,Ί@w θόÿÿÿ…ΐu.‹CD¨ u…ν…#Ώ  9dw t‰Ψθόÿÿÿ…ΐ„EΏ  [^_]Γv ‹C0XΠ=”Ω u¦‰ϋλΠ΄&    ‹W0zΠϊ”Ω …6ÿÿÿλΜι_Ώ  ΄&    θόÿÿÿh6Ρ  jÿj hΐI θόÿÿÿƒΔ= πÿÿwιόÿÿÿ΄&    fΓ΄&    ΄&    θόÿÿÿU‰ΕW‰ΗΈ w VSƒμθόÿÿÿ‹5w ‰Γ‰θ„ΐ„$  ‹”Ω Η$    Ηw     BΠϊ”Ω „&  ‰ϊ‹$‰ί1ν‰Σv φ@Du9Ζu„Ϋu…Ιt‹Q89P8~‰Α½   ‹P0BΠϊ”Ω uΡ‰θ‰ϋ„ΐ„ν   ‰w …Ι„Ο   9Ξt%‹xΩ B ϊxΩ tf‹P`ƒ`DοB ϊxΩ uξ‹5όv …φu\…ΙtX΅xΩ =xΩ tLj 1ΙΊB Έw j θόÿÿÿ΅    ZΊ    Yτ  £w ΅    …ΐtσΌΠΈw θόÿÿÿΗόv    ƒΔ‰ΪΈ w [^_]ιόÿÿÿt& ‹”Ω BΠϊ”Ω t‰4$ιιώÿÿ‰ρ…φ…_ÿÿÿt& ‰5w ‰ριMÿÿÿv ‹$ιÿÿÿθόÿÿÿUΈ€Ω W‰ΟVSθόÿÿÿ΅”Ω =”Ω tXΠ1φ½   t& θόÿÿÿ…ΐtφCD t#‰θΊ    ÿs,)πhNΡ  HΒP7PθόÿÿÿΖƒΔ‹C0XΠ=”Ω uΑ»   Έ    )σHΨχΈ€Ω θόÿÿÿhRΡ  SWθόÿÿÿƒΔπ[^_]Γ»   1φλΧ΄&    θόÿÿÿSΈ€Ω ‰Λθόÿÿÿ΅dw ÿp,hTΡ  h   Sθόÿÿÿ‰ΓΈ€Ω θόÿÿÿ‰ΨƒΔ[Γv θόÿÿÿU‰ΕWVSƒμ(Ηθv     Ηδv     θόÿÿÿΈ   θόÿÿÿ‹5`Ω …φQ  Ηΰv     Έ    „ή   ‹    ƒϊ†Ο   ‹    …Ϋ…G  Ώ    »    θόÿÿÿ9Γu‰ψΊ    θόÿÿÿ‰Η‰Γ;    ƒ2  π«=ΰv ΅    Ώ   9ΖGπƒώλbfσΌΠ‰Π9ΣvFπ«ΰv ƒΗ9χtGθόÿÿÿ‹    1ÒχσBÿΊ    θόÿÿÿ9ΓwΡ΅    …ΐuΎΊ    Έ    9ΣwΊƒΗ9χuΐ΄&    θόÿÿÿπ³ΰv ΅ΰv θόÿÿÿ…ΐ„!  θόÿÿÿ‰D$$hΰv ÿ5    Pÿu,hD θόÿÿÿ‹    ΗD$ÿÿÿÿƒΔΗD$ÿÿÿÿΗD$ÿÿÿΗD$    ΗD$    ¶    ‹$Ίΰv θόÿÿÿ‰$9Ψƒp  ‹<$9|$$tί‹U ‰θθόÿÿÿ‰ι‰D$‰ψ‰T$Ί6 j‰|$θόÿÿÿ‹U ‰θθόÿÿÿ‹}‹u‰T$$‹τv ‰D$ ΅πv ‰Σ;D$\$Y…ϋΓ   ‹L$‹\$ 9ΑΣ…ϋί   ‹L$‹\$ +L$\$‰Θ‰Ϊ‰ρ‰ϋ¬ωΡλ!π!ϊ‰Ξ‰ΩΏ    ‹\$χΦχΡ!Ζ!Ρ	ρ‹t$EΗEΧ1ÿ―U‰ΡχeΚ‹M­ΠΣκφΑ EΒEΧ‰χ‹t$9ΓΧ‰ί‹\$Lψ‰|$‹|$Lϊ9Ψ‰|$‰Χχ‰ί‹    Lψ‰ΠMD$‰|$‰D$ιΗώÿÿ΄&    ‹<$π«=δv ΅πv ‹L$‹τv ‹\$ 9Α‹}‹uΣ…ϋ‰!ÿÿÿ‹$π«θv ‹u‹}ιÿÿÿfΈ   θόÿÿÿd΅    …ΐ„   θόÿÿÿ‹θv …Ò…}Ώ  ΅δv …ΐ…¥Ώ  ƒΔ([^_]ΓΈ   θόÿÿÿd΅    …ΐtjθόÿÿÿÿu,hΰC θόÿÿÿ[^ƒΔ([^_]Γ΅    £ΰv θόÿÿÿπ³ΰv ΅ΰv ιύÿÿ΄&    σΌΫ‰ίιΈόÿÿt& θόÿÿÿιfÿÿÿ΅ΰv ιTύÿÿθόÿÿÿλ΄&    t& θόÿÿÿ‹`Ω …ÒuΓιϋϋÿÿ΄&    t& θόÿÿÿV‰ΒSƒμ‹5`w „ΐt
+Η`w     ΅”Ω XΠ=”Ω uλ\΄&    ‹C0XΠ=”Ω tH9ήu„ÒuλφCD€tε‹CP…ΐ…ΐ  ‹KT…Ι…ΐ  ΅`w …ΐt‹@89C8~Ύ‹C0‰`w XΠ=”Ω uΈƒΔ[^Γ΄&    ¶    θόÿÿÿWVS‰Γƒμ;w „―   9dw „Γ   ;`w „ί   Έ w θόÿÿÿ‰Β΅w 9ΓtφCDu,‹s0‹K4C0‰N‰1‰C0‰C4Έ w θόÿÿÿ1ΐƒΔ[^_Γt& ‹{`‹sdK`‰w‰>‰K`‰Kd‹όv …Ιt¶…ΐt΅xΩ =xΩ u¦Έw ‰$θόÿÿÿ‹$Ηόv     λ¶    Έ   θώχÿÿ;w …;ÿÿÿΈπÿÿÿλ‡v Έ   θ~φÿÿ9dw tδ;`w …+ÿÿÿ΄&    v Έ   θFώÿÿιÿÿÿθόÿÿÿS‰ΓΈ€Ω θόÿÿÿ‹S0C09Βt‰Ψθ½ώÿÿ‰ΓΈ€Ω θόÿÿÿ‰Ψ[Γt& 1ΫΈ€Ω θόÿÿÿ‰Ψ[Γ΄&    θόÿÿÿ‹PD‹H0ƒβΟƒΚ@‰PDP09Ρt5‹PX…Òtθόÿÿÿ΅(w …ΐuΓ΄&    ‹    ΉhΩ Έ    ιόÿÿÿv Η@8    Γ΄&    θόÿÿÿUΈ w WVSƒμXθόÿÿÿ‹-όv …ν„{  ΅ψv ‰D$L΅xΩ h =xΩ „*  ‰l$@λ1΄&    v ‹5(w …φ…ϊ  ‹D$@‹@`x ‰|$@=xΩ „σ  ‹D$@‹@Dƒΰ@‰$uΚ΄&    v ϊ΅w ‹θόÿÿÿ‰D$$‹D$@‰T$(‹θόÿÿÿ‰D$D΅w ‰T$H‹θόÿÿÿ‰D$΅w ‰T$‹θόÿÿÿ‰D$,‰T$0ϋ‹-w ‹D$+D$$‹T$‹u‹}‰ΑT$(‰π!ρ¬ψ‰L$‰Ρ‰ϊ‰ΓΡκ!ω‹D$χΣ‰\$‰Σ#D$χΣ‰\$4!Λ	Γ„C  ‹$ƒψ‡Ο  9    †Γ  ‹D$@‹@D‰$¨„Q  ‹ψv …Ι…C  ‹\$@‹=w ‹Cp‹w‰|$‹St‹‰D$‹D$$+D$‰T$ ‰Ε‹T$(T$ !υ¬ώ‰l$‰Υ‰ς‹t$!ύχÒΡο‰Π‰ϊ‹|$χÒ!π!κ	Β‹W‹D$DEρEι‰T$4‹W‰t$‹{‹sl‰l$8‹k‹[h‰T$‹T$H‰t$T)Ψ‰\$Pς‰ώ‰Σ‰κ!Ζ‰ψΡκ¬θ!λ‰T$0‹T$0χΠ‰ί!πχÒ!Ϊ‹\$@	Β‹T$D‹D$$EρEω‹K‹k‰Sh‹T$(‰L$,‹L$H‰Cp΅ψv ‰Kl‰St…ΐ…φύÿÿ‹L$8‹D$―L$χd$Κ¶L$4­ΠΣκφΑ t‰Π1Ò‰D$‰θ―ύ¶L$,‰T$χζ1φϊ‹|$­ΠΣκφΑ EΒEΦ1ν‰D$‰T$‹W ‰οS ‹\$+\$‹t$‰Ωt$‰πχΩƒΠ χΨHΛHΖ9ΚΗ  ‹D$@9dw „ψ  ‹$ƒΰ!ƒψ…Jύÿÿ΅w φ@D„;ύÿÿ‹4$‹|$@‰πƒΘ ‰GD΅(w …ΐ„ύÿÿ9=dw „ω  ‰π   ‰GDv ‹    ΉhΩ Έ    θόÿÿÿιμόÿÿ¶    ‹U‹E―M‰T$1Ò‰D$8‹D$‰T$<χeΚ¶L$­ΠΣκφΑ t‰Π1ÒΉ † ‰D$9Α‰T$Σrύÿÿ‹L$,‹\$0+L$\$‰Ϊ‰Θ‹\$4!ϊ‹|$!π!Σ!Η	ϋu<‹t$8‹L$<―Φ―ΘΡχζ1φΚ¶L$­ΠΣκφΑ EΒEΦ‰ΖΈPΓ  ‰Χ9πΣ'  ƒ$‹$;    †Vόÿÿ‹],θόÿÿÿÿ4$ÿt$ÿt$SPh F θόÿÿÿ‹D$Xθ>ϋÿÿƒΔιτϋÿÿ‹|$L…ÿtπÿψv d΅    Ί    θόÿÿÿ;    sM‹w …Ò„   ƒΔXΈ w [^_]ιόÿÿÿ‹$‹|$@‹T$(ƒΘ‰GD‹D$$‰Wt‹T$H‰Gp‹D$D‰Wl‰Ghι€ϋÿÿ‹    Έ    …Òt¤σΌΒ‹w …Òu¤λ,‹P\‰Η…Ò„ϋύÿÿθόÿÿÿ‹GD‰$‹$ƒΰ!ƒψ…:ϋÿÿιλύÿÿw τ  ‰ΒΈw θόÿÿÿι[ÿÿÿθόÿÿÿιϋÿÿ‹],θόÿÿÿWVSPhόE θόÿÿÿÿt$$ÿt$$‹D$\ÿp,hPF θόÿÿÿƒΔ$ιΩϊÿÿ‹|$@‹_,θόÿÿÿSPhG θόÿÿÿ΅w ÿpÿpÿt$4ÿt$4ÿt$Dÿt$Dÿt$<ÿt$<ÿp,h€G θόÿÿÿƒΔ4ÿwÿwÿt$\ÿt$\ÿt$Xÿt$Xÿt$(ÿt$(ÿw,hΰG θόÿÿÿ΅dw ƒΔ(9ψ…*ΐ  ι`ΐ  ‹],θόÿÿÿÿ4$SPh¨E θόÿÿÿƒΔιϋÿÿθόÿÿÿ΅dw UWVS…ΐt‹PDβ@  ϊ@  „7  Έ w 1Ϋθόÿÿÿ‹xΩ ‰Ζ‹J x ϊxΩ u.ιΐ   φΔt€δώ»   ‰AD‹G`W`‰ωƒθ`ÿΩ „™   ‰Η‹AD¨@tΠ‹Y`‹Ad½”Ω ‰C‰‹A4‰Q`‰Qd‹Q0‰B‰΅”Ω ΗA0   ΗA4"  PΠ‰ΓΗA8    =”Ω uλ"΄&    ‹B0‰έPΠ=”Ω t	‰Γ‹B8…ΐyθ‹E Q0»   ‰P‰A0‰i4‰U ‹ADιIÿÿÿ΄&    f‹όv …Òt΅w …ΐt%΅xΩ =xΩ t‰ςΈ w θόÿÿÿ‰Ψ[^_]Γ¶    Έw θόÿÿÿΗόv     λΡ‹`Ω …Ò„»ώÿÿθίρÿÿι±ώÿÿ΄&    v θόÿÿÿΈ€Ω θόÿÿÿθlώÿÿ…ΐuΈ€Ω θόÿÿÿ1ΐΓv 1ΐθΑνÿÿΈ€Ω θόÿÿÿ1ΐΓt& θόÿÿÿUWV‰ΖΈ€Ω S‰ΣθόÿÿÿΈ w θόÿÿÿ‹V0‰Ε‹F4‰B‰΅”Ω ΗF0   ΗF4"  ‰^8=”Ω tjPΠ‰ΑΏ”Ω λ΄&    f‹B0‰ΟPΠ=”Ω t‰Α;Z8~κ‹V0‰P‰F0Έ w ‰~4‰‰κθόÿÿÿ1ΐθνÿÿ1ΐθpξÿÿ1ΐθωτÿÿΈ€Ω [^_]ιόÿÿÿΏ”Ω λΌt& θόÿÿÿVS‰ΓΈ w θόÿÿÿ‰ΖφCD@u‹S0C09Βt
+‹S`C`9Πt‰ΨθΊφÿÿ‰ς[Έ w ^ιόÿÿÿt& ‹xΩ £xΩ ‰B‰S`ΗCdxΩ λΝ΄&    ΄&    θόÿÿÿS‰Γ΅`w …ΐt+9Ψt;‹PH…Òtθόÿÿÿ…ΐu΅`w ‹θόÿÿÿ£ w ‰$w [Γf€=     „uΐ  [Γ‰ w [‰$w ΓfθόÿÿÿU‰εWVS‰Γƒμ‰D$‰Π‰Κ‹`w …Ι„  9Ω„ς   ‹‰Θθόÿÿÿ‹ w ‹$w 9Α‰ίΧr5΅`w 1φ1ÿ‰D$‹D$9D$t‹PL…ÒtθόÿÿÿƒΔ‰π‰ϊ[^_]Γ¶    ‹=`w ‰|$)Θ‹|$Ϊ‹\$‹w‹‹K‹[!ϊ!π¬ώΡο‰$‰ς‰L$‰ωχÒ‰\$‹$χΡ!Β!Ω	Ρu~¶L$χd$‰Ζ‰Χ1ΐΣο­ΦφΑ EχEψ‰Ψ…Ϋ„gÿÿÿΉ    +L$1Ϋχd$¥ΒΣΰƒα EΠEΓΖΧιAÿÿÿ΄&    f‹ w ‹$w 9Α‰ίΧr<ƒΔ1φ1ÿ[‰π‰ϊ^_]Γt& ¶L$1ΐχd$‰Ζ‰Χ1ΐΣο­Φƒα EχEψιμώÿÿt& ‹|$‰|$ιÿÿÿv θόÿÿÿ΅Ω =”Ω t'SXΠv ‹SP…Òt‰Ψθόÿÿÿ‹C4XΠ=”Ω uε[Γv Γ΄&    θόÿÿÿ΅”Ω S=”Ω t!XΠv ‹ST…Òt‰Ψθόÿÿÿ‹C0XΠ=”Ω uεπÿψv [Γt& θόÿÿÿπÿψv Γv θόÿÿÿU‰εWVS‰ΛΑƒμ‹u‹}‰D$Έÿÿÿÿ‰T$ΊÿÿÿÿΗD$    ‰$…Òt
+‰Π1Òχρ‰D$‹$χρ‰ω‹T$9ΖΡCπCϊ‹D$‰ω)Ψ1Ϋ―ΘχζΚ¶L$­ΠΣκƒα ‹MEΒEΣ…Ιt‹]‰3‰{ƒΔ¬Π[Ρκ^_]Γ΄&    θόÿÿÿU‰ΝWV‰ΖSƒμ…Ι…  ‹@ …ΐ…Ε  ΗF PΦά‹^Έ   1ÿχγ‰$‰Ρ…ÒtΏ…λQ‰Πχη‰Π‰ΧΑθΑοkΐd)Α‰Κ‹$Ήd   χρ‰ϊ‰F‰Α…ν„  ‹nλQ΄&    fΡλƒνΈ   1ÿχγ‰^‰n‰Ρ‰$…ÒtΏ…λQ‰Πχη‰Π‰ΧΑθΑοkΐd)Α‰Κ‹$Ήd   χρ‰ϊ‰F‰Α‰ΨΘr²9Λr®‹F‹V‰$F$‰T$‰κP‰Ψÿt$ÿt$θόÿÿÿR‰FP‰Vÿv(ÿv$ÿt$ ÿt$ ÿv,hI θόÿÿÿƒΔ4[^_]Γ‹@‰Χ‹V1Ϋ‰$‰T$‰Α…Òt‰Π1Òχυ‰Γ‰Θχυ‰Ϊ1Ϋ‰Α…Ò…Ώ   ‰Θχχ‰Ϊ‰Σ‰Ρ‰ϊ	Γt/ƒ|$ †΄   ΊX  9ΒΊ    Κƒ    iΧX  ΄&    v F^‰ι‰$Έ Κ;R1ÒχχP‹T$‰Ψθόÿÿÿ‹F Y[…ÿ„]ώÿÿ…ΐu&―ύ1ÒΈ Κ;χχΊ@ =? FΒ‰F ιGώÿÿt& =? ‡7ώÿÿι0ώÿÿ‰ΨΘr*‹nιΚώÿÿ΄&    ‰Π1Òχχ‰Γι4ÿÿÿv ―Η‰Βιfÿÿÿ€=    uΝÿv,hXI Ζ   θόÿÿÿX‹N‹n‹^Zιyώÿÿ΄&    θόÿÿÿUW‰ΟV‰ΦS‰Γθόÿÿÿƒ{<‡  ‹C@ƒψ‡ΐ  ‰ω‰ς‰ΨθόÿÿÿΈ€Ω θόÿÿÿΈ w θόÿÿÿ‰Ε΅”Ω PΠ‰Α=”Ω „ζ   ‹{8Ύ”Ω λ¶    ‹B0‰ΞPΠ=”Ω t‰Α9z8}κ‹S0‰P‰C0C`‰s4‰‹SD‰C`‰CdφΒ„}   ‹xΩ £xΩ ‰BƒcDο‰S`ΗCdxΩ ‰κΈ w θόÿÿÿ1ΐθ6ζÿÿ1ΐθηÿÿφCD€t-‹sP…φ…©ΐ  ‹KT…Ι…©ΐ  ΅`w …ΐt‹@89C8~‰`w Έ€Ω θόÿÿÿ1ΐ[^_]Γv φΒtƒΚ ‰SDλ’v ΗC<    ιΨώÿÿΎ”Ω ι8ÿÿÿθόÿÿÿUWVSYÿƒμƒϋ‡   ‰Ζ‰Θ€|ÿ
+tu‰ΛƒϋrN‹j‰Χƒεό‰
+‹Lό)ο‰Lό‰ρ)ωίƒηόƒÿr‰$ƒηό1φ‹1‰D5 ƒΖ9ώrς‹$ΪΖ ƒΔ[^_]Γt& …Ϋtλ¶
+φΓtα·Lώf‰LώλΥ¶    …ΫtΝλ‡fΈκÿÿÿλΕ΄&    fθόÿÿÿV‰ΘSƒμ$d‹    ‰T$ 1Ò‹t$0‰β‰ρθόÿÿÿ‰Γ…ΐxDΈ€Ω θόÿÿÿ΅”Ω XΠ=”Ω t‹C,‰βθόÿÿÿ…ΐt5‹C0XΠ=”Ω uεΈ€Ω »νÿÿÿθόÿÿÿ‹D$ d+    u%ƒΔ$‰Ψ[^Γv ‰Ψθνÿÿ‰ΓΈ€Ω θόÿÿÿ…ΫDήλΞθόÿÿÿ΄&    fθόÿÿÿSΈ€Ω ‰Λθόÿÿÿ‹L$‰ΨΊ@w θόÿÿÿ‰Γ…ΐx1ΐθ1δÿÿΈ€Ω θόÿÿÿ‰Ψ[ΓfθόÿÿÿU΅    1Ò‰ε]Γ΄&    ΄&    θόÿÿÿU‰εWVλt& σ‹    φΒuσ‹5    ‹=   ‹    9Ρuί‰π‰ϊ^_]Γt& θόÿÿÿUΉ   ΊΣMbWΏ€w VΎ Ω Sσ¥‰Ητ  ‰ΖΑÿΑζΗ¬w »Ρ  ¤Η‰ΘΑωƒΈw χκ‰Π‰ΣΑψΑϋ)Θ)Λ™πϊ1φ‰Α…Òt‰Π1Òχσ‰Ζ‰Θχσ‰ς‰ΑΡθ1Ò  ΚƒÒ;1ν‰Ζ…Òt‰Π1Òχρ‰Ε‰πχρ‰κ1ΙΑΰΊ   £w Έ€w θόÿÿÿ1ΐ[^_]ΓffffθόÿÿÿΓ΄&    v θόÿÿÿWV‰ΦS‹XD‹Bt\ΗÿÿÿÿΖC ‹~‹6‰ψ	πt9Έÿÿÿÿλ‹Ί    θόÿÿÿ‰;    r€{ u4ΗÿÿÿÿΖCƒΖÿƒΧÿ‰ψ	πuΞ‰Ψ[^_Γ΄&    θόÿÿÿ‰C‰Sλ—v 1Ϋ‰Ψ[^_Γ΄&    θόÿÿÿ‹D$‹T$…ΐtL$θόÿÿÿΓt& D$PRθόÿÿÿXZΓfθόÿÿÿU‰Ε‰ΡWVSƒμ<‹D$P‰T$8‹T$T‰D$,Έ        ‰T$0‰D$4‰ΖQhΣΡ  Uθÿÿÿ‰πƒΐ8‰D$ƒΔΗD$(    ‰,$΄&    ÿt$(hάΡ  ‹|$Wθ]ÿÿÿ‹t$VhθΡ  WθMÿÿÿÿvhόΡ  Wθ?ÿÿÿƒΔ$ÿ5    hÒ  Wθ+ÿÿÿÿvh(Ò  Wθÿÿÿÿv$ÿv h<Ò  WθÿÿÿƒΔ(hVÒ  Wθώώÿÿ‹D$4F ‰D$‹‹T$8V$1ν1Ϋ‰T$θόÿÿÿ‹N‰D$X‰ΞZ‹|$‹…φ„τ   t& ‹V‹N‹~‰T$‹V‰L$ ‹N‰T$‹T$‰L$¶N$L$'θόÿÿÿWVShfÒ  ‹\$Sθ~ώÿÿ¶|$;WhwÒ  SθmώÿÿƒΔ h€Ò  ‰\$Sθ[ώÿÿ‹L$$‹\$(‰Θ‰Ϊ+D$T$RP‹t$$‹|$(‰π+D$‰ϊT$ ƒΕRPS1ΫQWVhDJ ÿt$,θώÿÿ‹|$4ƒΔ0‹θόÿÿÿ‹w‰D$…ν„)ÿÿÿ…φ„!ÿÿÿ‰πθόÿÿÿƒΓ…ΐt9λrπ‹|$‰Ζ‹…φ…ÿÿÿ‹T$θόÿÿÿƒD$(‹D$(ƒD$(ƒψ…@ώÿÿ‹,$‹t$4ÿv$ÿv h‚Ò  hÒ  Uθ“ύÿÿ¶F1ÒRƒΰPh¤Ò  h°Ò  Uθxύÿÿ‹F1ÒƒΔ(RPhΏÒ  h°Ò  Uθ^ύÿÿ·F1ÒRPhΙÒ  h°Ò  UθFύÿÿ·F1ÒƒΔ(RPhΤÒ  h°Ò  Uθ+ύÿÿ‹F1ÒRPhέÒ  h°Ò  Uθύÿÿ‹D$`ƒΔ(θόÿÿÿ1Ò‰Γ‹@,RPhλÒ  h°Ò  Uθοόÿÿÿs8ÿs4hυÒ  hÒ  UθΩόÿÿ¶C01ÒƒΔ(ΠθRƒΰPhÿÒ  h°Ò  UθΉόÿÿ‹CD1ÒRPhΣ  h°Ò  UθΆόÿÿ‹CH1ÒƒΔ(RPhΣ  h°Ò  Uθόÿÿ‹CL1ÒRPh$Σ  h°Ò  UθqόÿÿƒΔ(ÿsTÿsPh0Σ  hÒ  UθXόÿÿÿs\ÿsXh?Σ  hÒ  UθBόÿÿƒΔ(ÿsdÿs`hMΣ  hÒ  Uθ)όÿÿÿslÿshh[Σ  hÒ  UθόÿÿƒΔ(ÿstÿsphjΣ  hÒ  Uθϊϋÿÿ‹Cx1ÒRPh{Σ  h°Ò  UθγϋÿÿƒΔ(ÿ³   ÿ³   hΣ  h°Ò  UθΔϋÿÿÿ³   ÿ³”   h“Σ  hÒ  Uθ¨ϋÿÿ΅    1ÒƒΔ(RPh Σ  Uθ‘ϋÿÿ‰l$`ΗD$d€Ò  ƒΔL[^_]ιyϋÿÿ΄&    fθόÿÿÿWV‰ΦS‹|$‰ΓQhΐΣ  PθTϋÿÿƒΔ…ÿ  WhνΣ  Sθ=ϋÿÿƒΔhΤ  Sθ/ϋÿÿXZ…φ„u  ÿv`hΤ  Sθϋÿÿÿvÿvh"Τ  Sθϋÿÿÿv ÿvh9Τ  SθυϊÿÿƒΔ,ÿv$hPΤ  Sθδϊÿÿÿv(heΤ  SθΦϊÿÿÿv,hzΤ  SθΘϊÿÿƒΔ$ÿvÿvhΤ  Sθ΄ϊÿÿÿvh«Τ  Sθ¦ϊÿÿ‹FDƒΔ…ΐtPhΑΤ  SθϊÿÿƒΔ‹F8…ΐtPhΧΤ  SθzϊÿÿƒΔ‹F<…ΐtPhνΤ  SθdϊÿÿƒΔ‹F@…ΐtPhΥ  SθNϊÿÿƒΔ‹FH…ΐtPhΥ  Sθ8ϊÿÿƒΔÿ6h0Υ  Sθ(ϊÿÿh€Ò  Sθϊÿÿÿv4hFΥ  SθϊÿÿƒΔ …ÿyh€Ò  SθύωÿÿXZ[^_Γ΄&    ‰ψθόÿÿÿΊΉΣ  …ΐt‹P`Rh\Υ  SθΡωÿÿƒΔλΔt& hΫΣ  Sθ½ωÿÿYXι|ώÿÿ¶    hΤ  Sθ¥ωÿÿY[[^_Γ΄&    ΄&    θόÿÿÿS‰Γθόÿÿÿ‹Hjÿ‹‰ΨθώÿÿθόÿÿÿPÿ5    hoΥ  Sθ^ωÿÿθόÿÿÿPÿ5    hxJ SθGωÿÿƒΔ$h€Ò  Sθ9ωÿÿXZ[Γt& θόÿÿÿWVS‹2‰Γ¶Bƒώÿt;„ΐt‰πθόÿÿÿ‹HV‹‰Ψθ“ύÿÿX1ΐ[^_Γt& ÿr‰Ψÿr‰ςθωÿÿ1ΐZY[^_Γ„ΐt‰ΨθEÿÿÿ1ΐ[^_Γ΄&    ‹r‹zhΥ  Sθ·ψÿÿjh¤Υ  SθªψÿÿWVhΑΥ  SθψÿÿƒΔ$h€Ò  Sθψÿÿ1ΐ[^[^_Γ΄&    θόÿÿÿS‹XDΊ    ƒƒQ ‹θόÿÿÿ‰;    r€{ uΗÿÿÿÿΖC‰Ψ[Γ1ΫλψfθόÿÿÿWVSθόÿÿÿhΥ  ‰Ζ‰Χj θ#ψÿÿjh¤Υ  j θψÿÿWVhΑΥ  j θψÿÿƒΔ$h€Ò  j θψχÿÿ[»ÿÿÿÿXλ΄&    W‰Ϊ1ΐVθψÿÿZY‰ΨΊ    θόÿÿÿ‰Γ;    rέ1ΐ»ÿÿÿÿθ)ώÿÿλ΄&    ‰Ψθόÿÿÿ‹HS‹1ΐθ,όÿÿX‰ΨΊ    θόÿÿÿ‰Γ;    rΥ[^_ΓθόÿÿÿUW‰ΟVSƒμ(d‹    ‰L$$1Ιt$‹\$<Ή€Q VθόÿÿÿY|$‰Ζ‰ω‰  v ƒξΑ€Q xυ‰ΘΊΕ³Ά‘½   χβΑκ‰SiÒ  )ΡΊ‰‰ΘχβΑκ‰SkÒ<)ΡΊ“$I’‰N‰Θχκ‰ΘΑψΚΑϊ)ΒΥ    )Π‰ΚL$)ΒBHΠ‰π‰S™Αΰ¤ςb Ò   €‰D$‰T$ Qj h±: θόÿÿÿ‰Α‰Φ‹D$(‹T$,kφd¬ΠΊaΫ, D… 1νχβ‰l$‰Ε‰T$‰ΧΊΛÿO[‰θχβΈd   Ακ‰T$χα‰D$‹D$‰T$‹T$t$`…A^Ò1’ιÿ‰D$‰T$ƒΔ…ÿ„Ά   ƒη”D$iD$]  1Ι ‰Β·ΐΑκύΗηxΦ—Α‰Ξt$4$iΐqz  ΑθƒΐύΗηxΦvmƒκΉΞώÿÿξl  ·ΐL$‰S‰s‰C‰K‹D$$d+    uIƒΔ([^_]Γ΄&    ι€Q ƒΖωQ οιeώÿÿ΄&    v ƒα”D$ιYÿÿÿv ¶L$ƒΑ;λ‘θόÿÿÿθόÿÿÿV‰ΦS‰Γ‰‰π‹θόÿÿÿ‰C‹D$‰S‹T$‰C1ΐ‰S‹N1ÒΗC    φΑ ΗC     ”ΐ•ΒΣΰΣβƒΐÿƒÒÿ‰C‰S[^Γt& θόÿÿÿU‰εWVS‰Γƒδψƒμ‹ ‹θόÿÿÿ‹3‹{‰$+C‰T$S‰Ρ#F#Nχf―NΚ‹KCS !Χ!Α‰{ ‹|$‰K‹N1φ‰{­ΠΣκφΑ EΒEΦ‹4$CS‰C‰s‰Seτ[^_]Γ΄&    v θόÿÿÿU‰εWVS‰Γ‰Π‰Κƒδψƒμ0‹‹s‹{‰$‰t$ ‹q‰|$$‹y‰t$(‹t$ ‰|$,‹|$$)π‰T$‰Ζ‹D$(ϊ‹{#T$,!π‹s‰|$‰t$‹s ‹[‰t$‰\$‹Y‹I‰ή‰L$‹L$(‹\$,¬ΩΡλ9ΑΣs`‹D$(‹T$ +$‹L$$L$!Π‹T$,!Κ¶L$‰Σχζ―ήΪ+D$T$1φ­ΠΣκφΑ EΒEΦ‰Ζ‹D$‰Χ‹T$)πϊeτ[^_]Γ΄&    ―Φ¶L$‰ΣχζΪD$T$1Ϋ­ΠΣκƒα EΒEΣD$T$eτ[^_]ΓfffffθόÿÿÿUWVS‹    …Ϋt)‰Φ‰Ο΄&    f‹C‹+ƒΓÿt$‰ς‰ωθόÿÿÿ‹X…Òuδ[1ΐ^_]Γ΄&    ¶    θόÿÿÿUWVS‹    ‹t$‹|$…Ϋt‰Υv ‹C‹ƒΓW‰κVθόÿÿÿ‹XZ…Ιuη[1ΐ^_]ΓθόÿÿÿUWVS‹    ‹t$‹|$…Ϋt‰Υv ‹C‹ƒΓW‰κVθόÿÿÿ‹XZ…Ιuη[1ΐ^_]ΓθόÿÿÿUWVS‹    ‹t$‹|$…Ϋt‰Υv ‹C‹ƒΓW‰κVθόÿÿÿ‹XZ…Ιuη[1ΐ^_]ΓθόÿÿÿSΈ x θόÿÿÿ‹x ‰ΒΈ x θόÿÿÿ‰Ψ[Γ΄&    v θόÿÿÿU‰εWV‹p‹x‹@@@‹Εx θόÿÿÿ)ΖΧ‰π^‰ϊ_]ΓfθόÿÿÿU‰εS‰Λ‰Ρ‹P`‹@\)ΘΪ‹]όΙΓt& θόÿÿÿσΓ΄&    U‰εW‰ΟV‰ΦS‰Γƒμ‹S@d΅    ‰Eπ1ΐ‰Uδθόÿÿÿ‹Uδ…    ‹CD‰Uδ…ΐtoMμUθΈ   θόÿÿÿ…ΐtC‹M‹Uθ‰J0Ή`   f‰J4‹M‰j<ΗB8    H‹Mμ‰p‰xj ÿuδRΊ   j jSθόÿÿÿƒΔ‹Eπd+    ueτ[^_]Γt& ‹…ΐu‹λΰθόÿÿÿ΄&    t& U‰εW‰ΧV‰ΖSƒμ‹^@d΅    ‰Eπ1ΐθόÿÿÿ…    ‹FD‰]δ…ΐ„ƒ   MμUθΈ$   θόÿÿÿ…ΐtX‹M‹Uθ‰J0Ή`   ‰j<f‰J4ΗB8    ‰x‹O@H‹O‹_‰H‹M‰X‹]‰H‹Mμ‰Xj ÿuδRΊ$   j jVθόÿÿÿƒΔ‹Eπd+    ueτ[^_]Γv ‹…ΐ…sÿÿÿλέθόÿÿÿ΄&    W‰ΟV‰ΦS‰Γƒμd΅    ‰D$‹C$©ΐ  u@Ή   ‰Ϊ‰ΰθόÿÿÿ…ΐt‹T$,‰p‰xP‰ΰθόÿÿÿ‹D$d+    uƒΔ[^_Γ¶    φΔu»‰Ψθόÿÿÿ„ΐt°λΤθόÿÿÿ΄&    fV‰ΖS‰Σƒμd΅    ‰D$‹F$©ΐ  uSΉ    ‰ς‰ΰθόÿÿÿ…ΐt*‰X‹S@P‹K‹[‰H‹L$(‰X‹\$,‰H‰X‰ΰθόÿÿÿ‹D$d+    uƒΔ[^Γt& φΔu¨‰πθόÿÿÿ„ΐtλΧθόÿÿÿ΄&    fU‰ΚWVS‰Γ‹¨x   θόÿÿÿƒψt[^_]Γv ¶M‹uΊΣΥ  ‹}h ΄  Σΰ‰ΑC@θόÿÿÿWVPhJ Sθόÿÿÿƒ`  ƒΔ[^_]ιόÿÿÿU‰ΚWVS‰Γƒμ‹¨x   θόÿÿÿƒψtƒΔ[^_]Γt& ‹M‹U‹u‹}‰L$¶M‰$ΊΣΥ  hΰ³  Σΰ‰ΑC@θόÿÿÿWVÿt$ÿt$PÿuhΐJ Sθόÿÿÿƒ`  ƒΔ,[^_]ιόÿÿÿW1ÿV‹t$WVθόÿÿÿXZ^_Γ΄&    t& 1Ιιόÿÿÿ΄&    fθόÿÿÿW‰Ο1ΙV‰ΦRS‹Υ”x ‰Γ@θόÿÿÿ‰{<‰s@‰ΗC0 l ΗCD    [^_Γt& θόÿÿÿW|$ƒδψÿwόU‰εWV‰ΖSƒμ‰Eδ‰Π‰Κ‰EΨ‰Α‹‰Σ‰Uά‹W‰ί‰Eθ‹F‰Uμ‹V‰Ξ)ΖΧ…ÿx?‰ϋ;uθ}μ‰ρΏ    Ύ   }Aÿuμÿuθθόÿÿÿ‹]δ‰C‰SXZeτ‰π‰ϊ[^_]gψ_Γv eτ1φ1ÿ[‰π‰ϊ^_]gψ_Γt& ‹uμ…φxQÿuμ‰Θ‰Ϊÿuθθόÿÿÿ‰Ζ‰Χ‹Eθ‹Uμ―Η―Φ‹EθχζΪ‹]δCS‰C‰SY‹MΨ[‹]ά9ΑΣ|ƒΖƒΧ ιgÿÿÿ¶    θόÿÿÿU‰εW‰ΟV‰ΦS‰Γ‹@@@‹Εx θόÿÿÿW‰Ρ‰Β‰ΨVθόÿÿÿY[eτ[^_]Γ¶    θόÿÿÿUƒΐP‰εWV‹pμ‹xπQR‰ς‰ωθόÿÿÿY^eψ^_]Γ΄&    fθόÿÿÿ‹PHΗ@H    …Òt‰Πθόÿÿÿ1ΐΓv UΈ   ‰ε]ιόÿÿÿfθόÿÿÿW|$ƒδπÿwόU‰εWVS‰Γƒμ,d΅    ‰EδΈ   θόÿÿÿ‰Ρ‰ΒEΘθόÿÿÿ‹EΘd‹    ‰‹EΜ‹3‰C‹EΠ‹{‰C‹’¤  ‹Rr$z(B,‰ω™R‰ςPEΨθόÿÿÿ‹EΨ‹Uά‰‹Eΰ‰S‰CXZ‹Eδd+    ueτ[^_]gψ_Γθόÿÿÿ΄&    U1ΐ‰ε]ιόÿÿÿt& θόÿÿÿUWVS‰Γƒμ8‹x d΅    ‰D$41ΐ…Ι…θ   ‹ƒΨ  ¨„κ   ‹C$½ÿÿÿÿφ@xtp‹   …Òtf|$1ΐΉ   ‰\$σ«D$ΗD$νΥ  ΗD$ώÿÿÿθόÿÿÿ‰Ζ= πÿÿwΊ   FθόÿÿÿΈ x θόÿÿÿ‰Β΅x …ΐt-Έ x θόÿÿÿ‰πθόÿÿÿ‹D$4d+    ufƒΔ8‰θ[^_]Γt& ‹ƒΐ  ‰$θόÿÿÿ‹$„ΐtΎ‰Ψ‰x 1φ1νθόÿÿÿ‹$λ¨t& Έ x θόÿÿÿ‰Βλ•f½πÿÿÿλ΄&    f½ÿÿÿÿλθόÿÿÿt& θόÿÿÿUWVS‰Γƒμ‹x@Αβª€x ‰T$‰θθόÿÿÿ‰$Cθόÿÿÿ‰Ζ…ΐyw‹$‰θθόÿÿÿ‹Εx θόÿÿÿ>t& ƒΔ‰π[^_]Γ΄&    d‹    £    sίdÿ    ‹    …Ιt‹IR‰ΪP‰ΘθόÿÿÿXZdÿ    uµθόÿÿÿλ®΄&    φCDtƒ‹T$‚„x ‰ΪθόÿÿÿƒcDώιiÿÿÿθόÿÿÿS‰Γλ¶    σ‰Ψθόÿÿÿ…ΐxσ[ΓθόÿÿÿƒΐPιÿÿÿv θόÿÿÿUWVS‰Γƒθƒμ‹s,‰$vΑΰΈ€x ‰D$‰ψθόÿÿÿ‰ΕφC0t‹D$‹$„x θόÿÿÿƒc0ώ‰κ‰ψθόÿÿÿ‹k(…ν„α   v‹Εx θόÿÿÿ‰Ρ‰Β‹$θόÿÿÿ‰Ε‰ψθόÿÿÿ‰Α…νtA‹Cψ‹Sό‹l$‰C‰SΕ„x ‰C‰SφC0…΅   ‹$‰θ‰L$½   θόÿÿÿƒK0‹L$‰ψ‰Κθόÿÿÿv‹Εx θόÿÿÿ>t& ƒΔ‰θ[^_]Γ΄&    d‹    £    sίdÿ    ‹    …Ιt‹IRP‹T$‰ΘθόÿÿÿXZdÿ    u³θόÿÿÿλ¬t& ‰ψθόÿÿÿ‰Αι|ÿÿÿf‹$‰θ‰L$θόÿÿÿ‹L$ιHÿÿÿ΄&    fθόÿÿÿUWVS‰Γ‹@@4@Αζ®€x Ζ„x ‰θθόÿÿÿ‹S‹Kj ‰ΗCj ‰S j ‰K$‰S(‰K,θόÿÿÿƒΔφCDu‰Ϊ‰πθόÿÿÿƒKD‰ϊ[‰θ^_]ιόÿÿÿt& ‰Ϊ‰πθόÿÿÿλΧt& θόÿÿÿUW‰ΟV‰ΦS‰Γƒμ‹h@Tm Αβ‚€x ‰T$‰$θόÿÿÿ‹T$‰s‰D$‰{²„x φCD…   ‰Ϊ‰πsθόÿÿÿƒKD‹C‹Sj j j ‰Ρ‰Β‰πθόÿÿÿ‹T$‹D$θόÿÿÿDm ‹Εx θόÿÿÿƒΔ>t& ƒΔ[^_]Γd‹    £    sθdÿ    ‹    …Ιt‹IR‰ΪP‰ΘθόÿÿÿXZdÿ    uΎθόÿÿÿλ·΄&    ‰Ϊ‰πθόÿÿÿιVÿÿÿ΄&    v θόÿÿÿW‰ΟV‰ΦS‰Γ‹@@@‹Εx θόÿÿÿR‰ϊP‰πθόÿÿÿY^‰Ρ‰Β‰Ψ[^_ιΕώÿÿt& θόÿÿÿUW‰ΟV‰ΦS€|$ ‰Γ‹l$u&‹€   @‹Εx θόÿÿÿR‰ϊP‰πθόÿÿÿ‰Ζ‰ΧXZ‰θ„ΐt‰s\‰{`[^_]Γ΄&    CP‰ς[‰ω^_]ιXώÿÿ΄&    θόÿÿÿW|$ƒδπÿwόU‰εWVS‰Γd‹5    ƒμ<‰Uΐ‹?‰MΔd΅    ‰Eδ1ΐ‰sH΄&    Έ   ‡F‹Uΐ‹MΔ‰Ψθόÿÿÿ‹CH…ΐtθόÿÿÿλt& σ‰Ψθόÿÿÿ…ΐxσ‹CH…ΐt‹©   u‹¨tµt& d΅    Η@    ‹[H…Ϋ„“   ‹    …Ò…‰   d‹5    ‹†D  …ΐ„½   ‹Εx θόÿÿÿ‹Mΐ‹]Δ)ΑΣ1ΐ9ΘΨΈ    |‹Uδd+    …   eτ[^_]gψ_Γ‰ΚEΘ‰Ωθόÿÿÿ‹EΘUΨ‰EΨ‹EΜ‰Eά‹EΠ‰Eΰ†8  θόÿÿÿλ¶1ΐλ²θόÿÿÿ„ΐ„jÿÿÿ…ÿ„Ύ   ƒÿt9€=΅    …PÿÿÿWhψΥ  Ζ΅   θόÿÿÿZYι5ÿÿÿ΄&    Έόύÿÿι_ÿÿÿΈx Ύ   ‹@θόÿÿÿ‹Mΐ‹]Δ)ΑΈHx Σ‰MΈ‰]Όθόÿÿÿ‹MΌ‹Px ‰Γ΅Tx 9UΈΑ|	Πu(‹EΈ‹UΌ‰5`x £Px ‹Eΐ‰Tx ‹UΔ£Xx ‰\x ‰ΪΈHx θόÿÿÿι¤ώÿÿΈ€x Ύ   ι{ÿÿÿθόÿÿÿ΄&    v θόÿÿÿSΈ x θόÿÿÿ‹x ‰ΒΈ x θόÿÿÿ…ΫtΊ x ‰Ψθόÿÿÿ1ΐ[Γ΄&    v θόÿÿÿUhPWVS‰Γ‹p<‹x@‹€   @‹Εx θόÿÿÿW‰Ρ‰Β‰θVθόÿÿÿC$XS(‹C\‹K`Z‰Β[‰θ^_]ιϋÿÿ΄&    ΄&    θόÿÿÿVΈ x S‰Σθόÿÿÿ‹5x ‰ΒΈ x θόÿÿÿ…φtΗ    ΅    ΗC    ‰C1ΐ[^ΓΈκÿÿÿλφ¶    θόÿÿÿWV‰ΦS1Ϋƒψt1Ϋƒψ	”Γ\ÿΈ x θόÿÿÿ‹=x ‰ΒΈ x θόÿÿÿ…ÿt[‹Εx ‰πθόÿÿÿ1ΐ[^_ΓΈκÿÿÿλυt& θόÿÿÿU‰εVS1Ϋƒψt1Ϋƒψ	”Γ\ÿΈ x θόÿÿÿ‹5x ‰ΒΈ x θόÿÿÿ…φt[[^‹Εx ]ιόÿÿÿ[ΈκÿÿÿΊÿÿÿÿ^]Γv θόÿÿÿWVS‰ΓΈ x θόÿÿÿ‹5x ‰ΒΈ x θόÿÿÿ…φtuΈ#   θόÿÿÿ„ΐt`‹C1φƒψtƒψ	”ΐ¶ΐt ÿvCd1Ι‹Υ”x {Pθόÿÿÿ‰{P1ΐΗƒ€    l Ηƒ   Πx ‰³   Ηƒ”       [^_Γt& ΈÿÿÿÿλπΈ΅ÿÿÿλι΄&    v θόÿÿÿU‰ΥW‰ΗV‰ΞS1ΫƒμX‰D$d΅    ‰D$T1ΐƒÿt1Ϋƒÿ	”Γ\ÿd΅    ‰$Έ x θόÿÿÿ‹=x ‰ΒΈ x θόÿÿÿ…ÿ„†  χΕώÿÿÿ…B  Έ#   θόÿÿÿ„ΐ„@  [1Ι‹Ε”x D$θόÿÿÿ‹NΊ}Α%D$ΗD$8 l ‰D$‹ΗD$D i ‹v9ΒΊ   ‰\$HΚΗD$L    Λ   Ί Κ;iΙ Κ;1ÿχβΚΖΧƒύty[‹Εx θόÿÿÿWVθόÿÿÿS‰Χ‰Ζ‰Β‰ωD$θYϊÿÿƒΔ=όύÿÿt‹T$Td+    …ΐ   ƒΔX[^_]Γ¶    ‹$‰™@  ‰±L  ‰ΉP  Η<  π]  λΐ΄&    d΅    ‹€¤  ‹@=    uRS‰ς‰ωD$θδωÿÿZΊώύÿÿ=όύÿÿDΒλ…t& ΎÿÿÿÿΏÿÿÿι;ÿÿÿΈκÿÿÿιgÿÿÿ¶    ΈÿÿÿÿιWÿÿÿ¶    ƒΐ‰ω‰ςP‹D$θόÿÿÿY‰Ζ‰Χλ–Έ΅ÿÿÿι/ÿÿÿθόÿÿÿ΄&    fθόÿÿÿU½€x WVSƒμH‰D$d΅    ‰D$DΈHx θόÿÿÿ‹Px ‹Tx ΗPx     ΗTx     ‰Β΅`x ‰$‹Xx ‰\$‹\x ‰D$ΈHx ‰L$‰\$θόÿÿÿΈ x θόÿÿÿ‹=x ‰ΒΈ x ‰|$θόÿÿÿΗD$    …ÿ„‡  ‰θθόÿÿÿ‹]‰Β‰θθόÿÿÿ…ΫtD‹s‹{‹Eθόÿÿÿ)Ζ‹$Χ‹T$‰Α	Ρt9Ζ‰ωΡ}‹C‹S‰4$‰|$‰D$‹D$‰T$‰D$ƒΕƒ|$…¶   ‹l$‹<$‰θ	ψ„  Έÿ“5w9ψΈ    θ  >t& ‹t$Ί x ‰πθόÿÿÿ‰πT$ θόÿÿÿÿt$@ÿt$@ÿt$@ÿt$@ÿt$@ÿt$@ÿt$@ÿt$@ÿt$@θόÿÿÿƒΔ$j j D$T$RΊ x P‰πθόÿÿÿ‰ΓƒΔ…ΐ–   ‹D$Dd+    …΄   ƒΔH‰Ψ[^_]Γv ΗD$   ιΤώÿÿv d΅    £    ƒQÿÿÿdÿ    ΅    …ΐt‹@ÿt$‹T$‹L$θόÿÿÿXdÿ    …ÿÿÿθόÿÿÿιÿÿÿ΄&    f1Ϋιsÿÿÿ΄&    f‹D$1ΙΊθ  θόÿÿÿιUÿÿÿ‹D$1ΙΊΠ  »πÿÿÿθόÿÿÿι;ÿÿÿθόÿÿÿ΄&    t& θόÿÿÿUh°WxΐVS‰Γ‰ψƒμθόÿÿÿΗCΠ    ‰Ζ‹CπCμtD‹CδP‰Sδ‰θ1νθόÿÿÿ…ΐt‹Sπ‹Cμ‰Ρ‰$	Α‰T$u#‰ψ‰ςθόÿÿÿ‰θƒΔ[^_]Γ΄&    1ÒλΑt& ‹C@½   @‹Εx θόÿÿÿÿt$ÿt$‰Ρ‰Β‰ΨθόÿÿÿΗCΠ   CΤXSΨZƒCδλffffθόÿÿÿΗ    ΅    ΗB    ‰B1ΐΓv θόÿÿÿU‰εS‰Λ‰Ρ‹P`‹@\)ΘΪ‹]όΙΓt& θόÿÿÿσΓ΄&    θόÿÿÿS‰Γ‹@ΗC<    ΗC@    ‹P4‰Ψθόÿÿÿ…ΐxΗC     1ΐ[Γ¶    Έ   [Γθόÿÿÿ‹P1ΙƒΐPθόÿÿÿ1ΐΓ΄&    t& θόÿÿÿU‰εWSXPÿp@ÿp<‰ΨθόÿÿÿY[eψ[_]Γ΄&    ¶    θόÿÿÿƒΐPιόÿÿÿv θόÿÿÿU‰ΥΊ}Α%WVS‰Γ‹‹y‹q9ΒΊ   ϊ|+Ί Κ;iΟ Κ;1ÿχβΚπϊS‰ιχΡƒαθόÿÿÿZ[^_]Γv ΈÿÿÿÿΊÿÿÿλήt& θόÿÿÿUΈ   ‰ε]ιόÿÿÿ΄&    ¶    θόÿÿÿUΈ   ‰ε]ιόÿÿÿ΄&    ¶    θόÿÿÿU1ΐ‰ε]ιόÿÿÿθόÿÿÿU‰εS‰Σƒδπƒμ d΅    ‰D$Έ   θόÿÿÿ‰Ρ‰Β‰ΰθόÿÿÿ‹$‰‹D$‰C‹D$‰C‹D$d+    u‹]ό1ΐΙΓθόÿÿÿt& θόÿÿÿU1Ι‰εS‰ΣΊ@B ƒδπƒμ d΅    ‰D$1ΐ‰ΰθόÿÿÿ‹$‰‹D$‰C‹D$‰C‹D$d+    u‹]ό1ΐΙΓθόÿÿÿ΄&    fθόÿÿÿU‰εWVS‰Γƒδπƒμ0‹K@‹s‰T$‹S<d΅    ‰D$,1ΐ‹C8‰D$‰Θ	Πuw‹C …ΐuƒ|$uG‹C‹Vθόÿÿÿ‰$‰T$‹L$‹v0‰Ψ‹$θόÿÿÿ‰Ρ1Ò|$9ΒΚ΄   ƒ|$t‹D$Η@   ‹D$,d+    …Έ   eτ[^_]Γ΄&    fD$‰Ηθόÿÿÿ‹D$‹L$‰‹D$‰A‹D$‰A‹C‹Vθόÿÿÿ‰$‰T$φC4uƒ|$u‹$‹L$‰Ψ‹~,θόÿÿÿC$S(ιKÿÿÿf‹L$‹v0‰Ψ‹$θόÿÿÿ‰Ρ1Ò9ΒΚTÿÿÿ‰Β‰ψθόÿÿÿ‹D$‹|$‰G‹D$‰G‹D$‰Gι7ÿÿÿθόÿÿÿt& θόÿÿÿUWV‰ΞS‰Γƒμ‹h‰$‹T$ …ÒtθόÿÿÿΗC<    ‰ΨΗC@    ‹U4θόÿÿÿ‰ΒΈ   …ÒΦ   ‹C4ΗC     ΗC,    ƒΐΗC0    ƒΰώ‰C4‹FF„Ή   ‹Έ}Α%‹N‹~9ΠΈ   Θε   Έ Κ;iΙ Κ;‰|$χβΗD$    ΚD$T$‰S@Ί}Α%‰C<‹F‹N‹v9ΒΊ   Κ·   Ί Κ;iΙ Κ;1ÿχβΚπϊ‹<$ƒηuR‹s81Ιƒώ”ΑQ‰Ρ‰Β‰ΨW‹}8θόÿÿÿX1ΐƒώ•ΐZ‰C 1ΐƒΔ[^_]Γ΄&    ‹F…ΐ…<ÿÿÿƒΔ[^_]Γt& d‹    ‹‰¤  ‹Iω    t–ƒΑ‹sQ‰Ρ‰Β‰πθόÿÿÿYλv ΈÿÿÿÿΊÿÿÿι/ÿÿÿ΄&    fΈÿÿÿÿΊÿÿÿιOÿÿÿθόÿÿÿ‰Πθόÿÿÿ1ΐΓθόÿÿÿU‰ε]ιόÿÿÿfθόÿÿÿWVS‰Σƒμd΅    ‰D$‰Πθόÿÿÿd΅    ‹€¤  ‹@‹p‹x3‹@ {C™‰ωR‰ςPD$θόÿÿÿ‹D$‹T$‰‹D$‰S‰CXZ‹D$d+    u	ƒΔ1ΐ[^_Γθόÿÿÿθόÿÿÿ‰Πιόÿÿÿt& θόÿÿÿ‰Πθόÿÿÿ1ΐΓθόÿÿÿ‰Π1Òιόÿÿÿfθόÿÿÿdÿÿÿ΅ΰ€ ιόÿÿÿ΄&    t& θόÿÿÿS‰Γ…Òu$‹CHθόÿÿÿ‹CLθόÿÿÿƒ   Ίΐ [ιόÿÿÿv Έΐx θόÿÿÿ‹K‰Β‹C‰…ΐt‰HΗC"  Έΐx θόÿÿÿλ®fθόÿÿÿU‰ΝW‰ΧVS‰Γƒμ‹S‹t$ ‹D$$‰ρ‰D$CPƒρ‰$¶Α‰D$…Òu‰πΉ`¶  „ΐΈ ¶  DΑ‰C‹$‹L$θόÿÿÿ‰πΗCl€ „ΐu‹Cp‹@θόÿÿÿR‰κP‰ψθόÿÿÿ‰Η‰ΥXZ€|$ ‰{\‰k`‰{d‰khtƒΔ[^_]Γt& j ‰ϊ‰ιj j ‹D$θόÿÿÿƒΔƒΔ[^_]ΓfθόÿÿÿWVS1Ϋ…ΐxw‰Η‰Φθόÿÿÿd΅    ‹¨  ‰Π1ψiΐG†ΘaΑθ‹…ΰx …ΐuλAv ‹C…ΐt7ƒθ‰Γt0;PDuν;xuθx‰ψθόÿÿÿ‰‰Βd΅    ‹€¨  9CDt‰ψθόÿÿÿθόÿÿÿ1Ϋ‰Ψ[^_Γt& θόÿÿÿ‰Ψ[^_Γt& θόÿÿÿUWV‰ΦS‰Γ‹h‹xθόÿÿÿ‹Cθόÿÿÿ‹U<…Òt‰Ψθόÿÿÿθόÿÿÿ‰ς[‰ψ^_]ιÿÿÿ¶    λδt& θόÿÿÿV‰ΦSƒμd‹    ‰T$‰βθςώÿÿ…ΐtW‰Γ1Ò1ΐ‰ƒΐƒψrυ‹C…ΐt6‹H$…Ιt/‰ς‰Ψ1φθόÿÿÿ‹$Cθόÿÿÿ‹D$d+    uƒΔ‰π[^Γt& ΎκÿÿÿλΣΎκÿÿÿλΧθόÿÿÿ΄&    t& θόÿÿÿU‰ΝW‰ΧVS‰Γƒμd΅    ‰D$1ΐ‹L$ …Ιt1Ò‰ƒΐƒψrυ‰ΨT$‰$θ?ώÿÿ‹$…ΐ‰Γu4λdt& ‹p…φt.Q‰ϊ‰ι‰Ψθόÿÿÿ‰ΖXƒώu!‰ΨT$θªώÿÿ1Ι‰Γ…ΐt2‹C…ΐuΛΎκÿÿÿ‹T$Cθόÿÿÿ‹D$d+    uƒΔ‰π[^_]ΓΎκÿÿÿλαθόÿÿÿt& θόÿÿÿW|$ƒδπÿwόU‰εWVS‰Σƒμ,d΅    ‰EδΈ   θόÿÿÿ‰Ρ‰ΒEΘθόÿÿÿ‹EΘd‹    ‰‹EΜ‹3‰C‹EΠ‹{‰C‹’¤  ‹Rr$z(B,‰ω™R‰ςPEΨθόÿÿÿ‹EΨ‹Uά‰‹Eΰ‰S‰CXZ‹Eδd+    ueτ1ΐ[^_]gψ_Γθόÿÿÿ¶    θόÿÿÿUhPWVS‰Γ‹p<‹x@‹@p‹@θόÿÿÿW‰Ρ‰Β‰θVθόÿÿÿC$‹CdS(‹Shj ‹K\‹[`)ΑΣSQ‰Ρ‰Β‰θθόÿÿÿƒΔ[^_]Γ΄&    θόÿÿÿU‰ΥΊ}Α%WVS‰Γ‹‹y‹q9ΒΊ   ϊ|[Ί Κ;iΟ Κ;1ÿχβΚπϊƒεuS‰ιƒρθόÿÿÿZ[^_]Γd‹    ‹‰¤  ‹Iω    tΧƒΑQ‰Ρ‰Β‰ΨθόÿÿÿYλΕ¶    ΈÿÿÿÿΊÿÿÿλ®t& θόÿÿÿUW‰ΗVSƒμ$‰D$‰T$‰L$d΅    ‰D$ 1ΐ…ÿ¬  ‹|$ƒÿΜ  ƒÿΐ!ψ‹…ΰ¶  ‰D$‹D$…ΐ„®  ‹P…Ò„  ΅ΰ€ Ίΐ  θόÿÿÿ‰Ε…ΐ„  θόÿÿÿ‰EL…ΐ„„  Η@    Pƒΐ1ΫΗ@    ƒΰό)ΒJ 1Òƒαό‰ƒΒ9ΚrφΗE    d΅    ‹¨  ‰l$‹CT‰$E‰D$fΈΐx θόÿÿÿ‹sT‰Ω1ρiΙG†ΘaΑι‹<ΰx ,ΰx …ÿ„  ‰ψλt& ‹@…ΐ„ύ  ƒθ„τ  ;XDuη‹P9ΦuΰΎώÿÿÿƒΒΈ    HΠ‰ST9$tΈΐx θόÿÿÿƒώώt‹l$λv ‹l$Έΐx ƒώώ„Π  θόÿÿÿ‰t$…φ  ‹D$‹|$‰uΗE$ÿÿÿÿ‰E‹D$ΗE(ÿÿÿÿ‰E…ÿ„Κ  θόÿÿÿd‹5    ‹†¨  ‹  ‹Gƒψ„(  π   …ΐ„  ƒψ…'  …Ϋ„  Έ   πΑ…ΐ„_  P	Β!  ‰]Hθόÿÿÿ‹EH…ΐ„ÿ  ‹|$‹G‹W‰E8‹EL‰P‹EL‹‰P ‹EL‹UΉ   ‰P‹ELT$Η@ώÿÿÿ‹D$θόÿÿÿ…ΐ…  ‹D$‹P‰θθόÿÿÿΊ   ‰Ζ…ΐ…Ρ   d‹    ‹ƒ¬  θόÿÿÿ‹ƒ¨  ‰ED‹ƒ¨  ‹PX‰j‰U PX‰U‰hX‹ƒ¬  θόÿÿÿι•   1Ϋƒψ…:ÿÿÿ‹D$‹@θόÿÿÿ1Ò‰Γθόÿÿÿ…ΐt$‹Ύ¨  9Έ¨  u‹D$‹@‰$ƒθƒψ?†Ωώÿÿ1Ϋιφώÿÿ‹D$‰x‰h‹D$‰ΰx …ÿt‹D$‰G‹sT‰ςισύÿÿθόÿÿÿΎυÿÿÿ1ÒΗD$υÿÿÿ‰θθ›χÿÿ‹D$ d+    …  ƒΔ$‰π[^_]Γ‹ELΗE8    Η@   ‹ELΗ@     ‹EL‹U‰P d΅    ‹€¨  ‹  …ΫtΈ   πΑ…ΐ„   P	Βxu‰]Hιiώÿÿ‰ψΊ    ƒΰƒψΈ    DΒ‰D$ιUόÿÿΊ   ΎςÿÿÿιWÿÿÿΎκÿÿÿιTÿÿÿ΅ΰ€ ‰κΎυÿÿÿθόÿÿÿι>ÿÿÿΊ   Ύκÿÿÿι(ÿÿÿΊ   ‰ΨθόÿÿÿιΞύÿÿΊ   ‰ΨθόÿÿÿιzÿÿÿΊ   ‰ΨθόÿÿÿιiÿÿÿΊ   ‰Ψθόÿÿÿι›ύÿÿΎ΅ÿÿÿιαώÿÿΎυÿÿÿιΧώÿÿ1ÒιΙώÿÿθόÿÿÿ¶    θόÿÿÿWVS‰Σƒμd΅    ‰D$‰Πθόÿÿÿd΅    ‹€¤  ‹@‹p‹x3‹@ {C™‰ωR‰ςPD$θόÿÿÿ‹D$‹T$‰‹D$‰S‰CXZ‹D$d+    u	ƒΔ1ΐ[^_ΓθόÿÿÿθόÿÿÿWVS‰Σƒμd΅    ‰D$‰Πθόÿÿÿd΅    ‹€¤  ‹@‹p‹x3‹@ {C™‰ωR‰ςPD$θόÿÿÿ‹D$‹T$‰‹D$‰S‰CXZ‹D$d+    u	ƒΔ1ΐ[^_ΓθόÿÿÿθόÿÿÿUWxΐVS‰Γ‰ψƒμθόÿÿÿ‹SπSμΗCΠ    ‰Ζ„£   ‹Cδƒΐ‰Cδ‹Sό1Ι‰B$φCθ‹Sψ‹Cό”Α1νθόÿÿÿ…ΐ~`‹CπCμtX‹C ‹@θόÿÿÿΉ?B ‰$‹Cμ‰T$‹Sπ9ΑΥ|$@B ƒT$ R½   P‹T$‰Ψ‹L$θόÿÿÿCΤXSΨZƒCδΗCΠ   ‰ψ‰ςθόÿÿÿ‰θƒΔ[^_]Γ΄&    1ΐι_ÿÿÿ΄&    fVΉΠ   ‰ΦS‰ΓμΤ   d΅    ‰„$Π   1ΐ‰ΰθόÿÿÿ…ΐum…Ϋxqƒϋ   ƒϋΐ!Ψ‹…ΰ¶  …ΐtv‹H…Ιtv‰Ψ‰βθόÿÿÿ‰Γ…ΐy ‹„$Π   d+    u^ΔΤ   ‰Ψ[^Γt& ΉΠ   ‰β‰πθόÿÿÿ…ΐtΞ¶    »ςÿÿÿλΑ‰ΨΊ    ƒΰƒψΈ    EΒλ΄&    f»κÿÿÿλ™»΅ÿÿÿλ’θόÿÿÿ΄&    ¶    W‰ΧV‰ΖSμΤ   d΅    ‰„$Π   ‰ΰθόÿÿÿ‰Γ…ΐt)‹„$Π   d+    …™   ΔΤ   ‰Ψ[^_Γ΄&    f…φxLƒώgƒώΐ!π‹…ΰ¶  …ΐtU‹H…ΙtX‰β‰πθόÿÿÿ‰Γ…ΐx¦‰β‰ψθόÿÿÿ…ΐΈςÿÿÿEΨλ‘΄&    v ‰πΊ    ƒΰƒψΈ    EΒλ°΄&    f»κÿÿÿι]ÿÿÿ»΅ÿÿÿιSÿÿÿθόÿÿÿ΄&    θόÿÿÿUWVS‰Γƒμd΅    ‰D$‹C‰βθΎσÿÿ…ΐt‰Ε‹@@E<u ‹$Eθόÿÿÿ‹D$d+    uaƒΔ[^_]Γ‹C9E4uΨ‹E‹P(‰θθόÿÿÿ‹E$‹U(ΗE    ƒE4‰E,‰U0ΗE$ÿÿÿÿΗE(ÿÿÿÿ‹s‰χΑÿΖΈÿÿÿΧ1Ò9πϊLπ‰sλ‡θόÿÿÿfθόÿÿÿ‹HL‰Q$1Ι‹PHφ@8‹@L”Αθόÿÿÿ…ΐΐ¶ΐΓ΄&    θόÿÿÿVSƒμD‹‹pd‹    ‰T$@‹P…Òt?Ή@   ‰ΰθόÿÿÿ‰ΒΈςÿÿÿ…Òt‹T$@d+    u8ƒΔD[^Γt& ‰ρ‰β‰Ψθ…φÿÿλΫv ‹D$@d+    uƒΔD‰ρ‰Ψ1Ò[^ιcφÿÿθόÿÿÿ΄&    ΄&    θόÿÿÿSƒμ‹X‹ d‹    ‰T$1Ò‰βθ>σÿÿ…ΐt‹T$d+    u!ƒΔ[Γ΄&    ‰Ϊ‰ΰθόÿÿÿ…ΐtΩΈςÿÿÿλÒθόÿÿÿ΄&    θόÿÿÿSƒμ‹X‹ d‹    ‰T$1Ò‰βθήςÿÿ…ΐt‹T$d+    u!ƒΔ[Γ΄&    ‰Ϊ‰ΰθόÿÿÿ…ΐtΩΈςÿÿÿλÒθόÿÿÿ΄&    θόÿÿÿSƒμ‹ d‹    ‰T$‰βθ“ρÿÿ…ΐt3‹P,Ήÿÿÿ1Ϋ9ΡX0MΚ‹$ƒΐ‰Λθόÿÿÿ‹D$d+    uƒΔ‰Ψ[Γ»κÿÿÿλεθόÿÿÿθόÿÿÿUWVSƒμ8‹X‹hd‹    ‰T$41Ò‹8‹Pt$1ΐ…ΫEΖ‰$…ÒtZD$θόÿÿÿ…ΐuD|$ÿΙ;‹D$w?D$x9|$ÿΙ;w/ÿ4$‰κ‰ψL$θ_ςÿÿZ…ΐu…Ϋt‰Ϊ‰πθόÿÿÿ…ΐtΈςÿÿÿλfΈκÿÿÿ‹T$4d+    uƒΔ8[^_]ΓθόÿÿÿθόÿÿÿUWVSƒμ8‹X‹hd‹    ‰T$41Ò‹8‹Pt$1ΐ…ΫEΖ‰$…ÒtZD$θόÿÿÿ…ΐuD|$ÿΙ;‹D$w?D$x9|$ÿΙ;w/ÿ4$‰κ‰ψL$θ―ρÿÿZ…ΐu…Ϋt‰Ϊ‰πθόÿÿÿ…ΐtΈςÿÿÿλfΈκÿÿÿ‹T$4d+    uƒΔ8[^_]ΓθόÿÿÿθόÿÿÿVSƒμ‹ d‹    ‰T$‰βθÒοÿÿ‰Γ…ΐ„¨   ‹C…ΐ„}   ‹P …Òtv‰Ψθόÿÿÿƒψtrd‹5    ‹†¬  θόÿÿÿ‹‹C‰B‰Η   ΗC"  ‹†¬  θόÿÿÿΗCD    ‹$Cθόÿÿÿ‰ΨΊ   θ8ξÿÿ1ΐ‹T$d+    u0ƒΔ[^Γv λ’t& ‰Ψ‰βθΟοÿÿ‰Γ…ΐ…]ÿÿÿt& ΈκÿÿÿλΓθόÿÿÿt& θόÿÿÿUhXW‰ΗVS‹@X9θtfv ‹_Xsλ‹P …Òt!‰Ψθόÿÿÿƒψu‰πθόÿÿÿ‰πθόÿÿÿ‹C…ΐuΨ‹‹C‰B‰‰πΗ   ΗC"  θόÿÿÿ‰ΨΊ   θ|νÿÿ‹GX9θu[^_]ΓθόÿÿÿVSƒμ‹d‹    ‰T$1Ò‹P…ΫxPƒϋwkƒϋΐ!Ψ‹4…ΰ¶  …φtY‹F…ΐtR‰ΰθόÿÿÿ…ΐuW‹N‰β‰Ψθόÿÿÿ‹T$d+    uEƒΔ[^Γ΄&    ‰ΨΎ    ƒΰƒψΈ    Eπλ¬΄&    fΈκÿÿÿλΎ΄&    fΈςÿÿÿλ®θόÿÿÿt& θόÿÿÿSƒμ‹X‹ d‹    ‰T$1Ò…ΐxYƒψwlƒψÒ!Β‹•ΰ¶  …ÒtZ‹J‰βθόÿÿÿ…ΐt‹T$d+    uFƒΔ[Γ΄&    v ‰Ϊ‰ΰθόÿÿÿ…ΐtΧΈςÿÿÿλΠt& ‰ΒΉ    ƒβƒϊΊ    EΡλ£Έκÿÿÿλ­θόÿÿÿt& θόÿÿÿS‰Σ…ΐx,ƒψ?ƒψÒ!Β‹•ΰ¶  …Òt-‹J…Ιt-‰Ϊ[ιόÿÿÿ¶    ‰ΒΉ    ƒβƒϊΊ    EΡλΠΈκÿÿÿ[ΓΈ΅ÿÿÿ[Γfθόÿÿÿ‹P‹ ι1χÿÿθόÿÿÿSƒμ‹X‹ d‹    ‰T$1Ò…ΐxYƒψwlƒψÒ!Β‹•ΰ¶  …ÒtZ‹
+‰βθόÿÿÿ…ΐu…Ϋu‹T$d+    uCƒΔ[Γ΄&    ‰Ϊ‰ΰθόÿÿÿ…ΐtΪΈςÿÿÿλΣt& ‰ΒΉ    ƒβƒϊΊ    EΡλ£Έκÿÿÿλ°θόÿÿÿt& θόÿÿÿVSƒμ‹d‹    ‰T$1Ò‹P…ΫxPƒϋwkƒϋΐ!Ψ‹4…ΰ¶  …φtY‹F…ΐtR‰ΰθόÿÿÿ…ΐuW‹N‰β‰Ψθόÿÿÿ‹T$d+    uEƒΔ[^Γ΄&    ‰ΨΎ    ƒΰƒψΈ    Eπλ¬΄&    fΈκÿÿÿλΎ΄&    fΈςÿÿÿλ®θόÿÿÿt& θόÿÿÿSƒμ‹X‹ d‹    ‰T$1Ò…ΐxYƒψwlƒψÒ!Β‹•ΰ¶  …ÒtZ‹J‰βθόÿÿÿ…ΐt‹T$d+    uFƒΔ[Γ΄&    v ‰Ϊ‰ΰθόÿÿÿ…ΐtΧΈςÿÿÿλΠt& ‰ΒΉ    ƒβƒϊΊ    EΡλ£Έκÿÿÿλ­θόÿÿÿt& θόÿÿÿ‹P‹ ιφÿÿθόÿÿÿSƒμ‹X‹ d‹    ‰T$1Ò…ΐxYƒψwlƒψÒ!Β‹•ΰ¶  …ÒtZ‹
+‰βθόÿÿÿ…ΐu…Ϋu‹T$d+    uCƒΔ[Γ΄&    ‰Ϊ‰ΰθόÿÿÿ…ΐtΪΈςÿÿÿλΣt& ‰ΒΉ    ƒβƒϊΊ    EΡλ£Έκÿÿÿλ°θόÿÿÿt& θόÿÿÿUWVSƒμ‹‹pd‹    ‰T$1Ò‹x‹P…Ϋ”   ƒϋwoƒϋΐ!Ψ‹,…ΰ¶  …νt]‹M…Ι„©   ‰ΰθόÿÿÿ…ΐ…“   ‹D$…ΐx;|$ÿΙ;w1χΗ   ui1Ò…φ•Βd΅    ‰α‰D  ‰ϊ‰°H  ‰Ψ‹uθόÿÿÿλΈκÿÿÿ‹T$d+    uLƒΔ[^_]Γ¶    ‰Ψ½    ƒΰƒψΈ    Eθιeÿÿÿ¶    1Ò1φλ΄&    v Έςÿÿÿλ®Έ΅ÿÿÿλ§θόÿÿÿ΄&    ¶    θόÿÿÿUWVSƒμ‹‹pd‹    ‰T$1Ò‹x‹P…Ϋ   ƒϋwwƒϋΐ!Ψ‹,…ΰ¶  …νte‹M…Ι„©   ‰ΰθόÿÿÿ…ΐ…“   ‹D$…ΐxC|$ÿΙ;w9…φtuχΗ   umΊ   d΅    ‰α‰D  ‰ϊ‰°H  ‰Ψ‹uθόÿÿÿλ¶    Έκÿÿÿ‹T$d+    uDƒΔ[^_]Γ¶    ‰Ψ½    ƒΰƒψΈ    Eθι]ÿÿÿ¶    1φ1Òλ’fΈςÿÿÿλ¶Έ΅ÿÿÿλ―θόÿÿÿffffffθόÿÿÿU‰εWVS‰Γ‰Π‰Κƒδψƒμ ‹K<‹s\‹{`‰L$‹K@9π‰|$‰L$‰ΡL$‰t$‰|$‰t$‚ί   ‹L$‰Ο|$„Ο   ‹|$Θ‰Ξϊ+D$T$‰D$)Θ‰T$ϊ9Α‰ωΡΉ    s4‰\$΄&    ‹D$¤χ‹T$φƒΑ‰ϋ)πϊ9ΖΣrγ‹\$…Ιxsv ‹D$‹T$‰D$‹D$‰T$‹T$9π‰ΠψrE‹D$‹T$πϊ‰D$‰T$‰D$‰T$‰C\Έ   ‰S`1Ò¥ΒΣΰφΑ t‰Β1ΐC$S()t$|$¬ώΡοƒιs‹D$‹T$eτ[^_]Γ΄&    θόÿÿÿUWVS‰Σƒμ‰$‹‹R‰Χ	ΗtD‹|$9D$‰ΞΧrF‹k‹{‰ι	ωtΗΥ‰;‰k>t& ‹$‹D$ Ί   θόÿÿÿ‹S‹‰Σ	ΓuƒΔ[^_]Γ΄&    ;‰Σ^sη‰‰VƒΔ[^_]Γ΄&    v ‹$‹€¨  ‹  d΅    £    s–dÿ    ΅    …ΐt‹T$ ‹@ÿt$ÿt$ƒκθόÿÿÿXZdÿ    …`ÿÿÿθόÿÿÿιVÿÿÿfθόÿÿÿWVS‹X‰ΩƒαΑαƒγΌ
+$  u‹’¨  Ό
+Θ   O‹p\‹X`PP‰Hd‰Θθόÿÿÿ„ΐt;7‰ΨGs‰7‰_[^_Γ΄&    θόÿÿÿ‰ΑWƒαV‰ΖΑψSƒζƒωtPχΠ…ΐu d΅    …φtN‹Έ”  ‰ψ[^_Γ΄&    v ‰Σθόÿÿÿ‰Η…ΐt…φu?„Ϋtd΅    ;Έ”  t‹G…ΐuΖ1ÿ‰ψ[^_Γ¶    ‹€¨  [^‹Έ  ‰ψ_Γ¶    1Òθόÿÿÿ…ΐtΟd‹    ‹¨  9¨  t€1ÿλΈ΄&    t& θόÿÿÿV‰ΦS‰Γθόÿÿÿ1Ò‰Ψθ'ÿÿÿ…ΐt7θόÿÿÿƒγΗ    ΗF    ƒϋtΗF@B 1ΐ[^Γt& ΗF   1ΐ[^ΓθόÿÿÿΈκÿÿÿλΰθόÿÿÿV‰ΖSθόÿÿÿ‹F1ÒθΘώÿÿ…ΐtR‰ΓFPΗF    ‰FPΈ   πΑ…ΐt(P	Βx‰^hθόÿÿÿ1ΐ[^Γt& Ί   ‰ΨθόÿÿÿλαfΊ   ‰ΨθόÿÿÿλΡθόÿÿÿΈκÿÿÿλΟ¶    θόÿÿÿΗ@ϊÿÿÿιoÿÿÿ΄&    ΄&    θόÿÿÿΗ@ώÿÿÿιOÿÿÿ΄&    ΄&    θόÿÿÿU‰ΝW‰ΗVSƒμ‰T$ΗD$    ‹D$‹t$‹_‹π‹Dπ‰$‰D$…Ϋ„‹   ‹C‹t$‹S9$ΖrRΎ   ‹CΗC$   …ΐt‰ΪθόÿÿÿΗC    ‹ES‰U‰k‰C ‰‹_…ΫtAƒΖ‹S‹Cƒώt‹L$9$Αs³‰GƒΗƒD$‹D$‰Wπƒψ…aÿÿÿƒΔ[^_]Γt& ΊÿÿÿÿΈÿÿÿÿλΜ΄&    t& θόÿÿÿS‰Γθόÿÿÿ1Ò‰Ψθ*ύÿÿ…ΐtθόÿÿÿΈÿÿÿÿ[ΓθόÿÿÿΈκÿÿÿ[Γ΄&    ΄&    θόÿÿÿVS‰Γƒμd΅    ‰D$1ΐθόÿÿÿ1Ò‹ChφC”Βθόÿÿÿ…ΐtc‰β‰Ζθόÿÿÿ…ΐ„Ν   ‹Ct…ΐt6‹†¬  ‹$θόÿÿÿθόÿÿÿΈ   ‹T$d+    …Ϊ   ƒΔ[^Γ΄&    ‹Cd…ΐu)‹†¬  ‹$θόÿÿÿθόÿÿÿ‹Chθόÿÿÿ1ΐλΌ΄&    v SPθόÿÿÿ‹SΗCd    ‰ΠƒΰƒβuT‹–¨  Αΰ‹K\„Θ   ‹S`33P	ΚuΗ     ‹$Η@    ‹†¬  θόÿÿÿθόÿÿÿλv ‹Sd…Òt)ιwÿÿÿfΑΰ„$  ‹‹P3K\3S`	Κ…Jÿÿÿλ¬CP9CPuΟιHÿÿÿθόÿÿÿ΄&    ΄&    θόÿÿÿS‰Σθόÿÿÿd΅    ‹€”  …ΐtθόÿÿÿΗ    1ΐΗC    ΗC   [ΓθόÿÿÿΈκÿÿÿ[Γ΄&    v θόÿÿÿS‰Σθόÿÿÿd΅    ‹€¨  ‹€  …ΐtθόÿÿÿΗ    1ΐΗC    ΗC   [ΓθόÿÿÿΈκÿÿÿ[Γt& θόÿÿÿU‰εWVSƒδψƒμ`‰D$$‰Π‹Έ¨  d‹    ‰T$\1Ò‰|$‹—ψ   …Ò…μ   „ΙuhT$(θόÿÿÿ‹D$0‹T$4‰Α‰Σ‰D$H‹D$8‰T$L‹T$<L$(\$,‰D$P‰L$@‰\$D‰T$T‹D$$‹TΔD‹DΔ@‹L$\d+    …Μ  eτ[^_]Γ¶    °   ‹—ψ   ‰\$Έ   ‰\$ΐ   ‰\$…Ò„   ‹L$θόÿÿÿ‰Ζ‰Χ‹L$θόÿÿÿ‰D$‹L$‰T$θόÿÿÿ‹L$‹\$‰t$H‰|$Lρ‰D$Pϋ‰L$@‰\$D‰T$TιYÿÿÿt& ‹\$‹°   θόÿÿÿ‰Ζ‰Χ‹Έ   θόÿÿÿ‰D$‹ΐ   ‰T$λ ΄&    v T$(θόÿÿÿ‹D$0‹|$‰D$ ‹D$4‰D$λ‰Θ‹\$ ‹L$πΗ1Φ3D$	Ζt‰ωθόÿÿÿ;D$ ‰D$‰Α‰ΠD$‰ΦrΝ‹D$(‹|$‰D$ ‹D$,‰D$λ΄&    ‰Θ‹\$ ‹L$πΗ1Φ3D$	Ζt‰ωθόÿÿÿ;D$ ‰D$‰Α‰ΠD$‰ΦrΝ‹D$8‹|$‰D$ ‹D$<‰D$λ΄&    ‰Θ‹\$ ‹L$πΗ1Φ3D$	Ζt‰ωθόÿÿÿ;D$ ‰D$‰Α‰ΠD$‰ΦrΝ‹D$Η€ψ      ιnώÿÿθόÿÿÿt& θόÿÿÿU‰εW‰ΗVƒηS‰Σƒδπƒμ0d‹    ‰T$,1Ò‰D$‰|$θόÿÿÿ‹D$Ί   ‰ΖθNψÿÿƒζ1Ò…φ”Βθόÿÿÿ…ΐ„Ά   ‰Β…φt1ƒ|$„†   ‹°Ψ  ‹Έά  ‹D$…ΐtbƒψt1φ1ÿλt& ‹D$1Ιθυόÿÿ‰Ζ‰Χθόÿÿÿ‰ς‰ωD$θόÿÿÿ‹D$‰‹D$‰C‹D$‰C1ΐ‹T$,d+    u3eτ[^_]Γt& ²ΰ  Ίδ  λ±fθόÿÿÿ‰Ζ‰Χλ¤θόÿÿÿΈκÿÿÿλΐθόÿÿÿt& θόÿÿÿΈϊÿÿÿιαώÿÿθόÿÿÿΈώÿÿÿιΡώÿÿθόÿÿÿWVS‰Γƒμ‹{d΅    ‰D$1ΐθόÿÿÿ1Ò‹ChφC”Βθόÿÿÿ…ΐth‰β‰Ζθόÿÿÿ…ΐt[‰ψƒΰφCt"ƒψt}‹–Ψ  ‹ά  …ΐt]ƒψt1Ò1ΙλΉ   ‰ςθδϋÿÿ‰Ρ‰Β‰ΨθIτÿÿ‰ς‰Ψθpφÿÿ‹†¬  ‹$θόÿÿÿθόÿÿÿ‹D$d+    u-ƒΔ[^_Γ΄&    f–ΰ  δ  λ²f‰πθόÿÿÿ‰Ρ‰Βλ£θόÿÿÿ΄&    ΄&    θόÿÿÿS‰Γ‹@8ƒΰϋƒψt]‹CL…ΐtN‹C@C<u1Ò‰ΨθόÿÿÿΗC\    ΗC`    [Γt& ‹C4P‰Ψ‰S4θόÿÿÿ…ΐtε‰ΨθµώÿÿƒC4[Γ΄&    ‹CHθόÿÿÿΗC\    ΗC`    [ΓθόÿÿÿU‰εWV‰ΖSƒδπƒμ`‹E‰T$‰L$ ‰D$8d΅    ‰D$\‹Fƒΰ‰Ηθόÿÿÿ1Ò‹FhφF”Βθόÿÿÿ‰D$<…ΐ„  ‹\$ Ί}Α%‹C‹K‹[9ΒΊ   Κ  Ί Κ;iΙ Κ;χβΚ‰Ω1ΫΘΪ‰D$‰T$‰D$0‰T$4‹D$<T$Xθόÿÿÿ…ΐ„-  ‹F<‹V@‰$‹F\‰T$‰D$‹F`‰D$‹Ft‰D$$…ΐ…C  ‹Fd…ΐtVPθόÿÿÿΗFd    φF…Σ  ‹T$<Ή   ‰ψθγωÿÿ‰D$(‰T$,‹D$8…ΐt#‹|$|$…  Η@    Η@    Η@    ‹T$$…Ò…  ‹T$4‹D$0‰Ρ	Α„Β  φD$u‹L$(‹\$,ΘΪ‰D$0‰T$4‰D$‰T$‹D$‹T$‹L$0‹\$4‰F\‹D$(‰V`‹T$,9Θ‰ΠΨs‹T$<‰πθήσÿÿ‹D$<‹T$X‹€¬  θόÿÿÿ‹\$ Ί}Α%‹‹K‹[9ΒΊ   ΚS  Ί Κ;iΙ Κ;χβΚ‰Ω1ΫΘΪ‹L$(‹\$,‰F<‹F4‰V@‹T$4‰ίΗF,    ƒΐΗF0    ƒΰώΗF$ÿÿÿÿ‰F4‹D$0ΗF(ÿÿÿÿ9ΑΧr9‰Χ	Η…d  ‹D$<T$Xθόÿÿÿ…ΐt‹Fd…ΐ„θ  ‹D$<‹T$X‹€¬  θόÿÿÿθόÿÿÿ‹|$8…ÿt$‹$‹L$D$@θόÿÿÿ‹D$@‰‹D$D‰G‹D$H‰G‹D$\d+    …μ  ‹D$$eτ[^_]Γ΄&    ƒÿ‹D$<„«  ‹ά  ‹€Ψ  ‰T$,‰D$(…ÿ„Η   ƒÿ„ώÿÿΗD$(    ΗD$,    ιόύÿÿ΄&    ΗF\    ΗF`    ιώÿÿt& ‹L$,‹T$(‰πθπÿÿ‹L$(‹\$,9Α‰ίΧr!‹D$8Η@   Η@    Η@    ιΛύÿÿv )ΘΪ‰Ρ‰ΒD$@θόÿÿÿ‹D$@‹|$8‰G‹D$D‰G‹D$H‰Gι™ύÿÿ΄&    f‰πθΙϋÿÿιώÿÿt& ‹D$<‹ΰ  ‹δ  L$(\$,ι8ύÿÿv θόÿÿÿΗD$$ύÿÿÿιΊώÿÿ¶    ΗD$0ÿÿÿÿΗD$4ÿÿÿΗD$ÿÿÿÿΗD$ÿÿÿιόÿÿv ΗFtÿÿÿÿΗD$$   ιΏόÿÿt& ΈÿÿÿÿΊÿÿÿιµύÿÿ΄&    f‹V‹t$<‰ΠƒΰΑΰƒβu<‹–¨  „Θ   Η     Η@    ιεύÿÿt& θόÿÿÿ‰D$(‰T$,ι{όÿÿ¶    „$  λΘθόÿÿÿfθόÿÿÿUWV‰ΞΉ)   S‰ΓμΘ   ‰$l$ ‰οd΅    ‰„$Δ   1ΐσ«‰θ‰\$8ΗD$DÿÿÿÿΗD$Hÿÿÿÿd‹=    θςÿÿ‰|$h‰Γ…ΐt"‹„$Δ   d+    …  ΔΘ   ‰Ψ[^_]Γ‹ΗD$    ΗD$    ‰D$‹FΗD$    ‰D$‹F‰D$D$0θόÿÿÿ‰θj ‹T$L$θϊÿÿY‰Γ…ΐ…  ‹‰ψ‰ώβ   uE‹‹T$|‹„$€   ƒαu2	Π„ζ   ΗF   D$0θόÿÿÿθόÿÿÿD$0θόÿÿÿ‹‰πβ   tΌ‹D$|‹”$€   Ήδ€ ‰$D$‰T$1ÒP‰θθϊÿÿZ‰Ζ…ΐuz‰θθιςÿÿD$0θόÿÿÿ‹L$‰ΘL$™‹D$	Π	Θ„εώÿÿ‹<$‹l$d΅    ‰ΈL  8  ‰¨P  ‹€D  …ΐtST$‰Θθόÿÿÿ‰Γιªώÿÿt& D$0θόÿÿÿ‰θθxςÿÿ‰ΖD$0θόÿÿÿƒώtΰλ†¶    ‰θθYςÿÿD$0θόÿÿÿιiώÿÿ»όύÿÿι_ώÿÿθόÿÿÿ΄&    t& θόÿÿÿUW‰ΟV‰ΦS‰Γd‹-    ƒμ¨t!Αψ‰$ƒψÿtX1Ò1Ι‰θθόÿÿÿ‰Β‹$χΠ9ΠtB‰ω‰ς‰Ψθ§ύÿÿ=όύÿÿtƒΔ[^_]Γ΄&    ƒζu"‰@  Η…<  ΰ¬ ƒΔ[^_]Γv ΈκÿÿÿλΙΈώύÿÿλΒfθόÿÿÿU‰εSƒδπƒμ ‹Xd‹    ‰T$1Ò‹P‹@‰Ρ‰Β‰ΰθόÿÿÿ‹$Ί   L$‰D$‹D$‰D$‹D$‰D$‰Ψθ	ύÿÿ‹T$d+    u‹]όΙΓθόÿÿÿfθόÿÿÿVΈϊÿÿÿS‰Σd‹5    θΦόÿÿ=όύÿÿt[^Γt& ƒγuΗ†@  ϊÿÿÿΗ†<  ΰ¬ [^ΓΈώύÿÿλΦt& θόÿÿÿU‰εWV‰ΦS‰Γƒδπƒμ0‹S`d΅    ‰D$,‹C‰T$‰D$‹C\‰D$θόÿÿÿ1Ò‹ChφC”Βθόÿÿÿ…ΐ„   ‹K@‹S<‰ΗD$θόÿÿÿ‹D$‹L$‰‹D$‰F‹D$‰F‹D$	Αtm‹D$ƒΰ‰D$φCt|ƒψ„Σ   ‹Ψ  ‹ά  ‹‡ΰ  ‹—δ  ‹|$…ÿ„   ƒÿt[‹T$‹L$D$θόÿÿÿ‹D$‰F‹D$‰F‹D$‰Ff‹D$,d+    …|   eτ[^_]ιόÿÿÿv ‹D$1Ι‰ϊθΓρÿÿ‰Α‰Σ‹D$‹T$‰ί9ΑΧr/ΗF   ΗF    ΗF    λ¨΄&    ΑΣλΛ΄&    v )L$\$ι[ÿÿÿv ‰ψθόÿÿÿ‰Α‰Σλ¤θόÿÿÿ΄&    ΄&    θόÿÿÿW|$ƒδψÿwόU‰εWVUΔSd‹    ƒμLd΅    ‰Eμ1ΐEΘ‰EΘ‰EΜ‰Ψθόÿÿÿ…ΐ„«  ΅    ‹CH…ΐΪ  ‹ƒ$  ‹“(  #ƒ4  #“8  #ƒD  #“H  !Πƒψÿ„    ‹³Ψ  ‹»ά  MΘ‰π‰ϊƒΰ  ‰uΨ“δ  ‰EΠ‰UΤ‹ƒ¨   ‹“¬   ‰}ά‰Eΰƒ$  ‰UδUΠθ`νÿÿ‹»¨  ‹·\  ƒώÿtJiƒH  θ  ‹—`  9Π‚  ƒϊÿ„  ΅    …ΐ…GΑ  Ί   Έ	   d‹    θόÿÿÿ‹»¨  ‹‡ψ   …ΐ„7  ‹ό   …Ι…)  Η‡ό      ·Θ   °   θόÿÿÿ‰EΈΈ   ‰UΌθόÿÿÿ‰E°ΐ   ‰U΄θόÿÿÿ‰E¨‹EΈ‰U¬‹U°UΈ‹M΄‰EΨ‹E¨MΌ‰U°‰UΠ‹UΌ‰EΰEΠ‰Uά‹U¬‰M΄‰MΤMΘ‰Uδ‰Β‰πθgμÿÿ‰ρ—   ‰Ψjÿu΄ÿu°θ ιÿÿ‰ΨΨ   —    jÿuΌÿuΈθιÿÿ‹ƒ¨  ƒΔ‹°δ  ƒώÿ„M  ‹θ  ‰π‰M¨Ή Κ;χα‰EΈ‰Θ‹M΄‰UΌχe¨9E°Ρ‚r  ƒ}¨ÿ„h  ‹    …Ò…Α  Ί   Έ	   d‹    θόÿÿÿt& Ηƒd      ‹ƒ¬  ‹UΔθόÿÿÿ‹UΘ‹Z”p”EΘ9ΒuλUt& ‰Ζ{‰UΈ‰ψθόÿÿÿ‹Cp‹Kl‹UΈ‰A‰‹Ct‰Sl‰SpΗCt    …ΐx‰Ψθσÿÿ‰ψ}Θ‰σθόÿÿÿ‹FlVlƒθl9ϊu―‹Eμd+    …]  eτ[^_]gψ_Γv 9Ζ‡ώÿÿ‹=    …ÿ…λΐ  Ί   Έ   Ζ@B d‹    θόÿÿÿ‹ƒ¨  ‰°\  ‹»¨  ιÒύÿÿ΄&    ‹‡Θ   ‹Μ   ‰E°‹—ά   #—μ   ‹‡Ψ   !Κ#‡θ   #E°!Πƒψÿu
+Η‡ψ       Η‡ό       ιΔώÿÿt& ‹E°‹MΈ‹U΄9Θ‰ΠEΌr7΅    …ΐ…½ΐ  Ί   Έ   ƒΖd‹    θόÿÿÿEΈ Κ;ƒUΌ ‰·δ  ‹·Θ   ‹EΈ‹UΌ‹Μ   9π‰u°‰ΦΞƒUÿÿÿ‰‡Θ   ‰—Μ   ιrÿÿÿt& ¶ƒ°  ¨„όÿÿƒΰχ‰ΩΊ   ƒ°  Έ   θόÿÿÿιψϋÿÿθόÿÿÿ΄&    ¶    θόÿÿÿWxVƒηό‰ΞH)ωS‰ΓƒΑ0Η@    Η@4    Αι1ΐσ«‰ΠΗÿÿÿÿχΠΗCÿÿÿÿ	πΗCÿÿÿÿΗCÿÿÿÿΗC ÿÿÿÿΗC$ÿÿÿÿtΈ Κ;iφ Κ;ΗC0   χβς‰‰S[^_ΓθόÿÿÿUWViς Κ;S‰Γƒμd΅    ‰D$1ΐT$‰Ψθόÿÿÿ…ΐtg‹ƒ¨  Ή   ‰Ϊ1ν‰$1ΐθμÿÿ‹$‰ι;°Θ   Μ   r-‹ƒ¬  ‹T$θόÿÿÿ1ΐ‹T$d+    u$ƒΔ[^_]Γ΄&    ‰°Θ   ‰¨Μ   λΕΈύÿÿÿλΟθόÿÿÿ΄&    ΄&    θόÿÿÿU‰ΥWVSƒμ‹¨  ‹ƒψ   …ΐtR‹°   θόÿÿÿ‰Ζ‰Χ‹Έ   θόÿÿÿ‰$‹ΐ   ‰T$θόÿÿÿ‹$‹\$‰u‰}ρ‰Eϋ‰M ‰]‰UƒΔ[^_]Γλª΄&    t& θόÿÿÿWV‰ΖS‹0  …Ϋt&Έ,  ¶    ‰Ϊ‰ψθόÿÿÿΗC    ‹0  …Ϋuζ‹@  Ύ<  …Ϋt ¶    ‰Ϊ‰ψθόÿÿÿΗC    ‹@  …Ϋuζ‹P  ΎL  …Ϋt ¶    ‰Ϊ‰ψθόÿÿÿΗC    ‹P  …Ϋuζ[^_ΓfθόÿÿÿWVS‹°¨  ‹Τ   …Ϋt"ΎΠ   f‰Ϊ‰ψθόÿÿÿΗC    ‹Τ   …Ϋuζ‹δ   Ύΰ   …Ϋt ¶    ‰Ϊ‰ψθόÿÿÿΗC    ‹δ   …Ϋuζ‹τ   Ύπ   …Ϋt ¶    ‰Ϊ‰ψθόÿÿÿΗC    ‹τ   …Ϋuζ[^_ΓfθόÿÿÿΗ€\      Η€`  0― Η€d      Γ΄&    t& θόÿÿÿUWVSd‹    ƒμ‹‹d  …ΙtƒΔ[^_]Γv ‹»4  ‹³D  ‹“$  ‹‹8  ‹ƒ(  ‹«H  ‰t$‰ώ!Φ‰$‰Κ#t$!Β‰|$‰Χ‰L$!ο!ώƒώÿt_‹‹¨   ‹“¬   ‹³Ψ  ‹»ά  ‰L$‰T$‰ω‰ς“ΰ  ‹δ  ;$ΑƒΟ   ;t$‰ψD$ƒΏ   ‹T$‹t$9t$κƒ«   ‹³¨  ‹†ψ   …ΐty‹†ό   …ΐuo°   θόÿÿÿ‰Η‰ΥΈ   θόÿÿÿ‰$ΐ   ‰T$θόÿÿÿ‰D$‹$‰Ρ‹T$ψκ;†Θ   ‰Π†Μ   s:;ΎΨ   ‰οΎά   s*‹D$;†θ   μ   s‹SH…Ò‰Έώÿÿφƒ°  „«ώÿÿ‹ƒd  …ΐu$“\  ‰ΨΉ   Ηƒd     ƒΔ[^_]ιόÿÿÿιvώÿÿ΄&    fθόÿÿÿUWVSƒμ‹l$ƒϊ‡·   ‰Σ‹°¨  ‰Β‰Ο‰ΨΉ   θίηÿÿ‰$‰T$…νtl‹U‹E ‰Ρ	Αt‹L$9$Ρr]ΗE @B ΗE    ‹W‹‰Ρ	Αt$T$‰‰WΑγ‰Χή;†Θ   ΎΜ   s‰†Θ   ‰–Μ   ƒΔ[^_]Γ΄&    ‹‹WλΙ+$T$‰E ‰U‹W‹‰Ρ	Αt°λΆ¶    ƒΔ[^_]ΓfffθόÿÿÿWΉό€ V‰ΦΊΧ  S‰Γƒΐh{(θόÿÿÿ‰ψΊ Έ  θόÿÿÿ‰ψ‰ςθόÿÿÿ‰Η…ΐ…uΑ  ‹‰sd‰CL‰ψ[^_ΓfθόÿÿÿWV1φS‹Ί   ‰Σ‹W …Òt	‰ψθόÿÿÿ‰Ζ‹Gdθόÿÿÿ‰πΗƒ       [^_Γ¶    θόÿÿÿUWV‰ΦSƒμ‹|  {@‰ψθόÿÿÿ€{X uD‹KπkΨ…Ιt‹V$‰θθόÿÿÿ‰Β…ΐu‹C<θόÿÿÿ‰®   1Ò‰ψ‰$θόÿÿÿ‹$ƒΔ[^_]Γt& ΊνÿÿÿλίθόÿÿÿVS‰Γ‹Pd@(shθόÿÿÿ‰πθόÿÿÿΖƒ€   ‰πθόÿÿÿ‹Cd[^ιόÿÿÿ΄&    v θόÿÿÿUΑψWχΠV‰ΦSθόÿÿÿ…ΐtt‰Γ‹@Ώκÿÿÿx8ΰΉ t‰Ψθόÿÿÿ[‰ψ^_]Γ¶    ‹ƒ   …ΐtβ‰‹«   }h‰ψθόÿÿÿ€½€    u‰n1ÿ…νuΕΏνÿÿÿλ·v ‰ψΏνÿÿÿθόÿÿÿΗF    λΏκÿÿÿλ΄&    t& θόÿÿÿUW‰ΧVSƒμd‹    ‰T$‰βθ@ÿÿÿ‰Γ…ΐu8‹,$‹t$»σÿÿÿφE$t‹N»΅ÿÿÿ…Ιt‰ϊ‰πθόÿÿÿ‰ΓFhθόÿÿÿ‰θθόÿÿÿ‹D$d+    u
+ƒΔ‰Ψ[^_]Γθόÿÿÿ¶    θόÿÿÿWV‰ΦSƒμd‹    ‰T$‰βθΑώÿÿ‰Γ…ΐu+‹|$»΅ÿÿÿ‹O…Ιt‰ς‰ψθόÿÿÿ‰ΓGhθόÿÿÿ‹$θόÿÿÿ‹D$d+    u	ƒΔ‰Ψ[^_Γθόÿÿÿt& θόÿÿÿWV‰ΦSƒμd‹    ‰T$‰βθQώÿÿ‰Γ…ΐu+‹|$»΅ÿÿÿ‹O…Ιt‰ς‰ψθόÿÿÿ‰ΓGhθόÿÿÿ‹$θόÿÿÿ‹D$d+    u	ƒΔ‰Ψ[^_Γθόÿÿÿt& θόÿÿÿUW‰ΧVSƒμd‹    ‰T$‰βθΰύÿÿ‰Γ…ΐu8‹,$‹t$»σÿÿÿφE$t‹N»΅ÿÿÿ…Ιt‰ϊ‰πθόÿÿÿ‰ΓFhθόÿÿÿ‰θθόÿÿÿ‹D$d+    u
+ƒΔ‰Ψ[^_]Γθόÿÿÿ¶    θόÿÿÿUWV‰ΖSƒμ‹   ‰${h‰ψθόÿÿÿ€»€    ‹$u3…ΫtO‹k1Ò…νt‰ς‰Ψθόÿÿÿ‰Β‰ψ‰$θόÿÿÿ‹$ƒΔ‰Π[^_]Γt& ‰ψθόÿÿÿΊ   ƒΔ‰Π[^_]Γ΄&    v Ί   λΛ΄&    fθόÿÿÿUWVSƒμ‹   ‰T${h‰$‰ψθόÿÿÿ€»€    ‹$‹T$u-…Ϋt?‹kΎηÿÿÿ…νt	‰Ψθόÿÿÿ‰Ζ‰ψθόÿÿÿƒΔ‰π[^_]Γv ‰ψΎνÿÿÿθόÿÿÿ‰πƒΔ[^_]ΓΎνÿÿÿλΦv θόÿÿÿUWV‰ΖSƒμ‹   ‰${h‰L$‰ψθόÿÿÿ€»€    uB…ΫtT‹k$Ίκÿÿÿ…νtÿt$‹V ‰Ψ‹L$θόÿÿÿ‰ΒX‰ψ‰$θόÿÿÿ‹$ƒΔ‰Π[^_]Γ¶    ‰ψθόÿÿÿΊνÿÿÿƒΔ‰Π[^_]ΓΊνÿÿÿλΣfθόÿÿÿU‰εWV‰ΖS‰ΛƒδπƒμP‹Ύ¨  ‰T$‰D$d΅    ‰D$L1ΐ‹†¬  θόÿÿÿ‹D$1ΙΑΰΗ‹‡   ‹—”   ‹·   ‹Ώ   ‰D$‰T$1Ò‹D$D$uw‹D$‰T$‰L$‹€¬  θόÿÿÿ‹T$‹L$D$ θόÿÿÿ‹D$ ‰ς‰ω‰C‹D$$‰C‹D$(‰CD$ θόÿÿÿ‹D$ ‰‹D$$‰C‹D$(‰C‹D$Ld+    u`eτ[^_]Γt& ‹D$T$0θόÿÿÿ‹D$‹L$‹TΔ4‹DΔ0‰T$‹T$‰D$9ΒL$Ί@B Ή    ‚Jÿÿÿ‹T$‹L$+T$L$ι5ÿÿÿθόÿÿÿ΄&    ΄&    θόÿÿÿW|$ƒδπÿwόU‰εWV‰ΞS‰Γƒμl‰U¨‹Q‰E¬‹?d΅    ‰Eδ‹ƒ¨  »ÿÿÿ‰E°‹AΉ}Α%9ΑΉ   ΡΉÿÿÿÿ|+=ύ‚>Ϊ‰ΣƒΫύ  iΚ Κ;Ί Κ;χβΚ‹N‰ΛΑϋΑΣ‹Ί}Α%‰Mά‹N‰]ΰ9ΒΊ   ΗE ÿÿÿÿΚΗE¤ÿÿÿ|1=ύ‚>Ϊ‰ΛƒΫύΌ  Ί Κ;iΙ Κ;χβΚ‹N‰ΛΑϋΘΪ‰E ‰U¤‹E¬‹€¬  θόÿÿÿ‹]¨Αγ]°‹ƒ   ‹“”   ‹‹   ‰EΤ‹ƒ   ‰U‰E‹Eά‰UΨ‹“   	Α‰M°‹M‰U”‹Uΰ	Ρ‰M΄M°t)‰Ρ	Α…  EΤMάP‹U¨‹E¬θόÿÿÿ‹Eά‹Uΰ‰E°‰U΄Y‹E°‹U΄‰ƒ   ‹E ‰“”   ‹U¤‰ƒ   ‰“   >t& ‹E¬‹€¬  θόÿÿÿ…ÿt?‹UΤ‹MΨEΈθόÿÿÿ‹EΈ‹U‹M”‰G‹EΌ‰G‹Eΐ‰GEΈθόÿÿÿ‹EΈ‰‹EΌ‰G‹Eΐ‰G‹Eδd+    …   eτ[^_]gψ_Γ΄&    fd΅    £    ƒwÿÿÿdÿ    ΅    …ΐt‹@Ί   +U¨ÿu΄ÿu°‰ρθόÿÿÿXZdÿ    …@ÿÿÿθόÿÿÿι6ÿÿÿt& @B ƒÒ ‰Eά‰UΰιΧώÿÿ1Ι»   €ιώÿÿΗE     ΗE¤   €ιRώÿÿθόÿÿÿθόÿÿÿW|$ƒδπÿwόU‰εWVS‰Λd‹5    ƒμ<‰Uΐd‹    ‰Uδ1Òƒψ„  ƒψ„έ  Ίκÿÿÿ…ΐ„¤   ‹Eδd+    …j  eτ‰Π[^_]gψ_Γf1ΐ1Ι;MΔ‹MΈΘΈθ  LEΔ‰EΔΈ    MΘ‹UΔEΨθόÿÿÿ‹EΨ‰C‹Eά‰C‹Eΰ‰C‹†¨  ‹   ‹€   ‰Ρ‰ΒEΘθόÿÿÿ‹EΘ‰‹EΜ‰C‹EΠ‰C‰ψθόÿÿÿ…ΐyy‹†¬  θόÿÿÿσ‹†¬  θόÿÿÿ‹†¨  x`…ΫtΠΊ   ‰ψθόÿÿÿ‰EΔ‰ψ‰UΈθόÿÿÿ„ΐ…CÿÿÿΗEΔ    1ΙιUÿÿÿt& Q‹MΐΊ   ‰πθ όÿÿZ1Òιψώÿÿ΄&    ‹Eΐ‹P‹H‹X‹†¨  ‰EΔΈ}Α%9ΠΈ   Θ  Έ Κ;iΙ Κ;χβΚ‰Ω1ΫΑΣ‰MΈ‰Ψ‰]Ό	Θ„   ‹Eΐ‹‹X‹HΈ}Α%9ΠΈ   Ψμ   Έ Κ;iΫ Κ;χβΪ1ΫΘΪ‹]Δ‰ƒ   ‰ψ‰“   jj j ‹UΈ‹MΌθόÿÿÿƒΔ>t& ‹†¬  θόÿÿÿ1Òι0ώÿÿQ‹Mΐ1Ò‰πθCϋÿÿ1ÒXιώÿÿv ‹EΔΗ€       Η€       λΈ΄&    d΅    £    s§dÿ    ΅    …ΐt‹@j 1Òj ‹MΐθόÿÿÿY[dÿ    …wÿÿÿθόÿÿÿιmÿÿÿ΄&    ΗEΈÿÿÿÿΗEΌÿÿÿιυώÿÿΈÿÿÿÿΊÿÿÿιÿÿÿθόÿÿÿθόÿÿÿUWVSd‹    ƒμ4‹(‹xd‹    ‰T$01Òƒύt6ƒύ„-  Έκÿÿÿ…ν„   ‹T$0d+    …I  ƒΔ4[^_]Γ΄&    L$Ί   ‰Ψθΰψÿÿl$‹D$‹\$ ΉΣMb‰D$‰ΨΑϋχι‹D$$‰D$Αϊ)Ϊ‹\$,‰T$‰ΨΑϋχιΉ   ‰ψΑϊ)Ϊ‰T$‰κθόÿÿÿχΨΐƒΰςιuÿÿÿt& ‹ƒ¬  θόÿÿÿ‹ƒ¨  Ί   ƒΐ`‰$θόÿÿÿ‰D$‹$‰Φθόÿÿÿ„ΐu}1Ι1φl$‰Κ‰ρ‰θθόÿÿÿ‹D$‰D$$‹D$‰D$(‹D$‰D$,‹ƒ¨  ‹   ‹€   ‰Ρ‰ΒD$θόÿÿÿ‹ƒ¬  θόÿÿÿιÿÿÿv L$1Ò‰Ψθγχÿÿl$ιώώÿÿ΄&    v ‹L$‰θ9ΝπΈθ  MΘMυιmÿÿÿθόÿÿÿθόÿÿÿƒμ‹¤   >t& Ί   Έ   θόÿÿÿ1ΐƒΔΓ΄&    d΅    £    sΤdÿ    ΅    …ΐt‹@j 1Òj ‰L$θόÿÿÿXZ‹$dÿ    u¤θόÿÿÿλ΄&    v θόÿÿÿƒμ4‹ d‹    ‰T$01ÒΊÿÿÿL$ΗD$    9ΠΗD$    GΒ‰βΗD$    Η$    ‰D$1ΐΗD$    θ·ϊÿÿ‹D$$‹L$(	Αu‹T$,…Òu‹T$0d+    uƒΔ4Γf|$,ÿdΝ~γƒΐλήθόÿÿÿ΄&    t& θόÿÿÿUWVSƒμH‹p‹d‹    ‰T$D1Ò‹P…Ò„  Ή   D$,θόÿÿÿ…ΐ…8  ‹L$4…Ι%  ‹D$8=?B ‡  ‹|$,…ÿ
+  ‹T$0ϊ?B ‡ϊ   iΐθ  ‰|$ΑÿiÒθ  ‰L$ Αω‰|$‰L$$‰D$(‰T$T$…φ„΄   ‰ΨL$,θΉωÿÿ‰Γ…ΐuW‹D$,‹|$4ΉΣMb‰D$‰ψΑÿχι‹D$8‰D$Αϊ)ϊ‹|$@‰T$‰ψΑÿχιΉ   ‰πΑϊ)ϊ‰T$T$θόÿÿÿ…ΐΈςÿÿÿEΨ‹D$Dd+    u]ƒΔH‰Ψ[^_]Γt& T$1Ι1ΐ‰ƒΐƒψrυ€=Ά    „¦Α  …φ…Tÿÿÿ΄&    ‰Ψ1Ιθωÿÿ‰Γλ§v »κÿÿÿλ»ςÿÿÿλ–θόÿÿÿffffff‹ θόÿÿÿΓ΄&    θόÿÿÿU‰εW1ÿV‰ΖSƒδψƒμ(‹Z$‰L$‹J(‰D$Σζ‰D$‰|$¥Η1ΐφΑ EώEπ…Ϋ„ύ   ‰Ψ1Ò‰$ƒΐÿ‰T$ƒÒÿ‰D$‰T$‰ϊ‰π­ΠΣκφΑ t‰Π1Ò‰D$ ‹D$‰T$$3D$ ‹T$3T$$	ΠtFΎÿÿÿÿΏÿÿÿÿ‰π‰ϊ‰Ζ…Òu_1Ι‰πχσ»θ  ‰Κ1Ι‰Ζ9Ψ‰ΠΘ‰ΨCΚCΖeτ[^‰Κ_]Γ΄&    f‰π‹T$χΠ9D$‰ψχΠΒs°€|$ u%t$|$‰π‰ϊ‰Ζ…Òt΅‰Π1Òχσ‰Αλ™΄&    f1ΐ1ÒφΑ •Β”ΐΣβΣΰ;$‰ΠD$‚dÿÿÿt$|$λΉ¶    »   ΗB$   ΗD$    ΗD$    Η$   ΗD$    ικώÿÿ΄&    ΄&    θόÿÿÿU1Ι‰ε]ιpώÿÿθόÿÿÿU‰ΕWVS»   λ<¶    ‹M$‰πχe$ƒE4―ΟΚ‹M(­ΠΣκφΑ ‹MEΒ‰κθόÿÿÿ…ΐt$ƒλ„ΠΑ  ‹u‹} θόÿÿÿπϊƒ},‰E‰Uu―1ΐ[^_]ΓθόÿÿÿV‰ΖSΗ@,    ‹@p…ΐ„…   =    „­   Έό€ θόÿÿÿ‹Τα ‰ΓFt‰B‰VtΗFxΤα λ*¶    ΅Μα ‹P‹p‰Q‰
+‹Τα ‰B‰Η@Τα £Τα ‰πθόÿÿÿ΅Μα =Μα uΔ‰ΪΈό€ [^ιόÿÿÿ¶    Έ    θFύÿÿƒψwAθόÿÿÿ‰ΒΑθƒβ)Β•   ‰Fp=    …Sÿÿÿÿv`hL θόÿÿÿΗFp    XZι6ÿÿÿλ»΄&    t& θόÿÿÿV‰ΖΈό€ S‰Λθόÿÿÿώ€ί tK‹–”  Έ    •    1φ…ΐt‹ …ΐtÿp`hFΧ  h   Sθόÿÿÿ‰ΖƒΔΈό€ θόÿÿÿ‰π[^Γ¶    θόÿÿÿλΐθόÿÿÿW‰Η‰ΘVSƒμ,d‹    ‰T$(1Ò‹L$<T$θόÿÿÿ‰Γ…ΐ   ΈΈα θόÿÿÿΈό€ θόÿÿÿ΅Τα X‰Ζ=Τα uιƒ   v ‹CtX‰Ζ=Τα tq‹C`T$θόÿÿÿ…ΐuα‹K,‹—”  …Ιtt‹•    Έ    9Έό€ „   θόÿÿÿΈΈα »πÿÿÿθόÿÿÿ¶    ‹D$(d+    …   ƒΔ,‰Ψ[^_Γ¶    Έό€ »νÿÿÿθόÿÿÿΈΈα θόÿÿÿλΕt& ‹Cx‹St‰B‰Έό€ ‰st‰sxθόÿÿÿΈΈα θόÿÿÿ‹\$<λ•t& θόÿÿÿ‹‡”  ΊΰΟ ‰$ΗD$νÿÿÿjL$θόÿÿÿ‹\$ΈΈα θόÿÿÿX…ΫtΌιRÿÿÿθόÿÿÿ΄&    ¶    θόÿÿÿU‰Ρ1ÒWV1φS‰Γƒμ‹@\‰Η…Òt‰Π1Òχρ‰Ζ‰ψ1ÿχρ‰ςs$‰T$‹l$S(‰$Έ   9$ύC$P‰πQΉ Κ;θόÿÿÿ‹CX1Ι‰ΪθªϊÿÿΉ   ‰C‹C\‰S ‰Ϊθ•ϊÿÿ‰C‰SƒΔ[^_]Γ΄&    θόÿÿÿƒμ‰HX‹L$‰H\φ@0t‰$θPÿÿÿ‹$ƒΔιUόÿÿt& θόÿÿÿV‰ΖS‰Σƒμd΅    ‰D$ΈΈα θόÿÿÿΊΰΟ ‰Ψ‰4$ΗD$νÿÿÿjL$θόÿÿÿΈΈα ‹\$θόÿÿÿX‹D$d+    uƒΔ‰Ψ[^Γθόÿÿÿ΄&    θόÿÿÿUW‰ΗΈό€ VSθόÿÿÿθόÿÿÿ‹7‹V,…Ò„‘   ‹…    Ί    ;4tΈπÿÿÿ‰G[Έό€ ^_]ιόÿÿÿf΅Τα X=Τα tΩ1ν΄&    9ήt4‹C,…ΐu-‰Ϊ‰θθόÿÿÿ„ΐt ‹C|θόÿÿÿ„ΐt…νtH‹E|‰έθόÿÿÿ¶    ‹CtX=Τα u»…νt‡‰θθόÿÿÿ‹Nt‹VxFt‰Q‰
+‰Ft‰Fx1ΐιjÿÿÿt& ‰έλΔt& θόÿÿÿV‰ΖS‹@,9Βu[^Γt& ‰Σ‹V0φΒuNƒϋtywƒϋubƒβtέ‹V8…ÒuΗF,   λΝt& ƒϋuΓƒψuw‹V@…Òt·‰πθόÿÿÿ…ΐu¬t& ‰^,λ£v ‰^,ƒϋu‹F$…ΐu‘ΗF$   λ†¶    ‹VD…ÒuΒλΟ΄&    ƒβ„gÿÿÿ‹V<…Òt‰πθόÿÿÿ…ΐ…QÿÿÿΗF,   λ―€=¤    …:ÿÿÿPhJΧ  Ζ¤   θόÿÿÿZYιÿÿÿ΄&    ΄&    θόÿÿÿSƒx,‰ΓuΗCÿÿÿÿΗCÿÿÿ[Γfφ@0u‹PD…Òt	θόÿÿÿ…ΐuΨΗC,   ΗCÿÿÿÿΗCÿÿÿ[Γv θόÿÿÿ‹PH…Òtιόÿÿÿ΄&    1ΐΓt& θόÿÿÿUWVS‰Γƒμ‹D$‰$…ΙΓ   ‹C,‰S‰Φ‰Ο‰Kƒψ„   ƒψ…Μ   ‹k0ƒεt‹k‰Ω‰π‰ϊθόÿÿÿƒΔ[^_]Γ¶    θόÿÿÿ)ΖΧ9υύ}   ‹C‹S9π‰Ρω‹K MΧMΖ‹s‰Χ9πΟLΖMΚχc$―K$Κ‹K(­ΠΣκφΑ ‹KEΒ‰Ϊθόÿÿÿ…ΐt–€<$ tƒΔ‰Ψ[^_]ιPψÿÿƒΔ1ΐ[^_]Γ¶    ƒΔΈΒÿÿÿ[^_]Γ€<$ ΈΒÿÿÿ„SÿÿÿλΑ΄&    €=£    …'ÿÿÿPhJΧ  Ζ£   θόÿÿÿ]XιÿÿÿθόÿÿÿS‰Γφ@0tθ=ϋÿÿ‹S,ƒϊt-1ΐƒϊt[Γt& ‹S0φΒuςƒβt%‹S8…Òtζ‰Ψ[ιόÿÿÿt& ‹S‹Kj ‰ΨθόÿÿÿZ[ΓΈΪÿÿÿ[Γ΄&    ΄&    θόÿÿÿW‰ΧV‰ΖS[ϊθόÿÿÿƒψνt€ηtϋ[^_Γt& ‰ϊ‰πθόÿÿÿλζ΄&    ¶    θόÿÿÿΓ΄&    v θόÿÿÿV‰ΦS…ΐt7‰Γ‹@|θόÿÿÿ‹S,…Òur‹Sx‹KtCt‰Q‰
+‹Μα £Μα ‰B‰StΗCxΜα …φt=‹F,…ΐuqφF0u‹VD…Òt‰πθόÿÿÿ…ΐu΄&    fΗF,   ΗFÿÿÿÿΗFÿÿÿ[^Γ΄&    φC0u‹SD…Òt‰Ψθόÿÿÿ…ΐ…rÿÿÿt& ΗC,    ιbÿÿÿt& ΄&    ΄&    θόÿÿÿ΅Ψα =Τα t/SXv ‹SP…Òt‹C,…ΐt‰Ψθόÿÿÿ‹CxX=Τα uή[Γt& Γ΄&    ΄&    θόÿÿÿ΅Τα =Τα t/SXv ‹ST…Òt‹C,…ΐt‰Ψθόÿÿÿ‹CtX=Τα uή[Γt& Γ΄&    ΄&    θόÿÿÿS‰ΓΈό€ θόÿÿÿ‰ΨθόÿÿÿΈό€ [ιόÿÿÿ΄&    t& θόÿÿÿUWV‰ΖΈό€ Sθόÿÿÿ‰Η‰πθόÿÿÿ‹Μα ‹CJϋΜα t)t& ‹Xx‰Z‰Η@t   Η@x"  ‹Qt‰ΘJ=Xα uΫ΅Τα ‹Xi=Τα uλgt& ‹Et‰λƒθtύ`α tR‰Ε‹Cp£0sζ‹CpθVσÿÿƒψuΩ‰Ψθόÿÿÿ…ΐuΞ‹C,…ΐu9‹Cx‹St‰B‰ΗCt   ΗCx"  ‹Et‰λƒθtύ`α u®[‰ϊ^Έό€ _]ιόÿÿÿffθόÿÿÿ9    t3Έ›Χ  θόÿÿÿd΅    ·@4ƒΰfƒψ—ΐ¶ΐθόÿÿÿΈ   ιόÿÿÿv Έ    θόÿÿÿƒ        @B Έ   ƒ    θόÿÿÿΈ    ƒ    θόÿÿÿθόÿÿÿλ‰΄&    t& θόÿÿÿUWVS‰Γθόÿÿÿ‹s‹{‰ΕθSÿÿÿ;    t[^_]Γ¶    ƒ{,uο΄&    v Ζ@B j ‰ΨƒΧ ‰ς‰ωθόÿÿÿZ…ΐtΚθόÿÿÿ…ΐtά‰θθÿÿÿλΣv θόÿÿÿV‰ΖS»    θόÿÿÿ‹…    ‹φ@0u1ΐ[^Γ΄&    ‰π[^ιόÿÿÿ΄&    θόÿÿÿ‰ΒΈ    •    Γ΄&    t& θόÿÿÿΈ›Χ  θόÿÿÿ1ΐd‹    …Òt‹R0φΒtƒβΈ   tθόÿÿÿ¶ΐΓ΄&    fθόÿÿÿWVS‰Γθόÿÿÿ‹C0¨uU¨u^΅    ¨uM‹5    ‹=   ‹    9ΠuαΊ   ‰Ψθόÿÿÿλ΄&    fΖ@B ƒΧ j ‰ς‰ω‰ΨθόÿÿÿZ…ΐuε[^_Γσλ¦t& θόÿÿÿ…ΐu™‰ΨΊ   [^_ιόÿÿÿθόÿÿÿUW‰ΟV‰ΖS‰Σƒμ‹D$ ‰$‹…ΐtq‹P‹H‹(Η     ‰T$‰L$‰‹$‹Cp‹
+9t‹Chθόÿÿÿ‰ϊ‰Ψθόÿÿÿ…ΐu+‹N…ΙuƒΔ‰Ψ1Ò[^_]ιÿÿÿÿt$‰κ‰Ψÿt$θόÿÿÿXZƒΔ[^_]Γt& ƒ=    ώtΗF    1νΗD$    ΗD$    λt& ‰    θόÿÿÿ£    ‰   λΙθόÿÿÿWV‰ΖS»    θόÿÿÿ…    θόÿÿÿ‰ς‰Η‹θόÿÿÿ‰ψ‰ϊ‰ωΑκƒΰ)Π‰ς…   P‰ΨθζώÿÿXφF0u[^_Γv [^_ιόÿÿÿθόÿÿÿUWV‰ΖS‰Σθόÿÿÿ‹Sp£ƒ‚   ‰Η’ΑΑθƒη‰ΝƒΗ)Η‹Cp‹½    9tr‹Ch…ΐyK…φ„ƒ   ‹Fp‹½    9tEφC0uφF0u9θόÿÿÿ…ΐu0‹Fd9Cd*‹Vp‹Cp[^‹ 9•ΐ_‰Ε‰θ]Γfθόÿÿÿ…ΐu¬΄&    1ν[‰θ^_]Γ΄&    φC0u*…φu§¶    θόÿÿÿ…ΐtΩλΥt& φC0uΜλθ΄&    …φuλΌ΄&    v θόÿÿÿUWV‰ΖSθόÿÿÿ‰ς‰ΗΈ    ½    ‹(‰Γ‰θθόÿÿÿ„ΐtY‹F|θόÿÿÿ„ΐu[^_]Γ‰θθόÿÿÿ…ΐuM‰ς‰θθόÿÿÿ‰ψ‰ϊ‰ωΑκƒΰ)Π‰ς…   P‰ΨθmύÿÿXφF0tΑ[^_]ιόÿÿÿt& [‰ϊ‰π^_]ιόÿÿÿv ‰θ1νθόÿÿÿλ¨΄&    ¶    θόÿÿÿθόÿÿÿ;    tΓt& ‹    Έ    …ÒtσΌΒ£    Γ΄&    ΄&    θόÿÿÿ‰ΒΈ    V•    S‹0Η@    …φtΗF,    ‰Γ1Ò‰πθόÿÿÿΗ    Η    [^Γ΄&    ¶    θόÿÿÿS»    θόÿÿÿ‹…    ‹[ιόÿÿÿθόÿÿÿVS»    θόÿÿÿ…    θόÿÿÿ‰Ζ‹θόÿÿÿ‰π„ΐu‹C…ΐu‹1Òθόÿÿÿ[^ιόÿÿÿt& θόÿÿÿ[^ιόÿÿÿ΄&    t& θόÿÿÿS»    θόÿÿÿ‹…    ‹θόÿÿÿ[ιόÿÿÿ΄&    t& θόÿÿÿθόÿÿÿιaÿÿÿθόÿÿÿVΈ Sθόÿÿÿ΅ ‹    ƒΐ£ 9Πt(θόÿÿÿ»    ‹…    ‹θόÿÿÿΈ [^ιόÿÿÿv θόÿÿÿ>t& Η       θόÿÿÿΈ [^ιόÿÿÿv ‹ψ  d‹    £    sΜdÿ    ‹    …Òt‹rj‰Α‰Ϊ‰πθόÿÿÿXdÿ    u΅θόÿÿÿλθόÿÿÿVΈ Sθόÿÿÿ΅    9 t"θόÿÿÿƒ- Έ [^ιόÿÿÿ΄&    v θόÿÿÿΗ       θόÿÿÿ>t& λΘt& ‹τ  d‹    £    s­dÿ    ‹    …Òt‹rj ‰Α‰Ϊ‰πθόÿÿÿXdÿ    u‚θόÿÿÿιxÿÿÿffθόÿÿÿπ³ π³ Γ΄&    v θόÿÿÿU‰ΥWVSƒx,‰Γ‹t$‹|$t
+Ί   θόÿÿÿj‰ς‰ω‰ΨθόÿÿÿXφC0 t7‰θ‹KpΑνƒΰƒΐ)θ…    ‹…    9t‰Sp‹Ch[^_]ιόÿÿÿ¶    [^_]Γ΄&    t& θόÿÿÿ€=¦    „yΒ  Γ΄&    ¶    θόÿÿÿSθόÿÿÿ£  r4’Γ΅  …ΐt σΌΐ‹…    Ί    ‹‹PLΈ  θόÿÿÿ‰Ψ[Γt& ‹, π³  ‹Z0Αλƒσƒγλ³΄&    t& θόÿÿÿUWVΎ    S‰Γθόÿÿÿ‹,…    Έΐ  θόÿÿÿ΅, ƒx,tG΅    #( £  θJÿÿÿƒ{,‰ΗtBΈΐ  θόÿÿÿ‰ψ„ΐt‹D5 [^_‹]ιόÿÿÿv [^_]Γv [Έΐ  ^_]ιόÿÿÿ΄&    v ‹C‹Sj@B ƒÒ ‰Ρ‰Β‰ΨθόÿÿÿXλ fθόÿÿÿUWVS‰Γƒμθόÿÿÿ…ΫtG‰Ζ;Πβ tOΗΠβ ΅( ‹S,£  π³5  ΅  	 ƒϊu…ΐu0ΗCÿÿÿÿΗCÿÿÿƒΔ[^_]Γ΄&    v ƒΔ[^_]ι¤ύÿÿt& Έ    Ώ    θόÿÿÿ΅    ‹   ‰$Έ    ‰T$θόÿÿÿ‰ΨΊ   θόÿÿÿ‹-    Έÿÿÿÿ‰\$Ί  θόÿÿÿ9θs)‹…    ‹:…Òtδ‹$‹\$‰J‰ZΊ  θόÿÿÿ9θrΧ‹\$ÿt$‰ςÿt$‰Ψθ.ύÿÿXZιEÿÿÿ΄&    θόÿÿÿUW‰ΗΈΐ  VΎ    Sƒμθόÿÿÿ‰Γθόÿÿÿ‹…    ‹40…φt‹F0¨t¨tƒΔ‰ΪΈΐ  [^_]ιόÿÿÿθόÿÿÿ‹-, ‹( ƒÿt4ƒÿt%…ÿta…νtΚ‹( …Ò…   …ΙtΈ‰θθόÿÿÿλ―fΗ    π«$ π«( rΓ…νt‹E0%€   0 u³‰π‰$θόÿÿÿ‹$λ¤‹ …Òu•π³$ π³( sƒ‹=0 …ÿ…uÿÿÿ1Ò‰π‰$θόÿÿÿ‹$ιaÿÿÿf…Ι…%ÿÿÿ΅0 …ΐuΊ   ‰θθόÿÿÿιÿÿÿ¶    ‰θθ΅ύÿÿιωώÿÿ΄&    t& Η     Γ΄&    fθόÿÿÿUWVS‰Γƒμ‰D$Έΐ  θόÿÿÿΗCÿÿÿÿΗCÿÿÿ»    Η      θόÿÿÿΗD$    ‰Η‰ΦΈÿÿÿÿΗ$ÿÿÿÿΗD$ÿÿÿfΊ θόÿÿÿ;    sN‹…    ‰υ‹‹J‹R9ΟΥ|π«  π« λΔt& ;$‰Υl$}µ‰D$‰$‰T$λ¨΄&    θόÿÿÿπ³ ‹    ΅   Η     ‰Ρ£  χΡ…Αusθfϋÿÿ‹4$‹|$‰Γ‰ς‰ψ5ÿÿÿχÒ	ΠtWV‹T$‹D$θϊÿÿXZΈΐ  θόÿÿÿ„ΫuƒΔ[^_]Γ΄&    θόÿÿÿ»    ‹…    ‹‹ƒΔ[^_]ιόÿÿÿ¶    !Β‰  λ΄&    t& θόÿÿÿΈ, Γt& θόÿÿÿΈ( Γt& θόÿÿÿ‰ΒΈw  ‹•    ‹Γ΄&    fθόÿÿÿUWV‰ΦS‰ΓΈw  ƒμ‹•    ‹-, ‹…Ϋ„ά   ‹C0¨u‰ΒƒβBƒϊB„~   ¨X…Χ   ƒ=0 „Ω   …ν„α   ‹Ed9Cd¶   ‹C|θόÿÿÿ„ΐ„¦   ‰Ϊ‰θθόÿÿÿΗE     ΅( ‰, …ΐ…Β   φC0t}ƒ=0 „Ο   ƒΔ[^_]ιόÿÿÿv ‰ς‰χƒβΑοƒΒ)ϊ‹{p‹•    9…aÿÿÿ…Ιt‹yd9{dQÿÿÿ‹C|‰$θόÿÿÿ‹$„ΐtuΗ€θ ‰Θ‰ΪΏw  θόÿÿÿ‹µ    ‰8ƒΔ[^_]Γ΄&    ¨…ÿÿÿλη¶    ‹C|θόÿÿÿ„ΐtΥ‰Ϊ1ΐθόÿÿÿι1ÿÿÿ¶    Ί   ‰Ψθόÿÿÿι-ÿÿÿ΄&    ‹C0ιΒώÿÿΈΐ  θόÿÿÿΗ0    ‰Γ΅, …ΐtθϊÿÿƒΔ‰ΪΈΐ  [^_]ιόÿÿÿ΄&    fθόÿÿÿ…ΐt9, ”ΐ¶ΐΓ΄&    v 1ΐΓ΄&    ¶    θόÿÿÿVΎνÿÿÿSƒμ…ΐt‰ΓΎνÿÿÿ;, tƒΔ‰π[^Γ¶    Έΐ  ‰$θόÿÿÿ‹$‰Ψθόÿÿÿ‰ΖΈΐ  θόÿÿÿ‰πƒΔ[^Γt& θόÿÿÿU‹-, WV‰ΦS‰ΓΈΐ  θόÿÿÿ‰Η‹C0¨uj¨uFπ³5( £5$ ƒΙ   ΅0 …ΐ„„   1Ϋƒψu‰πθ6χÿÿ‰ϊΈΐ  θόÿÿÿ‰Ψ[^_]Γv ‹CL…ΐu»€=¥    „Ι   ΗCLί λ¥v ‹KLΗ    …Ι„—   π«5( ΅0 …ΐun»   …νtΊ   ‰θθόÿÿÿλ‘΄&    ‹( …Òt…νt:φE0€u41Ϋ£5( ’Γιeÿÿÿv …νt‰θθόÿÿÿλΩv π³5( ι*ÿÿÿv 1Ϋι;ÿÿÿ‰θ»   θDψÿÿι)ÿÿÿ΄&    €=¥    tΗCLί ιTÿÿÿιΒ  ι§Β  ΄&    fθόÿÿÿS»    θόÿÿÿ‹…    ‹…ΐt‹…Òtθόÿÿÿ1ΐ[ΓΈνÿÿÿ[ΓΈκÿÿÿ[Γt& θόÿÿÿλΉ΄&    fθόÿÿÿ‰Α…ÒΈ    Ί ί EΒ‰Γ΄&    θόÿÿÿVS‰ΓΈΐ  θόÿÿÿπ³( π³$ ‹    Ύw  ‹…Òt‹01Òθόÿÿÿ‹    Η0    π³ π³ π³ ΅, …ΐu[Έΐ  ^ιόÿÿÿt& ‹0 ( uαθόÿÿÿΈΐ  [^ιόÿÿÿθόÿÿÿSΈΐ  θόÿÿÿ‰Γ΅, …ΐtθόÿÿÿ‰ΪΈΐ  [ιόÿÿÿv θόÿÿÿ1ΐƒ=0 uΓ΄&    θόÿÿÿ£( ’ΐΓ΄&    θόÿÿÿVΈΐ  Sθόÿÿÿ‹5, ‰Γ…φt*‰πθόÿÿÿ΅0 …ΐt+ƒψu΅( …ΐtΊ   ‰πθόÿÿÿ‰ΪΈΐ  [^ιόÿÿÿv ‹( …ÒtεΊ   ‰πθόÿÿÿλΧθόÿÿÿΈ Γt& θόÿÿÿθόÿÿÿ£ ’ΐ¶ΐΓ΄&    θόÿÿÿSθόÿÿÿ£ r[Γ΄&    v θόÿÿÿ»    …    ƒ{uέ‹Ί   [ιόÿÿÿ΄&    t& θόÿÿÿU‰ΕWΏ    VSƒμθόÿÿÿ<…    θόÿÿÿƒ‹7‰Γu2‹    Έw  ‹<…ÿt…ν„§  1Ϋƒύt`ƒΔ‰Ψ[^_]Γ¶    ΅, …ΐ„+  Έΐ  θόÿÿÿ‹=, ƒύtnπ³ ‚€  1ΫΈΐ  θόÿÿÿ‰ΨƒΔ[^_]Γ΄&    v ‰πΊ   θόÿÿÿ‰ψΊ   θόÿÿÿ‹F‹Vj‰Ρ‰Β‰ψθόÿÿÿX‰ΨƒΔ[^_]Γ΄&    v φG0€„n  ‹G‹W5ÿÿÿχÒ	Πt	;_l„Μ   ‹0 …Ι„Ύ   π« ‚`ÿÿÿ£ ‚}  φG0€t6θόÿÿÿφG0€‹W‰Ε‹Gt‰Αρÿÿÿ‰$‰ΡχΡ$t;olt‹N9VΑ|Ί   ‰πθόÿÿÿ£ rR‹V‹F;G‰ΡOξώÿÿR‰ΪP‰ψθCςÿÿ^]φG0€„Χώÿÿ‹G‹W5ÿÿÿχÒ	Π„Βώÿÿ;_l…Ήώÿÿπ³ »πÿÿÿι¨ώÿÿ¶    ƒ,…¨   ƒΔ1Ϋ‰Ψ[^_]Γ΄&    v Ί   ‰πθόÿÿÿπ³ ‚fώÿÿ‹F‹V5ÿÿÿχÒ	Π„Qώÿÿθόÿÿÿ‰Α‹F‹v9Ας|.π« 1Ϋι1ώÿÿ΄&    ‹0 …Ò…¬ώÿÿιώÿÿt& Ή   ‰ςθόÿÿÿιÿύÿÿ΄&    »πÿÿÿι®ύÿÿ΅, …ΐtνΈΐ  θόÿÿÿιΘύÿÿι|ώÿÿ΄&    ΄&    θόÿÿÿSΈΐ  θόÿÿÿΗ0    ‰Γ΅, …ΐtθ¶ςÿÿ‰ΪΈΐ  [ιόÿÿÿ΄&    fθόÿÿÿUWV‰ΖΈΐ  Sθόÿÿÿ‰Γ΅, …ΐt!φ@0€t‹x‹H‰ύ‰ΚςÿÿÿχΥ	κt;plt‰ΪΈΐ  [^_]ιόÿÿÿj‰ϊθόÿÿÿ‰ΪXΈΐ  [^_]ιόÿÿÿt& θόÿÿÿ1ΐƒ=0 ”ΐΓ΄&    ΄&    θόÿÿÿ‹, 1ΐ…Òt‹B0ΡθƒΰΓfffθόÿÿÿ‹ β Έ β θόÿÿÿ1ΐΓ΄&    θόÿÿÿΈ@ θόÿÿÿ1ΐΓ΄&    ΄&    θόÿÿÿW‰ΧV‰ΖS‰Λθόÿÿÿ‰ς‰ωΈ@ j
+j j θόÿÿÿ΅` ‹ ‹@‰Clθόÿÿÿ1ΐƒΔ[^_Γ΄&    ΄&    θόÿÿÿΈ@ Ή   Ί   θόÿÿÿΈ β Η\ `ξ ιόÿÿÿfθόÿÿÿW‰ΟV‰ΖΈΫΧ  S‰Σƒμθόÿÿÿ‰Ϊ‰ρςÿÿÿχΡd΅    	Κtƒx,tI1Ò…ÿ‰Ω•ΒR‰ςθόÿÿÿZƒΔ[^_ΓΊ   ‰$θόÿÿÿ‹$Η@ÿÿÿÿΗ@ÿÿÿƒΔ1ΐ[^_Γ΄&    fΊ   ‰$θόÿÿÿ‹$λ¥΄&    ΄&    θόÿÿÿSΈΫΧ  θόÿÿÿΊ   d‹    ‰Ψθόÿÿÿθόÿÿÿj‰Ρ‰Β‰ΨθόÿÿÿX[Γ΄&    θόÿÿÿWVS‹t$‰Γ‰‹|$Ί   θόÿÿÿ‰ς‰ω‰ΨΗD$   [^_ιόÿÿÿ΄&    t& θόÿÿÿW‰ΗVS»    θόÿÿÿ…    ‹3…φ„ΒΒ  ‹F0¨„βΒ  ¨u ΗC   ‰πΊ   ‰>θόÿÿÿθόÿÿÿ1ΐ[^_ΓιβΒ  ΄&    θόÿÿÿS[ϊΈΫΧ  θόÿÿÿd΅   ƒψ”ΐ¶ΐ€ηtϋ[Γ¶    θόÿÿÿΈ    ιaÿÿÿθόÿÿÿUΈ    ‰εVSθόÿÿÿƒ    ‹t ‹5p ‰Ψ	πu‹5    ‹   ‰5p ‰t Έ    ƒ    θόÿÿÿ‰π‰Ϊ[^]ΓfθόÿÿÿU‰εWVS‰Γƒδψƒμ‰T$λ	΄&    σ΅    ¨uυ‹5p ‹=t ‹    ‹    9ΒuΫ‰Kx‰³„   ‰»   ‰L$θόÿÿÿ‰D$…ΐ„Ε   ‰π‰ϊ@B ƒÒ ‰D$‰T$θόÿÿÿφC0„"  θόÿÿÿ‰D$΅    ‰T$;D$tƒψÿ„ι   ΗD$ÿÿÿÿΗD$ÿÿÿΈÿÿÿÿ‹L$Ίÿÿÿ)πϊ9D$ΈÿÿÿÿΡΊÿÿÿr5‹t$‹|$9Ζ‰ωΡ‰ρCΘCϊ‰Ξ‰ψ‰ϊ‰ƒ€   ‰π‰K|eτ[^_]Γ¶    ‹D$‹T$πϊλ½΄&    v θόÿÿÿ„ΐ….ÿÿÿΈΨ  θόÿÿÿdf΅    ¨…ÿÿÿ‹D$‰ω‰ςθόÿÿÿΉ@B ‰D$‰ƒ   )π‰T$‰“   ϊ9Α‹L$Ρ‚ ÿÿÿιμώÿÿt& φC0…ÿÿÿιÿÿÿ΄&    f1Ι1ΐ1φ1ÒιBÿÿÿv θόÿÿÿφ@0td‹    φAu8Η@<    Η@@    ·B4ƒΰfƒψ—ΐ¶ΐθόÿÿÿΈ   ιόÿÿÿ΄&    v ƒ@DλΒ΄&    v θόÿÿÿUW‰ΧV‰ΖS΅    ‰Γƒγ…Λ   ‹-    ‹   ‹    9ΠuΪ9ξ‰ψΘΑ   Έ    θόÿÿÿ;5    ‰ψ   “   ƒ    Έ?B +5    =   9πϋ‰   ΅p ‹t Ή   @B ƒÒ 1Ϋ    £p    @B ‰t ƒÒ £    ‰   ƒ    θόÿÿÿΈ    θόÿÿÿ[^_]ιόÿÿÿ¶    σιÿÿÿ[Έ    ^_]ιόÿÿÿf[^_]Γv ‰π‰ϊ1Ϋ‰Φ‰Α…Òt‰πΊƒήCχβ‰ΠΑκΑθ‰Σiΐ@B )ΖΏ@B ‰Θ‰ςχχ‰ΪH‰ψχαp t 1ΫιAÿÿÿ΄&    θόÿÿÿW‰ΟV‰ΦS‰Γθόÿÿÿ‹    ƒϊÿtb9Βtc΅    9ƒ    t1Ηƒ¤       ΅    ‰ƒ    ¶C0¨tƒΘC0[^_Γ΄&    v ‹ƒ¤   ƒΐ‰ƒ¤   ƒψuΠ‰π‰ϊθ#ώÿÿλ°£    ‰π‰ϊθώÿÿλ’θόÿÿÿUWVS‰ΓΈΨ  θόÿÿÿd‹-    θόÿÿÿ‰Χ‰Ζ‰Β‰Ψ‰ωθ@ÿÿÿ…νu<ΗC<    ΗC@    φC0u7j ‰ς‰ω‰Ψh@B θόÿÿÿXΈ   Z[^_]Γ΄&    v ‰κ‰Ψθ7ύÿÿφC0tΙ[1ΐ^_]Γ΄&    v θόÿÿÿUWVS» w  ƒμ‰$θόÿÿÿ…    ΈΨ  θόÿÿÿd‹-    θόÿÿÿ‹$‰Χ‰Ζ‰Β‰ΨΗAÿÿÿÿΗAÿÿÿ‰ωθώÿÿ‰κ‰ΨθΑόÿÿφC0u+j ‰ω‰ς‰Ψh@B θόÿÿÿ‹C‹SΉ   ƒΔ[^_]ιόÿÿÿfƒΔ[^_]Γ΄&    θόÿÿÿW‰ΟV‰ΦS‰Γθόÿÿÿ‹C4‹S8‰ωj ‰C‰S‰C‰Ψ‰S‰ςh@B θόÿÿÿƒ{,XZt)‹C‹SΉ   θόÿÿÿΗC<    ΗC@    [^_Γ΄&    ‹C‹Sj
++CSR‹KP‹S‰ΨθόÿÿÿƒΔλΕ¶    θόÿÿÿUWVSƒμ‹\$$φB0uZ…ΫtJ‹T$‹D$ χΪƒΠ χΨHD$ HT$‰Η‰Π‰ϊ1ÿ‰Φ‰Α…Òum‰Θ‰ςΉθ  χρ‹L$ ‰ϊ…ΙyχΨƒÒ χΪ‰‰SƒΔ[^_]Γt& ‰Υ‹L$ ‹T$+UPMT‰$‰L$θόÿÿÿ…ΐu@‹$‹T$EhUl‹D$‹T$ ‰EP‰UTιfÿÿÿΏΣMb‰Πχη‰Π‰ΧΑθΑοiΐθ  )Ζιsÿÿÿ‹$‹L$UpMtλΎθόÿÿÿW|$ƒδψÿwόU‰εWVS» w  ƒμ‹5    ‰Uθ…φ„Α   ‰Eδ…    θόÿÿÿ‰Ρ‰Β‹Eθ…ΐ„‹   P‹EδQR‰ΪθΖώÿÿ‹Ch‹SlƒΔ‰Eθ‰Uμ‹Mθ‹]μ‰Κ‰ΨχΪƒΠ χΨHΓHΡ‰Η‰Π‰ϊ1ÿ‰Φ‰Γ…ÒtΏΣMb‰Πχη‰Π‰ΧΑθΑοiΐθ  )ΖΉθ  ‰Ψ‰ςχρ‹Mμ‰ϊ…ΙyχΨƒÒ χΪeτ[^_]gψ_Γ¶    φC0u2‹Ch‹Sl‰Eθ‰UμιzÿÿÿeτΈÿÿÿÿΊÿÿÿÿ[^_]gψ_Γ΄&    v ‹Eδ‰Uθ‰Mμθόÿÿÿ…ΐuΌ‹Uθ‹Mμ‰Π‰ΚChSl+CPST‰Eθ‰Uμι&ÿÿÿ΄&    ¶    θόÿÿÿW|$ƒδψÿwόU‰εWVS» w  ƒμ‹5    ‰Uθ…φ„Α   ‰Eδ…    θόÿÿÿ‰Ρ‰Β‹Eθ…ΐ„‹   P‹EδQR‰Ϊθvύÿÿ‹Cp‹StƒΔ‰Eθ‰Uμ‹Mθ‹]μ‰Κ‰ΨχΪƒΠ χΨHΓHΡ‰Η‰Π‰ϊ1ÿ‰Φ‰Γ…ÒtΏΣMb‰Πχη‰Π‰ΧΑθΑοiΐθ  )ΖΉθ  ‰Ψ‰ςχρ‹Mμ‰ϊ…ΙyχΨƒÒ χΪeτ[^_]gψ_Γ¶    φC0u2‹Cp‹St‰Eθ‰UμιzÿÿÿeτΈÿÿÿÿΊÿÿÿÿ[^_]gψ_Γ΄&    v ‹Eδ‰Uθ‰Mμθόÿÿÿ…ΐtΌ‹Uθ‹Mμ‰Π‰ΚCpSt+CPST‰Eθ‰Uμι&ÿÿÿ΄&    ¶    θόÿÿÿS£    ’Γs>‹B,…ΐt'd΅    ‹ ¨uΈΨ  θόÿÿÿdf΅    f…ΐu=‰Ψ[Γ1Ϋ‰Ψ[Γ΄&    v ;    u
+Η    ÿÿÿÿ‰ΨΗB<    [ΗB@    Γt& θόÿÿÿ£    λµ΄&    v θόÿÿÿ‰ΒΈ w  •    Γ΄&    t& θόÿÿÿS» w  θόÿÿÿ‹…    ¶D0[ΠθƒΰΓ΄&    ¶    θόÿÿÿ‰ΒΈ w  ‹•    ¶D0ΠθƒΰΓfθόÿÿÿUWVS» w  ƒμ$θόÿÿÿ…    θόÿÿÿ‰Ζ‹ƒ   ƒ„   „Z  ‹{|‹«€   1ΐƒCH9ψθ|%Ηƒ„       Ηƒ       ƒΔ$[^_]Γ΄&    f¶C0ΠθƒΰD$ΈΨ  θόÿÿÿ‹“   Ηƒ       d΅    ‰D$‹ƒ„   ‰T$‰D$‹C|Ηƒ„       ‰$‹ƒ€   ‰D$΅    9Ζ„  ƒψÿt€c0χφC0…Ο   θόÿÿÿθόÿÿÿ‹C‹S€K0‰C4‰S8>t& ΄&    ‹$‹D$‹S,‰K<χΡ‰C@5ÿÿÿ	Θ„Ρ  ƒϊ„X  ‹$‹T$Ή   ‰C‰S‰C‰SθόÿÿÿƒCL€|$ ‰»”   ‰«   …οώÿÿφC0„εώÿÿ‹Cx‰CDƒΔ$‰π[^_]ιόÿÿÿf‰Ϊ‰πθgύÿÿ„ΐ„Ύώÿÿ‰ς‰Ψθτÿÿ‰Η‰Υιώÿÿt& ‹K@‹T$‹C<1Κ‰L$‹$1Α	Ρ…;ÿÿÿ‹T$‰ΑχΡςÿÿÿ	Ρ„jÿÿÿ‹S‹K‰T$‹T$‰L$ 3D$3T$ 	Π„Hÿÿÿ€=§    …τώÿÿ‰ΨΖ§   θόÿÿÿÿt$ ¶ΐÿt$ P‹D$ ÿpÿpÿs@ÿs<ÿt$,ÿt$,h(M θόÿÿÿƒΔ(φC0…«ώÿÿιώÿÿ¶    €K0Η    ÿÿÿÿφC0…0ÿÿÿι\ώÿÿv j
+‰Ψj j ‹T$‹L$θόÿÿÿƒΔι¨ώÿÿv d΅    £    ƒMώÿÿdÿ    ΅    …ΐt‹@1ΙΊ   θόÿÿÿdÿ    …!ώÿÿθόÿÿÿιώÿÿ΄&    ƒϊ…Lώÿÿ‰Ψθόÿÿÿι@ώÿÿ΄&    t& θόÿÿÿS» w  θόÿÿÿ‹…    Η„„       Η„       [ιόÿÿÿ΄&    ¶    θόÿÿÿSϊθόÿÿÿ» w  …    ‹ƒ   ƒ„   u"€K0θόÿÿÿ€K0‰CP‰STθόÿÿÿϋ[Γ΄&    λΪt& θόÿÿÿS» w  θόÿÿÿ…    φC0tθόÿÿÿ€K0‰CP‰ST[ιόÿÿÿ¶    [ιόÿÿÿfθόÿÿÿS» w  θόÿÿÿ1Ò…    ¶C0¨tƒΰοΊ   C0‰Π[ΓθόÿÿÿUΈΨ  ‰εθόÿÿÿ]d΅    ‹P‹@ΓθόÿÿÿU‰εWV‰ΖΈΨ  S» w  ƒδψƒμθόÿÿÿd‹    ‰T$θόÿÿÿ…    θόÿÿÿ‹STφC0‰Η‹CP‰T$‹T$‰D$„„   ‹B‹R+D$T$‰‰ψ‰V‰ΪθHϊÿÿ„ΐu‹‹Veτ[^_]Γ΄&    ‰ϊ‰ΨθΧπÿÿ‰Α‰Π‰Χ	ΘtΩ‰Ψ‰L$θόÿÿÿ‹L$‰Φ9ΘώCΧCΑ‰T$‹T$‰$‹$+D$T$eτ[^_]Γt& ιuÿÿÿ΄&    fθόÿÿÿ‰ΒΈ w  ‹•    ‹DHΓ΄&    θόÿÿÿS» w  θόÿÿÿ‹…    ‹DH[Γv θόÿÿÿWVS» w  θόÿÿÿ…    φC0u	[^_Γt& θόÿÿÿ‰Ζ‰Χθ*ςÿÿθόÿÿÿθόÿÿÿ€c0ύ‰ς‰Ψ‰ωθ1υÿÿ΅    +CD‰s`Pÿ‰{dϊύÿÿw·[^_ιόÿÿÿθόÿÿÿUWVS» w  ƒμθόÿÿÿ…    ϊφC0„π   ‹ƒ   ƒ„   …φ   ¶C0ƒΰώ‰ΑC0Πθ‰Εΐιƒεƒαu‰θ„ΐuϋƒΔ[^_]Γt& $θόÿÿÿ¶$‰Ζ‰Χ„ΙtθόÿÿÿφC0uY€c0ϋθόÿÿÿ‰θ„ΐtΕθόÿÿÿ‰π‰ϊθLρÿÿθόÿÿÿθόÿÿÿ€c0ύ‰ς‰Ψ‰ωθSτÿÿ΅    +CD‰s`Pÿ‰{dϊύÿÿw…θόÿÿÿι{ÿÿÿ‰ς‰ω+SPKT‰$‰L$θόÿÿÿ…ΐtF‹$‹L$SpKt‰sP‰{Tιuÿÿÿ¶    ‹ƒ   ƒ„   „ÿÿÿt& ιÿÿÿ΄&    f‹$‹T$ChSlλΈθόÿÿÿWVS» w  ƒμθόÿÿÿθόÿÿÿ…    φC0u	ƒΔ[^_Γfθόÿÿÿ‰Ζ¶C0‰Χ¨u7¨tβΈ+Ψ  θόÿÿÿΈψw  d    ‰0‰x[ϊ‰π‰ϊθ4πÿÿ€ηt¶ϋλ³t& θόÿÿÿφC0u€c0ϋθόÿÿÿ¶C0λ―¶    ‰ς‰ω+SPKT‰$‰L$θόÿÿÿ…ΐu‹$‹T$ChSl‰sP‰{TλΌ΄&    f‹$‹L$SpKtλΰθόÿÿÿUWVS» w  ƒμθόÿÿÿ…    θόÿÿÿΉ   ‰Ζ‰Χ‰ΨΊ   θόÿÿÿΗCPυ θύμÿÿ‰C‰C΅h ‰S‰S…ΐtK΅    1Ò1νθόÿÿÿ‰ΑΈ ΅ ‰$…Òt‰Π1Òχρ‰Ε‹$χρ‰κ‰$‰Εθόÿÿÿ‹$―ΘχεΚCSCSj ‰ω‰ς‰Ψh@B θόÿÿÿ‹s‹{j
+‹C‹S‰ω)πϊR‰ςP‰ΨθόÿÿÿƒΔ€=     tΗC,   πΊ-     sƒΔ[^_]Γ¶    ƒΔ[^_]ιόÿÿÿt& θόÿÿÿWS» w  …    ‹C …ΐt‰Ψθόÿÿÿ{Η    1ΐΗƒ¤       ƒηό)ϋ‹¨   Αισ«[_Γ΄&    θόÿÿÿSΈÿÿÿÿ» w  λ¶    ‹…    Ϊπ€J(Ί    θόÿÿÿ;    rΰ[Γ¶    θόÿÿÿS» w  θόÿÿÿ…    π€K([ΓfθόÿÿÿWV‰ΖS» w  θόÿÿÿ‹…    ΪπΊr( s‹J,…Ιt1ÿ‰ψ[^_Γt& θόÿÿÿ…ΐtλθόÿÿÿ…ΐtβΏ   …φtΫθόÿÿÿ€=     ‹4…    tΔΈΰυ θόÿÿÿ‰Η…ΐu΄σΉ   Ί   ‰Ψθόÿÿÿθπκÿÿ‰C‰C‹C ‰S‰S‹@θόÿÿÿj ‰Ρ‰Β‰Ψh@B θόÿÿÿ‹S‹CΉ   θόÿÿÿ€=     XZ„TÿÿÿΗC,   πΊ-     ‚>ÿÿÿθόÿÿÿι6ÿÿÿffffθόÿÿÿUWVS‰Γƒμ΅    ƒΐ£    ΅π   ƒΐ£π   ‹‹@@£τ   ‹Sl‰D$£   ‹Ch‰$   £    ‹s‹{ ‰t   £p   ‰5(   1φ‰=,   ‹K‹S ‹C­ΠΣκφΑ EΒEΦ£x   ‰|   ‹Ct‹SxChSl£€   1ν‰„   ‹K‹{ ‹s‰T$‰$‹C|­ώΣοφΑ ΉÿΙ;EχEύ™πϊ9ΑΉ    Ρs(1ΙΏÿΙ;1φv  6eΔ‰υƒÒÿƒΑ9ΗΥrν1ÿ$|$£   ‹$‰   ‹T$£€   ΅    ‰„   £θ   ‹D$…ΐu%΅    ƒΐ£    ΅π   ƒΐ£π   ƒΔ[^_]Γv ‹C‹S£   ‰   ‹C‹S£   ‰   ‹C‹SD£   ‹C£   ‹C@‰ό   £ψ   ‹C8‹S<£   ‰  ‹CH£  ‹CL£  ‹Ct‹SxChSl‰$1φ‰T$£0   ‰4   ‹C|‹K™¥ΒΣΰφΑ EΠEΖCS ‰Ζ‰ΧΈ Κ;1Ò1ν¥ΒΣΰφΑ ‰ωEΠEΕ9ΖΡrJ¶    )ΖΧƒ$‹$ƒT$ ‹T$1ν£0   Έ Κ;‰4   ‹KΊ    ¥ΒΣΰφΑ ‰ωEΠEΕ9ΖΡsΌ‹$‹T$‰58   ƒ΄   ‰=<   “Έ   ‹K‰$1ν‹ƒΌ   ‰T$™¥ΒΣΰφΑ EΠEΕ‹l$Ζ‰-”   Έ Κ;Χ1Ò‰t$1φ‰|$‹<$‰=   ‹K¥ΒΣΰφΑ EΠEΖ‹t$9D$ΦrcƒΗ‹t$ƒΥ ‰<$‹|$‰l$f)Ζ‹$Χ‹T$1ν£   Έ Κ;‰”   ‹KΊ    ¥ΒΣΰφΑ ‰ωEΠEΕƒ$ƒT$ 9ΖΡsΌ‰t$‰|$‹D$‹T$£   ‹ƒ¬   ‰   ‹“°   £P  ‰T  ‹CP‹ST£X  ‰\  ‹ƒ   ™ChSl‰Τ   £Π   ‹C‹S £Ψ   ‰ά   ι~ύÿÿ΄&    t& θόÿÿÿ΅    £ΰ   ΅   £δ   Γ¶    θόÿÿÿΈ    θόÿÿÿ‹    Q‹π   ‰    Q‰π   Γfθόÿÿÿ‰Β΅    ƒΐ£    ΅π   ƒΐ£π   Έ    ιόÿÿÿffθόÿÿÿ‰Α‰ΠΊΐ
+ ‹‰  ιόÿÿÿ΄&    θόÿÿÿUΊM W‰ΗVΎ   S1ΫθόÿÿÿΊ¬M ‰ψθόÿÿÿ΄&    ‹€ …ΐt'‰Ω‰ς‰υPΣβKÿΣεR‰ι1ν…ΫDΝQh<Ψ  WθόÿÿÿƒΔƒΓƒϋ uΖ[1ΐ^_]Γ΄&    ΄&    θόÿÿÿΊÿÿÿÿ½DΚ‰ΘΊ   ƒΐ9ΠOΒƒ…€ Γffffθόÿÿÿ‹@ψΓ΄&    θόÿÿÿV°   S‰Γ‰πθόÿÿÿ‹›¤  …Ϋt0‹[Έ   KπΑC…ΐt,P	Βx5‰πθόÿÿÿC…ΫEΨ‰Ψ[^Γ‰πθόÿÿÿ‰Ψ[^Γt& Ί   ‰ΘθόÿÿÿλΝfΊ   ‰Θθόÿÿÿλ½fθόÿÿÿV°   S‰Γ‰πθόÿÿÿ‹›¤  …Ϋt0‹[Έ   KπΑC…ΐt,P	Βx5‰πθόÿÿÿC…ΫEΨ‰Ψ[^Γ‰πθόÿÿÿ‰Ψ[^Γt& Ί   ‰ΘθόÿÿÿλΝfΊ   ‰Θθόÿÿÿλ½fθόÿÿÿU‰εWVpωƒζύS‰Λ‰Ρ‹UtƒψtY‰Ϊ‰Θ[^_]Γ΄&    ‹B‹z‹rΊ}Α%9ΒΊ   ϊ|OΊ Κ;iÿ Κ;χβϊ1ÿπϊ9Α‰ίΧ|")ΑΣ‰Θ‰Ϊ[^_]Γt& ‹‹z‹rλ·¶    1Ϋ1Ι‰Ϊ‰Θ[^_]Γv ΈÿÿÿÿΊÿÿÿλΊ΄&    t& θόÿÿÿUWV‰ΞSƒμ¨€„κ   d΅    ‹€p  ‰ΧΉ   »δÿÿÿ‹P‰ψθόÿÿÿ‰Ε…ΐ„±   ΅P   Ή8   Ίΐ@ θόÿÿÿ‰Γ…ΐ„Q  Η@   1ÒΈΐ@ θόÿÿÿ‰C0…ΐ„²   ΗC    Cθόÿÿÿ…ΐ…Γ   ‰kΗC    …ÿt&ά   Έ   πΑ‡ά   …ΐ„β   P	Β§   ‹F‰;ΖC4 ‰C‹F‰C‹F ‰C ‹F$‰C$‹F(‰C(‹F,‰C,ƒΔ‰Ψ[^_]Γv IΈ   πΑF…ΐtwP‰σ	ΒyΩΊ   ‰ΘθόÿÿÿλΛ΄&    Ύτÿÿÿ‰Ψ‰σθόÿÿÿ‰θΊ   θόÿÿÿ‰ΨƒΔ[^_]Γt& ‰$‹C01Òθόÿÿÿ‹4$λΛ¶    Ί   ‰ΘθόÿÿÿιHÿÿÿ΄&    Ί   ‰Θ‰σθόÿÿÿιXÿÿÿt& Ί   ‰Θθόÿÿÿιÿÿÿ»τÿÿÿλ†΄&    θόÿÿÿS‰Γ‹@Ί   θόÿÿÿ‹…ΐtά   ΊÿÿÿÿπΑά   ƒϊt%…Ò~)‹Cθόÿÿÿ‹C01Òθόÿÿÿ‰Ψ[ιόÿÿÿ΄&    θόÿÿÿλΨΊ   ‰ΘθόÿÿÿλΙfθόÿÿÿΊÿÿÿÿπΑPƒϊt…Ò~Γ΄&    Hψ‰Θιfÿÿÿ¶    SXΊ   ‰Ψ[ιόÿÿÿ΄&    ΄&    θόÿÿÿU‰ΕWzψVS‰Σ‹pθόÿÿÿ„ΐ„`  ‹CψΊ   θόÿÿÿ„ΐ„;  ‹EΊ   ‹@lθόÿÿÿ„ΐ„#  k/* SPDX-License-Identifier: GPL-2.0 */
+/*
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * Authors: Waiman Long <waiman.long@hpe.com>
+ */
 
-	if (unlikely(!debug_locks))
-		seq_printf(m, "*WARNING* lock debugging disabled!! - possibly due to a lockdep warning\n");
+/*
+ * Collect locking event counts
+ */
+#include <linux/debugfs.h>
+#include <linux/sched.h>
+#include <linux/sched/clock.h>
+#include <linux/fs.h>
 
-	seq_line(m, '-', 0, 40 + 1 + 12 * (14 + 1));
-	seq_printf(m, "%40s %14s %14s %14s %14s %14s %14s %14s %14s %14s %14s "
-			"%14s %14s\n",
-			"class name",
-			"con-bounces",
-			"contentions",
-			"waittime-min",
-			"waittime-max",
-			"waittime-total",
-			"waittime-avg",
-			"acq-bounces",
-			"acquisitions",
-			"holdtime-min",
-			"holdtime-max",
-			"holdtime-total",
-			"holdtime-avg");
-	seq_line(m, '-', 0, 40 + 1 + 12 * (14 + 1));
-	seq_printf(m, "\n");
-}
+#include "lock_events.h"
 
-static void *ls_start(struct seq_file *m, loff_t *pos)
-{
-	struct lock_stat_seq *data = m->private;
-	struct lock_stat_data *iter;
+#undef  LOCK_EVENT
+#define LOCK_EVENT(name)	[LOCKEVENT_ ## name] = #name,
 
-	if (*pos == 0)
-		return SEQ_START_TOKEN;
+#define LOCK_EVENTS_DIR		"lock_event_counts"
 
-	iter = data->stats + (*pos - 1);
-	if (iter >= data->iter_end)
-		iter = NULL;
+/*
+ * When CONFIG_LOCK_EVENT_COUNTS is enabled, event counts of different
+ * types of locks will be reported under the <debugfs>/lock_event_counts/
+ * directory. See lock_events_list.h for the list of available locking
+ * events.
+ *
+ * Writing to the special ".reset_counts" file will reset all the above
+ * locking event counts. This is a very slow operation and so should not
+ * be done frequently.
+ *
+ * These event counts are implemented as per-cpu variables which are
+ * summed and computed whenever the corresponding debugfs files are read. This
+ * minimizes added overhead making the counts usable even in a production
+ * environment.
+ */
+static const char * const lockevent_names[lockevent_num + 1] = {
 
-	return iter;
-}
+#include "lock_events_list.h"
 
-static void *ls_next(struct seq_file *m, void *v, loff_t *pos)
-{
-	(*pos)++;
-	return ls_start(m, pos);
-}
-
-static void ls_stop(struct seq_file *m, void *v)
-{
-}
-
-static int ls_show(struct seq_file *m, void *v)
-{
-	if (v == SEQ_START_TOKEN)
-		seq_header(m);
-	else
-		seq_stats(m, v);
-
-	return 0;
-}
-
-static const struct seq_operations lockstat_ops = {
-	.start	= ls_start,
-	.next	= ls_next,
-	.stop	= ls_stop,
-	.show	= ls_show,
+	[LOCKEVENT_reset_cnts] = ".reset_counts",
 };
 
-static int lock_stat_open(struct inode *inode, struct file *file)
+/*
+ * Per-cpu counts
+ */
+DEFINE_PER_CPU(unsigned long, lockevents[lockevent_num]);
+
+/*
+ * The lockevent_read() function can be overridden.
+ */
+ssize_t __weak lockevent_read(struct file *file, char __user *user_buf,
+			      size_t count, loff_t *ppos)
 {
-	int res;
-	struct lock_class *class;
-	struct lock_stat_seq *data = vmalloc(sizeof(struct lock_stat_seq));
+	char buf[64];
+	int cpu, id, len;
+	u64 sum = 0;
 
-	if (!data)
-		return -ENOMEM;
+	/*
+	 * Get the counter ID stored in file->f_inode->i_private
+	 */
+	id = (long)file_inode(file)->i_private;
 
-	res = seq_open(file, &lockstat_ops);
-	if (!res) {
-		struct lock_stat_data *iter = data->stats;
-		struct seq_file *m = file->private_data;
-		unsigned long idx;
+	if (id >= lockevent_num)
+		return -EBADF;
 
-		iterate_lock_classes(idx, class) {
-			if (!test_bit(idx, lock_classes_in_use))
-				continue;
-			iter->class = class;
-			iter->stats = lock_stats(class);
-			iter++;
-		}
+	for_each_possible_cpu(cpu)
+		sum += per_cpu(lockevents[id], cpu);
+	len = snprintf(buf, sizeof(buf) - 1, "%llu\n", sum);
 
-		data->iter_end = iter;
-
-		sort(data->stats, data->iter_end - data->stats,
-				sizeof(struct lock_stat_data),
-				lock_stat_cmp, NULL);
-
-		m->private = data;
-	} else
-		vfree(data);
-
-	return res;
+	return simple_read_from_buffer(user_buf, count, ppos, buf, len);
 }
 
-static ssize_t lock_stat_write(struct file *file, const char __user *buf,
-			       size_t count, loff_t *ppos)
+/*
+ * Function to handle write request
+ *
+ * When idx = reset_cnts, reset all the counts.
+ */
+static ssize_t lockevent_write(struct file *file, const char __user *user_buf,
+			   size_t count, loff_t *ppos)
 {
-	struct lock_class *class;
-	unsigned long idx;
-	char c;
+	int cpu;
 
-	if (count) {
-		if (get_user(c, buf))
-			return -EFAULT;
+	/*
+	 * Get the counter ID stored in file->f_inode->i_private
+	 */
+	if ((long)file_inode(file)->i_private != LOCKEVENT_reset_cnts)
+		return count;
 
-		if (c != '0')
-			return count;
+	for_each_possible_cpu(cpu) {
+		int i;
+		unsigned long *ptr = per_cpu_ptr(lockevents, cpu);
 
-		iterate_lock_classes(idx, class) {
-			if (!test_bit(idx, lock_classes_in_use))
-				continue;
-			clear_lock_stats(class);
-		}
+		for (i = 0 ; i < lockevent_num; i++)
+			WRITE_ONCE(ptr[i], 0);
 	}
 	return count;
 }
 
-static int lock_stat_release(struct inode *inode, struct file *file)
-{
-	struct seq_file *seq = file->private_data;
-
-	vfree(seq->private);
-	return seq_release(inode, file);
-}
-
-static const struct proc_ops lock_stat_proc_ops = {
-	.proc_open	= lock_stat_open,
-	.proc_write	= lock_stat_write,
-	.proc_read	= seq_read,
-	.proc_lseek	= seq_lseek,
-	.proc_release	= lock_stat_release,
+/*
+ * Debugfs data structures
+ */
+static const struct file_operations fops_lockevent = {
+	.read = lockevent_read,
+	.write = lockevent_write,
+	.llseek = default_llseek,
 };
-#endif /* CONFIG_LOCK_STAT */
 
-static int __init lockdep_proc_init(void)
+#ifdef CONFIG_PARAVIRT_SPINLOCKS
+#include <asm/paravirt.h>
+
+static bool __init skip_lockevent(const char *name)
 {
-	proc_create_seq("lockdep", S_IRUSR, NULL, &lockdep_ops);
-#ifdef CONFIG_PROVE_LOCKING
-	proc_create_seq("lockdep_chains", S_IRUSR, NULL, &lockdep_chains_ops);
+	static int pv_on __initdata = -1;
+
+	if (pv_on < 0)
+		pv_on = !pv_is_native_spin_unlock();
+	/*
+	 * Skip PV qspinlock events on bare metal.
+	 */
+	if (!pv_on && !memcmp(name, "pv_", 3))
+		return true;
+	return false;
+}
+#else
+static inline bool skip_lockevent(const char *name)
+{
+	return false;
+}
 #endif
-	proc_create_single("lockdep_stats", S_IRUSR, NULL, lockdep_stats_show);
-#ifdef CONFIG_LOCK_STAT
-	proc_create("lock_stat", S_IRUSR | S_IWUSR, NULL, &lock_stat_proc_ops);
-#endif
+
+/*
+ * Initialize debugfs for the locking event counts.
+ */
+static int __init init_lockevent_counts(void)
+{
+	struct dentry *d_counts = debugfs_create_dir(LOCK_EVENTS_DIR, NULL);
+	int i;
+
+	if (!d_counts)
+		goto out;
+
+	/*
+	 * Create the debugfs files
+	 *
+	 * As reading from and writing to the stat files can be slow, only
+	 * root is allowed to do the read/write to limit impact to system
+	 * performance.
+	 */
+	for (i = 0; i < lockevent_num; i++) {
+		if (skip_lockevent(lockevent_names[i]))
+			continue;
+		if (!debugfs_create_file(lockevent_names[i], 0400, d_counts,
+					 (void *)(long)i, &fops_lockevent))
+			goto fail_undo;
+	}
+
+	if (!debugfs_create_file(lockevent_names[LOCKEVENT_reset_cnts], 0200,
+				 d_counts, (void *)(long)LOCKEVENT_reset_cnts,
+				 &fops_lockevent))
+		goto fail_undo;
 
 	return 0;
+fail_undo:
+	debugfs_remove_recursive(d_counts);
+out:
+	pr_warn("Could not create '%s' debugfs entries\n", LOCK_EVENTS_DIR);
+	return -ENOMEM;
+}
+fs_initcall(init_lockevent_counts);
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     /* SPDX-License-Identifier: GPL-2.0 */
+/*
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * Authors: Waiman Long <longman@redhat.com>
+ */
+
+#ifndef __LOCKING_LOCK_EVENTS_H
+#define __LOCKING_LOCK_EVENTS_H
+
+enum lock_events {
+
+#include "lock_events_list.h"
+
+	lockevent_num,	/* Total number of lock event counts */
+	LOCKEVENT_reset_cnts = lockevent_num,
+};
+
+#ifdef CONFIG_LOCK_EVENT_COUNTS
+/*
+ * Per-cpu counters
+ */
+DECLARE_PER_CPU(unsigned long, lockevents[lockevent_num]);
+
+/*
+ * Increment the statistical counters. use raw_cpu_inc() because of lower
+ * overhead and we don't care if we loose the occasional update.
+ */
+static inline void __lockevent_inc(enum lock_events event, bool cond)
+{
+	if (cond)
+		raw_cpu_inc(lockevents[event]);
 }
 
-__initcall(lockdep_proc_init);
+#define lockevent_inc(ev)	  __lockevent_inc(LOCKEVENT_ ##ev, true)
+#define lockevent_cond_inc(ev, c) __lockevent_inc(LOCKEVENT_ ##ev, c)
 
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                οΧ.Ν…E?PΔyclΟΝ[— έρ"n―O…οο ζqΫƒδΚΣC0KΤέ„=_t¨cήbΣΟ0Ϋgό!ό­ψ™¥>q9μM>dΚfΣ¨γΈ&\χP¤άª`©4ιΣΜ„ζΨ	/JC‚κB’Αg=ΩJΌ y2LSƒ@ϊSΟ…FΡ».:Xκ/Yσzvχumem”*ξυ€Ψ_f–0›!NΈD)Λ#Χ` G5!RH–EΩ€π=q"Εώ¦―®όόÿ3»άAZsμuν0“κ+~—_Ά‹=FeςΑ™7)θ^0‡!xΖλ―ΗHGeV‰O-γοf!ΩΟΛτΓ¥ΔaΉ―	,γJΦΌΩlΜM+*ΉmςS΅’Q	Ί/»ϊΖ	-z=­-@<±ΐ’μ0Ω±VΧ/M>θ`¦e‚R_Ϊ•>…΄Ώϋ†kρµAζfΝ|θ"Καζ,τ/•Λΰν4σnªΝl±™ h)6\ÿ[{›ΙήάρzΫV°θhsΙοHtZ2n‚^`;ªhΊ*αΒ“‹}‹"7πϋν6ÿOο¬eΑe‰φϋa¨Ο±Α­iƒύJ»nϋ@=¤Y‰®SΏ—0\@1¨“Ή©ψλρ$²	°ΖΩφ£…kΏ΄7¦Ύ®0@Tk†8¨z8Ε-cv|#{ªÿNΠ™11hΈO_Ώm’Eξpΰ΄Ψθ„/„Γ
-θ$Ωtu<»ΑfΘDρÿΟΎΓyΓ–BΝeΦΊν+fVhcΗ[@ÿΪΓΧΉlk³SύImzΚ"…‡]nFΙÒ@UέτI?
-ήFβe® ά5ω=ύÒΦ!­€ΜPψ¨©ΟΑ«>ν]υξδqΫ²²|ί{Ϋ3Κ"»%ΊίΪΚhA^‹f‘Ξ;Ϋπ­‘~κ¨r­sE!ςΔƒΌΛν.ωnÒτ~CªHiσnΚΗ“nKgήTξόvτ΅1Τΐκ΄{Ξtύ ;6ώ/1Ύ¬l@ούµχΕ²Ώ</ΐ@Έe•€Ιή²[3ύÿ`κRσΩ‡UχϋΈθp¦ÿέ6qlΏA7;@ΐΜΟ’τ’ΐ·Ϋneως_dL;ά,Ι­•Ρ“‘v%.@Ι7ΰnW ³ϋ.@(Z?wNΟPγΩό‹jXs’—6|ηZΧτ*dΞ5Α¶7l›΄ΟΪΖΩΫ)~β$γƒΛήm=Ι”F]Ζό~ΩόHΈχXγƒ„κGΚjΩυ°3½’Π‚³/ΉΌ`ƒΡ<Λ5w[VφύΊχβa\Α XV…Σd1vG™Ξ¨ϊjTΙ%ξίλvζ{XZNΗ¤'sυ—Mώ―ϋΨώΩ)¶	WÒπψΩƒΠ™±ZζΉΓ~u…#xE9\£Φƒ«¦ÿ£ÿy¤9ξ'Qn0†v”Φ†…Ϋbνέ7sbΆτLl?ΛΘ4§lξ™Ρ:€Έab»-ZόcΑς•:’,ΖAΧ—µ΄Κ*9Τ„Ί=F_d$Nw§Ϊ*ύY­'~Rνd¬εΏΎ¦θ‚¦9³&„‚!ΘΓΓ„EΑΨΕΗÿ[#!Έ|ΖωΛ	y9ύθΘQ3ΒΒ=ΚΨ/›9*’d‚F£ΡSτβ5ΑVϋ©΄KΓΫΞrΦ;νj}SÒ­―ΰrί†ΎΌδµP^‹—]/F–Άβ­Χς‡ψvKΜόkGJ“θ ΏΥ§	ι`Ϊ4ΩΡF.IEΙμο
- Ξ-ΐ2ΩΠ“¬¥F΄&—©¥8
-=™μξι>δQJΟ¬bt Φ-SD·Y20"A—$¤pLΨ‘4}KQoσ¶wEr	Ξm7λΓª5ς€>vlόΉ¨§²ΔΩrΈªII=E®3vRsδ§”DβΥι½τξ®{ÿΰV
-Όά‡-uΑ=ΰΞ1rϊ	
-αOυώκ,^Ρ)…1O]άA_ΆωEΜ2Ϋ†Ή:;Ο rOί¶.7λx,bE\λ/>KΛϋav"0IΟ1ΒEΠpZ"η+ !Z
-θg,δ¶3#D{΄qΕΏ²ΘΛaυ¬i ‚PC©¶7<ΣόHηrGΟF{Μ!RΝÒL`‚ΕΏxt'6)'”•μ
- ΕξD›HΕZ9βH―v}6o©9ΠOΛβ΄,Ό_ΙλΙj€27ΎρV
-m#ξ¨ΛµΓdÒm"Λ\-t-ιjϊe;³Pƒ·™ΕQτc ‹RUή&s¶sD§[ήΣ®λκγΚAό©6ª4r@Ί&°Έ—θMέƒRμΕ¥ΡΤ O=σ‡Mz+>τB―α ύGτ•F6qƒ*π;†ΝMÿ«ΒcΈσεª~.G;9γpπ²ΜΟΦΈ"ί“¤po)ζΖ¶3n„ΩΨAU3ι^Ύi'PqkΫύΌ'ξaWβΆWθϋmΫΏ†„ό`§vΕPg}n¤<H^ύxΔ%`›Σ-.hΥPΤιδ"zΉ`ξ–§κΡ>Ξ
-<MΈXώX…ΎvΏ΄ά{‡Όψ­Uη‰ΔάcΰΜ +π8°JάΡ¥+‡ΡI**­”Σ‚ωωH6Φόιβ-WK^γ1.άQΏΔ^?R–Rjο$†λ’HÿΏ€ίb"ΛSα™
-xT± ”΄²Mq€ƒ_³%Ή<l¨sYη”ΩΪHfÒ Η:NΚ{d΄gTyγ§j†ωίομIθkα¤ψyf)Ί¥(—ό+ΜΙ›hτΏ6όh>Jζÿgs_Ι¬ϋ€DΙ!°•^£¶ΈΕ*a_?„> xaΟYσj’8αδ=©":$8+›΄Φ8ΰhiYς€½‡Vς²DCΦYκ>†Η½θL*’λatÒNυeFόΕτq:μϋΜ~ΓΣΧ€ήΆ”ρ–ys«{‚/4Ε(Iςª 7χ1πt―ϋΠ’υrδΖT…R4†x”“ϋ·Ώl0Ϊ°½+ι,« eολ§”“VZΉΖb—ε	Dz0ςiίξφ"[ει	ε:’ΦC‹όƒa›HΈΟ^²)D^s¶Δ™|3ΐΏΑ0Ρ¤μEpΓU€\/³TΕώ“™.zt¦ψ³θG<C^ΊvEοΘο|\ήη(Γ!ΜoYÿ)ΑN™¤X5‡ 5GÿC®λμ‡)*ζl™»`-w}Ψ¶kΜHεο‡KcΝµ4ƒ΅Α­"a~<>V=σ²8®sόw+^γ5΅ )rοχ‡–Ί\I4%¶Ϋ@v :Λ*Nήυ †ι§v πΓQcυνΤ΅¥nμχ–¬\ηj·YA,τ―π‡4ηL²ÿ³΅‹Έ…΄‰+΅αU?ρ‰ί^Ò*€Ϊ½χ fkΌ¤KD‘xό+XhF±΅z 5φΈΰƒ±_υ4 ¤ηB5ΞEέ™$Ι/‹%ÿ?ΡεΤLσ$ψζiφG$«ήΝNz¨Hƒ00Ε^k±1λ<A½΄PΦΥaZ[5Ψ“Ϋ6΄ R?Ϊ/€hkΡΰ|iΨDqlΑΌΔlPm”Θ01{“λ­°ρÿ’ά[{ÿa5”α¬—sυ‡“ρs¨ζΈu·3§«ώf\έΚ²ΕUΧ°ΨµaQX¥-?Òτ c/RFΠδ8ÿbS%·Ϊσl³`¦―*eh?ΦΧ)	W4u&)µ› rά;$ηuÿ‰cuPtA¬™φΑ„ΰί·³ΐ>ªΦVζRπV.¶9fXQM°—tΝeM™―Yi»£uhΫV²X@cQx ΌoVÿζΉΕ‚^RΫ³ο/8£@9Βς-µΤήÒ·αQ–IoυZ>xΌ δtW–`F•—†±^[ÒzΦΑώόª2 E€!V®Χ,T'‡ε―Τ)πªΝ…^'M 6ΐ<uI,ΰΐN°οΓCdΏ›ΐΨz›\ΔΧ’ϋδτ
-ν¶θΔ“!}]Πλγ(‰™7Τ%;Χy”Lk½b~±ª_ΈΊθ^εωZ©ΤlJ»½Σ</Òμ¦su-Ζ²¥M•ήμΓ".΄Ύ#ΠΜ=ωΔΈ!b±‡?6Α‹Ώ¦47€Ε]k+νυd`”φaH¨K‰a”"dχoΆΎδή–Υ–Τ­έϊ"'_\¤D!ίΞΐ(Ί'fς4M…Ά®Ί<µh‹±&ψvt΅έΞΗπRψϋΜΔ’B3A3‹µH*giΊ9ήM40αυωtη±YP/'xσF•'o0Hh`~οq²θ*H2Ω_C»+τΞeWεN;K;΄µtQτΤWΥ’"%3d[‹¨v ª†¶¦<΅¨>kήH’µÒ’L\”ZΚ•,N2hψRREPώΤκ$+ςέ2/Πt€φ7Ύf΄`aH}ΦNWΈbfrΆ²ΑΰD ΉªL¤±}ΟS§Ò†νΜχ«P¤3L ΤSLD'ό¶¶Υό²ψo.€™Σ»#yΛΆJ·	°5>αg}CU<Ω­ΐm}Ve΄εµ^(2k,t―©σύl‚ ΧΖΆ“κL‹KYΆ¶µs>Dω)$Òd~y»κΕ„*|Τά³ά:δ ΰ½ΰΥ όρ#by@ςΰΟΒ«‰§†ΆλF†4²υψ-P…ψ	DΈ`pY}TG_¶MJΧΌιmd13=–™lf€*RB›Ζ²:Ε=µΨxπ¥ ΠO(“ Vύ¬ζ;cό&{ΐ‚ªΉ®ίΤ=SΟDΈ­NΟ΅j!^ΨζΟέd
-+rέJ
-Σ²jcq^¬…Ν+(ΩE……³1¶~ NΞnςoyhΜ4A5έV«r_ΡΛώ©ªz1γ…-ε²{ΗD΄δχμΔ¬είW5rΜκB—_wΏγΊÿHΎη[hΔoƒB„²Ψ(¬.XϋΫΤΚΕK―«¬ΈgTm™Fφ}1¥VΠT©–%v7k―¨¬X`2ΜΟoq¨ƒΥ¨,(Eφ®αr\Β?Νi]όυΊ2z¬φ/&OΚW$.Gέ ΰe¶‹ΤΖδ¶Θ
-!_Φu0ΙAΡ€¤ΆύΈ}ΚFέ³,ªΎ„π΄®‹Μ[&Vx™‘0LDΑ~(ψp»¬ς#¶ώ|P1­νs±m¨ Ξ–Pς)†—μe„2›Ω*Ώυ"-=σ-υQΐβÒωBdΗwgσ0¬΄?Q"…²6©”[ϊΎy™u.NÒ{Λ³ΙΟ9ό„¨ÒΘ7~:)^ε €Κ™-KT¶Ύeξqϊ8}±x†ι΄όΙL;£K@ΌΩ©³ε ÿ²ΘέVτξWxΏΤΠ=Λώ.γόσ‡w£{Έ­µΈM?Ύ)DΓ¨Eΐτl“@Φ[FK"2θ2½^@YΈ3Κ-D_†ÿΨ$Bυ9#©ψ£!;Ιή”Eaά½fgAjεoΪC™SmÒF½ω²puiβE0Dς‡Α³έΝ‡+2½µέΏ/΄ΆΫb#Vn	V&Uω7“Μϋ»Y‰“:6U3ωλEwκw"»ΐD*ÿuƒ[ΰΘ B5Γ‹ϋα«ηϊ"ΔSeXλ6•οΧ2G‚nωtζ:°μΫαψ‡£§^|•όϊΊΏ~¬m$Mhv)γΤ`Έ ‹Όσ¤γ~&@¨Ω“›†²KΠÒν™Αιχ*Q^§cΎxΑ»©‚t‰<ΰBχl(’Δ6rέ'P8h®7»Ru¨Θ*ήθ™όc"#γzγΖh=³
-Ή–`1„Λ 4Κ¨®Γ,ΉΦΗBΊ%Ϊb{ηmƒ­Ξ*οΎaϊF3ΏμÒYΕΖ΅0µGξ’GB¥ϋΔ‚-dVΤιZ¬iΛϋ©R³`ςt!JΙ¤i*O”ν¬6o
-ΩΕΆ—¶c "ΌηΦl©ΜY:ΚYΓDΕΣφtκψΈΠF>›ξΝ$‚DΌ―Ί…β¥Λη§7+βΫC@›³ƒ/«΅uΘο1eEjΛ—δ±_3[’E ’«*ΞG„?1ε»[NC@Γυmj0lL— 5¤»tξ³ύύ²)ΰtΣυ§b»ψΛm-ρ2·2{τS4Έz,Θ&ΐ‰Ώτ&8…C{JέXνΔφRά#RΚ”Ψα‘τNRςz²¤ΟÒΊΫΆ³U+4l:…{	υ>φvΟϋ"k.χ½+Mώι΄κQSγ²rηw‘±™§½IΓ½| υhΊΘc±±¨K ηΤΩAuι|Ή±]#΅ν…zΟqλΜΗ{νΘX­–Ζΐ ΚζZ¶|ΑΙς―έ¤X-dhΛ–k4TsΜΠZn1B‰μκ(9›€«΅ΑΦcΏΰÒ®S{γ¤“€Α—Όfπ
-•½9Λf(bBt;Η»Χ c»Qο—X*Μ®p»‰§ήR―C“±τ`µF‡©rSδd‹Ήβ-χΎ²&r^Υ@υΖεC@‹Ρζϋoχ«ξχµ™a|?Α|Γn·ΓΈFΔΡΘνªO`μ΅:Ω¶vfφv$4°β†ςªΘ?Χ^π f)·†}ΐ _Q‰4μιΫΏνuΤΣ­ήΟ½)α	„I^§6β†Ή,ΐY΄zB•¬ό!	t	{ΎΒ_$‡ªή"¥Z΅25ς‡zg§«K'γΖϋÒUώ |™ύdίΉ4¶^Cuw‡Ό‹@°θÿC—ΠΣΔΈ8—%#…ƒ>ςχ0›efηgΔΐ?“w3δ£Φ
-ΆddX^Q…<αΡ—ΫΫΛg!'hTh®ΓDψ—ζ>)
-0•ρp=έ7`δΩξGω@#Gµς}^+>ό8C<-jς>R%ο±κτο¥ƒ©χA%¶M|η+!±ό΄}[―fnΩbK‰jGtIXϋΟοΔ…&ζ…[,&jBg½P9υN―>½s‡§Γψ¥tΩkφτΆΣ@HΝR5”mH?_Z<Ω‘XΚμvu¥35¤ζΆ3ΥήΧx‘3°{$tωΕnΫ¨ ”―Έ/·Η†΅λ5Σμ¥ΙΣόIT I'β8;ο±έ:ά9Πµ2uςWnΞΊϋge4H°…°“ζwv!ώ“HΈ»σ%‰‡®Θjη/V"|Ψ’cql4W«ΌSN$ª>XP¨H¥t­¨*qPυΎ¶Zσ[4ΦΰϊY΄²Χ‹m%n c%Ω’R(b&Ϊϋ5‡Γκσ$k"4;aλώvμΑiw€«CΡYrM@Xe†!¨¤ώ*8Z'–Υγ{ΫS¶―lβÿnWdΤ£g¥=ηΎ=/€=&‡PΝ]=ς™Γ‡·N}‡¤°­«Ά©sΟr›U 'νΐΔ¦^V*2X½®{ΌΈ“΄Z[π‰”WψΪ[IdTΣn €ψ-¦Ϊ5σϊO[ξτΣ"?
-^α­εbn‘Lμ}(Ϊ™ζG3d΅4=Z(I3ΏσΧ®¨L¦γ&ΐ½‰ΪzΞ›o‹1qζηθ"wWά9ΝΦΕΦάa¦ΪΤdϋP•™¶.Πά―ύΟmY°9”As0
-±lÒEM%Ε7e©uBƒδΎe%φ­{³Η°ξ†”d…°U¶§]Η›Ή|9­ΘΊΟΩP ?Γ“¦ΰ©θ™Z&m-™_αp½ν¦	E¨7ψΜέiσΏΏ#™^8/=vcΆ…ÒΡΙϊkυυό»cCψx‰KKρΆ#: _ύoςλΌ’ΖεDΛaλsίΨ®u†ΜmxJ¶Τί—3νjν‰½Ò<άάGlÒ6{#θRh•:IPG‰IΑ“O%_¬ªΏXΣp]?qXβyΨϋ7!])€PÒΥΖιƒΈΕν&δΓαπ‚ΐom!8;ΞDwBΫ9'a oσF½0:ΰΚβ^Έ^ Kf4χ¥μίL©ΉA:42·bη}wΫρ
-¤μ§΄Λ€ρΚυKΩuPΟ~ζ…”Α4½”•δO¶ vio·ΰ.Ψ†Vό,lÿ”ΨΣZDόΞaR‡WεΡ†x­[iw†H	%YβuV³0­Γ#>Z΅t±Έ¥4vΖ­8ύύτNP{θΑ	σΕΊyqk=Ό  9ÒΕ
-Π~rϋiÒ$ΓπΈΑωΠI%χΗ―φ"UΏε½Ò…[ΰ`ts>S'έ0BζDπ)µµ[ HόΜa8Οy®""Soέξ|&Κμh ΩΏΠ΄+•ΜDR°l±ςµ3D)[vAάώΔΩφh΄ζ΄‹6«?gxzι2Υα Σ_+­UdθX΄|•ΉÿOΫωDΩ'2¤νβh	Ω…ϊ(­»ª Έ^Αϋn5φ>”|uΧπϋ²$ibΈτΪ+mCΞμ‚	}Τό:sΗTÒ_RΡ¬3¶nPχ§%?q`ύαΨ©‘Ί ιΕμΝXήψAά}¦xΎΠ€\›φA§ω{σPΎCjΔ>π.ΈθIΕ^ΙfΗ®0Ϋ•>φΓΖΕrέrf‘'JMτξΓbή­1WΗ΅ό5χ†Ψ5TaΑΨA8­a­:	Ί&hgβrώYΡ<mΣo| ‚Lq·ςΠ6…
-,8%±΄MύL#:;`e¤P&¶¬sRΏzΖΊÿ΄ί½>2j±in$p)‘μΟsKρQ¨ώτJις\ΟΒ6·Χ2ΉΎOΎ%^"wª*ΡπHc FοΉ+&½k ÿύΪ-σvRBΔd…ΑsίωΏ\³lJNEγ@J+hRίΙ„εθj}κ9&E<9Ώ4:'85 ¬VοgKQqΧθ¥_Ha37 Ξ?Ώ% %‰U¦*³ΈΰΜPcλιΌλΰ ;·Kβ¶µdz:¨[‘K…σfΚ©RwΦ©pΰj”[ Όεΐp­	ξ/νύΐ“ωώγaπ#­~ΝΊξrξΓ|)άεΉΧΦy|ε±M!ΣÒϊΚVψΙ2–½|·’ PoέβEξU^8gϊΛfEcΊΐ‘Γ9Ψ]Ζ&)a‹ήLώ–Η–wTά½ΰz6W#(o!O}ÿξ«Ίξα-sa	Β¥ΒiE…µl£—σ3ηάΪΖ¬’4„d>βΗωÿ`ΠχνοiνB–9 ÒΆ,Χ4Ζεnγ¤‚δ©γ5·χ‚μnά§‚Z5ζΟ™νλ€9•%BΦ-oeYQ–ξχϊ¨Wϊ?	»+£	Ζ ΚNM‘z‘ζ`ϋδbiΥΉ"¨TΡ
-<\τ]Μ…DK.ξ‹σ	.x7\„!Β“1#χ<)	HqΉvισΑ!S‹_ΐ‰k£gT(Y‰mΝί¤"oÿΨκ¥€άΣs~nί·$ki?V$έ2si’BβΥιΏipzτΩOw›§…6dGςΖ»#d•D;έzÿx¨jXς¤Hκ»Mΰ Ύ;h¶¨€C6T1΅>¶©Θ®p·ΆΟ°“‡ν‚«ύ¬®(ϊiυ§mOΑ&bvBέΖ©b>Px$ζu*fT K@τUΒΔΘΎAFlί?Σ<%ªWγΟP}ώZ QÒB΅¶Rή‘._»?Ητ©4_wΌΟΥ¬0αOΏw¦<ÒΥ”_¥j xT<<μ‡­1JΡ@5Η‘ωªΥ™ζc4>ήμΖήΝΉΦ1SΧ›‹Ωό‡ιµ®GcvtΈ"Ydp΅'¦λIOΨƒs|ΩX2Jÿ}ΫY[„&yT\-RXσ¶	Ν‹o¶!ΧM†i‘H«ώ"H•ω 1j΅&„TΥM›Om.µx΄ΌG|‡/ψά’½ϊ4x†Ύ°£'mΪQ\Ξ`Ϋ(΅ai,do¦r³w(­KlΉ΄tf¶V Τ,&F2Ω	4aχισ—φ F™δ²(4“ςIªYΔJ"‹@IZ~4ώΈΗΗ’ΖΧΐιΡ¨>ΒτΗΈλg΄ 0ρf4Ϋ…xΠFk;κG“ΞΐδTnιγkω³¶ª^»>/8{„"Υ­Λ)Άα½«e"Λ:ΘΠªH¤ήΞm.c’ψοΟΧζ±μ‹Αη[QTΰ[σ±XΑ<Φ—©1½,:kΜSώÒW ¶+†r‹ά›δή_Ψε£7ΠΊ,&W!ÿtψΛ©Ίϋqπ;KΊψyPoυώ§Aσ:όΘ=ίά$/θ€Θβ:½fήt\	ΊπΤε,hcX¶nρ—.“¥ΊΑΟ+RJfPΠ!†^ύ2£hZRΫ¤vΌΒnΎTj¥gΆm‹4KΉ=‘—ο^©®[­ΌuF¶d•™κρW•®¨ώΒθ_MΒ•λUµ<A-›=m+‰&}5wW§Γªυ2ο‘Χƒ
-™½O*`*ή<ζ€6I΅Ϊn_βzHk–α³%¦ΚE=S›FΈ­ξ©3Γέ΅eΚΫFxWβχΆ357ϋ+=ZΪ[7υ.δ·h>)L>Νβ©΅	Zϋk«ΐΊ‘~A@b0¨4l qνIηΧ—Ιώ±:―Γο½8ώ~ΏΞ)έΜ{·,wςwmχ?υάOhώHƒ‚•cE©ςθΦEΣΑΠ§ct<T¤r)yt§ ν¬ΪΗΟs’Ό*ζ²5\Έ@ΐύÒ0Ή„ο«¶`©IίΎέO|hYβ2±e…•Ml>ΉΥ}“πBπ^ΊP·―κÒψ­SP¨°Έ©Sν{«¶[>9yS§«Ύ~ό‘ίϊθ•El4ΐ’ΩβΜCO3^άy%6™rI–kΎΦΚΐ™Ύ”ΚΨ@ϊ±δΡYg;•T‰—[/ΆbαΜ/‘ªΓϊβM­ΗΜ ¶6‡j	kΚ7Άz“Ϋσ	±nu‡DαβψΑG·‰Άσ]ΰmί<»υκ_„r`A‹ο%νΕΔψμϋιs“Ο‚z-Τ2ϋ)ο>E†yβ•x½Ψ“’ί­AΏ+ΖΎXΘ6e¶uMΉy
-ª	¬gύ· 9Ώ ΓE²υVmΕγª±m;Κ2ΎTβ…‰Ϊ&N¤ΐk\sΚτΗΫυ X0Λτw”-Ο£zΆ.hθK@ΩnζBΛ|£\r“ΘV%~j}X¤ΔYNuspς%G{Ι ωεύXΣύuy1•™'›ρY‹ƒªz8ΙI‚Ih«K²ΗWΊrσZ7s„0pω­Ϊζ=,δ5qχlΰΑ ς»~χbdnd!ΐΓρNWSqΉΨΟ©{X’MήoΡ	fτ8…γω{dε§¶3Υ%ΞΧB'ΓSρPΟ΅Q‰6i•2`%r·΅λdΔΔ[ά.¬¤ÿ‹4QGϋίω#“UuΚ1Π™δxν©γƒΰ©q¦ΌΙΒ‹%ÿκmΊgΪA΄E,t€ΟIhσΠkΧ‡ΖΉΘ!οΫΛª7zT!‘qΰ(G°|…|ΆΊEe±HΎ'qΓ:g¨©ΗυCµ γ)ΰδ³Κ'j¦>\(§op£θ~\ε2ξmδω ÿ9ΨN‡ΘΜέ\αχε¦σm.ϋrυdc^χWª.|`ω|›Γ›Q)Ρο|	ωχ”MόZΝErmξωR‡α6Δ_“Ay ΅Ϋ8CΏ·ΠBt0V1€lε<”‡µ£s+μqυ-­*NΚ­ΏΦΗΨσ«ό|1ήFΨ"†―Ϊ=3ο,.ΐ`X. 	SΩ8geCΛ±*όΑ {v9>Σ‹ΆvΙ(u% €Κ§arKπΛ‹γήίΓDΊ«`uϋ²Vι$&Ν4ΨΜ©xΩγέ5R½SΆ³²`ΉÒ“—ϋƒEΰX³X$Ή„‚h#ϋΨ+/<oΫζΠΗFήυτο­fν	->|β–ψ-³N4.ukiΆHΌ'yBÒΧώLΞ/«δΏ~ύ4}—™iδΧΖχTkκΥAιΓ6ΓΙΚΣc#A=sΐΗµ*±Gύ2έΑfl…χy±6 aΠƒύ³π>ƒω™ύ™—oZ<ς7Ύ;}<ξγRΜ/N[\0L)uΩxψª·ιΤJχiWΖ-Ύjtsη:ÿ³r® ?“η_;'ΧωZΓΫ³#ΦόΒc΄ΎνΏEΏ[ΣΏ~Fj}.φΨCªÒΌCϊπΓR&¥Θ#ΚhJχψbΎΡΚBo¥Y―ιλZ=]ΞoΉΪΫIέ=Ό&ό·ε„ϊΑAz•k\¤‘†yαψιαεΞλ­™ΩΙΞ}ΐ-ε°ΰ
-έ!”VaF‘27…c•ν΅bΎ~I£7X΅Ò€›έ»‡ζZ+Pρ±+ªo0¨αΡ/β_ΘςΖJi_Σ$πΐB΅)C»#?ρKΒύe&§νέ]ΈΙOμ――8<{ÿh¦ρ³8ΆqµΆφx{Ό–I¨;µ’R3¤Φ·L¶«+zÒ/_UBh&ιωλΤϊ²φΊφ«µϊxυhM½Βχόδ>£†vήeΜ΅©ΆΉNSrB P¶Ρhζ»Ρ΅bΎ2^²%τ¤BLΙDyώp…Γgβ@`ζDΚΗ–―Α3εΒΛΗBίm8K°Υ}­χ["—’κL–Μ<™[Α°΄j ?$§gAλΚ;‚ΝF IJρAΗΫΏ;QZD7ε,Η(†‹ΙΟ8*kΰώέy_ƒά~ς@ΧΠΰV]U•:"
-ύw!|,'΅)kξΪµV΅:ΠVTSq5J6*0Η(ν$ΥrY=“`§·–DΈ+ΠιΥό¶J%5®XxÿgbΪY&sεK(‰ϋ¥4PΨ–1(Ό]}KΆΩΜm;kX¤V¬›y5­MmRS£¤YΘK?υη¦½_ζYέ€=ΖΟ/ϊσΗ±(ίZ9H'Φu‰MΜ ]ΦτSUόΨΪ°7jΜΪ[.‡8OτD~Q«2Eψÿ¬TZΨ8 βι ’OΪxω―ιOg­5DΌΠF_Α΅¬°ξ—΄O¤αΜ–Ϊ|±»ώ¦σ[γη£Ψ5Μ²Ήª­οX6+g&εώΰ“N#ζ”HΞΆ@„ΊΠυΩ(&y»Λ¦m²_‹σ:†NΟ±†`¬„Π‹wr™DxEΙΑΌ¶!«/vί¤j.Υ¦‰tmQ!φχ„πΓ‡ΌΗ1νοΔάΈ'‡p€%ÿΰCΔΧBήhΝuέ™5fΌoRΦ+ύª½ΡSI)ΤbΧΙλόβsnΗΈXΏΨfν`XσΊd‡ΘξY&=™ά®ΝΓϊΆ;b¬/–Κ„)‚¥%ώ•±[#‡Ώkδέ΅>Υλ„ι‡ΦB8³e.µ7„v6bs¥ςΖΥhΓ_'ογZψΝ³t.Ιz*ρθ–α@<*φ(ΘίΧ–<½ÒxTφu€°έ_άΓ—ρ£Σκ‘³άΒP6Τ2ΌO”ψά)€`|Γ{ΣήΠ`ι"¶―}6ΐ~Κ πS"–L[ΘEm4ψg΄Ο¨tσi7•).j‡ρΜΔ[Λώ™‰OΖς>I™‘ªΤΥω8Ζ¥–Ώγa…ξÿςk5v)θ…>½ηξD„F2{bβ*=±V3‰E¦Οέ4ωb­k’jί λ‹ιKG~=rq›’ΈQ?]‹e!ªψΙΎ"“κ<¦Ιo…Ò®;Φ#@²S3λΊϊβ8χaϋ7=wφΑOΈ(;:iΐΧn·”iΏ½.…FF‘Δ	ÿ―ύ$–§d[Wξ)gϊ‹½΅ΔQ@αεΘ
-{kE1»Β}$!;η>βζ`Ύs3”oΓ›lj`R}Ή–ηδ^n{›γhΛ¦Π£_όΣZβjzν„Εxα3Ώη‡CΗ&σ#ΗύΪsz6†±ίΚKΐf½Ό½²τ:ΟΛΣ»|>5Fzu(ªΟ_ι²ΩΧ–Σ°ή0H®¬ϊΈΉr΅μoΈβησ«ΤςΛqγaΊ'lgνio΅6ί–Θρ‚Χ Iύf»SΊ§Jψπ?Κ_Qj]Ε‚ΖƒψΥ‚FΨ;o­²pj0[tz‚Ke«bµª9δ§Ρώ{ΥSΨ	® Ιk¥)³nϊKο${@½$½s
-Ϊ0W%νVNEΦΐ3¥βΛ3γ®ι•±Kψ1¦K™οVsΓ„Θ…°δΕ'ΕΡ―TΎu{Θ9”ϊ§;%*ΠTΕGσ{υΏ‚8$g$%>^κ®‰µσΙΈe¨{
-Άσ ΩήΌ- ±ϊ9¦ν±¥βΙΰ’δ΅ΰsί±§Wcχ"ΡΛί/JΩwF£•ªq
--ΧΤ)χ
-:HώYη[9ΔMx'³Άu]­ζτ/ΩxΡζ<$²#ΑΕδZω,!Γυtΰ+Ψa°™=]χtή™Τ>µoS2ΌζΏΌaφjT¤[λ«”6K¦©ωθDE'«―«Ϋι™¬πlQ±ΩΤλΈ¤®$8΅ΒΡ8«*ήwhΒq§-Α§!"'›#>V—`®Ή8ΌQsjώέ0ψ#$ΰπΚ‰BΝ&Ξÿ―ªF#\ήίΉΧ½Φ›pmΪπXm,ό―ΙΤ³›· „–Πjf+Λξk {XΘj\ΧOα<bα Ίϋ^y“ZUa½PΜηKb™CP¶ÿ΄'tΰYΓ`PS#‚TrΝΗτ-.tqÿΩΥψv4«hς·*—Ψ³ΘΐL7δ&ιIοSµΙΝΌ αL#°ρNΎ}΅bΠ²6Χh€™ΥS:N” z—J&g†ΘΠDpΣ&ότΒ<gκ6By·KJϊ…5«ϊγ.τ_(#2=€†Tπόυ3ώ”`-¥φR FΓgΏγ¬Y]J°αθÒ(9²ΚΨ4OqHΊx)ÿ X)|…}i%ΚvόΛe™N—ΞγΧµJΜ6ΔÒ#"’χTWXυ
-:M'Άu™5fζύδRν«XV;}ΒJάήtάΚzΥν&΄I„ΉϋdΙΆ|ΨυJΕ°Lwτmi.2­φι+.Λ ΨΨyzχ6gmϋC9 ¦ό¤q‘™#®8<ξYγVΟ’iγΑ ~x0®ƒς–>ζYzxh\ώ§Θ£€ΐ ­Ι+ΜλeCΦ>L1h8ί8ς‘¥£*Η`β&ωy«lxh>!PaVBQω±¦…ΖΫHEΟXκQO2άOΆ}Cβοe–ά“{Ò„¨Uª·ΠΎ£:TdΊ½bς©2Νι<•λνeGX»`"ΗwΉZ2Y3υαµOΦ΅­3?uήΤΊoΪΟπώgΊZ¥·ΒΤMX]¤οασ¬§±[ΚΧ;–ώXΘη*=Έ²!:οO¤4`ί«’jX¶Ϋ›xNυ>eΫ‡•ΣjΗ/μα¨b"Εbs[rpηςμίGζΒΦdn/“π­+\΅ίΉN&V.aχ]:ώΒ"½½¨Ζ/nΣyΟΫΙ―M^ΘfηDe»ςu’½pZpx_ΉL&δ+@PρμÒGυ;ΛΕυ®™L"ΔTΔ‡S βBYª+βΏνΌy ΎΙiS1­ων€•ΪV%W4¶>@ΘªK3¤))`£]ω'@Χ7VΫεΠÒqL"έώΓ–‡κ5Μ/Σ{Q‡/¨Μ8¨µΫ£¥ϋ ‹Ιv‡χdD¬NJί°–}Τϋυ£ϊYν―µli½Ω±£Up*ª*(±n ®zwj/Z7Θν‘
-1_‹ΉΫ2G@_½«~[(VΓ.ύW&Ibƒs…FÒοΙ™	<@IPηd±*KR;νσ£1rh©XC£t&Ο,ύ4®ΉΠΟE…!-„ύ"δi@ΓαAψ―\Ej%"δl;"οΙοβ}DyÿΚG™Ό_D•	ƒίx‘^έW‰41σ«[“£°*θVΉκ2A^yΕÿ,f¤ ƒA…ÿώpnγϊ€·Ϋν“(ΩµÒΘ²ίΙB\ηK9yOρ	7ΪΙH`ζΔ’¦_}yο%“ηςw΄‹Σ'$Θ`ίπΥ™φ1ιήRύμ2*ΐΜΔ_Ώ_TN η¤~›dlqdΚ06rω±ΨΣο?2’ι…"s^/r±=N¶π>krΌF…#Τ>‡8{ρ—L‘΄ΰΪυj9Φώƒκ–FePGI y–ζ†φ0NZIt®
-γUjzαία8Yπ3_φ C8@BΪ`ΩΆξο?3τύ―
-$¦1ΫxΟΊς?ό‰:{r_ψ‹)$4}βΙ] BtΐP €0ψOί+ΈMN‘Αf+SΑªΥlts]ή@*+€Z±¶Ί6„ιμ¤°A
-Θ!?Xÿ4έW‚Ώ‚2Η/ΡΓUN§lDSτ„vDH³ΠΔΖ…χ~*ΥV[5θάDγV,ξgi.!V£5γρu1
-ΒεZγ’θϊl‚|‚½΅xΜΜw£v——£Υi6ς¨?ΒΔΈ*Η·2Cί›ύgsL•(^ÒW
-Òϋ‰βtN\" ΧΎ½ϋ#<cY?tFΙ¬‰Κ…¤Ϋ²μ,sQ{~0β4±ΟyΤNοΘΥyη|s±I,σH·—w4O_LΎ΅]Ά΅l§ΦΦ©AΙGΤ:–ΕΫVy;¦½6;­yώλ-}&mvzΚγν„(‰Z:ΖΔo«r5ΐΨΰ&κ”.ιγpt`–®αΡπ^¤Ω?άiϋ)Yt΄BήK΄0%»&->§snΙΝ<‘yΆΙ\lο=ω#G`§y.Μ)Γό-·αΉA]φ΅]μkHΤ^ΐXΧ+θΧb'Ψύ‚9 Ώb¦/—‹κKLOT?—Α‚poQv«C6Φ<¤•£m™Òύ ΝΨς°#FA.H…Wι"ωÿHJ^/‹ρQ(tDκ®O΄Y6εε~{•Μΐ²οfe§RΛcΘΥ2?) ίξFFήÒ‹‡ΎN§'p‡ή΄ρj›/µ:&ι9'»ΧμIr”}΅ζ·Γ€pΚnΑl™¬δρÿxG3.:Σ“O‘-e;Y³c®dΐυ―Η¥h–‚1²ϋΩ&ΫΆ:hb!Έ&ΌΝΊ5z`ϊ…―y’Qd#΅ΰ­E.-ί.5DΤ}L$]qQΞ¬ό>Ο\‹ιΥΕ5Gx‘¨ΪΤ(>οάυΨ_ϊ8vΠ±d!6®e>g)ΌΛ?1)κÒa®…©’,,t2Ks’·ΐ:ΩYΒ{–*τ`}ς£3³PBPsZν1Γ‹¥b§
-‹"ΆγέRο―θ%zRΑΧd±}Ξηο_θό7…W^Η|½BÿOiqIfΈya„:Ιο>G^z—WhΙο8u ω‰0SΚγβEXMβpPΧ;gΊΚD„ςπ‘I|[TH­²zδΦkΫBW«ÿ{αfκ΅a+ν
-ΐfΗN‚Uφ=CΈ0Οsυβ«΅Έ‰&? ΛV8³ΧΦΐφ›Ηύ	tΪξ(΄db£Χ98Ι*Κ7SdwϊϊΡ@γ+ς‹”V`ΈHMU$ΡR2ΥΜip?υΖΔƒCΚΪ«|ΤΗn]NχHÿ$U’f<M6Z¦@Kζ„‰Έ•ν_ΖpΙΫσ*ρΠΆK:%Ί<F»ώ#¬%ZWkΆN £Α‚y®fΤΦΝΑ<.}©{*xώJ0$ιHκF[Kb«Ϋπ²¤εα‚|ΐbΊ@σΔ¦ο¶ξHªl'¨#ΆχTΈ«όpΫ1;WF£gλΝ!Ν6²¶Ò"ςαW"‹
-*A΄p†ΥοβÒφ[εΔe†Wδ„ΙcΠθ¬ΑS4κΪ—vDÒA8Α]ώ uMσΤ
-Ϋ1Mr§πήΛSk¤¶χ!o―ΎZΫΎEU® ΰβo}%m5E“:5ey±wΆNΔ‘*cψlz‘TΣΑά¥	M"Ώv!ίι®*ΔA$®J7A. ΛTe*Ή΅Ό©εϊΐsΗE*—Σ(WΨΟ•ΘΨi?.o:Ίq”KBaaγ³5½Τύ:‡ίz-Β΄­Tμ#3γΰ34¨ΧA>(™ϊ1Υ­Ί†wΧBcδ‘]#°γfΞ°
-f§΄FDmΆχ›π"ξQ²&;ΠηBς»tpλ•~UΞ^cρΏ‡δ`Ήρ³γ5:	iΣ¥VTΕωΙψEΈ%άZ_7®Jσ !ΗΎ³L©Y_Ύ(¨ΒΑ‚gx²Ϊ·"4Lÿ•Έ	v’Ι}ω·AΈGσL°ίpοW$Γ2uΥηzΎϋ§(*ιΙ‰hΡιό0$@κκΰ»WάίJέΤΧΐ‚ΪFυ-3ΰΊ;	άχ Ε.γυoΩSªvΊj^^tύΧB΅i=Ϊ=2ΔhΘ‰XMgΝVfφΛψό·ΓX7δmn΅\έ
-P.™hb~ΈN’S§”‘λΒDΑr™†ηIΕ =τ5“TvWnΒirΤV\·¦ϊBRέσέ|ϋQT°¬ύI3¤ΆΒγΟ>mϋ•ƒj#…¥5©ψ
-©¥%·°ά2oΦ$Κ"9Θά[ΰΣJ9'.±5£ƒΚΡϊtΉ·µ {²zΦFe΅a)¥κAύd>=χΕγy[½ΩΞ±”ς“ψZ\Ό6ΧA>,ΑW+/ήzp- ωD-ΙY5υn]ΒΦdAΐW.:Λƒ‹OS€
-ϋΓb#5Q$uρO‹S©w]ΐ‚Ε„Ν}ΡKσ™xl%QΩVΙΗ^¤σjcσΓ‡Ήj_)KmΩΘPΌ
-Α+T~€³!ΩWΊ¨½ ‘]Χ8q{\{ΕΖφα1ΎϊƒtΜ€ΣξÿV`Pμ/$ϋόοPhζκiύήΰBo’KqψσUlΑM©ΰSRϊ-b)ξ7‚LmT}ζΑΑεO22α6θγ Δªγ΄”μυεeM±¤<WΪμθTVΪkΕ¤3_ΑktΊ]]ά>Π/ρ¶Ά'Λ+Εί—Κ\9‘ύe¶VΆ7ω4)
-}„>4ψ‰µς’Δ$YΡ<Πθ¶²φΧLδDω>¥½ρΑΙϋΞοΑ0ι―F~ (φ­¶s Τ»p.¶Ύm©'=¬pÿy©ϋυΝUλ‡2εό,;‰O_Ξ‘*YµÒΟv`Gέr’?γΒrθκ)όΡÒυηΛσrOΏσ©/ει€ιϋ€άΉ.³_ΤΉρρfφEΨQΜΥόόYύL'‹@U Aiΰ_οvΨ!ΟyJT °„dΕί¶„σ=α=΅`€VΦιj®―Μ™^£ΦΦ…―Lθ†―Ε7Y¤†{Mΐ*‹‹lΓb"LΰwuLγ =οTQ,Η=ΓπÒαmj€6kYµΎσέ·2—”Hn©τΖeRhςΜP(ΗΛκ=wΠ^D―¦ξμ|(έφπaSΟ|(9έ$ƒckQΞ
-ρ¶Ιƒ¬8έCmοRόίαΙζ€ΌUΙW-·1M‹‘υίy
-Θ=Zcυή¦ϊay½y`’χe†$°Cν©ΖΔ>(Χwπ(Ϋ$5»mcYe£`γΜ'υγγΧWmnϋOmeΚΫ•_-¨Μγχ‚ΈβqiΠ!€MU€ÿ~vƒx€σςέo`G'#«’­«»ώF¥ΤAφA»»Y€IρυF,Ύ±‡ςω#W6ΑyVΏρΩMIVξ*έZςΎ+Hω)CIx–†2Πτ…‘^φªI8dπ†R,HµjTϊρaΝP!Ε sΦΙ2„Ye{GKm ”9:7½ΙYÿνt93vª¨&,¶ιvDaΩLΤ(g	Ν¬ΛΈό»eε1Τ ‰Ζ°sύρ.Έ+\±ορ@LΈªζγχ0:RΚΗΙl;¦1ƒr/“ÒΦαϋ3ηlλ§/‹'‡€0<οο‘(]¬&	¨ iυ‡τη	…uKό+χ'έxfrCbBΦξϋςΝZrj`µΞpΦΑΑu¤²όXcƒZK6ΑKlΩ»ybΘδ©¬$¥Ξeρe‘B Νϊ§!…»L²ΟGζ¶μ¦‚­ςq²`‚wΘ]Λ_[—Vε‘_7Ϊ–(Χ>ΞT‚³fό[8Uh_`³‘‚ΩOΫdlΔ`ΆΑΑ†ƒ«νY΄―z”Dx€ίΥ0'…ΟBωΈΆ2’+έdg™AρΎ<ÿa‚οΏn`&#μ»90qtίε"ªΫ]°?Έ—ιψD ϊ:λή ΰλ>±ω²to0\*υΖ‰Π­¨V¨λ¥Ύa’ψΫyQ|ρ	®\>C-§Έªΰφ²,ΐµÿΈ&bfΒA-τ«ƒΉv8a«G!ό‰C_µε¤ώθFj2B{_
-σ[Θϊ4DΕΝ5όΒ{’ήDΫΪEΎPZΪρKΧyϊ>Νψ_zΨ&τνJΠ2w½(7ΰΉΠνω`IeΪeΠk…]JRϋ9ωx¨tΘλl9BΣ/.ν΄}Ϋ
-θΔ&oο¨Π·g ±θΛ³¬¬ΌΩ&«-γήΟφ®[ ;‰•A¶Κ§CxτΑzH΅
-ύΎ„¥J‚Ρy@γQ”ΘΗjςΔΕEΚ³~MΊΰª“ψ¥…PΪpΒ@ΤMθ0Òώ G‹βλ³t@ψ±m»ΞΨ°έe_5rFΟ`x›Pή8[κ`L=@™'ΟΙήΗΤβ«ζψZD–ªkήΖ6μΧς±νΎ—ÒZχΝx{κZύ2yw³{Zd©¬ZτH-lƒ§ΗκQ …vΡ®,Ψ•£ϋσwπϊ¥-»j›δYΌ?®\;έg‰X•υΚD£ζiΛ'KΉω°`¥‹φΔE¬±‹ΰm¦'ΖtΟ*,ηUδ}&ÿ$	{! *bΙΫƒϋFΜ.‡OV/Σ7Θ~»r0°lλ# εδμWu% [cΈO–Χ§=ΝR]^ÿΥάΕ5r°aΰ4jΕw$Φΐλ‚μΔ ÿΫfξ4όY.PΓn_I©]’ς=†Jmlΰ•,a›#~ΰxnμ°ΉyΒ"Ο'"YσγΈCJΕ­b1R°Υ `Κ¶‘L†U„Εtxf‰“0vImµƒΈψX2/ΌτΗ]>ÿλHΧΐυ—ΧΟ†MΡψ:a|†}χΑcΎΈϊιKJτψwΛ)‡ω¦F~R†ίZΊΩC&3uD³AU6ήOάΆ=ΰUσΗΥλ‚zΔ6[„ ΞΜJ²kƒ<‘δΌ7°m-[6ΣÿnÒ_5Ξµkϊ‚CεiLx¨¬fώαH;¤}0Πα—b~#²xTΜ£-LΈ|±Wi>—‡Ώ°ªνDΔΖPΖ'ΗΧΫΧ`Ψi‘+―9S<φ}±Μ†κ―\[ΆR±«oΆ2 „ω:e½OΞ―u]ο1‹Λ€\΄>ό›T^%‚)½w‰ÿΗy+<Υττ©«μN²ΚµY
-„ϋυB¶q΅…ÿAι
-  include/linux/memory_hotplug.h \
-    $(wildcard include/config/HAVE_ARCH_NODEDATA_EXTENSION) \
-    $(wildcard include/config/ARCH_HAS_ADD_PAGES) \
-    $(wildcard include/config/MEMORY_HOTREMOVE) \
-  arch/x86/include/asm/mmzone.h \
-  arch/x86/include/asm/mmzone_32.h \
-  include/linux/topology.h \
-    $(wildcard include/config/USE_PERCPU_NUMA_NODE_ID) \
-    $(wildcard include/config/SCHED_SMT) \
-    $(wildcard include/config/SCHED_CLUSTER) \
-  include/linux/arch_topology.h \
-    $(wildcard include/config/ACPI_CPPC_LIB) \
-    $(wildcard include/config/GENERIC_ARCH_TOPOLOGY) \
-  arch/x86/include/asm/topology.h \
-    $(wildcard include/config/SCHED_MC_PRIO) \
-  arch/x86/include/asm/mpspec.h \
-    $(wildcard include/config/EISA) \
-    $(wildcard include/config/X86_MPPARSE) \
-  arch/x86/include/asm/mpspec_def.h \
-  arch/x86/include/asm/x86_init.h \
-  arch/x86/include/asm/apicdef.h \
-  include/asm-generic/topology.h \
-  include/linux/kconfig.h \
-  include/linux/radix-tree.h \
-  include/linux/capability.h \
-  include/uapi/linux/capability.h \
-  include/linux/semaphore.h \
-  include/linux/fcntl.h \
-    $(wildcard include/config/ARCH_32BIT_OFF_T) \
-  include/uapi/linux/fcntl.h \
-  arch/x86/include/generated/uapi/asm/fcntl.h \
-  include/uapi/asm-generic/fcntl.h \
-  include/uapi/linux/openat2.h \
-  include/linux/migrate_mode.h \
-  include/linux/percpu-rwsem.h \
-  include/linux/rcuwait.h \
-  include/linux/sched/signal.h \
-    $(wildcard include/config/SCHED_AUTOGROUP) \
-    $(wildcard include/config/BSD_PROCESS_ACCT) \
-    $(wildcard include/config/TASKSTATS) \
-    $(wildcard include/config/STACK_GROWSUP) \
-  include/linux/signal.h \
-    $(wildcard include/config/DYNAMIC_SIGFRAME) \
-  include/linux/sched/jobctl.h \
-  include/linux/sched/task.h \
-    $(wildcard include/config/HAVE_EXIT_THREAD) \
-    $(wildcard include/config/ARCH_WANTS_DYNAMIC_TASK_STRUCT) \
-    $(wildcard include/config/HAVE_ARCH_THREAD_STRUCT_WHITELIST) \
-  include/linux/uaccess.h \
-  include/linux/fault-inject-usercopy.h \
-    $(wildcard include/config/FAULT_INJECTION_USERCOPY) \
-  arch/x86/include/asm/uaccess.h \
-    $(wildcard include/config/CC_HAS_ASM_GOTO_OUTPUT) \
-    $(wildcard include/config/CC_HAS_ASM_GOTO_TIED_OUTPUT) \
-    $(wildcard include/config/ARCH_HAS_COPY_MC) \
-    $(wildcard include/config/X86_INTEL_USERCOPY) \
-  arch/x86/include/asm/smap.h \
-  arch/x86/include/asm/extable.h \
-    $(wildcard include/config/BPF_JIT) \
-  include/asm-generic/access_ok.h \
-    $(wildcard include/config/ALTERNATE_USER_ADDRESS_SPACE) \
-  arch/x86/include/asm/uaccess_32.h \
-  include/linux/cred.h \
-    $(wildcard include/config/DEBUG_CREDENTIALS) \
-  include/linux/key.h \
-    $(wildcard include/config/KEY_NOTIFICATIONS) \
-    $(wildcard include/config/SYSCTL) \
-  include/linux/sysctl.h \
-  include/uapi/linux/sysctl.h \
-  include/linux/assoc_array.h \
-    $(wildcard include/config/ASSOCIATIVE_ARRAY) \
-  include/linux/sched/user.h \
-    $(wildcard include/config/WATCH_QUEUE) \
-  include/linux/percpu_counter.h \
-  include/linux/ratelimit.h \
-  include/linux/rcu_sync.h \
-  include/linux/delayed_call.h \
-  include/linux/uuid.h \
-  include/uapi/linux/uuid.h \
-  include/linux/errseq.h \
-  include/linux/ioprio.h \
-  include/linux/sched/rt.h \
-  include/linux/iocontext.h \
-    $(wildcard include/config/BLK_ICQ) \
-  include/uapi/linux/ioprio.h \
-  include/linux/fs_types.h \
-  include/linux/mount.h \
-  include/linux/mnt_idmapping.h \
-  include/linux/slab.h \
-    $(wildcard include/config/DEBUG_SLAB) \
-    $(wildcard include/config/FAILSLAB) \
-    $(wildcard include/config/KASAN) \
-    $(wildcard include/config/SLAB) \
-    $(wildcard include/config/SLUB) \
-    $(wildcard include/config/SLOB) \
-  include/linux/overflow.h \
-  include/linux/percpu-refcount.h \
-  include/linux/kasan.h \
-    $(wildcard include/config/KASAN_STACK) \
-    $(wildcard include/config/KASAN_VMALLOC) \
-    $(wildcard include/config/KASAN_INLINE) \
-  include/linux/kasan-enabled.h \
-  include/uapi/linux/fs.h \
-  include/linux/quota.h \
-    $(wildcard include/config/QUOTA_NETLINK_INTERFACE) \
-  include/uapi/linuxELF                       j      4     (               θόÿÿÿS‹X  ‹T  1ΐ‰Z[‰
-Γt& θόÿÿÿ‹€|  ΗAA	  ‰1ΐΓ΄&    fθόÿÿÿ‹…Òu‹A…ΐuΗA   1ΐΓt& ΈκÿÿÿΓ΄&    v θόÿÿÿƒ9w6y   u-‹D  ‰Q‰Q‹H  Ρκ‰Q‹€H  Ρθ‰A1ΐΓ΄&    ΈκÿÿÿΓ΄&    v θόÿÿÿϊ   vPÿÿÿƒωw Έ Α ΣθƒΰΓt& ϊƒ   —ΐΓ¶    1ΐΓt& θόÿÿÿ‹P@‹‚P  …ΐuΓt& ‹‚L  j Ή@   ΊΑ   j j j@θόÿÿÿƒΔΓ΄&    θόÿÿÿ‹P@‹‚P  …ΐuΓt& ‹‚L  j Ή@   ΊΑ   j j j θόÿÿÿƒΔΓ΄&    θόÿÿÿƒμ‹€L  ¶Òd‹    ‰L$1Ι‰αθόÿÿÿ…ΐI$‹T$d+    uƒΔΓθόÿÿÿ΄&    ΄&    θόÿÿÿUWVS‰Γ‰Π‰Κ‰Α€υ@ƒμ	Ρt}‰Α€υ	Ρt<‰Ζ‰ΧΖ ώÿÿƒΧÿζÿύÿÿ‰ω	ρtk‰Αα °  uq„ΐu}%  ÿ ‰ΗχίΙƒα‰Θλv Ή   Έ   ‹    …Òόÿÿÿ‹ƒL  Ί(   θόÿÿÿ1ΐƒΔ[^_]Γ¶    Ή
-   Έ
-   λΖt& Ή   Έ   λ¶t& Ή   Έ   λ¦t& Ή   Έ   λ–΄&    t& θόÿÿÿWVS‹X  ‹°T  1Λ1Φ	σtd‹°Θ  ‹Δ  …φtD‹{‹s!Ξ!Χ‰σ	ϋtJ‰Σ‰ΈT  γ ω  ‰°X  ƒϋΫƒγ`Γΰ  ‰H  [^_ι΄ώÿÿt& Ώÿÿÿ 1φλΉ΄&    1ΐ[^_ΓΈκÿÿÿλυv θόÿÿÿ…ΙtGƒyuAS‹D  ‰Y‹H  ΗA   ΡκΗA   ‰QΗA   ‹    …Ι!   1ΐ[Γt& ΈκÿÿÿΓ΄&    v θόÿÿÿ‹€    Ί   θόÿÿÿ1ΐΓ΄&    θόÿÿÿWVS‰Σ‹    …Òέ   {‰Ω1ΐΗ    ƒηόΗCp    ΊΘ  )ωƒΑtΑισ«fƒΒ$ϊ  t/‹zό…ÿtξ‹‹J‰ώ9Θwv f	tCƒΐ9ΘvτƒΒ$f	;ϊ  uΡ[1ΐ^_ΓθόÿÿÿS‹ƒϋtƒϋu[ιόÿÿÿ΄&    [ιόÿÿÿ΄&    v Έκÿÿÿ[Γ΄&    fθόÿÿÿ‹    U‰ΕWVS‹x\…Òϊ   ‹‡Θ  ·   1Ϋ…ΐtJf‰πƒΓΖ   θόÿÿÿ‹‡Θ  9Ψwζ…ΐt*·@  1Ϋ΄&    v ‰πƒΓΖ   θόÿÿÿ9Θ  wθ‰ψƒΕθόÿÿÿ‡Μ  θόÿÿÿ‰θΊ   θόÿÿÿ‰θΊ   θόÿÿÿ1ΐ[^_]Γt& θόÿÿÿV‰ΖSzGREY‰Σt<ƒ{t1ΐ[^Γƒ{uτ‹†L  1ΙΊ   θόÿÿÿ‹†L  Ή   Ί   θόÿÿÿλΛ‹€L  Ήp   Ί   θόÿÿÿλ­΄&    fθόÿÿÿU‰ΕWVSƒμfƒ: ‰$„ζ   1Ϋv ‹$1Ιf‰LX2·|X‹…T  ‰Βςÿÿÿ •X  „  ©ÿÿ sDσ1ΙFϊ‰D$ƒψwlΈΘ  1Ιƒΐ$Ί  9Βt#‹Pό…Òtν…Χt	;0r;pvƒΐ$Ί  ƒΑ9Βuέ‹|$‰Ξ‹…L  Ξπ   ÿ‰ρWΠ¶Òθόÿÿÿ‹…L  WΡ‰ρ¶Òθόÿÿÿ‰ρ‹$f‰LXƒΓƒϋ…>ÿÿÿ‹…L  Ή   ΊΝ   θόÿÿÿ1ΐƒΔ[^_]Γ‹€L  1ΙΊΝ   »Π   θόÿÿÿ‹…L  1ΙΊΟ   θόÿÿÿ¶    ‹…L  ‰ΪΉÿ   ƒΓθόÿÿÿϋό   uγƒΔ1ΐ[^_]Γ΄&    fθόÿÿÿVS‰Σƒμ‹²L  Ίΐ   d΅    ‰D$1ΐL$Η$    ‰πΗD$    θόÿÿÿ‹L$…Ιuk‰αΊ‡   ‰πθόÿÿÿ‹$…ΐu&‹D$d+    …°   ƒΔΈ   [^Γ΄&    v L$Ί†   ‰πΗD$    θόÿÿÿ‹L$…ΙtΊΊ   ‰πθόÿÿÿλ¬fΊΐ   ‰πθόÿÿÿ‹D$¨@t–‹    %€   •ƒt  …Ò7  ‰ΨΊ@  θόÿÿÿ1ΐ€»t   t‹ƒl  j Ή   Ί   j j P‰πθόÿÿÿƒΔι?ÿÿÿθόÿÿÿθόÿÿÿS‹    Ί   ‰Ψθόÿÿÿ1Ò…ΐx
-‰Π[Γ¶    ‰Β‹ƒτ   …ΐtκHÿπ±‹τ   uο‰Π[Γ΄&    t& θόÿÿÿVS‰Γ·€v  f=PQ„¶   1φf=QQ„‚   ‹ƒd  …ΐt‰ςƒΞƒΚƒψDς‹    …Òd  ‹ƒL  1ΙΊ   θόÿÿÿ‹ƒL  ‰ρ1ÒθόÿÿÿΊ@   Έ   ƒ»d  EΒ‹›L  j ΉP   j Ί   j P‰ΨθόÿÿÿƒΔ[^Γv f»x   …oÿÿÿ‹‹p  1ΐ…Ι”ΐ4Ε    ιVÿÿÿ1φf»x   …EÿÿÿλΤ΄&    ¶    θόÿÿÿ‹P(‹Hϊ	 tmv;ϊ	 „   ϊ	 …«   ‹@|…ΐ”ΐ¶ΐ‰¤   4ύÿÿθΗώÿÿ1ΐΓt& ϊ 	 thϊ	 ux‹P|‹€   ‰ΡΊ   θόÿÿÿ1ΐΓ΄&    ‹P|‹€   ‰ΡΊ
-   θόÿÿÿ1ΐΓ΄&    ‹P|‹€   ‰ΡΊ   θόÿÿÿ1ΐΓ΄&    ‹P|‹€   ‰ΡΊ	   θόÿÿÿ1ΐΓΈκÿÿÿΓfθόÿÿÿ‰d  1Òƒω•Β‰h  ‰p  θώÿÿ1ΐΓ΄&    fθόÿÿÿU‰ΕW1ÿV°,     Sƒμ‹Θ  ‰D$…ΫuιZ  fƒΗΖ   9½Θ  †C  iΗ   1Ò^N`θ‹€,  9πDΒ‹Vό‹@ΗF|   ‰$Ί   ‰D$1ΐ…ÿ”ΐ‰D$‰Ψθόÿÿÿ…ΐ­   ‹E`‰Ϊ‹@θόÿÿÿ…ΐ   ÿt$·D$‰ι1ÒP‰ΨθόÿÿÿZY…ΐx}ƒ<$tO…ÿ…_ÿÿÿ‹T$1ΐ…Ò•ΐ‰$‹$‰…d  ‰θθύÿÿ‹D$‹•8  ‹<  ‰…Δ  ‰θθ4χÿÿιÿÿÿ΄&    ÿt$‹F‰ι1Ò·@P‰ΨθόÿÿÿY[…ΐx…ÿt¦ιςώÿÿf‰Β‹…Θ  …ΐt.µ@  1Ϋ‰Χ΄&    v ‰πƒΓΖ   θόÿÿÿ9Θ  wθ‰ϊƒΔ‰Π[^_]Γt& ƒΔ1Ò[‰Π^_]Γ΄&    t& θόÿÿÿUWVS‰Γƒμ·Bf‰$‹Bƒΰ…‹  ‰Φ·$‰Οƒς·Κ‰L$‹‹Θ  …Ι„~  ‹o“@  λv ƒΐΒ   9Θ„_  9Υuλiΐ   ‹    ‹„(  …Ι‘  ƒψ…@  ½   “ΐ   ‰Π‰$θόÿÿÿ…ΐt!‹$θόÿÿÿ…ΐ„X  Η@$    ‹@ Η@$    “ΰ   ‰Π‰$θόÿÿÿ…ΐt!‹$θόÿÿÿ…ΐ„#  Η@$    ‹@ Η@$    ‹D$$‰ιƒΰ‰Βƒς„Ιu~·N‰“h  ‰‹d  …ΐt~Ηƒp     ‰Ψθ1ϋÿÿ‹“Θ  …ÒttG”‹“T  ‰ƒΔ  ‹O¬‹ƒT  ‹o°1ÿ!Κ1ΠƒX  ‰ΦtI…Òu‰Ξ‰ο‰ς‰ω‰Ψθ)υÿÿ1ΐƒΔ[^_]Γ΄&    Ηƒd     ‰“h  …ΐu4Ηƒp      ‰Ψθ³ϊÿÿ1ΐƒΔ[^_]Γ΄&    f΅    …ΐM1νιΎώÿÿΗƒp     ‰Ψθϊÿÿ‹T$‰ψƒΒΑβΪθόÿÿÿ…ΐt‹t$$‰p$‹@ ‰p$ι%ÿÿÿΈκÿÿÿλιµ  ιW  t& θόÿÿÿU‰Ε1ΙWVS»ΐ  ƒμ‹°L  1ΐ¶Π‰χλt& ¶K‹½L  ‰ψƒΓθόÿÿÿ¶€ϊÿuδ‹•P  …Ò„  1ΙΊ   ‰πθόÿÿÿΉ   ΊΒ   ‰πθόÿÿÿΉ   Ί   ‰πθόÿÿÿ‹µL  1ΙΊΟ   »Π   ‰πθόÿÿÿt& ‰ΪΉÿ   ‰πƒΓθόÿÿÿϋό   uη»Π  ‰,${$ϋ€  tt& ‹Gτ…ΐu1‰ϋ{$ϋ€  uμ‹,$‰θθRωÿÿ…Μ  θόÿÿÿ1ΐƒΔ[^_]Γt& ·oπΊΕ   ‰πƒΓ‰ιfΑι·Ιθόÿÿÿ·ΝΊΔ   ‰πθόÿÿÿt& ¶KΊΓ   ‰πƒΓθόÿÿÿ9ϋuι‰ϋλ†Ή   Ί   ‰πθόÿÿÿΉ   ΊΒ   ‰πθόÿÿÿ1ΙΊ   ‰πθόÿÿÿιϊώÿÿ΄&    θόÿÿÿU‰ΕWVS1Ϋƒμ‰T$d΅    ‰D$‰ΠxHΗ@    ƒηόΗ@^    1ΐ)ωƒΑ`Αισ«ΗD$    λCv ‹D$…ΐ“  ƒΰƒψ
-ΐ4…Δ  ƒΗ;<$uX‰π·φ	t$‹L$f‰DYƒΓƒϋt`‹…T  ‰Βςÿÿÿ •X  „³  ©ÿÿ SDΣ1ΐƒκƒϊwΐTΠ1φ¶ϊG‰$‹…L  L$‰ϊθόÿÿÿ…ΐ‰iÿÿÿι“  t& ‰Θ·L$f‰‹D$d+    u
-ƒΔ1ΐ[^_]Γθόÿÿÿ΄&    v θόÿÿÿS‰Σƒμ‹€L  d‹    ‰T$1Ò‰αΊ   θόÿÿÿΊ    …ΐI$ƒΰƒψΈÿÿ  EΒ‰C<‹D$d+    uƒΔ1ΐ[ΓθόÿÿÿθόÿÿÿVS‰Γƒμ‹³    d΅    ‰D$1ΐ…Ò„Ά   Ί   ‰πθόÿÿÿ‰Β…ΐ$  Ή   Ί   Ύ”  λv ¶N‹ƒL  ƒΖθόÿÿÿ¶€ϊÿuζ‹“T  ‹‹X  ‰Π5ÿÿÿ 	Θ„ϋ   ‰Ψθπÿÿ‹ƒ|  ƒψ„•   ƒψ„|   ‹ƒP  …ΐub‹³l  Ί@  ‰Ψθόÿÿÿλ¶    ‰πΊ   1φθόÿÿÿj ‹ƒL  Ί   Ή   j j Vθόÿÿÿ1ÒƒΔ‹D$d+    …»   ƒΔ‰Π[^Γ1φ€»t   t™λ‘v Ηƒl  	   ιuÿÿÿj ‹ƒL  Ή   Ί   j j j θόÿÿÿΗƒl     ƒΔιEÿÿÿ‹†τ   …ΐtHÿπ±τ   „|ÿÿÿλιv ‹ƒL  ‰αΊ   θόÿÿÿ…ΐI$ƒΰƒθƒψ
-v1Ò1ΙιΩώÿÿt& ‹Ε    ‹Ε   ιΒώÿÿθόÿÿÿ΄&    θόÿÿÿV‰ΦS‰Γƒμd΅    ‰D$1ΐ‹ƒP  …ΐt,¶ƒt  …ΐuF1ΐ1Ò‰‰V‹D$d+    ucƒΔ1ΐ[^Γv ‹ƒL  ‰αΊ   θόÿÿÿ‹$ƒΰƒψ”ΐ¶ΐ…ΐtΊ‹ƒL  ‰αΊ   θόÿÿÿ…ΐI$ƒΰƒθƒψ
-w—‹Ε   ‹Ε    λ‹θόÿÿÿv θόÿÿÿVS‰Γƒμd΅    ‰D$‹ƒT  5ÿÿÿ ƒX  t‹D$d+    …α   ƒΔ1ΐ[^Γ¶    ‹ƒL  ‰αΊ   θόÿÿÿ‹‹\  ‹“`  …ΐI$ƒΰƒθƒψ
-vI	Κt®Ηƒ\      Ηƒ`      Ηƒ@      Ηƒ<      ΗƒD  Π  ΗƒH  @  ιmÿÿÿt& ‹4Ε    ‹Ε   1ρ1Β	Κ„Oÿÿÿ‰³\  ζ ω  ‰ƒ`  Ηƒ@      Ηƒ<      ΗƒD  Π  t΅ΗƒH  ΰ  ιÿÿÿθόÿÿÿθόÿÿÿU1ÒWVS‰Γƒμd΅    ‰D$‹ƒL  L$θόÿÿÿ…ΐΠ  ιΜ  ΄&    v θόÿÿÿUW‰ΗVSƒμd΅    ‰D$‹G‹P‹Rθόÿÿÿ%   =   …  oΉ   Ί  ‰θθόÿÿÿ‰Γ= πÿÿ‡Y  …ΐt1ÒθόÿÿÿΈ   θόÿÿÿΉ   Ί  ‰θθόÿÿÿ‰Γ= πÿÿ‡&  …ΐt'ΈΔ	  θόÿÿÿ1Ò‰ΨθόÿÿÿΉ   Ίϊ   ΈΘ   θόÿÿÿΉΐ  Ί€  ‰θθόÿÿÿ‰Ζ…ΐ„  j 1ΙΊ€   ‰ψθόÿÿÿ[‰Γ= πÿÿ‡Κ   ‰†L  Ήΐ  ‰ϊ‰πθόÿÿÿΊ   ‰πƒN\ΐ   ΗFh  Η†|     ΗF8  ΗF  Η†ά      Η†Ψ      Η†ό      Η†ψ      Η†     Η†     θόÿÿÿ‰Γ…ΐu?‹†”   Ί€   ‰$‹†L  jL$θόÿÿÿY‰Γ…ΐ‰$  ιύ  ΄&    …Ϋ„ύώÿÿ‹D$d+    uƒΔ‰Ψ[^_]Γ»ϋÿÿÿλαθόÿÿÿ»τÿÿÿλΥ΄&    ¶    θόÿÿÿUWV‰ΖSƒμ‹Yd΅    ‰D$1ΐ…Ϋ…«  ΅    ‰Χ‰Λ…ΐι  ‹k1ΐ‹S…νHθΈÿ  9ΕOθ1ΐ…ÒHΠΈ   ‰k9ΒOΠ‰S‹†T  ‰Αρÿÿÿ X  „  % ω  ƒψΐƒΰ`ΰ  )Πj ΉΠ  ΊΡ   j )κ)ιkPƒθPCP‰θjθόÿÿÿ‹‹CƒΔ…Ò„  Έκÿÿÿƒϊt‹T$d+    …  ƒΔ[^_]Γt& Ύ<  ÿ πÿÿ‡υ  ‹†D  9C„O  ‹T  ‹†L  ‰Κςÿÿÿ –X  „g  €εω„  ½ΰ  ‹KΊ   θόÿÿÿ‹K‹†L  Ί   K)ιθόÿÿÿ‹K‹†L  Ί   Αωθόÿÿÿ‹K‹†L  Ί   ƒΙθόÿÿÿ‹S‹Cώÿÿ‹†L  Ί   Αιθόÿÿÿ‹S‹Cώÿÿ‹†L  Ί   θόÿÿÿλ$·N 9Θƒμ   €Αβz0ÿ πÿÿ‡  ‹C‰‹C‰G‹C‰G‹C‰G1ΐιΒώÿÿ΄&    ‹†L  ‰αΊ   θόÿÿÿ‹S‹k…ΐI$ƒΰHÿΈ@  ƒω
-‡Fώÿÿ‹Ν    ι(ώÿÿ΄&    v ‹†H  9C…Άώÿÿ‹†@  9C…“ώÿÿ‹†<  9C…„ώÿÿιaÿÿÿ¶    ‰αΊ   θόÿÿÿ…ΐI$ƒΰƒθƒψ
-v+‹†L  ½@  ιzώÿÿv ιÿÿÿΈκÿÿÿιωύÿÿ¶    ‹Ε    ‹†L  ι?ώÿÿθόÿÿÿ‰ψιΥύÿÿfθόÿÿÿV‰ΖS‰Λƒμ‹Id΅    ‰D$1ΐ…ΙtoΈκÿÿÿƒωuEΗC    ΗC    ΗCΠ  ‹–T  ‰Π5ÿÿÿ †X  „‡   €ζω„΅   ΗCΰ  1ΐt& ‹T$d+    …Γ   ƒΔ[^Γ΄&    f‹‹K…ΐtƒψu2†<  = πÿÿwΕ‹‰S‹P‰S‹P‰S‹@‰C1ΐλª΄&    v Έκÿÿÿλ™΄&    f‹†L  ‰αΊ   θόÿÿÿ…ΐI$ƒΰƒθƒψ
-v-ΗC@  1ΐι_ÿÿÿ΄&    ·v 9ρs ‰Αΰƒΐ0ιtÿÿÿ‹Ε    ιÿÿÿt& λβθόÿÿÿ               €                 [                                                              ΐ           €                                                         ΐ                                               ÿ       $                                                                                             @   p   ΐ      @  €  Π  °  @  F      ΐ  @  €  0           p  `	  @
-  p
-    0  ΐ  ΰ  @    ΐ  ΰ             Set video std register to %d.
-  tvp5150.c: removing tvp5150 adapter on address 0x%x
-    VBI can't be configured without knowing number of lines
-    Selecting video route: route input=%s, output=%s => tvp5150 input=0x%02x, opmode=0x%02x
-    link setup '%s':%d->'%s':%d[%d] tvp5150: Video input source selection #1 = 0x%02x
-  tvp5150: Analog channel controls = 0x%02x
-  tvp5150: Operation mode controls = 0x%02x
-  tvp5150: Miscellaneous controls = 0x%02x
-   tvp5150: Autoswitch mask= 0x%02x
-   tvp5150: Color killer threshold control = 0x%02x
-   tvp5150: Luminance processing controls #1 #2 and #3 = %02x %02x %02x
-   tvp5150: Brightness control = 0x%02x
-   tvp5150: Color saturation control = 0x%02x
- tvp5150: Hue control = 0x%02x
-  tvp5150: Contrast control = 0x%02x
- tvp5150: Outputs and data rates select = 0x%02x
-    tvp5150: Configuration shared pins = 0x%02x
-    tvp5150: Active video cropping start = 0x%02x%02x
-  tvp5150: Active video cropping stop  = 0x%02x%02x
-  tvp5150: Genlock/RTC = 0x%02x
-  tvp5150: Horizontal sync start = 0x%02x
-    tvp5150: Vertical blanking start = 0x%02x
-  tvp5150: Vertical blanking stop = 0x%02x
-   tvp5150: Chrominance processing control #1 and #2 = %02x %02x
-  tvp5150: Interrupt reset register B = 0x%02x
-   tvp5150: Interrupt enable register B = 0x%02x
-  tvp5150: Interrupt configuration register B = 0x%02x
-   tvp5150: Video standard = 0x%02x
-   tvp5150: Chroma gain factor: Cb=0x%02x Cr=0x%02x
-   tvp5150: Macrovision on counter = 0x%02x
-   tvp5150: Macrovision off counter = 0x%02x
-  tvp5150: ITU-R BT.656.%d timing(TVP5150AM1 only)
-   tvp5150: Device ID = %02x%02x
-  tvp5150: ROM version = (hex) %02x.%02x
- tvp5150: Vertical line count = 0x%02x%02x
-  tvp5150: Interrupt status register B = 0x%02x
-  tvp5150: Interrupt active register B = 0x%02x
-  tvp5150: Status regs #1 to #5 = %02x %02x %02x %02x %02x
-   tvp5150: Teletext filter enable = 0x%02x
-   tvp5150: Interrupt status register A = 0x%02x
-  tvp5150: Interrupt enable register A = 0x%02x
-  tvp5150: Interrupt configuration = 0x%02x
-  tvp5150: VDP status register = 0x%02x
-  tvp5150: FIFO word count = 0x%02x
-  tvp5150: FIFO interrupt threshold = 0x%02x
- tvp5150: Line number interrupt = 0x%02x
-    tvp5150: Pixel alignment register = 0x%02x%02x
- tvp5150: FIFO output control = 0x%02x
-  tvp5150: Full field enable = 0x%02x
-    tvp5150: Full field mode register = 0x%02x
- reading ID registers failed: %d
-    tvp%04x (%u.%u) chip found @ 0x%02x (%s)
-   *** unknown tvp%04x chip detected.
- %s left=%d, top=%d, width=%d, height=%d
- 7 width = %d, height = %d
- %s reg %02x = %*ph
- g_sliced_vbi_cap
- ck ss sync lo%s signal
- normal black-frame-gen svideo aip1a aip1b %s: failed with error = %d
- Teletext filter 1 Teletext filter 2 tvp5150: FIFO reset = 0x%02x
- CC   data WSS  data VPS  data VITC data Line mode pdn reset tvp5150a detected.
- tvp5150am1 detected.
- tvp5151 detected.
- tvp5150 include/media/v4l2-subdev.h Disabled Black screen ‰$Ph    ÿ³    h    θόÿÿÿ‹L$ƒΔιD  RSh   ÿ°    h    θόÿÿÿ1ΐƒΔι…  θόÿÿÿUW‰ΗVS¶Ωƒμ‰T$¶l$0d΅    ‰D$1ΐ‰,$‰ύ9$~Q‹4$)ή;t$4Ot$41ÿ9χ}‰θ¶Òθ|  D<GλθD$PVSÿt$h   ÿµ    h    θόÿÿÿ\$PƒΔλª‹D$d+    tθόÿÿÿƒΔ[^_]Γh0   ÿ°    h    θόÿÿÿƒΔιΤ  ·@ΐPh    ÿ·    h    θόÿÿÿƒΔι  hX   ÿµ    θόÿÿÿ1ΙXZιj  …ΐΊE   ΈB   DΒPhH   ÿ³    h    θόÿÿÿƒΔιΪ  ƒ»h   ΊZ   Ήa   EΡ…ΐt2ƒψΉq   Έ~   EΑj VRPh”   ÿ³    h    θόÿÿÿƒΔιΈ  Έx   λΧ‹L$$‰D$ƒαQ·T$‰L$R‹Vÿr·WRÿuhπ   ÿ³    h    θόÿÿÿ‹D$,ƒΔ ƒψ…Υ  ƒ=     ‹L$½     Q‹D$ΑΰΨ·Τ   R‹€Π   ÿp·GP‹Gÿphπ   ÿ³    h    θόÿÿÿƒΔ ι  ‹D$$ƒΰP·D$P‹Fÿp·GP‹Gÿphπ   ÿ³    h    θόÿÿÿƒΔ ιΥ  PhX   h„   ÿµ    θόÿÿÿ1ΐƒΔι;  hX   ÿµ    θόÿÿÿX1ΐZι;  ‹D$Ph  ÿ³    h    θόÿÿÿ‹ƒL  Ί   L$θόÿÿÿƒΔ…ΐ‰'
-  PhD  ÿ³    h    θόÿÿÿ‹ƒL  Ί   L$θόÿÿÿƒΔ…ΐ‰ϋ	  Php  ÿ³    h    θόÿÿÿ‹ƒL  Ί   L$θόÿÿÿƒΔ…ΐ‰Ο	  Ph  ÿ³    h    θόÿÿÿ‹ƒL  Ί   L$θόÿÿÿƒΔ…ΐ‰£	  PhΘ  ÿ³    h    θόÿÿÿ‹ƒL  Ί   L$θόÿÿÿƒΔ…ΐ‰w	  Phμ  ÿ³    h    θόÿÿÿ‹ƒL  Ί   L$θόÿÿÿ‰ΗƒΔ…ΐ‰I	  ‹ƒL  L$Ί   θόÿÿÿ‰Ζ…ΐx‹t$‹ƒL  L$Ί   θόÿÿÿ…ΐx‹D$WVPh   ÿ³    h    θόÿÿÿ‹ƒL  Ί	   L$θόÿÿÿƒΔ…ΐ‰α  Phh  ÿ³    h    θόÿÿÿ‹ƒL  Ί
-   L$θόÿÿÿƒΔ…ΐ‰µ  Ph  ÿ³    h    θόÿÿÿ‹ƒL  Ί   L$θόÿÿÿƒΔ…ΐ‰‰  PhΌ  ÿ³    h    θόÿÿÿ‹ƒL  Ί   L$θόÿÿÿƒΔ…ΐ‰]  Phά  ÿ³    h    θόÿÿÿ‹ƒL  Ί   L$θόÿÿÿƒΔ…ΐ‰1  Ph   ÿ³    h    θόÿÿÿ‹ƒL  Ί   L$θόÿÿÿƒΔ…ΐ‰  Ph4  ÿ³    h    θόÿÿÿ‹ƒL  Ί   L$θόÿÿÿ‰ΖƒΔ…ΐ‰Χ  ‹ƒL  L$Ί   θόÿÿÿ…ΐx‹D$VPhd  ÿ³    h    θόÿÿÿ‹ƒL  Ί   L$θόÿÿÿ‰ΖƒΔ…ΐ‰  ‹ƒL  L$Ί   θόÿÿÿ…ΐx‹D$VPh  ÿ³    h    θόÿÿÿ‹ƒL  Ί   L$θόÿÿÿƒΔ…ΐ‰C  PhΜ  ÿ³    h    θόÿÿÿ‹ƒL  Ί   L$θόÿÿÿƒΔ…ΐ‰  Phμ  ÿ³    h    θόÿÿÿ‹ƒL  Ί   L$θόÿÿÿƒΔ…ΐ‰λ  Ph  ÿ³    h    θόÿÿÿ‹ƒL  Ί   L$θόÿÿÿƒΔ…ΐ‰Ώ  PhD  ÿ³    h    θόÿÿÿ‹ƒL  Ί   L$θόÿÿÿ‰ΖƒΔ…ΐ‰‘  ‹ƒL  L$Ί   θόÿÿÿ…ΐx‹D$VPhp  ÿ³    h    θόÿÿÿ‹ƒL  Ί   L$θόÿÿÿƒΔ…ΐ‰H  Ph°  ÿ³    h    θόÿÿÿ‹ƒL  Ί   L$θόÿÿÿƒΔ…ΐ‰  Phΰ  ÿ³    h    θόÿÿÿ‹ƒL  Ί   L$θόÿÿÿƒΔ…ΐ‰π  Ph  ÿ³    h    θόÿÿÿ‹ƒL  Ί(   L$θόÿÿÿƒΔ…ΐ‰Δ  PhH  ÿ³    h    θόÿÿÿ‹ƒL  Ί-   L$θόÿÿÿ‰ΖƒΔ…ΐ‰–  ‹ƒL  L$Ί,   θόÿÿÿ…ΐx‹D$VPhl  ÿ³    h    θόÿÿÿ‹ƒL  Ί.   L$θόÿÿÿƒΔ…ΐ‰M  Ph   ÿ³    h    θόÿÿÿ‹ƒL  Ί/   L$θόÿÿÿƒΔ…ΐ‰!  PhΜ  ÿ³    h    θόÿÿÿ‹ƒL  Ί0   L$θόÿÿÿƒΔ…ΐ‰υ  ƒΰΊ   )ΒRhψ  ÿ³    h    θόÿÿÿΊ   ‰Ψθ|  Ί€   ‰Ζ‰Ψθ|  VPh,  ÿ³    h    θόÿÿÿΊƒ   ‰ΨƒΔ$θ|  Ί‚   ‰Ζ‰Ψθ|  VPhL  ÿ³    h    θόÿÿÿΊ…   ‰Ψθ|  Ί„   ‰Ζ‰Ψθ|  VPht  ÿ³    h    θόÿÿÿΊ†   ‰ΨƒΔ(θ|  Ph   ÿ³    h    θόÿÿÿΊ‡   ‰Ψθ|  PhΠ  ÿ³    h    θόÿÿÿΊ   ‰ΨƒΔ θ|  Ί‹   ‰$‰Ψθ|  Ί   ‰Ε‰Ψθ|  Ί‰   ‰Η‰Ψθ|  Ί   ‰Ζ‰Ψθ|  ‹$QUWVPh   ÿ³    h    θόÿÿÿΉ±   Ί    ‰ΨƒΔ jhµ   θ¤υÿÿΉ¶   Ί²   ‰ΨjhΊ   θυÿÿΊ»   ‰Ψθ|  Ph<  ÿ³    h    θόÿÿÿΊΐ   ‰ΨƒΔ θ|  Phh  ÿ³    h    θόÿÿÿΊΑ   ‰Ψθ|  Ph  ÿ³    h    θόÿÿÿΊΒ   ‰ΨƒΔ θ|  PhΘ  ÿ³    h    θόÿÿÿΊΖ   ‰Ψθ|  Phτ  ÿ³    h    θόÿÿÿΊΗ   ‰ΨƒΔ θ|  Ph  ÿ³    h    θόÿÿÿΊΘ   ‰Ψθ|  Ph@  ÿ³    h    θόÿÿÿΊΙ   ‰ΨƒΔ θ|  PhΔ   ÿ³    h    θόÿÿÿΊΚ   ‰Ψθ|  Phl  ÿ³    h    θόÿÿÿΊΛ   ‰ΨƒΔ θ|  ΊΜ   ‰Ζ‰Ψθ|  VPh  ÿ³    h    θόÿÿÿΊΝ   ‰Ψθ|  PhΘ  ÿ³    h    θόÿÿÿΊΟ   ‰ΨƒΔ$θ|  Phπ  ÿ³    h    θόÿÿÿΊό   ‰Ψθ|  Ph	  ÿ³    h    θόÿÿÿΉ   Ίβ   ‰ΨƒΔ jh“   θ–σÿÿΉ”   Ίμ   ‰Ψjh™   θ~σÿÿΉ   Ίφ   ‰Ψjh¦   θfσÿÿΉ§   Ί   ‰Ψj
-h―   θNσÿÿΊ
-  ‰ΨΉΠ   ƒΔ jhϋ   θ3σÿÿXZ‹D$d+    …ύ   ƒΔ1ΐ[^_]Γ‹D$ιΠυÿÿ‹D$ιόυÿÿ‹D$ι(φÿÿ‹D$ιTφÿÿ‹D$ι€φÿÿ‹|$ι®φÿÿ‹D$ιχÿÿ‹D$ιBχÿÿ‹D$ιnχÿÿ‹D$ιχÿÿ‹D$ιΖχÿÿ‹D$ιςχÿÿ‹t$ι ψÿÿ‹t$ιkψÿÿ‹D$ι΄ψÿÿ‹D$ιΰψÿÿ‹D$ιωÿÿ‹D$ι8ωÿÿ‹t$ιfωÿÿ‹D$ι―ωÿÿ‹D$ιΫωÿÿ‹D$ιϊÿÿ‹D$ι3ϊÿÿ‹t$ιaϊÿÿ‹D$ιªϊÿÿ‹D$ιΦϊÿÿ‹D$ιϋÿÿθόÿÿÿ·D$·T$‹$¶L$fΑΐfΑΒf‰†v  ·ΐf‰–x  ‹S‰$Β  R·SÒR¶T$RQPhh	  ÿ¶    θόÿÿÿ·†v  ƒΔf=PQ…‰   ·x  ‹–    fω!…   h  RθόÿÿÿXZ‹Θ  1ΐ9Ψ„Α   iΘ   ‹–T  ƒΐ”8  ‰$‹–X  ”<  ‰Ρ‹$‰X  ‰–T  λΏPhD	  ‹D$ƒΐPθόÿÿÿƒΔιΤ  ‹–    f=QQu$fΎx   uhH  RθόÿÿÿXZιsÿÿÿfω tPh”	  ÿ¶    θόÿÿÿƒΔιSÿÿÿh2  Rθόÿÿÿ‹†L  1ΙΊ0   θόÿÿÿY[ι/ÿÿÿ…ΐuΗ†T  ÿÿÿ Η†X      †Μ  1ΙΊ   Η†\      ‰$‰Γj Η†`      Η†d     Η†p     θόÿÿÿΉ 	 Ί  ‰Ψj h€   j jj hÿ   j j θόÿÿÿΉ	 Ί  ‰ΨƒΔ$j h€   j jj hÿ   j j θόÿÿÿΉ	 Ί  ‰ΨƒΔ j h€   j jj hÿ   j j θόÿÿÿΉ	 Ί  ‰ΨƒΔ j j j jj jjÿj€θόÿÿÿΉ	 Ί  ‰ΨƒΔ j hΐό›j jj hΐό›j hΐό›θόÿÿÿΊ  ‰ΨΉ	 ƒΔ h  j j j jθόÿÿÿ‰^l‹  ƒΔ‰Ϊ…Ϋt‹$‰T$θόÿÿÿ‹\$ιΤ  ‹†L  L$Ί   θόÿÿÿ…ΐx‹D$ƒΰΊ@  ƒθƒψ
-†¨   ‹‡ΰ  ‰–H  1ÒΗ†@      ‰†P  ‰πΗ†<      Η†D  Π  θ,  ‹—ΰ  …Òt&V1Ι‰θh[  h   h   θόÿÿÿ‰ΒƒΔ…ΐ…Rÿÿÿ‰πθόÿÿÿ‰Β…ΐAÿÿÿƒ=    ~‰πθά  1Ò‰θθόÿÿÿ‰θθόÿÿÿ1Ò‰θθόÿÿÿιΤ  ‹Ε    % ω  ƒψÒƒβ`Βΰ  ι9ÿÿÿÿqÿqÿqÿqhh   hΈ	  ÿ¶    h    θόÿÿÿƒΔ ιB     W  ­  Ψ  c  λ	P  c  λ	θόÿÿÿΊ    Έ    ιόÿÿÿΈ    ιόÿÿÿ           °              ÿ                                              @                ÿ     tvp5150_get_vbi tvp5150_set_selection   tvp5150                                                                                                                                         @             @  
-                                                (   (   ,   0   €         »   ΐ   Ν   Ο   ό   p
-                                            ΰ         @             ΰ  ΐ  @   p       @  @                                                  ΐ  0  ΐ         @
-          °                        @                                                                          ΰ                                          ΰ              0                      @              `	                                                                                                                                                                                                      0               ªªÿÿ'. +¦r                                                                                                                                                                                        π               ª*ÿ?Qni	   '    @           [UΕÿ qnB¦Ν   :                                                                                                                            ªªÿÿΊΞ+¦Ϊ   ` o GT' ÿÿ                               ` 	€
-€ €G     €     ( ./» ΐ Α ΒΘ€Ι Κ ΛNΜ ΝΟ Π όÿÿdebug parm=debug:Debug level (0-2) parmtype=debug:int license=GPL v2 author=Mauro Carvalho Chehab description=Texas Instruments TVP5150A/TVP5150AM1/TVP5151 video decoder driver              ¤ÿ      GCC: (GNU) 11.2.0           GNU  ΐ       ΐ                                  ρÿ                                                                  1   @   &     H   p   F     `   ΐ   ;     u      9        @  9     ¤   €  A                                	              
- ±   Π  Τ     y           Α       %    
- Φ   °       δ   @  V     υ   %   !    
-   F   ›    
-           (  ΐ  €     A  ΐ  Τ    Q  α       
- o  @  7     ‡  €  ¬     –  ώ   $    
- ª  0  g     Ό     W    Ρ  "      
- λ          χ  @  €       ;  -    
-      E     $  p  γ     3  h  Q    
- G  `	  ή     V  @
-  '     h  p
-  ”    {          Ή  ή    
- ¦  0      ΄  ΐ  X     Ι  ΐ      ή  —  9    
- ψ  X          ΰ  _       @  Θ    $  ”       8      X     B    ­     S  ΐ       d  ΰ  6     w  Π  X   
-      γ      €   ΄     ¬  ΐ        Έ         Ν         β  (  Ε   
- υ                      ώ    2  ν  .    
- M  h        X    I                  n           ‚      €     ‘      
-                   ¥  ΐ   \     ΄  €   0     Ώ  $       Φ  @  P     ξ  ΰ  0     ÿ     ,       @  P     #          3  ΰ  @     C           X          q                    ‘  0        ¨  ?        Ύ  \   O     Ω             δ             ό                                       +             8             D             V             }                          Ή             Ψ             υ                          !             9             B             [             o             †             £             Ή             Ρ             θ                                        1             J             Q             `             s             €             —             ¬             ½             Η             δ             φ             	             -	             H	             Z	             p	             ~	             ’	           	             ­	      
-     Ό	  €   0     ί	             ύ	              tvp5150.c tvp5150_g_std tvp5150_get_mbus_config tvp5150_enum_mbus_code tvp5150_enum_frame_size tvp5150_volatile_reg tvp5150_runtime_resume tvp5150_runtime_suspend tvp5150_read tvp5150_set_std tvp5150_set_std.cold tvp5150_s_std tvp5150_fill_fmt tvp5150_fill_fmt.cold dump_reg_range tvp5150_close tvp5150_g_sliced_vbi_cap vbi_ram_default tvp5150_g_sliced_vbi_cap.cold tvp5150_subscribe_event tvp5150_remove tvp5150_remove.cold tvp5150_s_raw_fmt tvp5150_s_sliced_fmt tvp5150_s_sliced_fmt.cold tvp5150_isr tvp5150_ev_fmt tvp5150_isr.cold tvp5150_open tvp5150_selmux tvp5150_selmux.cold tvp5150_s_ctrl tvp5150_s_routing tvp5150_registered tvp5150_link_setup tvp5150_link_setup.cold tvp5150_reset tvp5150_init_default tvp5150_g_sliced_fmt tvp5150_g_sliced_fmt.cold __func__.2 tvp5150_g_tuner tvp5150_s_stream tvp5150_init_enable CSWTCH.90 tvp5150_querystd tvp5150_init_cfg tvp5150_log_status tvp5150_log_status.cold tvp5150_probe tvp5150_config tvp5150_ops tvp5150_internal_ops tvp5150_sd_media_ops tvp5150_probe.cold tvp5150_ctrl_ops tvp5150_test_patterns tvp5150_set_selection tvp5150_set_selection.cold __func__.1 tvp5150_get_selection tvp5150_driver_init tvp5150_driver tvp5150_driver_exit tvp5150_pm_ops tvp5150_id tvp5150_readable_table tvp5150_readable_ranges tvp5150_core_ops tvp5150_tuner_ops tvp5150_video_ops tvp5150_vbi_ops tvp5150_pad_ops __UNIQUE_ID_debug283 __UNIQUE_ID_debugtype282 __param_debug __param_str_debug __UNIQUE_ID_license281 __UNIQUE_ID_author280 __UNIQUE_ID_description279 __fentry__ regmap_update_bits_base __stack_chk_guard regmap_read __stack_chk_fail regmap_write _dev_printk __pm_runtime_idle v4l2_src_change_event_subdev_subscribe v4l2_ctrl_subdev_subscribe_event v4l2_fwnode_connector_free media_device_unregister_entity v4l2_async_unregister_subdev v4l2_ctrl_handler_free __pm_runtime_disable __pm_runtime_set_status _dev_err v4l2_subdev_notify_event __pm_runtime_resume media_entity_pads_init media_device_register_entity media_create_pad_link media_entity_remote_pad media_entity_find_link v4l2_ctrl_handler_setup __x86_indirect_thunk_edx devm_gpiod_get_optional gpiod_set_value_cansleep msleep __const_udelay usleep_range_state devm_kmalloc __devm_regmap_init_i2c v4l2_i2c_subdev_init regmap_bulk_read _dev_info v4l2_ctrl_handler_init_class v4l2_ctrl_new_std v4l2_ctrl_new_std_menu_items devm_request_threaded_irq v4l2_async_register_subdev pm_runtime_enable v4l_bound_align_image __this_module i2c_register_driver init_module i2c_del_driver cleanup_module __mod_i2c__tvp5150_id_device_table v4l2_event_subdev_unsubscribe param_ops_int     Z  !   Z  A   Z  q   Z  Α   Z    Z  1  [  A  Z  q  [    Z  ”  \  ΅  ]  ²  \  ½  ^  Ρ  Z  <    T  _  ±  Z  A  Z  {    ΅  Z  ±  a  Α  Z  Μ    π  I    I  4  I  A  Z    Z  ‡    Ό  d  μ  e  ώ  f  	  g    h  !  i  1  Z  d  _  y  _  ‘  _  ΅  Z    I    I  -  I  U  _  h  _  “  _  ΄  _  Ζ  _  α  _    Z    \  9  ]  O  ]  a  \  ”  ]  ¨  _  Έ  _  Ζ    α  I  ζ  k    [    ^  !  Z  4  l  q  Z  °    Κ  _  Ω  _  	  [  a	  Z  Ρ	  _  ρ	  _  
-  _  1
-  _  A
-  Z  q
-  Z  χ
-  m    n  )  o  ›  o  ά  e    Z  }    ª  p  ¶  q  ί  p  λ  q  Ρ       q  1  Z  >  I  h  _    _    _  ®  _  Η  _  έ  _  κ  I  φ  I    I  %  r  P  _  _  _  w  _    _  ΅  _  ―  _  Α  Z  Φ  \  *  I  ›  ]  Α  \  Ò  ^  α  Z  τ  \    ]  -  \  ;  ^  A  Z  T  \  n  l  ‡  I    _  υ  I  ό  k    a  .  [  >  \  ‰  [  Ξ  ]  σ  I  ϊ  I    ^    Z     \  O  \  n  ]  “  ]  «  I  ²  I  Ή  ^  Α  Z  Ξ  \  π  \    ]  ƒ  I    I  ά  ^  α  Z  ς  \    ]  !  Z  0  \  B  s  _    f  t  ~  u    v  ’    ™  t  ΄  w  ½  u  Ρ  x  β  y  υ    ό  z    I    {  6  I  G  I    m  ΄  |  ί  \  ψ  ^    Z  #  \  6    Ε  „  κ  \  X  _  p  _  †  _    _  Ό  _  Ω  _  6  ]  ]  I  °  ]  σ  I    ^    Z  #  \  ‡  \  ώ  ]  C  I  U  ^  D    ƒ    Τ    T  b  b  c      ε    Ϊ    Έ    "    '        f    ¨            Ώ    Δ    B                   \   I  h   I  ¤     ά   I                                                 $     (     ,     0     4     8     <     @     D     H     L     P     T     X     \     `     d     h     l     p     t     x     |     €     „             E               `  (     3     8   `  G   Z  b   \  “     ª     µ     Ί   `  Ξ   \  Υ   ^  β     ν     ς   `            `  #    .  j  >    C    L    W    \  `  p    u    „    ‰    –    ΅    ¦  `  ³    ή    ι    ξ  `      ?    J    O  `  {    †    ‹  `  ™  I      ©  j  Έ    Γ  j  Φ    α    ζ  `  ϊ  ]            `  /  ]  @    K    P  `  d  ]  u    €    …  `  ™  ]  ª    µ    Ί  `  Ξ  ]  ί    κ    ο  `    ]  $  ]  B  ]  R    ]    b  `  v  ]  ‡    ’    —  `  «  ]  Ό    Η    Μ  `  ΰ  ]  ρ    ό      `    ]  &    1    6  `  J  ]  [    f    k  `    ]      ›       `  ΄  ]  Υ  ]  δ    ο    τ  `    ]  )  ]  8    C    H  `  \  ]  m    x    }  `  ‘  ]  Ά    ­    ²  `  Ζ  ]  Χ    β    η  `  ϋ  ]            `  0  ]  Q  ]  `    k    p  `  „  ]  •         ¥  `  Ή  ]  Κ    Υ    Ϊ  `  ξ  ]  ÿ    
-      `  #  ]  4    ?    D  `  X  ]  y  ]      “      `  ¬  ]  ½    Θ    Ν  `  α  ]  ς    ύ    	  `  	  ]  1	    <	    A	  `  M	    [	    b	    m	    r	  `  	    	    –	    ΅	    ¦	  `  ²	    ΐ	    Η	    Ò	    Χ	  `  ζ	    μ	    χ	    ό	  `  
-    
-    
-    
-  `  -
-    <
-    J
-    X
-    f
-    s
-    ~
-    ƒ
-  `  
-    ¨
-    Β
-    Θ
-    Σ
-    Ψ
-  `  η
-    ν
-    ψ
-    ύ
-  `  	              `  .    4    ?    D  `  P    V    a    f  `  u    {    †    ‹  `  —        ¨    ­  `  Ό    Β    Ν    Ò  `  ή    δ    ο    τ  `              #    (  `  4    :    E    J  `  Y    _    j    o  `  {            ‘  `  ›    ¶    Ξ    ζ    ω      \  $  ^  p    {  }  ¬    ²  }        j  4    :  }  N    Y  }  f    l  }  ~  _  ή  ~  θ  I        I  /    9  I  Y    c  I  }    ‡  I  ª    ―  I  Ύ  I  Λ  €  ι  g    ]  [    o    y    ~    ’  ‚  Ά    ¬    µ  i  Ό  ƒ  Ε  a  Ρ  I  ϊ  I  ÿ    
-      `  !     B     ϊ         7    d    ®    ώ        W    “    ³    Μ        ς    Κ                                           Z          …     †                             $  I              ΐ  I  Δ  I  Μ  I  Π  I  ά  I  ΰ    δ    θ    π    τ    ψ    ό        ,    0    4    8    @    H    L    X    h    ΄    ΰ    π          ‹               I     …             .symtab .strtab .shstrtab .rel.text .rel.data .bss .rel__mcount_loc .rodata.str1.4 .rodata.str1.1 .rel.text.unlikely .rel.smp_locks .rel__bug_table .rel.init.text .rel.exit.text .rel.rodata .modinfo .rel__param .comment .note.GNU-stack .note.gnu.property                                                      @   Y                    	   @       8U  ΐ              )                4                  %   	   @       ψ[  8               /             Τ                    8             Τ                    4   	   @       0\                 E      2       d  α	                T      2       E'  •                g             Ϊ(                   c   	   @       P]  
-     
-         z             ψ:                    v   	   @       Xg                 ‰              ;                    …   	   @       hg                  ™             ;                    •   	   @       g                  ¨             ,;  
-                  ¤   	   @       ¨g                 ·             @;                    ³   	   @       Έg  (              Ώ             ^A  «                  Μ             B                    Θ   	   @       ΰh                  Τ      0        B                   έ              3B                     ν             4B  (                                \B  Π     Z         	              ,K  
-                                i                                                                                                                                                                                                                                                                                                                            ½–2΅gJΚU”z°/UK\S΄Υ#H&B-’”‹ΖώΎV―ϊιXΣ‚Ήmυ >Ψ@\5	{@ΣJcΕψbέ'1PΑέ`*„μ•τdΩά άOGΕjΝώZ…),£UCV΅φέ¨’ΌW%Χ§ 5kφρψ#!TΠPΥΏ© kμ‰@AlAa­§2<< εLδΓBc%κip+vj¶BFΠªζC3ί@egί~)η5Φχw5pν44‘ι`9ρTι¥|	ξjπLUΟσε!VIςξΡ‚³ΔqΪτr9φAεªΡXHΛ?fι…±:‹εΩΥ…"e@M-NΟjz1{‘&gμ©;ϋ¤k.σβ !ΛΊ.νχ+¶΅p	ΌΡΪ™εέξV]ί,¬ 4‘¬ιΒ27Α4Z~φώ&π οΩƒR2Ο‡χ‹Αi,gθΉAΆvIΪΊ‹"	€–ύiη‹µ'θÒmΖϊ5­ ΗΡ¥ΛΗ'xρ|I‰¬Ρ$ίΐΣ7™i}Kψγ\ΰQήFd‰dΒ„&&‹iOGΧ3άvKδ%[™©iou«…«fΗδzΐ–x:J’*pΠΑ…‡„"\"Φz
-λΌ©ΎyªQ_ωΔνΗ™hSξhβΡωξLΏΆιÿαγ<maο
-Ο@6΅”Κ4®ώ²ιjX[=Ο}ƒΙΘϊVΨX^ΣNΏ|²Σΐηζ‘«V·—θnH^Χπ‹»	κYjq>ϋ‰iμΉΉΨΚƒg κF^PΛΊnόƒ›:²;ωήύ½D¨«Γψ΅υNμ¶•}Ϋ Πq–[¶MΖ‹γΫ‚ϊ hάςδκYa―
-ύ`†ιψx KJ|O^Π¦Mσ8ΦƒαT(7αΖΖ„¦(»*‡DΌ3
-lΖD,ψ\]ΕΒψΙd¨ϊ2b«TG{υ[ΐS•U)VΑ?Z®	Ή6_kΞ§ΐΑ¤2HΠCΧdΏχΣ</ξ8γ†® •Ώ$'£ΠεϊIΎ κ®ΧδΨ†Ϋƒ~n‹αΦ—==/ίDΧMβ]¶τ 
-έDά5€"XΓ>U£Ιξβ–Η%Σά%DΉ•ÒI}¨όWBμ™X‚‹/a«5Fό;[Νώ_ÿΪΖd“…ρ4ΡψΘή2Δϊζ® ΅i Γ/Ρ]ΪυU‹¦`…0:¨6 ΪK.ΩιΆΗαD£ÒKεu hΌj<w	ψoαύΫ97ΖΧÒokΊ(h`\να°-«ΖΙνaKΘt†[7ο_ϋΔ?0£†ηk8Σ‰ζy¥$ύΜµΣP·\Θu΄8δΪξ…ONΒ©µ‰?ΚM΅µ¬-ο π0ΰ6ιnOζN΄"άΉrςiΚ@Ogχ)Ο8ρλ94εGcfΥψ/¤Ζ*ΪηhΔ¦€FΎΊ²ΉΎzΙ‘«2FεΏ2bg`Α°–Υ…ΓΣφk£$¦xαθΩZόµAδ‹hΝ2¤#ΑNΝΈΓ…Β%ΨίθΒxΥ`sεκlΫzZσiΤi*Π@ϊΰ¶cgΜÿ‡οFγ(WgµemRt4‰η>kF©Pa½tξ ϋT‡ηuΙHΑ85nz»ΝaΠΟ‚{z½tτ"
-ά+΅ώΉψΊ±„XƒΫΓªpF[χΰiΩª(‚βg!i›Oόhΰwiαϊ°Έsv©hΜ Α/Ν`‹ΘχjTΘΛ?,΅ZΌύ@«ε¶νΞΪψF«™ÿ*6I¨όχtΞΝAnθ½™«wk£VX
-Ο·υτ`)i‰5wρ0ζVΝέ²β"WyϊαΠ~Yό_!Ξ¶<CLύν€Θ#ΒΠΕ#•Ή)Ωiδ΄ΌgTΛ·{Ρμ m=PsαA<έ΅­αρ¤’[®ƒ=ύk»έΛ aό#
-Cψ*Fψ#“ΨγΔ$qHΉA&φεpm’ϋ p;Ω¤b’wξ2΄oσ¶TύΠ²'ίΣ·G–dψϋ·Σµ|‡’{Ή ·ΨΟ_­Ρώ~Om~-VPtηnύΪ[^idΰq²ΏΦΒTΤΩªύΜ~ξU΅+a5μΆ1οή®8ή;ηGΘ<έQKhέΏηG«ΔίΛΘvΩ;σsr?mς+[sέίR»(»‘weΠμά›CςΈ,J^δFg{.Ή<#βh(.‚µ=DJ‰h`O>vCΕ“E@hrz(£ig:”_!FFξªkέ
-Τj;€!ΜΣi3v7W6ΓSΖv3n§;΄/ 8ΰφ#WρµΘψέ:y+Ρ’|"τήΏ©u‹―E+' ΝΞΉbKΜΩξ¶pηC–Κ-g¨ε·ΠδÒΌΌωΰ Pε.ΚπΡ–ΰx3…Έ•bξ–Òtΰw’‡‚›XB7[Y‘ν³δGς§zY…:'Nπk']-πιW 1δΗµMΫ¤…ukΒ5 ς–<yΜΜ}Ό•*ό>@'7(΄ΆΜΟφή(Yƒ_ÒJz:Όaό™rEldΘ!P¤0θ³¤vƒj S™nhR^Σ»ω  .Q Px
-ςfω‡’®<tZΝ|-άάΏυΒΪ_ι‚ƒΓΦΡJ‹αΆ<QΦσª{JΓΦλ<‹ΝÿΜjβXΖ+sg‹κ†“sν,λ•Οη›-Cn+„fΨ:ήΣvE2Ϊ95K…BΎ‘#έVΰyζψΥΈ$lο0ΓΫ "ΩμA…Ύψ?D1Α‰…τ~Ò>ePΜΐ]Τ§9ώ°%$xVγƒ[ΏΤΒ±κΒ²σMμΏ·ϊz«“?vΑ1“εCLCÿε}«–qπύ0ϊπiΥaplΒ±ΎVuκην-™6Π@,+ρeΙ®9Ώ/ΥD9Z¤b’Tώ#ξ_Χ·ΗΐΈύΘWΒQvδ³ε‰q‚€υWΈjXzHΆg	δw_αzAόΎέ„»ΚτCωΕy?Ύ'›αpώ¤NΣe2%έ®X©ΎγΕ]@ASΰ²®¦‰Cϋ}ΦNiΟ³ν·λGΣ°SΦ­ΘΒDε;§οDΩ[Ψ:55x•cqT|<Eνªvι9 }xgG{JΥΟ“―)±F¤ΔzΗ½Ϋ¬ΒXθ γΕ`.Ά¤ΧΪΝζΎ™#¶Ω­ιΑ@'κΥ²R ¨θ£bέβ=}#fªγYΨMδΩΞρψ½|IΠ{e υL9φχj· *	7`U*’mvΰΤsSUΓργΨ#Β|ψ¶oψΤHy1Λ3ƒ―kΆo’ RA™a$ίΘΜn
-·ςκ”ΌΥΌ?jhρμΐ»Ò›ka–P½—μÿ™£™Έ>νS?!Μ£Γψkϋ?moOcBΘxL„½dέάÒδίD2·―€ΰά«Ξ‡s}…Ί±ώόP‡Q…Crά)Η&βϋEiϊ"“¤θ¤.	9Α<ΠK¬¨[μύνÿ,ƒ+γ/όHFYT«{ϊ“€§TÒθO§ΘΘ]§ΚΙ5Dj³Eι¨ƒ)1ΈίTΝBm4xqρWαcΙa‰£~OIUπLtΡ1[ήkΎ¦ΑWιΰz“jΪςΖΓDθ{Ρ0έΧ©h δΈJ«T“tΎX.	’KNOΘlδΔi²0χ)κmΈΐΐΛγµ{,Gk…_(” G¤ΣΕ›ή†μΟΔχ^”΅9]ψΩΡΦu\]ι†Ά¨°*j3Ρm›c¬~<Zρ4±]/Lϊ¶όΠΪ0= WΝO‰OY½‡?~—,ª–Bgw]Rε¬ϋÒΝX\-°αlp1’ηώ#§'μΆ¨‰αgΏ	χ? #ώ<‡ΏkΖƒώ‡Λ‡Υ\ς{ÿ4yί®w)Υ(ΤzΝuξfp†ΏΧpζψτ’ψ°φª8ΌÒΧYGςσΚ…FρuΣπάΝUΖΡ€άcnδ•W€ν θh€:Τβ¬5…Δ	TβOD0© /Σ°:iτ2ª¶S2B½&VΓT!PΕα½ΐG¥tΑΚµΖ–AΒ7‹c±ά4Γ^ Μ°KυΔγ€^Φ“¤8.ωΔrzκ‘Π¦λL;f°θq•ΑyΫ]hW ί) ©H‘ΐ»>»q`Η]Ζµbµ@UnΚ-ΝΕ?rµβC}Pq}θ³)F¬©`Lκv©ΨθώαifSΪ§N'ΎƒµΖrHh1μ
-8EUMhμhh―ΫhI®ΥIαβZhλϋ9£H_ΞφSηζ ¥ΔΏCΔbeάN|%ΠYJ™ ρ=RΕ>¤„nq»ζΕ#–AΚ‘%ΔΰΝyy:T²ΥίΩ5Κ·Ά•:δψÒBδ†RιΚ”οή΅?FΜΒCΐ›:O™€ι,ƒλΔRΌYΆ ›Ξ€EΠΊU.ί±ΝAδJY6ΪuUάxαcθΫ³r)!’Zwq‹γ0‚DηO²8λΠVτ½ª‘ώξOΨψ°4(	eαc¬5―	¦γL©ΒV`‰μh7Λ@KB}Ϋ§¬pψA?γγF}ϊ?ΏaJªqώG\ό]Ϊxl3Λƒ|GiQQc C
-¦R¨Ώ¥ωκ{γ¤9hμ	­	§«ξ0KV›¦ξΧYΛzόυM®¦\‡;MB8HασΊΎQ[fλτ'ψ]όι=φs“Γτ‹GΔΌpυυ{(ΉΥ­,ρb¨•΅¬Hώ K8λθΝξ>.β¬;ώμL/Ά¨6†€XΔG……ϋηώ΅NaSrΡ¬Ώ°ς®Os_ #¬4ƒ:uοy}κωπ³π5?0¦pDδΌGHV;‰qHΚΦ‰¦EΊOu™…†Ωΐfμsε‚Κ7GζeΗFΠ|Ά{Ψ}θUt5&ζ±΅:zCΟίχΐ5ÒZΘ^ϊΘ*ΩF/N>Ν5tl³α$θφ!φ#H.χ*nΊ1§ΰF B6γ7Ρ4Η<π.ί±:+ΠΎFL›7@–ΙfίÒμ<§ΘΉγ	?©ν­)ρΟΊΉΌC)uΣ0f–‘ΑNΆUTΞQ"ÿΜI…;:
-©–ΝGέύχ1¤Φ	¶ κε@ηWΛxΡΊtjλ\ωμΙ?4M›vχ?<ν«ΚcZƒ<C†ς«qμΌθ%τ~7΄ΰ!/Φ)―RfΌ@ξPζω——H¨{¬ω©b±ΟS	γγωΰήcηΨ«2αυΫί  b^zw΄^©eή)p·έHFª*”*·αΞ™|}Λ4=ΌbΠΕgξ*[‹kwήΛg®ΐΈΦr$=Δd;R0Z®μϋβκΓ9²¥BΒρ¥ÒήWj³JΣK?α8ο`kwLt*v!IάfCƒωο¥)…ΒGh›?αsd6[δ.σ&Ξ”£ΠG–‡@xΥΨδΈgδ€;¤™ιΩραp¤Τυ¤J‘wAPΗ8ώζ?€ΗΏA­Ίν›…ΙΡl—*ω1ΜHk¦Ωo¨JρΊI:²8†&οώ M›Β-¶7ώcλ ιψΣΊzόΏJ0%ΔX―a­¨7TSC4·Ι*pµ4:ζΔΎΤÒ]©‘3p7…αqS;ΗÒ)U®N9‰β*2cψI„FΪ–F³μ¦¥Ά­/“±¤Ϊ‘χVώΩάβύχπkLZ=›”aNcΕ…<1Ι Λohr,ν„·YΓjΪtΧ_ΆRΈIΞ¥Ι»AΎύΊΖαtLmΞΣk$J™ƒGο+ά¬ά¤ªa_αS¬plτ΅qdΠφήbGd4bΡΗ(:]oό&>ψ”νF” hβύήΔ)°j ΜMτ{π{ϊΕΛ»R+ΤΚ]η@lθ™‰ΖΥcνJ–ΐ#ϊwsΛ™ΐ[o 4EΟϊψϊY3±―aή&pKω8
-\έ.·ψνύO°φ/ΐ:L.§©µ<Ό—ό-v6mΝδ{°Wάό§‹Kd$Ξ8/f3$|ΉβDΙ§Ò§‚­DlsΖZG4ς<–EU`Ι»Οb)"L$Ώaζ[I_
-$T."μ«QeZtΝνΘ°Χ$―~vΞ»όθSΖ‰›lªZ½θ&X~„ΨiΈ‹›‡φμ	Ο.[Ϊ†)Ω\½£v·υρΡ±ΞHΈ%Χ|7σ£`ΖΈ#Α3―ξϊΜ^"ΝÒ}UΙÿz^K›b)ΝκΣf•­KΕ.ª†θ&3/TΘR[Ύ‘ΨBΪFs°CD'^WΪηH.Ήσ¨ΠϋPφΖΞ1όe7\hχ<Ϋ­gάτμO2A μ…ζ.A2{hΨΠd}§>DnΤΒωΞ;tΝκ΄mΐΑ†‡pBm™Ω†&#΄Jpϋhθ§λ‹ΙtΔSΌ£\y?RΈ{(ω&sUzzμS’?1μ—Ωx†ÿΌ­γ¤²?cίa#vΧδ•y ,†§\“vμςZΡ9Χ«®+²Ò©j‚φϊηΉ[N?x~ξµόSψΠΌiπΓ)*ÿΪ"zΑρλJ3
-Ί²„ή„k²Z°ώZϋ_‚»&›UY\η²4―Ξ*Μ*τςA’Ϋ-°ζ|Ώ…>R—"ΌΧ)ÿ­³?±[μA}¦
-νE»β/μ8΅Ξ=¬ΰΏ’ m”ÿΰξkC™ςyϋHύA<h‹ο,#®jYgW―Ω΄YΝ:Ξ΄™
-O¤wΆ8R
-#X…Qλ½¥#ήβΞήXεK¤‡YΫνωτq—ΣΠσEe‚qΛψΖ‹ΈπKΖMόP cFdσ>DΔ‡:h„¤Ζ!ΛDΣnΌu	}χD(t›5"eΜθnMHω *FaX=Ή)QΞYε‡ΑωχαyYΈχJ2Ψ#GΠεΦ&π7!τά#+Wªα\IΉΊ?rv“ƒ©»O·_όΪό­ιªήL'j²—Θ,ίΜίλI{ΛX'V2k¶z€ςw‘>;Λ8«ªΑyÒ°ύ5δ™Ηϋc)4?$ΐ6΄δάΙQ.&ΕΖ Y/Ι·'Θ£„υΪuΉτ™©1Y‘ϋ-σ‘|Wη°jTd`vΝΧ_UÒ’ª>)ZN#ΞwΝ%'I`δcR.9ΞΧ&”9τz	5NV‡HAωEλϋχo³£— “ΎςvΫ»
-j΅Y½ΗΪΨo·Θ’6s{®μ<bΝ‰Η–d6-Ψ\.ZKHxhN¬“_:όTq’~Π2™{·o®l9ψqD–VαωZύ1£ωπ\Θ«&y6KUi1ΕFkzk+Oφ?Iδαύx–·E‚J·5sΏf’xτ‰Φο7Ί=ΘΣPZHρªSμ	‹c…ρaoΔ\5!ί»Υm2 [=WU³PΜZ#lβφαte­—ζ;°#Y‚Η±Ξ&νª<–.xΌE«κ}Ί—=b"ΆΔΟ>vT	#’΄ΒEή§Ξg dΩUÒ K4YoΠΚ<Ζ€κ’ίΥ—>λΐ¤Ψoγ¬ex"ΨXÒm ]·®(ΗsΘ1(rσχΕ—rΊ\ζΨ#¶‚Ο(‚}tώ‚GΓ‚Ϊ#ÿΡfχk`οΏΘEVi<Ϋr¬aί9\[–ινªCVαLγΪ‹S! ¥ΝΪc§§Ϊ+ θμΦυ•#4€=ΖoΝφ7YΠΉΣk»α¥Ι‹/(µθ*οi0ωρ–s(ΈtίΛx(¥gΣ:2HθSk–¬Θ(^–ÿ¦ΔWbKύ.υζ€p.β†Φ5&\w`V‰&΄ό7™ΜΤlΡm®ψηελΟK»m:­$Ξp(9>ΩΈ§{Λ€¥\ϋRmΌ"ΐμkΚώ@‡kµªuαςrσ«l‚’¨αi7ήr“£uΥP2ή#gσιBΟΟp¥A\^(xQyZ‰π#»™v΅”R#κΣ‹&C;­_*ΤέΥ™π+Ά!bf+u¬ϊέ ίl'\D™σn
-:‚βφ>‘ό†ρ½¤O½ZΖ]p‡οϋV§baσΟ?θ<μ΄Οƒό
-©·4ω}ΰs<‚[[ªIπΞ[^j©‹Ϊζ “ΨΈb½+jΰ…„E*gAυ·W–Z-¨¦ΗγΠΙΈkώc]v‡ηΎ6Ζφ²rwµ*}$ZzO…υ@‚qv-£‡ξ~ΘΖΞ½‰Η†ΠζhϋΒdpύ4ÿ'¶ξ€*Η}φoΕa‘Αn&N?ώhΓM_ΊόήΚΨzΖ•Μπÿ‚M,2ΦΎ^a@²ΠΡ{E΅®Α(ϊ•F―\γ(Euή†ªΑc‰Ι³ρπφƒϋo`κRPΛgψΉIAα™Ω]ΫΩ©«Ι•.$„‰xρΆμU_‚Κ$T5zta9:…N¦I:ά.xΪΌ`ε§>«½¨~¨ΞυψyΖ+Ψ/α@―¨a£κΆ:°³!.ϋC¬	μPΥƒ¤‡®cC=ΘΟ„Ε±8φ΄5φ»ΌΫ³½Κrd³&Q'Ύ8nz#M…ΑςζΉTV+L³ΏσUΓxnΩXo%:Γσµ£¤W–:d±x
- 'ζΞω<%fλ"‘.λz^JCWTΖzίρΖ½ªϋfψψΦφηVιΜUi£+±ά1pΕ•i^Τ4¥Ι: :D΄[rΪΆτ―qθκΦ|αι9ς5αύÒtc2Uν–{k+όΏeμ­ƒA΄®$·=λK7h—Dι©uI–¥"κ+n^υ–RZ§>ok[uή"R±δ†Υz[µp°ς…†ΰιbÿύ©e μνΰ1^Yη”ύAZΞζΌYμ RψΟ"IY'Ψ)ΖυΉ1Γ(ΟΧ©εT­ÿ©ξΛΛ|<C@µ@Β84Wθ²Ή!bixW“!ϋ6Κ—Ά“YV΄ν#pΑeRUK`Γ8*H<Q ­χ2
-Ής4(’ ν π°Ε»©κ-·±z¨PP€a²f2§Y©9!pWT{ς^•0ΒΩ#yυΧξ¥~ΎgL’pL—’f›Ϊσν@%bl‰ζΦK5ζ€svΥ€²0(ωηέRGQDύ΄]<η;Ò¦ΙϋΖθ{:rƒ£%Tj»q¬ή³5ªδύUGδ9zdnAKΫP£ά4DΊ›,σCΖ‘9†Δjdϊγ·ΘBχ:e-VΌΉΨκAÿ―g»½fδΦώ*Z_»Ϋ	xjΕΝοr-/Yÿ[IΞέ$ρ ›8ιΣΗ
-“χy>ÒwΡΗqΆ>41U<ΦΦτTΘ2amN“2ω…C0w_>z¬σ²‘p]’9Έ	ϋ²υζ{Y@α£j©‰h@ά#›	εΊm%µ°po¨ί¤GU
-&±Δ.CΓυBBb›φ^\γ/΄t4'όv’3
-σΟF2ΥªtΔΉoψt[Vz=΄T|Ν«‡μ.ΐw”Αµ'ΩOµdξK%ΟξG=n#Hv ZγrτIz΅ψpς<” "ή(ρ4¬™χ2Ξπγ¤P\4k$›βχ«Γ»βD|Τ23φΗ`LΠ™hζZΤ=$―ΜτίιEVWΡ5OnΐC>5έΔ!Όdΐκ―ΝθπbÒ’+¤π8Tει}―ΥpΎ°j0π „DM'¬±Εe†Vΐ­^(ZΙπ‚ό*»~I£u™+³Vy1}Hsίµ7QΊϋ›Οϊ3ΏΒ“B‚Ά‚›ϊ®/Ρ$δhT –θΟΰ¨I/sλ4IxήgΌ>KcrGόƒ΄ς;°fλa\|FπΓÿ<?ξπjΰ·”ρ z#σH«2[α*Ε±;Ώ¥N§h«΅z%VέL] iΨfgΑ―›¥»!ΈÒt¬nCόό¶χ™sQΎqθlΥαχ ?ΒΜσqΘ’ούθόX«$ƒ)iβP8.{$w
-O-Χ μώ;JΚ4&µ6!ΑκÒ£l§θ%4ϋζhεεΐ±²A-P¨ί@βK(	dyΡgPΊTχ%X-^ZσDεί\:8(ΔI«Κ%D®ΊΗPµ/,Ζ5ΝΏ·±®ΰg80°ΓΞ`xª»θ? ΧcEF+εDΖhίβwΌRQ“ίs&	–Pm£Iμώξcμ;ι©
-”ς  “#NΠ°πΟ1χέR–χe,%4=‹°ΗΥv+…\£i{€Ϊθ¥κίWΛυ=a‹τfΔ?΅Tί™v®Sg®‰‘ƒkεμ›Μα¦o-ΈΟzªBΣK^ΫWΛrr/`ΐε‘φ rc‡SΧ:§nIόφ΄6U¤"ΌΝC‘Ίg/p2Ν72|„,τΪΙ–r!λΉ0ώlΖϊpy`6ΛB>ψΩTeΧBύτΒ]FφΡ‹pCρ΅©ς]1’‡ηΉ;ƒΰ€%H?m(,ΏR‚ΥÒίtw•οa*0KάΕ$U,λT³Ο΅ϊgζ°—ΒXA:©Fy,ΗJ³aGϊ—Ύ°ωΘδΐ²ª>Q©;PήLΈΜΪAΌ”ϊ›€ψ^³ϊ8Χ½±lµT|²rώΫ”\΄6Ή†s<πÒr…q„"³†“opNώb™Ψβ~¤uεr1­»adψu%¬!v›‰/4dUωcΔK²0ψkΘ$C–¥“OF­ψeÒ|.‡W¶Δ2EYƒΓΠ
- }υ=›YgδΏ ΄τΑ:»ƒζ-Ψ™bΗΙLϋΒ:Ξ΅ωZvyS,~8.µλΑ7_νσpƒb—ξΊ‡ΗΑKΛΏΡ›2L²Άτ" )±±rΘdϊκ‡0@Γ ΨmY0§δ_U?MέÒ .™lu:pl!‚ΛΆ¬ζ<+Ίwdψ±A,άΈkΆ*¦ΠκΠ£ΐ§¶|—§ΙΘ_Ί›SΨ—ΥΣχ±IκΏ	Li·―–κΖ+|Τ E…wΗΆ²<ςυ΄μ^‰}mχΨ,Gφ°™LΌC©μ;Rβ¦FΨΝiN#ΉP£‹ά«αΨMιΒ|¨Ξo3Lύ& ιόΚΉDαΫYΪf%&`QΕ¤,βP'[ή–/8Qώ«’¨W[ªr&M5}2Ò6ΛpμeÒ–ϋ σΊώφmΫ"ήΗΠ£:υihT—Λ­_5³Aή‡¥Α#a‹>τ‰¤¬ΰrωR_L	τoÿίόYεΝΘD²P®¤†ξ<vβMuΟyϊaίοd°όκρΠ)%h³Μ±Ή}v5Φ7)ÿζί)@ΚSxΆP…U|Φ¦γ;χY–VdY|µY‚IΚ”=Οk;¥ήx,²?6~ζ^bul υΫhQKTη{«%„~ο€v”¶O†ΔpΩf:-ύώ„2rW>YφΊύFΤ†”« A¦~Χ’?tSR•†hξΩ»U…Uν£fQ\7τPWζΟKk6t\*Ήr’ΑΈϊΏ<.®ΉΗ!wnοαª£M>Z‚Π¦@°t,XΗf[ƒCa§ƒΓΉμ/Nμ  εύKΥªΧ¤niάAA…@sςΚηΦϋ)]7·έAr±„yαXN‘t`7^μ»¤έ»gβ A U(Δ‹ΔΉδΦΫ+VjΣ΅ρΆ9lªβ“ΊΣ„±VζaD3;U;Ψ²GΔ¶Gw2ώΨ
-”΅‡GυΜάΦVƒΌP+ζθέlΘrlϊΨKh]ΠΥDΨNg|WReοv%T³®S*’£²vΊΡNt.57&#^°L<N  7$Ωσέ»D8ε/cO΅ΤΟόdς²ΛP7µq›¦e®%ΣÒTΈΏ„²Πª#ΰ­¨λ† ›γKΫe$Jshv¤$μ+Ν_QΟ
->©»ΗΛω¶ζ&ϊγ+7\ΤfK΄μ3F\VZΈ­VΠπΰA²¦2k<lήÒ-ςη§R^ύόΎΧ‹²ΐj"°ΰl‰½΅µοψ’P%OJΗΪRϊoA¬ÒΝΊ|j*^tkΥ.z¨¦oBΡΚ6ΌΏΉΉ/Ώ?³gpυ8φ^n)³π~]?f¬½=4»†8]ΥP,S#X,^€΄Ύ­Σ%Έ/¨ρ^ΨÒ§θ9Α+Ν€|@Ό(VGή^k>sτyβ η)‚$–Ξa¥D4Ϊl|ϊqξ6µηW[ .OT5ΚΤ\±ωU{¥ξ¤W@έΥBZλ£dϊ_lρ„ªªω'aΞσ0γ~Οϋ}¶›c=ΌuPϊινKχϋ6Α*¨yƒκsΌ‰γ	δ?YθQΔΜ‹λΆώLρ=6s}θ‡ΈΩdΐQKΙIΆC¨XÿoΔξρ6σt)&υά``ΎΟOwx€{–Z~Ν
-ϊSVΝNj*²{53”Ύ½RβO/yυeÒΐ―Λ“8&qξI+άΖ"Χ.ΘώUυmΖμ±ƒεX$© S
-5ο‹yΊnG‚ζ§–J–ύ	ΦC£Ώΰ…\|@Ν#z9Υ7W½4‘;Ρν}ΊΒhρt’Ω”NE,uTρ…Οd+Ώ|?±ω
-LΑ^=&‚»Ν :©-Ώ$½|'¤®qΩ¬Ύ^Ώη€Ώΰεσσeaf»ΎΈUD½ψΙ‹ΫΒζϊή ΑωσΫΌ¦RΕw”κ} yπN\Έ(9Heΐ·$KοΠXSΓ\0/K•θ•½.€=ΔvQΠXέ·.ttAMΧY‡„υ©&rzυ&hσ^8™ªO?μ(VR£LυB4£B\Ωρs¥{31Ϊ€U¬µΜΕ
-σήgS(ί9›έ1Θwξ&T?Ϋο²P)h=eΚ—ΟaAf9(*D·uΓ9ΘζNρ@λbήµ‚ΖύΒώΊ. λ3μέDγλΑwoy6}8‡/§7BΞB~gÿΕΌΩΑ%k—H(…³hωWÿO—T>2Ώi΄ υτ«o¶:€ήΈƒΈi–Ι"-σ2¥wV_Vd)΅5tjψ$ΖΪάΘΞ»ΤJΗcΐq{Yζ΄¶ÿr«f\Ο'αΆX ΟΌ•Hς&d€`bG”ΔUΗ'Ω/­(;$(Ψ;Ei’H<Χ†ΖΟfΟ«;ΚPόΟ
-eΌ­„Άn£NΘ•φnJΠΡΩA{¬κ”ΔΔ[J’ΖκΛeg.3X•+Γ|‰IkΤD…^Ηλy…Τλq!Υ©#.?iAϋEΒρW2)…Έs»Έ<¥=V¥Κg6ΊΆΔΌ	HωepςF$Yϊ@½―j2zνb®ΌΟª!ª‰w;Ζ{”_iTkί„wΊτ½Ίμω]J;%FΣ•οϊ‹ΈMαΐ¤p¦KΕYx+σ6ƒ|5
-d‹6UX#Η‹QέS»Lη-?®›Σ:ÒεΠ”²L®—0 •AwnΛQ8?νΠ±Κ=PHΩΖΖΕ•θό5ΔκHύk£C‡2ιCΔ-ΜύΨ§α$?―ψ3²Ξ‚d_‚lΊ…V΅³%ΖπΨ&ViUΗ{_ÿ,P¤$fR0¬n”QPÒρ'NτµYΆ9_ χ8δ¶¥φPγφξ%Ξÿγγ@ΫΆΫΛ
-B%ίύώ'%Ι”…κQpΩΖοJ΄.x– ‹Q”‚Ξ-ίBrkγυόΜpήX§ik¨ΈΉoAxΌEm:³ζX°Tu…#Χ9o²ΖΈµ ®ΞαXYβQα΄ Ϊch―Σd»MνΔ.]αÿξ‹σ€ƒªsχ,WMd…²ƒWªζ`έΖLoH|A6Rno†`Κz“wιG`σκ#N'ςxªΐΦ›{k΅£EέΈ”gήQ¤›έ¦‘υοYÒd)Σ…³f’
-¬^ da‘—Ϋ„wQƒ§Δ“Σm?*­΅:Hg―b9|"ζP{¦τΫ0²Οφ•8οgr‘Ρμwώ|1Òκk·οZe’lδGpk«ι*ΚtR`ΰ	Z5ΕyΦE	ΚΫ‡–3χΚykƒwαZάΒ<^{^€μ¬ίG$J‹…[ΟΥUΦI«Ν2β\g)¥Στ€Θ†Γ—Ήϋ+/r9)΄ΡR ΐυ3pΝΑ{ΰ_ΕΦGe,ΞXHMYªg”ώ‚U“Τϋ‚!ά-IΌ…ώθeΘH a\vmγΐ #ΧψsHax(pώ®Kδ_άλ΄wwΐT“ΙUVe&¥i°Ν[wsζγl›*Έ&ÒΦΌ²;!aªr·ΑΫΖύ5°άN΄η¤.΄¤έ»ΌΑ™H©&ΏΌ‰ΥήώyΥόΓΤa•EΎXξAΖοω•½EίΌΜ
-l5β"Φ8ι¤Δ‰ψi$θύ·IC`z:§•²„+?µM"ήS*ª"ΓXz΄2 ΑOΓ^μ·=
-–ξπ?ΘDϋΏIAaνΖ£ƒ¶»?V!§
-z€ΡλbAAswµ‚S%	vΔN¦•€Ip%(y€Κƒ‚`ωΡ€8%κÒΓ‡'d¨AaIσXL>f-#’)Η~ύeUέυγZϋύBZΩi¶Weϊ‡·Ψa©zΥ ¥ΧΨSh3 ΔpHzΡΏ-;ϋ½©¨}έyKο&£W‡Ηςιf°_Όχ^―cΠ™ªOμdwόθ* Ϋϊ+d²†µYΡ+F€¦θΟ!Òύ2κΦΘ‚κΪηζWΙ6 ›΄―PmλfΉ΅X­ϋwΪƒ”ρB–ν
-/ό£ΙΣ‹©"Ψζ’~J‡kΨ¶Ή»u΅…'rI©θΝώί:mχ†X‹)Xόb³O3Ι7²–Κ³38ώ	ΞΝά>)γέ5Yb θζ««Ω$»ΑΝτƒρρMEƒλΜύ)ΉrWδ(¥pΣϋmd΄θδ}ζ¨‡ΗΉ0Πχwt~N¥άΠ2•ο­pηiQYΙ;³JΑφΰaΥFύ‰Κ‡U”­h%h― ½O_¤=©΅v¤ζ½,φ	Xϋ•10ϊN2Ρ¨h‚jQο1­α›C’¦¦t9$df―WSmγ:Β\6±ΒΠΌΙΎΩrU%*dΕy”E[ωΛ¬΄ύyβhΚ¶”½iζ–®Ή&h•΅§0“όςzkβ]OύRa΅R™8στ/Φ‡ΑnNΤΒb Μ ρ9
-Β£™ϋtµώϋ8›Ε	άΰ‹κυqΥΔ©Κ‡Γάθ-ΫgZ?ί„Γ―ϊ’ΎΆFΠOπψ9²\T¨VτfXΟ‡0Σ{3{
-vίScΞΨΆ_SΑ€½SήRoL>•Λ¬‚°Ή tκ|©»“¥5χ£²σG"S<κlιΛΠ'H/0·Γάvφ*J¥#‚Tψ†ύ7qfΣXa…„ Ή}WεέΜzύψΡd4Γμ4@δ0;Πµ_”±™ ΰΨΝ4e^Aµ^“Σr±
-soμAρΩλΩό–wΣKρΛΘΗi¥6E¶lzΟ*1rΤZµ—τyΑkΐ?«‡αΠ“Λi,—PΑe=…Ρ|&¨o>Ν†ιfΎ~»ΣRbΖΩÒ~o*ρΝ¬d³®δ³& RΐB5ιQχr)^ƒW§-ƒn2μ1DGΙΫªγό¦:TΕΥ‡µÒ†LLήθ”qSΨVωª¨"hο|W£C― y Ό
-¬'w‚KιAιiΐM`·ΕόPn@"A-B½οHκGΩ2fΝω±*|’Θ`I~[£Ν,>½{\Η;R°›ΈΑz,πs«(£θo;P£²z#© 3γόθ v_M¤½Ι'ώ'SΈΤε΄m(ηC†1r-Έ·]k"S΄•&Ά[ΨΥή„i[―^ZΡAΕq®”Ώ¥?^#-υuΓUρυό„©ί¨„=bΣ\ρλϋθ;ZΥµ6gΒ%9‘CC”Ζς‡·†FrνM•!sΑ5΅ψ?›EιωkΔ
-­(b%«Uυ΄ζ‡SPO^οοΕ®F>ήΣ£fύo+	FCΝ8‡Y¬©HξΛFUª6ΓΒ ‹Ϋ2μ¤αg½ae΅*‚‡BδdΒμ‰;Θ0&Α #ϋίω‹χ"μόwtp5oχΦ‹Π]α›X{ρ~Ό/Wg9ύ·–HH==―¦³• ÒKWΚÒb1©π 6y"X…8„c²”οηY°E™ε3™Β]‰NΞ?j$ε@7+sdaFy.¶£“β#Y\ΔςJ<oλΝD·=
-*2_Ψ‘ΛƒyΦl ”ΆEσύd rΖγf‡§it0¨5s/H­ήϋHC5jήtκjέ —―ηφΥ•Sωα½Ϋ‡Ώmδΐ["½A¥ΩÒ†wρη²PT$«δ|πuφΡ‹B->®›Μc6ΥΟ°q%ίUΌN„οΰ>Υμn>FRΚ;n{7 ΒuΞ‹ΉA©ηΠ­«ΞξΝ	+τK¶{ωao,πÒ(`µηqηΓ™ά)}Ώ{ωX†οΊ›3IZ?¨έδ4&Υ5ªΉEΞQƒtΒή“Z› ξJ«”ξ.ρ†z<KΑΧ"ιFDΌπ»„ΤΡUrΕ„^=?A.΄΅Ε®Θ+»5’Έ~&ΊΉeΛΰτΚ Γ–D›cςτΈ¥E ΄ÿ|.YΏ€J“C4φΐέ†WόGN#gΟΑÿΛΞO%Ϋs¦ΓµΝyΎQ5¶%•Q΅_zI*qÒ*wDΠςΡzz¬8­ν2β7KΣΟ"λψκή3ΰεΉ$GΨ%ό]nί[ΒΚwή 	!aΖΦ¶‹’…aÿkΖ}¨:Ψν/Κ•ωω&ζYΔ;εςαo³όN•Β³Bfδ>™PWΥZ¶Jε’Ηu4ε'T;¤Ήπh‰¤¬σ`e­οα,Λ¥Ε(BeΉH’°pεCRΖίµ56` +ζσwµώ‘Λύ³ήKπΈ™€Ή*£$‘θ©Nβ¶·2da_TΡΉ‡Qθ9,)τύγ¥U ζo!cμΙB_®λωƒdFl3Μ©eε‰ MÒ>+k$pϊƒW•ιΊyjξsΪ©{s§ληe―Ύώ0±Pd="e°γΡ¬„ΑB­.H7dλΠ9Μ££Ζ96ª΅²Jυ§O‚Π¨(Ή.µX#ΐύGNΙϋ‘ΟEI^Σ¶	§%`yÿ–‹ΕƒZΨμ1σh…άπtιm•ΰ 6\c©α€¥Zώ·Τ"γWΚτ…τWM?M–IΑηύβOπ†P<^Ν΄;Φ	ππίΓTΚP62xiΏ"5#’( $ΤΞ‰^t2¥Δ=PvcΜ™Ε―J6QLδOd/σ-r΄\A°h†>GΉ»‰pE ρ7u{χΔύ‘yψΏRxΉτUχΣEι©λξσ®¥™‡Y+`AξvoW½ρHάΑhΞ{R·|Όvύ‰‚{gΆoI‰ÿΖKιTDνΑF‹OGΖ>}[θγ„›οΩ–0›–{m¥]ξ>vώ€ΏFiΫ+a‰^€lΈΡΥB Òj—wΕΠέΫ\3D•QΓΉ5t±kλQEΐ’χΩ~v~I6Qά«8Ωο…=χλj6\»Σ=5µΩ³¨Γ6ϋvηά“ΐG΅^Ί~cg»χθpΛαo<΅ΫωθfTM< μYγ†)ÿwRύlγ¨vυΜΓΰ7ύΰμI&±Ξp }–f>ιBΓiFΛΩDΈ “ΒλΈ!b(Ψω	[L‘ξVαάΨ~"ΖMΠWX•3ΰg6.ζ±0υΜqγ}¶w‘ykq2Ύhρƒ$*ΐΆvξι›μbΟξ*‡ωjEνύΧ³„ªΨ›S‚¶ϋ‘
-ΓÿηΜ#Qqlϊ„X	[Ω+Ο'bm‰qDoM[«T?/|kσΰB,.4,σ°–‡7eύ›/nοσηΑ†Δθ.^>MΥLdXβτyYFGΊ Υ6θγΧώ!|tυ$“¨0?αΎ–NQnΈΏi"23±k2r­Lγο|ªΥƒΞUΗ:pM5κ›`Ϊ³‹ΙΟΝdν?[ν!ZyOΖφwΘψk,Rε™Χ’‡ΗXDύ¥Nƒθ™U,5¤5*ΪηÒ_…¬WΆpΦy•OΝo|7ν>tz_«ε¦Ί$ίοWª¤T
-χrKQ-V_†ρ–Α•δ»i… K(3ώ]Θ'ψϊieΠTq§1‘JO8όÿ…w‰6Έ—`Έn…αΘα©Γ―q"rπAΏwσΕi,¬έJ5³wΘnσf®S­Ο0ΥVOΈz·€ΧΥΨx¬σ uε²1^ÒαµέS“+•JΞaάKDΡcΔ{µγ]ΦΘ‚1»¨ζ€ζ®¶θΝ {Ό*³Κ,hώΤΑιv³Ψ…Λ²εtT  •ΥΨ%κS0¨Ζ>ε@EΫmb ωΓXΠΒΛ\>,0fκv]?i~fφ­Η¬σΟ½2ΕAΥG{Τ¤φ9“	©l&όΔÿπΞµuΙΝ„ρ²υ(³uΘfgρΏcFg.ό@ΌvΏ^Αª2);„tιΌeΥΣωΎ«Z	υbƒ)Ò–CΌRu‡έρ	ξΣΑ.wu	':ΰB|^Ο΅‡6ª›yΨΝUsΖ‡ΌtΥΰr”vβΓjΧ‡ρ	σF½ LH·t
-ςΌÿφ)6‘‰§gΚΛ–(~‹uRτ΅­Ωfψή+΅Φ]κΉJ2ξέ?΅kb&0Ιµ“®οW b°'Kτ9-AaσU?''ΪΎ!’!ΑI
-‘Yλ‰Ρ›ιP]^VύιΠ΅έ9g‹£εJ½ίD]t0σ²KφαXγχ{Π†	²u~:UƒxVΌ$φ+YwΞ\Τ*| ρz®±= πψdή†pΛ`*DΗΨ!r+γ’Θ/Fαβ©:)nªWΝ:wÿk!Ώ«-­―P3†φ?{Λ‡EEΣΒ\ιπ΄wcA)^Γκi»TοW<U\‰V„t0*d®έώ"ΨΞ.Σ-‰|™^ΌηλbΜd±ώόÿvE‡0Gr’Υm‹¥E ¬Ϋ±2¬H8BζΔkz†WeΑκ£/ρξΑ­t=Gw…Ώζ5hWΛ?KΓ}zΧ§Ο~OÒίHPϋΥ΄ ΠV η>LΜhΜφ!kRη”Ζμ”½ψψΠf=Υ"»mώ#ήw
-y
-΅–V/ÿMλύSΎ%F‘QOΛϊA™ÒΏ’ΛpμΫΉpαΩVC€ά,ΣΕξάδςθ4]Φγ
-’σµ.°sωƒο =§{ΤΚΧ<΄ΟsKν`mνÿ0Λ%nΣo q›ΆZ°`ΟΪ‰ªk›ΎΎ„3Bt°γληΫς]Σ…O1hω-9γc²-Q½«PΆ7νϋ…WΦ…τΥ/–…Vp„€q>Aδ?S+Ο Ϋ}# *9λ©Γ%/Ά™‡„΅iη_Τs@
-΅™Τ„·δ.Κ7-·Qό~vΣηy”N.xμΧN	€k^Tφ?9£s0:\=;Κι½ÿƒΣχ,·ƒήΗ8C5>Ϋ; ψΧ?ϋ80^£PΌΉλΎϋ\£νÒsΓ"]α0ιaέ‚Κ+@ρ¦™; Lf0uΦ<―ΊΗΉ»²“ω‡[3­¬5^ΦWϊά!ΗΫqθ•Ύ%°Z―γΏBοΈl*J6 ΨϋcΡΆ?³ί¥@-V5«©ΏB°όμ~Z[gΟςv·™T¶eq&Jw+σ¨F{§4ώήΡµ‡ΜpΌ¬`ηΈΪ1ι”	Z>φ>Ί―gΙ~η'% ΛΓYέάs»χζ`ÿ^ή–υ±,Πµv•ίέ‹ΐadO>³A@y)i†>SήA‰Ο=-Ψ†Οα©ΞξΗίΨ<®ΐ~q¦tZFΝb® Ψ5‡ώ<‰8p_c¬'µ°ΕΌδ)ΪKFν@Ί“9cVΊp®-Xy_Η;>‰RΏηJΝΉ.Τυβ"ÿΈ–\;ΜΩΤsv8JΛÿ¤ζ~4‡Gb/‚vN†ί4=χΕ―;2\1.YΧ…οΘσ±ΗΑM„J6ή‡ΛHYtμ#έΆpBηφmσώ:θ}gt¦–««Ό+Γ|ΰ©ΩθΧΛqÿ *6GOΜωf μ²Ί„΅‘T“ΊΖΐ‚¶‡²Q“γX½+ƒ—§³ΈZ³ΊΙφZ)^Ε¬€AKΛ®n·ή•τ	ύ ϋβΧ†³Η\vu=D“•6oΜΚ]rρΕδΫΕ3Ά?Κα;ΪΩά%^†3\,ng¥PÒζΜ)1ϊE>ύΉπa…Β²Υ y•6υΡ‹bΰσƒγ‰,ξδ·ήUJΛ„=!σϊ;oϊΜ<pIθF)“B$αÿΑ'	ΠΉ‚
-hΉ•oW>'Sί\ΣK®$Ϊ+”ΖwsjΈ,p”»ΥQX©²JHλ"c /tΏκ‰\ÿ<ΫzΰG‘ϊΌλΕύϋ³†θώ±ΐ΄`ωμαΚ`‰“‚xβcEαι4x»Ϋ“J·Εj\πΥµόνHkξΦΈ"ΐ =G―”χ+Ψ&L[βδPeΦ¶«x6ωR©d-p§ΠIdΉ―VF hM\4‰ΉύC¥“ΏG€qΈS ®A’Ξΐ	'°ςΌ]ΠΕ—³0οεήPΰ%CΉ-ςd-Γ<•‚ΕΌΖnΜ-¬„Έ©™R$Ίζ­„.λ	
-j¶φ\ΜVλ‚}7Υ|ύD7·XΕ=ΧMγEΖ³Ό6am&+βΝΞ<xµΎ{’ΛκBΪÒΈ?υίΗψ„σω­UIΜΧ„LV¥—A"?»σ[®ιχυ~dV-£ZZΉ:ZΑ¦<H–ΌΒ+†ή"X"ΨυS#ϋalχΪςϊ%ΖΛ1ζ\8:¤δΜ%Ò~/Θγ¶Ί@pΒµ!±¬U¤‘rH‡O‹κ«6ύόεΈ/JωΤ1ΊQΏηk‰εp@ΕTl‡L
-­&I~πi2Ψ\ΤJF;GΒ&BλbYf`LFΕfAsΣεYDο€«•ƒ‹"±lυΒqJa†'ªΙ¤¤ ‰ΓruLΓ»`Η­ΚΘ£ςΐκ7S?¬ϋ!ζγI™@"‘eΰB]ΦS2 (‹ψξC@g
-Nς·~G2Ò†ξ&g4Y¶•‹ώ°mςυX7LΔ*Ϋωªζ?ΈZ…B®¤ΞhΓέs#ςJZΐΝχ7z'*Ε«.α/3)ΤΨΐέΓlτφg	¶Ώ1Θ‘‰”lΤhζρίZΡ΅Τ6}ƒ”…8Οο@δΗH?ΘB(ν‡|υβ&Γd½ab‘μζ‹.m#ΛNΟfΛΡ²΄¥d>< κ^§όyhώÒέ‰ΔΓsφΘV9τέΛI†zPTΘΰΧ†J9{κ±W°¶Υυ†,=:
-±•δgκζΐ§σΡ©nclude/config/GENERIC_CLOCKEVENTS_BROADCAST) \
-  include/linux/clockchips.h \
-    $(wildcard include/config/ARCH_HAS_TICK_BROADCAST) \
-  include/linux/clocksource.h \
-    $(wildcard include/config/ARCH_CLOCKSOURCE_DATA) \
-    $(wildcard include/config/GENERIC_GETTIMEOFDAY) \
-    $(wildcard include/config/CLOCKSOURCE_WATCHDOG) \
-    $(wildcard include/config/ARCH_CLOCKSOURCE_INIT) \
-    $(wildcard include/config/TIMER_PROBE) \
-  include/linux/of.h \
-    $(wildcard include/config/OF_DYNAMIC) \
-    $(wildcard include/config/SPARC) \
-    $(wildcard include/config/OF_PROMTREE) \
-    $(wildcard include/config/OF_KOBJ) \
-    $(wildcard include/config/OF) \
-    $(wildcard include/config/OF_NUMA) \
-    $(wildcard include/config/OF_OVERLAY) \
-  include/linux/mod_devicetable.h \
-  include/linux/uuid.h \
-  include/uapi/linux/uuid.h \
-  include/linux/property.h \
-  arch/x86/include/asm/clocksource.h \
-  arch/x86/include/asm/vdso/clocksource.h \
-  include/vdso/clocksource.h \
-  kernel/irq/internals.h \
-    $(wildcard include/config/GENERIC_IRQ_CHIP) \
-  include/linux/kernel_stat.h \
-  include/linux/pm_runtime.h \
-    $(wildcard include/config/PM) \
-  include/linux/device.h \
-    $(wildcard include/config/GENERIC_MSI_IRQ_DOMAIN) \
-    $(wildcard include/config/GENERIC_MSI_IRQ) \
-    $(wildcard include/config/ENERGY_MODEL) \
-    $(wildcard include/config/PINCTRL) \
-    $(wildcard include/config/DMA_OPS) \
-    $(wildcard include/config/DMA_DECLARE_COHERENT) \
-    $(wildcard include/config/DMA_CMA) \
-    $(wildcard include/config/SWIOTLB) \
-    $(wildcard include/config/ARCH_HAS_SYNC_DMA_FOR_DEVICE) \
-    $(wildcard include/config/ARCH_HAS_SYNC_DMA_FOR_CPU) \
-    $(wildcard include/config/ARCH_HAS_SYNC_DMA_FOR_CPU_ALL) \
-    $(wildcard include/config/DMA_OPS_BYPASS) \
-    $(wildcard include/config/DEVTMPFS) \
-    $(wildcard include/config/SYSFS_DEPRECATED) \
-  include/linux/dev_printk.h \
-  include/linux/energy_model.h \
-  include/linux/sched/cpufreq.h \
-    $(wildcard include/config/CPU_FREQ) \
-  include/linux/sched/topology.h \
-    $(wildcard include/config/SCHED_DEBUG) \
-    $(wildcard include/config/SCHED_MC) \
-    $(wildcard include/config/CPU_FREQ_GOV_SCHEDUTIL) \
-  include/linux/sched/idle.h \
-  include/linux/sched/sd_flags.h \
-  include/linux/ioport.h \
-  include/linux/klist.h \
-  include/linux/pm.h \
-    $(wildcard include/config/VT_CONSOLE_SLEEP) \
-    $(wildcard include/config/PM_CLK) \
-    $(wildcard include/config/PM_GENERIC_DOMAINS) \
-  include/linux/device/bus.h \
-    $(wildcard include/config/ACPI) \
-  include/linux/device/class.h \
-  include/linux/device/driver.h \
-  include/linux/module.h \
-    $(wildcard include/config/MODULES_TREE_LOOKUP) \
-    $(wildcard include/config/STACKTRACE_BUILD_ID) \
-    $(wildcard include/config/MODULE_SIG) \
-    $(wildcard include/config/KALLSYMS) \
-    $(wildcard include/config/BPF_EVENTS) \
-    $(wildcard include/config/DEBUG_INFO_BTF_MODULES) \
-    $(wildcard include/config/EVENT_TRACING) \
-    $(wildcard include/config/MODULE_UNLOAD) \
-    $(wildcard include/config/CONSTRUCTORS) \
-    $(wildcard include/config/FUNCTION_ERROR_INJECTION) \
-  include/linux/buildid.h \
-    $(wildcard include/config/CRASH_CORE) \
-  include/linux/kmod.h \
-  include/linux/umh.h \
-  include/linux/sysctl.h \
-    $(wildcard include/config/SYSCTL) \
-  include/uapi/linux/sysctl.h \
-  include/linux/elf.h \
-    $(wildcard include/config/ARCH_USE_GNU_PROPERTY) \
-    $(wildcard include/config/ARCH_HAVE_ELF_PROT) \
-  arch/x86/include/asm/elf.h \
-    $(wildcard include/config/X86_X32_ABI) \
-  arch/x86/include/asm/user.h \
-  arch/x86/include/asm/user_32.h \
-  arch/x86/include/asm/fsgsbase.h \
-  arch/x86/include/asm/vdso.h \
-  arch/x86/include/asm/desc.h \
-  arch/x86/include/asm/fixmap.h \
-    $(wildcard include/config/DEBUG_KMAP_LOCAL_FORCE_MAP) \
-    $(wildcard include/config/X86_VSYSCALL_EMULATION) \
-    $(wildcard include/config/PROVIDE_OHCI1394_DMA_INIT) \
-    $(wildcard include/config/PCI_MMCONFIG) \
-    $(wildcard include/config/ACPI_APEI_GHES) \
-    $(wildcard include/config/INTEL_TXT) \
-  include/asm-generic/fixmap.h \
-  include/uapi/linux/elf.h \
-  include/uapi/linux/elf-em.h \
-  include/linux/moduleparam.h \
-    $(wildcard include/config/ALPHA) \
-    $(wildcard include/config/IA64) \
-    $(wildcard include/config/PPC64) \
-  include/linux/rbtree_latch.h \
-  include/linux/error-injection.h \
-  include/asm-generic/error-injection.h \
-  include/linux/cfi.h \
-    $(wildcard include/config/CFI_CLANG_SHADOW) \
-  arch/x86/include/asm/module.h \
-    $(wildcard include/config/UNWINDER_ORC) \
-  include/asm-generic/module.h \
-    $(wildcard include/config/HAVE_MOD_ARCH_SPECIFIC) \
-    $(wildcard include/config/MODULES_USE_ELF_REL) \
-    $(wildcard include/config/MODULES_USE_ELF_RELA) \
-  arch/x86/include/asm/orc_types.h \
-  arch/x86/include/asm/device.h \
-  include/linux/pm_wakeup.h \
-  include/linux/sched/clock.h \
-    $(wildcard include/config/HAVE_UNSTABLE_SCHED_CLOCK) \
-  kernel/irq/debug.h \
-  kernel/irq/settings.h \
+static inline void __lockevent_add(enum lock_events event, int inc)
+{
+	raw_cpu_add(lockevents[event], inc);
+}
 
-kernel/irq/cpuhotplug.o: $(deps_kernel/irq/cpuhotplug.o)
+#define lockevent_add(ev, c)	__lockevent_add(LOCKEVENT_ ##ev, c)
 
-$(deps_kernel/irq/cpuhotplug.o):
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                /dqblk_xfs.h \
-  include/linux/dqblk_v1.h \
-  include/linux/dqblk_v2.h \
-  include/linux/dqblk_qtree.h \
-  include/linux/projid.h \
-  include/uapi/linux/quota.h \
-  include/linux/nfs_fs_i.h \
-  include/linux/seq_file.h \
-  include/linux/string_helpers.h \
-  include/linux/ctype.h \
-  include/linux/kernfs.h \
-    $(wildcard include/config/KERNFS) \
-  include/linux/idr.h \
-  include/linux/ns_common.h \
-  include/linux/nsproxy.h \
-  include/linux/user_namespace.h \
-    $(wildcard include/config/INOTIFY_USER) \
-    $(wildcard include/config/FANOTIFY) \
-    $(wildcard include/config/PERSISTENT_KEYRINGS) \
-  include/linux/kernel_stat.h \
-  include/linux/interrupt.h \
-    $(wildcard include/config/IRQ_FORCED_THREADING) \
-    $(wildcard include/config/GENERIC_IRQ_PROBE) \
-    $(wildcard include/config/IRQ_TIMINGS) \
-  include/linux/irqreturn.h \
-  include/linux/irqnr.h \
-  include/uapi/linux/irqnr.h \
-  include/linux/hardirq.h \
-  include/linux/context_tracking_state.h \
-    $(wildcard include/config/CONTEXT_TRACKING) \
-  include/linux/ftrace_irq.h \
-    $(wildcard include/config/HWLAT_TRACER) \
-    $(wildcard include/config/OSNOISE_TRACER) \
-  include/linux/vtime.h \
-    $(wildcard include/config/VIRT_CPU_ACCOUNTING) \
-    $(wildcard include/config/IRQ_TIME_ACCOUNTING) \
-  arch/x86/include/asm/hardirq.h \
-    $(wildcard include/config/KVM_INTEL) \
-    $(wildcard include/config/HAVE_KVM) \
-    $(wildcard include/config/X86_THERMAL_VECTOR) \
-    $(wildcard include/config/X86_MCE_THRESHOLD) \
-    $(wildcard include/config/X86_MCE_AMD) \
-    $(wildcard include/config/X86_HV_CALLBACK_VECTOR) \
-    $(wildcard include/config/HYPERV) \
-  arch/x86/include/asm/irq.h \
-  arch/x86/include/asm/irq_vectors.h \
-    $(wildcard include/config/X86_IO_APIC) \
-    $(wildcard include/config/PCI_MSI) \
-  arch/x86/include/asm/sections.h \
-  include/asm-generic/sections.h \
-    $(wildcard include/config/HAVE_FUNCTION_DESCRIPTORS) \
-  include/linux/cgroup-defs.h \
-    $(wildcard include/config/CGROUP_NET_CLASSID) \
-    $(wildcard include/config/CGROUP_NET_PRIO) \
-  include/linux/u64_stats_sync.h \
-  include/linux/bpf-cgroup-defs.h \
-  include/linux/psi_types.h \
-  include/linux/kthread.h \
-  include/linux/cgroup_subsys.h \
-    $(wildcard include/config/CGROUP_DEVICE) \
-    $(wildcard include/config/CGROUP_FREEZER) \
-    $(wildcard include/config/CGROUP_PERF) \
-    $(wildcard include/config/CGROUP_HUGETLB) \
-    $(wildcard include/config/CGROUP_PIDS) \
-    $(wildcard include/config/CGROUP_RDMA) \
-    $(wildcard include/config/CGROUP_MISC) \
-    $(wildcard include/config/CGROUP_DEBUG) \
-  include/linux/filter.h \
-    $(wildcard include/config/BPF_JIT_ALWAYS_ON) \
-    $(wildcard include/config/HAVE_EBPF_JIT) \
-    $(wildcard include/config/IPV6) \
-  include/linux/bpf.h \
-  include/uapi/linux/bpf.h \
-    $(wildcard include/config/BPF_LIRC_MODE2) \
-    $(wildcard include/config/EFFICIENT_UNALIGNED_ACCESS) \
-    $(wildcard include/config/IP_ROUTE_CLASSID) \
-    $(wildcard include/config/BPF_KPROBE_OVERRIDE) \
-    $(wildcard include/config/FUNCTION_ERROR_INJECTION) \
-    $(wildcard include/config/XFRM) \
-  include/uapi/linux/bpf_common.h \
-  include/linux/file.h \
-  include/linux/rbtree_latch.h \
-  include/linux/module.h \
-    $(wildcard include/config/MODULES_TREE_LOOKUP) \
-    $(wildcard include/config/STACKTRACE_BUILD_ID) \
-    $(wildcard include/config/MODULE_SIG) \
-    $(wildcard include/config/KALLSYMS) \
-    $(wildcard include/config/BPF_EVENTS) \
-    $(wildcard include/config/DEBUG_INFO_BTF_MODULES) \
-    $(wildcard include/config/EVENT_TRACING) \
-    $(wildcard include/config/MODULE_UNLOAD) \
-    $(wildcard include/config/CONSTRUCTORS) \
-  include/linux/buildid.h \
-    $(wildcard include/config/CRASH_CORE) \
-  include/linux/kmod.h \
-  include/linux/umh.h \
-  include/linux/elf.h \
-    $(wildcard include/config/ARCH_USE_GNU_PROPERTY) \
-    $(wildcard include/config/ARCH_HAVE_ELF_PROT) \
-  arch/x86/include/asm/elf.h \
-    $(wildcard include/config/X86_X32_ABI) \
-  arch/x86/include/asm/user.h \
-  arch/x86/include/asm/user_32.h \
-  arch/x86/include/asm/fsgcmd_drivers/media/i2c/tvp5150.o := gcc -Wp,-MMD,drivers/media/i2c/.tvp5150.o.d -nostdinc -I./arch/x86/include -I./arch/x86/include/generated  -I./include -I./arch/x86/include/uapi -I./arch/x86/include/generated/uapi -I./include/uapi -I./include/generated/uapi -include ./include/linux/compiler-version.h -include ./include/linux/kconfig.h -include ./include/linux/compiler_types.h -D__KERNEL__ -fmacro-prefix-map=./= -Wall -Wundef -Werror=strict-prototypes -Wno-trigraphs -fno-strict-aliasing -fno-common -fshort-wchar -fno-PIE -Werror=implicit-function-declaration -Werror=implicit-int -Werror=return-type -Wno-format-security -std=gnu11 -mno-sse -mno-mmx -mno-sse2 -mno-3dnow -mno-avx -fcf-protection=none -m32 -msoft-float -mregparm=3 -freg-struct-return -fno-pic -mpreferred-stack-boundary=2 -march=i686 -mtune=pentium3 -mtune=generic -Wa,-mtune=generic32 -ffreestanding -mstack-protector-guard-reg=fs -mstack-protector-guard-symbol=__stack_chk_guard -Wno-sign-compare -fno-asynchronous-unwind-tables -mindirect-branch=thunk-extern -mindirect-branch-register -fno-jump-tables -fno-delete-null-pointer-checks -Wno-frame-address -Wno-format-truncation -Wno-format-overflow -Wno-address-of-packed-member -O2 -fno-allow-store-data-races -fstack-protector-strong -Wimplicit-fallthrough=5 -Wno-main -Wno-unused-but-set-variable -Wno-unused-const-variable -fno-stack-clash-protection -pg -mrecord-mcount -mfentry -DCC_USING_FENTRY -Wdeclaration-after-statement -Wvla -Wno-pointer-sign -Wcast-function-type -Wno-stringop-truncation -Wno-stringop-overflow -Wno-restrict -Wno-maybe-uninitialized -Wno-alloc-size-larger-than -fno-strict-overflow -fno-stack-check -fconserve-stack -Werror=date-time -Werror=incompatible-pointer-types -Werror=designated-init -Wno-packed-not-aligned  -DMODULE  -DKBUILD_BASENAME='"tvp5150"' -DKBUILD_MODNAME='"tvp5150"' -D__KBUILD_MODNAME=kmod_tvp5150 -c -o drivers/media/i2c/tvp5150.o drivers/media/i2c/tvp5150.c 
+#else  /* CONFIG_LOCK_EVENT_COUNTS */
 
-source_drivers/media/i2c/tvp5150.o := drivers/media/i2c/tvp5150.c
+#define lockevent_inc(ev)
+#define lockevent_add(ev, c)
+#define lockevent_cond_inc(ev, c)
 
-deps_drivers/media/i2c/tvp5150.o := \
-    $(wildcard include/config/VIDEO_V4L2_SUBDEV_API) \
-    $(wildcard include/config/MEDIA_CONTROLLER) \
-    $(wildcard include/config/VIDEO_ADV_DEBUG) \
-    $(wildcard include/config/OF) \
-  include/linux/compiler-version.h \
-    $(wildcard include/config/CC_VERSION_TEXT) \
-  include/linux/kconfig.h \
-    $(wildcard include/config/CPU_BIG_ENDIAN) \
-    $(wildcard include/config/BOOGER) \
-    $(wildcard include/config/FOO) \
-  include/linux/compiler_types.h \
-    $(wildcard include/config/DEBUG_INFO_BTF) \
-    $(wildcard include/config/PAHOLE_HAS_BTF_TAG) \
-    $(wildcard include/config/HAVE_ARCH_COMPILER_H) \
-    $(wildcard include/config/CC_HAS_ASM_INLINE) \
-  include/linux/compiler_attributes.h \
-  include/linux/compiler-gcc.h \
-    $(wildcard include/config/RETPOLINE) \
-    $(wildcard include/config/ARCH_USE_BUILTIN_BSWAP) \
-    $(wildcard include/config/SHADOW_CALL_STACK) \
-    $(wildcard include/config/KCOV) \
-  include/dt-bindings/media/tvp5150.h \
-  include/linux/i2c.h \
-    $(wildcard include/config/I2C) \
-    $(wildcard include/config/I2C_SLAVE) \
-    $(wildcard include/config/I2C_BOARDINFO) \
-    $(wildcard include/config/I2C_MUX) \
-    $(wildcard include/config/ACPI) \
-  include/linux/acpi.h \
-    $(wildcard include/config/ACPI_DEBUGGER) \
-    $(wildcard include/config/ACPI_TABLE_LIB) \
-    $(wildcard include/config/X86) \
-    $(wildcard include/config/IA64) \
-    $(wildcard include/config/LOONGARCH) \
-    $(wildcard include/config/ARM64) \
-    $(wildcard include/config/ACPI_PROCESSOR_CSTATE) \
-    $(wildcard include/config/ACPI_HOTPLUG_CPU) \
-    $(wildcard include/config/ACPI_HOTPLUG_IOAPIC) \
-    $(wildcard include/config/X86_IO_APIC) \
-    $(wildcard include/config/PCI) \
-    $(wildcard include/config/ACPI_WMI) \
-    $(wildcard include/config/ACPI_NUMA) \
-    $(wildcard include/config/HIBERNATION) \
-    $(wildcard include/config/PM_SLEEP) \
-    $(wildcard include/config/ACPI_HOTPLUG_MEMORY) \
-    $(wildcard include/config/ACPI_CONTAINER) \
-    $(wildcard include/config/ACPI_GTDT) \
-    $(wildcard include/config/PM) \
-    $(wildcard include/config/DYNAMIC_DEBUG) \
-    $(wildcard include/config/GPIOLIB) \
-    $(wildcard include/config/ACPI_TABLE_UPGRADE) \
-    $(wildcard include/config/ACPI_WATCHDOG) \
-    $(wildcard include/config/ACPI_SPCR_TABLE) \
-    $(wildcard include/config/ACPI_GENERIC_GSI) \
-    $(wildcard include/config/ACPI_LPIT) \
-    $(wildcard include/config/ACPI_PPTT) \
-    $(wildcard include/config/ACPI_PCC) \
-  include/linux/errno.h \
-  include/uapi/linux/errno.h \
-  arch/x86/include/generated/uapi/asm/errno.h \
-  include/uapi/asm-generic/errno.h \
-  include/uapi/asm-generic/errno-base.h \
-  include/linux/ioport.h \
-    $(wildcard include/config/MEMORY_HOTREMOVE) \
-    $(wildcard include/config/MEMORY_HOTPLUG) \
-  include/linux/bits.h \
-  include/linux/const.h \
-  include/vdso/const.h \
-  include/uapi/linux/const.h \
-  include/vdso/bits.h \
-  arch/x86/include/uapi/asm/bitsperlong.h \
-  include/asm-generic/bitsperlong.h \
-    $(wildcard include/config/64BIT) \
-  include/uapi/asm-generic/bitsperlong.h \
-  include/linux/build_bug.h \
-  include/linux/compiler.h \
-    $(wildcard include/config/TRACE_BRANCH_PROFILING) \
-    $(wildcard include/config/PROFILE_ALL_BRANCHES) \
-    $(wildcard include/config/STACK_VALIDATION) \
-    $(wildcard include/config/CFI_CLANG) \
-  include/linux/compiler_types.h \
-  arch/x86/include/generated/asm/rwonce.h \
-  include/asm-generic/rwonce.h \
-  include/linux/kasan-checks.h \
-    $(wildcard include/config/KASAN_GENERIC) \
-    $(wildcard include/config/KASAN_SW_TAGS) \
-  include/linux/types.h \
-    $(wildcard include/config/HAVE_UID16) \
-    $(wildcard include/config/UID16) \
-    $(wildcard include/config/ARCH_DMA_ADDR_T_64BIT) \
-    $(wildcard include/config/PHYS_ADDR_T_64BIT) \
-    $(wildcard include/config/ARCH_32BIT_USTAT_F_TINODE) \
-  include/uapi/linux/types.h \
-  arch/x86/include/generated/uapi/asm/types.h \
-  include/uapi/asm-generic/types.h \
-  include/asm-generic/int-ll64.h \
-  include/uapi/asm-generic/int-ll64.h \
-  include/uapi/linux/posix_types.h \
-  include/linux/stddef.h \
-  include/uapi/linux/stddef.h \
-  arch/x86/include/asm/posix_types.h \
-    $(wildcard include/config/X86_32) \
-  arch/x86/include/uapi/asm/posix_types_32.h \
-  include/uapi/asm-generic/posix_types.h \
-  include/linux/kcsan-checks.h \
-    $(wildcard include/config/KCSAN) \
-    $(wildcard include/config/KCSAN_WEAK_MEMORY) \
-    $(wildcard include/config/KCSAN_IGNORE_ATOMICS) \
-  include/linux/minmax.h \
-  include/linux/irqdomain.h \
-    $(wildcard include/config/IRQ_DOMAIN_HIERARCHY) \
-    $(wildcard include/config/GENERIC_IRQ_DEBUGFS) \
-    $(wildcard include/config/IRQ_DOMAIN) \
-    $(wildcard include/config/IRQ_DOMAIN_NOMAP) \
-  include/linux/irqhandler.h \
-  include/linux/of.h \
-    $(wildcard include/config/OF_DYNAMIC) \
-    $(wildcard include/config/SPARC) \
-    $(wildcard include/config/OF_PROMTREE) \
-    $(wildcard include/config/OF_KOBJ) \
-    $(wildcard include/config/NUMA) \
-    $(wildcard include/config/OF_NUMA) \
-    $(wildcard include/config/OF_OVERLAY) \
-  include/linux/bitops.h \
-  include/linux/typecheck.h \
-  include/uapi/linux/kernel.h \
-  include/uapi/linux/sysinfo.h \
-  arch/x86/include/asm/bitops.h \
-    $(wildcard include/config/X86_64) \
-    $(wildcard include/config/X86_CMOV) \
-  arch/x86/include/asm/alternative.h \
-    $(wildcard include/config/SMP) \
-  include/linux/stringify.h \
-  arch/x86/include/asm/asm.h \
-    $(wildcard include/config/KPROBES) \
-  arch/x86/include/asm/extable_fixup_types.h \
-  arch/x86/include/asm/rmwcc.h \
-    $(wildcard include/config/CC_HAS_ASM_GOTO) \
-  arch/x86/include/asm/barrier.h \
-  arch/x86/include/asm/nops.h \
-  include/asm-generic/barrier.h \
-  include/asm-generic/bitops/fls64.h \
-  include/asm-generic/bitops/sched.h \
-  arch/x86/include/asm/arch_hweight.h \
-  arch/x86/include/asm/cpufeatures.h \
-  arch/x86/include/asm/required-features.h \
-    $(wildcard include/config/X86_MINIMUM_CPU_FAMILY) \
-    $(wildcard include/config/MATH_EMULATION) \
-    $(wildcard include/config/X86_PAE) \
-    $(wildcard include/config/X86_CMPXCHG64) \
-    $(wildcard include/config/X86_P6_NOP) \
-    $(wildcard include/config/MATOM) \
-    $(wildcard include/config/PARAVIRT_XXL) \
-  arch/x86/include/asm/disabled-features.h \
-    $(wildcard include/config/X86_SMAP) \
-    $(wildcard include/config/X86_UMIP) \
-    $(wildcard include/config/X86_INTEL_MEMORY_PROTECTION_KEYS) \
-    $(wildcard include/config/X86_5LEVEL) \
-    $(wildcard include/config/PAGE_TABLE_ISOLATION) \
-    $(wildcard include/config/INTEL_IOMMU_SVM) \
-    $(wildcard include/config/X86_SGX) \
-  include/asm-generic/bitops/const_hweight.h \
-  include/asm-generic/bitops/instrumented-atomic.h \
-  include/linux/instrumented.h \
-  include/asm-generic/bitops/instrumented-non-atomic.h \
-    $(wildcard include/config/KCSAN_ASSUME_PLAIN_WRITES_ATOMIC) \
-  include/asm-generic/bitops/instrumented-lock.h \
-  include/asm-generic/bitops/le.h \
-  arch/x86/include/uapi/asm/byteorder.h \
-  include/linux/byteorder/little_endian.h \
-  include/uapi/linux/byteorder/little_endian.h \
-  include/linux/swab.h \
-  include/uapi/linux/swab.h \
-  arch/x86/include/uapi/asm/swab.h \
-  include/linux/byteorder/generic.h \
-  include/asm-generic/bitops/ext2-atomic-setbit.h \
-  include/linux/kobject.h \
-    $(wildcard include/config/UEVENT_HELPER) \
-    $(wildcard include/config/DEBUG_KOBJECT_RELEASE) \
-  include/linux/list.h \
-    $(wildcard include/config/DEBUG_LIST) \
-  include/linux/container_of.h \
-  include/linux/err.h \
-  include/linux/poison.h \
-    $(wildcard include/config/ILLEGAL_POINTER_VALUE) \
-  include/linux/sysfs.h \
-    $(wildcard include/config/DEBUG_LOCK_ALLOC) \
-    $(wildcard include/config/SYSFS) \
-  include/linux/kernfs.h \
-    $(wildcard include/config/KERNFS) \
-  include/linux/mutex.h \
-    $(wildcard include/config/PREEMPT_RT) \
-    $(wildcard include/config/MUTEX_SPIN_ON_OWNER) \
-    $(wildcard include/config/DEBUG_MUTEXES) \
-  arch/x86/include/asm/current.h \
-  arch/x86/include/asm/percpu.h \
-    $(wildcard include/config/X86_64_SMP) \
-  include/linux/kernel.h \
-    $(wildcard include/config/PREEMPT_VOLUNTARY_BUILD) \
-    $(wildcard include/config/PREEMPT_DYNAMIC) \
-    $(wildcard include/config/HAVE_PREEMPT_DYNAMIC_CALL) \
-    $(wildcard include/config/HAVE_PREEMPT_DYNAMIC_KEY) \
-    $(wildcard include/config/PREEMPT_) \
-    $(wildcard include/config/DEBUG_ATOMIC_SLEEP) \
-    $(wildcard include/config/MMU) \
-    $(wildcard include/config/PROVE_LOCKING) \
-    $(wildcard include/config/TRACING) \
-    $(wildcard include/config/FTRACE_MCOUNT_RECORD) \
-  include/linux/std
+#endif /* CONFIG_LOCK_EVENT_COUNTS */
+#endif /* __LOCKING_LOCK_EVENTS_H */
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          

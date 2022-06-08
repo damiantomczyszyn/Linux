@@ -1,6 +1,1 @@
-e/linux/rwlock.h \
-    $(wildcard include/config/PREEMPT) \
-  include/linux/spinlock_api_smp.h \
-    $(wildcard include/config/INLINE_SPIN_LOCK) \
-    $(wildcard include/config/INLINE_SPIN_LOCK_BH) \
-    $(wildcard include/config/INLINE_SPI
+cmd_drivers/net/dsa/microchip/ksz9477_i2c.ko := ld -r -m elf_i386 --build-id=sha1  -T scripts/module.lds -o drivers/net/dsa/microchip/ksz9477_i2c.ko drivers/net/dsa/microchip/ksz9477_i2c.o drivers/net/dsa/microchip/ksz9477_i2c.mod.o;  true

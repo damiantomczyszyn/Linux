@@ -1,2 +1,1 @@
-config/X86_P6_NOP) \
-    $(wil
+/* SPDX-License-Identifier: GP

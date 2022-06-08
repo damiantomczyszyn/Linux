@@ -1,15 +1,37 @@
-$(wildcard include/config/TRACE_BRANCH_PROFILING) \
-    $(wildcard include/config/PROFILE_ALL_BRANCHES) \
-    $(wildcard include/config/STACK_VALIDATION) \
-  include/linux/compiler_types.h \
-  arch/x86/include/generated/asm/rwonce.h \
-  include/asm-generic/rwonce.h \
-  include/linux/kasan-checks.h \
-    $(wildcard include/config/KASAN_GENERIC) \
-    $(wildcard include/config/KASAN_SW_TAGS) \
-  include/linux/types.h \
-    $(wildcard include/config/HAVE_UID16) \
-    $(wildcard include/config/UID16) \
-    $(wildcard include/config/ARCH_DMA_ADDR_T_64BIT) \
-    $(wildcard include/config/PHYS_ADDR_T_64BIT) \
-    $(wildcard include/con
+// SPDX-License-Identifier: GPL-2.0-or-later
+
+/*
+ * netup-eeprom.c
+ *
+ * 24LC02 EEPROM driver in conjunction with NetUP Dual DVB-S2 CI card
+ *
+ * Copyright (C) 2009 NetUP Inc.
+ * Copyright (C) 2009 Abylay Ospan <aospan@netup.ru>
+ */
+
+#
+#include "cx23885.h"
+#include "netup-eeprom.h"
+
+#define EEPROM_I2C_ADDR 0x50
+
+int netup_eeprom_read(struct i2c_adapter *i2c_adap, u8 addr)
+{
+	int ret;
+	unsigned char buf[2];
+
+	/* Read from EEPROM */
+	struct i2c_msg msg[] = {
+		{
+			.addr	= EEPROM_I2C_ADDR,
+			.flags	= 0,
+			.buf	= &buf[0],
+			.len	= 1
+		}, {
+			.addr	= EEPROM_I2C_ADDR,
+			.flags	= I2C_M_RD,
+			.buf	= &buf[1],
+			.len	= 1
+		}
+
+	};

@@ -1,4 +1,1 @@
-ated/bounds.h \
-  include/linux/mm_types.h \
-    $(wildcard include/config/HAVE_ALIGNED_STRUCT_PAGE) \
-    $(wildcard includ
+cmd_drivers/net/dsa/b53/b53_mmap.mod := { echo  drivers/net/dsa/b53/b53_mmap.o;  echo; } > drivers/net/dsa/b53/b53_mmap.mod

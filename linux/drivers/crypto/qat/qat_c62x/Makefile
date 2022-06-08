@@ -1,1 +1,1 @@
-cmd_drivers/media/i2c/tvp7002.o := gcc -Wp,-MMD,drivers/media/i2c/.tvp7002.o.d -nostdinc -I./arch/x86/include -I./arch/x86/include/generated  -I./include -I./arch/x86/include/uapi -I
+cmd_drivers/media/pci/cx18/cx18.ko := ld -r -m elf_i386 --build-id=sha1  -T scripts/module.lds -o drivers/media/pci/cx18/cx18.ko drivers/media/pci/cx18/cx18.o drivers/media/pci/cx18/

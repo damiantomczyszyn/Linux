@@ -1,2 +1,1 @@
-drivers/media/rc/keymaps/rc-tt-1500.o
-
+/* SPDX-License-Identifier: GPL-2.0-or-

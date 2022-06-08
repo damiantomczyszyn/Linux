@@ -1,1 +1,4 @@
-g&Ëƒ{¤¢~ªÐ)Z®7ÖŽãÓu]œ…T¿˜ð²¨êr…[Q9‰Aðûnÿ3³ v†æœQ’”^1„ ¡ÇÎ™žú<š?”Œä‘æg2@ÁåÀ¶ö÷8(
+         = &mpeg_fops,
+	.ioctl_ops     = &mpeg_ioctl_ops,
+	.tvnorms       = CX23885_NORMS,
+};

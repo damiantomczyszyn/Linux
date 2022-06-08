@@ -1,1 +1,3 @@
-dcard include/confi
+}
+
+static const str

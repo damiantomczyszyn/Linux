@@ -1,27 +1,29 @@
-_percpu_address(addr))
-		return 1;
+FIG_SMP */
 
-	/*
-	 * module static or percpu var?
-	 */
-	return is_module_address(addr) || is_module_percpu_address(addr);
+/**
+ * find_process_by_pid - find a process with a matching PID value.
+ * @pid: the pid in question.
+ *
+ * The task of @pid, if found. %NULL otherwise.
+ */
+static struct task_struct *find_process_by_pid(pid_t pid)
+{
+	return pid ? find_task_by_vpid(pid) : current;
 }
-#endif
 
 /*
- * To make lock name printouts unique, we calculate a unique
- * class->name_version generation counter. The caller must hold the graph
- * lock.
+ * sched_setparam() passes in -1 for its policy, to let the functions
+ * it calls know not to change it.
  */
-static int count_matching_names(struct lock_class *new_class)
+#define SETPARAM_POLICY	-1
+
+static void __setscheduler_params(struct task_struct *p,
+		const struct sched_attr *attr)
 {
-	struct lock_class *class;
-	int count = 0;
+	int policy = attr->sched_policy;
 
-	if (!new_class->name)
-		return 0;
+	if (policy == SETPARAM_POLICY)
+		policy = p->policy;
 
-	list_for_each_entry(class, &all_lock_classes, lock_entry) {
-		if (new_class->key - new_class->subclass == class->key)
-			return class->name_version;
-		if (class->name && !s
+	p->policy = policy;
+

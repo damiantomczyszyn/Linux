@@ -1,1 +1,1 @@
-card include/config/BPF_JIT
+ in both TC_REQ and TC_REQ_

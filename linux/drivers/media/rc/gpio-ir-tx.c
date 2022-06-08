@@ -1,207 +1,139 @@
-// SPDX-License-Identifier: GPL-2.0-or-later
-/*
- * Copyright (C) 2017 Sean Young <sean@mess.org>
- */
-
-#include <linux/kernel.h>
-#include <linux/module.h>
-#include <linux/gpio/consumer.h>
-#include <linux/delay.h>
-#include <linux/slab.h>
-#include <linux/of.h>
-#include <linux/platform_device.h>
-#include <media/rc-core.h>
-
-#define DRIVER_NAME	"gpio-ir-tx"
-#define DEVICE_NAME	"GPIO IR Bit Banging Transmitter"
-
-struct gpio_ir {
-	struct gpio_desc *gpio;
-	unsigned int carrier;
-	unsigned int duty_cycle;
-};
-
-static const struct of_device_id gpio_ir_tx_of_match[] = {
-	{ .compatible = "gpio-ir-tx", },
-	{ },
-};
-MODULE_DEVICE_TABLE(of, gpio_ir_tx_of_match);
-
-static int gpio_ir_tx_set_duty_cycle(struct rc_dev *dev, u32 duty_cycle)
-{
-	struct gpio_ir *gpio_ir = dev->priv;
-
-	gpio_ir->duty_cycle = duty_cycle;
-
-	return 0;
-}
-
-static int gpio_ir_tx_set_carrier(struct rc_dev *dev, u32 carrier)
-{
-	struct gpio_ir *gpio_ir = dev->priv;
-
-	if (carrier > 500000)
-		return -EINVAL;
-
-	gpio_ir->carrier = carrier;
-
-	return 0;
-}
-
-static void delay_until(ktime_t until)
-{
-	/*
-	 * delta should never exceed 0.5 seconds (IR_MAX_DURATION) and on
-	 * m68k ndelay(s64) does not compile; so use s32 rather than s64.
-	 */
-	s32 delta;
-
-	while (true) {
-		delta = ktime_us_delta(until, ktime_get());
-		if (delta <= 0)
-			return;
-
-		/* udelay more than 1ms may not work */
-		delta = min(delta, 1000);
-		udelay(delta);
-	}
-}
-
-static void gpio_ir_tx_unmodulated(struct gpio_ir *gpio_ir, uint *txbuf,
-				   uint count)
-{
-	ktime_t edge;
-	int i;
-
-	local_irq_disable();
-
-	edge = ktime_get();
-
-	for (i = 0; i < count; i++) {
-		gpiod_set_value(gpio_ir->gpio, !(i % 2));
-
-		edge = ktime_add_us(edge, txbuf[i]);
-		delay_until(edge);
-	}
-
-	gpiod_set_value(gpio_ir->gpio, 0);
-}
-
-static void gpio_ir_tx_modulated(struct gpio_ir *gpio_ir, uint *txbuf,
-				 uint count)
-{
-	ktime_t edge;
-	/*
-	 * delta should never exceed 0.5 seconds (IR_MAX_DURATION) and on
-	 * m68k ndelay(s64) does not compile; so use s32 rather than s64.
-	 */
-	s32 delta;
-	int i;
-	unsigned int pulse, space;
-
-	/* Ensure the dividend fits into 32 bit */
-	pulse = DIV_ROUND_CLOSEST(gpio_ir->duty_cycle * (NSEC_PER_SEC / 100),
-				  gpio_ir->carrier);
-	space = DIV_ROUND_CLOSEST((100 - gpio_ir->duty_cycle) *
-				  (NSEC_PER_SEC / 100), gpio_ir->carrier);
-
-	local_irq_disable();
-
-	edge = ktime_get();
-
-	for (i = 0; i < count; i++) {
-		if (i % 2) {
-			// space
-			edge = ktime_add_us(edge, txbuf[i]);
-			delay_until(edge);
-		} else {
-			// pulse
-			ktime_t last = ktime_add_us(edge, txbuf[i]);
-
-			while (ktime_before(ktime_get(), last)) {
-				gpiod_set_value(gpio_ir->gpio, 1);
-				edge = ktime_add_ns(edge, pulse);
-				delta = ktime_to_ns(ktime_sub(edge,
-							      ktime_get()));
-				if (delta > 0)
-					ndelay(delta);
-				gpiod_set_value(gpio_ir->gpio, 0);
-				edge = ktime_add_ns(edge, space);
-				delta = ktime_to_ns(ktime_sub(edge,
-							      ktime_get()));
-				if (delta > 0)
-					ndelay(delta);
+			/* attach tuner */
+			memset(&ts2020_config, 0, sizeof(ts2020_config));
+			ts2020_config.fe = fe0->dvb.frontend;
+			ts2020_config.get_agc_pwm = m88ds3103_get_agc_pwm;
+			memset(&info, 0, sizeof(struct i2c_board_info));
+			strscpy(info.type, "ts2020", I2C_NAME_SIZE);
+			info.addr = 0x60;
+			info.platform_data = &ts2020_config;
+			request_module(info.type);
+			client_tuner = i2c_new_client_device(adapter, &info);
+			if (!i2c_client_has_driver(client_tuner))
+				goto frontend_detach;
+			if (!try_module_get(client_tuner->dev.driver->owner)) {
+				i2c_unregister_device(client_tuner);
+				goto frontend_detach;
 			}
 
-			edge = last;
+			/* delegate signal strength measurement to tuner */
+			fe0->dvb.frontend->ops.read_signal_strength =
+				fe0->dvb.frontend->ops.tuner_ops.get_rf_strength;
+
+			/*
+			 * for setting the voltage we need to set GPIOs on
+			 * the card.
+			 */
+			port->fe_set_voltage =
+				fe0->dvb.frontend->ops.set_voltage;
+			fe0->dvb.frontend->ops.set_voltage =
+				dvbsky_t9580_set_voltage;
+
+			port->i2c_client_tuner = client_tuner;
+
+			break;
+		/* port c - terrestrial/cable */
+		case 2:
+			/* attach frontend */
+			memset(&si2168_config, 0, sizeof(si2168_config));
+			si2168_config.i2c_adapter = &adapter;
+			si2168_config.fe = &fe0->dvb.frontend;
+			si2168_config.ts_mode = SI2168_TS_SERIAL;
+			memset(&info, 0, sizeof(struct i2c_board_info));
+			strscpy(info.type, "si2168", I2C_NAME_SIZE);
+			info.addr = 0x64;
+			info.platform_data = &si2168_config;
+			request_module(info.type);
+			client_demod = i2c_new_client_device(&i2c_bus->i2c_adap, &info);
+			if (!i2c_client_has_driver(client_demod))
+				goto frontend_detach;
+			if (!try_module_get(client_demod->dev.driver->owner)) {
+				i2c_unregister_device(client_demod);
+				goto frontend_detach;
+			}
+			port->i2c_client_demod = client_demod;
+
+			/* attach tuner */
+			memset(&si2157_config, 0, sizeof(si2157_config));
+			si2157_config.fe = fe0->dvb.frontend;
+			si2157_config.if_port = 1;
+			memset(&info, 0, sizeof(struct i2c_board_info));
+			strscpy(info.type, "si2157", I2C_NAME_SIZE);
+			info.addr = 0x60;
+			info.platform_data = &si2157_config;
+			request_module(info.type);
+			client_tuner = i2c_new_client_device(adapter, &info);
+			if (!i2c_client_has_driver(client_tuner))
+				goto frontend_detach;
+
+			if (!try_module_get(client_tuner->dev.driver->owner)) {
+				i2c_unregister_device(client_tuner);
+				goto frontend_detach;
+			}
+			port->i2c_client_tuner = client_tuner;
+			break;
 		}
-	}
-}
+		break;
+	case CX23885_BOARD_DVBSKY_T980C:
+	case CX23885_BOARD_TT_CT2_4500_CI:
+		i2c_bus = &dev->i2c_bus[0];
+		i2c_bus2 = &dev->i2c_bus[1];
 
-static int gpio_ir_tx(struct rc_dev *dev, unsigned int *txbuf,
-		      unsigned int count)
-{
-	struct gpio_ir *gpio_ir = dev->priv;
-	unsigned long flags;
+		/* attach frontend */
+		memset(&si2168_config, 0, sizeof(si2168_config));
+		si2168_config.i2c_adapter = &adapter;
+		si2168_config.fe = &fe0->dvb.frontend;
+		si2168_config.ts_mode = SI2168_TS_PARALLEL;
+		memset(&info, 0, sizeof(struct i2c_board_info));
+		strscpy(info.type, "si2168", I2C_NAME_SIZE);
+		info.addr = 0x64;
+		info.platform_data = &si2168_config;
+		request_module(info.type);
+		client_demod = i2c_new_client_device(&i2c_bus2->i2c_adap, &info);
+		if (!i2c_client_has_driver(client_demod))
+			goto frontend_detach;
+		if (!try_module_get(client_demod->dev.driver->owner)) {
+			i2c_unregister_device(client_demod);
+			goto frontend_detach;
+		}
+		port->i2c_client_demod = client_demod;
 
-	local_irq_save(flags);
-	if (gpio_ir->carrier)
-		gpio_ir_tx_modulated(gpio_ir, txbuf, count);
-	else
-		gpio_ir_tx_unmodulated(gpio_ir, txbuf, count);
-	local_irq_restore(flags);
+		/* attach tuner */
+		memset(&si2157_config, 0, sizeof(si2157_config));
+		si2157_config.fe = fe0->dvb.frontend;
+		si2157_config.if_port = 1;
+		memset(&info, 0, sizeof(struct i2c_board_info));
+		strscpy(info.type, "si2157", I2C_NAME_SIZE);
+		info.addr = 0x60;
+		info.platform_data = &si2157_config;
+		request_module(info.type);
+		client_tuner = i2c_new_client_device(adapter, &info);
+		if (!i2c_client_has_driver(client_tuner))
+			goto frontend_detach;
+		if (!try_module_get(client_tuner->dev.driver->owner)) {
+			i2c_unregister_device(client_tuner);
+			goto frontend_detach;
+		}
+		port->i2c_client_tuner = client_tuner;
+		break;
+	case CX23885_BOARD_DVBSKY_S950C:
+		i2c_bus = &dev->i2c_bus[0];
+		i2c_bus2 = &dev->i2c_bus[1];
 
-	return count;
-}
+		/* attach frontend */
+		fe0->dvb.frontend = dvb_attach(m88ds3103_attach,
+				&dvbsky_s950c_m88ds3103_config,
+				&i2c_bus2->i2c_adap, &adapter);
+		if (fe0->dvb.frontend == NULL)
+			break;
 
-static int gpio_ir_tx_probe(struct platform_device *pdev)
-{
-	struct gpio_ir *gpio_ir;
-	struct rc_dev *rcdev;
-	int rc;
-
-	gpio_ir = devm_kmalloc(&pdev->dev, sizeof(*gpio_ir), GFP_KERNEL);
-	if (!gpio_ir)
-		return -ENOMEM;
-
-	rcdev = devm_rc_allocate_device(&pdev->dev, RC_DRIVER_IR_RAW_TX);
-	if (!rcdev)
-		return -ENOMEM;
-
-	gpio_ir->gpio = devm_gpiod_get(&pdev->dev, NULL, GPIOD_OUT_LOW);
-	if (IS_ERR(gpio_ir->gpio)) {
-		if (PTR_ERR(gpio_ir->gpio) != -EPROBE_DEFER)
-			dev_err(&pdev->dev, "Failed to get gpio (%ld)\n",
-				PTR_ERR(gpio_ir->gpio));
-		return PTR_ERR(gpio_ir->gpio);
-	}
-
-	rcdev->priv = gpio_ir;
-	rcdev->driver_name = DRIVER_NAME;
-	rcdev->device_name = DEVICE_NAME;
-	rcdev->tx_ir = gpio_ir_tx;
-	rcdev->s_tx_duty_cycle = gpio_ir_tx_set_duty_cycle;
-	rcdev->s_tx_carrier = gpio_ir_tx_set_carrier;
-
-	gpio_ir->carrier = 38000;
-	gpio_ir->duty_cycle = 50;
-
-	rc = devm_rc_register_device(&pdev->dev, rcdev);
-	if (rc < 0)
-		dev_err(&pdev->dev, "failed to register rc device\n");
-
-	return rc;
-}
-
-static struct platform_driver gpio_ir_tx_driver = {
-	.probe	= gpio_ir_tx_probe,
-	.driver = {
-		.name	= DRIVER_NAME,
-		.of_match_table = of_match_ptr(gpio_ir_tx_of_match),
-	},
-};
-module_platform_driver(gpio_ir_tx_driver);
-
-MODULE_DESCRIPTION("GPIO IR Bit Banging Transmitter");
-MODULE_AUTHOR("Sean Young <sean@mess.org>");
-MODULE_LICENSE("GPL");
+		/* attach tuner */
+		memset(&ts2020_config, 0, sizeof(ts2020_config));
+		ts2020_config.fe = fe0->dvb.frontend;
+		ts2020_config.get_agc_pwm = m88ds3103_get_agc_pwm;
+		memset(&info, 0, sizeof(struct i2c_board_info));
+		strscpy(info.type, "ts2020", I2C_NAME_SIZE);
+		info.addr = 0x60;
+		info.platform_data = &ts2020_config;
+		request_module(info.type);
+		client_tuner = i2c_new_client_device(adapter, &info);
+		if (!i2c_client_has_driv

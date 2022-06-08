@@ -1,1 +1,2 @@
-cmd_drivers/media/i2c/ud
+  = 0x61,
+	.if_khz      

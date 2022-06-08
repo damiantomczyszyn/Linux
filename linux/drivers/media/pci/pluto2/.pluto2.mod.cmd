@@ -1,5 +1,6 @@
-\
-  include/asm-generic/iomap.h \
-  include/asm-generic/pci_iomap.h \
-    $(wildcard include/config/NO_GENERIC_PCI_IOPORT_MAP) \
-    
+// SPDX-License-Identifier: GPL-2.0-or-later
+
+/*
+ * netup-eeprom.c
+ *
+ * 24LC02 EEPROM driver in conjunction with NetUP Dual DVB-S2 C

@@ -1,1 +1,2 @@
-$(wildcard include/conf
+00140140
+#define AUD_EX

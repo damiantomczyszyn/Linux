@@ -1,1 +1,2 @@
-de/config/INLINE_READ_UNLOCK_IRQ
+drivers/net/dsa/b53/b53_mdio.o
+

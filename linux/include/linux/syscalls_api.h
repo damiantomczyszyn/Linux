@@ -1,2 +1,2 @@
-x/scatterlist.h \
-    $(wild
+3885_BOARD_DVBSKY_T980C:
+	ca

@@ -1,2 +1,6 @@
-ackwards for a lock dependency,
- * 	for a lock dependency A -> B, there are 
+if
+}
+
+DEFINE_STATIC_KEY_FALSE(sched_numa_balancing);
+
+#ifdef CONFIG_NUMA_BAL

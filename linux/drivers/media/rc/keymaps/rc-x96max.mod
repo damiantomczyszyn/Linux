@@ -1,2 +1,3 @@
-drivers/media/rc/keymaps/rc-x96max.o
-
+onst struct v4l2_frequency *f)
+{
+	stru

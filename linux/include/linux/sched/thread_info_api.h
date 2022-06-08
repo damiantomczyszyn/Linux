@@ -1,2 +1,1 @@
-t.h \
-    $(wildcard include/co
+        = LGDT3306A_TPCLK_RISIN

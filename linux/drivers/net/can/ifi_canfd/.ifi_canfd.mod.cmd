@@ -1,4 +1,1 @@
-ard include/config/ACPI_APEI_GHES) \
-    $(wildcard include/config/INTEL_TXT) \
-  arch/x86/include/generated/asm/kmap_size.h \
-  include/asm-gene
+cmd_drivers/net/can/ifi_canfd/ifi_canfd.mod := { echo  drivers/net/can/ifi_canfd/ifi_canfd.o;  echo; } > drivers/net/can/ifi_canfd/ifi_canfd.mod

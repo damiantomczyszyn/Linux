@@ -1,1 +1,2 @@
-// SPDX-License-Identifier: 
+us & VID_BC_MSK_SYNC) ||
+		(

@@ -1,1 +1,2 @@
-ldcard include/config/SH
+fault_pm	  = 0,
+				.dvb

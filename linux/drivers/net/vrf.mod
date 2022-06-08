@@ -1,2 +1,3 @@
-ated/bounds.h \
-  i
+}
+
+static const str

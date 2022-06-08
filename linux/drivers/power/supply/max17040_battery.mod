@@ -1,1 +1,2 @@
-cmd_drivers/media/i2c/tw9903.o := gcc -Wp
+nnel *audio_ch =
+		&dev->sram_channels[AU

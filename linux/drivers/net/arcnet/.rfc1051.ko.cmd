@@ -1,5 +1,1 @@
-nclude/linux/page-flags-layout.h \
-    $(wildcard include/config/KASAN_HW_TAGS) \
-  include/linux/numa.h \
-    $(wildcard include/config/NODES_SHIFT) \
-    $(wildcard include/config/NUMA_KEEP_MEMI
+cmd_drivers/net/arcnet/rfc1051.ko := ld -r -m elf_i386 --build-id=sha1  -T scripts/module.lds -o drivers/net/arcnet/rfc1051.ko drivers/net/arcnet/rfc1051.o drivers/net/arcnet/rfc1051.mod.o;  true

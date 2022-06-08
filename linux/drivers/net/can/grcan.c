@@ -1,1098 +1,1730 @@
-de/config/BPF_JIT) \
-  include/asm-generic/access_ok.h \
-    $(wildcard include/config/ALTERNATE_USER_ADDRESS_SPACE) \
-  arch/x86/include/asm/uaccess_32.h \
-  include/linux/cred.h \
-    $(wildcard include/config/DEBUG_CREDENTIALS) \
-  include/linux/key.h \
-    $(wildcard include/config/KEY_NOTIFICATIONS) \
-    $(wildcard include/config/NET) \
-  include/linux/assoc_array.h \
-    $(wildcard include/config/ASSOCIATIVE_ARRAY) \
-  include/linux/sched/user.h \
-    $(wildcard include/config/WATCH_QUEUE) \
-  include/linux/percpu_counter.h \
-  include/linux/rcu_sync.h \
-  include/linux/delayed_call.h \
-  include/linux/errseq.h \
-  include/linux/ioprio.h \
-  include/linux/sched/rt.h \
-  include/linux/iocontext.h \
-    $(wildcard include/config/BLK_ICQ) \
-  include/uapi/linux/ioprio.h \
-  include/linux/fs_types.h \
-  include/linux/mount.h \
-  include/linux/mnt_idmapping.h \
-  include/uapi/linux/fs.h \
-  include/linux/quota.h \
-    $(wildcard include/config/QUOTA_NETLINK_INTERFACE) \
-  include/uapi/linux/dqblk_xfs.h \
-  include/linux/dqblk_v1.h \
-  include/linux/dqblk_v2.h \
-  include/linux/dqblk_qtree.h \
-  include/linux/projid.h \
-  include/uapi/linux/quota.h \
-  include/linux/nfs_fs_i.h \
-  include/linux/seq_file.h \
-  include/linux/string_helpers.h \
-  include/linux/ns_common.h \
-  include/linux/nsproxy.h \
-  include/linux/user_namespace.h \
-    $(wildcard include/config/INOTIFY_USER) \
-    $(wildcard include/config/FANOTIFY) \
-    $(wildcard include/config/PERSISTENT_KEYRINGS) \
-  include/linux/kernel_stat.h \
-  include/linux/interrupt.h \
-    $(wildcard include/config/IRQ_FORCED_THREADING) \
-    $(wildcard include/config/GENERIC_IRQ_PROBE) \
-    $(wildcard include/config/IRQ_TIMINGS) \
-  include/linux/irqreturn.h \
-  include/linux/irqnr.h \
-  include/uapi/linux/irqnr.h \
-  include/linux/hardirq.h \
-  include/linux/context_tracking_state.h \
-    $(wildcard include/config/CONTEXT_TRACKING) \
-  include/linux/ftrace_irq.h \
-    $(wildcard include/config/HWLAT_TRACER) \
-    $(wildcard include/config/OSNOISE_TRACER) \
-  include/linux/vtime.h \
-    $(wildcard include/config/VIRT_CPU_ACCOUNTING) \
-    $(wildcard include/config/IRQ_TIME_ACCOUNTING) \
-  arch/x86/include/asm/hardirq.h \
-    $(wildcard include/config/KVM_INTEL) \
-    $(wildcard include/config/X86_THERMAL_VECTOR) \
-    $(wildcard include/config/X86_MCE_THRESHOLD) \
-    $(wildcard include/config/X86_MCE_AMD) \
-    $(wildcard include/config/X86_HV_CALLBACK_VECTOR) \
-  arch/x86/include/asm/irq.h \
-  arch/x86/include/asm/sections.h \
-  include/asm-generic/sections.h \
-    $(wildcard include/config/HAVE_FUNCTION_DESCRIPTORS) \
-  include/linux/cgroup-defs.h \
-    $(wildcard include/config/CGROUP_NET_CLASSID) \
-    $(wildcard include/config/CGROUP_NET_PRIO) \
-  include/linux/u64_stats_sync.h \
-  include/linux/bpf-cgroup-defs.h \
-  include/linux/psi_types.h \
-  include/linux/kthread.h \
-  include/linux/cgroup_subsys.h \
-    $(wildcard include/config/CGROUP_DEVICE) \
-    $(wildcard include/config/CGROUP_FREEZER) \
-    $(wildcard include/config/CGROUP_PERF) \
-    $(wildcard include/config/CGROUP_HUGETLB) \
-    $(wildcard include/config/CGROUP_PIDS) \
-    $(wildcard include/config/CGROUP_RDMA) \
-    $(wildcard include/config/CGROUP_MISC) \
-    $(wildcard include/config/CGROUP_DEBUG) \
-  include/linux/vm_event_item.h \
-    $(wildcard include/config/HAVE_ARCH_TRANSPARENT_HUGEPAGE_PUD) \
-    $(wildcard include/config/MEMORY_BALLOON) \
-    $(wildcard include/config/BALLOON_COMPACTION) \
-    $(wildcard include/config/DEBUG_TLBFLUSH) \
-    $(wildcard include/config/DEBUG_VM_VMACACHE) \
-  include/linux/page_counter.h \
-  include/linux/vmpressure.h \
-  include/linux/eventfd.h \
-  include/linux/mm.h \
-    $(wildcard include/config/HAVE_ARCH_MMAP_RND_BITS) \
-    $(wildcard include/config/HAVE_ARCH_MMAP_RND_COMPAT_BITS) \
-    $(wildcard include/config/ARCH_USES_HIGH_VMA_FLAGS) \
-    $(wildcard include/config/ARCH_HAS_PKEYS) \
-    $(wildcard include/config/PPC) \
-    $(wildcard include/config/PARISC) \
-    $(wildcard include/config/SPARC64) \
-    $(wildcard include/config/ARM64_MTE) \
-    $(wildcard include/config/HAVE_ARCH_USERFAULTFD_MINOR) \
-    $(wildcard include/config/SHMEM) \
-    $(wildcard include/config/ARCH_HAS_PTE_SPECIAL) \
-    $(wildcard include/config/ARCH_HAS_PTE_DEVMAP) \
-    $(wildcard include/config/DEBUG_VM_RB) \
-    $(wildcard include/config/PAGE_POISONING) \
-    $(wildcard include/config/INIT_ON_ALLOC_DEFAULT_ON) \
-    $(wildcard include/config/INIT_ON_FREE_DEFAULT_ON) \
-    $(wildcard include/config/DEBUG_PAGEALLOC) \
-    $(wildcard include/config/HUGETLBFS) \
-    $(wildcard include/config/MAPPING_DIRTY_HELPERS) \
-    $(wildcard include/config/ANON_VMA_NAME) \
-  include/linux/mmap_lock.h \
-  include/linux/page_ext.h \
-  include/linux/stacktrace.h \
-    $(wildcard include/config/ARCH_STACKWALK) \
-    $(wildcard include/config/STACKTRACE) \
-    $(wildcard include/config/HAVE_RELIABLE_STACKTRACE) \
-  include/linux/stackdepot.h \
-    $(wildcard include/config/STACKDEPOT_ALWAYS_INIT) \
-  include/linux/page_ref.h \
-    $(wildcard include/config/DEBUG_PAGE_REF) \
-  include/linux/sizes.h \
-  include/linux/pgtable.h \
-    $(wildcard include/config/HIGHPTE) \
-    $(wildcard include/config/GUP_GET_PTE_LOW_HIGH) \
-    $(wildcard include/config/HAVE_ARCH_SOFT_DIRTY) \
-    $(wildcard include/config/ARCH_ENABLE_THP_MIGRATION) \
-    $(wildcard include/config/X86_ESPFIX64) \
-  arch/x86/include/asm/pgtable.h \
-    $(wildcard include/config/DEBUG_WX) \
-    $(wildcard include/config/PAGE_TABLE_CHECK) \
-  arch/x86/include/asm/pkru.h \
-  arch/x86/include/asm/fpu/api.h \
-    $(wildcard include/config/X86_DEBUG_FPU) \
-  arch/x86/include/asm/coco.h \
-  include/asm-generic/pgtable_uffd.h \
-  include/linux/page_table_check.h \
-  arch/x86/include/asm/pgtable_32.h \
-  arch/x86/include/asm/pgtable-3level.h \
-  arch/x86/include/asm/pgtable-invert.h \
-  include/linux/huge_mm.h \
-  include/linux/sched/coredump.h \
-    $(wildcard include/config/CORE_DUMP_DEFAULT_ELF_HEADERS) \
-  include/linux/vmstat.h \
-    $(wildcard include/config/VM_EVENT_COUNTERS) \
-  include/linux/writeback.h \
-  include/linux/flex_proportions.h \
-  include/linux/backing-dev-defs.h \
-    $(wildcard include/config/DEBUG_FS) \
-  include/linux/blk_types.h \
-    $(wildcard include/config/FAIL_MAKE_REQUEST) \
-    $(wildcard include/config/BLK_CGROUP_IOCOST) \
-    $(wildcard include/config/BLK_INLINE_ENCRYPTION) \
-    $(wildcard include/config/BLK_DEV_INTEGRITY) \
-  include/linux/bvec.h \
-  include/linux/highmem.h \
-  include/linux/cacheflush.h \
-  arch/x86/include/asm/cacheflush.h \
-  include/asm-generic/cacheflush.h \
-  include/linux/highmem-internal.h \
-  arch/x86/include/asm/highmem.h \
-  arch/x86/include/asm/tlbflush.h \
-  arch/x86/include/asm/invpcid.h \
-  arch/x86/include/asm/pti.h \
-  include/linux/bio.h \
-  include/linux/mempool.h \
-  include/linux/uio.h \
-    $(wildcard include/config/ARCH_HAS_UACCESS_FLUSHCACHE) \
-  include/uapi/linux/uio.h \
-  include/linux/node.h \
-    $(wildcard include/config/HMEM_REPORTING) \
-  include/linux/pagemap.h \
-  include/linux/hugetlb_inline.h \
-  include/uapi/linux/mempolicy.h \
-  include/linux/freezer.h \
-  include/uapi/linux/i2c.h \
-  include/linux/videodev2.h \
-  include/uapi/linux/videodev2.h \
-  include/uapi/linux/v4l2-common.h \
-  include/uapi/linux/v4l2-controls.h \
-  include/media/v4l2-device.h \
-    $(wildcard include/config/VIDEO_V4L2_SUBDEV_API) \
-  include/media/media-device.h \
-    $(wildcard include/config/MEDIA_CONTROLLER) \
-  include/media/media-devnode.h \
-  include/linux/poll.h \
-  include/uapi/linux/poll.h \
-  arch/x86/include/generated/uapi/asm/poll.h \
-  include/uapi/asm-generic/poll.h \
-  include/uapi/linux/eventpoll.h \
-  include/linux/cdev.h \
-  include/media/media-entity.h \
-  include/uapi/linux/media.h \
-  include/media/v4l2-subdev.h \
-  include/uapi/linux/v4l2-subdev.h \
-  include/uapi/linux/v4l2-mediabus.h \
-  include/uapi/linux/media-bus-format.h \
-  include/media/v4l2-async.h \
-  include/media/v4l2-common.h \
-    $(wildcard include/config/VIDEO_V4L2_I2C) \
-    $(wildcard include/config/SPI) \
-  include/media/v4l2-dev.h \
-  include/linux/spi/spi.h \
-    $(wildcard include/config/SPI_SLAVE) \
-  include/linux/scatterlist.h \
-    $(wildcard include/config/NEED_SG_DMA_LENGTH) \
-    $(wildcard include/config/DEBUG_SG) \
-    $(wildcard include/config/SGL_ALLOC) \
-    $(wildcard include/config/ARCH_NO_SG_CHAIN) \
-    $(wildcard include/config/SG_POOL) \
-  include/linux/gpio/consumer.h \
-    $(wildcard include/config/OF_GPIO) \
-    $(wildcard include/config/GPIO_SYSFS) \
-  include/uapi/linux/spi/spi.h \
-  include/media/v4l2-fh.h \
-  include/media/v4l2-mediabus.h \
-  include/media/i2c/upd64083.h \
+// SPDX-License-Identifier: GPL-2.0-or-later
+/*
+ * Socket CAN driver for Aeroflex Gaisler GRCAN and GRHCAN.
+ *
+ * 2012 (c) Aeroflex Gaisler AB
+ *
+ * This driver supports GRCAN and GRHCAN CAN controllers available in the GRLIB
+ * VHDL IP core library.
+ *
+ * Full documentation of the GRCAN core can be found here:
+ * http://www.gaisler.com/products/grlib/grip.pdf
+ *
+ * See "Documentation/devicetree/bindings/net/can/grcan.txt" for information on
+ * open firmware properties.
+ *
+ * See "Documentation/ABI/testing/sysfs-class-net-grcan" for information on the
+ * sysfs interface.
+ *
+ * See "Documentation/admin-guide/kernel-parameters.rst" for information on the module
+ * parameters.
+ *
+ * Contributors: Andreas Larsson <andreas@gaisler.com>
+ */
 
-drivers/media/i2c/upd64083.o: $(deps_drivers/media/i2c/upd64083.o)
+#include <linux/kernel.h>
+#include <linux/module.h>
+#include <linux/interrupt.h>
+#include <linux/netdevice.h>
+#include <linux/delay.h>
+#include <linux/io.h>
+#include <linux/can/dev.h>
+#include <linux/spinlock.h>
+#include <linux/of_platform.h>
+#include <linux/of_irq.h>
 
-$(deps_drivers/media/i2c/upd64083.o):
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    cmd_drivers/media/i2c/upd64083.o := gcc -Wp,-MMD,drivers/media/i2c/.upd64083.o.d -nostdinc -I./arch/x86/include -I./arch/x86/include/generated  -I./include -I./arch/x86/include/uapi -I./arch/x86/include/generated/uapi -I./include/uapi -I./include/generated/uapi -include ./include/linux/compiler-version.h -include ./include/linux/kconfig.h -include ./include/linux/compiler_types.h -D__KERNEL__ -fmacro-prefix-map=./= -Wall -Wundef -Werror=strict-prototypes -Wno-trigraphs -fno-strict-aliasing -fno-common -fshort-wchar -fno-PIE -Werror=implicit-function-declaration -Werror=implicit-int -Werror=return-type -Wno-format-security -std=gnu11 -mno-sse -mno-mmx -mno-sse2 -mno-3dnow -mno-avx -fcf-protection=none -m32 -msoft-float -mregparm=3 -freg-struct-return -fno-pic -mpreferred-stack-boundary=2 -march=i686 -mtune=pentium3 -mtune=generic -Wa,-mtune=generic32 -ffreestanding -mstack-protector-guard-reg=fs -mstack-protector-guard-symbol=__stack_chk_guard -Wno-sign-compare -fno-asynchronous-unwind-tables -mindirect-branch=thunk-extern -mindirect-branch-register -fno-jump-tables -fno-delete-null-pointer-checks -Wno-frame-address -Wno-format-truncation -Wno-format-overflow -Wno-address-of-packed-member -O2 -fno-allow-store-data-races -fstack-protector-strong -Wimplicit-fallthrough=5 -Wno-main -Wno-unused-but-set-variable -Wno-unused-const-variable -fno-stack-clash-protection -pg -mrecord-mcount -mfentry -DCC_USING_FENTRY -Wdeclaration-after-statement -Wvla -Wno-pointer-sign -Wcast-function-type -Wno-stringop-truncation -Wno-stringop-overflow -Wno-restrict -Wno-maybe-uninitialized -Wno-alloc-size-larger-than -fno-strict-overflow -fno-stack-check -fconserve-stack -Werror=date-time -Werror=incompatible-pointer-types -Werror=designated-init -Wno-packed-not-aligned  -DMODULE  -DKBUILD_BASENAME='"upd64083"' -DKBUILD_MODNAME='"upd64083"' -D__KBUILD_MODNAME=kmod_upd64083 -c -o drivers/media/i2c/upd64083.o drivers/media/i2c/upd64083.c 
+#include <linux/dma-mapping.h>
 
-source_drivers/media/i2c/upd64083.o := drivers/media/i2c/upd64083.c
+#define DRV_NAME	"grcan"
 
-deps_drivers/media/i2c/upd64083.o := \
-    $(wildcard include/config/VIDEO_ADV_DEBUG) \
-  include/linux/compiler-version.h \
-    $(wildcard include/config/CC_VERSION_TEXT) \
-  include/linux/kconfig.h \
-    $(wildcard include/config/CPU_BIG_ENDIAN) \
-    $(wildcard include/config/BOOGER) \
-    $(wildcard include/config/FOO) \
-  include/linux/compiler_types.h \
-    $(wildcard include/config/DEBUG_INFO_BTF) \
-    $(wildcard include/config/PAHOLE_HAS_BTF_TAG) \
-    $(wildcard include/config/HAVE_ARCH_COMPILER_H) \
-    $(wildcard include/config/CC_HAS_ASM_INLINE) \
-  include/linux/compiler_attributes.h \
-  include/linux/compiler-gcc.h \
-    $(wildcard include/config/RETPOLINE) \
-    $(wildcard include/config/ARCH_USE_BUILTIN_BSWAP) \
-    $(wildcard include/config/SHADOW_CALL_STACK) \
-    $(wildcard include/config/KCOV) \
-  include/linux/module.h \
-    $(wildcard include/config/MODULES) \
-    $(wildcard include/config/SYSFS) \
-    $(wildcard include/config/MODULES_TREE_LOOKUP) \
-    $(wildcard include/config/LIVEPATCH) \
-    $(wildcard include/config/STACKTRACE_BUILD_ID) \
-    $(wildcard include/config/CFI_CLANG) \
-    $(wildcard include/config/MODULE_SIG) \
-    $(wildcard include/config/GENERIC_BUG) \
-    $(wildcard include/config/KALLSYMS) \
-    $(wildcard include/config/SMP) \
-    $(wildcard include/config/TRACEPOINTS) \
-    $(wildcard include/config/TREE_SRCU) \
-    $(wildcard include/config/BPF_EVENTS) \
-    $(wildcard include/config/DEBUG_INFO_BTF_MODULES) \
-    $(wildcard include/config/JUMP_LABEL) \
-    $(wildcard include/config/TRACING) \
-    $(wildcard include/config/EVENT_TRACING) \
-    $(wildcard include/config/FTRACE_MCOUNT_RECORD) \
-    $(wildcard include/config/KPROBES) \
-    $(wildcard include/config/HAVE_STATIC_CALL_INLINE) \
-    $(wildcard include/config/PRINTK_INDEX) \
-    $(wildcard include/config/MODULE_UNLOAD) \
-    $(wildcard include/config/CONSTRUCTORS) \
-    $(wildcard include/config/FUNCTION_ERROR_INJECTION) \
-  include/linux/list.h \
-    $(wildcard include/config/DEBUG_LIST) \
-  include/linux/container_of.h \
-  include/linux/build_bug.h \
-  include/linux/compiler.h \
-    $(wildcard include/config/TRACE_BRANCH_PROFILING) \
-    $(wildcard include/config/PROFILE_ALL_BRANCHES) \
-    $(wildcard include/config/STACK_VALIDATION) \
-  include/linux/compiler_types.h \
-  arch/x86/include/generated/asm/rwonce.h \
-  include/asm-generic/rwonce.h \
-  include/linux/kasan-checks.h \
-    $(wildcard include/config/KASAN_GENERIC) \
-    $(wildcard include/config/KASAN_SW_TAGS) \
-  include/linux/types.h \
-    $(wildcard include/config/HAVE_UID16) \
-    $(wildcard include/config/UID16) \
-    $(wildcard include/config/ARCH_DMA_ADDR_T_64BIT) \
-    $(wildcard include/config/PHYS_ADDR_T_64BIT) \
-    $(wildcard include/config/64BIT) \
-    $(wildcard include/config/ARCH_32BIT_USTAT_F_TINODE) \
-  include/uapi/linux/types.h \
-  arch/x86/include/generated/uapi/asm/types.h \
-  include/uapi/asm-generic/types.h \
-  include/asm-generic/int-ll64.h \
-  include/uapi/asm-generic/int-ll64.h \
-  arch/x86/include/uapi/asm/bitsperlong.h \
-  include/asm-generic/bitsperlong.h \
-  include/uapi/asm-generic/bitsperlong.h \
-  include/uapi/linux/posix_types.h \
-  include/linux/stddef.h \
-  include/uapi/linux/stddef.h \
-  arch/x86/include/asm/posix_types.h \
-    $(wildcard include/config/X86_32) \
-  arch/x86/include/uapi/asm/posix_types_32.h \
-  include/uapi/asm-generic/posix_types.h \
-  include/linux/kcsan-checks.h \
-    $(wildcard include/config/KCSAN) \
-    $(wildcard include/config/KCSAN_WEAK_MEMORY) \
-    $(wildcard include/config/KCSAN_IGNORE_ATOMICS) \
-  include/linux/err.h \
-  arch/x86/include/generated/uapi/asm/errno.h \
-  include/uapi/asm-generic/errno.h \
-  include/uapi/asm-generic/errno-base.h \
-  include/linux/poison.h \
-    $(wildcard include/config/ILLEGAL_POINTER_VALUE) \
-  include/linux/const.h \
-  include/vdso/const.h \
-  include/uapi/linux/const.h \
-  arch/x86/include/asm/barrier.h \
-  arch/x86/include/asm/alternative.h \
-  include/linux/stringify.h \
-  arch/x86/include/asm/asm.h \
-  arch/x86/include/asm/extable_fixup_types.h \
-  arch/x86/include/asm/nops.h \
-  include/asm-generic/barrier.h \
-  include/linux/stat.h \
-  arch/x86/include/uapi/asm/stat.h \
-  include/uapi/linux/stat.h \
-  include/linux/time.h \
-    $(wildcard include/config/POSIX_TIMERS) \
-  include/linux/cache.h \
-    $(wildcard include/config/ARCH_HAS_CACHE_LINE_SIZE) \
-  include/uapi/linux/kernel.h \
-  include/uapi/linux/sysinfo.h \
-  arch/x86/include/asm/cache.h \
-    $(wildcard include/config/X86_L1_CACHE_SHIFT) \
-    $(wildcard include/config/X86_INTERNODE_CACHE_SHIFT) \
-    $(wildcard include/config/X86_VSMP) \
-  include/linux/linkage.h \
-    $(wildcard include/config/ARCH_USE_SYM_ANNOTATIONS) \
-  include/linux/export.h \
-    $(wildcard include/config/MODVERSIONS) \
-    $(wildcard include/config/MODULE_REL_CRCS) \
-    $(wildcard include/config/HAVE_ARCH_PREL32_RELOCATIONS) \
-    $(wildcard include/config/TRIM_UNUSED_KSYMS) \
-  arch/x86/include/asm/linkage.h \
-    $(wildcard include/config/X86_64) \
-    $(wildcard include/config/X86_ALIGNMENT_16) \
-    $(wildcard include/config/SLS) \
-  arch/x86/include/asm/ibt.h \
-    $(wildcard include/config/X86_KERNEL_IBT) \
-  include/linux/math64.h \
-    $(wildcard include/config/ARCH_SUPPORTS_INT128) \
-  include/linux/math.h \
-  arch/x86/include/asm/div64.h \
-  include/linux/log2.h \
-    $(wildcard include/config/ARCH_HAS_ILOG2_U32) \
-    $(wildcard include/config/ARCH_HAS_ILOG2_U64) \
-  include/linux/bitops.h \
-  include/linux/bits.h \
-  include/vdso/bits.h \
-  include/linux/typecheck.h \
-  arch/x86/include/asm/bitops.h \
-    $(wildcard include/config/X86_CMOV) \
-  arch/x86/include/asm/rmwcc.h \
-    $(wildcard include/config/CC_HAS_ASM_GOTO) \
-  include/asm-generic/bitops/fls64.h \
-  include/asm-generic/bitops/sched.h \
-  arch/x86/include/asm/arch_hweight.h \
-  arch/x86/include/asm/cpufeatures.h \
-  arch/x86/include/asm/required-features.h \
-    $(wildcard include/config/X86_MINIMUM_CPU_FAMILY) \
-    $(wildcard include/config/MATH_EMULATION) \
-    $(wildcard include/config/X86_PAE) \
-    $(wildcard include/config/X86_CMPXCHG64) \
-    $(wildcard include/config/X86_P6_NOP) \
-    $(wildcard include/config/MATOM) \
-    $(wildcard include/config/PARAVIRT_XXL) \
-  arch/x86/include/asm/disabled-features.h \
-    $(wildcard include/config/X86_SMAP) \
-    $(wildcard include/config/X86_UMIP) \
-    $(wildcard include/config/X86_INTEL_MEMORY_PROTECTION_KEYS) \
-    $(wildcard include/config/X86_5LEVEL) \
-    $(wildcard include/config/PAGE_TABLE_ISOLATION) \
-    $(wildcard include/config/INTEL_IOMMU_SVM) \
-    $(wildcard include/config/X86_SGX) \
-  include/asm-generic/bitops/const_hweight.h \
-  include/asm-generic/bitops/instrumented-atomic.h \
-  include/linux/instrumented.h \
-  include/asm-generic/bitops/instrumented-non-atomic.h \
-    $(wildcard include/config/KCSAN_ASSUME_PLAIN_WRITES_ATOMIC) \
-  include/asm-generic/bitops/instrumented-lock.h \
-  include/asm-generic/bitops/le.h \
-  arch/x86/include/uapi/asm/byteorder.h \
-  include/linux/byteorder/little_endian.h \
-  include/uapi/linux/byteorder/little_endian.h \
-  include/linux/swab.h \
-  include/uapi/linux/swab.h \
-  arch/x86/include/uapi/asm/swab.h \
-  include/linux/byteorder/generic.h \
-  include/asm-generic/bitops/ext2-atomic-setbit.h \
-  include/vdso/math64.h \
-  include/linux/time64.h \
-  include/vdso/time64.h \
-  include/uapi/linux/time.h \
-  include/uapi/linux/time_types.h \
-  include/linux/time32.h \
-  include/linux/timex.h \
-  include/uapi/linux/timex.h \
-  include/uapi/linux/param.h \
-  arch/x86/include/generated/uapi/asm/param.h \
-  include/asm-generic/param.h \
-    $(wildcard include/config/HZ) \
-  include/uapi/asm-generic/param.h \
-  arch/x86/include/asm/timex.h \
-    $(wildcard include/config/X86_TSC) \
-  arch/x86/include/asm/processor.h \
-    $(wildcard include/config/X86_VMX_FEATURE_NAMES) \
-    $(wildcard include/config/X86_IOPL_IOPERM) \
-    $(wildcard include/config/STACKPROTECTOR) \
-    $(wildcard include/config/VM86) \
-    $(wildcard include/config/X86_DEBUGCTLMSR) \
-    $(wildcard include/config/CPU_SUP_AMD) \
-    $(wildcard include/config/XEN) \
-  arch/x86/include/asm/processor-flags.h \
-  arch/x86/include/uapi/asm/processor-flags.h \
-  include/linux/mem_encrypt.h \
-    $(wildcard include/config/ARCH_HAS_MEM_ENCRYPT) \
-    $(wildcard include/config/AMD_MEM_ENCRYPT) \
-  arch/x86/include/asm/mem_encrypt.h \
-  include/linux/init.h \
-    $(wildcard include/config/STRICT_KERNEL_RWX) \
-    $(wildcard include/config/STRICT_MODULE_RWX) \
-    $(wildcard include/config/LTO_CLANG) \
-  include/linux/cc_platform.h \
-    $(wildcard include/config/ARCH_HAS_CC_PLATFORM) \
-  arch/x86/include/uapi/asm/bootparam.h \
-  include/linux/screen_info.h \
-  include/uapi/linux/screen_info.h \
-  include/linux/apm_bios.h \
-  include/uapi/linux/apm_bios.h \
-  include/uapi/linux/ioctl.h \
-  arch/x86/include/generated/uapi/asm/ioctl.h \
-  include/asm-generic/ioctl.h \
-  include/uapi/asm-generic/ioctl.h \
-  include/linux/edd.h \
-  include/uapi/linux/edd.h \
-  arch/x86/include/asm/ist.h \
-  arch/x86/include/uapi/asm/ist.h \
-  include/video/edid.h \
-    $(wildcard include/config/X86) \
-  include/uapi/video/edid.h \
-  arch/x86/include/asm/math_emu.h \
-  arch/x86/include/asm/ptrace.h \
-    $(wildcard include/config/PARAVIRT) \
-    $(wildcard include/config/IA32_EMULATION) \
-  arch/x86/include/asm/segment.h \
-    $(wildcard include/config/XEN_PV) \
-  arch/x86/include/asm/page_types.h \
-    $(wildcard include/config/PHYSICAL_START) \
-    $(wildcard include/config/PHYSICAL_ALIGN) \
-    $(wildcard include/config/DYNAMIC_PHYSICAL_MASK) \
-  arch/x86/include/asm/page_32_types.h \
-    $(wildcard include/config/HIGHMEM4G) \
-    $(wildcard include/config/HIGHMEM64G) \
-    $(wildcard include/config/PAGE_OFFSET) \
-  arch/x86/include/uapi/asm/ptrace.h \
-  arch/x86/include/uapi/asm/ptrace-abi.h \
-  arch/x86/include/asm/paravirt_types.h \
-    $(wildcard include/config/PGTABLE_LEVELS) \
-    $(wildcard include/config/PARAVIRT_DEBUG) \
-  arch/x86/include/asm/desc_defs.h \
-  arch/x86/include/asm/pgtable_types.h \
-    $(wildcard include/config/MEM_SOFT_DIRTY) \
-    $(wildcard include/config/HAVE_ARCH_USERFAULTFD_WP) \
-    $(wildcard include/config/PROC_FS) \
-  arch/x86/include/asm/pgtable_32_types.h \
-  arch/x86/include/asm/pgtable-3level_types.h \
-  include/asm-generic/pgtable-nop4d.h \
-  include/asm-generic/pgtable-nopud.h \
-  arch/x86/include/asm/nospec-branch.h \
-  include/linux/static_key.h \
-  include/linux/jump_label.h \
-    $(wildcard include/config/HAVE_ARCH_JUMP_LABEL_RELATIVE) \
-  arch/x86/include/asm/jump_label.h \
-  include/linux/objtool.h \
-    $(wildcard include/config/FRAME_POINTER) \
-  arch/x86/include/asm/msr-index.h \
-  arch/x86/include/asm/unwind_hints.h \
-  arch/x86/include/asm/orc_types.h \
-  arch/x86/include/asm/GEN-for-each-reg.h \
-  arch/x86/include/asm/spinlock_types.h \
-  include/asm-generic/qspinlock_types.h \
-    $(wildcard include/config/NR_CPUS) \
-  include/asm-generic/qrwlock_types.h \
-  arch/x86/include/asm/proto.h \
-  arch/x86/include/uapi/asm/ldt.h \
-  arch/x86/include/uapi/asm/sigcontext.h \
-  arch/x86/include/asm/current.h \
-  arch/x86/include/asm/percpu.h \
-    $(wildcard include/config/X86_64_SMP) \
-  include/linux/kernel.h \
-    $(wildcard include/config/PREEMPT_VOLUNTARY_BUILD) \
-    $(wildcard include/config/PREEMPT_DYNAMIC) \
-    $(wildcard include/config/HAVE_PREEMPT_DYNAMIC_CALL) \
-    $(wildcard include/config/HAVE_PREEMPT_DYNAMIC_KEY) \
-    $(wildcard include/config/PREEMPT_) \
-    $(wildcard include/config/DEBUG_ATOMIC_SLEEP) \
-    $(wildcard include/config/MMU) \
-    $(wildcard include/config/PROVE_LOCKING) \
-  include/linux/stdarg.h \
-  include/linux/align.h \
-  include/linux/limits.h \
-  include/uapi/linux/limits.h \
-  include/vdso/limits.h \
-  include/linux/kstrtox.h \
-  include/linux/minmax.h \
-  include/linux/panic.h \
-    $(wildcard include/config/PANIC_TIMEOUT) \
-  include/linux/printk.h \
-    $(wildcard include/config/MESSAGE_LOGLEVEL_DEFAULT) \
-    $(wildcard include/config/CONSOLE_LOGLEVEL_DEFAULT) \
-    $(wildcard include/config/CONSOLE_LOGLEVEL_QUIET) \
-    $(wildcard include/config/EARLY_PRINTK) \
-    $(wildcard include/config/PRINTK) \
-    $(wildcard include/config/DYNAMIC_DEBUG) \
-    $(wildcard include/config/DYNAMIC_DEBUG_CORE) \
-  include/linux/kern_levels.h \
-  include/linux/ratelimit_types.h \
-  include/linux/spinlock_types_raw.h \
-    $(wildcard include/config/DEBUG_SPINLOCK) \
-    $(wildcard include/config/DEBUG_LOCK_ALLOC) \
-  include/linux/lockdep_types.h \
-    $(wildcard include/config/PROVE_RAW_LOCK_NESTING) \
-    $(wildcard include/config/LOCKDEP) \
-    $(wildcard include/config/LOCK_STAT) \
-  include/linux/once_lite.h \
-  include/linux/static_call_types.h \
-    $(wildcard include/config/HAVE_STATIC_CALL) \
-  include/linux/instruction_pointer.h \
-  include/asm-generic/percpu.h \
-    $(wildcard include/config/DEBUG_PREEMPT) \
-    $(wildcard include/config/HAVE_SETUP_PER_CPU_AREA) \
-  include/linux/threads.h \
-    $(wildcard include/config/BASE_SMALL) \
-  include/linux/percpu-defs.h \
-    $(wildcard include/config/DEBUG_FORCE_WEAK_PER_CPU) \
-  arch/x86/include/asm/page.h \
-  arch/x86/include/asm/page_32.h \
-    $(wildcard include/config/DEBUG_VIRTUAL) \
-    $(wildcard include/config/FLATMEM) \
-  include/linux/string.h \
-    $(wildcard include/config/BINARY_PRINTF) \
-    $(wildcard include/config/FORTIFY_SOURCE) \
-  include/linux/errno.h \
-  include/uapi/linux/errno.h \
-  include/uapi/linux/string.h \
-  arch/x86/include/asm/string.h \
-  arch/x86/include/asm/string_32.h \
-  include/linux/fortify-string.h \
-  include/linux/range.h \
-  include/asm-generic/memory_model.h \
-    $(wildcard include/config/SPARSEMEM_VMEMMAP) \
-    $(wildcard include/config/SPARSEMEM) \
-  include/linux/pfn.h \
-  include/asm-generic/getorder.h \
-  arch/x86/include/asm/msr.h \
-  arch/x86/include/asm/msr-index.h \
-  arch/x86/include/asm/cpumask.h \
-  include/linux/cpumask.h \
-    $(wildcard include/config/CPUMASK_OFFSTACK) \
-    $(wildcard include/config/HOTPLUG_CPU) \
-    $(wildcard include/config/DEBUG_PER_CPU_MAPS) \
-  include/linux/bitmap.h \
-  include/linux/find.h \
-  include/linux/atomic.h \
-  arch/x86/include/asm/atomic.h \
-  arch/x86/include/asm/cmpxchg.h \
-  arch/x86/include/asm/cmpxchg_32.h \
-  arch/x86/include/asm/atomic64_32.h \
-  include/linux/atomic/atomic-arch-fallback.h \
-    $(wildcard include/config/GENERIC_ATOMIC64) \
-  include/linux/atomic/atomic-long.h \
-  include/linux/atomic/atomic-instrumented.h \
-  include/linux/bug.h \
-    $(wildcard include/config/BUG_ON_DATA_CORRUPTION) \
-  arch/x86/include/asm/bug.h \
-    $(wildcard include/config/DEBUG_BUGVERBOSE) \
-  include/linux/instrumentation.h \
-    $(wildcard include/config/DEBUG_ENTRY) \
-  include/asm-generic/bug.h \
-    $(wildcard include/config/BUG) \
-    $(wildcard include/config/GENERIC_BUG_RELATIVE_POINTERS) \
-  arch/x86/include/uapi/asm/msr.h \
-  include/linux/tracepoint-defs.h \
-  arch/x86/include/asm/special_insns.h \
-  include/linux/irqflags.h \
-    $(wildcard include/config/TRACE_IRQFLAGS) \
-    $(wildcard include/config/PREEMPT_RT) \
-    $(wildcard include/config/IRQSOFF_TRACER) \
-    $(wildcard include/config/PREEMPT_TRACER) \
-    $(wildcard include/config/DEBUG_IRQFLAGS) \
-    $(wildcard include/config/TRACE_IRQFLAGS_SUPPORT) \
-  arch/x86/include/asm/irqflags.h \
-  arch/x86/include/asm/fpu/types.h \
-  arch/x86/include/asm/vmxfeatures.h \
-  arch/x86/include/asm/vdso/processor.h \
-  include/linux/personality.h \
-  include/uapi/linux/personality.h \
-  arch/x86/include/asm/tsc.h \
-  arch/x86/include/asm/cpufeature.h \
-    $(wildcard include/config/X86_FEATURE_NAMES) \
-  include/vdso/time32.h \
-  include/vdso/time.h \
-  include/linux/uidgid.h \
-    $(wildcard include/config/MULTIUSER) \
-    $(wildcard include/config/USER_NS) \
-  include/linux/highuid.h \
-  include/linux/buildid.h \
-    $(wildcard include/config/CRASH_CORE) \
-  include/linux/mm_types.h \
-    $(wildcard include/config/HAVE_ALIGNED_STRUCT_PAGE) \
-    $(wildcard include/config/MEMCG) \
-    $(wildcard include/config/USERFAULTFD) \
-    $(wildcard include/config/SWAP) \
-    $(wildcard include/config/NUMA) \
-    $(wildcard include/config/HAVE_ARCH_COMPAT_MMAP_BASES) \
-    $(wildcard include/config/MEMBARRIER) \
-    $(wildcard include/config/AIO) \
-    $(wildcard include/config/MMU_NOTIFIER) \
-    $(wildcard include/config/TRANSPARENT_HUGEPAGE) \
-    $(wildcard include/config/NUMA_BALANCING) \
-    $(wildcard include/config/ARCH_WANT_BATCHED_UNMAP_TLB_FLUSH) \
-    $(wildcard include/config/HUGETLB_PAGE) \
-    $(wildcard include/config/IOMMU_SVA) \
-  include/linux/mm_types_task.h \
-    $(wildcard include/config/SPLIT_PTLOCK_CPUS) \
-    $(wildcard include/config/ARCH_ENABLE_SPLIT_PMD_PTLOCK) \
-  arch/x86/include/asm/tlbbatch.h \
-  include/linux/auxvec.h \
-  include/uapi/linux/auxvec.h \
-  arch/x86/include/uapi/asm/auxvec.h \
-  include/linux/kref.h \
-  include/linux/spinlock.h \
-    $(wildcard include/config/PREEMPTION) \
-  include/linux/preempt.h \
-    $(wildcard include/config/PREEMPT_COUNT) \
-    $(wildcard include/config/TRACE_PREEMPT_TOGGLE) \
-    $(wildcard include/config/PREEMPT_NOTIFIERS) \
-  arch/x86/include/asm/preempt.h \
-  include/linux/thread_info.h \
-    $(wildcard include/config/THREAD_INFO_IN_TASK) \
-    $(wildcard include/config/GENERIC_ENTRY) \
-    $(wildcard include/config/HAVE_ARCH_WITHIN_STACK_FRAMES) \
-    $(wildcard include/config/HARDENED_USERCOPY) \
-  include/linux/restart_block.h \
-  arch/x86/include/asm/thread_info.h \
-    $(wildcard include/config/COMPAT) \
-  include/linux/bottom_half.h \
-  include/linux/lockdep.h \
-    $(wildcard include/config/DEBUG_LOCKING_API_SELFTESTS) \
-  include/linux/smp.h \
-    $(wildcard include/config/UP_LATE_INIT) \
-  include/linux/smp_types.h \
-  include/linux/llist.h \
-    $(wildcard include/config/ARCH_HAVE_NMI_SAFE_CMPXCHG) \
-  arch/x86/include/asm/smp.h \
-    $(wildcard include/config/X86_LOCAL_APIC) \
-    $(wildcard include/config/DEBUG_NMI_SELFTEST) \
-  arch/x86/include/generated/asm/mmiowb.h \
-  include/asm-generic/mmiowb.h \
-    $(wildcard include/config/MMIOWB) \
-  include/linux/spinlock_types.h \
-  include/linux/rwlock_types.h \
-  arch/x86/include/asm/spinlock.h \
-  arch/x86/include/asm/paravirt.h \
-    $(wildcard include/config/PARAVIRT_SPINLOCKS) \
-  arch/x86/include/asm/frame.h \
-  arch/x86/include/asm/qspinlock.h \
-  include/asm-generic/qspinlock.h \
-  arch/x86/include/asm/qrwlock.h \
-  include/asm-generic/qrwlock.h \
-  include/linux/rwlock.h \
-    $(wildcard include/config/PREEMPT) \
-  include/linux/spinlock_api_smp.h \
-    $(wildcard include/config/INLINE_SPIN_LOCK) \
-    $(wildcard include/config/INLINE_SPIN_LOCK_BH) \
-    $(wildcard include/config/INLINE_SPIN_LOCK_IRQ) \
-    $(wildcard include/config/INLINE_SPIN_LOCK_IRQSAVE) \
-    $(wildcard include/config/INLINE_SPIN_TRYLOCK) \
-    $(wildcard include/config/INLINE_SPIN_TRYLOCK_BH) \
-    $(wildcard include/config/UNINLINE_SPIN_UNLOCK) \
-    $(wildcard include/config/INLINE_SPIN_UNLOCK_BH) \
-    $(wildcard include/config/INLINE_SPIN_UNLOCK_IRQ) \
-    $(wildcard include/config/INLINE_SPIN_UNLOCK_IRQRESTORE) \
-    $(wildcard include/config/GENERIC_LOCKBREAK) \
-  include/linux/rwlock_api_smp.h \
-    $(wildcard include/config/INLINE_READ_LOCK) \
-    $(wildcard include/config/INLINE_WRITE_LOCK) \
-    $(wildcard include/config/INLINE_READ_LOCK_BH) \
-    $(wildcard include/config/INLINE_WRITE_LOCK_BH) \
-    $(wildcard include/config/INLINE_READ_LOCK_IRQ) \
-    $(wildcard include/config/INLINE_WRITE_LOCK_IRQ) \
-    $(wildcard include/config/INLINE_READ_LOCK_IRQSAVE) \
-    $(wildcard include/config/INLINE_WRITE_LOCK_IRQSAVE) \
-    $(wildcard include/config/INLINE_READ_TRYLOCK) \
-    $(wildcard include/config/INLINE_WRITE_TRYLOCK) \
-    $(wildcard include/config/INLINE_READ_UNLOCK) \
-    $(wildcard include/config/INLINE_WRITE_UNLOCK) \
-    $(wildcard include/config/INLINE_READ_UNLOCK_BH) \
-    $(wildcard include/config/INLINE_WRITE_UNLOCK_BH) \
-    $(wildcard include/config/INLINE_READ_UNLOCK_IRQ) \
-    $(wildcard include/config/INLINE_WRITE_UNLOCK_IRQ) \
-    $(wildcard include/config/INLINE_READ_UNLOCK_IRQRESTORE) \
-    $(wildcard include/config/INLINE_WRITE_UNLOCK_IRQRESTORE) \
-  include/linux/refcount.h \
-  include/linux/rbtree.h \
-  include/linux/rbtree_types.h \
-  include/linux/rcupdate.h \
-    $(wildcard include/config/PREEMPT_RCU) \
-    $(wildcard include/config/TINY_RCU) \
-    $(wildcard include/config/RCU_STRICT_GRACE_PERIOD) \
-    $(wildcard include/config/TASKS_RCU_GENERIC) \
-    $(wildcard include/config/RCU_STALL_COMMON) \
-    $(wildcard include/config/NO_HZ_FULL) \
-    $(wildcard include/config/RCU_NOCB_CPU) \
-    $(wildcard include/config/TASKS_RCU) \
-    $(wildcard include/config/TASKS_TRACE_RCU) \
-    $(wildcard include/config/TASKS_RUDE_RCU) \
-    $(wildcard include/config/TREE_RCU) \
-    $(wildcard include/config/DEBUG_OBJECTS_RCU_HEAD) \
-    $(wildcard include/config/PROVE_RCU) \
-    $(wildcard include/config/ARCH_WEAK_RELEASE_ACQUIRE) \
-  include/linux/rcutree.h \
-  include/linux/rwsem.h \
-    $(wildcard include/config/RWSEM_SPIN_ON_OWNER) \
-    $(wildcard include/config/DEBUG_RWSEMS) \
-  include/linux/osq_lock.h \
-  include/linux/completion.h \
-  include/linux/swait.h \
-  include/linux/wait.h \
-  include/uapi/linux/wait.h \
-  include/linux/uprobes.h \
-    $(wildcard include/config/UPROBES) \
-  arch/x86/include/asm/uprobes.h \
-  include/linux/notifier.h \
-  include/linux/mutex.h \
-    $(wildcard include/config/MUTEX_SPIN_ON_OWNER) \
-    $(wildcard include/config/DEBUG_MUTEXES) \
-  include/linux/debug_locks.h \
-  include/linux/srcu.h \
-    $(wildcard include/config/TINY_SRCU) \
-    $(wildcard include/config/SRCU) \
-  include/linux/workqueue.h \
-    $(wildcard include/config/DEBUG_OBJECTS_WORK) \
-    $(wildcard include/config/FREEZER) \
-    $(wildcard include/config/WQ_WATCHDOG) \
-  include/linux/timer.h \
-    $(wildcard include/config/DEBUG_OBJECTS_TIMERS) \
-    $(wildcard include/config/NO_HZ_COMMON) \
-  include/linux/ktime.h \
-  include/linux/jiffies.h \
-  include/vdso/jiffies.h \
-  include/generated/timeconst.h \
-  include/vdso/ktime.h \
-  include/linux/timekeeping.h \
-    $(wildcard include/config/GENERIC_CMOS_UPDATE) \
-  include/linux/clocksource_ids.h \
-  include/linux/debugobjects.h \
-    $(wildcard include/config/DEBUG_OBJECTS) \
-    $(wildcard include/config/DEBUG_OBJECTS_FREE) \
-  include/linux/rcu_segcblist.h \
-  include/linux/srcutree.h \
-  include/linux/rcu_node_tree.h \
-    $(wildcard include/config/RCU_FANOUT) \
-    $(wildcard include/config/RCU_FANOUT_LEAF) \
-  include/linux/page-flags-layout.h \
-    $(wildcard include/config/KASAN_HW_TAGS) \
-  include/linux/numa.h \
-    $(wildcard include/config/NODES_SHIFT) \
-    $(wildcard include/config/NUMA_KEEP_MEMINFO) \
-    $(wildcard include/config/HAVE_ARCH_NODE_DEV_GROUP) \
-  arch/x86/include/asm/sparsemem.h \
-  include/generated/bounds.h \
-  include/linux/seqlock.h \
-  include/linux/ww_mutex.h \
-    $(wildcard include/config/DEBUG_RT_MUTEXES) \
-    $(wildcard include/config/DEBUG_WW_MUTEX_SLOWPATH) \
-  include/linux/rtmutex.h \
-  arch/x86/include/asm/mmu.h \
-    $(wildcard include/config/MODIFY_LDT_SYSCALL) \
-  include/linux/kmod.h \
-  include/linux/umh.h \
-  include/linux/gfp.h \
-    $(wildcard include/config/HIGHMEM) \
-    $(wildcard include/config/ZONE_DMA) \
-    $(wildcard include/config/ZONE_DMA32) \
-    $(wildcard include/config/ZONE_DEVICE) \
-    $(wildcard include/config/PM_SLEEP) \
-    $(wildcard include/config/CONTIG_ALLOC) \
-    $(wildcard include/config/CMA) \
-  include/linux/mmdebug.h \
-    $(wildcard include/config/DEBUG_VM) \
-    $(wildcard include/config/DEBUG_VM_PGFLAGS) \
-  include/linux/mmzone.h \
-    $(wildcard include/config/FORCE_MAX_ZONEORDER) \
-    $(wildcard include/config/MEMORY_ISOLATION) \
-    $(wildcard include/config/ZSMALLOC) \
-    $(wildcard include/config/MEMORY_HOTPLUG) \
-    $(wildcard include/config/COMPACTION) \
-    $(wildcard include/config/PAGE_EXTENSION) \
-    $(wildcard include/config/DEFERRED_STRUCT_PAGE_INIT) \
-    $(wildcard include/config/HAVE_MEMORYLESS_NODES) \
-    $(wildcard include/config/SPARSEMEM_EXTREME) \
-    $(wildcard include/config/HAVE_ARCH_PFN_VALID) \
-  include/linux/nodemask.h \
-  include/linux/pageblock-flags.h \
-    $(wildcard include/config/HUGETLB_PAGE_SIZE_VARIABLE) \
-  include/linux/page-flags.h \
-    $(wildcard include/config/ARCH_USES_PG_UNCACHED) \
-    $(wildcard include/config/MEMORY_FAILURE) \
-    $(wildcard include/config/PAGE_IDLE_FLAG) \
-    $(wildcard include/config/HUGETLB_PAGE_FREE_VMEMMAP) \
-    $(wildcard include/config/HUGETLB_PAGE_FREE_VMEMMAP_DEFAULT_ON) \
-    $(wildcard include/config/KSM) \
-  include/linux/local_lock.h \
-  include/linux/local_lock_internal.h \
-  include/linux/memory_hotplug.h \
-    $(wildcard include/config/HAVE_ARCH_NODEDATA_EXTENSION) \
-    $(wildcard include/config/ARCH_HAS_ADD_PAGES) \
-    $(wildcard include/config/MEMORY_HOTREMOVE) \
-  arch/x86/include/asm/mmzone.h \
-  arch/x86/include/asm/mmzone_32.h \
-  include/linux/topology.h \
-    $(wildcard include/config/USE_PERCPU_NUMA_NODE_ID) \
-    $(wildcard include/config/SCHED_SMT) \
-    $(wildcard include/config/SCHED_CLUSTER) \
-  include/linux/arch_topology.h \
-    $(wildcard include/config/ACPI_CPPC_LIB) \
-    $(wildcard include/config/GENERIC_ARCH_TOPOLOGY) \
-  include/linux/percpu.h \
-    $(wildcard include/config/NEED_PER_CPU_EMBED_FIRST_CHUNK) \
-    $(wildcard include/config/NEED_PER_CPU_PAGE_FIRST_CHUNK) \
-  arch/x86/include/asm/topology.h \
-    $(wildcard include/config/SCHED_MC_PRIO) \
-  arch/x86/include/asm/mpspec.h \
-    $(wildcard include/config/EISA) \
-    $(wildcard include/config/X86_MPPARSE) \
-  arch/x86/include/asm/mpspec_def.h \
-  arch/x86/include/asm/x86_init.h \
-  arch/x86/include/asm/apicdef.h \
-  include/asm-generic/topology.h \
-  include/linux/sysctl.h \
-    $(wildcard include/config/SYSCTL) \
-  include/uapi/linux/sysctl.h \
-  include/linux/elf.h \
-    $(wildcard include/config/ARCH_USE_GNU_PROPERTY) \
-    $(wildcard include/config/ARCH_HAVE_ELF_PROT) \
-  arch/x86/include/asm/elf.h \
-    $(wildcard include/config/X86_X32_ABI) \
-  arch/x86/include/asm/user.h \
-  arch/x86/include/asm/user_32.h \
-  arch/x86/include/asm/fsgsbase.h \
-  arch/x86/include/asm/vdso.h \
-  arch/x86/include/asm/desc.h \
-  arch/x86/include/asm/fixmap.h \
-    $(wildcard include/config/DEBUG_KMAP_LOCAL_FORCE_MAP) \
-    $(wildcard include/config/X86_VSYSCALL_EMULATION) \
-    $(wildcard include/config/PROVIDE_OHCI1394_DMA_INIT) \
-    $(wildcard include/config/X86_IO_APIC) \
-    $(wildcard include/config/KMAP_LOCAL) \
-    $(wildcard include/config/PCI_MMCONFIG) \
-    $(wildcard include/config/ACPI_APEI_GHES) \
-    $(wildcard include/config/INTEL_TXT) \
-  arch/x86/include/generated/asm/kmap_size.h \
-  include/asm-generic/kmap_size.h \
-    $(wildcard include/config/DEBUG_KMAP_LOCAL) \
-  include/asm-generic/fixmap.h \
-  arch/x86/include/asm/irq_vectors.h \
-    $(wildcard include/config/HAVE_KVM) \
-    $(wildcard include/config/HYPERV) \
-    $(wildcard include/config/PCI_MSI) \
-  arch/x86/include/asm/cpu_entry_area.h \
-  arch/x86/include/asm/intel_ds.h \
-  arch/x86/include/asm/pgtable_areas.h \
-  arch/x86/include/asm/pgtable_32_areas.h \
-  include/uapi/linux/elf.h \
-  include/uapi/linux/elf-em.h \
-  include/linux/kobject.h \
-    $(wildcard include/config/UEVENT_HELPER) \
-    $(wildcard include/config/DEBUG_KOBJECT_RELEASE) \
-  include/linux/sysfs.h \
-  include/linux/kernfs.h \
-    $(wildcard include/config/KERNFS) \
-  include/linux/idr.h \
-  include/linux/radix-tree.h \
-  include/linux/xarray.h \
-    $(wildcard include/config/XARRAY_MULTI) \
-  include/linux/kconfig.h \
-  include/linux/kobject_ns.h \
-  include/linux/moduleparam.h \
-    $(wildcard include/config/ALPHA) \
-    $(wildcard include/config/IA64) \
-    $(wildcard include/config/PPC64) \
-  include/linux/rbtree_latch.h \
-  include/linux/error-injection.h \
-  include/asm-generic/error-injection.h \
-  include/linux/cfi.h \
-    $(wildcard include/config/CFI_CLANG_SHADOW) \
-  arch/x86/include/asm/module.h \
-    $(wildcard include/config/UNWINDER_ORC) \
-  include/asm-generic/module.h \
-    $(wildcard include/config/HAVE_MOD_ARCH_SPECIFIC) \
-    $(wildcard include/config/MODULES_USE_ELF_REL) \
-    $(wildcard include/config/MODULES_USE_ELF_RELA) \
-  arch/x86/include/asm/orc_types.h \
-  include/linux/i2c.h \
-    $(wildcard include/config/I2C) \
-    $(wildcard include/config/I2C_SLAVE) \
-    $(wildcard include/config/I2C_BOARDINFO) \
-    $(wildcard include/config/I2C_MUX) \
-    $(wildcard include/config/OF) \
-    $(wildcard include/config/ACPI) \
-  include/linux/acpi.h \
-    $(wildcard include/config/ACPI_DEBUGGER) \
-    $(wildcard include/config/ACPI_TABLE_LIB) \
-    $(wildcard include/config/LOONGARCH) \
-    $(wildcard include/config/ARM64) \
-    $(wildcard include/config/ACPI_PROCESSOR_CSTATE) \
-    $(wildcard include/config/ACPI_HOTPLUG_CPU) \
-    $(wildcard include/config/ACPI_HOTPLUG_IOAPIC) \
-    $(wildcard include/config/PCI) \
-    $(wildcard include/config/ACPI_WMI) \
-    $(wildcard include/config/ACPI_NUMA) \
-    $(wildcard include/config/HIBERNATION) \
-    $(wildcard include/config/ACPI_HOTPLUG_MEMORY) \
-    $(wildcard include/config/ACPI_CONTAINER) \
-    $(wildcard include/config/ACPI_GTDT) \
-    $(wildcard include/config/PM) \
-    $(wildcard include/config/GPIOLIB) \
-    $(wildcard include/config/ACPI_TABLE_UPGRADE) \
-    $(wildcard include/config/ACPI_WATCHDOG) \
-    $(wildcard include/config/ACPI_SPCR_TABLE) \
-    $(wildcard include/config/ACPI_GENERIC_GSI) \
-    $(wildcard include/config/ACPI_LPIT) \
-    $(wildcard include/config/ACPI_PPTT) \
-    $(wildcard include/config/ACPI_PCC) \
-  include/linux/ioport.h \
-  include/linux/irqdomain.h \
-    $(wildcard include/config/IRQ_DOMAIN_HIERARCHY) \
-    $(wildcard include/config/GENERIC_IRQ_DEBUGFS) \
-    $(wildcard include/config/IRQ_DOMAIN) \
-    $(wildcard include/config/IRQ_DOMAIN_NOMAP) \
-  include/linux/irqhandler.h \
-  include/linux/of.h \
-    $(wildcard include/config/OF_DYNAMIC) \
-    $(wildcard include/config/SPARC) \
-    $(wildcard include/config/OF_PROMTREE) \
-    $(wildcard include/config/OF_KOBJ) \
-    $(wildcard include/config/OF_NUMA) \
-    $(wildcard include/config/OF_OVERLAY) \
-  include/linux/mod_devicetable.h \
-  include/linux/uuid.h \
-  include/uapi/linux/uuid.h \
-  include/linux/property.h \
-  include/linux/fwnode.h \
-  include/linux/resource_ext.h \
-  include/linux/slab.h \
-    $(wildcard include/config/DEBUG_SLAB) \
-    $(wildcard include/config/FAILSLAB) \
-    $(wildcard include/config/MEMCG_KMEM) \
-    $(wildcard include/config/KASAN) \
-    $(wildcard include/config/SLAB) \
-    $(wildcard include/config/SLUB) \
-    $(wildcard include/config/SLOB) \
-  include/linux/overflow.h \
-  include/linux/percpu-refcount.h \
-  include/linux/kasan.h \
-    $(wildcard include/config/KASAN_STACK) \
-    $(wildcard include/config/KASAN_VMALLOC) \
-    $(wildcard include/config/KASAN_INLINE) \
-  include/linux/kasan-enabled.h \
-  include/linux/device.h \
-    $(wildcard include/config/GENERIC_MSI_IRQ_DOMAIN) \
-    $(wildcard include/config/GENERIC_MSI_IRQ) \
-    $(wildcard include/config/ENERGY_MODEL) \
-    $(wildcard include/config/PINCTRL) \
-    $(wildcard include/config/DMA_OPS) \
-    $(wildcard include/config/DMA_DECLARE_COHERENT) \
-    $(wildcard include/config/DMA_CMA) \
-    $(wildcard include/config/SWIOTLB) \
-    $(wildcard include/config/ARCH_HAS_SYNC_DMA_FOR_DEVICE) \
-    $(wildcard include/config/ARCH_HAS_SYNC_DMA_FOR_CPU) \
-    $(wildcard include/config/ARCH_HAS_SYNC_DMA_FOR_CPU_ALL) \
-    $(wildcard include/config/DMA_OPS_BYPASS) \
-    $(wildcard include/config/DEVTMPFS) \
-    $(wildcard include/config/SYSFS_DEPRECATED) \
-  include/linux/dev_printk.h \
-  include/linux/ratelimit.h \
-  include/linux/sched.h \
-    $(wildcard include/config/VIRT_CPU_ACCOUNTING_NATIVE) \
-    $(wildcard include/config/SCHED_INFO) \
-    $(wildcard include/config/SCHEDSTATS) \
-    $(wildcard include/config/SCHED_CORE) \
-    $(wildcard include/config/FAIR_GROUP_SCHED) \
-    $(wildcard include/config/RT_GROUP_SCHED) \
-    $(wildcard include/config/RT_MUTEXES) \
-    $(wildcard include/config/UCLAMP_TASK) \
-    $(wildcard include/config/UCLAMP_BUCKETS_COUNT) \
-    $(wildcard include/config/CGROUP_SCHED) \
-    $(wildcard include/config/BLK_DEV_IO_TRACE) \
-    $(wildcard include/config/PSI) \
-    $(wildcard include/config/COMPAT_BRK) \
-    $(wildcard include/config/CGROUPS) \
-    $(wildcard include/config/BLK_CGROUP) \
-    $(wildcard include/config/PAGE_OWNER) \
-    $(wildcard include/config/EVENTFD) \
-    $(wildcard include/config/ARCH_HAS_SCALED_CPUTIME) \
-    $(wildcard include/config/VIRT_CPU_ACCOUNTING_GEN) \
-    $(wildcard include/config/POSIX_CPUTIMERS) \
-    $(wildcard include/config/POSIX_CPU_TIMERS_TASK_WORK) \
-    $(wildcard include/config/KEYS) \
-    $(wildcard include/config/SYSVIPC) \
-    $(wildcard include/config/DETECT_HUNG_TASK) \
-    $(wildcard include/config/IO_URING) \
-    $(wildcard include/config/AUDIT) \
-    $(wildcard include/config/AUDITSYSCALL) \
-    $(wildcard include/config/UBSAN) \
-    $(wildcard include/config/UBSAN_TRAP) \
-    $(wildcard include/config/TASK_XACCT) \
-    $(wildcard include/config/CPUSETS) \
-    $(wildcard include/config/X86_CPU_RESCTRL) \
-    $(wildcard include/config/FUTEX) \
-    $(wildcard include/config/PERF_EVENTS) \
-    $(wildcard include/config/RSEQ) \
-    $(wildcard include/config/TASK_DELAY_ACCT) \
-    $(wildcard include/config/FAULT_INJECTION) \
-    $(wildcard include/config/LATENCYTOP) \
-    $(wildcard include/config/KUNIT) \
-    $(wildcard include/config/FUNCTION_GRAPH_TRACER) \
-    $(wildcard include/config/BCACHE) \
-    $(wildcard include/config/VMAP_STACK) \
-    $(wildcard include/config/SECURITY) \
-    $(wildcard include/config/BPF_SYSCALL) \
-    $(wildcard include/config/GCC_PLUGIN_STACKLEAK) \
-    $(wildcard include/config/X86_MCE) \
-    $(wildcard include/config/KRETPROBES) \
-    $(wildcard include/config/RETHOOK) \
-    $(wildcard include/config/ARCH_HAS_PARANOID_L1D_FLUSH) \
-    $(wildcard include/config/ARCH_TASK_STRUCT_ON_STACK) \
-    $(wildcard include/config/DEBUG_RSEQ) \
-  include/uapi/linux/sched.h \
-  include/linux/pid.h \
-  include/linux/rculist.h \
-    $(wildcard include/config/PROVE_RCU_LIST) \
-  include/linux/sem.h \
-  include/uapi/linux/sem.h \
-  include/linux/ipc.h \
-  include/linux/rhashtable-types.h \
-  include/uapi/linux/ipc.h \
-  arch/x86/include/generated/uapi/asm/ipcbuf.h \
-  include/uapi/asm-generic/ipcbuf.h \
-  arch/x86/include/uapi/asm/sembuf.h \
-  include/linux/shm.h \
-  include/uapi/linux/shm.h \
-  include/uapi/asm-generic/hugetlb_encode.h \
-  arch/x86/include/uapi/asm/shmbuf.h \
-  include/uapi/asm-generic/shmbuf.h \
-  arch/x86/include/asm/shmparam.h \
-  include/linux/plist.h \
-    $(wildcard include/config/DEBUG_PLIST) \
-  include/linux/hrtimer.h \
-    $(wildcard include/config/HIGH_RES_TIMERS) \
-    $(wildcard include/config/TIME_LOW_RES) \
-    $(wildcard include/config/TIMERFD) \
-  include/linux/hrtimer_defs.h \
-  include/linux/timerqueue.h \
-  include/linux/seccomp.h \
-    $(wildcard include/config/SECCOMP) \
-    $(wildcard include/config/HAVE_ARCH_SECCOMP_FILTER) \
-    $(wildcard include/config/SECCOMP_FILTER) \
-    $(wildcard include/config/CHECKPOINT_RESTORE) \
-    $(wildcard include/config/SECCOMP_CACHE_DEBUG) \
-  include/uapi/linux/seccomp.h \
-  arch/x86/include/asm/seccomp.h \
-  arch/x86/include/asm/unistd.h \
-  arch/x86/include/uapi/asm/unistd.h \
-  arch/x86/include/generated/uapi/asm/unistd_32.h \
-  include/asm-generic/seccomp.h \
-  include/uapi/linux/unistd.h \
-  include/linux/resource.h \
-  include/uapi/linux/resource.h \
-  arch/x86/
+#define GRCAN_NAPI_WEIGHT	32
+
+#define GRCAN_RESERVE_SIZE(slot1, slot2) (((slot2) - (slot1)) / 4 - 1)
+
+struct grcan_registers {
+	u32 conf;	/* 0x00 */
+	u32 stat;	/* 0x04 */
+	u32 ctrl;	/* 0x08 */
+	u32 __reserved1[GRCAN_RESERVE_SIZE(0x08, 0x18)];
+	u32 smask;	/* 0x18 - CanMASK */
+	u32 scode;	/* 0x1c - CanCODE */
+	u32 __reserved2[GRCAN_RESERVE_SIZE(0x1c, 0x100)];
+	u32 pimsr;	/* 0x100 */
+	u32 pimr;	/* 0x104 */
+	u32 pisr;	/* 0x108 */
+	u32 pir;	/* 0x10C */
+	u32 imr;	/* 0x110 */
+	u32 picr;	/* 0x114 */
+	u32 __reserved3[GRCAN_RESERVE_SIZE(0x114, 0x200)];
+	u32 txctrl;	/* 0x200 */
+	u32 txaddr;	/* 0x204 */
+	u32 txsize;	/* 0x208 */
+	u32 txwr;	/* 0x20C */
+	u32 txrd;	/* 0x210 */
+	u32 txirq;	/* 0x214 */
+	u32 __reserved4[GRCAN_RESERVE_SIZE(0x214, 0x300)];
+	u32 rxctrl;	/* 0x300 */
+	u32 rxaddr;	/* 0x304 */
+	u32 rxsize;	/* 0x308 */
+	u32 rxwr;	/* 0x30C */
+	u32 rxrd;	/* 0x310 */
+	u32 rxirq;	/* 0x314 */
+	u32 rxmask;	/* 0x318 */
+	u32 rxcode;	/* 0x31C */
+};
+
+#define GRCAN_CONF_ABORT	0x00000001
+#define GRCAN_CONF_ENABLE0	0x00000002
+#define GRCAN_CONF_ENABLE1	0x00000004
+#define GRCAN_CONF_SELECT	0x00000008
+#define GRCAN_CONF_SILENT	0x00000010
+#define GRCAN_CONF_SAM		0x00000020 /* Available in some hardware */
+#define GRCAN_CONF_BPR		0x00000300 /* Note: not BRP */
+#define GRCAN_CONF_RSJ		0x00007000
+#define GRCAN_CONF_PS1		0x00f00000
+#define GRCAN_CONF_PS2		0x000f0000
+#define GRCAN_CONF_SCALER	0xff000000
+#define GRCAN_CONF_OPERATION						\
+	(GRCAN_CONF_ABORT | GRCAN_CONF_ENABLE0 | GRCAN_CONF_ENABLE1	\
+	 | GRCAN_CONF_SELECT | GRCAN_CONF_SILENT | GRCAN_CONF_SAM)
+#define GRCAN_CONF_TIMING						\
+	(GRCAN_CONF_BPR | GRCAN_CONF_RSJ | GRCAN_CONF_PS1		\
+	 | GRCAN_CONF_PS2 | GRCAN_CONF_SCALER)
+
+#define GRCAN_CONF_RSJ_MIN	1
+#define GRCAN_CONF_RSJ_MAX	4
+#define GRCAN_CONF_PS1_MIN	1
+#define GRCAN_CONF_PS1_MAX	15
+#define GRCAN_CONF_PS2_MIN	2
+#define GRCAN_CONF_PS2_MAX	8
+#define GRCAN_CONF_SCALER_MIN	0
+#define GRCAN_CONF_SCALER_MAX	255
+#define GRCAN_CONF_SCALER_INC	1
+
+#define GRCAN_CONF_BPR_BIT	8
+#define GRCAN_CONF_RSJ_BIT	12
+#define GRCAN_CONF_PS1_BIT	20
+#define GRCAN_CONF_PS2_BIT	16
+#define GRCAN_CONF_SCALER_BIT	24
+
+#define GRCAN_STAT_PASS		0x000001
+#define GRCAN_STAT_OFF		0x000002
+#define GRCAN_STAT_OR		0x000004
+#define GRCAN_STAT_AHBERR	0x000008
+#define GRCAN_STAT_ACTIVE	0x000010
+#define GRCAN_STAT_RXERRCNT	0x00ff00
+#define GRCAN_STAT_TXERRCNT	0xff0000
+
+#define GRCAN_STAT_ERRCTR_RELATED	(GRCAN_STAT_PASS | GRCAN_STAT_OFF)
+
+#define GRCAN_STAT_RXERRCNT_BIT	8
+#define GRCAN_STAT_TXERRCNT_BIT	16
+
+#define GRCAN_STAT_ERRCNT_WARNING_LIMIT	96
+#define GRCAN_STAT_ERRCNT_PASSIVE_LIMIT	127
+
+#define GRCAN_CTRL_RESET	0x2
+#define GRCAN_CTRL_ENABLE	0x1
+
+#define GRCAN_TXCTRL_ENABLE	0x1
+#define GRCAN_TXCTRL_ONGOING	0x2
+#define GRCAN_TXCTRL_SINGLE	0x4
+
+#define GRCAN_RXCTRL_ENABLE	0x1
+#define GRCAN_RXCTRL_ONGOING	0x2
+
+/* Relative offset of IRQ sources to AMBA Plug&Play */
+#define GRCAN_IRQIX_IRQ		0
+#define GRCAN_IRQIX_TXSYNC	1
+#define GRCAN_IRQIX_RXSYNC	2
+
+#define GRCAN_IRQ_PASS		0x00001
+#define GRCAN_IRQ_OFF		0x00002
+#define GRCAN_IRQ_OR		0x00004
+#define GRCAN_IRQ_RXAHBERR	0x00008
+#define GRCAN_IRQ_TXAHBERR	0x00010
+#define GRCAN_IRQ_RXIRQ		0x00020
+#define GRCAN_IRQ_TXIRQ		0x00040
+#define GRCAN_IRQ_RXFULL	0x00080
+#define GRCAN_IRQ_TXEMPTY	0x00100
+#define GRCAN_IRQ_RX		0x00200
+#define GRCAN_IRQ_TX		0x00400
+#define GRCAN_IRQ_RXSYNC	0x00800
+#define GRCAN_IRQ_TXSYNC	0x01000
+#define GRCAN_IRQ_RXERRCTR	0x02000
+#define GRCAN_IRQ_TXERRCTR	0x04000
+#define GRCAN_IRQ_RXMISS	0x08000
+#define GRCAN_IRQ_TXLOSS	0x10000
+
+#define GRCAN_IRQ_NONE	0
+#define GRCAN_IRQ_ALL							\
+	(GRCAN_IRQ_PASS | GRCAN_IRQ_OFF | GRCAN_IRQ_OR			\
+	 | GRCAN_IRQ_RXAHBERR | GRCAN_IRQ_TXAHBERR			\
+	 | GRCAN_IRQ_RXIRQ | GRCAN_IRQ_TXIRQ				\
+	 | GRCAN_IRQ_RXFULL | GRCAN_IRQ_TXEMPTY				\
+	 | GRCAN_IRQ_RX | GRCAN_IRQ_TX | GRCAN_IRQ_RXSYNC		\
+	 | GRCAN_IRQ_TXSYNC | GRCAN_IRQ_RXERRCTR			\
+	 | GRCAN_IRQ_TXERRCTR | GRCAN_IRQ_RXMISS			\
+	 | GRCAN_IRQ_TXLOSS)
+
+#define GRCAN_IRQ_ERRCTR_RELATED (GRCAN_IRQ_RXERRCTR | GRCAN_IRQ_TXERRCTR \
+				  | GRCAN_IRQ_PASS | GRCAN_IRQ_OFF)
+#define GRCAN_IRQ_ERRORS (GRCAN_IRQ_ERRCTR_RELATED | GRCAN_IRQ_OR	\
+			  | GRCAN_IRQ_TXAHBERR | GRCAN_IRQ_RXAHBERR	\
+			  | GRCAN_IRQ_TXLOSS)
+#define GRCAN_IRQ_DEFAULT (GRCAN_IRQ_RX | GRCAN_IRQ_TX | GRCAN_IRQ_ERRORS)
+
+#define GRCAN_MSG_SIZE		16
+
+#define GRCAN_MSG_IDE		0x80000000
+#define GRCAN_MSG_RTR		0x40000000
+#define GRCAN_MSG_BID		0x1ffc0000
+#define GRCAN_MSG_EID		0x1fffffff
+#define GRCAN_MSG_IDE_BIT	31
+#define GRCAN_MSG_RTR_BIT	30
+#define GRCAN_MSG_BID_BIT	18
+#define GRCAN_MSG_EID_BIT	0
+
+#define GRCAN_MSG_DLC		0xf0000000
+#define GRCAN_MSG_TXERRC	0x00ff0000
+#define GRCAN_MSG_RXERRC	0x0000ff00
+#define GRCAN_MSG_DLC_BIT	28
+#define GRCAN_MSG_TXERRC_BIT	16
+#define GRCAN_MSG_RXERRC_BIT	8
+#define GRCAN_MSG_AHBERR	0x00000008
+#define GRCAN_MSG_OR		0x00000004
+#define GRCAN_MSG_OFF		0x00000002
+#define GRCAN_MSG_PASS		0x00000001
+
+#define GRCAN_MSG_DATA_SLOT_INDEX(i) (2 + (i) / 4)
+#define GRCAN_MSG_DATA_SHIFT(i) ((3 - (i) % 4) * 8)
+
+#define GRCAN_BUFFER_ALIGNMENT		1024
+#define GRCAN_DEFAULT_BUFFER_SIZE	1024
+#define GRCAN_VALID_TR_SIZE_MASK	0x001fffc0
+
+#define GRCAN_INVALID_BUFFER_SIZE(s)			\
+	((s) == 0 || ((s) & ~GRCAN_VALID_TR_SIZE_MASK))
+
+#if GRCAN_INVALID_BUFFER_SIZE(GRCAN_DEFAULT_BUFFER_SIZE)
+#error "Invalid default buffer size"
+#endif
+
+struct grcan_dma_buffer {
+	size_t size;
+	void *buf;
+	dma_addr_t handle;
+};
+
+struct grcan_dma {
+	size_t base_size;
+	void *base_buf;
+	dma_addr_t base_handle;
+	struct grcan_dma_buffer tx;
+	struct grcan_dma_buffer rx;
+};
+
+/* GRCAN configuration parameters */
+struct grcan_device_config {
+	unsigned short enable0;
+	unsigned short enable1;
+	unsigned short select;
+	unsigned int txsize;
+	unsigned int rxsize;
+};
+
+#define GRCAN_DEFAULT_DEVICE_CONFIG {				\
+		.enable0	= 0,				\
+		.enable1	= 0,				\
+		.select		= 0,				\
+		.txsize		= GRCAN_DEFAULT_BUFFER_SIZE,	\
+		.rxsize		= GRCAN_DEFAULT_BUFFER_SIZE,	\
+		}
+
+#define GRCAN_TXBUG_SAFE_GRLIB_VERSION	4100
+#define GRLIB_VERSION_MASK		0xffff
+
+/* GRCAN private data structure */
+struct grcan_priv {
+	struct can_priv can;	/* must be the first member */
+	struct net_device *dev;
+	struct device *ofdev_dev;
+	struct napi_struct napi;
+
+	struct grcan_registers __iomem *regs;	/* ioremap'ed registers */
+	struct grcan_device_config config;
+	struct grcan_dma dma;
+
+	struct sk_buff **echo_skb;	/* We allocate this on our own */
+
+	/* The echo skb pointer, pointing into echo_skb and indicating which
+	 * frames can be echoed back. See the "Notes on the tx cyclic buffer
+	 * handling"-comment for grcan_start_xmit for more details.
+	 */
+	u32 eskbp;
+
+	/* Lock for controlling changes to the netif tx queue state, accesses to
+	 * the echo_skb pointer eskbp and for making sure that a running reset
+	 * and/or a close of the interface is done without interference from
+	 * other parts of the code.
+	 *
+	 * The echo_skb pointer, eskbp, should only be accessed under this lock
+	 * as it can be changed in several places and together with decisions on
+	 * whether to wake up the tx queue.
+	 *
+	 * The tx queue must never be woken up if there is a running reset or
+	 * close in progress.
+	 *
+	 * A running reset (see below on need_txbug_workaround) should never be
+	 * done if the interface is closing down and several running resets
+	 * should never be scheduled simultaneously.
+	 */
+	spinlock_t lock;
+
+	/* Whether a workaround is needed due to a bug in older hardware. In
+	 * this case, the driver both tries to prevent the bug from being
+	 * triggered and recovers, if the bug nevertheless happens, by doing a
+	 * running reset. A running reset, resets the device and continues from
+	 * where it were without being noticeable from outside the driver (apart
+	 * from slight delays).
+	 */
+	bool need_txbug_workaround;
+
+	/* To trigger initization of running reset and to trigger running reset
+	 * respectively in the case of a hanged device due to a txbug.
+	 */
+	struct timer_list hang_timer;
+	struct timer_list rr_timer;
+
+	/* To avoid waking up the netif queue and restarting timers
+	 * when a reset is scheduled or when closing of the device is
+	 * undergoing
+	 */
+	bool resetting;
+	bool closing;
+};
+
+/* Wait time for a short wait for ongoing to clear */
+#define GRCAN_SHORTWAIT_USECS	10
+
+/* Limit on the number of transmitted bits of an eff frame according to the CAN
+ * specification: 1 bit start of frame, 32 bits arbitration field, 6 bits
+ * control field, 8 bytes data field, 16 bits crc field, 2 bits ACK field and 7
+ * bits end of frame
+ */
+#define GRCAN_EFF_FRAME_MAX_BITS	(1+32+6+8*8+16+2+7)
+
+#if defined(__BIG_ENDIAN)
+static inline u32 grcan_read_reg(u32 __iomem *reg)
+{
+	return ioread32be(reg);
+}
+
+static inline void grcan_write_reg(u32 __iomem *reg, u32 val)
+{
+	iowrite32be(val, reg);
+}
+#else
+static inline u32 grcan_read_reg(u32 __iomem *reg)
+{
+	return ioread32(reg);
+}
+
+static inline void grcan_write_reg(u32 __iomem *reg, u32 val)
+{
+	iowrite32(val, reg);
+}
+#endif
+
+static inline void grcan_clear_bits(u32 __iomem *reg, u32 mask)
+{
+	grcan_write_reg(reg, grcan_read_reg(reg) & ~mask);
+}
+
+static inline void grcan_set_bits(u32 __iomem *reg, u32 mask)
+{
+	grcan_write_reg(reg, grcan_read_reg(reg) | mask);
+}
+
+static inline u32 grcan_read_bits(u32 __iomem *reg, u32 mask)
+{
+	return grcan_read_reg(reg) & mask;
+}
+
+static inline void grcan_write_bits(u32 __iomem *reg, u32 value, u32 mask)
+{
+	u32 old = grcan_read_reg(reg);
+
+	grcan_write_reg(reg, (old & ~mask) | (value & mask));
+}
+
+/* a and b should both be in [0,size] and a == b == size should not hold */
+static inline u32 grcan_ring_add(u32 a, u32 b, u32 size)
+{
+	u32 sum = a + b;
+
+	if (sum < size)
+		return sum;
+	else
+		return sum - size;
+}
+
+/* a and b should both be in [0,size) */
+static inline u32 grcan_ring_sub(u32 a, u32 b, u32 size)
+{
+	return grcan_ring_add(a, size - b, size);
+}
+
+/* Available slots for new transmissions */
+static inline u32 grcan_txspace(size_t txsize, u32 txwr, u32 eskbp)
+{
+	u32 slots = txsize / GRCAN_MSG_SIZE - 1;
+	u32 used = grcan_ring_sub(txwr, eskbp, txsize) / GRCAN_MSG_SIZE;
+
+	return slots - used;
+}
+
+/* Configuration parameters that can be set via module parameters */
+static struct grcan_device_config grcan_module_config =
+	GRCAN_DEFAULT_DEVICE_CONFIG;
+
+static const struct can_bittiming_const grcan_bittiming_const = {
+	.name		= DRV_NAME,
+	.tseg1_min	= GRCAN_CONF_PS1_MIN + 1,
+	.tseg1_max	= GRCAN_CONF_PS1_MAX + 1,
+	.tseg2_min	= GRCAN_CONF_PS2_MIN,
+	.tseg2_max	= GRCAN_CONF_PS2_MAX,
+	.sjw_max	= GRCAN_CONF_RSJ_MAX,
+	.brp_min	= GRCAN_CONF_SCALER_MIN + 1,
+	.brp_max	= GRCAN_CONF_SCALER_MAX + 1,
+	.brp_inc	= GRCAN_CONF_SCALER_INC,
+};
+
+static int grcan_set_bittiming(struct net_device *dev)
+{
+	struct grcan_priv *priv = netdev_priv(dev);
+	struct grcan_registers __iomem *regs = priv->regs;
+	struct can_bittiming *bt = &priv->can.bittiming;
+	u32 timing = 0;
+	int bpr, rsj, ps1, ps2, scaler;
+
+	/* Should never happen - function will not be called when
+	 * device is up
+	 */
+	if (grcan_read_bits(&regs->ctrl, GRCAN_CTRL_ENABLE))
+		return -EBUSY;
+
+	bpr = 0; /* Note bpr and brp are different concepts */
+	rsj = bt->sjw;
+	ps1 = (bt->prop_seg + bt->phase_seg1) - 1; /* tseg1 - 1 */
+	ps2 = bt->phase_seg2;
+	scaler = (bt->brp - 1);
+	netdev_dbg(dev, "Request for BPR=%d, RSJ=%d, PS1=%d, PS2=%d, SCALER=%d",
+		   bpr, rsj, ps1, ps2, scaler);
+	if (!(ps1 > ps2)) {
+		netdev_err(dev, "PS1 > PS2 must hold: PS1=%d, PS2=%d\n",
+			   ps1, ps2);
+		return -EINVAL;
+	}
+	if (!(ps2 >= rsj)) {
+		netdev_err(dev, "PS2 >= RSJ must hold: PS2=%d, RSJ=%d\n",
+			   ps2, rsj);
+		return -EINVAL;
+	}
+
+	timing |= (bpr << GRCAN_CONF_BPR_BIT) & GRCAN_CONF_BPR;
+	timing |= (rsj << GRCAN_CONF_RSJ_BIT) & GRCAN_CONF_RSJ;
+	timing |= (ps1 << GRCAN_CONF_PS1_BIT) & GRCAN_CONF_PS1;
+	timing |= (ps2 << GRCAN_CONF_PS2_BIT) & GRCAN_CONF_PS2;
+	timing |= (scaler << GRCAN_CONF_SCALER_BIT) & GRCAN_CONF_SCALER;
+	netdev_info(dev, "setting timing=0x%x\n", timing);
+	grcan_write_bits(&regs->conf, timing, GRCAN_CONF_TIMING);
+
+	return 0;
+}
+
+static int grcan_get_berr_counter(const struct net_device *dev,
+				  struct can_berr_counter *bec)
+{
+	struct grcan_priv *priv = netdev_priv(dev);
+	struct grcan_registers __iomem *regs = priv->regs;
+	u32 status = grcan_read_reg(&regs->stat);
+
+	bec->txerr = (status & GRCAN_STAT_TXERRCNT) >> GRCAN_STAT_TXERRCNT_BIT;
+	bec->rxerr = (status & GRCAN_STAT_RXERRCNT) >> GRCAN_STAT_RXERRCNT_BIT;
+	return 0;
+}
+
+static int grcan_poll(struct napi_struct *napi, int budget);
+
+/* Reset device, but keep configuration information */
+static void grcan_reset(struct net_device *dev)
+{
+	struct grcan_priv *priv = netdev_priv(dev);
+	struct grcan_registers __iomem *regs = priv->regs;
+	u32 config = grcan_read_reg(&regs->conf);
+
+	grcan_set_bits(&regs->ctrl, GRCAN_CTRL_RESET);
+	grcan_write_reg(&regs->conf, config);
+
+	priv->eskbp = grcan_read_reg(&regs->txrd);
+	priv->can.state = CAN_STATE_STOPPED;
+
+	/* Turn off hardware filtering - regs->rxcode set to 0 by reset */
+	grcan_write_reg(&regs->rxmask, 0);
+}
+
+/* stop device without changing any configurations */
+static void grcan_stop_hardware(struct net_device *dev)
+{
+	struct grcan_priv *priv = netdev_priv(dev);
+	struct grcan_registers __iomem *regs = priv->regs;
+
+	grcan_write_reg(&regs->imr, GRCAN_IRQ_NONE);
+	grcan_clear_bits(&regs->txctrl, GRCAN_TXCTRL_ENABLE);
+	grcan_clear_bits(&regs->rxctrl, GRCAN_RXCTRL_ENABLE);
+	grcan_clear_bits(&regs->ctrl, GRCAN_CTRL_ENABLE);
+}
+
+/* Let priv->eskbp catch up to regs->txrd and echo back the skbs if echo
+ * is true and free them otherwise.
+ *
+ * If budget is >= 0, stop after handling at most budget skbs. Otherwise,
+ * continue until priv->eskbp catches up to regs->txrd.
+ *
+ * priv->lock *must* be held when calling this function
+ */
+static int catch_up_echo_skb(struct net_device *dev, int budget, bool echo)
+{
+	struct grcan_priv *priv = netdev_priv(dev);
+	struct grcan_registers __iomem *regs = priv->regs;
+	struct grcan_dma *dma = &priv->dma;
+	struct net_device_stats *stats = &dev->stats;
+	int i, work_done;
+
+	/* Updates to priv->eskbp and wake-ups of the queue needs to
+	 * be atomic towards the reads of priv->eskbp and shut-downs
+	 * of the queue in grcan_start_xmit.
+	 */
+	u32 txrd = grcan_read_reg(&regs->txrd);
+
+	for (work_done = 0; work_done < budget || budget < 0; work_done++) {
+		if (priv->eskbp == txrd)
+			break;
+		i = priv->eskbp / GRCAN_MSG_SIZE;
+		if (echo) {
+			/* Normal echo of messages */
+			stats->tx_packets++;
+			stats->tx_bytes += can_get_echo_skb(dev, i, NULL);
+		} else {
+			/* For cleanup of untransmitted messages */
+			can_free_echo_skb(dev, i, NULL);
+		}
+
+		priv->eskbp = grcan_ring_add(priv->eskbp, GRCAN_MSG_SIZE,
+					     dma->tx.size);
+		txrd = grcan_read_reg(&regs->txrd);
+	}
+	return work_done;
+}
+
+static void grcan_lost_one_shot_frame(struct net_device *dev)
+{
+	struct grcan_priv *priv = netdev_priv(dev);
+	struct grcan_registers __iomem *regs = priv->regs;
+	struct grcan_dma *dma = &priv->dma;
+	u32 txrd;
+	unsigned long flags;
+
+	spin_lock_irqsave(&priv->lock, flags);
+
+	catch_up_echo_skb(dev, -1, true);
+
+	if (unlikely(grcan_read_bits(&regs->txctrl, GRCAN_TXCTRL_ENABLE))) {
+		/* Should never happen */
+		netdev_err(dev, "TXCTRL enabled at TXLOSS in one shot mode\n");
+	} else {
+		/* By the time an GRCAN_IRQ_TXLOSS is generated in
+		 * one-shot mode there is no problem in writing
+		 * to TXRD even in versions of the hardware in
+		 * which GRCAN_TXCTRL_ONGOING is not cleared properly
+		 * in one-shot mode.
+		 */
+
+		/* Skip message and discard echo-skb */
+		txrd = grcan_read_reg(&regs->txrd);
+		txrd = grcan_ring_add(txrd, GRCAN_MSG_SIZE, dma->tx.size);
+		grcan_write_reg(&regs->txrd, txrd);
+		catch_up_echo_skb(dev, -1, false);
+
+		if (!priv->resetting && !priv->closing &&
+		    !(priv->can.ctrlmode & CAN_CTRLMODE_LISTENONLY)) {
+			netif_wake_queue(dev);
+			grcan_set_bits(&regs->txctrl, GRCAN_TXCTRL_ENABLE);
+		}
+	}
+
+	spin_unlock_irqrestore(&priv->lock, flags);
+}
+
+static void grcan_err(struct net_device *dev, u32 sources, u32 status)
+{
+	struct grcan_priv *priv = netdev_priv(dev);
+	struct grcan_registers __iomem *regs = priv->regs;
+	struct grcan_dma *dma = &priv->dma;
+	struct net_device_stats *stats = &dev->stats;
+	struct can_frame cf;
+
+	/* Zero potential error_frame */
+	memset(&cf, 0, sizeof(cf));
+
+	/* Message lost interrupt. This might be due to arbitration error, but
+	 * is also triggered when there is no one else on the can bus or when
+	 * there is a problem with the hardware interface or the bus itself. As
+	 * arbitration errors can not be singled out, no error frames are
+	 * generated reporting this event as an arbitration error.
+	 */
+	if (sources & GRCAN_IRQ_TXLOSS) {
+		/* Take care of failed one-shot transmit */
+		if (priv->can.ctrlmode & CAN_CTRLMODE_ONE_SHOT)
+			grcan_lost_one_shot_frame(dev);
+
+		/* Stop printing as soon as error passive or bus off is in
+		 * effect to limit the amount of txloss debug printouts.
+		 */
+		if (!(status & GRCAN_STAT_ERRCTR_RELATED)) {
+			netdev_dbg(dev, "tx message lost\n");
+			stats->tx_errors++;
+		}
+	}
+
+	/* Conditions dealing with the error counters. There is no interrupt for
+	 * error warning, but there are interrupts for increases of the error
+	 * counters.
+	 */
+	if ((sources & GRCAN_IRQ_ERRCTR_RELATED) ||
+	    (status & GRCAN_STAT_ERRCTR_RELATED)) {
+		enum can_state state = priv->can.state;
+		enum can_state oldstate = state;
+		u32 txerr = (status & GRCAN_STAT_TXERRCNT)
+			>> GRCAN_STAT_TXERRCNT_BIT;
+		u32 rxerr = (status & GRCAN_STAT_RXERRCNT)
+			>> GRCAN_STAT_RXERRCNT_BIT;
+
+		/* Figure out current state */
+		if (status & GRCAN_STAT_OFF) {
+			state = CAN_STATE_BUS_OFF;
+		} else if (status & GRCAN_STAT_PASS) {
+			state = CAN_STATE_ERROR_PASSIVE;
+		} else if (txerr >= GRCAN_STAT_ERRCNT_WARNING_LIMIT ||
+			   rxerr >= GRCAN_STAT_ERRCNT_WARNING_LIMIT) {
+			state = CAN_STATE_ERROR_WARNING;
+		} else {
+			state = CAN_STATE_ERROR_ACTIVE;
+		}
+
+		/* Handle and report state changes */
+		if (state != oldstate) {
+			switch (state) {
+			case CAN_STATE_BUS_OFF:
+				netdev_dbg(dev, "bus-off\n");
+				netif_carrier_off(dev);
+				priv->can.can_stats.bus_off++;
+
+				/* Prevent the hardware from recovering from bus
+				 * off on its own if restart is disabled.
+				 */
+				if (!priv->can.restart_ms)
+					grcan_stop_hardware(dev);
+
+				cf.can_id |= CAN_ERR_BUSOFF;
+				break;
+
+			case CAN_STATE_ERROR_PASSIVE:
+				netdev_dbg(dev, "Error passive condition\n");
+				priv->can.can_stats.error_passive++;
+
+				cf.can_id |= CAN_ERR_CRTL;
+				if (txerr >= GRCAN_STAT_ERRCNT_PASSIVE_LIMIT)
+					cf.data[1] |= CAN_ERR_CRTL_TX_PASSIVE;
+				if (rxerr >= GRCAN_STAT_ERRCNT_PASSIVE_LIMIT)
+					cf.data[1] |= CAN_ERR_CRTL_RX_PASSIVE;
+				break;
+
+			case CAN_STATE_ERROR_WARNING:
+				netdev_dbg(dev, "Error warning condition\n");
+				priv->can.can_stats.error_warning++;
+
+				cf.can_id |= CAN_ERR_CRTL;
+				if (txerr >= GRCAN_STAT_ERRCNT_WARNING_LIMIT)
+					cf.data[1] |= CAN_ERR_CRTL_TX_WARNING;
+				if (rxerr >= GRCAN_STAT_ERRCNT_WARNING_LIMIT)
+					cf.data[1] |= CAN_ERR_CRTL_RX_WARNING;
+				break;
+
+			case CAN_STATE_ERROR_ACTIVE:
+				netdev_dbg(dev, "Error active condition\n");
+				cf.can_id |= CAN_ERR_CRTL;
+				break;
+
+			default:
+				/* There are no others at this point */
+				break;
+			}
+			cf.data[6] = txerr;
+			cf.data[7] = rxerr;
+			priv->can.state = state;
+		}
+
+		/* Report automatic restarts */
+		if (priv->can.restart_ms && oldstate == CAN_STATE_BUS_OFF) {
+			unsigned long flags;
+
+			cf.can_id |= CAN_ERR_RESTARTED;
+			netdev_dbg(dev, "restarted\n");
+			priv->can.can_stats.restarts++;
+			netif_carrier_on(dev);
+
+			spin_lock_irqsave(&priv->lock, flags);
+
+			if (!priv->resetting && !priv->closing) {
+				u32 txwr = grcan_read_reg(&regs->txwr);
+
+				if (grcan_txspace(dma->tx.size, txwr,
+						  priv->eskbp))
+					netif_wake_queue(dev);
+			}
+
+			spin_unlock_irqrestore(&priv->lock, flags);
+		}
+	}
+
+	/* Data overrun interrupt */
+	if ((sources & GRCAN_IRQ_OR) || (status & GRCAN_STAT_OR)) {
+		netdev_dbg(dev, "got data overrun interrupt\n");
+		stats->rx_over_errors++;
+		stats->rx_errors++;
+
+		cf.can_id |= CAN_ERR_CRTL;
+		cf.data[1] |= CAN_ERR_CRTL_RX_OVERFLOW;
+	}
+
+	/* AHB bus error interrupts (not CAN bus errors) - shut down the
+	 * device.
+	 */
+	if (sources & (GRCAN_IRQ_TXAHBERR | GRCAN_IRQ_RXAHBERR) ||
+	    (status & GRCAN_STAT_AHBERR)) {
+		char *txrx = "";
+		unsigned long flags;
+
+		if (sources & GRCAN_IRQ_TXAHBERR) {
+			txrx = "on tx ";
+			stats->tx_errors++;
+		} else if (sources & GRCAN_IRQ_RXAHBERR) {
+			txrx = "on rx ";
+			stats->rx_errors++;
+		}
+		netdev_err(dev, "Fatal AHB bus error %s- halting device\n",
+			   txrx);
+
+		spin_lock_irqsave(&priv->lock, flags);
+
+		/* Prevent anything to be enabled again and halt device */
+		priv->closing = true;
+		netif_stop_queue(dev);
+		grcan_stop_hardware(dev);
+		priv->can.state = CAN_STATE_STOPPED;
+
+		spin_unlock_irqrestore(&priv->lock, flags);
+	}
+
+	/* Pass on error frame if something to report,
+	 * i.e. id contains some information
+	 */
+	if (cf.can_id) {
+		struct can_frame *skb_cf;
+		struct sk_buff *skb = alloc_can_err_skb(dev, &skb_cf);
+
+		if (skb == NULL) {
+			netdev_dbg(dev, "could not allocate error frame\n");
+			return;
+		}
+		skb_cf->can_id |= cf.can_id;
+		memcpy(skb_cf->data, cf.data, sizeof(cf.data));
+
+		netif_rx(skb);
+	}
+}
+
+static irqreturn_t grcan_interrupt(int irq, void *dev_id)
+{
+	struct net_device *dev = dev_id;
+	struct grcan_priv *priv = netdev_priv(dev);
+	struct grcan_registers __iomem *regs = priv->regs;
+	u32 sources, status;
+
+	/* Find out the source */
+	sources = grcan_read_reg(&regs->pimsr);
+	if (!sources)
+		return IRQ_NONE;
+	grcan_write_reg(&regs->picr, sources);
+	status = grcan_read_reg(&regs->stat);
+
+	/* If we got TX progress, the device has not hanged,
+	 * so disable the hang timer
+	 */
+	if (priv->need_txbug_workaround &&
+	    (sources & (GRCAN_IRQ_TX | GRCAN_IRQ_TXLOSS))) {
+		del_timer(&priv->hang_timer);
+	}
+
+	/* Frame(s) received or transmitted */
+	if (sources & (GRCAN_IRQ_TX | GRCAN_IRQ_RX)) {
+		/* Disable tx/rx interrupts and schedule poll(). No need for
+		 * locking as interference from a running reset at worst leads
+		 * to an extra interrupt.
+		 */
+		grcan_clear_bits(&regs->imr, GRCAN_IRQ_TX | GRCAN_IRQ_RX);
+		napi_schedule(&priv->napi);
+	}
+
+	/* (Potential) error conditions to take care of */
+	if (sources & GRCAN_IRQ_ERRORS)
+		grcan_err(dev, sources, status);
+
+	return IRQ_HANDLED;
+}
+
+/* Reset device and restart operations from where they were.
+ *
+ * This assumes that RXCTRL & RXCTRL is properly disabled and that RX
+ * is not ONGOING (TX might be stuck in ONGOING due to a harwrware bug
+ * for single shot)
+ */
+static void grcan_running_reset(struct timer_list *t)
+{
+	struct grcan_priv *priv = from_timer(priv, t, rr_timer);
+	struct net_device *dev = priv->dev;
+	struct grcan_registers __iomem *regs = priv->regs;
+	unsigned long flags;
+
+	/* This temporarily messes with eskbp, so we need to lock
+	 * priv->lock
+	 */
+	spin_lock_irqsave(&priv->lock, flags);
+
+	priv->resetting = false;
+	del_timer(&priv->hang_timer);
+	del_timer(&priv->rr_timer);
+
+	if (!priv->closing) {
+		/* Save and reset - config register preserved by grcan_reset */
+		u32 imr = grcan_read_reg(&regs->imr);
+
+		u32 txaddr = grcan_read_reg(&regs->txaddr);
+		u32 txsize = grcan_read_reg(&regs->txsize);
+		u32 txwr = grcan_read_reg(&regs->txwr);
+		u32 txrd = grcan_read_reg(&regs->txrd);
+		u32 eskbp = priv->eskbp;
+
+		u32 rxaddr = grcan_read_reg(&regs->rxaddr);
+		u32 rxsize = grcan_read_reg(&regs->rxsize);
+		u32 rxwr = grcan_read_reg(&regs->rxwr);
+		u32 rxrd = grcan_read_reg(&regs->rxrd);
+
+		grcan_reset(dev);
+
+		/* Restore */
+		grcan_write_reg(&regs->txaddr, txaddr);
+		grcan_write_reg(&regs->txsize, txsize);
+		grcan_write_reg(&regs->txwr, txwr);
+		grcan_write_reg(&regs->txrd, txrd);
+		priv->eskbp = eskbp;
+
+		grcan_write_reg(&regs->rxaddr, rxaddr);
+		grcan_write_reg(&regs->rxsize, rxsize);
+		grcan_write_reg(&regs->rxwr, rxwr);
+		grcan_write_reg(&regs->rxrd, rxrd);
+
+		/* Turn on device again */
+		grcan_write_reg(&regs->imr, imr);
+		priv->can.state = CAN_STATE_ERROR_ACTIVE;
+		grcan_write_reg(&regs->txctrl, GRCAN_TXCTRL_ENABLE
+				| (priv->can.ctrlmode & CAN_CTRLMODE_ONE_SHOT
+				   ? GRCAN_TXCTRL_SINGLE : 0));
+		grcan_write_reg(&regs->rxctrl, GRCAN_RXCTRL_ENABLE);
+		grcan_write_reg(&regs->ctrl, GRCAN_CTRL_ENABLE);
+
+		/* Start queue if there is size and listen-onle mode is not
+		 * enabled
+		 */
+		if (grcan_txspace(priv->dma.tx.size, txwr, priv->eskbp) &&
+		    !(priv->can.ctrlmode & CAN_CTRLMODE_LISTENONLY))
+			netif_wake_queue(dev);
+	}
+
+	spin_unlock_irqrestore(&priv->lock, flags);
+
+	netdev_err(dev, "Device reset and restored\n");
+}
+
+/* Waiting time in usecs corresponding to the transmission of three maximum
+ * sized can frames in the given bitrate (in bits/sec). Waiting for this amount
+ * of time makes sure that the can controller have time to finish sending or
+ * receiving a frame with a good margin.
+ *
+ * usecs/sec * number of frames * bits/frame / bits/sec
+ */
+static inline u32 grcan_ongoing_wait_usecs(__u32 bitrate)
+{
+	return 1000000 * 3 * GRCAN_EFF_FRAME_MAX_BITS / bitrate;
+}
+
+/* Set timer so that it will not fire until after a period in which the can
+ * controller have a good margin to finish transmitting a frame unless it has
+ * hanged
+ */
+static inline void grcan_reset_timer(struct timer_list *timer, __u32 bitrate)
+{
+	u32 wait_jiffies = usecs_to_jiffies(grcan_ongoing_wait_usecs(bitrate));
+
+	mod_timer(timer, jiffies + wait_jiffies);
+}
+
+/* Disable channels and schedule a running reset */
+static void grcan_initiate_running_reset(struct timer_list *t)
+{
+	struct grcan_priv *priv = from_timer(priv, t, hang_timer);
+	struct net_device *dev = priv->dev;
+	struct grcan_registers __iomem *regs = priv->regs;
+	unsigned long flags;
+
+	netdev_err(dev, "Device seems hanged - reset scheduled\n");
+
+	spin_lock_irqsave(&priv->lock, flags);
+
+	/* The main body of this function must never be executed again
+	 * until after an execution of grcan_running_reset
+	 */
+	if (!priv->resetting && !priv->closing) {
+		priv->resetting = true;
+		netif_stop_queue(dev);
+		grcan_clear_bits(&regs->txctrl, GRCAN_TXCTRL_ENABLE);
+		grcan_clear_bits(&regs->rxctrl, GRCAN_RXCTRL_ENABLE);
+		grcan_reset_timer(&priv->rr_timer, priv->can.bittiming.bitrate);
+	}
+
+	spin_unlock_irqrestore(&priv->lock, flags);
+}
+
+static void grcan_free_dma_buffers(struct net_device *dev)
+{
+	struct grcan_priv *priv = netdev_priv(dev);
+	struct grcan_dma *dma = &priv->dma;
+
+	dma_free_coherent(priv->ofdev_dev, dma->base_size, dma->base_buf,
+			  dma->base_handle);
+	memset(dma, 0, sizeof(*dma));
+}
+
+static int grcan_allocate_dma_buffers(struct net_device *dev,
+				      size_t tsize, size_t rsize)
+{
+	struct grcan_priv *priv = netdev_priv(dev);
+	struct grcan_dma *dma = &priv->dma;
+	struct grcan_dma_buffer *large = rsize > tsize ? &dma->rx : &dma->tx;
+	struct grcan_dma_buffer *small = rsize > tsize ? &dma->tx : &dma->rx;
+	size_t shift;
+
+	/* Need a whole number of GRCAN_BUFFER_ALIGNMENT for the large,
+	 * i.e. first buffer
+	 */
+	size_t maxs = max(tsize, rsize);
+	size_t lsize = ALIGN(maxs, GRCAN_BUFFER_ALIGNMENT);
+
+	/* Put the small buffer after that */
+	size_t ssize = min(tsize, rsize);
+
+	/* Extra GRCAN_BUFFER_ALIGNMENT to allow for alignment */
+	dma->base_size = lsize + ssize + GRCAN_BUFFER_ALIGNMENT;
+	dma->base_buf = dma_alloc_coherent(priv->ofdev_dev,
+					   dma->base_size,
+					   &dma->base_handle,
+					   GFP_KERNEL);
+
+	if (!dma->base_buf)
+		return -ENOMEM;
+
+	dma->tx.size = tsize;
+	dma->rx.size = rsize;
+
+	large->handle = ALIGN(dma->base_handle, GRCAN_BUFFER_ALIGNMENT);
+	small->handle = large->handle + lsize;
+	shift = large->handle - dma->base_handle;
+
+	large->buf = dma->base_buf + shift;
+	small->buf = large->buf + lsize;
+
+	return 0;
+}
+
+/* priv->lock *must* be held when calling this function */
+static int grcan_start(struct net_device *dev)
+{
+	struct grcan_priv *priv = netdev_priv(dev);
+	struct grcan_registers __iomem *regs = priv->regs;
+	u32 confop, txctrl;
+
+	grcan_reset(dev);
+
+	grcan_write_reg(&regs->txaddr, priv->dma.tx.handle);
+	grcan_write_reg(&regs->txsize, priv->dma.tx.size);
+	/* regs->txwr, regs->txrd and priv->eskbp already set to 0 by reset */
+
+	grcan_write_reg(&regs->rxaddr, priv->dma.rx.handle);
+	grcan_write_reg(&regs->rxsize, priv->dma.rx.size);
+	/* regs->rxwr and regs->rxrd already set to 0 by reset */
+
+	/* Enable interrupts */
+	grcan_read_reg(&regs->pir);
+	grcan_write_reg(&regs->imr, GRCAN_IRQ_DEFAULT);
+
+	/* Enable interfaces, channels and device */
+	confop = GRCAN_CONF_ABORT
+		| (priv->config.enable0 ? GRCAN_CONF_ENABLE0 : 0)
+		| (priv->config.enable1 ? GRCAN_CONF_ENABLE1 : 0)
+		| (priv->config.select ? GRCAN_CONF_SELECT : 0)
+		| (priv->can.ctrlmode & CAN_CTRLMODE_LISTENONLY ?
+		   GRCAN_CONF_SILENT : 0)
+		| (priv->can.ctrlmode & CAN_CTRLMODE_3_SAMPLES ?
+		   GRCAN_CONF_SAM : 0);
+	grcan_write_bits(&regs->conf, confop, GRCAN_CONF_OPERATION);
+	txctrl = GRCAN_TXCTRL_ENABLE
+		| (priv->can.ctrlmode & CAN_CTRLMODE_ONE_SHOT
+		   ? GRCAN_TXCTRL_SINGLE : 0);
+	grcan_write_reg(&regs->txctrl, txctrl);
+	grcan_write_reg(&regs->rxctrl, GRCAN_RXCTRL_ENABLE);
+	grcan_write_reg(&regs->ctrl, GRCAN_CTRL_ENABLE);
+
+	priv->can.state = CAN_STATE_ERROR_ACTIVE;
+
+	return 0;
+}
+
+static int grcan_set_mode(struct net_device *dev, enum can_mode mode)
+{
+	struct grcan_priv *priv = netdev_priv(dev);
+	unsigned long flags;
+	int err = 0;
+
+	if (mode == CAN_MODE_START) {
+		/* This might be called to restart the device to recover from
+		 * bus off errors
+		 */
+		spin_lock_irqsave(&priv->lock, flags);
+		if (priv->closing || priv->resetting) {
+			err = -EBUSY;
+		} else {
+			netdev_info(dev, "Restarting device\n");
+			grcan_start(dev);
+			if (!(priv->can.ctrlmode & CAN_CTRLMODE_LISTENONLY))
+				netif_wake_queue(dev);
+		}
+		spin_unlock_irqrestore(&priv->lock, flags);
+		return err;
+	}
+	return -EOPNOTSUPP;
+}
+
+static int grcan_open(struct net_device *dev)
+{
+	struct grcan_priv *priv = netdev_priv(dev);
+	struct grcan_dma *dma = &priv->dma;
+	unsigned long flags;
+	int err;
+
+	/* Allocate memory */
+	err = grcan_allocate_dma_buffers(dev, priv->config.txsize,
+					 priv->config.rxsize);
+	if (err) {
+		netdev_err(dev, "could not allocate DMA buffers\n");
+		return err;
+	}
+
+	priv->echo_skb = kcalloc(dma->tx.size, sizeof(*priv->echo_skb),
+				 GFP_KERNEL);
+	if (!priv->echo_skb) {
+		err = -ENOMEM;
+		goto exit_free_dma_buffers;
+	}
+	priv->can.echo_skb_max = dma->tx.size;
+	priv->can.echo_skb = priv->echo_skb;
+
+	/* Get can device up */
+	err = open_candev(dev);
+	if (err)
+		goto exit_free_echo_skb;
+
+	err = request_irq(dev->irq, grcan_interrupt, IRQF_SHARED,
+			  dev->name, dev);
+	if (err)
+		goto exit_close_candev;
+
+	spin_lock_irqsave(&priv->lock, flags);
+
+	napi_enable(&priv->napi);
+	grcan_start(dev);
+	if (!(priv->can.ctrlmode & CAN_CTRLMODE_LISTENONLY))
+		netif_start_queue(dev);
+	priv->resetting = false;
+	priv->closing = false;
+
+	spin_unlock_irqrestore(&priv->lock, flags);
+
+	return 0;
+
+exit_close_candev:
+	close_candev(dev);
+exit_free_echo_skb:
+	kfree(priv->echo_skb);
+exit_free_dma_buffers:
+	grcan_free_dma_buffers(dev);
+	return err;
+}
+
+static int grcan_close(struct net_device *dev)
+{
+	struct grcan_priv *priv = netdev_priv(dev);
+	unsigned long flags;
+
+	napi_disable(&priv->napi);
+
+	spin_lock_irqsave(&priv->lock, flags);
+
+	priv->closing = true;
+	if (priv->need_txbug_workaround) {
+		spin_unlock_irqrestore(&priv->lock, flags);
+		del_timer_sync(&priv->hang_timer);
+		del_timer_sync(&priv->rr_timer);
+		spin_lock_irqsave(&priv->lock, flags);
+	}
+	netif_stop_queue(dev);
+	grcan_stop_hardware(dev);
+	priv->can.state = CAN_STATE_STOPPED;
+
+	spin_unlock_irqrestore(&priv->lock, flags);
+
+	free_irq(dev->irq, dev);
+	close_candev(dev);
+
+	grcan_free_dma_buffers(dev);
+	priv->can.echo_skb_max = 0;
+	priv->can.echo_skb = NULL;
+	kfree(priv->echo_skb);
+
+	return 0;
+}
+
+static void grcan_transmit_catch_up(struct net_device *dev)
+{
+	struct grcan_priv *priv = netdev_priv(dev);
+	unsigned long flags;
+	int work_done;
+
+	spin_lock_irqsave(&priv->lock, flags);
+
+	work_done = catch_up_echo_skb(dev, -1, true);
+	if (work_done) {
+		if (!priv->resetting && !priv->closing &&
+		    !(priv->can.ctrlmode & CAN_CTRLMODE_LISTENONLY))
+			netif_wake_queue(dev);
+
+		/* With napi we don't get TX interrupts for a while,
+		 * so prevent a running reset while catching up
+		 */
+		if (priv->need_txbug_workaround)
+			del_timer(&priv->hang_timer);
+	}
+
+	spin_unlock_irqrestore(&priv->lock, flags);
+}
+
+static int grcan_receive(struct net_device *dev, int budget)
+{
+	struct grcan_priv *priv = netdev_priv(dev);
+	struct grcan_registers __iomem *regs = priv->regs;
+	struct grcan_dma *dma = &priv->dma;
+	struct net_device_stats *stats = &dev->stats;
+	struct can_frame *cf;
+	struct sk_buff *skb;
+	u32 wr, rd, startrd;
+	u32 *slot;
+	u32 i, rtr, eff, j, shift;
+	int work_done = 0;
+
+	rd = grcan_read_reg(&regs->rxrd);
+	startrd = rd;
+	for (work_done = 0; work_done < budget; work_done++) {
+		/* Check for packet to receive */
+		wr = grcan_read_reg(&regs->rxwr);
+		if (rd == wr)
+			break;
+
+		/* Take care of packet */
+		skb = alloc_can_skb(dev, &cf);
+		if (skb == NULL) {
+			netdev_err(dev,
+				   "dropping frame: skb allocation failed\n");
+			stats->rx_dropped++;
+			continue;
+		}
+
+		slot = dma->rx.buf + rd;
+		eff = slot[0] & GRCAN_MSG_IDE;
+		rtr = slot[0] & GRCAN_MSG_RTR;
+		if (eff) {
+			cf->can_id = ((slot[0] & GRCAN_MSG_EID)
+				      >> GRCAN_MSG_EID_BIT);
+			cf->can_id |= CAN_EFF_FLAG;
+		} else {
+			cf->can_id = ((slot[0] & GRCAN_MSG_BID)
+				      >> GRCAN_MSG_BID_BIT);
+		}
+		cf->len = can_cc_dlc2len((slot[1] & GRCAN_MSG_DLC)
+					  >> GRCAN_MSG_DLC_BIT);
+		if (rtr) {
+			cf->can_id |= CAN_RTR_FLAG;
+		} else {
+			for (i = 0; i < cf->len; i++) {
+				j = GRCAN_MSG_DATA_SLOT_INDEX(i);
+				shift = GRCAN_MSG_DATA_SHIFT(i);
+				cf->data[i] = (u8)(slot[j] >> shift);
+			}
+
+			stats->rx_bytes += cf->len;
+		}
+		stats->rx_packets++;
+
+		netif_receive_skb(skb);
+
+		rd = grcan_ring_add(rd, GRCAN_MSG_SIZE, dma->rx.size);
+	}
+
+	/* Make sure everything is read before allowing hardware to
+	 * use the memory
+	 */
+	mb();
+
+	/* Update read pointer - no need to check for ongoing */
+	if (likely(rd != startrd))
+		grcan_write_reg(&regs->rxrd, rd);
+
+	return work_done;
+}
+
+static int grcan_poll(struct napi_struct *napi, int budget)
+{
+	struct grcan_priv *priv = container_of(napi, struct grcan_priv, napi);
+	struct net_device *dev = priv->dev;
+	struct grcan_registers __iomem *regs = priv->regs;
+	unsigned long flags;
+	int work_done;
+
+	work_done = grcan_receive(dev, budget);
+
+	grcan_transmit_catch_up(dev);
+
+	if (work_done < budget) {
+		napi_complete(napi);
+
+		/* Guarantee no interference with a running reset that otherwise
+		 * could turn off interrupts.
+		 */
+		spin_lock_irqsave(&priv->lock, flags);
+
+		/* Enable tx and rx interrupts again. No need to check
+		 * priv->closing as napi_disable in grcan_close is waiting for
+		 * scheduled napi calls to finish.
+		 */
+		grcan_set_bits(&regs->imr, GRCAN_IRQ_TX | GRCAN_IRQ_RX);
+
+		spin_unlock_irqrestore(&priv->lock, flags);
+	}
+
+	return work_done;
+}
+
+/* Work tx bug by waiting while for the risky situation to clear. If that fails,
+ * drop a frame in one-shot mode or indicate a busy device otherwise.
+ *
+ * Returns 0 on successful wait. Otherwise it sets *netdev_tx_status to the
+ * value that should be returned by grcan_start_xmit when aborting the xmit.
+ */
+static int grcan_txbug_workaround(struct net_device *dev, struct sk_buff *skb,
+				  u32 txwr, u32 oneshotmode,
+				  netdev_tx_t *netdev_tx_status)
+{
+	struct grcan_priv *priv = netdev_priv(dev);
+	struct grcan_registers __iomem *regs = priv->regs;
+	struct grcan_dma *dma = &priv->dma;
+	int i;
+	unsigned long flags;
+
+	/* Wait a while for ongoing to be cleared or read pointer to catch up to
+	 * write pointer. The latter is needed due to a bug in older versions of
+	 * GRCAN in which ONGOING is not cleared properly one-shot mode when a
+	 * transmission fails.
+	 */
+	for (i = 0; i < GRCAN_SHORTWAIT_USECS; i++) {
+		udelay(1);
+		if (!grcan_read_bits(&regs->txctrl, GRCAN_TXCTRL_ONGOING) ||
+		    grcan_read_reg(&regs->txrd) == txwr) {
+			return 0;
+		}
+	}
+
+	/* Clean up, in case the situation was not resolved */
+	spin_lock_irqsave(&priv->lock, flags);
+	if (!priv->resetting && !priv->closing) {
+		/* Queue might have been stopped earlier in grcan_start_xmit */
+		if (grcan_txspace(dma->tx.size, txwr, priv->eskbp))
+			netif_wake_queue(dev);
+		/* Set a timer to resolve a hanged tx controller */
+		if (!timer_pending(&priv->hang_timer))
+			grcan_reset_timer(&priv->hang_timer,
+					  priv->can.bittiming.bitrate);
+	}
+	spin_unlock_irqrestore(&priv->lock, flags);
+
+	if (oneshotmode) {
+		/* In one-shot mode we should never end up here because
+		 * then the interrupt handler increases txrd on TXLOSS,
+		 * but it is consistent with one-shot mode to drop the
+		 * frame in this case.
+		 */
+		kfree_skb(skb);
+		*netdev_tx_status = NETDEV_TX_OK;
+	} else {
+		/* In normal mode the socket-can transmission queue get
+		 * to keep the frame so that it can be retransmitted
+		 * later
+		 */
+		*netdev_tx_status = NETDEV_TX_BUSY;
+	}
+	return -EBUSY;
+}
+
+/* Notes on the tx cyclic buffer handling:
+ *
+ * regs->txwr	- the next slot for the driver to put data to be sent
+ * regs->txrd	- the next slot for the device to read data
+ * priv->eskbp	- the next slot for the driver to call can_put_echo_skb for
+ *
+ * grcan_start_xmit can enter more messages as long as regs->txwr does
+ * not reach priv->eskbp (within 1 message gap)
+ *
+ * The device sends messages until regs->txrd reaches regs->txwr
+ *
+ * The interrupt calls handler calls can_put_echo_skb until
+ * priv->eskbp reaches regs->txrd
+ */
+static netdev_tx_t grcan_start_xmit(struct sk_buff *skb,
+				    struct net_device *dev)
+{
+	struct grcan_priv *priv = netdev_priv(dev);
+	struct grcan_registers __iomem *regs = priv->regs;
+	struct grcan_dma *dma = &priv->dma;
+	struct can_frame *cf = (struct can_frame *)skb->data;
+	u32 id, txwr, txrd, space, txctrl;
+	int slotindex;
+	u32 *slot;
+	u32 i, rtr, eff, dlc, tmp, err;
+	int j, shift;
+	unsigned long flags;
+	u32 oneshotmode = priv->can.ctrlmode & CAN_CTRLMODE_ONE_SHOT;
+
+	if (can_dropped_invalid_skb(dev, skb))
+		return NETDEV_TX_OK;
+
+	/* Trying to transmit in silent mode will generate error interrupts, but
+	 * this should never happen - the queue should not have been started.
+	 */
+	if (priv->can.ctrlmode & CAN_CTRLMODE_LISTENONLY)
+		return NETDEV_TX_BUSY;
+
+	/* Reads of priv->eskbp and shut-downs of the queue needs to
+	 * be atomic towards the updates to priv->eskbp and wake-ups
+	 * of the queue in the interrupt handler.
+	 */
+	spin_lock_irqsave(&priv->lock, flags);
+
+	txwr = grcan_read_reg(&regs->txwr);
+	space = grcan_txspace(dma->tx.size, txwr, priv->eskbp);
+
+	slotindex = txwr / GRCAN_MSG_SIZE;
+	slot = dma->tx.buf + txwr;
+
+	if (unlikely(space == 1))
+		netif_stop_queue(dev);
+
+	spin_unlock_irqrestore(&priv->lock, flags);
+	/* End of critical section*/
+
+	/* This should never happen. If circular buffer is full, the
+	 * netif_stop_queue should have been stopped already.
+	 */
+	if (unlikely(!space)) {
+		netdev_err(dev, "No buffer space, but queue is non-stopped.\n");
+		return NETDEV_TX_BUSY;
+	}
+
+	/* Convert and write CAN message to DMA buffer */
+	eff = cf->can_id & CAN_EFF_FLAG;
+	rtr = cf->can_id & CAN_RTR_FLAG;
+	id = cf->can_id & (eff ? CAN_EFF_MASK : CAN_SFF_MASK);
+	dlc = cf->len;
+	if (eff)
+		tmp = (id << GRCAN_MSG_EID_BIT) & GRCAN_MSG_EID;
+	else
+		tmp = (id << GRCAN_MSG_BID_BIT) & GRCAN_MSG_BID;
+	slot[0] = (eff ? GRCAN_MSG_IDE : 0) | (rtr ? GRCAN_MSG_RTR : 0) | tmp;
+
+	slot[1] = ((dlc << GRCAN_MSG_DLC_BIT) & GRCAN_MSG_DLC);
+	slot[2] = 0;
+	slot[3] = 0;
+	for (i = 0; i < dlc; i++) {
+		j = GRCAN_MSG_DATA_SLOT_INDEX(i);
+		shift = GRCAN_MSG_DATA_SHIFT(i);
+		slot[j] |= cf->data[i] << shift;
+	}
+
+	/* Checking that channel has not been disabled. These cases
+	 * should never happen
+	 */
+	txctrl = grcan_read_reg(&regs->txctrl);
+	if (!(txctrl & GRCAN_TXCTRL_ENABLE))
+		netdev_err(dev, "tx channel spuriously disabled\n");
+
+	if (oneshotmode && !(txctrl & GRCAN_TXCTRL_SINGLE))
+		netdev_err(dev, "one-shot mode spuriously disabled\n");
+
+	/* Bug workaround for old version of grcan where updating txwr
+	 * in the same clock cycle as the controller updates txrd to
+	 * the current txwr could hang the can controller
+	 */
+	if (priv->need_txbug_workaround) {
+		txrd = grcan_read_reg(&regs->txrd);
+		if (unlikely(grcan_ring_sub(txwr, txrd, dma->tx.size) == 1)) {
+			netdev_tx_t txstatus;
+
+			err = grcan_txbug_workaround(dev, skb, txwr,
+						     oneshotmode, &txstatus);
+			if (err)
+				return txstatus;
+		}
+	}
+
+	/* Prepare skb for echoing. This must be after the bug workaround above
+	 * as ownership of the skb is passed on by calling can_put_echo_skb.
+	 * Returning NETDEV_TX_BUSY or accessing skb or cf after a call to
+	 * can_put_echo_skb would be an error unless other measures are
+	 * taken.
+	 */
+	can_put_echo_skb(skb, dev, slotindex, 0);
+
+	/* Make sure everything is written before allowing hardware to
+	 * read from the memory
+	 */
+	wmb();
+
+	/* Update write pointer to start transmission */
+	grcan_write_reg(&regs->txwr,
+			grcan_ring_add(txwr, GRCAN_MSG_SIZE, dma->tx.size));
+
+	return NETDEV_TX_OK;
+}
+
+/* ========== Setting up sysfs interface and module parameters ========== */
+
+#define GRCAN_NOT_BOOL(unsigned_val) ((unsigned_val) > 1)
+
+#define GRCAN_MODULE_PARAM(name, mtype, valcheckf, desc)		\
+	static void grcan_sanitize_##name(struct platform_device *pd)	\
+	{								\
+		struct grcan_device_config grcan_default_config		\
+			= GRCAN_DEFAULT_DEVICE_CONFIG;			\
+		if (valcheckf(grcan_module_config.name)) {		\
+			dev_err(&pd->dev,				\
+				"Invalid module parameter value for "	\
+				#name " - setting default\n");		\
+			grcan_module_config.name =			\
+				grcan_default_config.name;		\
+		}							\
+	}								\
+	module_param_named(name, grcan_module_config.name,		\
+			   mtype, 0444);				\
+	MODULE_PARM_DESC(name, desc)
+
+#define GRCAN_CONFIG_ATTR(name, desc)					\
+	static ssize_t grcan_store_##name(struct device *sdev,		\
+					  struct device_attribute *att,	\
+					  const char *buf,		\
+					  size_t count)			\
+	{								\
+		struct net_device *dev = to_net_dev(sdev);		\
+		struct grcan_priv *priv = netdev_priv(dev);		\
+		u8 val;							\
+		int ret;						\
+		if (dev->flags & IFF_UP)				\
+			return -EBUSY;					\
+		ret = kstrtou8(buf, 0, &val);				\
+		if (ret < 0 || val > 1)					\
+			return -EINVAL;					\
+		priv->config.name = val;				\
+		return count;						\
+	}								\
+	static ssize_t grcan_show_##name(struct device *sdev,		\
+					 struct device_attribute *att,	\
+					 char *buf)			\
+	{								\
+		struct net_device *dev = to_net_dev(sdev);		\
+		struct grcan_priv *priv = netdev_priv(dev);		\
+		return sprintf(buf, "%d\n", priv->config.name);		\
+	}								\
+	static DEVICE_ATTR(name, 0644,					\
+			   grcan_show_##name,				\
+			   grcan_store_##name);				\
+	GRCAN_MODULE_PARAM(name, ushort, GRCAN_NOT_BOOL, desc)
+
+/* The following configuration options are made available both via module
+ * parameters and writable sysfs files. See the chapter about GRCAN in the
+ * documentation for the GRLIB VHDL library for further details.
+ */
+GRCAN_CONFIG_ATTR(enable0,
+		  "Configuration of physical interface 0. Determines\n"	\
+		  "the \"Enable 0\" bit of the configuration register.\n" \
+		  "Format: 0 | 1\nDefault: 0\n");
+
+GRCAN_CONFIG_ATTR(enable1,
+		  "Configuration of physical interface 1. Determines\n"	\
+		  "the \"Enable 1\" bit of the configuration register.\n" \
+		  "Format: 0 | 1\nDefault: 0\n");
+
+GRCAN_CONFIG_ATTR(select,
+		  "Select which physical interface to use.\n"	\
+		  "Format: 0 | 1\nDefault: 0\n");
+
+/* The tx and rx buffer size configuration options are only available via module
+ * parameters.
+ */
+GRCAN_MODULE_PARAM(txsize, uint, GRCAN_INVALID_BUFFER_SIZE,
+		   "Sets the size of the tx buffer.\n"			\
+		   "Format: <unsigned int> where (txsize & ~0x1fffc0) == 0\n" \
+		   "Default: 1024\n");
+GRCAN_MODULE_PARAM(rxsize, uint, GRCAN_INVALID_BUFFER_SIZE,
+		   "Sets the size of the rx buffer.\n"			\
+		   "Format: <unsigned int> where (size & ~0x1fffc0) == 0\n" \
+		   "Default: 1024\n");
+
+/* Function that makes sure that configuration done using
+ * module parameters are set to valid values
+ */
+static void grcan_sanitize_module_config(struct platform_device *ofdev)
+{
+	grcan_sanitize_enable0(ofdev);
+	grcan_sanitize_enable1(ofdev);
+	grcan_sanitize_select(ofdev);
+	grcan_sanitize_txsize(ofdev);
+	grcan_sanitize_rxsize(ofdev);
+}
+
+static const struct attribute *const sysfs_grcan_attrs[] = {
+	/* Config attrs */
+	&dev_attr_enable0.attr,
+	&dev_attr_enable1.attr,
+	&dev_attr_select.attr,
+	NULL,
+};
+
+static const struct attribute_group sysfs_grcan_group = {
+	.name	= "grcan",
+	.attrs	= (struct attribute **)sysfs_grcan_attrs,
+};
+
+/* ========== Setting up the driver ========== */
+
+static const struct net_device_ops grcan_netdev_ops = {
+	.ndo_open	= grcan_open,
+	.ndo_stop	= grcan_close,
+	.ndo_start_xmit	= grcan_start_xmit,
+	.ndo_change_mtu = can_change_mtu,
+};
+
+static int grcan_setup_netdev(struct platform_device *ofdev,
+			      void __iomem *base,
+			      int irq, u32 ambafreq, bool txbug)
+{
+	struct net_device *dev;
+	struct grcan_priv *priv;
+	struct grcan_registers __iomem *regs;
+	int err;
+
+	dev = alloc_candev(sizeof(struct grcan_priv), 0);
+	if (!dev)
+		return -ENOMEM;
+
+	dev->irq = irq;
+	dev->flags |= IFF_ECHO;
+	dev->netdev_ops = &grcan_netdev_ops;
+	dev->sysfs_groups[0] = &sysfs_grcan_group;
+
+	priv = netdev_priv(dev);
+	memcpy(&priv->config, &grcan_module_config,
+	       sizeof(struct grcan_device_config));
+	priv->dev = dev;
+	priv->ofdev_dev = &ofdev->dev;
+	priv->regs = base;
+	priv->can.bittiming_const = &grcan_bittiming_const;
+	priv->can.do_set_bittiming = grcan_set_bittiming;
+	priv->can.do_set_mode = grcan_set_mode;
+	priv->can.do_get_berr_counter = grcan_get_berr_counter;
+	priv->can.clock.freq = ambafreq;
+	priv->can.ctrlmode_supported =
+		CAN_CTRLMODE_LISTENONLY | CAN_CTRLMODE_ONE_SHOT;
+	priv->need_txbug_workaround = txbug;
+
+	/* Discover if triple sampling is supported by hardware */
+	regs = priv->regs;
+	grcan_set_bits(&regs->ctrl, GRCAN_CTRL_RESET);
+	grcan_set_bits(&regs->conf, GRCAN_CONF_SAM);
+	if (grcan_read_bits(&regs->conf, GRCAN_CONF_SAM)) {
+		priv->can.ctrlmode_supported |= CAN_CTRLMODE_3_SAMPLES;
+		dev_dbg(&ofdev->dev, "Hardware supports triple-sampling\n");
+	}
+
+	spin_lock_init(&priv->lock);
+
+	if (priv->need_txbug_workaround) {
+		timer_setup(&priv->rr_timer, grcan_running_reset, 0);
+		timer_setup(&priv->hang_timer, grcan_initiate_running_reset, 0);
+	}
+
+	netif_napi_add(dev, &priv->napi, grcan_poll, GRCAN_NAPI_WEIGHT);
+
+	SET_NETDEV_DEV(dev, &ofdev->dev);
+	dev_info(&ofdev->dev, "regs=0x%p, irq=%d, clock=%d\n",
+		 priv->regs, dev->irq, priv->can.clock.freq);
+
+	err = register_candev(dev);
+	if (err)
+		goto exit_free_candev;
+
+	platform_set_drvdata(ofdev, dev);
+
+	/* Reset device to allow bit-timing to be set. No need to call
+	 * grcan_reset at this stage. That is done in grcan_open.
+	 */
+	grcan_write_reg(&regs->ctrl, GRCAN_CTRL_RESET);
+
+	return 0;
+exit_free_candev:
+	free_candev(dev);
+	return err;
+}
+
+static int grcan_probe(struct platform_device *ofdev)
+{
+	struct device_node *np = ofdev->dev.of_node;
+	struct device_node *sysid_parent;
+	u32 sysid, ambafreq;
+	int irq, err;
+	void __iomem *base;
+	bool txbug = true;
+
+	/* Compare GRLIB version number with the first that does not
+	 * have the tx bug (see start_xmit)
+	 */
+	sysid_parent = of_find_node_by_path("/ambapp0");
+	if (sysid_parent) {
+		of_node_get(sysid_parent);
+		err = of_property_read_u32(sysid_parent, "systemid", &sysid);
+		if (!err && ((sysid & GRLIB_VERSION_MASK) >=
+			     GRCAN_TXBUG_SAFE_GRLIB_VERSION))
+			txbug = false;
+		of_node_put(sysid_parent);
+	}
+
+	err = of_property_read_u32(np, "freq", &ambafreq);
+	if (err) {
+		dev_err(&ofdev->dev, "unable to fetch \"freq\" property\n");
+		goto exit_error;
+	}
+
+	base = devm_platform_ioremap_resource(ofdev, 0);
+	if (IS_ERR(base)) {
+		err = PTR_ERR(base);
+		goto exit_error;
+	}
+
+	irq = irq_of_parse_and_map(np, GRCAN_IRQIX_IRQ);
+	if (!irq) {
+		dev_err(&ofdev->dev, "no irq found\n");
+		err = -ENODEV;
+		goto exit_error;
+	}
+
+	grcan_sanitize_module_config(ofdev);
+
+	err = grcan_setup_netdev(ofdev, base, irq, ambafreq, txbug);
+	if (err)
+		goto exit_dispose_irq;
+
+	return 0;
+
+exit_dispose_irq:
+	irq_dispose_mapping(irq);
+exit_error:
+	dev_err(&ofdev->dev,
+		"%s socket CAN driver initialization failed with error %d\n",
+		DRV_NAME, err);
+	return err;
+}
+
+static int grcan_remove(struct platform_device *ofdev)
+{
+	struct net_device *dev = platform_get_drvdata(ofdev);
+	struct grcan_priv *priv = netdev_priv(dev);
+
+	unregister_candev(dev); /* Will in turn call grcan_close */
+
+	irq_dispose_mapping(dev->irq);
+	netif_napi_del(&priv->napi);
+	free_candev(dev);
+
+	return 0;
+}
+
+static const struct of_device_id grcan_match[] = {
+	{.name = "GAISLER_GRCAN"},
+	{.name = "01_03d"},
+	{.name = "GAISLER_GRHCAN"},
+	{.name = "01_034"},
+	{},
+};
+
+MODULE_DEVICE_TABLE(of, grcan_match);
+
+static struct platform_driver grcan_driver = {
+	.driver = {
+		.name = DRV_NAME,
+		.of_match_table = grcan_match,
+	},
+	.probe = grcan_probe,
+	.remove = grcan_remove,
+};
+
+module_platform_driver(grcan_driver);
+
+MODULE_AUTHOR("Aeroflex Gaisler AB.");
+MODULE_DESCRIPTION("Socket CAN driver for Aeroflex Gaisler GRCAN");
+MODULE_LICENSE("GPL");

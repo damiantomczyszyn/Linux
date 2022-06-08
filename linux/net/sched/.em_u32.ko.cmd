@@ -1,1 +1,8 @@
-Æ{’ÜŒhÀ¬+Kö1Fû¹†³S¥u<’5‰­â¿[ÿï1ZUï#ÿ±Å?"5‰aÕJÏ·	pøıq•Æd	faƒñ?ø°7”\á´VNùyĞèZŞ;"WæH“ÿãöt¬f=É#·9"ôú’„×øFÇù-gcZXã£	ãÄÎúlbÄ®8¾‡--ú ¢%Î9È®
+t("%s\n", __func__);
+
+	if (0 != slot)
+		return -EINVAL;
+
+	mutex_lock(&inter->fpga_mutex);
+
+	ret = netup_fpga_op_rw(inter, NETUP_CI_BUSCTRL, 0, NETUP_CI_FLG_

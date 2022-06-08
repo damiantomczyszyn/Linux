@@ -1,2 +1,3 @@
-drivers/media/rc/keymaps/rc-snapstream-firefly.o
-
+,
+				&dvbsky_s950c_m88ds3103_config,
+				&i2c_bus

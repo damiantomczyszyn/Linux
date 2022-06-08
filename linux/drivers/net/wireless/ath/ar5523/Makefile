@@ -1,2 +1,3 @@
-$(wildcard include/config/DEBUG_PLIST) \
-  include/linux/hrtimer.h
+885_video_template = {
+	.name                 = "cx23885-video",
+	

@@ -1,124 +1,192 @@
-CPI_APEI_GHES) \
-    $(wildcard include/config/INTEL_TXT) \
-  arch/x86/include/generated/asm/kmap_size.h \
-  include/asm-generic/kmap_size.h \
-    $(wildcard include/config/DEBUG_KMAP_LOCAL) \
-  include/asm-generic/fixmap.h \
-  arch/x86/include/asm/irq_vectors.h \
-    $(wildcard include/config/HAVE_KVM) \
-    $(wildcard include/config/HYPERV) \
-    $(wildcard include/config/PCI_MSI) \
-  arch/x86/include/asm/cpu_entry_area.h \
-  arch/x86/include/asm/intel_ds.h \
-  arch/x86/include/asm/pgtable_areas.h \
-  arch/x86/include/asm/pgtable_32_areas.h \
-  include/uapi/linux/elf.h \
-  include/uapi/linux/elf-em.h \
-  include/linux/kobject.h \
-    $(wildcard include/config/UEVENT_HELPER) \
-    $(wildcard include/config/DEBUG_KOBJECT_RELEASE) \
-  include/linux/sysfs.h \
-  include/linux/kernfs.h \
-    $(wildcard include/config/KERNFS) \
-  include/linux/idr.h \
-  include/linux/radix-tree.h \
-  include/linux/xarray.h \
-    $(wildcard include/config/XARRAY_MULTI) \
-  include/linux/kconfig.h \
-  include/linux/kobject_ns.h \
-  include/linux/moduleparam.h \
-    $(wildcard include/config/ALPHA) \
-    $(wildcard include/config/IA64) \
-    $(wildcard include/config/PPC64) \
-  include/linux/rbtree_latch.h \
-  include/linux/error-injection.h \
-  include/asm-generic/error-injection.h \
-  include/linux/cfi.h \
-    $(wildcard include/config/CFI_CLANG_SHADOW) \
-  arch/x86/include/asm/module.h \
-    $(wildcard include/config/UNWINDER_ORC) \
-  include/asm-generic/module.h \
-    $(wildcard include/config/HAVE_MOD_ARCH_SPECIFIC) \
-    $(wildcard include/config/MODULES_USE_ELF_REL) \
-    $(wildcard include/config/MODULES_USE_ELF_RELA) \
-  arch/x86/include/asm/orc_types.h \
-  include/linux/i2c.h \
-    $(wildcard include/config/I2C) \
-    $(wildcard include/config/I2C_SLAVE) \
-    $(wildcard include/config/I2C_BOARDINFO) \
-    $(wildcard include/config/I2C_MUX) \
-    $(wildcard include/config/OF) \
-    $(wildcard include/config/ACPI) \
-  include/linux/acpi.h \
-    $(wildcard include/config/ACPI_DEBUGGER) \
-    $(wildcard include/config/ACPI_TABLE_LIB) \
-    $(wildcard include/config/LOONGARCH) \
-    $(wildcard include/config/ARM64) \
-    $(wildcard include/config/ACPI_PROCESSOR_CSTATE) \
-    $(wildcard include/config/ACPI_HOTPLUG_CPU) \
-    $(wildcard include/config/ACPI_HOTPLUG_IOAPIC) \
-    $(wildcard include/config/PCI) \
-    $(wildcard include/config/ACPI_WMI) \
-    $(wildcard include/config/ACPI_NUMA) \
-    $(wildcard include/config/HIBERNATION) \
-    $(wildcard include/config/ACPI_HOTPLUG_MEMORY) \
-    $(wildcard include/config/ACPI_CONTAINER) \
-    $(wildcard include/config/ACPI_GTDT) \
-    $(wildcard include/config/PM) \
-    $(wildcard include/config/GPIOLIB) \
-    $(wildcard include/config/ACPI_TABLE_UPGRADE) \
-    $(wildcard include/config/ACPI_WATCHDOG) \
-    $(wildcard include/config/ACPI_SPCR_TABLE) \
-    $(wildcard include/config/ACPI_GENERIC_GSI) \
-    $(wildcard include/config/ACPI_LPIT) \
-    $(wildcard include/config/ACPI_PPTT) \
-    $(wildcard include/config/ACPI_PCC) \
-  include/linux/ioport.h \
-  include/linux/irqdomain.h \
-    $(wildcard include/config/IRQ_DOMAIN_HIERARCHY) \
-    $(wildcard include/config/GENERIC_IRQ_DEBUGFS) \
-    $(wildcard include/config/IRQ_DOMAIN) \
-    $(wildcard include/config/IRQ_DOMAIN_NOMAP) \
-  include/linux/irqhandler.h \
-  include/linux/of.h \
-    $(wildcard include/config/OF_DYNAMIC) \
-    $(wildcard include/config/SPARC) \
-    $(wildcard include/config/OF_PROMTREE) \
-    $(wildcard include/config/OF_KOBJ) \
-    $(wildcard include/config/OF_NUMA) \
-    $(wildcard include/config/OF_OVERLAY) \
-  include/linux/mod_devicetable.h \
-  include/linux/uuid.h \
-  include/uapi/linux/uuid.h \
-  include/linux/property.h \
-  include/linux/fwnode.h \
-  include/linux/resource_ext.h \
-  include/linux/slab.h \
-    $(wildcard include/config/DEBUG_SLAB) \
-    $(wildcard include/config/FAILSLAB) \
-    $(wildcard include/config/MEMCG_KMEM) \
-    $(wildcard include/config/KASAN) \
-    $(wildcard include/config/SLAB) \
-    $(wildcard include/config/SLUB) \
-    $(wildcard include/config/SLOB) \
-  include/linux/overflow.h \
-  include/linux/percpu-refcount.h \
-  include/linux/kasan.h \
-    $(wildcard include/config/KASAN_STACK) \
-    $(wildcard include/config/KASAN_VMALLOC) \
-    $(wildcard include/config/KASAN_INLINE) \
-  include/linux/kasan-enabled.h \
-  include/linux/device.h \
-    $(wildcard include/config/GENERIC_MSI_IRQ_DOMAIN) \
-    $(wildcard include/config/GENERIC_MSI_IRQ) \
-    $(wildcard include/config/ENERGY_MODEL) \
-    $(wildcard include/config/PINCTRL) \
-    $(wildcard include/config/DMA_OPS) \
-    $(wildcard include/config/DMA_DECLARE_COHERENT) \
-    $(wildcard include/config/DMA_CMA) \
-    $(wildcard include/config/SWIOTLB) \
-    $(wildcard include/config/ARCH_HAS_SYNC_DMA_FOR_DEVICE) \
-    $(wildcard include/config/ARCH_HAS_SYNC_DMA_FOR_CPU) \
-    $(wildcard include/config/ARCH_HAS_SYNC_DMA_FOR_CPU_ALL) \
-    $(wildcard include/config/DMA_OPS_BYPASS) \
-    $(wildcard include/config/DEVTMP
+// SPDX-License-Identifier: GPL-2.0-or-later
+/*
+ * tscan1.c: driver for Technologic Systems TS-CAN1 PC104 boards
+ *
+ * Copyright 2010 Andre B. Oliveira
+ */
+
+/*
+ * References:
+ * - Getting started with TS-CAN1, Technologic Systems, Jun 2009
+ *	http://www.embeddedarm.com/documentation/ts-can1-manual.pdf
+ */
+
+#include <linux/init.h>
+#include <linux/io.h>
+#include <linux/ioport.h>
+#include <linux/isa.h>
+#include <linux/module.h>
+#include <linux/netdevice.h>
+#include "sja1000.h"
+
+MODULE_DESCRIPTION("Driver for Technologic Systems TS-CAN1 PC104 boards");
+MODULE_AUTHOR("Andre B. Oliveira <anbadeol@gmail.com>");
+MODULE_LICENSE("GPL");
+
+/* Maximum number of boards (one in each JP1:JP2 setting of IO address) */
+#define TSCAN1_MAXDEV 4
+
+/* PLD registers address offsets */
+#define TSCAN1_ID1	0
+#define TSCAN1_ID2	1
+#define TSCAN1_VERSION	2
+#define TSCAN1_LED	3
+#define TSCAN1_PAGE	4
+#define TSCAN1_MODE	5
+#define TSCAN1_JUMPERS	6
+
+/* PLD board identifier registers magic values */
+#define TSCAN1_ID1_VALUE 0xf6
+#define TSCAN1_ID2_VALUE 0xb9
+
+/* PLD mode register SJA1000 IO enable bit */
+#define TSCAN1_MODE_ENABLE 0x40
+
+/* PLD jumpers register bits */
+#define TSCAN1_JP4 0x10
+#define TSCAN1_JP5 0x20
+
+/* PLD IO base addresses start */
+#define TSCAN1_PLD_ADDRESS 0x150
+
+/* PLD register space size */
+#define TSCAN1_PLD_SIZE 8
+
+/* SJA1000 register space size */
+#define TSCAN1_SJA1000_SIZE 32
+
+/* SJA1000 crystal frequency (16MHz) */
+#define TSCAN1_SJA1000_XTAL 16000000
+
+/* SJA1000 IO base addresses */
+static const unsigned short tscan1_sja1000_addresses[] = {
+	0x100, 0x120, 0x180, 0x1a0, 0x200, 0x240, 0x280, 0x320
+};
+
+/* Read SJA1000 register */
+static u8 tscan1_read(const struct sja1000_priv *priv, int reg)
+{
+	return inb((unsigned long)priv->reg_base + reg);
+}
+
+/* Write SJA1000 register */
+static void tscan1_write(const struct sja1000_priv *priv, int reg, u8 val)
+{
+	outb(val, (unsigned long)priv->reg_base + reg);
+}
+
+/* Probe for a TS-CAN1 board with JP2:JP1 jumper setting ID */
+static int tscan1_probe(struct device *dev, unsigned id)
+{
+	struct net_device *netdev;
+	struct sja1000_priv *priv;
+	unsigned long pld_base, sja1000_base;
+	int irq, i;
+
+	pld_base = TSCAN1_PLD_ADDRESS + id * TSCAN1_PLD_SIZE;
+	if (!request_region(pld_base, TSCAN1_PLD_SIZE, dev_name(dev)))
+		return -EBUSY;
+
+	if (inb(pld_base + TSCAN1_ID1) != TSCAN1_ID1_VALUE ||
+	    inb(pld_base + TSCAN1_ID2) != TSCAN1_ID2_VALUE) {
+		release_region(pld_base, TSCAN1_PLD_SIZE);
+		return -ENODEV;
+	}
+
+	switch (inb(pld_base + TSCAN1_JUMPERS) & (TSCAN1_JP4 | TSCAN1_JP5)) {
+	case TSCAN1_JP4:
+		irq = 6;
+		break;
+	case TSCAN1_JP5:
+		irq = 7;
+		break;
+	case TSCAN1_JP4 | TSCAN1_JP5:
+		irq = 5;
+		break;
+	default:
+		dev_err(dev, "invalid JP4:JP5 setting (no IRQ)\n");
+		release_region(pld_base, TSCAN1_PLD_SIZE);
+		return -EINVAL;
+	}
+
+	netdev = alloc_sja1000dev(0);
+	if (!netdev) {
+		release_region(pld_base, TSCAN1_PLD_SIZE);
+		return -ENOMEM;
+	}
+
+	dev_set_drvdata(dev, netdev);
+	SET_NETDEV_DEV(netdev, dev);
+
+	netdev->base_addr = pld_base;
+	netdev->irq = irq;
+
+	priv = netdev_priv(netdev);
+	priv->read_reg = tscan1_read;
+	priv->write_reg = tscan1_write;
+	priv->can.clock.freq = TSCAN1_SJA1000_XTAL / 2;
+	priv->cdr = CDR_CBP | CDR_CLK_OFF;
+	priv->ocr = OCR_TX0_PUSHPULL;
+
+	/* Select the first SJA1000 IO address that is free and that works */
+	for (i = 0; i < ARRAY_SIZE(tscan1_sja1000_addresses); i++) {
+		sja1000_base = tscan1_sja1000_addresses[i];
+		if (!request_region(sja1000_base, TSCAN1_SJA1000_SIZE,
+								dev_name(dev)))
+			continue;
+
+		/* Set SJA1000 IO base address and enable it */
+		outb(TSCAN1_MODE_ENABLE | i, pld_base + TSCAN1_MODE);
+
+		priv->reg_base = (void __iomem *)sja1000_base;
+		if (!register_sja1000dev(netdev)) {
+			/* SJA1000 probe succeeded; turn LED off and return */
+			outb(0, pld_base + TSCAN1_LED);
+			netdev_info(netdev, "TS-CAN1 at 0x%lx 0x%lx irq %d\n",
+						pld_base, sja1000_base, irq);
+			return 0;
+		}
+
+		/* SJA1000 probe failed; release and try next address */
+		outb(0, pld_base + TSCAN1_MODE);
+		release_region(sja1000_base, TSCAN1_SJA1000_SIZE);
+	}
+
+	dev_err(dev, "failed to assign SJA1000 IO address\n");
+	dev_set_drvdata(dev, NULL);
+	free_sja1000dev(netdev);
+	release_region(pld_base, TSCAN1_PLD_SIZE);
+	return -ENXIO;
+}
+
+static void tscan1_remove(struct device *dev, unsigned id /*unused*/)
+{
+	struct net_device *netdev;
+	struct sja1000_priv *priv;
+	unsigned long pld_base, sja1000_base;
+
+	netdev = dev_get_drvdata(dev);
+	unregister_sja1000dev(netdev);
+	dev_set_drvdata(dev, NULL);
+
+	priv = netdev_priv(netdev);
+	pld_base = netdev->base_addr;
+	sja1000_base = (unsigned long)priv->reg_base;
+
+	outb(0, pld_base + TSCAN1_MODE);	/* disable SJA1000 IO space */
+
+	release_region(sja1000_base, TSCAN1_SJA1000_SIZE);
+	release_region(pld_base, TSCAN1_PLD_SIZE);
+
+	free_sja1000dev(netdev);
+}
+
+static struct isa_driver tscan1_isa_driver = {
+	.probe = tscan1_probe,
+	.remove = tscan1_remove,
+	.driver = {
+		.name = "tscan1",
+	},
+};
+
+module_isa_driver(tscan1_isa_driver, TSCAN1_MAXDEV);

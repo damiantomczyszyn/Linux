@@ -1,2 +1,2 @@
-lude/config/SPI) \
-  include/media/v4l2-d
+drivers/media/pci/cx18/cx18.ko
+drivers/me

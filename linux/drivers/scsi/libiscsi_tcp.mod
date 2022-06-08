@@ -1,2 +1,2 @@
-\
-    $(wildcard include/conf
+th =
+			    txclk_tx_s_max_pu

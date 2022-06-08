@@ -1,1 +1,5 @@
-cmd_drivers/media/rc/keymaps/rc-x96max.mod := { echo  drivers/media/rc/keymaps/rc-x96max.o;  echo; } > drivers/media/rc/keymaps/rc-x96max.mod
+885_video_template = {
+	.name                 = "cx23885-video",
+	.fops                 = &video_fops,
+	.ioctl_ops	      = &video_ioctl_ops,
+	

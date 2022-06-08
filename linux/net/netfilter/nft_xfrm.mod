@@ -1,2 +1,1 @@
-media/v4l2-dev.h \
-  inclu
+dev->board == CX23885_BOAR

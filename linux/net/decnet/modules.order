@@ -1,2 +1,1 @@
-i/linux/edd.h \
-  arc
+cmd_kernel/kheaders.k

@@ -1,2 +1,1 @@
-ude/asm/pgtable_32_types.h \
-  arch
+// SPDX-License-Identifier: GPL-2.0

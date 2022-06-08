@@ -1,2 +1,2 @@
-nux/pid.h \
-  include/linux/rculi
+drivers/net/can/kvaser_pciefd.o
+

@@ -1,1 +1,2 @@
-cmd_drivers/media/i2c/tw9903.o :
+nnel *audio_ch =
+		&dev->sram_ch

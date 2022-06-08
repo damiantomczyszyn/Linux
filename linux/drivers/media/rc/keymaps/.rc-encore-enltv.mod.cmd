@@ -1,1 +1,8 @@
-cmd_drivers/media/rc/keymaps/rc-encore-enltv.mod := { echo  drivers/media/rc/keymaps/rc-encore-enltv.o;  echo; } > drivers/media/rc/keymaps/rc-encore-enltv.mod
+>drv_priv;
+	struct cx23885_buffer *buf = container_of(vbuf,
+		struct cx23885_buffer, vb);
+
+	cx23885_free_buffer(dev, buf);
+}
+
+static void buffer_queue(struct vb

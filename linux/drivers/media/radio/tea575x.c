@@ -1,577 +1,542 @@
-// SPDX-License-Identifier: GPL-2.0-or-later
-/*
- *   ALSA driver for TEA5757/5759 Philips AM/FM radio tuner chips
- *
- *	Copyright (c) 2004 Jaroslav Kysela <perex@perex.cz>
- */
-
-#include <linux/delay.h>
-#include <linux/module.h>
-#include <linux/init.h>
-#include <linux/slab.h>
-#include <linux/sched.h>
-#include <asm/io.h>
-#include <media/v4l2-device.h>
-#include <media/v4l2-dev.h>
-#include <media/v4l2-fh.h>
-#include <media/v4l2-ioctl.h>
-#include <media/v4l2-event.h>
-#include <media/drv-intf/tea575x.h>
-
-MODULE_AUTHOR("Jaroslav Kysela <perex@perex.cz>");
-MODULE_DESCRIPTION("Routines for control of TEA5757/5759 Philips AM/FM radio tuner chips");
-MODULE_LICENSE("GPL");
-
-/*
- * definitions
- */
-
-#define TEA575X_BIT_SEARCH	(1<<24)		/* 1 = search action, 0 = tuned */
-#define TEA575X_BIT_UPDOWN	(1<<23)		/* 0 = search down, 1 = search up */
-#define TEA575X_BIT_MONO	(1<<22)		/* 0 = stereo, 1 = mono */
-#define TEA575X_BIT_BAND_MASK	(3<<20)
-#define TEA575X_BIT_BAND_FM	(0<<20)
-#define TEA575X_BIT_BAND_MW	(1<<20)
-#define TEA575X_BIT_BAND_LW	(2<<20)
-#define TEA575X_BIT_BAND_SW	(3<<20)
-#define TEA575X_BIT_PORT_0	(1<<19)		/* user bit */
-#define TEA575X_BIT_PORT_1	(1<<18)		/* user bit */
-#define TEA575X_BIT_SEARCH_MASK	(3<<16)		/* search level */
-#define TEA575X_BIT_SEARCH_5_28	     (0<<16)	/* FM >5uV, AM >28uV */
-#define TEA575X_BIT_SEARCH_10_40     (1<<16)	/* FM >10uV, AM > 40uV */
-#define TEA575X_BIT_SEARCH_30_63     (2<<16)	/* FM >30uV, AM > 63uV */
-#define TEA575X_BIT_SEARCH_150_1000  (3<<16)	/* FM > 150uV, AM > 1000uV */
-#define TEA575X_BIT_DUMMY	(1<<15)		/* buffer */
-#define TEA575X_BIT_FREQ_MASK	0x7fff
-
-enum { BAND_FM, BAND_FM_JAPAN, BAND_AM };
-
-static const struct v4l2_frequency_band bands[] = {
-	{
-		.type = V4L2_TUNER_RADIO,
-		.index = 0,
-		.capability = V4L2_TUNER_CAP_LOW | V4L2_TUNER_CAP_STEREO |
-			      V4L2_TUNER_CAP_FREQ_BANDS,
-		.rangelow   =  87500 * 16,
-		.rangehigh  = 108000 * 16,
-		.modulation = V4L2_BAND_MODULATION_FM,
-	},
-	{
-		.type = V4L2_TUNER_RADIO,
-		.index = 0,
-		.capability = V4L2_TUNER_CAP_LOW | V4L2_TUNER_CAP_STEREO |
-			      V4L2_TUNER_CAP_FREQ_BANDS,
-		.rangelow   = 76000 * 16,
-		.rangehigh  = 91000 * 16,
-		.modulation = V4L2_BAND_MODULATION_FM,
-	},
-	{
-		.type = V4L2_TUNER_RADIO,
-		.index = 1,
-		.capability = V4L2_TUNER_CAP_LOW | V4L2_TUNER_CAP_FREQ_BANDS,
-		.rangelow   =  530 * 16,
-		.rangehigh  = 1710 * 16,
-		.modulation = V4L2_BAND_MODULATION_AM,
-	},
-};
-
-/*
- * lowlevel part
- */
-
-static void snd_tea575x_write(struct snd_tea575x *tea, unsigned int val)
+ine void cx23885_irq_disable_all(struct cx23885_dev *dev)
 {
-	u16 l;
-	u8 data;
-
-	if (tea->ops->write_val)
-		return tea->ops->write_val(tea, val);
-
-	tea->ops->set_direction(tea, 1);
-	udelay(16);
-
-	for (l = 25; l > 0; l--) {
-		data = (val >> 24) & TEA575X_DATA;
-		val <<= 1;			/* shift data */
-		tea->ops->set_pins(tea, data | TEA575X_WREN);
-		udelay(2);
-		tea->ops->set_pins(tea, data | TEA575X_WREN | TEA575X_CLK);
-		udelay(2);
-		tea->ops->set_pins(tea, data | TEA575X_WREN);
-		udelay(2);
-	}
-
-	if (!tea->mute)
-		tea->ops->set_pins(tea, 0);
+	cx23885_irq_disable(dev, 0xffffffff);
 }
 
-static u32 snd_tea575x_read(struct snd_tea575x *tea)
+void cx23885_irq_remove(struct cx23885_dev *dev, u32 mask)
 {
-	u16 l, rdata;
-	u32 data = 0;
+	unsigned long flags;
+	spin_lock_irqsave(&dev->pci_irqmask_lock, flags);
 
-	if (tea->ops->read_val)
-		return tea->ops->read_val(tea);
+	dev->pci_irqmask &= ~mask;
+	cx_clear(PCI_INT_MSK, mask);
 
-	tea->ops->set_direction(tea, 0);
-	tea->ops->set_pins(tea, 0);
-	udelay(16);
-
-	for (l = 24; l--;) {
-		tea->ops->set_pins(tea, TEA575X_CLK);
-		udelay(2);
-		if (!l)
-			tea->tuned = tea->ops->get_pins(tea) & TEA575X_MOST ? 0 : 1;
-		tea->ops->set_pins(tea, 0);
-		udelay(2);
-		data <<= 1;			/* shift data */
-		rdata = tea->ops->get_pins(tea);
-		if (!l)
-			tea->stereo = (rdata & TEA575X_MOST) ?  0 : 1;
-		if (rdata & TEA575X_DATA)
-			data++;
-		udelay(2);
-	}
-
-	if (tea->mute)
-		tea->ops->set_pins(tea, TEA575X_WREN);
-
-	return data;
+	spin_unlock_irqrestore(&dev->pci_irqmask_lock, flags);
 }
 
-static u32 snd_tea575x_val_to_freq(struct snd_tea575x *tea, u32 val)
+static u32 cx23885_irq_get_mask(struct cx23885_dev *dev)
 {
-	u32 freq = val & TEA575X_BIT_FREQ_MASK;
+	u32 v;
+	unsigned long flags;
+	spin_lock_irqsave(&dev->pci_irqmask_lock, flags);
 
-	if (freq == 0)
-		return freq;
+	v = cx_read(PCI_INT_MSK);
 
-	switch (tea->band) {
-	case BAND_FM:
-		/* freq *= 12.5 */
-		freq *= 125;
-		freq /= 10;
-		/* crystal fixup */
-		freq -= TEA575X_FMIF;
-		break;
-	case BAND_FM_JAPAN:
-		/* freq *= 12.5 */
-		freq *= 125;
-		freq /= 10;
-		/* crystal fixup */
-		freq += TEA575X_FMIF;
-		break;
-	case BAND_AM:
-		/* crystal fixup */
-		freq -= TEA575X_AMIF;
-		break;
-	}
-
-	return clamp(freq * 16, bands[tea->band].rangelow,
-				bands[tea->band].rangehigh); /* from kHz */
+	spin_unlock_irqrestore(&dev->pci_irqmask_lock, flags);
+	return v;
 }
 
-static u32 snd_tea575x_get_freq(struct snd_tea575x *tea)
+static int cx23885_risc_decode(u32 risc)
 {
-	return snd_tea575x_val_to_freq(tea, snd_tea575x_read(tea));
+	static char *instr[16] = {
+		[RISC_SYNC    >> 28] = "sync",
+		[RISC_WRITE   >> 28] = "write",
+		[RISC_WRITEC  >> 28] = "writec",
+		[RISC_READ    >> 28] = "read",
+		[RISC_READC   >> 28] = "readc",
+		[RISC_JUMP    >> 28] = "jump",
+		[RISC_SKIP    >> 28] = "skip",
+		[RISC_WRITERM >> 28] = "writerm",
+		[RISC_WRITECM >> 28] = "writecm",
+		[RISC_WRITECR >> 28] = "writecr",
+	};
+	static int incr[16] = {
+		[RISC_WRITE   >> 28] = 3,
+		[RISC_JUMP    >> 28] = 3,
+		[RISC_SKIP    >> 28] = 1,
+		[RISC_SYNC    >> 28] = 1,
+		[RISC_WRITERM >> 28] = 3,
+		[RISC_WRITECM >> 28] = 3,
+		[RISC_WRITECR >> 28] = 4,
+	};
+	static char *bits[] = {
+		"12",   "13",   "14",   "resync",
+		"cnt0", "cnt1", "18",   "19",
+		"20",   "21",   "22",   "23",
+		"irq1", "irq2", "eol",  "sol",
+	};
+	int i;
+
+	printk(KERN_DEBUG "0x%08x [ %s", risc,
+	       instr[risc >> 28] ? instr[risc >> 28] : "INVALID");
+	for (i = ARRAY_SIZE(bits) - 1; i >= 0; i--)
+		if (risc & (1 << (i + 12)))
+			pr_cont(" %s", bits[i]);
+	pr_cont(" count=%d ]\n", risc & 0xfff);
+	return incr[risc >> 28] ? incr[risc >> 28] : 1;
 }
 
-void snd_tea575x_set_freq(struct snd_tea575x *tea)
+static void cx23885_wakeup(struct cx23885_tsport *port,
+			   struct cx23885_dmaqueue *q, u32 count)
 {
-	u32 freq = tea->freq / 16;	/* to kHz */
-	u32 band = 0;
+	struct cx23885_buffer *buf;
+	int count_delta;
+	int max_buf_done = 5; /* service maximum five buffers */
 
-	switch (tea->band) {
-	case BAND_FM:
-		band = TEA575X_BIT_BAND_FM;
-		/* crystal fixup */
-		freq += TEA575X_FMIF;
-		/* freq /= 12.5 */
-		freq *= 10;
-		freq /= 125;
-		break;
-	case BAND_FM_JAPAN:
-		band = TEA575X_BIT_BAND_FM;
-		/* crystal fixup */
-		freq -= TEA575X_FMIF;
-		/* freq /= 12.5 */
-		freq *= 10;
-		freq /= 125;
-		break;
-	case BAND_AM:
-		band = TEA575X_BIT_BAND_MW;
-		/* crystal fixup */
-		freq += TEA575X_AMIF;
-		break;
-	}
+	do {
+		if (list_empty(&q->active))
+			return;
+		buf = list_entry(q->active.next,
+				 struct cx23885_buffer, queue);
 
-	tea->val &= ~(TEA575X_BIT_FREQ_MASK | TEA575X_BIT_BAND_MASK);
-	tea->val |= band;
-	tea->val |= freq & TEA575X_BIT_FREQ_MASK;
-	snd_tea575x_write(tea, tea->val);
-	tea->freq = snd_tea575x_val_to_freq(tea, tea->val);
-}
-EXPORT_SYMBOL(snd_tea575x_set_freq);
-
-/*
- * Linux Video interface
- */
-
-static int vidioc_querycap(struct file *file, void  *priv,
-					struct v4l2_capability *v)
-{
-	struct snd_tea575x *tea = video_drvdata(file);
-
-	strscpy(v->driver, tea->v4l2_dev->name, sizeof(v->driver));
-	strscpy(v->card, tea->card, sizeof(v->card));
-	strlcat(v->card, tea->tea5759 ? " TEA5759" : " TEA5757", sizeof(v->card));
-	strscpy(v->bus_info, tea->bus_info, sizeof(v->bus_info));
-	return 0;
-}
-
-int snd_tea575x_enum_freq_bands(struct snd_tea575x *tea,
-					struct v4l2_frequency_band *band)
-{
-	int index;
-
-	if (band->tuner != 0)
-		return -EINVAL;
-
-	switch (band->index) {
-	case 0:
-		if (tea->tea5759)
-			index = BAND_FM_JAPAN;
-		else
-			index = BAND_FM;
-		break;
-	case 1:
-		if (tea->has_am) {
-			index = BAND_AM;
-			break;
+		buf->vb.vb2_buf.timestamp = ktime_get_ns();
+		buf->vb.sequence = q->count++;
+		if (count != (q->count % 65536)) {
+			dprintk(1, "[%p/%d] wakeup reg=%d buf=%d\n", buf,
+				buf->vb.vb2_buf.index, count, q->count);
+		} else {
+			dprintk(7, "[%p/%d] wakeup reg=%d buf=%d\n", buf,
+				buf->vb.vb2_buf.index, count, q->count);
 		}
-		fallthrough;
-	default:
-		return -EINVAL;
-	}
-
-	*band = bands[index];
-	if (!tea->cannot_read_data)
-		band->capability |= V4L2_TUNER_CAP_HWSEEK_BOUNDED;
-
-	return 0;
-}
-EXPORT_SYMBOL(snd_tea575x_enum_freq_bands);
-
-static int vidioc_enum_freq_bands(struct file *file, void *priv,
-					 struct v4l2_frequency_band *band)
-{
-	struct snd_tea575x *tea = video_drvdata(file);
-
-	return snd_tea575x_enum_freq_bands(tea, band);
+		list_del(&buf->queue);
+		vb2_buffer_done(&buf->vb.vb2_buf, VB2_BUF_STATE_DONE);
+		max_buf_done--;
+		/* count register is 16 bits so apply modulo appropriately */
+		count_delta = ((int)count - (int)(q->count % 65536));
+	} while ((count_delta > 0) && (max_buf_done > 0));
 }
 
-int snd_tea575x_g_tuner(struct snd_tea575x *tea, struct v4l2_tuner *v)
+int cx23885_sram_channel_setup(struct cx23885_dev *dev,
+				      struct sram_channel *ch,
+				      unsigned int bpl, u32 risc)
 {
-	struct v4l2_frequency_band band_fm = { 0, };
+	unsigned int i, lines;
+	u32 cdt;
 
-	if (v->index > 0)
-		return -EINVAL;
-
-	snd_tea575x_read(tea);
-	snd_tea575x_enum_freq_bands(tea, &band_fm);
-
-	memset(v, 0, sizeof(*v));
-	strscpy(v->name, tea->has_am ? "FM/AM" : "FM", sizeof(v->name));
-	v->type = V4L2_TUNER_RADIO;
-	v->capability = band_fm.capability;
-	v->rangelow = tea->has_am ? bands[BAND_AM].rangelow : band_fm.rangelow;
-	v->rangehigh = band_fm.rangehigh;
-	v->rxsubchans = tea->stereo ? V4L2_TUNER_SUB_STEREO : V4L2_TUNER_SUB_MONO;
-	v->audmode = (tea->val & TEA575X_BIT_MONO) ?
-		V4L2_TUNER_MODE_MONO : V4L2_TUNER_MODE_STEREO;
-	v->signal = tea->tuned ? 0xffff : 0;
-	return 0;
-}
-EXPORT_SYMBOL(snd_tea575x_g_tuner);
-
-static int vidioc_g_tuner(struct file *file, void *priv,
-					struct v4l2_tuner *v)
-{
-	struct snd_tea575x *tea = video_drvdata(file);
-
-	return snd_tea575x_g_tuner(tea, v);
-}
-
-static int vidioc_s_tuner(struct file *file, void *priv,
-					const struct v4l2_tuner *v)
-{
-	struct snd_tea575x *tea = video_drvdata(file);
-	u32 orig_val = tea->val;
-
-	if (v->index)
-		return -EINVAL;
-	tea->val &= ~TEA575X_BIT_MONO;
-	if (v->audmode == V4L2_TUNER_MODE_MONO)
-		tea->val |= TEA575X_BIT_MONO;
-	/* Only apply changes if currently tuning FM */
-	if (tea->band != BAND_AM && tea->val != orig_val)
-		snd_tea575x_set_freq(tea);
-
-	return 0;
-}
-
-static int vidioc_g_frequency(struct file *file, void *priv,
-					struct v4l2_frequency *f)
-{
-	struct snd_tea575x *tea = video_drvdata(file);
-
-	if (f->tuner != 0)
-		return -EINVAL;
-	f->type = V4L2_TUNER_RADIO;
-	f->frequency = tea->freq;
-	return 0;
-}
-
-static int vidioc_s_frequency(struct file *file, void *priv,
-					const struct v4l2_frequency *f)
-{
-	struct snd_tea575x *tea = video_drvdata(file);
-
-	if (f->tuner != 0 || f->type != V4L2_TUNER_RADIO)
-		return -EINVAL;
-
-	if (tea->has_am && f->frequency < (20000 * 16))
-		tea->band = BAND_AM;
-	else if (tea->tea5759)
-		tea->band = BAND_FM_JAPAN;
-	else
-		tea->band = BAND_FM;
-
-	tea->freq = clamp_t(u32, f->frequency, bands[tea->band].rangelow,
-					bands[tea->band].rangehigh);
-	snd_tea575x_set_freq(tea);
-	return 0;
-}
-
-int snd_tea575x_s_hw_freq_seek(struct file *file, struct snd_tea575x *tea,
-				const struct v4l2_hw_freq_seek *a)
-{
-	unsigned long timeout;
-	int i, spacing;
-
-	if (tea->cannot_read_data)
-		return -ENOTTY;
-	if (a->tuner || a->wrap_around)
-		return -EINVAL;
-
-	if (file->f_flags & O_NONBLOCK)
-		return -EWOULDBLOCK;
-
-	if (a->rangelow || a->rangehigh) {
-		for (i = 0; i < ARRAY_SIZE(bands); i++) {
-			if ((i == BAND_FM && tea->tea5759) ||
-			    (i == BAND_FM_JAPAN && !tea->tea5759) ||
-			    (i == BAND_AM && !tea->has_am))
-				continue;
-			if (bands[i].rangelow  == a->rangelow &&
-			    bands[i].rangehigh == a->rangehigh)
-				break;
-		}
-		if (i == ARRAY_SIZE(bands))
-			return -EINVAL; /* No matching band found */
-		if (i != tea->band) {
-			tea->band = i;
-			tea->freq = clamp(tea->freq, bands[i].rangelow,
-						     bands[i].rangehigh);
-			snd_tea575x_set_freq(tea);
-		}
-	}
-
-	spacing = (tea->band == BAND_AM) ? 5 : 50; /* kHz */
-
-	/* clear the frequency, HW will fill it in */
-	tea->val &= ~TEA575X_BIT_FREQ_MASK;
-	tea->val |= TEA575X_BIT_SEARCH;
-	if (a->seek_upward)
-		tea->val |= TEA575X_BIT_UPDOWN;
-	else
-		tea->val &= ~TEA575X_BIT_UPDOWN;
-	snd_tea575x_write(tea, tea->val);
-	timeout = jiffies + msecs_to_jiffies(10000);
-	for (;;) {
-		if (time_after(jiffies, timeout))
-			break;
-		if (schedule_timeout_interruptible(msecs_to_jiffies(10))) {
-			/* some signal arrived, stop search */
-			tea->val &= ~TEA575X_BIT_SEARCH;
-			snd_tea575x_set_freq(tea);
-			return -ERESTARTSYS;
-		}
-		if (!(snd_tea575x_read(tea) & TEA575X_BIT_SEARCH)) {
-			u32 freq;
-
-			/* Found a frequency, wait until it can be read */
-			for (i = 0; i < 100; i++) {
-				msleep(10);
-				freq = snd_tea575x_get_freq(tea);
-				if (freq) /* available */
-					break;
-			}
-			if (freq == 0) /* shouldn't happen */
-				break;
-			/*
-			 * if we moved by less than the spacing, or in the
-			 * wrong direction, continue seeking
-			 */
-			if (abs(tea->freq - freq) < 16 * spacing ||
-					(a->seek_upward && freq < tea->freq) ||
-					(!a->seek_upward && freq > tea->freq)) {
-				snd_tea575x_write(tea, tea->val);
-				continue;
-			}
-			tea->freq = freq;
-			tea->val &= ~TEA575X_BIT_SEARCH;
-			return 0;
-		}
-	}
-	tea->val &= ~TEA575X_BIT_SEARCH;
-	snd_tea575x_set_freq(tea);
-	return -ENODATA;
-}
-EXPORT_SYMBOL(snd_tea575x_s_hw_freq_seek);
-
-static int vidioc_s_hw_freq_seek(struct file *file, void *fh,
-					const struct v4l2_hw_freq_seek *a)
-{
-	struct snd_tea575x *tea = video_drvdata(file);
-
-	return snd_tea575x_s_hw_freq_seek(file, tea, a);
-}
-
-static int tea575x_s_ctrl(struct v4l2_ctrl *ctrl)
-{
-	struct snd_tea575x *tea = container_of(ctrl->handler, struct snd_tea575x, ctrl_handler);
-
-	switch (ctrl->id) {
-	case V4L2_CID_AUDIO_MUTE:
-		tea->mute = ctrl->val;
-		snd_tea575x_set_freq(tea);
+	if (ch->cmds_start == 0) {
+		dprintk(1, "%s() Erasing channel [%s]\n", __func__,
+			ch->name);
+		cx_write(ch->ptr1_reg, 0);
+		cx_write(ch->ptr2_reg, 0);
+		cx_write(ch->cnt2_reg, 0);
+		cx_write(ch->cnt1_reg, 0);
 		return 0;
+	} else {
+		dprintk(1, "%s() Configuring channel [%s]\n", __func__,
+			ch->name);
 	}
 
-	return -EINVAL;
-}
+	bpl   = (bpl + 7) & ~7; /* alignment */
+	cdt   = ch->cdt;
+	lines = ch->fifo_size / bpl;
+	if (lines > 6)
+		lines = 6;
+	BUG_ON(lines < 2);
 
-static const struct v4l2_file_operations tea575x_fops = {
-	.unlocked_ioctl	= video_ioctl2,
-	.open           = v4l2_fh_open,
-	.release        = v4l2_fh_release,
-	.poll           = v4l2_ctrl_poll,
-};
+	cx_write(8 + 0, RISC_JUMP | RISC_CNT_RESET);
+	cx_write(8 + 4, 12);
+	cx_write(8 + 8, 0);
 
-static const struct v4l2_ioctl_ops tea575x_ioctl_ops = {
-	.vidioc_querycap    = vidioc_querycap,
-	.vidioc_g_tuner     = vidioc_g_tuner,
-	.vidioc_s_tuner     = vidioc_s_tuner,
-	.vidioc_g_frequency = vidioc_g_frequency,
-	.vidioc_s_frequency = vidioc_s_frequency,
-	.vidioc_s_hw_freq_seek = vidioc_s_hw_freq_seek,
-	.vidioc_enum_freq_bands = vidioc_enum_freq_bands,
-	.vidioc_log_status  = v4l2_ctrl_log_status,
-	.vidioc_subscribe_event = v4l2_ctrl_subscribe_event,
-	.vidioc_unsubscribe_event = v4l2_event_unsubscribe,
-};
-
-static const struct video_device tea575x_radio = {
-	.ioctl_ops	= &tea575x_ioctl_ops,
-	.release        = video_device_release_empty,
-};
-
-static const struct v4l2_ctrl_ops tea575x_ctrl_ops = {
-	.s_ctrl = tea575x_s_ctrl,
-};
-
-
-int snd_tea575x_hw_init(struct snd_tea575x *tea)
-{
-	tea->mute = true;
-
-	/* Not all devices can or know how to read the data back.
-	   Such devices can set cannot_read_data to true. */
-	if (!tea->cannot_read_data) {
-		snd_tea575x_write(tea, 0x55AA);
-		if (snd_tea575x_read(tea) != 0x55AA)
-			return -ENODEV;
+	/* write CDT */
+	for (i = 0; i < lines; i++) {
+		dprintk(2, "%s() 0x%08x <- 0x%08x\n", __func__, cdt + 16*i,
+			ch->fifo_start + bpl*i);
+		cx_write(cdt + 16*i, ch->fifo_start + bpl*i);
+		cx_write(cdt + 16*i +  4, 0);
+		cx_write(cdt + 16*i +  8, 0);
+		cx_write(cdt + 16*i + 12, 0);
 	}
 
-	tea->val = TEA575X_BIT_BAND_FM | TEA575X_BIT_SEARCH_5_28;
-	tea->freq = 90500 * 16;		/* 90.5Mhz default */
-	snd_tea575x_set_freq(tea);
+	/* write CMDS */
+	if (ch->jumponly)
+		cx_write(ch->cmds_start + 0, 8);
+	else
+		cx_write(ch->cmds_start + 0, risc);
+	cx_write(ch->cmds_start +  4, 0); /* 64 bits 63-32 */
+	cx_write(ch->cmds_start +  8, cdt);
+	cx_write(ch->cmds_start + 12, (lines*16) >> 3);
+	cx_write(ch->cmds_start + 16, ch->ctrl_start);
+	if (ch->jumponly)
+		cx_write(ch->cmds_start + 20, 0x80000000 | (64 >> 2));
+	else
+		cx_write(ch->cmds_start + 20, 64 >> 2);
+	for (i = 24; i < 80; i += 4)
+		cx_write(ch->cmds_start + i, 0);
+
+	/* fill registers */
+	cx_write(ch->ptr1_reg, ch->fifo_start);
+	cx_write(ch->ptr2_reg, cdt);
+	cx_write(ch->cnt2_reg, (lines*16) >> 3);
+	cx_write(ch->cnt1_reg, (bpl >> 3) - 1);
+
+	dprintk(2, "[bridge %d] sram setup %s: bpl=%d lines=%d\n",
+		dev->bridge,
+		ch->name,
+		bpl,
+		lines);
 
 	return 0;
 }
-EXPORT_SYMBOL(snd_tea575x_hw_init);
 
-int snd_tea575x_init(struct snd_tea575x *tea, struct module *owner)
+void cx23885_sram_channel_dump(struct cx23885_dev *dev,
+				      struct sram_channel *ch)
 {
-	int retval = snd_tea575x_hw_init(tea);
+	static char *name[] = {
+		"init risc lo",
+		"init risc hi",
+		"cdt base",
+		"cdt size",
+		"iq base",
+		"iq size",
+		"risc pc lo",
+		"risc pc hi",
+		"iq wr ptr",
+		"iq rd ptr",
+		"cdt current",
+		"pci target lo",
+		"pci target hi",
+		"line / byte",
+	};
+	u32 risc;
+	unsigned int i, j, n;
 
-	if (retval)
-		return retval;
+	pr_warn("%s: %s - dma channel status dump\n",
+		dev->name, ch->name);
+	for (i = 0; i < ARRAY_SIZE(name); i++)
+		pr_warn("%s:   cmds: %-15s: 0x%08x\n",
+			dev->name, name[i],
+			cx_read(ch->cmds_start + 4*i));
 
-	tea->vd = tea575x_radio;
-	video_set_drvdata(&tea->vd, tea);
-	mutex_init(&tea->mutex);
-	strscpy(tea->vd.name, tea->v4l2_dev->name, sizeof(tea->vd.name));
-	tea->vd.lock = &tea->mutex;
-	tea->vd.v4l2_dev = tea->v4l2_dev;
-	tea->vd.device_caps = V4L2_CAP_TUNER | V4L2_CAP_RADIO;
-	if (!tea->cannot_read_data)
-		tea->vd.device_caps |= V4L2_CAP_HW_FREQ_SEEK;
-	tea->fops = tea575x_fops;
-	tea->fops.owner = owner;
-	tea->vd.fops = &tea->fops;
-	/* disable hw_freq_seek if we can't use it */
-	if (tea->cannot_read_data)
-		v4l2_disable_ioctl(&tea->vd, VIDIOC_S_HW_FREQ_SEEK);
+	for (i = 0; i < 4; i++) {
+		risc = cx_read(ch->cmds_start + 4 * (i + 14));
+		pr_warn("%s:   risc%d: ", dev->name, i);
+		cx23885_risc_decode(risc);
+	}
+	for (i = 0; i < (64 >> 2); i += n) {
+		risc = cx_read(ch->ctrl_start + 4 * i);
+		/* No consideration for bits 63-32 */
 
-	if (!tea->cannot_mute) {
-		tea->vd.ctrl_handler = &tea->ctrl_handler;
-		v4l2_ctrl_handler_init(&tea->ctrl_handler, 1);
-		v4l2_ctrl_new_std(&tea->ctrl_handler, &tea575x_ctrl_ops,
-				  V4L2_CID_AUDIO_MUTE, 0, 1, 1, 1);
-		retval = tea->ctrl_handler.error;
-		if (retval) {
-			v4l2_err(tea->v4l2_dev, "can't initialize controls\n");
-			v4l2_ctrl_handler_free(&tea->ctrl_handler);
-			return retval;
+		pr_warn("%s:   (0x%08x) iq %x: ", dev->name,
+			ch->ctrl_start + 4 * i, i);
+		n = cx23885_risc_decode(risc);
+		for (j = 1; j < n; j++) {
+			risc = cx_read(ch->ctrl_start + 4 * (i + j));
+			pr_warn("%s:   iq %x: 0x%08x [ arg #%d ]\n",
+				dev->name, i+j, risc, j);
 		}
-
-		if (tea->ext_init) {
-			retval = tea->ext_init(tea);
-			if (retval) {
-				v4l2_ctrl_handler_free(&tea->ctrl_handler);
-				return retval;
-			}
-		}
-
-		v4l2_ctrl_handler_setup(&tea->ctrl_handler);
 	}
 
-	retval = video_register_device(&tea->vd, VFL_TYPE_RADIO, tea->radio_nr);
-	if (retval) {
-		v4l2_err(tea->v4l2_dev, "can't register video device!\n");
-		v4l2_ctrl_handler_free(tea->vd.ctrl_handler);
-		return retval;
+	pr_warn("%s: fifo: 0x%08x -> 0x%x\n",
+		dev->name, ch->fifo_start, ch->fifo_start+ch->fifo_size);
+	pr_warn("%s: ctrl: 0x%08x -> 0x%x\n",
+		dev->name, ch->ctrl_start, ch->ctrl_start + 6*16);
+	pr_warn("%s:   ptr1_reg: 0x%08x\n",
+		dev->name, cx_read(ch->ptr1_reg));
+	pr_warn("%s:   ptr2_reg: 0x%08x\n",
+		dev->name, cx_read(ch->ptr2_reg));
+	pr_warn("%s:   cnt1_reg: 0x%08x\n",
+		dev->name, cx_read(ch->cnt1_reg));
+	pr_warn("%s:   cnt2_reg: 0x%08x\n",
+		dev->name, cx_read(ch->cnt2_reg));
+}
+
+static void cx23885_risc_disasm(struct cx23885_tsport *port,
+				struct cx23885_riscmem *risc)
+{
+	struct cx23885_dev *dev = port->dev;
+	unsigned int i, j, n;
+
+	pr_info("%s: risc disasm: %p [dma=0x%08lx]\n",
+	       dev->name, risc->cpu, (unsigned long)risc->dma);
+	for (i = 0; i < (risc->size >> 2); i += n) {
+		pr_info("%s:   %04d: ", dev->name, i);
+		n = cx23885_risc_decode(le32_to_cpu(risc->cpu[i]));
+		for (j = 1; j < n; j++)
+			pr_info("%s:   %04d: 0x%08x [ arg #%d ]\n",
+				dev->name, i + j, risc->cpu[i + j], j);
+		if (risc->cpu[i] == cpu_to_le32(RISC_JUMP))
+			break;
+	}
+}
+
+static void cx23885_clear_bridge_error(struct cx23885_dev *dev)
+{
+	uint32_t reg1_val, reg2_val;
+
+	if (!dev->need_dma_reset)
+		return;
+
+	reg1_val = cx_read(TC_REQ); /* read-only */
+	reg2_val = cx_read(TC_REQ_SET);
+
+	if (reg1_val && reg2_val) {
+		cx_write(TC_REQ, reg1_val);
+		cx_write(TC_REQ_SET, reg2_val);
+		cx_read(VID_B_DMA);
+		cx_read(VBI_B_DMA);
+		cx_read(VID_C_DMA);
+		cx_read(VBI_C_DMA);
+
+		dev_info(&dev->pci->dev,
+			"dma in progress detected 0x%08x 0x%08x, clearing\n",
+			reg1_val, reg2_val);
+	}
+}
+
+static void cx23885_shutdown(struct cx23885_dev *dev)
+{
+	/* disable RISC controller */
+	cx_write(DEV_CNTRL2, 0);
+
+	/* Disable all IR activity */
+	cx_write(IR_CNTRL_REG, 0);
+
+	/* Disable Video A/B activity */
+	cx_write(VID_A_DMA_CTL, 0);
+	cx_write(VID_B_DMA_CTL, 0);
+	cx_write(VID_C_DMA_CTL, 0);
+
+	/* Disable Audio activity */
+	cx_write(AUD_INT_DMA_CTL, 0);
+	cx_write(AUD_EXT_DMA_CTL, 0);
+
+	/* Disable Serial port */
+	cx_write(UART_CTL, 0);
+
+	/* Disable Interrupts */
+	cx23885_irq_disable_all(dev);
+	cx_write(VID_A_INT_MSK, 0);
+	cx_write(VID_B_INT_MSK, 0);
+	cx_write(VID_C_INT_MSK, 0);
+	cx_write(AUDIO_INT_INT_MSK, 0);
+	cx_write(AUDIO_EXT_INT_MSK, 0);
+
+}
+
+static void cx23885_reset(struct cx23885_dev *dev)
+{
+	dprintk(1, "%s()\n", __func__);
+
+	cx23885_shutdown(dev);
+
+	cx_write(PCI_INT_STAT, 0xffffffff);
+	cx_write(VID_A_INT_STAT, 0xffffffff);
+	cx_write(VID_B_INT_STAT, 0xffffffff);
+	cx_write(VID_C_INT_STAT, 0xffffffff);
+	cx_write(AUDIO_INT_INT_STAT, 0xffffffff);
+	cx_write(AUDIO_EXT_INT_STAT, 0xffffffff);
+	cx_write(CLK_DELAY, cx_read(CLK_DELAY) & 0x80000000);
+	cx_write(PAD_CTRL, 0x00500300);
+
+	/* clear dma in progress */
+	cx23885_clear_bridge_error(dev);
+	msleep(100);
+
+	cx23885_sram_channel_setup(dev, &dev->sram_channels[SRAM_CH01],
+		720*4, 0);
+	cx23885_sram_channel_setup(dev, &dev->sram_channels[SRAM_CH02], 128, 0);
+	cx23885_sram_channel_setup(dev, &dev->sram_channels[SRAM_CH03],
+		188*4, 0);
+	cx23885_sram_channel_setup(dev, &dev->sram_channels[SRAM_CH04], 128, 0);
+	cx23885_sram_channel_setup(dev, &dev->sram_channels[SRAM_CH05], 128, 0);
+	cx23885_sram_channel_setup(dev, &dev->sram_channels[SRAM_CH06],
+		188*4, 0);
+	cx23885_sram_channel_setup(dev, &dev->sram_channels[SRAM_CH07], 128, 0);
+	cx23885_sram_channel_setup(dev, &dev->sram_channels[SRAM_CH08], 128, 0);
+	cx23885_sram_channel_setup(dev, &dev->sram_channels[SRAM_CH09], 128, 0);
+
+	cx23885_gpio_setup(dev);
+
+	cx23885_irq_get_mask(dev);
+
+	/* clear dma in progress */
+	cx23885_clear_bridge_error(dev);
+}
+
+
+static int cx23885_pci_quirks(struct cx23885_dev *dev)
+{
+	dprintk(1, "%s()\n", __func__);
+
+	/* The cx23885 bridge has a weird bug which causes NMI to be asserted
+	 * when DMA begins if RDR_TLCTL0 bit4 is not cleared. It does not
+	 * occur on the cx23887 bridge.
+	 */
+	if (dev->bridge == CX23885_BRIDGE_885)
+		cx_clear(RDR_TLCTL0, 1 << 4);
+
+	/* clear dma in progress */
+	cx23885_clear_bridge_error(dev);
+	return 0;
+}
+
+static int get_resources(struct cx23885_dev *dev)
+{
+	if (request_mem_region(pci_resource_start(dev->pci, 0),
+			       pci_resource_len(dev->pci, 0),
+			       dev->name))
+		return 0;
+
+	pr_err("%s: can't get MMIO memory @ 0x%llx\n",
+	       dev->name, (unsigned long long)pci_resource_start(dev->pci, 0));
+
+	return -EBUSY;
+}
+
+static int cx23885_init_tsport(struct cx23885_dev *dev,
+	struct cx23885_tsport *port, int portno)
+{
+	dprintk(1, "%s(portno=%d)\n", __func__, portno);
+
+	/* Transport bus init dma queue  - Common settings */
+	port->dma_ctl_val        = 0x11; /* Enable RISC controller and Fifo */
+	port->ts_int_msk_val     = 0x1111; /* TS port bits for RISC */
+	port->vld_misc_val       = 0x0;
+	port->hw_sop_ctrl_val    = (0x47 << 16 | 188 << 4);
+
+	spin_lock_init(&port->slock);
+	port->dev = dev;
+	port->nr = portno;
+
+	INIT_LIST_HEAD(&port->mpegq.active);
+	mutex_init(&port->frontends.lock);
+	INIT_LIST_HEAD(&port->frontends.felist);
+	port->frontends.active_fe_id = 0;
+
+	/* This should be hardcoded allow a single frontend
+	 * attachment to this tsport, keeping the -dvb.c
+	 * code clean and safe.
+	 */
+	if (!port->num_frontends)
+		port->num_frontends = 1;
+
+	switch (portno) {
+	case 1:
+		port->reg_gpcnt          = VID_B_GPCNT;
+		port->reg_gpcnt_ctl      = VID_B_GPCNT_CTL;
+		port->reg_dma_ctl        = VID_B_DMA_CTL;
+		port->reg_lngth          = VID_B_LNGTH;
+		port->reg_hw_sop_ctrl    = VID_B_HW_SOP_CTL;
+		port->reg_gen_ctrl       = VID_B_GEN_CTL;
+		port->reg_bd_pkt_status  = VID_B_BD_PKT_STATUS;
+		port->reg_sop_status     = VID_B_SOP_STATUS;
+		port->reg_fifo_ovfl_stat = VID_B_FIFO_OVFL_STAT;
+		port->reg_vld_misc       = VID_B_VLD_MISC;
+		port->reg_ts_clk_en      = VID_B_TS_CLK_EN;
+		port->reg_src_sel        = VID_B_SRC_SEL;
+		port->reg_ts_int_msk     = VID_B_INT_MSK;
+		port->reg_ts_int_stat    = VID_B_INT_STAT;
+		port->sram_chno          = SRAM_CH03; /* VID_B */
+		port->pci_irqmask        = 0x02; /* VID_B bit1 */
+		break;
+	case 2:
+		port->reg_gpcnt          = VID_C_GPCNT;
+		port->reg_gpcnt_ctl      = VID_C_GPCNT_CTL;
+		port->reg_dma_ctl        = VID_C_DMA_CTL;
+		port->reg_lngth          = VID_C_LNGTH;
+		port->reg_hw_sop_ctrl    = VID_C_HW_SOP_CTL;
+		port->reg_gen_ctrl       = VID_C_GEN_CTL;
+		port->reg_bd_pkt_status  = VID_C_BD_PKT_STATUS;
+		port->reg_sop_status     = VID_C_SOP_STATUS;
+		port->reg_fifo_ovfl_stat = VID_C_FIFO_OVFL_STAT;
+		port->reg_vld_misc       = VID_C_VLD_MISC;
+		port->reg_ts_clk_en      = VID_C_TS_CLK_EN;
+		port->reg_src_sel        = 0;
+		port->reg_ts_int_msk     = VID_C_INT_MSK;
+		port->reg_ts_int_stat    = VID_C_INT_STAT;
+		port->sram_chno          = SRAM_CH06; /* VID_C */
+		port->pci_irqmask        = 0x04; /* VID_C bit2 */
+		break;
+	default:
+		BUG();
 	}
 
 	return 0;
 }
-EXPORT_SYMBOL(snd_tea575x_init);
 
-void snd_tea575x_exit(struct snd_tea575x *tea)
+static void cx23885_dev_checkrevision(struct cx23885_dev *dev)
 {
-	video_unregister_device(&tea->vd);
-	v4l2_ctrl_handler_free(tea->vd.ctrl_handler);
+	switch (cx_read(RDR_CFG2) & 0xff) {
+	case 0x00:
+		/* cx23885 */
+		dev->hwrevision = 0xa0;
+		break;
+	case 0x01:
+		/* CX23885-12Z */
+		dev->hwrevision = 0xa1;
+		break;
+	case 0x02:
+		/* CX23885-13Z/14Z */
+		dev->hwrevision = 0xb0;
+		break;
+	case 0x03:
+		if (dev->pci->device == 0x8880) {
+			/* CX23888-21Z/22Z */
+			dev->hwrevision = 0xc0;
+		} else {
+			/* CX23885-14Z */
+			dev->hwrevision = 0xa4;
+		}
+		break;
+	case 0x04:
+		if (dev->pci->device == 0x8880) {
+			/* CX23888-31Z */
+			dev->hwrevision = 0xd0;
+		} else {
+			/* CX23885-15Z, CX23888-31Z */
+			dev->hwrevision = 0xa5;
+		}
+		break;
+	case 0x0e:
+		/* CX23887-15Z */
+		dev->hwrevision = 0xc0;
+		break;
+	case 0x0f:
+		/* CX23887-14Z */
+		dev->hwrevision = 0xb1;
+		break;
+	default:
+		pr_err("%s() New hardware revision found 0x%x\n",
+		       __func__, dev->hwrevision);
+	}
+	if (dev->hwrevision)
+		pr_info("%s() Hardware revision = 0x%02x\n",
+			__func__, dev->hwrevision);
+	else
+		pr_err("%s() Hardware revision unknown 0x%x\n",
+		       __func__, dev->hwrevision);
 }
-EXPORT_SYMBOL(snd_tea575x_exit);
+
+/* Find the first v4l2_subdev member of the group id in hw */
+struct v4l2_subdev *cx23885_find_hw(struct cx23885_dev *dev, u32 hw)
+{
+	struct v4l2_subdev *result = NULL;
+	struct v4l2_subdev *sd;
+
+	spin_lock(&dev->v4l2_dev.lock);
+	v4l2_device_for_each_subdev(sd, &dev->v4l2_dev) {
+		if (sd->grp_id == hw) {
+			result = sd;
+			break;
+		}
+	}
+	spin_unlock(&dev->v4l2_dev.lock);
+	return result;
+}
+
+static int cx23885_dev_setup(struct cx23885_dev *dev)
+{
+	int i;
+
+	spin_lock_init(&dev->pci_irqmask_lock);
+	spin_lock_init(&dev->slock);
+
+	mutex_init(&dev->lock);
+	mutex_init(&dev->gpio_lock);
+
+	atomic_inc(&dev->refcount);
+
+	dev->nr = cx23885_devcount++;
+	sprintf(dev->name, "cx23885[%d]", dev->nr);
+
+	/* Configure the internal memory */
+	if (dev->pci->device == 0x8880) {
+		/* Could be 887 or 888, assume an 888 default */
+		dev->bridge = CX23885_BRIDGE_888;
+		/* Apply a sensible clock frequency for the PCIe bridge */
+		dev->clk_freq = 50000000;
+		dev->sram_channels = cx23887_sram_channels;
+	} else
+	if (dev->pci->device == 0x8852) {
+		dev->bridge = CX23885_BRIDGE_885;
+		/* Apply a sensible clock frequency for the P

@@ -1,1 +1,2 @@
-cmd_drivers/media/i2c
+00000);
+	cx_write(PAD

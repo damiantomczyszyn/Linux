@@ -1,5 +1,1 @@
-$(wildcard include/config/TRACE_BRANCH_PROFILING) \
-    $(wildcard include/config/PROFILE_ALL_BRANCHES) \
-    $(wildcard include/config/STACK_VALIDATION) \
-  include/linux/compiler_types.h \
-  arch/x86/in
+cmd_drivers/net/can/usb/esd_usb2.ko := ld -r -m elf_i386 --build-id=sha1  -T scripts/module.lds -o drivers/net/can/usb/esd_usb2.ko drivers/net/can/usb/esd_usb2.o drivers/net/can/usb/esd_usb2.mod.o;  true

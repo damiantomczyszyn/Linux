@@ -1,4 +1,2 @@
- \
-  arch/x86/include/asm/apicdef.h \
-  include/asm-generic/topology.h \
-  in
+ GFP_KERNEL, cpu_to_node(i));
+		per_cpu(select_idle_mask, i) = (cpumask_var_t

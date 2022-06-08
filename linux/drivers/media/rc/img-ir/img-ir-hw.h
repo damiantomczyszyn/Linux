@@ -1,297 +1,263 @@
-/* SPDX-License-Identifier: GPL-2.0-or-later */
-/*
- * ImgTec IR Hardware Decoder found in PowerDown Controller.
- *
- * Copyright 2010-2014 Imagination Technologies Ltd.
- */
+,
+				&dvbsky_s950c_m88ds3103_config,
+				&i2c_bus2->i2c_adap, &adapter);
+		if (fe0->dvb.frontend == NULL)
+			break;
 
-#ifndef _IMG_IR_HW_H_
-#define _IMG_IR_HW_H_
+		/* attach tuner */
+		memset(&ts2020_config, 0, sizeof(ts2020_config));
+		ts2020_config.fe = fe0->dvb.frontend;
+		ts2020_config.get_agc_pwm = m88ds3103_get_agc_pwm;
+		memset(&info, 0, sizeof(struct i2c_board_info));
+		strscpy(info.type, "ts2020", I2C_NAME_SIZE);
+		info.addr = 0x60;
+		info.platform_data = &ts2020_config;
+		request_module(info.type);
+		client_tuner = i2c_new_client_device(adapter, &info);
+		if (!i2c_client_has_driver(client_tuner))
+			goto frontend_detach;
+		if (!try_module_get(client_tuner->dev.driver->owner)) {
+			i2c_unregister_device(client_tuner);
+			goto frontend_detach;
+		}
 
-#include <linux/kernel.h>
-#include <media/rc-core.h>
+		/* delegate signal strength measurement to tuner */
+		fe0->dvb.frontend->ops.read_signal_strength =
+			fe0->dvb.frontend->ops.tuner_ops.get_rf_strength;
 
-/* constants */
+		port->i2c_client_tuner = client_tuner;
+		break;
+	case CX23885_BOARD_DVBSKY_S952:
+		/* attach frontend */
+		memset(&m88ds3103_pdata, 0, sizeof(m88ds3103_pdata));
+		m88ds3103_pdata.clk = 27000000;
+		m88ds3103_pdata.i2c_wr_max = 33;
+		m88ds3103_pdata.agc = 0x99;
+		m88ds3103_pdata.clk_out = M88DS3103_CLOCK_OUT_DISABLED;
+		m88ds3103_pdata.lnb_en_pol = 1;
 
-#define IMG_IR_CODETYPE_PULSELEN	0x0	/* Sony */
-#define IMG_IR_CODETYPE_PULSEDIST	0x1	/* NEC, Toshiba, Micom, Sharp */
-#define IMG_IR_CODETYPE_BIPHASE		0x2	/* RC-5/6 */
-#define IMG_IR_CODETYPE_2BITPULSEPOS	0x3	/* RC-MM */
+		switch (port->nr) {
+		/* port b */
+		case 1:
+			i2c_bus = &dev->i2c_bus[1];
+			m88ds3103_pdata.ts_mode = M88DS3103_TS_PARALLEL;
+			m88ds3103_pdata.ts_clk = 16000;
+			m88ds3103_pdata.ts_clk_pol = 1;
+			p_set_voltage = dvbsky_t9580_set_voltage;
+			break;
+		/* port c */
+		case 2:
+			i2c_bus = &dev->i2c_bus[0];
+			m88ds3103_pdata.ts_mode = M88DS3103_TS_SERIAL;
+			m88ds3103_pdata.ts_clk = 96000;
+			m88ds3103_pdata.ts_clk_pol = 0;
+			p_set_voltage = dvbsky_s952_portc_set_voltage;
+			break;
+		default:
+			return 0;
+		}
 
+		memset(&info, 0, sizeof(info));
+		strscpy(info.type, "m88ds3103", I2C_NAME_SIZE);
+		info.addr = 0x68;
+		info.platform_data = &m88ds3103_pdata;
+		request_module(info.type);
+		client_demod = i2c_new_client_device(&i2c_bus->i2c_adap, &info);
+		if (!i2c_client_has_driver(client_demod))
+			goto frontend_detach;
+		if (!try_module_get(client_demod->dev.driver->owner)) {
+			i2c_unregister_device(client_demod);
+			goto frontend_detach;
+		}
+		port->i2c_client_demod = client_demod;
+		adapter = m88ds3103_pdata.get_i2c_adapter(client_demod);
+		fe0->dvb.frontend = m88ds3103_pdata.get_dvb_frontend(client_demod);
 
-/* Timing information */
+		/* attach tuner */
+		memset(&ts2020_config, 0, sizeof(ts2020_config));
+		ts2020_config.fe = fe0->dvb.frontend;
+		ts2020_config.get_agc_pwm = m88ds3103_get_agc_pwm;
+		memset(&info, 0, sizeof(struct i2c_board_info));
+		strscpy(info.type, "ts2020", I2C_NAME_SIZE);
+		info.addr = 0x60;
+		info.platform_data = &ts2020_config;
+		request_module(info.type);
+		client_tuner = i2c_new_client_device(adapter, &info);
+		if (!i2c_client_has_driver(client_tuner))
+			goto frontend_detach;
+		if (!try_module_get(client_tuner->dev.driver->owner)) {
+			i2c_unregister_device(client_tuner);
+			goto frontend_detach;
+		}
 
-/**
- * struct img_ir_control - Decoder control settings
- * @decoden:	Primary decoder enable
- * @code_type:	Decode type (see IMG_IR_CODETYPE_*)
- * @hdrtog:	Detect header toggle symbol after leader symbol
- * @ldrdec:	Don't discard leader if maximum width reached
- * @decodinpol:	Decoder input polarity (1=active high)
- * @bitorien:	Bit orientation (1=MSB first)
- * @d1validsel:	Decoder 2 takes over if it detects valid data
- * @bitinv:	Bit inversion switch (1=don't invert)
- * @decodend2:	Secondary decoder enable (no leader symbol)
- * @bitoriend2:	Bit orientation (1=MSB first)
- * @bitinvd2:	Secondary decoder bit inversion switch (1=don't invert)
- */
-struct img_ir_control {
-	unsigned decoden:1;
-	unsigned code_type:2;
-	unsigned hdrtog:1;
-	unsigned ldrdec:1;
-	unsigned decodinpol:1;
-	unsigned bitorien:1;
-	unsigned d1validsel:1;
-	unsigned bitinv:1;
-	unsigned decodend2:1;
-	unsigned bitoriend2:1;
-	unsigned bitinvd2:1;
-};
+		/* delegate signal strength measurement to tuner */
+		fe0->dvb.frontend->ops.read_signal_strength =
+			fe0->dvb.frontend->ops.tuner_ops.get_rf_strength;
 
-/**
- * struct img_ir_timing_range - range of timing values
- * @min:	Minimum timing value
- * @max:	Maximum timing value (if < @min, this will be set to @min during
- *		preprocessing step, so it is normally not explicitly initialised
- *		and is taken care of by the tolerance)
- */
-struct img_ir_timing_range {
-	u16 min;
-	u16 max;
-};
+		/*
+		 * for setting the voltage we need to set GPIOs on
+		 * the card.
+		 */
+		port->fe_set_voltage =
+			fe0->dvb.frontend->ops.set_voltage;
+		fe0->dvb.frontend->ops.set_voltage = p_set_voltage;
 
-/**
- * struct img_ir_symbol_timing - timing data for a symbol
- * @pulse:	Timing range for the length of the pulse in this symbol
- * @space:	Timing range for the length of the space in this symbol
- */
-struct img_ir_symbol_timing {
-	struct img_ir_timing_range pulse;
-	struct img_ir_timing_range space;
-};
+		port->i2c_client_tuner = client_tuner;
+		break;
+	case CX23885_BOARD_DVBSKY_T982:
+		memset(&si2168_config, 0, sizeof(si2168_config));
+		switch (port->nr) {
+		/* port b */
+		case 1:
+			i2c_bus = &dev->i2c_bus[1];
+			si2168_config.ts_mode = SI2168_TS_PARALLEL;
+			break;
+		/* port c */
+		case 2:
+			i2c_bus = &dev->i2c_bus[0];
+			si2168_config.ts_mode = SI2168_TS_SERIAL;
+			break;
+		}
 
-/**
- * struct img_ir_free_timing - timing data for free time symbol
- * @minlen:	Minimum number of bits of data
- * @maxlen:	Maximum number of bits of data
- * @ft_min:	Minimum free time after message
- */
-struct img_ir_free_timing {
-	/* measured in bits */
-	u8 minlen;
-	u8 maxlen;
-	u16 ft_min;
-};
+		/* attach frontend */
+		si2168_config.i2c_adapter = &adapter;
+		si2168_config.fe = &fe0->dvb.frontend;
+		memset(&info, 0, sizeof(struct i2c_board_info));
+		strscpy(info.type, "si2168", I2C_NAME_SIZE);
+		info.addr = 0x64;
+		info.platform_data = &si2168_config;
+		request_module(info.type);
+		client_demod = i2c_new_client_device(&i2c_bus->i2c_adap, &info);
+		if (!i2c_client_has_driver(client_demod))
+			goto frontend_detach;
+		if (!try_module_get(client_demod->dev.driver->owner)) {
+			i2c_unregister_device(client_demod);
+			goto frontend_detach;
+		}
+		port->i2c_client_demod = client_demod;
 
-/**
- * struct img_ir_timings - Timing values.
- * @ldr:	Leader symbol timing data
- * @s00:	Zero symbol timing data for primary decoder
- * @s01:	One symbol timing data for primary decoder
- * @s10:	Zero symbol timing data for secondary (no leader symbol) decoder
- * @s11:	One symbol timing data for secondary (no leader symbol) decoder
- * @ft:		Free time symbol timing data
- */
-struct img_ir_timings {
-	struct img_ir_symbol_timing ldr, s00, s01, s10, s11;
-	struct img_ir_free_timing ft;
-};
+		/* attach tuner */
+		memset(&si2157_config, 0, sizeof(si2157_config));
+		si2157_config.fe = fe0->dvb.frontend;
+		si2157_config.if_port = 1;
+		memset(&info, 0, sizeof(struct i2c_board_info));
+		strscpy(info.type, "si2157", I2C_NAME_SIZE);
+		info.addr = 0x60;
+		info.platform_data = &si2157_config;
+		request_module(info.type);
+		client_tuner = i2c_new_client_device(adapter, &info);
+		if (!i2c_client_has_driver(client_tuner))
+			goto frontend_detach;
+		if (!try_module_get(client_tuner->dev.driver->owner)) {
+			i2c_unregister_device(client_tuner);
+			goto frontend_detach;
+		}
+		port->i2c_client_tuner = client_tuner;
+		break;
+	case CX23885_BOARD_HAUPPAUGE_STARBURST2:
+	case CX23885_BOARD_HAUPPAUGE_HVR5525:
+		i2c_bus = &dev->i2c_bus[0];
+		i2c_bus2 = &dev->i2c_bus[1];
 
-/**
- * struct img_ir_filter - Filter IR events.
- * @data:	Data to match.
- * @mask:	Mask of bits to compare.
- * @minlen:	Additional minimum number of bits.
- * @maxlen:	Additional maximum number of bits.
- */
-struct img_ir_filter {
-	u64 data;
-	u64 mask;
-	u8 minlen;
-	u8 maxlen;
-};
+		switch (port->nr) {
 
-/**
- * struct img_ir_timing_regvals - Calculated timing register values.
- * @ldr:	Leader symbol timing register value
- * @s00:	Zero symbol timing register value for primary decoder
- * @s01:	One symbol timing register value for primary decoder
- * @s10:	Zero symbol timing register value for secondary decoder
- * @s11:	One symbol timing register value for secondary decoder
- * @ft:		Free time symbol timing register value
- */
-struct img_ir_timing_regvals {
-	u32 ldr, s00, s01, s10, s11, ft;
-};
+		/* port b - satellite */
+		case 1:
+			/* attach frontend */
+			fe0->dvb.frontend = dvb_attach(m88ds3103_attach,
+					&hauppauge_hvr5525_m88ds3103_config,
+					&i2c_bus->i2c_adap, &adapter);
+			if (fe0->dvb.frontend == NULL)
+				break;
 
-#define IMG_IR_SCANCODE		0	/* new scancode */
-#define IMG_IR_REPEATCODE	1	/* repeat the previous code */
+			/* attach SEC */
+			a8293_pdata.dvb_frontend = fe0->dvb.frontend;
+			memset(&info, 0, sizeof(info));
+			strscpy(info.type, "a8293", I2C_NAME_SIZE);
+			info.addr = 0x0b;
+			info.platform_data = &a8293_pdata;
+			request_module("a8293");
+			client_sec = i2c_new_client_device(&i2c_bus->i2c_adap, &info);
+			if (!i2c_client_has_driver(client_sec))
+				goto frontend_detach;
+			if (!try_module_get(client_sec->dev.driver->owner)) {
+				i2c_unregister_device(client_sec);
+				goto frontend_detach;
+			}
+			port->i2c_client_sec = client_sec;
 
-/**
- * struct img_ir_scancode_req - Scancode request data.
- * @protocol:	Protocol code of received message (defaults to
- *		RC_PROTO_UNKNOWN).
- * @scancode:	Scan code of received message (must be written by
- *		handler if IMG_IR_SCANCODE is returned).
- * @toggle:	Toggle bit (defaults to 0).
- */
-struct img_ir_scancode_req {
-	enum rc_proto protocol;
-	u32 scancode;
-	u8 toggle;
-};
+			/* attach tuner */
+			memset(&m88rs6000t_config, 0, sizeof(m88rs6000t_config));
+			m88rs6000t_config.fe = fe0->dvb.frontend;
+			memset(&info, 0, sizeof(struct i2c_board_info));
+			strscpy(info.type, "m88rs6000t", I2C_NAME_SIZE);
+			info.addr = 0x21;
+			info.platform_data = &m88rs6000t_config;
+			request_module("%s", info.type);
+			client_tuner = i2c_new_client_device(adapter, &info);
+			if (!i2c_client_has_driver(client_tuner))
+				goto frontend_detach;
+			if (!try_module_get(client_tuner->dev.driver->owner)) {
+				i2c_unregister_device(client_tuner);
+				goto frontend_detach;
+			}
+			port->i2c_client_tuner = client_tuner;
 
-/**
- * struct img_ir_decoder - Decoder settings for an IR protocol.
- * @type:	Protocol types bitmap.
- * @tolerance:	Timing tolerance as a percentage (default 10%).
- * @unit:	Unit of timings in nanoseconds (default 1 us).
- * @timings:	Primary timings
- * @rtimings:	Additional override timings while waiting for repeats.
- * @repeat:	Maximum repeat interval (always in milliseconds).
- * @control:	Control flags.
- *
- * @scancode:	Pointer to function to convert the IR data into a scancode (it
- *		must be safe to execute in interrupt context).
- *		Returns IMG_IR_SCANCODE to emit new scancode.
- *		Returns IMG_IR_REPEATCODE to repeat previous code.
- *		Returns -errno (e.g. -EINVAL) on error.
- * @filter:	Pointer to function to convert scancode filter to raw hardware
- *		filter. The minlen and maxlen fields will have been initialised
- *		to the maximum range.
- */
-struct img_ir_decoder {
-	/* core description */
-	u64				type;
-	unsigned int			tolerance;
-	unsigned int			unit;
-	struct img_ir_timings		timings;
-	struct img_ir_timings		rtimings;
-	unsigned int			repeat;
-	struct img_ir_control		control;
+			/* delegate signal strength measurement to tuner */
+			fe0->dvb.frontend->ops.read_signal_strength =
+				fe0->dvb.frontend->ops.tuner_ops.get_rf_strength;
+			break;
+		/* port c - terrestrial/cable */
+		case 2:
+			/* attach frontend */
+			memset(&si2168_config, 0, sizeof(si2168_config));
+			si2168_config.i2c_adapter = &adapter;
+			si2168_config.fe = &fe0->dvb.frontend;
+			si2168_config.ts_mode = SI2168_TS_SERIAL;
+			memset(&info, 0, sizeof(struct i2c_board_info));
+			strscpy(info.type, "si2168", I2C_NAME_SIZE);
+			info.addr = 0x64;
+			info.platform_data = &si2168_config;
+			request_module("%s", info.type);
+			client_demod = i2c_new_client_device(&i2c_bus->i2c_adap, &info);
+			if (!i2c_client_has_driver(client_demod))
+				goto frontend_detach;
+			if (!try_module_get(client_demod->dev.driver->owner)) {
+				i2c_unregister_device(client_demod);
+				goto frontend_detach;
+			}
+			port->i2c_client_demod = client_demod;
 
-	/* scancode logic */
-	int (*scancode)(int len, u64 raw, u64 enabled_protocols,
-			struct img_ir_scancode_req *request);
-	int (*filter)(const struct rc_scancode_filter *in,
-		      struct img_ir_filter *out, u64 protocols);
-};
+			/* attach tuner */
+			memset(&si2157_config, 0, sizeof(si2157_config));
+			si2157_config.fe = fe0->dvb.frontend;
+			si2157_config.if_port = 1;
+			memset(&info, 0, sizeof(struct i2c_board_info));
+			strscpy(info.type, "si2157", I2C_NAME_SIZE);
+			info.addr = 0x60;
+			info.platform_data = &si2157_config;
+			request_module("%s", info.type);
+			client_tuner = i2c_new_client_device(&i2c_bus2->i2c_adap, &info);
+			if (!i2c_client_has_driver(client_tuner)) {
+				module_put(client_demod->dev.driver->owner);
+				i2c_unregister_device(client_demod);
+				port->i2c_client_demod = NULL;
+				goto frontend_detach;
+			}
+			if (!try_module_get(client_tuner->dev.driver->owner)) {
+				i2c_unregister_device(client_tuner);
+				module_put(client_demod->dev.driver->owner);
+				i2c_unregister_device(client_demod);
+				port->i2c_client_demod = NULL;
+				goto frontend_detach;
+			}
+			port->i2c_client_tuner = client_tuner;
 
-extern struct img_ir_decoder img_ir_nec;
-extern struct img_ir_decoder img_ir_jvc;
-extern struct img_ir_decoder img_ir_sony;
-extern struct img_ir_decoder img_ir_sharp;
-extern struct img_ir_decoder img_ir_sanyo;
-extern struct img_ir_decoder img_ir_rc5;
-extern struct img_ir_decoder img_ir_rc6;
+			dev->ts1.analog_fe.tuner_priv = client_tuner;
+			memcpy(&dev->ts1.analog_fe.ops.tuner_ops,
+			       &fe0->dvb.frontend->ops.tuner_ops,
+			       sizeof(struct dvb_tuner_ops));
 
-/**
- * struct img_ir_reg_timings - Reg values for decoder timings at clock rate.
- * @ctrl:	Processed control register value.
- * @timings:	Processed primary timings.
- * @rtimings:	Processed repeat timings.
- */
-struct img_ir_reg_timings {
-	u32				ctrl;
-	struct img_ir_timing_regvals	timings;
-	struct img_ir_timing_regvals	rtimings;
-};
-
-struct img_ir_priv;
-
-#ifdef CONFIG_IR_IMG_HW
-
-enum img_ir_mode {
-	IMG_IR_M_NORMAL,
-	IMG_IR_M_REPEATING,
-#ifdef CONFIG_PM_SLEEP
-	IMG_IR_M_WAKE,
-#endif
-};
-
-/**
- * struct img_ir_priv_hw - Private driver data for hardware decoder.
- * @ct_quirks:		Quirk bits for each code type.
- * @rdev:		Remote control device
- * @clk_nb:		Notifier block for clock notify events.
- * @end_timer:		Timer until repeat timeout.
- * @suspend_timer:	Timer to re-enable protocol.
- * @decoder:		Current decoder settings.
- * @enabled_protocols:	Currently enabled protocols.
- * @clk_hz:		Current core clock rate in Hz.
- * @reg_timings:	Timing reg values for decoder at clock rate.
- * @flags:		IMG_IR_F_*.
- * @filters:		HW filters (derived from scancode filters).
- * @mode:		Current decode mode.
- * @stopping:		Indicates that decoder is being taken down and timers
- *			should not be restarted.
- * @suspend_irqen:	Saved IRQ enable mask over suspend.
- * @quirk_suspend_irq:	Saved IRQ enable mask over quirk suspend timer.
- */
-struct img_ir_priv_hw {
-	unsigned int			ct_quirks[4];
-	struct rc_dev			*rdev;
-	struct notifier_block		clk_nb;
-	struct timer_list		end_timer;
-	struct timer_list		suspend_timer;
-	const struct img_ir_decoder	*decoder;
-	u64				enabled_protocols;
-	unsigned long			clk_hz;
-	struct img_ir_reg_timings	reg_timings;
-	unsigned int			flags;
-	struct img_ir_filter		filters[RC_FILTER_MAX];
-
-	enum img_ir_mode		mode;
-	bool				stopping;
-	u32				suspend_irqen;
-	u32				quirk_suspend_irq;
-};
-
-static inline bool img_ir_hw_enabled(struct img_ir_priv_hw *hw)
-{
-	return hw->rdev;
-};
-
-void img_ir_isr_hw(struct img_ir_priv *priv, u32 irq_status);
-void img_ir_setup_hw(struct img_ir_priv *priv);
-int img_ir_probe_hw(struct img_ir_priv *priv);
-void img_ir_remove_hw(struct img_ir_priv *priv);
-
-#ifdef CONFIG_PM_SLEEP
-int img_ir_suspend(struct device *dev);
-int img_ir_resume(struct device *dev);
-#else
-#define img_ir_suspend NULL
-#define img_ir_resume NULL
-#endif
-
-#else
-
-struct img_ir_priv_hw {
-};
-
-static inline bool img_ir_hw_enabled(struct img_ir_priv_hw *hw)
-{
-	return false;
-};
-static inline void img_ir_isr_hw(struct img_ir_priv *priv, u32 irq_status)
-{
-}
-static inline void img_ir_setup_hw(struct img_ir_priv *priv)
-{
-}
-static inline int img_ir_probe_hw(struct img_ir_priv *priv)
-{
-	return -ENODEV;
-}
-static inline void img_ir_remove_hw(struct img_ir_priv *priv)
-{
-}
-
-#define img_ir_suspend NULL
-#define img_ir_resume NULL
-
-#endif /* CONFIG_IR_IMG_HW */
-
-#endif /* _IMG_IR_HW_H_ */
+			break;
+		}
+		b

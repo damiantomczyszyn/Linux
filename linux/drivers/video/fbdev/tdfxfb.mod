@@ -1,1 +1,1 @@
-cmd_drivers/media/i2c/uda1342.
+!try_module_get(client_tuner->

@@ -1,6 +1,1 @@
-LE_UPGRADE) \
-    $(wildcard include/config/ACPI_WATCHDOG) \
-    $(wildcard include/config/ACPI_SPCR_TABLE) \
-    $(wildcard include/config/ACPI_GENERIC_GSI) \
-    $(wildcard include/config/ACPI_LPIT) \
-    $(wildcard include/config
+cmd_drivers/net/dsa/vitesse-vsc73xx-spi.ko := ld -r -m elf_i386 --build-id=sha1  -T scripts/module.lds -o drivers/net/dsa/vitesse-vsc73xx-spi.ko drivers/net/dsa/vitesse-vsc73xx-spi.o drivers/net/dsa/vitesse-vsc73xx-spi.mod.o;  true

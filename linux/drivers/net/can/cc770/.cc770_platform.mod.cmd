@@ -1,6 +1,1 @@
-de/linux/bits.h \
-  include/linux/const.h \
-  include/vdso/const.h \
-  include/uapi/linux/const.h \
-  include/vdso/bits.h \
-  include/linux/build_bu
+cmd_drivers/net/can/cc770/cc770_platform.mod := { echo  drivers/net/can/cc770/cc770_platform.o;  echo; } > drivers/net/can/cc770/cc770_platform.mod

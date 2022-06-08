@@ -1,1 +1,8 @@
-cmd_drivers/media/rc/keymaps/rc-dntv-live-dvbt-pro.mod := { echo  drivers/media/rc/keymaps/rc-dntv-live-dvbt-pro.o;  echo; } > drivers/media/rc/keymaps/rc-dntv-live-dvbt-pro.mod
+taval = tempval & 0x000000FF;
+
+	/* Bring CS and RD high. */
+	regval = MC417_MIWR | MC417_MIRD | MC417_MICS | MC417_MIRDY;
+	cx_write(MC417_RWD, regval);
+
+	/* Read data byte 1 */
+	

@@ -1,1 +1,2 @@
-cmd_kernel/irq/cpuho
+r(p);
+		if (retval)

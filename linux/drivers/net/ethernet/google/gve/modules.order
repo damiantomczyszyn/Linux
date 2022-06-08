@@ -1,2 +1,4 @@
-IC_IOREMAP) \
-    $(wildcard include/co
+,
+			.amux   = CX25840_AUDIO8,
+		} },
+	

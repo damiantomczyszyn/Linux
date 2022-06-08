@@ -1,2 +1,2 @@
-disabled-features.h \
-    $(wildcar
+
+  include/asm-generic/qrwlock.h \

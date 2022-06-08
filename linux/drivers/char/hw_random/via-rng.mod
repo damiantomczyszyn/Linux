@@ -1,2 +1,1 @@
-lude/config/SPI) \
-  include/media
+cmd_drivers/media/pci/cx18/cx18-al

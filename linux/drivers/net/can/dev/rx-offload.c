@@ -1,249 +1,402 @@
-IC_IOREMAP) \
-    $(wildcard include/config/VIRT_TO_BUS) \
-    $(wildcard include/config/GENERIC_DEVMEM_IS_ALLOWED) \
-  include/linux/logic_pio.h \
-    $(wildcard include/config/INDIRECT_PIO) \
-  include/linux/vmalloc.h \
-    $(wildcard include/config/HAVE_ARCH_HUGE_VMALLOC) \
-  arch/x86/include/asm/vmalloc.h \
-    $(wildcard include/config/HAVE_ARCH_HUGE_VMAP) \
-  arch/x86/include/asm/acpi.h \
-    $(wildcard include/config/ACPI_APEI) \
-  include/acpi/pdc_intel.h \
-  arch/x86/include/asm/numa.h \
-    $(wildcard include/config/NUMA_EMU) \
-  arch/x86/include/asm/numa_32.h \
-  include/linux/regulator/consumer.h \
-    $(wildcard include/config/REGULATOR) \
-  include/linux/suspend.h \
-    $(wildcard include/config/VT) \
-    $(wildcard include/config/SUSPEND) \
-    $(wildcard include/config/HIBERNATION_SNAPSHOT_DEV) \
-    $(wildcard include/config/PM_SLEEP_DEBUG) \
-    $(wildcard include/config/PM_AUTOSLEEP) \
-  include/linux/swap.h \
-    $(wildcard include/config/DEVICE_PRIVATE) \
-    $(wildcard include/config/MIGRATION) \
-    $(wildcard include/config/FRONTSWAP) \
-    $(wildcard include/config/THP_SWAP) \
-    $(wildcard include/config/MEMCG_SWAP) \
-  include/linux/memcontrol.h \
-    $(wildcard include/config/CGROUP_WRITEBACK) \
-  include/linux/cgroup.h \
-    $(wildcard include/config/CGROUP_CPUACCT) \
-    $(wildcard include/config/SOCK_CGROUP_DATA) \
-    $(wildcard include/config/CGROUP_DATA) \
-    $(wildcard include/config/CGROUP_BPF) \
-  include/uapi/linux/cgroupstats.h \
-  include/uapi/linux/taskstats.h \
-  include/linux/fs.h \
-    $(wildcard include/config/READ_ONLY_THP_FOR_FS) \
-    $(wildcard include/config/FS_POSIX_ACL) \
-    $(wildcard include/config/IMA) \
-    $(wildcard include/config/FILE_LOCKING) \
-    $(wildcard include/config/FSNOTIFY) \
-    $(wildcard include/config/FS_ENCRYPTION) \
-    $(wildcard include/config/FS_VERITY) \
-    $(wildcard include/config/EPOLL) \
-    $(wildcard include/config/UNICODE) \
-    $(wildcard include/config/QUOTA) \
-    $(wildcard include/config/FS_DAX) \
-    $(wildcard include/config/BLOCK) \
-  include/linux/wait_bit.h \
-  include/linux/kdev_t.h \
-  include/uapi/linux/kdev_t.h \
-  include/linux/dcache.h \
-  include/linux/rculist_bl.h \
-  include/linux/list_bl.h \
-  include/linux/bit_spinlock.h \
-  include/linux/lockref.h \
-    $(wildcard include/config/ARCH_USE_CMPXCHG_LOCKREF) \
-  include/linux/stringhash.h \
-    $(wildcard include/config/DCACHE_WORD_ACCESS) \
-  include/linux/hash.h \
-    $(wildcard include/config/HAVE_ARCH_HASH) \
-  include/linux/path.h \
-  include/linux/list_lru.h \
-  include/linux/shrinker.h \
-  include/linux/capability.h \
-  include/uapi/linux/capability.h \
-  include/linux/semaphore.h \
-  include/linux/fcntl.h \
-    $(wildcard include/config/ARCH_32BIT_OFF_T) \
-  include/uapi/linux/fcntl.h \
-  arch/x86/include/generated/uapi/asm/fcntl.h \
-  include/uapi/asm-generic/fcntl.h \
-  include/uapi/linux/openat2.h \
-  include/linux/migrate_mode.h \
-  include/linux/percpu-rwsem.h \
-  include/linux/rcuwait.h \
-  include/linux/sched/signal.h \
-    $(wildcard include/config/SCHED_AUTOGROUP) \
-    $(wildcard include/config/BSD_PROCESS_ACCT) \
-    $(wildcard include/config/TASKSTATS) \
-    $(wildcard include/config/STACK_GROWSUP) \
-  include/linux/signal.h \
-    $(wildcard include/config/DYNAMIC_SIGFRAME) \
-  include/linux/sched/jobctl.h \
-  include/linux/sched/task.h \
-    $(wildcard include/config/HAVE_EXIT_THREAD) \
-    $(wildcard include/config/ARCH_WANTS_DYNAMIC_TASK_STRUCT) \
-    $(wildcard include/config/HAVE_ARCH_THREAD_STRUCT_WHITELIST) \
-  include/linux/uaccess.h \
-  include/linux/fault-inject-usercopy.h \
-    $(wildcard include/config/FAULT_INJECTION_USERCOPY) \
-  arch/x86/include/asm/uaccess.h \
-    $(wildcard include/config/CC_HAS_ASM_GOTO_OUTPUT) \
-    $(wildcard include/config/CC_HAS_ASM_GOTO_TIED_OUTPUT) \
-    $(wildcard include/config/ARCH_HAS_COPY_MC) \
-    $(wildcard include/config/X86_INTEL_USERCOPY) \
-  arch/x86/include/asm/smap.h \
-  arch/x86/include/asm/extable.h \
-    $(wildcard include/config/BPF_JIT) \
-  include/asm-generic/access_ok.h \
-    $(wildcard include/config/ALTERNATE_USER_ADDRESS_SPACE) \
-  arch/x86/include/asm/uaccess_32.h \
-  include/linux/cred.h \
-    $(wildcard include/config/DEBUG_CREDENTIALS) \
-  include/linux/key.h \
-    $(wildcard include/config/KEY_NOTIFICATIONS) \
-    $(wildcard include/config/NET) \
-  include/linux/assoc_array.h \
-    $(wildcard include/config/ASSOCIATIVE_ARRAY) \
-  include/linux/sched/user.h \
-    $(wildcard include/config/WATCH_QUEUE) \
-  include/linux/percpu_counter.h \
-  include/linux/rcu_sync.h \
-  include/linux/delayed_call.h \
-  include/linux/errseq.h \
-  include/linux/ioprio.h \
-  include/linux/sched/rt.h \
-  include/linux/iocontext.h \
-    $(wildcard include/config/BLK_ICQ) \
-  include/uapi/linux/ioprio.h \
-  include/linux/fs_types.h \
-  include/linux/mount.h \
-  include/linux/mnt_idmapping.h \
-  include/uapi/linux/fs.h \
-  include/linux/quota.h \
-    $(wildcard include/config/QUOTA_NETLINK_INTERFACE) \
-  include/uapi/linux/dqblk_xfs.h \
-  include/linux/dqblk_v1.h \
-  include/linux/dqblk_v2.h \
-  include/linux/dqblk_qtree.h \
-  include/linux/projid.h \
-  include/uapi/linux/quota.h \
-  include/linux/nfs_fs_i.h \
-  include/linux/seq_file.h \
-  include/linux/string_helpers.h \
-  include/linux/ns_common.h \
-  include/linux/nsproxy.h \
-  include/linux/user_namespace.h \
-    $(wildcard include/config/INOTIFY_USER) \
-    $(wildcard include/config/FANOTIFY) \
-    $(wildcard include/config/PERSISTENT_KEYRINGS) \
-  include/linux/kernel_stat.h \
-  include/linux/interrupt.h \
-    $(wildcard include/config/IRQ_FORCED_THREADING) \
-    $(wildcard include/config/GENERIC_IRQ_PROBE) \
-    $(wildcard include/config/IRQ_TIMINGS) \
-  include/linux/irqreturn.h \
-  include/linux/irqnr.h \
-  include/uapi/linux/irqnr.h \
-  include/linux/hardirq.h \
-  include/linux/context_tracking_state.h \
-    $(wildcard include/config/CONTEXT_TRACKING) \
-  include/linux/ftrace_irq.h \
-    $(wildcard include/config/HWLAT_TRACER) \
-    $(wildcard include/config/OSNOISE_TRACER) \
-  include/linux/vtime.h \
-    $(wildcard include/config/VIRT_CPU_ACCOUNTING) \
-    $(wildcard include/config/IRQ_TIME_ACCOUNTING) \
-  arch/x86/include/asm/hardirq.h \
-    $(wildcard include/config/KVM_INTEL) \
-    $(wildcard include/config/X86_THERMAL_VECTOR) \
-    $(wildcard include/config/X86_MCE_THRESHOLD) \
-    $(wildcard include/config/X86_MCE_AMD) \
-    $(wildcard include/config/X86_HV_CALLBACK_VECTOR) \
-  arch/x86/include/asm/irq.h \
-  arch/x86/include/asm/sections.h \
-  include/asm-generic/sections.h \
-    $(wildcard include/config/HAVE_FUNCTION_DESCRIPTORS) \
-  include/linux/cgroup-defs.h \
-    $(wildcard include/config/CGROUP_NET_CLASSID) \
-    $(wildcard include/config/CGROUP_NET_PRIO) \
-  include/linux/u64_stats_sync.h \
-  include/linux/bpf-cgroup-defs.h \
-  include/linux/psi_types.h \
-  include/linux/kthread.h \
-  include/linux/cgroup_subsys.h \
-    $(wildcard include/config/CGROUP_DEVICE) \
-    $(wildcard include/config/CGROUP_FREEZER) \
-    $(wildcard include/config/CGROUP_PERF) \
-    $(wildcard include/config/CGROUP_HUGETLB) \
-    $(wildcard include/config/CGROUP_PIDS) \
-    $(wildcard include/config/CGROUP_RDMA) \
-    $(wildcard include/config/CGROUP_MISC) \
-    $(wildcard include/config/CGROUP_DEBUG) \
-  include/linux/vm_event_item.h \
-    $(wildcard include/config/HAVE_ARCH_TRANSPARENT_HUGEPAGE_PUD) \
-    $(wildcard include/config/MEMORY_BALLOON) \
-    $(wildcard include/config/BALLOON_COMPACTION) \
-    $(wildcard include/config/DEBUG_TLBFLUSH) \
-    $(wildcard include/config/DEBUG_VM_VMACACHE) \
-  include/linux/page_counter.h \
-  include/linux/vmpressure.h \
-  include/linux/eventfd.h \
-  include/linux/mm.h \
-    $(wildcard include/config/HAVE_ARCH_MMAP_RND_BITS) \
-    $(wildcard include/config/HAVE_ARCH_MMAP_RND_COMPAT_BITS) \
-    $(wildcard include/config/ARCH_USES_HIGH_VMA_FLAGS) \
-    $(wildcard include/config/ARCH_HAS_PKEYS) \
-    $(wildcard include/config/PPC) \
-    $(wildcard include/config/PARISC) \
-    $(wildcard include/config/SPARC64) \
-    $(wildcard include/config/ARM64_MTE) \
-    $(wildcard include/config/HAVE_ARCH_USERFAULTFD_MINOR) \
-    $(wildcard include/config/SHMEM) \
-    $(wildcard include/config/ARCH_HAS_PTE_SPECIAL) \
-    $(wildcard include/config/ARCH_HAS_PTE_DEVMAP) \
-    $(wildcard include/config/DEBUG_VM_RB) \
-    $(wildcard include/config/PAGE_POISONING) \
-    $(wildcard include/config/INIT_ON_ALLOC_DEFAULT_ON) \
-    $(wildcard include/config/INIT_ON_FREE_DEFAULT_ON) \
-    $(wildcard include/config/DEBUG_PAGEALLOC) \
-    $(wildcard include/config/HUGETLBFS) \
-    $(wildcard include/config/MAPPING_DIRTY_HELPERS) \
-    $(wildcard include/config/ANON_VMA_NAME) \
-  include/linux/mmap_lock.h \
-  include/linux/page_ext.h \
-  include/linux/stacktrace.h \
-    $(wildcard include/config/ARCH_STACKWALK) \
-    $(wildcard include/config/STACKTRACE) \
-    $(wildcard include/config/HAVE_RELIABLE_STACKTRACE) \
-  include/linux/stackdepot.h \
-    $(wildcard include/config/STACKDEPOT_ALWAYS_INIT) \
-  include/linux/page_ref.h \
-    $(wildcard include/config/DEBUG_PAGE_REF) \
-  include/linux/sizes.h \
-  include/linux/pgtable.h \
-    $(wildcard include/config/HIGHPTE) \
-    $(wildcard include/config/GUP_GET_PTE_LOW_HIGH) \
-    $(wildcard include/config/HAVE_ARCH_SOFT_DIRTY) \
-    $(wildcard include/config/ARCH_ENABLE_THP_MIGRATION) \
-    $(wildcard include/config/X86_ESPFIX64) \
-  arch/x86/include/asm/pgtable.h \
-    $(wildcard include/config/DEBUG_WX) \
-    $(wildcard include/config/PAGE_TABLE_CHECK) \
-  arch/x86/include/asm/pkru.h \
-  arch/x86/include/asm/fpu/api.h \
-    $(wildcard include/config/X86_DEBUG_FPU) \
-  arch/x86/include/asm/coco.h \
-  include/asm-generic/pgtable_uffd.h \
-  include/linux/page_table_check.h \
-  arch/x86/include/asm/pgtable_32.h \
-  arch/x86/include/asm/pgtable-3level.h \
-  arch/x86/include/asm/pgtable-invert.h \
-  include/linux/huge_mm.h \
-  include/linux/sched/coredump.h \
-    $(wildcard include/config/CORE_DUMP_DEFAULT_ELF_
+// SPDX-License-Identifier: GPL-2.0-only
+/* Copyright (c) 2014      Protonic Holland,
+ *                         David Jander
+ * Copyright (C) 2014-2021 Pengutronix,
+ *                         Marc Kleine-Budde <kernel@pengutronix.de>
+ */
+
+#include <linux/can/dev.h>
+#include <linux/can/rx-offload.h>
+
+struct can_rx_offload_cb {
+	u32 timestamp;
+};
+
+static inline struct can_rx_offload_cb *
+can_rx_offload_get_cb(struct sk_buff *skb)
+{
+	BUILD_BUG_ON(sizeof(struct can_rx_offload_cb) > sizeof(skb->cb));
+
+	return (struct can_rx_offload_cb *)skb->cb;
+}
+
+static inline bool
+can_rx_offload_le(struct can_rx_offload *offload,
+		  unsigned int a, unsigned int b)
+{
+	if (offload->inc)
+		return a <= b;
+	else
+		return a >= b;
+}
+
+static inline unsigned int
+can_rx_offload_inc(struct can_rx_offload *offload, unsigned int *val)
+{
+	if (offload->inc)
+		return (*val)++;
+	else
+		return (*val)--;
+}
+
+static int can_rx_offload_napi_poll(struct napi_struct *napi, int quota)
+{
+	struct can_rx_offload *offload = container_of(napi,
+						      struct can_rx_offload,
+						      napi);
+	struct net_device *dev = offload->dev;
+	struct net_device_stats *stats = &dev->stats;
+	struct sk_buff *skb;
+	int work_done = 0;
+
+	while ((work_done < quota) &&
+	       (skb = skb_dequeue(&offload->skb_queue))) {
+		struct can_frame *cf = (struct can_frame *)skb->data;
+
+		work_done++;
+		if (!(cf->can_id & CAN_ERR_FLAG)) {
+			stats->rx_packets++;
+			if (!(cf->can_id & CAN_RTR_FLAG))
+				stats->rx_bytes += cf->len;
+		}
+		netif_receive_skb(skb);
+	}
+
+	if (work_done < quota) {
+		napi_complete_done(napi, work_done);
+
+		/* Check if there was another interrupt */
+		if (!skb_queue_empty(&offload->skb_queue))
+			napi_reschedule(&offload->napi);
+	}
+
+	can_led_event(offload->dev, CAN_LED_EVENT_RX);
+
+	return work_done;
+}
+
+static inline void
+__skb_queue_add_sort(struct sk_buff_head *head, struct sk_buff *new,
+		     int (*compare)(struct sk_buff *a, struct sk_buff *b))
+{
+	struct sk_buff *pos, *insert = NULL;
+
+	skb_queue_reverse_walk(head, pos) {
+		const struct can_rx_offload_cb *cb_pos, *cb_new;
+
+		cb_pos = can_rx_offload_get_cb(pos);
+		cb_new = can_rx_offload_get_cb(new);
+
+		netdev_dbg(new->dev,
+			   "%s: pos=0x%08x, new=0x%08x, diff=%10d, queue_len=%d\n",
+			   __func__,
+			   cb_pos->timestamp, cb_new->timestamp,
+			   cb_new->timestamp - cb_pos->timestamp,
+			   skb_queue_len(head));
+
+		if (compare(pos, new) < 0)
+			continue;
+		insert = pos;
+		break;
+	}
+	if (!insert)
+		__skb_queue_head(head, new);
+	else
+		__skb_queue_after(head, insert, new);
+}
+
+static int can_rx_offload_compare(struct sk_buff *a, struct sk_buff *b)
+{
+	const struct can_rx_offload_cb *cb_a, *cb_b;
+
+	cb_a = can_rx_offload_get_cb(a);
+	cb_b = can_rx_offload_get_cb(b);
+
+	/* Subtract two u32 and return result as int, to keep
+	 * difference steady around the u32 overflow.
+	 */
+	return cb_b->timestamp - cb_a->timestamp;
+}
+
+/**
+ * can_rx_offload_offload_one() - Read one CAN frame from HW
+ * @offload: pointer to rx_offload context
+ * @n: number of mailbox to read
+ *
+ * The task of this function is to read a CAN frame from mailbox @n
+ * from the device and return the mailbox's content as a struct
+ * sk_buff.
+ *
+ * If the struct can_rx_offload::skb_queue exceeds the maximal queue
+ * length (struct can_rx_offload::skb_queue_len_max) or no skb can be
+ * allocated, the mailbox contents is discarded by reading it into an
+ * overflow buffer. This way the mailbox is marked as free by the
+ * driver.
+ *
+ * Return: A pointer to skb containing the CAN frame on success.
+ *
+ *         NULL if the mailbox @n is empty.
+ *
+ *         ERR_PTR() in case of an error
+ */
+static struct sk_buff *
+can_rx_offload_offload_one(struct can_rx_offload *offload, unsigned int n)
+{
+	struct sk_buff *skb;
+	struct can_rx_offload_cb *cb;
+	bool drop = false;
+	u32 timestamp;
+
+	/* If queue is full drop frame */
+	if (unlikely(skb_queue_len(&offload->skb_queue) >
+		     offload->skb_queue_len_max))
+		drop = true;
+
+	skb = offload->mailbox_read(offload, n, &timestamp, drop);
+	/* Mailbox was empty. */
+	if (unlikely(!skb))
+		return NULL;
+
+	/* There was a problem reading the mailbox, propagate
+	 * error value.
+	 */
+	if (IS_ERR(skb)) {
+		offload->dev->stats.rx_dropped++;
+		offload->dev->stats.rx_fifo_errors++;
+
+		return skb;
+	}
+
+	/* Mailbox was read. */
+	cb = can_rx_offload_get_cb(skb);
+	cb->timestamp = timestamp;
+
+	return skb;
+}
+
+int can_rx_offload_irq_offload_timestamp(struct can_rx_offload *offload,
+					 u64 pending)
+{
+	unsigned int i;
+	int received = 0;
+
+	for (i = offload->mb_first;
+	     can_rx_offload_le(offload, i, offload->mb_last);
+	     can_rx_offload_inc(offload, &i)) {
+		struct sk_buff *skb;
+
+		if (!(pending & BIT_ULL(i)))
+			continue;
+
+		skb = can_rx_offload_offload_one(offload, i);
+		if (IS_ERR_OR_NULL(skb))
+			continue;
+
+		__skb_queue_add_sort(&offload->skb_irq_queue, skb,
+				     can_rx_offload_compare);
+		received++;
+	}
+
+	return received;
+}
+EXPORT_SYMBOL_GPL(can_rx_offload_irq_offload_timestamp);
+
+int can_rx_offload_irq_offload_fifo(struct can_rx_offload *offload)
+{
+	struct sk_buff *skb;
+	int received = 0;
+
+	while (1) {
+		skb = can_rx_offload_offload_one(offload, 0);
+		if (IS_ERR(skb))
+			continue;
+		if (!skb)
+			break;
+
+		__skb_queue_tail(&offload->skb_irq_queue, skb);
+		received++;
+	}
+
+	return received;
+}
+EXPORT_SYMBOL_GPL(can_rx_offload_irq_offload_fifo);
+
+int can_rx_offload_queue_sorted(struct can_rx_offload *offload,
+				struct sk_buff *skb, u32 timestamp)
+{
+	struct can_rx_offload_cb *cb;
+
+	if (skb_queue_len(&offload->skb_queue) >
+	    offload->skb_queue_len_max) {
+		dev_kfree_skb_any(skb);
+		return -ENOBUFS;
+	}
+
+	cb = can_rx_offload_get_cb(skb);
+	cb->timestamp = timestamp;
+
+	__skb_queue_add_sort(&offload->skb_irq_queue, skb,
+			     can_rx_offload_compare);
+
+	return 0;
+}
+EXPORT_SYMBOL_GPL(can_rx_offload_queue_sorted);
+
+unsigned int can_rx_offload_get_echo_skb(struct can_rx_offload *offload,
+					 unsigned int idx, u32 timestamp,
+					 unsigned int *frame_len_ptr)
+{
+	struct net_device *dev = offload->dev;
+	struct net_device_stats *stats = &dev->stats;
+	struct sk_buff *skb;
+	u8 len;
+	int err;
+
+	skb = __can_get_echo_skb(dev, idx, &len, frame_len_ptr);
+	if (!skb)
+		return 0;
+
+	err = can_rx_offload_queue_sorted(offload, skb, timestamp);
+	if (err) {
+		stats->rx_errors++;
+		stats->tx_fifo_errors++;
+	}
+
+	return len;
+}
+EXPORT_SYMBOL_GPL(can_rx_offload_get_echo_skb);
+
+int can_rx_offload_queue_tail(struct can_rx_offload *offload,
+			      struct sk_buff *skb)
+{
+	if (skb_queue_len(&offload->skb_queue) >
+	    offload->skb_queue_len_max) {
+		dev_kfree_skb_any(skb);
+		return -ENOBUFS;
+	}
+
+	__skb_queue_tail(&offload->skb_irq_queue, skb);
+
+	return 0;
+}
+EXPORT_SYMBOL_GPL(can_rx_offload_queue_tail);
+
+void can_rx_offload_irq_finish(struct can_rx_offload *offload)
+{
+	unsigned long flags;
+	int queue_len;
+
+	if (skb_queue_empty_lockless(&offload->skb_irq_queue))
+		return;
+
+	spin_lock_irqsave(&offload->skb_queue.lock, flags);
+	skb_queue_splice_tail_init(&offload->skb_irq_queue, &offload->skb_queue);
+	spin_unlock_irqrestore(&offload->skb_queue.lock, flags);
+
+	queue_len = skb_queue_len(&offload->skb_queue);
+	if (queue_len > offload->skb_queue_len_max / 8)
+		netdev_dbg(offload->dev, "%s: queue_len=%d\n",
+			   __func__, queue_len);
+
+	napi_schedule(&offload->napi);
+}
+EXPORT_SYMBOL_GPL(can_rx_offload_irq_finish);
+
+void can_rx_offload_threaded_irq_finish(struct can_rx_offload *offload)
+{
+	unsigned long flags;
+	int queue_len;
+
+	if (skb_queue_empty_lockless(&offload->skb_irq_queue))
+		return;
+
+	spin_lock_irqsave(&offload->skb_queue.lock, flags);
+	skb_queue_splice_tail_init(&offload->skb_irq_queue, &offload->skb_queue);
+	spin_unlock_irqrestore(&offload->skb_queue.lock, flags);
+
+	queue_len = skb_queue_len(&offload->skb_queue);
+	if (queue_len > offload->skb_queue_len_max / 8)
+		netdev_dbg(offload->dev, "%s: queue_len=%d\n",
+			   __func__, queue_len);
+
+	local_bh_disable();
+	napi_schedule(&offload->napi);
+	local_bh_enable();
+}
+EXPORT_SYMBOL_GPL(can_rx_offload_threaded_irq_finish);
+
+static int can_rx_offload_init_queue(struct net_device *dev,
+				     struct can_rx_offload *offload,
+				     unsigned int weight)
+{
+	offload->dev = dev;
+
+	/* Limit queue len to 4x the weight (rounted to next power of two) */
+	offload->skb_queue_len_max = 2 << fls(weight);
+	offload->skb_queue_len_max *= 4;
+	skb_queue_head_init(&offload->skb_queue);
+	__skb_queue_head_init(&offload->skb_irq_queue);
+
+	netif_napi_add(dev, &offload->napi, can_rx_offload_napi_poll, weight);
+
+	dev_dbg(dev->dev.parent, "%s: skb_queue_len_max=%d\n",
+		__func__, offload->skb_queue_len_max);
+
+	return 0;
+}
+
+int can_rx_offload_add_timestamp(struct net_device *dev,
+				 struct can_rx_offload *offload)
+{
+	unsigned int weight;
+
+	if (offload->mb_first > BITS_PER_LONG_LONG ||
+	    offload->mb_last > BITS_PER_LONG_LONG || !offload->mailbox_read)
+		return -EINVAL;
+
+	if (offload->mb_first < offload->mb_last) {
+		offload->inc = true;
+		weight = offload->mb_last - offload->mb_first;
+	} else {
+		offload->inc = false;
+		weight = offload->mb_first - offload->mb_last;
+	}
+
+	return can_rx_offload_init_queue(dev, offload, weight);
+}
+EXPORT_SYMBOL_GPL(can_rx_offload_add_timestamp);
+
+int can_rx_offload_add_fifo(struct net_device *dev,
+			    struct can_rx_offload *offload, unsigned int weight)
+{
+	if (!offload->mailbox_read)
+		return -EINVAL;
+
+	return can_rx_offload_init_queue(dev, offload, weight);
+}
+EXPORT_SYMBOL_GPL(can_rx_offload_add_fifo);
+
+int can_rx_offload_add_manual(struct net_device *dev,
+			      struct can_rx_offload *offload,
+			      unsigned int weight)
+{
+	if (offload->mailbox_read)
+		return -EINVAL;
+
+	return can_rx_offload_init_queue(dev, offload, weight);
+}
+EXPORT_SYMBOL_GPL(can_rx_offload_add_manual);
+
+void can_rx_offload_enable(struct can_rx_offload *offload)
+{
+	napi_enable(&offload->napi);
+}
+EXPORT_SYMBOL_GPL(can_rx_offload_enable);
+
+void can_rx_offload_del(struct can_rx_offload *offload)
+{
+	netif_napi_del(&offload->napi);
+	skb_queue_purge(&offload->skb_queue);
+	__skb_queue_purge(&offload->skb_irq_queue);
+}
+EXPORT_SYMBOL_GPL(can_rx_offload_del);

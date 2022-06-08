@@ -1,1 +1,5 @@
-cmd_drivers/media/i2c/tw2804.o :
+tore;
+	int mem;
+	int ret;
+
+	if (

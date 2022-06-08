@@ -1,1 +1,1 @@
-cmd_drivers/media/i2c/
+/* SPDX-License-Identi

@@ -1,3 +1,3 @@
-dcard include/config/INLINE_WRITE_UNLOCK_IRQRESTORE) \
-  include/linux/irqhandler.h \
-  inc
+*
+	 * Forcefully restricting the affinity of a deadline task is
+	 * likely to cause problem

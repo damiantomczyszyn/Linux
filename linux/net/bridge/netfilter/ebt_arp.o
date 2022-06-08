@@ -1,88 +1,89 @@
- -> @hlock and @hlock -> <whatever __bfs() found> is not -(*R)->
- * and -(S*)->.
+e leaf
+ * rcu_node structure's ->lock be held.  It consults the cached value
+ * of ->gp_seq_needed in the rcu_data structure, and if that indicates
+ * that a new grace-period request be made, invokes rcu_accelerate_cbs()
+ * while holding the leaf rcu_node structure's ->lock.
  */
-static inline void bfs_init_root(struct lock_list *lock,
-				 struct held_lock *hlock)
+static void rcu_accelerate_cbs_unlocked(struct rcu_node *rnp,
+					struct rcu_data *rdp)
 {
-	__bfs_init_root(lock, hlock_class(hlock));
-	lock->only_xr = (hlock->read == 2);
+	unsigned long c;
+	bool needwake;
+
+	rcu_lockdep_assert_cblist_protected(rdp);
+	c = rcu_seq_snap(&rcu_state.gp_seq);
+	if (!READ_ONCE(rdp->gpwrap) && ULONG_CMP_GE(rdp->gp_seq_needed, c)) {
+		/* Old request still live, so mark recent callbacks. */
+		(void)rcu_segcblist_accelerate(&rdp->cblist, c);
+		return;
+	}
+	raw_spin_lock_rcu_node(rnp); /* irqs already disabled. */
+	needwake = rcu_accelerate_cbs(rnp, rdp);
+	raw_spin_unlock_rcu_node(rnp); /* irqs remain disabled. */
+	if (needwake)
+		rcu_gp_kthread_wake();
 }
 
 /*
- * Similar to bfs_init_root() but initialize the root for backwards BFS.
+ * Move any callbacks whose grace period has completed to the
+ * RCU_DONE_TAIL sublist, then compact the remaining sublists and
+ * assign ->gp_seq numbers to any callbacks in the RCU_NEXT_TAIL
+ * sublist.  This function is idempotent, so it does not hurt to
+ * invoke it repeatedly.  As long as it is not invoked -too- often...
+ * Returns true if the RCU grace-period kthread needs to be awakened.
  *
- * ->only_xr of the initial lock node is set to @hlock->read != 0, to make sure
- * that <next> -> @hlock and @hlock -> <whatever backwards BFS found> is not
- * -(*S)-> and -(R*)-> (reverse order of -(*R)-> and -(S*)->).
+ * The caller must hold rnp->lock with interrupts disabled.
  */
-static inline void bfs_init_rootb(struct lock_list *lock,
-				  struct held_lock *hlock)
+static bool rcu_advance_cbs(struct rcu_node *rnp, struct rcu_data *rdp)
 {
-	__bfs_init_root(lock, hlock_class(hlock));
-	lock->only_xr = (hlock->read != 0);
-}
+	rcu_lockdep_assert_cblist_protected(rdp);
+	raw_lockdep_assert_held_rcu_node(rnp);
 
-static inline struct lock_list *__bfs_next(struct lock_list *lock, int offset)
-{
-	if (!lock || !lock->parent)
-		return NULL;
+	/* If no pending (not yet ready to invoke) callbacks, nothing to do. */
+	if (!rcu_segcblist_pend_cbs(&rdp->cblist))
+		return false;
 
-	return list_next_or_null_rcu(get_dep_list(lock->parent, offset),
-				     &lock->entry, struct lock_list, entry);
+	/*
+	 * Find all callbacks whose ->gp_seq numbers indicate that they
+	 * are ready to invoke, and put them into the RCU_DONE_TAIL sublist.
+	 */
+	rcu_segcblist_advance(&rdp->cblist, rnp->gp_seq);
+
+	/* Classify any remaining callbacks. */
+	return rcu_accelerate_cbs(rnp, rdp);
 }
 
 /*
- * Breadth-First Search to find a strong path in the dependency graph.
- *
- * @source_entry: the source of the path we are searching for.
- * @data: data used for the second parameter of @match function
- * @match: match function for the search
- * @target_entry: pointer to the target of a matched path
- * @offset: the offset to struct lock_class to determine whether it is
- *          locks_after or locks_before
- *
- * We may have multiple edges (considering different kinds of dependencies,
- * e.g. ER and SN) between two nodes in the dependency graph. But
- * only the strong dependency path in the graph is relevant to deadlocks. A
- * strong dependency path is a dependency path that doesn't have two adjacent
- * dependencies as -(*R)-> -(S*)->, please see:
- *
- *         Documentation/locking/lockdep-design.rst
- *
- * for more explanation of the definition of strong dependency paths
- *
- * In __bfs(), we only traverse in the strong dependency path:
- *
- *     In lock_list::only_xr, we record whether the previous dependency only
- *     has -(*R)-> in the search, and if it does (prev only has -(*R)->), we
- *     filter out any -(S*)-> in the current dependency and after that, the
- *     ->only_xr is set according to whether we only have -(*R)-> left.
+ * Move and classify callbacks, but only if doing so won't require
+ * that the RCU grace-period kthread be awakened.
  */
-static enum bfs_result __bfs(struct lock_list *source_entry,
-			     void *data,
-			     bool (*match)(struct lock_list *entry, void *data),
-			     bool (*skip)(struct lock_list *entry, void *data),
-			     struct lock_list **target_entry,
-			     int offset)
+static void __maybe_unused rcu_advance_cbs_nowake(struct rcu_node *rnp,
+						  struct rcu_data *rdp)
 {
-	struct circular_queue *cq = &lock_cq;
-	struct lock_list *lock = NULL;
-	struct lock_list *entry;
-	struct list_head *head;
-	unsigned int cq_depth;
-	bool first;
+	rcu_lockdep_assert_cblist_protected(rdp);
+	if (!rcu_seq_state(rcu_seq_current(&rnp->gp_seq)) || !raw_spin_trylock_rcu_node(rnp))
+		return;
+	// The grace period cannot end while we hold the rcu_node lock.
+	if (rcu_seq_state(rcu_seq_current(&rnp->gp_seq)))
+		WARN_ON_ONCE(rcu_advance_cbs(rnp, rdp));
+	raw_spin_unlock_rcu_node(rnp);
+}
 
-	lockdep_assert_locked();
+/*
+ * In CONFIG_RCU_STRICT_GRACE_PERIOD=y kernels, attempt to generate a
+ * quiescent state.  This is intended to be invoked when the CPU notices
+ * a new grace period.
+ */
+static void rcu_strict_gp_check_qs(void)
+{
+	if (IS_ENABLED(CONFIG_RCU_STRICT_GRACE_PERIOD)) {
+		rcu_read_lock();
+		rcu_read_unlock();
+	}
+}
 
-	__cq_init(cq);
-	__cq_enqueue(cq, source_entry);
-
-	while ((lock = __bfs_next(lock, offset)) || (lock = __cq_dequeue(cq))) {
-		if (!lock->class)
-			return BFS_EINVALIDNODE;
-
-		/*
-		 * Step 1: check whether we already finish on this one.
-		 *
-		 * If we have visited all the dependencies from this @lock to
-		 * others (iow, if we have visited a
+/*
+ * Update CPU-local rcu_data state to record the beginnings and ends of
+ * grace periods.  The caller must hold the ->lock of the leaf rcu_node
+ * structure corresponding to the current CPU, and must have irqs disabled.
+ * Returns true 

@@ -1,2 +1,2 @@
-d include/config/SCHED_SMT) \
-    $(wildcard includ
+.prepare = snd_cx23885_prepare,
+	.trigger = snd_cx2

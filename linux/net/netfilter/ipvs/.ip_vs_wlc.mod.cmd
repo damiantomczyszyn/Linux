@@ -1,6 +1,5 @@
-e for the next lock_list
-		 * entry, see the comments for the function.
-		 */
-		trace = entry->trace;
+nable(dev, p->modulation);
+	o->modulation = p->modulation;
 
-		if (depth == 0 && (
+	if (p->modulation) {
+		p->carrier_freq = rxclk_rx_s_carrier(dev

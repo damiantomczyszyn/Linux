@@ -1,63 +1,115 @@
-e/config/ACPI_APEI_GHES) \
-    $(wildcard include/config/INTEL_TXT) \
-  arch/x86/include/generated/asm/kmap_size.h \
-  include/asm-generic/kmap_size.h \
-    $(wildcard include/config/DEBUG_KMAP_LOCAL) \
-  include/asm-generic/fixmap.h \
-  arch/x86/include/asm/irq_vectors.h \
-    $(wildcard include/config/HAVE_KVM) \
-    $(wildcard include/config/HYPERV) \
-    $(wildcard include/config/PCI_MSI) \
-  arch/x86/include/asm/cpu_entry_area.h \
-  arch/x86/include/asm/intel_ds.h \
-  arch/x86/include/asm/pgtable_areas.h \
-  arch/x86/include/asm/pgtable_32_areas.h \
-  include/uapi/linux/elf.h \
-  include/uapi/linux/elf-em.h \
-  include/linux/kobject.h \
-    $(wildcard include/config/UEVENT_HELPER) \
-    $(wildcard include/config/DEBUG_KOBJECT_RELEASE) \
-  include/linux/sysfs.h \
-  include/linux/kernfs.h \
-    $(wildcard include/config/KERNFS) \
-  include/linux/idr.h \
-  include/linux/radix-tree.h \
-  include/linux/xarray.h \
-    $(wildcard include/config/XARRAY_MULTI) \
-  include/linux/kconfig.h \
-  include/linux/kobject_ns.h \
-  include/linux/moduleparam.h \
-    $(wildcard include/config/ALPHA) \
-    $(wildcard include/config/IA64) \
-    $(wildcard include/config/PPC64) \
-  include/linux/rbtree_latch.h \
-  include/linux/error-injection.h \
-  include/asm-generic/error-injection.h \
-  include/linux/cfi.h \
-    $(wildcard include/config/CFI_CLANG_SHADOW) \
-  arch/x86/include/asm/module.h \
-    $(wildcard include/config/UNWINDER_ORC) \
-  include/asm-generic/module.h \
-    $(wildcard include/config/HAVE_MOD_ARCH_SPECIFIC) \
-    $(wildcard include/config/MODULES_USE_ELF_REL) \
-    $(wildcard include/config/MODULES_USE_ELF_RELA) \
-  arch/x86/include/asm/orc_types.h \
-  include/linux/i2c.h \
-    $(wildcard include/config/I2C) \
-    $(wildcard include/config/I2C_SLAVE) \
-    $(wildcard include/config/I2C_BOARDINFO) \
-    $(wildcard include/config/I2C_MUX) \
-    $(wildcard include/config/OF) \
-    $(wildcard include/config/ACPI) \
-  include/linux/acpi.h \
-    $(wildcard include/config/ACPI_DEBUGGER) \
-    $(wildcard include/config/ACPI_TABLE_LIB) \
-    $(wildcard include/config/LOONGARCH) \
-    $(wildcard include/config/ARM64) \
-    $(wildcard include/config/ACPI_PROCESSOR_CSTATE) \
-    $(wildcard include/config/ACPI_HOTPLUG_CPU) \
-    $(wildcard include/config/ACPI_HOTPLUG_IOAPIC) \
-    $(wildcard include/config/PCI) \
-    $(wildcard include/config/ACPI_WMI) \
-    $(wildcard include/config/ACPI_NUMA) \
- 
+// SPDX-License-Identifier: GPL-2.0-or-later
+/*
+ * Driver for Silicon Labs C8051F300 microcontroller.
+ *
+ * It is used for LNB power control in TeVii S470,
+ * TBS 6920 PCIe DVB-S2 cards.
+ *
+ * Microcontroller connected to cx23885 GPIO pins:
+ * GPIO0 - data		- P0.3 F300
+ * GPIO1 - reset	- P0.2 F300
+ * GPIO2 - clk		- P0.1 F300
+ * GPIO3 - busy		- P0.0 F300
+ *
+ * Copyright (C) 2009 Igor M. Liplianin <liplianin@me.by>
+ */
+
+#include "cx23885.h"
+#include "cx23885-f300.h"
+
+#define F300_DATA	GPIO_0
+#define F300_RESET	GPIO_1
+#define F300_CLK	GPIO_2
+#define F300_BUSY	GPIO_3
+
+static void f300_set_line(struct cx23885_dev *dev, u32 line, u8 lvl)
+{
+	cx23885_gpio_enable(dev, line, 1);
+	if (lvl == 1)
+		cx23885_gpio_set(dev, line);
+	else
+		cx23885_gpio_clear(dev, line);
+}
+
+static u8 f300_get_line(struct cx23885_dev *dev, u32 line)
+{
+	cx23885_gpio_enable(dev, line, 0);
+
+	return cx23885_gpio_get(dev, line);
+}
+
+static void f300_send_byte(struct cx23885_dev *dev, u8 dta)
+{
+	u8 i;
+
+	for (i = 0; i < 8; i++) {
+		f300_set_line(dev, F300_CLK, 0);
+		udelay(30);
+		f300_set_line(dev, F300_DATA, (dta & 0x80) >> 7);/* msb first */
+		udelay(30);
+		dta <<= 1;
+		f300_set_line(dev, F300_CLK, 1);
+		udelay(30);
+	}
+}
+
+static u8 f300_get_byte(struct cx23885_dev *dev)
+{
+	u8 i, dta = 0;
+
+	for (i = 0; i < 8; i++) {
+		f300_set_line(dev, F300_CLK, 0);
+		udelay(30);
+		dta <<= 1;
+		f300_set_line(dev, F300_CLK, 1);
+		udelay(30);
+		dta |= f300_get_line(dev, F300_DATA);/* msb first */
+
+	}
+
+	return dta;
+}
+
+static u8 f300_xfer(struct dvb_frontend *fe, u8 *buf)
+{
+	struct cx23885_tsport *port = fe->dvb->priv;
+	struct cx23885_dev *dev = port->dev;
+	u8 i, temp, ret = 0;
+
+	temp = buf[0];
+	for (i = 0; i < buf[0]; i++)
+		temp += buf[i + 1];
+	temp = (~temp + 1);/* get check sum */
+	buf[1 + buf[0]] = temp;
+
+	f300_set_line(dev, F300_RESET, 1);
+	f300_set_line(dev, F300_CLK, 1);
+	udelay(30);
+	f300_set_line(dev, F300_DATA, 1);
+	msleep(1);
+
+	/* question: */
+	f300_set_line(dev, F300_RESET, 0);/* begin to send data */
+	msleep(1);
+
+	f300_send_byte(dev, 0xe0);/* the slave address is 0xe0, write */
+	msleep(1);
+
+	temp = buf[0];
+	temp += 2;
+	for (i = 0; i < temp; i++)
+		f300_send_byte(dev, buf[i]);
+
+	f300_set_line(dev, F300_RESET, 1);/* sent data over */
+	f300_set_line(dev, F300_DATA, 1);
+
+	/* answer: */
+	temp = 0;
+	for (i = 0; ((i < 8) & (temp == 0)); i++) {
+		msleep(1);
+		if (f300_get_line(dev, F300_BUSY) == 0)
+			temp = 1;
+	}
+
+	if (i > 7) {
+		pr_err("%s

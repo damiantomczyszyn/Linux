@@ -1,4 +1,3 @@
-timer.h \
-    $(wildcard include/config/HIGH_RES_TIMERS) \
-    $(wildcard include/config/TIME_LOW_RES) \
-    $(wildcard includ
+/* SPDX-License-Identifier: GPL-2.0 */
+extern int f300_set_voltage(struct dvb_frontend *fe,
+			    enum fe_sec_voltage voltage

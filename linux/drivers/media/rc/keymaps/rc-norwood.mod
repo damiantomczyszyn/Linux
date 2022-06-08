@@ -1,2 +1,2 @@
-drivers/media/rc/keymaps/rc-norwood.o
-
+us & VID_BC_MSK_SYNC) ||
+		(status & VI

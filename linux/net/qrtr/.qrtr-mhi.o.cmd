@@ -1,1 +1,8 @@
-¶N,G«±ü·¹ÚŸÇ„‰KL—ÃîÊ*ş?í¼½ÉGœë’Tö(Ïıùò£œÏä¥"Jµ#7‘xş¤Ş:/nxõƒí£ºŞ.!Ã¨
+00);
+		break;
+	}
+}
+
+int cx23885_ir_init(struct cx23885_dev *dev)
+{
+	static struct v4l

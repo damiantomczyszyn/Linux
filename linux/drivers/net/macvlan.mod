@@ -1,1 +1,1 @@
-fig/GENERIC_ATOMIC64) \
+_read(ALT_PIN_OUT_SEL))

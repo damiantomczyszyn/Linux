@@ -1,6 +1,1 @@
-ated/bounds.h \
-  include/linux/mm_types.h \
-    $(wildcard include/config/HAVE_ALIGNED_STRUCT_PAGE) \
-    $(wildcard include/config/USERFAULTFD) \
-    $(wildcard include/config/HAVE_ARCH_COMPAT_MMAP_BASES) \
-   
+cmd_drivers/net/ethernet/8390/8390.ko := ld -r -m elf_i386 --build-id=sha1  -T scripts/module.lds -o drivers/net/ethernet/8390/8390.ko drivers/net/ethernet/8390/8390.o drivers/net/ethernet/8390/8390.mod.o;  true

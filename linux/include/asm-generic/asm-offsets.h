@@ -1,2 +1,1 @@
-VE) \
-  include/linux/scatterlist.h
+// SPDX-License-Identifier: GPL-2.0

@@ -1,2 +1,2 @@
-drivers/media/radio/radio-timb.o
-
+>drv_priv;
+	struct cx23885_buffer 

@@ -1,2 +1,2 @@
-ig/RCU_FANOUT) \
-    $(wil
+drivers/net/dsa/mt7530.o
+

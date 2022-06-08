@@ -1,9 +1,5 @@
-_name(read_bit));
-	}
-
-	return 0;
-}
-
-void print_irqtrace_events(struct task_struct *curr)
-{
-	const struct irqtrace_e
+TV-HVR1700 (PCIe, OEM, No IR, full height)
+		 * DVB-T and MPEG2 HW Encoder */
+		break;
+	case 85021:
+		/* WinTV-HVR1

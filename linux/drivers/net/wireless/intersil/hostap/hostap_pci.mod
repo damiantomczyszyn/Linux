@@ -1,2 +1,2 @@
-UMA) \
-    $(wildcard include/config/NUMA_BALANCING
+			/* attach tuner */
+			memset(&ts2020_config, 0, 

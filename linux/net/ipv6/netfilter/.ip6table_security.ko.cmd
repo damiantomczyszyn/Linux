@@ -1,8 +1,5 @@
-p_next_lockchain(long i);
-unsigned long lock_chain_count(void);
-extern unsigned long nr_stack_trace_entries;
-
-extern unsigned int nr_hardirq_chains;
-extern unsigned int nr_softirq_chains;
-extern unsigned int nr_process_chains;
-extern un
+/* SPDX-License-Identifier: GPL-2.0 */
+/*
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 

@@ -1,2 +1,3 @@
+t("%s\n", __func__);
 
-  arch/x86/include/asm/msr-
+	if (0

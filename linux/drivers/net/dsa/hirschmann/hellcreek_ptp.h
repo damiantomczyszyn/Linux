@@ -1,58 +1,76 @@
-e/config/ACPI_APEI_GHES) \
-    $(wildcard include/config/INTEL_TXT) \
-  arch/x86/include/generated/asm/kmap_size.h \
-  include/asm-generic/kmap_size.h \
-    $(wildcard include/config/DEBUG_KMAP_LOCAL) \
-  include/asm-generic/fixmap.h \
-  arch/x86/include/asm/irq_vectors.h \
-    $(wildcard include/config/HAVE_KVM) \
-    $(wildcard include/config/HYPERV) \
-    $(wildcard include/config/PCI_MSI) \
-  arch/x86/include/asm/cpu_entry_area.h \
-  arch/x86/include/asm/intel_ds.h \
-  arch/x86/include/asm/pgtable_areas.h \
-  arch/x86/include/asm/pgtable_32_areas.h \
-  include/uapi/linux/elf.h \
-  include/uapi/linux/elf-em.h \
-  include/linux/kobject.h \
-    $(wildcard include/config/UEVENT_HELPER) \
-    $(wildcard include/config/DEBUG_KOBJECT_RELEASE) \
-  include/linux/sysfs.h \
-  include/linux/kernfs.h \
-    $(wildcard include/config/KERNFS) \
-  include/linux/idr.h \
-  include/linux/radix-tree.h \
-  include/linux/xarray.h \
-    $(wildcard include/config/XARRAY_MULTI) \
-  include/linux/kconfig.h \
-  include/linux/kobject_ns.h \
-  include/linux/moduleparam.h \
-    $(wildcard include/config/ALPHA) \
-    $(wildcard include/config/IA64) \
-    $(wildcard include/config/PPC64) \
-  include/linux/rbtree_latch.h \
-  include/linux/error-injection.h \
-  include/asm-generic/error-injection.h \
-  include/linux/cfi.h \
-    $(wildcard include/config/CFI_CLANG_SHADOW) \
-  arch/x86/include/asm/module.h \
-    $(wildcard include/config/UNWINDER_ORC) \
-  include/asm-generic/module.h \
-    $(wildcard include/config/HAVE_MOD_ARCH_SPECIFIC) \
-    $(wildcard include/config/MODULES_USE_ELF_REL) \
-    $(wildcard include/config/MODULES_USE_ELF_RELA) \
-  arch/x86/include/asm/orc_types.h \
-  include/linux/delay.h \
-  include/linux/sched.h \
-    $(wildcard include/config/VIRT_CPU_ACCOUNTING_NATIVE) \
-    $(wildcard include/config/SCHED_INFO) \
-    $(wildcard include/config/SCHEDSTATS) \
-    $(wildcard include/config/SCHED_CORE) \
-    $(wildcard include/config/FAIR_GROUP_SCHED) \
-    $(wildcard include/config/RT_GROUP_SCHED) \
-    $(wildcard include/config/RT_MUTEXES) \
-    $(wildcard include/config/UCLAMP_TASK) \
-    $(wildcard include/config/UCLAMP_BUCKETS_COUNT) \
-    $(wildcard include/config/CGROUP_SCHED) \
-    $(wildcard include/config/BLK_DEV_IO_TRACE) \
-    $(wildcard include/con
+/* SPDX-License-Identifier: (GPL-2.0 OR MIT) */
+/*
+ * DSA driver for:
+ * Hirschmann Hellcreek TSN switch.
+ *
+ * Copyright (C) 2019,2020 Hochschule Offenburg
+ * Copyright (C) 2019,2020 Linutronix GmbH
+ * Authors: Kurt Kanzenbach <kurt@linutronix.de>
+ *	    Kamil Alkhouri <kamil.alkhouri@hs-offenburg.de>
+ */
+
+#ifndef _HELLCREEK_PTP_H_
+#define _HELLCREEK_PTP_H_
+
+#include <linux/bitops.h>
+#include <linux/ptp_clock_kernel.h>
+
+#include "hellcreek.h"
+
+/* Every jump in time is 7 ns */
+#define MAX_NS_PER_STEP			7L
+
+/* Correct offset at every clock cycle */
+#define MIN_CLK_CYCLES_BETWEEN_STEPS	0
+
+/* Maximum available slow offset resources */
+#define MAX_SLOW_OFFSET_ADJ					\
+	((unsigned long long)((1 << 30) - 1) * MAX_NS_PER_STEP)
+
+/* four times a second overflow check */
+#define HELLCREEK_OVERFLOW_PERIOD	(HZ / 4)
+
+/* PTP Register */
+#define PR_SETTINGS_C			(0x09 * 2)
+#define PR_SETTINGS_C_RES3TS		BIT(4)
+#define PR_SETTINGS_C_TS_SRC_TK_SHIFT	8
+#define PR_SETTINGS_C_TS_SRC_TK_MASK	GENMASK(9, 8)
+#define PR_COMMAND_C			(0x0a * 2)
+#define PR_COMMAND_C_SS			BIT(0)
+
+#define PR_CLOCK_STATUS_C		(0x0c * 2)
+#define PR_CLOCK_STATUS_C_ENA_DRIFT	BIT(12)
+#define PR_CLOCK_STATUS_C_OFS_ACT	BIT(13)
+#define PR_CLOCK_STATUS_C_ENA_OFS	BIT(14)
+
+#define PR_CLOCK_READ_C			(0x0d * 2)
+#define PR_CLOCK_WRITE_C		(0x0e * 2)
+#define PR_CLOCK_OFFSET_C		(0x0f * 2)
+#define PR_CLOCK_DRIFT_C		(0x10 * 2)
+
+#define PR_SS_FREE_DATA_C		(0x12 * 2)
+#define PR_SS_SYNT_DATA_C		(0x14 * 2)
+#define PR_SS_SYNC_DATA_C		(0x16 * 2)
+#define PR_SS_DRAC_DATA_C		(0x18 * 2)
+
+#define STATUS_OUT			(0x60 * 2)
+#define STATUS_OUT_SYNC_GOOD		BIT(0)
+#define STATUS_OUT_IS_GM		BIT(1)
+
+int hellcreek_ptp_setup(struct hellcreek *hellcreek);
+void hellcreek_ptp_free(struct hellcreek *hellcreek);
+u16 hellcreek_ptp_read(struct hellcreek *hellcreek, unsigned int offset);
+void hellcreek_ptp_write(struct hellcreek *hellcreek, u16 data,
+			 unsigned int offset);
+u64 hellcreek_ptp_gettime_seconds(struct hellcreek *hellcreek, u64 ns);
+
+#define ptp_to_hellcreek(ptp)					\
+	container_of(ptp, struct hellcreek, ptp_clock_info)
+
+#define dw_overflow_to_hellcreek(dw)				\
+	container_of(dw, struct hellcreek, overflow_work)
+
+#define led_to_hellcreek(ldev, led)				\
+	container_of(ldev, struct hellcreek, led)
+
+#endif /* _HELLCREEK_PTP_H_ */

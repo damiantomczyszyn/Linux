@@ -1,1 +1,2 @@
-include/config/HAVE_ALIGNED_STRUCT_
+drivers/net/dsa/xrs700x/xrs700x.o
+

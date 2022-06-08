@@ -1,2 +1,1 @@
-.h \
-  include/uapi/a
+dev->board == CX23885

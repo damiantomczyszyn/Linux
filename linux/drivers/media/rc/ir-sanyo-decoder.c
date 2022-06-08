@@ -1,235 +1,201 @@
-// SPDX-License-Identifier: GPL-2.0
-// ir-sanyo-decoder.c - handle SANYO IR Pulse/Space protocol
-//
-// Copyright (C) 2011 by Mauro Carvalho Chehab
-//
-// This protocol uses the NEC protocol timings. However, data is formatted as:
-//	13 bits Custom Code
-//	13 bits NOT(Custom Code)
-//	8 bits Key data
-//	8 bits NOT(Key data)
-//
-// According with LIRC, this protocol is used on Sanyo, Aiwa and Chinon
-// Information for this protocol is available at the Sanyo LC7461 datasheet.
-
-#include <linux/module.h>
-#include <linux/bitrev.h>
-#include "rc-core-priv.h"
-
-#define SANYO_NBITS		(13+13+8+8)
-#define SANYO_UNIT		563  /* us */
-#define SANYO_HEADER_PULSE	(16  * SANYO_UNIT)
-#define SANYO_HEADER_SPACE	(8   * SANYO_UNIT)
-#define SANYO_BIT_PULSE		(1   * SANYO_UNIT)
-#define SANYO_BIT_0_SPACE	(1   * SANYO_UNIT)
-#define SANYO_BIT_1_SPACE	(3   * SANYO_UNIT)
-#define SANYO_REPEAT_SPACE	(150 * SANYO_UNIT)
-#define	SANYO_TRAILER_PULSE	(1   * SANYO_UNIT)
-#define	SANYO_TRAILER_SPACE	(10  * SANYO_UNIT)	/* in fact, 42 */
-
-enum sanyo_state {
-	STATE_INACTIVE,
-	STATE_HEADER_SPACE,
-	STATE_BIT_PULSE,
-	STATE_BIT_SPACE,
-	STATE_TRAILER_PULSE,
-	STATE_TRAILER_SPACE,
-};
-
-/**
- * ir_sanyo_decode() - Decode one SANYO pulse or space
- * @dev:	the struct rc_dev descriptor of the device
- * @ev:		the struct ir_raw_event descriptor of the pulse/space
+n interrupt which signals that the previous buffer has been
+ * DMAed successfully and that it can be returned to userspace.
  *
- * This function returns -EINVAL if the pulse violates the state machine
+ * It also sets the final jump of the previous buffer to the start of the new
+ * buffer, thus chaining the new buffer into the DMA chain. This is a single
+ * atomic u32 write, so there is no race condition.
+ *
+ * The end-result of all this that you only get an interrupt when a buffer
+ * is ready, so the control flow is very easy.
  */
-static int ir_sanyo_decode(struct rc_dev *dev, struct ir_raw_event ev)
+static void buffer_queue(struct vb2_buffer *vb)
 {
-	struct sanyo_dec *data = &dev->raw->sanyo;
-	u32 scancode;
-	u16 address;
-	u8 command, not_command;
+	struct vb2_v4l2_buffer *vbuf = to_vb2_v4l2_buffer(vb);
+	struct cx23885_dev *dev = vb->vb2_queue->drv_priv;
+	struct cx23885_buffer   *buf = container_of(vbuf,
+		struct cx23885_buffer, vb);
+	struct cx23885_buffer   *prev;
+	struct cx23885_dmaqueue *q    = &dev->vidq;
+	unsigned long flags;
 
-	if (!is_timing_event(ev)) {
-		if (ev.overflow) {
-			dev_dbg(&dev->dev, "SANYO event overflow received. reset to state 0\n");
-			data->state = STATE_INACTIVE;
-		}
-		return 0;
+	/* add jump to start */
+	buf->risc.cpu[1] = cpu_to_le32(buf->risc.dma + 12);
+	buf->risc.jmp[0] = cpu_to_le32(RISC_JUMP | RISC_CNT_INC);
+	buf->risc.jmp[1] = cpu_to_le32(buf->risc.dma + 12);
+	buf->risc.jmp[2] = cpu_to_le32(0); /* bits 63-32 */
+
+	spin_lock_irqsave(&dev->slock, flags);
+	if (list_empty(&q->active)) {
+		list_add_tail(&buf->queue, &q->active);
+		dprintk(2, "[%p/%d] buffer_queue - first active\n",
+			buf, buf->vb.vb2_buf.index);
+	} else {
+		buf->risc.cpu[0] |= cpu_to_le32(RISC_IRQ1);
+		prev = list_entry(q->active.prev, struct cx23885_buffer,
+			queue);
+		list_add_tail(&buf->queue, &q->active);
+		prev->risc.jmp[1] = cpu_to_le32(buf->risc.dma);
+		dprintk(2, "[%p/%d] buffer_queue - append to active\n",
+				buf, buf->vb.vb2_buf.index);
 	}
-
-	dev_dbg(&dev->dev, "SANYO decode started at state %d (%uus %s)\n",
-		data->state, ev.duration, TO_STR(ev.pulse));
-
-	switch (data->state) {
-
-	case STATE_INACTIVE:
-		if (!ev.pulse)
-			break;
-
-		if (eq_margin(ev.duration, SANYO_HEADER_PULSE, SANYO_UNIT / 2)) {
-			data->count = 0;
-			data->state = STATE_HEADER_SPACE;
-			return 0;
-		}
-		break;
-
-
-	case STATE_HEADER_SPACE:
-		if (ev.pulse)
-			break;
-
-		if (eq_margin(ev.duration, SANYO_HEADER_SPACE, SANYO_UNIT / 2)) {
-			data->state = STATE_BIT_PULSE;
-			return 0;
-		}
-
-		break;
-
-	case STATE_BIT_PULSE:
-		if (!ev.pulse)
-			break;
-
-		if (!eq_margin(ev.duration, SANYO_BIT_PULSE, SANYO_UNIT / 2))
-			break;
-
-		data->state = STATE_BIT_SPACE;
-		return 0;
-
-	case STATE_BIT_SPACE:
-		if (ev.pulse)
-			break;
-
-		if (!data->count && geq_margin(ev.duration, SANYO_REPEAT_SPACE, SANYO_UNIT / 2)) {
-			rc_repeat(dev);
-			dev_dbg(&dev->dev, "SANYO repeat last key\n");
-			data->state = STATE_INACTIVE;
-			return 0;
-		}
-
-		data->bits <<= 1;
-		if (eq_margin(ev.duration, SANYO_BIT_1_SPACE, SANYO_UNIT / 2))
-			data->bits |= 1;
-		else if (!eq_margin(ev.duration, SANYO_BIT_0_SPACE, SANYO_UNIT / 2))
-			break;
-		data->count++;
-
-		if (data->count == SANYO_NBITS)
-			data->state = STATE_TRAILER_PULSE;
-		else
-			data->state = STATE_BIT_PULSE;
-
-		return 0;
-
-	case STATE_TRAILER_PULSE:
-		if (!ev.pulse)
-			break;
-
-		if (!eq_margin(ev.duration, SANYO_TRAILER_PULSE, SANYO_UNIT / 2))
-			break;
-
-		data->state = STATE_TRAILER_SPACE;
-		return 0;
-
-	case STATE_TRAILER_SPACE:
-		if (ev.pulse)
-			break;
-
-		if (!geq_margin(ev.duration, SANYO_TRAILER_SPACE, SANYO_UNIT / 2))
-			break;
-
-		address     = bitrev16((data->bits >> 29) & 0x1fff) >> 3;
-		/* not_address = bitrev16((data->bits >> 16) & 0x1fff) >> 3; */
-		command	    = bitrev8((data->bits >>  8) & 0xff);
-		not_command = bitrev8((data->bits >>  0) & 0xff);
-
-		if ((command ^ not_command) != 0xff) {
-			dev_dbg(&dev->dev, "SANYO checksum error: received 0x%08llx\n",
-				data->bits);
-			data->state = STATE_INACTIVE;
-			return 0;
-		}
-
-		scancode = address << 8 | command;
-		dev_dbg(&dev->dev, "SANYO scancode: 0x%06x\n", scancode);
-		rc_keydown(dev, RC_PROTO_SANYO, scancode, 0);
-		data->state = STATE_INACTIVE;
-		return 0;
-	}
-
-	dev_dbg(&dev->dev, "SANYO decode failed at count %d state %d (%uus %s)\n",
-		data->count, data->state, ev.duration, TO_STR(ev.pulse));
-	data->state = STATE_INACTIVE;
-	return -EINVAL;
+	spin_unlock_irqrestore(&dev->slock, flags);
 }
 
-static const struct ir_raw_timings_pd ir_sanyo_timings = {
-	.header_pulse  = SANYO_HEADER_PULSE,
-	.header_space  = SANYO_HEADER_SPACE,
-	.bit_pulse     = SANYO_BIT_PULSE,
-	.bit_space[0]  = SANYO_BIT_0_SPACE,
-	.bit_space[1]  = SANYO_BIT_1_SPACE,
-	.trailer_pulse = SANYO_TRAILER_PULSE,
-	.trailer_space = SANYO_TRAILER_SPACE,
-	.msb_first     = 1,
-};
-
-/**
- * ir_sanyo_encode() - Encode a scancode as a stream of raw events
- *
- * @protocol:	protocol to encode
- * @scancode:	scancode to encode
- * @events:	array of raw ir events to write into
- * @max:	maximum size of @events
- *
- * Returns:	The number of events written.
- *		-ENOBUFS if there isn't enough space in the array to fit the
- *		encoding. In this case all @max events will have been written.
- */
-static int ir_sanyo_encode(enum rc_proto protocol, u32 scancode,
-			   struct ir_raw_event *events, unsigned int max)
+static int cx23885_start_streaming(struct vb2_queue *q, unsigned int count)
 {
-	struct ir_raw_event *e = events;
-	int ret;
-	u64 raw;
+	struct cx23885_dev *dev = q->drv_priv;
+	struct cx23885_dmaqueue *dmaq = &dev->vidq;
+	struct cx23885_buffer *buf = list_entry(dmaq->active.next,
+			struct cx23885_buffer, queue);
 
-	raw = ((u64)(bitrev16(scancode >> 8) & 0xfff8) << (8 + 8 + 13 - 3)) |
-	      ((u64)(bitrev16(~scancode >> 8) & 0xfff8) << (8 + 8 +  0 - 3)) |
-	      ((bitrev8(scancode) & 0xff) << 8) |
-	      (bitrev8(~scancode) & 0xff);
-
-	ret = ir_raw_gen_pd(&e, max, &ir_sanyo_timings, SANYO_NBITS, raw);
-	if (ret < 0)
-		return ret;
-
-	return e - events;
-}
-
-static struct ir_raw_handler sanyo_handler = {
-	.protocols	= RC_PROTO_BIT_SANYO,
-	.decode		= ir_sanyo_decode,
-	.encode		= ir_sanyo_encode,
-	.carrier	= 38000,
-	.min_timeout	= SANYO_TRAILER_SPACE,
-};
-
-static int __init ir_sanyo_decode_init(void)
-{
-	ir_raw_handler_register(&sanyo_handler);
-
-	printk(KERN_INFO "IR SANYO protocol handler initialized\n");
+	cx23885_start_video_dma(dev, dmaq, buf);
 	return 0;
 }
 
-static void __exit ir_sanyo_decode_exit(void)
+static void cx23885_stop_streaming(struct vb2_queue *q)
 {
-	ir_raw_handler_unregister(&sanyo_handler);
+	struct cx23885_dev *dev = q->drv_priv;
+	struct cx23885_dmaqueue *dmaq = &dev->vidq;
+	unsigned long flags;
+
+	cx_clear(VID_A_DMA_CTL, 0x11);
+	spin_lock_irqsave(&dev->slock, flags);
+	while (!list_empty(&dmaq->active)) {
+		struct cx23885_buffer *buf = list_entry(dmaq->active.next,
+			struct cx23885_buffer, queue);
+
+		list_del(&buf->queue);
+		vb2_buffer_done(&buf->vb.vb2_buf, VB2_BUF_STATE_ERROR);
+	}
+	spin_unlock_irqrestore(&dev->slock, flags);
 }
 
-module_init(ir_sanyo_decode_init);
-module_exit(ir_sanyo_decode_exit);
+static const struct vb2_ops cx23885_video_qops = {
+	.queue_setup    = queue_setup,
+	.buf_prepare  = buffer_prepare,
+	.buf_finish = buffer_finish,
+	.buf_queue    = buffer_queue,
+	.wait_prepare = vb2_ops_wait_prepare,
+	.wait_finish = vb2_ops_wait_finish,
+	.start_streaming = cx23885_start_streaming,
+	.stop_streaming = cx23885_stop_streaming,
+};
 
-MODULE_LICENSE("GPL v2");
-MODULE_AUTHOR("Mauro Carvalho Chehab");
-MODULE_AUTHOR("Red Hat Inc. (http://www.redhat.com)");
-MODULE_DESCRIPTION("SANYO IR protocol decoder");
+/* ------------------------------------------------------------------ */
+/* VIDEO IOCTLS                                                       */
+
+static int vidioc_g_fmt_vid_cap(struct file *file, void *priv,
+	struct v4l2_format *f)
+{
+	struct cx23885_dev *dev = video_drvdata(file);
+
+	f->fmt.pix.width        = dev->width;
+	f->fmt.pix.height       = dev->height;
+	f->fmt.pix.field        = dev->field;
+	f->fmt.pix.pixelformat  = dev->fmt->fourcc;
+	f->fmt.pix.bytesperline =
+		(f->fmt.pix.width * dev->fmt->depth) >> 3;
+	f->fmt.pix.sizeimage =
+		f->fmt.pix.height * f->fmt.pix.bytesperline;
+	f->fmt.pix.colorspace   = V4L2_COLORSPACE_SMPTE170M;
+
+	return 0;
+}
+
+static int vidioc_try_fmt_vid_cap(struct file *file, void *priv,
+	struct v4l2_format *f)
+{
+	struct cx23885_dev *dev = video_drvdata(file);
+	struct cx23885_fmt *fmt;
+	enum v4l2_field   field;
+	unsigned int      maxw, maxh;
+
+	fmt = format_by_fourcc(f->fmt.pix.pixelformat);
+	if (NULL == fmt)
+		return -EINVAL;
+
+	field = f->fmt.pix.field;
+	maxw  = 720;
+	maxh  = norm_maxh(dev->tvnorm);
+
+	if (V4L2_FIELD_ANY == field) {
+		field = (f->fmt.pix.height > maxh/2)
+			? V4L2_FIELD_INTERLACED
+			: V4L2_FIELD_BOTTOM;
+	}
+
+	switch (field) {
+	case V4L2_FIELD_TOP:
+	case V4L2_FIELD_BOTTOM:
+		maxh = maxh / 2;
+		break;
+	case V4L2_FIELD_INTERLACED:
+	case V4L2_FIELD_SEQ_TB:
+	case V4L2_FIELD_SEQ_BT:
+		break;
+	default:
+		field = V4L2_FIELD_INTERLACED;
+		break;
+	}
+
+	f->fmt.pix.field = field;
+	v4l_bound_align_image(&f->fmt.pix.width, 48, maxw, 2,
+			      &f->fmt.pix.height, 32, maxh, 0, 0);
+	f->fmt.pix.bytesperline =
+		(f->fmt.pix.width * fmt->depth) >> 3;
+	f->fmt.pix.sizeimage =
+		f->fmt.pix.height * f->fmt.pix.bytesperline;
+	f->fmt.pix.colorspace = V4L2_COLORSPACE_SMPTE170M;
+
+	return 0;
+}
+
+static int vidioc_s_fmt_vid_cap(struct file *file, void *priv,
+	struct v4l2_format *f)
+{
+	struct cx23885_dev *dev = video_drvdata(file);
+	struct v4l2_subdev_format format = {
+		.which = V4L2_SUBDEV_FORMAT_ACTIVE,
+	};
+	int err;
+
+	dprintk(2, "%s()\n", __func__);
+	err = vidioc_try_fmt_vid_cap(file, priv, f);
+
+	if (0 != err)
+		return err;
+
+	if (vb2_is_busy(&dev->vb2_vidq) || vb2_is_busy(&dev->vb2_vbiq) ||
+	    vb2_is_busy(&dev->vb2_mpegq))
+		return -EBUSY;
+
+	dev->fmt        = format_by_fourcc(f->fmt.pix.pixelformat);
+	dev->width      = f->fmt.pix.width;
+	dev->height     = f->fmt.pix.height;
+	dev->field	= f->fmt.pix.field;
+	dprintk(2, "%s() width=%d height=%d field=%d\n", __func__,
+		dev->width, dev->height, dev->field);
+	v4l2_fill_mbus_format(&format.format, &f->fmt.pix, MEDIA_BUS_FMT_FIXED);
+	call_all(dev, pad, set_fmt, NULL, &format);
+	v4l2_fill_pix_format(&f->fmt.pix, &format.format);
+	/* set_fmt overwrites f->fmt.pix.field, restore it */
+	f->fmt.pix.field = dev->field;
+	return 0;
+}
+
+static int vidioc_querycap(struct file *file, void  *priv,
+	struct v4l2_capability *cap)
+{
+	struct cx23885_dev *dev = video_drvdata(file);
+
+	strscpy(cap->driver, "cx23885", sizeof(cap->driver));
+	strscpy(cap->card, cx23885_boards[dev->board].name,
+		sizeof(cap->card));
+	sprintf(cap->bus_info, "PCIe:%s", pci_name(dev->pci));
+	cap->capabilities = V4L2_CAP_READWRITE | V4L2_CAP_STREAMING |
+			    V4L2_CAP_AUDIO | V4L2_CAP_VBI_CAPTURE |
+			    V4L2_CAP_VIDEO_CAPTURE |
+			    V4L2_CAP_DEVICE_CAPS;
+	switch (dev->board) { /* i2c device tuners */
+	case CX23885_BOARD_HAUPPAUGE_HVR1265_K4:
+	case CX23885_BOARD

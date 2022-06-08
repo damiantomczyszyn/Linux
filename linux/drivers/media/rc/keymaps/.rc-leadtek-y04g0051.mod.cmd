@@ -1,1 +1,6 @@
-cmd_drivers/media/rc/keymaps/rc-leadtek-y04g0051.mod := { echo  drivers/media/rc/keymaps/rc-leadtek-y04g0051.o;  echo; } > drivers/media/rc/keymaps/rc-leadtek-y04g0051.mod
+UGE_HVR1500:
+	case CX23885_BOARD_MPX885:
+	case CX23885_BOARD_MYGICA_X8507:
+	case CX23885_BOARD_TERRATEC_CINERGY_T_PCIE_DUAL:
+	case CX23885_BOARD_AVERMEDIA_HC81R:
+	case CX23

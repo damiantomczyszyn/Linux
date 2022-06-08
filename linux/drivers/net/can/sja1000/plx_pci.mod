@@ -1,2 +1,2 @@
-U_FANOUT_LEAF) \
-  include/linux/pa
+drivers/net/can/sja1000/plx_pci.o
+

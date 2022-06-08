@@ -1,2 +1,2 @@
-/DEBUG_SG) \
-    $(wildcard include/config/S
+>drv_priv;
+	struct cx23885_buffer *buf = con

@@ -1,2 +1,3 @@
-drivers/media/rc/keymaps/rc-khadas.o
-
+-T/C/S2, IR) */
+	}, {
+		.subvendor = 0

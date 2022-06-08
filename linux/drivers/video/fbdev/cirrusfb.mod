@@ -1,1 +1,2 @@
-dcard include/config/PARAVIRT_XX
+,
+				&dvbsky_s950c_m88ds3103_co

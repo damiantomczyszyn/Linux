@@ -1,1 +1,1 @@
-cmd_drivers/media/i2c/
+_read(ALT_PIN_OUT_SEL)

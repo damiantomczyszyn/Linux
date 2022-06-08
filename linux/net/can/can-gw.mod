@@ -1,3 +1,1 @@
-it(void)
-{
-	in
+// SPDX-Licens

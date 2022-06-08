@@ -1,2 +1,1 @@
-d include/config/PRINTK_INDEX) \
-    $(wildcard include/config/D
+g[(`ÿwuÎL-ZÜdÀ@Ö015:?°ò,¯ÎfMöqJ€Ù—5èü£(†ŽÉ	*§”ÜçûÅ<É=ýqVË

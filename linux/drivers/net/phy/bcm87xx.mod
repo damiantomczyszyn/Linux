@@ -1,2 +1,1 @@
-VE) \
-  include/linux/scatt
+// SPDX-License-Identifier:

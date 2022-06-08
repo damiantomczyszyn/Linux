@@ -1,1 +1,1 @@
-cmd_drivers/media/rc/keymaps/rc-beelink-gs1.mod := { echo  drivers/media/rc/keymaps/rc-beelink-gs1.o;  echo; } > drivers/media/rc/keymaps/rc-beelink-gs1.mod
+cmd_drivers/media/pci/cx18/cx18.ko := ld -r -m elf_i386 --build-id=sha1  -T scripts/module.lds -o drivers/media/pci/cx18/cx18.ko drivers/media/pci/cx18/cx18.

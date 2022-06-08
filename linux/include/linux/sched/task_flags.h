@@ -1,2 +1,2 @@
-\
-    $(wildcard include/
+  = 0x61,
+	.if_khz       

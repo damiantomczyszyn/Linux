@@ -1,24 +1,23 @@
-.h \
-  include/linux/percpu-refcount.h \
-  include/linux/kasan.h \
-    $(wildcard include/config/KASAN_STACK) \
-    $(wildcard include/config/KASAN_VMALLOC) \
-    $(wildcard include/config/KASAN_INLINE) \
-  include/linux/kasan-enabled.h \
-  include/linux/device.h \
-    $(wildcard include/config/GENERIC_MSI_IRQ_DOMAIN) \
-    $(wildcard include/config/GENERIC_MSI_IRQ) \
-    $(wildcard include/config/ENERGY_MODEL) \
-    $(wildcard include/config/PINCTRL) \
-    $(wildcard include/config/DMA_OPS) \
-    $(wildcard include/config/DMA_DECLARE_COHERENT) \
-    $(wildcard include/config/DMA_CMA) \
-    $(wildcard include/config/SWIOTLB) \
-    $(wildcard include/config/ARCH_HAS_SYNC_DMA_FOR_DEVICE) \
-    $(wildcard include/config/ARCH_HAS_SYNC_DMA_FOR_CPU) \
-    $(wildcard include/config/ARCH_HAS_SYNC_DMA_FOR_CPU_ALL) \
-    $(wildcard include/config/DMA_OPS_BYPASS) \
-    $(wildcard include/config/DEVTMPFS) \
-    $(wildcard include/config/SYSFS_DEPRECATED) \
-  include/linux/dev_printk.h \
-  include/linux/ratel
+/* SPDX-License-Identifier: GPL-2.0-or-later */
+
+/* Marvell 88E6xxx Switch devlink support. */
+
+#ifndef _MV88E6XXX_DEVLINK_H
+#define _MV88E6XXX_DEVLINK_H
+
+int mv88e6xxx_setup_devlink_params(struct dsa_switch *ds);
+void mv88e6xxx_teardown_devlink_params(struct dsa_switch *ds);
+int mv88e6xxx_setup_devlink_resources(struct dsa_switch *ds);
+int mv88e6xxx_devlink_param_get(struct dsa_switch *ds, u32 id,
+				struct devlink_param_gset_ctx *ctx);
+int mv88e6xxx_devlink_param_set(struct dsa_switch *ds, u32 id,
+				struct devlink_param_gset_ctx *ctx);
+int mv88e6xxx_setup_devlink_regions_global(struct dsa_switch *ds);
+void mv88e6xxx_teardown_devlink_regions_global(struct dsa_switch *ds);
+int mv88e6xxx_setup_devlink_regions_port(struct dsa_switch *ds, int port);
+void mv88e6xxx_teardown_devlink_regions_port(struct dsa_switch *ds, int port);
+
+int mv88e6xxx_devlink_info_get(struct dsa_switch *ds,
+			       struct devlink_info_req *req,
+			       struct netlink_ext_ack *extack);
+#endif /* _MV88E6XXX_DEVLINK_H */

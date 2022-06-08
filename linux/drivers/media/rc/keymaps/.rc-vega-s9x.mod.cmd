@@ -1,1 +1,5 @@
-cmd_drivers/media/rc/keymaps/rc-vega-s9x.mod := { echo  drivers/media/rc/keymaps/rc-vega-s9x.o;  echo; } > drivers/media/rc/keymaps/rc-vega-s9x.mod
+ffer *vbuf = to_vb2_v4l2_buffer(vb);
+	struct cx23885_buffer *buf = container_of(vbuf,
+		struct cx23885_buffer, vb);
+
+	cx23885_free_buffer(vb->vb2_qu

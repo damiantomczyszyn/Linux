@@ -1,1 +1,1 @@
-(wildcard include/config/SPLIT_PTLOCK_CPUS) 
+ct tda10071_platform_data tda10071_pdata = h

@@ -1,564 +1,850 @@
-h \
-  include/vdso/bits.h \
-  include/linux/build_bug.h \
-  include/linux/compiler.h \
-    $(wildcard include/config/TRACE_BRANCH_PROFILING) \
-    $(wildcard include/config/PROFILE_ALL_BRANCHES) \
-    $(wildcard include/config/STACK_VALIDATION) \
-    $(wildcard include/config/CFI_CLANG) \
-  arch/x86/include/generated/asm/rwonce.h \
-  include/asm-generic/rwonce.h \
-  include/linux/kasan-checks.h \
-    $(wildcard include/config/KASAN_GENERIC) \
-    $(wildcard include/config/KASAN_SW_TAGS) \
-  include/linux/kcsan-checks.h \
-    $(wildcard include/config/KCSAN) \
-    $(wildcard include/config/KCSAN_WEAK_MEMORY) \
-    $(wildcard include/config/KCSAN_IGNORE_ATOMICS) \
-  include/linux/typecheck.h \
-  include/uapi/linux/kernel.h \
-  include/uapi/linux/sysinfo.h \
-  arch/x86/include/asm/bitops.h \
-    $(wildcard include/config/X86_64) \
-    $(wildcard include/config/X86_CMOV) \
-  arch/x86/include/asm/alternative.h \
-    $(wildcard include/config/SMP) \
-  include/linux/stringify.h \
-  arch/x86/include/asm/asm.h \
-    $(wildcard include/config/KPROBES) \
-  arch/x86/include/asm/extable_fixup_types.h \
-  arch/x86/include/asm/rmwcc.h \
-    $(wildcard include/config/CC_HAS_ASM_GOTO) \
-  arch/x86/include/asm/barrier.h \
-  arch/x86/include/asm/nops.h \
-  include/asm-generic/barrier.h \
-  include/asm-generic/bitops/fls64.h \
-  include/asm-generic/bitops/sched.h \
-  arch/x86/include/asm/arch_hweight.h \
-  arch/x86/include/asm/cpufeatures.h \
-  arch/x86/include/asm/required-features.h \
-    $(wildcard include/config/X86_MINIMUM_CPU_FAMILY) \
-    $(wildcard include/config/MATH_EMULATION) \
-    $(wildcard include/config/X86_PAE) \
-    $(wildcard include/config/X86_CMPXCHG64) \
-    $(wildcard include/config/X86_P6_NOP) \
-    $(wildcard include/config/MATOM) \
-    $(wildcard include/config/PARAVIRT_XXL) \
-  arch/x86/include/asm/disabled-features.h \
-    $(wildcard include/config/X86_SMAP) \
-    $(wildcard include/config/X86_UMIP) \
-    $(wildcard include/config/X86_INTEL_MEMORY_PROTECTION_KEYS) \
-    $(wildcard include/config/X86_5LEVEL) \
-    $(wildcard include/config/PAGE_TABLE_ISOLATION) \
-    $(wildcard include/config/INTEL_IOMMU_SVM) \
-    $(wildcard include/config/X86_SGX) \
-  include/asm-generic/bitops/const_hweight.h \
-  include/asm-generic/bitops/instrumented-atomic.h \
-  include/linux/instrumented.h \
-  include/asm-generic/bitops/instrumented-non-atomic.h \
-    $(wildcard include/config/KCSAN_ASSUME_PLAIN_WRITES_ATOMIC) \
-  include/asm-generic/bitops/instrumented-lock.h \
-  include/asm-generic/bitops/le.h \
-  arch/x86/include/uapi/asm/byteorder.h \
-  include/linux/byteorder/little_endian.h \
-  include/uapi/linux/byteorder/little_endian.h \
-  include/linux/swab.h \
-  include/uapi/linux/swab.h \
-  arch/x86/include/uapi/asm/swab.h \
-  include/linux/byteorder/generic.h \
-  include/asm-generic/bitops/ext2-atomic-setbit.h \
-  include/linux/sched.h \
-    $(wildcard include/config/DEBUG_ATOMIC_SLEEP) \
-    $(wildcard include/config/PREEMPT_RT) \
-    $(wildcard include/config/VIRT_CPU_ACCOUNTING_NATIVE) \
-    $(wildcard include/config/SCHED_INFO) \
-    $(wildcard include/config/SCHEDSTATS) \
-    $(wildcard include/config/SCHED_CORE) \
-    $(wildcard include/config/FAIR_GROUP_SCHED) \
-    $(wildcard include/config/RT_GROUP_SCHED) \
-    $(wildcard include/config/RT_MUTEXES) \
-    $(wildcard include/config/UCLAMP_TASK) \
-    $(wildcard include/config/UCLAMP_BUCKETS_COUNT) \
-    $(wildcard include/config/KMAP_LOCAL) \
-    $(wildcard include/config/THREAD_INFO_IN_TASK) \
-    $(wildcard include/config/CGROUP_SCHED) \
-    $(wildcard include/config/PREEMPT_NOTIFIERS) \
-    $(wildcard include/config/BLK_DEV_IO_TRACE) \
-    $(wildcard include/config/PREEMPT_RCU) \
-    $(wildcard include/config/TASKS_RCU) \
-    $(wildcard include/config/TASKS_TRACE_RCU) \
-    $(wildcard include/config/PSI) \
-    $(wildcard include/config/MEMCG) \
-    $(wildcard include/config/COMPAT_BRK) \
-    $(wildcard include/config/CGROUPS) \
-    $(wildcard include/config/BLK_CGROUP) \
-    $(wildcard include/config/PAGE_OWNER) \
-    $(wildcard include/config/EVENTFD) \
-    $(wildcard include/config/IOMMU_SVA) \
-    $(wildcard include/config/STACKPROTECTOR) \
-    $(wildcard include/config/ARCH_HAS_SCALED_CPUTIME) \
-    $(wildcard include/config/VIRT_CPU_ACCOUNTING_GEN) \
-    $(wildcard include/config/NO_HZ_FULL) \
-    $(wildcard include/config/POSIX_CPUTIMERS) \
-    $(wildcard include/config/POSIX_CPU_TIMERS_TASK_WORK) \
-    $(wildcard include/config/KEYS) \
-    $(wildcard include/config/SYSVIPC) \
-    $(wildcard include/config/DETECT_HUNG_TASK) \
-    $(wildcard include/config/IO_URING) \
-    $(wildcard include/config/AUDIT) \
-    $(wildcard include/config/AUDITSYSCALL) \
-    $(wildcard include/config/DEBUG_MUTEXES) \
-    $(wildcard include/config/TRACE_IRQFLAGS) \
-    $(wildcard include/config/LOCKDEP) \
-    $(wildcard include/config/UBSAN) \
-    $(wildcard include/config/UBSAN_TRAP) \
-    $(wildcard include/config/COMPACTION) \
-    $(wildcard include/config/TASK_XACCT) \
-    $(wildcard include/config/CPUSETS) \
-    $(wildcard include/config/X86_CPU_RESCTRL) \
-    $(wildcard include/config/FUTEX) \
-    $(wildcard include/config/COMPAT) \
-    $(wildcard include/config/PERF_EVENTS) \
-    $(wildcard include/config/DEBUG_PREEMPT) \
-    $(wildcard include/config/NUMA) \
-    $(wildcard include/config/NUMA_BALANCING) \
-    $(wildcard include/config/RSEQ) \
-    $(wildcard include/config/TASK_DELAY_ACCT) \
-    $(wildcard include/config/FAULT_INJECTION) \
-    $(wildcard include/config/LATENCYTOP) \
-    $(wildcard include/config/KUNIT) \
-    $(wildcard include/config/FUNCTION_GRAPH_TRACER) \
-    $(wildcard include/config/TRACING) \
-    $(wildcard include/config/UPROBES) \
-    $(wildcard include/config/BCACHE) \
-    $(wildcard include/config/MMU) \
-    $(wildcard include/config/VMAP_STACK) \
-    $(wildcard include/config/LIVEPATCH) \
-    $(wildcard include/config/SECURITY) \
-    $(wildcard include/config/BPF_SYSCALL) \
-    $(wildcard include/config/GCC_PLUGIN_STACKLEAK) \
-    $(wildcard include/config/X86_MCE) \
-    $(wildcard include/config/KRETPROBES) \
-    $(wildcard include/config/RETHOOK) \
-    $(wildcard include/config/ARCH_HAS_PARANOID_L1D_FLUSH) \
-    $(wildcard include/config/ARCH_TASK_STRUCT_ON_STACK) \
-    $(wildcard include/config/PREEMPTION) \
-    $(wildcard include/config/PREEMPT_DYNAMIC) \
-    $(wildcard include/config/HAVE_PREEMPT_DYNAMIC_CALL) \
-    $(wildcard include/config/HAVE_PREEMPT_DYNAMIC_KEY) \
-    $(wildcard include/config/DEBUG_RSEQ) \
-  include/uapi/linux/sched.h \
-  arch/x86/include/asm/current.h \
-  arch/x86/include/asm/percpu.h \
-    $(wildcard include/config/X86_64_SMP) \
-  include/linux/kernel.h \
-    $(wildcard include/config/PREEMPT_VOLUNTARY_BUILD) \
-    $(wildcard include/config/PREEMPT_) \
-    $(wildcard include/config/PROVE_LOCKING) \
-    $(wildcard include/config/FTRACE_MCOUNT_RECORD) \
-  include/linux/stdarg.h \
-  include/linux/align.h \
-  include/linux/limits.h \
-  include/uapi/linux/limits.h \
-  include/vdso/limits.h \
-  include/linux/linkage.h \
-    $(wildcard include/config/ARCH_USE_SYM_ANNOTATIONS) \
-  include/linux/export.h \
-    $(wildcard include/config/MODVERSIONS) \
-    $(wildcard include/config/MODULE_REL_CRCS) \
-    $(wildcard include/config/HAVE_ARCH_PREL32_RELOCATIONS) \
-    $(wildcard include/config/MODULES) \
-    $(wildcard include/config/TRIM_UNUSED_KSYMS) \
-  arch/x86/include/asm/linkage.h \
-    $(wildcard include/config/X86_ALIGNMENT_16) \
-    $(wildcard include/config/SLS) \
-  arch/x86/include/asm/ibt.h \
-    $(wildcard include/config/X86_KERNEL_IBT) \
-  include/linux/container_of.h \
-  include/linux/err.h \
-  arch/x86/include/generated/uapi/asm/errno.h \
-  include/uapi/asm-generic/errno.h \
-  include/uapi/asm-generic/errno-base.h \
-  include/linux/kstrtox.h \
-  include/linux/minmax.h \
-  include/linux/panic.h \
-    $(wildcard include/config/PANIC_TIMEOUT) \
-  include/linux/printk.h \
-    $(wildcard include/config/MESSAGE_LOGLEVEL_DEFAULT) \
-    $(wildcard include/config/CONSOLE_LOGLEVEL_DEFAULT) \
-    $(wildcard include/config/CONSOLE_LOGLEVEL_QUIET) \
-    $(wildcard include/config/EARLY_PRINTK) \
-    $(wildcard include/config/PRINTK) \
-    $(wildcard include/config/PRINTK_INDEX) \
-    $(wildcard include/config/DYNAMIC_DEBUG) \
-    $(wildcard include/config/DYNAMIC_DEBUG_CORE) \
-  include/linux/init.h \
-    $(wildcard include/config/STRICT_KERNEL_RWX) \
-    $(wildcard include/config/STRICT_MODULE_RWX) \
-    $(wildcard include/config/LTO_CLANG) \
-  include/linux/kern_levels.h \
-  include/linux/cache.h \
-    $(wildcard include/config/ARCH_HAS_CACHE_LINE_SIZE) \
-  arch/x86/include/asm/cache.h \
-    $(wildcard include/config/X86_L1_CACHE_SHIFT) \
-    $(wildcard include/config/X86_INTERNODE_CACHE_SHIFT) \
-    $(wildcard include/config/X86_VSMP) \
-  include/linux/ratelimit_types.h \
-  include/uapi/linux/param.h \
-  arch/x86/include/generated/uapi/asm/param.h \
-  include/asm-generic/param.h \
-    $(wildcard include/config/HZ) \
-  include/uapi/asm-generic/param.h \
-  include/linux/spinlock_types_raw.h \
-    $(wildcard include/config/DEBUG_SPINLOCK) \
-    $(wildcard include/config/DEBUG_LOCK_ALLOC) \
-  arch/x86/include/asm/spinlock_types.h \
-  include/asm-generic/qspinlock_types.h \
-    $(wildcard include/config/NR_CPUS) \
-  include/asm-generic/qrwlock_types.h \
-  include/linux/lockdep_types.h \
-    $(wildcard include/config/PROVE_RAW_LOCK_NESTING) \
-    $(wildcard include/config/LOCK_STAT) \
-  include/linux/once_lite.h \
-  include/linux/static_call_types.h \
-    $(wildcard include/config/HAVE_STATIC_CALL) \
-    $(wildcard include/config/HAVE_STATIC_CALL_INLINE) \
-  include/linux/instruction_pointer.h \
-  include/asm-generic/percpu.h \
-    $(wildcard include/config/HAVE_SETUP_PER_CPU_AREA) \
-  include/linux/threads.h \
-    $(wildcard include/config/BASE_SMALL) \
-  include/linux/percpu-defs.h \
-    $(wildcard include/config/DEBUG_FORCE_WEAK_PER_CPU) \
-    $(wildcard include/config/AMD_MEM_ENCRYPT) \
-  include/linux/pid.h \
-  include/linux/rculist.h \
-    $(wildcard include/config/PROVE_RCU_LIST) \
-  include/linux/list.h \
-    $(wildcard include/config/DEBUG_LIST) \
-  include/linux/poison.h \
-    $(wildcard include/config/ILLEGAL_POINTER_VALUE) \
-  include/linux/rcupdate.h \
-    $(wildcard include/config/TINY_RCU) \
-    $(wildcard include/config/RCU_STRICT_GRACE_PERIOD) \
-    $(wildcard include/config/TASKS_RCU_GENERIC) \
-    $(wildcard include/config/RCU_STALL_COMMON) \
-    $(wildcard include/config/RCU_NOCB_CPU) \
-    $(wildcard include/config/TASKS_RUDE_RCU) \
-    $(wildcard include/config/TREE_RCU) \
-    $(wildcard include/config/DEBUG_OBJECTS_RCU_HEAD) \
-    $(wildcard include/config/HOTPLUG_CPU) \
-    $(wildcard include/config/PROVE_RCU) \
-    $(wildcard include/config/ARCH_WEAK_RELEASE_ACQUIRE) \
-  include/linux/atomic.h \
-  arch/x86/include/asm/atomic.h \
-  arch/x86/include/asm/cmpxchg.h \
-  arch/x86/include/asm/cmpxchg_32.h \
-  arch/x86/include/asm/atomic64_32.h \
-  include/linux/atomic/atomic-arch-fallback.h \
-    $(wildcard include/config/GENERIC_ATOMIC64) \
-  include/linux/atomic/atomic-long.h \
-  include/linux/atomic/atomic-instrumented.h \
-  include/linux/irqflags.h \
-    $(wildcard include/config/IRQSOFF_TRACER) \
-    $(wildcard include/config/PREEMPT_TRACER) \
-    $(wildcard include/config/DEBUG_IRQFLAGS) \
-    $(wildcard include/config/TRACE_IRQFLAGS_SUPPORT) \
-  arch/x86/include/asm/irqflags.h \
-    $(wildcard include/config/DEBUG_ENTRY) \
-    $(wildcard include/config/XEN_PV) \
-  arch/x86/include/asm/processor-flags.h \
-    $(wildcard include/config/VM86) \
-  arch/x86/include/uapi/asm/processor-flags.h \
-  include/linux/mem_encrypt.h \
-    $(wildcard include/config/ARCH_HAS_MEM_ENCRYPT) \
-  arch/x86/include/asm/mem_encrypt.h \
-  include/linux/cc_platform.h \
-    $(wildcard include/config/ARCH_HAS_CC_PLATFORM) \
-  arch/x86/include/uapi/asm/bootparam.h \
-  include/linux/screen_info.h \
-  include/uapi/linux/screen_info.h \
-  include/linux/apm_bios.h \
-  include/uapi/linux/apm_bios.h \
-  include/uapi/linux/ioctl.h \
-  arch/x86/include/generated/uapi/asm/ioctl.h \
-  include/asm-generic/ioctl.h \
-  include/uapi/asm-generic/ioctl.h \
-  include/linux/edd.h \
-  include/uapi/linux/edd.h \
-  arch/x86/include/asm/ist.h \
-  arch/x86/include/uapi/asm/ist.h \
-  include/video/edid.h \
-    $(wildcard include/config/X86) \
-  include/uapi/video/edid.h \
-  arch/x86/include/asm/nospec-branch.h \
-  include/linux/static_key.h \
-  include/linux/jump_label.h \
-    $(wildcard include/config/JUMP_LABEL) \
-    $(wildcard include/config/HAVE_ARCH_JUMP_LABEL_RELATIVE) \
-  arch/x86/include/asm/jump_label.h \
-  include/linux/objtool.h \
-    $(wildcard include/config/FRAME_POINTER) \
-  arch/x86/include/asm/msr-index.h \
-  arch/x86/include/asm/unwind_hints.h \
-  arch/x86/include/asm/orc_types.h \
-  arch/x86/include/asm/GEN-for-each-reg.h \
-  arch/x86/include/asm/segment.h \
-  include/linux/preempt.h \
-    $(wildcard include/config/PREEMPT_COUNT) \
-    $(wildcard include/config/TRACE_PREEMPT_TOGGLE) \
-  arch/x86/include/asm/preempt.h \
-  include/linux/thread_info.h \
-    $(wildcard include/config/GENERIC_ENTRY) \
-    $(wildcard include/config/HAVE_ARCH_WITHIN_STACK_FRAMES) \
-    $(wildcard include/config/HARDENED_USERCOPY) \
-    $(wildcard include/config/BUG) \
-  include/linux/bug.h \
-    $(wildcard include/config/GENERIC_BUG) \
-    $(wildcard include/config/BUG_ON_DATA_CORRUPTION) \
-  arch/x86/include/asm/bug.h \
-    $(wildcard include/config/DEBUG_BUGVERBOSE) \
-  include/linux/instrumentation.h \
-  include/asm-generic/bug.h \
-    $(wildcard include/config/GENERIC_BUG_RELATIVE_POINTERS) \
-  include/linux/restart_block.h \
-  include/linux/time64.h \
-  include/linux/math64.h \
-    $(wildcard include/config/ARCH_SUPPORTS_INT128) \
-  include/vdso/math64.h \
-  include/vdso/time64.h \
-  include/uapi/linux/time.h \
-  include/uapi/linux/time_types.h \
-  include/linux/errno.h \
-  include/uapi/linux/errno.h \
-  arch/x86/include/asm/thread_info.h \
-    $(wildcard include/config/X86_IOPL_IOPERM) \
-    $(wildcard include/config/IA32_EMULATION) \
-  arch/x86/include/asm/page.h \
-  arch/x86/include/asm/page_types.h \
-    $(wildcard include/config/PHYSICAL_START) \
-    $(wildcard include/config/PHYSICAL_ALIGN) \
-    $(wildcard include/config/DYNAMIC_PHYSICAL_MASK) \
-  arch/x86/include/asm/page_32_types.h \
-    $(wildcard include/config/HIGHMEM4G) \
-    $(wildcard include/config/HIGHMEM64G) \
-    $(wildcard include/config/PAGE_OFFSET) \
-  arch/x86/include/asm/page_32.h \
-    $(wildcard include/config/DEBUG_VIRTUAL) \
-    $(wildcard include/config/FLATMEM) \
-  include/linux/string.h \
-    $(wildcard include/config/BINARY_PRINTF) \
-    $(wildcard include/config/FORTIFY_SOURCE) \
-  include/uapi/linux/string.h \
-  arch/x86/include/asm/string.h \
-  arch/x86/include/asm/string_32.h \
-  include/linux/fortify-string.h \
-  include/linux/range.h \
-  include/asm-generic/memory_model.h \
-    $(wildcard include/config/SPARSEMEM_VMEMMAP) \
-    $(wildcard include/config/SPARSEMEM) \
-  include/linux/pfn.h \
-  include/asm-generic/getorder.h \
-  arch/x86/include/asm/cpufeature.h \
-    $(wildcard include/config/X86_FEATURE_NAMES) \
-  arch/x86/include/asm/processor.h \
-    $(wildcard include/config/X86_VMX_FEATURE_NAMES) \
-    $(wildcard include/config/X86_DEBUGCTLMSR) \
-    $(wildcard include/config/CPU_SUP_AMD) \
-    $(wildcard include/config/XEN) \
-  arch/x86/include/asm/math_emu.h \
-  arch/x86/include/asm/ptrace.h \
-    $(wildcard include/config/PARAVIRT) \
-  arch/x86/include/uapi/asm/ptrace.h \
-  arch/x86/include/uapi/asm/ptrace-abi.h \
-  arch/x86/include/asm/paravirt_types.h \
-    $(wildcard include/config/PGTABLE_LEVELS) \
-    $(wildcard include/config/PARAVIRT_DEBUG) \
-  arch/x86/include/asm/desc_defs.h \
-  arch/x86/include/asm/pgtable_types.h \
-    $(wildcard include/config/MEM_SOFT_DIRTY) \
-    $(wildcard include/config/HAVE_ARCH_USERFAULTFD_WP) \
-    $(wildcard include/config/PROC_FS) \
-  arch/x86/include/asm/pgtable_32_types.h \
-  arch/x86/include/asm/pgtable-3level_types.h \
-  include/asm-generic/pgtable-nop4d.h \
-  include/asm-generic/pgtable-nopud.h \
-  arch/x86/include/asm/proto.h \
-  arch/x86/include/uapi/asm/ldt.h \
-  arch/x86/include/uapi/asm/sigcontext.h \
-  arch/x86/include/asm/msr.h \
-    $(wildcard include/config/TRACEPOINTS) \
-  arch/x86/include/asm/msr-index.h \
-  arch/x86/include/asm/cpumask.h \
-  include/linux/cpumask.h \
-    $(wildcard include/config/CPUMASK_OFFSTACK) \
-    $(wildcard include/config/DEBUG_PER_CPU_MAPS) \
-  include/linux/bitmap.h \
-  include/linux/find.h \
-  arch/x86/include/uapi/asm/msr.h \
-  include/linux/tracepoint-defs.h \
-  arch/x86/include/asm/special_insns.h \
-  arch/x86/include/asm/fpu/types.h \
-  arch/x86/include/asm/vmxfeatures.h \
-  arch/x86/include/asm/vdso/processor.h \
-  include/linux/personality.h \
-  include/uapi/linux/personality.h \
-  include/linux/bottom_half.h \
-  include/linux/lockdep.h \
-    $(wildcard include/config/DEBUG_LOCKING_API_SELFTESTS) \
-  include/linux/smp.h \
-    $(wildcard include/config/UP_LATE_INIT) \
-  include/linux/smp_types.h \
-  include/linux/llist.h \
-    $(wildcard include/config/ARCH_HAVE_NMI_SAFE_CMPXCHG) \
-  arch/x86/include/asm/smp.h \
-    $(wildcard include/config/X86_LOCAL_APIC) \
-    $(wildcard include/config/DEBUG_NMI_SELFTEST) \
-  include/linux/rcutree.h \
-  include/linux/wait.h \
-  include/linux/spinlock.h \
-  arch/x86/include/generated/asm/mmiowb.h \
-  include/asm-generic/mmiowb.h \
-    $(wildcard include/config/MMIOWB) \
-  include/linux/spinlock_types.h \
-  include/linux/rwlock_types.h \
-  arch/x86/include/asm/spinlock.h \
-  arch/x86/include/asm/paravirt.h \
-    $(wildcard include/config/PARAVIRT_SPINLOCKS) \
-  arch/x86/include/asm/frame.h \
-  arch/x86/include/asm/qspinlock.h \
-  include/asm-generic/qspinlock.h \
-  arch/x86/include/asm/qrwlock.h \
-  include/asm-generic/qrwlock.h \
-  include/linux/rwlock.h \
-    $(wildcard include/config/PREEMPT) \
-  include/linux/spinlock_api_smp.h \
-    $(wildcard include/config/INLINE_SPIN_LOCK) \
-    $(wildcard include/config/INLINE_SPIN_LOCK_BH) \
-    $(wildcard include/config/INLINE_SPIN_LOCK_IRQ) \
-    $(wildcard include/config/INLINE_SPIN_LOCK_IRQSAVE) \
-    $(wildcard include/config/INLINE_SPIN_TRYLOCK) \
-    $(wildcard include/config/INLINE_SPIN_TRYLOCK_BH) \
-    $(wildcard include/config/UNINLINE_SPIN_UNLOCK) \
-    $(wildcard include/config/INLINE_SPIN_UNLOCK_BH) \
-    $(wildcard include/config/INLINE_SPIN_UNLOCK_IRQ) \
-    $(wildcard include/config/INLINE_SPIN_UNLOCK_IRQRESTORE) \
-    $(wildcard include/config/GENERIC_LOCKBREAK) \
-  include/linux/rwlock_api_smp.h \
-    $(wildcard include/config/INLINE_READ_LOCK) \
-    $(wildcard include/config/INLINE_WRITE_LOCK) \
-    $(wildcard include/config/INLINE_READ_LOCK_BH) \
-    $(wildcard include/config/INLINE_WRITE_LOCK_BH) \
-    $(wildcard include/config/INLINE_READ_LOCK_IRQ) \
-    $(wildcard include/config/INLINE_WRITE_LOCK_IRQ) \
-    $(wildcard include/config/INLINE_READ_LOCK_IRQSAVE) \
-    $(wildcard include/config/INLINE_WRITE_LOCK_IRQSAVE) \
-    $(wildcard include/config/INLINE_READ_TRYLOCK) \
-    $(wildcard include/config/INLINE_WRITE_TRYLOCK) \
-    $(wildcard include/config/INLINE_READ_UNLOCK) \
-    $(wildcard include/config/INLINE_WRITE_UNLOCK) \
-    $(wildcard include/config/INLINE_READ_UNLOCK_BH) \
-    $(wildcard include/config/INLINE_WRITE_UNLOCK_BH) \
-    $(wildcard include/config/INLINE_READ_UNLOCK_IRQ) \
-    $(wildcard include/config/INLINE_WRITE_UNLOCK_IRQ) \
-    $(wildcard include/config/INLINE_READ_UNLOCK_IRQRESTORE) \
-    $(wildcard include/config/INLINE_WRITE_UNLOCK_IRQRESTORE) \
-  include/uapi/linux/wait.h \
-  include/linux/refcount.h \
-  include/linux/sem.h \
-  include/uapi/linux/sem.h \
-  include/linux/ipc.h \
-  include/linux/uidgid.h \
-    $(wildcard include/config/MULTIUSER) \
-    $(wildcard include/config/USER_NS) \
-  include/linux/highuid.h \
-  include/linux/rhashtable-types.h \
-  include/linux/mutex.h \
-    $(wildcard include/config/MUTEX_SPIN_ON_OWNER) \
-  include/linux/osq_lock.h \
-  include/linux/debug_locks.h \
-  include/linux/workqueue.h \
-    $(wildcard include/config/DEBUG_OBJECTS_WORK) \
-    $(wildcard include/config/FREEZER) \
-    $(wildcard include/config/SYSFS) \
-    $(wildcard include/config/WQ_WATCHDOG) \
-  include/linux/timer.h \
-    $(wildcard include/config/DEBUG_OBJECTS_TIMERS) \
-    $(wildcard include/config/NO_HZ_COMMON) \
-  include/linux/ktime.h \
-  include/linux/time.h \
-    $(wildcard include/config/POSIX_TIMERS) \
-  include/linux/time32.h \
-  include/linux/timex.h \
-  include/uapi/linux/timex.h \
-  arch/x86/include/asm/timex.h \
-    $(wildcard include/config/X86_TSC) \
-  arch/x86/include/asm/tsc.h \
-  include/vdso/time32.h \
-  include/vdso/time.h \
-  include/linux/jiffies.h \
-  include/vdso/jiffies.h \
-  include/generated/timeconst.h \
-  include/vdso/ktime.h \
-  include/linux/timekeeping.h \
-    $(wildcard include/config/GENERIC_CMOS_UPDATE) \
-  include/linux/clocksource_ids.h \
-  include/linux/debugobjects.h \
-    $(wildcard include/config/DEBUG_OBJECTS) \
-    $(wildcard include/config/DEBUG_OBJECTS_FREE) \
-  include/uapi/linux/ipc.h \
-  arch/x86/include/generated/uapi/asm/ipcbuf.h \
-  include/uapi/asm-generic/ipcbuf.h \
-  arch/x86/include/uapi/asm/sembuf.h \
-  include/linux/shm.h \
-  include/uapi/linux/shm.h \
-  include/uapi/asm-generic/hugetlb_encode.h \
-  arch/x86/include/uapi/asm/shmbuf.h \
-  include/uapi/asm-generic/shmbuf.h \
-  arch/x86/include/asm/shmparam.h \
-  include/linux/plist.h \
-    $(wildcard include/config/DEBUG_PLIST) \
-  include/linux/hrtimer.h \
-    $(wildcard include/config/HIGH_RES_TIMERS) \
-    $(wildcard include/config/TIME_LOW_RES) \
-    $(wildcard include/config/TIMERFD) \
-  include/linux/hrtimer_defs.h \
-  include/linux/rbtree.h \
-  include/linux/rbtree_types.h \
-  include/linux/percpu.h \
-    $(wildcard include/config/NEED_PER_CPU_EMBED_FIRST_CHUNK) \
-    $(wildcard include/config/NEED_PER_CPU_PAGE_FIRST_CHUNK) \
-  include/linux/mmdebug.h \
-    $(wildcard include/config/DEBUG_VM) \
-    $(wildcard include/config/DEBUG_VM_PGFLAGS) \
-  include/linux/seqlock.h \
-  include/linux/ww_mutex.h \
-    $(wildcard include/config/DEBUG_RT_MUTEXES) \
-    $(wildcard include/config/DEBUG_WW_MUTEX_SLOWPATH) \
-  include/linux/rtmutex.h \
-  include/linux/timerqueue.h \
-  include/linux/seccomp.h \
-    $(wildcard include/config/SECCOMP) \
-    $(wildcard include/config/HAVE_ARCH_SECCOMP_FILTER) \
-    $(wildcard include/config/SECCOMP_FILTER) \
-    $(wildcard include/config/CHECKPOINT_RESTORE) \
-    $(wildcard include/config/SECCOMP_CACHE_DEBUG) \
-  include/uapi/linux/seccomp.h \
-  arch/x86/include/asm/seccomp.h \
-  arch/x86/include/asm/unistd.h \
-  arch/x86/include/uapi/asm/unistd.h \
-  arch/x86/include/generated/uapi/asm/unistd_32.h \
-  include/asm-generic/seccomp.h \
-  include/uapi/linux/unistd.h \
-  include/linux/nodemask.h \
-    $(wildcard include/config/HIGHMEM) \
-  include/linux/numa.h \
-    $(wildcard include/config/NODES_SHIFT) \
-    $(wildcard include/config/NUMA_KEEP_MEMINFO) \
-    $(wildcard include/config/HAVE_ARCH_NODE_DEV_GROUP) \
-  arch/x86/include/asm/sparsemem.h \
-  include/linux/resource.h \
-  include/uapi/linux/resource.h \
-  arch/x86/include/generated/uapi/asm/resource.h \
-  include/asm-generic/resource.h \
-  in
+/* mac8390.c: New driver for 8390-based Nubus (or Nubus-alike)
+   Ethernet cards on Linux */
+/* Based on the former daynaport.c driver, by Alan Cox.  Some code
+   taken from or inspired by skeleton.c by Donald Becker, acenic.c by
+   Jes Sorensen, and ne2k-pci.c by Donald Becker and Paul Gortmaker.
+
+   This software may be used and distributed according to the terms of
+   the GNU Public License, incorporated herein by reference.  */
+
+/* 2000-02-28: support added for Dayna and Kinetics cards by
+   A.G.deWijn@phys.uu.nl */
+/* 2000-04-04: support added for Dayna2 by bart@etpmod.phys.tue.nl */
+/* 2001-04-18: support for DaynaPort E/LC-M by rayk@knightsmanor.org */
+/* 2001-05-15: support for Cabletron ported from old daynaport driver
+ * and fixed access to Sonic Sys card which masquerades as a Farallon
+ * by rayk@knightsmanor.org */
+/* 2002-12-30: Try to support more cards, some clues from NetBSD driver */
+/* 2003-12-26: Make sure Asante cards always work. */
+
+#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
+
+#include <linux/module.h>
+#include <linux/kernel.h>
+#include <linux/types.h>
+#include <linux/fcntl.h>
+#include <linux/interrupt.h>
+#include <linux/ptrace.h>
+#include <linux/ioport.h>
+#include <linux/nubus.h>
+#include <linux/in.h>
+#include <linux/string.h>
+#include <linux/errno.h>
+#include <linux/init.h>
+#include <linux/netdevice.h>
+#include <linux/etherdevice.h>
+#include <linux/skbuff.h>
+#include <linux/bitops.h>
+#include <linux/io.h>
+
+#include <asm/dma.h>
+#include <asm/hwtest.h>
+#include <asm/macints.h>
+
+static char version[] =
+	"v0.4 2001-05-15 David Huggins-Daines <dhd@debian.org> and others\n";
+
+#define EI_SHIFT(x)	(ei_local->reg_offset[x])
+#define ei_inb(port)	in_8(port)
+#define ei_outb(val, port)	out_8(port, val)
+#define ei_inb_p(port)	in_8(port)
+#define ei_outb_p(val, port)	out_8(port, val)
+
+#include "lib8390.c"
+
+#define WD_START_PG			0x00	/* First page of TX buffer */
+#define CABLETRON_RX_START_PG		0x00    /* First page of RX buffer */
+#define CABLETRON_RX_STOP_PG		0x30    /* Last page +1 of RX ring */
+#define CABLETRON_TX_START_PG		CABLETRON_RX_STOP_PG
+						/* First page of TX buffer */
+
+/*
+ * Unfortunately it seems we have to hardcode these for the moment
+ * Shouldn't the card know about this?
+ * Does anyone know where to read it off the card?
+ * Do we trust the data provided by the card?
+ */
+
+#define DAYNA_8390_BASE		0x80000
+#define DAYNA_8390_MEM		0x00000
+
+#define CABLETRON_8390_BASE	0x90000
+#define CABLETRON_8390_MEM	0x00000
+
+#define INTERLAN_8390_BASE	0xE0000
+#define INTERLAN_8390_MEM	0xD0000
+
+enum mac8390_type {
+	MAC8390_NONE = -1,
+	MAC8390_APPLE,
+	MAC8390_ASANTE,
+	MAC8390_FARALLON,
+	MAC8390_CABLETRON,
+	MAC8390_DAYNA,
+	MAC8390_INTERLAN,
+	MAC8390_KINETICS,
+};
+
+static const char *cardname[] = {
+	"apple",
+	"asante",
+	"farallon",
+	"cabletron",
+	"dayna",
+	"interlan",
+	"kinetics",
+};
+
+static const int word16[] = {
+	1, /* apple */
+	1, /* asante */
+	1, /* farallon */
+	1, /* cabletron */
+	0, /* dayna */
+	1, /* interlan */
+	0, /* kinetics */
+};
+
+/* on which cards do we use NuBus resources? */
+static const int useresources[] = {
+	1, /* apple */
+	1, /* asante */
+	1, /* farallon */
+	0, /* cabletron */
+	0, /* dayna */
+	0, /* interlan */
+	0, /* kinetics */
+};
+
+enum mac8390_access {
+	ACCESS_UNKNOWN = 0,
+	ACCESS_32,
+	ACCESS_16,
+};
+
+extern int mac8390_memtest(struct net_device *dev);
+static int mac8390_initdev(struct net_device *dev, struct nubus_board *board,
+			   enum mac8390_type type);
+
+static int mac8390_open(struct net_device *dev);
+static int mac8390_close(struct net_device *dev);
+static void mac8390_no_reset(struct net_device *dev);
+static void interlan_reset(struct net_device *dev);
+
+/* Sane (32-bit chunk memory read/write) - Some Farallon and Apple do this*/
+static void sane_get_8390_hdr(struct net_device *dev,
+			      struct e8390_pkt_hdr *hdr, int ring_page);
+static void sane_block_input(struct net_device *dev, int count,
+			     struct sk_buff *skb, int ring_offset);
+static void sane_block_output(struct net_device *dev, int count,
+			      const unsigned char *buf, const int start_page);
+
+/* dayna_memcpy to and from card */
+static void dayna_memcpy_fromcard(struct net_device *dev, void *to,
+				int from, int count);
+static void dayna_memcpy_tocard(struct net_device *dev, int to,
+			      const void *from, int count);
+
+/* Dayna - Dayna/Kinetics use this */
+static void dayna_get_8390_hdr(struct net_device *dev,
+			       struct e8390_pkt_hdr *hdr, int ring_page);
+static void dayna_block_input(struct net_device *dev, int count,
+			      struct sk_buff *skb, int ring_offset);
+static void dayna_block_output(struct net_device *dev, int count,
+			       const unsigned char *buf, int start_page);
+
+/* Slow Sane (16-bit chunk memory read/write) Cabletron uses this */
+static void slow_sane_get_8390_hdr(struct net_device *dev,
+				   struct e8390_pkt_hdr *hdr, int ring_page);
+static void slow_sane_block_input(struct net_device *dev, int count,
+				  struct sk_buff *skb, int ring_offset);
+static void slow_sane_block_output(struct net_device *dev, int count,
+				   const unsigned char *buf, int start_page);
+static void word_memcpy_tocard(unsigned long tp, const void *fp, int count);
+static void word_memcpy_fromcard(void *tp, unsigned long fp, int count);
+
+static enum mac8390_type mac8390_ident(struct nubus_rsrc *fres)
+{
+	switch (fres->dr_sw) {
+	case NUBUS_DRSW_3COM:
+		switch (fres->dr_hw) {
+		case NUBUS_DRHW_APPLE_SONIC_NB:
+		case NUBUS_DRHW_APPLE_SONIC_LC:
+		case NUBUS_DRHW_SONNET:
+			return MAC8390_NONE;
+		default:
+			return MAC8390_APPLE;
+		}
+
+	case NUBUS_DRSW_APPLE:
+		switch (fres->dr_hw) {
+		case NUBUS_DRHW_ASANTE_LC:
+			return MAC8390_NONE;
+		case NUBUS_DRHW_CABLETRON:
+			return MAC8390_CABLETRON;
+		default:
+			return MAC8390_APPLE;
+		}
+
+	case NUBUS_DRSW_ASANTE:
+		return MAC8390_ASANTE;
+
+	case NUBUS_DRSW_TECHWORKS:
+	case NUBUS_DRSW_DAYNA2:
+	case NUBUS_DRSW_DAYNA_LC:
+		if (fres->dr_hw == NUBUS_DRHW_CABLETRON)
+			return MAC8390_CABLETRON;
+		else
+			return MAC8390_APPLE;
+
+	case NUBUS_DRSW_FARALLON:
+		return MAC8390_FARALLON;
+
+	case NUBUS_DRSW_KINETICS:
+		switch (fres->dr_hw) {
+		case NUBUS_DRHW_INTERLAN:
+			return MAC8390_INTERLAN;
+		default:
+			return MAC8390_KINETICS;
+		}
+
+	case NUBUS_DRSW_DAYNA:
+		/*
+		 * These correspond to Dayna Sonic cards
+		 * which use the macsonic driver
+		 */
+		if (fres->dr_hw == NUBUS_DRHW_SMC9194 ||
+		    fres->dr_hw == NUBUS_DRHW_INTERLAN)
+			return MAC8390_NONE;
+		else
+			return MAC8390_DAYNA;
+	}
+	return MAC8390_NONE;
+}
+
+static enum mac8390_access mac8390_testio(unsigned long membase)
+{
+	u32 outdata = 0xA5A0B5B0;
+	u32 indata = 0;
+
+	/* Try writing 32 bits */
+	nubus_writel(outdata, membase);
+	/* Now read it back */
+	indata = nubus_readl(membase);
+	if (outdata == indata)
+		return ACCESS_32;
+
+	outdata = 0xC5C0D5D0;
+	indata = 0;
+
+	/* Write 16 bit output */
+	word_memcpy_tocard(membase, &outdata, 4);
+	/* Now read it back */
+	word_memcpy_fromcard(&indata, membase, 4);
+	if (outdata == indata)
+		return ACCESS_16;
+
+	return ACCESS_UNKNOWN;
+}
+
+static int mac8390_memsize(unsigned long membase)
+{
+	unsigned long flags;
+	int i, j;
+
+	local_irq_save(flags);
+	/* Check up to 32K in 4K increments */
+	for (i = 0; i < 8; i++) {
+		volatile unsigned short *m = (unsigned short *)(membase + (i * 0x1000));
+
+		/* Unwriteable - we have a fully decoded card and the
+		   RAM end located */
+		if (hwreg_present(m) == 0)
+			break;
+
+		/* write a distinctive byte */
+		*m = 0xA5A0 | i;
+		/* check that we read back what we wrote */
+		if (*m != (0xA5A0 | i))
+			break;
+
+		/* check for partial decode and wrap */
+		for (j = 0; j < i; j++) {
+			volatile unsigned short *p = (unsigned short *)(membase + (j * 0x1000));
+			if (*p != (0xA5A0 | j))
+				break;
+		}
+	}
+	local_irq_restore(flags);
+	/*
+	 * in any case, we stopped once we tried one block too many,
+	 * or once we reached 32K
+	 */
+	return i * 0x1000;
+}
+
+static bool mac8390_rsrc_init(struct net_device *dev,
+			      struct nubus_rsrc *fres,
+			      enum mac8390_type cardtype)
+{
+	struct nubus_board *board = fres->board;
+	struct nubus_dir dir;
+	struct nubus_dirent ent;
+	int offset;
+	volatile unsigned short *i;
+	u8 addr[ETH_ALEN];
+
+	dev->irq = SLOT2IRQ(board->slot);
+	/* This is getting to be a habit */
+	dev->base_addr = board->slot_addr | ((board->slot & 0xf) << 20);
+
+	/*
+	 * Get some Nubus info - we will trust the card's idea
+	 * of where its memory and registers are.
+	 */
+
+	if (nubus_get_func_dir(fres, &dir) == -1) {
+		dev_err(&board->dev,
+			"Unable to get Nubus functional directory\n");
+		return false;
+	}
+
+	/* Get the MAC address */
+	if (nubus_find_rsrc(&dir, NUBUS_RESID_MAC_ADDRESS, &ent) == -1) {
+		dev_info(&board->dev, "MAC address resource not found\n");
+		return false;
+	}
+
+	nubus_get_rsrc_mem(addr, &ent, 6);
+	eth_hw_addr_set(dev, addr);
+
+	if (useresources[cardtype] == 1) {
+		nubus_rewinddir(&dir);
+		if (nubus_find_rsrc(&dir, NUBUS_RESID_MINOR_BASEOS,
+				    &ent) == -1) {
+			dev_err(&board->dev,
+				"Memory offset resource not found\n");
+			return false;
+		}
+		nubus_get_rsrc_mem(&offset, &ent, 4);
+		dev->mem_start = dev->base_addr + offset;
+		/* yes, this is how the Apple driver does it */
+		dev->base_addr = dev->mem_start + 0x10000;
+		nubus_rewinddir(&dir);
+		if (nubus_find_rsrc(&dir, NUBUS_RESID_MINOR_LENGTH,
+				    &ent) == -1) {
+			dev_info(&board->dev,
+				 "Memory length resource not found, probing\n");
+			offset = mac8390_memsize(dev->mem_start);
+		} else {
+			nubus_get_rsrc_mem(&offset, &ent, 4);
+		}
+		dev->mem_end = dev->mem_start + offset;
+	} else {
+		switch (cardtype) {
+		case MAC8390_KINETICS:
+		case MAC8390_DAYNA: /* it's the same */
+			dev->base_addr = (int)(board->slot_addr +
+					       DAYNA_8390_BASE);
+			dev->mem_start = (int)(board->slot_addr +
+					       DAYNA_8390_MEM);
+			dev->mem_end = dev->mem_start +
+				       mac8390_memsize(dev->mem_start);
+			break;
+		case MAC8390_INTERLAN:
+			dev->base_addr = (int)(board->slot_addr +
+					       INTERLAN_8390_BASE);
+			dev->mem_start = (int)(board->slot_addr +
+					       INTERLAN_8390_MEM);
+			dev->mem_end = dev->mem_start +
+				       mac8390_memsize(dev->mem_start);
+			break;
+		case MAC8390_CABLETRON:
+			dev->base_addr = (int)(board->slot_addr +
+					       CABLETRON_8390_BASE);
+			dev->mem_start = (int)(board->slot_addr +
+					       CABLETRON_8390_MEM);
+			/* The base address is unreadable if 0x00
+			 * has been written to the command register
+			 * Reset the chip by writing E8390_NODMA +
+			 *   E8390_PAGE0 + E8390_STOP just to be
+			 *   sure
+			 */
+			i = (void *)dev->base_addr;
+			*i = 0x21;
+			dev->mem_end = dev->mem_start +
+				       mac8390_memsize(dev->mem_start);
+			break;
+
+		default:
+			dev_err(&board->dev,
+				"No known base address for card type\n");
+			return false;
+		}
+	}
+
+	return true;
+}
+
+static int mac8390_device_probe(struct nubus_board *board)
+{
+	struct net_device *dev;
+	int err = -ENODEV;
+	struct nubus_rsrc *fres;
+	enum mac8390_type cardtype = MAC8390_NONE;
+
+	dev = ____alloc_ei_netdev(0);
+	if (!dev)
+		return -ENOMEM;
+
+	SET_NETDEV_DEV(dev, &board->dev);
+
+	for_each_board_func_rsrc(board, fres) {
+		if (fres->category != NUBUS_CAT_NETWORK ||
+		    fres->type != NUBUS_TYPE_ETHERNET)
+			continue;
+
+		cardtype = mac8390_ident(fres);
+		if (cardtype == MAC8390_NONE)
+			continue;
+
+		if (mac8390_rsrc_init(dev, fres, cardtype))
+			break;
+	}
+	if (!fres)
+		goto out;
+
+	err = mac8390_initdev(dev, board, cardtype);
+	if (err)
+		goto out;
+
+	err = register_netdev(dev);
+	if (err)
+		goto out;
+
+	nubus_set_drvdata(board, dev);
+	return 0;
+
+out:
+	free_netdev(dev);
+	return err;
+}
+
+static void mac8390_device_remove(struct nubus_board *board)
+{
+	struct net_device *dev = nubus_get_drvdata(board);
+
+	unregister_netdev(dev);
+	free_netdev(dev);
+}
+
+static struct nubus_driver mac8390_driver = {
+	.probe = mac8390_device_probe,
+	.remove = mac8390_device_remove,
+	.driver = {
+		.name = KBUILD_MODNAME,
+		.owner = THIS_MODULE,
+	}
+};
+
+MODULE_AUTHOR("David Huggins-Daines <dhd@debian.org> and others");
+MODULE_DESCRIPTION("Macintosh NS8390-based Nubus Ethernet driver");
+MODULE_LICENSE("GPL");
+
+static int __init mac8390_init(void)
+{
+	return nubus_driver_register(&mac8390_driver);
+}
+module_init(mac8390_init);
+
+static void __exit mac8390_exit(void)
+{
+	nubus_driver_unregister(&mac8390_driver);
+}
+module_exit(mac8390_exit);
+
+static const struct net_device_ops mac8390_netdev_ops = {
+	.ndo_open 		= mac8390_open,
+	.ndo_stop		= mac8390_close,
+	.ndo_start_xmit		= __ei_start_xmit,
+	.ndo_tx_timeout		= __ei_tx_timeout,
+	.ndo_get_stats		= __ei_get_stats,
+	.ndo_set_rx_mode	= __ei_set_multicast_list,
+	.ndo_validate_addr	= eth_validate_addr,
+	.ndo_set_mac_address 	= eth_mac_addr,
+#ifdef CONFIG_NET_POLL_CONTROLLER
+	.ndo_poll_controller	= __ei_poll,
+#endif
+};
+
+static int mac8390_initdev(struct net_device *dev, struct nubus_board *board,
+			   enum mac8390_type type)
+{
+	static u32 fwrd4_offsets[16] = {
+		0,      4,      8,      12,
+		16,     20,     24,     28,
+		32,     36,     40,     44,
+		48,     52,     56,     60
+	};
+	static u32 back4_offsets[16] = {
+		60,     56,     52,     48,
+		44,     40,     36,     32,
+		28,     24,     20,     16,
+		12,     8,      4,      0
+	};
+	static u32 fwrd2_offsets[16] = {
+		0,      2,      4,      6,
+		8,     10,     12,     14,
+		16,    18,     20,     22,
+		24,    26,     28,     30
+	};
+
+	int access_bitmode = 0;
+
+	/* Now fill in our stuff */
+	dev->netdev_ops = &mac8390_netdev_ops;
+
+	/* GAR, ei_status is actually a macro even though it looks global */
+	ei_status.name = cardname[type];
+	ei_status.word16 = word16[type];
+
+	/* Cabletron's TX/RX buffers are backwards */
+	if (type == MAC8390_CABLETRON) {
+		ei_status.tx_start_page = CABLETRON_TX_START_PG;
+		ei_status.rx_start_page = CABLETRON_RX_START_PG;
+		ei_status.stop_page = CABLETRON_RX_STOP_PG;
+		ei_status.rmem_start = dev->mem_start;
+		ei_status.rmem_end = dev->mem_start + CABLETRON_RX_STOP_PG*256;
+	} else {
+		ei_status.tx_start_page = WD_START_PG;
+		ei_status.rx_start_page = WD_START_PG + TX_PAGES;
+		ei_status.stop_page = (dev->mem_end - dev->mem_start)/256;
+		ei_status.rmem_start = dev->mem_start + TX_PAGES*256;
+		ei_status.rmem_end = dev->mem_end;
+	}
+
+	/* Fill in model-specific information and functions */
+	switch (type) {
+	case MAC8390_FARALLON:
+	case MAC8390_APPLE:
+		switch (mac8390_testio(dev->mem_start)) {
+		case ACCESS_UNKNOWN:
+			dev_err(&board->dev,
+				"Don't know how to access card memory\n");
+			return -ENODEV;
+
+		case ACCESS_16:
+			/* 16 bit card, register map is reversed */
+			ei_status.reset_8390 = mac8390_no_reset;
+			ei_status.block_input = slow_sane_block_input;
+			ei_status.block_output = slow_sane_block_output;
+			ei_status.get_8390_hdr = slow_sane_get_8390_hdr;
+			ei_status.reg_offset = back4_offsets;
+			break;
+
+		case ACCESS_32:
+			/* 32 bit card, register map is reversed */
+			ei_status.reset_8390 = mac8390_no_reset;
+			ei_status.block_input = sane_block_input;
+			ei_status.block_output = sane_block_output;
+			ei_status.get_8390_hdr = sane_get_8390_hdr;
+			ei_status.reg_offset = back4_offsets;
+			access_bitmode = 1;
+			break;
+		}
+		break;
+
+	case MAC8390_ASANTE:
+		/* Some Asante cards pass the 32 bit test
+		 * but overwrite system memory when run at 32 bit.
+		 * so we run them all at 16 bit.
+		 */
+		ei_status.reset_8390 = mac8390_no_reset;
+		ei_status.block_input = slow_sane_block_input;
+		ei_status.block_output = slow_sane_block_output;
+		ei_status.get_8390_hdr = slow_sane_get_8390_hdr;
+		ei_status.reg_offset = back4_offsets;
+		break;
+
+	case MAC8390_CABLETRON:
+		/* 16 bit card, register map is short forward */
+		ei_status.reset_8390 = mac8390_no_reset;
+		ei_status.block_input = slow_sane_block_input;
+		ei_status.block_output = slow_sane_block_output;
+		ei_status.get_8390_hdr = slow_sane_get_8390_hdr;
+		ei_status.reg_offset = fwrd2_offsets;
+		break;
+
+	case MAC8390_DAYNA:
+	case MAC8390_KINETICS:
+		/* 16 bit memory, register map is forward */
+		/* dayna and similar */
+		ei_status.reset_8390 = mac8390_no_reset;
+		ei_status.block_input = dayna_block_input;
+		ei_status.block_output = dayna_block_output;
+		ei_status.get_8390_hdr = dayna_get_8390_hdr;
+		ei_status.reg_offset = fwrd4_offsets;
+		break;
+
+	case MAC8390_INTERLAN:
+		/* 16 bit memory, register map is forward */
+		ei_status.reset_8390 = interlan_reset;
+		ei_status.block_input = slow_sane_block_input;
+		ei_status.block_output = slow_sane_block_output;
+		ei_status.get_8390_hdr = slow_sane_get_8390_hdr;
+		ei_status.reg_offset = fwrd4_offsets;
+		break;
+
+	default:
+		dev_err(&board->dev, "Unsupported card type\n");
+		return -ENODEV;
+	}
+
+	__NS8390_init(dev, 0);
+
+	/* Good, done, now spit out some messages */
+	dev_info(&board->dev, "%s (type %s)\n", board->name, cardname[type]);
+	dev_info(&board->dev, "MAC %pM, IRQ %d, %d KB shared memory at %#lx, %d-bit access.\n",
+		 dev->dev_addr, dev->irq,
+		 (unsigned int)(dev->mem_end - dev->mem_start) >> 10,
+		 dev->mem_start, access_bitmode ? 32 : 16);
+	return 0;
+}
+
+static int mac8390_open(struct net_device *dev)
+{
+	int err;
+
+	__ei_open(dev);
+	err = request_irq(dev->irq, __ei_interrupt, 0, "8390 Ethernet", dev);
+	if (err)
+		pr_err("%s: unable to get IRQ %d\n", dev->name, dev->irq);
+	return err;
+}
+
+static int mac8390_close(struct net_device *dev)
+{
+	free_irq(dev->irq, dev);
+	__ei_close(dev);
+	return 0;
+}
+
+static void mac8390_no_reset(struct net_device *dev)
+{
+	struct ei_device *ei_local = netdev_priv(dev);
+
+	ei_status.txing = 0;
+	netif_info(ei_local, hw, dev, "reset not supported\n");
+}
+
+static void interlan_reset(struct net_device *dev)
+{
+	unsigned char *target = nubus_slot_addr(IRQ2SLOT(dev->irq));
+	struct ei_device *ei_local = netdev_priv(dev);
+
+	netif_info(ei_local, hw, dev, "Need to reset the NS8390 t=%lu...",
+		   jiffies);
+	ei_status.txing = 0;
+	target[0xC0000] = 0;
+	if (netif_msg_hw(ei_local))
+		pr_cont("reset complete\n");
+}
+
+/* dayna_memcpy_fromio/dayna_memcpy_toio */
+/* directly from daynaport.c by Alan Cox */
+static void dayna_memcpy_fromcard(struct net_device *dev, void *to, int from,
+				  int count)
+{
+	volatile unsigned char *ptr;
+	unsigned char *target = to;
+	from <<= 1;	/* word, skip overhead */
+	ptr = (unsigned char *)(dev->mem_start+from);
+	/* Leading byte? */
+	if (from & 2) {
+		*target++ = ptr[-1];
+		ptr += 2;
+		count--;
+	}
+	while (count >= 2) {
+		*(unsigned short *)target = *(unsigned short volatile *)ptr;
+		ptr += 4;			/* skip cruft */
+		target += 2;
+		count -= 2;
+	}
+	/* Trailing byte? */
+	if (count)
+		*target = *ptr;
+}
+
+static void dayna_memcpy_tocard(struct net_device *dev, int to,
+				const void *from, int count)
+{
+	volatile unsigned short *ptr;
+	const unsigned char *src = from;
+	to <<= 1;	/* word, skip overhead */
+	ptr = (unsigned short *)(dev->mem_start+to);
+	/* Leading byte? */
+	if (to & 2) {		/* avoid a byte write (stomps on other data) */
+		ptr[-1] = (ptr[-1]&0xFF00)|*src++;
+		ptr++;
+		count--;
+	}
+	while (count >= 2) {
+		*ptr++ = *(unsigned short *)src;	/* Copy and */
+		ptr++;			/* skip cruft */
+		src += 2;
+		count -= 2;
+	}
+	/* Trailing byte? */
+	if (count) {
+		/* card doesn't like byte writes */
+		*ptr = (*ptr & 0x00FF) | (*src << 8);
+	}
+}
+
+/* sane block input/output */
+static void sane_get_8390_hdr(struct net_device *dev,
+			      struct e8390_pkt_hdr *hdr, int ring_page)
+{
+	unsigned long hdr_start = (ring_page - WD_START_PG)<<8;
+	memcpy_fromio(hdr, (void __iomem *)dev->mem_start + hdr_start, 4);
+	/* Fix endianness */
+	hdr->count = swab16(hdr->count);
+}
+
+static void sane_block_input(struct net_device *dev, int count,
+			     struct sk_buff *skb, int ring_offset)
+{
+	unsigned long xfer_base = ring_offset - (WD_START_PG<<8);
+	unsigned long xfer_start = xfer_base + dev->mem_start;
+
+	if (xfer_start + count > ei_status.rmem_end) {
+		/* We must wrap the input move. */
+		int semi_count = ei_status.rmem_end - xfer_start;
+		memcpy_fromio(skb->data,
+			      (void __iomem *)dev->mem_start + xfer_base,
+			      semi_count);
+		count -= semi_count;
+		memcpy_fromio(skb->data + semi_count,
+			      (void __iomem *)ei_status.rmem_start, count);
+	} else {
+		memcpy_fromio(skb->data,
+			      (void __iomem *)dev->mem_start + xfer_base,
+			      count);
+	}
+}
+
+static void sane_block_output(struct net_device *dev, int count,
+			      const unsigned char *buf, int start_page)
+{
+	long shmem = (start_page - WD_START_PG)<<8;
+
+	memcpy_toio((void __iomem *)dev->mem_start + shmem, buf, count);
+}
+
+/* dayna block input/output */
+static void dayna_get_8390_hdr(struct net_device *dev,
+			       struct e8390_pkt_hdr *hdr, int ring_page)
+{
+	unsigned long hdr_start = (ring_page - WD_START_PG)<<8;
+
+	dayna_memcpy_fromcard(dev, hdr, hdr_start, 4);
+	/* Fix endianness */
+	hdr->count = (hdr->count & 0xFF) << 8 | (hdr->count >> 8);
+}
+
+static void dayna_block_input(struct net_device *dev, int count,
+			      struct sk_buff *skb, int ring_offset)
+{
+	unsigned long xfer_base = ring_offset - (WD_START_PG<<8);
+	unsigned long xfer_start = xfer_base+dev->mem_start;
+
+	/* Note the offset math is done in card memory space which is word
+	   per long onto our space. */
+
+	if (xfer_start + count > ei_status.rmem_end) {
+		/* We must wrap the input move. */
+		int semi_count = ei_status.rmem_end - xfer_start;
+		dayna_memcpy_fromcard(dev, skb->data, xfer_base, semi_count);
+		count -= semi_count;
+		dayna_memcpy_fromcard(dev, skb->data + semi_count,
+				      ei_status.rmem_start - dev->mem_start,
+				      count);
+	} else {
+		dayna_memcpy_fromcard(dev, skb->data, xfer_base, count);
+	}
+}
+
+static void dayna_block_output(struct net_device *dev, int count,
+			       const unsigned char *buf,
+			       int start_page)
+{
+	long shmem = (start_page - WD_START_PG)<<8;
+
+	dayna_memcpy_tocard(dev, shmem, buf, count);
+}
+
+/* Cabletron block I/O */
+static void slow_sane_get_8390_hdr(struct net_device *dev,
+				   struct e8390_pkt_hdr *hdr,
+				   int ring_page)
+{
+	unsigned long hdr_start = (ring_page - WD_START_PG)<<8;
+	word_memcpy_fromcard(hdr, dev->mem_start + hdr_start, 4);
+	/* Register endianism - fix here rather than 8390.c */
+	hdr->count = (hdr->count&0xFF)<<8|(hdr->count>>8);
+}
+
+static void slow_sane_block_input(struct net_device *dev, int count,
+				  struct sk_buff *skb, int ring_offset)
+{
+	unsigned long xfer_base = ring_offset - (WD_START_PG<<8);
+	unsigned long xfer_start = xfer_base+dev->mem_start;
+
+	if (xfer_start + count > ei_status.rmem_end) {
+		/* We must wrap the input move. */
+		int semi_count = ei_status.rmem_end - xfer_start;
+		word_memcpy_fromcard(skb->data, dev->mem_start + xfer_base,
+				     semi_count);
+		count -= semi_count;
+		word_memcpy_fromcard(skb->data + semi_count,
+				     ei_status.rmem_start, count);
+	} else {
+		word_memcpy_fromcard(skb->data, dev->mem_start + xfer_base,
+				     count);
+	}
+}
+
+static void slow_sane_block_output(struct net_device *dev, int count,
+				   const unsigned char *buf, int start_page)
+{
+	long shmem = (start_page - WD_START_PG)<<8;
+
+	word_memcpy_tocard(dev->mem_start + shmem, buf, count);
+}
+
+static void word_memcpy_tocard(unsigned long tp, const void *fp, int count)
+{
+	volatile unsigned short *to = (void *)tp;
+	const unsigned short *from = fp;
+
+	count++;
+	count /= 2;
+
+	while (count--)
+		*to++ = *from++;
+}
+
+static void word_memcpy_fromcard(void *tp, unsigned long fp, int count)
+{
+	unsigned short *to = tp;
+	const volatile unsigned short *from = (const void *)fp;
+
+	count++;
+	count /= 2;
+
+	while (count--)
+		*to++ = *from++;
+}
+
+

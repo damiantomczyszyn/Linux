@@ -1,546 +1,1019 @@
-cmd_drivers/media/i2c/tw9906.o := gcc -Wp,-MMD,drivers/media/i2c/.tw9906.o.d -nostdinc -I./arch/x86/include -I./arch/x86/include/generated  -I./include -I./arch/x86/include/uapi -I./arch/x86/include/generated/uapi -I./include/uapi -I./include/generated/uapi -include ./include/linux/compiler-version.h -include ./include/linux/kconfig.h -include ./include/linux/compiler_types.h -D__KERNEL__ -fmacro-prefix-map=./= -Wall -Wundef -Werror=strict-prototypes -Wno-trigraphs -fno-strict-aliasing -fno-common -fshort-wchar -fno-PIE -Werror=implicit-function-declaration -Werror=implicit-int -Werror=return-type -Wno-format-security -std=gnu11 -mno-sse -mno-mmx -mno-sse2 -mno-3dnow -mno-avx -fcf-protection=none -m32 -msoft-float -mregparm=3 -freg-struct-return -fno-pic -mpreferred-stack-boundary=2 -march=i686 -mtune=pentium3 -mtune=generic -Wa,-mtune=generic32 -ffreestanding -mstack-protector-guard-reg=fs -mstack-protector-guard-symbol=__stack_chk_guard -Wno-sign-compare -fno-asynchronous-unwind-tables -mindirect-branch=thunk-extern -mindirect-branch-register -fno-jump-tables -fno-delete-null-pointer-checks -Wno-frame-address -Wno-format-truncation -Wno-format-overflow -Wno-address-of-packed-member -O2 -fno-allow-store-data-races -fstack-protector-strong -Wimplicit-fallthrough=5 -Wno-main -Wno-unused-but-set-variable -Wno-unused-const-variable -fno-stack-clash-protection -pg -mrecord-mcount -mfentry -DCC_USING_FENTRY -Wdeclaration-after-statement -Wvla -Wno-pointer-sign -Wcast-function-type -Wno-stringop-truncation -Wno-stringop-overflow -Wno-restrict -Wno-maybe-uninitialized -Wno-alloc-size-larger-than -fno-strict-overflow -fno-stack-check -fconserve-stack -Werror=date-time -Werror=incompatible-pointer-types -Werror=designated-init -Wno-packed-not-aligned  -DMODULE  -DKBUILD_BASENAME='"tw9906"' -DKBUILD_MODNAME='"tw9906"' -D__KBUILD_MODNAME=kmod_tw9906 -c -o drivers/media/i2c/tw9906.o drivers/media/i2c/tw9906.c 
+// SPDX-License-Identifier: GPL-2.0-only
+/*
+ * CAN driver for "8 devices" USB2CAN converter
+ *
+ * Copyright (C) 2012 Bernd Krumboeck (krumboeck@universalnet.at)
+ *
+ * This driver is inspired by the 3.2.0 version of drivers/net/can/usb/ems_usb.c
+ * and drivers/net/can/usb/esd_usb2.c
+ *
+ * Many thanks to Gerhard Bertelsmann (info@gerhard-bertelsmann.de)
+ * for testing and fixing this driver. Also many thanks to "8 devices",
+ * who were very cooperative and answered my questions.
+ */
 
-source_drivers/media/i2c/tw9906.o := drivers/media/i2c/tw9906.c
+#include <linux/signal.h>
+#include <linux/slab.h>
+#include <linux/module.h>
+#include <linux/netdevice.h>
+#include <linux/usb.h>
 
-deps_drivers/media/i2c/tw9906.o := \
-  include/linux/compiler-version.h \
-    $(wildcard include/config/CC_VERSION_TEXT) \
-  include/linux/kconfig.h \
-    $(wildcard include/config/CPU_BIG_ENDIAN) \
-    $(wildcard include/config/BOOGER) \
-    $(wildcard include/config/FOO) \
-  include/linux/compiler_types.h \
-    $(wildcard include/config/DEBUG_INFO_BTF) \
-    $(wildcard include/config/PAHOLE_HAS_BTF_TAG) \
-    $(wildcard include/config/HAVE_ARCH_COMPILER_H) \
-    $(wildcard include/config/CC_HAS_ASM_INLINE) \
-  include/linux/compiler_attributes.h \
-  include/linux/compiler-gcc.h \
-    $(wildcard include/config/RETPOLINE) \
-    $(wildcard include/config/ARCH_USE_BUILTIN_BSWAP) \
-    $(wildcard include/config/SHADOW_CALL_STACK) \
-    $(wildcard include/config/KCOV) \
-  include/linux/module.h \
-    $(wildcard include/config/MODULES) \
-    $(wildcard include/config/SYSFS) \
-    $(wildcard include/config/MODULES_TREE_LOOKUP) \
-    $(wildcard include/config/LIVEPATCH) \
-    $(wildcard include/config/STACKTRACE_BUILD_ID) \
-    $(wildcard include/config/CFI_CLANG) \
-    $(wildcard include/config/MODULE_SIG) \
-    $(wildcard include/config/GENERIC_BUG) \
-    $(wildcard include/config/KALLSYMS) \
-    $(wildcard include/config/SMP) \
-    $(wildcard include/config/TRACEPOINTS) \
-    $(wildcard include/config/TREE_SRCU) \
-    $(wildcard include/config/BPF_EVENTS) \
-    $(wildcard include/config/DEBUG_INFO_BTF_MODULES) \
-    $(wildcard include/config/JUMP_LABEL) \
-    $(wildcard include/config/TRACING) \
-    $(wildcard include/config/EVENT_TRACING) \
-    $(wildcard include/config/FTRACE_MCOUNT_RECORD) \
-    $(wildcard include/config/KPROBES) \
-    $(wildcard include/config/HAVE_STATIC_CALL_INLINE) \
-    $(wildcard include/config/PRINTK_INDEX) \
-    $(wildcard include/config/MODULE_UNLOAD) \
-    $(wildcard include/config/CONSTRUCTORS) \
-    $(wildcard include/config/FUNCTION_ERROR_INJECTION) \
-  include/linux/list.h \
-    $(wildcard include/config/DEBUG_LIST) \
-  include/linux/container_of.h \
-  include/linux/build_bug.h \
-  include/linux/compiler.h \
-    $(wildcard include/config/TRACE_BRANCH_PROFILING) \
-    $(wildcard include/config/PROFILE_ALL_BRANCHES) \
-    $(wildcard include/config/STACK_VALIDATION) \
-  include/linux/compiler_types.h \
-  arch/x86/include/generated/asm/rwonce.h \
-  include/asm-generic/rwonce.h \
-  include/linux/kasan-checks.h \
-    $(wildcard include/config/KASAN_GENERIC) \
-    $(wildcard include/config/KASAN_SW_TAGS) \
-  include/linux/types.h \
-    $(wildcard include/config/HAVE_UID16) \
-    $(wildcard include/config/UID16) \
-    $(wildcard include/config/ARCH_DMA_ADDR_T_64BIT) \
-    $(wildcard include/config/PHYS_ADDR_T_64BIT) \
-    $(wildcard include/config/64BIT) \
-    $(wildcard include/config/ARCH_32BIT_USTAT_F_TINODE) \
-  include/uapi/linux/types.h \
-  arch/x86/include/generated/uapi/asm/types.h \
-  include/uapi/asm-generic/types.h \
-  include/asm-generic/int-ll64.h \
-  include/uapi/asm-generic/int-ll64.h \
-  arch/x86/include/uapi/asm/bitsperlong.h \
-  include/asm-generic/bitsperlong.h \
-  include/uapi/asm-generic/bitsperlong.h \
-  include/uapi/linux/posix_types.h \
-  include/linux/stddef.h \
-  include/uapi/linux/stddef.h \
-  arch/x86/include/asm/posix_types.h \
-    $(wildcard include/config/X86_32) \
-  arch/x86/include/uapi/asm/posix_types_32.h \
-  include/uapi/asm-generic/posix_types.h \
-  include/linux/kcsan-checks.h \
-    $(wildcard include/config/KCSAN) \
-    $(wildcard include/config/KCSAN_WEAK_MEMORY) \
-    $(wildcard include/config/KCSAN_IGNORE_ATOMICS) \
-  include/linux/err.h \
-  arch/x86/include/generated/uapi/asm/errno.h \
-  include/uapi/asm-generic/errno.h \
-  include/uapi/asm-generic/errno-base.h \
-  include/linux/poison.h \
-    $(wildcard include/config/ILLEGAL_POINTER_VALUE) \
-  include/linux/const.h \
-  include/vdso/const.h \
-  include/uapi/linux/const.h \
-  arch/x86/include/asm/barrier.h \
-  arch/x86/include/asm/alternative.h \
-  include/linux/stringify.h \
-  arch/x86/include/asm/asm.h \
-  arch/x86/include/asm/extable_fixup_types.h \
-  arch/x86/include/asm/nops.h \
-  include/asm-generic/barrier.h \
-  include/linux/stat.h \
-  arch/x86/include/uapi/asm/stat.h \
-  include/uapi/linux/stat.h \
-  include/linux/time.h \
-    $(wildcard include/config/POSIX_TIMERS) \
-  include/linux/cache.h \
-    $(wildcard include/config/ARCH_HAS_CACHE_LINE_SIZE) \
-  include/uapi/linux/kernel.h \
-  include/uapi/linux/sysinfo.h \
-  arch/x86/include/asm/cache.h \
-    $(wildcard include/config/X86_L1_CACHE_SHIFT) \
-    $(wildcard include/config/X86_INTERNODE_CACHE_SHIFT) \
-    $(wildcard include/config/X86_VSMP) \
-  include/linux/linkage.h \
-    $(wildcard include/config/ARCH_USE_SYM_ANNOTATIONS) \
-  include/linux/export.h \
-    $(wildcard include/config/MODVERSIONS) \
-    $(wildcard include/config/MODULE_REL_CRCS) \
-    $(wildcard include/config/HAVE_ARCH_PREL32_RELOCATIONS) \
-    $(wildcard include/config/TRIM_UNUSED_KSYMS) \
-  arch/x86/include/asm/linkage.h \
-    $(wildcard include/config/X86_64) \
-    $(wildcard include/config/X86_ALIGNMENT_16) \
-    $(wildcard include/config/SLS) \
-  arch/x86/include/asm/ibt.h \
-    $(wildcard include/config/X86_KERNEL_IBT) \
-  include/linux/math64.h \
-    $(wildcard include/config/ARCH_SUPPORTS_INT128) \
-  include/linux/math.h \
-  arch/x86/include/asm/div64.h \
-  include/linux/log2.h \
-    $(wildcard include/config/ARCH_HAS_ILOG2_U32) \
-    $(wildcard include/config/ARCH_HAS_ILOG2_U64) \
-  include/linux/bitops.h \
-  include/linux/bits.h \
-  include/vdso/bits.h \
-  include/linux/typecheck.h \
-  arch/x86/include/asm/bitops.h \
-    $(wildcard include/config/X86_CMOV) \
-  arch/x86/include/asm/rmwcc.h \
-    $(wildcard include/config/CC_HAS_ASM_GOTO) \
-  include/asm-generic/bitops/fls64.h \
-  include/asm-generic/bitops/sched.h \
-  arch/x86/include/asm/arch_hweight.h \
-  arch/x86/include/asm/cpufeatures.h \
-  arch/x86/include/asm/required-features.h \
-    $(wildcard include/config/X86_MINIMUM_CPU_FAMILY) \
-    $(wildcard include/config/MATH_EMULATION) \
-    $(wildcard include/config/X86_PAE) \
-    $(wildcard include/config/X86_CMPXCHG64) \
-    $(wildcard include/config/X86_P6_NOP) \
-    $(wildcard include/config/MATOM) \
-    $(wildcard include/config/PARAVIRT_XXL) \
-  arch/x86/include/asm/disabled-features.h \
-    $(wildcard include/config/X86_SMAP) \
-    $(wildcard include/config/X86_UMIP) \
-    $(wildcard include/config/X86_INTEL_MEMORY_PROTECTION_KEYS) \
-    $(wildcard include/config/X86_5LEVEL) \
-    $(wildcard include/config/PAGE_TABLE_ISOLATION) \
-    $(wildcard include/config/INTEL_IOMMU_SVM) \
-    $(wildcard include/config/X86_SGX) \
-  include/asm-generic/bitops/const_hweight.h \
-  include/asm-generic/bitops/instrumented-atomic.h \
-  include/linux/instrumented.h \
-  include/asm-generic/bitops/instrumented-non-atomic.h \
-    $(wildcard include/config/KCSAN_ASSUME_PLAIN_WRITES_ATOMIC) \
-  include/asm-generic/bitops/instrumented-lock.h \
-  include/asm-generic/bitops/le.h \
-  arch/x86/include/uapi/asm/byteorder.h \
-  include/linux/byteorder/little_endian.h \
-  include/uapi/linux/byteorder/little_endian.h \
-  include/linux/swab.h \
-  include/uapi/linux/swab.h \
-  arch/x86/include/uapi/asm/swab.h \
-  include/linux/byteorder/generic.h \
-  include/asm-generic/bitops/ext2-atomic-setbit.h \
-  include/vdso/math64.h \
-  include/linux/time64.h \
-  include/vdso/time64.h \
-  include/uapi/linux/time.h \
-  include/uapi/linux/time_types.h \
-  include/linux/time32.h \
-  include/linux/timex.h \
-  include/uapi/linux/timex.h \
-  include/uapi/linux/param.h \
-  arch/x86/include/generated/uapi/asm/param.h \
-  include/asm-generic/param.h \
-    $(wildcard include/config/HZ) \
-  include/uapi/asm-generic/param.h \
-  arch/x86/include/asm/timex.h \
-    $(wildcard include/config/X86_TSC) \
-  arch/x86/include/asm/processor.h \
-    $(wildcard include/config/X86_VMX_FEATURE_NAMES) \
-    $(wildcard include/config/X86_IOPL_IOPERM) \
-    $(wildcard include/config/STACKPROTECTOR) \
-    $(wildcard include/config/VM86) \
-    $(wildcard include/config/X86_DEBUGCTLMSR) \
-    $(wildcard include/config/CPU_SUP_AMD) \
-    $(wildcard include/config/XEN) \
-  arch/x86/include/asm/processor-flags.h \
-  arch/x86/include/uapi/asm/processor-flags.h \
-  include/linux/mem_encrypt.h \
-    $(wildcard include/config/ARCH_HAS_MEM_ENCRYPT) \
-    $(wildcard include/config/AMD_MEM_ENCRYPT) \
-  arch/x86/include/asm/mem_encrypt.h \
-  include/linux/init.h \
-    $(wildcard include/config/STRICT_KERNEL_RWX) \
-    $(wildcard include/config/STRICT_MODULE_RWX) \
-    $(wildcard include/config/LTO_CLANG) \
-  include/linux/cc_platform.h \
-    $(wildcard include/config/ARCH_HAS_CC_PLATFORM) \
-  arch/x86/include/uapi/asm/bootparam.h \
-  include/linux/screen_info.h \
-  include/uapi/linux/screen_info.h \
-  include/linux/apm_bios.h \
-  include/uapi/linux/apm_bios.h \
-  include/uapi/linux/ioctl.h \
-  arch/x86/include/generated/uapi/asm/ioctl.h \
-  include/asm-generic/ioctl.h \
-  include/uapi/asm-generic/ioctl.h \
-  include/linux/edd.h \
-  include/uapi/linux/edd.h \
-  arch/x86/include/asm/ist.h \
-  arch/x86/include/uapi/asm/ist.h \
-  include/video/edid.h \
-    $(wildcard include/config/X86) \
-  include/uapi/video/edid.h \
-  arch/x86/include/asm/math_emu.h \
-  arch/x86/include/asm/ptrace.h \
-    $(wildcard include/config/PARAVIRT) \
-    $(wildcard include/config/IA32_EMULATION) \
-  arch/x86/include/asm/segment.h \
-    $(wildcard include/config/XEN_PV) \
-  arch/x86/include/asm/page_types.h \
-    $(wildcard include/config/PHYSICAL_START) \
-    $(wildcard include/config/PHYSICAL_ALIGN) \
-    $(wildcard include/config/DYNAMIC_PHYSICAL_MASK) \
-  arch/x86/include/asm/page_32_types.h \
-    $(wildcard include/config/HIGHMEM4G) \
-    $(wildcard include/config/HIGHMEM64G) \
-    $(wildcard include/config/PAGE_OFFSET) \
-  arch/x86/include/uapi/asm/ptrace.h \
-  arch/x86/include/uapi/asm/ptrace-abi.h \
-  arch/x86/include/asm/paravirt_types.h \
-    $(wildcard include/config/PGTABLE_LEVELS) \
-    $(wildcard include/config/PARAVIRT_DEBUG) \
-  arch/x86/include/asm/desc_defs.h \
-  arch/x86/include/asm/pgtable_types.h \
-    $(wildcard include/config/MEM_SOFT_DIRTY) \
-    $(wildcard include/config/HAVE_ARCH_USERFAULTFD_WP) \
-    $(wildcard include/config/PROC_FS) \
-  arch/x86/include/asm/pgtable_32_types.h \
-  arch/x86/include/asm/pgtable-3level_types.h \
-  include/asm-generic/pgtable-nop4d.h \
-  include/asm-generic/pgtable-nopud.h \
-  arch/x86/include/asm/nospec-branch.h \
-  include/linux/static_key.h \
-  include/linux/jump_label.h \
-    $(wildcard include/config/HAVE_ARCH_JUMP_LABEL_RELATIVE) \
-  arch/x86/include/asm/jump_label.h \
-  include/linux/objtool.h \
-    $(wildcard include/config/FRAME_POINTER) \
-  arch/x86/include/asm/msr-index.h \
-  arch/x86/include/asm/unwind_hints.h \
-  arch/x86/include/asm/orc_types.h \
-  arch/x86/include/asm/GEN-for-each-reg.h \
-  arch/x86/include/asm/spinlock_types.h \
-  include/asm-generic/qspinlock_types.h \
-    $(wildcard include/config/NR_CPUS) \
-  include/asm-generic/qrwlock_types.h \
-  arch/x86/include/asm/proto.h \
-  arch/x86/include/uapi/asm/ldt.h \
-  arch/x86/include/uapi/asm/sigcontext.h \
-  arch/x86/include/asm/current.h \
-  arch/x86/include/asm/percpu.h \
-    $(wildcard include/config/X86_64_SMP) \
-  include/linux/kernel.h \
-    $(wildcard include/config/PREEMPT_VOLUNTARY_BUILD) \
-    $(wildcard include/config/PREEMPT_DYNAMIC) \
-    $(wildcard include/config/HAVE_PREEMPT_DYNAMIC_CALL) \
-    $(wildcard include/config/HAVE_PREEMPT_DYNAMIC_KEY) \
-    $(wildcard include/config/PREEMPT_) \
-    $(wildcard include/config/DEBUG_ATOMIC_SLEEP) \
-    $(wildcard include/config/MMU) \
-    $(wildcard include/config/PROVE_LOCKING) \
-  include/linux/stdarg.h \
-  include/linux/align.h \
-  include/linux/limits.h \
-  include/uapi/linux/limits.h \
-  include/vdso/limits.h \
-  include/linux/kstrtox.h \
-  include/linux/minmax.h \
-  include/linux/panic.h \
-    $(wildcard include/config/PANIC_TIMEOUT) \
-  include/linux/printk.h \
-    $(wildcard include/config/MESSAGE_LOGLEVEL_DEFAULT) \
-    $(wildcard include/config/CONSOLE_LOGLEVEL_DEFAULT) \
-    $(wildcard include/config/CONSOLE_LOGLEVEL_QUIET) \
-    $(wildcard include/config/EARLY_PRINTK) \
-    $(wildcard include/config/PRINTK) \
-    $(wildcard include/config/DYNAMIC_DEBUG) \
-    $(wildcard include/config/DYNAMIC_DEBUG_CORE) \
-  include/linux/kern_levels.h \
-  include/linux/ratelimit_types.h \
-  include/linux/spinlock_types_raw.h \
-    $(wildcard include/config/DEBUG_SPINLOCK) \
-    $(wildcard include/config/DEBUG_LOCK_ALLOC) \
-  include/linux/lockdep_types.h \
-    $(wildcard include/config/PROVE_RAW_LOCK_NESTING) \
-    $(wildcard include/config/LOCKDEP) \
-    $(wildcard include/config/LOCK_STAT) \
-  include/linux/once_lite.h \
-  include/linux/static_call_types.h \
-    $(wildcard include/config/HAVE_STATIC_CALL) \
-  include/linux/instruction_pointer.h \
-  include/asm-generic/percpu.h \
-    $(wildcard include/config/DEBUG_PREEMPT) \
-    $(wildcard include/config/HAVE_SETUP_PER_CPU_AREA) \
-  include/linux/threads.h \
-    $(wildcard include/config/BASE_SMALL) \
-  include/linux/percpu-defs.h \
-    $(wildcard include/config/DEBUG_FORCE_WEAK_PER_CPU) \
-  arch/x86/include/asm/page.h \
-  arch/x86/include/asm/page_32.h \
-    $(wildcard include/config/DEBUG_VIRTUAL) \
-    $(wildcard include/config/FLATMEM) \
-  include/linux/string.h \
-    $(wildcard include/config/BINARY_PRINTF) \
-    $(wildcard include/config/FORTIFY_SOURCE) \
-  include/linux/errno.h \
-  include/uapi/linux/errno.h \
-  include/uapi/linux/string.h \
-  arch/x86/include/asm/string.h \
-  arch/x86/include/asm/string_32.h \
-  include/linux/fortify-string.h \
-  include/linux/range.h \
-  include/asm-generic/memory_model.h \
-    $(wildcard include/config/SPARSEMEM_VMEMMAP) \
-    $(wildcard include/config/SPARSEMEM) \
-  include/linux/pfn.h \
-  include/asm-generic/getorder.h \
-  arch/x86/include/asm/msr.h \
-  arch/x86/include/asm/msr-index.h \
-  arch/x86/include/asm/cpumask.h \
-  include/linux/cpumask.h \
-    $(wildcard include/config/CPUMASK_OFFSTACK) \
-    $(wildcard include/config/HOTPLUG_CPU) \
-    $(wildcard include/config/DEBUG_PER_CPU_MAPS) \
-  include/linux/bitmap.h \
-  include/linux/find.h \
-  include/linux/atomic.h \
-  arch/x86/include/asm/atomic.h \
-  arch/x86/include/asm/cmpxchg.h \
-  arch/x86/include/asm/cmpxchg_32.h \
-  arch/x86/include/asm/atomic64_32.h \
-  include/linux/atomic/atomic-arch-fallback.h \
-    $(wildcard include/config/GENERIC_ATOMIC64) \
-  include/linux/atomic/atomic-long.h \
-  include/linux/atomic/atomic-instrumented.h \
-  include/linux/bug.h \
-    $(wildcard include/config/BUG_ON_DATA_CORRUPTION) \
-  arch/x86/include/asm/bug.h \
-    $(wildcard include/config/DEBUG_BUGVERBOSE) \
-  include/linux/instrumentation.h \
-    $(wildcard include/config/DEBUG_ENTRY) \
-  include/asm-generic/bug.h \
-    $(wildcard include/config/BUG) \
-    $(wildcard include/config/GENERIC_BUG_RELATIVE_POINTERS) \
-  arch/x86/include/uapi/asm/msr.h \
-  include/linux/tracepoint-defs.h \
-  arch/x86/include/asm/special_insns.h \
-  include/linux/irqflags.h \
-    $(wildcard include/config/TRACE_IRQFLAGS) \
-    $(wildcard include/config/PREEMPT_RT) \
-    $(wildcard include/config/IRQSOFF_TRACER) \
-    $(wildcard include/config/PREEMPT_TRACER) \
-    $(wildcard include/config/DEBUG_IRQFLAGS) \
-    $(wildcard include/config/TRACE_IRQFLAGS_SUPPORT) \
-  arch/x86/include/asm/irqflags.h \
-  arch/x86/include/asm/fpu/types.h \
-  arch/x86/include/asm/vmxfeatures.h \
-  arch/x86/include/asm/vdso/processor.h \
-  include/linux/personality.h \
-  include/uapi/linux/personality.h \
-  arch/x86/include/asm/tsc.h \
-  arch/x86/include/asm/cpufeature.h \
-    $(wildcard include/config/X86_FEATURE_NAMES) \
-  include/vdso/time32.h \
-  include/vdso/time.h \
-  include/linux/uidgid.h \
-    $(wildcard include/config/MULTIUSER) \
-    $(wildcard include/config/USER_NS) \
-  include/linux/highuid.h \
-  include/linux/buildid.h \
-    $(wildcard include/config/CRASH_CORE) \
-  include/linux/mm_types.h \
-    $(wildcard include/config/HAVE_ALIGNED_STRUCT_PAGE) \
-    $(wildcard include/config/MEMCG) \
-    $(wildcard include/config/USERFAULTFD) \
-    $(wildcard include/config/SWAP) \
-    $(wildcard include/config/NUMA) \
-    $(wildcard include/config/HAVE_ARCH_COMPAT_MMAP_BASES) \
-    $(wildcard include/config/MEMBARRIER) \
-    $(wildcard include/config/AIO) \
-    $(wildcard include/config/MMU_NOTIFIER) \
-    $(wildcard include/config/TRANSPARENT_HUGEPAGE) \
-    $(wildcard include/config/NUMA_BALANCING) \
-    $(wildcard include/config/ARCH_WANT_BATCHED_UNMAP_TLB_FLUSH) \
-    $(wildcard include/config/HUGETLB_PAGE) \
-    $(wildcard include/config/IOMMU_SVA) \
-  include/linux/mm_types_task.h \
-    $(wildcard include/config/SPLIT_PTLOCK_CPUS) \
-    $(wildcard include/config/ARCH_ENABLE_SPLIT_PMD_PTLOCK) \
-  arch/x86/include/asm/tlbbatch.h \
-  include/linux/auxvec.h \
-  include/uapi/linux/auxvec.h \
-  arch/x86/include/uapi/asm/auxvec.h \
-  include/linux/kref.h \
-  include/linux/spinlock.h \
-    $(wildcard include/config/PREEMPTION) \
-  include/linux/preempt.h \
-    $(wildcard include/config/PREEMPT_COUNT) \
-    $(wildcard include/config/TRACE_PREEMPT_TOGGLE) \
-    $(wildcard include/config/PREEMPT_NOTIFIERS) \
-  arch/x86/include/asm/preempt.h \
-  include/linux/thread_info.h \
-    $(wildcard include/config/THREAD_INFO_IN_TASK) \
-    $(wildcard include/config/GENERIC_ENTRY) \
-    $(wildcard include/config/HAVE_ARCH_WITHIN_STACK_FRAMES) \
-    $(wildcard include/config/HARDENED_USERCOPY) \
-  include/linux/restart_block.h \
-  arch/x86/include/asm/thread_info.h \
-    $(wildcard include/config/COMPAT) \
-  include/linux/bottom_half.h \
-  include/linux/lockdep.h \
-    $(wildcard include/config/DEBUG_LOCKING_API_SELFTESTS) \
-  include/linux/smp.h \
-    $(wildcard include/config/UP_LATE_INIT) \
-  include/linux/smp_types.h \
-  include/linux/llist.h \
-    $(wildcard include/config/ARCH_HAVE_NMI_SAFE_CMPXCHG) \
-  arch/x86/include/asm/smp.h \
-    $(wildcard include/config/X86_LOCAL_APIC) \
-    $(wildcard include/config/DEBUG_NMI_SELFTEST) \
-  arch/x86/include/generated/asm/mmiowb.h \
-  include/asm-generic/mmiowb.h \
-    $(wildcard include/config/MMIOWB) \
-  include/linux/spinlock_types.h \
-  include/linux/rwlock_types.h \
-  arch/x86/include/asm/spinlock.h \
-  arch/x86/include/asm/paravirt.h \
-    $(wildcard include/config/PARAVIRT_SPINLOCKS) \
-  arch/x86/include/asm/frame.h \
-  arch/x86/include/asm/qspinlock.h \
-  include/asm-generic/qspinlock.h \
-  arch/x86/include/asm/qrwlock.h \
-  include/asm-generic/qrwlock.h \
-  include/linux/rwlock.h \
-    $(wildcard include/config/PREEMPT) \
-  include/linux/spinlock_api_smp.h \
-    $(wildcard include/config/INLINE_SPIN_LOCK) \
-    $(wildcard include/config/INLINE_SPIN_LOCK_BH) \
-    $(wildcard include/config/INLINE_SPIN_LOCK_IRQ) \
-    $(wildcard include/config/INLINE_SPIN_LOCK_IRQSAVE) \
-    $(wildcard include/config/INLINE_SPIN_TRYLOCK) \
-    $(wildcard include/config/INLINE_SPIN_TRYLOCK_BH) \
-    $(wildcard include/config/UNINLINE_SPIN_UNLOCK) \
-    $(wildcard include/config/INLINE_SPIN_UNLOCK_BH) \
-    $(wildcard include/config/INLINE_SPIN_UNLOCK_IRQ) \
-    $(wildcard include/config/INLINE_SPIN_UNLOCK_IRQRESTORE) \
-    $(wildcard include/config/GENERIC_LOCKBREAK) \
-  include/linux/rwlock_api_smp.h \
-    $(wildcard include/config/INLINE_READ_LOCK) \
-    $(wildcard include/config/INLINE_WRITE_LOCK) \
-    $(wildcard include/config/INLINE_READ_LOCK_BH) \
-    $(wildcard include/config/INLINE_WRITE_LOCK_BH) \
-    $(wildcard include/config/INLINE_READ_LOCK_IRQ) \
-    $(wildcard include/config/INLINE_WRITE_LOCK_IRQ) \
-    $(wildcard include/config/INLINE_READ_LOCK_IRQSAVE) \
-    $(wildcard include/config/INLINE_WRITE_LOCK_IRQSAVE) \
-    $(wildcard include/config/INLINE_READ_TRYLOCK) \
-    $(wildcard include/config/INLINE_WRITE_TRYLOCK) \
-    $(wildcard include/config/INLINE_READ_UNLOCK) \
-    $(wildcard include/config/INLINE_WRITE_UNLOCK) \
-    $(wildcard include/config/INLINE_READ_UNLOCK_BH) \
-    $(wildcard include/config/INLINE_WRITE_UNLOCK_BH) \
-    $(wildcard include/config/INLINE_READ_UNLOCK_IRQ) \
-    $(wildcard include/config/INLINE_WRITE_UNLOCK_IRQ) \
-    $(wildcard include/config/INLINE_READ_UNLOCK_IRQRESTORE) \
-    $(wildcard include/config/INLINE_WRITE_UNLOCK_IRQRESTORE) \
-  include/linux/refcount.h \
-  include/linux/rbtree.h \
-  include/linux/rbtree_types.h \
-  include/linux/rcupdate.h \
-    $(wildcard include/config/PREEMPT_RCU) \
-    $(wildcard include/config/TINY_RCU) \
-    $(wildcard include/config/RCU_STRICT_GRACE_PERIOD) \
-    $(wildcard include/config/TASKS_RCU_GENERIC) \
-    $(wildcard include/config/RCU_STALL_COMMON) \
-    $(wildcard include/config/NO_HZ_FULL) \
-    $(wildcard include/config/RCU_NOCB_CPU) \
-    $(wildcard include/config/TASKS_RCU) \
-    $(wildcard include/config/TASKS_TRACE_RCU) \
-    $(wildcard include/config/TASKS_RUDE_RCU) \
-    $(wildcard include/config/TREE_RCU) \
-    $(wildcard include/config/DEBUG_OBJECTS_RCU_HEAD) \
-    $(wildcard include/config/PROVE_RCU) \
-    $(wildcard include/config/ARCH_WEAK_RELEASE_ACQUIRE) \
-  include/linux/rcutree.h \
-  include/linux/rwsem.h \
-    $(wildcard include/config/RWSEM_SPIN_ON_OWNER) \
-    $(wildcard include/config/DEBUG_RWSEMS) \
-  include/linux/osq_lock.h \
-  include/linux/completion.h \
-  include/linux/swait.h \
-  include/linux/wait.h \
-  include/uapi/linux/wait.h \
-  include/linux/uprobes.h \
-    $(wildcard include/config/UPROBES) \
-  arch/x86/include/asm/uprobes.h \
-  include/linux/notifier.h \
-  include/linux/mutex.h \
-    $(wildcard include/config/MUTEX_SPIN_ON_OWNER) \
-    $(wildcard include/config/DEBUG_MUTEXES) \
-  include/linux/debug_locks.h \
-  include/linux/srcu.h \
-    $(wildcard include/config/TINY_SRCU) \
-    $(wildcard include/config/SRCU) \
-  include/linux/workqueue.h \
-    $(wildcard include/config/DEBUG_OBJECTS_WORK) \
-    $(wildcard include/config/FREEZER) \
-    $(wildcard include/config/WQ_WATCHDOG) \
-  include/linux/timer.h \
-    $(wildcard include/config/DEBUG_OBJECTS_TIMERS) \
-    $(wildcard include/config/NO_HZ_COMMON) \
-  include/linux/ktime.h \
-  include/linux/jiffies.h \
-  include/vdso/jiffies.h \
-  include/generated/timeconst.h \
-  include/vdso/ktime.h \
-  include/linux/timekeeping.h \
-    $(wildcard include/config/GENERIC_CMOS_UPDATE) \
-  include
+#include <linux/can.h>
+#include <linux/can/dev.h>
+#include <linux/can/error.h>
+#include <linux/can/led.h>
+
+/* driver constants */
+#define MAX_RX_URBS			20
+#define MAX_TX_URBS			20
+#define RX_BUFFER_SIZE			64
+
+/* vendor and product id */
+#define USB_8DEV_VENDOR_ID		0x0483
+#define USB_8DEV_PRODUCT_ID		0x1234
+
+/* endpoints */
+enum usb_8dev_endpoint {
+	USB_8DEV_ENDP_DATA_RX = 1,
+	USB_8DEV_ENDP_DATA_TX,
+	USB_8DEV_ENDP_CMD_RX,
+	USB_8DEV_ENDP_CMD_TX
+};
+
+/* device CAN clock */
+#define USB_8DEV_ABP_CLOCK		32000000
+
+/* setup flags */
+#define USB_8DEV_SILENT			0x01
+#define USB_8DEV_LOOPBACK		0x02
+#define USB_8DEV_DISABLE_AUTO_RESTRANS	0x04
+#define USB_8DEV_STATUS_FRAME		0x08
+
+/* commands */
+enum usb_8dev_cmd {
+	USB_8DEV_RESET = 1,
+	USB_8DEV_OPEN,
+	USB_8DEV_CLOSE,
+	USB_8DEV_SET_SPEED,
+	USB_8DEV_SET_MASK_FILTER,
+	USB_8DEV_GET_STATUS,
+	USB_8DEV_GET_STATISTICS,
+	USB_8DEV_GET_SERIAL,
+	USB_8DEV_GET_SOFTW_VER,
+	USB_8DEV_GET_HARDW_VER,
+	USB_8DEV_RESET_TIMESTAMP,
+	USB_8DEV_GET_SOFTW_HARDW_VER
+};
+
+/* command options */
+#define USB_8DEV_BAUD_MANUAL		0x09
+#define USB_8DEV_CMD_START		0x11
+#define USB_8DEV_CMD_END		0x22
+
+#define USB_8DEV_CMD_SUCCESS		0
+#define USB_8DEV_CMD_ERROR		255
+
+#define USB_8DEV_CMD_TIMEOUT		1000
+
+/* frames */
+#define USB_8DEV_DATA_START		0x55
+#define USB_8DEV_DATA_END		0xAA
+
+#define USB_8DEV_TYPE_CAN_FRAME		0
+#define USB_8DEV_TYPE_ERROR_FRAME	3
+
+#define USB_8DEV_EXTID			0x01
+#define USB_8DEV_RTR			0x02
+#define USB_8DEV_ERR_FLAG		0x04
+
+/* status */
+#define USB_8DEV_STATUSMSG_OK		0x00  /* Normal condition. */
+#define USB_8DEV_STATUSMSG_OVERRUN	0x01  /* Overrun occurred when sending */
+#define USB_8DEV_STATUSMSG_BUSLIGHT	0x02  /* Error counter has reached 96 */
+#define USB_8DEV_STATUSMSG_BUSHEAVY	0x03  /* Error count. has reached 128 */
+#define USB_8DEV_STATUSMSG_BUSOFF	0x04  /* Device is in BUSOFF */
+#define USB_8DEV_STATUSMSG_STUFF	0x20  /* Stuff Error */
+#define USB_8DEV_STATUSMSG_FORM		0x21  /* Form Error */
+#define USB_8DEV_STATUSMSG_ACK		0x23  /* Ack Error */
+#define USB_8DEV_STATUSMSG_BIT0		0x24  /* Bit1 Error */
+#define USB_8DEV_STATUSMSG_BIT1		0x25  /* Bit0 Error */
+#define USB_8DEV_STATUSMSG_CRC		0x27  /* CRC Error */
+
+#define USB_8DEV_RP_MASK		0x7F  /* Mask for Receive Error Bit */
+
+
+/* table of devices that work with this driver */
+static const struct usb_device_id usb_8dev_table[] = {
+	{ USB_DEVICE(USB_8DEV_VENDOR_ID, USB_8DEV_PRODUCT_ID) },
+	{ }					/* Terminating entry */
+};
+
+MODULE_DEVICE_TABLE(usb, usb_8dev_table);
+
+struct usb_8dev_tx_urb_context {
+	struct usb_8dev_priv *priv;
+
+	u32 echo_index;
+};
+
+/* Structure to hold all of our device specific stuff */
+struct usb_8dev_priv {
+	struct can_priv can; /* must be the first member */
+
+	struct usb_device *udev;
+	struct net_device *netdev;
+
+	atomic_t active_tx_urbs;
+	struct usb_anchor tx_submitted;
+	struct usb_8dev_tx_urb_context tx_contexts[MAX_TX_URBS];
+
+	struct usb_anchor rx_submitted;
+
+	struct can_berr_counter bec;
+
+	u8 *cmd_msg_buffer;
+
+	struct mutex usb_8dev_cmd_lock;
+	void *rxbuf[MAX_RX_URBS];
+	dma_addr_t rxbuf_dma[MAX_RX_URBS];
+};
+
+/* tx frame */
+struct __packed usb_8dev_tx_msg {
+	u8 begin;
+	u8 flags;	/* RTR and EXT_ID flag */
+	__be32 id;	/* upper 3 bits not used */
+	u8 dlc;		/* data length code 0-8 bytes */
+	u8 data[8];	/* 64-bit data */
+	u8 end;
+};
+
+/* rx frame */
+struct __packed usb_8dev_rx_msg {
+	u8 begin;
+	u8 type;		/* frame type */
+	u8 flags;		/* RTR and EXT_ID flag */
+	__be32 id;		/* upper 3 bits not used */
+	u8 dlc;			/* data length code 0-8 bytes */
+	u8 data[8];		/* 64-bit data */
+	__be32 timestamp;	/* 32-bit timestamp */
+	u8 end;
+};
+
+/* command frame */
+struct __packed usb_8dev_cmd_msg {
+	u8 begin;
+	u8 channel;	/* unknown - always 0 */
+	u8 command;	/* command to execute */
+	u8 opt1;	/* optional parameter / return value */
+	u8 opt2;	/* optional parameter 2 */
+	u8 data[10];	/* optional parameter and data */
+	u8 end;
+};
+
+static int usb_8dev_send_cmd_msg(struct usb_8dev_priv *priv, u8 *msg, int size)
+{
+	int actual_length;
+
+	return usb_bulk_msg(priv->udev,
+			    usb_sndbulkpipe(priv->udev, USB_8DEV_ENDP_CMD_TX),
+			    msg, size, &actual_length, USB_8DEV_CMD_TIMEOUT);
+}
+
+static int usb_8dev_wait_cmd_msg(struct usb_8dev_priv *priv, u8 *msg, int size,
+				int *actual_length)
+{
+	return usb_bulk_msg(priv->udev,
+			    usb_rcvbulkpipe(priv->udev, USB_8DEV_ENDP_CMD_RX),
+			    msg, size, actual_length, USB_8DEV_CMD_TIMEOUT);
+}
+
+/* Send command to device and receive result.
+ * Command was successful when opt1 = 0.
+ */
+static int usb_8dev_send_cmd(struct usb_8dev_priv *priv,
+			     struct usb_8dev_cmd_msg *out,
+			     struct usb_8dev_cmd_msg *in)
+{
+	int err;
+	int num_bytes_read;
+	struct net_device *netdev;
+
+	netdev = priv->netdev;
+
+	out->begin = USB_8DEV_CMD_START;
+	out->end = USB_8DEV_CMD_END;
+
+	mutex_lock(&priv->usb_8dev_cmd_lock);
+
+	memcpy(priv->cmd_msg_buffer, out,
+		sizeof(struct usb_8dev_cmd_msg));
+
+	err = usb_8dev_send_cmd_msg(priv, priv->cmd_msg_buffer,
+				    sizeof(struct usb_8dev_cmd_msg));
+	if (err < 0) {
+		netdev_err(netdev, "sending command message failed\n");
+		goto failed;
+	}
+
+	err = usb_8dev_wait_cmd_msg(priv, priv->cmd_msg_buffer,
+				    sizeof(struct usb_8dev_cmd_msg),
+				    &num_bytes_read);
+	if (err < 0) {
+		netdev_err(netdev, "no command message answer\n");
+		goto failed;
+	}
+
+	memcpy(in, priv->cmd_msg_buffer, sizeof(struct usb_8dev_cmd_msg));
+
+	if (in->begin != USB_8DEV_CMD_START || in->end != USB_8DEV_CMD_END ||
+			num_bytes_read != 16 || in->opt1 != 0)
+		err = -EPROTO;
+
+failed:
+	mutex_unlock(&priv->usb_8dev_cmd_lock);
+	return err;
+}
+
+/* Send open command to device */
+static int usb_8dev_cmd_open(struct usb_8dev_priv *priv)
+{
+	struct can_bittiming *bt = &priv->can.bittiming;
+	struct usb_8dev_cmd_msg outmsg;
+	struct usb_8dev_cmd_msg inmsg;
+	u32 ctrlmode = priv->can.ctrlmode;
+	u32 flags = USB_8DEV_STATUS_FRAME;
+	__be32 beflags;
+	__be16 bebrp;
+
+	memset(&outmsg, 0, sizeof(outmsg));
+	outmsg.command = USB_8DEV_OPEN;
+	outmsg.opt1 = USB_8DEV_BAUD_MANUAL;
+	outmsg.data[0] = bt->prop_seg + bt->phase_seg1;
+	outmsg.data[1] = bt->phase_seg2;
+	outmsg.data[2] = bt->sjw;
+
+	/* BRP */
+	bebrp = cpu_to_be16((u16)bt->brp);
+	memcpy(&outmsg.data[3], &bebrp, sizeof(bebrp));
+
+	/* flags */
+	if (ctrlmode & CAN_CTRLMODE_LOOPBACK)
+		flags |= USB_8DEV_LOOPBACK;
+	if (ctrlmode & CAN_CTRLMODE_LISTENONLY)
+		flags |= USB_8DEV_SILENT;
+	if (ctrlmode & CAN_CTRLMODE_ONE_SHOT)
+		flags |= USB_8DEV_DISABLE_AUTO_RESTRANS;
+
+	beflags = cpu_to_be32(flags);
+	memcpy(&outmsg.data[5], &beflags, sizeof(beflags));
+
+	return usb_8dev_send_cmd(priv, &outmsg, &inmsg);
+}
+
+/* Send close command to device */
+static int usb_8dev_cmd_close(struct usb_8dev_priv *priv)
+{
+	struct usb_8dev_cmd_msg inmsg;
+	struct usb_8dev_cmd_msg outmsg = {
+		.channel = 0,
+		.command = USB_8DEV_CLOSE,
+		.opt1 = 0,
+		.opt2 = 0
+	};
+
+	return usb_8dev_send_cmd(priv, &outmsg, &inmsg);
+}
+
+/* Get firmware and hardware version */
+static int usb_8dev_cmd_version(struct usb_8dev_priv *priv, u32 *res)
+{
+	struct usb_8dev_cmd_msg	inmsg;
+	struct usb_8dev_cmd_msg	outmsg = {
+		.channel = 0,
+		.command = USB_8DEV_GET_SOFTW_HARDW_VER,
+		.opt1 = 0,
+		.opt2 = 0
+	};
+
+	int err = usb_8dev_send_cmd(priv, &outmsg, &inmsg);
+	if (err)
+		return err;
+
+	*res = be32_to_cpup((__be32 *)inmsg.data);
+
+	return err;
+}
+
+/* Set network device mode
+ *
+ * Maybe we should leave this function empty, because the device
+ * set mode variable with open command.
+ */
+static int usb_8dev_set_mode(struct net_device *netdev, enum can_mode mode)
+{
+	struct usb_8dev_priv *priv = netdev_priv(netdev);
+	int err = 0;
+
+	switch (mode) {
+	case CAN_MODE_START:
+		err = usb_8dev_cmd_open(priv);
+		if (err)
+			netdev_warn(netdev, "couldn't start device");
+		break;
+
+	default:
+		return -EOPNOTSUPP;
+	}
+
+	return err;
+}
+
+/* Read error/status frames */
+static void usb_8dev_rx_err_msg(struct usb_8dev_priv *priv,
+				struct usb_8dev_rx_msg *msg)
+{
+	struct can_frame *cf;
+	struct sk_buff *skb;
+	struct net_device_stats *stats = &priv->netdev->stats;
+
+	/* Error message:
+	 * byte 0: Status
+	 * byte 1: bit   7: Receive Passive
+	 * byte 1: bit 0-6: Receive Error Counter
+	 * byte 2: Transmit Error Counter
+	 * byte 3: Always 0 (maybe reserved for future use)
+	 */
+
+	u8 state = msg->data[0];
+	u8 rxerr = msg->data[1] & USB_8DEV_RP_MASK;
+	u8 txerr = msg->data[2];
+	int rx_errors = 0;
+	int tx_errors = 0;
+
+	skb = alloc_can_err_skb(priv->netdev, &cf);
+	if (!skb)
+		return;
+
+	switch (state) {
+	case USB_8DEV_STATUSMSG_OK:
+		priv->can.state = CAN_STATE_ERROR_ACTIVE;
+		cf->can_id |= CAN_ERR_PROT;
+		cf->data[2] = CAN_ERR_PROT_ACTIVE;
+		break;
+	case USB_8DEV_STATUSMSG_BUSOFF:
+		priv->can.state = CAN_STATE_BUS_OFF;
+		cf->can_id |= CAN_ERR_BUSOFF;
+		priv->can.can_stats.bus_off++;
+		can_bus_off(priv->netdev);
+		break;
+	case USB_8DEV_STATUSMSG_OVERRUN:
+	case USB_8DEV_STATUSMSG_BUSLIGHT:
+	case USB_8DEV_STATUSMSG_BUSHEAVY:
+		cf->can_id |= CAN_ERR_CRTL;
+		break;
+	default:
+		priv->can.state = CAN_STATE_ERROR_WARNING;
+		cf->can_id |= CAN_ERR_PROT | CAN_ERR_BUSERROR;
+		priv->can.can_stats.bus_error++;
+		break;
+	}
+
+	switch (state) {
+	case USB_8DEV_STATUSMSG_OK:
+	case USB_8DEV_STATUSMSG_BUSOFF:
+		break;
+	case USB_8DEV_STATUSMSG_ACK:
+		cf->can_id |= CAN_ERR_ACK;
+		tx_errors = 1;
+		break;
+	case USB_8DEV_STATUSMSG_CRC:
+		cf->data[3] = CAN_ERR_PROT_LOC_CRC_SEQ;
+		rx_errors = 1;
+		break;
+	case USB_8DEV_STATUSMSG_BIT0:
+		cf->data[2] |= CAN_ERR_PROT_BIT0;
+		tx_errors = 1;
+		break;
+	case USB_8DEV_STATUSMSG_BIT1:
+		cf->data[2] |= CAN_ERR_PROT_BIT1;
+		tx_errors = 1;
+		break;
+	case USB_8DEV_STATUSMSG_FORM:
+		cf->data[2] |= CAN_ERR_PROT_FORM;
+		rx_errors = 1;
+		break;
+	case USB_8DEV_STATUSMSG_STUFF:
+		cf->data[2] |= CAN_ERR_PROT_STUFF;
+		rx_errors = 1;
+		break;
+	case USB_8DEV_STATUSMSG_OVERRUN:
+		cf->data[1] = CAN_ERR_CRTL_RX_OVERFLOW;
+		stats->rx_over_errors++;
+		rx_errors = 1;
+		break;
+	case USB_8DEV_STATUSMSG_BUSLIGHT:
+		priv->can.state = CAN_STATE_ERROR_WARNING;
+		cf->data[1] = (txerr > rxerr) ?
+			CAN_ERR_CRTL_TX_WARNING :
+			CAN_ERR_CRTL_RX_WARNING;
+		priv->can.can_stats.error_warning++;
+		break;
+	case USB_8DEV_STATUSMSG_BUSHEAVY:
+		priv->can.state = CAN_STATE_ERROR_PASSIVE;
+		cf->data[1] = (txerr > rxerr) ?
+			CAN_ERR_CRTL_TX_PASSIVE :
+			CAN_ERR_CRTL_RX_PASSIVE;
+		priv->can.can_stats.error_passive++;
+		break;
+	default:
+		netdev_warn(priv->netdev,
+			    "Unknown status/error message (%d)\n", state);
+		break;
+	}
+
+	if (tx_errors) {
+		cf->data[2] |= CAN_ERR_PROT_TX;
+		stats->tx_errors++;
+	}
+
+	if (rx_errors)
+		stats->rx_errors++;
+
+	cf->data[6] = txerr;
+	cf->data[7] = rxerr;
+
+	priv->bec.txerr = txerr;
+	priv->bec.rxerr = rxerr;
+
+	netif_rx(skb);
+}
+
+/* Read data and status frames */
+static void usb_8dev_rx_can_msg(struct usb_8dev_priv *priv,
+				struct usb_8dev_rx_msg *msg)
+{
+	struct can_frame *cf;
+	struct sk_buff *skb;
+	struct net_device_stats *stats = &priv->netdev->stats;
+
+	if (msg->type == USB_8DEV_TYPE_ERROR_FRAME &&
+		   msg->flags == USB_8DEV_ERR_FLAG) {
+		usb_8dev_rx_err_msg(priv, msg);
+	} else if (msg->type == USB_8DEV_TYPE_CAN_FRAME) {
+		skb = alloc_can_skb(priv->netdev, &cf);
+		if (!skb)
+			return;
+
+		cf->can_id = be32_to_cpu(msg->id);
+		can_frame_set_cc_len(cf, msg->dlc & 0xF, priv->can.ctrlmode);
+
+		if (msg->flags & USB_8DEV_EXTID)
+			cf->can_id |= CAN_EFF_FLAG;
+
+		if (msg->flags & USB_8DEV_RTR) {
+			cf->can_id |= CAN_RTR_FLAG;
+		} else {
+			memcpy(cf->data, msg->data, cf->len);
+			stats->rx_bytes += cf->len;
+		}
+		stats->rx_packets++;
+
+		netif_rx(skb);
+
+		can_led_event(priv->netdev, CAN_LED_EVENT_RX);
+	} else {
+		netdev_warn(priv->netdev, "frame type %d unknown",
+			 msg->type);
+	}
+
+}
+
+/* Callback for reading data from device
+ *
+ * Check urb status, call read function and resubmit urb read operation.
+ */
+static void usb_8dev_read_bulk_callback(struct urb *urb)
+{
+	struct usb_8dev_priv *priv = urb->context;
+	struct net_device *netdev;
+	int retval;
+	int pos = 0;
+
+	netdev = priv->netdev;
+
+	if (!netif_device_present(netdev))
+		return;
+
+	switch (urb->status) {
+	case 0: /* success */
+		break;
+
+	case -ENOENT:
+	case -EPIPE:
+	case -EPROTO:
+	case -ESHUTDOWN:
+		return;
+
+	default:
+		netdev_info(netdev, "Rx URB aborted (%d)\n",
+			 urb->status);
+		goto resubmit_urb;
+	}
+
+	while (pos < urb->actual_length) {
+		struct usb_8dev_rx_msg *msg;
+
+		if (pos + sizeof(struct usb_8dev_rx_msg) > urb->actual_length) {
+			netdev_err(priv->netdev, "format error\n");
+			break;
+		}
+
+		msg = (struct usb_8dev_rx_msg *)(urb->transfer_buffer + pos);
+		usb_8dev_rx_can_msg(priv, msg);
+
+		pos += sizeof(struct usb_8dev_rx_msg);
+	}
+
+resubmit_urb:
+	usb_fill_bulk_urb(urb, priv->udev,
+			  usb_rcvbulkpipe(priv->udev, USB_8DEV_ENDP_DATA_RX),
+			  urb->transfer_buffer, RX_BUFFER_SIZE,
+			  usb_8dev_read_bulk_callback, priv);
+
+	retval = usb_submit_urb(urb, GFP_ATOMIC);
+
+	if (retval == -ENODEV)
+		netif_device_detach(netdev);
+	else if (retval)
+		netdev_err(netdev,
+			"failed resubmitting read bulk urb: %d\n", retval);
+}
+
+/* Callback handler for write operations
+ *
+ * Free allocated buffers, check transmit status and
+ * calculate statistic.
+ */
+static void usb_8dev_write_bulk_callback(struct urb *urb)
+{
+	struct usb_8dev_tx_urb_context *context = urb->context;
+	struct usb_8dev_priv *priv;
+	struct net_device *netdev;
+
+	BUG_ON(!context);
+
+	priv = context->priv;
+	netdev = priv->netdev;
+
+	/* free up our allocated buffer */
+	usb_free_coherent(urb->dev, urb->transfer_buffer_length,
+			  urb->transfer_buffer, urb->transfer_dma);
+
+	atomic_dec(&priv->active_tx_urbs);
+
+	if (!netif_device_present(netdev))
+		return;
+
+	if (urb->status)
+		netdev_info(netdev, "Tx URB aborted (%d)\n",
+			 urb->status);
+
+	netdev->stats.tx_packets++;
+	netdev->stats.tx_bytes += can_get_echo_skb(netdev, context->echo_index, NULL);
+
+	can_led_event(netdev, CAN_LED_EVENT_TX);
+
+	/* Release context */
+	context->echo_index = MAX_TX_URBS;
+
+	netif_wake_queue(netdev);
+}
+
+/* Send data to device */
+static netdev_tx_t usb_8dev_start_xmit(struct sk_buff *skb,
+				      struct net_device *netdev)
+{
+	struct usb_8dev_priv *priv = netdev_priv(netdev);
+	struct net_device_stats *stats = &netdev->stats;
+	struct can_frame *cf = (struct can_frame *) skb->data;
+	struct usb_8dev_tx_msg *msg;
+	struct urb *urb;
+	struct usb_8dev_tx_urb_context *context = NULL;
+	u8 *buf;
+	int i, err;
+	size_t size = sizeof(struct usb_8dev_tx_msg);
+
+	if (can_dropped_invalid_skb(netdev, skb))
+		return NETDEV_TX_OK;
+
+	/* create a URB, and a buffer for it, and copy the data to the URB */
+	urb = usb_alloc_urb(0, GFP_ATOMIC);
+	if (!urb)
+		goto nomem;
+
+	buf = usb_alloc_coherent(priv->udev, size, GFP_ATOMIC,
+				 &urb->transfer_dma);
+	if (!buf) {
+		netdev_err(netdev, "No memory left for USB buffer\n");
+		goto nomembuf;
+	}
+
+	memset(buf, 0, size);
+
+	msg = (struct usb_8dev_tx_msg *)buf;
+	msg->begin = USB_8DEV_DATA_START;
+	msg->flags = 0x00;
+
+	if (cf->can_id & CAN_RTR_FLAG)
+		msg->flags |= USB_8DEV_RTR;
+
+	if (cf->can_id & CAN_EFF_FLAG)
+		msg->flags |= USB_8DEV_EXTID;
+
+	msg->id = cpu_to_be32(cf->can_id & CAN_ERR_MASK);
+	msg->dlc = can_get_cc_dlc(cf, priv->can.ctrlmode);
+	memcpy(msg->data, cf->data, cf->len);
+	msg->end = USB_8DEV_DATA_END;
+
+	for (i = 0; i < MAX_TX_URBS; i++) {
+		if (priv->tx_contexts[i].echo_index == MAX_TX_URBS) {
+			context = &priv->tx_contexts[i];
+			break;
+		}
+	}
+
+	/* May never happen! When this happens we'd more URBs in flight as
+	 * allowed (MAX_TX_URBS).
+	 */
+	if (!context)
+		goto nofreecontext;
+
+	context->priv = priv;
+	context->echo_index = i;
+
+	usb_fill_bulk_urb(urb, priv->udev,
+			  usb_sndbulkpipe(priv->udev, USB_8DEV_ENDP_DATA_TX),
+			  buf, size, usb_8dev_write_bulk_callback, context);
+	urb->transfer_flags |= URB_NO_TRANSFER_DMA_MAP;
+	usb_anchor_urb(urb, &priv->tx_submitted);
+
+	can_put_echo_skb(skb, netdev, context->echo_index, 0);
+
+	atomic_inc(&priv->active_tx_urbs);
+
+	err = usb_submit_urb(urb, GFP_ATOMIC);
+	if (unlikely(err)) {
+		can_free_echo_skb(netdev, context->echo_index, NULL);
+
+		usb_unanchor_urb(urb);
+		usb_free_coherent(priv->udev, size, buf, urb->transfer_dma);
+
+		atomic_dec(&priv->active_tx_urbs);
+
+		if (err == -ENODEV)
+			netif_device_detach(netdev);
+		else
+			netdev_warn(netdev, "failed tx_urb %d\n", err);
+		stats->tx_dropped++;
+	} else if (atomic_read(&priv->active_tx_urbs) >= MAX_TX_URBS)
+		/* Slow down tx path */
+		netif_stop_queue(netdev);
+
+	/* Release our reference to this URB, the USB core will eventually free
+	 * it entirely.
+	 */
+	usb_free_urb(urb);
+
+	return NETDEV_TX_OK;
+
+nofreecontext:
+	usb_free_coherent(priv->udev, size, buf, urb->transfer_dma);
+	usb_free_urb(urb);
+
+	netdev_warn(netdev, "couldn't find free context");
+
+	return NETDEV_TX_BUSY;
+
+nomembuf:
+	usb_free_urb(urb);
+
+nomem:
+	dev_kfree_skb(skb);
+	stats->tx_dropped++;
+
+	return NETDEV_TX_OK;
+}
+
+static int usb_8dev_get_berr_counter(const struct net_device *netdev,
+				     struct can_berr_counter *bec)
+{
+	struct usb_8dev_priv *priv = netdev_priv(netdev);
+
+	bec->txerr = priv->bec.txerr;
+	bec->rxerr = priv->bec.rxerr;
+
+	return 0;
+}
+
+/* Start USB device */
+static int usb_8dev_start(struct usb_8dev_priv *priv)
+{
+	struct net_device *netdev = priv->netdev;
+	int err, i;
+
+	for (i = 0; i < MAX_RX_URBS; i++) {
+		struct urb *urb = NULL;
+		u8 *buf;
+		dma_addr_t buf_dma;
+
+		/* create a URB, and a buffer for it */
+		urb = usb_alloc_urb(0, GFP_KERNEL);
+		if (!urb) {
+			err = -ENOMEM;
+			break;
+		}
+
+		buf = usb_alloc_coherent(priv->udev, RX_BUFFER_SIZE, GFP_KERNEL,
+					 &buf_dma);
+		if (!buf) {
+			netdev_err(netdev, "No memory left for USB buffer\n");
+			usb_free_urb(urb);
+			err = -ENOMEM;
+			break;
+		}
+
+		urb->transfer_dma = buf_dma;
+
+		usb_fill_bulk_urb(urb, priv->udev,
+				  usb_rcvbulkpipe(priv->udev,
+						  USB_8DEV_ENDP_DATA_RX),
+				  buf, RX_BUFFER_SIZE,
+				  usb_8dev_read_bulk_callback, priv);
+		urb->transfer_flags |= URB_NO_TRANSFER_DMA_MAP;
+		usb_anchor_urb(urb, &priv->rx_submitted);
+
+		err = usb_submit_urb(urb, GFP_KERNEL);
+		if (err) {
+			usb_unanchor_urb(urb);
+			usb_free_coherent(priv->udev, RX_BUFFER_SIZE, buf,
+					  urb->transfer_dma);
+			usb_free_urb(urb);
+			break;
+		}
+
+		priv->rxbuf[i] = buf;
+		priv->rxbuf_dma[i] = buf_dma;
+
+		/* Drop reference, USB core will take care of freeing it */
+		usb_free_urb(urb);
+	}
+
+	/* Did we submit any URBs */
+	if (i == 0) {
+		netdev_warn(netdev, "couldn't setup read URBs\n");
+		return err;
+	}
+
+	/* Warn if we've couldn't transmit all the URBs */
+	if (i < MAX_RX_URBS)
+		netdev_warn(netdev, "rx performance may be slow\n");
+
+	err = usb_8dev_cmd_open(priv);
+	if (err)
+		goto failed;
+
+	priv->can.state = CAN_STATE_ERROR_ACTIVE;
+
+	return 0;
+
+failed:
+	if (err == -ENODEV)
+		netif_device_detach(priv->netdev);
+
+	netdev_warn(netdev, "couldn't submit control: %d\n", err);
+
+	return err;
+}
+
+/* Open USB device */
+static int usb_8dev_open(struct net_device *netdev)
+{
+	struct usb_8dev_priv *priv = netdev_priv(netdev);
+	int err;
+
+	/* common open */
+	err = open_candev(netdev);
+	if (err)
+		return err;
+
+	can_led_event(netdev, CAN_LED_EVENT_OPEN);
+
+	/* finally start device */
+	err = usb_8dev_start(priv);
+	if (err) {
+		if (err == -ENODEV)
+			netif_device_detach(priv->netdev);
+
+		netdev_warn(netdev, "couldn't start device: %d\n",
+			 err);
+
+		close_candev(netdev);
+
+		return err;
+	}
+
+	netif_start_queue(netdev);
+
+	return 0;
+}
+
+static void unlink_all_urbs(struct usb_8dev_priv *priv)
+{
+	int i;
+
+	usb_kill_anchored_urbs(&priv->rx_submitted);
+
+	for (i = 0; i < MAX_RX_URBS; ++i)
+		usb_free_coherent(priv->udev, RX_BUFFER_SIZE,
+				  priv->rxbuf[i], priv->rxbuf_dma[i]);
+
+	usb_kill_anchored_urbs(&priv->tx_submitted);
+	atomic_set(&priv->active_tx_urbs, 0);
+
+	for (i = 0; i < MAX_TX_URBS; i++)
+		priv->tx_contexts[i].echo_index = MAX_TX_URBS;
+}
+
+/* Close USB device */
+static int usb_8dev_close(struct net_device *netdev)
+{
+	struct usb_8dev_priv *priv = netdev_priv(netdev);
+	int err = 0;
+
+	/* Send CLOSE command to CAN controller */
+	err = usb_8dev_cmd_close(priv);
+	if (err)
+		netdev_warn(netdev, "couldn't stop device");
+
+	priv->can.state = CAN_STATE_STOPPED;
+
+	netif_stop_queue(netdev);
+
+	/* Stop polling */
+	unlink_all_urbs(priv);
+
+	close_candev(netdev);
+
+	can_led_event(netdev, CAN_LED_EVENT_STOP);
+
+	return err;
+}
+
+static const struct net_device_ops usb_8dev_netdev_ops = {
+	.ndo_open = usb_8dev_open,
+	.ndo_stop = usb_8dev_close,
+	.ndo_start_xmit = usb_8dev_start_xmit,
+	.ndo_change_mtu = can_change_mtu,
+};
+
+static const struct can_bittiming_const usb_8dev_bittiming_const = {
+	.name = "usb_8dev",
+	.tseg1_min = 1,
+	.tseg1_max = 16,
+	.tseg2_min = 1,
+	.tseg2_max = 8,
+	.sjw_max = 4,
+	.brp_min = 1,
+	.brp_max = 1024,
+	.brp_inc = 1,
+};
+
+/* Probe USB device
+ *
+ * Check device and firmware.
+ * Set supported modes and bittiming constants.
+ * Allocate some memory.
+ */
+static int usb_8dev_probe(struct usb_interface *intf,
+			 const struct usb_device_id *id)
+{
+	struct net_device *netdev;
+	struct usb_8dev_priv *priv;
+	int i, err = -ENOMEM;
+	u32 version;
+	char buf[18];
+	struct usb_device *usbdev = interface_to_usbdev(intf);
+
+	/* product id looks strange, better we also check iProduct string */
+	if (usb_string(usbdev, usbdev->descriptor.iProduct, buf,
+		       sizeof(buf)) > 0 && strcmp(buf, "USB2CAN converter")) {
+		dev_info(&usbdev->dev, "ignoring: not an USB2CAN converter\n");
+		return -ENODEV;
+	}
+
+	netdev = alloc_candev(sizeof(struct usb_8dev_priv), MAX_TX_URBS);
+	if (!netdev) {
+		dev_err(&intf->dev, "Couldn't alloc candev\n");
+		return -ENOMEM;
+	}
+
+	priv = netdev_priv(netdev);
+
+	priv->udev = usbdev;
+	priv->netdev = netdev;
+
+	priv->can.state = CAN_STATE_STOPPED;
+	priv->can.clock.freq = USB_8DEV_ABP_CLOCK;
+	priv->can.bittiming_const = &usb_8dev_bittiming_const;
+	priv->can.do_set_mode = usb_8dev_set_mode;
+	priv->can.do_get_berr_counter = usb_8dev_get_berr_counter;
+	priv->can.ctrlmode_supported = CAN_CTRLMODE_LOOPBACK |
+				      CAN_CTRLMODE_LISTENONLY |
+				      CAN_CTRLMODE_ONE_SHOT |
+				      CAN_CTRLMODE_CC_LEN8_DLC;
+
+	netdev->netdev_ops = &usb_8dev_netdev_ops;
+
+	netdev->flags |= IFF_ECHO; /* we support local echo */
+
+	init_usb_anchor(&priv->rx_submitted);
+
+	init_usb_anchor(&priv->tx_submitted);
+	atomic_set(&priv->active_tx_urbs, 0);
+
+	for (i = 0; i < MAX_TX_URBS; i++)
+		priv->tx_contexts[i].echo_index = MAX_TX_URBS;
+
+	priv->cmd_msg_buffer = devm_kzalloc(&intf->dev, sizeof(struct usb_8dev_cmd_msg),
+					    GFP_KERNEL);
+	if (!priv->cmd_msg_buffer)
+		goto cleanup_candev;
+
+	usb_set_intfdata(intf, priv);
+
+	SET_NETDEV_DEV(netdev, &intf->dev);
+
+	mutex_init(&priv->usb_8dev_cmd_lock);
+
+	err = register_candev(netdev);
+	if (err) {
+		netdev_err(netdev,
+			"couldn't register CAN device: %d\n", err);
+		goto cleanup_candev;
+	}
+
+	err = usb_8dev_cmd_version(priv, &version);
+	if (err) {
+		netdev_err(netdev, "can't get firmware version\n");
+		goto cleanup_unregister_candev;
+	} else {
+		netdev_info(netdev,
+			 "firmware: %d.%d, hardware: %d.%d\n",
+			 (version>>24) & 0xff, (version>>16) & 0xff,
+			 (version>>8) & 0xff, version & 0xff);
+	}
+
+	devm_can_led_init(netdev);
+
+	return 0;
+
+cleanup_unregister_candev:
+	unregister_netdev(priv->netdev);
+
+cleanup_candev:
+	free_candev(netdev);
+
+	return err;
+
+}
+
+/* Called by the usb core when driver is unloaded or device is removed */
+static void usb_8dev_disconnect(struct usb_interface *intf)
+{
+	struct usb_8dev_priv *priv = usb_get_intfdata(intf);
+
+	usb_set_intfdata(intf, NULL);
+
+	if (priv) {
+		netdev_info(priv->netdev, "device disconnected\n");
+
+		unregister_netdev(priv->netdev);
+		unlink_all_urbs(priv);
+		free_candev(priv->netdev);
+	}
+
+}
+
+static struct usb_driver usb_8dev_driver = {
+	.name =		"usb_8dev",
+	.probe =	usb_8dev_probe,
+	.disconnect =	usb_8dev_disconnect,
+	.id_table =	usb_8dev_table,
+};
+
+module_usb_driver(usb_8dev_driver);
+
+MODULE_AUTHOR("Bernd Krumboeck <krumboeck@universalnet.at>");
+MODULE_DESCRIPTION("CAN driver for 8 devices USB2CAN interfaces");
+MODULE_LICENSE("GPL v2");

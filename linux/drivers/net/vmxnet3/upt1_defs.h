@@ -1,70 +1,127 @@
-nclude/config/GENERIC_ATOMIC64) \
-  include/linux/atomic/atomic-long.h \
-  include/linux/atomic/atomic-instrumented.h \
-  include/linux/bug.h \
-    $(wildcard include/config/BUG_ON_DATA_CORRUPTION) \
-  arch/x86/include/asm/bug.h \
-    $(wildcard include/config/DEBUG_BUGVERBOSE) \
-  include/linux/instrumentation.h \
-    $(wildcard include/config/DEBUG_ENTRY) \
-  include/asm-generic/bug.h \
-    $(wildcard include/config/BUG) \
-    $(wildcard include/config/GENERIC_BUG_RELATIVE_POINTERS) \
-  arch/x86/include/uapi/asm/msr.h \
-  include/linux/tracepoint-defs.h \
-  arch/x86/include/asm/special_insns.h \
-  include/linux/irqflags.h \
-    $(wildcard include/config/TRACE_IRQFLAGS) \
-    $(wildcard include/config/PREEMPT_RT) \
-    $(wildcard include/config/IRQSOFF_TRACER) \
-    $(wildcard include/config/PREEMPT_TRACER) \
-    $(wildcard include/config/DEBUG_IRQFLAGS) \
-    $(wildcard include/config/TRACE_IRQFLAGS_SUPPORT) \
-  arch/x86/include/asm/irqflags.h \
-  arch/x86/include/asm/fpu/types.h \
-  arch/x86/include/asm/vmxfeatures.h \
-  arch/x86/include/asm/vdso/processor.h \
-  include/linux/personality.h \
-  include/uapi/linux/personality.h \
-  arch/x86/include/asm/tsc.h \
-  arch/x86/include/asm/cpufeature.h \
-    $(wildcard include/config/X86_FEATURE_NAMES) \
-  include/vdso/time32.h \
-  include/vdso/time.h \
-  include/linux/uidgid.h \
-    $(wildcard include/config/MULTIUSER) \
-    $(wildcard include/config/USER_NS) \
-  include/linux/highuid.h \
-  include/linux/buildid.h \
-    $(wildcard include/config/CRASH_CORE) \
-  include/linux/mm_types.h \
-    $(wildcard include/config/HAVE_ALIGNED_STRUCT_PAGE) \
-    $(wildcard include/config/MEMCG) \
-    $(wildcard include/config/USERFAULTFD) \
-    $(wildcard include/config/SWAP) \
-    $(wildcard include/config/NUMA) \
-    $(wildcard include/config/HAVE_ARCH_COMPAT_MMAP_BASES) \
-    $(wildcard include/config/MEMBARRIER) \
-    $(wildcard include/config/AIO) \
-    $(wildcard include/config/MMU_NOTIFIER) \
-    $(wildcard include/config/TRANSPARENT_HUGEPAGE) \
-    $(wildcard include/config/NUMA_BALANCING) \
-    $(wildcard include/config/ARCH_WANT_BATCHED_UNMAP_TLB_FLUSH) \
-    $(wildcard include/config/HUGETLB_PAGE) \
-    $(wildcard include/config/IOMMU_SVA) \
-  include/linux/mm_types_task.h \
-    $(wildcard include/config/SPLIT_PTLOCK_CPUS) \
-    $(wildcard include/config/ARCH_ENABLE_SPLIT_PMD_PTLOCK) \
-  arch/x86/include/asm/tlbbatch.h \
-  include/linux/auxvec.h \
-  include/uapi/linux/auxvec.h \
-  arch/x86/include/uapi/asm/auxvec.h \
-  include/linux/kref.h \
-  include/linux/spinlock.h \
-    $(wildcard include/config/PREEMPTION) \
-  include/linux/preempt.h \
-    $(wildcard include/config/PREEMPT_COUNT) \
-    $(wildcard include/config/TRACE_PREEMPT_TOGGLE) \
-    $(wildcard include/config/PREEMPT_NOTIFIERS) \
-  arch/x86/include/asm/preempt.h \
-  in
+// SPDX-License-Identifier: GPL-2.0-or-later
+/*
+ * Driver for Silicon Labs C8051F300 microcontroller.
+ *
+ * It is used for LNB power control in TeVii S470,
+ * TBS 6920 PCIe DVB-S2 cards.
+ *
+ * Microcontroller connected to cx23885 GPIO pins:
+ * GPIO0 - data		- P0.3 F300
+ * GPIO1 - reset	- P0.2 F300
+ * GPIO2 - clk		- P0.1 F300
+ * GPIO3 - busy		- P0.0 F300
+ *
+ * Copyright (C) 2009 Igor M. Liplianin <liplianin@me.by>
+ */
+
+#include "cx23885.h"
+#include "cx23885-f300.h"
+
+#define F300_DATA	GPIO_0
+#define F300_RESET	GPIO_1
+#define F300_CLK	GPIO_2
+#define F300_BUSY	GPIO_3
+
+static void f300_set_line(struct cx23885_dev *dev, u32 line, u8 lvl)
+{
+	cx23885_gpio_enable(dev, line, 1);
+	if (lvl == 1)
+		cx23885_gpio_set(dev, line);
+	else
+		cx23885_gpio_clear(dev, line);
+}
+
+static u8 f300_get_line(struct cx23885_dev *dev, u32 line)
+{
+	cx23885_gpio_enable(dev, line, 0);
+
+	return cx23885_gpio_get(dev, line);
+}
+
+static void f300_send_byte(struct cx23885_dev *dev, u8 dta)
+{
+	u8 i;
+
+	for (i = 0; i < 8; i++) {
+		f300_set_line(dev, F300_CLK, 0);
+		udelay(30);
+		f300_set_line(dev, F300_DATA, (dta & 0x80) >> 7);/* msb first */
+		udelay(30);
+		dta <<= 1;
+		f300_set_line(dev, F300_CLK, 1);
+		udelay(30);
+	}
+}
+
+static u8 f300_get_byte(struct cx23885_dev *dev)
+{
+	u8 i, dta = 0;
+
+	for (i = 0; i < 8; i++) {
+		f300_set_line(dev, F300_CLK, 0);
+		udelay(30);
+		dta <<= 1;
+		f300_set_line(dev, F300_CLK, 1);
+		udelay(30);
+		dta |= f300_get_line(dev, F300_DATA);/* msb first */
+
+	}
+
+	return dta;
+}
+
+static u8 f300_xfer(struct dvb_frontend *fe, u8 *buf)
+{
+	struct cx23885_tsport *port = fe->dvb->priv;
+	struct cx23885_dev *dev = port->dev;
+	u8 i, temp, ret = 0;
+
+	temp = buf[0];
+	for (i = 0; i < buf[0]; i++)
+		temp += buf[i + 1];
+	temp = (~temp + 1);/* get check sum */
+	buf[1 + buf[0]] = temp;
+
+	f300_set_line(dev, F300_RESET, 1);
+	f300_set_line(dev, F300_CLK, 1);
+	udelay(30);
+	f300_set_line(dev, F300_DATA, 1);
+	msleep(1);
+
+	/* question: */
+	f300_set_line(dev, F300_RESET, 0);/* begin to send data */
+	msleep(1);
+
+	f300_send_byte(dev, 0xe0);/* the slave address is 0xe0, write */
+	msleep(1);
+
+	temp = buf[0];
+	temp += 2;
+	for (i = 0; i < temp; i++)
+		f300_send_byte(dev, buf[i]);
+
+	f300_set_line(dev, F300_RESET, 1);/* sent data over */
+	f300_set_line(dev, F300_DATA, 1);
+
+	/* answer: */
+	temp = 0;
+	for (i = 0; ((i < 8) & (temp == 0)); i++) {
+		msleep(1);
+		if (f300_get_line(dev, F300_BUSY) == 0)
+			temp = 1;
+	}
+
+	if (i > 7) {
+		pr_err("%s: timeout, the slave no response\n",
+								__func__);
+		ret = 1; /* timeout, the slave no response */
+	} else { /* the slave not busy, prepare for getting data */
+		f300_set_line(dev, F300_RESET, 0);/*ready...*/
+		msleep(1);
+		f300_send_byte(dev, 0xe1);/* 0xe1 is Read */
+		msleep(1);
+		temp = f300_get_byte(dev);/*get the data length */
+		if (temp > 14)
+			temp = 14;
+
+		for (i = 0; i < (tem

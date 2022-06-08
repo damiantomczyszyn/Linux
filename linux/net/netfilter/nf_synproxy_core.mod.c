@@ -1,29 +1,16 @@
-/* SPDX-License-Identifier: GPL-2.0 */
-/*
- * kernel/lockdep_internals.h
- *
- * Runtime locking correctness validator
- *
- * lockdep subsystem internal functions and variables.
- */
-
-/*
- * Lock-class usage-state bits:
- */
-enum lock_usage_bit {
-#define LOCKDEP_STATE(__STATE)		\
-	LOCK_USED_IN_##__STATE,		\
-	LOCK_USED_IN_##__STATE##_READ,	\
-	LOCK_ENABLED_##__STATE,		\
-	LOCK_ENABLED_##__STATE##_READ,
-#include "lockdep_states.h"
-#undef LOCKDEP_STATE
-	LOCK_USED,
-	LOCK_USED_READ,
-	LOCK_USAGE_STATES,
-};
-
-/* states after LOCK_USED_READ are not traced and printed */
-static_assert(LOCK_TRACE_STATES == LOCK_USAGE_STATES);
-
-#defi
+dcard include/config/RCU_FANOUT_LEAF) \
+  include/linux/page-flags-layout.h \
+    $(wildcard include/config/KASAN_HW_TAGS) \
+  include/linux/numa.h \
+    $(wildcard include/config/NODES_SHIFT) \
+    $(wildcard include/config/NUMA_KEEP_MEMINFO) \
+    $(wildcard include/config/HAVE_ARCH_NODE_DEV_GROUP) \
+  arch/x86/include/asm/sparsemem.h \
+  include/generated/bounds.h \
+  include/linux/seqlock.h \
+  include/linux/ww_mutex.h \
+    $(wildcard include/config/DEBUG_RT_MUTEXES) \
+    $(wildcard include/config/DEBUG_WW_MUTEX_SLOWPATH) \
+  include/linux/rtmutex.h \
+  arch/x86/include/asm/mmu.h \
+    $(wildcard include/co

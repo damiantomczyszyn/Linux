@@ -1,2 +1,1 @@
-drivers/media/rc/keymaps/rc-reddo.o
-
+ct tda10071_platform_data tda10071_pd

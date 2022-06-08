@@ -1,1 +1,4 @@
-cmd_drivers/media/rc/keymaps/rc-d680-dmb.mod := { echo  drivers/media/rc/keymaps/rc-d680-dmb.o;  echo; } > drivers/media/rc/keymaps/rc-d680-dmb.mod
+filt->nr = hw_filt_nr - 1;
+	/* store old feed controls */
+	pid_filt->start_feed = config->demux->start_feed;
+	pid_filt->stop_feed = config->demux->s

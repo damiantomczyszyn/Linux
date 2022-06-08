@@ -1,3 +1,4 @@
-IRQ) << LOCK_USAGE_READ_MASK;
+p_assert_rq_held(rq);
 
-	ret
+	/*
+	 * Ensu

@@ -1,2 +1,2 @@
-x/build_bug.h \
-  include/linux
+q;
+	dev->video_dev->device_caps

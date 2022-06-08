@@ -1,2 +1,2 @@
-de/linux/bits.h \
-  include/linux/cons
+# SPDX-License-Identifier: GPL-2.0
+cx2

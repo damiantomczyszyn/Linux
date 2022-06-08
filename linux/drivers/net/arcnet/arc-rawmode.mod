@@ -1,1 +1,2 @@
-  $(wildcard include/config/ALTERN
+drivers/net/arcnet/arc-rawmode.o
+

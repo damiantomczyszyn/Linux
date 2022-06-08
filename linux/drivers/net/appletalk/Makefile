@@ -1,4 +1,8 @@
-ask.h \
-    $(wildcard include/config/HAVE_EXIT_THREAD) \
-    $(wildcard include/config/ARCH_WANTS_DYNAMIC_TASK_STRUCT) \
-    $(wildcard include/config/HAVE_ARCH_THREAD_ST
+# SPDX-License-Identifier: GPL-2.0-only
+#
+# Makefile for drivers/net/appletalk
+#
+
+obj-$(CONFIG_IPDDP) += ipddp.o
+obj-$(CONFIG_COPS) += cops.o
+obj-$(CONFIG_LTPC) += ltpc.o

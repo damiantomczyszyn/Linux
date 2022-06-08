@@ -1,4 +1,1 @@
-ard include/config/ACPI_APEI_GHES) \
-    $(wildcard include/config/INTEL_TXT) \
-  arch/x86/include/generated/asm/kmap_size.h \
-  incl
+cmd_drivers/net/can/sja1000/plx_pci.mod := { echo  drivers/net/can/sja1000/plx_pci.o;  echo; } > drivers/net/can/sja1000/plx_pci.mod

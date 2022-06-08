@@ -1,1 +1,6 @@
-cmd_drivers/media/rc/keymaps/rc-it913x-v1.mod := { echo  drivers/media/rc/keymaps/rc-it913x-v1.o;  echo; } > drivers/media/rc/keymaps/rc-it913x-v1.mod
+pauge WinTV-HVR1275",
+		.portc		= CX23885_MPEG_DVB,
+	},
+	[CX23885_BOARD_HAUPPAUGE_HVR1255] = {
+		.name		= "Hauppauge WinTV-HVR1255",
+		.porta		= CX2388

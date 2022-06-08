@@ -1,1 +1,1 @@
-cmd_drivers/media/i2c/tvp5150.o := gcc -W
+  include/uapi/linux/byteorder/little_end

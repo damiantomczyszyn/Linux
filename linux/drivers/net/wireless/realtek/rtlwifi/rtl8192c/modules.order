@@ -1,2 +1,3 @@
-  $(wildcard include/config/ALTERNATE_USER_ADDRESS_SPACE) \
-  arc
+,
+				&dvbsky_s950c_m88ds3103_config,
+				&i2c_bus2->i2c_adap, &a

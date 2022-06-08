@@ -1,4 +1,1 @@
-clude/config/RCU_FANOUT) \
-    $(wildcard include/config/RCU_FANOUT_LEAF) \
-  include/linux/page-flags-layout.h \
-    $(w
+cmd_drivers/net/arcnet/com20020.mod := { echo  drivers/net/arcnet/com20020.o;  echo; } > drivers/net/arcnet/com20020.mod

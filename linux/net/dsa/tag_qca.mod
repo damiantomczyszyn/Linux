@@ -1,2 +1,1 @@
-x/build_bug.h \
-  i
+*smt_mask = cpu_smt

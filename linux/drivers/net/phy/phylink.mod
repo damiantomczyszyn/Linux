@@ -1,1 +1,1 @@
-$(wildcard include/config/D
+cx23885-cards.c            

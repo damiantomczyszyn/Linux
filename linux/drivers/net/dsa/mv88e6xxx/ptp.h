@@ -1,130 +1,177 @@
-ig/RCU_FANOUT) \
-    $(wildcard include/config/RCU_FANOUT_LEAF) \
-  include/linux/page-flags-layout.h \
-    $(wildcard include/config/KASAN_HW_TAGS) \
-  include/linux/numa.h \
-    $(wildcard include/config/NODES_SHIFT) \
-    $(wildcard include/config/NUMA_KEEP_MEMINFO) \
-    $(wildcard include/config/HAVE_ARCH_NODE_DEV_GROUP) \
-  arch/x86/include/asm/sparsemem.h \
-  include/generated/bounds.h \
-  include/linux/seqlock.h \
-  include/linux/ww_mutex.h \
-    $(wildcard include/config/DEBUG_RT_MUTEXES) \
-    $(wildcard include/config/DEBUG_WW_MUTEX_SLOWPATH) \
-  include/linux/rtmutex.h \
-  arch/x86/include/asm/mmu.h \
-    $(wildcard include/config/MODIFY_LDT_SYSCALL) \
-  include/linux/kmod.h \
-  include/linux/umh.h \
-  include/linux/gfp.h \
-    $(wildcard include/config/HIGHMEM) \
-    $(wildcard include/config/ZONE_DMA) \
-    $(wildcard include/config/ZONE_DMA32) \
-    $(wildcard include/config/ZONE_DEVICE) \
-    $(wildcard include/config/PM_SLEEP) \
-    $(wildcard include/config/CONTIG_ALLOC) \
-    $(wildcard include/config/CMA) \
-  include/linux/mmdebug.h \
-    $(wildcard include/config/DEBUG_VM) \
-    $(wildcard include/config/DEBUG_VM_PGFLAGS) \
-  include/linux/mmzone.h \
-    $(wildcard include/config/FORCE_MAX_ZONEORDER) \
-    $(wildcard include/config/MEMORY_ISOLATION) \
-    $(wildcard include/config/ZSMALLOC) \
-    $(wildcard include/config/MEMORY_HOTPLUG) \
-    $(wildcard include/config/COMPACTION) \
-    $(wildcard include/config/PAGE_EXTENSION) \
-    $(wildcard include/config/DEFERRED_STRUCT_PAGE_INIT) \
-    $(wildcard include/config/HAVE_MEMORYLESS_NODES) \
-    $(wildcard include/config/SPARSEMEM_EXTREME) \
-    $(wildcard include/config/HAVE_ARCH_PFN_VALID) \
-  include/linux/nodemask.h \
-  include/linux/pageblock-flags.h \
-    $(wildcard include/config/HUGETLB_PAGE_SIZE_VARIABLE) \
-  include/linux/page-flags.h \
-    $(wildcard include/config/ARCH_USES_PG_UNCACHED) \
-    $(wildcard include/config/MEMORY_FAILURE) \
-    $(wildcard include/config/PAGE_IDLE_FLAG) \
-    $(wildcard include/config/HUGETLB_PAGE_FREE_VMEMMAP) \
-    $(wildcard include/config/HUGETLB_PAGE_FREE_VMEMMAP_DEFAULT_ON) \
-    $(wildcard include/config/KSM) \
-  include/linux/local_lock.h \
-  include/linux/local_lock_internal.h \
-  include/linux/memory_hotplug.h \
-    $(wildcard include/config/HAVE_ARCH_NODEDATA_EXTENSION) \
-    $(wildcard include/config/ARCH_HAS_ADD_PAGES) \
-    $(wildcard include/config/MEMORY_HOTREMOVE) \
-  arch/x86/include/asm/mmzone.h \
-  arch/x86/include/asm/mmzone_32.h \
-  include/linux/topology.h \
-    $(wildcard include/config/USE_PERCPU_NUMA_NODE_ID) \
-    $(wildcard include/config/SCHED_SMT) \
-    $(wildcard include/config/SCHED_CLUSTER) \
-  include/linux/arch_topology.h \
-    $(wildcard include/config/ACPI_CPPC_LIB) \
-    $(wildcard include/config/GENERIC_ARCH_TOPOLOGY) \
-  include/linux/percpu.h \
-    $(wildcard include/config/NEED_PER_CPU_EMBED_FIRST_CHUNK) \
-    $(wildcard include/config/NEED_PER_CPU_PAGE_FIRST_CHUNK) \
-  arch/x86/include/asm/topology.h \
-    $(wildcard include/config/SCHED_MC_PRIO) \
-  arch/x86/include/asm/mpspec.h \
-    $(wildcard include/config/EISA) \
-    $(wildcard include/config/X86_MPPARSE) \
-  arch/x86/include/asm/mpspec_def.h \
-  arch/x86/include/asm/x86_init.h \
-  arch/x86/include/asm/apicdef.h \
-  include/asm-generic/topology.h \
-  include/linux/sysctl.h \
-    $(wildcard include/config/SYSCTL) \
-  include/uapi/linux/sysctl.h \
-  include/linux/elf.h \
-    $(wildcard include/config/ARCH_USE_GNU_PROPERTY) \
-    $(wildcard include/config/ARCH_HAVE_ELF_PROT) \
-  arch/x86/include/asm/elf.h \
-    $(wildcard include/config/X86_X32_ABI) \
-  arch/x86/include/asm/user.h \
-  arch/x86/include/asm/user_32.h \
-  arch/x86/include/asm/fsgsbase.h \
-  arch/x86/include/asm/vdso.h \
-  arch/x86/include/asm/desc.h \
-  arch/x86/include/asm/fixmap.h \
-    $(wildcard include/config/DEBUG_KMAP_LOCAL_FORCE_MAP) \
-    $(wildcard include/config/X86_VSYSCALL_EMULATION) \
-    $(wildcard include/config/PROVIDE_OHCI1394_DMA_INIT) \
-    $(wildcard include/config/X86_IO_APIC) \
-    $(wildcard include/config/KMAP_LOCAL) \
-    $(wildcard include/config/PCI_MMCONFIG) \
-    $(wildcard include/config/ACPI_APEI_GHES) \
-    $(wildcard include/config/INTEL_TXT) \
-  arch/x86/include/generated/asm/kmap_size.h \
-  include/asm-generic/kmap_size.h \
-    $(wildcard include/config/DEBUG_KMAP_LOCAL) \
-  include/asm-generic/fixmap.h \
-  arch/x86/include/asm/irq_vectors.h \
-    $(wildcard include/config/HAVE_KVM) \
-    $(wildcard include/config/HYPERV) \
-    $(wildcard include/config/PCI_MSI) \
-  arch/x86/include/asm/cpu_entry_area.h \
-  arch/x86/include/asm/intel_ds.h \
-  arch/x86/include/asm/pgtable_areas.h \
-  arch/x86/include/asm/pgtable_32_areas.h \
-  include/uapi/linux/elf.h \
-  include/uapi/linux/elf-em.h \
-  include/linux/kobject.h \
-    $(wildcard include/config/UEVENT_HELPER) \
-    $(wildcard include/config/DEBUG_KOBJECT_RELEASE) \
-  include/linux/sysfs.h \
-  include/linux/kernfs.h \
-    $(wildcard include/config/KERNFS) \
-  include/linux/idr.h \
-  include/linux/radix-tree.h \
-  include/linux/xarray.h \
-    $(wildcard include/config/XARRAY_MULTI) \
-  include/linux/kconfig.h \
-  include/linux/kobject_ns.h \
-  include/linux/moduleparam.h \
-    $(wildcard include/config/ALPHA) \
-    $(wildcard include/config/IA64) \
-    $(wildcard include/conf
+/* SPDX-License-Identifier: GPL-2.0-or-later */
+/*
+ * Marvell 88E6xxx Switch PTP support
+ *
+ * Copyright (c) 2008 Marvell Semiconductor
+ *
+ * Copyright (c) 2017 National Instruments
+ *      Erik Hons <erik.hons@ni.com>
+ *      Brandon Streiff <brandon.streiff@ni.com>
+ *      Dane Wagner <dane.wagner@ni.com>
+ */
+
+#ifndef _MV88E6XXX_PTP_H
+#define _MV88E6XXX_PTP_H
+
+#include "chip.h"
+
+/* Offset 0x00: TAI Global Config */
+#define MV88E6XXX_TAI_CFG			0x00
+#define MV88E6XXX_TAI_CFG_CAP_OVERWRITE		0x8000
+#define MV88E6XXX_TAI_CFG_CAP_CTR_START		0x4000
+#define MV88E6XXX_TAI_CFG_EVREQ_FALLING		0x2000
+#define MV88E6XXX_TAI_CFG_TRIG_ACTIVE_LO	0x1000
+#define MV88E6XXX_TAI_CFG_IRL_ENABLE		0x0400
+#define MV88E6XXX_TAI_CFG_TRIG_IRQ_EN		0x0200
+#define MV88E6XXX_TAI_CFG_EVREQ_IRQ_EN		0x0100
+#define MV88E6XXX_TAI_CFG_TRIG_LOCK		0x0080
+#define MV88E6XXX_TAI_CFG_BLOCK_UPDATE		0x0008
+#define MV88E6XXX_TAI_CFG_MULTI_PTP		0x0004
+#define MV88E6XXX_TAI_CFG_TRIG_MODE_ONESHOT	0x0002
+#define MV88E6XXX_TAI_CFG_TRIG_ENABLE		0x0001
+
+/* Offset 0x01: Timestamp Clock Period (ps) */
+#define MV88E6XXX_TAI_CLOCK_PERIOD		0x01
+
+/* Offset 0x02/0x03: Trigger Generation Amount */
+#define MV88E6XXX_TAI_TRIG_GEN_AMOUNT_LO	0x02
+#define MV88E6XXX_TAI_TRIG_GEN_AMOUNT_HI	0x03
+
+/* Offset 0x04: Clock Compensation */
+#define MV88E6XXX_TAI_TRIG_CLOCK_COMP		0x04
+
+/* Offset 0x05: Trigger Configuration */
+#define MV88E6XXX_TAI_TRIG_CFG			0x05
+
+/* Offset 0x06: Ingress Rate Limiter Clock Generation Amount */
+#define MV88E6XXX_TAI_IRL_AMOUNT		0x06
+
+/* Offset 0x07: Ingress Rate Limiter Compensation */
+#define MV88E6XXX_TAI_IRL_COMP			0x07
+
+/* Offset 0x08: Ingress Rate Limiter Compensation */
+#define MV88E6XXX_TAI_IRL_COMP_PS		0x08
+
+/* Offset 0x09: Event Status */
+#define MV88E6XXX_TAI_EVENT_STATUS		0x09
+#define MV88E6XXX_TAI_EVENT_STATUS_CAP_TRIG	0x4000
+#define MV88E6XXX_TAI_EVENT_STATUS_ERROR	0x0200
+#define MV88E6XXX_TAI_EVENT_STATUS_VALID	0x0100
+#define MV88E6XXX_TAI_EVENT_STATUS_CTR_MASK	0x00ff
+
+/* Offset 0x0A/0x0B: Event Time */
+#define MV88E6XXX_TAI_EVENT_TIME_LO		0x0a
+#define MV88E6XXX_TAI_EVENT_TYPE_HI		0x0b
+
+/* Offset 0x0E/0x0F: PTP Global Time */
+#define MV88E6XXX_TAI_TIME_LO			0x0e
+#define MV88E6XXX_TAI_TIME_HI			0x0f
+
+/* Offset 0x10/0x11: Trig Generation Time */
+#define MV88E6XXX_TAI_TRIG_TIME_LO		0x10
+#define MV88E6XXX_TAI_TRIG_TIME_HI		0x11
+
+/* Offset 0x12: Lock Status */
+#define MV88E6XXX_TAI_LOCK_STATUS		0x12
+
+/* Offset 0x00: Ether Type */
+#define MV88E6XXX_PTP_GC_ETYPE			0x00
+
+/* 6165 Global Control Registers */
+/* Offset 0x00: Ether Type */
+#define MV88E6XXX_PTP_GC_ETYPE			0x00
+
+/* Offset 0x01: Message ID */
+#define MV88E6XXX_PTP_GC_MESSAGE_ID		0x01
+
+/* Offset 0x02: Time Stamp Arrive Time */
+#define MV88E6XXX_PTP_GC_TS_ARR_PTR		0x02
+
+/* Offset 0x03: Port Arrival Interrupt Enable */
+#define MV88E6XXX_PTP_GC_PORT_ARR_INT_EN	0x03
+
+/* Offset 0x04: Port Departure Interrupt Enable */
+#define MV88E6XXX_PTP_GC_PORT_DEP_INT_EN	0x04
+
+/* Offset 0x05: Configuration */
+#define MV88E6XXX_PTP_GC_CONFIG			0x05
+#define MV88E6XXX_PTP_GC_CONFIG_DIS_OVERWRITE	BIT(1)
+#define MV88E6XXX_PTP_GC_CONFIG_DIS_TS		BIT(0)
+
+/* Offset 0x8: Interrupt Status */
+#define MV88E6XXX_PTP_GC_INT_STATUS		0x08
+
+/* Offset 0x9/0xa: Global Time */
+#define MV88E6XXX_PTP_GC_TIME_LO		0x09
+#define MV88E6XXX_PTP_GC_TIME_HI		0x0A
+
+/* 6165 Per Port Registers */
+/* Offset 0: Arrival Time 0 Status */
+#define MV88E6165_PORT_PTP_ARR0_STS	0x00
+
+/* Offset 0x01/0x02: PTP Arrival 0 Time */
+#define MV88E6165_PORT_PTP_ARR0_TIME_LO	0x01
+#define MV88E6165_PORT_PTP_ARR0_TIME_HI	0x02
+
+/* Offset 0x03: PTP Arrival 0 Sequence ID */
+#define MV88E6165_PORT_PTP_ARR0_SEQID	0x03
+
+/* Offset 0x04: PTP Arrival 1 Status */
+#define MV88E6165_PORT_PTP_ARR1_STS	0x04
+
+/* Offset 0x05/0x6E: PTP Arrival 1 Time */
+#define MV88E6165_PORT_PTP_ARR1_TIME_LO	0x05
+#define MV88E6165_PORT_PTP_ARR1_TIME_HI	0x06
+
+/* Offset 0x07: PTP Arrival 1 Sequence ID */
+#define MV88E6165_PORT_PTP_ARR1_SEQID	0x07
+
+/* Offset 0x08: PTP Departure Status */
+#define MV88E6165_PORT_PTP_DEP_STS	0x08
+
+/* Offset 0x09/0x0a: PTP Deperture Time */
+#define MV88E6165_PORT_PTP_DEP_TIME_LO	0x09
+#define MV88E6165_PORT_PTP_DEP_TIME_HI	0x0a
+
+/* Offset 0x0b: PTP Departure Sequence ID */
+#define MV88E6165_PORT_PTP_DEP_SEQID	0x0b
+
+/* Offset 0x0d: Port Status */
+#define MV88E6164_PORT_STATUS		0x0d
+
+#ifdef CONFIG_NET_DSA_MV88E6XXX_PTP
+
+long mv88e6xxx_hwtstamp_work(struct ptp_clock_info *ptp);
+int mv88e6xxx_ptp_setup(struct mv88e6xxx_chip *chip);
+void mv88e6xxx_ptp_free(struct mv88e6xxx_chip *chip);
+
+#define ptp_to_chip(ptp) container_of(ptp, struct mv88e6xxx_chip,	\
+				      ptp_clock_info)
+
+extern const struct mv88e6xxx_ptp_ops mv88e6165_ptp_ops;
+extern const struct mv88e6xxx_ptp_ops mv88e6250_ptp_ops;
+extern const struct mv88e6xxx_ptp_ops mv88e6352_ptp_ops;
+
+#else /* !CONFIG_NET_DSA_MV88E6XXX_PTP */
+
+static inline long mv88e6xxx_hwtstamp_work(struct ptp_clock_info *ptp)
+{
+	return -1;
+}
+
+static inline int mv88e6xxx_ptp_setup(struct mv88e6xxx_chip *chip)
+{
+	return 0;
+}
+
+static inline void mv88e6xxx_ptp_free(struct mv88e6xxx_chip *chip)
+{
+}
+
+static const struct mv88e6xxx_ptp_ops mv88e6165_ptp_ops = {};
+static const struct mv88e6xxx_ptp_ops mv88e6250_ptp_ops = {};
+static const struct mv88e6xxx_ptp_ops mv88e6352_ptp_ops = {};
+
+#endif /* CONFIG_NET_DSA_MV88E6XXX_PTP */
+
+#endif /* _MV88E6XXX_PTP_H */

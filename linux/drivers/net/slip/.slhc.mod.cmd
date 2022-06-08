@@ -1,4 +1,1 @@
-RCU) \
-  include/linux/srcu.h \
-    $(wildcard include/config/TINY_SRCU) \
-    $(wildcard include/confi
+cmd_drivers/media/pci/cx18/cx18.ko := ld -r -m elf_i386 --build-id=sha1  -T scripts/module.lds -o drive

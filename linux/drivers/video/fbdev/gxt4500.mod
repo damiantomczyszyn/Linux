@@ -1,2 +1,1 @@
-.h \
-  include/linux/percpu-ref
+// SPDX-License-Identifier: GPL

@@ -1,2 +1,2 @@
-.h \
-  include/linux/atomic/atomi
+C:
+	case CX23885_BOARD_TT_CT2_450

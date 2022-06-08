@@ -1,1 +1,6 @@
-cmd_drivers/media/rc/keymaps/rc-em-terratec.mod := { echo  drivers/media/rc/keymaps/rc-em-terratec.o;  echo; } > drivers/media/rc/keymaps/rc-em-terratec.mod
+egval = MC417_SPD_CTL(MC417_SPD_CTL_FAST)	|
+		 MC417_GPIO_SEL(MC417_GPIO_SEL_GPIO3)	|
+		 MC417_UART_GPIO_EN;
+	cx_write(MC417_CTL, regval);
+
+	/* Configure MC4

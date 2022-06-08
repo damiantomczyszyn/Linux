@@ -1,1 +1,5 @@
-cmd_drivers/media/rc/keymaps/rc-xbox-360.mod := { echo  drivers/media/rc/keymaps/rc-xbox-360.o;  echo; } > drivers/media/rc/keymaps/rc-xbox-360.mod
+/* SPDX-License-Identifier: GPL-2.0-or-later */
+/*
+ *  Driver for the Conexant CX23885/7/8 PCIe bridge
+ *
+ *  Copyright (C) 2010  Andy Walls <awalls

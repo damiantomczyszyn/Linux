@@ -1,10 +1,8 @@
-,
-	.task_boost     = torture_boost_dummy,
-	.writeunlock	= torture_lock_busted_write_unlock,
-	.readlock       = NULL,
-	.read_delay     = NULL,
-	.readunlock     = NULL,
-	.name		= "lock_busted"
-};
+E(uc_rq->value))
+		WRITE_ONCE(uc_rq->value, uc_se->value);
+}
 
-static DEFINE_SPINLOCK(torture_sp
+/*
+ * When a task is dequeued from a rq, the clamp bucket refcounted by the task
+ * is released. If this is the last task reference counting the rq's max
+ * active cl

@@ -1,1 +1,7 @@
-cmd_drivers/media/rc/keymaps/rc-hauppauge.mod := { echo  drivers/media/rc/keymaps/rc-hauppauge.o;  echo; } > drivers/media/rc/keymaps/rc-hauppauge.mod
+,
+			.amux   = CX25840_AUDIO8,
+		} },
+	},
+	[CX23885_BOARD_HAUPPAUGE_QUADHD_DVB_885] = {
+		.name         = "Hauppauge WinTV-QuadHD-DVB(885)",
+		.portb  

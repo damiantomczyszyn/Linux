@@ -1,3 +1,4 @@
-NTRIES);
-	seq_printf(m, " indirect dependencies:         %11lu\n",
-			sum_forwa
+// SPDX-License-Identifier: GPL-2.0-only
+
+#include <linux/bug.h>
+#include <linu

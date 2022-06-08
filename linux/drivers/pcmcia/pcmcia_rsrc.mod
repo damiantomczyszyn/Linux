@@ -1,2 +1,2 @@
-e/linux/rwlock.h \
-    $(wildcard include/config/PREEMPT) \
+rch/x86/include/asm/atomic64_32.h \
+  include/linux/atomic/

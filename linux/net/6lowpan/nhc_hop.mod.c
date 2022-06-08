@@ -1,32 +1,27 @@
-(likely(hlock_class(this)->usage_mask & new_mask))
-		return 1;
+k_struct *curr,
+				 struct task_struct *next)
+{
+	if (static_branch_unlikely(&preempt_notifier_key))
+		__fire_sched_out_preempt_notifiers(curr, next);
+}
 
-	if (!graph_lock())
-		return 0;
+#else /* !CONFIG_PREEMPT_NOTIFIERS */
+
+static inline void fire_sched_in_preempt_notifiers(struct task_struct *curr)
+{
+}
+
+static inline void
+fire_sched_out_preempt_notifiers(struct task_struct *curr,
+				 struct task_struct *next)
+{
+}
+
+#endif /* CONFIG_PREEMPT_NOTIFIERS */
+
+static inline void prepare_task(struct task_struct *next)
+{
+#ifdef CONFIG_SMP
 	/*
-	 * Make sure we didn't race:
-	 */
-	if (unlikely(hlock_class(this)->usage_mask & new_mask))
-		goto unlock;
-
-	if (!hlock_class(this)->usage_mask)
-		debug_atomic_dec(nr_unused_locks);
-
-	hlock_class(this)->usage_mask |= new_mask;
-
-	if (new_bit < LOCK_TRACE_STATES) {
-		if (!(hlock_class(this)->usage_traces[new_bit] = save_trace()))
-			return 0;
-	}
-
-	if (new_bit < LOCK_USED) {
-		ret = mark_lock_irq(curr, this, new_bit);
-		if (!ret)
-			return 0;
-	}
-
-unlock:
-	graph_unlock();
-
-	/*
-	 * We must printk outside of the gra
+	 * Claim the task as running, we do this before switching to it
+	 * such that any running task will have

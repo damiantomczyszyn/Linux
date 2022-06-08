@@ -1209,8 +1209,6 @@ deps_drivers/message/fusion/mptfc.o := \
   include/net/page_pool.h \
     $(wildcard include/config/PAGE_POOL_STATS) \
   include/linux/ptr_ring.h \
-  include/linux/netfilter/nf_conntrack_common.h \
-  include/uapi/linux/netfilter/nf_conntrack_common.h \
   include/net/scm.h \
     $(wildcard include/config/SECURITY_NETWORK) \
   include/linux/security.h \

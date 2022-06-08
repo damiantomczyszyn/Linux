@@ -1,2 +1,4 @@
-pes.h \
-  include/asm-generic/pgtable-no
+		sn);
+}
+
+static void hauppauge_eeprom(s

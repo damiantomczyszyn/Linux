@@ -1,1 +1,2 @@
-cmd_drivers/media/i2c/tw9910.o :
+00000);
+	cx_write(PAD_CTRL, 0x00

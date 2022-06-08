@@ -1,3370 +1,5462 @@
-CPI_APEI_GHES) \
-    $(wildcard include/config/INTEL_TXT) \
-  arch/x86/include/generated/asm/kmap_size.h \
-  include/asm-generic/kmap_size.h \
-    $(wildcard include/config/DEBUG_KMAP_LOCAL) \
-  include/asm-generic/fixmap.h \
-  arch/x86/include/asm/irq_vectors.h \
-    $(wildcard include/config/HAVE_KVM) \
-    $(wildcard include/config/HYPERV) \
-    $(wildcard include/config/PCI_MSI) \
-  arch/x86/include/asm/cpu_entry_area.h \
-  arch/x86/include/asm/intel_ds.h \
-  arch/x86/include/asm/pgtable_areas.h \
-  arch/x86/include/asm/pgtable_32_areas.h \
-  include/uapi/linux/elf.h \
-  include/uapi/linux/elf-em.h \
-  include/linux/kobject.h \
-    $(wildcard include/config/UEVENT_HELPER) \
-    $(wildcard include/config/DEBUG_KOBJECT_RELEASE) \
-  include/linux/sysfs.h \
-  include/linux/kernfs.h \
-    $(wildcard include/config/KERNFS) \
-  include/linux/idr.h \
-  include/linux/radix-tree.h \
-  include/linux/xarray.h \
-    $(wildcard include/config/XARRAY_MULTI) \
-  include/linux/kconfig.h \
-  include/linux/kobject_ns.h \
-  include/linux/moduleparam.h \
-    $(wildcard include/config/ALPHA) \
-    $(wildcard include/config/IA64) \
-    $(wildcard include/config/PPC64) \
-  include/linux/rbtree_latch.h \
-  include/linux/error-injection.h \
-  include/asm-generic/error-injection.h \
-  include/linux/cfi.h \
-    $(wildcard include/config/CFI_CLANG_SHADOW) \
-  arch/x86/include/asm/module.h \
-    $(wildcard include/config/UNWINDER_ORC) \
-  include/asm-generic/module.h \
-    $(wildcard include/config/HAVE_MOD_ARCH_SPECIFIC) \
-    $(wildcard include/config/MODULES_USE_ELF_REL) \
-    $(wildcard include/config/MODULES_USE_ELF_RELA) \
-  arch/x86/include/asm/orc_types.h \
-  include/linux/i2c.h \
-    $(wildcard include/config/I2C) \
-    $(wildcard include/config/I2C_SLAVE) \
-    $(wildcard include/config/I2C_BOARDINFO) \
-    $(wildcard include/config/I2C_MUX) \
-    $(wildcard include/config/OF) \
-    $(wildcard include/config/ACPI) \
-  include/linux/acpi.h \
-    $(wildcard include/config/ACPI_DEBUGGER) \
-    $(wildcard include/config/ACPI_TABLE_LIB) \
-    $(wildcard include/config/LOONGARCH) \
-    $(wildcard include/config/ARM64) \
-    $(wildcard include/config/ACPI_PROCESSOR_CSTATE) \
-    $(wildcard include/config/ACPI_HOTPLUG_CPU) \
-    $(wildcard include/config/ACPI_HOTPLUG_IOAPIC) \
-    $(wildcard include/config/PCI) \
-    $(wildcard include/config/ACPI_WMI) \
-    $(wildcard include/config/ACPI_NUMA) \
-    $(wildcard include/config/HIBERNATION) \
-    $(wildcard include/config/ACPI_HOTPLUG_MEMORY) \
-    $(wildcard include/config/ACPI_CONTAINER) \
-    $(wildcard include/config/ACPI_GTDT) \
-    $(wildcard include/config/PM) \
-    $(wildcard include/config/GPIOLIB) \
-    $(wildcard include/config/ACPI_TABLE_UPGRADE) \
-    $(wildcard include/config/ACPI_WATCHDOG) \
-    $(wildcard include/config/ACPI_SPCR_TABLE) \
-    $(wildcard include/config/ACPI_GENERIC_GSI) \
-    $(wildcard include/config/ACPI_LPIT) \
-    $(wildcard include/config/ACPI_PPTT) \
-    $(wildcard include/config/ACPI_PCC) \
-  include/linux/ioport.h \
-  include/linux/irqdomain.h \
-    $(wildcard include/config/IRQ_DOMAIN_HIERARCHY) \
-    $(wildcard include/config/GENERIC_IRQ_DEBUGFS) \
-    $(wildcard include/config/IRQ_DOMAIN) \
-    $(wildcard include/config/IRQ_DOMAIN_NOMAP) \
-  include/linux/irqhandler.h \
-  include/linux/of.h \
-    $(wildcard include/config/OF_DYNAMIC) \
-    $(wildcard include/config/SPARC) \
-    $(wildcard include/config/OF_PROMTREE) \
-    $(wildcard include/config/OF_KOBJ) \
-    $(wildcard include/config/OF_NUMA) \
-    $(wildcard include/config/OF_OVERLAY) \
-  include/linux/mod_devicetable.h \
-  include/linux/uuid.h \
-  include/uapi/linux/uuid.h \
-  include/linux/property.h \
-  include/linux/fwnode.h \
-  include/linux/resource_ext.h \
-  include/linux/slab.h \
-    $(wildcard include/config/DEBUG_SLAB) \
-    $(wildcard include/config/FAILSLAB) \
-    $(wildcard include/config/MEMCG_KMEM) \
-    $(wildcard include/config/KASAN) \
-    $(wildcard include/config/SLAB) \
-    $(wildcard include/config/SLUB) \
-    $(wildcard include/config/SLOB) \
-  include/linux/overflow.h \
-  include/linux/percpu-refcount.h \
-  include/linux/kasan.h \
-    $(wildcard include/config/KASAN_STACK) \
-    $(wildcard include/config/KASAN_VMALLOC) \
-    $(wildcard include/config/KASAN_INLINE) \
-  include/linux/kasan-enabled.h \
-  include/linux/device.h \
-    $(wildcard include/config/GENERIC_MSI_IRQ_DOMAIN) \
-    $(wildcard include/config/GENERIC_MSI_IRQ) \
-    $(wildcard include/config/ENERGY_MODEL) \
-    $(wildcard include/config/PINCTRL) \
-    $(wildcard include/config/DMA_OPS) \
-    $(wildcard include/config/DMA_DECLARE_COHERENT) \
-    $(wildcard include/config/DMA_CMA) \
-    $(wildcard include/config/SWIOTLB) \
-    $(wildcard include/config/ARCH_HAS_SYNC_DMA_FOR_DEVICE) \
-    $(wildcard include/config/ARCH_HAS_SYNC_DMA_FOR_CPU) \
-    $(wildcard include/config/ARCH_HAS_SYNC_DMA_FOR_CPU_ALL) \
-    $(wildcard include/config/DMA_OPS_BYPASS) \
-    $(wildcard include/config/DEVTMPFS) \
-    $(wildcard include/config/SYSFS_DEPRECATED) \
-  include/linux/dev_printk.h \
-  include/linux/ratelimit.h \
-  include/linux/sched.h \
-    $(wildcard include/config/VIRT_CPU_ACCOUNTING_NATIVE) \
-    $(wildcard include/config/SCHED_INFO) \
-    $(wildcard include/config/SCHEDSTATS) \
-    $(wildcard include/config/SCHED_CORE) \
-    $(wildcard include/config/FAIR_GROUP_SCHED) \
-    $(wildcard include/config/RT_GROUP_SCHED) \
-    $(wildcard include/config/RT_MUTEXES) \
-    $(wildcard include/config/UCLAMP_TASK) \
-    $(wildcard include/config/UCLAMP_BUCKETS_COUNT) \
-    $(wildcard include/config/CGROUP_SCHED) \
-    $(wildcard include/config/BLK_DEV_IO_TRACE) \
-    $(wildcard include/config/PSI) \
-    $(wildcard include/config/COMPAT_BRK) \
-    $(wildcard include/config/CGROUPS) \
-    $(wildcard include/config/BLK_CGROUP) \
-    $(wildcard include/config/PAGE_OWNER) \
-    $(wildcard include/config/EVENTFD) \
-    $(wildcard include/config/ARCH_HAS_SCALED_CPUTIME) \
-    $(wildcard include/config/VIRT_CPU_ACCOUNTING_GEN) \
-    $(wildcard include/config/POSIX_CPUTIMERS) \
-    $(wildcard include/config/POSIX_CPU_TIMERS_TASK_WORK) \
-    $(wildcard include/config/KEYS) \
-    $(wildcard include/config/SYSVIPC) \
-    $(wildcard include/config/DETECT_HUNG_TASK) \
-    $(wildcard include/config/IO_URING) \
-    $(wildcard include/config/AUDIT) \
-    $(wildcard include/config/AUDITSYSCALL) \
-    $(wildcard include/config/UBSAN) \
-    $(wildcard include/config/UBSAN_TRAP) \
-    $(wildcard include/config/TASK_XACCT) \
-    $(wildcard include/config/CPUSETS) \
-    $(wildcard include/config/X86_CPU_RESCTRL) \
-    $(wildcard include/config/FUTEX) \
-    $(wildcard include/config/PERF_EVENTS) \
-    $(wildcard include/config/RSEQ) \
-    $(wildcard include/config/TASK_DELAY_ACCT) \
-    $(wildcard include/config/FAULT_INJECTION) \
-    $(wildcard include/config/LATENCYTOP) \
-    $(wildcard include/config/KUNIT) \
-    $(wildcard include/config/FUNCTION_GRAPH_TRACER) \
-    $(wildcard include/config/BCACHE) \
-    $(wildcard include/config/VMAP_STACK) \
-    $(wildcard include/config/SECURITY) \
-    $(wildcard include/config/BPF_SYSCALL) \
-    $(wildcard include/config/GCC_PLUGIN_STACKLEAK) \
-    $(wildcard include/config/X86_MCE) \
-    $(wildcard include/config/KRETPROBES) \
-    $(wildcard include/config/RETHOOK) \
-    $(wildcard include/config/ARCH_HAS_PARANOID_L1D_FLUSH) \
-    $(wildcard include/config/ARCH_TASK_STRUCT_ON_STACK) \
-    $(wildcard include/config/DEBUG_RSEQ) \
-  include/uapi/linux/sched.h \
-  include/linux/pid.h \
-  include/linux/rculist.h \
-    $(wildcard include/config/PROVE_RCU_LIST) \
-  include/linux/sem.h \
-  include/uapi/linux/sem.h \
-  include/linux/ipc.h \
-  include/linux/rhashtable-types.h \
-  include/uapi/linux/ipc.h \
-  arch/x86/include/generated/uapi/asm/ipcbuf.h \
-  include/uapi/asm-generic/ipcbuf.h \
-  arch/x86/include/uapi/asm/sembuf.h \
-  include/linux/shm.h \
-  include/uapi/linux/shm.h \
-  include/uapi/asm-generic/hugetlb_encode.h \
-  arch/x86/include/uapi/asm/shmbuf.h \
-  include/uapi/asm-generic/shmbuf.h \
-  arch/x86/include/asm/shmparam.h \
-  include/linux/plist.h \
-    $(wildcard include/config/DEBUG_PLIST) \
-  include/linux/hrtimer.h \
-    $(wildcard include/config/HIGH_RES_TIMERS) \
-    $(wildcard include/config/TIME_LOW_RES) \
-    $(wildcard include/config/TIMERFD) \
-  include/linux/hrtimer_defs.h \
-  include/linux/timerqueue.h \
-  include/linux/seccomp.h \
-    $(wildcard include/config/SECCOMP) \
-    $(wildcard include/config/HAVE_ARCH_SECCOMP_FILTER) \
-    $(wildcard include/config/SECCOMP_FILTER) \
-    $(wildcard include/config/CHECKPOINT_RESTORE) \
-    $(wildcard include/config/SECCOMP_CACHE_DEBUG) \
-  include/uapi/linux/seccomp.h \
-  arch/x86/include/asm/seccomp.h \
-  arch/x86/include/asm/unistd.h \
-  arch/x86/include/uapi/asm/unistd.h \
-  arch/x86/include/generated/uapi/asm/unistd_32.h \
-  include/asm-generic/seccomp.h \
-  include/uapi/linux/unistd.h \
-  include/linux/resource.h \
-  include/uapi/linux/resource.h \
-  arch/x86/include/generated/uapi/asm/resource.h \
-  include/asm-generic/resource.h \
-  include/uapi/asm-generic/resource.h \
-  include/linux/latencytop.h \
-  include/linux/sched/prio.h \
-  include/linux/sched/types.h \
-  include/linux/signal_types.h \
-    $(wildcard include/config/OLD_SIGACTION) \
-  include/uapi/linux/signal.h \
-  arch/x86/include/asm/signal.h \
-  arch/x86/include/uapi/asm/signal.h \
-  include/uapi/asm-generic/signal-defs.h \
-  arch/x86/include/uapi/asm/siginfo.h \
-  include/uapi/asm-generic/siginfo.h \
-  include/linux/syscall_user_dispatch.h \
-  include/linux/task_io_accounting.h \
-    $(wildcard include/config/TASK_IO_ACCOUNTING) \
-  include/linux/posix-timers.h \
-  include/linux/alarmtimer.h \
-    $(wildcard include/config/RTC_CLASS) \
-  include/uapi/linux/rseq.h \
-  include/linux/kcsan.h \
-  include/linux/energy_model.h \
-  include/linux/sched/cpufreq.h \
-    $(wildcard include/config/CPU_FREQ) \
-  include/linux/sched/topology.h \
-    $(wildcard include/config/SCHED_DEBUG) \
-    $(wildcard include/config/SCHED_MC) \
-    $(wildcard include/config/CPU_FREQ_GOV_SCHEDUTIL) \
-  include/linux/sched/idle.h \
-  include/linux/sched/sd_flags.h \
-  include/linux/klist.h \
-  include/linux/pm.h \
-    $(wildcard include/config/VT_CONSOLE_SLEEP) \
-    $(wildcard include/config/PM_CLK) \
-    $(wildcard include/config/PM_GENERIC_DOMAINS) \
-  include/linux/device/bus.h \
-  include/linux/device/class.h \
-  include/linux/device/driver.h \
-  arch/x86/include/asm/device.h \
-  include/linux/pm_wakeup.h \
-  include/acpi/acpi.h \
-  include/acpi/platform/acenv.h \
-  include/acpi/platform/acgcc.h \
-  include/acpi/platform/aclinux.h \
-    $(wildcard include/config/ACPI_REDUCED_HARDWARE_ONLY) \
-    $(wildcard include/config/ACPI_DEBUG) \
-  include/linux/ctype.h \
-  arch/x86/include/asm/acenv.h \
-  include/acpi/acnames.h \
-  include/acpi/actypes.h \
-  include/acpi/acexcep.h \
-  include/acpi/actbl.h \
-  include/acpi/actbl1.h \
-  include/acpi/actbl2.h \
-  include/acpi/actbl3.h \
-  include/acpi/acrestyp.h \
-  include/acpi/platform/acenvex.h \
-  include/acpi/platform/aclinuxex.h \
-  include/acpi/platform/acgccex.h \
-  include/acpi/acoutput.h \
-  include/acpi/acpiosxf.h \
-  include/acpi/acpixf.h \
-  include/acpi/acconfig.h \
-  include/acpi/acbuffer.h \
-  include/linux/dynamic_debug.h \
-  include/acpi/acpi_bus.h \
-    $(wildcard include/config/X86_ANDROID_TABLETS) \
-    $(wildcard include/config/ACPI_SYSTEM_POWER_STATES_SUPPORT) \
-    $(wildcard include/config/ACPI_SLEEP) \
-  include/acpi/acpi_drivers.h \
-    $(wildcard include/config/ACPI_DOCK) \
-  include/acpi/acpi_numa.h \
-    $(wildcard include/config/ACPI_HMAT) \
-  include/acpi/acpi_io.h \
-  include/linux/io.h \
-    $(wildcard include/config/HAS_IOPORT_MAP) \
-  arch/x86/include/asm/io.h \
-    $(wildcard include/config/MTRR) \
-    $(wildcard include/config/X86_PAT) \
-  arch/x86/include/generated/asm/early_ioremap.h \
-  include/asm-generic/early_ioremap.h \
-    $(wildcard include/config/GENERIC_EARLY_IOREMAP) \
-  include/asm-generic/iomap.h \
-  include/asm-generic/pci_iomap.h \
-    $(wildcard include/config/NO_GENERIC_PCI_IOPORT_MAP) \
-    $(wildcard include/config/GENERIC_PCI_IOMAP) \
-  include/asm-generic/io.h \
-    $(wildcard include/config/GENERIC_IOMAP) \
-    $(wildcard include/config/GENERIC_IOREMAP) \
-    $(wildcard include/config/VIRT_TO_BUS) \
-    $(wildcard include/config/GENERIC_DEVMEM_IS_ALLOWED) \
-  include/linux/logic_pio.h \
-    $(wildcard include/config/INDIRECT_PIO) \
-  include/linux/vmalloc.h \
-    $(wildcard include/config/HAVE_ARCH_HUGE_VMALLOC) \
-  arch/x86/include/asm/vmalloc.h \
-    $(wildcard include/config/HAVE_ARCH_HUGE_VMAP) \
-  arch/x86/include/asm/acpi.h \
-    $(wildcard include/config/ACPI_APEI) \
-  include/acpi/pdc_intel.h \
-  arch/x86/include/asm/numa.h \
-    $(wildcard include/config/NUMA_EMU) \
-  arch/x86/include/asm/numa_32.h \
-  include/linux/regulator/consumer.h \
-    $(wildcard include/config/REGULATOR) \
-  include/linux/suspend.h \
-    $(wildcard include/config/VT) \
-    $(wildcard include/config/SUSPEND) \
-    $(wildcard include/config/HIBERNATION_SNAPSHOT_DEV) \
-    $(wildcard include/config/PM_SLEEP_DEBUG) \
-    $(wildcard include/config/PM_AUTOSLEEP) \
-  include/linux/swap.h \
-    $(wildcard include/config/DEVICE_PRIVATE) \
-    $(wildcard include/config/MIGRATION) \
-    $(wildcard include/config/FRONTSWAP) \
-    $(wildcard include/config/THP_SWAP) \
-    $(wildcard include/config/MEMCG_SWAP) \
-  include/linux/memcontrol.h \
-    $(wildcard include/config/CGROUP_WRITEBACK) \
-  include/linux/cgroup.h \
-    $(wildcard include/config/CGROUP_CPUACCT) \
-    $(wildcard include/config/SOCK_CGROUP_DATA) \
-    $(wildcard include/config/CGROUP_DATA) \
-    $(wildcard include/config/CGROUP_BPF) \
-  include/uapi/linux/cgroupstats.h \
-  include/uapi/linux/taskstats.h \
-  include/linux/fs.h \
-    $(wildcard include/config/READ_ONLY_THP_FOR_FS) \
-    $(wildcard include/config/FS_POSIX_ACL) \
-    $(wildcard include/config/IMA) \
-    $(wildcard include/config/FILE_LOCKING) \
-    $(wildcard include/config/FSNOTIFY) \
-    $(wildcard include/config/FS_ENCRYPTION) \
-    $(wildcard include/config/FS_VERITY) \
-    $(wildcard include/config/EPOLL) \
-    $(wildcard include/config/UNICODE) \
-    $(wildcard include/config/QUOTA) \
-    $(wildcard include/config/FS_DAX) \
-    $(wildcard include/config/BLOCK) \
-  include/linux/wait_bit.h \
-  include/linux/kdev_t.h \
-  include/uapi/linux/kdev_t.h \
-  include/linux/dcache.h \
-  include/linux/rculist_bl.h \
-  include/linux/list_bl.h \
-  include/linux/bit_spinlock.h \
-  include/linux/lockref.h \
-    $(wildcard include/config/ARCH_USE_CMPXCHG_LOCKREF) \
-  include/linux/stringhash.h \
-    $(wildcard include/config/DCACHE_WORD_ACCESS) \
-  include/linux/hash.h \
-    $(wildcard include/config/HAVE_ARCH_HASH) \
-  include/linux/path.h \
-  include/linux/list_lru.h \
-  include/linux/shrinker.h \
-  include/linux/capability.h \
-  include/uapi/linux/capability.h \
-  include/linux/semaphore.h \
-  include/linux/fcntl.h \
-    $(wildcard include/config/ARCH_32BIT_OFF_T) \
-  include/uapi/linux/fcntl.h \
-  arch/x86/include/generated/uapi/asm/fcntl.h \
-  include/uapi/asm-generic/fcntl.h \
-  include/uapi/linux/openat2.h \
-  include/linux/migrate_mode.h \
-  include/linux/percpu-rwsem.h \
-  include/linux/rcuwait.h \
-  include/linux/sched/signal.h \
-    $(wildcard include/config/SCHED_AUTOGROUP) \
-    $(wildcard include/config/BSD_PROCESS_ACCT) \
-    $(wildcard include/config/TASKSTATS) \
-    $(wildcard include/config/STACK_GROWSUP) \
-  include/linux/signal.h \
-    $(wildcard include/config/DYNAMIC_SIGFRAME) \
-  include/linux/sched/jobctl.h \
-  include/linux/sched/task.h \
-    $(wildcard include/config/HAVE_EXIT_THREAD) \
-    $(wildcard include/config/ARCH_WANTS_DYNAMIC_TASK_STRUCT) \
-    $(wildcard include/config/HAVE_ARCH_THREAD_STRUCT_WHITELIST) \
-  include/linux/uaccess.h \
-  include/linux/fault-inject-usercopy.h \
-    $(wildcard include/config/FAULT_INJECTION_USERCOPY) \
-  arch/x86/include/asm/uaccess.h \
-    $(wildcard include/config/CC_HAS_ASM_GOTO_OUTPUT) \
-    $(wildcard include/config/CC_HAS_ASM_GOTO_TIED_OUTPUT) \
-    $(wildcard include/config/ARCH_HAS_COPY_MC) \
-    $(wildcard include/config/X86_INTEL_USERCOPY) \
-  arch/x86/include/asm/smap.h \
-  arch/x86/include/asm/extable.h \
-    $(wildcard include/config/BPF_JIT) \
-  include/asm-generic/access_ok.h \
-    $(wildcard include/config/ALTERNATE_USER_ADDRESS_SPACE) \
-  arch/x86/include/asm/uaccess_32.h \
-  include/linux/cred.h \
-    $(wildcard include/config/DEBUG_CREDENTIALS) \
-  include/linux/key.h \
-    $(wildcard include/config/KEY_NOTIFICATIONS) \
-    $(wildcard include/config/NET) \
-  include/linux/assoc_array.h \
-    $(wildcard include/config/ASSOCIATIVE_ARRAY) \
-  include/linux/sched/user.h \
-    $(wildcard include/config/WATCH_QUEUE) \
-  include/linux/percpu_counter.h \
-  include/linux/rcu_sync.h \
-  include/linux/delayed_call.h \
-  include/linux/errseq.h \
-  include/linux/ioprio.h \
-  include/linux/sched/rt.h \
-  include/linux/iocontext.h \
-    $(wildcard include/config/BLK_ICQ) \
-  include/uapi/linux/ioprio.h \
-  include/linux/fs_types.h \
-  include/linux/mount.h \
-  include/linux/mnt_idmapping.h \
-  include/uapi/linux/fs.h \
-  include/linux/quota.h \
-    $(wildcard include/config/QUOTA_NETLINK_INTERFACE) \
-  include/uapi/linux/dqblk_xfs.h \
-  include/linux/dqblk_v1.h \
-  include/linux/dqblk_v2.h \
-  include/linux/dqblk_qtree.h \
-  include/linux/projid.h \
-  include/uapi/linux/quota.h \
-  include/linux/nfs_fs_i.h \
-  include/linux/seq_file.h \
-  include/linux/string_helpers.h \
-  include/linux/ns_common.h \
-  include/linux/nsproxy.h \
-  include/linux/user_namespace.h \
-    $(wildcard include/config/INOTIFY_USER) \
-    $(wildcard include/config/FANOTIFY) \
-    $(wildcard include/config/PERSISTENT_KEYRINGS) \
-  include/linux/kernel_stat.h \
-  include/linux/interrupt.h \
-    $(wildcard include/config/IRQ_FORCED_THREADING) \
-    $(wildcard include/config/GENERIC_IRQ_PROBE) \
-    $(wildcard include/config/IRQ_TIMINGS) \
-  include/linux/irqreturn.h \
-  include/linux/irqnr.h \
-  include/uapi/linux/irqnr.h \
-  include/linux/hardirq.h \
-  include/linux/context_tracking_state.h \
-    $(wildcard include/config/CONTEXT_TRACKING) \
-  include/linux/ftrace_irq.h \
-    $(wildcard include/config/HWLAT_TRACER) \
-    $(wildcard include/config/OSNOISE_TRACER) \
-  include/linux/vtime.h \
-    $(wildcard include/config/VIRT_CPU_ACCOUNTING) \
-    $(wildcard include/config/IRQ_TIME_ACCOUNTING) \
-  arch/x86/include/asm/hardirq.h \
-    $(wildcard include/config/KVM_INTEL) \
-    $(wildcard include/config/X86_THERMAL_VECTOR) \
-    $(wildcard include/config/X86_MCE_THRESHOLD) \
-    $(wildcard include/config/X86_MCE_AMD) \
-    $(wildcard include/config/X86_HV_CALLBACK_VECTOR) \
-  arch/x86/include/asm/irq.h \
-  arch/x86/include/asm/sections.h \
-  include/asm-generic/sections.h \
-    $(wildcard include/config/HAVE_FUNCTION_DESCRIPTORS) \
-  include/linux/cgroup-defs.h \
-    $(wildcard include/config/CGROUP_NET_CLASSID) \
-    $(wildcard include/config/CGROUP_NET_PRIO) \
-  include/linux/u64_stats_sync.h \
-  include/linux/bpf-cgroup-defs.h \
-  include/linux/psi_types.h \
-  include/linux/kthread.h \
-  include/linux/cgroup_subsys.h \
-    $(wildcard include/config/CGROUP_DEVICE) \
-    $(wildcard include/config/CGROUP_FREEZER) \
-    $(wildcard include/config/CGROUP_PERF) \
-    $(wildcard include/config/CGROUP_HUGETLB) \
-    $(wildcard include/config/CGROUP_PIDS) \
-    $(wildcard include/config/CGROUP_RDMA) \
-    $(wildcard include/config/CGROUP_MISC) \
-    $(wildcard include/config/CGROUP_DEBUG) \
-  include/linux/vm_event_item.h \
-    $(wildcard include/config/HAVE_ARCH_TRANSPARENT_HUGEPAGE_PUD) \
-    $(wildcard include/config/MEMORY_BALLOON) \
-    $(wildcard include/config/BALLOON_COMPACTION) \
-    $(wildcard include/config/DEBUG_TLBFLUSH) \
-    $(wildcard include/config/DEBUG_VM_VMACACHE) \
-  include/linux/page_counter.h \
-  include/linux/vmpressure.h \
-  include/linux/eventfd.h \
-  include/linux/mm.h \
-    $(wildcard include/config/HAVE_ARCH_MMAP_RND_BITS) \
-    $(wildcard include/config/HAVE_ARCH_MMAP_RND_COMPAT_BITS) \
-    $(wildcard include/config/ARCH_USES_HIGH_VMA_FLAGS) \
-    $(wildcard include/config/ARCH_HAS_PKEYS) \
-    $(wildcard include/config/PPC) \
-    $(wildcard include/config/PARISC) \
-    $(wildcard include/config/SPARC64) \
-    $(wildcard include/config/ARM64_MTE) \
-    $(wildcard include/config/HAVE_ARCH_USERFAULTFD_MINOR) \
-    $(wildcard include/config/SHMEM) \
-    $(wildcard include/config/ARCH_HAS_PTE_SPECIAL) \
-    $(wildcard include/config/ARCH_HAS_PTE_DEVMAP) \
-    $(wildcard include/config/DEBUG_VM_RB) \
-    $(wildcard include/config/PAGE_POISONING) \
-    $(wildcard include/config/INIT_ON_ALLOC_DEFAULT_ON) \
-    $(wildcard include/config/INIT_ON_FREE_DEFAULT_ON) \
-    $(wildcard include/config/DEBUG_PAGEALLOC) \
-    $(wildcard include/config/HUGETLBFS) \
-    $(wildcard include/config/MAPPING_DIRTY_HELPERS) \
-    $(wildcard include/config/ANON_VMA_NAME) \
-  include/linux/mmap_lock.h \
-  include/linux/page_ext.h \
-  include/linux/stacktrace.h \
-    $(wildcard include/config/ARCH_STACKWALK) \
-    $(wildcard include/config/STACKTRACE) \
-    $(wildcard include/config/HAVE_RELIABLE_STACKTRACE) \
-  include/linux/stackdepot.h \
-    $(wildcard include/config/STACKDEPOT_ALWAYS_INIT) \
-  include/linux/page_ref.h \
-    $(wildcard include/config/DEBUG_PAGE_REF) \
-  include/linux/sizes.h \
-  include/linux/pgtable.h \
-    $(wildcard include/config/HIGHPTE) \
-    $(wildcard include/config/GUP_GET_PTE_LOW_HIGH) \
-    $(wildcard include/config/HAVE_ARCH_SOFT_DIRTY) \
-    $(wildcard include/config/ARCH_ENABLE_THP_MIGRATION) \
-    $(wildcard include/config/X86_ESPFIX64) \
-  arch/x86/include/asm/pgtable.h \
-    $(wildcard include/config/DEBUG_WX) \
-    $(wildcard include/config/PAGE_TABLE_CHECK) \
-  arch/x86/include/asm/pkru.h \
-  arch/x86/include/asm/fpu/api.h \
-    $(wildcard include/config/X86_DEBUG_FPU) \
-  arch/x86/include/asm/coco.h \
-  include/asm-generic/pgtable_uffd.h \
-  include/linux/page_table_check.h \
-  arch/x86/include/asm/pgtable_32.h \
-  arch/x86/include/asm/pgtable-3level.h \
-  arch/x86/include/asm/pgtable-invert.h \
-  include/linux/huge_mm.h \
-  include/linux/sched/coredump.h \
-    $(wildcard include/config/CORE_DUMP_DEFAULT_ELF_HEADERS) \
-  include/linux/vmstat.h \
-    $(wildcard include/config/VM_EVENT_COUNTERS) \
-  include/linux/writeback.h \
-  include/linux/flex_proportions.h \
-  include/linux/backing-dev-defs.h \
-    $(wildcard include/config/DEBUG_FS) \
-  include/linux/blk_types.h \
-    $(wildcard include/config/FAIL_MAKE_REQUEST) \
-    $(wildcard include/config/BLK_CGROUP_IOCOST) \
-    $(wildcard include/config/BLK_INLINE_ENCRYPTION) \
-    $(wildcard include/config/BLK_DEV_INTEGRITY) \
-  include/linux/bvec.h \
-  include/linux/highmem.h \
-  include/linux/cacheflush.h \
-  arch/x86/include/asm/cacheflush.h \
-  include/asm-generic/cacheflush.h \
-  include/linux/highmem-internal.h \
-  arch/x86/include/asm/highmem.h \
-  arch/x86/include/asm/tlbflush.h \
-  arch/x86/include/asm/invpcid.h \
-  arch/x86/include/asm/pti.h \
-  include/linux/bio.h \
-  include/linux/mempool.h \
-  include/linux/uio.h \
-    $(wildcard include/config/ARCH_HAS_UACCESS_FLUSHCACHE) \
-  include/uapi/linux/uio.h \
-  include/linux/node.h \
-    $(wildcard include/config/HMEM_REPORTING) \
-  include/linux/pagemap.h \
-  include/linux/hugetlb_inline.h \
-  include/uapi/linux/mempolicy.h \
-  include/linux/freezer.h \
-  include/uapi/linux/i2c.h \
-  include/linux/videodev2.h \
-  include/uapi/linux/videodev2.h \
-    $(wildcard include/config/VIDEO_ADV_DEBUG) \
-  include/uapi/linux/v4l2-common.h \
-  include/uapi/linux/v4l2-controls.h \
-  include/media/v4l2-device.h \
-    $(wildcard include/config/VIDEO_V4L2_SUBDEV_API) \
-  include/media/media-device.h \
-    $(wildcard include/config/MEDIA_CONTROLLER) \
-  include/media/media-devnode.h \
-  include/linux/poll.h \
-  include/uapi/linux/poll.h \
-  arch/x86/include/generated/uapi/asm/poll.h \
-  include/uapi/asm-generic/poll.h \
-  include/uapi/linux/eventpoll.h \
-  include/linux/cdev.h \
-  include/media/media-entity.h \
-  include/uapi/linux/media.h \
-  include/media/v4l2-subdev.h \
-  include/uapi/linux/v4l2-subdev.h \
-  include/uapi/linux/v4l2-mediabus.h \
-  include/uapi/linux/media-bus-format.h \
-  include/media/v4l2-async.h \
-  include/media/v4l2-common.h \
-    $(wildcard include/config/VIDEO_V4L2_I2C) \
-    $(wildcard include/config/SPI) \
-  include/media/v4l2-dev.h \
-  include/linux/spi/spi.h \
-    $(wildcard include/config/SPI_SLAVE) \
-  include/linux/scatterlist.h \
-    $(wildcard include/config/NEED_SG_DMA_LENGTH) \
-    $(wildcard include/config/DEBUG_SG) \
-    $(wildcard include/config/SGL_ALLOC) \
-    $(wildcard include/config/ARCH_NO_SG_CHAIN) \
-    $(wildcard include/config/SG_POOL) \
-  include/linux/gpio/consumer.h \
-    $(wildcard include/config/OF_GPIO) \
-    $(wildcard include/config/GPIO_SYSFS) \
-  include/uapi/linux/spi/spi.h \
-  include/media/v4l2-fh.h \
-  include/media/v4l2-mediabus.h \
-  include/media/v4l2-ctrls.h \
-  include/media/media-request.h \
-  include/media/hevc-ctrls.h \
 
-drivers/media/i2c/tw9906.o: $(deps_drivers/media/i2c/tw9906.o)
+/* cnic.c: QLogic CNIC core network driver.
+ *
+ * Copyright (c) 2006-2014 Broadcom Corporation
+ * Copyright (c) 2014 QLogic Corporation
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation.
+ *
+ */
 
-$(deps_drivers/media/i2c/tw9906.o):
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               cmd_drivers/media/i2c/tw9906.o := gcc -Wp,-MMD,drivers/media/i2c/.tw9906.o.d -nostdinc -I./arch/x86/include -I./arch/x86/include/generated  -I./include -I./arch/x86/include/uapi -I./arch/x86/include/generated/uapi -I./include/uapi -I./include/generated/uapi -include ./include/linux/compiler-version.h -include ./include/linux/kconfig.h -include ./include/linux/compiler_types.h -D__KERNEL__ -fmacro-prefix-map=./= -Wall -Wundef -Werror=strict-prototypes -Wno-trigraphs -fno-strict-aliasing -fno-common -fshort-wchar -fno-PIE -Werror=implicit-function-declaration -Werror=implicit-int -Werror=return-type -Wno-format-security -std=gnu11 -mno-sse -mno-mmx -mno-sse2 -mno-3dnow -mno-avx -fcf-protection=none -m32 -msoft-float -mregparm=3 -freg-struct-return -fno-pic -mpreferred-stack-boundary=2 -march=i686 -mtune=pentium3 -mtune=generic -Wa,-mtune=generic32 -ffreestanding -mstack-protector-guard-reg=fs -mstack-protector-guard-symbol=__stack_chk_guard -Wno-sign-compare -fno-asynchronous-unwind-tables -mindirect-branch=thunk-extern -mindirect-branch-register -fno-jump-tables -fno-delete-null-pointer-checks -Wno-frame-address -Wno-format-truncation -Wno-format-overflow -Wno-address-of-packed-member -O2 -fno-allow-store-data-races -fstack-protector-strong -Wimplicit-fallthrough=5 -Wno-main -Wno-unused-but-set-variable -Wno-unused-const-variable -fno-stack-clash-protection -pg -mrecord-mcount -mfentry -DCC_USING_FENTRY -Wdeclaration-after-statement -Wvla -Wno-pointer-sign -Wcast-function-type -Wno-stringop-truncation -Wno-stringop-overflow -Wno-restrict -Wno-maybe-uninitialized -Wno-alloc-size-larger-than -fno-strict-overflow -fno-stack-check -fconserve-stack -Werror=date-time -Werror=incompatible-pointer-types -Werror=designated-init -Wno-packed-not-aligned  -DMODULE  -DKBUILD_BASENAME='"tw9906"' -DKBUILD_MODNAME='"tw9906"' -D__KBUILD_MODNAME=kmod_tw9906 -c -o drivers/media/i2c/tw9906.o drivers/media/i2c/tw9906.c 
+#ifndef CNIC_DEFS_H
+#define CNIC_DEFS_H
 
-source_drivers/media/i2c/tw9906.o := drivers/media/i2c/tw9906.c
+/* KWQ (kernel work queue) request op codes */
+#define L2_KWQE_OPCODE_VALUE_FLUSH                  (4)
+#define L2_KWQE_OPCODE_VALUE_VM_FREE_RX_QUEUE       (8)
 
-deps_drivers/media/i2c/tw9906.o := \
-  include/linux/compiler-version.h \
-    $(wildcard include/config/CC_VERSION_TEXT) \
-  include/linux/kconfig.h \
-    $(wildcard include/config/CPU_BIG_ENDIAN) \
-    $(wildcard include/config/BOOGER) \
-    $(wildcard include/config/FOO) \
-  include/linux/compiler_types.h \
-    $(wildcard include/config/DEBUG_INFO_BTF) \
-    $(wildcard include/config/PAHOLE_HAS_BTF_TAG) \
-    $(wildcard include/config/HAVE_ARCH_COMPILER_H) \
-    $(wildcard include/config/CC_HAS_ASM_INLINE) \
-  include/linux/compiler_attributes.h \
-  include/linux/compiler-gcc.h \
-    $(wildcard include/config/RETPOLINE) \
-    $(wildcard include/config/ARCH_USE_BUILTIN_BSWAP) \
-    $(wildcard include/config/SHADOW_CALL_STACK) \
-    $(wildcard include/config/KCOV) \
-  include/linux/module.h \
-    $(wildcard include/config/MODULES) \
-    $(wildcard include/config/SYSFS) \
-    $(wildcard include/config/MODULES_TREE_LOOKUP) \
-    $(wildcard include/config/LIVEPATCH) \
-    $(wildcard include/config/STACKTRACE_BUILD_ID) \
-    $(wildcard include/config/CFI_CLANG) \
-    $(wildcard include/config/MODULE_SIG) \
-    $(wildcard include/config/GENERIC_BUG) \
-    $(wildcard include/config/KALLSYMS) \
-    $(wildcard include/config/SMP) \
-    $(wildcard include/config/TRACEPOINTS) \
-    $(wildcard include/config/TREE_SRCU) \
-    $(wildcard include/config/BPF_EVENTS) \
-    $(wildcard include/config/DEBUG_INFO_BTF_MODULES) \
-    $(wildcard include/config/JUMP_LABEL) \
-    $(wildcard include/config/TRACING) \
-    $(wildcard include/config/EVENT_TRACING) \
-    $(wildcard include/config/FTRACE_MCOUNT_RECORD) \
-    $(wildcard include/config/KPROBES) \
-    $(wildcard include/config/HAVE_STATIC_CALL_INLINE) \
-    $(wildcard include/config/PRINTK_INDEX) \
-    $(wildcard include/config/MODULE_UNLOAD) \
-    $(wildcard include/config/CONSTRUCTORS) \
-    $(wildcard include/config/FUNCTION_ERROR_INJECTION) \
-  include/linux/list.h \
-    $(wildcard include/config/DEBUG_LIST) \
-  include/linux/container_of.h \
-  include/linux/build_bug.h \
-  include/linux/compiler.h \
-    $(wildcard include/config/TRACE_BRANCH_PROFILING) \
-    $(wildcard include/config/PROFILE_ALL_BRANCHES) \
-    $(wildcard include/config/STACK_VALIDATION) \
-  include/linux/compiler_types.h \
-  arch/x86/include/generated/asm/rwonce.h \
-  include/asm-generic/rwonce.h \
-  include/linux/kasan-checks.h \
-    $(wildcard include/config/KASAN_GENERIC) \
-    $(wildcard include/config/KASAN_SW_TAGS) \
-  include/linux/types.h \
-    $(wildcard include/config/HAVE_UID16) \
-    $(wildcard include/config/UID16) \
-    $(wildcard include/config/ARCH_DMA_ADDR_T_64BIT) \
-    $(wildcard include/config/PHYS_ADDR_T_64BIT) \
-    $(wildcard include/config/64BIT) \
-    $(wildcard include/config/ARCH_32BIT_USTAT_F_TINODE) \
-  include/uapi/linux/types.h \
-  arch/x86/include/generated/uapi/asm/types.h \
-  include/uapi/asm-generic/types.h \
-  include/asm-generic/int-ll64.h \
-  include/uapi/asm-generic/int-ll64.h \
-  arch/x86/include/uapi/asm/bitsperlong.h \
-  include/asm-generic/bitsperlong.h \
-  include/uapi/asm-generic/bitsperlong.h \
-  include/uapi/linux/posix_types.h \
-  include/linux/stddef.h \
-  include/uapi/linux/stddef.h \
-  arch/x86/include/asm/posix_types.h \
-    $(wildcard include/config/X86_32) \
-  arch/x86/include/uapi/asm/posix_types_32.h \
-  include/uapi/asm-generic/posix_types.h \
-  include/linux/kcsan-checks.h \
-    $(wildcard include/config/KCSAN) \
-    $(wildcard include/config/KCSAN_WEAK_MEMORY) \
-    $(wildcard include/config/KCSAN_IGNORE_ATOMICS) \
-  include/linux/err.h \
-  arch/x86/include/generated/uapi/asm/errno.h \
-  include/uapi/asm-generic/errno.h \
-  include/uapi/asm-generic/errno-base.h \
-  include/linux/poison.h \
-    $(wildcard include/config/ILLEGAL_POINTER_VALUE) \
-  include/linux/const.h \
-  include/vdso/const.h \
-  include/uapi/linux/const.h \
-  arch/x86/include/asm/barrier.h \
-  arch/x86/include/asm/alternative.h \
-  include/linux/stringify.h \
-  arch/x86/include/asm/asm.h \
-  arch/x86/include/asm/extable_fixup_types.h \
-  arch/x86/include/asm/nops.h \
-  include/asm-generic/barrier.h \
-  include/linux/stat.h \
-  arch/x86/include/uapi/asm/stat.h \
-  include/uapi/linux/stat.h \
-  include/linux/time.h \
-    $(wildcard include/config/POSIX_TIMERS) \
-  include/linux/cache.h \
-    $(wildcard include/config/ARCH_HAS_CACHE_LINE_SIZE) \
-  include/uapi/linux/kernel.h \
-  include/uapi/linux/sysinfo.h \
-  arch/x86/include/asm/cache.h \
-    $(wildcard include/config/X86_L1_CACHE_SHIFT) \
-    $(wildcard include/config/X86_INTERNODE_CACHE_SHIFT) \
-    $(wildcard include/config/X86_VSMP) \
-  include/linux/linkage.h \
-    $(wildcard include/config/ARCH_USE_SYM_ANNOTATIONS) \
-  include/linux/export.h \
-    $(wildcard include/config/MODVERSIONS) \
-    $(wildcard include/config/MODULE_REL_CRCS) \
-    $(wildcard include/config/HAVE_ARCH_PREL32_RELOCATIONS) \
-    $(wildcard include/config/TRIM_UNUSED_KSYMS) \
-  arch/x86/include/asm/linkage.h \
-    $(wildcard include/config/X86_64) \
-    $(wildcard include/config/X86_ALIGNMENT_16) \
-    $(wildcard include/config/SLS) \
-  arch/x86/include/asm/ibt.h \
-    $(wildcard include/config/X86_KERNEL_IBT) \
-  include/linux/math64.h \
-    $(wildcard include/config/ARCH_SUPPORTS_INT128) \
-  include/linux/math.h \
-  arch/x86/include/asm/div64.h \
-  include/linux/log2.h \
-    $(wildcard include/config/ARCH_HAS_ILOG2_U32) \
-    $(wildcard include/config/ARCH_HAS_ILOG2_U64) \
-  include/linux/bitops.h \
-  include/linux/bits.h \
-  include/vdso/bits.h \
-  include/linux/typecheck.h \
-  arch/x86/include/asm/bitops.h \
-    $(wildcard include/config/X86_CMOV) \
-  arch/x86/include/asm/rmwcc.h \
-    $(wildcard include/config/CC_HAS_ASM_GOTO) \
-  include/asm-generic/bitops/fls64.h \
-  include/asm-generic/bitops/sched.h \
-  arch/x86/include/asm/arch_hweight.h \
-  arch/x86/include/asm/cpufeatures.h \
-  arch/x86/include/asm/required-features.h \
-    $(wildcard include/config/X86_MINIMUM_CPU_FAMILY) \
-    $(wildcard include/config/MATH_EMULATION) \
-    $(wildcard include/config/X86_PAE) \
-    $(wildcard include/config/X86_CMPXCHG64) \
-    $(wildcard include/config/X86_P6_NOP) \
-    $(wildcard include/config/MATOM) \
-    $(wildcard include/config/PARAVIRT_XXL) \
-  arch/x86/include/asm/disabled-features.h \
-    $(wildcard include/config/X86_SMAP) \
-    $(wildcard include/config/X86_UMIP) \
-    $(wildcard include/config/X86_INTEL_MEMORY_PROTECTION_KEYS) \
-    $(wildcard include/config/X86_5LEVEL) \
-    $(wildcard include/config/PAGE_TABLE_ISOLATION) \
-    $(wildcard include/config/INTEL_IOMMU_SVM) \
-    $(wildcard include/config/X86_SGX) \
-  include/asm-generic/bitops/const_hweight.h \
-  include/asm-generic/bitops/instrumented-atomic.h \
-  include/linux/instrumented.h \
-  include/asm-generic/bitops/instrumented-non-atomic.h \
-    $(wildcard include/config/KCSAN_ASSUME_PLAIN_WRITES_ATOMIC) \
-  include/asm-generic/bitops/instrumented-lock.h \
-  include/asm-generic/bitops/le.h \
-  arch/x86/include/uapi/asm/byteorder.h \
-  include/linux/byteorder/little_endian.h \
-  include/uapi/linux/byteorder/little_endian.h \
-  include/linux/swab.h \
-  include/uapi/linux/swab.h \
-  arch/x86/include/uapi/asm/swab.h \
-  include/linux/byteorder/generic.h \
-  include/asm-generic/bitops/ext2-atomic-setbit.h \
-  include/vdso/math64.h \
-  include/linux/time64.h \
-  include/vdso/time64.h \
-  include/uapi/linux/time.h \
-  include/uapi/linux/time_types.h \
-  include/linux/time32.h \
-  include/linux/timex.h \
-  include/uapi/linux/timex.h \
-  include/uapi/linux/param.h \
-  arch/x86/include/generated/uapi/asm/param.h \
-  include/asm-generic/param.h \
-    $(wildcard include/config/HZ) \
-  include/uapi/asm-generic/param.h \
-  arch/x86/include/asm/timex.h \
-    $(wildcard include/config/X86_TSC) \
-  arch/x86/include/asm/processor.h \
-    $(wildcard include/config/X86_VMX_FEATURE_NAMES) \
-    $(wildcard include/config/X86_IOPL_IOPERM) \
-    $(wildcard include/config/STACKPROTECTOR) \
-    $(wildcard include/config/VM86) \
-    $(wildcard include/config/X86_DEBUGCTLMSR) \
-    $(wildcard include/config/CPU_SUP_AMD) \
-    $(wildcard include/config/XEN) \
-  arch/x86/include/asm/processor-flags.h \
-  arch/x86/include/uapi/asm/processor-flags.h \
-  include/linux/mem_encrypt.h \
-    $(wildcard include/config/ARCH_HAS_MEM_ENCRYPT) \
-    $(wildcard include/config/AMD_MEM_ENCRYPT) \
-  arch/x86/include/asm/mem_encrypt.h \
-  include/linux/init.h \
-    $(wildcard include/config/STRICT_KERNEL_RWX) \
-    $(wildcard include/config/STRICT_MODULE_RWX) \
-    $(wildcard include/config/LTO_CLANG) \
-  include/linux/cc_platform.h \
-    $(wildcard include/config/ARCH_HAS_CC_PLATFORM) \
-  arch/x86/include/uapi/asm/bootparam.h \
-  include/linux/screen_info.h \
-  include/uapi/linux/screen_info.h \
-  include/linux/apm_bios.h \
-  include/uapi/linux/apm_bios.h \
-  include/uapi/linux/ioctl.h \
-  arch/x86/include/generated/uapi/asm/ioctl.h \
-  include/asm-generic/ioctl.h \
-  include/uapi/asm-generic/ioctl.h \
-  include/linux/edd.h \
-  include/uapi/linux/edd.h \
-  arch/x86/include/asm/ist.h \
-  arch/x86/include/uapi/asm/ist.h \
-  include/video/edid.h \
-    $(wildcard include/config/X86) \
-  include/uapi/video/edid.h \
-  arch/x86/include/asm/math_emu.h \
-  arch/x86/include/asm/ptrace.h \
-    $(wildcard include/config/PARAVIRT) \
-    $(wildcard include/config/IA32_EMULATION) \
-  arch/x86/include/asm/segment.h \
-    $(wildcard include/config/XEN_PV) \
-  arch/x86/include/asm/page_types.h \
-    $(wildcard include/config/PHYSICAL_START) \
-    $(wildcard include/config/PHYSICAL_ALIGN) \
-    $(wildcard include/config/DYNAMIC_PHYSICAL_MASK) \
-  arch/x86/include/asm/page_32_types.h \
-    $(wildcard include/config/HIGHMEM4G) \
-    $(wildcard include/config/HIGHMEM64G) \
-    $(wildcard include/config/PAGE_OFFSET) \
-  arch/x86/include/uapi/asm/ptrace.h \
-  arch/x86/include/uapi/asm/ptrace-abi.h \
-  arch/x86/include/asm/paravirt_types.h \
-    $(wildcard include/config/PGTABLE_LEVELS) \
-    $(wildcard include/config/PARAVIRT_DEBUG) \
-  arch/x86/include/asm/desc_defs.h \
-  arch/x86/include/asm/pgtable_types.h \
-    $(wildcard include/config/MEM_SOFT_DIRTY) \
-    $(wildcard include/config/HAVE_ARCH_USERFAULTFD_WP) \
-    $(wildcard include/config/PROC_FS) \
-  arch/x86/include/asm/pgtable_32_types.h \
-  arch/x86/include/asm/pgtable-3level_types.h \
-  include/asm-generic/pgtable-nop4d.h \
-  include/asm-generic/pgtable-nopud.h \
-  arch/x86/include/asm/nospec-branch.h \
-  include/linux/static_key.h \
-  include/linux/jump_label.h \
-    $(wildcard include/config/HAVE_ARCH_JUMP_LABEL_RELATIVE) \
-  arch/x86/include/asm/jump_label.h \
-  include/linux/objtool.h \
-    $(wildcard include/config/FRAME_POINTER) \
-  arch/x86/include/asm/msr-index.h \
-  arch/x86/include/asm/unwind_hints.h \
-  arch/x86/include/asm/orc_types.h \
-  arch/x86/include/asm/GEN-for-each-reg.h \
-  arch/x86/include/asm/spinlock_types.h \
-  include/asm-generic/qspinlock_types.h \
-    $(wildcard include/config/NR_CPUS) \
-  include/asm-generic/qrwlock_types.h \
-  arch/x86/include/asm/proto.h \
-  arch/x86/include/uapi/asm/ldt.h \
-  arch/x86/include/uapi/asm/sigcontext.h \
-  arch/x86/include/asm/current.h \
-  arch/x86/include/asm/percpu.h \
-    $(wildcard include/config/X86_64_SMP) \
-  include/linux/kernel.h \
-    $(wildcard include/config/PREEMPT_VOLUNTARY_BUILD) \
-    $(wildcard include/config/PREEMPT_DYNAMIC) \
-    $(wildcard include/config/HAVE_PREEMPT_DYNAMIC_CALL) \
-    $(wildcard include/config/HAVE_PREEMPT_DYNAMIC_KEY) \
-    $(wildcard include/config/PREEMPT_) \
-    $(wildcard include/config/DEBUG_ATOMIC_SLEEP) \
-    $(wildcard include/config/MMU) \
-    $(wildcard include/config/PROVE_LOCKING) \
-  include/linux/stdarg.h \
-  include/linux/align.h \
-  include/linux/limits.h \
-  include/uapi/linux/limits.h \
-  include/vdso/limits.h \
-  include/linux/kstrtox.h \
-  include/linux/minmax.h \
-  include/linux/panic.h \
-    $(wildcard include/config/PANIC_TIMEOUT) \
-  include/linux/printk.h \
-    $(wildcard include/config/MESSAGE_LOGLEVEL_DEFAULT) \
-    $(wildcard include/config/CONSOLE_LOGLEVEL_DEFAULT) \
-    $(wildcard include/config/CONSOLE_LOGLEVEL_QUIET) \
-    $(wildcard include/config/EARLY_PRINTK) \
-    $(wildcard include/config/PRINTK) \
-    $(wildcard include/config/DYNAMIC_DEBUG) \
-    $(wildcard include/config/DYNAMIC_DEBUG_CORE) \
-  include/linux/kern_levels.h \
-  include/linux/ratelimit_types.h \
-  include/linux/spinlock_types_raw.h \
-    $(wildcard include/config/DEBUG_SPINLOCK) \
-    $(wildcard include/config/DEBUG_LOCK_ALLOC) \
-  include/linux/lockdep_types.h \
-    $(wildcard include/config/PROVE_RAW_LOCK_NESTING) \
-    $(wildcard include/config/LOCKDEP) \
-    $(wildcard include/config/LOCK_STAT) \
-  include/linux/once_lite.h \
-  include/linux/static_call_types.h \
-    $(wildcard include/config/HAVE_STATIC_CALL) \
-  include/linux/instruction_pointer.h \
-  include/asm-generic/percpu.h \
-    $(wildcard include/config/DEBUG_PREEMPT) \
-    $(wildcard include/config/HAVE_SETUP_PER_CPU_AREA) \
-  include/linux/threads.h \
-    $(wildcard include/config/BASE_SMALL) \
-  include/linux/percpu-defs.h \
-    $(wildcard include/config/DEBUG_FORCE_WEAK_PER_CPU) \
-  arch/x86/include/asm/page.h \
-  arch/x86/include/asm/page_32.h \
-    $(wildcard include/config/DEBUG_VIRTUAL) \
-    $(wildcard include/config/FLATMEM) \
-  include/linux/string.h \
-    $(wildcard include/config/BINARY_PRINTF) \
-    $(wildcard include/config/FORTIFY_SOURCE) \
-  include/linux/errno.h \
-  include/uapi/linux/errno.h \
-  include/uapi/linux/string.h \
-  arch/x86/include/asm/string.h \
-  arch/x86/include/asm/string_32.h \
-  include/linux/fortify-string.h \
-  include/linux/range.h \
-  include/asm-generic/memory_model.h \
-    $(wildcard include/config/SPARSEMEM_VMEMMAP) \
-    $(wildcard include/config/SPARSEMEM) \
-  include/linux/pfn.h \
-  include/asm-generic/getorder.h \
-  arch/x86/include/asm/msr.h \
-  arch/x86/include/asm/msr-index.h \
-  arch/x86/include/asm/cpumask.h \
-  include/linux/cpumask.h \
-    $(wildcard include/config/CPUMASK_OFFSTACK) \
-    $(wildcard include/config/HOTPLUG_CPU) \
-    $(wildcard include/config/DEBUG_PER_CPU_MAPS) \
-  include/linux/bitmap.h \
-  include/linux/find.h \
-  include/linux/atomic.h \
-  arch/x86/include/asm/atomic.h \
-  arch/x86/include/asm/cmpxchg.h \
-  arch/x86/include/asm/cmpxchg_32.h \
-  arch/x86/include/asm/atomic64_32.h \
-  include/linux/atomic/atomic-arch-fallback.h \
-    $(wildcard include/config/GENERIC_ATOMIC64) \
-  include/linux/atomic/atomic-long.h \
-  include/linux/atomic/atomic-instrumented.h \
-  include/linux/bug.h \
-    $(wildcard include/config/BUG_ON_DATA_CORRUPTION) \
-  arch/x86/include/asm/bug.h \
-    $(wildcard include/config/DEBUG_BUGVERBOSE) \
-  include/linux/instrumentation.h \
-    $(wildcard include/config/DEBUG_ENTRY) \
-  include/asm-generic/bug.h \
-    $(wildcard include/config/BUG) \
-    $(wildcard include/config/GENERIC_BUG_RELATIVE_POINTERS) \
-  arch/x86/include/uapi/asm/msr.h \
-  include/linux/tracepoint-defs.h \
-  arch/x86/include/asm/special_insns.h \
-  include/linux/irqflags.h \
-    $(wildcard include/config/TRACE_IRQFLAGS) \
-    $(wildcard include/config/PREEMPT_RT) \
-    $(wildcard include/config/IRQSOFF_TRACER) \
-    $(wildcard include/config/PREEMPT_TRACER) \
-    $(wildcard include/config/DEBUG_IRQFLAGS) \
-    $(wildcard include/config/TRACE_IRQFLAGS_SUPPORT) \
-  arch/x86/include/asm/irqflags.h \
-  arch/x86/include/asm/fpu/types.h \
-  arch/x86/include/asm/vmxfeatures.h \
-  arch/x86/include/asm/vdso/processor.h \
-  include/linux/personality.h \
-  include/uapi/linux/personality.h \
-  arch/x86/include/asm/tsc.h \
-  arch/x86/include/asm/cpufeature.h \
-    $(wildcard include/config/X86_FEATURE_NAMES) \
-  include/vdso/time32.h \
-  include/vdso/time.h \
-  include/linux/uidgid.h \
-    $(wildcard include/config/MULTIUSER) \
-    $(wildcard include/config/USER_NS) \
-  include/linux/highuid.h \
-  include/linux/buildid.h \
-    $(wildcard include/config/CRASH_CORE) \
-  include/linux/mm_types.h \
-    $(wildcard include/config/HAVE_ALIGNED_STRUCT_PAGE) \
-    $(wildcard include/config/MEMCG) \
-    $(wildcard include/config/USERFAULTFD) \
-    $(wildcard include/config/SWAP) \
-    $(wildcard include/config/NUMA) \
-    $(wildcard include/config/HAVE_ARCH_COMPAT_MMAP_BASES) \
-    $(wildcard include/config/MEMBARRIER) \
-    $(wildcard include/config/AIO) \
-    $(wildcard include/config/MMU_NOTIFIER) \
-    $(wildcard include/config/TRANSPARENT_HUGEPAGE) \
-    $(wildcard include/config/NUMA_BALANCING) \
-    $(wildcard include/config/ARCH_WANT_BATCHED_UNMAP_TLB_FLUSH) \
-    $(wildcard include/config/HUGETLB_PAGE) \
-    $(wildcard include/config/IOMMU_SVA) \
-  include/linux/mm_types_task.h \
-    $(wildcard include/config/SPLIT_PTLOCK_CPUS) \
-    $(wildcard include/config/ARCH_ENABLE_SPLIT_PMD_PTLOCK) \
-  arch/x86/include/asm/tlbbatch.h \
-  include/linux/auxvec.h \
-  include/uapi/linux/auxvec.h \
-  arch/x86/include/uapi/asm/auxvec.h \
-  include/linux/kref.h \
-  include/linux/spinlock.h \
-    $(wildcard include/config/PREEMPTION) \
-  include/linux/preempt.h \
-    $(wildcard include/config/PREEMPT_COUNT) \
-    $(wildcard include/config/TRACE_PREEMPT_TOGGLE) \
-    $(wildcard include/config/PREEMPT_NOTIFIERS) \
-  arch/x86/include/asm/preempt.h \
-  include/linux/thread_info.h \
-    $(wildcard include/config/THREAD_INFO_IN_TASK) \
-    $(wildcard include/config/GENERIC_ENTRY) \
-    $(wildcard include/config/HAVE_ARCH_WITHIN_STACK_FRAMES) \
-    $(wildcard include/config/HARDENED_USERCOPY) \
-  include/linux/restart_block.h \
-  arch/x86/include/asm/thread_info.h \
-    $(wildcard include/config/COMPAT) \
-  include/linux/bottom_half.h \
-  include/linux/lockdep.h \
-    $(wildcard include/config/DEBUG_LOCKING_API_SELFTESTS) \
-  include/linux/smp.h \
-    $(wildcard include/config/UP_LATE_INIT) \
-  include/linux/smp_types.h \
-  include/linux/llist.h \
-    $(wildcard include/config/ARCH_HAVE_NMI_SAFE_CMPXCHG) \
-  arch/x86/include/asm/smp.h \
-    $(wildcard include/config/X86_LOCAL_APIC) \
-    $(wildcard include/config/DEBUG_NMI_SELFTEST) \
-  arch/x86/include/generated/asm/mmiowb.h \
-  include/asm-generic/mmiowb.h \
-    $(wildcard include/config/MMIOWB) \
-  include/linux/spinlock_types.h \
-  include/linux/rwlock_types.h \
-  arch/x86/include/asm/spinlock.h \
-  arch/x86/include/asm/paravirt.h \
-    $(wildcard include/config/PARAVIRT_SPINLOCKS) \
-  arch/x86/include/asm/frame.h \
-  arch/x86/include/asm/qspinlock.h \
-  include/asm-generic/qspinlock.h \
-  arch/x86/include/asm/qrwlock.h \
-  include/asm-generic/qrwlock.h \
-  include/linux/rwlock.h \
-    $(wildcard include/config/PREEMPT) \
-  include/linux/spinlock_api_smp.h \
-    $(wildcard include/config/INLINE_SPIN_LOCK) \
-    $(wildcard include/config/INLINE_SPIN_LOCK_BH) \
-    $(wildcard include/config/INLINE_SPIN_LOCK_IRQ) \
-    $(wildcard include/config/INLINE_SPIN_LOCK_IRQSAVE) \
-    $(wildcard include/config/INLINE_SPIN_TRYLOCK) \
-    $(wildcard include/config/INLINE_SPIN_TRYLOCK_BH) \
-    $(wildcard include/config/UNINLINE_SPIN_UNLOCK) \
-    $(wildcard include/config/INLINE_SPIN_UNLOCK_BH) \
-    $(wildcard include/config/INLINE_SPIN_UNLOCK_IRQ) \
-    $(wildcard include/config/INLINE_SPIN_UNLOCK_IRQRESTORE) \
-    $(wildcard include/config/GENERIC_LOCKBREAK) \
-  include/linux/rwlock_api_smp.h \
-    $(wildcard include/config/INLINE_READ_LOCK) \
-    $(wildcard include/config/INLINE_WRITE_LOCK) \
-    $(wildcard include/config/INLINE_READ_LOCK_BH) \
-    $(wildcard include/config/INLINE_WRITE_LOCK_BH) \
-    $(wildcard include/config/INLINE_READ_LOCK_IRQ) \
-    $(wildcard include/config/INLINE_WRITE_LOCK_IRQ) \
-    $(wildcard include/config/INLINE_READ_LOCK_IRQSAVE) \
-    $(wildcard include/config/INLINE_WRITE_LOCK_IRQSAVE) \
-    $(wildcard include/config/INLINE_READ_TRYLOCK) \
-    $(wildcard include/config/INLINE_WRITE_TRYLOCK) \
-    $(wildcard include/config/INLINE_READ_UNLOCK) \
-    $(wildcard include/config/INLINE_WRITE_UNLOCK) \
-    $(wildcard include/config/INLINE_READ_UNLOCK_BH) \
-    $(wildcard include/config/INLINE_WRITE_UNLOCK_BH) \
-    $(wildcard include/config/INLINE_READ_UNLOCK_IRQ) \
-    $(wildcard include/config/INLINE_WRITE_UNLOCK_IRQ) \
-    $(wildcard include/config/INLINE_READ_UNLOCK_IRQRESTORE) \
-    $(wildcard include/config/INLINE_WRITE_UNLOCK_IRQRESTORE) \
-  include/linux/refcount.h \
-  include/linux/rbtree.h \
-  include/linux/rbtree_types.h \
-  include/linux/rcupdate.h \
-    $(wildcard include/config/PREEMPT_RCU) \
-    $(wildcard include/config/TINY_RCU) \
-    $(wildcard include/config/RCU_STRICT_GRACE_PERIOD) \
-    $(wildcard include/config/TASKS_RCU_GENERIC) \
-    $(wildcard include/config/RCU_STALL_COMMON) \
-    $(wildcard include/config/NO_HZ_FULL) \
-    $(wildcard include/config/RCU_NOCB_CPU) \
-    $(wildcard include/config/TASKS_RCU) \
-    $(wildcard include/config/TASKS_TRACE_RCU) \
-    $(wildcard include/config/TASKS_RUDE_RCU) \
-    $(wildcard include/config/TREE_RCU) \
-    $(wildcard include/config/DEBUG_OBJECTS_RCU_HEAD) \
-    $(wildcard include/config/PROVE_RCU) \
-    $(wildcard include/config/ARCH_WEAK_RELEASE_ACQUIRE) \
-  include/linux/rcutree.h \
-  include/linux/rwsem.h \
-    $(wildcard include/config/RWSEM_SPIN_ON_OWNER) \
-    $(wildcard include/config/DEBUG_RWSEMS) \
-  include/linux/osq_lock.h \
-  include/linux/completion.h \
-  include/linux/swait.h \
-  include/linux/wait.h \
-  include/uapi/linux/wait.h \
-  include/linux/uprobes.h \
-    $(wildcard include/config/UPROBES) \
-  arch/x86/include/asm/uprobes.h \
-  include/linux/notifier.h \
-  include/linux/mutex.h \
-    $(wildcard include/config/MUTEX_SPIN_ON_OWNER) \
-    $(wildcard include/config/DEBUG_MUTEXES) \
-  include/linux/debug_locks.h \
-  include/linux/srcu.h \
-    $(wildcard include/config/TINY_SRCU) \
-    $(wildcard include/config/SRCU) \
-  include/linux/workqueue.h \
-    $(wildcard include/config/DEBUG_OBJECTS_WORK) \
-    $(wildcard include/config/FREEZER) \
-    $(wildcard include/config/WQ_WATCHDOG) \
-  include/linux/timer.h \
-    $(wildcard include/config/DEBUG_OBJECTS_TIMERS) \
-    $(wildcard include/config/NO_HZ_COMMON) \
-  include/linux/ktime.h \
-  include/linux/jiffies.h \
-  include/vdso/jiffies.h \
-  include/generated/timeconst.h \
-  include/vdso/ktime.h \
-  include/linux/timekeeping.h \
-    $(wildcard include/config/GENERIC_CMOS_UPDATE) \
-  include/linux/clocksource_ids.h \
-  include/linux/debugobjects.h \
-    $(wildcard include/config/DEBUG_OBJECTS) \
-    $(wildcard include/config/DEBUG_OBJECTS_FREE) \
-  include/linux/rcu_segcblist.h \
-  include/linux/srcutree.h \
-  include/linux/rcu_node_tree.h \
-    $(wildcard include/config/RCU_FANOUT) \
-    $(wildcard include/config/RCU_FANOUT_LEAF) \
-  include/linux/page-flags-layout.h \
-    $(wildcard include/config/KASAN_HW_TAGS) \
-  include/linux/numa.h \
-    $(wildcard include/config/NODES_SHIFT) \
-    $(wildcard include/config/NUMA_KEEP_MEMINFO) \
-    $(wildcard include/config/HAVE_ARCH_NODE_DEV_GROUP) \
-  arch/x86/include/asm/sparsemem.h \
-  include/generated/bounds.h \
-  include/linux/seqlock.h \
-  include/linux/ww_mutex.h \
-    $(wildcard include/config/DEBUG_RT_MUTEXES) \
-    $(wildcard include/config/DEBUG_WW_MUTEX_SLOWPATH) \
-  include/linux/rtmutex.h \
-  arch/x86/include/asm/mmu.h \
-    $(wildcard include/config/MODIFY_LDT_SYSCALL) \
-  include/linux/kmod.h \
-  include/linux/umh.h \
-  include/linux/gfp.h \
-    $(wildcard include/config/HIGHMEM) \
-    $(wildcard include/config/ZONE_DMA) \
-    $(wildcard include/config/ZONE_DMA32) \
-    $(wildcard include/config/ZONE_DEVICE) \
-    $(wildcard include/config/PM_SLEEP) \
-    $(wildcard include/config/CONTIG_ALLOC) \
-    $(wildcard include/config/CMA) \
-  include/linux/mmdebug.h \
-    $(wildcard include/config/DEBUG_VM) \
-    $(wildcard include/config/DEBUG_VM_PGFLAGS) \
-  include/linux/mmzone.h \
-    $(wildcard include/config/FORCE_MAX_ZONEORDER) \
-    $(wildcard include/config/MEMORY_ISOLATION) \
-    $(wildcard include/config/ZSMALLOC) \
-    $(wildcard include/config/MEMORY_HOTPLUG) \
-    $(wildcard include/config/COMPACTION) \
-    $(wildcard include/config/PAGE_EXTENSION) \
-    $(wildcard include/config/DEFERRED_STRUCT_PAGE_INIT) \
-    $(wildcard include/config/HAVE_MEMORYLESS_NODES) \
-    $(wildcard include/config/SPARSEMEM_EXTREME) \
-    $(wildcard include/config/HAVE_ARCH_PFN_VALID) \
-  include/linux/nodemask.h \
-  include/linux/pageblock-flags.h \
-    $(wildcard include/config/HUGETLB_PAGE_SIZE_VARIABLE) \
-  include/linux/page-flags.h \
-    $(wildcard include/config/ARCH_USES_PG_UNCACHED) \
-    $(wildcard include/config/MEMORY_FAILURE) \
-    $(wildcard include/config/PAGE_IDLE_FLAG) \
-    $(wildcard include/config/HUGETLB_PAGE_FREE_VMEMMAP) \
-    $(wildcard include/config/HUGETLB_PAGE_FREE_VMEMMAP_DEFAULT_ON) \
-    $(wildcard include/config/KSM) \
-  include/linux/local_lock.h \
-  include/linux/local_lock_internal.h \
-  include/linux/memory_hotplug.h \
-    $(wildcard include/config/HAVE_ARCH_NODEDATA_EXTENSION) \
-    $(wildcard include/config/ARCH_HAS_ADD_PAGES) \
-    $(wildcard include/config/MEMORY_HOTREMOVE) \
-  arch/x86/include/asm/mmzone.h \
-  arch/x86/include/asm/mmzone_32.h \
-  include/linux/topology.h \
-    $(wildcard include/config/USE_PERCPU_NUMA_NODE_ID) \
-    $(wildcard include/config/SCHED_SMT) \
-    $(wildcard include/config/SCHED_CLUSTER) \
-  include/linux/arch_topology.h \
-    $(wildcard include/config/ACPI_CPPC_LIB) \
-    $(wildcard include/config/GENERIC_ARCH_TOPOLOGY) \
-  include/linux/percpu.h \
-    $(wildcard include/config/NEED_PER_CPU_EMBED_FIRST_CHUNK) \
-    $(wildcard include/config/NEED_PER_CPU_PAGE_FIRST_CHUNK) \
-  arch/x86/include/asm/topology.h \
-    $(wildcard include/config/SCHED_MC_PRIO) \
-  arch/x86/include/asm/mpspec.h \
-    $(wildcard include/config/EISA) \
-    $(wildcard include/config/X86_MPPARSE) \
-  arch/x86/include/asm/mpspec_def.h \
-  arch/x86/include/asm/x86_init.h \
-  arch/x86/include/asm/apicdef.h \
-  include/asm-generic/topology.h \
-  include/linux/sysctl.h \
-    $(wildcard include/config/SYSCTL) \
-  include/uapi/linux/sysctl.h \
-  include/linux/elf.h \
-    $(wildcard include/config/ARCH_USE_GNU_PROPERTY) \
-    $(wildcard include/config/ARCH_HAVE_ELF_PROT) \
-  arch/x86/include/asm/elf.h \
-    $(wildcard include/config/X86_X32_ABI) \
-  arch/x86/include/asm/user.h \
-  arch/x86/include/asm/user_32.h \
-  arch/x86/include/asm/fsgsbase.h \
-  arch/x86/include/asm/vdso.h \
-  arch/x86/include/asm/desc.h \
-  arch/x86/include/asm/fixmap.h \
-    $(wildcard include/config/DEBUG_KMAP_LOCAL_FORCE_MAP) \
-    $(wildcard include/config/X86_VSYSCALL_EMULATION) \
-    $(wildcard include/config/PROVIDE_OHCI1394_DMA_INIT) \
-    $(wildcard include/config/X86_IO_APIC) \
-    $(wildcard include/config/KMAP_LOCAL) \
-    $(wildcard include/config/PCI_MMCONFIG) \
-    $(wildcard include/config/ACPI_APEI_GHES) \
-    $(wildcard include/config/INTEL_TXT) \
-  arch/x86/include/generated/asm/kmap_size.h \
-  include/asm-generic/kmap_size.h \
-    $(wildcard include/config/DEBUG_KMAP_LOCAL) \
-  include/asm-generic/fixmap.h \
-  arch/x86/include/asm/irq_vectors.h \
-    $(wildcard include/config/HAVE_KVM) \
-    $(wildcard include/config/HYPERV) \
-    $(wildcard include/config/PCI_MSI) \
-  arch/x86/include/asm/cpu_entry_area.h \
-  arch/x86/include/asm/intel_ds.h \
-  arch/x86/include/asm/pgtable_areas.h \
-  arch/x86/include/asm/pgtable_32_areas.h \
-  include/uapi/linux/elf.h \
-  include/uapi/linux/elf-em.h \
-  include/linux/kobject.h \
-    $(wildcard include/config/UEVENT_HELPER) \
-    $(wildcard include/config/DEBUG_KOBJECT_RELEASE) \
-  include/linux/sysfs.h \
-  include/linux/kernfs.h \
-    $(wildcard include/config/KERNFS) \
-  include/linux/idr.h \
-  include/linux/radix-tree.h \
-  include/linux/xarray.h \
-    $(wildcard include/config/XARRAY_MULTI) \
-  include/linux/kconfig.h \
-  include/linux/kobject_ns.h \
-  include/linux/moduleparam.h \
-    $(wildcard include/config/ALPHA) \
-    $(wildcard include/config/IA64) \
-    $(wildcard include/config/PPC64) \
-  include/linux/rbtree_latch.h \
-  include/linux/error-injection.h \
-  include/asm-generic/error-injection.h \
-  include/linux/cfi.h \
-    $(wildcard include/config/CFI_CLANG_SHADOW) \
-  arch/x86/include/asm/module.h \
-    $(wildcard include/config/UNWINDER_ORC) \
-  include/asm-generic/module.h \
-    $(wildcard include/config/HAVE_MOD_ARCH_SPECIFIC) \
-    $(wildcard include/config/MODULES_USE_ELF_REL) \
-    $(wildcard include/config/MODULES_USE_ELF_RELA) \
-  arch/x86/include/asm/orc_types.h \
-  include/linux/i2c.h \
-    $(wildcard include/config/I2C) \
-    $(wildcard include/config/I2C_SLAVE) \
-    $(wildcard include/config/I2C_BOARDINFO) \
-    $(wildcard include/config/I2C_MUX) \
-    $(wildcard include/config/OF) \
-    $(wildcard include/config/ACPI) \
-  include/linux/acpi.h \
-    $(wildcard include/config/ACPI_DEBUGGER) \
-    $(wildcard include/config/ACPI_TABLE_LIB) \
-    $(wildcard include/config/LOONGARCH) \
-    $(wildcard include/config/ARM64) \
-    $(wildcard include/config/ACPI_PROCESSOR_CSTATE) \
-    $(wildcard include/config/ACPI_HOTPLUG_CPU) \
-    $(wildcard include/config/ACPI_HOTPLUG_IOAPIC) \
-    $(wildcard include/config/PCI) \
-    $(wildcard include/config/ACPI_WMI) \
-    $(wildcard include/config/ACPI_NUMA) \
-    $(wildcard include/config/HIBERNATION) \
-    $(wildcard include/config/ACPI_HOTPLUG_MEMORY) \
-    $(wildcard include/config/ACPI_CONTAINER) \
-    $(wildcard include/config/ACPI_GTDT) \
-    $(wildcard include/config/PM) \
-    $(wildcard include/config/GPIOLIB) \
-    $(wildcard include/config/ACPI_TABLE_UPGRADE) \
-    $(wildcard include/config/ACPI_WATCHDOG) \
-    $(wildcard include/config/ACPI_SPCR_TABLE) \
-    $(wildcard include/config/ACPI_GENERIC_GSI) \
-    $(wildcard include/config/ACPI_LPIT) \
-    $(wildcard include/config/ACPI_PPTT) \
-    $(wildcard include/config/ACPI_PCC) \
-  include/linux/ioport.h \
-  include/linux/irqdomain.h \
-    $(wildcard include/config/IRQ_DOMAIN_HIERARCHY) \
-    $(wildcard include/config/GENERIC_IRQ_DEBUGFS) \
-    $(wildcard include/config/IRQ_DOMAIN) \
-    $(wildcard include/config/IRQ_DOMAIN_NOMAP) \
-  include/linux/irqhandler.h \
-  include/linux/of.h \
-    $(wildcard include/config/OF_DYNAMIC) \
-    $(wildcard include/config/SPARC) \
-    $(wildcard include/config/OF_PROMTREE) \
-    $(wildcard include/config/OF_KOBJ) \
-    $(wildcard include/config/OF_NUMA) \
-    $(wildcard include/config/OF_OVERLAY) \
-  include/linux/mod_devicetable.h \
-  include/linux/uuid.h \
-  include/uapi/linux/uuid.h \
-  include/linux/property.h \
-  include/linux/fwnode.h \
-  include/linux/resource_ext.h \
-  include/linux/slab.h \
-    $(wildcard include/config/DEBUG_SLAB) \
-    $(wildcard include/config/FAILSLAB) \
-    $(wildcard include/config/MEMCG_KMEM) \
-    $(wildcard include/config/KASAN) \
-    $(wildcard include/config/SLAB) \
-    $(wildcard include/config/SLUB) \
-    $(wildcard include/config/SLOB) \
-  include/linux/overflow.h \
-  include/linux/percpu-refcount.h \
-  include/linux/kasan.h \
-    $(wildcard include/config/KASAN_STACK) \
-    $(wildcard include/config/KASAN_VMALLOC) \
-    $(wildcard include/config/KASAN_INLINE) \
-  include/linux/kasan-enabled.h \
-  include/linux/device.h \
-    $(wildcard include/config/GENERIC_MSI_IRQ_DOMAIN) \
-    $(wildcard include/config/GENERIC_MSI_IRQ) \
-    $(wildcard include/config/ENERGY_MODEL) \
-    $(wildcard include/config/PINCTRL) \
-    $(wildcard include/config/DMA_OPS) \
-    $(wildcard include/config/DMA_DECLARE_COHERENT) \
-    $(wildcard include/config/DMA_CMA) \
-    $(wildcard include/config/SWIOTLB) \
-    $(wildcard include/config/ARCH_HAS_SYNC_DMA_FOR_DEVICE) \
-    $(wildcard include/config/ARCH_HAS_SYNC_DMA_FOR_CPU) \
-    $(wildcard include/config/ARCH_HAS_SYNC_DMA_FOR_CPU_ALL) \
-    $(wildcard include/config/DMA_OPS_BYPASS) \
-    $(wildcard include/config/DEVTMPFS) \
-    $(wildcard include/config/SYSFS_DEPRECATED) \
-  include/linux/dev_printk.h \
-  include/linux/ratelimit.h \
-  include/linux/sched.h \
-    $(wildcard include/config/VIRT_CPU_ACCOUNTING_NATIVE) \
-    $(wildcard include/config/SCHED_INFO) \
-    $(wildcard include/config/SCHEDSTATS) \
-    $(wildcard include/config/SCHED_CORE) \
-    $(wildcard include/config/FAIR_GROUP_SCHED) \
-    $(wildcard include/config/RT_GROUP_SCHED) \
-    $(wildcard include/config/RT_MUTEXES) \
-    $(wildcard include/config/UCLAMP_TASK) \
-    $(wildcard include/config/UCLAMP_BUCKETS_COUNT) \
-    $(wildcard include/config/CGROUP_SCHED) \
-    $(wildcard include/config/BLK_DEV_IO_TRACE) \
-    $(wildcard include/config/PSI) \
-    $(wildcard include/config/COMPAT_BRK) \
-    $(wildcard include/config/CGROUPS) \
-    $(wildcard include/config/BLK_CGROUP) \
-    $(wildcard include/config/PAGE_OWNER) \
-    $(wildcard include/config/EVENTFD) \
-    $(wildcard include/config/ARCH_HAS_SCALED_CPUTIME) \
-    $(wildcard include/config/VIRT_CPU_ACCOUNTING_GEN) \
-    $(wildcard include/config/POSIX_CPUTIMERS) \
-    $(wildcard include/config/POSIX_CPU_TIMERS_TASK_WORK) \
-    $(wildcard include/config/KEYS) \
-    $(wildcard include/config/SYSVIPC) \
-    $(wildcard include/config/DETECT_HUNG_TASK) \
-    $(wildcard include/config/IO_URING) \
-    $(wildcard include/config/AUDIT) \
-    $(wildcard include/config/AUDITSYSCALL) \
-    $(wildcard include/config/UBSAN) \
-    $(wildcard include/config/UBSAN_TRAP) \
-    $(wildcard include/config/TASK_XACCT) \
-    $(wildcard include/config/CPUSETS) \
-    $(wildcard include/config/X86_CPU_RESCTRL) \
-    $(wildcard include/config/FUTEX) \
-    $(wildcard include/config/PERF_EVENTS) \
-    $(wildcard include/config/RSEQ) \
-    $(wildcard include/config/TASK_DELAY_ACCT) \
-    $(wildcard include/config/FAULT_INJECTION) \
-    $(wildcard include/config/LATENCYTOP) \
-    $(wildcard include/config/KUNIT) \
-    $(wildcard include/config/FUNCTION_GRAPH_TRACER) \
-    $(wildcard include/config/BCACHE) \
-    $(wildcard include/config/VMAP_STACK) \
-    $(wildcard include/config/SECURITY) \
-    $(wildcard include/config/BPF_SYSCALL) \
-    $(wildcard include/config/GCC_PLUGIN_STACKLEAK) \
-    $(wildcard include/config/X86_MCE) \
-    $(wildcard include/config/KRETPROBES) \
-    $(wildcard include/config/RETHOOK) \
-    $(wildcard include/config/ARCH_HAS_PARANOID_L1D_FLUSH) \
-    $(wildcard include/config/ARCH_TASK_STRUCT_ON_STACK) \
-    $(wildcard include/config/DEBUG_RSEQ) \
-  include/uapi/linux/sched.h \
-  include/linux/pid.h \
-  include/linux/rculist.h \
-    $(wildcard include/config/PROVE_RCU_LIST) \
-  include/linux/sem.h \
-  include/uapi/linux/sem.h \
-  include/linux/ipc.h \
-  include/linux/rhashtable-types.h \
-  include/uapi/linux/ipc.h \
-  arch/x86/include/generated/uapi/asm/ipcbuf.h \
-  include/uapi/asm-generic/ipcbuf.h \
-  arch/x86/include/uapi/asm/sembuf.h \
-  include/linux/shm.h \
-  include/uapi/linux/shm.h \
-  include/uapi/asm-generic/hugetlb_encode.h \
-  arch/x86/include/uapi/asm/shmbuf.h \
-  include/uapi/asm-generic/shmbuf.h \
-  arch/x86/include/asm/shmparam.h \
-  include/linux/plist.h \
-    $(wildcard include/config/DEBUG_PLIST) \
-  include/linux/hrtimer.h \
-    $(wildcard include/config/HIGH_RES_TIMERS) \
-    $(wildcard include/config/TIME_LOW_RES) \
-    $(wildcard include/config/TIMERFD) \
-  include/linux/hrtimer_defs.h \
-  include/linux/timerqueue.h \
-  include/linux/seccomp.h \
-    $(wildcard include/config/SECCOMP) \
-    $(wildcard include/config/HAVE_ARCH_SECCOMP_FILTER) \
-    $(wildcard include/config/SECCOMP_FILTER) \
-    $(wildcard include/config/CHECKPOINT_RESTORE) \
-    $(wildcard include/config/SECCOMP_CACHE_DEBUG) \
-  include/uapi/linux/seccomp.h \
-  arch/x86/include/asm/seccomp.h \
-  arch/x86/include/asm/unistd.h \
-  arch/x86/include/uapi/asm/unistd.h \
-  arch/x86/include/generated/uapi/asm/unistd_32.h \
-  include/asm-generic/seccomp.h \
-  include/uapi/linux/unistd.h \
-  include/linux/resource.h \
-  include/uapi/linux/resource.h \
-  arch/x86/include/generated/uapi/asm/resource.h \
-  include/asm-generic/resource.h \
-  include/uapi/asm-generic/resource.h \
-  include/linux/latencytop.h \
-  include/linux/sched/prio.h \
-  include/linux/sched/types.h \
-  include/linux/signal_types.h \
-    $(wildcard include/config/OLD_SIGACTION) \
-  include/uapi/linux/signal.h \
-  arch/x86/include/asm/signal.h \
-  arch/x86/include/uapi/asm/signal.h \
-  include/uapi/asm-generic/signal-defs.h \
-  arch/x86/include/uapi/asm/siginfo.h \
-  include/uapi/asm-generic/siginfo.h \
-  include/linux/syscall_user_dispatch.h \
-  include/linux/task_io_accounting.h \
-    $(wildcard include/config/TASK_IO_ACCOUNTING) \
-  include/linux/posix-timers.h \
-  include/linux/alarmtimer.h \
-    $(wildcard include/config/RTC_CLASS) \
-  include/uapi/linux/rseq.h \
-  include/linux/kcsan.h \
-  include/linux/energy_model.h \
-  include/linux/sched/cpufreq.h \
-    $(wildcard include/config/CPU_FREQ) \
-  include/linux/sched/topology.h \
-    $(wildcard include/config/SCHED_DEBUG) \
-    $(wildcard include/config/SCHED_MC) \
-    $(wildcard include/config/CPU_FREQ_GOV_SCHEDUTIL) \
-  include/linux/sched/idle.h \
-  include/linux/sched/sd_flags.h \
-  include/linux/klist.h \
-  include/linux/pm.h \
-    $(wildcard include/config/VT_CONSOLE_SLEEP) \
-    $(wildcard include/config/PM_CLK) \
-    $(wildcard include/config/PM_GENERIC_DOMAINS) \
-  include/linux/device/bus.h \
-  include/linux/device/class.h \
-  include/linux/device/driver.h \
-  arch/x86/include/asm/device.h \
-  include/linux/pm_wakeup.h \
-  include/acpi/acpi.h \
-  include/acpi/platform/acenv.h \
-  include/acpi/platform/acgcc.h \
-  include/acpi/platform/aclinux.h \
-    $(wildcard include/config/ACPI_REDUCED_HARDWARE_ONLY) \
-    $(wildcard include/config/ACPI_DEBUG) \
-  include/linux/ctype.h \
-  arch/x86/include/asm/acenv.h \
-  include/acpi/acnames.h \
-  include/acpi/actypes.h \
-  include/acpi/acexcep.h \
-  include/acpi/actbl.h \
-  include/acpi/actbl1.h \
-  include/acpi/actbl2.h \
-  include/acpi/actbl3.h \
-  include/acpi/acrestyp.h \
-  include/acpi/platform/acenvex.h \
-  include/acpi/platform/aclinuxex.h \
-  include/acpi/platform/acgccex.h \
-  include/acpi/acoutput.h \
-  include/acpi/acpiosxf.h \
-  include/acpi/acpixf.h \
-  include/acpi/acconfig.h \
-  include/acpi/acbuffer.h \
-  include/linux/dynamic_debug.h \
-  include/acpi/acpi_bus.h \
-    $(wildcard include/config/X86_ANDROID_TABLETS) \
-    $(wildcard include/config/ACPI_SYSTEM_POWER_STATES_SUPPORT) \
-    $(wildcard include/config/ACPI_SLEEP) \
-  include/acpi/acpi_drivers.h \
-    $(wildcard include/config/ACPI_DOCK) \
-  include/acpi/acpi_numa.h \
-    $(wildcard include/config/ACPI_HMAT) \
-  include/acpi/acpi_io.h \
-  include/linux/io.h \
-    $(wildcard include/config/HAS_IOPORT_MAP) \
-  arch/x86/include/asm/io.h \
-    $(wildcard include/config/MTRR) \
-    $(wildcard include/config/X86_PAT) \
-  arch/x86/include/generated/asm/early_ioremap.h \
-  include/asm-generic/early_ioremap.h \
-    $(wildcard include/config/GENERIC_EARLY_IOREMAP) \
-  include/asm-generic/iomap.h \
-  include/asm-generic/pci_iomap.h \
-    $(wildcard include/config/NO_GENERIC_PCI_IOPORT_MAP) \
-    $(wildcard include/config/GENERIC_PCI_IOMAP) \
-  include/asm-generic/io.h \
-    $(wildcard include/config/GENERIC_IOMAP) \
-    $(wildcard include/config/GENERIC_IOREMAP) \
-    $(wildcard include/config/VIRT_TO_BUS) \
-    $(wildcard include/config/GENERIC_DEVMEM_IS_ALLOWED) \
-  include/linux/logic_pio.h \
-    $(wildcard include/config/INDIRECT_PIO) \
-  include/linux/vmalloc.h \
-    $(wildcard include/config/HAVE_ARCH_HUGE_VMALLOC) \
-  arch/x86/include/asm/vmalloc.h \
-    $(wildcard include/config/HAVE_ARCH_HUGE_VMAP) \
-  arch/x86/include/asm/acpi.h \
-    $(wildcard include/config/ACPI_APEI) \
-  include/acpi/pdc_intel.h \
-  arch/x86/include/asm/numa.h \
-    $(wildcard include/config/NUMA_EMU) \
-  arch/x86/include/asm/numa_32.h \
-  include/linux/regulator/consumer.h \
-    $(wildcard include/config/REGULATOR) \
-  include/linux/suspend.h \
-    $(wildcard include/config/VT) \
-    $(wildcard include/config/SUSPEND) \
-    $(wildcard include/config/HIBERNATION_SNAPSHOT_DEV) \
-    $(wildcard include/config/PM_SLEEP_DEBUG) \
-    $(wildcard include/config/PM_AUTOSLEEP) \
-  include/linux/swap.h \
-    $(wildcard include/config/DEVICE_PRIVATE) \
-    $(wildcard include/config/MIGRATION) \
-    $(wildcard include/config/FRONTSWAP) \
-    $(wildcard include/config/THP_SWAP) \
-    $(wildcard include/config/MEMCG_SWAP) \
-  include/linux/memcontrol.h \
-    $(wildcard include/config/CGROUP_WRITEBACK) \
-  include/linux/cgroup.h \
-    $(wildcard include/config/CGROUP_CPUACCT) \
-    $(wildcard include/config/SOCK_CGROUP_DATA) \
-    $(wildcard include/config/CGROUP_DATA) \
-    $(wildcard include/config/CGROUP_BPF) \
-  include/uapi/linux/cgroupstats.h \
-  include/uapi/linux/taskstats.h \
-  include/linux/fs.h \
-    $(wildcard include/config/READ_ONLY_THP_FOR_FS) \
-    $(wildcard include/config/FS_POSIX_ACL) \
-    $(wildcard include/config/IMA) \
-    $(wildcard include/config/FILE_LOCKING) \
-    $(wildcard include/config/FSNOTIFY) \
-    $(wildcard include/config/FS_ENCRYPTION) \
-    $(wildcard include/config/FS_VERITY) \
-    $(wildcard include/config/EPOLL) \
-    $(wildcard include/config/UNICODE) \
-    $(wildcard include/config/QUOTA) \
-    $(wildcard include/config/FS_DAX) \
-    $(wildcard include/config/BLOCK) \
-  include/linux/wait_bit.h \
-  include/linux/kdev_t.h \
-  include/uapi/linux/kdev_t.h \
-  include/linux/dcache.h \
-  include/linux/rculist_bl.h \
-  include/linux/list_bl.h \
-  include/linux/bit_spinlock.h \
-  include/linux/lockref.h \
-    $(wildcard include/config/ARCH_USE_CMPXCHG_LOCKREF) \
-  include/linux/stringhash.h \
-    $(wildcard include/config/DCACHE_WORD_ACCESS) \
-  include/linux/hash.h \
-    $(wildcard include/config/HAVE_ARCH_HASH) \
-  include/linux/path.h \
-  include/linux/list_lru.h \
-  include/linux/shrinker.h \
-  include/linux/capability.h \
-  include/uapi/linux/capability.h \
-  include/linux/semaphore.h \
-  include/linux/fcntl.h \
-    $(wildcard include/config/ARCH_32BIT_OFF_T) \
-  include/uapi/linux/fcntl.h \
-  arch/x86/include/generated/uapi/asm/fcntl.h \
-  include/uapi/asm-generic/fcntl.h \
-  include/uapi/linux/openat2.h \
-  include/linux/migrate_mode.h \
-  include/linux/percpu-rwsem.h \
-  include/linux/rcuwait.h \
-  include/linux/sched/signal.h \
-    $(wildcard include/config/SCHED_AUTOGROUP) \
-    $(wildcard include/config/BSD_PROCESS_ACCT) \
-    $(wildcard include/config/TASKSTATS) \
-    $(wildcard include/config/STACK_GROWSUP) \
-  include/linux/signal.h \
-    $(wildcard include/config/DYNAMIC_SIGFRAME) \
-  include/linux/sched/jobctl.h \
-  include/linux/sched/task.h \
-    $(wildcard include/config/HAVE_EXIT_THREAD) \
-    $(wildcard include/config/ARCH_WANTS_DYNAMIC_TASK_STRUCT) \
-    $(wildcard include/config/HAVE_ARCH_THREAD_STRUCT_WHITELIST) \
-  include/linux/uaccess.h \
-  include/linux/fault-inject-usercopy.h \
-    $(wildcard include/config/FAULT_INJECTION_USERCOPY) \
-  arch/x86/include/asm/uaccess.h \
-    $(wildcard include/config/CC_HAS_ASM_GOTO_OUTPUT) \
-    $(wildcard include/config/CC_HAS_ASM_GOTO_TIED_OUTPUT) \
-    $(wildcard include/config/ARCH_HAS_COPY_MC) \
-    $(wildcard include/config/X86_INTEL_USERCOPY) \
-  arch/x86/include/asm/smap.h \
-  arch/x86/include/asm/extable.h \
-    $(wildcard include/config/BPF_JIT) \
-  include/asm-generic/access_ok.h \
-    $(wildcard include/config/ALTERNATE_USER_ADDRESS_SPACE) \
-  arch/x86/include/asm/uaccess_32.h \
-  include/linux/cred.h \
-    $(wildcard include/config/DEBUG_CREDENTIALS) \
-  include/linux/key.h \
-    $(wildcard include/config/KEY_NOTIFICATIONS) \
-    $(wildcard include/config/NET) \
-  include/linux/assoc_array.h \
-    $(wildcard include/config/ASSOCIATIVE_ARRAY) \
-  include/linux/sched/user.h \
-    $(wildcard include/config/WATCH_QUEUE) \
-  include/linux/percpu_counter.h \
-  include/linux/rcu_sync.h \
-  include/linux/delayed_call.h \
-  include/linux/errseq.h \
-  include/linux/ioprio.h \
-  include/linux/sched/rt.h \
-  include/linux/iocontext.h \
-    $(wildcard include/config/BLK_ICQ) \
-  include/uapi/linux/ioprio.h \
-  include/linux/fs_types.h \
-  include/linux/mount.h \
-  include/linux/mnt_idmapping.h \
-  include/uapi/linux/fs.h \
-  include/linux/quota.h \
-    $(wildcard include/config/QUOTA_NETLINK_INTERFACE) \
-  include/uapi/linux/dqblk_xfs.h \
-  include/linux/dqblk_v1.h \
-  include/linux/dqblk_v2.h \
-  include/linux/dqblk_qtree.h \
-  include/linux/projid.h \
-  include/uapi/linux/quota.h \
-  include/linux/nfs_fs_i.h \
-  include/linux/seq_file.h \
-  include/linux/string_helpers.h \
-  include/linux/ns_common.h \
-  include/linux/nsproxy.h \
-  include/linux/user_namespace.h \
-    $(wildcard include/config/INOTIFY_USER) \
-    $(wildcard include/config/FANOTIFY) \
-    $(wildcard include/config/PERSISTENT_KEYRINGS) \
-  include/linux/kernel_stat.h \
-  include/linux/interrupt.h \
-    $(wildcard include/config/IRQ_FORCED_THREADING) \
-    $(wildcard include/config/GENERIC_IRQ_PROBE) \
-    $(wildcard include/config/IRQ_TIMINGS) \
-  include/linux/irqreturn.h \
-  include/linux/irqnr.h \
-  include/uapi/linux/irqnr.h \
-  include/linux/hardirq.h \
-  include/linux/context_tracking_state.h \
-    $(wildcard include/config/CONTEXT_TRACKING) \
-  include/linux/ftrace_irq.h \
-    $(wildcard include/config/HWLAT_TRACER) \
-    $(wildcard include/config/OSNOISE_TRACER) \
-  include/linux/vtime.h \
-    $(wildcard include/config/VIRT_CPU_ACCOUNTING) \
-    $(wildcard include/config/IRQ_TIME_ACCOUNTING) \
-  arch/x86/include/asm/hardirq.h \
-    $(wildcard include/config/KVM_INTEL) \
-    $(wildcard include/config/X86_THERMAL_VECTOR) \
-    $(wildcard include/config/X86_MCE_THRESHOLD) \
-    $(wildcard include/config/X86_MCE_AMD) \
-    $(wildcard include/config/X86_HV_CALLBACK_VECTOR) \
-  arch/x86/include/asm/irq.h \
-  arch/x86/include/asm/sections.h \
-  include/asm-generic/sections.h \
-    $(wildcard include/config/HAVE_FUNCTION_DESCRIPTORS) \
-  include/linux/cgroup-defs.h \
-    $(wildcard include/config/CGROUP_NET_CLASSID) \
-    $(wildcard include/config/CGROUP_NET_PRIO) \
-  include/linux/u64_stats_sync.h \
-  include/linux/bpf-cgroup-defs.h \
-  include/linux/psi_types.h \
-  include/linux/kthread.h \
-  include/linux/cgroup_subsys.h \
-    $(wildcard include/config/CGROUP_DEVICE) \
-    $(wildcard include/config/CGROUP_FREEZER) \
-    $(wildcard include/config/CGROUP_PERF) \
-    $(wildcard include/config/CGROUP_HUGETLB) \
-    $(wildcard include/config/CGROUP_PIDS) \
-    $(wildcard include/config/CGROUP_RDMA) \
-    $(wildcard include/config/CGROUP_MISC) \
-    $(wildcard include/config/CGROUP_DEBUG) \
-  include/linux/vm_event_item.h \
-    $(wildcard include/config/HAVE_ARCH_TRANSPARENT_HUGEPAGE_PUD) \
-    $(wildcard include/config/MEMORY_BALLOON) \
-    $(wildcard include/config/BALLOON_COMPACTION) \
-    $(wildcard include/config/DEBUG_TLBFLUSH) \
-    $(wildcard include/config/DEBUG_VM_VMACACHE) \
-  include/linux/page_counter.h \
-  include/linux/vmpressure.h \
-  include/linux/eventfd.h \
-  include/linux/mm.h \
-    $(wildcard include/config/HAVE_ARCH_MMAP_RND_BITS) \
-    $(wildcard include/config/HAVE_ARCH_MMAP_RND_COMPAT_BITS) \
-    $(wildcard include/config/ARCH_USES_HIGH_VMA_FLAGS) \
-    $(wildcard include/config/ARCH_HAS_PKEYS) \
-    $(wildcard include/config/PPC) \
-    $(wildcard include/config/PARISC) \
-    $(wildcard include/config/SPARC64) \
-    $(wildcard include/config/ARM64_MTE) \
-    $(wildcard include/config/HAVE_ARCH_USERFAULTFD_MINOR) \
-    $(wildcard include/config/SHMEM) \
-    $(wildcard include/config/ARCH_HAS_PTE_SPECIAL) \
-    $(wildcard include/config/ARCH_HAS_PTE_DEVMAP) \
-    $(wildcard include/config/DEBUG_VM_RB) \
-    $(wildcard include/config/PAGE_POISONING) \
-    $(wildcard include/config/INIT_ON_ALLOC_DEFAULT_ON) \
-    $(wildcard include/config/INIT_ON_FREE_DEFAULT_ON) \
-    $(wildcard include/config/DEBUG_PAGEALLOC) \
-    $(wildcard include/config/HUGETLBFS) \
-    $(wildcard include/config/MAPPING_DIRTY_HELPERS) \
-    $(wildcard include/config/ANON_VMA_NAME) \
-  include/linux/mmap_lock.h \
-  include/linux/page_ext.h \
-  include/linux/stacktrace.h \
-    $(wildcard include/config/ARCH_STACKWALK) \
-    $(wildcard include/config/STACKTRACE) \
-    $(wildcard include/config/HAVE_RELIABLE_STACKTRACE) \
-  include/linux/stackdepot.h \
-    $(wildcard include/config/STACKDEPOT_ALWAYS_INIT) \
-  include/linux/page_ref.h \
-    $(wildcard include/config/DEBUG_PAGE_REF) \
-  include/linux/sizes.h \
-  include/linux/pgtable.h \
-    $(wildcard include/config/HIGHPTE) \
-    $(wildcard include/config/GUP_GET_PTE_LOW_HIGH) \
-    $(wildcard include/config/HAVE_ARCH_SOFT_DIRTY) \
-    $(wildcard include/config/ARCH_ENABLE_THP_MIGRATION) \
-    $(wildcard include/config/X86_ESPFIX64) \
-  arch/x86/include/asm/pgtable.h \
-    $(wildcard include/config/DEBUG_WX) \
-    $(wildcard include/config/PAGE_TABLE_CHECK) \
-  arch/x86/include/asm/pkru.h \
-  arch/x86/include/asm/fpu/api.h \
-    $(wildcard include/config/X86_DEBUG_FPU) \
-  arch/x86/include/asm/coco.h \
-  include/asm-generic/pgtable_uffd.h \
-  include/linux/page_table_check.h \
-  arch/x86/include/asm/pgtable_32.h \
-  arch/x86/include/asm/pgtable-3level.h \
-  arch/x86/include/asm/pgtable-invert.h \
-  include/linux/huge_mm.h \
-  include/linux/sched/coredump.h \
-    $(wildcard include/config/CORE_DUMP_DEFAULT_ELF_HEADERS) \
-  include/linux/vmstat.h \
-    $(wildcard include/config/VM_EVENT_COUNTERS) \
-  include/linux/writeback.h \
-  include/linux/flex_proportions.h \
-  include/linux/backing-dev-defs.h \
-    $(wildcard include/config/DEBUG_FS) \
-  include/linux/blk_types.h \
-    $(wildcard include/config/FAIL_MAKE_REQUEST) \
-    $(wildcard include/config/BLK_CGROUP_IOCOST) \
-    $(wildcard include/config/BLK_INLINE_ENCRYPTION) \
-    $(wildcard include/config/BLK_DEV_INTEGRITY) \
-  include/linux/bvec.h \
-  include/linux/highmem.h \
-  include/linux/cacheflush.h \
-  arch/x86/include/asm/cacheflush.h \
-  include/asm-generic/cacheflush.h \
-  include/linux/highmem-internal.h \
-  arch/x86/include/asm/highmem.h \
-  arch/x86/include/asm/tlbflush.h \
-  arch/x86/include/asm/invpcid.h \
-  arch/x86/include/asm/pti.h \
-  include/linux/bio.h \
-  include/linux/mempool.h \
-  include/linux/uio.h \
-    $(wildcard include/config/ARCH_HAS_UACCESS_FLUSHCACHE) \
-  include/uapi/linux/uio.h \
-  include/linux/node.h \
-    $(wildcard include/config/HMEM_REPORTING) \
-  include/linux/pagemap.h \
-  include/linux/hugetlb_inline.h \
-  include/uapi/linux/mempolicy.h \
-  include/linux/freezer.h \
-  include/uapi/linux/i2c.h \
-  include/linux/videodev2.h \
-  include/uapi/linux/videodev2.h \
-    $(wildcard include/config/VIDEO_ADV_DEBUG) \
-  include/uapi/linux/v4l2-common.h \
-  include/uapi/linux/v4l2-controls.h \
-  include/media/v4l2-device.h \
-    $(wildcard include/config/VIDEO_V4L2_SUBDEV_API) \
-  include/media/media-device.h \
-    $(wildcard include/config/MEDIA_CONTROLLER) \
-  include/media/media-devnode.h \
-  include/linux/poll.h \
-  include/uapi/linux/poll.h \
-  arch/x86/include/generated/uapi/asm/poll.h \
-  include/uapi/asm-generic/poll.h \
-  include/uapi/linux/eventpoll.h \
-  include/linux/cdev.h \
-  include/media/media-entity.h \
-  include/uapi/linux/media.h \
-  include/media/v4l2-subdev.h \
-  include/uapi/linux/v4l2-subdev.h \
-  include/uapi/linux/v4l2-mediabus.h \
-  include/uapi/linux/media-bus-format.h \
-  include/media/v4l2-async.h \
-  include/media/v4l2-common.h \
-    $(wildcard include/config/VIDEO_V4L2_I2C) \
-    $(wildcard include/config/SPI) \
-  include/media/v4l2-dev.h \
-  include/linux/spi/spi.h \
-    $(wildcard include/config/SPI_SLAVE) \
-  include/linux/scatterlist.h \
-    $(wildcard include/config/NEED_SG_DMA_LENGTH) \
-    $(wildcard include/config/DEBUG_SG) \
-    $(wildcard include/config/SGL_ALLOC) \
-    $(wildcard include/config/ARCH_NO_SG_CHAIN) \
-    $(wildcard include/config/SG_POOL) \
-  include/linux/gpio/consumer.h \
-    $(wildcard include/config/OF_GPIO) \
-    $(wildcard include/config/GPIO_SYSFS) \
-  include/uapi/linux/spi/spi.h \
-  include/media/v4l2-fh.h \
-  include/media/v4l2-mediabus.h \
-  include/media/v4l2-ctrls.h \
-  include/media/media-request.h \
-  include/media/hevc-ctrls.h \
+#define L4_KWQE_OPCODE_VALUE_CONNECT1               (50)
+#define L4_KWQE_OPCODE_VALUE_CONNECT2               (51)
+#define L4_KWQE_OPCODE_VALUE_CONNECT3               (52)
+#define L4_KWQE_OPCODE_VALUE_RESET                  (53)
+#define L4_KWQE_OPCODE_VALUE_CLOSE                  (54)
+#define L4_KWQE_OPCODE_VALUE_UPDATE_SECRET          (60)
+#define L4_KWQE_OPCODE_VALUE_INIT_ULP               (61)
 
-drivers/media/i2c/tw9906.o: $(deps_drivers/media/i2c/tw9906.o)
+#define L4_KWQE_OPCODE_VALUE_OFFLOAD_PG             (1)
+#define L4_KWQE_OPCODE_VALUE_UPDATE_PG              (9)
+#define L4_KWQE_OPCODE_VALUE_UPLOAD_PG              (14)
 
-$(deps_drivers/media/i2c/tw9906.o):
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               ELF                       "      4     (               Ë¸ˇˇˇSãÄî   ã@\ãòÿ   ãà‘   1¿âZ[â
-√ç¥&    çt& êË¸ˇˇˇãÄî   É9ã@\uMÉywG«A    «A    ˜Ä‘    ∞  t«AÄ  1¿«A‡  √çt& «A   1¿«A@  √ç¥&    ∏Íˇˇˇ√ç¥&    çv Ë¸ˇˇˇãÖ“uãAÖ¿u«A   1¿√çt& ∏Íˇˇˇ√ç¥&    çv Ë¸ˇˇˇ«ˇ∞  1¿«B    √ç¥&    çt& Ë¸ˇˇˇSãX\ãÉ»   Ö¿tË¸ˇˇˇãÉ¿   Ë¸ˇˇˇâÿË¸ˇˇˇ1¿[√fêË¸ˇˇˇUWVSã®¿   â√ã∏î   ÖÌt&âËË¸ˇˇˇâ∆Ö¿t[â^_]√êâËË¸ˇˇˇâ∆Ö¿ÖØ   ãÉ»   Ö¿t1“Ë¸ˇˇˇπ   ∫Ë  ∏Ù  Ë¸ˇˇˇÉ«π   ∫    â¯Ë¸ˇˇˇâÉÃ   = ˇˇá¸ˇˇˇ1ˆÖ¿tó∫   Ë¸ˇˇˇ∏Ù  π   ∫Ë  Ë¸ˇˇˇãÉÃ   Ö¿t!1“Ë¸ˇˇˇ∏Ù  π   ∫Ë  Ë¸ˇˇˇãÉÃ   Ë¸ˇˇˇ1ˆ[â^_]√ç¥&    êâËË¸ˇˇˇÈ,ˇˇˇçt& Ë¸ˇˇˇVSãÄî   ãX\Ö“tâÿ[^È„˛ˇˇçv ã≥¿   âË¸ˇˇˇâË¸ˇˇˇãÉ»   Ö¿t∫   Ë¸ˇˇˇπ   ∫Ë  ∏Ù  Ë¸ˇˇˇ1¿[^√ç¥&    ç¥&    êË¸ˇˇˇUWVâ∆Sç~ÉÏãnXã@ÖÌÑg   ãPãRË¸ˇˇˇ%   =   ÖP   π¿  ∫‡   â¯Ë¸ˇˇˇâ√Ö¿Ñ˚   â®ƒ   π@   âÚË¸ˇˇˇ∫   â¯Ë¸ˇˇˇâÉ¿   É¯˛ÑÜ   = ˇˇáÂ   π   ∫<   â¯Ë¸ˇˇˇâÉ»   = ˇˇá  ãn\ãÖƒ   ã ÉËÉ‡˜Ö˝   ãÖî   ã@\Ëº˝ˇˇâ¬Ö¿xF1“âË¸ˇˇˇâ¬â∆¡˙ÉÊÉ‚âµ‹   É˙ÖÜ   È~   çt& «É¿       Èvˇˇˇç¥&    fêãÉ»   Ö¿tâ$Ë¸ˇˇˇã$ãÉ¿   â$Ë¸ˇˇˇã$Éƒâ–[^_]√∫ÙˇˇˇÎÔç¥&    fêË¸ˇˇˇUWVSÉÏãêî   ãiãr\ÖÌÖ¿   ãæ–   â»Öˇt4∑WâPãñ–   ∑R«@   «@   âP«@	   1¿Éƒ[^_]√êãñ‘   ˆ∆∞ÖÅ   Ñ“tmΩ‡   ø@  ç_HâD$çOâ4$âÿÎ3fê∑QªÄ  æ‡  )”â⁄˜⁄H”∑Y)ﬁâÛ˜€Hﬁ⁄9Ísâ’âœÉ¡9»uÀã4$ãD$âæ–   ÖˇÖRˇˇˇç∂    ∏ÍˇˇˇÈmˇˇˇç∂    ø†  ÎÜç¥&    fêË¸ˇˇˇWVSãòî   ãC\˜¬ˇ∞  Ñ√   âê‘   ÄÊ˘∫U   âàÿ   âÿusË¸ˇˇˇÖ¿àì   %Ô   ∫U   ø   æ   â¡âÿË¸ˇˇˇÖ¿urâÒ∫   âÿ¡ÈÉ·É…Ë¸ˇˇˇÖ¿uWâ˘∫   âÿË¸ˇˇˇÖ¿uEâ∫	   ∂»âÿ[^_È¸ˇˇˇçt& Ë¸ˇˇˇÖ¿x$%Ô   ∫U   ø   æ   É»â¡âÿË¸ˇˇˇÖ¿té[^_√ç¥&    ∏ÍˇˇˇÎÓç¥&    fêË¸ˇˇˇWVSã∞î   â”ãF\Ö“Ö≈   ãÄ‹   ø   Ö¿Öö   ∫   âË¸ˇˇˇÖ¿à~   %¯   ∫   	¯â¡âË¸ˇˇˇÖ¿xeÉ˚∫   âˇÉÁÉ˚€É„@Ë¸ˇˇˇÖ¿xE%Ò   ∫   	¯â¡âË¸ˇˇˇÖ¿x,∫   âË¸ˇˇˇÖ¿x∂€%ø   ∫   	ÿ[â¡â^_È¸ˇˇˇê[^_√çt& É¯Ö¿  ø   ÈSˇˇˇçt& êãà–   Ö…Ñ⁄  1ˇÈ9ˇˇˇç¥&    çt& Ë¸ˇˇˇUWVSâÀÉÏãàî   âD$ãCâT$ãQ\Ö¿Öû  ãCÖ¿Ñ  É¯	ÖÚ  ãCãK«C   «C   â$ãÇ‘   ˆƒ∞Ö¸   Ñ¿Ñ\  æ@  ∏   ∫@  çzHâ\$1ÌâÀâ|$øˇˇˇˇÎç¥&    ∑B∑rã$)¡â»˜ÿH¡∑Œâﬁ)ŒâÒ˜ŸHŒ»9¯sâ’â«É¬9T$uÀã\$ÖÌÑÔ   ∑EÉ;âC∑uâsÑà   ã|$1ˆãâãCâBãCâBãCâBãCâBãCâBãC âBãC$âBãC(âB ãC,âB$ãC0âB(ãC4âB,Éƒâ[^_]√ç¥&    çv «C	   È‚˛ˇˇçt& æ‡  ∏Ä  ∫†  Èˇˇˇçt& ãSÖ“t	É˙	ÖÁ  ã|$ãøî   â|$ã\ãó‘   â|$ˆ∆∞u*Ñ“ÑÆ  «D$@  ∫   π@  Î çt& æÍˇˇˇÈjˇˇˇ«D$†  ∫Ä  π‡  â˜â\$)œâ˘˜ŸHœâ«)◊â˙˜⁄H◊ã|$ç,çOÉ«Hâ<$Î-∑Qâ√â˜)”â⁄˜⁄H”∑Y)ﬂâ˚˜€Hﬂ⁄9ÍsâL$â’É¡9$uŒã|$ãD$ã\$âá–   Ö¿Ñ¶  ã|$∫   â¯Ë¸ˇˇˇÖ¿xÉ‡∫   Äâ¡â¯Ë¸ˇˇˇπ   ∫à  ∏Ë  Ë¸ˇˇˇãD$ãl$∫   ãÄƒ   ã8âËË¸ˇˇˇâ∆Ö¿àS  1¿Éˇ∫   î¿ÅÊø   ¡‡âÒ	¡âËË¸ˇˇˇâ∆Ö¿à(  ãD$∫   ãÄƒ   ãxçGˇÉ¯∏    G¯âËË¸ˇˇˇâ∆Ö¿à˜   ÉÊ¯∫   âËâÒ	˘∂…Ë¸ˇˇˇâ∆Ö¿à◊   ãD$∫   ã∏–   ∑O
-∂G	¡˘É‡É·	¡âË∂…Ë¸ˇˇˇâ∆Ö¿à°   ∂O∫   âËË¸ˇˇˇâ∆Ö¿àá   ∂O
-∫   âËË¸ˇˇˇâ∆Ö¿xqπL   ∫k   âËã}\Ë¸ˇˇˇâ∆Ö¿xWπ`   ∫l   âËË¸ˇˇˇâ∆Ö¿x@Éø‹   Ñô   ãD$ãÄ–   ∑P∑@ÖˆÖE˝ˇˇâSâCÈ:˝ˇˇæÍˇˇˇç¥&    fêã|$∫   â¯Ë¸ˇˇˇÖ¿xÉ‡∫   Äâ¡â¯Ë¸ˇˇˇ∏Ë  π   ∫à  Ë¸ˇˇˇãD$«Ä–       Èﬁ¸ˇˇ«á–       æÍˇˇˇÎ°È˝ˇˇã|$∫N   â¯Ë¸ˇˇˇâ∆Ö¿xÑÅÊà   ∫N   â¯âÒË¸ˇˇˇâ∆Ö¿â3ˇˇˇÈaˇˇˇ                     ê                     ˘                                                                                                       0   †   –            ê      ‡  ‡      rstb Unable to get GPIO "rstb" xti Unable to get xti clock
- pdn Unable to get GPIO "pdn" bus width error
- Product ID error %x:%x
- tw9910 Product ID %0x:%0x
- un-supported revision
- norm select error
- Field type %d invalid
- drivers/media/i2c/tw9910.c tw9910 PAL SQ PAL CCIR601 PAL SQ (CIF) PAL CCIR601 (CIF) PAL SQ (QCIF) PAL CCIR601 (QCIF) NTSC SQ NTSC CCIR601 NTSC SQ (CIF) NTSC CCIR601 (CIF) NTSC SQ (QCIF) NTSC CCIR601 (QCIF) h   WË¸ˇˇˇã≥¿   âË¸ˇˇˇâË¸ˇˇˇãÉ»   ZYÖ¿t∫   Ë¸ˇˇˇπ   ∫Ë  ∏Ù  Ë¸ˇˇˇã≥Ã   ÈD  h    WË¸ˇˇˇXZ∫˚ˇˇˇÈ“  h    WË¸ˇˇˇ∫ÍˇˇˇY[È“  ®Ñ∞   VRhj   WË¸ˇˇˇãÖî   ãp\ãæ¿   â¯Ë¸ˇˇˇâ¯Ë¸ˇˇˇãÜ»   ÉƒÖ¿to∫   Ë¸ˇˇˇ∫Ë  π   ∏Ù  Ë¸ˇˇˇ∫ÌˇˇˇÈ¨  h#   WË¸ˇˇˇãì¿   _]È“  hY   WË¸ˇˇˇXZ∫ÌˇˇˇÈ¨  h@   WË¸ˇˇˇãì»   Y^È¡  ∫ÌˇˇˇÈ¨  VjhÇ   WË¸ˇˇˇãÖî   «Ö‘    ∞  «Öÿ       «Ö–   †  ãp\ãæ¿   â¯Ë¸ˇˇˇâ¯Ë¸ˇˇˇãÜ»   ÉƒÖ¿t∫   Ë¸ˇˇˇπ   ∫Ë  ∏Ù  Ë¸ˇˇˇâÿË¸ˇˇˇâ¬Ö¿Ñ“  È¨  É∆hù   VË¸ˇˇˇ∏Íˇˇˇ[^Èú  É∆h¥   VË¸ˇˇˇXÉ»ˇZÈú  É¡PæÍˇˇˇh«   QË¸ˇˇˇÉƒÈ    TW9910: missing platform data!
- I2C-Adapter doesn't support I2C_FUNC_SMBUS_BYTE_DATA
- O  ﬁ   	Ë¸ˇˇˇ∫    ∏    È¸ˇˇˇ∏    È¸ˇˇˇlicense=GPL v2 author=Kuninori Morimoto description=V4L2 driver for TW9910 video decoder                    tw9910                                                                     †               `       †             ‡  0                                                                 –           ‡                                                                                                                         @    –@    Ä      h   2  ¿ ê   @  ¥ ê                           S  Ä‡  [  –‡  h  @   v  h   â  † x   ò  ¥ x    GCC: (GNU) 11.2.0           GNU  ¿       ¿                                  Òˇ                            
-       $        0   f     ,   †   &     B   –        S      .                                	 a      ¸     q       T    	 Ü      a                   ï   ê  W    ¢   @         ¥   T   p   	 ∆   †  H     Ÿ     ˜     Ë   @  H     ˙     Á       ‡  ı       ƒ  2    	 ,  ‡  Ø    ;  ˆ      	               O           f      Ä     x      
-     è           ¶          º  (   1     ◊      0                   ·     0     ¯  †   P       `   @     &             1             ;             C             `             l             w             á             ö             ≠             ª             ≈             —             Í             ˜                                       -             6             Q             k             y             ç           ô             ®      
-     ∑      0      tw9910.c tw9910_g_std tw9910_get_selection tw9910_enum_mbus_code tw9910_g_tvnorms tw9910_remove tw9910_power_on tw9910_power_on.cold tw9910_s_power tw9910_probe tw9910_subdev_ops tw9910_probe.cold tw9910_ntsc_scales tw9910_get_fmt tw9910_pal_scales tw9910_s_std tw9910_s_stream tw9910_s_stream.cold tw9910_set_fmt tw9910_set_fmt.cold tw9910_i2c_driver_init tw9910_i2c_driver tw9910_i2c_driver_exit __UNIQUE_ID_license268 __UNIQUE_ID_author267 __UNIQUE_ID_description266 tw9910_id tw9910_subdev_core_ops tw9910_subdev_video_ops tw9910_subdev_pad_ops __fentry__ gpiod_put clk_put v4l2_async_unregister_subdev clk_prepare clk_enable gpiod_set_value usleep_range_state gpiod_get_optional clk_unprepare _dev_info clk_disable __x86_indirect_thunk_edx devm_kmalloc v4l2_i2c_subdev_init clk_get i2c_smbus_read_byte_data _dev_err v4l2_async_register_subdev i2c_smbus_write_byte_data __this_module i2c_register_driver init_module i2c_del_driver cleanup_module __mod_i2c__tw9910_id_device_table       &  1   &  °   &  —   &  Ò   &    '    (    )  !  &  >  *  S  +  n  ,  Ç  -  è  	  ñ  .  ∑  ,  À  -  ‹  ,    -  ˚  '    /  !  &  I  1  P  /  d  ,  x  -  ë  &  ∂  2  ◊  3  Ï  "  Û  4  ¯  	  ˇ  5  #  	  *  .  o  6  æ  '  œ  (  Ò  &  i  "  ·  "  Ò  &  &  6  K  9  f  9  x  9  ô  6  Ω  9  ·  &    6  3  9  S  6  l  9  |  6  ·  &  W  "  K  "  î  "  ∂  "  H	  6  _	  9  s	  -  è	  6  ∫	  9  Î	  6  
-  9  A
-  9  [
-  9  u
-  9  è
-  9  ¶
-  9  ¸
-  6    9  '  -  b  6  |  9  ß  
-  ´  
-  ∆  
-    
-  ;  
-  R  
-  ã  
-  ê  
-  ê  9  õ  9  ≠  
-     
-    
-               	  h   "                                                 $     (     ,     0        	     0     1     /  1   ,  E   -  U     [   7  l     r   7  ç   	  ì   7  ©   1  ∞   /  «   ,  €   -  Í   	     7    	    7    	    0  >  	  D  0  h  "  x  1    /  ñ  ,  ™  -  ±  8  »  	  Œ  7  ‚  	  Ë  7     	    7  P     g     ~     Â     ˝         ,    6    ª    ¿    ⁄    Ú                 	     &          :     ;          =  @   "  L   "  \   "  d     p     t     x     ®     ¨     º     »          @  	  L  	  X  	  d  	  p  	  |  	  †  	  ¨  	  ∏  	  ƒ  	  –  	  ‹  	   .symtab .strtab .shstrtab .rel.text .rel.data .bss .rel__mcount_loc .rodata.str1.1 .rel.text.unlikely .rodata.str1.4 .rel__bug_table .rel.init.text .rel.exit.text .modinfo .rel.rodata .comment .note.GNU-stack .note.gnu.property                                                         @   è                    	   @       @  »              )             ‡  Ä                   %   	   @                         /             `                     8             `  4                  4   	   @       (  h               E      2       î  ¨                X             @                   T   	   @       ê  à     	         g      2       T  V                 z             ™                    v   	   @                         ä             ∂                    Ü   	   @       (                   ô                
-                  ï   	   @       H                  §             ‘  Y                  ±             @  Ë                  ≠   	   @       X   ¿               π      0       (                   ¬              ;                     “             <  (                                d        &         	              d  Ÿ                               !  Â                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          ELF                       "      4     (               Ë¸ˇˇˇSãÄî   ã@\ãòÿ   ãà‘   1¿âZ[â
-√ç¥&    çt& êË¸ˇˇˇãÄî   É9ã@\uMÉywG«A    «A    ˜Ä‘    ∞  t«AÄ  1¿«A‡  √çt& «A   1¿«A@  √ç¥&    ∏Íˇˇˇ√ç¥&    çv Ë¸ˇˇˇãÖ“uãAÖ¿u«A   1¿√çt& ∏Íˇˇˇ√ç¥&    çv Ë¸ˇˇˇ«ˇ∞  1¿«B    √ç¥&    çt& Ë¸ˇˇˇSãX\ãÉ»   Ö¿tË¸ˇˇˇãÉ¿   Ë¸ˇˇˇâÿË¸ˇˇˇ1¿[√fêË¸ˇˇˇUWVSã®¿   â√ã∏î   ÖÌt&âËË¸ˇˇˇâ∆Ö¿t[â^_]√êâËË¸ˇˇˇâ∆Ö¿ÖØ   ãÉ»   Ö¿t1“Ë¸ˇˇˇπ   ∫Ë  ∏Ù  Ë¸ˇˇˇÉ«π   ∫    â¯Ë¸ˇˇˇâÉÃ   = ˇˇá¸ˇˇˇ1ˆÖ¿tó∫   Ë¸ˇˇˇ∏Ù  π   ∫Ë  Ë¸ˇˇˇãÉÃ   Ö¿t!1“Ë¸ˇˇˇ∏Ù  π   ∫Ë  Ë¸ˇˇˇãÉÃ   Ë¸ˇˇˇ1ˆ[â^_]√ç¥&    êâËË¸ˇˇˇÈ,ˇˇˇçt& Ë¸ˇˇˇVSãÄî   ãX\Ö“tâÿ[^È„˛ˇˇçv ã≥¿   âË¸ˇˇˇâË¸ˇˇˇãÉ»   Ö¿t∫   Ë¸ˇˇˇπ   ∫Ë  ∏Ù  Ë¸ˇˇˇ1¿[^√ç¥&    ç¥&    êË¸ˇˇˇUWVâ∆Sç~ÉÏãnXã@ÖÌÑg   ãPãRË¸ˇˇˇ%   =   ÖP   π¿  ∫‡   â¯Ë¸ˇˇˇâ√Ö¿Ñ˚   â®ƒ   π@   âÚË¸ˇˇˇ∫   â¯Ë¸ˇˇˇâÉ¿   É¯˛ÑÜ   = ˇˇáÂ   π   ∫<   â¯Ë¸ˇˇˇâÉ»   = ˇˇá  ãn\ãÖƒ   ã ÉËÉ‡˜Ö˝   ãÖî   ã@\Ëº˝ˇˇâ¬Ö¿xF1“âË¸ˇˇˇâ¬â∆¡˙ÉÊÉ‚âµ‹   É˙ÖÜ   È~   çt& «É¿       Èvˇˇˇç¥&    fêãÉ»   Ö¿tâ$Ë¸ˇˇˇã$ãÉ¿   â$Ë¸ˇˇˇã$Éƒâ–[^_]√∫ÙˇˇˇÎÔç¥&    fêË¸ˇˇˇUWVSÉÏãêî   ãiãr\ÖÌÖ¿   ãæ–   â»Öˇt4∑WâPãñ–   ∑R«@   «@   âP«@	   1¿Éƒ[^_]√êãñ‘   ˆ∆∞ÖÅ   Ñ“tmΩ‡   ø@  ç_HâD$çOâ4$âÿÎ3fê∑QªÄ  æ‡  )”â⁄˜⁄H”∑Y)ﬁâÛ˜€Hﬁ⁄9Ísâ’âœÉ¡9»uÀã4$ãD$âæ–   ÖˇÖRˇˇˇç∂    ∏ÍˇˇˇÈmˇˇˇç∂    ø†  ÎÜç¥&    fêË¸ˇˇˇWVSãòî   ãC\˜¬ˇ∞  Ñ√   âê‘   ÄÊ˘∫U   âàÿ   âÿusË¸ˇˇˇÖ¿àì   %Ô   ∫U   ø   æ   â¡âÿË¸ˇˇˇÖ¿urâÒ∫   âÿ¡ÈÉ·É…Ë¸ˇˇˇÖ¿uWâ˘∫   âÿË¸ˇˇˇÖ¿uEâ∫	   ∂»âÿ[^_È¸ˇˇˇçt& Ë¸ˇˇˇÖ¿x$%Ô   ∫U   ø   æ   É»â¡âÿË¸ˇˇˇÖ¿té[^_√ç¥&    ∏ÍˇˇˇÎÓç¥&    fêË¸ˇˇˇWVSã∞î   â”ãF\Ö“Ö≈   ãÄ‹   ø   Ö¿Öö   ∫   âË¸ˇˇˇÖ¿à~   %¯   ∫   	¯â¡âË¸ˇˇˇÖ¿xeÉ˚∫   âˇÉÁÉ˚€É„@Ë¸ˇˇˇÖ¿xE%Ò   ∫   	¯â¡âË¸ˇˇˇÖ¿x,∫   âË¸ˇˇˇÖ¿x∂€%ø   ∫   	ÿ[â¡â^_È¸ˇˇˇê[^_√çt& É¯Ö¿  ø   ÈSˇˇˇçt& êãà–   Ö…Ñ⁄  1ˇÈ9ˇˇˇç¥&    çt& Ë¸ˇˇˇUWVSâÀÉÏãàî   âD$ãCâT$ãQ\Ö¿Öû  ãCÖ¿Ñ  É¯	ÖÚ  ãCãK«C   «C   â$ãÇ‘   ˆƒ∞Ö¸   Ñ¿Ñ\  æ@  ∏   ∫@  çzHâ\$1ÌâÀâ|$øˇˇˇˇÎç¥&    ∑B∑rã$)¡â»˜ÿH¡∑Œâﬁ)ŒâÒ˜ŸHŒ»9¯sâ’â«É¬9T$uÀã\$ÖÌÑÔ   ∑EÉ;âC∑uâsÑà   ã|$1ˆãâãCâBãCâBãCâBãCâBãCâBãC âBãC$âBãC(âB ãC,âB$ãC0âB(ãC4âB,Éƒâ[^_]√ç¥&    çv «C	   È‚˛ˇˇçt& æ‡  ∏Ä  ∫†  Èˇˇˇçt& ãSÖ“t	É˙	ÖÁ  ã|$ãøî   â|$ã\ãó‘   â|$ˆ∆∞u*Ñ“ÑÆ  «D$@  ∫   π@  Î çt& æÍˇˇˇÈjˇˇˇ«D$†  ∫Ä  π‡  â˜â\$)œâ˘˜ŸHœâ«)◊â˙˜⁄H◊ã|$ç,çOÉ«Hâ<$Î-∑Qâ√â˜)”â⁄˜⁄H”∑Y)ﬂâ˚˜€Hﬂ⁄9ÍsâL$â’É¡9$uŒã|$ãD$ã\$âá–   Ö¿Ñ¶  ã|$∫   â¯Ë¸ˇˇˇÖ¿xÉ‡∫   Äâ¡â¯Ë¸ˇˇˇπ   ∫à  ∏Ë  Ë¸ˇˇˇãD$ãl$∫   ãÄƒ   ã8âËË¸ˇˇˇâ∆Ö¿àS  1¿Éˇ∫   î¿ÅÊø   ¡‡âÒ	¡âËË¸ˇˇˇâ∆Ö¿à(  ãD$∫   ãÄƒ   ãxçGˇÉ¯∏    G¯âËË¸ˇˇˇâ∆Ö¿à˜   ÉÊ¯∫   âËâÒ	˘∂…Ë¸ˇˇˇâ∆Ö¿à◊   ãD$∫   ã∏–   ∑O
-∂G	¡˘É‡É·	¡âË∂…Ë¸ˇˇˇâ∆Ö¿à°   ∂O∫   âËË¸ˇˇˇâ∆Ö¿àá   ∂O
-∫   âËË¸ˇˇˇâ∆Ö¿xqπL   ∫k   âËã}\Ë¸ˇˇˇâ∆Ö¿xWπ`   ∫l   âËË¸ˇˇˇâ∆Ö¿x@Éø‹   Ñô   ãD$ãÄ–   ∑P∑@ÖˆÖE˝ˇˇâSâCÈ:˝ˇˇæÍˇˇˇç¥&    fêã|$∫   â¯Ë¸ˇˇˇÖ¿xÉ‡∫   Äâ¡â¯Ë¸ˇˇˇ∏Ë  π   ∫à  Ë¸ˇˇˇãD$«Ä–       Èﬁ¸ˇˇ«á–       æÍˇˇˇÎ°È˝ˇˇã|$∫N   â¯Ë¸ˇˇˇâ∆Ö¿xÑÅÊà   ∫N   â¯âÒË¸ˇˇˇâ∆Ö¿â3ˇˇˇÈaˇˇˇ                     ê                     ˘                                                                                                       0   †   –            ê      ‡  ‡      rstb Unable to get GPIO "rstb" xti Unable to get xti clock
- pdn Unable to get GPIO "pdn" bus width error
- Product ID error %x:%x
- tw9910 Product ID %0x:%0x
- un-supported revision
- norm select error
- Field type %d invalid
- drivers/media/i2c/tw9910.c tw9910 PAL SQ PAL CCIR601 PAL SQ (CIF) PAL CCIR601 (CIF) PAL SQ (QCIF) PAL CCIR601 (QCIF) NTSC SQ NTSC CCIR601 NTSC SQ (CIF) NTSC CCIR601 (CIF) NTSC SQ (QCIF) NTSC CCIR601 (QCIF) h   WË¸ˇˇˇã≥¿   âË¸ˇˇˇâË¸ˇˇˇãÉ»   ZYÖ¿t∫   Ë¸ˇˇˇπ   ∫Ë  ∏Ù  Ë¸ˇˇˇã≥Ã   ÈD  h    WË¸ˇˇˇXZ∫˚ˇˇˇÈ“  h    WË¸ˇˇˇ∫ÍˇˇˇY[È“  ®Ñ∞   VRhj   WË¸ˇˇˇãÖî   ãp\ãæ¿   â¯Ë¸ˇˇˇâ¯Ë¸ˇˇˇãÜ»   ÉƒÖ¿to∫   Ë¸ˇˇˇ∫Ë  π   ∏Ù  Ë¸ˇˇˇ∫ÌˇˇˇÈ¨  h#   WË¸ˇˇˇãì¿   _]È“  hY   WË¸ˇˇˇXZ∫ÌˇˇˇÈ¨  h@   WË¸ˇˇˇãì»   Y^È¡  ∫ÌˇˇˇÈ¨  VjhÇ   WË¸ˇˇˇãÖî   «Ö‘    ∞  «Öÿ       «Ö–   †  ãp\ãæ¿   â¯Ë¸ˇˇˇâ¯Ë¸ˇˇˇãÜ»   ÉƒÖ¿t∫   Ë¸ˇˇˇπ   ∫Ë  ∏Ù  Ë¸ˇˇˇâÿË¸ˇˇˇâ¬Ö¿Ñ“  È¨  É∆hù   VË¸ˇˇˇ∏Íˇˇˇ[^Èú  É∆h¥   VË¸ˇˇˇXÉ»ˇZÈú  É¡PæÍˇˇˇh«   QË¸ˇˇˇÉƒÈ    TW9910: missing platform data!
- I2C-Adapter doesn't support I2C_FUNC_SMBUS_BYTE_DATA
- O  ﬁ   	Ë¸ˇˇˇ∫    ∏    È¸ˇˇˇ∏    È¸ˇˇˇlicense=GPL v2 author=Kuninori Morimoto description=V4L2 driver for TW9910 video decoder                    tw9910                                                                     †               `       †             ‡  0                                                                 –           ‡                                                                                                                         @    –@    Ä      h   2  ¿ ê   @  ¥ ê                           S  Ä‡  [  –‡  h  @   v  h   â  † x   ò  ¥ x    GCC: (GNU) 11.2.0           GNU  ¿       ¿                                  Òˇ                            
-       $        0   f     ,   †   &     B   –        S      .                                	 a      ¸     q       T    	 Ü      a                   ï   ê  W    ¢   @         ¥   T   p   	 ∆   †  H     Ÿ     ˜     Ë   @  H     ˙     Á       ‡  ı       ƒ  2    	 ,  ‡  Ø    ;  ˆ      	               O           f      Ä     x      
-     è           ¶          º  (   1     ◊      0                   ·     0     ¯  †   P       `   @     &             1             ;             C             `             l             w             á             ö             ≠             ª             ≈             —             Í             ˜                                       -             6             Q             k             y             ç           ô             ®      
-     ∑      0      tw9910.c tw9910_g_std tw9910_get_selection tw9910_enum_mbus_code tw9910_g_tvnorms tw9910_remove tw9910_power_on tw9910_power_on.cold tw9910_s_power tw9910_probe tw9910_subdev_ops tw9910_probe.cold tw9910_ntsc_scales tw9910_get_fmt tw9910_pal_scales tw9910_s_std tw9910_s_stream tw9910_s_stream.cold tw9910_set_fmt tw9910_set_fmt.cold tw9910_i2c_driver_init tw9910_i2c_driver tw9910_i2c_driver_exit __UNIQUE_ID_license268 __UNIQUE_ID_author267 __UNIQUE_ID_description266 tw9910_id tw9910_subdev_core_ops tw9910_subdev_video_ops tw9910_subdev_pad_ops __fentry__ gpiod_put clk_put v4l2_async_unregister_subdev clk_prepare clk_enable gpiod_set_value usleep_range_state gpiod_get_optional clk_unprepare _dev_info clk_disable __x86_indirect_thunk_edx devm_kmalloc v4l2_i2c_subdev_init clk_get i2c_smbus_read_byte_data _dev_err v4l2_async_register_subdev i2c_smbus_write_byte_data __this_module i2c_register_driver init_module i2c_del_driver cleanup_module __mod_i2c__tw9910_id_device_table       &  1   &  °   &  —   &  Ò   &    '    (    )  !  &  >  *  S  +  n  ,  Ç  -  è  	  ñ  .  ∑  ,  À  -  ‹  ,    -  ˚  '    /  !  &  I  1  P  /  d  ,  x  -  ë  &  ∂  2  ◊  3  Ï  "  Û  4  ¯  	  ˇ  5  #  	  *  .  o  6  æ  '  œ  (  Ò  &  i  "  ·  "  Ò  &  &  6  K  9  f  9  x  9  ô  6  Ω  9  ·  &    6  3  9  S  6  l  9  |  6  ·  &  W  "  K  "  î  "  ∂  "  H	  6  _	  9  s	  -  è	  6  ∫	  9  Î	  6  
-  9  A
-  9  [
-  9  u
-  9  è
-  9  ¶
-  9  ¸
-  6    9  '  -  b  6  |  9  ß  
-  ´  
-  ∆  
-    
-  ;  
-  R  
-  ã  
-  ê  
-  ê  9  õ  9  ≠  
-     
-    
-               	  h   "                                                 $     (     ,     0        	     0     1     /  1   ,  E   -  U     [   7  l     r   7  ç   	  ì   7  ©   1  ∞   /  «   ,  €   -  Í   	     7    	    7    	    0  >  	  D  0  h  "  x  1    /  ñ  ,  ™  -  ±  8  »  	  Œ  7  ‚  	  Ë  7     	    7  P     g     ~     Â     ˝         ,    6    ª    ¿    ⁄    Ú                 	     &          :     ;          =  @   "  L   "  \   "  d     p     t     x     ®     ¨     º     »          @  	  L  	  X  	  d  	  p  	  |  	  †  	  ¨  	  ∏  	  ƒ  	  –  	  ‹  	   .symtab .strtab .shstrtab .rel.text .rel.data .bss .rel__mcount_loc .rodata.str1.1 .rel.text.unlikely .rodata.str1.4 .rel__bug_table .rel.init.text .rel.exit.text .modinfo .rel.rodata .comment .note.GNU-stack .note.gnu.property                                                         @   è                    	   @       @  »              )             ‡  Ä                   %   	   @                         /             `                     8             `  4                  4   	   @       (  h               E      2       î  ¨                X             @                   T   	   @       ê  à     	         g      2       T  V                 z             ™                    v   	   @                         ä             ∂                    Ü   	   @       (                   ô                
-                  ï   	   @       H                  §             ‘  Y                  ±             @  Ë                  ≠   	   @       X   ¿               π      0       (                   ¬              ;                     “             <  (                                d        &         	              d  Ÿ                               !  Â                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          cmd_drivers/media/i2c/tw9910.o := gcc -Wp,-MMD,drivers/media/i2c/.tw9910.o.d -nostdinc -I./arch/x86/include -I./arch/x86/include/generated  -I./include -I./arch/x86/include/uapi -I./arch/x86/include/generated/uapi -I./include/uapi -I./include/generated/uapi -include ./include/linux/compiler-version.h -include ./include/linux/kconfig.h -include ./include/linux/compiler_types.h -D__KERNEL__ -fmacro-prefix-map=./= -Wall -Wundef -Werror=strict-prototypes -Wno-trigraphs -fno-strict-aliasing -fno-common -fshort-wchar -fno-PIE -Werror=implicit-function-declaration -Werror=implicit-int -Werror=return-type -Wno-format-security -std=gnu11 -mno-sse -mno-mmx -mno-sse2 -mno-3dnow -mno-avx -fcf-protection=none -m32 -msoft-float -mregparm=3 -freg-struct-return -fno-pic -mpreferred-stack-boundary=2 -march=i686 -mtune=pentium3 -mtune=generic -Wa,-mtune=generic32 -ffreestanding -mstack-protector-guard-reg=fs -mstack-protector-guard-symbol=__stack_chk_guard -Wno-sign-compare -fno-asynchronous-unwind-tables -mindirect-branch=thunk-extern -mindirect-branch-register -fno-jump-tables -fno-delete-null-pointer-checks -Wno-frame-address -Wno-format-truncation -Wno-format-overflow -Wno-address-of-packed-member -O2 -fno-allow-store-data-races -fstack-protector-strong -Wimplicit-fallthrough=5 -Wno-main -Wno-unused-but-set-variable -Wno-unused-const-variable -fno-stack-clash-protection -pg -mrecord-mcount -mfentry -DCC_USING_FENTRY -Wdeclaration-after-statement -Wvla -Wno-pointer-sign -Wcast-function-type -Wno-stringop-truncation -Wno-stringop-overflow -Wno-restrict -Wno-maybe-uninitialized -Wno-alloc-size-larger-than -fno-strict-overflow -fno-stack-check -fconserve-stack -Werror=date-time -Werror=incompatible-pointer-types -Werror=designated-init -Wno-packed-not-aligned  -DMODULE  -DKBUILD_BASENAME='"tw9910"' -DKBUILD_MODNAME='"tw9910"' -D__KBUILD_MODNAME=kmod_tw9910 -c -o drivers/media/i2c/tw9910.o drivers/media/i2c/tw9910.c 
+#define L5CM_RAMROD_CMD_ID_BASE			(0x80)
+#define L5CM_RAMROD_CMD_ID_TCP_CONNECT		(L5CM_RAMROD_CMD_ID_BASE + 3)
+#define L5CM_RAMROD_CMD_ID_CLOSE		(L5CM_RAMROD_CMD_ID_BASE + 12)
+#define L5CM_RAMROD_CMD_ID_ABORT		(L5CM_RAMROD_CMD_ID_BASE + 13)
+#define L5CM_RAMROD_CMD_ID_SEARCHER_DELETE	(L5CM_RAMROD_CMD_ID_BASE + 14)
+#define L5CM_RAMROD_CMD_ID_TERMINATE_OFFLOAD	(L5CM_RAMROD_CMD_ID_BASE + 15)
 
-source_drivers/media/i2c/tw9910.o := drivers/media/i2c/tw9910.c
+#define FCOE_RAMROD_CMD_ID_INIT_FUNC		(FCOE_KCQE_OPCODE_INIT_FUNC)
+#define FCOE_RAMROD_CMD_ID_DESTROY_FUNC		(FCOE_KCQE_OPCODE_DESTROY_FUNC)
+#define FCOE_RAMROD_CMD_ID_STAT_FUNC		(FCOE_KCQE_OPCODE_STAT_FUNC)
+#define FCOE_RAMROD_CMD_ID_OFFLOAD_CONN		(FCOE_KCQE_OPCODE_OFFLOAD_CONN)
+#define FCOE_RAMROD_CMD_ID_ENABLE_CONN		(FCOE_KCQE_OPCODE_ENABLE_CONN)
+#define FCOE_RAMROD_CMD_ID_DISABLE_CONN		(FCOE_KCQE_OPCODE_DISABLE_CONN)
+#define FCOE_RAMROD_CMD_ID_DESTROY_CONN		(FCOE_KCQE_OPCODE_DESTROY_CONN)
+#define FCOE_RAMROD_CMD_ID_TERMINATE_CONN	(0x81)
 
-deps_drivers/media/i2c/tw9910.o := \
-    $(wildcard include/config/VIDEO_ADV_DEBUG) \
-  include/linux/compiler-version.h \
-    $(wildcard include/config/CC_VERSION_TEXT) \
-  include/linux/kconfig.h \
-    $(wildcard include/config/CPU_BIG_ENDIAN) \
-    $(wildcard include/config/BOOGER) \
-    $(wildcard include/config/FOO) \
-  include/linux/compiler_types.h \
-    $(wildcard include/config/DEBUG_INFO_BTF) \
-    $(wildcard include/config/PAHOLE_HAS_BTF_TAG) \
-    $(wildcard include/config/HAVE_ARCH_COMPILER_H) \
-    $(wildcard include/config/CC_HAS_ASM_INLINE) \
-  include/linux/compiler_attributes.h \
-  include/linux/compiler-gcc.h \
-    $(wildcard include/config/RETPOLINE) \
-    $(wildcard include/config/ARCH_USE_BUILTIN_BSWAP) \
-    $(wildcard include/config/SHADOW_CALL_STACK) \
-    $(wildcard include/config/KCOV) \
-  include/linux/clk.h \
-    $(wildcard include/config/COMMON_CLK) \
-    $(wildcard include/config/HAVE_CLK_PREPARE) \
-    $(wildcard include/config/HAVE_CLK) \
-    $(wildcard include/config/OF) \
-  include/linux/err.h \
-  include/linux/compiler.h \
-    $(wildcard include/config/TRACE_BRANCH_PROFILING) \
-    $(wildcard include/config/PROFILE_ALL_BRANCHES) \
-    $(wildcard include/config/STACK_VALIDATION) \
-    $(wildcard include/config/CFI_CLANG) \
-  include/linux/compiler_types.h \
-  arch/x86/include/generated/asm/rwonce.h \
-  include/asm-generic/rwonce.h \
-  include/linux/kasan-checks.h \
-    $(wildcard include/config/KASAN_GENERIC) \
-    $(wildcard include/config/KASAN_SW_TAGS) \
-  include/linux/types.h \
-    $(wildcard include/config/HAVE_UID16) \
-    $(wildcard include/config/UID16) \
-    $(wildcard include/config/ARCH_DMA_ADDR_T_64BIT) \
-    $(wildcard include/config/PHYS_ADDR_T_64BIT) \
-    $(wildcard include/config/64BIT) \
-    $(wildcard include/config/ARCH_32BIT_USTAT_F_TINODE) \
-  include/uapi/linux/types.h \
-  arch/x86/include/generated/uapi/asm/types.h \
-  include/uapi/asm-generic/types.h \
-  include/asm-generic/int-ll64.h \
-  include/uapi/asm-generic/int-ll64.h \
-  arch/x86/include/uapi/asm/bitsperlong.h \
-  include/asm-generic/bitsperlong.h \
-  include/uapi/asm-generic/bitsperlong.h \
-  include/uapi/linux/posix_types.h \
-  include/linux/stddef.h \
-  include/uapi/linux/stddef.h \
-  arch/x86/include/asm/posix_types.h \
-    $(wildcard include/config/X86_32) \
-  arch/x86/include/uapi/asm/posix_types_32.h \
-  include/uapi/asm-generic/posix_types.h \
-  include/linux/kcsan-checks.h \
-    $(wildcard include/config/KCSAN) \
-    $(wildcard include/config/KCSAN_WEAK_MEMORY) \
-    $(wildcard include/config/KCSAN_IGNORE_ATOMICS) \
-  arch/x86/include/generated/uapi/asm/errno.h \
-  include/uapi/asm-generic/errno.h \
-  include/uapi/asm-generic/errno-base.h \
-  include/linux/kernel.h \
-    $(wildcard include/config/PREEMPT_VOLUNTARY_BUILD) \
-    $(wildcard include/config/PREEMPT_DYNAMIC) \
-    $(wildcard include/config/HAVE_PREEMPT_DYNAMIC_CALL) \
-    $(wildcard include/config/HAVE_PREEMPT_DYNAMIC_KEY) \
-    $(wildcard include/config/PREEMPT_) \
-    $(wildcard include/config/DEBUG_ATOMIC_SLEEP) \
-    $(wildcard include/config/SMP) \
-    $(wildcard include/config/MMU) \
-    $(wildcard include/config/PROVE_LOCKING) \
-    $(wildcard include/config/TRACING) \
-    $(wildcard include/config/FTRACE_MCOUNT_RECORD) \
-  include/linux/stdarg.h \
-  include/linux/align.h \
-  include/linux/const.h \
-  include/vdso/const.h \
-  include/uapi/linux/const.h \
-  include/linux/limits.h \
-  include/uapi/linux/limits.h \
-  include/vdso/limits.h \
-  include/linux/linkage.h \
-    $(wildcard include/config/ARCH_USE_SYM_ANNOTATIONS) \
-  include/linux/stringify.h \
-  include/linux/export.h \
-    $(wildcard include/config/MODVERSIONS) \
-    $(wildcard include/config/MODULE_REL_CRCS) \
-    $(wildcard include/config/HAVE_ARCH_PREL32_RELOCATIONS) \
-    $(wildcard include/config/MODULES) \
-    $(wildcard include/config/TRIM_UNUSED_KSYMS) \
-  arch/x86/include/asm/linkage.h \
-    $(wildcard include/config/X86_64) \
-    $(wildcard include/config/X86_ALIGNMENT_16) \
-    $(wildcard include/config/SLS) \
-  arch/x86/include/asm/ibt.h \
-    $(wildcard include/config/X86_KERNEL_IBT) \
-  include/linux/container_of.h \
-  include/linux/build_bug.h \
-  include/linux/bitops.h \
-  include/linux/bits.h \
-  include/vdso/bits.h \
-  include/linux/typecheck.h \
-  include/uapi/linux/kernel.h \
-  include/uapi/linux/sysinfo.h \
-  arch/x86/include/asm/bitops.h \
-    $(wildcard include/config/X86_CMOV) \
-  arch/x86/include/asm/alternative.h \
-  arch/x86/include/asm/asm.h \
-    $(wildcard include/config/KPROBES) \
-  arch/x86/include/asm/extable_fixup_types.h \
-  arch/x86/include/asm/rmwcc.h \
-    $(wildcard include/config/CC_HAS_ASM_GOTO) \
-  arch/x86/include/asm/barrier.h \
-  arch/x86/include/asm/nops.h \
-  include/asm-generic/barrier.h \
-  include/asm-generic/bitops/fls64.h \
-  include/asm-generic/bitops/sched.h \
-  arch/x86/include/asm/arch_hweight.h \
-  arch/x86/include/asm/cpufeatures.h \
-  arch/x86/include/asm/required-features.h \
-    $(wildcard include/config/X86_MINIMUM_CPU_FAMILY) \
-    $(wildcard include/config/MATH_EMULATION) \
-    $(wildcard include/config/X86_PAE) \
-    $(wildcard include/config/X86_CMPXCHG64) \
-    $(wildcard include/config/X86_P6_NOP) \
-    $(wildcard include/config/MATOM) \
-    $(wildcard include/config/PARAVIRT_XXL) \
-  arch/x86/include/asm/disabled-features.h \
-    $(wildcard include/config/X86_SMAP) \
-    $(wildcard include/config/X86_UMIP) \
-    $(wildcard include/config/X86_INTEL_MEMORY_PROTECTION_KEYS) \
-    $(wildcard include/config/X86_5LEVEL) \
-    $(wildcard include/config/PAGE_TABLE_ISOLATION) \
-    $(wildcard include/config/INTEL_IOMMU_SVM) \
-    $(wildcard include/config/X86_SGX) \
-  include/asm-generic/bitops/const_hweight.h \
-  include/asm-generic/bitops/instrumented-atomic.h \
-  include/linux/instrumented.h \
-  include/asm-generic/bitops/instrumented-non-atomic.h \
-    $(wildcard include/config/KCSAN_ASSUME_PLAIN_WRITES_ATOMIC) \
-  include/asm-generic/bitops/instrumented-lock.h \
-  include/asm-generic/bitops/le.h \
-  arch/x86/include/uapi/asm/byteorder.h \
-  include/linux/byteorder/little_endian.h \
-  include/uapi/linux/byteorder/little_endian.h \
-  include/linux/swab.h \
-  include/uapi/linux/swab.h \
-  arch/x86/include/uapi/asm/swab.h \
-  include/linux/byteorder/generic.h \
-  include/asm-generic/bitops/ext2-atomic-setbit.h \
-  include/linux/kstrtox.h \
-  include/linux/log2.h \
-    $(wildcard include/config/ARCH_HAS_ILOG2_U32) \
-    $(wildcard include/config/ARCH_HAS_ILOG2_U64) \
-  include/linux/math.h \
-  arch/x86/include/asm/div64.h \
-  include/linux/minmax.h \
-  include/linux/panic.h \
-    $(wildcard include/config/PANIC_TIMEOUT) \
-  include/linux/printk.h \
-    $(wildcard include/config/MESSAGE_LOGLEVEL_DEFAULT) \
-    $(wildcard include/config/CONSOLE_LOGLEVEL_DEFAULT) \
-    $(wildcard include/config/CONSOLE_LOGLEVEL_QUIET) \
-    $(wildcard include/config/EARLY_PRINTK) \
-    $(wildcard include/config/PRINTK) \
-    $(wildcard include/config/PRINTK_INDEX) \
-    $(wildcard include/config/DYNAMIC_DEBUG) \
-    $(wildcard include/config/DYNAMIC_DEBUG_CORE) \
-  include/linux/init.h \
-    $(wildcard include/config/STRICT_KERNEL_RWX) \
-    $(wildcard include/config/STRICT_MODULE_RWX) \
-    $(wildcard include/config/LTO_CLANG) \
-  include/linux/kern_levels.h \
-  include/linux/cache.h \
-    $(wildcard include/config/ARCH_HAS_CACHE_LINE_SIZE) \
-  arch/x86/include/asm/cache.h \
-    $(wildcard include/config/X86_L1_CACHE_SHIFT) \
-    $(wildcard include/config/X86_INTERNODE_CACHE_SHIFT) \
-    $(wildcard include/config/X86_VSMP) \
-  include/linux/ratelimit_types.h \
-  include/uapi/linux/param.h \
-  arch/x86/include/generated/uapi/asm/param.h \
-  include/asm-generic/param.h \
-    $(wildcard include/config/HZ) \
-  include/uapi/asm-generic/param.h \
-  include/linux/spinlock_types_raw.h \
-    $(wildcard include/config/DEBUG_SPINLOCK) \
-    $(wildcard include/config/DEBUG_LOCK_ALLOC) \
-  arch/x86/include/asm/spinlock_types.h \
-  include/asm-generic/qspinlock_types.h \
-    $(wildcard include/config/NR_CPUS) \
-  include/asm-generic/qrwlock_types.h \
-  include/linux/lockdep_types.h \
-    $(wildcard include/config/PROVE_RAW_LOCK_NESTING) \
-    $(wildcard include/config/LOCKDEP) \
-    $(wildcard include/config/LOCK_STAT) \
-  include/linux/once_lite.h \
-  include/linux/static_call_types.h \
-    $(wildcard include/config/HAVE_STATIC_CALL) \
-    $(wildcard include/config/HAVE_STATIC_CALL_INLINE) \
-  include/linux/instruction_pointer.h \
-  include/linux/notifier.h \
-    $(wildcard include/config/TREE_SRCU) \
-  include/linux/errno.h \
-  include/uapi/linux/errno.h \
-  include/linux/mutex.h \
-    $(wildcard include/config/PREEMPT_RT) \
-    $(wildcard include/config/MUTEX_SPIN_ON_OWNER) \
-    $(wildcard include/config/DEBUG_MUTEXES) \
-  arch/x86/include/asm/current.h \
-  arch/x86/include/asm/percpu.h \
-    $(wildcard include/config/X86_64_SMP) \
-  include/asm-generic/percpu.h \
-    $(wildcard include/config/DEBUG_PREEMPT) \
-    $(wildcard include/config/HAVE_SETUP_PER_CPU_AREA) \
-  include/linux/threads.h \
-    $(wildcard include/config/BASE_SMALL) \
-  include/linux/percpu-defs.h \
-    $(wildcard include/config/DEBUG_FORCE_WEAK_PER_CPU) \
-    $(wildcard include/config/AMD_MEM_ENCRYPT) \
-  include/linux/list.h \
-    $(wildcard include/config/DEBUG_LIST) \
-  include/linux/poison.h \
-    $(wildcard include/config/ILLEGAL_POINTER_VALUE) \
-  include/linux/spinlock_types.h \
-  include/linux/rwlock_types.h \
-  include/linux/lockdep.h \
-    $(wildcard include/config/DEBUG_LOCKING_API_SELFTESTS) \
-    $(wildcard include/config/PREEMPT_COUNT) \
-  include/linux/smp.h \
-    $(wildcard include/config/UP_LATE_INIT) \
-  include/linux/cpumask.h \
-    $(wildcard include/config/CPUMASK_OFFSTACK) \
-    $(wildcard include/config/HOTPLUG_CPU) \
-    $(wildcard include/config/DEBUG_PER_CPU_MAPS) \
-  include/linux/bitmap.h \
-  include/linux/find.h \
-  include/linux/string.h \
-    $(wildcard include/config/BINARY_PRINTF) \
-    $(wildcard include/config/FORTIFY_SOURCE) \
-  include/uapi/linux/string.h \
-  arch/x86/include/asm/string.h \
-  arch/x86/include/asm/string_32.h \
-  include/linux/fortify-string.h \
-  include/linux/atomic.h \
-  arch/x86/include/asm/atomic.h \
-  arch/x86/include/asm/cmpxchg.h \
-  arch/x86/include/asm/cmpxchg_32.h \
-  arch/x86/include/asm/atomic64_32.h \
-  include/linux/atomic/atomic-arch-fallback.h \
-    $(wildcard include/config/GENERIC_ATOMIC64) \
-  include/linux/atomic/atomic-long.h \
-  include/linux/atomic/atomic-instrumented.h \
-  include/linux/bug.h \
-    $(wildcard include/config/GENERIC_BUG) \
-    $(wildcard include/config/BUG_ON_DATA_CORRUPTION) \
-  arch/x86/include/asm/bug.h \
-    $(wildcard include/config/DEBUG_BUGVERBOSE) \
-  include/linux/instrumentation.h \
-    $(wildcard include/config/DEBUG_ENTRY) \
-  include/linux/objtool.h \
-    $(wildcard include/config/FRAME_POINTER) \
-  include/asm-generic/bug.h \
-    $(wildcard include/config/BUG) \
-    $(wildcard include/config/GENERIC_BUG_RELATIVE_POINTERS) \
-  include/linux/smp_types.h \
-  include/linux/llist.h \
-    $(wildcard include/config/ARCH_HAVE_NMI_SAFE_CMPXCHG) \
-  include/linux/preempt.h \
-    $(wildcard include/config/TRACE_PREEMPT_TOGGLE) \
-    $(wildcard include/config/PREEMPTION) \
-    $(wildcard include/config/PREEMPT_NOTIFIERS) \
-  arch/x86/include/asm/preempt.h \
-  include/linux/thread_info.h \
-    $(wildcard include/config/THREAD_INFO_IN_TASK) \
-    $(wildcard include/config/GENERIC_ENTRY) \
-    $(wildcard include/config/HAVE_ARCH_WITHIN_STACK_FRAMES) \
-    $(wildcard include/config/HARDENED_USERCOPY) \
-  include/linux/restart_block.h \
-  include/linux/time64.h \
-  include/linux/math64.h \
-    $(wildcard include/config/ARCH_SUPPORTS_INT128) \
-  include/vdso/math64.h \
-  include/vdso/time64.h \
-  include/uapi/linux/time.h \
-  include/uapi/linux/time_types.h \
-  arch/x86/include/asm/thread_info.h \
-    $(wildcard include/config/VM86) \
-    $(wildcard include/config/X86_IOPL_IOPERM) \
-    $(wildcard include/config/COMPAT) \
-    $(wildcard include/config/IA32_EMULATION) \
-  arch/x86/include/asm/page.h \
-  arch/x86/include/asm/page_types.h \
-    $(wildcard include/config/PHYSICAL_START) \
-    $(wildcard include/config/PHYSICAL_ALIGN) \
-    $(wildcard include/config/DYNAMIC_PHYSICAL_MASK) \
-  include/linux/mem_encrypt.h \
-    $(wildcard include/config/ARCH_HAS_MEM_ENCRYPT) \
-  arch/x86/include/asm/mem_encrypt.h \
-  include/linux/cc_platform.h \
-    $(wildcard include/config/ARCH_HAS_CC_PLATFORM) \
-  arch/x86/include/uapi/asm/bootparam.h \
-  include/linux/screen_info.h \
-  include/uapi/linux/screen_info.h \
-  include/linux/apm_bios.h \
-  include/uapi/linux/apm_bios.h \
-  include/uapi/linux/ioctl.h \
-  arch/x86/include/generated/uapi/asm/ioctl.h \
-  include/asm-generic/ioctl.h \
-  include/uapi/asm-generic/ioctl.h \
-  include/linux/edd.h \
-  include/uapi/linux/edd.h \
-  arch/x86/include/asm/ist.h \
-  arch/x86/include/uapi/asm/ist.h \
-  include/video/edid.h \
-    $(wildcard include/config/X86) \
-  include/uapi/video/edid.h \
-  arch/x86/include/asm/page_32_types.h \
-    $(wildcard include/config/HIGHMEM4G) \
-    $(wildcard include/config/HIGHMEM64G) \
-    $(wildcard include/config/PAGE_OFFSET) \
-  arch/x86/include/asm/page_32.h \
-    $(wildcard include/config/DEBUG_VIRTUAL) \
-    $(wildcard include/config/FLATMEM) \
-  include/linux/range.h \
-  include/asm-generic/memory_model.h \
-    $(wildcard include/config/SPARSEMEM_VMEMMAP) \
-    $(wildcard include/config/SPARSEMEM) \
-  include/linux/pfn.h \
-  include/asm-generic/getorder.h \
-  arch/x86/include/asm/cpufeature.h \
-    $(wildcard include/config/X86_FEATURE_NAMES) \
-  arch/x86/include/asm/processor.h \
-    $(wildcard include/config/X86_VMX_FEATURE_NAMES) \
-    $(wildcard include/config/STACKPROTECTOR) \
-    $(wildcard include/config/X86_DEBUGCTLMSR) \
-    $(wildcard include/config/CPU_SUP_AMD) \
-    $(wildcard include/config/XEN) \
-  arch/x86/include/asm/processor-flags.h \
-  arch/x86/include/uapi/asm/processor-flags.h \
-  arch/x86/include/asm/math_emu.h \
-  arch/x86/include/asm/ptrace.h \
-    $(wildcard include/config/PARAVIRT) \
-  arch/x86/include/asm/segment.h \
-    $(wildcard include/config/XEN_PV) \
-  arch/x86/include/uapi/asm/ptrace.h \
-  arch/x86/include/uapi/asm/ptrace-abi.h \
-  arch/x86/include/asm/paravirt_types.h \
-    $(wildcard include/config/PGTABLE_LEVELS) \
-    $(wildcard include/config/PARAVIRT_DEBUG) \
-  arch/x86/include/asm/desc_defs.h \
-  arch/x86/include/asm/pgtable_types.h \
-    $(wildcard include/config/MEM_SOFT_DIRTY) \
-    $(wildcard include/config/HAVE_ARCH_USERFAULTFD_WP) \
-    $(wildcard include/config/PROC_FS) \
-  arch/x86/include/asm/pgtable_32_types.h \
-  arch/x86/include/asm/pgtable-3level_types.h \
-  include/asm-generic/pgtable-nop4d.h \
-  include/asm-generic/pgtable-nopud.h \
-  arch/x86/include/asm/nospec-branch.h \
-  include/linux/static_key.h \
-  include/linux/jump_label.h \
-    $(wildcard include/config/JUMP_LABEL) \
-    $(wildcard include/config/HAVE_ARCH_JUMP_LABEL_RELATIVE) \
-  arch/x86/include/asm/jump_label.h \
-  arch/x86/include/asm/msr-index.h \
-  arch/x86/include/asm/unwind_hints.h \
-  arch/x86/include/asm/orc_types.h \
-  arch/x86/include/asm/GEN-for-each-reg.h \
-  arch/x86/include/asm/proto.h \
-  arch/x86/include/uapi/asm/ldt.h \
-  arch/x86/include/uapi/asm/sigcontext.h \
-  arch/x86/include/asm/msr.h \
-    $(wildcard include/config/TRACEPOINTS) \
-  arch/x86/include/asm/msr-index.h \
-  arch/x86/include/asm/cpumask.h \
-  arch/x86/include/uapi/asm/msr.h \
-  include/linux/tracepoint-defs.h \
-  arch/x86/include/asm/special_insns.h \
-  include/linux/irqflags.h \
-    $(wildcard include/config/TRACE_IRQFLAGS) \
-    $(wildcard include/config/IRQSOFF_TRACER) \
-    $(wildcard include/config/PREEMPT_TRACER) \
-    $(wildcard include/config/DEBUG_IRQFLAGS) \
-    $(wildcard include/config/TRACE_IRQFLAGS_SUPPORT) \
-  arch/x86/include/asm/irqflags.h \
-  arch/x86/include/asm/fpu/types.h \
-  arch/x86/include/asm/vmxfeatures.h \
-  arch/x86/include/asm/vdso/processor.h \
-  include/linux/personality.h \
-  include/uapi/linux/personality.h \
-  arch/x86/include/asm/smp.h \
-    $(wildcard include/config/X86_LOCAL_APIC) \
-    $(wildcard include/config/DEBUG_NMI_SELFTEST) \
-  include/linux/osq_lock.h \
-  include/linux/debug_locks.h \
-  include/linux/rwsem.h \
-    $(wildcard include/config/RWSEM_SPIN_ON_OWNER) \
-    $(wildcard include/config/DEBUG_RWSEMS) \
-  include/linux/spinlock.h \
-  include/linux/bottom_half.h \
-  arch/x86/include/generated/asm/mmiowb.h \
-  include/asm-generic/mmiowb.h \
-    $(wildcard include/config/MMIOWB) \
-  arch/x86/include/asm/spinlock.h \
-  arch/x86/include/asm/paravirt.h \
-    $(wildcard include/config/PARAVIRT_SPINLOCKS) \
-  arch/x86/include/asm/frame.h \
-  arch/x86/include/asm/qspinlock.h \
-  include/asm-generic/qspinlock.h \
-  arch/x86/include/asm/qrwlock.h \
-  include/asm-generic/qrwlock.h \
-  include/linux/rwlock.h \
-    $(wildcard include/config/PREEMPT) \
-  include/linux/spinlock_api_smp.h \
-    $(wildcard include/config/INLINE_SPIN_LOCK) \
-    $(wildcard include/config/INLINE_SPIN_LOCK_BH) \
-    $(wildcard include/config/INLINE_SPIN_LOCK_IRQ) \
-    $(wildcard include/config/INLINE_SPIN_LOCK_IRQSAVE) \
-    $(wildcard include/config/INLINE_SPIN_TRYLOCK) \
-    $(wildcard include/config/INLINE_SPIN_TRYLOCK_BH) \
-    $(wildcard include/config/UNINLINE_SPIN_UNLOCK) \
-    $(wildcard include/config/INLINE_SPIN_UNLOCK_BH) \
-    $(wildcard include/config/INLINE_SPIN_UNLOCK_IRQ) \
-    $(wildcard include/config/INLINE_SPIN_UNLOCK_IRQRESTORE) \
-    $(wildcard include/config/GENERIC_LOCKBREAK) \
-  include/linux/rwlock_api_smp.h \
-    $(wildcard include/config/INLINE_READ_LOCK) \
-    $(wildcard include/config/INLINE_WRITE_LOCK) \
-    $(wildcard include/config/INLINE_READ_LOCK_BH) \
-    $(wildcard include/config/INLINE_WRITE_LOCK_BH) \
-    $(wildcard include/config/INLINE_READ_LOCK_IRQ) \
-    $(wildcard include/config/INLINE_WRITE_LOCK_IRQ) \
-    $(wildcard include/config/INLINE_READ_LOCK_IRQSAVE) \
-    $(wildcard include/config/INLINE_WRITE_LOCK_IRQSAVE) \
-    $(wildcard include/config/INLINE_READ_TRYLOCK) \
-    $(wildcard include/config/INLINE_WRITE_TRYLOCK) \
-    $(wildcard include/config/INLINE_READ_UNLOCK) \
-    $(wildcard include/config/INLINE_WRITE_UNLOCK) \
-    $(wildcard include/config/INLINE_READ_UNLOCK_BH) \
-    $(wildcard include/config/INLINE_WRITE_UNLOCK_BH) \
-    $(wildcard include/config/INLINE_READ_UNLOCK_IRQ) \
-    $(wildcard include/config/INLINE_WRITE_UNLOCK_IRQ) \
-    $(wildcard include/config/INLINE_READ_UNLOCK_IRQRESTORE) \
-    $(wildcard include/config/INLINE_WRITE_UNLOCK_IRQRESTORE) \
-  include/linux/srcu.h \
-    $(wildcard include/config/TINY_SRCU) \
-    $(wildcard include/config/SRCU) \
-  include/linux/rcupdate.h \
-    $(wildcard include/config/PREEMPT_RCU) \
-    $(wildcard include/config/TINY_RCU) \
-    $(wildcard include/config/RCU_STRICT_GRACE_PERIOD) \
-    $(wildcard include/config/TASKS_RCU_GENERIC) \
-    $(wildcard include/config/RCU_STALL_COMMON) \
-    $(wildcard include/config/NO_HZ_FULL) \
-    $(wildcard include/config/RCU_NOCB_CPU) \
-    $(wildcard include/config/TASKS_RCU) \
-    $(wildcard include/config/TASKS_TRACE_RCU) \
-    $(wildcard include/config/TASKS_RUDE_RCU) \
-    $(wildcard include/config/TREE_RCU) \
-    $(wildcard include/config/DEBUG_OBJECTS_RCU_HEAD) \
-    $(wildcard include/config/PROVE_RCU) \
-    $(wildcard include/config/ARCH_WEAK_RELEASE_ACQUIRE) \
-  include/linux/rcutree.h \
-  include/linux/workqueue.h \
-    $(wildcard include/config/DEBUG_OBJECTS_WORK) \
-    $(wildcard include/config/FREEZER) \
-    $(wildcard include/config/SYSFS) \
-    $(wildcard include/config/WQ_WATCHDOG) \
-  include/linux/timer.h \
-    $(wildcard include/config/DEBUG_OBJECTS_TIMERS) \
-    $(wildcard include/config/NO_HZ_COMMON) \
-  include/linux/ktime.h \
-  include/linux/time.h \
-    $(wildcard include/config/POSIX_TIMERS) \
-  include/linux/time32.h \
-  include/linux/timex.h \
-  include/uapi/linux/timex.h \
-  arch/x86/include/asm/timex.h \
-    $(wildcard include/config/X86_TSC) \
-  arch/x86/include/asm/tsc.h \
-  include/vdso/time32.h \
-  include/vdso/time.h \
-  include/linux/jiffies.h \
-  include/vdso/jiffies.h \
-  include/generated/timeconst.h \
-  include/vdso/ktime.h \
-  include/linux/timekeeping.h \
-    $(wildcard include/config/GENERIC_CMOS_UPDATE) \
-  include/linux/clocksource_ids.h \
-  include/linux/debugobjects.h \
-    $(wildcard include/config/DEBUG_OBJECTS) \
-    $(wildcard include/config/DEBUG_OBJECTS_FREE) \
-  include/linux/rcu_segcblist.h \
-  include/linux/srcutree.h \
-  include/linux/rcu_node_tree.h \
-    $(wildcard include/config/RCU_FANOUT) \
-    $(wildcard include/config/RCU_FANOUT_LEAF) \
-  include/linux/completion.h \
-  include/linux/swait.h \
-  include/linux/wait.h \
-  include/uapi/linux/wait.h \
-  include/linux/delay.h \
-  include/linux/sched.h \
-    $(wildcard include/config/VIRT_CPU_ACCOUNTING_NATIVE) \
-    $(wildcard include/config/SCHED_INFO) \
-    $(wildcard include/config/SCHEDSTATS) \
-    $(wildcard include/config/SCHED_CORE) \
-    $(wildcard include/config/FAIR_GROUP_SCHED) \
-    $(wildcard include/config/RT_GROUP_SCHED) \
-    $(wildcard include/config/RT_MUTEXES) \
-    $(wildcard include/config/UCLAMP_TASK) \
-    $(wildcard include/config/UCLAMP_BUCKETS_COUNT) \
-    $(wildcard include/config/KMAP_LOCAL) \
-    $(wildcard include/config/CGROUP_SCHED) \
-    $(wildcard include/config/BLK_DEV_IO_TRACE) \
-    $(wildcard include/config/PSI) \
-    $(wildcard include/config/MEMCG) \
-    $(wildcard include/config/COMPAT_BRK) \
-    $(wildcard include/config/CGROUPS) \
-    $(wildcard include/config/BLK_CGROUP) \
-    $(wildcard include/config/PAGE_OWNER) \
-    $(wildcard include/config/EVENTFD) \
-    $(wildcard include/config/IOMMU_SVA) \
-    $(wildcard include/config/ARCH_HAS_SCALED_CPUTIME) \
-    $(wildcard include/config/VIRT_CPU_ACCOUNTING_GEN) \
-    $(wildcard include/config/POSIX_CPUTIMERS) \
-    $(wildcard include/config/POSIX_CPU_TIMERS_TASK_WORK) \
-    $(wildcard include/config/KEYS) \
-    $(wildcard include/config/SYSVIPC) \
-    $(wildcard include/config/DETECT_HUNG_TASK) \
-    $(wildcard include/config/IO_URING) \
-    $(wildcard include/config/AUDIT) \
-    $(wildcard include/config/AUDITSYSCALL) \
-    $(wildcard include/config/UBSAN) \
-    $(wildcard include/config/UBSAN_TRAP) \
-    $(wildcard include/config/COMPACTION) \
-    $(wildcard include/config/TASK_XACCT) \
-    $(wildcard include/config/CPUSETS) \
-    $(wildcard include/config/X86_CPU_RESCTRL) \
-    $(wildcard include/config/FUTEX) \
-    $(wildcard include/config/PERF_EVENTS) \
-    $(wildcard include/config/NUMA) \
-    $(wildcard include/config/NUMA_BALANCING) \
-    $(wildcard include/config/RSEQ) \
-    $(wildcard include/config/TASK_DELAY_ACCT) \
-    $(wildcard include/config/FAULT_INJECTION) \
-    $(wildcard include/config/LATENCYTOP) \
-    $(wildcard include/config/KUNIT) \
-    $(wildcard include/config/FUNCTION_GRAPH_TRACER) \
-    $(wildcard include/config/UPROBES) \
-    $(wildcard include/config/BCACHE) \
-    $(wildcard include/config/VMAP_STACK) \
-    $(wildcard include/config/LIVEPATCH) \
-    $(wildcard include/config/SECURITY) \
-    $(wildcard include/config/BPF_SYSCALL) \
-    $(wildcard include/config/GCC_PLUGIN_STACKLEAK) \
-    $(wildcard include/config/X86_MCE) \
-    $(wildcard include/config/KRETPROBES) \
-    $(wildcard include/config/RETHOOK) \
-    $(wildcard include/config/ARCH_HAS_PARANOID_L1D_FLUSH) \
-    $(wildcard include/config/ARCH_TASK_STRUCT_ON_STACK) \
-    $(wildcard include/config/DEBUG_RSEQ) \
-  include/uapi/linux/sched.h \
-  include/linux/pid.h \
-  include/linux/rculist.h \
-    $(wildcard include/config/PROVE_RCU_LIST) \
-  include/linux/refcount.h \
-  include/linux/sem.h \
-  include/uapi/linux/sem.h \
-  include/linux/ipc.h \
-  include/linux/uidgid.h \
-    $(wildcard include/config/MULTIUSER) \
-    $(wildcard include/config/USER_NS) \
-  include/linux/highuid.h \
-  include/linux/rhashtable-types.h \
-  include/uapi/linux/ipc.h \
-  arch/x86/include/generated/uapi/asm/ipcbuf.h \
-  include/uapi/asm-generic/ipcbuf.h \
-  arch/x86/include/uapi/asm/sembuf.h \
-  include/linux/shm.h \
-  include/uapi/linux/shm.h \
-  include/uapi/asm-generic/hugetlb_encode.h \
-  arch/x86/include/uapi/asm/shmbuf.h \
-  include/uapi/asm-generic/shmbuf.h \
-  arch/x86/include/asm/shmparam.h \
-  include/linux/plist.h \
-    $(wildcard include/config/DEBUG_PLIST) \
-  include/linux/hrtimer.h \
-    $(wildcard include/config/HIGH_RES_TIMERS) \
-    $(wildcard include/config/TIME_LOW_RES) \
-    $(wildcard include/config/TIMERFD) \
-  include/linux/hrtimer_defs.h \
-  include/linux/rbtree.h \
-  include/linux/rbtree_types.h \
-  include/linux/percpu.h \
-    $(wildcard include/config/NEED_PER_CPU_EMBED_FIRST_CHUNK) \
-    $(wildcard include/config/NEED_PER_CPU_PAGE_FIRST_CHUNK) \
-  include/linux/mmdebug.h \
-    $(wildcard include/config/DEBUG_VM) \
-    $(wildcard include/config/DEBUG_VM_PGFLAGS) \
-  include/linux/seqlock.h \
-  include/linux/ww_mutex.h \
-    $(wildcard include/config/DEBUG_RT_MUTEXES) \
-    $(wildcard include/config/DEBUG_WW_MUTEX_SLOWPATH) \
-  include/linux/rtmutex.h \
-  include/linux/timerqueue.h \
-  include/linux/seccomp.h \
-    $(wildcard include/config/SECCOMP) \
-    $(wildcard include/config/HAVE_ARCH_SECCOMP_FILTER) \
-    $(wildcard include/config/SECCOMP_FILTER) \
-    $(wildcard include/config/CHECKPOINT_RESTORE) \
-    $(wildcard include/config/SECCOMP_CACHE_DEBUG) \
-  include/uapi/linux/seccomp.h \
-  arch/x86/include/asm/seccomp.h \
-  arch/x86/include/asm/unistd.h \
-  arch/x86/include/uapi/asm/unistd.h \
-  arch/x86/include/generated/uapi/asm/unistd_32.h \
-  include/asm-generic/seccomp.h \
-  include/uapi/linux/unistd.h \
-  include/linux/nodemask.h \
-    $(wildcard include/config/HIGHMEM) \
-  include/linux/numa.h \
-    $(wildcard include/config/NODES_SHIFT) \
-    $(wildcard include/config/NUMA_KEEP_MEMINFO) \
-    $(wildcard include/config/HAVE_ARCH_NODE_DEV_GROUP) \
-  arch/x86/include/asm/sparsemem.h \
-  include/linux/resource.h \
-  include/uapi/linux/resource.h \
-  arch/x86/include/generated/uapi/asm/resource.h \
-  include/asm-generic/resource.h \
-  include/uapi/asm-generic/resource.h \
-  include/linux/latencytop.h \
-  include/linux/sched/prio.h \
-  include/linux/sched/types.h \
-  include/linux/signal_types.h \
-    $(wildcard include/config/OLD_SIGACTION) \
-  include/uapi/linux/signal.h \
-  arch/x86/include/asm/signal.h \
-  arch/x86/include/uapi/asm/signal.h \
-  include/uapi/asm-generic/signal-defs.h \
-  arch/x86/include/uapi/asm/siginfo.h \
-  include/uapi/asm-generic/siginfo.h \
-  include/linux/syscall_user_dispatch.h \
-  include/linux/mm_types_task.h \
-    $(wildcard include/config/ARCH_WANT_BATCHED_UNMAP_TLB_FLUSH) \
-    $(wildcard include/config/SPLIT_PTLOCK_CPUS) \
-    $(wildcard include/config/ARCH_ENABLE_SPLIT_PMD_PTLOCK) \
-  arch/x86/include/asm/tlbbatch.h \
-  include/linux/task_io_accounting.h \
-    $(wildcard include/config/TASK_IO_ACCOUNTING) \
-  include/linux/posix-timers.h \
-  include/linux/alarmtimer.h \
-    $(wildcard include/config/RTC_CLASS) \
-  include/uapi/linux/rseq.h \
-  include/linux/kcsan.h \
-  arch/x86/include/generated/asm/kmap_size.h \
-  include/asm-generic/kmap_size.h \
-    $(wildcard include/config/DEBUG_KMAP_LOCAL) \
-  arch/x86/include/asm/delay.h \
-  include/asm-generic/delay.h \
-  include/linux/gpio/consumer.h \
-    $(wildcard include/config/GPIOLIB) \
-    $(wildcard include/config/OF_GPIO) \
-    $(wildcard include/config/ACPI) \
-    $(wildcard include/config/GPIO_SYSFS) \
-  include/linux/i2c.h \
-    $(wildcard include/config/I2C) \
-    $(wildcard include/config/I2C_SLAVE) \
-    $(wildcard include/config/I2C_BOARDINFO) \
-    $(wildcard include/config/I2C_MUX) \
-  include/linux/acpi.h \
-    $(wildcard include/config/ACPI_DEBUGGER) \
-    $(wildcard include/config/ACPI_TABLE_LIB) \
-    $(wildcard include/config/IA64) \
-    $(wildcard include/config/LOONGARCH) \
-    $(wildcard include/config/ARM64) \
-    $(wildcard include/config/ACPI_PROCESSOR_CSTATE) \
-    $(wildcard include/config/ACPI_HOTPLUG_CPU) \
-    $(wildcard include/config/ACPI_HOTPLUG_IOAPIC) \
-    $(wildcard include/config/X86_IO_APIC) \
-    $(wildcard include/config/PCI) \
-    $(wildcard include/config/ACPI_WMI) \
-    $(wildcard include/config/ACPI_NUMA) \
-    $(wildcard include/config/HIBERNATION) \
-    $(wildcard include/config/PM_SLEEP) \
-    $(wildcard include/config/ACPI_HOTPLUG_MEMORY) \
-    $(wildcard include/config/ACPI_CONTAINER) \
-    $(wildcard include/config/ACPI_GTDT) \
-    $(wildcard include/config/PM) \
-    $(wildcard include/config/ACPI_TABLE_UPGRADE) \
-    $(wildcard include/config/ACPI_WATCHDOG) \
-    $(wildcard include/config/ACPI_SPCR_TABLE) \
-    $(wildcard include/config/ACPI_GENERIC_GSI) \
-    $(wildcard include/config/ACPI_LPIT) \
-    $(wildcard include/config/ACPI_PPTT) \
-    $(wildcard include/config/ACPI_PCC) \
-  include/linux/ioport.h \
-    $(wildcard include/config/MEMORY_HOTREMOVE) \
-    $(wildcard include/config/MEMORY_HOTPLUG) \
-  include/linux/irqdomain.h \
-    $(wildcard include/config/IRQ_DOMAIN_HIERARCHY) \
-    $(wildcard include/config/GENERIC_IRQ_DEBUGFS) \
-    $(wildcard include/config/IRQ_DOMAIN) \
-    $(wildcard include/config/IRQ_DOMAIN_NOMAP) \
-  include/linux/irqhandler.h \
-  include/linux/of.h \
-    $(wildcard include/config/OF_DYNAMIC) \
-    $(wildcard include/config/SPARC) \
-    $(wildcard include/config/OF_PROMTREE) \
-    $(wildcard include/config/OF_KOBJ) \
-    $(wildcard include/config/OF_NUMA) \
-    $(wildcard include/config/OF_OVERLAY) \
-  include/linux/kobject.h \
-    $(wildcard include/config/UEVENT_HELPER) \
-    $(wildcard include/config/DEBUG_KOBJECT_RELEASE) \
-  include/linux/sysfs.h \
-  include/linux/kernfs.h \
-    $(wildcard include/config/KERNFS) \
-  include/linux/idr.h \
-  include/linux/radix-tree.h \
-  include/linux/gfp.h \
-    $(wildcard include/config/KASAN_HW_TAGS) \
-    $(wildcard include/config/ZONE_DMA) \
-    $(wildcard include/config/ZONE_DMA32) \
-    $(wildcard include/config/ZONE_DEVICE) \
-    $(wildcard include/config/CONTIG_ALLOC) \
-    $(wildcard include/config/CMA) \
-  include/linux/mmzone.h \
-    $(wildcard include/config/FORCE_MAX_ZONEORDER) \
-    $(wildcard include/config/MEMORY_ISOLATION) \
-    $(wildcard include/config/ZSMALLOC) \
-    $(wildcard include/config/SWAP) \
-    $(wildcard include/config/TRANSPARENT_HUGEPAGE) \
-    $(wildcard include/config/PAGE_EXTENSION) \
-    $(wildcard include/config/DEFERRED_STRUCT_PAGE_INIT) \
-    $(wildcard include/config/HAVE_MEMORYLESS_NODES) \
-    $(wildcard include/config/SPARSEMEM_EXTREME) \
-    $(wildcard include/config/HAVE_ARCH_PFN_VALID) \
-  include/linux/pageblock-flags.h \
-    $(wildcard include/config/HUGETLB_PAGE) \
-    $(wildcard include/config/HUGETLB_PAGE_SIZE_VARIABLE) \
-  include/linux/page-flags-layout.h \
-  include/generated/bounds.h \
-  include/linux/mm_types.h \
-    $(wildcard include/config/HAVE_ALIGNED_STRUCT_PAGE) \
-    $(wildcard include/config/USERFAULTFD) \
-    $(wildcard include/config/HAVE_ARCH_COMPAT_MMAP_BASES) \
-    $(wildcard include/config/MEMBARRIER) \
-    $(wildcard include/config/AIO) \
-    $(wildcard include/config/MMU_NOTIFIER) \
-  include/linux/auxvec.h \
-  include/uapi/linux/auxvec.h \
-  arch/x86/include/uapi/asm/auxvec.h \
-  include/linux/kref.h \
-  include/linux/uprobes.h \
-  arch/x86/include/asm/uprobes.h \
-  arch/x86/include/asm/mmu.h \
-    $(wildcard include/config/MODIFY_LDT_SYSCALL) \
-  include/linux/page-flags.h \
-    $(wildcard include/config/ARCH_USES_PG_UNCACHED) \
-    $(wildcard include/config/MEMORY_FAILURE) \
-    $(wildcard include/config/PAGE_IDLE_FLAG) \
-    $(wildcard include/config/HUGETLB_PAGE_FREE_VMEMMAP) \
-    $(wildcard include/config/HUGETLB_PAGE_FREE_VMEMMAP_DEFAULT_ON) \
-    $(wildcard include/config/KSM) \
-  include/linux/local_lock.h \
-  include/linux/local_lock_internal.h \
-  include/linux/memory_hotplug.h \
-    $(wildcard include/config/HAVE_ARCH_NODEDATA_EXTENSION) \
-    $(wildcard include/config/ARCH_HAS_ADD_PAGES) \
-  arch/x86/include/asm/mmzone.h \
-  arch/x86/include/asm/mmzone_32.h \
-  include/linux/topology.h \
-    $(wildcard include/config/USE_PERCPU_NUMA_NODE_ID) \
-    $(wildcard include/config/SCHED_SMT) \
-    $(wildcard include/config/SCHED_CLUSTER) \
-  include/linux/arch_topology.h \
-    $(wildcard include/config/ACPI_CPPC_LIB) \
-    $(wildcard include/config/GENERIC_ARCH_TOPOLOGY) \
-  arch/x86/include/asm/topology.h \
-    $(wildcard include/config/SCHED_MC_PRIO) \
-  arch/x86/include/asm/mpspec.h \
-    $(wildcard include/config/EISA) \
-    $(wildcard include/config/X86_MPPARSE) \
-  arch/x86/include/asm/mpspec_def.h \
-  arch/x86/include/asm/x86_init.h \
-  arch/x86/include/asm/apicdef.h \
-  include/asm-generic/topology.h \
-  include/linux/xarray.h \
-    $(wildcard include/config/XARRAY_MULTI) \
-  include/linux/kconfig.h \
-  include/linux/kobject_ns.h \
-  include/linux/stat.h \
-  arch/x86/include/uapi/asm/stat.h \
-  include/uapi/linux/stat.h \
-  include/linux/mod_devicetable.h \
-  include/linux/uuid.h \
-  include/uapi/linux/uuid.h \
-  include/linux/property.h \
-  include/linux/fwnode.h \
-  include/linux/resource_ext.h \
-  include/linux/slab.h \
-    $(wildcard include/config/DEBUG_SLAB) \
-    $(wildcard include/config/FAILSLAB) \
-    $(wildcard include/config/MEMCG_KMEM) \
-    $(wildcard include/config/KASAN) \
-    $(wildcard include/config/SLAB) \
-    $(wildcard include/config/SLUB) \
-    $(wildcard include/config/SLOB) \
-  include/linux/overflow.h \
-  include/linux/percpu-refcount.h \
-  include/linux/kasan.h \
-    $(wildcard include/config/KASAN_STACK) \
-    $(wildcard include/config/KASAN_VMALLOC) \
-    $(wildcard include/config/KASAN_INLINE) \
-  include/linux/kasan-enabled.h \
-  include/linux/device.h \
-    $(wildcard include/config/GENERIC_MSI_IRQ_DOMAIN) \
-    $(wildcard include/config/GENERIC_MSI_IRQ) \
-    $(wildcard include/config/ENERGY_MODEL) \
-    $(wildcard include/config/PINCTRL) \
-    $(wildcard include/config/DMA_OPS) \
-    $(wildcard include/config/DMA_DECLARE_COHERENT) \
-    $(wildcard include/config/DMA_CMA) \
-    $(wildcard include/config/SWIOTLB) \
-    $(wildcard include/config/ARCH_HAS_SYNC_DMA_FOR_DEVICE) \
-    $(wildcard include/config/ARCH_HAS_SYNC_DMA_FOR_CPU) \
-    $(wildcard include/config/ARCH_HAS_SYNC_DMA_FOR_CPU_ALL) \
-    $(wildcard include/config/DMA_OPS_BYPASS) \
-    $(wildcard include/config/DEVTMPFS) \
-    $(wildcard include/config/SYSFS_DEPRECATED) \
-  include/linux/dev_printk.h \
-  include/linux/ratelimit.h \
-  include/linux/energy_model.h \
-  include/linux/sched/cpufreq.h \
-    $(wildcard include/config/CPU_FREQ) \
-  include/linux/sched/topology.h \
-    $(wildcard include/config/SCHED_DEBUG) \
-    $(wildcard include/config/SCHED_MC) \
-    $(wildcard include/config/CPU_FREQ_GOV_SCHEDUTIL) \
-  include/linux/sched/idle.h \
-  include/linux/sched/sd_flags.h \
-  include/linux/klist.h \
-  include/linux/pm.h \
-    $(wildcard include/config/VT_CONSOLE_SLEEP) \
-    $(wildcard include/config/PM_CLK) \
-    $(wildcard include/config/PM_GENERIC_DOMAINS) \
-  include/linux/device/bus.h \
-  include/linux/device/class.h \
-  include/linux/device/driver.h \
-  include/linux/module.h \
-    $(wildcard include/config/MODULES_TREE_LOOKUP) \
-    $(wildcard include/config/STACKTRACE_BUILD_ID) \
-    $(wildcard include/config/MODULE_SIG) \
-    $(wildcard include/config/KALLSYMS) \
-    $(wildcard include/config/BPF_EVENTS) \
-    $(wildcard include/config/DEBUG_INFO_BTF_MODULES) \
-    $(wildcard include/config/EVENT_TRACING) \
-    $(wildcard include/config/MODULE_UNLOAD) \
-    $(wildcard include/config/CONSTRUCTORS) \
-    $(wildcard include/config/FUNCTION_ERROR_INJECTION) \
-  include/linux/buildid.h \
-    $(wildcard include/config/CRASH_CORE) \
-  include/linux/kmod.h \
-  include/linux/umh.h \
-  include/linux/sysctl.h \
-    $(wildcard include/config/SYSCTL) \
-  include/uapi/linux/sysctl.h \
-  include/linux/elf.h \
-    $(wildcard include/config/ARCH_USE_GNU_PROPERTY) \
-    $(wildcard include/config/ARCH_HAVE_ELF_PROT) \
-  arch/x86/include/asm/elf.h \
-    $(wildcard include/config/X86_X32_ABI) \
-  arch/x86/include/asm/user.h \
-  arch/x86/include/asm/user_32.h \
-  arch/x86/include/asm/fsgsbase.h \
-  arch/x86/include/asm/vdso.h \
-  arch/x86/include/asm/desc.h \
-  arch/x86/include/asm/fixmap.h \
-    $(wildcard include/config/DEBUG_KMAP_LOCAL_FORCE_MAP) \
-    $(wildcard include/config/X86_VSYSCALL_EMULATION) \
-    $(wildcard include/config/PROVIDE_OHCI1394_DMA_INIT) \
-    $(wildcard include/config/PCI_MMCONFIG) \
-    $(wildcard include/config/ACPI_APEI_GHES) \
-    $(wildcard include/config/INTEL_TXT) \
-  include/asm-generic/fixmap.h \
-  arch/x86/include/asm/irq_vectors.h \
-    $(wildcard include/config/HAVE_KVM) \
-    $(wildcard include/config/HYPERV) \
-    $(wildcard include/config/PCI_MSI) \
-  arch/x86/include/asm/cpu_entry_area.h \
-  arch/x86/include/asm/intel_ds.h \
-  arch/x86/include/asm/pgtable_areas.h \
-  arch/x86/include/asm/pgtable_32_areas.h \
-  include/uapi/linux/elf.h \
-  include/uapi/linux/elf-em.h \
-  include/linux/moduleparam.h \
-    $(wildcard include/config/ALPHA) \
-    $(wildcard include/config/PPC64) \
-  include/linux/rbtree_latch.h \
-  include/linux/error-injection.h \
-  include/asm-generic/error-injection.h \
-  include/linux/cfi.h \
-    $(wildcard include/config/CFI_CLANG_SHADOW) \
-  arch/x86/include/asm/module.h \
-    $(wildcard include/config/UNWINDER_ORC) \
-  include/asm-generic/module.h \
-    $(wildcard include/config/HAVE_MOD_ARCH_SPECIFIC) \
-    $(wildcard include/config/MODULES_USE_ELF_REL) \
-    $(wildcard include/config/MODULES_USE_ELF_RELA) \
-  arch/x86/include/asm/orc_types.h \
-  arch/x86/include/asm/device.h \
-  include/linux/pm_wakeup.h \
-  include/acpi/acpi.h \
-  include/acpi/platform/acenv.h \
-  include/acpi/platform/acgcc.h \
-  include/acpi/platform/aclinux.h \
-    $(wildcard include/config/ACPI_REDUCED_HARDWARE_ONLY) \
-    $(wildcard include/config/ACPI_DEBUG) \
-  include/linux/ctype.h \
-  arch/x86/include/asm/acenv.h \
-  include/acpi/acnames.h \
-  include/acpi/actypes.h \
-  include/acpi/acexcep.h \
-  include/acpi/actbl.h \
-  include/acpi/actbl1.h \
-  include/acpi/actbl2.h \
-  include/acpi/actbl3.h \
-  include/acpi/acrestyp.h \
-  include/acpi/platform/acenvex.h \
-  include/acpi/platform/aclinuxex.h \
-  include/acpi/platform/acgccex.h \
-  include/acpi/acoutput.h \
-  include/acpi/acpiosxf.h \
-  include/acpi/acpixf.h \
-  include/acpi/acconfig.h \
-  include/acpi/acbuffer.h \
-  include/linux/dynamic_debug.h \
-  include/acpi/acpi_bus.h \
-    $(wildcard include/config/X86_ANDROID_TABLETS) \
-    $(wildcard include/config/ACPI_SYSTEM_POWER_STATES_SUPPORT) \
-    $(wildcard include/config/ACPI_SLEEP) \
-  include/acpi/acpi_drivers.h \
-    $(wildcard include/config/ACPI_DOCK) \
-  include/acpi/acpi_numa.h \
-    $(wildcard include/config/ACPI_HMAT) \
-  include/acpi/acpi_io.h \
-  include/linux/io.h \
-    $(wildcard include/config/HAS_IOPORT_MAP) \
-  arch/x86/include/asm/io.h \
-    $(wildcard include/config/MTRR) \
-    $(wildcard include/config/X86_PAT) \
-  arch/x86/include/generated/asm/early_ioremap.h \
-  include/asm-generic/early_ioremap.h \
-    $(wildcard include/config/GENERIC_EARLY_IOREMAP) \
-  include/asm-generic/iomap.h \
-  include/asm-generic/pci_iomap.h \
-    $(wildcard include/config/NO_GENERIC_PCI_IOPORT_MAP) \
-    $(wildcard include/config/GENERIC_PCI_IOMAP) \
-  include/asm-generic/io.h \
-    $(wildcard include/config/GENERIC_IOMAP) \
-    $(wildcard include/config/GENERIC_IOREMAP) \
-    $(wildcard include/config/VIRT_TO_BUS) \
-    $(wildcard include/config/GENERIC_DEVMEM_IS_ALLOWED) \
-  include/linux/logic_pio.h \
-    $(wildcard include/config/INDIRECT_PIO) \
-  include/linux/vmalloc.h \
-    $(wildcard include/config/HAVE_ARCH_HUGE_VMALLOC) \
-  arch/x86/include/asm/vmalloc.h \
-    $(wildcard include/config/HAVE_ARCH_HUGE_VMAP) \
-  arch/x86/include/asm/acpi.h \
-    $(wildcard include/config/ACPI_APEI) \
-  include/acpi/pdc_intel.h \
-  arch/x86/include/asm/numa.h \
-    $(wildcard include/config/NUMA_EMU) \
-  arch/x86/include/asm/numa_32.h \
-  include/linux/regulator/consumer.h \
-    $(wildcard include/config/REGULATOR) \
-  include/linux/suspend.h \
-    $(wildcard include/config/VT) \
-    $(wildcard include/config/SUSPEND) \
-    $(wildcard include/config/HIBERNATION_SNAPSHOT_DEV) \
-    $(wildcard include/config/PM_SLEEP_DEBUG) \
-    $(wildcard include/config/PM_AUTOSLEEP) \
-  include/linux/swap.h \
-    $(wildcard include/config/DEVICE_PRIVATE) \
-    $(wildcard include/config/MIGRATION) \
-    $(wildcard include/config/FRONTSWAP) \
-    $(wildcard include/config/THP_SWAP) \
-    $(wildcard include/config/MEMCG_SWAP) \
-  include/linux/memcontrol.h \
-    $(wildcard include/config/CGROUP_WRITEBACK) \
-  include/linux/cgroup.h \
-    $(wildcard include/config/CGROUP_CPUACCT) \
-    $(wildcard include/config/SOCK_CGROUP_DATA) \
-    $(wildcard include/config/CGROUP_DATA) \
-    $(wildcard include/config/CGROUP_BPF) \
-  include/uapi/linux/cgroupstats.h \
-  include/uapi/linux/taskstats.h \
-  include/linux/fs.h \
-    $(wildcard include/config/READ_ONLY_THP_FOR_FS) \
-    $(wildcard include/config/FS_POSIX_ACL) \
-    $(wildcard include/config/IMA) \
-    $(wildcard include/config/FILE_LOCKING) \
-    $(wildcard include/config/FSNOTIFY) \
-    $(wildcard include/config/FS_ENCRYPTION) \
-    $(wildcard include/config/FS_VERITY) \
-    $(wildcard include/config/EPOLL) \
-    $(wildcard include/config/UNICODE) \
-    $(wildcard include/config/QUOTA) \
-    $(wildcard include/config/FS_DAX) \
-    $(wildcard include/config/BLOCK) \
-  include/linux/wait_bit.h \
-  include/linux/kdev_t.h \
-  include/uapi/linux/kdev_t.h \
-  include/linux/dcache.h \
-  include/linux/rculist_bl.h \
-  include/linux/list_bl.h \
-  include/linux/bit_spinlock.h \
-  include/linux/lockref.h \
-    $(wildcard include/config/ARCH_USE_CMPXCHG_LOCKREF) \
-  include/linux/stringhash.h \
-    $(wildcard include/config/DCACHE_WORD_ACCESS) \
-  include/linux/hash.h \
-    $(wildcard include/config/HAVE_ARCH_HASH) \
-  include/linux/path.h \
-  include/linux/list_lru.h \
-  include/linux/shrinker.h \
-  include/linux/capability.h \
-  include/uapi/linux/capability.h \
-  include/linux/semaphore.h \
-  include/linux/fcntl.h \
-    $(wildcard include/config/ARCH_32BIT_OFF_T) \
-  include/uapi/linux/fcntl.h \
-  arch/x86/include/generated/uapi/asm/fcntl.h \
-  include/uapi/asm-generic/fcntl.h \
-  include/uapi/linux/openat2.h \
-  include/linux/migrate_mode.h \
-  include/linux/percpu-rwsem.h \
-  include/linux/rcuwait.h \
-  include/linux/sched/signal.h \
-    $(wildcard include/config/SCHED_AUTOGROUP) \
-    $(wildcard include/config/BSD_PROCESS_ACCT) \
-    $(wildcard include/config/TASKSTATS) \
-    $(wildcard include/config/STACK_GROWSUP) \
-  include/linux/signal.h \
-    $(wildcard include/config/DYNAMIC_SIGFRAME) \
-  include/linux/sched/jobctl.h \
-  include/linux/sched/task.h \
-    $(wildcard include/config/HAVE_EXIT_THREAD) \
-    $(wildcard include/config/ARCH_WANTS_DYNAMIC_TASK_STRUCT) \
-    $(wildcard include/config/HAVE_ARCH_THREAD_STRUCT_WHITELIST) \
-  include/linux/uaccess.h \
-  include/linux/fault-inject-usercopy.h \
-    $(wildcard include/config/FAULT_INJECTION_USERCOPY) \
-  arch/x86/include/asm/uaccess.h \
-    $(wildcard include/config/CC_HAS_ASM_GOTO_OUTPUT) \
-    $(wildcard include/config/CC_HAS_ASM_GOTO_TIED_OUTPUT) \
-    $(wildcard include/config/ARCH_HAS_COPY_MC) \
-    $(wildcard include/config/X86_INTEL_USERCOPY) \
-  arch/x86/include/asm/smap.h \
-  arch/x86/include/asm/extable.h \
-    $(wildcard include/config/BPF_JIT) \
-  include/asm-generic/access_ok.h \
-    $(wildcard include/config/ALTERNATE_USER_ADDRESS_SPACE) \
-  arch/x86/include/asm/uaccess_32.h \
-  include/linux/cred.h \
-    $(wildcard include/config/DEBUG_CREDENTIALS) \
-  include/linux/key.h \
-    $(wildcard include/config/KEY_NOTIFICATIONS) \
-    $(wildcard include/config/NET) \
-  include/linux/assoc_array.h \
-    $(wildcard include/config/ASSOCIATIVE_ARRAY) \
-  include/linux/sched/user.h \
-    $(wildcard include/config/WATCH_QUEUE) \
-  include/linux/percpu_counter.h \
-  include/linux/rcu_sync.h \
-  include/linux/delayed_call.h \
-  include/linux/errseq.h \
-  include/linux/ioprio.h \
-  include/linux/sched/rt.h \
-  include/linux/iocontext.h \
-    $(wildcard include/config/BLK_ICQ) \
-  include/uapi/linux/ioprio.h \
-  include/linux/fs_types.h \
-  include/linux/mount.h \
-  include/linux/mnt_idmapping.h \
-  include/uapi/linux/fs.h \
-  include/linux/quota.h \
-    $(wildcard include/config/QUOTA_NETLINK_INTERFACE) \
-  include/uapi/linux/dqblk_xfs.h \
-  include/linux/dqblk_v1.h \
-  include/linux/dqblk_v2.h \
-  include/linux/dqblk_qtree.h \
-  include/linux/projid.h \
-  include/uapi/linux/quota.h \
-  include/linux/nfs_fs_i.h \
-  include/linux/seq_file.h \
-  include/linux/string_helpers.h \
-  include/linux/ns_common.h \
-  include/linux/nsproxy.h \
-  include/linux/user_namespace.h \
-    $(wildcard include/config/INOTIFY_USER) \
-    $(wildcard include/config/FANOTIFY) \
-    $(wildcard include/config/PERSISTENT_KEYRINGS) \
-  include/linux/kernel_stat.h \
-  include/linux/interrupt.h \
-    $(wildcard include/config/IRQ_FORCED_THREADING) \
-    $(wildcard include/config/GENERIC_IRQ_PROBE) \
-    $(wildcard include/config/IRQ_TIMINGS) \
-  include/linux/irqreturn.h \
-  include/linux/irqnr.h \
-  include/uapi/linux/irqnr.h \
-  include/linux/hardirq.h \
-  include/linux/context_tracking_state.h \
-    $(wildcard include/config/CONTEXT_TRACKING) \
-  include/linux/ftrace_irq.h \
-    $(wildcard include/config/HWLAT_TRACER) \
-    $(wildcard include/config/OSNOISE_TRACER) \
-  include/linux/vtime.h \
-    $(wildcard include/config/VIRT_CPU_ACCOUNTING) \
-    $(wildcard include/config/IRQ_TIME_ACCOUNTING) \
-  arch/x86/include/asm/hardirq.h \
-    $(wildcard include/config/KVM_INTEL) \
-    $(wildcard include/config/X86_THERMAL_VECTOR) \
-    $(wildcard include/config/X86_MCE_THRESHOLD) \
-    $(wildcard include/config/X86_MCE_AMD) \
-    $(wildcard include/config/X86_HV_CALLBACK_VECTOR) \
-  arch/x86/include/asm/irq.h \
-  arch/x86/include/asm/sections.h \
-  include/asm-generic/sections.h \
-    $(wildcard include/config/HAVE_FUNCTION_DESCRIPTORS) \
-  include/linux/cgroup-defs.h \
-    $(wildcard include/config/CGROUP_NET_CLASSID) \
-    $(wildcard include/config/CGROUP_NET_PRIO) \
-  include/linux/u64_stats_sync.h \
-  include/linux/bpf-cgroup-defs.h \
-  include/linux/psi_types.h \
-  include/linux/kthread.h \
-  include/linux/cgroup_subsys.h \
-    $(wildcard include/config/CGROUP_DEVICE) \
-    $(wildcard include/config/CGROUP_FREEZER) \
-    $(wildcard include/config/CGROUP_PERF) \
-    $(wildcard include/config/CGROUP_HUGETLB) \
-    $(wildcard include/config/CGROUP_PIDS) \
-    $(wildcard include/config/CGROUP_RDMA) \
-    $(wildcard include/config/CGROUP_MISC) \
-    $(wildcard include/config/CGROUP_DEBUG) \
-  include/linux/vm_event_item.h \
-    $(wildcard include/config/HAVE_ARCH_TRANSPARENT_HUGEPAGE_PUD) \
-    $(wildcard include/config/MEMORY_BALLOON) \
-    $(wildcard include/config/BALLOON_COMPACTION) \
-    $(wildcard include/config/DEBUG_TLBFLUSH) \
-    $(wildcard include/config/DEBUG_VM_VMACACHE) \
-  include/linux/page_counter.h \
-  include/linux/vmpressure.h \
-  include/linux/eventfd.h \
-  include/linux/mm.h \
-    $(wildcard include/config/HAVE_ARCH_MMAP_RND_BITS) \
-    $(wildcard include/config/HAVE_ARCH_MMAP_RND_COMPAT_BITS) \
-    $(wildcard include/config/ARCH_USES_HIGH_VMA_FLAGS) \
-    $(wildcard include/config/ARCH_HAS_PKEYS) \
-    $(wildcard include/config/PPC) \
-    $(wildcard include/config/PARISC) \
-    $(wildcard include/config/SPARC64) \
-    $(wildcard include/config/ARM64_MTE) \
-    $(wildcard include/config/HAVE_ARCH_USERFAULTFD_MINOR) \
-    $(wildcard include/config/SHMEM) \
-    $(wildcard include/config/ARCH_HAS_PTE_SPECIAL) \
-    $(wildcard include/config/ARCH_HAS_PTE_DEVMAP) \
-    $(wildcard include/config/DEBUG_VM_RB) \
-    $(wildcard include/config/PAGE_POISONING) \
-    $(wildcard include/config/INIT_ON_ALLOC_DEFAULT_ON) \
-    $(wildcard include/config/INIT_ON_FREE_DEFAULT_ON) \
-    $(wildcard include/config/DEBUG_PAGEALLOC) \
-    $(wildcard include/config/HUGETLBFS) \
-    $(wildcard include/config/MAPPING_DIRTY_HELPERS) \
-    $(wildcard include/config/ANON_VMA_NAME) \
-  include/linux/mmap_lock.h \
-  include/linux/page_ext.h \
-  include/linux/stacktrace.h \
-    $(wildcard include/config/ARCH_STACKWALK) \
-    $(wildcard include/config/STACKTRACE) \
-    $(wildcard include/config/HAVE_RELIABLE_STACKTRACE) \
-  include/linux/stackdepot.h \
-    $(wildcard include/config/STACKDEPOT_ALWAYS_INIT) \
-  include/linux/page_ref.h \
-    $(wildcard include/config/DEBUG_PAGE_REF) \
-  include/linux/sizes.h \
-  include/linux/pgtable.h \
-    $(wildcard include/config/HIGHPTE) \
-    $(wildcard include/config/GUP_GET_PTE_LOW_HIGH) \
-    $(wildcard include/config/HAVE_ARCH_SOFT_DIRTY) \
-    $(wildcard include/config/ARCH_ENABLE_THP_MIGRATION) \
-    $(wildcard include/config/X86_ESPFIX64) \
-  arch/x86/include/asm/pgtable.h \
-    $(wildcard include/config/DEBUG_WX) \
-    $(wildcard include/config/PAGE_TABLE_CHECK) \
-  arch/x86/include/asm/pkru.h \
-  arch/x86/include/asm/fpu/api.h \
-    $(wildcard include/config/X86_DEBUG_FPU) \
-  arch/x86/include/asm/coco.h \
-  include/asm-generic/pgtable_uffd.h \
-  include/linux/page_table_check.h \
-  arch/x86/include/asm/pgtable_32.h \
-  arch/x86/include/asm/pgtable-3level.h \
-  arch/x86/include/asm/pgtable-invert.h \
-  include/linux/huge_mm.h \
-  include/linux/sched/coredump.h \
-    $(wildcard include/config/CORE_DUMP_DEFAULT_ELF_HEADERS) \
-  include/linux/vmstat.h \
-    $(wildcard include/config/VM_EVENT_COUNTERS) \
-  include/linux/writeback.h \
-  include/linux/flex_proportions.h \
-  include/linux/backing-dev-defs.h \
-    $(wildcard include/config/DEBUG_FS) \
-  include/linux/blk_types.h \
-    $(wildcard include/config/FAIL_MAKE_REQUEST) \
-    $(wildcard include/config/BLK_CGROUP_IOCOST) \
-    $(wildcard include/config/BLK_INLINE_ENCRYPTION) \
-    $(wildcard include/config/BLK_DEV_INTEGRITY) \
-  include/linux/bvec.h \
-  include/linux/highmem.h \
-  include/linux/cacheflush.h \
-  arch/x86/include/asm/cacheflush.h \
-  include/asm-generic/cacheflush.h \
-  include/linux/highmem-internal.h \
-  arch/x86/include/asm/highmem.h \
-  arch/x86/include/asm/tlbflush.h \
-  arch/x86/include/asm/invpcid.h \
-  arch/x86/include/asm/pti.h \
-  include/linux/bio.h \
-  include/linux/mempool.h \
-  include/linux/uio.h \
-    $(wildcard include/config/ARCH_HAS_UACCESS_FLUSHCACHE) \
-  include/uapi/linux/uio.h \
-  include/linux/node.h \
-    $(wildcard include/config/HMEM_REPORTING) \
-  include/linux/pagemap.h \
-  include/linux/hugetlb_inline.h \
-  include/uapi/linux/mempolicy.h \
-  include/linux/freezer.h \
-  include/uapi/linux/i2c.h \
-  include/uapi/linux/v4l2-mediabus.h \
-  include/uapi/linux/media-bus-format.h \
-  include/linux/videodev2.h \
-  include/uapi/linux/videodev2.h \
-  include/uapi/linux/v4l2-common.h \
-  include/uapi/linux/v4l2-controls.h \
-  include/media/i2c/tw9910.h \
-  include/media/v4l2-subdev.h \
-    $(wildcard include/config/MEDIA_CONTROLLER) \
-    $(wildcard include/config/VIDEO_V4L2_SUBDEV_API) \
-  include/uapi/linux/v4l2-subdev.h \
-  include/media/media-entity.h \
-  include/uapi/linux/media.h \
-  include/media/v4l2-async.h \
-  include/media/v4l2-common.h \
-    $(wildcard include/config/VIDEO_V4L2_I2C) \
-    $(wildcard include/config/SPI) \
-  include/media/v4l2-dev.h \
-  include/linux/poll.h \
-  include/uapi/linux/poll.h \
-  arch/x86/include/generated/uapi/asm/poll.h \
-  include/uapi/asm-generic/poll.h \
-  include/uapi/linux/eventpoll.h \
-  include/linux/cdev.h \
-  include/linux/spi/spi.h \
-    $(wildcard include/config/SPI_SLAVE) \
-  include/linux/scatterlist.h \
-    $(wildcard include/config/NEED_SG_DMA_LENGTH) \
-    $(wildcard include/config/DEBUG_SG) \
-    $(wildcard include/config/SGL_ALLOC) \
-    $(wildcard include/config/ARCH_NO_SG_CHAIN) \
-    $(wildcard include/config/SG_POOL) \
-  include/uapi/linux/spi/spi.h \
-  include/media/v4l2-fh.h \
-  include/media/v4l2-mediabus.h \
+/* KCQ (kernel completion queue) response op codes */
+#define L4_KCQE_OPCODE_VALUE_CLOSE_COMP             (53)
+#define L4_KCQE_OPCODE_VALUE_RESET_COMP             (54)
+#define L4_KCQE_OPCODE_VALUE_FW_TCP_UPDATE          (55)
+#define L4_KCQE_OPCODE_VALUE_CONNECT_COMPLETE       (56)
+#define L4_KCQE_OPCODE_VALUE_RESET_RECEIVED         (57)
+#define L4_KCQE_OPCODE_VALUE_CLOSE_RECEIVED         (58)
+#define L4_KCQE_OPCODE_VALUE_INIT_ULP               (61)
 
-drivers/media/i2c/tw9910.o: $(deps_drivers/media/i2c/tw9910.o)
+#define L4_KCQE_OPCODE_VALUE_OFFLOAD_PG             (1)
+#define L4_KCQE_OPCODE_VALUE_UPDATE_PG              (9)
+#define L4_KCQE_OPCODE_VALUE_UPLOAD_PG              (14)
 
-$(deps_drivers/media/i2c/tw9910.o):
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        cmd_drivers/media/i2c/tw9910.o := gcc -Wp,-MMD,drivers/media/i2c/.tw9910.o.d -nostdinc -I./arch/x86/include -I./arch/x86/include/generated  -I./include -I./arch/x86/include/uapi -I./arch/x86/include/generated/uapi -I./include/uapi -I./include/generated/uapi -include ./include/linux/compiler-version.h -include ./include/linux/kconfig.h -include ./include/linux/compiler_types.h -D__KERNEL__ -fmacro-prefix-map=./= -Wall -Wundef -Werror=strict-prototypes -Wno-trigraphs -fno-strict-aliasing -fno-common -fshort-wchar -fno-PIE -Werror=implicit-function-declaration -Werror=implicit-int -Werror=return-type -Wno-format-security -std=gnu11 -mno-sse -mno-mmx -mno-sse2 -mno-3dnow -mno-avx -fcf-protection=none -m32 -msoft-float -mregparm=3 -freg-struct-return -fno-pic -mpreferred-stack-boundary=2 -march=i686 -mtune=pentium3 -mtune=generic -Wa,-mtune=generic32 -ffreestanding -mstack-protector-guard-reg=fs -mstack-protector-guard-symbol=__stack_chk_guard -Wno-sign-compare -fno-asynchronous-unwind-tables -mindirect-branch=thunk-extern -mindirect-branch-register -fno-jump-tables -fno-delete-null-pointer-checks -Wno-frame-address -Wno-format-truncation -Wno-format-overflow -Wno-address-of-packed-member -O2 -fno-allow-store-data-races -fstack-protector-strong -Wimplicit-fallthrough=5 -Wno-main -Wno-unused-but-set-variable -Wno-unused-const-variable -fno-stack-clash-protection -pg -mrecord-mcount -mfentry -DCC_USING_FENTRY -Wdeclaration-after-statement -Wvla -Wno-pointer-sign -Wcast-function-type -Wno-stringop-truncation -Wno-stringop-overflow -Wno-restrict -Wno-maybe-uninitialized -Wno-alloc-size-larger-than -fno-strict-overflow -fno-stack-check -fconserve-stack -Werror=date-time -Werror=incompatible-pointer-types -Werror=designated-init -Wno-packed-not-aligned  -DMODULE  -DKBUILD_BASENAME='"tw9910"' -DKBUILD_MODNAME='"tw9910"' -D__KBUILD_MODNAME=kmod_tw9910 -c -o drivers/media/i2c/tw9910.o drivers/media/i2c/tw9910.c 
+/* KCQ (kernel completion queue) completion status */
+#define L4_KCQE_COMPLETION_STATUS_SUCCESS           (0)
+#define L4_KCQE_COMPLETION_STATUS_NIC_ERROR         (4)
+#define L4_KCQE_COMPLETION_STATUS_PARITY_ERROR	    (0x81)
+#define L4_KCQE_COMPLETION_STATUS_TIMEOUT           (0x93)
 
-source_drivers/media/i2c/tw9910.o := drivers/media/i2c/tw9910.c
+#define L4_KCQE_COMPLETION_STATUS_CTX_ALLOC_FAIL    (0x83)
+#define L4_KCQE_COMPLETION_STATUS_OFFLOADED_PG      (0x89)
 
-deps_drivers/media/i2c/tw9910.o := \
-    $(wildcard include/config/VIDEO_ADV_DEBUG) \
-  include/linux/compiler-version.h \
-    $(wildcard include/config/CC_VERSION_TEXT) \
-  include/linux/kconfig.h \
-    $(wildcard include/config/CPU_BIG_ENDIAN) \
-    $(wildcard include/config/BOOGER) \
-    $(wildcard include/config/FOO) \
-  include/linux/compiler_types.h \
-    $(wildcard include/config/DEBUG_INFO_BTF) \
-    $(wildcard include/config/PAHOLE_HAS_BTF_TAG) \
-    $(wildcard include/config/HAVE_ARCH_COMPILER_H) \
-    $(wildcard include/config/CC_HAS_ASM_INLINE) \
-  include/linux/compiler_attributes.h \
-  include/linux/compiler-gcc.h \
-    $(wildcard include/config/RETPOLINE) \
-    $(wildcard include/config/ARCH_USE_BUILTIN_BSWAP) \
-    $(wildcard include/config/SHADOW_CALL_STACK) \
-    $(wildcard include/config/KCOV) \
-  include/linux/clk.h \
-    $(wildcard include/config/COMMON_CLK) \
-    $(wildcard include/config/HAVE_CLK_PREPARE) \
-    $(wildcard include/config/HAVE_CLK) \
-    $(wildcard include/config/OF) \
-  include/linux/err.h \
-  include/linux/compiler.h \
-    $(wildcard include/config/TRACE_BRANCH_PROFILING) \
-    $(wildcard include/config/PROFILE_ALL_BRANCHES) \
-    $(wildcard include/config/STACK_VALIDATION) \
-    $(wildcard include/config/CFI_CLANG) \
-  include/linux/compiler_types.h \
-  arch/x86/include/generated/asm/rwonce.h \
-  include/asm-generic/rwonce.h \
-  include/linux/kasan-checks.h \
-    $(wildcard include/config/KASAN_GENERIC) \
-    $(wildcard include/config/KASAN_SW_TAGS) \
-  include/linux/types.h \
-    $(wildcard include/config/HAVE_UID16) \
-    $(wildcard include/config/UID16) \
-    $(wildcard include/config/ARCH_DMA_ADDR_T_64BIT) \
-    $(wildcard include/config/PHYS_ADDR_T_64BIT) \
-    $(wildcard include/config/64BIT) \
-    $(wildcard include/config/ARCH_32BIT_USTAT_F_TINODE) \
-  include/uapi/linux/types.h \
-  arch/x86/include/generated/uapi/asm/types.h \
-  include/uapi/asm-generic/types.h \
-  include/asm-generic/int-ll64.h \
-  include/uapi/asm-generic/int-ll64.h \
-  arch/x86/include/uapi/asm/bitsperlong.h \
-  include/asm-generic/bitsperlong.h \
-  include/uapi/asm-generic/bitsperlong.h \
-  include/uapi/linux/posix_types.h \
-  include/linux/stddef.h \
-  include/uapi/linux/stddef.h \
-  arch/x86/include/asm/posix_types.h \
-    $(wildcard include/config/X86_32) \
-  arch/x86/include/uapi/asm/posix_types_32.h \
-  include/uapi/asm-generic/posix_types.h \
-  include/linux/kcsan-checks.h \
-    $(wildcard include/config/KCSAN) \
-    $(wildcard include/config/KCSAN_WEAK_MEMORY) \
-    $(wildcard include/config/KCSAN_IGNORE_ATOMICS) \
-  arch/x86/include/generated/uapi/asm/errno.h \
-  include/uapi/asm-generic/errno.h \
-  include/uapi/asm-generic/errno-base.h \
-  include/linux/kernel.h \
-    $(wildcard include/config/PREEMPT_VOLUNTARY_BUILD) \
-    $(wildcard include/config/PREEMPT_DYNAMIC) \
-    $(wildcard include/config/HAVE_PREEMPT_DYNAMIC_CALL) \
-    $(wildcard include/config/HAVE_PREEMPT_DYNAMIC_KEY) \
-    $(wildcard include/config/PREEMPT_) \
-    $(wildcard include/config/DEBUG_ATOMIC_SLEEP) \
-    $(wildcard include/config/SMP) \
-    $(wildcard include/config/MMU) \
-    $(wildcard include/config/PROVE_LOCKING) \
-    $(wildcard include/config/TRACING) \
-    $(wildcard include/config/FTRACE_MCOUNT_RECORD) \
-  include/linux/stdarg.h \
-  inclu
+#define L4_KCQE_OPCODE_VALUE_OOO_EVENT_NOTIFICATION (0xa0)
+#define L4_KCQE_OPCODE_VALUE_OOO_FLUSH              (0xa1)
+
+#define L4_LAYER_CODE (4)
+#define L2_LAYER_CODE (2)
+
+/*
+ * L4 KCQ CQE
+ */
+struct l4_kcq {
+	u32 cid;
+	u32 pg_cid;
+	u32 conn_id;
+	u32 pg_host_opaque;
+#if defined(__BIG_ENDIAN)
+	u16 status;
+	u16 reserved1;
+#elif defined(__LITTLE_ENDIAN)
+	u16 reserved1;
+	u16 status;
+#endif
+	u32 reserved2[2];
+#if defined(__BIG_ENDIAN)
+	u8 flags;
+#define L4_KCQ_RESERVED3 (0x7<<0)
+#define L4_KCQ_RESERVED3_SHIFT 0
+#define L4_KCQ_RAMROD_COMPLETION (0x1<<3) /* Everest only */
+#define L4_KCQ_RAMROD_COMPLETION_SHIFT 3
+#define L4_KCQ_LAYER_CODE (0x7<<4)
+#define L4_KCQ_LAYER_CODE_SHIFT 4
+#define L4_KCQ_RESERVED4 (0x1<<7)
+#define L4_KCQ_RESERVED4_SHIFT 7
+	u8 op_code;
+	u16 qe_self_seq;
+#elif defined(__LITTLE_ENDIAN)
+	u16 qe_self_seq;
+	u8 op_code;
+	u8 flags;
+#define L4_KCQ_RESERVED3 (0xF<<0)
+#define L4_KCQ_RESERVED3_SHIFT 0
+#define L4_KCQ_RAMROD_COMPLETION (0x1<<3) /* Everest only */
+#define L4_KCQ_RAMROD_COMPLETION_SHIFT 3
+#define L4_KCQ_LAYER_CODE (0x7<<4)
+#define L4_KCQ_LAYER_CODE_SHIFT 4
+#define L4_KCQ_RESERVED4 (0x1<<7)
+#define L4_KCQ_RESERVED4_SHIFT 7
+#endif
+};
+
+
+/*
+ * L4 KCQ CQE PG upload
+ */
+struct l4_kcq_upload_pg {
+	u32 pg_cid;
+#if defined(__BIG_ENDIAN)
+	u16 pg_status;
+	u16 pg_ipid_count;
+#elif defined(__LITTLE_ENDIAN)
+	u16 pg_ipid_count;
+	u16 pg_status;
+#endif
+	u32 reserved1[5];
+#if defined(__BIG_ENDIAN)
+	u8 flags;
+#define L4_KCQ_UPLOAD_PG_RESERVED3 (0xF<<0)
+#define L4_KCQ_UPLOAD_PG_RESERVED3_SHIFT 0
+#define L4_KCQ_UPLOAD_PG_LAYER_CODE (0x7<<4)
+#define L4_KCQ_UPLOAD_PG_LAYER_CODE_SHIFT 4
+#define L4_KCQ_UPLOAD_PG_RESERVED4 (0x1<<7)
+#define L4_KCQ_UPLOAD_PG_RESERVED4_SHIFT 7
+	u8 op_code;
+	u16 qe_self_seq;
+#elif defined(__LITTLE_ENDIAN)
+	u16 qe_self_seq;
+	u8 op_code;
+	u8 flags;
+#define L4_KCQ_UPLOAD_PG_RESERVED3 (0xF<<0)
+#define L4_KCQ_UPLOAD_PG_RESERVED3_SHIFT 0
+#define L4_KCQ_UPLOAD_PG_LAYER_CODE (0x7<<4)
+#define L4_KCQ_UPLOAD_PG_LAYER_CODE_SHIFT 4
+#define L4_KCQ_UPLOAD_PG_RESERVED4 (0x1<<7)
+#define L4_KCQ_UPLOAD_PG_RESERVED4_SHIFT 7
+#endif
+};
+
+
+/*
+ * Gracefully close the connection request
+ */
+struct l4_kwq_close_req {
+#if defined(__BIG_ENDIAN)
+	u8 flags;
+#define L4_KWQ_CLOSE_REQ_RESERVED1 (0xF<<0)
+#define L4_KWQ_CLOSE_REQ_RESERVED1_SHIFT 0
+#define L4_KWQ_CLOSE_REQ_LAYER_CODE (0x7<<4)
+#define L4_KWQ_CLOSE_REQ_LAYER_CODE_SHIFT 4
+#define L4_KWQ_CLOSE_REQ_LINKED_WITH_NEXT (0x1<<7)
+#define L4_KWQ_CLOSE_REQ_LINKED_WITH_NEXT_SHIFT 7
+	u8 op_code;
+	u16 reserved0;
+#elif defined(__LITTLE_ENDIAN)
+	u16 reserved0;
+	u8 op_code;
+	u8 flags;
+#define L4_KWQ_CLOSE_REQ_RESERVED1 (0xF<<0)
+#define L4_KWQ_CLOSE_REQ_RESERVED1_SHIFT 0
+#define L4_KWQ_CLOSE_REQ_LAYER_CODE (0x7<<4)
+#define L4_KWQ_CLOSE_REQ_LAYER_CODE_SHIFT 4
+#define L4_KWQ_CLOSE_REQ_LINKED_WITH_NEXT (0x1<<7)
+#define L4_KWQ_CLOSE_REQ_LINKED_WITH_NEXT_SHIFT 7
+#endif
+	u32 cid;
+	u32 reserved2[6];
+};
+
+
+/*
+ * The first request to be passed in order to establish connection in option2
+ */
+struct l4_kwq_connect_req1 {
+#if defined(__BIG_ENDIAN)
+	u8 flags;
+#define L4_KWQ_CONNECT_REQ1_RESERVED1 (0xF<<0)
+#define L4_KWQ_CONNECT_REQ1_RESERVED1_SHIFT 0
+#define L4_KWQ_CONNECT_REQ1_LAYER_CODE (0x7<<4)
+#define L4_KWQ_CONNECT_REQ1_LAYER_CODE_SHIFT 4
+#define L4_KWQ_CONNECT_REQ1_LINKED_WITH_NEXT (0x1<<7)
+#define L4_KWQ_CONNECT_REQ1_LINKED_WITH_NEXT_SHIFT 7
+	u8 op_code;
+	u8 reserved0;
+	u8 conn_flags;
+#define L4_KWQ_CONNECT_REQ1_IS_PG_HOST_OPAQUE (0x1<<0)
+#define L4_KWQ_CONNECT_REQ1_IS_PG_HOST_OPAQUE_SHIFT 0
+#define L4_KWQ_CONNECT_REQ1_IP_V6 (0x1<<1)
+#define L4_KWQ_CONNECT_REQ1_IP_V6_SHIFT 1
+#define L4_KWQ_CONNECT_REQ1_PASSIVE_FLAG (0x1<<2)
+#define L4_KWQ_CONNECT_REQ1_PASSIVE_FLAG_SHIFT 2
+#define L4_KWQ_CONNECT_REQ1_RSRV (0x1F<<3)
+#define L4_KWQ_CONNECT_REQ1_RSRV_SHIFT 3
+#elif defined(__LITTLE_ENDIAN)
+	u8 conn_flags;
+#define L4_KWQ_CONNECT_REQ1_IS_PG_HOST_OPAQUE (0x1<<0)
+#define L4_KWQ_CONNECT_REQ1_IS_PG_HOST_OPAQUE_SHIFT 0
+#define L4_KWQ_CONNECT_REQ1_IP_V6 (0x1<<1)
+#define L4_KWQ_CONNECT_REQ1_IP_V6_SHIFT 1
+#define L4_KWQ_CONNECT_REQ1_PASSIVE_FLAG (0x1<<2)
+#define L4_KWQ_CONNECT_REQ1_PASSIVE_FLAG_SHIFT 2
+#define L4_KWQ_CONNECT_REQ1_RSRV (0x1F<<3)
+#define L4_KWQ_CONNECT_REQ1_RSRV_SHIFT 3
+	u8 reserved0;
+	u8 op_code;
+	u8 flags;
+#define L4_KWQ_CONNECT_REQ1_RESERVED1 (0xF<<0)
+#define L4_KWQ_CONNECT_REQ1_RESERVED1_SHIFT 0
+#define L4_KWQ_CONNECT_REQ1_LAYER_CODE (0x7<<4)
+#define L4_KWQ_CONNECT_REQ1_LAYER_CODE_SHIFT 4
+#define L4_KWQ_CONNECT_REQ1_LINKED_WITH_NEXT (0x1<<7)
+#define L4_KWQ_CONNECT_REQ1_LINKED_WITH_NEXT_SHIFT 7
+#endif
+	u32 cid;
+	u32 pg_cid;
+	u32 src_ip;
+	u32 dst_ip;
+#if defined(__BIG_ENDIAN)
+	u16 dst_port;
+	u16 src_port;
+#elif defined(__LITTLE_ENDIAN)
+	u16 src_port;
+	u16 dst_port;
+#endif
+#if defined(__BIG_ENDIAN)
+	u8 rsrv1[3];
+	u8 tcp_flags;
+#define L4_KWQ_CONNECT_REQ1_NO_DELAY_ACK (0x1<<0)
+#define L4_KWQ_CONNECT_REQ1_NO_DELAY_ACK_SHIFT 0
+#define L4_KWQ_CONNECT_REQ1_KEEP_ALIVE (0x1<<1)
+#define L4_KWQ_CONNECT_REQ1_KEEP_ALIVE_SHIFT 1
+#define L4_KWQ_CONNECT_REQ1_NAGLE_ENABLE (0x1<<2)
+#define L4_KWQ_CONNECT_REQ1_NAGLE_ENABLE_SHIFT 2
+#define L4_KWQ_CONNECT_REQ1_TIME_STAMP (0x1<<3)
+#define L4_KWQ_CONNECT_REQ1_TIME_STAMP_SHIFT 3
+#define L4_KWQ_CONNECT_REQ1_SACK (0x1<<4)
+#define L4_KWQ_CONNECT_REQ1_SACK_SHIFT 4
+#define L4_KWQ_CONNECT_REQ1_SEG_SCALING (0x1<<5)
+#define L4_KWQ_CONNECT_REQ1_SEG_SCALING_SHIFT 5
+#define L4_KWQ_CONNECT_REQ1_RESERVED2 (0x3<<6)
+#define L4_KWQ_CONNECT_REQ1_RESERVED2_SHIFT 6
+#elif defined(__LITTLE_ENDIAN)
+	u8 tcp_flags;
+#define L4_KWQ_CONNECT_REQ1_NO_DELAY_ACK (0x1<<0)
+#define L4_KWQ_CONNECT_REQ1_NO_DELAY_ACK_SHIFT 0
+#define L4_KWQ_CONNECT_REQ1_KEEP_ALIVE (0x1<<1)
+#define L4_KWQ_CONNECT_REQ1_KEEP_ALIVE_SHIFT 1
+#define L4_KWQ_CONNECT_REQ1_NAGLE_ENABLE (0x1<<2)
+#define L4_KWQ_CONNECT_REQ1_NAGLE_ENABLE_SHIFT 2
+#define L4_KWQ_CONNECT_REQ1_TIME_STAMP (0x1<<3)
+#define L4_KWQ_CONNECT_REQ1_TIME_STAMP_SHIFT 3
+#define L4_KWQ_CONNECT_REQ1_SACK (0x1<<4)
+#define L4_KWQ_CONNECT_REQ1_SACK_SHIFT 4
+#define L4_KWQ_CONNECT_REQ1_SEG_SCALING (0x1<<5)
+#define L4_KWQ_CONNECT_REQ1_SEG_SCALING_SHIFT 5
+#define L4_KWQ_CONNECT_REQ1_RESERVED2 (0x3<<6)
+#define L4_KWQ_CONNECT_REQ1_RESERVED2_SHIFT 6
+	u8 rsrv1[3];
+#endif
+	u32 rsrv2;
+};
+
+
+/*
+ * The second ( optional )request to be passed in order to establish
+ * connection in option2 - for IPv6 only
+ */
+struct l4_kwq_connect_req2 {
+#if defined(__BIG_ENDIAN)
+	u8 flags;
+#define L4_KWQ_CONNECT_REQ2_RESERVED1 (0xF<<0)
+#define L4_KWQ_CONNECT_REQ2_RESERVED1_SHIFT 0
+#define L4_KWQ_CONNECT_REQ2_LAYER_CODE (0x7<<4)
+#define L4_KWQ_CONNECT_REQ2_LAYER_CODE_SHIFT 4
+#define L4_KWQ_CONNECT_REQ2_LINKED_WITH_NEXT (0x1<<7)
+#define L4_KWQ_CONNECT_REQ2_LINKED_WITH_NEXT_SHIFT 7
+	u8 op_code;
+	u8 reserved0;
+	u8 rsrv;
+#elif defined(__LITTLE_ENDIAN)
+	u8 rsrv;
+	u8 reserved0;
+	u8 op_code;
+	u8 flags;
+#define L4_KWQ_CONNECT_REQ2_RESERVED1 (0xF<<0)
+#define L4_KWQ_CONNECT_REQ2_RESERVED1_SHIFT 0
+#define L4_KWQ_CONNECT_REQ2_LAYER_CODE (0x7<<4)
+#define L4_KWQ_CONNECT_REQ2_LAYER_CODE_SHIFT 4
+#define L4_KWQ_CONNECT_REQ2_LINKED_WITH_NEXT (0x1<<7)
+#define L4_KWQ_CONNECT_REQ2_LINKED_WITH_NEXT_SHIFT 7
+#endif
+	u32 reserved2;
+	u32 src_ip_v6_2;
+	u32 src_ip_v6_3;
+	u32 src_ip_v6_4;
+	u32 dst_ip_v6_2;
+	u32 dst_ip_v6_3;
+	u32 dst_ip_v6_4;
+};
+
+
+/*
+ * The third ( and last )request to be passed in order to establish
+ * connection in option2
+ */
+struct l4_kwq_connect_req3 {
+#if defined(__BIG_ENDIAN)
+	u8 flags;
+#define L4_KWQ_CONNECT_REQ3_RESERVED1 (0xF<<0)
+#define L4_KWQ_CONNECT_REQ3_RESERVED1_SHIFT 0
+#define L4_KWQ_CONNECT_REQ3_LAYER_CODE (0x7<<4)
+#define L4_KWQ_CONNECT_REQ3_LAYER_CODE_SHIFT 4
+#define L4_KWQ_CONNECT_REQ3_LINKED_WITH_NEXT (0x1<<7)
+#define L4_KWQ_CONNECT_REQ3_LINKED_WITH_NEXT_SHIFT 7
+	u8 op_code;
+	u16 reserved0;
+#elif defined(__LITTLE_ENDIAN)
+	u16 reserved0;
+	u8 op_code;
+	u8 flags;
+#define L4_KWQ_CONNECT_REQ3_RESERVED1 (0xF<<0)
+#define L4_KWQ_CONNECT_REQ3_RESERVED1_SHIFT 0
+#define L4_KWQ_CONNECT_REQ3_LAYER_CODE (0x7<<4)
+#define L4_KWQ_CONNECT_REQ3_LAYER_CODE_SHIFT 4
+#define L4_KWQ_CONNECT_REQ3_LINKED_WITH_NEXT (0x1<<7)
+#define L4_KWQ_CONNECT_REQ3_LINKED_WITH_NEXT_SHIFT 7
+#endif
+	u32 ka_timeout;
+	u32 ka_interval ;
+#if defined(__BIG_ENDIAN)
+	u8 snd_seq_scale;
+	u8 ttl;
+	u8 tos;
+	u8 ka_max_probe_count;
+#elif defined(__LITTLE_ENDIAN)
+	u8 ka_max_probe_count;
+	u8 tos;
+	u8 ttl;
+	u8 snd_seq_scale;
+#endif
+#if defined(__BIG_ENDIAN)
+	u16 pmtu;
+	u16 mss;
+#elif defined(__LITTLE_ENDIAN)
+	u16 mss;
+	u16 pmtu;
+#endif
+	u32 rcv_buf;
+	u32 snd_buf;
+	u32 seed;
+};
+
+
+/*
+ * a KWQE request to offload a PG connection
+ */
+struct l4_kwq_offload_pg {
+#if defined(__BIG_ENDIAN)
+	u8 flags;
+#define L4_KWQ_OFFLOAD_PG_RESERVED1 (0xF<<0)
+#define L4_KWQ_OFFLOAD_PG_RESERVED1_SHIFT 0
+#define L4_KWQ_OFFLOAD_PG_LAYER_CODE (0x7<<4)
+#define L4_KWQ_OFFLOAD_PG_LAYER_CODE_SHIFT 4
+#define L4_KWQ_OFFLOAD_PG_LINKED_WITH_NEXT (0x1<<7)
+#define L4_KWQ_OFFLOAD_PG_LINKED_WITH_NEXT_SHIFT 7
+	u8 op_code;
+	u16 reserved0;
+#elif defined(__LITTLE_ENDIAN)
+	u16 reserved0;
+	u8 op_code;
+	u8 flags;
+#define L4_KWQ_OFFLOAD_PG_RESERVED1 (0xF<<0)
+#define L4_KWQ_OFFLOAD_PG_RESERVED1_SHIFT 0
+#define L4_KWQ_OFFLOAD_PG_LAYER_CODE (0x7<<4)
+#define L4_KWQ_OFFLOAD_PG_LAYER_CODE_SHIFT 4
+#define L4_KWQ_OFFLOAD_PG_LINKED_WITH_NEXT (0x1<<7)
+#define L4_KWQ_OFFLOAD_PG_LINKED_WITH_NEXT_SHIFT 7
+#endif
+#if defined(__BIG_ENDIAN)
+	u8 l2hdr_nbytes;
+	u8 pg_flags;
+#define L4_KWQ_OFFLOAD_PG_SNAP_ENCAP (0x1<<0)
+#define L4_KWQ_OFFLOAD_PG_SNAP_ENCAP_SHIFT 0
+#define L4_KWQ_OFFLOAD_PG_VLAN_TAGGING (0x1<<1)
+#define L4_KWQ_OFFLOAD_PG_VLAN_TAGGING_SHIFT 1
+#define L4_KWQ_OFFLOAD_PG_RESERVED2 (0x3F<<2)
+#define L4_KWQ_OFFLOAD_PG_RESERVED2_SHIFT 2
+	u8 da0;
+	u8 da1;
+#elif defined(__LITTLE_ENDIAN)
+	u8 da1;
+	u8 da0;
+	u8 pg_flags;
+#define L4_KWQ_OFFLOAD_PG_SNAP_ENCAP (0x1<<0)
+#define L4_KWQ_OFFLOAD_PG_SNAP_ENCAP_SHIFT 0
+#define L4_KWQ_OFFLOAD_PG_VLAN_TAGGING (0x1<<1)
+#define L4_KWQ_OFFLOAD_PG_VLAN_TAGGING_SHIFT 1
+#define L4_KWQ_OFFLOAD_PG_RESERVED2 (0x3F<<2)
+#define L4_KWQ_OFFLOAD_PG_RESERVED2_SHIFT 2
+	u8 l2hdr_nbytes;
+#endif
+#if defined(__BIG_ENDIAN)
+	u8 da2;
+	u8 da3;
+	u8 da4;
+	u8 da5;
+#elif defined(__LITTLE_ENDIAN)
+	u8 da5;
+	u8 da4;
+	u8 da3;
+	u8 da2;
+#endif
+#if defined(__BIG_ENDIAN)
+	u8 sa0;
+	u8 sa1;
+	u8 sa2;
+	u8 sa3;
+#elif defined(__LITTLE_ENDIAN)
+	u8 sa3;
+	u8 sa2;
+	u8 sa1;
+	u8 sa0;
+#endif
+#if defined(__BIG_ENDIAN)
+	u8 sa4;
+	u8 sa5;
+	u16 etype;
+#elif defined(__LITTLE_ENDIAN)
+	u16 etype;
+	u8 sa5;
+	u8 sa4;
+#endif
+#if defined(__BIG_ENDIAN)
+	u16 vlan_tag;
+	u16 ipid_start;
+#elif defined(__LITTLE_ENDIAN)
+	u16 ipid_start;
+	u16 vlan_tag;
+#endif
+#if defined(__BIG_ENDIAN)
+	u16 ipid_count;
+	u16 reserved3;
+#elif defined(__LITTLE_ENDIAN)
+	u16 reserved3;
+	u16 ipid_count;
+#endif
+	u32 host_opaque;
+};
+
+
+/*
+ * Abortively close the connection request
+ */
+struct l4_kwq_reset_req {
+#if defined(__BIG_ENDIAN)
+	u8 flags;
+#define L4_KWQ_RESET_REQ_RESERVED1 (0xF<<0)
+#define L4_KWQ_RESET_REQ_RESERVED1_SHIFT 0
+#define L4_KWQ_RESET_REQ_LAYER_CODE (0x7<<4)
+#define L4_KWQ_RESET_REQ_LAYER_CODE_SHIFT 4
+#define L4_KWQ_RESET_REQ_LINKED_WITH_NEXT (0x1<<7)
+#define L4_KWQ_RESET_REQ_LINKED_WITH_NEXT_SHIFT 7
+	u8 op_code;
+	u16 reserved0;
+#elif defined(__LITTLE_ENDIAN)
+	u16 reserved0;
+	u8 op_code;
+	u8 flags;
+#define L4_KWQ_RESET_REQ_RESERVED1 (0xF<<0)
+#define L4_KWQ_RESET_REQ_RESERVED1_SHIFT 0
+#define L4_KWQ_RESET_REQ_LAYER_CODE (0x7<<4)
+#define L4_KWQ_RESET_REQ_LAYER_CODE_SHIFT 4
+#define L4_KWQ_RESET_REQ_LINKED_WITH_NEXT (0x1<<7)
+#define L4_KWQ_RESET_REQ_LINKED_WITH_NEXT_SHIFT 7
+#endif
+	u32 cid;
+	u32 reserved2[6];
+};
+
+
+/*
+ * a KWQE request to update a PG connection
+ */
+struct l4_kwq_update_pg {
+#if defined(__BIG_ENDIAN)
+	u8 flags;
+#define L4_KWQ_UPDATE_PG_RESERVED1 (0xF<<0)
+#define L4_KWQ_UPDATE_PG_RESERVED1_SHIFT 0
+#define L4_KWQ_UPDATE_PG_LAYER_CODE (0x7<<4)
+#define L4_KWQ_UPDATE_PG_LAYER_CODE_SHIFT 4
+#define L4_KWQ_UPDATE_PG_LINKED_WITH_NEXT (0x1<<7)
+#define L4_KWQ_UPDATE_PG_LINKED_WITH_NEXT_SHIFT 7
+	u8 opcode;
+	u16 oper16;
+#elif defined(__LITTLE_ENDIAN)
+	u16 oper16;
+	u8 opcode;
+	u8 flags;
+#define L4_KWQ_UPDATE_PG_RESERVED1 (0xF<<0)
+#define L4_KWQ_UPDATE_PG_RESERVED1_SHIFT 0
+#define L4_KWQ_UPDATE_PG_LAYER_CODE (0x7<<4)
+#define L4_KWQ_UPDATE_PG_LAYER_CODE_SHIFT 4
+#define L4_KWQ_UPDATE_PG_LINKED_WITH_NEXT (0x1<<7)
+#define L4_KWQ_UPDATE_PG_LINKED_WITH_NEXT_SHIFT 7
+#endif
+	u32 pg_cid;
+	u32 pg_host_opaque;
+#if defined(__BIG_ENDIAN)
+	u8 pg_valids;
+#define L4_KWQ_UPDATE_PG_VALIDS_IPID_COUNT (0x1<<0)
+#define L4_KWQ_UPDATE_PG_VALIDS_IPID_COUNT_SHIFT 0
+#define L4_KWQ_UPDATE_PG_VALIDS_DA (0x1<<1)
+#define L4_KWQ_UPDATE_PG_VALIDS_DA_SHIFT 1
+#define L4_KWQ_UPDATE_PG_RESERVERD2 (0x3F<<2)
+#define L4_KWQ_UPDATE_PG_RESERVERD2_SHIFT 2
+	u8 pg_unused_a;
+	u16 pg_ipid_count;
+#elif defined(__LITTLE_ENDIAN)
+	u16 pg_ipid_count;
+	u8 pg_unused_a;
+	u8 pg_valids;
+#define L4_KWQ_UPDATE_PG_VALIDS_IPID_COUNT (0x1<<0)
+#define L4_KWQ_UPDATE_PG_VALIDS_IPID_COUNT_SHIFT 0
+#define L4_KWQ_UPDATE_PG_VALIDS_DA (0x1<<1)
+#define L4_KWQ_UPDATE_PG_VALIDS_DA_SHIFT 1
+#define L4_KWQ_UPDATE_PG_RESERVERD2 (0x3F<<2)
+#define L4_KWQ_UPDATE_PG_RESERVERD2_SHIFT 2
+#endif
+#if defined(__BIG_ENDIAN)
+	u16 reserved3;
+	u8 da0;
+	u8 da1;
+#elif defined(__LITTLE_ENDIAN)
+	u8 da1;
+	u8 da0;
+	u16 reserved3;
+#endif
+#if defined(__BIG_ENDIAN)
+	u8 da2;
+	u8 da3;
+	u8 da4;
+	u8 da5;
+#elif defined(__LITTLE_ENDIAN)
+	u8 da5;
+	u8 da4;
+	u8 da3;
+	u8 da2;
+#endif
+	u32 reserved4;
+	u32 reserved5;
+};
+
+
+/*
+ * a KWQE request to upload a PG or L4 context
+ */
+struct l4_kwq_upload {
+#if defined(__BIG_ENDIAN)
+	u8 flags;
+#define L4_KWQ_UPLOAD_RESERVED1 (0xF<<0)
+#define L4_KWQ_UPLOAD_RESERVED1_SHIFT 0
+#define L4_KWQ_UPLOAD_LAYER_CODE (0x7<<4)
+#define L4_KWQ_UPLOAD_LAYER_CODE_SHIFT 4
+#define L4_KWQ_UPLOAD_LINKED_WITH_NEXT (0x1<<7)
+#define L4_KWQ_UPLOAD_LINKED_WITH_NEXT_SHIFT 7
+	u8 opcode;
+	u16 oper16;
+#elif defined(__LITTLE_ENDIAN)
+	u16 oper16;
+	u8 opcode;
+	u8 flags;
+#define L4_KWQ_UPLOAD_RESERVED1 (0xF<<0)
+#define L4_KWQ_UPLOAD_RESERVED1_SHIFT 0
+#define L4_KWQ_UPLOAD_LAYER_CODE (0x7<<4)
+#define L4_KWQ_UPLOAD_LAYER_CODE_SHIFT 4
+#define L4_KWQ_UPLOAD_LINKED_WITH_NEXT (0x1<<7)
+#define L4_KWQ_UPLOAD_LINKED_WITH_NEXT_SHIFT 7
+#endif
+	u32 cid;
+	u32 reserved2[6];
+};
+
+/*
+ * bnx2x structures
+ */
+
+/*
+ * The iscsi aggregative context of Cstorm
+ */
+struct cstorm_iscsi_ag_context {
+	u32 agg_vars1;
+#define CSTORM_ISCSI_AG_CONTEXT_STATE (0xFF<<0)
+#define CSTORM_ISCSI_AG_CONTEXT_STATE_SHIFT 0
+#define __CSTORM_ISCSI_AG_CONTEXT_EXISTS_IN_QM0 (0x1<<8)
+#define __CSTORM_ISCSI_AG_CONTEXT_EXISTS_IN_QM0_SHIFT 8
+#define __CSTORM_ISCSI_AG_CONTEXT_EXISTS_IN_QM1 (0x1<<9)
+#define __CSTORM_ISCSI_AG_CONTEXT_EXISTS_IN_QM1_SHIFT 9
+#define __CSTORM_ISCSI_AG_CONTEXT_EXISTS_IN_QM2 (0x1<<10)
+#define __CSTORM_ISCSI_AG_CONTEXT_EXISTS_IN_QM2_SHIFT 10
+#define __CSTORM_ISCSI_AG_CONTEXT_EXISTS_IN_QM3 (0x1<<11)
+#define __CSTORM_ISCSI_AG_CONTEXT_EXISTS_IN_QM3_SHIFT 11
+#define __CSTORM_ISCSI_AG_CONTEXT_RESERVED_ULP_RX_SE_CF_EN (0x1<<12)
+#define __CSTORM_ISCSI_AG_CONTEXT_RESERVED_ULP_RX_SE_CF_EN_SHIFT 12
+#define __CSTORM_ISCSI_AG_CONTEXT_RESERVED_ULP_RX_INV_CF_EN (0x1<<13)
+#define __CSTORM_ISCSI_AG_CONTEXT_RESERVED_ULP_RX_INV_CF_EN_SHIFT 13
+#define __CSTORM_ISCSI_AG_CONTEXT_AUX4_CF (0x3<<14)
+#define __CSTORM_ISCSI_AG_CONTEXT_AUX4_CF_SHIFT 14
+#define __CSTORM_ISCSI_AG_CONTEXT_RESERVED66 (0x3<<16)
+#define __CSTORM_ISCSI_AG_CONTEXT_RESERVED66_SHIFT 16
+#define __CSTORM_ISCSI_AG_CONTEXT_FIN_RECEIVED_CF_EN (0x1<<18)
+#define __CSTORM_ISCSI_AG_CONTEXT_FIN_RECEIVED_CF_EN_SHIFT 18
+#define __CSTORM_ISCSI_AG_CONTEXT_AUX1_CF_EN (0x1<<19)
+#define __CSTORM_ISCSI_AG_CONTEXT_AUX1_CF_EN_SHIFT 19
+#define __CSTORM_ISCSI_AG_CONTEXT_AUX2_CF_EN (0x1<<20)
+#define __CSTORM_ISCSI_AG_CONTEXT_AUX2_CF_EN_SHIFT 20
+#define __CSTORM_ISCSI_AG_CONTEXT_AUX3_CF_EN (0x1<<21)
+#define __CSTORM_ISCSI_AG_CONTEXT_AUX3_CF_EN_SHIFT 21
+#define __CSTORM_ISCSI_AG_CONTEXT_AUX4_CF_EN (0x1<<22)
+#define __CSTORM_ISCSI_AG_CONTEXT_AUX4_CF_EN_SHIFT 22
+#define __CSTORM_ISCSI_AG_CONTEXT_REL_SEQ_RULE (0x7<<23)
+#define __CSTORM_ISCSI_AG_CONTEXT_REL_SEQ_RULE_SHIFT 23
+#define CSTORM_ISCSI_AG_CONTEXT_HQ_PROD_RULE (0x3<<26)
+#define CSTORM_ISCSI_AG_CONTEXT_HQ_PROD_RULE_SHIFT 26
+#define __CSTORM_ISCSI_AG_CONTEXT_RESERVED52 (0x3<<28)
+#define __CSTORM_ISCSI_AG_CONTEXT_RESERVED52_SHIFT 28
+#define __CSTORM_ISCSI_AG_CONTEXT_RESERVED53 (0x3<<30)
+#define __CSTORM_ISCSI_AG_CONTEXT_RESERVED53_SHIFT 30
+#if defined(__BIG_ENDIAN)
+	u8 __aux1_th;
+	u8 __aux1_val;
+	u16 __agg_vars2;
+#elif defined(__LITTLE_ENDIAN)
+	u16 __agg_vars2;
+	u8 __aux1_val;
+	u8 __aux1_th;
+#endif
+	u32 rel_seq;
+	u32 rel_seq_th;
+#if defined(__BIG_ENDIAN)
+	u16 hq_cons;
+	u16 hq_prod;
+#elif defined(__LITTLE_ENDIAN)
+	u16 hq_prod;
+	u16 hq_cons;
+#endif
+#if defined(__BIG_ENDIAN)
+	u8 __reserved62;
+	u8 __reserved61;
+	u8 __reserved60;
+	u8 __reserved59;
+#elif defined(__LITTLE_ENDIAN)
+	u8 __reserved59;
+	u8 __reserved60;
+	u8 __reserved61;
+	u8 __reserved62;
+#endif
+#if defined(__BIG_ENDIAN)
+	u16 __reserved64;
+	u16 cq_u_prod;
+#elif defined(__LITTLE_ENDIAN)
+	u16 cq_u_prod;
+	u16 __reserved64;
+#endif
+	u32 __cq_u_prod1;
+#if defined(__BIG_ENDIAN)
+	u16 __agg_vars3;
+	u16 cq_u_pend;
+#elif defined(__LITTLE_ENDIAN)
+	u16 cq_u_pend;
+	u16 __agg_vars3;
+#endif
+#if defined(__BIG_ENDIAN)
+	u16 __aux2_th;
+	u16 aux2_val;
+#elif defined(__LITTLE_ENDIAN)
+	u16 aux2_val;
+	u16 __aux2_th;
+#endif
+};
+
+/*
+ * The fcoe extra aggregative context section of Tstorm
+ */
+struct tstorm_fcoe_extra_ag_context_section {
+	u32 __agg_val1;
+#if defined(__BIG_ENDIAN)
+	u8 __tcp_agg_vars2;
+	u8 __agg_val3;
+	u16 __agg_val2;
+#elif defined(__LITTLE_ENDIAN)
+	u16 __agg_val2;
+	u8 __agg_val3;
+	u8 __tcp_agg_vars2;
+#endif
+#if defined(__BIG_ENDIAN)
+	u16 __agg_val5;
+	u8 __agg_val6;
+	u8 __tcp_agg_vars3;
+#elif defined(__LITTLE_ENDIAN)
+	u8 __tcp_agg_vars3;
+	u8 __agg_val6;
+	u16 __agg_val5;
+#endif
+	u32 __lcq_prod;
+	u32 rtt_seq;
+	u32 rtt_time;
+	u32 __reserved66;
+	u32 wnd_right_edge;
+	u32 tcp_agg_vars1;
+#define TSTORM_FCOE_EXTRA_AG_CONTEXT_SECTION_FIN_SENT_FLAG (0x1<<0)
+#define TSTORM_FCOE_EXTRA_AG_CONTEXT_SECTION_FIN_SENT_FLAG_SHIFT 0
+#define TSTORM_FCOE_EXTRA_AG_CONTEXT_SECTION_LAST_PACKET_FIN_FLAG (0x1<<1)
+#define TSTORM_FCOE_EXTRA_AG_CONTEXT_SECTION_LAST_PACKET_FIN_FLAG_SHIFT 1
+#define TSTORM_FCOE_EXTRA_AG_CONTEXT_SECTION_WND_UPD_CF (0x3<<2)
+#define TSTORM_FCOE_EXTRA_AG_CONTEXT_SECTION_WND_UPD_CF_SHIFT 2
+#define TSTORM_FCOE_EXTRA_AG_CONTEXT_SECTION_TIMEOUT_CF (0x3<<4)
+#define TSTORM_FCOE_EXTRA_AG_CONTEXT_SECTION_TIMEOUT_CF_SHIFT 4
+#define TSTORM_FCOE_EXTRA_AG_CONTEXT_SECTION_WND_UPD_CF_EN (0x1<<6)
+#define TSTORM_FCOE_EXTRA_AG_CONTEXT_SECTION_WND_UPD_CF_EN_SHIFT 6
+#define TSTORM_FCOE_EXTRA_AG_CONTEXT_SECTION_TIMEOUT_CF_EN (0x1<<7)
+#define TSTORM_FCOE_EXTRA_AG_CONTEXT_SECTION_TIMEOUT_CF_EN_SHIFT 7
+#define TSTORM_FCOE_EXTRA_AG_CONTEXT_SECTION_RETRANSMIT_SEQ_EN (0x1<<8)
+#define TSTORM_FCOE_EXTRA_AG_CONTEXT_SECTION_RETRANSMIT_SEQ_EN_SHIFT 8
+#define __TSTORM_FCOE_EXTRA_AG_CONTEXT_SECTION_LCQ_SND_EN (0x1<<9)
+#define __TSTORM_FCOE_EXTRA_AG_CONTEXT_SECTION_LCQ_SND_EN_SHIFT 9
+#define TSTORM_FCOE_EXTRA_AG_CONTEXT_SECTION_AUX1_FLAG (0x1<<10)
+#define TSTORM_FCOE_EXTRA_AG_CONTEXT_SECTION_AUX1_FLAG_SHIFT 10
+#define TSTORM_FCOE_EXTRA_AG_CONTEXT_SECTION_AUX2_FLAG (0x1<<11)
+#define TSTORM_FCOE_EXTRA_AG_CONTEXT_SECTION_AUX2_FLAG_SHIFT 11
+#define TSTORM_FCOE_EXTRA_AG_CONTEXT_SECTION_AUX1_CF_EN (0x1<<12)
+#define TSTORM_FCOE_EXTRA_AG_CONTEXT_SECTION_AUX1_CF_EN_SHIFT 12
+#define TSTORM_FCOE_EXTRA_AG_CONTEXT_SECTION_AUX2_CF_EN (0x1<<13)
+#define TSTORM_FCOE_EXTRA_AG_CONTEXT_SECTION_AUX2_CF_EN_SHIFT 13
+#define TSTORM_FCOE_EXTRA_AG_CONTEXT_SECTION_AUX1_CF (0x3<<14)
+#define TSTORM_FCOE_EXTRA_AG_CONTEXT_SECTION_AUX1_CF_SHIFT 14
+#define TSTORM_FCOE_EXTRA_AG_CONTEXT_SECTION_AUX2_CF (0x3<<16)
+#define TSTORM_FCOE_EXTRA_AG_CONTEXT_SECTION_AUX2_CF_SHIFT 16
+#define TSTORM_FCOE_EXTRA_AG_CONTEXT_SECTION_TX_BLOCKED (0x1<<18)
+#define TSTORM_FCOE_EXTRA_AG_CONTEXT_SECTION_TX_BLOCKED_SHIFT 18
+#define __TSTORM_FCOE_EXTRA_AG_CONTEXT_SECTION_AUX10_CF_EN (0x1<<19)
+#define __TSTORM_FCOE_EXTRA_AG_CONTEXT_SECTION_AUX10_CF_EN_SHIFT 19
+#define __TSTORM_FCOE_EXTRA_AG_CONTEXT_SECTION_AUX11_CF_EN (0x1<<20)
+#define __TSTORM_FCOE_EXTRA_AG_CONTEXT_SECTION_AUX11_CF_EN_SHIFT 20
+#define __TSTORM_FCOE_EXTRA_AG_CONTEXT_SECTION_AUX12_CF_EN (0x1<<21)
+#define __TSTORM_FCOE_EXTRA_AG_CONTEXT_SECTION_AUX12_CF_EN_SHIFT 21
+#define __TSTORM_FCOE_EXTRA_AG_CONTEXT_SECTION_RESERVED1 (0x3<<22)
+#define __TSTORM_FCOE_EXTRA_AG_CONTEXT_SECTION_RESERVED1_SHIFT 22
+#define TSTORM_FCOE_EXTRA_AG_CONTEXT_SECTION_RETRANSMIT_PEND_SEQ (0xF<<24)
+#define TSTORM_FCOE_EXTRA_AG_CONTEXT_SECTION_RETRANSMIT_PEND_SEQ_SHIFT 24
+#define TSTORM_FCOE_EXTRA_AG_CONTEXT_SECTION_RETRANSMIT_DONE_SEQ (0xF<<28)
+#define TSTORM_FCOE_EXTRA_AG_CONTEXT_SECTION_RETRANSMIT_DONE_SEQ_SHIFT 28
+	u32 snd_max;
+	u32 __lcq_cons;
+	u32 __reserved2;
+};
+
+/*
+ * The fcoe aggregative context of Tstorm
+ */
+struct tstorm_fcoe_ag_context {
+#if defined(__BIG_ENDIAN)
+	u16 ulp_credit;
+	u8 agg_vars1;
+#define TSTORM_FCOE_AG_CONTEXT_EXISTS_IN_QM0 (0x1<<0)
+#define TSTORM_FCOE_AG_CONTEXT_EXISTS_IN_QM0_SHIFT 0
+#define TSTORM_FCOE_AG_CONTEXT_EXISTS_IN_QM1 (0x1<<1)
+#define TSTORM_FCOE_AG_CONTEXT_EXISTS_IN_QM1_SHIFT 1
+#define TSTORM_FCOE_AG_CONTEXT_EXISTS_IN_QM2 (0x1<<2)
+#define TSTORM_FCOE_AG_CONTEXT_EXISTS_IN_QM2_SHIFT 2
+#define TSTORM_FCOE_AG_CONTEXT_EXISTS_IN_QM3 (0x1<<3)
+#define TSTORM_FCOE_AG_CONTEXT_EXISTS_IN_QM3_SHIFT 3
+#define __TSTORM_FCOE_AG_CONTEXT_QUEUE0_FLUSH_CF (0x3<<4)
+#define __TSTORM_FCOE_AG_CONTEXT_QUEUE0_FLUSH_CF_SHIFT 4
+#define __TSTORM_FCOE_AG_CONTEXT_AUX3_FLAG (0x1<<6)
+#define __TSTORM_FCOE_AG_CONTEXT_AUX3_FLAG_SHIFT 6
+#define __TSTORM_FCOE_AG_CONTEXT_AUX4_FLAG (0x1<<7)
+#define __TSTORM_FCOE_AG_CONTEXT_AUX4_FLAG_SHIFT 7
+	u8 state;
+#elif defined(__LITTLE_ENDIAN)
+	u8 state;
+	u8 agg_vars1;
+#define TSTORM_FCOE_AG_CONTEXT_EXISTS_IN_QM0 (0x1<<0)
+#define TSTORM_FCOE_AG_CONTEXT_EXISTS_IN_QM0_SHIFT 0
+#define TSTORM_FCOE_AG_CONTEXT_EXISTS_IN_QM1 (0x1<<1)
+#define TSTORM_FCOE_AG_CONTEXT_EXISTS_IN_QM1_SHIFT 1
+#define TSTORM_FCOE_AG_CONTEXT_EXISTS_IN_QM2 (0x1<<2)
+#define TSTORM_FCOE_AG_CONTEXT_EXISTS_IN_QM2_SHIFT 2
+#define TSTORM_FCOE_AG_CONTEXT_EXISTS_IN_QM3 (0x1<<3)
+#define TSTORM_FCOE_AG_CONTEXT_EXISTS_IN_QM3_SHIFT 3
+#define __TSTORM_FCOE_AG_CONTEXT_QUEUE0_FLUSH_CF (0x3<<4)
+#define __TSTORM_FCOE_AG_CONTEXT_QUEUE0_FLUSH_CF_SHIFT 4
+#define __TSTORM_FCOE_AG_CONTEXT_AUX3_FLAG (0x1<<6)
+#define __TSTORM_FCOE_AG_CONTEXT_AUX3_FLAG_SHIFT 6
+#define __TSTORM_FCOE_AG_CONTEXT_AUX4_FLAG (0x1<<7)
+#define __TSTORM_FCOE_AG_CONTEXT_AUX4_FLAG_SHIFT 7
+	u16 ulp_credit;
+#endif
+#if defined(__BIG_ENDIAN)
+	u16 __agg_val4;
+	u16 agg_vars2;
+#define __TSTORM_FCOE_AG_CONTEXT_AUX5_FLAG (0x1<<0)
+#define __TSTORM_FCOE_AG_CONTEXT_AUX5_FLAG_SHIFT 0
+#define __TSTORM_FCOE_AG_CONTEXT_AUX6_FLAG (0x1<<1)
+#define __TSTORM_FCOE_AG_CONTEXT_AUX6_FLAG_SHIFT 1
+#define __TSTORM_FCOE_AG_CONTEXT_AUX4_CF (0x3<<2)
+#define __TSTORM_FCOE_AG_CONTEXT_AUX4_CF_SHIFT 2
+#define __TSTORM_FCOE_AG_CONTEXT_AUX5_CF (0x3<<4)
+#define __TSTORM_FCOE_AG_CONTEXT_AUX5_CF_SHIFT 4
+#define __TSTORM_FCOE_AG_CONTEXT_AUX6_CF (0x3<<6)
+#define __TSTORM_FCOE_AG_CONTEXT_AUX6_CF_SHIFT 6
+#define __TSTORM_FCOE_AG_CONTEXT_AUX7_CF (0x3<<8)
+#define __TSTORM_FCOE_AG_CONTEXT_AUX7_CF_SHIFT 8
+#define __TSTORM_FCOE_AG_CONTEXT_AUX7_FLAG (0x1<<10)
+#define __TSTORM_FCOE_AG_CONTEXT_AUX7_FLAG_SHIFT 10
+#define __TSTORM_FCOE_AG_CONTEXT_QUEUE0_FLUSH_CF_EN (0x1<<11)
+#define __TSTORM_FCOE_AG_CONTEXT_QUEUE0_FLUSH_CF_EN_SHIFT 11
+#define TSTORM_FCOE_AG_CONTEXT_AUX4_CF_EN (0x1<<12)
+#define TSTORM_FCOE_AG_CONTEXT_AUX4_CF_EN_SHIFT 12
+#define TSTORM_FCOE_AG_CONTEXT_AUX5_CF_EN (0x1<<13)
+#define TSTORM_FCOE_AG_CONTEXT_AUX5_CF_EN_SHIFT 13
+#define TSTORM_FCOE_AG_CONTEXT_AUX6_CF_EN (0x1<<14)
+#define TSTORM_FCOE_AG_CONTEXT_AUX6_CF_EN_SHIFT 14
+#define TSTORM_FCOE_AG_CONTEXT_AUX7_CF_EN (0x1<<15)
+#define TSTORM_FCOE_AG_CONTEXT_AUX7_CF_EN_SHIFT 15
+#elif defined(__LITTLE_ENDIAN)
+	u16 agg_vars2;
+#define __TSTORM_FCOE_AG_CONTEXT_AUX5_FLAG (0x1<<0)
+#define __TSTORM_FCOE_AG_CONTEXT_AUX5_FLAG_SHIFT 0
+#define __TSTORM_FCOE_AG_CONTEXT_AUX6_FLAG (0x1<<1)
+#define __TSTORM_FCOE_AG_CONTEXT_AUX6_FLAG_SHIFT 1
+#define __TSTORM_FCOE_AG_CONTEXT_AUX4_CF (0x3<<2)
+#define __TSTORM_FCOE_AG_CONTEXT_AUX4_CF_SHIFT 2
+#define __TSTORM_FCOE_AG_CONTEXT_AUX5_CF (0x3<<4)
+#define __TSTORM_FCOE_AG_CONTEXT_AUX5_CF_SHIFT 4
+#define __TSTORM_FCOE_AG_CONTEXT_AUX6_CF (0x3<<6)
+#define __TSTORM_FCOE_AG_CONTEXT_AUX6_CF_SHIFT 6
+#define __TSTORM_FCOE_AG_CONTEXT_AUX7_CF (0x3<<8)
+#define __TSTORM_FCOE_AG_CONTEXT_AUX7_CF_SHIFT 8
+#define __TSTORM_FCOE_AG_CONTEXT_AUX7_FLAG (0x1<<10)
+#define __TSTORM_FCOE_AG_CONTEXT_AUX7_FLAG_SHIFT 10
+#define __TSTORM_FCOE_AG_CONTEXT_QUEUE0_FLUSH_CF_EN (0x1<<11)
+#define __TSTORM_FCOE_AG_CONTEXT_QUEUE0_FLUSH_CF_EN_SHIFT 11
+#define TSTORM_FCOE_AG_CONTEXT_AUX4_CF_EN (0x1<<12)
+#define TSTORM_FCOE_AG_CONTEXT_AUX4_CF_EN_SHIFT 12
+#define TSTORM_FCOE_AG_CONTEXT_AUX5_CF_EN (0x1<<13)
+#define TSTORM_FCOE_AG_CONTEXT_AUX5_CF_EN_SHIFT 13
+#define TSTORM_FCOE_AG_CONTEXT_AUX6_CF_EN (0x1<<14)
+#define TSTORM_FCOE_AG_CONTEXT_AUX6_CF_EN_SHIFT 14
+#define TSTORM_FCOE_AG_CONTEXT_AUX7_CF_EN (0x1<<15)
+#define TSTORM_FCOE_AG_CONTEXT_AUX7_CF_EN_SHIFT 15
+	u16 __agg_val4;
+#endif
+	struct tstorm_fcoe_extra_ag_context_section __extra_section;
+};
+
+
+
+/*
+ * The tcp aggregative context section of Tstorm
+ */
+struct tstorm_tcp_tcp_ag_context_section {
+	u32 __agg_val1;
+#if defined(__BIG_ENDIAN)
+	u8 __tcp_agg_vars2;
+	u8 __agg_val3;
+	u16 __agg_val2;
+#elif defined(__LITTLE_ENDIAN)
+	u16 __agg_val2;
+	u8 __agg_val3;
+	u8 __tcp_agg_vars2;
+#endif
+#if defined(__BIG_ENDIAN)
+	u16 __agg_val5;
+	u8 __agg_val6;
+	u8 __tcp_agg_vars3;
+#elif defined(__LITTLE_ENDIAN)
+	u8 __tcp_agg_vars3;
+	u8 __agg_val6;
+	u16 __agg_val5;
+#endif
+	u32 snd_nxt;
+	u32 rtt_seq;
+	u32 rtt_time;
+	u32 wnd_right_edge_local;
+	u32 wnd_right_edge;
+	u32 tcp_agg_vars1;
+#define TSTORM_TCP_TCP_AG_CONTEXT_SECTION_FIN_SENT_FLAG (0x1<<0)
+#define TSTORM_TCP_TCP_AG_CONTEXT_SECTION_FIN_SENT_FLAG_SHIFT 0
+#define TSTORM_TCP_TCP_AG_CONTEXT_SECTION_LAST_PACKET_FIN_FLAG (0x1<<1)
+#define TSTORM_TCP_TCP_AG_CONTEXT_SECTION_LAST_PACKET_FIN_FLAG_SHIFT 1
+#define TSTORM_TCP_TCP_AG_CONTEXT_SECTION_WND_UPD_CF (0x3<<2)
+#define TSTORM_TCP_TCP_AG_CONTEXT_SECTION_WND_UPD_CF_SHIFT 2
+#define TSTORM_TCP_TCP_AG_CONTEXT_SECTION_TIMEOUT_CF (0x3<<4)
+#define TSTORM_TCP_TCP_AG_CONTEXT_SECTION_TIMEOUT_CF_SHIFT 4
+#define TSTORM_TCP_TCP_AG_CONTEXT_SECTION_WND_UPD_CF_EN (0x1<<6)
+#define TSTORM_TCP_TCP_AG_CONTEXT_SECTION_WND_UPD_CF_EN_SHIFT 6
+#define TSTORM_TCP_TCP_AG_CONTEXT_SECTION_TIMEOUT_CF_EN (0x1<<7)
+#define TSTORM_TCP_TCP_AG_CONTEXT_SECTION_TIMEOUT_CF_EN_SHIFT 7
+#define TSTORM_TCP_TCP_AG_CONTEXT_SECTION_RETRANSMIT_SEQ_EN (0x1<<8)
+#define TSTORM_TCP_TCP_AG_CONTEXT_SECTION_RETRANSMIT_SEQ_EN_SHIFT 8
+#define TSTORM_TCP_TCP_AG_CONTEXT_SECTION_SND_NXT_EN (0x1<<9)
+#define TSTORM_TCP_TCP_AG_CONTEXT_SECTION_SND_NXT_EN_SHIFT 9
+#define TSTORM_TCP_TCP_AG_CONTEXT_SECTION_AUX1_FLAG (0x1<<10)
+#define TSTORM_TCP_TCP_AG_CONTEXT_SECTION_AUX1_FLAG_SHIFT 10
+#define TSTORM_TCP_TCP_AG_CONTEXT_SECTION_AUX2_FLAG (0x1<<11)
+#define TSTORM_TCP_TCP_AG_CONTEXT_SECTION_AUX2_FLAG_SHIFT 11
+#define TSTORM_TCP_TCP_AG_CONTEXT_SECTION_AUX1_CF_EN (0x1<<12)
+#define TSTORM_TCP_TCP_AG_CONTEXT_SECTION_AUX1_CF_EN_SHIFT 12
+#define TSTORM_TCP_TCP_AG_CONTEXT_SECTION_AUX2_CF_EN (0x1<<13)
+#define TSTORM_TCP_TCP_AG_CONTEXT_SECTION_AUX2_CF_EN_SHIFT 13
+#define TSTORM_TCP_TCP_AG_CONTEXT_SECTION_AUX1_CF (0x3<<14)
+#define TSTORM_TCP_TCP_AG_CONTEXT_SECTION_AUX1_CF_SHIFT 14
+#define TSTORM_TCP_TCP_AG_CONTEXT_SECTION_AUX2_CF (0x3<<16)
+#define TSTORM_TCP_TCP_AG_CONTEXT_SECTION_AUX2_CF_SHIFT 16
+#define TSTORM_TCP_TCP_AG_CONTEXT_SECTION_TX_BLOCKED (0x1<<18)
+#define TSTORM_TCP_TCP_AG_CONTEXT_SECTION_TX_BLOCKED_SHIFT 18
+#define __TSTORM_TCP_TCP_AG_CONTEXT_SECTION_AUX10_CF_EN (0x1<<19)
+#define __TSTORM_TCP_TCP_AG_CONTEXT_SECTION_AUX10_CF_EN_SHIFT 19
+#define __TSTORM_TCP_TCP_AG_CONTEXT_SECTION_AUX11_CF_EN (0x1<<20)
+#define __TSTORM_TCP_TCP_AG_CONTEXT_SECTION_AUX11_CF_EN_SHIFT 20
+#define __TSTORM_TCP_TCP_AG_CONTEXT_SECTION_AUX12_CF_EN (0x1<<21)
+#define __TSTORM_TCP_TCP_AG_CONTEXT_SECTION_AUX12_CF_EN_SHIFT 21
+#define __TSTORM_TCP_TCP_AG_CONTEXT_SECTION_RESERVED1 (0x3<<22)
+#define __TSTORM_TCP_TCP_AG_CONTEXT_SECTION_RESERVED1_SHIFT 22
+#define TSTORM_TCP_TCP_AG_CONTEXT_SECTION_RETRANSMIT_PEND_SEQ (0xF<<24)
+#define TSTORM_TCP_TCP_AG_CONTEXT_SECTION_RETRANSMIT_PEND_SEQ_SHIFT 24
+#define TSTORM_TCP_TCP_AG_CONTEXT_SECTION_RETRANSMIT_DONE_SEQ (0xF<<28)
+#define TSTORM_TCP_TCP_AG_CONTEXT_SECTION_RETRANSMIT_DONE_SEQ_SHIFT 28
+	u32 snd_max;
+	u32 snd_una;
+	u32 __reserved2;
+};
+
+/*
+ * The iscsi aggregative context of Tstorm
+ */
+struct tstorm_iscsi_ag_context {
+#if defined(__BIG_ENDIAN)
+	u16 ulp_credit;
+	u8 agg_vars1;
+#define TSTORM_ISCSI_AG_CONTEXT_EXISTS_IN_QM0 (0x1<<0)
+#define TSTORM_ISCSI_AG_CONTEXT_EXISTS_IN_QM0_SHIFT 0
+#define TSTORM_ISCSI_AG_CONTEXT_EXISTS_IN_QM1 (0x1<<1)
+#define TSTORM_ISCSI_AG_CONTEXT_EXISTS_IN_QM1_SHIFT 1
+#define TSTORM_ISCSI_AG_CONTEXT_EXISTS_IN_QM2 (0x1<<2)
+#define TSTORM_ISCSI_AG_CONTEXT_EXISTS_IN_QM2_SHIFT 2
+#define TSTORM_ISCSI_AG_CONTEXT_EXISTS_IN_QM3 (0x1<<3)
+#define TSTORM_ISCSI_AG_CONTEXT_EXISTS_IN_QM3_SHIFT 3
+#define __TSTORM_ISCSI_AG_CONTEXT_QUEUES_FLUSH_Q0_CF (0x3<<4)
+#define __TSTORM_ISCSI_AG_CONTEXT_QUEUES_FLUSH_Q0_CF_SHIFT 4
+#define __TSTORM_ISCSI_AG_CONTEXT_AUX3_FLAG (0x1<<6)
+#define __TSTORM_ISCSI_AG_CONTEXT_AUX3_FLAG_SHIFT 6
+#define __TSTORM_ISCSI_AG_CONTEXT_ACK_ON_FIN_SENT_FLAG (0x1<<7)
+#define __TSTORM_ISCSI_AG_CONTEXT_ACK_ON_FIN_SENT_FLAG_SHIFT 7
+	u8 state;
+#elif defined(__LITTLE_ENDIAN)
+	u8 state;
+	u8 agg_vars1;
+#define TSTORM_ISCSI_AG_CONTEXT_EXISTS_IN_QM0 (0x1<<0)
+#define TSTORM_ISCSI_AG_CONTEXT_EXISTS_IN_QM0_SHIFT 0
+#define TSTORM_ISCSI_AG_CONTEXT_EXISTS_IN_QM1 (0x1<<1)
+#define TSTORM_ISCSI_AG_CONTEXT_EXISTS_IN_QM1_SHIFT 1
+#define TSTORM_ISCSI_AG_CONTEXT_EXISTS_IN_QM2 (0x1<<2)
+#define TSTORM_ISCSI_AG_CONTEXT_EXISTS_IN_QM2_SHIFT 2
+#define TSTORM_ISCSI_AG_CONTEXT_EXISTS_IN_QM3 (0x1<<3)
+#define TSTORM_ISCSI_AG_CONTEXT_EXISTS_IN_QM3_SHIFT 3
+#define __TSTORM_ISCSI_AG_CONTEXT_QUEUES_FLUSH_Q0_CF (0x3<<4)
+#define __TSTORM_ISCSI_AG_CONTEXT_QUEUES_FLUSH_Q0_CF_SHIFT 4
+#define __TSTORM_ISCSI_AG_CONTEXT_AUX3_FLAG (0x1<<6)
+#define __TSTORM_ISCSI_AG_CONTEXT_AUX3_FLAG_SHIFT 6
+#define __TSTORM_ISCSI_AG_CONTEXT_ACK_ON_FIN_SENT_FLAG (0x1<<7)
+#define __TSTORM_ISCSI_AG_CONTEXT_ACK_ON_FIN_SENT_FLAG_SHIFT 7
+	u16 ulp_credit;
+#endif
+#if defined(__BIG_ENDIAN)
+	u16 __agg_val4;
+	u16 agg_vars2;
+#define __TSTORM_ISCSI_AG_CONTEXT_MSL_TIMER_SET_FLAG (0x1<<0)
+#define __TSTORM_ISCSI_AG_CONTEXT_MSL_TIMER_SET_FLAG_SHIFT 0
+#define __TSTORM_ISCSI_AG_CONTEXT_FIN_SENT_FIRST_FLAG (0x1<<1)
+#define __TSTORM_ISCSI_AG_CONTEXT_FIN_SENT_FIRST_FLAG_SHIFT 1
+#define __TSTORM_ISCSI_AG_CONTEXT_RST_SENT_CF (0x3<<2)
+#define __TSTORM_ISCSI_AG_CONTEXT_RST_SENT_CF_SHIFT 2
+#define __TSTORM_ISCSI_AG_CONTEXT_WAKEUP_CALL_CF (0x3<<4)
+#define __TSTORM_ISCSI_AG_CONTEXT_WAKEUP_CALL_CF_SHIFT 4
+#define __TSTORM_ISCSI_AG_CONTEXT_AUX6_CF (0x3<<6)
+#define __TSTORM_ISCSI_AG_CONTEXT_AUX6_CF_SHIFT 6
+#define __TSTORM_ISCSI_AG_CONTEXT_AUX7_CF (0x3<<8)
+#define __TSTORM_ISCSI_AG_CONTEXT_AUX7_CF_SHIFT 8
+#define __TSTORM_ISCSI_AG_CONTEXT_AUX7_FLAG (0x1<<10)
+#define __TSTORM_ISCSI_AG_CONTEXT_AUX7_FLAG_SHIFT 10
+#define __TSTORM_ISCSI_AG_CONTEXT_QUEUES_FLUSH_Q0_CF_EN (0x1<<11)
+#define __TSTORM_ISCSI_AG_CONTEXT_QUEUES_FLUSH_Q0_CF_EN_SHIFT 11
+#define __TSTORM_ISCSI_AG_CONTEXT_RST_SENT_CF_EN (0x1<<12)
+#define __TSTORM_ISCSI_AG_CONTEXT_RST_SENT_CF_EN_SHIFT 12
+#define __TSTORM_ISCSI_AG_CONTEXT_WAKEUP_CALL_CF_EN (0x1<<13)
+#define __TSTORM_ISCSI_AG_CONTEXT_WAKEUP_CALL_CF_EN_SHIFT 13
+#define TSTORM_ISCSI_AG_CONTEXT_AUX6_CF_EN (0x1<<14)
+#define TSTORM_ISCSI_AG_CONTEXT_AUX6_CF_EN_SHIFT 14
+#define TSTORM_ISCSI_AG_CONTEXT_AUX7_CF_EN (0x1<<15)
+#define TSTORM_ISCSI_AG_CONTEXT_AUX7_CF_EN_SHIFT 15
+#elif defined(__LITTLE_ENDIAN)
+	u16 agg_vars2;
+#define __TSTORM_ISCSI_AG_CONTEXT_MSL_TIMER_SET_FLAG (0x1<<0)
+#define __TSTORM_ISCSI_AG_CONTEXT_MSL_TIMER_SET_FLAG_SHIFT 0
+#define __TSTORM_ISCSI_AG_CONTEXT_FIN_SENT_FIRST_FLAG (0x1<<1)
+#define __TSTORM_ISCSI_AG_CONTEXT_FIN_SENT_FIRST_FLAG_SHIFT 1
+#define __TSTORM_ISCSI_AG_CONTEXT_RST_SENT_CF (0x3<<2)
+#define __TSTORM_ISCSI_AG_CONTEXT_RST_SENT_CF_SHIFT 2
+#define __TSTORM_ISCSI_AG_CONTEXT_WAKEUP_CALL_CF (0x3<<4)
+#define __TSTORM_ISCSI_AG_CONTEXT_WAKEUP_CALL_CF_SHIFT 4
+#define __TSTORM_ISCSI_AG_CONTEXT_AUX6_CF (0x3<<6)
+#define __TSTORM_ISCSI_AG_CONTEXT_AUX6_CF_SHIFT 6
+#define __TSTORM_ISCSI_AG_CONTEXT_AUX7_CF (0x3<<8)
+#define __TSTORM_ISCSI_AG_CONTEXT_AUX7_CF_SHIFT 8
+#define __TSTORM_ISCSI_AG_CONTEXT_AUX7_FLAG (0x1<<10)
+#define __TSTORM_ISCSI_AG_CONTEXT_AUX7_FLAG_SHIFT 10
+#define __TSTORM_ISCSI_AG_CONTEXT_QUEUES_FLUSH_Q0_CF_EN (0x1<<11)
+#define __TSTORM_ISCSI_AG_CONTEXT_QUEUES_FLUSH_Q0_CF_EN_SHIFT 11
+#define __TSTORM_ISCSI_AG_CONTEXT_RST_SENT_CF_EN (0x1<<12)
+#define __TSTORM_ISCSI_AG_CONTEXT_RST_SENT_CF_EN_SHIFT 12
+#define __TSTORM_ISCSI_AG_CONTEXT_WAKEUP_CALL_CF_EN (0x1<<13)
+#define __TSTORM_ISCSI_AG_CONTEXT_WAKEUP_CALL_CF_EN_SHIFT 13
+#define TSTORM_ISCSI_AG_CONTEXT_AUX6_CF_EN (0x1<<14)
+#define TSTORM_ISCSI_AG_CONTEXT_AUX6_CF_EN_SHIFT 14
+#define TSTORM_ISCSI_AG_CONTEXT_AUX7_CF_EN (0x1<<15)
+#define TSTORM_ISCSI_AG_CONTEXT_AUX7_CF_EN_SHIFT 15
+	u16 __agg_val4;
+#endif
+	struct tstorm_tcp_tcp_ag_context_section tcp;
+};
+
+
+
+/*
+ * The fcoe aggregative context of Ustorm
+ */
+struct ustorm_fcoe_ag_context {
+#if defined(__BIG_ENDIAN)
+	u8 __aux_counter_flags;
+	u8 agg_vars2;
+#define USTORM_FCOE_AG_CONTEXT_TX_CF (0x3<<0)
+#define USTORM_FCOE_AG_CONTEXT_TX_CF_SHIFT 0
+#define __USTORM_FCOE_AG_CONTEXT_TIMER_CF (0x3<<2)
+#define __USTORM_FCOE_AG_CONTEXT_TIMER_CF_SHIFT 2
+#define USTORM_FCOE_AG_CONTEXT_AGG_MISC4_RULE (0x7<<4)
+#define USTORM_FCOE_AG_CONTEXT_AGG_MISC4_RULE_SHIFT 4
+#define __USTORM_FCOE_AG_CONTEXT_AGG_VAL2_MASK (0x1<<7)
+#define __USTORM_FCOE_AG_CONTEXT_AGG_VAL2_MASK_SHIFT 7
+	u8 agg_vars1;
+#define __USTORM_FCOE_AG_CONTEXT_EXISTS_IN_QM0 (0x1<<0)
+#define __USTORM_FCOE_AG_CONTEXT_EXISTS_IN_QM0_SHIFT 0
+#define USTORM_FCOE_AG_CONTEXT_EXISTS_IN_QM1 (0x1<<1)
+#define USTORM_FCOE_AG_CONTEXT_EXISTS_IN_QM1_SHIFT 1
+#define USTORM_FCOE_AG_CONTEXT_EXISTS_IN_QM2 (0x1<<2)
+#define USTORM_FCOE_AG_CONTEXT_EXISTS_IN_QM2_SHIFT 2
+#define USTORM_FCOE_AG_CONTEXT_EXISTS_IN_QM3 (0x1<<3)
+#define USTORM_FCOE_AG_CONTEXT_EXISTS_IN_QM3_SHIFT 3
+#define USTORM_FCOE_AG_CONTEXT_INV_CF (0x3<<4)
+#define USTORM_FCOE_AG_CONTEXT_INV_CF_SHIFT 4
+#define USTORM_FCOE_AG_CONTEXT_COMPLETION_CF (0x3<<6)
+#define USTORM_FCOE_AG_CONTEXT_COMPLETION_CF_SHIFT 6
+	u8 state;
+#elif defined(__LITTLE_ENDIAN)
+	u8 state;
+	u8 agg_vars1;
+#define __USTORM_FCOE_AG_CONTEXT_EXISTS_IN_QM0 (0x1<<0)
+#define __USTORM_FCOE_AG_CONTEXT_EXISTS_IN_QM0_SHIFT 0
+#define USTORM_FCOE_AG_CONTEXT_EXISTS_IN_QM1 (0x1<<1)
+#define USTORM_FCOE_AG_CONTEXT_EXISTS_IN_QM1_SHIFT 1
+#define USTORM_FCOE_AG_CONTEXT_EXISTS_IN_QM2 (0x1<<2)
+#define USTORM_FCOE_AG_CONTEXT_EXISTS_IN_QM2_SHIFT 2
+#define USTORM_FCOE_AG_CONTEXT_EXISTS_IN_QM3 (0x1<<3)
+#define USTORM_FCOE_AG_CONTEXT_EXISTS_IN_QM3_SHIFT 3
+#define USTORM_FCOE_AG_CONTEXT_INV_CF (0x3<<4)
+#define USTORM_FCOE_AG_CONTEXT_INV_CF_SHIFT 4
+#define USTORM_FCOE_AG_CONTEXT_COMPLETION_CF (0x3<<6)
+#define USTORM_FCOE_AG_CONTEXT_COMPLETION_CF_SHIFT 6
+	u8 agg_vars2;
+#define USTORM_FCOE_AG_CONTEXT_TX_CF (0x3<<0)
+#define USTORM_FCOE_AG_CONTEXT_TX_CF_SHIFT 0
+#define __USTORM_FCOE_AG_CONTEXT_TIMER_CF (0x3<<2)
+#define __USTORM_FCOE_AG_CONTEXT_TIMER_CF_SHIFT 2
+#define USTORM_FCOE_AG_CONTEXT_AGG_MISC4_RULE (0x7<<4)
+#define USTORM_FCOE_AG_CONTEXT_AGG_MISC4_RULE_SHIFT 4
+#define __USTORM_FCOE_AG_CONTEXT_AGG_VAL2_MASK (0x1<<7)
+#define __USTORM_FCOE_AG_CONTEXT_AGG_VAL2_MASK_SHIFT 7
+	u8 __aux_counter_flags;
+#endif
+#if defined(__BIG_ENDIAN)
+	u8 cdu_usage;
+	u8 agg_misc2;
+	u16 pbf_tx_seq_ack;
+#elif defined(__LITTLE_ENDIAN)
+	u16 pbf_tx_seq_ack;
+	u8 agg_misc2;
+	u8 cdu_usage;
+#endif
+	u32 agg_misc4;
+#if defined(__BIG_ENDIAN)
+	u8 agg_val3_th;
+	u8 agg_val3;
+	u16 agg_misc3;
+#elif defined(__LITTLE_ENDIAN)
+	u16 agg_misc3;
+	u8 agg_val3;
+	u8 agg_val3_th;
+#endif
+	u32 expired_task_id;
+	u32 agg_misc4_th;
+#if defined(__BIG_ENDIAN)
+	u16 cq_prod;
+	u16 cq_cons;
+#elif defined(__LITTLE_ENDIAN)
+	u16 cq_cons;
+	u16 cq_prod;
+#endif
+#if defined(__BIG_ENDIAN)
+	u16 __reserved2;
+	u8 decision_rules;
+#define USTORM_FCOE_AG_CONTEXT_CQ_DEC_RULE (0x7<<0)
+#define USTORM_FCOE_AG_CONTEXT_CQ_DEC_RULE_SHIFT 0
+#define __USTORM_FCOE_AG_CONTEXT_AGG_VAL3_RULE (0x7<<3)
+#define __USTORM_FCOE_AG_CONTEXT_AGG_VAL3_RULE_SHIFT 3
+#define USTORM_FCOE_AG_CONTEXT_CQ_ARM_N_FLAG (0x1<<6)
+#define USTORM_FCOE_AG_CONTEXT_CQ_ARM_N_FLAG_SHIFT 6
+#define __USTORM_FCOE_AG_CONTEXT_RESERVED1 (0x1<<7)
+#define __USTORM_FCOE_AG_CONTEXT_RESERVED1_SHIFT 7
+	u8 decision_rule_enable_bits;
+#define __USTORM_FCOE_AG_CONTEXT_RESERVED_INV_CF_EN (0x1<<0)
+#define __USTORM_FCOE_AG_CONTEXT_RESERVED_INV_CF_EN_SHIFT 0
+#define USTORM_FCOE_AG_CONTEXT_COMPLETION_CF_EN (0x1<<1)
+#define USTORM_FCOE_AG_CONTEXT_COMPLETION_CF_EN_SHIFT 1
+#define USTORM_FCOE_AG_CONTEXT_TX_CF_EN (0x1<<2)
+#define USTORM_FCOE_AG_CONTEXT_TX_CF_EN_SHIFT 2
+#define __USTORM_FCOE_AG_CONTEXT_TIMER_CF_EN (0x1<<3)
+#define __USTORM_FCOE_AG_CONTEXT_TIMER_CF_EN_SHIFT 3
+#define __USTORM_FCOE_AG_CONTEXT_AUX1_CF_EN (0x1<<4)
+#define __USTORM_FCOE_AG_CONTEXT_AUX1_CF_EN_SHIFT 4
+#define __USTORM_FCOE_AG_CONTEXT_QUEUE0_CF_EN (0x1<<5)
+#define __USTORM_FCOE_AG_CONTEXT_QUEUE0_CF_EN_SHIFT 5
+#define __USTORM_FCOE_AG_CONTEXT_AUX3_CF_EN (0x1<<6)
+#define __USTORM_FCOE_AG_CONTEXT_AUX3_CF_EN_SHIFT 6
+#define __USTORM_FCOE_AG_CONTEXT_DQ_CF_EN (0x1<<7)
+#define __USTORM_FCOE_AG_CONTEXT_DQ_CF_EN_SHIFT 7
+#elif defined(__LITTLE_ENDIAN)
+	u8 decision_rule_enable_bits;
+#define __USTORM_FCOE_AG_CONTEXT_RESERVED_INV_CF_EN (0x1<<0)
+#define __USTORM_FCOE_AG_CONTEXT_RESERVED_INV_CF_EN_SHIFT 0
+#define USTORM_FCOE_AG_CONTEXT_COMPLETION_CF_EN (0x1<<1)
+#define USTORM_FCOE_AG_CONTEXT_COMPLETION_CF_EN_SHIFT 1
+#define USTORM_FCOE_AG_CONTEXT_TX_CF_EN (0x1<<2)
+#define USTORM_FCOE_AG_CONTEXT_TX_CF_EN_SHIFT 2
+#define __USTORM_FCOE_AG_CONTEXT_TIMER_CF_EN (0x1<<3)
+#define __USTORM_FCOE_AG_CONTEXT_TIMER_CF_EN_SHIFT 3
+#define __USTORM_FCOE_AG_CONTEXT_AUX1_CF_EN (0x1<<4)
+#define __USTORM_FCOE_AG_CONTEXT_AUX1_CF_EN_SHIFT 4
+#define __USTORM_FCOE_AG_CONTEXT_QUEUE0_CF_EN (0x1<<5)
+#define __USTORM_FCOE_AG_CONTEXT_QUEUE0_CF_EN_SHIFT 5
+#define __USTORM_FCOE_AG_CONTEXT_AUX3_CF_EN (0x1<<6)
+#define __USTORM_FCOE_AG_CONTEXT_AUX3_CF_EN_SHIFT 6
+#define __USTORM_FCOE_AG_CONTEXT_DQ_CF_EN (0x1<<7)
+#define __USTORM_FCOE_AG_CONTEXT_DQ_CF_EN_SHIFT 7
+	u8 decision_rules;
+#define USTORM_FCOE_AG_CONTEXT_CQ_DEC_RULE (0x7<<0)
+#define USTORM_FCOE_AG_CONTEXT_CQ_DEC_RULE_SHIFT 0
+#define __USTORM_FCOE_AG_CONTEXT_AGG_VAL3_RULE (0x7<<3)
+#define __USTORM_FCOE_AG_CONTEXT_AGG_VAL3_RULE_SHIFT 3
+#define USTORM_FCOE_AG_CONTEXT_CQ_ARM_N_FLAG (0x1<<6)
+#define USTORM_FCOE_AG_CONTEXT_CQ_ARM_N_FLAG_SHIFT 6
+#define __USTORM_FCOE_AG_CONTEXT_RESERVED1 (0x1<<7)
+#define __USTORM_FCOE_AG_CONTEXT_RESERVED1_SHIFT 7
+	u16 __reserved2;
+#endif
+};
+
+
+/*
+ * The iscsi aggregative context of Ustorm
+ */
+struct ustorm_iscsi_ag_context {
+#if defined(__BIG_ENDIAN)
+	u8 __aux_counter_flags;
+	u8 agg_vars2;
+#define USTORM_ISCSI_AG_CONTEXT_TX_CF (0x3<<0)
+#define USTORM_ISCSI_AG_CONTEXT_TX_CF_SHIFT 0
+#define __USTORM_ISCSI_AG_CONTEXT_TIMER_CF (0x3<<2)
+#define __USTORM_ISCSI_AG_CONTEXT_TIMER_CF_SHIFT 2
+#define USTORM_ISCSI_AG_CONTEXT_AGG_MISC4_RULE (0x7<<4)
+#define USTORM_ISCSI_AG_CONTEXT_AGG_MISC4_RULE_SHIFT 4
+#define __USTORM_ISCSI_AG_CONTEXT_AGG_VAL2_MASK (0x1<<7)
+#define __USTORM_ISCSI_AG_CONTEXT_AGG_VAL2_MASK_SHIFT 7
+	u8 agg_vars1;
+#define __USTORM_ISCSI_AG_CONTEXT_EXISTS_IN_QM0 (0x1<<0)
+#define __USTORM_ISCSI_AG_CONTEXT_EXISTS_IN_QM0_SHIFT 0
+#define USTORM_ISCSI_AG_CONTEXT_EXISTS_IN_QM1 (0x1<<1)
+#define USTORM_ISCSI_AG_CONTEXT_EXISTS_IN_QM1_SHIFT 1
+#define USTORM_ISCSI_AG_CONTEXT_EXISTS_IN_QM2 (0x1<<2)
+#define USTORM_ISCSI_AG_CONTEXT_EXISTS_IN_QM2_SHIFT 2
+#define USTORM_ISCSI_AG_CONTEXT_EXISTS_IN_QM3 (0x1<<3)
+#define USTORM_ISCSI_AG_CONTEXT_EXISTS_IN_QM3_SHIFT 3
+#define USTORM_ISCSI_AG_CONTEXT_INV_CF (0x3<<4)
+#define USTORM_ISCSI_AG_CONTEXT_INV_CF_SHIFT 4
+#define USTORM_ISCSI_AG_CONTEXT_COMPLETION_CF (0x3<<6)
+#define USTORM_ISCSI_AG_CONTEXT_COMPLETION_CF_SHIFT 6
+	u8 state;
+#elif defined(__LITTLE_ENDIAN)
+	u8 state;
+	u8 agg_vars1;
+#define __USTORM_ISCSI_AG_CONTEXT_EXISTS_IN_QM0 (0x1<<0)
+#define __USTORM_ISCSI_AG_CONTEXT_EXISTS_IN_QM0_SHIFT 0
+#define USTORM_ISCSI_AG_CONTEXT_EXISTS_IN_QM1 (0x1<<1)
+#define USTORM_ISCSI_AG_CONTEXT_EXISTS_IN_QM1_SHIFT 1
+#define USTORM_ISCSI_AG_CONTEXT_EXISTS_IN_QM2 (0x1<<2)
+#define USTORM_ISCSI_AG_CONTEXT_EXISTS_IN_QM2_SHIFT 2
+#define USTORM_ISCSI_AG_CONTEXT_EXISTS_IN_QM3 (0x1<<3)
+#define USTORM_ISCSI_AG_CONTEXT_EXISTS_IN_QM3_SHIFT 3
+#define USTORM_ISCSI_AG_CONTEXT_INV_CF (0x3<<4)
+#define USTORM_ISCSI_AG_CONTEXT_INV_CF_SHIFT 4
+#define USTORM_ISCSI_AG_CONTEXT_COMPLETION_CF (0x3<<6)
+#define USTORM_ISCSI_AG_CONTEXT_COMPLETION_CF_SHIFT 6
+	u8 agg_vars2;
+#define USTORM_ISCSI_AG_CONTEXT_TX_CF (0x3<<0)
+#define USTORM_ISCSI_AG_CONTEXT_TX_CF_SHIFT 0
+#define __USTORM_ISCSI_AG_CONTEXT_TIMER_CF (0x3<<2)
+#define __USTORM_ISCSI_AG_CONTEXT_TIMER_CF_SHIFT 2
+#define USTORM_ISCSI_AG_CONTEXT_AGG_MISC4_RULE (0x7<<4)
+#define USTORM_ISCSI_AG_CONTEXT_AGG_MISC4_RULE_SHIFT 4
+#define __USTORM_ISCSI_AG_CONTEXT_AGG_VAL2_MASK (0x1<<7)
+#define __USTORM_ISCSI_AG_CONTEXT_AGG_VAL2_MASK_SHIFT 7
+	u8 __aux_counter_flags;
+#endif
+#if defined(__BIG_ENDIAN)
+	u8 cdu_usage;
+	u8 agg_misc2;
+	u16 __cq_local_comp_itt_val;
+#elif defined(__LITTLE_ENDIAN)
+	u16 __cq_local_comp_itt_val;
+	u8 agg_misc2;
+	u8 cdu_usage;
+#endif
+	u32 agg_misc4;
+#if defined(__BIG_ENDIAN)
+	u8 agg_val3_th;
+	u8 agg_val3;
+	u16 agg_misc3;
+#elif defined(__LITTLE_ENDIAN)
+	u16 agg_misc3;
+	u8 agg_val3;
+	u8 agg_val3_th;
+#endif
+	u32 agg_val1;
+	u32 agg_misc4_th;
+#if defined(__BIG_ENDIAN)
+	u16 agg_val2_th;
+	u16 agg_val2;
+#elif defined(__LITTLE_ENDIAN)
+	u16 agg_val2;
+	u16 agg_val2_th;
+#endif
+#if defined(__BIG_ENDIAN)
+	u16 __reserved2;
+	u8 decision_rules;
+#define USTORM_ISCSI_AG_CONTEXT_AGG_VAL2_RULE (0x7<<0)
+#define USTORM_ISCSI_AG_CONTEXT_AGG_VAL2_RULE_SHIFT 0
+#define __USTORM_ISCSI_AG_CONTEXT_AGG_VAL3_RULE (0x7<<3)
+#define __USTORM_ISCSI_AG_CONTEXT_AGG_VAL3_RULE_SHIFT 3
+#define USTORM_ISCSI_AG_CONTEXT_AGG_VAL2_ARM_N_FLAG (0x1<<6)
+#define USTORM_ISCSI_AG_CONTEXT_AGG_VAL2_ARM_N_FLAG_SHIFT 6
+#define __USTORM_ISCSI_AG_CONTEXT_RESERVED1 (0x1<<7)
+#define __USTORM_ISCSI_AG_CONTEXT_RESERVED1_SHIFT 7
+	u8 decision_rule_enable_bits;
+#define USTORM_ISCSI_AG_CONTEXT_INV_CF_EN (0x1<<0)
+#define USTORM_ISCSI_AG_CONTEXT_INV_CF_EN_SHIFT 0
+#define USTORM_ISCSI_AG_CONTEXT_COMPLETION_CF_EN (0x1<<1)
+#define USTORM_ISCSI_AG_CONTEXT_COMPLETION_CF_EN_SHIFT 1
+#define USTORM_ISCSI_AG_CONTEXT_TX_CF_EN (0x1<<2)
+#define USTORM_ISCSI_AG_CONTEXT_TX_CF_EN_SHIFT 2
+#define __USTORM_ISCSI_AG_CONTEXT_TIMER_CF_EN (0x1<<3)
+#define __USTORM_ISCSI_AG_CONTEXT_TIMER_CF_EN_SHIFT 3
+#define __USTORM_ISCSI_AG_CONTEXT_CQ_LOCAL_COMP_CF_EN (0x1<<4)
+#define __USTORM_ISCSI_AG_CONTEXT_CQ_LOCAL_COMP_CF_EN_SHIFT 4
+#define __USTORM_ISCSI_AG_CONTEXT_QUEUES_FLUSH_Q0_CF_EN (0x1<<5)
+#define __USTORM_ISCSI_AG_CONTEXT_QUEUES_FLUSH_Q0_CF_EN_SHIFT 5
+#define __USTORM_ISCSI_AG_CONTEXT_AUX3_CF_EN (0x1<<6)
+#define __USTORM_ISCSI_AG_CONTEXT_AUX3_CF_EN_SHIFT 6
+#define __USTORM_ISCSI_AG_CONTEXT_DQ_CF_EN (0x1<<7)
+#define __USTORM_ISCSI_AG_CONTEXT_DQ_CF_EN_SHIFT 7
+#elif defined(__LITTLE_ENDIAN)
+	u8 decision_rule_enable_bits;
+#define USTORM_ISCSI_AG_CONTEXT_INV_CF_EN (0x1<<0)
+#define USTORM_ISCSI_AG_CONTEXT_INV_CF_EN_SHIFT 0
+#define USTORM_ISCSI_AG_CONTEXT_COMPLETION_CF_EN (0x1<<1)
+#define USTORM_ISCSI_AG_CONTEXT_COMPLETION_CF_EN_SHIFT 1
+#define USTORM_ISCSI_AG_CONTEXT_TX_CF_EN (0x1<<2)
+#define USTORM_ISCSI_AG_CONTEXT_TX_CF_EN_SHIFT 2
+#define __USTORM_ISCSI_AG_CONTEXT_TIMER_CF_EN (0x1<<3)
+#define __USTORM_ISCSI_AG_CONTEXT_TIMER_CF_EN_SHIFT 3
+#define __USTORM_ISCSI_AG_CONTEXT_CQ_LOCAL_COMP_CF_EN (0x1<<4)
+#define __USTORM_ISCSI_AG_CONTEXT_CQ_LOCAL_COMP_CF_EN_SHIFT 4
+#define __USTORM_ISCSI_AG_CONTEXT_QUEUES_FLUSH_Q0_CF_EN (0x1<<5)
+#define __USTORM_ISCSI_AG_CONTEXT_QUEUES_FLUSH_Q0_CF_EN_SHIFT 5
+#define __USTORM_ISCSI_AG_CONTEXT_AUX3_CF_EN (0x1<<6)
+#define __USTORM_ISCSI_AG_CONTEXT_AUX3_CF_EN_SHIFT 6
+#define __USTORM_ISCSI_AG_CONTEXT_DQ_CF_EN (0x1<<7)
+#define __USTORM_ISCSI_AG_CONTEXT_DQ_CF_EN_SHIFT 7
+	u8 decision_rules;
+#define USTORM_ISCSI_AG_CONTEXT_AGG_VAL2_RULE (0x7<<0)
+#define USTORM_ISCSI_AG_CONTEXT_AGG_VAL2_RULE_SHIFT 0
+#define __USTORM_ISCSI_AG_CONTEXT_AGG_VAL3_RULE (0x7<<3)
+#define __USTORM_ISCSI_AG_CONTEXT_AGG_VAL3_RULE_SHIFT 3
+#define USTORM_ISCSI_AG_CONTEXT_AGG_VAL2_ARM_N_FLAG (0x1<<6)
+#define USTORM_ISCSI_AG_CONTEXT_AGG_VAL2_ARM_N_FLAG_SHIFT 6
+#define __USTORM_ISCSI_AG_CONTEXT_RESERVED1 (0x1<<7)
+#define __USTORM_ISCSI_AG_CONTEXT_RESERVED1_SHIFT 7
+	u16 __reserved2;
+#endif
+};
+
+
+/*
+ * The fcoe aggregative context section of Xstorm
+ */
+struct xstorm_fcoe_extra_ag_context_section {
+#if defined(__BIG_ENDIAN)
+	u8 tcp_agg_vars1;
+#define __XSTORM_FCOE_EXTRA_AG_CONTEXT_SECTION_RESERVED51 (0x3<<0)
+#define __XSTORM_FCOE_EXTRA_AG_CONTEXT_SECTION_RESERVED51_SHIFT 0
+#define __XSTORM_FCOE_EXTRA_AG_CONTEXT_SECTION_ACK_TO_FE_UPDATED (0x3<<2)
+#define __XSTORM_FCOE_EXTRA_AG_CONTEXT_SECTION_ACK_TO_FE_UPDATED_SHIFT 2
+#define XSTORM_FCOE_EXTRA_AG_CONTEXT_SECTION_SIDEBAND_SENT_CF (0x3<<4)
+#define XSTORM_FCOE_EXTRA_AG_CONTEXT_SECTION_SIDEBAND_SENT_CF_SHIFT 4
+#define __XSTORM_FCOE_EXTRA_AG_CONTEXT_SECTION_RESERVED_CLEAR_DA_TIMER_EN (0x1<<6)
+#define __XSTORM_FCOE_EXTRA_AG_CONTEXT_SECTION_RESERVED_CLEAR_DA_TIMER_EN_SHIFT 6
+#define __XSTORM_FCOE_EXTRA_AG_CONTEXT_SECTION_RESERVED_DA_EXPIRATION_FLAG (0x1<<7)
+#define __XSTORM_FCOE_EXTRA_AG_CONTEXT_SECTION_RESERVED_DA_EXPIRATION_FLAG_SHIFT 7
+	u8 __reserved_da_cnt;
+	u16 __mtu;
+#elif defined(__LITTLE_ENDIAN)
+	u16 __mtu;
+	u8 __reserved_da_cnt;
+	u8 tcp_agg_vars1;
+#define __XSTORM_FCOE_EXTRA_AG_CONTEXT_SECTION_RESERVED51 (0x3<<0)
+#define __XSTORM_FCOE_EXTRA_AG_CONTEXT_SECTION_RESERVED51_SHIFT 0
+#define __XSTORM_FCOE_EXTRA_AG_CONTEXT_SECTION_ACK_TO_FE_UPDATED (0x3<<2)
+#define __XSTORM_FCOE_EXTRA_AG_CONTEXT_SECTION_ACK_TO_FE_UPDATED_SHIFT 2
+#define XSTORM_FCOE_EXTRA_AG_CONTEXT_SECTION_SIDEBAND_SENT_CF (0x3<<4)
+#define XSTORM_FCOE_EXTRA_AG_CONTEXT_SECTION_SIDEBAND_SENT_CF_SHIFT 4
+#define __XSTORM_FCOE_EXTRA_AG_CONTEXT_SECTION_RESERVED_CLEAR_DA_TIMER_EN (0x1<<6)
+#define __XSTORM_FCOE_EXTRA_AG_CONTEXT_SECTION_RESERVED_CLEAR_DA_TIMER_EN_SHIFT 6
+#define __XSTORM_FCOE_EXTRA_AG_CONTEXT_SECTION_RESERVED_DA_EXPIRATION_FLAG (0x1<<7)
+#define __XSTORM_FCOE_EXTRA_AG_CONTEXT_SECTION_RESERVED_DA_EXPIRATION_FLAG_SHIFT 7
+#endif
+	u32 snd_nxt;
+	u32 __xfrqe_bd_addr_lo;
+	u32 __xfrqe_bd_addr_hi;
+	u32 __xfrqe_data1;
+#if defined(__BIG_ENDIAN)
+	u8 __agg_val8_th;
+	u8 __tx_dest;
+	u16 tcp_agg_vars2;
+#define __XSTORM_FCOE_EXTRA_AG_CONTEXT_SECTION_RESERVED57 (0x1<<0)
+#define __XSTORM_FCOE_EXTRA_AG_CONTEXT_SECTION_RESERVED57_SHIFT 0
+#define __XSTORM_FCOE_EXTRA_AG_CONTEXT_SECTION_RESERVED58 (0x1<<1)
+#define __XSTORM_FCOE_EXTRA_AG_CONTEXT_SECTION_RESERVED58_SHIFT 1
+#define __XSTORM_FCOE_EXTRA_AG_CONTEXT_SECTION_RESERVED59 (0x1<<2)
+#define __XSTORM_FCOE_EXTRA_AG_CONTEXT_SECTION_RESERVED59_SHIFT 2
+#define __XSTORM_FCOE_EXTRA_AG_CONTEXT_SECTION_AUX3_FLAG (0x1<<3)
+#define __XSTORM_FCOE_EXTRA_AG_CONTEXT_SECTION_AUX3_FLAG_SHIFT 3
+#define __XSTORM_FCOE_EXTRA_AG_CONTEXT_SECTION_AUX4_FLAG (0x1<<4)
+#define __XSTORM_FCOE_EXTRA_AG_CONTEXT_SECTION_AUX4_FLAG_SHIFT 4
+#define __XSTORM_FCOE_EXTRA_AG_CONTEXT_SECTION_RESERVED60 (0x1<<5)
+#define __XSTORM_FCOE_EXTRA_AG_CONTEXT_SECTION_RESERVED60_SHIFT 5
+#define __XSTORM_FCOE_EXTRA_AG_CONTEXT_SECTION_RESERVED_ACK_TO_FE_UPDATED_EN (0x1<<6)
+#define __XSTORM_FCOE_EXTRA_AG_CONTEXT_SECTION_RESERVED_ACK_TO_FE_UPDATED_EN_SHIFT 6
+#define XSTORM_FCOE_EXTRA_AG_CONTEXT_SECTION_SIDEBAND_SENT_CF_EN (0x1<<7)
+#define XSTORM_FCOE_EXTRA_AG_CONTEXT_SECTION_SIDEBAND_SENT_CF_EN_SHIFT 7
+#define __XSTORM_FCOE_EXTRA_AG_CONTEXT_SECTION_RESERVED_TX_FIN_FLAG_EN (0x1<<8)
+#define __XSTORM_FCOE_EXTRA_AG_CONTEXT_SECTION_RESERVED_TX_FIN_FLAG_EN_SHIFT 8
+#define __XSTORM_FCOE_EXTRA_AG_CONTEXT_SECTION_AUX1_FLAG (0x1<<9)
+#define __XSTORM_FCOE_EXTRA_AG_CONTEXT_SECTION_AUX1_FLAG_SHIFT 9
+#define __XSTORM_FCOE_EXTRA_AG_CONTEXT_SECTION_SET_RTO_CF (0x3<<10)
+#define __XSTORM_FCOE_EXTRA_AG_CONTEXT_SECTION_SET_RTO_CF_SHIFT 10
+#define __XSTORM_FCOE_EXTRA_AG_CONTEXT_SECTION_TS_TO_ECHO_UPDATED_CF (0x3<<12)
+#define __XSTORM_FCOE_EXTRA_AG_CONTEXT_SECTION_TS_TO_ECHO_UPDATED_CF_SHIFT 12
+#define __XSTORM_FCOE_EXTRA_AG_CONTEXT_SECTION_TX_DEST_UPDATED_CF (0x3<<14)
+#define __XSTORM_FCOE_EXTRA_AG_CONTEXT_SECTION_TX_DEST_UPDATED_CF_SHIFT 14
+#elif defined(__LITTLE_ENDIAN)
+	u16 tcp_agg_vars2;
+#define __XSTORM_FCOE_EXTRA_AG_CONTEXT_SECTION_RESERVED57 (0x1<<0)
+#define __XSTORM_FCOE_EXTRA_AG_CONTEXT_SECTION_RESERVED57_SHIFT 0
+#define __XSTORM_FCOE_EXTRA_AG_CONTEXT_SECTION_RESERVED58 (0x1<<1)
+#define __XSTORM_FCOE_EXTRA_AG_CONTEXT_SECTION_RESERVED58_SHIFT 1
+#define __XSTORM_FCOE_EXTRA_AG_CONTEXT_SECTION_RESERVED59 (0x1<<2)
+#define __XSTORM_FCOE_EXTRA_AG_CONTEXT_SECTION_RESERVED59_SHIFT 2
+#define __XSTORM_FCOE_EXTRA_AG_CONTEXT_SECTION_AUX3_FLAG (0x1<<3)
+#define __XSTORM_FCOE_EXTRA_AG_CONTEXT_SECTION_AUX3_FLAG_SHIFT 3
+#define __XSTORM_FCOE_EXTRA_AG_CONTEXT_SECTION_AUX4_FLAG (0x1<<4)
+#define __XSTORM_FCOE_EXTRA_AG_CONTEXT_SECTION_AUX4_FLAG_SHIFT 4
+#define __XSTORM_FCOE_EXTRA_AG_CONTEXT_SECTION_RESERVED60 (0x1<<5)
+#define __XSTORM_FCOE_EXTRA_AG_CONTEXT_SECTION_RESERVED60_SHIFT 5
+#define __XSTORM_FCOE_EXTRA_AG_CONTEXT_SECTION_RESERVED_ACK_TO_FE_UPDATED_EN (0x1<<6)
+#define __XSTORM_FCOE_EXTRA_AG_CONTEXT_SECTION_RESERVED_ACK_TO_FE_UPDATED_EN_SHIFT 6
+#define XSTORM_FCOE_EXTRA_AG_CONTEXT_SECTION_SIDEBAND_SENT_CF_EN (0x1<<7)
+#define XSTORM_FCOE_EXTRA_AG_CONTEXT_SECTION_SIDEBAND_SENT_CF_EN_SHIFT 7
+#define __XSTORM_FCOE_EXTRA_AG_CONTEXT_SECTION_RESERVED_TX_FIN_FLAG_EN (0x1<<8)
+#define __XSTORM_FCOE_EXTRA_AG_CONTEXT_SECTION_RESERVED_TX_FIN_FLAG_EN_SHIFT 8
+#define __XSTORM_FCOE_EXTRA_AG_CONTEXT_SECTION_AUX1_FLAG (0x1<<9)
+#define __XSTORM_FCOE_EXTRA_AG_CONTEXT_SECTION_AUX1_FLAG_SHIFT 9
+#define __XSTORM_FCOE_EXTRA_AG_CONTEXT_SECTION_SET_RTO_CF (0x3<<10)
+#define __XSTORM_FCOE_EXTRA_AG_CONTEXT_SECTION_SET_RTO_CF_SHIFT 10
+#define __XSTORM_FCOE_EXTRA_AG_CONTEXT_SECTION_TS_TO_ECHO_UPDATED_CF (0x3<<12)
+#define __XSTORM_FCOE_EXTRA_AG_CONTEXT_SECTION_TS_TO_ECHO_UPDATED_CF_SHIFT 12
+#define __XSTORM_FCOE_EXTRA_AG_CONTEXT_SECTION_TX_DEST_UPDATED_CF (0x3<<14)
+#define __XSTORM_FCOE_EXTRA_AG_CONTEXT_SECTION_TX_DEST_UPDATED_CF_SHIFT 14
+	u8 __tx_dest;
+	u8 __agg_val8_th;
+#endif
+	u32 __sq_base_addr_lo;
+	u32 __sq_base_addr_hi;
+	u32 __xfrq_base_addr_lo;
+	u32 __xfrq_base_addr_hi;
+#if defined(__BIG_ENDIAN)
+	u16 __xfrq_cons;
+	u16 __xfrq_prod;
+#elif defined(__LITTLE_ENDIAN)
+	u16 __xfrq_prod;
+	u16 __xfrq_cons;
+#endif
+#if defined(__BIG_ENDIAN)
+	u8 __tcp_agg_vars5;
+	u8 __tcp_agg_vars4;
+	u8 __tcp_agg_vars3;
+	u8 __reserved_force_pure_ack_cnt;
+#elif defined(__LITTLE_ENDIAN)
+	u8 __reserved_force_pure_ack_cnt;
+	u8 __tcp_agg_vars3;
+	u8 __tcp_agg_vars4;
+	u8 __tcp_agg_vars5;
+#endif
+	u32 __tcp_agg_vars6;
+#if defined(__BIG_ENDIAN)
+	u16 __xfrqe_mng;
+	u16 __tcp_agg_vars7;
+#elif defined(__LITTLE_ENDIAN)
+	u16 __tcp_agg_vars7;
+	u16 __xfrqe_mng;
+#endif
+	u32 __xfrqe_data0;
+	u32 __agg_val10_th;
+#if defined(__BIG_ENDIAN)
+	u16 __reserved3;
+	u8 __reserved2;
+	u8 __da_only_cnt;
+#elif defined(__LITTLE_ENDIAN)
+	u8 __da_only_cnt;
+	u8 __reserved2;
+	u16 __reserved3;
+#endif
+};
+
+/*
+ * The fcoe aggregative context of Xstorm
+ */
+struct xstorm_fcoe_ag_context {
+#if defined(__BIG_ENDIAN)
+	u16 agg_val1;
+	u8 agg_vars1;
+#define __XSTORM_FCOE_AG_CONTEXT_EXISTS_IN_QM0 (0x1<<0)
+#define __XSTORM_FCOE_AG_CONTEXT_EXISTS_IN_QM0_SHIFT 0
+#define __XSTORM_FCOE_AG_CONTEXT_EXISTS_IN_QM1 (0x1<<1)
+#define __XSTORM_FCOE_AG_CONTEXT_EXISTS_IN_QM1_SHIFT 1
+#define __XSTORM_FCOE_AG_CONTEXT_RESERVED51 (0x1<<2)
+#define __XSTORM_FCOE_AG_CONTEXT_RESERVED51_SHIFT 2
+#define __XSTORM_FCOE_AG_CONTEXT_RESERVED52 (0x1<<3)
+#define __XSTORM_FCOE_AG_CONTEXT_RESERVED52_SHIFT 3
+#define __XSTORM_FCOE_AG_CONTEXT_MORE_TO_SEND_EN (0x1<<4)
+#define __XSTORM_FCOE_AG_CONTEXT_MORE_TO_SEND_EN_SHIFT 4
+#define XSTORM_FCOE_AG_CONTEXT_NAGLE_EN (0x1<<5)
+#define XSTORM_FCOE_AG_CONTEXT_NAGLE_EN_SHIFT 5
+#define __XSTORM_FCOE_AG_CONTEXT_DQ_SPARE_FLAG (0x1<<6)
+#define __XSTORM_FCOE_AG_CONTEXT_DQ_SPARE_FLAG_SHIFT 6
+#define __XSTORM_FCOE_AG_CONTEXT_RESERVED_UNA_GT_NXT_EN (0x1<<7)
+#define __XSTORM_FCOE_AG_CONTEXT_RESERVED_UNA_GT_NXT_EN_SHIFT 7
+	u8 __state;
+#elif defined(__LITTLE_ENDIAN)
+	u8 __state;
+	u8 agg_vars1;
+#define __XSTORM_FCOE_AG_CONTEXT_EXISTS_IN_QM0 (0x1<<0)
+#define __XSTORM_FCOE_AG_CONTEXT_EXISTS_IN_QM0_SHIFT 0
+#define __XSTORM_FCOE_AG_CONTEXT_EXISTS_IN_QM1 (0x1<<1)
+#define __XSTORM_FCOE_AG_CONTEXT_EXISTS_IN_QM1_SHIFT 1
+#define __XSTORM_FCOE_AG_CONTEXT_RESERVED51 (0x1<<2)
+#define __XSTORM_FCOE_AG_CONTEXT_RESERVED51_SHIFT 2
+#define __XSTORM_FCOE_AG_CONTEXT_RESERVED52 (0x1<<3)
+#define __XSTORM_FCOE_AG_CONTEXT_RESERVED52_SHIFT 3
+#define __XSTORM_FCOE_AG_CONTEXT_MORE_TO_SEND_EN (0x1<<4)
+#define __XSTORM_FCOE_AG_CONTEXT_MORE_TO_SEND_EN_SHIFT 4
+#define XSTORM_FCOE_AG_CONTEXT_NAGLE_EN (0x1<<5)
+#define XSTORM_FCOE_AG_CONTEXT_NAGLE_EN_SHIFT 5
+#define __XSTORM_FCOE_AG_CONTEXT_DQ_SPARE_FLAG (0x1<<6)
+#define __XSTORM_FCOE_AG_CONTEXT_DQ_SPARE_FLAG_SHIFT 6
+#define __XSTORM_FCOE_AG_CONTEXT_RESERVED_UNA_GT_NXT_EN (0x1<<7)
+#define __XSTORM_FCOE_AG_CONTEXT_RESERVED_UNA_GT_NXT_EN_SHIFT 7
+	u16 agg_val1;
+#endif
+#if defined(__BIG_ENDIAN)
+	u8 cdu_reserved;
+	u8 __agg_vars4;
+	u8 agg_vars3;
+#define XSTORM_FCOE_AG_CONTEXT_PHYSICAL_QUEUE_NUM2 (0x3F<<0)
+#define XSTORM_FCOE_AG_CONTEXT_PHYSICAL_QUEUE_NUM2_SHIFT 0
+#define __XSTORM_FCOE_AG_CONTEXT_AUX19_CF (0x3<<6)
+#define __XSTORM_FCOE_AG_CONTEXT_AUX19_CF_SHIFT 6
+	u8 agg_vars2;
+#define __XSTORM_FCOE_AG_CONTEXT_DQ_CF (0x3<<0)
+#define __XSTORM_FCOE_AG_CONTEXT_DQ_CF_SHIFT 0
+#define __XSTORM_FCOE_AG_CONTEXT_DQ_SPARE_FLAG_EN (0x1<<2)
+#define __XSTORM_FCOE_AG_CONTEXT_DQ_SPARE_FLAG_EN_SHIFT 2
+#define __XSTORM_FCOE_AG_CONTEXT_AUX8_FLAG (0x1<<3)
+#define __XSTORM_FCOE_AG_CONTEXT_AUX8_FLAG_SHIFT 3
+#define __XSTORM_FCOE_AG_CONTEXT_AUX9_FLAG (0x1<<4)
+#define __XSTORM_FCOE_AG_CONTEXT_AUX9_FLAG_SHIFT 4
+#define XSTORM_FCOE_AG_CONTEXT_DECISION_RULE1 (0x3<<5)
+#define XSTORM_FCOE_AG_CONTEXT_DECISION_RULE1_SHIFT 5
+#define __XSTORM_FCOE_AG_CONTEXT_DQ_CF_EN (0x1<<7)
+#define __XSTORM_FCOE_AG_CONTEXT_DQ_CF_EN_SHIFT 7
+#elif defined(__LITTLE_ENDIAN)
+	u8 agg_vars2;
+#define __XSTORM_FCOE_AG_CONTEXT_DQ_CF (0x3<<0)
+#define __XSTORM_FCOE_AG_CONTEXT_DQ_CF_SHIFT 0
+#define __XSTORM_FCOE_AG_CONTEXT_DQ_SPARE_FLAG_EN (0x1<<2)
+#define __XSTORM_FCOE_AG_CONTEXT_DQ_SPARE_FLAG_EN_SHIFT 2
+#define __XSTORM_FCOE_AG_CONTEXT_AUX8_FLAG (0x1<<3)
+#define __XSTORM_FCOE_AG_CONTEXT_AUX8_FLAG_SHIFT 3
+#define __XSTORM_FCOE_AG_CONTEXT_AUX9_FLAG (0x1<<4)
+#define __XSTORM_FCOE_AG_CONTEXT_AUX9_FLAG_SHIFT 4
+#define XSTORM_FCOE_AG_CONTEXT_DECISION_RULE1 (0x3<<5)
+#define XSTORM_FCOE_AG_CONTEXT_DECISION_RULE1_SHIFT 5
+#define __XSTORM_FCOE_AG_CONTEXT_DQ_CF_EN (0x1<<7)
+#define __XSTORM_FCOE_AG_CONTEXT_DQ_CF_EN_SHIFT 7
+	u8 agg_vars3;
+#define XSTORM_FCOE_AG_CONTEXT_PHYSICAL_QUEUE_NUM2 (0x3F<<0)
+#define XSTORM_FCOE_AG_CONTEXT_PHYSICAL_QUEUE_NUM2_SHIFT 0
+#define __XSTORM_FCOE_AG_CONTEXT_AUX19_CF (0x3<<6)
+#define __XSTORM_FCOE_AG_CONTEXT_AUX19_CF_SHIFT 6
+	u8 __agg_vars4;
+	u8 cdu_reserved;
+#endif
+	u32 more_to_send;
+#if defined(__BIG_ENDIAN)
+	u16 agg_vars5;
+#define XSTORM_FCOE_AG_CONTEXT_DECISION_RULE5 (0x3<<0)
+#define XSTORM_FCOE_AG_CONTEXT_DECISION_RULE5_SHIFT 0
+#define XSTORM_FCOE_AG_CONTEXT_PHYSICAL_QUEUE_NUM0 (0x3F<<2)
+#define XSTORM_FCOE_AG_CONTEXT_PHYSICAL_QUEUE_NUM0_SHIFT 2
+#define XSTORM_FCOE_AG_CONTEXT_PHYSICAL_QUEUE_NUM1 (0x3F<<8)
+#define XSTORM_FCOE_AG_CONTEXT_PHYSICAL_QUEUE_NUM1_SHIFT 8
+#define __XSTORM_FCOE_AG_CONTEXT_CONFQ_DEC_RULE (0x3<<14)
+#define __XSTORM_FCOE_AG_CONTEXT_CONFQ_DEC_RULE_SHIFT 14
+	u16 sq_cons;
+#elif defined(__LITTLE_ENDIAN)
+	u16 sq_cons;
+	u16 agg_vars5;
+#define XSTORM_FCOE_AG_CONTEXT_DECISION_RULE5 (0x3<<0)
+#define XSTORM_FCOE_AG_CONTEXT_DECISION_RULE5_SHIFT 0
+#define XSTORM_FCOE_AG_CONTEXT_PHYSICAL_QUEUE_NUM0 (0x3F<<2)
+#define XSTORM_FCOE_AG_CONTEXT_PHYSICAL_QUEUE_NUM0_SHIFT 2
+#define XSTORM_FCOE_AG_CONTEXT_PHYSICAL_QUEUE_NUM1 (0x3F<<8)
+#define XSTORM_FCOE_AG_CONTEXT_PHYSICAL_QUEUE_NUM1_SHIFT 8
+#define __XSTORM_FCOE_AG_CONTEXT_CONFQ_DEC_RULE (0x3<<14)
+#define __XSTORM_FCOE_AG_CONTEXT_CONFQ_DEC_RULE_SHIFT 14
+#endif
+	struct xstorm_fcoe_extra_ag_context_section __extra_section;
+#if defined(__BIG_ENDIAN)
+	u16 agg_vars7;
+#define __XSTORM_FCOE_AG_CONTEXT_AGG_VAL11_DECISION_RULE (0x7<<0)
+#define __XSTORM_FCOE_AG_CONTEXT_AGG_VAL11_DECISION_RULE_SHIFT 0
+#define __XSTORM_FCOE_AG_CONTEXT_AUX13_FLAG (0x1<<3)
+#define __XSTORM_FCOE_AG_CONTEXT_AUX13_FLAG_SHIFT 3
+#define __XSTORM_FCOE_AG_CONTEXT_QUEUE0_CF (0x3<<4)
+#define __XSTORM_FCOE_AG_CONTEXT_QUEUE0_CF_SHIFT 4
+#define XSTORM_FCOE_AG_CONTEXT_DECISION_RULE3 (0x3<<6)
+#define XSTORM_FCOE_AG_CONTEXT_DECISION_RULE3_SHIFT 6
+#define XSTORM_FCOE_AG_CONTEXT_AUX1_CF (0x3<<8)
+#define XSTORM_FCOE_AG_CONTEXT_AUX1_CF_SHIFT 8
+#define __XSTORM_FCOE_AG_CONTEXT_RESERVED62 (0x1<<10)
+#define __XSTORM_FCOE_AG_CONTEXT_RESERVED62_SHIFT 10
+#define __XSTORM_FCOE_AG_CONTEXT_AUX1_CF_EN (0x1<<11)
+#define __XSTORM_FCOE_AG_CONTEXT_AUX1_CF_EN_SHIFT 11
+#define __XSTORM_FCOE_AG_CONTEXT_AUX10_FLAG (0x1<<12)
+#define __XSTORM_FCOE_AG_CONTEXT_AUX10_FLAG_SHIFT 12
+#define __XSTORM_FCOE_AG_CONTEXT_AUX11_FLAG (0x1<<13)
+#define __XSTORM_FCOE_AG_CONTEXT_AUX11_FLAG_SHIFT 13
+#define __XSTORM_FCOE_AG_CONTEXT_AUX12_FLAG (0x1<<14)
+#define __XSTORM_FCOE_AG_CONTEXT_AUX12_FLAG_SHIFT 14
+#define __XSTORM_FCOE_AG_CONTEXT_AUX2_FLAG (0x1<<15)
+#define __XSTORM_FCOE_AG_CONTEXT_AUX2_FLAG_SHIFT 15
+	u8 agg_val3_th;
+	u8 agg_vars6;
+#define XSTORM_FCOE_AG_CONTEXT_DECISION_RULE6 (0x7<<0)
+#define XSTORM_FCOE_AG_CONTEXT_DECISION_RULE6_SHIFT 0
+#define __XSTORM_FCOE_AG_CONTEXT_XFRQ_DEC_RULE (0x7<<3)
+#define __XSTORM_FCOE_AG_CONTEXT_XFRQ_DEC_RULE_SHIFT 3
+#define __XSTORM_FCOE_AG_CONTEXT_SQ_DEC_RULE (0x3<<6)
+#define __XSTORM_FCOE_AG_CONTEXT_SQ_DEC_RULE_SHIFT 6
+#elif defined(__LITTLE_ENDIAN)
+	u8 agg_vars6;
+#define XSTORM_FCOE_AG_CONTEXT_DECISION_RULE6 (0x7<<0)
+#define XSTORM_FCOE_AG_CONTEXT_DECISION_RULE6_SHIFT 0
+#define __XSTORM_FCOE_AG_CONTEXT_XFRQ_DEC_RULE (0x7<<3)
+#define __XSTORM_FCOE_AG_CONTEXT_XFRQ_DEC_RULE_SHIFT 3
+#define __XSTORM_FCOE_AG_CONTEXT_SQ_DEC_RULE (0x3<<6)
+#define __XSTORM_FCOE_AG_CONTEXT_SQ_DEC_RULE_SHIFT 6
+	u8 agg_val3_th;
+	u16 agg_vars7;
+#define __XSTORM_FCOE_AG_CONTEXT_AGG_VAL11_DECISION_RULE (0x7<<0)
+#define __XSTORM_FCOE_AG_CONTEXT_AGG_VAL11_DECISION_RULE_SHIFT 0
+#define __XSTORM_FCOE_AG_CONTEXT_AUX13_FLAG (0x1<<3)
+#define __XSTORM_FCOE_AG_CONTEXT_AUX13_FLAG_SHIFT 3
+#define __XSTORM_FCOE_AG_CONTEXT_QUEUE0_CF (0x3<<4)
+#define __XSTORM_FCOE_AG_CONTEXT_QUEUE0_CF_SHIFT 4
+#define XSTORM_FCOE_AG_CONTEXT_DECISION_RULE3 (0x3<<6)
+#define XSTORM_FCOE_AG_CONTEXT_DECISION_RULE3_SHIFT 6
+#define XSTORM_FCOE_AG_CONTEXT_AUX1_CF (0x3<<8)
+#define XSTORM_FCOE_AG_CONTEXT_AUX1_CF_SHIFT 8
+#define __XSTORM_FCOE_AG_CONTEXT_RESERVED62 (0x1<<10)
+#define __XSTORM_FCOE_AG_CONTEXT_RESERVED62_SHIFT 10
+#define __XSTORM_FCOE_AG_CONTEXT_AUX1_CF_EN (0x1<<11)
+#define __XSTORM_FCOE_AG_CONTEXT_AUX1_CF_EN_SHIFT 11
+#define __XSTORM_FCOE_AG_CONTEXT_AUX10_FLAG (0x1<<12)
+#define __XSTORM_FCOE_AG_CONTEXT_AUX10_FLAG_SHIFT 12
+#define __XSTORM_FCOE_AG_CONTEXT_AUX11_FLAG (0x1<<13)
+#define __XSTORM_FCOE_AG_CONTEXT_AUX11_FLAG_SHIFT 13
+#define __XSTORM_FCOE_AG_CONTEXT_AUX12_FLAG (0x1<<14)
+#define __XSTORM_FCOE_AG_CONTEXT_AUX12_FLAG_SHIFT 14
+#define __XSTORM_FCOE_AG_CONTEXT_AUX2_FLAG (0x1<<15)
+#define __XSTORM_FCOE_AG_CONTEXT_AUX2_FLAG_SHIFT 15
+#endif
+#if defined(__BIG_ENDIAN)
+	u16 __agg_val11_th;
+	u16 __agg_val11;
+#elif defined(__LITTLE_ENDIAN)
+	u16 __agg_val11;
+	u16 __agg_val11_th;
+#endif
+#if defined(__BIG_ENDIAN)
+	u8 __reserved1;
+	u8 __agg_val6_th;
+	u16 __agg_val9;
+#elif defined(__LITTLE_ENDIAN)
+	u16 __agg_val9;
+	u8 __agg_val6_th;
+	u8 __reserved1;
+#endif
+#if defined(__BIG_ENDIAN)
+	u16 confq_cons;
+	u16 confq_prod;
+#elif defined(__LITTLE_ENDIAN)
+	u16 confq_prod;
+	u16 confq_cons;
+#endif
+	u32 agg_vars8;
+#define XSTORM_FCOE_AG_CONTEXT_AGG_MISC2 (0xFFFFFF<<0)
+#define XSTORM_FCOE_AG_CONTEXT_AGG_MISC2_SHIFT 0
+#define XSTORM_FCOE_AG_CONTEXT_AGG_MISC3 (0xFF<<24)
+#define XSTORM_FCOE_AG_CONTEXT_AGG_MISC3_SHIFT 24
+#if defined(__BIG_ENDIAN)
+	u16 __cache_wqe_db;
+	u16 sq_prod;
+#elif defined(__LITTLE_ENDIAN)
+	u16 sq_prod;
+	u16 __cache_wqe_db;
+#endif
+#if defined(__BIG_ENDIAN)
+	u8 agg_val3;
+	u8 agg_val6;
+	u8 agg_val5_th;
+	u8 agg_val5;
+#elif defined(__LITTLE_ENDIAN)
+	u8 agg_val5;
+	u8 agg_val5_th;
+	u8 agg_val6;
+	u8 agg_val3;
+#endif
+#if defined(__BIG_ENDIAN)
+	u16 __agg_misc1;
+	u16 agg_limit1;
+#elif defined(__LITTLE_ENDIAN)
+	u16 agg_limit1;
+	u16 __agg_misc1;
+#endif
+	u32 completion_seq;
+	u32 confq_pbl_base_lo;
+	u32 confq_pbl_base_hi;
+};
+
+
+
+/*
+ * The tcp aggregative context section of Xstorm
+ */
+struct xstorm_tcp_tcp_ag_context_section {
+#if defined(__BIG_ENDIAN)
+	u8 tcp_agg_vars1;
+#define __XSTORM_TCP_TCP_AG_CONTEXT_SECTION_SET_DA_TIMER_CF (0x3<<0)
+#define __XSTORM_TCP_TCP_AG_CONTEXT_SECTION_SET_DA_TIMER_CF_SHIFT 0
+#define __XSTORM_TCP_TCP_AG_CONTEXT_SECTION_ACK_TO_FE_UPDATED (0x3<<2)
+#define __XSTORM_TCP_TCP_AG_CONTEXT_SECTION_ACK_TO_FE_UPDATED_SHIFT 2
+#define XSTORM_TCP_TCP_AG_CONTEXT_SECTION_SIDEBAND_SENT_CF (0x3<<4)
+#define XSTORM_TCP_TCP_AG_CONTEXT_SECTION_SIDEBAND_SENT_CF_SHIFT 4
+#define __XSTORM_TCP_TCP_AG_CONTEXT_SECTION_CLEAR_DA_TIMER_EN (0x1<<6)
+#define __XSTORM_TCP_TCP_AG_CONTEXT_SECTION_CLEAR_DA_TIMER_EN_SHIFT 6
+#define __XSTORM_TCP_TCP_AG_CONTEXT_SECTION_DA_EXPIRATION_FLAG (0x1<<7)
+#define __XSTORM_TCP_TCP_AG_CONTEXT_SECTION_DA_EXPIRATION_FLAG_SHIFT 7
+	u8 __da_cnt;
+	u16 mss;
+#elif defined(__LITTLE_ENDIAN)
+	u16 mss;
+	u8 __da_cnt;
+	u8 tcp_agg_vars1;
+#define __XSTORM_TCP_TCP_AG_CONTEXT_SECTION_SET_DA_TIMER_CF (0x3<<0)
+#define __XSTORM_TCP_TCP_AG_CONTEXT_SECTION_SET_DA_TIMER_CF_SHIFT 0
+#define __XSTORM_TCP_TCP_AG_CONTEXT_SECTION_ACK_TO_FE_UPDATED (0x3<<2)
+#define __XSTORM_TCP_TCP_AG_CONTEXT_SECTION_ACK_TO_FE_UPDATED_SHIFT 2
+#define XSTORM_TCP_TCP_AG_CONTEXT_SECTION_SIDEBAND_SENT_CF (0x3<<4)
+#define XSTORM_TCP_TCP_AG_CONTEXT_SECTION_SIDEBAND_SENT_CF_SHIFT 4
+#define __XSTORM_TCP_TCP_AG_CONTEXT_SECTION_CLEAR_DA_TIMER_EN (0x1<<6)
+#define __XSTORM_TCP_TCP_AG_CONTEXT_SECTION_CLEAR_DA_TIMER_EN_SHIFT 6
+#define __XSTORM_TCP_TCP_AG_CONTEXT_SECTION_DA_EXPIRATION_FLAG (0x1<<7)
+#define __XSTORM_TCP_TCP_AG_CONTEXT_SECTION_DA_EXPIRATION_FLAG_SHIFT 7
+#endif
+	u32 snd_nxt;
+	u32 tx_wnd;
+	u32 snd_una;
+	u32 local_adv_wnd;
+#if defined(__BIG_ENDIAN)
+	u8 __agg_val8_th;
+	u8 __tx_dest;
+	u16 tcp_agg_vars2;
+#define XSTORM_TCP_TCP_AG_CONTEXT_SECTION_TX_FIN_FLAG (0x1<<0)
+#define XSTORM_TCP_TCP_AG_CONTEXT_SECTION_TX_FIN_FLAG_SHIFT 0
+#define __XSTORM_TCP_TCP_AG_CONTEXT_SECTION_TX_UNBLOCKED (0x1<<1)
+#define __XSTORM_TCP_TCP_AG_CONTEXT_SECTION_TX_UNBLOCKED_SHIFT 1
+#define __XSTORM_TCP_TCP_AG_CONTEXT_SECTION_DA_TIMER_ACTIVE (0x1<<2)
+#define __XSTORM_TCP_TCP_AG_CONTEXT_SECTION_DA_TIMER_ACTIVE_SHIFT 2
+#define __XSTORM_TCP_TCP_AG_CONTEXT_SECTION_AUX3_FLAG (0x1<<3)
+#define __XSTORM_TCP_TCP_AG_CONTEXT_SECTION_AUX3_FLAG_SHIFT 3
+#define __XSTORM_TCP_TCP_AG_CONTEXT_SECTION_AUX4_FLAG (0x1<<4)
+#define __XSTORM_TCP_TCP_AG_CONTEXT_SECTION_AUX4_FLAG_SHIFT 4
+#define XSTORM_TCP_TCP_AG_CONTEXT_SECTION_DA_ENABLE (0x1<<5)
+#define XSTORM_TCP_TCP_AG_CONTEXT_SECTION_DA_ENABLE_SHIFT 5
+#define __XSTORM_TCP_TCP_AG_CONTEXT_SECTION_ACK_TO_FE_UPDATED_EN (0x1<<6)
+#define __XSTORM_TCP_TCP_AG_CONTEXT_SECTION_ACK_TO_FE_UPDATED_EN_SHIFT 6
+#define XSTORM_TCP_TCP_AG_CONTEXT_SECTION_SIDEBAND_SENT_CF_EN (0x1<<7)
+#define XSTORM_TCP_TCP_AG_CONTEXT_SECTION_SIDEBAND_SENT_CF_EN_SHIFT 7
+#define __XSTORM_TCP_TCP_AG_CONTEXT_SECTION_TX_FIN_FLAG_EN (0x1<<8)
+#define __XSTORM_TCP_TCP_AG_CONTEXT_SECTION_TX_FIN_FLAG_EN_SHIFT 8
+#define __XSTORM_TCP_TCP_AG_CONTEXT_SECTION_AUX1_FLAG (0x1<<9)
+#define __XSTORM_TCP_TCP_AG_CONTEXT_SECTION_AUX1_FLAG_SHIFT 9
+#define __XSTORM_TCP_TCP_AG_CONTEXT_SECTION_SET_RTO_CF (0x3<<10)
+#define __XSTORM_TCP_TCP_AG_CONTEXT_SECTION_SET_RTO_CF_SHIFT 10
+#define __XSTORM_TCP_TCP_AG_CONTEXT_SECTION_TS_TO_ECHO_UPDATED_CF (0x3<<12)
+#define __XSTORM_TCP_TCP_AG_CONTEXT_SECTION_TS_TO_ECHO_UPDATED_CF_SHIFT 12
+#define __XSTORM_TCP_TCP_AG_CONTEXT_SECTION_TX_DEST_UPDATED_CF (0x3<<14)
+#define __XSTORM_TCP_TCP_AG_CONTEXT_SECTION_TX_DEST_UPDATED_CF_SHIFT 14
+#elif defined(__LITTLE_ENDIAN)
+	u16 tcp_agg_vars2;
+#define XSTORM_TCP_TCP_AG_CONTEXT_SECTION_TX_FIN_FLAG (0x1<<0)
+#define XSTORM_TCP_TCP_AG_CONTEXT_SECTION_TX_FIN_FLAG_SHIFT 0
+#define __XSTORM_TCP_TCP_AG_CONTEXT_SECTION_TX_UNBLOCKED (0x1<<1)
+#define __XSTORM_TCP_TCP_AG_CONTEXT_SECTION_TX_UNBLOCKED_SHIFT 1
+#define __XSTORM_TCP_TCP_AG_CONTEXT_SECTION_DA_TIMER_ACTIVE (0x1<<2)
+#define __XSTORM_TCP_TCP_AG_CONTEXT_SECTION_DA_TIMER_ACTIVE_SHIFT 2
+#define __XSTORM_TCP_TCP_AG_CONTEXT_SECTION_AUX3_FLAG (0x1<<3)
+#define __XSTORM_TCP_TCP_AG_CONTEXT_SECTION_AUX3_FLAG_SHIFT 3
+#define __XSTORM_TCP_TCP_AG_CONTEXT_SECTION_AUX4_FLAG (0x1<<4)
+#define __XSTORM_TCP_TCP_AG_CONTEXT_SECTION_AUX4_FLAG_SHIFT 4
+#define XSTORM_TCP_TCP_AG_CONTEXT_SECTION_DA_ENABLE (0x1<<5)
+#define XSTORM_TCP_TCP_AG_CONTEXT_SECTION_DA_ENABLE_SHIFT 5
+#define __XSTORM_TCP_TCP_AG_CONTEXT_SECTION_ACK_TO_FE_UPDATED_EN (0x1<<6)
+#define __XSTORM_TCP_TCP_AG_CONTEXT_SECTION_ACK_TO_FE_UPDATED_EN_SHIFT 6
+#define XSTORM_TCP_TCP_AG_CONTEXT_SECTION_SIDEBAND_SENT_CF_EN (0x1<<7)
+#define XSTORM_TCP_TCP_AG_CONTEXT_SECTION_SIDEBAND_SENT_CF_EN_SHIFT 7
+#define __XSTORM_TCP_TCP_AG_CONTEXT_SECTION_TX_FIN_FLAG_EN (0x1<<8)
+#define __XSTORM_TCP_TCP_AG_CONTEXT_SECTION_TX_FIN_FLAG_EN_SHIFT 8
+#define __XSTORM_TCP_TCP_AG_CONTEXT_SECTION_AUX1_FLAG (0x1<<9)
+#define __XSTORM_TCP_TCP_AG_CONTEXT_SECTION_AUX1_FLAG_SHIFT 9
+#define __XSTORM_TCP_TCP_AG_CONTEXT_SECTION_SET_RTO_CF (0x3<<10)
+#define __XSTORM_TCP_TCP_AG_CONTEXT_SECTION_SET_RTO_CF_SHIFT 10
+#define __XSTORM_TCP_TCP_AG_CONTEXT_SECTION_TS_TO_ECHO_UPDATED_CF (0x3<<12)
+#define __XSTORM_TCP_TCP_AG_CONTEXT_SECTION_TS_TO_ECHO_UPDATED_CF_SHIFT 12
+#define __XSTORM_TCP_TCP_AG_CONTEXT_SECTION_TX_DEST_UPDATED_CF (0x3<<14)
+#define __XSTORM_TCP_TCP_AG_CONTEXT_SECTION_TX_DEST_UPDATED_CF_SHIFT 14
+	u8 __tx_dest;
+	u8 __agg_val8_th;
+#endif
+	u32 ack_to_far_end;
+	u32 rto_timer;
+	u32 ka_timer;
+	u32 ts_to_echo;
+#if defined(__BIG_ENDIAN)
+	u16 __agg_val7_th;
+	u16 __agg_val7;
+#elif defined(__LITTLE_ENDIAN)
+	u16 __agg_val7;
+	u16 __agg_val7_th;
+#endif
+#if defined(__BIG_ENDIAN)
+	u8 __tcp_agg_vars5;
+	u8 __tcp_agg_vars4;
+	u8 __tcp_agg_vars3;
+	u8 __force_pure_ack_cnt;
+#elif defined(__LITTLE_ENDIAN)
+	u8 __force_pure_ack_cnt;
+	u8 __tcp_agg_vars3;
+	u8 __tcp_agg_vars4;
+	u8 __tcp_agg_vars5;
+#endif
+	u32 tcp_agg_vars6;
+#define __XSTORM_TCP_TCP_AG_CONTEXT_SECTION_TS_TO_ECHO_CF_EN (0x1<<0)
+#define __XSTORM_TCP_TCP_AG_CONTEXT_SECTION_TS_TO_ECHO_CF_EN_SHIFT 0
+#define __XSTORM_TCP_TCP_AG_CONTEXT_SECTION_TX_DEST_UPDATED_CF_EN (0x1<<1)
+#define __XSTORM_TCP_TCP_AG_CONTEXT_SECTION_TX_DEST_UPDATED_CF_EN_SHIFT 1
+#define __XSTORM_TCP_TCP_AG_CONTEXT_SECTION_AUX9_CF_EN (0x1<<2)
+#define __XSTORM_TCP_TCP_AG_CONTEXT_SECTION_AUX9_CF_EN_SHIFT 2
+#define __XSTORM_TCP_TCP_AG_CONTEXT_SECTION_AUX10_CF_EN (0x1<<3)
+#define __XSTORM_TCP_TCP_AG_CONTEXT_SECTION_AUX10_CF_EN_SHIFT 3
+#define __XSTORM_TCP_TCP_AG_CONTEXT_SECTION_AUX6_FLAG (0x1<<4)
+#define __XSTORM_TCP_TCP_AG_CONTEXT_SECTION_AUX6_FLAG_SHIFT 4
+#define __XSTORM_TCP_TCP_AG_CONTEXT_SECTION_AUX7_FLAG (0x1<<5)
+#define __XSTORM_TCP_TCP_AG_CONTEXT_SECTION_AUX7_FLAG_SHIFT 5
+#define __XSTORM_TCP_TCP_AG_CONTEXT_SECTION_AUX5_CF (0x3<<6)
+#define __XSTORM_TCP_TCP_AG_CONTEXT_SECTION_AUX5_CF_SHIFT 6
+#define __XSTORM_TCP_TCP_AG_CONTEXT_SECTION_AUX9_CF (0x3<<8)
+#define __XSTORM_TCP_TCP_AG_CONTEXT_SECTION_AUX9_CF_SHIFT 8
+#define __XSTORM_TCP_TCP_AG_CONTEXT_SECTION_AUX10_CF (0x3<<10)
+#define __XSTORM_TCP_TCP_AG_CONTEXT_SECTION_AUX10_CF_SHIFT 10
+#define __XSTORM_TCP_TCP_AG_CONTEXT_SECTION_AUX11_CF (0x3<<12)
+#define __XSTORM_TCP_TCP_AG_CONTEXT_SECTION_AUX11_CF_SHIFT 12
+#define __XSTORM_TCP_TCP_AG_CONTEXT_SECTION_AUX12_CF (0x3<<14)
+#define __XSTORM_TCP_TCP_AG_CONTEXT_SECTION_AUX12_CF_SHIFT 14
+#define __XSTORM_TCP_TCP_AG_CONTEXT_SECTION_AUX13_CF (0x3<<16)
+#define __XSTORM_TCP_TCP_AG_CONTEXT_SECTION_AUX13_CF_SHIFT 16
+#define __XSTORM_TCP_TCP_AG_CONTEXT_SECTION_AUX14_CF (0x3<<18)
+#define __XSTORM_TCP_TCP_AG_CONTEXT_SECTION_AUX14_CF_SHIFT 18
+#define __XSTORM_TCP_TCP_AG_CONTEXT_SECTION_AUX15_CF (0x3<<20)
+#define __XSTORM_TCP_TCP_AG_CONTEXT_SECTION_AUX15_CF_SHIFT 20
+#define __XSTORM_TCP_TCP_AG_CONTEXT_SECTION_AUX16_CF (0x3<<22)
+#define __XSTORM_TCP_TCP_AG_CONTEXT_SECTION_AUX16_CF_SHIFT 22
+#define __XSTORM_TCP_TCP_AG_CONTEXT_SECTION_AUX17_CF (0x3<<24)
+#define __XSTORM_TCP_TCP_AG_CONTEXT_SECTION_AUX17_CF_SHIFT 24
+#define XSTORM_TCP_TCP_AG_CONTEXT_SECTION_ECE_FLAG (0x1<<26)
+#define XSTORM_TCP_TCP_AG_CONTEXT_SECTION_ECE_FLAG_SHIFT 26
+#define __XSTORM_TCP_TCP_AG_CONTEXT_SECTION_RESERVED71 (0x1<<27)
+#define __XSTORM_TCP_TCP_AG_CONTEXT_SECTION_RESERVED71_SHIFT 27
+#define __XSTORM_TCP_TCP_AG_CONTEXT_SECTION_FORCE_PURE_ACK_CNT_DIRTY (0x1<<28)
+#define __XSTORM_TCP_TCP_AG_CONTEXT_SECTION_FORCE_PURE_ACK_CNT_DIRTY_SHIFT 28
+#define __XSTORM_TCP_TCP_AG_CONTEXT_SECTION_TCP_AUTO_STOP_FLAG (0x1<<29)
+#define __XSTORM_TCP_TCP_AG_CONTEXT_SECTION_TCP_AUTO_STOP_FLAG_SHIFT 29
+#define __XSTORM_TCP_TCP_AG_CONTEXT_SECTION_DO_TS_UPDATE_FLAG (0x1<<30)
+#define __XSTORM_TCP_TCP_AG_CONTEXT_SECTION_DO_TS_UPDATE_FLAG_SHIFT 30
+#define __XSTORM_TCP_TCP_AG_CONTEXT_SECTION_CANCEL_RETRANSMIT_FLAG (0x1<<31)
+#define __XSTORM_TCP_TCP_AG_CONTEXT_SECTION_CANCEL_RETRANSMIT_FLAG_SHIFT 31
+#if defined(__BIG_ENDIAN)
+	u16 __agg_misc6;
+	u16 __tcp_agg_vars7;
+#elif defined(__LITTLE_ENDIAN)
+	u16 __tcp_agg_vars7;
+	u16 __agg_misc6;
+#endif
+	u32 __agg_val10;
+	u32 __agg_val10_th;
+#if defined(__BIG_ENDIAN)
+	u16 __reserved3;
+	u8 __reserved2;
+	u8 __da_only_cnt;
+#elif defined(__LITTLE_ENDIAN)
+	u8 __da_only_cnt;
+	u8 __reserved2;
+	u16 __reserved3;
+#endif
+};
+
+/*
+ * The iscsi aggregative context of Xstorm
+ */
+struct xstorm_iscsi_ag_context {
+#if defined(__BIG_ENDIAN)
+	u16 agg_val1;
+	u8 agg_vars1;
+#define __XSTORM_ISCSI_AG_CONTEXT_EXISTS_IN_QM0 (0x1<<0)
+#define __XSTORM_ISCSI_AG_CONTEXT_EXISTS_IN_QM0_SHIFT 0
+#define XSTORM_ISCSI_AG_CONTEXT_EXISTS_IN_QM1 (0x1<<1)
+#define XSTORM_ISCSI_AG_CONTEXT_EXISTS_IN_QM1_SHIFT 1
+#define XSTORM_ISCSI_AG_CONTEXT_EXISTS_IN_QM2 (0x1<<2)
+#define XSTORM_ISCSI_AG_CONTEXT_EXISTS_IN_QM2_SHIFT 2
+#define XSTORM_ISCSI_AG_CONTEXT_EXISTS_IN_QM3 (0x1<<3)
+#define XSTORM_ISCSI_AG_CONTEXT_EXISTS_IN_QM3_SHIFT 3
+#define __XSTORM_ISCSI_AG_CONTEXT_MORE_TO_SEND_EN (0x1<<4)
+#define __XSTORM_ISCSI_AG_CONTEXT_MORE_TO_SEND_EN_SHIFT 4
+#define XSTORM_ISCSI_AG_CONTEXT_NAGLE_EN (0x1<<5)
+#define XSTORM_ISCSI_AG_CONTEXT_NAGLE_EN_SHIFT 5
+#define __XSTORM_ISCSI_AG_CONTEXT_DQ_SPARE_FLAG (0x1<<6)
+#define __XSTORM_ISCSI_AG_CONTEXT_DQ_SPARE_FLAG_SHIFT 6
+#define __XSTORM_ISCSI_AG_CONTEXT_UNA_GT_NXT_EN (0x1<<7)
+#define __XSTORM_ISCSI_AG_CONTEXT_UNA_GT_NXT_EN_SHIFT 7
+	u8 state;
+#elif defined(__LITTLE_ENDIAN)
+	u8 state;
+	u8 agg_vars1;
+#define __XSTORM_ISCSI_AG_CONTEXT_EXISTS_IN_QM0 (0x1<<0)
+#define __XSTORM_ISCSI_AG_CONTEXT_EXISTS_IN_QM0_SHIFT 0
+#define XSTORM_ISCSI_AG_CONTEXT_EXISTS_IN_QM1 (0x1<<1)
+#define XSTORM_ISCSI_AG_CONTEXT_EXISTS_IN_QM1_SHIFT 1
+#define XSTORM_ISCSI_AG_CONTEXT_EXISTS_IN_QM2 (0x1<<2)
+#define XSTORM_ISCSI_AG_CONTEXT_EXISTS_IN_QM2_SHIFT 2
+#define XSTORM_ISCSI_AG_CONTEXT_EXISTS_IN_QM3 (0x1<<3)
+#define XSTORM_ISCSI_AG_CONTEXT_EXISTS_IN_QM3_SHIFT 3
+#define __XSTORM_ISCSI_AG_CONTEXT_MORE_TO_SEND_EN (0x1<<4)
+#define __XSTORM_ISCSI_AG_CONTEXT_MORE_TO_SEND_EN_SHIFT 4
+#define XSTORM_ISCSI_AG_CONTEXT_NAGLE_EN (0x1<<5)
+#define XSTORM_ISCSI_AG_CONTEXT_NAGLE_EN_SHIFT 5
+#define __XSTORM_ISCSI_AG_CONTEXT_DQ_SPARE_FLAG (0x1<<6)
+#define __XSTORM_ISCSI_AG_CONTEXT_DQ_SPARE_FLAG_SHIFT 6
+#define __XSTORM_ISCSI_AG_CONTEXT_UNA_GT_NXT_EN (0x1<<7)
+#define __XSTORM_ISCSI_AG_CONTEXT_UNA_GT_NXT_EN_SHIFT 7
+	u16 agg_val1;
+#endif
+#if defined(__BIG_ENDIAN)
+	u8 cdu_reserved;
+	u8 __agg_vars4;
+	u8 agg_vars3;
+#define XSTORM_ISCSI_AG_CONTEXT_PHYSICAL_QUEUE_NUM2 (0x3F<<0)
+#define XSTORM_ISCSI_AG_CONTEXT_PHYSICAL_QUEUE_NUM2_SHIFT 0
+#define __XSTORM_ISCSI_AG_CONTEXT_RX_TS_EN_CF (0x3<<6)
+#define __XSTORM_ISCSI_AG_CONTEXT_RX_TS_EN_CF_SHIFT 6
+	u8 agg_vars2;
+#define __XSTORM_ISCSI_AG_CONTEXT_DQ_CF (0x3<<0)
+#define __XSTORM_ISCSI_AG_CONTEXT_DQ_CF_SHIFT 0
+#define __XSTORM_ISCSI_AG_CONTEXT_DQ_SPARE_FLAG_EN (0x1<<2)
+#define __XSTORM_ISCSI_AG_CONTEXT_DQ_SPARE_FLAG_EN_SHIFT 2
+#define __XSTORM_ISCSI_AG_CONTEXT_AUX8_FLAG (0x1<<3)
+#define __XSTORM_ISCSI_AG_CONTEXT_AUX8_FLAG_SHIFT 3
+#define __XSTORM_ISCSI_AG_CONTEXT_AUX9_FLAG (0x1<<4)
+#define __XSTORM_ISCSI_AG_CONTEXT_AUX9_FLAG_SHIFT 4
+#define XSTORM_ISCSI_AG_CONTEXT_DECISION_RULE1 (0x3<<5)
+#define XSTORM_ISCSI_AG_CONTEXT_DECISION_RULE1_SHIFT 5
+#define __XSTORM_ISCSI_AG_CONTEXT_DQ_CF_EN (0x1<<7)
+#define __XSTORM_ISCSI_AG_CONTEXT_DQ_CF_EN_SHIFT 7
+#elif defined(__LITTLE_ENDIAN)
+	u8 agg_vars2;
+#define __XSTORM_ISCSI_AG_CONTEXT_DQ_CF (0x3<<0)
+#define __XSTORM_ISCSI_AG_CONTEXT_DQ_CF_SHIFT 0
+#define __XSTORM_ISCSI_AG_CONTEXT_DQ_SPARE_FLAG_EN (0x1<<2)
+#define __XSTORM_ISCSI_AG_CONTEXT_DQ_SPARE_FLAG_EN_SHIFT 2
+#define __XSTORM_ISCSI_AG_CONTEXT_AUX8_FLAG (0x1<<3)
+#define __XSTORM_ISCSI_AG_CONTEXT_AUX8_FLAG_SHIFT 3
+#define __XSTORM_ISCSI_AG_CONTEXT_AUX9_FLAG (0x1<<4)
+#define __XSTORM_ISCSI_AG_CONTEXT_AUX9_FLAG_SHIFT 4
+#define XSTORM_ISCSI_AG_CONTEXT_DECISION_RULE1 (0x3<<5)
+#define XSTORM_ISCSI_AG_CONTEXT_DECISION_RULE1_SHIFT 5
+#define __XSTORM_ISCSI_AG_CONTEXT_DQ_CF_EN (0x1<<7)
+#define __XSTORM_ISCSI_AG_CONTEXT_DQ_CF_EN_SHIFT 7
+	u8 agg_vars3;
+#define XSTORM_ISCSI_AG_CONTEXT_PHYSICAL_QUEUE_NUM2 (0x3F<<0)
+#define XSTORM_ISCSI_AG_CONTEXT_PHYSICAL_QUEUE_NUM2_SHIFT 0
+#define __XSTORM_ISCSI_AG_CONTEXT_RX_TS_EN_CF (0x3<<6)
+#define __XSTORM_ISCSI_AG_CONTEXT_RX_TS_EN_CF_SHIFT 6
+	u8 __agg_vars4;
+	u8 cdu_reserved;
+#endif
+	u32 more_to_send;
+#if defined(__BIG_ENDIAN)
+	u16 agg_vars5;
+#define XSTORM_ISCSI_AG_CONTEXT_DECISION_RULE5 (0x3<<0)
+#define XSTORM_ISCSI_AG_CONTEXT_DECISION_RULE5_SHIFT 0
+#define XSTORM_ISCSI_AG_CONTEXT_PHYSICAL_QUEUE_NUM0 (0x3F<<2)
+#define XSTORM_ISCSI_AG_CONTEXT_PHYSICAL_QUEUE_NUM0_SHIFT 2
+#define XSTORM_ISCSI_AG_CONTEXT_PHYSICAL_QUEUE_NUM1 (0x3F<<8)
+#define XSTORM_ISCSI_AG_CONTEXT_PHYSICAL_QUEUE_NUM1_SHIFT 8
+#define XSTORM_ISCSI_AG_CONTEXT_DECISION_RULE2 (0x3<<14)
+#define XSTORM_ISCSI_AG_CONTEXT_DECISION_RULE2_SHIFT 14
+	u16 sq_cons;
+#elif defined(__LITTLE_ENDIAN)
+	u16 sq_cons;
+	u16 agg_vars5;
+#define XSTORM_ISCSI_AG_CONTEXT_DECISION_RULE5 (0x3<<0)
+#define XSTORM_ISCSI_AG_CONTEXT_DECISION_RULE5_SHIFT 0
+#define XSTORM_ISCSI_AG_CONTEXT_PHYSICAL_QUEUE_NUM0 (0x3F<<2)
+#define XSTORM_ISCSI_AG_CONTEXT_PHYSICAL_QUEUE_NUM0_SHIFT 2
+#define XSTORM_ISCSI_AG_CONTEXT_PHYSICAL_QUEUE_NUM1 (0x3F<<8)
+#define XSTORM_ISCSI_AG_CONTEXT_PHYSICAL_QUEUE_NUM1_SHIFT 8
+#define XSTORM_ISCSI_AG_CONTEXT_DECISION_RULE2 (0x3<<14)
+#define XSTORM_ISCSI_AG_CONTEXT_DECISION_RULE2_SHIFT 14
+#endif
+	struct xstorm_tcp_tcp_ag_context_section tcp;
+#if defined(__BIG_ENDIAN)
+	u16 agg_vars7;
+#define __XSTORM_ISCSI_AG_CONTEXT_AGG_VAL11_DECISION_RULE (0x7<<0)
+#define __XSTORM_ISCSI_AG_CONTEXT_AGG_VAL11_DECISION_RULE_SHIFT 0
+#define __XSTORM_ISCSI_AG_CONTEXT_AUX13_FLAG (0x1<<3)
+#define __XSTORM_ISCSI_AG_CONTEXT_AUX13_FLAG_SHIFT 3
+#define __XSTORM_ISCSI_AG_CONTEXT_STORMS_SYNC_CF (0x3<<4)
+#define __XSTORM_ISCSI_AG_CONTEXT_STORMS_SYNC_CF_SHIFT 4
+#define XSTORM_ISCSI_AG_CONTEXT_DECISION_RULE3 (0x3<<6)
+#define XSTORM_ISCSI_AG_CONTEXT_DECISION_RULE3_SHIFT 6
+#define XSTORM_ISCSI_AG_CONTEXT_AUX1_CF (0x3<<8)
+#define XSTORM_ISCSI_AG_CONTEXT_AUX1_CF_SHIFT 8
+#define __XSTORM_ISCSI_AG_CONTEXT_COMPLETION_SEQ_DECISION_MASK (0x1<<10)
+#define __XSTORM_ISCSI_AG_CONTEXT_COMPLETION_SEQ_DECISION_MASK_SHIFT 10
+#define __XSTORM_ISCSI_AG_CONTEXT_AUX1_CF_EN (0x1<<11)
+#define __XSTORM_ISCSI_AG_CONTEXT_AUX1_CF_EN_SHIFT 11
+#define __XSTORM_ISCSI_AG_CONTEXT_AUX10_FLAG (0x1<<12)
+#define __XSTORM_ISCSI_AG_CONTEXT_AUX10_FLAG_SHIFT 12
+#define __XSTORM_ISCSI_AG_CONTEXT_AUX11_FLAG (0x1<<13)
+#define __XSTORM_ISCSI_AG_CONTEXT_AUX11_FLAG_SHIFT 13
+#define __XSTORM_ISCSI_AG_CONTEXT_AUX12_FLAG (0x1<<14)
+#define __XSTORM_ISCSI_AG_CONTEXT_AUX12_FLAG_SHIFT 14
+#define __XSTORM_ISCSI_AG_CONTEXT_RX_WND_SCL_EN (0x1<<15)
+#define __XSTORM_ISCSI_AG_CONTEXT_RX_WND_SCL_EN_SHIFT 15
+	u8 agg_val3_th;
+	u8 agg_vars6;
+#define XSTORM_ISCSI_AG_CONTEXT_DECISION_RULE6 (0x7<<0)
+#define XSTORM_ISCSI_AG_CONTEXT_DECISION_RULE6_SHIFT 0
+#define XSTORM_ISCSI_AG_CONTEXT_DECISION_RULE7 (0x7<<3)
+#define XSTORM_ISCSI_AG_CONTEXT_DECISION_RULE7_SHIFT 3
+#define XSTORM_ISCSI_AG_CONTEXT_DECISION_RULE4 (0x3<<6)
+#define XSTORM_ISCSI_AG_CONTEXT_DECISION_RULE4_SHIFT 6
+#elif defined(__LITTLE_ENDIAN)
+	u8 agg_vars6;
+#define XSTORM_ISCSI_AG_CONTEXT_DECISION_RULE6 (0x7<<0)
+#define XSTORM_ISCSI_AG_CONTEXT_DECISION_RULE6_SHIFT 0
+#define XSTORM_ISCSI_AG_CONTEXT_DECISION_RULE7 (0x7<<3)
+#define XSTORM_ISCSI_AG_CONTEXT_DECISION_RULE7_SHIFT 3
+#define XSTORM_ISCSI_AG_CONTEXT_DECISION_RULE4 (0x3<<6)
+#define XSTORM_ISCSI_AG_CONTEXT_DECISION_RULE4_SHIFT 6
+	u8 agg_val3_th;
+	u16 agg_vars7;
+#define __XSTORM_ISCSI_AG_CONTEXT_AGG_VAL11_DECISION_RULE (0x7<<0)
+#define __XSTORM_ISCSI_AG_CONTEXT_AGG_VAL11_DECISION_RULE_SHIFT 0
+#define __XSTORM_ISCSI_AG_CONTEXT_AUX13_FLAG (0x1<<3)
+#define __XSTORM_ISCSI_AG_CONTEXT_AUX13_FLAG_SHIFT 3
+#define __XSTORM_ISCSI_AG_CONTEXT_STORMS_SYNC_CF (0x3<<4)
+#define __XSTORM_ISCSI_AG_CONTEXT_STORMS_SYNC_CF_SHIFT 4
+#define XSTORM_ISCSI_AG_CONTEXT_DECISION_RULE3 (0x3<<6)
+#define XSTORM_ISCSI_AG_CONTEXT_DECISION_RULE3_SHIFT 6
+#define XSTORM_ISCSI_AG_CONTEXT_AUX1_CF (0x3<<8)
+#define XSTORM_ISCSI_AG_CONTEXT_AUX1_CF_SHIFT 8
+#define __XSTORM_ISCSI_AG_CONTEXT_COMPLETION_SEQ_DECISION_MASK (0x1<<10)
+#define __XSTORM_ISCSI_AG_CONTEXT_COMPLETION_SEQ_DECISION_MASK_SHIFT 10
+#define __XSTORM_ISCSI_AG_CONTEXT_AUX1_CF_EN (0x1<<11)
+#define __XSTORM_ISCSI_AG_CONTEXT_AUX1_CF_EN_SHIFT 11
+#define __XSTORM_ISCSI_AG_CONTEXT_AUX10_FLAG (0x1<<12)
+#define __XSTORM_ISCSI_AG_CONTEXT_AUX10_FLAG_SHIFT 12
+#define __XSTORM_ISCSI_AG_CONTEXT_AUX11_FLAG (0x1<<13)
+#define __XSTORM_ISCSI_AG_CONTEXT_AUX11_FLAG_SHIFT 13
+#define __XSTORM_ISCSI_AG_CONTEXT_AUX12_FLAG (0x1<<14)
+#define __XSTORM_ISCSI_AG_CONTEXT_AUX12_FLAG_SHIFT 14
+#define __XSTORM_ISCSI_AG_CONTEXT_RX_WND_SCL_EN (0x1<<15)
+#define __XSTORM_ISCSI_AG_CONTEXT_RX_WND_SCL_EN_SHIFT 15
+#endif
+#if defined(__BIG_ENDIAN)
+	u16 __agg_val11_th;
+	u16 __gen_data;
+#elif defined(__LITTLE_ENDIAN)
+	u16 __gen_data;
+	u16 __agg_val11_th;
+#endif
+#if defined(__BIG_ENDIAN)
+	u8 __reserved1;
+	u8 __agg_val6_th;
+	u16 __agg_val9;
+#elif defined(__LITTLE_ENDIAN)
+	u16 __agg_val9;
+	u8 __agg_val6_th;
+	u8 __reserved1;
+#endif
+#if defined(__BIG_ENDIAN)
+	u16 hq_prod;
+	u16 hq_cons;
+#elif defined(__LITTLE_ENDIAN)
+	u16 hq_cons;
+	u16 hq_prod;
+#endif
+	u32 agg_vars8;
+#define XSTORM_ISCSI_AG_CONTEXT_AGG_MISC2 (0xFFFFFF<<0)
+#define XSTORM_ISCSI_AG_CONTEXT_AGG_MISC2_SHIFT 0
+#define XSTORM_ISCSI_AG_CONTEXT_AGG_MISC3 (0xFF<<24)
+#define XSTORM_ISCSI_AG_CONTEXT_AGG_MISC3_SHIFT 24
+#if defined(__BIG_ENDIAN)
+	u16 r2tq_prod;
+	u16 sq_prod;
+#elif defined(__LITTLE_ENDIAN)
+	u16 sq_prod;
+	u16 r2tq_prod;
+#endif
+#if defined(__BIG_ENDIAN)
+	u8 agg_val3;
+	u8 agg_val6;
+	u8 agg_val5_th;
+	u8 agg_val5;
+#elif defined(__LITTLE_ENDIAN)
+	u8 agg_val5;
+	u8 agg_val5_th;
+	u8 agg_val6;
+	u8 agg_val3;
+#endif
+#if defined(__BIG_ENDIAN)
+	u16 __agg_misc1;
+	u16 agg_limit1;
+#elif defined(__LITTLE_ENDIAN)
+	u16 agg_limit1;
+	u16 __agg_misc1;
+#endif
+	u32 hq_cons_tcp_seq;
+	u32 exp_stat_sn;
+	u32 rst_seq_num;
+};
+
+
+/*
+ * The L5cm aggregative context of XStorm
+ */
+struct xstorm_l5cm_ag_context {
+#if defined(__BIG_ENDIAN)
+	u16 agg_val1;
+	u8 agg_vars1;
+#define __XSTORM_L5CM_AG_CONTEXT_EXISTS_IN_QM0 (0x1<<0)
+#define __XSTORM_L5CM_AG_CONTEXT_EXISTS_IN_QM0_SHIFT 0
+#define XSTORM_L5CM_AG_CONTEXT_EXISTS_IN_QM1 (0x1<<1)
+#define XSTORM_L5CM_AG_CONTEXT_EXISTS_IN_QM1_SHIFT 1
+#define XSTORM_L5CM_AG_CONTEXT_EXISTS_IN_QM2 (0x1<<2)
+#define XSTORM_L5CM_AG_CONTEXT_EXISTS_IN_QM2_SHIFT 2
+#define XSTORM_L5CM_AG_CONTEXT_EXISTS_IN_QM3 (0x1<<3)
+#define XSTORM_L5CM_AG_CONTEXT_EXISTS_IN_QM3_SHIFT 3
+#define __XSTORM_L5CM_AG_CONTEXT_MORE_TO_SEND_EN (0x1<<4)
+#define __XSTORM_L5CM_AG_CONTEXT_MORE_TO_SEND_EN_SHIFT 4
+#define XSTORM_L5CM_AG_CONTEXT_NAGLE_EN (0x1<<5)
+#define XSTORM_L5CM_AG_CONTEXT_NAGLE_EN_SHIFT 5
+#define __XSTORM_L5CM_AG_CONTEXT_DQ_SPARE_FLAG (0x1<<6)
+#define __XSTORM_L5CM_AG_CONTEXT_DQ_SPARE_FLAG_SHIFT 6
+#define __XSTORM_L5CM_AG_CONTEXT_UNA_GT_NXT_EN (0x1<<7)
+#define __XSTORM_L5CM_AG_CONTEXT_UNA_GT_NXT_EN_SHIFT 7
+	u8 state;
+#elif defined(__LITTLE_ENDIAN)
+	u8 state;
+	u8 agg_vars1;
+#define __XSTORM_L5CM_AG_CONTEXT_EXISTS_IN_QM0 (0x1<<0)
+#define __XSTORM_L5CM_AG_CONTEXT_EXISTS_IN_QM0_SHIFT 0
+#define XSTORM_L5CM_AG_CONTEXT_EXISTS_IN_QM1 (0x1<<1)
+#define XSTORM_L5CM_AG_CONTEXT_EXISTS_IN_QM1_SHIFT 1
+#define XSTORM_L5CM_AG_CONTEXT_EXISTS_IN_QM2 (0x1<<2)
+#define XSTORM_L5CM_AG_CONTEXT_EXISTS_IN_QM2_SHIFT 2
+#define XSTORM_L5CM_AG_CONTEXT_EXISTS_IN_QM3 (0x1<<3)
+#define XSTORM_L5CM_AG_CONTEXT_EXISTS_IN_QM3_SHIFT 3
+#define __XSTORM_L5CM_AG_CONTEXT_MORE_TO_SEND_EN (0x1<<4)
+#define __XSTORM_L5CM_AG_CONTEXT_MORE_TO_SEND_EN_SHIFT 4
+#define XSTORM_L5CM_AG_CONTEXT_NAGLE_EN (0x1<<5)
+#define XSTORM_L5CM_AG_CONTEXT_NAGLE_EN_SHIFT 5
+#define __XSTORM_L5CM_AG_CONTEXT_DQ_SPARE_FLAG (0x1<<6)
+#define __XSTORM_L5CM_AG_CONTEXT_DQ_SPARE_FLAG_SHIFT 6
+#define __XSTORM_L5CM_AG_CONTEXT_UNA_GT_NXT_EN (0x1<<7)
+#define __XSTORM_L5CM_AG_CONTEXT_UNA_GT_NXT_EN_SHIFT 7
+	u16 agg_val1;
+#endif
+#if defined(__BIG_ENDIAN)
+	u8 cdu_reserved;
+	u8 __agg_vars4;
+	u8 agg_vars3;
+#define XSTORM_L5CM_AG_CONTEXT_PHYSICAL_QUEUE_NUM2 (0x3F<<0)
+#define XSTORM_L5CM_AG_CONTEXT_PHYSICAL_QUEUE_NUM2_SHIFT 0
+#define __XSTORM_L5CM_AG_CONTEXT_RX_TS_EN_CF (0x3<<6)
+#define __XSTORM_L5CM_AG_CONTEXT_RX_TS_EN_CF_SHIFT 6
+	u8 agg_vars2;
+#define XSTORM_L5CM_AG_CONTEXT_AUX4_CF (0x3<<0)
+#define XSTORM_L5CM_AG_CONTEXT_AUX4_CF_SHIFT 0
+#define __XSTORM_L5CM_AG_CONTEXT_DQ_SPARE_FLAG_EN (0x1<<2)
+#define __XSTORM_L5CM_AG_CONTEXT_DQ_SPARE_FLAG_EN_SHIFT 2
+#define __XSTORM_L5CM_AG_CONTEXT_AUX8_FLAG (0x1<<3)
+#define __XSTORM_L5CM_AG_CONTEXT_AUX8_FLAG_SHIFT 3
+#define __XSTORM_L5CM_AG_CONTEXT_AUX9_FLAG (0x1<<4)
+#define __XSTORM_L5CM_AG_CONTEXT_AUX9_FLAG_SHIFT 4
+#define XSTORM_L5CM_AG_CONTEXT_DECISION_RULE1 (0x3<<5)
+#define XSTORM_L5CM_AG_CONTEXT_DECISION_RULE1_SHIFT 5
+#define XSTORM_L5CM_AG_CONTEXT_AUX4_CF_EN (0x1<<7)
+#define XSTORM_L5CM_AG_CONTEXT_AUX4_CF_EN_SHIFT 7
+#elif defined(__LITTLE_ENDIAN)
+	u8 agg_vars2;
+#define XSTORM_L5CM_AG_CONTEXT_AUX4_CF (0x3<<0)
+#define XSTORM_L5CM_AG_CONTEXT_AUX4_CF_SHIFT 0
+#define __XSTORM_L5CM_AG_CONTEXT_DQ_SPARE_FLAG_EN (0x1<<2)
+#define __XSTORM_L5CM_AG_CONTEXT_DQ_SPARE_FLAG_EN_SHIFT 2
+#define __XSTORM_L5CM_AG_CONTEXT_AUX8_FLAG (0x1<<3)
+#define __XSTORM_L5CM_AG_CONTEXT_AUX8_FLAG_SHIFT 3
+#define __XSTORM_L5CM_AG_CONTEXT_AUX9_FLAG (0x1<<4)
+#define __XSTORM_L5CM_AG_CONTEXT_AUX9_FLAG_SHIFT 4
+#define XSTORM_L5CM_AG_CONTEXT_DECISION_RULE1 (0x3<<5)
+#define XSTORM_L5CM_AG_CONTEXT_DECISION_RULE1_SHIFT 5
+#define XSTORM_L5CM_AG_CONTEXT_AUX4_CF_EN (0x1<<7)
+#define XSTORM_L5CM_AG_CONTEXT_AUX4_CF_EN_SHIFT 7
+	u8 agg_vars3;
+#define XSTORM_L5CM_AG_CONTEXT_PHYSICAL_QUEUE_NUM2 (0x3F<<0)
+#define XSTORM_L5CM_AG_CONTEXT_PHYSICAL_QUEUE_NUM2_SHIFT 0
+#define __XSTORM_L5CM_AG_CONTEXT_RX_TS_EN_CF (0x3<<6)
+#define __XSTORM_L5CM_AG_CONTEXT_RX_TS_EN_CF_SHIFT 6
+	u8 __agg_vars4;
+	u8 cdu_reserved;
+#endif
+	u32 more_to_send;
+#if defined(__BIG_ENDIAN)
+	u16 agg_vars5;
+#define XSTORM_L5CM_AG_CONTEXT_DECISION_RULE5 (0x3<<0)
+#define XSTORM_L5CM_AG_CONTEXT_DECISION_RULE5_SHIFT 0
+#define XSTORM_L5CM_AG_CONTEXT_PHYSICAL_QUEUE_NUM0 (0x3F<<2)
+#define XSTORM_L5CM_AG_CONTEXT_PHYSICAL_QUEUE_NUM0_SHIFT 2
+#define XSTORM_L5CM_AG_CONTEXT_PHYSICAL_QUEUE_NUM1 (0x3F<<8)
+#define XSTORM_L5CM_AG_CONTEXT_PHYSICAL_QUEUE_NUM1_SHIFT 8
+#define XSTORM_L5CM_AG_CONTEXT_DECISION_RULE2 (0x3<<14)
+#define XSTORM_L5CM_AG_CONTEXT_DECISION_RULE2_SHIFT 14
+	u16 agg_val4_th;
+#elif defined(__LITTLE_ENDIAN)
+	u16 agg_val4_th;
+	u16 agg_vars5;
+#define XSTORM_L5CM_AG_CONTEXT_DECISION_RULE5 (0x3<<0)
+#define XSTORM_L5CM_AG_CONTEXT_DECISION_RULE5_SHIFT 0
+#define XSTORM_L5CM_AG_CONTEXT_PHYSICAL_QUEUE_NUM0 (0x3F<<2)
+#define XSTORM_L5CM_AG_CONTEXT_PHYSICAL_QUEUE_NUM0_SHIFT 2
+#define XSTORM_L5CM_AG_CONTEXT_PHYSICAL_QUEUE_NUM1 (0x3F<<8)
+#define XSTORM_L5CM_AG_CONTEXT_PHYSICAL_QUEUE_NUM1_SHIFT 8
+#define XSTORM_L5CM_AG_CONTEXT_DECISION_RULE2 (0x3<<14)
+#define XSTORM_L5CM_AG_CONTEXT_DECISION_RULE2_SHIFT 14
+#endif
+	struct xstorm_tcp_tcp_ag_context_section tcp;
+#if defined(__BIG_ENDIAN)
+	u16 agg_vars7;
+#define __XSTORM_L5CM_AG_CONTEXT_AGG_VAL11_DECISION_RULE (0x7<<0)
+#define __XSTORM_L5CM_AG_CONTEXT_AGG_VAL11_DECISION_RULE_SHIFT 0
+#define __XSTORM_L5CM_AG_CONTEXT_AUX13_FLAG (0x1<<3)
+#define __XSTORM_L5CM_AG_CONTEXT_AUX13_FLAG_SHIFT 3
+#define __XSTORM_L5CM_AG_CONTEXT_STORMS_SYNC_CF (0x3<<4)
+#define __XSTORM_L5CM_AG_CONTEXT_STORMS_SYNC_CF_SHIFT 4
+#define XSTORM_L5CM_AG_CONTEXT_DECISION_RULE3 (0x3<<6)
+#define XSTORM_L5CM_AG_CONTEXT_DECISION_RULE3_SHIFT 6
+#define XSTORM_L5CM_AG_CONTEXT_AUX1_CF (0x3<<8)
+#define XSTORM_L5CM_AG_CONTEXT_AUX1_CF_SHIFT 8
+#define __XSTORM_L5CM_AG_CONTEXT_COMPLETION_SEQ_DECISION_MASK (0x1<<10)
+#define __XSTORM_L5CM_AG_CONTEXT_COMPLETION_SEQ_DECISION_MASK_SHIFT 10
+#define __XSTORM_L5CM_AG_CONTEXT_AUX1_CF_EN (0x1<<11)
+#define __XSTORM_L5CM_AG_CONTEXT_AUX1_CF_EN_SHIFT 11
+#define __XSTORM_L5CM_AG_CONTEXT_AUX10_FLAG (0x1<<12)
+#define __XSTORM_L5CM_AG_CONTEXT_AUX10_FLAG_SHIFT 12
+#define __XSTORM_L5CM_AG_CONTEXT_AUX11_FLAG (0x1<<13)
+#define __XSTORM_L5CM_AG_CONTEXT_AUX11_FLAG_SHIFT 13
+#define __XSTORM_L5CM_AG_CONTEXT_AUX12_FLAG (0x1<<14)
+#define __XSTORM_L5CM_AG_CONTEXT_AUX12_FLAG_SHIFT 14
+#define __XSTORM_L5CM_AG_CONTEXT_RX_WND_SCL_EN (0x1<<15)
+#define __XSTORM_L5CM_AG_CONTEXT_RX_WND_SCL_EN_SHIFT 15
+	u8 agg_val3_th;
+	u8 agg_vars6;
+#define XSTORM_L5CM_AG_CONTEXT_DECISION_RULE6 (0x7<<0)
+#define XSTORM_L5CM_AG_CONTEXT_DECISION_RULE6_SHIFT 0
+#define XSTORM_L5CM_AG_CONTEXT_DECISION_RULE7 (0x7<<3)
+#define XSTORM_L5CM_AG_CONTEXT_DECISION_RULE7_SHIFT 3
+#define XSTORM_L5CM_AG_CONTEXT_DECISION_RULE4 (0x3<<6)
+#define XSTORM_L5CM_AG_CONTEXT_DECISION_RULE4_SHIFT 6
+#elif defined(__LITTLE_ENDIAN)
+	u8 agg_vars6;
+#define XSTORM_L5CM_AG_CONTEXT_DECISION_RULE6 (0x7<<0)
+#define XSTORM_L5CM_AG_CONTEXT_DECISION_RULE6_SHIFT 0
+#define XSTORM_L5CM_AG_CONTEXT_DECISION_RULE7 (0x7<<3)
+#define XSTORM_L5CM_AG_CONTEXT_DECISION_RULE7_SHIFT 3
+#define XSTORM_L5CM_AG_CONTEXT_DECISION_RULE4 (0x3<<6)
+#define XSTORM_L5CM_AG_CONTEXT_DECISION_RULE4_SHIFT 6
+	u8 agg_val3_th;
+	u16 agg_vars7;
+#define __XSTORM_L5CM_AG_CONTEXT_AGG_VAL11_DECISION_RULE (0x7<<0)
+#define __XSTORM_L5CM_AG_CONTEXT_AGG_VAL11_DECISION_RULE_SHIFT 0
+#define __XSTORM_L5CM_AG_CONTEXT_AUX13_FLAG (0x1<<3)
+#define __XSTORM_L5CM_AG_CONTEXT_AUX13_FLAG_SHIFT 3
+#define __XSTORM_L5CM_AG_CONTEXT_STORMS_SYNC_CF (0x3<<4)
+#define __XSTORM_L5CM_AG_CONTEXT_STORMS_SYNC_CF_SHIFT 4
+#define XSTORM_L5CM_AG_CONTEXT_DECISION_RULE3 (0x3<<6)
+#define XSTORM_L5CM_AG_CONTEXT_DECISION_RULE3_SHIFT 6
+#define XSTORM_L5CM_AG_CONTEXT_AUX1_CF (0x3<<8)
+#define XSTORM_L5CM_AG_CONTEXT_AUX1_CF_SHIFT 8
+#define __XSTORM_L5CM_AG_CONTEXT_COMPLETION_SEQ_DECISION_MASK (0x1<<10)
+#define __XSTORM_L5CM_AG_CONTEXT_COMPLETION_SEQ_DECISION_MASK_SHIFT 10
+#define __XSTORM_L5CM_AG_CONTEXT_AUX1_CF_EN (0x1<<11)
+#define __XSTORM_L5CM_AG_CONTEXT_AUX1_CF_EN_SHIFT 11
+#define __XSTORM_L5CM_AG_CONTEXT_AUX10_FLAG (0x1<<12)
+#define __XSTORM_L5CM_AG_CONTEXT_AUX10_FLAG_SHIFT 12
+#define __XSTORM_L5CM_AG_CONTEXT_AUX11_FLAG (0x1<<13)
+#define __XSTORM_L5CM_AG_CONTEXT_AUX11_FLAG_SHIFT 13
+#define __XSTORM_L5CM_AG_CONTEXT_AUX12_FLAG (0x1<<14)
+#define __XSTORM_L5CM_AG_CONTEXT_AUX12_FLAG_SHIFT 14
+#define __XSTORM_L5CM_AG_CONTEXT_RX_WND_SCL_EN (0x1<<15)
+#define __XSTORM_L5CM_AG_CONTEXT_RX_WND_SCL_EN_SHIFT 15
+#endif
+#if defined(__BIG_ENDIAN)
+	u16 __agg_val11_th;
+	u16 __gen_data;
+#elif defined(__LITTLE_ENDIAN)
+	u16 __gen_data;
+	u16 __agg_val11_th;
+#endif
+#if defined(__BIG_ENDIAN)
+	u8 __reserved1;
+	u8 __agg_val6_th;
+	u16 __agg_val9;
+#elif defined(__LITTLE_ENDIAN)
+	u16 __agg_val9;
+	u8 __agg_val6_th;
+	u8 __reserved1;
+#endif
+#if defined(__BIG_ENDIAN)
+	u16 agg_val2_th;
+	u16 agg_val2;
+#elif defined(__LITTLE_ENDIAN)
+	u16 agg_val2;
+	u16 agg_val2_th;
+#endif
+	u32 agg_vars8;
+#define XSTORM_L5CM_AG_CONTEXT_AGG_MISC2 (0xFFFFFF<<0)
+#define XSTORM_L5CM_AG_CONTEXT_AGG_MISC2_SHIFT 0
+#define XSTORM_L5CM_AG_CONTEXT_AGG_MISC3 (0xFF<<24)
+#define XSTORM_L5CM_AG_CONTEXT_AGG_MISC3_SHIFT 24
+#if defined(__BIG_ENDIAN)
+	u16 agg_misc0;
+	u16 agg_val4;
+#elif defined(__LITTLE_ENDIAN)
+	u16 agg_val4;
+	u16 agg_misc0;
+#endif
+#if defined(__BIG_ENDIAN)
+	u8 agg_val3;
+	u8 agg_val6;
+	u8 agg_val5_th;
+	u8 agg_val5;
+#elif defined(__LITTLE_ENDIAN)
+	u8 agg_val5;
+	u8 agg_val5_th;
+	u8 agg_val6;
+	u8 agg_val3;
+#endif
+#if defined(__BIG_ENDIAN)
+	u16 __agg_misc1;
+	u16 agg_limit1;
+#elif defined(__LITTLE_ENDIAN)
+	u16 agg_limit1;
+	u16 __agg_misc1;
+#endif
+	u32 completion_seq;
+	u32 agg_misc4;
+	u32 rst_seq_num;
+};
+
+/*
+ * ABTS info $$KEEP_ENDIANNESS$$
+ */
+struct fcoe_abts_info {
+	__le16 aborted_task_id;
+	__le16 reserved0;
+	__le32 reserved1;
+};
+
+
+/*
+ * Fixed size structure in order to plant it in Union structure
+ * $$KEEP_ENDIANNESS$$
+ */
+struct fcoe_abts_rsp_union {
+	u8 r_ctl;
+	u8 rsrv[3];
+	__le32 abts_rsp_payload[7];
+};
+
+
+/*
+ * 4 regs size $$KEEP_ENDIANNESS$$
+ */
+struct fcoe_bd_ctx {
+	__le32 buf_addr_hi;
+	__le32 buf_addr_lo;
+	__le16 buf_len;
+	__le16 rsrv0;
+	__le16 flags;
+	__le16 rsrv1;
+};
+
+
+/*
+ * FCoE cached sges context $$KEEP_ENDIANNESS$$
+ */
+struct fcoe_cached_sge_ctx {
+	struct regpair cur_buf_addr;
+	__le16 cur_buf_rem;
+	__le16 second_buf_rem;
+	struct regpair second_buf_addr;
+};
+
+
+/*
+ * Cleanup info $$KEEP_ENDIANNESS$$
+ */
+struct fcoe_cleanup_info {
+	__le16 cleaned_task_id;
+	__le16 rolled_tx_seq_cnt;
+	__le32 rolled_tx_data_offset;
+};
+
+
+/*
+ * Fcp RSP flags $$KEEP_ENDIANNESS$$
+ */
+struct fcoe_fcp_rsp_flags {
+	u8 flags;
+#define FCOE_FCP_RSP_FLAGS_FCP_RSP_LEN_VALID (0x1<<0)
+#define FCOE_FCP_RSP_FLAGS_FCP_RSP_LEN_VALID_SHIFT 0
+#define FCOE_FCP_RSP_FLAGS_FCP_SNS_LEN_VALID (0x1<<1)
+#define FCOE_FCP_RSP_FLAGS_FCP_SNS_LEN_VALID_SHIFT 1
+#define FCOE_FCP_RSP_FLAGS_FCP_RESID_OVER (0x1<<2)
+#define FCOE_FCP_RSP_FLAGS_FCP_RESID_OVER_SHIFT 2
+#define FCOE_FCP_RSP_FLAGS_FCP_RESID_UNDER (0x1<<3)
+#define FCOE_FCP_RSP_FLAGS_FCP_RESID_UNDER_SHIFT 3
+#define FCOE_FCP_RSP_FLAGS_FCP_CONF_REQ (0x1<<4)
+#define FCOE_FCP_RSP_FLAGS_FCP_CONF_REQ_SHIFT 4
+#define FCOE_FCP_RSP_FLAGS_FCP_BIDI_FLAGS (0x7<<5)
+#define FCOE_FCP_RSP_FLAGS_FCP_BIDI_FLAGS_SHIFT 5
+};
+
+/*
+ * Fcp RSP payload $$KEEP_ENDIANNESS$$
+ */
+struct fcoe_fcp_rsp_payload {
+	struct regpair reserved0;
+	__le32 fcp_resid;
+	u8 scsi_status_code;
+	struct fcoe_fcp_rsp_flags fcp_flags;
+	__le16 retry_delay_timer;
+	__le32 fcp_rsp_len;
+	__le32 fcp_sns_len;
+};
+
+/*
+ * Fixed size structure in order to plant it in Union structure
+ * $$KEEP_ENDIANNESS$$
+ */
+struct fcoe_fcp_rsp_union {
+	struct fcoe_fcp_rsp_payload payload;
+	struct regpair reserved0;
+};
+
+/*
+ * FC header $$KEEP_ENDIANNESS$$
+ */
+struct fcoe_fc_hdr {
+	u8 s_id[3];
+	u8 cs_ctl;
+	u8 d_id[3];
+	u8 r_ctl;
+	__le16 seq_cnt;
+	u8 df_ctl;
+	u8 seq_id;
+	u8 f_ctl[3];
+	u8 type;
+	__le32 parameters;
+	__le16 rx_id;
+	__le16 ox_id;
+};
+
+/*
+ * FC header union $$KEEP_ENDIANNESS$$
+ */
+struct fcoe_mp_rsp_union {
+	struct fcoe_fc_hdr fc_hdr;
+	__le32 mp_payload_len;
+	__le32 rsrv;
+};
+
+/*
+ * Completion information $$KEEP_ENDIANNESS$$
+ */
+union fcoe_comp_flow_info {
+	struct fcoe_fcp_rsp_union fcp_rsp;
+	struct fcoe_abts_rsp_union abts_rsp;
+	struct fcoe_mp_rsp_union mp_rsp;
+	__le32 opaque[8];
+};
+
+
+/*
+ * External ABTS info $$KEEP_ENDIANNESS$$
+ */
+struct fcoe_ext_abts_info {
+	__le32 rsrv0[6];
+	struct fcoe_abts_info ctx;
+};
+
+
+/*
+ * External cleanup info $$KEEP_ENDIANNESS$$
+ */
+struct fcoe_ext_cleanup_info {
+	__le32 rsrv0[6];
+	struct fcoe_cleanup_info ctx;
+};
+
+
+/*
+ * Fcoe FW Tx sequence context $$KEEP_ENDIANNESS$$
+ */
+struct fcoe_fw_tx_seq_ctx {
+	__le32 data_offset;
+	__le16 seq_cnt;
+	__le16 rsrv0;
+};
+
+/*
+ * Fcoe external FW Tx sequence context $$KEEP_ENDIANNESS$$
+ */
+struct fcoe_ext_fw_tx_seq_ctx {
+	__le32 rsrv0[6];
+	struct fcoe_fw_tx_seq_ctx ctx;
+};
+
+
+/*
+ * FCoE multiple sges context $$KEEP_ENDIANNESS$$
+ */
+struct fcoe_mul_sges_ctx {
+	struct regpair cur_sge_addr;
+	__le16 cur_sge_off;
+	u8 cur_sge_idx;
+	u8 sgl_size;
+};
+
+/*
+ * FCoE external multiple sges context $$KEEP_ENDIANNESS$$
+ */
+struct fcoe_ext_mul_sges_ctx {
+	struct fcoe_mul_sges_ctx mul_sgl;
+	struct regpair rsrv0;
+};
+
+
+/*
+ * FCP CMD payload $$KEEP_ENDIANNESS$$
+ */
+struct fcoe_fcp_cmd_payload {
+	__le32 opaque[8];
+};
+
+
+
+
+
+/*
+ * Fcp xfr rdy payload $$KEEP_ENDIANNESS$$
+ */
+struct fcoe_fcp_xfr_rdy_payload {
+	__le32 burst_len;
+	__le32 data_ro;
+};
+
+
+/*
+ * FC frame $$KEEP_ENDIANNESS$$
+ */
+struct fcoe_fc_frame {
+	struct fcoe_fc_hdr fc_hdr;
+	__le32 reserved0[2];
+};
+
+
+
+
+/*
+ * FCoE KCQ CQE parameters $$KEEP_ENDIANNESS$$
+ */
+union fcoe_kcqe_params {
+	__le32 reserved0[4];
+};
+
+/*
+ * FCoE KCQ CQE $$KEEP_ENDIANNESS$$
+ */
+struct fcoe_kcqe {
+	__le32 fcoe_conn_id;
+	__le32 completion_status;
+	__le32 fcoe_conn_context_id;
+	union fcoe_kcqe_params params;
+	__le16 qe_self_seq;
+	u8 op_code;
+	u8 flags;
+#define FCOE_KCQE_RESERVED0 (0x7<<0)
+#define FCOE_KCQE_RESERVED0_SHIFT 0
+#define FCOE_KCQE_RAMROD_COMPLETION (0x1<<3)
+#define FCOE_KCQE_RAMROD_COMPLETION_SHIFT 3
+#define FCOE_KCQE_LAYER_CODE (0x7<<4)
+#define FCOE_KCQE_LAYER_CODE_SHIFT 4
+#define FCOE_KCQE_LINKED_WITH_NEXT (0x1<<7)
+#define FCOE_KCQE_LINKED_WITH_NEXT_SHIFT 7
+};
+
+
+
+/*
+ * FCoE KWQE header $$KEEP_ENDIANNESS$$
+ */
+struct fcoe_kwqe_header {
+	u8 op_code;
+	u8 flags;
+#define FCOE_KWQE_HEADER_RESERVED0 (0xF<<0)
+#define FCOE_KWQE_HEADER_RESERVED0_SHIFT 0
+#define FCOE_KWQE_HEADER_LAYER_CODE (0x7<<4)
+#define FCOE_KWQE_HEADER_LAYER_CODE_SHIFT 4
+#define FCOE_KWQE_HEADER_RESERVED1 (0x1<<7)
+#define FCOE_KWQE_HEADER_RESERVED1_SHIFT 7
+};
+
+/*
+ * FCoE firmware init request 1 $$KEEP_ENDIANNESS$$
+ */
+struct fcoe_kwqe_init1 {
+	__le16 num_tasks;
+	struct fcoe_kwqe_header hdr;
+	__le32 task_list_pbl_addr_lo;
+	__le32 task_list_pbl_addr_hi;
+	__le32 dummy_buffer_addr_lo;
+	__le32 dummy_buffer_addr_hi;
+	__le16 sq_num_wqes;
+	__le16 rq_num_wqes;
+	__le16 rq_buffer_log_size;
+	__le16 cq_num_wqes;
+	__le16 mtu;
+	u8 num_sessions_log;
+	u8 flags;
+#define FCOE_KWQE_INIT1_LOG_PAGE_SIZE (0xF<<0)
+#define FCOE_KWQE_INIT1_LOG_PAGE_SIZE_SHIFT 0
+#define FCOE_KWQE_INIT1_LOG_CACHED_PBES_PER_FUNC (0x7<<4)
+#define FCOE_KWQE_INIT1_LOG_CACHED_PBES_PER_FUNC_SHIFT 4
+#define FCOE_KWQE_INIT1_RESERVED1 (0x1<<7)
+#define FCOE_KWQE_INIT1_RESERVED1_SHIFT 7
+};
+
+/*
+ * FCoE firmware init request 2 $$KEEP_ENDIANNESS$$
+ */
+struct fcoe_kwqe_init2 {
+	u8 hsi_major_version;
+	u8 hsi_minor_version;
+	struct fcoe_kwqe_header hdr;
+	__le32 hash_tbl_pbl_addr_lo;
+	__le32 hash_tbl_pbl_addr_hi;
+	__le32 t2_hash_tbl_addr_lo;
+	__le32 t2_hash_tbl_addr_hi;
+	__le32 t2_ptr_hash_tbl_addr_lo;
+	__le32 t2_ptr_hash_tbl_addr_hi;
+	__le32 free_list_count;
+};
+
+/*
+ * FCoE firmware init request 3 $$KEEP_ENDIANNESS$$
+ */
+struct fcoe_kwqe_init3 {
+	__le16 reserved0;
+	struct fcoe_kwqe_header hdr;
+	__le32 error_bit_map_lo;
+	__le32 error_bit_map_hi;
+	u8 perf_config;
+	u8 reserved21[3];
+	__le32 reserved2[4];
+};
+
+/*
+ * FCoE connection offload request 1 $$KEEP_ENDIANNESS$$
+ */
+struct fcoe_kwqe_conn_offload1 {
+	__le16 fcoe_conn_id;
+	struct fcoe_kwqe_header hdr;
+	__le32 sq_addr_lo;
+	__le32 sq_addr_hi;
+	__le32 rq_pbl_addr_lo;
+	__le32 rq_pbl_addr_hi;
+	__le32 rq_first_pbe_addr_lo;
+	__le32 rq_first_pbe_addr_hi;
+	__le16 rq_prod;
+	__le16 reserved0;
+};
+
+/*
+ * FCoE connection offload request 2 $$KEEP_ENDIANNESS$$
+ */
+struct fcoe_kwqe_conn_offload2 {
+	__le16 tx_max_fc_pay_len;
+	struct fcoe_kwqe_header hdr;
+	__le32 cq_addr_lo;
+	__le32 cq_addr_hi;
+	__le32 xferq_addr_lo;
+	__le32 xferq_addr_hi;
+	__le32 conn_db_addr_lo;
+	__le32 conn_db_addr_hi;
+	__le32 reserved1;
+};
+
+/*
+ * FCoE connection offload request 3 $$KEEP_ENDIANNESS$$
+ */
+struct fcoe_kwqe_conn_offload3 {
+	__le16 vlan_tag;
+#define FCOE_KWQE_CONN_OFFLOAD3_VLAN_ID (0xFFF<<0)
+#define FCOE_KWQE_CONN_OFFLOAD3_VLAN_ID_SHIFT 0
+#define FCOE_KWQE_CONN_OFFLOAD3_CFI (0x1<<12)
+#define FCOE_KWQE_CONN_OFFLOAD3_CFI_SHIFT 12
+#define FCOE_KWQE_CONN_OFFLOAD3_PRIORITY (0x7<<13)
+#define FCOE_KWQE_CONN_OFFLOAD3_PRIORITY_SHIFT 13
+	struct fcoe_kwqe_header hdr;
+	u8 s_id[3];
+	u8 tx_max_conc_seqs_c3;
+	u8 d_id[3];
+	u8 flags;
+#define FCOE_KWQE_CONN_OFFLOAD3_B_MUL_N_PORT_IDS (0x1<<0)
+#define FCOE_KWQE_CONN_OFFLOAD3_B_MUL_N_PORT_IDS_SHIFT 0
+#define FCOE_KWQE_CONN_OFFLOAD3_B_E_D_TOV_RES (0x1<<1)
+#define FCOE_KWQE_CONN_OFFLOAD3_B_E_D_TOV_RES_SHIFT 1
+#define FCOE_KWQE_CONN_OFFLOAD3_B_CONT_INCR_SEQ_CNT (0x1<<2)
+#define FCOE_KWQE_CONN_OFFLOAD3_B_CONT_INCR_SEQ_CNT_SHIFT 2
+#define FCOE_KWQE_CONN_OFFLOAD3_B_CONF_REQ (0x1<<3)
+#define FCOE_KWQE_CONN_OFFLOAD3_B_CONF_REQ_SHIFT 3
+#define FCOE_KWQE_CONN_OFFLOAD3_B_REC_VALID (0x1<<4)
+#define FCOE_KWQE_CONN_OFFLOAD3_B_REC_VALID_SHIFT 4
+#define FCOE_KWQE_CONN_OFFLOAD3_B_C2_VALID (0x1<<5)
+#define FCOE_KWQE_CONN_OFFLOAD3_B_C2_VALID_SHIFT 5
+#define FCOE_KWQE_CONN_OFFLOAD3_B_ACK_0 (0x1<<6)
+#define FCOE_KWQE_CONN_OFFLOAD3_B_ACK_0_SHIFT 6
+#define FCOE_KWQE_CONN_OFFLOAD3_B_VLAN_FLAG (0x1<<7)
+#define FCOE_KWQE_CONN_OFFLOAD3_B_VLAN_FLAG_SHIFT 7
+	__le32 reserved;
+	__le32 confq_first_pbe_addr_lo;
+	__le32 confq_first_pbe_addr_hi;
+	__le16 tx_total_conc_seqs;
+	__le16 rx_max_fc_pay_len;
+	__le16 rx_total_conc_seqs;
+	u8 rx_max_conc_seqs_c3;
+	u8 rx_open_seqs_exch_c3;
+};
+
+/*
+ * FCoE connection offload request 4 $$KEEP_ENDIANNESS$$
+ */
+struct fcoe_kwqe_conn_offload4 {
+	u8 e_d_tov_timer_val;
+	u8 reserved2;
+	struct fcoe_kwqe_header hdr;
+	u8 src_mac_addr_lo[2];
+	u8 src_mac_addr_mid[2];
+	u8 src_mac_addr_hi[2];
+	u8 dst_mac_addr_hi[2];
+	u8 dst_mac_addr_lo[2];
+	u8 dst_mac_addr_mid[2];
+	__le32 lcq_addr_lo;
+	__le32 lcq_addr_hi;
+	__le32 confq_pbl_base_addr_lo;
+	__le32 confq_pbl_base_addr_hi;
+};
+
+/*
+ * FCoE connection enable request $$KEEP_ENDIANNESS$$
+ */
+struct fcoe_kwqe_conn_enable_disable {
+	__le16 reserved0;
+	struct fcoe_kwqe_header hdr;
+	u8 src_mac_addr_lo[2];
+	u8 src_mac_addr_mid[2];
+	u8 src_mac_addr_hi[2];
+	u16 vlan_tag;
+#define FCOE_KWQE_CONN_ENABLE_DISABLE_VLAN_ID (0xFFF<<0)
+#define FCOE_KWQE_CONN_ENABLE_DISABLE_VLAN_ID_SHIFT 0
+#define FCOE_KWQE_CONN_ENABLE_DISABLE_CFI (0x1<<12)
+#define FCOE_KWQE_CONN_ENABLE_DISABLE_CFI_SHIFT 12
+#define FCOE_KWQE_CONN_ENABLE_DISABLE_PRIORITY (0x7<<13)
+#define FCOE_KWQE_CONN_ENABLE_DISABLE_PRIORITY_SHIFT 13
+	u8 dst_mac_addr_lo[2];
+	u8 dst_mac_addr_mid[2];
+	u8 dst_mac_addr_hi[2];
+	__le16 reserved1;
+	u8 s_id[3];
+	u8 vlan_flag;
+	u8 d_id[3];
+	u8 reserved3;
+	__le32 context_id;
+	__le32 conn_id;
+	__le32 reserved4;
+};
+
+/*
+ * FCoE connection destroy request $$KEEP_ENDIANNESS$$
+ */
+struct fcoe_kwqe_conn_destroy {
+	__le16 reserved0;
+	struct fcoe_kwqe_header hdr;
+	__le32 context_id;
+	__le32 conn_id;
+	__le32 reserved1[5];
+};
+
+/*
+ * FCoe destroy request $$KEEP_ENDIANNESS$$
+ */
+struct fcoe_kwqe_destroy {
+	__le16 reserved0;
+	struct fcoe_kwqe_header hdr;
+	__le32 reserved1[7];
+};
+
+/*
+ * FCoe statistics request $$KEEP_ENDIANNESS$$
+ */
+struct fcoe_kwqe_stat {
+	__le16 reserved0;
+	struct fcoe_kwqe_header hdr;
+	__le32 stat_params_addr_lo;
+	__le32 stat_params_addr_hi;
+	__le32 reserved1[5];
+};
+
+/*
+ * FCoE KWQ WQE $$KEEP_ENDIANNESS$$
+ */
+union fcoe_kwqe {
+	struct fcoe_kwqe_init1 init1;
+	struct fcoe_kwqe_init2 init2;
+	struct fcoe_kwqe_init3 init3;
+	struct fcoe_kwqe_conn_offload1 conn_offload1;
+	struct fcoe_kwqe_conn_offload2 conn_offload2;
+	struct fcoe_kwqe_conn_offload3 conn_offload3;
+	struct fcoe_kwqe_conn_offload4 conn_offload4;
+	struct fcoe_kwqe_conn_enable_disable conn_enable_disable;
+	struct fcoe_kwqe_conn_destroy conn_destroy;
+	struct fcoe_kwqe_destroy destroy;
+	struct fcoe_kwqe_stat statistics;
+};
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/*
+ * TX SGL context $$KEEP_ENDIANNESS$$
+ */
+union fcoe_sgl_union_ctx {
+	struct fcoe_cached_sge_ctx cached_sge;
+	struct fcoe_ext_mul_sges_ctx sgl;
+	__le32 opaque[5];
+};
+
+/*
+ * Data-In/ELS/BLS information $$KEEP_ENDIANNESS$$
+ */
+struct fcoe_read_flow_info {
+	union fcoe_sgl_union_ctx sgl_ctx;
+	__le32 rsrv0[3];
+};
+
+
+/*
+ * Fcoe stat context $$KEEP_ENDIANNESS$$
+ */
+struct fcoe_s_stat_ctx {
+	u8 flags;
+#define FCOE_S_STAT_CTX_ACTIVE (0x1<<0)
+#define FCOE_S_STAT_CTX_ACTIVE_SHIFT 0
+#define FCOE_S_STAT_CTX_ACK_ABORT_SEQ_COND (0x1<<1)
+#define FCOE_S_STAT_CTX_ACK_ABORT_SEQ_COND_SHIFT 1
+#define FCOE_S_STAT_CTX_ABTS_PERFORMED (0x1<<2)
+#define FCOE_S_STAT_CTX_ABTS_PERFORMED_SHIFT 2
+#define FCOE_S_STAT_CTX_SEQ_TIMEOUT (0x1<<3)
+#define FCOE_S_STAT_CTX_SEQ_TIMEOUT_SHIFT 3
+#define FCOE_S_STAT_CTX_P_RJT (0x1<<4)
+#define FCOE_S_STAT_CTX_P_RJT_SHIFT 4
+#define FCOE_S_STAT_CTX_ACK_EOFT (0x1<<5)
+#define FCOE_S_STAT_CTX_ACK_EOFT_SHIFT 5
+#define FCOE_S_STAT_CTX_RSRV1 (0x3<<6)
+#define FCOE_S_STAT_CTX_RSRV1_SHIFT 6
+};
+
+/*
+ * Fcoe rx seq context $$KEEP_ENDIANNESS$$
+ */
+struct fcoe_rx_seq_ctx {
+	u8 seq_id;
+	struct fcoe_s_stat_ctx s_stat;
+	__le16 seq_cnt;
+	__le32 low_exp_ro;
+	__le32 high_exp_ro;
+};
+
+
+/*
+ * Fcoe rx_wr union context $$KEEP_ENDIANNESS$$
+ */
+union fcoe_rx_wr_union_ctx {
+	struct fcoe_read_flow_info read_info;
+	union fcoe_comp_flow_info comp_info;
+	__le32 opaque[8];
+};
+
+
+
+/*
+ * FCoE SQ element $$KEEP_ENDIANNESS$$
+ */
+struct fcoe_sqe {
+	__le16 wqe;
+#define FCOE_SQE_TASK_ID (0x7FFF<<0)
+#define FCOE_SQE_TASK_ID_SHIFT 0
+#define FCOE_SQE_TOGGLE_BIT (0x1<<15)
+#define FCOE_SQE_TOGGLE_BIT_SHIFT 15
+};
+
+
+
+/*
+ * 14 regs $$KEEP_ENDIANNESS$$
+ */
+struct fcoe_tce_tx_only {
+	union fcoe_sgl_union_ctx sgl_ctx;
+	__le32 rsrv0;
+};
+
+/*
+ * 32 bytes (8 regs) used for TX only purposes $$KEEP_ENDIANNESS$$
+ */
+union fcoe_tx_wr_rx_rd_union_ctx {
+	struct fcoe_fc_frame tx_frame;
+	struct fcoe_fcp_cmd_payload fcp_cmd;
+	struct fcoe_ext_cleanup_info cleanup;
+	struct fcoe_ext_abts_info abts;
+	struct fcoe_ext_fw_tx_seq_ctx tx_seq;
+	__le32 opaque[8];
+};
+
+/*
+ * tce_tx_wr_rx_rd_const $$KEEP_ENDIANNESS$$
+ */
+struct fcoe_tce_tx_wr_rx_rd_const {
+	u8 init_flags;
+#define FCOE_TCE_TX_WR_RX_RD_CONST_TASK_TYPE (0x7<<0)
+#define FCOE_TCE_TX_WR_RX_RD_CONST_TASK_TYPE_SHIFT 0
+#define FCOE_TCE_TX_WR_RX_RD_CONST_DEV_TYPE (0x1<<3)
+#define FCOE_TCE_TX_WR_RX_RD_CONST_DEV_TYPE_SHIFT 3
+#define FCOE_TCE_TX_WR_RX_RD_CONST_CLASS_TYPE (0x1<<4)
+#define FCOE_TCE_TX_WR_RX_RD_CONST_CLASS_TYPE_SHIFT 4
+#define FCOE_TCE_TX_WR_RX_RD_CONST_CACHED_SGE (0x3<<5)
+#define FCOE_TCE_TX_WR_RX_RD_CONST_CACHED_SGE_SHIFT 5
+#define FCOE_TCE_TX_WR_RX_RD_CONST_SUPPORT_REC_TOV (0x1<<7)
+#define FCOE_TCE_TX_WR_RX_RD_CONST_SUPPORT_REC_TOV_SHIFT 7
+	u8 tx_flags;
+#define FCOE_TCE_TX_WR_RX_RD_CONST_TX_VALID (0x1<<0)
+#define FCOE_TCE_TX_WR_RX_RD_CONST_TX_VALID_SHIFT 0
+#define FCOE_TCE_TX_WR_RX_RD_CONST_TX_STATE (0xF<<1)
+#define FCOE_TCE_TX_WR_RX_RD_CONST_TX_STATE_SHIFT 1
+#define FCOE_TCE_TX_WR_RX_RD_CONST_RSRV1 (0x1<<5)
+#define FCOE_TCE_TX_WR_RX_RD_CONST_RSRV1_SHIFT 5
+#define FCOE_TCE_TX_WR_RX_RD_CONST_TX_SEQ_INIT (0x1<<6)
+#define FCOE_TCE_TX_WR_RX_RD_CONST_TX_SEQ_INIT_SHIFT 6
+#define FCOE_TCE_TX_WR_RX_RD_CONST_TX_COMP_TRNS (0x1<<7)
+#define FCOE_TCE_TX_WR_RX_RD_CONST_TX_COMP_TRNS_SHIFT 7
+	__le16 rsrv3;
+	__le32 verify_tx_seq;
+};
+
+/*
+ * tce_tx_wr_rx_rd $$KEEP_ENDIANNESS$$
+ */
+struct fcoe_tce_tx_wr_rx_rd {
+	union fcoe_tx_wr_rx_rd_union_ctx union_ctx;
+	struct fcoe_tce_tx_wr_rx_rd_const const_ctx;
+};
+
+/*
+ * tce_rx_wr_tx_rd_const $$KEEP_ENDIANNESS$$
+ */
+struct fcoe_tce_rx_wr_tx_rd_const {
+	__le32 data_2_trns;
+	__le32 init_flags;
+#define FCOE_TCE_RX_WR_TX_RD_CONST_CID (0xFFFFFF<<0)
+#define FCOE_TCE_RX_WR_TX_RD_CONST_CID_SHIFT 0
+#define FCOE_TCE_RX_WR_TX_RD_CONST_RSRV0 (0xFF<<24)
+#define FCOE_TCE_RX_WR_TX_RD_CONST_RSRV0_SHIFT 24
+};
+
+/*
+ * tce_rx_wr_tx_rd_var $$KEEP_ENDIANNESS$$
+ */
+struct fcoe_tce_rx_wr_tx_rd_var {
+	__le16 rx_flags;
+#define FCOE_TCE_RX_WR_TX_RD_VAR_RSRV1 (0xF<<0)
+#define FCOE_TCE_RX_WR_TX_RD_VAR_RSRV1_SHIFT 0
+#define FCOE_TCE_RX_WR_TX_RD_VAR_NUM_RQ_WQE (0x7<<4)
+#define FCOE_TCE_RX_WR_TX_RD_VAR_NUM_RQ_WQE_SHIFT 4
+#define FCOE_TCE_RX_WR_TX_RD_VAR_CONF_REQ (0x1<<7)
+#define FCOE_TCE_RX_WR_TX_RD_VAR_CONF_REQ_SHIFT 7
+#define FCOE_TCE_RX_WR_TX_RD_VAR_RX_STATE (0xF<<8)
+#define FCOE_TCE_RX_WR_TX_RD_VAR_RX_STATE_SHIFT 8
+#define FCOE_TCE_RX_WR_TX_RD_VAR_EXP_FIRST_FRAME (0x1<<12)
+#define FCOE_TCE_RX_WR_TX_RD_VAR_EXP_FIRST_FRAME_SHIFT 12
+#define FCOE_TCE_RX_WR_TX_RD_VAR_RX_SEQ_INIT (0x1<<13)
+#define FCOE_TCE_RX_WR_TX_RD_VAR_RX_SEQ_INIT_SHIFT 13
+#define FCOE_TCE_RX_WR_TX_RD_VAR_RSRV2 (0x1<<14)
+#define FCOE_TCE_RX_WR_TX_RD_VAR_RSRV2_SHIFT 14
+#define FCOE_TCE_RX_WR_TX_RD_VAR_RX_VALID (0x1<<15)
+#define FCOE_TCE_RX_WR_TX_RD_VAR_RX_VALID_SHIFT 15
+	__le16 rx_id;
+	struct fcoe_fcp_xfr_rdy_payload fcp_xfr_rdy;
+};
+
+/*
+ * tce_rx_wr_tx_rd $$KEEP_ENDIANNESS$$
+ */
+struct fcoe_tce_rx_wr_tx_rd {
+	struct fcoe_tce_rx_wr_tx_rd_const const_ctx;
+	struct fcoe_tce_rx_wr_tx_rd_var var_ctx;
+};
+
+/*
+ * tce_rx_only $$KEEP_ENDIANNESS$$
+ */
+struct fcoe_tce_rx_only {
+	struct fcoe_rx_seq_ctx rx_seq_ctx;
+	union fcoe_rx_wr_union_ctx union_ctx;
+};
+
+/*
+ * task_ctx_entry $$KEEP_ENDIANNESS$$
+ */
+struct fcoe_task_ctx_entry {
+	struct fcoe_tce_tx_only txwr_only;
+	struct fcoe_tce_tx_wr_rx_rd txwr_rxrd;
+	struct fcoe_tce_rx_wr_tx_rd rxwr_txrd;
+	struct fcoe_tce_rx_only rxwr_only;
+};
+
+
+
+
+
+
+
+
+
+
+/*
+ * FCoE XFRQ element $$KEEP_ENDIANNESS$$
+ */
+struct fcoe_xfrqe {
+	__le16 wqe;
+#define FCOE_XFRQE_TASK_ID (0x7FFF<<0)
+#define FCOE_XFRQE_TASK_ID_SHIFT 0
+#define FCOE_XFRQE_TOGGLE_BIT (0x1<<15)
+#define FCOE_XFRQE_TOGGLE_BIT_SHIFT 15
+};
+
+
+/*
+ * Cached SGEs $$KEEP_ENDIANNESS$$
+ */
+struct common_fcoe_sgl {
+	struct fcoe_bd_ctx sge[3];
+};
+
+
+/*
+ * FCoE SQ\XFRQ element
+ */
+struct fcoe_cached_wqe {
+	struct fcoe_sqe sqe;
+	struct fcoe_xfrqe xfrqe;
+};
+
+
+/*
+ * FCoE connection enable\disable params passed by driver to FW in FCoE enable
+ * ramrod $$KEEP_ENDIANNESS$$
+ */
+struct fcoe_conn_enable_disable_ramrod_params {
+	struct fcoe_kwqe_conn_enable_disable enable_disable_kwqe;
+};
+
+
+/*
+ * FCoE connection offload params passed by driver to FW in FCoE offload ramrod
+ * $$KEEP_ENDIANNESS$$
+ */
+struct fcoe_conn_offload_ramrod_params {
+	struct fcoe_kwqe_conn_offload1 offload_kwqe1;
+	struct fcoe_kwqe_conn_offload2 offload_kwqe2;
+	struct fcoe_kwqe_conn_offload3 offload_kwqe3;
+	struct fcoe_kwqe_conn_offload4 offload_kwqe4;
+};
+
+
+struct ustorm_fcoe_mng_ctx {
+#if defined(__BIG_ENDIAN)
+	u8 mid_seq_proc_flag;
+	u8 tce_in_cam_flag;
+	u8 tce_on_ior_flag;
+	u8 en_cached_tce_flag;
+#elif defined(__LITTLE_ENDIAN)
+	u8 en_cached_tce_flag;
+	u8 tce_on_ior_flag;
+	u8 tce_in_cam_flag;
+	u8 mid_seq_proc_flag;
+#endif
+#if defined(__BIG_ENDIAN)
+	u8 tce_cam_addr;
+	u8 cached_conn_flag;
+	u16 rsrv0;
+#elif defined(__LITTLE_ENDIAN)
+	u16 rsrv0;
+	u8 cached_conn_flag;
+	u8 tce_cam_addr;
+#endif
+#if defined(__BIG_ENDIAN)
+	u16 dma_tce_ram_addr;
+	u16 tce_ram_addr;
+#elif defined(__LITTLE_ENDIAN)
+	u16 tce_ram_addr;
+	u16 dma_tce_ram_addr;
+#endif
+#if defined(__BIG_ENDIAN)
+	u16 ox_id;
+	u16 wr_done_seq;
+#elif defined(__LITTLE_ENDIAN)
+	u16 wr_done_seq;
+	u16 ox_id;
+#endif
+	struct regpair task_addr;
+};
+
+/*
+ * Parameters initialized during offloaded according to FLOGI/PLOGI/PRLI and
+ * used in FCoE context section
+ */
+struct ustorm_fcoe_params {
+#if defined(__BIG_ENDIAN)
+	u16 fcoe_conn_id;
+	u16 flags;
+#define USTORM_FCOE_PARAMS_B_MUL_N_PORT_IDS (0x1<<0)
+#define USTORM_FCOE_PARAMS_B_MUL_N_PORT_IDS_SHIFT 0
+#define USTORM_FCOE_PARAMS_B_E_D_TOV_RES (0x1<<1)
+#define USTORM_FCOE_PARAMS_B_E_D_TOV_RES_SHIFT 1
+#define USTORM_FCOE_PARAMS_B_CONT_INCR_SEQ_CNT (0x1<<2)
+#define USTORM_FCOE_PARAMS_B_CONT_INCR_SEQ_CNT_SHIFT 2
+#define USTORM_FCOE_PARAMS_B_CONF_REQ (0x1<<3)
+#define USTORM_FCOE_PARAMS_B_CONF_REQ_SHIFT 3
+#define USTORM_FCOE_PARAMS_B_REC_VALID (0x1<<4)
+#define USTORM_FCOE_PARAMS_B_REC_VALID_SHIFT 4
+#define USTORM_FCOE_PARAMS_B_CQ_TOGGLE_BIT (0x1<<5)
+#define USTORM_FCOE_PARAMS_B_CQ_TOGGLE_BIT_SHIFT 5
+#define USTORM_FCOE_PARAMS_B_XFRQ_TOGGLE_BIT (0x1<<6)
+#define USTORM_FCOE_PARAMS_B_XFRQ_TOGGLE_BIT_SHIFT 6
+#define USTORM_FCOE_PARAMS_RSRV0 (0x1FF<<7)
+#define USTORM_FCOE_PARAMS_RSRV0_SHIFT 7
+#elif defined(__LITTLE_ENDIAN)
+	u16 flags;
+#define USTORM_FCOE_PARAMS_B_MUL_N_PORT_IDS (0x1<<0)
+#define USTORM_FCOE_PARAMS_B_MUL_N_PORT_IDS_SHIFT 0
+#define USTORM_FCOE_PARAMS_B_E_D_TOV_RES (0x1<<1)
+#define USTORM_FCOE_PARAMS_B_E_D_TOV_RES_SHIFT 1
+#define USTORM_FCOE_PARAMS_B_CONT_INCR_SEQ_CNT (0x1<<2)
+#define USTORM_FCOE_PARAMS_B_CONT_INCR_SEQ_CNT_SHIFT 2
+#define USTORM_FCOE_PARAMS_B_CONF_REQ (0x1<<3)
+#define USTORM_FCOE_PARAMS_B_CONF_REQ_SHIFT 3
+#define USTORM_FCOE_PARAMS_B_REC_VALID (0x1<<4)
+#define USTORM_FCOE_PARAMS_B_REC_VALID_SHIFT 4
+#define USTORM_FCOE_PARAMS_B_CQ_TOGGLE_BIT (0x1<<5)
+#define USTORM_FCOE_PARAMS_B_CQ_TOGGLE_BIT_SHIFT 5
+#define USTORM_FCOE_PARAMS_B_XFRQ_TOGGLE_BIT (0x1<<6)
+#define USTORM_FCOE_PARAMS_B_XFRQ_TOGGLE_BIT_SHIFT 6
+#define USTORM_FCOE_PARAMS_RSRV0 (0x1FF<<7)
+#define USTORM_FCOE_PARAMS_RSRV0_SHIFT 7
+	u16 fcoe_conn_id;
+#endif
+#if defined(__BIG_ENDIAN)
+	u8 hc_csdm_byte_en;
+	u8 func_id;
+	u8 port_id;
+	u8 vnic_id;
+#elif defined(__LITTLE_ENDIAN)
+	u8 vnic_id;
+	u8 port_id;
+	u8 func_id;
+	u8 hc_csdm_byte_en;
+#endif
+#if defined(__BIG_ENDIAN)
+	u16 rx_total_conc_seqs;
+	u16 rx_max_fc_pay_len;
+#elif defined(__LITTLE_ENDIAN)
+	u16 rx_max_fc_pay_len;
+	u16 rx_total_conc_seqs;
+#endif
+#if defined(__BIG_ENDIAN)
+	u8 task_pbe_idx_off;
+	u8 task_in_page_log_size;
+	u16 rx_max_conc_seqs;
+#elif defined(__LITTLE_ENDIAN)
+	u16 rx_max_conc_seqs;
+	u8 task_in_page_log_size;
+	u8 task_pbe_idx_off;
+#endif
+};
+
+/*
+ * FCoE 16-bits index structure
+ */
+struct fcoe_idx16_fields {
+	u16 fields;
+#define FCOE_IDX16_FIELDS_IDX (0x7FFF<<0)
+#define FCOE_IDX16_FIELDS_IDX_SHIFT 0
+#define FCOE_IDX16_FIELDS_MSB (0x1<<15)
+#define FCOE_IDX16_FIELDS_MSB_SHIFT 15
+};
+
+/*
+ * FCoE 16-bits index union
+ */
+union fcoe_idx16_field_union {
+	struct fcoe_idx16_fields fields;
+	u16 val;
+};
+
+/*
+ * Parameters required for placement according to SGL
+ */
+struct ustorm_fcoe_data_place_mng {
+#if defined(__BIG_ENDIAN)
+	u16 sge_off;
+	u8 num_sges;
+	u8 sge_idx;
+#elif defined(__LITTLE_ENDIAN)
+	u8 sge_idx;
+	u8 num_sges;
+	u16 sge_off;
+#endif
+};
+
+/*
+ * Parameters required for placement according to SGL
+ */
+struct ustorm_fcoe_data_place {
+	struct ustorm_fcoe_data_place_mng cached_mng;
+	struct fcoe_bd_ctx cached_sge[2];
+};
+
+/*
+ * TX processing shall write and RX processing shall read from this section
+ */
+union fcoe_u_tce_tx_wr_rx_rd_union {
+	struct fcoe_abts_info abts;
+	struct fcoe_cleanup_info cleanup;
+	struct fcoe_fw_tx_seq_ctx tx_seq_ctx;
+	u32 opaque[2];
+};
+
+/*
+ * TX processing shall write and RX processing shall read from this section
+ */
+struct fcoe_u_tce_tx_wr_rx_rd {
+	union fcoe_u_tce_tx_wr_rx_rd_union union_ctx;
+	struct fcoe_tce_tx_wr_rx_rd_const const_ctx;
+};
+
+struct ustorm_fcoe_tce {
+	struct fcoe_u_tce_tx_wr_rx_rd txwr_rxrd;
+	struct fcoe_tce_rx_wr_tx_rd rxwr_txrd;
+	struct fcoe_tce_rx_only rxwr;
+};
+
+struct ustorm_fcoe_cache_ctx {
+	u32 rsrv0;
+	struct ustorm_fcoe_data_place data_place;
+	struct ustorm_fcoe_tce tce;
+};
+
+/*
+ * Ustorm FCoE Storm Context
+ */
+struct ustorm_fcoe_st_context {
+	struct ustorm_fcoe_mng_ctx mng_ctx;
+	struct ustorm_fcoe_params fcoe_params;
+	struct regpair cq_base_addr;
+	struct regpair rq_pbl_base;
+	struct regpair rq_cur_page_addr;
+	struct regpair confq_pbl_base_addr;
+	struct regpair conn_db_base;
+	struct regpair xfrq_base_addr;
+	struct regpair lcq_base_addr;
+#if defined(__BIG_ENDIAN)
+	union fcoe_idx16_field_union rq_cons;
+	union fcoe_idx16_field_union rq_prod;
+#elif defined(__LITTLE_ENDIAN)
+	union fcoe_idx16_field_union rq_prod;
+	union fcoe_idx16_field_union rq_cons;
+#endif
+#if defined(__BIG_ENDIAN)
+	u16 xfrq_prod;
+	u16 cq_cons;
+#elif defined(__LITTLE_ENDIAN)
+	u16 cq_cons;
+	u16 xfrq_prod;
+#endif
+#if defined(__BIG_ENDIAN)
+	u16 lcq_cons;
+	u16 hc_cram_address;
+#elif defined(__LITTLE_ENDIAN)
+	u16 hc_cram_address;
+	u16 lcq_cons;
+#endif
+#if defined(__BIG_ENDIAN)
+	u16 sq_xfrq_lcq_confq_size;
+	u16 confq_prod;
+#elif defined(__LITTLE_ENDIAN)
+	u16 confq_prod;
+	u16 sq_xfrq_lcq_confq_size;
+#endif
+#if defined(__BIG_ENDIAN)
+	u8 hc_csdm_agg_int;
+	u8 rsrv2;
+	u8 available_rqes;
+	u8 sp_q_flush_cnt;
+#elif defined(__LITTLE_ENDIAN)
+	u8 sp_q_flush_cnt;
+	u8 available_rqes;
+	u8 rsrv2;
+	u8 hc_csdm_agg_int;
+#endif
+#if defined(__BIG_ENDIAN)
+	u16 num_pend_tasks;
+	u16 pbf_ack_ram_addr;
+#elif defined(__LITTLE_ENDIAN)
+	u16 pbf_ack_ram_addr;
+	u16 num_pend_tasks;
+#endif
+	struct ustorm_fcoe_cache_ctx cache_ctx;
+};
+
+/*
+ * The FCoE non-aggregative context of Tstorm
+ */
+struct tstorm_fcoe_st_context {
+	struct regpair reserved0;
+	struct regpair reserved1;
+};
+
+/*
+ * Ethernet context section
+ */
+struct xstorm_fcoe_eth_context_section {
+#if defined(__BIG_ENDIAN)
+	u8 remote_addr_4;
+	u8 remote_addr_5;
+	u8 local_addr_0;
+	u8 local_addr_1;
+#elif defined(__LITTLE_ENDIAN)
+	u8 local_addr_1;
+	u8 local_addr_0;
+	u8 remote_addr_5;
+	u8 remote_addr_4;
+#endif
+#if defined(__BIG_ENDIAN)
+	u8 remote_addr_0;
+	u8 remote_addr_1;
+	u8 remote_addr_2;
+	u8 remote_addr_3;
+#elif defined(__LITTLE_ENDIAN)
+	u8 remote_addr_3;
+	u8 remote_addr_2;
+	u8 remote_addr_1;
+	u8 remote_addr_0;
+#endif
+#if defined(__BIG_ENDIAN)
+	u16 reserved_vlan_type;
+	u16 params;
+#define XSTORM_FCOE_ETH_CONTEXT_SECTION_VLAN_ID (0xFFF<<0)
+#define XSTORM_FCOE_ETH_CONTEXT_SECTION_VLAN_ID_SHIFT 0
+#define XSTORM_FCOE_ETH_CONTEXT_SECTION_CFI (0x1<<12)
+#define XSTORM_FCOE_ETH_CONTEXT_SECTION_CFI_SHIFT 12
+#define XSTORM_FCOE_ETH_CONTEXT_SECTION_PRIORITY (0x7<<13)
+#define XSTORM_FCOE_ETH_CONTEXT_SECTION_PRIORITY_SHIFT 13
+#elif defined(__LITTLE_ENDIAN)
+	u16 params;
+#define XSTORM_FCOE_ETH_CONTEXT_SECTION_VLAN_ID (0xFFF<<0)
+#define XSTORM_FCOE_ETH_CONTEXT_SECTION_VLAN_ID_SHIFT 0
+#define XSTORM_FCOE_ETH_CONTEXT_SECTION_CFI (0x1<<12)
+#define XSTORM_FCOE_ETH_CONTEXT_SECTION_CFI_SHIFT 12
+#define XSTORM_FCOE_ETH_CONTEXT_SECTION_PRIORITY (0x7<<13)
+#define XSTORM_FCOE_ETH_CONTEXT_SECTION_PRIORITY_SHIFT 13
+	u16 reserved_vlan_type;
+#endif
+#if defined(__BIG_ENDIAN)
+	u8 local_addr_2;
+	u8 local_addr_3;
+	u8 local_addr_4;
+	u8 local_addr_5;
+#elif defined(__LITTLE_ENDIAN)
+	u8 local_addr_5;
+	u8 local_addr_4;
+	u8 local_addr_3;
+	u8 local_addr_2;
+#endif
+};
+
+/*
+ * Flags used in FCoE context section - 1 byte
+ */
+struct xstorm_fcoe_context_flags {
+	u8 flags;
+#define XSTORM_FCOE_CONTEXT_FLAGS_B_PROC_Q (0x3<<0)
+#define XSTORM_FCOE_CONTEXT_FLAGS_B_PROC_Q_SHIFT 0
+#define XSTORM_FCOE_CONTEXT_FLAGS_B_MID_SEQ (0x1<<2)
+#define XSTORM_FCOE_CONTEXT_FLAGS_B_MID_SEQ_SHIFT 2
+#define XSTORM_FCOE_CONTEXT_FLAGS_B_BLOCK_SQ (0x1<<3)
+#define XSTORM_FCOE_CONTEXT_FLAGS_B_BLOCK_SQ_SHIFT 3
+#define XSTORM_FCOE_CONTEXT_FLAGS_B_REC_SUPPORT (0x1<<4)
+#define XSTORM_FCOE_CONTEXT_FLAGS_B_REC_SUPPORT_SHIFT 4
+#define XSTORM_FCOE_CONTEXT_FLAGS_B_SQ_TOGGLE (0x1<<5)
+#define XSTORM_FCOE_CONTEXT_FLAGS_B_SQ_TOGGLE_SHIFT 5
+#define XSTORM_FCOE_CONTEXT_FLAGS_B_XFRQ_TOGGLE (0x1<<6)
+#define XSTORM_FCOE_CONTEXT_FLAGS_B_XFRQ_TOGGLE_SHIFT 6
+#define XSTORM_FCOE_CONTEXT_FLAGS_B_VNTAG_VLAN (0x1<<7)
+#define XSTORM_FCOE_CONTEXT_FLAGS_B_VNTAG_VLAN_SHIFT 7
+};
+
+struct xstorm_fcoe_tce {
+	struct fcoe_tce_tx_only txwr;
+	struct fcoe_tce_tx_wr_rx_rd txwr_rxrd;
+};
+
+/*
+ * FCP_DATA parameters required for transmission
+ */
+struct xstorm_fcoe_fcp_data {
+	u32 io_rem;
+#if defined(__BIG_ENDIAN)
+	u16 cached_sge_off;
+	u8 cached_num_sges;
+	u8 cached_sge_idx;
+#elif defined(__LITTLE_ENDIAN)
+	u8 cached_sge_idx;
+	u8 cached_num_sges;
+	u16 cached_sge_off;
+#endif
+	u32 buf_addr_hi_0;
+	u32 buf_addr_lo_0;
+#if defined(__BIG_ENDIAN)
+	u16 num_of_pending_tasks;
+	u16 buf_len_0;
+#elif defined(__LITTLE_ENDIAN)
+	u16 buf_len_0;
+	u16 num_of_pending_tasks;
+#endif
+	u32 buf_addr_hi_1;
+	u32 buf_addr_lo_1;
+#if defined(__BIG_ENDIAN)
+	u16 task_pbe_idx_off;
+	u16 buf_len_1;
+#elif defined(__LITTLE_ENDIAN)
+	u16 buf_len_1;
+	u16 task_pbe_idx_off;
+#endif
+	u32 buf_addr_hi_2;
+	u32 buf_addr_lo_2;
+#if defined(__BIG_ENDIAN)
+	u16 ox_id;
+	u16 buf_len_2;
+#elif defined(__LITTLE_ENDIAN)
+	u16 buf_len_2;
+	u16 ox_id;
+#endif
+};
+
+/*
+ * vlan configuration
+ */
+struct xstorm_fcoe_vlan_conf {
+	u8 vlan_conf;
+#define XSTORM_FCOE_VLAN_CONF_PRIORITY (0x7<<0)
+#define XSTORM_FCOE_VLAN_CONF_PRIORITY_SHIFT 0
+#define XSTORM_FCOE_VLAN_CONF_INNER_VLAN_FLAG (0x1<<3)
+#define XSTORM_FCOE_VLAN_CONF_INNER_VLAN_FLAG_SHIFT 3
+#define XSTORM_FCOE_VLAN_CONF_RESERVED (0xF<<4)
+#define XSTORM_FCOE_VLAN_CONF_RESERVED_SHIFT 4
+};
+
+/*
+ * FCoE 16-bits vlan structure
+ */
+struct fcoe_vlan_fields {
+	u16 fields;
+#define FCOE_VLAN_FIELDS_VID (0xFFF<<0)
+#define FCOE_VLAN_FIELDS_VID_SHIFT 0
+#define FCOE_VLAN_FIELDS_CLI (0x1<<12)
+#define FCOE_VLAN_FIELDS_CLI_SHIFT 12
+#define FCOE_VLAN_FIELDS_PRI (0x7<<13)
+#define FCOE_VLAN_FIELDS_PRI_SHIFT 13
+};
+
+/*
+ * FCoE 16-bits vlan union
+ */
+union fcoe_vlan_field_union {
+	struct fcoe_vlan_fields fields;
+	u16 val;
+};
+
+/*
+ * FCoE 16-bits vlan, vif union
+ */
+union fcoe_vlan_vif_field_union {
+	union fcoe_vlan_field_union vlan;
+	u16 vif;
+};
+
+/*
+ * FCoE context section
+ */
+struct xstorm_fcoe_context_section {
+#if defined(__BIG_ENDIAN)
+	u8 cs_ctl;
+	u8 s_id[3];
+#elif defined(__LITTLE_ENDIAN)
+	u8 s_id[3];
+	u8 cs_ctl;
+#endif
+#if defined(__BIG_ENDIAN)
+	u8 rctl;
+	u8 d_id[3];
+#elif defined(__LITTLE_ENDIAN)
+	u8 d_id[3];
+	u8 rctl;
+#endif
+#if defined(__BIG_ENDIAN)
+	u16 sq_xfrq_lcq_confq_size;
+	u16 tx_max_fc_pay_len;
+#elif defined(__LITTLE_ENDIAN)
+	u16 tx_max_fc_pay_len;
+	u16 sq_xfrq_lcq_confq_size;
+#endif
+	u32 lcq_prod;
+#if defined(__BIG_ENDIAN)
+	u8 port_id;
+	u8 func_id;
+	u8 seq_id;
+	struct xstorm_fcoe_context_flags tx_flags;
+#elif defined(__LITTLE_ENDIAN)
+	struct xstorm_fcoe_context_flags tx_flags;
+	u8 seq_id;
+	u8 func_id;
+	u8 port_id;
+#endif
+#if defined(__BIG_ENDIAN)
+	u16 mtu;
+	u8 func_mode;
+	u8 vnic_id;
+#elif defined(__LITTLE_ENDIAN)
+	u8 vnic_id;
+	u8 func_mode;
+	u16 mtu;
+#endif
+	struct regpair confq_curr_page_addr;
+	struct fcoe_cached_wqe cached_wqe[8];
+	struct regpair lcq_base_addr;
+	struct xstorm_fcoe_tce tce;
+	struct xstorm_fcoe_fcp_data fcp_data;
+#if defined(__BIG_ENDIAN)
+	u8 tx_max_conc_seqs_c3;
+	u8 vlan_flag;
+	u8 dcb_val;
+	u8 data_pb_cmd_size;
+#elif defined(__LITTLE_ENDIAN)
+	u8 data_pb_cmd_size;
+	u8 dcb_val;
+	u8 vlan_flag;
+	u8 tx_max_conc_seqs_c3;
+#endif
+#if defined(__BIG_ENDIAN)
+	u16 fcoe_tx_stat_params_ram_addr;
+	u16 fcoe_tx_fc_seq_ram_addr;
+#elif defined(__LITTLE_ENDIAN)
+	u16 fcoe_tx_fc_seq_ram_addr;
+	u16 fcoe_tx_stat_params_ram_addr;
+#endif
+#if defined(__BIG_ENDIAN)
+	u8 fcp_cmd_line_credit;
+	u8 eth_hdr_size;
+	u16 pbf_addr;
+#elif defined(__LITTLE_ENDIAN)
+	u16 pbf_addr;
+	u8 eth_hdr_size;
+	u8 fcp_cmd_line_credit;
+#endif
+#if defined(__BIG_ENDIAN)
+	union fcoe_vlan_vif_field_union multi_func_val;
+	u8 page_log_size;
+	struct xstorm_fcoe_vlan_conf orig_vlan_conf;
+#elif defined(__LITTLE_ENDIAN)
+	struct xstorm_fcoe_vlan_conf orig_vlan_conf;
+	u8 page_log_size;
+	union fcoe_vlan_vif_field_union multi_func_val;
+#endif
+#if defined(__BIG_ENDIAN)
+	u16 fcp_cmd_frame_size;
+	u16 pbf_addr_ff;
+#elif defined(__LITTLE_ENDIAN)
+	u16 pbf_addr_ff;
+	u16 fcp_cmd_frame_size;
+#endif
+#if defined(__BIG_ENDIAN)
+	u8 vlan_num;
+	u8 cos;
+	u8 cache_xfrq_cons;
+	u8 cache_sq_cons;
+#elif defined(__LITTLE_ENDIAN)
+	u8 cache_sq_cons;
+	u8 cache_xfrq_cons;
+	u8 cos;
+	u8 vlan_num;
+#endif
+	u32 verify_tx_seq;
+};
+
+/*
+ * Xstorm FCoE Storm Context
+ */
+struct xstorm_fcoe_st_context {
+	struct xstorm_fcoe_eth_context_section eth;
+	struct xstorm_fcoe_context_section fcoe;
+};
+
+/*
+ * Fcoe connection context
+ */
+struct fcoe_context {
+	struct ustorm_fcoe_st_context ustorm_st_context;
+	struct tstorm_fcoe_st_context tstorm_st_context;
+	struct xstorm_fcoe_ag_context xstorm_ag_context;
+	struct tstorm_fcoe_ag_context tstorm_ag_context;
+	struct ustorm_fcoe_ag_context ustorm_ag_context;
+	struct timers_block_context timers_context;
+	struct xstorm_fcoe_st_context xstorm_st_context;
+};
+
+/*
+ * FCoE init params passed by driver to FW in FCoE init ramrod
+ * $$KEEP_ENDIANNESS$$
+ */
+struct fcoe_init_ramrod_params {
+	struct fcoe_kwqe_init1 init_kwqe1;
+	struct fcoe_kwqe_init2 init_kwqe2;
+	struct fcoe_kwqe_init3 init_kwqe3;
+	struct regpair eq_pbl_base;
+	__le32 eq_pbl_size;
+	__le32 reserved2;
+	__le16 eq_prod;
+	__le16 sb_num;
+	u8 sb_id;
+	u8 reserved0;
+	__le16 reserved1;
+};
+
+/*
+ * FCoE statistics params buffer passed by driver to FW in FCoE statistics
+ * ramrod $$KEEP_ENDIANNESS$$
+ */
+struct fcoe_stat_ramrod_params {
+	struct fcoe_kwqe_stat stat_kwqe;
+};
+
+/*
+ * CQ DB CQ producer and pending completion counter
+ */
+struct iscsi_cq_db_prod_pnd_cmpltn_cnt {
+#if defined(__BIG_ENDIAN)
+	u16 cntr;
+	u16 prod;
+#elif defined(__LITTLE_ENDIAN)
+	u16 prod;
+	u16 cntr;
+#endif
+};
+
+/*
+ * CQ DB pending completion ITT array
+ */
+struct iscsi_cq_db_prod_pnd_cmpltn_cnt_arr {
+	struct iscsi_cq_db_prod_pnd_cmpltn_cnt prod_pend_comp[8];
+};
+
+/*
+ * Cstorm CQ sequence to notify array, updated by driver
+ */
+struct iscsi_cq_db_sqn_2_notify_arr {
+	u16 sqn[8];
+};
+
+/*
+ * Cstorm iSCSI Storm Context
+ */
+struct cstorm_iscsi_st_context {
+	struct iscsi_cq_db_prod_pnd_cmpltn_cnt_arr cq_c_prod_pend_comp_ctr_arr;
+	struct iscsi_cq_db_sqn_2_notify_arr cq_c_prod_sqn_arr;
+	struct iscsi_cq_db_sqn_2_notify_arr cq_c_sqn_2_notify_arr;
+	struct regpair hq_pbl_base;
+	struct regpair hq_curr_pbe;
+	struct regpair task_pbl_base;
+	struct regpair cq_db_base;
+#if defined(__BIG_ENDIAN)
+	u16 hq_bd_itt;
+	u16 iscsi_conn_id;
+#elif defined(__LITTLE_ENDIAN)
+	u16 iscsi_conn_id;
+	u16 hq_bd_itt;
+#endif
+	u32 hq_bd_data_segment_len;
+	u32 hq_bd_buffer_offset;
+#if defined(__BIG_ENDIAN)
+	u8 rsrv;
+	u8 cq_proc_en_bit_map;
+	u8 cq_pend_comp_itt_valid_bit_map;
+	u8 hq_bd_opcode;
+#elif defined(__LITTLE_ENDIAN)
+	u8 hq_bd_opcode;
+	u8 cq_pend_comp_itt_valid_bit_map;
+	u8 cq_proc_en_bit_map;
+	u8 rsrv;
+#endif
+	u32 hq_tcp_seq;
+#if defined(__BIG_ENDIAN)
+	u16 flags;
+#define CSTORM_ISCSI_ST_CONTEXT_DATA_DIGEST_EN (0x1<<0)
+#define CSTORM_ISCSI_ST_CONTEXT_DATA_DIGEST_EN_SHIFT 0
+#define CSTORM_ISCSI_ST_CONTEXT_HDR_DIGEST_EN (0x1<<1)
+#define CSTORM_ISCSI_ST_CONTEXT_HDR_DIGEST_EN_SHIFT 1
+#define CSTORM_ISCSI_ST_CONTEXT_HQ_BD_CTXT_VALID (0x1<<2)
+#define CSTORM_ISCSI_ST_CONTEXT_HQ_BD_CTXT_VALID_SHIFT 2
+#define CSTORM_ISCSI_ST_CONTEXT_HQ_BD_LCL_CMPLN_FLG (0x1<<3)
+#define CSTORM_ISCSI_ST_CONTEXT_HQ_BD_LCL_CMPLN_FLG_SHIFT 3
+#define CSTORM_ISCSI_ST_CONTEXT_HQ_BD_WRITE_TASK (0x1<<4)
+#define CSTORM_ISCSI_ST_CONTEXT_HQ_BD_WRITE_TASK_SHIFT 4
+#define CSTORM_ISCSI_ST_CONTEXT_CTRL_FLAGS_RSRV (0x7FF<<5)
+#define CSTORM_ISCSI_ST_CONTEXT_CTRL_FLAGS_RSRV_SHIFT 5
+	u16 hq_cons;
+#elif defined(__LITTLE_ENDIAN)
+	u16 hq_cons;
+	u16 flags;
+#define CSTORM_ISCSI_ST_CONTEXT_DATA_DIGEST_EN (0x1<<0)
+#define CSTORM_ISCSI_ST_CONTEXT_DATA_DIGEST_EN_SHIFT 0
+#define CSTORM_ISCSI_ST_CONTEXT_HDR_DIGEST_EN (0x1<<1)
+#define CSTORM_ISCSI_ST_CONTEXT_HDR_DIGEST_EN_SHIFT 1
+#define CSTORM_ISCSI_ST_CONTEXT_HQ_BD_CTXT_VALID (0x1<<2)
+#define CSTORM_ISCSI_ST_CONTEXT_HQ_BD_CTXT_VALID_SHIFT 2
+#define CSTORM_ISCSI_ST_CONTEXT_HQ_BD_LCL_CMPLN_FLG (0x1<<3)
+#define CSTORM_ISCSI_ST_CONTEXT_HQ_BD_LCL_CMPLN_FLG_SHIFT 3
+#define CSTORM_ISCSI_ST_CONTEXT_HQ_BD_WRITE_TASK (0x1<<4)
+#define CSTORM_ISCSI_ST_CONTEXT_HQ_BD_WRITE_TASK_SHIFT 4
+#define CSTORM_ISCSI_ST_CONTEXT_CTRL_FLAGS_RSRV (0x7FF<<5)
+#define CSTORM_ISCSI_ST_CONTEXT_CTRL_FLAGS_RSRV_SHIFT 5
+#endif
+	struct regpair rsrv1;
+};
+
+
+/*
+ * SCSI read/write SQ WQE
+ */
+struct iscsi_cmd_pdu_hdr_little_endian {
+#if defined(__BIG_ENDIAN)
+	u8 opcode;
+	u8 op_attr;
+#define ISCSI_CMD_PDU_HDR_LITTLE_ENDIAN_ATTRIBUTES (0x7<<0)
+#define ISCSI_CMD_PDU_HDR_LITTLE_ENDIAN_ATTRIBUTES_SHIFT 0
+#define ISCSI_CMD_PDU_HDR_LITTLE_ENDIAN_RSRV1 (0x3<<3)
+#define ISCSI_CMD_PDU_HDR_LITTLE_ENDIAN_RSRV1_SHIFT 3
+#define ISCSI_CMD_PDU_HDR_LITTLE_ENDIAN_WRITE_FLAG (0x1<<5)
+#define ISCSI_CMD_PDU_HDR_LITTLE_ENDIAN_WRITE_FLAG_SHIFT 5
+#define ISCSI_CMD_PDU_HDR_LITTLE_ENDIAN_READ_FLAG (0x1<<6)
+#define ISCSI_CMD_PDU_HDR_LITTLE_ENDIAN_READ_FLAG_SHIFT 6
+#define ISCSI_CMD_PDU_HDR_LITTLE_ENDIAN_FINAL_FLAG (0x1<<7)
+#define ISCSI_CMD_PDU_HDR_LITTLE_ENDIAN_FINAL_FLAG_SHIFT 7
+	u16 rsrv0;
+#elif defined(__LITTLE_ENDIAN)
+	u16 rsrv0;
+	u8 op_attr;
+#define ISCSI_CMD_PDU_HDR_LITTLE_ENDIAN_ATTRIBUTES (0x7<<0)
+#define ISCSI_CMD_PDU_HDR_LITTLE_ENDIAN_ATTRIBUTES_SHIFT 0
+#define ISCSI_CMD_PDU_HDR_LITTLE_ENDIAN_RSRV1 (0x3<<3)
+#define ISCSI_CMD_PDU_HDR_LITTLE_ENDIAN_RSRV1_SHIFT 3
+#define ISCSI_CMD_PDU_HDR_LITTLE_ENDIAN_WRITE_FLAG (0x1<<5)
+#define ISCSI_CMD_PDU_HDR_LITTLE_ENDIAN_WRITE_FLAG_SHIFT 5
+#define ISCSI_CMD_PDU_HDR_LITTLE_ENDIAN_READ_FLAG (0x1<<6)
+#define ISCSI_CMD_PDU_HDR_LITTLE_ENDIAN_READ_FLAG_SHIFT 6
+#define ISCSI_CMD_PDU_HDR_LITTLE_ENDIAN_FINAL_FLAG (0x1<<7)
+#define ISCSI_CMD_PDU_HDR_LITTLE_ENDIAN_FINAL_FLAG_SHIFT 7
+	u8 opcode;
+#endif
+	u32 data_fields;
+#define ISCSI_CMD_PDU_HDR_LITTLE_ENDIAN_DATA_SEGMENT_LENGTH (0xFFFFFF<<0)
+#define ISCSI_CMD_PDU_HDR_LITTLE_ENDIAN_DATA_SEGMENT_LENGTH_SHIFT 0
+#define ISCSI_CMD_PDU_HDR_LITTLE_ENDIAN_TOTAL_AHS_LENGTH (0xFF<<24)
+#define ISCSI_CMD_PDU_HDR_LITTLE_ENDIAN_TOTAL_AHS_LENGTH_SHIFT 24
+	struct regpair lun;
+	u32 itt;
+	u32 expected_data_transfer_length;
+	u32 cmd_sn;
+	u32 exp_stat_sn;
+	u32 scsi_command_block[4];
+};
+
+
+/*
+ * Buffer per connection, used in Tstorm
+ */
+struct iscsi_conn_buf {
+	struct regpair reserved[8];
+};
+
+
+/*
+ * iSCSI context region, used only in iSCSI
+ */
+struct ustorm_iscsi_rq_db {
+	struct regpair pbl_base;
+	struct regpair curr_pbe;
+};
+
+/*
+ * iSCSI context region, used only in iSCSI
+ */
+struct ustorm_iscsi_r2tq_db {
+	struct regpair pbl_base;
+	struct regpair curr_pbe;
+};
+
+/*
+ * iSCSI context region, used only in iSCSI
+ */
+struct ustorm_iscsi_cq_db {
+#if defined(__BIG_ENDIAN)
+	u16 cq_sn;
+	u16 prod;
+#elif defined(__LITTLE_ENDIAN)
+	u16 prod;
+	u16 cq_sn;
+#endif
+	struct regpair curr_pbe;
+};
+
+/*
+ * iSCSI context region, used only in iSCSI
+ */
+struct rings_db {
+	struct ustorm_iscsi_rq_db rq;
+	struct ustorm_iscsi_r2tq_db r2tq;
+	struct ustorm_iscsi_cq_db cq[8];
+#if defined(__BIG_ENDIAN)
+	u16 rq_prod;
+	u16 r2tq_prod;
+#elif defined(__LITTLE_ENDIAN)
+	u16 r2tq_prod;
+	u16 rq_prod;
+#endif
+	struct regpair cq_pbl_base;
+};
+
+/*
+ * iSCSI context region, used only in iSCSI
+ */
+struct ustorm_iscsi_placement_db {
+	u32 sgl_base_lo;
+	u32 sgl_base_hi;
+	u32 local_sge_0_address_hi;
+	u32 local_sge_0_address_lo;
+#if defined(__BIG_ENDIAN)
+	u16 curr_sge_offset;
+	u16 local_sge_0_size;
+#elif defined(__LITTLE_ENDIAN)
+	u16 local_sge_0_size;
+	u16 curr_sge_offset;
+#endif
+	u32 local_sge_1_address_hi;
+	u32 local_sge_1_address_lo;
+#if defined(__BIG_ENDIAN)
+	u8 exp_padding_2b;
+	u8 nal_len_3b;
+	u16 local_sge_1_size;
+#elif defined(__LITTLE_ENDIAN)
+	u16 local_sge_1_size;
+	u8 nal_len_3b;
+	u8 exp_padding_2b;
+#endif
+#if defined(__BIG_ENDIAN)
+	u8 sgl_size;
+	u8 local_sge_index_2b;
+	u16 reserved7;
+#elif defined(__LITTLE_ENDIAN)
+	u16 reserved7;
+	u8 local_sge_index_2b;
+	u8 sgl_size;
+#endif
+	u32 rem_pdu;
+	u32 place_db_bitfield_1;
+#define USTORM_ISCSI_PLACEMENT_DB_REM_PDU_PAYLOAD (0xFFFFFF<<0)
+#define USTORM_ISCSI_PLACEMENT_DB_REM_PDU_PAYLOAD_SHIFT 0
+#define USTORM_ISCSI_PLACEMENT_DB_CQ_ID (0xFF<<24)
+#define USTORM_ISCSI_PLACEMENT_DB_CQ_ID_SHIFT 24
+	u32 place_db_bitfield_2;
+#define USTORM_ISCSI_PLACEMENT_DB_BYTES_2_TRUNCATE (0xFFFFFF<<0)
+#define USTORM_ISCSI_PLACEMENT_DB_BYTES_2_TRUNCATE_SHIFT 0
+#define USTORM_ISCSI_PLACEMENT_DB_HOST_SGE_INDEX (0xFF<<24)
+#define USTORM_ISCSI_PLACEMENT_DB_HOST_SGE_INDEX_SHIFT 24
+	u32 nal;
+#define USTORM_ISCSI_PLACEMENT_DB_REM_SGE_SIZE (0xFFFFFF<<0)
+#define USTORM_ISCSI_PLACEMENT_DB_REM_SGE_SIZE_SHIFT 0
+#define USTORM_ISCSI_PLACEMENT_DB_EXP_DIGEST_3B (0xFF<<24)
+#define USTORM_ISCSI_PLACEMENT_DB_EXP_DIGEST_3B_SHIFT 24
+};
+
+/*
+ * Ustorm iSCSI Storm Context
+ */
+struct ustorm_iscsi_st_context {
+	u32 exp_stat_sn;
+	u32 exp_data_sn;
+	struct rings_db ring;
+	struct regpair task_pbl_base;
+	struct regpair tce_phy_addr;
+	struct ustorm_iscsi_placement_db place_db;
+	u32 reserved8;
+	u32 rem_rcv_len;
+#if defined(__BIG_ENDIAN)
+	u16 hdr_itt;
+	u16 iscsi_conn_id;
+#elif defined(__LITTLE_ENDIAN)
+	u16 iscsi_conn_id;
+	u16 hdr_itt;
+#endif
+	u32 nal_bytes;
+#if defined(__BIG_ENDIAN)
+	u8 hdr_second_byte_union;
+	u8 bitfield_0;
+#define USTORM_ISCSI_ST_CONTEXT_BMIDDLEOFPDU (0x1<<0)
+#define USTORM_ISCSI_ST_CONTEXT_BMIDDLEOFPDU_SHIFT 0
+#define USTORM_ISCSI_ST_CONTEXT_BFENCECQE (0x1<<1)
+#define USTORM_ISCSI_ST_CONTEXT_BFENCECQE_SHIFT 1
+#define USTORM_ISCSI_ST_CONTEXT_BRESETCRC (0x1<<2)
+#define USTORM_ISCSI_ST_CONTEXT_BRESETCRC_SHIFT 2
+#define USTORM_ISCSI_ST_CONTEXT_RESERVED1 (0x1F<<3)
+#define USTORM_ISCSI_ST_CONTEXT_RESERVED1_SHIFT 3
+	u8 task_pdu_cache_index;
+	u8 task_pbe_cache_index;
+#elif defined(__LITTLE_ENDIAN)
+	u8 task_pbe_cache_index;
+	u8 task_pdu_cache_index;
+	u8 bitfield_0;
+#define USTORM_ISCSI_ST_CONTEXT_BMIDDLEOFPDU (0x1<<0)
+#define USTORM_ISCSI_ST_CONTEXT_BMIDDLEOFPDU_SHIFT 0
+#define USTORM_ISCSI_ST_CONTEXT_BFENCECQE (0x1<<1)
+#define USTORM_ISCSI_ST_CONTEXT_BFENCECQE_SHIFT 1
+#define USTORM_ISCSI_ST_CONTEXT_BRESETCRC (0x1<<2)
+#define USTORM_ISCSI_ST_CONTEXT_BRESETCRC_SHIFT 2
+#define USTORM_ISCSI_ST_CONTEXT_RESERVED1 (0x1F<<3)
+#define USTORM_ISCSI_ST_CONTEXT_RESERVED1_SHIFT 3
+	u8 hdr_second_byte_union;
+#endif
+#if defined(__BIG_ENDIAN)
+	u16 reserved3;
+	u8 reserved2;
+	u8 acDecrement;
+#elif defined(__LITTLE_ENDIAN)
+	u8 acDecrement;
+	u8 reserved2;
+	u16 reserved3;
+#endif
+	u32 task_stat;
+#if defined(__BIG_ENDIAN)
+	u8 hdr_opcode;
+	u8 num_cqs;
+	u16 reserved5;
+#elif defined(__LITTLE_ENDIAN)
+	u16 reserved5;
+	u8 num_cqs;
+	u8 hdr_opcode;
+#endif
+	u32 negotiated_rx;
+#define USTORM_ISCSI_ST_CONTEXT_MAX_RECV_PDU_LENGTH (0xFFFFFF<<0)
+#define USTORM_ISCSI_ST_CONTEXT_MAX_RECV_PDU_LENGTH_SHIFT 0
+#define USTORM_ISCSI_ST_CONTEXT_MAX_OUTSTANDING_R2TS (0xFF<<24)
+#define USTORM_ISCSI_ST_CONTEXT_MAX_OUTSTANDING_R2TS_SHIFT 24
+	u32 negotiated_rx_and_flags;
+#define USTORM_ISCSI_ST_CONTEXT_MAX_BURST_LENGTH (0xFFFFFF<<0)
+#define USTORM_ISCSI_ST_CONTEXT_MAX_BURST_LENGTH_SHIFT 0
+#define USTORM_ISCSI_ST_CONTEXT_B_CQE_POSTED_OR_HEADER_CACHED (0x1<<24)
+#define USTORM_ISCSI_ST_CONTEXT_B_CQE_POSTED_OR_HEADER_CACHED_SHIFT 24
+#define USTORM_ISCSI_ST_CONTEXT_B_HDR_DIGEST_EN (0x1<<25)
+#define USTORM_ISCSI_ST_CONTEXT_B_HDR_DIGEST_EN_SHIFT 25
+#define USTORM_ISCSI_ST_CONTEXT_B_DATA_DIGEST_EN (0x1<<26)
+#define USTORM_ISCSI_ST_CONTEXT_B_DATA_DIGEST_EN_SHIFT 26
+#define USTORM_ISCSI_ST_CONTEXT_B_PROTOCOL_ERROR (0x1<<27)
+#define USTORM_ISCSI_ST_CONTEXT_B_PROTOCOL_ERROR_SHIFT 27
+#define USTORM_ISCSI_ST_CONTEXT_B_TASK_VALID (0x1<<28)
+#define USTORM_ISCSI_ST_CONTEXT_B_TASK_VALID_SHIFT 28
+#define USTORM_ISCSI_ST_CONTEXT_TASK_TYPE (0x3<<29)
+#define USTORM_ISCSI_ST_CONTEXT_TASK_TYPE_SHIFT 29
+#define USTORM_ISCSI_ST_CONTEXT_B_ALL_DATA_ACKED (0x1<<31)
+#define USTORM_ISCSI_ST_CONTEXT_B_ALL_DATA_ACKED_SHIFT 31
+};
+
+/*
+ * TCP context region, shared in TOE, RDMA and ISCSI
+ */
+struct tstorm_tcp_st_context_section {
+	u32 flags1;
+#define TSTORM_TCP_ST_CONTEXT_SECTION_RTT_SRTT (0xFFFFFF<<0)
+#define TSTORM_TCP_ST_CONTEXT_SECTION_RTT_SRTT_SHIFT 0
+#define TSTORM_TCP_ST_CONTEXT_SECTION_PAWS_INVALID (0x1<<24)
+#define TSTORM_TCP_ST_CONTEXT_SECTION_PAWS_INVALID_SHIFT 24
+#define TSTORM_TCP_ST_CONTEXT_SECTION_TIMESTAMP_EXISTS (0x1<<25)
+#define TSTORM_TCP_ST_CONTEXT_SECTION_TIMESTAMP_EXISTS_SHIFT 25
+#define TSTORM_TCP_ST_CONTEXT_SECTION_RESERVED0 (0x1<<26)
+#define TSTORM_TCP_ST_CONTEXT_SECTION_RESERVED0_SHIFT 26
+#define TSTORM_TCP_ST_CONTEXT_SECTION_STOP_RX_PAYLOAD (0x1<<27)
+#define TSTORM_TCP_ST_CONTEXT_SECTION_STOP_RX_PAYLOAD_SHIFT 27
+#define TSTORM_TCP_ST_CONTEXT_SECTION_KA_ENABLED (0x1<<28)
+#define TSTORM_TCP_ST_CONTEXT_SECTION_KA_ENABLED_SHIFT 28
+#define TSTORM_TCP_ST_CONTEXT_SECTION_FIRST_RTO_ESTIMATE (0x1<<29)
+#define TSTORM_TCP_ST_CONTEXT_SECTION_FIRST_RTO_ESTIMATE_SHIFT 29
+#define TSTORM_TCP_ST_CONTEXT_SECTION_MAX_SEG_RETRANSMIT_EN (0x1<<30)
+#define TSTORM_TCP_ST_CONTEXT_SECTION_MAX_SEG_RETRANSMIT_EN_SHIFT 30
+#define TSTORM_TCP_ST_CONTEXT_SECTION_LAST_ISLE_HAS_FIN (0x1<<31)
+#define TSTORM_TCP_ST_CONTEXT_SECTION_LAST_ISLE_HAS_FIN_SHIFT 31
+	u32 flags2;
+#define TSTORM_TCP_ST_CONTEXT_SECTION_RTT_VARIATION (0xFFFFFF<<0)
+#define TSTORM_TCP_ST_CONTEXT_SECTION_RTT_VARIATION_SHIFT 0
+#define TSTORM_TCP_ST_CONTEXT_SECTION_DA_EN (0x1<<24)
+#define TSTORM_TCP_ST_CONTEXT_SECTION_DA_EN_SHIFT 24
+#define TSTORM_TCP_ST_CONTEXT_SECTION_DA_COUNTER_EN (0x1<<25)
+#define TSTORM_TCP_ST_CONTEXT_SECTION_DA_COUNTER_EN_SHIFT 25
+#define __TSTORM_TCP_ST_CONTEXT_SECTION_KA_PROBE_SENT (0x1<<26)
+#define __TSTORM_TCP_ST_CONTEXT_SECTION_KA_PROBE_SENT_SHIFT 26
+#define __TSTORM_TCP_ST_CONTEXT_SECTION_PERSIST_PROBE_SENT (0x1<<27)
+#define __TSTORM_TCP_ST_CONTEXT_SECTION_PERSIST_PROBE_SENT_SHIFT 27
+#define TSTORM_TCP_ST_CONTEXT_SECTION_UPDATE_L2_STATSTICS (0x1<<28)
+#define TSTORM_TCP_ST_CONTEXT_SECTION_UPDATE_L2_STATSTICS_SHIFT 28
+#define TSTORM_TCP_ST_CONTEXT_SECTION_UPDATE_L4_STATSTICS (0x1<<29)
+#define TSTORM_TCP_ST_CONTEXT_SECTION_UPDATE_L4_STATSTICS_SHIFT 29
+#define __TSTORM_TCP_ST_CONTEXT_SECTION_IN_WINDOW_RST_ATTACK (0x1<<30)
+#define __TSTORM_TCP_ST_CONTEXT_SECTION_IN_WINDOW_RST_ATTACK_SHIFT 30
+#define __TSTORM_TCP_ST_CONTEXT_SECTION_IN_WINDOW_SYN_ATTACK (0x1<<31)
+#define __TSTORM_TCP_ST_CONTEXT_SECTION_IN_WINDOW_SYN_ATTACK_SHIFT 31
+#if defined(__BIG_ENDIAN)
+	u16 mss;
+	u8 tcp_sm_state;
+	u8 rto_exp;
+#elif defined(__LITTLE_ENDIAN)
+	u8 rto_exp;
+	u8 tcp_sm_state;
+	u16 mss;
+#endif
+	u32 rcv_nxt;
+	u32 timestamp_recent;
+	u32 timestamp_recent_time;
+	u32 cwnd;
+	u32 ss_thresh;
+	u32 cwnd_accum;
+	u32 prev_seg_seq;
+	u32 expected_rel_seq;
+	u32 recover;
+#if defined(__BIG_ENDIAN)
+	u8 retransmit_count;
+	u8 ka_max_probe_count;
+	u8 persist_probe_count;
+	u8 ka_probe_count;
+#elif defined(__LITTLE_ENDIAN)
+	u8 ka_probe_count;
+	u8 persist_probe_count;
+	u8 ka_max_probe_count;
+	u8 retransmit_count;
+#endif
+#if defined(__BIG_ENDIAN)
+	u8 statistics_counter_id;
+	u8 ooo_support_mode;
+	u8 snd_wnd_scale;
+	u8 dup_ack_count;
+#elif defined(__LITTLE_ENDIAN)
+	u8 dup_ack_count;
+	u8 snd_wnd_scale;
+	u8 ooo_support_mode;
+	u8 statistics_counter_id;
+#endif
+	u32 retransmit_start_time;
+	u32 ka_timeout;
+	u32 ka_interval;
+	u32 isle_start_seq;
+	u32 isle_end_seq;
+#if defined(__BIG_ENDIAN)
+	u16 second_isle_address;
+	u16 recent_seg_wnd;
+#elif defined(__LITTLE_ENDIAN)
+	u16 recent_seg_wnd;
+	u16 second_isle_address;
+#endif
+#if defined(__BIG_ENDIAN)
+	u8 max_isles_ever_happened;
+	u8 isles_number;
+	u16 last_isle_address;
+#elif defined(__LITTLE_ENDIAN)
+	u16 last_isle_address;
+	u8 isles_number;
+	u8 max_isles_ever_happened;
+#endif
+	u32 max_rt_time;
+#if defined(__BIG_ENDIAN)
+	u16 lsb_mac_address;
+	u16 vlan_id;
+#elif defined(__LITTLE_ENDIAN)
+	u16 vlan_id;
+	u16 lsb_mac_address;
+#endif
+#if defined(__BIG_ENDIAN)
+	u16 msb_mac_address;
+	u16 mid_mac_address;
+#elif defined(__LITTLE_ENDIAN)
+	u16 mid_mac_address;
+	u16 msb_mac_address;
+#endif
+	u32 rightmost_received_seq;
+};
+
+/*
+ * Termination variables
+ */
+struct iscsi_term_vars {
+	u8 BitMap;
+#define ISCSI_TERM_VARS_TCP_STATE (0xF<<0)
+#define ISCSI_TERM_VARS_TCP_STATE_SHIFT 0
+#define ISCSI_TERM_VARS_FIN_RECEIVED_SBIT (0x1<<4)
+#define ISCSI_TERM_VARS_FIN_RECEIVED_SBIT_SHIFT 4
+#define ISCSI_TERM_VARS_ACK_ON_FIN_RECEIVED_SBIT (0x1<<5)
+#define ISCSI_TERM_VARS_ACK_ON_FIN_RECEIVED_SBIT_SHIFT 5
+#define ISCSI_TERM_VARS_TERM_ON_CHIP (0x1<<6)
+#define ISCSI_TERM_VARS_TERM_ON_CHIP_SHIFT 6
+#define ISCSI_TERM_VARS_RSRV (0x1<<7)
+#define ISCSI_TERM_VARS_RSRV_SHIFT 7
+};
+
+/*
+ * iSCSI context region, used only in iSCSI
+ */
+struct tstorm_iscsi_st_context_section {
+	u32 nalPayload;
+	u32 b2nh;
+#if defined(__BIG_ENDIAN)
+	u16 rq_cons;
+	u8 flags;
+#define TSTORM_ISCSI_ST_CONTEXT_SECTION_B_HDR_DIGEST_EN (0x1<<0)
+#define TSTORM_ISCSI_ST_CONTEXT_SECTION_B_HDR_DIGEST_EN_SHIFT 0
+#define TSTORM_ISCSI_ST_CONTEXT_SECTION_B_DATA_DIGEST_EN (0x1<<1)
+#define TSTORM_ISCSI_ST_CONTEXT_SECTION_B_DATA_DIGEST_EN_SHIFT 1
+#define TSTORM_ISCSI_ST_CONTEXT_SECTION_B_PARTIAL_HEADER (0x1<<2)
+#define TSTORM_ISCSI_ST_CONTEXT_SECTION_B_PARTIAL_HEADER_SHIFT 2
+#define TSTORM_ISCSI_ST_CONTEXT_SECTION_B_FULL_FEATURE (0x1<<3)
+#define TSTORM_ISCSI_ST_CONTEXT_SECTION_B_FULL_FEATURE_SHIFT 3
+#define TSTORM_ISCSI_ST_CONTEXT_SECTION_B_DROP_ALL_PDUS (0x1<<4)
+#define TSTORM_ISCSI_ST_CONTEXT_SECTION_B_DROP_ALL_PDUS_SHIFT 4
+#define TSTORM_ISCSI_ST_CONTEXT_SECTION_NALLEN (0x3<<5)
+#define TSTORM_ISCSI_ST_CONTEXT_SECTION_NALLEN_SHIFT 5
+#define TSTORM_ISCSI_ST_CONTEXT_SECTION_RSRV0 (0x1<<7)
+#define TSTORM_ISCSI_ST_CONTEXT_SECTION_RSRV0_SHIFT 7
+	u8 hdr_bytes_2_fetch;
+#elif defined(__LITTLE_ENDIAN)
+	u8 hdr_bytes_2_fetch;
+	u8 flags;
+#define TSTORM_ISCSI_ST_CONTEXT_SECTION_B_HDR_DIGEST_EN (0x1<<0)
+#define TSTORM_ISCSI_ST_CONTEXT_SECTION_B_HDR_DIGEST_EN_SHIFT 0
+#define TSTORM_ISCSI_ST_CONTEXT_SECTION_B_DATA_DIGEST_EN (0x1<<1)
+#define TSTORM_ISCSI_ST_CONTEXT_SECTION_B_DATA_DIGEST_EN_SHIFT 1
+#define TSTORM_ISCSI_ST_CONTEXT_SECTION_B_PARTIAL_HEADER (0x1<<2)
+#define TSTORM_ISCSI_ST_CONTEXT_SECTION_B_PARTIAL_HEADER_SHIFT 2
+#define TSTORM_ISCSI_ST_CONTEXT_SECTION_B_FULL_FEATURE (0x1<<3)
+#define TSTORM_ISCSI_ST_CONTEXT_SECTION_B_FULL_FEATURE_SHIFT 3
+#define TSTORM_ISCSI_ST_CONTEXT_SECTION_B_DROP_ALL_PDUS (0x1<<4)
+#define TSTORM_ISCSI_ST_CONTEXT_SECTION_B_DROP_ALL_PDUS_SHIFT 4
+#define TSTORM_ISCSI_ST_CONTEXT_SECTION_NALLEN (0x3<<5)
+#define TSTORM_ISCSI_ST_CONTEXT_SECTION_NALLEN_SHIFT 5
+#define TSTORM_ISCSI_ST_CONTEXT_SECTION_RSRV0 (0x1<<7)
+#define TSTORM_ISCSI_ST_CONTEXT_SECTION_RSRV0_SHIFT 7
+	u16 rq_cons;
+#endif
+	struct regpair rq_db_phy_addr;
+#if defined(__BIG_ENDIAN)
+	struct iscsi_term_vars term_vars;
+	u8 rsrv1;
+	u16 iscsi_conn_id;
+#elif defined(__LITTLE_ENDIAN)
+	u16 iscsi_conn_id;
+	u8 rsrv1;
+	struct iscsi_term_vars term_vars;
+#endif
+	u32 process_nxt;
+};
+
+/*
+ * The iSCSI non-aggregative context of Tstorm
+ */
+struct tstorm_iscsi_st_context {
+	struct tstorm_tcp_st_context_section tcp;
+	struct tstorm_iscsi_st_context_section iscsi;
+};
+
+/*
+ * Ethernet context section, shared in TOE, RDMA and ISCSI
+ */
+struct xstorm_eth_context_section {
+#if defined(__BIG_ENDIAN)
+	u8 remote_addr_4;
+	u8 remote_addr_5;
+	u8 local_addr_0;
+	u8 local_addr_1;
+#elif defined(__LITTLE_ENDIAN)
+	u8 local_addr_1;
+	u8 local_addr_0;
+	u8 remote_addr_5;
+	u8 remote_addr_4;
+#endif
+#if defined(__BIG_ENDIAN)
+	u8 remote_addr_0;
+	u8 remote_addr_1;
+	u8 remote_addr_2;
+	u8 remote_addr_3;
+#elif defined(__LITTLE_ENDIAN)
+	u8 remote_addr_3;
+	u8 remote_addr_2;
+	u8 remote_addr_1;
+	u8 remote_addr_0;
+#endif
+#if defined(__BIG_ENDIAN)
+	u16 reserved_vlan_type;
+	u16 vlan_params;
+#define XSTORM_ETH_CONTEXT_SECTION_VLAN_ID (0xFFF<<0)
+#define XSTORM_ETH_CONTEXT_SECTION_VLAN_ID_SHIFT 0
+#define XSTORM_ETH_CONTEXT_SECTION_CFI (0x1<<12)
+#define XSTORM_ETH_CONTEXT_SECTION_CFI_SHIFT 12
+#define XSTORM_ETH_CONTEXT_SECTION_PRIORITY (0x7<<13)
+#define XSTORM_ETH_CONTEXT_SECTION_PRIORITY_SHIFT 13
+#elif defined(__LITTLE_ENDIAN)
+	u16 vlan_params;
+#define XSTORM_ETH_CONTEXT_SECTION_VLAN_ID (0xFFF<<0)
+#define XSTORM_ETH_CONTEXT_SECTION_VLAN_ID_SHIFT 0
+#define XSTORM_ETH_CONTEXT_SECTION_CFI (0x1<<12)
+#define XSTORM_ETH_CONTEXT_SECTION_CFI_SHIFT 12
+#define XSTORM_ETH_CONTEXT_SECTION_PRIORITY (0x7<<13)
+#define XSTORM_ETH_CONTEXT_SECTION_PRIORITY_SHIFT 13
+	u16 reserved_vlan_type;
+#endif
+#if defined(__BIG_ENDIAN)
+	u8 local_addr_2;
+	u8 local_addr_3;
+	u8 local_addr_4;
+	u8 local_addr_5;
+#elif defined(__LITTLE_ENDIAN)
+	u8 local_addr_5;
+	u8 local_addr_4;
+	u8 local_addr_3;
+	u8 local_addr_2;
+#endif
+};
+
+/*
+ * IpV4 context section, shared in TOE, RDMA and ISCSI
+ */
+struct xstorm_ip_v4_context_section {
+#if defined(__BIG_ENDIAN)
+	u16 __pbf_hdr_cmd_rsvd_id;
+	u16 __pbf_hdr_cmd_rsvd_flags_offset;
+#elif defined(__LITTLE_ENDIAN)
+	u16 __pbf_hdr_cmd_rsvd_flags_offset;
+	u16 __pbf_hdr_cmd_rsvd_id;
+#endif
+#if defined(__BIG_ENDIAN)
+	u8 __pbf_hdr_cmd_rsvd_ver_ihl;
+	u8 tos;
+	u16 __pbf_hdr_cmd_rsvd_length;
+#elif defined(__LITTLE_ENDIAN)
+	u16 __pbf_hdr_cmd_rsvd_length;
+	u8 tos;
+	u8 __pbf_hdr_cmd_rsvd_ver_ihl;
+#endif
+	u32 ip_local_addr;
+#if defined(__BIG_ENDIAN)
+	u8 ttl;
+	u8 __pbf_hdr_cmd_rsvd_protocol;
+	u16 __pbf_hdr_cmd_rsvd_csum;
+#elif defined(__LITTLE_ENDIAN)
+	u16 __pbf_hdr_cmd_rsvd_csum;
+	u8 __pbf_hdr_cmd_rsvd_protocol;
+	u8 ttl;
+#endif
+	u32 __pbf_hdr_cmd_rsvd_1;
+	u32 ip_remote_addr;
+};
+
+/*
+ * context section, shared in TOE, RDMA and ISCSI
+ */
+struct xstorm_padded_ip_v4_context_section {
+	struct xstorm_ip_v4_context_section ip_v4;
+	u32 reserved1[4];
+};
+
+/*
+ * IpV6 context section, shared in TOE, RDMA and ISCSI
+ */
+struct xstorm_ip_v6_context_section {
+#if defined(__BIG_ENDIAN)
+	u16 pbf_hdr_cmd_rsvd_payload_len;
+	u8 pbf_hdr_cmd_rsvd_nxt_hdr;
+	u8 hop_limit;
+#elif defined(__LITTLE_ENDIAN)
+	u8 hop_limit;
+	u8 pbf_hdr_cmd_rsvd_nxt_hdr;
+	u16 pbf_hdr_cmd_rsvd_payload_len;
+#endif
+	u32 priority_flow_label;
+#define XSTORM_IP_V6_CONTEXT_SECTION_FLOW_LABEL (0xFFFFF<<0)
+#define XSTORM_IP_V6_CONTEXT_SECTION_FLOW_LABEL_SHIFT 0
+#define XSTORM_IP_V6_CONTEXT_SECTION_TRAFFIC_CLASS (0xFF<<20)
+#define XSTORM_IP_V6_CONTEXT_SECTION_TRAFFIC_CLASS_SHIFT 20
+#define XSTORM_IP_V6_CONTEXT_SECTION_PBF_HDR_CMD_RSVD_VER (0xF<<28)
+#define XSTORM_IP_V6_CONTEXT_SECTION_PBF_HDR_CMD_RSVD_VER_SHIFT 28
+	u32 ip_local_addr_lo_hi;
+	u32 ip_local_addr_lo_lo;
+	u32 ip_local_addr_hi_hi;
+	u32 ip_local_addr_hi_lo;
+	u32 ip_remote_addr_lo_hi;
+	u32 ip_remote_addr_lo_lo;
+	u32 ip_remote_addr_hi_hi;
+	u32 ip_remote_addr_hi_lo;
+};
+
+union xstorm_ip_context_section_types {
+	struct xstorm_padded_ip_v4_context_section padded_ip_v4;
+	struct xstorm_ip_v6_context_section ip_v6;
+};
+
+/*
+ * TCP context section, shared in TOE, RDMA and ISCSI
+ */
+struct xstorm_tcp_context_section {
+	u32 snd_max;
+#if defined(__BIG_ENDIAN)
+	u16 remote_port;
+	u16 local_port;
+#elif defined(__LITTLE_ENDIAN)
+	u16 local_port;
+	u16 remote_port;
+#endif
+#if defined(__BIG_ENDIAN)
+	u8 original_nagle_1b;
+	u8 ts_enabled;
+	u16 tcp_params;
+#define XSTORM_TCP_CONTEXT_SECTION_TOTAL_HEADER_SIZE (0xFF<<0)
+#define XSTORM_TCP_CONTEXT_SECTION_TOTAL_HEADER_SIZE_SHIFT 0
+#define __XSTORM_TCP_CONTEXT_SECTION_ECT_BIT (0x1<<8)
+#define __XSTORM_TCP_CONTEXT_SECTION_ECT_BIT_SHIFT 8
+#define __XSTORM_TCP_CONTEXT_SECTION_ECN_ENABLED (0x1<<9)
+#define __XSTORM_TCP_CONTEXT_SECTION_ECN_ENABLED_SHIFT 9
+#define XSTORM_TCP_CONTEXT_SECTION_SACK_ENABLED (0x1<<10)
+#define XSTORM_TCP_CONTEXT_SECTION_SACK_ENABLED_SHIFT 10
+#define XSTORM_TCP_CONTEXT_SECTION_SMALL_WIN_ADV (0x1<<11)
+#define XSTORM_TCP_CONTEXT_SECTION_SMALL_WIN_ADV_SHIFT 11
+#define XSTORM_TCP_CONTEXT_SECTION_FIN_SENT_FLAG (0x1<<12)
+#define XSTORM_TCP_CONTEXT_SECTION_FIN_SENT_FLAG_SHIFT 12
+#define XSTORM_TCP_CONTEXT_SECTION_WINDOW_SATURATED (0x1<<13)
+#define XSTORM_TCP_CONTEXT_SECTION_WINDOW_SATURATED_SHIFT 13
+#define XSTORM_TCP_CONTEXT_SECTION_SLOWPATH_QUEUES_FLUSH_COUNTER (0x3<<14)
+#define XSTORM_TCP_CONTEXT_SECTION_SLOWPATH_QUEUES_FLUSH_COUNTER_SHIFT 14
+#elif defined(__LITTLE_ENDIAN)
+	u16 tcp_params;
+#define XSTORM_TCP_CONTEXT_SECTION_TOTAL_HEADER_SIZE (0xFF<<0)
+#define XSTORM_TCP_CONTEXT_SECTION_TOTAL_HEADER_SIZE_SHIFT 0
+#define __XSTORM_TCP_CONTEXT_SECTION_ECT_BIT (0x1<<8)
+#define __XSTORM_TCP_CONTEXT_SECTION_ECT_BIT_SHIFT 8
+#define __XSTORM_TCP_CONTEXT_SECTION_ECN_ENABLED (0x1<<9)
+#define __XSTORM_TCP_CONTEXT_SECTION_ECN_ENABLED_SHIFT 9
+#define XSTORM_TCP_CONTEXT_SECTION_SACK_ENABLED (0x1<<10)
+#define XSTORM_TCP_CONTEXT_SECTION_SACK_ENABLED_SHIFT 10
+#define XSTORM_TCP_CONTEXT_SECTION_SMALL_WIN_ADV (0x1<<11)
+#define XSTORM_TCP_CONTEXT_SECTION_SMALL_WIN_ADV_SHIFT 11
+#define XSTORM_TCP_CONTEXT_SECTION_FIN_SENT_FLAG (0x1<<12)
+#define XSTORM_TCP_CONTEXT_SECTION_FIN_SENT_FLAG_SHIFT 12
+#define XSTORM_TCP_CONTEXT_SECTION_WINDOW_SATURATED (0x1<<13)
+#define XSTORM_TCP_CONTEXT_SECTION_WINDOW_SATURATED_SHIFT 13
+#define XSTORM_TCP_CONTEXT_SECTION_SLOWPATH_QUEUES_FLUSH_COUNTER (0x3<<14)
+#define XSTORM_TCP_CONTEXT_SECTION_SLOWPATH_QUEUES_FLUSH_COUNTER_SHIFT 14
+	u8 ts_enabled;
+	u8 original_nagle_1b;
+#endif
+#if defined(__BIG_ENDIAN)
+	u16 pseudo_csum;
+	u16 window_scaling_factor;
+#elif defined(__LITTLE_ENDIAN)
+	u16 window_scaling_factor;
+	u16 pseudo_csum;
+#endif
+#if defined(__BIG_ENDIAN)
+	u16 reserved2;
+	u8 statistics_counter_id;
+	u8 statistics_params;
+#define XSTORM_TCP_CONTEXT_SECTION_UPDATE_L2_STATSTICS (0x1<<0)
+#define XSTORM_TCP_CONTEXT_SECTION_UPDATE_L2_STATSTICS_SHIFT 0
+#define XSTORM_TCP_CONTEXT_SECTION_UPDATE_L4_STATSTICS (0x1<<1)
+#define XSTORM_TCP_CONTEXT_SECTION_UPDATE_L4_STATSTICS_SHIFT 1
+#define XSTORM_TCP_CONTEXT_SECTION_RESERVED (0x3F<<2)
+#define XSTORM_TCP_CONTEXT_SECTION_RESERVED_SHIFT 2
+#elif defined(__LITTLE_ENDIAN)
+	u8 statistics_params;
+#define XSTORM_TCP_CONTEXT_SECTION_UPDATE_L2_STATSTICS (0x1<<0)
+#define XSTORM_TCP_CONTEXT_SECTION_UPDATE_L2_STATSTICS_SHIFT 0
+#define XSTORM_TCP_CONTEXT_SECTION_UPDATE_L4_STATSTICS (0x1<<1)
+#define XSTORM_TCP_CONTEXT_SECTION_UPDATE_L4_STATSTICS_SHIFT 1
+#define XSTORM_TCP_CONTEXT_SECTION_RESERVED (0x3F<<2)
+#define XSTORM_TCP_CONTEXT_SECTION_RESERVED_SHIFT 2
+	u8 statistics_counter_id;
+	u16 reserved2;
+#endif
+	u32 ts_time_diff;
+	u32 __next_timer_expir;
+};
+
+/*
+ * Common context section, shared in TOE, RDMA and ISCSI
+ */
+struct xstorm_common_context_section {
+	struct xstorm_eth_context_section ethernet;
+	union xstorm_ip_context_section_types ip_union;
+	struct xstorm_tcp_context_section tcp;
+#if defined(__BIG_ENDIAN)
+	u8 __dcb_val;
+	u8 flags;
+#define XSTORM_COMMON_CONTEXT_SECTION_PHYSQ_INITIALIZED (0x1<<0)
+#define XSTORM_COMMON_CONTEXT_SECTION_PHYSQ_INITIALIZED_SHIFT 0
+#define XSTORM_COMMON_CONTEXT_SECTION_PBF_PORT (0x7<<1)
+#define XSTORM_COMMON_CONTEXT_SECTION_PBF_PORT_SHIFT 1
+#define XSTORM_COMMON_CONTEXT_SECTION_VLAN_MODE (0x1<<4)
+#define XSTORM_COMMON_CONTEXT_SECTION_VLAN_MODE_SHIFT 4
+#define XSTORM_COMMON_CONTEXT_SECTION_ORIGINAL_PRIORITY (0x7<<5)
+#define XSTORM_COMMON_CONTEXT_SECTION_ORIGINAL_PRIORITY_SHIFT 5
+	u8 reserved;
+	u8 ip_version_1b;
+#elif defined(__LITTLE_ENDIAN)
+	u8 ip_version_1b;
+	u8 reserved;
+	u8 flags;
+#define XSTORM_COMMON_CONTEXT_SECTION_PHYSQ_INITIALIZED (0x1<<0)
+#define XSTORM_COMMON_CONTEXT_SECTION_PHYSQ_INITIALIZED_SHIFT 0
+#define XSTORM_COMMON_CONTEXT_SECTION_PBF_PORT (0x7<<1)
+#define XSTORM_COMMON_CONTEXT_SECTION_PBF_PORT_SHIFT 1
+#define XSTORM_COMMON_CONTEXT_SECTION_VLAN_MODE (0x1<<4)
+#define XSTORM_COMMON_CONTEXT_SECTION_VLAN_MODE_SHIFT 4
+#define XSTORM_COMMON_CONTEXT_SECTION_ORIGINAL_PRIORITY (0x7<<5)
+#define XSTORM_COMMON_CONTEXT_SECTION_ORIGINAL_PRIORITY_SHIFT 5
+	u8 __dcb_val;
+#endif
+};
+
+/*
+ * Flags used in ISCSI context section
+ */
+struct xstorm_iscsi_context_flags {
+	u8 flags;
+#define XSTORM_ISCSI_CONTEXT_FLAGS_B_IMMEDIATE_DATA (0x1<<0)
+#define XSTORM_ISCSI_CONTEXT_FLAGS_B_IMMEDIATE_DATA_SHIFT 0
+#define XSTORM_ISCSI_CONTEXT_FLAGS_B_INITIAL_R2T (0x1<<1)
+#define XSTORM_ISCSI_CONTEXT_FLAGS_B_INITIAL_R2T_SHIFT 1
+#define XSTORM_ISCSI_CONTEXT_FLAGS_B_EN_HEADER_DIGEST (0x1<<2)
+#define XSTORM_ISCSI_CONTEXT_FLAGS_B_EN_HEADER_DIGEST_SHIFT 2
+#define XSTORM_ISCSI_CONTEXT_FLAGS_B_EN_DATA_DIGEST (0x1<<3)
+#define XSTORM_ISCSI_CONTEXT_FLAGS_B_EN_DATA_DIGEST_SHIFT 3
+#define XSTORM_ISCSI_CONTEXT_FLAGS_B_HQ_BD_WRITTEN (0x1<<4)
+#define XSTORM_ISCSI_CONTEXT_FLAGS_B_HQ_BD_WRITTEN_SHIFT 4
+#define XSTORM_ISCSI_CONTEXT_FLAGS_B_LAST_OP_SQ (0x1<<5)
+#define XSTORM_ISCSI_CONTEXT_FLAGS_B_LAST_OP_SQ_SHIFT 5
+#define XSTORM_ISCSI_CONTEXT_FLAGS_B_UPDATE_SND_NXT (0x1<<6)
+#define XSTORM_ISCSI_CONTEXT_FLAGS_B_UPDATE_SND_NXT_SHIFT 6
+#define XSTORM_ISCSI_CONTEXT_FLAGS_RESERVED4 (0x1<<7)
+#define XSTORM_ISCSI_CONTEXT_FLAGS_RESERVED4_SHIFT 7
+};
+
+struct iscsi_task_context_entry_x {
+	u32 data_out_buffer_offset;
+	u32 itt;
+	u32 data_sn;
+};
+
+struct iscsi_task_context_entry_xuc_x_write_only {
+	u32 tx_r2t_sn;
+};
+
+struct iscsi_task_context_entry_xuc_xu_write_both {
+	u32 sgl_base_lo;
+	u32 sgl_base_hi;
+#if defined(__BIG_ENDIAN)
+	u8 sgl_size;
+	u8 sge_index;
+	u16 sge_offset;
+#elif defined(__LITTLE_ENDIAN)
+	u16 sge_offset;
+	u8 sge_index;
+	u8 sgl_size;
+#endif
+};
+
+/*
+ * iSCSI context section
+ */
+struct xstorm_iscsi_context_section {
+	u32 first_burst_length;
+	u32 max_send_pdu_length;
+	struct regpair sq_pbl_base;
+	struct regpair sq_curr_pbe;
+	struct regpair hq_pbl_base;
+	struct regpair hq_curr_pbe_base;
+	struct regpair r2tq_pbl_base;
+	struct regpair r2tq_curr_pbe_base;
+	struct regpair task_pbl_base;
+#if defined(__BIG_ENDIAN)
+	u16 data_out_count;
+	struct xstorm_iscsi_context_flags flags;
+	u8 task_pbl_cache_idx;
+#elif defined(__LITTLE_ENDIAN)
+	u8 task_pbl_cache_idx;
+	struct xstorm_iscsi_context_flags flags;
+	u16 data_out_count;
+#endif
+	u32 seq_more_2_send;
+	u32 pdu_more_2_send;
+	struct iscsi_task_context_entry_x temp_tce_x;
+	struct iscsi_task_context_entry_xuc_x_write_only temp_tce_x_wr;
+	struct iscsi_task_context_entry_xuc_xu_write_both temp_tce_xu_wr;
+	struct regpair lun;
+	u32 exp_data_transfer_len_ttt;
+	u32 pdu_data_2_rxmit;
+	u32 rxmit_bytes_2_dr;
+#if defined(__BIG_ENDIAN)
+	u16 rxmit_sge_offset;
+	u16 hq_rxmit_cons;
+#elif defined(__LITTLE_ENDIAN)
+	u16 hq_rxmit_cons;
+	u16 rxmit_sge_offset;
+#endif
+#if defined(__BIG_ENDIAN)
+	u16 r2tq_cons;
+	u8 rxmit_flags;
+#define XSTORM_ISCSI_CONTEXT_SECTION_B_NEW_HQ_BD (0x1<<0)
+#define XSTORM_ISCSI_CONTEXT_SECTION_B_NEW_HQ_BD_SHIFT 0
+#define XSTORM_ISCSI_CONTEXT_SECTION_B_RXMIT_PDU_HDR (0x1<<1)
+#define XSTORM_ISCSI_CONTEXT_SECTION_B_RXMIT_PDU_HDR_SHIFT 1
+#define XSTORM_ISCSI_CONTEXT_SECTION_B_RXMIT_END_PDU (0x1<<2)
+#define XSTORM_ISCSI_CONTEXT_SECTION_B_RXMIT_END_PDU_SHIFT 2
+#define XSTORM_ISCSI_CONTEXT_SECTION_B_RXMIT_DR (0x1<<3)
+#define XSTORM_ISCSI_CONTEXT_SECTION_B_RXMIT_DR_SHIFT 3
+#define XSTORM_ISCSI_CONTEXT_SECTION_B_RXMIT_START_DR (0x1<<4)
+#define XSTORM_ISCSI_CONTEXT_SECTION_B_RXMIT_START_DR_SHIFT 4
+#define XSTORM_ISCSI_CONTEXT_SECTION_B_RXMIT_PADDING (0x3<<5)
+#define XSTORM_ISCSI_CONTEXT_SECTION_B_RXMIT_PADDING_SHIFT 5
+#define XSTORM_ISCSI_CONTEXT_SECTION_B_ISCSI_CONT_FAST_RXMIT (0x1<<7)
+#define XSTORM_ISCSI_CONTEXT_SECTION_B_ISCSI_CONT_FAST_RXMIT_SHIFT 7
+	u8 rxmit_sge_idx;
+#elif defined(__LITTLE_ENDIAN)
+	u8 rxmit_sge_idx;
+	u8 rxmit_flags;
+#define XSTORM_ISCSI_CONTEXT_SECTION_B_NEW_HQ_BD (0x1<<0)
+#define XSTORM_ISCSI_CONTEXT_SECTION_B_NEW_HQ_BD_SHIFT 0
+#define XSTORM_ISCSI_CONTEXT_SECTION_B_RXMIT_PDU_HDR (0x1<<1)
+#define XSTORM_ISCSI_CONTEXT_SECTION_B_RXMIT_PDU_HDR_SHIFT 1
+#define XSTORM_ISCSI_CONTEXT_SECTION_B_RXMIT_END_PDU (0x1<<2)
+#define XSTORM_ISCSI_CONTEXT_SECTION_B_RXMIT_END_PDU_SHIFT 2
+#define XSTORM_ISCSI_CONTEXT_SECTION_B_RXMIT_DR (0x1<<3)
+#define XSTORM_ISCSI_CONTEXT_SECTION_B_RXMIT_DR_SHIFT 3
+#define XSTORM_ISCSI_CONTEXT_SECTION_B_RXMIT_START_DR (0x1<<4)
+#define XSTORM_ISCSI_CONTEXT_SECTION_B_RXMIT_START_DR_SHIFT 4
+#define XSTORM_ISCSI_CONTEXT_SECTION_B_RXMIT_PADDING (0x3<<5)
+#define XSTORM_ISCSI_CONTEXT_SECTION_B_RXMIT_PADDING_SHIFT 5
+#define XSTORM_ISCSI_CONTEXT_SECTION_B_ISCSI_CONT_FAST_RXMIT (0x1<<7)
+#define XSTORM_ISCSI_CONTEXT_SECTION_B_ISCSI_CONT_FAST_RXMIT_SHIFT 7
+	u16 r2tq_cons;
+#endif
+	u32 hq_rxmit_tcp_seq;
+};
+
+/*
+ * Xstorm iSCSI Storm Context
+ */
+struct xstorm_iscsi_st_context {
+	struct xstorm_common_context_section common;
+	struct xstorm_iscsi_context_section iscsi;
+};
+
+/*
+ * Iscsi connection context
+ */
+struct iscsi_context {
+	struct ustorm_iscsi_st_context ustorm_st_context;
+	struct tstorm_iscsi_st_context tstorm_st_context;
+	struct xstorm_iscsi_ag_context xstorm_ag_context;
+	struct tstorm_iscsi_ag_context tstorm_ag_context;
+	struct cstorm_iscsi_ag_context cstorm_ag_context;
+	struct ustorm_iscsi_ag_context ustorm_ag_context;
+	struct timers_block_context timers_context;
+	struct regpair upb_context;
+	struct xstorm_iscsi_st_context xstorm_st_context;
+	struct regpair xpb_context;
+	struct cstorm_iscsi_st_context cstorm_st_context;
+};
+
+
+/*
+ * PDU header of an iSCSI DATA-OUT
+ */
+struct iscsi_data_pdu_hdr_little_endian {
+#if defined(__BIG_ENDIAN)
+	u8 opcode;
+	u8 op_attr;
+#define ISCSI_DATA_PDU_HDR_LITTLE_ENDIAN_RSRV1 (0x7F<<0)
+#define ISCSI_DATA_PDU_HDR_LITTLE_ENDIAN_RSRV1_SHIFT 0
+#define ISCSI_DATA_PDU_HDR_LITTLE_ENDIAN_FINAL_FLAG (0x1<<7)
+#define ISCSI_DATA_PDU_HDR_LITTLE_ENDIAN_FINAL_FLAG_SHIFT 7
+	u16 rsrv0;
+#elif defined(__LITTLE_ENDIAN)
+	u16 rsrv0;
+	u8 op_attr;
+#define ISCSI_DATA_PDU_HDR_LITTLE_ENDIAN_RSRV1 (0x7F<<0)
+#define ISCSI_DATA_PDU_HDR_LITTLE_ENDIAN_RSRV1_SHIFT 0
+#define ISCSI_DATA_PDU_HDR_LITTLE_ENDIAN_FINAL_FLAG (0x1<<7)
+#define ISCSI_DATA_PDU_HDR_LITTLE_ENDIAN_FINAL_FLAG_SHIFT 7
+	u8 opcode;
+#endif
+	u32 data_fields;
+#define ISCSI_DATA_PDU_HDR_LITTLE_ENDIAN_DATA_SEGMENT_LENGTH (0xFFFFFF<<0)
+#define ISCSI_DATA_PDU_HDR_LITTLE_ENDIAN_DATA_SEGMENT_LENGTH_SHIFT 0
+#define ISCSI_DATA_PDU_HDR_LITTLE_ENDIAN_TOTAL_AHS_LENGTH (0xFF<<24)
+#define ISCSI_DATA_PDU_HDR_LITTLE_ENDIAN_TOTAL_AHS_LENGTH_SHIFT 24
+	struct regpair lun;
+	u32 itt;
+	u32 ttt;
+	u32 rsrv2;
+	u32 exp_stat_sn;
+	u32 rsrv3;
+	u32 data_sn;
+	u32 buffer_offset;
+	u32 rsrv4;
+};
+
+
+/*
+ * PDU header of an iSCSI login request
+ */
+struct iscsi_login_req_hdr_little_endian {
+#if defined(__BIG_ENDIAN)
+	u8 opcode;
+	u8 op_attr;
+#define ISCSI_LOGIN_REQ_HDR_LITTLE_ENDIAN_NSG (0x3<<0)
+#define ISCSI_LOGIN_REQ_HDR_LITTLE_ENDIAN_NSG_SHIFT 0
+#define ISCSI_LOGIN_REQ_HDR_LITTLE_ENDIAN_CSG (0x3<<2)
+#define ISCSI_LOGIN_REQ_HDR_LITTLE_ENDIAN_CSG_SHIFT 2
+#define ISCSI_LOGIN_REQ_HDR_LITTLE_ENDIAN_RSRV0 (0x3<<4)
+#define ISCSI_LOGIN_REQ_HDR_LITTLE_ENDIAN_RSRV0_SHIFT 4
+#define ISCSI_LOGIN_REQ_HDR_LITTLE_ENDIAN_CONTINUE_FLG (0x1<<6)
+#define ISCSI_LOGIN_REQ_HDR_LITTLE_ENDIAN_CONTINUE_FLG_SHIFT 6
+#define ISCSI_LOGIN_REQ_HDR_LITTLE_ENDIAN_TRANSIT (0x1<<7)
+#define ISCSI_LOGIN_REQ_HDR_LITTLE_ENDIAN_TRANSIT_SHIFT 7
+	u8 version_max;
+	u8 version_min;
+#elif defined(__LITTLE_ENDIAN)
+	u8 version_min;
+	u8 version_max;
+	u8 op_attr;
+#define ISCSI_LOGIN_REQ_HDR_LITTLE_ENDIAN_NSG (0x3<<0)
+#define ISCSI_LOGIN_REQ_HDR_LITTLE_ENDIAN_NSG_SHIFT 0
+#define ISCSI_LOGIN_REQ_HDR_LITTLE_ENDIAN_CSG (0x3<<2)
+#define ISCSI_LOGIN_REQ_HDR_LITTLE_ENDIAN_CSG_SHIFT 2
+#define ISCSI_LOGIN_REQ_HDR_LITTLE_ENDIAN_RSRV0 (0x3<<4)
+#define ISCSI_LOGIN_REQ_HDR_LITTLE_ENDIAN_RSRV0_SHIFT 4
+#define ISCSI_LOGIN_REQ_HDR_LITTLE_ENDIAN_CONTINUE_FLG (0x1<<6)
+#define ISCSI_LOGIN_REQ_HDR_LITTLE_ENDIAN_CONTINUE_FLG_SHIFT 6
+#define ISCSI_LOGIN_REQ_HDR_LITTLE_ENDIAN_TRANSIT (0x1<<7)
+#define ISCSI_LOGIN_REQ_HDR_LITTLE_ENDIAN_TRANSIT_SHIFT 7
+	u8 opcode;
+#endif
+	u32 data_fields;
+#define ISCSI_LOGIN_REQ_HDR_LITTLE_ENDIAN_DATA_SEGMENT_LENGTH (0xFFFFFF<<0)
+#define ISCSI_LOGIN_REQ_HDR_LITTLE_ENDIAN_DATA_SEGMENT_LENGTH_SHIFT 0
+#define ISCSI_LOGIN_REQ_HDR_LITTLE_ENDIAN_TOTAL_AHS_LENGTH (0xFF<<24)
+#define ISCSI_LOGIN_REQ_HDR_LITTLE_ENDIAN_TOTAL_AHS_LENGTH_SHIFT 24
+	u32 isid_lo;
+#if defined(__BIG_ENDIAN)
+	u16 isid_hi;
+	u16 tsih;
+#elif defined(__LITTLE_ENDIAN)
+	u16 tsih;
+	u16 isid_hi;
+#endif
+	u32 itt;
+#if defined(__BIG_ENDIAN)
+	u16 cid;
+	u16 rsrv1;
+#elif defined(__LITTLE_ENDIAN)
+	u16 rsrv1;
+	u16 cid;
+#endif
+	u32 cmd_sn;
+	u32 exp_stat_sn;
+	u32 rsrv2[4];
+};
+
+/*
+ * PDU header of an iSCSI logout request
+ */
+struct iscsi_logout_req_hdr_little_endian {
+#if defined(__BIG_ENDIAN)
+	u8 opcode;
+	u8 op_attr;
+#define ISCSI_LOGOUT_REQ_HDR_LITTLE_ENDIAN_REASON_CODE (0x7F<<0)
+#define ISCSI_LOGOUT_REQ_HDR_LITTLE_ENDIAN_REASON_CODE_SHIFT 0
+#define ISCSI_LOGOUT_REQ_HDR_LITTLE_ENDIAN_RSRV1_1 (0x1<<7)
+#define ISCSI_LOGOUT_REQ_HDR_LITTLE_ENDIAN_RSRV1_1_SHIFT 7
+	u16 rsrv0;
+#elif defined(__LITTLE_ENDIAN)
+	u16 rsrv0;
+	u8 op_attr;
+#define ISCSI_LOGOUT_REQ_HDR_LITTLE_ENDIAN_REASON_CODE (0x7F<<0)
+#define ISCSI_LOGOUT_REQ_HDR_LITTLE_ENDIAN_REASON_CODE_SHIFT 0
+#define ISCSI_LOGOUT_REQ_HDR_LITTLE_ENDIAN_RSRV1_1 (0x1<<7)
+#define ISCSI_LOGOUT_REQ_HDR_LITTLE_ENDIAN_RSRV1_1_SHIFT 7
+	u8 opcode;
+#endif
+	u32 data_fields;
+#define ISCSI_LOGOUT_REQ_HDR_LITTLE_ENDIAN_DATA_SEGMENT_LENGTH (0xFFFFFF<<0)
+#define ISCSI_LOGOUT_REQ_HDR_LITTLE_ENDIAN_DATA_SEGMENT_LENGTH_SHIFT 0
+#define ISCSI_LOGOUT_REQ_HDR_LITTLE_ENDIAN_TOTAL_AHS_LENGTH (0xFF<<24)
+#define ISCSI_LOGOUT_REQ_HDR_LITTLE_ENDIAN_TOTAL_AHS_LENGTH_SHIFT 24
+	u32 rsrv2[2];
+	u32 itt;
+#if defined(__BIG_ENDIAN)
+	u16 cid;
+	u16 rsrv1;
+#elif defined(__LITTLE_ENDIAN)
+	u16 rsrv1;
+	u16 cid;
+#endif
+	u32 cmd_sn;
+	u32 exp_stat_sn;
+	u32 rsrv3[4];
+};
+
+/*
+ * PDU header of an iSCSI TMF request
+ */
+struct iscsi_tmf_req_hdr_little_endian {
+#if defined(__BIG_ENDIAN)
+	u8 opcode;
+	u8 op_attr;
+#define ISCSI_TMF_REQ_HDR_LITTLE_ENDIAN_FUNCTION (0x7F<<0)
+#define ISCSI_TMF_REQ_HDR_LITTLE_ENDIAN_FUNCTION_SHIFT 0
+#define ISCSI_TMF_REQ_HDR_LITTLE_ENDIAN_RSRV1_1 (0x1<<7)
+#define ISCSI_TMF_REQ_HDR_LITTLE_ENDIAN_RSRV1_1_SHIFT 7
+	u16 rsrv0;
+#elif defined(__LITTLE_ENDIAN)
+	u16 rsrv0;
+	u8 op_attr;
+#define ISCSI_TMF_REQ_HDR_LITTLE_ENDIAN_FUNCTION (0x7F<<0)
+#define ISCSI_TMF_REQ_HDR_LITTLE_ENDIAN_FUNCTION_SHIFT 0
+#define ISCSI_TMF_REQ_HDR_LITTLE_ENDIAN_RSRV1_1 (0x1<<7)
+#define ISCSI_TMF_REQ_HDR_LITTLE_ENDIAN_RSRV1_1_SHIFT 7
+	u8 opcode;
+#endif
+	u32 data_fields;
+#define ISCSI_TMF_REQ_HDR_LITTLE_ENDIAN_DATA_SEGMENT_LENGTH (0xFFFFFF<<0)
+#define ISCSI_TMF_REQ_HDR_LITTLE_ENDIAN_DATA_SEGMENT_LENGTH_SHIFT 0
+#define ISCSI_TMF_REQ_HDR_LITTLE_ENDIAN_TOTAL_AHS_LENGTH (0xFF<<24)
+#define ISCSI_TMF_REQ_HDR_LITTLE_ENDIAN_TOTAL_AHS_LENGTH_SHIFT 24
+	struct regpair lun;
+	u32 itt;
+	u32 referenced_task_tag;
+	u32 cmd_sn;
+	u32 exp_stat_sn;
+	u32 ref_cmd_sn;
+	u32 exp_data_sn;
+	u32 rsrv2[2];
+};
+
+/*
+ * PDU header of an iSCSI Text request
+ */
+struct iscsi_text_req_hdr_little_endian {
+#if defined(__BIG_ENDIAN)
+	u8 opcode;
+	u8 op_attr;
+#define ISCSI_TEXT_REQ_HDR_LITTLE_ENDIAN_RSRV1 (0x3F<<0)
+#define ISCSI_TEXT_REQ_HDR_LITTLE_ENDIAN_RSRV1_SHIFT 0
+#define ISCSI_TEXT_REQ_HDR_LITTLE_ENDIAN_CONTINUE_FLG (0x1<<6)
+#define ISCSI_TEXT_REQ_HDR_LITTLE_ENDIAN_CONTINUE_FLG_SHIFT 6
+#define ISCSI_TEXT_REQ_HDR_LITTLE_ENDIAN_FINAL (0x1<<7)
+#define ISCSI_TEXT_REQ_HDR_LITTLE_ENDIAN_FINAL_SHIFT 7
+	u16 rsrv0;
+#elif defined(__LITTLE_ENDIAN)
+	u16 rsrv0;
+	u8 op_attr;
+#define ISCSI_TEXT_REQ_HDR_LITTLE_ENDIAN_RSRV1 (0x3F<<0)
+#define ISCSI_TEXT_REQ_HDR_LITTLE_ENDIAN_RSRV1_SHIFT 0
+#define ISCSI_TEXT_REQ_HDR_LITTLE_ENDIAN_CONTINUE_FLG (0x1<<6)
+#define ISCSI_TEXT_REQ_HDR_LITTLE_ENDIAN_CONTINUE_FLG_SHIFT 6
+#define ISCSI_TEXT_REQ_HDR_LITTLE_ENDIAN_FINAL (0x1<<7)
+#define ISCSI_TEXT_REQ_HDR_LITTLE_ENDIAN_FINAL_SHIFT 7
+	u8 opcode;
+#endif
+	u32 data_fields;
+#define ISCSI_TEXT_REQ_HDR_LITTLE_ENDIAN_DATA_SEGMENT_LENGTH (0xFFFFFF<<0)
+#define ISCSI_TEXT_REQ_HDR_LITTLE_ENDIAN_DATA_SEGMENT_LENGTH_SHIFT 0
+#define ISCSI_TEXT_REQ_HDR_LITTLE_ENDIAN_TOTAL_AHS_LENGTH (0xFF<<24)
+#define ISCSI_TEXT_REQ_HDR_LITTLE_ENDIAN_TOTAL_AHS_LENGTH_SHIFT 24
+	struct regpair lun;
+	u32 itt;
+	u32 ttt;
+	u32 cmd_sn;
+	u32 exp_stat_sn;
+	u32 rsrv3[4];
+};
+
+/*
+ * PDU header of an iSCSI Nop-Out
+ */
+struct iscsi_nop_out_hdr_little_endian {
+#if defined(__BIG_ENDIAN)
+	u8 opcode;
+	u8 op_attr;
+#define ISCSI_NOP_OUT_HDR_LITTLE_ENDIAN_RSRV1 (0x7F<<0)
+#define ISCSI_NOP_OUT_HDR_LITTLE_ENDIAN_RSRV1_SHIFT 0
+#define ISCSI_NOP_OUT_HDR_LITTLE_ENDIAN_RSRV2_1 (0x1<<7)
+#define ISCSI_NOP_OUT_HDR_LITTLE_ENDIAN_RSRV2_1_SHIFT 7
+	u16 rsrv0;
+#elif defined(__LITTLE_ENDIAN)
+	u16 rsrv0;
+	u8 op_attr;
+#define ISCSI_NOP_OUT_HDR_LITTLE_ENDIAN_RSRV1 (0x7F<<0)
+#define ISCSI_NOP_OUT_HDR_LITTLE_ENDIAN_RSRV1_SHIFT 0
+#define ISCSI_NOP_OUT_HDR_LITTLE_ENDIAN_RSRV2_1 (0x1<<7)
+#define ISCSI_NOP_OUT_HDR_LITTLE_ENDIAN_RSRV2_1_SHIFT 7
+	u8 opcode;
+#endif
+	u32 data_fields;
+#define ISCSI_NOP_OUT_HDR_LITTLE_ENDIAN_DATA_SEGMENT_LENGTH (0xFFFFFF<<0)
+#define ISCSI_NOP_OUT_HDR_LITTLE_ENDIAN_DATA_SEGMENT_LENGTH_SHIFT 0
+#define ISCSI_NOP_OUT_HDR_LITTLE_ENDIAN_TOTAL_AHS_LENGTH (0xFF<<24)
+#define ISCSI_NOP_OUT_HDR_LITTLE_ENDIAN_TOTAL_AHS_LENGTH_SHIFT 24
+	struct regpair lun;
+	u32 itt;
+	u32 ttt;
+	u32 cmd_sn;
+	u32 exp_stat_sn;
+	u32 rsrv3[4];
+};
+
+/*
+ * iscsi pdu headers in little endian form.
+ */
+union iscsi_pdu_headers_little_endian {
+	u32 fullHeaderSize[12];
+	struct iscsi_cmd_pdu_hdr_little_endian command_pdu_hdr;
+	struct iscsi_data_pdu_hdr_little_endian data_out_pdu_hdr;
+	struct iscsi_login_req_hdr_little_endian login_req_pdu_hdr;
+	struct iscsi_logout_req_hdr_little_endian logout_req_pdu_hdr;
+	struct iscsi_tmf_req_hdr_little_endian tmf_req_pdu_hdr;
+	struct iscsi_text_req_hdr_little_endian text_req_pdu_hdr;
+	struct iscsi_nop_out_hdr_little_endian nop_out_pdu_hdr;
+};
+
+struct iscsi_hq_bd {
+	union iscsi_pdu_headers_little_endian pdu_header;
+#if defined(__BIG_ENDIAN)
+	u16 reserved1;
+	u16 lcl_cmp_flg;
+#elif defined(__LITTLE_ENDIAN)
+	u16 lcl_cmp_flg;
+	u16 reserved1;
+#endif
+	u32 sgl_base_lo;
+	u32 sgl_base_hi;
+#if defined(__BIG_ENDIAN)
+	u8 sgl_size;
+	u8 sge_index;
+	u16 sge_offset;
+#elif defined(__LITTLE_ENDIAN)
+	u16 sge_offset;
+	u8 sge_index;
+	u8 sgl_size;
+#endif
+};
+
+
+/*
+ * CQE data for L2 OOO connection $$KEEP_ENDIANNESS$$
+ */
+struct iscsi_l2_ooo_data {
+	__le32 iscsi_cid;
+	u8 drop_isle;
+	u8 drop_size;
+	u8 ooo_opcode;
+	u8 ooo_isle;
+	u8 reserved[8];
+};
+
+
+
+
+
+
+struct iscsi_task_context_entry_xuc_c_write_only {
+	u32 total_data_acked;
+};
+
+struct iscsi_task_context_r2t_table_entry {
+	u32 ttt;
+	u32 desired_data_len;
+};
+
+struct iscsi_task_context_entry_xuc_u_write_only {
+	u32 exp_r2t_sn;
+	struct iscsi_task_context_r2t_table_entry r2t_table[4];
+#if defined(__BIG_ENDIAN)
+	u16 data_in_count;
+	u8 cq_id;
+	u8 valid_1b;
+#elif defined(__LITTLE_ENDIAN)
+	u8 valid_1b;
+	u8 cq_id;
+	u16 data_in_count;
+#endif
+};
+
+struct iscsi_task_context_entry_xuc {
+	struct iscsi_task_context_entry_xuc_c_write_only write_c;
+	u32 exp_data_transfer_len;
+	struct iscsi_task_context_entry_xuc_x_write_only write_x;
+	u32 lun_lo;
+	struct iscsi_task_context_entry_xuc_xu_write_both write_xu;
+	u32 lun_hi;
+	struct iscsi_task_context_entry_xuc_u_write_only write_u;
+};
+
+struct iscsi_task_context_entry_u {
+	u32 exp_r2t_buff_offset;
+	u32 rem_rcv_len;
+	u32 exp_data_sn;
+};
+
+struct iscsi_task_context_entry {
+	struct iscsi_task_context_entry_x tce_x;
+#if defined(__BIG_ENDIAN)
+	u16 data_out_count;
+	u16 rsrv0;
+#elif defined(__LITTLE_ENDIAN)
+	u16 rsrv0;
+	u16 data_out_count;
+#endif
+	struct iscsi_task_context_entry_xuc tce_xuc;
+	struct iscsi_task_context_entry_u tce_u;
+	u32 rsrv1[7];
+};
+
+
+
+
+
+
+
+
+struct iscsi_task_context_entry_xuc_x_init_only {
+	struct regpair lun;
+	u32 exp_data_transfer_len;
+};
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/*
+ * ipv6 structure
+ */
+struct ip_v6_addr {
+	u32 ip_addr_lo_lo;
+	u32 ip_addr_lo_hi;
+	u32 ip_addr_hi_lo;
+	u32 ip_addr_hi_hi;
+};
+
+
+
+/*
+ * l5cm- connection identification params
+ */
+struct l5cm_conn_addr_params {
+	u32 pmtu;
+#if defined(__BIG_ENDIAN)
+	u8 remote_addr_3;
+	u8 remote_addr_2;
+	u8 remote_addr_1;
+	u8 remote_addr_0;
+#elif defined(__LITTLE_ENDIAN)
+	u8 remote_addr_0;
+	u8 remote_addr_1;
+	u8 remote_addr_2;
+	u8 remote_addr_3;
+#endif
+#if defined(__BIG_ENDIAN)
+	u16 params;
+#define L5CM_CONN_ADDR_PARAMS_IP_VERSION (0x1<<0)
+#define L5CM_CONN_ADDR_PARAMS_IP_VERSION_SHIFT 0
+#define L5CM_CONN_ADDR_PARAMS_RSRV (0x7FFF<<1)
+#define L5CM_CONN_ADDR_PARAMS_RSRV_SHIFT 1
+	u8 remote_addr_5;
+	u8 remote_addr_4;
+#elif defined(__LITTLE_ENDIAN)
+	u8 remote_addr_4;
+	u8 remote_addr_5;
+	u16 params;
+#define L5CM_CONN_ADDR_PARAMS_IP_VERSION (0x1<<0)
+#define L5CM_CONN_ADDR_PARAMS_IP_VERSION_SHIFT 0
+#define L5CM_CONN_ADDR_PARAMS_RSRV (0x7FFF<<1)
+#define L5CM_CONN_ADDR_PARAMS_RSRV_SHIFT 1
+#endif
+	struct ip_v6_addr local_ip_addr;
+	struct ip_v6_addr remote_ip_addr;
+	u32 ipv6_flow_label_20b;
+	u32 reserved1;
+#if defined(__BIG_ENDIAN)
+	u16 remote_tcp_port;
+	u16 local_tcp_port;
+#elif defined(__LITTLE_ENDIAN)
+	u16 local_tcp_port;
+	u16 remote_tcp_port;
+#endif
+};
+
+/*
+ * l5cm-xstorm connection buffer
+ */
+struct l5cm_xstorm_conn_buffer {
+#if defined(__BIG_ENDIAN)
+	u16 rsrv1;
+	u16 params;
+#define L5CM_XSTORM_CONN_BUFFER_NAGLE_ENABLE (0x1<<0)
+#define L5CM_XSTORM_CONN_BUFFER_NAGLE_ENABLE_SHIFT 0
+#define L5CM_XSTORM_CONN_BUFFER_RSRV (0x7FFF<<1)
+#define L5CM_XSTORM_CONN_BUFFER_RSRV_SHIFT 1
+#elif defined(__LITTLE_ENDIAN)
+	u16 params;
+#define L5CM_XSTORM_CONN_BUFFER_NAGLE_ENABLE (0x1<<0)
+#define L5CM_XSTORM_CONN_BUFFER_NAGLE_ENABLE_SHIFT 0
+#define L5CM_XSTORM_CONN_BUFFER_RSRV (0x7FFF<<1)
+#define L5CM_XSTORM_CONN_BUFFER_RSRV_SHIFT 1
+	u16 rsrv1;
+#endif
+#if defined(__BIG_ENDIAN)
+	u16 mss;
+	u16 pseudo_header_checksum;
+#elif defined(__LITTLE_ENDIAN)
+	u16 pseudo_header_checksum;
+	u16 mss;
+#endif
+	u32 rcv_buf;
+	u32 rsrv2;
+	struct regpair context_addr;
+};
+
+/*
+ * l5cm-tstorm connection buffer
+ */
+struct l5cm_tstorm_conn_buffer {
+	u32 rsrv1[2];
+#if defined(__BIG_ENDIAN)
+	u16 params;
+#define L5CM_TSTORM_CONN_BUFFER_DELAYED_ACK_ENABLE (0x1<<0)
+#define L5CM_TSTORM_CONN_BUFFER_DELAYED_ACK_ENABLE_SHIFT 0
+#define L5CM_TSTORM_CONN_BUFFER_RSRV (0x7FFF<<1)
+#define L5CM_TSTORM_CONN_BUFFER_RSRV_SHIFT 1
+	u8 ka_max_probe_count;
+	u8 ka_enable;
+#elif defined(__LITTLE_ENDIAN)
+	u8 ka_enable;
+	u8 ka_max_probe_count;
+	u16 params;
+#define L5CM_TSTORM_CONN_BUFFER_DELAYED_ACK_ENABLE (0x1<<0)
+#define L5CM_TSTORM_CONN_BUFFER_DELAYED_ACK_ENABLE_SHIFT 0
+#define L5CM_TSTORM_CONN_BUFFER_RSRV (0x7FFF<<1)
+#define L5CM_TSTORM_CONN_BUFFER_RSRV_SHIFT 1
+#endif
+	u32 ka_timeout;
+	u32 ka_interval;
+	u32 max_rt_time;
+};
+
+/*
+ * l5cm connection buffer for active side
+ */
+struct l5cm_active_conn_buffer {
+	struct l5cm_conn_addr_params conn_addr_buf;
+	struct l5cm_xstorm_conn_buffer xstorm_conn_buffer;
+	struct l5cm_tstorm_conn_buffer tstorm_conn_buffer;
+};
+
+
+
+/*
+ * The l5cm opaque buffer passed in add new connection ramrod passive side
+ */
+struct l5cm_hash_input_string {
+	u32 __opaque1;
+#if defined(__BIG_ENDIAN)
+	u16 __opaque3;
+	u16 __opaque2;
+#elif defined(__LITTLE_ENDIAN)
+	u16 __opaque2;
+	u16 __opaque3;
+#endif
+	struct ip_v6_addr __opaque4;
+	struct ip_v6_addr __opaque5;
+	u32 __opaque6;
+	u32 __opaque7[5];
+};
+
+
+/*
+ * syn cookie component
+ */
+struct l5cm_syn_cookie_comp {
+	u32 __opaque;
+};
+
+/*
+ * data related to listeners of a TCP port
+ */
+struct l5cm_port_listener_data {
+	u8 params;
+#define L5CM_PORT_LISTENER_DATA_ENABLE (0x1<<0)
+#define L5CM_PORT_LISTENER_DATA_ENABLE_SHIFT 0
+#define L5CM_PORT_LISTENER_DATA_IP_INDEX (0xF<<1)
+#define L5CM_PORT_LISTENER_DATA_IP_INDEX_SHIFT 1
+#define L5CM_PORT_LISTENER_DATA_NET_FILTER (0x1<<5)
+#define L5CM_PORT_LISTENER_DATA_NET_FILTER_SHIFT 5
+#define L5CM_PORT_LISTENER_DATA_DEFFERED_MODE (0x1<<6)
+#define L5CM_PORT_LISTENER_DATA_DEFFERED_MODE_SHIFT 6
+#define L5CM_PORT_LISTENER_DATA_MPA_MODE (0x1<<7)
+#define L5CM_PORT_LISTENER_DATA_MPA_MODE_SHIFT 7
+};
+
+/*
+ * Opaque structure passed from U to X when final ack arrives
+ */
+struct l5cm_opaque_buf {
+	u32 __opaque1;
+	u32 __opaque2;
+	u32 __opaque3;
+	u32 __opaque4;
+	struct l5cm_syn_cookie_comp __opaque5;
+#if defined(__BIG_ENDIAN)
+	u16 rsrv2;
+	u8 rsrv;
+	struct l5cm_port_listener_data __opaque6;
+#elif defined(__LITTLE_ENDIAN)
+	struct l5cm_port_listener_data __opaque6;
+	u8 rsrv;
+	u16 rsrv2;
+#endif
+};
+
+
+/*
+ * l5cm slow path element
+ */
+struct l5cm_packet_size {
+	u32 size;
+	u32 rsrv;
+};
+
+
+/*
+ * The final-ack union structure in PCS entry after final ack arrived
+ */
+struct l5cm_pcse_ack {
+	struct l5cm_xstorm_conn_buffer tx_socket_params;
+	struct l5cm_opaque_buf opaque_buf;
+	struct l5cm_tstorm_conn_buffer rx_socket_params;
+};
+
+
+/*
+ * The syn union structure in PCS entry after syn arrived
+ */
+struct l5cm_pcse_syn {
+	struct l5cm_opaque_buf opaque_buf;
+	u32 rsrv[12];
+};
+
+
+/*
+ * pcs entry data for passive connections
+ */
+struct l5cm_pcs_attributes {
+#if defined(__BIG_ENDIAN)
+	u16 pcs_id;
+	u8 status;
+	u8 flags;
+#define L5CM_PCS_ATTRIBUTES_NET_FILTER (0x1<<0)
+#define L5CM_PCS_ATTRIBUTES_NET_FILTER_SHIFT 0
+#define L5CM_PCS_ATTRIBUTES_CALCULATE_HASH (0x1<<1)
+#define L5CM_PCS_ATTRIBUTES_CALCULATE_HASH_SHIFT 1
+#define L5CM_PCS_ATTRIBUTES_COMPARE_HASH_RESULT (0x1<<2)
+#define L5CM_PCS_ATTRIBUTES_COMPARE_HASH_RESULT_SHIFT 2
+#define L5CM_PCS_ATTRIBUTES_QUERY_ULP_ACCEPT (0x1<<3)
+#define L5CM_PCS_ATTRIBUTES_QUERY_ULP_ACCEPT_SHIFT 3
+#define L5CM_PCS_ATTRIBUTES_FIND_DEST_MAC (0x1<<4)
+#define L5CM_PCS_ATTRIBUTES_FIND_DEST_MAC_SHIFT 4
+#define L5CM_PCS_ATTRIBUTES_L4_OFFLOAD (0x1<<5)
+#define L5CM_PCS_ATTRIBUTES_L4_OFFLOAD_SHIFT 5
+#define L5CM_PCS_ATTRIBUTES_FORWARD_PACKET (0x1<<6)
+#define L5CM_PCS_ATTRIBUTES_FORWARD_PACKET_SHIFT 6
+#define L5CM_PCS_ATTRIBUTES_RSRV (0x1<<7)
+#define L5CM_PCS_ATTRIBUTES_RSRV_SHIFT 7
+#elif defined(__LITTLE_ENDIAN)
+	u8 flags;
+#define L5CM_PCS_ATTRIBUTES_NET_FILTER (0x1<<0)
+#define L5CM_PCS_ATTRIBUTES_NET_FILTER_SHIFT 0
+#define L5CM_PCS_ATTRIBUTES_CALCULATE_HASH (0x1<<1)
+#define L5CM_PCS_ATTRIBUTES_CALCULATE_HASH_SHIFT 1
+#define L5CM_PCS_ATTRIBUTES_COMPARE_HASH_RESULT (0x1<<2)
+#define L5CM_PCS_ATTRIBUTES_COMPARE_HASH_RESULT_SHIFT 2
+#define L5CM_PCS_ATTRIBUTES_QUERY_ULP_ACCEPT (0x1<<3)
+#define L5CM_PCS_ATTRIBUTES_QUERY_ULP_ACCEPT_SHIFT 3
+#define L5CM_PCS_ATTRIBUTES_FIND_DEST_MAC (0x1<<4)
+#define L5CM_PCS_ATTRIBUTES_FIND_DEST_MAC_SHIFT 4
+#define L5CM_PCS_ATTRIBUTES_L4_OFFLOAD (0x1<<5)
+#define L5CM_PCS_ATTRIBUTES_L4_OFFLOAD_SHIFT 5
+#define L5CM_PCS_ATTRIBUTES_FORWARD_PACKET (0x1<<6)
+#define L5CM_PCS_ATTRIBUTES_FORWARD_PACKET_SHIFT 6
+#define L5CM_PCS_ATTRIBUTES_RSRV (0x1<<7)
+#define L5CM_PCS_ATTRIBUTES_RSRV_SHIFT 7
+	u8 status;
+	u16 pcs_id;
+#endif
+};
+
+
+union l5cm_seg_params {
+	struct l5cm_pcse_syn syn_seg_params;
+	struct l5cm_pcse_ack ack_seg_params;
+};
+
+/*
+ * pcs entry data for passive connections
+ */
+struct l5cm_pcs_hdr {
+	struct l5cm_hash_input_string hash_input_string;
+	struct l5cm_conn_addr_params conn_addr_buf;
+	u32 cid;
+	u32 hash_result;
+	union l5cm_seg_params seg_params;
+	struct l5cm_pcs_attributes att;
+#if defined(__BIG_ENDIAN)
+	u16 rsrv;
+	u16 rx_seg_size;
+#elif defined(__LITTLE_ENDIAN)
+	u16 rx_seg_size;
+	u16 rsrv;
+#endif
+};
+
+/*
+ * pcs entry for passive connections
+ */
+struct l5cm_pcs_entry {
+	struct l5cm_pcs_hdr hdr;
+	u8 rx_segment[1516];
+};
+
+
+
+
+/*
+ * l5cm connection parameters
+ */
+union l5cm_reduce_param_union {
+	u32 opaque1;
+	u32 opaque2;
+};
+
+/*
+ * l5cm connection parameters
+ */
+struct l5cm_reduce_conn {
+	union l5cm_reduce_param_union opaque1;
+	u32 opaque2;
+};
+
+/*
+ * l5cm slow path element
+ */
+union l5cm_specific_data {
+	u8 protocol_data[8];
+	struct regpair phy_address;
+	struct l5cm_packet_size packet_size;
+	struct l5cm_reduce_conn reduced_conn;
+};
+
+/*
+ * l5 slow path element
+ */
+struct l5cm_spe {
+	struct spe_hdr hdr;
+	union l5cm_specific_data data;
+};
+
+
+
+
+/*
+ * Termination variables
+ */
+struct l5cm_term_vars {
+	u8 BitMap;
+#define L5CM_TERM_VARS_TCP_STATE (0xF<<0)
+#define L5CM_TERM_VARS_TCP_STATE_SHIFT 0
+#define L5CM_TERM_VARS_FIN_RECEIVED_SBIT (0x1<<4)
+#define L5CM_TERM_VARS_FIN_RECEIVED_SBIT_SHIFT 4
+#define L5CM_TERM_VARS_ACK_ON_FIN_RECEIVED_SBIT (0x1<<5)
+#define L5CM_TERM_VARS_ACK_ON_FIN_RECEIVED_SBIT_SHIFT 5
+#define L5CM_TERM_VARS_TERM_ON_CHIP (0x1<<6)
+#define L5CM_TERM_VARS_TERM_ON_CHIP_SHIFT 6
+#define L5CM_TERM_VARS_RSRV (0x1<<7)
+#define L5CM_TERM_VARS_RSRV_SHIFT 7
+};
+
+
+
+
+/*
+ * Tstorm Tcp flags
+ */
+struct tstorm_l5cm_tcp_flags {
+	u16 flags;
+#define TSTORM_L5CM_TCP_FLAGS_VLAN_ID (0xFFF<<0)
+#define TSTORM_L5CM_TCP_FLAGS_VLAN_ID_SHIFT 0
+#define TSTORM_L5CM_TCP_FLAGS_DELAYED_ACK_EN (0x1<<12)
+#define TSTORM_L5CM_TCP_FLAGS_DELAYED_ACK_SHIFT 12
+#define TSTORM_L5CM_TCP_FLAGS_TS_ENABLED (0x1<<13)
+#define TSTORM_L5CM_TCP_FLAGS_TS_ENABLED_SHIFT 13
+#define TSTORM_L5CM_TCP_FLAGS_RSRV1 (0x3<<14)
+#define TSTORM_L5CM_TCP_FLAGS_RSRV1_SHIFT 14
+};
+
+
+/*
+ * Xstorm Tcp flags
+ */
+struct xstorm_l5cm_tcp_flags {
+	u8 flags;
+#define XSTORM_L5CM_TCP_FLAGS_ENC_ENABLED (0x1<<0)
+#define XSTORM_L5CM_TCP_FLAGS_ENC_ENABLED_SHIFT 0
+#define XSTORM_L5CM_TCP_FLAGS_TS_ENABLED (0x1<<1)
+#define XSTORM_L5CM_TCP_FLAGS_TS_ENABLED_SHIFT 1
+#define XSTORM_L5CM_TCP_FLAGS_WND_SCL_EN (0x1<<2)
+#define XSTORM_L5CM_TCP_FLAGS_WND_SCL_EN_SHIFT 2
+#define XSTORM_L5CM_TCP_FLAGS_RSRV (0x1F<<3)
+#define XSTORM_L5CM_TCP_FLAGS_RSRV_SHIFT 3
+};
+
+
+
+/*
+ * Out-of-order states
+ */
+enum tcp_ooo_event {
+	TCP_EVENT_ADD_PEN = 0,
+	TCP_EVENT_ADD_NEW_ISLE = 1,
+	TCP_EVENT_ADD_ISLE_RIGHT = 2,
+	TCP_EVENT_ADD_ISLE_LEFT = 3,
+	TCP_EVENT_JOIN = 4,
+	TCP_EVENT_NOP = 5,
+	MAX_TCP_OOO_EVENT
+};
+
+
+/*
+ * OOO support modes
+ */
+enum tcp_tstorm_ooo {
+	TCP_TSTORM_OOO_DROP_AND_PROC_ACK = 0,
+	TCP_TSTORM_OOO_SEND_PURE_ACK = 1,
+	TCP_TSTORM_OOO_SUPPORTED = 2,
+	MAX_TCP_TSTORM_OOO
+};
+
+
+
+
+
+
+
+
+
+#endif /* __5710_HSI_CNIC_LE__ */

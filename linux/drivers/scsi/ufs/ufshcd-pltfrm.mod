@@ -1,2 +1,1 @@
-CPI_APEI_GHES) \
-    $(wildcard in
+rch/x86/include/asm/atomic64_32.h 

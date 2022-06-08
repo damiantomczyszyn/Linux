@@ -1,2 +1,2 @@
-lude/config/SHMEM) \
-    
+nnel *audio_ch =
+		&dev->

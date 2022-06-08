@@ -1,4 +1,1 @@
-lude/config/PM) \
-    $(wildcard include/config/DYNAMIC_DEBUG) \
-    $(wildcard include/config/GPIOLIB) \
-    $(wildcard include/conf
+cmd_drivers/net/dsa/xrs700x/xrs700x.mod := { echo  drivers/net/dsa/xrs700x/xrs700x.o;  echo; } > drivers/net/dsa/xrs700x/xrs700x.mod

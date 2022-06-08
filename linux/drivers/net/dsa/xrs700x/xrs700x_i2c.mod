@@ -1,2 +1,2 @@
-ldcard include/config/X86_P6_NOP) \
-   
+drivers/net/dsa/xrs700x/xrs700x_i2c.o
+

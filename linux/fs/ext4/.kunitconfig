@@ -1,2 +1,2 @@
-fig/GENERIC_ATOMIC64) \
-  include/linux/atomic/atomic-long
+>drv_priv;
+	struct cx23885_buffer *buf = container_of(vbuf

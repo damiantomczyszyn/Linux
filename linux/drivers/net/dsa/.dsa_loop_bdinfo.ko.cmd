@@ -1,7 +1,1 @@
-\
-  include/linux/rwlock.h \
-    $(wildcard include/config/PREEMPT) \
-  include/linux/spinlock_api_smp.h \
-    $(wildcard include/config/INLINE_SPIN_LOCK) \
-    $(wildcard include/config/INLINE_SPIN_LOCK_BH) \
-    $(
+cmd_drivers/net/dsa/dsa_loop_bdinfo.ko := ld -r -m elf_i386 --build-id=sha1  -T scripts/module.lds -o drivers/net/dsa/dsa_loop_bdinfo.ko drivers/net/dsa/dsa_loop_bdinfo.o drivers/net/dsa/dsa_loop_bdinfo.mod.o;  true

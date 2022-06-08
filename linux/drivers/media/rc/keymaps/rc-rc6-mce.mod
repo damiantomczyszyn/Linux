@@ -1,2 +1,1 @@
-drivers/media/rc/keymaps/rc-rc6-mce.o
-
+dev->board == CX23885_BOARD_HAUPPAUGE_H

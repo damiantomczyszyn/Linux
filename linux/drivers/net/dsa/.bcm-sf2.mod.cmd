@@ -1,4 +1,1 @@
-x/build_bug.h \
-  include/linux/compiler.h \
-    $(wildcard include/config/TRACE_BRANCH_PROFILING) \
-    $(wildcard include/config/PROFILE_
+cmd_drivers/net/dsa/bcm-sf2.mod := { echo  drivers/net/dsa/bcm_sf2.o drivers/net/dsa/bcm_sf2_cfp.o;  echo; } > drivers/net/dsa/bcm-sf2.mod

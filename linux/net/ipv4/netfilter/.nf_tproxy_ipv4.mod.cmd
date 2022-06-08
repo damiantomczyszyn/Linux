@@ -1,4 +1,5 @@
-move lock classes from memory that is going to be
- * freed; and possibly re-used by other modules.
+// SPDX-License-Identifier: GPL-2.0-or-later
+/*
+ *  Driver for the Conexant CX23885 PCIe bridge
  *
- * We will have had one synchronize_r
+ *  Copyright (c) 2006 Steven Toth <stot

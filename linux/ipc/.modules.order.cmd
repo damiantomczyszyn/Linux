@@ -1,3 +1,3 @@
-TATE) \
-    $(wildcard include/config/ACPI_HOTPLUG_CPU) \
-    $(wildcard 
+// SPDX-License-Identifier: GPL-2.0-or-later
+/*
+ *  Driver for the Conexa

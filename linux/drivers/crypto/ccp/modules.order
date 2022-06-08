@@ -1,2 +1,1 @@
-ude/config/PARAVIRT_XXL) \
-  arch/x86/include/asm/disabled-
+truct cx23885_audio_dev *chip = snd_pcm_substream_chip(subs

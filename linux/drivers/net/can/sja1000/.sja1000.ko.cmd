@@ -1,7 +1,1 @@
-e/config/SPI) \
-  include/media/v4l2-dev.h \
-  include/linux/spi/spi.h \
-    $(wildcard include/config/SPI_SLAVE) \
-  include/linux/scatterlist.h \
-    $(wildcard include/config/NEED_SG_DMA_LENGTH) \
-    $(wildcard i
+cmd_drivers/net/can/sja1000/sja1000.ko := ld -r -m elf_i386 --build-id=sha1  -T scripts/module.lds -o drivers/net/can/sja1000/sja1000.ko drivers/net/can/sja1000/sja1000.o drivers/net/can/sja1000/sja1000.mod.o;  true

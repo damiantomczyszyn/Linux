@@ -1,2 +1,4 @@
-nclude/asm/atomic64_32.h \
-  include/linux/
+TRL, reg);
+	}
+
+	/* Set VIDC pins to input *

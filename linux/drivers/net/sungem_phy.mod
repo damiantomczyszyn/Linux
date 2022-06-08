@@ -1,2 +1,2 @@
-de/uapi/linux/swab.h \
-  a
+:
+		i2c_bus = &dev->i2c_bu

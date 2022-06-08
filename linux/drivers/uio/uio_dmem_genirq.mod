@@ -1,1 +1,2 @@
-h/x86/include/asm/pgtable_32_ty
+C:
+	case CX23885_BOARD_TT_CT2_4

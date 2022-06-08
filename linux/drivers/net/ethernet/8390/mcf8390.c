@@ -1,299 +1,472 @@
-h \
-    $(wildcard include/config/ARCH_NR_GPIO) \
-  include/linux/gpio/driver.h \
-    $(wildcard include/config/IRQ_DOMAIN_HIERARCHY) \
-    $(wildcard include/config/GPIO_GENERIC) \
-    $(wildcard include/config/GPIOLIB_IRQCHIP) \
-    $(wildcard include/config/OF_GPIO) \
-    $(wildcard include/config/PINCTRL) \
-  include/linux/device.h \
-    $(wildcard include/config/GENERIC_MSI_IRQ_DOMAIN) \
-    $(wildcard include/config/GENERIC_MSI_IRQ) \
-    $(wildcard include/config/ENERGY_MODEL) \
-    $(wildcard include/config/DMA_OPS) \
-    $(wildcard include/config/DMA_DECLARE_COHERENT) \
-    $(wildcard include/config/DMA_CMA) \
-    $(wildcard include/config/SWIOTLB) \
-    $(wildcard include/config/ARCH_HAS_SYNC_DMA_FOR_DEVICE) \
-    $(wildcard include/config/ARCH_HAS_SYNC_DMA_FOR_CPU) \
-    $(wildcard include/config/ARCH_HAS_SYNC_DMA_FOR_CPU_ALL) \
-    $(wildcard include/config/DMA_OPS_BYPASS) \
-    $(wildcard include/config/PM_SLEEP) \
-    $(wildcard include/config/OF) \
-    $(wildcard include/config/DEVTMPFS) \
-    $(wildcard include/config/SYSFS_DEPRECATED) \
-  include/linux/dev_printk.h \
-  include/linux/ratelimit.h \
-  include/linux/energy_model.h \
-  include/linux/kobject.h \
-    $(wildcard include/config/UEVENT_HELPER) \
-    $(wildcard include/config/DEBUG_KOBJECT_RELEASE) \
-  include/linux/sysfs.h \
-  include/linux/kernfs.h \
-    $(wildcard include/config/KERNFS) \
-  include/linux/idr.h \
-  include/linux/radix-tree.h \
-  include/linux/gfp.h \
-    $(wildcard include/config/KASAN_HW_TAGS) \
-    $(wildcard include/config/ZONE_DMA) \
-    $(wildcard include/config/ZONE_DMA32) \
-    $(wildcard include/config/ZONE_DEVICE) \
-    $(wildcard include/config/CONTIG_ALLOC) \
-    $(wildcard include/config/CMA) \
-  include/linux/mmzone.h \
-    $(wildcard include/config/FORCE_MAX_ZONEORDER) \
-    $(wildcard include/config/MEMORY_ISOLATION) \
-    $(wildcard include/config/ZSMALLOC) \
-    $(wildcard include/config/SWAP) \
-    $(wildcard include/config/TRANSPARENT_HUGEPAGE) \
-    $(wildcard include/config/MEMORY_HOTPLUG) \
-    $(wildcard include/config/PAGE_EXTENSION) \
-    $(wildcard include/config/DEFERRED_STRUCT_PAGE_INIT) \
-    $(wildcard include/config/HAVE_MEMORYLESS_NODES) \
-    $(wildcard include/config/SPARSEMEM_EXTREME) \
-    $(wildcard include/config/HAVE_ARCH_PFN_VALID) \
-  include/linux/pageblock-flags.h \
-    $(wildcard include/config/HUGETLB_PAGE) \
-    $(wildcard include/config/HUGETLB_PAGE_SIZE_VARIABLE) \
-  include/linux/page-flags-layout.h \
-  include/generated/bounds.h \
-  include/linux/mm_types.h \
-    $(wildcard include/config/HAVE_ALIGNED_STRUCT_PAGE) \
-    $(wildcard include/config/USERFAULTFD) \
-    $(wildcard include/config/HAVE_ARCH_COMPAT_MMAP_BASES) \
-    $(wildcard include/config/MEMBARRIER) \
-    $(wildcard include/config/AIO) \
-    $(wildcard include/config/MMU_NOTIFIER) \
-  include/linux/auxvec.h \
-  include/uapi/linux/auxvec.h \
-  arch/x86/include/uapi/asm/auxvec.h \
-  include/linux/kref.h \
-  include/linux/rwsem.h \
-    $(wildcard include/config/RWSEM_SPIN_ON_OWNER) \
-    $(wildcard include/config/DEBUG_RWSEMS) \
-  include/linux/completion.h \
-  include/linux/swait.h \
-  include/linux/uprobes.h \
-  arch/x86/include/asm/uprobes.h \
-  include/linux/notifier.h \
-    $(wildcard include/config/TREE_SRCU) \
-  include/linux/srcu.h \
-    $(wildcard include/config/TINY_SRCU) \
-    $(wildcard include/config/SRCU) \
-  include/linux/rcu_segcblist.h \
-  include/linux/srcutree.h \
-  include/linux/rcu_node_tree.h \
-    $(wildcard include/config/RCU_FANOUT) \
-    $(wildcard include/config/RCU_FANOUT_LEAF) \
-  arch/x86/include/asm/mmu.h \
-    $(wildcard include/config/MODIFY_LDT_SYSCALL) \
-  include/linux/page-flags.h \
-    $(wildcard include/config/ARCH_USES_PG_UNCACHED) \
-    $(wildcard include/config/MEMORY_FAILURE) \
-    $(wildcard include/config/PAGE_IDLE_FLAG) \
-    $(wildcard include/config/HUGETLB_PAGE_FREE_VMEMMAP) \
-    $(wildcard include/config/HUGETLB_PAGE_FREE_VMEMMAP_DEFAULT_ON) \
-    $(wildcard include/config/KSM) \
-  include/linux/local_lock.h \
-  include/linux/local_lock_internal.h \
-  include/linux/memory_hotplug.h \
-    $(wildcard include/config/HAVE_ARCH_NODEDATA_EXTENSION) \
-    $(wildcard include/config/ARCH_HAS_ADD_PAGES) \
-    $(wildcard include/config/MEMORY_HOTREMOVE) \
-  arch/x86/include/asm/mmzone.h \
-  arch/x86/include/asm/mmzone_32.h \
-  include/linux/topology.h \
-    $(wildcard include/config/USE_PERCPU_NUMA_NODE_ID) \
-    $(wildcard include/config/SCHED_SMT) \
-    $(wildcard include/config/SCHED_CLUSTER) \
-  include/linux/arch_topology.h \
-    $(wildcard include/config/ACPI_CPPC_LIB) \
-    $(wildcard include/config/GENERIC_ARCH_TOPOLOGY) \
-  arch/x86/include/asm/topology.h \
-    $(wildcard include/config/SCHED_MC_PRIO) \
-  arch/x86/include/asm/mpspec.h \
-    $(wildcard include/config/EISA) \
-    $(wildcard include/config/X86_MPPARSE) \
-  arch/x86/include/asm/mpspec_def.h \
-  arch/x86/include/asm/x86_init.h \
-  arch/x86/include/asm/apicdef.h \
-  include/asm-generic/topology.h \
-  include/linux/xarray.h \
-    $(wildcard include/config/XARRAY_MULTI) \
-  include/linux/kconfig.h \
-  include/linux/kobject_ns.h \
-  include/linux/stat.h \
-  arch/x86/include/uapi/asm/stat.h \
-  include/uapi/linux/stat.h \
-  include/linux/sched/cpufreq.h \
-    $(wildcard include/config/CPU_FREQ) \
-  include/linux/sched/topology.h \
-    $(wildcard include/config/SCHED_DEBUG) \
-    $(wildcard include/config/SCHED_MC) \
-    $(wildcard include/config/CPU_FREQ_GOV_SCHEDUTIL) \
-  include/linux/sched/idle.h \
-  include/linux/sched/sd_flags.h \
-  include/linux/ioport.h \
-  include/linux/klist.h \
-  include/linux/pm.h \
-    $(wildcard include/config/VT_CONSOLE_SLEEP) \
-    $(wildcard include/config/PM) \
-    $(wildcard include/config/PM_CLK) \
-    $(wildcard include/config/PM_GENERIC_DOMAINS) \
-  include/linux/overflow.h \
-  include/linux/device/bus.h \
-    $(wildcard include/config/ACPI) \
-  include/linux/device/class.h \
-  include/linux/device/driver.h \
-  include/linux/module.h \
-    $(wildcard include/config/MODULES_TREE_LOOKUP) \
-    $(wildcard include/config/STACKTRACE_BUILD_ID) \
-    $(wildcard include/config/MODULE_SIG) \
-    $(wildcard include/config/KALLSYMS) \
-    $(wildcard include/config/BPF_EVENTS) \
-    $(wildcard include/config/DEBUG_INFO_BTF_MODULES) \
-    $(wildcard include/config/EVENT_TRACING) \
-    $(wildcard include/config/MODULE_UNLOAD) \
-    $(wildcard include/config/CONSTRUCTORS) \
-    $(wildcard include/config/FUNCTION_ERROR_INJECTION) \
-  include/linux/buildid.h \
-    $(wildcard include/config/CRASH_CORE) \
-  include/linux/kmod.h \
-  include/linux/umh.h \
-  include/linux/sysctl.h \
-    $(wildcard include/config/SYSCTL) \
-  include/uapi/linux/sysctl.h \
-  include/linux/elf.h \
-    $(wildcard include/config/ARCH_USE_GNU_PROPERTY) \
-    $(wildcard include/config/ARCH_HAVE_ELF_PROT) \
-  arch/x86/include/asm/elf.h \
-    $(wildcard include/config/X86_X32_ABI) \
-  arch/x86/include/asm/user.h \
-  arch/x86/include/asm/user_32.h \
-  arch/x86/include/asm/fsgsbase.h \
-  arch/x86/include/asm/vdso.h \
-  arch/x86/include/asm/desc.h \
-  arch/x86/include/asm/fixmap.h \
-    $(wildcard include/config/DEBUG_KMAP_LOCAL_FORCE_MAP) \
-    $(wildcard include/config/X86_VSYSCALL_EMULATION) \
-    $(wildcard include/config/PROVIDE_OHCI1394_DMA_INIT) \
-    $(wildcard include/config/X86_IO_APIC) \
-    $(wildcard include/config/PCI_MMCONFIG) \
-    $(wildcard include/config/ACPI_APEI_GHES) \
-    $(wildcard include/config/INTEL_TXT) \
-  include/asm-generic/fixmap.h \
-  arch/x86/include/asm/irq_vectors.h \
-    $(wildcard include/config/HAVE_KVM) \
-    $(wildcard include/config/HYPERV) \
-    $(wildcard include/config/PCI_MSI) \
-  arch/x86/include/asm/cpu_entry_area.h \
-  arch/x86/include/asm/intel_ds.h \
-  arch/x86/include/asm/pgtable_areas.h \
-  arch/x86/include/asm/pgtable_32_areas.h \
-  include/uapi/linux/elf.h \
-  include/uapi/linux/elf-em.h \
-  include/linux/moduleparam.h \
-    $(wildcard include/config/ALPHA) \
-    $(wildcard include/config/IA64) \
-    $(wildcard include/config/PPC64) \
-  include/linux/rbtree_latch.h \
-  include/linux/error-injection.h \
-  include/asm-generic/error-injection.h \
-  include/linux/cfi.h \
-    $(wildcard include/config/CFI_CLANG_SHADOW) \
-  arch/x86/include/asm/module.h \
-    $(wildcard include/config/UNWINDER_ORC) \
-  include/asm-generic/module.h \
-    $(wildcard include/config/HAVE_MOD_ARCH_SPECIFIC) \
-    $(wildcard include/config/MODULES_USE_ELF_REL) \
-    $(wildcard include/config/MODULES_USE_ELF_RELA) \
-  arch/x86/include/asm/orc_types.h \
-  arch/x86/include/asm/device.h \
-  include/linux/pm_wakeup.h \
-  include/linux/irq.h \
-    $(wildcard include/config/GENERIC_IRQ_EFFECTIVE_AFF_MASK) \
-    $(wildcard include/config/GENERIC_IRQ_IPI) \
-    $(wildcard include/config/DEPRECATED_IRQ_CPU_ONOFFLINE) \
-    $(wildcard include/config/GENERIC_IRQ_MIGRATION) \
-    $(wildcard include/config/GENERIC_PENDING_IRQ) \
-    $(wildcard include/config/HARDIRQS_SW_RESEND) \
-    $(wildcard include/config/GENERIC_IRQ_LEGACY) \
-    $(wildcard include/config/GENERIC_IRQ_MULTI_HANDLER) \
-  include/linux/irqhandler.h \
-  include/linux/irqreturn.h \
-  include/linux/irqnr.h \
-  include/uapi/linux/irqnr.h \
-  include/linux/io.h \
-    $(wildcard include/config/HAS_IOPORT_MAP) \
-    $(wildcard include/config/PCI) \
-  arch/x86/include/asm/io.h \
-    $(wildcard include/config/MTRR) \
-    $(wildcard include/config/X86_PAT) \
-  arch/x86/include/generated/asm/early_ioremap.h \
-  include/asm-generic/early_ioremap.h \
-    $(wildcard include/config/GENERIC_EARLY_IOREMAP) \
-  include/asm-generic/iomap.h \
-  include/asm-generic/pci_iomap.h \
-    $(wildcard include/config/NO_GENERIC_PCI_IOPORT_MAP) \
-    $(wildcard include/config/GENERIC_PCI_IOMAP) \
-  include/asm-generic/io.h \
-    $(wildcard include/config/GENERIC_IOMAP) \
-    $(wildcard include/config/GENERIC_IOREMAP) \
-    $(wildcard include/config/VIRT_TO_BUS) \
-    $(wildcard include/config/GENERIC_DEVMEM_IS_ALLOWED) \
-  include/linux/logic_pio.h \
-    $(wildcard include/config/INDIRECT_PIO) \
-  include/linux/fwnode.h \
-  include/linux/vmalloc.h \
-    $(wildcard include/config/KASAN_VMALLOC) \
-    $(wildcard include/config/HAVE_ARCH_HUGE_VMALLOC) \
-  arch/x86/include/asm/vmalloc.h \
-    $(wildcard include/config/HAVE_ARCH_HUGE_VMAP) \
-  include/linux/slab.h \
-    $(wildcard include/config/DEBUG_SLAB) \
-    $(wildcard include/config/FAILSLAB) \
-    $(wildcard include/config/MEMCG_KMEM) \
-    $(wildcard include/config/KASAN) \
-    $(wildcard include/config/SLAB) \
-    $(wildcard include/config/SLUB) \
-    $(wildcard include/config/SLOB) \
-  include/linux/percpu-refcount.h \
-  include/linux/kasan.h \
-    $(wildcard include/config/KASAN_STACK) \
-    $(wildcard include/config/KASAN_INLINE) \
-  include/linux/kasan-enabled.h \
-  arch/x86/include/asm/irq.h \
-  arch/x86/include/generated/asm/irq_regs.h \
-  include/asm-generic/irq_regs.h \
-  include/linux/irqdesc.h \
-    $(wildcard include/config/GENERIC_IRQ_DEBUGFS) \
-    $(wildcard include/config/SPARSE_IRQ) \
-    $(wildcard include/config/IRQ_DOMAIN) \
-  arch/x86/include/asm/hw_irq.h \
-  include/linux/profile.h \
-    $(wildcard include/config/PROFILING) \
-  arch/x86/include/asm/sections.h \
-  include/asm-generic/sections.h \
-    $(wildcard include/config/HAVE_FUNCTION_DESCRIPTORS) \
-  arch/x86/include/asm/extable.h \
-    $(wildcard include/config/BPF_JIT) \
-  include/linux/irqchip/chained_irq.h \
-  include/linux/irqdomain.h \
-    $(wildcard include/config/IRQ_DOMAIN_NOMAP) \
-  include/linux/of.h \
-    $(wildcard include/config/OF_DYNAMIC) \
-    $(wildcard include/config/SPARC) \
-    $(wildcard include/config/OF_PROMTREE) \
-    $(wildcard include/config/OF_KOBJ) \
-    $(wildcard include/config/OF_NUMA) \
-    $(wildcard include/config/OF_OVERLAY) \
-  include/linux/mod_devicetable.h \
-  include/linux/uuid.h \
-  include/uapi/linux/uuid.h \
-  include/linux/property.h \
-  include/linux/pinctrl/pinctrl.h \
-    $(wildcard include/config/GENERIC_PINCONF) \
-  include/linux/seq_file.h \
-  include/linux/string_helpers.h \
-  include/linux/ctype.h \
-  inclu
+/*
+ *  Support for ColdFire CPU based boards using a NS8390 Ethernet device.
+ *
+ *  Derived from the many other 8390 drivers.
+ *
+ *  (C) Copyright 2012,  Greg Ungerer <gerg@uclinux.org>
+ *
+ *  This file is subject to the terms and conditions of the GNU General Public
+ *  License.  See the file COPYING in the main directory of the Linux
+ *  distribution for more details.
+ */
+
+#include <linux/module.h>
+#include <linux/kernel.h>
+#include <linux/errno.h>
+#include <linux/platform_device.h>
+#include <linux/netdevice.h>
+#include <linux/etherdevice.h>
+#include <linux/jiffies.h>
+#include <linux/io.h>
+#include <asm/mcf8390.h>
+
+static const char version[] =
+	"mcf8390.c: (15-06-2012) Greg Ungerer <gerg@uclinux.org>";
+
+#define NE_CMD		0x00
+#define NE_DATAPORT	0x10	/* NatSemi-defined port window offset */
+#define NE_RESET	0x1f	/* Issue a read to reset ,a write to clear */
+#define NE_EN0_ISR	0x07
+#define NE_EN0_DCFG	0x0e
+#define NE_EN0_RSARLO	0x08
+#define NE_EN0_RSARHI	0x09
+#define NE_EN0_RCNTLO	0x0a
+#define NE_EN0_RXCR	0x0c
+#define NE_EN0_TXCR	0x0d
+#define NE_EN0_RCNTHI	0x0b
+#define NE_EN0_IMR	0x0f
+
+#define NESM_START_PG	0x40	/* First page of TX buffer */
+#define NESM_STOP_PG	0x80	/* Last page +1 of RX ring */
+
+#ifdef NE2000_ODDOFFSET
+/*
+ * A lot of the ColdFire boards use a separate address region for odd offset
+ * register addresses. The following functions convert and map as required.
+ * Note that the data port accesses are treated a little differently, and
+ * always accessed via the insX/outsX functions.
+ */
+static inline u32 NE_PTR(u32 addr)
+{
+	if (addr & 1)
+		return addr - 1 + NE2000_ODDOFFSET;
+	return addr;
+}
+
+static inline u32 NE_DATA_PTR(u32 addr)
+{
+	return addr;
+}
+
+void ei_outb(u32 val, u32 addr)
+{
+	NE2000_BYTE *rp;
+
+	rp = (NE2000_BYTE *) NE_PTR(addr);
+	*rp = RSWAP(val);
+}
+
+#define	ei_inb	ei_inb
+u8 ei_inb(u32 addr)
+{
+	NE2000_BYTE *rp, val;
+
+	rp = (NE2000_BYTE *) NE_PTR(addr);
+	val = *rp;
+	return (u8) (RSWAP(val) & 0xff);
+}
+
+void ei_insb(u32 addr, void *vbuf, int len)
+{
+	NE2000_BYTE *rp, val;
+	u8 *buf;
+
+	buf = (u8 *) vbuf;
+	rp = (NE2000_BYTE *) NE_DATA_PTR(addr);
+	for (; (len > 0); len--) {
+		val = *rp;
+		*buf++ = RSWAP(val);
+	}
+}
+
+void ei_insw(u32 addr, void *vbuf, int len)
+{
+	volatile u16 *rp;
+	u16 w, *buf;
+
+	buf = (u16 *) vbuf;
+	rp = (volatile u16 *) NE_DATA_PTR(addr);
+	for (; (len > 0); len--) {
+		w = *rp;
+		*buf++ = BSWAP(w);
+	}
+}
+
+void ei_outsb(u32 addr, const void *vbuf, int len)
+{
+	NE2000_BYTE *rp, val;
+	u8 *buf;
+
+	buf = (u8 *) vbuf;
+	rp = (NE2000_BYTE *) NE_DATA_PTR(addr);
+	for (; (len > 0); len--) {
+		val = *buf++;
+		*rp = RSWAP(val);
+	}
+}
+
+void ei_outsw(u32 addr, const void *vbuf, int len)
+{
+	volatile u16 *rp;
+	u16 w, *buf;
+
+	buf = (u16 *) vbuf;
+	rp = (volatile u16 *) NE_DATA_PTR(addr);
+	for (; (len > 0); len--) {
+		w = *buf++;
+		*rp = BSWAP(w);
+	}
+}
+
+#else /* !NE2000_ODDOFFSET */
+
+#define	ei_inb		inb
+#define	ei_outb		outb
+#define	ei_insb		insb
+#define	ei_insw		insw
+#define	ei_outsb	outsb
+#define	ei_outsw	outsw
+
+#endif /* !NE2000_ODDOFFSET */
+
+#define	ei_inb_p	ei_inb
+#define	ei_outb_p	ei_outb
+
+#include "lib8390.c"
+
+/*
+ * Hard reset the card. This used to pause for the same period that a
+ * 8390 reset command required, but that shouldn't be necessary.
+ */
+static void mcf8390_reset_8390(struct net_device *dev)
+{
+	unsigned long reset_start_time = jiffies;
+	u32 addr = dev->base_addr;
+	struct ei_device *ei_local = netdev_priv(dev);
+
+	netif_dbg(ei_local, hw, dev, "resetting the 8390 t=%ld...\n", jiffies);
+
+	ei_outb(ei_inb(addr + NE_RESET), addr + NE_RESET);
+
+	ei_status.txing = 0;
+	ei_status.dmaing = 0;
+
+	/* This check _should_not_ be necessary, omit eventually. */
+	while ((ei_inb(addr + NE_EN0_ISR) & ENISR_RESET) == 0) {
+		if (time_after(jiffies, reset_start_time + 2 * HZ / 100)) {
+			netdev_warn(dev, "%s: did not complete\n", __func__);
+			break;
+		}
+	}
+
+	ei_outb(ENISR_RESET, addr + NE_EN0_ISR);
+}
+
+/*
+ * This *shouldn't* happen.
+ * If it does, it's the last thing you'll see
+ */
+static void mcf8390_dmaing_err(const char *func, struct net_device *dev,
+			       struct ei_device *ei_local)
+{
+	netdev_err(dev, "%s: DMAing conflict [DMAstat:%d][irqlock:%d]\n",
+		func, ei_local->dmaing, ei_local->irqlock);
+}
+
+/*
+ * Grab the 8390 specific header. Similar to the block_input routine, but
+ * we don't need to be concerned with ring wrap as the header will be at
+ * the start of a page, so we optimize accordingly.
+ */
+static void mcf8390_get_8390_hdr(struct net_device *dev,
+				 struct e8390_pkt_hdr *hdr, int ring_page)
+{
+	struct ei_device *ei_local = netdev_priv(dev);
+	u32 addr = dev->base_addr;
+
+	if (ei_local->dmaing) {
+		mcf8390_dmaing_err(__func__, dev, ei_local);
+		return;
+	}
+
+	ei_local->dmaing |= 0x01;
+	ei_outb(E8390_NODMA + E8390_PAGE0 + E8390_START, addr + NE_CMD);
+	ei_outb(ENISR_RDC, addr + NE_EN0_ISR);
+	ei_outb(sizeof(struct e8390_pkt_hdr), addr + NE_EN0_RCNTLO);
+	ei_outb(0, addr + NE_EN0_RCNTHI);
+	ei_outb(0, addr + NE_EN0_RSARLO);		/* On page boundary */
+	ei_outb(ring_page, addr + NE_EN0_RSARHI);
+	ei_outb(E8390_RREAD + E8390_START, addr + NE_CMD);
+
+	ei_insw(addr + NE_DATAPORT, hdr, sizeof(struct e8390_pkt_hdr) >> 1);
+
+	outb(ENISR_RDC, addr + NE_EN0_ISR);	/* Ack intr */
+	ei_local->dmaing &= ~0x01;
+
+	hdr->count = cpu_to_le16(hdr->count);
+}
+
+/*
+ * Block input and output, similar to the Crynwr packet driver.
+ * If you are porting to a new ethercard, look at the packet driver source
+ * for hints. The NEx000 doesn't share the on-board packet memory --
+ * you have to put the packet out through the "remote DMA" dataport
+ * using z_writeb.
+ */
+static void mcf8390_block_input(struct net_device *dev, int count,
+				struct sk_buff *skb, int ring_offset)
+{
+	struct ei_device *ei_local = netdev_priv(dev);
+	u32 addr = dev->base_addr;
+	char *buf = skb->data;
+
+	if (ei_local->dmaing) {
+		mcf8390_dmaing_err(__func__, dev, ei_local);
+		return;
+	}
+
+	ei_local->dmaing |= 0x01;
+	ei_outb(E8390_NODMA + E8390_PAGE0 + E8390_START, addr + NE_CMD);
+	ei_outb(ENISR_RDC, addr + NE_EN0_ISR);
+	ei_outb(count & 0xff, addr + NE_EN0_RCNTLO);
+	ei_outb(count >> 8, addr + NE_EN0_RCNTHI);
+	ei_outb(ring_offset & 0xff, addr + NE_EN0_RSARLO);
+	ei_outb(ring_offset >> 8, addr + NE_EN0_RSARHI);
+	ei_outb(E8390_RREAD + E8390_START, addr + NE_CMD);
+
+	ei_insw(addr + NE_DATAPORT, buf, count >> 1);
+	if (count & 1)
+		buf[count - 1] = ei_inb(addr + NE_DATAPORT);
+
+	ei_outb(ENISR_RDC, addr + NE_EN0_ISR);	/* Ack intr */
+	ei_local->dmaing &= ~0x01;
+}
+
+static void mcf8390_block_output(struct net_device *dev, int count,
+				 const unsigned char *buf,
+				 const int start_page)
+{
+	struct ei_device *ei_local = netdev_priv(dev);
+	u32 addr = dev->base_addr;
+	unsigned long dma_start;
+
+	/* Make sure we transfer all bytes if 16bit IO writes */
+	if (count & 0x1)
+		count++;
+
+	if (ei_local->dmaing) {
+		mcf8390_dmaing_err(__func__, dev, ei_local);
+		return;
+	}
+
+	ei_local->dmaing |= 0x01;
+	/* We should already be in page 0, but to be safe... */
+	ei_outb(E8390_PAGE0 + E8390_START + E8390_NODMA, addr + NE_CMD);
+
+	ei_outb(ENISR_RDC, addr + NE_EN0_ISR);
+
+	/* Now the normal output. */
+	ei_outb(count & 0xff, addr + NE_EN0_RCNTLO);
+	ei_outb(count >> 8, addr + NE_EN0_RCNTHI);
+	ei_outb(0x00, addr + NE_EN0_RSARLO);
+	ei_outb(start_page, addr + NE_EN0_RSARHI);
+	ei_outb(E8390_RWRITE + E8390_START, addr + NE_CMD);
+
+	ei_outsw(addr + NE_DATAPORT, buf, count >> 1);
+
+	dma_start = jiffies;
+	while ((ei_inb(addr + NE_EN0_ISR) & ENISR_RDC) == 0) {
+		if (time_after(jiffies, dma_start + 2 * HZ / 100)) { /* 20ms */
+			netdev_warn(dev, "timeout waiting for Tx RDC\n");
+			mcf8390_reset_8390(dev);
+			__NS8390_init(dev, 1);
+			break;
+		}
+	}
+
+	ei_outb(ENISR_RDC, addr + NE_EN0_ISR);	/* Ack intr */
+	ei_local->dmaing &= ~0x01;
+}
+
+static const struct net_device_ops mcf8390_netdev_ops = {
+	.ndo_open		= __ei_open,
+	.ndo_stop		= __ei_close,
+	.ndo_start_xmit		= __ei_start_xmit,
+	.ndo_tx_timeout		= __ei_tx_timeout,
+	.ndo_get_stats		= __ei_get_stats,
+	.ndo_set_rx_mode	= __ei_set_multicast_list,
+	.ndo_validate_addr	= eth_validate_addr,
+	.ndo_set_mac_address	= eth_mac_addr,
+#ifdef CONFIG_NET_POLL_CONTROLLER
+	.ndo_poll_controller	= __ei_poll,
+#endif
+};
+
+static int mcf8390_init(struct net_device *dev)
+{
+	static u32 offsets[] = {
+		0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07,
+		0x08, 0x09, 0x0a, 0x0b, 0x0c, 0x0d, 0x0e, 0x0f,
+	};
+	struct ei_device *ei_local = netdev_priv(dev);
+	unsigned char SA_prom[32];
+	u32 addr = dev->base_addr;
+	int start_page, stop_page;
+	int i, ret;
+
+	mcf8390_reset_8390(dev);
+
+	/*
+	 * Read the 16 bytes of station address PROM.
+	 * We must first initialize registers,
+	 * similar to NS8390_init(eifdev, 0).
+	 * We can't reliably read the SAPROM address without this.
+	 * (I learned the hard way!).
+	 */
+	{
+		static const struct {
+			u32 value;
+			u32 offset;
+		} program_seq[] = {
+			{E8390_NODMA + E8390_PAGE0 + E8390_STOP, NE_CMD},
+						/* Select page 0 */
+			{0x48,	NE_EN0_DCFG},	/* 0x48: Set byte-wide access */
+			{0x00,	NE_EN0_RCNTLO},	/* Clear the count regs */
+			{0x00,	NE_EN0_RCNTHI},
+			{0x00,	NE_EN0_IMR},	/* Mask completion irq */
+			{0xFF,	NE_EN0_ISR},
+			{E8390_RXOFF, NE_EN0_RXCR}, /* 0x20 Set to monitor */
+			{E8390_TXOFF, NE_EN0_TXCR}, /* 0x02 and loopback mode */
+			{32,	NE_EN0_RCNTLO},
+			{0x00,	NE_EN0_RCNTHI},
+			{0x00,	NE_EN0_RSARLO},	/* DMA starting at 0x0000 */
+			{0x00,	NE_EN0_RSARHI},
+			{E8390_RREAD + E8390_START, NE_CMD},
+		};
+		for (i = 0; i < ARRAY_SIZE(program_seq); i++) {
+			ei_outb(program_seq[i].value,
+				 addr + program_seq[i].offset);
+		}
+	}
+
+	for (i = 0; i < 16; i++) {
+		SA_prom[i] = ei_inb(addr + NE_DATAPORT);
+		ei_inb(addr + NE_DATAPORT);
+	}
+
+	/* We must set the 8390 for word mode. */
+	ei_outb(0x49, addr + NE_EN0_DCFG);
+	start_page = NESM_START_PG;
+	stop_page = NESM_STOP_PG;
+
+	/* Install the Interrupt handler */
+	ret = request_irq(dev->irq, __ei_interrupt, 0, dev->name, dev);
+	if (ret)
+		return ret;
+
+	eth_hw_addr_set(dev, SA_prom);
+
+	netdev_dbg(dev, "Found ethernet address: %pM\n", dev->dev_addr);
+
+	ei_local->name = "mcf8390";
+	ei_local->tx_start_page = start_page;
+	ei_local->stop_page = stop_page;
+	ei_local->word16 = 1;
+	ei_local->rx_start_page = start_page + TX_PAGES;
+	ei_local->reset_8390 = mcf8390_reset_8390;
+	ei_local->block_input = mcf8390_block_input;
+	ei_local->block_output = mcf8390_block_output;
+	ei_local->get_8390_hdr = mcf8390_get_8390_hdr;
+	ei_local->reg_offset = offsets;
+
+	dev->netdev_ops = &mcf8390_netdev_ops;
+	__NS8390_init(dev, 0);
+	ret = register_netdev(dev);
+	if (ret) {
+		free_irq(dev->irq, dev);
+		return ret;
+	}
+
+	netdev_info(dev, "addr=0x%08x irq=%d, Ethernet Address %pM\n",
+		addr, dev->irq, dev->dev_addr);
+	return 0;
+}
+
+static int mcf8390_probe(struct platform_device *pdev)
+{
+	struct net_device *dev;
+	struct resource *mem;
+	resource_size_t msize;
+	int ret, irq;
+
+	irq = platform_get_irq(pdev, 0);
+	if (irq < 0)
+		return -ENXIO;
+
+	mem = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+	if (mem == NULL) {
+		dev_err(&pdev->dev, "no memory address specified?\n");
+		return -ENXIO;
+	}
+	msize = resource_size(mem);
+	if (!request_mem_region(mem->start, msize, pdev->name))
+		return -EBUSY;
+
+	dev = ____alloc_ei_netdev(0);
+	if (dev == NULL) {
+		release_mem_region(mem->start, msize);
+		return -ENOMEM;
+	}
+
+	SET_NETDEV_DEV(dev, &pdev->dev);
+	platform_set_drvdata(pdev, dev);
+
+	dev->irq = irq;
+	dev->base_addr = mem->start;
+
+	ret = mcf8390_init(dev);
+	if (ret) {
+		release_mem_region(mem->start, msize);
+		free_netdev(dev);
+		return ret;
+	}
+	return 0;
+}
+
+static int mcf8390_remove(struct platform_device *pdev)
+{
+	struct net_device *dev = platform_get_drvdata(pdev);
+	struct resource *mem;
+
+	unregister_netdev(dev);
+	mem = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+	if (mem)
+		release_mem_region(mem->start, resource_size(mem));
+	free_netdev(dev);
+	return 0;
+}
+
+static struct platform_driver mcf8390_drv = {
+	.driver = {
+		.name	= "mcf8390",
+	},
+	.probe		= mcf8390_probe,
+	.remove		= mcf8390_remove,
+};
+
+module_platform_driver(mcf8390_drv);
+
+MODULE_DESCRIPTION("MCF8390 ColdFire NS8390 driver");
+MODULE_AUTHOR("Greg Ungerer <gerg@uclinux.org>");
+MODULE_LICENSE("GPL");
+MODULE_ALIAS("platform:mcf8390");

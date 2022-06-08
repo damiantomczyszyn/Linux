@@ -1,3 +1,1 @@
-ip)
-{
-	if (unlikely(!
+*smt_mask = cpu_smt_m

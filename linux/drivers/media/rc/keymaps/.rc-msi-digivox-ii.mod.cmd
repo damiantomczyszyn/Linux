@@ -1,1 +1,7 @@
-cmd_drivers/media/rc/keymaps/rc-msi-digivox-ii.mod := { echo  drivers/media/rc/keymaps/rc-msi-digivox-ii.o;  echo; } > drivers/media/rc/keymaps/rc-msi-digivox-ii.mod
+h->cmds_start + i, 0);
+
+	/* fill registers */
+	cx_write(ch->ptr1_reg, ch->fifo_start);
+	cx_write(ch->ptr2_reg, cdt);
+	cx_write(ch->cnt2_reg, (lines*16) >> 3);
+	cx_wri

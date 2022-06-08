@@ -1,2 +1,4 @@
-drivers/media/rc/keymaps/rc-hisi-tv-demo.o
+		sn);
+}
 
+static void hauppauge_eeprom(struc

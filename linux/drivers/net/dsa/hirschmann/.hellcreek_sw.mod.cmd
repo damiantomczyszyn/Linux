@@ -1,7 +1,1 @@
-IOAPIC) \
-    $(wildcard include/config/PCI) \
-    $(wildcard include/config/ACPI_WMI) \
-    $(wildcard include/config/ACPI_NUMA) \
-    $(wildcard include/config/HIBERNATION) \
-    $(wildcard include/config/ACPI_HOTPLUG_MEMORY) \
-    $(wildcard 
+cmd_drivers/net/dsa/hirschmann/hellcreek_sw.mod := { echo  drivers/net/dsa/hirschmann/hellcreek.o drivers/net/dsa/hirschmann/hellcreek_ptp.o drivers/net/dsa/hirschmann/hellcreek_hwtstamp.o;  echo; } > drivers/net/dsa/hirschmann/hellcreek_sw.mod

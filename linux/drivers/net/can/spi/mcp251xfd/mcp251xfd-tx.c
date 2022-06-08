@@ -1,129 +1,205 @@
-ated/bounds.h \
-  include/linux/mm_types.h \
-    $(wildcard include/config/HAVE_ALIGNED_STRUCT_PAGE) \
-    $(wildcard include/config/USERFAULTFD) \
-    $(wildcard include/config/HAVE_ARCH_COMPAT_MMAP_BASES) \
-    $(wildcard include/config/MEMBARRIER) \
-    $(wildcard include/config/AIO) \
-    $(wildcard include/config/MMU_NOTIFIER) \
-  include/linux/auxvec.h \
-  include/uapi/linux/auxvec.h \
-  arch/x86/include/uapi/asm/auxvec.h \
-  include/linux/kref.h \
-  include/linux/uprobes.h \
-  arch/x86/include/asm/uprobes.h \
-  arch/x86/include/asm/mmu.h \
-    $(wildcard include/config/MODIFY_LDT_SYSCALL) \
-  include/linux/page-flags.h \
-    $(wildcard include/config/ARCH_USES_PG_UNCACHED) \
-    $(wildcard include/config/MEMORY_FAILURE) \
-    $(wildcard include/config/PAGE_IDLE_FLAG) \
-    $(wildcard include/config/HUGETLB_PAGE_FREE_VMEMMAP) \
-    $(wildcard include/config/HUGETLB_PAGE_FREE_VMEMMAP_DEFAULT_ON) \
-    $(wildcard include/config/KSM) \
-  include/linux/local_lock.h \
-  include/linux/local_lock_internal.h \
-  include/linux/memory_hotplug.h \
-    $(wildcard include/config/HAVE_ARCH_NODEDATA_EXTENSION) \
-    $(wildcard include/config/ARCH_HAS_ADD_PAGES) \
-  arch/x86/include/asm/mmzone.h \
-  arch/x86/include/asm/mmzone_32.h \
-  include/linux/topology.h \
-    $(wildcard include/config/USE_PERCPU_NUMA_NODE_ID) \
-    $(wildcard include/config/SCHED_SMT) \
-    $(wildcard include/config/SCHED_CLUSTER) \
-  include/linux/arch_topology.h \
-    $(wildcard include/config/ACPI_CPPC_LIB) \
-    $(wildcard include/config/GENERIC_ARCH_TOPOLOGY) \
-  arch/x86/include/asm/topology.h \
-    $(wildcard include/config/SCHED_MC_PRIO) \
-  arch/x86/include/asm/mpspec.h \
-    $(wildcard include/config/EISA) \
-    $(wildcard include/config/X86_MPPARSE) \
-  arch/x86/include/asm/mpspec_def.h \
-  arch/x86/include/asm/x86_init.h \
-  arch/x86/include/asm/apicdef.h \
-  include/asm-generic/topology.h \
-  include/linux/xarray.h \
-    $(wildcard include/config/XARRAY_MULTI) \
-  include/linux/kconfig.h \
-  include/linux/kobject_ns.h \
-  include/linux/stat.h \
-  arch/x86/include/uapi/asm/stat.h \
-  include/uapi/linux/stat.h \
-  include/linux/mod_devicetable.h \
-  include/linux/uuid.h \
-  include/uapi/linux/uuid.h \
-  include/linux/property.h \
-  include/linux/fwnode.h \
-  include/linux/resource_ext.h \
-  include/linux/slab.h \
-    $(wildcard include/config/DEBUG_SLAB) \
-    $(wildcard include/config/FAILSLAB) \
-    $(wildcard include/config/MEMCG_KMEM) \
-    $(wildcard include/config/KASAN) \
-    $(wildcard include/config/SLAB) \
-    $(wildcard include/config/SLUB) \
-    $(wildcard include/config/SLOB) \
-  include/linux/overflow.h \
-  include/linux/percpu-refcount.h \
-  include/linux/kasan.h \
-    $(wildcard include/config/KASAN_STACK) \
-    $(wildcard include/config/KASAN_VMALLOC) \
-    $(wildcard include/config/KASAN_INLINE) \
-  include/linux/kasan-enabled.h \
-  include/linux/device.h \
-    $(wildcard include/config/GENERIC_MSI_IRQ_DOMAIN) \
-    $(wildcard include/config/GENERIC_MSI_IRQ) \
-    $(wildcard include/config/ENERGY_MODEL) \
-    $(wildcard include/config/PINCTRL) \
-    $(wildcard include/config/DMA_OPS) \
-    $(wildcard include/config/DMA_DECLARE_COHERENT) \
-    $(wildcard include/config/DMA_CMA) \
-    $(wildcard include/config/SWIOTLB) \
-    $(wildcard include/config/ARCH_HAS_SYNC_DMA_FOR_DEVICE) \
-    $(wildcard include/config/ARCH_HAS_SYNC_DMA_FOR_CPU) \
-    $(wildcard include/config/ARCH_HAS_SYNC_DMA_FOR_CPU_ALL) \
-    $(wildcard include/config/DMA_OPS_BYPASS) \
-    $(wildcard include/config/DEVTMPFS) \
-    $(wildcard include/config/SYSFS_DEPRECATED) \
-  include/linux/dev_printk.h \
-  include/linux/ratelimit.h \
-  include/linux/energy_model.h \
-  include/linux/sched/cpufreq.h \
-    $(wildcard include/config/CPU_FREQ) \
-  include/linux/sched/topology.h \
-    $(wildcard include/config/SCHED_DEBUG) \
-    $(wildcard include/config/SCHED_MC) \
-    $(wildcard include/config/CPU_FREQ_GOV_SCHEDUTIL) \
-  include/linux/sched/idle.h \
-  include/linux/sched/sd_flags.h \
-  include/linux/klist.h \
-  include/linux/pm.h \
-    $(wildcard include/config/VT_CONSOLE_SLEEP) \
-    $(wildcard include/config/PM_CLK) \
-    $(wildcard include/config/PM_GENERIC_DOMAINS) \
-  include/linux/device/bus.h \
-  include/linux/device/class.h \
-  include/linux/device/driver.h \
-  include/linux/module.h \
-    $(wildcard include/config/MODULES_TREE_LOOKUP) \
-    $(wildcard include/config/STACKTRACE_BUILD_ID) \
-    $(wildcard include/config/MODULE_SIG) \
-    $(wildcard include/config/KALLSYMS) \
-    $(wildcard include/config/BPF_EVENTS) \
-    $(wildcard include/config/DEBUG_INFO_BTF_MODULES) \
-    $(wildcard include/config/EVENT_TRACING) \
-    $(wildcard include/config/MODULE_UNLOAD) \
-    $(wildcard include/config/CONSTRUCTORS) \
-    $(wildcard include/config/FUNCTION_ERROR_INJECTION) \
-  include/linux/buildid.h \
-    $(wildcard include/config/CRASH_CORE) \
-  include/linux/kmod.h \
-  include/linux/umh.h \
-  include/linux/sysctl.h \
-    $(wildcard include/config/SYSCTL) \
-  include/uapi/linux/sysctl.h \
-  include/linux/elf.h \
-    $(wildcard include/config/ARCH_USE_GNU_PROPERTY) \
-    $(wildcard include/config/ARCH_
+// SPDX-License-Identifier: GPL-2.0
+//
+// mcp251xfd - Microchip MCP251xFD Family CAN controller driver
+//
+// Copyright (c) 2019, 2020, 2021 Pengutronix,
+//               Marc Kleine-Budde <kernel@pengutronix.de>
+//
+// Based on:
+//
+// CAN bus driver for Microchip 25XXFD CAN Controller with SPI Interface
+//
+// Copyright (c) 2019 Martin Sperl <kernel@martin.sperl.org>
+//
+
+#include <asm/unaligned.h>
+#include <linux/bitfield.h>
+
+#include "mcp251xfd.h"
+
+static inline struct
+mcp251xfd_tx_obj *mcp251xfd_get_tx_obj_next(struct mcp251xfd_tx_ring *tx_ring)
+{
+	u8 tx_head;
+
+	tx_head = mcp251xfd_get_tx_head(tx_ring);
+
+	return &tx_ring->obj[tx_head];
+}
+
+static void
+mcp251xfd_tx_obj_from_skb(const struct mcp251xfd_priv *priv,
+			  struct mcp251xfd_tx_obj *tx_obj,
+			  const struct sk_buff *skb,
+			  unsigned int seq)
+{
+	const struct canfd_frame *cfd = (struct canfd_frame *)skb->data;
+	struct mcp251xfd_hw_tx_obj_raw *hw_tx_obj;
+	union mcp251xfd_tx_obj_load_buf *load_buf;
+	u8 dlc;
+	u32 id, flags;
+	int len_sanitized = 0, len;
+
+	if (cfd->can_id & CAN_EFF_FLAG) {
+		u32 sid, eid;
+
+		sid = FIELD_GET(MCP251XFD_REG_FRAME_EFF_SID_MASK, cfd->can_id);
+		eid = FIELD_GET(MCP251XFD_REG_FRAME_EFF_EID_MASK, cfd->can_id);
+
+		id = FIELD_PREP(MCP251XFD_OBJ_ID_EID_MASK, eid) |
+			FIELD_PREP(MCP251XFD_OBJ_ID_SID_MASK, sid);
+
+		flags = MCP251XFD_OBJ_FLAGS_IDE;
+	} else {
+		id = FIELD_PREP(MCP251XFD_OBJ_ID_SID_MASK, cfd->can_id);
+		flags = 0;
+	}
+
+	/* Use the MCP2518FD mask even on the MCP2517FD. It doesn't
+	 * harm, only the lower 7 bits will be transferred into the
+	 * TEF object.
+	 */
+	flags |= FIELD_PREP(MCP251XFD_OBJ_FLAGS_SEQ_MCP2518FD_MASK, seq);
+
+	if (cfd->can_id & CAN_RTR_FLAG)
+		flags |= MCP251XFD_OBJ_FLAGS_RTR;
+	else
+		len_sanitized = canfd_sanitize_len(cfd->len);
+
+	/* CANFD */
+	if (can_is_canfd_skb(skb)) {
+		if (cfd->flags & CANFD_ESI)
+			flags |= MCP251XFD_OBJ_FLAGS_ESI;
+
+		flags |= MCP251XFD_OBJ_FLAGS_FDF;
+
+		if (cfd->flags & CANFD_BRS)
+			flags |= MCP251XFD_OBJ_FLAGS_BRS;
+
+		dlc = can_fd_len2dlc(cfd->len);
+	} else {
+		dlc = can_get_cc_dlc((struct can_frame *)cfd,
+				     priv->can.ctrlmode);
+	}
+
+	flags |= FIELD_PREP(MCP251XFD_OBJ_FLAGS_DLC_MASK, dlc);
+
+	load_buf = &tx_obj->buf;
+	if (priv->devtype_data.quirks & MCP251XFD_QUIRK_CRC_TX)
+		hw_tx_obj = &load_buf->crc.hw_tx_obj;
+	else
+		hw_tx_obj = &load_buf->nocrc.hw_tx_obj;
+
+	put_unaligned_le32(id, &hw_tx_obj->id);
+	put_unaligned_le32(flags, &hw_tx_obj->flags);
+
+	/* Copy data */
+	memcpy(hw_tx_obj->data, cfd->data, cfd->len);
+
+	/* Clear unused data at end of CAN frame */
+	if (MCP251XFD_SANITIZE_CAN && len_sanitized) {
+		int pad_len;
+
+		pad_len = len_sanitized - cfd->len;
+		if (pad_len)
+			memset(hw_tx_obj->data + cfd->len, 0x0, pad_len);
+	}
+
+	/* Number of bytes to be written into the RAM of the controller */
+	len = sizeof(hw_tx_obj->id) + sizeof(hw_tx_obj->flags);
+	if (MCP251XFD_SANITIZE_CAN)
+		len += round_up(len_sanitized, sizeof(u32));
+	else
+		len += round_up(cfd->len, sizeof(u32));
+
+	if (priv->devtype_data.quirks & MCP251XFD_QUIRK_CRC_TX) {
+		u16 crc;
+
+		mcp251xfd_spi_cmd_crc_set_len_in_ram(&load_buf->crc.cmd,
+						     len);
+		/* CRC */
+		len += sizeof(load_buf->crc.cmd);
+		crc = mcp251xfd_crc16_compute(&load_buf->crc, len);
+		put_unaligned_be16(crc, (void *)load_buf + len);
+
+		/* Total length */
+		len += sizeof(load_buf->crc.crc);
+	} else {
+		len += sizeof(load_buf->nocrc.cmd);
+	}
+
+	tx_obj->xfer[0].len = len;
+}
+
+static int mcp251xfd_tx_obj_write(const struct mcp251xfd_priv *priv,
+				  struct mcp251xfd_tx_obj *tx_obj)
+{
+	return spi_async(priv->spi, &tx_obj->msg);
+}
+
+static bool mcp251xfd_tx_busy(const struct mcp251xfd_priv *priv,
+			      struct mcp251xfd_tx_ring *tx_ring)
+{
+	if (mcp251xfd_get_tx_free(tx_ring) > 0)
+		return false;
+
+	netif_stop_queue(priv->ndev);
+
+	/* Memory barrier before checking tx_free (head and tail) */
+	smp_mb();
+
+	if (mcp251xfd_get_tx_free(tx_ring) == 0) {
+		netdev_dbg(priv->ndev,
+			   "Stopping tx-queue (tx_head=0x%08x, tx_tail=0x%08x, len=%d).\n",
+			   tx_ring->head, tx_ring->tail,
+			   tx_ring->head - tx_ring->tail);
+
+		return true;
+	}
+
+	netif_start_queue(priv->ndev);
+
+	return false;
+}
+
+netdev_tx_t mcp251xfd_start_xmit(struct sk_buff *skb,
+				 struct net_device *ndev)
+{
+	struct mcp251xfd_priv *priv = netdev_priv(ndev);
+	struct mcp251xfd_tx_ring *tx_ring = priv->tx;
+	struct mcp251xfd_tx_obj *tx_obj;
+	unsigned int frame_len;
+	u8 tx_head;
+	int err;
+
+	if (can_dropped_invalid_skb(ndev, skb))
+		return NETDEV_TX_OK;
+
+	if (mcp251xfd_tx_busy(priv, tx_ring))
+		return NETDEV_TX_BUSY;
+
+	tx_obj = mcp251xfd_get_tx_obj_next(tx_ring);
+	mcp251xfd_tx_obj_from_skb(priv, tx_obj, skb, tx_ring->head);
+
+	/* Stop queue if we occupy the complete TX FIFO */
+	tx_head = mcp251xfd_get_tx_head(tx_ring);
+	tx_ring->head++;
+	if (mcp251xfd_get_tx_free(tx_ring) == 0)
+		netif_stop_queue(ndev);
+
+	frame_len = can_skb_get_frame_len(skb);
+	err = can_put_echo_skb(skb, ndev, tx_head, frame_len);
+	if (!err)
+		netdev_sent_queue(priv->ndev, frame_len);
+
+	err = mcp251xfd_tx_obj_write(priv, tx_obj);
+	if (err)
+		goto out_err;
+
+	return NETDEV_TX_OK;
+
+ out_err:
+	netdev_err(priv->ndev, "ERROR in %s: %d\n", __func__, err);
+
+	return NETDEV_TX_OK;
+}

@@ -1,2 +1,1 @@
-qrwlock.h \
-  include/linux/r
+// SPDX-License-Identifier: G

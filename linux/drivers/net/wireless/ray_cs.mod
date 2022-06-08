@@ -1,2 +1,1 @@
- include/config/PM) \
-    $(wil
+dcard include/config/X86_P6_NOP

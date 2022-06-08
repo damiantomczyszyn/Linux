@@ -1,84 +1,56 @@
-// SPDX-License-Identifier: GPL-2.0-or-later
-/*
- * ImgTec IR Decoder setup for JVC protocol.
- *
- * Copyright 2012-2014 Imagination Technologies Ltd.
- */
+ient_tuner);
+				module_put(client_demod->dev.driver->owner);
+				i2c_unregister_device(client_demod);
+				port->i2c_client_demod = NULL;
+				goto frontend_detach;
+			}
+			port->i2c_client_tuner = client_tuner;
+			break;
+		}
+		break;
+	case CX23885_BOARD_HAUPPAUGE_QUADHD_ATSC:
+	case CX23885_BOARD_HAUPPAUGE_QUADHD_ATSC_885:
+		pr_info("%s(): board=%d port=%d\n", __func__,
+			dev->board, port->nr);
+		switch (port->nr) {
+		/* port b - Terrestrial/cable */
+		case 1:
+			/* attach frontend */
+			i2c_bus = &dev->i2c_bus[0];
+			fe0->dvb.frontend = dvb_attach(lgdt3306a_attach,
+				&hauppauge_quadHD_ATSC_a_config, &i2c_bus->i2c_adap);
+			if (fe0->dvb.frontend == NULL)
+				break;
 
-#include "img-ir-hw.h"
+			/* attach tuner */
+			memset(&si2157_config, 0, sizeof(si2157_config));
+			si2157_config.fe = fe0->dvb.frontend;
+			si2157_config.if_port = 1;
+			si2157_config.inversion = 1;
+			memset(&info, 0, sizeof(struct i2c_board_info));
+			strscpy(info.type, "si2157", I2C_NAME_SIZE);
+			info.addr = 0x60;
+			info.platform_data = &si2157_config;
+			request_module("%s", info.type);
+			client_tuner = i2c_new_client_device(&dev->i2c_bus[1].i2c_adap, &info);
+			if (!i2c_client_has_driver(client_tuner)) {
+				module_put(client_demod->dev.driver->owner);
+				i2c_unregister_device(client_demod);
+				port->i2c_client_demod = NULL;
+				goto frontend_detach;
+			}
+			if (!try_module_get(client_tuner->dev.driver->owner)) {
+				i2c_unregister_device(client_tuner);
+				module_put(client_demod->dev.driver->owner);
+				i2c_unregister_device(client_demod);
+				port->i2c_client_demod = NULL;
+				goto frontend_detach;
+			}
+			port->i2c_client_tuner = client_tuner;
 
-/* Convert JVC data to a scancode */
-static int img_ir_jvc_scancode(int len, u64 raw, u64 enabled_protocols,
-			       struct img_ir_scancode_req *request)
-{
-	unsigned int cust, data;
-
-	if (len != 16)
-		return -EINVAL;
-
-	cust = (raw >> 0) & 0xff;
-	data = (raw >> 8) & 0xff;
-
-	request->protocol = RC_PROTO_JVC;
-	request->scancode = cust << 8 | data;
-	return IMG_IR_SCANCODE;
-}
-
-/* Convert JVC scancode to JVC data filter */
-static int img_ir_jvc_filter(const struct rc_scancode_filter *in,
-			     struct img_ir_filter *out, u64 protocols)
-{
-	unsigned int cust, data;
-	unsigned int cust_m, data_m;
-
-	cust   = (in->data >> 8) & 0xff;
-	cust_m = (in->mask >> 8) & 0xff;
-	data   = (in->data >> 0) & 0xff;
-	data_m = (in->mask >> 0) & 0xff;
-
-	out->data = cust   | data << 8;
-	out->mask = cust_m | data_m << 8;
-
-	return 0;
-}
-
-/*
- * JVC decoder
- * See also http://www.sbprojects.com/knowledge/ir/jvc.php
- *          http://support.jvc.com/consumer/support/documents/RemoteCodes.pdf
- */
-struct img_ir_decoder img_ir_jvc = {
-	.type = RC_PROTO_BIT_JVC,
-	.control = {
-		.decoden = 1,
-		.code_type = IMG_IR_CODETYPE_PULSEDIST,
-	},
-	/* main timings */
-	.unit = 527500, /* 527.5 us */
-	.timings = {
-		/* leader symbol */
-		.ldr = {
-			.pulse = { 16	/* 8.44 ms */ },
-			.space = { 8	/* 4.22 ms */ },
-		},
-		/* 0 symbol */
-		.s00 = {
-			.pulse = { 1	/* 527.5 us +-60 us */ },
-			.space = { 1	/* 527.5 us */ },
-		},
-		/* 1 symbol */
-		.s01 = {
-			.pulse = { 1	/* 527.5 us +-60 us */ },
-			.space = { 3	/* 1.5825 ms +-40 us */ },
-		},
-		/* free time */
-		.ft = {
-			.minlen = 16,
-			.maxlen = 16,
-			.ft_min = 10,	/* 5.275 ms */
-		},
-	},
-	/* scancode logic */
-	.scancode = img_ir_jvc_scancode,
-	.filter = img_ir_jvc_filter,
-};
+			/* we only attach tuner for analog on the 888 version */
+			if (dev->board == CX23885_BOARD_HAUPPAUGE_QUADHD_ATSC) {
+				pr_info("%s(): QUADHD_ATSC analog setup\n",
+					__func__);
+				dev->ts1.analog_fe.tuner_priv = client_tuner;
+				memcpy(&dev->ts1.a

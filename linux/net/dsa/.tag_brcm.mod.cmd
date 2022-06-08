@@ -1,1 +1,3 @@
-k"àW=2²ãT"b~Eo.ž—;®6Qä"ù9,^î£ÚG¡ýYPœŒ·Qz•Ã;0P_<2§,|Ô0Ã–F}Î¼C¬±ÀÖˆ™jôÅqOÄ•‘´;bM
+// SPDX-License-Identifier: GPL-2.0-or-later
+/*
+ *  Driver for the Conexant CX23885 PCIe

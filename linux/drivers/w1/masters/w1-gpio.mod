@@ -1,1 +1,1 @@
- $(wildcard include/config/SLO
+cx23885-cards.c               

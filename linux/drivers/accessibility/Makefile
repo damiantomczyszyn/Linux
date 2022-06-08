@@ -1,3 +1,2 @@
-$(wildcard include/config/DEBUG_PLIST) \
-  include/linux/hrtimer.h \
-    $(wildcard include/conf
+n interrupt which signals that the previous buffer has been
+ * DMAed successfully and that it ca

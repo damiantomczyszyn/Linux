@@ -1,7 +1,1 @@
--3level_types.h \
-  include/asm-generic/pgtable-nop4d.h \
-  include/asm-generic/pgtable-nopud.h \
-  arch/x86/include/asm/nospec-branch.h \
-  include/linux/static_key.h \
-  include/linux/jump_label.h \
-    $(wildcard include/config/H
+cmd_drivers/net/can/ifi_canfd/ifi_canfd.ko := ld -r -m elf_i386 --build-id=sha1  -T scripts/module.lds -o drivers/net/can/ifi_canfd/ifi_canfd.ko drivers/net/can/ifi_canfd/ifi_canfd.o drivers/net/can/ifi_canfd/ifi_canfd.mod.o;  true

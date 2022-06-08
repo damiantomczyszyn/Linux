@@ -1,3 +1,2 @@
-nux/pid.h \
-  include/linux/rculist.h \
-    $(wildcard include/config/PROV
+drivers/net/can/c_can/c_can_ethtool.o drivers/net/can/c_can/c_can_main.o
+

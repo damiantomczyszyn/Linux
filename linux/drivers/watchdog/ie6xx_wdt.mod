@@ -1,1 +1,2 @@
-nclude/config/GENERIC_ATOMIC64
+  = 0x61,
+	.if_khz           =

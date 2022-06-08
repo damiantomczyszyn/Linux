@@ -1,8 +1,7 @@
-NTRIES);
-	seq_printf(m, " indirect dependencies:         %11lu\n",
-			sum_forward_deps);
+// SPDX-License-Identifier: GPL-2.0-only
 
-	/*
-	 * Total number of dependencies:
-	 *
-	 * All irq-safe locks may n
+#include <linux/bug.h>
+#include <linux/export.h>
+#include <linux/irqflags.h>
+
+noinstr void warn_bogus_irq_restore(void

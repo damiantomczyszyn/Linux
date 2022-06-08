@@ -1,31 +1,25 @@
-#include <linux/module.h>
-#define INCLUDE_VERMAGIC
-#include <linux/build-salt.h>
-#include <linux/elfnote-lto.h>
-#include <linux/vermagic.h>
-#include <linux/compiler.h>
+/* SPDX-License-Identifier: GPL-2.0-or-later */
+/*
+ * netup-eeprom.h
+ *
+ * 24LC02 EEPROM driver in conjunction with NetUP Dual DVB-S2 CI card
+ *
+ * Copyright (C) 2009 NetUP Inc.
+ * Copyright (C) 2009 Abylay Ospan <aospan@netup.ru>
+ */
 
-BUILD_SALT;
-BUILD_LTO_INFO;
+#ifndef NETUP_EEPROM_H
+#define NETUP_EEPROM_H
 
-MODULE_INFO(vermagic, VERMAGIC_STRING);
-MODULE_INFO(name, KBUILD_MODNAME);
-
-__visible struct module __this_module
-__section(".gnu.linkonce.this_module") = {
-	.name = KBUILD_MODNAME,
-	.init = init_module,
-#ifdef CONFIG_MODULE_UNLOAD
-	.exit = cleanup_module,
-#endif
-	.arch = MODULE_ARCH_INIT,
+struct netup_port_info {
+	u8 mac[6];/* card MAC address */
 };
 
-MODULE_INFO(intree, "Y");
+struct netup_card_info {
+	struct netup_port_info port[2];/* ports - 1,2 */
+	u8 rev;/* card revision */
+};
 
-#ifdef CONFIG_RETPOLINE
-MODULE_INFO(retpoline, "Y");
-#endif
-
-MODULE_INFO(depends, "rc-core");
-
+extern int netup_eeprom_read(struct i2c_adapter *i2c_adap, u8 addr);
+extern int netup_eeprom_write(struct i2c_adapter *i2c_adap, u8 addr, u8 data);
+extern void ne

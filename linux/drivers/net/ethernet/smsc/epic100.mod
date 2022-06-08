@@ -1,1 +1,1 @@
-$(wildcard include/config/TRACE_BRANC
+.duty_cycle = 25,      /* 25 %   - RC

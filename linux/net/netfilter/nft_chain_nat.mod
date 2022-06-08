@@ -1,2 +1,1 @@
-ount_matching_names(class);
-	cl
+ct tda10071_platform_data tda10

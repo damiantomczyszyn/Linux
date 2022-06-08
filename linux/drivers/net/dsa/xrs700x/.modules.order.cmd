@@ -1,6 +1,1 @@
-clude/config/NO_GENERIC_PCI_IOPORT_MAP) \
-    $(wildcard include/config/GENERIC_PCI_IOMAP) \
-  include/asm-generic/io.h \
-    $(wildcard include/config/GENERIC_IOMAP) \
-    $(wildcard include/config/GENERIC_IOREMAP) \
-    $(wildcard include/config/VI
+cmd_drivers/net/dsa/xrs700x/modules.order := {   echo drivers/net/dsa/xrs700x/xrs700x.ko;   echo drivers/net/dsa/xrs700x/xrs700x_i2c.ko;   echo drivers/net/dsa/xrs700x/xrs700x_mdio.ko; :; } | awk '!x[$$0]++' - > drivers/net/dsa/xrs700x/modules.order

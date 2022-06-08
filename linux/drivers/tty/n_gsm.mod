@@ -1,1 +1,1 @@
-g/CC_HAS_ASM_GOTO_TIE
+drivers/media/pci/cx1

@@ -1,3 +1,3 @@
-nclude/config/GENERIC_ATOMIC64) \
-  include/linux/atomic/atomic-long.h \
-  i
+// SPDX-License-Identifier: GPL-2.0-or-later
+/*
+ *  Driver for the Conexant 

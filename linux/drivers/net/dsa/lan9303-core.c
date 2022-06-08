@@ -1,885 +1,1402 @@
-e/config/ACPI_APEI_GHES) \
-    $(wildcard include/config/INTEL_TXT) \
-  arch/x86/include/generated/asm/kmap_size.h \
-  include/asm-generic/kmap_size.h \
-    $(wildcard include/config/DEBUG_KMAP_LOCAL) \
-  include/asm-generic/fixmap.h \
-  arch/x86/include/asm/irq_vectors.h \
-    $(wildcard include/config/HAVE_KVM) \
-    $(wildcard include/config/HYPERV) \
-    $(wildcard include/config/PCI_MSI) \
-  arch/x86/include/asm/cpu_entry_area.h \
-  arch/x86/include/asm/intel_ds.h \
-  arch/x86/include/asm/pgtable_areas.h \
-  arch/x86/include/asm/pgtable_32_areas.h \
-  include/uapi/linux/elf.h \
-  include/uapi/linux/elf-em.h \
-  include/linux/kobject.h \
-    $(wildcard include/config/UEVENT_HELPER) \
-    $(wildcard include/config/DEBUG_KOBJECT_RELEASE) \
-  include/linux/sysfs.h \
-  include/linux/kernfs.h \
-    $(wildcard include/config/KERNFS) \
-  include/linux/idr.h \
-  include/linux/radix-tree.h \
-  include/linux/xarray.h \
-    $(wildcard include/config/XARRAY_MULTI) \
-  include/linux/kconfig.h \
-  include/linux/kobject_ns.h \
-  include/linux/moduleparam.h \
-    $(wildcard include/config/ALPHA) \
-    $(wildcard include/config/IA64) \
-    $(wildcard include/config/PPC64) \
-  include/linux/rbtree_latch.h \
-  include/linux/error-injection.h \
-  include/asm-generic/error-injection.h \
-  include/linux/cfi.h \
-    $(wildcard include/config/CFI_CLANG_SHADOW) \
-  arch/x86/include/asm/module.h \
-    $(wildcard include/config/UNWINDER_ORC) \
-  include/asm-generic/module.h \
-    $(wildcard include/config/HAVE_MOD_ARCH_SPECIFIC) \
-    $(wildcard include/config/MODULES_USE_ELF_REL) \
-    $(wildcard include/config/MODULES_USE_ELF_RELA) \
-  arch/x86/include/asm/orc_types.h \
-  include/linux/sched.h \
-    $(wildcard include/config/VIRT_CPU_ACCOUNTING_NATIVE) \
-    $(wildcard include/config/SCHED_INFO) \
-    $(wildcard include/config/SCHEDSTATS) \
-    $(wildcard include/config/SCHED_CORE) \
-    $(wildcard include/config/FAIR_GROUP_SCHED) \
-    $(wildcard include/config/RT_GROUP_SCHED) \
-    $(wildcard include/config/RT_MUTEXES) \
-    $(wildcard include/config/UCLAMP_TASK) \
-    $(wildcard include/config/UCLAMP_BUCKETS_COUNT) \
-    $(wildcard include/config/CGROUP_SCHED) \
-    $(wildcard include/config/BLK_DEV_IO_TRACE) \
-    $(wildcard include/config/PSI) \
-    $(wildcard include/config/COMPAT_BRK) \
-    $(wildcard include/config/CGROUPS) \
-    $(wildcard include/config/BLK_CGROUP) \
-    $(wildcard include/config/PAGE_OWNER) \
-    $(wildcard include/config/EVENTFD) \
-    $(wildcard include/config/ARCH_HAS_SCALED_CPUTIME) \
-    $(wildcard include/config/VIRT_CPU_ACCOUNTING_GEN) \
-    $(wildcard include/config/POSIX_CPUTIMERS) \
-    $(wildcard include/config/POSIX_CPU_TIMERS_TASK_WORK) \
-    $(wildcard include/config/KEYS) \
-    $(wildcard include/config/SYSVIPC) \
-    $(wildcard include/config/DETECT_HUNG_TASK) \
-    $(wildcard include/config/IO_URING) \
-    $(wildcard include/config/AUDIT) \
-    $(wildcard include/config/AUDITSYSCALL) \
-    $(wildcard include/config/UBSAN) \
-    $(wildcard include/config/UBSAN_TRAP) \
-    $(wildcard include/config/TASK_XACCT) \
-    $(wildcard include/config/CPUSETS) \
-    $(wildcard include/config/X86_CPU_RESCTRL) \
-    $(wildcard include/config/FUTEX) \
-    $(wildcard include/config/PERF_EVENTS) \
-    $(wildcard include/config/RSEQ) \
-    $(wildcard include/config/TASK_DELAY_ACCT) \
-    $(wildcard include/config/FAULT_INJECTION) \
-    $(wildcard include/config/LATENCYTOP) \
-    $(wildcard include/config/KUNIT) \
-    $(wildcard include/config/FUNCTION_GRAPH_TRACER) \
-    $(wildcard include/config/BCACHE) \
-    $(wildcard include/config/VMAP_STACK) \
-    $(wildcard include/config/SECURITY) \
-    $(wildcard include/config/BPF_SYSCALL) \
-    $(wildcard include/config/GCC_PLUGIN_STACKLEAK) \
-    $(wildcard include/config/X86_MCE) \
-    $(wildcard include/config/KRETPROBES) \
-    $(wildcard include/config/RETHOOK) \
-    $(wildcard include/config/ARCH_HAS_PARANOID_L1D_FLUSH) \
-    $(wildcard include/config/ARCH_TASK_STRUCT_ON_STACK) \
-    $(wildcard include/config/DEBUG_RSEQ) \
-  include/uapi/linux/sched.h \
-  include/linux/pid.h \
-  include/linux/rculist.h \
-    $(wildcard include/config/PROVE_RCU_LIST) \
-  include/linux/sem.h \
-  include/uapi/linux/sem.h \
-  include/linux/ipc.h \
-  include/linux/rhashtable-types.h \
-  include/uapi/linux/ipc.h \
-  arch/x86/include/generated/uapi/asm/ipcbuf.h \
-  include/uapi/asm-generic/ipcbuf.h \
-  arch/x86/include/uapi/asm/sembuf.h \
-  include/linux/shm.h \
-  include/uapi/linux/shm.h \
-  include/uapi/asm-generic/hugetlb_encode.h \
-  arch/x86/include/uapi/asm/shmbuf.h \
-  include/uapi/asm-generic/shmbuf.h \
-  arch/x86/include/asm/shmparam.h \
-  include/linux/plist.h \
-    $(wildcard include/config/DEBUG_PLIST) \
-  include/linux/hrtimer.h \
-    $(wildcard include/config/HIGH_RES_TIMERS) \
-    $(wildcard include/config/TIME_LOW_RES) \
-    $(wildcard include/config/TIMERFD) \
-  include/linux/hrtimer_defs.h \
-  include/linux/timerqueue.h \
-  include/linux/seccomp.h \
-    $(wildcard include/config/SECCOMP) \
-    $(wildcard include/config/HAVE_ARCH_SECCOMP_FILTER) \
-    $(wildcard include/config/SECCOMP_FILTER) \
-    $(wildcard include/config/CHECKPOINT_RESTORE) \
-    $(wildcard include/config/SECCOMP_CACHE_DEBUG) \
-  include/uapi/linux/seccomp.h \
-  arch/x86/include/asm/seccomp.h \
-  arch/x86/include/asm/unistd.h \
-  arch/x86/include/uapi/asm/unistd.h \
-  arch/x86/include/generated/uapi/asm/unistd_32.h \
-  include/asm-generic/seccomp.h \
-  include/uapi/linux/unistd.h \
-  include/linux/resource.h \
-  include/uapi/linux/resource.h \
-  arch/x86/include/generated/uapi/asm/resource.h \
-  include/asm-generic/resource.h \
-  include/uapi/asm-generic/resource.h \
-  include/linux/latencytop.h \
-  include/linux/sched/prio.h \
-  include/linux/sched/types.h \
-  include/linux/signal_types.h \
-    $(wildcard include/config/OLD_SIGACTION) \
-  include/uapi/linux/signal.h \
-  arch/x86/include/asm/signal.h \
-  arch/x86/include/uapi/asm/signal.h \
-  include/uapi/asm-generic/signal-defs.h \
-  arch/x86/include/uapi/asm/siginfo.h \
-  include/uapi/asm-generic/siginfo.h \
-  include/linux/syscall_user_dispatch.h \
-  include/linux/task_io_accounting.h \
-    $(wildcard include/config/TASK_IO_ACCOUNTING) \
-  include/linux/posix-timers.h \
-  include/linux/alarmtimer.h \
-    $(wildcard include/config/RTC_CLASS) \
-  include/uapi/linux/rseq.h \
-  include/linux/kcsan.h \
-  include/linux/delay.h \
-  arch/x86/include/asm/delay.h \
-  include/asm-generic/delay.h \
-  include/linux/slab.h \
-    $(wildcard include/config/DEBUG_SLAB) \
-    $(wildcard include/config/FAILSLAB) \
-    $(wildcard include/config/MEMCG_KMEM) \
-    $(wildcard include/config/KASAN) \
-    $(wildcard include/config/SLAB) \
-    $(wildcard include/config/SLUB) \
-    $(wildcard include/config/SLOB) \
-  include/linux/overflow.h \
-  include/linux/percpu-refcount.h \
-  include/linux/kasan.h \
-    $(wildcard include/config/KASAN_STACK) \
-    $(wildcard include/config/KASAN_VMALLOC) \
-    $(wildcard include/config/KASAN_INLINE) \
-  include/linux/kasan-enabled.h \
-  include/linux/videodev2.h \
-  include/uapi/linux/videodev2.h \
-    $(wildcard include/config/VIDEO_ADV_DEBUG) \
-  include/uapi/linux/v4l2-common.h \
-  include/uapi/linux/v4l2-controls.h \
-  include/linux/i2c.h \
-    $(wildcard include/config/I2C) \
-    $(wildcard include/config/I2C_SLAVE) \
-    $(wildcard include/config/I2C_BOARDINFO) \
-    $(wildcard include/config/I2C_MUX) \
-    $(wildcard include/config/OF) \
-    $(wildcard include/config/ACPI) \
-  include/linux/acpi.h \
-    $(wildcard include/config/ACPI_DEBUGGER) \
-    $(wildcard include/config/ACPI_TABLE_LIB) \
-    $(wildcard include/config/LOONGARCH) \
-    $(wildcard include/config/ARM64) \
-    $(wildcard include/config/ACPI_PROCESSOR_CSTATE) \
-    $(wildcard include/config/ACPI_HOTPLUG_CPU) \
-    $(wildcard include/config/ACPI_HOTPLUG_IOAPIC) \
-    $(wildcard include/config/PCI) \
-    $(wildcard include/config/ACPI_WMI) \
-    $(wildcard include/config/ACPI_NUMA) \
-    $(wildcard include/config/HIBERNATION) \
-    $(wildcard include/config/ACPI_HOTPLUG_MEMORY) \
-    $(wildcard include/config/ACPI_CONTAINER) \
-    $(wildcard include/config/ACPI_GTDT) \
-    $(wildcard include/config/PM) \
-    $(wildcard include/config/GPIOLIB) \
-    $(wildcard include/config/ACPI_TABLE_UPGRADE) \
-    $(wildcard include/config/ACPI_WATCHDOG) \
-    $(wildcard include/config/ACPI_SPCR_TABLE) \
-    $(wildcard include/config/ACPI_GENERIC_GSI) \
-    $(wildcard include/config/ACPI_LPIT) \
-    $(wildcard include/config/ACPI_PPTT) \
-    $(wildcard include/config/ACPI_PCC) \
-  include/linux/ioport.h \
-  include/linux/irqdomain.h \
-    $(wildcard include/config/IRQ_DOMAIN_HIERARCHY) \
-    $(wildcard include/config/GENERIC_IRQ_DEBUGFS) \
-    $(wildcard include/config/IRQ_DOMAIN) \
-    $(wildcard include/config/IRQ_DOMAIN_NOMAP) \
-  include/linux/irqhandler.h \
-  include/linux/of.h \
-    $(wildcard include/config/OF_DYNAMIC) \
-    $(wildcard include/config/SPARC) \
-    $(wildcard include/config/OF_PROMTREE) \
-    $(wildcard include/config/OF_KOBJ) \
-    $(wildcard include/config/OF_NUMA) \
-    $(wildcard include/config/OF_OVERLAY) \
-  include/linux/mod_devicetable.h \
-  include/linux/uuid.h \
-  include/uapi/linux/uuid.h \
-  include/linux/property.h \
-  include/linux/fwnode.h \
-  include/linux/resource_ext.h \
-  include/linux/device.h \
-    $(wildcard include/config/GENERIC_MSI_IRQ_DOMAIN) \
-    $(wildcard include/config/GENERIC_MSI_IRQ) \
-    $(wildcard include/config/ENERGY_MODEL) \
-    $(wildcard include/config/PINCTRL) \
-    $(wildcard include/config/DMA_OPS) \
-    $(wildcard include/config/DMA_DECLARE_COHERENT) \
-    $(wildcard include/config/DMA_CMA) \
-    $(wildcard include/config/SWIOTLB) \
-    $(wildcard include/config/ARCH_HAS_SYNC_DMA_FOR_DEVICE) \
-    $(wildcard include/config/ARCH_HAS_SYNC_DMA_FOR_CPU) \
-    $(wildcard include/config/ARCH_HAS_SYNC_DMA_FOR_CPU_ALL) \
-    $(wildcard include/config/DMA_OPS_BYPASS) \
-    $(wildcard include/config/DEVTMPFS) \
-    $(wildcard include/config/SYSFS_DEPRECATED) \
-  include/linux/dev_printk.h \
-  include/linux/ratelimit.h \
-  include/linux/energy_model.h \
-  include/linux/sched/cpufreq.h \
-    $(wildcard include/config/CPU_FREQ) \
-  include/linux/sched/topology.h \
-    $(wildcard include/config/SCHED_DEBUG) \
-    $(wildcard include/config/SCHED_MC) \
-    $(wildcard include/config/CPU_FREQ_GOV_SCHEDUTIL) \
-  include/linux/sched/idle.h \
-  include/linux/sched/sd_flags.h \
-  include/linux/klist.h \
-  include/linux/pm.h \
-    $(wildcard include/config/VT_CONSOLE_SLEEP) \
-    $(wildcard include/config/PM_CLK) \
-    $(wildcard include/config/PM_GENERIC_DOMAINS) \
-  include/linux/device/bus.h \
-  include/linux/device/class.h \
-  include/linux/device/driver.h \
-  arch/x86/include/asm/device.h \
-  include/linux/pm_wakeup.h \
-  include/acpi/acpi.h \
-  include/acpi/platform/acenv.h \
-  include/acpi/platform/acgcc.h \
-  include/acpi/platform/aclinux.h \
-    $(wildcard include/config/ACPI_REDUCED_HARDWARE_ONLY) \
-    $(wildcard include/config/ACPI_DEBUG) \
-  include/linux/ctype.h \
-  arch/x86/include/asm/acenv.h \
-  include/acpi/acnames.h \
-  include/acpi/actypes.h \
-  include/acpi/acexcep.h \
-  include/acpi/actbl.h \
-  include/acpi/actbl1.h \
-  include/acpi/actbl2.h \
-  include/acpi/actbl3.h \
-  include/acpi/acrestyp.h \
-  include/acpi/platform/acenvex.h \
-  include/acpi/platform/aclinuxex.h \
-  include/acpi/platform/acgccex.h \
-  include/acpi/acoutput.h \
-  include/acpi/acpiosxf.h \
-  include/acpi/acpixf.h \
-  include/acpi/acconfig.h \
-  include/acpi/acbuffer.h \
-  include/linux/dynamic_debug.h \
-  include/acpi/acpi_bus.h \
-    $(wildcard include/config/X86_ANDROID_TABLETS) \
-    $(wildcard include/config/ACPI_SYSTEM_POWER_STATES_SUPPORT) \
-    $(wildcard include/config/ACPI_SLEEP) \
-  include/acpi/acpi_drivers.h \
-    $(wildcard include/config/ACPI_DOCK) \
-  include/acpi/acpi_numa.h \
-    $(wildcard include/config/ACPI_HMAT) \
-  include/acpi/acpi_io.h \
-  include/linux/io.h \
-    $(wildcard include/config/HAS_IOPORT_MAP) \
-  arch/x86/include/asm/io.h \
-    $(wildcard include/config/MTRR) \
-    $(wildcard include/config/X86_PAT) \
-  arch/x86/include/generated/asm/early_ioremap.h \
-  include/asm-generic/early_ioremap.h \
-    $(wildcard include/config/GENERIC_EARLY_IOREMAP) \
-  include/asm-generic/iomap.h \
-  include/asm-generic/pci_iomap.h \
-    $(wildcard include/config/NO_GENERIC_PCI_IOPORT_MAP) \
-    $(wildcard include/config/GENERIC_PCI_IOMAP) \
-  include/asm-generic/io.h \
-    $(wildcard include/config/GENERIC_IOMAP) \
-    $(wildcard include/config/GENERIC_IOREMAP) \
-    $(wildcard include/config/VIRT_TO_BUS) \
-    $(wildcard include/config/GENERIC_DEVMEM_IS_ALLOWED) \
-  include/linux/logic_pio.h \
-    $(wildcard include/config/INDIRECT_PIO) \
-  include/linux/vmalloc.h \
-    $(wildcard include/config/HAVE_ARCH_HUGE_VMALLOC) \
-  arch/x86/include/asm/vmalloc.h \
-    $(wildcard include/config/HAVE_ARCH_HUGE_VMAP) \
-  arch/x86/include/asm/acpi.h \
-    $(wildcard include/config/ACPI_APEI) \
-  include/acpi/pdc_intel.h \
-  arch/x86/include/asm/numa.h \
-    $(wildcard include/config/NUMA_EMU) \
-  arch/x86/include/asm/numa_32.h \
-  include/linux/regulator/consumer.h \
-    $(wildcard include/config/REGULATOR) \
-  include/linux/suspend.h \
-    $(wildcard include/config/VT) \
-    $(wildcard include/config/SUSPEND) \
-    $(wildcard include/config/HIBERNATION_SNAPSHOT_DEV) \
-    $(wildcard include/config/PM_SLEEP_DEBUG) \
-    $(wildcard include/config/PM_AUTOSLEEP) \
-  include/linux/swap.h \
-    $(wildcard include/config/DEVICE_PRIVATE) \
-    $(wildcard include/config/MIGRATION) \
-    $(wildcard include/config/FRONTSWAP) \
-    $(wildcard include/config/THP_SWAP) \
-    $(wildcard include/config/MEMCG_SWAP) \
-  include/linux/memcontrol.h \
-    $(wildcard include/config/CGROUP_WRITEBACK) \
-  include/linux/cgroup.h \
-    $(wildcard include/config/CGROUP_CPUACCT) \
-    $(wildcard include/config/SOCK_CGROUP_DATA) \
-    $(wildcard include/config/CGROUP_DATA) \
-    $(wildcard include/config/CGROUP_BPF) \
-  include/uapi/linux/cgroupstats.h \
-  include/uapi/linux/taskstats.h \
-  include/linux/fs.h \
-    $(wildcard include/config/READ_ONLY_THP_FOR_FS) \
-    $(wildcard include/config/FS_POSIX_ACL) \
-    $(wildcard include/config/IMA) \
-    $(wildcard include/config/FILE_LOCKING) \
-    $(wildcard include/config/FSNOTIFY) \
-    $(wildcard include/config/FS_ENCRYPTION) \
-    $(wildcard include/config/FS_VERITY) \
-    $(wildcard include/config/EPOLL) \
-    $(wildcard include/config/UNICODE) \
-    $(wildcard include/config/QUOTA) \
-    $(wildcard include/config/FS_DAX) \
-    $(wildcard include/config/BLOCK) \
-  include/linux/wait_bit.h \
-  include/linux/kdev_t.h \
-  include/uapi/linux/kdev_t.h \
-  include/linux/dcache.h \
-  include/linux/rculist_bl.h \
-  include/linux/list_bl.h \
-  include/linux/bit_spinlock.h \
-  include/linux/lockref.h \
-    $(wildcard include/config/ARCH_USE_CMPXCHG_LOCKREF) \
-  include/linux/stringhash.h \
-    $(wildcard include/config/DCACHE_WORD_ACCESS) \
-  include/linux/hash.h \
-    $(wildcard include/config/HAVE_ARCH_HASH) \
-  include/linux/path.h \
-  include/linux/list_lru.h \
-  include/linux/shrinker.h \
-  include/linux/capability.h \
-  include/uapi/linux/capability.h \
-  include/linux/semaphore.h \
-  include/linux/fcntl.h \
-    $(wildcard include/config/ARCH_32BIT_OFF_T) \
-  include/uapi/linux/fcntl.h \
-  arch/x86/include/generated/uapi/asm/fcntl.h \
-  include/uapi/asm-generic/fcntl.h \
-  include/uapi/linux/openat2.h \
-  include/linux/migrate_mode.h \
-  include/linux/percpu-rwsem.h \
-  include/linux/rcuwait.h \
-  include/linux/sched/signal.h \
-    $(wildcard include/config/SCHED_AUTOGROUP) \
-    $(wildcard include/config/BSD_PROCESS_ACCT) \
-    $(wildcard include/config/TASKSTATS) \
-    $(wildcard include/config/STACK_GROWSUP) \
-  include/linux/signal.h \
-    $(wildcard include/config/DYNAMIC_SIGFRAME) \
-  include/linux/sched/jobctl.h \
-  include/linux/sched/task.h \
-    $(wildcard include/config/HAVE_EXIT_THREAD) \
-    $(wildcard include/config/ARCH_WANTS_DYNAMIC_TASK_STRUCT) \
-    $(wildcard include/config/HAVE_ARCH_THREAD_STRUCT_WHITELIST) \
-  include/linux/uaccess.h \
-  include/linux/fault-inject-usercopy.h \
-    $(wildcard include/config/FAULT_INJECTION_USERCOPY) \
-  arch/x86/include/asm/uaccess.h \
-    $(wildcard include/config/CC_HAS_ASM_GOTO_OUTPUT) \
-    $(wildcard include/config/CC_HAS_ASM_GOTO_TIED_OUTPUT) \
-    $(wildcard include/config/ARCH_HAS_COPY_MC) \
-    $(wildcard include/config/X86_INTEL_USERCOPY) \
-  arch/x86/include/asm/smap.h \
-  arch/x86/include/asm/extable.h \
-    $(wildcard include/config/BPF_JIT) \
-  include/asm-generic/access_ok.h \
-    $(wildcard include/config/ALTERNATE_USER_ADDRESS_SPACE) \
-  arch/x86/include/asm/uaccess_32.h \
-  include/linux/cred.h \
-    $(wildcard include/config/DEBUG_CREDENTIALS) \
-  include/linux/key.h \
-    $(wildcard include/config/KEY_NOTIFICATIONS) \
-    $(wildcard include/config/NET) \
-  include/linux/assoc_array.h \
-    $(wildcard include/config/ASSOCIATIVE_ARRAY) \
-  include/linux/sched/user.h \
-    $(wildcard include/config/WATCH_QUEUE) \
-  include/linux/percpu_counter.h \
-  include/linux/rcu_sync.h \
-  include/linux/delayed_call.h \
-  include/linux/errseq.h \
-  include/linux/ioprio.h \
-  include/linux/sched/rt.h \
-  include/linux/iocontext.h \
-    $(wildcard include/config/BLK_ICQ) \
-  include/uapi/linux/ioprio.h \
-  include/linux/fs_types.h \
-  include/linux/mount.h \
-  include/linux/mnt_idmapping.h \
-  include/uapi/linux/fs.h \
-  include/linux/quota.h \
-    $(wildcard include/config/QUOTA_NETLINK_INTERFACE) \
-  include/uapi/linux/dqblk_xfs.h \
-  include/linux/dqblk_v1.h \
-  include/linux/dqblk_v2.h \
-  include/linux/dqblk_qtree.h \
-  include/linux/projid.h \
-  include/uapi/linux/quota.h \
-  include/linux/nfs_fs_i.h \
-  include/linux/seq_file.h \
-  include/linux/string_helpers.h \
-  include/linux/ns_common.h \
-  include/linux/nsproxy.h \
-  include/linux/user_namespace.h \
-    $(wildcard include/config/INOTIFY_USER) \
-    $(wildcard include/config/FANOTIFY) \
-    $(wildcard include/config/PERSISTENT_KEYRINGS) \
-  include/linux/kernel_stat.h \
-  include/linux/interrupt.h \
-    $(wildcard include/config/IRQ_FORCED_THREADING) \
-    $(wildcard include/config/GENERIC_IRQ_PROBE) \
-    $(wildcard include/config/IRQ_TIMINGS) \
-  include/linux/irqreturn.h \
-  include/linux/irqnr.h \
-  include/uapi/linux/irqnr.h \
-  include/linux/hardirq.h \
-  include/linux/context_tracking_state.h \
-    $(wildcard include/config/CONTEXT_TRACKING) \
-  include/linux/ftrace_irq.h \
-    $(wildcard include/config/HWLAT_TRACER) \
-    $(wildcard include/config/OSNOISE_TRACER) \
-  include/linux/vtime.h \
-    $(wildcard include/config/VIRT_CPU_ACCOUNTING) \
-    $(wildcard include/config/IRQ_TIME_ACCOUNTING) \
-  arch/x86/include/asm/hardirq.h \
-    $(wildcard include/config/KVM_INTEL) \
-    $(wildcard include/config/X86_THERMAL_VECTOR) \
-    $(wildcard include/config/X86_MCE_THRESHOLD) \
-    $(wildcard include/config/X86_MCE_AMD) \
-    $(wildcard include/config/X86_HV_CALLBACK_VECTOR) \
-  arch/x86/include/asm/irq.h \
-  arch/x86/include/asm/sections.h \
-  include/asm-generic/sections.h \
-    $(wildcard include/config/HAVE_FUNCTION_DESCRIPTORS) \
-  include/linux/cgroup-defs.h \
-    $(wildcard include/config/CGROUP_NET_CLASSID) \
-    $(wildcard include/config/CGROUP_NET_PRIO) \
-  include/linux/u64_stats_sync.h \
-  include/linux/bpf-cgroup-defs.h \
-  include/linux/psi_types.h \
-  include/linux/kthread.h \
-  include/linux/cgroup_subsys.h \
-    $(wildcard include/config/CGROUP_DEVICE) \
-    $(wildcard include/config/CGROUP_FREEZER) \
-    $(wildcard include/config/CGROUP_PERF) \
-    $(wildcard include/config/CGROUP_HUGETLB) \
-    $(wildcard include/config/CGROUP_PIDS) \
-    $(wildcard include/config/CGROUP_RDMA) \
-    $(wildcard include/config/CGROUP_MISC) \
-    $(wildcard include/config/CGROUP_DEBUG) \
-  include/linux/vm_event_item.h \
-    $(wildcard include/config/HAVE_ARCH_TRANSPARENT_HUGEPAGE_PUD) \
-    $(wildcard include/config/MEMORY_BALLOON) \
-    $(wildcard include/config/BALLOON_COMPACTION) \
-    $(wildcard include/config/DEBUG_TLBFLUSH) \
-    $(wildcard include/config/DEBUG_VM_VMACACHE) \
-  include/linux/page_counter.h \
-  include/linux/vmpressure.h \
-  include/linux/eventfd.h \
-  include/linux/mm.h \
-    $(wildcard include/config/HAVE_ARCH_MMAP_RND_BITS) \
-    $(wildcard include/config/HAVE_ARCH_MMAP_RND_COMPAT_BITS) \
-    $(wildcard include/config/ARCH_USES_HIGH_VMA_FLAGS) \
-    $(wildcard include/config/ARCH_HAS_PKEYS) \
-    $(wildcard include/config/PPC) \
-    $(wildcard include/config/PARISC) \
-    $(wildcard include/config/SPARC64) \
-    $(wildcard include/config/ARM64_MTE) \
-    $(wildcard include/config/HAVE_ARCH_USERFAULTFD_MINOR) \
-    $(wildcard include/config/SHMEM) \
-    $(wildcard include/config/ARCH_HAS_PTE_SPECIAL) \
-    $(wildcard include/config/ARCH_HAS_PTE_DEVMAP) \
-    $(wildcard include/config/DEBUG_VM_RB) \
-    $(wildcard include/config/PAGE_POISONING) \
-    $(wildcard include/config/INIT_ON_ALLOC_DEFAULT_ON) \
-    $(wildcard include/config/INIT_ON_FREE_DEFAULT_ON) \
-    $(wildcard include/config/DEBUG_PAGEALLOC) \
-    $(wildcard include/config/HUGETLBFS) \
-    $(wildcard include/config/MAPPING_DIRTY_HELPERS) \
-    $(wildcard include/config/ANON_VMA_NAME) \
-  include/linux/mmap_lock.h \
-  include/linux/page_ext.h \
-  include/linux/stacktrace.h \
-    $(wildcard include/config/ARCH_STACKWALK) \
-    $(wildcard include/config/STACKTRACE) \
-    $(wildcard include/config/HAVE_RELIABLE_STACKTRACE) \
-  include/linux/stackdepot.h \
-    $(wildcard include/config/STACKDEPOT_ALWAYS_INIT) \
-  include/linux/page_ref.h \
-    $(wildcard include/config/DEBUG_PAGE_REF) \
-  include/linux/sizes.h \
-  include/linux/pgtable.h \
-    $(wildcard include/config/HIGHPTE) \
-    $(wildcard include/config/GUP_GET_PTE_LOW_HIGH) \
-    $(wildcard include/config/HAVE_ARCH_SOFT_DIRTY) \
-    $(wildcard include/config/ARCH_ENABLE_THP_MIGRATION) \
-    $(wildcard include/config/X86_ESPFIX64) \
-  arch/x86/include/asm/pgtable.h \
-    $(wildcard include/config/DEBUG_WX) \
-    $(wildcard include/config/PAGE_TABLE_CHECK) \
-  arch/x86/include/asm/pkru.h \
-  arch/x86/include/asm/fpu/api.h \
-    $(wildcard include/config/X86_DEBUG_FPU) \
-  arch/x86/include/asm/coco.h \
-  include/asm-generic/pgtable_uffd.h \
-  include/linux/page_table_check.h \
-  arch/x86/include/asm/pgtable_32.h \
-  arch/x86/include/asm/pgtable-3level.h \
-  arch/x86/include/asm/pgtable-invert.h \
-  include/linux/huge_mm.h \
-  include/linux/sched/coredump.h \
-    $(wildcard include/config/CORE_DUMP_DEFAULT_ELF_HEADERS) \
-  include/linux/vmstat.h \
-    $(wildcard include/config/VM_EVENT_COUNTERS) \
-  include/linux/writeback.h \
-  include/linux/flex_proportions.h \
-  include/linux/backing-dev-defs.h \
-    $(wildcard include/config/DEBUG_FS) \
-  include/linux/blk_types.h \
-    $(wildcard include/config/FAIL_MAKE_REQUEST) \
-    $(wildcard include/config/BLK_CGROUP_IOCOST) \
-    $(wildcard include/config/BLK_INLINE_ENCRYPTION) \
-    $(wildcard include/config/BLK_DEV_INTEGRITY) \
-  include/linux/bvec.h \
-  include/linux/highmem.h \
-  include/linux/cacheflush.h \
-  arch/x86/include/asm/cacheflush.h \
-  include/asm-generic/cacheflush.h \
-  include/linux/highmem-internal.h \
-  arch/x86/include/asm/highmem.h \
-  arch/x86/include/asm/tlbflush.h \
-  arch/x86/include/asm/invpcid.h \
-  arch/x86/include/asm/pti.h \
-  include/linux/bio.h \
-  include/linux/mempool.h \
-  include/linux/uio.h \
-    $(wildcard include/config/ARCH_HAS_UACCESS_FLUSHCACHE) \
-  include/uapi/linux/uio.h \
-  include/linux/node.h \
-    $(wildcard include/config/HMEM_REPORTING) \
-  include/linux/pagemap.h \
-  include/linux/hugetlb_inline.h \
-  include/uapi/linux/mempolicy.h \
-  include/linux/freezer.h \
-  include/uapi/linux/i2c.h \
-  include/media/i2c/tvaudio.h \
-  include/media/v4l2-device.h \
-    $(wildcard include/config/VIDEO_V4L2_SUBDEV_API) \
-  include/media/media-device.h \
-    $(wildcard include/config/MEDIA_CONTROLLER) \
-  include/media/media-devnode.h \
-  include/linux/poll.h \
-  include/uapi/linux/poll.h \
-  arch/x86/include/generated/uapi/asm/poll.h \
-  include/uapi/asm-generic/poll.h \
-  include/uapi/linux/eventpoll.h \
-  include/linux/cdev.h \
-  include/media/media-entity.h \
-  include/uapi/linux/media.h \
-  include/media/v4l2-subdev.h \
-  include/uapi/linux/v4l2-subdev.h \
-  include/uapi/linux/v4l2-mediabus.h \
-  include/uapi/linux/media-bus-format.h \
-  include/media/v4l2-async.h \
-  include/media/v4l2-common.h \
-    $(wildcard include/config/VIDEO_V4L2_I2C) \
-    $(wildcard include/config/SPI) \
-  include/media/v4l2-dev.h \
-  include/linux/spi/spi.h \
-    $(wildcard include/config/SPI_SLAVE) \
-  include/linux/scatterlist.h \
-    $(wildcard include/config/NEED_SG_DMA_LENGTH) \
-    $(wildcard include/config/DEBUG_SG) \
-    $(wildcard include/config/SGL_ALLOC) \
-    $(wildcard include/config/ARCH_NO_SG_CHAIN) \
-    $(wildcard include/config/SG_POOL) \
-  include/linux/gpio/consumer.h \
-    $(wildcard include/config/OF_GPIO) \
-    $(wildcard include/config/GPIO_SYSFS) \
-  include/uapi/linux/spi/spi.h \
-  include/media/v4l2-fh.h \
-  include/media/v4l2-mediabus.h \
-  include/media/v4l2-ctrls.h \
-  include/media/media-request.h \
-  include/media/hevc-ctrls.h \
+// SPDX-License-Identifier: GPL-2.0-only
+/*
+ * Copyright (C) 2017 Pengutronix, Juergen Borleis <kernel@pengutronix.de>
+ */
+#include <linux/kernel.h>
+#include <linux/module.h>
+#include <linux/gpio/consumer.h>
+#include <linux/regmap.h>
+#include <linux/mutex.h>
+#include <linux/mii.h>
+#include <linux/phy.h>
+#include <linux/if_bridge.h>
+#include <linux/if_vlan.h>
+#include <linux/etherdevice.h>
 
-drivers/media/i2c/tvaudio.o: $(deps_drivers/media/i2c/tvaudio.o)
+#include "lan9303.h"
 
-$(deps_drivers/media/i2c/tvaudio.o):
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       cmd_drivers/media/i2c/tvaudio.o := gcc -Wp,-MMD,drivers/media/i2c/.tvaudio.o.d -nostdinc -I./arch/x86/include -I./arch/x86/include/generated  -I./include -I./arch/x86/include/uapi -I./arch/x86/include/generated/uapi -I./include/uapi -I./include/generated/uapi -include ./include/linux/compiler-version.h -include ./include/linux/kconfig.h -include ./include/linux/compiler_types.h -D__KERNEL__ -fmacro-prefix-map=./= -Wall -Wundef -Werror=strict-prototypes -Wno-trigraphs -fno-strict-aliasing -fno-common -fshort-wchar -fno-PIE -Werror=implicit-function-declaration -Werror=implicit-int -Werror=return-type -Wno-format-security -std=gnu11 -mno-sse -mno-mmx -mno-sse2 -mno-3dnow -mno-avx -fcf-protection=none -m32 -msoft-float -mregparm=3 -freg-struct-return -fno-pic -mpreferred-stack-boundary=2 -march=i686 -mtune=pentium3 -mtune=generic -Wa,-mtune=generic32 -ffreestanding -mstack-protector-guard-reg=fs -mstack-protector-guard-symbol=__stack_chk_guard -Wno-sign-compare -fno-asynchronous-unwind-tables -mindirect-branch=thunk-extern -mindirect-branch-register -fno-jump-tables -fno-delete-null-pointer-checks -Wno-frame-address -Wno-format-truncation -Wno-format-overflow -Wno-address-of-packed-member -O2 -fno-allow-store-data-races -fstack-protector-strong -Wimplicit-fallthrough=5 -Wno-main -Wno-unused-but-set-variable -Wno-unused-const-variable -fno-stack-clash-protection -pg -mrecord-mcount -mfentry -DCC_USING_FENTRY -Wdeclaration-after-statement -Wvla -Wno-pointer-sign -Wcast-function-type -Wno-stringop-truncation -Wno-stringop-overflow -Wno-restrict -Wno-maybe-uninitialized -Wno-alloc-size-larger-than -fno-strict-overflow -fno-stack-check -fconserve-stack -Werror=date-time -Werror=incompatible-pointer-types -Werror=designated-init -Wno-packed-not-aligned  -DMODULE  -DKBUILD_BASENAME='"tvaudio"' -DKBUILD_MODNAME='"tvaudio"' -D__KBUILD_MODNAME=kmod_tvaudio -c -o drivers/media/i2c/tvaudio.o drivers/media/i2c/tvaudio.c 
+#define LAN9303_NUM_PORTS 3
 
-source_drivers/media/i2c/tvaudio.o := drivers/media/i2c/tvaudio.c
+/* 13.2 System Control and Status Registers
+ * Multiply register number by 4 to get address offset.
+ */
+#define LAN9303_CHIP_REV 0x14
+# define LAN9303_CHIP_ID 0x9303
+#define LAN9303_IRQ_CFG 0x15
+# define LAN9303_IRQ_CFG_IRQ_ENABLE BIT(8)
+# define LAN9303_IRQ_CFG_IRQ_POL BIT(4)
+# define LAN9303_IRQ_CFG_IRQ_TYPE BIT(0)
+#define LAN9303_INT_STS 0x16
+# define LAN9303_INT_STS_PHY_INT2 BIT(27)
+# define LAN9303_INT_STS_PHY_INT1 BIT(26)
+#define LAN9303_INT_EN 0x17
+# define LAN9303_INT_EN_PHY_INT2_EN BIT(27)
+# define LAN9303_INT_EN_PHY_INT1_EN BIT(26)
+#define LAN9303_HW_CFG 0x1D
+# define LAN9303_HW_CFG_READY BIT(27)
+# define LAN9303_HW_CFG_AMDX_EN_PORT2 BIT(26)
+# define LAN9303_HW_CFG_AMDX_EN_PORT1 BIT(25)
+#define LAN9303_PMI_DATA 0x29
+#define LAN9303_PMI_ACCESS 0x2A
+# define LAN9303_PMI_ACCESS_PHY_ADDR(x) (((x) & 0x1f) << 11)
+# define LAN9303_PMI_ACCESS_MIIRINDA(x) (((x) & 0x1f) << 6)
+# define LAN9303_PMI_ACCESS_MII_BUSY BIT(0)
+# define LAN9303_PMI_ACCESS_MII_WRITE BIT(1)
+#define LAN9303_MANUAL_FC_1 0x68
+#define LAN9303_MANUAL_FC_2 0x69
+#define LAN9303_MANUAL_FC_0 0x6a
+#define LAN9303_SWITCH_CSR_DATA 0x6b
+#define LAN9303_SWITCH_CSR_CMD 0x6c
+#define LAN9303_SWITCH_CSR_CMD_BUSY BIT(31)
+#define LAN9303_SWITCH_CSR_CMD_RW BIT(30)
+#define LAN9303_SWITCH_CSR_CMD_LANES (BIT(19) | BIT(18) | BIT(17) | BIT(16))
+#define LAN9303_VIRT_PHY_BASE 0x70
+#define LAN9303_VIRT_SPECIAL_CTRL 0x77
+#define  LAN9303_VIRT_SPECIAL_TURBO BIT(10) /*Turbo MII Enable*/
 
-deps_drivers/media/i2c/tvaudio.o := \
-  include/linux/compiler-version.h \
-    $(wildcard include/config/CC_VERSION_TEXT) \
-  include/linux/kconfig.h \
-    $(wildcard include/config/CPU_BIG_ENDIAN) \
-    $(wildcard include/config/BOOGER) \
-    $(wildcard include/config/FOO) \
-  include/linux/compiler_types.h \
-    $(wildcard include/config/DEBUG_INFO_BTF) \
-    $(wildcard include/config/PAHOLE_HAS_BTF_TAG) \
-    $(wildcard include/config/HAVE_ARCH_COMPILER_H) \
-    $(wildcard include/config/CC_HAS_ASM_INLINE) \
-  include/linux/compiler_attributes.h \
-  include/linux/compiler-gcc.h \
-    $(wildcard include/config/RETPOLINE) \
-    $(wildcard include/config/ARCH_USE_BUILTIN_BSWAP) \
-    $(wildcard include/config/SHADOW_CALL_STACK) \
-    $(wildcard include/config/KCOV) \
-  include/linux/module.h \
-    $(wildcard include/config/MODULES) \
-    $(wildcard include/config/SYSFS) \
-    $(wildcard include/config/MODULES_TREE_LOOKUP) \
-    $(wildcard include/config/LIVEPATCH) \
-    $(wildcard include/config/STACKTRACE_BUILD_ID) \
-    $(wildcard include/config/CFI_CLANG) \
-    $(wildcard include/config/MODULE_SIG) \
-    $(wildcard include/config/GENERIC_BUG) \
-    $(wildcard include/config/KALLSYMS) \
-    $(wildcard include/config/SMP) \
-    $(wildcard include/config/TRACEPOINTS) \
-    $(wildcard include/config/TREE_SRCU) \
-    $(wildcard include/config/BPF_EVENTS) \
-    $(wildcard include/config/DEBUG_INFO_BTF_MODULES) \
-    $(wildcard include/config/JUMP_LABEL) \
-    $(wildcard include/config/TRACING) \
-    $(wildcard include/config/EVENT_TRACING) \
-    $(wildcard include/config/FTRACE_MCOUNT_RECORD) \
-    $(wildcard include/config/KPROBES) \
-    $(wildcard include/config/HAVE_STATIC_CALL_INLINE) \
-    $(wildcard include/config/PRINTK_INDEX) \
-    $(wildcard include/config/MODULE_UNLOAD) \
-    $(wildcard include/config/CONSTRUCTORS) \
-    $(wildcard include/config/FUNCTION_ERROR_INJECTION) \
-  include/linux/list.h \
-    $(wildcard include/config/DEBUG_LIST) \
-  include/linux/container_of.h \
-  include/linux/build_bug.h \
-  include/linux/compiler.h \
-    $(wildcard include/config/TRACE_BRANCH_PROFILING) \
-    $(wildcard include/config/PROFILE_ALL_BRANCHES) \
-    $(wildcard include/config/STACK_VALIDATION) \
-  include/linux/compiler_types.h \
-  arch/x86/include/generated/asm/rwonce.h \
-  include/asm-generic/rwonce.h \
-  include/linux/kasan-checks.h \
-    $(wildcard include/config/KASAN_GENERIC) \
-    $(wildcard include/config/KASAN_SW_TAGS) \
-  include/linux/types.h \
-    $(wildcard include/config/HAVE_UID16) \
-    $(wildcard include/config/UID16) \
-    $(wildcard include/config/ARCH_DMA_ADDR_T_64BIT) \
-    $(wildcard include/config/PHYS_ADDR_T_64BIT) \
-    $(wildcard include/config/64BIT) \
-    $(wildcard include/config/ARCH_32BIT_USTAT_F_TINODE) \
-  include/uapi/linux/types.h \
-  arch/x86/include/generated/uapi/asm/types.h \
-  include/uapi/asm-generic/types.h \
-  include/asm-generic/int-ll64.h \
-  include/uapi/asm-generic/int-ll64.h \
-  arch/x86/include/uapi/asm/bitsperlong.h \
-  include/asm-generic/bitsperlong.h \
-  include/uapi/asm-generic/bitsperlong.h \
-  include/uapi/linux/posix_types.h \
-  include/linux/stddef.h \
-  include/uapi/linux/stddef.h \
-  arch/x86/include/asm/posix_types.h \
-    $(wildcard include/config/X86_32) \
-  arch/x86/include/uapi/asm/posix_types_32.h \
-  include/uapi/asm-generic/posix_types.h \
-  include/linux/kcsan-checks.h \
-    $(wildcard include/config/KCSAN) \
-    $(wildcard include/config/KCSAN_WEAK_MEMORY) \
-    $(wildcard include/config/KCSAN_IGNORE_ATOMICS) \
-  include/linux/err.h \
-  arch/x86/include/generated/uapi/asm/errno.h \
-  include/uapi/asm-generic/errno.h \
-  include/uapi/asm-generic/errno-base.h \
-  include/linux/poison.h \
-    $(wildcard include/config/ILLEGAL_POINTER_VALUE) \
-  include/linux/const.h \
-  include/vdso/const.h \
-  include/uapi/linux/const.h \
-  arch/x86/include/asm/barrier.h \
-  arch/x86/include/asm/alternative.h \
-  include/linux/stringify.h \
-  arch/x86/include/asm/asm.h \
-  arch/x86/include/asm/extable_fixup_types.h \
-  arch/x86/include/asm/nops.h \
-  include/asm-generic/barrier.h \
-  include/linux/stat.h \
-  arch/x86/include/uapi/asm/stat.h \
-  include/uapi/linux/stat.h \
-  include/linux/time.h \
-    $(wildcard include/config/POSIX_TIMERS) \
-  include/linux/cache.h \
-    $(wildcard include/config/ARCH_HAS_CACHE_LINE_SIZE) \
-  include/uapi/linux/kernel.h \
-  include/uapi/linux/sysinfo.h \
-  arch/x86/include/asm/cache.h \
-    $(wildcard include/config/X86_L1_CACHE_SHIFT) \
-    $(wildcard include/config/X86_INTERNODE_CACHE_SHIFT) \
-    $(wildcard include/config/X86_VSMP) \
-  include/linux/linkage.h \
-    $(wildcard include/config/ARCH_USE_SYM_ANNOTATIONS) \
-  include/linux/export.h \
-    $(wildcard include/config/MODVERSIONS) \
-    $(wildcard include/config/MODULE_REL_CRCS) \
-    $(wildcard include/config/HAVE_ARCH_PREL32_RELOCATIONS) \
-    $(wildcard include/config/TRIM_UNUSED_KSYMS) \
-  arch/x86/include/asm/linkage.h \
-    $(wildcard include/config/X86_64) \
-    $(wildcard include/config/X86_ALIGNMENT_16) \
-    $(wildcard include/config/SLS) \
-  arch/x86/include/asm/ibt.h \
-    $(wildcard include/config/X86_KERNEL_IBT) \
-  include/linux/math64.h \
-    $(wildcard include/config/ARCH_SUPPORTS_INT128) \
-  include/linux/math.h \
-  arch/x86/include/asm/div64.h \
-  include/linux/log2.h \
-    $(wildcard include/config/ARCH_HAS_ILOG2_U32) \
-    $(wildcard include/config/ARCH_HAS_ILOG2_U64) \
-  include/linux/bitops.h \
-  include/linux/bits.h \
-  include/vdso/bits.h \
-  include/linux/typecheck.h \
-  arch/x86/include/asm/bitops.h \
-    $(wildcard include/config/X86_CMOV) \
-  arch/x86/include/asm/rmwcc.h \
-    $(wildcard include/config/CC_HAS_ASM_GOTO) \
-  include/asm-generic/bitops/fls64.h \
-  include/asm-generic/bitops/sched.h \
-  arch/x86/include/asm/arch_hweight.h \
-  arch/x86/include/asm/cpufeatures.h \
-  arch/x86/include/asm/required-features.h \
-    $(wildcard include/config/X86_MINIMUM_CPU_FAMILY) \
-    $(wildcard include/config/MATH_EMULATION) \
-    $(wildcard include/config/X86_PAE) \
-    $(wildcard include/config/X86_CMPXCHG64) \
-    $(wildcard include/config/X86_P6_NOP) \
-    $(wildcard include/config/MATOM) \
-    $(wildcard include/config/PARAVIRT_XXL) \
-  arch/x86/include/asm/disabled-features.h \
-    $(wildcard include/config/X86_SMAP) \
-    $(wildcard include/config/X86_UMIP) \
-    $(wildcard include/config/X86_INTEL_MEMORY_PROTECTION_KEYS) \
-    $(wildcard include/config/X86_5LEVEL) \
-    $(wildcard include/config/PAGE_TABLE_ISOLATION) \
-    $(wildcard include/config/INTEL_IOMMU_SVM) \
-    $(wildcard include/config/X86_SGX) \
-  include/asm-generic/bitops/const_hweight.h \
-  include/asm-generic/bitops/instrumented-atomic.h \
-  include/linux/instrumented.h \
-  include/asm-generic/bitops/instrumented-non-atomic.h \
-    $(wildcard include/config/KCSAN_ASSUME_PLAIN_WRITES_ATOMIC) \
-  include/asm-generic/bitops/instrumented-lock.h \
-  include/asm-generic/bitops/le.h \
-  arch/x86/include/uapi/asm/byteorder.h \
-  include/linux/byteorder/little_endian.h \
-  include/uapi/linux/byteorder/little_endian.h \
-  include/linux/swab.h \
-  include/uapi/linux/swab.h \
-  arch/x86/include/uapi/asm/swab.h \
-  include/linux/byteorder/generic.h \
-  include/asm-generic/bitops/ext2-atomic-setbit.h \
-  include/vdso/math64.h \
-  include/linux/time64.h \
-  include/vdso/time64.h \
-  include/uapi/linux/time.h \
-  include/uapi/linux/time_types.h \
-  include/linux/time32.h \
-  include/linux/timex.h \
-  include/uapi/linux/timex.h \
-  include/uapi/linux/param.h \
-  arch/x86/include/generated/uapi/asm/param.h \
-  include/asm-generic/param.h \
-    $(wildcard include/config/HZ) \
-  include/uapi/asm-generic/param.h \
-  arch/x86/include/asm/timex.h \
-    $(wildcard include/config/X86_TSC) \
-  arch/x86/include/asm/processor.h \
-    $(wildcard include/config/X86_VMX_FEATURE_NAMES) \
-    $(wildcard include/config/X86_IOPL_IOPERM) \
-    $(wildcard include/config/STACKPROTECTOR) \
-    $(wildcard include/config/VM86) \
-    $(wildcard include/config/X86_DEBUGCTLMSR) \
-    $(wildcard include/config/CPU_SUP_AMD) \
-    $(wildcard include/config/XEN) \
-  arch/x86/include/asm/processor-flags.h \
-  arch/x86/include/uapi/asm/processor-flags.h \
-  include/linux/mem_encrypt.h \
-    $(wildcard include/config/ARCH_HAS_MEM_ENCRYPT) \
-    $(wildcard include/config/AMD_MEM_ENCRYPT) \
-  arch/x86/include/asm/mem_encrypt.h \
-  include/linux/init.h \
-    $(wildcard include/config/STRICT_KERNEL_RWX) \
-    $(wildcard include/config/STRICT_MODULE_RWX) \
-    $(wildcard include/config/LTO_CLANG) \
-  include/linux/cc_platform.h \
-    $(wildcard include/config/ARCH_HAS_CC_PLATFORM) \
-  arch/x86/include/uapi/asm/bootparam.h \
-  include/linux/screen_info.h \
-  include/uapi/linux/screen_info.h \
-  include/linux/apm_bios.h \
-  include/uapi/linux/apm_bios.h \
-  include/uapi/linux/ioctl.h \
-  arch/x86/include/generated/uapi/asm/ioctl.h \
-  include/asm-generic/ioctl.h \
-  include/uapi/asm-generic/ioctl.h \
-  include/linux/edd.h \
-  include/uapi/linux/edd.h \
-  arch/x86/include/asm/ist.h \
-  arch/x86/include/uapi/asm/ist.h \
-  include/video/edid.h \
-    $(wildcard include/config/X86) \
-  include/uapi/video/edid.h \
-  arch/x86/include/asm/math_emu.h \
-  arch/x86/include/asm/ptrace.h \
-    $(wildcard include/config/PARAVIRT) \
-    $(wildcard include/config/IA32_EMULATION) \
-  arch/x86/include/asm/segment.h \
-    $(wildcard include/config/XEN_PV) \
-  arch/x86/include/asm/page_types.h \
-    $(wildcard include/config/PHYSICAL_START) \
-    $(wildcard include/config/PHYSICAL_ALIGN) \
-    $(wildcard include/config/DYNAMIC_PHYSICAL_MASK) \
-  arch/x86/include/asm/page_32_types.h \
-    $(wildcard include/config/HIGHMEM4G) \
+/*13.4 Switch Fabric Control and Status Registers
+ * Accessed indirectly via SWITCH_CSR_CMD, SWITCH_CSR_DATA.
+ */
+#define LAN9303_SW_DEV_ID 0x0000
+#define LAN9303_SW_RESET 0x0001
+#define LAN9303_SW_RESET_RESET BIT(0)
+#define LAN9303_SW_IMR 0x0004
+#define LAN9303_SW_IPR 0x0005
+#define LAN9303_MAC_VER_ID_0 0x0400
+#define LAN9303_MAC_RX_CFG_0 0x0401
+# define LAN9303_MAC_RX_CFG_X_REJECT_MAC_TYPES BIT(1)
+# define LAN9303_MAC_RX_CFG_X_RX_ENABLE BIT(0)
+#define LAN9303_MAC_RX_UNDSZE_CNT_0 0x0410
+#define LAN9303_MAC_RX_64_CNT_0 0x0411
+#define LAN9303_MAC_RX_127_CNT_0 0x0412
+#define LAN9303_MAC_RX_255_CNT_0 0x413
+#define LAN9303_MAC_RX_511_CNT_0 0x0414
+#define LAN9303_MAC_RX_1023_CNT_0 0x0415
+#define LAN9303_MAC_RX_MAX_CNT_0 0x0416
+#define LAN9303_MAC_RX_OVRSZE_CNT_0 0x0417
+#define LAN9303_MAC_RX_PKTOK_CNT_0 0x0418
+#define LAN9303_MAC_RX_CRCERR_CNT_0 0x0419
+#define LAN9303_MAC_RX_MULCST_CNT_0 0x041a
+#define LAN9303_MAC_RX_BRDCST_CNT_0 0x041b
+#define LAN9303_MAC_RX_PAUSE_CNT_0 0x041c
+#define LAN9303_MAC_RX_FRAG_CNT_0 0x041d
+#define LAN9303_MAC_RX_JABB_CNT_0 0x041e
+#define LAN9303_MAC_RX_ALIGN_CNT_0 0x041f
+#define LAN9303_MAC_RX_PKTLEN_CNT_0 0x0420
+#define LAN9303_MAC_RX_GOODPKTLEN_CNT_0 0x0421
+#define LAN9303_MAC_RX_SYMBL_CNT_0 0x0422
+#define LAN9303_MAC_RX_CTLFRM_CNT_0 0x0423
+
+#define LAN9303_MAC_TX_CFG_0 0x0440
+# define LAN9303_MAC_TX_CFG_X_TX_IFG_CONFIG_DEFAULT (21 << 2)
+# define LAN9303_MAC_TX_CFG_X_TX_PAD_ENABLE BIT(1)
+# define LAN9303_MAC_TX_CFG_X_TX_ENABLE BIT(0)
+#define LAN9303_MAC_TX_DEFER_CNT_0 0x0451
+#define LAN9303_MAC_TX_PAUSE_CNT_0 0x0452
+#define LAN9303_MAC_TX_PKTOK_CNT_0 0x0453
+#define LAN9303_MAC_TX_64_CNT_0 0x0454
+#define LAN9303_MAC_TX_127_CNT_0 0x0455
+#define LAN9303_MAC_TX_255_CNT_0 0x0456
+#define LAN9303_MAC_TX_511_CNT_0 0x0457
+#define LAN9303_MAC_TX_1023_CNT_0 0x0458
+#define LAN9303_MAC_TX_MAX_CNT_0 0x0459
+#define LAN9303_MAC_TX_UNDSZE_CNT_0 0x045a
+#define LAN9303_MAC_TX_PKTLEN_CNT_0 0x045c
+#define LAN9303_MAC_TX_BRDCST_CNT_0 0x045d
+#define LAN9303_MAC_TX_MULCST_CNT_0 0x045e
+#define LAN9303_MAC_TX_LATECOL_0 0x045f
+#define LAN9303_MAC_TX_EXCOL_CNT_0 0x0460
+#define LAN9303_MAC_TX_SNGLECOL_CNT_0 0x0461
+#define LAN9303_MAC_TX_MULTICOL_CNT_0 0x0462
+#define LAN9303_MAC_TX_TOTALCOL_CNT_0 0x0463
+
+#define LAN9303_MAC_VER_ID_1 0x0800
+#define LAN9303_MAC_RX_CFG_1 0x0801
+#define LAN9303_MAC_TX_CFG_1 0x0840
+#define LAN9303_MAC_VER_ID_2 0x0c00
+#define LAN9303_MAC_RX_CFG_2 0x0c01
+#define LAN9303_MAC_TX_CFG_2 0x0c40
+#define LAN9303_SWE_ALR_CMD 0x1800
+# define LAN9303_ALR_CMD_MAKE_ENTRY    BIT(2)
+# define LAN9303_ALR_CMD_GET_FIRST     BIT(1)
+# define LAN9303_ALR_CMD_GET_NEXT      BIT(0)
+#define LAN9303_SWE_ALR_WR_DAT_0 0x1801
+#define LAN9303_SWE_ALR_WR_DAT_1 0x1802
+# define LAN9303_ALR_DAT1_VALID        BIT(26)
+# define LAN9303_ALR_DAT1_END_OF_TABL  BIT(25)
+# define LAN9303_ALR_DAT1_AGE_OVERRID  BIT(25)
+# define LAN9303_ALR_DAT1_STATIC       BIT(24)
+# define LAN9303_ALR_DAT1_PORT_BITOFFS  16
+# define LAN9303_ALR_DAT1_PORT_MASK    (7 << LAN9303_ALR_DAT1_PORT_BITOFFS)
+#define LAN9303_SWE_ALR_RD_DAT_0 0x1805
+#define LAN9303_SWE_ALR_RD_DAT_1 0x1806
+#define LAN9303_SWE_ALR_CMD_STS 0x1808
+# define ALR_STS_MAKE_PEND     BIT(0)
+#define LAN9303_SWE_VLAN_CMD 0x180b
+# define LAN9303_SWE_VLAN_CMD_RNW BIT(5)
+# define LAN9303_SWE_VLAN_CMD_PVIDNVLAN BIT(4)
+#define LAN9303_SWE_VLAN_WR_DATA 0x180c
+#define LAN9303_SWE_VLAN_RD_DATA 0x180e
+# define LAN9303_SWE_VLAN_MEMBER_PORT2 BIT(17)
+# define LAN9303_SWE_VLAN_UNTAG_PORT2 BIT(16)
+# define LAN9303_SWE_VLAN_MEMBER_PORT1 BIT(15)
+# define LAN9303_SWE_VLAN_UNTAG_PORT1 BIT(14)
+# define LAN9303_SWE_VLAN_MEMBER_PORT0 BIT(13)
+# define LAN9303_SWE_VLAN_UNTAG_PORT0 BIT(12)
+#define LAN9303_SWE_VLAN_CMD_STS 0x1810
+#define LAN9303_SWE_GLB_INGRESS_CFG 0x1840
+# define LAN9303_SWE_GLB_INGR_IGMP_TRAP BIT(7)
+# define LAN9303_SWE_GLB_INGR_IGMP_PORT(p) BIT(10 + p)
+#define LAN9303_SWE_PORT_STATE 0x1843
+# define LAN9303_SWE_PORT_STATE_FORWARDING_PORT2 (0)
+# define LAN9303_SWE_PORT_STATE_LEARNING_PORT2 BIT(5)
+# define LAN9303_SWE_PORT_STATE_BLOCKING_PORT2 BIT(4)
+# define LAN9303_SWE_PORT_STATE_FORWARDING_PORT1 (0)
+# define LAN9303_SWE_PORT_STATE_LEARNING_PORT1 BIT(3)
+# define LAN9303_SWE_PORT_STATE_BLOCKING_PORT1 BIT(2)
+# define LAN9303_SWE_PORT_STATE_FORWARDING_PORT0 (0)
+# define LAN9303_SWE_PORT_STATE_LEARNING_PORT0 BIT(1)
+# define LAN9303_SWE_PORT_STATE_BLOCKING_PORT0 BIT(0)
+# define LAN9303_SWE_PORT_STATE_DISABLED_PORT0 (3)
+#define LAN9303_SWE_PORT_MIRROR 0x1846
+# define LAN9303_SWE_PORT_MIRROR_SNIFF_ALL BIT(8)
+# define LAN9303_SWE_PORT_MIRROR_SNIFFER_PORT2 BIT(7)
+# define LAN9303_SWE_PORT_MIRROR_SNIFFER_PORT1 BIT(6)
+# define LAN9303_SWE_PORT_MIRROR_SNIFFER_PORT0 BIT(5)
+# define LAN9303_SWE_PORT_MIRROR_MIRRORED_PORT2 BIT(4)
+# define LAN9303_SWE_PORT_MIRROR_MIRRORED_PORT1 BIT(3)
+# define LAN9303_SWE_PORT_MIRROR_MIRRORED_PORT0 BIT(2)
+# define LAN9303_SWE_PORT_MIRROR_ENABLE_RX_MIRRORING BIT(1)
+# define LAN9303_SWE_PORT_MIRROR_ENABLE_TX_MIRRORING BIT(0)
+# define LAN9303_SWE_PORT_MIRROR_DISABLED 0
+#define LAN9303_SWE_INGRESS_PORT_TYPE 0x1847
+#define  LAN9303_SWE_INGRESS_PORT_TYPE_VLAN 3
+#define LAN9303_BM_CFG 0x1c00
+#define LAN9303_BM_EGRSS_PORT_TYPE 0x1c0c
+# define LAN9303_BM_EGRSS_PORT_TYPE_SPECIAL_TAG_PORT2 (BIT(17) | BIT(16))
+# define LAN9303_BM_EGRSS_PORT_TYPE_SPECIAL_TAG_PORT1 (BIT(9) | BIT(8))
+# define LAN9303_BM_EGRSS_PORT_TYPE_SPECIAL_TAG_PORT0 (BIT(1) | BIT(0))
+
+#define LAN9303_SWITCH_PORT_REG(port, reg0) (0x400 * (port) + (reg0))
+
+/* the built-in PHYs are of type LAN911X */
+#define MII_LAN911X_SPECIAL_MODES 0x12
+#define MII_LAN911X_SPECIAL_CONTROL_STATUS 0x1f
+
+static const struct regmap_range lan9303_valid_regs[] = {
+	regmap_reg_range(0x14, 0x17), /* misc, interrupt */
+	regmap_reg_range(0x19, 0x19), /* endian test */
+	regmap_reg_range(0x1d, 0x1d), /* hardware config */
+	regmap_reg_range(0x23, 0x24), /* general purpose timer */
+	regmap_reg_range(0x27, 0x27), /* counter */
+	regmap_reg_range(0x29, 0x2a), /* PMI index regs */
+	regmap_reg_range(0x68, 0x6a), /* flow control */
+	regmap_reg_range(0x6b, 0x6c), /* switch fabric indirect regs */
+	regmap_reg_range(0x6d, 0x6f), /* misc */
+	regmap_reg_range(0x70, 0x77), /* virtual phy */
+	regmap_reg_range(0x78, 0x7a), /* GPIO */
+	regmap_reg_range(0x7c, 0x7e), /* MAC & reset */
+	regmap_reg_range(0x80, 0xb7), /* switch fabric direct regs (wr only) */
+};
+
+static const struct regmap_range lan9303_reserved_ranges[] = {
+	regmap_reg_range(0x00, 0x13),
+	regmap_reg_range(0x18, 0x18),
+	regmap_reg_range(0x1a, 0x1c),
+	regmap_reg_range(0x1e, 0x22),
+	regmap_reg_range(0x25, 0x26),
+	regmap_reg_range(0x28, 0x28),
+	regmap_reg_range(0x2b, 0x67),
+	regmap_reg_range(0x7b, 0x7b),
+	regmap_reg_range(0x7f, 0x7f),
+	regmap_reg_range(0xb8, 0xff),
+};
+
+const struct regmap_access_table lan9303_register_set = {
+	.yes_ranges = lan9303_valid_regs,
+	.n_yes_ranges = ARRAY_SIZE(lan9303_valid_regs),
+	.no_ranges = lan9303_reserved_ranges,
+	.n_no_ranges = ARRAY_SIZE(lan9303_reserved_ranges),
+};
+EXPORT_SYMBOL(lan9303_register_set);
+
+static int lan9303_read(struct regmap *regmap, unsigned int offset, u32 *reg)
+{
+	int ret, i;
+
+	/* we can lose arbitration for the I2C case, because the device
+	 * tries to detect and read an external EEPROM after reset and acts as
+	 * a master on the shared I2C bus itself. This conflicts with our
+	 * attempts to access the device as a slave at the same moment.
+	 */
+	for (i = 0; i < 5; i++) {
+		ret = regmap_read(regmap, offset, reg);
+		if (!ret)
+			return 0;
+		if (ret != -EAGAIN)
+			break;
+		msleep(500);
+	}
+
+	return -EIO;
+}
+
+static int lan9303_read_wait(struct lan9303 *chip, int offset, u32 mask)
+{
+	int i;
+
+	for (i = 0; i < 25; i++) {
+		u32 reg;
+		int ret;
+
+		ret = lan9303_read(chip->regmap, offset, &reg);
+		if (ret) {
+			dev_err(chip->dev, "%s failed to read offset %d: %d\n",
+				__func__, offset, ret);
+			return ret;
+		}
+		if (!(reg & mask))
+			return 0;
+		usleep_range(1000, 2000);
+	}
+
+	return -ETIMEDOUT;
+}
+
+static int lan9303_virt_phy_reg_read(struct lan9303 *chip, int regnum)
+{
+	int ret;
+	u32 val;
+
+	if (regnum > MII_EXPANSION)
+		return -EINVAL;
+
+	ret = lan9303_read(chip->regmap, LAN9303_VIRT_PHY_BASE + regnum, &val);
+	if (ret)
+		return ret;
+
+	return val & 0xffff;
+}
+
+static int lan9303_virt_phy_reg_write(struct lan9303 *chip, int regnum, u16 val)
+{
+	if (regnum > MII_EXPANSION)
+		return -EINVAL;
+
+	return regmap_write(chip->regmap, LAN9303_VIRT_PHY_BASE + regnum, val);
+}
+
+static int lan9303_indirect_phy_wait_for_completion(struct lan9303 *chip)
+{
+	return lan9303_read_wait(chip, LAN9303_PMI_ACCESS,
+				 LAN9303_PMI_ACCESS_MII_BUSY);
+}
+
+static int lan9303_indirect_phy_read(struct lan9303 *chip, int addr, int regnum)
+{
+	int ret;
+	u32 val;
+
+	val = LAN9303_PMI_ACCESS_PHY_ADDR(addr);
+	val |= LAN9303_PMI_ACCESS_MIIRINDA(regnum);
+
+	mutex_lock(&chip->indirect_mutex);
+
+	ret = lan9303_indirect_phy_wait_for_completion(chip);
+	if (ret)
+		goto on_error;
+
+	/* start the MII read cycle */
+	ret = regmap_write(chip->regmap, LAN9303_PMI_ACCESS, val);
+	if (ret)
+		goto on_error;
+
+	ret = lan9303_indirect_phy_wait_for_completion(chip);
+	if (ret)
+		goto on_error;
+
+	/* read the result of this operation */
+	ret = lan9303_read(chip->regmap, LAN9303_PMI_DATA, &val);
+	if (ret)
+		goto on_error;
+
+	mutex_unlock(&chip->indirect_mutex);
+
+	return val & 0xffff;
+
+on_error:
+	mutex_unlock(&chip->indirect_mutex);
+	return ret;
+}
+
+static int lan9303_indirect_phy_write(struct lan9303 *chip, int addr,
+				      int regnum, u16 val)
+{
+	int ret;
+	u32 reg;
+
+	reg = LAN9303_PMI_ACCESS_PHY_ADDR(addr);
+	reg |= LAN9303_PMI_ACCESS_MIIRINDA(regnum);
+	reg |= LAN9303_PMI_ACCESS_MII_WRITE;
+
+	mutex_lock(&chip->indirect_mutex);
+
+	ret = lan9303_indirect_phy_wait_for_completion(chip);
+	if (ret)
+		goto on_error;
+
+	/* write the data first... */
+	ret = regmap_write(chip->regmap, LAN9303_PMI_DATA, val);
+	if (ret)
+		goto on_error;
+
+	/* ...then start the MII write cycle */
+	ret = regmap_write(chip->regmap, LAN9303_PMI_ACCESS, reg);
+
+on_error:
+	mutex_unlock(&chip->indirect_mutex);
+	return ret;
+}
+
+const struct lan9303_phy_ops lan9303_indirect_phy_ops = {
+	.phy_read = lan9303_indirect_phy_read,
+	.phy_write = lan9303_indirect_phy_write,
+};
+EXPORT_SYMBOL_GPL(lan9303_indirect_phy_ops);
+
+static int lan9303_switch_wait_for_completion(struct lan9303 *chip)
+{
+	return lan9303_read_wait(chip, LAN9303_SWITCH_CSR_CMD,
+				 LAN9303_SWITCH_CSR_CMD_BUSY);
+}
+
+static int lan9303_write_switch_reg(struct lan9303 *chip, u16 regnum, u32 val)
+{
+	u32 reg;
+	int ret;
+
+	reg = regnum;
+	reg |= LAN9303_SWITCH_CSR_CMD_LANES;
+	reg |= LAN9303_SWITCH_CSR_CMD_BUSY;
+
+	mutex_lock(&chip->indirect_mutex);
+
+	ret = lan9303_switch_wait_for_completion(chip);
+	if (ret)
+		goto on_error;
+
+	ret = regmap_write(chip->regmap, LAN9303_SWITCH_CSR_DATA, val);
+	if (ret) {
+		dev_err(chip->dev, "Failed to write csr data reg: %d\n", ret);
+		goto on_error;
+	}
+
+	/* trigger write */
+	ret = regmap_write(chip->regmap, LAN9303_SWITCH_CSR_CMD, reg);
+	if (ret)
+		dev_err(chip->dev, "Failed to write csr command reg: %d\n",
+			ret);
+
+on_error:
+	mutex_unlock(&chip->indirect_mutex);
+	return ret;
+}
+
+static int lan9303_read_switch_reg(struct lan9303 *chip, u16 regnum, u32 *val)
+{
+	u32 reg;
+	int ret;
+
+	reg = regnum;
+	reg |= LAN9303_SWITCH_CSR_CMD_LANES;
+	reg |= LAN9303_SWITCH_CSR_CMD_RW;
+	reg |= LAN9303_SWITCH_CSR_CMD_BUSY;
+
+	mutex_lock(&chip->indirect_mutex);
+
+	ret = lan9303_switch_wait_for_completion(chip);
+	if (ret)
+		goto on_error;
+
+	/* trigger read */
+	ret = regmap_write(chip->regmap, LAN9303_SWITCH_CSR_CMD, reg);
+	if (ret) {
+		dev_err(chip->dev, "Failed to write csr command reg: %d\n",
+			ret);
+		goto on_error;
+	}
+
+	ret = lan9303_switch_wait_for_completion(chip);
+	if (ret)
+		goto on_error;
+
+	ret = lan9303_read(chip->regmap, LAN9303_SWITCH_CSR_DATA, val);
+	if (ret)
+		dev_err(chip->dev, "Failed to read csr data reg: %d\n", ret);
+on_error:
+	mutex_unlock(&chip->indirect_mutex);
+	return ret;
+}
+
+static int lan9303_write_switch_reg_mask(struct lan9303 *chip, u16 regnum,
+					 u32 val, u32 mask)
+{
+	int ret;
+	u32 reg;
+
+	ret = lan9303_read_switch_reg(chip, regnum, &reg);
+	if (ret)
+		return ret;
+
+	reg = (reg & ~mask) | val;
+
+	return lan9303_write_switch_reg(chip, regnum, reg);
+}
+
+static int lan9303_write_switch_port(struct lan9303 *chip, int port,
+				     u16 regnum, u32 val)
+{
+	return lan9303_write_switch_reg(
+		chip, LAN9303_SWITCH_PORT_REG(port, regnum), val);
+}
+
+static int lan9303_read_switch_port(struct lan9303 *chip, int port,
+				    u16 regnum, u32 *val)
+{
+	return lan9303_read_switch_reg(
+		chip, LAN9303_SWITCH_PORT_REG(port, regnum), val);
+}
+
+static int lan9303_detect_phy_setup(struct lan9303 *chip)
+{
+	int reg;
+
+	/* Calculate chip->phy_addr_base:
+	 * Depending on the 'phy_addr_sel_strap' setting, the three phys are
+	 * using IDs 0-1-2 or IDs 1-2-3. We cannot read back the
+	 * 'phy_addr_sel_strap' setting directly, so we need a test, which
+	 * configuration is active:
+	 * Special reg 18 of phy 3 reads as 0x0000, if 'phy_addr_sel_strap' is 0
+	 * and the IDs are 0-1-2, else it contains something different from
+	 * 0x0000, which means 'phy_addr_sel_strap' is 1 and the IDs are 1-2-3.
+	 * 0xffff is returned on MDIO read with no response.
+	 */
+	reg = chip->ops->phy_read(chip, 3, MII_LAN911X_SPECIAL_MODES);
+	if (reg < 0) {
+		dev_err(chip->dev, "Failed to detect phy config: %d\n", reg);
+		return reg;
+	}
+
+	chip->phy_addr_base = reg != 0 && reg != 0xffff;
+
+	dev_dbg(chip->dev, "Phy setup '%s' detected\n",
+		chip->phy_addr_base ? "1-2-3" : "0-1-2");
+
+	return 0;
+}
+
+/* Map ALR-port bits to port bitmap, and back */
+static const int alrport_2_portmap[] = {1, 2, 4, 0, 3, 5, 6, 7 };
+static const int portmap_2_alrport[] = {3, 0, 1, 4, 2, 5, 6, 7 };
+
+/* Return pointer to first free ALR cache entry, return NULL if none */
+static struct lan9303_alr_cache_entry *
+lan9303_alr_cache_find_free(struct lan9303 *chip)
+{
+	int i;
+	struct lan9303_alr_cache_entry *entr = chip->alr_cache;
+
+	for (i = 0; i < LAN9303_NUM_ALR_RECORDS; i++, entr++)
+		if (entr->port_map == 0)
+			return entr;
+
+	return NULL;
+}
+
+/* Return pointer to ALR cache entry matching MAC address */
+static struct lan9303_alr_cache_entry *
+lan9303_alr_cache_find_mac(struct lan9303 *chip, const u8 *mac_addr)
+{
+	int i;
+	struct lan9303_alr_cache_entry *entr = chip->alr_cache;
+
+	BUILD_BUG_ON_MSG(sizeof(struct lan9303_alr_cache_entry) & 1,
+			 "ether_addr_equal require u16 alignment");
+
+	for (i = 0; i < LAN9303_NUM_ALR_RECORDS; i++, entr++)
+		if (ether_addr_equal(entr->mac_addr, mac_addr))
+			return entr;
+
+	return NULL;
+}
+
+static int lan9303_csr_reg_wait(struct lan9303 *chip, int regno, u32 mask)
+{
+	int i;
+
+	for (i = 0; i < 25; i++) {
+		u32 reg;
+
+		lan9303_read_switch_reg(chip, regno, &reg);
+		if (!(reg & mask))
+			return 0;
+		usleep_range(1000, 2000);
+	}
+
+	return -ETIMEDOUT;
+}
+
+static int lan9303_alr_make_entry_raw(struct lan9303 *chip, u32 dat0, u32 dat1)
+{
+	lan9303_write_switch_reg(chip, LAN9303_SWE_ALR_WR_DAT_0, dat0);
+	lan9303_write_switch_reg(chip, LAN9303_SWE_ALR_WR_DAT_1, dat1);
+	lan9303_write_switch_reg(chip, LAN9303_SWE_ALR_CMD,
+				 LAN9303_ALR_CMD_MAKE_ENTRY);
+	lan9303_csr_reg_wait(chip, LAN9303_SWE_ALR_CMD_STS, ALR_STS_MAKE_PEND);
+	lan9303_write_switch_reg(chip, LAN9303_SWE_ALR_CMD, 0);
+
+	return 0;
+}
+
+typedef int alr_loop_cb_t(struct lan9303 *chip, u32 dat0, u32 dat1,
+			  int portmap, void *ctx);
+
+static int lan9303_alr_loop(struct lan9303 *chip, alr_loop_cb_t *cb, void *ctx)
+{
+	int ret = 0, i;
+
+	mutex_lock(&chip->alr_mutex);
+	lan9303_write_switch_reg(chip, LAN9303_SWE_ALR_CMD,
+				 LAN9303_ALR_CMD_GET_FIRST);
+	lan9303_write_switch_reg(chip, LAN9303_SWE_ALR_CMD, 0);
+
+	for (i = 1; i < LAN9303_NUM_ALR_RECORDS; i++) {
+		u32 dat0, dat1;
+		int alrport, portmap;
+
+		lan9303_read_switch_reg(chip, LAN9303_SWE_ALR_RD_DAT_0, &dat0);
+		lan9303_read_switch_reg(chip, LAN9303_SWE_ALR_RD_DAT_1, &dat1);
+		if (dat1 & LAN9303_ALR_DAT1_END_OF_TABL)
+			break;
+
+		alrport = (dat1 & LAN9303_ALR_DAT1_PORT_MASK) >>
+						LAN9303_ALR_DAT1_PORT_BITOFFS;
+		portmap = alrport_2_portmap[alrport];
+
+		ret = cb(chip, dat0, dat1, portmap, ctx);
+		if (ret)
+			break;
+
+		lan9303_write_switch_reg(chip, LAN9303_SWE_ALR_CMD,
+					 LAN9303_ALR_CMD_GET_NEXT);
+		lan9303_write_switch_reg(chip, LAN9303_SWE_ALR_CMD, 0);
+	}
+	mutex_unlock(&chip->alr_mutex);
+
+	return ret;
+}
+
+static void alr_reg_to_mac(u32 dat0, u32 dat1, u8 mac[6])
+{
+	mac[0] = (dat0 >>  0) & 0xff;
+	mac[1] = (dat0 >>  8) & 0xff;
+	mac[2] = (dat0 >> 16) & 0xff;
+	mac[3] = (dat0 >> 24) & 0xff;
+	mac[4] = (dat1 >>  0) & 0xff;
+	mac[5] = (dat1 >>  8) & 0xff;
+}
+
+struct del_port_learned_ctx {
+	int port;
+};
+
+/* Clear learned (non-static) entry on given port */
+static int alr_loop_cb_del_port_learned(struct lan9303 *chip, u32 dat0,
+					u32 dat1, int portmap, void *ctx)
+{
+	struct del_port_learned_ctx *del_ctx = ctx;
+	int port = del_ctx->port;
+
+	if (((BIT(port) & portmap) == 0) || (dat1 & LAN9303_ALR_DAT1_STATIC))
+		return 0;
+
+	/* learned entries has only one port, we can just delete */
+	dat1 &= ~LAN9303_ALR_DAT1_VALID; /* delete entry */
+	lan9303_alr_make_entry_raw(chip, dat0, dat1);
+
+	return 0;
+}
+
+struct port_fdb_dump_ctx {
+	int port;
+	void *data;
+	dsa_fdb_dump_cb_t *cb;
+};
+
+static int alr_loop_cb_fdb_port_dump(struct lan9303 *chip, u32 dat0,
+				     u32 dat1, int portmap, void *ctx)
+{
+	struct port_fdb_dump_ctx *dump_ctx = ctx;
+	u8 mac[ETH_ALEN];
+	bool is_static;
+
+	if ((BIT(dump_ctx->port) & portmap) == 0)
+		return 0;
+
+	alr_reg_to_mac(dat0, dat1, mac);
+	is_static = !!(dat1 & LAN9303_ALR_DAT1_STATIC);
+	return dump_ctx->cb(mac, 0, is_static, dump_ctx->data);
+}
+
+/* Set a static ALR entry. Delete entry if port_map is zero */
+static void lan9303_alr_set_entry(struct lan9303 *chip, const u8 *mac,
+				  u8 port_map, bool stp_override)
+{
+	u32 dat0, dat1, alr_port;
+
+	dev_dbg(chip->dev, "%s(%pM, %d)\n", __func__, mac, port_map);
+	dat1 = LAN9303_ALR_DAT1_STATIC;
+	if (port_map)
+		dat1 |= LAN9303_ALR_DAT1_VALID;
+	/* otherwise no ports: delete entry */
+	if (stp_override)
+		dat1 |= LAN9303_ALR_DAT1_AGE_OVERRID;
+
+	alr_port = portmap_2_alrport[port_map & 7];
+	dat1 &= ~LAN9303_ALR_DAT1_PORT_MASK;
+	dat1 |= alr_port << LAN9303_ALR_DAT1_PORT_BITOFFS;
+
+	dat0 = 0;
+	dat0 |= (mac[0] << 0);
+	dat0 |= (mac[1] << 8);
+	dat0 |= (mac[2] << 16);
+	dat0 |= (mac[3] << 24);
+
+	dat1 |= (mac[4] << 0);
+	dat1 |= (mac[5] << 8);
+
+	lan9303_alr_make_entry_raw(chip, dat0, dat1);
+}
+
+/* Add port to static ALR entry, create new static entry if needed */
+static int lan9303_alr_add_port(struct lan9303 *chip, const u8 *mac, int port,
+				bool stp_override)
+{
+	struct lan9303_alr_cache_entry *entr;
+
+	mutex_lock(&chip->alr_mutex);
+	entr = lan9303_alr_cache_find_mac(chip, mac);
+	if (!entr) { /*New entry */
+		entr = lan9303_alr_cache_find_free(chip);
+		if (!entr) {
+			mutex_unlock(&chip->alr_mutex);
+			return -ENOSPC;
+		}
+		ether_addr_copy(entr->mac_addr, mac);
+	}
+	entr->port_map |= BIT(port);
+	entr->stp_override = stp_override;
+	lan9303_alr_set_entry(chip, mac, entr->port_map, stp_override);
+	mutex_unlock(&chip->alr_mutex);
+
+	return 0;
+}
+
+/* Delete static port from ALR entry, delete entry if last port */
+static int lan9303_alr_del_port(struct lan9303 *chip, const u8 *mac, int port)
+{
+	struct lan9303_alr_cache_entry *entr;
+
+	mutex_lock(&chip->alr_mutex);
+	entr = lan9303_alr_cache_find_mac(chip, mac);
+	if (!entr)
+		goto out;  /* no static entry found */
+
+	entr->port_map &= ~BIT(port);
+	if (entr->port_map == 0) /* zero means its free again */
+		eth_zero_addr(entr->mac_addr);
+	lan9303_alr_set_entry(chip, mac, entr->port_map, entr->stp_override);
+
+out:
+	mutex_unlock(&chip->alr_mutex);
+	return 0;
+}
+
+static int lan9303_disable_processing_port(struct lan9303 *chip,
+					   unsigned int port)
+{
+	int ret;
+
+	/* disable RX, but keep register reset default values else */
+	ret = lan9303_write_switch_port(chip, port, LAN9303_MAC_RX_CFG_0,
+					LAN9303_MAC_RX_CFG_X_REJECT_MAC_TYPES);
+	if (ret)
+		return ret;
+
+	/* disable TX, but keep register reset default values else */
+	return lan9303_write_switch_port(chip, port, LAN9303_MAC_TX_CFG_0,
+				LAN9303_MAC_TX_CFG_X_TX_IFG_CONFIG_DEFAULT |
+				LAN9303_MAC_TX_CFG_X_TX_PAD_ENABLE);
+}
+
+static int lan9303_enable_processing_port(struct lan9303 *chip,
+					  unsigned int port)
+{
+	int ret;
+
+	/* enable RX and keep register reset default values else */
+	ret = lan9303_write_switch_port(chip, port, LAN9303_MAC_RX_CFG_0,
+					LAN9303_MAC_RX_CFG_X_REJECT_MAC_TYPES |
+					LAN9303_MAC_RX_CFG_X_RX_ENABLE);
+	if (ret)
+		return ret;
+
+	/* enable TX and keep register reset default values else */
+	return lan9303_write_switch_port(chip, port, LAN9303_MAC_TX_CFG_0,
+				LAN9303_MAC_TX_CFG_X_TX_IFG_CONFIG_DEFAULT |
+				LAN9303_MAC_TX_CFG_X_TX_PAD_ENABLE |
+				LAN9303_MAC_TX_CFG_X_TX_ENABLE);
+}
+
+/* forward special tagged packets from port 0 to port 1 *or* port 2 */
+static int lan9303_setup_tagging(struct lan9303 *chip)
+{
+	int ret;
+	u32 val;
+	/* enable defining the destination port via special VLAN tagging
+	 * for port 0
+	 */
+	ret = lan9303_write_switch_reg(chip, LAN9303_SWE_INGRESS_PORT_TYPE,
+				       LAN9303_SWE_INGRESS_PORT_TYPE_VLAN);
+	if (ret)
+		return ret;
+
+	/* tag incoming packets at port 1 and 2 on their way to port 0 to be
+	 * able to discover their source port
+	 */
+	val = LAN9303_BM_EGRSS_PORT_TYPE_SPECIAL_TAG_PORT0;
+	return lan9303_write_switch_reg(chip, LAN9303_BM_EGRSS_PORT_TYPE, val);
+}
+
+/* We want a special working switch:
+ * - do not forward packets between port 1 and 2
+ * - forward everything from port 1 to port 0
+ * - forward everything from port 2 to port 0
+ */
+static int lan9303_separate_ports(struct lan9303 *chip)
+{
+	int ret;
+
+	lan9303_alr_del_port(chip, eth_stp_addr, 0);
+	ret = lan9303_write_switch_reg(chip, LAN9303_SWE_PORT_MIRROR,
+				LAN9303_SWE_PORT_MIRROR_SNIFFER_PORT0 |
+				LAN9303_SWE_PORT_MIRROR_MIRRORED_PORT1 |
+				LAN9303_SWE_PORT_MIRROR_MIRRORED_PORT2 |
+				LAN9303_SWE_PORT_MIRROR_ENABLE_RX_MIRRORING |
+				LAN9303_SWE_PORT_MIRROR_SNIFF_ALL);
+	if (ret)
+		return ret;
+
+	/* prevent port 1 and 2 from forwarding packets by their own */
+	return lan9303_write_switch_reg(chip, LAN9303_SWE_PORT_STATE,
+				LAN9303_SWE_PORT_STATE_FORWARDING_PORT0 |
+				LAN9303_SWE_PORT_STATE_BLOCKING_PORT1 |
+				LAN9303_SWE_PORT_STATE_BLOCKING_PORT2);
+}
+
+static void lan9303_bridge_ports(struct lan9303 *chip)
+{
+	/* ports bridged: remove mirroring */
+	lan9303_write_switch_reg(chip, LAN9303_SWE_PORT_MIRROR,
+				 LAN9303_SWE_PORT_MIRROR_DISABLED);
+
+	lan9303_write_switch_reg(chip, LAN9303_SWE_PORT_STATE,
+				 chip->swe_port_state);
+	lan9303_alr_add_port(chip, eth_stp_addr, 0, true);
+}
+
+static void lan9303_handle_reset(struct lan9303 *chip)
+{
+	if (!chip->reset_gpio)
+		return;
+
+	if (chip->reset_duration != 0)
+		msleep(chip->reset_duration);
+
+	/* release (deassert) reset and activate the device */
+	gpiod_set_value_cansleep(chip->reset_gpio, 0);
+}
+
+/* stop processing packets for all ports */
+static int lan9303_disable_processing(struct lan9303 *chip)
+{
+	int p;
+
+	for (p = 1; p < LAN9303_NUM_PORTS; p++) {
+		int ret = lan9303_disable_processing_port(chip, p);
+
+		if (ret)
+			return ret;
+	}
+
+	return 0;
+}
+
+static int lan9303_check_device(struct lan9303 *chip)
+{
+	int ret;
+	u32 reg;
+
+	ret = lan9303_read(chip->regmap, LAN9303_CHIP_REV, &reg);
+	if (ret) {
+		dev_err(chip->dev, "failed to read chip revision register: %d\n",
+			ret);
+		if (!chip->reset_gpio) {
+			dev_dbg(chip->dev,
+				"hint: maybe failed due to missing reset GPIO\n");
+		}
+		return ret;
+	}
+
+	if ((reg >> 16) != LAN9303_CHIP_ID) {
+		dev_err(chip->dev, "expecting LAN9303 chip, but found: %X\n",
+			reg >> 16);
+		return -ENODEV;
+	}
+
+	/* The default state of the LAN9303 device is to forward packets between
+	 * all ports (if not configured differently by an external EEPROM).
+	 * The initial state of a DSA device must be forwarding packets only
+	 * between the external and the internal ports and no forwarding
+	 * between the external ports. In preparation we stop packet handling
+	 * at all for now until the LAN9303 device is re-programmed accordingly.
+	 */
+	ret = lan9303_disable_processing(chip);
+	if (ret)
+		dev_warn(chip->dev, "failed to disable switching %d\n", ret);
+
+	dev_info(chip->dev, "Found LAN9303 rev. %u\n", reg & 0xffff);
+
+	ret = lan9303_detect_phy_setup(chip);
+	if (ret) {
+		dev_err(chip->dev,
+			"failed to discover phy bootstrap setup: %d\n", ret);
+		return ret;
+	}
+
+	return 0;
+}
+
+/* ---------------------------- DSA -----------------------------------*/
+
+static enum dsa_tag_protocol lan9303_get_tag_protocol(struct dsa_switch *ds,
+						      int port,
+						      enum dsa_tag_protocol mp)
+{
+	return DSA_TAG_PROTO_LAN9303;
+}
+
+static int lan9303_setup(struct dsa_switch *ds)
+{
+	struct lan9303 *chip = ds->priv;
+	int ret;
+
+	/* Make sure that port 0 is the cpu port */
+	if (!dsa_is_cpu_port(ds, 0)) {
+		dev_err(chip->dev, "port 0 is not the CPU port\n");
+		return -EINVAL;
+	}
+
+	ret = lan9303_setup_tagging(chip);
+	if (ret)
+		dev_err(chip->dev, "failed to setup port tagging %d\n", ret);
+
+	ret = lan9303_separate_ports(chip);
+	if (ret)
+		dev_err(chip->dev, "failed to separate ports %d\n", ret);
+
+	ret = lan9303_enable_processing_port(chip, 0);
+	if (ret)
+		dev_err(chip->dev, "failed to re-enable switching %d\n", ret);
+
+	/* Trap IGMP to port 0 */
+	ret = lan9303_write_switch_reg_mask(chip, LAN9303_SWE_GLB_INGRESS_CFG,
+					    LAN9303_SWE_GLB_INGR_IGMP_TRAP |
+					    LAN9303_SWE_GLB_INGR_IGMP_PORT(0),
+					    LAN9303_SWE_GLB_INGR_IGMP_PORT(1) |
+					    LAN9303_SWE_GLB_INGR_IGMP_PORT(2));
+	if (ret)
+		dev_err(chip->dev, "failed to setup IGMP trap %d\n", ret);
+
+	return 0;
+}
+
+struct lan9303_mib_desc {
+	unsigned int offset; /* offset of first MAC */
+	const char *name;
+};
+
+static const struct lan9303_mib_desc lan9303_mib[] = {
+	{ .offset = LAN9303_MAC_RX_BRDCST_CNT_0, .name = "RxBroad", },
+	{ .offset = LAN9303_MAC_RX_PAUSE_CNT_0, .name = "RxPause", },
+	{ .offset = LAN9303_MAC_RX_MULCST_CNT_0, .name = "RxMulti", },
+	{ .offset = LAN9303_MAC_RX_PKTOK_CNT_0, .name = "RxOk", },
+	{ .offset = LAN9303_MAC_RX_CRCERR_CNT_0, .name = "RxCrcErr", },
+	{ .offset = LAN9303_MAC_RX_ALIGN_CNT_0, .name = "RxAlignErr", },
+	{ .offset = LAN9303_MAC_RX_JABB_CNT_0, .name = "RxJabber", },
+	{ .offset = LAN9303_MAC_RX_FRAG_CNT_0, .name = "RxFragment", },
+	{ .offset = LAN9303_MAC_RX_64_CNT_0, .name = "Rx64Byte", },
+	{ .offset = LAN9303_MAC_RX_127_CNT_0, .name = "Rx128Byte", },
+	{ .offset = LAN9303_MAC_RX_255_CNT_0, .name = "Rx256Byte", },
+	{ .offset = LAN9303_MAC_RX_511_CNT_0, .name = "Rx512Byte", },
+	{ .offset = LAN9303_MAC_RX_1023_CNT_0, .name = "Rx1024Byte", },
+	{ .offset = LAN9303_MAC_RX_MAX_CNT_0, .name = "RxMaxByte", },
+	{ .offset = LAN9303_MAC_RX_PKTLEN_CNT_0, .name = "RxByteCnt", },
+	{ .offset = LAN9303_MAC_RX_SYMBL_CNT_0, .name = "RxSymbolCnt", },
+	{ .offset = LAN9303_MAC_RX_CTLFRM_CNT_0, .name = "RxCfs", },
+	{ .offset = LAN9303_MAC_RX_OVRSZE_CNT_0, .name = "RxOverFlow", },
+	{ .offset = LAN9303_MAC_TX_UNDSZE_CNT_0, .name = "TxShort", },
+	{ .offset = LAN9303_MAC_TX_BRDCST_CNT_0, .name = "TxBroad", },
+	{ .offset = LAN9303_MAC_TX_PAUSE_CNT_0, .name = "TxPause", },
+	{ .offset = LAN9303_MAC_TX_MULCST_CNT_0, .name = "TxMulti", },
+	{ .offset = LAN9303_MAC_RX_UNDSZE_CNT_0, .name = "TxUnderRun", },
+	{ .offset = LAN9303_MAC_TX_64_CNT_0, .name = "Tx64Byte", },
+	{ .offset = LAN9303_MAC_TX_127_CNT_0, .name = "Tx128Byte", },
+	{ .offset = LAN9303_MAC_TX_255_CNT_0, .name = "Tx256Byte", },
+	{ .offset = LAN9303_MAC_TX_511_CNT_0, .name = "Tx512Byte", },
+	{ .offset = LAN9303_MAC_TX_1023_CNT_0, .name = "Tx1024Byte", },
+	{ .offset = LAN9303_MAC_TX_MAX_CNT_0, .name = "TxMaxByte", },
+	{ .offset = LAN9303_MAC_TX_PKTLEN_CNT_0, .name = "TxByteCnt", },
+	{ .offset = LAN9303_MAC_TX_PKTOK_CNT_0, .name = "TxOk", },
+	{ .offset = LAN9303_MAC_TX_TOTALCOL_CNT_0, .name = "TxCollision", },
+	{ .offset = LAN9303_MAC_TX_MULTICOL_CNT_0, .name = "TxMultiCol", },
+	{ .offset = LAN9303_MAC_TX_SNGLECOL_CNT_0, .name = "TxSingleCol", },
+	{ .offset = LAN9303_MAC_TX_EXCOL_CNT_0, .name = "TxExcCol", },
+	{ .offset = LAN9303_MAC_TX_DEFER_CNT_0, .name = "TxDefer", },
+	{ .offset = LAN9303_MAC_TX_LATECOL_0, .name = "TxLateCol", },
+};
+
+static void lan9303_get_strings(struct dsa_switch *ds, int port,
+				u32 stringset, uint8_t *data)
+{
+	unsigned int u;
+
+	if (stringset != ETH_SS_STATS)
+		return;
+
+	for (u = 0; u < ARRAY_SIZE(lan9303_mib); u++) {
+		strncpy(data + u * ETH_GSTRING_LEN, lan9303_mib[u].name,
+			ETH_GSTRING_LEN);
+	}
+}
+
+static void lan9303_get_ethtool_stats(struct dsa_switch *ds, int port,
+				      uint64_t *data)
+{
+	struct lan9303 *chip = ds->priv;
+	unsigned int u;
+
+	for (u = 0; u < ARRAY_SIZE(lan9303_mib); u++) {
+		u32 reg;
+		int ret;
+
+		ret = lan9303_read_switch_port(
+			chip, port, lan9303_mib[u].offset, &reg);
+
+		if (ret)
+			dev_warn(chip->dev, "Reading status port %d reg %u failed\n",
+				 port, lan9303_mib[u].offset);
+		data[u] = reg;
+	}
+}
+
+static int lan9303_get_sset_count(struct dsa_switch *ds, int port, int sset)
+{
+	if (sset != ETH_SS_STATS)
+		return 0;
+
+	return ARRAY_SIZE(lan9303_mib);
+}
+
+static int lan9303_phy_read(struct dsa_switch *ds, int phy, int regnum)
+{
+	struct lan9303 *chip = ds->priv;
+	int phy_base = chip->phy_addr_base;
+
+	if (phy == phy_base)
+		return lan9303_virt_phy_reg_read(chip, regnum);
+	if (phy > phy_base + 2)
+		return -ENODEV;
+
+	return chip->ops->phy_read(chip, phy, regnum);
+}
+
+static int lan9303_phy_write(struct dsa_switch *ds, int phy, int regnum,
+			     u16 val)
+{
+	struct lan9303 *chip = ds->priv;
+	int phy_base = chip->phy_addr_base;
+
+	if (phy == phy_base)
+		return lan9303_virt_phy_reg_write(chip, regnum, val);
+	if (phy > phy_base + 2)
+		return -ENODEV;
+
+	return chip->ops->phy_write(chip, phy, regnum, val);
+}
+
+static void lan9303_adjust_link(struct dsa_switch *ds, int port,
+				struct phy_device *phydev)
+{
+	struct lan9303 *chip = ds->priv;
+	int ctl;
+
+	if (!phy_is_pseudo_fixed_link(phydev))
+		return;
+
+	ctl = lan9303_phy_read(ds, port, MII_BMCR);
+
+	ctl &= ~BMCR_ANENABLE;
+
+	if (phydev->speed == SPEED_100)
+		ctl |= BMCR_SPEED100;
+	else if (phydev->speed == SPEED_10)
+		ctl &= ~BMCR_SPEED100;
+	else
+		dev_err(ds->dev, "unsupported speed: %d\n", phydev->speed);
+
+	if (phydev->duplex == DUPLEX_FULL)
+		ctl |= BMCR_FULLDPLX;
+	else
+		ctl &= ~BMCR_FULLDPLX;
+
+	lan9303_phy_write(ds, port, MII_BMCR, ctl);
+
+	if (port == chip->phy_addr_base) {
+		/* Virtual Phy: Remove Turbo 200Mbit mode */
+		lan9303_read(chip->regmap, LAN9303_VIRT_SPECIAL_CTRL, &ctl);
+
+		ctl &= ~LAN9303_VIRT_SPECIAL_TURBO;
+		regmap_write(chip->regmap, LAN9303_VIRT_SPECIAL_CTRL, ctl);
+	}
+}
+
+static int lan9303_port_enable(struct dsa_switch *ds, int port,
+			       struct phy_device *phy)
+{
+	struct dsa_port *dp = dsa_to_port(ds, port);
+	struct lan9303 *chip = ds->priv;
+
+	if (!dsa_port_is_user(dp))
+		return 0;
+
+	vlan_vid_add(dp->cpu_dp->master, htons(ETH_P_8021Q), port);
+
+	return lan9303_enable_processing_port(chip, port);
+}
+
+static void lan9303_port_disable(struct dsa_switch *ds, int port)
+{
+	struct dsa_port *dp = dsa_to_port(ds, port);
+	struct lan9303 *chip = ds->priv;
+
+	if (!dsa_port_is_user(dp))
+		return;
+
+	vlan_vid_del(dp->cpu_dp->master, htons(ETH_P_8021Q), port);
+
+	lan9303_disable_processing_port(chip, port);
+	lan9303_phy_write(ds, chip->phy_addr_base + port, MII_BMCR, BMCR_PDOWN);
+}
+
+static int lan9303_port_bridge_join(struct dsa_switch *ds, int port,
+				    struct dsa_bridge bridge,
+				    bool *tx_fwd_offload,
+				    struct netlink_ext_ack *extack)
+{
+	struct lan9303 *chip = ds->priv;
+
+	dev_dbg(chip->dev, "%s(port %d)\n", __func__, port);
+	if (dsa_port_bridge_same(dsa_to_port(ds, 1), dsa_to_port(ds, 2))) {
+		lan9303_bridge_ports(chip);
+		chip->is_bridged = true;  /* unleash stp_state_set() */
+	}
+
+	return 0;
+}
+
+static void lan9303_port_bridge_leave(struct dsa_switch *ds, int port,
+				      struct dsa_bridge bridge)
+{
+	struct lan9303 *chip = ds->priv;
+
+	dev_dbg(chip->dev, "%s(port %d)\n", __func__, port);
+	if (chip->is_bridged) {
+		lan9303_separate_ports(chip);
+		chip->is_bridged = false;
+	}
+}
+
+static void lan9303_port_stp_state_set(struct dsa_switch *ds, int port,
+				       u8 state)
+{
+	int portmask, portstate;
+	struct lan9303 *chip = ds->priv;
+
+	dev_dbg(chip->dev, "%s(port %d, state %d)\n",
+		__func__, port, state);
+
+	switch (state) {
+	case BR_STATE_DISABLED:
+		portstate = LAN9303_SWE_PORT_STATE_DISABLED_PORT0;
+		break;
+	case BR_STATE_BLOCKING:
+	case BR_STATE_LISTENING:
+		portstate = LAN9303_SWE_PORT_STATE_BLOCKING_PORT0;
+		break;
+	case BR_STATE_LEARNING:
+		portstate = LAN9303_SWE_PORT_STATE_LEARNING_PORT0;
+		break;
+	case BR_STATE_FORWARDING:
+		portstate = LAN9303_SWE_PORT_STATE_FORWARDING_PORT0;
+		break;
+	default:
+		portstate = LAN9303_SWE_PORT_STATE_DISABLED_PORT0;
+		dev_err(chip->dev, "unknown stp state: port %d, state %d\n",
+			port, state);
+	}
+
+	portmask = 0x3 << (port * 2);
+	portstate <<= (port * 2);
+
+	chip->swe_port_state = (chip->swe_port_state & ~portmask) | portstate;
+
+	if (chip->is_bridged)
+		lan9303_write_switch_reg(chip, LAN9303_SWE_PORT_STATE,
+					 chip->swe_port_state);
+	/* else: touching SWE_PORT_STATE would break port separation */
+}
+
+static void lan9303_port_fast_age(struct dsa_switch *ds, int port)
+{
+	struct lan9303 *chip = ds->priv;
+	struct del_port_learned_ctx del_ctx = {
+		.port = port,
+	};
+
+	dev_dbg(chip->dev, "%s(%d)\n", __func__, port);
+	lan9303_alr_loop(chip, alr_loop_cb_del_port_learned, &del_ctx);
+}
+
+static int lan9303_port_fdb_add(struct dsa_switch *ds, int port,
+				const unsigned char *addr, u16 vid,
+				struct dsa_db db)
+{
+	struct lan9303 *chip = ds->priv;
+
+	dev_dbg(chip->dev, "%s(%d, %pM, %d)\n", __func__, port, addr, vid);
+	if (vid)
+		return -EOPNOTSUPP;
+
+	return lan9303_alr_add_port(chip, addr, port, false);
+}
+
+static int lan9303_port_fdb_del(struct dsa_switch *ds, int port,
+				const unsigned char *addr, u16 vid,
+				struct dsa_db db)
+{
+	struct lan9303 *chip = ds->priv;
+
+	dev_dbg(chip->dev, "%s(%d, %pM, %d)\n", __func__, port, addr, vid);
+	if (vid)
+		return -EOPNOTSUPP;
+	lan9303_alr_del_port(chip, addr, port);
+
+	return 0;
+}
+
+static int lan9303_port_fdb_dump(struct dsa_switch *ds, int port,
+				 dsa_fdb_dump_cb_t *cb, void *data)
+{
+	struct lan9303 *chip = ds->priv;
+	struct port_fdb_dump_ctx dump_ctx = {
+		.port = port,
+		.data = data,
+		.cb   = cb,
+	};
+
+	dev_dbg(chip->dev, "%s(%d)\n", __func__, port);
+	return lan9303_alr_loop(chip, alr_loop_cb_fdb_port_dump, &dump_ctx);
+}
+
+static int lan9303_port_mdb_prepare(struct dsa_switch *ds, int port,
+				    const struct switchdev_obj_port_mdb *mdb)
+{
+	struct lan9303 *chip = ds->priv;
+
+	dev_dbg(chip->dev, "%s(%d, %pM, %d)\n", __func__, port, mdb->addr,
+		mdb->vid);
+	if (mdb->vid)
+		return -EOPNOTSUPP;
+	if (lan9303_alr_cache_find_mac(chip, mdb->addr))
+		return 0;
+	if (!lan9303_alr_cache_find_free(chip))
+		return -ENOSPC;
+
+	return 0;
+}
+
+static int lan9303_port_mdb_add(struct dsa_switch *ds, int port,
+				const struct switchdev_obj_port_mdb *mdb,
+				struct dsa_db db)
+{
+	struct lan9303 *chip = ds->priv;
+	int err;
+
+	err = lan9303_port_mdb_prepare(ds, port, mdb);
+	if (err)
+		return err;
+
+	dev_dbg(chip->dev, "%s(%d, %pM, %d)\n", __func__, port, mdb->addr,
+		mdb->vid);
+	return lan9303_alr_add_port(chip, mdb->addr, port, false);
+}
+
+static int lan9303_port_mdb_del(struct dsa_switch *ds, int port,
+				const struct switchdev_obj_port_mdb *mdb,
+				struct dsa_db db)
+{
+	struct lan9303 *chip = ds->priv;
+
+	dev_dbg(chip->dev, "%s(%d, %pM, %d)\n", __func__, port, mdb->addr,
+		mdb->vid);
+	if (mdb->vid)
+		return -EOPNOTSUPP;
+	lan9303_alr_del_port(chip, mdb->addr, port);
+
+	return 0;
+}
+
+static const struct dsa_switch_ops lan9303_switch_ops = {
+	.get_tag_protocol = lan9303_get_tag_protocol,
+	.setup = lan9303_setup,
+	.get_strings = lan9303_get_strings,
+	.phy_read = lan9303_phy_read,
+	.phy_write = lan9303_phy_write,
+	.adjust_link = lan9303_adjust_link,
+	.get_ethtool_stats = lan9303_get_ethtool_stats,
+	.get_sset_count = lan9303_get_sset_count,
+	.port_enable = lan9303_port_enable,
+	.port_disable = lan9303_port_disable,
+	.port_bridge_join       = lan9303_port_bridge_join,
+	.port_bridge_leave      = lan9303_port_bridge_leave,
+	.port_stp_state_set     = lan9303_port_stp_state_set,
+	.port_fast_age          = lan9303_port_fast_age,
+	.port_fdb_add           = lan9303_port_fdb_add,
+	.port_fdb_del           = lan9303_port_fdb_del,
+	.port_fdb_dump          = lan9303_port_fdb_dump,
+	.port_mdb_add           = lan9303_port_mdb_add,
+	.port_mdb_del           = lan9303_port_mdb_del,
+};
+
+static int lan9303_register_switch(struct lan9303 *chip)
+{
+	int base;
+
+	chip->ds = devm_kzalloc(chip->dev, sizeof(*chip->ds), GFP_KERNEL);
+	if (!chip->ds)
+		return -ENOMEM;
+
+	chip->ds->dev = chip->dev;
+	chip->ds->num_ports = LAN9303_NUM_PORTS;
+	chip->ds->priv = chip;
+	chip->ds->ops = &lan9303_switch_ops;
+	base = chip->phy_addr_base;
+	chip->ds->phys_mii_mask = GENMASK(LAN9303_NUM_PORTS - 1 + base, base);
+
+	return dsa_register_switch(chip->ds);
+}
+
+static int lan9303_probe_reset_gpio(struct lan9303 *chip,
+				     struct device_node *np)
+{
+	chip->reset_gpio = devm_gpiod_get_optional(chip->dev, "reset",
+						   GPIOD_OUT_HIGH);
+	if (IS_ERR(chip->reset_gpio))
+		return PTR_ERR(chip->reset_gpio);
+
+	if (!chip->reset_gpio) {
+		dev_dbg(chip->dev, "No reset GPIO defined\n");
+		return 0;
+	}
+
+	chip->reset_duration = 200;
+
+	if (np) {
+		of_property_read_u32(np, "reset-duration",
+				     &chip->reset_duration);
+	} else {
+		dev_dbg(chip->dev, "reset duration defaults to 200 ms\n");
+	}
+
+	/* A sane reset duration should not be longer than 1s */
+	if (chip->reset_duration > 1000)
+		chip->reset_duration = 1000;
+
+	return 0;
+}
+
+int lan9303_probe(struct lan9303 *chip, struct device_node *np)
+{
+	int ret;
+
+	mutex_init(&chip->indirect_mutex);
+	mutex_init(&chip->alr_mutex);
+
+	ret = lan9303_probe_reset_gpio(chip, np);
+	if (ret)
+		return ret;
+
+	lan9303_handle_reset(chip);
+
+	ret = lan9303_check_device(chip);
+	if (ret)
+		return ret;
+
+	ret = lan9303_register_switch(chip);
+	if (ret) {
+		dev_dbg(chip->dev, "Failed to register switch: %d\n", ret);
+		return ret;
+	}
+
+	return 0;
+}
+EXPORT_SYMBOL(lan9303_probe);
+
+int lan9303_remove(struct lan9303 *chip)
+{
+	int rc;
+
+	rc = lan9303_disable_processing(chip);
+	if (rc != 0)
+		dev_warn(chip->dev, "shutting down failed\n");
+
+	dsa_unregister_switch(chip->ds);
+
+	/* assert reset to the whole device to prevent it from doing anything */
+	gpiod_set_value_cansleep(chip->reset_gpio, 1);
+	gpiod_unexport(chip->reset_gpio);
+
+	return 0;
+}
+EXPORT_SYMBOL(lan9303_remove);
+
+void lan9303_shutdown(struct lan9303 *chip)
+{
+	dsa_switch_shutdown(chip->ds);
+}
+EXPORT_SYMBOL(lan9303_shutdown);
+
+MODULE_AUTHOR("Juergen Borleis <kernel@pengutronix.de>");
+MODULE_DESCRIPTION("Core driver for SMSC/Microchip LAN9303 three port ethernet switch");
+MODULE_LICENSE("GPL v2");

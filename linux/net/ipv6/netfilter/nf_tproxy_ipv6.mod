@@ -1,1 +1,3 @@
-rd include/config/DEBUG_OBJECTS_TIMER
+ of reset */
+		break;
+	case CX23885_B

@@ -1,3 +1,5 @@
-nfig/CFI_CLANG_SHADOW) \
-  arch/x86/include/asm/module.h \
-    $(wi
+dth_count_to_ns(FIFO_RXTX, *divider);
+}
+
+/*
+ * IR Tx Carrier Duty C

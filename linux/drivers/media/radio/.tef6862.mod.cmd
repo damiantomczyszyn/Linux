@@ -1,1 +1,5 @@
-cmd_drivers/media/radio/tef6862.mod := { echo  drivers/media/radio/tef6862.o;  echo; } > drivers/media/radio/tef6862.mod
+ET_SEQ_END:
+		return  "GET_SEQ_END";
+	case CX2341X_ENC_SET_PGM_INDEX_INFO:
+		return  "SET_PGM_INDEX_INFO";
+	case CX2341X_

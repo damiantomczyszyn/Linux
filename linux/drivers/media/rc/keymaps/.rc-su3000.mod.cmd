@@ -1,1 +1,9 @@
-cmd_drivers/media/rc/keymaps/rc-su3000.mod := { echo  drivers/media/rc/keymaps/rc-su3000.o;  echo; } > drivers/media/rc/keymaps/rc-su3000.mod
+gister(port);
+	if (err != 0)
+		pr_err("%s() dvb_register failed err = %d\n",
+		       __func__, err);
+
+	return err;
+}
+
+int cx23885_dvb_unregis

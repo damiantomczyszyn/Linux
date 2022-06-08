@@ -1,2 +1,4 @@
-$(wildcard include/config/DEBUG_PLIST) \
-  inc
+2_FIELD_SEQ_BT:
+		break;
+	default:
+		field = V

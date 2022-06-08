@@ -1,1 +1,2 @@
-x86/include/asm/desc_defs.h \
+ze, &risc->dma,
+				       GF

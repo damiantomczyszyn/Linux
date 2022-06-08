@@ -1,9 +1,7 @@
-// SPDX-License-Identifier: GPL-2.0-only
+// SPDX-License-Identifier: GPL-2.0-or-later
 /*
- * kernel/lockdep.c
  *
- * Runtime locking correctness validator
+ *  Support for a cx23417 mpeg encoder via cx23885 host port.
  *
- * Started by Ingo Molnar:
- *
- *  Copyright (C) 2006,2007 Red Hat, Inc., Ingo Molnar <
+ *    (c) 2004 Jelle Foks <jelle@foks.us>
+ *    (c) 2004 Gerd Knorr <kraxel@bytes

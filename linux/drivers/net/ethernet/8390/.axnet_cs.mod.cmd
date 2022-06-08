@@ -1,5 +1,1 @@
-fig/GENERIC_ATOMIC64) \
-  include/linux/atomic/atomic-long.h \
-  include/linux/atomic/atomic-instrumented.h \
-  include/linux/bug.h \
-    $(wi
+cmd_drivers/net/ethernet/8390/axnet_cs.mod := { echo  drivers/net/ethernet/8390/axnet_cs.o;  echo; } > drivers/net/ethernet/8390/axnet_cs.mod

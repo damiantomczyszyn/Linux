@@ -1,2 +1,1 @@
-ig/SPI_SLAVE) \
-  include
+onst struct v4l2_frequenc

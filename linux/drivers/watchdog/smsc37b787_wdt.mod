@@ -1,2 +1,2 @@
-config/X86_P6_NOP) \
-    $(wildcard
+] IR controller */
+		allowed_protos

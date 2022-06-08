@@ -1,998 +1,1756 @@
-$(wildcard include/config/RSEQ) \
-    $(wildcard include/config/TASK_DELAY_ACCT) \
-    $(wildcard include/config/FAULT_INJECTION) \
-    $(wildcard include/config/LATENCYTOP) \
-    $(wildcard include/config/KUNIT) \
-    $(wildcard include/config/FUNCTION_GRAPH_TRACER) \
-    $(wildcard include/config/BCACHE) \
-    $(wildcard include/config/VMAP_STACK) \
-    $(wildcard include/config/LIVEPATCH) \
-    $(wildcard include/config/SECURITY) \
-    $(wildcard include/config/BPF_SYSCALL) \
-    $(wildcard include/config/GCC_PLUGIN_STACKLEAK) \
-    $(wildcard include/config/X86_MCE) \
-    $(wildcard include/config/KRETPROBES) \
-    $(wildcard include/config/RETHOOK) \
-    $(wildcard include/config/ARCH_HAS_PARANOID_L1D_FLUSH) \
-    $(wildcard include/config/ARCH_TASK_STRUCT_ON_STACK) \
-    $(wildcard include/config/DEBUG_RSEQ) \
-  include/uapi/linux/sched.h \
-  include/linux/pid.h \
-  include/linux/rculist.h \
-    $(wildcard include/config/PROVE_RCU_LIST) \
-  include/linux/sem.h \
-  include/uapi/linux/sem.h \
-  include/linux/ipc.h \
-  include/linux/rhashtable-types.h \
-  include/uapi/linux/ipc.h \
-  arch/x86/include/generated/uapi/asm/ipcbuf.h \
-  include/uapi/asm-generic/ipcbuf.h \
-  arch/x86/include/uapi/asm/sembuf.h \
-  include/linux/shm.h \
-  include/uapi/linux/shm.h \
-  include/uapi/asm-generic/hugetlb_encode.h \
-  arch/x86/include/uapi/asm/shmbuf.h \
-  include/uapi/asm-generic/shmbuf.h \
-  arch/x86/include/asm/shmparam.h \
-  include/linux/plist.h \
-    $(wildcard include/config/DEBUG_PLIST) \
-  include/linux/hrtimer.h \
-    $(wildcard include/config/HIGH_RES_TIMERS) \
-    $(wildcard include/config/TIME_LOW_RES) \
-    $(wildcard include/config/TIMERFD) \
-  include/linux/hrtimer_defs.h \
-  include/linux/timerqueue.h \
-  include/linux/seccomp.h \
-    $(wildcard include/config/SECCOMP) \
-    $(wildcard include/config/HAVE_ARCH_SECCOMP_FILTER) \
-    $(wildcard include/config/SECCOMP_FILTER) \
-    $(wildcard include/config/CHECKPOINT_RESTORE) \
-    $(wildcard include/config/SECCOMP_CACHE_DEBUG) \
-  include/uapi/linux/seccomp.h \
-  arch/x86/include/asm/seccomp.h \
-  arch/x86/include/asm/unistd.h \
-  arch/x86/include/uapi/asm/unistd.h \
-  arch/x86/include/generated/uapi/asm/unistd_32.h \
-  include/asm-generic/seccomp.h \
-  include/uapi/linux/unistd.h \
-  include/linux/resource.h \
-  include/uapi/linux/resource.h \
-  arch/x86/include/generated/uapi/asm/resource.h \
-  include/asm-generic/resource.h \
-  include/uapi/asm-generic/resource.h \
-  include/linux/latencytop.h \
-  include/linux/sched/prio.h \
-  include/linux/sched/types.h \
-  include/linux/signal_types.h \
-    $(wildcard include/config/OLD_SIGACTION) \
-  include/uapi/linux/signal.h \
-  arch/x86/include/asm/signal.h \
-  arch/x86/include/uapi/asm/signal.h \
-  include/uapi/asm-generic/signal-defs.h \
-  arch/x86/include/uapi/asm/siginfo.h \
-  include/uapi/asm-generic/siginfo.h \
-  include/linux/syscall_user_dispatch.h \
-  include/linux/task_io_accounting.h \
-    $(wildcard include/config/TASK_IO_ACCOUNTING) \
-  include/linux/posix-timers.h \
-  include/linux/alarmtimer.h \
-    $(wildcard include/config/RTC_CLASS) \
-  include/uapi/linux/rseq.h \
-  include/linux/kcsan.h \
-  arch/x86/include/generated/asm/kmap_size.h \
-  include/asm-generic/kmap_size.h \
-    $(wildcard include/config/DEBUG_KMAP_LOCAL) \
-  include/linux/energy_model.h \
-  include/linux/sched/cpufreq.h \
-    $(wildcard include/config/CPU_FREQ) \
-  include/linux/sched/topology.h \
-    $(wildcard include/config/SCHED_DEBUG) \
-    $(wildcard include/config/SCHED_MC) \
-    $(wildcard include/config/CPU_FREQ_GOV_SCHEDUTIL) \
-  include/linux/sched/idle.h \
-  include/linux/sched/sd_flags.h \
-  include/linux/klist.h \
-  include/linux/pm.h \
-    $(wildcard include/config/VT_CONSOLE_SLEEP) \
-    $(wildcard include/config/PM_CLK) \
-    $(wildcard include/config/PM_GENERIC_DOMAINS) \
-  include/linux/device/bus.h \
-  include/linux/device/class.h \
-  include/linux/device/driver.h \
-  include/linux/module.h \
-    $(wildcard include/config/MODULES_TREE_LOOKUP) \
-    $(wildcard include/config/STACKTRACE_BUILD_ID) \
-    $(wildcard include/config/MODULE_SIG) \
-    $(wildcard include/config/KALLSYMS) \
-    $(wildcard include/config/BPF_EVENTS) \
-    $(wildcard include/config/DEBUG_INFO_BTF_MODULES) \
-    $(wildcard include/config/EVENT_TRACING) \
-    $(wildcard include/config/MODULE_UNLOAD) \
-    $(wildcard include/config/CONSTRUCTORS) \
-    $(wildcard include/config/FUNCTION_ERROR_INJECTION) \
-  include/linux/buildid.h \
-    $(wildcard include/config/CRASH_CORE) \
-  include/linux/kmod.h \
-  include/linux/umh.h \
-  include/linux/sysctl.h \
-    $(wildcard include/config/SYSCTL) \
-  include/uapi/linux/sysctl.h \
-  include/linux/elf.h \
-    $(wildcard include/config/ARCH_USE_GNU_PROPERTY) \
-    $(wildcard include/config/ARCH_HAVE_ELF_PROT) \
-  arch/x86/include/asm/elf.h \
-    $(wildcard include/config/X86_X32_ABI) \
-  arch/x86/include/asm/user.h \
-  arch/x86/include/asm/user_32.h \
-  arch/x86/include/asm/fsgsbase.h \
-  arch/x86/include/asm/vdso.h \
-  arch/x86/include/asm/desc.h \
-  arch/x86/include/asm/fixmap.h \
-    $(wildcard include/config/DEBUG_KMAP_LOCAL_FORCE_MAP) \
-    $(wildcard include/config/X86_VSYSCALL_EMULATION) \
-    $(wildcard include/config/PROVIDE_OHCI1394_DMA_INIT) \
-    $(wildcard include/config/PCI_MMCONFIG) \
-    $(wildcard include/config/ACPI_APEI_GHES) \
-    $(wildcard include/config/INTEL_TXT) \
-  include/asm-generic/fixmap.h \
-  arch/x86/include/asm/irq_vectors.h \
-    $(wildcard include/config/HAVE_KVM) \
-    $(wildcard include/config/HYPERV) \
-    $(wildcard include/config/PCI_MSI) \
-  arch/x86/include/asm/cpu_entry_area.h \
-  arch/x86/include/asm/intel_ds.h \
-  arch/x86/include/asm/pgtable_areas.h \
-  arch/x86/include/asm/pgtable_32_areas.h \
-  include/uapi/linux/elf.h \
-  include/uapi/linux/elf-em.h \
-  include/linux/moduleparam.h \
-    $(wildcard include/config/ALPHA) \
-    $(wildcard include/config/PPC64) \
-  include/linux/rbtree_latch.h \
-  include/linux/error-injection.h \
-  include/asm-generic/error-injection.h \
-  include/linux/cfi.h \
-    $(wildcard include/config/CFI_CLANG_SHADOW) \
-  arch/x86/include/asm/module.h \
-    $(wildcard include/config/UNWINDER_ORC) \
-  include/asm-generic/module.h \
-    $(wildcard include/config/HAVE_MOD_ARCH_SPECIFIC) \
-    $(wildcard include/config/MODULES_USE_ELF_REL) \
-    $(wildcard include/config/MODULES_USE_ELF_RELA) \
-  arch/x86/include/asm/orc_types.h \
-  arch/x86/include/asm/device.h \
-  include/linux/pm_wakeup.h \
-  include/acpi/acpi.h \
-  include/acpi/platform/acenv.h \
-  include/acpi/platform/acgcc.h \
-  include/acpi/platform/aclinux.h \
-    $(wildcard include/config/ACPI_REDUCED_HARDWARE_ONLY) \
-    $(wildcard include/config/ACPI_DEBUG) \
-  include/linux/ctype.h \
-  arch/x86/include/asm/acenv.h \
-  include/acpi/acnames.h \
-  include/acpi/actypes.h \
-  include/acpi/acexcep.h \
-  include/acpi/actbl.h \
-  include/acpi/actbl1.h \
-  include/acpi/actbl2.h \
-  include/acpi/actbl3.h \
-  include/acpi/acrestyp.h \
-  include/acpi/platform/acenvex.h \
-  include/acpi/platform/aclinuxex.h \
-  include/acpi/platform/acgccex.h \
-  include/acpi/acoutput.h \
-  include/acpi/acpiosxf.h \
-  include/acpi/acpixf.h \
-  include/acpi/acconfig.h \
-  include/acpi/acbuffer.h \
-  include/linux/dynamic_debug.h \
-  include/acpi/acpi_bus.h \
-    $(wildcard include/config/X86_ANDROID_TABLETS) \
-    $(wildcard include/config/ACPI_SYSTEM_POWER_STATES_SUPPORT) \
-    $(wildcard include/config/ACPI_SLEEP) \
-  include/acpi/acpi_drivers.h \
-    $(wildcard include/config/ACPI_DOCK) \
-  include/acpi/acpi_numa.h \
-    $(wildcard include/config/ACPI_HMAT) \
-  include/acpi/acpi_io.h \
-  include/linux/io.h \
-    $(wildcard include/config/HAS_IOPORT_MAP) \
-  arch/x86/include/asm/io.h \
-    $(wildcard include/config/MTRR) \
-    $(wildcard include/config/X86_PAT) \
-  arch/x86/include/generated/asm/early_ioremap.h \
-  include/asm-generic/early_ioremap.h \
-    $(wildcard include/config/GENERIC_EARLY_IOREMAP) \
-  include/asm-generic/iomap.h \
-  include/asm-generic/pci_iomap.h \
-    $(wildcard include/config/NO_GENERIC_PCI_IOPORT_MAP) \
-    $(wildcard include/config/GENERIC_PCI_IOMAP) \
-  include/asm-generic/io.h \
-    $(wildcard include/config/GENERIC_IOMAP) \
-    $(wildcard include/config/GENERIC_IOREMAP) \
-    $(wildcard include/config/VIRT_TO_BUS) \
-    $(wildcard include/config/GENERIC_DEVMEM_IS_ALLOWED) \
-  include/linux/logic_pio.h \
-    $(wildcard include/config/INDIRECT_PIO) \
-  include/linux/vmalloc.h \
-    $(wildcard include/config/HAVE_ARCH_HUGE_VMALLOC) \
-  arch/x86/include/asm/vmalloc.h \
-    $(wildcard include/config/HAVE_ARCH_HUGE_VMAP) \
-  arch/x86/include/asm/acpi.h \
-    $(wildcard include/config/ACPI_APEI) \
-  include/acpi/pdc_intel.h \
-  arch/x86/include/asm/numa.h \
-    $(wildcard include/config/NUMA_EMU) \
-  arch/x86/include/asm/numa_32.h \
-  include/linux/regulator/consumer.h \
-    $(wildcard include/config/REGULATOR) \
-  include/linux/suspend.h \
-    $(wildcard include/config/VT) \
-    $(wildcard include/config/SUSPEND) \
-    $(wildcard include/config/HIBERNATION_SNAPSHOT_DEV) \
-    $(wildcard include/config/PM_SLEEP_DEBUG) \
-    $(wildcard include/config/PM_AUTOSLEEP) \
-  include/linux/swap.h \
-    $(wildcard include/config/DEVICE_PRIVATE) \
-    $(wildcard include/config/MIGRATION) \
-    $(wildcard include/config/FRONTSWAP) \
-    $(wildcard include/config/THP_SWAP) \
-    $(wildcard include/config/MEMCG_SWAP) \
-  include/linux/memcontrol.h \
-    $(wildcard include/config/CGROUP_WRITEBACK) \
-  include/linux/cgroup.h \
-    $(wildcard include/config/CGROUP_CPUACCT) \
-    $(wildcard include/config/SOCK_CGROUP_DATA) \
-    $(wildcard include/config/CGROUP_DATA) \
-    $(wildcard include/config/CGROUP_BPF) \
-  include/uapi/linux/cgroupstats.h \
-  include/uapi/linux/taskstats.h \
-  include/linux/fs.h \
-    $(wildcard include/config/READ_ONLY_THP_FOR_FS) \
-    $(wildcard include/config/FS_POSIX_ACL) \
-    $(wildcard include/config/IMA) \
-    $(wildcard include/config/FILE_LOCKING) \
-    $(wildcard include/config/FSNOTIFY) \
-    $(wildcard include/config/FS_ENCRYPTION) \
-    $(wildcard include/config/FS_VERITY) \
-    $(wildcard include/config/EPOLL) \
-    $(wildcard include/config/UNICODE) \
-    $(wildcard include/config/QUOTA) \
-    $(wildcard include/config/FS_DAX) \
-    $(wildcard include/config/BLOCK) \
-  include/linux/wait_bit.h \
-  include/linux/kdev_t.h \
-  include/uapi/linux/kdev_t.h \
-  include/linux/dcache.h \
-  include/linux/rculist_bl.h \
-  include/linux/list_bl.h \
-  include/linux/bit_spinlock.h \
-  include/linux/lockref.h \
-    $(wildcard include/config/ARCH_USE_CMPXCHG_LOCKREF) \
-  include/linux/stringhash.h \
-    $(wildcard include/config/DCACHE_WORD_ACCESS) \
-  include/linux/hash.h \
-    $(wildcard include/config/HAVE_ARCH_HASH) \
-  include/linux/path.h \
-  include/linux/list_lru.h \
-  include/linux/shrinker.h \
-  include/linux/capability.h \
-  include/uapi/linux/capability.h \
-  include/linux/semaphore.h \
-  include/linux/fcntl.h \
-    $(wildcard include/config/ARCH_32BIT_OFF_T) \
-  include/uapi/linux/fcntl.h \
-  arch/x86/include/generated/uapi/asm/fcntl.h \
-  include/uapi/asm-generic/fcntl.h \
-  include/uapi/linux/openat2.h \
-  include/linux/migrate_mode.h \
-  include/linux/percpu-rwsem.h \
-  include/linux/rcuwait.h \
-  include/linux/sched/signal.h \
-    $(wildcard include/config/SCHED_AUTOGROUP) \
-    $(wildcard include/config/BSD_PROCESS_ACCT) \
-    $(wildcard include/config/TASKSTATS) \
-    $(wildcard include/config/STACK_GROWSUP) \
-  include/linux/signal.h \
-    $(wildcard include/config/DYNAMIC_SIGFRAME) \
-  include/linux/sched/jobctl.h \
-  include/linux/sched/task.h \
-    $(wildcard include/config/HAVE_EXIT_THREAD) \
-    $(wildcard include/config/ARCH_WANTS_DYNAMIC_TASK_STRUCT) \
-    $(wildcard include/config/HAVE_ARCH_THREAD_STRUCT_WHITELIST) \
-  include/linux/uaccess.h \
-  include/linux/fault-inject-usercopy.h \
-    $(wildcard include/config/FAULT_INJECTION_USERCOPY) \
-  arch/x86/include/asm/uaccess.h \
-    $(wildcard include/config/CC_HAS_ASM_GOTO_OUTPUT) \
-    $(wildcard include/config/CC_HAS_ASM_GOTO_TIED_OUTPUT) \
-    $(wildcard include/config/ARCH_HAS_COPY_MC) \
-    $(wildcard include/config/X86_INTEL_USERCOPY) \
-  arch/x86/include/asm/smap.h \
-  arch/x86/include/asm/extable.h \
-    $(wildcard include/config/BPF_JIT) \
-  include/asm-generic/access_ok.h \
-    $(wildcard include/config/ALTERNATE_USER_ADDRESS_SPACE) \
-  arch/x86/include/asm/uaccess_32.h \
-  include/linux/cred.h \
-    $(wildcard include/config/DEBUG_CREDENTIALS) \
-  include/linux/key.h \
-    $(wildcard include/config/KEY_NOTIFICATIONS) \
-    $(wildcard include/config/NET) \
-  include/linux/assoc_array.h \
-    $(wildcard include/config/ASSOCIATIVE_ARRAY) \
-  include/linux/sched/user.h \
-    $(wildcard include/config/WATCH_QUEUE) \
-  include/linux/percpu_counter.h \
-  include/linux/rcu_sync.h \
-  include/linux/delayed_call.h \
-  include/linux/errseq.h \
-  include/linux/ioprio.h \
-  include/linux/sched/rt.h \
-  include/linux/iocontext.h \
-    $(wildcard include/config/BLK_ICQ) \
-  include/uapi/linux/ioprio.h \
-  include/linux/fs_types.h \
-  include/linux/mount.h \
-  include/linux/mnt_idmapping.h \
-  include/uapi/linux/fs.h \
-  include/linux/quota.h \
-    $(wildcard include/config/QUOTA_NETLINK_INTERFACE) \
-  include/uapi/linux/dqblk_xfs.h \
-  include/linux/dqblk_v1.h \
-  include/linux/dqblk_v2.h \
-  include/linux/dqblk_qtree.h \
-  include/linux/projid.h \
-  include/uapi/linux/quota.h \
-  include/linux/nfs_fs_i.h \
-  include/linux/seq_file.h \
-  include/linux/string_helpers.h \
-  include/linux/ns_common.h \
-  include/linux/nsproxy.h \
-  include/linux/user_namespace.h \
-    $(wildcard include/config/INOTIFY_USER) \
-    $(wildcard include/config/FANOTIFY) \
-    $(wildcard include/config/PERSISTENT_KEYRINGS) \
-  include/linux/kernel_stat.h \
-  include/linux/interrupt.h \
-    $(wildcard include/config/IRQ_FORCED_THREADING) \
-    $(wildcard include/config/GENERIC_IRQ_PROBE) \
-    $(wildcard include/config/IRQ_TIMINGS) \
-  include/linux/irqreturn.h \
-  include/linux/irqnr.h \
-  include/uapi/linux/irqnr.h \
-  include/linux/hardirq.h \
-  include/linux/context_tracking_state.h \
-    $(wildcard include/config/CONTEXT_TRACKING) \
-  include/linux/ftrace_irq.h \
-    $(wildcard include/config/HWLAT_TRACER) \
-    $(wildcard include/config/OSNOISE_TRACER) \
-  include/linux/vtime.h \
-    $(wildcard include/config/VIRT_CPU_ACCOUNTING) \
-    $(wildcard include/config/IRQ_TIME_ACCOUNTING) \
-  arch/x86/include/asm/hardirq.h \
-    $(wildcard include/config/KVM_INTEL) \
-    $(wildcard include/config/X86_THERMAL_VECTOR) \
-    $(wildcard include/config/X86_MCE_THRESHOLD) \
-    $(wildcard include/config/X86_MCE_AMD) \
-    $(wildcard include/config/X86_HV_CALLBACK_VECTOR) \
-  arch/x86/include/asm/irq.h \
-  arch/x86/include/asm/sections.h \
-  include/asm-generic/sections.h \
-    $(wildcard include/config/HAVE_FUNCTION_DESCRIPTORS) \
-  include/linux/cgroup-defs.h \
-    $(wildcard include/config/CGROUP_NET_CLASSID) \
-    $(wildcard include/config/CGROUP_NET_PRIO) \
-  include/linux/u64_stats_sync.h \
-  include/linux/bpf-cgroup-defs.h \
-  include/linux/psi_types.h \
-  include/linux/kthread.h \
-  include/linux/cgroup_subsys.h \
-    $(wildcard include/config/CGROUP_DEVICE) \
-    $(wildcard include/config/CGROUP_FREEZER) \
-    $(wildcard include/config/CGROUP_PERF) \
-    $(wildcard include/config/CGROUP_HUGETLB) \
-    $(wildcard include/config/CGROUP_PIDS) \
-    $(wildcard include/config/CGROUP_RDMA) \
-    $(wildcard include/config/CGROUP_MISC) \
-    $(wildcard include/config/CGROUP_DEBUG) \
-  include/linux/vm_event_item.h \
-    $(wildcard include/config/HAVE_ARCH_TRANSPARENT_HUGEPAGE_PUD) \
-    $(wildcard include/config/MEMORY_BALLOON) \
-    $(wildcard include/config/BALLOON_COMPACTION) \
-    $(wildcard include/config/DEBUG_TLBFLUSH) \
-    $(wildcard include/config/DEBUG_VM_VMACACHE) \
-  include/linux/page_counter.h \
-  include/linux/vmpressure.h \
-  include/linux/eventfd.h \
-  include/linux/mm.h \
-    $(wildcard include/config/HAVE_ARCH_MMAP_RND_BITS) \
-    $(wildcard include/config/HAVE_ARCH_MMAP_RND_COMPAT_BITS) \
-    $(wildcard include/config/ARCH_USES_HIGH_VMA_FLAGS) \
-    $(wildcard include/config/ARCH_HAS_PKEYS) \
-    $(wildcard include/config/PPC) \
-    $(wildcard include/config/PARISC) \
-    $(wildcard include/config/SPARC64) \
-    $(wildcard include/config/ARM64_MTE) \
-    $(wildcard include/config/HAVE_ARCH_USERFAULTFD_MINOR) \
-    $(wildcard include/config/SHMEM) \
-    $(wildcard include/config/ARCH_HAS_PTE_SPECIAL) \
-    $(wildcard include/config/ARCH_HAS_PTE_DEVMAP) \
-    $(wildcard include/config/DEBUG_VM_RB) \
-    $(wildcard include/config/PAGE_POISONING) \
-    $(wildcard include/config/INIT_ON_ALLOC_DEFAULT_ON) \
-    $(wildcard include/config/INIT_ON_FREE_DEFAULT_ON) \
-    $(wildcard include/config/DEBUG_PAGEALLOC) \
-    $(wildcard include/config/HUGETLBFS) \
-    $(wildcard include/config/MAPPING_DIRTY_HELPERS) \
-    $(wildcard include/config/ANON_VMA_NAME) \
-  include/linux/mmap_lock.h \
-  include/linux/page_ext.h \
-  include/linux/stacktrace.h \
-    $(wildcard include/config/ARCH_STACKWALK) \
-    $(wildcard include/config/STACKTRACE) \
-    $(wildcard include/config/HAVE_RELIABLE_STACKTRACE) \
-  include/linux/stackdepot.h \
-    $(wildcard include/config/STACKDEPOT_ALWAYS_INIT) \
-  include/linux/page_ref.h \
-    $(wildcard include/config/DEBUG_PAGE_REF) \
-  include/linux/sizes.h \
-  include/linux/pgtable.h \
-    $(wildcard include/config/HIGHPTE) \
-    $(wildcard include/config/GUP_GET_PTE_LOW_HIGH) \
-    $(wildcard include/config/HAVE_ARCH_SOFT_DIRTY) \
-    $(wildcard include/config/ARCH_ENABLE_THP_MIGRATION) \
-    $(wildcard include/config/X86_ESPFIX64) \
-  arch/x86/include/asm/pgtable.h \
-    $(wildcard include/config/DEBUG_WX) \
-    $(wildcard include/config/PAGE_TABLE_CHECK) \
-  arch/x86/include/asm/pkru.h \
-  arch/x86/include/asm/fpu/api.h \
-    $(wildcard include/config/X86_DEBUG_FPU) \
-  arch/x86/include/asm/coco.h \
-  include/asm-generic/pgtable_uffd.h \
-  include/linux/page_table_check.h \
-  arch/x86/include/asm/pgtable_32.h \
-  arch/x86/include/asm/pgtable-3level.h \
-  arch/x86/include/asm/pgtable-invert.h \
-  include/linux/huge_mm.h \
-  include/linux/sched/coredump.h \
-    $(wildcard include/config/CORE_DUMP_DEFAULT_ELF_HEADERS) \
-  include/linux/vmstat.h \
-    $(wildcard include/config/VM_EVENT_COUNTERS) \
-  include/linux/writeback.h \
-  include/linux/flex_proportions.h \
-  include/linux/backing-dev-defs.h \
-    $(wildcard include/config/DEBUG_FS) \
-  include/linux/blk_types.h \
-    $(wildcard include/config/FAIL_MAKE_REQUEST) \
-    $(wildcard include/config/BLK_CGROUP_IOCOST) \
-    $(wildcard include/config/BLK_INLINE_ENCRYPTION) \
-    $(wildcard include/config/BLK_DEV_INTEGRITY) \
-  include/linux/bvec.h \
-  include/linux/highmem.h \
-  include/linux/cacheflush.h \
-  arch/x86/include/asm/cacheflush.h \
-  include/asm-generic/cacheflush.h \
-  include/linux/highmem-internal.h \
-  arch/x86/include/asm/highmem.h \
-  arch/x86/include/asm/tlbflush.h \
-  arch/x86/include/asm/invpcid.h \
-  arch/x86/include/asm/pti.h \
-  include/linux/bio.h \
-  include/linux/mempool.h \
-  include/linux/uio.h \
-    $(wildcard include/config/ARCH_HAS_UACCESS_FLUSHCACHE) \
-  include/uapi/linux/uio.h \
-  include/linux/node.h \
-    $(wildcard include/config/HMEM_REPORTING) \
-  include/linux/pagemap.h \
-  include/linux/hugetlb_inline.h \
-  include/uapi/linux/mempolicy.h \
-  include/linux/freezer.h \
-  include/uapi/linux/i2c.h \
-  include/linux/delay.h \
-  arch/x86/include/asm/delay.h \
-  include/asm-generic/delay.h \
-  include/linux/videodev2.h \
-  include/uapi/linux/videodev2.h \
-    $(wildcard include/config/VIDEO_ADV_DEBUG) \
-  include/uapi/linux/v4l2-common.h \
-  include/uapi/linux/v4l2-controls.h \
-  include/uapi/linux/v4l2-mediabus.h \
-  include/uapi/linux/media-bus-format.h \
-  include/linux/of_graph.h \
-  include/media/v4l2-async.h \
-  include/media/v4l2-device.h \
-    $(wildcard include/config/VIDEO_V4L2_SUBDEV_API) \
-  include/media/media-device.h \
-  include/media/media-devnode.h \
-  include/linux/poll.h \
-  include/uapi/linux/poll.h \
-  arch/x86/include/generated/uapi/asm/poll.h \
-  include/uapi/asm-generic/poll.h \
-  include/uapi/linux/eventpoll.h \
-  include/linux/cdev.h \
-  include/media/media-entity.h \
-  include/uapi/linux/media.h \
-  include/media/v4l2-subdev.h \
-  include/uapi/linux/v4l2-subdev.h \
-  include/media/v4l2-common.h \
-    $(wildcard include/config/VIDEO_V4L2_I2C) \
-    $(wildcard include/config/SPI) \
-  include/media/v4l2-dev.h \
-  include/linux/spi/spi.h \
-    $(wildcard include/config/SPI_SLAVE) \
-  include/linux/scatterlist.h \
-    $(wildcard include/config/NEED_SG_DMA_LENGTH) \
-    $(wildcard include/config/DEBUG_SG) \
-    $(wildcard include/config/SGL_ALLOC) \
-    $(wildcard include/config/ARCH_NO_SG_CHAIN) \
-    $(wildcard include/config/SG_POOL) \
-  include/linux/gpio/consumer.h \
-    $(wildcard include/config/OF_GPIO) \
-    $(wildcard include/config/GPIO_SYSFS) \
-  include/uapi/linux/spi/spi.h \
-  include/media/v4l2-fh.h \
-  include/media/v4l2-mediabus.h \
-  include/media/v4l2-fwnode.h \
-  include/media/v4l2-ctrls.h \
-  include/media/media-request.h \
-  include/media/hevc-ctrls.h \
-  include/media/i2c/tvp514x.h \
-  drivers/media/i2c/tvp514x_regs.h \
+// SPDX-License-Identifier: GPL-2.0
+/*
+ * Microchip KSZ9477 switch driver main logic
+ *
+ * Copyright (C) 2017-2019 Microchip Technology Inc.
+ */
 
-drivers/media/i2c/tvp514x.o: $(deps_drivers/media/i2c/tvp514x.o)
+#include <linux/kernel.h>
+#include <linux/module.h>
+#include <linux/iopoll.h>
+#include <linux/platform_data/microchip-ksz.h>
+#include <linux/phy.h>
+#include <linux/if_bridge.h>
+#include <linux/if_vlan.h>
+#include <net/dsa.h>
+#include <net/switchdev.h>
 
-$(deps_drivers/media/i2c/tvp514x.o):
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     cmd_drivers/media/i2c/tvp514x.o := gcc -Wp,-MMD,drivers/media/i2c/.tvp514x.o.d -nostdinc -I./arch/x86/include -I./arch/x86/include/generated  -I./include -I./arch/x86/include/uapi -I./arch/x86/include/generated/uapi -I./include/uapi -I./include/generated/uapi -include ./include/linux/compiler-version.h -include ./include/linux/kconfig.h -include ./include/linux/compiler_types.h -D__KERNEL__ -fmacro-prefix-map=./= -Wall -Wundef -Werror=strict-prototypes -Wno-trigraphs -fno-strict-aliasing -fno-common -fshort-wchar -fno-PIE -Werror=implicit-function-declaration -Werror=implicit-int -Werror=return-type -Wno-format-security -std=gnu11 -mno-sse -mno-mmx -mno-sse2 -mno-3dnow -mno-avx -fcf-protection=none -m32 -msoft-float -mregparm=3 -freg-struct-return -fno-pic -mpreferred-stack-boundary=2 -march=i686 -mtune=pentium3 -mtune=generic -Wa,-mtune=generic32 -ffreestanding -mstack-protector-guard-reg=fs -mstack-protector-guard-symbol=__stack_chk_guard -Wno-sign-compare -fno-asynchronous-unwind-tables -mindirect-branch=thunk-extern -mindirect-branch-register -fno-jump-tables -fno-delete-null-pointer-checks -Wno-frame-address -Wno-format-truncation -Wno-format-overflow -Wno-address-of-packed-member -O2 -fno-allow-store-data-races -fstack-protector-strong -Wimplicit-fallthrough=5 -Wno-main -Wno-unused-but-set-variable -Wno-unused-const-variable -fno-stack-clash-protection -pg -mrecord-mcount -mfentry -DCC_USING_FENTRY -Wdeclaration-after-statement -Wvla -Wno-pointer-sign -Wcast-function-type -Wno-stringop-truncation -Wno-stringop-overflow -Wno-restrict -Wno-maybe-uninitialized -Wno-alloc-size-larger-than -fno-strict-overflow -fno-stack-check -fconserve-stack -Werror=date-time -Werror=incompatible-pointer-types -Werror=designated-init -Wno-packed-not-aligned  -DMODULE  -DKBUILD_BASENAME='"tvp514x"' -DKBUILD_MODNAME='"tvp514x"' -D__KBUILD_MODNAME=kmod_tvp514x -c -o drivers/media/i2c/tvp514x.o drivers/media/i2c/tvp514x.c 
+#include "ksz9477_reg.h"
+#include "ksz_common.h"
 
-source_drivers/media/i2c/tvp514x.o := drivers/media/i2c/tvp514x.c
+/* Used with variable features to indicate capabilities. */
+#define GBIT_SUPPORT			BIT(0)
+#define NEW_XMII			BIT(1)
+#define IS_9893				BIT(2)
 
-deps_drivers/media/i2c/tvp514x.o := \
-    $(wildcard include/config/OF) \
-    $(wildcard include/config/MEDIA_CONTROLLER) \
-  include/linux/compiler-version.h \
-    $(wildcard include/config/CC_VERSION_TEXT) \
-  include/linux/kconfig.h \
-    $(wildcard include/config/CPU_BIG_ENDIAN) \
-    $(wildcard include/config/BOOGER) \
-    $(wildcard include/config/FOO) \
-  include/linux/compiler_types.h \
-    $(wildcard include/config/DEBUG_INFO_BTF) \
-    $(wildcard include/config/PAHOLE_HAS_BTF_TAG) \
-    $(wildcard include/config/HAVE_ARCH_COMPILER_H) \
-    $(wildcard include/config/CC_HAS_ASM_INLINE) \
-  include/linux/compiler_attributes.h \
-  include/linux/compiler-gcc.h \
-    $(wildcard include/config/RETPOLINE) \
-    $(wildcard include/config/ARCH_USE_BUILTIN_BSWAP) \
-    $(wildcard include/config/SHADOW_CALL_STACK) \
-    $(wildcard include/config/KCOV) \
-  include/linux/i2c.h \
-    $(wildcard include/config/I2C) \
-    $(wildcard include/config/I2C_SLAVE) \
-    $(wildcard include/config/I2C_BOARDINFO) \
-    $(wildcard include/config/I2C_MUX) \
-    $(wildcard include/config/ACPI) \
-  include/linux/acpi.h \
-    $(wildcard include/config/ACPI_DEBUGGER) \
-    $(wildcard include/config/ACPI_TABLE_LIB) \
-    $(wildcard include/config/X86) \
-    $(wildcard include/config/IA64) \
-    $(wildcard include/config/LOONGARCH) \
-    $(wildcard include/config/ARM64) \
-    $(wildcard include/config/ACPI_PROCESSOR_CSTATE) \
-    $(wildcard include/config/ACPI_HOTPLUG_CPU) \
-    $(wildcard include/config/ACPI_HOTPLUG_IOAPIC) \
-    $(wildcard include/config/X86_IO_APIC) \
-    $(wildcard include/config/PCI) \
-    $(wildcard include/config/ACPI_WMI) \
-    $(wildcard include/config/ACPI_NUMA) \
-    $(wildcard include/config/HIBERNATION) \
-    $(wildcard include/config/PM_SLEEP) \
-    $(wildcard include/config/ACPI_HOTPLUG_MEMORY) \
-    $(wildcard include/config/ACPI_CONTAINER) \
-    $(wildcard include/config/ACPI_GTDT) \
-    $(wildcard include/config/PM) \
-    $(wildcard include/config/DYNAMIC_DEBUG) \
-    $(wildcard include/config/GPIOLIB) \
-    $(wildcard include/config/ACPI_TABLE_UPGRADE) \
-    $(wildcard include/config/ACPI_WATCHDOG) \
-    $(wildcard include/config/ACPI_SPCR_TABLE) \
-    $(wildcard include/config/ACPI_GENERIC_GSI) \
-    $(wildcard include/config/ACPI_LPIT) \
-    $(wildcard include/config/ACPI_PPTT) \
-    $(wildcard include/config/ACPI_PCC) \
-  include/linux/errno.h \
-  include/uapi/linux/errno.h \
-  arch/x86/include/generated/uapi/asm/errno.h \
-  include/uapi/asm-generic/errno.h \
-  include/uapi/asm-generic/errno-base.h \
-  include/linux/ioport.h \
-    $(wildcard include/config/MEMORY_HOTREMOVE) \
-    $(wildcard include/config/MEMORY_HOTPLUG) \
-  include/linux/bits.h \
-  include/linux/const.h \
-  include/vdso/const.h \
-  include/uapi/linux/const.h \
-  include/vdso/bits.h \
-  arch/x86/include/uapi/asm/bitsperlong.h \
-  include/asm-generic/bitsperlong.h \
-    $(wildcard include/config/64BIT) \
-  include/uapi/asm-generic/bitsperlong.h \
-  include/linux/build_bug.h \
-  include/linux/compiler.h \
-    $(wildcard include/config/TRACE_BRANCH_PROFILING) \
-    $(wildcard include/config/PROFILE_ALL_BRANCHES) \
-    $(wildcard include/config/STACK_VALIDATION) \
-    $(wildcard include/config/CFI_CLANG) \
-  include/linux/compiler_types.h \
-  arch/x86/include/generated/asm/rwonce.h \
-  include/asm-generic/rwonce.h \
-  include/linux/kasan-checks.h \
-    $(wildcard include/config/KASAN_GENERIC) \
-    $(wildcard include/config/KASAN_SW_TAGS) \
-  include/linux/types.h \
-    $(wildcard include/config/HAVE_UID16) \
-    $(wildcard include/config/UID16) \
-    $(wildcard include/config/ARCH_DMA_ADDR_T_64BIT) \
-    $(wildcard include/config/PHYS_ADDR_T_64BIT) \
-    $(wildcard include/config/ARCH_32BIT_USTAT_F_TINODE) \
-  include/uapi/linux/types.h \
-  arch/x86/include/generated/uapi/asm/types.h \
-  include/uapi/asm-generic/types.h \
-  include/asm-generic/int-ll64.h \
-  include/uapi/asm-generic/int-ll64.h \
-  include/uapi/linux/posix_types.h \
-  include/linux/stddef.h \
-  include/uapi/linux/stddef.h \
-  arch/x86/include/asm/posix_types.h \
-    $(wildcard include/config/X86_32) \
-  arch/x86/include/uapi/asm/posix_types_32.h \
-  include/uapi/asm-generic/posix_types.h \
-  include/linux/kcsan-checks.h \
-    $(wildcard include/config/KCSAN) \
-    $(wildcard include/config/KCSAN_WEAK_MEMORY) \
-    $(wildcard include/config/KCSAN_IGNORE_ATOMICS) \
-  include/linux/minmax.h \
-  include/linux/irqdomain.h \
-    $(wildcard include/config/IRQ_DOMAIN_HIERARCHY) \
-    $(wildcard include/config/GENERIC_IRQ_DEBUGFS) \
-    $(wildcard include/config/IRQ_DOMAIN) \
-    $(wildcard include/config/IRQ_DOMAIN_NOMAP) \
-  include/linux/irqhandler.h \
-  include/linux/of.h \
-    $(wildcard include/config/OF_DYNAMIC) \
-    $(wildcard include/config/SPARC) \
-    $(wildcard include/config/OF_PROMTREE) \
-    $(wildcard include/config/OF_KOBJ) \
-    $(wildcard include/config/NUMA) \
-    $(wildcard include/config/OF_NUMA) \
-    $(wildcard include/config/OF_OVERLAY) \
-  include/linux/bitops.h \
-  include/linux/typecheck.h \
-  include/uapi/linux/kernel.h \
-  include/uapi/linux/sysinfo.h \
-  arch/x86/include/asm/bitops.h \
-    $(wildcard include/config/X86_64) \
-    $(wildcard include/config/X86_CMOV) \
-  arch/x86/include/asm/alternative.h \
-    $(wildcard include/config/SMP) \
-  include/linux/stringify.h \
-  arch/x86/include/asm/asm.h \
-    $(wildcard include/config/KPROBES) \
-  arch/x86/include/asm/extable_fixup_types.h \
-  arch/x86/include/asm/rmwcc.h \
-    $(wildcard include/config/CC_HAS_ASM_GOTO) \
-  arch/x86/include/asm/barrier.h \
-  arch/x86/include/asm/nops.h \
-  include/asm-generic/barrier.h \
-  include/asm-generic/bitops/fls64.h \
-  include/asm-generic/bitops/sched.h \
-  arch/x86/include/asm/arch_hweight.h \
-  arch/x86/include/asm/cpufeatures.h \
-  arch/x86/include/asm/required-features.h \
-    $(wildcard include/config/X86_MINIMUM_CPU_FAMILY) \
-    $(wildcard include/config/MATH_EMULATION) \
-    $(wildcard include/config/X86_PAE) \
-    $(wildcard include/config/X86_CMPXCHG64) \
-    $(wildcard include/config/X86_P6_NOP) \
-    $(wildcard include/config/MATOM) \
-    $(wildcard include/config/PARAVIRT_XXL) \
-  arch/x86/include/asm/disabled-features.h \
-    $(wildcard include/config/X86_SMAP) \
-    $(wildcard include/config/X86_UMIP) \
-    $(wildcard include/config/X86_INTEL_MEMORY_PROTECTION_KEYS) \
-    $(wildcard include/config/X86_5LEVEL) \
-    $(wildcard include/config/PAGE_TABLE_ISOLATION) \
-    $(wildcard include/config/INTEL_IOMMU_SVM) \
-    $(wildcard include/config/X86_SGX) \
-  include/asm-generic/bitops/const_hweight.h \
-  include/asm-generic/bitops/instrumented-atomic.h \
-  include/linux/instrumented.h \
-  include/asm-generic/bitops/instrumented-non-atomic.h \
-    $(wildcard include/config/KCSAN_ASSUME_PLAIN_WRITES_ATOMIC) \
-  include/asm-generic/bitops/instrumented-lock.h \
-  include/asm-generic/bitops/le.h \
-  arch/x86/include/uapi/asm/byteorder.h \
-  include/linux/byteorder/little_endian.h \
-  include/uapi/linux/byteorder/little_endian.h \
-  include/linux/swab.h \
-  include/uapi/linux/swab.h \
-  arch/x86/include/uapi/asm/swab.h \
-  include/linux/byteorder/generic.h \
-  include/asm-generic/bitops/ext2-atomic-setbit.h \
-  include/linux/kobject.h \
-    $(wildcard include/config/UEVENT_HELPER) \
-    $(wildcard include/config/DEBUG_KOBJECT_RELEASE) \
-  include/linux/list.h \
-    $(wildcard include/config/DEBUG_LIST) \
-  include/linux/container_of.h \
-  include/linux/err.h \
-  include/linux/poison.h \
-    $(wildcard include/config/ILLEGAL_POINTER_VALUE) \
-  include/linux/sysfs.h \
-    $(wildcard include/config/DEBUG_LOCK_ALLOC) \
-    $(wildcard include/config/SYSFS) \
-  include/linux/kernfs.h \
-    $(wildcard include/config/KERNFS) \
-  include/linux/mutex.h \
-    $(wildcard include/config/PREEMPT_RT) \
-    $(wildcard include/config/MUTEX_SPIN_ON_OWNER) \
-    $(wildcard include/config/DEBUG_MUTEXES) \
-  arch/x86/include/asm/current.h \
-  arch/x86/include/asm/percpu.h \
-    $(wildcard include/config/X86_64_SMP) \
-  include/linux/kernel.h \
-    $(wildcard include/config/PREEMPT_VOLUNTARY_BUILD) \
-    $(wildcard include/config/PREEMPT_DYNAMIC) \
-    $(wildcard include/config/HAVE_PREEMPT_DYNAMIC_CALL) \
-    $(wildcard include/config/HAVE_PREEMPT_DYNAMIC_KEY) \
-    $(wildcard include/config/PREEMPT_) \
-    $(wildcard include/config/DEBUG_ATOMIC_SLEEP) \
-    $(wildcard include/config/MMU) \
-    $(wildcard include/config/PROVE_LOCKING) \
-    $(wildcard include/config/TRACING) \
-    $(wildcard include/config/FTRACE_MCOUNT_RECORD) \
-  include/linux/stdarg.h \
-  include/linux/align.h \
-  include/linux/limits.h \
-  include/uapi/linux/limits.h \
-  include/vdso/limits.h \
-  include/linux/linkage.h \
-    $(wildcard include/config/ARCH_USE_SYM_ANNOTATIONS) \
-  include/linux/export.h \
-    $(wildcard include/config/MODVERSIONS) \
-    $(wildcard include/config/MODULE_REL_CRCS) \
-    $(wildcard include/config/HAVE_ARCH_PREL32_RELOCATIONS) \
-    $(wildcard include/config/MODULES) \
-    $(wildcard include/config/TRIM_UNUSED_KSYMS) \
-  arch/x86/include/asm/linkage.h \
-    $(wildcard include/config/X86_ALIGNMENT_16) \
-    $(wildcard include/config/SLS) \
-  arch/x86/include/asm/ibt.h \
-    $(wildcard include/config/X86_KERNEL_IBT) \
-  include/linux/kstrtox.h \
-  include/linux/log2.h \
-    $(wildcard include/config/ARCH_HAS_ILOG2_U32) \
-    $(wildcard include/config/ARCH_HAS_ILOG2_U64) \
-  include/linux/math.h \
-  arch/x86/include/asm/div64.h \
-  include/linux/panic.h \
-    $(wildcard include/config/PANIC_TIMEOUT) \
-  include/linux/printk.h \
-    $(wildcard include/config/MESSAGE_LOGLEVEL_DEFAULT) \
-    $(wildcard include/config/CONSOLE_LOGLEVEL_DEFAULT) \
-    $(wildcard include/config/CONSOLE_LOGLEVEL_QUIET) \
-    $(wildcard include/config/EARLY_PRINTK) \
-    $(wildcard include/config/PRINTK) \
-    $(wildcard include/config/PRINTK_INDEX) \
-    $(wildcard include/config/DYNAMIC_DEBUG_CORE) \
-  include/linux/init.h \
-    $(wildcard include/config/STRICT_KERNEL_RWX) \
-    $(wildcard include/config/STRICT_MODULE_RWX) \
-    $(wildcard include/config/LTO_CLANG) \
-  include/linux/kern_levels.h \
-  include/linux/cache.h \
-    $(wildcard include/config/ARCH_HAS_CACHE_LINE_SIZE) \
-  arch/x86/include/asm/cache.h \
-    $(wildcard include/config/X86_L1_CACHE_SHIFT) \
-    $(wildcard include/config/X86_INTERNODE_CACHE_SHIFT) \
-    $(wildcard include/config/X86_VSMP) \
-  include/linux/ratelimit_types.h \
-  include/uapi/linux/param.h \
-  arch/x86/include/generated/uapi/asm/param.h \
-  include/asm-generic/param.h \
-    $(wildcard include/config/HZ) \
-  include/uapi/asm-generic/param.h \
-  include/linux/spinlock_types_raw.h \
-    $(wildcard include/config/DEBUG_SPINLOCK) \
-  arch/x86/include/asm/spinlock_types.h \
-  include/asm-generic/qspinlock_types.h \
-    $(wildcard include/config/NR_CPUS) \
-  include/asm-generic/qrwlock_types.h \
-  include/linux/lockdep_types.h \
-    $(wildcard include/config/PROVE_RAW_LOCK_NESTING) \
-    $(wildcard include/config/LOCKDEP) \
-    $(wildcard include/config/LOCK_STAT) \
-  include/linux/once_lite.h \
-  include/linux/static_call_types.h \
-    $(wildcard include/config/HAVE_STATIC_CALL) \
-    $(wildcard include/config/HAVE_STATIC_CALL_INLINE) \
-  include/linux/instruction_pointer.h \
-  include/asm-generic/percpu.h \
-    $(wildcard include/config/DEBUG_PREEMPT) \
-    $(wildcard include/config/HAVE_SETUP_PER_CPU_AREA) \
-  include/linux/threads.h \
-    $(wildcard include/config/BASE_SMALL) \
-  include/linux/percpu-defs.h \
-    $(wildcard include/config/DEBUG_FORCE_WEAK_PER_CPU) \
-    $(wildcard include/config/AMD_MEM_ENCRYPT) \
-  include/linux/spinlock_types.h \
-  include/linux/rwlock_types.h \
-  include/linux/lockdep.h \
-    $(wildcard include/config/DEBUG_LOCKING_API_SELFTESTS) \
-    $(wildcard include/config/PREEMPT_COUNT) \
-  include/linux/smp.h \
-    $(wildcard include/config/UP_LATE_INIT) \
-  include/linux/cpumask.h \
-    $(wildcard include/config/CPUMASK_OFFSTACK) \
-    $(wildcard include/config/HOTPLUG_CPU) \
-    $(wildcard include/config/DEBUG_PER_CPU_MAPS) \
-  include/linux/bitmap.h \
-  include/linux/find.h \
-  include/linux/string.h \
-    $(wildcard include/config/BINARY_PRINTF) \
-    $(wildcard include/config/FORTIFY_SOURCE) \
-  include/uapi/linux/string.h \
-  arch/x86/include/asm/string.h \
-  arch/x86/include/asm/string_32.h \
-  include/linux/fortify-string.h \
-  include/linux/atomic.h \
-  arch/x86/include/asm/atomic.h \
-  arch/x86/include/asm/cmpxchg.h \
-  arch/x86/include/asm/cmpxchg_32.h \
-  arch/x86/include/asm/atomic64_32.h \
-  include/linux/atomic/atomic-arch-fallback.h \
-    $(wildcard include/config/GENERIC_ATOMIC64) \
-  include/linux/atomic/atomic-long.h \
-  include/linux/atomic/atomic-instrumented.h \
-  include/linux/bug.h \
-    $(wildcard include/config/GENERIC_BUG) \
-    $(wildcard include/config/BUG_ON_DATA_CORRUPTION) \
-  arch/x86/include/asm/bug.h \
-    $(wildcard include/config/DEBUG_BUGVERBOSE) \
-  include/linux/instrumentation.h \
-    $(wildcard include/config/DEBUG_ENTRY) \
-  include/linux/objtool.h \
-    $(wildcard include/config/FRAME_POINTER) \
-  include/asm-generic/bug.h \
-    $(wildcard include/config/BUG) \
-    $(wildcard include/config/GENERIC_BUG_RELATIVE_POINTERS) \
-  include/linux/smp_types.h \
-  include/linux/llist.h \
-    $(wildcard include/config/ARCH_HAVE_NMI_SAFE_CMPXCHG) \
-  include/linux/preempt.h \
-    $(wildcard include/config/TRACE_PREEMPT_TOGGLE) \
-    $(wildcard include/config/PREEMPTION) \
-    $(wildcard include/config/PREEMPT_NOTIFIERS) \
-  arch/x86/include/asm/preempt.h \
-  include/linux/thread_info.h \
-    $(wildcard include/config/THREAD_INFO_IN_TASK) \
-    $(wildcard include/config/GENERIC_ENTRY) \
-    $(wildcard include/config/HAVE_ARCH_WITHIN_STACK_FRAMES) \
-    $(wildcard include/config/HARDENED_USERCOPY) \
-  include/linux/restart_block.h \
-  include/linux/time64.h \
-  include/linux/math64.h \
-    $(wildcard include/config/ARCH_SUPPORTS_INT128) \
-  include/vdso/math64.h \
-  include/vdso/time64.h \
-  include/uapi/linux/time.h \
-  include/uapi/linux/time_types.h \
-  arch/x86/include/asm/thread_info.h \
-    $(wildcard include/config/VM86) \
-    $(wildcard include/config/X86_IOPL_IOPERM) \
-    $(wildcard include/config/COMPAT) \
-    $(wildcard include/config/IA32_EMULATION) \
-  arch/x86/include/asm/page.h \
-  arch/x86/include/asm/page_types.h \
-    $(wildcard include/config/PHYSICAL_START) \
-    $(wildcard include/config/PHYSICAL_ALIGN) \
-    $(wildcard include/config/DYNAMIC_PHYSICAL_MASK) \
-  include/linux/mem_encrypt.h \
-    $(wildcard include/config/ARCH_HAS_MEM_ENCRYPT) \
-  arch/x86/include/asm/mem_encrypt.h \
-  include/linux/cc_platform.h \
-    $(wildcard include/config/ARCH_HAS_CC_PLATFORM) \
-  arch/x86/include/uapi/asm/bootparam.h \
-  include/linux/screen_info.h \
-  include/uapi/linux/screen_info.h \
-  include/linux/apm_bios.h \
-  include/uapi/linux/apm_bios.h \
-  include/uapi/linux/ioctl.h \
-  arch/x86/include/generated/uapi/asm/ioctl.h \
-  include/asm-generic/ioctl.h \
-  include/uapi/asm-generic/ioctl.h \
-  include/linux/edd.h \
-  include/uapi/linux/edd.h \
-  arch/x86/include/asm/ist.h \
-  arch/x86/include/uapi/asm/ist.h \
-  include/video/edid.h \
-  include/uapi/video/edid.h \
-  arch/x86/include/asm/page_32_types.h \
-    $(wildcard include/config/HIGHMEM4G) \
-    $(wildcard include/config/HIGHMEM64G) \
-    $(wildcard include/config/PAGE_OFFSET) \
-  arch/x86/include/asm/page_32.h \
-    $(wildcard include/config/DEBUG_VIRTUAL) \
-    $(wildcard include/config/FLATMEM) \
-  include/linux/range.h \
-  include/asm-generic/memory_model.h \
-    $(wildcard include/config/SPARSEMEM_VMEMMAP) \
-    $(wildcard include/config/SPARSEMEM) \
-  include/linux/pfn.h \
-  include/asm-generic/getorder.h \
-  arch/x86/include/asm/cpufeature.h \
-    $(wildcard include/config/X86_FEATURE_NAMES) \
-  arch/x86/include/asm/processor.h \
-    $(wildcard include/config/X86_VMX_FEATURE_NAMES) \
-    $(wildcard include/config/STACKPROTECTOR) \
-    $(wildcard include/config/X86_DEBUGCTLMSR) \
-    $(wildcard include/config/CPU_SUP_AMD) \
-    $(wildcard include/config/XEN) \
-  arch/x86/include/asm/processor-flags.h \
-  arch/x86/include/uapi/asm/processor-flags.h \
-  arch/x86/include/asm/math_emu.h \
-  arch/x86/include/asm/ptrace.h \
-    $(wildcard include/config/PARAVIRT) \
-  arch/x86/include/asm/segment.h \
-    $(wildcard include/config/XEN_PV) \
-  arch/x86/include/uapi/asm/ptrace.h \
-  arch/x86/include/uapi/asm/ptrace-abi.h \
-  arch/x86/include/asm/paravirt_types.h \
-    $(wildcard include/config/PGTABLE_LEVELS) \
-    $(wildcard include/config/PARAVIRT_DEBUG) \
-  arch/x86/include/asm/desc_defs.h \
-  arch/x86/include/asm/pgtable_types.h \
-    $(wildcard include/config/MEM_SOFT_DIRTY) \
-    $(wildcard include/config/HAVE_ARCH_USERFAULTFD_WP) \
-    $(wildcard include/config/PROC_FS) \
-  arch/x86/include/asm/pgtable_32_types.h \
-  arch/x86/include/asm/pgtable-3level_types.h \
-  include/asm-generic/pgtable-nop4d.h \
-  include/asm-generic/pgtable-nopud.h \
-  arch/x86/include/asm/nospec-branch.h \
-  include/linux/static_key.h \
-  include/linux/jump_label.h \
-    $(wildcard include/config/JUMP_LABEL) \
-    $(wildcard include/config/HAVE_ARCH_JUMP_LABEL_RELATIVE) \
-  arch/x86/include/asm/jump_label.h \
-  arch/x86/include/asm/msr-index.h \
-  arch/x86/include/asm/unwind_hints.h \
-  arch/x86/include/asm/orc_types.h \
-  arch/x86/include/asm/GEN-for-each-reg.h \
-  arch/x86/include/asm/proto.h \
-  arch/x86/include/uapi/asm/ldt.h \
-  arch/x86/include/uapi/asm/sigcontext.h \
-  arch/x86/include/asm/msr.h \
-    $(wildcard include/config/TRACEPOINTS) \
-  arch/x86/include/asm/msr-index.h \
-  arch/x86/include/asm/cpumask.h \
-  arch/x86/include/uapi/asm/msr.h \
-  include/linux/tracepoint-defs.h \
-  arch/x86/include/asm/special_insns.h \
-  include/linux/irqflags.h \
-    $(wildcard include/config/TRACE_IRQFLAGS) \
-    $(wildcard include/config/IRQSOFF_TRACER) \
-    $(wildcard include/config/PREEMPT_TRACER) \
-    $(wildcard include/config/DEBUG_IRQFLAGS) \
-    $(wildcard include/config/TRACE_IRQFLAGS_SUPPORT) \
-  arch/x86/include/asm/irqflags.h \
-  arch/x86/include/asm/fpu/types.h \
-  arch/x86/include/asm/vmxfeatures.h \
-  arch/x86/include/asm/vdso/processor.h \
-  include/linux/personality.h \
-  include/uapi/linux/person
+static const struct {
+	int index;
+	char string[ETH_GSTRING_LEN];
+} ksz9477_mib_names[TOTAL_SWITCH_COUNTER_NUM] = {
+	{ 0x00, "rx_hi" },
+	{ 0x01, "rx_undersize" },
+	{ 0x02, "rx_fragments" },
+	{ 0x03, "rx_oversize" },
+	{ 0x04, "rx_jabbers" },
+	{ 0x05, "rx_symbol_err" },
+	{ 0x06, "rx_crc_err" },
+	{ 0x07, "rx_align_err" },
+	{ 0x08, "rx_mac_ctrl" },
+	{ 0x09, "rx_pause" },
+	{ 0x0A, "rx_bcast" },
+	{ 0x0B, "rx_mcast" },
+	{ 0x0C, "rx_ucast" },
+	{ 0x0D, "rx_64_or_less" },
+	{ 0x0E, "rx_65_127" },
+	{ 0x0F, "rx_128_255" },
+	{ 0x10, "rx_256_511" },
+	{ 0x11, "rx_512_1023" },
+	{ 0x12, "rx_1024_1522" },
+	{ 0x13, "rx_1523_2000" },
+	{ 0x14, "rx_2001" },
+	{ 0x15, "tx_hi" },
+	{ 0x16, "tx_late_col" },
+	{ 0x17, "tx_pause" },
+	{ 0x18, "tx_bcast" },
+	{ 0x19, "tx_mcast" },
+	{ 0x1A, "tx_ucast" },
+	{ 0x1B, "tx_deferred" },
+	{ 0x1C, "tx_total_col" },
+	{ 0x1D, "tx_exc_col" },
+	{ 0x1E, "tx_single_col" },
+	{ 0x1F, "tx_mult_col" },
+	{ 0x80, "rx_total" },
+	{ 0x81, "tx_total" },
+	{ 0x82, "rx_discards" },
+	{ 0x83, "tx_discards" },
+};
+
+struct ksz9477_stats_raw {
+	u64 rx_hi;
+	u64 rx_undersize;
+	u64 rx_fragments;
+	u64 rx_oversize;
+	u64 rx_jabbers;
+	u64 rx_symbol_err;
+	u64 rx_crc_err;
+	u64 rx_align_err;
+	u64 rx_mac_ctrl;
+	u64 rx_pause;
+	u64 rx_bcast;
+	u64 rx_mcast;
+	u64 rx_ucast;
+	u64 rx_64_or_less;
+	u64 rx_65_127;
+	u64 rx_128_255;
+	u64 rx_256_511;
+	u64 rx_512_1023;
+	u64 rx_1024_1522;
+	u64 rx_1523_2000;
+	u64 rx_2001;
+	u64 tx_hi;
+	u64 tx_late_col;
+	u64 tx_pause;
+	u64 tx_bcast;
+	u64 tx_mcast;
+	u64 tx_ucast;
+	u64 tx_deferred;
+	u64 tx_total_col;
+	u64 tx_exc_col;
+	u64 tx_single_col;
+	u64 tx_mult_col;
+	u64 rx_total;
+	u64 tx_total;
+	u64 rx_discards;
+	u64 tx_discards;
+};
+
+static void ksz9477_r_mib_stats64(struct ksz_device *dev, int port)
+{
+	struct rtnl_link_stats64 *stats;
+	struct ksz9477_stats_raw *raw;
+	struct ksz_port_mib *mib;
+
+	mib = &dev->ports[port].mib;
+	stats = &mib->stats64;
+	raw = (struct ksz9477_stats_raw *)mib->counters;
+
+	spin_lock(&mib->stats64_lock);
+
+	stats->rx_packets = raw->rx_bcast + raw->rx_mcast + raw->rx_ucast;
+	stats->tx_packets = raw->tx_bcast + raw->tx_mcast + raw->tx_ucast;
+
+	/* HW counters are counting bytes + FCS which is not acceptable
+	 * for rtnl_link_stats64 interface
+	 */
+	stats->rx_bytes = raw->rx_total - stats->rx_packets * ETH_FCS_LEN;
+	stats->tx_bytes = raw->tx_total - stats->tx_packets * ETH_FCS_LEN;
+
+	stats->rx_length_errors = raw->rx_undersize + raw->rx_fragments +
+		raw->rx_oversize;
+
+	stats->rx_crc_errors = raw->rx_crc_err;
+	stats->rx_frame_errors = raw->rx_align_err;
+	stats->rx_dropped = raw->rx_discards;
+	stats->rx_errors = stats->rx_length_errors + stats->rx_crc_errors +
+		stats->rx_frame_errors  + stats->rx_dropped;
+
+	stats->tx_window_errors = raw->tx_late_col;
+	stats->tx_fifo_errors = raw->tx_discards;
+	stats->tx_aborted_errors = raw->tx_exc_col;
+	stats->tx_errors = stats->tx_window_errors + stats->tx_fifo_errors +
+		stats->tx_aborted_errors;
+
+	stats->multicast = raw->rx_mcast;
+	stats->collisions = raw->tx_total_col;
+
+	spin_unlock(&mib->stats64_lock);
+}
+
+static void ksz9477_get_stats64(struct dsa_switch *ds, int port,
+			       struct rtnl_link_stats64 *s)
+{
+	struct ksz_device *dev = ds->priv;
+	struct ksz_port_mib *mib;
+
+	mib = &dev->ports[port].mib;
+
+	spin_lock(&mib->stats64_lock);
+	memcpy(s, &mib->stats64, sizeof(*s));
+	spin_unlock(&mib->stats64_lock);
+}
+
+static void ksz_cfg(struct ksz_device *dev, u32 addr, u8 bits, bool set)
+{
+	regmap_update_bits(dev->regmap[0], addr, bits, set ? bits : 0);
+}
+
+static void ksz_port_cfg(struct ksz_device *dev, int port, int offset, u8 bits,
+			 bool set)
+{
+	regmap_update_bits(dev->regmap[0], PORT_CTRL_ADDR(port, offset),
+			   bits, set ? bits : 0);
+}
+
+static void ksz9477_cfg32(struct ksz_device *dev, u32 addr, u32 bits, bool set)
+{
+	regmap_update_bits(dev->regmap[2], addr, bits, set ? bits : 0);
+}
+
+static void ksz9477_port_cfg32(struct ksz_device *dev, int port, int offset,
+			       u32 bits, bool set)
+{
+	regmap_update_bits(dev->regmap[2], PORT_CTRL_ADDR(port, offset),
+			   bits, set ? bits : 0);
+}
+
+static int ksz9477_change_mtu(struct dsa_switch *ds, int port, int mtu)
+{
+	struct ksz_device *dev = ds->priv;
+	u16 frame_size, max_frame = 0;
+	int i;
+
+	frame_size = mtu + VLAN_ETH_HLEN + ETH_FCS_LEN;
+
+	/* Cache the per-port MTU setting */
+	dev->ports[port].max_frame = frame_size;
+
+	for (i = 0; i < dev->port_cnt; i++)
+		max_frame = max(max_frame, dev->ports[i].max_frame);
+
+	return regmap_update_bits(dev->regmap[1], REG_SW_MTU__2,
+				  REG_SW_MTU_MASK, max_frame);
+}
+
+static int ksz9477_max_mtu(struct dsa_switch *ds, int port)
+{
+	return KSZ9477_MAX_FRAME_SIZE - VLAN_ETH_HLEN - ETH_FCS_LEN;
+}
+
+static int ksz9477_wait_vlan_ctrl_ready(struct ksz_device *dev)
+{
+	unsigned int val;
+
+	return regmap_read_poll_timeout(dev->regmap[0], REG_SW_VLAN_CTRL,
+					val, !(val & VLAN_START), 10, 1000);
+}
+
+static int ksz9477_get_vlan_table(struct ksz_device *dev, u16 vid,
+				  u32 *vlan_table)
+{
+	int ret;
+
+	mutex_lock(&dev->vlan_mutex);
+
+	ksz_write16(dev, REG_SW_VLAN_ENTRY_INDEX__2, vid & VLAN_INDEX_M);
+	ksz_write8(dev, REG_SW_VLAN_CTRL, VLAN_READ | VLAN_START);
+
+	/* wait to be cleared */
+	ret = ksz9477_wait_vlan_ctrl_ready(dev);
+	if (ret) {
+		dev_dbg(dev->dev, "Failed to read vlan table\n");
+		goto exit;
+	}
+
+	ksz_read32(dev, REG_SW_VLAN_ENTRY__4, &vlan_table[0]);
+	ksz_read32(dev, REG_SW_VLAN_ENTRY_UNTAG__4, &vlan_table[1]);
+	ksz_read32(dev, REG_SW_VLAN_ENTRY_PORTS__4, &vlan_table[2]);
+
+	ksz_write8(dev, REG_SW_VLAN_CTRL, 0);
+
+exit:
+	mutex_unlock(&dev->vlan_mutex);
+
+	return ret;
+}
+
+static int ksz9477_set_vlan_table(struct ksz_device *dev, u16 vid,
+				  u32 *vlan_table)
+{
+	int ret;
+
+	mutex_lock(&dev->vlan_mutex);
+
+	ksz_write32(dev, REG_SW_VLAN_ENTRY__4, vlan_table[0]);
+	ksz_write32(dev, REG_SW_VLAN_ENTRY_UNTAG__4, vlan_table[1]);
+	ksz_write32(dev, REG_SW_VLAN_ENTRY_PORTS__4, vlan_table[2]);
+
+	ksz_write16(dev, REG_SW_VLAN_ENTRY_INDEX__2, vid & VLAN_INDEX_M);
+	ksz_write8(dev, REG_SW_VLAN_CTRL, VLAN_START | VLAN_WRITE);
+
+	/* wait to be cleared */
+	ret = ksz9477_wait_vlan_ctrl_ready(dev);
+	if (ret) {
+		dev_dbg(dev->dev, "Failed to write vlan table\n");
+		goto exit;
+	}
+
+	ksz_write8(dev, REG_SW_VLAN_CTRL, 0);
+
+	/* update vlan cache table */
+	dev->vlan_cache[vid].table[0] = vlan_table[0];
+	dev->vlan_cache[vid].table[1] = vlan_table[1];
+	dev->vlan_cache[vid].table[2] = vlan_table[2];
+
+exit:
+	mutex_unlock(&dev->vlan_mutex);
+
+	return ret;
+}
+
+static void ksz9477_read_table(struct ksz_device *dev, u32 *table)
+{
+	ksz_read32(dev, REG_SW_ALU_VAL_A, &table[0]);
+	ksz_read32(dev, REG_SW_ALU_VAL_B, &table[1]);
+	ksz_read32(dev, REG_SW_ALU_VAL_C, &table[2]);
+	ksz_read32(dev, REG_SW_ALU_VAL_D, &table[3]);
+}
+
+static void ksz9477_write_table(struct ksz_device *dev, u32 *table)
+{
+	ksz_write32(dev, REG_SW_ALU_VAL_A, table[0]);
+	ksz_write32(dev, REG_SW_ALU_VAL_B, table[1]);
+	ksz_write32(dev, REG_SW_ALU_VAL_C, table[2]);
+	ksz_write32(dev, REG_SW_ALU_VAL_D, table[3]);
+}
+
+static int ksz9477_wait_alu_ready(struct ksz_device *dev)
+{
+	unsigned int val;
+
+	return regmap_read_poll_timeout(dev->regmap[2], REG_SW_ALU_CTRL__4,
+					val, !(val & ALU_START), 10, 1000);
+}
+
+static int ksz9477_wait_alu_sta_ready(struct ksz_device *dev)
+{
+	unsigned int val;
+
+	return regmap_read_poll_timeout(dev->regmap[2],
+					REG_SW_ALU_STAT_CTRL__4,
+					val, !(val & ALU_STAT_START),
+					10, 1000);
+}
+
+static int ksz9477_reset_switch(struct ksz_device *dev)
+{
+	u8 data8;
+	u32 data32;
+
+	/* reset switch */
+	ksz_cfg(dev, REG_SW_OPERATION, SW_RESET, true);
+
+	/* turn off SPI DO Edge select */
+	regmap_update_bits(dev->regmap[0], REG_SW_GLOBAL_SERIAL_CTRL_0,
+			   SPI_AUTO_EDGE_DETECTION, 0);
+
+	/* default configuration */
+	ksz_read8(dev, REG_SW_LUE_CTRL_1, &data8);
+	data8 = SW_AGING_ENABLE | SW_LINK_AUTO_AGING |
+	      SW_SRC_ADDR_FILTER | SW_FLUSH_STP_TABLE | SW_FLUSH_MSTP_TABLE;
+	ksz_write8(dev, REG_SW_LUE_CTRL_1, data8);
+
+	/* disable interrupts */
+	ksz_write32(dev, REG_SW_INT_MASK__4, SWITCH_INT_MASK);
+	ksz_write32(dev, REG_SW_PORT_INT_MASK__4, 0x7F);
+	ksz_read32(dev, REG_SW_PORT_INT_STATUS__4, &data32);
+
+	/* set broadcast storm protection 10% rate */
+	regmap_update_bits(dev->regmap[1], REG_SW_MAC_CTRL_2,
+			   BROADCAST_STORM_RATE,
+			   (BROADCAST_STORM_VALUE *
+			   BROADCAST_STORM_PROT_RATE) / 100);
+
+	data8 = SW_ENABLE_REFCLKO;
+	if (dev->synclko_disable)
+		data8 = 0;
+	else if (dev->synclko_125)
+		data8 = SW_ENABLE_REFCLKO | SW_REFCLKO_IS_125MHZ;
+	ksz_write8(dev, REG_SW_GLOBAL_OUTPUT_CTRL__1, data8);
+
+	return 0;
+}
+
+static void ksz9477_r_mib_cnt(struct ksz_device *dev, int port, u16 addr,
+			      u64 *cnt)
+{
+	struct ksz_port *p = &dev->ports[port];
+	unsigned int val;
+	u32 data;
+	int ret;
+
+	/* retain the flush/freeze bit */
+	data = p->freeze ? MIB_COUNTER_FLUSH_FREEZE : 0;
+	data |= MIB_COUNTER_READ;
+	data |= (addr << MIB_COUNTER_INDEX_S);
+	ksz_pwrite32(dev, port, REG_PORT_MIB_CTRL_STAT__4, data);
+
+	ret = regmap_read_poll_timeout(dev->regmap[2],
+			PORT_CTRL_ADDR(port, REG_PORT_MIB_CTRL_STAT__4),
+			val, !(val & MIB_COUNTER_READ), 10, 1000);
+	/* failed to read MIB. get out of loop */
+	if (ret) {
+		dev_dbg(dev->dev, "Failed to get MIB\n");
+		return;
+	}
+
+	/* count resets upon read */
+	ksz_pread32(dev, port, REG_PORT_MIB_DATA, &data);
+	*cnt += data;
+}
+
+static void ksz9477_r_mib_pkt(struct ksz_device *dev, int port, u16 addr,
+			      u64 *dropped, u64 *cnt)
+{
+	addr = ksz9477_mib_names[addr].index;
+	ksz9477_r_mib_cnt(dev, port, addr, cnt);
+}
+
+static void ksz9477_freeze_mib(struct ksz_device *dev, int port, bool freeze)
+{
+	u32 val = freeze ? MIB_COUNTER_FLUSH_FREEZE : 0;
+	struct ksz_port *p = &dev->ports[port];
+
+	/* enable/disable the port for flush/freeze function */
+	mutex_lock(&p->mib.cnt_mutex);
+	ksz_pwrite32(dev, port, REG_PORT_MIB_CTRL_STAT__4, val);
+
+	/* used by MIB counter reading code to know freeze is enabled */
+	p->freeze = freeze;
+	mutex_unlock(&p->mib.cnt_mutex);
+}
+
+static void ksz9477_port_init_cnt(struct ksz_device *dev, int port)
+{
+	struct ksz_port_mib *mib = &dev->ports[port].mib;
+
+	/* flush all enabled port MIB counters */
+	mutex_lock(&mib->cnt_mutex);
+	ksz_pwrite32(dev, port, REG_PORT_MIB_CTRL_STAT__4,
+		     MIB_COUNTER_FLUSH_FREEZE);
+	ksz_write8(dev, REG_SW_MAC_CTRL_6, SW_MIB_COUNTER_FLUSH);
+	ksz_pwrite32(dev, port, REG_PORT_MIB_CTRL_STAT__4, 0);
+	mutex_unlock(&mib->cnt_mutex);
+
+	mib->cnt_ptr = 0;
+	memset(mib->counters, 0, dev->mib_cnt * sizeof(u64));
+}
+
+static enum dsa_tag_protocol ksz9477_get_tag_protocol(struct dsa_switch *ds,
+						      int port,
+						      enum dsa_tag_protocol mp)
+{
+	enum dsa_tag_protocol proto = DSA_TAG_PROTO_KSZ9477;
+	struct ksz_device *dev = ds->priv;
+
+	if (dev->features & IS_9893)
+		proto = DSA_TAG_PROTO_KSZ9893;
+	return proto;
+}
+
+static int ksz9477_phy_read16(struct dsa_switch *ds, int addr, int reg)
+{
+	struct ksz_device *dev = ds->priv;
+	u16 val = 0xffff;
+
+	/* No real PHY after this. Simulate the PHY.
+	 * A fixed PHY can be setup in the device tree, but this function is
+	 * still called for that port during initialization.
+	 * For RGMII PHY there is no way to access it so the fixed PHY should
+	 * be used.  For SGMII PHY the supporting code will be added later.
+	 */
+	if (addr >= dev->phy_port_cnt) {
+		struct ksz_port *p = &dev->ports[addr];
+
+		switch (reg) {
+		case MII_BMCR:
+			val = 0x1140;
+			break;
+		case MII_BMSR:
+			val = 0x796d;
+			break;
+		case MII_PHYSID1:
+			val = 0x0022;
+			break;
+		case MII_PHYSID2:
+			val = 0x1631;
+			break;
+		case MII_ADVERTISE:
+			val = 0x05e1;
+			break;
+		case MII_LPA:
+			val = 0xc5e1;
+			break;
+		case MII_CTRL1000:
+			val = 0x0700;
+			break;
+		case MII_STAT1000:
+			if (p->phydev.speed == SPEED_1000)
+				val = 0x3800;
+			else
+				val = 0;
+			break;
+		}
+	} else {
+		ksz_pread16(dev, addr, 0x100 + (reg << 1), &val);
+	}
+
+	return val;
+}
+
+static int ksz9477_phy_write16(struct dsa_switch *ds, int addr, int reg,
+			       u16 val)
+{
+	struct ksz_device *dev = ds->priv;
+
+	/* No real PHY after this. */
+	if (addr >= dev->phy_port_cnt)
+		return 0;
+
+	/* No gigabit support.  Do not write to this register. */
+	if (!(dev->features & GBIT_SUPPORT) && reg == MII_CTRL1000)
+		return 0;
+	ksz_pwrite16(dev, addr, 0x100 + (reg << 1), val);
+
+	return 0;
+}
+
+static void ksz9477_get_strings(struct dsa_switch *ds, int port,
+				u32 stringset, uint8_t *buf)
+{
+	int i;
+
+	if (stringset != ETH_SS_STATS)
+		return;
+
+	for (i = 0; i < TOTAL_SWITCH_COUNTER_NUM; i++) {
+		memcpy(buf + i * ETH_GSTRING_LEN, ksz9477_mib_names[i].string,
+		       ETH_GSTRING_LEN);
+	}
+}
+
+static void ksz9477_cfg_port_member(struct ksz_device *dev, int port,
+				    u8 member)
+{
+	ksz_pwrite32(dev, port, REG_PORT_VLAN_MEMBERSHIP__4, member);
+}
+
+static void ksz9477_port_stp_state_set(struct dsa_switch *ds, int port,
+				       u8 state)
+{
+	struct ksz_device *dev = ds->priv;
+	struct ksz_port *p = &dev->ports[port];
+	u8 data;
+
+	ksz_pread8(dev, port, P_STP_CTRL, &data);
+	data &= ~(PORT_TX_ENABLE | PORT_RX_ENABLE | PORT_LEARN_DISABLE);
+
+	switch (state) {
+	case BR_STATE_DISABLED:
+		data |= PORT_LEARN_DISABLE;
+		break;
+	case BR_STATE_LISTENING:
+		data |= (PORT_RX_ENABLE | PORT_LEARN_DISABLE);
+		break;
+	case BR_STATE_LEARNING:
+		data |= PORT_RX_ENABLE;
+		break;
+	case BR_STATE_FORWARDING:
+		data |= (PORT_TX_ENABLE | PORT_RX_ENABLE);
+		break;
+	case BR_STATE_BLOCKING:
+		data |= PORT_LEARN_DISABLE;
+		break;
+	default:
+		dev_err(ds->dev, "invalid STP state: %d\n", state);
+		return;
+	}
+
+	ksz_pwrite8(dev, port, P_STP_CTRL, data);
+	p->stp_state = state;
+
+	ksz_update_port_member(dev, port);
+}
+
+static void ksz9477_flush_dyn_mac_table(struct ksz_device *dev, int port)
+{
+	u8 data;
+
+	regmap_update_bits(dev->regmap[0], REG_SW_LUE_CTRL_2,
+			   SW_FLUSH_OPTION_M << SW_FLUSH_OPTION_S,
+			   SW_FLUSH_OPTION_DYN_MAC << SW_FLUSH_OPTION_S);
+
+	if (port < dev->port_cnt) {
+		/* flush individual port */
+		ksz_pread8(dev, port, P_STP_CTRL, &data);
+		if (!(data & PORT_LEARN_DISABLE))
+			ksz_pwrite8(dev, port, P_STP_CTRL,
+				    data | PORT_LEARN_DISABLE);
+		ksz_cfg(dev, S_FLUSH_TABLE_CTRL, SW_FLUSH_DYN_MAC_TABLE, true);
+		ksz_pwrite8(dev, port, P_STP_CTRL, data);
+	} else {
+		/* flush all */
+		ksz_cfg(dev, S_FLUSH_TABLE_CTRL, SW_FLUSH_STP_TABLE, true);
+	}
+}
+
+static int ksz9477_port_vlan_filtering(struct dsa_switch *ds, int port,
+				       bool flag,
+				       struct netlink_ext_ack *extack)
+{
+	struct ksz_device *dev = ds->priv;
+
+	if (flag) {
+		ksz_port_cfg(dev, port, REG_PORT_LUE_CTRL,
+			     PORT_VLAN_LOOKUP_VID_0, true);
+		ksz_cfg(dev, REG_SW_LUE_CTRL_0, SW_VLAN_ENABLE, true);
+	} else {
+		ksz_cfg(dev, REG_SW_LUE_CTRL_0, SW_VLAN_ENABLE, false);
+		ksz_port_cfg(dev, port, REG_PORT_LUE_CTRL,
+			     PORT_VLAN_LOOKUP_VID_0, false);
+	}
+
+	return 0;
+}
+
+static int ksz9477_port_vlan_add(struct dsa_switch *ds, int port,
+				 const struct switchdev_obj_port_vlan *vlan,
+				 struct netlink_ext_ack *extack)
+{
+	struct ksz_device *dev = ds->priv;
+	u32 vlan_table[3];
+	bool untagged = vlan->flags & BRIDGE_VLAN_INFO_UNTAGGED;
+	int err;
+
+	err = ksz9477_get_vlan_table(dev, vlan->vid, vlan_table);
+	if (err) {
+		NL_SET_ERR_MSG_MOD(extack, "Failed to get vlan table");
+		return err;
+	}
+
+	vlan_table[0] = VLAN_VALID | (vlan->vid & VLAN_FID_M);
+	if (untagged)
+		vlan_table[1] |= BIT(port);
+	else
+		vlan_table[1] &= ~BIT(port);
+	vlan_table[1] &= ~(BIT(dev->cpu_port));
+
+	vlan_table[2] |= BIT(port) | BIT(dev->cpu_port);
+
+	err = ksz9477_set_vlan_table(dev, vlan->vid, vlan_table);
+	if (err) {
+		NL_SET_ERR_MSG_MOD(extack, "Failed to set vlan table");
+		return err;
+	}
+
+	/* change PVID */
+	if (vlan->flags & BRIDGE_VLAN_INFO_PVID)
+		ksz_pwrite16(dev, port, REG_PORT_DEFAULT_VID, vlan->vid);
+
+	return 0;
+}
+
+static int ksz9477_port_vlan_del(struct dsa_switch *ds, int port,
+				 const struct switchdev_obj_port_vlan *vlan)
+{
+	struct ksz_device *dev = ds->priv;
+	bool untagged = vlan->flags & BRIDGE_VLAN_INFO_UNTAGGED;
+	u32 vlan_table[3];
+	u16 pvid;
+
+	ksz_pread16(dev, port, REG_PORT_DEFAULT_VID, &pvid);
+	pvid = pvid & 0xFFF;
+
+	if (ksz9477_get_vlan_table(dev, vlan->vid, vlan_table)) {
+		dev_dbg(dev->dev, "Failed to get vlan table\n");
+		return -ETIMEDOUT;
+	}
+
+	vlan_table[2] &= ~BIT(port);
+
+	if (pvid == vlan->vid)
+		pvid = 1;
+
+	if (untagged)
+		vlan_table[1] &= ~BIT(port);
+
+	if (ksz9477_set_vlan_table(dev, vlan->vid, vlan_table)) {
+		dev_dbg(dev->dev, "Failed to set vlan table\n");
+		return -ETIMEDOUT;
+	}
+
+	ksz_pwrite16(dev, port, REG_PORT_DEFAULT_VID, pvid);
+
+	return 0;
+}
+
+static int ksz9477_port_fdb_add(struct dsa_switch *ds, int port,
+				const unsigned char *addr, u16 vid,
+				struct dsa_db db)
+{
+	struct ksz_device *dev = ds->priv;
+	u32 alu_table[4];
+	u32 data;
+	int ret = 0;
+
+	mutex_lock(&dev->alu_mutex);
+
+	/* find any entry with mac & vid */
+	data = vid << ALU_FID_INDEX_S;
+	data |= ((addr[0] << 8) | addr[1]);
+	ksz_write32(dev, REG_SW_ALU_INDEX_0, data);
+
+	data = ((addr[2] << 24) | (addr[3] << 16));
+	data |= ((addr[4] << 8) | addr[5]);
+	ksz_write32(dev, REG_SW_ALU_INDEX_1, data);
+
+	/* start read operation */
+	ksz_write32(dev, REG_SW_ALU_CTRL__4, ALU_READ | ALU_START);
+
+	/* wait to be finished */
+	ret = ksz9477_wait_alu_ready(dev);
+	if (ret) {
+		dev_dbg(dev->dev, "Failed to read ALU\n");
+		goto exit;
+	}
+
+	/* read ALU entry */
+	ksz9477_read_table(dev, alu_table);
+
+	/* update ALU entry */
+	alu_table[0] = ALU_V_STATIC_VALID;
+	alu_table[1] |= BIT(port);
+	if (vid)
+		alu_table[1] |= ALU_V_USE_FID;
+	alu_table[2] = (vid << ALU_V_FID_S);
+	alu_table[2] |= ((addr[0] << 8) | addr[1]);
+	alu_table[3] = ((addr[2] << 24) | (addr[3] << 16));
+	alu_table[3] |= ((addr[4] << 8) | addr[5]);
+
+	ksz9477_write_table(dev, alu_table);
+
+	ksz_write32(dev, REG_SW_ALU_CTRL__4, ALU_WRITE | ALU_START);
+
+	/* wait to be finished */
+	ret = ksz9477_wait_alu_ready(dev);
+	if (ret)
+		dev_dbg(dev->dev, "Failed to write ALU\n");
+
+exit:
+	mutex_unlock(&dev->alu_mutex);
+
+	return ret;
+}
+
+static int ksz9477_port_fdb_del(struct dsa_switch *ds, int port,
+				const unsigned char *addr, u16 vid,
+				struct dsa_db db)
+{
+	struct ksz_device *dev = ds->priv;
+	u32 alu_table[4];
+	u32 data;
+	int ret = 0;
+
+	mutex_lock(&dev->alu_mutex);
+
+	/* read any entry with mac & vid */
+	data = vid << ALU_FID_INDEX_S;
+	data |= ((addr[0] << 8) | addr[1]);
+	ksz_write32(dev, REG_SW_ALU_INDEX_0, data);
+
+	data = ((addr[2] << 24) | (addr[3] << 16));
+	data |= ((addr[4] << 8) | addr[5]);
+	ksz_write32(dev, REG_SW_ALU_INDEX_1, data);
+
+	/* start read operation */
+	ksz_write32(dev, REG_SW_ALU_CTRL__4, ALU_READ | ALU_START);
+
+	/* wait to be finished */
+	ret = ksz9477_wait_alu_ready(dev);
+	if (ret) {
+		dev_dbg(dev->dev, "Failed to read ALU\n");
+		goto exit;
+	}
+
+	ksz_read32(dev, REG_SW_ALU_VAL_A, &alu_table[0]);
+	if (alu_table[0] & ALU_V_STATIC_VALID) {
+		ksz_read32(dev, REG_SW_ALU_VAL_B, &alu_table[1]);
+		ksz_read32(dev, REG_SW_ALU_VAL_C, &alu_table[2]);
+		ksz_read32(dev, REG_SW_ALU_VAL_D, &alu_table[3]);
+
+		/* clear forwarding port */
+		alu_table[2] &= ~BIT(port);
+
+		/* if there is no port to forward, clear table */
+		if ((alu_table[2] & ALU_V_PORT_MAP) == 0) {
+			alu_table[0] = 0;
+			alu_table[1] = 0;
+			alu_table[2] = 0;
+			alu_table[3] = 0;
+		}
+	} else {
+		alu_table[0] = 0;
+		alu_table[1] = 0;
+		alu_table[2] = 0;
+		alu_table[3] = 0;
+	}
+
+	ksz9477_write_table(dev, alu_table);
+
+	ksz_write32(dev, REG_SW_ALU_CTRL__4, ALU_WRITE | ALU_START);
+
+	/* wait to be finished */
+	ret = ksz9477_wait_alu_ready(dev);
+	if (ret)
+		dev_dbg(dev->dev, "Failed to write ALU\n");
+
+exit:
+	mutex_unlock(&dev->alu_mutex);
+
+	return ret;
+}
+
+static void ksz9477_convert_alu(struct alu_struct *alu, u32 *alu_table)
+{
+	alu->is_static = !!(alu_table[0] & ALU_V_STATIC_VALID);
+	alu->is_src_filter = !!(alu_table[0] & ALU_V_SRC_FILTER);
+	alu->is_dst_filter = !!(alu_table[0] & ALU_V_DST_FILTER);
+	alu->prio_age = (alu_table[0] >> ALU_V_PRIO_AGE_CNT_S) &
+			ALU_V_PRIO_AGE_CNT_M;
+	alu->mstp = alu_table[0] & ALU_V_MSTP_M;
+
+	alu->is_override = !!(alu_table[1] & ALU_V_OVERRIDE);
+	alu->is_use_fid = !!(alu_table[1] & ALU_V_USE_FID);
+	alu->port_forward = alu_table[1] & ALU_V_PORT_MAP;
+
+	alu->fid = (alu_table[2] >> ALU_V_FID_S) & ALU_V_FID_M;
+
+	alu->mac[0] = (alu_table[2] >> 8) & 0xFF;
+	alu->mac[1] = alu_table[2] & 0xFF;
+	alu->mac[2] = (alu_table[3] >> 24) & 0xFF;
+	alu->mac[3] = (alu_table[3] >> 16) & 0xFF;
+	alu->mac[4] = (alu_table[3] >> 8) & 0xFF;
+	alu->mac[5] = alu_table[3] & 0xFF;
+}
+
+static int ksz9477_port_fdb_dump(struct dsa_switch *ds, int port,
+				 dsa_fdb_dump_cb_t *cb, void *data)
+{
+	struct ksz_device *dev = ds->priv;
+	int ret = 0;
+	u32 ksz_data;
+	u32 alu_table[4];
+	struct alu_struct alu;
+	int timeout;
+
+	mutex_lock(&dev->alu_mutex);
+
+	/* start ALU search */
+	ksz_write32(dev, REG_SW_ALU_CTRL__4, ALU_START | ALU_SEARCH);
+
+	do {
+		timeout = 1000;
+		do {
+			ksz_read32(dev, REG_SW_ALU_CTRL__4, &ksz_data);
+			if ((ksz_data & ALU_VALID) || !(ksz_data & ALU_START))
+				break;
+			usleep_range(1, 10);
+		} while (timeout-- > 0);
+
+		if (!timeout) {
+			dev_dbg(dev->dev, "Failed to search ALU\n");
+			ret = -ETIMEDOUT;
+			goto exit;
+		}
+
+		/* read ALU table */
+		ksz9477_read_table(dev, alu_table);
+
+		ksz9477_convert_alu(&alu, alu_table);
+
+		if (alu.port_forward & BIT(port)) {
+			ret = cb(alu.mac, alu.fid, alu.is_static, data);
+			if (ret)
+				goto exit;
+		}
+	} while (ksz_data & ALU_START);
+
+exit:
+
+	/* stop ALU search */
+	ksz_write32(dev, REG_SW_ALU_CTRL__4, 0);
+
+	mutex_unlock(&dev->alu_mutex);
+
+	return ret;
+}
+
+static int ksz9477_port_mdb_add(struct dsa_switch *ds, int port,
+				const struct switchdev_obj_port_mdb *mdb,
+				struct dsa_db db)
+{
+	struct ksz_device *dev = ds->priv;
+	u32 static_table[4];
+	u32 data;
+	int index;
+	u32 mac_hi, mac_lo;
+	int err = 0;
+
+	mac_hi = ((mdb->addr[0] << 8) | mdb->addr[1]);
+	mac_lo = ((mdb->addr[2] << 24) | (mdb->addr[3] << 16));
+	mac_lo |= ((mdb->addr[4] << 8) | mdb->addr[5]);
+
+	mutex_lock(&dev->alu_mutex);
+
+	for (index = 0; index < dev->num_statics; index++) {
+		/* find empty slot first */
+		data = (index << ALU_STAT_INDEX_S) |
+			ALU_STAT_READ | ALU_STAT_START;
+		ksz_write32(dev, REG_SW_ALU_STAT_CTRL__4, data);
+
+		/* wait to be finished */
+		err = ksz9477_wait_alu_sta_ready(dev);
+		if (err) {
+			dev_dbg(dev->dev, "Failed to read ALU STATIC\n");
+			goto exit;
+		}
+
+		/* read ALU static table */
+		ksz9477_read_table(dev, static_table);
+
+		if (static_table[0] & ALU_V_STATIC_VALID) {
+			/* check this has same vid & mac address */
+			if (((static_table[2] >> ALU_V_FID_S) == mdb->vid) &&
+			    ((static_table[2] & ALU_V_MAC_ADDR_HI) == mac_hi) &&
+			    static_table[3] == mac_lo) {
+				/* found matching one */
+				break;
+			}
+		} else {
+			/* found empty one */
+			break;
+		}
+	}
+
+	/* no available entry */
+	if (index == dev->num_statics) {
+		err = -ENOSPC;
+		goto exit;
+	}
+
+	/* add entry */
+	static_table[0] = ALU_V_STATIC_VALID;
+	static_table[1] |= BIT(port);
+	if (mdb->vid)
+		static_table[1] |= ALU_V_USE_FID;
+	static_table[2] = (mdb->vid << ALU_V_FID_S);
+	static_table[2] |= mac_hi;
+	static_table[3] = mac_lo;
+
+	ksz9477_write_table(dev, static_table);
+
+	data = (index << ALU_STAT_INDEX_S) | ALU_STAT_START;
+	ksz_write32(dev, REG_SW_ALU_STAT_CTRL__4, data);
+
+	/* wait to be finished */
+	if (ksz9477_wait_alu_sta_ready(dev))
+		dev_dbg(dev->dev, "Failed to read ALU STATIC\n");
+
+exit:
+	mutex_unlock(&dev->alu_mutex);
+	return err;
+}
+
+static int ksz9477_port_mdb_del(struct dsa_switch *ds, int port,
+				const struct switchdev_obj_port_mdb *mdb,
+				struct dsa_db db)
+{
+	struct ksz_device *dev = ds->priv;
+	u32 static_table[4];
+	u32 data;
+	int index;
+	int ret = 0;
+	u32 mac_hi, mac_lo;
+
+	mac_hi = ((mdb->addr[0] << 8) | mdb->addr[1]);
+	mac_lo = ((mdb->addr[2] << 24) | (mdb->addr[3] << 16));
+	mac_lo |= ((mdb->addr[4] << 8) | mdb->addr[5]);
+
+	mutex_lock(&dev->alu_mutex);
+
+	for (index = 0; index < dev->num_statics; index++) {
+		/* find empty slot first */
+		data = (index << ALU_STAT_INDEX_S) |
+			ALU_STAT_READ | ALU_STAT_START;
+		ksz_write32(dev, REG_SW_ALU_STAT_CTRL__4, data);
+
+		/* wait to be finished */
+		ret = ksz9477_wait_alu_sta_ready(dev);
+		if (ret) {
+			dev_dbg(dev->dev, "Failed to read ALU STATIC\n");
+			goto exit;
+		}
+
+		/* read ALU static table */
+		ksz9477_read_table(dev, static_table);
+
+		if (static_table[0] & ALU_V_STATIC_VALID) {
+			/* check this has same vid & mac address */
+
+			if (((static_table[2] >> ALU_V_FID_S) == mdb->vid) &&
+			    ((static_table[2] & ALU_V_MAC_ADDR_HI) == mac_hi) &&
+			    static_table[3] == mac_lo) {
+				/* found matching one */
+				break;
+			}
+		}
+	}
+
+	/* no available entry */
+	if (index == dev->num_statics)
+		goto exit;
+
+	/* clear port */
+	static_table[1] &= ~BIT(port);
+
+	if ((static_table[1] & ALU_V_PORT_MAP) == 0) {
+		/* delete entry */
+		static_table[0] = 0;
+		static_table[1] = 0;
+		static_table[2] = 0;
+		static_table[3] = 0;
+	}
+
+	ksz9477_write_table(dev, static_table);
+
+	data = (index << ALU_STAT_INDEX_S) | ALU_STAT_START;
+	ksz_write32(dev, REG_SW_ALU_STAT_CTRL__4, data);
+
+	/* wait to be finished */
+	ret = ksz9477_wait_alu_sta_ready(dev);
+	if (ret)
+		dev_dbg(dev->dev, "Failed to read ALU STATIC\n");
+
+exit:
+	mutex_unlock(&dev->alu_mutex);
+
+	return ret;
+}
+
+static int ksz9477_port_mirror_add(struct dsa_switch *ds, int port,
+				   struct dsa_mall_mirror_tc_entry *mirror,
+				   bool ingress, struct netlink_ext_ack *extack)
+{
+	struct ksz_device *dev = ds->priv;
+	u8 data;
+	int p;
+
+	/* Limit to one sniffer port
+	 * Check if any of the port is already set for sniffing
+	 * If yes, instruct the user to remove the previous entry & exit
+	 */
+	for (p = 0; p < dev->port_cnt; p++) {
+		/* Skip the current sniffing port */
+		if (p == mirror->to_local_port)
+			continue;
+
+		ksz_pread8(dev, p, P_MIRROR_CTRL, &data);
+
+		if (data & PORT_MIRROR_SNIFFER) {
+			NL_SET_ERR_MSG_MOD(extack,
+					   "Sniffer port is already configured, delete existing rules & retry");
+			return -EBUSY;
+		}
+	}
+
+	if (ingress)
+		ksz_port_cfg(dev, port, P_MIRROR_CTRL, PORT_MIRROR_RX, true);
+	else
+		ksz_port_cfg(dev, port, P_MIRROR_CTRL, PORT_MIRROR_TX, true);
+
+	/* configure mirror port */
+	ksz_port_cfg(dev, mirror->to_local_port, P_MIRROR_CTRL,
+		     PORT_MIRROR_SNIFFER, true);
+
+	ksz_cfg(dev, S_MIRROR_CTRL, SW_MIRROR_RX_TX, false);
+
+	return 0;
+}
+
+static void ksz9477_port_mirror_del(struct dsa_switch *ds, int port,
+				    struct dsa_mall_mirror_tc_entry *mirror)
+{
+	struct ksz_device *dev = ds->priv;
+	bool in_use = false;
+	u8 data;
+	int p;
+
+	if (mirror->ingress)
+		ksz_port_cfg(dev, port, P_MIRROR_CTRL, PORT_MIRROR_RX, false);
+	else
+		ksz_port_cfg(dev, port, P_MIRROR_CTRL, PORT_MIRROR_TX, false);
+
+
+	/* Check if any of the port is still referring to sniffer port */
+	for (p = 0; p < dev->port_cnt; p++) {
+		ksz_pread8(dev, p, P_MIRROR_CTRL, &data);
+
+		if ((data & (PORT_MIRROR_RX | PORT_MIRROR_TX))) {
+			in_use = true;
+			break;
+		}
+	}
+
+	/* delete sniffing if there are no other mirroring rules */
+	if (!in_use)
+		ksz_port_cfg(dev, mirror->to_local_port, P_MIRROR_CTRL,
+			     PORT_MIRROR_SNIFFER, false);
+}
+
+static bool ksz9477_get_gbit(struct ksz_device *dev, u8 data)
+{
+	bool gbit;
+
+	if (dev->features & NEW_XMII)
+		gbit = !(data & PORT_MII_NOT_1GBIT);
+	else
+		gbit = !!(data & PORT_MII_1000MBIT_S1);
+	return gbit;
+}
+
+static void ksz9477_set_gbit(struct ksz_device *dev, bool gbit, u8 *data)
+{
+	if (dev->features & NEW_XMII) {
+		if (gbit)
+			*data &= ~PORT_MII_NOT_1GBIT;
+		else
+			*data |= PORT_MII_NOT_1GBIT;
+	} else {
+		if (gbit)
+			*data |= PORT_MII_1000MBIT_S1;
+		else
+			*data &= ~PORT_MII_1000MBIT_S1;
+	}
+}
+
+static int ksz9477_get_xmii(struct ksz_device *dev, u8 data)
+{
+	int mode;
+
+	if (dev->features & NEW_XMII) {
+		switch (data & PORT_MII_SEL_M) {
+		case PORT_MII_SEL:
+			mode = 0;
+			break;
+		case PORT_RMII_SEL:
+			mode = 1;
+			break;
+		case PORT_GMII_SEL:
+			mode = 2;
+			break;
+		default:
+			mode = 3;
+		}
+	} else {
+		switch (data & PORT_MII_SEL_M) {
+		case PORT_MII_SEL_S1:
+			mode = 0;
+			break;
+		case PORT_RMII_SEL_S1:
+			mode = 1;
+			break;
+		case PORT_GMII_SEL_S1:
+			mode = 2;
+			break;
+		default:
+			mode = 3;
+		}
+	}
+	return mode;
+}
+
+static void ksz9477_set_xmii(struct ksz_device *dev, int mode, u8 *data)
+{
+	u8 xmii;
+
+	if (dev->features & NEW_XMII) {
+		switch (mode) {
+		case 0:
+			xmii = PORT_MII_SEL;
+			break;
+		case 1:
+			xmii = PORT_RMII_SEL;
+			break;
+		case 2:
+			xmii = PORT_GMII_SEL;
+			break;
+		default:
+			xmii = PORT_RGMII_SEL;
+			break;
+		}
+	} else {
+		switch (mode) {
+		case 0:
+			xmii = PORT_MII_SEL_S1;
+			break;
+		case 1:
+			xmii = PORT_RMII_SEL_S1;
+			break;
+		case 2:
+			xmii = PORT_GMII_SEL_S1;
+			break;
+		default:
+			xmii = PORT_RGMII_SEL_S1;
+			break;
+		}
+	}
+	*data &= ~PORT_MII_SEL_M;
+	*data |= xmii;
+}
+
+static phy_interface_t ksz9477_get_interface(struct ksz_device *dev, int port)
+{
+	phy_interface_t interface;
+	bool gbit;
+	int mode;
+	u8 data8;
+
+	if (port < dev->phy_port_cnt)
+		return PHY_INTERFACE_MODE_NA;
+	ksz_pread8(dev, port, REG_PORT_XMII_CTRL_1, &data8);
+	gbit = ksz9477_get_gbit(dev, data8);
+	mode = ksz9477_get_xmii(dev, data8);
+	switch (mode) {
+	case 2:
+		interface = PHY_INTERFACE_MODE_GMII;
+		if (gbit)
+			break;
+		fallthrough;
+	case 0:
+		interface = PHY_INTERFACE_MODE_MII;
+		break;
+	case 1:
+		interface = PHY_INTERFACE_MODE_RMII;
+		break;
+	default:
+		interface = PHY_INTERFACE_MODE_RGMII;
+		if (data8 & PORT_RGMII_ID_EG_ENABLE)
+			interface = PHY_INTERFACE_MODE_RGMII_TXID;
+		if (data8 & PORT_RGMII_ID_IG_ENABLE) {
+			interface = PHY_INTERFACE_MODE_RGMII_RXID;
+			if (data8 & PORT_RGMII_ID_EG_ENABLE)
+				interface = PHY_INTERFACE_MODE_RGMII_ID;
+		}
+		break;
+	}
+	return interface;
+}
+
+static void ksz9477_port_mmd_write(struct ksz_device *dev, int port,
+				   u8 dev_addr, u16 reg_addr, u16 val)
+{
+	ksz_pwrite16(dev, port, REG_PORT_PHY_MMD_SETUP,
+		     MMD_SETUP(PORT_MMD_OP_INDEX, dev_addr));
+	ksz_pwrite16(dev, port, REG_PORT_PHY_MMD_INDEX_DATA, reg_addr);
+	ksz_pwrite16(dev, port, REG_PORT_PHY_MMD_SETUP,
+		     MMD_SETUP(PORT_MMD_OP_DATA_NO_INCR, dev_addr));
+	ksz_pwrite16(dev, port, REG_PORT_PHY_MMD_INDEX_DATA, val);
+}
+
+static void ksz9477_phy_errata_setup(struct ksz_device *dev, int port)
+{
+	/* Apply PHY settings to address errata listed in
+	 * KSZ9477, KSZ9897, KSZ9896, KSZ9567, KSZ8565
+	 * Silicon Errata and Data Sheet Clarification documents:
+	 *
+	 * Register settings are needed to improve PHY receive performance
+	 */
+	ksz9477_port_mmd_write(dev, port, 0x01, 0x6f, 0xdd0b);
+	ksz9477_port_mmd_write(dev, port, 0x01, 0x8f, 0x6032);
+	ksz9477_port_mmd_write(dev, port, 0x01, 0x9d, 0x248c);
+	ksz9477_port_mmd_write(dev, port, 0x01, 0x75, 0x0060);
+	ksz9477_port_mmd_write(dev, port, 0x01, 0xd3, 0x7777);
+	ksz9477_port_mmd_write(dev, port, 0x1c, 0x06, 0x3008);
+	ksz9477_port_mmd_write(dev, port, 0x1c, 0x08, 0x2001);
+
+	/* Transmit waveform amplitude can be improved
+	 * (1000BASE-T, 100BASE-TX, 10BASE-Te)
+	 */
+	ksz9477_port_mmd_write(dev, port, 0x1c, 0x04, 0x00d0);
+
+	/* Energy Efficient Ethernet (EEE) feature select must
+	 * be manually disabled (except on KSZ8565 which is 100Mbit)
+	 */
+	if (dev->features & GBIT_SUPPORT)
+		ksz9477_port_mmd_write(dev, port, 0x07, 0x3c, 0x0000);
+
+	/* Register settings are required to meet data sheet
+	 * supply current specifications
+	 */
+	ksz9477_port_mmd_write(dev, port, 0x1c, 0x13, 0x6eff);
+	ksz9477_port_mmd_write(dev, port, 0x1c, 0x14, 0xe6ff);
+	ksz9477_port_mmd_write(dev, port, 0x1c, 0x15, 0x6eff);
+	ksz9477_port_mmd_write(dev, port, 0x1c, 0x16, 0xe6ff);
+	ksz9477_port_mmd_write(dev, port, 0x1c, 0x17, 0x00ff);
+	ksz9477_port_mmd_write(dev, port, 0x1c, 0x18, 0x43ff);
+	ksz9477_port_mmd_write(dev, port, 0x1c, 0x19, 0xc3ff);
+	ksz9477_port_mmd_write(dev, port, 0x1c, 0x1a, 0x6fff);
+	ksz9477_port_mmd_write(dev, port, 0x1c, 0x1b, 0x07ff);
+	ksz9477_port_mmd_write(dev, port, 0x1c, 0x1c, 0x0fff);
+	ksz9477_port_mmd_write(dev, port, 0x1c, 0x1d, 0xe7ff);
+	ksz9477_port_mmd_write(dev, port, 0x1c, 0x1e, 0xefff);
+	ksz9477_port_mmd_write(dev, port, 0x1c, 0x20, 0xeeee);
+}
+
+static void ksz9477_port_setup(struct ksz_device *dev, int port, bool cpu_port)
+{
+	struct ksz_port *p = &dev->ports[port];
+	struct dsa_switch *ds = dev->ds;
+	u8 data8, member;
+	u16 data16;
+
+	/* enable tag tail for host port */
+	if (cpu_port)
+		ksz_port_cfg(dev, port, REG_PORT_CTRL_0, PORT_TAIL_TAG_ENABLE,
+			     true);
+
+	ksz_port_cfg(dev, port, REG_PORT_CTRL_0, PORT_MAC_LOOPBACK, false);
+
+	/* set back pressure */
+	ksz_port_cfg(dev, port, REG_PORT_MAC_CTRL_1, PORT_BACK_PRESSURE, true);
+
+	/* enable broadcast storm limit */
+	ksz_port_cfg(dev, port, P_BCAST_STORM_CTRL, PORT_BROADCAST_STORM, true);
+
+	/* disable DiffServ priority */
+	ksz_port_cfg(dev, port, P_PRIO_CTRL, PORT_DIFFSERV_PRIO_ENABLE, false);
+
+	/* replace priority */
+	ksz_port_cfg(dev, port, REG_PORT_MRI_MAC_CTRL, PORT_USER_PRIO_CEILING,
+		     false);
+	ksz9477_port_cfg32(dev, port, REG_PORT_MTI_QUEUE_CTRL_0__4,
+			   MTI_PVID_REPLACE, false);
+
+	/* enable 802.1p priority */
+	ksz_port_cfg(dev, port, P_PRIO_CTRL, PORT_802_1P_PRIO_ENABLE, true);
+
+	if (port < dev->phy_port_cnt) {
+		/* do not force flow control */
+		ksz_port_cfg(dev, port, REG_PORT_CTRL_0,
+			     PORT_FORCE_TX_FLOW_CTRL | PORT_FORCE_RX_FLOW_CTRL,
+			     false);
+
+		if (dev->phy_errata_9477)
+			ksz9477_phy_errata_setup(dev, port);
+	} else {
+		/* force flow control */
+		ksz_port_cfg(dev, port, REG_PORT_CTRL_0,
+			     PORT_FORCE_TX_FLOW_CTRL | PORT_FORCE_RX_FLOW_CTRL,
+			     true);
+
+		/* configure MAC to 1G & RGMII mode */
+		ksz_pread8(dev, port, REG_PORT_XMII_CTRL_1, &data8);
+		switch (p->interface) {
+		case PHY_INTERFACE_MODE_MII:
+			ksz9477_set_xmii(dev, 0, &data8);
+			ksz9477_set_gbit(dev, false, &data8);
+			p->phydev.speed = SPEED_100;
+			break;
+		case PHY_INTERFACE_MODE_RMII:
+			ksz9477_set_xmii(dev, 1, &data8);
+			ksz9477_set_gbit(dev, false, &data8);
+			p->phydev.speed = SPEED_100;
+			break;
+		case PHY_INTERFACE_MODE_GMII:
+			ksz9477_set_xmii(dev, 2, &data8);
+			ksz9477_set_gbit(dev, true, &data8);
+			p->phydev.speed = SPEED_1000;
+			break;
+		default:
+			ksz9477_set_xmii(dev, 3, &data8);
+			ksz9477_set_gbit(dev, true, &data8);
+			data8 &= ~PORT_RGMII_ID_IG_ENABLE;
+			data8 &= ~PORT_RGMII_ID_EG_ENABLE;
+			if (p->interface == PHY_INTERFACE_MODE_RGMII_ID ||
+			    p->interface == PHY_INTERFACE_MODE_RGMII_RXID)
+				data8 |= PORT_RGMII_ID_IG_ENABLE;
+			if (p->interface == PHY_INTERFACE_MODE_RGMII_ID ||
+			    p->interface == PHY_INTERFACE_MODE_RGMII_TXID)
+				data8 |= PORT_RGMII_ID_EG_ENABLE;
+			/* On KSZ9893, disable RGMII in-band status support */
+			if (dev->features & IS_9893)
+				data8 &= ~PORT_MII_MAC_MODE;
+			p->phydev.speed = SPEED_1000;
+			break;
+		}
+		ksz_pwrite8(dev, port, REG_PORT_XMII_CTRL_1, data8);
+		p->phydev.duplex = 1;
+	}
+
+	if (cpu_port)
+		member = dsa_user_ports(ds);
+	else
+		member = BIT(dsa_upstream_port(ds, port));
+
+	ksz9477_cfg_port_member(dev, port, member);
+
+	/* clear pending interrupts */
+	if (port < dev->phy_port_cnt)
+		ksz_pread16(dev, port, REG_PORT_PHY_INT_ENABLE, &data16);
+}
+
+static void ksz9477_config_cpu_port(struct dsa_switch *ds)
+{
+	struct ksz_device *dev = ds->priv;
+	struct ksz_port *p;
+	int i;
+
+	for (i = 0; i < dev->port_cnt; i++) {
+		if (dsa_is_cpu_port(ds, i) && (dev->cpu_ports & (1 << i))) {
+			phy_interface_t interface;
+			const char *prev_msg;
+			const char *prev_mode;
+
+			dev->cpu_port = i;
+			p = &dev->ports[i];
+
+			/* Read from XMII register to determine host port
+			 * interface.  If set specifically in device tree
+			 * note the difference to help debugging.
+			 */
+			interface = ksz9477_get_interface(dev, i);
+			if (!p->interface) {
+				if (dev->compat_interface) {
+					dev_warn(dev->dev,
+						 "Using legacy switch \"phy-mode\" property, because it is missing on port %d node. "
+						 "Please update your device tree.\n",
+						 i);
+					p->interface = dev->compat_interface;
+				} else {
+					p->interface = interface;
+				}
+			}
+			if (interface && interface != p->interface) {
+				prev_msg = " instead of ";
+				prev_mode = phy_modes(interface);
+			} else {
+				prev_msg = "";
+				prev_mode = "";
+			}
+			dev_info(dev->dev,
+				 "Port%d: using phy mode %s%s%s\n",
+				 i,
+				 phy_modes(p->interface),
+				 prev_msg,
+				 prev_mode);
+
+			/* enable cpu port */
+			ksz9477_port_setup(dev, i, true);
+			p->on = 1;
+		}
+	}
+
+	for (i = 0; i < dev->port_cnt; i++) {
+		if (i == dev->cpu_port)
+			continue;
+		p = &dev->ports[i];
+
+		ksz9477_port_stp_state_set(ds, i, BR_STATE_DISABLED);
+		p->on = 1;
+		if (i < dev->phy_port_cnt)
+			p->phy = 1;
+		if (dev->chip_id == 0x00947700 && i == 6) {
+			p->sgmii = 1;
+
+			/* SGMII PHY detection code is not implemented yet. */
+			p->phy = 0;
+		}
+	}
+}
+
+static int ksz9477_setup(struct dsa_switch *ds)
+{
+	struct ksz_device *dev = ds->priv;
+	int ret = 0;
+
+	dev->vlan_cache = devm_kcalloc(dev->dev, sizeof(struct vlan_table),
+				       dev->num_vlans, GFP_KERNEL);
+	if (!dev->vlan_cache)
+		return -ENOMEM;
+
+	ret = ksz9477_reset_switch(dev);
+	if (ret) {
+		dev_err(ds->dev, "failed to reset switch\n");
+		return ret;
+	}
+
+	/* Required for port partitioning. */
+	ksz9477_cfg32(dev, REG_SW_QM_CTRL__4, UNICAST_VLAN_BOUNDARY,
+		      true);
+
+	/* Do not work correctly with tail tagging. */
+	ksz_cfg(dev, REG_SW_MAC_CTRL_0, SW_CHECK_LENGTH, false);
+
+	/* Enable REG_SW_MTU__2 reg by setting SW_JUMBO_PACKET */
+	ksz_cfg(dev, REG_SW_MAC_CTRL_1, SW_JUMBO_PACKET, true);
+
+	/* Now we can configure default MTU value */
+	ret = regmap_update_bits(dev->regmap[1], REG_SW_MTU__2, REG_SW_MTU_MASK,
+				 VLAN_ETH_FRAME_LEN + ETH_FCS_LEN);
+	if (ret)
+		return ret;
+
+	ksz9477_config_cpu_port(ds);
+
+	ksz_cfg(dev, REG_SW_MAC_CTRL_1, MULTICAST_STORM_DISABLE, true);
+
+	/* queue based egress rate limit */
+	ksz_cfg(dev, REG_SW_MAC_CTRL_5, SW_OUT_RATE_LIMIT_QUEUE_BASED, true);
+
+	/* enable global MIB counter freeze function */
+	ksz_cfg(dev, REG_SW_MAC_CTRL_6, SW_MIB_COUNTER_FREEZE, true);
+
+	/* start switch */
+	ksz_cfg(dev, REG_SW_OPERATION, SW_START, true);
+
+	ksz_init_mib_timer(dev);
+
+	ds->configure_vlan_while_not_filtering = false;
+
+	return 0;
+}
+
+static const struct dsa_switch_ops ksz9477_switch_ops = {
+	.get_tag_protocol	= ksz9477_get_tag_protocol,
+	.setup			= ksz9477_setup,
+	.phy_read		= ksz9477_phy_read16,
+	.phy_write		= ksz9477_phy_write16,
+	.phylink_mac_link_down	= ksz_mac_link_down,
+	.port_enable		= ksz_enable_port,
+	.get_strings		= ksz9477_get_strings,
+	.get_ethtool_stats	= ksz_get_ethtool_stats,
+	.get_sset_count		= ksz_sset_count,
+	.port_bridge_join	= ksz_port_bridge_join,
+	.port_bridge_leave	= ksz_port_bridge_leave,
+	.port_stp_state_set	= ksz9477_port_stp_state_set,
+	.port_fast_age		= ksz_port_fast_age,
+	.port_vlan_filtering	= ksz9477_port_vlan_filtering,
+	.port_vlan_add		= ksz9477_port_vlan_add,
+	.port_vlan_del		= ksz9477_port_vlan_del,
+	.port_fdb_dump		= ksz9477_port_fdb_dump,
+	.port_fdb_add		= ksz9477_port_fdb_add,
+	.port_fdb_del		= ksz9477_port_fdb_del,
+	.port_mdb_add           = ksz9477_port_mdb_add,
+	.port_mdb_del           = ksz9477_port_mdb_del,
+	.port_mirror_add	= ksz9477_port_mirror_add,
+	.port_mirror_del	= ksz9477_port_mirror_del,
+	.get_stats64		= ksz9477_get_stats64,
+	.port_change_mtu	= ksz9477_change_mtu,
+	.port_max_mtu		= ksz9477_max_mtu,
+};
+
+static u32 ksz9477_get_port_addr(int port, int offset)
+{
+	return PORT_CTRL_ADDR(port, offset);
+}
+
+static int ksz9477_switch_detect(struct ksz_device *dev)
+{
+	u8 data8;
+	u8 id_hi;
+	u8 id_lo;
+	u32 id32;
+	int ret;
+
+	/* turn off SPI DO Edge select */
+	ret = ksz_read8(dev, REG_SW_GLOBAL_SERIAL_CTRL_0, &data8);
+	if (ret)
+		return ret;
+
+	data8 &= ~SPI_AUTO_EDGE_DETECTION;
+	ret = ksz_write8(dev, REG_SW_GLOBAL_SERIAL_CTRL_0, data8);
+	if (ret)
+		return ret;
+
+	/* read chip id */
+	ret = ksz_read32(dev, REG_CHIP_ID0__1, &id32);
+	if (ret)
+		return ret;
+	ret = ksz_read8(dev, REG_GLOBAL_OPTIONS, &data8);
+	if (ret)
+		return ret;
+
+	/* Number of ports can be reduced depending on chip. */
+	dev->phy_port_cnt = 5;
+
+	/* Default capability is gigabit capable. */
+	dev->features = GBIT_SUPPORT;
+
+	dev_dbg(dev->dev, "Switch detect: ID=%08x%02x\n", id32, data8);
+	id_hi = (u8)(id32 >> 16);
+	id_lo = (u8)(id32 >> 8);
+	if ((id_lo & 0xf) == 3) {
+		/* Chip is from KSZ9893 design. */
+		dev_info(dev->dev, "Found KSZ9893\n");
+		dev->features |= IS_9893;
+
+		/* Chip does not support gigabit. */
+		if (data8 & SW_QW_ABLE)
+			dev->features &= ~GBIT_SUPPORT;
+		dev->phy_port_cnt = 2;
+	} else {
+		dev_info(dev->dev, "Found KSZ9477 or compatible\n");
+		/* Chip uses new XMII register definitions. */
+		dev->features |= NEW_XMII;
+
+		/* Chip does not support gigabit. */
+		if (!(data8 & SW_GIGABIT_ABLE))
+			dev->features &= ~GBIT_SUPPORT;
+	}
+
+	/* Change chip id to known ones so it can be matched against them. */
+	id32 = (id_hi << 16) | (id_lo << 8);
+
+	dev->chip_id = id32;
+
+	return 0;
+}
+
+struct ksz_chip_data {
+	u32 chip_id;
+	const char *dev_name;
+	int num_vlans;
+	int num_alus;
+	int num_statics;
+	int cpu_ports;
+	int port_cnt;
+	bool phy_errata_9477;
+};
+
+static const struct ksz_chip_data ksz9477_switch_chips[] = {
+	{
+		.chip_id = 0x00947700,
+		.dev_name = "KSZ9477",
+		.num_vlans = 4096,
+		.num_alus = 4096,
+		.num_statics = 16,
+		.cpu_ports = 0x7F,	/* can be configured as cpu port */
+		.port_cnt = 7,		/* total physical port count */
+		.phy_errata_9477 = true,
+	},
+	{
+		.chip_id = 0x00989700,
+		.dev_name = "KSZ9897",
+		.num_vlans = 4096,
+		.num_alus = 4096,
+		.num_statics = 16,
+		.cpu_ports = 0x7F,	/* can be configured as cpu port */
+		.port_cnt = 7,		/* total physical port count */
+		.phy_errata_9477 = true,
+	},
+	{
+		.chip_id = 0x00989300,
+		.dev_name = "KSZ9893",
+		.num_vlans = 4096,
+		.num_alus = 4096,
+		.num_statics = 16,
+		.cpu_ports = 0x07,	/* can be configured as cpu port */
+		.port_cnt = 3,		/* total port count */
+	},
+	{
+		.chip_id = 0x00956700,
+		.dev_name = "KSZ9567",
+		.num_vlans = 4096,
+		.num_alus = 4096,
+		.num_statics = 16,
+		.cpu_ports = 0x7F,	/* can be configured as cpu port */
+		.port_cnt = 7,		/* total physical port count */
+		.phy_errata_9477 = true,
+	},
+};
+
+static int ksz9477_switch_init(struct ksz_device *dev)
+{
+	int i;
+
+	dev->ds->ops = &ksz9477_switch_ops;
+
+	for (i = 0; i < ARRAY_SIZE(ksz9477_switch_chips); i++) {
+		const struct ksz_chip_data *chip = &ksz9477_switch_chips[i];
+
+		if (dev->chip_id == chip->chip_id) {
+			dev->name = chip->dev_name;
+			dev->num_vlans = chip->num_vlans;
+			dev->num_alus = chip->num_alus;
+			dev->num_statics = chip->num_statics;
+			dev->port_cnt = chip->port_cnt;
+			dev->cpu_ports = chip->cpu_ports;
+			dev->phy_errata_9477 = chip->phy_errata_9477;
+
+			break;
+		}
+	}
+
+	/* no switch found */
+	if (!dev->port_cnt)
+		return -ENODEV;
+
+	dev->port_mask = (1 << dev->port_cnt) - 1;
+
+	dev->reg_mib_cnt = SWITCH_COUNTER_NUM;
+	dev->mib_cnt = TOTAL_SWITCH_COUNTER_NUM;
+
+	dev->ports = devm_kzalloc(dev->dev,
+				  dev->port_cnt * sizeof(struct ksz_port),
+				  GFP_KERNEL);
+	if (!dev->ports)
+		return -ENOMEM;
+	for (i = 0; i < dev->port_cnt; i++) {
+		spin_lock_init(&dev->ports[i].mib.stats64_lock);
+		mutex_init(&dev->ports[i].mib.cnt_mutex);
+		dev->ports[i].mib.counters =
+			devm_kzalloc(dev->dev,
+				     sizeof(u64) *
+				     (TOTAL_SWITCH_COUNTER_NUM + 1),
+				     GFP_KERNEL);
+		if (!dev->ports[i].mib.counters)
+			return -ENOMEM;
+	}
+
+	/* set the real number of ports */
+	dev->ds->num_ports = dev->port_cnt;
+
+	return 0;
+}
+
+static void ksz9477_switch_exit(struct ksz_device *dev)
+{
+	ksz9477_reset_switch(dev);
+}
+
+static const struct ksz_dev_ops ksz9477_dev_ops = {
+	.get_port_addr = ksz9477_get_port_addr,
+	.cfg_port_member = ksz9477_cfg_port_member,
+	.flush_dyn_mac_table = ksz9477_flush_dyn_mac_table,
+	.port_setup = ksz9477_port_setup,
+	.r_mib_cnt = ksz9477_r_mib_cnt,
+	.r_mib_pkt = ksz9477_r_mib_pkt,
+	.r_mib_stat64 = ksz9477_r_mib_stats64,
+	.freeze_mib = ksz9477_freeze_mib,
+	.port_init_cnt = ksz9477_port_init_cnt,
+	.shutdown = ksz9477_reset_switch,
+	.detect = ksz9477_switch_detect,
+	.init = ksz9477_switch_init,
+	.exit = ksz9477_switch_exit,
+};
+
+int ksz9477_switch_register(struct ksz_device *dev)
+{
+	int ret, i;
+	struct phy_device *phydev;
+
+	ret = ksz_switch_register(dev, &ksz9477_dev_ops);
+	if (ret)
+		return ret;
+
+	for (i = 0; i < dev->phy_port_cnt; ++i) {
+		if (!dsa_is_user_port(dev->ds, i))
+			continue;
+
+		phydev = dsa_to_port(dev->ds, i)->slave->phydev;
+
+		/* The MAC actually cannot run in 1000 half-duplex mode. */
+		phy_remove_link_mode(phydev,
+				     ETHTOOL_LINK_MODE_1000baseT_Half_BIT);
+
+		/* PHY does not support gigabit. */
+		if (!(dev->features & GBIT_SUPPORT))
+			phy_remove_link_mode(phydev,
+					     ETHTOOL_LINK_MODE_1000baseT_Full_BIT);
+	}
+	return ret;
+}
+EXPORT_SYMBOL(ksz9477_switch_register);
+
+MODULE_AUTHOR("Woojung Huh <Woojung.Huh@microchip.com>");
+MODULE_DESCRIPTION("Microchip KSZ9477 Series Switch DSA Driver");
+MODULE_LICENSE("GPL");

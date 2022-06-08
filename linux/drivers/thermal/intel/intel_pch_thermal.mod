@@ -1,2 +1,1 @@
-g/CC_HAS_ASM_GOTO_TIED_OUTPUT) \
-    $(wild
+cmd_drivers/media/pci/cx18/cx18-alsa.mod.o 

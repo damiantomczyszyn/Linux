@@ -1,2 +1,5 @@
-drivers/media/rc/keymaps/rc-nec-terratec-cinergy-xs.o
+TRL, reg);
+	}
 
+	/* Set VIDC pins to input */
+	if (cx238

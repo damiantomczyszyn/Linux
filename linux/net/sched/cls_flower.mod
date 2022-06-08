@@ -1,2 +1,2 @@
-_percpu_address(addr))
-	
+_MSK_GPIO0)
+			dprintk(7

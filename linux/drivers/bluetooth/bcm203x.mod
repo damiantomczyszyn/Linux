@@ -1,2 +1,2 @@
-clude/config/RCU_FANOUT) \
-  
+00140140
+#define AUD_EXT_LNGT

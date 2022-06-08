@@ -1,1 +1,7 @@
-cmd_drivers/media/rc/keymaps/rc-odroid.mod := { echo  drivers/media/rc/keymaps/rc-odroid.o;  echo; } > drivers/media/rc/keymaps/rc-odroid.mod
+}
+
+static const struct vb2_ops dvb_qops = {
+	.queue_setup    = queue_setup,
+	.buf_prepare  = buffer_prepare,
+	.buf_finish = buffer_finish,
+	.b

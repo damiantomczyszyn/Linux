@@ -1,2 +1,1 @@
-.h \
-  include/linux/
+!try_module_get(clien

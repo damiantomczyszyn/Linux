@@ -1,1 +1,1 @@
-e/config/ACPI_APEI_GHES) 
+drivers/media/pci/cx18/cx

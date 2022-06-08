@@ -1,1 +1,5 @@
-cmd_drivers/media/rc/keymaps/rc-medion-x10-digitainer.mod := { echo  drivers/media/rc/keymaps/rc-medion-x10-digitainer.o;  echo; } > drivers/media/rc/keymaps/rc-medion-x10-digitainer.mod
+_read(ALT_PIN_OUT_SEL));
+	dprintk(1, "%s() GPIO2                    0x%08X\n", __func__,
+		cx_read(GPIO2));
+	dprintk(1, "%s() gpcnt(0x%08X)          0x%08X\n", __func__,
+		port->reg_gpcnt

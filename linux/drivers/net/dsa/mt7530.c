@@ -1,1841 +1,3345 @@
-lude/linux/percpu-refcount.h \
-  include/linux/kasan.h \
-    $(wildcard include/config/KASAN_STACK) \
-    $(wildcard include/config/KASAN_VMALLOC) \
-    $(wildcard include/config/KASAN_INLINE) \
-  include/linux/kasan-enabled.h \
-  include/linux/device.h \
-    $(wildcard include/config/GENERIC_MSI_IRQ_DOMAIN) \
-    $(wildcard include/config/GENERIC_MSI_IRQ) \
-    $(wildcard include/config/ENERGY_MODEL) \
-    $(wildcard include/config/PINCTRL) \
-    $(wildcard include/config/DMA_OPS) \
-    $(wildcard include/config/DMA_DECLARE_COHERENT) \
-    $(wildcard include/config/DMA_CMA) \
-    $(wildcard include/config/SWIOTLB) \
-    $(wildcard include/config/ARCH_HAS_SYNC_DMA_FOR_DEVICE) \
-    $(wildcard include/config/ARCH_HAS_SYNC_DMA_FOR_CPU) \
-    $(wildcard include/config/ARCH_HAS_SYNC_DMA_FOR_CPU_ALL) \
-    $(wildcard include/config/DMA_OPS_BYPASS) \
-    $(wildcard include/config/DEVTMPFS) \
-    $(wildcard include/config/SYSFS_DEPRECATED) \
-  include/linux/dev_printk.h \
-  include/linux/ratelimit.h \
-  include/linux/sched.h \
-    $(wildcard include/config/VIRT_CPU_ACCOUNTING_NATIVE) \
-    $(wildcard include/config/SCHED_INFO) \
-    $(wildcard include/config/SCHEDSTATS) \
-    $(wildcard include/config/SCHED_CORE) \
-    $(wildcard include/config/FAIR_GROUP_SCHED) \
-    $(wildcard include/config/RT_GROUP_SCHED) \
-    $(wildcard include/config/RT_MUTEXES) \
-    $(wildcard include/config/UCLAMP_TASK) \
-    $(wildcard include/config/UCLAMP_BUCKETS_COUNT) \
-    $(wildcard include/config/CGROUP_SCHED) \
-    $(wildcard include/config/BLK_DEV_IO_TRACE) \
-    $(wildcard include/config/PSI) \
-    $(wildcard include/config/COMPAT_BRK) \
-    $(wildcard include/config/CGROUPS) \
-    $(wildcard include/config/BLK_CGROUP) \
-    $(wildcard include/config/PAGE_OWNER) \
-    $(wildcard include/config/EVENTFD) \
-    $(wildcard include/config/ARCH_HAS_SCALED_CPUTIME) \
-    $(wildcard include/config/VIRT_CPU_ACCOUNTING_GEN) \
-    $(wildcard include/config/POSIX_CPUTIMERS) \
-    $(wildcard include/config/POSIX_CPU_TIMERS_TASK_WORK) \
-    $(wildcard include/config/KEYS) \
-    $(wildcard include/config/SYSVIPC) \
-    $(wildcard include/config/DETECT_HUNG_TASK) \
-    $(wildcard include/config/IO_URING) \
-    $(wildcard include/config/AUDIT) \
-    $(wildcard include/config/AUDITSYSCALL) \
-    $(wildcard include/config/UBSAN) \
-    $(wildcard include/config/UBSAN_TRAP) \
-    $(wildcard include/config/TASK_XACCT) \
-    $(wildcard include/config/CPUSETS) \
-    $(wildcard include/config/X86_CPU_RESCTRL) \
-    $(wildcard include/config/FUTEX) \
-    $(wildcard include/config/PERF_EVENTS) \
-    $(wildcard include/config/RSEQ) \
-    $(wildcard include/config/TASK_DELAY_ACCT) \
-    $(wildcard include/config/FAULT_INJECTION) \
-    $(wildcard include/config/LATENCYTOP) \
-    $(wildcard include/config/KUNIT) \
-    $(wildcard include/config/FUNCTION_GRAPH_TRACER) \
-    $(wildcard include/config/BCACHE) \
-    $(wildcard include/config/VMAP_STACK) \
-    $(wildcard include/config/SECURITY) \
-    $(wildcard include/config/BPF_SYSCALL) \
-    $(wildcard include/config/GCC_PLUGIN_STACKLEAK) \
-    $(wildcard include/config/X86_MCE) \
-    $(wildcard include/config/KRETPROBES) \
-    $(wildcard include/config/RETHOOK) \
-    $(wildcard include/config/ARCH_HAS_PARANOID_L1D_FLUSH) \
-    $(wildcard include/config/ARCH_TASK_STRUCT_ON_STACK) \
-    $(wildcard include/config/DEBUG_RSEQ) \
-  include/uapi/linux/sched.h \
-  include/linux/pid.h \
-  include/linux/rculist.h \
-    $(wildcard include/config/PROVE_RCU_LIST) \
-  include/linux/sem.h \
-  include/uapi/linux/sem.h \
-  include/linux/ipc.h \
-  include/linux/rhashtable-types.h \
-  include/uapi/linux/ipc.h \
-  arch/x86/include/generated/uapi/asm/ipcbuf.h \
-  include/uapi/asm-generic/ipcbuf.h \
-  arch/x86/include/uapi/asm/sembuf.h \
-  include/linux/shm.h \
-  include/uapi/linux/shm.h \
-  include/uapi/asm-generic/hugetlb_encode.h \
-  arch/x86/include/uapi/asm/shmbuf.h \
-  include/uapi/asm-generic/shmbuf.h \
-  arch/x86/include/asm/shmparam.h \
-  include/linux/plist.h \
-    $(wildcard include/config/DEBUG_PLIST) \
-  include/linux/hrtimer.h \
-    $(wildcard include/config/HIGH_RES_TIMERS) \
-    $(wildcard include/config/TIME_LOW_RES) \
-    $(wildcard include/config/TIMERFD) \
-  include/linux/hrtimer_defs.h \
-  include/linux/timerqueue.h \
-  include/linux/seccomp.h \
-    $(wildcard include/config/SECCOMP) \
-    $(wildcard include/config/HAVE_ARCH_SECCOMP_FILTER) \
-    $(wildcard include/config/SECCOMP_FILTER) \
-    $(wildcard include/config/CHECKPOINT_RESTORE) \
-    $(wildcard include/config/SECCOMP_CACHE_DEBUG) \
-  include/uapi/linux/seccomp.h \
-  arch/x86/include/asm/seccomp.h \
-  arch/x86/include/asm/unistd.h \
-  arch/x86/include/uapi/asm/unistd.h \
-  arch/x86/include/generated/uapi/asm/unistd_32.h \
-  include/asm-generic/seccomp.h \
-  include/uapi/linux/unistd.h \
-  include/linux/resource.h \
-  include/uapi/linux/resource.h \
-  arch/x86/include/generated/uapi/asm/resource.h \
-  include/asm-generic/resource.h \
-  include/uapi/asm-generic/resource.h \
-  include/linux/latencytop.h \
-  include/linux/sched/prio.h \
-  include/linux/sched/types.h \
-  include/linux/signal_types.h \
-    $(wildcard include/config/OLD_SIGACTION) \
-  include/uapi/linux/signal.h \
-  arch/x86/include/asm/signal.h \
-  arch/x86/include/uapi/asm/signal.h \
-  include/uapi/asm-generic/signal-defs.h \
-  arch/x86/include/uapi/asm/siginfo.h \
-  include/uapi/asm-generic/siginfo.h \
-  include/linux/syscall_user_dispatch.h \
-  include/linux/task_io_accounting.h \
-    $(wildcard include/config/TASK_IO_ACCOUNTING) \
-  include/linux/posix-timers.h \
-  include/linux/alarmtimer.h \
-    $(wildcard include/config/RTC_CLASS) \
-  include/uapi/linux/rseq.h \
-  include/linux/kcsan.h \
-  include/linux/energy_model.h \
-  include/linux/sched/cpufreq.h \
-    $(wildcard include/config/CPU_FREQ) \
-  include/linux/sched/topology.h \
-    $(wildcard include/config/SCHED_DEBUG) \
-    $(wildcard include/config/SCHED_MC) \
-    $(wildcard include/config/CPU_FREQ_GOV_SCHEDUTIL) \
-  include/linux/sched/idle.h \
-  include/linux/sched/sd_flags.h \
-  include/linux/klist.h \
-  include/linux/pm.h \
-    $(wildcard include/config/VT_CONSOLE_SLEEP) \
-    $(wildcard include/config/PM_CLK) \
-    $(wildcard include/config/PM_GENERIC_DOMAINS) \
-  include/linux/device/bus.h \
-  include/linux/device/class.h \
-  include/linux/device/driver.h \
-  arch/x86/include/asm/device.h \
-  include/linux/pm_wakeup.h \
-  include/acpi/acpi.h \
-  include/acpi/platform/acenv.h \
-  include/acpi/platform/acgcc.h \
-  include/acpi/platform/aclinux.h \
-    $(wildcard include/config/ACPI_REDUCED_HARDWARE_ONLY) \
-    $(wildcard include/config/ACPI_DEBUG) \
-  include/linux/ctype.h \
-  arch/x86/include/asm/acenv.h \
-  include/acpi/acnames.h \
-  include/acpi/actypes.h \
-  include/acpi/acexcep.h \
-  include/acpi/actbl.h \
-  include/acpi/actbl1.h \
-  include/acpi/actbl2.h \
-  include/acpi/actbl3.h \
-  include/acpi/acrestyp.h \
-  include/acpi/platform/acenvex.h \
-  include/acpi/platform/aclinuxex.h \
-  include/acpi/platform/acgccex.h \
-  include/acpi/acoutput.h \
-  include/acpi/acpiosxf.h \
-  include/acpi/acpixf.h \
-  include/acpi/acconfig.h \
-  include/acpi/acbuffer.h \
-  include/linux/dynamic_debug.h \
-  include/acpi/acpi_bus.h \
-    $(wildcard include/config/X86_ANDROID_TABLETS) \
-    $(wildcard include/config/ACPI_SYSTEM_POWER_STATES_SUPPORT) \
-    $(wildcard include/config/ACPI_SLEEP) \
-  include/acpi/acpi_drivers.h \
-    $(wildcard include/config/ACPI_DOCK) \
-  include/acpi/acpi_numa.h \
-    $(wildcard include/config/ACPI_HMAT) \
-  include/acpi/acpi_io.h \
-  include/linux/io.h \
-    $(wildcard include/config/HAS_IOPORT_MAP) \
-  arch/x86/include/asm/io.h \
-    $(wildcard include/config/MTRR) \
-    $(wildcard include/config/X86_PAT) \
-  arch/x86/include/generated/asm/early_ioremap.h \
-  include/asm-generic/early_ioremap.h \
-    $(wildcard include/config/GENERIC_EARLY_IOREMAP) \
-  include/asm-generic/iomap.h \
-  include/asm-generic/pci_iomap.h \
-    $(wildcard include/config/NO_GENERIC_PCI_IOPORT_MAP) \
-    $(wildcard include/config/GENERIC_PCI_IOMAP) \
-  include/asm-generic/io.h \
-    $(wildcard include/config/GENERIC_IOMAP) \
-    $(wildcard include/config/GENERIC_IOREMAP) \
-    $(wildcard include/config/VIRT_TO_BUS) \
-    $(wildcard include/config/GENERIC_DEVMEM_IS_ALLOWED) \
-  include/linux/logic_pio.h \
-    $(wildcard include/config/INDIRECT_PIO) \
-  include/linux/vmalloc.h \
-    $(wildcard include/config/HAVE_ARCH_HUGE_VMALLOC) \
-  arch/x86/include/asm/vmalloc.h \
-    $(wildcard include/config/HAVE_ARCH_HUGE_VMAP) \
-  arch/x86/include/asm/acpi.h \
-    $(wildcard include/config/ACPI_APEI) \
-  include/acpi/pdc_intel.h \
-  arch/x86/include/asm/numa.h \
-    $(wildcard include/config/NUMA_EMU) \
-  arch/x86/include/asm/numa_32.h \
-  include/linux/regulator/consumer.h \
-    $(wildcard include/config/REGULATOR) \
-  include/linux/suspend.h \
-    $(wildcard include/config/VT) \
-    $(wildcard include/config/SUSPEND) \
-    $(wildcard include/config/HIBERNATION_SNAPSHOT_DEV) \
-    $(wildcard include/config/PM_SLEEP_DEBUG) \
-    $(wildcard include/config/PM_AUTOSLEEP) \
-  include/linux/swap.h \
-    $(wildcard include/config/DEVICE_PRIVATE) \
-    $(wildcard include/config/MIGRATION) \
-    $(wildcard include/config/FRONTSWAP) \
-    $(wildcard include/config/THP_SWAP) \
-    $(wildcard include/config/MEMCG_SWAP) \
-  include/linux/memcontrol.h \
-    $(wildcard include/config/CGROUP_WRITEBACK) \
-  include/linux/cgroup.h \
-    $(wildcard include/config/CGROUP_CPUACCT) \
-    $(wildcard include/config/SOCK_CGROUP_DATA) \
-    $(wildcard include/config/CGROUP_DATA) \
-    $(wildcard include/config/CGROUP_BPF) \
-  include/uapi/linux/cgroupstats.h \
-  include/uapi/linux/taskstats.h \
-  include/linux/fs.h \
-    $(wildcard include/config/READ_ONLY_THP_FOR_FS) \
-    $(wildcard include/config/FS_POSIX_ACL) \
-    $(wildcard include/config/IMA) \
-    $(wildcard include/config/FILE_LOCKING) \
-    $(wildcard include/config/FSNOTIFY) \
-    $(wildcard include/config/FS_ENCRYPTION) \
-    $(wildcard include/config/FS_VERITY) \
-    $(wildcard include/config/EPOLL) \
-    $(wildcard include/config/UNICODE) \
-    $(wildcard include/config/QUOTA) \
-    $(wildcard include/config/FS_DAX) \
-    $(wildcard include/config/BLOCK) \
-  include/linux/wait_bit.h \
-  include/linux/kdev_t.h \
-  include/uapi/linux/kdev_t.h \
-  include/linux/dcache.h \
-  include/linux/rculist_bl.h \
-  include/linux/list_bl.h \
-  include/linux/bit_spinlock.h \
-  include/linux/lockref.h \
-    $(wildcard include/config/ARCH_USE_CMPXCHG_LOCKREF) \
-  include/linux/stringhash.h \
-    $(wildcard include/config/DCACHE_WORD_ACCESS) \
-  include/linux/hash.h \
-    $(wildcard include/config/HAVE_ARCH_HASH) \
-  include/linux/path.h \
-  include/linux/list_lru.h \
-  include/linux/shrinker.h \
-  include/linux/capability.h \
-  include/uapi/linux/capability.h \
-  include/linux/semaphore.h \
-  include/linux/fcntl.h \
-    $(wildcard include/config/ARCH_32BIT_OFF_T) \
-  include/uapi/linux/fcntl.h \
-  arch/x86/include/generated/uapi/asm/fcntl.h \
-  include/uapi/asm-generic/fcntl.h \
-  include/uapi/linux/openat2.h \
-  include/linux/migrate_mode.h \
-  include/linux/percpu-rwsem.h \
-  include/linux/rcuwait.h \
-  include/linux/sched/signal.h \
-    $(wildcard include/config/SCHED_AUTOGROUP) \
-    $(wildcard include/config/BSD_PROCESS_ACCT) \
-    $(wildcard include/config/TASKSTATS) \
-    $(wildcard include/config/STACK_GROWSUP) \
-  include/linux/signal.h \
-    $(wildcard include/config/DYNAMIC_SIGFRAME) \
-  include/linux/sched/jobctl.h \
-  include/linux/sched/task.h \
-    $(wildcard include/config/HAVE_EXIT_THREAD) \
-    $(wildcard include/config/ARCH_WANTS_DYNAMIC_TASK_STRUCT) \
-    $(wildcard include/config/HAVE_ARCH_THREAD_STRUCT_WHITELIST) \
-  include/linux/uaccess.h \
-  include/linux/fault-inject-usercopy.h \
-    $(wildcard include/config/FAULT_INJECTION_USERCOPY) \
-  arch/x86/include/asm/uaccess.h \
-    $(wildcard include/config/CC_HAS_ASM_GOTO_OUTPUT) \
-    $(wildcard include/config/CC_HAS_ASM_GOTO_TIED_OUTPUT) \
-    $(wildcard include/config/ARCH_HAS_COPY_MC) \
-    $(wildcard include/config/X86_INTEL_USERCOPY) \
-  arch/x86/include/asm/smap.h \
-  arch/x86/include/asm/extable.h \
-    $(wildcard include/config/BPF_JIT) \
-  include/asm-generic/access_ok.h \
-    $(wildcard include/config/ALTERNATE_USER_ADDRESS_SPACE) \
-  arch/x86/include/asm/uaccess_32.h \
-  include/linux/cred.h \
-    $(wildcard include/config/DEBUG_CREDENTIALS) \
-  include/linux/key.h \
-    $(wildcard include/config/KEY_NOTIFICATIONS) \
-    $(wildcard include/config/NET) \
-  include/linux/assoc_array.h \
-    $(wildcard include/config/ASSOCIATIVE_ARRAY) \
-  include/linux/sched/user.h \
-    $(wildcard include/config/WATCH_QUEUE) \
-  include/linux/percpu_counter.h \
-  include/linux/rcu_sync.h \
-  include/linux/delayed_call.h \
-  include/linux/errseq.h \
-  include/linux/ioprio.h \
-  include/linux/sched/rt.h \
-  include/linux/iocontext.h \
-    $(wildcard include/config/BLK_ICQ) \
-  include/uapi/linux/ioprio.h \
-  include/linux/fs_types.h \
-  include/linux/mount.h \
-  include/linux/mnt_idmapping.h \
-  include/uapi/linux/fs.h \
-  include/linux/quota.h \
-    $(wildcard include/config/QUOTA_NETLINK_INTERFACE) \
-  include/uapi/linux/dqblk_xfs.h \
-  include/linux/dqblk_v1.h \
-  include/linux/dqblk_v2.h \
-  include/linux/dqblk_qtree.h \
-  include/linux/projid.h \
-  include/uapi/linux/quota.h \
-  include/linux/nfs_fs_i.h \
-  include/linux/seq_file.h \
-  include/linux/string_helpers.h \
-  include/linux/ns_common.h \
-  include/linux/nsproxy.h \
-  include/linux/user_namespace.h \
-    $(wildcard include/config/INOTIFY_USER) \
-    $(wildcard include/config/FANOTIFY) \
-    $(wildcard include/config/PERSISTENT_KEYRINGS) \
-  include/linux/kernel_stat.h \
-  include/linux/interrupt.h \
-    $(wildcard include/config/IRQ_FORCED_THREADING) \
-    $(wildcard include/config/GENERIC_IRQ_PROBE) \
-    $(wildcard include/config/IRQ_TIMINGS) \
-  include/linux/irqreturn.h \
-  include/linux/irqnr.h \
-  include/uapi/linux/irqnr.h \
-  include/linux/hardirq.h \
-  include/linux/context_tracking_state.h \
-    $(wildcard include/config/CONTEXT_TRACKING) \
-  include/linux/ftrace_irq.h \
-    $(wildcard include/config/HWLAT_TRACER) \
-    $(wildcard include/config/OSNOISE_TRACER) \
-  include/linux/vtime.h \
-    $(wildcard include/config/VIRT_CPU_ACCOUNTING) \
-    $(wildcard include/config/IRQ_TIME_ACCOUNTING) \
-  arch/x86/include/asm/hardirq.h \
-    $(wildcard include/config/KVM_INTEL) \
-    $(wildcard include/config/X86_THERMAL_VECTOR) \
-    $(wildcard include/config/X86_MCE_THRESHOLD) \
-    $(wildcard include/config/X86_MCE_AMD) \
-    $(wildcard include/config/X86_HV_CALLBACK_VECTOR) \
-  arch/x86/include/asm/irq.h \
-  arch/x86/include/asm/sections.h \
-  include/asm-generic/sections.h \
-    $(wildcard include/config/HAVE_FUNCTION_DESCRIPTORS) \
-  include/linux/cgroup-defs.h \
-    $(wildcard include/config/CGROUP_NET_CLASSID) \
-    $(wildcard include/config/CGROUP_NET_PRIO) \
-  include/linux/u64_stats_sync.h \
-  include/linux/bpf-cgroup-defs.h \
-  include/linux/psi_types.h \
-  include/linux/kthread.h \
-  include/linux/cgroup_subsys.h \
-    $(wildcard include/config/CGROUP_DEVICE) \
-    $(wildcard include/config/CGROUP_FREEZER) \
-    $(wildcard include/config/CGROUP_PERF) \
-    $(wildcard include/config/CGROUP_HUGETLB) \
-    $(wildcard include/config/CGROUP_PIDS) \
-    $(wildcard include/config/CGROUP_RDMA) \
-    $(wildcard include/config/CGROUP_MISC) \
-    $(wildcard include/config/CGROUP_DEBUG) \
-  include/linux/vm_event_item.h \
-    $(wildcard include/config/HAVE_ARCH_TRANSPARENT_HUGEPAGE_PUD) \
-    $(wildcard include/config/MEMORY_BALLOON) \
-    $(wildcard include/config/BALLOON_COMPACTION) \
-    $(wildcard include/config/DEBUG_TLBFLUSH) \
-    $(wildcard include/config/DEBUG_VM_VMACACHE) \
-  include/linux/page_counter.h \
-  include/linux/vmpressure.h \
-  include/linux/eventfd.h \
-  include/linux/mm.h \
-    $(wildcard include/config/HAVE_ARCH_MMAP_RND_BITS) \
-    $(wildcard include/config/HAVE_ARCH_MMAP_RND_COMPAT_BITS) \
-    $(wildcard include/config/ARCH_USES_HIGH_VMA_FLAGS) \
-    $(wildcard include/config/ARCH_HAS_PKEYS) \
-    $(wildcard include/config/PPC) \
-    $(wildcard include/config/PARISC) \
-    $(wildcard include/config/SPARC64) \
-    $(wildcard include/config/ARM64_MTE) \
-    $(wildcard include/config/HAVE_ARCH_USERFAULTFD_MINOR) \
-    $(wildcard include/config/SHMEM) \
-    $(wildcard include/config/ARCH_HAS_PTE_SPECIAL) \
-    $(wildcard include/config/ARCH_HAS_PTE_DEVMAP) \
-    $(wildcard include/config/DEBUG_VM_RB) \
-    $(wildcard include/config/PAGE_POISONING) \
-    $(wildcard include/config/INIT_ON_ALLOC_DEFAULT_ON) \
-    $(wildcard include/config/INIT_ON_FREE_DEFAULT_ON) \
-    $(wildcard include/config/DEBUG_PAGEALLOC) \
-    $(wildcard include/config/HUGETLBFS) \
-    $(wildcard include/config/MAPPING_DIRTY_HELPERS) \
-    $(wildcard include/config/ANON_VMA_NAME) \
-  include/linux/mmap_lock.h \
-  include/linux/page_ext.h \
-  include/linux/stacktrace.h \
-    $(wildcard include/config/ARCH_STACKWALK) \
-    $(wildcard include/config/STACKTRACE) \
-    $(wildcard include/config/HAVE_RELIABLE_STACKTRACE) \
-  include/linux/stackdepot.h \
-    $(wildcard include/config/STACKDEPOT_ALWAYS_INIT) \
-  include/linux/page_ref.h \
-    $(wildcard include/config/DEBUG_PAGE_REF) \
-  include/linux/sizes.h \
-  include/linux/pgtable.h \
-    $(wildcard include/config/HIGHPTE) \
-    $(wildcard include/config/GUP_GET_PTE_LOW_HIGH) \
-    $(wildcard include/config/HAVE_ARCH_SOFT_DIRTY) \
-    $(wildcard include/config/ARCH_ENABLE_THP_MIGRATION) \
-    $(wildcard include/config/X86_ESPFIX64) \
-  arch/x86/include/asm/pgtable.h \
-    $(wildcard include/config/DEBUG_WX) \
-    $(wildcard include/config/PAGE_TABLE_CHECK) \
-  arch/x86/include/asm/pkru.h \
-  arch/x86/include/asm/fpu/api.h \
-    $(wildcard include/config/X86_DEBUG_FPU) \
-  arch/x86/include/asm/coco.h \
-  include/asm-generic/pgtable_uffd.h \
-  include/linux/page_table_check.h \
-  arch/x86/include/asm/pgtable_32.h \
-  arch/x86/include/asm/pgtable-3level.h \
-  arch/x86/include/asm/pgtable-invert.h \
-  include/linux/huge_mm.h \
-  include/linux/sched/coredump.h \
-    $(wildcard include/config/CORE_DUMP_DEFAULT_ELF_HEADERS) \
-  include/linux/vmstat.h \
-    $(wildcard include/config/VM_EVENT_COUNTERS) \
-  include/linux/writeback.h \
-  include/linux/flex_proportions.h \
-  include/linux/backing-dev-defs.h \
-    $(wildcard include/config/DEBUG_FS) \
-  include/linux/blk_types.h \
-    $(wildcard include/config/FAIL_MAKE_REQUEST) \
-    $(wildcard include/config/BLK_CGROUP_IOCOST) \
-    $(wildcard include/config/BLK_INLINE_ENCRYPTION) \
-    $(wildcard include/config/BLK_DEV_INTEGRITY) \
-  include/linux/bvec.h \
-  include/linux/highmem.h \
-  include/linux/cacheflush.h \
-  arch/x86/include/asm/cacheflush.h \
-  include/asm-generic/cacheflush.h \
-  include/linux/highmem-internal.h \
-  arch/x86/include/asm/highmem.h \
-  arch/x86/include/asm/tlbflush.h \
-  arch/x86/include/asm/invpcid.h \
-  arch/x86/include/asm/pti.h \
-  include/linux/bio.h \
-  include/linux/mempool.h \
-  include/linux/uio.h \
-    $(wildcard include/config/ARCH_HAS_UACCESS_FLUSHCACHE) \
-  include/uapi/linux/uio.h \
-  include/linux/node.h \
-    $(wildcard include/config/HMEM_REPORTING) \
-  include/linux/pagemap.h \
-  include/linux/hugetlb_inline.h \
-  include/uapi/linux/mempolicy.h \
-  include/linux/freezer.h \
-  include/uapi/linux/i2c.h \
-  include/linux/videodev2.h \
-  include/uapi/linux/videodev2.h \
-    $(wildcard include/config/VIDEO_ADV_DEBUG) \
-  include/uapi/linux/v4l2-common.h \
-  include/uapi/linux/v4l2-controls.h \
-  include/media/v4l2-device.h \
-    $(wildcard include/config/VIDEO_V4L2_SUBDEV_API) \
-  include/media/media-device.h \
-    $(wildcard include/config/MEDIA_CONTROLLER) \
-  include/media/media-devnode.h \
-  include/linux/poll.h \
-  include/uapi/linux/poll.h \
-  arch/x86/include/generated/uapi/asm/poll.h \
-  include/uapi/asm-generic/poll.h \
-  include/uapi/linux/eventpoll.h \
-  include/linux/cdev.h \
-  include/media/media-entity.h \
-  include/uapi/linux/media.h \
-  include/media/v4l2-subdev.h \
-  include/uapi/linux/v4l2-subdev.h \
-  include/uapi/linux/v4l2-mediabus.h \
-  include/uapi/linux/media-bus-format.h \
-  include/media/v4l2-async.h \
-  include/media/v4l2-common.h \
-    $(wildcard include/config/VIDEO_V4L2_I2C) \
-    $(wildcard include/config/SPI) \
-  include/media/v4l2-dev.h \
-  include/linux/spi/spi.h \
-    $(wildcard include/config/SPI_SLAVE) \
-  include/linux/scatterlist.h \
-    $(wildcard include/config/NEED_SG_DMA_LENGTH) \
-    $(wildcard include/config/DEBUG_SG) \
-    $(wildcard include/config/SGL_ALLOC) \
-    $(wildcard include/config/ARCH_NO_SG_CHAIN) \
-    $(wildcard include/config/SG_POOL) \
-  include/linux/gpio/consumer.h \
-    $(wildcard include/config/OF_GPIO) \
-    $(wildcard include/config/GPIO_SYSFS) \
-  include/uapi/linux/spi/spi.h \
-  include/media/v4l2-fh.h \
-  include/media/v4l2-mediabus.h \
-  include/media/v4l2-ctrls.h \
-  include/media/media-request.h \
-  include/media/hevc-ctrls.h \
+// SPDX-License-Identifier: GPL-2.0-only
+/*
+ * Mediatek MT7530 DSA Switch driver
+ * Copyright (C) 2017 Sean Wang <sean.wang@mediatek.com>
+ */
+#include <linux/etherdevice.h>
+#include <linux/if_bridge.h>
+#include <linux/iopoll.h>
+#include <linux/mdio.h>
+#include <linux/mfd/syscon.h>
+#include <linux/module.h>
+#include <linux/netdevice.h>
+#include <linux/of_irq.h>
+#include <linux/of_mdio.h>
+#include <linux/of_net.h>
+#include <linux/of_platform.h>
+#include <linux/phylink.h>
+#include <linux/regmap.h>
+#include <linux/regulator/consumer.h>
+#include <linux/reset.h>
+#include <linux/gpio/consumer.h>
+#include <linux/gpio/driver.h>
+#include <net/dsa.h>
 
-drivers/media/i2c/tw9903.o: $(deps_drivers/media/i2c/tw9903.o)
+#include "mt7530.h"
 
-$(deps_drivers/media/i2c/tw9903.o):
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               cmd_drivers/media/i2c/tw9903.o := gcc -Wp,-MMD,drivers/media/i2c/.tw9903.o.d -nostdinc -I./arch/x86/include -I./arch/x86/include/generated  -I./include -I./arch/x86/include/uapi -I./arch/x86/include/generated/uapi -I./include/uapi -I./include/generated/uapi -include ./include/linux/compiler-version.h -include ./include/linux/kconfig.h -include ./include/linux/compiler_types.h -D__KERNEL__ -fmacro-prefix-map=./= -Wall -Wundef -Werror=strict-prototypes -Wno-trigraphs -fno-strict-aliasing -fno-common -fshort-wchar -fno-PIE -Werror=implicit-function-declaration -Werror=implicit-int -Werror=return-type -Wno-format-security -std=gnu11 -mno-sse -mno-mmx -mno-sse2 -mno-3dnow -mno-avx -fcf-protection=none -m32 -msoft-float -mregparm=3 -freg-struct-return -fno-pic -mpreferred-stack-boundary=2 -march=i686 -mtune=pentium3 -mtune=generic -Wa,-mtune=generic32 -ffreestanding -mstack-protector-guard-reg=fs -mstack-protector-guard-symbol=__stack_chk_guard -Wno-sign-compare -fno-asynchronous-unwind-tables -mindirect-branch=thunk-extern -mindirect-branch-register -fno-jump-tables -fno-delete-null-pointer-checks -Wno-frame-address -Wno-format-truncation -Wno-format-overflow -Wno-address-of-packed-member -O2 -fno-allow-store-data-races -fstack-protector-strong -Wimplicit-fallthrough=5 -Wno-main -Wno-unused-but-set-variable -Wno-unused-const-variable -fno-stack-clash-protection -pg -mrecord-mcount -mfentry -DCC_USING_FENTRY -Wdeclaration-after-statement -Wvla -Wno-pointer-sign -Wcast-function-type -Wno-stringop-truncation -Wno-stringop-overflow -Wno-restrict -Wno-maybe-uninitialized -Wno-alloc-size-larger-than -fno-strict-overflow -fno-stack-check -fconserve-stack -Werror=date-time -Werror=incompatible-pointer-types -Werror=designated-init -Wno-packed-not-aligned  -DMODULE  -DKBUILD_BASENAME='"tw9903"' -DKBUILD_MODNAME='"tw9903"' -D__KBUILD_MODNAME=kmod_tw9903 -c -o drivers/media/i2c/tw9903.o drivers/media/i2c/tw9903.c 
+/* String, offset, and register size in bytes if different from 4 bytes */
+static const struct mt7530_mib_desc mt7530_mib[] = {
+	MIB_DESC(1, 0x00, "TxDrop"),
+	MIB_DESC(1, 0x04, "TxCrcErr"),
+	MIB_DESC(1, 0x08, "TxUnicast"),
+	MIB_DESC(1, 0x0c, "TxMulticast"),
+	MIB_DESC(1, 0x10, "TxBroadcast"),
+	MIB_DESC(1, 0x14, "TxCollision"),
+	MIB_DESC(1, 0x18, "TxSingleCollision"),
+	MIB_DESC(1, 0x1c, "TxMultipleCollision"),
+	MIB_DESC(1, 0x20, "TxDeferred"),
+	MIB_DESC(1, 0x24, "TxLateCollision"),
+	MIB_DESC(1, 0x28, "TxExcessiveCollistion"),
+	MIB_DESC(1, 0x2c, "TxPause"),
+	MIB_DESC(1, 0x30, "TxPktSz64"),
+	MIB_DESC(1, 0x34, "TxPktSz65To127"),
+	MIB_DESC(1, 0x38, "TxPktSz128To255"),
+	MIB_DESC(1, 0x3c, "TxPktSz256To511"),
+	MIB_DESC(1, 0x40, "TxPktSz512To1023"),
+	MIB_DESC(1, 0x44, "Tx1024ToMax"),
+	MIB_DESC(2, 0x48, "TxBytes"),
+	MIB_DESC(1, 0x60, "RxDrop"),
+	MIB_DESC(1, 0x64, "RxFiltering"),
+	MIB_DESC(1, 0x68, "RxUnicast"),
+	MIB_DESC(1, 0x6c, "RxMulticast"),
+	MIB_DESC(1, 0x70, "RxBroadcast"),
+	MIB_DESC(1, 0x74, "RxAlignErr"),
+	MIB_DESC(1, 0x78, "RxCrcErr"),
+	MIB_DESC(1, 0x7c, "RxUnderSizeErr"),
+	MIB_DESC(1, 0x80, "RxFragErr"),
+	MIB_DESC(1, 0x84, "RxOverSzErr"),
+	MIB_DESC(1, 0x88, "RxJabberErr"),
+	MIB_DESC(1, 0x8c, "RxPause"),
+	MIB_DESC(1, 0x90, "RxPktSz64"),
+	MIB_DESC(1, 0x94, "RxPktSz65To127"),
+	MIB_DESC(1, 0x98, "RxPktSz128To255"),
+	MIB_DESC(1, 0x9c, "RxPktSz256To511"),
+	MIB_DESC(1, 0xa0, "RxPktSz512To1023"),
+	MIB_DESC(1, 0xa4, "RxPktSz1024ToMax"),
+	MIB_DESC(2, 0xa8, "RxBytes"),
+	MIB_DESC(1, 0xb0, "RxCtrlDrop"),
+	MIB_DESC(1, 0xb4, "RxIngressDrop"),
+	MIB_DESC(1, 0xb8, "RxArlDrop"),
+};
 
-source_drivers/media/i2c/tw9903.o := drivers/media/i2c/tw9903.c
+/* Since phy_device has not yet been created and
+ * phy_{read,write}_mmd_indirect is not available, we provide our own
+ * core_{read,write}_mmd_indirect with core_{clear,write,set} wrappers
+ * to complete this function.
+ */
+static int
+core_read_mmd_indirect(struct mt7530_priv *priv, int prtad, int devad)
+{
+	struct mii_bus *bus = priv->bus;
+	int value, ret;
 
-deps_drivers/media/i2c/tw9903.o := \
-  include/linux/compiler-version.h \
-    $(wildcard include/config/CC_VERSION_TEXT) \
-  include/linux/kconfig.h \
-    $(wildcard include/config/CPU_BIG_ENDIAN) \
-    $(wildcard include/config/BOOGER) \
-    $(wildcard include/config/FOO) \
-  include/linux/compiler_types.h \
-    $(wildcard include/config/DEBUG_INFO_BTF) \
-    $(wildcard include/config/PAHOLE_HAS_BTF_TAG) \
-    $(wildcard include/config/HAVE_ARCH_COMPILER_H) \
-    $(wildcard include/config/CC_HAS_ASM_INLINE) \
-  include/linux/compiler_attributes.h \
-  include/linux/compiler-gcc.h \
-    $(wildcard include/config/RETPOLINE) \
-    $(wildcard include/config/ARCH_USE_BUILTIN_BSWAP) \
-    $(wildcard include/config/SHADOW_CALL_STACK) \
-    $(wildcard include/config/KCOV) \
-  include/linux/module.h \
-    $(wildcard include/config/MODULES) \
-    $(wildcard include/config/SYSFS) \
-    $(wildcard include/config/MODULES_TREE_LOOKUP) \
-    $(wildcard include/config/LIVEPATCH) \
-    $(wildcard include/config/STACKTRACE_BUILD_ID) \
-    $(wildcard include/config/CFI_CLANG) \
-    $(wildcard include/config/MODULE_SIG) \
-    $(wildcard include/config/GENERIC_BUG) \
-    $(wildcard include/config/KALLSYMS) \
-    $(wildcard include/config/SMP) \
-    $(wildcard include/config/TRACEPOINTS) \
-    $(wildcard include/config/TREE_SRCU) \
-    $(wildcard include/config/BPF_EVENTS) \
-    $(wildcard include/config/DEBUG_INFO_BTF_MODULES) \
-    $(wildcard include/config/JUMP_LABEL) \
-    $(wildcard include/config/TRACING) \
-    $(wildcard include/config/EVENT_TRACING) \
-    $(wildcard include/config/FTRACE_MCOUNT_RECORD) \
-    $(wildcard include/config/KPROBES) \
-    $(wildcard include/config/HAVE_STATIC_CALL_INLINE) \
-    $(wildcard include/config/PRINTK_INDEX) \
-    $(wildcard include/config/MODULE_UNLOAD) \
-    $(wildcard include/config/CONSTRUCTORS) \
-    $(wildcard include/config/FUNCTION_ERROR_INJECTION) \
-  include/linux/list.h \
-    $(wildcard include/config/DEBUG_LIST) \
-  include/linux/container_of.h \
-  include/linux/build_bug.h \
-  include/linux/compiler.h \
-    $(wildcard include/config/TRACE_BRANCH_PROFILING) \
-    $(wildcard include/config/PROFILE_ALL_BRANCHES) \
-    $(wildcard include/config/STACK_VALIDATION) \
-  include/linux/compiler_types.h \
-  arch/x86/include/generated/asm/rwonce.h \
-  include/asm-generic/rwonce.h \
-  include/linux/kasan-checks.h \
-    $(wildcard include/config/KASAN_GENERIC) \
-    $(wildcard include/config/KASAN_SW_TAGS) \
-  include/linux/types.h \
-    $(wildcard include/config/HAVE_UID16) \
-    $(wildcard include/config/UID16) \
-    $(wildcard include/config/ARCH_DMA_ADDR_T_64BIT) \
-    $(wildcard include/config/PHYS_ADDR_T_64BIT) \
-    $(wildcard include/config/64BIT) \
-    $(wildcard include/config/ARCH_32BIT_USTAT_F_TINODE) \
-  include/uapi/linux/types.h \
-  arch/x86/include/generated/uapi/asm/types.h \
-  include/uapi/asm-generic/types.h \
-  include/asm-generic/int-ll64.h \
-  include/uapi/asm-generic/int-ll64.h \
-  arch/x86/include/uapi/asm/bitsperlong.h \
-  include/asm-generic/bitsperlong.h \
-  include/uapi/asm-generic/bitsperlong.h \
-  include/uapi/linux/posix_types.h \
-  include/linux/stddef.h \
-  include/uapi/linux/stddef.h \
-  arch/x86/include/asm/posix_types.h \
-    $(wildcard include/config/X86_32) \
-  arch/x86/include/uapi/asm/posix_types_32.h \
-  include/uapi/asm-generic/posix_types.h \
-  include/linux/kcsan-checks.h \
-    $(wildcard include/config/KCSAN) \
-    $(wildcard include/config/KCSAN_WEAK_MEMORY) \
-    $(wildcard include/config/KCSAN_IGNORE_ATOMICS) \
-  include/linux/err.h \
-  arch/x86/include/generated/uapi/asm/errno.h \
-  include/uapi/asm-generic/errno.h \
-  include/uapi/asm-generic/errno-base.h \
-  include/linux/poison.h \
-    $(wildcard include/config/ILLEGAL_POINTER_VALUE) \
-  include/linux/const.h \
-  include/vdso/const.h \
-  include/uapi/linux/const.h \
-  arch/x86/include/asm/barrier.h \
-  arch/x86/include/asm/alternative.h \
-  include/linux/stringify.h \
-  arch/x86/include/asm/asm.h \
-  arch/x86/include/asm/extable_fixup_types.h \
-  arch/x86/include/asm/nops.h \
-  include/asm-generic/barrier.h \
-  include/linux/stat.h \
-  arch/x86/include/uapi/asm/stat.h \
-  include/uapi/linux/stat.h \
-  include/linux/time.h \
-    $(wildcard include/config/POSIX_TIMERS) \
-  include/linux/cache.h \
-    $(wildcard include/config/ARCH_HAS_CACHE_LINE_SIZE) \
-  include/uapi/linux/kernel.h \
-  include/uapi/linux/sysinfo.h \
-  arch/x86/include/asm/cache.h \
-    $(wildcard include/config/X86_L1_CACHE_SHIFT) \
-    $(wildcard include/config/X86_INTERNODE_CACHE_SHIFT) \
-    $(wildcard include/config/X86_VSMP) \
-  include/linux/linkage.h \
-    $(wildcard include/config/ARCH_USE_SYM_ANNOTATIONS) \
-  include/linux/export.h \
-    $(wildcard include/config/MODVERSIONS) \
-    $(wildcard include/config/MODULE_REL_CRCS) \
-    $(wildcard include/config/HAVE_ARCH_PREL32_RELOCATIONS) \
-    $(wildcard include/config/TRIM_UNUSED_KSYMS) \
-  arch/x86/include/asm/linkage.h \
-    $(wildcard include/config/X86_64) \
-    $(wildcard include/config/X86_ALIGNMENT_16) \
-    $(wildcard include/config/SLS) \
-  arch/x86/include/asm/ibt.h \
-    $(wildcard include/config/X86_KERNEL_IBT) \
-  include/linux/math64.h \
-    $(wildcard include/config/ARCH_SUPPORTS_INT128) \
-  include/linux/math.h \
-  arch/x86/include/asm/div64.h \
-  include/linux/log2.h \
-    $(wildcard include/config/ARCH_HAS_ILOG2_U32) \
-    $(wildcard include/config/ARCH_HAS_ILOG2_U64) \
-  include/linux/bitops.h \
-  include/linux/bits.h \
-  include/vdso/bits.h \
-  include/linux/typecheck.h \
-  arch/x86/include/asm/bitops.h \
-    $(wildcard include/config/X86_CMOV) \
-  arch/x86/include/asm/rmwcc.h \
-    $(wildcard include/config/CC_HAS_ASM_GOTO) \
-  include/asm-generic/bitops/fls64.h \
-  include/asm-generic/bitops/sched.h \
-  arch/x86/include/asm/arch_hweight.h \
-  arch/x86/include/asm/cpufeatures.h \
-  arch/x86/include/asm/required-features.h \
-    $(wildcard include/config/X86_MINIMUM_CPU_FAMILY) \
-    $(wildcard include/config/MATH_EMULATION) \
-    $(wildcard include/config/X86_PAE) \
-    $(wildcard include/config/X86_CMPXCHG64) \
-    $(wildcard include/config/X86_P6_NOP) \
-    $(wildcard include/config/MATOM) \
-    $(wildcard include/config/PARAVIRT_XXL) \
-  arch/x86/include/asm/disabled-features.h \
-    $(wildcard include/config/X86_SMAP) \
-    $(wildcard include/config/X86_UMIP) \
-    $(wildcard include/config/X86_INTEL_MEMORY_PROTECTION_KEYS) \
-    $(wildcard include/config/X86_5LEVEL) \
-    $(wildcard include/config/PAGE_TABLE_ISOLATION) \
-    $(wildcard include/config/INTEL_IOMMU_SVM) \
-    $(wildcard include/config/X86_SGX) \
-  include/asm-generic/bitops/const_hweight.h \
-  include/asm-generic/bitops/instrumented-atomic.h \
-  include/linux/instrumented.h \
-  include/asm-generic/bitops/instrumented-non-atomic.h \
-    $(wildcard include/config/KCSAN_ASSUME_PLAIN_WRITES_ATOMIC) \
-  include/asm-generic/bitops/instrumented-lock.h \
-  include/asm-generic/bitops/le.h \
-  arch/x86/include/uapi/asm/byteorder.h \
-  include/linux/byteorder/little_endian.h \
-  include/uapi/linux/byteorder/little_endian.h \
-  include/linux/swab.h \
-  include/uapi/linux/swab.h \
-  arch/x86/include/uapi/asm/swab.h \
-  include/linux/byteorder/generic.h \
-  include/asm-generic/bitops/ext2-atomic-setbit.h \
-  include/vdso/math64.h \
-  include/linux/time64.h \
-  include/vdso/time64.h \
-  include/uapi/linux/time.h \
-  include/uapi/linux/time_types.h \
-  include/linux/time32.h \
-  include/linux/timex.h \
-  include/uapi/linux/timex.h \
-  include/uapi/linux/param.h \
-  arch/x86/include/generated/uapi/asm/param.h \
-  include/asm-generic/param.h \
-    $(wildcard include/config/HZ) \
-  include/uapi/asm-generic/param.h \
-  arch/x86/include/asm/timex.h \
-    $(wildcard include/config/X86_TSC) \
-  arch/x86/include/asm/processor.h \
-    $(wildcard include/config/X86_VMX_FEATURE_NAMES) \
-    $(wildcard include/config/X86_IOPL_IOPERM) \
-    $(wildcard include/config/STACKPROTECTOR) \
-    $(wildcard include/config/VM86) \
-    $(wildcard include/config/X86_DEBUGCTLMSR) \
-    $(wildcard include/config/CPU_SUP_AMD) \
-    $(wildcard include/config/XEN) \
-  arch/x86/include/asm/processor-flags.h \
-  arch/x86/include/uapi/asm/processor-flags.h \
-  include/linux/mem_encrypt.h \
-    $(wildcard include/config/ARCH_HAS_MEM_ENCRYPT) \
-    $(wildcard include/config/AMD_MEM_ENCRYPT) \
-  arch/x86/include/asm/mem_encrypt.h \
-  include/linux/init.h \
-    $(wildcard include/config/STRICT_KERNEL_RWX) \
-    $(wildcard include/config/STRICT_MODULE_RWX) \
-    $(wildcard include/config/LTO_CLANG) \
-  include/linux/cc_platform.h \
-    $(wildcard include/config/ARCH_HAS_CC_PLATFORM) \
-  arch/x86/include/uapi/asm/bootparam.h \
-  include/linux/screen_info.h \
-  include/uapi/linux/screen_info.h \
-  include/linux/apm_bios.h \
-  include/uapi/linux/apm_bios.h \
-  include/uapi/linux/ioctl.h \
-  arch/x86/include/generated/uapi/asm/ioctl.h \
-  include/asm-generic/ioctl.h \
-  include/uapi/asm-generic/ioctl.h \
-  include/linux/edd.h \
-  include/uapi/linux/edd.h \
-  arch/x86/include/asm/ist.h \
-  arch/x86/include/uapi/asm/ist.h \
-  include/video/edid.h \
-    $(wildcard include/config/X86) \
-  include/uapi/video/edid.h \
-  arch/x86/include/asm/math_emu.h \
-  arch/x86/include/asm/ptrace.h \
-    $(wildcard include/config/PARAVIRT) \
-    $(wildcard include/config/IA32_EMULATION) \
-  arch/x86/include/asm/segment.h \
-    $(wildcard include/config/XEN_PV) \
-  arch/x86/include/asm/page_types.h \
-    $(wildcard include/config/PHYSICAL_START) \
-    $(wildcard include/config/PHYSICAL_ALIGN) \
-    $(wildcard include/config/DYNAMIC_PHYSICAL_MASK) \
-  arch/x86/include/asm/page_32_types.h \
-    $(wildcard include/config/HIGHMEM4G) \
-    $(wildcard include/config/HIGHMEM64G) \
-    $(wildcard include/config/PAGE_OFFSET) \
-  arch/x86/include/uapi/asm/ptrace.h \
-  arch/x86/include/uapi/asm/ptrace-abi.h \
-  arch/x86/include/asm/paravirt_types.h \
-    $(wildcard include/config/PGTABLE_LEVELS) \
-    $(wildcard include/config/PARAVIRT_DEBUG) \
-  arch/x86/include/asm/desc_defs.h \
-  arch/x86/include/asm/pgtable_types.h \
-    $(wildcard include/config/MEM_SOFT_DIRTY) \
-    $(wildcard include/config/HAVE_ARCH_USERFAULTFD_WP) \
-    $(wildcard include/config/PROC_FS) \
-  arch/x86/include/asm/pgtable_32_types.h \
-  arch/x86/include/asm/pgtable-3level_types.h \
-  include/asm-generic/pgtable-nop4d.h \
-  include/asm-generic/pgtable-nopud.h \
-  arch/x86/include/asm/nospec-branch.h \
-  include/linux/static_key.h \
-  include/linux/jump_label.h \
-    $(wildcard include/config/HAVE_ARCH_JUMP_LABEL_RELATIVE) \
-  arch/x86/include/asm/jump_label.h \
-  include/linux/objtool.h \
-    $(wildcard include/config/FRAME_POINTER) \
-  arch/x86/include/asm/msr-index.h \
-  arch/x86/include/asm/unwind_hints.h \
-  arch/x86/include/asm/orc_types.h \
-  arch/x86/include/asm/GEN-for-each-reg.h \
-  arch/x86/include/asm/spinlock_types.h \
-  include/asm-generic/qspinlock_types.h \
-    $(wildcard include/config/NR_CPUS) \
-  include/asm-generic/qrwlock_types.h \
-  arch/x86/include/asm/proto.h \
-  arch/x86/include/uapi/asm/ldt.h \
-  arch/x86/include/uapi/asm/sigcontext.h \
-  arch/x86/include/asm/current.h \
-  arch/x86/include/asm/percpu.h \
-    $(wildcard include/config/X86_64_SMP) \
-  include/linux/kernel.h \
-    $(wildcard include/config/PREEMPT_VOLUNTARY_BUILD) \
-    $(wildcard include/config/PREEMPT_DYNAMIC) \
-    $(wildcard include/config/HAVE_PREEMPT_DYNAMIC_CALL) \
-    $(wildcard include/config/HAVE_PREEMPT_DYNAMIC_KEY) \
-    $(wildcard include/config/PREEMPT_) \
-    $(wildcard include/config/DEBUG_ATOMIC_SLEEP) \
-    $(wildcard include/config/MMU) \
-    $(wildcard include/config/PROVE_LOCKING) \
-  include/linux/stdarg.h \
-  include/linux/align.h \
-  include/linux/limits.h \
-  include/uapi/linux/limits.h \
-  include/vdso/limits.h \
-  include/linux/kstrtox.h \
-  include/linux/minmax.h \
-  include/linux/panic.h \
-    $(wildcard include/config/PANIC_TIMEOUT) \
-  include/linux/printk.h \
-    $(wildcard include/config/MESSAGE_LOGLEVEL_DEFAULT) \
-    $(wildcard include/config/CONSOLE_LOGLEVEL_DEFAULT) \
-    $(wildcard include/config/CONSOLE_LOGLEVEL_QUIET) \
-    $(wildcard include/config/EARLY_PRINTK) \
-    $(wildcard include/config/PRINTK) \
-    $(wildcard include/config/DYNAMIC_DEBUG) \
-    $(wildcard include/config/DYNAMIC_DEBUG_CORE) \
-  include/linux/kern_levels.h \
-  include/linux/ratelimit_types.h \
-  include/linux/spinlock_types_raw.h \
-    $(wildcard include/config/DEBUG_SPINLOCK) \
-    $(wildcard include/config/DEBUG_LOCK_ALLOC) \
-  include/linux/lockdep_types.h \
-    $(wildcard include/config/PROVE_RAW_LOCK_NESTING) \
-    $(wildcard include/config/LOCKDEP) \
-    $(wildcard include/config/LOCK_STAT) \
-  include/linux/once_lite.h \
-  include/linux/static_call_types.h \
-    $(wildcard include/config/HAVE_STATIC_CALL) \
-  include/linux/instruction_pointer.h \
-  include/asm-generic/percpu.h \
-    $(wildcard include/config/DEBUG_PREEMPT) \
-    $(wildcard include/config/HAVE_SETUP_PER_CPU_AREA) \
-  include/linux/threads.h \
-    $(wildcard include/config/BASE_SMALL) \
-  include/linux/percpu-defs.h \
-    $(wildcard include/config/DEBUG_FORCE_WEAK_PER_CPU) \
-  arch/x86/include/asm/page.h \
-  arch/x86/include/asm/page_32.h \
-    $(wildcard include/config/DEBUG_VIRTUAL) \
-    $(wildcard include/config/FLATMEM) \
-  include/linux/string.h \
-    $(wildcard include/config/BINARY_PRINTF) \
-    $(wildcard include/config/FORTIFY_SOURCE) \
-  include/linux/errno.h \
-  include/uapi/linux/errno.h \
-  include/uapi/linux/string.h \
-  arch/x86/include/asm/string.h \
-  arch/x86/include/asm/string_32.h \
-  include/linux/fortify-string.h \
-  include/linux/range.h \
-  include/asm-generic/memory_model.h \
-    $(wildcard include/config/SPARSEMEM_VMEMMAP) \
-    $(wildcard include/config/SPARSEMEM) \
-  include/linux/pfn.h \
-  include/asm-generic/getorder.h \
-  arch/x86/include/asm/msr.h \
-  arch/x86/include/asm/msr-index.h \
-  arch/x86/include/asm/cpumask.h \
-  include/linux/cpumask.h \
-    $(wildcard include/config/CPUMASK_OFFSTACK) \
-    $(wildcard include/config/HOTPLUG_CPU) \
-    $(wildcard include/config/DEBUG_PER_CPU_MAPS) \
-  include/linux/bitmap.h \
-  include/linux/find.h \
-  include/linux/atomic.h \
-  arch/x86/include/asm/atomic.h \
-  arch/x86/include/asm/cmpxchg.h \
-  arch/x86/include/asm/cmpxchg_32.h \
-  arch/x86/include/asm/atomic64_32.h \
-  include/linux/atomic/atomic-arch-fallback.h \
-    $(wildcard include/config/GENERIC_ATOMIC64) \
-  include/linux/atomic/atomic-long.h \
-  include/linux/atomic/atomic-instrumented.h \
-  include/linux/bug.h \
-    $(wildcard include/config/BUG_ON_DATA_CORRUPTION) \
-  arch/x86/include/asm/bug.h \
-    $(wildcard include/config/DEBUG_BUGVERBOSE) \
-  include/linux/instrumentation.h \
-    $(wildcard include/config/DEBUG_ENTRY) \
-  include/asm-generic/bug.h \
-    $(wildcard include/config/BUG) \
-    $(wildcard include/config/GENERIC_BUG_RELATIVE_POINTERS) \
-  arch/x86/include/uapi/asm/msr.h \
-  include/linux/tracepoint-defs.h \
-  arch/x86/include/asm/special_insns.h \
-  include/linux/irqflags.h \
-    $(wildcard include/config/TRACE_IRQFLAGS) \
-    $(wildcard include/config/PREEMPT_RT) \
-    $(wildcard include/config/IRQSOFF_TRACER) \
-    $(wildcard include/config/PREEMPT_TRACER) \
-    $(wildcard include/config/DEBUG_IRQFLAGS) \
-    $(wildcard include/config/TRACE_IRQFLAGS_SUPPORT) \
-  arch/x86/include/asm/irqflags.h \
-  arch/x86/include/asm/fpu/types.h \
-  arch/x86/include/asm/vmxfeatures.h \
-  arch/x86/include/asm/vdso/processor.h \
-  include/linux/personality.h \
-  include/uapi/linux/personality.h \
-  arch/x86/include/asm/tsc.h \
-  arch/x86/include/asm/cpufeature.h \
-    $(wildcard include/config/X86_FEATURE_NAMES) \
-  include/vdso/time32.h \
-  include/vdso/time.h \
-  include/linux/uidgid.h \
-    $(wildcard include/config/MULTIUSER) \
-    $(wildcard include/config/USER_NS) \
-  include/linux/highuid.h \
-  include/linux/buildid.h \
-    $(wildcard include/config/CRASH_CORE) \
-  include/linux/mm_types.h \
-    $(wildcard include/config/HAVE_ALIGNED_STRUCT_PAGE) \
-    $(wildcard include/config/MEMCG) \
-    $(wildcard include/config/USERFAULTFD) \
-    $(wildcard include/config/SWAP) \
-    $(wildcard include/config/NUMA) \
-    $(wildcard include/config/HAVE_ARCH_COMPAT_MMAP_BASES) \
-    $(wildcard include/config/MEMBARRIER) \
-    $(wildcard include/config/AIO) \
-    $(wildcard include/config/MMU_NOTIFIER) \
-    $(wildcard include/config/TRANSPARENT_HUGEPAGE) \
-    $(wildcard include/config/NUMA_BALANCING) \
-    $(wildcard include/config/ARCH_WANT_BATCHED_UNMAP_TLB_FLUSH) \
-    $(wildcard include/config/HUGETLB_PAGE) \
-    $(wildcard include/config/IOMMU_SVA) \
-  include/linux/mm_types_task.h \
-    $(wildcard include/config/SPLIT_PTLOCK_CPUS) \
-    $(wildcard include/config/ARCH_ENABLE_SPLIT_PMD_PTLOCK) \
-  arch/x86/include/asm/tlbbatch.h \
-  include/linux/auxvec.h \
-  include/uapi/linux/auxvec.h \
-  arch/x86/include/uapi/asm/auxvec.h \
-  include/linux/kref.h \
-  include/linux/spinlock.h \
-    $(wildcard include/config/PREEMPTION) \
-  include/linux/preempt.h \
-    $(wildcard include/config/PREEMPT_COUNT) \
-    $(wildcard include/config/TRACE_PREEMPT_TOGGLE) \
-    $(wildcard include/config/PREEMPT_NOTIFIERS) \
-  arch/x86/include/asm/preempt.h \
-  include/linux/thread_info.h \
-    $(wildcard include/config/THREAD_INFO_IN_TASK) \
-    $(wildcard include/config/GENERIC_ENTRY) \
-    $(wildcard include/config/HAVE_ARCH_WITHIN_STACK_FRAMES) \
-    $(wildcard include/config/HARDENED_USERCOPY) \
-  include/linux/restart_block.h \
-  arch/x86/include/asm/thread_info.h \
-    $(wildcard include/config/COMPAT) \
-  include/linux/bottom_half.h \
-  include/linux/lockdep.h \
-    $(wildcard include/config/DEBUG_LOCKING_API_SELFTESTS) \
-  include/linux/smp.h \
-    $(wildcard include/config/UP_LATE_INIT) \
-  include/linux/smp_types.h \
-  include/linux/llist.h \
-    $(wildcard include/config/ARCH_HAVE_NMI_SAFE_CMPXCHG) \
-  arch/x86/include/asm/smp.h \
-    $(wildcard include/config/X86_LOCAL_APIC) \
-    $(wildcard include/config/DEBUG_NMI_SELFTEST) \
-  arch/x86/include/generated/asm/mmiowb.h \
-  include/asm-generic/mmiowb.h \
-    $(wildcard include/config/MMIOWB) \
-  include/linux/spinlock_types.h \
-  include/linux/rwlock_types.h \
-  arch/x86/include/asm/spinlock.h \
-  arch/x86/include/asm/paravirt.h \
-    $(wildcard include/config/PARAVIRT_SPINLOCKS) \
-  arch/x86/include/asm/frame.h \
-  arch/x86/include/asm/qspinlock.h \
-  include/asm-generic/qspinlock.h \
-  arch/x86/include/asm/qrwlock.h \
-  include/asm-generic/qrwlock.h \
-  include/linux/rwlock.h \
-    $(wildcard include/config/PREEMPT) \
-  include/linux/spinlock_api_smp.h \
-    $(wildcard include/config/INLINE_SPIN_LOCK) \
-    $(wildcard include/config/INLINE_SPIN_LOCK_BH) \
-    $(wildcard include/config/INLINE_SPIN_LOCK_IRQ) \
-    $(wildcard include/config/INLINE_SPIN_LOCK_IRQSAVE) \
-    $(wildcard include/config/INLINE_SPIN_TRYLOCK) \
-    $(wildcard include/config/INLINE_SPIN_TRYLOCK_BH) \
-    $(wildcard include/config/UNINLINE_SPIN_UNLOCK) \
-    $(wildcard include/config/INLINE_SPIN_UNLOCK_BH) \
-    $(wildcard include/config/INLINE_SPIN_UNLOCK_IRQ) \
-    $(wildcard include/config/INLINE_SPIN_UNLOCK_IRQRESTORE) \
-    $(wildcard include/config/GENERIC_LOCKBREAK) \
-  include/linux/rwlock_api_smp.h \
-    $(wildcard include/config/INLINE_READ_LOCK) \
-    $(wildcard include/config/INLINE_WRITE_LOCK) \
-    $(wildcard include/config/INLINE_READ_LOCK_BH) \
-    $(wildcard include/config/INLINE_WRITE_LOCK_BH) \
-    $(wildcard include/config/INLINE_READ_LOCK_IRQ) \
-    $(wildcard include/config/INLINE_WRITE_LOCK_IRQ) \
-    $(wildcard include/config/INLINE_READ_LOCK_IRQSAVE) \
-    $(wildcard include/config/INLINE_WRITE_LOCK_IRQSAVE) \
-    $(wildcard include/config/INLINE_READ_TRYLOCK) \
-    $(wildcard include/config/INLINE_WRITE_TRYLOCK) \
-    $(wildcard include/config/INLINE_READ_UNLOCK) \
-    $(wildcard include/config/INLINE_WRITE_UNLOCK) \
-    $(wildcard include/config/INLINE_READ_UNLOCK_BH) \
-    $(wildcard include/config/INLINE_WRITE_UNLOCK_BH) \
-    $(wildcard include/config/INLINE_READ_UNLOCK_IRQ) \
-    $(wildcard include/config/INLINE_WRITE_UNLOCK_IRQ) \
-    $(wildcard include/config/INLINE_READ_UNLOCK_IRQRESTORE) \
-    $(wildcard include/config/INLINE_WRITE_UNLOCK_IRQRESTORE) \
-  include/linux/refcount.h \
-  include/linux/rbtree.h \
-  include/linux/rbtree_types.h \
-  include/linux/rcupdate.h \
-    $(wildcard include/config/PREEMPT_RCU) \
-    $(wildcard include/config/TINY_RCU) \
-    $(wildcard include/config/RCU_STRICT_GRACE_PERIOD) \
-    $(wildcard include/config/TASKS_RCU_GENERIC) \
-    $(wildcard include/config/RCU_STALL_COMMON) \
-    $(wildcard include/config/NO_HZ_FULL) \
-    $(wildcard include/config/RCU_NOCB_CPU) \
-    $(wildcard include/config/TASKS_RCU) \
-    $(wildcard include/config/TASKS_TRACE_RCU) \
-    $(wildcard include/config/TASKS_RUDE_RCU) \
-    $(wildcard include/config/TREE_RCU) \
-    $(wildcard include/config/DEBUG_OBJECTS_RCU_HEAD) \
-    $(wildcard include/config/PROVE_RCU) \
-    $(wildcard include/config/ARCH_WEAK_RELEASE_ACQUIRE) \
-  include/linux/rcutree.h \
-  include/linux/rwsem.h \
-    $(wildcard include/config/RWSEM_SPIN_ON_OWNER) \
-    $(wildcard include/config/DEBUG_RWSEMS) \
-  include/linux/osq_lock.h \
-  include/linux/completion.h \
-  include/linux/swait.h \
-  include/linux/wait.h \
-  include/uapi/linux/wait.h \
-  include/linux/uprobes.h \
-    $(wildcard include/config/UPROBES) \
-  arch/x86/include/asm/uprobes.h \
-  include/linux/notifier.h \
-  include/linux/mutex.h \
-    $(wildcard include/config/MUTEX_SPIN_ON_OWNER) \
-    $(wildcard include/config/DEBUG_MUTEXES) \
-  include/linux/debug_locks.h \
-  include/linux/srcu.h \
-    $(wildcard include/config/TINY_SRCU) \
-    $(wildcard include/config/SRCU) \
-  include/linux/workqueue.h \
-    $(wildcard include/config/DEBUG_OBJECTS_WORK) \
-    $(wildcard include/config/FREEZER) \
-    $(wildcard include/config/WQ_WATCHDOG) \
-  include/linux/timer.h \
-    $(wildcard include/config/DEBUG_OBJECTS_TIMERS) \
-    $(wildcard include/config/NO_HZ_COMMON) \
-  include/linux/ktime.h \
-  include/linux/jiffies.h \
-  include/vdso/jiffies.h \
-  include/generated/timeconst.h \
-  include/vdso/ktime.h \
-  include/linux/timekeeping.h \
-    $(wildcard include/config/GENERIC_CMOS_UPDATE) \
-  include/linux/clocksource_ids.h \
-  include/linux/debugobjects.h \
-    $(wildcard include/config/DEBUG_OBJECTS) \
-    $(wildcard include/config/DEBUG_OBJECTS_FREE) \
-  include/linux/rcu_segcblist.h \
-  include/linux/srcutree.h \
-  include/linux/rcu_node_tree.h \
-    $(wildcard include/config/RCU_FANOUT) \
-    $(wildcard include/config/RCU_FANOUT_LEAF) \
-  include/linux/page-flags-layout.h \
-    $(wildcard include/config/KASAN_HW_TAGS) \
-  include/linux/numa.h \
-    $(wildcard include/config/NODES_SHIFT) \
-    $(wildcard include/config/NUMA_KEEP_MEMINFO) \
-    $(wildcard include/config/HAVE_ARCH_NODE_DEV_GROUP) \
-  arch/x86/include/asm/sparsemem.h \
-  include/generated/bounds.h \
-  include/linux/seqlock.h \
-  include/linux/ww_mutex.h \
-    $(wildcard include/config/DEBUG_RT_MUTEXES) \
-    $(wildcard include/config/DEBUG_WW_MUTEX_SLOWPATH) \
-  include/linux/rtmutex.h \
-  arch/x86/include/asm/mmu.h \
-    $(wildcard include/config/MODIFY_LDT_SYSCALL) \
-  include/linux/kmod.h \
-  include/linux/umh.h \
-  include/linux/gfp.h \
-    $(wildcard include/config/HIGHMEM) \
-    $(wildcard include/config/ZONE_DMA) \
-    $(wildcard include/config/ZONE_DMA32) \
-    $(wildcard include/config/ZONE_DEVICE) \
-    $(wildcard include/config/PM_SLEEP) \
-    $(wildcard include/config/CONTIG_ALLOC) \
-    $(wildcard include/config/CMA) \
-  include/linux/mmdebug.h \
-    $(wildcard include/config/DEBUG_VM) \
-    $(wildcard include/config/DEBUG_VM_PGFLAGS) \
-  include/linux/mmzone.h \
-    $(wildcard include/config/FORCE_MAX_ZONEORDER) \
-    $(wildcard include/config/MEMORY_ISOLATION) \
-    $(wildcard include/config/ZSMALLOC) \
-    $(wildcard include/config/MEMORY_HOTPLUG) \
-    $(wildcard include/config/COMPACTION) \
-    $(wildcard include/config/PAGE_EXTENSION) \
-    $(wildcard include/config/DEFERRED_STRUCT_PAGE_INIT) \
-    $(wildcard include/config/HAVE_MEMORYLESS_NODES) \
-    $(wildcard include/config/SPARSEMEM_EXTREME) \
-    $(wildcard include/config/HAVE_ARCH_PFN_VALID) \
-  include/linux/nodemask.h \
-  include/linux/pageblock-flags.h \
-    $(wildcard include/config/HUGETLB_PAGE_SIZE_VARIABLE) \
-  include/linux/page-flags.h \
-    $(wildcard include/config/ARCH_USES_PG_UNCACHED) \
-    $(wildcard include/config/MEMORY_FAILURE) \
-    $(wildcard include/config/PAGE_IDLE_FLAG) \
-    $(wildcard include/config/HUGETLB_PAGE_FREE_VMEMMAP) \
-    $(wildcard include/config/HUGETLB_PAGE_FREE_VMEMMAP_DEFAULT_ON) \
-    $(wildcard include/config/KSM) \
-  include/linux/local_lock.h \
-  include/linux/local_lock_internal.h \
-  include/linux/memory_hotplug.h \
-    $(wildcard include/config/HAVE_ARCH_NODEDATA_EXTENSION) \
-    $(wildcard include/config/ARCH_HAS_ADD_PAGES) \
-    $(wildcard include/config/MEMORY_HOTREMOVE) \
-  arch/x86/include/asm/mmzone.h \
-  arch/x86/include/asm/mmzone_32.h \
-  include/linux/topology.h \
-    $(wildcard include/config/USE_PERCPU_NUMA_NODE_ID) \
-    $(wildcard include/config/SCHED_SMT) \
-    $(wildcard include/config/SCHED_CLUSTER) \
-  include/linux/arch_topology.h \
-    $(wildcard include/config/ACPI_CPPC_LIB) \
-    $(wildcard include/config/GENERIC_ARCH_TOPOLOGY) \
-  include/linux/percpu.h \
-    $(wildcard include/config/NEED_PER_CPU_EMBED_FIRST_CHUNK) \
-    $(wildcard include/config/NEED_PER_CPU_PAGE_FIRST_CHUNK) \
-  arch/x86/include/asm/topology.h \
-    $(wildcard include/config/SCHED_MC_PRIO) \
-  arch/x86/include/asm/mpspec.h \
-    $(wildcard include/config/EISA) \
-    $(wildcard include/config/X86_MPPARSE) \
-  arch/x86/include/asm/mpspec_def.h \
-  arch/x86/include/asm/x86_init.h \
-  arch/x86/include/asm/apicdef.h \
-  include/asm-generic/topology.h \
-  include/linux/sysctl.h \
-    $(wildcard include/config/SYSCTL) \
-  include/uapi/linux/sysctl.h \
-  include/linux/elf.h \
-    $(wildcard include/config/ARCH_USE_GNU_PROPERTY) \
-    $(wildcard include/config/ARCH_HAVE_ELF_PROT) \
-  arch/x86/include/asm/elf.h \
-    $(wildcard include/config/X86_X32_ABI) \
-  arch/x86/include/asm/user.h \
-  arch/x86/include/asm/user_32.h \
-  arch/x86/include/asm/fsgsbase.h \
-  arch/x86/include/asm/vdso.h \
-  arch/x86/include/asm/desc.h \
-  arch/x86/include/asm/fixmap.h \
-    $(wildcard include/config/DEBUG_KMAP_LOCAL_FORCE_MAP) \
-    $(wildcard include/config/X86_VSYSCALL_EMULATION) \
-    $(wildcard include/config/PROVIDE_OHCI1394_DMA_INIT) \
-    $(wildcard include/config/X86_IO_APIC) \
-    $(wildcard include/config/KMAP_LOCAL) \
-    $(wildcard include/config/PCI_MMCONFIG) \
-    $(wildcard include/config/ACPI_APEI_GHES) \
-    $(wildcard include/config/INTEL_TXT) \
-  arch/x86/include/generated/asm/kmap_size.h \
-  include/asm-generic/kmap_size.h \
-    $(wildcard include/config/DEBUG_KMAP_LOCAL) \
-  include/asm-generic/fixmap.h \
-  arch/x86/include/asm/irq_vectors.h \
-    $(wildcard include/config/HAVE_KVM) \
-    $(wildcard include/config/HYPERV) \
-    $(wildcard include/config/PCI_MSI) \
-  arch/x86/include/asm/cpu_entry_area.h \
-  arch/x86/include/asm/intel_ds.h \
-  arch/x86/include/asm/pgtable_areas.h \
-  arch/x86/include/asm/pgtable_32_areas.h \
-  include/uapi/linux/elf.h \
-  include/uapi/linux/elf-em.h \
-  include/linux/kobject.h \
-    $(wildcard include/config/UEVENT_HELPER) \
-    $(wildcard include/config/DEBUG_KOBJECT_RELEASE) \
-  include/linux/sysfs.h \
-  include/linux/kernfs.h \
-    $(wildcard include/config/KERNFS) \
-  include/linux/idr.h \
-  include/linux/radix-tree.h \
-  include/linux/xarray.h \
-    $(wildcard include/config/XARRAY_MULTI) \
-  include/linux/kconfig.h \
-  include/linux/kobject_ns.h \
-  include/linux/moduleparam.h \
-    $(wildcard include/config/ALPHA) \
-    $(wildcard include/config/IA64) \
-    $(wildcard include/config/PPC64) \
-  include/linux/rbtree_latch.h \
-  include/linux/error-injection.h \
-  include/asm-generic/error-injection.h \
-  include/linux/cfi.h \
-    $(wildcard include/config/CFI_CLANG_SHADOW) \
-  arch/x86/include/asm/module.h \
-    $(wildcard include/config/UNWINDER_ORC) \
-  include/asm-generic/module.h \
-    $(wildcard include/config/HAVE_MOD_ARCH_SPECIFIC) \
-    $(wildcard include/config/MODULES_USE_ELF_REL) \
-    $(wildcard include/config/MODULES_USE_ELF_RELA) \
-  arch/x86/include/asm/orc_types.h \
-  include/linux/i2c.h \
-    $(wildcard include/config/I2C) \
-    $(wildcard include/config/I2C_SLAVE) \
-    $(wildcard include/config/I2C_BOARDINFO) \
-    $(wildcard include/config/I2C_MUX) \
-    $(wildcard include/config/OF) \
-    $(wildcard include/config/ACPI) \
-  include/linux/acpi.h \
-    $(wildcard include/config/ACPI_DEBUGGER) \
-    $(wildcard include/config/ACPI_TABLE_LIB) \
-    $(wildcard include/config/LOONGARCH) \
-    $(wildcard include/config/ARM64) \
-    $(wildcard include/config/ACPI_PROCESSOR_CSTATE) \
-    $(wildcard include/config/ACPI_HOTPLUG_CPU) \
-    $(wildcard include/config/ACPI_HOTPLUG_IOAPIC) \
-    $(wildcard include/config/PCI) \
-    $(wildcard include/config/ACPI_WMI) \
-    $(wildcard include/config/ACPI_NUMA) \
-    $(wildcard include/config/HIBERNATION) \
-    $(wildcard include/config/ACPI_HOTPLUG_MEMORY) \
-    $(wildcard include/config/ACPI_CONTAINER) \
-    $(wildcard include/config/ACPI_GTDT) \
-    $(wildcard include/config/PM) \
-    $(wildcard include/config/GPIOLIB) \
-    $(wildcard include/config/ACPI_TABLE_UPGRADE) \
-    $(wildcard include/config/ACPI_WATCHDOG) \
-    $(wildcard include/config/ACPI_SPCR_TABLE) \
-    $(wildcard include/config/ACPI_GENERIC_GSI) \
-    $(wildcard include/config/ACPI_LPIT) \
-    $(wildcard include/config/ACPI_PPTT) \
-    $(wildcard include/config/ACPI_PCC) \
-  include/linux/ioport.h \
-  include/linux/irqdomain.h \
-    $(wildcard include/config/IRQ_DOMAIN_HIERARCHY) \
-    $(wildcard include/config/GENERIC_IRQ_DEBUGFS) \
-    $(wildcard include/config/IRQ_DOMAIN) \
-    $(wildcard include/config/IRQ_DOMAIN_NOMAP) \
-  include/linux/irqhandler.h \
-  include/linux/of.h \
-    $(wildcard include/config/OF_DYNAMIC) \
-    $(wildcard include/config/SPARC) \
-    $(wildcard include/config/OF_PROMTREE) \
-    $(wildcard include/config/OF_KOBJ) \
-    $(wildcard include/config/OF_NUMA) \
-    $(wildcard include/config/OF_OVERLAY) \
-  include/linux/mod_devicetable.h \
-  include/linux/uuid.h \
-  include/uapi/linux/uuid.h \
-  include/linux/property.h \
-  include/linux/fwnode.h \
-  include/linux/resource_ext.h \
-  include/linux/slab.h \
-    $(wildcard include/config/DEBUG_SLAB) \
-    $(wildcard include/config/FAILSLAB) \
-    $(wildcard include/config/MEMCG_KMEM) \
-    $(wildcard include/config/KASAN) \
-    $(wildcard include/config/SLAB) \
-    $(wildcard include/config/SLUB) \
-    $(wildcard include/config/SLOB) \
-  include/linux/overflow.h \
-  include/linux/percpu-refcount.h \
-  include/linux/kasan.h \
-    $(wildcard include/config/KASAN_STACK) \
-    $(wildcard include/config/KASAN_VMALLOC) \
-    $(wildcard include/config/KASAN_INLINE) \
-  include/linux/kasan-enabled.h \
-  include/linux/device.h \
-    $(wildcard include/config/GENERIC_MSI_IRQ_DOMAIN) \
-    $(wildcard include/config/GENERIC_MSI_IRQ) \
-    $(wildcard include/config/ENERGY_MODEL) \
-    $(wildcard include/config/PINCTRL) \
-    $(wildcard include/config/DMA_OPS) \
-    $(wildcard include/config/DMA_DECLARE_COHERENT) \
-    $(wildcard include/config/DMA_CMA) \
-    $(wildcard include/config/SWIOTLB) \
-    $(wildcard include/config/ARCH_HAS_SYNC_DMA_FOR_DEVICE) \
-    $(wildcard include/config/ARCH_HAS_SYNC_DMA_FOR_CPU) \
-    $(wildcard include/config/ARCH_HAS_SYNC_DMA_FOR_CPU_ALL) \
-    $(wildcard include/config/DMA_OPS_BYPASS) \
-    $(wildcard include/config/DEVTMPFS) \
-    $(wildcard include/config/SYSFS_DEPRECATED) \
-  include/linux/dev_printk.h \
-  include/linux/ratelimit.h \
-  include/linux/sched.h \
-    $(wildcard include/config/VIRT_CPU_ACCOUNTING_NATIVE) \
-    $(wildcard include/config/SCHED_INFO) \
-    $(wildcard include/config/SCHEDSTATS) \
-    $(wildcard include/config/SCHED_CORE) \
-    $(wildcard include/config/FAIR_GROUP_SCHED) \
-    $(wildcard include/config/RT_GROUP_SCHED) \
-    $(wildcard include/config/RT_MUTEXES) \
-    $(wildcard include/config/UCLAMP_TASK) \
-    $(wildcard include/config/UCLAMP_BUCKETS_COUNT) \
-    $(wildcard include/config/CGROUP_SCHED) \
-    $(wildcard include/config/BLK_DEV_IO_TRACE) \
-    $(wildcard include/config/PSI) \
-    $(wildcard include/config/COMPAT_BRK) \
-    $(wildcard include/config/CGROUPS) \
-    $(wildcard include/config/BLK_CGROUP) \
-    $(wildcard include/config/PAGE_OWNER) \
-    $(wildcard include/config/EVENTFD) \
-    $(wildcard include/config/ARCH_HAS_SCALED_CPUTIME) \
-    $(wildcard include/config/VIRT_CPU_ACCOUNTING_GEN) \
-    $(wildcard include/config/POSIX_CPUTIMERS) \
-    $(wildcard include/config/POSIX_CPU_TIMERS_TASK_WORK) \
-    $(wildcard include/config/KEYS) \
-    $(wildcard include/config/SYSVIPC) \
-    $(wildcard include/config/DETECT_HUNG_TASK) \
-    $(wildcard include/config/IO_URING) \
-    $(wildcard include/config/AUDIT) \
-    $(wildcard include/config/AUDITSYSCALL) \
-    $(wildcard include/config/UBSAN) \
-    $(wildcard include/config/UBSAN_TRAP) \
-    $(wildcard include/config/TASK_XACCT) \
-    $(wildcard include/config/CPUSETS) \
-    $(wildcard include/config/X86_CPU_RESCTRL) \
-    $(wildcard include/config/FUTEX) \
-    $(wildcard include/config/PERF_EVENTS) \
-    $(wildcard include/config/RSEQ) \
-    $(wildcard include/config/TASK_DELAY_ACCT) \
-    $(wildcard include/config/FAULT_INJECTION) \
-    $(wildcard include/config/LATENCYTOP) \
-    $(wildcard include/config/KUNIT) \
-    $(wildcard include/config/FUNCTION_GRAPH_TRACER) \
-    $(wildcard include/config/BCACHE) \
-    $(wildcard include/config/VMAP_STACK) \
-    $(wildcard include/config/SECURITY) \
-    $(wildcard include/config/BPF_SYSCALL) \
-    $(wildcard include/config/GCC_PLUGIN_STACKLEAK) \
-    $(wildcard include/config/X86_MCE) \
-    $(wildcard include/config/KRETPROBES) \
-    $(wildcard include/config/RETHOOK) \
-    $(wildcard include/config/ARCH_HAS_PARANOID_L1D_FLUSH) \
-    $(wildcard include/config/ARCH_TASK_STRUCT_ON_STACK) \
-    $(wildcard include/config/DEBUG_RSEQ) \
-  include/uapi/linux/sched.h \
-  include/linux/pid.h \
-  include/linux/rculist.h \
-    $(wildcard include/config/PROVE_RCU_LIST) \
-  include/linux/sem.h \
-  include/uapi/linux/sem.h \
-  include/linux/ipc.h \
-  include/linux/rhashtable-types.h \
-  include/uapi/linux/ipc.h \
-  arch/x86/include/generated/uapi/asm/ipcbuf.h \
-  include/uapi/asm-generic/ipcbuf.h \
-  arch/x86/include/uapi/asm/sembuf.h \
-  include/linux/shm.h \
-  include/uapi/linux/shm.h \
-  include/uapi/asm-generic/hugetlb_encode.h \
-  arch/x86/include/uapi/asm/shmbuf.h \
-  include/uapi/asm-generic/shmbuf.h \
-  arch/x86/include/asm/shmparam.h \
-  include/linux/plist.h \
-    $(wildcard include/config/DEBUG_PLIST) \
-  include/linux/hrtimer.h \
-    $(wildcard include/config/HIGH_RES_TIMERS) \
-    $(wildcard include/config/TIME_LOW_RES) \
-    $(wildcard include/config/TIMERFD) \
-  include/linux/hrtimer_defs.h \
-  include/linux/timerqueue.h \
-  include/linux/seccomp.h \
-    $(wildcard include/config/SECCOMP) \
-    $(wildcard include/config/HAVE_ARCH_SECCOMP_FILTER) \
-    $(wildcard include/config/SECCOMP_FILTER) \
-    $(wildcard include/config/CHECKPOINT_RESTORE) \
-    $(wildcard include/config/SECCOMP_CACHE_DEBUG) \
-  include/uapi/linux/seccomp.h \
-  arch/x86/include/asm/seccomp.h \
-  arch/x86/include/asm/unistd.h \
-  arch/x86/include/uapi/asm/unistd.h \
-  arch/x86/include/generated/uapi/asm/unistd_32.h \
-  include/asm-generic/seccomp.h \
-  include/uapi/linux/unistd.h \
-  include/linux/resource.h \
-  include/uapi/linux/resource.h \
-  arch/x86/include/generated/uapi/asm/resource.h \
-  include/asm-generic/resource.h \
-  include/uapi/asm-generic/resource.h \
-  include/linux/latencytop.h \
-  include/linux/sched/prio.h \
-  include/linux/sched/types.h \
-  include/linux/signal_types.h \
-    $(wildcard include/config/OLD_SIGACTION) \
-  include/uapi/linux/signal.h \
-  arch/x86/include/asm/signal.h \
-  arch/x86/include/uapi/asm/signal.h \
-  include/uapi/asm-generic/signal-defs.h \
-  arch/x86/include/uapi/asm/siginfo.h \
-  include/uapi/asm-generic/siginfo.h \
-  include/linux/syscall_user_dispatch.h \
-  include/linux/task_io_accounting.h \
-    $(wildcard include/config/TASK_IO_ACCOUNTING) \
-  include/linux/posix-timers.h \
-  include/linux/alarmtimer.h \
-    $(wildcard include/config/RTC_CLASS) \
-  include/uapi/linux/rseq.h \
-  include/linux/kcsan.h \
-  include/linux/energy_model.h \
-  include/linux/sched/cpufreq.h \
-    $(wildcard include/config/CPU_FREQ) \
-  include/linux/sched/topology.h \
-    $(wildcard include/config/SCHED_DEBUG) \
-    $(wildcard include/config/SCHED_MC) \
-    $(wildcard include/config/CPU_FREQ_GOV_SCHEDUTIL) \
-  include/linux/sched/idle.h \
-  include/linux/sched/sd_flags.h \
-  include/linux/klist.h \
-  include/linux/pm.h \
-    $(wildcard include/config/VT_CONSOLE_SLEEP) \
-    $(wildcard include/config/PM_CLK) \
-    $(wildcard include/config/PM_GENERIC_DOMAINS) \
-  include/linux/device/bus.h \
-  include/linux/device/class.h \
-  include/linux/device/driver.h \
-  arch/x86/include/asm/device.h \
-  include/linux/pm_wakeup.h \
-  include/acpi/acpi.h \
-  include/acpi/platform/acenv.h \
-  include/acpi/platform/acgcc.h \
-  include/acpi/platform/aclinux.h \
-    $(wildcard include/config/ACPI_REDUCED_HARDWARE_ONLY) \
-    $(wildcard include/config/ACPI_DEBUG) \
-  include/linux/ctype.h \
-  arch/x86/include/asm/acenv.h \
-  include/acpi/acnames.h \
-  include/acpi/actypes.h \
-  include/acpi/acexcep.h \
-  include/acpi/actbl.h \
-  include/acpi/actbl1.h \
-  include/acpi/actbl2.h \
-  include/acpi/actbl3.h \
-  include/acpi/acrestyp.h \
-  include/acpi/platform/acenvex.h \
-  include/acpi/platform/aclinuxex.h \
-  include/acpi/platform/acgccex.h \
-  include/acpi/acoutput.h \
-  include/acpi/acpiosxf.h \
-  include/acpi/acpixf.h \
-  include/acpi/acconfig.h \
-  include/acpi/acbuffer.h \
-  include/linux/dynamic_debug.h \
-  include/acpi/acpi_bus.h \
-    $(wildcard include/config/X86_ANDROID_TABLETS) \
-    $(wildcard include/config/ACPI_SYSTEM_POWER_STATES_SUPPORT) \
-    $(wildcard include/config/ACPI_SLEEP) \
-  include/acpi/acpi_drivers.h \
-    $(wildcard include/config/ACPI_DOCK) \
-  include/acpi/acpi_numa.h \
-    $(wildcard include/config/ACPI_HMAT) \
-  include/acpi/acpi_io.h \
-  include/linux/io.h \
-    $(wildcard include/config/HAS_IOPORT_MAP) \
-  arch/x86/include/asm/io.h \
-    $(wildcard include/config/MTRR) \
-    $(wildcard include/config/X86_PAT) \
-  arch/x86/include/generated/asm/early_ioremap.h \
-  include/asm-generic/early_ioremap.h \
-    $(wildcard include/config/GENERIC_EARLY_IOREMAP) \
-  include/asm-generic/iomap.h \
-  include/asm-generic/pci_iomap.h \
-    $(wildcard include/config/NO_GENERIC_PCI_IOPORT_MAP) \
-    $(wildcard include/config/GENERIC_PCI_IOMAP) \
-  include/asm-generic/io.h \
-    $(wildcard include/config/GENERIC_IOMAP) \
-    $(wildcard include/config/GENERIC_IOREMAP) \
-    $(wildcard include/config/VIRT_TO_BUS) \
-    $(wildcard include/config/GENERIC_DEVMEM_IS_ALLOWED) \
-  include/linux/logic_pio.h \
-    $(wildcard include/config/INDIRECT_PIO) \
-  include/linux/vmalloc.h \
-    $(wildcard include/config/HAVE_ARCH_HUGE_VMALLOC) \
-  arch/x86/include/asm/vmalloc.h \
-    $(wildcard include/config/HAVE_ARCH_HUGE_VMAP) \
-  arch/x86/include/asm/acpi.h \
-    $(wildcard include/config/ACPI_APEI) \
-  include/acpi/pdc_intel.h \
-  arch/x86/include/asm/numa.h \
-    $(wildcard include/config/NUMA_EMU) \
-  arch/x86/include/asm/numa_32.h \
-  include/linux/regulator/consumer.h \
-    $(wildcard include/config/REGULATOR) \
-  include/linux/suspend.h \
-    $(wildcard include/config/VT) \
-    $(wildcard include/config/SUSPEND) \
-    $(wildcard include/config/HIBERNATION_SNAPSHOT_DEV) \
-    $(wildcard include/config/PM_SLEEP_DEBUG) \
-    $(wildcard include/config/PM_AUTOSLEEP) \
-  include/linux/swap.h \
-    $(wildcard include/config/DEVICE_PRIVATE) \
-    $(wildcard include/config/MIGRATION) \
-    $(wildcard include/config/FRONTSWAP) \
-    $(wildcard include/config/THP_SWAP) \
-    $(wildcard include/config/MEMCG_SWAP) \
-  include/linux/memcontrol.h \
-    $(wildcard include/config/CGROUP_WRITEBACK) \
-  include/linux/cgroup.h \
-    $(wildcard include/config/CGROUP_CPUACCT) \
-    $(wildcard include/config/SOCK_CGROUP_DATA) \
-    $(wildcard include/config/CGROUP_DATA) \
-    $(wildcard include/config/CGROUP_BPF) \
-  include/uapi/linux/cgroupstats.h \
-  include/uapi/linux/taskstats.h \
-  include/linux/fs.h \
-    $(wildcard include/config/READ_ONLY_THP_FOR_FS) \
-    $(wildcard include/config/FS_POSIX_ACL) \
-    $(wildcard include/config/IMA) \
-    $(wildcard include/config/FILE_LOCKING) \
-    $(wildcard include/config/FSNOTIFY) \
-    $(wildcard include/config/FS_ENCRYPTION) \
-    $(wildcard include/config/FS_VERITY) \
-    $(wildcard include/config/EPOLL) \
-    $(wildcard include/config/UNICODE) \
-    $(wildcard include/config/QUOTA) \
-    $(wildcard include/config/FS_DAX) \
-    $(wildcard include/config/BLOCK) \
-  include/linux/wait_bit.h \
-  include/linux/kdev_t.h \
-  include/uapi/linux/kdev_t.h \
-  include/linux/dcache.h \
-  include/linux/rculist_bl.h \
-  include/linux/list_bl.h \
-  include/linux/bit_spinlock.h \
-  include/linux/lockref.h \
-    $(wildcard include/config/ARCH_USE_CMPXCHG_LOCKREF) \
-  include/linux/stringhash.h \
-    $(wildcard include/config/DCACHE_WORD_ACCESS) \
-  include/linux/hash.h \
-    $(wildcard include/config/HAVE_ARCH_HASH) \
-  include/linux/path.h \
-  include/linux/list_lru.h \
-  include/linux/shrinker.h \
-  include/linux/capability.h \
-  include/uapi/linux/capability.h \
-  include/linux/semaphore.h \
-  include/linux/fcntl.h \
-    $(wildcard include/config/ARCH_32BIT_OFF_T) \
-  include/uapi/linux/fcntl.h \
-  arch/x86/include/generated/uapi/asm/fcntl.h \
-  include/uapi/asm-generic/fcntl.h \
-  include/uapi/linux/openat2.h \
-  include/linux/migrate_mode.h \
-  include/linux/percpu-rwsem.h \
-  include/linux/rcuwait.h \
-  include/linux/sched/signal.h \
-    $(wildcard include/config/SCHED_AUTOGROUP) \
-    $(wildcard include/config/BSD_PROCESS_ACCT) \
-    $(wildcard include/config/TASKSTATS) \
-    $(wildcard include/config/STACK_GROWSUP) \
-  include/linux/signal.h \
-    $(wildcard include/config/DYNAMIC_SIGFRAME) \
-  include/linux/sched/jobctl.h \
-  include/linux/sched/task.h \
-    $(wildcard include/config/HAVE_EXIT_THREAD) \
-    $(wildcard include/config/ARCH_WANTS_DYNAMIC_TASK_STRUCT) \
-    $(wildcard include/config/HAVE_ARCH_THREAD_STRUCT_WHITELIST) \
-  include/linux/uaccess.h \
-  include/linux/fault-inject-usercopy.h \
-    $(wildcard include/config/FAULT_INJECTION_USERCOPY) \
-  arch/x86/include/asm/uaccess.h \
-    $(wildcard include/config/CC_HAS_ASM_GOTO_OUTPUT) \
-    $(wildcard include/config/CC_HAS_ASM_GOTO_TIED_OUTPUT) \
-    $(wildcard include/config/ARCH_HAS_COPY_MC) \
-    $(wildcard include/config/X86_INTEL_USERCOPY) \
-  arch/x86/include/asm/smap.h \
-  arch/x86/include/asm/extable.h \
-    $(wildcard include/config/BPF_JIT) \
-  include/asm-generic/access_ok.h \
-    $(wildcard include/config/ALTERNATE_USER_ADDRESS_SPACE) \
-  arch/x86/include/asm/uaccess_32.h \
-  include/linux/cred.h \
-    $(wildcard include/config/DEBUG_CREDENTIALS) \
-  include/linux/key.h \
-    $(wildcard include/config/KEY_NOTIFICATIONS) \
-    $(wildcard include/config/NET) \
-  include/linux/assoc_array.h \
-    $(wildcard include/config/ASSOCIATIVE_ARRAY) \
-  include/linux/sched/user.h \
-    $(wildcard include/config/WATCH_QUEUE) \
-  include/linux/percpu_counter.h \
-  include/linux/rcu_sync.h \
-  include/linux/delayed_call.h \
-  include/linux/errseq.h \
-  include/linux/ioprio.h \
-  include/linux/sched/rt.h \
-  include/linux/iocontext.h \
-    $(wildcard include/config/BLK_ICQ) \
-  include/uapi/linux/ioprio.h \
-  include/linux/fs_types.h \
-  include/linux/mount.h \
-  include/linux/mnt_idmapping.h \
-  include/uapi/linux/fs.h \
-  include/linux/quota.h \
-    $(wildcard include/config/QUOTA_NETLINK_INTERFACE) \
-  include/uapi/linux/dqblk_xfs.h \
-  include/linux/dqblk_v1.h \
-  include/linux/dqblk_v2.h \
-  include/linux/dqblk_qtree.h \
-  include/linux/projid.h \
-  include/uapi/linux/quota.h \
-  include/linux/nfs_fs_i.h \
-  include/linux/seq_file.h \
-  include/linux/string_helpers.h \
-  include/linux/ns_common.h \
-  include/linux/nsproxy.h \
-  include/linux/user_namespace.h \
-    $(wildcard include/config/INOTIFY_USER) \
-    $(wildcard include/config/FANOTIFY) \
-    $(wildcard include/config/PERSISTENT_KEYRINGS) \
-  include/linux/kernel_stat.h \
-  include/linux/interrupt.h \
-    $(wildcard include/config/IRQ_FORCED_THREADING) \
-    $(wildcard include/config/GENERIC_IRQ_PROBE) \
-    $(wildcard include/config/IRQ_TIMINGS) \
-  include/linux/irqreturn.h \
-  include/linux/irqnr.h \
-  include/uapi/linux/irqnr.h \
-  include/linux/hardirq.h \
-  include/linux/context_tracking_state.h \
-    $(wildcard include/config/CONTEXT_TRACKING) \
-  include/linux/ftrace_irq.h \
-    $(wildcard include/config/HWLAT_TRACER) \
-    $(wildcard include/config/OSNOISE_TRACER) \
-  include/linux/vtime.h \
-    $(wildcard include/config/VIRT_CPU_ACCOUNTING) \
-    $(wildcard include/config/IRQ_TIME_ACCOUNTING) \
-  arch/x86/include/asm/hardirq.h \
-    $(wildcard include/config/KVM_INTEL) \
-    $(wildcard include/config/X86_THERMAL_VECTOR) \
-    $(wildcard include/config/X86_MCE_THRESHOLD) \
-    $(wildcard include/config/X86_MCE_AMD) \
-    $(wildcard include/config/X86_HV_CALLBACK_VECTOR) \
-  arch/x86/include/asm/irq.h \
-  arch/x86/include/asm/sections.h \
-  include/asm-generic/sections.h \
-    $(wildcard include/config/HAVE_FUNCTION_DESCRIPTORS) \
-  include/linux/cgroup-defs.h \
-    $(wildcard include/config/CGROUP_NET_CLASSID) \
-    $(wildcard include/config/CGROUP_NET_PRIO) \
-  include/linux/u64_stats_sync.h \
-  include/linux/bpf-cgroup-defs.h \
-  include/linux/psi_types.h \
-  include/linux/kthread.h \
-  include/linux/cgroup_subsys.h \
-    $(wildcard include/config/CGROUP_DEVICE) \
-    $(wildcard include/config/CGROUP_FREEZER) \
-    $(wildcard include/config/CGROUP_PERF) \
-    $(wildcard include/config/CGROUP_HUGETLB) \
-    $(wildcard include/config/CGROUP_PIDS) \
-    $(wildcard include/config/CGROUP_RDMA) \
-    $(wildcard include/config/CGROUP_MISC) \
-    $(wildcard include/config/CGROUP_DEBUG) \
-  include/linux/vm_event_item.h \
-    $(wildcard include/config/HAVE_ARCH_TRANSPARENT_HUGEPAGE_PUD) \
-    $(wildcard include/config/MEMORY_BALLOON) \
-    $(wildcard include/config/BALLOON_COMPACTION) \
-    $(wildcard include/config/DEBUG_TLBFLUSH) \
-    $(wildcard include/config/DEBUG_VM_VMACACHE) \
-  include/linux/page_counter.h \
-  include/linux/vmpressure.h \
-  include/linux/eventfd.h \
-  include/linux/mm.h \
-    $(wildcard include/config/HAVE_ARCH_MMAP_RND_BITS) \
-    $(wildcard include/config/HAVE_ARCH_MMAP_RND_COMPAT_BITS) \
-    $(wildcard include/config/ARCH_USES_HIGH_VMA_FLAGS) \
-    $(wildcard include/config/ARCH_HAS_PKEYS) \
-    $(wildcard include/config/PPC) \
-    $(wildcard include/config/PARISC) \
-    $(wildcard include/config/SPARC64) \
-    $(wildcard include/config/ARM64_MTE) \
-    $(wildcard include/config/HAVE_ARCH_USERFAULTFD_MINOR) \
-    $(wildcard include/config/SHMEM) \
-    $(wildcard include/config/ARCH_HAS_PTE_SPECIAL) \
-    $(wildcard include/config/ARCH_HAS_PTE_DEVMAP) \
-    $(wildcard include/config/DEBUG_VM_RB) \
-    $(wildcard include/config/PAGE_POISONING) \
-    $(wildcard include/config/INIT_ON_ALLOC_DEFAULT_ON) \
-    $(wildcard include/config/INIT_ON_FREE_DEFAULT_ON) \
-    $(wildcard include/config/DEBUG_PAGEALLOC) \
-    $(wildcard include/config/HUGETLBFS) \
-    $(wildcard include/config/MAPPING_DIRTY_HELPERS) \
-    $(wildcard include/config/ANON_VMA_NAME) \
-  include/linux/mmap_lock.h \
-  include/linux/page_ext.h \
-  include/linux/stacktrace.h \
-    $(wildcard include/config/ARCH_STACKWALK) \
-    $(wildcard include/config/STACKTRACE) \
-    $(wildcard include/config/HAVE_RELIABLE_STACKTRACE) \
-  include/linux/stackdepot.h \
-    $(wildcard include/config/STACKDEPOT_ALWAYS_INIT) \
-  include/linux/page_ref.h \
-    $(wildcard include/config/DEBUG_PAGE_REF) \
-  include/linux/sizes.h \
-  include/linux/pgtable.h \
-    $(wildcard include/config/HIGHPTE) \
-    $(wildcard include/config/GUP_GET_PTE_LOW_HIGH) \
-    $(wildcard include/config/HAVE_ARCH_SOFT_DIRTY) \
-    $(wildcard include/config/ARCH_ENABLE_THP_MIGRATION) \
-    $(wildcard include/config/X86_ESPFIX64) \
-  arch/x86/include/asm/pgtable.h \
-    $(wildcard include/config/DEBUG_WX) \
-    $(wildcard include/config/PAGE_TABLE_CHECK) \
-  arch/x86/include/asm/pkru.h \
-  arch/x86/include/asm/fpu/api.h \
-    $(wildcard include/config/X86_DEBUG_FPU) \
-  arch/x86/include/asm/coco.h \
-  include/asm-generic/pgtable_uffd.h \
-  include/linux/page_table_check.h \
-  arch/x86/include/asm/pgtable_32.h \
-  arch/x86/include/asm/pgtable-3level.h \
-  arch/x86/include/asm/pgtable-invert.h \
-  include/linux/huge_mm.h \
-  include/linux/sched/coredump.h \
-    $(wildcard include/config/CORE_DUMP_DEFAULT_ELF_HEADERS) \
-  include/linux/vmstat.h \
-    $(wildcard include/config/VM_EVENT_COUNTERS) \
-  include/linux/writeback.h \
-  include/linux/flex_proportions.h \
-  include/linux/backing-dev-defs.h \
-    $(wildcard include/config/DEBUG_FS) \
-  include/linux/blk_types.h \
-    $(wildcard include/config/FAIL_MAKE_REQUEST) \
-    $(wildcard include/config/BLK_CGROUP_IOCOST) \
-    $(wildcard include/config/BLK_INLINE_ENCRYPTION) \
-    $(wildcard include/config/BLK_DEV_INTEGRITY) \
-  include/linux/bvec.h \
-  include/linux/highmem.h \
-  include/linux/cacheflush.h \
-  arch/x86/include/asm/cacheflush.h \
-  include/asm-generic/cacheflush.h \
-  include/linux/highmem-internal.h \
-  arch/x86/include/asm/highmem.h \
-  arch/x86/include/asm/tlbflush.h \
-  arch/x86/include/asm/invpcid.h \
-  arch/x86/include/asm/pti.h \
-  include/linux/bio.h \
-  include/linux/mempool.h \
-  include/linux/uio.h \
-    $(wildcard include/config/ARCH_HAS_UACCESS_FLUSHCACHE) \
-  include/uapi/linux/uio.h \
-  include/linux/node.h \
-    $(wildcard include/config/HMEM_REPORTING) \
-  include/linux/pagemap.h \
-  include/linux/hugetlb_inline.h \
-  include/uapi/linux/mempolicy.h \
-  include/linux/freezer.h \
-  include/uapi/linux/i2c.h \
-  include/linux/videodev2.h \
-  include/uapi/linux/videodev2.h \
-    $(wildcard include/config/VIDEO_ADV_DEBUG) \
-  include/uapi/linux/v4l2-common.h \
-  include/uapi/linux/v4l2-controls.h \
-  include/media/v4l2-device.h \
-    $(wildcard include/config/VIDEO_V4L2_SUBDEV_API) \
-  include/media/media-device.h \
-    $(wildcard include/config/MEDIA_CONTROLLER) \
-  include/media/media-devnode.h \
-  include/linux/poll.h \
-  include/uapi/linux/poll.h \
-  arch/x86/include/generated/uapi/asm/poll.h \
-  include/uapi/asm-generic/poll.h \
-  include/uapi/linux/eventpoll.h \
-  include/linux/cdev.h \
-  include/media/media-entity.h \
-  include/uapi/linux/media.h \
-  include/media/v4l2-subdev.h \
-  include/uapi/linux/v4l2-subdev.h \
-  include/uapi/linux/v4l2-mediabus.h \
-  include/uapi/linux/media-bus-format.h \
-  include/media/v4l2-async.h \
-  include/media/v4l2-common.h \
-    $(wildcard include/config/VIDEO_V4L2_I2C) \
-    $(wildcard include/config/SPI) \
-  include/media/v4l2-dev.h \
-  include/linux/spi/spi.h \
-    $(wildcard include/config/SPI_SLAVE) \
-  include/linux/scatterlist.h \
-    $(wildcard include/config/NEED_SG_DMA_LENGTH) \
-    $(wildcard include/config/DEBUG_SG) \
-    $(wildcard include/config/SGL_ALLOC) \
-    $(wildcard include/config/ARCH_NO_SG_CHAIN) \
-    $(wildcard include/config/SG_POOL) \
-  include/linux/gpio/consumer.h \
-    $(wildcard include/config/OF_GPIO) \
-    $(wildcard include/config/GPIO_SYSFS) \
-  include/uapi/linux/spi/spi.h \
-  include/media/v4l2-fh.h \
-  include/media/v4l2-mediabus.h \
-  include/media/v4l2-ctrls.h \
-  include/media/media-request.h \
-  include/media/hevc-ctrls.h \
+	/* Write the desired MMD Devad */
+	ret = bus->write(bus, 0, MII_MMD_CTRL, devad);
+	if (ret < 0)
+		goto err;
 
-drivers/media/i2c/tw9903.o: $(deps_drivers/media/i2c/tw9903.o)
+	/* Write the desired MMD register address */
+	ret = bus->write(bus, 0, MII_MMD_DATA, prtad);
+	if (ret < 0)
+		goto err;
 
-$(deps_drivers/media/i2c/tw9903.o):
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               ELF                      °      4     (               èüÿÿÿS‹X\‰ØèüÿÿÿƒÀ   èüÿÿÿ1À[ÃèüÿÿÿS‹P(‹Xú	˜ tú	˜ tT¹êÿÿÿú 	˜ t'‰È[Ãv ¶H|‹CÔº   èüÿÿÿ1É[‰ÈÃ´&    f¶H|‹CÔº   èüÿÿÿ1É[‰ÈÃ´&    f¶H|‹CÔº   èüÿÿÿ1É[‰ÈÃ´&    fèüÿÿÿ‹€”   º   ƒÉ@¶Éèüÿÿÿ1ÀÃ´&    ´&    èüÿÿÿUWVS‰Ã‹@‹P‹Rèüÿÿÿ%   =   „7   ¾ûÿÿÿ[‰ð^_]Ã´&    t& èüÿÿÿUöÆù‰ÍW‰×º   V‰Æ¸    S»   DØƒÃë´&    ¶SƒÃ„Òt¶‹†”   èüÿÿÿ…Àyã[‰¾0  1À‰®4  ^_]Ã    à                                                                                                                                  °       à          6%s: Standard: %d Hz
- tw9906 èüÿÿÿS‰Ã‹€0  % ù  ƒøÀƒàöƒÀ<PCpPh    èüÿÿÿ‰Øèüÿÿÿ1ÀƒÄ[Ã‹S·CŠ  Q QPÿ²   ‹CTÿ0h    èüÿÿÿC¹À  º8  èüÿÿÿ‰ÇƒÄ…Àu
-¾ôÿÿÿé
-  ¹`   ‰Ú¯À   èüÿÿÿ1Éº   ‰èj èüÿÿÿ¹ 	˜ º  ‰èj j j jj jjÿj€èüÿÿÿ¹	˜ º  ‰èƒÄ$j j`j jj hÿ   j j èüÿÿÿ¹	˜ º  ‰èƒÄ j j j jj jjÿj€èüÿÿÿ‹·ü   ‰olƒÄ …öt‰èèüÿÿÿé
-  Ç‡0   °  ½   º   Ç‡4      ¶M‹‡”   èüÿÿÿ…ÀyƒÃ¾êÿÿÿSh(   èüÿÿÿXZé
-  ¶UƒÅ„ÒuÈé
-   6%s %d-%04x: chip found @ 0x%02x (%s)
- 3%s: error initializing TW9906
- èüÿÿÿº    ¸    éüÿÿÿ¸    éüÿÿÿ                 	     	ð            tw9906                                                          à           €                   °                                                                                                                                                              @¢	ð
-Ð   `~~ W@)U k&l6mðnAo­p  license=GPL v2 description=TW9906 I2C subdev driver  GCC: (GNU) 11.2.0             GNU  À       À                                  ñÿ                            
-                   ‡     &   °   !                                	 =       ;    	               O   à   5     \   ;   R   	 n   `         y          ‰      :     ›      `     ¨       
-     ¶      
-                   Ä            ×       €     å       
-                   ø       0       à   0       €   P     #           :     %     U             `             ~             •             ¯             ·             Ó             ì             ù                          +             =             K             _           k             z      
-     ‰      0      tw9906.c tw9906_remove tw9906_s_ctrl tw9906_s_video_routing tw9906_log_status tw9906_probe tw9906_probe.cold tw9906_ops tw9906_ctrl_ops initial_registers tw9906_s_std config_50hz.2 config_60hz.1 tw9906_driver_init tw9906_driver tw9906_driver_exit tw9906_id tw9906_core_ops tw9906_video_ops __UNIQUE_ID_license267 __UNIQUE_ID_description266 __fentry__ v4l2_device_unregister_subdev v4l2_ctrl_handler_free i2c_smbus_write_byte_data _printk v4l2_ctrl_subdev_log_status __x86_indirect_thunk_edx devm_kmalloc v4l2_i2c_subdev_init v4l2_ctrl_handler_init_class v4l2_ctrl_new_std __this_module i2c_register_driver init_module i2c_del_driver cleanup_module __mod_i2c__tw9906_id_device_table                 !     ]      }            ±     Ê      á     õ   #  !    7    =    e                        h                                              $     )   !  0   "  Z   
-  _   !  q   $  ‰     –   %  ¦   &  °     Ç   '  Ñ     î   '  ø       '  )    =    [     m  
-  r  !  „     .    y    ‰                 (     )          +  `     l     €     Œ     à          .symtab .strtab .shstrtab .rel.text .rel.data .bss .rel__mcount_loc .rodata.str1.1 .rel.text.unlikel
+	/* Select the Function : DATA with no post increment */
+	ret = bus->write(bus, 0, MII_MMD_CTRL, (devad | MII_MMD_CTRL_NOINCR));
+	if (ret < 0)
+		goto err;
+
+	/* Read the content of the MMD's selected register */
+	value = bus->read(bus, 0, MII_MMD_DATA);
+
+	return value;
+err:
+	dev_err(&bus->dev,  "failed to read mmd register\n");
+
+	return ret;
+}
+
+static int
+core_write_mmd_indirect(struct mt7530_priv *priv, int prtad,
+			int devad, u32 data)
+{
+	struct mii_bus *bus = priv->bus;
+	int ret;
+
+	/* Write the desired MMD Devad */
+	ret = bus->write(bus, 0, MII_MMD_CTRL, devad);
+	if (ret < 0)
+		goto err;
+
+	/* Write the desired MMD register address */
+	ret = bus->write(bus, 0, MII_MMD_DATA, prtad);
+	if (ret < 0)
+		goto err;
+
+	/* Select the Function : DATA with no post increment */
+	ret = bus->write(bus, 0, MII_MMD_CTRL, (devad | MII_MMD_CTRL_NOINCR));
+	if (ret < 0)
+		goto err;
+
+	/* Write the data into MMD's selected register */
+	ret = bus->write(bus, 0, MII_MMD_DATA, data);
+err:
+	if (ret < 0)
+		dev_err(&bus->dev,
+			"failed to write mmd register\n");
+	return ret;
+}
+
+static void
+core_write(struct mt7530_priv *priv, u32 reg, u32 val)
+{
+	struct mii_bus *bus = priv->bus;
+
+	mutex_lock_nested(&bus->mdio_lock, MDIO_MUTEX_NESTED);
+
+	core_write_mmd_indirect(priv, reg, MDIO_MMD_VEND2, val);
+
+	mutex_unlock(&bus->mdio_lock);
+}
+
+static void
+core_rmw(struct mt7530_priv *priv, u32 reg, u32 mask, u32 set)
+{
+	struct mii_bus *bus = priv->bus;
+	u32 val;
+
+	mutex_lock_nested(&bus->mdio_lock, MDIO_MUTEX_NESTED);
+
+	val = core_read_mmd_indirect(priv, reg, MDIO_MMD_VEND2);
+	val &= ~mask;
+	val |= set;
+	core_write_mmd_indirect(priv, reg, MDIO_MMD_VEND2, val);
+
+	mutex_unlock(&bus->mdio_lock);
+}
+
+static void
+core_set(struct mt7530_priv *priv, u32 reg, u32 val)
+{
+	core_rmw(priv, reg, 0, val);
+}
+
+static void
+core_clear(struct mt7530_priv *priv, u32 reg, u32 val)
+{
+	core_rmw(priv, reg, val, 0);
+}
+
+static int
+mt7530_mii_write(struct mt7530_priv *priv, u32 reg, u32 val)
+{
+	struct mii_bus *bus = priv->bus;
+	u16 page, r, lo, hi;
+	int ret;
+
+	page = (reg >> 6) & 0x3ff;
+	r  = (reg >> 2) & 0xf;
+	lo = val & 0xffff;
+	hi = val >> 16;
+
+	/* MT7530 uses 31 as the pseudo port */
+	ret = bus->write(bus, 0x1f, 0x1f, page);
+	if (ret < 0)
+		goto err;
+
+	ret = bus->write(bus, 0x1f, r,  lo);
+	if (ret < 0)
+		goto err;
+
+	ret = bus->write(bus, 0x1f, 0x10, hi);
+err:
+	if (ret < 0)
+		dev_err(&bus->dev,
+			"failed to write mt7530 register\n");
+	return ret;
+}
+
+static u32
+mt7530_mii_read(struct mt7530_priv *priv, u32 reg)
+{
+	struct mii_bus *bus = priv->bus;
+	u16 page, r, lo, hi;
+	int ret;
+
+	page = (reg >> 6) & 0x3ff;
+	r = (reg >> 2) & 0xf;
+
+	/* MT7530 uses 31 as the pseudo port */
+	ret = bus->write(bus, 0x1f, 0x1f, page);
+	if (ret < 0) {
+		dev_err(&bus->dev,
+			"failed to read mt7530 register\n");
+		return ret;
+	}
+
+	lo = bus->read(bus, 0x1f, r);
+	hi = bus->read(bus, 0x1f, 0x10);
+
+	return (hi << 16) | (lo & 0xffff);
+}
+
+static void
+mt7530_write(struct mt7530_priv *priv, u32 reg, u32 val)
+{
+	struct mii_bus *bus = priv->bus;
+
+	mutex_lock_nested(&bus->mdio_lock, MDIO_MUTEX_NESTED);
+
+	mt7530_mii_write(priv, reg, val);
+
+	mutex_unlock(&bus->mdio_lock);
+}
+
+static u32
+_mt7530_unlocked_read(struct mt7530_dummy_poll *p)
+{
+	return mt7530_mii_read(p->priv, p->reg);
+}
+
+static u32
+_mt7530_read(struct mt7530_dummy_poll *p)
+{
+	struct mii_bus		*bus = p->priv->bus;
+	u32 val;
+
+	mutex_lock_nested(&bus->mdio_lock, MDIO_MUTEX_NESTED);
+
+	val = mt7530_mii_read(p->priv, p->reg);
+
+	mutex_unlock(&bus->mdio_lock);
+
+	return val;
+}
+
+static u32
+mt7530_read(struct mt7530_priv *priv, u32 reg)
+{
+	struct mt7530_dummy_poll p;
+
+	INIT_MT7530_DUMMY_POLL(&p, priv, reg);
+	return _mt7530_read(&p);
+}
+
+static void
+mt7530_rmw(struct mt7530_priv *priv, u32 reg,
+	   u32 mask, u32 set)
+{
+	struct mii_bus *bus = priv->bus;
+	u32 val;
+
+	mutex_lock_nested(&bus->mdio_lock, MDIO_MUTEX_NESTED);
+
+	val = mt7530_mii_read(priv, reg);
+	val &= ~mask;
+	val |= set;
+	mt7530_mii_write(priv, reg, val);
+
+	mutex_unlock(&bus->mdio_lock);
+}
+
+static void
+mt7530_set(struct mt7530_priv *priv, u32 reg, u32 val)
+{
+	mt7530_rmw(priv, reg, 0, val);
+}
+
+static void
+mt7530_clear(struct mt7530_priv *priv, u32 reg, u32 val)
+{
+	mt7530_rmw(priv, reg, val, 0);
+}
+
+static int
+mt7530_fdb_cmd(struct mt7530_priv *priv, enum mt7530_fdb_cmd cmd, u32 *rsp)
+{
+	u32 val;
+	int ret;
+	struct mt7530_dummy_poll p;
+
+	/* Set the command operating upon the MAC address entries */
+	val = ATC_BUSY | ATC_MAT(0) | cmd;
+	mt7530_write(priv, MT7530_ATC, val);
+
+	INIT_MT7530_DUMMY_POLL(&p, priv, MT7530_ATC);
+	ret = readx_poll_timeout(_mt7530_read, &p, val,
+				 !(val & ATC_BUSY), 20, 20000);
+	if (ret < 0) {
+		dev_err(priv->dev, "reset timeout\n");
+		return ret;
+	}
+
+	/* Additional sanity for read command if the specified
+	 * entry is invalid
+	 */
+	val = mt7530_read(priv, MT7530_ATC);
+	if ((cmd == MT7530_FDB_READ) && (val & ATC_INVALID))
+		return -EINVAL;
+
+	if (rsp)
+		*rsp = val;
+
+	return 0;
+}
+
+static void
+mt7530_fdb_read(struct mt7530_priv *priv, struct mt7530_fdb *fdb)
+{
+	u32 reg[3];
+	int i;
+
+	/* Read from ARL table into an array */
+	for (i = 0; i < 3; i++) {
+		reg[i] = mt7530_read(priv, MT7530_TSRA1 + (i * 4));
+
+		dev_dbg(priv->dev, "%s(%d) reg[%d]=0x%x\n",
+			__func__, __LINE__, i, reg[i]);
+	}
+
+	fdb->vid = (reg[1] >> CVID) & CVID_MASK;
+	fdb->aging = (reg[2] >> AGE_TIMER) & AGE_TIMER_MASK;
+	fdb->port_mask = (reg[2] >> PORT_MAP) & PORT_MAP_MASK;
+	fdb->mac[0] = (reg[0] >> MAC_BYTE_0) & MAC_BYTE_MASK;
+	fdb->mac[1] = (reg[0] >> MAC_BYTE_1) & MAC_BYTE_MASK;
+	fdb->mac[2] = (reg[0] >> MAC_BYTE_2) & MAC_BYTE_MASK;
+	fdb->mac[3] = (reg[0] >> MAC_BYTE_3) & MAC_BYTE_MASK;
+	fdb->mac[4] = (reg[1] >> MAC_BYTE_4) & MAC_BYTE_MASK;
+	fdb->mac[5] = (reg[1] >> MAC_BYTE_5) & MAC_BYTE_MASK;
+	fdb->noarp = ((reg[2] >> ENT_STATUS) & ENT_STATUS_MASK) == STATIC_ENT;
+}
+
+static void
+mt7530_fdb_write(struct mt7530_priv *priv, u16 vid,
+		 u8 port_mask, const u8 *mac,
+		 u8 aging, u8 type)
+{
+	u32 reg[3] = { 0 };
+	int i;
+
+	reg[1] |= vid & CVID_MASK;
+	reg[1] |= ATA2_IVL;
+	reg[1] |= ATA2_FID(FID_BRIDGED);
+	reg[2] |= (aging & AGE_TIMER_MASK) << AGE_TIMER;
+	reg[2] |= (port_mask & PORT_MAP_MASK) << PORT_MAP;
+	/* STATIC_ENT indicate that entry is static wouldn't
+	 * be aged out and STATIC_EMP specified as erasing an
+	 * entry
+	 */
+	reg[2] |= (type & ENT_STATUS_MASK) << ENT_STATUS;
+	reg[1] |= mac[5] << MAC_BYTE_5;
+	reg[1] |= mac[4] << MAC_BYTE_4;
+	reg[0] |= mac[3] << MAC_BYTE_3;
+	reg[0] |= mac[2] << MAC_BYTE_2;
+	reg[0] |= mac[1] << MAC_BYTE_1;
+	reg[0] |= mac[0] << MAC_BYTE_0;
+
+	/* Write array into the ARL table */
+	for (i = 0; i < 3; i++)
+		mt7530_write(priv, MT7530_ATA1 + (i * 4), reg[i]);
+}
+
+/* Setup TX circuit including relevant PAD and driving */
+static int
+mt7530_pad_clk_setup(struct dsa_switch *ds, phy_interface_t interface)
+{
+	struct mt7530_priv *priv = ds->priv;
+	u32 ncpo1, ssc_delta, trgint, i, xtal;
+
+	xtal = mt7530_read(priv, MT7530_MHWTRAP) & HWTRAP_XTAL_MASK;
+
+	if (xtal == HWTRAP_XTAL_20MHZ) {
+		dev_err(priv->dev,
+			"%s: MT7530 with a 20MHz XTAL is not supported!\n",
+			__func__);
+		return -EINVAL;
+	}
+
+	switch (interface) {
+	case PHY_INTERFACE_MODE_RGMII:
+		trgint = 0;
+		/* PLL frequency: 125MHz */
+		ncpo1 = 0x0c80;
+		break;
+	case PHY_INTERFACE_MODE_TRGMII:
+		trgint = 1;
+		if (priv->id == ID_MT7621) {
+			/* PLL frequency: 150MHz: 1.2GBit */
+			if (xtal == HWTRAP_XTAL_40MHZ)
+				ncpo1 = 0x0780;
+			if (xtal == HWTRAP_XTAL_25MHZ)
+				ncpo1 = 0x0a00;
+		} else { /* PLL frequency: 250MHz: 2.0Gbit */
+			if (xtal == HWTRAP_XTAL_40MHZ)
+				ncpo1 = 0x0c80;
+			if (xtal == HWTRAP_XTAL_25MHZ)
+				ncpo1 = 0x1400;
+		}
+		break;
+	default:
+		dev_err(priv->dev, "xMII interface %d not supported\n",
+			interface);
+		return -EINVAL;
+	}
+
+	if (xtal == HWTRAP_XTAL_25MHZ)
+		ssc_delta = 0x57;
+	else
+		ssc_delta = 0x87;
+
+	mt7530_rmw(priv, MT7530_P6ECR, P6_INTF_MODE_MASK,
+		   P6_INTF_MODE(trgint));
+
+	/* Lower Tx Driving for TRGMII path */
+	for (i = 0 ; i < NUM_TRGMII_CTRL ; i++)
+		mt7530_write(priv, MT7530_TRGMII_TD_ODT(i),
+			     TD_DM_DRVP(8) | TD_DM_DRVN(8));
+
+	/* Disable MT7530 core and TRGMII Tx clocks */
+	core_clear(priv, CORE_TRGMII_GSW_CLK_CG,
+		   REG_GSWCK_EN | REG_TRGMIICK_EN);
+
+	/* Setup core clock for MT7530 */
+	/* Disable PLL */
+	core_write(priv, CORE_GSWPLL_GRP1, 0);
+
+	/* Set core clock into 500Mhz */
+	core_write(priv, CORE_GSWPLL_GRP2,
+		   RG_GSWPLL_POSDIV_500M(1) |
+		   RG_GSWPLL_FBKDIV_500M(25));
+
+	/* Enable PLL */
+	core_write(priv, CORE_GSWPLL_GRP1,
+		   RG_GSWPLL_EN_PRE |
+		   RG_GSWPLL_POSDIV_200M(2) |
+		   RG_GSWPLL_FBKDIV_200M(32));
+
+	/* Setup the MT7530 TRGMII Tx Clock */
+	core_write(priv, CORE_PLL_GROUP5, RG_LCDDS_PCW_NCPO1(ncpo1));
+	core_write(priv, CORE_PLL_GROUP6, RG_LCDDS_PCW_NCPO0(0));
+	core_write(priv, CORE_PLL_GROUP10, RG_LCDDS_SSC_DELTA(ssc_delta));
+	core_write(priv, CORE_PLL_GROUP11, RG_LCDDS_SSC_DELTA1(ssc_delta));
+	core_write(priv, CORE_PLL_GROUP4,
+		   RG_SYSPLL_DDSFBK_EN | RG_SYSPLL_BIAS_EN |
+		   RG_SYSPLL_BIAS_LPF_EN);
+	core_write(priv, CORE_PLL_GROUP2,
+		   RG_SYSPLL_EN_NORMAL | RG_SYSPLL_VODEN |
+		   RG_SYSPLL_POSDIV(1));
+	core_write(priv, CORE_PLL_GROUP7,
+		   RG_LCDDS_PCW_NCPO_CHG | RG_LCCDS_C(3) |
+		   RG_LCDDS_PWDB | RG_LCDDS_ISO_EN);
+
+	/* Enable MT7530 core and TRGMII Tx clocks */
+	core_set(priv, CORE_TRGMII_GSW_CLK_CG,
+		 REG_GSWCK_EN | REG_TRGMIICK_EN);
+
+	if (!trgint)
+		for (i = 0 ; i < NUM_TRGMII_CTRL; i++)
+			mt7530_rmw(priv, MT7530_TRGMII_RD(i),
+				   RD_TAP_MASK, RD_TAP(16));
+	return 0;
+}
+
+static bool mt7531_dual_sgmii_supported(struct mt7530_priv *priv)
+{
+	u32 val;
+
+	val = mt7530_read(priv, MT7531_TOP_SIG_SR);
+
+	return (val & PAD_DUAL_SGMII_EN) != 0;
+}
+
+static int
+mt7531_pad_setup(struct dsa_switch *ds, phy_interface_t interface)
+{
+	struct mt7530_priv *priv = ds->priv;
+	u32 top_sig;
+	u32 hwstrap;
+	u32 xtal;
+	u32 val;
+
+	if (mt7531_dual_sgmii_supported(priv))
+		return 0;
+
+	val = mt7530_read(priv, MT7531_CREV);
+	top_sig = mt7530_read(priv, MT7531_TOP_SIG_SR);
+	hwstrap = mt7530_read(priv, MT7531_HWTRAP);
+	if ((val & CHIP_REV_M) > 0)
+		xtal = (top_sig & PAD_MCM_SMI_EN) ? HWTRAP_XTAL_FSEL_40MHZ :
+						    HWTRAP_XTAL_FSEL_25MHZ;
+	else
+		xtal = hwstrap & HWTRAP_XTAL_FSEL_MASK;
+
+	/* Step 1 : Disable MT7531 COREPLL */
+	val = mt7530_read(priv, MT7531_PLLGP_EN);
+	val &= ~EN_COREPLL;
+	mt7530_write(priv, MT7531_PLLGP_EN, val);
+
+	/* Step 2: switch to XTAL output */
+	val = mt7530_read(priv, MT7531_PLLGP_EN);
+	val |= SW_CLKSW;
+	mt7530_write(priv, MT7531_PLLGP_EN, val);
+
+	val = mt7530_read(priv, MT7531_PLLGP_CR0);
+	val &= ~RG_COREPLL_EN;
+	mt7530_write(priv, MT7531_PLLGP_CR0, val);
+
+	/* Step 3: disable PLLGP and enable program PLLGP */
+	val = mt7530_read(priv, MT7531_PLLGP_EN);
+	val |= SW_PLLGP;
+	mt7530_write(priv, MT7531_PLLGP_EN, val);
+
+	/* Step 4: program COREPLL output frequency to 500MHz */
+	val = mt7530_read(priv, MT7531_PLLGP_CR0);
+	val &= ~RG_COREPLL_POSDIV_M;
+	val |= 2 << RG_COREPLL_POSDIV_S;
+	mt7530_write(priv, MT7531_PLLGP_CR0, val);
+	usleep_range(25, 35);
+
+	switch (xtal) {
+	case HWTRAP_XTAL_FSEL_25MHZ:
+		val = mt7530_read(priv, MT7531_PLLGP_CR0);
+		val &= ~RG_COREPLL_SDM_PCW_M;
+		val |= 0x140000 << RG_COREPLL_SDM_PCW_S;
+		mt7530_write(priv, MT7531_PLLGP_CR0, val);
+		break;
+	case HWTRAP_XTAL_FSEL_40MHZ:
+		val = mt7530_read(priv, MT7531_PLLGP_CR0);
+		val &= ~RG_COREPLL_SDM_PCW_M;
+		val |= 0x190000 << RG_COREPLL_SDM_PCW_S;
+		mt7530_write(priv, MT7531_PLLGP_CR0, val);
+		break;
+	}
+
+	/* Set feedback divide ratio update signal to high */
+	val = mt7530_read(priv, MT7531_PLLGP_CR0);
+	val |= RG_COREPLL_SDM_PCW_CHG;
+	mt7530_write(priv, MT7531_PLLGP_CR0, val);
+	/* Wait for at least 16 XTAL clocks */
+	usleep_range(10, 20);
+
+	/* Step 5: set feedback divide ratio update signal to low */
+	val = mt7530_read(priv, MT7531_PLLGP_CR0);
+	val &= ~RG_COREPLL_SDM_PCW_CHG;
+	mt7530_write(priv, MT7531_PLLGP_CR0, val);
+
+	/* Enable 325M clock for SGMII */
+	mt7530_write(priv, MT7531_ANA_PLLGP_CR5, 0xad0000);
+
+	/* Enable 250SSC clock for RGMII */
+	mt7530_write(priv, MT7531_ANA_PLLGP_CR2, 0x4f40000);
+
+	/* Step 6: Enable MT7531 PLL */
+	val = mt7530_read(priv, MT7531_PLLGP_CR0);
+	val |= RG_COREPLL_EN;
+	mt7530_write(priv, MT7531_PLLGP_CR0, val);
+
+	val = mt7530_read(priv, MT7531_PLLGP_EN);
+	val |= EN_COREPLL;
+	mt7530_write(priv, MT7531_PLLGP_EN, val);
+	usleep_range(25, 35);
+
+	return 0;
+}
+
+static void
+mt7530_mib_reset(struct dsa_switch *ds)
+{
+	struct mt7530_priv *priv = ds->priv;
+
+	mt7530_write(priv, MT7530_MIB_CCR, CCR_MIB_FLUSH);
+	mt7530_write(priv, MT7530_MIB_CCR, CCR_MIB_ACTIVATE);
+}
+
+static int mt7530_phy_read(struct mt7530_priv *priv, int port, int regnum)
+{
+	return mdiobus_read_nested(priv->bus, port, regnum);
+}
+
+static int mt7530_phy_write(struct mt7530_priv *priv, int port, int regnum,
+			    u16 val)
+{
+	return mdiobus_write_nested(priv->bus, port, regnum, val);
+}
+
+static int
+mt7531_ind_c45_phy_read(struct mt7530_priv *priv, int port, int devad,
+			int regnum)
+{
+	struct mii_bus *bus = priv->bus;
+	struct mt7530_dummy_poll p;
+	u32 reg, val;
+	int ret;
+
+	INIT_MT7530_DUMMY_POLL(&p, priv, MT7531_PHY_IAC);
+
+	mutex_lock_nested(&bus->mdio_lock, MDIO_MUTEX_NESTED);
+
+	ret = readx_poll_timeout(_mt7530_unlocked_read, &p, val,
+				 !(val & MT7531_PHY_ACS_ST), 20, 100000);
+	if (ret < 0) {
+		dev_err(priv->dev, "poll timeout\n");
+		goto out;
+	}
+
+	reg = MT7531_MDIO_CL45_ADDR | MT7531_MDIO_PHY_ADDR(port) |
+	      MT7531_MDIO_DEV_ADDR(devad) | regnum;
+	mt7530_mii_write(priv, MT7531_PHY_IAC, reg | MT7531_PHY_ACS_ST);
+
+	ret = readx_poll_timeout(_mt7530_unlocked_read, &p, val,
+				 !(val & MT7531_PHY_ACS_ST), 20, 100000);
+	if (ret < 0) {
+		dev_err(priv->dev, "poll timeout\n");
+		goto out;
+	}
+
+	reg = MT7531_MDIO_CL45_READ | MT7531_MDIO_PHY_ADDR(port) |
+	      MT7531_MDIO_DEV_ADDR(devad);
+	mt7530_mii_write(priv, MT7531_PHY_IAC, reg | MT7531_PHY_ACS_ST);
+
+	ret = readx_poll_timeout(_mt7530_unlocked_read, &p, val,
+				 !(val & MT7531_PHY_ACS_ST), 20, 100000);
+	if (ret < 0) {
+		dev_err(priv->dev, "poll timeout\n");
+		goto out;
+	}
+
+	ret = val & MT7531_MDIO_RW_DATA_MASK;
+out:
+	mutex_unlock(&bus->mdio_lock);
+
+	return ret;
+}
+
+static int
+mt7531_ind_c45_phy_write(struct mt7530_priv *priv, int port, int devad,
+			 int regnum, u32 data)
+{
+	struct mii_bus *bus = priv->bus;
+	struct mt7530_dummy_poll p;
+	u32 val, reg;
+	int ret;
+
+	INIT_MT7530_DUMMY_POLL(&p, priv, MT7531_PHY_IAC);
+
+	mutex_lock_nested(&bus->mdio_lock, MDIO_MUTEX_NESTED);
+
+	ret = readx_poll_timeout(_mt7530_unlocked_read, &p, val,
+				 !(val & MT7531_PHY_ACS_ST), 20, 100000);
+	if (ret < 0) {
+		dev_err(priv->dev, "poll timeout\n");
+		goto out;
+	}
+
+	reg = MT7531_MDIO_CL45_ADDR | MT7531_MDIO_PHY_ADDR(port) |
+	      MT7531_MDIO_DEV_ADDR(devad) | regnum;
+	mt7530_mii_write(priv, MT7531_PHY_IAC, reg | MT7531_PHY_ACS_ST);
+
+	ret = readx_poll_timeout(_mt7530_unlocked_read, &p, val,
+				 !(val & MT7531_PHY_ACS_ST), 20, 100000);
+	if (ret < 0) {
+		dev_err(priv->dev, "poll timeout\n");
+		goto out;
+	}
+
+	reg = MT7531_MDIO_CL45_WRITE | MT7531_MDIO_PHY_ADDR(port) |
+	      MT7531_MDIO_DEV_ADDR(devad) | data;
+	mt7530_mii_write(priv, MT7531_PHY_IAC, reg | MT7531_PHY_ACS_ST);
+
+	ret = readx_poll_timeout(_mt7530_unlocked_read, &p, val,
+				 !(val & MT7531_PHY_ACS_ST), 20, 100000);
+	if (ret < 0) {
+		dev_err(priv->dev, "poll timeout\n");
+		goto out;
+	}
+
+out:
+	mutex_unlock(&bus->mdio_lock);
+
+	return ret;
+}
+
+static int
+mt7531_ind_c22_phy_read(struct mt7530_priv *priv, int port, int regnum)
+{
+	struct mii_bus *bus = priv->bus;
+	struct mt7530_dummy_poll p;
+	int ret;
+	u32 val;
+
+	INIT_MT7530_DUMMY_POLL(&p, priv, MT7531_PHY_IAC);
+
+	mutex_lock_nested(&bus->mdio_lock, MDIO_MUTEX_NESTED);
+
+	ret = readx_poll_timeout(_mt7530_unlocked_read, &p, val,
+				 !(val & MT7531_PHY_ACS_ST), 20, 100000);
+	if (ret < 0) {
+		dev_err(priv->dev, "poll timeout\n");
+		goto out;
+	}
+
+	val = MT7531_MDIO_CL22_READ | MT7531_MDIO_PHY_ADDR(port) |
+	      MT7531_MDIO_REG_ADDR(regnum);
+
+	mt7530_mii_write(priv, MT7531_PHY_IAC, val | MT7531_PHY_ACS_ST);
+
+	ret = readx_poll_timeout(_mt7530_unlocked_read, &p, val,
+				 !(val & MT7531_PHY_ACS_ST), 20, 100000);
+	if (ret < 0) {
+		dev_err(priv->dev, "poll timeout\n");
+		goto out;
+	}
+
+	ret = val & MT7531_MDIO_RW_DATA_MASK;
+out:
+	mutex_unlock(&bus->mdio_lock);
+
+	return ret;
+}
+
+static int
+mt7531_ind_c22_phy_write(struct mt7530_priv *priv, int port, int regnum,
+			 u16 data)
+{
+	struct mii_bus *bus = priv->bus;
+	struct mt7530_dummy_poll p;
+	int ret;
+	u32 reg;
+
+	INIT_MT7530_DUMMY_POLL(&p, priv, MT7531_PHY_IAC);
+
+	mutex_lock_nested(&bus->mdio_lock, MDIO_MUTEX_NESTED);
+
+	ret = readx_poll_timeout(_mt7530_unlocked_read, &p, reg,
+				 !(reg & MT7531_PHY_ACS_ST), 20, 100000);
+	if (ret < 0) {
+		dev_err(priv->dev, "poll timeout\n");
+		goto out;
+	}
+
+	reg = MT7531_MDIO_CL22_WRITE | MT7531_MDIO_PHY_ADDR(port) |
+	      MT7531_MDIO_REG_ADDR(regnum) | data;
+
+	mt7530_mii_write(priv, MT7531_PHY_IAC, reg | MT7531_PHY_ACS_ST);
+
+	ret = readx_poll_timeout(_mt7530_unlocked_read, &p, reg,
+				 !(reg & MT7531_PHY_ACS_ST), 20, 100000);
+	if (ret < 0) {
+		dev_err(priv->dev, "poll timeout\n");
+		goto out;
+	}
+
+out:
+	mutex_unlock(&bus->mdio_lock);
+
+	return ret;
+}
+
+static int
+mt7531_ind_phy_read(struct mt7530_priv *priv, int port, int regnum)
+{
+	int devad;
+	int ret;
+
+	if (regnum & MII_ADDR_C45) {
+		devad = (regnum >> MII_DEVADDR_C45_SHIFT) & 0x1f;
+		ret = mt7531_ind_c45_phy_read(priv, port, devad,
+					      regnum & MII_REGADDR_C45_MASK);
+	} else {
+		ret = mt7531_ind_c22_phy_read(priv, port, regnum);
+	}
+
+	return ret;
+}
+
+static int
+mt7531_ind_phy_write(struct mt7530_priv *priv, int port, int regnum,
+		     u16 data)
+{
+	int devad;
+	int ret;
+
+	if (regnum & MII_ADDR_C45) {
+		devad = (regnum >> MII_DEVADDR_C45_SHIFT) & 0x1f;
+		ret = mt7531_ind_c45_phy_write(priv, port, devad,
+					       regnum & MII_REGADDR_C45_MASK,
+					       data);
+	} else {
+		ret = mt7531_ind_c22_phy_write(priv, port, regnum, data);
+	}
+
+	return ret;
+}
+
+static int
+mt753x_phy_read(struct mii_bus *bus, int port, int regnum)
+{
+	struct mt7530_priv *priv = bus->priv;
+
+	return priv->info->phy_read(priv, port, regnum);
+}
+
+static int
+mt753x_phy_write(struct mii_bus *bus, int port, int regnum, u16 val)
+{
+	struct mt7530_priv *priv = bus->priv;
+
+	return priv->info->phy_write(priv, port, regnum, val);
+}
+
+static void
+mt7530_get_strings(struct dsa_switch *ds, int port, u32 stringset,
+		   uint8_t *data)
+{
+	int i;
+
+	if (stringset != ETH_SS_STATS)
+		return;
+
+	for (i = 0; i < ARRAY_SIZE(mt7530_mib); i++)
+		strncpy(data + i * ETH_GSTRING_LEN, mt7530_mib[i].name,
+			ETH_GSTRING_LEN);
+}
+
+static void
+mt7530_get_ethtool_stats(struct dsa_switch *ds, int port,
+			 uint64_t *data)
+{
+	struct mt7530_priv *priv = ds->priv;
+	const struct mt7530_mib_desc *mib;
+	u32 reg, i;
+	u64 hi;
+
+	for (i = 0; i < ARRAY_SIZE(mt7530_mib); i++) {
+		mib = &mt7530_mib[i];
+		reg = MT7530_PORT_MIB_COUNTER(port) + mib->offset;
+
+		data[i] = mt7530_read(priv, reg);
+		if (mib->size == 2) {
+			hi = mt7530_read(priv, reg + 4);
+			data[i] |= hi << 32;
+		}
+	}
+}
+
+static int
+mt7530_get_sset_count(struct dsa_switch *ds, int port, int sset)
+{
+	if (sset != ETH_SS_STATS)
+		return 0;
+
+	return ARRAY_SIZE(mt7530_mib);
+}
+
+static int
+mt7530_set_ageing_time(struct dsa_switch *ds, unsigned int msecs)
+{
+	struct mt7530_priv *priv = ds->priv;
+	unsigned int secs = msecs / 1000;
+	unsigned int tmp_age_count;
+	unsigned int error = -1;
+	unsigned int age_count;
+	unsigned int age_unit;
+
+	/* Applied timer is (AGE_CNT + 1) * (AGE_UNIT + 1) seconds */
+	if (secs < 1 || secs > (AGE_CNT_MAX + 1) * (AGE_UNIT_MAX + 1))
+		return -ERANGE;
+
+	/* iterate through all possible age_count to find the closest pair */
+	for (tmp_age_count = 0; tmp_age_count <= AGE_CNT_MAX; ++tmp_age_count) {
+		unsigned int tmp_age_unit = secs / (tmp_age_count + 1) - 1;
+
+		if (tmp_age_unit <= AGE_UNIT_MAX) {
+			unsigned int tmp_error = secs -
+				(tmp_age_count + 1) * (tmp_age_unit + 1);
+
+			/* found a closer pair */
+			if (error > tmp_error) {
+				error = tmp_error;
+				age_count = tmp_age_count;
+				age_unit = tmp_age_unit;
+			}
+
+			/* found the exact match, so break the loop */
+			if (!error)
+				break;
+		}
+	}
+
+	mt7530_write(priv, MT7530_AAC, AGE_CNT(age_count) | AGE_UNIT(age_unit));
+
+	return 0;
+}
+
+static void mt7530_setup_port5(struct dsa_switch *ds, phy_interface_t interface)
+{
+	struct mt7530_priv *priv = ds->priv;
+	u8 tx_delay = 0;
+	int val;
+
+	mutex_lock(&priv->reg_mutex);
+
+	val = mt7530_read(priv, MT7530_MHWTRAP);
+
+	val |= MHWTRAP_MANUAL | MHWTRAP_P5_MAC_SEL | MHWTRAP_P5_DIS;
+	val &= ~MHWTRAP_P5_RGMII_MODE & ~MHWTRAP_PHY0_SEL;
+
+	switch (priv->p5_intf_sel) {
+	case P5_INTF_SEL_PHY_P0:
+		/* MT7530_P5_MODE_GPHY_P0: 2nd GMAC -> P5 -> P0 */
+		val |= MHWTRAP_PHY0_SEL;
+		fallthrough;
+	case P5_INTF_SEL_PHY_P4:
+		/* MT7530_P5_MODE_GPHY_P4: 2nd GMAC -> P5 -> P4 */
+		val &= ~MHWTRAP_P5_MAC_SEL & ~MHWTRAP_P5_DIS;
+
+		/* Setup the MAC by default for the cpu port */
+		mt7530_write(priv, MT7530_PMCR_P(5), 0x56300);
+		break;
+	case P5_INTF_SEL_GMAC5:
+		/* MT7530_P5_MODE_GMAC: P5 -> External phy or 2nd GMAC */
+		val &= ~MHWTRAP_P5_DIS;
+		break;
+	case P5_DISABLED:
+		interface = PHY_INTERFACE_MODE_NA;
+		break;
+	default:
+		dev_err(ds->dev, "Unsupported p5_intf_sel %d\n",
+			priv->p5_intf_sel);
+		goto unlock_exit;
+	}
+
+	/* Setup RGMII settings */
+	if (phy_interface_mode_is_rgmii(interface)) {
+		val |= MHWTRAP_P5_RGMII_MODE;
+
+		/* P5 RGMII RX Clock Control: delay setting for 1000M */
+		mt7530_write(priv, MT7530_P5RGMIIRXCR, CSR_RGMII_EDGE_ALIGN);
+
+		/* Don't set delay in DSA mode */
+		if (!dsa_is_dsa_port(priv->ds, 5) &&
+		    (interface == PHY_INTERFACE_MODE_RGMII_TXID ||
+		     interface == PHY_INTERFACE_MODE_RGMII_ID))
+			tx_delay = 4; /* n * 0.5 ns */
+
+		/* P5 RGMII TX Clock Control: delay x */
+		mt7530_write(priv, MT7530_P5RGMIITXCR,
+			     CSR_RGMII_TXC_CFG(0x10 + tx_delay));
+
+		/* reduce P5 RGMII Tx driving, 8mA */
+		mt7530_write(priv, MT7530_IO_DRV_CR,
+			     P5_IO_CLK_DRV(1) | P5_IO_DATA_DRV(1));
+	}
+
+	mt7530_write(priv, MT7530_MHWTRAP, val);
+
+	dev_dbg(ds->dev, "Setup P5, HWTRAP=0x%x, intf_sel=%s, phy-mode=%s\n",
+		val, p5_intf_modes(priv->p5_intf_sel), phy_modes(interface));
+
+	priv->p5_interface = interface;
+
+unlock_exit:
+	mutex_unlock(&priv->reg_mutex);
+}
+
+static int
+mt753x_cpu_port_enable(struct dsa_switch *ds, int port)
+{
+	struct mt7530_priv *priv = ds->priv;
+	int ret;
+
+	/* Setup max capability of CPU port at first */
+	if (priv->info->cpu_port_config) {
+		ret = priv->info->cpu_port_config(ds, port);
+		if (ret)
+			return ret;
+	}
+
+	/* Enable Mediatek header mode on the cpu port */
+	mt7530_write(priv, MT7530_PVC_P(port),
+		     PORT_SPEC_TAG);
+
+	/* Disable flooding by default */
+	mt7530_rmw(priv, MT7530_MFC, BC_FFP_MASK | UNM_FFP_MASK | UNU_FFP_MASK,
+		   BC_FFP(BIT(port)) | UNM_FFP(BIT(port)) | UNU_FFP(BIT(port)));
+
+	/* Set CPU port number */
+	if (priv->id == ID_MT7621)
+		mt7530_rmw(priv, MT7530_MFC, CPU_MASK, CPU_EN | CPU_PORT(port));
+
+	/* CPU port gets connected to all user ports of
+	 * the switch.
+	 */
+	mt7530_write(priv, MT7530_PCR_P(port),
+		     PCR_MATRIX(dsa_user_ports(priv->ds)));
+
+	/* Set to fallback mode for independent VLAN learning */
+	mt7530_rmw(priv, MT7530_PCR_P(port), PCR_PORT_VLAN_MASK,
+		   MT7530_PORT_FALLBACK_MODE);
+
+	return 0;
+}
+
+static int
+mt7530_port_enable(struct dsa_switch *ds, int port,
+		   struct phy_device *phy)
+{
+	struct mt7530_priv *priv = ds->priv;
+
+	mutex_lock(&priv->reg_mutex);
+
+	/* Allow the user port gets connected to the cpu port and also
+	 * restore the port matrix if the port is the member of a certain
+	 * bridge.
+	 */
+	priv->ports[port].pm |= PCR_MATRIX(BIT(MT7530_CPU_PORT));
+	priv->ports[port].enable = true;
+	mt7530_rmw(priv, MT7530_PCR_P(port), PCR_MATRIX_MASK,
+		   priv->ports[port].pm);
+	mt7530_clear(priv, MT7530_PMCR_P(port), PMCR_LINK_SETTINGS_MASK);
+
+	mutex_unlock(&priv->reg_mutex);
+
+	return 0;
+}
+
+static void
+mt7530_port_disable(struct dsa_switch *ds, int port)
+{
+	struct mt7530_priv *priv = ds->priv;
+
+	mutex_lock(&priv->reg_mutex);
+
+	/* Clear up all port matrix which could be restored in the next
+	 * enablement for the port.
+	 */
+	priv->ports[port].enable = false;
+	mt7530_rmw(priv, MT7530_PCR_P(port), PCR_MATRIX_MASK,
+		   PCR_MATRIX_CLR);
+	mt7530_clear(priv, MT7530_PMCR_P(port), PMCR_LINK_SETTINGS_MASK);
+
+	mutex_unlock(&priv->reg_mutex);
+}
+
+static int
+mt7530_port_change_mtu(struct dsa_switch *ds, int port, int new_mtu)
+{
+	struct mt7530_priv *priv = ds->priv;
+	struct mii_bus *bus = priv->bus;
+	int length;
+	u32 val;
+
+	/* When a new MTU is set, DSA always set the CPU port's MTU to the
+	 * largest MTU of the slave ports. Because the switch only has a global
+	 * RX length register, only allowing CPU port here is enough.
+	 */
+	if (!dsa_is_cpu_port(ds, port))
+		return 0;
+
+	mutex_lock_nested(&bus->mdio_lock, MDIO_MUTEX_NESTED);
+
+	val = mt7530_mii_read(priv, MT7530_GMACCR);
+	val &= ~MAX_RX_PKT_LEN_MASK;
+
+	/* RX length also includes Ethernet header, MTK tag, and FCS length */
+	length = new_mtu + ETH_HLEN + MTK_HDR_LEN + ETH_FCS_LEN;
+	if (length <= 1522) {
+		val |= MAX_RX_PKT_LEN_1522;
+	} else if (length <= 1536) {
+		val |= MAX_RX_PKT_LEN_1536;
+	} else if (length <= 1552) {
+		val |= MAX_RX_PKT_LEN_1552;
+	} else {
+		val &= ~MAX_RX_JUMBO_MASK;
+		val |= MAX_RX_JUMBO(DIV_ROUND_UP(length, 1024));
+		val |= MAX_RX_PKT_LEN_JUMBO;
+	}
+
+	mt7530_mii_write(priv, MT7530_GMACCR, val);
+
+	mutex_unlock(&bus->mdio_lock);
+
+	return 0;
+}
+
+static int
+mt7530_port_max_mtu(struct dsa_switch *ds, int port)
+{
+	return MT7530_MAX_MTU;
+}
+
+static void
+mt7530_stp_state_set(struct dsa_switch *ds, int port, u8 state)
+{
+	struct mt7530_priv *priv = ds->priv;
+	u32 stp_state;
+
+	switch (state) {
+	case BR_STATE_DISABLED:
+		stp_state = MT7530_STP_DISABLED;
+		break;
+	case BR_STATE_BLOCKING:
+		stp_state = MT7530_STP_BLOCKING;
+		break;
+	case BR_STATE_LISTENING:
+		stp_state = MT7530_STP_LISTENING;
+		break;
+	case BR_STATE_LEARNING:
+		stp_state = MT7530_STP_LEARNING;
+		break;
+	case BR_STATE_FORWARDING:
+	default:
+		stp_state = MT7530_STP_FORWARDING;
+		break;
+	}
+
+	mt7530_rmw(priv, MT7530_SSP_P(port), FID_PST_MASK(FID_BRIDGED),
+		   FID_PST(FID_BRIDGED, stp_state));
+}
+
+static int
+mt7530_port_pre_bridge_flags(struct dsa_switch *ds, int port,
+			     struct switchdev_brport_flags flags,
+			     struct netlink_ext_ack *extack)
+{
+	if (flags.mask & ~(BR_LEARNING | BR_FLOOD | BR_MCAST_FLOOD |
+			   BR_BCAST_FLOOD))
+		return -EINVAL;
+
+	return 0;
+}
+
+static int
+mt7530_port_bridge_flags(struct dsa_switch *ds, int port,
+			 struct switchdev_brport_flags flags,
+			 struct netlink_ext_ack *extack)
+{
+	struct mt7530_priv *priv = ds->priv;
+
+	if (flags.mask & BR_LEARNING)
+		mt7530_rmw(priv, MT7530_PSC_P(port), SA_DIS,
+			   flags.val & BR_LEARNING ? 0 : SA_DIS);
+
+	if (flags.mask & BR_FLOOD)
+		mt7530_rmw(priv, MT7530_MFC, UNU_FFP(BIT(port)),
+			   flags.val & BR_FLOOD ? UNU_FFP(BIT(port)) : 0);
+
+	if (flags.mask & BR_MCAST_FLOOD)
+		mt7530_rmw(priv, MT7530_MFC, UNM_FFP(BIT(port)),
+			   flags.val & BR_MCAST_FLOOD ? UNM_FFP(BIT(port)) : 0);
+
+	if (flags.mask & BR_BCAST_FLOOD)
+		mt7530_rmw(priv, MT7530_MFC, BC_FFP(BIT(port)),
+			   flags.val & BR_BCAST_FLOOD ? BC_FFP(BIT(port)) : 0);
+
+	return 0;
+}
+
+static int
+mt7530_port_bridge_join(struct dsa_switch *ds, int port,
+			struct dsa_bridge bridge, bool *tx_fwd_offload,
+			struct netlink_ext_ack *extack)
+{
+	struct dsa_port *dp = dsa_to_port(ds, port), *other_dp;
+	u32 port_bitmap = BIT(MT7530_CPU_PORT);
+	struct mt7530_priv *priv = ds->priv;
+
+	mutex_lock(&priv->reg_mutex);
+
+	dsa_switch_for_each_user_port(other_dp, ds) {
+		int other_port = other_dp->index;
+
+		if (dp == other_dp)
+			continue;
+
+		/* Add this port to the port matrix of the other ports in the
+		 * same bridge. If the port is disabled, port matrix is kept
+		 * and not being setup until the port becomes enabled.
+		 */
+		if (!dsa_port_offloads_bridge(other_dp, &bridge))
+			continue;
+
+		if (priv->ports[other_port].enable)
+			mt7530_set(priv, MT7530_PCR_P(other_port),
+				   PCR_MATRIX(BIT(port)));
+		priv->ports[other_port].pm |= PCR_MATRIX(BIT(port));
+
+		port_bitmap |= BIT(other_port);
+	}
+
+	/* Add the all other ports to this port matrix. */
+	if (priv->ports[port].enable)
+		mt7530_rmw(priv, MT7530_PCR_P(port),
+			   PCR_MATRIX_MASK, PCR_MATRIX(port_bitmap));
+	priv->ports[port].pm |= PCR_MATRIX(port_bitmap);
+
+	/* Set to fallback mode for independent VLAN learning */
+	mt7530_rmw(priv, MT7530_PCR_P(port), PCR_PORT_VLAN_MASK,
+		   MT7530_PORT_FALLBACK_MODE);
+
+	mutex_unlock(&priv->reg_mutex);
+
+	return 0;
+}
+
+static void
+mt7530_port_set_vlan_unaware(struct dsa_switch *ds, int port)
+{
+	struct mt7530_priv *priv = ds->priv;
+	bool all_user_ports_removed = true;
+	int i;
+
+	/* This is called after .port_bridge_leave when leaving a VLAN-aware
+	 * bridge. Don't set standalone ports to fallback mode.
+	 */
+	if (dsa_port_bridge_dev_get(dsa_to_port(ds, port)))
+		mt7530_rmw(priv, MT7530_PCR_P(port), PCR_PORT_VLAN_MASK,
+			   MT7530_PORT_FALLBACK_MODE);
+
+	mt7530_rmw(priv, MT7530_PVC_P(port),
+		   VLAN_ATTR_MASK | PVC_EG_TAG_MASK | ACC_FRM_MASK,
+		   VLAN_ATTR(MT7530_VLAN_TRANSPARENT) |
+		   PVC_EG_TAG(MT7530_VLAN_EG_CONSISTENT) |
+		   MT7530_VLAN_ACC_ALL);
+
+	/* Set PVID to 0 */
+	mt7530_rmw(priv, MT7530_PPBV1_P(port), G0_PORT_VID_MASK,
+		   G0_PORT_VID_DEF);
+
+	for (i = 0; i < MT7530_NUM_PORTS; i++) {
+		if (dsa_is_user_port(ds, i) &&
+		    dsa_port_is_vlan_filtering(dsa_to_port(ds, i))) {
+			all_user_ports_removed = false;
+			break;
+		}
+	}
+
+	/* CPU port also does the same thing until all user ports belonging to
+	 * the CPU port get out of VLAN filtering mode.
+	 */
+	if (all_user_ports_removed) {
+		mt7530_write(priv, MT7530_PCR_P(MT7530_CPU_PORT),
+			     PCR_MATRIX(dsa_user_ports(priv->ds)));
+		mt7530_write(priv, MT7530_PVC_P(MT7530_CPU_PORT), PORT_SPEC_TAG
+			     | PVC_EG_TAG(MT7530_VLAN_EG_CONSISTENT));
+	}
+}
+
+static void
+mt7530_port_set_vlan_aware(struct dsa_switch *ds, int port)
+{
+	struct mt7530_priv *priv = ds->priv;
+
+	/* Trapped into security mode allows packet forwarding through VLAN
+	 * table lookup.
+	 */
+	if (dsa_is_user_port(ds, port)) {
+		mt7530_rmw(priv, MT7530_PCR_P(port), PCR_PORT_VLAN_MASK,
+			   MT7530_PORT_SECURITY_MODE);
+		mt7530_rmw(priv, MT7530_PPBV1_P(port), G0_PORT_VID_MASK,
+			   G0_PORT_VID(priv->ports[port].pvid));
+
+		/* Only accept tagged frames if PVID is not set */
+		if (!priv->ports[port].pvid)
+			mt7530_rmw(priv, MT7530_PVC_P(port), ACC_FRM_MASK,
+				   MT7530_VLAN_ACC_TAGGED);
+	}
+
+	/* Set the port as a user port which is to be able to recognize VID
+	 * from incoming packets before fetching entry within the VLAN table.
+	 */
+	mt7530_rmw(priv, MT7530_PVC_P(port), VLAN_ATTR_MASK | PVC_EG_TAG_MASK,
+		   VLAN_ATTR(MT7530_VLAN_USER) |
+		   PVC_EG_TAG(MT7530_VLAN_EG_DISABLED));
+}
+
+static void
+mt7530_port_bridge_leave(struct dsa_switch *ds, int port,
+			 struct dsa_bridge bridge)
+{
+	struct dsa_port *dp = dsa_to_port(ds, port), *other_dp;
+	struct mt7530_priv *priv = ds->priv;
+
+	mutex_lock(&priv->reg_mutex);
+
+	dsa_switch_for_each_user_port(other_dp, ds) {
+		int other_port = other_dp->index;
+
+		if (dp == other_dp)
+			continue;
+
+		/* Remove this port from the port matrix of the other ports
+		 * in the same bridge. If the port is disabled, port matrix
+		 * is kept and not being setup until the port becomes enabled.
+		 */
+		if (!dsa_port_offloads_bridge(other_dp, &bridge))
+			continue;
+
+		if (priv->ports[other_port].enable)
+			mt7530_clear(priv, MT7530_PCR_P(other_port),
+				     PCR_MATRIX(BIT(port)));
+		priv->ports[other_port].pm &= ~PCR_MATRIX(BIT(port));
+	}
+
+	/* Set the cpu port to be the only one in the port matrix of
+	 * this port.
+	 */
+	if (priv->ports[port].enable)
+		mt7530_rmw(priv, MT7530_PCR_P(port), PCR_MATRIX_MASK,
+			   PCR_MATRIX(BIT(MT7530_CPU_PORT)));
+	priv->ports[port].pm = PCR_MATRIX(BIT(MT7530_CPU_PORT));
+
+	/* When a port is removed from the bridge, the port would be set up
+	 * back to the default as is at initial boot which is a VLAN-unaware
+	 * port.
+	 */
+	mt7530_rmw(priv, MT7530_PCR_P(port), PCR_PORT_VLAN_MASK,
+		   MT7530_PORT_MATRIX_MODE);
+
+	mutex_unlock(&priv->reg_mutex);
+}
+
+static int
+mt7530_port_fdb_add(struct dsa_switch *ds, int port,
+		    const unsigned char *addr, u16 vid,
+		    struct dsa_db db)
+{
+	struct mt7530_priv *priv = ds->priv;
+	int ret;
+	u8 port_mask = BIT(port);
+
+	mutex_lock(&priv->reg_mutex);
+	mt7530_fdb_write(priv, vid, port_mask, addr, -1, STATIC_ENT);
+	ret = mt7530_fdb_cmd(priv, MT7530_FDB_WRITE, NULL);
+	mutex_unlock(&priv->reg_mutex);
+
+	return ret;
+}
+
+static int
+mt7530_port_fdb_del(struct dsa_switch *ds, int port,
+		    const unsigned char *addr, u16 vid,
+		    struct dsa_db db)
+{
+	struct mt7530_priv *priv = ds->priv;
+	int ret;
+	u8 port_mask = BIT(port);
+
+	mutex_lock(&priv->reg_mutex);
+	mt7530_fdb_write(priv, vid, port_mask, addr, -1, STATIC_EMP);
+	ret = mt7530_fdb_cmd(priv, MT7530_FDB_WRITE, NULL);
+	mutex_unlock(&priv->reg_mutex);
+
+	return ret;
+}
+
+static int
+mt7530_port_fdb_dump(struct dsa_switch *ds, int port,
+		     dsa_fdb_dump_cb_t *cb, void *data)
+{
+	struct mt7530_priv *priv = ds->priv;
+	struct mt7530_fdb _fdb = { 0 };
+	int cnt = MT7530_NUM_FDB_RECORDS;
+	int ret = 0;
+	u32 rsp = 0;
+
+	mutex_lock(&priv->reg_mutex);
+
+	ret = mt7530_fdb_cmd(priv, MT7530_FDB_START, &rsp);
+	if (ret < 0)
+		goto err;
+
+	do {
+		if (rsp & ATC_SRCH_HIT) {
+			mt7530_fdb_read(priv, &_fdb);
+			if (_fdb.port_mask & BIT(port)) {
+				ret = cb(_fdb.mac, _fdb.vid, _fdb.noarp,
+					 data);
+				if (ret < 0)
+					break;
+			}
+		}
+	} while (--cnt &&
+		 !(rsp & ATC_SRCH_END) &&
+		 !mt7530_fdb_cmd(priv, MT7530_FDB_NEXT, &rsp));
+err:
+	mutex_unlock(&priv->reg_mutex);
+
+	return 0;
+}
+
+static int
+mt7530_port_mdb_add(struct dsa_switch *ds, int port,
+		    const struct switchdev_obj_port_mdb *mdb,
+		    struct dsa_db db)
+{
+	struct mt7530_priv *priv = ds->priv;
+	const u8 *addr = mdb->addr;
+	u16 vid = mdb->vid;
+	u8 port_mask = 0;
+	int ret;
+
+	mutex_lock(&priv->reg_mutex);
+
+	mt7530_fdb_write(priv, vid, 0, addr, 0, STATIC_EMP);
+	if (!mt7530_fdb_cmd(priv, MT7530_FDB_READ, NULL))
+		port_mask = (mt7530_read(priv, MT7530_ATRD) >> PORT_MAP)
+			    & PORT_MAP_MASK;
+
+	port_mask |= BIT(port);
+	mt7530_fdb_write(priv, vid, port_mask, addr, -1, STATIC_ENT);
+	ret = mt7530_fdb_cmd(priv, MT7530_FDB_WRITE, NULL);
+
+	mutex_unlock(&priv->reg_mutex);
+
+	return ret;
+}
+
+static int
+mt7530_port_mdb_del(struct dsa_switch *ds, int port,
+		    const struct switchdev_obj_port_mdb *mdb,
+		    struct dsa_db db)
+{
+	struct mt7530_priv *priv = ds->priv;
+	const u8 *addr = mdb->addr;
+	u16 vid = mdb->vid;
+	u8 port_mask = 0;
+	int ret;
+
+	mutex_lock(&priv->reg_mutex);
+
+	mt7530_fdb_write(priv, vid, 0, addr, 0, STATIC_EMP);
+	if (!mt7530_fdb_cmd(priv, MT7530_FDB_READ, NULL))
+		port_mask = (mt7530_read(priv, MT7530_ATRD) >> PORT_MAP)
+			    & PORT_MAP_MASK;
+
+	port_mask &= ~BIT(port);
+	mt7530_fdb_write(priv, vid, port_mask, addr, -1,
+			 port_mask ? STATIC_ENT : STATIC_EMP);
+	ret = mt7530_fdb_cmd(priv, MT7530_FDB_WRITE, NULL);
+
+	mutex_unlock(&priv->reg_mutex);
+
+	return ret;
+}
+
+static int
+mt7530_vlan_cmd(struct mt7530_priv *priv, enum mt7530_vlan_cmd cmd, u16 vid)
+{
+	struct mt7530_dummy_poll p;
+	u32 val;
+	int ret;
+
+	val = VTCR_BUSY | VTCR_FUNC(cmd) | vid;
+	mt7530_write(priv, MT7530_VTCR, val);
+
+	INIT_MT7530_DUMMY_POLL(&p, priv, MT7530_VTCR);
+	ret = readx_poll_timeout(_mt7530_read, &p, val,
+				 !(val & VTCR_BUSY), 20, 20000);
+	if (ret < 0) {
+		dev_err(priv->dev, "poll timeout\n");
+		return ret;
+	}
+
+	val = mt7530_read(priv, MT7530_VTCR);
+	if (val & VTCR_INVALID) {
+		dev_err(priv->dev, "read VTCR invalid\n");
+		return -EINVAL;
+	}
+
+	return 0;
+}
+
+static int
+mt7530_port_vlan_filtering(struct dsa_switch *ds, int port, bool vlan_filtering,
+			   struct netlink_ext_ack *extack)
+{
+	if (vlan_filtering) {
+		/* The port is being kept as VLAN-unaware port when bridge is
+		 * set up with vlan_filtering not being set, Otherwise, the
+		 * port and the corresponding CPU port is required the setup
+		 * for becoming a VLAN-aware port.
+		 */
+		mt7530_port_set_vlan_aware(ds, port);
+		mt7530_port_set_vlan_aware(ds, MT7530_CPU_PORT);
+	} else {
+		mt7530_port_set_vlan_unaware(ds, port);
+	}
+
+	return 0;
+}
+
+static void
+mt7530_hw_vlan_add(struct mt7530_priv *priv,
+		   struct mt7530_hw_vlan_entry *entry)
+{
+	u8 new_members;
+	u32 val;
+
+	new_members = entry->old_members | BIT(entry->port) |
+		      BIT(MT7530_CPU_PORT);
+
+	/* Validate the entry with independent learning, create egress tag per
+	 * VLAN and joining the port as one of the port members.
+	 */
+	val = IVL_MAC | VTAG_EN | PORT_MEM(new_members) | FID(FID_BRIDGED) |
+	      VLAN_VALID;
+	mt7530_write(priv, MT7530_VAWD1, val);
+
+	/* Decide whether adding tag or not for those outgoing packets from the
+	 * port inside the VLAN.
+	 */
+	val = entry->untagged ? MT7530_VLAN_EGRESS_UNTAG :
+				MT7530_VLAN_EGRESS_TAG;
+	mt7530_rmw(priv, MT7530_VAWD2,
+		   ETAG_CTRL_P_MASK(entry->port),
+		   ETAG_CTRL_P(entry->port, val));
+
+	/* CPU port is always taken as a tagged port for serving more than one
+	 * VLANs across and also being applied with egress type stack mode for
+	 * that VLAN tags would be appended after hardware special tag used as
+	 * DSA tag.
+	 */
+	mt7530_rmw(priv, MT7530_VAWD2,
+		   ETAG_CTRL_P_MASK(MT7530_CPU_PORT),
+		   ETAG_CTRL_P(MT7530_CPU_PORT,
+			       MT7530_VLAN_EGRESS_STACK));
+}
+
+static void
+mt7530_hw_vlan_del(struct mt7530_priv *priv,
+		   struct mt7530_hw_vlan_entry *entry)
+{
+	u8 new_members;
+	u32 val;
+
+	new_members = entry->old_members & ~BIT(entry->port);
+
+	val = mt7530_read(priv, MT7530_VAWD1);
+	if (!(val & VLAN_VALID)) {
+		dev_err(priv->dev,
+			"Cannot be deleted due to invalid entry\n");
+		return;
+	}
+
+	/* If certain member apart from CPU port is still alive in the VLAN,
+	 * the entry would be kept valid. Otherwise, the entry is got to be
+	 * disabled.
+	 */
+	if (new_members && new_members != BIT(MT7530_CPU_PORT)) {
+		val = IVL_MAC | VTAG_EN | PORT_MEM(new_members) |
+		      VLAN_VALID;
+		mt7530_write(priv, MT7530_VAWD1, val);
+	} else {
+		mt7530_write(priv, MT7530_VAWD1, 0);
+		mt7530_write(priv, MT7530_VAWD2, 0);
+	}
+}
+
+static void
+mt7530_hw_vlan_update(struct mt7530_priv *priv, u16 vid,
+		      struct mt7530_hw_vlan_entry *entry,
+		      mt7530_vlan_op vlan_op)
+{
+	u32 val;
+
+	/* Fetch entry */
+	mt7530_vlan_cmd(priv, MT7530_VTCR_RD_VID, vid);
+
+	val = mt7530_read(priv, MT7530_VAWD1);
+
+	entry->old_members = (val >> PORT_MEM_SHFT) & PORT_MEM_MASK;
+
+	/* Manipulate entry */
+	vlan_op(priv, entry);
+
+	/* Flush result to hardware */
+	mt7530_vlan_cmd(priv, MT7530_VTCR_WR_VID, vid);
+}
+
+static int
+mt7530_setup_vlan0(struct mt7530_priv *priv)
+{
+	u32 val;
+
+	/* Validate the entry with independent learning, keep the original
+	 * ingress tag attribute.
+	 */
+	val = IVL_MAC | EG_CON | PORT_MEM(MT7530_ALL_MEMBERS) | FID(FID_BRIDGED) |
+	      VLAN_VALID;
+	mt7530_write(priv, MT7530_VAWD1, val);
+
+	return mt7530_vlan_cmd(priv, MT7530_VTCR_WR_VID, 0);
+}
+
+static int
+mt7530_port_vlan_add(struct dsa_switch *ds, int port,
+		     const struct switchdev_obj_port_vlan *vlan,
+		     struct netlink_ext_ack *extack)
+{
+	bool untagged = vlan->flags & BRIDGE_VLAN_INFO_UNTAGGED;
+	bool pvid = vlan->flags & BRIDGE_VLAN_INFO_PVID;
+	struct mt7530_hw_vlan_entry new_entry;
+	struct mt7530_priv *priv = ds->priv;
+
+	mutex_lock(&priv->reg_mutex);
+
+	mt7530_hw_vlan_entry_init(&new_entry, port, untagged);
+	mt7530_hw_vlan_update(priv, vlan->vid, &new_entry, mt7530_hw_vlan_add);
+
+	if (pvid) {
+		priv->ports[port].pvid = vlan->vid;
+
+		/* Accept all frames if PVID is set */
+		mt7530_rmw(priv, MT7530_PVC_P(port), ACC_FRM_MASK,
+			   MT7530_VLAN_ACC_ALL);
+
+		/* Only configure PVID if VLAN filtering is enabled */
+		if (dsa_port_is_vlan_filtering(dsa_to_port(ds, port)))
+			mt7530_rmw(priv, MT7530_PPBV1_P(port),
+				   G0_PORT_VID_MASK,
+				   G0_PORT_VID(vlan->vid));
+	} else if (vlan->vid && priv->ports[port].pvid == vlan->vid) {
+		/* This VLAN is overwritten without PVID, so unset it */
+		priv->ports[port].pvid = G0_PORT_VID_DEF;
+
+		/* Only accept tagged frames if the port is VLAN-aware */
+		if (dsa_port_is_vlan_filtering(dsa_to_port(ds, port)))
+			mt7530_rmw(priv, MT7530_PVC_P(port), ACC_FRM_MASK,
+				   MT7530_VLAN_ACC_TAGGED);
+
+		mt7530_rmw(priv, MT7530_PPBV1_P(port), G0_PORT_VID_MASK,
+			   G0_PORT_VID_DEF);
+	}
+
+	mutex_unlock(&priv->reg_mutex);
+
+	return 0;
+}
+
+static int
+mt7530_port_vlan_del(struct dsa_switch *ds, int port,
+		     const struct switchdev_obj_port_vlan *vlan)
+{
+	struct mt7530_hw_vlan_entry target_entry;
+	struct mt7530_priv *priv = ds->priv;
+
+	mutex_lock(&priv->reg_mutex);
+
+	mt7530_hw_vlan_entry_init(&target_entry, port, 0);
+	mt7530_hw_vlan_update(priv, vlan->vid, &target_entry,
+			      mt7530_hw_vlan_del);
+
+	/* PVID is being restored to the default whenever the PVID port
+	 * is being removed from the VLAN.
+	 */
+	if (priv->ports[port].pvid == vlan->vid) {
+		priv->ports[port].pvid = G0_PORT_VID_DEF;
+
+		/* Only accept tagged frames if the port is VLAN-aware */
+		if (dsa_port_is_vlan_filtering(dsa_to_port(ds, port)))
+			mt7530_rmw(priv, MT7530_PVC_P(port), ACC_FRM_MASK,
+				   MT7530_VLAN_ACC_TAGGED);
+
+		mt7530_rmw(priv, MT7530_PPBV1_P(port), G0_PORT_VID_MASK,
+			   G0_PORT_VID_DEF);
+	}
+
+
+	mutex_unlock(&priv->reg_mutex);
+
+	return 0;
+}
+
+static int mt753x_mirror_port_get(unsigned int id, u32 val)
+{
+	return (id == ID_MT7531) ? MT7531_MIRROR_PORT_GET(val) :
+				   MIRROR_PORT(val);
+}
+
+static int mt753x_mirror_port_set(unsigned int id, u32 val)
+{
+	return (id == ID_MT7531) ? MT7531_MIRROR_PORT_SET(val) :
+				   MIRROR_PORT(val);
+}
+
+static int mt753x_port_mirror_add(struct dsa_switch *ds, int port,
+				  struct dsa_mall_mirror_tc_entry *mirror,
+				  bool ingress, struct netlink_ext_ack *extack)
+{
+	struct mt7530_priv *priv = ds->priv;
+	int monitor_port;
+	u32 val;
+
+	/* Check for existent entry */
+	if ((ingress ? priv->mirror_rx : priv->mirror_tx) & BIT(port))
+		return -EEXIST;
+
+	val = mt7530_read(priv, MT753X_MIRROR_REG(priv->id));
+
+	/* MT7530 only supports one monitor port */
+	monitor_port = mt753x_mirror_port_get(priv->id, val);
+	if (val & MT753X_MIRROR_EN(priv->id) &&
+	    monitor_port != mirror->to_local_port)
+		return -EEXIST;
+
+	val |= MT753X_MIRROR_EN(priv->id);
+	val &= ~MT753X_MIRROR_MASK(priv->id);
+	val |= mt753x_mirror_port_set(priv->id, mirror->to_local_port);
+	mt7530_write(priv, MT753X_MIRROR_REG(priv->id), val);
+
+	val = mt7530_read(priv, MT7530_PCR_P(port));
+	if (ingress) {
+		val |= PORT_RX_MIR;
+		priv->mirror_rx |= BIT(port);
+	} else {
+		val |= PORT_TX_MIR;
+		priv->mirror_tx |= BIT(port);
+	}
+	mt7530_write(priv, MT7530_PCR_P(port), val);
+
+	return 0;
+}
+
+static void mt753x_port_mirror_del(struct dsa_switch *ds, int port,
+				   struct dsa_mall_mirror_tc_entry *mirror)
+{
+	struct mt7530_priv *priv = ds->priv;
+	u32 val;
+
+	val = mt7530_read(priv, MT7530_PCR_P(port));
+	if (mirror->ingress) {
+		val &= ~PORT_RX_MIR;
+		priv->mirror_rx &= ~BIT(port);
+	} else {
+		val &= ~PORT_TX_MIR;
+		priv->mirror_tx &= ~BIT(port);
+	}
+	mt7530_write(priv, MT7530_PCR_P(port), val);
+
+	if (!priv->mirror_rx && !priv->mirror_tx) {
+		val = mt7530_read(priv, MT753X_MIRROR_REG(priv->id));
+		val &= ~MT753X_MIRROR_EN(priv->id);
+		mt7530_write(priv, MT753X_MIRROR_REG(priv->id), val);
+	}
+}
+
+static enum dsa_tag_protocol
+mtk_get_tag_protocol(struct dsa_switch *ds, int port,
+		     enum dsa_tag_protocol mp)
+{
+	return DSA_TAG_PROTO_MTK;
+}
+
+#ifdef CONFIG_GPIOLIB
+static inline u32
+mt7530_gpio_to_bit(unsigned int offset)
+{
+	/* Map GPIO offset to register bit
+	 * [ 2: 0]  port 0 LED 0..2 as GPIO 0..2
+	 * [ 6: 4]  port 1 LED 0..2 as GPIO 3..5
+	 * [10: 8]  port 2 LED 0..2 as GPIO 6..8
+	 * [14:12]  port 3 LED 0..2 as GPIO 9..11
+	 * [18:16]  port 4 LED 0..2 as GPIO 12..14
+	 */
+	return BIT(offset + offset / 3);
+}
+
+static int
+mt7530_gpio_get(struct gpio_chip *gc, unsigned int offset)
+{
+	struct mt7530_priv *priv = gpiochip_get_data(gc);
+	u32 bit = mt7530_gpio_to_bit(offset);
+
+	return !!(mt7530_read(priv, MT7530_LED_GPIO_DATA) & bit);
+}
+
+static void
+mt7530_gpio_set(struct gpio_chip *gc, unsigned int offset, int value)
+{
+	struct mt7530_priv *priv = gpiochip_get_data(gc);
+	u32 bit = mt7530_gpio_to_bit(offset);
+
+	if (value)
+		mt7530_set(priv, MT7530_LED_GPIO_DATA, bit);
+	else
+		mt7530_clear(priv, MT7530_LED_GPIO_DATA, bit);
+}
+
+static int
+mt7530_gpio_get_direction(struct gpio_chip *gc, unsigned int offset)
+{
+	struct mt7530_priv *priv = gpiochip_get_data(gc);
+	u32 bit = mt7530_gpio_to_bit(offset);
+
+	return (mt7530_read(priv, MT7530_LED_GPIO_DIR) & bit) ?
+		GPIO_LINE_DIRECTION_OUT : GPIO_LINE_DIRECTION_IN;
+}
+
+static int
+mt7530_gpio_direction_input(struct gpio_chip *gc, unsigned int offset)
+{
+	struct mt7530_priv *priv = gpiochip_get_data(gc);
+	u32 bit = mt7530_gpio_to_bit(offset);
+
+	mt7530_clear(priv, MT7530_LED_GPIO_OE, bit);
+	mt7530_clear(priv, MT7530_LED_GPIO_DIR, bit);
+
+	return 0;
+}
+
+static int
+mt7530_gpio_direction_output(struct gpio_chip *gc, unsigned int offset, int value)
+{
+	struct mt7530_priv *priv = gpiochip_get_data(gc);
+	u32 bit = mt7530_gpio_to_bit(offset);
+
+	mt7530_set(priv, MT7530_LED_GPIO_DIR, bit);
+
+	if (value)
+		mt7530_set(priv, MT7530_LED_GPIO_DATA, bit);
+	else
+		mt7530_clear(priv, MT7530_LED_GPIO_DATA, bit);
+
+	mt7530_set(priv, MT7530_LED_GPIO_OE, bit);
+
+	return 0;
+}
+
+static int
+mt7530_setup_gpio(struct mt7530_priv *priv)
+{
+	struct device *dev = priv->dev;
+	struct gpio_chip *gc;
+
+	gc = devm_kzalloc(dev, sizeof(*gc), GFP_KERNEL);
+	if (!gc)
+		return -ENOMEM;
+
+	mt7530_write(priv, MT7530_LED_GPIO_OE, 0);
+	mt7530_write(priv, MT7530_LED_GPIO_DIR, 0);
+	mt7530_write(priv, MT7530_LED_IO_MODE, 0);
+
+	gc->label = "mt7530";
+	gc->parent = dev;
+	gc->owner = THIS_MODULE;
+	gc->get_direction = mt7530_gpio_get_direction;
+	gc->direction_input = mt7530_gpio_direction_input;
+	gc->direction_output = mt7530_gpio_direction_output;
+	gc->get = mt7530_gpio_get;
+	gc->set = mt7530_gpio_set;
+	gc->base = -1;
+	gc->ngpio = 15;
+	gc->can_sleep = true;
+
+	return devm_gpiochip_add_data(dev, gc, priv);
+}
+#endif /* CONFIG_GPIOLIB */
+
+static irqreturn_t
+mt7530_irq_thread_fn(int irq, void *dev_id)
+{
+	struct mt7530_priv *priv = dev_id;
+	bool handled = false;
+	u32 val;
+	int p;
+
+	mutex_lock_nested(&priv->bus->mdio_lock, MDIO_MUTEX_NESTED);
+	val = mt7530_mii_read(priv, MT7530_SYS_INT_STS);
+	mt7530_mii_write(priv, MT7530_SYS_INT_STS, val);
+	mutex_unlock(&priv->bus->mdio_lock);
+
+	for (p = 0; p < MT7530_NUM_PHYS; p++) {
+		if (BIT(p) & val) {
+			unsigned int irq;
+
+			irq = irq_find_mapping(priv->irq_domain, p);
+			handle_nested_irq(irq);
+			handled = true;
+		}
+	}
+
+	return IRQ_RETVAL(handled);
+}
+
+static void
+mt7530_irq_mask(struct irq_data *d)
+{
+	struct mt7530_priv *priv = irq_data_get_irq_chip_data(d);
+
+	priv->irq_enable &= ~BIT(d->hwirq);
+}
+
+static void
+mt7530_irq_unmask(struct irq_data *d)
+{
+	struct mt7530_priv *priv = irq_data_get_irq_chip_data(d);
+
+	priv->irq_enable |= BIT(d->hwirq);
+}
+
+static void
+mt7530_irq_bus_lock(struct irq_data *d)
+{
+	struct mt7530_priv *priv = irq_data_get_irq_chip_data(d);
+
+	mutex_lock_nested(&priv->bus->mdio_lock, MDIO_MUTEX_NESTED);
+}
+
+static void
+mt7530_irq_bus_sync_unlock(struct irq_data *d)
+{
+	struct mt7530_priv *priv = irq_data_get_irq_chip_data(d);
+
+	mt7530_mii_write(priv, MT7530_SYS_INT_EN, priv->irq_enable);
+	mutex_unlock(&priv->bus->mdio_lock);
+}
+
+static struct irq_chip mt7530_irq_chip = {
+	.name = KBUILD_MODNAME,
+	.irq_mask = mt7530_irq_mask,
+	.irq_unmask = mt7530_irq_unmask,
+	.irq_bus_lock = mt7530_irq_bus_lock,
+	.irq_bus_sync_unlock = mt7530_irq_bus_sync_unlock,
+};
+
+static int
+mt7530_irq_map(struct irq_domain *domain, unsigned int irq,
+	       irq_hw_number_t hwirq)
+{
+	irq_set_chip_data(irq, domain->host_data);
+	irq_set_chip_and_handler(irq, &mt7530_irq_chip, handle_simple_irq);
+	irq_set_nested_thread(irq, true);
+	irq_set_noprobe(irq);
+
+	return 0;
+}
+
+static const struct irq_domain_ops mt7530_irq_domain_ops = {
+	.map = mt7530_irq_map,
+	.xlate = irq_domain_xlate_onecell,
+};
+
+static void
+mt7530_setup_mdio_irq(struct mt7530_priv *priv)
+{
+	struct dsa_switch *ds = priv->ds;
+	int p;
+
+	for (p = 0; p < MT7530_NUM_PHYS; p++) {
+		if (BIT(p) & ds->phys_mii_mask) {
+			unsigned int irq;
+
+			irq = irq_create_mapping(priv->irq_domain, p);
+			ds->slave_mii_bus->irq[p] = irq;
+		}
+	}
+}
+
+static int
+mt7530_setup_irq(struct mt7530_priv *priv)
+{
+	struct device *dev = priv->dev;
+	struct device_node *np = dev->of_node;
+	int ret;
+
+	if (!of_property_read_bool(np, "interrupt-controller")) {
+		dev_info(dev, "no interrupt support\n");
+		return 0;
+	}
+
+	priv->irq = of_irq_get(np, 0);
+	if (priv->irq <= 0) {
+		dev_err(dev, "failed to get parent IRQ: %d\n", priv->irq);
+		return priv->irq ? : -EINVAL;
+	}
+
+	priv->irq_domain = irq_domain_add_linear(np, MT7530_NUM_PHYS,
+						 &mt7530_irq_domain_ops, priv);
+	if (!priv->irq_domain) {
+		dev_err(dev, "failed to create IRQ domain\n");
+		return -ENOMEM;
+	}
+
+	/* This register must be set for MT7530 to properly fire interrupts */
+	if (priv->id != ID_MT7531)
+		mt7530_set(priv, MT7530_TOP_SIG_CTRL, TOP_SIG_CTRL_NORMAL);
+
+	ret = request_threaded_irq(priv->irq, NULL, mt7530_irq_thread_fn,
+				   IRQF_ONESHOT, KBUILD_MODNAME, priv);
+	if (ret) {
+		irq_domain_remove(priv->irq_domain);
+		dev_err(dev, "failed to request IRQ: %d\n", ret);
+		return ret;
+	}
+
+	return 0;
+}
+
+static void
+mt7530_free_mdio_irq(struct mt7530_priv *priv)
+{
+	int p;
+
+	for (p = 0; p < MT7530_NUM_PHYS; p++) {
+		if (BIT(p) & priv->ds->phys_mii_mask) {
+			unsigned int irq;
+
+			irq = irq_find_mapping(priv->irq_domain, p);
+			irq_dispose_mapping(irq);
+		}
+	}
+}
+
+static void
+mt7530_free_irq_common(struct mt7530_priv *priv)
+{
+	free_irq(priv->irq, priv);
+	irq_domain_remove(priv->irq_domain);
+}
+
+static void
+mt7530_free_irq(struct mt7530_priv *priv)
+{
+	mt7530_free_mdio_irq(priv);
+	mt7530_free_irq_common(priv);
+}
+
+static int
+mt7530_setup_mdio(struct mt7530_priv *priv)
+{
+	struct dsa_switch *ds = priv->ds;
+	struct device *dev = priv->dev;
+	struct mii_bus *bus;
+	static int idx;
+	int ret;
+
+	bus = devm_mdiobus_alloc(dev);
+	if (!bus)
+		return -ENOMEM;
+
+	ds->slave_mii_bus = bus;
+	bus->priv = priv;
+	bus->name = KBUILD_MODNAME "-mii";
+	snprintf(bus->id, MII_BUS_ID_SIZE, KBUILD_MODNAME "-%d", idx++);
+	bus->read = mt753x_phy_read;
+	bus->write = mt753x_phy_write;
+	bus->parent = dev;
+	bus->phy_mask = ~ds->phys_mii_mask;
+
+	if (priv->irq)
+		mt7530_setup_mdio_irq(priv);
+
+	ret = devm_mdiobus_register(dev, bus);
+	if (ret) {
+		dev_err(dev, "failed to register MDIO bus: %d\n", ret);
+		if (priv->irq)
+			mt7530_free_mdio_irq(priv);
+	}
+
+	return ret;
+}
+
+static int
+mt7530_setup(struct dsa_switch *ds)
+{
+	struct mt7530_priv *priv = ds->priv;
+	struct device_node *phy_node;
+	struct device_node *mac_np;
+	struct mt7530_dummy_poll p;
+	phy_interface_t interface;
+	struct device_node *dn;
+	u32 id, val;
+	int ret, i;
+
+	/* The parent node of master netdev which holds the common system
+	 * controller also is the container for two GMACs nodes representing
+	 * as two netdev instances.
+	 */
+	dn = dsa_to_port(ds, MT7530_CPU_PORT)->master->dev.of_node->parent;
+	ds->assisted_learning_on_cpu_port = true;
+	ds->mtu_enforcement_ingress = true;
+
+	if (priv->id == ID_MT7530) {
+		regulator_set_voltage(priv->core_pwr, 1000000, 1000000);
+		ret = regulator_enable(priv->core_pwr);
+		if (ret < 0) {
+			dev_err(priv->dev,
+				"Failed to enable core power: %d\n", ret);
+			return ret;
+		}
+
+		regulator_set_voltage(priv->io_pwr, 3300000, 3300000);
+		ret = regulator_enable(priv->io_pwr);
+		if (ret < 0) {
+			dev_err(priv->dev, "Failed to enable io pwr: %d\n",
+				ret);
+			return ret;
+		}
+	}
+
+	/* Reset whole chip through gpio pin or memory-mapped registers for
+	 * different type of hardware
+	 */
+	if (priv->mcm) {
+		reset_control_assert(priv->rstc);
+		usleep_range(1000, 1100);
+		reset_control_deassert(priv->rstc);
+	} else {
+		gpiod_set_value_cansleep(priv->reset, 0);
+		usleep_range(1000, 1100);
+		gpiod_set_value_cansleep(priv->reset, 1);
+	}
+
+	/* Waiting for MT7530 got to stable */
+	INIT_MT7530_DUMMY_POLL(&p, priv, MT7530_HWTRAP);
+	ret = readx_poll_timeout(_mt7530_read, &p, val, val != 0,
+				 20, 1000000);
+	if (ret < 0) {
+		dev_err(priv->dev, "reset timeout\n");
+		return ret;
+	}
+
+	id = mt7530_read(priv, MT7530_CREV);
+	id >>= CHIP_NAME_SHIFT;
+	if (id != MT7530_ID) {
+		dev_err(priv->dev, "chip %x can't be supported\n", id);
+		return -ENODEV;
+	}
+
+	/* Reset the switch through internal reset */
+	mt7530_write(priv, MT7530_SYS_CTRL,
+		     SYS_CTRL_PHY_RST | SYS_CTRL_SW_RST |
+		     SYS_CTRL_REG_RST);
+
+	/* Enable Port 6 only; P5 as GMAC5 which currently is not supported */
+	val = mt7530_read(priv, MT7530_MHWTRAP);
+	val &= ~MHWTRAP_P6_DIS & ~MHWTRAP_PHY_ACCESS;
+	val |= MHWTRAP_MANUAL;
+	mt7530_write(priv, MT7530_MHWTRAP, val);
+
+	priv->p6_interface = PHY_INTERFACE_MODE_NA;
+
+	/* Enable and reset MIB counters */
+	mt7530_mib_reset(ds);
+
+	for (i = 0; i < MT7530_NUM_PORTS; i++) {
+		/* Disable forwarding by default on all ports */
+		mt7530_rmw(priv, MT7530_PCR_P(i), PCR_MATRIX_MASK,
+			   PCR_MATRIX_CLR);
+
+		/* Disable learning by default on all ports */
+		mt7530_set(priv, MT7530_PSC_P(i), SA_DIS);
+
+		if (dsa_is_cpu_port(ds, i)) {
+			ret = mt753x_cpu_port_enable(ds, i);
+			if (ret)
+				return ret;
+		} else {
+			mt7530_port_disable(ds, i);
+
+			/* Set default PVID to 0 on all user ports */
+			mt7530_rmw(priv, MT7530_PPBV1_P(i), G0_PORT_VID_MASK,
+				   G0_PORT_VID_DEF);
+		}
+		/* Enable consistent egress tag */
+		mt7530_rmw(priv, MT7530_PVC_P(i), PVC_EG_TAG_MASK,
+			   PVC_EG_TAG(MT7530_VLAN_EG_CONSISTENT));
+	}
+
+	/* Setup VLAN ID 0 for VLAN-unaware bridges */
+	ret = mt7530_setup_vlan0(priv);
+	if (ret)
+		return ret;
+
+	/* Setup port 5 */
+	priv->p5_intf_sel = P5_DISABLED;
+	interface = PHY_INTERFACE_MODE_NA;
+
+	if (!dsa_is_unused_port(ds, 5)) {
+		priv->p5_intf_sel = P5_INTF_SEL_GMAC5;
+		ret = of_get_phy_mode(dsa_to_port(ds, 5)->dn, &interface);
+		if (ret && ret != -ENODEV)
+			return ret;
+	} else {
+		/* Scan the ethernet nodes. look for GMAC1, lookup used phy */
+		for_each_child_of_node(dn, mac_np) {
+			if (!of_device_is_compatible(mac_np,
+						     "mediatek,eth-mac"))
+				continue;
+
+			ret = of_property_read_u32(mac_np, "reg", &id);
+			if (ret < 0 || id != 1)
+				continue;
+
+			phy_node = of_parse_phandle(mac_np, "phy-handle", 0);
+			if (!phy_node)
+				continue;
+
+			if (phy_node->parent == priv->dev->of_node->parent) {
+				ret = of_get_phy_mode(mac_np, &interface);
+				if (ret && ret != -ENODEV) {
+					of_node_put(mac_np);
+					of_node_put(phy_node);
+					return ret;
+				}
+				id = of_mdio_parse_addr(ds->dev, phy_node);
+				if (id == 0)
+					priv->p5_intf_sel = P5_INTF_SEL_PHY_P0;
+				if (id == 4)
+					priv->p5_intf_sel = P5_INTF_SEL_PHY_P4;
+			}
+			of_node_put(mac_np);
+			of_node_put(phy_node);
+			break;
+		}
+	}
+
+#ifdef CONFIG_GPIOLIB
+	if (of_property_read_bool(priv->dev->of_node, "gpio-controller")) {
+		ret = mt7530_setup_gpio(priv);
+		if (ret)
+			return ret;
+	}
+#endif /* CONFIG_GPIOLIB */
+
+	mt7530_setup_port5(ds, interface);
+
+	/* Flush the FDB table */
+	ret = mt7530_fdb_cmd(priv, MT7530_FDB_FLUSH, NULL);
+	if (ret < 0)
+		return ret;
+
+	return 0;
+}
+
+static int
+mt7531_setup(struct dsa_switch *ds)
+{
+	struct mt7530_priv *priv = ds->priv;
+	struct mt7530_dummy_poll p;
+	u32 val, id;
+	int ret, i;
+
+	/* Reset whole chip through gpio pin or memory-mapped registers for
+	 * different type of hardware
+	 */
+	if (priv->mcm) {
+		reset_control_assert(priv->rstc);
+		usleep_range(1000, 1100);
+		reset_control_deassert(priv->rstc);
+	} else {
+		gpiod_set_value_cansleep(priv->reset, 0);
+		usleep_range(1000, 1100);
+		gpiod_set_value_cansleep(priv->reset, 1);
+	}
+
+	/* Waiting for MT7530 got to stable */
+	INIT_MT7530_DUMMY_POLL(&p, priv, MT7530_HWTRAP);
+	ret = readx_poll_timeout(_mt7530_read, &p, val, val != 0,
+				 20, 1000000);
+	if (ret < 0) {
+		dev_err(priv->dev, "reset timeout\n");
+		return ret;
+	}
+
+	id = mt7530_read(priv, MT7531_CREV);
+	id >>= CHIP_NAME_SHIFT;
+
+	if (id != MT7531_ID) {
+		dev_err(priv->dev, "chip %x can't be supported\n", id);
+		return -ENODEV;
+	}
+
+	/* Reset the switch through internal reset */
+	mt7530_write(priv, MT7530_SYS_CTRL,
+		     SYS_CTRL_PHY_RST | SYS_CTRL_SW_RST |
+		     SYS_CTRL_REG_RST);
+
+	if (mt7531_dual_sgmii_supported(priv)) {
+		priv->p5_intf_sel = P5_INTF_SEL_GMAC5_SGMII;
+
+		/* Let ds->slave_mii_bus be able to access external phy. */
+		mt7530_rmw(priv, MT7531_GPIO_MODE1, MT7531_GPIO11_RG_RXD2_MASK,
+			   MT7531_EXT_P_MDC_11);
+		mt7530_rmw(priv, MT7531_GPIO_MODE1, MT7531_GPIO12_RG_RXD3_MASK,
+			   MT7531_EXT_P_MDIO_12);
+	} else {
+		priv->p5_intf_sel = P5_INTF_SEL_GMAC5;
+	}
+	dev_dbg(ds->dev, "P5 support %s interface\n",
+		p5_intf_modes(priv->p5_intf_sel));
+
+	mt7530_rmw(priv, MT7531_GPIO_MODE0, MT7531_GPIO0_MASK,
+		   MT7531_GPIO0_INTERRUPT);
+
+	/* Let phylink decide the interface later. */
+	priv->p5_interface = PHY_INTERFACE_MODE_NA;
+	priv->p6_interface = PHY_INTERFACE_MODE_NA;
+
+	/* Enable PHY core PLL, since phy_device has not yet been created
+	 * provided for phy_[read,write]_mmd_indirect is called, we provide
+	 * our own mt7531_ind_mmd_phy_[read,write] to complete this
+	 * function.
+	 */
+	val = mt7531_ind_c45_phy_read(priv, MT753X_CTRL_PHY_ADDR,
+				      MDIO_MMD_VEND2, CORE_PLL_GROUP4);
+	val |= MT7531_PHY_PLL_BYPASS_MODE;
+	val &= ~MT7531_PHY_PLL_OFF;
+	mt7531_ind_c45_phy_write(priv, MT753X_CTRL_PHY_ADDR, MDIO_MMD_VEND2,
+				 CORE_PLL_GROUP4, val);
+
+	/* BPDU to CPU port */
+	mt7530_rmw(priv, MT7531_CFC, MT7531_CPU_PMAP_MASK,
+		   BIT(MT7530_CPU_PORT));
+	mt7530_rmw(priv, MT753X_BPC, MT753X_BPDU_PORT_FW_MASK,
+		   MT753X_BPDU_CPU_ONLY);
+
+	/* Enable and reset MIB counters */
+	mt7530_mib_reset(ds);
+
+	for (i = 0; i < MT7530_NUM_PORTS; i++) {
+		/* Disable forwarding by default on all ports */
+		mt7530_rmw(priv, MT7530_PCR_P(i), PCR_MATRIX_MASK,
+			   PCR_MATRIX_CLR);
+
+		/* Disable learning by default on all ports */
+		mt7530_set(priv, MT7530_PSC_P(i), SA_DIS);
+
+		mt7530_set(priv, MT7531_DBG_CNT(i), MT7531_DIS_CLR);
+
+		if (dsa_is_cpu_port(ds, i)) {
+			ret = mt753x_cpu_port_enable(ds, i);
+			if (ret)
+				return ret;
+		} else {
+			mt7530_port_disable(ds, i);
+
+			/* Set default PVID to 0 on all user ports */
+			mt7530_rmw(priv, MT7530_PPBV1_P(i), G0_PORT_VID_MASK,
+				   G0_PORT_VID_DEF);
+		}
+
+		/* Enable consistent egress tag */
+		mt7530_rmw(priv, MT7530_PVC_P(i), PVC_EG_TAG_MASK,
+			   PVC_EG_TAG(MT7530_VLAN_EG_CONSISTENT));
+	}
+
+	/* Setup VLAN ID 0 for VLAN-unaware bridges */
+	ret = mt7530_setup_vlan0(priv);
+	if (ret)
+		return ret;
+
+	ds->assisted_learning_on_cpu_port = true;
+	ds->mtu_enforcement_ingress = true;
+
+	/* Flush the FDB table */
+	ret = mt7530_fdb_cmd(priv, MT7530_FDB_FLUSH, NULL);
+	if (ret < 0)
+		return ret;
+
+	return 0;
+}
+
+static bool
+mt7530_phy_mode_supported(struct dsa_switch *ds, int port,
+			  const struct phylink_link_state *state)
+{
+	struct mt7530_priv *priv = ds->priv;
+
+	switch (port) {
+	case 0 ... 4: /* Internal phy */
+		if (state->interface != PHY_INTERFACE_MODE_GMII)
+			return false;
+		break;
+	case 5: /* 2nd cpu port with phy of port 0 or 4 / external phy */
+		if (!phy_interface_mode_is_rgmii(state->interface) &&
+		    state->interface != PHY_INTERFACE_MODE_MII &&
+		    state->interface != PHY_INTERFACE_MODE_GMII)
+			return false;
+		break;
+	case 6: /* 1st cpu port */
+		if (state->interface != PHY_INTERFACE_MODE_RGMII &&
+		    state->interface != PHY_INTERFACE_MODE_TRGMII)
+			return false;
+		break;
+	default:
+		dev_err(priv->dev, "%s: unsupported port: %i\n", __func__,
+			port);
+		return false;
+	}
+
+	return true;
+}
+
+static bool mt7531_is_rgmii_port(struct mt7530_priv *priv, u32 port)
+{
+	return (port == 5) && (priv->p5_intf_sel != P5_INTF_SEL_GMAC5_SGMII);
+}
+
+static bool
+mt7531_phy_mode_supported(struct dsa_switch *ds, int port,
+			  const struct phylink_link_state *state)
+{
+	struct mt7530_priv *priv = ds->priv;
+
+	switch (port) {
+	case 0 ... 4: /* Internal phy */
+		if (state->interface != PHY_INTERFACE_MODE_GMII)
+			return false;
+		break;
+	case 5: /* 2nd cpu port supports either rgmii or sgmii/8023z */
+		if (mt7531_is_rgmii_port(priv, port))
+			return phy_interface_mode_is_rgmii(state->interface);
+		fallthrough;
+	case 6: /* 1st cpu port supports sgmii/8023z only */
+		if (state->interface != PHY_INTERFACE_MODE_SGMII &&
+		    !phy_interface_mode_is_8023z(state->interface))
+			return false;
+		break;
+	default:
+		dev_err(priv->dev, "%s: unsupported port: %i\n", __func__,
+			port);
+		return false;
+	}
+
+	return true;
+}
+
+static bool
+mt753x_phy_mode_supported(struct dsa_switch *ds, int port,
+			  const struct phylink_link_state *state)
+{
+	struct mt7530_priv *priv = ds->priv;
+
+	return priv->info->phy_mode_supported(ds, port, state);
+}
+
+static int
+mt753x_pad_setup(struct dsa_switch *ds, const struct phylink_link_state *state)
+{
+	struct mt7530_priv *priv = ds->priv;
+
+	return priv->info->pad_setup(ds, state->interface);
+}
+
+static int
+mt7530_mac_config(struct dsa_switch *ds, int port, unsigned int mode,
+		  phy_interface_t interface)
+{
+	struct mt7530_priv *priv = ds->priv;
+
+	/* Only need to setup port5. */
+	if (port != 5)
+		return 0;
+
+	mt7530_setup_port5(priv->ds, interface);
+
+	return 0;
+}
+
+static int mt7531_rgmii_setup(struct mt7530_priv *priv, u32 port,
+			      phy_interface_t interface,
+			      struct phy_device *phydev)
+{
+	u32 val;
+
+	if (!mt7531_is_rgmii_port(priv, port)) {
+		dev_err(priv->dev, "RGMII mode is not available for port %d\n",
+			port);
+		return -EINVAL;
+	}
+
+	val = mt7530_read(priv, MT7531_CLKGEN_CTRL);
+	val |= GP_CLK_EN;
+	val &= ~GP_MODE_MASK;
+	val |= GP_MODE(MT7531_GP_MODE_RGMII);
+	val &= ~CLK_SKEW_IN_MASK;
+	val |= CLK_SKEW_IN(MT7531_CLK_SKEW_NO_CHG);
+	val &= ~CLK_SKEW_OUT_MASK;
+	val |= CLK_SKEW_OUT(MT7531_CLK_SKEW_NO_CHG);
+	val |= TXCLK_NO_REVERSE | RXCLK_NO_DELAY;
+
+	/* Do not adjust rgmii delay when vendor phy driver presents. */
+	if (!phydev || phy_driver_is_genphy(phydev)) {
+		val &= ~(TXCLK_NO_REVERSE | RXCLK_NO_DELAY);
+		switch (interface) {
+		case PHY_INTERFACE_MODE_RGMII:
+			val |= TXCLK_NO_REVERSE;
+			val |= RXCLK_NO_DELAY;
+			break;
+		case PHY_INTERFACE_MODE_RGMII_RXID:
+			val |= TXCLK_NO_REVERSE;
+			break;
+		case PHY_INTERFACE_MODE_RGMII_TXID:
+			val |= RXCLK_NO_DELAY;
+			break;
+		case PHY_INTERFACE_MODE_RGMII_ID:
+			break;
+		default:
+			return -EINVAL;
+		}
+	}
+	mt7530_write(priv, MT7531_CLKGEN_CTRL, val);
+
+	return 0;
+}
+
+static void mt7531_sgmii_validate(struct mt7530_priv *priv, int port,
+				  unsigned long *supported)
+{
+	/* Port5 supports ethier RGMII or SGMII.
+	 * Port6 supports SGMII only.
+	 */
+	switch (port) {
+	case 5:
+		if (mt7531_is_rgmii_port(priv, port))
+			break;
+		fallthrough;
+	case 6:
+		phylink_set(supported, 1000baseX_Full);
+		phylink_set(supported, 2500baseX_Full);
+		phylink_set(supported, 2500baseT_Full);
+	}
+}
+
+static void
+mt7531_sgmii_link_up_force(struct dsa_switch *ds, int port,
+			   unsigned int mode, phy_interface_t interface,
+			   int speed, int duplex)
+{
+	struct mt7530_priv *priv = ds->priv;
+	unsigned int val;
+
+	/* For adjusting speed and duplex of SGMII force mode. */
+	if (interface != PHY_INTERFACE_MODE_SGMII ||
+	    phylink_autoneg_inband(mode))
+		return;
+
+	/* SGMII force mode setting */
+	val = mt7530_read(priv, MT7531_SGMII_MODE(port));
+	val &= ~MT7531_SGMII_IF_MODE_MASK;
+
+	switch (speed) {
+	case SPEED_10:
+		val |= MT7531_SGMII_FORCE_SPEED_10;
+		break;
+	case SPEED_100:
+		val |= MT7531_SGMII_FORCE_SPEED_100;
+		break;
+	case SPEED_1000:
+		val |= MT7531_SGMII_FORCE_SPEED_1000;
+		break;
+	}
+
+	/* MT7531 SGMII 1G force mode can only work in full duplex mode,
+	 * no matter MT7531_SGMII_FORCE_HALF_DUPLEX is set or not.
+	 */
+	if ((speed == SPEED_10 || speed == SPEED_100) &&
+	    duplex != DUPLEX_FULL)
+		val |= MT7531_SGMII_FORCE_HALF_DUPLEX;
+
+	mt7530_write(priv, MT7531_SGMII_MODE(port), val);
+}
+
+static bool mt753x_is_mac_port(u32 port)
+{
+	return (port == 5 || port == 6);
+}
+
+static int mt7531_sgmii_setup_mode_force(struct mt7530_priv *priv, u32 port,
+					 phy_interface_t interface)
+{
+	u32 val;
+
+	if (!mt753x_is_mac_port(port))
+		return -EINVAL;
+
+	mt7530_set(priv, MT7531_QPHY_PWR_STATE_CTRL(port),
+		   MT7531_SGMII_PHYA_PWD);
+
+	val = mt7530_read(priv, MT7531_PHYA_CTRL_SIGNAL3(port));
+	val &= ~MT7531_RG_TPHY_SPEED_MASK;
+	/* Setup 2.5 times faster clock for 2.5Gbps data speeds with 10B/8B
+	 * encoding.
+	 */
+	val |= (interface == PHY_INTERFACE_MODE_2500BASEX) ?
+		MT7531_RG_TPHY_SPEED_3_125G : MT7531_RG_TPHY_SPEED_1_25G;
+	mt7530_write(priv, MT7531_PHYA_CTRL_SIGNAL3(port), val);
+
+	mt7530_clear(priv, MT7531_PCS_CONTROL_1(port), MT7531_SGMII_AN_ENABLE);
+
+	/* MT7531 SGMII 1G and 2.5G force mode can only work in full duplex
+	 * mode, no matter MT7531_SGMII_FORCE_HALF_DUPLEX is set or not.
+	 */
+	mt7530_rmw(priv, MT7531_SGMII_MODE(port),
+		   MT7531_SGMII_IF_MODE_MASK | MT7531_SGMII_REMOTE_FAULT_DIS,
+		   MT7531_SGMII_FORCE_SPEED_1000);
+
+	mt7530_write(priv, MT7531_QPHY_PWR_STATE_CTRL(port), 0);
+
+	return 0;
+}
+
+static int mt7531_sgmii_setup_mode_an(struct mt7530_priv *priv, int port,
+				      phy_interface_t interface)
+{
+	if (!mt753x_is_mac_port(port))
+		return -EINVAL;
+
+	mt7530_set(priv, MT7531_QPHY_PWR_STATE_CTRL(port),
+		   MT7531_SGMII_PHYA_PWD);
+
+	mt7530_rmw(priv, MT7531_PHYA_CTRL_SIGNAL3(port),
+		   MT7531_RG_TPHY_SPEED_MASK, MT7531_RG_TPHY_SPEED_1_25G);
+
+	mt7530_set(priv, MT7531_SGMII_MODE(port),
+		   MT7531_SGMII_REMOTE_FAULT_DIS |
+		   MT7531_SGMII_SPEED_DUPLEX_AN);
+
+	mt7530_rmw(priv, MT7531_PCS_SPEED_ABILITY(port),
+		   MT7531_SGMII_TX_CONFIG_MASK, 1);
+
+	mt7530_set(priv, MT7531_PCS_CONTROL_1(port), MT7531_SGMII_AN_ENABLE);
+
+	mt7530_set(priv, MT7531_PCS_CONTROL_1(port), MT7531_SGMII_AN_RESTART);
+
+	mt7530_write(priv, MT7531_QPHY_PWR_STATE_CTRL(port), 0);
+
+	return 0;
+}
+
+static void mt7531_sgmii_restart_an(struct dsa_switch *ds, int port)
+{
+	struct mt7530_priv *priv = ds->priv;
+	u32 val;
+
+	/* Only restart AN when AN is enabled */
+	val = mt7530_read(priv, MT7531_PCS_CONTROL_1(port));
+	if (val & MT7531_SGMII_AN_ENABLE) {
+		val |= MT7531_SGMII_AN_RESTART;
+		mt7530_write(priv, MT7531_PCS_CONTROL_1(port), val);
+	}
+}
+
+static int
+mt7531_mac_config(struct dsa_switch *ds, int port, unsigned int mode,
+		  phy_interface_t interface)
+{
+	struct mt7530_priv *priv = ds->priv;
+	struct phy_device *phydev;
+	struct dsa_port *dp;
+
+	if (!mt753x_is_mac_port(port)) {
+		dev_err(priv->dev, "port %d is not a MAC port\n", port);
+		return -EINVAL;
+	}
+
+	switch (interface) {
+	case PHY_INTERFACE_MODE_RGMII:
+	case PHY_INTERFACE_MODE_RGMII_ID:
+	case PHY_INTERFACE_MODE_RGMII_RXID:
+	case PHY_INTERFACE_MODE_RGMII_TXID:
+		dp = dsa_to_port(ds, port);
+		phydev = dp->slave->phydev;
+		return mt7531_rgmii_setup(priv, port, interface, phydev);
+	case PHY_INTERFACE_MODE_SGMII:
+		return mt7531_sgmii_setup_mode_an(priv, port, interface);
+	case PHY_INTERFACE_MODE_NA:
+	case PHY_INTERFACE_MODE_1000BASEX:
+	case PHY_INTERFACE_MODE_2500BASEX:
+		if (phylink_autoneg_inband(mode))
+			return -EINVAL;
+
+		return mt7531_sgmii_setup_mode_force(priv, port, interface);
+	default:
+		return -EINVAL;
+	}
+
+	return -EINVAL;
+}
+
+static int
+mt753x_mac_config(struct dsa_switch *ds, int port, unsigned int mode,
+		  const struct phylink_link_state *state)
+{
+	struct mt7530_priv *priv = ds->priv;
+
+	return priv->info->mac_port_config(ds, port, mode, state->interface);
+}
+
+static void
+mt753x_phylink_mac_config(struct dsa_switch *ds, int port, unsigned int mode,
+			  const struct phylink_link_state *state)
+{
+	struct mt7530_priv *priv = ds->priv;
+	u32 mcr_cur, mcr_new;
+
+	if (!mt753x_phy_mode_supported(ds, port, state))
+		goto unsupported;
+
+	switch (port) {
+	case 0 ... 4: /* Internal phy */
+		if (state->interface != PHY_INTERFACE_MODE_GMII)
+			goto unsupported;
+		break;
+	case 5: /* 2nd cpu port with phy of port 0 or 4 / external phy */
+		if (priv->p5_interface == state->interface)
+			break;
+
+		if (mt753x_mac_config(ds, port, mode, state) < 0)
+			goto unsupported;
+
+		if (priv->p5_intf_sel != P5_DISABLED)
+			priv->p5_interface = state->interface;
+		break;
+	case 6: /* 1st cpu port */
+		if (priv->p6_interface == state->interface)
+			break;
+
+		mt753x_pad_setup(ds, state);
+
+		if (mt753x_mac_config(ds, port, mode, state) < 0)
+			goto unsupported;
+
+		priv->p6_interface = state->interface;
+		break;
+	default:
+unsupported:
+		dev_err(ds->dev, "%s: unsupported %s port: %i\n",
+			__func__, phy_modes(state->interface), port);
+		return;
+	}
+
+	if (phylink_autoneg_inband(mode) &&
+	    state->interface != PHY_INTERFACE_MODE_SGMII) {
+		dev_err(ds->dev, "%s: in-band negotiation unsupported\n",
+			__func__);
+		return;
+	}
+
+	mcr_cur = mt7530_read(priv, MT7530_PMCR_P(port));
+	mcr_new = mcr_cur;
+	mcr_new &= ~PMCR_LINK_SETTINGS_MASK;
+	mcr_new |= PMCR_IFG_XMIT(1) | PMCR_MAC_MODE | PMCR_BACKOFF_EN |
+		   PMCR_BACKPR_EN | PMCR_FORCE_MODE_ID(priv->id);
+
+	/* Are we connected to external phy */
+	if (port == 5 && dsa_is_user_port(ds, 5))
+		mcr_new |= PMCR_EXT_PHY;
+
+	if (mcr_new != mcr_cur)
+		mt7530_write(priv, MT7530_PMCR_P(port), mcr_new);
+}
+
+static void
+mt753x_phylink_mac_an_restart(struct dsa_switch *ds, int port)
+{
+	struct mt7530_priv *priv = ds->priv;
+
+	if (!priv->info->mac_pcs_an_restart)
+		return;
+
+	priv->info->mac_pcs_an_restart(ds, port);
+}
+
+static void mt753x_phylink_mac_link_down(struct dsa_switch *ds, int port,
+					 unsigned int mode,
+					 phy_interface_t interface)
+{
+	struct mt7530_priv *priv = ds->priv;
+
+	mt7530_clear(priv, MT7530_PMCR_P(port), PMCR_LINK_SETTINGS_MASK);
+}
+
+static void mt753x_mac_pcs_link_up(struct dsa_switch *ds, int port,
+				   unsigned int mode, phy_interface_t interface,
+				   int speed, int duplex)
+{
+	struct mt7530_priv *priv = ds->priv;
+
+	if (!priv->info->mac_pcs_link_up)
+		return;
+
+	priv->info->mac_pcs_link_up(ds, port, mode, interface, speed, duplex);
+}
+
+static void mt753x_phylink_mac_link_up(struct dsa_switch *ds, int port,
+				       unsigned int mode,
+				       phy_interface_t interface,
+				       struct phy_device *phydev,
+				       int speed, int duplex,
+				       bool tx_pause, bool rx_pause)
+{
+	struct mt7530_priv *priv = ds->priv;
+	u32 mcr;
+
+	mt753x_mac_pcs_link_up(ds, port, mode, interface, speed, duplex);
+
+	mcr = PMCR_RX_EN | PMCR_TX_EN | PMCR_FORCE_LNK;
+
+	/* MT753x MAC works in 1G full duplex mode for all up-clocked
+	 * variants.
+	 */
+	if (interface == PHY_INTERFACE_MODE_TRGMII ||
+	    (phy_interface_mode_is_8023z(interface))) {
+		speed = SPEED_1000;
+		duplex = DUPLEX_FULL;
+	}
+
+	switch (speed) {
+	case SPEED_1000:
+		mcr |= PMCR_FORCE_SPEED_1000;
+		break;
+	case SPEED_100:
+		mcr |= PMCR_FORCE_SPEED_100;
+		break;
+	}
+	if (duplex == DUPLEX_FULL) {
+		mcr |= PMCR_FORCE_FDX;
+		if (tx_pause)
+			mcr |= PMCR_TX_FC_EN;
+		if (rx_pause)
+			mcr |= PMCR_RX_FC_EN;
+	}
+
+	if (mode == MLO_AN_PHY && phydev && phy_init_eee(phydev, false) >= 0) {
+		switch (speed) {
+		case SPEED_1000:
+			mcr |= PMCR_FORCE_EEE1G;
+			break;
+		case SPEED_100:
+			mcr |= PMCR_FORCE_EEE100;
+			break;
+		}
+	}
+
+	mt7530_set(priv, MT7530_PMCR_P(port), mcr);
+}
+
+static int
+mt7531_cpu_port_config(struct dsa_switch *ds, int port)
+{
+	struct mt7530_priv *priv = ds->priv;
+	phy_interface_t interface;
+	int speed;
+	int ret;
+
+	switch (port) {
+	case 5:
+		if (mt7531_is_rgmii_port(priv, port))
+			interface = PHY_INTERFACE_MODE_RGMII;
+		else
+			interface = PHY_INTERFACE_MODE_2500BASEX;
+
+		priv->p5_interface = interface;
+		break;
+	case 6:
+		interface = PHY_INTERFACE_MODE_2500BASEX;
+
+		mt7531_pad_setup(ds, interface);
+
+		priv->p6_interface = interface;
+		break;
+	default:
+		return -EINVAL;
+	}
+
+	if (interface == PHY_INTERFACE_MODE_2500BASEX)
+		speed = SPEED_2500;
+	else
+		speed = SPEED_1000;
+
+	ret = mt7531_mac_config(ds, port, MLO_AN_FIXED, interface);
+	if (ret)
+		return ret;
+	mt7530_write(priv, MT7530_PMCR_P(port),
+		     PMCR_CPU_PORT_SETTING(priv->id));
+	mt753x_phylink_mac_link_up(ds, port, MLO_AN_FIXED, interface, NULL,
+				   speed, DUPLEX_FULL, true, true);
+
+	return 0;
+}
+
+static void
+mt7530_mac_port_validate(struct dsa_switch *ds, int port,
+			 unsigned long *supported)
+{
+	if (port == 5)
+		phylink_set(supported, 1000baseX_Full);
+}
+
+static void mt7531_mac_port_validate(struct dsa_switch *ds, int port,
+				     unsigned long *supported)
+{
+	struct mt7530_priv *priv = ds->priv;
+
+	mt7531_sgmii_validate(priv, port, supported);
+}
+
+static void
+mt753x_phylink_validate(struct dsa_switch *ds, int port,
+			unsigned long *supported,
+			struct phylink_link_state *state)
+{
+	__ETHTOOL_DECLARE_LINK_MODE_MASK(mask) = { 0, };
+	struct mt7530_priv *priv = ds->priv;
+
+	if (state->interface != PHY_INTERFACE_MODE_NA &&
+	    !mt753x_phy_mode_supported(ds, port, state)) {
+		linkmode_zero(supported);
+		return;
+	}
+
+	phylink_set_port_modes(mask);
+
+	if (state->interface != PHY_INTERFACE_MODE_TRGMII &&
+	    !phy_interface_mode_is_8023z(state->interface)) {
+		phylink_set(mask, 10baseT_Half);
+		phylink_set(mask, 10baseT_Full);
+		phylink_set(mask, 100baseT_Half);
+		phylink_set(mask, 100baseT_Full);
+		phylink_set(mask, Autoneg);
+	}
+
+	/* This switch only supports 1G full-duplex. */
+	if (state->interface != PHY_INTERFACE_MODE_MII)
+		phylink_set(mask, 1000baseT_Full);
+
+	priv->info->mac_port_validate(ds, port, mask);
+
+	phylink_set(mask, Pause);
+	phylink_set(mask, Asym_Pause);
+
+	linkmode_and(supported, supported, mask);
+	linkmode_and(state->advertising, state->advertising, mask);
+
+	/* We can only operate at 2500BaseX or 1000BaseX.  If requested
+	 * to advertise both, only report advertising at 2500BaseX.
+	 */
+	phylink_helper_basex_speed(state);
+}
+
+static int
+mt7530_phylink_mac_link_state(struct dsa_switch *ds, int port,
+			      struct phylink_link_state *state)
+{
+	struct mt7530_priv *priv = ds->priv;
+	u32 pmsr;
+
+	if (port < 0 || port >= MT7530_NUM_PORTS)
+		return -EINVAL;
+
+	pmsr = mt7530_read(priv, MT7530_PMSR_P(port));
+
+	state->link = (pmsr & PMSR_LINK);
+	state->an_complete = state->link;
+	state->duplex = !!(pmsr & PMSR_DPX);
+
+	switch (pmsr & PMSR_SPEED_MASK) {
+	case PMSR_SPEED_10:
+		state->speed = SPEED_10;
+		break;
+	case PMSR_SPEED_100:
+		state->speed = SPEED_100;
+		break;
+	case PMSR_SPEED_1000:
+		state->speed = SPEED_1000;
+		break;
+	default:
+		state->speed = SPEED_UNKNOWN;
+		break;
+	}
+
+	state->pause &= ~(MLO_PAUSE_RX | MLO_PAUSE_TX);
+	if (pmsr & PMSR_RX_FC)
+		state->pause |= MLO_PAUSE_RX;
+	if (pmsr & PMSR_TX_FC)
+		state->pause |= MLO_PAUSE_TX;
+
+	return 1;
+}
+
+static int
+mt7531_sgmii_pcs_get_state_an(struct mt7530_priv *priv, int port,
+			      struct phylink_link_state *state)
+{
+	u32 status, val;
+	u16 config_reg;
+
+	status = mt7530_read(priv, MT7531_PCS_CONTROL_1(port));
+	state->link = !!(status & MT7531_SGMII_LINK_STATUS);
+	if (state->interface == PHY_INTERFACE_MODE_SGMII &&
+	    (status & MT7531_SGMII_AN_ENABLE)) {
+		val = mt7530_read(priv, MT7531_PCS_SPEED_ABILITY(port));
+		config_reg = val >> 16;
+
+		switch (config_reg & LPA_SGMII_SPD_MASK) {
+		case LPA_SGMII_1000:
+			state->speed = SPEED_1000;
+			break;
+		case LPA_SGMII_100:
+			state->speed = SPEED_100;
+			break;
+		case LPA_SGMII_10:
+			state->speed = SPEED_10;
+			break;
+		default:
+			dev_err(priv->dev, "invalid sgmii PHY speed\n");
+			state->link = false;
+			return -EINVAL;
+		}
+
+		if (config_reg & LPA_SGMII_FULL_DUPLEX)
+			state->duplex = DUPLEX_FULL;
+		else
+			state->duplex = DUPLEX_HALF;
+	}
+
+	return 0;
+}
+
+static int
+mt7531_phylink_mac_link_state(struct dsa_switch *ds, int port,
+			      struct phylink_link_state *state)
+{
+	struct mt7530_priv *priv = ds->priv;
+
+	if (state->interface == PHY_INTERFACE_MODE_SGMII)
+		return mt7531_sgmii_pcs_get_state_an(priv, port, state);
+
+	return -EOPNOTSUPP;
+}
+
+static int
+mt753x_phylink_mac_link_state(struct dsa_switch *ds, int port,
+			      struct phylink_link_state *state)
+{
+	struct mt7530_priv *priv = ds->priv;
+
+	return priv->info->mac_port_get_state(ds, port, state);
+}
+
+static int
+mt753x_setup(struct dsa_switch *ds)
+{
+	struct mt7530_priv *priv = ds->priv;
+	int ret = priv->info->sw_setup(ds);
+
+	if (ret)
+		return ret;
+
+	ret = mt7530_setup_irq(priv);
+	if (ret)
+		return ret;
+
+	ret = mt7530_setup_mdio(priv);
+	if (ret && priv->irq)
+		mt7530_free_irq_common(priv);
+
+	return ret;
+}
+
+static int mt753x_get_mac_eee(struct dsa_switch *ds, int port,
+			      struct ethtool_eee *e)
+{
+	struct mt7530_priv *priv = ds->priv;
+	u32 eeecr = mt7530_read(priv, MT7530_PMEEECR_P(port));
+
+	e->tx_lpi_enabled = !(eeecr & LPI_MODE_EN);
+	e->tx_lpi_timer = GET_LPI_THRESH(eeecr);
+
+	return 0;
+}
+
+static int mt753x_set_mac_eee(struct dsa_switch *ds, int port,
+			      struct ethtool_eee *e)
+{
+	struct mt7530_priv *priv = ds->priv;
+	u32 set, mask = LPI_THRESH_MASK | LPI_MODE_EN;
+
+	if (e->tx_lpi_timer > 0xFFF)
+		return -EINVAL;
+
+	set = SET_LPI_THRESH(e->tx_lpi_timer);
+	if (!e->tx_lpi_enabled)
+		/* Force LPI Mode without a delay */
+		set |= LPI_MODE_EN;
+	mt7530_rmw(priv, MT7530_PMEEECR_P(port), mask, set);
+
+	return 0;
+}
+
+static const struct dsa_switch_ops mt7530_switch_ops = {
+	.get_tag_protocol	= mtk_get_tag_protocol,
+	.setup			= mt753x_setup,
+	.get_strings		= mt7530_get_strings,
+	.get_ethtool_stats	= mt7530_get_ethtool_stats,
+	.get_sset_count		= mt7530_get_sset_count,
+	.set_ageing_time	= mt7530_set_ageing_time,
+	.port_enable		= mt7530_port_enable,
+	.port_disable		= mt7530_port_disable,
+	.port_change_mtu	= mt7530_port_change_mtu,
+	.port_max_mtu		= mt7530_port_max_mtu,
+	.port_stp_state_set	= mt7530_stp_state_set,
+	.port_pre_bridge_flags	= mt7530_port_pre_bridge_flags,
+	.port_bridge_flags	= mt7530_port_bridge_flags,
+	.port_bridge_join	= mt7530_port_bridge_join,
+	.port_bridge_leave	= mt7530_port_bridge_leave,
+	.port_fdb_add		= mt7530_port_fdb_add,
+	.port_fdb_del		= mt7530_port_fdb_del,
+	.port_fdb_dump		= mt7530_port_fdb_dump,
+	.port_mdb_add		= mt7530_port_mdb_add,
+	.port_mdb_del		= mt7530_port_mdb_del,
+	.port_vlan_filtering	= mt7530_port_vlan_filtering,
+	.port_vlan_add		= mt7530_port_vlan_add,
+	.port_vlan_del		= mt7530_port_vlan_del,
+	.port_mirror_add	= mt753x_port_mirror_add,
+	.port_mirror_del	= mt753x_port_mirror_del,
+	.phylink_validate	= mt753x_phylink_validate,
+	.phylink_mac_link_state	= mt753x_phylink_mac_link_state,
+	.phylink_mac_config	= mt753x_phylink_mac_config,
+	.phylink_mac_an_restart	= mt753x_phylink_mac_an_restart,
+	.phylink_mac_link_down	= mt753x_phylink_mac_link_down,
+	.phylink_mac_link_up	= mt753x_phylink_mac_link_up,
+	.get_mac_eee		= mt753x_get_mac_eee,
+	.set_mac_eee		= mt753x_set_mac_eee,
+};
+
+static const struct mt753x_info mt753x_table[] = {
+	[ID_MT7621] = {
+		.id = ID_MT7621,
+		.sw_setup = mt7530_setup,
+		.phy_read = mt7530_phy_read,
+		.phy_write = mt7530_phy_write,
+		.pad_setup = mt7530_pad_clk_setup,
+		.phy_mode_supported = mt7530_phy_mode_supported,
+		.mac_port_validate = mt7530_mac_port_validate,
+		.mac_port_get_state = mt7530_phylink_mac_link_state,
+		.mac_port_config = mt7530_mac_config,
+	},
+	[ID_MT7530] = {
+		.id = ID_MT7530,
+		.sw_setup = mt7530_setup,
+		.phy_read = mt7530_phy_read,
+		.phy_write = mt7530_phy_write,
+		.pad_setup = mt7530_pad_clk_setup,
+		.phy_mode_supported = mt7530_phy_mode_supported,
+		.mac_port_validate = mt7530_mac_port_validate,
+		.mac_port_get_state = mt7530_phylink_mac_link_state,
+		.mac_port_config = mt7530_mac_config,
+	},
+	[ID_MT7531] = {
+		.id = ID_MT7531,
+		.sw_setup = mt7531_setup,
+		.phy_read = mt7531_ind_phy_read,
+		.phy_write = mt7531_ind_phy_write,
+		.pad_setup = mt7531_pad_setup,
+		.cpu_port_config = mt7531_cpu_port_config,
+		.phy_mode_supported = mt7531_phy_mode_supported,
+		.mac_port_validate = mt7531_mac_port_validate,
+		.mac_port_get_state = mt7531_phylink_mac_link_state,
+		.mac_port_config = mt7531_mac_config,
+		.mac_pcs_an_restart = mt7531_sgmii_restart_an,
+		.mac_pcs_link_up = mt7531_sgmii_link_up_force,
+	},
+};
+
+static const struct of_device_id mt7530_of_match[] = {
+	{ .compatible = "mediatek,mt7621", .data = &mt753x_table[ID_MT7621], },
+	{ .compatible = "mediatek,mt7530", .data = &mt753x_table[ID_MT7530], },
+	{ .compatible = "mediatek,mt7531", .data = &mt753x_table[ID_MT7531], },
+	{ /* sentinel */ },
+};
+MODULE_DEVICE_TABLE(of, mt7530_of_match);
+
+static int
+mt7530_probe(struct mdio_device *mdiodev)
+{
+	struct mt7530_priv *priv;
+	struct device_node *dn;
+
+	dn = mdiodev->dev.of_node;
+
+	priv = devm_kzalloc(&mdiodev->dev, sizeof(*priv), GFP_KERNEL);
+	if (!priv)
+		return -ENOMEM;
+
+	priv->ds = devm_kzalloc(&mdiodev->dev, sizeof(*priv->ds), GFP_KERNEL);
+	if (!priv->ds)
+		return -ENOMEM;
+
+	priv->ds->dev = &mdiodev->dev;
+	priv->ds->num_ports = MT7530_NUM_PORTS;
+
+	/* Use medatek,mcm property to distinguish hardware type that would
+	 * casues a little bit differences on power-on sequence.
+	 */
+	priv->mcm = of_property_read_bool(dn, "mediatek,mcm");
+	if (priv->mcm) {
+		dev_info(&mdiodev->dev, "MT7530 adapts as multi-chip module\n");
+
+		priv->rstc = devm_reset_control_get(&mdiodev->dev, "mcm");
+		if (IS_ERR(priv->rstc)) {
+			dev_err(&mdiodev->dev, "Couldn't get our reset line\n");
+			return PTR_ERR(priv->rstc);
+		}
+	}
+
+	/* Get the hardware identifier from the devicetree node.
+	 * We will need it for some of the clock and regulator setup.
+	 */
+	priv->info = of_device_get_match_data(&mdiodev->dev);
+	if (!priv->info)
+		return -EINVAL;
+
+	/* Sanity check if these required device operations are filled
+	 * properly.
+	 */
+	if (!priv->info->sw_setup || !priv->info->pad_setup ||
+	    !priv->info->phy_read || !priv->info->phy_write ||
+	    !priv->info->phy_mode_supported ||
+	    !priv->info->mac_port_validate ||
+	    !priv->info->mac_port_get_state || !priv->info->mac_port_config)
+		return -EINVAL;
+
+	priv->id = priv->info->id;
+
+	if (priv->id == ID_MT7530) {
+		priv->core_pwr = devm_regulator_get(&mdiodev->dev, "core");
+		if (IS_ERR(priv->core_pwr))
+			return PTR_ERR(priv->core_pwr);
+
+		priv->io_pwr = devm_regulator_get(&mdiodev->dev, "io");
+		if (IS_ERR(priv->io_pwr))
+			return PTR_ERR(priv->io_pwr);
+	}
+
+	/* Not MCM that indicates switch works as the remote standalone
+	 * integrated circuit so the GPIO pin would be used to complete
+	 * the reset, otherwise memory-mapped register accessing used
+	 * through syscon provides in the case of MCM.
+	 */
+	if (!priv->mcm) {
+		priv->reset = devm_gpiod_get_optional(&mdiodev->dev, "reset",
+						      GPIOD_OUT_LOW);
+		if (IS_ERR(priv->reset)) {
+			dev_err(&mdiodev->dev, "Couldn't get our reset line\n");
+			return PTR_ERR(priv->reset);
+		}
+	}
+
+	priv->bus = mdiodev->bus;
+	priv->dev = &mdiodev->dev;
+	priv->ds->priv = priv;
+	priv->ds->ops = &mt7530_switch_ops;
+	mutex_init(&priv->reg_mutex);
+	dev_set_drvdata(&mdiodev->dev, priv);
+
+	return dsa_register_switch(priv->ds);
+}
+
+static void
+mt7530_remove(struct mdio_device *mdiodev)
+{
+	struct mt7530_priv *priv = dev_get_drvdata(&mdiodev->dev);
+	int ret = 0;
+
+	if (!priv)
+		return;
+
+	ret = regulator_disable(priv->core_pwr);
+	if (ret < 0)
+		dev_err(priv->dev,
+			"Failed to disable core power: %d\n", ret);
+
+	ret = regulator_disable(priv->io_pwr);
+	if (ret < 0)
+		dev_err(priv->dev, "Failed to disable io pwr: %d\n",
+			ret);
+
+	if (priv->irq)
+		mt7530_free_irq(priv);
+
+	dsa_unregister_switch(priv->ds);
+	mutex_destroy(&priv->reg_mutex);
+
+	dev_set_drvdata(&mdiodev->dev, NULL);
+}
+
+static void mt7530_shutdown(struct mdio_device *mdiodev)
+{
+	struct mt7530_priv *priv = dev_get_drvdata(&mdiodev->dev);
+
+	if (!priv)
+		return;
+
+	dsa_switch_shutdown(priv->ds);
+
+	dev_set_drvdata(&mdiodev->dev, NULL);
+}
+
+static struct mdio_driver mt7530_mdio_driver = {
+	.probe  = mt7530_probe,
+	.remove = mt7530_remove,
+	.shutdown = mt7530_shutdown,
+	.mdiodrv.driver = {
+		.name = "mt7530",
+		.of_match_table = mt7530_of_match,
+	},
+};
+
+mdio_module_driver(mt7530_mdio_driver);
+
+MODULE_AUTHOR("Sean Wang <sean.wang@mediatek.com>");
+MODULE_DESCRIPTION("Driver for Mediatek MT7530 Switch");
+MODULE_LICENSE("GPL");

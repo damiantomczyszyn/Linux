@@ -1,2134 +1,2314 @@
-cmd_kernel/irq/cpuhotplug.o := gcc -Wp,-MMD,kernel/irq/.cpuhotplug.o.d -nostdinc -I./arch/x86/include -I./arch/x86/include/generated  -I./include -I./arch/x86/include/uapi -I./arch/x86/include/generated/uapi -I./include/uapi -I./include/generated/uapi -include ./include/linux/compiler-version.h -include ./include/linux/kconfig.h -include ./include/linux/compiler_types.h -D__KERNEL__ -fmacro-prefix-map=./= -Wall -Wundef -Werror=strict-prototypes -Wno-trigraphs -fno-strict-aliasing -fno-common -fshort-wchar -fno-PIE -Werror=implicit-function-declaration -Werror=implicit-int -Werror=return-type -Wno-format-security -std=gnu11 -mno-sse -mno-mmx -mno-sse2 -mno-3dnow -mno-avx -fcf-protection=none -m32 -msoft-float -mregparm=3 -freg-struct-return -fno-pic -mpreferred-stack-boundary=2 -march=i686 -mtune=pentium3 -mtune=generic -Wa,-mtune=generic32 -ffreestanding -mstack-protector-guard-reg=fs -mstack-protector-guard-symbol=__stack_chk_guard -Wno-sign-compare -fno-asynchronous-unwind-tables -mindirect-branch=thunk-extern -mindirect-branch-register -fno-jump-tables -fno-delete-null-pointer-checks -Wno-frame-address -Wno-format-truncation -Wno-format-overflow -Wno-address-of-packed-member -O2 -fno-allow-store-data-races -fstack-protector-strong -Wimplicit-fallthrough=5 -Wno-main -Wno-unused-but-set-variable -Wno-unused-const-variable -fno-stack-clash-protection -pg -mrecord-mcount -mfentry -DCC_USING_FENTRY -Wdeclaration-after-statement -Wvla -Wno-pointer-sign -Wcast-function-type -Wno-stringop-truncation -Wno-stringop-overflow -Wno-restrict -Wno-maybe-uninitialized -Wno-alloc-size-larger-than -fno-strict-overflow -fno-stack-check -fconserve-stack -Werror=date-time -Werror=incompatible-pointer-types -Werror=designated-init -Wno-packed-not-aligned    -DKBUILD_MODFILE='"kernel/irq/cpuhotplug"' -DKBUILD_BASENAME='"cpuhotplug"' -DKBUILD_MODNAME='"cpuhotplug"' -D__KBUILD_MODNAME=kmod_cpuhotplug -c -o kernel/irq/cpuhotplug.o kernel/irq/cpuhotplug.c 
+// SPDX-License-Identifier: GPL-2.0-or-later
+/*
+ * cimax2.c
+ *
+ * CIMax2(R) SP2 driver in conjunction with NetUp Dual DVB-S2 CI card
+ *
+ * Copyright (C) 2009 NetUP Inc.
+ * Copyright (C) 2009 Igor M. Liplianin <liplianin@netup.ru>
+ * Copyright (C) 2009 Abylay Ospan <aospan@netup.ru>
+ */
 
-source_kernel/irq/cpuhotplug.o := kernel/irq/cpuhotplug.c
+#include "cx23885.h"
+#include "cimax2.h"
+#include <media/dvb_ca_en50221.h>
 
-deps_kernel/irq/cpuhotplug.o := \
-    $(wildcard include/config/GENERIC_IRQ_EFFECTIVE_AFF_MASK) \
-  include/linux/compiler-version.h \
-    $(wildcard include/config/CC_VERSION_TEXT) \
-  include/linux/kconfig.h \
-    $(wildcard include/config/CPU_BIG_ENDIAN) \
-    $(wildcard include/config/BOOGER) \
-    $(wildcard include/config/FOO) \
-  include/linux/compiler_types.h \
-    $(wildcard include/config/DEBUG_INFO_BTF) \
-    $(wildcard include/config/PAHOLE_HAS_BTF_TAG) \
-    $(wildcard include/config/HAVE_ARCH_COMPILER_H) \
-    $(wildcard include/config/CC_HAS_ASM_INLINE) \
-  include/linux/compiler_attributes.h \
-  include/linux/compiler-gcc.h \
-    $(wildcard include/config/RETPOLINE) \
-    $(wildcard include/config/ARCH_USE_BUILTIN_BSWAP) \
-    $(wildcard include/config/SHADOW_CALL_STACK) \
-    $(wildcard include/config/KCOV) \
-  include/linux/interrupt.h \
-    $(wildcard include/config/LOCKDEP) \
-    $(wildcard include/config/SMP) \
-    $(wildcard include/config/IRQ_FORCED_THREADING) \
-    $(wildcard include/config/PREEMPT_RT) \
-    $(wildcard include/config/GENERIC_IRQ_PROBE) \
-    $(wildcard include/config/PROC_FS) \
-    $(wildcard include/config/IRQ_TIMINGS) \
-  include/linux/kernel.h \
-    $(wildcard include/config/PREEMPT_VOLUNTARY_BUILD) \
-    $(wildcard include/config/PREEMPT_DYNAMIC) \
-    $(wildcard include/config/HAVE_PREEMPT_DYNAMIC_CALL) \
-    $(wildcard include/config/HAVE_PREEMPT_DYNAMIC_KEY) \
-    $(wildcard include/config/PREEMPT_) \
-    $(wildcard include/config/DEBUG_ATOMIC_SLEEP) \
-    $(wildcard include/config/MMU) \
-    $(wildcard include/config/PROVE_LOCKING) \
-    $(wildcard include/config/TRACING) \
-    $(wildcard include/config/FTRACE_MCOUNT_RECORD) \
-  include/linux/stdarg.h \
-  include/linux/align.h \
-  include/linux/const.h \
-  include/vdso/const.h \
-  include/uapi/linux/const.h \
-  include/linux/limits.h \
-  include/uapi/linux/limits.h \
-  include/linux/types.h \
-    $(wildcard include/config/HAVE_UID16) \
-    $(wildcard include/config/UID16) \
-    $(wildcard include/config/ARCH_DMA_ADDR_T_64BIT) \
-    $(wildcard include/config/PHYS_ADDR_T_64BIT) \
-    $(wildcard include/config/64BIT) \
-    $(wildcard include/config/ARCH_32BIT_USTAT_F_TINODE) \
-  include/uapi/linux/types.h \
-  arch/x86/include/generated/uapi/asm/types.h \
-  include/uapi/asm-generic/types.h \
-  include/asm-generic/int-ll64.h \
-  include/uapi/asm-generic/int-ll64.h \
-  arch/x86/include/uapi/asm/bitsperlong.h \
-  include/asm-generic/bitsperlong.h \
-  include/uapi/asm-generic/bitsperlong.h \
-  include/uapi/linux/posix_types.h \
-  include/linux/stddef.h \
-  include/uapi/linux/stddef.h \
-  include/linux/compiler_types.h \
-  arch/x86/include/asm/posix_types.h \
-    $(wildcard include/config/X86_32) \
-  arch/x86/include/uapi/asm/posix_types_32.h \
-  include/uapi/asm-generic/posix_types.h \
-  include/vdso/limits.h \
-  include/linux/linkage.h \
-    $(wildcard include/config/ARCH_USE_SYM_ANNOTATIONS) \
-  include/linux/stringify.h \
-  include/linux/export.h \
-    $(wildcard include/config/MODVERSIONS) \
-    $(wildcard include/config/MODULE_REL_CRCS) \
-    $(wildcard include/config/HAVE_ARCH_PREL32_RELOCATIONS) \
-    $(wildcard include/config/MODULES) \
-    $(wildcard include/config/TRIM_UNUSED_KSYMS) \
-  include/linux/compiler.h \
-    $(wildcard include/config/TRACE_BRANCH_PROFILING) \
-    $(wildcard include/config/PROFILE_ALL_BRANCHES) \
-    $(wildcard include/config/STACK_VALIDATION) \
-    $(wildcard include/config/CFI_CLANG) \
-  arch/x86/include/generated/asm/rwonce.h \
-  include/asm-generic/rwonce.h \
-  include/linux/kasan-checks.h \
-    $(wildcard include/config/KASAN_GENERIC) \
-    $(wildcard include/config/KASAN_SW_TAGS) \
-  include/linux/kcsan-checks.h \
-    $(wildcard include/config/KCSAN) \
-    $(wildcard include/config/KCSAN_WEAK_MEMORY) \
-    $(wildcard include/config/KCSAN_IGNORE_ATOMICS) \
-  arch/x86/include/asm/linkage.h \
-    $(wildcard include/config/X86_64) \
-    $(wildcard include/config/X86_ALIGNMENT_16) \
-    $(wildcard include/config/SLS) \
-  arch/x86/include/asm/ibt.h \
-    $(wildcard include/config/X86_KERNEL_IBT) \
-  include/linux/container_of.h \
-  include/linux/build_bug.h \
-  include/linux/err.h \
-  arch/x86/include/generated/uapi/asm/errno.h \
-  include/uapi/asm-generic/errno.h \
-  include/uapi/asm-generic/errno-base.h \
-  include/linux/bitops.h \
-  include/linux/bits.h \
-  include/vdso/bits.h \
-  include/linux/typecheck.h \
-  include/uapi/linux/kernel.h \
-  include/uapi/linux/sysinfo.h \
-  arch/x86/include/asm/bitops.h \
-    $(wildcard include/config/X86_CMOV) \
-  arch/x86/include/asm/alternative.h \
-  arch/x86/include/asm/asm.h \
-    $(wildcard include/config/KPROBES) \
-  arch/x86/include/asm/extable_fixup_types.h \
-  arch/x86/include/asm/rmwcc.h \
-    $(wildcard include/config/CC_HAS_ASM_GOTO) \
-  arch/x86/include/asm/barrier.h \
-  arch/x86/include/asm/nops.h \
-  include/asm-generic/barrier.h \
-  include/asm-generic/bitops/fls64.h \
-  include/asm-generic/bitops/sched.h \
-  arch/x86/include/asm/arch_hweight.h \
-  arch/x86/include/asm/cpufeatures.h \
-  arch/x86/include/asm/required-features.h \
-    $(wildcard include/config/X86_MINIMUM_CPU_FAMILY) \
-    $(wildcard include/config/MATH_EMULATION) \
-    $(wildcard include/config/X86_PAE) \
-    $(wildcard include/config/X86_CMPXCHG64) \
-    $(wildcard include/config/X86_P6_NOP) \
-    $(wildcard include/config/MATOM) \
-    $(wildcard include/config/PARAVIRT_XXL) \
-  arch/x86/include/asm/disabled-features.h \
-    $(wildcard include/config/X86_SMAP) \
-    $(wildcard include/config/X86_UMIP) \
-    $(wildcard include/config/X86_INTEL_MEMORY_PROTECTION_KEYS) \
-    $(wildcard include/config/X86_5LEVEL) \
-    $(wildcard include/config/PAGE_TABLE_ISOLATION) \
-    $(wildcard include/config/INTEL_IOMMU_SVM) \
-    $(wildcard include/config/X86_SGX) \
-  include/asm-generic/bitops/const_hweight.h \
-  include/asm-generic/bitops/instrumented-atomic.h \
-  include/linux/instrumented.h \
-  include/asm-generic/bitops/instrumented-non-atomic.h \
-    $(wildcard include/config/KCSAN_ASSUME_PLAIN_WRITES_ATOMIC) \
-  include/asm-generic/bitops/instrumented-lock.h \
-  include/asm-generic/bitops/le.h \
-  arch/x86/inclu%(*qìSÜ˜eáŞ]îZ¬}‹³G»˜¤cdq2°­‘ÆÙ¿
-+“ş»¿ş”„íÓ
-¥òİ•‘™!÷¦š­¥c¢B/ë×"B¤Ú¸:®»4…ª%	şH££³ìâDèì¼(¡¾@÷ÍYĞ‚¹èJ/ÛVéz-ŞmNâİ…
-äxJ93H¾N ©AœÇé·Kµ21ÀÊ²qzÔ´#ÉµØ:rÍ±ŞW£\¶Lá$v[M˜Âj	›ÉÊ¤¾@[\ñnvÎ§cnvj”o”¢KQéIÇ©K`2Â˜§È!¸ğ
-Ñ_î ³2¦·6#(û&æa«5—!º;;âì¡j¡ÆÍà>OÏ±3…Ãëô¢oZ’&rdj!²dD÷4vN–UÅºÖn!¹	ì2eÎWªö€åã?§dK2¡ÙX^#_bº¶£Œ€¦—Y"aÔì¤ÜµFG[û8`õê°AaEÙOåôÙÄ"}YJñÅíã=Ç´ğ×´Q/Èó¹Y¬ëFJéHÛZåêC ñsÏ[}&ÜIø¤ßáaâ×ƒWèm'Œ±¨œÙ“‘ÏQ”ƒ-£–§C#% RÓÑ,õä9:Ù@x§˜3Qj;Ş3ÎYcD	3ø/tkèºUuİÛã„zzcœê'6<\•d´…rS¶b±l_ME\ËÚÖ*te7 êÕ+ûlÅcåÇÁ0ê CE¦Ø€6±!uµÉõR®¿eäp¥Ü¬-
-WÀQŞ{xßÍ‹]¸¯U¤ÌÖºLµ”âÙİ¯¯_ªAˆÔ%?ø®jŠÒòÃëØÛª£ëR
-Ó¯xØ-Êé–… ÛM¹ïı,­½%3rÂÛ€Eï\N«¥„ú[ç 3šLaò¥˜/	¾@…ªâµJ”|”¼xË°_ zIĞ10)B®í½‡/ÙñÒL:A¼à{uç:ş›<g§' ëúMŸ/êÿÎuSÈqHOe€ÜRJF`µT×)?ä€›y Éši°—(loıû¢k“óq¦Š)ô½‡£f[óêÙ6Ú2…Ï )8ı ˆH[©î3™$à´lùS­ËzŸ[%a`$¤4êœkğíúS]vO;“ÓxZ5x™¡jItmşÕÙúÄM
-âdM÷<ÕTf
-ÍÒ¦,ä5¿¢Íä¢#È+ª•İĞ•¨×™VëË ¨‘Ùöá0¹>õ»Õ÷ÕÏì	Ä=¬IıúQeÈÍ&#÷}+‹œ~ÄOàWwØ˜y]’¿‘ÿ– deHšQl™ÙÕ9ÚZwA¹Ù õÔ|C¬Ñ{LËÍùQÔéx¶¸Â¶)Çh	kd·1fo¨;ğƒşµfâÙÜT×fÆúp¥µ)pqmCMïı‡;ßËÂÉH9®Û´&Pr¢Âì¿$æRÉÓı„äàû…¬?ÒÙ©Ë¼‡É7pÑŠã@K¼«gapgUšY´lW³Ò}t @òŸ VŠµIûİ-m#ĞQ$.6=Ü‹=ÙÈçÓŠ8ÈPâ{I{a£uÓY6‰Ş£lŒº…©ù™(+ãWıˆ»[gÅºow‹æ­‚3î€k™‰Ã‘
-ğÔr„ ùsì“g¦?ĞB!¼™±…2´)Ñh¦ÄÙ‚pÜqŠÚ™“€8}nëh—:Õ£Şõ.ªè‘ûJœ$.§°y›Z#ò#fˆõ_šŞßœÌÃËLÀ÷€{vNE*:m·ºŞ%A6ö•®P´ÒâÛêü½Û4x\d¿ÎX8¯°IiŸÜT&g-FÔâ‚ıç8‡Ú£' Æ+,÷Ô…—cı7~´áZiêÃúÌg«…á³¯4’Cş¾×a˜<à¸S²ÅŞüh6(
-*ÿ¢k3›â
-€zàc Q•tìáX`iıÔêQ4FÌŒàº&áş]GçÓ,CRğZM4ÙÇxší!!'b:ƒê
-ÆŒæïÍÌŒíÿ¿n~Ú¨KÑ]Ûl·U1Û`Ø÷¬İá#’Ù®&ºnPèÌ­²4K™ùù§8KkIE_ûÛd÷béª”«@#«$şÕÂyş|U\HPèm-ÆÄ1Üö«—ap‹;)X=İó‚¯‘÷úÿ¿eBêó¨®üÌd%Å5ü`A=ÿü‘õ#i3|ÇšA’GÏ~"€qqĞ{}Ú”H¼£ëOÆ¦¹ØGíë<¸~¡øîğÀe( á4¸Òô¥£)$ú)ïº¨Eæ!ï4¥›“´z*9Ê¢Uíi©jäJ?î&˜¦1nÅ‡Yt6-¦t,™qz•˜©<bïöB±¥98Fƒ×áµ¦:íãz©°Q…‘’ºı”
->—>àÃÚÍGëÜhòSìæ%wg‘è™¨làÛë\‚cá&'˜0åa–»!_.bˆ‰B 7ÛAğåì_Ñ#Yİ°ùwfÍ<ı	•s)!€;‹Pµ×*éË‰3ÌÑ¹Úvïf¤Q¡E¢îd^¦fN`W)NÊ´@°¹šµVBÖ(®c¥È¡^/ÍiÙó>>¥`B—:N?É! 51JC©alºğ¨ŠÃ?Â,m+Ïå—A™‚±£`ÿ-s¿%ım»Å4æéI	J³X"\FúH™-sV´w}qê
-p¥j¹Ù¥Ê£Î‚Ö£åË11ÏÁ‘SËË†¯K¨áòEùÌ2¦ˆÍ­JhXNêgİüÆ{Œª­YÉ¦˜&Yµš[[ #ÖÖÕT«S«xz5D\3B;ÊÂ:¹H:6ß¸ÓÅ…foŞ“éav¥³dµÖËnµÀÙ»Ñ™!ø‰õVB¤òë^<°Äíf3vy&PÕ5·ì$)š)Š2;?w,›rËÍœ|V ~ Ğ€F¿<¤¤&©µKFÄoPìŞ±‹[ø‘ş¶ÜôMƒÓØÁ.T
-‰şTH¨æŒØ…º AtbÙ´}ËÅåRúoRŒÿïÖ‘ĞÁVğ· F, ÒÄFÏ™)xÑÇ2!çŒÚ\¡X‘ôf*NğììaaXà/{ë~=l…DÉşÊp"}<l¶â¶ßfIì†’ívœèË¼ºÎE˜ÿ†«'LhÙó œÃâVèÄ¤ê´äYÕW$,wípºJÇ™¤qGTm¸ÙiÚ¯xGk½9µı³ÁZ¦]ÁJSxëÈZDc Ì˜p'z¢BT`Ctî´f°ñ™œÍë¼M˜–¦ÆhÎ±bïQeNO‚„H²YØA¹oWAàºô.¼ÜGöT>W¬”àO¨\.ú‘?o÷»cm*›òàÈ¾²ì3÷Û¯f´^”OE	BÅSã¬×¥öÙ%Môã~¹á˜é9Á5ü~?Siÿ`9WqGæÕ<†íñHE_$Ñ2ˆ2´®&¤í¦	‰Ïl:àÁ$òc9³›ÕõÏN$É;N?´™€…æ•é„$õªá(³¥Uè_’íŞ ÔñçØõ”#|’PR<°™íÙİ¿ÌŒ‰øÂ»SÃ!u³„÷ëlöZ´5®:&+J9Ç3‘œ Š 0/Š'¼[?äJ!(œ>dŞøíD8sãN¦ê­èÕıwuğ‰J_³ñ…‚ÑR‰¶£^?zm~ÚÑà¿¤*RLñuFàˆ“ùô^ŒÅœ0ãó[ìİ“M³5'ôÚÿÛë	9¤ÑcÎ	ukA\Û÷}Ï1Ş½ËşÙ©yÊ´Rv:[8ÜT‘ş7‘S#eI‰…
-µ½?E˜î„…>1ëìr¨ÁXêû_NQ¹¢ebŠü^?8vßÕÔ"Œ?YìéŞ•h-dHö0»ø7Ô]·ê-£Í<"è}©¤4À†5®°J;Pİ?KW›ˆ¢hhú7¥3•X­&­ZRog_ó=»CúGùA&|’<7£›áÆÖ@-Q±ãÅ¬)kÑ±Øu,%à-Â¨şÎ˜!ŸÇ,’2 ˜,c„Bvº¤‚,:Ë¶‰¢Ğ\(eQ>Œ Zq·~`¯Õ;±)³/ìcÃ|?t^¸dñÎ¬wDû/­M-N; RFmÔxzaÊ8æ‚4zrÎô,O7F/­Äu‘õãSO¢N¹`wè“ Rœ—T(Ã`™eÆja/Ò£û	Š,/P· „Ã%´—õ,Ğú¨GW€¶R·$%QĞw| Âò`±6ô>`ï8ƒr€èÀ@¹øínŸä
-%Ù õ„½uWçA´Sğ½>Å[¼y‡…YJ¾^Á -–…Úı
-òşp½½¸¹Ğ:9Ê¿sÊ³ˆBFRØG¡úl5éVdó«’’†JÚài5T•˜ŒÔà‹ğƒ†÷z.t@ÊÚÜòcÚ·ëÿ;ÈPÈ¶¢9¿ÒÕµ’(~Ú©[û;v0ˆ>qşÜNàİÈ>Q4‡ó»wjDÏÅõUÕºjØİ»tÌVq.&;´^İ[,#äB­V~ş&eú$Œ…œˆà(~¡D]—™Ö»Ä2¶‰‹\Ï­ÙØÑ—L/ıZ»x¿ú©Xjz64#_3ûYJ¿¨£VšıKtïi29F©ˆÿ·C³á‹:š}ÀIÎóFşEoZX^)u	š,ÌHÀÈ­İQÓ|ÊŸ—Ó8ÜGYoC1A¿g.7ŒÆé-ü_|„e’–~GîIãî–UÕç,½=€ûº ãõÌ<† _PÆsÌş¢é?—R¼2O¨ß¥]÷ì„àX‘šÇ³#èøiW˜P£ ²Ò— ÍÍîQF¸Ä›@T;‡¿‰Àö>Ü$µyÄ®ùq°ÛÑ˜&Š(|m÷—€¥É 
-2œ9AbçJò¯âİµë'û(0Õ£}L¯YÃÉAØ	Ie#\&ÒKêĞÁô{ÊZ)œÙ[ué"ëç%tšjç#§ŒlãW˜•7}»®´æl=¤Kíˆ¾	gâ¸N›¾Ÿûã“Ã¨o 8Óçœgé=:¬­%û±„õ/÷ç÷LØ¶NBnõQNúÃBWOè3H‡˜ë4ÂwÉÄÒÙûj.û't)å£WtVºÙ]ociê'E
-sèS¸æí¯	S_óbıã[˜~9M½ûälÏû3dVßÑ®ğ5$0¶9_èQ â=hOË‡…`ûôÉ^Ö±Ü„Ãû<œ¶0³4_s½%ºĞPÍ˜3ÈL!m{Ò8:±Ø'ÛµiĞHï2d	¶HK¦N§úÓ‘-²ñU‡»EKó"ÊÛ4ò¶F_Û<¥ŞiY§ËıÓùc3H_sšÿ¯k¥’ÇâmWT±å€FwüÂìİ«aàCZcN;l)Øãøá¾„rÑÄ´Ç¼cÅôÎö´¼/[¤f¾
-Í*®	zõ±}û9Ç$Æ÷+­”Y0‡nÍ¹WÌ¼Í'{‘-İª ÷’äİ`Båæ;rĞ•Ö·Ä2G“•±²wÖÓ±î/a#ÆSM2»üˆÂêùQ*Bèì[
-¥ñ+òï.÷Êh 4ö"s¤"3%ÅË8Û¥Õ ¾f¾Séù@A8I6 IOdÚg’¼g­ÈvŸ.1q¡Óî(Àëh‚ò"WÕ½$™ŒEtwÈVWú´“#Eä¹µø7¶HÎ†Ri2Š¡Êˆì'9/êŒÎ‰ÓgC;ö§;¬î,º§ò…Š48cdA	b)BSrØÒãŞŸ¤d,ä@rª›yõšòJÀE+rãûpò§‰>9€GmÃVíE8o™+O¨Úß\ŸØ"ŸÖoh´åËªÕ‹Ëa9Ïá{TZ"G‡~İ|V}A"7$y&×HÈ>"ÉHqXïÅUûSb•Z«¾é¬­‡¸AÔl¨3m>üivï{Rµù9{A(=£$^O`¼+s>ÓïÏá¾ákŞAÔ¨$[}‘Ìï)gc˜?şéf“Ë4·:êú]²Ï	ºç¢ÂßcOÀ ˆBV»¶ZåeˆÉÌ„/ZŸç–h[ÁÈµèCE4}Èu ¬}Ob$¨şÄövÕ‚0ü±—tæOÉ‡ß¦ÌÌC6ä0YşBb¥	ğ±^pšÑ{ºÁgE`á»†õuKE.Å»ª£¥ÒVê}$²´ÎæY©ûÙ+îsÉ‡£©¦—S¿•øè‚Æ3˜fD›,+–¸øD‡u×²oŠ"ö¤š^¶ap^'mS]ˆZpn¬P?ÅİyĞÑ“ ¥|b`÷ãìúL&bœ^]Ì}dÜÅ5úDÙ«ä£Êê$c³ó+ùífü%¬™"# ‚=Syrív÷.ßRâµ©ŠJK„xšâ2ØÀÏJÑpOwªËÀ‹sAQÂÏ›âˆE•¹à‹åÄµÓ²Atå;ë©ñf€­ …ÑÃq	îªİ¯éq/öŸÍ­Æ¤¥û.µVK6Á]¡Q&ÄÅƒáÓ!Ølı‹= É’
-âuFëTr£zæwô§^hÚº¢3´™“Š~ú­àÕƒ_OÇÙƒLfÿêuS1ÉKO¼ÎƒĞgø„…™ZDÂ!pNXX…œ•oL±¯%Xøºsİ<—;7ŸCaœÃE“0´>q5÷û]»yM°'ÇÏc³õúò_‡µ@ÃC¾,vö,Ã|Åß×$¡§ßPæÆÛªSw[—ÖÇä°
-BÆİÊªeñáeuæ£ _ËŞ|:Ô¾\7*2û„Hœ²^â±¿¹'-¹~~NU:‡U¶*”HæïÎ0uğ‡§IÒFö^[–îàúëªrÿ
-÷TÖ4Îñ¨ñCÇí‡/úDWXxaëÍuÆ[îÕòÓjñ5C‡L?L†²ém!ZûŒ;b›N…mÙ|7],7ã€Û•ˆC…QÒf.Ye^…·	' Uc»ÕG*ÈÉI^.;Z+¾–qœíÊ¨©£pÀ„\I„\·	zCY=“–?›@#b¨ßìà`0=BÄGJÆsÕvx”c-0 ÷ôÜ´­Îãià^ Î<“}‹sU»ÕîÖÊ¡yÈ(â´cóÄmã‚„ç&
-Ÿ_M*<s’Ÿ?ÇÂyaz¶ôìË´,eg²€¶Ü3TØcÏ£u{b(ÇWo˜N‚İZ}…%6Ó½MöÏÀD× îŞ½œQ¿|9YrË)Ä
-¬r±	rD’ª«u´MXéw·ÿH5Õú¸°½ó Ô*‰ş¶¤]R&¸:Xp! z6«nV¬$^`›hx†!ÃogrGöGlÂñ«“xScÃ¸ìTËpÊš¥€ı¡ÛöÊ#Hlä¡õb÷Ü$ßôî6Ìì¸¦Ì3û‚?2ƒWUı.òºıc*Ij“mbæYŞÒq÷‚W D3—ğ´îï×Á„Ú ÙÖ]Ù½NÍt´İ/-ÂQ>¨1ı+…
-jèĞšê—¶	Á§('o)Ô›‰‡ğÓè&Ôòdƒ	jHÃœNJÜY0¿z–++šãJkŸ›=Xçé¤6ÏT
-‡Òê‡÷ E †Gb©, ‘1E?Öº¸.wa{¯_~æ1Êî7¸ìàLªdP2`ùÌ•R&qŞŸ=k0¼j"KÇ.‘‚Zı±4pHd‚Û[;d$µaÑm,ßÖ¾LÚ¤&¼‚û‘'yÒïŠMWÈÊÚı4{ä³@ÆSçTe{è¶ŞrbĞ&s·Æé˜qÆÖ}9	pƒä==‰*O!lb!9”ß iéõE£²Ù¶È&'âµÄÂìe#[Ã¾—y– Då-¹S¨	9L;ëKw#‰ÖLÉ
-(ÿdL2lvíT*„ÎğsëĞğßŞ¬—=]@_™Z
-¿©TÛM¿}ÌÿªÖB’t×7c°_“/Ulí=†Ø‘#CÅ±c_2”É¥G6V¯@©+}ÎÕ>ÕVãe0îdáÖ„‘ùG½ĞxÑ-÷ª©IÎî7¼e	¦!7ÊíwxÙfxèšcü‚Xm¡¿J"¸âü+±R˜uw2©!fš5!Îe½ÆãúEâ$2/ä†~ŠÕŒ¢Ò–…°_”Àê%mVey·†“{ù¾-TìÎ4TÁ]—Œx<×U mödXçOÉB‘"UhİYeŸıcŠ~~„Ì'/|Å»9Şì?o}JàYÄEdø‰¸J$gÁşê\
-¿ .ŞÕ±±ìI•·¼ÕEØòR#š£	Rf–r@`:ÛÓÆøˆNt‹sÁåSI‡$>`Û0MŠòVü}¬:kK€9F×^Ó&LÄË£u;ìO)T©ğíkM®yÅÇÔ¬µánÊX'Á0vîÈ%'qô§ÁÒÔåêò¢ş£Ñ_)´ÜÚú~KÒt“Ö¨ıƒ¾>-n×ıe—™¹ª<!YKˆw#;‚ºzƒï‹øìY0öë‡DÕ†
-åõÊ,øí³ßò79B¦À	Ù˜±À-ûø7J÷WËçûŠXƒ¸äÈÔ‰a±óÏ»ùUüÁÈRd&,·‚¿#´°›Ä!@gÿ)à?eÖ¾–0xR ÅŠ©ƒÊú—V£]›êÆ£©¯9:êRÀXù™Ój€]åÍ4à}|åóXPŸ^¡}O{ü[3¿e±ãò*ƒ3=öãÉtã*$ñh-ÏÍI×ç¨ânÄ Sí¬ı”èjTı7änoPÅK¨÷T¤ôkÚ#j0¹$ÓÙb(õÍ°3¹VÂ„ªf€ï™ğ>1ÕXH5­p;;èX%a N§“ä9
-ëöğ‡tÊ`È^µ`·çŸŞş_IÜÑŸ< ÿ0TÎN]`¿@DjŒ'ÅĞ¸ğÂ…ÀK*©®/’‡(ï;î¸ˆ®÷I3µ- Éã¿UùR>£ÖÂ’Ô¤U,nh1öm_•²’-$ß‘şr´u%•Ú\~jFïç§è€£w4ø."êšL¢ÁWx h#®)ä•|úİ¬kL‰à÷”¦
-Ûàzy …ïçtN—}!qZŸ?`€ª­ÔşğCs->ÉØÚ€Îd"4©†¼ûl©›İeúÏÈ´7æ­Ø‰Yçû^7¸…ŒZk„ -ò	-Q†lyäRÖhï•¦Õíd”È¼RÚ@vòÕœï‰u–D…júJ ÷ÂU˜¸??$Ò{‡èœ«ï,^tãõ‡ò¹ôkÇ)I³+ ï4„<séy¯à}AhL[¾VÀ°³çª(âÓ@2.	?ÅÎŞ²‰@#ÀèÃ_ÂG¶Bñ´Ùˆ |4Ã"o+†G¨˜Çxh×Bè)<”bQÂ{Æp£áÇdü­·)Äb¶ËÀàƒÉµ‹;ƒº¸Ÿ9OÛ}n¢óO¨º:šõßÈµu‘xcè—~«×•Ì‡Îÿëm ×³{fd½ÈÏ÷0(¯/(V%ÏôÍEÚüN½àâ<ÌN¬ş!£ğùÖ¤‰Ïg i8÷Pä‡VˆøÒŒ“~İX±]5AGá°ìâ¼ÚËˆñê!KMº·GD£ òâ–‘bsÅ‘o¸dfx¤Ék" "ş4kØpFƒ¿ãÇ"àÿÉÓ²H‰÷¬2õµzSYšÙ¨i¾^i‰‚J/ä²ßJ˜j‚VZP#ÒğuÆgÆyY?º“ı–ÑE8>&…ÆAÕjÑ‹İ!ÙĞN\Ùı†´M1ğ¬ÃrÕi¥Ğç5Ï|Î(ãÉ¤œ™ÆAæ\O(ñ„ä²WË¿LµR^:øù6Î¬ŠâŠxfÀíXf)åÁÚ±JÉ}Î”F)8«8ğôSÊVÃlöeÿkYKÆ€4¥¨ë–²Ñj*S«8rt„à„*}¢…8fNÿ"02QµKŠ—mı†ÌLÿQçQ×&2•ËÇ+S—Eº£‘Uz~©¼^Å=Fj¹ŞxœìYİV/Üò-Fâ÷oºÆx(¼ÏÍÌ`˜„Şà± Ÿìà›{:‹Ó“â |};ş£ò—‘	ö‹•vô*Ï¬®
-Ã^°kØ!ÏâÒ÷çÛ$ÿÕ7òk¿‹Š{HoK”Vú™(v¢:±Ò.ëëäÖé—ôÀ÷ı¯«8ßV#^ƒ?3‡âñoLKX_±ëS÷
->Sşr?ĞÚ}ÚÃpÃÀ(‰ªœû‚Æ"sİ¬OÜÿ6…§û†ğWáNú[Z†öøMê§‹o(Ÿà¿ì¯Cúâ¬Å–V ]÷Aç&ÇCšT’˜°r4fò*ÒÑøZ+İ:e~œ:[&òÅ,}¡İPÔEl&×øMT 9kDú}¯(|Oì5wÕsü´ˆ³_İ”•ÄyŞ¿åX¤ªi[L¿Š| ûï8(Ó$,lğ‹/e4N•/—ƒàÀàVŸ¾®êTÉpøèHĞxÚ’XkHï YÏ%=ôçÑßÅ®d¨•4ÇöšÍÊÚëê"ò:¸Q¾a¡Iº€Ö‹˜^yÂë€Êà©A»şI§3îd6ì@ÔÚÈ'äÓ¤À· ó£Ü|—ö·s^9•g:§R:ÄK§S)§®ºşZşß«wO~&„ß¾Yd.Df–5®7‹—p¡”¤sEÏ¢ICq‹¶È[•CöP¾J§†WÀ^ÛUOêÆ<\;C8@?”AÑ´¢˜CuGÆ6Ñ‹ñoà˜¼)ñ£vù,ÑÆLyœÄÔ ıl®;Ä-?ŞÛõÉFxeŒµ¾)O¨+ 
-XËtAÎ0*¿—{J³™oQÇOàÍ(MÃÏaË%aMZ™üô…§Ij­'L‡3Xu{äìù#o#(·”N§Ëˆz±Ü›“…Z”ßs{g¦‚–gÆëVå‹0ñöŠæ·5|³TFf¯(Dä÷‰ñë…¹ßdRZëV¤è ¢ZØ‡úÈç(±8VÀN·Û¨×43§‡>ğ  
-êª´²`!B–¡3É÷Ê*†\e&kIï/9“7[îÑ_„<ªG¤\aàMn5Cc:Úf°û÷rÖº;à%Pœ˜Âüs)±ÚQ8{á©ß§¾¾òœ}ççb10^%mY«cB¦”‰Œ>Eğ¡dt£C>–wP)ıÊ'»J¸Eî½,cç>Ï]âÄ±C=@ß+ëre­2„N6HˆÓ’»6“Ã^éA†iu1<·Ş“Ü‰eÁİí÷Ä)>=ˆîã>nZÈÕb,~Ï=µ±‘ÔıÊşğ€¤ü C¼÷ÛÁ>Œ¶ª?nÆËWÇıö@^eD7÷ƒÊØ€©İôä2Ğ:ÿ¦»vN"¶WÒèÿN1˜½¨©¶ò†#ÑG˜´) m–rP*s‰X¤i­:Fÿ< –qj¨9reJàiäÕ£3êÖ>”ZKÛü¡Qœ”1ÜÏBfŞ8‡Ê2HòÄõ³®µ§|¡ÚœÖ—.ÿ˜_£ÚAé¯ 
-]ï±!±´ÑqÁÿc‡i·îynNş&’’>„0¿bû³¶èçîE4l‚mì-°oê˜j‡A4ìy:¼Ş_å(*(A/ß.-ã,tÀkIE}Ag0`‘Òß
-Ëä ¸4èÖÆÁvÖ~>Ë.f<UÈ
-.°2èâ«Îş^¹›.l¹¹²mœg¬¯)óÊu›¸mYx‚á¾íåSdf©ŸÚİ÷êöà‚YæN‰ËC€‡’i §»s\™‰tJ¦d\¶Ou¿,HÛS}Ú*¸ù¦s¾õU,nEC˜©ìr€S¤"–"Ïâ¤L<uVÄ›¬VÌ&\W“äñ[#Èô=¤`>¼$>M„3)ª­iÜ~2åäf!Ékâ ó³¶‡?­Ÿ]ë¹+«clSú·ır°öZB-=—c=ç{K–Úƒ’“9ë`¨Pdû‡ÖÂx@•gñ½!ßÿ´íX¼&Ïæ¦Y1ëx¤U†^a>Ÿhpæ¤Ñ÷¿xÖÖ¨Œã¡£~Dkz¾˜‡ i­€MèGÜú¸JÎƒušÒ]’}¦ÉnüßùÈƒèıñ<xxˆ.,À'¸Q¿œœ:"Ö[ÌycşÜPL4k_XAû5RÙƒµà˜y‡kËô~Ó°Ÿ;I3%à‘¿äëâ:GÍX2€¼İı É™[a& åÔR”tÑììC¼ßM›©qµV?.WHòó"¯ef²á¡¹î)ˆ¶èE(\ÉT|Î(„
-ò¸©Şp× 27§¬dKïO{zJ™\#™u6ç§æiİGwu§>OGØ¾ùæ¨İÒøäØY•JÍ(õ÷ ÙİT‡Å¢Ö[û#ªtU+e%~ÛV
-.Q‡mã3;NwÚëßì²£çĞMõ(¿˜4Ñ]³''8qşº=å»“¸=G ò¹^5@Õ÷ß?”féaŠïröîÛ–=€şÏéE¬’9Â°7I®¬‰*äc/q1×¿x+!TÔK£ÅiÊ0N´(Õ4º=»ã<x°Ì/¼NÂWØ>Ç­G¾Îˆ¼	É„cÒ=åÈôºŠPÉR‚&gşà+[\´~D"¤…VviS’¤‹@ìäÒÈ°ûô\XÃÍ fkfY£{³Üï…Ïz<sC€õDĞm"ÿxİéM
-^P´¼\‹T´‡"ÌM>$~eF ƒbazOÎŠŸÉbµÌ "OÂÇ@°N6^²+_ı:3Ï\CKİ\B÷ÖV¬-å(2Òzî|„‰•üİs¸¸ÅË‰k¦s¬m²c¬Ü·Œ\àÑ.· Çò¯Æ]	ÚéÉSYš u+­H÷ú0$|±å;¯°öíªYÙŠ^dÕõãN–Q°ş6nyÂßMè$õ[Üœjz½lö™°@»¡ºêÇ¬—”â¿2Ä`gˆô‡	@af¶$ ICztm1=Nß„…U_%Î®–ã)Ó­­Û=`¬ÙïÑ`Òî™1sú7xı«wt[$vl÷c'‘m?gğ„,€Š6÷¶òÃs¼À·)Ã€jÖÚ
-'4éU÷3F]µÿL›Šø^éãdˆ«æ»?àÍ8JçÉ,¯r{µa“9çï$¸œØºÁ'0}EÇ}0W=té“Á®cùYvs¾3ÑB§…ìyôRfÓGØÅu`Õ`î’¶Ëtc¨OR†c/_]!³“ãL·¿ó @[ä˜Œ;2ôş‰?E7^Ì«C¾E9Ãç*ß…ìv¬o8 ¬WKïËX	c¿Üà‡”ŠøB­ÃìóAŞ`„Qu›	ñH#3e_’ }rlÿù‹ÿC•I÷ÔğYòpuå!áFÚ×xqcpM†õ‚ò $Yğm[v ]%Fé<I¹X/ÈŸÃÉ¹ÇB½âgà‡·´RWôqwnpâªÔãö™¡°JŞ;)ñV%à{! ’Y½h¹‚~`E5Ğ˜úğÕ‹·ºy[ªH"ê$áŞî>)ª3 ';¿Ã:¹ÏùÓS"øW¨üÜé×O³÷ÜÓ•BGğ./SÃÙvH^w;|ÛtsI[šÎM%œø¤“d…‰×+}e®WÅ­|)bN‹›},êwŒŞšLzğÏhä¯–Ãî465÷§†¥
-”z.=?ê§r
-a“¯“NmÚƒãp©°®Æ±K×]–fMX|E0¾yXÅKéfgêØ%à™§º¡Šû½1¡¥ºË5*”
-6£Ê¿ÚôcK4j#1,nËGY˜RXow×ôú6Ü_¿vg&áÒ}|z¼B>Ó¼))¦–˜A8ËGâ=½ğïYs†ñÈuÎâÍhşl)±¼ÑóZòŞå}“û…DWçµÍP8rÓÎµŞà?¥‡ƒYúJáTœ-,&@ÀÈ1œ÷*şÚÂÃE¸ê~‘Ô´s!£y$M[ê#SÖIwdîô©ğÏb6ûåä(ªc§ne®uqÆ»ÔbÔ–ç¤WºœüêğgY³wûuÊÒlïƒ*Q÷\ò§£Ù§	 _sÄüuS°ZW±*¦¢™-|(d‘.5nş|wG14‡ååªÀ¡«'¢¨2!
-·5@~2¯ş§Lğ¦İAöA¶H{j<’÷RoçbFŠu1|gğ 90òÈúÍÌëa¼²bÿ§½ùs>Í^+û-kÚ>PkqøµğgõmK_fAÈ)tNep»$0áòÏ‘ş‡Új!O9±Yí1Î)n&0!C¨Šº÷‹×Rëq×3°üGÍÊ-ê1Ç±ÑT‘"™}h…ÑŸ ¼ĞÓ`'w~×0‘[±jwÑòóßµ(bk2 ĞšµS+	»ì„{}íHÓàŞ°(¶µÊ£~vŞ3
-sŞfùQà´ å(÷ZLeZBÍ„…]DjbLŒìÄ–ùzó”^gÇĞª_øİXO7—®rŸy¬Ûk²L*–AÚ‹ˆÆ7äŒ76£Ù”áé£›ÙùUm0Â{1­UŒÈ¹g`GÚîŠ‹B=_¯á×³> ñ7Óºyq5ğ{?‰‡¾Œî³oÜºã}Ÿ°C¹¬ì‘øüş
-û_K¦¸™®
-0kŞ‚ˆ+?áÃ|+JûÚ¾IùèÔ˜€Sƒ²0ï¶SÓŸ¢‡	\Êòa¦Mµlk5U.×OïFJ¢mnsÑs.·]g/,¢Œ×NŠ`¿I— jaÎô%•ÓÊ˜^kŸ¬˜Ox63=é}0´¶ˆ°›°(ßCÎ% ¾òsc³Ö@V¢¶âæ%¹ª2á"æT^¸jĞrV<h£ä'’Åß2¥&›¦NšÒI‘ŸaxÁ‚½ÅÅr^ç2–w‚™4»ˆ’©ü˜RÄ$ÂuËVÉá€’y×Ü­$”Œ–5D%¥TU•Q‡¹1Ê4™	­µŸ¤WK;kâ&-­yÆº\†ì3_³aÓî®°§w3«=v7û¸ğÌOó…õ*¼ÈÄOkÉ
-µ'Yœƒ¼‘ÚˆÄ°Å
-ÛëÙ¹¢T¶_…o$íÉLFI”Oò­8¾ô‹È3g&µ9/Ó³b=n—ax`X…„8%t’6Í÷æ”×¦é»/ûši7­¼$Ö³\­t\‡â ÁÏİ¾‹Çº¨sòğ{AOe£‰-	%osˆ‡v·ğHDœ“ÒQ§ƒİ-jÁ!Ò¹RŞŸ*2Úg†P*LoÊÓŸ£ë.F,Á£Ü$H^ªÅÎ´¼ÿâZÚ0™°÷gÂÀ1›Q­³ÔKˆb²Åºƒˆ­XEµ¤‰X>L(èËïzËuFƒFŠ1¼Œ2#²ÜŞe]MóÌİë¤q<ğ>Ô÷Ñx~PR{`/díÈë÷<œ4æ9Í)2ğO/ÂÌ4áâlÄj}AnÁDgõxômø_]Ì˜-Ÿ¨šT(Vz~3¨›|#Ç}‘¢î£U¼&Ì™cÙÇÏsîNV8À°á<–ÎL¤ñ6=î+Éy”%új‹nŞÔIê%sIgÿFÔPIÙ—¯ÉÙ‘ ½np¨Xµ»6ƒœ_Ì°şÿ+ÀS‹<%;Uˆ‚¼ú«SØèÏ¹#?q^]®N/kµ»¥j–¢ùÍKk¢ã­ü¿‘Q{GÅ¦ˆ¬]}‰„ZŒÛUcİ‚ÛœáE£ˆ– 1ToP8½DlÏòC…çŞ²İoã²ú3İ€Úmñ®@¼‰Î¾Àqš[æí¶›Ø—6à0¸ @R®c£é6RÅò}L3ÄÑÅº‘ìRA€¼E>%Àƒ¶„Ì1“Zm®¡ìñİÒ»£á¢ÚîgaN(´û³dìWÚó­/ ?¯¶ÊVkBÓ	<zÓ˜,ûÂ¦ò3#<éŒ18$ë½	WÓ= ıu˜^}¸m­‘ƒ`KBm?Ì’œWu±™}XáwĞ€ S®{{s´‘0ÖLÜ ï¼t¸sI–.ÅÌ×‰‚0–FĞBlz'GGa†Ól}éº=ïšfsóÑU	1×›ò—İçµNtcÚƒÿ³Pw7-9•A
-dá½J|èäÏ‘kŞà3EÇ±fì‘Z‡2Ií
-º§-0€›Cv³b‘Y3ƒè†ı"­*ñ[Ø)_Oï¿‚Ş1{Å,\rÅ~ó®ìàh½|EœâJki)·ä\K¢hi¾PÉ¤b¥gOÚ[yêşÑëµı9hJ±¹'b2¦÷ìz¤"ÔÜà~ßW´•îY¾·ø¼ôù®~İ“„}lZb†xV•kàƒL²¤X5„’í–hªö?Rúñûâj…a'“] ¾`‘å¡H¡?–Ê(£F”Î!·pÙ€ M‘¥7ˆo9)ş¶(ÅÙ+G
-@q„Û^g<™¶*+úµàÀáJ­ÆrSw÷JöQUTU9ñzj²á'¼´.šNpÇŞˆÒ…d>íoÉz4}	Ü­szé;÷u›ˆ•…éÈNÉµÅxÿ%<œ"êÚXê¶Şÿ\$/ˆ˜”C÷„ŒI Ò•Ûjz-ÃK­¸N\7?™«ó’ı:j&pÍ=•yâ<¿~ 3êùäkDË<#Xvò÷mG!ã6«êb‡D×• yÛ†ë£uá‡¢èEE³÷õ5ş|Ä¬aÒàëªá‡½hÿ7Æ$LùXæ'a‰¡1X³ÕP š(÷°4j¤kÖ0ÖÇ!Çá[kkuÌ#-É[Q¢ =Í—63y8%g÷¼
-æ^xÉÑ13İÕ9=°¥7(PÓ:Äkß^!ãÎù@6óung_6qpŒÜ{”Ûãœ*şçÖÓcTN@œÌHP˜äÁSûdgÎã»Û‚2€ë"Ü³NgóÁ¢"Ì¾)¿Toà´$tº»õ«ë²
-WÇ¾–é WÄgÈº“fk4]Ş…İûÜ$F;“¤]x¡Y©§ğ„\‰·Œ.­›jü³HoïØá%ÏP4%t?)^À–xan'ú+ÅUö\ßªîX$´ÙüU‹æoé^A0šá Àüeç³»‘XòáôÊEç<3|T Ó½ñx¯Scc—xL”ü¿ù–PˆOÅÑ`È‚GGÌòöîŠı3øá™âàáKàaªdpwß`°Ú*¡½¥Ş’¼Û€2Qmö3xÛL²£Òœ÷w­µ\>µ]üAìä°Ç|™_3b¨åÎqJ¤0¢1Ç5I‚rõßŒ	¡9eŠdÄbß+§8o¦ÈP°ôÌMj'@Á¿û‹|rÅt$`æW˜€òñÀ³–¹åû	¸Øc¡ÊAïJà$Şl[W½A·%ÀuÙk9ğir¬pãJË|6à,iUÕï¤'½¯ÂGAÁºÒ~¿%¤ç¯³eŞLS¶T¿õ,ÀÙ¸©3ÕöZ–Í—¦Ä‘¦¸œ(
-û/ÔÑ[²[ìl6(ÿÄIŸg,r¥zCÓS7ÿ*ù¥24Ôbë—xĞÛò«x1 åOß»Ü«%ˆŒèHÄwËgÎØ0Ô»Û”¤ä/wPŒ0Kè=©—‹:—»³t‡ÑÆÒô¯¼cÖJÉ"eÿØ=PFÖ(-%r9Ö˜‚úùdÍZ2œ*Uo^‘ÏâGpAñƒÚ_èÊ]ÚQ^¸pj¦9cÕnw£^	Ş‚±ü~	´qJ)×±÷|ê!s ùR•‘zĞ™“pæ€)`»¨±Û½¯ˆğ€¿Æ^£-“"vUG|‰2ì ımcĞŠÔ´¨‹bUSÏPù_½ã©‚ÉOì+&˜ê“6•F€\Âåúìi=ıÙEİ5 ivËÈÈx'œ Œg5·’ædø:NĞÒßôP³g2÷B­fzqI`+hfüŸß±)¢%j»ĞŠñV©ÉÒÆtşèOùó˜!1Œeó™aÔ= âÈ©úÎ†h…. ]¦ê†düï´Àxç‹Œ{Sú…=„µFò/‚q2Tm›Ô}Wâ=,»6–ä4Õïİ%éc‘œœõïñ”€.üáFa7İø¡Gt.T%á¿Ä\×ÒP’Ÿ}Øê¦3ğT‡.#àİõ¢0<¡é#Ôâ,‘Â®ÆAU½¾kŒ€NËDæp/5¢}iª+(›¹ì¦HnÂ¯4Æ'dâ00¸´JÿiZ²˜öŞØ[Å+ƒôÏLÒ‰ó§pÈÎpn½à» iÑº¹ ‰‚¡T™¾ÿ€Ä² Œb»<‘ŒÎ¼¦ÈVœ"§ÕB
-\‰a4Myôõ &{jµ7Ğr|3û*Rt]`˜Q{°ôîÅëØm6uÈÅ#x]¤%Ø¬²²,ÚÊŸYÇg,ğunûgèNûºWÓƒÜ[°ï¨‚‡?¢?}İòkúXy†2fHÔ2Î3T%(…«Ş–+MŒdÚDÿJñóa9
-¾YAÛšm gA°+‚ºŸJçb¤¡?«L²-á¸í¨¥IíßÜEQéÆïÏµB-£©ê—½É‰Ìï;ãd¤Ö¡ä0/ÈDw›ëFY‚3XÁ­[fêG°Á…wP(”7¤ü
-ÀéNu,ÍXí:şv±Bğ%²k;%ê¥ô9Ü/küĞïî|Çs×ÿ·T®¡äE¸ }Ì
-QÛÍQ>]‰ë,=U7Æ¿ô¢“øÉGãVÒ §4hçjĞqÇŠ©|aÆ½+ÑÚNæ£i’m)9Q¦–(éN3İ[Bïó¤ÿPİÖşy3S1ÈD }ã‡Áåè(åìë2ù
-ó§¡ÑB=¥ÿ¢Ğ5ˆ'€Uô<‚7+³o3êë’öö•¯ˆhä#…p'~¿]5ÿ¨¬3Hùï$rÍ!ó‘È2•Î&Í¨r5©Øì(`¿ø›Ê–±-‹u–œû²
-G”KÚø);ùôô‡);ĞÀ]k¼tU e\âB Ş–‚¸ı§‹¶êÖ³Uè’_s4£1¶1E]Vşh„=½ ¦MØ2%› A.5C˜¿Dƒ©ŒÀFô#¬t«ş1<xşå¹ŠWĞuê¦XCmBıM5³M¹k÷µ•ñZ
-àQû:Ó³İêZåa±<OW¶5®Š#­‡[('3¸ZoDŸ„$ZÔ‹¿–?©Ú‘ñŒ®,G¬7³[…<‘ıûÕ–¿t,	—VlYËNİøc©vh„î*D¼käÚæB‘Ç	Øí*Ô‘‚Bœ2gx ù¡çr¢€
-LÎÌ“×Ø[AóåÌ|¼©'ëSı
-ÆğÅ]†	Ì¨ÁÊ!†æ³hOñ'[³
-Í	$§°±_TÇ!fĞègŒõ‰¹í`\ 2^A<ÔI=F]„ñJô´‡ÿÏ%9Õ²(}{ÖÀ.íô,Ê¼	˜«P+MÇ¿Eë$p#wFO¦O‰;éæYY\ë„ø¢ƒÏ8ì²¬]Ì$×ãüÂ(a«Ü$}â.¢JXOëçi£4pı5”8€ÚAYPGƒÛ«ÕS£·‡ø‹K-¡R¨‚­ô˜öšì8qiêÊkÈ7ºq:Šøå‘·)ì}ä@6ÈA§Ô… L˜V?8ÎÒ	ñ7Póú:4ì<€é¿Áz­¬·LÙ±@´¡©ÉÑéJR0àpÓƒKœ&%öí	ÌoU™Ô‰S~’S¬éÌŞÚ×K9g­<;zypƒ—w}!¶ğ¸IpgĞ¶Ú™Ó¦7È·¨Ò‚³g\´Ø£IâÖaá¾p‚–¦c¤lRşlÓÛ;‰ü«aª)jƒ^óÉrlH+äğ;®êN‚,ĞŸö$òD˜“·Ù“{e*<Ëü' U<8EÇşÀ2íX­Ò‹ÏÕÇ\ ¬÷cØûÉÖøuÏo"“;–rJ_RU5úõSæAø>r7É“ıY0mˆV´ø’	\à>OøõËwÊ®»!uç…1˜±ÛpQWlìi~­ƒÃU¶Ï.A‹ EK\·Gº8k$Ê”Ğ”
-‡S“H(:œU–r‡İÎµ§´ÉÄ‡çÕC+Ñ·-à‚Wş¿5èx|ÃÀâ¶|^ŒD0*)içÄ0"´25†æéNÆ=D:‘³n0‰ªüàÙùá
-mÃù³b)LlmL$·9Jp b­‰Ëöà¦r"¢kŒé9ßãfÔ¨xÙ8Ÿ%ŸÁ\‘®Ùç2LHB·È›í<gŠÇZeÂK»{]#DˆŞ9v®Ì£©p J†KÏ‚fô×„êwƒ¹#ZN"+ì"‚c4²ul@òIr{î²ÄÇñs/’€åv1h¬(£wIj&E^¬6šÊ*á|¡R\_$B£3GWÓ‚á_÷QOÌk¢S•HætnGó–€R­Gr´S»QáAV¶¨‚¡…Ä5¢s®BX /_bÀ4|Ó¶
-f>`gÛóœ.ñÜJõ‚È†˜®Y0¾¡u—ù ì’;Wúş’«%êÑ`pDü*MçTQtq•ë¼•9¤÷xí:1*#ûLæ¤¶¡%æ]W–S
-=¬ÇÆX8š¢¡¡%ˆ%Sd;Aä«]Cº\óhüĞR`[çc=ÚJíe@²ù¢ö#(½‹[| ş}Ş;ÕTcÏj‘8—?†<£ÌÑ`Z?¢ı¥B]ì9	~	·™¹ÌEÀô@O!å
-5TìÌÌoÌéV,¬‹¾Á¤ë­ŸÜ¬ìëh¥ÄÄ–’°xˆğŞÊÅÍGGvşª>&QQ»Ù‡Óø¶#-eÜ0Ÿ\¤^Yö†ù8
-ù›$ñÛ#„Jµ`¹-Šv¼ãµ@_f:†¯È­G©ªf^âµ9ï+QÍTaeÄ›aŸÿcR>‡’·?wYFğm[?V K²³e£9ÑÜ<rÃ¢G6,¢é(>ùuÓÑğıp#Dc†HÌb}XƒrÍ²ùU€ƒíHĞhIS’Ğ\5lTØ*?)¬£d_á™í‹bˆÎHnõMá°Tõû KÊ\¡°XÀGó£&ãp-YA™öŞqª¥qÀn'V9²N'´§~Ä.¬Ş¾â–G‰ÜL,òô/›,4È|D¨4÷Ö›êzîÕ•{=‚õÅıYc€Ã80ã@f¢ğ‘»5Ö”°Nˆˆlia©¥¬Õ¥”Ò‡ù!9´Só¨`7/	Á®’àŞ¢³KÏ"H§§‹úw¬bÅn-+š[ÓÙÚ~{%±€cıÌÍ¦{GÕ+Ùs\‹kfÉÌo…5f%:,(gÂ¿ÒZÔòÚÓ}|éW….†ˆØ¹VmµWWÅsRó/uşZIsî:H²“rñöËZ"]!¼™‰ÜÕÔSQ7Ì ‰=¿!¢=ç¢­\q!ã¶<F1GV¨¾Ú Ê¥|PëMR°@K
-€îQ\äÂ&1ìV‡kšN_k¿#Æ¬x^üÍx²ây8#‹™š£Wùæ=ü‡tí £EŞ“ew9`I”¼] ÎÀwnï›ûó=zàºïQdì~u„7×KaÈŞß_üb£º¹Â\›8•¹I¦Ù¸‘Øû¥¹‹yJˆ›7ß
-‘¡ZŸnôj‘8ø^O±€d[ı’‡1	¹íí˜1€ÔyÊÕÄp~ÇòL”ÙW6í¦[pgU[Ã ‘Ç_Ó0]õ™è€Ò­xHjöoW|l+˜ùû#9L_DQ-ˆélQc1ê¡ºÄO›U‰Ltå‰PEÙÅ_·øRAØí›zRp¶¬ØËÕ”ı¼ ÷É¾˜ğÀŞ/1¯nj:fÛ¸•w65:Ä%3àOgíf5Ûm:Ü/Ì	à‚[:ñe0…cbäæ½±QioªVetË”^×úŞ¹Dr×iæ„ °vMãq…}|:5·b¹Q>JÃTu”^°?»¹0Ú;€æİ*³.B¬;™é2H¿ ‡„İ™‚EŠµU/NŠÛ'/ÛÍÏõM®–ÒğByÍó¶Ğ:’Œı}øL™ÏÈõ?òÄêî#uîãX•Ağºaˆ.LıÆ¼š j0­x™¯R½ıÉ
-iMiè(Nö;£ğÿ«“Cı»­lr¹ŸØ¨-Âj{`ƒ­¡úËãø›}û Ùƒ/Ò¹(7`½ŠÜ“ _ëçq|V¥sßµ;hêDƒ@•À£( íj½aVµ{ïÃ¾ ¶Qñ“×*à\İGjş;¶±s’ëøÿW¦FZàÎáü™Yj™2ê@µ¼ze=\êízô“.‘v:»H”_Ñ/F’µQFkğ¸_òŞ«¿D¢"éZñ'ŞÄ}Ë+†šep`Îß‡ĞïŞ,˜(Z•Q…^	q¾GÓuŒˆÃ›š×ù£!µ©´¼#D™³±öE1“Qi[|ÑÚè×r6üODCŸ­åáï¶Jò}XÏÂ·ïOâÖ„ç¾'½y¼†¥­¦"nî×Š7Òy¢úy.Ëá›Ä#8,Èè´+©œâ¨sd¼iÛ'Á]%Ñnq¡Ë’¾H]%úÜø ÌÆ›{Ö’ÁP}Ïc!!·DpÌÔ”è@!*r9FOp_4ó.*èXo4¤N³@è\q Ô{aÁöøCïnƒD¹qdgA–Û²|'„Ì£1Ïe76™#´ëhŒ\¤Ñãò-¢HÕĞ1·ª‰Î¨æ(Œx¶6á?-à¡şBB&å:üŒºƒ<Mš‰bå6–L5>+ÔMådÄò_©0>:Jáÿ
-\jsşe¶1‚ëü Í¨¥FvÍxä.ğEõ#Ó>ı0¥¸Ã—T8rZ0àÎ¦p hößšK_·{É,*q§¾ëÄŠØü€½]ãDºˆŸuG‚ØtúıéÆó\ ›û•¹¡.—7œŒ;*¤oEöGêœ[í2†Z 4°!Fób&ER} ÊàTÕ«)8RÿR^ÓFN;El	Çˆ[Ë’d[yàYóÌàu_ÒKçVĞOBñÅx”›s	=™öCûºgS=O4¬İOœnÈÍ‹j8l,Òfmà‹HŞ†[nr}x/)¶BâYqEZÒ8“£ÏS8‚X´Ãmƒğİ;`OÊ÷boŒŸ‚t_X©ÂNb_ÓX$TÁâ¢ó‚Ëİk!"°_‰`ÕòÇ]ıĞ&S9½"	ËXQÜ%iVåtÜ0$}³~À„`qUĞòåW;ßB i=d^I0HwÇš	CÂ;v·Sú–6U¼f‡…aÓ Iûòiñ‹È,Ñnk‹œò@’GòÑº(råÖ#s¨YY}O#g$NÒ„Ã½C9Æğ"ŸŞP÷÷_¥z»D4¾¬¯sÔ×ê™|ŠåK7ÏÎ
-ú:B]’µM¡Q…õØ£=Y©RJõñ÷‹}/x= Hn£(b„ƒjû<‹DÇ^èm6S‹Ããsz^Â
-0/
-(ûö&vní¥…9Õ`»Ó#¬3ŒÀ³r…aÚµ:cY"EK„ïØÈãÛÁ¯Õ¸èøÆ¥:zuÎè
-eŞCˆ íêÛzu”„‡nZ~º¤ğ€EX¡…/ô<š0¸Â&™B¤tÓï.o¦°±8QãÔğÂ,Ëß
-(íCk|²ÜC
->ng|²&EP”1ğAÂüßIdÅ‘}R©ä¶­–ÅÀì-Û%WßÇÆœPø*¡²©İn(ƒ »û(:-$¹Q?ƒè¯`E|´ß”±ºñ/´G )À‹B¤•ø„ĞKçûÌ9ã]ŞÔÙZWR‘ÿË¨•WÚÙ¢ÿø³pÂ<š÷ÉNÀùRå›ÆS.&6Ş@¶ØİG¼4	»$×İ,d¿¤éÓTPÖ½ËNÉ¤“JæÜ~ø|¦É¸«H?ÖZXìTn1ZğÙ7)&İ¤YzàE!¿¼’»–;>¬I‰Æıå<B]<°ßØ,%ñ{>”]hsÙÚÿîÜÉ +IJ
-»Qê	G3‚+t>+¼Ó’ìÙÍ»×MlEq7ŸŠyÕªÙW¦¹¶Ò¾‡$oì“êB÷¢Î¬F}ög‰Æèi ´úõ¯–“¢ƒ•Xv:’ı8ˆ® ¸¨L—o·ƒŒÍ)ı½Gu¹b¸ÄÁ6¾„EIgs»ûh°ñÉ>Ü‘íİn!q§Íø3ä­ŒõQI1_£}l´†¿ÉR}ª³öbêIe¹}(ª#•ö÷°)ªrÒGƒ0¿6Ó^gÿ ŞBDeÉÕSRd~	¨vÆxˆId´Œı
-ów'6óş%[æ[“rF×ÉòõœÑq‚àFÑÓaHÌ¯¼)B75A>÷ñ
-°“N8„;ÜÌQ­bh™õ5cÃ¿‘9”âBäÄ×4a7 ŒÔÙÌş¯Ü•ùZ}ròo¡²é·N9€ş?Ê²6¤2ÄCJ¾ØÚáÁ«YîÜÃh´K9ŠõøºÛF™2Æ…0œ:&KÚ¥ûª2ºŒÊó+}L'ª Ÿ|¯°|îé	R…Èt¨^h}°úÓïc¢˜>îí·ÅÒ~ÙÉ6ådc'ªŒ•ÔŸÚÕ“—É9Op¯©¨å#	î|ú…ô¼û}[u“lk®$£êkP­ÙÌS«íµdAG©?…®4Æz:oZßÿûÓâ€hË8«ñÃh+şP´,©ZÁ†ñC ÏPW-~ÃÍ°èê7§7—=ˆm5<ñŠ³€„í)•¯œEÃøy“.A¦ §ÙÏt¾÷¤ì+]_¡$lÒcUƒ–	+ém¥¹4¿«!%FrBe~âÃ<Ø:ù<×•^4ı¶ø"…¾¶ÌËGÁ't|–­5kó%}W¡•ÔÂ$ÄB+sp ÜíŒùsŠ¤‹¢V¯ºñ”Ú^c(¿ÚI!W+¨h°¨l¶Ú, A¤¬dîËJêXÎìæ¡ĞV¡5¥p–3"ÚU"^#óˆjè¢¬DşÅak§ïm‡mqGu ËF45Òc)Í8ü¸‡jZÓ€¯Â’)\‚6ßÎ#CFœÍO7‘Ô¿È)‹#mÀ&"C<PNà¶±a NÑT&Wuù\‡òù³øÚÆãC2.`8§·µ %ìáô«ÿ9İ}5Ê/¾F½ã~»ê åoşïŠÄ±zN0Sê"¨¨à¤‘3™Tğuë™’àbæ²ÂJd¿"’®?‹ø±É~ÄÕ)ƒª¥/ÆKA0x‚jN6§i¬7ÃLªQØÜšñR†Gó¢Ïm®Ø2û%);«t‡¨èèíeV¢yõG£¤”LL£DÂ>ÖÓJ©I)Èìµ¨Š=VB÷H[»İ¶wÖÈ=†ï_­ãì¾ñ5!kxM2‰ªGjù%ßÚ»‰°"tmr2ÈX/·õ×<;ÕÍ–ê¶f-ÓlˆÀI®­™L²NOÒß¸·DÀWK7Ò°ÂâÀÜıÙ”sû{™ô¤±Îİl—n4¶4ã`1¥{e@xÀr3Ìä±;]ÀoÙÇ½j¸-êŒ9)eŞŠ™Šcèm[7Œ²ëÆIx;ÅhÇLKFãV@èœ9±ùI˜"3ôƒ>šŞ¥—·A‚ŸH ¥næy‘—±Czô0~şôSI</{h›mäğúõä,«½(Ú#£lôŠ4§À¹+òıà‰6øS½Ñ(¨2ôÜÜëiß¤…R›g¶9ïHÓ˜ûˆŞÛ¥­‚ãÿÙ@XaÊw™? ‚ZVhQ÷ˆúœt¬¶IæùµÁƒŠ+—·‡U\X59
-;±˜bXè¤º	¹}¸‘4m¡q^—eÃ„ì»çf4ØT„'b%BUÛ‹hp¦¼Èº4l®=½ıñ|;¬E¡ªÑ„’º´,MqÚà#Éß®?ÊÀ%)»´ú.ÑÉ \5ÚšXÏ-#âAú™ñhËG÷ÎêÛ
-²r·0•'Y#¼Øz˜ÙÙµâ„zRzzäıffO•Èéñ=‘ğ>ÄŸ‚,IIå”Ã­€&•,èG	—,SF„-üÆiueÂ8¶Òg¯?Œ¤+•ª­8íñ÷~Šª”2jãëøE_™TnYĞµ-®Î¼T8Ïg¿–oe#ÄR‹¬ŠÚ¦sš_ø¾®¤Œä­iñ€Øæ&"¿¯|^ÿïôÒ«7¥ói¤™³•”-÷Ü2k]±8°˜6p?°·˜ Øã]Ax8SÛ-+\¥?ŞÿØ‚ï~Ù9Øåârx¯¶yåÍ¹ZçÅMÕÁ]ÿ ¤‰".Ğ’ Xº[äÅPak"¡§áo‚—ãûs¨Û¡dzî8CD›rß¾7o½½f3Ûk#5Dã…V…ô~tÇîòÚ„ä­çD
-GC_õ“¥ éäÀ"+²œ”áêêœÊ!Z¾‡×ÜKÁÈ-û“\oh.¦cË¦ÈÙtLNı8±$ñ_Œ ÓZº!–´jÔKUÏ¢}F¸˜÷hŒHgÒLr{ÿpîeó¯J˜W§ÆEaE¦…oymşÄ×ò nnšâô¾"Gç¯ª·ÃA£øÑƒŸ™).òøÛb S,|=„òğØœÔaU²)}Síô7¼\©¦NeïÎ–ÅœˆR¾c¹Ş¶|g;·—?­²aı$‘¬÷LÓêAGt~l€èø¼uEsqm™ëk_ÃÂ9Á6™-ÅÂìãöwP“YàM¦L	8§ùªRĞZDî7Kó]z'Fg¼³‰Ğ&åíî#³1~”
-şú€EïŠçÅ«‚UBİ·j¸åß‘Ùäü@©4x´Êy15¯>ŠŸw§¹Nq²ùÈD„ã±ÿÁJkº‚ÌÏé[F÷¾V,¸tàgf«8	ë@	?ãµ±f=Ñd·%Ø,Õrí¢‰üEe¢²ØQó^ØA¤±Eß§­˜º§‡Í„s£EL~¿®Ï¨)üå&‹ağÇ›¯ÓO>MÅ'Q†„Dº®-Üv•b„†'Re5¬·íT “)KöKzUMzË˜²¯?e¡Œ±G¨)XÜ/Å~ğ’#ryŠò¦Ør`]=AéÆJ£¢öv·Mx"†ôjP÷+õ^u¹^ÇVë¿…'|RŞîº3èpäÃ¬-«¢´œ¹á/sèyC®¨Ò“ fšìÛ‹$ÌCo¸[İÍÕX
-–>fÓ è”¤}Íôê–€õßÄH_¬Ììú‹ûéÊ„lÃkÈwŞPcF£ ò¨ç«KZ(“Ö{³ ©_q£°/•^O6ÿMµ¼+…\‡?EW»(vƒYW2Ó}HOŸI'ltÑSxU‚$„¢{?HğŸ}$\b>Yrd°âg°ºº´E`ø©!ËOC:w±M m³!Ñ2°èµ"Õä¡/&)‹ªî©ZÁ¸jf’3\$ñ\›¬ufZLıê‰¯yåŠŠ¼ØšwO%pİÀTXvâí>ñşÕÑµUcîc·C¢µT"BÜšÎX²àÕ¿şb-´õü-és5´†O(šñ?ıúcpBç¬==éS“…ÄÉ
-L<qEıº
-g	{Uj!“÷·šÀDP@À²o“íë—&Xmÿ2á×©·¥WÀŞŒ	XúWXÆŞË·hG‚NÉÊç7ÜéGô?xj$q$Î ãd;–ÿÜ€“Ç]…?e©Xš#¯^BÊbúÀ¤,cm=jÚû‘.¶rÚ„. u×jñCø©­Ï"è1ÈßJşÙ¤SÙ.¶p…cË,•>,ö¼^ÕŞ¹-yÙŸüßÛ
-³, üŞ«6µ½h‘ÔMÌÚVÚ­f1±`–æ„GY?åÍ‚–=íÃ4×8ù<˜œ§|m±ÿ×'tÅwŸÙ
-±ëëÍÈå¼V½&¯+ñ@ÑÅihÖK¾9îÖrms¸òÅ‹û/ 4:çÕa¾¡RÃÛ¸d¾d3-®áĞ²Ü[£Êt¾D6º·ÏUk]‰È7vøKÌuÆá‚JiúÚJ:÷Yy­f$à3.õ{ùıL~¢†…Y8fÑ/¤|¥g=Ë.eD|¾òal°ı×sJ%W6ğZ}a¶6nå Îöv­´ê&]ógìûgß+­}Î¢¸³ö¦ÌŸfÂJî0–©V…c¼Yğc‘˜ÓƒQ±õ.]QP¡klÂ¬ËÔ…¶0(/s[!{×R8xÇáŸ$Ú(—’søŒ‡:¸Wg£µ!²2™óåLÌjDÛ¶Kº`œWz/ôhvåêG‹8W2_ äÔ'ªÓ/¦Óz{~òİtAr'öàaw¼lš;â€0ÕqêÖôÍ¢V_QÜèèL\g“•§8	+FÈ‚çeÒãg{wŞhd<‡¥ºAÓ=ç¼c'Íj³«}ıa¬€8é”ƒ¯º’²‡ğÑ4bŞ¶ë<Kÿtô¸®o@ö&YQ¡ÀŒWy·zĞ$_•DDÚûîiZáúxÈabÑB'.Õßg„„í)€Ğ†Ú[öŠ\¡²sªë„Ê·–UÑ¨åØ9\«›fG5÷54¿ƒ¾o)ê†šÂ´¹U0æP¤I˜oŠ¢ö>!»İC¿"Ê”ÒcôzÊY—çq€¶l†C©ü¥z(³º›<¨Ò$aèËG,ŸVOCOÎz4e¥ZÒ?í8’aÚ¥²ë\êó[ÏMÉöm¯9sOŠ&•ÒàUÑÙvE³°$ŠŒ†° hpû…"tŠ3öcuÁMjÚ¹úMäu}ÓÛ ±Ë$1ÖøÀY´¨ä/ÉvøiÈXO1zDÔeDj^åÎî¼NÚ€ĞÜÕÜ¼4'”Ÿ,¾Â`cfäÏÉ“÷`T¯è´¤1™9	1.¯m.*é£‹Lyvb®Ér&ñtgqé8Wğo ÑÒGn¶ç Áâ’Îó,{&3ßíX;¡áÆNIRlÚœ4÷01Ó8*¸ÖEØ=·Vºfì×ç=şö OO¯ÖÁ®Ï‹ÎåeÔ˜”¸M2Æeçññg¤PÈ­æ*PŸˆ‹
-MSÏ“Ù^<.ä‚ó«)¹ô”÷rq¼ñcÄõ9_7“Â\ê‰9M8«Q­Õ>+œ7¢$_80	AKX®÷—RşIÛ½Éï­íPW#,©é‘Í>­)ÏÕç›!ô˜Õ³t4öl»;#E›û¿hq†Î$â…É·ôe9º åáB)è9¼ê	BŒó$BuXULÖ¯"f}áV¼U ”Eùœõö1‘E</¾=¶2ÃÖêJx.µùhhSÆòË±Œ½€¶BÖİ`şy´E]ù‡ı|KÙ((ÚÍÜã±’@¶ä.ëqX¢#,wİÆG*2#Ş ± .“e\,»”
-NlX/ù@™tWÌ9tûÔ‘Ô$ÏíZ–c@Ä<pîJkK@4 cb$œ‰C^s¦ĞÛr=\W0à–ëx{­i’p(öâVUÇC¤ï<oá”P*NÀ@vÈ+a–^ŒÆŠE‰¼Ïn¼”O:Ê;øŠfWÇC©Îô€„±,=öÕu‰ˆ_éW±Ãå
-	Â;/”vuA	ªàJ4åšD€l„t‰
- zôƒY*•¸¡ ¾Ùı7º\]Š›=÷©AÖfŞœ£,è…üşÁö®slñõt‹¦ÇÔİÂhªéNª’Ö
-5ÀÎ œ0^ö«ïEpòÛ„Àòº52ñmËn9Î®e"˜/ş×£µä21ŞİZŸlš-Ã£.¸‰?tcŠ™`3Bø°ÌŒ¶!hĞP5÷’Ã´¶]¹É×Œˆˆn	ózìvÌîî-a"œ²ó5:µjÎßÎAğ l}æ /ìúüËôÒúdMKx'kp[åÛå¯°QÂPã› ™ìã0Û=ËX‹A/=k‘ëŸá—dUÌ7@úÊ|(‡‘Ica€¯Vö?¨ØxSÏBşÖZòW\}M7„ÖÄXşã¾ŠƒÄi/Wú„¼¹¾}¸0°·ì-£ˆT=Ì4{”ÒÒ'Èµ¹©†šAù”ï@O‘#”ÔĞœÆŒâ—‹T~a*“¡÷¯vF€µ[KúŸó“…ì¶^§÷ijZ •»ÓÏNHë^àÍúÏ²z+ëø¼›±tÕ±'wóÁ%ë3¥Ã€`¨…‹rxÙ[İtõiÎBãêˆÊ•›Ä”G'†‰Sêo)6>˜2¥29\øùÌ»i­‰v¤­üTk‹bğŞ…®(F„”6NÜ[»úÈ1ÓGª * ³àG4™º62ÓÿFJsëâ”×ªÅ^÷&ë‰¨² Š>_ğvK*'’Ÿk.°B¼¥w âù¦†U[S¹ü6öæª…ï#qÑ«­Æ»?˜qQkß»½œ¼5½¸5¤r=Œ„=¡wRC<û?AEşr›9]—C8oßÌ+Ïw‹x:ªºDÁŞi‘ìÅº&eÎ
-›qÎİtQû`¾¬ìs	£Ï1·Æ¦™‡'³M—PwfíYÒ»‚;ÊşÇº•!0zØD­êi1ÆæÔT^{ ş¸pàBı°L˜P›YÜnüî;š˜†ÙŒ¤éSğ†‡Ÿ´SY…#4¨v._8?Ãì[œÀœÖ
-3–e˜ EIçä;%ï÷TXí<K¾GØ‡Ò Ì§à1xìé;s‹ä†0•ó;#‚Å	è¤E'£)›qáøŸ¼ıSU+ÓÏ›b~ò¾k±€!J (âÙƒâ!³Paä®O¬	”GèÉ™_ì¢]a9(ß.Ò'Ş3ÿ`F¦öµîkè‘ƒK0’àÄxªøt¢0g,„Ø:0&v¯ İ®¾Ó(±”š¢ ¢Í„›†^¶1ğê@µI×6Aœ_V$)ûÇ©m$ªVö*Œ´ª@©š·,OÊ¨qA”I[:ş][ø>ö£ÓÓ7-ÜrRÿmò0yŠù¸‡óuo¦DXøƒ/ö*<º	9{Fjv‹Ê¶™¥6š‚øJâŞ€é=£nØÃ•”»PØÈû«·!¬Îf¬9¨v:^»Èç<;Hq,Dx´O\æ^€½uÌ:À ©ş7OÛ½ ¾5ÑnØ
-«UPzè–k»rÏî„†c4}
-ÍÃL?Uäª·àŞh¥Èªê	,Ğz+^¤³£¬W½?¤û£Ş8êš ‘”huü6JtmÏ”õŸpéİRæg*³É>FúÂE{ğÙâá|DôI·¶ŒB‹)bé­Âwó}éº–—ˆE˜®áíK·ØmòÆİgãÒu{ú.uçŸÿÆ?;!êêñ@?G Å İH½û‚º,E÷‚Ï)†×uS‘ÊªWòÄ;Cm€KzLì°š#ğnPP=Öı:Éûœğ.ÜPÒ"ÉlXÿ\Cae"Æÿ"T„ìé€ ãh®çŒ—/,æ;9j;0H D—›ÕR³s$˜NĞş~¬wáå4õtà­š.õoš†îæe|§ËŒØÒÈî»âl|7Q³òrã³G*œ-É	Ÿ8RÒj0ŞÇ«©ò/@Ë.¢Bal”«uv.ÏåpôˆØóïµµ™Ÿ¢vñ¾˜ÎİYT×ğWœ4Æ?lRÎÊµnW0†«:H><El7†².ê¬õ“–7÷“Î@Í]Œ¼××oŒ|)H‚I÷˜)† H sL²n”D‹QœÑBÈçÏ‰‡	é»ZéKÔ|§¯ò¶ëM•t¶]°
-HÚ,5hTM*FÒ­€[ó¤CÎØH&¥1'ƒ1Ù$Ö-ÆÜwÍ‡*RÃîX>Jâs-Ì…¿äÓ<<Ú–Ş[ß”^ï‘W¤ÏíZŞ‰•˜(à2dª²û½ÃÜV­Ğv×şãh|kŞÉÂËš½Ø”à/ş¼›/­¬³5¿• lÅâÆ•‚P· KfàºÿÑq[š8g/ÿôf„H°yàTö  ‡8'6Wı\KÿizÖĞ@Mkéo\ŸİbÏgã¦ÚˆÈSØ%úrÕ€yõrÖsÁ):›J¶ÑŸt•¼¿LŸ_tÙZ	V áø³Zd‹KÓ
-“5—¦vÍ]Ò‚Ó"ëKt¶^›“òCÏãt4e»/€òV>Õ;4srÓi‘“Í§şJTCLG†¿Êlğ,£®Šlç×ÜP»J¸Xto—I:Sğ  då3¹x8AJwø?—º!â°JÌ®<î£  T±cs"7Ú…¶xC­áøSÉ-×[©Pş8lÆø°Fqï³ôE„öØXàVªAkºvŠ¦È×«¡0ÕÑ#ÄE®K%†!}×úî·u·álèDLÛ}€½Árã¾N€sT±|Æº°@Ø·?%C\Ÿ
-<CÇ‡{ßí3†‡¯YÒÊ4[½uáS2…×êÎ›yÔ¿IûTÕ¦>/ÇÃ¢jì!ps¦?§‡á©$ÖSº;Ú-¾(1kÍÉ0¾¥/¬Vl‰ Õ•OZ¡t£÷¹¦)ñvVItxlBUÑRëƒÊƒz¥¨•âÀzH¨Q,ƒC£òcåÒA"Lˆ•óí–‰*x;_l?ãÏ”R˜¸“¤˜Óˆˆ¹aRÒa§6ûÖ^"ğ÷f¯3iM¤¤ÑVù?ˆ–Wm½úã0Ò‹6W_ª3ôµ	¸Çf?4È}0xf4rœÃÀB½Ôó÷K­"Glï6¬`ÔVY¤va?Îó›Û‡’Záš¼!@™SoNµlëÎ%sû8J“)40ş¿µ}Ã¡1ó´×EÃøı€re¼¾ïøC½!—›ÿı6yk‰'¬é¥s€9Ki‰bXÔWxü.OéĞ€ÏYOãn8mÌZ,Ô™”Ğ¡ÌÖ"rg0ÕÕ…¿™³¦×~øSø"İG]è¥•a$ŠüugŠ =-7ÂÃ	N­[• …´¶²Ü©÷hëº5:¿v´µØ7±C¿˜5m^^³¨'ªúc0Çœ¹åP{ÌÉ”:zË¬ZŞÛ‰“HHÌ4¨k`Ñ[Á„/i‰;šÔq=£Îì·IÀTÉµ—núyÑ·Ì.@ÔĞxö„
-Atb¸ªsÁŞÊ+–ê(5@:¢òôt›qq
-á¢¨¦ÆÑŠÿ¹ Ü/
-(¤)jën[ïxú_HÎ4Öõª\µ`	ØVò ôŠ!ª@·Ê>x‘ö—¸43gi¨·~&·H§ş5'kÕĞFÎÎ éeÊ
-£h¢'LNfzÓwì¾†Î›€@ØÆGç?P'’”‘æƒùéUr)['eæ=ìWrE&@£Äˆ“1tï¹GD•ˆ1iRT ¹¡Ù t¬`ˆóÖÖ/S˜èòşx_º²•0_ªÏ$.ïUöõ›-
-cMšŠ? ¢‹15ÒÃ´ÛOŞÆÇOøÔ´ë€y>Î“VN9Z×8BS6Ú?î-¯ÛÿLSzÅqjùÄ™ …4»`R'(:Ôi{Ø‘ÚºÇÿY%ÿœh/RÂUd¬Õ[•`C®màMY‚‚`H›G¢}Å_ƒ¬¸T:´“c6oÒ&|Àşóší¨Ÿf)qèiÚßYÉÃøÂ‚Uiq&ü B-gªf–dÏŸõ¹*7@üZlWZ'}îÓiBjØã’Šsåw¹¾ä£Y(À©±ÁÈÒ±2y‘Ãs&ì‘.,Øa¤ëßŞ¸Ü#FH3…Ì v?£ã&)ÓMHÇÍrÉ'=x‚±Ş°ù±É®ÔmÄ9y ÃãÏìÀŒåN
-uÀ²÷EÇvµšf<±ƒXƒº$ÇYãõĞ}Cróû¹fbk†}D!¸KBŒ#X°UO±eR´‹Çi¯ªè›cÓcíDÙk!X+\îPÃÎw4~.p"İ†w‘1Ú„½ßS?Ğ˜ôh?Îæ1Y°$™Ä¹·4*äbÕ FC\„<«Ğìô~…úed÷=Câc°r]â˜ƒ_Ñ)¡ÓN×ü†â0ãÛ ƒ;3Æ"7sw®ŞSáÈ-‹µp‚X16°3a>Àì. V mSYÂ¤:²zjî„~ø`£Ñzv´ÿY#±Ö7í~Ÿå¸Š¶ƒ“Œ7õ,î7/¶ù™r¬è#¡nX¦rŞùr¹æëŞÆ„,zËQòë¶lŒÏóE«ÀI3pz–óø´SyæLPòŸ¨ø;¹*ØIÚ‡êÊŸÚ…lM#Ê*´ü#*Ì\Ú2Û—¬T§S2Ií­Ë×Á/H?9rXa4Vı_;Î€ÁËù/±-„úãr0Ğİöd9„~ÕÏ$¬VFfèAlóËbÙ\­á+tx §õ¿YáÂ‡AprÄñclZ·~±­Á}Ü×İö„¶=»S¸äÚY¨i*à‘×¯ı`íØöŒ1ô¥?·Â¼zĞçˆçÀßmå ¿ùr;6`!·šyŞõıQÕù™_Ò±µ;H‚ÃîGşÔ/1ñ+± È2ì(£·N † 4õuŞGŠ8­IÀEGÄ"ñçq¢ïúe^SÄ/d»a4ÕsoP² jG%èFB&@Ê)âoú–&_µ•—¬ÎòÿÃO>a.zí'b$-†,’5ë{ÔÁe©ßqatëœøzíÁ^Üäe.^X[ÕÄJkàzÒŸcÄjC•8àE}\ˆ¬Ÿb0ğNÃXPÚëü¯âşF×õÁˆÊC#‰¤ùÀsÏ¸ş$n‰¿ŞDû¼àM;‹ˆ†Gò€öZHä=³ˆ2–Áº
-3;^óŠ§Ä’#yªTÇj2/© Ìà¿§Ú­Œ­±¨G&>ÉƒW—øI"¢Dwì0OŠİtLO×üÅÆ¾×æı‚§.4Ê×PEÒ9o>dÑFÉC1g#CuhÉ”\"ê}/í|!€E!í[Ü/XNèc2¬Úç´Õ.ıí>ÙÆN^Gˆ±vˆ†§ïŒÁİJ¸è	Ğ+{MT8EÅŞ­ûj+:û÷Î™…û;èÂv´uÖ4—_"ÂãÊÉ@áÊÄfˆ_bx*şó6ÀkòdĞ¬£+ÏÛQn2úZòu¯¢éÜQßmÁ%sR|6h‹‘w¾	ôàøHôeª&XbŸ0X†¤èÃUz<‰QÑâàŠŒ3¶²Ïë¬[{–¹RÅ€
-Hv5z®JB0RHş€$¡_¾¦ÀnËzTú]^ÉVÈƒ.g ?®Ø•½ĞcO©®]4ı™0šåÎ»²šÀÄîô}ŠÌÏ}÷xqn«vD¹—ïÆğyRİêé·¥UòÊ øõ:õÊ×­âY°ljuYe”j`„ $k”±D‘Ó¦ŞÜT¨×¯+Ä©jìz½®KP¸À†¬m¦ÑvÂ	piä3v×ß®†Ö"e…y‚Å‘g…d¢´JDØ‚¦fê¸·óaœ|4ŸG’û$ÏD$©f¯Od6g²ê»û=-ü“î]Éø¢C¸Ä·“Õñz29H»˜!ŒÓV=Švi:’Œğh15µ×˜ş4&Dz–Q˜3X‹bx&'²½fºŠ”%Ä+6yĞ£ß¼0ôn<øòGˆÆÒêÈÃùBDˆõ¢W*d|áÙdÉn¦¿w`ª™æÉÖ—Ü”ºÖãª‘lV^÷Så&Â¬B'ƒ²x·ü İAz¤RÒ”¤kT€«¤SäqÛ^Ñ"Pdõ‚Ê«»vŸan4¨s°\Òœ•×¤D– ûT9˜şò8Á7_¦¥lz=çÙQnàçº³ÖÉè€\oS¦£ªLö!cèìÖ0–«âB~8”÷m •£µ81ğ9Ñ®çèè¹¸.º&¼»¤¶ÓjMO¬Qí%úu›©Ö4×H*Y‹Qx®÷`GÎHaô#³ƒ¿‘Y¢H½Ë­V£Ò5z¸Mg®Ö&IÊÄ¾íŠ‚§«îw·rO¸ïÃYèó=ëHÕ~&âî+n5«4ß>ÅÌõp^u¢÷Ûë:d5ö8«BŒY
-¢h÷ÅÿèŒ¬ÌªNu/¼¬¹¹ÃR\öÂ£¸â¸ìíh‰^)Â±j^"¥kYnC(éBE’›·„‡°Ò¿åCs™M8t™ Jğ¨0ÚTyÒ¦ŒÀËû±Jô‚.qÔMÈ«g)İ¬ä’u“<€YØƒb¹ÀäÕ'YnZšå¼È¿¹‡O¨8^`fÂÿöŸP^<Æ¼¹Í	Ñ_ÕÍU"b]ÖùMRô”S·àÚ:ÂÀ 	..-A´=¬OâI$©Ñ~H	FI½AT…œAn‰mø‘µr—vïïâRÙ~„i.ÅGã¸È†-Ñˆ#wË·ŒH>Ôk9c!QHdœ¾vÜéÔøM RÁgu]X\äcg gÏ¼vt·èg‡ŠÃš FÀ AÇöÓÖOªh`äIŒÛŠw¤o&ûÓı+MõàrD5Ñg€¤¬ha»æØŸÁ_:^ı'¶¦•SŒÓêœÑ*”±’W)Öx¦\\ÑÒ†0ô;2á]ï¤ë¼YÈŠdPùMDÏöLS´£şıa~ïeCëo¦õ·Š´¥@]²
-P§Ü!PUñÚ¾0İ%îùï#®BØK!£Ás ¹9FKÈ`K`jŸZª%H§4åˆñã"¾\ÖÖt?†³Sâj7%¿DÁÊQ7°=§¡†€9(´…›)Ítjö.¶ 87ÕLÕ¬¿${Iµµ?×tÚÄ)ğe0¤ì\¦;Gìš•màg¦Œi~y°vréI-«“=å°À[,!oÙÚ6­¾¯İ¯:gÎÖ+7ÜB£°T¥oŠŸ! Ñœj Ñ–Ÿã”ø0)P&íÜ>'¾}ù<ÿ®9âåÁo×Éhrvc/ª MeLÇ„'˜ÔÓe=Ñó®¿æ´K5š}ÊœÍˆ´ÆÈUo9­±{×£A*@¼™ƒİºĞŞŞ“!<;¿GPÙ	R n=İ)»ùj°DQ§'èˆ‘v;«cdÆŒM¢Ôä1ªWÚ†«>0‡)×Ş
-yÔ5/º`ÁøõË´ÖT"¥:F¨
-şûvÈ.›¡ÖÿÆésÉğ³×D5ßQ«ò[ˆQíÙsÍÙÒ?ù|¼QŠ5™¡eÜğ‚]ò¦ó~šÅ4rÒ`Õ
-€2¥\.S9â—¿5Ébª£’¶,ÉãS¨êx#%ÎvZuù¿+éÇ	$	ImVàY¬6„—zÓCtê¡*‚h êÉü)lÇĞuP!L¿…ËÅT~~ÜÈ2XÚa:€êÊŞ}îMËvtÆÔi×N‘×ü¶à8ˆšÍmÃŒ°¿ä²ÔŞ‹*À„ã‰ÛùAU¾i3õÃÑ-ØŸ³ÕZg‡a°Ÿ(gË•hJ¼ $ËuÍŸÖj"CZ`kù¦ÌÍó°ˆp6¼QTÅ}	@¼«ì­aªëîœâQ”•³S*‡õø„ÆĞS¹ºzœ•åj…A?ñÒºÒÓî Y´ËR^lí=Í˜f‡Ù}Agw«/5…Û@ª1¥Ö°¿®yöëG^R
-èÁË(ŒRİ`5ÜÎgk6s:>Zzú-—½™Ú+ÄòÎ!Š„ô&¦Búó`,©óq¼|i2l*n©«òÕõŠ[Ôí1ÅU%Z‚‚÷l0Åáò q‚N][k8“œ}L®mÚJˆbûã-#©chiY± <%8âÒ(Àı¡‰ûrĞ÷ á3±Î;'ïêû¸¶‚'$ ô]>í:ÿÉ×L&~#ZÑ'±jÜ^W9°•'ÒQ¼Ğ¢|ŠŒ— †Ñ¨pƒs—k°0±’CÎZø+‘D¯,EUü„iw>İ©í»&ùü^\¾¯Ø“˜™‘p½Üd´[++€ìçuY´1ëfQƒåˆá§Hüg'ö³~³Ò~i³ëö¢+XIZıü¼#~™¶;Ş=àTLˆ½•ä[Î¹ÉZÅEw^jzâZ4_ÖmØDÈ¬ãú®êm‹sÃMO%Ü( µ€Ÿ–Ÿ“®á£;h
-y°–švÔ&Š¢È‘–²)ngıÑØ3÷£ó³hYÊmºÉË´º³¸y@›K[İPDŒìS"j>¾6ÆÚàÇµh{üEfüŠğßÊåpeÒ‹}3tŞÜn~åÍ9êk9jD*ùå<¼_³÷¶ªû¦à>„s«GwÓ{„¶r2²TuôbR“]£ ªÊ¨|Ç}‰‡[#ÛEÊ¹²úÇg#å|&‘>£:g$ú|ñã¼Ñ'H¥tkÿOJÿ]FåÌ ‚¶›ä²ş8Ø)Ì’/íIæ
-Í©ç@¥š’™7´ZWvû.VtÎ€õB…n®O+	7âq¯xİaÈ[ÖAKæÊÒô*Sè§2×ä/DtY¼^úà aòw8şÙ¬¶FÙT¸l«²Ol¥lb]~	·[?˜?kşV~¥$öl:Ù Ôß±Ms<¨®ìÄ]t]¨/íJè\hhêÛ1IJá8#_ÓÿïõƒŞûş›iÒAÌÆ@i.şVÑ;æd“ g¬sÓLÀ%¾Ã·E,6S†qŠšRŠg]ğ™‹õÛ•!.LŸÚò¹ìl©Ÿi^7Fï€İÄYYŞ›ó1N†×û`¥_®-î^•[
-Bdßúo&æ‰Q]¾mf~ò¹­ë8óîïEâµÉØ˜/üJF˜·üé”ı•¢Ùø(¡LüØğê/İôIÛe™'FØÖ
-ôY5å§.BÏ@ÿš®Ç1i%éioÖ,ß’=•ìêñ‰% Ç½è9?_ÀÙCx5vÒ^Ûu7%îA_òm·¬Ò*¹â¶£ˆîÃrGb¹„L 2ÔBALË÷tÍÒßGHuıê£ÙÛ—ˆ“&iGÁØ­Jë¥³×ñ€ãuŸyğº³Ù[×`ûk¡sPhŠ÷Kº¾"dîL6ç‰†³R¼ßVÀx<èj2Fzy¢è£·­·rĞgPç4É„v¬ê
-t€ÀùxzaÄôwµMÁ$éïÄ¦k—{iÅ'”b¨ÅÖ½{Ğ6aÓ&şèš§[8ôQ)ÓæFšO %ö(©ã[şB´ªû³ñã÷PµşíÖOÂˆFØ³ÒGÉ¥ñ‚‰6UÅˆÔğ ±6ä„a“'&GÇ†y;Âf(èø³Ê›Mˆ~ÏÔtZu:^.ÚŒµ¹ÔEäÚæíZWâÁœ¾¯Z±‚ØİlÉ:Ò ´† ¿ÁÌ~dôoµÑİÀàÁ8]Ê‡[}{ÔııµFˆ\ùY¤ÄìÂ£ÚØÕjü}âRŸà®µ€ç#"ÎDüSÇÖ[d¢ıWIô5Ï†·ë+´n»s ™[©(m~µjó¨ÍváÕ
-[gÈ:{òÿÊzî»Á(Å)°?nzqIîY{Ê†õövã	ÕâêY_Åj—¢ŸĞÚèöù)L öY®N-œÊ‚UÈ ,şïBÒ)(„”ƒqî!ú{`Š†œj¼a(£6=D&áwl±v¼(M ³à–ğ´ğAVÃ¡÷óæŸóûÄp0•·ob=/]¿ßşŞ‘¿3ép/»[‡\Ï30»üé-ŒÅº3Ç&ç`+(Ø8Üâé(t-Şà£';—S	Åp¥ÏÁ·kF,¨0…¡ˆkg|/)ˆtå]Y>úJ^„jšoù»‹Ô6W7Â	Å‡¨¶”0>~ÅæQU€kÎ%»£æA…,<`uİK…í6¾Ê\N¦šÓİğ>ÿÆkX ¯ºÎf§Œ+f/¼›"®(~ğ€íŸÜÈË™¦c¿@?s‘1, ."I™8'°ù5D¸¨NE±Ueú€b‰13™Oeø|Ù-4cÉ-•è­iãJËUmâ01Zs-î/=5Ñ Ğ`ZŠ-YÒ•92R©•«ì„rèE[ˆ³&e'ÉÄ½æLÕ7®*±âÚQÒz¶^³z»o¡aqFÖ7æ=nÌJz[êhmØÙf«Ä–3:(!Ê¶é¢à„àˆ¼È_ÑA½«š'ÇÄ¤˜ã6…¿F{Øó|ÄA 
-„]PÊF‡mî¥($¬TiÕz!©gxX«[Ş?ˆ<•AŠ	¾Ã‚ä"Üù	spXŸ´èå3ÎÅmÈºQíd) !¥}¦#ëƒ°¥h%Ìu]W‘¾áßÁˆÜ=ZG.Y®'hÍİTÁÒMáSìèÂm“,H‘éåjW]—‰¾H/Ab×4ü‘1Óûé†2J½¿š}ág¬ÃÙ/İÄ—”æazo…2˜8<”¾VƒUş1ì„-úM,¦"Ôİ÷gë¤Ì›Z‰V‡6^¥ŸÚbó¥Ñ]†[â^¯½±ko1©!:~ğ„¸‚¤­×İæ>zAÚº;ÉŠ¦n»~t2íT²µZµ—]âms5© Qg#´)¬x:R<ül0Íç#ÚéÅı•K^$¯¶šİEzùÃg,]ÀF:c‘•¶î©Uû³Y‚îÖËb®ìc³ºtâu‘Ü›B)œÈh½W¦ùƒ€œvš‰´ˆZA$Ğ8{šïèfe’èöPûğWÊå(!±UÕĞ«EHÏBñ*®Ól(ş%Xè¨ÉÏŠ}üİ„…^§ôÅçÓ+ê“2mFD
-åÚW»ò¹8ê";®ï#Û ;¤ó|òõLR
-\¼OVŞ¿Î+¤Ñ¯Pó‘ZC×Â#{Ê¬¿©;j¿÷Ê> ~g÷ˆÛ„Ç‹~yPèg˜áz^’ŒÒãfØj$¯‚–˜ãaµ‚â|‡:l0
-û„s3Ñ÷í06:AçHÓCu|SSà¶ÒÖÍ_í`â	Q`uh-MA;aØ…íAS?dåúHäBµì@^yši†mÙşïBÀXÑ“ş¬!e$aßKô·G<{íuÖºm‚(^'>¥ïÁ!ÀÁ,ƒªúBµ(cÕ·tİ•ù¦·™dù›¥’pÀSêé]èá­Ñ‚àƒÊÁşø¯–¦ò™ü&J^ÊÓd¤eÁ1¯nÍW#Ö¯?á—ÂMÎÕ¨\*o?îß]èÙ>TºöØµÃ@–„‡uPjıDC¶IiÓ\rÓ«gÀ-}©nUƒl‚ó>TH¼b'!óhëğTœëJğEbÀœ1’Äõmå*ˆVÈ (ó2GÅŠ¿VÓ êıñ3»Hä ‚EB!uH5Å!=‰>ÃË¤¥™cŒ9«5éõGñ“ŒÊ¹ôN­EøâË¤ À·£qsòv‹5Y'¥ü&£ÅÇ8{áœÂ¬Š±ºÊ•!B1ëàgòlpXNLM{©
-”äØÁ§úryño"_a¦4ê®1ú-£Ã]Y ÿñs6û§üøÒ7—œG›oµôÜ’Â3iÕ>>ËĞ¾Ù•Í–t¥êÅ†Õ`³ÛTLÿ–Hü=:F‡EÒ¨Î£Ñû=1·–¼)KîâxIpÍñÏÕ;wË2fÓ_ğŞ^ÿ-ëU#­€ÈğXõ9W ¡é(´
-;¨’
-½Ä#!¨šWÕ\~A£ËA¬y6ÛóĞ
-!É/_:‡?ãª£èR!›OI5í¬R\ëë•Ñ6éQ÷fÙ÷Ã£T+ïÿøº$“RYdúDÎµúìÁ«†PuäëØíÕ­®¾Ú>í'ªFÒã—¤z÷  ·6h3^òc9#tÚ¦÷Ì½#FEh—YlB5™ºa°|ºdHò©é%üˆ…tn(ªL]²E&ÃyÔµÔäŸç—æRçé<€›Á]®AƒLœîÓ²{"°ˆ]:l¿£H\©<›­}š»İ KwŠw†äIvg&_ı¦=ú˜eIJ6¿sïÏı;u‚”ğ›ƒæ>¨¤uDŠÚW÷ *$˜„¾ˆTa’w¥²¯*–:åïßUŠªPÓ¼İvÜÙEEvÔ&õQ0]ø‡’y“6KLN“2¨úaFi#;ére®ÏßÙ­Şœéû0//Ü»ø5©Ÿ“
-îFZ0#ÔR6Ò¡[Ëê“Ûı;jGÆ2;?LËªê¨r¼¯0n€o{º0&3…[í˜ËÀ7¹Ûø0c­˜¡€ıÂÌÛPpûúYwì©Ø@îÁWş«C²ét{tßÉIeJ„e»‰Ø 9àp‰A V& 0–]¸m­Wíc~Mã'w3îAÊ;pú‰Â†²™Á\Àúºü™çıÜÄéOê?šÙû,ë	…)Ù4©ñ^=`=²°Ò~37_Dc	ëÅ~jháã'¥’m5°¨ÌBk™MR>İl®
-É?ÚGÔ(T–›IìÌåqò?;¸!0æ ´‘Ç:‰İÒ:§hâe™+4'é‰F…'5;v?[H™åúò§¸&±£§kj¿²¨ÓÃA©ĞyÍÇ§JOùH€)ÕãAj‚ºiÂJÉËwíĞF%¶«[F ˆ}p;ª!a¢ó©HÂ;2~êTì5˜sâÆk:–œ¨G˜2öüs
-6çûez—$FÃ­¦–§-’•İzi®íÀŸŠşÓ‚D`
-;™j**¡(és7Óƒ6‡"ñe)SÊ
-E!S/¢W‘*Œús}óÀ÷R’ù·§Lp¢$}ÏêªÖjßf}’Œ6½,£d<ĞzkP¸›1©œß»lJœ¼"ºŠÈEö­¹àq¿Ê‘	Kr‚Œ|Ó2Xm”Áp^ó~İBc,xF˜] |ñ „´—ÚEè.¤;+"í6ùbŒıhaó ñ—$–¨TlÖk¢\ÿ=ßCs‹Sb{™+ÏJòíGe#%uPBÒ«‡P¹'ä3P~vH>*%òwnÚÀ¼GD2ƒûQ‰¶õÄ ×À×&lµigÓGİÿÎø;Q}úË¥–!bÚF|Ø®<nÑ’Uİøèpì’™İ±J`<(åsÍ3¤Çîk)îş6D¢m”kNÔ¼@Ghçzø™\àõ%’DÒZæğDçdªŒSüù<ÜÆ@×ZV–ı	«OÑ´Æj¿9Z}®öÍ#ıu€fseFhŠ›lò¬”ºÜrË%Ó Ú=9o·"×_™Ç¡a±Ó>$ä1`-(Ik0£õÒè=ë¯ªìB›Äsg°ë.}5,Eï“DbÔÖ‡Ïvê~s^T’û[Y}Á<¥…˜uğö-¢ßYOŞÆ@¾Íôa‡ÍıZ6¾WIªíÊdüá§,À€O5ñC¨‹«ûĞ­
-    $(wildcard include/config/CONTEXT_TRACKING) \
-  include/linux/percpu.h \
-    $(wildcard include/config/NEED_PER_CPU_EMBED_FIRST_CHUNK) \
-    $(wildcard include/config/NEED_PER_CPU_PAGE_FIRST_CHUNK) \
-    $(wildcard include/config/HAVE_SETUP_PER_CPU_AREA) \
-  include/linux/mmdebug.h \
-    $(wildcard include/config/DEBUG_VM) \
-    $(wildcard include/config/DEBUG_VIRTUAL) \
-    $(wildcard include/config/DEBUG_VM_PGFLAGS) \
-  include/linux/preempt.h \
-    $(wildcard include/config/PREEMPT_COUNT) \
-    $(wildcard include/config/DEBUG_PREEMPT) \
-    $(wildcard include/config/TRACE_PREEMPT_TOGGLE) \
-    $(wildcard include/config/PREEMPTION) \
-    $(wildcard include/config/PREEMPT_NOTIFIERS) \
-  include/linux/list.h \
-    $(wildcard include/config/DEBUG_LIST) \
-  include/linux/poison.h \
-    $(wildcard include/config/ILLEGAL_POINTER_VALUE) \
-  arch/x86/include/asm/preempt.h \
-  arch/x86/include/asm/percpu.h \
-    $(wildcard include/config/X86_64_SMP) \
-  include/asm-generic/percpu.h \
-  include/linux/percpu-defs.h \
-    $(wildcard include/config/DEBUG_FORCE_WEAK_PER_CPU) \
-    $(wildcard include/config/AMD_MEM_ENCRYPT) \
-  include/linux/thread_info.h \
-    $(wildcard include/config/THREAD_INFO_IN_TASK) \
-    $(wildcard include/config/GENERIC_ENTRY) \
-    $(wildcard include/config/HAVE_ARCH_WITHIN_STACK_FRAMES) \
-    $(wildcard include/config/HARDENED_USERCOPY) \
-  include/linux/restart_block.h \
-  include/linux/time64.h \
-  include/linux/math64.h \
-    $(wildcard include/config/ARCH_SUPPORTS_INT128) \
-  include/vdso/math64.h \
-  include/vdso/time64.h \
-  include/uapi/linux/time.h \
-  include/uapi/linux/time_types.h \
-  arch/x86/include/asm/current.h \
-  arch/x86/include/asm/thread_info.h \
-    $(wildcard include/config/VM86) \
-    $(wildcard include/config/X86_IOPL_IOPERM) \
-    $(wildcard include/config/COMPAT) \
-    $(wildcard include/config/IA32_EMULATION) \
-  arch/x86/include/asm/page.h \
-  arch/x86/include/asm/page_types.h \
-    $(wildcard include/config/PHYSICAL_START) \
-    $(wildcard include/config/PHYSICAL_ALIGN) \
-    $(wildcard include/config/DYNAMIC_PHYSICAL_MASK) \
-  include/linux/mem_encrypt.h \
-    $(wildcard include/config/ARCH_HAS_MEM_ENCRYPT) \
-  arch/x86/include/asm/mem_encrypt.h \
-  include/linux/cc_platform.h \
-    $(wildcard include/config/ARCH_HAS_CC_PLATFORM) \
-  arch/x86/include/uapi/asm/bootparam.h \
-  include/linux/screen_info.h \
-  include/uapi/linux/screen_info.h \
-  include/linux/apm_bios.h \
-  include/uapi/linux/apm_bios.h \
-  include/uapi/linux/ioctl.h \
-  arch/x86/include/generated/uapi/asm/ioctl.h \
-  include/asm-generic/ioctl.h \
-  include/uapi/asm-generic/ioctl.h \
-  include/linux/edd.h \
-  include/uapi/linux/edd.h \
-  arch/x86/include/asm/ist.h \
-  arch/x86/include/uapi/asm/ist.h \
-  include/video/edid.h \
-    $(wildcard include/config/X86) \
-  include/uapi/video/edid.h \
-  arch/x86/include/asm/page_32_types.h \
-    $(wildcard include/config/HIGHMEM4G) \
-    $(wildcard include/config/HIGHMEM64G) \
-    $(wildcard include/config/PAGE_OFFSET) \
-  arch/x86/include/asm/page_32.h \
-    $(wildcard include/config/FLATMEM) \
-  include/linux/range.h \
-  include/asm-generic/memory_model.h \
-    $(wildcard include/config/SPARSEMEM_VMEMMAP) \
-    $(wildcard include/config/SPARSEMEM) \
-  include/linux/pfn.h \
-  include/asm-generic/getorder.h \
-  arch/x86/include/asm/cpufeature.h \
-    $(wildcard include/config/X86_FEATURE_NAMES) \
-  arch/x86/include/asm/processor.h \
-    $(wildcard include/config/X86_VMX_FEATURE_NAMES) \
-    $(wildcard include/config/STACKPROTECTOR) \
-    $(wildcard include/config/X86_DEBUGCTLMSR) \
-    $(wildcard include/config/CPU_SUP_AMD) \
-    $(wildcard include/config/XEN) \
-  arch/x86/include/asm/processor-flags.h \
-  arch/x86/include/uapi/asm/processor-flags.h \
-  arch/x86/include/asm/math_emu.h \
-  arch/x86/include/asm/ptrace.h \
-    $(wildcard include/config/PARAVIRT) \
-  arch/x86/include/asm/segment.h \
-    $(wildcard include/config/XEN_PV) \
-  arch/x86/include/uapi/asm/ptrace.h \
-  arch/x86/include/uapi/asm/ptrace-abi.h \
-  arch/x86/include/asm/paravirt_types.h \
-    $(wildcard include/config/PGTABLE_LEVELS) \
-    $(wildcard include/config/PARAVIRT_DEBUG) \
-  arch/x86/include/asm/desc_defs.h \
-  arch/x86/include/asm/pgtable_types.h \
-    $(wildcard include/config/MEM_SOFT_DIRTY) \
-    $(wildcard include/config/HAVE_ARCH_USERFAULTFD_WP) \
-  arch/x86/include/asm/pgtable_32_types.h \
-  arch/x86/include/asm/pgtable-3level_types.h \
-  include/asm-generic/pgtable-nop4d.h \
-  include/asm-generic/pgtable-nopud.h \
-  arch/x86/include/asm/nospec-branch.h \
-  include/linux/static_key.h \
-  include/linux/jump_label.h \
-    $(wildcard include/config/JUMP_LABEL) \
-    $(wildcard include/config/HAVE_ARCH_JUMP_LABEL_RELATIVE) \
-  arch/x86/include/asm/jump_label.h \
-  arch/x86/include/asm/msr-index.h \
-  arch/x86/include/asm/unwind_hints.h \
-  arch/x86/include/asm/orc_types.h \
-  arch/x86/include/asm/GEN-for-each-reg.h \
-  arch/x86/include/asm/proto.h \
-  arch/x86/include/uapi/asm/ldt.h \
-  arch/x86/include/uapi/asm/sigcontext.h \
-  arch/x86/include/asm/msr.h \
-    $(wildcard include/config/TRACEPOINTS) \
-  arch/x86/include/asm/msr-index.h \
-  arch/x86/include/asm/cpumask.h \
-  arch/x86/include/uapi/asm/msr.h \
-  include/linux/tracepoint-defs.h \
-  arch/x86/include/asm/special_insns.h \
-  include/linux/irqflags.h \
-    $(wildcard include/config/TRACE_IRQFLAGS) \
-    $(wildcard include/config/IRQSOFF_TRACER) \
-    $(wildcard include/config/PREEMPT_TRACER) \
-    $(wildcard include/config/DEBUG_IRQFLAGS) \
-    $(wildcard include/config/TRACE_IRQFLAGS_SUPPORT) \
-  arch/x86/include/asm/irqflags.h \
-  arch/x86/include/asm/fpu/types.h \
-  arch/x86/include/asm/vmxfeatures.h \
-  arch/x86/include/asm/vdso/processor.h \
-  include/linux/personality.h \
-  include/uapi/linux/personality.h \
-  include/linux/smp.h \
-    $(wildcard include/config/UP_LATE_INIT) \
-  include/linux/smp_types.h \
-  include/linux/llist.h \
-    $(wildcard include/config/ARCH_HAVE_NMI_SAFE_CMPXCHG) \
-  arch/x86/include/asm/smp.h \
-    $(wildcard include/config/X86_LOCAL_APIC) \
-    $(wildcard include/config/DEBUG_NMI_SELFTEST) \
-  include/linux/lockdep.h \
-    $(wildcard include/config/DEBUG_LOCKING_API_SELFTESTS) \
-  include/linux/ftrace_irq.h \
-    $(wildcard include/config/HWLAT_TRACER) \
-    $(wildcard include/config/OSNOISE_TRACER) \
-  include/linux/sched.h \
-    $(wildcard include/config/VIRT_CPU_ACCOUNTING_NATIVE) \
-    $(wildcard include/config/SCHED_INFO) \
-    $(wildcard include/config/SCHEDSTATS) \
-    $(wildcard include/config/SCHED_CORE) \
-    $(wildcard include/config/FAIR_GROUP_SCHED) \
-    $(wildcard include/config/RT_GROUP_SCHED) \
-    $(wildcard include/config/RT_MUTEXES) \
-    $(wildcard include/config/UCLAMP_TASK) \
-    $(wildcard include/config/UCLAMP_BUCKETS_COUNT) \
-    $(wildcard include/config/KMAP_LOCAL) \
-    $(wildcard include/config/CGROUP_SCHED) \
-    $(wildcard include/config/BLK_DEV_IO_TRACE) \
-    $(wildcard include/config/PREEMPT_RCU) \
-    $(wildcard include/config/TASKS_RCU) \
-    $(wildcard include/config/TASKS_TRACE_RCU) \
-    $(wildcard include/config/PSI) \
-    $(wildcard include/config/MEMCG) \
-    $(wildcard include/config/COMPAT_BRK) \
-    $(wildcard include/config/CGROUPS) \
-    $(wildcard include/config/BLK_CGROUP) \
-    $(wildcard include/config/PAGE_OWNER) \
-    $(wildcard include/config/EVENTFD) \
-    $(wildcard include/config/IOMMU_SVA) \
-    $(wildcard include/config/ARCH_HAS_SCALED_CPUTIME) \
-    $(wildcard include/config/VIRT_CPU_ACCOUNTING_GEN) \
-    $(wildcard include/config/POSIX_CPUTIMERS) \
-    $(wildcard include/config/POSIX_CPU_TIMERS_TASK_WORK) \
-    $(wildcard include/config/KEYS) \
-    $(wildcard include/config/SYSVIPC) \
-    $(wildcard include/config/DETECT_HUNG_TASK) \
-    $(wildcard include/config/IO_URING) \
-    $(wildcard include/config/AUDIT) \
-    $(wildcard include/config/AUDITSYSCALL) \
-    $(wildcard include/config/DEBUG_MUTEXES) \
-    $(wildcard include/config/UBSAN) \
-    $(wildcard include/config/UBSAN_TRAP) \
-    $(wildcard include/config/COMPACTION) \
-    $(wildcard include/config/TASK_XACCT) \
-    $(wildcard include/config/CPUSETS) \
-    $(wildcard include/config/X86_CPUCOE) \
-    $(wildcard include/config/XFRM_OFFLOAD) \
-    $(wildcard include/config/LIBFCOE) \
-    $(wildcard include/config/WIRELESS_EXT) \
-    $(wildcard include/config/NET_L3_MASTER_DEV) \
-    $(wildcard include/config/NET_DSA) \
-    $(wildcard include/config/TIPC) \
-    $(wildcard include/config/ATALK) \
-    $(wildcard include/config/DECNET) \
-    $(wildcard include/config/MPLS_ROUTING) \
-    $(wildcard include/config/MCTP) \
-    $(wildcard include/config/NETFILTER_INGRESS) \
-    $(wildcard include/config/NETFILTER_EGRESS) \
-    $(wildcard include/config/PCPU_DEV_REFCNT) \
-    $(wildcard include/config/GARP) \
-    $(wildcard include/config/MRP) \
-    $(wildcard include/config/NET_DROP_MONITOR) \
-    $(wildcard include/config/MACSEC) \
-    $(wildcard include/config/NET_FLOW_LIMIT) \
-    $(wildcard include/config/NET_DEV_REFCNT_TRACKER) \
-    $(wildcard include/config/ETHTOOL_NETLINK) \
-  include/linux/delay.h \
-  arch/x86/include/asm/delay.h \
-  include/asm-generic/delay.h \
-  include/linux/prefetch.h \
-  arch/x86/include/asm/local.h \
-  include/linux/dynamic_queue_limits.h \
-  include/net/net_namespace.h \
-    $(wildcard include/config/IEEE802154_6LOWPAN) \
-    $(wildcard include/config/IP_SCTP) \
-    $(wildcard include/config/NETFILTER) \
-    $(wildcard include/config/WEXT_CORE) \
-    $(wildcard include/config/MPLS) \
-    $(wildcard include/config/CAN) \
-    $(wildcard include/config/CRYPTO_USER) \
-    $(wildcard include/config/SMC) \
-    $(wildcard include/config/NET_NS) \
-    $(wildcard include/config/NET_NS_REFCNT_TRACKER) \
-  include/net/netns/core.h \
-  include/net/netns/mib.h \
-    $(wildcard include/config/XFRM_STATISTICS) \
-    $(wildcard include/config/TLS) \
-  include/net/snmp.h \
-  include/uapi/linux/snmp.h \
-  include/net/netns/unix.h \
-  include/net/netns/packet.h \
-  include/net/netns/ipv4.h \
-    $(wildcard include/config/IP_MULTIPLE_TABLES) \
-    $(wildcard include/config/IP_MROUTE) \
-    $(wildcard include/config/IP_MROUTE_MULTIPLE_TABLES) \
-    $(wildcard include/config/IP_ROUTE_MULTIPATH) \
-  include/net/inet_frag.h \
-  include/net/netns/ipv6.h \
-    $(wildcard include/config/IPV6_MULTIPLE_TABLES) \
-    $(wildcard include/config/IPV6_SUBTREES) \
-    $(wildcard include/config/IPV6_MROUTE) \
-    $(wildcard include/config/IPV6_MROUTE_MULTIPLE_TABLES) \
-    $(wildcard include/config/NF_DEFRAG_IPV6) \
-  include/net/dst_ops.h \
-  include/uapi/linux/icmpv6.h \
-  include/net/netns/nexthop.h \
-  include/net/netns/ieee802154_6lowpan.h \
-  include/net/netns/sctp.h \
-  include/net/netns/netfilter.h \
-    $(wildcard include/config/NETFILTER_FAMILY_ARP) \
-    $(wildcard include/config/NETFILTER_FAMILY_BRIDGE) \
-    $(wildcard include/config/NF_DEFRAG_IPV4) \
-  include/linux/netfilter_defs.h \
-  include/uapi/linux/netfilter.h \
-  include/linux/in.h \
-  include/uapi/linux/in.h \
-  include/net/netns/conntrack.h \
-    $(wildcard include/config/NF_CT_PROTO_DCCP) \
-    $(wildcard include/config/NF_CT_PROTO_SCTP) \
-    $(wildcard include/config/NF_FLOW_TABLE) \
-    $(wildcard include/config/NF_CT_PROTO_GRE) \
-    $(wildcard include/config/NF_CONNTRACK_EVENTS) \
-    $(wildcard include/config/NF_CONNTRACK_LABELS) \
-  include/linux/list_nulls.h \
-  include/linux/netfilter/nf_conntrack_tcp.h \
-  include/uapi/linux/netfilter/nf_conntrack_tcp.h \
-  include/linux/netfilter/nf_conntrack_dccp.h \
-  include/uapi/linux/netfilter/nf_conntrack_tuple_common.h \
-  include/linux/netfilter/nf_conntrack_sctp.h \
-  include/uapi/linux/netfilter/nf_conntrack_sctp.h \
-  include/net/netns/nftables.h \
-  include/net/netns/xfrm.h \
-  include/uapi/linux/xfrm.h \
-  include/net/netns/mpls.h \
-  include/net/netns/can.h \
-  include/net/netns/xdp.h \
-  include/net/netns/smc.h \
-  include/net/netns/bpf.h \
-  include/net/netns/mctp.h \
-  include/net/net_trackers.h \
-  include/linux/ref_tracker.h \
-    $(wildcard include/config/REF_TRACKER) \
-  include/linux/seq_file_net.h \
-  include/net/netprio_cgroup.h \
-  include/net/xdp.h \
-  include/uapi/linux/neighbour.h \
-  include/linux/netlink.h \
-  include/net/scm.h \
-    $(wildcard include/config/SECURITY_NELF                      X)      4     (               èüÿÿÿWzV‹°<  ƒçü‹‰‹†€   ‰‚€   )ú1ÀŠ„   )ÖÁéó¥^_Ã´&    fèüÿÿÿ‹B…Àu$WV‹2ƒşw+iö˜   z¹!   1ÀÆ@  ó¥^_Ã¸êÿÿÿÃ´&    v ¸êÿÿÿëæ´&    fèüÿÿÿ‹A…ÀuÇA   1ÀÃ´&    v ¸êÿÿÿÃ´&    v èüÿÿÿ‰ÂÇA   ‰È‹Š<  ‹I‰H‹Š<  ‹I‰H‹Š<  ‹‰Œ   ‰H‹’<  ‹’ˆ   ‰P1ÀÃ´&    èüÿÿÿU¶éWV¶òS‰ÃƒÃpƒì‹¸”   Ç$    ‰é‰ò‰øèüÿÿÿ…Àˆüÿÿÿ1ÒƒÄ‰Ğ[^_]Ã´&    ¶    èüÿÿÿVS‰Ã‹@{(	˜ uK°@ÿÿÿ¶K|º
-   ‰ğè…ÿÿÿ…Àt	[^Ã¶    ¶K|º	   ‰ğèhÿÿÿ¶K|…Àuß‰ğ[º   ^éRÿÿÿf¸êÿÿÿëÈ´&    fèüÿÿÿ€=     S‹X\…M   ‰ØèüÿÿÿƒÀ   èüÿÿÿ1À[Ãt& èüÿÿÿ‰ÂÇA   ‰È‹Š<  ‹I‰H‹Š<  ‹I‰H‹Š<  ‹‰Œ   ‰H‹’<  ‹’ˆ   ‰P1ÀÃ´&    èüÿÿÿUWVS‹…Ûu5‰Åz1ö´&    v “D  ¹   ‰øèüÿÿÿ…ÀtƒÆÃ˜   ƒşuÜ¸êÿÿÿ[^_]Ãfiö˜   Ã@  ‰<  ‹Ä  ¶€ú\uë×¶    ¶SƒÃ€ú\tÅ€{uî…Àuê¶K‰èè'şÿÿëİt& èüÿÿÿUWVS‰Ãìˆ   ‹sXd¡    ‰„$„   1À…ö„Ä  ‹C‹P‹Rèüÿÿÿ%   =   …   C¹À  º`  èüÿÿÿ‰Å…À„¤   ‰°0  ¹@   ‰Ú¾   Ç€<  @  èüÿÿÿ‹C·Sˆ  QRRÿ°   ‹CTÿ0h0   èüÿÿÿ‹½”   ƒÄë´&    v ¸
-   èüÿÿÿƒî„Ş  1Ò‰øèüÿÿÿ‰Ã…ÀxŞéh   »ûÿÿÿ‹„$„   d+    uÄˆ   ‰Ø[^_]Ã»ôÿÿÿëÜèüÿÿÿ´&    t& èüÿÿÿ98  tSUWV‰ÖS‰Ã@pƒìƒú‹x$Ç$    í‰D$ƒå‰éº   ‰øèüÿÿÿ…Àˆ  ‰³8  1ÒƒÄ‰Ğ[^_]Ã´&    1ÀÃ´&    ¶    èüÿÿÿUW¿   V‰ÖSƒìÇ   ‹¨”   ‰$ët& ¸
-   èüÿÿÿƒï„…  º7   ‰èèüÿÿÿ‰Ã…ÀxÛ‹$‰\$¿   ‹¨”   ë´&    ¸
-   èüÿÿÿƒï„Á  º8   ‰èèüÿÿÿ‰Ã…ÀxÛ‰D$‹\$¿   ‹$‰\$‹¨”   ë´&    ¸
-   èüÿÿÿƒï„Ü  º9   ‰èèüÿÿÿ‰Ã…ÀxÛ‰D$‹$‹¸”   ¸   ‰ı‰Çëv ¸
-   èüÿÿÿƒï„÷  º:   ‰èèüÿÿÿ‰Ã…ÀxÛ¶|$‰Å‹\$ºî  ÁåÇ    1É‰ø¶Ûå   ÁÿÁàƒç%   	Ã¶D$	Å¸@  ë´&    ƒÁ˜   ‰=h  tW·’   9Úuäf;¸   uÛ·”   fƒúÿt9êwÊ·–   9êr¿´&    €=     …  1ÛƒÄ‰Ø[^_]Ã´&    ¶    ƒùuÔ„À…   »½ÿÿÿëÔ´&    ¶    èüÿÿÿWVS‰Óƒìd‹    ‰T$‰âèñıÿÿ…Àu6i$˜   {ƒçü²@  ‹’@  ‰‹–€   ‰“€   )û‹„   )ŞÁéó¥‹T$d+    uƒÄ[^_Ãèüÿÿÿ´&    ´&    èüÿÿÿVS‰Ãspƒìd¡    ‰D$1À‰â‰Øèlıÿÿ‹ƒ<  ÿpÿpVh¬   èüÿÿÿ‹D$ƒÄƒø…/  é”          Ğ  ğ              à                                                                                                       @      À     `  Ğ     P  ğ    €  p  ğ      4%s: Write: retry ... %d
- 3%s: TVP7002 write error %d
- No platform data
- 6%s: Rev. %02x detected.
- 3%s: TVP7002 read error %d
- 7%s: Fail to set streaming
- 7%s: detected timings: %d
- yes no 6%s: Streaming enabled: %s
- tvp7002 ‰D$ÿ4$Sh    èüÿÿÿ¸
-   èüÿÿÿƒD$‹D$ƒÄ‹T$ƒø…0  R‰T$Sh   èüÿÿÿ‹T$ƒÄéE  ·@PCpPh    èüÿÿÿƒÄéâ  ¶ÀupPVhK   èüÿÿÿƒÄ€ûtVh\   èüÿÿÿXZ1Û1Ò¾@  €~u¶N…Ûu	‰èè  ‰Ã¶VƒÆ€ú\uİ…ÛˆØ  ‹…0  º   ¶H¶@ÁáÁà	Á‰èƒÉ è  ‰Ã…ÀˆØ  ‹•0  ¶J¶BÁáÀ	Á¶º   	Á‰èƒÉè  ‰Ã…ÀˆØ  ‰â‰è‹µ<  ‰ç¹!   ó¥èL  ƒM\º   ‰èÇ…\     @  ÇE  èüÿÿÿ‰Ã…ÀˆØ  j µÀ   1Éº   ‰ğèüÿÿÿ¹	˜ º0  ‰ğj j j jj hÿ   j j èüÿÿÿ‹ü   ‰ulƒÄ$…Ût=‰ğèüÿÿÿéØ  ƒÃh9   SèüÿÿÿY[»êÿÿÿéØ  ƒÅpSUhf   èüÿÿÿƒÄéØ  ‰ğèüÿÿÿ‰èèüÿÿÿ‰Ã…Àu¯éØ  ‰D$ÿ4$ÿt$h    èüÿÿÿ¸
-   èüÿÿÿƒD$‹D$ƒÄ‹T$ƒø…=  R‰T$ÿt$h   èüÿÿÿ‹T$ƒÄ€=     „[  ÿt$hƒ   èüÿÿÿXZ‹$é[  S‹D$ƒÀpPhf   èüÿÿÿƒÄé3  US‹D$»½ÿÿÿƒÀpPh€   èüÿÿÿƒÄé3  S‹D$ƒÀpPhf   èüÿÿÿƒÄé3  S‹D$ƒÀpPhf   èüÿÿÿƒÄé3  S‹D$ƒÀpPhf   èüÿÿÿƒÄé3  Q‹D$1ÛƒÀpPh    èüÿÿÿƒÄé3  iÀ˜   ÿ°H  ÿ°D  Vhô   èüÿÿÿƒÄƒ»8   ºÀ   ¸¼   DÂPVhÃ   èüÿÿÿƒÀ   ‰òèüÿÿÿƒÄ‹D$d+    uƒÄ1À[^ÃVhĞ   èüÿÿÿXZë¬èüÿÿÿ7%s: Removing tvp7002 adapteron address 0x%x
-  6%s %d-%04x: tvp7002 found @ 0x%02x (%s)
-  6%s: Unknown revision detected.
-   7%s: detection failed: lpf = %x, cpl = %x
- 6%s: Selected DV Timings: %ux%u
-   6%s: Detected DV Timings: None
-    6%s: Detected DV Timings: %ux%u
- èüÿÿÿº    ¸    éüÿÿÿ¸    éüÿÿÿ                            tvp7002                                                                                    `                  À                          @                                                                         P      p                              ğ                                                      `             Ğ         ÷l    n   (   Ü                           ’                                                              À         î‡ ™     €  8        ÷l    X   ,   ”                        š                                                              €          eµ Í     €  8        ÷l      ,   ”                        ˜                                                                         eÙ õ        Ğ         ÷l    ¸  (   Ü                                                                                         €         î£ ·     €  8          îÙ    X   ,   ”         $                  ’                                                              @         eZ f     Ğ  à          Àü›       >   <   	                        Ğ                                                                      ÿÿÿÿ    Ğ  @          Àü›       @   D         '                  Ğ                                                            À         qÿÿÿÿ                        {À˜@GABKCDE F-G 1Z2  \ÿ             g  @GABKCDE F-G 1Z2   \ÿ             ¥ ˜@ABŠCDEFG1Z2  \ÿ             ‰€à@ABŠCDEFG1Z2  \ÿ             ‰€˜@ABŠCDEFG1Z2  \ÿ             6 @›A BC D E F-G 1\ÿ             5 @‘A BC DEFG1\ÿ              ÿ g  €2 ` 	 
- €€€ .]G  ÿ G  gw  !" #ÿ $ÿ %ÿ &€'ÿ (S)*+ ,P- .€/Œ01Z23`4ÿ56 7ÿ 8ÿ 9ÿ :ÿ ;ÿ <ÿ =>`?@A,BC,DE FG H I JãKLOMNÎOP«QóR STUUüVxWñXˆYşZ [\ÿ debug parm=debug:Debug level (0-2) parmtype=debug:bool license=GPL author=Santiago Nunez-Corrales <santiago.nunez@ridgerun.com> description=TI TVP7002 Video and Graphics Digitizer driver  X          ¤ÿ      GCC: (GNU) 11.2.0           GNU  À       À                                  ñÿ                                                 7         @   G     8   @  (    H      &     _   À   I                                	 v     C     „       Q    	 —   `  g                   ¦   Ğ  ,                µ   Q       	 É      I     à   P  ›     õ   ğ        @           l   ¦   	 "  @      7  0       H    c     Y    w    	 o  €  ã    €  ‰  ª    	 –  p  r     ¯  ğ  P     Â  3  y    	               Ú           î      €     ı      
-           0                        0     -      P     ?  `   @     O  À  3     d  €  3     z     3       €  3     ¥  @  3     »     3     Î  À  3     á           ö                       X       /  1        F  =   =     \  z   ;     w             ‚             œ             ¤             ¹             Ö             í             ô                                       ,             A             Z             k             ‚             Ÿ             ±             º             Ò             í             
-                          ,           8             G      
-     V      0     y              tvp7002.c tvp7002_g_dv_timings tvp7002_enum_dv_timings tvp7002_timings tvp7002_enum_mbus_code tvp7002_get_pad_format tvp7002_write tvp7002_write.cold tvp7002_s_ctrl tvp7002_remove tvp7002_remove.cold tvp7002_set_pad_format tvp7002_s_dv_timings tvp7002_probe tvp7002_ops tvp7002_probe.cold tvp7002_init_default tvp7002_ctrl_ops tvp7002_s_stream tvp7002_s_stream.cold tvp7002_query_dv tvp7002_query_dv.cold tvp7002_query_dv_timings tvp7002_log_status tvp7002_log_status.cold tvp7002_driver_init tvp7002_driver tvp7002_driver_exit tvp7002_id tvp7002_core_ops tvp7002_video_ops tvp7002_pad_ops tvp7002_parms_720P60 tvp7002_parms_1080I60 tvp7002_parms_1080I50 tvp7002_parms_720P50 tvp7002_parms_1080P60 tvp7002_parms_480P tvp7002_parms_576P __UNIQUE_ID_debug270 __UNIQUE_ID_debugtype269 __param_debug __param_str_debug __UNIQUE_ID_license268 __UNIQUE_ID_author267 __UNIQUE_ID_description266 __fentry__ i2c_smbus_write_byte_data _printk msleep_interruptible v4l2_async_unregister_subdev v4l2_ctrl_handler_free memcmp __stack_chk_guard __x86_indirect_thunk_edx devm_kmalloc v4l2_i2c_subdev_init i2c_smbus_read_byte_data __stack_chk_fail media_entity_pads_init v4l2_ctrl_handler_init_class v4l2_ctrl_new_std _dev_err v4l2_ctrl_handler_setup v4l2_async_register_subdev v4l2_ctrl_handler_log_status __this_module i2c_register_driver init_module i2c_del_driver cleanup_module __mod_i2c__tvp7002_id_device_table param_ops_bool    8  A   8  g   &  ‘   8  Á   8    8  ;  9  a  8  Ñ  8  ×    é  <  ô  =    8  Q  8  r  &  ~  >  ¨  &  ´  &  ñ  8    ?  %  @  G  A  \  &  m  &  r  B  ’    —  :  ¶  ;  È  C  æ  ?    D    8  K  9    8  ®  ;  Ã  C  î  ;    C  6  ;  K  C  v  ;  ‹  C  Ó  &  ë  &  *    K    q  8  €  ?  ¢  &  ¨  &  Ğ  ?  Ş  D  ñ  8    ?  "    '  :  C    â        ¿    Ó    S    ·    ÷    ?        1    X    7    <                 
-  h   &                                                 $     (     ,     0     4     8   !  	   
-     :     ;  <   
-  A   :  [     `   :  u   
-  z   :  ˆ        :  ˜   &  ­     è         =    d  E  „  F    &  ¨  G  ¿  =  Ì  
-  Ò  H  è  
-  í  :  ü  I    J    
-  #  :  -  ;  T  
-  Y  :  f    v  
-  {  :  “  
-  ˜  :  ´    ¹  :  Ï  
-  Ô  :  ê  
-  ï  :    
-  
-  :  "  
-  '  :  ;  &  A  &  G    L  :  [  
-  `  
-  j  
-  o  :  |  K  Š  ?  š    Ÿ  :  ¨  D  1     M     h     Ã     ò     %    n    Ä    Ş    õ        F    m    …         Á    Ü    ÷        /       8          L     M          O  @   &  L   &  \   &  d     p     t     Œ     È     Ø     Ü     à          8    Ä  &  \  &  ô  &  Œ  &  $  &  ¼  &  T  &      &     L     R        .symtab .strtab .shstrtab .rel.text .rel.data .bss .rel__mcount_loc .rodata.str1.1 .rel.text.unlikely .rodata.str1.4 .rel.init.text .rel.exit.text .rel.rodata .modinfo .rel__param .comment .note.GNU-stack .note.gnu.property                                                         @   @                    	   @       <"  0              )             €  €                   %   	   @       l$                  /                                  8                <                  4   	   @       Œ$  x               E      2       <  è                 X             $	  ¬                 T   	   @       %  €     	         g      2       Ğ                  z             æ                    v   	   @       „'                  ‰             ú  
-                  …   	   @       ¤'                 ˜                ^                  ”   	   @       ´'                                ~  µ                  ­             4                    ©   	   @       T(                  µ      0       H                   ¾              [                     Î             \  (                                „  0     8         	              ´  ˆ                               t(  á                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  _RESCTRL) \
-    $(wildcard include/config/FUTEX) \
-    $(wildcard include/config/PERF_EVENTS) \
-    $(wildcard include/config/NUMA) \
-    $(wildcard include/config/NUMA_BALANCING) \
-    $(wildcard include/config/RSEQ) \
-    $(wildcard include/config/TASK_DELAY_ACCT) \
-    $(wildcard include/config/FAULT_INJECTION) \
-    $(wildcard include/config/LATENCYTOP) \
-    $(wildcard include/config/KUNIT) \
-    $(wildcard include/config/FUNCTION_GRAPH_TRACER) \
-    $(wildcard include/config/UPROBES) \
-    $(wildcard include/config/BCACHE) \
-    $(wildcard include/config/VMAP_STACK) \
-    $(wildcard include/config/LIVEPATCH) \
-    $(wildcard include/config/SECURITY) \
-    $(wildcard include/config/BPF_SYSCALL) \
-    $(wildcard include/config/GCC_PLUGIN_STACKLEAK) \
-    $(wildcard include/config/X86_MCE) \
-    $(wildcard include/config/KRETPROBES) \
-    $(wildcard include/config/RETHOOK) \
-    $(wildcard include/config/ARCH_HAS_PARANOID_L1D_FLUSH) \
-    $(wildcard include/config/ARCH_TASK_STRUCT_ON_STACK) \
-    $(wildcard include/config/DEBUG_RSEQ) \
-  include/uapi/linux/sched.h \
-  include/linux/pid.h \
-  include/linux/rculist.h \
-    $(wildcard include/config/PROVE_RCU_LIST) \
-  include/linux/rcupdate.h \
-    $(wildcard include/config/RCU_STRICT_GRACE_PERIOD) \
-    $(wildcard include/config/TASKS_RCU_GENERIC) \
-    $(wildcard include/config/RCU_STALL_COMMON) \
-    $(wildcard include/config/RCU_NOCB_CPU) \
-    $(wildcard include/config/TASKS_RUDE_RCU) \
-    $(wildcard include/config/TREE_RCU) \
-    $(wildcard include/config/DEBUG_OBJECTS_RCU_HEAD) \
-    $(wildcard include/config/PROVE_RCU) \
-    $(wildcard include/config/ARCH_WEAK_RELEASE_ACQUIRE) \
-  include/linux/bottom_half.h \
-  include/linux/rcutree.h \
-  include/linux/wait.h \
-  include/linux/spinlock.h \
-  arch/x86/include/generated/asm/mmiowb.h \
-  include/asm-generic/mmiowb.h \
-    $(wildcard include/config/MMIOWB) \
-  include/linux/spinlock_types.h \
-  include/linux/rwlock_types.h \
-  arch/x86/include/asm/spinlock.h \
-  arch/x86/include/asm/paravirt.h \
-    $(wildcard include/config/PARAVIRT_SPINLOCKS) \
-  arch/x86/include/asm/frame.h \
-  arch/x86/include/asm/qspinlock.h \
-  include/asm-generic/qspinlock.h \
-  arch/x86/include/asm/qrwlock.h \
-  include/asm-generic/qrwlock.h \
-  include/linux/rwlock.h \
-    $(wildcard include/config/PREEMPT) \
-  include/linux/spinlock_api_smp.h \
-    $(wildcard include/config/INLINE_SPIN_LOCK) \
-    $(wildcard include/config/INLINE_SPIN_LOCK_BH) \
-    $(wildcard include/config/INLINE_SPIN_LOCK_IRQ) \
-    $(wildcard include/config/INLINE_SPIN_LOCK_IRQSAVE) \
-    $(wildcard include/config/INLINE_SPIN_TRYLOCK) \
-    $(wildcard include/config/INLINE_SPIN_TRYLOCK_BH) \
-    $(wildcard include/config/UNINLINE_SPIN_UNLOCK) \
-    $(wildcard include/config/INLINE_SPIN_UNLOCK_BH) \
-    $(wildcard include/config/INLINE_SPIN_UNLOCK_IRQ) \
-    $(wildcard include/config/INLINE_SPIN_UNLOCK_IRQRESTORE) \
-    $(wildcard include/config/GENERIC_LOCKBREAK) \
-  include/linux/rwlock_api_smp.h \
-    $(wildcard include/config/INLINE_READ_LOCK) \
-    $(wildcard include/config/INLINE_WRITE_LOCK) \
-    $(wildcard include/config/INLINE_READ_LOCK_BH) \
-    $(wildcard include/config/INLINE_WRITE_LOCK_BH) \
-    $(wildcard include/config/INLINE_READ_LOCK_IRQ) \
-    $(wildcard include/config/INLINE_WRITE_LOCK_IRQ) \
-    $(wildcard include/config/INLINE_READ_LOCK_IRQSAVE) \
-    $(wildcard include/config/INLINE_WRITE_LOCK_IRQSAVE) \
-    $(wildcard include/config/INLINE_READ_TRYLOCK) \
-    $(wildcard include/config/INLINE_WRITE_TRYLOCK) \
-    $(wildcard include/config/INLINE_READ_UNLOCK) \
-    $(wildcard include/config/INLINE_WRITE_UNLOCK) \
-    $(wildcard include/config/INLINE_READ_UNLOCK_BH) \
-    $(wildcard include/config/INLINE_WRITE_UNLOCK_BH) \
-    $(wildcard include/config/INLINE_READ_UNLOCK_IRQ) \
-    $(wildcard include/config/INLINE_WRITE_UNLOCK_IRQ) \
-    $(wildcard include/config/INLINE_READ_UNLOCK_IRQRESTORE) \
-    $(wildcard include/config/INLINE_WRITE_UNLOCK_IRQRESTORE) \
-  include/uapi/linux/wait.h \
-  include/linux/refcount.h \
-  include/linux/sem.h \
-  include/uapi/linux/sem.h \
-  include/linux/ipc.h \
-  include/linux/uidgid.h \
-    $(wildcard include/config/MULTIUSER) \
-    $(wildcard include/config/USER_NS) \
-  include/linux/highuid.h \
-  include/linux/rhashtable-types.h \
-  include/linux/mutex.h \
-    $(wildcard include/config/MUTEX_SPIN_ON_OWNER) \
-  include/linux/osq_lock.h \
-  include/linux/debug_locks.h \
-  include/linux/workqueue.h \
-    $(wildcard include/config/DEBUG_OBJECTS_WORK) \
-    $(wildcard include/config/FREEZER) \
-    $(wildcard include/config/SYSFS) \
-    $(wildcard include/config/WQ_WATCHDOG) \
-  include/linux/timer.h \
-    $(wildcard include/config/DEBUG_OBJECTS_TIMERS) \
-    $(wildcard include/config/NO_HZ_COMMON) \
-  include/linux/ktime.h \
-  include/linux/time.h \
-    $(wildcard include/config/POSIX_TIMERS) \
-  include/linux/time32.h \
-  include/linux/timex.h \
-  include/uapi/linux/timex.h \
-  arch/x86/include/asm/timex.h \
-    $(wildcard include/config/X86_TSC) \
-  arch/x86/include/asm/tsc.h \
-  include/vdso/time32.h \
-  include/vdso/time.h \
-  include/linux/jiffies.h \
-  include/vdso/jiffies.h \
-  include/generated/timeconst.h \
-  include/vdso/ktime.h \
-  include/linux/timekeeping.h \
-    $(wildcard include/config/GENERIC_CMOS_UPDATE) \
-  include/linux/clocksource_ids.h \
-  include/linux/debugobjects.h \
-    $(wildcard include/config/DEBUG_OBJECTS) \
-    $(wildcard include/config/DEBUG_OBJECTS_FREE) \
-  include/uapi/linux/ipc.h \
-  arch/x86/include/generated/uapi/asm/ipcbuf.h \
-  include/uapi/asm-generic/ipcbuf.h \
-  arch/x86/include/uapi/asm/sembuf.h \
-  include/linux/shm.h \
-  include/uapi/linux/shm.h \
-  include/uapi/asm-generic/hugetlb_encode.h \
-  arch/x86/include/uapi/asm/shmbuf.h \
-  include/uapi/asm-generic/shmbuf.h \
-  arch/x86/include/asm/shmparam.h \
-  include/linux/plist.h \
-    $(wildcard include/config/DEBUG_PLIST) \
-  include/linux/hrtimer.h \
-    $(wildcard include/config/HIGH_RES_TIMERS) \
-    $(wildcard include/config/TIME_LOW_RES) \
-    $(wildcard include/config/TIMERFD) \
-  include/linux/hrtimer_defs.h \
-  include/linux/rbtree.h \
-  include/linux/rbtree_types.h \
-  include/linux/seqlock.h \
-  include/linux/ww_mutex.h \
-    $(wildcard include/config/DEBUG_RT_MUTEXES) \
-    $(wildcard include/config/DEBUG_WW_MUTEX_SLOWPATH) \
-  include/linux/rtmutex.h \
-  include/linux/timerqueue.h \
-  include/linux/seccomp.h \
-    $(wildcard include/config/SECCOMP) \
-    $(wildcard include/config/HAVE_ARCH_SECCOMP_FILTER) \
-    $(wildcard include/config/SECCOMP_FILTER) \
-    $(wildcard include/config/CHECKPOINT_RESTORE) \
-    $(wildcard include/config/SECCOMP_CACHE_DEBUG) \
-  include/uapi/linux/seccomp.h \
-  arch/x86/include/asm/seccomp.h \
-  arch/x86/include/asm/unistd.h \
-  arch/x86/include/uapi/asm/unistd.h \
-  arch/x86/include/generated/uapi/asm/unistd_32.h \
-  include/asm-generic/seccomp.h \
-  include/uapi/linux/unistd.h \
-  include/linux/nodemask.h \
-    $(wildcard include/config/HIGHMEM) \
-  include/linux/numa.h \
-    $(wildcard include/config/NODES_SHIFT) \
-    $(wildcard include/config/NUMA_KEEP_MEMINFO) \
-    $(wildcard include/config/HAVE_ARCH_NODE_DEV_GROUP) \
-  arch/x86/include/asm/sparsemem.h \
-  include/linux/resource.h \
-  include/uapi/linux/resource.h \
-  arch/x86/include/generated/uapi/asm/resource.h \
-  include/asm-generic/resource.h \
-  include/uapi/asm-generic/resource.h \
-  include/linux/latencytop.h \
-  include/linux/sched/prio.h \
-  include/linux/sched/types.h \
-  include/linux/signal_types.h \
-    $(wildcard include/config/OLD_SIGACTION) \
-  include/uapi/linux/signal.h \
-  arch/x86/include/asm/signal.h \
-  arch/x86/include/uapi/asm/signal.h \
-  include/uapi/asm-generic/signal-defs.h \
-  arch/x86/include/uapi/asm/siginfo.h \
-  include/uapi/asm-generic/siginfo.h \
-  include/linux/syscall_user_dispatch.h \
-  include/linux/mm_types_task.h \
-    $(wildcard include/config/ARCH_WANT_BATCHED_UNMAP_TLB_FLUSH) \
-    $(wildcard include/config/SPLIT_PTLOCK_CPUS) \
-    $(wildcard include/config/ARCH_ENABLE_SPLIT_PMD_PTLOCK) \
-  arch/x86/include/asm/tlbbatch.h \
-  include/linux/task_io_accounting.h \
-    $(wildcard include/config/TASK_ETWORK) \
-  include/linux/security.h \
-    $(wildcard include/config/SECURITY_INFINIBAND) \
-    $(wildcard include/config/SECURITY_NETWORK_XFRM) \
-    $(wildcard include/config/SECURITY_PATH) \
-    $(wildcard include/config/SECURITYFS) \
-  include/linux/kernel_read_file.h \
-  include/uapi/linux/netlink.h \
-  include/uapi/linux/netdevice.h \
-  include/linux/if_ether.h \
-  include/linux/if_link.h \
-  include/uapi/linux/if_link.h \
-  include/uapi/linux/if_bonding.h \
-  include/uapi/linux/pkt_cls.h \
-  include/uapi/linux/pkt_sched.h \
-  include/linux/hashtable.h \
-  include/linux/etherdevice.h \
-  include/linux/crc32.h \
-  include/linux/bitrev.h \
-    $(wildcard include/config/HAVE_ARCH_BITREVERSE) \
-  arch/x86/include/generated/asm/unaligned.h \
-  include/asm-generic/unaligned.h \
-  include/linux/unaligned/packed_struct.h \
-  include/linux/rtnetlink.h \
-    $(wildcard include/config/NET_INGRESS) \
-    $(wildcard include/config/NET_EGRESS) \
-  include/uapi/linux/rtnetlink.h \
-  include/uapi/linux/if_addr.h \
-  include/uapi/linux/if_vlan.h \
-  include/crypto/sha1.h \
-  include/net/sch_generic.h \
-  include/uapi/linux/pkt_cls.h \
-  include/net/gen_stats.h \
-  include/uapi/linux/gen_stats.h \
-  include/net/rtnetlink.h \
-  include/net/netlink.h \
-  include/net/flow_offload.h \
-  include/uapi/linux/filter.h \
-  include/linux/bpf-cgroup.h \
-  include/net/sock.h \
-    $(wildcard include/config/SOCK_RX_QUEUE_MAPPING) \
-    $(wildcard include/config/SOCK_VALIDATE_XMIT) \
-  include/linux/page_counter.h \
-  include/linux/memcontrol.h \
-    $(wildcard include/config/MEMCG_SWAP) \
-  include/linux/vmpressure.h \
-  include/linux/eventfd.h \
-  include/linux/writeback.h \
-  include/linux/flex_proportions.h \
-  include/linux/backing-dev-defs.h \
-    $(wildcard include/config/DEBUG_FS) \
-  include/linux/blk_types.h \
-    $(wildcard include/config/FAIL_MAKE_REQUEST) \
-    $(wildcard include/config/BLK_CGROUP_IOCOST) \
-    $(wildcard include/config/BLK_INLINE_ENCRYPTION) \
-    $(wildcard include/config/BLK_DEV_INTEGRITY) \
-  include/linux/bio.h \
-  include/linux/mempool.h \
-  include/linux/rculist_nulls.h \
-  include/linux/poll.h \
-  include/uapi/linux/poll.h \
-  arch/x86/include/generated/uapi/asm/poll.h \
-  include/uapi/asm-generic/poll.h \
-  include/uapi/linux/eventpoll.h \
-  include/linux/indirect_call_wrapper.h \
-  include/net/dst.h \
-  include/net/neighbour.h \
-  include/net/tcp_states.h \
-  include/uapi/linux/net_tstamp.h \
-  include/net/l3mdev.h \
-  include/net/fib_rules.h \
-  include/uapi/linux/fib_rules.h \
-  include/net/fib_notifier.h \
-  include/net/bpf_sk_storage.h \
-  include/uapi/linux/sock_diag.h \
-  include/uapi/linux/btf.h \
-  include/linux/bpf_local_storage.h \
-  kernel/bpf/../cgroup/cgroup-internal.h \
-  include/linux/fs_parser.h \
-    $(wildcard include/config/VALIDATE_FS_PARSER) \
-  include/linux/fs_context.h \
+/* Max transfer size done by I2C transfer functions */
+#define MAX_XFER_SIZE  64
 
-kernel/bpf/cgroup.o: $(deps_kernel/bpf/cgroup.o)
+/**** Bit definitions for MC417_RWD and MC417_OEN registers  ***
+  bits 31-16
++-----------+
+| Reserved  |
++-----------+
+  bit 15  bit 14  bit 13 bit 12  bit 11  bit 10  bit 9   bit 8
++-------+-------+-------+-------+-------+-------+-------+-------+
+|  WR#  |  RD#  |       |  ACK# |  ADHI |  ADLO |  CS1# |  CS0# |
++-------+-------+-------+-------+-------+-------+-------+-------+
+ bit 7   bit 6   bit 5   bit 4   bit 3   bit 2   bit 1   bit 0
++-------+-------+-------+-------+-------+-------+-------+-------+
+|  DATA7|  DATA6|  DATA5|  DATA4|  DATA3|  DATA2|  DATA1|  DATA0|
++-------+-------+-------+-------+-------+-------+-------+-------+
+***/
+/* MC417 */
+#define NETUP_DATA		0x000000ff
+#define NETUP_WR		0x00008000
+#define NETUP_RD		0x00004000
+#define NETUP_ACK		0x00001000
+#define NETUP_ADHI		0x00000800
+#define NETUP_ADLO		0x00000400
+#define NETUP_CS1		0x00000200
+#define NETUP_CS0		0x00000100
+#define NETUP_EN_ALL		0x00001000
+#define NETUP_CTRL_OFF		(NETUP_CS1 | NETUP_CS0 | NETUP_WR | NETUP_RD)
+#define NETUP_CI_CTL		0x04
+#define NETUP_CI_RD		1
 
-$(deps_kernel/bpf/cgroup.o):
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    cmd_drivers/media/i2c/tvp7002.o := gcc -Wp,-MMD,drivers/media/i2c/.tvp7002.o.d -nostdinc -I./arch/x86/include -I./arch/x86/include/generated  -I./include -I./arch/x86/include/uapi -I./arch/x86/include/generated/uapi -I./include/uapi -I./include/generated/uapi -include ./include/linux/compiler-version.h -include ./include/linux/kconfig.h -include ./include/linux/compiler_types.h -D__KERNEL__ -fmacro-prefix-map=./= -Wall -Wundef -Werror=strict-prototypes -Wno-trigraphs -fno-strict-aliasing -fno-common -fshort-wchar -fno-PIE -Werror=implicit-function-declaration -Werror=implicit-int -Werror=return-type -Wno-format-security -std=gnu11 -mno-sse -mno-mmx -mno-sse2 -mno-3dnow -mno-avx -fcf-protection=none -m32 -msoft-float -mregparm=3 -freg-struct-return -fno-pic -mpreferred-stack-boundary=2 -march=i686 -mtune=pentium3 -mtune=generic -Wa,-mtune=generic32 -ffreestanding -mstack-protector-guard-reg=fs -mstack-protector-guard-symbol=__stack_chk_guard -Wno-sign-compare -fno-asynchronous-unwind-tables -mindirect-branch=thunk-extern -mindirect-branch-register -fno-jump-tables -fno-delete-null-pointer-checks -Wno-frame-address -Wno-format-truncation -Wno-format-overflow -Wno-address-of-packed-member -O2 -fno-allow-store-data-races -fstack-protector-strong -Wimplicit-fallthrough=5 -Wno-main -Wno-unused-but-set-variable -Wno-unused-const-variable -fno-stack-clash-protection -pg -mrecord-mcount -mfentry -DCC_USING_FENTRY -Wdeclaration-after-statement -Wvla -Wno-pointer-sign -Wcast-function-type -Wno-stringop-truncation -Wno-stringop-overflow -Wno-restrict -Wno-maybe-uninitialized -Wno-alloc-size-larger-than -fno-strict-overflow -fno-stack-check -fconserve-stack -Werror=date-time -Werror=incompatible-pointer-types -Werror=designated-init -Wno-packed-not-aligned  -DMODULE  -DKBUILD_BASENAME='"tvp7002"' -DKBUILD_MODNAME='"tvp7002"' -D__KBUILD_MODNAME=kmod_tvp7002 -c -o drivers/media/i2c/tvp7002.o drivers/media/i2c/tvp7002.c 
+#define NETUP_IRQ_DETAM		0x1
+#define NETUP_IRQ_IRQAM		0x4
 
-source_drivers/media/i2c/tvp7002.o := drivers/media/i2c/tvp7002.c
+static unsigned int ci_dbg;
+module_param(ci_dbg, int, 0644);
+MODULE_PARM_DESC(ci_dbg, "Enable CI debugging");
 
-deps_drivers/media/i2c/tvp7002.o := \
-    $(wildcard include/config/VIDEO_ADV_DEBUG) \
-    $(wildcard include/config/OF) \
-    $(wildcard include/config/MEDIA_CONTROLLER) \
-  include/linux/compiler-version.h \
-    $(wildcard include/config/CC_VERSION_TEXT) \
-  include/linux/kconfig.h \
-    $(wildcard include/config/CPU_BIG_ENDIAN) \
-    $(wildcard include/config/BOOGER) \
-    $(wildcard include/config/FOO) \
-  include/linux/compiler_types.h \
-    $(wildcard include/config/DEBUG_INFO_BTF) \
-    $(wildcard include/config/PAHOLE_HAS_BTF_TAG) \
-    $(wildcard include/config/HAVE_ARCH_COMPILER_H) \
-    $(wildcard include/config/CC_HAS_ASM_INLINE) \
-  include/linux/compiler_attributes.h \
-  include/linux/compiler-gcc.h \
-    $(wildcard include/config/RETPOLINE) \
-    $(wildcard include/config/ARCH_USE_BUILTIN_BSWAP) \
-    $(wildcard include/config/SHADOW_CALL_STACK) \
-    $(wildcard include/config/KCOV) \
-  include/linux/delay.h \
-  include/linux/math.h \
-  include/linux/types.h \
-    $(wildcard include/config/HAVE_UID16) \
-    $(wildcard include/config/UID16) \
-    $(wildcard include/config/ARCH_DMA_ADDR_T_64BIT) \
-    $(wildcard include/config/PHYS_ADDR_T_64BIT) \
-    $(wildcard include/config/64BIT) \
-    $(wildcard include/config/ARCH_32BIT_USTAT_F_TINODE) \
-  include/uapi/linux/types.h \
-  arch/x86/include/generated/uapi/asm/types.h \
-  include/uapi/asm-generic/types.h \
-  include/asm-generic/int-ll64.h \
-  include/uapi/asm-generic/int-ll64.h \
-  arch/x86/include/uapi/asm/bitsperlong.h \
-  include/asm-generic/bitsperlong.h \
-  include/uapi/asm-generic/bitsperlong.h \
-  include/uapi/linux/posix_types.h \
-  include/linux/stddef.h \
-  include/uapi/linux/stddef.h \
-  include/linux/compiler_types.h \
-  arch/x86/include/asm/posix_types.h \
-    $(wildcard include/config/X86_32) \
-  arch/x86/include/uapi/asm/posix_types_32.h \
-  include/uapi/asm-generic/posix_types.h \
-  arch/x86/include/asm/div64.h \
-  include/linux/log2.h \
-    $(wildcard include/config/ARCH_HAS_ILOG2_U32) \
-    $(wildcard include/config/ARCH_HAS_ILOG2_U64) \
-  include/linux/bitops.h \
-  include/linux/bits.h \
-  include/linux/const.h \
-  include/vdso/const.h \
-  include/uapi/linux/const.h \
-  include/vdso/bits.h \
-  include/linux/build_bug.h \
-  include/linux/compiler.h \
-    $(wildcard include/config/TRACE_BRANCH_PROFILING) \
-    $(wildcard include/config/PROFILE_ALL_BRANCHES) \
-    $(wildcard include/config/STACK_VALIDATION) \
-    $(wildcard include/config/CFI_CLANG) \
-  arch/x86/include/generated/asm/rwonce.h \
-  include/asm-generic/rwonce.h \
-  include/linux/kasan-checks.h \
-    $(wildcard include/config/KASAN_GENERIC) \
-    $(wildcard include/config/KASAN_SW_TAGS) \
-  include/linux/kcsan-checks.h \
-    $(wildcard include/config/KCSAN) \
-    $(wildcard include/config/KCSAN_WEAK_MEMORY) \
-    $(wildcard include/config/KCSAN_IGNORE_ATOMICS) \
-  include/linux/typecheck.h \
-  include/uapi/linux/kernel.h \
-  include/uapi/linux/sysinfo.h \
-  arch/x86/include/asm/bitops.h \
-    $(wildcard include/config/X86_64) \
-    $(wildcard include/config/X86_CMOV) \
-  arch/x86/include/asm/alternative.h \
-    $(wildcard include/config/SMP) \
-  include/linux/stringify.h \
-  arch/x86/include/asm/asm.h \
-    $(wildcard include/config/KPROBES) \
-  arch/x86/include/asm/extable_fixup_types.h \
-  arch/x86/include/asm/rmwcc.h \
-    $(wildcard include/config/CC_HAS_ASM_GOTO) \
-  arch/x86/include/asm/barrier.h \
-  arch/x86/include/asm/nops.h \
-  include/asm-generic/barrier.h \
-  include/asm-generic/bitops/fls64.h \
-  include/asm-generic/bitops/sched.h \
-  arch/x86/include/asm/arch_hweight.h \
-  arch/x86/include/asm/cpufeatures.h \
-  arch/x86/include/asm/required-features.h \
-    $(wildcard include/config/X86_MINIMUM_CPU_FAMILY) \
-    $(wildcard include/config/MATH_EMULATION) \
-    $(wildcard include/config/X86_PAE) \
-    $(wildcard include/config/X86_CMPXCHG64) \
-    $(wildcard include/config/X86_P6_NOP) \
-    $(wildcard include/config/MATOM) \
-    $(wildcard include/config/PARAVIRT_XXL) \
-  arch/x86/include/asm/disabled-features.h \
-    $(wildcard include/config/X86_SMAP) \
-    $(wildcard include/config/X86_UMIP) \
-    $(wildcard include/config/X86_INTEL_MEMORY_PROTECTION_KEYS) \
-    $(wildcard include/config/X86_5LEVEL) \
-    $(wildcard include/config/PAGE_TABLE_ISOLATION) \
-    $(wildcard include/config/INTEL_IOMMU_SVM) \
-    $(wildcard include/config/X86_SGX) \
-  include/asm-generic/bitops/const_hweight.h \
-  include/asm-generic/bitops/instrumented-atomic.h \
-  include/linux/instrumented.h \
-  include/asm-generic/bitops/instrumented-non-atomic.h \
-    $(wildcard include/config/KCSAN_ASSUME_PLAIN_WRITES_ATOMIC) \
-  include/asm-generic/bitops/instrumented-lock.h \
-  include/asm-generic/bitops/le.h \
-  arch/x86/include/uapi/asm/byteorder.h \
-  include/linux/byteorder/little_endian.h \
-  include/uapi/linux/byteorder/little_endian.h \
-  include/linux/swab.h \
-  include/uapi/linux/swab.h \
-  arch/x86/include/uapi/asm/swab.h \
-  include/linux/byteorder/generic.h \
-  include/asm-generic/bitops/ext2-atomic-setbit.h \
-  include/linux/sched.h \
-    $(wildcard include/config/DEBUG_ATOMIC_SLEEP) \
-    $(wildcard include/config/PREEMPT_RT) \
-    $(wildcard include/config/VIRT_CPU_ACCOUNTING_NATIVE) \
-    $(wildcard include/config/SCHED_INFO) \
-    $(wildcard include/config/SCHEDSTATS) \
-    $(wildcard include/config/SCHED_CORE) \
-    $(wildcard include/config/FAIR_GROUP_SCHED) \
-    $(wildcard include/config/RT_GROUP_SCHED) \
-    $(wildcard include/config/RT_MUTEXES) \
-    $(wildcard include/config/UCLAMP_TASK) \
-    $(wildcard include/config/UCLAMP_BUCKETS_COUNT) \
-    $(wildcard include/config/KMAP_LOCAL) \
-    $(wildcard include/config/THREAD_INFO_IN_TASK) \
-    $(wildcard include/config/CGROUP_SCHED) \
-    $(wildcard include/config/PREEMPT_NOTIFIERS) \
-    $(wildcard include/config/BLK_DEV_IO_TRACE) \
-    $(wildcard include/config/PREEMPT_RCU) \
-    $(wildcard include/config/TASKS_RCU) \
-    $(wildcard include/config/TASKS_TRACE_RCU) \
-    $(wildcard include/config/PSI) \
-    $(wildcard include/config/MEMCG) \
-    $(wildcard include/config/COMPAT_BRK) \
-    $(wildcard include/config/CGROUPS) \
-    $(wildcard include/config/BLK_CGROUP) \
-    $(wildcard include/config/PAGE_OWNER) \
-    $(wildcard include/config/EVENTFD) \
-    $(wildcard include/config/IOMMU_SVA) \
-    $(wildcard include/config/STACKPROTECTOR) \
-    $(wildcard include/config/ARCH_HAS_SCALED_CPUTIME) \
-    $(wildcard include/config/VIRT_CPU_ACCOUNTING_GEN) \
-    $(wildcard include/config/NO_HZ_FULL) \
-    $(wildcard include/config/POSIX_CPUTIMERS) \
-    $(wildcard include/config/POSIX_CPU_TIMERS_TASK_WORK) \
-    $(wildcard include/config/KEYS) \
-    $(wildcard include/config/SYSVIPC) \
-    $(wildcard include/config/DETECT_HUNG_TASK) \
-    $(wildcard include/config/IO_URING) \
-    $(wildcard include/config/AUDIT) \
-    $(wildcard include/config/AUDITSYSCALL) \
-    $(wildcard include/config/DEBUG_MUTEXES) \
-    $(wildcard include/config/TRACE_IRQFLAGS) \
-    $(wildcard include/config/LOCKDEP) \
-    $(wildcard include/config/UBSAN) \
-    $(wildcard include/config/UBSAN_TRAP) \
-    $(wildcard include/config/COMPACTION) \
-    $(wildcard include/config/TASK_XACCT) \
-    $(wildcard include/config/CPUSETS) \
-    $(wildcard include/config/X86_CPU_RESCTRL) \
-    $(wildcard include/config/FUTEX) \
-    $(wildcard include/config/COMPAT) \
-    $(wildcard include/config/PERF_EVENTS) \
-    $(wildcard include/config/DEBUG_PREEMPT) \
-    $(wildcard include/config/NUMA) \
-    $(wildcard include/config/NUMA_BALANCING) \
-    $(wildcard include/config/RSEQ) \
-    $(wildcard include/config/TASK_DELAY_ACCT) \
-    $(wildcard include/config/FAULT_INJECTION) \
-    $(wildcard include/config/LATENCYTOP) \
-    $(wildcard include/config/KUNIT) \
-    $(wildcard include/config/FUNCTION_GRAPH_TRACER) \
-    $(wildcard include/config/TRACING) \
-    $(wildcard include/config/UPROBES) \
-    $(wildcard include/config/BCACHE) \
-    $(wildcard include/config/MMU) \
-    $(wildcard include/config/VMAP_STACK) \
-    $(wildcard include/config/LIVEPATCH) \
-    $(wildcard include/config/SECURITY) \
-    $(wildcard include/config/BPF_SYSCALL) \
-    $(wildcard include/config/GCC_PLUGIN_STACKLEAK) \
-    $(wildcard include/config/X86_MCE) \
-    $(wildcard include/config/KRETPROBES) \
-    $(wildcard include/config/RETHOOK) \
-    $(wildcard include/config/ARCH_HAS_PARANOID_L1D_FLUSH) \
-    $(wildcard include/config/ARCH_TASK_STRUCT_ON_STACK) \
-    $(wildcard include/config/PREEMPTION) \
-    $(wildcard include/config/PREEMPT_DYNAMIC) \
-    $(wildcard include/config/HAVE_PREEMPT_DYNAMIC_CALL) \
-    $(wildcard include/config/HAVE_PREEMPT_DYNAMIC_KEY) \
-    $(wildcard include/config/DEBUG_RSEQ) \
-  include/uapi/linux/sched.h \
-  arch/x86/include/asm/current.h \
-  arch/x86/include/asm/percpu.h \
-    $(wildcard include/config/X86_64_SMP) \
-  include/linux/kernel.h \
-    $(wildcard include/config/PREEMPT_VOLUNTARY_BUILD) \
-    $(wildcard include/config/PREEMPT_) \
-    $(wildcard include/config/PROVE_LOCKING) \
-    $(wildcard include/config/FTRACE_MCOUNT_RECORD) \
-  include/linux/stdarg.h \
-  include/linux/align.h \
-  include/linux/limits.h \
-  include/uapi/linux/limits.h \
-  include/vdso/limits.h \
-  include/linux/linkage.h \
-    $(wildcard include/config/ARCH_USE_SYM_ANNOTATIONS) \
-  include/linux/export.h \
-    $(wildcard include/config/MODVERSIONS) \
-    $(wildcard include/config/MODULE_REL_CRCS) \
-    $(wildcard include/config/HAVE_ARCH_PREL32_RELOCATIONS) \
-    $(wildcard include/config/MODULES) \
-    $(wildcard include/config/TRIM_UNUSED_KSYMS) \
-  arch/x86/include/asm/linkage.h \
-    $(wildcard include/config/X86_ALIGNMENT_16) \
-    $(wildcard include/config/SLS) \
-  arch/x86/include/asm/ibt.h \
-    $(wildcard include/config/X86_KERNEL_IBT) \
-  include/linux/container_of.h \
-  include/linux/err.h \
-  arch/x86/include/generated/uapi/asm/errno.h \
-  include/uapi/asm-generic/errno.h \
-  include/uapi/asm-generic/errno-base.h \
-  include/linux/kstrtox.h \
-  include/linux/minmax.h \
-  include/linux/panic.h \
-    $(wildcard include/config/PANIC_TIMEOUT) \
-  include/linux/printk.h \
-    $(wildcard include/config/MESSAGE_LOGLEVEL_DEFAULT) \
-    $(wildcard include/config/CONSOLE_LOGLEVEL_DEFAULT) \
-    $(wildcard include/config/CONSOLE_LOGLEVEL_QUIET) \
-    $(wildcard include/config/EARLY_PRINTK) \
-    $(wildcard include/config/PRINTK) \
-    $(wildcard include/config/PRINTK_INDEX) \
-    $(wildcard include/config/DYNAMIC_DEBUG) \
-    $(wildcard include/config/DYNAMIC_DEBUG_CORE) \
-  include/linux/init.h \
-    $(wildcard include/config/STRICT_KERNEL_RWX) \
-    $(wildcard include/config/STRICT_MODULE_RWX) \
-    $(wildcard include/config/LTO_CLANG) \
-  include/linux/kern_levels.h \
-  include/linux/cache.h \
-    $(wildcard include/config/ARCH_HAS_CACHE_LINE_SIZE) \
-  arch/x86/include/asm/cache.h \
-    $(wildcard include/config/X86_L1_CACHE_SHIFT) \
-    $(wildcard include/config/X86_INTERNODE_CACHE_SHIFT) \
-    $(wildcard include/config/X86_VSMP) \
-  include/linux/ratelimit_types.h \
-  include/uapi/linux/param.h \
-  arch/x86/include/generated/uapi/asm/param.h \
-  include/asm-generic/param.h \
-    $(wildcard include/config/HZ) \
-  include/uapi/asm-generic/param.h \
-  include/linux/spinlock_types_raw.h \
-    $(wildcard include/config/DEBUG_SPINLOCK) \
-    $(wildcard include/config/DEBUG_LOCK_ALLOC) \
-  arch/x86/include/asm/spinlock_types.h \
-  include/asm-generic/qspinlock_types.h \
-    $(wildcard include/config/NR_CPUS) \
-  include/asm-generic/qrwlock_types.h \
-  include/linux/lockdep_types.h \
-    $(wildcard include/config/PROVE_RAW_LOCK_NESTING) \
-    $(wildcard include/config/LOCK_STAT) \
-  include/linux/once_lite.h \
-  include/linux/static_call_types.h \
-    $(wildcard include/config/HAVE_STATIC_CALL) \
-    $(wildcard include/config/HAVE_STATIC_CALL_INLINE) \
-  include/linux/instruction_pointer.h \
-  include/asm-generic/percpu.h \
-    $(wildcard include/config/HAVE_SETUP_PER_CPU_AREA) \
-  include/linux/threads.h \
-    $(wildcard include/config/BASE_SMALL) \
-  include/linux/percpu-defs.h \
-    $(wildcard include/config/DEBUG_FORCE_WEAK_PER_CPU) \
-    $(wildcard include/config/AMD_MEM_ENCRYPT) \
-  include/linux/pid.h \
-  include/linux/rculist.h \
-    $(wildcard include/config/PROVE_RCU_LIST) \
-  include/linux/list.h \
-    $(wildcard include/config/DEBUG_LIST) \
-  include/linux/poison.h \
-    $(wildcard include/config/ILLEGAL_POINTER_VALUE) \
-  include/linux/rcupdate.h \
-    $(wildcard include/config/TINY_RCU) \
-    $(wildcard include/config/RCU_STRICT_GRACE_PERIOD) \
-    $(wildcard include/config/TASKS_RCU_GENERIC) \
-    $(wildcard include/config/RCU_STALL_COMMON) \
-    $(wildcard include/config/RCU_NOCB_CPU) \
-    $(wildcard include/config/TASKS_RUDE_RCU) \
-    $(wildcard include/config/TREE_RCU) \
-    $(wildcard include/config/DEBUG_OBJECTS_RCU_HEAD) \
-    $(wildcard include/config/HOTPLUG_CPU) \
-    $(wildcard include/config/PROVE_RCU) \
-    $(wildcard include/config/ARCH_WEAK_RELEASE_ACQUIRE) \
-  include/linux/atomic.h \
-  arch/x86/include/asm/atomic.h \
-  arch/x86/include/asm/cmpxchg.h \
-  arch/x86/include/asm/cmpxchg_32.h \
-  arch/x86/include/asm/atomic64_32.h \
-  include/linux/atomic/atomic-arch-fallback.h \
-    $(wildcard include/config/GENERIC_ATOMIC64) \
-  include/linux/atomic/atomic-long.h \
-  include/linux/atomic/atomic-instrumented.h \
-  include/linux/irqflags.h \
-    $(wildcard include/config/IRQSOFF_TRACER) \
-    $(wildcard include/config/PREEMPT_TRACER) \
-    $(wildcard include/config/DEBUG_IRQFLAGS) \
-    $(wildcard include/config/TRACE_IRQFLAGS_SUPPORT) \
-  arch/x86/include/asm/irqflags.h \
-    $(wildcard include/config/DEBUG_ENTRY) \
-    $(wildcard include/config/XEN_PV) \
-  arch/x86/include/asm/processor-flags.h \
-    $(wildcard include/config/VM86) \
-  arch/x86/include/uapi/asm/processor-flags.h \
-  include/linux/mem_encrypt.h \
-    $(wildcard include/config/ARCH_HAS_MEM_ENCRYPT) \
-  arch/x86/include/asm/mem_encrypt.h \
-  include/linux/cc_platform.h \
-    $(wildcard include/config/ARCH_HAS_CC_PLATFORM) \
-  arch/x86/include/uapi/asm/bootparam.h \
-  include/linux/screen_info.h \
-  include/uapi/linux/screen_info.h \
-  include/linux/apm_bios.h \
-  include/uapi/linux/apm_bios.h \
-  include/uapi/linux/ioctl.h \
-  arch/x86/include/generated/uapi/asm/ioctl.h \
-  include/asm-generic/ioctl.h \
-  include/uapi/asm-generic/ioctl.h \
-  include/linux/edd.h \
-  include/uapi/linux/edd.h \
-  arch/x86/include/asm/ist.h \
-  arch/x86/include/uapi/asm/ist.h \
-  include/video/edid.h \
-    $(wildcard include/config/X86) \
-  include/uapi/video/edid.h \
-  arch/x86/include/asm/nospec-branch.h \
-  include/linux/static_key.h \
-  include/linux/jump_label.h \
-    $(wildcard include/config/JUMP_LABEL) \
-    $(wildcard include/config/HAVE_ARCH_JUMP_LABEL_RELATIVE) \
-  arch/x86/include/asm/jump_label.h \
-  include/linux/objtool.h \
-    $(wildcard include/config/FRAME_POINTER) \
-  arch/x86/include/asm/msr-index.h \
-  arch/x86/include/asm/unwind_hints.h \
-  arch/x86/include/asm/orc_types.h \
-  arch/x86/include/asm/GEN-for-each-reg.h \
-  arch/x86/include/asm/segment.h \
-  include/linux/preempt.h \
-    $(wildcard include/config/PREEMPT_COUNT) \
-    $(wildcard include/config/TRACE_PREEMPT_TOGGLE) \
-  arch/x86/include/asm/preempt.h \
-  include/linux/thread_info.h \
-    $(wildcard include/config/GENERIC_ENTRY) \
-    $(wildcard include/config/HAVE_ARCH_WITHIN_STACK_FRAMES) \
-    $(wildcard include/config/HARDENED_USERCOPY) \
-    $(wildcard include/config/BUG) \
-  include/linux/bug.h \
-    $(wildcard include/config/GENERIC_BUG) \
-    $(wildcard include/config/BUG_ON_DATA_CORRUPTION) \
-  arch/x86/include/asm/bug.h \
-    $(wildcard include/config/DEBUG_BUGVERBOSE) \
-  include/linux/instrumentation.h \
-  include/asm-generic/bug.h \
-    $(wildcard include/config/GENERIC_BUG_RELATIVE_POINTERS) \
-  include/linux/restart_block.h \
-  include/linux/time64.h \
-  include/linux/math64.h \
-    $(wildcard include/config/ARCH_SUPPORTS_INT128) \
-  include/vdso/math64.h \
-  include/vdso/time64.h \
-  include/uapi/linux/time.h \
-  include/uapi/linux/time_types.h \
-  include/linux/errno.h \
-  include/uapi/linux/errno.h \
-  arch/x86/include/asm/thread_info.h \
-    $(wildcard include/config/X86_IOPL_IOPERM) \
-    $(wildcard include/config/IA32_EMULATION) \
-  arch/x86/include/asm/page.h \
-  arch/x86/include/asm/page_types.h \
-    $(wildcard include/config/PHYSICAL_START) \
-    $(wildcard include/config/PHYSICAL_ALIGN) \
-    $(wildcard include/config/DYNAMIC_PHYSICAL_MASK) \
-  arch/x86/include/asm/page_32_types.h \
-    $(wildcard include/config/HIGHMEM4G) \
-    $(wildcard include/config/HIGHMEM64G) \
-    $(wildcard include/config/PAGE_OFFSET) \
-  arch/x86/include/asm/page_32.h \
-    $(wildcard include/config/DEBUG_VIRTUAL) \
-    $(wildcard include/config/FLATMEM) \
-  include/linux/string.h \
-    $(wildcard include/config/BINARY_PRINTF) \
-    $(wildcard include/config/FORTIFY_SOURCE) \
-  include/uapi/linux/string.h \
-  arch/x86/include/asm/string.h \
-  arch/x86/include/asm/string_32.h \
-  include/linux/fortify-string.h \
-  include/linux/range.h \
-  include/asm-generic/memory_model.h \
-    $(wildcard include/config/SPARSEMEM_VMEMMAP) \
-    $(wildcard include/config/SPARSEMEM) \
-  include/linux/pfn.h \
-  include/asm-generic/getorder.h \
-  arch/x86/include/asm/cpufeature.h \
-    $(wildcard include/config/X86_FEATURE_NAMES) \
-  arch/x86/include/asm/processor.h \
-    $(wildcard include/config/X86_VMX_FEATURE_NAMES) \
-    $(wildcard include/config/X86_DEBUGCTLMSR) \
-    $(wildcard include/config/CPU_SUP_AMD) \
-    $(wildcard include/config/XEN) \
-  arch/x86/include/asm/math_emu.h \
-  arch/x86/include/asm/ptrace.h \
-    $(wildcard include/config/PARAVIRT) \
-  arch/x86/include/uapi/asm/ptrace.h \
-  arch/x86/include/uapi/asm/ptrace-abi.h \
-  arch/x86/include/asm/paravirt_types.h \
-    $(wildcard include/config/PGTABLE_LEVELS) \
-    $(wildcard include/config/PARAVIRT_DEBUG) \
-  arch/x86/include/asm/desc_defs.h \
-  arch/x86/include/asm/pgtable_types.h \
-    $(wildcard include/config/MEM_SOFT_DIRTY) \
-    $(wildcard include/config/HAVE_ARCH_USERFAULTFD_WP) \
-    $(wildcard include/config/PROC_FS) \
-  arch/x86/include/asm/pgtable_32_types.h \
-  arch/x86/include/asm/pgtable-3level_types.h \
-  include/asm-generic/pgtable-nop4d.h \
-  include/asm-generic/pgtable-nopud.h \
-  arch/x86/include/asm/proto.h \
-  arch/x86/include/uapi/asm/ldt.h \
-  arch/x86/include/uapi/asm/sigcontext.h \
-  arch/x86/include/asm/msr.h \
-    $(wildcard include/config/TRACEPOINTS) \
-  arch/x86/include/asm/msr-index.h \
-  arch/x86/include/asm/cpumask.h \
-  include/linux/cpumask.h \
-    $(wildcard include/config/CPUMASK_OFFSTACK) \
-    $(wildcard include/config/DEBUG_PER_CPU_MAPS) \
-  include/linux/bitmap.h \
-  include/linux/find.h \
-  arch/x86/include/uapi/asm/msr.h \
-  include/linux/tracepoint-defs.h \
-  arch/x86/include/asm/special_insns.h \
-  arch/x86/include/asm/fpu/types.h \
-  arch/x86/include/asm/vmxfeatures.h \
-  arch/x86/include/asm/vdso/processor.h \
-  include/linux/personality.h \
-  include/uapi/linux/personality.h \
-  include/linux/bottom_half.h \
-  include/linux/lockdep.h \
-    $(wildcard include/config/DEBUG_LOCKING_API_SELFTESTS) \
-  include/linux/smp.h \
-    $(wildcard include/config/UP_LATE_INIT) \
-  include/linux/smp_types.h \
-  include/linux/llist.h \
-    $(wildcard include/config/ARCH_HAVE_NMI_SAFE_CMPXCHG) \
-  arch/x86/include/asm/smp.h \
-    $(wildcard include/config/X86_LOCAL_APIC) \
-    $(wildcard include/config/DEBUG_NMI_SELFTEST) \
-  include/linux/rcutree.h \
-  include/linux/wait.h \
-  include/linux/spinlock.h \
-  arch/x86/include/generated/asm/mmiowb.h \
-  include/asm-generic/mmiowb.h \
-    $(wildcard include/config/MMIOWB) \
-  include/linux/spinlock_types.h \
-  include/linux/rwlock_types.h \
-  arch/x86/include/asm/spinlock.h \
-  arch/x86/include/asm/paravirt.h \
-    $(wildcard include/config/PARAVIRT_SPINLOCKS) \
-  arch/x86/include/asm/frame.h \
-  arch/x86/include/asm/qspinlock.h \
-  include/asm-generic/qspinlock.h \
-  arch/x86/include/asm/qrwlock.h \
-  include/asm-generic/qrwlock.h \
-  include/linux/rwlock.h \
-    $(wildcard include/config/PREEMPT) \
-  include/linux/spinlock_api_smp.h \
-    $(wildcard include/config/INLINE_SPIN_LOCK) \
-    $(wildcard include/config/INLINE_SPIN_LOCK_BH) \
-    $(wildcard include/config/INLINE_SPIN_LOCK_IRQ) \
-    $(wildcard include/config/INLINE_SPIN_LOCK_IRQSAVE) \
-    $(wildcard include/config/INLINE_SPIN_TRYLOCK) \
-    $(wildcard include/config/INLINE_SPIN_TRYLOCK_BH) \
-    $(wildcard include/config/UNINLINE_SPIN_UNLOCK) \
-    $(wildcard include/config/INLINE_SPIN_UNLOCK_BH) \
-    $(wildcard include/config/INLINE_SPIN_UNLOCK_IRQ) \
-    $(wildcard include/config/INLINE_SPIN_UNLOCK_IRQRESTORE) \
-    $(wildcard include/config/GENERIC_LOCKBREAK) \
-  include/linux/rwlock_api_smp.h \
-    $(wildcard include/config/INLINE_READ_LOCK) \
-    $(wildcard include/config/INLINE_WRITE_LOCK) \
-    $(wildcard include/config/INLINE_READ_LOCK_BH) \
-    $(wildcard include/config/INLINE_WRITE_LOCK_BH) \
-    $(wildcard include/config/INLINE_READ_LOCK_IRQ) \
-    $(wildcard include/config/INLINE_WRITE_LOCK_IRQ) \
-    $(wildcard include/config/INLINE_READ_LOCK_IRQSAVE) \
-    $(wildcard include/config/INLINE_WRITE_LOCK_IRQSAVE) \
-    $(wildcard include/config/INLINE_READ_TRYLOCK) \
-    $(wildcard include/config/INLINE_WRITE_TRYLOCK) \
-    $(wildcard include/config/INLINE_READ_UNLOCK) \
-    $(wildcard include/config/INLINE_WRITE_UNLOCK) \
-    $(wildcard include/config/INLINE_READ_UNLOCK_BH) \
-    $(wildcard include/config/INLINE_WRITE_UNLOCK_BH) \
-    $(wildcard include/config/INLINE_READ_UNLOCK_IRQ) \
-    $(wildcard include/config/INLINE_WRITE_UNLOCK_IRQ) \
-    $(wildcard include/config/INLINE_READ_UNLOCK_IRQRESTORE) \
-    $(wildcard include/config/INLINE_WRITE_UNLOCK_IRQRESTORE) \
-  include/uapi/linux/wait.h \
-  include/linux/refcount.h \
-  include/linux/sem.h \
-  include/uapi/linux/sem.h \
-  include/linux/ipc.h \
-  include/linux/uidgid.h \
-    $(wildcard include/config/MULTIUSER) \
-    $(wildcard include/config/USER_NS) \
-  include/linux/highuid.h \
-  include/linux/rhashtable-types.h \
-  include/linux/mutex.h \
-    $(wildcard include/config/MUTEX_SPIN_ON_OWNER) \
-  include/linux/osq_lock.h \
-  include/linux/debug_locks.h \
-  include/linux/workqueue.h \
-    $(wildcard include/config/DEBUG_OBJECTS_WORK) \
-    $(wildcard include/config/FREEZER) \
-    $(wildcard include/config/SYSFS) \
-    $(wildcard include/config/WQ_WATCHDOG) \
-  include/linux/timer.h \
-    $(wildcard include/config/DEBUG_OBJECTS_TIMERS) \
-    $(wildcard include/config/NO_HZ_COMMON) \
-  include/linux/ktime.h \
-  include/linux/time.h \
-    $(wildcard include/config/POSIX_TIMERS) \
-  include/linux/time32.h \
-  include/linux/timex.h \
-  include/uapi/linux/timex.h \
-  arch/x86/include/asm/timex.h \
-    $(wildcard include/config/X86_TSC) \
-  arch/x86/include/asm/tsc.h \
-  include/vdso/time32.h \
-  include/vdso/time.h \
-  include/linux/jiffies.h \
-  include/vdso/jiffies.h \
-  include/generated/timeconst.h \
-  include/vdso/ktime.h \
-  include/linux/timekeeping.h \
-    $(wildcard include/config/GENERIC_CMOS_UPDATE) \
-  include/linux/clocksource_ids.h \
-  include/linux/debugobjects.h \
-    $(wildcard include/config/DEBUG_OBJECTS) \
-    $(wildcard include/config/DEBUG_OBJECTS_FREE) \
-  include/uapi/linux/ipc.h \
-  arch/x86/include/generated/uapi/asm/ipcbuf.h \
-  include/uapi/asm-generic/ipcbuf.h \
-  arch/x86/include/uapi/asm/sembuf.h \
-  include/linux/shm.h \
-  include/uapi/linux/shm.h \
-  include/uapi/asm-generic/hugetlb_encode.h \
-  arch/x86/include/uapi/asm/shmbuf.h \
-  include/uapi/asm-generic/shmbuf.h \
-  arch/x86/include/asm/shmparam.h \
-  include/linux/plist.h \
-    $(wildcard include/config/DEBUG_PLIST) \
-  include/linux/hrtimer.h \
-    $(wildcard include/config/HIGH_RES_TIMERS) \
-    $(wildcard include/config/TIME_LOW_RES) \
-    $(wildcard include/config/TIMERFD) \
-  include/linux/hrtimer_defs.h \
-  include/linux/rbtree.h \
-  include/linux/rbtree_types.h \
-  include/linux/percpu.h \
-    $(wildcard include/config/NEED_PER_CPU_EMBED_FIRST_CHUNK) \
-    $(wildcard include/config/NEED_PER_CPU_PAGE_FIRST_CHUNK) \
-  include/linux/mmdebug.h \
-    $(wildcard include/config/DEBUG_VM) \
-    $(wildcard include/config/DEBUG_VM_PGFLAGS) \
-  include/linux/seqlock.h \
-  include/linux/ww_mutex.h \
-    $(wildcard include/config/DEBUG_RT_MUTEXES) \
-    $(wildcard include/config/DEBUG_WW_MUTEX_SLOWPATH) \
-  include/linux/rtmutex.h \
-  include/linux/timerqueue.h \
-  include/linux/seccomp.h \
-    $(wildcard include/config/SECCOMP) \
-    $(wildcard include/config/HAVE_ARCH_SECCOMP_FILTER) \
-    $(wildcard include/config/SECCOMP_FILTER) \
-    $(wildcard include/config/CHECKPOINT_RESTORE) \
-    $(wildcard include/config/SECCOMP_CACHE_DEBUG) \
-  include/uapi/linux/seccomp.h \
-  arch/x86/include/asm/seccomp.h \
-  arch/x86/include/asm/unistd.h \
-  arch/x86/include/uapi/asm/unistd.h \
-  arch/x86/include/generated/uapi/asm/unistd_32.h \
-  include/asm-generic/seccomp.h \
-  include/uapi/linux/unistd.h \
-  include/linux/nodemask.h \
-    $(wildcard include/config/HIGHMEM) \
-  include/linux/numa.h \
-    $(wildcard include/config/NODES_SHIFT) \
-    $(wildcard include/config/NUMA_KEEP_MEMINFO) \
-    $(wildcard include/config/HAVE_ARCH_NODE_DEV_GROUP) \
-  arch/x86/include/asm/sparsemem.h \
-  include/linux/resource.h \
-  include/uapi/linux/resource.h \
-  arch/x86/include/generated/uapi/asm/resource.h \
-  include/asm-generic/resource.h \
-  include/uapi/asm-generic/resource.h \
-  include/linux/latencytop.h \
-  include/linux/sched/prio.h \
-  include/linux/sched/types.h \
-  include/linux/signal_types.h \
-    $(wildcard include/config/OLD_SIGACTION) \
-  include/uapi/linux/signal.h \
-  arch/x86/include/asm/signal.h \
-  arch/x86/include/uapi/asm/signal.h \
-  include/uapi/asm-generic/signal-defs.h \
-  arch/x86/include/uapi/asm/siginfo.h \
-  include/uapi/asm-generic/siginfo.h \
-  include/linux/syscall_user_dispatch.h \
-  include/linux/mm_types_task.h \
-    $(wildcard include/config/ARCH_WANT_BATCHED_UNMAP_TLB_FLUSH) \
-    $(wildcard include/config/SPLIT_PTLOCK_CPUS) \
-    $(wildcard include/config/ARCH_ENABLE_SPLIT_PMD_PTLOCK) \
-  arch/x86/include/asm/tlbbatch.h \
-  include/linux/task_io_accounting.h \
-    $(wildcard include/config/TASK_IO_ACCOUNTING) \
-  include/linux/posix-timers.h \
-  include/linux/alarmtimer.h \
-    $(wildcard include/config/RTC_CLASS) \
-  include/uapi/linux/rseq.h \
-  include/linux/kcsan.h \
-  arch/x86/include/generated/asm/kmap_size.h \
-  include/asm-generic/kmap_size.h \
-    $(wildcard include/config/DEBUG_KMAP_LOCAL) \
-  arch/x86/include/asm/delay.h \
-  include/asm-generic/delay.h \
-  include/linux/i2c.h \
-    $(wildcard include/config/I2C) \
-    $(wildcard include/config/I2C_SLAVE) \
-    $(wildcard include/config/I2C_BOARDINFO) \
-    $(wildcard include/config/I2C_MUX) \
-    $(wildcard include/config/ACPI) \
-  include/linux/acpi.h \
-    $(wildcard include/config/ACPI_DEBUGGER) \
-    $(wildcard include/config/ACPI_TABLE_LIB) \
-    $(wildcard include/config/IA64) \
-    $(wildcard include/config/LOONGARCH) \
-    $(wildcard include/config/ARM64) \
-    $(wildcard include/config/ACPI_PROCESSOR_CSTATE) \
-    $(wildcard include/config/ACPI_HOTPLUG_CPU) \
-    $(wildcard include/config/ACPI_HOTPLUG_IOAPIC) \
-    $(wildcard include/config/X86_IO_APIC) \
-    $(wildcard include/config/PCI) \
-    $(wildcard include/config/ACPI_WMI) \
-    $(wildcard include/config/ACPI_NUMA) \
-    $(wildcard include/config/HIBERNATION) \
-    $(wildcard include/config/PM_SLEEP) \
-    $(wildcard include/config/ACPI_HOTPLUG_MEMORY) \
-    $(wildcard include/config/ACPI_CONTAINER) \
-    $(wildcard include/config/ACPI_GTDT) \
-    $(wildcard include/config/PM) \
-    $(wildcard include/config/GPIOLIB) \
-    $(wildcard include/config/ACPI_TABLE_UPGRADE) \
-    $(wildcard include/config/ACPI_WATCHDOG) \
-    $(wildcard include/config/ACPI_SPCR_TABLE) \
-    $(wildcard include/config/ACPI_GENERIC_GSI) \
-    $(wildcard include/config/ACPI_LPIT) \
-    $(wildcard include/config/ACPI_PPTT) \
-    $(wildcard include/config/ACPI_PCC) \
-  include/linux/ioport.h \
-    $(wildcard include/config/MEMORY_HOTREMOVE) \
-    $(wildcard include/config/MEMORY_HOTPLUG) \
-  include/linux/irqdomain.h \
-    $(wildcard include/config/IRQ_DOMAIN_HIERARCHY) \
-    $(wildcard include/config/GENERIC_IRQ_DEBUGFS) \
-    $(wildcard include/config/IRQ_DOMAIN) \
-    $(wildcard include/config/IRQ_DOMAIN_NOMAP) \
-  include/linux/irqhandler.h \
-  include/linux/of.h \
-    $(wildcard include/config/OF_DYNAMIC) \
-    $(wildcard include/config/SPARC) \
-    $(wildcard include/config/OF_PROMTREE) \
-    $(wildcard include/config/OF_KOBJ) \
-    $(wildcard include/config/OF_NUMA) \
-    $(wildcard include/config/OF_OVERLAY) \
-  include/linux/kobject.h \
-    $(wildcard include/config/UEVENT_HELPER) \
-    $(wildcard include/config/DEBUG_KOBJECT_RELEASE) \
-  include/linux/sysfs.h \
-  include/linux/kernfs.h \
-    $(wildcard include/config/KERNFS) \
-  include/linux/idr.h \
-  include/linux/radix-tree.h \
-  include/linux/gfp.h \
-    $(wildcard include/config/KASAN_HW_TAGS) \
-    $(wildcard include/config/ZONE_DMA) \
-    $(wildcard include/config/ZONE_DMA32) \
-    $(wildcard include/config/ZONE_DEVICE) \
-    $(wildcard include/config/CONTIG_ALLOC) \
-    $(wildcard include/config/CMA) \
-  include/linux/mmzone.h \
-    $(wildcard include/config/FORCE_MAX_ZONEORDER) \
-    $(wildcard include/config/MEMORY_ISOLATION) \
-    $(wildcard include/config/ZSMALLOC) \
-    $(wildcard include/config/SWAP) \
-    $(wildcard include/config/TRANSPARENT_HUGEPAGE) \
-    $(wildcard include/config/PAGE_EXTENSION) \
-    $(wildcard include/config/DEFERRED_STRUCT_PAGE_INIT) \
-    $(wildcard include/config/HAVE_MEMORYLESS_NODES) \
-    $(wildcard include/config/SPARSEMEM_EXTREME) \
-    $(wildcard include/config/HAVE_ARCH_PFN_VALID) \
-  include/linux/pageblock-flags.h \
-    $(wildcard include/config/HUGETLB_PAGE) \
-    $(wildcard include/config/HUGETLB_PAGE_SIZE_VARIABLE) \
-  include/linux/page-flags-layout.h \
-  include/generated/bounds.h \
-  include/linux/mm_types.h \
-    $(wildcard include/config/HAVE_ALIGNED_STRUCT_PAGE) \
-    $(wildcard include/config/USERFAULTFD) \
-    $(wildcard include/config/HAVE_ARCH_COMPAT_MMAP_BASES) \
-    $(wildcard include/config/MEMBARRIER) \
-    $(wildcard include/config/AIO) \
-    $(wildcard include/config/MMU_NOTIFIER) \
-  include/linux/auxvec.h \
-  include/uapi/linux/auxvec.h \
-  arch/x86/include/uapi/asm/auxvec.h \
-  include/linux/kref.h \
-  include/linux/rwsem.h \
-    $(wildcard include/config/RWSEM_SPIN_ON_OWNER) \
-    $(wildcard include/config/DEBUG_RWSEMS) \
-  include/linux/completion.h \
-  include/linux/swait.h \
-  include/linux/uprobes.h \
-  arch/x86/include/asm/uprobes.h \
-  include/linux/notifier.h \
-    $(wildcard include/config/TREE_SRCU) \
-  include/linux/srcu.h \
-    $(wildcard include/config/TINY_SRCU) \
-    $(wildcard include/config/SRCU) \
-  include/linux/rcu_segcblist.h \
-  include/linux/srcutree.h \
-  include/linux/rcu_node_tree.h \
-    $(wildcard include/config/RCU_FANOUT) \
-    $(wildcard include/config/RCU_FANOUT_LEAF) \
-  arch/x86/include/asm/mmu.h \
-    $(wildcard include/config/MODIFY_LDT_SYSCALL) \
-  include/linux/page-flags.h \
-    $(wildcard include/config/ARCH_USES_PG_UNCACHED) \
-    $(wildcard include/config/MEMORY_FAILURE) \
-    $(wildcard include/config/PAGE_IDLE_FLAG) \
-    $(wildcard include/config/HUGETLB_PAGE_FREE_VMEMMAP) \
-    $(wildcard include/config/HUGETLB_PAGE_FREE_VMEMMAP_DEFAULT_ON) \
-    $(wildcard include/config/KSM) \
-  include/linux/local_lock.h \
-  include/linux/local_lock_internal.h \
-  include/linux/memory_hotplug.h \
-    $(wildcard include/config/HAVE_ARCH_NODEDATA_EXTENSION) \
-    $(wildcard include/config/ARCH_HAS_ADD_PAGES) \
-  arch/x86/include/asm/mmzone.h \
-  arch/x86/include/asm/mmzone_32.h \
-  include/linux/topology.h \
-    $(wildcard include/config/USE_PERCPU_NUMA_NODE_ID) \
-    $(wildcard include/config/SCHED_SMT) \
-    $(wildcard include/config/SCHED_CLUSTER) \
-  include/linux/arch_topology.h \
-    $(wildcard include/config/ACPI_CPPC_LIB) \
-    $(wildcard include/config/GENERIC_ARCH_TOPOLOGY) \
-  arch/x86/include/asm/topology.h \
-    $(wildcard include/config/SCHED_MC_PRIO) \
-  arch/x86/include/asm/mpspec.h \
-    $(wildcard include/config/EISA) \
-    $(wildcard include/config/X86_MPPARSE) \
-  arch/x86/include/asm/mpspec_def.h \
-  arch/x86/include/asm/x86_init.h \
-  arch/x86/include/asm/apicdef.h \
-  include/asm-generic/topology.h \
-  include/linux/xarray.h \
-    $(wildcard include/config/XARRAY_MULTI) \
-  include/linux/kconfig.h \
-  include/linux/kobject_ns.h \
-  include/linux/stat.h \
-  arch/x86/include/uapi/asm/stat.h \
-  include/uapi/linux/stat.h \
-  include/linux/mod_devicetable.h \
-  include/linux/uuid.h \
-  include/uapi/linux/uuid.h \
-  include/linux/property.h \
-  include/linux/fwnode.h \
-  include/linux/resource_ext.h \
-  include/linux/slab.h \
-    $(wildcard include/config/DEBUG_SLAB) \
-    $(wildcard include/config/FAILSLAB) \
-    $(wildcard include/config/MEMCG_KMEM) \
-    $(wildcard include/config/KASAN) \
-    $(wildcard include/config/SLAB) \
-    $(wildcard include/config/SLUB) \
-    $(wildcard include/config/SLOB) \
-  include/linux/overflow.h \
-  include/linux/percpu-refcount.h \
-  include/linux/kasan.h \
-    $(wildcard include/config/KASAN_STACK) \
-    $(wildcard include/config/KASAN_VMALLOC) \
-    $(wildcard include/config/KASAN_INLINE) \
-  include/linux/kasan-enabled.h \
-  include/linux/device.h \
-    $(wildcard include/config/GENERIC_MSI_IRQ_DOMAIN) \
-    $(wildcard include/config/GENERIC_MSI_IRQ) \
-    $(wildcard include/config/ENERGY_MODEL) \
-    $(wildcard include/config/PINCTRL) \
-    $(wildcard include/config/DMA_OPS) \
-    $(wildcard include/config/DMA_DECLARE_COHERENT) \
-    $(wildcard include/config/DMA_CMA) \
-    $(wildcard include/config/SWIOTLB) \
-    $(wildcard include/config/ARCH_HAS_SYNC_DMA_FOR_DEVICE) \
-    $(wildcard include/config/ARCH_HAS_SYNC_DMA_FOR_CPU) \
-    $(wildcard include/config/ARCH_HAS_SYNC_DMA_FOR_CPU_ALL) \
-    $(wildcard include/config/DMA_OPS_BYPASS) \
-    $(wildcard include/config/DEVTMPFS) \
-    $(wildcard include/config/SYSFS_DEPRECATED) \
-  include/linux/dev_printk.h \
-  include/linux/ratelimit.h \
-  include/linux/energy_model.h \
-  include/linux/sched/cpufreq.h \
-    $(wildcard include/config/CPU_FREQ) \
-  include/linux/sched/topology.h \
-    $(wildcard include/config/SCHED_DEBUG) \
-    $(wildcard include/config/SCHED_MC) \
-    $(wildcard include/config/CPU_FREQ_GOV_SCHEDUTIL) \
-  include/linux/sched/idle.h \
-  include/linux/sched/sd_flags.h \
-  include/linux/klist.h \
-  include/linux/pm.h \
-    $(wildcard include/config/VT_CONSOLE_SLEEP) \
-    $(wildcard include/config/PM_CLK) \
-    $(wildcard include/config/PM_GENERIC_DOMAINS) \
-  include/linux/device/bus.h \
-  include/linux/device/class.h \
-  include/linux/device/driver.h \
-  include/linux/module.h \
-    $(wildcard include/config/MODULES_TREE_LOOKUP) \
-    $(wildcard include/config/STACKTRACE_BUILD_ID) \
-    $(wildcard include/config/MODULE_SIG) \
-    $(wildcard include/config/KALLSYMS) \
-    $(wildcard include/config/BPF_EVENTS) \
-    $(wildcard include/config/DEBUG_INFO_BTF_MODULES) \
-    $(wildcard include/config/EVENT_TRACING) \
-    $(wildcard include/config/MODULE_UNLOAD) \
-    $(wildcard include/config/CONSTRUCTORS) \
-    $(wildcard include/config/FUNCTION_ERROR_INJECTION) \
-  include/linux/buildid.h \
-    $(wildcard include/config/CRASH_CORE) \
-  include/linux/kmod.h \
-  include/linux/umh.h \
-  include/linux/sysctl.h \
-    $(wildcard include/config/SYSCTL) \
-  include/uapi/linux/sysctl.h \
-  include/linux/elf.h \
-    $(wildcard include/config/ARCH_USE_GNU_PROPERTY) \
-    $(wildcard include/config/ARCH_HAVE_ELF_PROT) \
-  arch/x86/include/asm/elf.h \
-    $(wildcard include/config/X86_X32_ABI) \
-  arch/x86/include/asm/user.h \
-  arch/x86/include/asm/user_32.h \
-  arch/x86/include/asm/fsgsbase.h \
-  arch/x86/include/asm/vdso.h \
-  arch/x86/include/asm/desc.h \
-  arch/x86/include/asm/fixmap.h \
-    $(wildcard include/config/DEBUG_KMAP_LOCAL_FORCE_MAP) \
-    $(wildcard include/config/X86_VSYSCALL_EMULATION) \
-    $(wildcard include/config/PROVIDE_OHCI1394_DMA_INIT) \
-    $(wildcard include/config/PCI_MMCONFIG) \
-    $(wildcard include/config/ACPI_APEI_GHES) \
-    $(wildcard include/config/INTEL_TXT) \
-  include/asm-generic/fixmap.h \
-  arch/x86/include/asm/irq_vectors.h \
-    $(wildcard include/config/HAVE_KVM) \
-    $(wildcard include/config/HYPERV) \
-    $(wildcard include/config/PCI_MSI) \
-  arch/x86/include/asm/cpu_entry_area.h \
-  arch/x86/include/asm/intel_ds.h \
-  arch/x86/include/asm/pgtable_areas.h \
-  arch/x86/include/asm/pgtable_32_areas.h \
-  include/uapi/linux/elf.h \
-  include/uapi/linux/elf-em.h \
-  include/linux/moduleparam.h \
-    $(wildcard include/config/ALPHA) \
-    $(wildcard include/config/PPC64) \
-  include/linux/rbtree_latch.h \
-  include/linux/error-injection.h \
-  include/asm-generic/error-injection.h \
-  include/linux/cfi.h \
-    $(wildcard include/config/CFI_CLANG_SHADOW) \
-  arch/x86/include/asm/module.h \
-    $(wildcard include/config/UNWINDER_ORC) \
-  include/asm-generic/module.h \
-    $(wildcard include/config/HAVE_MOD_ARCH_SPECIFIC) \
-    $(wildcard include/config/MODULES_USE_ELF_REL) \
-    $(wildcard include/config/MODULES_USE_ELF_RELA) \
-  arch/x86/include/asm/orc_types.h \
-  arch/x86/include/asm/device.h \
-  include/linux/pm_wakeup.h \
-  include/acpi/acpi.h \
-  include/acpi/platform/acenv.h \
-  include/acpi/platform/acgcc.h \
-  include/acpi/platform/aclinux.h \
-    $(wildcard include/config/ACPI_REDUCED_HARDWARE_ONLY) \
-    $(wildcard include/config/ACPI_DEBUG) \
-  include/linux/ctype.h \
-  arch/x86/include/asm/acenv.h \
-  include/acpi/acnames.h \
-  include/acpi/actypes.h \
-  include/acpi/acexcep.h \
-  include/acpi/actbl.h \
-  include/acpi/actbl1.h \
-  include/acpi/actbl2.h \
-  include/acpi/actbl3.h \
-  include/acpi/acrestyp.h \
-  include/acpi/platform/acenvex.h \
-  include/acpi/platform/aclinuxex.h \
-  include/acpi/platform/acgccex.h \
-  include/acpi/acoutput.h \
-  include/acpi/acpiosxf.h \
-  include/acpi/acpixf.h \
-  include/acpi/acconfig.h \
-  include/acpi/acbuffer.h \
-  include/linux/dynamic_debug.h \
-  include/acpi/acpi_bus.h \
-    $(wildcard include/config/X86_ANDROID_TABLETS) \
-    $(wildcard include/config/ACPI_SYSTEM_POWER_STATES_SUPPORT) \
-    $(wildcard include/config/ACPI_SLEEP) \
-  include/acpi/acpi_drivers.h \
-    $(wildcard include/config/ACPI_DOCK) \
-  include/acpi/acpi_numa.h \
-    $(wildcard include/config/ACPI_HMAT) \
-  include/acpi/acpi_io.h \
-  include/linux/io.h \
-    $(wildcard include/config/HAS_IOPORT_MAP) \
-  arch/x86/include/asm/io.h \
-    $(wildcard include/config/MTRR) \
-    $(wildcard include/config/X86_PAT) \
-  arch/x86/include/generated/asm/early_ioremap.h \
-  include/asm-generic/early_ioremap.h \
-    $(wildcard include/config/GENERIC_EARLY_IOREMAP) \
-  include/asm-generic/iomap.h \
-  include/asm-generic/pci_iomap.h \
-    $(wildcard include/config/NO_GENERIC_PCI_IOPORT_MAP) \
-    $(wildcard include/config/GENERIC_PCI_IOMAP) \
-  include/asm-generic/io.h \
-    $(wildcard include/config/GENERIC_IOMAP) \
-    $(wildcard include/config/GENERIC_IOREMAP) \
-    $(wildcard include/config/VIRT_TO_BUS) \
-    $(wildcard include/config/GENERIC_DEVMEM_IS_ALLOWED) \
-  include/linux/logic_pio.h \
-    $(wildcard include/config/INDIRECT_PIO) \
-  include/linux/vmalloc.h \
-    $(wildcard include/config/HAVE_ARCH_HUGE_VMALLOC) \
-  arch/x86/include/asm/vmalloc.h \
-    $(wildcard include/config/HAVE_ARCH_HUGE_VMAP) \
-  arch/x86/include/asm/acpi.h \
-    $(wildcard include/config/ACPI_APEI) \
-  include/acpi/pdc_intel.h \
-  arch/x86/include/asm/numa.h \
-    $(wildcard include/config/NUMA_EMU) \
-  arch/x86/include/asm/numa_32.h \
-  include/linux/regulator/consumer.h \
-    $(wildcard include/config/REGULATOR) \
-  include/linux/suspend.h \
-    $(wildcard include/config/VT) \
-    $(wildcard include/config/SUSPEND) \
-    $(wildcard include/config/HIBERNATION_SNAPSHOT_DEV) \
-    $(wildcard include/config/PM_SLEEP_DEBUG) \
-    $(wildcard include/config/PM_AUTOSLEEP) \
-  include/linux/swap.h \
-    $(wildcard include/config/DEVICE_PRIVATE) \
-    $(wildcard include/config/MIGRATION) \
-    $(wildcard include/config/FRONTSWAP) \
-    $(wildcard include/config/THP_SWAP) \
-    $(wildcard include/config/MEMCG_SWAP) \
-  include/linux/memcontrol.h \
-    $(wildcard include/config/CGROUP_WRITEBACK) \
-  include/linux/cgroup.h \
-    $(wildcard include/config/CGROUP_CPUACCT) \
-    $(wildcard include/config/SOCK_CGROUP_DATA) \
-    $(wildcard include/config/CGROUP_DATA) \
-    $(wildcard include/config/CGROUP_BPF) \
-  include/uapi/linux/cgroupstats.h \
-  include/uapi/linux/taskstats.h \
-  include/linux/fs.h \
-    $(wildcard include/config/READ_ONLY_THP_FOR_FS) \
-    $(wildcard include/config/FS_POSIX_ACL) \
-    $(wildcard include/config/IMA) \
-    $(wildcard include/config/FILE_LOCKING) \
-    $(wildcard include/config/FSNOTIFY) \
-    $(wildcard include/config/FS_ENCRYPTION) \
-    $(wildcard include/config/FS_VERITY) \
-    $(wildcard include/config/EPOLL) \
-    $(wildcard include/config/UNICODE) \
-    $(wildcard include/config/QUOTA) \
-    $(wildcard include/config/FS_DAX) \
-    $(wildcard include/config/BLOCK) \
-  include/linux/wait_bit.h \
-  include/linux/kdev_t.h \
-  include/uapi/linux/kdev_t.h \
-  include/linux/dcache.h \
-  include/linux/rculist_bl.h \
-  include/linux/list_bl.h \
-  include/linux/bit_spinlock.h \
-  include/linux/lockref.h \
-    $(wildcard include/config/ARCH_USE_CMPXCHG_LOCKREF) \
-  include/linux/stringhash.h \
-    $(wildcard include/config/DCACHE_WORD_ACCESS) \
-  include/linux/hash.h \
-    $(wildcard include/config/HAVE_ARCH_HASH) \
-  include/linux/path.h \
-  include/linux/list_lru.h \
-  include/linux/shrinker.h \
-  include/linux/capability.h \
-  include/uapi/linux/capability.h \
-  include/linux/semaphore.h \
-  include/linux/fcntl.h \
-    $(wildcard include/config/ARCH_32BIT_OFF_T) \
-  include/uapi/linux/fcntl.h \
-  arch/x86/include/generated/uapi/asm/fcntl.h \
-  include/uapi/asm-generic/fcntl.h \
-  include/uapi/linux/openat2.h \
-  include/linux/migrate_mode.h \
-  include/linux/percpu-rwsem.h \
-  include/linux/rcuwait.h \
-  include/linux/sched/signal.h \
-    $(wildcard include/config/SCHED_AUTOGROUP) \
-    $(wildcard include/config/BSD_PROCESS_ACCT) \
-    $(wildcard include/config/TASKSTATS) \
-    $(wildcard include/config/STACK_GROWSUP) \
-  include/linux/signal.h \
-    $(wildcard include/config/DYNAMIC_SIGFRAME) \
-  include/linux/sched/jobctl.h \
-  include/linux/sched/task.h \
-    $(wildcard include/config/HAVE_EXIT_THREAD) \
-    $(wildcard include/config/ARCH_WANTS_DYNAMIC_TASK_STRUCT) \
-    $(wildcard include/config/HAVE_ARCH_THREAD_STRUCT_WHITELIST) \
-  include/linux/uaccess.h \
-  include/linux/fault-inject-usercopy.h \
-    $(wildcard include/config/FAULT_INJECTION_USERCOPY) \
-  arch/x86/include/asm/uaccess.h \
-    $(wildcard include/config/CC_HAS_ASM_GOTO_OUTPUT) \
-    $(wildcard include/config/CC_HAS_ASM_GOTO_TIED_OUTPUT) \
-    $(wildcard include/config/ARCH_HAS_COPY_MC) \
-    $(wildcard include/config/X86_INTEL_USERCOPY) \
-  arch/x86/include/asm/smap.h \
-  arch/x86/include/asm/extable.h \
-    $(wildcard include/config/BPF_JIT) \
-  include/asm-generic/access_ok.h \
-    $(wildcard include/config/ALTERNATE_USER_ADDRESS_SPACE) \
-  arch/x86/include/asm/uaccess_32.h \
-  include/linux/cred.h \
-    $(wildcard include/config/DEBUG_CREDENTIALS) \
-  include/linux/key.h \
-    $(wildcard include/config/KEY_NOTIFICATIONS) \
-    $(wildcard include/config/NET) \
-  include/linux/assoc_array.h \
-    $(wildcard include/config/ASSOCIATIVE_ARRAY) \
-  include/linux/sched/user.h \
-    $(wildcard include/config/WATCH_QUEUE) \
-  include/linux/percpu_counter.h \
-  include/linux/rcu_sync.h \
-  include/linux/delayed_call.h \
-  include/linux/errseq.h \
-  include/linux/ioprio.h \
-  include/linux/sched/rt.h \
-  include/linux/iocontext.h \
-    $(wildcard include/config/BLK_ICQ) \
-  include/uapi/linux/ioprio.h \
-  include/linux/fs_types.h \
-  include/linux/mount.h \
-  include/linux/mnt_idmapping.h \
-  include/uapi/linux/fs.h \
-  include/linux/quota.h \
-    $(wildcard include/config/QUOTA_NETLINK_INTERFACE) \
-  include/uapi/linux/dqblk_xfs.h \
-  include/linux/dqblk_v1.h \
-  include/linux/dqblk_v2.h \
-  include/linux/dqblk_qtree.h \
-  include/linux/projid.h \
-  include/uapi/linux/quota.h \
-  include/linux/nfs_fs_i.h \
-  include/linux/seq_file.h \
-  include/linux/string_helpers.h \
-  include/linux/ns_common.h \
-  include/linux/nsproxy.h \
-  include/linux/user_namespace.h \
-    $(wildcard include/config/INOTIFY_USER) \
-    $(wildcard include/config/FANOTIFY) \
-    $(wildcard include/config/PERSISTENT_KEYRINGS) \
-  include/linux/kernel_stat.h \
-  include/linux/interrupt.h \
-    $(wildcard include/config/IRQ_FORCED_THREADING) \
-    $(wildcard include/config/GENERIC_IRQ_PROBE) \
-    $(wildcard include/config/IRQ_TIMINGS) \
-  include/linux/irqreturn.h \
-  include/linux/irqnr.h \
-  include/uapi/linux/irqnr.h \
-  include/linux/hardirq.h \
-  include/linux/context_tracking_state.h \
-    $(wildcard include/config/CONTEXT_TRACKING) \
-  include/linux/ftrace_irq.h \
-    $(wildcard include/config/HWLAT_TRACER) \
-    $(wildcard include/config/OSNOISE_TRACER) \
-  include/linux/vtime.h \
-    $(wildcard include/config/VIRT_CPU_ACCOUNTING) \
-    $(wildcard include/config/IRQ_TIME_ACCOUNTING) \
-  arch/x86/include/asm/hardirq.h \
-    $(wildcard include/config/KVM_INTEL) \
-    $(wildcard include/config/X86_THERMAL_VECTOR) \
-    $(wildcard include/config/X86_MCE_THRESHOLD) \
-    $(wildcard include/config/X86_MCE_AMD) \
-    $(wildcard include/config/X86_HV_CALLBACK_VECTOR) \
-  arch/x86/include/asm/irq.h \
-  arch/x86/include/asm/sections.h \
-  include/asm-generic/sections.h \
-    $(wildcard include/config/HAVE_FUNCTION_DESCRIPTORS) \
-  include/linux/cgroup-defs.h \
-    $(wildcard include/config/CGROUP_NET_CLASSID) \
-    $(wildcard include/config/CGROUP_NET_PRIO) \
-  include/linux/u64_stats_sync.h \
-  include/linux/bpf-cgroup-defs.h \
-  include/linux/psi_types.h \
-  include/linux/kthread.h \
-  include/linux/cgroup_subsys.h \
-    $(wildcard include/config/CGROUP_DEVICE) \
-    $(wildcard include/config/CGROUP_FREEZER) \
-    $(wildcard include/config/CGROUP_PERF) \
-    $(wildcard include/config/CGROUP_HUGETLB) \
-    $(wildcard include/config/CGROUP_PIDS) \
-    $(wildcard include/config/CGROUP_RDMA) \
-    $(wildcard include/config/CGROUP_MISC) \
-    $(wildcard include/config/CGROUP_DEBUG) \
-  include/linux/vm_event_item.h \
-    $(wildcard include/config/HAVE_ARCH_TRANSPARENT_HUGEPAGE_PUD) \
-    $(wildcard include/config/MEMORY_BALLOON) \
-    $(wildcard include/config/BALLOON_COMPACTION) \
-    $(wildcard include/config/DEBUG_TLBFLUSH) \
-    $(wildcard include/config/DEBUG_VM_VMACACHE) \
-  include/linux/page_counter.h \
-  include/linux/vmpressure.h \
-  include/linux/eventfd.h \
-  include/linux/mm.h \
-    $(wildcard include/config/HAVE_ARCH_MMAP_RND_BITS) \
-    $(wildcard include/config/HAVE_ARCH_MMAP_RND_COMPAT_BITS) \
-    $(wildcard include/config/ARCH_USES_HIGH_VMA_FLAGS) \
-    $(wildcard include/config/ARCH_HAS_PKEYS) \
-    $(wildcard include/config/PPC) \
-    $(wildcard include/config/PARISC) \
-    $(wildcard include/config/SPARC64) \
-    $(wildcard include/config/ARM64_MTE) \
-    $(wildcard include/config/HAVE_ARCH_USERFAULTFD_MINOR) \
-    $(wildcard include/config/SHMEM) \
-    $(wildcard include/config/ARCH_HAS_PTE_SPECIAL) \
-    $(wildcard include/config/ARCH_HAS_PTE_DEVMAP) \
-    $(wildcard include/config/DEBUG_VM_RB) \
-    $(wildcard include/config/PAGE_POISONING) \
-    $(wildcard include/config/INIT_ON_ALLOC_DEFAULT_ON) \
-    $(wildcard include/config/INIT_ON_FREE_DEFAULT_ON) \
-    $(wildcard include/config/DEBUG_PAGEALLOC) \
-    $(wildcard include/config/HUGETLBFS) \
-    $(wildcard include/config/MAPPING_DIRTY_HELPERS) \
-    $(wildcard include/config/ANON_VMA_NAME) \
-  include/linux/mmap_lock.h \
-  include/linux/page_ext.h \
-  include/linux/stacktrace.h \
-    $(wildcard include/config/ARCH_STACKWALK) \
-    $(wildcard include/config/STACKTRACE) \
-    $(wildcard include/config/HAVE_RELIABLE_STACKTRACE) \
-  include/linux/stackdepot.h \
-    $(wildcard include/config/STACKDEPOT_ALWAYS_INIT) \
-  include/linux/page_ref.h \
-    $(wildcard include/config/DEBUG_PAGE_REF) \
-  include/linux/sizes.h \
-  include/linux/pgtable.h \
-    $(wildcard include/config/HIGHPTE) \
-    $(wildcard include/config/GUP_GET_PTE_LOW_HIGH) \
-    $(wildcard include/config/HAVE_ARCH_SOFT_DIRTY) \
-    $(wildcard include/config/ARCH_ENABLE_THP_MIGRATION) \
-    $(wildcard include/config/X86_ESPFIX64) \
-  arch/x86/include/asm/pgtable.h \
-    $(wildcard include/config/DEBUG_WX) \
-    $(wildcard include/config/PAGE_TABLE_CHECK) \
-  arch/x86/include/asm/pkru.h \
-  arch/x86/include/asm/fpu/api.h \
-    $(wildcard include/config/X86_DEBUG_FPU) \
-  arch/x86/include/asm/coco.h \
-  include/asm-generic/pgtable_uffd.h \
-  include/linux/page_table_check.h \
-  arch/x86/include/a
+static unsigned int ci_irq_enable;
+module_param(ci_irq_enable, int, 0644);
+MODULE_PARM_DESC(ci_irq_enable, "Enable IRQ from CAM");
+
+#define ci_dbg_print(fmt, args...) \
+	do { \
+		if (ci_dbg) \
+			printk(KERN_DEBUG pr_fmt("%s: " fmt), \
+			       __func__, ##args); \
+	} while (0)
+
+#define ci_irq_flags() (ci_irq_enable ? NETUP_IRQ_IRQAM : 0)
+
+/* stores all private variables for communication with CI */
+struct netup_ci_state {
+	struct dvb_ca_en50221 ca;
+	struct mutex ca_mutex;
+	struct i2c_adapter *i2c_adap;
+	u8 ci_i2c_addr;
+	int status;
+	struct work_struct work;
+	void *priv;
+	u8 current_irq_mode;
+	int current_ci_flag;
+	unsigned long next_status_checked_time;
+};
+
+
+static int netup_read_i2c(struct i2c_adapter *i2c_adap, u8 addr, u8 reg,
+						u8 *buf, int len)
+{
+	int ret;
+	struct i2c_msg msg[] = {
+		{
+			.addr	= addr,
+			.flags	= 0,
+			.buf	= &reg,
+			.len	= 1
+		}, {
+			.addr	= addr,
+			.flags	= I2C_M_RD,
+			.buf	= buf,
+			.len	= len
+		}
+	};
+
+	ret = i2c_transfer(i2c_adap, msg, 2);
+
+	if (ret != 2) {
+		ci_dbg_print("%s: i2c read error, Reg = 0x%02x, Status = %d\n",
+						__func__, reg, ret);
+
+		return -1;
+	}
+
+	ci_dbg_print("%s: i2c read Addr=0x%04x, Reg = 0x%02x, data = %02x\n",
+						__func__, addr, reg, buf[0]);
+
+	return 0;
+}
+
+static int netup_write_i2c(struct i2c_adapter *i2c_adap, u8 addr, u8 reg,
+						u8 *buf, int len)
+{
+	int ret;
+	u8 buffer[MAX_XFER_SIZE];
+
+	struct i2c_msg msg = {
+		.addr	= addr,
+		.flags	= 0,
+		.buf	= &buffer[0],
+		.len	= len + 1
+	};
+
+	if (1 + len > sizeof(buffer)) {
+		pr_warn("%s: i2c wr reg=%04x: len=%d is too big!\n",
+		       KBUILD_MODNAME, reg, len);
+		return -EINVAL;
+	}
+
+	buffer[0] = reg;
+	memcpy(&buffer[1], buf, len);
+
+	ret = i2c_transfer(i2c_adap, &msg, 1);
+
+	if (ret != 1) {
+		ci_dbg_print("%s: i2c write error, Reg=[0x%02x], Status=%d\n",
+						__func__, reg, ret);
+		return -1;
+	}
+
+	return 0;
+}
+
+static int netup_ci_get_mem(struct cx23885_dev *dev)
+{
+	int mem;
+	unsigned long timeout = jiffies + msecs_to_jiffies(1);
+
+	for (;;) {
+		mem = cx_read(MC417_RWD);
+		if ((mem & NETUP_ACK) == 0)
+			break;
+		if (time_after(jiffies, timeout))
+			break;
+		udelay(1);
+	}
+
+	cx_set(MC417_RWD, NETUP_CTRL_OFF);
+
+	return mem & 0xff;
+}
+
+static int netup_ci_op_cam(struct dvb_ca_en50221 *en50221, int slot,
+				u8 flag, u8 read, int addr, u8 data)
+{
+	struct netup_ci_state *state = en50221->data;
+	struct cx23885_tsport *port = state->priv;
+	struct cx23885_dev *dev = port->dev;
+
+	u8 store;
+	int mem;
+	int ret;
+
+	if (0 != slot)
+		return -EINVAL;
+
+	if (state->current_ci_flag != flag) {
+		ret = netup_read_i2c(state->i2c_adap, state->ci_i2c_addr,
+				0, &store, 1);
+		if (ret != 0)
+			return ret;
+
+		store &= ~0x0c;
+		store |= flag;
+
+		ret = netup_write_i2c(state->i2c_adap, state->ci_i2c_addr,
+				0, &store, 1);
+		if (ret != 0)
+			return ret;
+	}
+	state->current_ci_flag = flag;
+
+	mutex_lock(&dev->gpio_lock);
+
+	/* write addr */
+	cx_write(MC417_OEN, NETUP_EN_ALL);
+	cx_write(MC417_RWD, NETUP_CTRL_OFF |
+				NETUP_ADLO | (0xff & addr));
+	cx_clear(MC417_RWD, NETUP_ADLO);
+	cx_write(MC417_RWD, NETUP_CTRL_OFF |
+				NETUP_ADHI | (0xff & (addr >> 8)));
+	cx_clear(MC417_RWD, NETUP_ADHI);
+
+	if (read) { /* data in */
+		cx_write(MC417_OEN, NETUP_EN_ALL | NETUP_DATA);
+	} else /* data out */
+		cx_write(MC417_RWD, NETUP_CTRL_OFF | data);
+
+	/* choose chip */
+	cx_clear(MC417_RWD,
+			(state->ci_i2c_addr == 0x40) ? NETUP_CS0 : NETUP_CS1);
+	/* read/write */
+	cx_clear(MC417_RWD, (read) ? NETUP_RD : NETUP_WR);
+	mem = netup_ci_get_mem(dev);
+
+	mutex_unlock(&dev->gpio_lock);
+
+	if (!read)
+		if (mem < 0)
+			return -EREMOTEIO;
+
+	ci_dbg_print("%s: %s: chipaddr=[0x%x] addr=[0x%02x], %s=%x\n", __func__,
+			(read) ? "read" : "write", state->ci_i2c_addr, addr,
+			(flag == NETUP_CI_CTL) ? "ctl" : "mem",
+			(read) ? mem : data);
+
+	if (read)
+		return mem;
+
+	return 0;
+}
+
+int netup_ci_read_attribute_mem(struct dvb_ca_en50221 *en50221,
+						int slot, int addr)
+{
+	return netup_ci_op_cam(en50221, slot, 0, NETUP_CI_RD, addr, 0);
+}
+
+int netup_ci_write_attribute_mem(struct dvb_ca_en50221 *en50221,
+						int slot, int addr, u8 data)
+{
+	return netup_ci_op_cam(en50221, slot, 0, 0, addr, data);
+}
+
+int netup_ci_read_cam_ctl(struct dvb_ca_en50221 *en50221, int slot,
+				 u8 addr)
+{
+	return netup_ci_op_cam(en50221, slot, NETUP_CI_CTL,
+							NETUP_CI_RD, addr, 0);
+}
+
+int netup_ci_write_cam_ctl(struct dvb_ca_en50221 *en50221, int slot,
+							u8 addr, u8 data)
+{
+	return netup_ci_op_cam(en50221, slot, NETUP_CI_CTL, 0, addr, data);
+}
+
+int netup_ci_slot_reset(struct dvb_ca_en50221 *en50221, int slot)
+{
+	struct netup_ci_state *state = en50221->data;
+	u8 buf =  0x80;
+	int ret;
+
+	if (0 != slot)
+		return -EINVAL;
+
+	udelay(500);
+	ret = netup_write_i2c(state->i2c_adap, state->ci_i2c_addr,
+							0, &buf, 1);
+
+	if (ret != 0)
+		return ret;
+
+	udelay(500);
+
+	buf = 0x00;
+	ret = netup_write_i2c(state->i2c_adap, state->ci_i2c_addr,
+							0, &buf, 1);
+
+	msleep(1000);
+	dvb_ca_en50221_camready_irq(&state->ca, 0);
+
+	return 0;
+
+}
+
+int netup_ci_slot_shutdown(struct dvb_ca_en50221 *en50221, int slot)
+{
+	/* not implemented */
+	return 0;
+}
+
+static int netup_ci_set_irq(struct dvb_ca_en50221 *en50221, u8 irq_mode)
+{
+	struct netup_ci_state *state = en50221->data;
+	int ret;
+
+	if (irq_mode == state->current_irq_mode)
+		return 0;
+
+	ci_dbg_print("%s: chipaddr=[0x%x] setting ci IRQ to [0x%x] \n",
+			__func__, state->ci_i2c_addr, irq_mode);
+	ret = netup_write_i2c(state->i2c_adap, state->ci_i2c_addr,
+							0x1b, &irq_mode, 1);
+
+	if (ret != 0)
+		return ret;
+
+	state->current_irq_mode = irq_mode;
+
+	return 0;
+}
+
+int netup_ci_slot_ts_ctl(struct dvb_ca_en50221 *en50221, int slot)
+{
+	struct netup_ci_state *state = en50221->data;
+	u8 buf;
+
+	if (0 != slot)
+		return -EINVAL;
+
+	netup_read_i2c(state->i2c_adap, state->ci_i2c_addr,
+			0, &buf, 1);
+	buf |= 0x60;
+
+	return netup_write_i2c(state->i2c_adap, state->ci_i2c_addr,
+							0, &buf, 1);
+}
+
+/* work handler */
+static void netup_read_ci_status(struct work_struct *work)
+{
+	struct netup_ci_state *state =
+			container_of(work, struct netup_ci_state, work);
+	u8 buf[33];
+	int ret;
+
+	/* CAM module IRQ processing. fast operation */
+	dvb_ca_en50221_frda_irq(&state->ca, 0);
+
+	/* CAM module INSERT/REMOVE processing. slow operation because of i2c
+	 * transfers */
+	if (time_after(jiffies, state->next_status_checked_time)
+			|| !state->status) {
+		ret = netup_read_i2c(state->i2c_adap, state->ci_i2c_addr,
+				0, &buf[0], 33);
+
+		state->next_status_checked_time = jiffies
+			+ msecs_to_jiffies(1000);
+
+		if (ret != 0)
+			return;
+
+		ci_dbg_print("%s: Slot Status Addr=[0x%04x], Reg=[0x%02x], data=%02x, TS config = %02x\n",
+			     __func__,	state->ci_i2c_addr, 0, buf[0], buf[0]);
+
+
+		if (buf[0] & 1)
+			state->status = DVB_CA_EN50221_POLL_CAM_PRESENT |
+				DVB_CA_EN50221_POLL_CAM_READY;
+		else
+			state->status = 0;
+	}
+}
+
+/* CI irq handler */
+int netup_ci_slot_status(struct cx23885_dev *dev, u32 pci_status)
+{
+	struct cx23885_tsport *port = NULL;
+	struct netup_ci_state *state = NULL;
+
+	ci_dbg_print("%s:\n", __func__);
+
+	if (0 == (pci_status & (PCI_MSK_GPIO0 | PCI_MSK_GPIO1)))
+		return 0;
+
+	if (pci_status & PCI_MSK_GPIO0) {
+		port = &dev->ts1;
+		state = port->port_priv;
+		schedule_work(&state->work);
+		ci_dbg_print("%s: Wakeup CI0\n", __func__);
+	}
+
+	if (pci_status & PCI_MSK_GPIO1) {
+		port = &dev->ts2;
+		state = port->port_priv;
+		schedule_work(&state->work);
+		ci_dbg_print("%s: Wakeup CI1\n", __func__);
+	}
+
+	return 1;
+}
+
+int netup_poll_ci_slot_status(struct dvb_ca_en50221 *en50221,
+				     int slot, int open)
+{
+	struct netup_ci_state *state = en50221->data;
+
+	if (0 != slot)
+		return -EINVAL;
+
+	netup_ci_set_irq(en50221, open ? (NETUP_IRQ_DETAM | ci_irq_flags())
+			: NETUP_IRQ_DETAM);
+
+	return state->status;
+}
+
+int netup_ci_init(struct cx23885_tsport *port)
+{
+	struct netup_ci_state *state;
+	u8 cimax_init[34] = {
+		0x00, /* module A control*/
+		0x00, /* auto select mask high A */
+		0x00, /* auto select mask low A */
+		0x00, /* auto select pattern high A */
+		0x00, /* auto select pattern low A */
+		0x44, /* memory access time A */
+		0x00, /* invert input A */
+		0x00, /* RFU */
+		0x00, /* RFU */
+		0x00, /* module B control*/
+		0x00, /* auto select mask high B */
+		0x00, /* auto select mask low B */
+		0x00, /* auto select pattern high B */
+		0x00, /* auto select pattern low B */
+		0x44, /* memory access time B */
+		0x00, /* invert input B */
+		0x00, /* RFU */
+		0x00, /* RFU */
+		0x00, /* auto select mask high Ext */
+		0x00, /* auto select mask low Ext */
+		0x00, /* auto select pattern high Ext */
+		0x00, /* auto select pattern low Ext */
+		0x00, /* RFU */
+		0x02, /* destination - module A */
+		0x01, /* power on (use it like store place) */
+		0x00, /* RFU */
+		0x00, /* int status read only */
+		ci_irq_flags() | NETUP_IRQ_DETAM, /* DETAM, IRQAM unmasked */
+		0x05, /* EXTINT=active-high, INT=push-pull */
+		0x00, /* USCG1 */
+		0x04, /* ack active low */
+		0x00, /* LOCK = 0 */
+		0x33, /* serial mode, rising in, rising out, MSB first*/
+		0x31, /* synchronization */
+	};
+	int ret;
+
+	ci_dbg_print("%s\n", __func__);
+	state = kzalloc(sizeof(struct netup_ci_state), GFP_KERNEL);
+	if (!state) {
+		ci_dbg_print("%s: Unable create CI structure!\n", __func__);
+		ret = -ENOMEM;
+		goto err;
+	}
+
+	port->port_priv = state;
+
+	switch (port->nr) {
+	case 1:
+		state->ci_i2c_addr = 0x40;
+		break;
+	case 2:
+		state->ci_i2c_addr = 0x41;
+		break;
+	}
+
+	state->i2c_adap = &port->dev->i2c_bus[0].i2c_adap;
+	state->ca.owner = THIS_MODULE;
+	state->ca.read_attribute_mem = netup_ci_read_attribute_mem;
+	state->ca.write_attribute_mem = netup_ci_write_attribute_mem;
+	state->ca.read_cam_control = netup_ci_read_cam_ctl;
+	state->ca.write_cam_control = netup_ci_write_cam_ctl;
+	state->ca.slot_reset = netup_ci_slot_reset;
+	state->ca.slot_shutdown = netup_ci_slot_shutdown;
+	state->ca.slot_ts_enable = netup_ci_slot_ts_ctl;
+	state->ca.poll_slot_status = netup_poll_ci_slot_status;
+	state->ca.data = state;
+	state->priv = port;
+	state->current_irq_mode = ci_irq_flags() | NETUP_IRQ_DETAM;
+
+	ret = netup_write_i2c(state->i2c_adap, state->ci_i2c_addr,
+						0, &cimax_init[0], 34);
+	/* lock registers */
+	ret |= netup_write_i2c(state->i2c_adap, state->ci_i2c_addr,
+						0x1f, &cimax_init[0x18], 1);
+	/* power on slots */
+	ret |= netup_write_i2c(state->i2c_adap, state->ci_i2c_addr,
+						0x18, &cimax_init[0x18], 1);
+
+	if (0 != ret)
+		goto err;
+
+	ret = dvb_ca_en50221_init(&port->frontends.adapter,
+				   &state->ca,
+				   /* flags */ 0,
+				   /* n_slots */ 1);
+	if (0 != ret)
+		goto err;
+
+	INIT_WORK(&state->work, netup_read_ci_status);
+	schedule_work(&state->work);
+
+	ci_dbg_print("%s: CI initialized!\n", __func__);
+
+	return 0;
+err:
+	ci_dbg_print("%s: Cannot initialize CI: Error %d.\n", __func__, ret);
+	kfree(state);
+	return ret;
+}
+
+void netup_ci_exit(struct cx23885_tsport *port)
+{
+	struct netup_ci_state *state;
+
+	if (NULL == port)
+		return;
+
+	state = (struct netup_ci_state *)port->port_priv;
+	if (NULL == state)
+		return;
+
+	if (NULL == state->ca.data)
+		return;
+
+	dvb_ca_en50221_release(&state->ca);
+	kfree(state);
+}
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       |1(JŸN­ÙÊƒÀ`«k)öf­ü€ğö×–<èRçÈúOx€¡VÒ€²ì_… @ŞâŞîõò#â­Ó¸aĞø«$8
+È?–†ßé|-;İfåóxûdî9?À€‘½ıÌù>Z©kÌà;í
+É%õ¦·ÄÔæµ“@)\­2ßW£°IŠ©YÚ'Kˆº=<O¼ß‘(ºí²@6ãåáØöÍ/a¡ÎE_µõñ7FùGúçıÄ0_Ü™Î6H•ïğLU¥ÛÄ˜E³ÄRİæ-ä›È°ƒ²îŞø–{æò‰QìmšäZ’Ã¥›Ö¶’K~?_ŠÍoÃ!t8[tÜ¸MÜõçé,%V­vşŒ-Ef$¼X9ÃAQÇû\}ËÆ$×/LH?P“YêIöYíMè‰ÿ‚²7ôZGSîî^ir?­Ã ÊTìğŞE
+G)nŠeq5øÌX”b•&A¿¦6ÑìÍ–ÁÉ£HBğ¦0E` ÜÕ¶Øk’‚y €W¨ñşñ@VŸ×bİ_ †w×ÒqÍ±fnÊ ‡B²ïş ¡ÂÒí¦pcqë·%í£?yÎk4 Ã7Qó)“¥ıüñUuM’Ä~L£­Å²åVz³m%º^´ÿãÓe&v“ØäBÀxÄ¹õÒİe¤¶3˜—Í_AëğFåÙ;}JŒ<œù  )Ğœ:k'Ù¿Ã`gè|v¨|‘ñIã4?†óMÁlddºñ}J4ş?1XºÚ„¦”!Ù‹8ÊÅWÿ—ÛËÀ˜o­gõÂ½}¡ íDó?iÑ†bHõ*ìOÛŒ°]hêzßì"DR¨|J	ıàãZ–§_˜†^¡Õ”&ˆiğÍ¢
+”;#Ds‹›’{·¥È`g¡åâs-¶‡”-ó÷@;vË1»“lÿ,UÓ'vp~­¢q³.¿®+>½G¯ÊîLèß|ö>mıX#©Úã=¶ğIP]·˜‹4UêÁè%£ğlh-ıs­¶šWiqüÓ	Š¯Nrq]A-4”¹È 2òz¾À`Bé9pgàıyı~Óe*ÿïÀûTÙ’m¡„Bòêa‘7ä©Íá†[¨n ßÜ
+{â¾àï³óÀ^/F´Ú1't®*ä7Ò¦êåƒ'VÍŒ)¾ˆô¯š•èâãÛ¥¯ù#TGˆÎ"ğƒÊH#Ëş¬<t²¡õM<‚ó^öo®51Ôƒ€ÓêÍÑ™QDİ§[®TŞÈ.¾fá!XbxŠ$.o:“\§Á„…zâ @FÃ£İ1âwµĞWùŠÚ8uè“Xq~°'#¹~™šZÔ•L£´xÜÀ¹wÔ©ä¿ş\Zh`K$uT‡(§ò½HPâØ3|b´ûÕÄª7DC`œèìœ‰¦ªéÉ2†”¤‘ƒã/h§"·¦KÄ=½WğI-bNWuäÓÑjx˜ôD¶÷/³ï”q8F±×\,DEë"tà¦ëÍ>Ik;`|È<ôş£Ì pÜnwåw¹ãİÒ	g(í@+¦(D:ÿ«. ÀÉW§4}OF†µÒnNv-.Šäb±óV ÕL
+cöŸpüêtÇ¬Æ„°£ä¥F÷yf^WgæAé:€¨wñÔ³í0şÙ>#23¬éq\æ˜æ¥/wjŒ‚>ûôŞÚ“IFGŠ:t9Å;K_ŠnÓç0-Òc…¬ë+å}™3¤ëĞ¤X” ¥”—üƒ–B¶üm%gjªÚ'ß¾Í÷¥b÷ÓÈh(¢´ÈñíÛq‚ù¦?Ë¥"M–tûÔDõè¯·†‚‡ÊB’»ÙÆ G™7€ò‚Àèq³f4°ÓŒ^ÇGûjç­+ª¬÷‰#ôœââì
+:-;‡»9™ÖëåÛœhP¨‰§0hRágÓ®‡$­´ä»’Ô#á{œıµ¦òÍLÅOöfÉEôìÎ "Oš»È¾1Ò"0¥=XZï_Å	œ[Å¼½UC­I'­™çYbÇ~2°ŒğõTø±;uîª©tãÅSEşòmÏ6òŒóéÆWŞŞÛ3_œA¹–’ì.3º{Yeá/bFŒÁà2wd¿Ï*«äÔğVµ¹Ñ¥¡ƒ¥†ÀŒŸYí®k‚™› L§­¢+—
+eş§è\ßgk:'ÔS†¹³÷³X$ö¶k }²a?á#uÔaj@Lğ]ÊE¨×, óòŠ¸RÄAp²ş`iİÿcĞ±AŠ\T„]›çÔù¶%l³±
+—<ÅeÈŒ$:äàJ%ÿ¯ÏEfáòz’Å`:G	ñ®]  Æ+İé	ä(òæ1:©0Ev|ù<nÈ]êæß²9Y7ZÏªG»*§…ğ^—ËA¬¨—ø&!¬X #véÆRE#T_ø§.C}\<YmÓ{Ytr Fï`øänÆ¼Ë«	úO]¬àÄ’Íƒ/±’1Ø—û[˜Ôƒ`Ä#ñN¾–ïŠ~(Jî2’Ÿ;–W=aš4oh”AwÓÇĞ½#Š½#T·i¦
+57¢õ €ğr©c³}QÑLoó#èõ’®RÅtATËq‡Áv¦KééÃufè0Œ¹ÖãÖêtJñé«äğ£Ú-LtÍ ½¦Wmàs&drn·¼À>tc4.óæPL%zş2ãGOŸNÜV‰R¸Í^Diç¬o"³‡ÿ=?¡¥Íõ™ü<İ‹õµ½ªaa¶ %;jÇÃ@“’ä½§Ó
+!ÎÑuÚÈ°· 6=@ù[Ís›Ò’åÓçŠ…åÔ´«^tT)ìgĞ¬qJF:oø(ÄA£õ¤K³À°;%±«dıáK</¯´`×Z¬6û§£+¥¡•·C¿˜lâ­³ÌĞ¼¶T rmĞ½Ø[ËÕsœˆ
+j09–A\„Ÿ™;huwòËAü‘Ñø«7ƒ˜@0ÓŒ¾•€Ãoo&1Ïhàj:-Ş>~L¿—dâÿJw	öyF!ãQN^ÉçáèÏ¨GD^ØªŸhH¨úÑ<²B	¿Óe‰+;f¢İOr½A pƒ½pÄ[	ä]
+u“¸ÊË®›=0©á Ì?”Š¥à'Şc³›-µæ•bÖW²2C©±ñ”‰>>J›ƒÆh¸£ĞÊ¸aæ·Úï¸.M¿ªsq}‹E#0¢’Şæ^°à¶Üù¼@q¡µÁSíä5Bÿ‚*r³e:®­^¹¨Ê¹ÿiQÈ!ÃŒáÀ†‹X`}ÖINÜ.µéÂØãäÓ§D'¯÷êştÜÊ[ Ş¯ÇÜd—Òé*—¦z³¾#üÙÎ¯ÌlƒºÒEƒ=¡lAÍÜ½š˜nÎ¿¢ÆœÊñ¼‹éâ´¯â÷O':àD×$!Ÿğ~>Áå†ÌEº1XÕ Õó„¦ƒ<Ô Î[wÀdÏS@kH4!{ú{S²Ì ‹ÆÆ™ò`û//¹GÄ®¡¼ÙÇ’ËëÊ;¢íŒ˜gôÂ’ÊToœl¤7Ğ­¡¢Õw€p!›, ìûÍjÆLŞ›˜mK‹lÙĞ§—ªŠXáßÅjçs"89æ¶¡6WÌä…í9oEdÆÏxû© 2Ã®HDËq‡?Y[k\’@ü8Â|ú|¾Ùå“ñ`ºsÂgÖ[ÿÅöşfI#*¨êËûl×$'0ÕïŠäÑFS¡ü®9ëGÃ‹z–ÀÛ.İ°u¹!†øÕU_¢ÂoZß¨cıØí{¸R@FQ‚Iw Jv-eÉ9*ÍdÔQ‹€Ò¸ña[¹‹ã¯Ì· iKo‘ŠK€ÿõ°6ÆLØ½ùÊòôÂ¬fâËj×C²ò¦Ö·‚Q…¡¶1Cã‘zi×ı]W“a_ÔY6·r©}•şÆ‚	Ôôxˆn3^ a7ª§s¬œ†'û5ƒğX‹q0¼Wiú]q_Ñ´èÄ3­ÉãªqØ€¤ôDq4:,ò~ôıœfÉÊ”ud—h}N,{eıÙZ¤µgVUµ“ƒQ·‡‡	x@#Û¥dY­‡=Ë
+½=„¾n“ÄÇ
+ÌÛ·(@Ÿ¿Ô•FØ|ù±ö}¶¤£[x¯À*TÄğDt£­„ñê¹òæm„5»ìyM+åÚ7À½üJ> ëÅñŞ¥He|cÿ”LH‘Š(ÌœİÉ(£†6-Ÿ çÁT$/wOP@úˆ›l\
+;˜'Ë¾¾ÎH2	2ö-÷­Ä\Q8×ëæ®‡zÌ£Ò`¢U ¢ä ºö©İ|FÛIŞI#.Bäö	$óã,S§²¤††ÚMlÊ’>á³-{‹"Ñ*»à¦ºá‡Ğ»¦QÕÛ:ëUÿÃ"º1åğóšŒ¾¡¥Ä›µ¤øˆBˆ“!¬j“rÔd$‚ÜúcÍçé‰œó;xä-@_‰Ò­ögYë5ñA² ­%Íşî„Eä]TèyÎÚßuß•“Ë
+¥”Fq=€OŠrwĞ‹A§^¹t01sd.¶¥bíÔ\ î’29,xcŠ¬NËªusİOï„Ã-gkë?®ªzÄš¨R,Ìµ§Ê—¸~7¥¦è¬zDŸ•y×	š1Æ¤Übì½eŞe7ñöìœ¤
+BÉ‚ŞK	¤P®óc†çï»˜1ÏP aîó¢ı”‡*£x9ºBxÏ™&ˆ´¶íuŸo\ôN™ÿ[^j°Ë£öË\a#Û\ˆ´‰6PoÎjÿÅÚG<†­ú‡†)ŞUù·è¸¥•¢&ºƒ“µvÖYhÍèâÃZ‚¬ftAìl´`Cd˜w/IŸ÷E 4°V_/TÛF¤N/Ñç–D…İú¯Ã¯¦w—J53­"Dƒkõë…x¯e&—´ı¹(—ó÷w:ü²ß&@5IøkÃ|¢åó­*×É±D„‚qŸÈ®I_‚Uh‹YyÎg@‰\cT-ä{º²Şw\Ãi=Ö…kÎ£<,‚a%–¶Å­®×l"™’`M»c/kô’ ®R3¸ê÷e¯ßóÄ“S•í/ÿ1È²„Ú§L)"w8Ó£–«Õ¤‹Â†™¾4GPDCO7bc‡)ÁÇXäsXÿ&BÅ× fTæ…¬ §örŒ[¥Tùù0ÆûPo^Ù ­gş~Kh(íÏhÃ½«mÊF…IÍ^Vìº»”æãˆ5`ñ„''Úy¦(¯Å\íŠ2…¸[ê(ƒ:ijºäè®¦[+Ór7+hBƒ_qA¬;±¿ø(æ„8·Yã)8e¤£V¯kKõV‘yæö“ SpØÌÍT5íX^É}«4páæıB¸ëšØ‚w1×=Ñı³Ç®¨¡l¾Şp«Ş÷ó:*ƒ?É@O?	PÑ„˜}Ümÿ&iê"q¯üÈO	.ÇÔ.ãÅ¼ e3§,65Ÿ;šùÓ^†%H°Biñ­{sĞ@øa$Cƒq`›‚-œá°›îš$™HYõw*.FöKÙÑeWÉyO•²ÿ$:;t§Z]Q’:~ÌUta’V¸o–!?å0y^!YåŠùàáMkP2µ:º…É½ŒtüH(â­}iè–Úîü?y2ÖŸ§ËÍji¼ë/k¸Áè%—ØÈJk× 1Ş«iG›IÍ]Q­·b3äoÙ¶®ù}„ŒAÃ h¸CÁyAóõYö‡ú”ÂT5æÄ€JÄˆhm*ö•ù¥öAï£s˜”kj	D³,b™ª+`…şÚXŠÍô÷(`óİÜûÁ'£ÒCöü{r2²úXöËAëŠÔ%‚.EvŞŸ.ÁùXç2#¢«-TDt•8)"¦µ¥¬UĞ¸ly5l˜üpS_Ñ8©,S·Â¡€úÖvvè­7)7.®Çr™:CR‡‹økç~"WEô´òkj“Òn\D½g¤¶®Ô }Ïèœ¹¢“uş*Ÿˆ!wB½¾Cò&ØÌ{ÌàÀNÈO…N©Ü6\0­2[K»ÇŠôæ‰Œ)o|ãßtÉá¹çËF¹Àşö£½MFª<ôøyV¼gÍ4¦=İ¼Ş
+ı¸ÓÃ$ìÁOí¶f:UxH¨,\6	iÓØÁ)j"¶ú‰Ì#G©ò'GÒŠ&$‘¨Ú>MÆÙ ×¨OR³Õöë÷ƒğÒfÅßI—FÛå7N$öH”Z9ûWP}h”ÂÑpÂãLš™({Á¬ÃQ‰¬xr7M=û~m@x{pL3ªVrfòÊ×K¢û4&ßDã©¼«/#¼Êì’±¢tøÀ(ô
+Àš©ˆœ7.|{×^?¼nºç ¨Î¡Èon´>sâˆ
+åO1u²,¾Çm·¬¿Bˆ²ùæÌô‹#Ÿ^„C”©­¨HşÔÙ¾gW„z]ğRÉ½)x˜ú°wQÍıø#l}<›ùv0†’40¹——e”…'95Â¡2ú€à~Tñ¬h§ºm¹1©Û1î#J~ğ¢"ÁÓÿÂ°<¦riv&áe^İ¦‚Úå%NvÒGÓºÂ×ƒš[vOi}ãö/-—o#¡Ã7jËœótïi—çôâ¦‘Ù­ç\®b“›Cv³Î%†‹aôc@LÙÄT0íÕÑD‰/Ê}ï·×—g[òÅèuÖ%â9\}ñ°Bèê@Dòİ~%÷{äéÌnÇº	?¾2 Æ A)½nyQ²ëîöæ<—Ôœ¬L—¿y¿ÙùE}»%Ô©‹?„(ı’ ù¯— .Ñ˜aoq	Eéöio ›†„fé+|ƒ@Î]"j§(c ö”PgõC®´ñáå:ÃaĞdDìøf¶©EÚ—gP˜Ùœ°2ÈÕİ6İÒGÅkÉ+WˆØˆ¸)S¡fÉ$Â1Ùã³má­‡\zc*·½^åDé|£‡7§áÜ.–’%’ÒZ"ËQĞä¨åå ù&£Ï÷.¯,Óõb‚úD“d%ÜEß	m3á¤tœü'í>Ù÷~GÁóŒ±Trw†(9[”šC¾ ¾àÚÿ·lŒ®ó<t3¶2{ÔqËÍ¥vkŞ}£xËrúá˜,Î(¿ÉÀÚMÔ<ò^kµÆÈÅ	U¾İLğ‰¤Cş­±Âr¾6W`‘·{À—";š…ì©XÎ]½6#ƒu€îU`3MÿİmTæÖ©1(˜ië”@‰ö+nÔ|M<@.÷\pSŞEªÌ@\9ï>U6ÔÂ&—ñ½¶­aS0úQ›şö&IÒö#²®yNŠ+[>åñ àö¶°.¢è“N‘³ig­‹§J£’ŞƒòÅën¹ğ°v£«G:.&1Û‰oÖh ²$6¹ÿ­}ø3ÄßªuAÈÆ£!æS’=áPÛEŒE¤fŸqå7GôL 8/„Ïuñ¿‚ĞNC-DÖzÏd(àœ)¾]‰ÏìğÈ¢f_³úÆcÎ’ğ/¿d”ûnÌ^ßR Ö3Ç™d(ÁI'Ê@ô5<UË¦Ôqì­e¨da·áåG¯Z¢Ò¦NÍJ¿ƒ[¨b2t¾Ï¼A¶»XÙ€ û(K8»tH…†õW¿àsêr„?ü3k´´»»züónÙßÆJá[¦w…¶Tz>®ua7{QêGC‘AÀN¸I0Suaı}`ØVÆe%“ÀX !fX%ê©Ğè½Ãr%#.$‡RBÖMİıŸ['{ 5XRşmÅëór:0ßko†³<Ö_Ñ5IÜVàzòÕ ©ªŠ“ºşvP¼çí­Œ8JÄ{pîòÃâ=íÅpŸ<Èœ&…Í}J$cé'ò-E€IÅ:^½g h®;2–¡=.Ùhc%ù6ÊrÏn˜jpŞûæ© 0¢è * 9½'»?ªEÓJ}²ùÏhí¥†’zûãS	Ü¡ÛòŒd
+áP·§r0¹¦3óqŒTîk3l/Œ‰‰‹”ò±ôKQŒúbw”Ñ=ã‰L¾vİ™=qC¶bùŸÑğzDí€HsTÓKƒßi|.ÑogáÿJ¢éyÜe^Ã×rÒãŞ$Á{c9<Ğ—õ©½÷şóFWòxS8zš%EJÇ”ûlP·e"á;«¹8ÖìÄşu\c _d UEÆˆJñIßÀu[×2ùNñÙá¾é¹8m4†ô±È8¿[¹]éÙT]CPƒ:¾“÷Ñ#qÚÊù‹Y^yúÖûzçÕdØ¶¬‚-)™´¾Ğ}Ã[½¶IĞç&úŞ%Q¸ô.ÊbûÌfœÏB{-‰“ëZ­ÈQìuL<İšÇ„•B'âåƒ5]–ûzÃ?XùR±}
+ƒsáŒKÄ‘Å4‘íµÜ¬ññ¤ùjìÎ=ÈğË+ì¾-	î®üàrÖB`.b•·Ğq¯ALU˜t|úN…’%7•¥Îøª²d¢SFÚ!Ô}EŸ¯Ì^µŸ_ÆääÇ’P'¯Å.ÜîfĞJy²D~ÿÒ/³±.’m›ğ	-JŞ"Di˜36=V¯*#óUå	'-³õË†YYéW!’(_$mü)Î-á¤ú†’f[çŞè5/£Ú;t;Å’aõ“°S…p'h‘Š.ëjÇä{1vÎò†, ²8÷™vUİüîÚ³wŠñ¾.ÎŸ?©Íf˜wˆ1V
+M#aï½6
+ö"Ë¥@RÇ1-%½%PlµKWĞšÙÅğ»m¤ßÜ_!8ÚÖª›ÿ$ëXÕ¤–’Kp]A<×•3 =NSÅf{ã!a¥ÁöÛfªz†`KÉ[’Ç´.QÕ‚4Œm@yÏL)ûlãH‚ Š#L(1dLé²G`Ål‚D{bcú§âù Ñ†oÇùšX$û#İÕÊ“Gƒä-¾°Weg’"`­Ã—äÈ.÷¼p6˜©M€ğæ§’±æ™k‚¡(–UQ¦Ó’KÎfÛ¿Î×ôŞ³ÏÌw³ÔÓá{ÍĞ?øËt$Ûa_}DH÷ãkŞ5§à—şPšj›Ö8§ÊÎ0thIKhjI·Ò®µ¿ÿıëÙpÔ€²½;şØå¶èº—QÒ³Â:ŞpœªTˆ\V$¶l(Fí™)é1ª^99èMˆXä$$œZ-ãÇÏÕ.fê›ß¾>Û¤uŞ¯Sj]€àvH˜t³YŠ]ƒ.9µ?ßĞ›¸¢jÒ3ÀZPL</02¿ûEsP‘ü™¹ÒhäNã˜òL!Õ«½„K»¨d¦t†š©C°«X¬&kÃ7Ë­ë´˜)>¿&q³qh 2Ä³éÚPDÍ|!¦r‚pde™“i‹Úà¢Ï4m.Y1­’ÖÄı;—¤¹…Æ¾t1³(û!å;ZäZMµ.\¥«PßBZ²*”HS”¾”Nğ0Ã°ñû®ãlüÀ£±œV‡ eV¡¤+Å‹š^‹ïŠ!{9ÿˆ@…lÁ7Ö”‚9×2Px÷ù²iˆLôÛ[6H}}òc•ùÉ2Rÿ»­5šø½{Ğd@™B{[5V!Æªaûä¿•lX7†S[“išÇGûÅ¸™Lg^PiŠíÈqZ`hÆÏTŠ¹!ÄsÚZ”Ş-º­j¯¶Vs»Msk€¤×7tZíşNvâ•ñtü|c"öëWÉ“p¨8øzP×¢@Ù´#6 ´²V~»”k#löœ»«Ü/¥Éñó/(áW%ü$J+ 2õ+%rfw	ˆ"ËaPÖÕ9êÎøĞâî[Ğç§C ÛâñïĞH€}H`jƒâöÔ#tY³ê§ûäf Â|>nR •Û§WXtÿÀ*d æÂ“(¸P×^]cÜ¥|5ÉPb¿ŞœbKlI^h³ëNÊJ±_âšrôOiU\@ÁşÑŒis˜-/Û¶ÕØÕk4lß¢´ŠiÓvf@ÏSn;·&ÀÃä
+¼3Şö=É¥}”9qªÏPÉÅêĞºò¾éR-%3Ú‹Óï T*mC·øïTäõ©ÿßpÕ`Q‹«ïî2vø'FEçÎ¶$áåF¯xæêÅªÀ•ı7k™°sã!Æ†şR7àä{º ëeûQŸi»:2(šÉDĞ¡›…0¹)w«ı€MO+!Ëû^ºëç2­)-¸§ò“Ö
+²õm5Ê8Ì^JLºGşy¹S@›Ü8'nU>©«ËŠY„6tô€lA÷¹ç„åÀÀÿŠ9Õà0šŒz(6Ê¤U$—}ù7Bè²›…9ßÕâ¢elB:7eï}(ÍÓ[ÉüpÙÈéY•…Já-Ï×z²‡#´hÿ~gÙ·‰ØöUñomZ›
+´£+y¨ìâ¡êf¡İTÂûáiHKãF7²ÇşîCOıí¡r
+‹>D}$^SË&'
+MN»YÃÂ.Z•H<E(e#¥t­­WáİZÑH¸ñeB[¢ÁovkÚ¢¬‰ÕôiÁ¯
+ê—¬Y+bñÑJ÷gÅİ 5şûŸ?p%XpdœğµFÿÛ‹ôªNÒ=˜ğRâ÷¹4;½S ›ëEwä;»Ï	ı03“{¼Ç¨‰Ú®ûz•Ë‘'nÒŞüÌ² ç¿‰
+‚ª²Üí?–ßô&« @DLsãhÔtkåq\ÌN–ç.«ÅÊ9 Ë7*Õsëôb[;ƒí¨¸³cjÛ¸æABaÌ»·¤üìÖ_§Ä¼¿5«d`_²ï_1úè“)À|v%¥±ã9ªæºw:F@!q"Ç¾7ìÆÚìò_ :T’™cïd
+Ö+Fà_/Ö»§hİ]Ø&§‚CÓv¥8C·¸ú³ñ‚Ô_!HŞ$5®i¿ñá}şJ£C™ÓµÇYŸlûÔ¸ô>xF2ı!˜îKÎo)•Óö)å±ÄÏ7NÀ–‡ã”HPxYë‚Qµ^ôÃì-vš¢íW{·5Ì8î)W“öBdJI“,MóÃ?‹AÍ“TÕ1³i´ñFtøÄ©}AD°*oFÕJirC'¾4É³ù«×ø ß~N°Oı°rUu—ø@ú§áoYkÉP·õäöD’2Ğ²˜Pª©_Ş³ A,y† 2ÅSOJò{]ÑC0ŒÅúğ*U‹’Eø¬Îo6Å*î\Fò—™1.øÎ\§Sy\‚s2;4¬öJ˜Ôméë#©#À¹ŒˆOÇh?G[§­®oT-Š¶Ç¢á¬¢ÑÖG.í#OiÈ¡ú’r…å¶NNbĞ(n™À.’Ü0ÅAB&t	¦Ÿ‰C~¿İseõ_¶Ø-d\˜ØOš¬	 ¬˜Ä ûÙ(7(>zß#."ü¡ù—#/;¡«<>°QhV{ÛÎWVi‡É hqd·MìGíçö´”=LÅı±{ãd Hª-¿  òlåÕ­QQ+¼ô-xĞ2ŠÛÕç1Š	#ˆ¡>.7…{:}/aÑINå+Ô<%I"ˆbbtşØ3=Â<–jE!‘¦»¾Ca¥W¤\´EÁU:<ñ³šŒXº«PÿÜòÍŸÄ7O9×jÊ¨±!ÊÏ™#º¼ºƒ}‡¨Ù@âl7iÕM/¸ì«¼©¥¿2Ãdü"ÿ§*ÂR´³”vN%šú$ omØ¢‹ôT$±fˆ ŞîıOŸ¡ıš›äh›G•IíAÛl1ıOQê~GwV=ZñùñŠ.>öà¾0•ò¨ ìO`OT® ¾9Š¸Šã6ŸÌı£›2ì÷íìy;]ÈæQxÌ^©îÁt-È»|kÆæà\’†‚¿x-f•¡U5yıE`é5Ì§R]Õ’²úzn;ô|´û÷ ¢ 9›&KmÂ©»•Í’§]½š1/Ö7›m¹6}Û¢Ô²-ã8ªn-ºxFÌYĞÿ¢Ï#ºÚŒs‡èW4ÅÑ%£_<õŠ{ink‰ªs­è…èöNË•Í~Åp%¥(¾h\I™š¨Ôë†,\Nu<wbà_\’á&~ˆ•>&è/nÔzh|Ï•?H±Ø¸P(%ç°NOdÔÙY»ó…8çÔHğÛûí8Y¢`“=ÒOéõCUÙw·:ÂHq˜Š£Š…õÈ÷naáğã(ÁÛãt·¥1 ÂÉvYÃĞp›«¹xÆw¯lßG§*}ÿºT°zŞ6«P¿¢^2E„“fÓ¶ëŸ(=ÒåpeäVÖÄÑ9¹r(7Â•¦­Õ(Ãü,º¯’%”XÔ5ÀBƒÇ$·cÕr"/	Ÿù®?+¸Ë; 'Iÿ	Vç¢èV“™Ê( Hî¬4£ò 5·„4`|ã(£íi>øì_ŠïËù¢SYH"…H4Ä:h½0™p 7ê>ÚƒNŠ~Á–À+y©nŒ™…uõÊØSK/¶q)Wßİ8ªÏ±ª½?şä`ZpºY+7ï­l(¡‰Ãÿc0Ø&ß[yƒœ€ÿ»ë¨ÎbRJâ-KÏyÙó·2«­í³³S;Rı’ÅçéÛÚWä¢~Ã±mYùoáÓ:•|Ò³úkß
+Ù¶•!e«‚‡c­Şä/]Ğ­^l)‚gÈ‡áØ.åÂÅòÄÛó)ƒ|éq šËÍv¤±‚ÂŒàér("”5§`	(£ú•»¨ßYè¦Ëu¼zº}6–-™\:"­íé7 Î¡4qigÜBøãLeŒ|@±@¸:#‘¤‚ ˆş6©­†c[ĞR„ş¤Ëõ³O ¦ î†dƒ)‘^]wö*ş(^;o¾GôÓ­w°ËÔT¯”â˜Ò"†ŠÁÄb;FLZ£ïæXÆÑÀÁIéÊÍ9 ²˜hÑ'ìCş‡k[FùÃOõ)×í‘ÏX^B¦Ù÷ò°nìÖDúOYS:ÛàY&~¢)È6,6¦‰ÓP~LTrC×ì[{íNF8Œ²P¡›-çu:NóB©àµH\
+AÑùÅ§ÃFJĞ×‡)×¬ÛP˜˜˜®"´ÏŒ°r¨lMÆ®m¢ââåŞX\5}íÿ‡İFx—­È@µÀáx[İ:P<aíj6%
+iµ(ÃD³U¤a*?k¡aZ–²¯ØüÁìŸ®–àVÆ‹ê”óYzê£‡¡?33,šz2§Ç‘êªyØÒú÷>ï-]*=ıã–ã•ÿ—ÚîGP­aĞQ:ã‹†Õ×ş@-8ë¾p”òj”[™º{™T³oEÎF@#âÇ)Ò’¨G­;ôû‘UÎg&­‰CÖÁı?qŒõµÂÆpÿÍùå™Ì$mØ »T&Fu¶<*Â¨P[6Î¯cÏÒˆ’&ÏşãPãƒm“ä/Æ›İYùêˆëÈtÑÿ£‹È`2 O×GŸ=¾*tŸ&Q‚¨¶xäİ¿P(Ç€ÈÕ	5N«Jé—Ônpd¾ö·”5gqñ(z>I44”“£Îv "Ë?ˆj¿,=QÚóß]úÜ‹/uSD> iö€¤æäkío„‘ùJ+_#&‘óLuş«ß^š–…€b\U¢m––õ^¨Ûj#a>¼eÔµVu­Ü†”n±ïè!j¶—@"•o lvWÇîİ€wË¼z,u³6jÏ»)9í)›Õ$‘8êÊ@W¿àmr€xM“Ø×àÁFMöğ7€£ïIô9õ[ÿ—~¤Xq(şµ17Ìé‰s
+Ü~œä1}	kÔ|ƒ’Øâ	!yÅn²$yˆ™E¦ &]®Û-™íG3weCÀ–ÊA”kÂ¿,mC½Y ÌÜ½dÑÏFÙ”b›ˆ[`ÿ2aÙ¸Ø#€a^9[<4*'-(¨ÇmµÇÿõ÷xèöèŠàŸMl%uI–ÅÛ³ıÎ¾rà¾ƒAØ€¸RJ–›!¿‚BÆDF5¹œ
+òº¡•59’vØ3Pyg›í,	@"4Åh»So‚.dwÂ/ÄÚÇe+}sşâIiÿİ
+jÀLì¹úÒ´Ia‰_ÃG#´Ìs¼ë44 Á*ó>21_‹ ƒ¾«_g NvhæÎÊjEì±x¯û.\.¯NZ°gÌË‹i‰„ªyÀ9¦IµZ[G;‰.‡¨I)íÖ=ßš¶®Wãgq¿óÂbÊ™Ewµ°#hUâ7hq·nOñ:õúò^ğëàğª¬_[
+£m²mÒ³[èVs« ^Í‰=#?ÊuË“C©a{lË|pÇ]Ü`*TÛL]!ä Ëõ"Q=\«sêT«¨ÚN8OaàÿÚ‹,Oîá	¶^È<#{o^j5&™×ißaü@	Ê¡ŒùÍ0tZ}-®í;=/ÅšLY`š¬ç*Bv@Œ@¥aç~—ÍEÔ†dö/ß©©İ×Ïâòš_TB €6ıÅtjñícšÆ¶­SòlêR¿ÜtÃ,‡vs…8ÁÁæ©ıBÑ‹wH¶lôëì ó†ÀÙFlÁ<¼èæ$
+œËŠµ¾BT!"SÅğÓ«uò™È««—QË°¹OT8úÑ“Å6s{D”aá®ïPü±Äc3
+†D¬c.ö<—Éëo½¡X9gLm«_v•ª&ÁS<°X2û -‰D¬ŒLOXñT’b?ú"€9÷{A—ë€‘u2úq44†
+—÷—çÀĞ×<ötÖôÕU.Yï~µPìl-@ÆÙÉ‚Ñq )0«ãÄgáE°ãÓÈñ«L•;&4ünÒ¯Uó‘œ¹­³›3tP…:òšA¢õ¬<
+Õ6&]&–]d2,÷€J‹„&+şä¢@À&(¥w¡J´#ÆBDìA×Ê–/Û[®÷YöÇ÷¸p+ZƒD	L(?g´ù®Ğå[WäÑdLäóró$È #ª nšÏ:'½ËçSÁ-ÇU#{¼ò€Q¨ƒ¢ÿ±g/Ùü‹LVÛvÜª¤	¤2ü’%tlÒ­¯,ã%½@H4ï‰r#¢Ø²¥®ş[şÒœ-/jôvVú2àPn'œë;Ü%Hÿ>MQ3¾@‰ÿÒ:)>ôÊâ}1uû;¨Uô´’:ç¼™®uËFæFYGàÊhµøŠi$>_w³Yê»Èç-ô=@á©·îcÆ•YxAª°èlé–Lòj@ê"^6†—0<­7Vqõ¿W°b d—Ò$¨Æe6®ji©Ğœp (-”8o§£µõm¡x½kû¸ÔòÒş	­NW&#rÎ‰¡\y$™!5NJrnªZœ(–LÖ´İ«J$ïŸ©QµBBúE7Çƒ3’%]Ô²¥\©Š·#1.ĞŒÏ¯Ú|Ì œÿö$k>å\¹&MŞA,“ÁQJbaƒŞÆ¾zøõÏqĞøÇÚÒ1?õĞAÊ'X‡®’ã¤ğ¼\®ÊgE³˜ç›õ5li–àR´Ú<AÚ2ù åšœ¸9«‰E(Ñ¨QÀ¾°å:;.ßŸbß¾´†ò §«›XÈ©şæ@»'Äyœ}úÜ’«eâÊ‡\’3…Cl ù9ÕğLŸø§ [œçfÃ÷~¥ 	‡×VïÇåƒ”L³¾˜£§0‰òû{+rh{šïº(À¤'1$eÄ³İâQ3¾ÇM“m›{!™"ëÒùr‘¿<›ˆ°ªv¥ƒíø_z¥Aª¦\ÈäAÛ9¬[<ØEsMd¼z¹lè©yİZµG¸LÉäKn«5².´[³†sØ¾è~â”Ÿºbò«4Äÿ,1_Ÿ1»']&FÛ	à”Î¸‡‰£“à_VøÇ_¬lƒ÷Ô»íÅf%£t`_¹|õCyæÃÀ§kØû\‹”¯	øtE.½åê²aØóÕ±Í*ğ'Ë¼Z_ì9X÷°ræâhnÆ
+S7]˜6Û£“òª#xI	gs~hMUpãõÉrj“)ƒ9G¿Ÿ¹¿çv8=â_©¡àJß>…¼ı¥R€ª&ä 0±ø/º,.rºNÔmĞœÊ¬Nc„5µ…Î,]›Óõ™š`üjßıQ5ò·jÔ¿§bÏ ×/ÑŠJ4‘+À®ƒ{hQôÈ²€Ôâ–3®ş[ØNÆ ~GòÓóggùv	½:?ÚwK^¥Å­	.I¯¶Y¼ª$.%¨w°ûˆw±çXµ´v±fjG“Y#<Ä?Â8õ9{,ÿÙŠv­zû#ªDùÆáÜâ@{‡ ½jîŞ(Õh´‰zq¿|dî¹€»®±ÃßwŠ=B#’ÓKU'ohAxÔò|y™újìÂ'²+Ó†~tà!7‰Ø5X)vK®Åø¶²…Ï…¦R3÷ï†çT<ßXöÜÍ9¨v<Ä`&Ç¨Âë[å¡Rnªv\5ò³v˜Šù/Guc¨Á»Â~‡ÛÑˆi\pHHğ¾ÕU¢ØÉT,Ë×Å§<µØ9+\hÉš9Åq,òÀÉ~˜ÊşwƒË gÁòE„t¿ÚeäôsŸ:kªW)ÂîPçz®¼ãf4v¾ŸGñÎ6”¹Æ¢"ÖK5˜Ÿ%–®âÉÄW£vºô¦µùJÛŞ¬l)o·BçŠ¸:œ>N¦·@4uâgÿ/%,ïğ—©F}ÛFé¡È¹cÏ³Zãç°g«)ë¥ÀH.¿±Û¢
+Ôq¬
+b »‰¾d‹õRz×?kL†\ùA3ãªUÆp)³;%—3ÎŸ„7 [JPK¾¾@¹w›
+†ø3¢/ÿq8lUŞ@È!ô@Ìß¬…‚Ë–=\J¢-h‡ëÛo`Ñ’:–˜ màÑ9àÚÁ®&‚ğº<+?MŠS—[Z9!jÏ÷¼ˆ†e÷ØLÄ×¹ÖÅK$£Ë õá‚^G´
+l1;İ¡-©™²Ï/‘)ğÉ+ÛC?½ÿ¸ñ›¿¾àù6”eôÌ7*j¢°†ô€íâšğ]¥dı"#§İîşBÇÄ.îÁôYâƒª$¨¤İgßğæ4Is©x· usíÿ!á˜4KqèËD²~³x†ª>ç@Ğñ÷C a,æ|ÛÍºiHxJ§Fé{¼ASÀş„‘¼2eoÁhbæJı’hs½5k½^M´wuŸ2-xÖk‰ğz,IÖSë³´Nú®=®ä9’+ÖÃ—İ}h¦ôbŒ\Ø“¤üQ=ıvï9ü”[×8U‚M$¥7yûáéPz/á çÚ×>M…‡P'ˆÙ‚ùq™ÕázµpOÛ›’Êhë„‚yÀ10­iáñ¦MàÕhã€ºhtna$¬Úk¦r´îp±ïïàO
+èuºø©i$
+Ë¨³:P°TÊh¸ØIõ¥K_‚,‹ X4)Òfp˜+HsvšßM“±O|®m&àÄ)(X×‚©VîQ5¤Ê£Ìä¢qqù˜3 ã/Ø+¬7ïDîÃ±svÄ°›awn£†£?L÷ş¸€ŸÏrã5oÏÏÏ”‘`Ğ#OCh,ŞuÃÂ=@Oƒ‰¦²K1|ØúJ‡pFm‘$_!Àª†¼}ÂšõµMËßïmÊhï·ÚK°S)S*-Ÿ
+[" üñ¨´
+^ıØj+¾ì®hSŞqÜæÛdËƒ ‡¥#fµ¿8á¯§À}ôşé¾·rloÑÕ¥ö†Á.»èm¨‘$:‡Ëxëêqé-gÆ˜Ò×Ç“ë9:h>Ê¼9>äLEŞZO]›ö 3i¯©ŞX56Fz;THšÙÁçéOĞê~¤oÉ­cM?j„ å’²ô˜å´ö!¥?>M³Éç8ú¸øé~¾¨ì(~\ŒÜø.7ÿçæ^˜üğ]áPçñCÌ
+OŠ^}v’ğÌlÿY<ªZd,¨r9!—:»aS}éú/W{Aì®Î:~Ë—¨ì®öqr‰ZyôÀë}ÔÃ[à ÕÉ¸<ÿÀıp"ÒÙynòQUàÑ2!¯Şo}›—-˜uH²ø7‹r×0LıNZ³#ÑÂ§¢	K¬bºi$[•ÛQüÛe…3$Öl†zªuj¨b ú&+ísÂôFNZfDnß+™ä~s>¶±Ò*e–‹#‘|Ô6msÄdÎRK½°2&“Ÿß«=íÊg¨#³ßkäæ<nO6ªæŒÔäfM““ò3ö·ä AAø±o¿#;Ê•›Íç-.+5PµTâšV×±ğÈêˆ¶C¯M‡=g“<ÒúŞµ)f¤ÍEciôdÊŒ—œg©¸ç¨<["¼ö,ÿ8³n/æ§ƒrº·AJ¼"ê‚¼„4µ½*~a÷E·cHt:Ô¶ÙøĞU½Ö!ÔÂ²òí—T¨8])†—ƒBËkp÷—8&Uè€«H“6Xs<sİ¿–dnÆm¥r´/ûÁ±¦É™¿ú¼¨î´W;bPX2ù…Û;Œ,B©&gÃÌ:g-ƒŒÏcÒN(ç ›¾X¹6òÇ7,Qd©}›1ïú“Õaè
+'ÇŸ¬%×«=GÈ›¡mË·©.-ĞÇŞ^i}›R%IeM/R?àÂ| ¿<¯¿$
+š†E'ÇKÑ	(2nĞ[ºjAiYgrw³kPÂRÊVíCqL­KzÍz¨x$êG¯H¹I'˜ƒèÃ)ó•ÜQ„èÙ SöMïÒgáÅÁ[`ø|5‘ƒŒâ 'Ğ(æx•7µ€vÒ{vT×õ!ÇÃsİn8Øÿ%ğrn:§ûÛ¼ŒÌqÓ5â(­cŒÔDû^ÅsøªqÄì¿®™é×¡ÁïS
+n¾ÄTş»»òg¨k é7µV¾ â}ZŠY«œåS”FšnTC•‡¬‘;ö…tıLrÓ9ı˜åè‡öœ›é
+®UxEÖ›wØ\$Œ;¯?)‘âÎ>ÁyWàÍí~s™óozç±Ÿu0!‹?
+@'¯3Yl3ØeÅëĞ”¾Ãì€<½ À›MÛQ½IÌe„.Öƒ¿Ô“˜óÒ–éaªï\1ÀS~CjŠì—
+¡‡ñÖ¹—!EÏæèÜ)Î$7§N‘Ø^QIö÷›E	å€¶¿msvr”ÙƒX‚8f$æ™A<|¾çvˆ»“¬z#(Åè©rYŞuR¼×™ğ„3SMösæNäO.«¬H“ìMBŞª¾LÂnË¨Bƒ|ÔşE¨+÷N'NÆp“‘©›RáizwHÌoµ‡‚åvó€ÁÿÑ[œEZxàVu}ó«õğA=×¶¨è¦öªê':~õ{Ônák` ¸?pL2¾’ä%£7K0ìÁ\5\:G±ü–B“Ş?ìpÂ ¦t"dèIõ~×åQÈàVM-«]¢ı'ê'­Š§—I#Lµí©,šÌSY†şf	)š":´Ñõç°°T˜#ÏAóålp2©ê;`9I¬Á^T*ëÃ®èö87¬³a¸VcÖ	Ş)ïõZ8‰üÕQú¶i}–IXÊ·¼#ÔÑ¢®)ŸşÍpnàŸ²Qqátº™ukØMU~ƒ`ÎØçñ{Ö31öÕçsŒŞÇz@`±$.êåç ¾,!Dğşqo¹:yæõÈ”‚–›ÍãÆ„,l<}8ş´b$ç¾B7­0M9)Âü16Ô;A¼^¾‡nÁxøˆlÏâŠPK¶h{h!˜s›wôW¿(nßû-2ÆPÑ@¾,úp÷J_—9œn¯än:d¡P*ß5ÓoJòYİf5N’¼u¢‘éf*:ÑMˆ­U÷„¯›ÑCB8[˜ÀÄ¬‘k­8og´Gg’šJD h«Ò½”jwT•<?•{½è2fòê¾1ŞåÅÉRñ	ö8FŸ˜Va€wûÍğ¢DßC•şÙAàÛµ:ej‡“3¢cŞ„×àN<íT‘›JŒ¶Ór›U8wQÀŸ£0Vş=‚ÿ0g¿L¤ÅĞöXÉ|é„‡ÑıLà«T£rÏCÒÏ;¦CâÃ3b»Ò}g>âğ¸KÀÃ’¯0ˆÏaÆ¢27·Aƒl?sŸ¤šL|RÂ bQ £Íš6Õïˆ-™éÌ%(øğ\(?Úpí„Z0[0¹í¡Ï“ÿÊ#td„nµr¨N¥}u_õŸOãŸ	®YS-æ¼K::ÿ†ÌÍ~’\Cø¼ù|”_YML)À÷«.Ä¼Ñ!/º…2°ò"Íˆ*ã„K ¿À,zMÖ¦Š|®Úğ!´Cáíñ‡,¸!§ûÁ[öØ€Ğ+µ	Û¶è>íê‡mŞ­lJ8Ùöo¬³÷4—‘Iâ'”)'=;8.¯–bxMÛ$­èïB?gW§µ4°¯vş–½ÇM„òÆ>0¸~A ½òÇÀõ3zœ‡LêäÄm8‡6ºˆ%‰e\oğÔú8¦.ts5Ù”õ7QÊ¸52é‡|K5Rèå
+šA£­%#W8~v„l¶Çh{Õ€)¿¿„Dlõ–o í:(Ê•Vİíá¸î3rdj#£¸<Wøõ+ª'jïYê!Áh‚ Ü$Çi%ìû2
+wwdŞ¬Ndä™§wW$Ÿ3`—b¬nZû.l÷„ëEÂ—Åª
+{£øTü¼EË9ìA	vÅÕgœ'M0“ä86‡›ªmiŸ!k¢ ¡”vãbìP%A îŒ±Ş—îú÷hÎhĞ—Ó¢ş»'NI&Q‘İÊêU‰åmb@÷ÁÍz ùR´Bo~yyûdâõ¶’°îÆ) .è{ª¦+ùd.aÌAı£-Æ(ª#I¸‹­Ç°~£.¡x'¶!”µÚqõ†´’A¹°Cª'·Î³hU
+)JP®Ae¯°_Ğ‹ù¿÷cÃ›5mÂ1ƒG]c £¯‚Şª¾ÚàÓOÏts¢ª‡ĞVT/—€Äf£Ev»Ìå«]ég»Ûäì\¯I ˜5ø‹°æz²©qM(±UYXè÷ŸĞĞÇh4Ü'ĞB–ÿ˜İ¬“ä±]8mKîèb2*ñâKöGÚ³˜$ äsK¤'ÉÍ»[Ş…Çk@A†ÕÖb Üê÷1¡[DX%CJ•bÓøÎ.ĞÉİP¬Áœh‹ùç™‘´IC@ÂEfş C
+%DóE/:Øa¼ˆ)‚úÏ’:‹Š¶ü”	íOÍIâ0O¸3pÁeÅêNå8-äÍ¸Åï|)cà´×.öê g/ªËh®egé]Z†>Øš‰5î‚2×'„™ìÁ5h*š¸õÂ‘T—d½Ø¢#ú‡Â;j½ˆ`ÿf>p‹™bñå°ç÷*qÛ²~p§ç×P*/ø}‡×x£c¶ãS>×¼ÙŞNs·"wRHh4î:2Æ£øA]•^È‡ÊVæR‰…[m´ëb`õvó+—£İ,ã2$ŒŠQ	ôŠ\İpë»wƒ{-°›6ds»K°m(À9Æ3­*;¼ñ®ŒJK4iÙ ›5mí8¸C	®÷BNFÉO'12‚ Icw-\ô¾bGúæD>[TC2+xƒ-Ó’÷t»¤Éæ/™}“¾Œˆ•%¼õ»	ïw÷ªÅÒ	^äba’ÏÇhÒìÇğN¬R:š\AÏ¢ëÎ„MÈe
+äı|5MÂÆ'Ì’÷hŠA™¤Ô¡ÂÔqgÖÈ?ÓôN0î5xìù`”ÏÆÈr†î¥á9@şßoJï[uC™µ7D÷%‘~ˆ3Ö¯ ibã”‡mÓÛúcÔ¶&A”z?ÄvÀ)dcÕëşp7á*yTy¤CÆÍı‚,†˜Înu²zÜæÜ|9‚·ÑbàÿH{ui‘‡ÿ±õÕA›´ù™Dï÷6’¥|z¥8›† Ü^U%]PÄÜHk?SXP®væ¹áñ|;¬M¯€tI iü$|É‚GÓ7› Á÷Reç5ƒJäTè2ĞâL `ğ¢Ÿh3-¿±ßú˜Ã³×ËT^mÉ}mu7TÿTa¨Wâ”Bôä³£Ñ¸h~ÖãÔĞ¥,Ç²ßTjªˆÊSãÊk=œz½‚Ï5˜,)[4ŒXÔãö¦dà_ğíçtD4æ*E"ÍL|Ë'½¤‡¿EJœ¬ v›G Ò/Ç7RR@€vÔa¨Öî{¸alÿ¯¾TXp¦Ã²1Ì|Ã¦o“Ê¡…½³bv³ŒünZSã>È>öCVÕahÇƒjqË>½§ñÎuÀN×! fªqµMy•ôMe‰@ú&•‘·£ø‹Ûtí>B ëÁÀîr‘ˆÿ>cßÆ+P N¸ä¸ì!^—¨ÑĞLJ›DŒ,yşÄ‚Á°÷D®Vkrù],3ı<v'”Û¨È`Â^mJ.!¢ÇÍ§:6¼-uÕ¶Öæ© ³œ˜NúÁNpäêºõ”Ş•ëÓğÿn¯à”3}³¢pVáTs8ŞÀd=^.ÕAD¿Øµ€inS?‘Ÿ«ƒê­šmˆmº?¥‘+‰;˜fhÂÉª’7şRâó‹8üÃ»>›ş:;(1Ø5eïbBŠñ—lkm£X‚0Šş=i€…:ê™Äı`!Ş1ä,ª.ìRÚÉ“2q…È³B¦‰·ºš#´][N–O~¹aGÊ~M)ÙÜ?£Vêv6ÈÄÇTª“lË?">Cî¸E~\³­:Öÿ•P?íšêÍ‹Ù^öØ …ªV¹ø£­ÙkC‘†xşkB»z£Ø ˜ UÃ(İj1/ lR“*Í_ªxé^´ßÃ”’Ø[„ iÚµxCd©_<‡ƒXŠ®
+­Æâç¯*9Ñ•6&‚"²I_"’BÒiº;dc³Åµı³œC¥Í›Åó„C´
+8ìíÇ]ÿz%qÂááTe¸Àœë›æŸ¦Cƒp‰À‹ÃJ”
+m»môè´Â«¤OT}o‚Óu„1— l±ø Ä"èXê/=ïî×åÅ…Ò¢aVí}ìj¸±ìŠèb5	~2iBõG@årqÇº[˜û%•ıÍªÆÁçèÚ» 1…_º’Æ¸“Ş<50ŸâÒÿ¹ÏïT”zs¸´L_èÆÎ£KAø4æ H¯Ÿvî©²T…÷EÎ¹êÎ (Ãc¡µfÆK4X8ãûP%4Ä¦¼£ãókË™HÏ+İ_‹7ô&KÈx¼âz‘pg+Y³ØÉbòj×ªš¿/T½€®ŞÏQMÒ°‰¹æñáv)-kbÂb;FpUÃ“‘ô_›àš!qìŸìå7Ë“‚'€„•ñö¡}5BÄ¸’{æ_,Úú?/G>¢Ñ)«gWÃ{–ò$WaØ®:l£q/Ó»3÷<Ş×‰èØˆ‚G
+Ğ¶ÚÕE7Ö­èë²
+`öûª6w¡µ«
+i«—1^Wò—
+Ùƒp-KrÒp£ÌÉ®9ò¬ù40\¾0á`’:í9o`WH…'>¨9ÂÏµ"©5q[©Šå•6ó7‡Ğ!bÿ/}ı	éü›v®=de1º¯ª·HÅg	lgCßìöw‡#Ù²{„+¯½SÍ,Òë€S3¥T‰À· :öqîjxœ¿K]ÈÃ0/EÛ.÷…fÄ6,„o$}/â¹º¢¢U¼ÑèÒÿºÛğ´ÔÀèõCyÀp-V$+›3s˜÷‡‹&j§«ÖIÙoŒzK«¬"kŞÍdb™5(3ÎG	7OÑïzS7GVâ
+qİQ’UÊ#ÙoR-Ğ	Å QÑ%)öy]4oäA	w.ÕûÇâ¢Iªr_N—~ˆ˜8§øfT {ß=Bñ6¸©™c¡ÄMºGÍ›õd]¯ÎmøyH]¶/QNââ-ªãˆœÚL¶{Šse¶[ÂšÇç)0|ñÌƒ¿éLô”ü®pæßsŒe†/®´Ml”nİS3pÖŸïàÃgğ!T!,wûüåõ‡&EQ†+â‘}ÍÇRÜfÇ·x“14ÆTx–6|I¿mfºS1
+@‡ëkbêŠW¥Ux‚³z‚P¢½xŸ¸KõË+Éåšv~ş*²ßxj:<–¬a	›\8dä?úØÔÏM;)Ù¶ÂÒÓ]­a²Õd¥¿ĞÂîCô$£ ±1¶F)M8’ymÛh"™Q¸W1=aÊ·?+X±———m‰*b÷SŞc’gìW+ed-dÜ³¡A÷z$N$¹„…›ªî3·Ü…ÍË·œaËf°‚ÃC4ìŠkï	R‡—Š <N~[¼Õ…uU§¹Ùù2A/Uáá´÷ñà6ğ:ÁUU{ Ê
+Wí¹¥ İİ_àÈ@ÿ§¿I»°åar{Üo*9—>Ë–qˆŸœVv™ÛÃ¬xİ¤YYù:mÃÔ|ô”
+Ö?ÉâOµªšvø
+fÀÊt;>Iòfğ‚	/yÀóõŠrÔú4ğØã8Ì•$åh“ƒÒ˜/E3%ĞÖì»dÚ@(e$Š™I˜ö»E4G 4=õØVÄuÒœ$Ğ¡~ğ¿u qŞ„ùŞë6€·šTu¥<©R«D_r¤.¥g]Òo;åš—ğY,´`bŠùşˆq5>#
+sbı€Üp×&E®ŠÏ½vZÁ2^Ã¢Áı¬>X¦†<Ë2Àı*yM·PI;#’Ğ—¬ı“:Êø±ı¶ÁVµàµ\Eãy*xCj Úiî(PõeX;äßÏšSi *{îcıÆï hìº´XåxÜEhûQeî©'©ş8Ş=tFâ¢ 0b3B—Çä¸©©®/Œ‹>…ZŸ?º·àÜ¦Î=ÄL)Ö—x»€ *’“ü	¾?’Œ{ó+[Ğ‡»½Š6Ë}–ÿ‚¸‰Ù ¡*ñ½fğª~#˜õô7m©²|òä¾	R³gûõFŠ_¤;¼e)=G´í4<–# 1É8ÌM=.®\8®ƒ1¸:º®¿|ñ¶šU+Væ*Ï—Å®Ó›P7=pì^d5:Ö“aSƒasöp¡q^dî?­KTà&t:²›Ü ßk¯ÄòÉë:ëƒ‚>äj£û2{¹óÈC¶î8eŸ`9ú:¤#D|ëa)á‡5óüòàuuÄMƒæ¥ˆ¤²Æ¼ì[¼EÑš;Ø&}y5îÕQAE¢#1=:pÜ“P	ÜC¨ÖK—fÆõb°/Î ”esÓÔfH˜ÙİÑ#š‘°ù¢··—YĞs5“¤od'û¢§+í§.·Í#ûh‰k…{U/–+Áwâ2³›£%¼+nŒæø,œQ…÷~5ë$¸«Ü(Rù>+%tß%Â,ô;°,Ê4ˆ_ÈgÓÒê¡ØtÄÈ= H¼¨%¸ª£ÁÏ|ô$İ­‘H£t›‘»¯¼‰ %%yá˜v¿* å!}¬ÛúØKZ†w¿¶àô™Û(ÆÃƒt Ç¹À “*Å‹nä‹qÚ#,ˆo×ú61Ÿ6æÒ:î3½ô{Ì×`ümĞ’İ<U¶`N%Äok´Ø‡´ß†ÿSLş¤/†½ ¹eU‰h‚¸ç½&Yñ>û^†äÙKİ_)‚(|MXÆäŒ¶×ìºœöÑ3DûëGüÿ‡{•Â=æ/R~FND¦îºµş”ô%·÷Šãƒú Ã{
+Â	òxøØNqM]ªÿŸÑ¸ö7+vA–âÉmú…n5­h—G$¥ƒ¡S•Ï¸ë°])ûn&?JFåtÌ~øj_d¾ù#2¸0³n“¹Å1…¦<ªkéëv~mñò˜q\ÈXÈ™G¢Ö	!aÀúr¨Z€ÄÕ‘‘"AJêySŞj‘ƒ3·ÖâÊ@ÌçuÍ4Ôi™S|èJPWBÔ‘Wf%	Ø>iÙè48V'ßÛOÍóx×ÌyS÷r¶™|…[ÇP³°¶×2Ü†¾Çw9e{è†²ë'½+…µo“Ìûá¢uéªïÖjdË„ïß-ºhíT·1“S}ö©føÚBœMe±U<vÒgSÊØ0»Õª;RpÎ}À~-”öLç*ía0È›.5!àL_·˜¦mnæ²‰)©fjjX/7uFi	kÓ¶¨t	
+¥Óû«ÎŸêñ4ØGpl¾]=Ãd;¥£[`Ô`ÏÛM,“€|	,¸„X~±&Û2ï]d2À#¶füh) Ôr<%š¨î7ÆÛ®,ªìÒ«ÅÅ?Â;¸móŒÜe„,NÁÛ }Y(ë…N	ä¦å Z`çö7YUÀ˜i`À$‡İzÇ™ë¦ö”'&(„2x,õZ>,:PòŠİ*S|î‚T4rÂ`Ö8 Aå°ù.y§6!ü{P:vñœ…½MIWõˆLÏQ6°bÍîÃ=iøô†èüWŠ{Èc=¾Eù‡2<ùÿ©D¤äª³¤x¹hPŞ¸Gjx_¤İ­dšà.b>@±è@
+†G 8À–õø5}tÁów¾ù…R{œ@ŒtÉ•H&¤©~, Foı>Ê¢£,¯¬:Â€£Z­ÿ?œES]›ÁqÙ¥ÖB0UOo¾4LË~Ã©£DG½Ç­«VXØltt"!¥s¿Y½NaÒ:V	à{àq;©êÉUw)‡£ç¶Úù‡†zòß¸c,(°İ¥LYTŸq„‰€ùÚ"?aÃµ¯Ş0ŒÖßæñDÏÚ@‰3Š‰.CÌ™4˜òH÷c3jÙU ?ƒ=ÆZ¸b `ßÎd6MÔl..3a0%JmĞ´¯ëyûv’ 3(ŸNA˜Å‰›IZŸÔ¨‰âr¿úÿû£´5ûÑ1WVÿMmŸ  RÎ&PÏ” ‡şì€ğ¶  ŒP½ö;0    YZ        description=Echo the kernel header artifacts used to build the kernel author=Joel Fernandes license=GPL v2 depends= retpoline=Y intree=Y name=kheaders vermagic=5.18.2-smp SMP preempt mod_unload PENTIUMIII  kheaders.tar.xz           GNU  À       À                GNU ])u)UŞoÇŸÚC	a·¢¼¥        Linux                Linux                                   $                                                                      kheaders                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             GCC: (GNU) 11.2.0  GCC: (GNU) 11.2.0                                                                                                      
+                                                                                                                                                         ñÿ       #            #     *             8            J       F    
+ d   F       
+ y   \       
+             ñÿ   k   	    
+ ´   t       
+ Ì   €   	    
+ á   ‰       
+ ô   —   7    
+                                 )             ?           N             U             a             l      #     x            Œ  0?;       ¤              kheaders.c ikheaders_read ikheaders_init kheaders_attr ikheaders_cleanup __UNIQUE_ID_description96 __UNIQUE_ID_author95 __UNIQUE_ID_license94 kheaders.mod.c __UNIQUE_ID_depends98 __UNIQUE_ID_retpoline97 __UNIQUE_ID_intree96 __UNIQUE_ID_name95 __UNIQUE_ID_vermagic94 _note_9 _note_8 __this_module sysfs_create_bin_file cleanup_module memcpy kernel_kobj __fentry__ init_module kernel_headers_data kernel_headers_data_end sysfs_remove_bin_file      &     (     $     &     )          (          %     "     %          *                        Ì   '  ô  #   .symtab .strtab .shstrtab .rel.text .rel.init.text .rel.exit.text .rodata .rel__mcount_loc .modinfo .rodata.str1.1 .note.gnu.property .note.gnu.build-id .note.Linux .data .rel.data..ro_after_init .rel.gnu.linkonce.this_module .bss .comment .note.GNU-stack                                                         @   #                     	   @       H;                )             c   #                  %   	   @       ,H; 8               8             †                     4   	   @       dH;                C             •   0?;                O             Å?;                   K   	   @       |H;                \             Í?; Î                  e      2       ›@;                  t             ¬@; (                  ‡             Ô@; $                  š             ø@; 0                  ¦             (A;                    °             @A;                     ¬   	   @       ŒH;                É             €A;            @       Å   	   @       œH;                ã             €C;                    è      0       €C; &                 ñ              ¦C;                                  ¨C; °     !         	              XF; º                               ¬H;                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  // SPDX-License-Identifier: GPL-2.0-or-later
+/*
+ *
+ *  Support for a cx23417 mpeg encoder via cx23885 host port.
+ *
+ *    (c) 2004 Jelle Foks <jelle@foks.us>
+ *    (c) 2004 Gerd Knorr <kraxel@bytesex.org>
+ *    (c) 2008 Steven Toth <stoth@linuxtv.org>
+ *      - CX23885/7/8 support
+ *
+ *  Includes parts from the ivtv driver <http://sourceforge.net/projects/ivtv/>
+ */
+
+#include "cx23885.h"
+#include "cx23885-ioctl.h"
+
+#include <linux/module.h>
+#include <linux/moduleparam.h>
+#include <linux/init.h>
+#include <linux/fs.h>
+#include <linux/delay.h>
+#include <linux/device.h>
+#include <linux/firmware.h>
+#include <linux/slab.h>
+#include <media/v4l2-common.h>
+#include <media/v4l2-ioctl.h>
+#include <media/drv-intf/cx2341x.h>
+
+#define CX23885_FIRM_IMAGE_SIZE 376836
+#define CX23885_FIRM_IMAGE_NAME "v4l-cx23885-enc.fw"
+
+static unsigned int mpegbufs = 32;
+module_param(mpegbufs, int, 0644);
+MODULE_PARM_DESC(mpegbufs, "number of mpeg buffers, range 2-32");
+static unsigned int mpeglines = 32;
+module_param(mpeglines, int, 0644);
+MODULE_PARM_DESC(mpeglines, "number of lines in an MPEG buffer, range 2-32");
+static unsigned int mpeglinesize = 512;
+module_param(mpeglinesize, int, 0644);
+MODULE_PARM_DESC(mpeglinesize,
+	"number of bytes in each line of an MPEG buffer, range 512-1024");
+
+static unsigned int v4l_debug;
+module_param(v4l_debug, int, 0644);
+MODULE_PARM_DESC(v4l_debug, "enable V4L debug messages");
+
+#define dprintk(level, fmt, arg...)\
+	do { if (v4l_debug >= level) \
+		printk(KERN_DEBUG pr_fmt("%s: 417:" fmt), \
+			__func__, ##arg); \
+	} while (0)
+
+static struct cx23885_tvnorm cx23885_tvnorms[] = {
+	{
+		.name      = "NTSC-M",
+		.id        = V4L2_STD_NTSC_M,
+	}, {
+		.name      = "NTSC-JP",
+		.id        = V4L2_STD_NTSC_M_JP,
+	}, {
+		.name      = "PAL-BG",
+		.id        = V4L2_STD_PAL_BG,
+	}, {
+		.name      = "PAL-DK",
+		.id        = V4L2_STD_PAL_DK,
+	}, {
+		.name      = "PAL-I",
+		.id        = V4L2_STD_PAL_I,
+	}, {
+		.name      = "PAL-M",
+		.id        = V4L2_STD_PAL_M,
+	}, {
+		.name      = "PAL-N",
+		.id        = V4L2_STD_PAL_N,
+	}, {
+		.name      = "PAL-Nc",
+		.id        = V4L2_STD_PAL_Nc,
+	}, {
+		.name      = "PAL-60",
+		.id        = V4L2_STD_PAL_60,
+	}, {
+		.name      = "SECAM-L",
+		.id        = V4L2_STD_SECAM_L,
+	}, {
+		.name      = "SECAM-DK",
+		.id        = V4L2_STD_SECAM_DK,
+	}
+};
+
+/* ------------------------------------------------------------------ */
+enum cx23885_capture_type {
+	CX23885_MPEG_CAPTURE,
+	CX23885_RAW_CAPTURE,
+	CX23885_RAW_PASSTHRU_CAPTURE
+};
+enum cx23885_capture_bits {
+	CX23885_RAW_BITS_NONE             = 0x00,
+	CX23885_RAW_BITS_YUV_CAPTURE      = 0x01,
+	CX23885_RAW_BITS_PCM_CAPTURE      = 0x02,
+	CX23885_RAW_BITS_VBI_CAPTURE      = 0x04,
+	CX23885_RAW_BITS_PASSTHRU_CAPTURE = 0x08,
+	CX23885_RAW_BITS_TO_HOST_CAPTURE  = 0x10
+};
+enum cx23885_capture_end {
+	CX23885_END_AT_GOP, /* stop at the end of gop, generate irq */
+	CX23885_END_NOW, /* stop immediately, no irq */
+};
+enum cx23885_framerate {
+	CX23885_FRAMERATE_NTSC_30, /* NTSC: 30fps */
+	CX23885_FRAMERATE_PAL_25   /* PAL: 25fps */
+};
+enum cx23885_stream_port {
+	CX23885_OUTPUT_PORT_MEMORY,
+	CX23885_OUTPUT_PORT_STREAMING,
+	CX23885_OUTPUT_PORT_SERIAL
+};
+enum cx23885_data_xfer_status {
+	CX23885_MORE_BUFFERS_FOLLOW,
+	CX23885_LAST_BUFFER,
+};
+enum cx23885_picture_mask {
+	CX23885_PICTURE_MASK_NONE,
+	CX23885_PICTURE_MASK_I_FRAMES,
+	CX23885_PICTURE_MASK_I_P_FRAMES = 0x3,
+	CX23885_PICTURE_MASK_ALL_FRAMES = 0x7,
+};
+enum cx23885_vbi_mode_bits {
+	CX23885_VBI_BITS_SLICED,
+	CX23885_VBI_BITS_RAW,
+};
+enum cx23885_vbi_insertion_bits {
+	CX23885_VBI_BITS_INSERT_IN_XTENSION_USR_DATA,
+	CX23885_VBI_BITS_INSERT_IN_PRIVATE_PACKETS = 0x1 << 1,
+	CX23885_VBI_BITS_SEPARATE_STREAM = 0x2 << 1,
+	CX23885_VBI_BITS_SEPARATE_STREAM_USR_DATA = 0x4 << 1,
+	CX23885_VBI_BITS_SEPARATE_STREAM_PRV_DATA = 0x5 << 1,
+};
+enum cx23885_dma_unit {
+	CX23885_DMA_BYTES,
+	CX23885_DMA_FRAMES,
+};
+enum cx23885_dma_transfer_status_bits {
+	CX23885_DMA_TRANSFER_BITS_DONE = 0x01,
+	CX23885_DMA_TRANSFER_BITS_ERROR = 0x04,
+	CX23885_DMA_TRANSFER_BITS_LL_ERROR = 0x10,
+};
+enum cx23885_pause {
+	CX23885_PAUSE_ENCODING,
+	CX23885_RESUME_ENCODING,
+};
+enum cx23885_copyright {
+	CX23885_COPYRIGHT_OFF,
+	CX23885_COPYRIGHT_ON,
+};
+enum cx23885_notification_type {
+	CX23885_NOTIFICATION_REFRESH,
+};
+enum cx23885_notification_status {
+	CX23885_NOTIFICATION_OFF,
+	CX23885_NOTIFICATION_ON,
+};
+enum cx23885_notification_mailbox {
+	CX23885_NOTIFICATION_NO_MAILBOX = -1,
+};
+enum cx23885_field1_lines {
+	CX23885_FIELD1_SAA7114 = 0x00EF, /* 239 */
+	CX23885_FIELD1_SAA7115 = 0x00F0, /* 240 */
+	CX23885_FIELD1_MICRONAS = 0x0105, /* 261 */
+};
+enum cx23885_field2_lines {
+	CX23885_FIELD2_SAA7114 = 0x00EF, /* 239 */
+	CX23885_FIELD2_SAA7115 = 0x00F0, /* 240 */
+	CX23885_FIELD2_MICRONAS = 0x0106, /* 262 */
+};
+enum cx23885_custom_data_type {
+	CX23885_CUSTOM_EXTENSION_USR_DATA,
+	CX23885_CUSTOM_PRIVATE_PACKET,
+};
+enum cx23885_mute {
+	CX23885_UNMUTE,
+	CX23885_MUTE,
+};
+enum cx23885_mute_video_mask {
+	CX23885_MUTE_VIDEO_V_MASK = 0x0000FF00,
+	CX23885_MUTE_VIDEO_U_MASK = 0x00FF0000,
+	CX23885_MUTE_VIDEO_Y_MASK = 0xFF000000,
+};
+enum cx23885_mute_video_shift {
+	CX23885_MUTE_VIDEO_V_SHIFT = 8,
+	CX23885_MUTE_VIDEO_U_SHIFT = 16,
+	CX23885_MUTE_VIDEO_Y_SHIFT = 24,
+};
+
+/* defines below are from ivtv-driver.h */
+#define IVTV_CMD_HW_BLOCKS_RST 0xFFFFFFFF
+
+/* Firmware API commands */
+#define IVTV_API_STD_TIMEOUT 500
+
+/* Registers */
+/* IVTV_REG_OFFSET */
+#define IVTV_REG_ENC_SDRAM_REFRESH (0x07F8)
+#define IVTV_REG_ENC_SDRAM_PRECHARGE (0x07FC)
+#define IVTV_REG_SPU (0x9050)
+#define IVTV_REG_HW_BLOCKS (0x9054)
+#define IVTV_REG_VPU (0x9058)
+#define IVTV_REG_APU (0xA064)
+
+/**** Bit definitions for MC417_RWD and MC417_OEN registers  ***
+  bits 31-16
++-----------+
+| Reserved  |
++-----------+
+  bit 15  bit 14  bit 13 bit 12  bit 11  bit 10  bit 9   bit 8
++-------+-------+-------+-------+-------+-------+-------+-------+
+| MIWR# | MIRD# | MICS# |MIRDY# |MIADDR3|MIADDR2|MIADDR1|MIADDR0|
++-------+-------+-------+-------+-------+-------+-------+-------+
+ bit 7   bit 6   bit 5   bit 4   bit 3   bit 2   bit 1   bit 0
++-------+-------+-------+-------+-------+-------+-------+-------+
+|MIDATA7|MIDATA6|MIDATA5|MIDATA4|MIDATA3|MIDATA2|MIDATA1|MIDATA0|
++-------+-------+-------+-------+-------+-------+-------+-------+
+***/
+#define MC417_MIWR	0x8000
+#define MC417_MIRD	0x4000
+#define MC417_MICS	0x2000
+#define MC417_MIRDY	0x1000
+#define MC417_MIADDR	0x0F00
+#define MC417_MIDATA	0x00FF
+
+/* MIADDR* nibble definitions */
+#define  MCI_MEMORY_DATA_BYTE0          0x000
+#define  MCI_MEMORY_DATA_BYTE1          0x100
+#define  MCI_MEMORY_DATA_BYTE2          0x200
+#define  MCI_MEMORY_DATA_BYTE3          0x300
+#define  MCI_MEMORY_ADDRESS_BYTE2       0x400
+#define  MCI_MEMORY_ADDRESS_BYTE1       0x500
+#define  MCI_MEMORY_ADDRESS_BYTE0       0x600
+#define  MCI_REGISTER_DATA_BYTE0        0x800
+#define  MCI_REGISTER_DATA_BYTE1        0x900
+#define  MCI_REGISTER_DATA_BYTE2        0xA00
+#define  MCI_REGISTER_DATA_BYTE3        0xB00
+#define  MCI_REGISTER_ADDRESS_BYTE0     0xC00
+#define  MCI_REGISTER_ADDRESS_BYTE1     0xD00
+#define  MCI_REGISTER_MODE              0xE00
+
+/* Read and write modes */
+#define  MCI_MODE_REGISTER_READ         0
+#define  MCI_MODE_REGISTER_WRITE        1
+#define  MCI_MODE_MEMORY_READ           0
+#define  MCI_MODE_MEMORY_WRITE          0x40
+
+/*** Bit definitions for MC417_CTL register ****
+ bits 31-6   bits 5-4   bit 3    bits 2-1       Bit 0
++--------+-------------+--------+--------------+------------+
+|Reserved|MC417_SPD_CTL|Reserved|MC417_GPIO_SEL|UART_GPIO_EN|
++--------+-------------+--------+--------------+------------+
+***/
+#define MC417_SPD_CTL(x)	(((x) << 4) & 0x00000030)
+#define MC417_GPIO_SEL(x)	(((x) << 1) & 0x00000006)
+#define MC417_UART_GPIO_EN	0x00000001
+
+/* Values for speed control */
+#define MC417_SPD_CTL_SLOW	0x1
+#define MC417_SPD_CTL_MEDIUM	0x0
+#define MC417_SPD_CTL_FAST	0x3     /* b'1x, but we use b'11 */
+
+/* Values for GPIO select */
+#define MC417_GPIO_SEL_GPIO3	0x3
+#define MC417_GPIO_SEL_GPIO2	0x2
+#define MC417_GPIO_SEL_GPIO1	0x1
+#define MC417_GPIO_SEL_GPIO0	0x0
+
+void cx23885_mc417_init(struct cx23885_dev *dev)
+{
+	u32 regval;
+
+	dprintk(2, "%s()\n", __func__);
+
+	/* Configure MC417_CTL register to defaults. */
+	regval = MC417_SPD_CTL(MC417_SPD_CTL_FAST)	|
+		 MC417_GPIO_SEL(MC417_GPIO_SEL_GPIO3)	|
+		 MC417_UART_GPIO_EN;
+	cx_write(MC417_CTL, regval);
+
+	/* Configure MC417_OEN to defaults. */
+	regval = MC417_MIRDY;
+	cx_write(MC417_OEN, regval);
+
+	/* Configure MC417_RWD to defaults. */
+	regval = MC417_MIWR | MC417_MIRD | MC417_MICS;
+	cx_write(MC417_RWD, regval);
+}
+
+static int mc417_wait_ready(struct cx23885_dev *dev)
+{
+	u32 mi_ready;
+	unsigned long timeout = jiffies + msecs_to_jiffies(1);
+
+	for (;;) {
+		mi_ready = cx_read(MC417_RWD) & MC417_MIRDY;
+		if (mi_ready != 0)
+			return 0;
+		if (time_after(jiffies, timeout))
+			return -1;
+		udelay(1);
+	}
+}
+
+int mc417_register_write(struct cx23885_dev *dev, u16 address, u32 value)
+{
+	u32 regval;
+
+	/* Enable MC417 GPIO outputs except for MC417_MIRDY,
+	 * which is an input.
+	 */
+	cx_write(MC417_OEN, MC417_MIRDY);
+
+	/* Write data byte 0 */
+	regval = MC417_MIRD | MC417_MIRDY | MCI_REGISTER_DATA_BYTE0 |
+		(value & 0x000000FF);
+	cx_write(MC417_RWD, regval);
+
+	/* Transition CS/WR to effect write transaction across bus. */
+	regval |= MC417_MICS | MC417_MIWR;
+	cx_write(MC417_RWD, regval);
+
+	/* Write data byte 1 */
+	regval = MC417_MIRD | MC417_MIRDY | MCI_REGISTER_DATA_BYTE1 |
+		((value >> 8) & 0x000000FF);
+	cx_write(MC417_RWD, regval);
+	regval |= MC417_MICS | MC417_MIWR;
+	cx_write(MC417_RWD, regval);
+
+	/* Write data byte 2 */
+	regval = MC417_MIRD | MC417_MIRDY | MCI_REGISTER_DATA_BYTE2 |
+		((value >> 16) & 0x000000FF);
+	cx_write(MC417_RWD, regval);
+	regval |= MC417_MICS | MC417_MIWR;
+	cx_write(MC417_RWD, regval);
+
+	/* Write data byte 3 */
+	regval = MC417_MIRD | MC417_MIRDY | MCI_REGISTER_DATA_BYTE3 |
+		((value >> 24) & 0x000000FF);
+	cx_write(MC417_RWD, regval);
+	regval |= MC417_MICS | MC417_MIWR;
+	cx_write(MC417_RWD, regval);
+
+	/* Write address byte 0 */
+	regval = MC417_MIRD | MC417_MIRDY | MCI_REGISTER_ADDRESS_BYTE0 |
+		(address & 0xFF);
+	cx_write(MC417_RWD, regval);
+	regval |= MC417_MICS | MC417_MIWR;
+	cx_write(MC417_RWD, regval);
+
+	/* Write address byte 1 */
+	regval = MC417_MIRD | MC417_MIRDY | MCI_REGISTER_ADDRESS_BYTE1 |
+		((address >> 8) & 0xFF);
+	cx_write(MC417_RWD, regval);
+	regval |= MC417_MICS | MC417_MIWR;
+	cx_write(MC417_RWD, regval);
+
+	/* Indicate that this is a write. */
+	regval = MC417_MIRD | MC417_MIRDY | MCI_REGISTER_MODE |
+		MCI_MODE_REGISTER_WRITE;
+	cx_write(MC417_RWD, regval);
+	regval |= MC417_MICS | MC417_MIWR;
+	cx_write(MC417_RWD, regval);
+
+	/* Wait for the trans to complete (MC417_MIRDY asserted). */
+	return mc417_wait_ready(dev);
+}
+
+int mc417_register_read(struct cx23885_dev *dev, u16 address, u32 *value)
+{
+	int retval;
+	u32 regval;
+	u32 tempval;
+	u32 dataval;
+
+	/* Enable MC417 GPIO outputs except for MC417_MIRDY,
+	 * which is an input.
+	 */
+	cx_write(MC417_OEN, MC417_MIRDY);
+
+	/* Write address byte 0 */
+	regval = MC417_MIRD | MC417_MIRDY | MCI_REGISTER_ADDRESS_BYTE0 |
+		((address & 0x00FF));
+	cx_write(MC417_RWD, regval);
+	regval |= MC417_MICS | MC417_MIWR;
+	cx_write(MC417_RWD, regval);
+
+	/* Write address byte 1 */
+	regval = MC417_MIRD | MC417_MIRDY | MCI_REGISTER_ADDRESS_BYTE1 |
+		((address >> 8) & 0xFF);
+	cx_write(MC417_RWD, regval);
+	regval |= MC417_MICS | MC417_MIWR;
+	cx_write(MC417_RWD, regval);
+
+	/* Indicate that this is a register read. */
+	regval = MC417_MIRD | MC417_MIRDY | MCI_REGISTER_MODE |
+		MCI_MODE_REGISTER_READ;
+	cx_write(MC417_RWD, regval);
+	regval |= MC417_MICS | MC417_MIWR;
+	cx_write(MC417_RWD, regval);
+
+	/* Wait for the trans to complete (MC417_MIRDY asserted). */
+	retval = mc417_wait_ready(dev);
+
+	/* switch the DAT0-7 GPIO[10:3] to input mode */
+	cx_write(MC417_OEN, MC417_MIRDY | MC417_MIDATA);
+
+	/* Read data byte 0 */
+	regval = MC417_MIRD | MC417_MIRDY | MCI_REGISTER_DATA_BYTE0;
+	cx_write(MC417_RWD, regval);
+
+	/* Transition RD to effect read transaction across bus.
+	 * Transition 0x5000 -> 0x9000 correct (RD/RDY -> WR/RDY)?
+	 * Should it be 0x9000 -> 0xF000 (also why is RDY being set, its
+	 * input only...)
+	 */
+	regval = MC417_MIWR | MC417_MIRDY | MCI_REGISTER_DATA_BYTE0;
+	cx_write(MC417_RWD, regval);
+
+	/* Collect byte */
+	tempval = cx_read(MC417_RWD);
+	dataval = tempval & 0x000000FF;
+
+	/* Bring CS and RD high. */
+	regval = MC417_MIWR | MC417_MIRD | MC417_MICS | MC417_MIRDY;
+	cx_write(MC417_RWD, regval);
+
+	/* Read data byte 1 */
+	regval = MC417_MIRD | MC417_MIRDY | MCI_REGISTER_DATA_BYTE1;
+	cx_write(MC417_RWD, regval);
+	regval = MC417_MIWR | MC417_MIRDY | MCI_REGISTER_DATA_BYTE1;
+	cx_write(MC417_RWD, regval);
+	tempval = cx_read(MC417_RWD);
+	dataval |= ((tempval & 0x000000FF) << 8);
+	regval = MC417_MIWR | MC417_MIRD | MC417_MICS | MC417_MIRDY;
+	cx_write(MC417_RWD, regval);
+
+	/* Read data byte 2 */
+	regval = MC417_MIRD | MC417_MIRDY | MCI_REGISTER_DATA_BYTE2;
+	cx_write(MC417_RWD, regval);
+	regval = MC417_MIWR | MC417_MIRDY | MCI_REGISTER_DATA_BYTE2;
+	cx_write(MC417_RWD, regval);
+	tempval = cx_read(MC417_RWD);
+	dataval |= ((tempval & 0x000000FF) << 16);
+	regval = MC417_MIWR | MC417_MIRD | MC417_MICS | MC417_MIRDY;
+	cx_write(MC417_RWD, regval);
+
+	/* Read data byte 3 */
+	regval = MC417_MIRD | MC417_MIRDY | MCI_REGISTER_DATA_BYTE3;
+	cx_write(MC417_RWD, regval);
+	regval = MC417_MIWR | MC417_MIRDY | MCI_REGISTER_DATA_BYTE3;
+	cx_write(MC417_RWD, regval);
+	tempval = cx_read(MC417_RWD);
+	dataval |= ((tempval & 0x000000FF) << 24);
+	regval = MC417_MIWR | MC417_MIRD | MC417_MICS | MC417_MIRDY;
+	cx_write(MC417_RWD, regval);
+
+	*value  = dataval;
+
+	return retval;
+}
+
+int mc417_memory_write(struct cx23885_dev *dev, u32 address, u32 value)
+{
+	u32 regval;
+
+	/* Enable MC417 GPIO outputs except for MC417_MIRDY,
+	 * which is an input.
+	 */
+	cx_write(MC417_OEN, MC417_MIRDY);
+
+	/* Write data byte 0 */
+	regval = MC417_MIRD | MC417_MIRDY | MCI_MEMORY_DATA_BYTE0 |
+		(value & 0x000000FF);
+	cx_write(MC417_RWD, regval);
+
+	/* Transition CS/WR to effect write transaction across bus. */
+	regval |= MC417_MICS | MC417_MIWR;
+	cx_write(MC417_RWD, regval);
+
+	/* Write data byte 1 */
+	regval = MC417_MIRD | MC417_MIRDY | MCI_MEMORY_DATA_BYTE1 |
+		((value >> 8) & 0x000000FF);
+	cx_write(MC417_RWD, regval);
+	regval |= MC417_MICS | MC417_MIWR;
+	cx_write(MC417_RWD, regval);
+
+	/* Write data byte 2 */
+	regval = MC417_MIRD | MC417_MIRDY | MCI_MEMORY_DATA_BYTE2 |
+		((value >> 16) & 0x000000FF);
+	cx_write(MC417_RWD, regval);
+	regval |= MC417_MICS | MC417_MIWR;
+	cx_write(MC417_RWD, regval);
+
+	/* Write data byte 3 */
+	regval = MC417_MIRD | MC417_MIRDY | MCI_MEMORY_DATA_BYTE3 |
+		((value >> 24) & 0x000000FF);
+	cx_write(MC417_RWD, regval);
+	regval |= MC417_MICS | MC417_MIWR;
+	cx_write(MC417_RWD, regval);
+
+	/* Write address byte 2 */
+	regval = MC417_MIRD | MC417_MIRDY | MCI_MEMORY_ADDRESS_BYTE2 |
+		MCI_MODE_MEMORY_WRITE | ((address >> 16) & 0x3F);
+	cx_write(MC417_RWD, regval);
+	regval |= MC417_MICS | MC417_MIWR;
+	cx_write(MC417_RWD, regval);
+
+	/* Write address byte 1 */
+	regval = MC417_MIRD | MC417_MIRDY | MCI_MEMORY_ADDRESS_BYTE1 |
+		((address >> 8) & 0xFF);
+	cx_write(MC417_RWD, regval);
+	regval |= MC417_MICS | MC417_MIWR;
+	cx_write(MC417_RWD, regval);
+
+	/* Write address byte 0 */
+	regval = MC417_MIRD | MC417_MIRDY | MCI_MEMORY_ADDRESS_BYTE0 |
+		(address & 0xFF);
+	cx_write(MC417_RWD, regval);
+	regval |= MC417_MICS | MC417_MIWR;
+	cx_write(MC417_RWD, regval);
+
+	/* Wait for the trans to complete (MC417_MIRDY asserted). */
+	return mc417_wait_ready(dev);
+}
+
+int mc417_memory_read(struct cx23885_dev *dev, u32 address, u32 *value)
+{
+	int retval;
+	u32 regval;
+	u32 tempval;
+	u32 dataval;
+
+	/* Enable MC417 GPIO outputs except for MC417_MIRDY,
+	 * which is an input.
+	 */
+	cx_write(MC417_OEN, MC417_MIRDY);
+
+	/* Write address byte 2 */
+	regval = MC417_MIRD | MC417_MIRDY | MCI_MEMORY_ADDRESS_BYTE2 |
+		MCI_MODE_MEMORY_READ | ((address >> 16) & 0x3F);
+	cx_write(MC417_RWD, regval);
+	regval |= MC417_MICS | MC417_MIWR;
+	cx_write(MC417_RWD, regval);
+
+	/* Write address byte 1 */
+	regval = MC417_MIRD | MC417_MIRDY | MCI_MEMORY_ADDRESS_BYTE1 |
+		((address >> 8) & 0xFF);
+	cx_write(MC417_RWD, regval);
+	regval |= MC417_MICS | MC417_MIWR;
+	cx_write(MC417_RWD, regval);
+
+	/* Write address byte 0 */
+	regval = MC417_MIRD | MC417_MIRDY | MCI_MEMORY_ADDRESS_BYTE0 |
+		(address & 0xFF);
+	cx_write(MC417_RWD, regval);
+	regval |= MC417_MICS | MC417_MIWR;
+	cx_write(MC417_RWD, regval);
+
+	/* Wait for the trans to complete (MC417_MIRDY asserted). */
+	retval = mc417_wait_ready(dev);
+
+	/* switch the DAT0-7 GPIO[10:3] to input mode */
+	cx_write(MC417_OEN, MC417_MIRDY | MC417_MIDATA);
+
+	/* Read data byte 3 */
+	regval = MC417_MIRD | MC417_MIRDY | MCI_MEMORY_DATA_BYTE3;
+	cx_write(MC417_RWD, regval);
+
+	/* Transition RD to effect read transaction across bus. */
+	regval = MC417_MIWR | MC417_MIRDY | MCI_MEMORY_DATA_BYTE3;
+	cx_write(MC417_RWD, regval);
+
+	/* Collect byte */
+	tempval = cx_read(MC417_RWD);
+	dataval = ((tempval & 0x000000FF) << 24);
+
+	/* Bring CS and RD high. */
+	regval = MC417_MIWR | MC417_MIRD | MC417_MICS | MC417_MIRDY;
+	cx_write(MC417_RWD, regval);
+
+	/* Read data byte 2 */
+	regval = MC417_MIRD | MC417_MIRDY | MCI_MEMORY_DATA_BYTE2;
+	cx_write(MC417_RWD, regval);
+	regval = MC417_MIWR | MC417_MIRDY | MCI_MEMORY_DATA_BYTE2;
+	cx_write(MC417_RWD, regval);
+	tempval = cx_read(MC417_RWD);
+	dataval |= ((tempval & 0x000000FF) << 16);
+	regval = MC417_MIWR | MC417_MIRD | MC417_MICS | MC417_MIRDY;
+	cx_write(MC417_RWD, regval);
+
+	/* Read data byte 1 */
+	regval = MC417_MIRD | MC417_MIRDY | MCI_MEMORY_DATA_BYTE1;
+	cx_write(MC417_RWD, regval);
+	regval = MC417_MIWR | MC417_MIRDY | MCI_MEMORY_DATA_BYTE1;
+	cx_write(MC417_RWD, regval);
+	tempval = cx_read(MC417_RWD);
+	dataval |= ((tempval & 0x000000FF) << 8);
+	regval = MC417_MIWR | MC417_MIRD | MC417_MICS | MC417_MIRDY;
+	cx_write(MC417_RWD, regval);
+
+	/* Read data byte 0 */
+	regval = MC417_MIRD | MC417_MIRDY | MCI_MEMORY_DATA_BYTE0;
+	cx_write(MC417_RWD, regval);
+	regval = MC417_MIWR | MC417_MIRDY | MCI_MEMORY_DATA_BYTE0;
+	cx_write(MC417_RWD, regval);
+	tempval = cx_read(MC417_RWD);
+	dataval |= (tempval & 0x000000FF);
+	regval = MC417_MIWR | MC417_MIRD | MC417_MICS | MC417_MIRDY;
+	cx_write(MC417_RWD, regval);
+
+	*value  = dataval;
+
+	return retval;
+}
+
+void mc417_gpio_set(struct cx23885_dev *dev, u32 mask)
+{
+	u32 val;
+
+	/* Set the gpio value */
+	mc417_register_read(dev, 0x900C, &val);
+	val |= (mask & 0x000ffff);
+	mc417_register_write(dev, 0x900C, val);
+}
+
+void mc417_gpio_clear(struct cx23885_dev *dev, u32 mask)
+{
+	u32 val;
+
+	/* Clear the gpio value */
+	mc417_register_read(dev, 0x900C, &val);
+	val &= ~(mask & 0x0000ffff);
+	mc417_register_write(dev, 0x900C, val);
+}
+
+void mc417_gpio_enable(struct cx23885_dev *dev, u32 mask, int asoutput)
+{
+	u32 val;
+
+	/* Enable GPIO direction bits */
+	mc417_register_read(dev, 0x9020, &val);
+	if (asoutput)
+		val |= (mask & 0x0000ffff);
+	else
+		val &= ~(mask & 0x0000ffff);
+
+	mc417_register_write(dev, 0x9020, val);
+}
+/* ------------------------------------------------------------------ */
+
+/* MPEG encoder API */
+static char *cmd_to_str(int cmd)
+{
+	switch (cmd) {
+	case CX2341X_ENC_PING_FW:
+		return  "PING_FW";
+	case CX2341X_ENC_START_CAPTURE:
+		return  "START_CAPTURE";
+	case CX2341X_ENC_STOP_CAPTURE:
+		return  "STOP_CAPTURE";
+	case CX2341X_ENC_SET_AUDIO_ID:
+		return  "SET_AUDIO_ID";
+	case CX2341X_ENC_SET_VIDEO_ID:
+		return  "SET_VIDEO_ID";
+	case CX2341X_ENC_SET_PCR_ID:
+		return  "SET_PCR_ID";
+	case CX2341X_ENC_SET_FRAME_RATE:
+		return  "SET_FRAME_RATE";
+	case CX2341X_ENC_SET_FRAME_SIZE:
+		return  "SET_FRAME_SIZE";
+	case CX2341X_ENC_SET_BIT_RATE:
+		return  "SET_BIT_RATE";
+	case CX2341X_ENC_SET_GOP_PROPERTIES:
+		return  "SET_GOP_PROPERTIES";
+	case CX2341X_ENC_SET_ASPECT_RATIO:
+		return  "SET_ASPECT_RATIO";
+	case CX2341X_ENC_SET_DNR_FILTER_MODE:
+		return  "SET_DNR_FILTER_MODE";
+	case CX2341X_ENC_SET_DNR_FILTER_PROPS:
+		return  "SET_DNR_FILTER_PROPS";
+	case CX2341X_ENC_SET_CORING_LEVELS:
+		return  "SET_CORING_LEVELS";
+	case CX2341X_ENC_SET_SPATIAL_FILTER_TYPE:
+		return  "SET_SPATIAL_FILTER_TYPE";
+	case CX2341X_ENC_SET_VBI_LINE:
+		return  "SET_VBI_LINE";
+	case CX2341X_ENC_SET_STREAM_TYPE:
+		return  "SET_STREAM_TYPE";
+	case CX2341X_ENC_SET_OUTPUT_PORT:
+		return  "SET_OUTPUT_PORT";
+	case CX2341X_ENC_SET_AUDIO_PROPERTIES:
+		return  "SET_AUDIO_PROPERTIES";
+	case CX2341X_ENC_HALT_FW:
+		return  "HALT_FW";
+	case CX2341X_ENC_GET_VERSION:
+		return  "GET_VERSION";
+	case CX2341X_ENC_SET_GOP_CLOSURE:
+		return  "SET_GOP_CLOSURE";
+	case CX2341X_ENC_GET_SEQ_END:
+		return  "GET_SEQ_END";
+	case CX2341X_ENC_SET_PGM_INDEX_INFO:
+		return  "SET_PGM_INDEX_INFO";
+	case CX2341X_ENC_SET_VBI_CONFIG:
+		return  "SET_VBI_CONFIG";
+	case CX2341X_ENC_SET_DMA_BLOCK_SIZE:
+		return  "SET_DMA_BLOCK_SIZE";
+	case CX2341X_ENC_GET_PREV_DMA_INFO_MB_10:
+		return  "GET_PREV_DMA_INFO_MB_10";
+	case CX2341X_ENC_GET_PREV_DMA_INFO_MB_9:
+		return  "GET_PREV_DMA_INFO_MB_9";
+	case CX2341X_ENC_SCHED_DMA_TO_HOST:
+		return  "SCHED_DMA_TO_HOST";
+	case CX2341X_ENC_INITIALIZE_INPUT:
+		return  "INITIALIZE_INPUT";
+	case CX2341X_ENC_SET_FRAME_DROP_RATE:
+		return  "SET_FRAME_DROP_RATE";
+	case CX2341X_ENC_PAUSE_ENCODER:
+		return  "PAUSE_ENCODER";
+	case CX2341X_ENC_REFRESH_INPUT:
+		return  "REFRESH_INPUT";
+	case CX2341X_ENC_SET_COPYRIGHT:
+		return  "SET_COPYRIGHT";
+	case CX2341X_ENC_SET_EVENT_NOTIFICATION:
+		return  "SET_EVENT_NOTIFICATION";
+	case CX2341X_ENC_SET_NUM_VSYNC_LINES:
+		return  "SET_NUM_VSYNC_LINES";
+	case CX2341X_ENC_SET_PLACEHOLDER:
+		return  "SET_PLACEHOLDER";
+	case CX2341X_ENC_MUTE_VIDEO:
+		return  "MUTE_VIDEO";
+	case CX2341X_ENC_MUTE_AUDIO:
+		return  "MUTE_AUDIO";
+	case CX2341X_ENC_MISC:
+		return  "MISC";
+	default:
+		return "UNKNOWN";
+	}
+}
+
+static int cx23885_mbox_func(void *priv,
+			     u32 command,
+			     int in,
+			     int out,
+			     u32 data[CX2341X_MBOX_MAX_DATA])
+{
+	struct cx23885_dev *dev = priv;
+	unsigned long timeout;
+	u32 value, flag, retval = 0;
+	int i;
+
+	dprintk(3, "%s: command(0x%X) = %s\n", __func__, command,
+		cmd_to_str(command));
+
+	/* this may not be 100% safe if we can't read any memory location
+	   without side effects */
+	mc417_memory_read(dev, dev->cx23417_mailbox - 4, &value);
+	if (value != 0x12345678) {
+		pr_err("Firmware and/or mailbox pointer not initialized or corrupted, signature = 0x%x, cmd = %s\n",
+			value, cmd_to_str(command));
+		return -1;
+	}
+
+	/* This read looks at 32 bits, but flag is only 8 bits.
+	 * Seems we also bail if CMD or TIMEOUT bytes are set???
+	 */
+	mc417_memory_read(dev, dev->cx23417_mailbox, &flag);
+	if (flag) {
+		pr_err("ERROR: Mailbox appears to be in use (%x), cmd = %s\n",
+		       flag, cmd_to_str(command));
+		return -1;
+	}
+
+	flag |= 1; /* tell 'em we're working on it */
+	mc417_memory_write(dev, dev->cx23417_mailbox, flag);
+
+	/* write command + args + fill remaining with zeros */
+	/* command code */
+	mc417_memory_write(dev, dev->cx23417_mailbox + 1, command);
+	mc417_memory_write(dev, dev->cx23417_mailbox + 3,
+		IVTV_API_STD_TIMEOUT); /* timeout */
+	for (i = 0; i < in; i++) {
+		mc417_memory_write(dev, dev->cx23417_mailbox + 4 + i, data[i]);
+		dprintk(3, "API Input %d = %d\n", i, data[i]);
+	}
+	for (; i < CX2341X_MBOX_MAX_DATA; i++)
+		mc417_memory_write(dev, dev->cx23417_mailbox + 4 + i, 0);
+
+	flag |= 3; /* tell 'em we're done writing */
+	mc417_memory_write(dev, dev->cx23417_mailbox, flag);
+
+	/* wait for firmware to handle the API command */
+	timeout = jiffies + msecs_to_jiffies(10);
+	for (;;) {
+		mc417_memory_read(dev, dev->cx23417_mailbox, &flag);
+		if (0 != (flag & 4))
+			break;
+		if (time_after(jiffies, timeout)) {
+			pr_err("ERROR: API Mailbox timeout\n");
+			return -1;
+		}
+		udelay(10);
+	}
+
+	/* read output values */
+	for (i = 0; i < out; i++) {
+		mc417_memory_read(dev, dev->cx23417_mailbox + 4 + i, data + i);
+		dprintk(3, "API Output %d = %d\n", i, data[i]);
+	}
+
+	mc417_memory_read(dev, dev->cx23417_mailbox + 2, &retval);
+	dprintk(3, "API result = %d\n", retval);
+
+	flag = 0;
+	mc417_memory_write(dev, dev->cx23417_mailbox, flag);
+
+	return retval;
+}
+
+/* We don't need to call the API often, so using just one
+ * mailbox will probably suffice
+ */
+static int cx23885_api_cmd(struct cx23885_dev *dev,
+			   u32 command,
+			   u32 inputcnt,
+			   u32 outputcnt,
+			   ...)
+{
+	u32 data[CX2341X_MBOX_MAX_DATA];
+	va_list vargs;
+	int i, err;
+
+	dprintk(3, "%s() cmds = 0x%08x\n", __func__, command);
+
+	va_start(vargs, outputcnt);
+	for (i = 0; i < inputcnt; i++)
+		data[i] = va_arg(vargs, int);
+
+	err = cx23885_mbox_func(dev, command, inputcnt, outputcnt, data);
+	for (i = 0; i < outputcnt; i++) {
+		int *vptr = va_arg(vargs, int *);
+		*vptr = data[i];
+	}
+	va_end(vargs);
+
+	return err;
+}
+
+static int cx23885_api_func(void *priv, u32 cmd, int in, int out, u32 data[CX2341X_MBOX_MAX_DATA])
+{
+	return cx23885_mbox_func(priv, cmd, in, out, data);
+}
+
+static int cx23885_find_mailbox(struct cx23885_dev *dev)
+{
+	u32 signature[4] = {
+		0x12345678, 0x34567812, 0x56781234, 0x78123456
+	};
+	int signaturecnt = 0;
+	u32 value;
+	int i;
+
+	dprintk(2, "%s()\n", __func__);
+
+	for (i = 0; i < CX23885_FIRM_IMAGE_SIZE; i++) {
+		mc417_memory_read(dev, i, &value);
+		if (value == signature[signaturecnt])
+			signaturecnt++;
+		else
+			signaturecnt = 0;
+		if (4 == signaturecnt) {
+			dprintk(1, "Mailbox signature found at 0x%x\n", i+1);
+			return i+1;
+		}
+	}
+	pr_err("Mailbox signature values not found!\n");
+	return -1;
+}
+
+static int cx23885_load_firmware(struct cx23885_dev *dev)
+{
+	static const unsigned char magic[8] = {
+		0xa7, 0x0d, 0x00, 0x00, 0x66, 0xbb, 0x55, 0xaa
+	};
+	const struct firmware *firmware;
+	int i, retval = 0;
+	u32 value = 0;
+	u32 gpio_output = 0;
+	u32 gpio_value;
+	u32 checksum = 0;
+	u32 *dataptr;
+
+	dprintk(2, "%s()\n", __func__);
+
+	/* Save GPIO settings before reset of APU */
+	retval |= mc417_memory_read(dev, 0x9020, &gpio_output);
+	retval |= mc417_memory_read(dev, 0x900C, &gpio_value);
+
+	retval  = mc417_register_write(dev,
+		IVTV_REG_VPU, 0xFFFFFFED);
+	retval |= mc417_register_write(dev,
+		IVTV_REG_HW_BLOCKS, IVTV_CMD_HW_BLOCKS_RST);
+	retval |= mc417_register_write(dev,
+		IVTV_REG_ENC_SDRAM_REFRESH, 0x80000800);
+	retval |= mc417_register_write(dev,
+		IVTV_REG_ENC_SDRAM_PRECHARGE, 0x1A);
+	retval |= mc417_register_write(dev,
+		IVTV_REG_APU, 0);
+
+	if (retval != 0) {
+		pr_err("%s: Error with mc417_register_write\n",
+			__func__);
+		return -1;
+	}
+
+	retval = request_firmware(&firmware, CX23885_FIRM_IMAGE_NAME,
+				  &dev->pci->dev);
+
+	if (retval != 0) {
+		pr_err("ERROR: Hotplug firmware request failed (%s).\n",
+		       CX23885_FIRM_IMAGE_NAME);
+		pr_err("Please fix your hotplug setup, the board will not work without firmware loaded!\n");
+		return -1;
+	}
+
+	if (firmware->size != CX23885_FIRM_IMAGE_SIZE) {
+		pr_err("ERROR: Firmware size mismatch (have %zu, expected %d)\n",
+		       firmware->size, CX23885_FIRM_IMAGE_SIZE);
+		release_firmware(firmware);
+		return -1;
+	}
+
+	if (0 != memcmp(firmware->data, magic, 8)) {
+		pr_err("ERROR: Firmware magic mismatch, wrong file?\n");
+		release_firmware(firmware);
+		return -1;
+	}
+
+	/* transfer to the chip */
+	dprintk(2, "Loading firmware ...\n");
+	dataptr = (u32 *)firmware->data;
+	for (i = 0; i < (firmware->size >> 2); i++) {
+		value = *dataptr;
+		checksum += ~value;
+		if (mc417_memory_write(dev, i, value) != 0) {
+			pr_err("ERROR: Loading firmware failed!\n");
+			release_firmware(firmware);
+			return -1;
+		}
+		dataptr++;
+	}
+
+	/* read back to verify with the checksum */
+	dprintk(1, "Verifying firmware ...\n");
+	for (i--; i >= 0; i--) {
+		if (mc417_memory_read(dev, i, &value) != 0) {
+			pr_err("ERROR: Reading firmware failed!\n");
+			release_firmware(firmware);
+			return -1;
+		}
+		checksum -= ~value;
+	}
+	if (checksum) {
+		pr_err("ERROR: Firmware load failed (checksum mismatch).\n");
+		release_firmware(firmware);
+		return -1;
+	}
+	release_firmware(firmware);
+	dprintk(1, "Firmware upload successful.\n");
+
+	retval |= mc417_register_write(dev, IVTV_REG_HW_BLOCKS,
+		IVTV_CMD_HW_BLOCKS_RST);
+
+	/* F/W power up disturbs the GPIOs, restore state */
+	retval |= mc417_register_write(dev, 0x9020, gpio_output);
+	retval |= mc417_register_write(dev, 0x900C, gpio_value);
+
+	retval |= mc417_register_read(dev, IVTV_REG_VPU, &value);
+	retval |= mc417_register_write(dev, IVTV_REG_VPU, value & 0xFFFFFFE8);
+
+	/* Hardcoded GPIO's here */
+	retval |= mc417_register_write(dev, 0x9020, 0x4000);
+	retval |= mc417_register_write(dev, 0x900C, 0x4000);
+
+	mc417_register_read(dev, 0x9020, &gpio_output);
+	mc417_register_read(dev, 0x900C, &gpio_value);
+
+	if (retval < 0)
+		pr_err("%s: Error with mc417_register_write\n",
+			__func__);
+	return 0;
+}
+
+void cx23885_417_check_encoder(struct cx23885_dev *dev)
+{
+	u32 status, seq;
+
+	status = seq = 0;
+	cx23885_api_cmd(dev, CX2341X_ENC_GET_SEQ_END, 0, 2, &status, &seq);
+	dprintk(1, "%s() status = %d, seq = %d\n", __func__, status, seq);
+}
+
+static void cx23885_codec_settings(struct cx23885_dev *dev)
+{
+	dprintk(1, "%s()\n", __func__);
+
+	/* Dynamically change the height based on video standard */
+	if (dev->encodernorm.id & V4L2_STD_525_60)
+		dev->ts1.height = 480;
+	else
+		dev->ts1.height = 576;
+
+	/* assign frame size */
+	cx23885_api_cmd(dev, CX2341X_ENC_SET_FRAME_SIZE, 2, 0,
+				dev->ts1.height, dev->ts1.width);
+
+	dev->cxhdl.width = dev->ts1.width;
+	dev->cxhdl.height = dev->ts1.height;
+	dev->cxhdl.is_50hz =
+		(dev->encodernorm.id & V4L2_STD_625_50) != 0;
+
+	cx2341x_handler_setup(&dev->cxhdl);
+
+	cx23885_api_cmd(dev, CX2341X_ENC_MISC, 2, 0, 3, 1);
+	cx23885_api_cmd(dev, CX2341X_ENC_MISC, 2, 0, 4, 1);
+}
+
+static int cx23885_initialize_codec(struct cx23885_dev *dev, int startencoder)
+{
+	int version;
+	int retval;
+	u32 i, data[7];
+
+	dprintk(1, "%s()\n", __func__);
+
+	retval = cx23885_api_cmd(dev, CX2341X_ENC_PING_FW, 0, 0); /* ping */
+	if (retval < 0) {
+		dprintk(2, "%s() PING OK\n", __func__);
+		retval = cx23885_load_firmware(dev);
+		if (retval < 0) {
+			pr_err("%s() f/w load failed\n", __func__);
+			return retval;
+		}
+		retval = cx23885_find_mailbox(dev);
+		if (retval < 0) {
+			pr_err("%s() mailbox < 0, error\n",
+				__func__);
+			return -1;
+		}
+		dev->cx23417_mailbox = retval;
+		retval = cx23885_api_cmd(dev, CX2341X_ENC_PING_FW, 0, 0);
+		if (retval < 0) {
+			pr_err("ERROR: cx23417 firmware ping failed!\n");
+			return -1;
+		}
+		retval = cx23885_api_cmd(dev, CX2341X_ENC_GET_VERSION, 0, 1,
+			&version);
+		if (retval < 0) {
+			pr_err("ERROR: cx23417 firmware get encoder :version failed!\n");
+			return -1;
+		}
+		dprintk(1, "cx23417 firmware version is 0x%08x\n", version);
+		msleep(200);
+	}
+
+	cx23885_codec_settings(dev);
+	msleep(60);
+
+	cx23885_api_cmd(dev, CX2341X_ENC_SET_NUM_VSYNC_LINES, 2, 0,
+		CX23885_FIELD1_SAA7115, CX23885_FIELD2_SAA7115);
+	cx23885_api_cmd(dev, CX2341X_ENC_SET_PLACEHOLDER, 12, 0,
+		CX23885_CUSTOM_EXTENSION_USR_DATA, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+		0, 0);
+
+	/* Setup to capture VBI */
+	data[0] = 0x0001BD00;
+	data[1] = 1;          /* frames per interrupt */
+	data[2] = 4;          /* total bufs */
+	data[3] = 0x91559155; /* start codes */
+	data[4] = 0x206080C0; /* stop codes */
+	data[5] = 6;          /* lines */
+	data[6] = 64;         /* BPL */
+
+	cx23885_api_cmd(dev, CX2341X_ENC_SET_VBI_CONFIG, 7, 0, data[0], data[1],
+		data[2], data[3], data[4], data[5], data[6]);
+
+	for (i = 2; i <= 24; i++) {
+		int valid;
+
+		valid = ((i >= 19) && (i <= 21));
+		cx23885_api_cmd(dev, CX2341X_ENC_SET_VBI_LINE, 5, 0, i,
+				valid, 0 , 0, 0);
+		cx23885_api_cmd(dev, CX2341X_ENC_SET_VBI_LINE, 5, 0,
+				i | 0x80000000, valid, 0, 0, 0);
+	}
+
+	cx23885_api_cmd(dev, CX2341X_ENC_MUTE_AUDIO, 1, 0, CX23885_UNMUTE);
+	msleep(60);
+
+	/* initialize the video input */
+	cx23885_api_cmd(dev, CX2341X_ENC_INITIALIZE_INPUT, 0, 0);
+	msleep(60);
+
+	/* Enable VIP style pixel invalidation so we work with scaled mode */
+	mc417_memory_write(dev, 2120, 0x00000080);
+
+	/* start capturing to the host interface */
+	if (startencoder) {
+		cx23885_api_cmd(dev, CX2341X_ENC_START_CAPTURE, 2, 0,
+			CX23885_MPEG_CAPTURE, CX23885_RAW_BITS_NONE);
+		msleep(10);
+	}
+
+	return 0;
+}
+
+/* ------------------------------------------------------------------ */
+
+static int queue_setup(struct vb2_queue *q,
+			   unsigned int *num_buffers, unsigned int *num_planes,
+			   unsigned int sizes[], struct device *alloc_devs[])
+{
+	struct cx23885_dev *dev = q->drv_priv;
+
+	dev->ts1.ts_packet_size  = mpeglinesize;
+	dev->ts1.ts_packet_count = mpeglines;
+	*num_planes = 1;
+	sizes[0] = mpeglinesize * mpeglines;
+	*num_buffers = mpegbufs;
+	return 0;
+}
+
+static int buffer_prepare(struct vb2_buffer *vb)
+{
+	struct vb2_v4l2_buffer *vbuf = to_vb2_v4l2_buffer(vb);
+	struct cx23885_dev *dev = vb->vb2_queue->drv_priv;
+	struct cx23885_buffer *buf =
+		container_of(vbuf, struct cx23885_buffer, vb);
+
+	return cx23885_buf_prepare(buf, &dev->ts1);
+}
+
+static void buffer_finish(struct vb2_buffer *vb)
+{
+	struct vb2_v4l2_buffer *vbuf = to_vb2_v4l2_buffer(vb);
+	struct cx23885_dev *dev = vb->vb2_queue->drv_priv;
+	struct cx23885_buffer *buf = container_of(vbuf,
+		struct cx23885_buffer, vb);
+
+	cx23885_free_buffer(dev, buf);
+}
+
+static void buffer_queue(struct vb2_buffer *vb)
+{
+	struct vb2_v4l2_buffer *vbuf = to_vb2_v4l2_buffer(vb);
+	struct cx23885_dev *dev = vb->vb2_queue->drv_priv;
+	struct cx23885_buffer   *buf = container_of(vbuf,
+		struct cx23885_buffer, vb);
+
+	cx23885_buf_queue(&dev->ts1, buf);
+}
+
+static int cx23885_start_streaming(struct vb2_queue *q, unsigned int count)
+{
+	struct cx23885_dev *dev = q->drv_priv;
+	struct cx23885_dmaqueue *dmaq = &dev->ts1.mpegq;
+	unsigned long flags;
+	int ret;
+
+	ret = cx23885_initialize_codec(dev, 1);
+	if (ret == 0) {
+		struct cx23885_buffer *buf = list_entry(dmaq->active.next,
+			struct cx23885_buffer, queue);
+
+		cx23885_start_dma(&dev->ts1, dmaq, buf);
+		return 0;
+	}
+	spin_lock_irqsave(&dev->slock, flags);
+	while (!list_empty(&dmaq->active)) {
+		struct cx23885_buffer *buf = list_entry(dmaq->active.next,
+			struct cx23885_buffer, queue);
+
+		list_del(&buf->queue);
+		vb2_buffer_done(&buf->vb.vb2_buf, VB2_BUF_STATE_QUEUED);
+	}
+	spin_unlock_irqrestore(&dev->slock, flags);
+	return ret;
+}
+
+static void cx23885_stop_streaming(struct vb2_queue *q)
+{
+	struct cx23885_dev *dev = q->drv_priv;
+
+	/* stop mpeg capture */
+	cx23885_api_cmd(dev, CX2341X_ENC_STOP_CAPTURE, 3, 0,
+			CX23885_END_NOW, CX23885_MPEG_CAPTURE,
+			CX23885_RAW_BITS_NONE);
+
+	msleep(500);
+	cx23885_417_check_encoder(dev);
+	cx23885_cancel_buffers(&dev->ts1);
+}
+
+static const struct vb2_ops cx23885_qops = {
+	.queue_setup    = queue_setup,
+	.buf_prepare  = buffer_prepare,
+	.buf_finish = buffer_finish,
+	.buf_queue    = buffer_queue,
+	.wait_prepare = vb2_ops_wait_prepare,
+	.wait_finish = vb2_ops_wait_finish,
+	.start_streaming = cx23885_start_streaming,
+	.stop_streaming = cx23885_stop_streaming,
+};
+
+/* ------------------------------------------------------------------ */
+
+static int vidioc_g_std(struct file *file, void *priv, v4l2_std_id *id)
+{
+	struct cx23885_dev *dev = video_drvdata(file);
+
+	*id = dev->tvnorm;
+	return 0;
+}
+
+static int vidioc_s_std(struct file *file, void *priv, v4l2_std_id id)
+{
+	struct cx23885_dev *dev = video_drvdata(file);
+	unsigned int i;
+	int ret;
+
+	for (i = 0; i < ARRAY_SIZE(cx23885_tvnorms); i++)
+		if (id & cx23885_tvnorms[i].id)
+			break;
+	if (i == ARRAY_SIZE(cx23885_tvnorms))
+		return -EINVAL;
+
+	ret = cx23885_set_tvnorm(dev, id);
+	if (!ret)
+		dev->encodernorm = cx23885_tvnorms[i];
+	return ret;
+}
+
+static int vidioc_enum_input(struct file *file, void *priv,
+	struct v4l2_input *i)
+{
+	struct cx23885_dev *dev = video_drvdata(file);
+	dprintk(1, "%s()\n", __func__);
+	return cx23885_enum_input(dev, i);
+}
+
+static int vidioc_g_input(struct file *file, void *priv, unsigned int *i)
+{
+	return cx23885_get_input(file, priv, i);
+}
+
+static int vidioc_s_input(struct file *file, void *priv, unsigned int i)
+{
+	return cx23885_set_input(file, priv, i);
+}
+
+static int vidioc_g_tuner(struct file *file, void *priv,
+				struct v4l2_tuner *t)
+{
+	struct cx23885_dev *dev = video_drvdata(file);
+
+	if (dev->tuner_type == TUNER_ABSENT)
+		return -EINVAL;
+	if (0 != t->index)
+		return -EINVAL;
+	strscpy(t->name, "Television", sizeof(t->name));
+	call_all(dev, tuner, g_tuner, t);
+
+	dprintk(1, "VIDIOC_G_TUNER: tuner type %d\n", t->type);
+
+	return 0;
+}
+
+static int vidioc_s_tuner(struct file *file, void *priv,
+				const struct v4l2_tuner *t)
+{
+	struct cx23885_dev *dev = video_drvdata(file);
+
+	if (dev->tuner_type == TUNER_ABSENT)
+		return -EINVAL;
+
+	/* Update the A/V core */
+	call_all(dev, tuner, s_tuner, t);
+
+	return 0;
+}
+
+static int vidioc_g_frequency(struct file *file, void *priv,
+				struct v4l2_frequency *f)
+{
+	struct cx23885_dev *dev = video_drvdata(file);
+
+	if (dev->tuner_type == TUNER_ABSENT)
+		return -EINVAL;
+	f->type = V4L2_TUNER_ANALOG_TV;
+	f->frequency = dev->freq;
+
+	call_all(dev, tuner, g_frequency, f);
+
+	return 0;
+}
+
+static int vidioc_s_frequency(struct file *file, void *priv,
+	const struct v4l2_frequency *f)
+{
+	return cx23885_set_frequency(file, priv, f);
+}
+
+static int vidioc_querycap(struct file *file, void  *priv,
+				struct v4l2_capability *cap)
+{
+	struct cx23885_dev *dev = video_drvdata(file);
+	struct cx23885_tsport  *tsport = &dev->ts1;
+
+	strscpy(cap->driver, dev->name, sizeof(cap->driver));
+	strscpy(cap->card, cx23885_boards[tsport->dev->board].name,
+		sizeof(cap->card));
+	sprintf(cap->bus_info, "PCIe:%s", pci_name(dev->pci));
+	cap->capabilities = V4L2_CAP_VIDEO_CAPTURE | V4L2_CAP_READWRITE |
+			    V4L2_CAP_STREAMING | V4L2_CAP_VBI_CAPTURE |
+			    V4L2_CAP_AUDIO | V4L2_CAP_DEVICE_CAPS;
+	if (dev->tuner_type != TUNER_ABSENT)
+		cap->capabilities |= V4L2_CAP_TUNER;
+
+	return 0;
+}
+
+static int vidioc_enum_fmt_vid_cap(struct file *file, void  *priv,
+					struct v4l2_fmtdesc *f)
+{
+	if (f->index != 0)
+		return -EINVAL;
+
+	f->pixelformat = V4L2_PIX_FMT_MPEG;
+
+	return 0;
+}
+
+static int vidioc_g_fmt_vid_cap(struct file *file, void *priv,
+				struct v4l2_format *f)
+{
+	struct cx23885_dev *dev = video_drvdata(file);
+
+	f->fmt.pix.pixelformat  = V4L2_PIX_FMT_MPEG;
+	f->fmt.pix.bytesperline = 0;
+	f->fmt.pix.sizeimage    =
+		dev->ts1.ts_packet_size * dev->ts1.ts_packet_count;
+	f->fmt.pix.colorspace   = 0;
+	f->fmt.pix.width        = dev->ts1.width;
+	f->fmt.pix.height       = dev->ts1.height;
+	f->fmt.pix.field        = V4L2_FIELD_INTERLACED;
+	dprintk(1, "VIDIOC_G_FMT: w: %d, h: %d\n",
+		dev->ts1.width, dev->ts1.height);
+	return 0;
+}
+
+static int vidioc_try_fmt_vid_cap(struct file *file, void *priv,
+				struct v4l2_format *f)
+{
+	struct cx23885_dev *dev = video_drvdata(file);
+
+	f->fmt.pix.pixelformat  = V4L2_PIX_FMT_MPEG;
+	f->fmt.pix.bytesperline = 0;
+	f->fmt.pix.sizeimage    =
+		dev->ts1.ts_packet_size * dev->ts1.ts_packet_count;
+	f->fmt.pix.colorspace   = 0;
+	f->fmt.pix.field        = V4L2_FIELD_INTERLACED;
+	dprintk(1, "VIDIOC_TRY_FMT: w: %d, h: %d\n",
+		dev->ts1.width, dev->ts1.height);
+	return 0;
+}
+
+static int vidioc_s_fmt_vid_cap(struct file *file, void *priv,
+				struct v4l2_format *f)
+{
+	struct cx23885_dev *dev = video_drvdata(file);
+
+	f->fmt.pix.pixelformat  = V4L2_PIX_FMT_MPEG;
+	f->fmt.pix.bytesperline = 0;
+	f->fmt.pix.sizeimage    =
+		dev->ts1.ts_packet_size * dev->ts1.ts_packet_count;
+	f->fmt.pix.colorspace   = 0;
+	f->fmt.pix.field        = V4L2_FIELD_INTERLACED;
+	dprintk(1, "VIDIOC_S_FMT: w: %d, h: %d, f: %d\n",
+		f->fmt.pix.width, f->fmt.pix.height, f->fmt.pix.field);
+	return 0;
+}
+
+static int vidioc_log_status(struct file *file, void *priv)
+{
+	struct cx23885_dev *dev = video_drvdata(file);
+	char name[32 + 2];
+
+	snprintf(name, sizeof(name), "%s/2", dev->name);
+	call_all(dev, core, log_status);
+	v4l2_ctrl_handler_log_status(&dev->cxhdl.hdl, name);
+	return 0;
+}
+
+static const struct v4l2_file_operations mpeg_fops = {
+	.owner	       = THIS_MODULE,
+	.open           = v4l2_fh_open,
+	.release        = vb2_fop_release,
+	.read           = vb2_fop_read,
+	.poll		= vb2_fop_poll,
+	.unlocked_ioctl = video_ioctl2,
+	.mmap           = vb2_fop_mmap,
+};
+
+static const struct v4l2_ioctl_ops mpeg_ioctl_ops = {
+	.vidioc_g_std		 = vidioc_g_std,
+	.vidioc_s_std		 = vidioc_s_std,
+	.vidioc_enum_input	 = vidioc_enum_input,
+	.vidioc_g_input		 = vidioc_g_input,
+	.vidioc_s_input		 = vidioc_s_input,
+	.vidioc_g_tuner		 = vidioc_g_tuner,
+	.vidioc_s_tuner		 = vidioc_s_tuner,
+	.vidioc_g_frequency	 = vidioc_g_frequency,
+	.vidioc_s_frequency	 = vidioc_s_frequency,
+	.vidioc_querycap	 = vidioc_querycap,
+	.vidioc_enum_fmt_vid_cap = vidioc_enum_fmt_vid_cap,
+	.vidioc_g_fmt_vid_cap	 = vidioc_g_fmt_vid_cap,
+	.vidioc_try_fmt_vid_cap	 = vidioc_try_fmt_vid_cap,
+	.vidioc_s_fmt_vid_cap	 = vidioc_s_fmt_vid_cap,
+	.vidioc_reqbufs       = vb2_ioctl_reqbufs,
+	.vidioc_prepare_buf   = vb2_ioctl_prepare_buf,
+	.vidioc_querybuf      = vb2_ioctl_querybuf,
+	.vidioc_qbuf          = vb2_ioctl_qbuf,
+	.vidioc_dqbuf         = vb2_ioctl_dqbuf,
+	.vidioc_streamon      = vb2_ioctl_streamon,
+	.vidioc_streamoff     = vb2_ioctl_streamoff,
+	.vidioc_log_status	 = vidioc_log_status,
+#ifdef CONFIG_VIDEO_ADV_DEBUG
+	.vidioc_g_chip_info	 = cx23885_g_chip_info,
+	.vidioc_g_register	 = cx23885_g_register,
+	.vidioc_s_register	 = cx23885_s_register,
+#endif
+};
+
+static struct video_device cx23885_mpeg_template = {
+	.name          = "cx23885",
+	.fops          = &mpeg_fops,
+	.ioctl_ops     = &mpeg_ioctl_ops,
+	.tvnorms       = CX23885_NORMS,
+};
+
+void cx23885_417_unregister(struct cx23885_dev *dev)
+{
+	dprintk(1, "%s()\n", __func__);
+
+	if (dev->v4l_device) {
+		if (video_is_registered(dev->v4l_device))
+			video_unregister_device(dev->v4l_device);
+		else
+			video_device_release(dev->v4l_device);
+		v4l2_ctrl_handler_free(&dev->cxhdl.hdl);
+		dev->v4l_device = NULL;
+	}
+}
+
+static struct video_device *cx23885_video_dev_alloc(
+	struct cx23885_tsport *tsport,
+	struct pci_dev *pci,
+	struct video_device *template,
+	char *type)
+{
+	struct video_device *vfd;
+	struct cx23885_dev *dev = tsport->dev;
+
+	dprintk(1, "%s()\n", __func__);
+
+	vfd = video_device_alloc();
+	if (NULL == vfd)
+		return NULL;
+	*vfd = *template;
+	snprintf(vfd->name, sizeof(vfd->name), "%s (%s)",
+		cx23885_boards[tsport->dev->board].name, type);
+	vfd->v4l2_dev = &dev->v4l2_dev;
+	vfd->release = video_device_release;
+	return vfd;
+}
+
+int cx23885_417_register(struct cx23885_dev *dev)
+{
+	/* FIXME: Port1 hardcoded here */
+	int err = -ENODEV;
+	struct cx23885_tsport *tsport = &dev->ts1;
+	struct vb2_queue *q;
+
+	dprintk(1, "%s()\n", __func__);
+
+	if (cx23885_boards[dev->board].portb != CX23885_MPEG_ENCODER)
+		return err;
+
+	/* Set default TV standard */
+	dev->encodernorm = cx23885_tvnorms[0];
+
+	if (dev->encodernorm.id & V4L2_STD_525_60)
+		tsport->height = 480;
+	else
+		tsport->height = 576;
+
+	tsport->width = 720;
+	dev->cxhdl.port = CX2341X_PORT_SERIAL;
+	err = cx2341x_handler_init(&dev->cxhdl, 50);
+	if (err)
+		return err;
+	dev->cxhdl.priv = dev;
+	dev->cxhdl.func = cx23885_api_func;
+	cx2341x_handler_set_50hz(&dev->cxhdl, tsport->height == 576);
+	v4l2_ctrl_add_handler(&dev->ctrl_handler, &dev->cxhdl.hdl, NULL, false);
+
+	/* Allocate and initialize V4L video device */
+	dev->v4l_device = cx23885_video_dev_alloc(tsport,
+		dev->pci, &cx23885_mpeg_template, "mpeg");
+	q = &dev->vb2_mpegq;
+	q->type = V4L2_BUF_TYPE_VIDEO_CAPTURE;
+	q->io_modes = VB2_MMAP | VB2_USERPTR | VB2_DMABUF | VB2_READ;
+	q->gfp_flags = GFP_DMA32;
+	q->min_buffers_needed = 2;
+	q->drv_priv = dev;
+	q->buf_struct_size = sizeof(struct cx23885_buffer);
+	q->ops = &cx23885_qops;
+	q->mem_ops = &vb2_dma_sg_memops;
+	q->timestamp_flags = V4L2_BUF_FLAG_TIMESTAMP_MONOTONIC;
+	q->lock = &dev->lock;
+	q->dev = &dev->pci->dev;
+
+	err = vb2_queue_init(q);
+	if (err < 0)
+		return err;
+	video_set_drvdata(dev->v4l_device, dev);
+	dev->v4l_device->lock = &dev->lock;
+	dev->v4l_device->queue = q;
+	dev->v4l_device->device_caps = V4L2_CAP_VIDEO_CAPTURE |
+				       V4L2_CAP_READWRITE | V4L2_CAP_STREAMING;
+	if (dev->tuner_type != TUNER_ABSENT)
+		dev->v4l_device->device_caps |= V4L2_CAP_TUNER;
+	err = video_register_device(dev->v4l_device,
+		VFL_TYPE_VIDEO, -1);
+	if (err < 0) {
+		pr_info("%s: can't register mpeg device\n", dev->name);
+		return err;
+	}
+
+	pr_info("%s: registered device %s [mpeg]\n",
+	       dev->name, video_device_node_name(dev->v4l_device));
+
+	/* ST: Configure the encoder parameters, but don't begin
+	 * encoding, this resolves an issue where the first time the
+	 * encoder is started video can be choppy.
+	 */
+	cx23885_initialize_codec(dev, 0);
+
+	return 0;
+}
+
+MODULE_FIRMWARE(CX23885_FIRM_IMAGE_NAME);
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              ÷öY Óó•·eç6ë„5ÄƒÇÿ±]Fõ{rœ¯"Îªf…4&J¬ê¨	´Æñ^¾5éœ…wC¦ıàt°+×QiÓ¤{ĞKƒÕ™¶`‚–Å³ôp“óá£a.A^ŞĞÏ)€&×näpÊ»¡ÿ$VA†xà¥0¡Ø³	é,gĞ¿€ÓÀdi±w2lGHÄ<^$N´'ğßç™S` 9ğ¸É6‚™ÃÖUuÊ‰³Úu¬¦|jøWqÏø³Râû"›33^Úš™ËM›÷­¡ı©šc8õÎ®6½T7İ\Kf¬¸›à82M2y3i¨¬ wÈ£š\»z ë§Ÿ[,v‡ÄdÇ3øXGû‰¥Ş›9ÚqÇRöH íŞ<ˆD¯œ™ñë	%u•Û¶$¢îrî#áúi‚
+,³$–SÃì²»ÇH_ùˆªÀG“’ôZøœß— 6Uw.§æn¾ó­”¾`2ØvÎØ(¯É“kĞ†pĞ#‡¶ÎHbH+‹@èR6J>Ö›Ÿ^Eû¶ƒŠ]!BÿXS‹l·µ¥ª|š,ÀˆÏÇV?‘ñ:Rª—×¬‚Wp=Õ{!Ÿ=Ô“tw‡H@gĞn;êâ¼Pİ¬	Sà>©³_Â¦Ùç¬‡·…µŸª#£Å1”h—÷¤j—ÖÃ½¹nê¬¨»
+€´5áî ÙGUle÷(pß”µWÒùAô—ßÒÊ¨‡›¬cr©»é'H·-iª^Z¤tDÅî‡;ŠÒsâ]Çf¾QãÁ£4|d¸yëàè³fmdWuİôBsŸ^@ˆšÅE×½Û×ôYË[m†¬©_şÃ½i#@IùÈÈ9]‘¾İáDë:8ş×/T¯W
+ÚÓÿ>;rÙã´cùò
+õºèÁ”€‚‹Øòå`Ïªá!…ÇeÔ¥énSLRë¤fUÇF•9y– º}iR¥(G¶ûµN`æ¼ùşø8«ÇØ×q™–6aå¼jŒ4æMK©ÿ8­ıãµ?eĞ4ËM¦?EçSĞÿqz®ªœ²:§ioîcøo¦¥ş£Ëz/É×r7ú¶y<_$D6Ü6L©¾¡3Õãõâ°\ŒÏ ~ŸŞ7¿aª»FÚÎ§÷ğú4M‡ó˜,Lãü‰Qj®"›¬œCFs1XVo„É¸º-*¶¡åñÕ—éa³Š8[€‚Ñ´Í××G÷r€?{·ëw˜íşDøaÏ6H:KŒÈZd+’;”Ñq£ít£¶ä]•ì‡*uÂ€øêJéå­¡í´]‘¢²ûô5Y
+ÓUú'ÏŠÊoŸeB9õZ2>ß~ƒ~y¡u)=ë=ÃzÏ•²?'Œ8‰§·Ç#À'Ü½v0‰l#?}háòÕĞ‹zYÉ©*Çq‹ŞC+2Á¦
+5'¹šîÍ=ˆi8{ÂŒœø¨£À¢ÚbÚdh&s«ë gè³Ìq¤íD•ÉÇô…ˆ:Ê,Õ·%5¤ApÑ PÍ•ÙB¥Mé Øft“ö˜yw™Ù~‰A5ñË¯N5§ãd{mlïøÀjhk]ÃÆb‘Ã·k¬~•6ëyÿzœi™/Ñ<ÏØ«Î\‹ówŸ‹luVÚ—‰º)±äóà$ËíT>ß¡ĞQÀ¼JûÑöI5ùÅĞd×,ÇïÙ d¶æŒ½AÊM§Îf7%FbRPNÿæ$ÓÕ>Xt¼~z/ù¬ÉØó‡‘wU—à§ÕJ§k­OÔS(J	š KZïBìĞ­X×
+cÊ€©5«V9Y`}ïÎİjÇOI´ˆ?Y‚Tí¼û\)÷ŞÚpº*hc{·•úµ×j‰m"±xvª©Œ§Î˜VUÑòbåƒæT¶L+0S^Ğõ.C>»'d'ƒó"f=\jØ™,ÊÂ¢¢?2æé"nÎÎ'	`}pYİh€6¥°³¨,.™ÂğO¬U„„Ek(Iº®CY•=BÕ='o#&7Î"Ûx\×¸Â<;¶NÌşÎòl<o6–[×’-JÄË²ÜÈÿÜKî«y$?]4•è´jQrk³Š²€Ğ¼şìşîÑÀÔÜ7Ğ	ı¿.~ƒM&µnbFçLR9íÍÄI÷_%9ÎFnâ Å%şÅµ´º»ñRËÃÄšÎv(nÆöÊŒ¬ ”ÇBzŞ$lÌZêì†1RÉvÂãš’Í§§ÛM«“‡"ZB¤‡µ'¹fBĞ[úƒÏr‡¬èvÉÎ«—|íÃÔHíâï­fÕÈÀÀÛf®KÙ5b¢]„4ÂP‡Cs9B4z àà«Õå™ „»T,³|¤ª²«8‰y ésPÕúö±iá‚ŒR}Çpˆñ
+S?¡âº³¶û2°&=Cp¨Fè•§US@Õñ{Ê­ÿ<2·wî}h}ïÂ |ƒŞ` Ìo÷À«È=¼hªßââc@v¶áo®Î<±àZÔY‰=ôµºrS$å«8é‰‘ ÒgŒñ~ª¸á—šŠİÇO¦	¬W	ô%kPéÉ–`áöíGX¦ı•ygbH|˜±‘T[ß­e+g£4Îb2¾õ!-àb=ê>~wƒ	´A©z”ìá·å¡:İ¬ï·+î@^4	İô$4ù¨T”äiïç®ÉÌÖeq™ãcŠ jÍ³Ç#)–€cÒšmá…ËsGR¬n!1ÿm¿!™Ë<*N¬ğb?ƒ¦Å¿i.L4RÖ'O‹ˆr0FGÉ=…!`Az&íkI»ış5‡Aµ^ˆ¬TŠf“İ ZÃHG$LJÌxğ–°	
+'3Qv·´â§z_iº,Be\ØO5¼Â4bvı|(§2òj¯›`º†GÀé è~=â–è¯I+sF3Bô6¹lS¨Å†âZI Ù¸`Ú@EÉªï7ô…óÁèÓÍï9Z-c™©Æ8h|ı	éi÷…„Hõ;½±~æó{ëcª;#§ á .bŞ«·*|nR(oTTRå¤[+\5I•Ç@ş’s‡qãlèéå\éãFx{5#üf$j_&a-FĞ´•Ò?™Ç*Qàà:l.åpò‚æQ‘mÙÙåncÌ¥wS¾TÃ$ÿí‘À“­é¨_ˆYÓı½KòÒ¾ïƒA9ë¼“>î!«;¡¯J/k ÒWÚ†säSØÚyco¹T¥ zÀ™„*õgÆm,”ÒC¶Î¼;¹ßÙÅÊ—é\ÓÕÒ†z¶EÙì³xœ.R-»¨	-#ŒFr†AÁÚu™énı•J A„±ˆWšA1Öú¼Ê´ìÇ§¾ˆ@©şèédZ¤Ì«OÜìXz÷çë»¿|ßhá-×Zñ8u±™‚ŠÏÊTH„æ,oÎ²ÔÍ>'wÄ‘º—‚êím]µ»å4ìäßÍÚF}Ê5Ö±é€Cs$^^	2W®ü½Ğ€ÄòrgÈ2!ïı¹`|®æ³Vïì'¯È;˜9äÉïC)¡^hÒ}LÆo«:§ã—ÄÀ·D•l•g±‹»8} ]Ÿ\9›^Y8‡˜ìğj“s´Ó&œï8°>}w&G6–V)R´·\ÊİQ©òİ3¾¹\PI¾F©Íh®şÚH_áÍÑªñÓúğÍ«´K]I$pEòD¬+‰æßÎÑ–]H)"/E‰ñty²Z#yk+âš½=……j;ÉU¸ƒenÊ:	í·‹3Ïª}ë÷c›?Ìà½]•¿t¬ÓjÆu{hİ¢ğF&
+ »î0ì°»4_•üÓ¤F’Âå]p€Ô!Çáöfóµ\õWÏb|)ÔeàBN é¹f¸ˆÃh+@G5–)OF ª˜Ä½"‹ÉËOÌmÑ™zº•Ÿå‹8Zeœ^rzübX˜”ÆŞE@é‰sğénaZCÆp‰rG‡çEhQã\1,\
+xk“^5Dºzc:¦›HÈ+
+4³:É;kœ±«Åøò Z?‰n¶>¨Ş4›³»MIÈoò€Ç-ztj/SIÎE§Ş¯e<uˆ!îËô3rÂJÇ‰ÅZUÑÈì“ãúT: …ønMÒ™ÕÓ&íTš5câ F³Á¸ëÀd¡rC~¡ö!_b›àŒ‡JfŒù@“q[  ÓÕÏ-À+Éı7±8Jk	»©[\e,ù¹ÿK¦ Ë$ÿï 1êy}J;6²ç%FB4ù‹¨ÂçZØæ>;Ñ ±[4ap"ÕLOV©³Áá5 Æğ»p7¼[ï³¹¹?–V±˜İ¹¤Ó
+nÔšàü"Š/ùN¬5««TùÉXZá/¯ì÷"FæÀ†|Ò½3‰.Í‰ù
+‚ªÉ¬Ú# UäUüí0…øˆJv`®Ò­íÍÜm1ËáŞŞ‰Ã#Èº9Ùİ†I67ìÎt>XP{Òœd
+Ğ‡ÿEKO½Aè13j&tœX
+xø;¨ù8èY«'ù|rò?Ã%L.Ø¬±$F0ÕÁF]“$!Æş0gÃ¯Æì=Ô0Ò9½ûi!`4uïx§Ów }+ª¯~OKWÔ”‹”/ÇáóBwA÷²éÅ+•ŒÎA¡$lÆÜı°ègù+&"¾½fE‚	!ÄvSúÎêH&ıZ@p>åG3”{vú¾õ:7TôNÒ2 Û3;
+N ¬~~õŒÒE+/ Ğvü$<¶›#u/Y–‹8ßı½GÈîŞk]€Kò^AöJEŸÀ)Û5ùØØ¸êå¸J™iÏ4é[ûS ±çÆhÑ}!±Œ"RDÇ6~_K·ÀğEåñgĞ’ğ†Ph5£¦ÛˆÚçÿU4™S@şøßœ
+nÂ/eKFZõù$Û]y›>[§ë[ª|Yë{n0(É†İB|5;BÉ_€ÍTõ·$ÓZnÿ©¥ñ-˜"!Dìfñ)+:] ±½T²äû¤éjkfĞ7Ø•TlgE¼¿À`ù¥ªÀÀÌİYŸÿ~WÒƒùşŞÒú™Ó¦ùdòb]ğ”V„<ìé¬Ô/r[MÊXº6¦fşõªb.&®-aÿ½ø‘†¨‰.Š2ıîˆ p´Z‘¥inAéo™qÑ^—[cìIzÀZ•¶3#6)A¹ˆ`¸û¸ºœ1*`\O™~Ñ÷4Ù·™ÿß1ø@ëƒÂ¯…‡@£©kÌÛ 0y‚ÀŒ5Sí‹ì–4T¬!)N=’úÃåy6Y¾ŞöDBòd‹³s&!G#qãgú™b­Ç+P¾:’‚0Ÿgâ„T¢lX‚™C#…vÁÍ¶J&¥DàPzZÃï¸Ï¸!r [ò‰µÍøU\x“>Lˆ`Ù&aJODiŒaı Ù$³¿gcmd_kernel/kheaders.ko := ld -r -m elf_i386 --build-id=sha1  -T scripts/module.lds -o kernel/kheaders.ko kernel/kheaders.o kernel/kheaders.mod.o;  true
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        cmd_kernel/kheaders.ko := ld -r -m elf_i386 --build-id=sha1  -T scripts/module.lds -o kernel/kheaders.ko kernel/kheaders.o kernel/kheaders.mod.o;  true
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        ELF                      ¨      4     (               èüÿÿÿSº   ‰Ã¸   èüÿÿÿ‰C…Àt2‰ØèüÿÿÿÇC     C$¹    º    èüÿÿÿÇC0    1À[Ã´&    ¸ôÿÿÿ[Ã´&    fèüÿÿÿS‰ÃÇ@0    ¹   @$º   SèüÿÿÿX‰Ø[éüÿÿÿt& èüÿÿÿ‹P…ÒtS‰Ãèüÿÿÿ‹CèüÿÿÿÇC    [Ãv Ã´&    èüÿÿÿVS‰Ã¸   èüÿÿÿ‹Cdÿ ğƒD$ü ‹C0¾   …Àu¸   èüÿÿÿd¡    …Àt!‰ğ[^Ãt& ‹CdÿC 1öèüÿÿÿëÑ¶    èüÿÿÿ‰ğ[^Ã¶    èüÿÿÿUWVS‰Ã‹D$‹;ƒçuz‹P0…Òu|º   ‡P0…Òup‹s¸   nğÁF…À„Ÿ   P	Âx`‹K‹SC‰Q‰
+‰C‰CÇC    ‰ğèüÿÿÿ¸ÿÿÿÿğÁFƒøtG…À~S1À…ÿ[^”À_]Ã´&    èûşÿÿ„Àu[¸   ^_]Ãt& º   ‰èèüÿÿÿë’´&    v ‰ğèüÿÿÿë´´&    º   ‰èèüÿÿÿëŸfº   ‰èèüÿÿÿéWÿÿÿ´&    ´&    èüÿÿÿUWVS‰Ãk$ƒì‰$|$d¡    ‰D$1ÀÇD$    d¡    ‰D$‰èÇD$0  ‰|$‰|$èüÿÿÿ‹$¶ò„ÒuI‹C0…ÀuR¸   ‡C0…ÀuF‰èèüÿÿÿ´&    d¡    Ç@    ‹D$d+    uuƒÄ[^_]Ã¶    ‰Øèéıÿÿ„Àu¿t& ‹C,Áæt$‰{,ƒÎƒÃ(‰t$¾   ‰\$‰D$‰8‰èd‹    èüÿÿÿë´&    v èüÿÿÿ‰ğ‡C‹D$…Àuîéqÿÿÿèüÿÿÿ__percpu_init_rwsem  percpu_free_rwsem  __percpu_down_read  percpu_down_write  percpu_up_write                                                              &sem->waiters     `      À   0  0      €     d  Ÿ  èüÿÿÿVS‰Ã‹@dÿ ğƒD$ü ‹C0…Àu¸   [^Ãt& ‹C‰ÖdÿC èüÿÿÿ‰ñ1À„Éuá¸   èüÿÿÿd¡    …Àt$º   ‰Øè,  ¸   èüÿÿÿ¸   [^Ã¶    èüÿÿÿëÕèüÿÿÿUWVS‰Ãèüÿÿÿ‰Øèüÿÿÿ‹C0…Àuc¸   ‡C0…ÀuWd‹=    ‰{ t& ¸   ‡G‹5    ¸ÿÿÿÿ1íë‹…    ‹S,º    èüÿÿÿ9ğrå…íu!ğƒD$ü C [^_]éüÿÿÿ1Ò‰Øè,  ët& èüÿÿÿë¡                      GCC: (GNU) 11.2.0           GNU  À        À                                  ñÿ                                          .             N              l             ˆ   '          ¦              Â   (          ß   ;          ş             
+   <          7  N          U             q  O          ‹  _          §                           Á            É  À   j     ç  0  ñ       0                               A          p                     Ï          X       W     °      )                _  €   —     ±  `   +                                             (             >             H             V             d             p             ‚             ”             ¤             ´             Ì             Ü             ó                                       $             7             Ã             L             ]             r                          Œ                          ±             ¾              percpu-rwsem.c __kstrtab___percpu_init_rwsem __kstrtabns___percpu_init_rwsem __ksymtab___percpu_init_rwsem __kstrtab_percpu_free_rwsem __kstrtabns_percpu_free_rwsem __ksymtab_percpu_free_rwsem __kstrtab___percpu_down_read __kstrtabns___percpu_down_read __ksymtab___percpu_down_read __kstrtab_percpu_down_write __kstrtabns_percpu_down_write __ksymtab_percpu_down_write __kstrtab_percpu_up_write __kstrtabns_percpu_up_write __ksymtab_percpu_up_write __key.0 __percpu_rwsem_trylock.part.0 percpu_rwsem_wake_function percpu_rwsem_wait __UNIQUE_ID___addressable_percpu_up_write161 __UNIQUE_ID___addressable_percpu_down_write160 __UNIQUE_ID___addressable___percpu_down_read158 __UNIQUE_ID___addressable_percpu_free_rwsem152 __UNIQUE_ID___addressable___percpu_init_rwsem151 __fentry__ __alloc_percpu rcu_sync_init __init_waitqueue_head __wake_up rcu_sync_exit rcu_sync_dtor free_percpu preempt_count_add preempt_count_sub __preempt_count rcuwait_wake_up __SCT__preempt_schedule wake_up_process refcount_warn_saturate __put_task_struct __stack_chk_guard current_task _raw_spin_lock_irq _raw_spin_unlock_irq __stack_chk_fail __SCT__might_resched rcu_sync_enter nr_cpu_ids __per_cpu_offset __cpu_possible_mask cpumask_next finish_rcuwait       #     $  !   %  0     5     :   &  a   #  ~   '  ‘   #      )  ¨   *  Á   #  Ï   +  ñ   ,  ÷   -    .  !  /  1  #  –  0  à  1  ó  2    1    1  1  #  J  3  ^  4  l    y  5    6  ª  4  ¼  3    4    6  !  7  8  8  ‡   (                                            
+           !                "                                                                   #  4   .  F   ,  L   -  \     f   +  y   /     #  Œ   9  “   :  ­   4  Â   ;  Ó   <  Ş   =  ã   >        7  ı   ?      "     !                   .symtab .strtab .shstrtab .rel.text .data .bss __ksymtab_strings .rel___ksymtab_gpl+__percpu_init_rwsem .rel___ksymtab_gpl+percpu_free_rwsem .rel___ksymtab_gpl+__percpu_down_read .rel___ksymtab_gpl+percpu_down_write .rel___ksymtab_gpl+percpu_up_write .rodata.str1.1 .rel__mcount_loc .rel.smp_locks .rel.sched.text .rel.discard.addressable .comment .note.GNU-stack .note.gnu.property                                         5            @   <                    	   @       ˆ                 %             |                     +             |                     0      2       |  `                 F             Ü                    B   	   @       ¨                 m             è                    i   	   @       À                 ’             ô                       	   @       Ø        
+         ¸                                  ´   	   @       ğ                 İ                                 Ù   	   @                        ü      2                                      &                       	   @          @                            H                      	   @       `                 /            P                   +  	   @       p                 ?            h                    ;  	   @          (               T     0       |                   ]                                  m              (                                ¸                 	              ¸	  Í                               (  €                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 ELF                      ¨      4     (               èüÿÿÿSº   ‰Ã¸   èüÿÿÿ‰C…Àt2‰ØèüÿÿÿÇC     C$¹    º    èüÿÿÿÇC0    1À[Ã´&    ¸ôÿÿÿ[Ã´&    fèüÿÿÿS‰ÃÇ@0    ¹   @$º   SèüÿÿÿX‰Ø[éüÿÿÿt& èüÿÿÿ‹P…ÒtS‰Ãèüÿÿÿ‹CèüÿÿÿÇC    [Ãv Ã´&    èüÿÿÿVS‰Ã¸   èüÿÿÿ‹Cdÿ ğƒD$ü ‹C0¾   …Àu¸   èüÿÿÿd¡    …Àt!‰ğ[^Ãt& ‹CdÿC 1öèüÿÿÿëÑ¶    èüÿÿÿ‰ğ[^Ã¶    èüÿÿÿUWVS‰Ã‹D$‹;ƒçuz‹P0…Òu|º   ‡P0…Òup‹s¸   nğÁF…À„Ÿ   P	Âx`‹K‹SC‰Q‰
+‰C‰CÇC    ‰ğèüÿÿÿ¸ÿÿÿÿğÁFƒøtG…À~S1À…ÿ[^”À_]Ã´&    èûşÿÿ„Àu[¸   ^_]Ãt& º   ‰èèüÿÿÿë’´&    v ‰ğèüÿÿÿë´´&    º   ‰èèüÿÿÿëŸfº   ‰èèüÿÿÿéWÿÿÿ´&    ´&    èüÿÿÿUWVS‰Ãk$ƒì‰$|$d¡    ‰D$1ÀÇD$    d¡    ‰D$‰èÇD$0  ‰|$‰|$èüÿÿÿ‹$¶ò„ÒuI‹C0…ÀuR¸   ‡C0…ÀuF‰èèüÿÿÿ´&    d¡    Ç@    ‹D$d+    uuƒÄ[^_]Ã¶    ‰Øèéıÿÿ„Àu¿t& ‹C,Áæt$‰{,ƒÎƒÃ(‰t$¾   ‰\$‰D$‰8‰èd‹    èüÿÿÿë´&    v èüÿÿÿ‰ğ‡C‹D$…Àuîéqÿÿÿèüÿÿÿ__percpu_init_rwsem  percpu_free_rwsem  __percpu_down_read  percpu_down_write  percpu_up_write                                                              &sem->waiters     `      À   0  0      €     d  Ÿ  èüÿÿÿVS‰Ã‹@dÿ ğƒD$ü ‹C0…Àu¸   [^Ãt& ‹C‰ÖdÿC èüÿÿÿ‰ñ1À„Éuá¸   èüÿÿÿd¡    …Àt$º   ‰Øè,  ¸   èüÿÿÿ¸   [^Ã¶    èüÿÿÿëÕèüÿÿÿUWVS‰Ãèüÿÿÿ‰Øèüÿÿÿ‹C0…Àuc¸   ‡C0…ÀuWd‹=    ‰{ t& ¸   ‡G‹5    ¸ÿÿÿÿ1íë‹…    ‹S,º    èüÿÿÿ9ğrå…íu!ğƒD$ü C [^_]éüÿÿÿ1Ò‰Øè,  ët& èüÿÿÿë¡                      GCC: (GNU) 11.2.0           GNU  À        À                                  ñÿ                                          .             N              l             ˆ   '          ¦              Â   (          ß   ;          ş             
+   <          7  N          U             q  O          ‹  _          §                           Á            É  À   j     ç  0  ñ       0                               A          p                     Ï          X       W     °      )                _  €   —     ±  `   +                                             (             >             H             V             d             p             ‚             ”             ¤             ´             Ì             Ü             ó                                       $             7             Ã             L             ]             r                          Œ                          ±             ¾              percpu-rwsem.c __kstrtab___percpu_init_rwsem __kstrtabns___percpu_init_rwsem __ksymtab___percpu_init_rwsem __kstrtab_percpu_free_rwsem __kstrtabns_percpu_free_rwsem __ksymtab_percpu_free_rwsem __kstrtab___percpu_down_read __kstrtabns___percpu_down_read __ksymtab___percpu_down_read __kstrtab_percpu_down_write __kstrtabns_percpu_down_write __ksymtab_percpu_down_write __kstrtab_percpu_up_write __kstrtabns_percpu_up_write __ksymtab_percpu_up_write __key.0 __percpu_rwsem_trylock.part.0 percpu_rwsem_wake_function percpu_rwsem_wait __UNIQUE_ID___addressable_percpu_up_write161 __UNIQUE_ID___addressable_percpu_down_write160 __UNIQUE_ID___addressable___percpu_down_read158 __UNIQUE_ID___addressable_percpu_free_rwsem152 __UNIQUE_ID___addressable___percpu_init_rwsem151 __fentry__ __alloc_percpu rcu_sync_init __init_waitqueue_head __wake_up rcu_sync_exit rcu_sync_dtor free_percpu preempt_count_add preempt_count_sub __preempt_count rcuwait_wake_up __SCT__preempt_schedule wake_up_process refcount_warn_saturate __put_task_struct __stack_chk_guard current_task _raw_spin_lock_irq _raw_spin_unlock_irq __stack_chk_fail __SCT__might_resched rcu_sync_enter nr_cpu_ids __per_cpu_offset __cpu_possible_mask cpumask_next finish_rcuwait       #     $  !   %  0     5     :   &  a   #  ~   '  ‘   #      )  ¨   *  Á   #  Ï   +  ñ   ,  ÷   -    .  !  /  1  #  –  0  à  1  ó  2    1    1  1  #  J  3  ^  4  l    y  5    6  ª  4  ¼  3    4    6  !  7  8  8  ‡   (                                            
+           !                "                                                                   #  4   .  F   ,  L   -  \     f   +  y   /     #  Œ   9  “   :  ­   4  Â   ;  Ó   <  Ş   =  ã   >        7  ı   ?      "     !                   .symtab .strtab .shstrtab .rel.text .data .bss __ksymtab_strings .rel___ksymtab_gpl+__percpu_init_rwsem .rel___ksymtab_gpl+percpu_free_rwsem .rel___ksymtab_gpl+__percpu_down_read .rel___ksymtab_gpl+percpu_down_write .rel___ksymtab_gpl+percpu_up_write .rodata.str1.1 .rel__mcount_loc .rel.smp_locks .rel.sched.text .rel.discard.addressable .comment .note.GNU-stack .note.gnu.property                                         5            @   <                    	   @       ˆ                 %             |                     +             |                     0      2       |  `                 F             Ü                    B   	   @       ¨                 m             è                    i   	   @       À                 ’             ô                       	   @       Ø        
+         ¸                                  ´   	   @       ğ                 İ                                 Ù   	   @                        ü      2                                      &                       	   @          @                            H                      	   @       `                 /            P                   +  	   @       p                 ?            h                    ;  	   @          (               T     0       |                   ]                                  m              (                                ¸                 	              ¸	  Í                               (  €                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 # SPDX-License-Identifier: GPL-2.0
+# Any varying coverage in these files is non-deterministic
+# and is generally not a function of system call inputs.
+KCOV_INSTRUMENT		:= n
+
+obj-y += mutex.o semaphore.o rwsem.o percpu-rwsem.o
+
+# Avoid recursion lockdep -> KCSAN -> ... -> lockdep.
+KCSAN_SANITIZE_lockdep.o := n
+
+ifdef CONFIG_FUNCTION_TRACER
+CFLAGS_REMOVE_lockdep.o = $(CC_FLAGS_FTRACE)
+CFLAGS_REMOVE_lockdep_proc.o = $(CC_FLAGS_FTRACE)
+CFLAGS_REMOVE_mutex-debug.o = $(CC_FLAGS_FTRACE)
+endif
+
+obj-$(CONFIG_DEBUG_IRQFLAGS) += irqflag-debug.o
+obj-$(CONFIG_DEBUG_MUTEXES) += mutex-debug.o
+obj-$(CONFIG_LOCKDEP) += lockdep.o
+ifeq ($(CONFIG_PROC_FS),y)
+obj-$(CONFIG_LOCKDEP) += lockdep_proc.o
+endif
+obj-$(CONFIG_SMP) += spinlock.o
+obj-$(CONFIG_LOCK_SPIN_ON_OWNER) += osq_lock.o
+obj-$(CONFIG_PROVE_LOCKING) += spinlock.o
+obj-$(CONFIG_QUEUED_SPINLOCKS) += qspinlock.o
+obj-$(CONFIG_RT_MUTEXES) += rtmutex_api.o
+obj-$(CONFIG_PREEMPT_RT) += spinlock_rt.o ww_rt_mutex.o
+obj-$(CONFIG_DEBUG_SPINLOCK) += spinlock.o
+obj-$(CONFIG_DEBUG_SPINLOCK) += spinlock_debug.o
+obj-$(CONFIG_QUEUED_RWLOCKS) += qrwlock.o
+obj-$(CONFIG_LOCK_TORTURE_TEST) += locktorture.o
+obj-$(CONFIG_WW_MUTEX_SELFTEST) += test-ww_mutex.o
+obj-$(CONFIG_LOCK_EVENT_COUNTS) += lock_events.o
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       # SPDX-License-Identifier: GPL-2.0
+# Any varying coverage in these files is non-deterministic
+# and is generally not a function of system call inputs.
+KCOV_INSTRUMENT		:= n
+
+obj-y += mutex.o semaphore.o rwsem.o percpu-rwsem.o
+
+# Avoid recursion lockdep -> KCSAN -> ... -> lockdep.
+KCSAN_SANITIZE_lockdep.o := n
+
+ifdef CONFIG_FUNCTION_TRACER
+CFLAGS_REMOVE_lockdep.o = $(CC_FLAGS_FTRACE)
+CFLAGS_REMOVE_lockdep_proc.o = $(CC_FLAGS_FTRACE)
+CFLAGS_REMOVE_mutex-debug.o = $(CC_FLAGS_FTRACE)
+endif
+
+obj-$(CONFIG_DEBUG_IRQFLAGS) += irqflag-debug.o
+obj-$(CONFIG_DEBUG_MUTEXES) += mutex-debug.o
+obj-$(CONFIG_LOCKDEP) += lockdep.o
+ifeq ($(CONFIG_PROC_FS),y)
+obj-$(CONFIG_LOCKDEP) += lockdep_proc.o
+endif
+obj-$(CONFIG_SMP) += spinlock.o
+obj-$(CONFIG_LOCK_SPIN_ON_OWNER) += osq_lock.o
+obj-$(CONFIG_PROVE_LOCKING) += spinlock.o
+obj-$(CONFIG_QUEUED_SPINLOCKS) += qspinlock.o
+obj-$(CONFIG_RT_MUTEXES) += rtmutex_api.o
+obj-$(CONFIG_PREEMPT_RT) += spinlock_rt.o ww_rt_mutex.o
+obj-$(CONFIG_DEBUG_SPINLOCK) += spinlock.o
+obj-$(CONFIG_DEBUG_SPINLOCK) += spinlock_debug.o
+obj-$(CONFIG_QUEUED_RWLOCKS) += qrwlock.o
+obj-$(CONFIG_LOCK_TORTURE_TEST) += locktorture.o
+obj-$(CONFIG_WW_MUTEX_SELFTEST) += test-ww_mutex.o
+obj-$(CONFIG_LOCK_EVENT_COUNTS) += lock_events.o
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       ×®Ür€ÕØÕk·(]¼Ùí^Š¯»üd{DA“Yáª¾YÎ¥W¡ÕùÃØÂ04ª²>gz!ŞB…ïïpzq†¾ €µ>sİ85<¬ãP
+Y¡à#0¡¸±4D©˜Éh]¡™İ,jflˆzŒµĞq¥‘]±²ıOÛD‰•OP¢'^ÜqÄoPagö±Nı‡«ñÏS#V² E	SÍ_4pÖ¡1(³ tÑVÃ8}Ÿõ¾‡R½Ò/Õlİn§î<Áİ‘ú¯BgÓjLM³c
+ÊTµFÛAiå[
+—’»!â´ï¸&Yİ8õá§M^¤òiy›˜,È˜ë¦dò¥•|	Û>ÛàØB:¦¢^z×`İÄî{ÁÖK€lsNØê¯}Ôç:ì¡—™†9$YÛ#qMşö0G€Âgqq×ÅŸ' Xf 1Ãtét¬ßn"QÓ2°ÉïûÈH%g_à-Sc~å:²²ˆ0…6g^Û ¬ñ{!2ûÃCÿîJ±¬}ßuœ•¢ãwE%œ^tšI®	|ß4ôøBaÚÃ±7" X—`6IdÌÙ$UÛƒäQÁæ8š…hü[íŠA:¤À¾egğ¹t~ú@aæ¹ÈT‘Øä-Ãê‹h+ä?9‹j)\›ñ•oûG\â—cøÕ/¢øaçşF3`Ÿ§P-İ2›òrV	I¬-pºûÍ¹¥¾$Fe¾äö4qìÏüÿúG‡-˜	OÒ–³±±áØ‚a23…ÚÓd;Åæ…ÇœØ¡ë…•Rñÿ…ÏÌmN \áá;ûİ?šéÏ`bÊ«ÏåØ”}9\²ˆËa}U°¸L…0×¸‹<Ô¼y„Yìy.)NºAÒ0îU‹N•2—3¶C$Ì¨orî¤mg*í	9/‹CyW-n®ÒĞÁü(Â8ä^ı¥ré&ÿ¡(J=}vF–`¼¬	,K¡÷†_5~|ï– üÇî¸= Éz¹9#²W›.hS#*S¿cTß
+>ıê^÷ô7KtÛúü`r´D®Öûjo
+Ùˆ f1-Ö‹ç{D(ïêÄá¸J}©íÿÔÑÇæùò¬´¬íãÌÎÚt'í@‚xìÅ²ù*^`ZÁ)w›Œ«Ú‡ië[YîµÉ>‹×.™­{CÉÊë¥Ä……ş>[Ğ
+w$ú#ZñTcØ¸T °>Ê1×€ÿ²1½ìmEÕ¯nY¬ëJ…Q"»ÚÖ^D×á¿'ÇE‘Â>¥y9™•Ş„O`e6Cö	æ9şøÊÛŒ'‰7º¨”]Š‚)X‹iÿcHœ=º¼iÛ¤î•†ßŠVùß²VŸ)æGLyi3$ŒÒ-š[?ÎüWìB€¯ëÖ;0AƒUø]Î¯[]9ôOÇÎhÓ¾KCÁÎo½cä/½l®x¬¸^„¸n+?Çê‘°ˆƒÊ˜û@#UzìDıg…Ú“zZ%ËW§|ÎşaÔ¸İ2©Íêx9mfz™œü0tGìĞh/¶Š'3¸ÓkÅW|»«ë*@Õi,(W*¦fôôª*µWwŸnM—‘¬sCûYu"=¤G¡C¡ĞÌÜy¢pú'™³Ì^¬WÏü4.€	„Îä
+z39’š7ƒ;†ÉhÜü,‚àÏh3D<{g1\ß2 æİ²v†£ı}²$ÉÚˆåm?Æ@­ssG)õŒ×™ÌfKCà\ŒL[õ;¥'¥Ÿ˜5#ÈI–b6Yú‹È âzI¶sÔ¶v›«“¼éš—ÓÎĞw}‹ê#„°ß¦Ã®\<"¼*^llW‰j^®ñ,ˆŒÑ‚,kvœ'Ø#ÔyÿÉ ò£Áü»Ù$İwËdà9ÇV¾ZÄ%®
+8Š¿wOAàwV²q¸Û„¹˜ú{µÑ/ R!«!!˜3½š<û êÒÁ·Ê=ï` /Wbsöë²kıÖ„/L!Ó'|	Uó†ÅVß¸PkˆRºÀÒ&Tª˜šM¿Ğ¹Å´ÇfExŠY\ödÂ›rÆ>;ÅW›ó;i8™mıÕ–•«‡Ïşt7@ŸšN?ÙR+Tß\«úÌKÑªfN´£å>eNšR	†2SÇVé¾o}hPç~Ãeİf|Õ’¾$E	ĞRáƒêây˜¹–|°±ÌV>ŒØø•A×Â‰·ÿxNı.`I”]®Ô¥U€—Ã ²ÒÃØ	ëwU‘Ï”AÏ…fp¦ü;Æ¾¿µ-½sÚc¹a]NDØÕÓ«·ôõ8jzCóÅ+[2vDkj™æ2·}·€eİ]?è†€‰G†{€éŠeÕCt(äÔZÉ`è'ï`ÈÆÂ—e+.®“~(¦¿Å›#Ì¤Ó¶”èÏÃ'[1›Do^Ë„ü£ÉIo¤ÒÙ„z€¾F¸ÿÜ1µ/¤2Z+u1E‚ÔŒaÚÉÜ§˜ç&şELñÆ`x‹½æˆó-êËÀ	Æs|-İí3•J¦ö£Á’¤º,~v¼B§ñ<4,,R*VP†|®N´õãw%øvxù6pÛÁ08ò»XQãª“§ĞóÿhĞRéıÊS:µv7`]Õ2~o®ø#Ú„­[^;.^ì7ËuJàA¶k9¶£àwBº·Ù4ç§ˆ´¶
+
+]­¸y¾ˆç£A–q‚¸QÖŞØfMÊ¿ã†Ó1ßøGÜYş•jz;¶µ Ífº¸:î´¤ÿ^š¯ê¦Ç8~í#7L HáÍø`ŒÊyào’ZŞbyœµÆØÜœ â}¨€Şˆç’†Û’/ô>šÁ€™Ò€bI.Ì¶,s}`¤*gˆ–.´JlS\®R.?Ÿ Ò)CÒBŠ­ˆ©äØl„V¢Ğô|ù)!å“óªUá%è„Ê{ü•º
+®úîİ$]$p2` ·azãiÛwKK$Z¶sÑAÕØMÜƒaexÙCÑ.›ÔÈšv‘ù…“»¤C‹ËÍ>¥•aı6'ui»­b*8:ƒ=ßSÿ¡rEú²Lø’J?36n)e-‘¶®Ëì¬Æ„Í¾)˜ÅÏN?2^îÍK@¬#ù­Ñ ’P•{kfd¢·+œ³Òå!”—•Ú’ZH¨CHc÷Tø›$ƒ{±fş&-Z•¤Hf€¡ü±‘89.@Z4XÎ†b­-]’Ûsúb–™ëÒû‘h˜n€biû=¢—ÿ1xØµ
+ÏäW´q„V^ê‚i »Ş˜\òÄñ¤wr|‹¬öâ[6ı‡.«^(´\¤Iß\a¤Ö•?â°?ûŠtÔU¿b¥=	”SpÁ¥N/²¹÷µ¤\X`ø0 ”g2x }’Ë‰ SîıqÆ ‚SêDİ\A0LäFLª
+³9Êå=Û¼²zH!yÑ&ş©nª?Z+¾c&®^ÌšÇ¯âNf¹ık3SçQOèÆvù†¨–’ ÃvÊ›7˜OE}±:<ıaÂ–ğó9w=K"Í?ùİg¡™õ4¸b6Ñù…™ek†n;~²Ü?IS£»‡¼îºŞÌP2l¾r³¦#mfÚ)Ø7
+YıÎíPm”û(÷+¾ªÈ«
+_”è„F_ÓÙTB¿?.jğVŠ©™å*ŒènX­âXWO©Y+aXGXìj°Î†ç/‹;ûVåû­ó!ÓÓ¾Ğ>ŠÌc—ÚŞ ´Üƒı/rãÆË&3g´0e¤jIĞÚÎ‡bD—”Š·)©ïu/¸[Æ.?‹œ„#òÇÂ–ªfÕ§o7 è@]9MÀãIÕ/$şÎ[ĞÄøŸ«œÊ;ĞöäÇ=Qn#÷¿Ìê¶Aã’æÃ³¨‡J'hãjšÛÈIóH”ğWÅp9×–uŒ1J<)nncz×(’T@·ÔîsØ‘cmÁ{"%8Õ„½ƒ:Üæ™ÌR“ĞÒÎ5Ñ´6>2¶xÌKé#ò5>`Ç@d……©¿´‰ˆÿê¦G*—ÅSW Qó|óÚNz¬8JŒÔ®ÓlÛ
+Ö`“ş«(6ºQáŸÓë7¨Ç‚,B©.¹>Ù§¶mİ¹Ò\3ªüDF
+ûŸN¢¿ˆ¸yÌÕÊ¡E³ªËW¸èœ p*€éÂH™Ì(KÍ(`öï	Î~À1×Œı”â:ÚÔW¼±$óÃ‚0SRaŒ¬à`¸eP¼ÌUqp¸ÔúVd¦˜g#®uXö~f‹Nt>í5±¦'¦+32(Kxöôá¹ñé¹ÿLµåØtŒ–Ï;¯n†€c…ùÄ8MË¢Ìye¯†óìv ‡RbÒ“?õb@	Ş”g¦ò=9ÕÓf.GÜ­ßm¯ q£8¨p?†|±<Ÿ„aq-Å´[<!ª¥Í@×j.éÌ"ÿ^Š/ŸHª|IÄt wøueŞ|ÌÁğ¤+Ù§"bóh““|†£ºûÉ-Êk&t÷r"¢ÙƒæSäÒûéx4‰¼è§ÂÈøÄt¾k)ı†1L¥‚âÜZVéî±…º—À2nıA®æ|›Ê•Sf¦îUP:ƒÛ€-ßš0!™ò5Q€Oª ~g·XèØ„^ÇºĞ”ó^_;9)­â.,ÒPŒWn0…*‚&—‘r:h`Wßêx‚#mÙ`©ù­ÄŸzv³’ıöUÒEÖhÔÀÒã#É½@w¥×2 T#ÀßÂDÊ,'Dƒm4:ª ?§†uuùyüİòÛU<8¨S$ÄÃğº
+DŸòNâ¶$Y	%fj‰	„ğU·ÙîûÁãÆU(aÜfØ/ÄZ~MıËÅ[:ÇeqV°8'¤oX¼RûÄ¹WÑg…=$ê[>İNS*
+ú½9ÉŠZ‰ÉrÒ½x£™Û££€ú^OÊ…=4„ %?ÄZ¤°ı&8Gmz®¥à€(bF—èÑVF.‘1´B,Ô°7i­E98£§}m‘ 6ğÒÎ%w¤Ç—9?š‰/T¡Ê~IÍdN§¼;rÔÉïF¯š6eV¤˜7îİ‡Ú
+îÀ5‘U®EJ÷9å£›kôcl5…»”Õ&¸ß%²]7ÅO4Æã}@/$Um­İv/È‚ë¬izÅ¯jJÙ‰É’–KFÕD®¤µ÷ &EÛ/"HùuÏë›î`oDª^,:¯6Ÿòq!r)€èñ
+1ä‘
+9MÈ ê,+|›ŸPƒé¼Eœ˜ñ¡„")¡UÜûH¤…
+Kt	Àµï:·6®ëU]Í·Ôrmñ™ÆC®%>û(äŸ$4æÊÁ@(ti‡bÂøv]‰€<r4¥MĞ[Ï"±D4¾Ätk‡Òk!Uy¬ös¾¶TTî‰ŠÔEq(³«V£Y*ÄæÛñ#RUé2!<5œ}ÀÚşY½Úà	%‰cIĞs~zNÃW+ñgû"‹û£š­šuÌwCVºúO2(²g¬˜³ñl"Ö}Øúñx»µ+B.oC§·4ºàÔûÚ½J¾úàhÄgN>™•ååiV¼ZæpÊb¾È½¥kş%{¤	vA|Ï\‡–°\6sœp.ÏÍ<>]F{tœ4•´Ô´8$²†£˜„_&LÙ¤ÌÃu…!jKVEãò¿^–â÷Ya­>q®ïô¶ÉoxCÈ®KÌóâ²¾ÃîÑƒíR€Ô 2¿ˆõt17Ê~Â“bD@_ˆÀjÅú0§ãÜ¼ğùÒÖ•}¯P”oÇªNklïŒQ­v xßwñI¤¿¾Dıa*#ÈpR—ùÚ%u¸·v‡ÑMX¶É°^gy‡§…Ú2±bµ™³]}zb¹éXéÏºW<yiQ¡ˆ˜Çèæ³mãÜºj7ïW¤©É @@Ö.Âl'«r}s¶3³©˜UQ³š´CÓ4JŠÂ•¡Ä:‰6™œ&@šsšm‡7ç< ØvhËÀc×°=ˆ3Íù:÷8kÎ“LªÄè1&á€mTYÔeÛ${UuÆUSı¨:‡8£¨¡]@Ô0ò¤ª´ÁÏØdR¸˜O¹±ü?H‚®p-¿cé´Ãì²#5Õ¾1‚4CfY†+"|Éºi3O·UW€Mè9• Cñ6»Å^f;6<1æZ%O%ÌGˆK­sc°*%-¡Ù:ŠõÖbÈpgºÒÏHÖE¸ÊBº´;|6¨ön§›=ôÃ03ªU,|™¥õÕÆı;@ï ó)ÒìÊÌ¾f-ÄÑ ÷œî†5ç0'sæ³òº‘Æ~*3áè5€o!V’/u`›˜ìQ°Rtà—ëÿ/‘y)·?š$!•;¦^¤Œ¹VäfÄç²¼‹óÄZ]Æ[}cı!eEC[òŒÀøÑ¦sz‘9J†Ú¦ĞÈÙŠ·Úo<S9–=Ou%ULªÂ¤à¶§1 €:óïœ…hfü'Oa 
+L.K r nùª	XP£®ç,¬àµN
+?ƒsÂ8ò0ú3:Yó²(qHPq§ÏK2'Ï‡X" Ä\o¨GÒğºáœ?4P0Õæ¸Ía‚ ­1’gçË«2¦Æ Šİ…àpâˆ&ˆLM€±ñ{·ØÜÃ”jàl2ô¿µY$wæ„¾Â¦WF³²³·iªø¡»x´¶o,¤=,Å.AC¿Á¨šÉçÄnİ éò„ñÔd²näSÜ´Ğé™Äwcè  ƒÚ@A[¨OÂÎ€d iÊíÔüfÌ#ƒû‹'¬—Ó¡QÊ±Íïñ©MÊYĞ´¢íùĞÅB—Ì œ¼ÿÅ¡ÙÁ¤Î,5ÅÍ©Î°œ3_¼ÚUÎäe¹ñÇõZÜPŠš*ò"ç~8²ì½\æ)ÿù¿B®İè‹M¤ö5kê’4ênC0D#ÑÃ¸3‚¥' /!¥ì\´ô¾<Œ˜ÏÑ›½İ¿N¹àSKpáxPìà6@b©>ÿQ
+_ˆÂIÅÆ|µÌ/Â}aôÕÂ¸‚]9b©[¯¹¨9‘Øã½Òã°ÚcA¡§`OdcG–"&+öÉŸı>ÎNm—|ˆ°Õ¼1Ï¿_;l"óé”ú_ÊÂ+ÀvúEFßôuËd¾æ0Ğ¸xYM~YtümJÈ‡ñ9,ùÏŒvşy›’àÒ±ÅéÍ5âóÓğùog M÷&şÄ½zAæ~@1×¦„Õ«qÇuª;— o»`¦‰"ÔÎK ¼ÒÅı\KÃEô*}¬mè« ›z_Œcqıß	Vû—a‰”´¢Q&A¥½?c:4€À§£k0²ØwfV-bóe€R˜_GNí•¼Ù”×úw¢Û”^ÂRoğŒ€ákÃe^½Ï~¸ŒËŠŠvïla•¶¥fğ’áßt}VbMOÀ&tX°peö*¡ğ\Êéö9—
+}ˆÊUéO?áÍ@a{®Œƒ%4îê™ã¶¢åkaŞÍ…'IìÃsz1dÙ£njóÌçW1è¨¸@ùûa< ÍiA ƒöú‹î€TñQ›4vhsßO_Ÿ(§9!œ‡ß0L¨Iòä†éÉKÿ¬b`€¡b7€Õ|¿Œ(®¤¶^á5ï˜9’h§‚¢ŒÀX’'¾¬ÊîîèÓu‡W4kÀ¿[3?æëäH‹p¨*·åì)ÿw‰œØËm—‹şÚ¸¹,Ù!¨}E˜Ùh@DÉ³x²¢Ä÷‹Ïd²íÊÔã-J†Îßî±T\Ä­.`B\|¤ÉŠCûéºn8v”@ÉÉE;Ãçó}˜¨ ĞOTßØÜÛDhìÇO«UÑáv“qä­8Ã»dª:?‰ù±±¿|*J¤qzŒQU»

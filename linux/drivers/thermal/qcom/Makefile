@@ -1,9 +1,14 @@
-h \
-    $(wildcard include/config/VIDEO_V4L2_I2C) \
-    $(wildcard include/config/SPI) \
-  include/media/v4l2-dev.h \
-  include/linux/spi/spi.h \
-    $(wildcard include/config/SPI_SLAVE) \
-  include/linux/scatterlist.h \
-    $(wildcard include/config/NEED_SG_DMA_LENGTH) \
-    $(wildcard include/config/DEBUG_SG) \
+/* SPDX-License-Identifier: GPL-2.0-or-later */
+/*
+ * altera-ci.c
+ *
+ *  CI driver in conjunction with NetUp Dual DVB-T/C RF CI card
+ *
+ * Copyright (C) 2010 NetUP Inc.
+ * Copyright (C) 2010 Igor M. Liplianin <liplianin@netup.ru>
+ */
+#ifndef __ALTERA_CI_H
+#define __ALTERA_CI_H
+
+#define ALT_DATA	0x000000ff
+#define

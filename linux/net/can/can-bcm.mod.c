@@ -1,20 +1,28 @@
-p_next_lockchain(long i);
-unsigned long lock_chain_count(void);
-extern unsigned long nr_stack_trace_entries;
+tes, loff_t off)
+{
+	struct task_group *tg = css_tg(of_css(of));
+	u64 period = tg_get_cfs_period(tg);
+	u64 burst = tg_get_cfs_burst(tg);
+	u64 quota;
+	int ret;
 
-extern unsigned int nr_hardirq_chains;
-extern unsigned int nr_softirq_chains;
-extern unsigned int nr_process_chains;
-extern unsigned int nr_free_chain_hlocks;
-extern unsigned int nr_lost_chain_hlocks;
-extern unsigned int nr_large_chain_blocks;
+	ret = cpu_period_quota_parse(buf, &period, &quota);
+	if (!ret)
+		ret = tg_set_cfs_bandwidth(tg, period, quota, burst);
+	return ret ?: nbytes;
+}
+#endif
 
-extern unsigned int max_lockdep_depth;
-extern unsigned int max_bfs_queue_depth;
-extern unsigned long max_lock_class_idx;
-
-extern struct lock_class lock_classes[MAX_LOCKDEP_KEYS];
-extern unsigned long lock_classes_in_use[];
-
-#ifdef CONFIG_PROVE_LOCKING
-exte
+static struct cftype cpu_files[] = {
+#ifdef CONFIG_FAIR_GROUP_SCHED
+	{
+		.name = "weight",
+		.flags = CFTYPE_NOT_ON_ROOT,
+		.read_u64 = cpu_weight_read_u64,
+		.write_u64 = cpu_weight_write_u64,
+	},
+	{
+		.name = "weight.nice",
+		.flags = CFTYPE_NOT_ON_ROOT,
+		.read_s64 = cpu_weight_nice_read_s64,
+		

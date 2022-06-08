@@ -1,2 +1,5 @@
-nclude/asm/atomic64_32.h \
-  include/linux/atomic/atom
+		mem &= ~ALT_DATA;
+		mem |= (data & ALT_DATA);
+	}
+
+	i

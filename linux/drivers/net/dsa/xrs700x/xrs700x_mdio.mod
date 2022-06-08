@@ -1,2 +1,2 @@
-TION) \
-  arch/x86/include/asm/page.h \
+drivers/net/dsa/xrs700x/xrs700x_mdio.o
+

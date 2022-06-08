@@ -1,53 +1,69 @@
-x/build_bug.h \
-  include/linux/compiler.h \
-    $(wildcard include/config/TRACE_BRANCH_PROFILING) \
-    $(wildcard include/config/PROFILE_ALL_BRANCHES) \
-    $(wildcard include/config/STACK_VALIDATION) \
-  include/linux/compiler_types.h \
-  arch/x86/include/generated/asm/rwonce.h \
-  include/asm-generic/rwonce.h \
-  include/linux/kasan-checks.h \
-    $(wildcard include/config/KASAN_GENERIC) \
-    $(wildcard include/config/KASAN_SW_TAGS) \
-  include/linux/types.h \
-    $(wildcard include/config/HAVE_UID16) \
-    $(wildcard include/config/UID16) \
-    $(wildcard include/config/ARCH_DMA_ADDR_T_64BIT) \
-    $(wildcard include/config/PHYS_ADDR_T_64BIT) \
-    $(wildcard include/config/64BIT) \
-    $(wildcard include/config/ARCH_32BIT_USTAT_F_TINODE) \
-  include/uapi/linux/types.h \
-  arch/x86/include/generated/uapi/asm/types.h \
-  include/uapi/asm-generic/types.h \
-  include/asm-generic/int-ll64.h \
-  include/uapi/asm-generic/int-ll64.h \
-  arch/x86/include/uapi/asm/bitsperlong.h \
-  include/asm-generic/bitsperlong.h \
-  include/uapi/asm-generic/bitsperlong.h \
-  include/uapi/linux/posix_types.h \
-  include/linux/stddef.h \
-  include/uapi/linux/stddef.h \
-  arch/x86/include/asm/posix_types.h \
-    $(wildcard include/config/X86_32) \
-  arch/x86/include/uapi/asm/posix_types_32.h \
-  include/uapi/asm-generic/posix_types.h \
-  include/linux/kcsan-checks.h \
-    $(wildcard include/config/KCSAN) \
-    $(wildcard include/config/KCSAN_WEAK_MEMORY) \
-    $(wildcard include/config/KCSAN_IGNORE_ATOMICS) \
-  include/linux/err.h \
-  arch/x86/include/generated/uapi/asm/errno.h \
-  include/uapi/asm-generic/errno.h \
-  include/uapi/asm-generic/errno-base.h \
-  include/linux/poison.h \
-    $(wildcard include/config/ILLEGAL_POINTER_VALUE) \
-  include/linux/const.h \
-  include/vdso/const.h \
-  include/uapi/linux/const.h \
-  arch/x86/include/asm/barrier.h \
-  arch/x86/include/asm/alternative.h \
-  include/linux/stringify.h \
-  arch/x86/include/asm/asm.h \
-  arch/x86/include/asm/extable_fixup_types.h \
-  arch/x86/include/asm/nops.h \
-  include/asm-generic/barrie
+// SPDX-License-Identifier: GPL-2.0-or-later
+/*
+ *  Driver for the Conexant CX23885/7/8 PCIe bridge
+ *
+ *  Infrared device support routines - non-input, non-vl42_subdev routines
+ *
+ *  Copyright (C) 2009  Andy Walls <awalls@md.metrocast.net>
+ */
+
+#include "cx23885.h"
+#include "cx23885-ir.h"
+#include "cx23885-input.h"
+
+#include <media/v4l2-device.h>
+
+#define CX23885_IR_RX_FIFO_SERVICE_REQ		0
+#define CX23885_IR_RX_END_OF_RX_DETECTED	1
+#define CX23885_IR_RX_HW_FIFO_OVERRUN		2
+#define CX23885_IR_RX_SW_FIFO_OVERRUN		3
+
+#define CX23885_IR_TX_FIFO_SERVICE_REQ		0
+
+
+void cx23885_ir_rx_work_handler(struct work_struct *work)
+{
+	struct cx23885_dev *dev =
+			     container_of(work, struct cx23885_dev, ir_rx_work);
+	u32 events = 0;
+	unsigned long *notifications = &dev->ir_rx_notifications;
+
+	if (test_and_clear_bit(CX23885_IR_RX_SW_FIFO_OVERRUN, notifications))
+		events |= V4L2_SUBDEV_IR_RX_SW_FIFO_OVERRUN;
+	if (test_and_clear_bit(CX23885_IR_RX_HW_FIFO_OVERRUN, notifications))
+		events |= V4L2_SUBDEV_IR_RX_HW_FIFO_OVERRUN;
+	if (test_and_clear_bit(CX23885_IR_RX_END_OF_RX_DETECTED, notifications))
+		events |= V4L2_SUBDEV_IR_RX_END_OF_RX_DETECTED;
+	if (test_and_clear_bit(CX23885_IR_RX_FIFO_SERVICE_REQ, notifications))
+		events |= V4L2_SUBDEV_IR_RX_FIFO_SERVICE_REQ;
+
+	if (events == 0)
+		return;
+
+	if (dev->kernel_ir)
+		cx23885_input_rx_work_handler(dev, events);
+}
+
+void cx23885_ir_tx_work_handler(struct work_struct *work)
+{
+	struct cx23885_dev *dev =
+			     container_of(work, struct cx23885_dev, ir_tx_work);
+	u32 events = 0;
+	unsigned long *notifications = &dev->ir_tx_notifications;
+
+	if (test_and_clear_bit(CX23885_IR_TX_FIFO_SERVICE_REQ, notifications))
+		events |= V4L2_SUBDEV_IR_TX_FIFO_SERVICE_REQ;
+
+	if (events == 0)
+		return;
+
+}
+
+/* Possibly called in an IRQ context */
+void cx23885_ir_rx_v4l2_dev_notify(struct v4l2_subdev *sd, u32 events)
+{
+	struct cx23885_dev *dev = to_cx23885(sd->v4l2_dev);
+	unsigned long *notifications = &dev->ir_rx_notifications;
+
+	if (events & V4L2_SUBDEV_IR_RX_FIFO_SERVICE_REQ)
+		set_bit(CX23885_IR_RX_FIFO_SERVICE_REQ, notificat

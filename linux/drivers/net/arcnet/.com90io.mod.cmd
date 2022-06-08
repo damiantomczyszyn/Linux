@@ -1,1 +1,1 @@
-cmd_drivers/media/i2c/upd64031a.o := gcc -Wp,-MMD,drivers/media/i2c/.upd64031a.o.d -nostdinc -I./arch/x86/include -I./
+cmd_drivers/net/arcnet/com90io.mod := { echo  drivers/net/arcnet/com90io.o;  echo; } > drivers/net/arcnet/com90io.mod

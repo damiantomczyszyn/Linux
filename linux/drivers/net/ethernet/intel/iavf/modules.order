@@ -1,2 +1,4 @@
-de/uapi/linux/swab.h \
-  arch/x86/includ
+:
+		i2c_bus = &dev->i2c_bus[0];
+
+		if (!

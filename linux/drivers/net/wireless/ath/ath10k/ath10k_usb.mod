@@ -1,3 +1,1 @@
-RCU) \
-  include/linux/srcu.h \
-    $(w
+cmd_drivers/media/pci/cx18/cx18.ko := l

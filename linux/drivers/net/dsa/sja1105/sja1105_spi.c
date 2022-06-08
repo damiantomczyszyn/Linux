@@ -1,704 +1,973 @@
-ildcard include/config/LATENCYTOP) \
-    $(wildcard include/config/KUNIT) \
-    $(wildcard include/config/FUNCTION_GRAPH_TRACER) \
-    $(wildcard include/config/BCACHE) \
-    $(wildcard include/config/VMAP_STACK) \
-    $(wildcard include/config/SECURITY) \
-    $(wildcard include/config/BPF_SYSCALL) \
-    $(wildcard include/config/GCC_PLUGIN_STACKLEAK) \
-    $(wildcard include/config/X86_MCE) \
-    $(wildcard include/config/KRETPROBES) \
-    $(wildcard include/config/RETHOOK) \
-    $(wildcard include/config/ARCH_HAS_PARANOID_L1D_FLUSH) \
-    $(wildcard include/config/ARCH_TASK_STRUCT_ON_STACK) \
-    $(wildcard include/config/DEBUG_RSEQ) \
-  include/uapi/linux/sched.h \
-  include/linux/pid.h \
-  include/linux/rculist.h \
-    $(wildcard include/config/PROVE_RCU_LIST) \
-  include/linux/sem.h \
-  include/uapi/linux/sem.h \
-  include/linux/ipc.h \
-  include/linux/rhashtable-types.h \
-  include/uapi/linux/ipc.h \
-  arch/x86/include/generated/uapi/asm/ipcbuf.h \
-  include/uapi/asm-generic/ipcbuf.h \
-  arch/x86/include/uapi/asm/sembuf.h \
-  include/linux/shm.h \
-  include/uapi/linux/shm.h \
-  include/uapi/asm-generic/hugetlb_encode.h \
-  arch/x86/include/uapi/asm/shmbuf.h \
-  include/uapi/asm-generic/shmbuf.h \
-  arch/x86/include/asm/shmparam.h \
-  include/linux/plist.h \
-    $(wildcard include/config/DEBUG_PLIST) \
-  include/linux/hrtimer.h \
-    $(wildcard include/config/HIGH_RES_TIMERS) \
-    $(wildcard include/config/TIME_LOW_RES) \
-    $(wildcard include/config/TIMERFD) \
-  include/linux/hrtimer_defs.h \
-  include/linux/timerqueue.h \
-  include/linux/seccomp.h \
-    $(wildcard include/config/SECCOMP) \
-    $(wildcard include/config/HAVE_ARCH_SECCOMP_FILTER) \
-    $(wildcard include/config/SECCOMP_FILTER) \
-    $(wildcard include/config/CHECKPOINT_RESTORE) \
-    $(wildcard include/config/SECCOMP_CACHE_DEBUG) \
-  include/uapi/linux/seccomp.h \
-  arch/x86/include/asm/seccomp.h \
-  arch/x86/include/asm/unistd.h \
-  arch/x86/include/uapi/asm/unistd.h \
-  arch/x86/include/generated/uapi/asm/unistd_32.h \
-  include/asm-generic/seccomp.h \
-  include/uapi/linux/unistd.h \
-  include/linux/resource.h \
-  include/uapi/linux/resource.h \
-  arch/x86/include/generated/uapi/asm/resource.h \
-  include/asm-generic/resource.h \
-  include/uapi/asm-generic/resource.h \
-  include/linux/latencytop.h \
-  include/linux/sched/prio.h \
-  include/linux/sched/types.h \
-  include/linux/signal_types.h \
-    $(wildcard include/config/OLD_SIGACTION) \
-  include/uapi/linux/signal.h \
-  arch/x86/include/asm/signal.h \
-  arch/x86/include/uapi/asm/signal.h \
-  include/uapi/asm-generic/signal-defs.h \
-  arch/x86/include/uapi/asm/siginfo.h \
-  include/uapi/asm-generic/siginfo.h \
-  include/linux/syscall_user_dispatch.h \
-  include/linux/task_io_accounting.h \
-    $(wildcard include/config/TASK_IO_ACCOUNTING) \
-  include/linux/posix-timers.h \
-  include/linux/alarmtimer.h \
-    $(wildcard include/config/RTC_CLASS) \
-  include/uapi/linux/rseq.h \
-  include/linux/kcsan.h \
-  arch/x86/include/asm/uaccess.h \
-    $(wildcard include/config/CC_HAS_ASM_GOTO_OUTPUT) \
-    $(wildcard include/config/CC_HAS_ASM_GOTO_TIED_OUTPUT) \
-    $(wildcard include/config/ARCH_HAS_COPY_MC) \
-    $(wildcard include/config/X86_INTEL_USERCOPY) \
-  arch/x86/include/asm/smap.h \
-  arch/x86/include/asm/extable.h \
-    $(wildcard include/config/BPF_JIT) \
-  include/asm-generic/access_ok.h \
-    $(wildcard include/config/ALTERNATE_USER_ADDRESS_SPACE) \
-  arch/x86/include/asm/uaccess_32.h \
-  include/linux/i2c.h \
-    $(wildcard include/config/I2C) \
-    $(wildcard include/config/I2C_SLAVE) \
-    $(wildcard include/config/I2C_BOARDINFO) \
-    $(wildcard include/config/I2C_MUX) \
-    $(wildcard include/config/OF) \
-    $(wildcard include/config/ACPI) \
-  include/linux/acpi.h \
-    $(wildcard include/config/ACPI_DEBUGGER) \
-    $(wildcard include/config/ACPI_TABLE_LIB) \
-    $(wildcard include/config/LOONGARCH) \
-    $(wildcard include/config/ARM64) \
-    $(wildcard include/config/ACPI_PROCESSOR_CSTATE) \
-    $(wildcard include/config/ACPI_HOTPLUG_CPU) \
-    $(wildcard include/config/ACPI_HOTPLUG_IOAPIC) \
-    $(wildcard include/config/PCI) \
-    $(wildcard include/config/ACPI_WMI) \
-    $(wildcard include/config/ACPI_NUMA) \
-    $(wildcard include/config/HIBERNATION) \
-    $(wildcard include/config/ACPI_HOTPLUG_MEMORY) \
-    $(wildcard include/config/ACPI_CONTAINER) \
-    $(wildcard include/config/ACPI_GTDT) \
-    $(wildcard include/config/PM) \
-    $(wildcard include/config/GPIOLIB) \
-    $(wildcard include/config/ACPI_TABLE_UPGRADE) \
-    $(wildcard include/config/ACPI_WATCHDOG) \
-    $(wildcard include/config/ACPI_SPCR_TABLE) \
-    $(wildcard include/config/ACPI_GENERIC_GSI) \
-    $(wildcard include/config/ACPI_LPIT) \
-    $(wildcard include/config/ACPI_PPTT) \
-    $(wildcard include/config/ACPI_PCC) \
-  include/linux/ioport.h \
-  include/linux/irqdomain.h \
-    $(wildcard include/config/IRQ_DOMAIN_HIERARCHY) \
-    $(wildcard include/config/GENERIC_IRQ_DEBUGFS) \
-    $(wildcard include/config/IRQ_DOMAIN) \
-    $(wildcard include/config/IRQ_DOMAIN_NOMAP) \
-  include/linux/irqhandler.h \
-  include/linux/of.h \
-    $(wildcard include/config/OF_DYNAMIC) \
-    $(wildcard include/config/SPARC) \
-    $(wildcard include/config/OF_PROMTREE) \
-    $(wildcard include/config/OF_KOBJ) \
-    $(wildcard include/config/OF_NUMA) \
-    $(wildcard include/config/OF_OVERLAY) \
-  include/linux/mod_devicetable.h \
-  include/linux/uuid.h \
-  include/uapi/linux/uuid.h \
-  include/linux/property.h \
-  include/linux/fwnode.h \
-  include/linux/resource_ext.h \
-  include/linux/device.h \
-    $(wildcard include/config/GENERIC_MSI_IRQ_DOMAIN) \
-    $(wildcard include/config/GENERIC_MSI_IRQ) \
-    $(wildcard include/config/ENERGY_MODEL) \
-    $(wildcard include/config/PINCTRL) \
-    $(wildcard include/config/DMA_OPS) \
-    $(wildcard include/config/DMA_DECLARE_COHERENT) \
-    $(wildcard include/config/DMA_CMA) \
-    $(wildcard include/config/SWIOTLB) \
-    $(wildcard include/config/ARCH_HAS_SYNC_DMA_FOR_DEVICE) \
-    $(wildcard include/config/ARCH_HAS_SYNC_DMA_FOR_CPU) \
-    $(wildcard include/config/ARCH_HAS_SYNC_DMA_FOR_CPU_ALL) \
-    $(wildcard include/config/DMA_OPS_BYPASS) \
-    $(wildcard include/config/DEVTMPFS) \
-    $(wildcard include/config/SYSFS_DEPRECATED) \
-  include/linux/dev_printk.h \
-  include/linux/ratelimit.h \
-  include/linux/energy_model.h \
-  include/linux/sched/cpufreq.h \
-    $(wildcard include/config/CPU_FREQ) \
-  include/linux/sched/topology.h \
-    $(wildcard include/config/SCHED_DEBUG) \
-    $(wildcard include/config/SCHED_MC) \
-    $(wildcard include/config/CPU_FREQ_GOV_SCHEDUTIL) \
-  include/linux/sched/idle.h \
-  include/linux/sched/sd_flags.h \
-  include/linux/klist.h \
-  include/linux/pm.h \
-    $(wildcard include/config/VT_CONSOLE_SLEEP) \
-    $(wildcard include/config/PM_CLK) \
-    $(wildcard include/config/PM_GENERIC_DOMAINS) \
-  include/linux/device/bus.h \
-  include/linux/device/class.h \
-  include/linux/device/driver.h \
-  arch/x86/include/asm/device.h \
-  include/linux/pm_wakeup.h \
-  include/acpi/acpi.h \
-  include/acpi/platform/acenv.h \
-  include/acpi/platform/acgcc.h \
-  include/acpi/platform/aclinux.h \
-    $(wildcard include/config/ACPI_REDUCED_HARDWARE_ONLY) \
-    $(wildcard include/config/ACPI_DEBUG) \
-  include/linux/ctype.h \
-  arch/x86/include/asm/acenv.h \
-  include/acpi/acnames.h \
-  include/acpi/actypes.h \
-  include/acpi/acexcep.h \
-  include/acpi/actbl.h \
-  include/acpi/actbl1.h \
-  include/acpi/actbl2.h \
-  include/acpi/actbl3.h \
-  include/acpi/acrestyp.h \
-  include/acpi/platform/acenvex.h \
-  include/acpi/platform/aclinuxex.h \
-  include/acpi/platform/acgccex.h \
-  include/acpi/acoutput.h \
-  include/acpi/acpiosxf.h \
-  include/acpi/acpixf.h \
-  include/acpi/acconfig.h \
-  include/acpi/acbuffer.h \
-  include/linux/dynamic_debug.h \
-  include/acpi/acpi_bus.h \
-    $(wildcard include/config/X86_ANDROID_TABLETS) \
-    $(wildcard include/config/ACPI_SYSTEM_POWER_STATES_SUPPORT) \
-    $(wildcard include/config/ACPI_SLEEP) \
-  include/acpi/acpi_drivers.h \
-    $(wildcard include/config/ACPI_DOCK) \
-  include/acpi/acpi_numa.h \
-    $(wildcard include/config/ACPI_HMAT) \
-  include/acpi/acpi_io.h \
-  include/linux/io.h \
-    $(wildcard include/config/HAS_IOPORT_MAP) \
-  arch/x86/include/asm/io.h \
-    $(wildcard include/config/MTRR) \
-    $(wildcard include/config/X86_PAT) \
-  arch/x86/include/generated/asm/early_ioremap.h \
-  include/asm-generic/early_ioremap.h \
-    $(wildcard include/config/GENERIC_EARLY_IOREMAP) \
-  include/asm-generic/iomap.h \
-  include/asm-generic/pci_iomap.h \
-    $(wildcard include/config/NO_GENERIC_PCI_IOPORT_MAP) \
-    $(wildcard include/config/GENERIC_PCI_IOMAP) \
-  include/asm-generic/io.h \
-    $(wildcard include/config/GENERIC_IOMAP) \
-    $(wildcard include/config/GENERIC_IOREMAP) \
-    $(wildcard include/config/VIRT_TO_BUS) \
-    $(wildcard include/config/GENERIC_DEVMEM_IS_ALLOWED) \
-  include/linux/logic_pio.h \
-    $(wildcard include/config/INDIRECT_PIO) \
-  include/linux/vmalloc.h \
-    $(wildcard include/config/HAVE_ARCH_HUGE_VMALLOC) \
-  arch/x86/include/asm/vmalloc.h \
-    $(wildcard include/config/HAVE_ARCH_HUGE_VMAP) \
-  arch/x86/include/asm/acpi.h \
-    $(wildcard include/config/ACPI_APEI) \
-  include/acpi/pdc_intel.h \
-  arch/x86/include/asm/numa.h \
-    $(wildcard include/config/NUMA_EMU) \
-  arch/x86/include/asm/numa_32.h \
-  include/linux/regulator/consumer.h \
-    $(wildcard include/config/REGULATOR) \
-  include/linux/suspend.h \
-    $(wildcard include/config/VT) \
-    $(wildcard include/config/SUSPEND) \
-    $(wildcard include/config/HIBERNATION_SNAPSHOT_DEV) \
-    $(wildcard include/config/PM_SLEEP_DEBUG) \
-    $(wildcard include/config/PM_AUTOSLEEP) \
-  include/linux/swap.h \
-    $(wildcard include/config/DEVICE_PRIVATE) \
-    $(wildcard include/config/MIGRATION) \
-    $(wildcard include/config/FRONTSWAP) \
-    $(wildcard include/config/THP_SWAP) \
-    $(wildcard include/config/MEMCG_SWAP) \
-  include/linux/memcontrol.h \
-    $(wildcard include/config/CGROUP_WRITEBACK) \
-  include/linux/cgroup.h \
-    $(wildcard include/config/CGROUP_CPUACCT) \
-    $(wildcard include/config/SOCK_CGROUP_DATA) \
-    $(wildcard include/config/CGROUP_DATA) \
-    $(wildcard include/config/CGROUP_BPF) \
-  include/uapi/linux/cgroupstats.h \
-  include/uapi/linux/taskstats.h \
-  include/linux/fs.h \
-    $(wildcard include/config/READ_ONLY_THP_FOR_FS) \
-    $(wildcard include/config/FS_POSIX_ACL) \
-    $(wildcard include/config/IMA) \
-    $(wildcard include/config/FILE_LOCKING) \
-    $(wildcard include/config/FSNOTIFY) \
-    $(wildcard include/config/FS_ENCRYPTION) \
-    $(wildcard include/config/FS_VERITY) \
-    $(wildcard include/config/EPOLL) \
-    $(wildcard include/config/UNICODE) \
-    $(wildcard include/config/QUOTA) \
-    $(wildcard include/config/FS_DAX) \
-    $(wildcard include/config/BLOCK) \
-  include/linux/wait_bit.h \
-  include/linux/kdev_t.h \
-  include/uapi/linux/kdev_t.h \
-  include/linux/dcache.h \
-  include/linux/rculist_bl.h \
-  include/linux/list_bl.h \
-  include/linux/bit_spinlock.h \
-  include/linux/lockref.h \
-    $(wildcard include/config/ARCH_USE_CMPXCHG_LOCKREF) \
-  include/linux/stringhash.h \
-    $(wildcard include/config/DCACHE_WORD_ACCESS) \
-  include/linux/hash.h \
-    $(wildcard include/config/HAVE_ARCH_HASH) \
-  include/linux/path.h \
-  include/linux/list_lru.h \
-  include/linux/shrinker.h \
-  include/linux/capability.h \
-  include/uapi/linux/capability.h \
-  include/linux/semaphore.h \
-  include/linux/fcntl.h \
-    $(wildcard include/config/ARCH_32BIT_OFF_T) \
-  include/uapi/linux/fcntl.h \
-  arch/x86/include/generated/uapi/asm/fcntl.h \
-  include/uapi/asm-generic/fcntl.h \
-  include/uapi/linux/openat2.h \
-  include/linux/migrate_mode.h \
-  include/linux/percpu-rwsem.h \
-  include/linux/rcuwait.h \
-  include/linux/sched/signal.h \
-    $(wildcard include/config/SCHED_AUTOGROUP) \
-    $(wildcard include/config/BSD_PROCESS_ACCT) \
-    $(wildcard include/config/TASKSTATS) \
-    $(wildcard include/config/STACK_GROWSUP) \
-  include/linux/signal.h \
-    $(wildcard include/config/DYNAMIC_SIGFRAME) \
-  include/linux/sched/jobctl.h \
-  include/linux/sched/task.h \
-    $(wildcard include/config/HAVE_EXIT_THREAD) \
-    $(wildcard include/config/ARCH_WANTS_DYNAMIC_TASK_STRUCT) \
-    $(wildcard include/config/HAVE_ARCH_THREAD_STRUCT_WHITELIST) \
-  include/linux/cred.h \
-    $(wildcard include/config/DEBUG_CREDENTIALS) \
-  include/linux/key.h \
-    $(wildcard include/config/KEY_NOTIFICATIONS) \
-    $(wildcard include/config/NET) \
-  include/linux/assoc_array.h \
-    $(wildcard include/config/ASSOCIATIVE_ARRAY) \
-  include/linux/sched/user.h \
-    $(wildcard include/config/WATCH_QUEUE) \
-  include/linux/percpu_counter.h \
-  include/linux/rcu_sync.h \
-  include/linux/delayed_call.h \
-  include/linux/errseq.h \
-  include/linux/ioprio.h \
-  include/linux/sched/rt.h \
-  include/linux/iocontext.h \
-    $(wildcard include/config/BLK_ICQ) \
-  include/uapi/linux/ioprio.h \
-  include/linux/fs_types.h \
-  include/linux/mount.h \
-  include/linux/mnt_idmapping.h \
-  include/uapi/linux/fs.h \
-  include/linux/quota.h \
-    $(wildcard include/config/QUOTA_NETLINK_INTERFACE) \
-  include/uapi/linux/dqblk_xfs.h \
-  include/linux/dqblk_v1.h \
-  include/linux/dqblk_v2.h \
-  include/linux/dqblk_qtree.h \
-  include/linux/projid.h \
-  include/uapi/linux/quota.h \
-  include/linux/nfs_fs_i.h \
-  include/linux/seq_file.h \
-  include/linux/string_helpers.h \
-  include/linux/ns_common.h \
-  include/linux/nsproxy.h \
-  include/linux/user_namespace.h \
-    $(wildcard include/config/INOTIFY_USER) \
-    $(wildcard include/config/FANOTIFY) \
-    $(wildcard include/config/PERSISTENT_KEYRINGS) \
-  include/linux/kernel_stat.h \
-  include/linux/interrupt.h \
-    $(wildcard include/config/IRQ_FORCED_THREADING) \
-    $(wildcard include/config/GENERIC_IRQ_PROBE) \
-    $(wildcard include/config/IRQ_TIMINGS) \
-  include/linux/irqreturn.h \
-  include/linux/irqnr.h \
-  include/uapi/linux/irqnr.h \
-  include/linux/hardirq.h \
-  include/linux/context_tracking_state.h \
-    $(wildcard include/config/CONTEXT_TRACKING) \
-  include/linux/ftrace_irq.h \
-    $(wildcard include/config/HWLAT_TRACER) \
-    $(wildcard include/config/OSNOISE_TRACER) \
-  include/linux/vtime.h \
-    $(wildcard include/config/VIRT_CPU_ACCOUNTING) \
-    $(wildcard include/config/IRQ_TIME_ACCOUNTING) \
-  arch/x86/include/asm/hardirq.h \
-    $(wildcard include/config/KVM_INTEL) \
-    $(wildcard include/config/X86_THERMAL_VECTOR) \
-    $(wildcard include/config/X86_MCE_THRESHOLD) \
-    $(wildcard include/config/X86_MCE_AMD) \
-    $(wildcard include/config/X86_HV_CALLBACK_VECTOR) \
-  arch/x86/include/asm/irq.h \
-  arch/x86/include/asm/sections.h \
-  include/asm-generic/sections.h \
-    $(wildcard include/config/HAVE_FUNCTION_DESCRIPTORS) \
-  include/linux/cgroup-defs.h \
-    $(wildcard include/config/CGROUP_NET_CLASSID) \
-    $(wildcard include/config/CGROUP_NET_PRIO) \
-  include/linux/u64_stats_sync.h \
-  include/linux/bpf-cgroup-defs.h \
-  include/linux/psi_types.h \
-  include/linux/kthread.h \
-  include/linux/cgroup_subsys.h \
-    $(wildcard include/config/CGROUP_DEVICE) \
-    $(wildcard include/config/CGROUP_FREEZER) \
-    $(wildcard include/config/CGROUP_PERF) \
-    $(wildcard include/config/CGROUP_HUGETLB) \
-    $(wildcard include/config/CGROUP_PIDS) \
-    $(wildcard include/config/CGROUP_RDMA) \
-    $(wildcard include/config/CGROUP_MISC) \
-    $(wildcard include/config/CGROUP_DEBUG) \
-  include/linux/vm_event_item.h \
-    $(wildcard include/config/HAVE_ARCH_TRANSPARENT_HUGEPAGE_PUD) \
-    $(wildcard include/config/MEMORY_BALLOON) \
-    $(wildcard include/config/BALLOON_COMPACTION) \
-    $(wildcard include/config/DEBUG_TLBFLUSH) \
-    $(wildcard include/config/DEBUG_VM_VMACACHE) \
-  include/linux/page_counter.h \
-  include/linux/vmpressure.h \
-  include/linux/eventfd.h \
-  include/linux/mm.h \
-    $(wildcard include/config/HAVE_ARCH_MMAP_RND_BITS) \
-    $(wildcard include/config/HAVE_ARCH_MMAP_RND_COMPAT_BITS) \
-    $(wildcard include/config/ARCH_USES_HIGH_VMA_FLAGS) \
-    $(wildcard include/config/ARCH_HAS_PKEYS) \
-    $(wildcard include/config/PPC) \
-    $(wildcard include/config/PARISC) \
-    $(wildcard include/config/SPARC64) \
-    $(wildcard include/config/ARM64_MTE) \
-    $(wildcard include/config/HAVE_ARCH_USERFAULTFD_MINOR) \
-    $(wildcard include/config/SHMEM) \
-    $(wildcard include/config/ARCH_HAS_PTE_SPECIAL) \
-    $(wildcard include/config/ARCH_HAS_PTE_DEVMAP) \
-    $(wildcard include/config/DEBUG_VM_RB) \
-    $(wildcard include/config/PAGE_POISONING) \
-    $(wildcard include/config/INIT_ON_ALLOC_DEFAULT_ON) \
-    $(wildcard include/config/INIT_ON_FREE_DEFAULT_ON) \
-    $(wildcard include/config/DEBUG_PAGEALLOC) \
-    $(wildcard include/config/HUGETLBFS) \
-    $(wildcard include/config/MAPPING_DIRTY_HELPERS) \
-    $(wildcard include/config/ANON_VMA_NAME) \
-  include/linux/mmap_lock.h \
-  include/linux/page_ext.h \
-  include/linux/stacktrace.h \
-    $(wildcard include/config/ARCH_STACKWALK) \
-    $(wildcard include/config/STACKTRACE) \
-    $(wildcard include/config/HAVE_RELIABLE_STACKTRACE) \
-  include/linux/stackdepot.h \
-    $(wildcard include/config/STACKDEPOT_ALWAYS_INIT) \
-  include/linux/page_ref.h \
-    $(wildcard include/config/DEBUG_PAGE_REF) \
-  include/linux/sizes.h \
-  include/linux/pgtable.h \
-    $(wildcard include/config/HIGHPTE) \
-    $(wildcard include/config/GUP_GET_PTE_LOW_HIGH) \
-    $(wildcard include/config/HAVE_ARCH_SOFT_DIRTY) \
-    $(wildcard include/config/ARCH_ENABLE_THP_MIGRATION) \
-    $(wildcard include/config/X86_ESPFIX64) \
-  arch/x86/include/asm/pgtable.h \
-    $(wildcard include/config/DEBUG_WX) \
-    $(wildcard include/config/PAGE_TABLE_CHECK) \
-  arch/x86/include/asm/pkru.h \
-  arch/x86/include/asm/fpu/api.h \
-    $(wildcard include/config/X86_DEBUG_FPU) \
-  arch/x86/include/asm/coco.h \
-  include/asm-generic/pgtable_uffd.h \
-  include/linux/page_table_check.h \
-  arch/x86/include/asm/pgtable_32.h \
-  arch/x86/include/asm/pgtable-3level.h \
-  arch/x86/include/asm/pgtable-invert.h \
-  include/linux/huge_mm.h \
-  include/linux/sched/coredump.h \
-    $(wildcard include/config/CORE_DUMP_DEFAULT_ELF_HEADERS) \
-  include/linux/vmstat.h \
-    $(wildcard include/config/VM_EVENT_COUNTERS) \
-  include/linux/writeback.h \
-  include/linux/flex_proportions.h \
-  include/linux/backing-dev-defs.h \
-    $(wildcard include/config/DEBUG_FS) \
-  include/linux/blk_types.h \
-    $(wildcard include/config/FAIL_MAKE_REQUEST) \
-    $(wildcard include/config/BLK_CGROUP_IOCOST) \
-    $(wildcard include/config/BLK_INLINE_ENCRYPTION) \
-    $(wildcard include/config/BLK_DEV_INTEGRITY) \
-  include/linux/bvec.h \
-  include/linux/highmem.h \
-  include/linux/cacheflush.h \
-  arch/x86/include/asm/cacheflush.h \
-  include/asm-generic/cacheflush.h \
-  include/linux/highmem-internal.h \
-  arch/x86/include/asm/highmem.h \
-  arch/x86/include/asm/tlbflush.h \
-  arch/x86/include/asm/invpcid.h \
-  arch/x86/include/asm/pti.h \
-  include/linux/bio.h \
-  include/linux/mempool.h \
-  include/linux/uio.h \
-    $(wildcard include/config/ARCH_HAS_UACCESS_FLUSHCACHE) \
-  include/uapi/linux/uio.h \
-  include/linux/node.h \
-    $(wildcard include/config/HMEM_REPORTING) \
-  include/linux/pagemap.h \
-  include/linux/hugetlb_inline.h \
-  include/uapi/linux/mempolicy.h \
-  include/linux/freezer.h \
-  include/uapi/linux/i2c.h \
-  include/linux/videodev2.h \
-  include/uapi/linux/videodev2.h \
-    $(wildcard include/config/VIDEO_ADV_DEBUG) \
-  include/uapi/linux/v4l2-common.h \
-  include/uapi/linux/v4l2-controls.h \
-  include/media/v4l2-device.h \
-    $(wildcard include/config/VIDEO_V4L2_SUBDEV_API) \
-  include/media/media-device.h \
-    $(wildcard include/config/MEDIA_CONTROLLER) \
-  include/media/media-devnode.h \
-  include/linux/poll.h \
-  include/uapi/linux/poll.h \
-  arch/x86/include/generated/uapi/asm/poll.h \
-  include/uapi/asm-generic/poll.h \
-  include/uapi/linux/eventpoll.h \
-  include/linux/cdev.h \
-  include/media/media-entity.h \
-  include/uapi/linux/media.h \
-  include/media/v4l2-subdev.h \
-  include/uapi/linux/v4l2-subdev.h \
-  include/uapi/linux/v4l2-mediabus.h \
-  include/uapi/linux/media-bus-format.h \
-  include/media/v4l2-async.h \
-  include/media/v4l2-common.h \
-    $(wildcard include/config/VIDEO_V4L2_I2C) \
-    $(wildcard include/config/SPI) \
-  include/media/v4l2-dev.h \
-  include/linux/spi/spi.h \
-    $(wildcard include/config/SPI_SLAVE) \
-  include/linux/scatterlist.h \
-    $(wildcard include/config/NEED_SG_DMA_LENGTH) \
-    $(wildcard include/config/DEBUG_SG) \
-    $(wildcard include/config/SGL_ALLOC) \
-    $(wildcard include/config/ARCH_NO_SG_CHAIN) \
-    $(wildcard include/config/SG_POOL) \
-  include/linux/gpio/consumer.h \
-    $(wildcard include/config/OF_GPIO) \
-    $(wildcard include/config/GPIO_SYSFS) \
-  include/uapi/linux/spi/spi.h \
-  include/media/v4l2-fh.h \
-  include/media/v4l2-mediabus.h \
-  include/media/v4l2-ctrls.h \
-  include/media/media-request.h \
-  include/media/hevc-ctrls.h \
+// SPDX-License-Identifier: BSD-3-Clause
+/* Copyright 2016-2018 NXP
+ * Copyright (c) 2018, Sensor-Technik Wiedemann GmbH
+ * Copyright (c) 2018-2019, Vladimir Oltean <olteanv@gmail.com>
+ */
+#include <linux/spi/spi.h>
+#include <linux/packing.h>
+#include "sja1105.h"
 
-drivers/media/i2c/wm8739.o: $(deps_drivers/media/i2c/wm8739.o)
+struct sja1105_chunk {
+	u8	*buf;
+	size_t	len;
+	u64	reg_addr;
+};
 
-$(deps_drivers/media/i2c/wm8739.o):
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               cmd_drivers/media/i2c/wm8739.o := gcc -Wp,-MMD,drivers/media/i2c/.wm8739.o.d -nostdinc -I./arch/x86/include -I./arch/x86/include/generated  -I./include -I./arch/x86/include/uapi -I./arch/x86/include/generated/uapi -I./include/uapi -I./include/generated/uapi -include ./include/linux/compiler-version.h -include ./include/linux/kconfig.h -include ./include/linux/compiler_types.h -D__KERNEL__ -fmacro-prefix-map=./= -Wall -Wundef -Werror=strict-prototypes -Wno-trigraphs -fno-strict-aliasing -fno-common -fshort-wchar -fno-PIE -Werror=implicit-function-declaration -Werror=implicit-int -Werror=return-type -Wno-format-security -std=gnu11 -mno-sse -mno-mmx -mno-sse2 -mno-3dnow -mno-avx -fcf-protection=none -m32 -msoft-float -mregparm=3 -freg-struct-return -fno-pic -mpreferred-stack-boundary=2 -march=i686 -mtune=pentium3 -mtune=generic -Wa,-mtune=generic32 -ffreestanding -mstack-protector-guard-reg=fs -mstack-protector-guard-symbol=__stack_chk_guard -Wno-sign-compare -fno-asynchronous-unwind-tables -mindirect-branch=thunk-extern -mindirect-branch-register -fno-jump-tables -fno-delete-null-pointer-checks -Wno-frame-address -Wno-format-truncation -Wno-format-overflow -Wno-address-of-packed-member -O2 -fno-allow-store-data-races -fstack-protector-strong -Wimplicit-fallthrough=5 -Wno-main -Wno-unused-but-set-variable -Wno-unused-const-variable -fno-stack-clash-protection -pg -mrecord-mcount -mfentry -DCC_USING_FENTRY -Wdeclaration-after-statement -Wvla -Wno-pointer-sign -Wcast-function-type -Wno-stringop-truncation -Wno-stringop-overflow -Wno-restrict -Wno-maybe-uninitialized -Wno-alloc-size-larger-than -fno-strict-overflow -fno-stack-check -fconserve-stack -Werror=date-time -Werror=incompatible-pointer-types -Werror=designated-init -Wno-packed-not-aligned  -DMODULE  -DKBUILD_BASENAME='"wm8739"' -DKBUILD_MODNAME='"wm8739"' -D__KBUILD_MODNAME=kmod_wm8739 -c -o drivers/media/i2c/wm8739.o drivers/media/i2c/wm8739.c 
+static void
+sja1105_spi_message_pack(void *buf, const struct sja1105_spi_message *msg)
+{
+	const int size = SJA1105_SIZE_SPI_MSG_HEADER;
 
-source_drivers/media/i2c/wm8739.o := drivers/media/i2c/wm8739.c
+	memset(buf, 0, size);
 
-deps_drivers/media/i2c/wm8739.o := \
-  include/linux/compiler-version.h \
-    $(wildcard include/config/CC_VERSION_TEXT) \
-  include/linux/kconfig.h \
-    $(wildcard include/config/CPU_BIG_ENDIAN) \
-    $(wildcard include/config/BOOGER) \
-    $(wildcard include/config/FOO) \
-  include/linux/compiler_types.h \
-    $(wildcard include/config/DEBUG_INFO_BTF) \
-    $(wildcard include/config/PAHOLE_HAS_BTF_TAG) \
-    $(wildcard include/config/HAVE_ARCH_COMPILER_H) \
-    $(wildcard include/config/CC_HAS_ASM_INLINE) \
-  include/linux/compiler_attributes.h \
-  include/linux/compiler-gcc.h \
-    $(wildcard include/config/RETPOLINE) \
-    $(wildcard include/config/ARCH_USE_BUILTIN_BSWAP) \
-    $(wildcard include/config/SHADOW_CALL_STACK) \
-    $(wildcard include/config/KCOV) \
-  include/linux/module.h \
-    $(wildcard include/config/MODULES) \
-    $(wildcard include/config/SYSFS) \
-    $(wildcard include/config/MODULES_TREE_LOOKUP) \
-    $(wildcard include/config/LIVEPATCH) \
-    $(wildcard include/config/STACKTRACE_BUILD_ID) \
-    $(wildcard include/config/CFI_CLANG) \
-    $(wildcard include/config/MODULE_SIG) \
-    $(wildcard include/config/GENERIC_BUG) \
-    $(wildcard include/config/KALLSYMS) \
-    $(wildcard include/config/SMP) \
-    $(wildcard include/config/TRACEPOINTS) \
-    $(wildcard include/config/TREE_SRCU) \
-    $(wildcard include/config/BPF_EVENTS) \
-    $(wildcard include/config/DEBUG_INFO_BTF_MODULES) \
-    $(wildcard include/config/JUMP_LABEL) \
-    $(wildcard include/config/TRACING) \
-    $(wildcard include/config/EVENT_TRACING) \
-    $(wildcard include/config/FTRACE_MCOUNT_RECORD) \
-    $(wildcard include/config/KPROBES) \
-    $(wildcard include/config/HAVE_STATIC_CALL_INLINE) \
-    $(wildcard include/config/PRINTK_INDEX) \
-    $(wildcard include/config/MODULE_UNLOAD) \
-    $(wildcard include/config/CONSTRUCTORS) \
-    $(wildcard include/config/FUNCTION_ERROR_INJECTION) \
-  include/linux/list.h \
-    $(wildcard include/config/DEBUG_LIST) \
-  include/linux/container_of.h \
-  include/linux/build_bug.h \
-  include/linux/compiler.h \
-    $(wildcard include/config/TRACE_BRANCH_PROFILING) \
-    $(wildcard include/config/PROFILE_ALL_BRANCHES) \
-    $(wildcard include/config/STACK_VALIDATION) \
-  include/linux/compiler_types.h \
-  arch/x86/include/generated/asm/rwonce.h \
-  include/asm-generic/rwonce.h \
-  include/linux/kasan-checks.h \
-    $(wildcard include/config/KASAN_GENERIC) \
-    $(wildcard include/config/KASAN_SW_TAGS) \
-  include/linux/types.h \
-    $(wildcard include/config/HAVE_UID16) \
-    $(wildcard include/config/UID16) \
-    $(wildcard include/config/ARCH_DMA_ADDR_T_64BIT) \
-    $(wildcard include/config/PHYS_ADDR_T_64BIT) \
-    $(wildcard include/config/64BIT) \
-    $(wildcard include/config/ARCH_32BIT_USTAT_F_TINODE) \
-  include/uapi/linux/types.h \
-  arch/x86/include/generated/uapi/asm/types.h \
-  include/uapi/asm-generic/types.h \
-  include/asm-generic/int-ll64.h \
-  include/uapi/asm-generic/int-ll64.h \
-  arch/x86/include/uapi/asm/bitsperlong.h \
-  include/asm-generic/bitsperlong.h \
-  include/uapi/asm-generic/bitsperlong.h \
-  include/uapi/linux/posix_types.h \
-  include/linux/stddef.h \
-  include/uapi/linux/stddef.h \
-  arch/x86/include/asm/posix_types.h \
-    $(wildcard include/config/X86_32) \
-  arch/x86/include/uapi/asm/posix_types_32.h \
-  include/uapi/asm-generic/posix_types.h \
-  include/linux/kcsan-checks.h \
-    $(wildcard include/config/KCSAN) \
-    $(wildcard include/config/KCSAN_WEAK_MEMORY) \
-    $(wildcard include/config/KCSAN_IGNORE_ATOMICS) \
-  include/linux/err.h \
-  arch/x86/include/generated/uapi/asm/errno.h \
-  include/uapi/asm-generic/errno.h \
-  include/uapi/asm-generic/errno-base.h \
-  include/linux/poison.h \
-    $(wildcard include/config/ILLEGAL_POINTER_VALUE) \
-  include/linux/const.h \
-  include/vdso/const.h \
-  include/uapi/linux/const.h \
-  arch/x86/include/asm/barrier.h \
-  arch/x86/include/asm/alternative.h \
-  include/linux/stringify.h \
-  arch/x86/include/asm/asm.h \
-  arch/x86/include/asm/extable_fixup_types.h \
-  arch/x86/include/asm/nops.h \
-  include/asm-generic/barrier.h \
-  include/linux/stat.h \
-  arch/x86/include/uapi/asm/stat.h \
-  include/uapi/linux/stat.h \
-  include/linux/time.h \
-    $(wildcard include/config/POSIX_TIMERS) \
-  include/linux/cache.h \
-    $(wildcard include/config/ARCH_HAS_CACHE_LINE_SIZE) \
-  include/uapi/linux/kernel.h \
-  include/uapi/linux/sysinfo.h \
-  arch/x86/include/asm/cache.h \
-    $(wildcard include/config/X86_L1_CACHE_SHIFT) \
-    $(wildcard include/config/X86_INTERNODE_CACHE_SHIFT) \
-    $(wildcard include/config/X86_VSMP) \
-  include/linux/linkage.h \
-    $(wildcard include/config/ARCH_USE_SYM_ANNOTATIONS) \
-  include/linux/export.h \
-    $(wildcard include/config/MODVERSIONS) \
-    $(wildcard include/config/MODULE_REL_CRCS) \
-    $(wildcard include/config/HAVE_ARCH_PREL32_RELOCATIONS) \
-    $(wildcard include/config/TRIM_UNUSED_KSYMS) \
-  arch/x86/include/asm/linkage.h \
-    $(wildcard include/config/X86_64) \
-    $(wildcard include/config/X86_ALIGNMENT_16) \
-    $(wildcard include/config/SLS) \
-  arch/x86/include/asm/ibt.h \
-    $(wildcard include/config/X86_KERNEL_IBT) \
-  include/linux/math64.h \
-    $(wildcard include/config/ARCH_SUPPORTS_INT128) \
-  include/linux/math.h \
-  arch/x86/include/asm/div64.h \
-  include/linux/log2.h \
-    $(wildcard include/config/ARCH_HAS_ILOG2_U32) \
-    $(wildcard include/config/ARCH_HAS_ILOG2_U64) \
-  include/linux/bitops.h \
-  include/linux/bits.h \
-  include/vdso/bits.h \
-  include/linux/typecheck.h \
-  arch/x86/include/asm/bitops.h \
-    $(wildcard include/config/X86_CMOV) \
-  arch/x86/include/asm/rmwcc.h \
-    $(wildcard include/config/CC_HAS_ASM_GOTO) \
-  include/asm-generic/bitops/fls64.h \
-  include/asm-generic/bitops/sched.h \
-  arch/x86/include/asm/arch_hweight.h \
-  arch/x86/include/asm/cpufeatures.h \
-  arch/x86/include/asm/required-features.h \
-    $(wildcard include/config/X86_MINIMUM_CPU_FAMILY) \
-    $(wildcard include/config/MATH_EMULATION) \
-    $(wildcard include/config/X86_PAE) \
-    $(wildcard include/config/X86_CMPXCHG64) \
-    $(wildcard include/config/X86_P6_NOP) \
-    $(wildcard include/config/MATOM) \
-    $(wildcard include/config/PARAVIRT_XXL) \
-  arch/x86/include/asm/disabled-features.h \
-    $(wildcard include/config/X86_SMAP) \
-    $(wildcard include/config/X86_UMIP) \
-    $(wildcard include/config/X86_INTEL_MEMORY_PROTECTION_KEYS) \
-    $(wildcard include/config/X86_5LEVEL) \
-    $(wildcard include/config/PAGE_TABLE_ISOLATION) \
-    $(wildcard include/config/INTEL_IOMMU_SVM) \
-    $(wildcard include/config/X86_SGX) \
-  in
+	sja1105_pack(buf, &msg->access,     31, 31, size);
+	sja1105_pack(buf, &msg->read_count, 30, 25, size);
+	sja1105_pack(buf, &msg->address,    24,  4, size);
+}
+
+/* If @rw is:
+ * - SPI_WRITE: creates and sends an SPI write message at absolute
+ *		address reg_addr, taking @len bytes from *buf
+ * - SPI_READ:  creates and sends an SPI read message from absolute
+ *		address reg_addr, writing @len bytes into *buf
+ */
+static int sja1105_xfer(const struct sja1105_private *priv,
+			sja1105_spi_rw_mode_t rw, u64 reg_addr, u8 *buf,
+			size_t len, struct ptp_system_timestamp *ptp_sts)
+{
+	u8 hdr_buf[SJA1105_SIZE_SPI_MSG_HEADER] = {0};
+	struct spi_device *spi = priv->spidev;
+	struct spi_transfer xfers[2] = {0};
+	struct spi_transfer *chunk_xfer;
+	struct spi_transfer *hdr_xfer;
+	struct sja1105_chunk chunk;
+	int num_chunks;
+	int rc, i = 0;
+
+	num_chunks = DIV_ROUND_UP(len, priv->max_xfer_len);
+
+	chunk.reg_addr = reg_addr;
+	chunk.buf = buf;
+	chunk.len = min_t(size_t, len, priv->max_xfer_len);
+
+	hdr_xfer = &xfers[0];
+	chunk_xfer = &xfers[1];
+
+	for (i = 0; i < num_chunks; i++) {
+		struct spi_transfer *ptp_sts_xfer;
+		struct sja1105_spi_message msg;
+
+		/* Populate the transfer's header buffer */
+		msg.address = chunk.reg_addr;
+		msg.access = rw;
+		if (rw == SPI_READ)
+			msg.read_count = chunk.len / 4;
+		else
+			/* Ignored */
+			msg.read_count = 0;
+		sja1105_spi_message_pack(hdr_buf, &msg);
+		hdr_xfer->tx_buf = hdr_buf;
+		hdr_xfer->len = SJA1105_SIZE_SPI_MSG_HEADER;
+
+		/* Populate the transfer's data buffer */
+		if (rw == SPI_READ)
+			chunk_xfer->rx_buf = chunk.buf;
+		else
+			chunk_xfer->tx_buf = chunk.buf;
+		chunk_xfer->len = chunk.len;
+
+		/* Request timestamping for the transfer. Instead of letting
+		 * callers specify which byte they want to timestamp, we can
+		 * make certain assumptions:
+		 * - A read operation will request a software timestamp when
+		 *   what's being read is the PTP time. That is snapshotted by
+		 *   the switch hardware at the end of the command portion
+		 *   (hdr_xfer).
+		 * - A write operation will request a software timestamp on
+		 *   actions that modify the PTP time. Taking clock stepping as
+		 *   an example, the switch writes the PTP time at the end of
+		 *   the data portion (chunk_xfer).
+		 */
+		if (rw == SPI_READ)
+			ptp_sts_xfer = hdr_xfer;
+		else
+			ptp_sts_xfer = chunk_xfer;
+		ptp_sts_xfer->ptp_sts_word_pre = ptp_sts_xfer->len - 1;
+		ptp_sts_xfer->ptp_sts_word_post = ptp_sts_xfer->len - 1;
+		ptp_sts_xfer->ptp_sts = ptp_sts;
+
+		/* Calculate next chunk */
+		chunk.buf += chunk.len;
+		chunk.reg_addr += chunk.len / 4;
+		chunk.len = min_t(size_t, (ptrdiff_t)(buf + len - chunk.buf),
+				  priv->max_xfer_len);
+
+		rc = spi_sync_transfer(spi, xfers, 2);
+		if (rc < 0) {
+			dev_err(&spi->dev, "SPI transfer failed: %d\n", rc);
+			return rc;
+		}
+	}
+
+	return 0;
+}
+
+int sja1105_xfer_buf(const struct sja1105_private *priv,
+		     sja1105_spi_rw_mode_t rw, u64 reg_addr,
+		     u8 *buf, size_t len)
+{
+	return sja1105_xfer(priv, rw, reg_addr, buf, len, NULL);
+}
+
+/* If @rw is:
+ * - SPI_WRITE: creates and sends an SPI write message at absolute
+ *		address reg_addr
+ * - SPI_READ:  creates and sends an SPI read message from absolute
+ *		address reg_addr
+ *
+ * The u64 *value is unpacked, meaning that it's stored in the native
+ * CPU endianness and directly usable by software running on the core.
+ */
+int sja1105_xfer_u64(const struct sja1105_private *priv,
+		     sja1105_spi_rw_mode_t rw, u64 reg_addr, u64 *value,
+		     struct ptp_system_timestamp *ptp_sts)
+{
+	u8 packed_buf[8];
+	int rc;
+
+	if (rw == SPI_WRITE)
+		sja1105_pack(packed_buf, value, 63, 0, 8);
+
+	rc = sja1105_xfer(priv, rw, reg_addr, packed_buf, 8, ptp_sts);
+
+	if (rw == SPI_READ)
+		sja1105_unpack(packed_buf, value, 63, 0, 8);
+
+	return rc;
+}
+
+/* Same as above, but transfers only a 4 byte word */
+int sja1105_xfer_u32(const struct sja1105_private *priv,
+		     sja1105_spi_rw_mode_t rw, u64 reg_addr, u32 *value,
+		     struct ptp_system_timestamp *ptp_sts)
+{
+	u8 packed_buf[4];
+	u64 tmp;
+	int rc;
+
+	if (rw == SPI_WRITE) {
+		/* The packing API only supports u64 as CPU word size,
+		 * so we need to convert.
+		 */
+		tmp = *value;
+		sja1105_pack(packed_buf, &tmp, 31, 0, 4);
+	}
+
+	rc = sja1105_xfer(priv, rw, reg_addr, packed_buf, 4, ptp_sts);
+
+	if (rw == SPI_READ) {
+		sja1105_unpack(packed_buf, &tmp, 31, 0, 4);
+		*value = tmp;
+	}
+
+	return rc;
+}
+
+static int sja1105et_reset_cmd(struct dsa_switch *ds)
+{
+	struct sja1105_private *priv = ds->priv;
+	const struct sja1105_regs *regs = priv->info->regs;
+	u32 cold_reset = BIT(3);
+
+	/* Cold reset */
+	return sja1105_xfer_u32(priv, SPI_WRITE, regs->rgu, &cold_reset, NULL);
+}
+
+static int sja1105pqrs_reset_cmd(struct dsa_switch *ds)
+{
+	struct sja1105_private *priv = ds->priv;
+	const struct sja1105_regs *regs = priv->info->regs;
+	u32 cold_reset = BIT(2);
+
+	/* Cold reset */
+	return sja1105_xfer_u32(priv, SPI_WRITE, regs->rgu, &cold_reset, NULL);
+}
+
+static int sja1110_reset_cmd(struct dsa_switch *ds)
+{
+	struct sja1105_private *priv = ds->priv;
+	const struct sja1105_regs *regs = priv->info->regs;
+	u32 switch_reset = BIT(20);
+
+	/* Only reset the switch core.
+	 * A full cold reset would re-enable the BASE_MCSS_CLOCK PLL which
+	 * would turn on the microcontroller, potentially letting it execute
+	 * code which could interfere with our configuration.
+	 */
+	return sja1105_xfer_u32(priv, SPI_WRITE, regs->rgu, &switch_reset, NULL);
+}
+
+int sja1105_inhibit_tx(const struct sja1105_private *priv,
+		       unsigned long port_bitmap, bool tx_inhibited)
+{
+	const struct sja1105_regs *regs = priv->info->regs;
+	u32 inhibit_cmd;
+	int rc;
+
+	rc = sja1105_xfer_u32(priv, SPI_READ, regs->port_control,
+			      &inhibit_cmd, NULL);
+	if (rc < 0)
+		return rc;
+
+	if (tx_inhibited)
+		inhibit_cmd |= port_bitmap;
+	else
+		inhibit_cmd &= ~port_bitmap;
+
+	return sja1105_xfer_u32(priv, SPI_WRITE, regs->port_control,
+				&inhibit_cmd, NULL);
+}
+
+struct sja1105_status {
+	u64 configs;
+	u64 crcchkl;
+	u64 ids;
+	u64 crcchkg;
+};
+
+/* This is not reading the entire General Status area, which is also
+ * divergent between E/T and P/Q/R/S, but only the relevant bits for
+ * ensuring that the static config upload procedure was successful.
+ */
+static void sja1105_status_unpack(void *buf, struct sja1105_status *status)
+{
+	/* So that addition translates to 4 bytes */
+	u32 *p = buf;
+
+	/* device_id is missing from the buffer, but we don't
+	 * want to diverge from the manual definition of the
+	 * register addresses, so we'll back off one step with
+	 * the register pointer, and never access p[0].
+	 */
+	p--;
+	sja1105_unpack(p + 0x1, &status->configs,   31, 31, 4);
+	sja1105_unpack(p + 0x1, &status->crcchkl,   30, 30, 4);
+	sja1105_unpack(p + 0x1, &status->ids,       29, 29, 4);
+	sja1105_unpack(p + 0x1, &status->crcchkg,   28, 28, 4);
+}
+
+static int sja1105_status_get(struct sja1105_private *priv,
+			      struct sja1105_status *status)
+{
+	const struct sja1105_regs *regs = priv->info->regs;
+	u8 packed_buf[4];
+	int rc;
+
+	rc = sja1105_xfer_buf(priv, SPI_READ, regs->status, packed_buf, 4);
+	if (rc < 0)
+		return rc;
+
+	sja1105_status_unpack(packed_buf, status);
+
+	return 0;
+}
+
+/* Not const because unpacking priv->static_config into buffers and preparing
+ * for upload requires the recalculation of table CRCs and updating the
+ * structures with these.
+ */
+int static_config_buf_prepare_for_upload(struct sja1105_private *priv,
+					 void *config_buf, int buf_len)
+{
+	struct sja1105_static_config *config = &priv->static_config;
+	struct sja1105_table_header final_header;
+	sja1105_config_valid_t valid;
+	char *final_header_ptr;
+	int crc_len;
+
+	valid = sja1105_static_config_check_valid(config,
+						  priv->info->max_frame_mem);
+	if (valid != SJA1105_CONFIG_OK) {
+		dev_err(&priv->spidev->dev,
+			sja1105_static_config_error_msg[valid]);
+		return -EINVAL;
+	}
+
+	/* Write Device ID and config tables to config_buf */
+	sja1105_static_config_pack(config_buf, config);
+	/* Recalculate CRC of the last header (right now 0xDEADBEEF).
+	 * Don't include the CRC field itself.
+	 */
+	crc_len = buf_len - 4;
+	/* Read the whole table header */
+	final_header_ptr = config_buf + buf_len - SJA1105_SIZE_TABLE_HEADER;
+	sja1105_table_header_packing(final_header_ptr, &final_header, UNPACK);
+	/* Modify */
+	final_header.crc = sja1105_crc32(config_buf, crc_len);
+	/* Rewrite */
+	sja1105_table_header_packing(final_header_ptr, &final_header, PACK);
+
+	return 0;
+}
+
+#define RETRIES 10
+
+int sja1105_static_config_upload(struct sja1105_private *priv)
+{
+	struct sja1105_static_config *config = &priv->static_config;
+	const struct sja1105_regs *regs = priv->info->regs;
+	struct device *dev = &priv->spidev->dev;
+	struct dsa_switch *ds = priv->ds;
+	struct sja1105_status status;
+	int rc, retries = RETRIES;
+	u8 *config_buf;
+	int buf_len;
+
+	buf_len = sja1105_static_config_get_length(config);
+	config_buf = kcalloc(buf_len, sizeof(char), GFP_KERNEL);
+	if (!config_buf)
+		return -ENOMEM;
+
+	rc = static_config_buf_prepare_for_upload(priv, config_buf, buf_len);
+	if (rc < 0) {
+		dev_err(dev, "Invalid config, cannot upload\n");
+		rc = -EINVAL;
+		goto out;
+	}
+	/* Prevent PHY jabbering during switch reset by inhibiting
+	 * Tx on all ports and waiting for current packet to drain.
+	 * Otherwise, the PHY will see an unterminated Ethernet packet.
+	 */
+	rc = sja1105_inhibit_tx(priv, GENMASK_ULL(ds->num_ports - 1, 0), true);
+	if (rc < 0) {
+		dev_err(dev, "Failed to inhibit Tx on ports\n");
+		rc = -ENXIO;
+		goto out;
+	}
+	/* Wait for an eventual egress packet to finish transmission
+	 * (reach IFG). It is guaranteed that a second one will not
+	 * follow, and that switch cold reset is thus safe
+	 */
+	usleep_range(500, 1000);
+	do {
+		/* Put the SJA1105 in programming mode */
+		rc = priv->info->reset_cmd(priv->ds);
+		if (rc < 0) {
+			dev_err(dev, "Failed to reset switch, retrying...\n");
+			continue;
+		}
+		/* Wait for the switch to come out of reset */
+		usleep_range(1000, 5000);
+		/* Upload the static config to the device */
+		rc = sja1105_xfer_buf(priv, SPI_WRITE, regs->config,
+				      config_buf, buf_len);
+		if (rc < 0) {
+			dev_err(dev, "Failed to upload config, retrying...\n");
+			continue;
+		}
+		/* Check that SJA1105 responded well to the config upload */
+		rc = sja1105_status_get(priv, &status);
+		if (rc < 0)
+			continue;
+
+		if (status.ids == 1) {
+			dev_err(dev, "Mismatch between hardware and static config "
+				"device id. Wrote 0x%llx, wants 0x%llx\n",
+				config->device_id, priv->info->device_id);
+			continue;
+		}
+		if (status.crcchkl == 1) {
+			dev_err(dev, "Switch reported invalid local CRC on "
+				"the uploaded config, retrying...\n");
+			continue;
+		}
+		if (status.crcchkg == 1) {
+			dev_err(dev, "Switch reported invalid global CRC on "
+				"the uploaded config, retrying...\n");
+			continue;
+		}
+		if (status.configs == 0) {
+			dev_err(dev, "Switch reported that configuration is "
+				"invalid, retrying...\n");
+			continue;
+		}
+		/* Success! */
+		break;
+	} while (--retries);
+
+	if (!retries) {
+		rc = -EIO;
+		dev_err(dev, "Failed to upload config to device, giving up\n");
+		goto out;
+	} else if (retries != RETRIES) {
+		dev_info(dev, "Succeeded after %d tried\n", RETRIES - retries);
+	}
+
+out:
+	kfree(config_buf);
+	return rc;
+}
+
+static const struct sja1105_regs sja1105et_regs = {
+	.device_id = 0x0,
+	.prod_id = 0x100BC3,
+	.status = 0x1,
+	.port_control = 0x11,
+	.vl_status = 0x10000,
+	.config = 0x020000,
+	.rgu = 0x100440,
+	/* UM10944.pdf, Table 86, ACU Register overview */
+	.pad_mii_tx = {0x100800, 0x100802, 0x100804, 0x100806, 0x100808},
+	.pad_mii_rx = {0x100801, 0x100803, 0x100805, 0x100807, 0x100809},
+	.rmii_pll1 = 0x10000A,
+	.cgu_idiv = {0x10000B, 0x10000C, 0x10000D, 0x10000E, 0x10000F},
+	.stats[MAC] = {0x200, 0x202, 0x204, 0x206, 0x208},
+	.stats[HL1] = {0x400, 0x410, 0x420, 0x430, 0x440},
+	.stats[HL2] = {0x600, 0x610, 0x620, 0x630, 0x640},
+	/* UM10944.pdf, Table 78, CGU Register overview */
+	.mii_tx_clk = {0x100013, 0x10001A, 0x100021, 0x100028, 0x10002F},
+	.mii_rx_clk = {0x100014, 0x10001B, 0x100022, 0x100029, 0x100030},
+	.mii_ext_tx_clk = {0x100018, 0x10001F, 0x100026, 0x10002D, 0x100034},
+	.mii_ext_rx_clk = {0x100019, 0x100020, 0x100027, 0x10002E, 0x100035},
+	.rgmii_tx_clk = {0x100016, 0x10001D, 0x100024, 0x10002B, 0x100032},
+	.rmii_ref_clk = {0x100015, 0x10001C, 0x100023, 0x10002A, 0x100031},
+	.rmii_ext_tx_clk = {0x100018, 0x10001F, 0x100026, 0x10002D, 0x100034},
+	.ptpegr_ts = {0xC0, 0xC2, 0xC4, 0xC6, 0xC8},
+	.ptpschtm = 0x12, /* Spans 0x12 to 0x13 */
+	.ptppinst = 0x14,
+	.ptppindur = 0x16,
+	.ptp_control = 0x17,
+	.ptpclkval = 0x18, /* Spans 0x18 to 0x19 */
+	.ptpclkrate = 0x1A,
+	.ptpclkcorp = 0x1D,
+	.mdio_100base_tx = SJA1105_RSV_ADDR,
+	.mdio_100base_t1 = SJA1105_RSV_ADDR,
+};
+
+static const struct sja1105_regs sja1105pqrs_regs = {
+	.device_id = 0x0,
+	.prod_id = 0x100BC3,
+	.status = 0x1,
+	.port_control = 0x12,
+	.vl_status = 0x10000,
+	.config = 0x020000,
+	.rgu = 0x100440,
+	/* UM10944.pdf, Table 86, ACU Register overview */
+	.pad_mii_tx = {0x100800, 0x100802, 0x100804, 0x100806, 0x100808},
+	.pad_mii_rx = {0x100801, 0x100803, 0x100805, 0x100807, 0x100809},
+	.pad_mii_id = {0x100810, 0x100811, 0x100812, 0x100813, 0x100814},
+	.rmii_pll1 = 0x10000A,
+	.cgu_idiv = {0x10000B, 0x10000C, 0x10000D, 0x10000E, 0x10000F},
+	.stats[MAC] = {0x200, 0x202, 0x204, 0x206, 0x208},
+	.stats[HL1] = {0x400, 0x410, 0x420, 0x430, 0x440},
+	.stats[HL2] = {0x600, 0x610, 0x620, 0x630, 0x640},
+	.stats[ETHER] = {0x1400, 0x1418, 0x1430, 0x1448, 0x1460},
+	/* UM11040.pdf, Table 114 */
+	.mii_tx_clk = {0x100013, 0x100019, 0x10001F, 0x100025, 0x10002B},
+	.mii_rx_clk = {0x100014, 0x10001A, 0x100020, 0x100026, 0x10002C},
+	.mii_ext_tx_clk = {0x100017, 0x10001D, 0x100023, 0x100029, 0x10002F},
+	.mii_ext_rx_clk = {0x100018, 0x10001E, 0x100024, 0x10002A, 0x100030},
+	.rgmii_tx_clk = {0x100016, 0x10001C, 0x100022, 0x100028, 0x10002E},
+	.rmii_ref_clk = {0x100015, 0x10001B, 0x100021, 0x100027, 0x10002D},
+	.rmii_ext_tx_clk = {0x100017, 0x10001D, 0x100023, 0x100029, 0x10002F},
+	.ptpegr_ts = {0xC0, 0xC4, 0xC8, 0xCC, 0xD0},
+	.ptpschtm = 0x13, /* Spans 0x13 to 0x14 */
+	.ptppinst = 0x15,
+	.ptppindur = 0x17,
+	.ptp_control = 0x18,
+	.ptpclkval = 0x19,
+	.ptpclkrate = 0x1B,
+	.ptpclkcorp = 0x1E,
+	.ptpsyncts = 0x1F,
+	.mdio_100base_tx = SJA1105_RSV_ADDR,
+	.mdio_100base_t1 = SJA1105_RSV_ADDR,
+};
+
+static const struct sja1105_regs sja1110_regs = {
+	.device_id = SJA1110_SPI_ADDR(0x0),
+	.prod_id = SJA1110_ACU_ADDR(0xf00),
+	.status = SJA1110_SPI_ADDR(0x4),
+	.port_control = SJA1110_SPI_ADDR(0x50), /* actually INHIB_TX */
+	.vl_status = 0x10000,
+	.config = 0x020000,
+	.rgu = SJA1110_RGU_ADDR(0x100), /* Reset Control Register 0 */
+	/* Ports 2 and 3 are capable of xMII, but there isn't anything to
+	 * configure in the CGU/ACU for them.
+	 */
+	.pad_mii_tx = {SJA1105_RSV_ADDR, SJA1105_RSV_ADDR,
+		       SJA1105_RSV_ADDR, SJA1105_RSV_ADDR,
+		       SJA1105_RSV_ADDR, SJA1105_RSV_ADDR,
+		       SJA1105_RSV_ADDR, SJA1105_RSV_ADDR,
+		       SJA1105_RSV_ADDR, SJA1105_RSV_ADDR,
+		       SJA1105_RSV_ADDR},
+	.pad_mii_rx = {SJA1105_RSV_ADDR, SJA1105_RSV_ADDR,
+		       SJA1105_RSV_ADDR, SJA1105_RSV_ADDR,
+		       SJA1105_RSV_ADDR, SJA1105_RSV_ADDR,
+		       SJA1105_RSV_ADDR, SJA1105_RSV_ADDR,
+		       SJA1105_RSV_ADDR, SJA1105_RSV_ADDR,
+		       SJA1105_RSV_ADDR},
+	.pad_mii_id = {SJA1105_RSV_ADDR, SJA1105_RSV_ADDR,
+		       SJA1110_ACU_ADDR(0x18), SJA1110_ACU_ADDR(0x28),
+		       SJA1105_RSV_ADDR, SJA1105_RSV_ADDR,
+		       SJA1105_RSV_ADDR, SJA1105_RSV_ADDR,
+		       SJA1105_RSV_ADDR, SJA1105_RSV_ADDR,
+		       SJA1105_RSV_ADDR},
+	.rmii_pll1 = SJA1105_RSV_ADDR,
+	.cgu_idiv = {SJA1105_RSV_ADDR, SJA1105_RSV_ADDR, SJA1105_RSV_ADDR,
+		     SJA1105_RSV_ADDR, SJA1105_RSV_ADDR, SJA1105_RSV_ADDR,
+		     SJA1105_RSV_ADDR, SJA1105_RSV_ADDR, SJA1105_RSV_ADDR,
+		     SJA1105_RSV_ADDR, SJA1105_RSV_ADDR},
+	.stats[MAC] = {0x200, 0x202, 0x204, 0x206, 0x208, 0x20a,
+		       0x20c, 0x20e, 0x210, 0x212, 0x214},
+	.stats[HL1] = {0x400, 0x410, 0x420, 0x430, 0x440, 0x450,
+		       0x460, 0x470, 0x480, 0x490, 0x4a0},
+	.stats[HL2] = {0x600, 0x610, 0x620, 0x630, 0x640, 0x650,
+		       0x660, 0x670, 0x680, 0x690, 0x6a0},
+	.stats[ETHER] = {0x1400, 0x1418, 0x1430, 0x1448, 0x1460, 0x1478,
+			 0x1490, 0x14a8, 0x14c0, 0x14d8, 0x14f0},
+	.mii_tx_clk = {SJA1105_RSV_ADDR, SJA1105_RSV_ADDR, SJA1105_RSV_ADDR,
+		       SJA1105_RSV_ADDR, SJA1105_RSV_ADDR, SJA1105_RSV_ADDR,
+		       SJA1105_RSV_ADDR, SJA1105_RSV_ADDR, SJA1105_RSV_ADDR,
+		       SJA1105_RSV_ADDR, SJA1105_RSV_ADDR},
+	.mii_rx_clk = {SJA1105_RSV_ADDR, SJA1105_RSV_ADDR, SJA1105_RSV_ADDR,
+		       SJA1105_RSV_ADDR, SJA1105_RSV_ADDR, SJA1105_RSV_ADDR,
+		       SJA1105_RSV_ADDR, SJA1105_RSV_ADDR, SJA1105_RSV_ADDR,
+		       SJA1105_RSV_ADDR, SJA1105_RSV_ADDR},
+	.mii_ext_tx_clk = {SJA1105_RSV_ADDR, SJA1105_RSV_ADDR, SJA1105_RSV_ADDR,
+			   SJA1105_RSV_ADDR, SJA1105_RSV_ADDR, SJA1105_RSV_ADDR,
+			   SJA1105_RSV_ADDR, SJA1105_RSV_ADDR, SJA1105_RSV_ADDR,
+			   SJA1105_RSV_ADDR, SJA1105_RSV_ADDR},
+	.mii_ext_rx_clk = {SJA1105_RSV_ADDR, SJA1105_RSV_ADDR, SJA1105_RSV_ADDR,
+			   SJA1105_RSV_ADDR, SJA1105_RSV_ADDR, SJA1105_RSV_ADDR,
+			   SJA1105_RSV_ADDR, SJA1105_RSV_ADDR, SJA1105_RSV_ADDR,
+			   SJA1105_RSV_ADDR, SJA1105_RSV_ADDR},
+	.rgmii_tx_clk = {SJA1105_RSV_ADDR, SJA1105_RSV_ADDR, SJA1105_RSV_ADDR,
+			 SJA1105_RSV_ADDR, SJA1105_RSV_ADDR, SJA1105_RSV_ADDR,
+			 SJA1105_RSV_ADDR, SJA1105_RSV_ADDR, SJA1105_RSV_ADDR,
+			 SJA1105_RSV_ADDR, SJA1105_RSV_ADDR},
+	.rmii_ref_clk = {SJA1105_RSV_ADDR, SJA1105_RSV_ADDR, SJA1105_RSV_ADDR,
+			 SJA1105_RSV_ADDR, SJA1105_RSV_ADDR, SJA1105_RSV_ADDR,
+			 SJA1105_RSV_ADDR, SJA1105_RSV_ADDR, SJA1105_RSV_ADDR,
+			 SJA1105_RSV_ADDR, SJA1105_RSV_ADDR},
+	.rmii_ext_tx_clk = {SJA1105_RSV_ADDR, SJA1105_RSV_ADDR,
+			    SJA1105_RSV_ADDR, SJA1105_RSV_ADDR,
+			    SJA1105_RSV_ADDR, SJA1105_RSV_ADDR,
+			    SJA1105_RSV_ADDR, SJA1105_RSV_ADDR,
+			    SJA1105_RSV_ADDR, SJA1105_RSV_ADDR,
+			    SJA1105_RSV_ADDR},
+	.ptpschtm = SJA1110_SPI_ADDR(0x54),
+	.ptppinst = SJA1110_SPI_ADDR(0x5c),
+	.ptppindur = SJA1110_SPI_ADDR(0x64),
+	.ptp_control = SJA1110_SPI_ADDR(0x68),
+	.ptpclkval = SJA1110_SPI_ADDR(0x6c),
+	.ptpclkrate = SJA1110_SPI_ADDR(0x74),
+	.ptpclkcorp = SJA1110_SPI_ADDR(0x80),
+	.ptpsyncts = SJA1110_SPI_ADDR(0x84),
+	.mdio_100base_tx = 0x1c2400,
+	.mdio_100base_t1 = 0x1c1000,
+	.pcs_base = {SJA1105_RSV_ADDR, 0x1c1400, 0x1c1800, 0x1c1c00, 0x1c2000,
+		     SJA1105_RSV_ADDR, SJA1105_RSV_ADDR, SJA1105_RSV_ADDR,
+		     SJA1105_RSV_ADDR, SJA1105_RSV_ADDR, SJA1105_RSV_ADDR},
+};
+
+const struct sja1105_info sja1105e_info = {
+	.device_id		= SJA1105E_DEVICE_ID,
+	.part_no		= SJA1105ET_PART_NO,
+	.static_ops		= sja1105e_table_ops,
+	.dyn_ops		= sja1105et_dyn_ops,
+	.tag_proto		= DSA_TAG_PROTO_SJA1105,
+	.can_limit_mcast_flood	= false,
+	.ptp_ts_bits		= 24,
+	.ptpegr_ts_bytes	= 4,
+	.max_frame_mem		= SJA1105_MAX_FRAME_MEMORY,
+	.num_ports		= SJA1105_NUM_PORTS,
+	.num_cbs_shapers	= SJA1105ET_MAX_CBS_COUNT,
+	.reset_cmd		= sja1105et_reset_cmd,
+	.fdb_add_cmd		= sja1105et_fdb_add,
+	.fdb_del_cmd		= sja1105et_fdb_del,
+	.ptp_cmd_packing	= sja1105et_ptp_cmd_packing,
+	.rxtstamp		= sja1105_rxtstamp,
+	.clocking_setup		= sja1105_clocking_setup,
+	.regs			= &sja1105et_regs,
+	.port_speed		= {
+		[SJA1105_SPEED_AUTO] = 0,
+		[SJA1105_SPEED_10MBPS] = 3,
+		[SJA1105_SPEED_100MBPS] = 2,
+		[SJA1105_SPEED_1000MBPS] = 1,
+		[SJA1105_SPEED_2500MBPS] = 0, /* Not supported */
+	},
+	.supports_mii		= {true, true, true, true, true},
+	.supports_rmii		= {true, true, true, true, true},
+	.supports_rgmii		= {true, true, true, true, true},
+	.name			= "SJA1105E",
+};
+
+const struct sja1105_info sja1105t_info = {
+	.device_id		= SJA1105T_DEVICE_ID,
+	.part_no		= SJA1105ET_PART_NO,
+	.static_ops		= sja1105t_table_ops,
+	.dyn_ops		= sja1105et_dyn_ops,
+	.tag_proto		= DSA_TAG_PROTO_SJA1105,
+	.can_limit_mcast_flood	= false,
+	.ptp_ts_bits		= 24,
+	.ptpegr_ts_bytes	= 4,
+	.max_frame_mem		= SJA1105_MAX_FRAME_MEMORY,
+	.num_ports		= SJA1105_NUM_PORTS,
+	.num_cbs_shapers	= SJA1105ET_MAX_CBS_COUNT,
+	.reset_cmd		= sja1105et_reset_cmd,
+	.fdb_add_cmd		= sja1105et_fdb_add,
+	.fdb_del_cmd		= sja1105et_fdb_del,
+	.ptp_cmd_packing	= sja1105et_ptp_cmd_packing,
+	.rxtstamp		= sja1105_rxtstamp,
+	.clocking_setup		= sja1105_clocking_setup,
+	.regs			= &sja1105et_regs,
+	.port_speed		= {
+		[SJA1105_SPEED_AUTO] = 0,
+		[SJA1105_SPEED_10MBPS] = 3,
+		[SJA1105_SPEED_100MBPS] = 2,
+		[SJA1105_SPEED_1000MBPS] = 1,
+		[SJA1105_SPEED_2500MBPS] = 0, /* Not supported */
+	},
+	.supports_mii		= {true, true, true, true, true},
+	.supports_rmii		= {true, true, true, true, true},
+	.supports_rgmii		= {true, true, true, true, true},
+	.name			= "SJA1105T",
+};
+
+const struct sja1105_info sja1105p_info = {
+	.device_id		= SJA1105PR_DEVICE_ID,
+	.part_no		= SJA1105P_PART_NO,
+	.static_ops		= sja1105p_table_ops,
+	.dyn_ops		= sja1105pqrs_dyn_ops,
+	.tag_proto		= DSA_TAG_PROTO_SJA1105,
+	.can_limit_mcast_flood	= true,
+	.ptp_ts_bits		= 32,
+	.ptpegr_ts_bytes	= 8,
+	.max_frame_mem		= SJA1105_MAX_FRAME_MEMORY,
+	.num_ports		= SJA1105_NUM_PORTS,
+	.num_cbs_shapers	= SJA1105PQRS_MAX_CBS_COUNT,
+	.setup_rgmii_delay	= sja1105pqrs_setup_rgmii_delay,
+	.reset_cmd		= sja1105pqrs_reset_cmd,
+	.fdb_add_cmd		= sja1105pqrs_fdb_add,
+	.fdb_del_cmd		= sja1105pqrs_fdb_del,
+	.ptp_cmd_packing	= sja1105pqrs_ptp_cmd_packing,
+	.rxtstamp		= sja1105_rxtstamp,
+	.clocking_setup		= sja1105_clocking_setup,
+	.regs			= &sja1105pqrs_regs,
+	.port_speed		= {
+		[SJA1105_SPEED_AUTO] = 0,
+		[SJA1105_SPEED_10MBPS] = 3,
+		[SJA1105_SPEED_100MBPS] = 2,
+		[SJA1105_SPEED_1000MBPS] = 1,
+		[SJA1105_SPEED_2500MBPS] = 0, /* Not supported */
+	},
+	.supports_mii		= {true, true, true, true, true},
+	.supports_rmii		= {true, true, true, true, true},
+	.supports_rgmii		= {true, true, true, true, true},
+	.name			= "SJA1105P",
+};
+
+const struct sja1105_info sja1105q_info = {
+	.device_id		= SJA1105QS_DEVICE_ID,
+	.part_no		= SJA1105Q_PART_NO,
+	.static_ops		= sja1105q_table_ops,
+	.dyn_ops		= sja1105pqrs_dyn_ops,
+	.tag_proto		= DSA_TAG_PROTO_SJA1105,
+	.can_limit_mcast_flood	= true,
+	.ptp_ts_bits		= 32,
+	.ptpegr_ts_bytes	= 8,
+	.max_frame_mem		= SJA1105_MAX_FRAME_MEMORY,
+	.num_ports		= SJA1105_NUM_PORTS,
+	.num_cbs_shapers	= SJA1105PQRS_MAX_CBS_COUNT,
+	.setup_rgmii_delay	= sja1105pqrs_setup_rgmii_delay,
+	.reset_cmd		= sja1105pqrs_reset_cmd,
+	.fdb_add_cmd		= sja1105pqrs_fdb_add,
+	.fdb_del_cmd		= sja1105pqrs_fdb_del,
+	.ptp_cmd_packing	= sja1105pqrs_ptp_cmd_packing,
+	.rxtstamp		= sja1105_rxtstamp,
+	.clocking_setup		= sja1105_clocking_setup,
+	.regs			= &sja1105pqrs_regs,
+	.port_speed		= {
+		[SJA1105_SPEED_AUTO] = 0,
+		[SJA1105_SPEED_10MBPS] = 3,
+		[SJA1105_SPEED_100MBPS] = 2,
+		[SJA1105_SPEED_1000MBPS] = 1,
+		[SJA1105_SPEED_2500MBPS] = 0, /* Not supported */
+	},
+	.supports_mii		= {true, true, true, true, true},
+	.supports_rmii		= {true, true, true, true, true},
+	.supports_rgmii		= {true, true, true, true, true},
+	.name			= "SJA1105Q",
+};
+
+const struct sja1105_info sja1105r_info = {
+	.device_id		= SJA1105PR_DEVICE_ID,
+	.part_no		= SJA1105R_PART_NO,
+	.static_ops		= sja1105r_table_ops,
+	.dyn_ops		= sja1105pqrs_dyn_ops,
+	.tag_proto		= DSA_TAG_PROTO_SJA1105,
+	.can_limit_mcast_flood	= true,
+	.ptp_ts_bits		= 32,
+	.ptpegr_ts_bytes	= 8,
+	.max_frame_mem		= SJA1105_MAX_FRAME_MEMORY,
+	.num_ports		= SJA1105_NUM_PORTS,
+	.num_cbs_shapers	= SJA1105PQRS_MAX_CBS_COUNT,
+	.setup_rgmii_delay	= sja1105pqrs_setup_rgmii_delay,
+	.reset_cmd		= sja1105pqrs_reset_cmd,
+	.fdb_add_cmd		= sja1105pqrs_fdb_add,
+	.fdb_del_cmd		= sja1105pqrs_fdb_del,
+	.ptp_cmd_packing	= sja1105pqrs_ptp_cmd_packing,
+	.rxtstamp		= sja1105_rxtstamp,
+	.clocking_setup		= sja1105_clocking_setup,
+	.pcs_mdio_read		= sja1105_pcs_mdio_read,
+	.pcs_mdio_write		= sja1105_pcs_mdio_write,
+	.regs			= &sja1105pqrs_regs,
+	.port_speed		= {
+		[SJA1105_SPEED_AUTO] = 0,
+		[SJA1105_SPEED_10MBPS] = 3,
+		[SJA1105_SPEED_100MBPS] = 2,
+		[SJA1105_SPEED_1000MBPS] = 1,
+		[SJA1105_SPEED_2500MBPS] = 0, /* Not supported */
+	},
+	.supports_mii		= {true, true, true, true, true},
+	.supports_rmii		= {true, true, true, true, true},
+	.supports_rgmii		= {true, true, true, true, true},
+	.supports_sgmii		= {false, false, false, false, true},
+	.name			= "SJA1105R",
+};
+
+const struct sja1105_info sja1105s_info = {
+	.device_id		= SJA1105QS_DEVICE_ID,
+	.part_no		= SJA1105S_PART_NO,
+	.static_ops		= sja1105s_table_ops,
+	.dyn_ops		= sja1105pqrs_dyn_ops,
+	.regs			= &sja1105pqrs_regs,
+	.tag_proto		= DSA_TAG_PROTO_SJA1105,
+	.can_limit_mcast_flood	= true,
+	.ptp_ts_bits		= 32,
+	.ptpegr_ts_bytes	= 8,
+	.max_frame_mem		= SJA1105_MAX_FRAME_MEMORY,
+	.num_ports		= SJA1105_NUM_PORTS,
+	.num_cbs_shapers	= SJA1105PQRS_MAX_CBS_COUNT,
+	.setup_rgmii_delay	= sja1105pqrs_setup_rgmii_delay,
+	.reset_cmd		= sja1105pqrs_reset_cmd,
+	.fdb_add_cmd		= sja1105pqrs_fdb_add,
+	.fdb_del_cmd		= sja1105pqrs_fdb_del,
+	.ptp_cmd_packing	= sja1105pqrs_ptp_cmd_packing,
+	.rxtstamp		= sja1105_rxtstamp,
+	.clocking_setup		= sja1105_clocking_setup,
+	.pcs_mdio_read		= sja1105_pcs_mdio_read,
+	.pcs_mdio_write		= sja1105_pcs_mdio_write,
+	.port_speed		= {
+		[SJA1105_SPEED_AUTO] = 0,
+		[SJA1105_SPEED_10MBPS] = 3,
+		[SJA1105_SPEED_100MBPS] = 2,
+		[SJA1105_SPEED_1000MBPS] = 1,
+		[SJA1105_SPEED_2500MBPS] = 0, /* Not supported */
+	},
+	.supports_mii		= {true, true, true, true, true},
+	.supports_rmii		= {true, true, true, true, true},
+	.supports_rgmii		= {true, true, true, true, true},
+	.supports_sgmii		= {false, false, false, false, true},
+	.name			= "SJA1105S",
+};
+
+const struct sja1105_info sja1110a_info = {
+	.device_id		= SJA1110_DEVICE_ID,
+	.part_no		= SJA1110A_PART_NO,
+	.static_ops		= sja1110_table_ops,
+	.dyn_ops		= sja1110_dyn_ops,
+	.regs			= &sja1110_regs,
+	.tag_proto		= DSA_TAG_PROTO_SJA1110,
+	.can_limit_mcast_flood	= true,
+	.multiple_cascade_ports	= true,
+	.ptp_ts_bits		= 32,
+	.ptpegr_ts_bytes	= 8,
+	.max_frame_mem		= SJA1110_MAX_FRAME_MEMORY,
+	.num_ports		= SJA1110_NUM_PORTS,
+	.num_cbs_shapers	= SJA1110_MAX_CBS_COUNT,
+	.setup_rgmii_delay	= sja1110_setup_rgmii_delay,
+	.reset_cmd		= sja1110_reset_cmd,
+	.fdb_add_cmd		= sja1105pqrs_fdb_add,
+	.fdb_del_cmd		= sja1105pqrs_fdb_del,
+	.ptp_cmd_packing	= sja1105pqrs_ptp_cmd_packing,
+	.rxtstamp		= sja1110_rxtstamp,
+	.txtstamp		= sja1110_txtstamp,
+	.disable_microcontroller = sja1110_disable_microcontroller,
+	.pcs_mdio_read		= sja1110_pcs_mdio_read,
+	.pcs_mdio_write		= sja1110_pcs_mdio_write,
+	.port_speed		= {
+		[SJA1105_SPEED_AUTO] = 0,
+		[SJA1105_SPEED_10MBPS] = 4,
+		[SJA1105_SPEED_100MBPS] = 3,
+		[SJA1105_SPEED_1000MBPS] = 2,
+		[SJA1105_SPEED_2500MBPS] = 1,
+	},
+	.supports_mii		= {true, true, true, true, false,
+				   true, true, true, true, true, true},
+	.supports_rmii		= {false, false, true, true, false,
+				   false, false, false, false, false, false},
+	.supports_rgmii		= {false, false, true, true, false,
+				   false, false, false, false, false, false},
+	.supports_sgmii		= {false, true, true, true, true,
+				   false, false, false, false, false, false},
+	.supports_2500basex	= {false, false, false, true, true,
+				   false, false, false, false, false, false},
+	.internal_phy		= {SJA1105_NO_PHY, SJA1105_PHY_BASE_TX,
+				   SJA1105_NO_PHY, SJA1105_NO_PHY,
+				   SJA1105_NO_PHY, SJA1105_PHY_BASE_T1,
+				   SJA1105_PHY_BASE_T1, SJA1105_PHY_BASE_T1,
+				   SJA1105_PHY_BASE_T1, SJA1105_PHY_BASE_T1,
+				   SJA1105_PHY_BASE_T1},
+	.name			= "SJA1110A",
+};
+
+const struct sja1105_info sja1110b_info = {
+	.device_id		= SJA1110_DEVICE_ID,
+	.part_no		= SJA1110B_PART_NO,
+	.static_ops		= sja1110_table_ops,
+	.dyn_ops		= sja1110_dyn_ops,
+	.regs			= &sja1110_regs,
+	.tag_proto		= DSA_TAG_PROTO_SJA1110,
+	.can_limit_mcast_flood	= true,
+	.multiple_cascade_ports	= true,
+	.ptp_ts_bits		= 32,
+	.ptpegr_ts_bytes	= 8,
+	.max_frame_mem		= SJA1110_MAX_FRAME_MEMORY,
+	.num_ports		= SJA1110_NUM_PORTS,
+	.num_cbs_shapers	= SJA1110_MAX_CBS_COUNT,
+	.setup_rgmii_delay	= sja1110_setup_rgmii_delay,
+	.reset_cmd		= sja1110_reset_cmd,
+	.fdb_add_cmd		= sja1105pqrs_fdb_add,
+	.fdb_del_cmd		= sja1105pqrs_fdb_del,
+	.ptp_cmd_packing	= sja1105pqrs_ptp_cmd_packing,
+	.rxtstamp		= sja1110_rxtstamp,
+	.txtstamp		= sja1110_txtstamp,
+	.disable_microcontroller = sja1110_disable_microcontroller,
+	.pcs_mdio_read		= sja1110_pcs_mdio_read,
+	.pcs_mdio_write		= sja1110_pcs_mdio_write,
+	.port_speed		= {
+		[SJA1105_SPEED_AUTO] = 0,
+		[SJA1105_SPEED_10MBPS] = 4,
+		[SJA1105_SPEED_100MBPS] = 3,
+		[SJA1105_SPEED_1000MBPS] = 2,
+		[SJA1105_SPEED_2500MBPS] = 1,
+	},
+	.supports_mii		= {true, true, true, true, false,
+				   true, true, true, true, true, false},
+	.supports_rmii		= {false, false, true, true, false,
+				   false, false, false, false, false, false},
+	.supports_rgmii		= {false, false, true, true, false,
+				   false, false, false, false, false, false},
+	.supports_sgmii		= {false, false, false, true, true,
+				   false, false, false, false, false, false},
+	.supports_2500basex	= {false, false, false, true, true,
+				   false, false, false, false, false, false},
+	.internal_phy		= {SJA1105_NO_PHY, SJA1105_PHY_BASE_TX,
+				   SJA1105_NO_PHY, SJA1105_NO_PHY,
+				   SJA1105_NO_PHY, SJA1105_PHY_BASE_T1,
+				   SJA1105_PHY_BASE_T1, SJA1105_PHY_BASE_T1,
+				   SJA1105_PHY_BASE_T1, SJA1105_PHY_BASE_T1,
+				   SJA1105_NO_PHY},
+	.name			= "SJA1110B",
+};
+
+const struct sja1105_info sja1110c_info = {
+	.device_id		= SJA1110_DEVICE_ID,
+	.part_no		= SJA1110C_PART_NO,
+	.static_ops		= sja1110_table_ops,
+	.dyn_ops		= sja1110_dyn_ops,
+	.regs			= &sja1110_regs,
+	.tag_proto		= DSA_TAG_PROTO_SJA1110,
+	.can_limit_mcast_flood	= true,
+	.multiple_cascade_ports	= true,
+	.ptp_ts_bits		= 32,
+	.ptpegr_ts_bytes	= 8,
+	.max_frame_mem		= SJA1110_MAX_FRAME_MEMORY,
+	.num_ports		= SJA1110_NUM_PORTS,
+	.num_cbs_shapers	= SJA1110_MAX_CBS_COUNT,
+	.setup_rgmii_delay	= sja1110_setup_rgmii_delay,
+	.reset_cmd		= sja1110_reset_cmd,
+	.fdb_add_cmd		= sja1105pqrs_fdb_add,
+	.fdb_del_cmd		= sja1105pqrs_fdb_del,
+	.ptp_cmd_packing	= sja1105pqrs_ptp_cmd_packing,
+	.rxtstamp		= sja1110_rxtstamp,
+	.txtstamp		= sja1110_txtstamp,
+	.disable_microcontroller = sja1110_disable_microcontroller,
+	.pcs_mdio_read		= sja1110_pcs_mdio_read,
+	.pcs_mdio_write		= sja1110_pcs_mdio_write,
+	.port_speed		= {
+		[SJA1105_SPEED_AUTO] = 0,
+		[SJA1105_SPEED_10MBPS] = 4,
+		[SJA1105_SPEED_100MBPS] = 3,
+		[SJA1105_SPEED_1000MBPS] = 2,
+		[SJA1105_SPEED_2500MBPS] = 1,
+	},
+	.supports_mii		= {true, true, true, true, false,
+				   true, true, true, false, false, false},
+	.supports_rmii		= {false, false, true, true, false,
+				   false, false, false, false, false, false},
+	.supports_rgmii		= {false, false, true, true, false,
+				   false, false, false, false, false, false},
+	.supports_sgmii		= {false, false, false, false, true,
+				   false, false, false, false, false, false},
+	.supports_2500basex	= {false, false, false, false, true,
+				   false, false, false, false, false, false},
+	.internal_phy		= {SJA1105_NO_PHY, SJA1105_PHY_BASE_TX,
+				   SJA1105_NO_PHY, SJA1105_NO_PHY,
+				   SJA1105_NO_PHY, SJA1105_PHY_BASE_T1,
+				   SJA1105_PHY_BASE_T1, SJA1105_PHY_BASE_T1,
+				   SJA1105_NO_PHY, SJA1105_NO_PHY,
+				   SJA1105_NO_PHY},
+	.name			= "SJA1110C",
+};
+
+const struct sja1105_info sja1110d_info = {
+	.device_id		= SJA1110_DEVICE_ID,
+	.part_no		= SJA1110D_PART_NO,
+	.static_ops		= sja1110_table_ops,
+	.dyn_ops		= sja1110_dyn_ops,
+	.regs			= &sja1110_regs,
+	.tag_proto		= DSA_TAG_PROTO_SJA1110,
+	.can_limit_mcast_flood	= true,
+	.multiple_cascade_ports	= true,
+	.ptp_ts_bits		= 32,
+	.ptpegr_ts_bytes	= 8,
+	.max_frame_mem		= SJA1110_MAX_FRAME_MEMORY,
+	.num_ports		= SJA1110_NUM_PORTS,
+	.num_cbs_shapers	= SJA1110_MAX_CBS_COUNT,
+	.setup_rgmii_delay	= sja1110_setup_rgmii_delay,
+	.reset_cmd		= sja1110_reset_cmd,
+	.fdb_add_cmd		= sja1105pqrs_fdb_add,
+	.fdb_del_cmd		= sja1105pqrs_fdb_del,
+	.ptp_cmd_packing	= sja1105pqrs_ptp_cmd_packing,
+	.rxtstamp		= sja1110_rxtstamp,
+	.txtstamp		= sja1110_txtstamp,
+	.disable_microcontroller = sja1110_disable_microcontroller,
+	.pcs_mdio_read		= sja1110_pcs_mdio_read,
+	.pcs_mdio_write		= sja1110_pcs_mdio_write,
+	.port_speed		= {
+		[SJA1105_SPEED_AUTO] = 0,
+		[SJA1105_SPEED_10MBPS] = 4,
+		[SJA1105_SPEED_100MBPS] = 3,
+		[SJA1105_SPEED_1000MBPS] = 2,
+		[SJA1105_SPEED_2500MBPS] = 1,
+	},
+	.supports_mii		= {true, false, true, false, false,
+				   true, true, true, false, false, false},
+	.supports_rmii		= {false, false, true, false, false,
+				   false, false, false, false, false, false},
+	.supports_rgmii		= {false, false, true, false, false,
+				   false, false, false, false, false, false},
+	.supports_sgmii		= {false, true, true, true, true,
+				   false, false, false, false, false, false},
+	.supports_2500basex     = {false, false, false, true, true,
+				   false, false, false, false, false, false},
+	.internal_phy		= {SJA1105_NO_PHY, SJA1105_NO_PHY,
+				   SJA1105_NO_PHY, SJA1105_NO_PHY,
+				   SJA1105_NO_PHY, SJA1105_PHY_BASE_T1,
+				   SJA1105_PHY_BASE_T1, SJA1105_PHY_BASE_T1,
+				   SJA1105_NO_PHY, SJA1105_NO_PHY,
+				   SJA1105_NO_PHY},
+	.name			= "SJA1110D",
+};

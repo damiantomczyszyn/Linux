@@ -1,1 +1,2 @@
-onfig/TRACE_BRANCH_PRO
+UGE_HVR1500:
+	case CX2

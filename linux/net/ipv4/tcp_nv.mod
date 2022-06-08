@@ -1,2 +1,1 @@
-t.h \
-    $(wildcar
+n interrupt which s

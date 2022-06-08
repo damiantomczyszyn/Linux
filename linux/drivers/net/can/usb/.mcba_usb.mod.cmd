@@ -1,4 +1,1 @@
-ig/SPI_SLAVE) \
-  include/linux/scatterlist.h \
-    $(wildcard include/config/NEED_SG_DMA_LENGTH) \
-    $(wildcard include/c
+cmd_drivers/net/can/usb/mcba_usb.mod := { echo  drivers/net/can/usb/mcba_usb.o;  echo; } > drivers/net/can/usb/mcba_usb.mod

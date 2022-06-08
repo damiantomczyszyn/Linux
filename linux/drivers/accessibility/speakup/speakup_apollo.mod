@@ -1,2 +1,1 @@
-_P6_NOP) \
-    $(wildcard include/config/MATOM) 
+/* SPDX-License-Identifier: GPL-2.0-or-later */

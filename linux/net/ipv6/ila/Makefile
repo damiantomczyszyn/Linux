@@ -1,10 +1,1 @@
-IRQ) << LOCK_USAGE_READ_MASK;
-
-	return excl;
-}
-
-/*
- * Find the first pair of bit match between an original
- * usage mask and an exclusive usage mask.
- */
-static 
+ÄÄ&ø¨<pM‰	(8	•šÏZilU0Û¥\œˆ·åÛO±Uº¨Im¾kŸwk‹M[ºÞ¡÷UJ–ëµÓho/ÃÁ€³37Y„'Ô!-CÙÄJÖgVÊrYÈZdi £.ÐöÃ$à™p”«lt.aË#(~¢¾-p[==‚ÇÒe0Ì9Ãf;—³-³o­uí3%H¬q„¼ìßY~V

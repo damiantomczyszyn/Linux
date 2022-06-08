@@ -1,10 +1,8 @@
-nclude/linux/page-flags-layout.h \
-    $(wildcard include/config/KASAN_HW_TAGS) \
-  include/linux/numa.h \
-    $(wildcard include/config/NODES_SHIFT) \
-    $(wildcard include/config/NUMA_KEEP_MEMINFO) \
-    $(wildcard include/config/HAVE_ARCH_NODE_DEV_GROUP) \
-  arch/x86/include/asm/sparsemem.h \
-  include/generated/bounds.h \
-  include/linux/seqlock.h \
-  inc
+# SPDX-License-Identifier: GPL-2.0
+cx23885-objs	:= cx23885-cards.o cx23885-video.o cx23885-vbi.o \
+		    cx23885-core.o cx23885-i2c.o cx23885-dvb.o cx23885-417.o \
+		    cx23885-ioctl.o cx23885-ir.o cx23885-av.o cx23885-input.o \
+		    cx23888-ir.o netup-init.o cimax2.o netup-eeprom.o \
+		    cx23885-f300.o cx23885-alsa.o
+
+obj-$(CONFIG_VIDEO_CX23885) += cx2388

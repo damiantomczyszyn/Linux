@@ -1,2 +1,2 @@
-drivers/media/rc/keymaps/rc-imon-rsc.o
-
+3885_BOARD_DVBSKY_T980C:
+	case CX23885_B

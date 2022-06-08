@@ -1,5 +1,1 @@
-dcard include/config/PARAVIRT_XXL) \
-  arch/x86/include/asm/disabled-features.h \
-    $(wildcard include/config/X86_SMAP) \
-    $(wildcard include/config/X86_UMIP) \
-    $(wildcard include/config/X86_INTEL_MEMORY_PROTECTION_KEYS
+cmd_drivers/net/ethernet/8390/ne2k-pci.ko := ld -r -m elf_i386 --build-id=sha1  -T scripts/module.lds -o drivers/net/ethernet/8390/ne2k-pci.ko drivers/net/ethernet/8390/ne2k-pci.o drivers/net/ethernet/8390/ne2k-pci.mod.o;  true

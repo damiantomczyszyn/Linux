@@ -1,3 +1,1 @@
-dcard include/config/PARAVIRT_XXL) \
-  arch/x86/include/asm/disabled-features.h \
-    $(wildcard include/config/X
+cmd_drivers/net/dsa/realtek/modules.order := {  :; } | awk '!x[$$0]++' - > drivers/net/dsa/realtek/modules.order

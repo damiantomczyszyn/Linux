@@ -1,2 +1,2 @@
-drivers/media/rc/keymaps/rc-msi-digivox-iii.o
-
+// SPDX-License-Identifier: GPL-2.0-or-later
+/*

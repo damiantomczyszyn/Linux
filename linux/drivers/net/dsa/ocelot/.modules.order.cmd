@@ -1,1 +1,1 @@
-cmd_drivers/media/i2c/uda1342.o := gcc -Wp,-MMD,drivers/media/i2c/.uda1342.o.d -nostdinc -I./arch/x86/include -
+cmd_drivers/net/dsa/ocelot/modules.order := {  :; } | awk '!x[$$0]++' - > drivers/net/dsa/ocelot/modules.order

@@ -1,6 +1,10 @@
-  $(wildcard include/config/ALTERNATE_USER_ADDRESS_SPACE) \
-  arch/x86/include/asm/uaccess_32.h \
-  include/linux/cred.h \
-    $(wildcard include/config/DEBUG_CREDENTIALS) \
-  include/linux/key.h \
-    $(wildcard inc
+k_struct *curr,
+				 struct task_struct *next)
+{
+	if (static_branch_unlikely(&preempt_notifier_key))
+		__fire_sched_out_preempt_notifiers(curr, next);
+}
+
+#else /* !CONFIG_PREEMPT_NOTIFIERS */
+
+static inline void fire

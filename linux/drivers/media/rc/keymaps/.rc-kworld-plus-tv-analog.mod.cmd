@@ -1,1 +1,5 @@
-cmd_drivers/media/rc/keymaps/rc-kworld-plus-tv-analog.mod := { echo  drivers/media/rc/keymaps/rc-kworld-plus-tv-analog.o;  echo; } > drivers/media/rc/keymaps/rc-kworld-plus-tv-analog.mod
+->src_sel_val     = CX23885_SRC_SEL_PARALLEL_MPEG_VIDEO;
+		break;
+	case CX23885_BOARD_DVICO_FUSIONHDTV_7_DUAL_EXP:
+	case CX23885_BOARD_DVICO_FUSIONHDTV_DVB_T_DUAL_EXP:
+	case CX23885_BOARD

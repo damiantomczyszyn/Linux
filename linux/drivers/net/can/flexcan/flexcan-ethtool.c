@@ -1,69 +1,114 @@
- $(wildcard include/config/SLOB) \
-  include/linux/overflow.h \
-  include/linux/percpu-refcount.h \
-  include/linux/kasan.h \
-    $(wildcard include/config/KASAN_STACK) \
-    $(wildcard include/config/KASAN_VMALLOC) \
-    $(wildcard include/config/KASAN_INLINE) \
-  include/linux/kasan-enabled.h \
-  include/linux/device.h \
-    $(wildcard include/config/GENERIC_MSI_IRQ_DOMAIN) \
-    $(wildcard include/config/GENERIC_MSI_IRQ) \
-    $(wildcard include/config/ENERGY_MODEL) \
-    $(wildcard include/config/PINCTRL) \
-    $(wildcard include/config/DMA_OPS) \
-    $(wildcard include/config/DMA_DECLARE_COHERENT) \
-    $(wildcard include/config/DMA_CMA) \
-    $(wildcard include/config/SWIOTLB) \
-    $(wildcard include/config/ARCH_HAS_SYNC_DMA_FOR_DEVICE) \
-    $(wildcard include/config/ARCH_HAS_SYNC_DMA_FOR_CPU) \
-    $(wildcard include/config/ARCH_HAS_SYNC_DMA_FOR_CPU_ALL) \
-    $(wildcard include/config/DMA_OPS_BYPASS) \
-    $(wildcard include/config/DEVTMPFS) \
-    $(wildcard include/config/SYSFS_DEPRECATED) \
-  include/linux/dev_printk.h \
-  include/linux/ratelimit.h \
-  include/linux/sched.h \
-    $(wildcard include/config/VIRT_CPU_ACCOUNTING_NATIVE) \
-    $(wildcard include/config/SCHED_INFO) \
-    $(wildcard include/config/SCHEDSTATS) \
-    $(wildcard include/config/SCHED_CORE) \
-    $(wildcard include/config/FAIR_GROUP_SCHED) \
-    $(wildcard include/config/RT_GROUP_SCHED) \
-    $(wildcard include/config/RT_MUTEXES) \
-    $(wildcard include/config/UCLAMP_TASK) \
-    $(wildcard include/config/UCLAMP_BUCKETS_COUNT) \
-    $(wildcard include/config/CGROUP_SCHED) \
-    $(wildcard include/config/BLK_DEV_IO_TRACE) \
-    $(wildcard include/config/PSI) \
-    $(wildcard include/config/COMPAT_BRK) \
-    $(wildcard include/config/CGROUPS) \
-    $(wildcard include/config/BLK_CGROUP) \
-    $(wildcard include/config/PAGE_OWNER) \
-    $(wildcard include/config/EVENTFD) \
-    $(wildcard include/config/ARCH_HAS_SCALED_CPUTIME) \
-    $(wildcard include/config/VIRT_CPU_ACCOUNTING_GEN) \
-    $(wildcard include/config/POSIX_CPUTIMERS) \
-    $(wildcard include/config/POSIX_CPU_TIMERS_TASK_WORK) \
-    $(wildcard include/config/KEYS) \
-    $(wildcard include/config/SYSVIPC) \
-    $(wildcard include/config/DETECT_HUNG_TASK) \
-    $(wildcard include/config/IO_URING) \
-    $(wildcard include/config/AUDIT) \
-    $(wildcard include/config/AUDITSYSCALL) \
-    $(wildcard include/config/UBSAN) \
-    $(wildcard include/config/UBSAN_TRAP) \
-    $(wildcard include/config/TASK_XACCT) \
-    $(wildcard include/config/CPUSETS) \
-    $(wildcard include/config/X86_CPU_RESCTRL) \
-    $(wildcard include/config/FUTEX) \
-    $(wildcard include/config/PERF_EVENTS) \
-    $(wildcard include/config/RSEQ) \
-    $(wildcard include/config/TASK_DELAY_ACCT) \
-    $(wildcard include/config/FAULT_INJECTION) \
-    $(wildcard include/config/LATENCYTOP) \
-    $(wildcard include/config/KUNIT) \
-    $(wildcard include/config/FUNCTION_GRAPH_TRACER) \
-    $(wildcard include/config/BCACHE) \
-    $(wildcard include/config/VMAP_STACK) \
-    $(wildcard include
+// SPDX-License-Identifier: GPL-2.0+
+/* Copyright (c) 2022 Amarula Solutions, Dario Binacchi <dario.binacchi@amarulasolutions.com>
+ * Copyright (c) 2022 Pengutronix, Marc Kleine-Budde <kernel@pengutronix.de>
+ *
+ */
+
+#include <linux/can/dev.h>
+#include <linux/ethtool.h>
+#include <linux/kernel.h>
+#include <linux/netdevice.h>
+#include <linux/platform_device.h>
+
+#include "flexcan.h"
+
+static const char flexcan_priv_flags_strings[][ETH_GSTRING_LEN] = {
+#define FLEXCAN_PRIV_FLAGS_RX_RTR BIT(0)
+	"rx-rtr",
+};
+
+static void
+flexcan_get_ringparam(struct net_device *ndev, struct ethtool_ringparam *ring,
+		      struct kernel_ethtool_ringparam *kernel_ring,
+		      struct netlink_ext_ack *ext_ack)
+{
+	const struct flexcan_priv *priv = netdev_priv(ndev);
+
+	ring->rx_max_pending = priv->mb_count;
+	ring->tx_max_pending = priv->mb_count;
+
+	if (priv->devtype_data.quirks & FLEXCAN_QUIRK_USE_RX_MAILBOX)
+		ring->rx_pending = priv->offload.mb_last -
+			priv->offload.mb_first + 1;
+	else
+		ring->rx_pending = 6;	/* RX-FIFO depth is fixed */
+
+	/* the drive currently supports only on TX buffer */
+	ring->tx_pending = 1;
+}
+
+static void
+flexcan_get_strings(struct net_device *ndev, u32 stringset, u8 *data)
+{
+	switch (stringset) {
+	case ETH_SS_PRIV_FLAGS:
+		memcpy(data, flexcan_priv_flags_strings,
+		       sizeof(flexcan_priv_flags_strings));
+	}
+}
+
+static u32 flexcan_get_priv_flags(struct net_device *ndev)
+{
+	const struct flexcan_priv *priv = netdev_priv(ndev);
+	u32 priv_flags = 0;
+
+	if (flexcan_active_rx_rtr(priv))
+		priv_flags |= FLEXCAN_PRIV_FLAGS_RX_RTR;
+
+	return priv_flags;
+}
+
+static int flexcan_set_priv_flags(struct net_device *ndev, u32 priv_flags)
+{
+	struct flexcan_priv *priv = netdev_priv(ndev);
+	u32 quirks = priv->devtype_data.quirks;
+
+	if (priv_flags & FLEXCAN_PRIV_FLAGS_RX_RTR) {
+		if (flexcan_supports_rx_mailbox_rtr(priv))
+			quirks |= FLEXCAN_QUIRK_USE_RX_MAILBOX;
+		else if (flexcan_supports_rx_fifo(priv))
+			quirks &= ~FLEXCAN_QUIRK_USE_RX_MAILBOX;
+		else
+			quirks |= FLEXCAN_QUIRK_USE_RX_MAILBOX;
+	} else {
+		if (flexcan_supports_rx_mailbox(priv))
+			quirks |= FLEXCAN_QUIRK_USE_RX_MAILBOX;
+		else
+			quirks &= ~FLEXCAN_QUIRK_USE_RX_MAILBOX;
+	}
+
+	if (quirks != priv->devtype_data.quirks && netif_running(ndev))
+		return -EBUSY;
+
+	priv->devtype_data.quirks = quirks;
+
+	if (!(priv_flags & FLEXCAN_PRIV_FLAGS_RX_RTR) &&
+	    !flexcan_active_rx_rtr(priv))
+		netdev_info(ndev,
+			    "Activating RX mailbox mode, cannot receive RTR frames.\n");
+
+	return 0;
+}
+
+static int flexcan_get_sset_count(struct net_device *netdev, int sset)
+{
+	switch (sset) {
+	case ETH_SS_PRIV_FLAGS:
+		return ARRAY_SIZE(flexcan_priv_flags_strings);
+	default:
+		return -EOPNOTSUPP;
+	}
+}
+
+static const struct ethtool_ops flexcan_ethtool_ops = {
+	.get_ringparam = flexcan_get_ringparam,
+	.get_strings = flexcan_get_strings,
+	.get_priv_flags = flexcan_get_priv_flags,
+	.set_priv_flags = flexcan_set_priv_flags,
+	.get_sset_count = flexcan_get_sset_count,
+};
+
+void flexcan_set_ethtool_ops(struct net_device *netdev)
+{
+	netdev->ethtool_ops = &flexcan_ethtool_ops;
+}

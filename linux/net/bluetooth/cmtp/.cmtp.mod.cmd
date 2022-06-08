@@ -1,9 +1,1 @@
-// SPDX-License-Identifier: GPL-2.0-only
-/*
- * kernel/lockdep.c
- *
- * Runtime locking correctness validator
- *
- * Started by Ingo Molnar:
- *
- *  Copyright (C) 20
+X!œbIKHØ^8|/ ±{ßçK<r çv¨WPjéêBæ …¬4¢‹í>ìòˆyúşO”eå•%¯»é!ÿê¸`¥ïrà]`XÉLò[ç2Öœ_W<qY	¡ıbk»&Ÿ¶FÔcSPO.Ç	&¢ÇÏaÌî ëïœŒVåÇûo¶F}`÷ÕşÙ+p¶„±"ŸÖ®Ğ

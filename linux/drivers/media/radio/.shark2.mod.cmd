@@ -1,1 +1,8 @@
-cmd_drivers/media/radio/shark2.mod := { echo  drivers/media/radio/radio-shark2.o drivers/media/radio/radio-tea5777.o;  echo; } > drivers/media/radio/shark2.mod
+>drv_priv;
+	struct cx23885_buffer *buf = container_of(vbuf,
+		struct cx23885_buffer, vb);
+
+	cx23885_free_buffer(dev, buf);
+}
+
+static void buffer_queue(struct vb

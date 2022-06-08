@@ -1,2 +1,1 @@
-drivers/media/rc/keymaps/rc-pine64.o
-
+        = LGDT3306A_TPCLK_RISING_EDGE,

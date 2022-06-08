@@ -1,20 +1,17 @@
-p_next_lockchain(long i);
-unsigned long lock_chain_count(void);
-extern unsigned long nr_stack_trace_entries;
+ue of having been offline.
+ */
+static int rcu_implicit_dynticks_qs(struct rcu_data *rdp)
+{
+	unsigned long jtsq;
+	struct rcu_node *rnp = rdp->mynode;
 
-extern unsigned int nr_hardirq_chains;
-extern unsigned int nr_softirq_chains;
-extern unsigned int nr_process_chains;
-extern unsigned int nr_free_chain_hlocks;
-extern unsigned int nr_lost_chain_hlocks;
-extern unsigned int nr_large_chain_blocks;
-
-extern unsigned int max_lockdep_depth;
-extern unsigned int max_bfs_queue_depth;
-extern unsigned long max_lock_class_idx;
-
-extern struct lock_class lock_classes[MAX_LOCKDEP_KEYS];
-extern unsigned long lock_classes_in_use[];
-
-#ifdef CONFIG_PROVE_LOCKING
-exte
+	/*
+	 * If the CPU passed through or entered a dynticks idle phase with
+	 * no active irq/NMI handlers, then we can safely pretend that the CPU
+	 * already acknowledged the request to pass through a quiescent
+	 * state.  Either way, that CPU cannot possibly be in an RCU
+	 * read-side critical section that started before the beginning
+	 * of the current RCU grace period.
+	 */
+	if (rcu_dynticks_in_eqs_since(rdp, rdp->dynticks_snap)) {
+		trace_rcu_fqs(rcu_stat

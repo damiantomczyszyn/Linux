@@ -1,1 +1,11 @@
-cmd_drivers/media/i2c/vp27smpx.o := gcc -Wp,-MMD,drivers/media/i2c/.vp27smpx.o.d -nostdinc -I./arch/x86/include -I./arch/x86/include/generated  -I./include -I./arch/x86/include/uapi -I./arch/x86/include/generated/uapi -I./include/uapi -I./include/generated/uapi -include ./include/linux/compiler-version.h -include ./include/linux/kconfig.h -inc
+# SPDX-License-Identifier: GPL-2.0
+config NET_DSA_HIRSCHMANN_HELLCREEK
+	tristate "Hirschmann Hellcreek TSN Switch support"
+	depends on HAS_IOMEM
+	depends on NET_DSA
+	depends on PTP_1588_CLOCK
+	depends on LEDS_CLASS
+	depends on NET_SCH_TAPRIO
+	select NET_DSA_TAG_HELLCREEK
+	help
+	  This driver adds support for Hirschmann Hellcreek TSN switches.

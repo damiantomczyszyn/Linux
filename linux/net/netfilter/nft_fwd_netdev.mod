@@ -1,4 +1,2 @@
-silent)
-		return;
-
-	pr_warn("\n"
+er->owner);
+				i2c_unregister_d

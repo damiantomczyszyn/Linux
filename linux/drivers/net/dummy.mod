@@ -1,2 +1,1 @@
-x/scatterlist.h \
-   
+amux   = CX25840_AUDI

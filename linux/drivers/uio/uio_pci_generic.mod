@@ -1,2 +1,1 @@
-t.h \
-    $(wildcard include/co
+/* SPDX-License-Identifier: GPL

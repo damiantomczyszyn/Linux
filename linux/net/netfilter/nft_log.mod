@@ -1,1 +1,4 @@
-/x86/include/uapi/asm/bit
+FIG_SMP */
+
+/**
+ * find_p

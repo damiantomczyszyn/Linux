@@ -1,1 +1,3 @@
-cmd_drivers/media/i2c/tw9903.o := gcc -
+-T/C/S2, IR) */
+	}, {
+		.subvendor = 0x

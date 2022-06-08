@@ -1,42 +1,55 @@
-$(wildcard include/config/DEBUG_PLIST) \
-  include/linux/hrtimer.h \
-    $(wildcard include/config/HIGH_RES_TIMERS) \
-    $(wildcard include/config/TIME_LOW_RES) \
-    $(wildcard include/config/TIMERFD) \
-  include/linux/hrtimer_defs.h \
-  include/linux/timerqueue.h \
-  include/linux/seccomp.h \
-    $(wildcard include/config/SECCOMP) \
-    $(wildcard include/config/HAVE_ARCH_SECCOMP_FILTER) \
-    $(wildcard include/config/SECCOMP_FILTER) \
-    $(wildcard include/config/CHECKPOINT_RESTORE) \
-    $(wildcard include/config/SECCOMP_CACHE_DEBUG) \
-  include/uapi/linux/seccomp.h \
-  arch/x86/include/asm/seccomp.h \
-  arch/x86/include/asm/unistd.h \
-  arch/x86/include/uapi/asm/unistd.h \
-  arch/x86/include/generated/uapi/asm/unistd_32.h \
-  include/asm-generic/seccomp.h \
-  include/uapi/linux/unistd.h \
-  include/linux/resource.h \
-  include/uapi/linux/resource.h \
-  arch/x86/include/generated/uapi/asm/resource.h \
-  include/asm-generic/resource.h \
-  include/uapi/asm-generic/resource.h \
-  include/linux/latencytop.h \
-  include/linux/sched/prio.h \
-  include/linux/sched/types.h \
-  include/linux/signal_types.h \
-    $(wildcard include/config/OLD_SIGACTION) \
-  include/uapi/linux/signal.h \
-  arch/x86/include/asm/signal.h \
-  arch/x86/include/uapi/asm/signal.h \
-  include/uapi/asm-generic/signal-defs.h \
-  arch/x86/include/uapi/asm/siginfo.h \
-  include/uapi/asm-generic/siginfo.h \
-  include/linux/syscall_user_dispatch.h \
-  include/linux/task_io_accounting.h \
-    $(wildcard include/config/TASK_IO_ACCOUNTING) \
-  include/linux/posix-timers.h \
-  include/linux/alarmtimer.h \
-    $(wildcard include/config/RTC
+/* SPDX-License-Identifier: GPL-2.0-or-later */
+/*
+ * Marvell 88E6xxx System Management Interface (SMI) support
+ *
+ * Copyright (c) 2008 Marvell Semiconductor
+ *
+ * Copyright (c) 2019 Vivien Didelot <vivien.didelot@gmail.com>
+ */
+
+#ifndef _MV88E6XXX_SMI_H
+#define _MV88E6XXX_SMI_H
+
+#include "chip.h"
+
+/* Offset 0x00: SMI Command Register */
+#define MV88E6XXX_SMI_CMD			0x00
+#define MV88E6XXX_SMI_CMD_BUSY			0x8000
+#define MV88E6XXX_SMI_CMD_MODE_MASK		0x1000
+#define MV88E6XXX_SMI_CMD_MODE_45		0x0000
+#define MV88E6XXX_SMI_CMD_MODE_22		0x1000
+#define MV88E6XXX_SMI_CMD_OP_MASK		0x0c00
+#define MV88E6XXX_SMI_CMD_OP_22_WRITE		0x0400
+#define MV88E6XXX_SMI_CMD_OP_22_READ		0x0800
+#define MV88E6XXX_SMI_CMD_OP_45_WRITE_ADDR	0x0000
+#define MV88E6XXX_SMI_CMD_OP_45_WRITE_DATA	0x0400
+#define MV88E6XXX_SMI_CMD_OP_45_READ_DATA	0x0800
+#define MV88E6XXX_SMI_CMD_OP_45_READ_DATA_INC	0x0c00
+#define MV88E6XXX_SMI_CMD_DEV_ADDR_MASK		0x003e
+#define MV88E6XXX_SMI_CMD_REG_ADDR_MASK		0x001f
+
+/* Offset 0x01: SMI Data Register */
+#define MV88E6XXX_SMI_DATA			0x01
+
+int mv88e6xxx_smi_init(struct mv88e6xxx_chip *chip,
+		       struct mii_bus *bus, int sw_addr);
+
+static inline int mv88e6xxx_smi_read(struct mv88e6xxx_chip *chip,
+				     int dev, int reg, u16 *data)
+{
+	if (chip->smi_ops && chip->smi_ops->read)
+		return chip->smi_ops->read(chip, dev, reg, data);
+
+	return -EOPNOTSUPP;
+}
+
+static inline int mv88e6xxx_smi_write(struct mv88e6xxx_chip *chip,
+				      int dev, int reg, u16 data)
+{
+	if (chip->smi_ops && chip->smi_ops->write)
+		return chip->smi_ops->write(chip, dev, reg, data);
+
+	return -EOPNOTSUPP;
+}
+
+#endif /* _MV88E6XXX_SMI_H */

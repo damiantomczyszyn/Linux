@@ -1,6 +1,8 @@
-lude/config/PHYSICAL_ALIGN) \
-    $(wildcard include/config/DYNAMIC_PHYSICAL_MASK) \
-  include/linux/mem_encrypt.h \
-    $(wildcard include/config/ARCH_HAS_MEM_ENCRYPT) \
-  arch/x86/include/asm/mem_encrypt.h \
-  include/linux/cc_pla
+# SPDX-License-Identifier: GPL-2.0-only
+#
+#  Makefile for the Bosch CC770 CAN controller drivers.
+#
+
+obj-$(CONFIG_CAN_CC770) += cc770.o
+obj-$(CONFIG_CAN_CC770_ISA) += cc770_isa.o
+obj-$(CONFIG_CAN_CC770_PLATFORM) += cc770_platform.o

@@ -1,1 +1,1 @@
-cmd_drivers/media/i
+ct tda10071_platfor

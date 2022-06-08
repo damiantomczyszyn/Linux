@@ -1,1 +1,7 @@
-cmd_drivers/media/rc/keymaps/rc-tt-1500.mod := { echo  drivers/media/rc/keymaps/rc-tt-1500.o;  echo; } > drivers/media/rc/keymaps/rc-tt-1500.mod
+ION		0x000004B4
+#define VBI_PASS_CTRL		0x000004BC
+
+/* Audio Decoder Registers */
+/* 8051 Configuration */
+#define DL_CTL		0x00000800
+#define STD_

@@ -1,1 +1,1 @@
- $(wildcard include/config/SLOB) \
+cx23885-cards.c                    

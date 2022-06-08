@@ -1,2 +1,1 @@
-
-    $(wildcard include/config/PARAVIRT_X
+// SPDX-License-Identifier: GPL-2.0-or-la

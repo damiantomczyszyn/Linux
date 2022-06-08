@@ -1,2 +1,1 @@
-nux/pid.h \
-  include/linux/rculist
+/* SPDX-License-Identifier: GPL-2.0

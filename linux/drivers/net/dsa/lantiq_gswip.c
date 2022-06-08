@@ -1,844 +1,2288 @@
-e/config/ACPI_APEI_GHES) \
-    $(wildcard include/config/INTEL_TXT) \
-  arch/x86/include/generated/asm/kmap_size.h \
-  include/asm-generic/kmap_size.h \
-    $(wildcard include/config/DEBUG_KMAP_LOCAL) \
-  include/asm-generic/fixmap.h \
-  arch/x86/include/asm/irq_vectors.h \
-    $(wildcard include/config/HAVE_KVM) \
-    $(wildcard include/config/HYPERV) \
-    $(wildcard include/config/PCI_MSI) \
-  arch/x86/include/asm/cpu_entry_area.h \
-  arch/x86/include/asm/intel_ds.h \
-  arch/x86/include/asm/pgtable_areas.h \
-  arch/x86/include/asm/pgtable_32_areas.h \
-  include/uapi/linux/elf.h \
-  include/uapi/linux/elf-em.h \
-  include/linux/kobject.h \
-    $(wildcard include/config/UEVENT_HELPER) \
-    $(wildcard include/config/DEBUG_KOBJECT_RELEASE) \
-  include/linux/sysfs.h \
-  include/linux/kernfs.h \
-    $(wildcard include/config/KERNFS) \
-  include/linux/idr.h \
-  include/linux/radix-tree.h \
-  include/linux/xarray.h \
-    $(wildcard include/config/XARRAY_MULTI) \
-  include/linux/kconfig.h \
-  include/linux/kobject_ns.h \
-  include/linux/moduleparam.h \
-    $(wildcard include/config/ALPHA) \
-    $(wildcard include/config/IA64) \
-    $(wildcard include/config/PPC64) \
-  include/linux/rbtree_latch.h \
-  include/linux/error-injection.h \
-  include/asm-generic/error-injection.h \
-  include/linux/cfi.h \
-    $(wildcard include/config/CFI_CLANG_SHADOW) \
-  arch/x86/include/asm/module.h \
-    $(wildcard include/config/UNWINDER_ORC) \
-  include/asm-generic/module.h \
-    $(wildcard include/config/HAVE_MOD_ARCH_SPECIFIC) \
-    $(wildcard include/config/MODULES_USE_ELF_REL) \
-    $(wildcard include/config/MODULES_USE_ELF_RELA) \
-  arch/x86/include/asm/orc_types.h \
-  include/linux/sched.h \
-    $(wildcard include/config/VIRT_CPU_ACCOUNTING_NATIVE) \
-    $(wildcard include/config/SCHED_INFO) \
-    $(wildcard include/config/SCHEDSTATS) \
-    $(wildcard include/config/SCHED_CORE) \
-    $(wildcard include/config/FAIR_GROUP_SCHED) \
-    $(wildcard include/config/RT_GROUP_SCHED) \
-    $(wildcard include/config/RT_MUTEXES) \
-    $(wildcard include/config/UCLAMP_TASK) \
-    $(wildcard include/config/UCLAMP_BUCKETS_COUNT) \
-    $(wildcard include/config/CGROUP_SCHED) \
-    $(wildcard include/config/BLK_DEV_IO_TRACE) \
-    $(wildcard include/config/PSI) \
-    $(wildcard include/config/COMPAT_BRK) \
-    $(wildcard include/config/CGROUPS) \
-    $(wildcard include/config/BLK_CGROUP) \
-    $(wildcard include/config/PAGE_OWNER) \
-    $(wildcard include/config/EVENTFD) \
-    $(wildcard include/config/ARCH_HAS_SCALED_CPUTIME) \
-    $(wildcard include/config/VIRT_CPU_ACCOUNTING_GEN) \
-    $(wildcard include/config/POSIX_CPUTIMERS) \
-    $(wildcard include/config/POSIX_CPU_TIMERS_TASK_WORK) \
-    $(wildcard include/config/KEYS) \
-    $(wildcard include/config/SYSVIPC) \
-    $(wildcard include/config/DETECT_HUNG_TASK) \
-    $(wildcard include/config/IO_URING) \
-    $(wildcard include/config/AUDIT) \
-    $(wildcard include/config/AUDITSYSCALL) \
-    $(wildcard include/config/UBSAN) \
-    $(wildcard include/config/UBSAN_TRAP) \
-    $(wildcard include/config/TASK_XACCT) \
-    $(wildcard include/config/CPUSETS) \
-    $(wildcard include/config/X86_CPU_RESCTRL) \
-    $(wildcard include/config/FUTEX) \
-    $(wildcard include/config/PERF_EVENTS) \
-    $(wildcard include/config/RSEQ) \
-    $(wildcard include/config/TASK_DELAY_ACCT) \
-    $(wildcard include/config/FAULT_INJECTION) \
-    $(wildcard include/config/LATENCYTOP) \
-    $(wildcard include/config/KUNIT) \
-    $(wildcard include/config/FUNCTION_GRAPH_TRACER) \
-    $(wildcard include/config/BCACHE) \
-    $(wildcard include/config/VMAP_STACK) \
-    $(wildcard include/config/SECURITY) \
-    $(wildcard include/config/BPF_SYSCALL) \
-    $(wildcard include/config/GCC_PLUGIN_STACKLEAK) \
-    $(wildcard include/config/X86_MCE) \
-    $(wildcard include/config/KRETPROBES) \
-    $(wildcard include/config/RETHOOK) \
-    $(wildcard include/config/ARCH_HAS_PARANOID_L1D_FLUSH) \
-    $(wildcard include/config/ARCH_TASK_STRUCT_ON_STACK) \
-    $(wildcard include/config/DEBUG_RSEQ) \
-  include/uapi/linux/sched.h \
-  include/linux/pid.h \
-  include/linux/rculist.h \
-    $(wildcard include/config/PROVE_RCU_LIST) \
-  include/linux/sem.h \
-  include/uapi/linux/sem.h \
-  include/linux/ipc.h \
-  include/linux/rhashtable-types.h \
-  include/uapi/linux/ipc.h \
-  arch/x86/include/generated/uapi/asm/ipcbuf.h \
-  include/uapi/asm-generic/ipcbuf.h \
-  arch/x86/include/uapi/asm/sembuf.h \
-  include/linux/shm.h \
-  include/uapi/linux/shm.h \
-  include/uapi/asm-generic/hugetlb_encode.h \
-  arch/x86/include/uapi/asm/shmbuf.h \
-  include/uapi/asm-generic/shmbuf.h \
-  arch/x86/include/asm/shmparam.h \
-  include/linux/plist.h \
-    $(wildcard include/config/DEBUG_PLIST) \
-  include/linux/hrtimer.h \
-    $(wildcard include/config/HIGH_RES_TIMERS) \
-    $(wildcard include/config/TIME_LOW_RES) \
-    $(wildcard include/config/TIMERFD) \
-  include/linux/hrtimer_defs.h \
-  include/linux/timerqueue.h \
-  include/linux/seccomp.h \
-    $(wildcard include/config/SECCOMP) \
-    $(wildcard include/config/HAVE_ARCH_SECCOMP_FILTER) \
-    $(wildcard include/config/SECCOMP_FILTER) \
-    $(wildcard include/config/CHECKPOINT_RESTORE) \
-    $(wildcard include/config/SECCOMP_CACHE_DEBUG) \
-  include/uapi/linux/seccomp.h \
-  arch/x86/include/asm/seccomp.h \
-  arch/x86/include/asm/unistd.h \
-  arch/x86/include/uapi/asm/unistd.h \
-  arch/x86/include/generated/uapi/asm/unistd_32.h \
-  include/asm-generic/seccomp.h \
-  include/uapi/linux/unistd.h \
-  include/linux/resource.h \
-  include/uapi/linux/resource.h \
-  arch/x86/include/generated/uapi/asm/resource.h \
-  include/asm-generic/resource.h \
-  include/uapi/asm-generic/resource.h \
-  include/linux/latencytop.h \
-  include/linux/sched/prio.h \
-  include/linux/sched/types.h \
-  include/linux/signal_types.h \
-    $(wildcard include/config/OLD_SIGACTION) \
-  include/uapi/linux/signal.h \
-  arch/x86/include/asm/signal.h \
-  arch/x86/include/uapi/asm/signal.h \
-  include/uapi/asm-generic/signal-defs.h \
-  arch/x86/include/uapi/asm/siginfo.h \
-  include/uapi/asm-generic/siginfo.h \
-  include/linux/syscall_user_dispatch.h \
-  include/linux/task_io_accounting.h \
-    $(wildcard include/config/TASK_IO_ACCOUNTING) \
-  include/linux/posix-timers.h \
-  include/linux/alarmtimer.h \
-    $(wildcard include/config/RTC_CLASS) \
-  include/uapi/linux/rseq.h \
-  include/linux/kcsan.h \
-  include/linux/delay.h \
-  arch/x86/include/asm/delay.h \
-  include/asm-generic/delay.h \
-  include/linux/slab.h \
-    $(wildcard include/config/DEBUG_SLAB) \
-    $(wildcard include/config/FAILSLAB) \
-    $(wildcard include/config/MEMCG_KMEM) \
-    $(wildcard include/config/KASAN) \
-    $(wildcard include/config/SLAB) \
-    $(wildcard include/config/SLUB) \
-    $(wildcard include/config/SLOB) \
-  include/linux/overflow.h \
-  include/linux/percpu-refcount.h \
-  include/linux/kasan.h \
-    $(wildcard include/config/KASAN_STACK) \
-    $(wildcard include/config/KASAN_VMALLOC) \
-    $(wildcard include/config/KASAN_INLINE) \
-  include/linux/kasan-enabled.h \
-  include/linux/videodev2.h \
-  include/uapi/linux/videodev2.h \
-    $(wildcard include/config/VIDEO_ADV_DEBUG) \
-  include/uapi/linux/v4l2-common.h \
-  include/uapi/linux/v4l2-controls.h \
-  include/linux/i2c.h \
-    $(wildcard include/config/I2C) \
-    $(wildcard include/config/I2C_SLAVE) \
-    $(wildcard include/config/I2C_BOARDINFO) \
-    $(wildcard include/config/I2C_MUX) \
-    $(wildcard include/config/OF) \
-    $(wildcard include/config/ACPI) \
-  include/linux/acpi.h \
-    $(wildcard include/config/ACPI_DEBUGGER) \
-    $(wildcard include/config/ACPI_TABLE_LIB) \
-    $(wildcard include/config/LOONGARCH) \
-    $(wildcard include/config/ARM64) \
-    $(wildcard include/config/ACPI_PROCESSOR_CSTATE) \
-    $(wildcard include/config/ACPI_HOTPLUG_CPU) \
-    $(wildcard include/config/ACPI_HOTPLUG_IOAPIC) \
-    $(wildcard include/config/PCI) \
-    $(wildcard include/config/ACPI_WMI) \
-    $(wildcard include/config/ACPI_NUMA) \
-    $(wildcard include/config/HIBERNATION) \
-    $(wildcard include/config/ACPI_HOTPLUG_MEMORY) \
-    $(wildcard include/config/ACPI_CONTAINER) \
-    $(wildcard include/config/ACPI_GTDT) \
-    $(wildcard include/config/PM) \
-    $(wildcard include/config/GPIOLIB) \
-    $(wildcard include/config/ACPI_TABLE_UPGRADE) \
-    $(wildcard include/config/ACPI_WATCHDOG) \
-    $(wildcard include/config/ACPI_SPCR_TABLE) \
-    $(wildcard include/config/ACPI_GENERIC_GSI) \
-    $(wildcard include/config/ACPI_LPIT) \
-    $(wildcard include/config/ACPI_PPTT) \
-    $(wildcard include/config/ACPI_PCC) \
-  include/linux/ioport.h \
-  include/linux/irqdomain.h \
-    $(wildcard include/config/IRQ_DOMAIN_HIERARCHY) \
-    $(wildcard include/config/GENERIC_IRQ_DEBUGFS) \
-    $(wildcard include/config/IRQ_DOMAIN) \
-    $(wildcard include/config/IRQ_DOMAIN_NOMAP) \
-  include/linux/irqhandler.h \
-  include/linux/of.h \
-    $(wildcard include/config/OF_DYNAMIC) \
-    $(wildcard include/config/SPARC) \
-    $(wildcard include/config/OF_PROMTREE) \
-    $(wildcard include/config/OF_KOBJ) \
-    $(wildcard include/config/OF_NUMA) \
-    $(wildcard include/config/OF_OVERLAY) \
-  include/linux/mod_devicetable.h \
-  include/linux/uuid.h \
-  include/uapi/linux/uuid.h \
-  include/linux/property.h \
-  include/linux/fwnode.h \
-  include/linux/resource_ext.h \
-  include/linux/device.h \
-    $(wildcard include/config/GENERIC_MSI_IRQ_DOMAIN) \
-    $(wildcard include/config/GENERIC_MSI_IRQ) \
-    $(wildcard include/config/ENERGY_MODEL) \
-    $(wildcard include/config/PINCTRL) \
-    $(wildcard include/config/DMA_OPS) \
-    $(wildcard include/config/DMA_DECLARE_COHERENT) \
-    $(wildcard include/config/DMA_CMA) \
-    $(wildcard include/config/SWIOTLB) \
-    $(wildcard include/config/ARCH_HAS_SYNC_DMA_FOR_DEVICE) \
-    $(wildcard include/config/ARCH_HAS_SYNC_DMA_FOR_CPU) \
-    $(wildcard include/config/ARCH_HAS_SYNC_DMA_FOR_CPU_ALL) \
-    $(wildcard include/config/DMA_OPS_BYPASS) \
-    $(wildcard include/config/DEVTMPFS) \
-    $(wildcard include/config/SYSFS_DEPRECATED) \
-  include/linux/dev_printk.h \
-  include/linux/ratelimit.h \
-  include/linux/energy_model.h \
-  include/linux/sched/cpufreq.h \
-    $(wildcard include/config/CPU_FREQ) \
-  include/linux/sched/topology.h \
-    $(wildcard include/config/SCHED_DEBUG) \
-    $(wildcard include/config/SCHED_MC) \
-    $(wildcard include/config/CPU_FREQ_GOV_SCHEDUTIL) \
-  include/linux/sched/idle.h \
-  include/linux/sched/sd_flags.h \
-  include/linux/klist.h \
-  include/linux/pm.h \
-    $(wildcard include/config/VT_CONSOLE_SLEEP) \
-    $(wildcard include/config/PM_CLK) \
-    $(wildcard include/config/PM_GENERIC_DOMAINS) \
-  include/linux/device/bus.h \
-  include/linux/device/class.h \
-  include/linux/device/driver.h \
-  arch/x86/include/asm/device.h \
-  include/linux/pm_wakeup.h \
-  include/acpi/acpi.h \
-  include/acpi/platform/acenv.h \
-  include/acpi/platform/acgcc.h \
-  include/acpi/platform/aclinux.h \
-    $(wildcard include/config/ACPI_REDUCED_HARDWARE_ONLY) \
-    $(wildcard include/config/ACPI_DEBUG) \
-  include/linux/ctype.h \
-  arch/x86/include/asm/acenv.h \
-  include/acpi/acnames.h \
-  include/acpi/actypes.h \
-  include/acpi/acexcep.h \
-  include/acpi/actbl.h \
-  include/acpi/actbl1.h \
-  include/acpi/actbl2.h \
-  include/acpi/actbl3.h \
-  include/acpi/acrestyp.h \
-  include/acpi/platform/acenvex.h \
-  include/acpi/platform/aclinuxex.h \
-  include/acpi/platform/acgccex.h \
-  include/acpi/acoutput.h \
-  include/acpi/acpiosxf.h \
-  include/acpi/acpixf.h \
-  include/acpi/acconfig.h \
-  include/acpi/acbuffer.h \
-  include/linux/dynamic_debug.h \
-  include/acpi/acpi_bus.h \
-    $(wildcard include/config/X86_ANDROID_TABLETS) \
-    $(wildcard include/config/ACPI_SYSTEM_POWER_STATES_SUPPORT) \
-    $(wildcard include/config/ACPI_SLEEP) \
-  include/acpi/acpi_drivers.h \
-    $(wildcard include/config/ACPI_DOCK) \
-  include/acpi/acpi_numa.h \
-    $(wildcard include/config/ACPI_HMAT) \
-  include/acpi/acpi_io.h \
-  include/linux/io.h \
-    $(wildcard include/config/HAS_IOPORT_MAP) \
-  arch/x86/include/asm/io.h \
-    $(wildcard include/config/MTRR) \
-    $(wildcard include/config/X86_PAT) \
-  arch/x86/include/generated/asm/early_ioremap.h \
-  include/asm-generic/early_ioremap.h \
-    $(wildcard include/config/GENERIC_EARLY_IOREMAP) \
-  include/asm-generic/iomap.h \
-  include/asm-generic/pci_iomap.h \
-    $(wildcard include/config/NO_GENERIC_PCI_IOPORT_MAP) \
-    $(wildcard include/config/GENERIC_PCI_IOMAP) \
-  include/asm-generic/io.h \
-    $(wildcard include/config/GENERIC_IOMAP) \
-    $(wildcard include/config/GENERIC_IOREMAP) \
-    $(wildcard include/config/VIRT_TO_BUS) \
-    $(wildcard include/config/GENERIC_DEVMEM_IS_ALLOWED) \
-  include/linux/logic_pio.h \
-    $(wildcard include/config/INDIRECT_PIO) \
-  include/linux/vmalloc.h \
-    $(wildcard include/config/HAVE_ARCH_HUGE_VMALLOC) \
-  arch/x86/include/asm/vmalloc.h \
-    $(wildcard include/config/HAVE_ARCH_HUGE_VMAP) \
-  arch/x86/include/asm/acpi.h \
-    $(wildcard include/config/ACPI_APEI) \
-  include/acpi/pdc_intel.h \
-  arch/x86/include/asm/numa.h \
-    $(wildcard include/config/NUMA_EMU) \
-  arch/x86/include/asm/numa_32.h \
-  include/linux/regulator/consumer.h \
-    $(wildcard include/config/REGULATOR) \
-  include/linux/suspend.h \
-    $(wildcard include/config/VT) \
-    $(wildcard include/config/SUSPEND) \
-    $(wildcard include/config/HIBERNATION_SNAPSHOT_DEV) \
-    $(wildcard include/config/PM_SLEEP_DEBUG) \
-    $(wildcard include/config/PM_AUTOSLEEP) \
-  include/linux/swap.h \
-    $(wildcard include/config/DEVICE_PRIVATE) \
-    $(wildcard include/config/MIGRATION) \
-    $(wildcard include/config/FRONTSWAP) \
-    $(wildcard include/config/THP_SWAP) \
-    $(wildcard include/config/MEMCG_SWAP) \
-  include/linux/memcontrol.h \
-    $(wildcard include/config/CGROUP_WRITEBACK) \
-  include/linux/cgroup.h \
-    $(wildcard include/config/CGROUP_CPUACCT) \
-    $(wildcard include/config/SOCK_CGROUP_DATA) \
-    $(wildcard include/config/CGROUP_DATA) \
-    $(wildcard include/config/CGROUP_BPF) \
-  include/uapi/linux/cgroupstats.h \
-  include/uapi/linux/taskstats.h \
-  include/linux/fs.h \
-    $(wildcard include/config/READ_ONLY_THP_FOR_FS) \
-    $(wildcard include/config/FS_POSIX_ACL) \
-    $(wildcard include/config/IMA) \
-    $(wildcard include/config/FILE_LOCKING) \
-    $(wildcard include/config/FSNOTIFY) \
-    $(wildcard include/config/FS_ENCRYPTION) \
-    $(wildcard include/config/FS_VERITY) \
-    $(wildcard include/config/EPOLL) \
-    $(wildcard include/config/UNICODE) \
-    $(wildcard include/config/QUOTA) \
-    $(wildcard include/config/FS_DAX) \
-    $(wildcard include/config/BLOCK) \
-  include/linux/wait_bit.h \
-  include/linux/kdev_t.h \
-  include/uapi/linux/kdev_t.h \
-  include/linux/dcache.h \
-  include/linux/rculist_bl.h \
-  include/linux/list_bl.h \
-  include/linux/bit_spinlock.h \
-  include/linux/lockref.h \
-    $(wildcard include/config/ARCH_USE_CMPXCHG_LOCKREF) \
-  include/linux/stringhash.h \
-    $(wildcard include/config/DCACHE_WORD_ACCESS) \
-  include/linux/hash.h \
-    $(wildcard include/config/HAVE_ARCH_HASH) \
-  include/linux/path.h \
-  include/linux/list_lru.h \
-  include/linux/shrinker.h \
-  include/linux/capability.h \
-  include/uapi/linux/capability.h \
-  include/linux/semaphore.h \
-  include/linux/fcntl.h \
-    $(wildcard include/config/ARCH_32BIT_OFF_T) \
-  include/uapi/linux/fcntl.h \
-  arch/x86/include/generated/uapi/asm/fcntl.h \
-  include/uapi/asm-generic/fcntl.h \
-  include/uapi/linux/openat2.h \
-  include/linux/migrate_mode.h \
-  include/linux/percpu-rwsem.h \
-  include/linux/rcuwait.h \
-  include/linux/sched/signal.h \
-    $(wildcard include/config/SCHED_AUTOGROUP) \
-    $(wildcard include/config/BSD_PROCESS_ACCT) \
-    $(wildcard include/config/TASKSTATS) \
-    $(wildcard include/config/STACK_GROWSUP) \
-  include/linux/signal.h \
-    $(wildcard include/config/DYNAMIC_SIGFRAME) \
-  include/linux/sched/jobctl.h \
-  include/linux/sched/task.h \
-    $(wildcard include/config/HAVE_EXIT_THREAD) \
-    $(wildcard include/config/ARCH_WANTS_DYNAMIC_TASK_STRUCT) \
-    $(wildcard include/config/HAVE_ARCH_THREAD_STRUCT_WHITELIST) \
-  include/linux/uaccess.h \
-  include/linux/fault-inject-usercopy.h \
-    $(wildcard include/config/FAULT_INJECTION_USERCOPY) \
-  arch/x86/include/asm/uaccess.h \
-    $(wildcard include/config/CC_HAS_ASM_GOTO_OUTPUT) \
-    $(wildcard include/config/CC_HAS_ASM_GOTO_TIED_OUTPUT) \
-    $(wildcard include/config/ARCH_HAS_COPY_MC) \
-    $(wildcard include/config/X86_INTEL_USERCOPY) \
-  arch/x86/include/asm/smap.h \
-  arch/x86/include/asm/extable.h \
-    $(wildcard include/config/BPF_JIT) \
-  include/asm-generic/access_ok.h \
-    $(wildcard include/config/ALTERNATE_USER_ADDRESS_SPACE) \
-  arch/x86/include/asm/uaccess_32.h \
-  include/linux/cred.h \
-    $(wildcard include/config/DEBUG_CREDENTIALS) \
-  include/linux/key.h \
-    $(wildcard include/config/KEY_NOTIFICATIONS) \
-    $(wildcard include/config/NET) \
-  include/linux/assoc_array.h \
-    $(wildcard include/config/ASSOCIATIVE_ARRAY) \
-  include/linux/sched/user.h \
-    $(wildcard include/config/WATCH_QUEUE) \
-  include/linux/percpu_counter.h \
-  include/linux/rcu_sync.h \
-  include/linux/delayed_call.h \
-  include/linux/errseq.h \
-  include/linux/ioprio.h \
-  include/linux/sched/rt.h \
-  include/linux/iocontext.h \
-    $(wildcard include/config/BLK_ICQ) \
-  include/uapi/linux/ioprio.h \
-  include/linux/fs_types.h \
-  include/linux/mount.h \
-  include/linux/mnt_idmapping.h \
-  include/uapi/linux/fs.h \
-  include/linux/quota.h \
-    $(wildcard include/config/QUOTA_NETLINK_INTERFACE) \
-  include/uapi/linux/dqblk_xfs.h \
-  include/linux/dqblk_v1.h \
-  include/linux/dqblk_v2.h \
-  include/linux/dqblk_qtree.h \
-  include/linux/projid.h \
-  include/uapi/linux/quota.h \
-  include/linux/nfs_fs_i.h \
-  include/linux/seq_file.h \
-  include/linux/string_helpers.h \
-  include/linux/ns_common.h \
-  include/linux/nsproxy.h \
-  include/linux/user_namespace.h \
-    $(wildcard include/config/INOTIFY_USER) \
-    $(wildcard include/config/FANOTIFY) \
-    $(wildcard include/config/PERSISTENT_KEYRINGS) \
-  include/linux/kernel_stat.h \
-  include/linux/interrupt.h \
-    $(wildcard include/config/IRQ_FORCED_THREADING) \
-    $(wildcard include/config/GENERIC_IRQ_PROBE) \
-    $(wildcard include/config/IRQ_TIMINGS) \
-  include/linux/irqreturn.h \
-  include/linux/irqnr.h \
-  include/uapi/linux/irqnr.h \
-  include/linux/hardirq.h \
-  include/linux/context_tracking_state.h \
-    $(wildcard include/config/CONTEXT_TRACKING) \
-  include/linux/ftrace_irq.h \
-    $(wildcard include/config/HWLAT_TRACER) \
-    $(wildcard include/config/OSNOISE_TRACER) \
-  include/linux/vtime.h \
-    $(wildcard include/config/VIRT_CPU_ACCOUNTING) \
-    $(wildcard include/config/IRQ_TIME_ACCOUNTING) \
-  arch/x86/include/asm/hardirq.h \
-    $(wildcard include/config/KVM_INTEL) \
-    $(wildcard include/config/X86_THERMAL_VECTOR) \
-    $(wildcard include/config/X86_MCE_THRESHOLD) \
-    $(wildcard include/config/X86_MCE_AMD) \
-    $(wildcard include/config/X86_HV_CALLBACK_VECTOR) \
-  arch/x86/include/asm/irq.h \
-  arch/x86/include/asm/sections.h \
-  include/asm-generic/sections.h \
-    $(wildcard include/config/HAVE_FUNCTION_DESCRIPTORS) \
-  include/linux/cgroup-defs.h \
-    $(wildcard include/config/CGROUP_NET_CLASSID) \
-    $(wildcard include/config/CGROUP_NET_PRIO) \
-  include/linux/u64_stats_sync.h \
-  include/linux/bpf-cgroup-defs.h \
-  include/linux/psi_types.h \
-  include/linux/kthread.h \
-  include/linux/cgroup_subsys.h \
-    $(wildcard include/config/CGROUP_DEVICE) \
-    $(wildcard include/config/CGROUP_FREEZER) \
-    $(wildcard include/config/CGROUP_PERF) \
-    $(wildcard include/config/CGROUP_HUGETLB) \
-    $(wildcard include/config/CGROUP_PIDS) \
-    $(wildcard include/config/CGROUP_RDMA) \
-    $(wildcard include/config/CGROUP_MISC) \
-    $(wildcard include/config/CGROUP_DEBUG) \
-  include/linux/vm_event_item.h \
-    $(wildcard include/config/HAVE_ARCH_TRANSPARENT_HUGEPAGE_PUD) \
-    $(wildcard include/config/MEMORY_BALLOON) \
-    $(wildcard include/config/BALLOON_COMPACTION) \
-    $(wildcard include/config/DEBUG_TLBFLUSH) \
-    $(wildcard include/config/DEBUG_VM_VMACACHE) \
-  include/linux/page_counter.h \
-  include/linux/vmpressure.h \
-  include/linux/eventfd.h \
-  include/linux/mm.h \
-    $(wildcard include/config/HAVE_ARCH_MMAP_RND_BITS) \
-    $(wildcard include/config/HAVE_ARCH_MMAP_RND_COMPAT_BITS) \
-    $(wildcard include/config/ARCH_USES_HIGH_VMA_FLAGS) \
-    $(wildcard include/config/ARCH_HAS_PKEYS) \
-    $(wildcard include/config/PPC) \
-    $(wildcard include/config/PARISC) \
-    $(wildcard include/config/SPARC64) \
-    $(wildcard include/config/ARM64_MTE) \
-    $(wildcard include/config/HAVE_ARCH_USERFAULTFD_MINOR) \
-    $(wildcard include/config/SHMEM) \
-    $(wildcard include/config/ARCH_HAS_PTE_SPECIAL) \
-    $(wildcard include/config/ARCH_HAS_PTE_DEVMAP) \
-    $(wildcard include/config/DEBUG_VM_RB) \
-    $(wildcard include/config/PAGE_POISONING) \
-    $(wildcard include/config/INIT_ON_ALLOC_DEFAULT_ON) \
-    $(wildcard include/config/INIT_ON_FREE_DEFAULT_ON) \
-    $(wildcard include/config/DEBUG_PAGEALLOC) \
-    $(wildcard include/config/HUGETLBFS) \
-    $(wildcard include/config/MAPPING_DIRTY_HELPERS) \
-    $(wildcard include/config/ANON_VMA_NAME) \
-  include/linux/mmap_lock.h \
-  include/linux/page_ext.h \
-  include/linux/stacktrace.h \
-    $(wildcard include/config/ARCH_STACKWALK) \
-    $(wildcard include/config/STACKTRACE) \
-    $(wildcard include/config/HAVE_RELIABLE_STACKTRACE) \
-  include/linux/stackdepot.h \
-    $(wildcard include/config/STACKDEPOT_ALWAYS_INIT) \
-  include/linux/page_ref.h \
-    $(wildcard include/config/DEBUG_PAGE_REF) \
-  include/linux/sizes.h \
-  include/linux/pgtable.h \
-    $(wildcard include/config/HIGHPTE) \
-    $(wildcard include/config/GUP_GET_PTE_LOW_HIGH) \
-    $(wildcard include/config/HAVE_ARCH_SOFT_DIRTY) \
-    $(wildcard include/config/ARCH_ENABLE_THP_MIGRATION) \
-    $(wildcard include/config/X86_ESPFIX64) \
-  arch/x86/include/asm/pgtable.h \
-    $(wildcard include/config/DEBUG_WX) \
-    $(wildcard include/config/PAGE_TABLE_CHECK) \
-  arch/x86/include/asm/pkru.h \
-  arch/x86/include/asm/fpu/api.h \
-    $(wildcard include/config/X86_DEBUG_FPU) \
-  arch/x86/include/asm/coco.h \
-  include/asm-generic/pgtable_uffd.h \
-  include/linux/page_table_check.h \
-  arch/x86/include/asm/pgtable_32.h \
-  arch/x86/include/asm/pgtable-3level.h \
-  arch/x86/include/asm/pgtable-invert.h \
-  include/linux/huge_mm.h \
-  include/linux/sched/coredump.h \
-    $(wildcard include/config/CORE_DUMP_DEFAULT_ELF_HEADERS) \
-  include/linux/vmstat.h \
-    $(wildcard include/config/VM_EVENT_COUNTERS) \
-  include/linux/writeback.h \
-  include/linux/flex_proportions.h \
-  include/linux/backing-dev-defs.h \
-    $(wildcard include/config/DEBUG_FS) \
-  include/linux/blk_types.h \
-    $(wildcard include/config/FAIL_MAKE_REQUEST) \
-    $(wildcard include/config/BLK_CGROUP_IOCOST) \
-    $(wildcard include/config/BLK_INLINE_ENCRYPTION) \
-    $(wildcard include/config/BLK_DEV_INTEGRITY) \
-  include/linux/bvec.h \
-  include/linux/highmem.h \
-  include/linux/cacheflush.h \
-  arch/x86/include/asm/cacheflush.h \
-  include/asm-generic/cacheflush.h \
-  include/linux/highmem-internal.h \
-  arch/x86/include/asm/highmem.h \
-  arch/x86/include/asm/tlbflush.h \
-  arch/x86/include/asm/invpcid.h \
-  arch/x86/include/asm/pti.h \
-  include/linux/bio.h \
-  include/linux/mempool.h \
-  include/linux/uio.h \
-    $(wildcard include/config/ARCH_HAS_UACCESS_FLUSHCACHE) \
-  include/uapi/linux/uio.h \
-  include/linux/node.h \
-    $(wildcard include/config/HMEM_REPORTING) \
-  include/linux/pagemap.h \
-  include/linux/hugetlb_inline.h \
-  include/uapi/linux/mempolicy.h \
-  include/linux/freezer.h \
-  include/uapi/linux/i2c.h \
-  include/media/i2c/tvaudio.h \
-  include/media/v4l2-device.h \
-    $(wildcard include/config/VIDEO_V4L2_SUBDEV_API) \
-  include/media/media-device.h \
-    $(wildcard include/config/MEDIA_CONTROLLER) \
-  include/media/media-devnode.h \
-  include/linux/poll.h \
-  include/uapi/linux/poll.h \
-  arch/x86/include/generated/uapi/asm/poll.h \
-  include/uapi/asm-generic/poll.h \
-  include/uapi/linux/eventpoll.h \
-  include/linux/cdev.h \
-  include/media/media-entity.h \
-  include/uapi/linux/media.h \
-  include/media/v4l2-subdev.h \
-  include/uapi/linux/v4l2-subdev.h \
-  include/uapi/linux/v4l2-mediabus.h \
-  include/uapi/linux/media-bus-format.h \
-  include/media/v4l2-async.h \
-  include/media/v4l2-common.h \
-    $(wildcard include/config/VIDEO_V4L2_I2C) \
-    $(wildcard include/config/SPI) \
-  include/media/v4l2-dev.h \
-  include/linux/spi/spi.h \
-    $(wildcard include/config/SPI_SLAVE) \
-  include/linux/scatterlist.h \
-    $(wildcard include/config/NEED_SG_DMA_LENGTH) \
-    $(wildcard include/config/DEBUG_SG) \
-    $(wildcard include/config/SGL_ALLOC) \
-    $(wildcard include/config/ARCH_NO_SG_CHAIN) \
-    $(wildcard include/config/SG_POOL) \
-  include/linux/gpio/consumer.h \
-    $(wildcard include/config/OF_GPIO) \
-    $(wildcard include/config/GPIO_SYSFS) \
-  include/uapi/linux/spi/spi.h \
-  include/media/v4l2-fh.h \
-  include/media/v4l2-mediabus.h \
-  include/media/v4l2-ctrls.h \
-  include/media/media-request.h \
-  include/media/hevc-ctrls.h \
+// SPDX-License-Identifier: GPL-2.0
+/*
+ * Lantiq / Intel GSWIP switch driver for VRX200, xRX300 and xRX330 SoCs
+ *
+ * Copyright (C) 2010 Lantiq Deutschland
+ * Copyright (C) 2012 John Crispin <john@phrozen.org>
+ * Copyright (C) 2017 - 2019 Hauke Mehrtens <hauke@hauke-m.de>
+ *
+ * The VLAN and bridge model the GSWIP hardware uses does not directly
+ * matches the model DSA uses.
+ *
+ * The hardware has 64 possible table entries for bridges with one VLAN
+ * ID, one flow id and a list of ports for each bridge. All entries which
+ * match the same flow ID are combined in the mac learning table, they
+ * act as one global bridge.
+ * The hardware does not support VLAN filter on the port, but on the
+ * bridge, this driver converts the DSA model to the hardware.
+ *
+ * The CPU gets all the exception frames which do not match any forwarding
+ * rule and the CPU port is also added to all bridges. This makes it possible
+ * to handle all the special cases easily in software.
+ * At the initialization the driver allocates one bridge table entry for
+ * each switch port which is used when the port is used without an
+ * explicit bridge. This prevents the frames from being forwarded
+ * between all LAN ports by default.
+ */
 
-drivers/media/i2c/tvaudio.o: $(deps_drivers/media/i2c/tvaudio.o)
+#include <linux/clk.h>
+#include <linux/delay.h>
+#include <linux/etherdevice.h>
+#include <linux/firmware.h>
+#include <linux/if_bridge.h>
+#include <linux/if_vlan.h>
+#include <linux/iopoll.h>
+#include <linux/mfd/syscon.h>
+#include <linux/module.h>
+#include <linux/of_mdio.h>
+#include <linux/of_net.h>
+#include <linux/of_platform.h>
+#include <linux/phy.h>
+#include <linux/phylink.h>
+#include <linux/platform_device.h>
+#include <linux/regmap.h>
+#include <linux/reset.h>
+#include <net/dsa.h>
+#include <dt-bindings/mips/lantiq_rcu_gphy.h>
 
-$(deps_drivers/media/i2c/tvaudio.o):
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       ELF                       å      4     (            GNU  ¿       ¿          Ë¸ˇˇˇÉÏã    Ö…è¸ˇˇˇÅ˙ † t2Å˙ @ u«Äx     1¿Éƒ√ç¥&    çv ∏ÍˇˇˇÉƒ√ç¥&    «Äx      1¿Éƒ√Ë¸ˇˇˇWãJVã2S#∞d  #àh  ãòî   â2É=    âJ[1¿^_√ã∞d  ã∏h  É√ãÄT  Ë¸ˇˇˇWVPh    Sh   Ë¸ˇˇˇÉƒÎ»ç¥&    çt& Ë¸ˇˇˇãàL  Ö…uãR89êê  tâêê  ãàî   â»Ë¸ˇˇˇ1¿√Ë¸ˇˇˇUWVSâ√ÉÏ8ã≥î   d°    âD$41¿ÉªP  Ö.   âË¸ˇˇˇÈ.   ç¥&    Ë¸ˇˇˇÉz$u=Vâ∆ÉÏãÄL  Ö¿uÉæP  t,ãÜî  âB4ãÜê  ÉJ(pâB8Éƒ1¿^√ç¥&    1¿√çt& êãÜî   â$Ë¸ˇˇˇã$Î¡ç¥&    ç∂    Ë¸ˇˇˇãÄî   ã@\ãê§  Ö“t'∂ê¥  π   ®  É‚¸É àP∫   j Ë¸ˇˇˇX1¿√ç¥&    ç¥&    Ë¸ˇˇˇÉÏã    Ö…èè  ã@@ãê§  Ö“t'∂ê¥  π   ®  É‚¸É àP∫   j Ë¸ˇˇˇX1¿Éƒ√Ë¸ˇˇˇWVSã∞L  ãòî   Öˆuã∞`  ã∏\  1Œ1◊	˛tJâê\  âà`  «ÄL      ãC\ãê§  Ö“t'∂ê¥  π   ®  É‚¸É àP∫   j Ë¸ˇˇˇX[1¿^_√çt& Ë¸ˇˇˇSâ√π   ÉÏ8d°    âD$41¿∑C«D$    É=    «D$    fâ$fâD$fâD$fâD$$çD$2«D$(    «D$  «D$   «D$  «D$   fâL$«D$     «D$&  âD$,è«  ãCπ   â‚Ë¸ˇˇˇÉ¯ÖØ  ãCπ   çT$Ë¸ˇˇˇÉ¯ÖØ  ãCπ   çT$Ë¸ˇˇˇÉ¯ÖØ  1¿ãT$4d+    uÉƒ8[√Ë¸ˇˇˇç∂    Ë¸ˇˇˇU1ÌWâœπ   Vâ÷Sâ√ÉÏ(d°    âD$$1¿∑C«D$    çT$!«D$    fâD$fâD$çD$âD$çFàD$!â¯f¡¿«D$    fâD$"çCfâL$âT$«D$  â$ãCπ   çT$Ë¸ˇˇˇÉ¯Ö  ∑D$f¡¿É=    ∑¿è‚  ãT$$d+    uÉƒ([^_]√Ë¸ˇˇˇçv Ë¸ˇˇˇUWâœVâ÷Sâ√ÉÏd°    âD$1¿â»àT$f¡¿fâD$∑D$$f¡¿É=    fâD$
-èó  çC1Ìâ$j π   âÿçT$Ë¸ˇˇˇYÉ¯ÖR  1¿ãT$d+    uÉƒ[^_]√Ë¸ˇˇˇç¥&    êË¸ˇˇˇUWVSãpãX|ã@(ã~‘=	ò ÑP  vN=	ò Ñì  =
-	ò Ö  Ö€∏   π   ∫   Eÿâ¯SËˇˇˇÄ~~ Xuuçt& ê1¿[^_]√ç¥&    fê=	ò ti=	ò Ö∆  Ö€çÉˇ   π   ∫   Hÿâ¯¡˚É√Ä∂€¡„SË≈˛ˇˇÄ~~ ]tÆSπ0   ∫   â¯Ë¨˛ˇˇYÎôç¥&    fêSπ3   Î‡ç¥&    êãÜ‹   ãñ‡   ã-    ã@|â¡	—Ö  âŸ∫Ä Ä¡·)Ÿâ»˜Íç
-¡˘¡˚)À¡„ÖÌè2  S1…∫   â¯Ë<˛ˇˇXâ›ÉÕUπ   ∫   â¯Ë$˛ˇˇÄæÑ    XÖ÷   Ä~~ Ñ¸˛ˇˇSπ   ÈIˇˇˇêç[∫Ä Ä¡·ÅÈ  0 â»˜Íâ¯ç
-¡˘∫   ¡˚)Àπ   ¡„SËÀ˝ˇˇÄ~~ XÑ∞˛ˇˇSπ1   È˝˛ˇˇçt& êç[∫Ä Ä¡·ÅÈ  0 â»˜Íâ¯ç
-¡˘∫   ¡˚)Àπ   ¡„SË{˝ˇˇÄ~~ XÑ`˛ˇˇSπ2   È≠˛ˇˇçt& êÖÌ>S∫   1…â¯Ω   ËH˝ˇˇZÈˇˇˇfêUπ@   ∫   â¯Ë.˝ˇˇXÈˇˇˇ∏ÍˇˇˇÈ˛ˇˇÈΩ  È  çt& Ë¸ˇˇˇã    SçX‰Ö“è]  âÿË¸ˇˇˇ1¿[√ç¥&    ç¥&    Ë¸ˇˇˇVâ∆SãX\âÿË¸ˇˇˇãÉ§  Ö¿tÄã¥  Ë¸ˇˇˇâË¸ˇˇˇçÉ¿   Ë¸ˇˇˇ1¿[^√Ë¸ˇˇˇUâ≈WVSÉÏ Ö“uç@π   ∫+  Ë¸ˇˇˇâËË¸ˇˇˇÉ¯ˇÑt  çEπ¿  ∫¯  âD$Ë¸ˇˇˇâ√Ö¿Ñf  π   âÍË¸ˇˇˇ«C   çã∏  âÿ«É‘     ∫   «É–     «ÉÙ     «É     Ë¸ˇˇˇâ∆Ö¿à™   «É\   ∞  çÉ®  π   ∫F  «É`      «Éd  ˇˇˇ «Éh      «Éê     «ÉÑ  ˇˇˇˇ«Éx      Ë¸ˇˇˇπ   ∫   âË«Éà      «Éå  B   Ë•˙ˇˇâD$âÉ0  É¯ˇu&°    Ö¿è¶  ç¥&    fêæÌˇˇˇÉƒ â[^_]√êπ   ∫   âËË_˙ˇˇãª0  âÉ4  â|$ã=    Öˇè}  ã|$Éˇˇt∏âD$	¯t∞ãt$âÉÊ¡¯çN@É‡â$É¿âD$ãD$∂‘â◊∫ÕÃÃÃâ¯â|$˜‚¡ÍâT$çíâ˙¿çí)«çÑN†  ãt$iŒ'  »âÉ8  ãD$É‡˚É¯îÉ<  É<$FüD$
-Éˇ∂D$
-û¡É˛àÉ=  ü¿ÉˇûD$∂t$àã>  	∆	»É<$CâÚàÉA  àì@  ü¬â÷!ŒÉ|$π   ÑÅ  àãB  1…É<$CàÉC  N¡∂T$∂L$
-àÉD  âàÉF  !—É<$GàìG  î¿ÉˇàãE  î¡!¡ÉˇàãH  î¡!¡É|$î¬àãI  !–É|$î¬!–àÉJ  °®   É¯v É<$F~«ÉP     Îçt& ê1¿É<$Cü¿âÉP  j çª¿   1…∫   â¯Ë¸ˇˇˇÄªG   ^ÖÕ   j π	ò ∫0  â¯h Ê  j hè  j hˇˇ  j j Ë¸ˇˇˇπ	ò ∫0  Éƒ âÉò  â¯j h Ä  j hè  j hˇˇ  j j Ë¸ˇˇˇπ		ò ∫0  â¯Éƒ j j j jj jj j Ë¸ˇˇˇã≥¸   â{lâÉú  Éƒ ÖˆÑÓ   â¯Ë¸ˇˇˇâÉƒ [^_]√ç¥&    fêâÚÑ“Öñ   1…Èn˛ˇˇç¥&    j π	ò ∫0  â¯h Ä  j hè  j hˇˇ  j j Ë¸ˇˇˇπ	ò ∫0  â¯Éƒ j h Ä  j hè  j hˇˇ  j j Ë¸ˇˇˇπ
-	ò ∫0  â¯Éƒ j j j jj jj j Ë¸ˇˇˇÉƒ È∞˛ˇˇçt& ê∆ÉB  àÉC  È‚˝ˇˇç∂    °    Ö¿éõ¸ˇˇÈÔ  æÙˇˇˇÈë¸ˇˇçìò  ∏   Ë¸ˇˇˇâ¯Ë¸ˇˇˇÄª=   Ñu  ÈW  È}  ç¥&    ç¥&    Ë¸ˇˇˇâ—∫   Èøˆˇˇç¥&    ç¥&    êË¸ˇˇˇâ—∫   Èüˆˇˇç¥&    ç¥&    êË¸ˇˇˇQâ—∫   ËN˜ˇˇZ√ç¥&    çt& êË¸ˇˇˇQâ—∫   Ë.˜ˇˇZ√ç¥&    çt& êË¸ˇˇˇWVSâ√â–â ãs\âÜt  É¯wÉ˘v?π`  ã=    âép  Öˇè*  Q∫   π   âÿË‘ˆˇˇÄæE   Zu:[^_√ç∂    ç…ç|ã<Ω`  Éˇˇt„ãç`  ˜—#ép  	˘Î†ç¥&    çv ˇ∂x  âÿπ@   ∫   ËyˆˇˇX[^_√çt& Ë¸ˇˇˇUWâ◊V¡ÔSâ√â»ÉÏã≥î   â<$â◊ÉÁâ|$âœ¡ÈÉÁÉ·â|$âL$9ìà  Ñ  âìà  π   1ˇâÉå  ∏   â’”ÌÉÂD«É¡É˘uÓÖ¿∫	   «Éî     E¬ãT$1…âÉX  âË¸ˇˇˇãT$π   âË¸ˇˇˇãT$π   âË¸ˇˇˇâË¸ˇˇˇ∏ª   ∫   ÉªP  ª0   EÿââŸË¿Ùˇˇã$âŸ%ˇ˛  ¡‚Å‚   	¬âR∫   ËnıˇˇãF\Zãà§  Ö…t'∂ê¥  π   ®  É‚¸É àP∫   j Ë¸ˇˇˇXÉƒ1¿[^_]√ç¥&    9Éå  ÖÚ˛ˇˇÎ·ç¥&    çv Ë¸ˇˇˇUWVâ÷Sâ√çª®  dã-    ÉÏd°    âD$1¿â‚â¯«$    «D$    «D$    âl$«D$    Ë¸ˇˇˇË¸ˇˇˇÑ¿uÖˆxNâË¸ˇˇˇË¸ˇˇˇâ‚â¯Ë¸ˇˇˇË¸ˇˇˇ°    dã    Ö¿u4∂É¥  É‡ãT$d+    u1Éƒ[^_]√çt& ê∏   áEË¸ˇˇˇÎØêâ–Ë¸ˇˇˇÑ¿t¡1¿Ë¸ˇˇˇÎ∏Ë¸ˇˇˇç¥&    Ë¸ˇˇˇSâ√ãÄò  ã@ã@Ë¸ˇˇˇãÉò  ãêÄ   âP|ãÉú  ãêÄ   âP|ãÉò  Ë~ÙˇˇãÉò  [ã@ã@È¸ˇˇˇç¥&    çt& êË¸ˇˇˇVSãòL  ã∞î   Ö€ugã    â√«ÄL     Ö…èT  ãÉP  Ä£¥  ˝Ö¿tFÉËÉ¯w4ãF\ãê§  Ö“t'∂ê¥  π   ®  É‚¸É àP∫   j Ë¸ˇˇˇX1¿[^√çt& êâ∫   Ë¸ˇˇˇâπrúî ∫rúî Ë¸ˇˇˇâÿË¸ˇˇˇ1¿[^√fêfêfêfêfêfêfêêË¸ˇˇˇÄ=     WV∑ÚSâ√ãx\tWπ   ∫   Ë¸ˇˇˇπ   ∫	   âÿË¸ˇˇˇâÒ∫
-   âÿË¸ˇˇˇâÒ∫   âÿË¸ˇˇˇâÒ∫   âÿË¸ˇˇˇÄøC   u$[^_√âÒ∫   Ë¸ˇˇˇâÒ∫	   âÿË¸ˇˇˇÎ≠çt& âÒâÿ∫A   [^_È¸ˇˇˇç¥&    ç¥&    êË¸ˇˇˇWVSâ√â»ÉÏã{\ãèê  É˘w;ã4ç4  ãç   Ö¿u7¡ÊÉŒ âÒã5    ∑“Öˆèo  Éƒâÿ[^_È¸ˇˇˇçv π    æ   Ö¿t…É¯
-~ÄøI   tçp¡Ê	ÒÎπfêâ∆¡Ê	ÒÎÆç¥&    Ë¸ˇˇˇU∫   WVSãh\â√ãµà  â˜¡ÔÉÁâ˘ËHˇˇˇâ˘∫   âÿË:ˇˇˇâÒ∫	   âÿ¡ÈÉ·Ë&ˇˇˇâÒ∫
-   âÿ¡ÈÉ·ËˇˇˇÄΩC   u¡Óâÿ∫   [âÒ^_É·]ÈÒ˛ˇˇêâÒ∫A   âÿ¡ÈÉ·Ë‹˛ˇˇÎ—ç¥&    çv Ë¸ˇˇˇS∫∏  â√1…∏∏  Îç¥&    çv ãBÖ¿tã
-É¬9Àu[√ç∂    ∏Ü  [√êË¸ˇˇˇWâ◊VâŒâ—¡ˇSÅ·ˇ  â√∫ì   Ë¸ˇˇˇâ˘∫õ   âÿË¸ˇˇˇâÒ∫£   âÿÅ·ˇ  ¡˛Ë¸ˇˇˇâÒ∫´   âÿË¸ˇˇˇâÿ1…[∫V   ^_È¸ˇˇˇç¥&    fêË¸ˇˇˇU∫Ü  WVâ∆SÉÏãx\ãüê  É˚wãùH  ÉøP  ã    tyãáX  É¯	Ñ:  ãØî  É˝toÉÂÑ  É˚Ω   F›É¯u]Ö…èB  É˚ÑU  èœ  Ö€Öó  âπGZ ∫GZ Ë¸ˇˇˇ°    Ö¿è<  1“Î}çt& êÖ…è   Éƒ[^_]√1€É¯t£è£   É¯Ñ:  É¯Öú   Ö…èù  É˚Ñ   è¢  Ö€Ñ¶  ã    1“Ö…è¸  É˚ÑŸ   É˚èê   Ö€Öò   ÉøX  Ñ´  ˆáî  ∏0   E–°    Ö¿èÿ  Éƒâ[^_]È¸ˇˇêÖ€ï√∂€ÈUˇˇˇçv É¯Ñá   ~Ö…èÄ  Éƒ[^_]√çt& êtÈÖ…è^  ãØl  1“ÖÌï¬¡‚ÈWˇˇˇêÉ˚uúÉ  Îäç∂    É˚tÎäç¥&    fêâπ Äa ∫ Äf Ë¸ˇˇˇ°    Ö¿èπ  1“É ÈLˇˇˇç¥&    êÖ…èõ  1“Èˇ˛ˇˇêÖ…èø  1“ÈÔ˛ˇˇêÉ˚uπ Äa ∫  d âË¸ˇˇˇ°    Ö¿è  1“ÈÕ˛ˇˇç∂    É˚usâπ Äa ∫ Äf Ë¸ˇˇˇ°    Ö¿è„  1“È◊˛ˇˇç∂    Ö…èï  ∫   È|˛ˇˇç∂    çC˛É¯áZ˛ˇˇπ 0  ∫   âË¸ˇˇˇã    1“ÈD˛ˇˇç∂    É˚ÑTˇˇˇÈ`ˇˇˇç¥&    çv ã    Ö“èz  ∫   1…âË¸ˇˇˇ∫   È>˛ˇˇç¥&    çv π0  ∫   âË¸ˇˇˇ°    Ö¿è[  1“ÈÄ˛ˇˇç¥&    çt& Ë¸ˇˇˇUâ’WVSâ√ÉÏã@\â$ãÄà  â¡âD$°    ¡ÈÖ¿è   ã$ç|Ì ¡·∫ª   ¡ÁÅ·   æ   â®X  èò  «Äî     âÿË¸ˇˇˇçt& ãå∑`  ∫   âÿË¸ˇˇˇÉÓsËπ   ∫   âÿæ   Ë¸ˇˇˇπ@   ∫   âÿË¸ˇˇˇ1…∫   âÿË¸ˇˇˇçv ãå∑x  ∫   âÿË¸ˇˇˇÉÓsËçDÌ ∫É   ç4≈`  âÿãN<Ë¸ˇˇˇãN4ãV0âÿË¸ˇˇˇ∑V@âÿË&˘ˇˇπ   ∫   âÿË¸ˇˇˇãND∫   âÿË¸ˇˇˇã$Ä∏<   u
-Éƒ[^_]√fêÉƒâÿπ Z  ∫   [^_]È¸ˇˇˇç¥&    êË¸ˇˇˇSãP\â√ãÇP  É¯~É¯uÉ∫T   t,âÿ[È‰˘ˇˇçt& Ö¿y[√ç¥&    çv âÿ[È˚ˇˇç¥&    êˆÇî  tãÇê  ÉËÉ‡˝tπ    ∫    âÿË¸ˇˇˇÎ™ç∂    π!   ∫    âÿË¸ˇˇˇÎëç¥&    ç∂    Ë¸ˇˇˇUWVâ∆SÉÏãx\ãüP  É˚éÄ   É˚u∫   Ë¸ˇˇˇâ≈â¡â¬1¿ÅÂ   É·@ÉøX  	tK∏   Ö…Dÿãáî  âüî  ÖÌtÉøT   ÑÄ  «áî     ª   É=     èL  9ÿï¿∂¿Éƒ[^_]√çt& Ö€yÉƒ1¿[^_]√fêãèl  ãáX  âÀÉ¯ÑŸ   çP˚1¿É˙wV∫#   âË¸ˇˇˇÉ=    è#  â√ãóî  Ω   É„uTçt& 9ÍÑ¯   ã    Ö…è  âØî  ãèl  ∏   9ŸÑeˇˇˇ°    Ö¿è/  âül  Éƒ∏   [^_]√ê—¯É‡É¯t6Ω   Ö¿tõÉ¯Ω   EÎÎéç∂    É¯
-Ω   EÎÈxˇˇˇç¥&    êΩ   Èfˇˇˇç∂    ∫   âË¸ˇˇˇ=ˇ  çê  ˇˇO¬É=    èÓ  ãóî  1€=    ∫= ˇˇΩ   ∏   MËÈˇˇˇçv ÉÀâüî  ÈÅ˛ˇˇfêãèl  1¿ÈˇˇˇÈx  ç¥&    ç¥&    Ë¸ˇˇˇUâ≈WVSÉÏãX\°    Ö¿è.	  «Éd  ˇˇˇ «Éh      Ë¸ˇˇˇçEâ$çv É=    è	  ∫ˇˇˇˇâÿË¸ˇˇˇ°    É¯èö	  Ä£¥  ˛Ë¸ˇˇˇÑ¿ÖE  ÉªX  	Ñ(  «É†     âÿæ@   Ë¸ˇˇˇãªL  ÖˇuãÉ\  % ∞  É¯ˆÉÊ·É∆ Ä£¥  ˝∫»   âÿ«Él      Ë¸ˇˇˇâ«°    ÖˇÖø  É=    èÌ  É˛Ñ   1“1¿Î"ç¥&    çv É¿ç@ã’¨  Ö…tã’†  9÷u‰ã    Ö“èŒ  ç@â≥T  Ä=     ç≈†  «Éî     ãPã@âì|  âÉÄ  Ñ]  ãÉL  Ö¿ÖO  ˜É\    ˇ Ñ?  É˛	Ñ6  ã    Ö…è©  π	   ∫    âË«ÉT  	   Ë¸ˇˇˇçt& êÄã¥  «ÉX     «Él     π   ∫   âËË¸ˇˇˇπ 0  ∫   âËË¸ˇˇˇÄª<   ÖÓ  ÄªE   Ö…  âËËzˆˇˇâÿ«É†      Ë¸ˇˇˇˆÉ¥  Ñ¸˝ˇˇæ   ÎCçt& ê∫Ë  âÿË¸ˇˇˇÖ¿uDÉÓâËã}\Ë¸ˇˇˇÖ¿uOÄ=     tÄß¥  ˝ˆÉ¥  Ñ≤˝ˇˇÖˆuæ∫à  âÿË¸ˇˇˇâ∆Ö¿tø°    É¯éµ˝ˇˇÈd	  ç¥&    fêâËË¸ˇˇˇÎ®ç¥&    1¿Î çt& É«çã≈¨  Ö“ÑÎ   ã≈†  9∆u‡çã≈¥  ã≈∞  âÉd  âìh  É˛FÉ˛	è¥  É˛ÑD  É˛	Ñì˛ˇˇÉÓÉ˛á¢˛ˇˇÄã¥  «ÉX     Èå˛ˇˇç¥&    fêÉ˛ Ñ/  É˛@Öq˛ˇˇ«ÉX     âË∫   «Éî     Ë¸ˇˇˇπrúî ∫rúî âËË¸ˇˇˇÈ;˛ˇˇç¥&    ê°    Ö¿è	  «É†      âÿË¸ˇˇˇÈm¸ˇˇçt& ê∏ˇˇˇ 1“È%ˇˇˇçt& ããx  ∫@   âËË¸ˇˇˇÈ ˛ˇˇêπ Z  ∫   âËË¸ˇˇˇÈ¸˝ˇˇç¥&    çv π   ∫    âËË¸ˇˇˇÎ%çt& ê∫~   âËË¸ˇˇˇ=˛  ~eÉ=    è   ∫d   âÿË¸ˇˇˇÖ¿t–È7˛ˇˇçv ∏   Äã¥  âÉX  «Él     ÈR˝ˇˇç¥&    «ÉX     È<˝ˇˇç¥&    fêâ∆ÈI¸ˇˇç¥&    fê°    Ö¿èI	  Éƒ1¿[^_]√1¿É˛
-î¿É¿Îë∏∏  Îçt& êÉ¿;1tFãPâ¡Ö“uÈ∫	  çv âD$∫∏  π∏  1¿Îç∂    ãJÖ…ÑÂ  ãÉ¬9∆uÏãD$ÈÓ  Èø	  ç¥&    ç¥&    Ë¸ˇˇˇUWVâ∆SÉÏã=    ãX\Öˇèê
-  «Éd  ˇˇˇ ç~«Éh      Ë¸ˇˇˇ°    â<$çt& êÉ¯èu
-  ∫ˇˇˇˇâÿË¸ˇˇˇ°    É¯èU
-  Ö¿è:
-  Ä£¥  ˛Ë¸ˇˇˇÑ¿Ö  ÉªX  	Ñ  ãn\â«ÖT     ãΩà  ¡ÔË¸ˇˇˇÄΩE   Ör  ãF\ãêL  Ö“Ö!  ãê\  ãÄ`  â—Äı 	¡ÑÄ  â—ÄıÄ	¡Ñ  â—ÅÒ  @ 	¡Ñ{  ∏p  ÄÊ∑Ö›  ¡Á∫0   â˘Å·   	¡âË¸ˇˇˇâËÕˇˇπ   ∫   âË¸ˇˇˇπ 0  ∫   âË¸ˇˇˇÄΩ<   ÖÆ  ã    ∫"   âË¸ˇˇˇãÉL  π@   Ö¿uÄªJ   ã    tÉ˘∏    D»âãT  ∫    âË¸ˇˇˇããT  É˘ub°    Ö¿è˜	  ø
-   çt& ∫d   âÿË¸ˇˇˇÖ¿Ö‰  ∫~   âË¸ˇˇˇ=˛  é5  É=    è‹	  ÉÔu√ããT  É˘Ñ%  ã-    ÖÌèë  1“1¿ÎÉ¿ç@ã<’¨  ÖˇÑõ   ã’†  9—u‡ç@ã≈¥  ã≈∞  âÉd  âìh  É˘	Ñb  âÿË¸ˇˇˇããp  ∫   âË¸ˇˇˇÖ¿Ö  ÉªT   Ñ¨   °    Èö˝ˇˇfêã    Ö…èà  «É†      âÿË¸ˇˇˇ°    Èo˝ˇˇç¥&    ∏ˇˇˇ 1“Èuˇˇˇçt& ã    Ö…èh  ∏   È˛ˇˇç¥&    êπ Z  ∫   âË¸ˇˇˇÈ<˛ˇˇç¥&    çv ãçx  ∫@   âË¸ˇˇˇÈw˝ˇˇç¥&    fêÄã¥  âã~\Ë¸ˇˇˇÖ¿ÖÔ   Ä=     t.Äß¥  ˝Î%çt& êÄ=     tÄß¥  ˝∫à  âÿË¸ˇˇˇÖ¿u(ˆÉ¥  Ñ˜˛ˇˇâã~\Ë¸ˇˇˇÖ¿t≈âË¸ˇˇˇÎºçt& °    Èô¸ˇˇç∂    π |  ∫   âË¸ˇˇˇÈà˛ˇˇfê°    Ö¿èH  ∏   È˝ˇˇç¥&    fê°    Ö¿è(  ∏   ÈÏ¸ˇˇç¥&    fêâ¡âÉT  É˘Ö€˝ˇˇ°    Ö¿é˙˚ˇˇÈË
-  çt& êâË¸ˇˇˇÈˇˇˇçt& ã    Ö“è  ∏@  Èì¸ˇˇ°    Ö¿è»
-  ∏`  È|¸ˇˇ°    Ö¿è´
-  1¿Éƒ[^_]√Éƒ∏ˇˇˇˇ[^_]√∏∏  1ˇ∫∏  Îç¥&    ãPÖ“Ñ
-  ã8É¿9˘uÏÈ
-  ç¥&    Ë¸ˇˇˇUWâ«VSÉÏãp\°    Ö¿è0  «Üd  ˇˇˇ «Üh      Ë¸ˇˇˇçGâD$fêÉ=    è  ∫ˇˇˇˇâË¸ˇˇˇ°    É¯è“  Ä¶¥  ˛Ë¸ˇˇˇÑ¿Ö•  ãÜL  Ö¿u[ÉæX  	tR«Ü†     âË¸ˇˇˇ1“â¯Ë¸ˇˇˇÄ¶¥  ˝∫»   â«Ül      Ë¸ˇˇˇâ$Ö¿t<°    É¯~ëÈ∑  çt& êã-    ÖÌèú  «Ü†      âË¸ˇˇˇÈ<ˇˇˇçt& Ä=     ÑÉ   ãÜ\  ©  ˇ tvã    Ö€èl  ã  âñ|  ©  ˇ Ö  Äæ<   Ñˇ  °¿   ∫   âÜÄ  â¯Ë¸ˇˇˇÄé¥  «Ül     «Üd  ‡ 2 «Üh      È–  çv «D$ˇˇˇˇ1€1ÌÎDç¥&    çv ∫   â¯Ë¸ˇˇˇçê  ˇˇ=ˇ  O¬9≈}â\$â≈ã    Ö…è.  É√É˚t.ã›   â¯â—Ë¸ˇˇˇ∫d   âË¸ˇˇˇÖ¿t¶°    ÈΩ˛ˇˇçt& ãD$É¯Öõ   «D$   Ω   Ä=     Öû  «D$ˇˇˇˇ1€ÎFçt& ê∫   â¯Ë¸ˇˇˇçê  ˇˇ=ˇ  O¬;$~â$â\$ã    Ö“è  É√;\$çü  ãT› â¯â—Ë¸ˇˇˇ∫d   âË¸ˇˇˇÖ¿t¢°    È˛ˇˇç¥&    êÉ¯Ñ  Ä=     Ö∫  ã≈   «D$ˇˇˇˇâñ|  É|$~EÉ|$Ñ  ãD$ÉËÉ¯Üì  É|$ u?ãÜ\  È˛ˇˇê°    Ö¿èQ  Éƒ1¿[^_]√ãD$Ö¿u«Üd   ∑  «Üh      âñÄ  â¯∫   Ë¸ˇˇˇãé|  ãñÄ  â¯Ë¸ˇˇˇâ¯«Ü†      Ë◊ÍˇˇâË¸ˇˇˇ°    Ö¿Ö  ˆÜ¥  Ññ¸ˇˇª   ÎIç¥&    ∫Ë  âË¸ˇˇˇÖ¿Ö>˛ˇˇâ¯ÉÎão\Ë¸ˇˇˇÖ¿uEÄ=     tÄ•¥  ˝ˆÜ¥  ÑF¸ˇˇÖ€u∫∫à  âË¸ˇˇˇâ√Ö¿Öˆ˝ˇˇâ¯ão\Ë¸ˇˇˇÖ¿tªâ¯Ë¸ˇˇˇÎ≤çt& êãD$ã≈   âñ|  É¯Ö°˛ˇˇ«Üd    ãD$«Üh      Ö¿ÑÃ  É|$Öﬁ˛ˇˇÄæ<   Ñ—˛ˇˇ°¯   ∫   âÜÄ  â¯Ë¸ˇˇˇÄé¥  «Ül     È∂˛ˇˇêã_\ãã|  ;ãÄ  Ñì   Ö¿èK  ãÉX  çP˚É˙veÉ¯ÖÑ   ã    Ö…é´˛ˇˇÈ…  ç¥&    fê«Üd     ∫   â¯«Üh      «ÜÄ    [ Ë¸ˇˇˇÄé¥  «Ül     È%˛ˇˇã-    ÖÌéO˛ˇˇÈÑ  çt& êÖ¿émˇˇˇÈ‹  çv É¯Ö,˛ˇˇããÄ  9ã|  Ñ˛ˇˇã    Ö“é˛ˇˇÈ£  ç¥&    çv ãD$∫   ã≈¿   âÜÄ  â¯Ë¸ˇˇˇÄé¥  «Üd  ‡ 2 «Üh      Èà˝ˇˇãÜ\  ©  ˇ ÑQ¸ˇˇãL$ãÕ   âñ|  É˘Ñ¯˛ˇˇÉ˘Ñ+˚ˇˇÖ…Ñ&˝ˇˇÉ˘Ö1˝ˇˇ«Üd    «Üh      °   ∫   âÜÄ  â¯Ë¸ˇˇˇÄé¥  È˝ˇˇ°¿   ∫   âÜÄ  â¯Ë¸ˇˇˇÄé¥  «Üd    ¿ «Üh      È’¸ˇˇãÜ\  ©  ˇ ÖMˇˇˇãD$ã≈   âñ|  É¯u4«Üd    «Üh      ÈÉ¸ˇˇÄ=     u«D$   Ω¿   ÈT˚ˇˇ«D$ˇˇˇˇÈÛ˚ˇˇãÜ\  ©  ˇ t‘È‰˛ˇˇRâT$h    ãàî   É¡âD$Qh   Ë¸ˇˇˇãD$ãT$ÉƒÈ   ç~É∆ˇ≥4  ˇ≥0  Vh    WË¸ˇˇˇçCpPh8   j4çt$ VË¸ˇˇˇçÉ¿   âÙâÚË¸ˇˇˇãÉX  É¯	vL∏   ãìP  Ö“Ö£   ãìî  æ+   π$   ˆ¬DŒÄ‚æ3   ∫,   D÷QRPhU   WË¸ˇˇˇÉƒÎãÖ    u∞PhG   WË¸ˇˇˇâÙˇ≥ê  h   WË¸ˇˇˇˇ≥å  ˇ≥à  h@   WË¸ˇˇˇˇ≥p  hë   WË¸ˇˇˇÉƒ(ãD$4d+    ucÉƒ81¿[^_]√ÉÍuPhG   WË¸ˇˇˇÉƒãÉî  ∫+   Ω$   æ,   ®DÍ®∏3   DãÉT  Ë¸ˇˇˇUVPhj   WË¸ˇˇˇÉƒÈTˇˇˇË¸ˇˇˇh£   PâD$h   Ë¸ˇˇˇãD$ÉƒÈ  É√h∂   SË¸ˇˇˇXÉ»ˇZÈØ  çCh´   Ph   Ë¸ˇˇˇÉƒÈa  PÉ√âD$WVh…   Sh   Ë¸ˇˇˇãD$ÉƒÈ  WVUÉ≈hl   ˇt$Ë¸ˇˇˇ∏
-   Ë¸ˇˇˇÉƒÉ˝uhê   ˇt$Ë¸ˇˇˇâÿË¸ˇˇˇXÉ»ˇZÈ  ÈL  WVUÉ≈h¥   ˇt$Ë¸ˇˇˇ∏
-   Ë¸ˇˇˇÉƒÉ˝u@hê   ˇt$Ë¸ˇˇˇâÿË¸ˇˇˇXÉ»ˇZÈ
-  çCˇt$$QRhÂ   Ph   Ë¸ˇˇˇÉƒÈ‰  ÈÏ  ãéÿ   ãI|Ö“ÑÉ   Ö¿Ω  ∏  ∫  D≈QΩ   RPçGh‹   Ph   Ë¸ˇˇˇ1…∫   â¯SËú  ÉƒÈf  ãÜÿ   ˇp|çGh  h  h‹   Ph   Ë¸ˇˇˇ1…∫   â¯SËú  ÉƒÈa  ∫  ∏  ÎÖh  Ph   Ë¸ˇˇˇÉƒÈ£  ∫+   Äª<   ∏  D¬â◊ããP  ˇ4ç¸   WRPãE  PãD$(É‡PãD$$∂ƒÉ¿@Pˇt$ˇt$<ˇt$(h(  ˇt$DË¸ˇˇˇãÉP  Éƒ0É¯áQ	  ãÖ    Ö¿ÑQ	  hk  jˇUPË¸ˇˇˇâ«Éƒ= ˇˇáˇ   Ë¸ˇˇˇâª§  ãE\É∏§   ÑQ	  ∂ê¥  π   ®  É‚¸É àP∫   j Ë¸ˇˇˇ[ÈQ	  π+   ∫  ∏  Äª<   D—D¡ø%  Èˇˇˇˇ≥4  ˇt$hQ  ˇt$$h   Ë¸ˇˇˇãÉ0  âD$ ÉƒÉ¿tãÉ4  ã|$	«âD$Öú	  É=     éL	  h¸   æÌˇˇˇˇt$h   Ë¸ˇˇˇÉƒÈQ	  çEh3  æÌˇˇˇPh   Ë¸ˇˇˇÉƒÈQ	  âÉ§  hs  ˇt$Ë¸ˇˇˇZYÈÒ˛ˇˇQRˇ4Ö@  çChd  Ph   Ë¸ˇˇˇãép  ÉƒÈ∂  çFhã  Ph   Ë¸ˇˇˇÉƒÈ˝  RâT$QâL$PçChå  PhÉ  Ë¸ˇˇˇãL$ãT$ÉƒÈÑ  çFRhé  PhÉ  Ë¸ˇˇˇÉƒÈ  çFjh(  PhÉ  Ë¸ˇˇˇ1“ÉƒÈ  RçFâT$h  PhÉ  Ë¸ˇˇˇãT$ÉƒÈm  çFâ$Sh(  PhÉ  Ë¸ˇˇˇãT$ÉƒÉ˚Ñ  É˚èê  Ö€ÑD  ÉÎÑ—  È`  çFRh¢  PhÉ  Ë¸ˇˇˇÉƒÈé  çFRh∑  PhÉ  Ë¸ˇˇˇã    ÉƒÈ∂  É∆h  VhÉ  Ë¸ˇˇˇÉƒÈ‘  çFRhŒ  PhÉ  Ë¸ˇˇˇã    1“ÉƒÈ"  çFRh¸  PhÉ  Ë¸ˇˇˇã    1“ÉƒÈ"  çFjh(  PhÉ  Ë¸ˇˇˇ1“ÉƒÈ`  çFSh(  PhÉ  Ë¸ˇˇˇ1“ÉƒÈˇˇˇÉ∆Shÿ  VhÉ  Ë¸ˇˇˇÉƒÈ‘  çFj h(  PhÉ  Ë¸ˇˇˇ1“ÉƒÈD  çFjh(  PhÉ  Ë¸ˇˇˇ1“ÉƒÈ—  çFh8  PhÉ  Ë¸ˇˇˇÉƒÈ
-  çFRh‰  PhÉ  Ë¸ˇˇˇã    ∫   ÉƒÈ"  É˚Ö`  È—  çCâL$RhN  PhÉ  Ë¸ˇˇˇãL$ÉƒÈé  PçVâD$h\  RhÉ  Ë¸ˇˇˇãD$ÉƒÈ#  çFURhD  PhÉ  Ë¸ˇˇˇÉƒÈr  É∆SQhê  VhÉ  Ë¸ˇˇˇÉƒÈò  É∆â$SUQRhd  VhÉ  Ë¸ˇˇˇãüî  ãD$ÉƒÈË  â¬—˙É‚Râ¬É‚âD$RçVhx  RhÉ  Ë¸ˇˇˇãD$ÉƒÈF  Vh:  h‹  ˇt$hÉ  Ë¸ˇˇˇÉƒÈ$  h  ˇt$hÉ  Ë¸ˇˇˇÉƒÈ‘  ãD$πÜ  âD$VQhº  ˇt$hÉ  Ë¸ˇˇˇãD$ÉƒÈ∂  hø  ˇt$hÉ  Ë¸ˇˇˇÉƒÈ…  çEhß  PhÉ  Ë¸ˇˇˇÉƒÈö  É≈hQ  UhÉ  Ë¸ˇˇˇÉƒÈI   hÓ  ˇt$hÉ  Ë¸ˇˇˇÉƒÈ„  h  ˇt$hÉ  Ë¸ˇˇˇÉƒÈ9  h÷  ˇt$hÉ  Ë¸ˇˇˇ°    ÉƒÈ%  ∫Ü  VRhú  ˇt$hÉ  Ë¸ˇˇˇÉƒÈs  h  ˇt$hÉ  Ë¸ˇˇˇÉƒÈ‘"  h   ˇt$hÉ  Ë¸ˇˇˇÉƒÈì"  ∫Ü  QRhÄ  ˇt$hÉ  Ë¸ˇˇˇããT  ÉƒÈˆ"  hÓ  ˇt$hÉ  Ë¸ˇˇˇÉƒÈ?!  hê  ˇt$hÉ  Ë¸ˇˇˇ°    ÉƒÈ7!  hx  ˇt$hÉ  Ë¸ˇˇˇÉƒÈ!  ç@h_  PhÉ  Ë¸ˇˇˇÉƒÈÎ   É∆hQ  VhÉ  Ë¸ˇˇˇ1¿ÉƒÈr%  h  ˇt$hÉ  Ë¸ˇˇˇ∏`  ÉƒÈﬂ!  hH  ˇt$hÉ  Ë¸ˇˇˇ°    ÉƒÈ!  hø  ˇt$hÉ  Ë¸ˇˇˇ∏@  ÉƒÈﬂ!  hŸ  ˇt$hÉ  Ë¸ˇˇˇ∏   ÉƒÈﬂ!  h  ˇt$hÉ  Ë¸ˇˇˇ∏   ÉƒÈﬂ!  h©  ˇt$hÉ  Ë¸ˇˇˇ∏   ÉƒÈﬂ!  h  ˇt$hÉ  Ë¸ˇˇˇÉƒÈä#  â»ªé  ô˜˚ªË  ô˜˚â»ª∞‚ Rô˜˚Ph0  ˇt$hÉ  Ë¸ˇˇˇÉƒÈY)  â»Ωé  ô˜˝ΩË  ô˜˝â»Ω∞‚ Rô˜˝Ph†  ˇt$hÉ  Ë¸ˇˇˇÉƒÈâ*  h9  ˇt$hÉ  Ë¸ˇˇˇÉƒÈ	&  çGh!  PhÉ  Ë¸ˇˇˇÉƒÈ⁄%  â»Ωé  ô˜˝ΩË  ô˜˝â»Ω∞‚ Rô˜˝Phƒ  ˇt$hÉ  Ë¸ˇˇˇÉƒÈâ*  ããÄ  Ωé  â»ô˜˝ΩË  ô˜˝â»Ω∞‚ Rô˜˝PhË  ˇt$hÉ  Ë¸ˇˇˇãÉX  ÉƒÈó*  ããÄ  Ωé  â»ô˜˝ΩË  ô˜˝â»Ω∞‚ Rô˜˝Ph  ˇt$hÉ  Ë¸ˇˇˇãÉX  ÉƒÈ$+  ˇt›Phì  ˇt$hÉ  Ë¸ˇˇˇÉƒÈ@(  ˇ4›  Ph{  ˇt$hÉ  Ë¸ˇˇˇÉƒÈû'  çGhQ  PhÉ  Ë¸ˇˇˇÉƒÈÈ(  hh  Ω¿   ˇt$hÉ  Ë¸ˇˇˇÉƒ«D$   «D$   ÈÓ'  h  ˇt$hÉ  Ë¸ˇˇˇÉƒÈ™&  hÓ  ˇt$hÉ  Ë¸ˇˇˇÉƒÈ#&  hP  ˇt$hÉ  Ë¸ˇˇˇ°    ÉƒÈç&  Ë¸ˇˇˇ∫    ∏    È¸ˇˇˇ∏    È¸ˇˇˇ                                  §     º  ≈  ‡  Ú         %                          msp3400                                                                 ê     ê     ê                                                                 4  ;  F                             `  @  †                          0                          –  ∞          @  –                                                   P          `                                                                                                                              0      `  d  h  l  p  w  3   ~                   ˇˇˇˇˇˇˇˇ      @  @         @     @      @  Ä0     Ä  Ä   Ä0      Ä        0  dolby   amsound standard    stereo_threshold    debug   once    opmode              0                                  ´  ∞  ∑  Ω  √      K      $   #   '   (   K      $   #   '   (   écL écL –           0  ˇˇˇˇˇˇˇˇ¯ˇˇˇ   ;   ~   ˇˇˇˇˇˇˇˇ¯ˇˇˇ   ;   ~   écL écL –           0  ¯ˇˇˇ¯ˇˇˇ      N   k   ¯ˇˇˇ¯ˇˇˇ      N   k   rúî rúî –   Ä       0           0   B   H            0   B   H   écL écL –   Ä  0    0     	         !   %            0   B   H   GZ GZ ∆   Ä       0  ˛ˇˇˇ¯ˇˇˇˆˇˇˇ
-   2   V            0   B   H   écL écL –   @       0        ˙ˇˇˇ¸ˇˇˇ(   ^            0   B   H   UUS UUS –   @       0  ˛ˇˇˇ¯ˇˇˇˆˇˇˇ
-   2   V   ¸ˇˇˇÙˇˇˇ˜ˇˇˇ   O   ~   GZ GZ ∆   @      |              ∏  ˇˇˇ                ⁄  ˇˇˇ         Ä> 9éA Î   ∑         écL ™¿O            GZ  ÍV #  ‡ 2        GZ 9§] A  ‡ 2        GZ GZ _  ‡ 2        GZ ™¿O x  ‡ 2        écL  @Q :        	   GZ  @Q ñ    ¿     
-   UUS „¯Z ´            GZ  @Q ¿  ‡ 2        GZ  @Q T  ‡ 2        GZ  @Q t  ‡ 2          Ä>  Ä> ◊         !    Ä>  Ä> Í         0    Ä>  Ä>           @   rúî rúî   ˇˇˇ     P   GZ GZ 1  ˇˇˇ     Q    Äa   d ?  ˇˇˇ     `     d   d U  ˇˇˇ     ˇˇˇˇ                    Setting I2S speed to %d
- 7 unknown , dual  stereo mono %s: Audio:     Mode:     %s
- Mode:     %s (%s%s)
- Standard: %s (%s%s)
- Audmode:  0x%04x
- ACB:      0x%04x
- resume
- msp_reset
- chip reset failed
- msp_read(0x%x, 0x%x): 0x%x
- msp_write(0x%x, 0x%x, 0x%x)
- no on yes off suspend
- nicam  and  radio msp3400 msp3400 not found
- &state->wq rev1=0x%04x, rev2=0x%04x
- msp34xx kernel_thread() failed
- switching to radio mode
- AM (for carrier detect) FM Radio Terrestrial FM-mono/stereo Satellite FM-mono NICAM/FM (B/G, D/K) NICAM/FM (I) NICAM/AM (L) BTSC External input manual autodetect autodetect and autoselect in1 in2 in3 in4 in1 da in2 da mute 7 unknown FM set_audmode: %s
- SAT set_audmode: %s
- NICAM set_audmode: %s
- BTSC set_audmode: %s
- extern set_audmode: %s
- FM-Radio set_audmode: %s
- mono set_audmode
- set audmode %d
- switching to AM mono
- set_mode: %d
- stereo detect register: %d
- nicam sync=%d, mode=%d
- watch: nicam %d => %d
- msp3410 daemon started
- msp3410 thread: sleep
- msp3410 thread: wakeup
- thread: restart scan
- thread: no carrier scan
- detection still in progress
- 5.5/5.85  B/G NICAM FM thread: exit
- msp34xxg daemon started
- msp34xxg thread: sleep
- msp34xxg thread: wakeup
- selected radio modus
- selected M (EIA-J) modus
- selected M (A2) modus
- selected SECAM-L modus
- selected M (BTSC) modus
- msp3400 daemon started
- msp3400 thread: sleep
- msp3400 thread: wakeup
- AM sound override
- carrier1 val: %5d / %s
- carrier2 val: %5d / %s
- mono stereo lang2 lang1 lang1+lang2 5.85  PAL D/K + SECAM NICAM 6.25  PAL D/K1 FM-stereo 6.74  PAL D/K2 FM-stereo 7.02  PAL SAT FM-stereo s/b 7.20  PAL SAT FM-stereo s 7.38  PAL SAT FM-stereo b 5.742 PAL B/G FM-stereo 5.85  PAL B/G NICAM 4.5   NTSC 5.5   PAL B/G 6.0   PAL I 6.5   PAL D/K + SAT + SECAM autodetect start 4.5/4.72  M Dual FM-Stereo 5.5/5.74  B/G Dual FM-Stereo 6.5/6.25  D/K1 Dual FM-Stereo 6.5/6.74  D/K2 Dual FM-Stereo 6.5  D/K FM-Mono (HDEV3) 6.5/5.74  D/K3 Dual FM-Stereo 6.5/5.85  L NICAM AM 6.0/6.55  I NICAM FM 6.5/5.85  D/K NICAM FM 4.5  M BTSC-Stereo 4.5  M BTSC-Mono + SAP 4.5  M EIA-J Japan Stereo 10.7  FM-Stereo Radio 6.5  SAT-Mono 7.02/7.20  SAT-Stereo 7.2  SAT ADR     `   –      @  ∞     P  –  –  †  0  ê  ¿           @  `  Ä  0  ê  p  –      ê  @  –  p  ∞     `  ¿  `  Ä  –   ¿%    detected standard: %s(0x%08Lx)
- %s rev1 = 0x%04x rev2 = 0x%04x
- Routing:  0x%08x (input) 0x%08x (output)
-   I/O error #%d (read 0x%02x/0x%02x)
- resetting chip, sound will go off.
- I/O error #%d (write 0x%02x/0x%02x)
-    mute=%s scanning=%s volume=%d
-  not an msp3400 (cannot read chip version)
-  MSP%d4%02d%c-%c%d found on %s: supports %s%s%s, mode is %s
- scart switch: %s => %d (ACB=0x%04x)
-    set source to %d (0x%x) for output %02x
-    could not detect sound standard set_audmode called with mode=%d instead of set_source (ignored)
-    set_audmode final source/matrix = 0x%x
- watch: rxsubchans %02x => %02x
- status=0x%x, stereo=%d, bilingual=%d -> rxsubchans=%d
-  setting standard: %s (0x%04x)
-  current standard: %s (0x%04x)
-  autodetection failed, switching to backup standard: %s (0x%04x)
-    started autodetect, waiting for result
- detection still in progress after 10 tries. giving up.
- detected standard: %s (0x%04x)
- mono sound carrier: %d.%03d MHz
-    main sound carrier: %d.%03d MHz
-    NICAM/FM carrier  : %d.%03d MHz
-    NICAM/AM carrier  : %d.%03d MHz
-    FM-stereo carrier : %d.%03d MHz
-    6.5/5.85  D/K NICAM FM (HDEV2)  6.5/5.85  D/K NICAM FM (HDEV3) parm=dolby:Activates Dolby processing parm=amsound:Hardwire AM sound at 6.5Hz (France), FM can autoscan parm=standard:Specify audio standard: 32 = NTSC, 64 = radio, Default: Autodetect parm=stereo_threshold:Sets signal threshold to activate stereo parm=debug:Enable debug messages [0-3] parm=once:No continuous stereo monitoring parm=opmode:Forces a MSP3400 opmode. 0=Manual, 1=Autodetect, 2=Autodetect and autoselect parmtype=dolby:bool parmtype=amsound:bool parmtype=standard:int parmtype=stereo_threshold:int parmtype=debug:int parmtype=once:bool parmtype=opmode:int license=GPL author=Gerd Knorr description=device driver for msp34xx TV sound processor Ã          §ˇ     ‘          §ˇ     ‹          §ˇ     Ë          §ˇ     ¸          §ˇ               §ˇ               $ˇ ®             Ä                                  ¿                  +                                                              †           `                       ê     ˇˇˇˇ                     @Q œ   ÍV Î  9§]    Äa     d 9   Äf S  ™¿O m   @Q Ö   Ä> ô  écL §  UUS ≤  GZ æ   GCC: (GNU) 11.2.0  GCC: (GNU) 11.2.0                                                                                                      
-                                                                                                                                           Òˇ       `     '       2     A   `   e     N   –   0     Z      9     i   2   a    }       (    
- á   @  c     ì   ∞  B     £      P     Æ   ì        æ   P  |     »           ‘           ﬂ            Á   ≥  3     ˆ   –  Õ     ˇ   Ê  p       †  à       V  k     &  0  \    1  ¡  †     A  ê  "     M  a       ^  ¿  @     i     Ú    s          
- {           ≈  ®        É  0      
- ê  y  µ    ü  ¸       
- ™          
- ¥  `  l    
- ª  .  *     Œ  @       
- ⁄  0  V    Ë  –  ±     Ù  X                        Ä            
-     0  †   \    
- ?  `   0    
- F     0    
- S  `  ,    
- a  @      
- o  †  P    
- }      &     í  &   B     ©  h   Q     ¡  π   ?     ·  ¯   '     ˆ    *     
-  I  Y        ¢       9           G  Ã      
- Y  ∂       t          Ñ  ‘      
- ò  Ã       ¥  (        ≈  ‹  	    
- ⁄  ‚       ˛  <          Ë      
- 4          M  P        [  ¸      
- m         Ö  d        í        
- £  &       Ω  x        Ã        
- ﬂ  :       ˆ  F         X  9     '           Òˇ:  ê  °     I  @  â     ]  4      
- g         
- q  s  .     ä  –  ñ     ü  †     
- ´     5    ¿  H      
-    °  -    ‰  `  @   
- ˜  Œ  $       Ú  ª     %  ≠  3    :  ‡	  «    O           l  ¿   0     á          ¢  ß  O    ∑             Ã          ÷             „             ˆ                                         Ä  B    /             L      
-     [  †        m  `       {             â           ì             ≤          æ             Õ  ∞  g     ‚             ¸                            `      ,             7           C             S             b  p  ?     x  –  ˙     Ç             ü             ∑             ¿             —  ¿  ì     ·             Î             ˇ             	             &	  §        3	             >	  ê  Ÿ     H	             _	             l	             	             å	             ñ	  Ä  ¨     §	             ∫	             –	  ¿%  
-    ‡	  `  X    Ú	  @        
-             
-  p  T     )
-             1
-             >
-             M
-             _
-             v
-             ä
-             ó
-  `   0    
- ∂
-             »
-          ’
-          ‚
-             Ò
-             ˇ
-               –   È                 -          6              msp3400-driver.c msp_s_i2s_clock_freq msp_s_i2s_clock_freq.cold msp_querystd msp_s_tuner msp_log_status msp_log_status.cold CSWTCH.74 msp_g_tuner msp_s_frequency msp_resume msp_resume.cold msp_s_std reset_off.1 reset_on.2 write.3 msp_reset.cold msp_read msp_read.cold msp_write msp_write.cold msp_s_ctrl msp_s_ctrl.cold msp_suspend msp_suspend.cold msp_remove msp_probe msp_ops __key.4 msp_ctrl_ops msp_probe.cold opmode_str CSWTCH.84 scarts msp_set_scart.cold scart_names msp_s_routing msp_s_radio msp_s_radio.cold msp_driver_init msp_driver msp_driver_exit msp3400_pm_ops msp_id msp_core_ops msp_tuner_ops msp_audio_ops msp_video_ops __UNIQUE_ID_dolby282 __UNIQUE_ID_amsound281 __UNIQUE_ID_standard280 __UNIQUE_ID_stereo_threshold279 __UNIQUE_ID_debug278 __UNIQUE_ID_once277 __UNIQUE_ID_opmode276 __UNIQUE_ID_dolbytype275 __param_dolby __param_str_dolby __UNIQUE_ID_amsoundtype274 __param_amsound __param_str_amsound __UNIQUE_ID_standardtype273 __param_standard __param_str_standard __UNIQUE_ID_stereo_thresholdtype272 __param_stereo_threshold __param_str_stereo_threshold __UNIQUE_ID_debugtype271 __param_debug __param_str_debug __UNIQUE_ID_oncetype270 __param_once __param_str_once __UNIQUE_ID_opmodetype269 __param_opmode __param_str_opmode __UNIQUE_ID_license268 __UNIQUE_ID_author267 __UNIQUE_ID_description266 msp3400-kthreads.c msp_set_source msp34xxg_set_source CSWTCH.91 CSWTCH.92 msp34xxg_set_source.cold msp34xxg_set_sources msp_stdlist msp3400c_set_audmode strmode.0 msp3400c_set_audmode.cold msp3400c_init_data msp3400c_set_mode.cold msp_detect_stereo.cold msp3410d_thread.cold msp34xxg_thread.cold msp3400c_carrier_detect_main msp3400c_carrier_detect_65 msp3400c_carrier_detect_55 msp3400c_thread.cold v4l2_i2c_subdev_init msp_debug devm_kmalloc __msecs_to_jiffies __this_module snprintf __stack_chk_guard msp3410d_thread v4l2_ctrl_handler_init_class cleanup_module msp_stereo_thresh msp_write_dsp set_freezable msp_dolby schedule_timeout_interruptible msp_amsound add_wait_queue msp3400c_set_carrier i2c_transfer_buffer_flags kthread_should_stop __wake_up msp_detect_stereo __fentry__ init_module wake_up_process __refrigerator msp_standard_std_name msp_reset v4l2_ctrl_handler_log_status v4l2_ctrl_handler_setup schedule __stack_chk_fail msp_set_audmode _dev_info i2c_register_driver v4l2_device_unregister_subdev _dev_err msp_standard mutex_lock msp_sleep media_entity_pads_init kthread_stop freezing_slow_path current_task _dev_warn msp_set_scart default_wake_function __init_waitqueue_head msp3400c_thread msp3400c_set_mode msp_write_dem kthread_create_on_node msp_update_volume strscpy mutex_unlock param_ops_bool v4l2_ctrl_new_std v4l2_ctrl_handler_free system_freezing_cnt i2c_transfer __mod_i2c__msp_id_device_table remove_wait_queue msp_read_dsp msp_read_dem i2c_del_driver param_ops_int _dev_printk msp34xxg_thread v4l2_ctrl_cluster msp_once __SCT__might_resched     ä  
-   u       a   ä  É   u  ©   é  ±   	  ∑     º   ∂  —   ä  ˘   î    ä    z  )    0  â  5    A  ä  ö  â  ±  ä  Í  à    ä  
-  u      E  à  Q  ä  ¡  à  —  ä  ‚  z  ˙  u  2    B    O    a    p  Ø  y    ä  Ø  ì    §  Ø  ≠    ∫  z  ∆  ì  —  ä  Î  z  ]  Ø  f    u  u      ä  z  ô  ì  °  ä  ¥  z  ÿ  u  ‰    ˛  Ü        z  $  ì  1  ä    u  É    à    ë  ä  ó  u  £    ™  è  ¡  ä  œ  ó  Â  ù  Ï  è  ˜  ≠    ä         ©  '  è  F  v  U    \  t  ù  ú  º    ¡    	  £  ;	  u  É	  u  ã	    Ë
-    )  |  C    a  ¨  k    î  ¨  û    ∏  ¨  Ÿ  ≠      .  ¨  8    [  ¨  e      ¨  ©  u  ∂    –  ∏  ◊  ë  ‰    È    Ó      ä  !  ä  A  ä  a  ä  Å  ä  ®  u  ∂    Í    ˆ    1  ä  √  °  ”  °  „  °  Í  î  b  à  ë  ä  ¶  ü  Ø  z  ‹  ¢  ·  Ñ  Ê  á  ı  w  ˙  Ç    ±    ∫    Æ    ü  -  z  I  í  S  û  ^  ç  e  ì  q  ä  Ö  ö  ¿  ™  —  ä  È  u  ˝    I  à  `  •  q  Ö  x  ®  ë  ä  ó  Å  ¥    ≈    ”    ·    Ô            -    A  ä  `    g    y  u  Ñ    ë    —  ä  q  ä  w    Ä  	  ©    ±  ä  œ  ¶  ›  ¶  Ù  ¶    ¶    ¶  !  ä  '    D    Q  u  é    ∂  Ö  ª  u  √    ‘           u  *    e  u  m    ü    ∂    ˝  Ö    u  
-    $    4    R  Ö  W  u  _    Ç  Ö  á  u  è    §    —    ◊  u    u  
-      °  =    B  u  J    a  ä  É  u  é    ∑    »  ¶  ”    ﬂ  ¶  ˙  ¶    ¶    ¶  #    /  ¶  D    N  ¶  [  Ö  w    Ü    ¥    ¡  ä  4  ¶  M  ¶  a  ä  ã  ≥  ·  u  Ë    9  ≥  ?  u  j  u  r    ê  u  ò      ≤    u  #    n    Å  ä  í  u  ö    ≥  Ä  ¬  u  …    ’  õ  ⁄  u  „    Ô  á    ®  W  õ  ^  u  l  u  ô    §    Æ  u  ≈  É  Õ      u  $    ?  ¶  p    Å    ≥  ®  ÿ  õ  È  â  Û  π    õ  %  u  3    C  î  a    p    ~    Ö      •    Ö  1  u  9    J  ®  v  ¶  ç    ≠  ¶  ¿  ≥  Õ  u  ‘    ‡  õ  A   u  I     e     Å     ç     í   	  ß     π     æ     —   ä  ‡   u  Î     !  Ä  !  u  !    )!  õ  .!  u  7!    ?!    K!  á  }!  è  ¯!  ¶  "    !"    4"  ~  @"  ¶  \"  ô  {"  ¶  ã"  u  ì"    ®"  õ  º"  ≥  Õ"  u  ‘"    Ó"  u  	#    #    &#    -#    I#  ®  [#    u#  u  Ç#  u  ä#    õ#  ®  †#  u  ¬#  u   #    Ì#    $  ¶  -$  â  ;$  π  R$  π  h$  õ  É$  â  é$  î  ô$  u  µ$    ¡$  u  …$    ·$  u  È$    %  u  %    +%  î  :%  u  B%    Q%  u  Y%    h%  u  p%    å%    ì%  	  ß%    µ%    ¡%  ä  “%  u  ⁄%    Û%  Ä  &  u  	&    &  õ  &  u  #&    /&  á  [&  ®  d&  •  Å&  õ  ç&  u  ó&    ¢&  u  ™&    ª&  ®   &  É  ‰&  u  Ï&    Ú&    '    ''  •  x'  ≤  ñ'  u  û'    ≠'    ∂'  Ö  ¬'  õ  À'  u  Ó'    Ù'  É  (  ≤  8(  u  @(    Z(  Ö  f(  õ  o(  u  ã(  É  ô(    ·(  u  È(    !)  •  4)  Ö  L)  ®  Q)  u  Ä)  õ  ï)  â  ü)  π  ∆)  õ  ⁄)  â  Â)  î  ˜)    C*    U*  •  â*    ¶*  u  ≥*    Ê*  •  +  u  +    !+    E+  u  R+    l+    y+  •  µ+    ˜+    	,  •  ,    ,,  •  h,    í,  É  ¢,                 ∂  .     F   	  L   ï  U     a   y  p   ê  Ä     ô     û     ¨     ±     º     ¬   ï  Œ     ÷     ‹   ï  È     Ô   ï     	    ï        ï  %  z  <    B  ï  P    U    Z    f    t  é  |    Ç  ï  è  ì  î    û    £  ∂  Ø    ∑    Ω  ò  «    œ    ’    ⁄  ∂  ‚    Ò    ˜    ¸  ∂        	    †  &  Ç  3  	  <  †  C  è  M    R    ]  	  f  †  p  Ç  }  	  Ü  †  ç  è  ó    •    ´    ∞  ∂  ∏    Ω    ’    ⁄    ﬂ    Ú  	  ¯    ˝  ∂          %    *    /  	  5    :  ∂  I    Q    V    [    b    h    m  ∂  u    z    Ü    ò    »  	  —  ï  „    Í    Ú    ˜       ß    å  +    Q  à  W    \    a    f    x    å    ï    ö  ∂  ¬    »  u  œ    ‘  	  ‚    Á  ∂  Ô    ˜          ∂          #  †  3    ;  	  A    F  ∂  T    \    b    g  ∂  o    Ç  	  à    ç  ∂  ù    ¶    ¨    ±  ∂  π    √    …    Œ  ∂  ÿ    Â  	  Î      ∂  ¸              ∂  #    4    =    B    K    Q    V  ∂  ^    g    m    r  ∂  x  u  Ä    à    é    ì  ∂  õ    §    ™    Ø  ∂  µ  u  ø    »    Œ    ”  ∂  Ÿ  u  „    Ì    Û    ¯  ∂                ∂  )  	  /    4  ∂  <    F    L    Q  ∂  [    e    k    p  ∂  z    Ç    à    ç  ∂  ï    û    §    ©  ∂  Ø  u  º    ≈         ◊    ›    ‚  ∂  Ó    ˚          ∂        	  "    '  ∂  /    9    ?    D  ∂  L    [  	  a    f  ∂  x    í    ò    ù  ∂  ©    Ø    ¥  	  Ω    ¬  ∂       œ    ÿ    ›  ∂  Â    Ó    ˘  	  	    	  ∂  	    	    !	    &	  ∂  .	    6	    <	    A	  ∂  I	    Q	    W	    \	  ∂  d	    i	    r	    w	  ∂  	    Ñ	    ç	    í	  ∂  ö	    ü	    ®	    ≠	  ∂  ≤	  u  ∫	    ø	    ∆	  	  œ	    ‘	  ∂  ‹	    ·	    Í	    Ô	  ∂  ˜	    ¸	  	  
-    
+#include "lantiq_pce.h"
 
-  ∂  
-    
-    
-  	  '
-    ,
-  ∂  :
-    ?
-    H
-    M
-  ∂  U
-    Z
-    c
-    h
-  ∂  m
-  u  u
-    z
-    É
-    à
-  ∂  ê
-    ò
-    û
-    £
-  ∂  ´
-    ≥
-    π
-    æ
-  ∂  »
-    Õ
-    ÷
-    €
-  ∂  Ë
-    Ì
-  	  ˆ
-    ˚
-  ∂     u                ∂  (    -    6    ;  ∂  H    M    V    [  ∂  h    m    v    {  ∂  à    ç    ñ    õ  ∂  £    ∆  	  œ    ‘  ∂  ‹    ˇ  	        ∂          #    (  ∂  0    8    >    C  ∂  K    n  	  w    |  ∂  Ñ    ≠  	  ∂    ª  ∂  …    Ú  	  ˚       ∂          !    &  ∂  .    5    ;    D    I  ∂  Q    Y    _    d  ∂  l    q    v        Ñ  ∂  ú    °    ™    Ø  ∂  ∑    º    ≈       ∂  “    ◊    ‡    Â  ∂  Í  u  Ú       ä          x     ñ          ¥      §     {     ∑        $     (     ,     0     4     8     <     @     D     ®     ¨     ∞     ¥     ∏     º     ¸                   $    (    ,    D    H    d    h    t    x    ¨    ∏         8    @    D    H    L    P    T    X    \    H    L    P    T    X    ¨  	  ƒ    ‹    Ù        $    <    T    l    Ñ    ú    ¥    Ã  	  ‰  	  ¸        ,    D    \    t    å                                                   $     (     ,     0     4     8     <     @     D     H     L     P     T     X     \     `     d     h     l     p     t     x     |     Ä     Ñ     à     å     ê              x     ´     Å          x     ´  $   É  (     ,   x  0   µ  8   ô  <     @   x  D   µ  L   ~  P     T   x  X   µ  `   u  d     h   x  l   ´  t   π  x     |   x  Ä   µ  à     $     (     <     |     à     ƒ     Ã     ‘     ‹     ‰     Ï     Ù     ¸                      .symtab .strtab .shstrtab .note.gnu.property .rel.text .rel.text.unlikely .rel.init.text .rel.exit.text .rel.rodata .rodata.str1.1 .rel__mcount_loc .rodata.str1.4 .modinfo .rel__param .rel.data .bss .comment .note.GNU-stack                                                         4   (                  2             `    ,                 .   	   @       ‰k  ‡              <             *-  ˆ                 8   	   @       ƒy  à              O              ;                    K   	   @       LÜ                  ^             4;  
-                  Z   	   @       lÜ                 m             @;  ∞                  i   	   @       |Ü  0     
-         u      2       B  b                à             RK  î                  Ñ   	   @       ¨à  (              ï      2       ËK  ì                §             {P  ë                 ±             S  å                  ≠   	   @       ‘â  ‡               Ω             †S                     π   	   @       ¥ä  à               √             ¿T                    »      0       ¿T  &                 —              ÊT                                   ËT  ∞     t         	              ò`  K                               <ã  ·                                                                                                                                                                                                           
+/* GSWIP MDIO Registers */
+#define GSWIP_MDIO_GLOB			0x00
+#define  GSWIP_MDIO_GLOB_ENABLE		BIT(15)
+#define GSWIP_MDIO_CTRL			0x08
+#define  GSWIP_MDIO_CTRL_BUSY		BIT(12)
+#define  GSWIP_MDIO_CTRL_RD		BIT(11)
+#define  GSWIP_MDIO_CTRL_WR		BIT(10)
+#define  GSWIP_MDIO_CTRL_PHYAD_MASK	0x1f
+#define  GSWIP_MDIO_CTRL_PHYAD_SHIFT	5
+#define  GSWIP_MDIO_CTRL_REGAD_MASK	0x1f
+#define GSWIP_MDIO_READ			0x09
+#define GSWIP_MDIO_WRITE		0x0A
+#define GSWIP_MDIO_MDC_CFG0		0x0B
+#define GSWIP_MDIO_MDC_CFG1		0x0C
+#define GSWIP_MDIO_PHYp(p)		(0x15 - (p))
+#define  GSWIP_MDIO_PHY_LINK_MASK	0x6000
+#define  GSWIP_MDIO_PHY_LINK_AUTO	0x0000
+#define  GSWIP_MDIO_PHY_LINK_DOWN	0x4000
+#define  GSWIP_MDIO_PHY_LINK_UP		0x2000
+#define  GSWIP_MDIO_PHY_SPEED_MASK	0x1800
+#define  GSWIP_MDIO_PHY_SPEED_AUTO	0x1800
+#define  GSWIP_MDIO_PHY_SPEED_M10	0x0000
+#define  GSWIP_MDIO_PHY_SPEED_M100	0x0800
+#define  GSWIP_MDIO_PHY_SPEED_G1	0x1000
+#define  GSWIP_MDIO_PHY_FDUP_MASK	0x0600
+#define  GSWIP_MDIO_PHY_FDUP_AUTO	0x0000
+#define  GSWIP_MDIO_PHY_FDUP_EN		0x0200
+#define  GSWIP_MDIO_PHY_FDUP_DIS	0x0600
+#define  GSWIP_MDIO_PHY_FCONTX_MASK	0x0180
+#define  GSWIP_MDIO_PHY_FCONTX_AUTO	0x0000
+#define  GSWIP_MDIO_PHY_FCONTX_EN	0x0100
+#define  GSWIP_MDIO_PHY_FCONTX_DIS	0x0180
+#define  GSWIP_MDIO_PHY_FCONRX_MASK	0x0060
+#define  GSWIP_MDIO_PHY_FCONRX_AUTO	0x0000
+#define  GSWIP_MDIO_PHY_FCONRX_EN	0x0020
+#define  GSWIP_MDIO_PHY_FCONRX_DIS	0x0060
+#define  GSWIP_MDIO_PHY_ADDR_MASK	0x001f
+#define  GSWIP_MDIO_PHY_MASK		(GSWIP_MDIO_PHY_ADDR_MASK | \
+					 GSWIP_MDIO_PHY_FCONRX_MASK | \
+					 GSWIP_MDIO_PHY_FCONTX_MASK | \
+					 GSWIP_MDIO_PHY_LINK_MASK | \
+					 GSWIP_MDIO_PHY_SPEED_MASK | \
+					 GSWIP_MDIO_PHY_FDUP_MASK)
+
+/* GSWIP MII Registers */
+#define GSWIP_MII_CFGp(p)		(0x2 * (p))
+#define  GSWIP_MII_CFG_RESET		BIT(15)
+#define  GSWIP_MII_CFG_EN		BIT(14)
+#define  GSWIP_MII_CFG_ISOLATE		BIT(13)
+#define  GSWIP_MII_CFG_LDCLKDIS		BIT(12)
+#define  GSWIP_MII_CFG_RGMII_IBS	BIT(8)
+#define  GSWIP_MII_CFG_RMII_CLK		BIT(7)
+#define  GSWIP_MII_CFG_MODE_MIIP	0x0
+#define  GSWIP_MII_CFG_MODE_MIIM	0x1
+#define  GSWIP_MII_CFG_MODE_RMIIP	0x2
+#define  GSWIP_MII_CFG_MODE_RMIIM	0x3
+#define  GSWIP_MII_CFG_MODE_RGMII	0x4
+#define  GSWIP_MII_CFG_MODE_GMII	0x9
+#define  GSWIP_MII_CFG_MODE_MASK	0xf
+#define  GSWIP_MII_CFG_RATE_M2P5	0x00
+#define  GSWIP_MII_CFG_RATE_M25	0x10
+#define  GSWIP_MII_CFG_RATE_M125	0x20
+#define  GSWIP_MII_CFG_RATE_M50	0x30
+#define  GSWIP_MII_CFG_RATE_AUTO	0x40
+#define  GSWIP_MII_CFG_RATE_MASK	0x70
+#define GSWIP_MII_PCDU0			0x01
+#define GSWIP_MII_PCDU1			0x03
+#define GSWIP_MII_PCDU5			0x05
+#define  GSWIP_MII_PCDU_TXDLY_MASK	GENMASK(2, 0)
+#define  GSWIP_MII_PCDU_RXDLY_MASK	GENMASK(9, 7)
+
+/* GSWIP Core Registers */
+#define GSWIP_SWRES			0x000
+#define  GSWIP_SWRES_R1			BIT(1)	/* GSWIP Software reset */
+#define  GSWIP_SWRES_R0			BIT(0)	/* GSWIP Hardware reset */
+#define GSWIP_VERSION			0x013
+#define  GSWIP_VERSION_REV_SHIFT	0
+#define  GSWIP_VERSION_REV_MASK		GENMASK(7, 0)
+#define  GSWIP_VERSION_MOD_SHIFT	8
+#define  GSWIP_VERSION_MOD_MASK		GENMASK(15, 8)
+#define   GSWIP_VERSION_2_0		0x100
+#define   GSWIP_VERSION_2_1		0x021
+#define   GSWIP_VERSION_2_2		0x122
+#define   GSWIP_VERSION_2_2_ETC		0x022
+
+#define GSWIP_BM_RAM_VAL(x)		(0x043 - (x))
+#define GSWIP_BM_RAM_ADDR		0x044
+#define GSWIP_BM_RAM_CTRL		0x045
+#define  GSWIP_BM_RAM_CTRL_BAS		BIT(15)
+#define  GSWIP_BM_RAM_CTRL_OPMOD	BIT(5)
+#define  GSWIP_BM_RAM_CTRL_ADDR_MASK	GENMASK(4, 0)
+#define GSWIP_BM_QUEUE_GCTRL		0x04A
+#define  GSWIP_BM_QUEUE_GCTRL_GL_MOD	BIT(10)
+/* buffer management Port Configuration Register */
+#define GSWIP_BM_PCFGp(p)		(0x080 + ((p) * 2))
+#define  GSWIP_BM_PCFG_CNTEN		BIT(0)	/* RMON Counter Enable */
+#define  GSWIP_BM_PCFG_IGCNT		BIT(1)	/* Ingres Special Tag RMON count */
+/* buffer management Port Control Register */
+#define GSWIP_BM_RMON_CTRLp(p)		(0x81 + ((p) * 2))
+#define  GSWIP_BM_CTRL_RMON_RAM1_RES	BIT(0)	/* Software Reset for RMON RAM 1 */
+#define  GSWIP_BM_CTRL_RMON_RAM2_RES	BIT(1)	/* Software Reset for RMON RAM 2 */
+
+/* PCE */
+#define GSWIP_PCE_TBL_KEY(x)		(0x447 - (x))
+#define GSWIP_PCE_TBL_MASK		0x448
+#define GSWIP_PCE_TBL_VAL(x)		(0x44D - (x))
+#define GSWIP_PCE_TBL_ADDR		0x44E
+#define GSWIP_PCE_TBL_CTRL		0x44F
+#define  GSWIP_PCE_TBL_CTRL_BAS		BIT(15)
+#define  GSWIP_PCE_TBL_CTRL_TYPE	BIT(13)
+#define  GSWIP_PCE_TBL_CTRL_VLD		BIT(12)
+#define  GSWIP_PCE_TBL_CTRL_KEYFORM	BIT(11)
+#define  GSWIP_PCE_TBL_CTRL_GMAP_MASK	GENMASK(10, 7)
+#define  GSWIP_PCE_TBL_CTRL_OPMOD_MASK	GENMASK(6, 5)
+#define  GSWIP_PCE_TBL_CTRL_OPMOD_ADRD	0x00
+#define  GSWIP_PCE_TBL_CTRL_OPMOD_ADWR	0x20
+#define  GSWIP_PCE_TBL_CTRL_OPMOD_KSRD	0x40
+#define  GSWIP_PCE_TBL_CTRL_OPMOD_KSWR	0x60
+#define  GSWIP_PCE_TBL_CTRL_ADDR_MASK	GENMASK(4, 0)
+#define GSWIP_PCE_PMAP1			0x453	/* Monitoring port map */
+#define GSWIP_PCE_PMAP2			0x454	/* Default Multicast port map */
+#define GSWIP_PCE_PMAP3			0x455	/* Default Unknown Unicast port map */
+#define GSWIP_PCE_GCTRL_0		0x456
+#define  GSWIP_PCE_GCTRL_0_MTFL		BIT(0)  /* MAC Table Flushing */
+#define  GSWIP_PCE_GCTRL_0_MC_VALID	BIT(3)
+#define  GSWIP_PCE_GCTRL_0_VLAN		BIT(14) /* VLAN aware Switching */
+#define GSWIP_PCE_GCTRL_1		0x457
+#define  GSWIP_PCE_GCTRL_1_MAC_GLOCK	BIT(2)	/* MAC Address table lock */
+#define  GSWIP_PCE_GCTRL_1_MAC_GLOCK_MOD	BIT(3) /* Mac address table lock forwarding mode */
+#define GSWIP_PCE_PCTRL_0p(p)		(0x480 + ((p) * 0xA))
+#define  GSWIP_PCE_PCTRL_0_TVM		BIT(5)	/* Transparent VLAN mode */
+#define  GSWIP_PCE_PCTRL_0_VREP		BIT(6)	/* VLAN Replace Mode */
+#define  GSWIP_PCE_PCTRL_0_INGRESS	BIT(11)	/* Accept special tag in ingress */
+#define  GSWIP_PCE_PCTRL_0_PSTATE_LISTEN	0x0
+#define  GSWIP_PCE_PCTRL_0_PSTATE_RX		0x1
+#define  GSWIP_PCE_PCTRL_0_PSTATE_TX		0x2
+#define  GSWIP_PCE_PCTRL_0_PSTATE_LEARNING	0x3
+#define  GSWIP_PCE_PCTRL_0_PSTATE_FORWARDING	0x7
+#define  GSWIP_PCE_PCTRL_0_PSTATE_MASK	GENMASK(2, 0)
+#define GSWIP_PCE_VCTRL(p)		(0x485 + ((p) * 0xA))
+#define  GSWIP_PCE_VCTRL_UVR		BIT(0)	/* Unknown VLAN Rule */
+#define  GSWIP_PCE_VCTRL_VIMR		BIT(3)	/* VLAN Ingress Member violation rule */
+#define  GSWIP_PCE_VCTRL_VEMR		BIT(4)	/* VLAN Egress Member violation rule */
+#define  GSWIP_PCE_VCTRL_VSR		BIT(5)	/* VLAN Security */
+#define  GSWIP_PCE_VCTRL_VID0		BIT(6)	/* Priority Tagged Rule */
+#define GSWIP_PCE_DEFPVID(p)		(0x486 + ((p) * 0xA))
+
+#define GSWIP_MAC_FLEN			0x8C5
+#define GSWIP_MAC_CTRL_0p(p)		(0x903 + ((p) * 0xC))
+#define  GSWIP_MAC_CTRL_0_PADEN		BIT(8)
+#define  GSWIP_MAC_CTRL_0_FCS_EN	BIT(7)
+#define  GSWIP_MAC_CTRL_0_FCON_MASK	0x0070
+#define  GSWIP_MAC_CTRL_0_FCON_AUTO	0x0000
+#define  GSWIP_MAC_CTRL_0_FCON_RX	0x0010
+#define  GSWIP_MAC_CTRL_0_FCON_TX	0x0020
+#define  GSWIP_MAC_CTRL_0_FCON_RXTX	0x0030
+#define  GSWIP_MAC_CTRL_0_FCON_NONE	0x0040
+#define  GSWIP_MAC_CTRL_0_FDUP_MASK	0x000C
+#define  GSWIP_MAC_CTRL_0_FDUP_AUTO	0x0000
+#define  GSWIP_MAC_CTRL_0_FDUP_EN	0x0004
+#define  GSWIP_MAC_CTRL_0_FDUP_DIS	0x000C
+#define  GSWIP_MAC_CTRL_0_GMII_MASK	0x0003
+#define  GSWIP_MAC_CTRL_0_GMII_AUTO	0x0000
+#define  GSWIP_MAC_CTRL_0_GMII_MII	0x0001
+#define  GSWIP_MAC_CTRL_0_GMII_RGMII	0x0002
+#define GSWIP_MAC_CTRL_2p(p)		(0x905 + ((p) * 0xC))
+#define GSWIP_MAC_CTRL_2_LCHKL		BIT(2) /* Frame Length Check Long Enable */
+#define GSWIP_MAC_CTRL_2_MLEN		BIT(3) /* Maximum Untagged Frame Lnegth */
+
+/* Ethernet Switch Fetch DMA Port Control Register */
+#define GSWIP_FDMA_PCTRLp(p)		(0xA80 + ((p) * 0x6))
+#define  GSWIP_FDMA_PCTRL_EN		BIT(0)	/* FDMA Port Enable */
+#define  GSWIP_FDMA_PCTRL_STEN		BIT(1)	/* Special Tag Insertion Enable */
+#define  GSWIP_FDMA_PCTRL_VLANMOD_MASK	GENMASK(4, 3)	/* VLAN Modification Control */
+#define  GSWIP_FDMA_PCTRL_VLANMOD_SHIFT	3	/* VLAN Modification Control */
+#define  GSWIP_FDMA_PCTRL_VLANMOD_DIS	(0x0 << GSWIP_FDMA_PCTRL_VLANMOD_SHIFT)
+#define  GSWIP_FDMA_PCTRL_VLANMOD_PRIO	(0x1 << GSWIP_FDMA_PCTRL_VLANMOD_SHIFT)
+#define  GSWIP_FDMA_PCTRL_VLANMOD_ID	(0x2 << GSWIP_FDMA_PCTRL_VLANMOD_SHIFT)
+#define  GSWIP_FDMA_PCTRL_VLANMOD_BOTH	(0x3 << GSWIP_FDMA_PCTRL_VLANMOD_SHIFT)
+
+/* Ethernet Switch Store DMA Port Control Register */
+#define GSWIP_SDMA_PCTRLp(p)		(0xBC0 + ((p) * 0x6))
+#define  GSWIP_SDMA_PCTRL_EN		BIT(0)	/* SDMA Port Enable */
+#define  GSWIP_SDMA_PCTRL_FCEN		BIT(1)	/* Flow Control Enable */
+#define  GSWIP_SDMA_PCTRL_PAUFWD	BIT(3)	/* Pause Frame Forwarding */
+
+#define GSWIP_TABLE_ACTIVE_VLAN		0x01
+#define GSWIP_TABLE_VLAN_MAPPING	0x02
+#define GSWIP_TABLE_MAC_BRIDGE		0x0b
+#define  GSWIP_TABLE_MAC_BRIDGE_STATIC	0x01	/* Static not, aging entry */
+
+#define XRX200_GPHY_FW_ALIGN	(16 * 1024)
+
+/* Maximum packet size supported by the switch. In theory this should be 10240,
+ * but long packets currently cause lock-ups with an MTU of over 2526. Medium
+ * packets are sometimes dropped (e.g. TCP over 2477, UDP over 2516-2519, ICMP
+ * over 2526), hence an MTU value of 2400 seems safe. This issue only affects
+ * packet reception. This is probably caused by the PPA engine, which is on the
+ * RX part of the device. Packet transmission works properly up to 10240.
+ */
+#define GSWIP_MAX_PACKET_LENGTH	2400
+
+struct gswip_hw_info {
+	int max_ports;
+	int cpu_port;
+	const struct dsa_switch_ops *ops;
+};
+
+struct xway_gphy_match_data {
+	char *fe_firmware_name;
+	char *ge_firmware_name;
+};
+
+struct gswip_gphy_fw {
+	struct clk *clk_gate;
+	struct reset_control *reset;
+	u32 fw_addr_offset;
+	char *fw_name;
+};
+
+struct gswip_vlan {
+	struct net_device *bridge;
+	u16 vid;
+	u8 fid;
+};
+
+struct gswip_priv {
+	__iomem void *gswip;
+	__iomem void *mdio;
+	__iomem void *mii;
+	const struct gswip_hw_info *hw_info;
+	const struct xway_gphy_match_data *gphy_fw_name_cfg;
+	struct dsa_switch *ds;
+	struct device *dev;
+	struct regmap *rcu_regmap;
+	struct gswip_vlan vlans[64];
+	int num_gphy_fw;
+	struct gswip_gphy_fw *gphy_fw;
+	u32 port_vlan_filter;
+	struct mutex pce_table_lock;
+};
+
+struct gswip_pce_table_entry {
+	u16 index;      // PCE_TBL_ADDR.ADDR = pData->table_index
+	u16 table;      // PCE_TBL_CTRL.ADDR = pData->table
+	u16 key[8];
+	u16 val[5];
+	u16 mask;
+	u8 gmap;
+	bool type;
+	bool valid;
+	bool key_mode;
+};
+
+struct gswip_rmon_cnt_desc {
+	unsigned int size;
+	unsigned int offset;
+	const char *name;
+};
+
+#define MIB_DESC(_size, _offset, _name) {.size = _size, .offset = _offset, .name = _name}
+
+static const struct gswip_rmon_cnt_desc gswip_rmon_cnt[] = {
+	/** Receive Packet Count (only packets that are accepted and not discarded). */
+	MIB_DESC(1, 0x1F, "RxGoodPkts"),
+	MIB_DESC(1, 0x23, "RxUnicastPkts"),
+	MIB_DESC(1, 0x22, "RxMulticastPkts"),
+	MIB_DESC(1, 0x21, "RxFCSErrorPkts"),
+	MIB_DESC(1, 0x1D, "RxUnderSizeGoodPkts"),
+	MIB_DESC(1, 0x1E, "RxUnderSizeErrorPkts"),
+	MIB_DESC(1, 0x1B, "RxOversizeGoodPkts"),
+	MIB_DESC(1, 0x1C, "RxOversizeErrorPkts"),
+	MIB_DESC(1, 0x20, "RxGoodPausePkts"),
+	MIB_DESC(1, 0x1A, "RxAlignErrorPkts"),
+	MIB_DESC(1, 0x12, "Rx64BytePkts"),
+	MIB_DESC(1, 0x13, "Rx127BytePkts"),
+	MIB_DESC(1, 0x14, "Rx255BytePkts"),
+	MIB_DESC(1, 0x15, "Rx511BytePkts"),
+	MIB_DESC(1, 0x16, "Rx1023BytePkts"),
+	/** Receive Size 1024-1522 (or more, if configured) Packet Count. */
+	MIB_DESC(1, 0x17, "RxMaxBytePkts"),
+	MIB_DESC(1, 0x18, "RxDroppedPkts"),
+	MIB_DESC(1, 0x19, "RxFilteredPkts"),
+	MIB_DESC(2, 0x24, "RxGoodBytes"),
+	MIB_DESC(2, 0x26, "RxBadBytes"),
+	MIB_DESC(1, 0x11, "TxAcmDroppedPkts"),
+	MIB_DESC(1, 0x0C, "TxGoodPkts"),
+	MIB_DESC(1, 0x06, "TxUnicastPkts"),
+	MIB_DESC(1, 0x07, "TxMulticastPkts"),
+	MIB_DESC(1, 0x00, "Tx64BytePkts"),
+	MIB_DESC(1, 0x01, "Tx127BytePkts"),
+	MIB_DESC(1, 0x02, "Tx255BytePkts"),
+	MIB_DESC(1, 0x03, "Tx511BytePkts"),
+	MIB_DESC(1, 0x04, "Tx1023BytePkts"),
+	/** Transmit Size 1024-1522 (or more, if configured) Packet Count. */
+	MIB_DESC(1, 0x05, "TxMaxBytePkts"),
+	MIB_DESC(1, 0x08, "TxSingleCollCount"),
+	MIB_DESC(1, 0x09, "TxMultCollCount"),
+	MIB_DESC(1, 0x0A, "TxLateCollCount"),
+	MIB_DESC(1, 0x0B, "TxExcessCollCount"),
+	MIB_DESC(1, 0x0D, "TxPauseCount"),
+	MIB_DESC(1, 0x10, "TxDroppedPkts"),
+	MIB_DESC(2, 0x0E, "TxGoodBytes"),
+};
+
+static u32 gswip_switch_r(struct gswip_priv *priv, u32 offset)
+{
+	return __raw_readl(priv->gswip + (offset * 4));
+}
+
+static void gswip_switch_w(struct gswip_priv *priv, u32 val, u32 offset)
+{
+	__raw_writel(val, priv->gswip + (offset * 4));
+}
+
+static void gswip_switch_mask(struct gswip_priv *priv, u32 clear, u32 set,
+			      u32 offset)
+{
+	u32 val = gswip_switch_r(priv, offset);
+
+	val &= ~(clear);
+	val |= set;
+	gswip_switch_w(priv, val, offset);
+}
+
+static u32 gswip_switch_r_timeout(struct gswip_priv *priv, u32 offset,
+				  u32 cleared)
+{
+	u32 val;
+
+	return readx_poll_timeout(__raw_readl, priv->gswip + (offset * 4), val,
+				  (val & cleared) == 0, 20, 50000);
+}
+
+static u32 gswip_mdio_r(struct gswip_priv *priv, u32 offset)
+{
+	return __raw_readl(priv->mdio + (offset * 4));
+}
+
+static void gswip_mdio_w(struct gswip_priv *priv, u32 val, u32 offset)
+{
+	__raw_writel(val, priv->mdio + (offset * 4));
+}
+
+static void gswip_mdio_mask(struct gswip_priv *priv, u32 clear, u32 set,
+			    u32 offset)
+{
+	u32 val = gswip_mdio_r(priv, offset);
+
+	val &= ~(clear);
+	val |= set;
+	gswip_mdio_w(priv, val, offset);
+}
+
+static u32 gswip_mii_r(struct gswip_priv *priv, u32 offset)
+{
+	return __raw_readl(priv->mii + (offset * 4));
+}
+
+static void gswip_mii_w(struct gswip_priv *priv, u32 val, u32 offset)
+{
+	__raw_writel(val, priv->mii + (offset * 4));
+}
+
+static void gswip_mii_mask(struct gswip_priv *priv, u32 clear, u32 set,
+			   u32 offset)
+{
+	u32 val = gswip_mii_r(priv, offset);
+
+	val &= ~(clear);
+	val |= set;
+	gswip_mii_w(priv, val, offset);
+}
+
+static void gswip_mii_mask_cfg(struct gswip_priv *priv, u32 clear, u32 set,
+			       int port)
+{
+	/* There's no MII_CFG register for the CPU port */
+	if (!dsa_is_cpu_port(priv->ds, port))
+		gswip_mii_mask(priv, clear, set, GSWIP_MII_CFGp(port));
+}
+
+static void gswip_mii_mask_pcdu(struct gswip_priv *priv, u32 clear, u32 set,
+				int port)
+{
+	switch (port) {
+	case 0:
+		gswip_mii_mask(priv, clear, set, GSWIP_MII_PCDU0);
+		break;
+	case 1:
+		gswip_mii_mask(priv, clear, set, GSWIP_MII_PCDU1);
+		break;
+	case 5:
+		gswip_mii_mask(priv, clear, set, GSWIP_MII_PCDU5);
+		break;
+	}
+}
+
+static int gswip_mdio_poll(struct gswip_priv *priv)
+{
+	int cnt = 100;
+
+	while (likely(cnt--)) {
+		u32 ctrl = gswip_mdio_r(priv, GSWIP_MDIO_CTRL);
+
+		if ((ctrl & GSWIP_MDIO_CTRL_BUSY) == 0)
+			return 0;
+		usleep_range(20, 40);
+	}
+
+	return -ETIMEDOUT;
+}
+
+static int gswip_mdio_wr(struct mii_bus *bus, int addr, int reg, u16 val)
+{
+	struct gswip_priv *priv = bus->priv;
+	int err;
+
+	err = gswip_mdio_poll(priv);
+	if (err) {
+		dev_err(&bus->dev, "waiting for MDIO bus busy timed out\n");
+		return err;
+	}
+
+	gswip_mdio_w(priv, val, GSWIP_MDIO_WRITE);
+	gswip_mdio_w(priv, GSWIP_MDIO_CTRL_BUSY | GSWIP_MDIO_CTRL_WR |
+		((addr & GSWIP_MDIO_CTRL_PHYAD_MASK) << GSWIP_MDIO_CTRL_PHYAD_SHIFT) |
+		(reg & GSWIP_MDIO_CTRL_REGAD_MASK),
+		GSWIP_MDIO_CTRL);
+
+	return 0;
+}
+
+static int gswip_mdio_rd(struct mii_bus *bus, int addr, int reg)
+{
+	struct gswip_priv *priv = bus->priv;
+	int err;
+
+	err = gswip_mdio_poll(priv);
+	if (err) {
+		dev_err(&bus->dev, "waiting for MDIO bus busy timed out\n");
+		return err;
+	}
+
+	gswip_mdio_w(priv, GSWIP_MDIO_CTRL_BUSY | GSWIP_MDIO_CTRL_RD |
+		((addr & GSWIP_MDIO_CTRL_PHYAD_MASK) << GSWIP_MDIO_CTRL_PHYAD_SHIFT) |
+		(reg & GSWIP_MDIO_CTRL_REGAD_MASK),
+		GSWIP_MDIO_CTRL);
+
+	err = gswip_mdio_poll(priv);
+	if (err) {
+		dev_err(&bus->dev, "waiting for MDIO bus busy timed out\n");
+		return err;
+	}
+
+	return gswip_mdio_r(priv, GSWIP_MDIO_READ);
+}
+
+static int gswip_mdio(struct gswip_priv *priv, struct device_node *mdio_np)
+{
+	struct dsa_switch *ds = priv->ds;
+	int err;
+
+	ds->slave_mii_bus = mdiobus_alloc();
+	if (!ds->slave_mii_bus)
+		return -ENOMEM;
+
+	ds->slave_mii_bus->priv = priv;
+	ds->slave_mii_bus->read = gswip_mdio_rd;
+	ds->slave_mii_bus->write = gswip_mdio_wr;
+	ds->slave_mii_bus->name = "lantiq,xrx200-mdio";
+	snprintf(ds->slave_mii_bus->id, MII_BUS_ID_SIZE, "%s-mii",
+		 dev_name(priv->dev));
+	ds->slave_mii_bus->parent = priv->dev;
+	ds->slave_mii_bus->phy_mask = ~ds->phys_mii_mask;
+
+	err = of_mdiobus_register(ds->slave_mii_bus, mdio_np);
+	if (err)
+		mdiobus_free(ds->slave_mii_bus);
+
+	return err;
+}
+
+static int gswip_pce_table_entry_read(struct gswip_priv *priv,
+				      struct gswip_pce_table_entry *tbl)
+{
+	int i;
+	int err;
+	u16 crtl;
+	u16 addr_mode = tbl->key_mode ? GSWIP_PCE_TBL_CTRL_OPMOD_KSRD :
+					GSWIP_PCE_TBL_CTRL_OPMOD_ADRD;
+
+	mutex_lock(&priv->pce_table_lock);
+
+	err = gswip_switch_r_timeout(priv, GSWIP_PCE_TBL_CTRL,
+				     GSWIP_PCE_TBL_CTRL_BAS);
+	if (err) {
+		mutex_unlock(&priv->pce_table_lock);
+		return err;
+	}
+
+	gswip_switch_w(priv, tbl->index, GSWIP_PCE_TBL_ADDR);
+	gswip_switch_mask(priv, GSWIP_PCE_TBL_CTRL_ADDR_MASK |
+				GSWIP_PCE_TBL_CTRL_OPMOD_MASK,
+			  tbl->table | addr_mode | GSWIP_PCE_TBL_CTRL_BAS,
+			  GSWIP_PCE_TBL_CTRL);
+
+	err = gswip_switch_r_timeout(priv, GSWIP_PCE_TBL_CTRL,
+				     GSWIP_PCE_TBL_CTRL_BAS);
+	if (err) {
+		mutex_unlock(&priv->pce_table_lock);
+		return err;
+	}
+
+	for (i = 0; i < ARRAY_SIZE(tbl->key); i++)
+		tbl->key[i] = gswip_switch_r(priv, GSWIP_PCE_TBL_KEY(i));
+
+	for (i = 0; i < ARRAY_SIZE(tbl->val); i++)
+		tbl->val[i] = gswip_switch_r(priv, GSWIP_PCE_TBL_VAL(i));
+
+	tbl->mask = gswip_switch_r(priv, GSWIP_PCE_TBL_MASK);
+
+	crtl = gswip_switch_r(priv, GSWIP_PCE_TBL_CTRL);
+
+	tbl->type = !!(crtl & GSWIP_PCE_TBL_CTRL_TYPE);
+	tbl->valid = !!(crtl & GSWIP_PCE_TBL_CTRL_VLD);
+	tbl->gmap = (crtl & GSWIP_PCE_TBL_CTRL_GMAP_MASK) >> 7;
+
+	mutex_unlock(&priv->pce_table_lock);
+
+	return 0;
+}
+
+static int gswip_pce_table_entry_write(struct gswip_priv *priv,
+				       struct gswip_pce_table_entry *tbl)
+{
+	int i;
+	int err;
+	u16 crtl;
+	u16 addr_mode = tbl->key_mode ? GSWIP_PCE_TBL_CTRL_OPMOD_KSWR :
+					GSWIP_PCE_TBL_CTRL_OPMOD_ADWR;
+
+	mutex_lock(&priv->pce_table_lock);
+
+	err = gswip_switch_r_timeout(priv, GSWIP_PCE_TBL_CTRL,
+				     GSWIP_PCE_TBL_CTRL_BAS);
+	if (err) {
+		mutex_unlock(&priv->pce_table_lock);
+		return err;
+	}
+
+	gswip_switch_w(priv, tbl->index, GSWIP_PCE_TBL_ADDR);
+	gswip_switch_mask(priv, GSWIP_PCE_TBL_CTRL_ADDR_MASK |
+				GSWIP_PCE_TBL_CTRL_OPMOD_MASK,
+			  tbl->table | addr_mode,
+			  GSWIP_PCE_TBL_CTRL);
+
+	for (i = 0; i < ARRAY_SIZE(tbl->key); i++)
+		gswip_switch_w(priv, tbl->key[i], GSWIP_PCE_TBL_KEY(i));
+
+	for (i = 0; i < ARRAY_SIZE(tbl->val); i++)
+		gswip_switch_w(priv, tbl->val[i], GSWIP_PCE_TBL_VAL(i));
+
+	gswip_switch_mask(priv, GSWIP_PCE_TBL_CTRL_ADDR_MASK |
+				GSWIP_PCE_TBL_CTRL_OPMOD_MASK,
+			  tbl->table | addr_mode,
+			  GSWIP_PCE_TBL_CTRL);
+
+	gswip_switch_w(priv, tbl->mask, GSWIP_PCE_TBL_MASK);
+
+	crtl = gswip_switch_r(priv, GSWIP_PCE_TBL_CTRL);
+	crtl &= ~(GSWIP_PCE_TBL_CTRL_TYPE | GSWIP_PCE_TBL_CTRL_VLD |
+		  GSWIP_PCE_TBL_CTRL_GMAP_MASK);
+	if (tbl->type)
+		crtl |= GSWIP_PCE_TBL_CTRL_TYPE;
+	if (tbl->valid)
+		crtl |= GSWIP_PCE_TBL_CTRL_VLD;
+	crtl |= (tbl->gmap << 7) & GSWIP_PCE_TBL_CTRL_GMAP_MASK;
+	crtl |= GSWIP_PCE_TBL_CTRL_BAS;
+	gswip_switch_w(priv, crtl, GSWIP_PCE_TBL_CTRL);
+
+	err = gswip_switch_r_timeout(priv, GSWIP_PCE_TBL_CTRL,
+				     GSWIP_PCE_TBL_CTRL_BAS);
+
+	mutex_unlock(&priv->pce_table_lock);
+
+	return err;
+}
+
+/* Add the LAN port into a bridge with the CPU port by
+ * default. This prevents automatic forwarding of
+ * packages between the LAN ports when no explicit
+ * bridge is configured.
+ */
+static int gswip_add_single_port_br(struct gswip_priv *priv, int port, bool add)
+{
+	struct gswip_pce_table_entry vlan_active = {0,};
+	struct gswip_pce_table_entry vlan_mapping = {0,};
+	unsigned int cpu_port = priv->hw_info->cpu_port;
+	unsigned int max_ports = priv->hw_info->max_ports;
+	int err;
+
+	if (port >= max_ports) {
+		dev_err(priv->dev, "single port for %i supported\n", port);
+		return -EIO;
+	}
+
+	vlan_active.index = port + 1;
+	vlan_active.table = GSWIP_TABLE_ACTIVE_VLAN;
+	vlan_active.key[0] = 0; /* vid */
+	vlan_active.val[0] = port + 1 /* fid */;
+	vlan_active.valid = add;
+	err = gswip_pce_table_entry_write(priv, &vlan_active);
+	if (err) {
+		dev_err(priv->dev, "failed to write active VLAN: %d\n", err);
+		return err;
+	}
+
+	if (!add)
+		return 0;
+
+	vlan_mapping.index = port + 1;
+	vlan_mapping.table = GSWIP_TABLE_VLAN_MAPPING;
+	vlan_mapping.val[0] = 0 /* vid */;
+	vlan_mapping.val[1] = BIT(port) | BIT(cpu_port);
+	vlan_mapping.val[2] = 0;
+	err = gswip_pce_table_entry_write(priv, &vlan_mapping);
+	if (err) {
+		dev_err(priv->dev, "failed to write VLAN mapping: %d\n", err);
+		return err;
+	}
+
+	return 0;
+}
+
+static int gswip_port_enable(struct dsa_switch *ds, int port,
+			     struct phy_device *phydev)
+{
+	struct gswip_priv *priv = ds->priv;
+	int err;
+
+	if (!dsa_is_user_port(ds, port))
+		return 0;
+
+	if (!dsa_is_cpu_port(ds, port)) {
+		err = gswip_add_single_port_br(priv, port, true);
+		if (err)
+			return err;
+	}
+
+	/* RMON Counter Enable for port */
+	gswip_switch_w(priv, GSWIP_BM_PCFG_CNTEN, GSWIP_BM_PCFGp(port));
+
+	/* enable port fetch/store dma & VLAN Modification */
+	gswip_switch_mask(priv, 0, GSWIP_FDMA_PCTRL_EN |
+				   GSWIP_FDMA_PCTRL_VLANMOD_BOTH,
+			 GSWIP_FDMA_PCTRLp(port));
+	gswip_switch_mask(priv, 0, GSWIP_SDMA_PCTRL_EN,
+			  GSWIP_SDMA_PCTRLp(port));
+
+	if (!dsa_is_cpu_port(ds, port)) {
+		u32 mdio_phy = 0;
+
+		if (phydev)
+			mdio_phy = phydev->mdio.addr & GSWIP_MDIO_PHY_ADDR_MASK;
+
+		gswip_mdio_mask(priv, GSWIP_MDIO_PHY_ADDR_MASK, mdio_phy,
+				GSWIP_MDIO_PHYp(port));
+	}
+
+	return 0;
+}
+
+static void gswip_port_disable(struct dsa_switch *ds, int port)
+{
+	struct gswip_priv *priv = ds->priv;
+
+	if (!dsa_is_user_port(ds, port))
+		return;
+
+	gswip_switch_mask(priv, GSWIP_FDMA_PCTRL_EN, 0,
+			  GSWIP_FDMA_PCTRLp(port));
+	gswip_switch_mask(priv, GSWIP_SDMA_PCTRL_EN, 0,
+			  GSWIP_SDMA_PCTRLp(port));
+}
+
+static int gswip_pce_load_microcode(struct gswip_priv *priv)
+{
+	int i;
+	int err;
+
+	gswip_switch_mask(priv, GSWIP_PCE_TBL_CTRL_ADDR_MASK |
+				GSWIP_PCE_TBL_CTRL_OPMOD_MASK,
+			  GSWIP_PCE_TBL_CTRL_OPMOD_ADWR, GSWIP_PCE_TBL_CTRL);
+	gswip_switch_w(priv, 0, GSWIP_PCE_TBL_MASK);
+
+	for (i = 0; i < ARRAY_SIZE(gswip_pce_microcode); i++) {
+		gswip_switch_w(priv, i, GSWIP_PCE_TBL_ADDR);
+		gswip_switch_w(priv, gswip_pce_microcode[i].val_0,
+			       GSWIP_PCE_TBL_VAL(0));
+		gswip_switch_w(priv, gswip_pce_microcode[i].val_1,
+			       GSWIP_PCE_TBL_VAL(1));
+		gswip_switch_w(priv, gswip_pce_microcode[i].val_2,
+			       GSWIP_PCE_TBL_VAL(2));
+		gswip_switch_w(priv, gswip_pce_microcode[i].val_3,
+			       GSWIP_PCE_TBL_VAL(3));
+
+		/* start the table access: */
+		gswip_switch_mask(priv, 0, GSWIP_PCE_TBL_CTRL_BAS,
+				  GSWIP_PCE_TBL_CTRL);
+		err = gswip_switch_r_timeout(priv, GSWIP_PCE_TBL_CTRL,
+					     GSWIP_PCE_TBL_CTRL_BAS);
+		if (err)
+			return err;
+	}
+
+	/* tell the switch that the microcode is loaded */
+	gswip_switch_mask(priv, 0, GSWIP_PCE_GCTRL_0_MC_VALID,
+			  GSWIP_PCE_GCTRL_0);
+
+	return 0;
+}
+
+static int gswip_port_vlan_filtering(struct dsa_switch *ds, int port,
+				     bool vlan_filtering,
+				     struct netlink_ext_ack *extack)
+{
+	struct net_device *bridge = dsa_port_bridge_dev_get(dsa_to_port(ds, port));
+	struct gswip_priv *priv = ds->priv;
+
+	/* Do not allow changing the VLAN filtering options while in bridge */
+	if (bridge && !!(priv->port_vlan_filter & BIT(port)) != vlan_filtering) {
+		NL_SET_ERR_MSG_MOD(extack,
+				   "Dynamic toggling of vlan_filtering not supported");
+		return -EIO;
+	}
+
+	if (vlan_filtering) {
+		/* Use port based VLAN tag */
+		gswip_switch_mask(priv,
+				  GSWIP_PCE_VCTRL_VSR,
+				  GSWIP_PCE_VCTRL_UVR | GSWIP_PCE_VCTRL_VIMR |
+				  GSWIP_PCE_VCTRL_VEMR,
+				  GSWIP_PCE_VCTRL(port));
+		gswip_switch_mask(priv, GSWIP_PCE_PCTRL_0_TVM, 0,
+				  GSWIP_PCE_PCTRL_0p(port));
+	} else {
+		/* Use port based VLAN tag */
+		gswip_switch_mask(priv,
+				  GSWIP_PCE_VCTRL_UVR | GSWIP_PCE_VCTRL_VIMR |
+				  GSWIP_PCE_VCTRL_VEMR,
+				  GSWIP_PCE_VCTRL_VSR,
+				  GSWIP_PCE_VCTRL(port));
+		gswip_switch_mask(priv, 0, GSWIP_PCE_PCTRL_0_TVM,
+				  GSWIP_PCE_PCTRL_0p(port));
+	}
+
+	return 0;
+}
+
+static int gswip_setup(struct dsa_switch *ds)
+{
+	struct gswip_priv *priv = ds->priv;
+	unsigned int cpu_port = priv->hw_info->cpu_port;
+	int i;
+	int err;
+
+	gswip_switch_w(priv, GSWIP_SWRES_R0, GSWIP_SWRES);
+	usleep_range(5000, 10000);
+	gswip_switch_w(priv, 0, GSWIP_SWRES);
+
+	/* disable port fetch/store dma on all ports */
+	for (i = 0; i < priv->hw_info->max_ports; i++) {
+		gswip_port_disable(ds, i);
+		gswip_port_vlan_filtering(ds, i, false, NULL);
+	}
+
+	/* enable Switch */
+	gswip_mdio_mask(priv, 0, GSWIP_MDIO_GLOB_ENABLE, GSWIP_MDIO_GLOB);
+
+	err = gswip_pce_load_microcode(priv);
+	if (err) {
+		dev_err(priv->dev, "writing PCE microcode failed, %i", err);
+		return err;
+	}
+
+	/* Default unknown Broadcast/Multicast/Unicast port maps */
+	gswip_switch_w(priv, BIT(cpu_port), GSWIP_PCE_PMAP1);
+	gswip_switch_w(priv, BIT(cpu_port), GSWIP_PCE_PMAP2);
+	gswip_switch_w(priv, BIT(cpu_port), GSWIP_PCE_PMAP3);
+
+	/* Deactivate MDIO PHY auto polling. Some PHYs as the AR8030 have an
+	 * interoperability problem with this auto polling mechanism because
+	 * their status registers think that the link is in a different state
+	 * than it actually is. For the AR8030 it has the BMSR_ESTATEN bit set
+	 * as well as ESTATUS_1000_TFULL and ESTATUS_1000_XFULL. This makes the
+	 * auto polling state machine consider the link being negotiated with
+	 * 1Gbit/s. Since the PHY itself is a Fast Ethernet RMII PHY this leads
+	 * to the switch port being completely dead (RX and TX are both not
+	 * working).
+	 * Also with various other PHY / port combinations (PHY11G GPHY, PHY22F
+	 * GPHY, external RGMII PEF7071/7072) any traffic would stop. Sometimes
+	 * it would work fine for a few minutes to hours and then stop, on
+	 * other device it would no traffic could be sent or received at all.
+	 * Testing shows that when PHY auto polling is disabled these problems
+	 * go away.
+	 */
+	gswip_mdio_w(priv, 0x0, GSWIP_MDIO_MDC_CFG0);
+
+	/* Configure the MDIO Clock 2.5 MHz */
+	gswip_mdio_mask(priv, 0xff, 0x09, GSWIP_MDIO_MDC_CFG1);
+
+	/* Disable the xMII interface and clear it's isolation bit */
+	for (i = 0; i < priv->hw_info->max_ports; i++)
+		gswip_mii_mask_cfg(priv,
+				   GSWIP_MII_CFG_EN | GSWIP_MII_CFG_ISOLATE,
+				   0, i);
+
+	/* enable special tag insertion on cpu port */
+	gswip_switch_mask(priv, 0, GSWIP_FDMA_PCTRL_STEN,
+			  GSWIP_FDMA_PCTRLp(cpu_port));
+
+	/* accept special tag in ingress direction */
+	gswip_switch_mask(priv, 0, GSWIP_PCE_PCTRL_0_INGRESS,
+			  GSWIP_PCE_PCTRL_0p(cpu_port));
+
+	gswip_switch_mask(priv, 0, GSWIP_BM_QUEUE_GCTRL_GL_MOD,
+			  GSWIP_BM_QUEUE_GCTRL);
+
+	/* VLAN aware Switching */
+	gswip_switch_mask(priv, 0, GSWIP_PCE_GCTRL_0_VLAN, GSWIP_PCE_GCTRL_0);
+
+	/* Flush MAC Table */
+	gswip_switch_mask(priv, 0, GSWIP_PCE_GCTRL_0_MTFL, GSWIP_PCE_GCTRL_0);
+
+	err = gswip_switch_r_timeout(priv, GSWIP_PCE_GCTRL_0,
+				     GSWIP_PCE_GCTRL_0_MTFL);
+	if (err) {
+		dev_err(priv->dev, "MAC flushing didn't finish\n");
+		return err;
+	}
+
+	ds->mtu_enforcement_ingress = true;
+
+	gswip_port_enable(ds, cpu_port, NULL);
+
+	ds->configure_vlan_while_not_filtering = false;
+
+	return 0;
+}
+
+static enum dsa_tag_protocol gswip_get_tag_protocol(struct dsa_switch *ds,
+						    int port,
+						    enum dsa_tag_protocol mp)
+{
+	return DSA_TAG_PROTO_GSWIP;
+}
+
+static int gswip_vlan_active_create(struct gswip_priv *priv,
+				    struct net_device *bridge,
+				    int fid, u16 vid)
+{
+	struct gswip_pce_table_entry vlan_active = {0,};
+	unsigned int max_ports = priv->hw_info->max_ports;
+	int idx = -1;
+	int err;
+	int i;
+
+	/* Look for a free slot */
+	for (i = max_ports; i < ARRAY_SIZE(priv->vlans); i++) {
+		if (!priv->vlans[i].bridge) {
+			idx = i;
+			break;
+		}
+	}
+
+	if (idx == -1)
+		return -ENOSPC;
+
+	if (fid == -1)
+		fid = idx;
+
+	vlan_active.index = idx;
+	vlan_active.table = GSWIP_TABLE_ACTIVE_VLAN;
+	vlan_active.key[0] = vid;
+	vlan_active.val[0] = fid;
+	vlan_active.valid = true;
+
+	err = gswip_pce_table_entry_write(priv, &vlan_active);
+	if (err) {
+		dev_err(priv->dev, "failed to write active VLAN: %d\n",	err);
+		return err;
+	}
+
+	priv->vlans[idx].bridge = bridge;
+	priv->vlans[idx].vid = vid;
+	priv->vlans[idx].fid = fid;
+
+	return idx;
+}
+
+static int gswip_vlan_active_remove(struct gswip_priv *priv, int idx)
+{
+	struct gswip_pce_table_entry vlan_active = {0,};
+	int err;
+
+	vlan_active.index = idx;
+	vlan_active.table = GSWIP_TABLE_ACTIVE_VLAN;
+	vlan_active.valid = false;
+	err = gswip_pce_table_entry_write(priv, &vlan_active);
+	if (err)
+		dev_err(priv->dev, "failed to delete active VLAN: %d\n", err);
+	priv->vlans[idx].bridge = NULL;
+
+	return err;
+}
+
+static int gswip_vlan_add_unaware(struct gswip_priv *priv,
+				  struct net_device *bridge, int port)
+{
+	struct gswip_pce_table_entry vlan_mapping = {0,};
+	unsigned int max_ports = priv->hw_info->max_ports;
+	unsigned int cpu_port = priv->hw_info->cpu_port;
+	bool active_vlan_created = false;
+	int idx = -1;
+	int i;
+	int err;
+
+	/* Check if there is already a page for this bridge */
+	for (i = max_ports; i < ARRAY_SIZE(priv->vlans); i++) {
+		if (priv->vlans[i].bridge == bridge) {
+			idx = i;
+			break;
+		}
+	}
+
+	/* If this bridge is not programmed yet, add a Active VLAN table
+	 * entry in a free slot and prepare the VLAN mapping table entry.
+	 */
+	if (idx == -1) {
+		idx = gswip_vlan_active_create(priv, bridge, -1, 0);
+		if (idx < 0)
+			return idx;
+		active_vlan_created = true;
+
+		vlan_mapping.index = idx;
+		vlan_mapping.table = GSWIP_TABLE_VLAN_MAPPING;
+		/* VLAN ID byte, maps to the VLAN ID of vlan active table */
+		vlan_mapping.val[0] = 0;
+	} else {
+		/* Read the existing VLAN mapping entry from the switch */
+		vlan_mapping.index = idx;
+		vlan_mapping.table = GSWIP_TABLE_VLAN_MAPPING;
+		err = gswip_pce_table_entry_read(priv, &vlan_mapping);
+		if (err) {
+			dev_err(priv->dev, "failed to read VLAN mapping: %d\n",
+				err);
+			return err;
+		}
+	}
+
+	/* Update the VLAN mapping entry and write it to the switch */
+	vlan_mapping.val[1] |= BIT(cpu_port);
+	vlan_mapping.val[1] |= BIT(port);
+	err = gswip_pce_table_entry_write(priv, &vlan_mapping);
+	if (err) {
+		dev_err(priv->dev, "failed to write VLAN mapping: %d\n", err);
+		/* In case an Active VLAN was creaetd delete it again */
+		if (active_vlan_created)
+			gswip_vlan_active_remove(priv, idx);
+		return err;
+	}
+
+	gswip_switch_w(priv, 0, GSWIP_PCE_DEFPVID(port));
+	return 0;
+}
+
+static int gswip_vlan_add_aware(struct gswip_priv *priv,
+				struct net_device *bridge, int port,
+				u16 vid, bool untagged,
+				bool pvid)
+{
+	struct gswip_pce_table_entry vlan_mapping = {0,};
+	unsigned int max_ports = priv->hw_info->max_ports;
+	unsigned int cpu_port = priv->hw_info->cpu_port;
+	bool active_vlan_created = false;
+	int idx = -1;
+	int fid = -1;
+	int i;
+	int err;
+
+	/* Check if there is already a page for this bridge */
+	for (i = max_ports; i < ARRAY_SIZE(priv->vlans); i++) {
+		if (priv->vlans[i].bridge == bridge) {
+			if (fid != -1 && fid != priv->vlans[i].fid)
+				dev_err(priv->dev, "one bridge with multiple flow ids\n");
+			fid = priv->vlans[i].fid;
+			if (priv->vlans[i].vid == vid) {
+				idx = i;
+				break;
+			}
+		}
+	}
+
+	/* If this bridge is not programmed yet, add a Active VLAN table
+	 * entry in a free slot and prepare the VLAN mapping table entry.
+	 */
+	if (idx == -1) {
+		idx = gswip_vlan_active_create(priv, bridge, fid, vid);
+		if (idx < 0)
+			return idx;
+		active_vlan_created = true;
+
+		vlan_mapping.index = idx;
+		vlan_mapping.table = GSWIP_TABLE_VLAN_MAPPING;
+		/* VLAN ID byte, maps to the VLAN ID of vlan active table */
+		vlan_mapping.val[0] = vid;
+	} else {
+		/* Read the existing VLAN mapping entry from the switch */
+		vlan_mapping.index = idx;
+		vlan_mapping.table = GSWIP_TABLE_VLAN_MAPPING;
+		err = gswip_pce_table_entry_read(priv, &vlan_mapping);
+		if (err) {
+			dev_err(priv->dev, "failed to read VLAN mapping: %d\n",
+				err);
+			return err;
+		}
+	}
+
+	vlan_mapping.val[0] = vid;
+	/* Update the VLAN mapping entry and write it to the switch */
+	vlan_mapping.val[1] |= BIT(cpu_port);
+	vlan_mapping.val[2] |= BIT(cpu_port);
+	vlan_mapping.val[1] |= BIT(port);
+	if (untagged)
+		vlan_mapping.val[2] &= ~BIT(port);
+	else
+		vlan_mapping.val[2] |= BIT(port);
+	err = gswip_pce_table_entry_write(priv, &vlan_mapping);
+	if (err) {
+		dev_err(priv->dev, "failed to write VLAN mapping: %d\n", err);
+		/* In case an Active VLAN was creaetd delete it again */
+		if (active_vlan_created)
+			gswip_vlan_active_remove(priv, idx);
+		return err;
+	}
+
+	if (pvid)
+		gswip_switch_w(priv, idx, GSWIP_PCE_DEFPVID(port));
+
+	return 0;
+}
+
+static int gswip_vlan_remove(struct gswip_priv *priv,
+			     struct net_device *bridge, int port,
+			     u16 vid, bool pvid, bool vlan_aware)
+{
+	struct gswip_pce_table_entry vlan_mapping = {0,};
+	unsigned int max_ports = priv->hw_info->max_ports;
+	unsigned int cpu_port = priv->hw_info->cpu_port;
+	int idx = -1;
+	int i;
+	int err;
+
+	/* Check if there is already a page for this bridge */
+	for (i = max_ports; i < ARRAY_SIZE(priv->vlans); i++) {
+		if (priv->vlans[i].bridge == bridge &&
+		    (!vlan_aware || priv->vlans[i].vid == vid)) {
+			idx = i;
+			break;
+		}
+	}
+
+	if (idx == -1) {
+		dev_err(priv->dev, "bridge to leave does not exists\n");
+		return -ENOENT;
+	}
+
+	vlan_mapping.index = idx;
+	vlan_mapping.table = GSWIP_TABLE_VLAN_MAPPING;
+	err = gswip_pce_table_entry_read(priv, &vlan_mapping);
+	if (err) {
+		dev_err(priv->dev, "failed to read VLAN mapping: %d\n",	err);
+		return err;
+	}
+
+	vlan_mapping.val[1] &= ~BIT(port);
+	vlan_mapping.val[2] &= ~BIT(port);
+	err = gswip_pce_table_entry_write(priv, &vlan_mapping);
+	if (err) {
+		dev_err(priv->dev, "failed to write VLAN mapping: %d\n", err);
+		return err;
+	}
+
+	/* In case all ports are removed from the bridge, remove the VLAN */
+	if ((vlan_mapping.val[1] & ~BIT(cpu_port)) == 0) {
+		err = gswip_vlan_active_remove(priv, idx);
+		if (err) {
+			dev_err(priv->dev, "failed to write active VLAN: %d\n",
+				err);
+			return err;
+		}
+	}
+
+	/* GSWIP 2.2 (GRX300) and later program here the VID directly. */
+	if (pvid)
+		gswip_switch_w(priv, 0, GSWIP_PCE_DEFPVID(port));
+
+	return 0;
+}
+
+static int gswip_port_bridge_join(struct dsa_switch *ds, int port,
+				  struct dsa_bridge bridge,
+				  bool *tx_fwd_offload,
+				  struct netlink_ext_ack *extack)
+{
+	struct net_device *br = bridge.dev;
+	struct gswip_priv *priv = ds->priv;
+	int err;
+
+	/* When the bridge uses VLAN filtering we have to configure VLAN
+	 * specific bridges. No bridge is configured here.
+	 */
+	if (!br_vlan_enabled(br)) {
+		err = gswip_vlan_add_unaware(priv, br, port);
+		if (err)
+			return err;
+		priv->port_vlan_filter &= ~BIT(port);
+	} else {
+		priv->port_vlan_filter |= BIT(port);
+	}
+	return gswip_add_single_port_br(priv, port, false);
+}
+
+static void gswip_port_bridge_leave(struct dsa_switch *ds, int port,
+				    struct dsa_bridge bridge)
+{
+	struct net_device *br = bridge.dev;
+	struct gswip_priv *priv = ds->priv;
+
+	gswip_add_single_port_br(priv, port, true);
+
+	/* When the bridge uses VLAN filtering we have to configure VLAN
+	 * specific bridges. No bridge is configured here.
+	 */
+	if (!br_vlan_enabled(br))
+		gswip_vlan_remove(priv, br, port, 0, true, false);
+}
+
+static int gswip_port_vlan_prepare(struct dsa_switch *ds, int port,
+				   const struct switchdev_obj_port_vlan *vlan,
+				   struct netlink_ext_ack *extack)
+{
+	struct net_device *bridge = dsa_port_bridge_dev_get(dsa_to_port(ds, port));
+	struct gswip_priv *priv = ds->priv;
+	unsigned int max_ports = priv->hw_info->max_ports;
+	int pos = max_ports;
+	int i, idx = -1;
+
+	/* We only support VLAN filtering on bridges */
+	if (!dsa_is_cpu_port(ds, port) && !bridge)
+		return -EOPNOTSUPP;
+
+	/* Check if there is already a page for this VLAN */
+	for (i = max_ports; i < ARRAY_SIZE(priv->vlans); i++) {
+		if (priv->vlans[i].bridge == bridge &&
+		    priv->vlans[i].vid == vlan->vid) {
+			idx = i;
+			break;
+		}
+	}
+
+	/* If this VLAN is not programmed yet, we have to reserve
+	 * one entry in the VLAN table. Make sure we start at the
+	 * next position round.
+	 */
+	if (idx == -1) {
+		/* Look for a free slot */
+		for (; pos < ARRAY_SIZE(priv->vlans); pos++) {
+			if (!priv->vlans[pos].bridge) {
+				idx = pos;
+				pos++;
+				break;
+			}
+		}
+
+		if (idx == -1) {
+			NL_SET_ERR_MSG_MOD(extack, "No slot in VLAN table");
+			return -ENOSPC;
+		}
+	}
+
+	return 0;
+}
+
+static int gswip_port_vlan_add(struct dsa_switch *ds, int port,
+			       const struct switchdev_obj_port_vlan *vlan,
+			       struct netlink_ext_ack *extack)
+{
+	struct net_device *bridge = dsa_port_bridge_dev_get(dsa_to_port(ds, port));
+	struct gswip_priv *priv = ds->priv;
+	bool untagged = vlan->flags & BRIDGE_VLAN_INFO_UNTAGGED;
+	bool pvid = vlan->flags & BRIDGE_VLAN_INFO_PVID;
+	int err;
+
+	err = gswip_port_vlan_prepare(ds, port, vlan, extack);
+	if (err)
+		return err;
+
+	/* We have to receive all packets on the CPU port and should not
+	 * do any VLAN filtering here. This is also called with bridge
+	 * NULL and then we do not know for which bridge to configure
+	 * this.
+	 */
+	if (dsa_is_cpu_port(ds, port))
+		return 0;
+
+	return gswip_vlan_add_aware(priv, bridge, port, vlan->vid,
+				    untagged, pvid);
+}
+
+static int gswip_port_vlan_del(struct dsa_switch *ds, int port,
+			       const struct switchdev_obj_port_vlan *vlan)
+{
+	struct net_device *bridge = dsa_port_bridge_dev_get(dsa_to_port(ds, port));
+	struct gswip_priv *priv = ds->priv;
+	bool pvid = vlan->flags & BRIDGE_VLAN_INFO_PVID;
+
+	/* We have to receive all packets on the CPU port and should not
+	 * do any VLAN filtering here. This is also called with bridge
+	 * NULL and then we do not know for which bridge to configure
+	 * this.
+	 */
+	if (dsa_is_cpu_port(ds, port))
+		return 0;
+
+	return gswip_vlan_remove(priv, bridge, port, vlan->vid, pvid, true);
+}
+
+static void gswip_port_fast_age(struct dsa_switch *ds, int port)
+{
+	struct gswip_priv *priv = ds->priv;
+	struct gswip_pce_table_entry mac_bridge = {0,};
+	int i;
+	int err;
+
+	for (i = 0; i < 2048; i++) {
+		mac_bridge.table = GSWIP_TABLE_MAC_BRIDGE;
+		mac_bridge.index = i;
+
+		err = gswip_pce_table_entry_read(priv, &mac_bridge);
+		if (err) {
+			dev_err(priv->dev, "failed to read mac bridge: %d\n",
+				err);
+			return;
+		}
+
+		if (!mac_bridge.valid)
+			continue;
+
+		if (mac_bridge.val[1] & GSWIP_TABLE_MAC_BRIDGE_STATIC)
+			continue;
+
+		if (((mac_bridge.val[0] & GENMASK(7, 4)) >> 4) != port)
+			continue;
+
+		mac_bridge.valid = false;
+		err = gswip_pce_table_entry_write(priv, &mac_bridge);
+		if (err) {
+			dev_err(priv->dev, "failed to write mac bridge: %d\n",
+				err);
+			return;
+		}
+	}
+}
+
+static void gswip_port_stp_state_set(struct dsa_switch *ds, int port, u8 state)
+{
+	struct gswip_priv *priv = ds->priv;
+	u32 stp_state;
+
+	switch (state) {
+	case BR_STATE_DISABLED:
+		gswip_switch_mask(priv, GSWIP_SDMA_PCTRL_EN, 0,
+				  GSWIP_SDMA_PCTRLp(port));
+		return;
+	case BR_STATE_BLOCKING:
+	case BR_STATE_LISTENING:
+		stp_state = GSWIP_PCE_PCTRL_0_PSTATE_LISTEN;
+		break;
+	case BR_STATE_LEARNING:
+		stp_state = GSWIP_PCE_PCTRL_0_PSTATE_LEARNING;
+		break;
+	case BR_STATE_FORWARDING:
+		stp_state = GSWIP_PCE_PCTRL_0_PSTATE_FORWARDING;
+		break;
+	default:
+		dev_err(priv->dev, "invalid STP state: %d\n", state);
+		return;
+	}
+
+	gswip_switch_mask(priv, 0, GSWIP_SDMA_PCTRL_EN,
+			  GSWIP_SDMA_PCTRLp(port));
+	gswip_switch_mask(priv, GSWIP_PCE_PCTRL_0_PSTATE_MASK, stp_state,
+			  GSWIP_PCE_PCTRL_0p(port));
+}
+
+static int gswip_port_fdb(struct dsa_switch *ds, int port,
+			  const unsigned char *addr, u16 vid, bool add)
+{
+	struct net_device *bridge = dsa_port_bridge_dev_get(dsa_to_port(ds, port));
+	struct gswip_priv *priv = ds->priv;
+	struct gswip_pce_table_entry mac_bridge = {0,};
+	unsigned int cpu_port = priv->hw_info->cpu_port;
+	int fid = -1;
+	int i;
+	int err;
+
+	if (!bridge)
+		return -EINVAL;
+
+	for (i = cpu_port; i < ARRAY_SIZE(priv->vlans); i++) {
+		if (priv->vlans[i].bridge == bridge) {
+			fid = priv->vlans[i].fid;
+			break;
+		}
+	}
+
+	if (fid == -1) {
+		dev_err(priv->dev, "Port not part of a bridge\n");
+		return -EINVAL;
+	}
+
+	mac_bridge.table = GSWIP_TABLE_MAC_BRIDGE;
+	mac_bridge.key_mode = true;
+	mac_bridge.key[0] = addr[5] | (addr[4] << 8);
+	mac_bridge.key[1] = addr[3] | (addr[2] << 8);
+	mac_bridge.key[2] = addr[1] | (addr[0] << 8);
+	mac_bridge.key[3] = fid;
+	mac_bridge.val[0] = add ? BIT(port) : 0; /* port map */
+	mac_bridge.val[1] = GSWIP_TABLE_MAC_BRIDGE_STATIC;
+	mac_bridge.valid = add;
+
+	err = gswip_pce_table_entry_write(priv, &mac_bridge);
+	if (err)
+		dev_err(priv->dev, "failed to write mac bridge: %d\n", err);
+
+	return err;
+}
+
+static int gswip_port_fdb_add(struct dsa_switch *ds, int port,
+			      const unsigned char *addr, u16 vid,
+			      struct dsa_db db)
+{
+	return gswip_port_fdb(ds, port, addr, vid, true);
+}
+
+static int gswip_port_fdb_del(struct dsa_switch *ds, int port,
+			      const unsigned char *addr, u16 vid,
+			      struct dsa_db db)
+{
+	return gswip_port_fdb(ds, port, addr, vid, false);
+}
+
+static int gswip_port_fdb_dump(struct dsa_switch *ds, int port,
+			       dsa_fdb_dump_cb_t *cb, void *data)
+{
+	struct gswip_priv *priv = ds->priv;
+	struct gswip_pce_table_entry mac_bridge = {0,};
+	unsigned char addr[6];
+	int i;
+	int err;
+
+	for (i = 0; i < 2048; i++) {
+		mac_bridge.table = GSWIP_TABLE_MAC_BRIDGE;
+		mac_bridge.index = i;
+
+		err = gswip_pce_table_entry_read(priv, &mac_bridge);
+		if (err) {
+			dev_err(priv->dev, "failed to write mac bridge: %d\n",
+				err);
+			return err;
+		}
+
+		if (!mac_bridge.valid)
+			continue;
+
+		addr[5] = mac_bridge.key[0] & 0xff;
+		addr[4] = (mac_bridge.key[0] >> 8) & 0xff;
+		addr[3] = mac_bridge.key[1] & 0xff;
+		addr[2] = (mac_bridge.key[1] >> 8) & 0xff;
+		addr[1] = mac_bridge.key[2] & 0xff;
+		addr[0] = (mac_bridge.key[2] >> 8) & 0xff;
+		if (mac_bridge.val[1] & GSWIP_TABLE_MAC_BRIDGE_STATIC) {
+			if (mac_bridge.val[0] & BIT(port)) {
+				err = cb(addr, 0, true, data);
+				if (err)
+					return err;
+			}
+		} else {
+			if (((mac_bridge.val[0] & GENMASK(7, 4)) >> 4) == port) {
+				err = cb(addr, 0, false, data);
+				if (err)
+					return err;
+			}
+		}
+	}
+	return 0;
+}
+
+static int gswip_port_max_mtu(struct dsa_switch *ds, int port)
+{
+	/* Includes 8 bytes for special header. */
+	return GSWIP_MAX_PACKET_LENGTH - VLAN_ETH_HLEN - ETH_FCS_LEN;
+}
+
+static int gswip_port_change_mtu(struct dsa_switch *ds, int port, int new_mtu)
+{
+	struct gswip_priv *priv = ds->priv;
+	int cpu_port = priv->hw_info->cpu_port;
+
+	/* CPU port always has maximum mtu of user ports, so use it to set
+	 * switch frame size, including 8 byte special header.
+	 */
+	if (port == cpu_port) {
+		new_mtu += 8;
+		gswip_switch_w(priv, VLAN_ETH_HLEN + new_mtu + ETH_FCS_LEN,
+			       GSWIP_MAC_FLEN);
+	}
+
+	/* Enable MLEN for ports with non-standard MTUs, including the special
+	 * header on the CPU port added above.
+	 */
+	if (new_mtu != ETH_DATA_LEN)
+		gswip_switch_mask(priv, 0, GSWIP_MAC_CTRL_2_MLEN,
+				  GSWIP_MAC_CTRL_2p(port));
+	else
+		gswip_switch_mask(priv, GSWIP_MAC_CTRL_2_MLEN, 0,
+				  GSWIP_MAC_CTRL_2p(port));
+
+	return 0;
+}
+
+static void gswip_xrx200_phylink_get_caps(struct dsa_switch *ds, int port,
+					  struct phylink_config *config)
+{
+	switch (port) {
+	case 0:
+	case 1:
+		phy_interface_set_rgmii(config->supported_interfaces);
+		__set_bit(PHY_INTERFACE_MODE_MII,
+			  config->supported_interfaces);
+		__set_bit(PHY_INTERFACE_MODE_REVMII,
+			  config->supported_interfaces);
+		__set_bit(PHY_INTERFACE_MODE_RMII,
+			  config->supported_interfaces);
+		break;
+
+	case 2:
+	case 3:
+	case 4:
+		__set_bit(PHY_INTERFACE_MODE_INTERNAL,
+			  config->supported_interfaces);
+		break;
+
+	case 5:
+		phy_interface_set_rgmii(config->supported_interfaces);
+		__set_bit(PHY_INTERFACE_MODE_INTERNAL,
+			  config->supported_interfaces);
+		break;
+	}
+
+	config->mac_capabilities = MAC_ASYM_PAUSE | MAC_SYM_PAUSE |
+		MAC_10 | MAC_100 | MAC_1000;
+}
+
+static void gswip_xrx300_phylink_get_caps(struct dsa_switch *ds, int port,
+					  struct phylink_config *config)
+{
+	switch (port) {
+	case 0:
+		phy_interface_set_rgmii(config->supported_interfaces);
+		__set_bit(PHY_INTERFACE_MODE_GMII,
+			  config->supported_interfaces);
+		__set_bit(PHY_INTERFACE_MODE_RMII,
+			  config->supported_interfaces);
+		break;
+
+	case 1:
+	case 2:
+	case 3:
+	case 4:
+		__set_bit(PHY_INTERFACE_MODE_INTERNAL,
+			  config->supported_interfaces);
+		break;
+
+	case 5:
+		phy_interface_set_rgmii(config->supported_interfaces);
+		__set_bit(PHY_INTERFACE_MODE_INTERNAL,
+			  config->supported_interfaces);
+		__set_bit(PHY_INTERFACE_MODE_RMII,
+			  config->supported_interfaces);
+		break;
+	}
+
+	config->mac_capabilities = MAC_ASYM_PAUSE | MAC_SYM_PAUSE |
+		MAC_10 | MAC_100 | MAC_1000;
+}
+
+static void gswip_port_set_link(struct gswip_priv *priv, int port, bool link)
+{
+	u32 mdio_phy;
+
+	if (link)
+		mdio_phy = GSWIP_MDIO_PHY_LINK_UP;
+	else
+		mdio_phy = GSWIP_MDIO_PHY_LINK_DOWN;
+
+	gswip_mdio_mask(priv, GSWIP_MDIO_PHY_LINK_MASK, mdio_phy,
+			GSWIP_MDIO_PHYp(port));
+}
+
+static void gswip_port_set_speed(struct gswip_priv *priv, int port, int speed,
+				 phy_interface_t interface)
+{
+	u32 mdio_phy = 0, mii_cfg = 0, mac_ctrl_0 = 0;
+
+	switch (speed) {
+	case SPEED_10:
+		mdio_phy = GSWIP_MDIO_PHY_SPEED_M10;
+
+		if (interface == PHY_INTERFACE_MODE_RMII)
+			mii_cfg = GSWIP_MII_CFG_RATE_M50;
+		else
+			mii_cfg = GSWIP_MII_CFG_RATE_M2P5;
+
+		mac_ctrl_0 = GSWIP_MAC_CTRL_0_GMII_MII;
+		break;
+
+	case SPEED_100:
+		mdio_phy = GSWIP_MDIO_PHY_SPEED_M100;
+
+		if (interface == PHY_INTERFACE_MODE_RMII)
+			mii_cfg = GSWIP_MII_CFG_RATE_M50;
+		else
+			mii_cfg = GSWIP_MII_CFG_RATE_M25;
+
+		mac_ctrl_0 = GSWIP_MAC_CTRL_0_GMII_MII;
+		break;
+
+	case SPEED_1000:
+		mdio_phy = GSWIP_MDIO_PHY_SPEED_G1;
+
+		mii_cfg = GSWIP_MII_CFG_RATE_M125;
+
+		mac_ctrl_0 = GSWIP_MAC_CTRL_0_GMII_RGMII;
+		break;
+	}
+
+	gswip_mdio_mask(priv, GSWIP_MDIO_PHY_SPEED_MASK, mdio_phy,
+			GSWIP_MDIO_PHYp(port));
+	gswip_mii_mask_cfg(priv, GSWIP_MII_CFG_RATE_MASK, mii_cfg, port);
+	gswip_switch_mask(priv, GSWIP_MAC_CTRL_0_GMII_MASK, mac_ctrl_0,
+			  GSWIP_MAC_CTRL_0p(port));
+}
+
+static void gswip_port_set_duplex(struct gswip_priv *priv, int port, int duplex)
+{
+	u32 mac_ctrl_0, mdio_phy;
+
+	if (duplex == DUPLEX_FULL) {
+		mac_ctrl_0 = GSWIP_MAC_CTRL_0_FDUP_EN;
+		mdio_phy = GSWIP_MDIO_PHY_FDUP_EN;
+	} else {
+		mac_ctrl_0 = GSWIP_MAC_CTRL_0_FDUP_DIS;
+		mdio_phy = GSWIP_MDIO_PHY_FDUP_DIS;
+	}
+
+	gswip_switch_mask(priv, GSWIP_MAC_CTRL_0_FDUP_MASK, mac_ctrl_0,
+			  GSWIP_MAC_CTRL_0p(port));
+	gswip_mdio_mask(priv, GSWIP_MDIO_PHY_FDUP_MASK, mdio_phy,
+			GSWIP_MDIO_PHYp(port));
+}
+
+static void gswip_port_set_pause(struct gswip_priv *priv, int port,
+				 bool tx_pause, bool rx_pause)
+{
+	u32 mac_ctrl_0, mdio_phy;
+
+	if (tx_pause && rx_pause) {
+		mac_ctrl_0 = GSWIP_MAC_CTRL_0_FCON_RXTX;
+		mdio_phy = GSWIP_MDIO_PHY_FCONTX_EN |
+			   GSWIP_MDIO_PHY_FCONRX_EN;
+	} else if (tx_pause) {
+		mac_ctrl_0 = GSWIP_MAC_CTRL_0_FCON_TX;
+		mdio_phy = GSWIP_MDIO_PHY_FCONTX_EN |
+			   GSWIP_MDIO_PHY_FCONRX_DIS;
+	} else if (rx_pause) {
+		mac_ctrl_0 = GSWIP_MAC_CTRL_0_FCON_RX;
+		mdio_phy = GSWIP_MDIO_PHY_FCONTX_DIS |
+			   GSWIP_MDIO_PHY_FCONRX_EN;
+	} else {
+		mac_ctrl_0 = GSWIP_MAC_CTRL_0_FCON_NONE;
+		mdio_phy = GSWIP_MDIO_PHY_FCONTX_DIS |
+			   GSWIP_MDIO_PHY_FCONRX_DIS;
+	}
+
+	gswip_switch_mask(priv, GSWIP_MAC_CTRL_0_FCON_MASK,
+			  mac_ctrl_0, GSWIP_MAC_CTRL_0p(port));
+	gswip_mdio_mask(priv,
+			GSWIP_MDIO_PHY_FCONTX_MASK |
+			GSWIP_MDIO_PHY_FCONRX_MASK,
+			mdio_phy, GSWIP_MDIO_PHYp(port));
+}
+
+static void gswip_phylink_mac_config(struct dsa_switch *ds, int port,
+				     unsigned int mode,
+				     const struct phylink_link_state *state)
+{
+	struct gswip_priv *priv = ds->priv;
+	u32 miicfg = 0;
+
+	miicfg |= GSWIP_MII_CFG_LDCLKDIS;
+
+	switch (state->interface) {
+	case PHY_INTERFACE_MODE_MII:
+	case PHY_INTERFACE_MODE_INTERNAL:
+		miicfg |= GSWIP_MII_CFG_MODE_MIIM;
+		break;
+	case PHY_INTERFACE_MODE_REVMII:
+		miicfg |= GSWIP_MII_CFG_MODE_MIIP;
+		break;
+	case PHY_INTERFACE_MODE_RMII:
+		miicfg |= GSWIP_MII_CFG_MODE_RMIIM;
+		break;
+	case PHY_INTERFACE_MODE_RGMII:
+	case PHY_INTERFACE_MODE_RGMII_ID:
+	case PHY_INTERFACE_MODE_RGMII_RXID:
+	case PHY_INTERFACE_MODE_RGMII_TXID:
+		miicfg |= GSWIP_MII_CFG_MODE_RGMII;
+		break;
+	case PHY_INTERFACE_MODE_GMII:
+		miicfg |= GSWIP_MII_CFG_MODE_GMII;
+		break;
+	default:
+		dev_err(ds->dev,
+			"Unsupported interface: %d\n", state->interface);
+		return;
+	}
+
+	gswip_mii_mask_cfg(priv,
+			   GSWIP_MII_CFG_MODE_MASK | GSWIP_MII_CFG_RMII_CLK |
+			   GSWIP_MII_CFG_RGMII_IBS | GSWIP_MII_CFG_LDCLKDIS,
+			   miicfg, port);
+
+	switch (state->interface) {
+	case PHY_INTERFACE_MODE_RGMII_ID:
+		gswip_mii_mask_pcdu(priv, GSWIP_MII_PCDU_TXDLY_MASK |
+					  GSWIP_MII_PCDU_RXDLY_MASK, 0, port);
+		break;
+	case PHY_INTERFACE_MODE_RGMII_RXID:
+		gswip_mii_mask_pcdu(priv, GSWIP_MII_PCDU_RXDLY_MASK, 0, port);
+		break;
+	case PHY_INTERFACE_MODE_RGMII_TXID:
+		gswip_mii_mask_pcdu(priv, GSWIP_MII_PCDU_TXDLY_MASK, 0, port);
+		break;
+	default:
+		break;
+	}
+}
+
+static void gswip_phylink_mac_link_down(struct dsa_switch *ds, int port,
+					unsigned int mode,
+					phy_interface_t interface)
+{
+	struct gswip_priv *priv = ds->priv;
+
+	gswip_mii_mask_cfg(priv, GSWIP_MII_CFG_EN, 0, port);
+
+	if (!dsa_is_cpu_port(ds, port))
+		gswip_port_set_link(priv, port, false);
+}
+
+static void gswip_phylink_mac_link_up(struct dsa_switch *ds, int port,
+				      unsigned int mode,
+				      phy_interface_t interface,
+				      struct phy_device *phydev,
+				      int speed, int duplex,
+				      bool tx_pause, bool rx_pause)
+{
+	struct gswip_priv *priv = ds->priv;
+
+	if (!dsa_is_cpu_port(ds, port)) {
+		gswip_port_set_link(priv, port, true);
+		gswip_port_set_speed(priv, port, speed, interface);
+		gswip_port_set_duplex(priv, port, duplex);
+		gswip_port_set_pause(priv, port, tx_pause, rx_pause);
+	}
+
+	gswip_mii_mask_cfg(priv, 0, GSWIP_MII_CFG_EN, port);
+}
+
+static void gswip_get_strings(struct dsa_switch *ds, int port, u32 stringset,
+			      uint8_t *data)
+{
+	int i;
+
+	if (stringset != ETH_SS_STATS)
+		return;
+
+	for (i = 0; i < ARRAY_SIZE(gswip_rmon_cnt); i++)
+		strncpy(data + i * ETH_GSTRING_LEN, gswip_rmon_cnt[i].name,
+			ETH_GSTRING_LEN);
+}
+
+static u32 gswip_bcm_ram_entry_read(struct gswip_priv *priv, u32 table,
+				    u32 index)
+{
+	u32 result;
+	int err;
+
+	gswip_switch_w(priv, index, GSWIP_BM_RAM_ADDR);
+	gswip_switch_mask(priv, GSWIP_BM_RAM_CTRL_ADDR_MASK |
+				GSWIP_BM_RAM_CTRL_OPMOD,
+			      table | GSWIP_BM_RAM_CTRL_BAS,
+			      GSWIP_BM_RAM_CTRL);
+
+	err = gswip_switch_r_timeout(priv, GSWIP_BM_RAM_CTRL,
+				     GSWIP_BM_RAM_CTRL_BAS);
+	if (err) {
+		dev_err(priv->dev, "timeout while reading table: %u, index: %u",
+			table, index);
+		return 0;
+	}
+
+	result = gswip_switch_r(priv, GSWIP_BM_RAM_VAL(0));
+	result |= gswip_switch_r(priv, GSWIP_BM_RAM_VAL(1)) << 16;
+
+	return result;
+}
+
+static void gswip_get_ethtool_stats(struct dsa_switch *ds, int port,
+				    uint64_t *data)
+{
+	struct gswip_priv *priv = ds->priv;
+	const struct gswip_rmon_cnt_desc *rmon_cnt;
+	int i;
+	u64 high;
+
+	for (i = 0; i < ARRAY_SIZE(gswip_rmon_cnt); i++) {
+		rmon_cnt = &gswip_rmon_cnt[i];
+
+		data[i] = gswip_bcm_ram_entry_read(priv, port,
+						   rmon_cnt->offset);
+		if (rmon_cnt->size == 2) {
+			high = gswip_bcm_ram_entry_read(priv, port,
+							rmon_cnt->offset + 1);
+			data[i] |= high << 32;
+		}
+	}
+}
+
+static int gswip_get_sset_count(struct dsa_switch *ds, int port, int sset)
+{
+	if (sset != ETH_SS_STATS)
+		return 0;
+
+	return ARRAY_SIZE(gswip_rmon_cnt);
+}
+
+static const struct dsa_switch_ops gswip_xrx200_switch_ops = {
+	.get_tag_protocol	= gswip_get_tag_protocol,
+	.setup			= gswip_setup,
+	.port_enable		= gswip_port_enable,
+	.port_disable		= gswip_port_disable,
+	.port_bridge_join	= gswip_port_bridge_join,
+	.port_bridge_leave	= gswip_port_bridge_leave,
+	.port_fast_age		= gswip_port_fast_age,
+	.port_vlan_filtering	= gswip_port_vlan_filtering,
+	.port_vlan_add		= gswip_port_vlan_add,
+	.port_vlan_del		= gswip_port_vlan_del,
+	.port_stp_state_set	= gswip_port_stp_state_set,
+	.port_fdb_add		= gswip_port_fdb_add,
+	.port_fdb_del		= gswip_port_fdb_del,
+	.port_fdb_dump		= gswip_port_fdb_dump,
+	.port_change_mtu	= gswip_port_change_mtu,
+	.port_max_mtu		= gswip_port_max_mtu,
+	.phylink_get_caps	= gswip_xrx200_phylink_get_caps,
+	.phylink_mac_config	= gswip_phylink_mac_config,
+	.phylink_mac_link_down	= gswip_phylink_mac_link_down,
+	.phylink_mac_link_up	= gswip_phylink_mac_link_up,
+	.get_strings		= gswip_get_strings,
+	.get_ethtool_stats	= gswip_get_ethtool_stats,
+	.get_sset_count		= gswip_get_sset_count,
+};
+
+static const struct dsa_switch_ops gswip_xrx300_switch_ops = {
+	.get_tag_protocol	= gswip_get_tag_protocol,
+	.setup			= gswip_setup,
+	.port_enable		= gswip_port_enable,
+	.port_disable		= gswip_port_disable,
+	.port_bridge_join	= gswip_port_bridge_join,
+	.port_bridge_leave	= gswip_port_bridge_leave,
+	.port_fast_age		= gswip_port_fast_age,
+	.port_vlan_filtering	= gswip_port_vlan_filtering,
+	.port_vlan_add		= gswip_port_vlan_add,
+	.port_vlan_del		= gswip_port_vlan_del,
+	.port_stp_state_set	= gswip_port_stp_state_set,
+	.port_fdb_add		= gswip_port_fdb_add,
+	.port_fdb_del		= gswip_port_fdb_del,
+	.port_fdb_dump		= gswip_port_fdb_dump,
+	.port_change_mtu	= gswip_port_change_mtu,
+	.port_max_mtu		= gswip_port_max_mtu,
+	.phylink_get_caps	= gswip_xrx300_phylink_get_caps,
+	.phylink_mac_config	= gswip_phylink_mac_config,
+	.phylink_mac_link_down	= gswip_phylink_mac_link_down,
+	.phylink_mac_link_up	= gswip_phylink_mac_link_up,
+	.get_strings		= gswip_get_strings,
+	.get_ethtool_stats	= gswip_get_ethtool_stats,
+	.get_sset_count		= gswip_get_sset_count,
+};
+
+static const struct xway_gphy_match_data xrx200a1x_gphy_data = {
+	.fe_firmware_name = "lantiq/xrx200_phy22f_a14.bin",
+	.ge_firmware_name = "lantiq/xrx200_phy11g_a14.bin",
+};
+
+static const struct xway_gphy_match_data xrx200a2x_gphy_data = {
+	.fe_firmware_name = "lantiq/xrx200_phy22f_a22.bin",
+	.ge_firmware_name = "lantiq/xrx200_phy11g_a22.bin",
+};
+
+static const struct xway_gphy_match_data xrx300_gphy_data = {
+	.fe_firmware_name = "lantiq/xrx300_phy22f_a21.bin",
+	.ge_firmware_name = "lantiq/xrx300_phy11g_a21.bin",
+};
+
+static const struct of_device_id xway_gphy_match[] = {
+	{ .compatible = "lantiq,xrx200-gphy-fw", .data = NULL },
+	{ .compatible = "lantiq,xrx200a1x-gphy-fw", .data = &xrx200a1x_gphy_data },
+	{ .compatible = "lantiq,xrx200a2x-gphy-fw", .data = &xrx200a2x_gphy_data },
+	{ .compatible = "lantiq,xrx300-gphy-fw", .data = &xrx300_gphy_data },
+	{ .compatible = "lantiq,xrx330-gphy-fw", .data = &xrx300_gphy_data },
+	{},
+};
+
+static int gswip_gphy_fw_load(struct gswip_priv *priv, struct gswip_gphy_fw *gphy_fw)
+{
+	struct device *dev = priv->dev;
+	const struct firmware *fw;
+	void *fw_addr;
+	dma_addr_t dma_addr;
+	dma_addr_t dev_addr;
+	size_t size;
+	int ret;
+
+	ret = clk_prepare_enable(gphy_fw->clk_gate);
+	if (ret)
+		return ret;
+
+	reset_control_assert(gphy_fw->reset);
+
+	/* The vendor BSP uses a 200ms delay after asserting the reset line.
+	 * Without this some users are observing that the PHY is not coming up
+	 * on the MDIO bus.
+	 */
+	msleep(200);
+
+	ret = request_firmware(&fw, gphy_fw->fw_name, dev);
+	if (ret) {
+		dev_err(dev, "failed to load firmware: %s, error: %i\n",
+			gphy_fw->fw_name, ret);
+		return ret;
+	}
+
+	/* GPHY cores need the firmware code in a persistent and contiguous
+	 * memory area with a 16 kB boundary aligned start address.
+	 */
+	size = fw->size + XRX200_GPHY_FW_ALIGN;
+
+	fw_addr = dmam_alloc_coherent(dev, size, &dma_addr, GFP_KERNEL);
+	if (fw_addr) {
+		fw_addr = PTR_ALIGN(fw_addr, XRX200_GPHY_FW_ALIGN);
+		dev_addr = ALIGN(dma_addr, XRX200_GPHY_FW_ALIGN);
+		memcpy(fw_addr, fw->data, fw->size);
+	} else {
+		dev_err(dev, "failed to alloc firmware memory\n");
+		release_firmware(fw);
+		return -ENOMEM;
+	}
+
+	release_firmware(fw);
+
+	ret = regmap_write(priv->rcu_regmap, gphy_fw->fw_addr_offset, dev_addr);
+	if (ret)
+		return ret;
+
+	reset_control_deassert(gphy_fw->reset);
+
+	return ret;
+}
+
+static int gswip_gphy_fw_probe(struct gswip_priv *priv,
+			       struct gswip_gphy_fw *gphy_fw,
+			       struct device_node *gphy_fw_np, int i)
+{
+	struct device *dev = priv->dev;
+	u32 gphy_mode;
+	int ret;
+	char gphyname[10];
+
+	snprintf(gphyname, sizeof(gphyname), "gphy%d", i);
+
+	gphy_fw->clk_gate = devm_clk_get(dev, gphyname);
+	if (IS_ERR(gphy_fw->clk_gate)) {
+		dev_err(dev, "Failed to lookup gate clock\n");
+		return PTR_ERR(gphy_fw->clk_gate);
+	}
+
+	ret = of_property_read_u32(gphy_fw_np, "reg", &gphy_fw->fw_addr_offset);
+	if (ret)
+		return ret;
+
+	ret = of_property_read_u32(gphy_fw_np, "lantiq,gphy-mode", &gphy_mode);
+	/* Default to GE mode */
+	if (ret)
+		gphy_mode = GPHY_MODE_GE;
+
+	switch (gphy_mode) {
+	case GPHY_MODE_FE:
+		gphy_fw->fw_name = priv->gphy_fw_name_cfg->fe_firmware_name;
+		break;
+	case GPHY_MODE_GE:
+		gphy_fw->fw_name = priv->gphy_fw_name_cfg->ge_firmware_name;
+		break;
+	default:
+		dev_err(dev, "Unknown GPHY mode %d\n", gphy_mode);
+		return -EINVAL;
+	}
+
+	gphy_fw->reset = of_reset_control_array_get_exclusive(gphy_fw_np);
+	if (IS_ERR(gphy_fw->reset)) {
+		if (PTR_ERR(gphy_fw->reset) != -EPROBE_DEFER)
+			dev_err(dev, "Failed to lookup gphy reset\n");
+		return PTR_ERR(gphy_fw->reset);
+	}
+
+	return gswip_gphy_fw_load(priv, gphy_fw);
+}
+
+static void gswip_gphy_fw_remove(struct gswip_priv *priv,
+				 struct gswip_gphy_fw *gphy_fw)
+{
+	int ret;
+
+	/* check if the device was fully probed */
+	if (!gphy_fw->fw_name)
+		return;
+
+	ret = regmap_write(priv->rcu_regmap, gphy_fw->fw_addr_offset, 0);
+	if (ret)
+		dev_err(priv->dev, "can not reset GPHY FW pointer");
+
+	clk_disable_unprepare(gphy_fw->clk_gate);
+
+	reset_control_put(gphy_fw->reset);
+}
+
+static int gswip_gphy_fw_list(struct gswip_priv *priv,
+			      struct device_node *gphy_fw_list_np, u32 version)
+{
+	struct device *dev = priv->dev;
+	struct device_node *gphy_fw_np;
+	const struct of_device_id *match;
+	int err;
+	int i = 0;
+
+	/* The VRX200 rev 1.1 uses the GSWIP 2.0 and needs the older
+	 * GPHY firmware. The VRX200 rev 1.2 uses the GSWIP 2.1 and also
+	 * needs a different GPHY firmware.
+	 */
+	if (of_device_is_compatible(gphy_fw_list_np, "lantiq,xrx200-gphy-fw")) {
+		switch (version) {
+		case GSWIP_VERSION_2_0:
+			priv->gphy_fw_name_cfg = &xrx200a1x_gphy_data;
+			break;
+		case GSWIP_VERSION_2_1:
+			priv->gphy_fw_name_cfg = &xrx200a2x_gphy_data;
+			break;
+		default:
+			dev_err(dev, "unknown GSWIP version: 0x%x", version);
+			return -ENOENT;
+		}
+	}
+
+	match = of_match_node(xway_gphy_match, gphy_fw_list_np);
+	if (match && match->data)
+		priv->gphy_fw_name_cfg = match->data;
+
+	if (!priv->gphy_fw_name_cfg) {
+		dev_err(dev, "GPHY compatible type not supported");
+		return -ENOENT;
+	}
+
+	priv->num_gphy_fw = of_get_available_child_count(gphy_fw_list_np);
+	if (!priv->num_gphy_fw)
+		return -ENOENT;
+
+	priv->rcu_regmap = syscon_regmap_lookup_by_phandle(gphy_fw_list_np,
+							   "lantiq,rcu");
+	if (IS_ERR(priv->rcu_regmap))
+		return PTR_ERR(priv->rcu_regmap);
+
+	priv->gphy_fw = devm_kmalloc_array(dev, priv->num_gphy_fw,
+					   sizeof(*priv->gphy_fw),
+					   GFP_KERNEL | __GFP_ZERO);
+	if (!priv->gphy_fw)
+		return -ENOMEM;
+
+	for_each_available_child_of_node(gphy_fw_list_np, gphy_fw_np) {
+		err = gswip_gphy_fw_probe(priv, &priv->gphy_fw[i],
+					  gphy_fw_np, i);
+		if (err)
+			goto remove_gphy;
+		i++;
+	}
+
+	/* The standalone PHY11G requires 300ms to be fully
+	 * initialized and ready for any MDIO communication after being
+	 * taken out of reset. For the SoC-internal GPHY variant there
+	 * is no (known) documentation for the minimum time after a
+	 * reset. Use the same value as for the standalone variant as
+	 * some users have reported internal PHYs not being detected
+	 * without any delay.
+	 */
+	msleep(300);
+
+	return 0;
+
+remove_gphy:
+	for (i = 0; i < priv->num_gphy_fw; i++)
+		gswip_gphy_fw_remove(priv, &priv->gphy_fw[i]);
+	return err;
+}
+
+static int gswip_probe(struct platform_device *pdev)
+{
+	struct gswip_priv *priv;
+	struct device_node *np, *mdio_np, *gphy_fw_np;
+	struct device *dev = &pdev->dev;
+	int err;
+	int i;
+	u32 version;
+
+	priv = devm_kzalloc(dev, sizeof(*priv), GFP_KERNEL);
+	if (!priv)
+		return -ENOMEM;
+
+	priv->gswip = devm_platform_ioremap_resource(pdev, 0);
+	if (IS_ERR(priv->gswip))
+		return PTR_ERR(priv->gswip);
+
+	priv->mdio = devm_platform_ioremap_resource(pdev, 1);
+	if (IS_ERR(priv->mdio))
+		return PTR_ERR(priv->mdio);
+
+	priv->mii = devm_platform_ioremap_resource(pdev, 2);
+	if (IS_ERR(priv->mii))
+		return PTR_ERR(priv->mii);
+
+	priv->hw_info = of_device_get_match_data(dev);
+	if (!priv->hw_info)
+		return -EINVAL;
+
+	priv->ds = devm_kzalloc(dev, sizeof(*priv->ds), GFP_KERNEL);
+	if (!priv->ds)
+		return -ENOMEM;
+
+	priv->ds->dev = dev;
+	priv->ds->num_ports = priv->hw_info->max_ports;
+	priv->ds->priv = priv;
+	priv->ds->ops = priv->hw_info->ops;
+	priv->dev = dev;
+	mutex_init(&priv->pce_table_lock);
+	version = gswip_switch_r(priv, GSWIP_VERSION);
+
+	np = dev->of_node;
+	switch (version) {
+	case GSWIP_VERSION_2_0:
+	case GSWIP_VERSION_2_1:
+		if (!of_device_is_compatible(np, "lantiq,xrx200-gswip"))
+			return -EINVAL;
+		break;
+	case GSWIP_VERSION_2_2:
+	case GSWIP_VERSION_2_2_ETC:
+		if (!of_device_is_compatible(np, "lantiq,xrx300-gswip") &&
+		    !of_device_is_compatible(np, "lantiq,xrx330-gswip"))
+			return -EINVAL;
+		break;
+	default:
+		dev_err(dev, "unknown GSWIP version: 0x%x", version);
+		return -ENOENT;
+	}
+
+	/* bring up the mdio bus */
+	gphy_fw_np = of_get_compatible_child(dev->of_node, "lantiq,gphy-fw");
+	if (gphy_fw_np) {
+		err = gswip_gphy_fw_list(priv, gphy_fw_np, version);
+		of_node_put(gphy_fw_np);
+		if (err) {
+			dev_err(dev, "gphy fw probe failed\n");
+			return err;
+		}
+	}
+
+	/* bring up the mdio bus */
+	mdio_np = of_get_compatible_child(dev->of_node, "lantiq,xrx200-mdio");
+	if (mdio_np) {
+		err = gswip_mdio(priv, mdio_np);
+		if (err) {
+			dev_err(dev, "mdio probe failed\n");
+			goto put_mdio_node;
+		}
+	}
+
+	err = dsa_register_switch(priv->ds);
+	if (err) {
+		dev_err(dev, "dsa switch register failed: %i\n", err);
+		goto mdio_bus;
+	}
+	if (!dsa_is_cpu_port(priv->ds, priv->hw_info->cpu_port)) {
+		dev_err(dev, "wrong CPU port defined, HW only supports port: %i",
+			priv->hw_info->cpu_port);
+		err = -EINVAL;
+		goto disable_switch;
+	}
+
+	platform_set_drvdata(pdev, priv);
+
+	dev_info(dev, "probed GSWIP version %lx mod %lx\n",
+		 (version & GSWIP_VERSION_REV_MASK) >> GSWIP_VERSION_REV_SHIFT,
+		 (version & GSWIP_VERSION_MOD_MASK) >> GSWIP_VERSION_MOD_SHIFT);
+	return 0;
+
+disable_switch:
+	gswip_mdio_mask(priv, GSWIP_MDIO_GLOB_ENABLE, 0, GSWIP_MDIO_GLOB);
+	dsa_unregister_switch(priv->ds);
+mdio_bus:
+	if (mdio_np) {
+		mdiobus_unregister(priv->ds->slave_mii_bus);
+		mdiobus_free(priv->ds->slave_mii_bus);
+	}
+put_mdio_node:
+	of_node_put(mdio_np);
+	for (i = 0; i < priv->num_gphy_fw; i++)
+		gswip_gphy_fw_remove(priv, &priv->gphy_fw[i]);
+	return err;
+}
+
+static int gswip_remove(struct platform_device *pdev)
+{
+	struct gswip_priv *priv = platform_get_drvdata(pdev);
+	int i;
+
+	if (!priv)
+		return 0;
+
+	/* disable the switch */
+	gswip_mdio_mask(priv, GSWIP_MDIO_GLOB_ENABLE, 0, GSWIP_MDIO_GLOB);
+
+	dsa_unregister_switch(priv->ds);
+
+	if (priv->ds->slave_mii_bus) {
+		mdiobus_unregister(priv->ds->slave_mii_bus);
+		of_node_put(priv->ds->slave_mii_bus->dev.of_node);
+		mdiobus_free(priv->ds->slave_mii_bus);
+	}
+
+	for (i = 0; i < priv->num_gphy_fw; i++)
+		gswip_gphy_fw_remove(priv, &priv->gphy_fw[i]);
+
+	platform_set_drvdata(pdev, NULL);
+
+	return 0;
+}
+
+static void gswip_shutdown(struct platform_device *pdev)
+{
+	struct gswip_priv *priv = platform_get_drvdata(pdev);
+
+	if (!priv)
+		return;
+
+	dsa_switch_shutdown(priv->ds);
+
+	platform_set_drvdata(pdev, NULL);
+}
+
+static const struct gswip_hw_info gswip_xrx200 = {
+	.max_ports = 7,
+	.cpu_port = 6,
+	.ops = &gswip_xrx200_switch_ops,
+};
+
+static const struct gswip_hw_info gswip_xrx300 = {
+	.max_ports = 7,
+	.cpu_port = 6,
+	.ops = &gswip_xrx300_switch_ops,
+};
+
+static const struct of_device_id gswip_of_match[] = {
+	{ .compatible = "lantiq,xrx200-gswip", .data = &gswip_xrx200 },
+	{ .compatible = "lantiq,xrx300-gswip", .data = &gswip_xrx300 },
+	{ .compatible = "lantiq,xrx330-gswip", .data = &gswip_xrx300 },
+	{},
+};
+MODULE_DEVICE_TABLE(of, gswip_of_match);
+
+static struct platform_driver gswip_driver = {
+	.probe = gswip_probe,
+	.remove = gswip_remove,
+	.shutdown = gswip_shutdown,
+	.driver = {
+		.name = "gswip",
+		.of_match_table = gswip_of_match,
+	},
+};
+
+module_platform_driver(gswip_driver);
+
+MODULE_FIRMWARE("lantiq/xrx300_phy11g_a21.bin");
+MODULE_FIRMWARE("lantiq/xrx300_phy22f_a21.bin");
+MODULE_FIRMWARE("lantiq/xrx200_phy11g_a14.bin");
+MODULE_FIRMWARE("lantiq/xrx200_phy11g_a22.bin");
+MODULE_FIRMWARE("lantiq/xrx200_phy22f_a14.bin");
+MODULE_FIRMWARE("lantiq/xrx200_phy22f_a22.bin");
+MODULE_AUTHOR("Hauke Mehrtens <hauke@hauke-m.de>");
+MODULE_DESCRIPTION("Lantiq / Intel GSWIP driver");
+MODULE_LICENSE("GPL v2");

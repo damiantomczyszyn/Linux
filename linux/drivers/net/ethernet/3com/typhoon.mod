@@ -1,2 +1,2 @@
--3level_types.h \
-  include/asm-gener
+drivers/net/ethernet/3com/typhoon.o
+

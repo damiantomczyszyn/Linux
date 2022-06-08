@@ -1,133 +1,207 @@
-nclude/linux/page-flags-layout.h \
-    $(wildcard include/config/KASAN_HW_TAGS) \
-  include/linux/numa.h \
-    $(wildcard include/config/NODES_SHIFT) \
-    $(wildcard include/config/NUMA_KEEP_MEMINFO) \
-    $(wildcard include/config/HAVE_ARCH_NODE_DEV_GROUP) \
-  arch/x86/include/asm/sparsemem.h \
-  include/generated/bounds.h \
-  include/linux/seqlock.h \
-  include/linux/ww_mutex.h \
-    $(wildcard include/config/DEBUG_RT_MUTEXES) \
-    $(wildcard include/config/DEBUG_WW_MUTEX_SLOWPATH) \
-  include/linux/rtmutex.h \
-  arch/x86/include/asm/mmu.h \
-    $(wildcard include/config/MODIFY_LDT_SYSCALL) \
-  include/linux/kmod.h \
-  include/linux/umh.h \
-  include/linux/gfp.h \
-    $(wildcard include/config/HIGHMEM) \
-    $(wildcard include/config/ZONE_DMA) \
-    $(wildcard include/config/ZONE_DMA32) \
-    $(wildcard include/config/ZONE_DEVICE) \
-    $(wildcard include/config/PM_SLEEP) \
-    $(wildcard include/config/CONTIG_ALLOC) \
-    $(wildcard include/config/CMA) \
-  include/linux/mmdebug.h \
-    $(wildcard include/config/DEBUG_VM) \
-    $(wildcard include/config/DEBUG_VM_PGFLAGS) \
-  include/linux/mmzone.h \
-    $(wildcard include/config/FORCE_MAX_ZONEORDER) \
-    $(wildcard include/config/MEMORY_ISOLATION) \
-    $(wildcard include/config/ZSMALLOC) \
-    $(wildcard include/config/MEMORY_HOTPLUG) \
-    $(wildcard include/config/COMPACTION) \
-    $(wildcard include/config/PAGE_EXTENSION) \
-    $(wildcard include/config/DEFERRED_STRUCT_PAGE_INIT) \
-    $(wildcard include/config/HAVE_MEMORYLESS_NODES) \
-    $(wildcard include/config/SPARSEMEM_EXTREME) \
-    $(wildcard include/config/HAVE_ARCH_PFN_VALID) \
-  include/linux/nodemask.h \
-  include/linux/pageblock-flags.h \
-    $(wildcard include/config/HUGETLB_PAGE_SIZE_VARIABLE) \
-  include/linux/page-flags.h \
-    $(wildcard include/config/ARCH_USES_PG_UNCACHED) \
-    $(wildcard include/config/MEMORY_FAILURE) \
-    $(wildcard include/config/PAGE_IDLE_FLAG) \
-    $(wildcard include/config/HUGETLB_PAGE_FREE_VMEMMAP) \
-    $(wildcard include/config/HUGETLB_PAGE_FREE_VMEMMAP_DEFAULT_ON) \
-    $(wildcard include/config/KSM) \
-  include/linux/local_lock.h \
-  include/linux/local_lock_internal.h \
-  include/linux/memory_hotplug.h \
-    $(wildcard include/config/HAVE_ARCH_NODEDATA_EXTENSION) \
-    $(wildcard include/config/ARCH_HAS_ADD_PAGES) \
-    $(wildcard include/config/MEMORY_HOTREMOVE) \
-  arch/x86/include/asm/mmzone.h \
-  arch/x86/include/asm/mmzone_32.h \
-  include/linux/topology.h \
-    $(wildcard include/config/USE_PERCPU_NUMA_NODE_ID) \
-    $(wildcard include/config/SCHED_SMT) \
-    $(wildcard include/config/SCHED_CLUSTER) \
-  include/linux/arch_topology.h \
-    $(wildcard include/config/ACPI_CPPC_LIB) \
-    $(wildcard include/config/GENERIC_ARCH_TOPOLOGY) \
-  include/linux/percpu.h \
-    $(wildcard include/config/NEED_PER_CPU_EMBED_FIRST_CHUNK) \
-    $(wildcard include/config/NEED_PER_CPU_PAGE_FIRST_CHUNK) \
-  arch/x86/include/asm/topology.h \
-    $(wildcard include/config/SCHED_MC_PRIO) \
-  arch/x86/include/asm/mpspec.h \
-    $(wildcard include/config/EISA) \
-    $(wildcard include/config/X86_MPPARSE) \
-  arch/x86/include/asm/mpspec_def.h \
-  arch/x86/include/asm/x86_init.h \
-  arch/x86/include/asm/apicdef.h \
-  include/asm-generic/topology.h \
-  include/linux/sysctl.h \
-    $(wildcard include/config/SYSCTL) \
-  include/uapi/linux/sysctl.h \
-  include/linux/elf.h \
-    $(wildcard include/config/ARCH_USE_GNU_PROPERTY) \
-    $(wildcard include/config/ARCH_HAVE_ELF_PROT) \
-  arch/x86/include/asm/elf.h \
-    $(wildcard include/config/X86_X32_ABI) \
-  arch/x86/include/asm/user.h \
-  arch/x86/include/asm/user_32.h \
-  arch/x86/include/asm/fsgsbase.h \
-  arch/x86/include/asm/vdso.h \
-  arch/x86/include/asm/desc.h \
-  arch/x86/include/asm/fixmap.h \
-    $(wildcard include/config/DEBUG_KMAP_LOCAL_FORCE_MAP) \
-    $(wildcard include/config/X86_VSYSCALL_EMULATION) \
-    $(wildcard include/config/PROVIDE_OHCI1394_DMA_INIT) \
-    $(wildcard include/config/X86_IO_APIC) \
-    $(wildcard include/config/KMAP_LOCAL) \
-    $(wildcard include/config/PCI_MMCONFIG) \
-    $(wildcard include/config/ACPI_APEI_GHES) \
-    $(wildcard include/config/INTEL_TXT) \
-  arch/x86/include/generated/asm/kmap_size.h \
-  include/asm-generic/kmap_size.h \
-    $(wildcard include/config/DEBUG_KMAP_LOCAL) \
-  include/asm-generic/fixmap.h \
-  arch/x86/include/asm/irq_vectors.h \
-    $(wildcard include/config/HAVE_KVM) \
-    $(wildcard include/config/HYPERV) \
-    $(wildcard include/config/PCI_MSI) \
-  arch/x86/include/asm/cpu_entry_area.h \
-  arch/x86/include/asm/intel_ds.h \
-  arch/x86/include/asm/pgtable_areas.h \
-  arch/x86/include/asm/pgtable_32_areas.h \
-  include/uapi/linux/elf.h \
-  include/uapi/linux/elf-em.h \
-  include/linux/kobject.h \
-    $(wildcard include/config/UEVENT_HELPER) \
-    $(wildcard include/config/DEBUG_KOBJECT_RELEASE) \
-  include/linux/sysfs.h \
-  include/linux/kernfs.h \
-    $(wildcard include/config/KERNFS) \
-  include/linux/idr.h \
-  include/linux/radix-tree.h \
-  include/linux/xarray.h \
-    $(wildcard include/config/XARRAY_MULTI) \
-  include/linux/kconfig.h \
-  include/linux/kobject_ns.h \
-  include/linux/moduleparam.h \
-    $(wildcard include/config/ALPHA) \
-    $(wildcard include/config/IA64) \
-    $(wildcard include/config/PPC64) \
-  include/linux/rbtree_latch.h \
-  include/linux/error-injection.h \
-  include/asm-generic/error-injection.h \
-  include/linux/cfi.h \
-    $(wild
+/* SPDX-License-Identifier: GPL-2.0 */
+/* Copyright (c) 2019, Vladimir Oltean <olteanv@gmail.com>
+ */
+#ifndef _SJA1105_PTP_H
+#define _SJA1105_PTP_H
+
+#include <linux/timer.h>
+
+#if IS_ENABLED(CONFIG_NET_DSA_SJA1105_PTP)
+
+/* Timestamps are in units of 8 ns clock ticks (equivalent to
+ * a fixed 125 MHz clock).
+ */
+#define SJA1105_TICK_NS			8
+
+static inline s64 ns_to_sja1105_ticks(s64 ns)
+{
+	return ns / SJA1105_TICK_NS;
+}
+
+static inline s64 sja1105_ticks_to_ns(s64 ticks)
+{
+	return ticks * SJA1105_TICK_NS;
+}
+
+/* Calculate the first base_time in the future that satisfies this
+ * relationship:
+ *
+ * future_base_time = base_time + N x cycle_time >= now, or
+ *
+ *      now - base_time
+ * N >= ---------------
+ *         cycle_time
+ *
+ * Because N is an integer, the ceiling value of the above "a / b" ratio
+ * is in fact precisely the floor value of "(a + b - 1) / b", which is
+ * easier to calculate only having integer division tools.
+ */
+static inline s64 future_base_time(s64 base_time, s64 cycle_time, s64 now)
+{
+	s64 a, b, n;
+
+	if (base_time >= now)
+		return base_time;
+
+	a = now - base_time;
+	b = cycle_time;
+	n = div_s64(a + b - 1, b);
+
+	return base_time + n * cycle_time;
+}
+
+/* This is not a preprocessor macro because the "ns" argument may or may not be
+ * s64 at caller side. This ensures it is properly type-cast before div_s64.
+ */
+static inline s64 ns_to_sja1105_delta(s64 ns)
+{
+	return div_s64(ns, 200);
+}
+
+static inline s64 sja1105_delta_to_ns(s64 delta)
+{
+	return delta * 200;
+}
+
+struct sja1105_ptp_cmd {
+	u64 startptpcp;		/* start toggling PTP_CLK pin */
+	u64 stopptpcp;		/* stop toggling PTP_CLK pin */
+	u64 ptpstrtsch;		/* start schedule */
+	u64 ptpstopsch;		/* stop schedule */
+	u64 resptp;		/* reset */
+	u64 corrclk4ts;		/* use the corrected clock for timestamps */
+	u64 ptpclkadd;		/* enum sja1105_ptp_clk_mode */
+};
+
+struct sja1105_ptp_data {
+	struct timer_list extts_timer;
+	/* Used only on SJA1105 to reconstruct partial timestamps */
+	struct sk_buff_head skb_rxtstamp_queue;
+	/* Used on SJA1110 where meta frames are generated only for
+	 * 2-step TX timestamps
+	 */
+	struct sk_buff_head skb_txtstamp_queue;
+	struct ptp_clock_info caps;
+	struct ptp_clock *clock;
+	struct sja1105_ptp_cmd cmd;
+	/* Serializes all operations on the PTP hardware clock */
+	struct mutex lock;
+	bool extts_enabled;
+	u64 ptpsyncts;
+};
+
+int sja1105_ptp_clock_register(struct dsa_switch *ds);
+
+void sja1105_ptp_clock_unregister(struct dsa_switch *ds);
+
+void sja1105et_ptp_cmd_packing(u8 *buf, struct sja1105_ptp_cmd *cmd,
+			       enum packing_op op);
+
+void sja1105pqrs_ptp_cmd_packing(u8 *buf, struct sja1105_ptp_cmd *cmd,
+				 enum packing_op op);
+
+int sja1105_get_ts_info(struct dsa_switch *ds, int port,
+			struct ethtool_ts_info *ts);
+
+void sja1105_ptp_txtstamp_skb(struct dsa_switch *ds, int slot,
+			      struct sk_buff *clone);
+
+bool sja1105_port_rxtstamp(struct dsa_switch *ds, int port,
+			   struct sk_buff *skb, unsigned int type);
+
+void sja1105_port_txtstamp(struct dsa_switch *ds, int port,
+			   struct sk_buff *skb);
+
+int sja1105_hwtstamp_get(struct dsa_switch *ds, int port, struct ifreq *ifr);
+
+int sja1105_hwtstamp_set(struct dsa_switch *ds, int port, struct ifreq *ifr);
+
+int __sja1105_ptp_gettimex(struct dsa_switch *ds, u64 *ns,
+			   struct ptp_system_timestamp *sts);
+
+int __sja1105_ptp_settime(struct dsa_switch *ds, u64 ns,
+			  struct ptp_system_timestamp *ptp_sts);
+
+int __sja1105_ptp_adjtime(struct dsa_switch *ds, s64 delta);
+
+int sja1105_ptp_commit(struct dsa_switch *ds, struct sja1105_ptp_cmd *cmd,
+		       sja1105_spi_rw_mode_t rw);
+
+bool sja1105_rxtstamp(struct dsa_switch *ds, int port, struct sk_buff *skb);
+bool sja1110_rxtstamp(struct dsa_switch *ds, int port, struct sk_buff *skb);
+void sja1110_txtstamp(struct dsa_switch *ds, int port, struct sk_buff *skb);
+
+void sja1110_process_meta_tstamp(struct dsa_switch *ds, int port, u8 ts_id,
+				 enum sja1110_meta_tstamp dir, u64 tstamp);
+
+#else
+
+struct sja1105_ptp_cmd;
+
+/* Structures cannot be empty in C. Bah!
+ * Keep the mutex as the only element, which is a bit more difficult to
+ * refactor out of sja1105_main.c anyway.
+ */
+struct sja1105_ptp_data {
+	struct mutex lock;
+};
+
+static inline int sja1105_ptp_clock_register(struct dsa_switch *ds)
+{
+	return 0;
+}
+
+static inline void sja1105_ptp_clock_unregister(struct dsa_switch *ds) { }
+
+static inline void sja1105_ptp_txtstamp_skb(struct dsa_switch *ds, int slot,
+					    struct sk_buff *clone)
+{
+}
+
+static inline int __sja1105_ptp_gettimex(struct dsa_switch *ds, u64 *ns,
+					 struct ptp_system_timestamp *sts)
+{
+	return 0;
+}
+
+static inline int __sja1105_ptp_settime(struct dsa_switch *ds, u64 ns,
+					struct ptp_system_timestamp *ptp_sts)
+{
+	return 0;
+}
+
+static inline int __sja1105_ptp_adjtime(struct dsa_switch *ds, s64 delta)
+{
+	return 0;
+}
+
+static inline int sja1105_ptp_commit(struct dsa_switch *ds,
+				     struct sja1105_ptp_cmd *cmd,
+				     sja1105_spi_rw_mode_t rw)
+{
+	return 0;
+}
+
+#define sja1105et_ptp_cmd_packing NULL
+
+#define sja1105pqrs_ptp_cmd_packing NULL
+
+#define sja1105_get_ts_info NULL
+
+#define sja1105_port_rxtstamp NULL
+
+#define sja1105_port_txtstamp NULL
+
+#define sja1105_hwtstamp_get NULL
+
+#define sja1105_hwtstamp_set NULL
+
+#define sja1105_rxtstamp NULL
+#define sja1110_rxtstamp NULL
+#define sja1110_txtstamp NULL
+
+#define sja1110_process_meta_tstamp NULL
+
+#endif /* IS_ENABLED(CONFIG_NET_DSA_SJA1105_PTP) */
+
+#endif /* _SJA1105_PTP_H */

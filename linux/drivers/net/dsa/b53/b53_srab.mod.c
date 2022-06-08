@@ -1,8 +1,65 @@
-cmd_drivers/media/i2c/uda1342.o := gcc -Wp,-MMD,drivers/media/i2c/.uda1342.o.d -nostdinc -I./arch/x86/include -I./arch/x86/include/generated  -I./include -I./arch/x86/include/uapi -I./arch/x86/include/generated/uapi -I./include/uapi -I./include/generated/uapi -include ./include/linux/compiler-version.h -include ./include/linux/kconfig.h -include ./include/linux/compiler_types.h -D__KERNEL__ -fmacro-prefix-map=./= -Wall -Wundef -Werror=strict-prototypes -Wno-trigraphs -fno-strict-aliasing -fno-common -fshort-wchar -fno-PIE -Werror=implicit-function-declaration -Werror=implicit-int -Werror=return-type -Wno-format-security -std=gnu11 -mno-sse -mno-mmx -mno-sse2 -mno-3dnow -mno-avx -fcf-protection=none -m32 -msoft-float -mregparm=3 -freg-struct-return -fno-pic -mpreferred-stack-boundary=2 -march=i686 -mtune=pentium3 -mtune=generic -Wa,-mtune=generic32 -ffreestanding -mstack-protector-guard-reg=fs -mstack-protector-guard-symbol=__stack_chk_guard -Wno-sign-compare -fno-asynchronous-unwind-tables -mindirect-branch=thunk-extern -mindirect-branch-register -fno-jump-tables -fno-delete-null-pointer-checks -Wno-frame-address -Wno-format-truncation -Wno-format-overflow -Wno-address-of-packed-member -O2 -fno-allow-store-data-races -fstack-protector-strong -Wimplicit-fallthrough=5 -Wno-main -Wno-unused-but-set-variable -Wno-unused-const-variable -fno-stack-clash-protection -pg -mrecord-mcount -mfentry -DCC_USING_FENTRY -Wdeclaration-after-statement -Wvla -Wno-pointer-sign -Wcast-function-type -Wno-stringop-truncation -Wno-stringop-overflow -Wno-restrict -Wno-maybe-uninitialized -Wno-alloc-size-larger-than -fno-strict-overflow -fno-stack-check -fconserve-stack -Werror=date-time -Werror=incompatible-pointer-types -Werror=designated-init -Wno-packed-not-aligned  -DMODULE  -DKBUILD_BASENAME='"uda1342"' -DKBUILD_MODNAME='"uda1342"' -D__KBUILD_MODNAME=kmod_uda1342 -c -o drivers/media/i2c/uda1342.o drivers/media/i2c/uda1342.c 
+#include <linux/module.h>
+#define INCLUDE_VERMAGIC
+#include <linux/build-salt.h>
+#include <linux/elfnote-lto.h>
+#include <linux/vermagic.h>
+#include <linux/compiler.h>
 
-source_drivers/media/i2c/uda1342.o := drivers/media/i2c/uda1342.c
+BUILD_SALT;
+BUILD_LTO_INFO;
 
-deps_drivers/media/i2c/uda1342.o := \
-  include/linux/compiler-version.h \
-    $(wildcard include/config/CC_VERSION_TEXT) \
-  include/linux/k
+MODULE_INFO(vermagic, VERMAGIC_STRING);
+MODULE_INFO(name, KBUILD_MODNAME);
+
+__visible struct module __this_module
+__section(".gnu.linkonce.this_module") = {
+	.name = KBUILD_MODNAME,
+	.init = init_module,
+#ifdef CONFIG_MODULE_UNLOAD
+	.exit = cleanup_module,
+#endif
+	.arch = MODULE_ARCH_INIT,
+};
+
+MODULE_INFO(intree, "Y");
+
+#ifdef CONFIG_RETPOLINE
+MODULE_INFO(retpoline, "Y");
+#endif
+
+MODULE_INFO(depends, "b53_serdes,b53_common,dsa_core");
+
+MODULE_ALIAS("of:N*T*Cbrcm,bcm53010-srab");
+MODULE_ALIAS("of:N*T*Cbrcm,bcm53010-srabC*");
+MODULE_ALIAS("of:N*T*Cbrcm,bcm53011-srab");
+MODULE_ALIAS("of:N*T*Cbrcm,bcm53011-srabC*");
+MODULE_ALIAS("of:N*T*Cbrcm,bcm53012-srab");
+MODULE_ALIAS("of:N*T*Cbrcm,bcm53012-srabC*");
+MODULE_ALIAS("of:N*T*Cbrcm,bcm53018-srab");
+MODULE_ALIAS("of:N*T*Cbrcm,bcm53018-srabC*");
+MODULE_ALIAS("of:N*T*Cbrcm,bcm53019-srab");
+MODULE_ALIAS("of:N*T*Cbrcm,bcm53019-srabC*");
+MODULE_ALIAS("of:N*T*Cbrcm,bcm5301x-srab");
+MODULE_ALIAS("of:N*T*Cbrcm,bcm5301x-srabC*");
+MODULE_ALIAS("of:N*T*Cbrcm,bcm11360-srab");
+MODULE_ALIAS("of:N*T*Cbrcm,bcm11360-srabC*");
+MODULE_ALIAS("of:N*T*Cbrcm,bcm58522-srab");
+MODULE_ALIAS("of:N*T*Cbrcm,bcm58522-srabC*");
+MODULE_ALIAS("of:N*T*Cbrcm,bcm58525-srab");
+MODULE_ALIAS("of:N*T*Cbrcm,bcm58525-srabC*");
+MODULE_ALIAS("of:N*T*Cbrcm,bcm58535-srab");
+MODULE_ALIAS("of:N*T*Cbrcm,bcm58535-srabC*");
+MODULE_ALIAS("of:N*T*Cbrcm,bcm58622-srab");
+MODULE_ALIAS("of:N*T*Cbrcm,bcm58622-srabC*");
+MODULE_ALIAS("of:N*T*Cbrcm,bcm58623-srab");
+MODULE_ALIAS("of:N*T*Cbrcm,bcm58623-srabC*");
+MODULE_ALIAS("of:N*T*Cbrcm,bcm58625-srab");
+MODULE_ALIAS("of:N*T*Cbrcm,bcm58625-srabC*");
+MODULE_ALIAS("of:N*T*Cbrcm,bcm88312-srab");
+MODULE_ALIAS("of:N*T*Cbrcm,bcm88312-srabC*");
+MODULE_ALIAS("of:N*T*Cbrcm,cygnus-srab");
+MODULE_ALIAS("of:N*T*Cbrcm,cygnus-srabC*");
+MODULE_ALIAS("of:N*T*Cbrcm,nsp-srab");
+MODULE_ALIAS("of:N*T*Cbrcm,nsp-srabC*");
+MODULE_ALIAS("of:N*T*Cbrcm,omega-srab");
+MODULE_ALIAS("of:N*T*Cbrcm,omega-srabC*");

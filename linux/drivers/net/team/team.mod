@@ -1,1 +1,2 @@
-clude/linux/scatterlist.h
+er->owner);
+				i2c_unreg

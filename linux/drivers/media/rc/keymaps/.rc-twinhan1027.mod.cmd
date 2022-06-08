@@ -1,1 +1,8 @@
-cmd_drivers/media/rc/keymaps/rc-twinhan1027.mod := { echo  drivers/media/rc/keymaps/rc-twinhan1027.o;  echo; } > drivers/media/rc/keymaps/rc-twinhan1027.mod
+00140140
+#define AUD_EXT_LNGTH		0x00140150
+#define AUD_EXT_A_MODE		0x00140158
+
+/* I2C Bus 1 */
+#define I2C1_ADDR	0x00180000
+#define I2C1_WDATA	0x00180004
+#de

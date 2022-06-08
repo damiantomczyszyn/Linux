@@ -1,3 +1,3 @@
-haracter as follows:
-	 *
-	 * - '+': irq is enabled and not in irq cont
+g
+		 * any task-queue locks at all. We'll only try to get
+		 * the run

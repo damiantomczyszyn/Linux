@@ -1,1 +1,1 @@
-cmd_drivers/media/i2c/uda1342
+ct tda10071_platform_data tda

@@ -1,2 +1,2 @@
-drivers/media/rc/keymaps/rc-npgtech.o
-
+IO moving on encoder ports\n",
+				dev-

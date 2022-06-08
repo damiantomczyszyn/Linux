@@ -1,242 +1,251 @@
-// SPDX-License-Identifier: GPL-2.0-only
-/* ir-sharp-decoder.c - handle Sharp IR Pulse/Space protocol
- *
- * Copyright (C) 2013-2014 Imagination Technologies Ltd.
- *
- * Based on NEC decoder:
- * Copyright (C) 2010 by Mauro Carvalho Chehab
- */
+"Television",
+		[CX23885_VMUX_CABLE]      = "Cable TV",
+		[CX23885_VMUX_DVB]        = "DVB",
+		[CX23885_VMUX_DEBUG]      = "for debug only",
+	};
+	unsigned int n;
+	dprintk(1, "%s()\n", __func__);
 
-#include <linux/bitrev.h>
-#include <linux/module.h>
-#include "rc-core-priv.h"
+	n = i->index;
+	if (n >= MAX_CX23885_INPUT)
+		return -EINVAL;
 
-#define SHARP_NBITS		15
-#define SHARP_UNIT		40  /* us */
-#define SHARP_BIT_PULSE		(8    * SHARP_UNIT) /* 320us */
-#define SHARP_BIT_0_PERIOD	(25   * SHARP_UNIT) /* 1ms (680us space) */
-#define SHARP_BIT_1_PERIOD	(50   * SHARP_UNIT) /* 2ms (1680ms space) */
-#define SHARP_ECHO_SPACE	(1000 * SHARP_UNIT) /* 40 ms */
-#define SHARP_TRAILER_SPACE	(125  * SHARP_UNIT) /* 5 ms (even longer) */
+	if (0 == INPUT(n)->type)
+		return -EINVAL;
 
-enum sharp_state {
-	STATE_INACTIVE,
-	STATE_BIT_PULSE,
-	STATE_BIT_SPACE,
-	STATE_TRAILER_PULSE,
-	STATE_ECHO_SPACE,
-	STATE_TRAILER_SPACE,
-};
-
-/**
- * ir_sharp_decode() - Decode one Sharp pulse or space
- * @dev:	the struct rc_dev descriptor of the device
- * @ev:		the struct ir_raw_event descriptor of the pulse/space
- *
- * This function returns -EINVAL if the pulse violates the state machine
- */
-static int ir_sharp_decode(struct rc_dev *dev, struct ir_raw_event ev)
-{
-	struct sharp_dec *data = &dev->raw->sharp;
-	u32 msg, echo, address, command, scancode;
-
-	if (!is_timing_event(ev)) {
-		if (ev.overflow)
-			data->state = STATE_INACTIVE;
-		return 0;
+	i->index = n;
+	i->type  = V4L2_INPUT_TYPE_CAMERA;
+	strscpy(i->name, iname[INPUT(n)->type], sizeof(i->name));
+	i->std = CX23885_NORMS;
+	if ((CX23885_VMUX_TELEVISION == INPUT(n)->type) ||
+		(CX23885_VMUX_CABLE == INPUT(n)->type)) {
+		i->type = V4L2_INPUT_TYPE_TUNER;
+		i->audioset = 4;
+	} else {
+		/* Two selectable audio inputs for non-tv inputs */
+		i->audioset = 3;
 	}
 
-	dev_dbg(&dev->dev, "Sharp decode started at state %d (%uus %s)\n",
-		data->state, ev.duration, TO_STR(ev.pulse));
-
-	switch (data->state) {
-
-	case STATE_INACTIVE:
-		if (!ev.pulse)
-			break;
-
-		if (!eq_margin(ev.duration, SHARP_BIT_PULSE,
-			       SHARP_BIT_PULSE / 2))
-			break;
-
-		data->count = 0;
-		data->pulse_len = ev.duration;
-		data->state = STATE_BIT_SPACE;
-		return 0;
-
-	case STATE_BIT_PULSE:
-		if (!ev.pulse)
-			break;
-
-		if (!eq_margin(ev.duration, SHARP_BIT_PULSE,
-			       SHARP_BIT_PULSE / 2))
-			break;
-
-		data->pulse_len = ev.duration;
-		data->state = STATE_BIT_SPACE;
-		return 0;
-
-	case STATE_BIT_SPACE:
-		if (ev.pulse)
-			break;
-
-		data->bits <<= 1;
-		if (eq_margin(data->pulse_len + ev.duration, SHARP_BIT_1_PERIOD,
-			      SHARP_BIT_PULSE * 2))
-			data->bits |= 1;
-		else if (!eq_margin(data->pulse_len + ev.duration,
-				    SHARP_BIT_0_PERIOD, SHARP_BIT_PULSE * 2))
-			break;
-		data->count++;
-
-		if (data->count == SHARP_NBITS ||
-		    data->count == SHARP_NBITS * 2)
-			data->state = STATE_TRAILER_PULSE;
-		else
-			data->state = STATE_BIT_PULSE;
-
-		return 0;
-
-	case STATE_TRAILER_PULSE:
-		if (!ev.pulse)
-			break;
-
-		if (!eq_margin(ev.duration, SHARP_BIT_PULSE,
-			       SHARP_BIT_PULSE / 2))
-			break;
-
-		if (data->count == SHARP_NBITS) {
-			/* exp,chk bits should be 1,0 */
-			if ((data->bits & 0x3) != 0x2 &&
-			/* DENON variant, both chk bits 0 */
-			    (data->bits & 0x3) != 0x0)
-				break;
-			data->state = STATE_ECHO_SPACE;
-		} else {
-			data->state = STATE_TRAILER_SPACE;
-		}
-		return 0;
-
-	case STATE_ECHO_SPACE:
-		if (ev.pulse)
-			break;
-
-		if (!eq_margin(ev.duration, SHARP_ECHO_SPACE,
-			       SHARP_ECHO_SPACE / 4))
-			break;
-
-		data->state = STATE_BIT_PULSE;
-
-		return 0;
-
-	case STATE_TRAILER_SPACE:
-		if (ev.pulse)
-			break;
-
-		if (!geq_margin(ev.duration, SHARP_TRAILER_SPACE,
-				SHARP_BIT_PULSE / 2))
-			break;
-
-		/* Validate - command, ext, chk should be inverted in 2nd */
-		msg = (data->bits >> 15) & 0x7fff;
-		echo = data->bits & 0x7fff;
-		if ((msg ^ echo) != 0x3ff) {
-			dev_dbg(&dev->dev,
-				"Sharp checksum error: received 0x%04x, 0x%04x\n",
-				msg, echo);
-			break;
-		}
-
-		address = bitrev8((msg >> 7) & 0xf8);
-		command = bitrev8((msg >> 2) & 0xff);
-
-		scancode = address << 8 | command;
-		dev_dbg(&dev->dev, "Sharp scancode 0x%04x\n", scancode);
-
-		rc_keydown(dev, RC_PROTO_SHARP, scancode, 0);
-		data->state = STATE_INACTIVE;
-		return 0;
+	if (dev->input == n) {
+		/* enum'd input matches our configured input.
+		 * Ask the video decoder to process the call
+		 * and give it an oppertunity to update the
+		 * status field.
+		 */
+		call_all(dev, video, g_input_status, &i->status);
 	}
 
-	dev_dbg(&dev->dev, "Sharp decode failed at count %d state %d (%uus %s)\n",
-		data->count, data->state, ev.duration, TO_STR(ev.pulse));
-	data->state = STATE_INACTIVE;
-	return -EINVAL;
-}
-
-static const struct ir_raw_timings_pd ir_sharp_timings = {
-	.header_pulse  = 0,
-	.header_space  = 0,
-	.bit_pulse     = SHARP_BIT_PULSE,
-	.bit_space[0]  = SHARP_BIT_0_PERIOD,
-	.bit_space[1]  = SHARP_BIT_1_PERIOD,
-	.trailer_pulse = SHARP_BIT_PULSE,
-	.trailer_space = SHARP_ECHO_SPACE,
-	.msb_first     = 1,
-};
-
-/**
- * ir_sharp_encode() - Encode a scancode as a stream of raw events
- *
- * @protocol:	protocol to encode
- * @scancode:	scancode to encode
- * @events:	array of raw ir events to write into
- * @max:	maximum size of @events
- *
- * Returns:	The number of events written.
- *		-ENOBUFS if there isn't enough space in the array to fit the
- *		encoding. In this case all @max events will have been written.
- */
-static int ir_sharp_encode(enum rc_proto protocol, u32 scancode,
-			   struct ir_raw_event *events, unsigned int max)
-{
-	struct ir_raw_event *e = events;
-	int ret;
-	u32 raw;
-
-	raw = (((bitrev8(scancode >> 8) >> 3) << 8) & 0x1f00) |
-		bitrev8(scancode);
-	ret = ir_raw_gen_pd(&e, max, &ir_sharp_timings, SHARP_NBITS,
-			    (raw << 2) | 2);
-	if (ret < 0)
-		return ret;
-
-	max -= ret;
-
-	raw = (((bitrev8(scancode >> 8) >> 3) << 8) & 0x1f00) |
-		bitrev8(~scancode);
-	ret = ir_raw_gen_pd(&e, max, &ir_sharp_timings, SHARP_NBITS,
-			    (raw << 2) | 1);
-	if (ret < 0)
-		return ret;
-
-	return e - events;
-}
-
-static struct ir_raw_handler sharp_handler = {
-	.protocols	= RC_PROTO_BIT_SHARP,
-	.decode		= ir_sharp_decode,
-	.encode		= ir_sharp_encode,
-	.carrier	= 38000,
-	.min_timeout	= SHARP_ECHO_SPACE + SHARP_ECHO_SPACE / 4,
-};
-
-static int __init ir_sharp_decode_init(void)
-{
-	ir_raw_handler_register(&sharp_handler);
-
-	pr_info("IR Sharp protocol handler initialized\n");
 	return 0;
 }
 
-static void __exit ir_sharp_decode_exit(void)
+static int vidioc_enum_input(struct file *file, void *priv,
+				struct v4l2_input *i)
 {
-	ir_raw_handler_unregister(&sharp_handler);
+	struct cx23885_dev *dev = video_drvdata(file);
+	dprintk(1, "%s()\n", __func__);
+	return cx23885_enum_input(dev, i);
 }
 
-module_init(ir_sharp_decode_init);
-module_exit(ir_sharp_decode_exit);
+int cx23885_get_input(struct file *file, void *priv, unsigned int *i)
+{
+	struct cx23885_dev *dev = video_drvdata(file);
 
-MODULE_LICENSE("GPL");
-MODULE_AUTHOR("James Hogan <jhogan@kernel.org>");
-MODULE_DESCRIPTION("Sharp IR protocol decoder");
+	*i = dev->input;
+	dprintk(1, "%s() returns %d\n", __func__, *i);
+	return 0;
+}
+
+static int vidioc_g_input(struct file *file, void *priv, unsigned int *i)
+{
+	return cx23885_get_input(file, priv, i);
+}
+
+int cx23885_set_input(struct file *file, void *priv, unsigned int i)
+{
+	struct cx23885_dev *dev = video_drvdata(file);
+
+	dprintk(1, "%s(%d)\n", __func__, i);
+
+	if (i >= MAX_CX23885_INPUT) {
+		dprintk(1, "%s() -EINVAL\n", __func__);
+		return -EINVAL;
+	}
+
+	if (INPUT(i)->type == 0)
+		return -EINVAL;
+
+	cx23885_video_mux(dev, i);
+
+	/* By default establish the default audio input for the card also */
+	/* Caller is free to use VIDIOC_S_AUDIO to override afterwards */
+	cx23885_audio_mux(dev, i);
+	return 0;
+}
+
+static int vidioc_s_input(struct file *file, void *priv, unsigned int i)
+{
+	return cx23885_set_input(file, priv, i);
+}
+
+static int vidioc_log_status(struct file *file, void *priv)
+{
+	struct cx23885_dev *dev = video_drvdata(file);
+
+	call_all(dev, core, log_status);
+	return 0;
+}
+
+static int cx23885_query_audinput(struct file *file, void *priv,
+	struct v4l2_audio *i)
+{
+	static const char *iname[] = {
+		[0] = "Baseband L/R 1",
+		[1] = "Baseband L/R 2",
+		[2] = "TV",
+	};
+	unsigned int n;
+	dprintk(1, "%s()\n", __func__);
+
+	n = i->index;
+	if (n >= 3)
+		return -EINVAL;
+
+	memset(i, 0, sizeof(*i));
+	i->index = n;
+	strscpy(i->name, iname[n], sizeof(i->name));
+	i->capability = V4L2_AUDCAP_STEREO;
+	return 0;
+
+}
+
+static int vidioc_enum_audinput(struct file *file, void *priv,
+				struct v4l2_audio *i)
+{
+	return cx23885_query_audinput(file, priv, i);
+}
+
+static int vidioc_g_audinput(struct file *file, void *priv,
+	struct v4l2_audio *i)
+{
+	struct cx23885_dev *dev = video_drvdata(file);
+
+	if ((CX23885_VMUX_TELEVISION == INPUT(dev->input)->type) ||
+		(CX23885_VMUX_CABLE == INPUT(dev->input)->type))
+		i->index = 2;
+	else
+		i->index = dev->audinput;
+	dprintk(1, "%s(input=%d)\n", __func__, i->index);
+
+	return cx23885_query_audinput(file, priv, i);
+}
+
+static int vidioc_s_audinput(struct file *file, void *priv,
+	const struct v4l2_audio *i)
+{
+	struct cx23885_dev *dev = video_drvdata(file);
+
+	if ((CX23885_VMUX_TELEVISION == INPUT(dev->input)->type) ||
+		(CX23885_VMUX_CABLE == INPUT(dev->input)->type)) {
+		return i->index != 2 ? -EINVAL : 0;
+	}
+	if (i->index > 1)
+		return -EINVAL;
+
+	dprintk(1, "%s(%d)\n", __func__, i->index);
+
+	dev->audinput = i->index;
+
+	/* Skip the audio defaults from the cards struct, caller wants
+	 * directly touch the audio mux hardware. */
+	cx23885_flatiron_mux(dev, dev->audinput + 1);
+	return 0;
+}
+
+static int vidioc_g_tuner(struct file *file, void *priv,
+				struct v4l2_tuner *t)
+{
+	struct cx23885_dev *dev = video_drvdata(file);
+
+	switch (dev->board) { /* i2c device tuners */
+	case CX23885_BOARD_HAUPPAUGE_HVR1265_K4:
+	case CX23885_BOARD_HAUPPAUGE_HVR5525:
+	case CX23885_BOARD_HAUPPAUGE_QUADHD_DVB:
+	case CX23885_BOARD_HAUPPAUGE_QUADHD_ATSC:
+		break;
+	default:
+		if (dev->tuner_type == TUNER_ABSENT)
+			return -EINVAL;
+		break;
+	}
+	if (0 != t->index)
+		return -EINVAL;
+
+	strscpy(t->name, "Television", sizeof(t->name));
+
+	call_all(dev, tuner, g_tuner, t);
+	return 0;
+}
+
+static int vidioc_s_tuner(struct file *file, void *priv,
+				const struct v4l2_tuner *t)
+{
+	struct cx23885_dev *dev = video_drvdata(file);
+
+	switch (dev->board) { /* i2c device tuners */
+	case CX23885_BOARD_HAUPPAUGE_HVR1265_K4:
+	case CX23885_BOARD_HAUPPAUGE_HVR5525:
+	case CX23885_BOARD_HAUPPAUGE_QUADHD_DVB:
+	case CX23885_BOARD_HAUPPAUGE_QUADHD_ATSC:
+		break;
+	default:
+		if (dev->tuner_type == TUNER_ABSENT)
+			return -EINVAL;
+		break;
+	}
+	if (0 != t->index)
+		return -EINVAL;
+	/* Update the A/V core */
+	call_all(dev, tuner, s_tuner, t);
+
+	return 0;
+}
+
+static int vidioc_g_frequency(struct file *file, void *priv,
+				struct v4l2_frequency *f)
+{
+	struct cx23885_dev *dev = video_drvdata(file);
+
+	switch (dev->board) { /* i2c device tuners */
+	case CX23885_BOARD_HAUPPAUGE_HVR1265_K4:
+	case CX23885_BOARD_HAUPPAUGE_HVR5525:
+	case CX23885_BOARD_HAUPPAUGE_QUADHD_DVB:
+	case CX23885_BOARD_HAUPPAUGE_QUADHD_ATSC:
+		break;
+	default:
+		if (dev->tuner_type == TUNER_ABSENT)
+			return -EINVAL;
+		break;
+	}
+	f->type = V4L2_TUNER_ANALOG_TV;
+	f->frequency = dev->freq;
+
+	call_all(dev, tuner, g_frequency, f);
+
+	return 0;
+}
+
+static int cx23885_set_freq(struct cx23885_dev *dev, const struct v4l2_frequency *f)
+{
+	struct v4l2_ctrl *mute;
+	int old_mute_val = 1;
+
+	switch (dev->board) { /* i2c device tuners */
+	case CX23885_BOARD_HAUPPAUGE_HVR1265_K4:
+	case CX23885_BOARD_HAUPPAUGE_HVR5525:
+	case CX23885_BOARD_HAUPPAUGE_QUADHD_DVB:
+	case CX23885_BOARD_HAUPPAUGE_QUADHD_ATSC:
+		break;
+	default:
+		if (dev->tuner_type == TUNER_ABSENT)
+			return -EINVAL;
+		brea

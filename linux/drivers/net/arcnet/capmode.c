@@ -1,141 +1,268 @@
-cmd_drivers/media/i2c/tvp5150.o := gcc -Wp,-MMD,drivers/media/i2c/.tvp5150.o.d -nostdinc -I./arch/x86/include -I./arch/x86/include/generated  -I./include -I./arch/x86/include/uapi -I./arch/x86/include/generated/uapi -I./include/uapi -I./include/generated/uapi -include ./include/linux/compiler-version.h -include ./include/linux/kconfig.h -include ./include/linux/compiler_types.h -D__KERNEL__ -fmacro-prefix-map=./= -Wall -Wundef -Werror=strict-prototypes -Wno-trigraphs -fno-strict-aliasing -fno-common -fshort-wchar -fno-PIE -Werror=implicit-function-declaration -Werror=implicit-int -Werror=return-type -Wno-format-security -std=gnu11 -mno-sse -mno-mmx -mno-sse2 -mno-3dnow -mno-avx -fcf-protection=none -m32 -msoft-float -mregparm=3 -freg-struct-return -fno-pic -mpreferred-stack-boundary=2 -march=i686 -mtune=pentium3 -mtune=generic -Wa,-mtune=generic32 -ffreestanding -mstack-protector-guard-reg=fs -mstack-protector-guard-symbol=__stack_chk_guard -Wno-sign-compare -fno-asynchronous-unwind-tables -mindirect-branch=thunk-extern -mindirect-branch-register -fno-jump-tables -fno-delete-null-pointer-checks -Wno-frame-address -Wno-format-truncation -Wno-format-overflow -Wno-address-of-packed-member -O2 -fno-allow-store-data-races -fstack-protector-strong -Wimplicit-fallthrough=5 -Wno-main -Wno-unused-but-set-variable -Wno-unused-const-variable -fno-stack-clash-protection -pg -mrecord-mcount -mfentry -DCC_USING_FENTRY -Wdeclaration-after-statement -Wvla -Wno-pointer-sign -Wcast-function-type -Wno-stringop-truncation -Wno-stringop-overflow -Wno-restrict -Wno-maybe-uninitialized -Wno-alloc-size-larger-than -fno-strict-overflow -fno-stack-check -fconserve-stack -Werror=date-time -Werror=incompatible-pointer-types -Werror=designated-init -Wno-packed-not-aligned  -DMODULE  -DKBUILD_BASENAME='"tvp5150"' -DKBUILD_MODNAME='"tvp5150"' -D__KBUILD_MODNAME=kmod_tvp5150 -c -o drivers/media/i2c/tvp5150.o drivers/media/i2c/tvp5150.c 
+/*
+ * Linux ARCnet driver - "cap mode" packet encapsulation.
+ * It adds sequence numbers to packets for communicating between a user space
+ * application and the driver. After a transmit it sends a packet with protocol
+ * byte 0 back up to the userspace containing the sequence number of the packet
+ * plus the transmit-status on the ArcNet.
+ *
+ * Written 2002-4 by Esben Nielsen, Vestas Wind Systems A/S
+ * Derived from arc-rawmode.c by Avery Pennarun.
+ * arc-rawmode was in turned based on skeleton.c, see below.
+ *
+ * **********************
+ *
+ * The original copyright of skeleton.c was as follows:
+ *
+ * skeleton.c Written 1993 by Donald Becker.
+ * Copyright 1993 United States Government as represented by the
+ * Director, National Security Agency.  This software may only be used
+ * and distributed according to the terms of the GNU General Public License as
+ * modified by SRC, incorporated herein by reference.
+ *
+ * **********************
+ *
+ * For more details, see drivers/net/arcnet.c
+ *
+ * **********************
+ */
 
-source_drivers/media/i2c/tvp5150.o := drivers/media/i2c/tvp5150.c
+#define pr_fmt(fmt) "arcnet:" KBUILD_MODNAME ": " fmt
 
-deps_drivers/media/i2c/tvp5150.o := \
-    $(wildcard include/config/VIDEO_V4L2_SUBDEV_API) \
-    $(wildcard include/config/MEDIA_CONTROLLER) \
-    $(wildcard include/config/VIDEO_ADV_DEBUG) \
-    $(wildcard include/config/OF) \
-  include/linux/compiler-version.h \
-    $(wildcard include/config/CC_VERSION_TEXT) \
-  include/linux/kconfig.h \
-    $(wildcard include/config/CPU_BIG_ENDIAN) \
-    $(wildcard include/config/BOOGER) \
-    $(wildcard include/config/FOO) \
-  include/linux/compiler_types.h \
-    $(wildcard include/config/DEBUG_INFO_BTF) \
-    $(wildcard include/config/PAHOLE_HAS_BTF_TAG) \
-    $(wildcard include/config/HAVE_ARCH_COMPILER_H) \
-    $(wildcard include/config/CC_HAS_ASM_INLINE) \
-  include/linux/compiler_attributes.h \
-  include/linux/compiler-gcc.h \
-    $(wildcard include/config/RETPOLINE) \
-    $(wildcard include/config/ARCH_USE_BUILTIN_BSWAP) \
-    $(wildcard include/config/SHADOW_CALL_STACK) \
-    $(wildcard include/config/KCOV) \
-  include/dt-bindings/media/tvp5150.h \
-  include/linux/i2c.h \
-    $(wildcard include/config/I2C) \
-    $(wildcard include/config/I2C_SLAVE) \
-    $(wildcard include/config/I2C_BOARDINFO) \
-    $(wildcard include/config/I2C_MUX) \
-    $(wildcard include/config/ACPI) \
-  include/linux/acpi.h \
-    $(wildcard include/config/ACPI_DEBUGGER) \
-    $(wildcard include/config/ACPI_TABLE_LIB) \
-    $(wildcard include/config/X86) \
-    $(wildcard include/config/IA64) \
-    $(wildcard include/config/LOONGARCH) \
-    $(wildcard include/config/ARM64) \
-    $(wildcard include/config/ACPI_PROCESSOR_CSTATE) \
-    $(wildcard include/config/ACPI_HOTPLUG_CPU) \
-    $(wildcard include/config/ACPI_HOTPLUG_IOAPIC) \
-    $(wildcard include/config/X86_IO_APIC) \
-    $(wildcard include/config/PCI) \
-    $(wildcard include/config/ACPI_WMI) \
-    $(wildcard include/config/ACPI_NUMA) \
-    $(wildcard include/config/HIBERNATION) \
-    $(wildcard include/config/PM_SLEEP) \
-    $(wildcard include/config/ACPI_HOTPLUG_MEMORY) \
-    $(wildcard include/config/ACPI_CONTAINER) \
-    $(wildcard include/config/ACPI_GTDT) \
-    $(wildcard include/config/PM) \
-    $(wildcard include/config/DYNAMIC_DEBUG) \
-    $(wildcard include/config/GPIOLIB) \
-    $(wildcard include/config/ACPI_TABLE_UPGRADE) \
-    $(wildcard include/config/ACPI_WATCHDOG) \
-    $(wildcard include/config/ACPI_SPCR_TABLE) \
-    $(wildcard include/config/ACPI_GENERIC_GSI) \
-    $(wildcard include/config/ACPI_LPIT) \
-    $(wildcard include/config/ACPI_PPTT) \
-    $(wildcard include/config/ACPI_PCC) \
-  include/linux/errno.h \
-  include/uapi/linux/errno.h \
-  arch/x86/include/generated/uapi/asm/errno.h \
-  include/uapi/asm-generic/errno.h \
-  include/uapi/asm-generic/errno-base.h \
-  include/linux/ioport.h \
-    $(wildcard include/config/MEMORY_HOTREMOVE) \
-    $(wildcard include/config/MEMORY_HOTPLUG) \
-  include/linux/bits.h \
-  include/linux/const.h \
-  include/vdso/const.h \
-  include/uapi/linux/const.h \
-  include/vdso/bits.h \
-  arch/x86/include/uapi/asm/bitsperlong.h \
-  include/asm-generic/bitsperlong.h \
-    $(wildcard include/config/64BIT) \
-  include/uapi/asm-generic/bitsperlong.h \
-  include/linux/build_bug.h \
-  include/linux/compiler.h \
-    $(wildcard include/config/TRACE_BRANCH_PROFILING) \
-    $(wildcard include/config/PROFILE_ALL_BRANCHES) \
-    $(wildcard include/config/STACK_VALIDATION) \
-    $(wildcard include/config/CFI_CLANG) \
-  include/linux/compiler_types.h \
-  arch/x86/include/generated/asm/rwonce.h \
-  include/asm-generic/rwonce.h \
-  include/linux/kasan-checks.h \
-    $(wildcard include/config/KASAN_GENERIC) \
-    $(wildcard include/config/KASAN_SW_TAGS) \
-  include/linux/types.h \
-    $(wildcard include/config/HAVE_UID16) \
-    $(wildcard include/config/UID16) \
-    $(wildcard include/config/ARCH_DMA_ADDR_T_64BIT) \
-    $(wildcard include/config/PHYS_ADDR_T_64BIT) \
-    $(wildcard include/config/ARCH_32BIT_USTAT_F_TINODE) \
-  include/uapi/linux/types.h \
-  arch/x86/include/generated/uapi/asm/types.h \
-  include/uapi/asm-generic/types.h \
-  include/asm-generic/int-ll64.h \
-  include/uapi/asm-generic/int-ll64.h \
-  include/uapi/linux/posix_types.h \
-  include/linux/stddef.h \
-  include/uapi/linux/stddef.h \
-  arch/x86/include/asm/posix_types.h \
-    $(wildcard include/config/X86_32) \
-  arch/x86/include/uapi/asm/posix_types_32.h \
-  include/uapi/asm-generic/posix_types.h \
-  include/linux/kcsan-checks.h \
-    $(wildcard include/config/KCSAN) \
-    $(wildcard include/config/KCSAN_WEAK_MEMORY) \
-    $(wildcard include/config/KCSAN_IGNORE_ATOMICS) \
-  include/linux/minmax.h \
-  include/linux/irqdomain.h \
-    $(wildcard include/config/IRQ_DOMAIN_HIERARCHY) \
-    $(wildcard include/config/GENERIC_IRQ_DEBUGFS) \
-    $(wildcard include/config/IRQ_DOMAIN) \
-    $(wildcard include/config/IRQ_DOMAIN_NOMAP) \
-  include/linux/irqhandler.h \
-  include/linux/of.h \
-    $(wildcard include/config/OF_DYNAMIC) \
-    $(wildcard include/config/SPARC) \
-    $(wildcard include/config/OF_PROMTREE) \
-    $(wildcard include/config/OF_KOBJ) \
-    $(wildcard include/config/NUMA) \
-    $(wildcard include/config/OF_NUMA) \
-    $(wildcard include/config/OF_OVERLAY) \
-  include/linux/bitops.h \
-  include/linux/typecheck.h \
-  include/uapi/linux/kernel.h \
-  include/uapi/linux/sysinfo.h \
-  arch/x86/include/asm/bitops.h \
-    $(wildcard include/config/X86_64) \
-    $(wildcard include/config/X86_CMOV) \
-  arch/x86/include/asm/alternative.h \
-    $(wildcard include/config/SMP) \
-  include/linux/stringify.h \
-  arch/x86/include/asm/asm.h \
-    $(wildcard include/config/KPROBES) \
-  arch/x86/include/asm/extable_fi
+#include <linux/module.h>
+#include <linux/gfp.h>
+#include <linux/init.h>
+#include <linux/if_arp.h>
+#include <net/arp.h>
+#include <linux/netdevice.h>
+#include <linux/skbuff.h>
+
+#include "arcdevice.h"
+
+/* packet receiver */
+static void rx(struct net_device *dev, int bufnum,
+	       struct archdr *pkthdr, int length)
+{
+	struct arcnet_local *lp = netdev_priv(dev);
+	struct sk_buff *skb;
+	struct archdr *pkt;
+	char *pktbuf, *pkthdrbuf;
+	int ofs;
+
+	arc_printk(D_DURING, dev, "it's a raw(cap) packet (length=%d)\n",
+		   length);
+
+	if (length >= MinTU)
+		ofs = 512 - length;
+	else
+		ofs = 256 - length;
+
+	skb = alloc_skb(length + ARC_HDR_SIZE + sizeof(int), GFP_ATOMIC);
+	if (!skb) {
+		dev->stats.rx_dropped++;
+		return;
+	}
+	skb_put(skb, length + ARC_HDR_SIZE + sizeof(int));
+	skb->dev = dev;
+	skb_reset_mac_header(skb);
+	pkt = (struct archdr *)skb_mac_header(skb);
+	skb_pull(skb, ARC_HDR_SIZE);
+
+	/* up to sizeof(pkt->soft) has already been copied from the card
+	 * squeeze in an int for the cap encapsulation
+	 * use these variables to be sure we count in bytes, not in
+	 * sizeof(struct archdr)
+	 */
+	pktbuf = (char *)pkt;
+	pkthdrbuf = (char *)pkthdr;
+	memcpy(pktbuf, pkthdrbuf, ARC_HDR_SIZE + sizeof(pkt->soft.cap.proto));
+	memcpy(pktbuf + ARC_HDR_SIZE + sizeof(pkt->soft.cap.proto) + sizeof(int),
+	       pkthdrbuf + ARC_HDR_SIZE + sizeof(pkt->soft.cap.proto),
+	       sizeof(struct archdr) - ARC_HDR_SIZE - sizeof(pkt->soft.cap.proto));
+
+	if (length > sizeof(pkt->soft))
+		lp->hw.copy_from_card(dev, bufnum, ofs + sizeof(pkt->soft),
+				      pkt->soft.raw + sizeof(pkt->soft)
+				      + sizeof(int),
+				      length - sizeof(pkt->soft));
+
+	if (BUGLVL(D_SKB))
+		arcnet_dump_skb(dev, skb, "rx");
+
+	skb->protocol = cpu_to_be16(ETH_P_ARCNET);
+	netif_rx(skb);
+}
+
+/* Create the ARCnet hard/soft headers for cap mode.
+ * There aren't any soft headers in cap mode - not even the protocol id.
+ */
+static int build_header(struct sk_buff *skb,
+			struct net_device *dev,
+			unsigned short type,
+			uint8_t daddr)
+{
+	int hdr_size = ARC_HDR_SIZE;
+	struct archdr *pkt = skb_push(skb, hdr_size);
+
+	arc_printk(D_PROTO, dev, "Preparing header for cap packet %x.\n",
+		   *((int *)&pkt->soft.cap.cookie[0]));
+
+	/* Set the source hardware address.
+	 *
+	 * This is pretty pointless for most purposes, but it can help in
+	 * debugging.  ARCnet does not allow us to change the source address in
+	 * the actual packet sent)
+	 */
+	pkt->hard.source = *dev->dev_addr;
+
+	/* see linux/net/ethernet/eth.c to see where I got the following */
+
+	if (dev->flags & (IFF_LOOPBACK | IFF_NOARP)) {
+		/* FIXME: fill in the last byte of the dest ipaddr here to
+		 * better comply with RFC1051 in "noarp" mode.
+		 */
+		pkt->hard.dest = 0;
+		return hdr_size;
+	}
+	/* otherwise, just fill it in and go! */
+	pkt->hard.dest = daddr;
+
+	return hdr_size;	/* success */
+}
+
+static int prepare_tx(struct net_device *dev, struct archdr *pkt, int length,
+		      int bufnum)
+{
+	struct arcnet_local *lp = netdev_priv(dev);
+	struct arc_hardware *hard = &pkt->hard;
+	int ofs;
+
+	/* hard header is not included in packet length */
+	length -= ARC_HDR_SIZE;
+	/* And neither is the cookie field */
+	length -= sizeof(int);
+
+	arc_printk(D_DURING, dev, "prepare_tx: txbufs=%d/%d/%d\n",
+		   lp->next_tx, lp->cur_tx, bufnum);
+
+	arc_printk(D_PROTO, dev, "Sending for cap packet %x.\n",
+		   *((int *)&pkt->soft.cap.cookie[0]));
+
+	if (length > XMTU) {
+		/* should never happen! other people already check for this. */
+		arc_printk(D_NORMAL, dev, "Bug!  prepare_tx with size %d (> %d)\n",
+			   length, XMTU);
+		length = XMTU;
+	}
+	if (length > MinTU) {
+		hard->offset[0] = 0;
+		hard->offset[1] = ofs = 512 - length;
+	} else if (length > MTU) {
+		hard->offset[0] = 0;
+		hard->offset[1] = ofs = 512 - length - 3;
+	} else {
+		hard->offset[0] = ofs = 256 - length;
+	}
+
+	arc_printk(D_DURING, dev, "prepare_tx: length=%d ofs=%d\n",
+		   length, ofs);
+
+	/* Copy the arcnet-header + the protocol byte down: */
+	lp->hw.copy_to_card(dev, bufnum, 0, hard, ARC_HDR_SIZE);
+	lp->hw.copy_to_card(dev, bufnum, ofs, &pkt->soft.cap.proto,
+			    sizeof(pkt->soft.cap.proto));
+
+	/* Skip the extra integer we have written into it as a cookie
+	 * but write the rest of the message:
+	 */
+	lp->hw.copy_to_card(dev, bufnum, ofs + 1,
+			    ((unsigned char *)&pkt->soft.cap.mes), length - 1);
+
+	lp->lastload_dest = hard->dest;
+
+	return 1;	/* done */
+}
+
+static int ack_tx(struct net_device *dev, int acked)
+{
+	struct arcnet_local *lp = netdev_priv(dev);
+	struct sk_buff *ackskb;
+	struct archdr *ackpkt;
+	int length = sizeof(struct arc_cap);
+
+	arc_printk(D_DURING, dev, "capmode: ack_tx: protocol: %x: result: %d\n",
+		   lp->outgoing.skb->protocol, acked);
+
+	if (BUGLVL(D_SKB))
+		arcnet_dump_skb(dev, lp->outgoing.skb, "ack_tx");
+
+	/* Now alloc a skb to send back up through the layers: */
+	ackskb = alloc_skb(length + ARC_HDR_SIZE, GFP_ATOMIC);
+	if (!ackskb)
+		goto free_outskb;
+
+	skb_put(ackskb, length + ARC_HDR_SIZE);
+	ackskb->dev = dev;
+
+	skb_reset_mac_header(ackskb);
+	ackpkt = (struct archdr *)skb_mac_header(ackskb);
+	/* skb_pull(ackskb, ARC_HDR_SIZE); */
+
+	skb_copy_from_linear_data(lp->outgoing.skb, ackpkt,
+				  ARC_HDR_SIZE + sizeof(struct arc_cap));
+	ackpkt->soft.cap.proto = 0; /* using protocol 0 for acknowledge */
+	ackpkt->soft.cap.mes.ack = acked;
+
+	arc_printk(D_PROTO, dev, "Acknowledge for cap packet %x.\n",
+		   *((int *)&ackpkt->soft.cap.cookie[0]));
+
+	ackskb->protocol = cpu_to_be16(ETH_P_ARCNET);
+
+	if (BUGLVL(D_SKB))
+		arcnet_dump_skb(dev, ackskb, "ack_tx_recv");
+	netif_rx(ackskb);
+
+free_outskb:
+	dev_kfree_skb_irq(lp->outgoing.skb);
+	lp->outgoing.proto = NULL;
+			/* We are always finished when in this protocol */
+
+	return 0;
+}
+
+static struct ArcProto capmode_proto = {
+	.suffix		= 'r',
+	.mtu		= XMTU,
+	.rx		= rx,
+	.build_header	= build_header,
+	.prepare_tx	= prepare_tx,
+	.ack_tx		= ack_tx
+};
+
+static int __init capmode_module_init(void)
+{
+	int count;
+
+	pr_info("cap mode (`c') encapsulation support loaded\n");
+
+	for (count = 1; count <= 8; count++)
+		if (arc_proto_map[count] == arc_proto_default)
+			arc_proto_map[count] = &capmode_proto;
+
+	/* for cap mode, we only set the bcast proto if there's no better one */
+	if (arc_bcast_proto == arc_proto_default)
+		arc_bcast_proto = &capmode_proto;
+
+	arc_proto_default = &capmode_proto;
+	arc_raw_proto = &capmode_proto;
+
+	return 0;
+}
+
+static void __exit capmode_module_exit(void)
+{
+	arcnet_unregister_proto(&capmode_proto);
+}
+module_init(capmode_module_init);
+module_exit(capmode_module_exit);
+
+MODULE_LICENSE("GPL");

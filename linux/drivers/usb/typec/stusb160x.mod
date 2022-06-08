@@ -1,1 +1,2 @@
-cmd_drivers/media/i2c/tw9910.o 
+= 1,
+	.agc = &xc3028_agc_config

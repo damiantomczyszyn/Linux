@@ -1,2 +1,2 @@
-ig/RCU_FANOUT) \
-    $(wildc
+reg_dma_ctl;
+	u32           

@@ -1,4 +1,1 @@
-\
-  include/asm-generic/iomap.h \
-  include/asm-generic/pci_iomap.h \
-    $(wildcard include/config/NO_GENERIC_PCI_IOPORT
+cmd_drivers/net/can/m_can/m_can.mod := { echo  drivers/net/can/m_can/m_can.o;  echo; } > drivers/net/can/m_can/m_can.mod

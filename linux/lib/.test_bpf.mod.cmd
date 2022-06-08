@@ -1,5 +1,2 @@
-// SPDX-License-Identifier: GPL-2.0-only
-/*
- * kernel/lockdep.c
- *
- * Runtim
+ when a subsequent affinity request
+ * occurs after the stopper bailed out d

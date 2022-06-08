@@ -1,1 +1,2 @@
-cmd_drivers/media/i2c/upd64083.o := gcc -Wp,-MMD,drivers/
+drivers/net/dsa/bcm_sf2.o drivers/net/dsa/bcm_sf2_cfp.o
+

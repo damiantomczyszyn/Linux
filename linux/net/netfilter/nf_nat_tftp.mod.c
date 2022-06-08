@@ -1,20 +1,17 @@
-p_next_lockchain(long i);
-unsigned long lock_chain_count(void);
-extern unsigned long nr_stack_trace_entries;
-
-extern unsigned int nr_hardirq_chains;
-extern unsigned int nr_softirq_chains;
-extern unsigned int nr_process_chains;
-extern unsigned int nr_free_chain_hlocks;
-extern unsigned int nr_lost_chain_hlocks;
-extern unsigned int nr_large_chain_blocks;
-
-extern unsigned int max_lockdep_depth;
-extern unsigned int max_bfs_queue_depth;
-extern unsigned long max_lock_class_idx;
-
-extern struct lock_class lock_classes[MAX_LOCKDEP_KEYS];
-extern unsigned long lock_classes_in_use[];
-
-#ifdef CONFIG_PROVE_LOCKING
-extern unsigned long lockdep_count_for
+MMCONFIG) \
+    $(wildcard include/config/ACPI_APEI_GHES) \
+    $(wildcard include/config/INTEL_TXT) \
+  arch/x86/include/generated/asm/kmap_size.h \
+  include/asm-generic/kmap_size.h \
+    $(wildcard include/config/DEBUG_KMAP_LOCAL) \
+  include/asm-generic/fixmap.h \
+  arch/x86/include/asm/irq_vectors.h \
+    $(wildcard include/config/HAVE_KVM) \
+    $(wildcard include/config/HYPERV) \
+    $(wildcard include/config/PCI_MSI) \
+  arch/x86/include/asm/cpu_entry_area.h \
+  arch/x86/include/asm/intel_ds.h \
+  arch/x86/include/asm/pgtable_areas.h \
+  arch/x86/include/asm/pgtable_32_areas.h \
+  include/uapi/linux/elf.h \
+  include/uapi/linux/e

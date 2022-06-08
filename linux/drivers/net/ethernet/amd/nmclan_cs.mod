@@ -1,2 +1,3 @@
-nux/ktime.h \
-  include/linux/time.h \
+ (0x9d << 24); /* 100kHz */
+
+	/* Exter

@@ -1,1059 +1,1919 @@
--3level_types.h \
-  include/asm-generic/pgtable-nop4d.h \
-  include/asm-generic/pgtable-nopud.h \
-  arch/x86/include/asm/nospec-branch.h \
-  include/linux/static_key.h \
-  include/linux/jump_label.h \
-    $(wildcard include/config/HAVE_ARCH_JUMP_LABEL_RELATIVE) \
-  arch/x86/include/asm/jump_label.h \
-  include/linux/objtool.h \
-    $(wildcard include/config/FRAME_POINTER) \
-  arch/x86/include/asm/msr-index.h \
-  arch/x86/include/asm/unwind_hints.h \
-  arch/x86/include/asm/orc_types.h \
-  arch/x86/include/asm/GEN-for-each-reg.h \
-  arch/x86/include/asm/spinlock_types.h \
-  include/asm-generic/qspinlock_types.h \
-    $(wildcard include/config/NR_CPUS) \
-  include/asm-generic/qrwlock_types.h \
-  arch/x86/include/asm/proto.h \
-  arch/x86/include/uapi/asm/ldt.h \
-  arch/x86/include/uapi/asm/sigcontext.h \
-  arch/x86/include/asm/current.h \
-  arch/x86/include/asm/percpu.h \
-    $(wildcard include/config/X86_64_SMP) \
-  include/linux/kernel.h \
-    $(wildcard include/config/PREEMPT_VOLUNTARY_BUILD) \
-    $(wildcard include/config/PREEMPT_DYNAMIC) \
-    $(wildcard include/config/HAVE_PREEMPT_DYNAMIC_CALL) \
-    $(wildcard include/config/HAVE_PREEMPT_DYNAMIC_KEY) \
-    $(wildcard include/config/PREEMPT_) \
-    $(wildcard include/config/DEBUG_ATOMIC_SLEEP) \
-    $(wildcard include/config/MMU) \
-    $(wildcard include/config/PROVE_LOCKING) \
-  include/linux/stdarg.h \
-  include/linux/align.h \
-  include/linux/limits.h \
-  include/uapi/linux/limits.h \
-  include/vdso/limits.h \
-  include/linux/kstrtox.h \
-  include/linux/minmax.h \
-  include/linux/panic.h \
-    $(wildcard include/config/PANIC_TIMEOUT) \
-  include/linux/printk.h \
-    $(wildcard include/config/MESSAGE_LOGLEVEL_DEFAULT) \
-    $(wildcard include/config/CONSOLE_LOGLEVEL_DEFAULT) \
-    $(wildcard include/config/CONSOLE_LOGLEVEL_QUIET) \
-    $(wildcard include/config/EARLY_PRINTK) \
-    $(wildcard include/config/PRINTK) \
-    $(wildcard include/config/DYNAMIC_DEBUG) \
-    $(wildcard include/config/DYNAMIC_DEBUG_CORE) \
-  include/linux/kern_levels.h \
-  include/linux/ratelimit_types.h \
-  include/linux/spinlock_types_raw.h \
-    $(wildcard include/config/DEBUG_SPINLOCK) \
-    $(wildcard include/config/DEBUG_LOCK_ALLOC) \
-  include/linux/lockdep_types.h \
-    $(wildcard include/config/PROVE_RAW_LOCK_NESTING) \
-    $(wildcard include/config/LOCKDEP) \
-    $(wildcard include/config/LOCK_STAT) \
-  include/linux/once_lite.h \
-  include/linux/static_call_types.h \
-    $(wildcard include/config/HAVE_STATIC_CALL) \
-  include/linux/instruction_pointer.h \
-  include/asm-generic/percpu.h \
-    $(wildcard include/config/DEBUG_PREEMPT) \
-    $(wildcard include/config/HAVE_SETUP_PER_CPU_AREA) \
-  include/linux/threads.h \
-    $(wildcard include/config/BASE_SMALL) \
-  include/linux/percpu-defs.h \
-    $(wildcard include/config/DEBUG_FORCE_WEAK_PER_CPU) \
-  arch/x86/include/asm/page.h \
-  arch/x86/include/asm/page_32.h \
-    $(wildcard include/config/DEBUG_VIRTUAL) \
-    $(wildcard include/config/FLATMEM) \
-  include/linux/string.h \
-    $(wildcard include/config/BINARY_PRINTF) \
-    $(wildcard include/config/FORTIFY_SOURCE) \
-  include/linux/errno.h \
-  include/uapi/linux/errno.h \
-  include/uapi/linux/string.h \
-  arch/x86/include/asm/string.h \
-  arch/x86/include/asm/string_32.h \
-  include/linux/fortify-string.h \
-  include/linux/range.h \
-  include/asm-generic/memory_model.h \
-    $(wildcard include/config/SPARSEMEM_VMEMMAP) \
-    $(wildcard include/config/SPARSEMEM) \
-  include/linux/pfn.h \
-  include/asm-generic/getorder.h \
-  arch/x86/include/asm/msr.h \
-  arch/x86/include/asm/msr-index.h \
-  arch/x86/include/asm/cpumask.h \
-  include/linux/cpumask.h \
-    $(wildcard include/config/CPUMASK_OFFSTACK) \
-    $(wildcard include/config/HOTPLUG_CPU) \
-    $(wildcard include/config/DEBUG_PER_CPU_MAPS) \
-  include/linux/bitmap.h \
-  include/linux/find.h \
-  include/linux/atomic.h \
-  arch/x86/include/asm/atomic.h \
-  arch/x86/include/asm/cmpxchg.h \
-  arch/x86/include/asm/cmpxchg_32.h \
-  arch/x86/include/asm/atomic64_32.h \
-  include/linux/atomic/atomic-arch-fallback.h \
-    $(wildcard include/config/GENERIC_ATOMIC64) \
-  include/linux/atomic/atomic-long.h \
-  include/linux/atomic/atomic-instrumented.h \
-  include/linux/bug.h \
-    $(wildcard include/config/BUG_ON_DATA_CORRUPTION) \
-  arch/x86/include/asm/bug.h \
-    $(wildcard include/config/DEBUG_BUGVERBOSE) \
-  include/linux/instrumentation.h \
-    $(wildcard include/config/DEBUG_ENTRY) \
-  include/asm-generic/bug.h \
-    $(wildcard include/config/BUG) \
-    $(wildcard include/config/GENERIC_BUG_RELATIVE_POINTERS) \
-  arch/x86/include/uapi/asm/msr.h \
-  include/linux/tracepoint-defs.h \
-  arch/x86/include/asm/special_insns.h \
-  include/linux/irqflags.h \
-    $(wildcard include/config/TRACE_IRQFLAGS) \
-    $(wildcard include/config/PREEMPT_RT) \
-    $(wildcard include/config/IRQSOFF_TRACER) \
-    $(wildcard include/config/PREEMPT_TRACER) \
-    $(wildcard include/config/DEBUG_IRQFLAGS) \
-    $(wildcard include/config/TRACE_IRQFLAGS_SUPPORT) \
-  arch/x86/include/asm/irqflags.h \
-  arch/x86/include/asm/fpu/types.h \
-  arch/x86/include/asm/vmxfeatures.h \
-  arch/x86/include/asm/vdso/processor.h \
-  include/linux/personality.h \
-  include/uapi/linux/personality.h \
-  arch/x86/include/asm/tsc.h \
-  arch/x86/include/asm/cpufeature.h \
-    $(wildcard include/config/X86_FEATURE_NAMES) \
-  include/vdso/time32.h \
-  include/vdso/time.h \
-  include/linux/uidgid.h \
-    $(wildcard include/config/MULTIUSER) \
-    $(wildcard include/config/USER_NS) \
-  include/linux/highuid.h \
-  include/linux/buildid.h \
-    $(wildcard include/config/CRASH_CORE) \
-  include/linux/mm_types.h \
-    $(wildcard include/config/HAVE_ALIGNED_STRUCT_PAGE) \
-    $(wildcard include/config/MEMCG) \
-    $(wildcard include/config/USERFAULTFD) \
-    $(wildcard include/config/SWAP) \
-    $(wildcard include/config/NUMA) \
-    $(wildcard include/config/HAVE_ARCH_COMPAT_MMAP_BASES) \
-    $(wildcard include/config/MEMBARRIER) \
-    $(wildcard include/config/AIO) \
-    $(wildcard include/config/MMU_NOTIFIER) \
-    $(wildcard include/config/TRANSPARENT_HUGEPAGE) \
-    $(wildcard include/config/NUMA_BALANCING) \
-    $(wildcard include/config/ARCH_WANT_BATCHED_UNMAP_TLB_FLUSH) \
-    $(wildcard include/config/HUGETLB_PAGE) \
-    $(wildcard include/config/IOMMU_SVA) \
-  include/linux/mm_types_task.h \
-    $(wildcard include/config/SPLIT_PTLOCK_CPUS) \
-    $(wildcard include/config/ARCH_ENABLE_SPLIT_PMD_PTLOCK) \
-  arch/x86/include/asm/tlbbatch.h \
-  include/linux/auxvec.h \
-  include/uapi/linux/auxvec.h \
-  arch/x86/include/uapi/asm/auxvec.h \
-  include/linux/kref.h \
-  include/linux/spinlock.h \
-    $(wildcard include/config/PREEMPTION) \
-  include/linux/preempt.h \
-    $(wildcard include/config/PREEMPT_COUNT) \
-    $(wildcard include/config/TRACE_PREEMPT_TOGGLE) \
-    $(wildcard include/config/PREEMPT_NOTIFIERS) \
-  arch/x86/include/asm/preempt.h \
-  include/linux/thread_info.h \
-    $(wildcard include/config/THREAD_INFO_IN_TASK) \
-    $(wildcard include/config/GENERIC_ENTRY) \
-    $(wildcard include/config/HAVE_ARCH_WITHIN_STACK_FRAMES) \
-    $(wildcard include/config/HARDENED_USERCOPY) \
-  include/linux/restart_block.h \
-  arch/x86/include/asm/thread_info.h \
-    $(wildcard include/config/COMPAT) \
-  include/linux/bottom_half.h \
-  include/linux/lockdep.h \
-    $(wildcard include/config/DEBUG_LOCKING_API_SELFTESTS) \
-  include/linux/smp.h \
-    $(wildcard include/config/UP_LATE_INIT) \
-  include/linux/smp_types.h \
-  include/linux/llist.h \
-    $(wildcard include/config/ARCH_HAVE_NMI_SAFE_CMPXCHG) \
-  arch/x86/include/asm/smp.h \
-    $(wildcard include/config/X86_LOCAL_APIC) \
-    $(wildcard include/config/DEBUG_NMI_SELFTEST) \
-  arch/x86/include/generated/asm/mmiowb.h \
-  include/asm-generic/mmiowb.h \
-    $(wildcard include/config/MMIOWB) \
-  include/linux/spinlock_types.h \
-  include/linux/rwlock_types.h \
-  arch/x86/include/asm/spinlock.h \
-  arch/x86/include/asm/paravirt.h \
-    $(wildcard include/config/PARAVIRT_SPINLOCKS) \
-  arch/x86/include/asm/frame.h \
-  arch/x86/include/asm/qspinlock.h \
-  include/asm-generic/qspinlock.h \
-  arch/x86/include/asm/qrwlock.h \
-  include/asm-generic/qrwlock.h \
-  include/linux/rwlock.h \
-    $(wildcard include/config/PREEMPT) \
-  include/linux/spinlock_api_smp.h \
-    $(wildcard include/config/INLINE_SPIN_LOCK) \
-    $(wildcard include/config/INLINE_SPIN_LOCK_BH) \
-    $(wildcard include/config/INLINE_SPIN_LOCK_IRQ) \
-    $(wildcard include/config/INLINE_SPIN_LOCK_IRQSAVE) \
-    $(wildcard include/config/INLINE_SPIN_TRYLOCK) \
-    $(wildcard include/config/INLINE_SPIN_TRYLOCK_BH) \
-    $(wildcard include/config/UNINLINE_SPIN_UNLOCK) \
-    $(wildcard include/config/INLINE_SPIN_UNLOCK_BH) \
-    $(wildcard include/config/INLINE_SPIN_UNLOCK_IRQ) \
-    $(wildcard include/config/INLINE_SPIN_UNLOCK_IRQRESTORE) \
-    $(wildcard include/config/GENERIC_LOCKBREAK) \
-  include/linux/rwlock_api_smp.h \
-    $(wildcard include/config/INLINE_READ_LOCK) \
-    $(wildcard include/config/INLINE_WRITE_LOCK) \
-    $(wildcard include/config/INLINE_READ_LOCK_BH) \
-    $(wildcard include/config/INLINE_WRITE_LOCK_BH) \
-    $(wildcard include/config/INLINE_READ_LOCK_IRQ) \
-    $(wildcard include/config/INLINE_WRITE_LOCK_IRQ) \
-    $(wildcard include/config/INLINE_READ_LOCK_IRQSAVE) \
-    $(wildcard include/config/INLINE_WRITE_LOCK_IRQSAVE) \
-    $(wildcard include/config/INLINE_READ_TRYLOCK) \
-    $(wildcard include/config/INLINE_WRITE_TRYLOCK) \
-    $(wildcard include/config/INLINE_READ_UNLOCK) \
-    $(wildcard include/config/INLINE_WRITE_UNLOCK) \
-    $(wildcard include/config/INLINE_READ_UNLOCK_BH) \
-    $(wildcard include/config/INLINE_WRITE_UNLOCK_BH) \
-    $(wildcard include/config/INLINE_READ_UNLOCK_IRQ) \
-    $(wildcard include/config/INLINE_WRITE_UNLOCK_IRQ) \
-    $(wildcard include/config/INLINE_READ_UNLOCK_IRQRESTORE) \
-    $(wildcard include/config/INLINE_WRITE_UNLOCK_IRQRESTORE) \
-  include/linux/refcount.h \
-  include/linux/rbtree.h \
-  include/linux/rbtree_types.h \
-  include/linux/rcupdate.h \
-    $(wildcard include/config/PREEMPT_RCU) \
-    $(wildcard include/config/TINY_RCU) \
-    $(wildcard include/config/RCU_STRICT_GRACE_PERIOD) \
-    $(wildcard include/config/TASKS_RCU_GENERIC) \
-    $(wildcard include/config/RCU_STALL_COMMON) \
-    $(wildcard include/config/NO_HZ_FULL) \
-    $(wildcard include/config/RCU_NOCB_CPU) \
-    $(wildcard include/config/TASKS_RCU) \
-    $(wildcard include/config/TASKS_TRACE_RCU) \
-    $(wildcard include/config/TASKS_RUDE_RCU) \
-    $(wildcard include/config/TREE_RCU) \
-    $(wildcard include/config/DEBUG_OBJECTS_RCU_HEAD) \
-    $(wildcard include/config/PROVE_RCU) \
-    $(wildcard include/config/ARCH_WEAK_RELEASE_ACQUIRE) \
-  include/linux/rcutree.h \
-  include/linux/rwsem.h \
-    $(wildcard include/config/RWSEM_SPIN_ON_OWNER) \
-    $(wildcard include/config/DEBUG_RWSEMS) \
-  include/linux/osq_lock.h \
-  include/linux/completion.h \
-  include/linux/swait.h \
-  include/linux/wait.h \
-  include/uapi/linux/wait.h \
-  include/linux/uprobes.h \
-    $(wildcard include/config/UPROBES) \
-  arch/x86/include/asm/uprobes.h \
-  include/linux/notifier.h \
-  include/linux/mutex.h \
-    $(wildcard include/config/MUTEX_SPIN_ON_OWNER) \
-    $(wildcard include/config/DEBUG_MUTEXES) \
-  include/linux/debug_locks.h \
-  include/linux/srcu.h \
-    $(wildcard include/config/TINY_SRCU) \
-    $(wildcard include/config/SRCU) \
-  include/linux/workqueue.h \
-    $(wildcard include/config/DEBUG_OBJECTS_WORK) \
-    $(wildcard include/config/FREEZER) \
-    $(wildcard include/config/WQ_WATCHDOG) \
-  include/linux/timer.h \
-    $(wildcard include/config/DEBUG_OBJECTS_TIMERS) \
-    $(wildcard include/config/NO_HZ_COMMON) \
-  include/linux/ktime.h \
-  include/linux/jiffies.h \
-  include/vdso/jiffies.h \
-  include/generated/timeconst.h \
-  include/vdso/ktime.h \
-  include/linux/timekeeping.h \
-    $(wildcard include/config/GENERIC_CMOS_UPDATE) \
-  include/linux/clocksource_ids.h \
-  include/linux/debugobjects.h \
-    $(wildcard include/config/DEBUG_OBJECTS) \
-    $(wildcard include/config/DEBUG_OBJECTS_FREE) \
-  include/linux/rcu_segcblist.h \
-  include/linux/srcutree.h \
-  include/linux/rcu_node_tree.h \
-    $(wildcard include/config/RCU_FANOUT) \
-    $(wildcard include/config/RCU_FANOUT_LEAF) \
-  include/linux/page-flags-layout.h \
-    $(wildcard include/config/KASAN_HW_TAGS) \
-  include/linux/numa.h \
-    $(wildcard include/config/NODES_SHIFT) \
-    $(wildcard include/config/NUMA_KEEP_MEMINFO) \
-    $(wildcard include/config/HAVE_ARCH_NODE_DEV_GROUP) \
-  arch/x86/include/asm/sparsemem.h \
-  include/generated/bounds.h \
-  include/linux/seqlock.h \
-  include/linux/ww_mutex.h \
-    $(wildcard include/config/DEBUG_RT_MUTEXES) \
-    $(wildcard include/config/DEBUG_WW_MUTEX_SLOWPATH) \
-  include/linux/rtmutex.h \
-  arch/x86/include/asm/mmu.h \
-    $(wildcard include/config/MODIFY_LDT_SYSCALL) \
-  include/linux/kmod.h \
-  include/linux/umh.h \
-  include/linux/gfp.h \
-    $(wildcard include/config/HIGHMEM) \
-    $(wildcard include/config/ZONE_DMA) \
-    $(wildcard include/config/ZONE_DMA32) \
-    $(wildcard include/config/ZONE_DEVICE) \
-    $(wildcard include/config/PM_SLEEP) \
-    $(wildcard include/config/CONTIG_ALLOC) \
-    $(wildcard include/config/CMA) \
-  include/linux/mmdebug.h \
-    $(wildcard include/config/DEBUG_VM) \
-    $(wildcard include/config/DEBUG_VM_PGFLAGS) \
-  include/linux/mmzone.h \
-    $(wildcard include/config/FORCE_MAX_ZONEORDER) \
-    $(wildcard include/config/MEMORY_ISOLATION) \
-    $(wildcard include/config/ZSMALLOC) \
-    $(wildcard include/config/MEMORY_HOTPLUG) \
-    $(wildcard include/config/COMPACTION) \
-    $(wildcard include/config/PAGE_EXTENSION) \
-    $(wildcard include/config/DEFERRED_STRUCT_PAGE_INIT) \
-    $(wildcard include/config/HAVE_MEMORYLESS_NODES) \
-    $(wildcard include/config/SPARSEMEM_EXTREME) \
-    $(wildcard include/config/HAVE_ARCH_PFN_VALID) \
-  include/linux/nodemask.h \
-  include/linux/pageblock-flags.h \
-    $(wildcard include/config/HUGETLB_PAGE_SIZE_VARIABLE) \
-  include/linux/page-flags.h \
-    $(wildcard include/config/ARCH_USES_PG_UNCACHED) \
-    $(wildcard include/config/MEMORY_FAILURE) \
-    $(wildcard include/config/PAGE_IDLE_FLAG) \
-    $(wildcard include/config/HUGETLB_PAGE_FREE_VMEMMAP) \
-    $(wildcard include/config/HUGETLB_PAGE_FREE_VMEMMAP_DEFAULT_ON) \
-    $(wildcard include/config/KSM) \
-  include/linux/local_lock.h \
-  include/linux/local_lock_internal.h \
-  include/linux/memory_hotplug.h \
-    $(wildcard include/config/HAVE_ARCH_NODEDATA_EXTENSION) \
-    $(wildcard include/config/ARCH_HAS_ADD_PAGES) \
-    $(wildcard include/config/MEMORY_HOTREMOVE) \
-  arch/x86/include/asm/mmzone.h \
-  arch/x86/include/asm/mmzone_32.h \
-  include/linux/topology.h \
-    $(wildcard include/config/USE_PERCPU_NUMA_NODE_ID) \
-    $(wildcard include/config/SCHED_SMT) \
-    $(wildcard include/config/SCHED_CLUSTER) \
-  include/linux/arch_topology.h \
-    $(wildcard include/config/ACPI_CPPC_LIB) \
-    $(wildcard include/config/GENERIC_ARCH_TOPOLOGY) \
-  include/linux/percpu.h \
-    $(wildcard include/config/NEED_PER_CPU_EMBED_FIRST_CHUNK) \
-    $(wildcard include/config/NEED_PER_CPU_PAGE_FIRST_CHUNK) \
-  arch/x86/include/asm/topology.h \
-    $(wildcard include/config/SCHED_MC_PRIO) \
-  arch/x86/include/asm/mpspec.h \
-    $(wildcard include/config/EISA) \
-    $(wildcard include/config/X86_MPPARSE) \
-  arch/x86/include/asm/mpspec_def.h \
-  arch/x86/include/asm/x86_init.h \
-  arch/x86/include/asm/apicdef.h \
-  include/asm-generic/topology.h \
-  include/linux/sysctl.h \
-    $(wildcard include/config/SYSCTL) \
-  include/uapi/linux/sysctl.h \
-  include/linux/elf.h \
-    $(wildcard include/config/ARCH_USE_GNU_PROPERTY) \
-    $(wildcard include/config/ARCH_HAVE_ELF_PROT) \
-  arch/x86/include/asm/elf.h \
-    $(wildcard include/config/X86_X32_ABI) \
-  arch/x86/include/asm/user.h \
-  arch/x86/include/asm/user_32.h \
-  arch/x86/include/asm/fsgsbase.h \
-  arch/x86/include/asm/vdso.h \
-  arch/x86/include/asm/desc.h \
-  arch/x86/include/asm/fixmap.h \
-    $(wildcard include/config/DEBUG_KMAP_LOCAL_FORCE_MAP) \
-    $(wildcard include/config/X86_VSYSCALL_EMULATION) \
-    $(wildcard include/config/PROVIDE_OHCI1394_DMA_INIT) \
-    $(wildcard include/config/X86_IO_APIC) \
-    $(wildcard include/config/KMAP_LOCAL) \
-    $(wildcard include/config/PCI_MMCONFIG) \
-    $(wildcard include/config/ACPI_APEI_GHES) \
-    $(wildcard include/config/INTEL_TXT) \
-  arch/x86/include/generated/asm/kmap_size.h \
-  include/asm-generic/kmap_size.h \
-    $(wildcard include/config/DEBUG_KMAP_LOCAL) \
-  include/asm-generic/fixmap.h \
-  arch/x86/include/asm/irq_vectors.h \
-    $(wildcard include/config/HAVE_KVM) \
-    $(wildcard include/config/HYPERV) \
-    $(wildcard include/config/PCI_MSI) \
-  arch/x86/include/asm/cpu_entry_area.h \
-  arch/x86/include/asm/intel_ds.h \
-  arch/x86/include/asm/pgtable_areas.h \
-  arch/x86/include/asm/pgtable_32_areas.h \
-  include/uapi/linux/elf.h \
-  include/uapi/linux/elf-em.h \
-  include/linux/kobject.h \
-    $(wildcard include/config/UEVENT_HELPER) \
-    $(wildcard include/config/DEBUG_KOBJECT_RELEASE) \
-  include/linux/sysfs.h \
-  include/linux/kernfs.h \
-    $(wildcard include/config/KERNFS) \
-  include/linux/idr.h \
-  include/linux/radix-tree.h \
-  include/linux/xarray.h \
-    $(wildcard include/config/XARRAY_MULTI) \
-  include/linux/kconfig.h \
-  include/linux/kobject_ns.h \
-  include/linux/moduleparam.h \
-    $(wildcard include/config/ALPHA) \
-    $(wildcard include/config/IA64) \
-    $(wildcard include/config/PPC64) \
-  include/linux/rbtree_latch.h \
-  include/linux/error-injection.h \
-  include/asm-generic/error-injection.h \
-  include/linux/cfi.h \
-    $(wildcard include/config/CFI_CLANG_SHADOW) \
-  arch/x86/include/asm/module.h \
-    $(wildcard include/config/UNWINDER_ORC) \
-  include/asm-generic/module.h \
-    $(wildcard include/config/HAVE_MOD_ARCH_SPECIFIC) \
-    $(wildcard include/config/MODULES_USE_ELF_REL) \
-    $(wildcard include/config/MODULES_USE_ELF_RELA) \
-  arch/x86/include/asm/orc_types.h \
-  include/linux/delay.h \
-  include/linux/sched.h \
-    $(wildcard include/config/VIRT_CPU_ACCOUNTING_NATIVE) \
-    $(wildcard include/config/SCHED_INFO) \
-    $(wildcard include/config/SCHEDSTATS) \
-    $(wildcard include/config/SCHED_CORE) \
-    $(wildcard include/config/FAIR_GROUP_SCHED) \
-    $(wildcard include/config/RT_GROUP_SCHED) \
-    $(wildcard include/config/RT_MUTEXES) \
-    $(wildcard include/config/UCLAMP_TASK) \
-    $(wildcard include/config/UCLAMP_BUCKETS_COUNT) \
-    $(wildcard include/config/CGROUP_SCHED) \
-    $(wildcard include/config/BLK_DEV_IO_TRACE) \
-    $(wildcard include/config/PSI) \
-    $(wildcard include/config/COMPAT_BRK) \
-    $(wildcard include/config/CGROUPS) \
-    $(wildcard include/config/BLK_CGROUP) \
-    $(wildcard include/config/PAGE_OWNER) \
-    $(wildcard include/config/EVENTFD) \
-    $(wildcard include/config/ARCH_HAS_SCALED_CPUTIME) \
-    $(wildcard include/config/VIRT_CPU_ACCOUNTING_GEN) \
-    $(wildcard include/config/POSIX_CPUTIMERS) \
-    $(wildcard include/config/POSIX_CPU_TIMERS_TASK_WORK) \
-    $(wildcard include/config/KEYS) \
-    $(wildcard include/config/SYSVIPC) \
-    $(wildcard include/config/DETECT_HUNG_TASK) \
-    $(wildcard include/config/IO_URING) \
-    $(wildcard include/config/AUDIT) \
-    $(wildcard include/config/AUDITSYSCALL) \
-    $(wildcard include/config/UBSAN) \
-    $(wildcard include/config/UBSAN_TRAP) \
-    $(wildcard include/config/TASK_XACCT) \
-    $(wildcard include/config/CPUSETS) \
-    $(wildcard include/config/X86_CPU_RESCTRL) \
-    $(wildcard include/config/FUTEX) \
-    $(wildcard include/config/PERF_EVENTS) \
-    $(wildcard include/config/RSEQ) \
-    $(wildcard include/config/TASK_DELAY_ACCT) \
-    $(wildcard include/config/FAULT_INJECTION) \
-    $(wildcard include/config/LATENCYTOP) \
-    $(wildcard include/config/KUNIT) \
-    $(wildcard include/config/FUNCTION_GRAPH_TRACER) \
-    $(wildcard include/config/BCACHE) \
-    $(wildcard include/config/VMAP_STACK) \
-    $(wildcard include/config/SECURITY) \
-    $(wildcard include/config/BPF_SYSCALL) \
-    $(wildcard include/config/GCC_PLUGIN_STACKLEAK) \
-    $(wildcard include/config/X86_MCE) \
-    $(wildcard include/config/KRETPROBES) \
-    $(wildcard include/config/RETHOOK) \
-    $(wildcard include/config/ARCH_HAS_PARANOID_L1D_FLUSH) \
-    $(wildcard include/config/ARCH_TASK_STRUCT_ON_STACK) \
-    $(wildcard include/config/DEBUG_RSEQ) \
-  include/uapi/linux/sched.h \
-  include/linux/pid.h \
-  include/linux/rculist.h \
-    $(wildcard include/config/PROVE_RCU_LIST) \
-  include/linux/sem.h \
-  include/uapi/linux/sem.h \
-  include/linux/ipc.h \
-  include/linux/rhashtable-types.h \
-  include/uapi/linux/ipc.h \
-  arch/x86/include/generated/uapi/asm/ipcbuf.h \
-  include/uapi/asm-generic/ipcbuf.h \
-  arch/x86/include/uapi/asm/sembuf.h \
-  include/linux/shm.h \
-  include/uapi/linux/shm.h \
-  include/uapi/asm-generic/hugetlb_encode.h \
-  arch/x86/include/uapi/asm/shmbuf.h \
-  include/uapi/asm-generic/shmbuf.h \
-  arch/x86/include/asm/shmparam.h \
-  include/linux/plist.h \
-    $(wildcard include/config/DEBUG_PLIST) \
-  include/linux/hrtimer.h \
-    $(wildcard include/config/HIGH_RES_TIMERS) \
-    $(wildcard include/config/TIME_LOW_RES) \
-    $(wildcard include/config/TIMERFD) \
-  include/linux/hrtimer_defs.h \
-  include/linux/timerqueue.h \
-  include/linux/seccomp.h \
-    $(wildcard include/config/SECCOMP) \
-    $(wildcard include/config/HAVE_ARCH_SECCOMP_FILTER) \
-    $(wildcard include/config/SECCOMP_FILTER) \
-    $(wildcard include/config/CHECKPOINT_RESTORE) \
-    $(wildcard include/config/SECCOMP_CACHE_DEBUG) \
-  include/uapi/linux/seccomp.h \
-  arch/x86/include/asm/seccomp.h \
-  arch/x86/include/asm/unistd.h \
-  arch/x86/include/uapi/asm/unistd.h \
-  arch/x86/include/generated/uapi/asm/unistd_32.h \
-  include/asm-generic/seccomp.h \
-  include/uapi/linux/unistd.h \
-  include/linux/resource.h \
-  include/uapi/linux/resource.h \
-  arch/x86/include/generated/uapi/asm/resource.h \
-  include/asm-generic/resource.h \
-  include/uapi/asm-generic/resource.h \
-  include/linux/latencytop.h \
-  include/linux/sched/prio.h \
-  include/linux/sched/types.h \
-  include/linux/signal_types.h \
-    $(wildcard include/config/OLD_SIGACTION) \
-  include/uapi/linux/signal.h \
-  arch/x86/include/asm/signal.h \
-  arch/x86/include/uapi/asm/signal.h \
-  include/uapi/asm-generic/signal-defs.h \
-  arch/x86/include/uapi/asm/siginfo.h \
-  include/uapi/asm-generic/siginfo.h \
-  include/linux/syscall_user_dispatch.h \
-  include/linux/task_io_accounting.h \
-    $(wildcard include/config/TASK_IO_ACCOUNTING) \
-  include/linux/posix-timers.h \
-  include/linux/alarmtimer.h \
-    $(wildcard include/config/RTC_CLASS) \
-  include/uapi/linux/rseq.h \
-  include/linux/kcsan.h \
-  arch/x86/include/asm/delay.h \
-  include/asm-generic/delay.h \
-  include/linux/slab.h \
-    $(wildcard include/config/DEBUG_SLAB) \
-    $(wildcard include/config/FAILSLAB) \
-    $(wildcard include/config/MEMCG_KMEM) \
-    $(wildcard include/config/KASAN) \
-    $(wildcard include/config/SLAB) \
-    $(wildcard include/config/SLUB) \
-    $(wildcard include/config/SLOB) \
-  include/linux/overflow.h \
-  include/linux/percpu-refcount.h \
-  include/linux/kasan.h \
-    $(wildcard include/config/KASAN_STACK) \
-    $(wildcard include/config/KASAN_VMALLOC) \
-    $(wildcard include/config/KASAN_INLINE) \
-  include/linux/kasan-enabled.h \
-  include/linux/uaccess.h \
-  include/linux/fault-inject-usercopy.h \
-    $(wildcard include/config/FAULT_INJECTION_USERCOPY) \
-  arch/x86/include/asm/uaccess.h \
-    $(wildcard include/config/CC_HAS_ASM_GOTO_OUTPUT) \
-    $(wildcard include/config/CC_HAS_ASM_GOTO_TIED_OUTPUT) \
-    $(wildcard include/config/ARCH_HAS_COPY_MC) \
-    $(wildcard include/config/X86_INTEL_USERCOPY) \
-  arch/x86/include/asm/smap.h \
-  arch/x86/include/asm/extable.h \
-    $(wildcard include/config/BPF_JIT) \
-  include/asm-generic/access_ok.h \
-    $(wildcard include/config/ALTERNATE_USER_ADDRESS_SPACE) \
-  arch/x86/include/asm/uaccess_32.h \
-  include/linux/i2c.h \
-    $(wildcard include/config/I2C) \
-    $(wildcard include/config/I2C_SLAVE) \
-    $(wildcard include/config/I2C_BOARDINFO) \
-    $(wildcard include/config/I2C_MUX) \
-    $(wildcard include/config/OF) \
-    $(wildcard include/config/ACPI) \
-  include/linux/acpi.h \
-    $(wildcard include/config/ACPI_DEBUGGER) \
-    $(wildcard include/config/ACPI_TABLE_LIB) \
-    $(wildcard include/config/LOONGARCH) \
-    $(wildcard include/config/ARM64) \
-    $(wildcard include/config/ACPI_PROCESSOR_CSTATE) \
-    $(wildcard include/config/ACPI_HOTPLUG_CPU) \
-    $(wildcard include/config/ACPI_HOTPLUG_IOAPIC) \
-    $(wildcard include/config/PCI) \
-    $(wildcard include/config/ACPI_WMI) \
-    $(wildcard include/config/ACPI_NUMA) \
-    $(wildcard include/config/HIBERNATION) \
-    $(wildcard include/config/ACPI_HOTPLUG_MEMORY) \
-    $(wildcard include/config/ACPI_CONTAINER) \
-    $(wildcard include/config/ACPI_GTDT) \
-    $(wildcard include/config/PM) \
-    $(wildcard include/config/GPIOLIB) \
-    $(wildcard include/config/ACPI_TABLE_UPGRADE) \
-    $(wildcard include/config/ACPI_WATCHDOG) \
-    $(wildcard include/config/ACPI_SPCR_TABLE) \
-    $(wildcard include/config/ACPI_GENERIC_GSI) \
-    $(wildcard include/config/ACPI_LPIT) \
-    $(wildcard include/config/ACPI_PPTT) \
-    $(wildcard include/config/ACPI_PCC) \
-  include/linux/ioport.h \
-  include/linux/irqdomain.h \
-    $(wildcard include/config/IRQ_DOMAIN_HIERARCHY) \
-    $(wildcard include/config/GENERIC_IRQ_DEBUGFS) \
-    $(wildcard include/config/IRQ_DOMAIN) \
-    $(wildcard include/config/IRQ_DOMAIN_NOMAP) \
-  include/linux/irqhandler.h \
-  include/linux/of.h \
-    $(wildcard include/config/OF_DYNAMIC) \
-    $(wildcard include/config/SPARC) \
-    $(wildcard include/config/OF_PROMTREE) \
-    $(wildcard include/config/OF_KOBJ) \
-    $(wildcard include/config/OF_NUMA) \
-    $(wildcard include/config/OF_OVERLAY) \
-  include/linux/mod_devicetable.h \
-  include/linux/uuid.h \
-  include/uapi/linux/uuid.h \
-  include/linux/property.h \
-  include/linux/fwnode.h \
-  include/linux/resource_ext.h \
-  include/linux/device.h \
-    $(wildcard include/config/GENERIC_MSI_IRQ_DOMAIN) \
-    $(wildcard include/config/GENERIC_MSI_IRQ) \
-    $(wildcard include/config/ENERGY_MODEL) \
-    $(wildcard include/config/PINCTRL) \
-    $(wildcard include/config/DMA_OPS) \
-    $(wildcard include/config/DMA_DECLARE_COHERENT) \
-    $(wildcard include/config/DMA_CMA) \
-    $(wildcard include/config/SWIOTLB) \
-    $(wildcard include/config/ARCH_HAS_SYNC_DMA_FOR_DEVICE) \
-    $(wildcard include/config/ARCH_HAS_SYNC_DMA_FOR_CPU) \
-    $(wildcard include/config/ARCH_HAS_SYNC_DMA_FOR_CPU_ALL) \
-    $(wildcard include/config/DMA_OPS_BYPASS) \
-    $(wildcard include/config/DEVTMPFS) \
-    $(wildcard include/config/SYSFS_DEPRECATED) \
-  include/linux/dev_printk.h \
-  include/linux/ratelimit.h \
-  include/linux/energy_model.h \
-  include/linux/sched/cpufreq.h \
-    $(wildcard include/config/CPU_FREQ) \
-  include/linux/sched/topology.h \
-    $(wildcard include/config/SCHED_DEBUG) \
-    $(wildcard include/config/SCHED_MC) \
-    $(wildcard include/config/CPU_FREQ_GOV_SCHEDUTIL) \
-  include/linux/sched/idle.h \
-  include/linux/sched/sd_flags.h \
-  include/linux/klist.h \
-  include/linux/pm.h \
-    $(wildcard include/config/VT_CONSOLE_SLEEP) \
-    $(wildcard include/config/PM_CLK) \
-    $(wildcard include/config/PM_GENERIC_DOMAINS) \
-  include/linux/device/bus.h \
-  include/linux/device/class.h \
-  include/linux/device/driver.h \
-  arch/x86/include/asm/device.h \
-  include/linux/pm_wakeup.h \
-  include/acpi/acpi.h \
-  include/acpi/platform/acenv.h \
-  include/acpi/platform/acgcc.h \
-  include/acpi/platform/aclinux.h \
-    $(wildcard include/config/ACPI_REDUCED_HARDWARE_ONLY) \
-    $(wildcard include/config/ACPI_DEBUG) \
-  include/linux/ctype.h \
-  arch/x86/include/asm/acenv.h \
-  include/acpi/acnames.h \
-  include/acpi/actypes.h \
-  include/acpi/acexcep.h \
-  include/acpi/actbl.h \
-  include/acpi/actbl1.h \
-  include/acpi/actbl2.h \
-  include/acpi/actbl3.h \
-  include/acpi/acrestyp.h \
-  include/acpi/platform/acenvex.h \
-  include/acpi/platform/aclinuxex.h \
-  include/acpi/platform/acgccex.h \
-  include/acpi/acoutput.h \
-  include/acpi/acpiosxf.h \
-  include/acpi/acpixf.h \
-  include/acpi/acconfig.h \
-  include/acpi/acbuffer.h \
-  include/linux/dynamic_debug.h \
-  include/acpi/acpi_bus.h \
-    $(wildcard include/config/X86_ANDROID_TABLETS) \
-    $(wildcard include/config/ACPI_SYSTEM_POWER_STATES_SUPPORT) \
-    $(wildcard include/config/ACPI_SLEEP) \
-  include/acpi/acpi_drivers.h \
-    $(wildcard include/config/ACPI_DOCK) \
-  include/acpi/acpi_numa.h \
-    $(wildcard include/config/ACPI_HMAT) \
-  include/acpi/acpi_io.h \
-  include/linux/io.h \
-    $(wildcard include/config/HAS_IOPORT_MAP) \
-  arch/x86/include/asm/io.h \
-    $(wildcard include/config/MTRR) \
-    $(wildcard include/config/X86_PAT) \
-  arch/x86/include/generated/asm/early_ioremap.h \
-  include/asm-generic/early_ioremap.h \
-    $(wildcard include/config/GENERIC_EARLY_IOREMAP) \
-  include/asm-generic/iomap.h \
-  include/asm-generic/pci_iomap.h \
-    $(wildcard include/config/NO_GENERIC_PCI_IOPORT_MAP) \
-    $(wildcard include/config/GENERIC_PCI_IOMAP) \
-  include/asm-generic/io.h \
-    $(wildcard include/config/GENERIC_IOMAP) \
-    $(wildcard include/config/GENERIC_IOREMAP) \
-    $(wildcard include/config/VIRT_TO_BUS) \
-    $(wildcard include/config/GENERIC_DEVMEM_IS_ALLOWED) \
-  include/linux/logic_pio.h \
-    $(wildcard include/config/INDIRECT_PIO) \
-  include/linux/vmalloc.h \
-    $(wildcard include/config/HAVE_ARCH_HUGE_VMALLOC) \
-  arch/x86/include/asm/vmalloc.h \
-    $(wildcard include/config/HAVE_ARCH_HUGE_VMAP) \
-  arch/x86/include/asm/acpi.h \
-    $(wildcard include/config/ACPI_APEI) \
-  include/acpi/pdc_intel.h \
-  arch/x86/include/asm/numa.h \
-    $(wildcard include/config/NUMA_EMU) \
-  arch/x86/include/asm/numa_32.h \
-  include/linux/regulator/consumer.h \
-    $(wildcard include/config/REGULATOR) \
-  include/linux/suspend.h \
-    $(wildcard include/config/VT) \
-    $(wildcard include/config/SUSPEND) \
-    $(wildcard include/config/HIBERNATION_SNAPSHOT_DEV) \
-    $(wildcard include/config/PM_SLEEP_DEBUG) \
-    $(wildcard include/config/PM_AUTOSLEEP) \
-  include/linux/swap.h \
-    $(wildcard include/config/DEVICE_PRIVATE) \
-    $(wildcard include/config/MIGRATION) \
-    $(wildcard include/config/FRONTSWAP) \
-    $(wildcard include/config/THP_SWAP) \
-    $(wildcard include/config/MEMCG_SWAP) \
-  include/linux/memcontrol.h \
-    $(wildcard include/config/CGROUP_WRITEBACK) \
-  include/linux/cgroup.h \
-    $(wildcard include/config/CGROUP_CPUACCT) \
-    $(wildcard include/config/SOCK_CGROUP_DATA) \
-    $(wildcard include/config/CGROUP_DATA) \
-    $(wildcard include/config/CGROUP_BPF) \
-  include/uapi/linux/cgroupstats.h \
-  include/uapi/linux/taskstats.h \
-  include/linux/fs.h \
-    $(wildcard include/config/READ_ONLY_THP_FOR_FS) \
-    $(wildcard include/config/FS_POSIX_ACL) \
-    $(wildcard include/config/IMA) \
-    $(wildcard include/config/FILE_LOCKING) \
-    $(wildcard include/config/FSNOTIFY) \
-    $(wildcard include/config/FS_ENCRYPTION) \
-    $(wildcard include/config/FS_VERITY) \
-    $(wildcard include/config/EPOLL) \
-    $(wildcard include/config/UNICODE) \
-    $(wildcard include/config/QUOTA) \
-    $(wildcard include/config/FS_DAX) \
-    $(wildcard include/config/BLOCK) \
-  include/linux/wait_bit.h \
-  include/linux/kdev_t.h \
-  include/uapi/linux/kdev_t.h \
-  include/linux/dcache.h \
-  include/linux/rculist_bl.h \
-  include/linux/list_bl.h \
-  include/linux/bit_spinlock.h \
-  include/linux/lockref.h \
-    $(wildcard include/config/ARCH_USE_CMPXCHG_LOCKREF) \
-  include/linux/stringhash.h \
-    $(wildcard include/config/DCACHE_WORD_ACCESS) \
-  include/linux/hash.h \
-    $(wildcard include/config/HAVE_ARCH_HASH) \
-  include/linux/path.h \
-  include/linux/list_lru.h \
-  include/linux/shrinker.h \
-  include/linux/capability.h \
-  include/uapi/linux/capability.h \
-  include/linux/semaphore.h \
-  include/linux/fcntl.h \
-    $(wildcard include/config/ARCH_32BIT_OFF_T) \
-  include/uapi/linux/fcntl.h \
-  arch/x86/include/generated/uapi/asm/fcntl.h \
-  include/uapi/asm-generic/fcntl.h \
-  include/uapi/linux/openat2.h \
-  include/linux/migrate_mode.h \
-  include/linux/percpu-rwsem.h \
-  include/linux/rcuwait.h \
-  include/linux/sched/signal.h \
-    $(wildcard include/config/SCHED_AUTOGROUP) \
-    $(wildcard include/config/BSD_PROCESS_ACCT) \
-    $(wildcard include/config/TASKSTATS) \
-    $(wildcard include/config/STACK_GROWSUP) \
-  include/linux/signal.h \
-    $(wildcard include/config/DYNAMIC_SIGFRAME) \
-  include/linux/sched/jobctl.h \
-  include/linux/sched/task.h \
-    $(wildcard include/config/HAVE_EXIT_THREAD) \
-    $(wildcard include/config/ARCH_WANTS_DYNAMIC_TASK_STRUCT) \
-    $(wildcard include/config/HAVE_ARCH_THREAD_STRUCT_WHITELIST) \
-  include/linux/cred.h \
-    $(wildcard include/config/DEBUG_CREDENTIALS) \
-  include/linux/key.h \
-    $(wildcard include/config/KEY_NOTIFICATIONS) \
-    $(wildcard include/config/NET) \
-  include/linux/assoc_array.h \
-    $(wildcard include/config/ASSOCIATIVE_ARRAY) \
-  include/linux/sched/user.h \
-    $(wildcard include/config/WATCH_QUEUE) \
-  include/linux/percpu_counter.h \
-  include/linux/rcu_sync.h \
-  include/linux/delayed_call.h \
-  include/linux/errseq.h \
-  include/linux/ioprio.h \
-  include/linux/sched/rt.h \
-  include/linux/iocontext.h \
-    $(wildcard include/config/BLK_ICQ) \
-  include/uapi/linux/ioprio.h \
-  include/linux/fs_types.h \
-  include/linux/mount.h \
-  include/linux/mnt_idmapping.h \
-  include/uapi/linux/fs.h \
-  include/linux/quota.h \
-    $(wildcard include/config/QUOTA_NETLINK_INTERFACE) \
-  include/uapi/linux/dqblk_xfs.h \
-  include/linux/dqblk_v1.h \
-  include/linux/dqblk_v2.h \
-  include/linux/dqblk_qtree.h \
-  include/linux/projid.h \
-  include/uapi/linux/quota.h \
-  include/linux/nfs_fs_i.h \
-  include/linux/seq_file.h \
-  include/linux/string_helpers.h \
-  include/linux/ns_common.h \
-  include/linux/nsproxy.h \
-  include/linux/user_namespace.h \
-    $(wildcard include/config/INOTIFY_USER) \
-    $(wildcard include/config/FANOTIFY) \
-    $(wildcard include/config/PERSISTENT_KEYRINGS) \
-  include/linux/kernel_stat.h \
-  include/linux/interrupt.h \
-    $(wildcard include/config/IRQ_FORCED_THREADING) \
-    $(wildcard include/config/GENERIC_IRQ_PROBE) \
-    $(wildcard include/config/IRQ_TIMINGS) \
-  include/linux/irqreturn.h \
-  include/linux/irqnr.h \
-  include/uapi/linux/irqnr.h \
-  include/linux/hardirq.h \
-  include/linux/context_tracking_state.h \
-    $(wildcard include/config/CONTEXT_TRACKING) \
-  include/linux/ftrace_irq.h \
-    $(wildcard include/config/HWLAT_TRACER) \
-    $(wildcard include/config/OSNOISE_TRACER) \
-  include/linux/vtime.h \
-    $(wildcard include/config/VIRT_CPU_ACCOUNTING) \
-    $(wildcard include/config/IRQ_TIME_ACCOUNTING) \
-  arch/x86/include/asm/hardirq.h \
-    $(wildcard include/config/KVM_INTEL) \
-    $(wildcard include/config/X86_THERMAL_VECTOR) \
-    $(wildcard include/config/X86_MCE_THRESHOLD) \
-    $(wildcard include/config/X86_MCE_AMD) \
-    $(wildcard include/config/X86_HV_CALLBACK_VECTOR) \
-  arch/x86/include/asm/irq.h \
-  arch/x86/include/asm/sections.h \
-  include/asm-generic/sections.h \
-    $(wildcard include/config/HAVE_FUNCTION_DESCRIPTORS) \
-  include/linux/cgroup-defs.h \
-    $(wildcard include/config/CGROUP_NET_CLASSID) \
-    $(wildcard include/config/CGROUP_NET_PRIO) \
-  include/linux/u64_stats_sync.h \
-  include/linux/bpf-cgroup-defs.h \
-  include/linux/psi_types.h \
-  include/linux/kthread.h \
-  include/linux/cgroup_subsys.h \
-    $(wildcard include/config/CGROUP_DEVICE) \
-    $(wildcard include/config/CGROUP_FREEZER) \
-    $(wildcard include/config/CGROUP_PERF) \
-    $(wildcard include/config/CGROUP_HUGETLB) \
-    $(wildcard include/config/CGROUP_PIDS) \
-    $(wildcard include/config/CGROUP_RDMA) \
-    $(wildcard include/config/CGROUP_MISC) \
-    $(wildcard include/config/CGROUP_DEBUG) \
-  include/linux/vm_event_item.h \
-    $(wildcard include/config/HAVE_ARCH_TRANSPARENT_HUGEPAGE_PUD) \
-    $(wildcard include/config/MEMORY_BALLOON) \
-    $(wildcard include/config/BALLOON_COMPACTION) \
-    $(wildcard include/config/DEBUG_TLBFLUSH) \
-    $(wildcard include/config/DEBUG_VM_VMACACHE) \
-  include/linux/page_counter.h \
-  include/linux/vmpressure.h \
-  include/linux/eventfd.h \
-  include/linux/mm.h \
-    $(wildcard include/config/HAVE_ARCH_MMAP_RND_BITS) \
-    $(wildcard include/config/HAVE_ARCH_MMAP_RND_COMPAT_BITS) \
-    $(wildcard include/config/ARCH_USES_HIGH_VMA_FLAGS) \
-    $(wildcard include/config/ARCH_HAS_PKEYS) \
-    $(wildcard include/config/PPC) \
-    $(wildcard include/config/PARISC) \
-    $(wildcard include/config/SPARC64) \
-    $(wildcard include/config/ARM64_MTE) \
-    $(wildcard include/config/HAVE_ARCH_USERFAULTFD_MINOR) \
-    $(wildcard include/config/SHMEM) \
-    $(wildcard include/config/ARCH_HAS_PTE_SPECIAL) \
-    $(wildcard include/config/ARCH_HAS_PTE_DEVMAP) \
-    $(wildcard include/config/DEBUG_VM_RB) \
-    $(wildcard include/config/PAGE_POISONING) \
-    $(wildcard include/config/INIT_ON_ALLOC_DEFAULT_ON) \
-    $(wildcard include/config/INIT_ON_FREE_DEFAULT_ON) \
-    $(wildcard include/config/DEBUG_PAGEALLOC) \
-    $(wildcard include/config/HUGETLBFS) \
-    $(wildcard include/config/MAPPING_DIRTY_HELPERS) \
-    $(wildcard include/config/ANON_VMA_NAME) \
-  include/linux/mmap_lock.h \
-  include/linux/page_ext.h \
-  include/linux/stacktrace.h \
-    $(wildcard include/config/ARCH_STACKWALK) \
-    $(wildcard include/config/STACKTRACE) \
-    $(wildcard include/config/HAVE_RELIABLE_STACKTRACE) \
-  include/linux/stackdepot.h \
-    $(wildcard include/config/STACKDEPOT_ALWAYS_INIT) \
-  include/linux/page_ref.h \
-    $(wildcard include/config/DEBUG_PAGE_REF) \
-  include/linux/sizes.h \
-  include/linux/pgtable.h \
-    $(wildcard include/config/HIGHPTE) \
-    $(wildcard include/config/GUP_GET_PTE_LOW_HIGH) \
-    $(wildcard include/config/HAVE_ARCH_SOFT_DIRTY) \
-    $(wildcard include/config/ARCH_ENABLE_THP_MIGRATION) \
-    $(wildcard include/config/X86_ESPFIX64) \
-  arch/x86/include/asm/pgtable.h \
-    $(wildcard include/config/DEBUG_WX) \
-    $(wildcard include/config/PAGE_TABLE_CHECK) \
-  arch/x86/include/asm/pkru.h \
-  arch/x86/include/asm/fpu/api.h \
-    $(wildcard include/config/X86_DEBUG_FPU) \
-  arch/x86/include/asm/coco.h \
-  include/asm-generic/pgtable_uffd.h \
-  include/linux/page_table_check.h \
-  arch/x86/include/asm/pgtable_32.h \
-  arch/x86/include/asm/pgtable-3level.h \
-  arch/x86/include/asm/pgtable-invert.h \
-  include/linux/huge_mm.h \
-  include/linux/sched/coredump.h \
-    $(wildcard include/config/CORE_DUMP_DEFAULT_ELF_HEADERS) \
-  include/linux/vmstat.h \
-    $(wildcard include/config/VM_EVENT_COUNTERS) \
-  include/linux/writeback.h \
-  include/linux/flex_proportions.h \
-  include/linux/backing-dev-defs.h \
-    $(wildcard include/config/DEBUG_FS) \
-  include/linux/blk_types.h \
-    $(wildcard include/config/FAIL_MAKE_REQUEST) \
-    $(wildcard include/config/BLK_CGROUP_IOCOST) \
-    $(wildcard include/config/BLK_INLINE_ENCRYPTION) \
-    $(wildcard include/config/BLK_DEV_INTEGRITY) \
-  include/linux/bvec.h \
-  include/linux/highmem.h \
-  include/linux/cacheflush.h \
-  arch/x86/include/asm/cacheflush.h \
-  include/asm-generic/cacheflush.h \
-  include/linux/highmem-internal.h \
-  arch/x86/include/asm/highmem.h \
-  arch/x86/include/asm/tlbflush.h \
-  arch/x86/include/asm/invpcid.h \
-  arch/x86/include/asm/pti.h \
-  include/linux/bio.h \
-  include/linux/mempool.h \
-  include/linux/uio.h \
-    $(wildcard include/config/ARCH_HAS_UACCESS_FLUSHCACHE) \
-  include/uapi/linux/uio.h \
-  include/linux/node.h \
-    $(wildcard include/config/HMEM_REPORTING) \
-  include/linux/pagemap.h \
-  include/linux/hugetlb_inline.h \
-  include/uapi/linux/mempolicy.h \
-  include/linux/freezer.h \
-  include/uapi/linux/i2c.h \
-  include/linux/videodev2.h \
-  include/uapi/linux/videodev2.h \
-    $(wildcard include/config/VIDEO_ADV_DEBUG) \
-  include/uapi/linux/v4l2-common.h \
-  include/uapi/linux/v4l2-controls.h \
-  include/media/v4l2-device.h \
-    $(wildcard include/config/VIDEO_V4L2_SUBDEV_API) \
-  include/media/media-device.h \
-    $(wildcard include/config/MEDIA_CONTROLLER) \
-  include/media/media-devnode.h \
-  include/linux/poll.h \
-  include/uapi/linux/poll.h \
-  arch/x86/include/generated/uapi/asm/poll.h \
-  include/uapi/asm-generic/poll.h \
-  include/uapi/linux/eventpoll.h \
-  include/linux/cdev.h \
-  include/media/media-entity.h \
-  include/uapi/linux/media.h \
-  include/media/v4l2-subdev.h \
-  include/uapi/linux/v4l2-subdev.h \
-  include/uapi/linux/v4l2-mediabus.h \
-  include/uapi/linux/media-bus-format.h \
-  include/media/v4l2-async.h \
-  include/media/v4l2-common.h \
-    $(wildcard include/config/VIDEO_V4L2_I2C) \
-    $(wildcard include/config/SPI) \
-  include/media/v4l2-dev.h \
-  include/linux/spi/spi.h \
-    $(wildcard include/config/SPI_SLAVE) \
-  include/linux/scatterlist.h \
-    $(wildcard include/config/NEED_SG_DMA_LENGTH) \
-    $(wildcard include/config/DEBUG_SG) \
-    $(wildcard include/config/SGL_ALLOC) \
-    $(wildcard include/config/ARCH_NO_SG_CHAIN) \
-    $(wildcard include/config/SG_POOL) \
-  include/linux/gpio/consumer.h \
-    $(wildcard include/config/OF_GPIO) \
-    $(wildcard include/config/GPIO_SYSFS) \
-  include/uapi/linux/spi/spi.h \
-  include/media/v4l2-fh.h \
-  include/media/v4l2-mediabus.h \
-  include/media/v4l2-ctrls.h \
-  include/media/media-request.h \
-  include/media/hevc-ctrls.h \
+// SPDX-License-Identifier: GPL-2.0 OR BSD-2-Clause
+/* Copyright (C) 2018 KVASER AB, Sweden. All rights reserved.
+ * Parts of this driver are based on the following:
+ *  - Kvaser linux pciefd driver (version 5.25)
+ *  - PEAK linux canfd driver
+ *  - Altera Avalon EPCS flash controller driver
+ */
 
-drivers/media/i2c/vpx3220.o: $(deps_drivers/media/i2c/vpx3220.o)
+#include <linux/kernel.h>
+#include <linux/module.h>
+#include <linux/device.h>
+#include <linux/pci.h>
+#include <linux/can/dev.h>
+#include <linux/timer.h>
+#include <linux/netdevice.h>
+#include <linux/crc32.h>
+#include <linux/iopoll.h>
 
-$(deps_drivers/media/i2c/vpx3220.o):
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       ELF                      L"      4     (               Ë¸ˇˇˇãÖ¿uãAÉ¯wã≈¨  âA1¿√∏Íˇˇˇ√ç¥&    çv Ë¸ˇˇˇâ¬â»ãIÖ…upãä8  âHãä<  âHãä@  âHãäD  âHãäH  âHãäL  âHãäP  âH ãäT  âH$ãäX  âH(ãä\  âH,ãä`  âH0ãíd  âP41¿√ê∏Íˇˇˇ√ç¥&    çv Ë¸ˇˇˇãà4  âJãÄ0  âB1¿√ç∂    Ë¸ˇˇˇSãX\âÿË¸ˇˇˇãClË¸ˇˇˇ1¿[√çt& Ë¸ˇˇˇÉÏãÄî   dã    âL$1…πÄˇˇfâL$Ö“t7∆D$j π   çT$Ë¸ˇˇˇX∏ºç Ë¸ˇˇˇãD$d+    u1¿Éƒ√çt& ∆D$Î«Ë¸ˇˇˇçt& Ë¸ˇˇˇSâ√ÉÏãJd°    âD$1¿Ö…tãBÖ¿Öﬂ   «B   ∏   «B   âÉ0  ãB∫Äˇˇπ   fâT$âÉ4  ãÉî   ∆D$ j çT$Ë¸ˇˇˇãì0  πÅˇˇãÉî   fâL$π   àt$j çT$	Ë¸ˇˇˇãì0  πÇˇˇãÉî   fâL$	π   àT$j çT$Ë¸ˇˇˇãì4  ãÉî   ªÑˇˇfâ\$π   àT$j çT$Ë¸ˇˇˇÉƒãD$d+    uÉƒ1¿[√çv k…9»Ü)ˇˇˇÈˇˇˇË¸ˇˇˇçv Ë¸ˇˇˇUâ≈WVSÉÏd°    âD$ãEãPãRË¸ˇˇˇ®Ñ)  ãEXâ$Ö¿Ñ"  h    çuãπ   âË¸ˇˇˇâ√XÖ€Ö¸ˇˇˇ∏d   Ë¸ˇˇˇπ¿  ∫l  âË¸ˇˇˇâ√Ö¿Ñ„  π@   âÍæ†  Ë¸ˇˇˇπ   ∫ÅˇˇÎê∑Nf¡¬àL$ãÉî   É∆fâT$π   j çT$	Ë¸ˇˇˇ∑XfÖ“uÕ∫¿  ∆D$ãÉî   π   fâT$j çT$	Ë¸ˇˇˇπ¿D  ãÉî   fâL$	π   ∆D$j çT$Ë¸ˇˇˇπ   ∫¯*  ∏'  Ë¸ˇˇˇπ   ^∫oÄˇˇ_æ|  Îçt& ∑Nf¡¬àL$ãÉî   É∆fâT$π   j çT$	Ë¸ˇˇˇ∑XfÖ“uÕ∫Ñ   æ¥  ø@  Îçt& ∑Wf¡∆àT$É«π   fât$ãÉî   j çT$	Ë¸ˇˇˇ∑7XfÖˆuÕ∫%Üˇˇ∆D$ãÉî   π   fâT$ø‡  j çT$	Ë¸ˇˇˇ∫  YÎçv ∑wf¡¬âÒãÉî   É«fâT$àL$π   j çT$	Ë¸ˇˇˇ∑XfÖ“uÀ∫Äˇˇ∆D$ π   ãÉî   fâT$æÇˇˇøÑˇˇ«É0     «É4     j çT$	Ë¸ˇˇˇãì0  πÅˇˇãÉî   fâL$	π   àt$j çT$Ë¸ˇˇˇãì0  ãÉî   π   fât$ç≥¿   àT$j çT$Ë¸ˇˇˇãì4  ãÉî   π   fâ|$çª8  àT$j çT$Ë¸ˇˇˇ1¿π   ∑UÛ´ãD$«É8  Ä  «É<  ‡  «É@     «ÉD     «ÉH     ã âÉh  ãEçà  QçQRˇ∞   ãETˇ0h,   Ë¸ˇˇˇ1…∫   âÉƒ(j Ë¸ˇˇˇπ	ò ∫0  âj há   j jj hˇ   j j Ë¸ˇˇˇπ	ò ∫0  âÉƒ$j jxj jj hˇ   j j Ë¸ˇˇˇπ	ò ∫0  âÉƒ j j j jj jj j Ë¸ˇˇˇπ	ò ∫0  âÉƒ j j j jj jj j Ë¸ˇˇˇâslãõ¸   âÉƒ Ö€u6Ë¸ˇˇˇâ√Ö¿uãD$d+    u:Éƒâÿ[^_]√çt& âË¸ˇˇˇÎ‹ç¥&    Ë¸ˇˇˇÎŒª˚ˇˇˇÎ«ªÍˇˇˇÎ¿ªÙˇˇˇÎπË¸ˇˇˇç¥&    ç¥&    êË¸ˇˇˇSÉÏãHdã    âT$1“ãP(Å˙	ò Ñê   wNÅ˙	ò tnÅ˙	ò u^∫∂ˇˇãY‘ã@|fâT$àD$π   âÿj çT$Ë¸ˇˇˇX1¿ãT$d+    uZÉƒ[√çv Å˙	ò u∫ºˇˇãY‘ã@|fâT$Î∏ç∂    ∏ÍˇˇˇÎƒêãY‘π¥ˇˇã@|fâL$Îòç∂    ãY‘π∫ˇˇã@|fâL$ÎÄË¸ˇˇˇêË¸ˇˇˇUWVâ∆SÉÏd°    âD$1¿ãAÖ¿Öé   ãAâ◊âÀçê˙ﬂˇˇÉ‚˝Ñ%  =  Ñ*  «A   π   ãCãk«C   âKâ¬É‚¸=Å  ∏Ä  C–âËÉ‡¸Å˝·  Ω‡  C≈ã+âSâCÖÌtEãC=   Ñó  =   ÑD  =  tu∏ÍˇˇˇãT$d+    Ö¬  Éƒ[^_]√ç¥&    ãâãSâPãSâPãSâPãSâPãSâPãS âPãS$âPãS(âP ãS,âP$ãS0âP(ãS4âP,1¿Îñç∂    ∫∞ˇˇç|$∆D$ãÜî   fâT$π   â˙j Ë¸ˇˇˇπ%îˇˇãÜî   fâL$∆D$ j π   â˙Ë¸ˇˇˇãCY]ãÆî   =Ä  Ñ∏  =@  ÖÌ  Å{   Ñ⁄  ∏Äˇˇ∆D$π   â˙fâD$âËΩÑˇˇj Ë¸ˇˇˇãSπÉˇˇãÜî   fâL$π   àt$â˙j Ë¸ˇˇˇãSãÜî   π   fâl$	ΩàˇˇàT$â˙j Ë¸ˇˇˇãSπáˇˇãÜî   fâL$π   àt$â˙j Ë¸ˇˇˇãSãÜî   π   fâl$àT$â˙j Ë¸ˇˇˇ∫ûˇˇãÜî   π   fâT$â˙∆D$j Ë¸ˇˇˇÉƒãCâÜ8  ãCâÜ<  ãCâÜ@  ãCâÜD  ãCâÜH  ãCâÜL  ãC âÜP  ãC$âÜT  ãC(âÜX  ãC,âÜ\  ãC0âÜ`  ãC4âÜd  1¿ÈÃ˝ˇˇçt& ø∞ˇˇ∆D$ ãÜî   π   fâ|$ç|$Ω%ñˇˇj â˙Ë¸ˇˇˇãÜî   fâl$∆D$È3˛ˇˇç¥&    ∫∞ˇˇç|$∆D$ ãÜî   fâT$π   â˙j Ë¸ˇˇˇπ%ñˇˇãÜî   fâL$∆D$ÈÎ˝ˇˇç¥&    =†   u!É{xÖ˛ˇˇ∏Äˇˇ∆D$fâD$Î~ç∂    =`  u!Å{   Ö‰˝ˇˇ∏Äˇˇ∆D$fâD$ÎSçv =∞   u!Å{ê   Öº˝ˇˇ∏Äˇˇ∆D$fâD$Î+çv É¯XÖü˝ˇˇÉ{HÖï˝ˇˇπÄˇˇ∆D$fâL$ç∂    j π   â˙âËË¸ˇˇˇXÈC˛ˇˇç¥&    çv Å{‡  ÖS˝ˇˇ∫Äˇˇ∆D$fâT$Î¬fêπ   ÈË˚ˇˇç∂    π   Èÿ˚ˇˇ∏Äˇˇ∆D$fâD$ÎïË¸ˇˇˇ                    ê  ‡                                                                                                                          0   ¿   ‡      p  ê    ‡      VS6624 Chip Enable vs6624   3%s %d-%04x: failed to request GPIO %d
-    6%s %d-%04x: chip found @ 0x%02x (%s)
- ã$ˇ0∑EPãEˇ∞   ãETˇ0h    Ë¸ˇˇˇÉƒÈ±  Ë¸ˇˇˇ∫    ∏    È¸ˇˇˇ∏    È¸ˇˇˇlicense=GPL v2 author=Scott Jiang <Scott.Jiang.Linux@gmail.com> description=VS6624 sensor driver                                vs6624                                                                     †               `                   0   ‡                                                                                         ¿   p                                                                                                        ¥Ñ ∂u ∏ 4Ñ 6u 8 ÇÄ ÑÄ ÜÄ Ä ê˛ Ç  Äd     ( ∫  º  ã  å è  ê ï  ñ ô  ö  Ñ%! Ä  Ñ Ç Ç  ∞  ñ% Ä                            <  f e — f b      &  & &c &— &h &› &: &  Ä$  ä0 ëb íJ ïe ñ °: ¢∏  
-
- :  ; Ö 	; 
-Ö :  0 è      oÄ å                             Å Å  … …G … …Ä …: :ê ;êG <ê …1 	…‹ 
-…Ä …D Dê Eê1 Fê‚ … …‡ …Ä …G Gêê HêÉ IêÅ Jê‡ Kê` Lê Mêê Nê¿ OêC Pêt Qê Rê SêÄ Tê Uê‰ Vêê Wê¿ XêC Yê Zê [ê \êÏ …] …  …Ä …] ]ê£ ^ê _ê `ê£ aê bê cê" …r …í …Ä …d dêt eê fê gêr hêï …G …Ú …Å …i iët jë kë lëÏ më¥ në oë
- pëê qëÄ rë së‡ tëp uë vëê wë” xëƒ yë zë" …
- …æ …Ä …s sê¸ tê£ uê‡ vêı wêÇ xêå yêÉ zê£ {ê£ |ê‡ }ê¸ ~ê£ ê‡ Äê√ Åêü Çêˇ ÉêÏ Ñêû Öê˛ Üê áê
- àêÍ  …G !…8 "…Ä #…â âêÏ äê” ãêî åê  çê@ éê èê êêê ëê” íê‘ ìêÏ îê ïê ñêG óê= $…E %…  &…Ä '…ò òê ôêw öê÷ õê úêE ùêÕ (…  )…’ *…Ä +…û ûêê üêÇ †ê °ê‡ ¢ê¥ £ê §ê •êê ¶êÉ ßêø ®ê‡ ©ê` ™ê ´êê ¨êÅ ≠ê¸ Æê‡ Øêˇ ∞ê√ ±ê ≤ê ≥êê ¥êÅ µê¸ ∂ê‡ ∑êˇ ∏ê πê  ∫ê⁄ ,…p -…º .…Ä /…ª ªêê ºêÇ Ωê æê‡ øê¥ ¿ê ¡ê ¬êê √ê¡ ƒê ≈êt ∆ê «ê »êê …ê”  ê† Àê Ãêp Õêø 0…r 1…! 2…Å 3…; ;ë} <ë =ë >ë{ ?ë @ër Aë% 4…( 5…Æ 6…Ä 7…“ “ê ”êê ‘ê“ ’ê
- ÷ê ◊ê( ÿê¥ 8…( 9…± :…Ä ;…Ÿ Ÿêê ⁄êÉ €ê∫ ‹ê‡ ›êˇ ﬁêê ﬂê“ ‡ê ·ê‡ ‚ê‰ „êÔ ‰ê Âê£ Êê‡ Áêt Ëêˇ Èê Íêê Îê“ Ïê
- Ìê Óê( Ôê¥ <…) =…y >…Ä ?… ê Òêê Úê“ Ûê Ùê ıê) ˆê @…) A…| B…Ä C…˜ ˜êê ¯êÉ ˘ê∫ ˙ê‡ ˚êˇ ¸êê ˝ê“ ˛ê ˇê‡  ë‰ ëÔ ë ë£ ë‡ ët ëˇ ë ëê 	ë“ 
-ë ë ë) ë D…* E…B F…Å G… ë ëê ë“ ë ë ë* ëH H…* I…E J…Å K… ëê ëÉ ë∫ ë‡ ëˇ ëê ë“ ë ë‡ ë‰ ëÔ  ë !ë£ "ë‡ #ët $ëˇ %ë &ëê 'ë“ (ë )ë *ë* +ëH  …                       GCC: (GNU) 11.2.0           GNU  ¿       ¿                                  Òˇ                            
-       &         ¨       /   0   Ü     >   ¿        V   ‡        d      l     t   p                                 	              
- å   ê  q    ô   @         §   †      Æ   |       ∏   @  å     «   ‡  ú     ÿ   0       Ë       *    
- ˙     œ       ‡  ê                             *      Ä     8      
-     K           b     1     x  @   !     ì      0                   ù     0     ≠  †   P     æ  `   @     Õ             ÿ             ˆ                                       9             H             Y             r             à             è             ú             ±             ƒ             Ã             È             ˚                          !             5           A             P      
-     _      0      vs6624.c vs6624_enum_mbus_code vs6624_formats vs6624_get_fmt vs6624_g_frame_interval vs6624_remove vs6624_s_stream vs6624_s_frame_interval vs6624_probe vs6624_ops vs6624_p1 vs6624_p2 vs6624_default vs6624_run_setup vs6624_ctrl_ops vs6624_probe.cold vs6624_s_ctrl vs6624_set_fmt vs6624_driver_init vs6624_driver vs6624_driver_exit __UNIQUE_ID_license268 __UNIQUE_ID_author267 __UNIQUE_ID_description266 vs6624_id vs6624_core_ops vs6624_video_ops vs6624_pad_ops __fentry__ v4l2_device_unregister_subdev v4l2_ctrl_handler_free __stack_chk_guard i2c_transfer_buffer_flags __const_udelay __stack_chk_fail __x86_indirect_thunk_edx devm_gpio_request_one msleep devm_kmalloc v4l2_i2c_subdev_init usleep_range_state _printk v4l2_ctrl_handler_init_class v4l2_ctrl_new_std v4l2_ctrl_handler_setup __this_module i2c_register_driver init_module i2c_del_driver cleanup_module __mod_i2c__vs6624_id_device_table       $        1   $  ¡   $  ·   $  Ï   %  Ù   &    $    '  :  (  E  )  P  '  h  *  q  $  Ä  '  ‹  (    (  0  (  Z  (  h  '  â  *  ë  $  †  '  ≤  +  Õ    ﬁ  ,  Û  -    .              /  V  (  Ñ  (  ©  (  Ω  0  Œ     ˛  (       F  (  n     y  (  ∞  (  ¸  (  &  (  Q  (  |  (  Ê    Î  1  ˛  2       %  3  /     L  3  V     p  3  z     î  3  ´  4  º  '  ”  &  ·  &  ˝  *    $    '  l  (  z  '  €  *  ·  $    '  ü  '  +	  (  N	  (  †	  (  ≈	  (  Í	  (  
-  (  /
-  (  R
-  (  ¯
-  (  ;  (    (  l  *  È                   h                                                     $     
+MODULE_LICENSE("Dual BSD/GPL");
+MODULE_AUTHOR("Kvaser AB <support@kvaser.com>");
+MODULE_DESCRIPTION("CAN driver for Kvaser CAN/PCIe devices");
+
+#define KVASER_PCIEFD_DRV_NAME "kvaser_pciefd"
+
+#define KVASER_PCIEFD_WAIT_TIMEOUT msecs_to_jiffies(1000)
+#define KVASER_PCIEFD_BEC_POLL_FREQ (jiffies + msecs_to_jiffies(200))
+#define KVASER_PCIEFD_MAX_ERR_REP 256
+#define KVASER_PCIEFD_CAN_TX_MAX_COUNT 17
+#define KVASER_PCIEFD_MAX_CAN_CHANNELS 4
+#define KVASER_PCIEFD_DMA_COUNT 2
+
+#define KVASER_PCIEFD_DMA_SIZE (4 * 1024)
+#define KVASER_PCIEFD_64BIT_DMA_BIT BIT(0)
+
+#define KVASER_PCIEFD_VENDOR 0x1a07
+#define KVASER_PCIEFD_4HS_ID 0x0d
+#define KVASER_PCIEFD_2HS_ID 0x0e
+#define KVASER_PCIEFD_HS_ID 0x0f
+#define KVASER_PCIEFD_MINIPCIE_HS_ID 0x10
+#define KVASER_PCIEFD_MINIPCIE_2HS_ID 0x11
+
+/* PCIe IRQ registers */
+#define KVASER_PCIEFD_IRQ_REG 0x40
+#define KVASER_PCIEFD_IEN_REG 0x50
+/* DMA map */
+#define KVASER_PCIEFD_DMA_MAP_BASE 0x1000
+/* Kvaser KCAN CAN controller registers */
+#define KVASER_PCIEFD_KCAN0_BASE 0x10000
+#define KVASER_PCIEFD_KCAN_BASE_OFFSET 0x1000
+#define KVASER_PCIEFD_KCAN_FIFO_REG 0x100
+#define KVASER_PCIEFD_KCAN_FIFO_LAST_REG 0x180
+#define KVASER_PCIEFD_KCAN_CTRL_REG 0x2c0
+#define KVASER_PCIEFD_KCAN_CMD_REG 0x400
+#define KVASER_PCIEFD_KCAN_IEN_REG 0x408
+#define KVASER_PCIEFD_KCAN_IRQ_REG 0x410
+#define KVASER_PCIEFD_KCAN_TX_NPACKETS_REG 0x414
+#define KVASER_PCIEFD_KCAN_STAT_REG 0x418
+#define KVASER_PCIEFD_KCAN_MODE_REG 0x41c
+#define KVASER_PCIEFD_KCAN_BTRN_REG 0x420
+#define KVASER_PCIEFD_KCAN_BUS_LOAD_REG 0x424
+#define KVASER_PCIEFD_KCAN_BTRD_REG 0x428
+#define KVASER_PCIEFD_KCAN_PWM_REG 0x430
+/* Loopback control register */
+#define KVASER_PCIEFD_LOOP_REG 0x1f000
+/* System identification and information registers */
+#define KVASER_PCIEFD_SYSID_BASE 0x1f020
+#define KVASER_PCIEFD_SYSID_VERSION_REG (KVASER_PCIEFD_SYSID_BASE + 0x8)
+#define KVASER_PCIEFD_SYSID_CANFREQ_REG (KVASER_PCIEFD_SYSID_BASE + 0xc)
+#define KVASER_PCIEFD_SYSID_BUSFREQ_REG (KVASER_PCIEFD_SYSID_BASE + 0x10)
+#define KVASER_PCIEFD_SYSID_BUILD_REG (KVASER_PCIEFD_SYSID_BASE + 0x14)
+/* Shared receive buffer registers */
+#define KVASER_PCIEFD_SRB_BASE 0x1f200
+#define KVASER_PCIEFD_SRB_CMD_REG (KVASER_PCIEFD_SRB_BASE + 0x200)
+#define KVASER_PCIEFD_SRB_IEN_REG (KVASER_PCIEFD_SRB_BASE + 0x204)
+#define KVASER_PCIEFD_SRB_IRQ_REG (KVASER_PCIEFD_SRB_BASE + 0x20c)
+#define KVASER_PCIEFD_SRB_STAT_REG (KVASER_PCIEFD_SRB_BASE + 0x210)
+#define KVASER_PCIEFD_SRB_CTRL_REG (KVASER_PCIEFD_SRB_BASE + 0x218)
+/* EPCS flash controller registers */
+#define KVASER_PCIEFD_SPI_BASE 0x1fc00
+#define KVASER_PCIEFD_SPI_RX_REG KVASER_PCIEFD_SPI_BASE
+#define KVASER_PCIEFD_SPI_TX_REG (KVASER_PCIEFD_SPI_BASE + 0x4)
+#define KVASER_PCIEFD_SPI_STATUS_REG (KVASER_PCIEFD_SPI_BASE + 0x8)
+#define KVASER_PCIEFD_SPI_CTRL_REG (KVASER_PCIEFD_SPI_BASE + 0xc)
+#define KVASER_PCIEFD_SPI_SSEL_REG (KVASER_PCIEFD_SPI_BASE + 0x14)
+
+#define KVASER_PCIEFD_IRQ_ALL_MSK 0x1f
+#define KVASER_PCIEFD_IRQ_SRB BIT(4)
+
+#define KVASER_PCIEFD_SYSID_NRCHAN_SHIFT 24
+#define KVASER_PCIEFD_SYSID_MAJOR_VER_SHIFT 16
+#define KVASER_PCIEFD_SYSID_BUILD_VER_SHIFT 1
+
+/* Reset DMA buffer 0, 1 and FIFO offset */
+#define KVASER_PCIEFD_SRB_CMD_RDB0 BIT(4)
+#define KVASER_PCIEFD_SRB_CMD_RDB1 BIT(5)
+#define KVASER_PCIEFD_SRB_CMD_FOR BIT(0)
+
+/* DMA packet done, buffer 0 and 1 */
+#define KVASER_PCIEFD_SRB_IRQ_DPD0 BIT(8)
+#define KVASER_PCIEFD_SRB_IRQ_DPD1 BIT(9)
+/* DMA overflow, buffer 0 and 1 */
+#define KVASER_PCIEFD_SRB_IRQ_DOF0 BIT(10)
+#define KVASER_PCIEFD_SRB_IRQ_DOF1 BIT(11)
+/* DMA underflow, buffer 0 and 1 */
+#define KVASER_PCIEFD_SRB_IRQ_DUF0 BIT(12)
+#define KVASER_PCIEFD_SRB_IRQ_DUF1 BIT(13)
+
+/* DMA idle */
+#define KVASER_PCIEFD_SRB_STAT_DI BIT(15)
+/* DMA support */
+#define KVASER_PCIEFD_SRB_STAT_DMA BIT(24)
+
+/* DMA Enable */
+#define KVASER_PCIEFD_SRB_CTRL_DMA_ENABLE BIT(0)
+
+/* EPCS flash controller definitions */
+#define KVASER_PCIEFD_CFG_IMG_SZ (64 * 1024)
+#define KVASER_PCIEFD_CFG_IMG_OFFSET (31 * 65536L)
+#define KVASER_PCIEFD_CFG_MAX_PARAMS 256
+#define KVASER_PCIEFD_CFG_MAGIC 0xcafef00d
+#define KVASER_PCIEFD_CFG_PARAM_MAX_SZ 24
+#define KVASER_PCIEFD_CFG_SYS_VER 1
+#define KVASER_PCIEFD_CFG_PARAM_NR_CHAN 130
+#define KVASER_PCIEFD_SPI_TMT BIT(5)
+#define KVASER_PCIEFD_SPI_TRDY BIT(6)
+#define KVASER_PCIEFD_SPI_RRDY BIT(7)
+#define KVASER_PCIEFD_FLASH_ID_EPCS16 0x14
+/* Commands for controlling the onboard flash */
+#define KVASER_PCIEFD_FLASH_RES_CMD 0xab
+#define KVASER_PCIEFD_FLASH_READ_CMD 0x3
+#define KVASER_PCIEFD_FLASH_STATUS_CMD 0x5
+
+/* Kvaser KCAN definitions */
+#define KVASER_PCIEFD_KCAN_CTRL_EFLUSH (4 << 29)
+#define KVASER_PCIEFD_KCAN_CTRL_EFRAME (5 << 29)
+
+#define KVASER_PCIEFD_KCAN_CMD_SEQ_SHIFT 16
+/* Request status packet */
+#define KVASER_PCIEFD_KCAN_CMD_SRQ BIT(0)
+/* Abort, flush and reset */
+#define KVASER_PCIEFD_KCAN_CMD_AT BIT(1)
+
+/* Tx FIFO unaligned read */
+#define KVASER_PCIEFD_KCAN_IRQ_TAR BIT(0)
+/* Tx FIFO unaligned end */
+#define KVASER_PCIEFD_KCAN_IRQ_TAE BIT(1)
+/* Bus parameter protection error */
+#define KVASER_PCIEFD_KCAN_IRQ_BPP BIT(2)
+/* FDF bit when controller is in classic mode */
+#define KVASER_PCIEFD_KCAN_IRQ_FDIC BIT(3)
+/* Rx FIFO overflow */
+#define KVASER_PCIEFD_KCAN_IRQ_ROF BIT(5)
+/* Abort done */
+#define KVASER_PCIEFD_KCAN_IRQ_ABD BIT(13)
+/* Tx buffer flush done */
+#define KVASER_PCIEFD_KCAN_IRQ_TFD BIT(14)
+/* Tx FIFO overflow */
+#define KVASER_PCIEFD_KCAN_IRQ_TOF BIT(15)
+/* Tx FIFO empty */
+#define KVASER_PCIEFD_KCAN_IRQ_TE BIT(16)
+/* Transmitter unaligned */
+#define KVASER_PCIEFD_KCAN_IRQ_TAL BIT(17)
+
+#define KVASER_PCIEFD_KCAN_TX_NPACKETS_MAX_SHIFT 16
+
+#define KVASER_PCIEFD_KCAN_STAT_SEQNO_SHIFT 24
+/* Abort request */
+#define KVASER_PCIEFD_KCAN_STAT_AR BIT(7)
+/* Idle state. Controller in reset mode and no abort or flush pending */
+#define KVASER_PCIEFD_KCAN_STAT_IDLE BIT(10)
+/* Bus off */
+#define KVASER_PCIEFD_KCAN_STAT_BOFF BIT(11)
+/* Reset mode request */
+#define KVASER_PCIEFD_KCAN_STAT_RMR BIT(14)
+/* Controller in reset mode */
+#define KVASER_PCIEFD_KCAN_STAT_IRM BIT(15)
+/* Controller got one-shot capability */
+#define KVASER_PCIEFD_KCAN_STAT_CAP BIT(16)
+/* Controller got CAN FD capability */
+#define KVASER_PCIEFD_KCAN_STAT_FD BIT(19)
+#define KVASER_PCIEFD_KCAN_STAT_BUS_OFF_MSK (KVASER_PCIEFD_KCAN_STAT_AR | \
+	KVASER_PCIEFD_KCAN_STAT_BOFF | KVASER_PCIEFD_KCAN_STAT_RMR | \
+	KVASER_PCIEFD_KCAN_STAT_IRM)
+
+/* Reset mode */
+#define KVASER_PCIEFD_KCAN_MODE_RM BIT(8)
+/* Listen only mode */
+#define KVASER_PCIEFD_KCAN_MODE_LOM BIT(9)
+/* Error packet enable */
+#define KVASER_PCIEFD_KCAN_MODE_EPEN BIT(12)
+/* CAN FD non-ISO */
+#define KVASER_PCIEFD_KCAN_MODE_NIFDEN BIT(15)
+/* Acknowledgment packet type */
+#define KVASER_PCIEFD_KCAN_MODE_APT BIT(20)
+/* Active error flag enable. Clear to force error passive */
+#define KVASER_PCIEFD_KCAN_MODE_EEN BIT(23)
+/* Classic CAN mode */
+#define KVASER_PCIEFD_KCAN_MODE_CCM BIT(31)
+
+#define KVASER_PCIEFD_KCAN_BTRN_SJW_SHIFT 13
+#define KVASER_PCIEFD_KCAN_BTRN_TSEG1_SHIFT 17
+#define KVASER_PCIEFD_KCAN_BTRN_TSEG2_SHIFT 26
+
+#define KVASER_PCIEFD_KCAN_PWM_TOP_SHIFT 16
+
+/* Kvaser KCAN packet types */
+#define KVASER_PCIEFD_PACK_TYPE_DATA 0
+#define KVASER_PCIEFD_PACK_TYPE_ACK 1
+#define KVASER_PCIEFD_PACK_TYPE_TXRQ 2
+#define KVASER_PCIEFD_PACK_TYPE_ERROR 3
+#define KVASER_PCIEFD_PACK_TYPE_EFLUSH_ACK 4
+#define KVASER_PCIEFD_PACK_TYPE_EFRAME_ACK 5
+#define KVASER_PCIEFD_PACK_TYPE_ACK_DATA 6
+#define KVASER_PCIEFD_PACK_TYPE_STATUS 8
+#define KVASER_PCIEFD_PACK_TYPE_BUS_LOAD 9
+
+/* Kvaser KCAN packet common definitions */
+#define KVASER_PCIEFD_PACKET_SEQ_MSK 0xff
+#define KVASER_PCIEFD_PACKET_CHID_SHIFT 25
+#define KVASER_PCIEFD_PACKET_TYPE_SHIFT 28
+
+/* Kvaser KCAN TDATA and RDATA first word */
+#define KVASER_PCIEFD_RPACKET_IDE BIT(30)
+#define KVASER_PCIEFD_RPACKET_RTR BIT(29)
+/* Kvaser KCAN TDATA and RDATA second word */
+#define KVASER_PCIEFD_RPACKET_ESI BIT(13)
+#define KVASER_PCIEFD_RPACKET_BRS BIT(14)
+#define KVASER_PCIEFD_RPACKET_FDF BIT(15)
+#define KVASER_PCIEFD_RPACKET_DLC_SHIFT 8
+/* Kvaser KCAN TDATA second word */
+#define KVASER_PCIEFD_TPACKET_SMS BIT(16)
+#define KVASER_PCIEFD_TPACKET_AREQ BIT(31)
+
+/* Kvaser KCAN APACKET */
+#define KVASER_PCIEFD_APACKET_FLU BIT(8)
+#define KVASER_PCIEFD_APACKET_CT BIT(9)
+#define KVASER_PCIEFD_APACKET_ABL BIT(10)
+#define KVASER_PCIEFD_APACKET_NACK BIT(11)
+
+/* Kvaser KCAN SPACK first word */
+#define KVASER_PCIEFD_SPACK_RXERR_SHIFT 8
+#define KVASER_PCIEFD_SPACK_BOFF BIT(16)
+#define KVASER_PCIEFD_SPACK_IDET BIT(20)
+#define KVASER_PCIEFD_SPACK_IRM BIT(21)
+#define KVASER_PCIEFD_SPACK_RMCD BIT(22)
+/* Kvaser KCAN SPACK second word */
+#define KVASER_PCIEFD_SPACK_AUTO BIT(21)
+#define KVASER_PCIEFD_SPACK_EWLR BIT(23)
+#define KVASER_PCIEFD_SPACK_EPLR BIT(24)
+
+/* Kvaser KCAN_EPACK second word */
+#define KVASER_PCIEFD_EPACK_DIR_TX BIT(0)
+
+struct kvaser_pciefd;
+
+struct kvaser_pciefd_can {
+	struct can_priv can;
+	struct kvaser_pciefd *kv_pcie;
+	void __iomem *reg_base;
+	struct can_berr_counter bec;
+	u8 cmd_seq;
+	int err_rep_cnt;
+	int echo_idx;
+	spinlock_t lock; /* Locks sensitive registers (e.g. MODE) */
+	spinlock_t echo_lock; /* Locks the message echo buffer */
+	struct timer_list bec_poll_timer;
+	struct completion start_comp, flush_comp;
+};
+
+struct kvaser_pciefd {
+	struct pci_dev *pci;
+	void __iomem *reg_base;
+	struct kvaser_pciefd_can *can[KVASER_PCIEFD_MAX_CAN_CHANNELS];
+	void *dma_data[KVASER_PCIEFD_DMA_COUNT];
+	u8 nr_channels;
+	u32 bus_freq;
+	u32 freq;
+	u32 freq_to_ticks_div;
+};
+
+struct kvaser_pciefd_rx_packet {
+	u32 header[2];
+	u64 timestamp;
+};
+
+struct kvaser_pciefd_tx_packet {
+	u32 header[2];
+	u8 data[64];
+};
+
+static const struct can_bittiming_const kvaser_pciefd_bittiming_const = {
+	.name = KVASER_PCIEFD_DRV_NAME,
+	.tseg1_min = 1,
+	.tseg1_max = 512,
+	.tseg2_min = 1,
+	.tseg2_max = 32,
+	.sjw_max = 16,
+	.brp_min = 1,
+	.brp_max = 8192,
+	.brp_inc = 1,
+};
+
+struct kvaser_pciefd_cfg_param {
+	__le32 magic;
+	__le32 nr;
+	__le32 len;
+	u8 data[KVASER_PCIEFD_CFG_PARAM_MAX_SZ];
+};
+
+struct kvaser_pciefd_cfg_img {
+	__le32 version;
+	__le32 magic;
+	__le32 crc;
+	struct kvaser_pciefd_cfg_param params[KVASER_PCIEFD_CFG_MAX_PARAMS];
+};
+
+static struct pci_device_id kvaser_pciefd_id_table[] = {
+	{ PCI_DEVICE(KVASER_PCIEFD_VENDOR, KVASER_PCIEFD_4HS_ID), },
+	{ PCI_DEVICE(KVASER_PCIEFD_VENDOR, KVASER_PCIEFD_2HS_ID), },
+	{ PCI_DEVICE(KVASER_PCIEFD_VENDOR, KVASER_PCIEFD_HS_ID), },
+	{ PCI_DEVICE(KVASER_PCIEFD_VENDOR, KVASER_PCIEFD_MINIPCIE_HS_ID), },
+	{ PCI_DEVICE(KVASER_PCIEFD_VENDOR, KVASER_PCIEFD_MINIPCIE_2HS_ID), },
+	{ 0,},
+};
+MODULE_DEVICE_TABLE(pci, kvaser_pciefd_id_table);
+
+/* Onboard flash memory functions */
+static int kvaser_pciefd_spi_wait_loop(struct kvaser_pciefd *pcie, int msk)
+{
+	u32 res;
+	int ret;
+
+	ret = readl_poll_timeout(pcie->reg_base + KVASER_PCIEFD_SPI_STATUS_REG,
+				 res, res & msk, 0, 10);
+
+	return ret;
+}
+
+static int kvaser_pciefd_spi_cmd(struct kvaser_pciefd *pcie, const u8 *tx,
+				 u32 tx_len, u8 *rx, u32 rx_len)
+{
+	int c;
+
+	iowrite32(BIT(0), pcie->reg_base + KVASER_PCIEFD_SPI_SSEL_REG);
+	iowrite32(BIT(10), pcie->reg_base + KVASER_PCIEFD_SPI_CTRL_REG);
+	ioread32(pcie->reg_base + KVASER_PCIEFD_SPI_RX_REG);
+
+	c = tx_len;
+	while (c--) {
+		if (kvaser_pciefd_spi_wait_loop(pcie, KVASER_PCIEFD_SPI_TRDY))
+			return -EIO;
+
+		iowrite32(*tx++, pcie->reg_base + KVASER_PCIEFD_SPI_TX_REG);
+
+		if (kvaser_pciefd_spi_wait_loop(pcie, KVASER_PCIEFD_SPI_RRDY))
+			return -EIO;
+
+		ioread32(pcie->reg_base + KVASER_PCIEFD_SPI_RX_REG);
+	}
+
+	c = rx_len;
+	while (c-- > 0) {
+		if (kvaser_pciefd_spi_wait_loop(pcie, KVASER_PCIEFD_SPI_TRDY))
+			return -EIO;
+
+		iowrite32(0, pcie->reg_base + KVASER_PCIEFD_SPI_TX_REG);
+
+		if (kvaser_pciefd_spi_wait_loop(pcie, KVASER_PCIEFD_SPI_RRDY))
+			return -EIO;
+
+		*rx++ = ioread32(pcie->reg_base + KVASER_PCIEFD_SPI_RX_REG);
+	}
+
+	if (kvaser_pciefd_spi_wait_loop(pcie, KVASER_PCIEFD_SPI_TMT))
+		return -EIO;
+
+	iowrite32(0, pcie->reg_base + KVASER_PCIEFD_SPI_CTRL_REG);
+
+	if (c != -1) {
+		dev_err(&pcie->pci->dev, "Flash SPI transfer failed\n");
+		return -EIO;
+	}
+
+	return 0;
+}
+
+static int kvaser_pciefd_cfg_read_and_verify(struct kvaser_pciefd *pcie,
+					     struct kvaser_pciefd_cfg_img *img)
+{
+	int offset = KVASER_PCIEFD_CFG_IMG_OFFSET;
+	int res, crc;
+	u8 *crc_buff;
+
+	u8 cmd[] = {
+		KVASER_PCIEFD_FLASH_READ_CMD,
+		(u8)((offset >> 16) & 0xff),
+		(u8)((offset >> 8) & 0xff),
+		(u8)(offset & 0xff)
+	};
+
+	res = kvaser_pciefd_spi_cmd(pcie, cmd, ARRAY_SIZE(cmd), (u8 *)img,
+				    KVASER_PCIEFD_CFG_IMG_SZ);
+	if (res)
+		return res;
+
+	crc_buff = (u8 *)img->params;
+
+	if (le32_to_cpu(img->version) != KVASER_PCIEFD_CFG_SYS_VER) {
+		dev_err(&pcie->pci->dev,
+			"Config flash corrupted, version number is wrong\n");
+		return -ENODEV;
+	}
+
+	if (le32_to_cpu(img->magic) != KVASER_PCIEFD_CFG_MAGIC) {
+		dev_err(&pcie->pci->dev,
+			"Config flash corrupted, magic number is wrong\n");
+		return -ENODEV;
+	}
+
+	crc = ~crc32_be(0xffffffff, crc_buff, sizeof(img->params));
+	if (le32_to_cpu(img->crc) != crc) {
+		dev_err(&pcie->pci->dev,
+			"Stored CRC does not match flash image contents\n");
+		return -EIO;
+	}
+
+	return 0;
+}
+
+static void kvaser_pciefd_cfg_read_params(struct kvaser_pciefd *pcie,
+					  struct kvaser_pciefd_cfg_img *img)
+{
+	struct kvaser_pciefd_cfg_param *param;
+
+	param = &img->params[KVASER_PCIEFD_CFG_PARAM_NR_CHAN];
+	memcpy(&pcie->nr_channels, param->data, le32_to_cpu(param->len));
+}
+
+static int kvaser_pciefd_read_cfg(struct kvaser_pciefd *pcie)
+{
+	int res;
+	struct kvaser_pciefd_cfg_img *img;
+
+	/* Read electronic signature */
+	u8 cmd[] = {KVASER_PCIEFD_FLASH_RES_CMD, 0, 0, 0};
+
+	res = kvaser_pciefd_spi_cmd(pcie, cmd, ARRAY_SIZE(cmd), cmd, 1);
+	if (res)
+		return -EIO;
+
+	img = kmalloc(KVASER_PCIEFD_CFG_IMG_SZ, GFP_KERNEL);
+	if (!img)
+		return -ENOMEM;
+
+	if (cmd[0] != KVASER_PCIEFD_FLASH_ID_EPCS16) {
+		dev_err(&pcie->pci->dev,
+			"Flash id is 0x%x instead of expected EPCS16 (0x%x)\n",
+			cmd[0], KVASER_PCIEFD_FLASH_ID_EPCS16);
+
+		res = -ENODEV;
+		goto image_free;
+	}
+
+	cmd[0] = KVASER_PCIEFD_FLASH_STATUS_CMD;
+	res = kvaser_pciefd_spi_cmd(pcie, cmd, 1, cmd, 1);
+	if (res) {
+		goto image_free;
+	} else if (cmd[0] & 1) {
+		res = -EIO;
+		/* No write is ever done, the WIP should never be set */
+		dev_err(&pcie->pci->dev, "Unexpected WIP bit set in flash\n");
+		goto image_free;
+	}
+
+	res = kvaser_pciefd_cfg_read_and_verify(pcie, img);
+	if (res) {
+		res = -EIO;
+		goto image_free;
+	}
+
+	kvaser_pciefd_cfg_read_params(pcie, img);
+
+image_free:
+	kfree(img);
+	return res;
+}
+
+static void kvaser_pciefd_request_status(struct kvaser_pciefd_can *can)
+{
+	u32 cmd;
+
+	cmd = KVASER_PCIEFD_KCAN_CMD_SRQ;
+	cmd |= ++can->cmd_seq << KVASER_PCIEFD_KCAN_CMD_SEQ_SHIFT;
+	iowrite32(cmd, can->reg_base + KVASER_PCIEFD_KCAN_CMD_REG);
+}
+
+static void kvaser_pciefd_enable_err_gen(struct kvaser_pciefd_can *can)
+{
+	u32 mode;
+	unsigned long irq;
+
+	spin_lock_irqsave(&can->lock, irq);
+	mode = ioread32(can->reg_base + KVASER_PCIEFD_KCAN_MODE_REG);
+	if (!(mode & KVASER_PCIEFD_KCAN_MODE_EPEN)) {
+		mode |= KVASER_PCIEFD_KCAN_MODE_EPEN;
+		iowrite32(mode, can->reg_base + KVASER_PCIEFD_KCAN_MODE_REG);
+	}
+	spin_unlock_irqrestore(&can->lock, irq);
+}
+
+static void kvaser_pciefd_disable_err_gen(struct kvaser_pciefd_can *can)
+{
+	u32 mode;
+	unsigned long irq;
+
+	spin_lock_irqsave(&can->lock, irq);
+	mode = ioread32(can->reg_base + KVASER_PCIEFD_KCAN_MODE_REG);
+	mode &= ~KVASER_PCIEFD_KCAN_MODE_EPEN;
+	iowrite32(mode, can->reg_base + KVASER_PCIEFD_KCAN_MODE_REG);
+	spin_unlock_irqrestore(&can->lock, irq);
+}
+
+static int kvaser_pciefd_set_tx_irq(struct kvaser_pciefd_can *can)
+{
+	u32 msk;
+
+	msk = KVASER_PCIEFD_KCAN_IRQ_TE | KVASER_PCIEFD_KCAN_IRQ_ROF |
+	      KVASER_PCIEFD_KCAN_IRQ_TOF | KVASER_PCIEFD_KCAN_IRQ_ABD |
+	      KVASER_PCIEFD_KCAN_IRQ_TAE | KVASER_PCIEFD_KCAN_IRQ_TAL |
+	      KVASER_PCIEFD_KCAN_IRQ_FDIC | KVASER_PCIEFD_KCAN_IRQ_BPP |
+	      KVASER_PCIEFD_KCAN_IRQ_TAR | KVASER_PCIEFD_KCAN_IRQ_TFD;
+
+	iowrite32(msk, can->reg_base + KVASER_PCIEFD_KCAN_IEN_REG);
+
+	return 0;
+}
+
+static void kvaser_pciefd_setup_controller(struct kvaser_pciefd_can *can)
+{
+	u32 mode;
+	unsigned long irq;
+
+	spin_lock_irqsave(&can->lock, irq);
+
+	mode = ioread32(can->reg_base + KVASER_PCIEFD_KCAN_MODE_REG);
+	if (can->can.ctrlmode & CAN_CTRLMODE_FD) {
+		mode &= ~KVASER_PCIEFD_KCAN_MODE_CCM;
+		if (can->can.ctrlmode & CAN_CTRLMODE_FD_NON_ISO)
+			mode |= KVASER_PCIEFD_KCAN_MODE_NIFDEN;
+		else
+			mode &= ~KVASER_PCIEFD_KCAN_MODE_NIFDEN;
+	} else {
+		mode |= KVASER_PCIEFD_KCAN_MODE_CCM;
+		mode &= ~KVASER_PCIEFD_KCAN_MODE_NIFDEN;
+	}
+
+	if (can->can.ctrlmode & CAN_CTRLMODE_LISTENONLY)
+		mode |= KVASER_PCIEFD_KCAN_MODE_LOM;
+
+	mode |= KVASER_PCIEFD_KCAN_MODE_EEN;
+	mode |= KVASER_PCIEFD_KCAN_MODE_EPEN;
+	/* Use ACK packet type */
+	mode &= ~KVASER_PCIEFD_KCAN_MODE_APT;
+	mode &= ~KVASER_PCIEFD_KCAN_MODE_RM;
+	iowrite32(mode, can->reg_base + KVASER_PCIEFD_KCAN_MODE_REG);
+
+	spin_unlock_irqrestore(&can->lock, irq);
+}
+
+static void kvaser_pciefd_start_controller_flush(struct kvaser_pciefd_can *can)
+{
+	u32 status;
+	unsigned long irq;
+
+	spin_lock_irqsave(&can->lock, irq);
+	iowrite32(-1, can->reg_base + KVASER_PCIEFD_KCAN_IRQ_REG);
+	iowrite32(KVASER_PCIEFD_KCAN_IRQ_ABD | KVASER_PCIEFD_KCAN_IRQ_TFD,
+		  can->reg_base + KVASER_PCIEFD_KCAN_IEN_REG);
+
+	status = ioread32(can->reg_base + KVASER_PCIEFD_KCAN_STAT_REG);
+	if (status & KVASER_PCIEFD_KCAN_STAT_IDLE) {
+		u32 cmd;
+
+		/* If controller is already idle, run abort, flush and reset */
+		cmd = KVASER_PCIEFD_KCAN_CMD_AT;
+		cmd |= ++can->cmd_seq << KVASER_PCIEFD_KCAN_CMD_SEQ_SHIFT;
+		iowrite32(cmd, can->reg_base + KVASER_PCIEFD_KCAN_CMD_REG);
+	} else if (!(status & KVASER_PCIEFD_KCAN_STAT_RMR)) {
+		u32 mode;
+
+		/* Put controller in reset mode */
+		mode = ioread32(can->reg_base + KVASER_PCIEFD_KCAN_MODE_REG);
+		mode |= KVASER_PCIEFD_KCAN_MODE_RM;
+		iowrite32(mode, can->reg_base + KVASER_PCIEFD_KCAN_MODE_REG);
+	}
+
+	spin_unlock_irqrestore(&can->lock, irq);
+}
+
+static int kvaser_pciefd_bus_on(struct kvaser_pciefd_can *can)
+{
+	u32 mode;
+	unsigned long irq;
+
+	del_timer(&can->bec_poll_timer);
+
+	if (!completion_done(&can->flush_comp))
+		kvaser_pciefd_start_controller_flush(can);
+
+	if (!wait_for_completion_timeout(&can->flush_comp,
+					 KVASER_PCIEFD_WAIT_TIMEOUT)) {
+		netdev_err(can->can.dev, "Timeout during bus on flush\n");
+		return -ETIMEDOUT;
+	}
+
+	spin_lock_irqsave(&can->lock, irq);
+	iowrite32(0, can->reg_base + KVASER_PCIEFD_KCAN_IEN_REG);
+	iowrite32(-1, can->reg_base + KVASER_PCIEFD_KCAN_IRQ_REG);
+
+	iowrite32(KVASER_PCIEFD_KCAN_IRQ_ABD | KVASER_PCIEFD_KCAN_IRQ_TFD,
+		  can->reg_base + KVASER_PCIEFD_KCAN_IEN_REG);
+
+	mode = ioread32(can->reg_base + KVASER_PCIEFD_KCAN_MODE_REG);
+	mode &= ~KVASER_PCIEFD_KCAN_MODE_RM;
+	iowrite32(mode, can->reg_base + KVASER_PCIEFD_KCAN_MODE_REG);
+	spin_unlock_irqrestore(&can->lock, irq);
+
+	if (!wait_for_completion_timeout(&can->start_comp,
+					 KVASER_PCIEFD_WAIT_TIMEOUT)) {
+		netdev_err(can->can.dev, "Timeout during bus on reset\n");
+		return -ETIMEDOUT;
+	}
+	/* Reset interrupt handling */
+	iowrite32(0, can->reg_base + KVASER_PCIEFD_KCAN_IEN_REG);
+	iowrite32(-1, can->reg_base + KVASER_PCIEFD_KCAN_IRQ_REG);
+
+	kvaser_pciefd_set_tx_irq(can);
+	kvaser_pciefd_setup_controller(can);
+
+	can->can.state = CAN_STATE_ERROR_ACTIVE;
+	netif_wake_queue(can->can.dev);
+	can->bec.txerr = 0;
+	can->bec.rxerr = 0;
+	can->err_rep_cnt = 0;
+
+	return 0;
+}
+
+static void kvaser_pciefd_pwm_stop(struct kvaser_pciefd_can *can)
+{
+	u8 top;
+	u32 pwm_ctrl;
+	unsigned long irq;
+
+	spin_lock_irqsave(&can->lock, irq);
+	pwm_ctrl = ioread32(can->reg_base + KVASER_PCIEFD_KCAN_PWM_REG);
+	top = (pwm_ctrl >> KVASER_PCIEFD_KCAN_PWM_TOP_SHIFT) & 0xff;
+
+	/* Set duty cycle to zero */
+	pwm_ctrl |= top;
+	iowrite32(pwm_ctrl, can->reg_base + KVASER_PCIEFD_KCAN_PWM_REG);
+	spin_unlock_irqrestore(&can->lock, irq);
+}
+
+static void kvaser_pciefd_pwm_start(struct kvaser_pciefd_can *can)
+{
+	int top, trigger;
+	u32 pwm_ctrl;
+	unsigned long irq;
+
+	kvaser_pciefd_pwm_stop(can);
+	spin_lock_irqsave(&can->lock, irq);
+
+	/* Set frequency to 500 KHz*/
+	top = can->kv_pcie->bus_freq / (2 * 500000) - 1;
+
+	pwm_ctrl = top & 0xff;
+	pwm_ctrl |= (top & 0xff) << KVASER_PCIEFD_KCAN_PWM_TOP_SHIFT;
+	iowrite32(pwm_ctrl, can->reg_base + KVASER_PCIEFD_KCAN_PWM_REG);
+
+	/* Set duty cycle to 95 */
+	trigger = (100 * top - 95 * (top + 1) + 50) / 100;
+	pwm_ctrl = trigger & 0xff;
+	pwm_ctrl |= (top & 0xff) << KVASER_PCIEFD_KCAN_PWM_TOP_SHIFT;
+	iowrite32(pwm_ctrl, can->reg_base + KVASER_PCIEFD_KCAN_PWM_REG);
+	spin_unlock_irqrestore(&can->lock, irq);
+}
+
+static int kvaser_pciefd_open(struct net_device *netdev)
+{
+	int err;
+	struct kvaser_pciefd_can *can = netdev_priv(netdev);
+
+	err = open_candev(netdev);
+	if (err)
+		return err;
+
+	err = kvaser_pciefd_bus_on(can);
+	if (err) {
+		close_candev(netdev);
+		return err;
+	}
+
+	return 0;
+}
+
+static int kvaser_pciefd_stop(struct net_device *netdev)
+{
+	struct kvaser_pciefd_can *can = netdev_priv(netdev);
+	int ret = 0;
+
+	/* Don't interrupt ongoing flush */
+	if (!completion_done(&can->flush_comp))
+		kvaser_pciefd_start_controller_flush(can);
+
+	if (!wait_for_completion_timeout(&can->flush_comp,
+					 KVASER_PCIEFD_WAIT_TIMEOUT)) {
+		netdev_err(can->can.dev, "Timeout during stop\n");
+		ret = -ETIMEDOUT;
+	} else {
+		iowrite32(0, can->reg_base + KVASER_PCIEFD_KCAN_IEN_REG);
+		del_timer(&can->bec_poll_timer);
+	}
+	close_candev(netdev);
+
+	return ret;
+}
+
+static int kvaser_pciefd_prepare_tx_packet(struct kvaser_pciefd_tx_packet *p,
+					   struct kvaser_pciefd_can *can,
+					   struct sk_buff *skb)
+{
+	struct canfd_frame *cf = (struct canfd_frame *)skb->data;
+	int packet_size;
+	int seq = can->echo_idx;
+
+	memset(p, 0, sizeof(*p));
+
+	if (can->can.ctrlmode & CAN_CTRLMODE_ONE_SHOT)
+		p->header[1] |= KVASER_PCIEFD_TPACKET_SMS;
+
+	if (cf->can_id & CAN_RTR_FLAG)
+		p->header[0] |= KVASER_PCIEFD_RPACKET_RTR;
+
+	if (cf->can_id & CAN_EFF_FLAG)
+		p->header[0] |= KVASER_PCIEFD_RPACKET_IDE;
+
+	p->header[0] |= cf->can_id & CAN_EFF_MASK;
+	p->header[1] |= can_fd_len2dlc(cf->len) << KVASER_PCIEFD_RPACKET_DLC_SHIFT;
+	p->header[1] |= KVASER_PCIEFD_TPACKET_AREQ;
+
+	if (can_is_canfd_skb(skb)) {
+		p->header[1] |= KVASER_PCIEFD_RPACKET_FDF;
+		if (cf->flags & CANFD_BRS)
+			p->header[1] |= KVASER_PCIEFD_RPACKET_BRS;
+		if (cf->flags & CANFD_ESI)
+			p->header[1] |= KVASER_PCIEFD_RPACKET_ESI;
+	}
+
+	p->header[1] |= seq & KVASER_PCIEFD_PACKET_SEQ_MSK;
+
+	packet_size = cf->len;
+	memcpy(p->data, cf->data, packet_size);
+
+	return DIV_ROUND_UP(packet_size, 4);
+}
+
+static netdev_tx_t kvaser_pciefd_start_xmit(struct sk_buff *skb,
+					    struct net_device *netdev)
+{
+	struct kvaser_pciefd_can *can = netdev_priv(netdev);
+	unsigned long irq_flags;
+	struct kvaser_pciefd_tx_packet packet;
+	int nwords;
+	u8 count;
+
+	if (can_dropped_invalid_skb(netdev, skb))
+		return NETDEV_TX_OK;
+
+	nwords = kvaser_pciefd_prepare_tx_packet(&packet, can, skb);
+
+	spin_lock_irqsave(&can->echo_lock, irq_flags);
+
+	/* Prepare and save echo skb in internal slot */
+	can_put_echo_skb(skb, netdev, can->echo_idx, 0);
+
+	/* Move echo index to the next slot */
+	can->echo_idx = (can->echo_idx + 1) % can->can.echo_skb_max;
+
+	/* Write header to fifo */
+	iowrite32(packet.header[0],
+		  can->reg_base + KVASER_PCIEFD_KCAN_FIFO_REG);
+	iowrite32(packet.header[1],
+		  can->reg_base + KVASER_PCIEFD_KCAN_FIFO_REG);
+
+	if (nwords) {
+		u32 data_last = ((u32 *)packet.data)[nwords - 1];
+
+		/* Write data to fifo, except last word */
+		iowrite32_rep(can->reg_base +
+			      KVASER_PCIEFD_KCAN_FIFO_REG, packet.data,
+			      nwords - 1);
+		/* Write last word to end of fifo */
+		__raw_writel(data_last, can->reg_base +
+			     KVASER_PCIEFD_KCAN_FIFO_LAST_REG);
+	} else {
+		/* Complete write to fifo */
+		__raw_writel(0, can->reg_base +
+			     KVASER_PCIEFD_KCAN_FIFO_LAST_REG);
+	}
+
+	count = ioread32(can->reg_base + KVASER_PCIEFD_KCAN_TX_NPACKETS_REG);
+	/* No room for a new message, stop the queue until at least one
+	 * successful transmit
+	 */
+	if (count >= KVASER_PCIEFD_CAN_TX_MAX_COUNT ||
+	    can->can.echo_skb[can->echo_idx])
+		netif_stop_queue(netdev);
+
+	spin_unlock_irqrestore(&can->echo_lock, irq_flags);
+
+	return NETDEV_TX_OK;
+}
+
+static int kvaser_pciefd_set_bittiming(struct kvaser_pciefd_can *can, bool data)
+{
+	u32 mode, test, btrn;
+	unsigned long irq_flags;
+	int ret;
+	struct can_bittiming *bt;
+
+	if (data)
+		bt = &can->can.data_bittiming;
+	else
+		bt = &can->can.bittiming;
+
+	btrn = ((bt->phase_seg2 - 1) & 0x1f) <<
+	       KVASER_PCIEFD_KCAN_BTRN_TSEG2_SHIFT |
+	       (((bt->prop_seg + bt->phase_seg1) - 1) & 0x1ff) <<
+	       KVASER_PCIEFD_KCAN_BTRN_TSEG1_SHIFT |
+	       ((bt->sjw - 1) & 0xf) << KVASER_PCIEFD_KCAN_BTRN_SJW_SHIFT |
+	       ((bt->brp - 1) & 0x1fff);
+
+	spin_lock_irqsave(&can->lock, irq_flags);
+	mode = ioread32(can->reg_base + KVASER_PCIEFD_KCAN_MODE_REG);
+
+	/* Put the circuit in reset mode */
+	iowrite32(mode | KVASER_PCIEFD_KCAN_MODE_RM,
+		  can->reg_base + KVASER_PCIEFD_KCAN_MODE_REG);
+
+	/* Can only set bittiming if in reset mode */
+	ret = readl_poll_timeout(can->reg_base + KVASER_PCIEFD_KCAN_MODE_REG,
+				 test, test & KVASER_PCIEFD_KCAN_MODE_RM,
+				 0, 10);
+
+	if (ret) {
+		spin_unlock_irqrestore(&can->lock, irq_flags);
+		return -EBUSY;
+	}
+
+	if (data)
+		iowrite32(btrn, can->reg_base + KVASER_PCIEFD_KCAN_BTRD_REG);
+	else
+		iowrite32(btrn, can->reg_base + KVASER_PCIEFD_KCAN_BTRN_REG);
+
+	/* Restore previous reset mode status */
+	iowrite32(mode, can->reg_base + KVASER_PCIEFD_KCAN_MODE_REG);
+
+	spin_unlock_irqrestore(&can->lock, irq_flags);
+	return 0;
+}
+
+static int kvaser_pciefd_set_nominal_bittiming(struct net_device *ndev)
+{
+	return kvaser_pciefd_set_bittiming(netdev_priv(ndev), false);
+}
+
+static int kvaser_pciefd_set_data_bittiming(struct net_device *ndev)
+{
+	return kvaser_pciefd_set_bittiming(netdev_priv(ndev), true);
+}
+
+static int kvaser_pciefd_set_mode(struct net_device *ndev, enum can_mode mode)
+{
+	struct kvaser_pciefd_can *can = netdev_priv(ndev);
+	int ret = 0;
+
+	switch (mode) {
+	case CAN_MODE_START:
+		if (!can->can.restart_ms)
+			ret = kvaser_pciefd_bus_on(can);
+		break;
+	default:
+		return -EOPNOTSUPP;
+	}
+
+	return ret;
+}
+
+static int kvaser_pciefd_get_berr_counter(const struct net_device *ndev,
+					  struct can_berr_counter *bec)
+{
+	struct kvaser_pciefd_can *can = netdev_priv(ndev);
+
+	bec->rxerr = can->bec.rxerr;
+	bec->txerr = can->bec.txerr;
+	return 0;
+}
+
+static void kvaser_pciefd_bec_poll_timer(struct timer_list *data)
+{
+	struct kvaser_pciefd_can *can = from_timer(can, data, bec_poll_timer);
+
+	kvaser_pciefd_enable_err_gen(can);
+	kvaser_pciefd_request_status(can);
+	can->err_rep_cnt = 0;
+}
+
+static const struct net_device_ops kvaser_pciefd_netdev_ops = {
+	.ndo_open = kvaser_pciefd_open,
+	.ndo_stop = kvaser_pciefd_stop,
+	.ndo_start_xmit = kvaser_pciefd_start_xmit,
+	.ndo_change_mtu = can_change_mtu,
+};
+
+static int kvaser_pciefd_setup_can_ctrls(struct kvaser_pciefd *pcie)
+{
+	int i;
+
+	for (i = 0; i < pcie->nr_channels; i++) {
+		struct net_device *netdev;
+		struct kvaser_pciefd_can *can;
+		u32 status, tx_npackets;
+
+		netdev = alloc_candev(sizeof(struct kvaser_pciefd_can),
+				      KVASER_PCIEFD_CAN_TX_MAX_COUNT);
+		if (!netdev)
+			return -ENOMEM;
+
+		can = netdev_priv(netdev);
+		netdev->netdev_ops = &kvaser_pciefd_netdev_ops;
+		can->reg_base = pcie->reg_base + KVASER_PCIEFD_KCAN0_BASE +
+				i * KVASER_PCIEFD_KCAN_BASE_OFFSET;
+
+		can->kv_pcie = pcie;
+		can->cmd_seq = 0;
+		can->err_rep_cnt = 0;
+		can->bec.txerr = 0;
+		can->bec.rxerr = 0;
+
+		init_completion(&can->start_comp);
+		init_completion(&can->flush_comp);
+		timer_setup(&can->bec_poll_timer, kvaser_pciefd_bec_poll_timer,
+			    0);
+
+		/* Disable Bus load reporting */
+		iowrite32(0, can->reg_base + KVASER_PCIEFD_KCAN_BUS_LOAD_REG);
+
+		tx_npackets = ioread32(can->reg_base +
+				       KVASER_PCIEFD_KCAN_TX_NPACKETS_REG);
+		if (((tx_npackets >> KVASER_PCIEFD_KCAN_TX_NPACKETS_MAX_SHIFT) &
+		      0xff) < KVASER_PCIEFD_CAN_TX_MAX_COUNT) {
+			dev_err(&pcie->pci->dev,
+				"Max Tx count is smaller than expected\n");
+
+			free_candev(netdev);
+			return -ENODEV;
+		}
+
+		can->can.clock.freq = pcie->freq;
+		can->can.echo_skb_max = KVASER_PCIEFD_CAN_TX_MAX_COUNT;
+		can->echo_idx = 0;
+		spin_lock_init(&can->echo_lock);
+		spin_lock_init(&can->lock);
+		can->can.bittiming_const = &kvaser_pciefd_bittiming_const;
+		can->can.data_bittiming_const = &kvaser_pciefd_bittiming_const;
+
+		can->can.do_set_bittiming = kvaser_pciefd_set_nominal_bittiming;
+		can->can.do_set_data_bittiming =
+			kvaser_pciefd_set_data_bittiming;
+
+		can->can.do_set_mode = kvaser_pciefd_set_mode;
+		can->can.do_get_berr_counter = kvaser_pciefd_get_berr_counter;
+
+		can->can.ctrlmode_supported = CAN_CTRLMODE_LISTENONLY |
+					      CAN_CTRLMODE_FD |
+					      CAN_CTRLMODE_FD_NON_ISO;
+
+		status = ioread32(can->reg_base + KVASER_PCIEFD_KCAN_STAT_REG);
+		if (!(status & KVASER_PCIEFD_KCAN_STAT_FD)) {
+			dev_err(&pcie->pci->dev,
+				"CAN FD not supported as expected %d\n", i);
+
+			free_candev(netdev);
+			return -ENODEV;
+		}
+
+		if (status & KVASER_PCIEFD_KCAN_STAT_CAP)
+			can->can.ctrlmode_supported |= CAN_CTRLMODE_ONE_SHOT;
+
+		netdev->flags |= IFF_ECHO;
+
+		SET_NETDEV_DEV(netdev, &pcie->pci->dev);
+
+		iowrite32(-1, can->reg_base + KVASER_PCIEFD_KCAN_IRQ_REG);
+		iowrite32(KVASER_PCIEFD_KCAN_IRQ_ABD |
+			  KVASER_PCIEFD_KCAN_IRQ_TFD,
+			  can->reg_base + KVASER_PCIEFD_KCAN_IEN_REG);
+
+		pcie->can[i] = can;
+		kvaser_pciefd_pwm_start(can);
+	}
+
+	return 0;
+}
+
+static int kvaser_pciefd_reg_candev(struct kvaser_pciefd *pcie)
+{
+	int i;
+
+	for (i = 0; i < pcie->nr_channels; i++) {
+		int err = register_candev(pcie->can[i]->can.dev);
+
+		if (err) {
+			int j;
+
+			/* Unregister all successfully registered devices. */
+			for (j = 0; j < i; j++)
+				unregister_candev(pcie->can[j]->can.dev);
+			return err;
+		}
+	}
+
+	return 0;
+}
+
+static void kvaser_pciefd_write_dma_map(struct kvaser_pciefd *pcie,
+					dma_addr_t addr, int offset)
+{
+	u32 word1, word2;
+
+#ifdef CONFIG_ARCH_DMA_ADDR_T_64BIT
+	word1 = addr | KVASER_PCIEFD_64BIT_DMA_BIT;
+	word2 = addr >> 32;
+#else
+	word1 = addr;
+	word2 = 0;
+#endif
+	iowrite32(word1, pcie->reg_base + offset);
+	iowrite32(word2, pcie->reg_base + offset + 4);
+}
+
+static int kvaser_pciefd_setup_dma(struct kvaser_pciefd *pcie)
+{
+	int i;
+	u32 srb_status;
+	dma_addr_t dma_addr[KVASER_PCIEFD_DMA_COUNT];
+
+	/* Disable the DMA */
+	iowrite32(0, pcie->reg_base + KVASER_PCIEFD_SRB_CTRL_REG);
+	for (i = 0; i < KVASER_PCIEFD_DMA_COUNT; i++) {
+		unsigned int offset = KVASER_PCIEFD_DMA_MAP_BASE + 8 * i;
+
+		pcie->dma_data[i] =
+			dmam_alloc_coherent(&pcie->pci->dev,
+					    KVASER_PCIEFD_DMA_SIZE,
+					    &dma_addr[i],
+					    GFP_KERNEL);
+
+		if (!pcie->dma_data[i] || !dma_addr[i]) {
+			dev_err(&pcie->pci->dev, "Rx dma_alloc(%u) failure\n",
+				KVASER_PCIEFD_DMA_SIZE);
+			return -ENOMEM;
+		}
+
+		kvaser_pciefd_write_dma_map(pcie, dma_addr[i], offset);
+	}
+
+	/* Reset Rx FIFO, and both DMA buffers */
+	iowrite32(KVASER_PCIEFD_SRB_CMD_FOR | KVASER_PCIEFD_SRB_CMD_RDB0 |
+		  KVASER_PCIEFD_SRB_CMD_RDB1,
+		  pcie->reg_base + KVASER_PCIEFD_SRB_CMD_REG);
+
+	srb_status = ioread32(pcie->reg_base + KVASER_PCIEFD_SRB_STAT_REG);
+	if (!(srb_status & KVASER_PCIEFD_SRB_STAT_DI)) {
+		dev_err(&pcie->pci->dev, "DMA not idle before enabling\n");
+		return -EIO;
+	}
+
+	/* Enable the DMA */
+	iowrite32(KVASER_PCIEFD_SRB_CTRL_DMA_ENABLE,
+		  pcie->reg_base + KVASER_PCIEFD_SRB_CTRL_REG);
+
+	return 0;
+}
+
+static int kvaser_pciefd_setup_board(struct kvaser_pciefd *pcie)
+{
+	u32 sysid, srb_status, build;
+	u8 sysid_nr_chan;
+	int ret;
+
+	ret = kvaser_pciefd_read_cfg(pcie);
+	if (ret)
+		return ret;
+
+	sysid = ioread32(pcie->reg_base + KVASER_PCIEFD_SYSID_VERSION_REG);
+	sysid_nr_chan = (sysid >> KVASER_PCIEFD_SYSID_NRCHAN_SHIFT) & 0xff;
+	if (pcie->nr_channels != sysid_nr_chan) {
+		dev_err(&pcie->pci->dev,
+			"Number of channels does not match: %u vs %u\n",
+			pcie->nr_channels,
+			sysid_nr_chan);
+		return -ENODEV;
+	}
+
+	if (pcie->nr_channels > KVASER_PCIEFD_MAX_CAN_CHANNELS)
+		pcie->nr_channels = KVASER_PCIEFD_MAX_CAN_CHANNELS;
+
+	build = ioread32(pcie->reg_base + KVASER_PCIEFD_SYSID_BUILD_REG);
+	dev_dbg(&pcie->pci->dev, "Version %u.%u.%u\n",
+		(sysid >> KVASER_PCIEFD_SYSID_MAJOR_VER_SHIFT) & 0xff,
+		sysid & 0xff,
+		(build >> KVASER_PCIEFD_SYSID_BUILD_VER_SHIFT) & 0x7fff);
+
+	srb_status = ioread32(pcie->reg_base + KVASER_PCIEFD_SRB_STAT_REG);
+	if (!(srb_status & KVASER_PCIEFD_SRB_STAT_DMA)) {
+		dev_err(&pcie->pci->dev,
+			"Hardware without DMA is not supported\n");
+		return -ENODEV;
+	}
+
+	pcie->bus_freq = ioread32(pcie->reg_base +
+				  KVASER_PCIEFD_SYSID_BUSFREQ_REG);
+	pcie->freq = ioread32(pcie->reg_base + KVASER_PCIEFD_SYSID_CANFREQ_REG);
+	pcie->freq_to_ticks_div = pcie->freq / 1000000;
+	if (pcie->freq_to_ticks_div == 0)
+		pcie->freq_to_ticks_div = 1;
+
+	/* Turn off all loopback functionality */
+	iowrite32(0, pcie->reg_base + KVASER_PCIEFD_LOOP_REG);
+	return ret;
+}
+
+static int kvaser_pciefd_handle_data_packet(struct kvaser_pciefd *pcie,
+					    struct kvaser_pciefd_rx_packet *p,
+					    __le32 *data)
+{
+	struct sk_buff *skb;
+	struct canfd_frame *cf;
+	struct can_priv *priv;
+	struct net_device_stats *stats;
+	struct skb_shared_hwtstamps *shhwtstamps;
+	u8 ch_id = (p->header[1] >> KVASER_PCIEFD_PACKET_CHID_SHIFT) & 0x7;
+
+	if (ch_id >= pcie->nr_channels)
+		return -EIO;
+
+	priv = &pcie->can[ch_id]->can;
+	stats = &priv->dev->stats;
+
+	if (p->header[1] & KVASER_PCIEFD_RPACKET_FDF) {
+		skb = alloc_canfd_skb(priv->dev, &cf);
+		if (!skb) {
+			stats->rx_dropped++;
+			return -ENOMEM;
+		}
+
+		if (p->header[1] & KVASER_PCIEFD_RPACKET_BRS)
+			cf->flags |= CANFD_BRS;
+
+		if (p->header[1] & KVASER_PCIEFD_RPACKET_ESI)
+			cf->flags |= CANFD_ESI;
+	} else {
+		skb = alloc_can_skb(priv->dev, (struct can_frame **)&cf);
+		if (!skb) {
+			stats->rx_dropped++;
+			return -ENOMEM;
+		}
+	}
+
+	cf->can_id = p->header[0] & CAN_EFF_MASK;
+	if (p->header[0] & KVASER_PCIEFD_RPACKET_IDE)
+		cf->can_id |= CAN_EFF_FLAG;
+
+	cf->len = can_fd_dlc2len(p->header[1] >> KVASER_PCIEFD_RPACKET_DLC_SHIFT);
+
+	if (p->header[0] & KVASER_PCIEFD_RPACKET_RTR) {
+		cf->can_id |= CAN_RTR_FLAG;
+	} else {
+		memcpy(cf->data, data, cf->len);
+
+		stats->rx_bytes += cf->len;
+	}
+	stats->rx_packets++;
+
+	shhwtstamps = skb_hwtstamps(skb);
+
+	shhwtstamps->hwtstamp =
+		ns_to_ktime(div_u64(p->timestamp * 1000,
+				    pcie->freq_to_ticks_div));
+
+	return netif_rx(skb);
+}
+
+static void kvaser_pciefd_change_state(struct kvaser_pciefd_can *can,
+				       struct can_frame *cf,
+				       enum can_state new_state,
+				       enum can_state tx_state,
+				       enum can_state rx_state)
+{
+	can_change_state(can->can.dev, cf, tx_state, rx_state);
+
+	if (new_state == CAN_STATE_BUS_OFF) {
+		struct net_device *ndev = can->can.dev;
+		unsigned long irq_flags;
+
+		spin_lock_irqsave(&can->lock, irq_flags);
+		netif_stop_queue(can->can.dev);
+		spin_unlock_irqrestore(&can->lock, irq_flags);
+
+		/* Prevent CAN controller from auto recover from bus off */
+		if (!can->can.restart_ms) {
+			kvaser_pciefd_start_controller_flush(can);
+			can_bus_off(ndev);
+		}
+	}
+}
+
+static void kvaser_pciefd_packet_to_state(struct kvaser_pciefd_rx_packet *p,
+					  struct can_berr_counter *bec,
+					  enum can_state *new_state,
+					  enum can_state *tx_state,
+					  enum can_state *rx_state)
+{
+	if (p->header[0] & KVASER_PCIEFD_SPACK_BOFF ||
+	    p->header[0] & KVASER_PCIEFD_SPACK_IRM)
+		*new_state = CAN_STATE_BUS_OFF;
+	else if (bec->txerr >= 255 ||  bec->rxerr >= 255)
+		*new_state = CAN_STATE_BUS_OFF;
+	else if (p->header[1] & KVASER_PCIEFD_SPACK_EPLR)
+		*new_state = CAN_STATE_ERROR_PASSIVE;
+	else if (bec->txerr >= 128 || bec->rxerr >= 128)
+		*new_state = CAN_STATE_ERROR_PASSIVE;
+	else if (p->header[1] & KVASER_PCIEFD_SPACK_EWLR)
+		*new_state = CAN_STATE_ERROR_WARNING;
+	else if (bec->txerr >= 96 || bec->rxerr >= 96)
+		*new_state = CAN_STATE_ERROR_WARNING;
+	else
+		*new_state = CAN_STATE_ERROR_ACTIVE;
+
+	*tx_state = bec->txerr >= bec->rxerr ? *new_state : 0;
+	*rx_state = bec->txerr <= bec->rxerr ? *new_state : 0;
+}
+
+static int kvaser_pciefd_rx_error_frame(struct kvaser_pciefd_can *can,
+					struct kvaser_pciefd_rx_packet *p)
+{
+	struct can_berr_counter bec;
+	enum can_state old_state, new_state, tx_state, rx_state;
+	struct net_device *ndev = can->can.dev;
+	struct sk_buff *skb;
+	struct can_frame *cf = NULL;
+	struct skb_shared_hwtstamps *shhwtstamps;
+	struct net_device_stats *stats = &ndev->stats;
+
+	old_state = can->can.state;
+
+	bec.txerr = p->header[0] & 0xff;
+	bec.rxerr = (p->header[0] >> KVASER_PCIEFD_SPACK_RXERR_SHIFT) & 0xff;
+
+	kvaser_pciefd_packet_to_state(p, &bec, &new_state, &tx_state,
+				      &rx_state);
+
+	skb = alloc_can_err_skb(ndev, &cf);
+
+	if (new_state != old_state) {
+		kvaser_pciefd_change_state(can, cf, new_state, tx_state,
+					   rx_state);
+
+		if (old_state == CAN_STATE_BUS_OFF &&
+		    new_state == CAN_STATE_ERROR_ACTIVE &&
+		    can->can.restart_ms) {
+			can->can.can_stats.restarts++;
+			if (skb)
+				cf->can_id |= CAN_ERR_RESTARTED;
+		}
+	}
+
+	can->err_rep_cnt++;
+	can->can.can_stats.bus_error++;
+	if (p->header[1] & KVASER_PCIEFD_EPACK_DIR_TX)
+		stats->tx_errors++;
+	else
+		stats->rx_errors++;
+
+	can->bec.txerr = bec.txerr;
+	can->bec.rxerr = bec.rxerr;
+
+	if (!skb) {
+		stats->rx_dropped++;
+		return -ENOMEM;
+	}
+
+	shhwtstamps = skb_hwtstamps(skb);
+	shhwtstamps->hwtstamp =
+		ns_to_ktime(div_u64(p->timestamp * 1000,
+				    can->kv_pcie->freq_to_ticks_div));
+	cf->can_id |= CAN_ERR_BUSERROR;
+
+	cf->data[6] = bec.txerr;
+	cf->data[7] = bec.rxerr;
+
+	netif_rx(skb);
+	return 0;
+}
+
+static int kvaser_pciefd_handle_error_packet(struct kvaser_pciefd *pcie,
+					     struct kvaser_pciefd_rx_packet *p)
+{
+	struct kvaser_pciefd_can *can;
+	u8 ch_id = (p->header[1] >> KVASER_PCIEFD_PACKET_CHID_SHIFT) & 0x7;
+
+	if (ch_id >= pcie->nr_channels)
+		return -EIO;
+
+	can = pcie->can[ch_id];
+
+	kvaser_pciefd_rx_error_frame(can, p);
+	if (can->err_rep_cnt >= KVASER_PCIEFD_MAX_ERR_REP)
+		/* Do not report more errors, until bec_poll_timer expires */
+		kvaser_pciefd_disable_err_gen(can);
+	/* Start polling the error counters */
+	mod_timer(&can->bec_poll_timer, KVASER_PCIEFD_BEC_POLL_FREQ);
+	return 0;
+}
+
+static int kvaser_pciefd_handle_status_resp(struct kvaser_pciefd_can *can,
+					    struct kvaser_pciefd_rx_packet *p)
+{
+	struct can_berr_counter bec;
+	enum can_state old_state, new_state, tx_state, rx_state;
+
+	old_state = can->can.state;
+
+	bec.txerr = p->header[0] & 0xff;
+	bec.rxerr = (p->header[0] >> KVASER_PCIEFD_SPACK_RXERR_SHIFT) & 0xff;
+
+	kvaser_pciefd_packet_to_state(p, &bec, &new_state, &tx_state,
+				      &rx_state);
+
+	if (new_state != old_state) {
+		struct net_device *ndev = can->can.dev;
+		struct sk_buff *skb;
+		struct can_frame *cf;
+		struct skb_shared_hwtstamps *shhwtstamps;
+
+		skb = alloc_can_err_skb(ndev, &cf);
+		if (!skb) {
+			struct net_device_stats *stats = &ndev->stats;
+
+			stats->rx_dropped++;
+			return -ENOMEM;
+		}
+
+		kvaser_pciefd_change_state(can, cf, new_state, tx_state,
+					   rx_state);
+
+		if (old_state == CAN_STATE_BUS_OFF &&
+		    new_state == CAN_STATE_ERROR_ACTIVE &&
+		    can->can.restart_ms) {
+			can->can.can_stats.restarts++;
+			cf->can_id |= CAN_ERR_RESTARTED;
+		}
+
+		shhwtstamps = skb_hwtstamps(skb);
+		shhwtstamps->hwtstamp =
+			ns_to_ktime(div_u64(p->timestamp * 1000,
+					    can->kv_pcie->freq_to_ticks_div));
+
+		cf->data[6] = bec.txerr;
+		cf->data[7] = bec.rxerr;
+
+		netif_rx(skb);
+	}
+	can->bec.txerr = bec.txerr;
+	can->bec.rxerr = bec.rxerr;
+	/* Check if we need to poll the error counters */
+	if (bec.txerr || bec.rxerr)
+		mod_timer(&can->bec_poll_timer, KVASER_PCIEFD_BEC_POLL_FREQ);
+
+	return 0;
+}
+
+static int kvaser_pciefd_handle_status_packet(struct kvaser_pciefd *pcie,
+					      struct kvaser_pciefd_rx_packet *p)
+{
+	struct kvaser_pciefd_can *can;
+	u8 cmdseq;
+	u32 status;
+	u8 ch_id = (p->header[1] >> KVASER_PCIEFD_PACKET_CHID_SHIFT) & 0x7;
+
+	if (ch_id >= pcie->nr_channels)
+		return -EIO;
+
+	can = pcie->can[ch_id];
+
+	status = ioread32(can->reg_base + KVASER_PCIEFD_KCAN_STAT_REG);
+	cmdseq = (status >> KVASER_PCIEFD_KCAN_STAT_SEQNO_SHIFT) & 0xff;
+
+	/* Reset done, start abort and flush */
+	if (p->header[0] & KVASER_PCIEFD_SPACK_IRM &&
+	    p->header[0] & KVASER_PCIEFD_SPACK_RMCD &&
+	    p->header[1] & KVASER_PCIEFD_SPACK_AUTO &&
+	    cmdseq == (p->header[1] & KVASER_PCIEFD_PACKET_SEQ_MSK) &&
+	    status & KVASER_PCIEFD_KCAN_STAT_IDLE) {
+		u32 cmd;
+
+		iowrite32(KVASER_PCIEFD_KCAN_IRQ_ABD,
+			  can->reg_base + KVASER_PCIEFD_KCAN_IRQ_REG);
+		cmd = KVASER_PCIEFD_KCAN_CMD_AT;
+		cmd |= ++can->cmd_seq << KVASER_PCIEFD_KCAN_CMD_SEQ_SHIFT;
+		iowrite32(cmd, can->reg_base + KVASER_PCIEFD_KCAN_CMD_REG);
+
+		iowrite32(KVASER_PCIEFD_KCAN_IRQ_TFD,
+			  can->reg_base + KVASER_PCIEFD_KCAN_IEN_REG);
+	} else if (p->header[0] & KVASER_PCIEFD_SPACK_IDET &&
+		   p->header[0] & KVASER_PCIEFD_SPACK_IRM &&
+		   cmdseq == (p->header[1] & KVASER_PCIEFD_PACKET_SEQ_MSK) &&
+		   status & KVASER_PCIEFD_KCAN_STAT_IDLE) {
+		/* Reset detected, send end of flush if no packet are in FIFO */
+		u8 count = ioread32(can->reg_base +
+				    KVASER_PCIEFD_KCAN_TX_NPACKETS_REG) & 0xff;
+
+		if (!count)
+			iowrite32(KVASER_PCIEFD_KCAN_CTRL_EFLUSH,
+				  can->reg_base + KVASER_PCIEFD_KCAN_CTRL_REG);
+	} else if (!(p->header[1] & KVASER_PCIEFD_SPACK_AUTO) &&
+		   cmdseq == (p->header[1] & KVASER_PCIEFD_PACKET_SEQ_MSK)) {
+		/* Response to status request received */
+		kvaser_pciefd_handle_status_resp(can, p);
+		if (can->can.state != CAN_STATE_BUS_OFF &&
+		    can->can.state != CAN_STATE_ERROR_ACTIVE) {
+			mod_timer(&can->bec_poll_timer,
+				  KVASER_PCIEFD_BEC_POLL_FREQ);
+		}
+	} else if (p->header[0] & KVASER_PCIEFD_SPACK_RMCD &&
+		   !(status & KVASER_PCIEFD_KCAN_STAT_BUS_OFF_MSK)) {
+		/* Reset to bus on detected */
+		if (!completion_done(&can->start_comp))
+			complete(&can->start_comp);
+	}
+
+	return 0;
+}
+
+static int kvaser_pciefd_handle_eack_packet(struct kvaser_pciefd *pcie,
+					    struct kvaser_pciefd_rx_packet *p)
+{
+	struct kvaser_pciefd_can *can;
+	u8 ch_id = (p->header[1] >> KVASER_PCIEFD_PACKET_CHID_SHIFT) & 0x7;
+
+	if (ch_id >= pcie->nr_channels)
+		return -EIO;
+
+	can = pcie->can[ch_id];
+
+	/* If this is the last flushed packet, send end of flush */
+	if (p->header[0] & KVASER_PCIEFD_APACKET_FLU) {
+		u8 count = ioread32(can->reg_base +
+				    KVASER_PCIEFD_KCAN_TX_NPACKETS_REG) & 0xff;
+
+		if (count == 0)
+			iowrite32(KVASER_PCIEFD_KCAN_CTRL_EFLUSH,
+				  can->reg_base + KVASER_PCIEFD_KCAN_CTRL_REG);
+	} else {
+		int echo_idx = p->header[0] & KVASER_PCIEFD_PACKET_SEQ_MSK;
+		int dlc = can_get_echo_skb(can->can.dev, echo_idx, NULL);
+		struct net_device_stats *stats = &can->can.dev->stats;
+
+		stats->tx_bytes += dlc;
+		stats->tx_packets++;
+
+		if (netif_queue_stopped(can->can.dev))
+			netif_wake_queue(can->can.dev);
+	}
+
+	return 0;
+}
+
+static void kvaser_pciefd_handle_nack_packet(struct kvaser_pciefd_can *can,
+					     struct kvaser_pciefd_rx_packet *p)
+{
+	struct sk_buff *skb;
+	struct net_device_stats *stats = &can->can.dev->stats;
+	struct can_frame *cf;
+
+	skb = alloc_can_err_skb(can->can.dev, &cf);
+
+	stats->tx_errors++;
+	if (p->header[0] & KVASER_PCIEFD_APACKET_ABL) {
+		if (skb)
+			cf->can_id |= CAN_ERR_LOSTARB;
+		can->can.can_stats.arbitration_lost++;
+	} else if (skb) {
+		cf->can_id |= CAN_ERR_ACK;
+	}
+
+	if (skb) {
+		cf->can_id |= CAN_ERR_BUSERROR;
+		netif_rx(skb);
+	} else {
+		stats->rx_dropped++;
+		netdev_warn(can->can.dev, "No memory left for err_skb\n");
+	}
+}
+
+static int kvaser_pciefd_handle_ack_packet(struct kvaser_pciefd *pcie,
+					   struct kvaser_pciefd_rx_packet *p)
+{
+	struct kvaser_pciefd_can *can;
+	bool one_shot_fail = false;
+	u8 ch_id = (p->header[1] >> KVASER_PCIEFD_PACKET_CHID_SHIFT) & 0x7;
+
+	if (ch_id >= pcie->nr_channels)
+		return -EIO;
+
+	can = pcie->can[ch_id];
+	/* Ignore control packet ACK */
+	if (p->header[0] & KVASER_PCIEFD_APACKET_CT)
+		return 0;
+
+	if (p->header[0] & KVASER_PCIEFD_APACKET_NACK) {
+		kvaser_pciefd_handle_nack_packet(can, p);
+		one_shot_fail = true;
+	}
+
+	if (p->header[0] & KVASER_PCIEFD_APACKET_FLU) {
+		netdev_dbg(can->can.dev, "Packet was flushed\n");
+	} else {
+		int echo_idx = p->header[0] & KVASER_PCIEFD_PACKET_SEQ_MSK;
+		int dlc = can_get_echo_skb(can->can.dev, echo_idx, NULL);
+		u8 count = ioread32(can->reg_base +
+				    KVASER_PCIEFD_KCAN_TX_NPACKETS_REG) & 0xff;
+
+		if (count < KVASER_PCIEFD_CAN_TX_MAX_COUNT &&
+		    netif_queue_stopped(can->can.dev))
+			netif_wake_queue(can->can.dev);
+
+		if (!one_shot_fail) {
+			struct net_device_stats *stats = &can->can.dev->stats;
+
+			stats->tx_bytes += dlc;
+			stats->tx_packets++;
+		}
+	}
+
+	return 0;
+}
+
+static int kvaser_pciefd_handle_eflush_packet(struct kvaser_pciefd *pcie,
+					      struct kvaser_pciefd_rx_packet *p)
+{
+	struct kvaser_pciefd_can *can;
+	u8 ch_id = (p->header[1] >> KVASER_PCIEFD_PACKET_CHID_SHIFT) & 0x7;
+
+	if (ch_id >= pcie->nr_channels)
+		return -EIO;
+
+	can = pcie->can[ch_id];
+
+	if (!completion_done(&can->flush_comp))
+		complete(&can->flush_comp);
+
+	return 0;
+}
+
+static int kvaser_pciefd_read_packet(struct kvaser_pciefd *pcie, int *start_pos,
+				     int dma_buf)
+{
+	__le32 *buffer = pcie->dma_data[dma_buf];
+	__le64 timestamp;
+	struct kvaser_pciefd_rx_packet packet;
+	struct kvaser_pciefd_rx_packet *p = &packet;
+	u8 type;
+	int pos = *start_pos;
+	int size;
+	int ret = 0;
+
+	size = le32_to_cpu(buffer[pos++]);
+	if (!size) {
+		*start_pos = 0;
+		return 0;
+	}
+
+	p->header[0] = le32_to_cpu(buffer[pos++]);
+	p->header[1] = le32_to_cpu(buffer[pos++]);
+
+	/* Read 64-bit timestamp */
+	memcpy(&timestamp, &buffer[pos], sizeof(__le64));
+	pos += 2;
+	p->timestamp = le64_to_cpu(timestamp);
+
+	type = (p->header[1] >> KVASER_PCIEFD_PACKET_TYPE_SHIFT) & 0xf;
+	switch (type) {
+	case KVASER_PCIEFD_PACK_TYPE_DATA:
+		ret = kvaser_pciefd_handle_data_packet(pcie, p, &buffer[pos]);
+		if (!(p->header[0] & KVASER_PCIEFD_RPACKET_RTR)) {
+			u8 data_len;
+
+			data_len = can_fd_dlc2len(p->header[1] >>
+					       KVASER_PCIEFD_RPACKET_DLC_SHIFT);
+			pos += DIV_ROUND_UP(data_len, 4);
+		}
+		break;
+
+	case KVASER_PCIEFD_PACK_TYPE_ACK:
+		ret = kvaser_pciefd_handle_ack_packet(pcie, p);
+		break;
+
+	case KVASER_PCIEFD_PACK_TYPE_STATUS:
+		ret = kvaser_pciefd_handle_status_packet(pcie, p);
+		break;
+
+	case KVASER_PCIEFD_PACK_TYPE_ERROR:
+		ret = kvaser_pciefd_handle_error_packet(pcie, p);
+		break;
+
+	case KVASER_PCIEFD_PACK_TYPE_EFRAME_ACK:
+		ret = kvaser_pciefd_handle_eack_packet(pcie, p);
+		break;
+
+	case KVASER_PCIEFD_PACK_TYPE_EFLUSH_ACK:
+		ret = kvaser_pciefd_handle_eflush_packet(pcie, p);
+		break;
+
+	case KVASER_PCIEFD_PACK_TYPE_ACK_DATA:
+	case KVASER_PCIEFD_PACK_TYPE_BUS_LOAD:
+	case KVASER_PCIEFD_PACK_TYPE_TXRQ:
+		dev_info(&pcie->pci->dev,
+			 "Received unexpected packet type 0x%08X\n", type);
+		break;
+
+	default:
+		dev_err(&pcie->pci->dev, "Unknown packet type 0x%08X\n", type);
+		ret = -EIO;
+		break;
+	}
+
+	if (ret)
+		return ret;
+
+	/* Position does not point to the end of the package,
+	 * corrupted packet size?
+	 */
+	if ((*start_pos + size) != pos)
+		return -EIO;
+
+	/* Point to the next packet header, if any */
+	*start_pos = pos;
+
+	return ret;
+}
+
+static int kvaser_pciefd_read_buffer(struct kvaser_pciefd *pcie, int dma_buf)
+{
+	int pos = 0;
+	int res = 0;
+
+	do {
+		res = kvaser_pciefd_read_packet(pcie, &pos, dma_buf);
+	} while (!res && pos > 0 && pos < KVASER_PCIEFD_DMA_SIZE);
+
+	return res;
+}
+
+static int kvaser_pciefd_receive_irq(struct kvaser_pciefd *pcie)
+{
+	u32 irq;
+
+	irq = ioread32(pcie->reg_base + KVASER_PCIEFD_SRB_IRQ_REG);
+	if (irq & KVASER_PCIEFD_SRB_IRQ_DPD0) {
+		kvaser_pciefd_read_buffer(pcie, 0);
+		/* Reset DMA buffer 0 */
+		iowrite32(KVASER_PCIEFD_SRB_CMD_RDB0,
+			  pcie->reg_base + KVASER_PCIEFD_SRB_CMD_REG);
+	}
+
+	if (irq & KVASER_PCIEFD_SRB_IRQ_DPD1) {
+		kvaser_pciefd_read_buffer(pcie, 1);
+		/* Reset DMA buffer 1 */
+		iowrite32(KVASER_PCIEFD_SRB_CMD_RDB1,
+			  pcie->reg_base + KVASER_PCIEFD_SRB_CMD_REG);
+	}
+
+	if (irq & KVASER_PCIEFD_SRB_IRQ_DOF0 ||
+	    irq & KVASER_PCIEFD_SRB_IRQ_DOF1 ||
+	    irq & KVASER_PCIEFD_SRB_IRQ_DUF0 ||
+	    irq & KVASER_PCIEFD_SRB_IRQ_DUF1)
+		dev_err(&pcie->pci->dev, "DMA IRQ error 0x%08X\n", irq);
+
+	iowrite32(irq, pcie->reg_base + KVASER_PCIEFD_SRB_IRQ_REG);
+	return 0;
+}
+
+static int kvaser_pciefd_transmit_irq(struct kvaser_pciefd_can *can)
+{
+	u32 irq = ioread32(can->reg_base + KVASER_PCIEFD_KCAN_IRQ_REG);
+
+	if (irq & KVASER_PCIEFD_KCAN_IRQ_TOF)
+		netdev_err(can->can.dev, "Tx FIFO overflow\n");
+
+	if (irq & KVASER_PCIEFD_KCAN_IRQ_TFD) {
+		u8 count = ioread32(can->reg_base +
+				    KVASER_PCIEFD_KCAN_TX_NPACKETS_REG) & 0xff;
+
+		if (count == 0)
+			iowrite32(KVASER_PCIEFD_KCAN_CTRL_EFLUSH,
+				  can->reg_base + KVASER_PCIEFD_KCAN_CTRL_REG);
+	}
+
+	if (irq & KVASER_PCIEFD_KCAN_IRQ_BPP)
+		netdev_err(can->can.dev,
+			   "Fail to change bittiming, when not in reset mode\n");
+
+	if (irq & KVASER_PCIEFD_KCAN_IRQ_FDIC)
+		netdev_err(can->can.dev, "CAN FD frame in CAN mode\n");
+
+	if (irq & KVASER_PCIEFD_KCAN_IRQ_ROF)
+		netdev_err(can->can.dev, "Rx FIFO overflow\n");
+
+	iowrite32(irq, can->reg_base + KVASER_PCIEFD_KCAN_IRQ_REG);
+	return 0;
+}
+
+static irqreturn_t kvaser_pciefd_irq_handler(int irq, void *dev)
+{
+	struct kvaser_pciefd *pcie = (struct kvaser_pciefd *)dev;
+	u32 board_irq;
+	int i;
+
+	board_irq = ioread32(pcie->reg_base + KVASER_PCIEFD_IRQ_REG);
+
+	if (!(board_irq & KVASER_PCIEFD_IRQ_ALL_MSK))
+		return IRQ_NONE;
+
+	if (board_irq & KVASER_PCIEFD_IRQ_SRB)
+		kvaser_pciefd_receive_irq(pcie);
+
+	for (i = 0; i < pcie->nr_channels; i++) {
+		if (!pcie->can[i]) {
+			dev_err(&pcie->pci->dev,
+				"IRQ mask points to unallocated controller\n");
+			break;
+		}
+
+		/* Check that mask matches channel (i) IRQ mask */
+		if (board_irq & (1 << i))
+			kvaser_pciefd_transmit_irq(pcie->can[i]);
+	}
+
+	iowrite32(board_irq, pcie->reg_base + KVASER_PCIEFD_IRQ_REG);
+	return IRQ_HANDLED;
+}
+
+static void kvaser_pciefd_teardown_can_ctrls(struct kvaser_pciefd *pcie)
+{
+	int i;
+	struct kvaser_pciefd_can *can;
+
+	for (i = 0; i < pcie->nr_channels; i++) {
+		can = pcie->can[i];
+		if (can) {
+			iowrite32(0,
+				  can->reg_base + KVASER_PCIEFD_KCAN_IEN_REG);
+			kvaser_pciefd_pwm_stop(can);
+			free_candev(can->can.dev);
+		}
+	}
+}
+
+static int kvaser_pciefd_probe(struct pci_dev *pdev,
+			       const struct pci_device_id *id)
+{
+	int err;
+	struct kvaser_pciefd *pcie;
+
+	pcie = devm_kzalloc(&pdev->dev, sizeof(*pcie), GFP_KERNEL);
+	if (!pcie)
+		return -ENOMEM;
+
+	pci_set_drvdata(pdev, pcie);
+	pcie->pci = pdev;
+
+	err = pci_enable_device(pdev);
+	if (err)
+		return err;
+
+	err = pci_request_regions(pdev, KVASER_PCIEFD_DRV_NAME);
+	if (err)
+		goto err_disable_pci;
+
+	pcie->reg_base = pci_iomap(pdev, 0, 0);
+	if (!pcie->reg_base) {
+		err = -ENOMEM;
+		goto err_release_regions;
+	}
+
+	err = kvaser_pciefd_setup_board(pcie);
+	if (err)
+		goto err_pci_iounmap;
+
+	err = kvaser_pciefd_setup_dma(pcie);
+	if (err)
+		goto err_pci_iounmap;
+
+	pci_set_master(pdev);
+
+	err = kvaser_pciefd_setup_can_ctrls(pcie);
+	if (err)
+		goto err_teardown_can_ctrls;
+
+	iowrite32(KVASER_PCIEFD_SRB_IRQ_DPD0 | KVASER_PCIEFD_SRB_IRQ_DPD1,
+		  pcie->reg_base + KVASER_PCIEFD_SRB_IRQ_REG);
+
+	iowrite32(KVASER_PCIEFD_SRB_IRQ_DPD0 | KVASER_PCIEFD_SRB_IRQ_DPD1 |
+		  KVASER_PCIEFD_SRB_IRQ_DOF0 | KVASER_PCIEFD_SRB_IRQ_DOF1 |
+		  KVASER_PCIEFD_SRB_IRQ_DUF0 | KVASER_PCIEFD_SRB_IRQ_DUF1,
+		  pcie->reg_base + KVASER_PCIEFD_SRB_IEN_REG);
+
+	/* Reset IRQ handling, expected to be off before */
+	iowrite32(KVASER_PCIEFD_IRQ_ALL_MSK,
+		  pcie->reg_base + KVASER_PCIEFD_IRQ_REG);
+	iowrite32(KVASER_PCIEFD_IRQ_ALL_MSK,
+		  pcie->reg_base + KVASER_PCIEFD_IEN_REG);
+
+	/* Ready the DMA buffers */
+	iowrite32(KVASER_PCIEFD_SRB_CMD_RDB0,
+		  pcie->reg_base + KVASER_PCIEFD_SRB_CMD_REG);
+	iowrite32(KVASER_PCIEFD_SRB_CMD_RDB1,
+		  pcie->reg_base + KVASER_PCIEFD_SRB_CMD_REG);
+
+	err = request_irq(pcie->pci->irq, kvaser_pciefd_irq_handler,
+			  IRQF_SHARED, KVASER_PCIEFD_DRV_NAME, pcie);
+	if (err)
+		goto err_teardown_can_ctrls;
+
+	err = kvaser_pciefd_reg_candev(pcie);
+	if (err)
+		goto err_free_irq;
+
+	return 0;
+
+err_free_irq:
+	free_irq(pcie->pci->irq, pcie);
+
+err_teardown_can_ctrls:
+	kvaser_pciefd_teardown_can_ctrls(pcie);
+	iowrite32(0, pcie->reg_base + KVASER_PCIEFD_SRB_CTRL_REG);
+	pci_clear_master(pdev);
+
+err_pci_iounmap:
+	pci_iounmap(pdev, pcie->reg_base);
+
+err_release_regions:
+	pci_release_regions(pdev);
+
+err_disable_pci:
+	pci_disable_device(pdev);
+
+	return err;
+}
+
+static void kvaser_pciefd_remove_all_ctrls(struct kvaser_pciefd *pcie)
+{
+	struct kvaser_pciefd_can *can;
+	int i;
+
+	for (i = 0; i < pcie->nr_channels; i++) {
+		can = pcie->can[i];
+		if (can) {
+			iowrite32(0,
+				  can->reg_base + KVASER_PCIEFD_KCAN_IEN_REG);
+			unregister_candev(can->can.dev);
+			del_timer(&can->bec_poll_timer);
+			kvaser_pciefd_pwm_stop(can);
+			free_candev(can->can.dev);
+		}
+	}
+}
+
+static void kvaser_pciefd_remove(struct pci_dev *pdev)
+{
+	struct kvaser_pciefd *pcie = pci_get_drvdata(pdev);
+
+	kvaser_pciefd_remove_all_ctrls(pcie);
+
+	/* Turn off IRQ generation */
+	iowrite32(0, pcie->reg_base + KVASER_PCIEFD_SRB_CTRL_REG);
+	iowrite32(KVASER_PCIEFD_IRQ_ALL_MSK,
+		  pcie->reg_base + KVASER_PCIEFD_IRQ_REG);
+	iowrite32(0, pcie->reg_base + KVASER_PCIEFD_IEN_REG);
+
+	free_irq(pcie->pci->irq, pcie);
+
+	pci_clear_master(pdev);
+	pci_iounmap(pdev, pcie->reg_base);
+	pci_release_regions(pdev);
+	pci_disable_device(pdev);
+}
+
+static struct pci_driver kvaser_pciefd = {
+	.name = KVASER_PCIEFD_DRV_NAME,
+	.id_table = kvaser_pciefd_id_table,
+	.probe = kvaser_pciefd_probe,
+	.remove = kvaser_pciefd_remove,
+};
+
+module_pci_driver(kvaser_pciefd)

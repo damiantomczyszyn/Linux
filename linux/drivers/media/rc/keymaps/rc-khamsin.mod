@@ -1,2 +1,1 @@
-drivers/media/rc/keymaps/rc-khamsin.o
-
+TV-HVR1700 (PCIe, OEM, No IR, full heig

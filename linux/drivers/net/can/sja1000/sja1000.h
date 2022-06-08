@@ -1,140 +1,182 @@
-onfig/TRACE_BRANCH_PROFILING) \
-    $(wildcard include/config/PROFILE_ALL_BRANCHES) \
-    $(wildcard include/config/STACK_VALIDATION) \
-  include/linux/compiler_types.h \
-  arch/x86/include/generated/asm/rwonce.h \
-  include/asm-generic/rwonce.h \
-  include/linux/kasan-checks.h \
-    $(wildcard include/config/KASAN_GENERIC) \
-    $(wildcard include/config/KASAN_SW_TAGS) \
-  include/linux/types.h \
-    $(wildcard include/config/HAVE_UID16) \
-    $(wildcard include/config/UID16) \
-    $(wildcard include/config/ARCH_DMA_ADDR_T_64BIT) \
-    $(wildcard include/config/PHYS_ADDR_T_64BIT) \
-    $(wildcard include/config/64BIT) \
-    $(wildcard include/config/ARCH_32BIT_USTAT_F_TINODE) \
-  include/uapi/linux/types.h \
-  arch/x86/include/generated/uapi/asm/types.h \
-  include/uapi/asm-generic/types.h \
-  include/asm-generic/int-ll64.h \
-  include/uapi/asm-generic/int-ll64.h \
-  arch/x86/include/uapi/asm/bitsperlong.h \
-  include/asm-generic/bitsperlong.h \
-  include/uapi/asm-generic/bitsperlong.h \
-  include/uapi/linux/posix_types.h \
-  include/linux/stddef.h \
-  include/uapi/linux/stddef.h \
-  arch/x86/include/asm/posix_types.h \
-    $(wildcard include/config/X86_32) \
-  arch/x86/include/uapi/asm/posix_types_32.h \
-  include/uapi/asm-generic/posix_types.h \
-  include/linux/kcsan-checks.h \
-    $(wildcard include/config/KCSAN) \
-    $(wildcard include/config/KCSAN_WEAK_MEMORY) \
-    $(wildcard include/config/KCSAN_IGNORE_ATOMICS) \
-  include/linux/err.h \
-  arch/x86/include/generated/uapi/asm/errno.h \
-  include/uapi/asm-generic/errno.h \
-  include/uapi/asm-generic/errno-base.h \
-  include/linux/poison.h \
-    $(wildcard include/config/ILLEGAL_POINTER_VALUE) \
-  include/linux/const.h \
-  include/vdso/const.h \
-  include/uapi/linux/const.h \
-  arch/x86/include/asm/barrier.h \
-  arch/x86/include/asm/alternative.h \
-  include/linux/stringify.h \
-  arch/x86/include/asm/asm.h \
-  arch/x86/include/asm/extable_fixup_types.h \
-  arch/x86/include/asm/nops.h \
-  include/asm-generic/barrier.h \
-  include/linux/stat.h \
-  arch/x86/include/uapi/asm/stat.h \
-  include/uapi/linux/stat.h \
-  include/linux/time.h \
-    $(wildcard include/config/POSIX_TIMERS) \
-  include/linux/cache.h \
-    $(wildcard include/config/ARCH_HAS_CACHE_LINE_SIZE) \
-  include/uapi/linux/kernel.h \
-  include/uapi/linux/sysinfo.h \
-  arch/x86/include/asm/cache.h \
-    $(wildcard include/config/X86_L1_CACHE_SHIFT) \
-    $(wildcard include/config/X86_INTERNODE_CACHE_SHIFT) \
-    $(wildcard include/config/X86_VSMP) \
-  include/linux/linkage.h \
-    $(wildcard include/config/ARCH_USE_SYM_ANNOTATIONS) \
-  include/linux/export.h \
-    $(wildcard include/config/MODVERSIONS) \
-    $(wildcard include/config/MODULE_REL_CRCS) \
-    $(wildcard include/config/HAVE_ARCH_PREL32_RELOCATIONS) \
-    $(wildcard include/config/TRIM_UNUSED_KSYMS) \
-  arch/x86/include/asm/linkage.h \
-    $(wildcard include/config/X86_64) \
-    $(wildcard include/config/X86_ALIGNMENT_16) \
-    $(wildcard include/config/SLS) \
-  arch/x86/include/asm/ibt.h \
-    $(wildcard include/config/X86_KERNEL_IBT) \
-  include/linux/math64.h \
-    $(wildcard include/config/ARCH_SUPPORTS_INT128) \
-  include/linux/math.h \
-  arch/x86/include/asm/div64.h \
-  include/linux/log2.h \
-    $(wildcard include/config/ARCH_HAS_ILOG2_U32) \
-    $(wildcard include/config/ARCH_HAS_ILOG2_U64) \
-  include/linux/bitops.h \
-  include/linux/bits.h \
-  include/vdso/bits.h \
-  include/linux/typecheck.h \
-  arch/x86/include/asm/bitops.h \
-    $(wildcard include/config/X86_CMOV) \
-  arch/x86/include/asm/rmwcc.h \
-    $(wildcard include/config/CC_HAS_ASM_GOTO) \
-  include/asm-generic/bitops/fls64.h \
-  include/asm-generic/bitops/sched.h \
-  arch/x86/include/asm/arch_hweight.h \
-  arch/x86/include/asm/cpufeatures.h \
-  arch/x86/include/asm/required-features.h \
-    $(wildcard include/config/X86_MINIMUM_CPU_FAMILY) \
-    $(wildcard include/config/MATH_EMULATION) \
-    $(wildcard include/config/X86_PAE) \
-    $(wildcard include/config/X86_CMPXCHG64) \
-    $(wildcard include/config/X86_P6_NOP) \
-    $(wildcard include/config/MATOM) \
-    $(wildcard include/config/PARAVIRT_XXL) \
-  arch/x86/include/asm/disabled-features.h \
-    $(wildcard include/config/X86_SMAP) \
-    $(wildcard include/config/X86_UMIP) \
-    $(wildcard include/config/X86_INTEL_MEMORY_PROTECTION_KEYS) \
-    $(wildcard include/config/X86_5LEVEL) \
-    $(wildcard include/config/PAGE_TABLE_ISOLATION) \
-    $(wildcard include/config/INTEL_IOMMU_SVM) \
-    $(wildcard include/config/X86_SGX) \
-  include/asm-generic/bitops/const_hweight.h \
-  include/asm-generic/bitops/instrumented-atomic.h \
-  include/linux/instrumented.h \
-  include/asm-generic/bitops/instrumented-non-atomic.h \
-    $(wildcard include/config/KCSAN_ASSUME_PLAIN_WRITES_ATOMIC) \
-  include/asm-generic/bitops/instrumented-lock.h \
-  include/asm-generic/bitops/le.h \
-  arch/x86/include/uapi/asm/byteorder.h \
-  include/linux/byteorder/little_endian.h \
-  include/uapi/linux/byteorder/little_endian.h \
-  include/linux/swab.h \
-  include/uapi/linux/swab.h \
-  arch/x86/include/uapi/asm/swab.h \
-  include/linux/byteorder/generic.h \
-  include/asm-generic/bitops/ext2-atomic-setbit.h \
-  include/vdso/math64.h \
-  include/linux/time64.h \
-  include/vdso/time64.h \
-  include/uapi/linux/time.h \
-  include/uapi/linux/time_types.h \
-  include/linux/time32.h \
-  include/linux/timex.h \
-  include/uapi/linux/timex.h \
-  include/uapi/linux/param.h \
-  arch/x86/include/generated/uapi/asm/param.h \
-  include/asm-generic/param.h \
-    $(wildcard include/config/HZ) \
-  include/uapi/asm-gen
+/*
+ * sja1000.h -  Philips SJA1000 network device driver
+ *
+ * Copyright (c) 2003 Matthias Brukner, Trajet Gmbh, Rebenring 33,
+ * 38106 Braunschweig, GERMANY
+ *
+ * Copyright (c) 2002-2007 Volkswagen Group Electronic Research
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions
+ * are met:
+ * 1. Redistributions of source code must retain the above copyright
+ *    notice, this list of conditions and the following disclaimer.
+ * 2. Redistributions in binary form must reproduce the above copyright
+ *    notice, this list of conditions and the following disclaimer in the
+ *    documentation and/or other materials provided with the distribution.
+ * 3. Neither the name of Volkswagen nor the names of its contributors
+ *    may be used to endorse or promote products derived from this software
+ *    without specific prior written permission.
+ *
+ * Alternatively, provided that this notice is retained in full, this
+ * software may be distributed under the terms of the GNU General
+ * Public License ("GPL") version 2, in which case the provisions of the
+ * GPL apply INSTEAD OF those given above.
+ *
+ * The provided data structures and external interfaces from this code
+ * are not restricted to be used by modules with a GPL compatible license.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+ * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+ * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+ * A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+ * OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+ * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+ * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+ * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+ * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+ * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH
+ * DAMAGE.
+ *
+ */
+
+#ifndef SJA1000_DEV_H
+#define SJA1000_DEV_H
+
+#include <linux/irqreturn.h>
+#include <linux/can/dev.h>
+#include <linux/can/platform/sja1000.h>
+
+#define SJA1000_ECHO_SKB_MAX	1 /* the SJA1000 has one TX buffer object */
+
+#define SJA1000_MAX_IRQ 20	/* max. number of interrupts handled in ISR */
+
+/* SJA1000 registers - manual section 6.4 (Pelican Mode) */
+#define SJA1000_MOD		0x00
+#define SJA1000_CMR		0x01
+#define SJA1000_SR		0x02
+#define SJA1000_IR		0x03
+#define SJA1000_IER		0x04
+#define SJA1000_ALC		0x0B
+#define SJA1000_ECC		0x0C
+#define SJA1000_EWL		0x0D
+#define SJA1000_RXERR		0x0E
+#define SJA1000_TXERR		0x0F
+#define SJA1000_ACCC0		0x10
+#define SJA1000_ACCC1		0x11
+#define SJA1000_ACCC2		0x12
+#define SJA1000_ACCC3		0x13
+#define SJA1000_ACCM0		0x14
+#define SJA1000_ACCM1		0x15
+#define SJA1000_ACCM2		0x16
+#define SJA1000_ACCM3		0x17
+#define SJA1000_RMC		0x1D
+#define SJA1000_RBSA		0x1E
+
+/* Common registers - manual section 6.5 */
+#define SJA1000_BTR0		0x06
+#define SJA1000_BTR1		0x07
+#define SJA1000_OCR		0x08
+#define SJA1000_CDR		0x1F
+
+#define SJA1000_FI		0x10
+#define SJA1000_SFF_BUF		0x13
+#define SJA1000_EFF_BUF		0x15
+
+#define SJA1000_FI_FF		0x80
+#define SJA1000_FI_RTR		0x40
+
+#define SJA1000_ID1		0x11
+#define SJA1000_ID2		0x12
+#define SJA1000_ID3		0x13
+#define SJA1000_ID4		0x14
+
+#define SJA1000_CAN_RAM		0x20
+
+/* mode register */
+#define MOD_RM		0x01
+#define MOD_LOM		0x02
+#define MOD_STM		0x04
+#define MOD_AFM		0x08
+#define MOD_SM		0x10
+
+/* commands */
+#define CMD_SRR		0x10
+#define CMD_CDO		0x08
+#define CMD_RRB		0x04
+#define CMD_AT		0x02
+#define CMD_TR		0x01
+
+/* interrupt sources */
+#define IRQ_BEI		0x80
+#define IRQ_ALI		0x40
+#define IRQ_EPI		0x20
+#define IRQ_WUI		0x10
+#define IRQ_DOI		0x08
+#define IRQ_EI		0x04
+#define IRQ_TI		0x02
+#define IRQ_RI		0x01
+#define IRQ_ALL		0xFF
+#define IRQ_OFF		0x00
+
+/* status register content */
+#define SR_BS		0x80
+#define SR_ES		0x40
+#define SR_TS		0x20
+#define SR_RS		0x10
+#define SR_TCS		0x08
+#define SR_TBS		0x04
+#define SR_DOS		0x02
+#define SR_RBS		0x01
+
+#define SR_CRIT (SR_BS|SR_ES)
+
+/* ECC register */
+#define ECC_SEG		0x1F
+#define ECC_DIR		0x20
+#define ECC_ERR		6
+#define ECC_BIT		0x00
+#define ECC_FORM	0x40
+#define ECC_STUFF	0x80
+#define ECC_MASK	0xc0
+
+/*
+ * Flags for sja1000priv.flags
+ */
+#define SJA1000_CUSTOM_IRQ_HANDLER 0x1
+
+/*
+ * SJA1000 private data structure
+ */
+struct sja1000_priv {
+	struct can_priv can;	/* must be the first member */
+	struct sk_buff *echo_skb;
+
+	/* the lower-layer is responsible for appropriate locking */
+	u8 (*read_reg) (const struct sja1000_priv *priv, int reg);
+	void (*write_reg) (const struct sja1000_priv *priv, int reg, u8 val);
+	void (*pre_irq) (const struct sja1000_priv *priv);
+	void (*post_irq) (const struct sja1000_priv *priv);
+
+	void *priv;		/* for board-specific data */
+	struct net_device *dev;
+
+	void __iomem *reg_base;	 /* ioremap'ed address to registers */
+	unsigned long irq_flags; /* for request_irq() */
+	spinlock_t cmdreg_lock;  /* lock for concurrent cmd register writes */
+
+	u16 flags;		/* custom mode flags */
+	u8 ocr;			/* output control register */
+	u8 cdr;			/* clock divider register */
+};
+
+struct net_device *alloc_sja1000dev(int sizeof_priv);
+void free_sja1000dev(struct net_device *dev);
+int register_sja1000dev(struct net_device *dev);
+void unregister_sja1000dev(struct net_device *dev);
+
+irqreturn_t sja1000_interrupt(int irq, void *dev_id);
+
+#endif /* SJA1000_DEV_H */

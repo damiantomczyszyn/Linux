@@ -1,2 +1,1 @@
-CPI_APEI_GHES) \
-    $(wildc
+rch/x86/include/asm/atomic64

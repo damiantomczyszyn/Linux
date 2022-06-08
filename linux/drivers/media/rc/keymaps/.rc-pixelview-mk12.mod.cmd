@@ -1,1 +1,7 @@
-cmd_drivers/media/rc/keymaps/rc-pixelview-mk12.mod := { echo  drivers/media/rc/keymaps/rc-pixelview-mk12.o;  echo; } > drivers/media/rc/keymaps/rc-pixelview-mk12.mod
+ient_demod))
+			goto frontend_detach;
+		if (!try_module_get(client_demod->dev.driver->owner)) {
+			i2c_unregister_device(client_demod);
+			goto frontend_detach;
+		}
+	

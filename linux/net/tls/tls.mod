@@ -1,1 +1,3 @@
-ºÄO›U‰Ltå‰PEÙÅ_·øRAØí›zRp¶¬ØËÕ”ı¼ ÷É¾˜ğÀŞ/1¯nj:fÛ¸•w65:Ä%3àO
+rity,
+ *				p->dl.dl_{runtime, deadline, period, flags, bw, density}
+ * 

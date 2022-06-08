@@ -1,1 +1,1 @@
-cmd_drivers/media/i2c
+er *uattr, struct sch

@@ -1,1 +1,9 @@
-cmd_drivers/media/rc/keymaps/rc-pixelview.mod := { echo  drivers/media/rc/keymaps/rc-pixelview.o;  echo; } > drivers/media/rc/keymaps/rc-pixelview.mod
+gister(port);
+	if (err != 0)
+		pr_err("%s() dvb_register failed err = %d\n",
+		       __func__, err);
+
+	return err;
+}
+
+int cx23885_dvb_unregister(struc

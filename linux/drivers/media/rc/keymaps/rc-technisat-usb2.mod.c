@@ -1,31 +1,33 @@
-#include <linux/module.h>
-#define INCLUDE_VERMAGIC
-#include <linux/build-salt.h>
-#include <linux/elfnote-lto.h>
-#include <linux/vermagic.h>
-#include <linux/compiler.h>
+// SPDX-License-Identifier: GPL-2.0-or-later
 
-BUILD_SALT;
-BUILD_LTO_INFO;
+/*
+ * netup-eeprom.c
+ *
+ * 24LC02 EEPROM driver in conjunction with NetUP Dual DVB-S2 CI card
+ *
+ * Copyright (C) 2009 NetUP Inc.
+ * Copyright (C) 2009 Abylay Ospan <aospan@netup.ru>
+ */
 
-MODULE_INFO(vermagic, VERMAGIC_STRING);
-MODULE_INFO(name, KBUILD_MODNAME);
+#
+#include "cx23885.h"
+#include "netup-eeprom.h"
 
-__visible struct module __this_module
-__section(".gnu.linkonce.this_module") = {
-	.name = KBUILD_MODNAME,
-	.init = init_module,
-#ifdef CONFIG_MODULE_UNLOAD
-	.exit = cleanup_module,
-#endif
-	.arch = MODULE_ARCH_INIT,
-};
+#define EEPROM_I2C_ADDR 0x50
 
-MODULE_INFO(intree, "Y");
+int netup_eeprom_read(struct i2c_adapter *i2c_adap, u8 addr)
+{
+	int ret;
+	unsigned char buf[2];
 
-#ifdef CONFIG_RETPOLINE
-MODULE_INFO(retpoline, "Y");
-#endif
-
-MODULE_INFO(depends, "rc-core");
-
+	/* Read from EEPROM */
+	struct i2c_msg msg[] = {
+		{
+			.addr	= EEPROM_I2C_ADDR,
+			.flags	= 0,
+			.buf	= &buf[0],
+			.len	= 1
+		}, {
+			.addr	= EEPROM_I2C_ADDR,
+			.flags	= I2C_M_RD,
+			.buf	= &buf[1],

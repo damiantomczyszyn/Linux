@@ -1,278 +1,434 @@
-eo/edid.h \
-    $(wildcard include/config/X86) \
-  include/uapi/video/edid.h \
-  arch/x86/include/asm/nospec-branch.h \
-  include/linux/static_key.h \
-  include/linux/jump_label.h \
-    $(wildcard include/config/JUMP_LABEL) \
-    $(wildcard include/config/HAVE_ARCH_JUMP_LABEL_RELATIVE) \
-  arch/x86/include/asm/jump_label.h \
-  include/linux/objtool.h \
-    $(wildcard include/config/FRAME_POINTER) \
-  arch/x86/include/asm/msr-index.h \
-  arch/x86/include/asm/unwind_hints.h \
-  arch/x86/include/asm/orc_types.h \
-  arch/x86/include/asm/GEN-for-each-reg.h \
-  arch/x86/include/asm/segment.h \
-  include/linux/preempt.h \
-    $(wildcard include/config/PREEMPT_COUNT) \
-    $(wildcard include/config/TRACE_PREEMPT_TOGGLE) \
-  arch/x86/include/asm/preempt.h \
-  include/linux/thread_info.h \
-    $(wildcard include/config/GENERIC_ENTRY) \
-    $(wildcard include/config/HAVE_ARCH_WITHIN_STACK_FRAMES) \
-    $(wildcard include/config/HARDENED_USERCOPY) \
-    $(wildcard include/config/BUG) \
-  include/linux/bug.h \
-    $(wildcard include/config/GENERIC_BUG) \
-    $(wildcard include/config/BUG_ON_DATA_CORRUPTION) \
-  arch/x86/include/asm/bug.h \
-    $(wildcard include/config/DEBUG_BUGVERBOSE) \
-  include/linux/instrumentation.h \
-  include/asm-generic/bug.h \
-    $(wildcard include/config/GENERIC_BUG_RELATIVE_POINTERS) \
-  include/linux/restart_block.h \
-  include/linux/time64.h \
-  include/linux/math64.h \
-    $(wildcard include/config/ARCH_SUPPORTS_INT128) \
-  include/vdso/math64.h \
-  include/vdso/time64.h \
-  include/uapi/linux/time.h \
-  include/uapi/linux/time_types.h \
-  include/linux/errno.h \
-  include/uapi/linux/errno.h \
-  arch/x86/include/asm/thread_info.h \
-    $(wildcard include/config/X86_IOPL_IOPERM) \
-    $(wildcard include/config/IA32_EMULATION) \
-  arch/x86/include/asm/page.h \
-  arch/x86/include/asm/page_types.h \
-    $(wildcard include/config/PHYSICAL_START) \
-    $(wildcard include/config/PHYSICAL_ALIGN) \
-    $(wildcard include/config/DYNAMIC_PHYSICAL_MASK) \
-  arch/x86/include/asm/page_32_types.h \
-    $(wildcard include/config/HIGHMEM4G) \
-    $(wildcard include/config/HIGHMEM64G) \
-    $(wildcard include/config/PAGE_OFFSET) \
-  arch/x86/include/asm/page_32.h \
-    $(wildcard include/config/DEBUG_VIRTUAL) \
-    $(wildcard include/config/FLATMEM) \
-  include/linux/string.h \
-    $(wildcard include/config/BINARY_PRINTF) \
-    $(wildcard include/config/FORTIFY_SOURCE) \
-  include/uapi/linux/string.h \
-  arch/x86/include/asm/string.h \
-  arch/x86/include/asm/string_32.h \
-  include/linux/fortify-string.h \
-  include/linux/range.h \
-  include/asm-generic/memory_model.h \
-    $(wildcard include/config/SPARSEMEM_VMEMMAP) \
-    $(wildcard include/config/SPARSEMEM) \
-  include/linux/pfn.h \
-  include/asm-generic/getorder.h \
-  arch/x86/include/asm/cpufeature.h \
-    $(wildcard include/config/X86_FEATURE_NAMES) \
-  arch/x86/include/asm/processor.h \
-    $(wildcard include/config/X86_VMX_FEATURE_NAMES) \
-    $(wildcard include/config/X86_DEBUGCTLMSR) \
-    $(wildcard include/config/CPU_SUP_AMD) \
-    $(wildcard include/config/XEN) \
-  arch/x86/include/asm/math_emu.h \
-  arch/x86/include/asm/ptrace.h \
-    $(wildcard include/config/PARAVIRT) \
-  arch/x86/include/uapi/asm/ptrace.h \
-  arch/x86/include/uapi/asm/ptrace-abi.h \
-  arch/x86/include/asm/paravirt_types.h \
-    $(wildcard include/config/PGTABLE_LEVELS) \
-    $(wildcard include/config/PARAVIRT_DEBUG) \
-  arch/x86/include/asm/desc_defs.h \
-  arch/x86/include/asm/pgtable_types.h \
-    $(wildcard include/config/MEM_SOFT_DIRTY) \
-    $(wildcard include/config/HAVE_ARCH_USERFAULTFD_WP) \
-    $(wildcard include/config/PROC_FS) \
-  arch/x86/include/asm/pgtable_32_types.h \
-  arch/x86/include/asm/pgtable-3level_types.h \
-  include/asm-generic/pgtable-nop4d.h \
-  include/asm-generic/pgtable-nopud.h \
-  arch/x86/include/asm/proto.h \
-  arch/x86/include/uapi/asm/ldt.h \
-  arch/x86/include/uapi/asm/sigcontext.h \
-  arch/x86/include/asm/msr.h \
-    $(wildcard include/config/TRACEPOINTS) \
-  arch/x86/include/asm/msr-index.h \
-  arch/x86/include/asm/cpumask.h \
-  include/linux/cpumask.h \
-    $(wildcard include/config/CPUMASK_OFFSTACK) \
-    $(wildcard include/config/DEBUG_PER_CPU_MAPS) \
-  include/linux/bitmap.h \
-  include/linux/find.h \
-  arch/x86/include/uapi/asm/msr.h \
-  include/linux/tracepoint-defs.h \
-  arch/x86/include/asm/special_insns.h \
-  arch/x86/include/asm/fpu/types.h \
-  arch/x86/include/asm/vmxfeatures.h \
-  arch/x86/include/asm/vdso/processor.h \
-  include/linux/personality.h \
-  include/uapi/linux/personality.h \
-  include/linux/bottom_half.h \
-  include/linux/lockdep.h \
-    $(wildcard include/config/DEBUG_LOCKING_API_SELFTESTS) \
-  include/linux/smp.h \
-    $(wildcard include/config/UP_LATE_INIT) \
-  include/linux/smp_types.h \
-  include/linux/llist.h \
-    $(wildcard include/config/ARCH_HAVE_NMI_SAFE_CMPXCHG) \
-  arch/x86/include/asm/smp.h \
-    $(wildcard include/config/X86_LOCAL_APIC) \
-    $(wildcard include/config/DEBUG_NMI_SELFTEST) \
-  include/linux/rcutree.h \
-  include/linux/wait.h \
-  include/linux/spinlock.h \
-  arch/x86/include/generated/asm/mmiowb.h \
-  include/asm-generic/mmiowb.h \
-    $(wildcard include/config/MMIOWB) \
-  include/linux/spinlock_types.h \
-  include/linux/rwlock_types.h \
-  arch/x86/include/asm/spinlock.h \
-  arch/x86/include/asm/paravirt.h \
-    $(wildcard include/config/PARAVIRT_SPINLOCKS) \
-  arch/x86/include/asm/frame.h \
-  arch/x86/include/asm/qspinlock.h \
-  include/asm-generic/qspinlock.h \
-  arch/x86/include/asm/qrwlock.h \
-  include/asm-generic/qrwlock.h \
-  include/linux/rwlock.h \
-    $(wildcard include/config/PREEMPT) \
-  include/linux/spinlock_api_smp.h \
-    $(wildcard include/config/INLINE_SPIN_LOCK) \
-    $(wildcard include/config/INLINE_SPIN_LOCK_BH) \
-    $(wildcard include/config/INLINE_SPIN_LOCK_IRQ) \
-    $(wildcard include/config/INLINE_SPIN_LOCK_IRQSAVE) \
-    $(wildcard include/config/INLINE_SPIN_TRYLOCK) \
-    $(wildcard include/config/INLINE_SPIN_TRYLOCK_BH) \
-    $(wildcard include/config/UNINLINE_SPIN_UNLOCK) \
-    $(wildcard include/config/INLINE_SPIN_UNLOCK_BH) \
-    $(wildcard include/config/INLINE_SPIN_UNLOCK_IRQ) \
-    $(wildcard include/config/INLINE_SPIN_UNLOCK_IRQRESTORE) \
-    $(wildcard include/config/GENERIC_LOCKBREAK) \
-  include/linux/rwlock_api_smp.h \
-    $(wildcard include/config/INLINE_READ_LOCK) \
-    $(wildcard include/config/INLINE_WRITE_LOCK) \
-    $(wildcard include/config/INLINE_READ_LOCK_BH) \
-    $(wildcard include/config/INLINE_WRITE_LOCK_BH) \
-    $(wildcard include/config/INLINE_READ_LOCK_IRQ) \
-    $(wildcard include/config/INLINE_WRITE_LOCK_IRQ) \
-    $(wildcard include/config/INLINE_READ_LOCK_IRQSAVE) \
-    $(wildcard include/config/INLINE_WRITE_LOCK_IRQSAVE) \
-    $(wildcard include/config/INLINE_READ_TRYLOCK) \
-    $(wildcard include/config/INLINE_WRITE_TRYLOCK) \
-    $(wildcard include/config/INLINE_READ_UNLOCK) \
-    $(wildcard include/config/INLINE_WRITE_UNLOCK) \
-    $(wildcard include/config/INLINE_READ_UNLOCK_BH) \
-    $(wildcard include/config/INLINE_WRITE_UNLOCK_BH) \
-    $(wildcard include/config/INLINE_READ_UNLOCK_IRQ) \
-    $(wildcard include/config/INLINE_WRITE_UNLOCK_IRQ) \
-    $(wildcard include/config/INLINE_READ_UNLOCK_IRQRESTORE) \
-    $(wildcard include/config/INLINE_WRITE_UNLOCK_IRQRESTORE) \
-  include/uapi/linux/wait.h \
-  include/linux/refcount.h \
-  include/linux/sem.h \
-  include/uapi/linux/sem.h \
-  include/linux/ipc.h \
-  include/linux/uidgid.h \
-    $(wildcard include/config/MULTIUSER) \
-    $(wildcard include/config/USER_NS) \
-  include/linux/highuid.h \
-  include/linux/rhashtable-types.h \
-  include/linux/mutex.h \
-    $(wildcard include/config/MUTEX_SPIN_ON_OWNER) \
-  include/linux/osq_lock.h \
-  include/linux/debug_locks.h \
-  include/linux/workqueue.h \
-    $(wildcard include/config/DEBUG_OBJECTS_WORK) \
-    $(wildcard include/config/FREEZER) \
-    $(wildcard include/config/SYSFS) \
-    $(wildcard include/config/WQ_WATCHDOG) \
-  include/linux/timer.h \
-    $(wildcard include/config/DEBUG_OBJECTS_TIMERS) \
-    $(wildcard include/config/NO_HZ_COMMON) \
-  include/linux/ktime.h \
-  include/linux/time.h \
-    $(wildcard include/config/POSIX_TIMERS) \
-  include/linux/time32.h \
-  include/linux/timex.h \
-  include/uapi/linux/timex.h \
-  arch/x86/include/asm/timex.h \
-    $(wildcard include/config/X86_TSC) \
-  arch/x86/include/asm/tsc.h \
-  include/vdso/time32.h \
-  include/vdso/time.h \
-  include/linux/jiffies.h \
-  include/vdso/jiffies.h \
-  include/generated/timeconst.h \
-  include/vdso/ktime.h \
-  include/linux/timekeeping.h \
-    $(wildcard include/config/GENERIC_CMOS_UPDATE) \
-  include/linux/clocksource_ids.h \
-  include/linux/debugobjects.h \
-    $(wildcard include/config/DEBUG_OBJECTS) \
-    $(wildcard include/config/DEBUG_OBJECTS_FREE) \
-  include/uapi/linux/ipc.h \
-  arch/x86/include/generated/uapi/asm/ipcbuf.h \
-  include/uapi/asm-generic/ipcbuf.h \
-  arch/x86/include/uapi/asm/sembuf.h \
-  include/linux/shm.h \
-  include/uapi/linux/shm.h \
-  include/uapi/asm-generic/hugetlb_encode.h \
-  arch/x86/include/uapi/asm/shmbuf.h \
-  include/uapi/asm-generic/shmbuf.h \
-  arch/x86/include/asm/shmparam.h \
-  include/linux/plist.h \
-    $(wildcard include/config/DEBUG_PLIST) \
-  include/linux/hrtimer.h \
-    $(wildcard include/config/HIGH_RES_TIMERS) \
-    $(wildcard include/config/TIME_LOW_RES) \
-    $(wildcard include/config/TIMERFD) \
-  include/linux/hrtimer_defs.h \
-  include/linux/rbtree.h \
-  include/linux/rbtree_types.h \
-  include/linux/percpu.h \
-    $(wildcard include/config/NEED_PER_CPU_EMBED_FIRST_CHUNK) \
-    $(wildcard include/config/NEED_PER_CPU_PAGE_FIRST_CHUNK) \
-  include/linux/mmdebug.h \
-    $(wildcard include/config/DEBUG_VM) \
-    $(wildcard include/config/DEBUG_VM_PGFLAGS) \
-  include/linux/seqlock.h \
-  include/linux/ww_mutex.h \
-    $(wildcard include/config/DEBUG_RT_MUTEXES) \
-    $(wildcard include/config/DEBUG_WW_MUTEX_SLOWPATH) \
-  include/linux/rtmutex.h \
-  include/linux/timerqueue.h \
-  include/linux/seccomp.h \
-    $(wildcard include/config/SECCOMP) \
-    $(wildcard include/config/HAVE_ARCH_SECCOMP_FILTER) \
-    $(wildcard include/config/SECCOMP_FILTER) \
-    $(wildcard include/config/CHECKPOINT_RESTORE) \
-    $(wildcard include/config/SECCOMP_CACHE_DEBUG) \
-  include/uapi/linux/seccomp.h \
-  arch/x86/include/asm/seccomp.h \
-  arch/x86/include/asm/unistd.h \
-  arch/x86/include/uapi/asm/unistd.h \
-  arch/x86/include/generated/uapi/asm/unistd_32.h \
-  include/asm-generic/seccomp.h \
-  include/uapi/linux/unistd.h \
-  include/linux/nodemask.h \
-    $(wildcard include/config/HIGHMEM) \
-  include/linux/numa.h \
-    $(wildcard include/config/NODES_SHIFT) \
-    $(wildcard include/config/NUMA_KEEP_MEMINFO) \
-    $(wildcard include/config/HAVE_ARCH_NODE_DEV_GROUP) \
-  arch/x86/include/asm/sparsemem.h \
-  include/linux/resource.h \
-  include/uapi/linux/resource.h \
-  arch/x86/include/generated/uapi/asm/resource.h \
-  include/asm-generic/resource.h \
-  include/uapi/asm-generic/resource.h \
-  include/linux/latencytop.h \
-  include/linux/sched/prio.h \
-  include/linux/sched/types.h \
-  include/linux/s
+// SPDX-License-Identifier: GPL-2.0
+// SPI to CAN driver for the Texas Instruments TCAN4x5x
+// Copyright (C) 2018-19 Texas Instruments Incorporated - http://www.ti.com/
+
+#include "tcan4x5x.h"
+
+#define TCAN4X5X_EXT_CLK_DEF 40000000
+
+#define TCAN4X5X_DEV_ID0 0x00
+#define TCAN4X5X_DEV_ID1 0x04
+#define TCAN4X5X_REV 0x08
+#define TCAN4X5X_STATUS 0x0C
+#define TCAN4X5X_ERROR_STATUS 0x10
+#define TCAN4X5X_CONTROL 0x14
+
+#define TCAN4X5X_CONFIG 0x800
+#define TCAN4X5X_TS_PRESCALE 0x804
+#define TCAN4X5X_TEST_REG 0x808
+#define TCAN4X5X_INT_FLAGS 0x820
+#define TCAN4X5X_MCAN_INT_REG 0x824
+#define TCAN4X5X_INT_EN 0x830
+
+/* Interrupt bits */
+#define TCAN4X5X_CANBUSTERMOPEN_INT_EN BIT(30)
+#define TCAN4X5X_CANHCANL_INT_EN BIT(29)
+#define TCAN4X5X_CANHBAT_INT_EN BIT(28)
+#define TCAN4X5X_CANLGND_INT_EN BIT(27)
+#define TCAN4X5X_CANBUSOPEN_INT_EN BIT(26)
+#define TCAN4X5X_CANBUSGND_INT_EN BIT(25)
+#define TCAN4X5X_CANBUSBAT_INT_EN BIT(24)
+#define TCAN4X5X_UVSUP_INT_EN BIT(22)
+#define TCAN4X5X_UVIO_INT_EN BIT(21)
+#define TCAN4X5X_TSD_INT_EN BIT(19)
+#define TCAN4X5X_ECCERR_INT_EN BIT(16)
+#define TCAN4X5X_CANINT_INT_EN BIT(15)
+#define TCAN4X5X_LWU_INT_EN BIT(14)
+#define TCAN4X5X_CANSLNT_INT_EN BIT(10)
+#define TCAN4X5X_CANDOM_INT_EN BIT(8)
+#define TCAN4X5X_CANBUS_ERR_INT_EN BIT(5)
+#define TCAN4X5X_BUS_FAULT BIT(4)
+#define TCAN4X5X_MCAN_INT BIT(1)
+#define TCAN4X5X_ENABLE_TCAN_INT \
+	(TCAN4X5X_MCAN_INT | TCAN4X5X_BUS_FAULT | \
+	 TCAN4X5X_CANBUS_ERR_INT_EN | TCAN4X5X_CANINT_INT_EN)
+
+/* MCAN Interrupt bits */
+#define TCAN4X5X_MCAN_IR_ARA BIT(29)
+#define TCAN4X5X_MCAN_IR_PED BIT(28)
+#define TCAN4X5X_MCAN_IR_PEA BIT(27)
+#define TCAN4X5X_MCAN_IR_WD BIT(26)
+#define TCAN4X5X_MCAN_IR_BO BIT(25)
+#define TCAN4X5X_MCAN_IR_EW BIT(24)
+#define TCAN4X5X_MCAN_IR_EP BIT(23)
+#define TCAN4X5X_MCAN_IR_ELO BIT(22)
+#define TCAN4X5X_MCAN_IR_BEU BIT(21)
+#define TCAN4X5X_MCAN_IR_BEC BIT(20)
+#define TCAN4X5X_MCAN_IR_DRX BIT(19)
+#define TCAN4X5X_MCAN_IR_TOO BIT(18)
+#define TCAN4X5X_MCAN_IR_MRAF BIT(17)
+#define TCAN4X5X_MCAN_IR_TSW BIT(16)
+#define TCAN4X5X_MCAN_IR_TEFL BIT(15)
+#define TCAN4X5X_MCAN_IR_TEFF BIT(14)
+#define TCAN4X5X_MCAN_IR_TEFW BIT(13)
+#define TCAN4X5X_MCAN_IR_TEFN BIT(12)
+#define TCAN4X5X_MCAN_IR_TFE BIT(11)
+#define TCAN4X5X_MCAN_IR_TCF BIT(10)
+#define TCAN4X5X_MCAN_IR_TC BIT(9)
+#define TCAN4X5X_MCAN_IR_HPM BIT(8)
+#define TCAN4X5X_MCAN_IR_RF1L BIT(7)
+#define TCAN4X5X_MCAN_IR_RF1F BIT(6)
+#define TCAN4X5X_MCAN_IR_RF1W BIT(5)
+#define TCAN4X5X_MCAN_IR_RF1N BIT(4)
+#define TCAN4X5X_MCAN_IR_RF0L BIT(3)
+#define TCAN4X5X_MCAN_IR_RF0F BIT(2)
+#define TCAN4X5X_MCAN_IR_RF0W BIT(1)
+#define TCAN4X5X_MCAN_IR_RF0N BIT(0)
+#define TCAN4X5X_ENABLE_MCAN_INT \
+	(TCAN4X5X_MCAN_IR_TC | TCAN4X5X_MCAN_IR_RF0N | \
+	 TCAN4X5X_MCAN_IR_RF1N | TCAN4X5X_MCAN_IR_RF0F | \
+	 TCAN4X5X_MCAN_IR_RF1F)
+
+#define TCAN4X5X_MRAM_START 0x8000
+#define TCAN4X5X_MCAN_OFFSET 0x1000
+
+#define TCAN4X5X_CLEAR_ALL_INT 0xffffffff
+#define TCAN4X5X_SET_ALL_INT 0xffffffff
+
+#define TCAN4X5X_MODE_SEL_MASK (BIT(7) | BIT(6))
+#define TCAN4X5X_MODE_SLEEP 0x00
+#define TCAN4X5X_MODE_STANDBY BIT(6)
+#define TCAN4X5X_MODE_NORMAL BIT(7)
+
+#define TCAN4X5X_DISABLE_WAKE_MSK	(BIT(31) | BIT(30))
+#define TCAN4X5X_DISABLE_INH_MSK	BIT(9)
+
+#define TCAN4X5X_SW_RESET BIT(2)
+
+#define TCAN4X5X_MCAN_CONFIGURED BIT(5)
+#define TCAN4X5X_WATCHDOG_EN BIT(3)
+#define TCAN4X5X_WD_60_MS_TIMER 0
+#define TCAN4X5X_WD_600_MS_TIMER BIT(28)
+#define TCAN4X5X_WD_3_S_TIMER BIT(29)
+#define TCAN4X5X_WD_6_S_TIMER (BIT(28) | BIT(29))
+
+static inline struct tcan4x5x_priv *cdev_to_priv(struct m_can_classdev *cdev)
+{
+	return container_of(cdev, struct tcan4x5x_priv, cdev);
+}
+
+static void tcan4x5x_check_wake(struct tcan4x5x_priv *priv)
+{
+	int wake_state = 0;
+
+	if (priv->device_state_gpio)
+		wake_state = gpiod_get_value(priv->device_state_gpio);
+
+	if (priv->device_wake_gpio && wake_state) {
+		gpiod_set_value(priv->device_wake_gpio, 0);
+		usleep_range(5, 50);
+		gpiod_set_value(priv->device_wake_gpio, 1);
+	}
+}
+
+static int tcan4x5x_reset(struct tcan4x5x_priv *priv)
+{
+	int ret = 0;
+
+	if (priv->reset_gpio) {
+		gpiod_set_value(priv->reset_gpio, 1);
+
+		/* tpulse_width minimum 30us */
+		usleep_range(30, 100);
+		gpiod_set_value(priv->reset_gpio, 0);
+	} else {
+		ret = regmap_write(priv->regmap, TCAN4X5X_CONFIG,
+				   TCAN4X5X_SW_RESET);
+		if (ret)
+			return ret;
+	}
+
+	usleep_range(700, 1000);
+
+	return ret;
+}
+
+static u32 tcan4x5x_read_reg(struct m_can_classdev *cdev, int reg)
+{
+	struct tcan4x5x_priv *priv = cdev_to_priv(cdev);
+	u32 val;
+
+	regmap_read(priv->regmap, TCAN4X5X_MCAN_OFFSET + reg, &val);
+
+	return val;
+}
+
+static int tcan4x5x_read_fifo(struct m_can_classdev *cdev, int addr_offset,
+			      void *val, size_t val_count)
+{
+	struct tcan4x5x_priv *priv = cdev_to_priv(cdev);
+
+	return regmap_bulk_read(priv->regmap, TCAN4X5X_MRAM_START + addr_offset, val, val_count);
+}
+
+static int tcan4x5x_write_reg(struct m_can_classdev *cdev, int reg, int val)
+{
+	struct tcan4x5x_priv *priv = cdev_to_priv(cdev);
+
+	return regmap_write(priv->regmap, TCAN4X5X_MCAN_OFFSET + reg, val);
+}
+
+static int tcan4x5x_write_fifo(struct m_can_classdev *cdev,
+			       int addr_offset, const void *val, size_t val_count)
+{
+	struct tcan4x5x_priv *priv = cdev_to_priv(cdev);
+
+	return regmap_bulk_write(priv->regmap, TCAN4X5X_MRAM_START + addr_offset, val, val_count);
+}
+
+static int tcan4x5x_power_enable(struct regulator *reg, int enable)
+{
+	if (IS_ERR_OR_NULL(reg))
+		return 0;
+
+	if (enable)
+		return regulator_enable(reg);
+	else
+		return regulator_disable(reg);
+}
+
+static int tcan4x5x_write_tcan_reg(struct m_can_classdev *cdev,
+				   int reg, int val)
+{
+	struct tcan4x5x_priv *priv = cdev_to_priv(cdev);
+
+	return regmap_write(priv->regmap, reg, val);
+}
+
+static int tcan4x5x_clear_interrupts(struct m_can_classdev *cdev)
+{
+	int ret;
+
+	ret = tcan4x5x_write_tcan_reg(cdev, TCAN4X5X_STATUS,
+				      TCAN4X5X_CLEAR_ALL_INT);
+	if (ret)
+		return ret;
+
+	ret = tcan4x5x_write_tcan_reg(cdev, TCAN4X5X_MCAN_INT_REG,
+				      TCAN4X5X_ENABLE_MCAN_INT);
+	if (ret)
+		return ret;
+
+	ret = tcan4x5x_write_tcan_reg(cdev, TCAN4X5X_INT_FLAGS,
+				      TCAN4X5X_CLEAR_ALL_INT);
+	if (ret)
+		return ret;
+
+	return tcan4x5x_write_tcan_reg(cdev, TCAN4X5X_ERROR_STATUS,
+				       TCAN4X5X_CLEAR_ALL_INT);
+}
+
+static int tcan4x5x_init(struct m_can_classdev *cdev)
+{
+	struct tcan4x5x_priv *tcan4x5x = cdev_to_priv(cdev);
+	int ret;
+
+	tcan4x5x_check_wake(tcan4x5x);
+
+	ret = tcan4x5x_clear_interrupts(cdev);
+	if (ret)
+		return ret;
+
+	ret = tcan4x5x_write_tcan_reg(cdev, TCAN4X5X_INT_EN,
+				      TCAN4X5X_ENABLE_TCAN_INT);
+	if (ret)
+		return ret;
+
+	/* Zero out the MCAN buffers */
+	ret = m_can_init_ram(cdev);
+	if (ret)
+		return ret;
+
+	ret = regmap_update_bits(tcan4x5x->regmap, TCAN4X5X_CONFIG,
+				 TCAN4X5X_MODE_SEL_MASK, TCAN4X5X_MODE_NORMAL);
+	if (ret)
+		return ret;
+
+	return ret;
+}
+
+static int tcan4x5x_disable_wake(struct m_can_classdev *cdev)
+{
+	struct tcan4x5x_priv *tcan4x5x = cdev_to_priv(cdev);
+
+	return regmap_update_bits(tcan4x5x->regmap, TCAN4X5X_CONFIG,
+				  TCAN4X5X_DISABLE_WAKE_MSK, 0x00);
+}
+
+static int tcan4x5x_disable_state(struct m_can_classdev *cdev)
+{
+	struct tcan4x5x_priv *tcan4x5x = cdev_to_priv(cdev);
+
+	return regmap_update_bits(tcan4x5x->regmap, TCAN4X5X_CONFIG,
+				  TCAN4X5X_DISABLE_INH_MSK, 0x01);
+}
+
+static int tcan4x5x_get_gpios(struct m_can_classdev *cdev)
+{
+	struct tcan4x5x_priv *tcan4x5x = cdev_to_priv(cdev);
+	int ret;
+
+	tcan4x5x->device_wake_gpio = devm_gpiod_get(cdev->dev, "device-wake",
+						    GPIOD_OUT_HIGH);
+	if (IS_ERR(tcan4x5x->device_wake_gpio)) {
+		if (PTR_ERR(tcan4x5x->device_wake_gpio) == -EPROBE_DEFER)
+			return -EPROBE_DEFER;
+
+		tcan4x5x_disable_wake(cdev);
+	}
+
+	tcan4x5x->reset_gpio = devm_gpiod_get_optional(cdev->dev, "reset",
+						       GPIOD_OUT_LOW);
+	if (IS_ERR(tcan4x5x->reset_gpio))
+		tcan4x5x->reset_gpio = NULL;
+
+	ret = tcan4x5x_reset(tcan4x5x);
+	if (ret)
+		return ret;
+
+	tcan4x5x->device_state_gpio = devm_gpiod_get_optional(cdev->dev,
+							      "device-state",
+							      GPIOD_IN);
+	if (IS_ERR(tcan4x5x->device_state_gpio)) {
+		tcan4x5x->device_state_gpio = NULL;
+		tcan4x5x_disable_state(cdev);
+	}
+
+	return 0;
+}
+
+static struct m_can_ops tcan4x5x_ops = {
+	.init = tcan4x5x_init,
+	.read_reg = tcan4x5x_read_reg,
+	.write_reg = tcan4x5x_write_reg,
+	.write_fifo = tcan4x5x_write_fifo,
+	.read_fifo = tcan4x5x_read_fifo,
+	.clear_interrupts = tcan4x5x_clear_interrupts,
+};
+
+static int tcan4x5x_can_probe(struct spi_device *spi)
+{
+	struct tcan4x5x_priv *priv;
+	struct m_can_classdev *mcan_class;
+	int freq, ret;
+
+	mcan_class = m_can_class_allocate_dev(&spi->dev,
+					      sizeof(struct tcan4x5x_priv));
+	if (!mcan_class)
+		return -ENOMEM;
+
+	priv = cdev_to_priv(mcan_class);
+
+	priv->power = devm_regulator_get_optional(&spi->dev, "vsup");
+	if (PTR_ERR(priv->power) == -EPROBE_DEFER) {
+		ret = -EPROBE_DEFER;
+		goto out_m_can_class_free_dev;
+	} else {
+		priv->power = NULL;
+	}
+
+	m_can_class_get_clocks(mcan_class);
+	if (IS_ERR(mcan_class->cclk)) {
+		dev_err(&spi->dev, "no CAN clock source defined\n");
+		freq = TCAN4X5X_EXT_CLK_DEF;
+	} else {
+		freq = clk_get_rate(mcan_class->cclk);
+	}
+
+	/* Sanity check */
+	if (freq < 20000000 || freq > TCAN4X5X_EXT_CLK_DEF) {
+		ret = -ERANGE;
+		goto out_m_can_class_free_dev;
+	}
+
+	priv->spi = spi;
+
+	mcan_class->pm_clock_support = 0;
+	mcan_class->can.clock.freq = freq;
+	mcan_class->dev = &spi->dev;
+	mcan_class->ops = &tcan4x5x_ops;
+	mcan_class->is_peripheral = true;
+	mcan_class->net->irq = spi->irq;
+
+	spi_set_drvdata(spi, priv);
+
+	/* Configure the SPI bus */
+	spi->bits_per_word = 8;
+	ret = spi_setup(spi);
+	if (ret)
+		goto out_m_can_class_free_dev;
+
+	ret = tcan4x5x_regmap_init(priv);
+	if (ret)
+		goto out_m_can_class_free_dev;
+
+	ret = tcan4x5x_power_enable(priv->power, 1);
+	if (ret)
+		goto out_m_can_class_free_dev;
+
+	ret = tcan4x5x_get_gpios(mcan_class);
+	if (ret)
+		goto out_power;
+
+	ret = tcan4x5x_init(mcan_class);
+	if (ret)
+		goto out_power;
+
+	ret = m_can_class_register(mcan_class);
+	if (ret)
+		goto out_power;
+
+	netdev_info(mcan_class->net, "TCAN4X5X successfully initialized.\n");
+	return 0;
+
+out_power:
+	tcan4x5x_power_enable(priv->power, 0);
+ out_m_can_class_free_dev:
+	m_can_class_free_dev(mcan_class->net);
+	return ret;
+}
+
+static void tcan4x5x_can_remove(struct spi_device *spi)
+{
+	struct tcan4x5x_priv *priv = spi_get_drvdata(spi);
+
+	m_can_class_unregister(&priv->cdev);
+
+	tcan4x5x_power_enable(priv->power, 0);
+
+	m_can_class_free_dev(priv->cdev.net);
+}
+
+static const struct of_device_id tcan4x5x_of_match[] = {
+	{
+		.compatible = "ti,tcan4x5x",
+	}, {
+		/* sentinel */
+	},
+};
+MODULE_DEVICE_TABLE(of, tcan4x5x_of_match);
+
+static const struct spi_device_id tcan4x5x_id_table[] = {
+	{
+		.name = "tcan4x5x",
+	}, {
+		/* sentinel */
+	},
+};
+MODULE_DEVICE_TABLE(spi, tcan4x5x_id_table);
+
+static struct spi_driver tcan4x5x_can_driver = {
+	.driver = {
+		.name = KBUILD_MODNAME,
+		.of_match_table = tcan4x5x_of_match,
+		.pm = NULL,
+	},
+	.id_table = tcan4x5x_id_table,
+	.probe = tcan4x5x_can_probe,
+	.remove = tcan4x5x_can_remove,
+};
+module_spi_driver(tcan4x5x_can_driver);
+
+MODULE_AUTHOR("Dan Murphy <dmurphy@ti.com>");
+MODULE_DESCRIPTION("Texas Instruments TCAN4x5x CAN driver");
+MODULE_LICENSE("GPL v2");

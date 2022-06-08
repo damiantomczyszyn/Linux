@@ -1,2 +1,6 @@
-drivers/media/rc/keymaps/rc-kworld-pc150u.o
+00);
+		break;
+	}
+}
 
+int cx23885_ir_init(struc

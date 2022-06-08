@@ -1,2 +1,3 @@
-drivers/media/rc/keymaps/rc-hauppauge.o
-
+amux   = CX25840_AUDIO8,
+		}, {
+			.type 

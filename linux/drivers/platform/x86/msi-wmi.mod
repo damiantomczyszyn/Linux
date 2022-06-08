@@ -1,2 +1,3 @@
-lude/config/SHMEM) \
-    $(wildc
+,
+			.amux   = CX25840_AUDIO8,
+	

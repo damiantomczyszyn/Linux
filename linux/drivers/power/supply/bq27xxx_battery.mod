@@ -1,2 +1,2 @@
-lude/config/SHMEM) \
-    $(wildcard incl
+         = &mpeg_fops,
+	.ioctl_ops     =

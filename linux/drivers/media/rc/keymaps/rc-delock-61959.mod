@@ -1,2 +1,1 @@
-drivers/media/rc/keymaps/rc-delock-61959.o
-
+/* SPDX-License-Identifier: GPL-2.0-or-later

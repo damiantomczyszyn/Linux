@@ -1,2 +1,3 @@
-IC_IOREMAP) \
-    $(wildcard include/config/VIRT_T
+UGE_HVR1500:
+	case CX23885_BOARD_MPX885:
+	case CX2

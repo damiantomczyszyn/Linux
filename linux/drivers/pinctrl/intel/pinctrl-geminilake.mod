@@ -1,1 +1,3 @@
-    $(wildcard include/config/HIGH_RES_TIMER
+C417_RWD, regval);
+
+	/* Wait for the trans t

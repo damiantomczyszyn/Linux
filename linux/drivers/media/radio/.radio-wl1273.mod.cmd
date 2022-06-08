@@ -1,1 +1,6 @@
-cmd_drivers/media/radio/radio-wl1273.mod := { echo  drivers/media/radio/radio-wl1273.o;  echo; } > drivers/media/radio/radio-wl1273.mod
+// SPDX-License-Identifier: GPL-2.0-or-later
+/*
+ *
+ *  Support for CX23885 analog audio capture
+ *
+ *    (c) 2008 Mijhail Moreyra <mijha

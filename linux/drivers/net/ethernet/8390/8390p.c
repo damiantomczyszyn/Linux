@@ -1,57 +1,105 @@
-) \
-  include/acpi/acpi_io.h \
-  include/linux/io.h \
-    $(wildcard include/config/HAS_IOPORT_MAP) \
-  arch/x86/include/asm/io.h \
-    $(wildcard include/config/MTRR) \
-    $(wildcard include/config/X86_PAT) \
-  arch/x86/include/generated/asm/early_ioremap.h \
-  include/asm-generic/early_ioremap.h \
-    $(wildcard include/config/GENERIC_EARLY_IOREMAP) \
-  include/asm-generic/iomap.h \
-  include/asm-generic/pci_iomap.h \
-    $(wildcard include/config/NO_GENERIC_PCI_IOPORT_MAP) \
-    $(wildcard include/config/GENERIC_PCI_IOMAP) \
-  include/asm-generic/io.h \
-    $(wildcard include/config/GENERIC_IOMAP) \
-    $(wildcard include/config/GENERIC_IOREMAP) \
-    $(wildcard include/config/VIRT_TO_BUS) \
-    $(wildcard include/config/GENERIC_DEVMEM_IS_ALLOWED) \
-  include/linux/logic_pio.h \
-    $(wildcard include/config/INDIRECT_PIO) \
-  include/linux/vmalloc.h \
-    $(wildcard include/config/HAVE_ARCH_HUGE_VMALLOC) \
-  arch/x86/include/asm/vmalloc.h \
-    $(wildcard include/config/HAVE_ARCH_HUGE_VMAP) \
-  arch/x86/include/asm/acpi.h \
-    $(wildcard include/config/ACPI_APEI) \
-  include/acpi/pdc_intel.h \
-  arch/x86/include/asm/numa.h \
-    $(wildcard include/config/NUMA_EMU) \
-  arch/x86/include/asm/numa_32.h \
-  include/linux/regulator/consumer.h \
-    $(wildcard include/config/REGULATOR) \
-  include/linux/suspend.h \
-    $(wildcard include/config/VT) \
-    $(wildcard include/config/SUSPEND) \
-    $(wildcard include/config/HIBERNATION_SNAPSHOT_DEV) \
-    $(wildcard include/config/PM_SLEEP_DEBUG) \
-    $(wildcard include/config/PM_AUTOSLEEP) \
-  include/linux/swap.h \
-    $(wildcard include/config/DEVICE_PRIVATE) \
-    $(wildcard include/config/MIGRATION) \
-    $(wildcard include/config/FRONTSWAP) \
-    $(wildcard include/config/THP_SWAP) \
-    $(wildcard include/config/MEMCG_SWAP) \
-  include/linux/memcontrol.h \
-    $(wildcard include/config/CGROUP_WRITEBACK) \
-  include/linux/cgroup.h \
-    $(wildcard include/config/CGROUP_CPUACCT) \
-    $(wildcard include/config/SOCK_CGROUP_DATA) \
-    $(wildcard include/config/CGROUP_DATA) \
-    $(wildcard include/config/CGROUP_BPF) \
-  include/uapi/linux/cgroupstats.h \
-  include/uapi/linux/taskstats.h \
-  include/linux/fs.h \
-    $(wildcard include/config/READ_ONLY_THP_FOR_FS) \
-    $(wildcard include/config/FS
+// SPDX-License-Identifier: GPL-2.0-only
+/* 8390 core for ISA devices needing bus delays */
+
+static const char version[] =
+    "8390p.c:v1.10cvs 9/23/94 Donald Becker (becker@cesdis.gsfc.nasa.gov)\n";
+
+#define ei_inb(_p)	inb(_p)
+#define ei_outb(_v, _p)	outb(_v, _p)
+#define ei_inb_p(_p)	inb_p(_p)
+#define ei_outb_p(_v, _p) outb_p(_v, _p)
+
+#include "lib8390.c"
+
+int eip_open(struct net_device *dev)
+{
+	return __ei_open(dev);
+}
+EXPORT_SYMBOL(eip_open);
+
+int eip_close(struct net_device *dev)
+{
+	return __ei_close(dev);
+}
+EXPORT_SYMBOL(eip_close);
+
+netdev_tx_t eip_start_xmit(struct sk_buff *skb, struct net_device *dev)
+{
+	return __ei_start_xmit(skb, dev);
+}
+EXPORT_SYMBOL(eip_start_xmit);
+
+struct net_device_stats *eip_get_stats(struct net_device *dev)
+{
+	return __ei_get_stats(dev);
+}
+EXPORT_SYMBOL(eip_get_stats);
+
+void eip_set_multicast_list(struct net_device *dev)
+{
+	__ei_set_multicast_list(dev);
+}
+EXPORT_SYMBOL(eip_set_multicast_list);
+
+void eip_tx_timeout(struct net_device *dev, unsigned int txqueue)
+{
+	__ei_tx_timeout(dev, txqueue);
+}
+EXPORT_SYMBOL(eip_tx_timeout);
+
+irqreturn_t eip_interrupt(int irq, void *dev_id)
+{
+	return __ei_interrupt(irq, dev_id);
+}
+EXPORT_SYMBOL(eip_interrupt);
+
+#ifdef CONFIG_NET_POLL_CONTROLLER
+void eip_poll(struct net_device *dev)
+{
+	__ei_poll(dev);
+}
+EXPORT_SYMBOL(eip_poll);
+#endif
+
+const struct net_device_ops eip_netdev_ops = {
+	.ndo_open		= eip_open,
+	.ndo_stop		= eip_close,
+	.ndo_start_xmit		= eip_start_xmit,
+	.ndo_tx_timeout		= eip_tx_timeout,
+	.ndo_get_stats		= eip_get_stats,
+	.ndo_set_rx_mode	= eip_set_multicast_list,
+	.ndo_validate_addr	= eth_validate_addr,
+	.ndo_set_mac_address 	= eth_mac_addr,
+#ifdef CONFIG_NET_POLL_CONTROLLER
+	.ndo_poll_controller	= eip_poll,
+#endif
+};
+EXPORT_SYMBOL(eip_netdev_ops);
+
+struct net_device *__alloc_eip_netdev(int size)
+{
+	struct net_device *dev = ____alloc_ei_netdev(size);
+	if (dev)
+		dev->netdev_ops = &eip_netdev_ops;
+	return dev;
+}
+EXPORT_SYMBOL(__alloc_eip_netdev);
+
+void NS8390p_init(struct net_device *dev, int startp)
+{
+	__NS8390_init(dev, startp);
+}
+EXPORT_SYMBOL(NS8390p_init);
+
+static int __init NS8390p_init_module(void)
+{
+	return 0;
+}
+
+static void __exit NS8390p_cleanup_module(void)
+{
+}
+
+module_init(NS8390p_init_module);
+module_exit(NS8390p_cleanup_module);
+MODULE_LICENSE("GPL");

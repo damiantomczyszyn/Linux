@@ -1,4 +1,1 @@
-de/generated/asm/early_ioremap.h \
-  include/asm-generic/early_ioremap.h \
-    $(wildcard include/config/GENERIC_EARLY_IOREMAP) \
-  i
+cmd_drivers/net/ethernet/3com/3c509.mod := { echo  drivers/net/ethernet/3com/3c509.o;  echo; } > drivers/net/ethernet/3com/3c509.mod

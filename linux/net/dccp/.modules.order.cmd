@@ -1,9 +1,10 @@
-_LOCK_DEPTH))
-		return 0;
+_do_set_cpus_allowed(p, cpumask_of(rq->cpu), SCA_MIGRATE_DISABLE);
+}
 
-	class_idx = class - lock_classes;
+void migrate_disable(void)
+{
+	struct task_struct *p = current;
 
-	if (depth) { /* we're holding locks */
-		hlock = curr->held_locks + depth - 1;
-		if (hlock->class_idx == class_idx && nest_lock) {
-		
+	if (p->migration_disabled) {
+		p->migration_disabled++;
+		retu

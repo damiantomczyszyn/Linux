@@ -1,1 +1,7 @@
-cmd_drivers/media/rc/keymaps/rc-genius-tvgo-a11mce.mod := { echo  drivers/media/rc/keymaps/rc-genius-tvgo-a11mce.o;  echo; } > drivers/media/rc/keymaps/rc-genius-tvgo-a11mce.mod
+] = {
+		.name		= "Hauppauge WinTV-HVR1500Q",
+		.portc		= CX23885_MPEG_DVB,
+	},
+	[CX23885_BOARD_HAUPPAUGE_HVR1500] = {
+		.name		= "Hauppauge WinTV-HVR1500",
+		.porta		= CX23885_AN

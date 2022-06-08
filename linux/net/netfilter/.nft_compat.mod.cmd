@@ -1,1 +1,3 @@
-cmd_drivers/media/i2c/tw9906.o := gcc -Wp,-MMD,drivers/media/i2c/.tw9906.o.d -nostdinc -I./arch/x86/include -I./
+ask after ensuring that the
+ * stopper is the last running task on the CPU, so nr_active count is
+ * stable. We 

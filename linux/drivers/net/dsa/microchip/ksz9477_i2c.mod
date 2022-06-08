@@ -1,2 +1,2 @@
-e/config/NO_GENERIC_PCI_IOPORT_MAP) \
-   
+drivers/net/dsa/microchip/ksz9477_i2c.o
+

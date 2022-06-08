@@ -1,1 +1,1 @@
-nfig/GENERIC_IOREMAP) \
+ct tda10071_platform_dat

@@ -1,2 +1,2 @@
- include/config/PM) \
-    $(wildcard
+#include <linux/module.h>
+#define IN

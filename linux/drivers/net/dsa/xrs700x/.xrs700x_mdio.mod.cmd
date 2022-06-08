@@ -1,5 +1,1 @@
-ETS) \
-    $(wildcard include/config/X86_CPU_RESCTRL) \
-    $(wildcard include/config/FUTEX) \
-    $(wildcard include/config/PERF_EVENTS) \
-    $(wi
+cmd_drivers/net/dsa/xrs700x/xrs700x_mdio.mod := { echo  drivers/net/dsa/xrs700x/xrs700x_mdio.o;  echo; } > drivers/net/dsa/xrs700x/xrs700x_mdio.mod

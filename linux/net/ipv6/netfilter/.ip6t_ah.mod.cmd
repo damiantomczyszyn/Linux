@@ -1,3 +1,4 @@
-lude/config/SHMEM) \
-    $(wildcard include/config/ARCH_HAS_PTE_SPECIAL) \
-    $(wildcard include/config/ARCH_HAS_PTE_
+o another thread in
+ * your thread group, or accelerate that thread toward the
+ * processor it's on.
+ * @p: target tas

@@ -1,668 +1,712 @@
-// SPDX-License-Identifier: GPL-2.0-or-later
-/*
- * Driver for Feature Integration Technology Inc. (aka Fintek) LPC CIR
- *
- * Copyright (C) 2011 Jarod Wilson <jarod@redhat.com>
- *
- * Special thanks to Fintek for providing hardware and spec sheets.
- * This driver is based upon the nuvoton, ite and ene drivers for
- * similar hardware.
- */
+        = LGDT3306A_TPCLK_RISING_EDGE,
+	.tpvalid_polarity       = LGDT3306A_TP_VALID_HIGH,
+	.xtalMHz                = 25, /* 24 or 25 */
+};
 
-#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
-
-#include <linux/kernel.h>
-#include <linux/module.h>
-#include <linux/pnp.h>
-#include <linux/io.h>
-#include <linux/interrupt.h>
-#include <linux/sched.h>
-#include <linux/slab.h>
-#include <media/rc-core.h>
-
-#include "fintek-cir.h"
-
-/* write val to config reg */
-static inline void fintek_cr_write(struct fintek_dev *fintek, u8 val, u8 reg)
+static int p8000_set_voltage(struct dvb_frontend *fe,
+			     enum fe_sec_voltage voltage)
 {
-	fit_dbg("%s: reg 0x%02x, val 0x%02x  (ip/dp: %02x/%02x)",
-		__func__, reg, val, fintek->cr_ip, fintek->cr_dp);
-	outb(reg, fintek->cr_ip);
-	outb(val, fintek->cr_dp);
+	struct cx23885_tsport *port = fe->dvb->priv;
+	struct cx23885_dev *dev = port->dev;
+
+	if (voltage == SEC_VOLTAGE_18)
+		cx_write(MC417_RWD, 0x00001e00);
+	else if (voltage == SEC_VOLTAGE_13)
+		cx_write(MC417_RWD, 0x00001a00);
+	else
+		cx_write(MC417_RWD, 0x00001800);
+	return 0;
 }
 
-/* read val from config reg */
-static inline u8 fintek_cr_read(struct fintek_dev *fintek, u8 reg)
+static int dvbsky_t9580_set_voltage(struct dvb_frontend *fe,
+					enum fe_sec_voltage voltage)
 {
-	u8 val;
+	struct cx23885_tsport *port = fe->dvb->priv;
+	struct cx23885_dev *dev = port->dev;
 
-	outb(reg, fintek->cr_ip);
-	val = inb(fintek->cr_dp);
+	cx23885_gpio_enable(dev, GPIO_0 | GPIO_1, 1);
 
-	fit_dbg("%s: reg 0x%02x, val 0x%02x  (ip/dp: %02x/%02x)",
-		__func__, reg, val, fintek->cr_ip, fintek->cr_dp);
-	return val;
-}
-
-/* update config register bit without changing other bits */
-static inline void fintek_set_reg_bit(struct fintek_dev *fintek, u8 val, u8 reg)
-{
-	u8 tmp = fintek_cr_read(fintek, reg) | val;
-	fintek_cr_write(fintek, tmp, reg);
-}
-
-/* enter config mode */
-static inline void fintek_config_mode_enable(struct fintek_dev *fintek)
-{
-	/* Enabling Config Mode explicitly requires writing 2x */
-	outb(CONFIG_REG_ENABLE, fintek->cr_ip);
-	outb(CONFIG_REG_ENABLE, fintek->cr_ip);
-}
-
-/* exit config mode */
-static inline void fintek_config_mode_disable(struct fintek_dev *fintek)
-{
-	outb(CONFIG_REG_DISABLE, fintek->cr_ip);
-}
-
-/*
- * When you want to address a specific logical device, write its logical
- * device number to GCR_LOGICAL_DEV_NO
- */
-static inline void fintek_select_logical_dev(struct fintek_dev *fintek, u8 ldev)
-{
-	fintek_cr_write(fintek, ldev, GCR_LOGICAL_DEV_NO);
-}
-
-/* write val to cir config register */
-static inline void fintek_cir_reg_write(struct fintek_dev *fintek, u8 val, u8 offset)
-{
-	outb(val, fintek->cir_addr + offset);
-}
-
-/* read val from cir config register */
-static u8 fintek_cir_reg_read(struct fintek_dev *fintek, u8 offset)
-{
-	return inb(fintek->cir_addr + offset);
-}
-
-/* dump current cir register contents */
-static void cir_dump_regs(struct fintek_dev *fintek)
-{
-	fintek_config_mode_enable(fintek);
-	fintek_select_logical_dev(fintek, fintek->logical_dev_cir);
-
-	pr_info("%s: Dump CIR logical device registers:\n", FINTEK_DRIVER_NAME);
-	pr_info(" * CR CIR BASE ADDR: 0x%x\n",
-		(fintek_cr_read(fintek, CIR_CR_BASE_ADDR_HI) << 8) |
-		fintek_cr_read(fintek, CIR_CR_BASE_ADDR_LO));
-	pr_info(" * CR CIR IRQ NUM:   0x%x\n",
-		fintek_cr_read(fintek, CIR_CR_IRQ_SEL));
-
-	fintek_config_mode_disable(fintek);
-
-	pr_info("%s: Dump CIR registers:\n", FINTEK_DRIVER_NAME);
-	pr_info(" * STATUS:     0x%x\n",
-		fintek_cir_reg_read(fintek, CIR_STATUS));
-	pr_info(" * CONTROL:    0x%x\n",
-		fintek_cir_reg_read(fintek, CIR_CONTROL));
-	pr_info(" * RX_DATA:    0x%x\n",
-		fintek_cir_reg_read(fintek, CIR_RX_DATA));
-	pr_info(" * TX_CONTROL: 0x%x\n",
-		fintek_cir_reg_read(fintek, CIR_TX_CONTROL));
-	pr_info(" * TX_DATA:    0x%x\n",
-		fintek_cir_reg_read(fintek, CIR_TX_DATA));
-}
-
-/* detect hardware features */
-static int fintek_hw_detect(struct fintek_dev *fintek)
-{
-	unsigned long flags;
-	u8 chip_major, chip_minor;
-	u8 vendor_major, vendor_minor;
-	u8 portsel, ir_class;
-	u16 vendor, chip;
-
-	fintek_config_mode_enable(fintek);
-
-	/* Check if we're using config port 0x4e or 0x2e */
-	portsel = fintek_cr_read(fintek, GCR_CONFIG_PORT_SEL);
-	if (portsel == 0xff) {
-		fit_pr(KERN_INFO, "first portsel read was bunk, trying alt");
-		fintek_config_mode_disable(fintek);
-		fintek->cr_ip = CR_INDEX_PORT2;
-		fintek->cr_dp = CR_DATA_PORT2;
-		fintek_config_mode_enable(fintek);
-		portsel = fintek_cr_read(fintek, GCR_CONFIG_PORT_SEL);
-	}
-	fit_dbg("portsel reg: 0x%02x", portsel);
-
-	ir_class = fintek_cir_reg_read(fintek, CIR_CR_CLASS);
-	fit_dbg("ir_class reg: 0x%02x", ir_class);
-
-	switch (ir_class) {
-	case CLASS_RX_2TX:
-	case CLASS_RX_1TX:
-		fintek->hw_tx_capable = true;
+	switch (voltage) {
+	case SEC_VOLTAGE_13:
+		cx23885_gpio_set(dev, GPIO_1);
+		cx23885_gpio_clear(dev, GPIO_0);
 		break;
-	case CLASS_RX_ONLY:
-	default:
-		fintek->hw_tx_capable = false;
+	case SEC_VOLTAGE_18:
+		cx23885_gpio_set(dev, GPIO_1);
+		cx23885_gpio_set(dev, GPIO_0);
+		break;
+	case SEC_VOLTAGE_OFF:
+		cx23885_gpio_clear(dev, GPIO_1);
+		cx23885_gpio_clear(dev, GPIO_0);
 		break;
 	}
 
-	chip_major = fintek_cr_read(fintek, GCR_CHIP_ID_HI);
-	chip_minor = fintek_cr_read(fintek, GCR_CHIP_ID_LO);
-	chip  = chip_major << 8 | chip_minor;
-
-	vendor_major = fintek_cr_read(fintek, GCR_VENDOR_ID_HI);
-	vendor_minor = fintek_cr_read(fintek, GCR_VENDOR_ID_LO);
-	vendor = vendor_major << 8 | vendor_minor;
-
-	if (vendor != VENDOR_ID_FINTEK)
-		fit_pr(KERN_WARNING, "Unknown vendor ID: 0x%04x", vendor);
-	else
-		fit_dbg("Read Fintek vendor ID from chip");
-
-	fintek_config_mode_disable(fintek);
-
-	spin_lock_irqsave(&fintek->fintek_lock, flags);
-	fintek->chip_major  = chip_major;
-	fintek->chip_minor  = chip_minor;
-	fintek->chip_vendor = vendor;
-
-	/*
-	 * Newer reviews of this chipset uses port 8 instead of 5
-	 */
-	if ((chip != 0x0408) && (chip != 0x0804))
-		fintek->logical_dev_cir = LOGICAL_DEV_CIR_REV2;
-	else
-		fintek->logical_dev_cir = LOGICAL_DEV_CIR_REV1;
-
-	spin_unlock_irqrestore(&fintek->fintek_lock, flags);
+	/* call the frontend set_voltage function */
+	port->fe_set_voltage(fe, voltage);
 
 	return 0;
 }
 
-static void fintek_cir_ldev_init(struct fintek_dev *fintek)
+static int dvbsky_s952_portc_set_voltage(struct dvb_frontend *fe,
+					enum fe_sec_voltage voltage)
 {
-	/* Select CIR logical device and enable */
-	fintek_select_logical_dev(fintek, fintek->logical_dev_cir);
-	fintek_cr_write(fintek, LOGICAL_DEV_ENABLE, CIR_CR_DEV_EN);
+	struct cx23885_tsport *port = fe->dvb->priv;
+	struct cx23885_dev *dev = port->dev;
 
-	/* Write allocated CIR address and IRQ information to hardware */
-	fintek_cr_write(fintek, fintek->cir_addr >> 8, CIR_CR_BASE_ADDR_HI);
-	fintek_cr_write(fintek, fintek->cir_addr & 0xff, CIR_CR_BASE_ADDR_LO);
+	cx23885_gpio_enable(dev, GPIO_12 | GPIO_13, 1);
 
-	fintek_cr_write(fintek, fintek->cir_irq, CIR_CR_IRQ_SEL);
-
-	fit_dbg("CIR initialized, base io address: 0x%lx, irq: %d (len: %d)",
-		fintek->cir_addr, fintek->cir_irq, fintek->cir_port_len);
-}
-
-/* enable CIR interrupts */
-static void fintek_enable_cir_irq(struct fintek_dev *fintek)
-{
-	fintek_cir_reg_write(fintek, CIR_STATUS_IRQ_EN, CIR_STATUS);
-}
-
-static void fintek_cir_regs_init(struct fintek_dev *fintek)
-{
-	/* clear any and all stray interrupts */
-	fintek_cir_reg_write(fintek, CIR_STATUS_IRQ_MASK, CIR_STATUS);
-
-	/* and finally, enable interrupts */
-	fintek_enable_cir_irq(fintek);
-}
-
-static void fintek_enable_wake(struct fintek_dev *fintek)
-{
-	fintek_config_mode_enable(fintek);
-	fintek_select_logical_dev(fintek, LOGICAL_DEV_ACPI);
-
-	/* Allow CIR PME's to wake system */
-	fintek_set_reg_bit(fintek, ACPI_WAKE_EN_CIR_BIT, LDEV_ACPI_WAKE_EN_REG);
-	/* Enable CIR PME's */
-	fintek_set_reg_bit(fintek, ACPI_PME_CIR_BIT, LDEV_ACPI_PME_EN_REG);
-	/* Clear CIR PME status register */
-	fintek_set_reg_bit(fintek, ACPI_PME_CIR_BIT, LDEV_ACPI_PME_CLR_REG);
-	/* Save state */
-	fintek_set_reg_bit(fintek, ACPI_STATE_CIR_BIT, LDEV_ACPI_STATE_REG);
-
-	fintek_config_mode_disable(fintek);
-}
-
-static int fintek_cmdsize(u8 cmd, u8 subcmd)
-{
-	int datasize = 0;
-
-	switch (cmd) {
-	case BUF_COMMAND_NULL:
-		if (subcmd == BUF_HW_CMD_HEADER)
-			datasize = 1;
+	switch (voltage) {
+	case SEC_VOLTAGE_13:
+		cx23885_gpio_set(dev, GPIO_13);
+		cx23885_gpio_clear(dev, GPIO_12);
 		break;
-	case BUF_HW_CMD_HEADER:
-		if (subcmd == BUF_CMD_G_REVISION)
-			datasize = 2;
+	case SEC_VOLTAGE_18:
+		cx23885_gpio_set(dev, GPIO_13);
+		cx23885_gpio_set(dev, GPIO_12);
 		break;
-	case BUF_COMMAND_HEADER:
-		switch (subcmd) {
-		case BUF_CMD_S_CARRIER:
-		case BUF_CMD_S_TIMEOUT:
-		case BUF_RSP_PULSE_COUNT:
-			datasize = 2;
+	case SEC_VOLTAGE_OFF:
+		cx23885_gpio_clear(dev, GPIO_13);
+		cx23885_gpio_clear(dev, GPIO_12);
+		break;
+	}
+	/* call the frontend set_voltage function */
+	return port->fe_set_voltage(fe, voltage);
+}
+
+static int cx23885_sp2_ci_ctrl(void *priv, u8 read, int addr,
+				u8 data, int *mem)
+{
+	/* MC417 */
+	#define SP2_DATA              0x000000ff
+	#define SP2_WR                0x00008000
+	#define SP2_RD                0x00004000
+	#define SP2_ACK               0x00001000
+	#define SP2_ADHI              0x00000800
+	#define SP2_ADLO              0x00000400
+	#define SP2_CS1               0x00000200
+	#define SP2_CS0               0x00000100
+	#define SP2_EN_ALL            0x00001000
+	#define SP2_CTRL_OFF          (SP2_CS1 | SP2_CS0 | SP2_WR | SP2_RD)
+
+	struct cx23885_tsport *port = priv;
+	struct cx23885_dev *dev = port->dev;
+	int ret;
+	int tmp = 0;
+	unsigned long timeout;
+
+	mutex_lock(&dev->gpio_lock);
+
+	/* write addr */
+	cx_write(MC417_OEN, SP2_EN_ALL);
+	cx_write(MC417_RWD, SP2_CTRL_OFF |
+				SP2_ADLO | (0xff & addr));
+	cx_clear(MC417_RWD, SP2_ADLO);
+	cx_write(MC417_RWD, SP2_CTRL_OFF |
+				SP2_ADHI | (0xff & (addr >> 8)));
+	cx_clear(MC417_RWD, SP2_ADHI);
+
+	if (read)
+		/* data in */
+		cx_write(MC417_OEN, SP2_EN_ALL | SP2_DATA);
+	else
+		/* data out */
+		cx_write(MC417_RWD, SP2_CTRL_OFF | data);
+
+	/* chip select 0 */
+	cx_clear(MC417_RWD, SP2_CS0);
+
+	/* read/write */
+	cx_clear(MC417_RWD, (read) ? SP2_RD : SP2_WR);
+
+	/* wait for a maximum of 1 msec */
+	timeout = jiffies + msecs_to_jiffies(1);
+	while (!time_after(jiffies, timeout)) {
+		tmp = cx_read(MC417_RWD);
+		if ((tmp & SP2_ACK) == 0)
 			break;
-		case BUF_CMD_SIG_END:
-		case BUF_CMD_S_TXMASK:
-		case BUF_CMD_S_RXSENSOR:
-			datasize = 1;
-			break;
+		usleep_range(50, 100);
+	}
+
+	cx_set(MC417_RWD, SP2_CTRL_OFF);
+	*mem = tmp & 0xff;
+
+	mutex_unlock(&dev->gpio_lock);
+
+	if (!read) {
+		if (*mem < 0) {
+			ret = -EREMOTEIO;
+			goto err;
 		}
 	}
 
-	return datasize;
-}
-
-/* process ir data stored in driver buffer */
-static void fintek_process_rx_ir_data(struct fintek_dev *fintek)
-{
-	struct ir_raw_event rawir = {};
-	u8 sample;
-	bool event = false;
-	int i;
-
-	for (i = 0; i < fintek->pkts; i++) {
-		sample = fintek->buf[i];
-		switch (fintek->parser_state) {
-		case CMD_HEADER:
-			fintek->cmd = sample;
-			if ((fintek->cmd == BUF_COMMAND_HEADER) ||
-			    ((fintek->cmd & BUF_COMMAND_MASK) !=
-			     BUF_PULSE_BIT)) {
-				fintek->parser_state = SUBCMD;
-				continue;
-			}
-			fintek->rem = (fintek->cmd & BUF_LEN_MASK);
-			fit_dbg("%s: rem: 0x%02x", __func__, fintek->rem);
-			if (fintek->rem)
-				fintek->parser_state = PARSE_IRDATA;
-			else
-				ir_raw_event_overflow(fintek->rdev);
-			break;
-		case SUBCMD:
-			fintek->rem = fintek_cmdsize(fintek->cmd, sample);
-			fintek->parser_state = CMD_DATA;
-			break;
-		case CMD_DATA:
-			fintek->rem--;
-			break;
-		case PARSE_IRDATA:
-			fintek->rem--;
-			rawir.pulse = ((sample & BUF_PULSE_BIT) != 0);
-			rawir.duration = (sample & BUF_SAMPLE_MASK)
-					  * CIR_SAMPLE_PERIOD;
-
-			fit_dbg("Storing %s with duration %d",
-				rawir.pulse ? "pulse" : "space",
-				rawir.duration);
-			if (ir_raw_event_store_with_filter(fintek->rdev,
-									&rawir))
-				event = true;
-			break;
-		}
-
-		if ((fintek->parser_state != CMD_HEADER) && !fintek->rem)
-			fintek->parser_state = CMD_HEADER;
-	}
-
-	fintek->pkts = 0;
-
-	if (event) {
-		fit_dbg("Calling ir_raw_event_handle");
-		ir_raw_event_handle(fintek->rdev);
-	}
-}
-
-/* copy data from hardware rx register into driver buffer */
-static void fintek_get_rx_ir_data(struct fintek_dev *fintek, u8 rx_irqs)
-{
-	unsigned long flags;
-	u8 sample, status;
-
-	spin_lock_irqsave(&fintek->fintek_lock, flags);
-
-	/*
-	 * We must read data from CIR_RX_DATA until the hardware IR buffer
-	 * is empty and clears the RX_TIMEOUT and/or RX_RECEIVE flags in
-	 * the CIR_STATUS register
-	 */
-	do {
-		sample = fintek_cir_reg_read(fintek, CIR_RX_DATA);
-		fit_dbg("%s: sample: 0x%02x", __func__, sample);
-
-		fintek->buf[fintek->pkts] = sample;
-		fintek->pkts++;
-
-		status = fintek_cir_reg_read(fintek, CIR_STATUS);
-		if (!(status & CIR_STATUS_IRQ_EN))
-			break;
-	} while (status & rx_irqs);
-
-	fintek_process_rx_ir_data(fintek);
-
-	spin_unlock_irqrestore(&fintek->fintek_lock, flags);
-}
-
-static void fintek_cir_log_irqs(u8 status)
-{
-	fit_pr(KERN_INFO, "IRQ 0x%02x:%s%s%s%s%s", status,
-		status & CIR_STATUS_IRQ_EN	? " IRQEN"	: "",
-		status & CIR_STATUS_TX_FINISH	? " TXF"	: "",
-		status & CIR_STATUS_TX_UNDERRUN	? " TXU"	: "",
-		status & CIR_STATUS_RX_TIMEOUT	? " RXTO"	: "",
-		status & CIR_STATUS_RX_RECEIVE	? " RXOK"	: "");
-}
-
-/* interrupt service routine for incoming and outgoing CIR data */
-static irqreturn_t fintek_cir_isr(int irq, void *data)
-{
-	struct fintek_dev *fintek = data;
-	u8 status, rx_irqs;
-
-	fit_dbg_verbose("%s firing", __func__);
-
-	fintek_config_mode_enable(fintek);
-	fintek_select_logical_dev(fintek, fintek->logical_dev_cir);
-	fintek_config_mode_disable(fintek);
-
-	/*
-	 * Get IR Status register contents. Write 1 to ack/clear
-	 *
-	 * bit: reg name    - description
-	 *   3: TX_FINISH   - TX is finished
-	 *   2: TX_UNDERRUN - TX underrun
-	 *   1: RX_TIMEOUT  - RX data timeout
-	 *   0: RX_RECEIVE  - RX data received
-	 */
-	status = fintek_cir_reg_read(fintek, CIR_STATUS);
-	if (!(status & CIR_STATUS_IRQ_MASK) || status == 0xff) {
-		fit_dbg_verbose("%s exiting, IRSTS 0x%02x", __func__, status);
-		fintek_cir_reg_write(fintek, CIR_STATUS_IRQ_MASK, CIR_STATUS);
-		return IRQ_RETVAL(IRQ_NONE);
-	}
-
-	if (debug)
-		fintek_cir_log_irqs(status);
-
-	rx_irqs = status & (CIR_STATUS_RX_RECEIVE | CIR_STATUS_RX_TIMEOUT);
-	if (rx_irqs)
-		fintek_get_rx_ir_data(fintek, rx_irqs);
-
-	/* ack/clear all irq flags we've got */
-	fintek_cir_reg_write(fintek, status, CIR_STATUS);
-
-	fit_dbg_verbose("%s done", __func__);
-	return IRQ_RETVAL(IRQ_HANDLED);
-}
-
-static void fintek_enable_cir(struct fintek_dev *fintek)
-{
-	/* set IRQ enabled */
-	fintek_cir_reg_write(fintek, CIR_STATUS_IRQ_EN, CIR_STATUS);
-
-	fintek_config_mode_enable(fintek);
-
-	/* enable the CIR logical device */
-	fintek_select_logical_dev(fintek, fintek->logical_dev_cir);
-	fintek_cr_write(fintek, LOGICAL_DEV_ENABLE, CIR_CR_DEV_EN);
-
-	fintek_config_mode_disable(fintek);
-
-	/* clear all pending interrupts */
-	fintek_cir_reg_write(fintek, CIR_STATUS_IRQ_MASK, CIR_STATUS);
-
-	/* enable interrupts */
-	fintek_enable_cir_irq(fintek);
-}
-
-static void fintek_disable_cir(struct fintek_dev *fintek)
-{
-	fintek_config_mode_enable(fintek);
-
-	/* disable the CIR logical device */
-	fintek_select_logical_dev(fintek, fintek->logical_dev_cir);
-	fintek_cr_write(fintek, LOGICAL_DEV_DISABLE, CIR_CR_DEV_EN);
-
-	fintek_config_mode_disable(fintek);
-}
-
-static int fintek_open(struct rc_dev *dev)
-{
-	struct fintek_dev *fintek = dev->priv;
-	unsigned long flags;
-
-	spin_lock_irqsave(&fintek->fintek_lock, flags);
-	fintek_enable_cir(fintek);
-	spin_unlock_irqrestore(&fintek->fintek_lock, flags);
-
 	return 0;
-}
-
-static void fintek_close(struct rc_dev *dev)
-{
-	struct fintek_dev *fintek = dev->priv;
-	unsigned long flags;
-
-	spin_lock_irqsave(&fintek->fintek_lock, flags);
-	fintek_disable_cir(fintek);
-	spin_unlock_irqrestore(&fintek->fintek_lock, flags);
-}
-
-/* Allocate memory, probe hardware, and initialize everything */
-static int fintek_probe(struct pnp_dev *pdev, const struct pnp_device_id *dev_id)
-{
-	struct fintek_dev *fintek;
-	struct rc_dev *rdev;
-	int ret = -ENOMEM;
-
-	fintek = kzalloc(sizeof(struct fintek_dev), GFP_KERNEL);
-	if (!fintek)
-		return ret;
-
-	/* input device for IR remote (and tx) */
-	rdev = rc_allocate_device(RC_DRIVER_IR_RAW);
-	if (!rdev)
-		goto exit_free_dev_rdev;
-
-	ret = -ENODEV;
-	/* validate pnp resources */
-	if (!pnp_port_valid(pdev, 0)) {
-		dev_err(&pdev->dev, "IR PNP Port not valid!\n");
-		goto exit_free_dev_rdev;
-	}
-
-	if (!pnp_irq_valid(pdev, 0)) {
-		dev_err(&pdev->dev, "IR PNP IRQ not valid!\n");
-		goto exit_free_dev_rdev;
-	}
-
-	fintek->cir_addr = pnp_port_start(pdev, 0);
-	fintek->cir_irq  = pnp_irq(pdev, 0);
-	fintek->cir_port_len = pnp_port_len(pdev, 0);
-
-	fintek->cr_ip = CR_INDEX_PORT;
-	fintek->cr_dp = CR_DATA_PORT;
-
-	spin_lock_init(&fintek->fintek_lock);
-
-	pnp_set_drvdata(pdev, fintek);
-	fintek->pdev = pdev;
-
-	ret = fintek_hw_detect(fintek);
-	if (ret)
-		goto exit_free_dev_rdev;
-
-	/* Initialize CIR & CIR Wake Logical Devices */
-	fintek_config_mode_enable(fintek);
-	fintek_cir_ldev_init(fintek);
-	fintek_config_mode_disable(fintek);
-
-	/* Initialize CIR & CIR Wake Config Registers */
-	fintek_cir_regs_init(fintek);
-
-	/* Set up the rc device */
-	rdev->priv = fintek;
-	rdev->allowed_protocols = RC_PROTO_BIT_ALL_IR_DECODER;
-	rdev->open = fintek_open;
-	rdev->close = fintek_close;
-	rdev->device_name = FINTEK_DESCRIPTION;
-	rdev->input_phys = "fintek/cir0";
-	rdev->input_id.bustype = BUS_HOST;
-	rdev->input_id.vendor = VENDOR_ID_FINTEK;
-	rdev->input_id.product = fintek->chip_major;
-	rdev->input_id.version = fintek->chip_minor;
-	rdev->dev.parent = &pdev->dev;
-	rdev->driver_name = FINTEK_DRIVER_NAME;
-	rdev->map_name = RC_MAP_RC6_MCE;
-	rdev->timeout = 1000;
-	/* rx resolution is hardwired to 50us atm, 1, 25, 100 also possible */
-	rdev->rx_resolution = CIR_SAMPLE_PERIOD;
-
-	fintek->rdev = rdev;
-
-	ret = -EBUSY;
-	/* now claim resources */
-	if (!request_region(fintek->cir_addr,
-			    fintek->cir_port_len, FINTEK_DRIVER_NAME))
-		goto exit_free_dev_rdev;
-
-	if (request_irq(fintek->cir_irq, fintek_cir_isr, IRQF_SHARED,
-			FINTEK_DRIVER_NAME, (void *)fintek))
-		goto exit_free_cir_addr;
-
-	ret = rc_register_device(rdev);
-	if (ret)
-		goto exit_free_irq;
-
-	device_init_wakeup(&pdev->dev, true);
-
-	fit_pr(KERN_NOTICE, "driver has been successfully loaded\n");
-	if (debug)
-		cir_dump_regs(fintek);
-
-	return 0;
-
-exit_free_irq:
-	free_irq(fintek->cir_irq, fintek);
-exit_free_cir_addr:
-	release_region(fintek->cir_addr, fintek->cir_port_len);
-exit_free_dev_rdev:
-	rc_free_device(rdev);
-	kfree(fintek);
-
+err:
 	return ret;
 }
 
-static void fintek_remove(struct pnp_dev *pdev)
+static int cx23885_dvb_set_frontend(struct dvb_frontend *fe)
 {
-	struct fintek_dev *fintek = pnp_get_drvdata(pdev);
-	unsigned long flags;
+	struct dtv_frontend_properties *p = &fe->dtv_property_cache;
+	struct cx23885_tsport *port = fe->dvb->priv;
+	struct cx23885_dev *dev = port->dev;
 
-	spin_lock_irqsave(&fintek->fintek_lock, flags);
-	/* disable CIR */
-	fintek_disable_cir(fintek);
-	fintek_cir_reg_write(fintek, CIR_STATUS_IRQ_MASK, CIR_STATUS);
-	/* enable CIR Wake (for IR power-on) */
-	fintek_enable_wake(fintek);
-	spin_unlock_irqrestore(&fintek->fintek_lock, flags);
+	switch (dev->board) {
+	case CX23885_BOARD_HAUPPAUGE_HVR1275:
+		switch (p->modulation) {
+		case VSB_8:
+			cx23885_gpio_clear(dev, GPIO_5);
+			break;
+		case QAM_64:
+		case QAM_256:
+		default:
+			cx23885_gpio_set(dev, GPIO_5);
+			break;
+		}
+		break;
+	case CX23885_BOARD_MYGICA_X8506:
+	case CX23885_BOARD_MYGICA_X8507:
+	case CX23885_BOARD_MAGICPRO_PROHDTVE2:
+		/* Select Digital TV */
+		cx23885_gpio_set(dev, GPIO_0);
+		break;
+	}
 
-	/* free resources */
-	free_irq(fintek->cir_irq, fintek);
-	release_region(fintek->cir_addr, fintek->cir_port_len);
-
-	rc_unregister_device(fintek->rdev);
-
-	kfree(fintek);
-}
-
-static int fintek_suspend(struct pnp_dev *pdev, pm_message_t state)
-{
-	struct fintek_dev *fintek = pnp_get_drvdata(pdev);
-	unsigned long flags;
-
-	fit_dbg("%s called", __func__);
-
-	spin_lock_irqsave(&fintek->fintek_lock, flags);
-
-	/* disable all CIR interrupts */
-	fintek_cir_reg_write(fintek, CIR_STATUS_IRQ_MASK, CIR_STATUS);
-
-	spin_unlock_irqrestore(&fintek->fintek_lock, flags);
-
-	fintek_config_mode_enable(fintek);
-
-	/* disable cir logical dev */
-	fintek_select_logical_dev(fintek, fintek->logical_dev_cir);
-	fintek_cr_write(fintek, LOGICAL_DEV_DISABLE, CIR_CR_DEV_EN);
-
-	fintek_config_mode_disable(fintek);
-
-	/* make sure wake is enabled */
-	fintek_enable_wake(fintek);
+	/* Call the real set_frontend */
+	if (port->set_frontend)
+		return port->set_frontend(fe);
 
 	return 0;
 }
 
-static int fintek_resume(struct pnp_dev *pdev)
+static void cx23885_set_frontend_hook(struct cx23885_tsport *port,
+				     struct dvb_frontend *fe)
 {
-	struct fintek_dev *fintek = pnp_get_drvdata(pdev);
+	port->set_frontend = fe->ops.set_frontend;
+	fe->ops.set_frontend = cx23885_dvb_set_frontend;
+}
 
-	fit_dbg("%s called", __func__);
+static struct lgs8gxx_config magicpro_prohdtve2_lgs8g75_config = {
+	.prod = LGS8GXX_PROD_LGS8G75,
+	.demod_address = 0x19,
+	.serial_ts = 0,
+	.ts_clk_pol = 1,
+	.ts_clk_gated = 1,
+	.if_clk_freq = 30400, /* 30.4 MHz */
+	.if_freq = 6500, /* 6.50 MHz */
+	.if_neg_center = 1,
+	.ext_adc = 0,
+	.adc_signed = 1,
+	.adc_vpp = 2, /* 1.6 Vpp */
+	.if_neg_edge = 1,
+};
 
-	/* open interrupt */
-	fintek_enable_cir_irq(fintek);
+static struct xc5000_config magicpro_prohdtve2_xc5000_config = {
+	.i2c_address = 0x61,
+	.if_khz = 6500,
+};
 
-	/* Enable CIR logical device */
-	fintek_config_mode_enable(fintek);
-	fintek_select_logical_dev(fintek, fintek->logical_dev_cir);
-	fintek_cr_write(fintek, LOGICAL_DEV_ENABLE, CIR_CR_DEV_EN);
+static struct atbm8830_config mygica_x8558pro_atbm8830_cfg1 = {
+	.prod = ATBM8830_PROD_8830,
+	.demod_address = 0x44,
+	.serial_ts = 0,
+	.ts_sampling_edge = 1,
+	.ts_clk_gated = 0,
+	.osc_clk_freq = 30400, /* in kHz */
+	.if_freq = 0, /* zero IF */
+	.zif_swap_iq = 1,
+	.agc_min = 0x2E,
+	.agc_max = 0xFF,
+	.agc_hold_loop = 0,
+};
 
-	fintek_config_mode_disable(fintek);
+static struct max2165_config mygic_x8558pro_max2165_cfg1 = {
+	.i2c_address = 0x60,
+	.osc_clk = 20
+};
 
-	fintek_cir_regs_init(fintek);
+static struct atbm8830_config mygica_x8558pro_atbm8830_cfg2 = {
+	.prod = ATBM8830_PROD_8830,
+	.demod_address = 0x44,
+	.serial_ts = 1,
+	.ts_sampling_edge = 1,
+	.ts_clk_gated = 0,
+	.osc_clk_freq = 30400, /* in kHz */
+	.if_freq = 0, /* zero IF */
+	.zif_swap_iq = 1,
+	.agc_min = 0x2E,
+	.agc_max = 0xFF,
+	.agc_hold_loop = 0,
+};
 
+static struct max2165_config mygic_x8558pro_max2165_cfg2 = {
+	.i2c_address = 0x60,
+	.osc_clk = 20
+};
+static struct stv0367_config netup_stv0367_config[] = {
+	{
+		.demod_address = 0x1c,
+		.xtal = 27000000,
+		.if_khz = 4500,
+		.if_iq_mode = 0,
+		.ts_mode = 1,
+		.clk_pol = 0,
+	}, {
+		.demod_address = 0x1d,
+		.xtal = 27000000,
+		.if_khz = 4500,
+		.if_iq_mode = 0,
+		.ts_mode = 1,
+		.clk_pol = 0,
+	},
+};
+
+static struct xc5000_config netup_xc5000_config[] = {
+	{
+		.i2c_address = 0x61,
+		.if_khz = 4500,
+	}, {
+		.i2c_address = 0x64,
+		.if_khz = 4500,
+	},
+};
+
+static struct drxk_config terratec_drxk_config[] = {
+	{
+		.adr = 0x29,
+		.no_i2c_bridge = 1,
+	}, {
+		.adr = 0x2a,
+		.no_i2c_bridge = 1,
+	},
+};
+
+static struct mt2063_config terratec_mt2063_config[] = {
+	{
+		.tuner_address = 0x60,
+	}, {
+		.tuner_address = 0x67,
+	},
+};
+
+static const struct tda10071_platform_data hauppauge_tda10071_pdata = {
+	.clk = 40444000, /* 40.444 MHz */
+	.i2c_wr_max = 64,
+	.ts_mode = TDA10071_TS_SERIAL,
+	.pll_multiplier = 20,
+	.tuner_i2c_addr = 0x54,
+};
+
+static const struct m88ds3103_config dvbsky_t9580_m88ds3103_config = {
+	.i2c_addr = 0x68,
+	.clock = 27000000,
+	.i2c_wr_max = 33,
+	.clock_out = 0,
+	.ts_mode = M88DS3103_TS_PARALLEL,
+	.ts_clk = 16000,
+	.ts_clk_pol = 1,
+	.lnb_en_pol = 1,
+	.lnb_hv_pol = 0,
+	.agc = 0x99,
+};
+
+static const struct m88ds3103_config dvbsky_s950c_m88ds3103_config = {
+	.i2c_addr = 0x68,
+	.clock = 27000000,
+	.i2c_wr_max = 33,
+	.clock_out = 0,
+	.ts_mode = M88DS3103_TS_CI,
+	.ts_clk = 10000,
+	.ts_clk_pol = 1,
+	.lnb_en_pol = 1,
+	.lnb_hv_pol = 0,
+	.agc = 0x99,
+};
+
+static const struct m88ds3103_config hauppauge_hvr5525_m88ds3103_config = {
+	.i2c_addr = 0x69,
+	.clock = 27000000,
+	.i2c_wr_max = 33,
+	.ts_mode = M88DS3103_TS_PARALLEL,
+	.ts_clk = 16000,
+	.ts_clk_pol = 1,
+	.agc = 0x99,
+};
+
+static struct lgdt3306a_config hauppauge_hvr1265k4_config = {
+	.i2c_addr               = 0x59,
+	.qam_if_khz             = 4000,
+	.vsb_if_khz             = 3250,
+	.deny_i2c_rptr          = 1, /* Disabled */
+	.spectral_inversion     = 0, /* Disabled */
+	.mpeg_mode              = LGDT3306A_MPEG_SERIAL,
+	.tpclk_edge             = LGDT3306A_TPCLK_RISING_EDGE,
+	.tpvalid_polarity       = LGDT3306A_TP_VALID_HIGH,
+	.xtalMHz                = 25, /* 24 or 25 */
+};
+
+static int netup_altera_fpga_rw(void *device, int flag, int data, int read)
+{
+	struct cx23885_dev *dev = (struct cx23885_dev *)device;
+	unsigned long timeout = jiffies + msecs_to_jiffies(1);
+	uint32_t mem = 0;
+
+	mem = cx_read(MC417_RWD);
+	if (read)
+		cx_set(MC417_OEN, ALT_DATA);
+	else {
+		cx_clear(MC417_OEN, ALT_DATA);/* D0-D7 out */
+		mem &= ~ALT_DATA;
+		mem |= (data & ALT_DATA);
+	}
+
+	if (flag)
+		mem |= ALT_AD_RG;
+	else
+		mem &= ~ALT_AD_RG;
+
+	mem &= ~ALT_CS;
+	if (read)
+		mem = (mem & ~ALT_RD) | ALT_WR;
+	else
+		mem = (mem & ~ALT_WR) | ALT_RD;
+
+	cx_write(MC417_RWD, mem);  /* start RW cycle */
+
+	for (;;) {
+		mem = cx_read(MC417_RWD);
+		if ((mem & ALT_RDY) == 0)
+			break;
+		if (time_after(jiffies, timeout))
+			break;
+		udelay(1);
+	}
+
+	cx_set(MC417_RWD, ALT_RD | ALT_WR | ALT_CS);
+	if (read)
+		return mem & ALT_DATA;
+
+	return 0;
+};
+
+static int dib7070_tuner_reset(struct dvb_frontend *fe, int onoff)
+{
+	struct dib7000p_ops *dib7000p_ops = fe->sec_priv;
+
+	return dib7000p_ops->set_gpio(fe, 8, 0, !onoff);
+}
+
+static int dib7070_tuner_sleep(struct dvb_frontend *fe, int onoff)
+{
 	return 0;
 }
 
-static void fintek_shutdown(struct pnp_dev *pdev)
+static struct dib0070_config dib7070p_dib0070_config = {
+	.i2c_address = DEFAULT_DIB0070_I2C_ADDRESS,
+	.reset = dib7070_tuner_reset,
+	.sleep = dib7070_tuner_sleep,
+	.clock_khz = 12000,
+	.freq_offset_khz_vhf = 550,
+	/* .flip_chip = 1, */
+};
+
+/* DIB7070 generic */
+static struct dibx000_agc_config dib7070_agc_config = {
+	.band_caps = BAND_UHF | BAND_VHF | BAND_LBAND | BAND_SBAND,
+
+	/*
+	 * P_agc_use_sd_mod1=0, P_agc_use_sd_mod2=0, P_agc_freq_pwm_div=5,
+	 * P_agc_inv_pwm1=0, P_agc_inv_pwm2=0, P_agc_inh_dc_rv_est=0,
+	 * P_agc_time_est=3, P_agc_freeze=0, P_agc_nb_est=5, P_agc_write=0
+	 */
+	.setup = (0 << 15) | (0 << 14) | (5 << 11) | (0 << 10) | (0 << 9) |
+		 (0 << 8) | (3 << 5) | (0 << 4) | (5 << 1) | (0 << 0),
+	.inv_gain = 600,
+	.time_stabiliz = 10,
+	.alpha_level = 0,
+	.thlock = 118,
+	.wbd_inv = 0,
+	.wbd_ref = 3530,
+	.wbd_sel = 1,
+	.wbd_alpha = 5,
+	.agc1_max = 65535,
+	.agc1_min = 0,
+	.agc2_max = 65535,
+	.agc2_min = 0,
+	.agc1_pt1 = 0,
+	.agc1_pt2 = 40,
+	.agc1_pt3 = 183,
+	.agc1_slope1 = 206,
+	.agc1_slope2 = 255,
+	.agc2_pt1 = 72,
+	.agc2_pt2 = 152,
+	.agc2_slope1 = 88,
+	.agc2_slope2 = 90,
+	.alpha_mant = 17,
+	.alpha_exp = 27,
+	.beta_mant = 23,
+	.beta_exp = 51,
+	.perform_agc_softsplit = 0,
+};
+
+static struct dibx000_bandwidth_config dib7070_bw_config_12_mhz = {
+	.internal = 60000,
+	.sampling = 15000,
+	.pll_prediv = 1,
+	.pll_ratio = 20,
+	.pll_range = 3,
+	.pll_reset = 1,
+	.pll_bypass = 0,
+	.enable_refdiv = 0,
+	.bypclk_div = 0,
+	.IO_CLK_en_core = 1,
+	.ADClkSrc = 1,
+	.modulo = 2,
+	/* refsel, sel, freq_15k */
+	.sad_cfg = (3 << 14) | (1 << 12) | (524 << 0),
+	.ifreq = (0 << 25) | 0,
+	.timf = 20452225,
+	.xtal_hz = 12000000,
+};
+
+static struct dib7000p_config dib7070p_dib7000p_config = {
+	/* .output_mode = OUTMODE_MPEG2_FIFO, */
+	.output_mode = OUTMODE_MPEG2_SERIAL,
+	/* .output_mode = OUTMODE_MPEG2_PAR_GATED_CLK, */
+	.output_mpeg2_in_188_bytes = 1,
+
+	.agc_config_count = 1,
+	.agc = &dib7070_agc_config,
+	.bw  = &dib7070_bw_config_12_mhz,
+	.tuner_is_baseband = 1,
+	.spur_protect = 1,
+
+	.gpio_dir = 0xfcef, /* DIB7000P_GPIO_DEFAULT_DIRECTIONS, */
+	.gpio_val = 0x0110, /* DIB7000P_GPIO_DEFAULT_VALUES, */
+	.gpio_pwm_pos = DIB7000P_GPIO_DEFAULT_PWM_POS,
+
+	.hostbus_diversity = 1,
+};
+
+static int dvb_register_ci_mac(struct cx23885_tsport *port)
 {
-	struct fintek_dev *fintek = pnp_get_drvdata(pdev);
-	fintek_enable_wake(fintek);
+	struct cx23885_dev *dev = port->dev;
+	struct i2c_client *client_ci = NULL;
+	struct vb2_dvb_frontend *fe0;
+
+	fe0 = vb2_dvb_get_frontend(&port->frontends, 1);
+	if (!fe0)
+		return -EINVAL;
+
+	switch (dev->board) {
+	case CX23885_BOARD_NETUP_DUAL_DVBS2_CI: {
+		static struct netup_card_info cinfo;
+
+		netup_get_card_info(&dev->i2c_bus[0].i2c_adap, &cinfo);
+		memcpy(port->frontends.adapter.proposed_mac,
+				cinfo.port[port->nr - 1].mac, 6);
+		pr_info("NetUP Dual DVB-S2 CI card port%d MAC=%pM\n",
+			port->nr, port->frontends.adapter.proposed_mac);
+
+		netup_ci_init(port);
+		return 0;
+		}
+	case CX23885_BOARD_NETUP_DUAL_DVB_T_C_CI_RF: {
+		struct altera_ci_config netup_ci_cfg = {
+			.dev = dev,/* magic number to identify*/
+			.adapter = &port->frontends.adapter,/* for CI */
+			.demux = &fe0->dvb.demux,/* for hw pid filter */
+			.fpga_rw = netup_altera_fpga_rw,
+		};
+
+		altera_ci_init(&netup_ci_cfg, port->nr);
+		return 0;
+		}
+	case CX23885_BOARD_TEVII_S470: {
+		u8 eeprom[256]; /* 24C02 i2c eeprom */
+
+		if (port->nr != 1)
+			return 0;
+
+		/* Read entire EEPROM */
+		dev->i2c_bus[0].i2c_client.addr = 0xa0 >> 1;
+		tveeprom_read(&dev->i2c_bus[0].i2c_client, eeprom, sizeof(eeprom));
+		pr_info("TeVii S470 MAC= %pM\n", eeprom + 0xa0);
+		memcpy(port->frontends.adapter.proposed_mac, eeprom + 0xa0, 6);
+		return 0;
+		}
+	case CX23885_BOARD_DVBSKY_T9580:
+	case CX23885_BOARD_DVBSKY_S950:
+	case CX23885_BOARD_DVBSKY_S952:
+	case CX23885_BOARD_DVBSKY_T982: {
+		u8 eeprom[256]; /* 24C02 i2c eeprom */
+
+		if (port->nr > 2)
+			return 0;
+
+		/* Read entire EEPROM */
+		dev->i2c_bus[0].i2c_client.addr = 0xa0 >> 1;
+		tveeprom_read(&dev->i2c_bus[0].i2c_client, eeprom,
+				sizeof(eeprom));
+		pr_info("%s port %d MAC address: %pM\n",
+			cx23885_boards[dev->board].name, port->nr,
+			eeprom + 0xc0 + (port->nr-1) * 8);
+		memcpy(port->frontends.adapter.proposed_mac, eeprom + 0xc0 +
+			(port->nr-1) * 8, 6);
+		return 0;
+		}
+	case CX23885_BOARD_DVBSKY_S950C:
+	case CX23885_BOARD_DVBSKY_T980C:
+	case CX23885_BOARD_TT_CT2_4500_CI: {
+		u8 eeprom[256]; /* 24C02 i2c eeprom */
+		struct sp2_config sp2_config;
+		struct i2c_board_info info;
+		struct cx23885_i2c *i2c_bus = &dev->i2c_bus[0];
+
+		/* attach CI */
+		memset(&sp2_config, 0, sizeof(sp2_config));
+		sp2_config.dvb_adap = &port->frontends.adapter;
+		sp2_config.priv = port;
+		sp2_config.ci_control = cx23885_sp2_ci_ctrl;
+		memset(&info, 0, sizeof(struct i2c_board_info));
+		strscpy(info.type, "sp2", I2C_NAME_SIZE);
+		info.addr = 0x40;
+		info.platform_data = &sp2_config;
+		request_module(info.type);
+		client_ci = i2c_new_client_device(&i2c_bus->i2c_adap, &info);
+		if (!i2c_client_has_driver(client_ci))
+			return -ENODEV;
+		if (!try_module_get(client_ci->dev.driver->owner)) {
+			i2c_unregister_device(client_ci);
+			return -ENODEV;
+		}
+		port->i2c_client_ci = client_ci;
+
+		if (port->nr != 1)
+			return 0;
+
+		/* Read entire EEPROM */
+		dev->i2c_bus[0].i2c_client.addr = 0xa0 >> 1;
+		tveeprom_read(&dev->i2c_bus[0].i2c_client, eeprom,
+				sizeof(eeprom));
+		pr_info("%s MAC address: %pM\n",
+			cx23885_boards[dev->board].name, eeprom + 0xc0);
+		memcpy(port->frontends.adapter.proposed_mac, eeprom + 0xc0, 6);
+		return 0;
+		}
+	}
+	return 0;
 }
 
-static const struct pnp_device_id fintek_ids[] = {
-	{ "FIT0002", 0 },   /* CIR */
-	{ "", 0 },
-};
+static int dvb_register(struct cx23885_tsport *port)
+{
+	struct dib7000p_ops dib7000p_ops;
+	struct cx23885_dev *dev = port->dev;
+	struct cx23885_i2c *i2c_bus = NULL, *i2c_bus2 = NULL;
+	struct vb2_dvb_frontend *fe0, *fe1 = NULL;
+	struct si2168_config si2168_config;
+	struct si2165_platform_data si2165_pdata;
+	struct si2157_config si2157_config;
+	struct ts2020_config ts2020_config;
+	struct m88ds3103_platform_data m88ds3103_pdata;
+	struct m88rs6000t_config m88rs6000t_config = {};
+	struct a8293_platform_data a8293_pdata = {};
+	struct i2c_board_info info;
+	struct i2c_adapter *adapter;
+	struct i2c_client *client_demod = NULL, *client_tuner = NULL;
+	struct i2c_client *client_sec = NULL;
+	int (*p_set_voltage)(struct dvb_frontend *fe,
+			     enum fe_sec_voltage voltage) = NULL;
+	int mfe_shared = 0; /* bus not shared by default */
+	int ret;
 
-static struct pnp_driver fintek_driver = {
-	.name		= FINTEK_DRIVER_NAME,
-	.id_table	= fintek_ids,
-	.flags		= PNP_DRIVER_RES_DO_NOT_CHANGE,
-	.probe		= fintek_probe,
-	.remove		= fintek_remove,
-	.suspend	= fintek_suspend,
-	.resume		= fintek_resume,
-	.shutdown	= fintek_shutdown,
-};
+	/* Get the first frontend */
+	fe0 = vb2_dvb_get_frontend(&port->frontends, 1);
+	if (!fe0)
+		return -EINVAL;
 
-module_param(debug, int, S_IRUGO | S_IWUSR);
-MODULE_PARM_DESC(debug, "Enable debugging output");
+	/* init struct vb2_dvb */
+	fe0->dvb.name = dev->name;
 
-MODULE_DEVICE_TABLE(pnp, fintek_ids);
-MODULE_DESCRIPTION(FINTEK_DESCRIPTION " driver");
+	/* multi-frontend gate control is undefined or defaults to fe0 */
+	port->frontends.gate = 0;
 
-MODULE_AUTHOR("Jarod Wilson <jarod@redhat.com>");
-MODULE_LICENSE("GPL");
+	/* Sets the gate control callback to be used by i2c command calls */
+	port->gate_ctrl = cx23885_dvb_gate_ctrl;
 
-module_pnp_driver(fintek_driver);
+	/* init frontend */
+	switch (dev->board) {
+	case CX23885_BOARD_HAUPPAUGE_HVR1250:
+		i2c_bus = &dev->i2c_bus[0];
+		fe0->dvb.frontend = dvb_attach(s5h1409_attach,
+						&hauppauge_generic_config,
+						&i2c_bus->i2c_adap);
+		if (fe0->dvb.frontend == NULL)
+			break;
+		dvb_attach(mt2131_attach, fe0->dvb.frontend,
+			   &i2c_bus->i2c_adap,
+			   &hauppauge_generic_tunerconfig, 0);
+		break;
+	case CX23885_BOARD_HAUPPAUGE_HVR1270:
+	case CX23885_BOARD_HAUPPAUGE_HVR1275:
+		i2c_bus = &dev->i2c_bus[0];
+		fe0->dvb.frontend = dvb_attach(lgdt3305_attach,
+					       &hauppauge_lgdt3305_config,
+					       &i2c_bus->i2c_adap);
+		if (fe0->dvb.frontend == NULL)
+			break;
+		dvb_attach(tda18271_attach, fe0->dvb.frontend,
+			   0x60, &dev->i2c_bus[1].i2c_adap,
+			   &hauppauge_hvr127x_config);
+		if (dev->board == CX23885_BOARD_HAUPPAUGE_HVR1275)
+			cx23885_set_frontend_hook(port, fe0->dvb.frontend);
+		break;
+	case CX23885_BOARD_HAUPPAUGE_HVR1255:
+	case CX23885_BOARD_HAUPPAUGE_HVR1255_22111:
+		i2c_bus = &dev->i2c_bus[0];
+		fe0->dvb.frontend = dvb_attach(s5h1411_attach,
+					       &hcw_s5h1411_config,
+					       &i2c_bus->i2c_adap);
+		if (fe0->dvb.frontend == NULL)
+			break;
+
+		dvb_attach(tda18271_attach, fe0->dvb.frontend,
+			   0x60, &dev->i2c_bus[1].i2c_adap,
+			   &hauppauge_tda18271_config);
+
+		tda18271_attach(&dev->ts1.analog_fe,
+			0x60, &dev->i2c_bus[1].i2c_adap,
+			&hauppauge_tda18271_config);
+
+		break;
+	case CX23885_BOARD_HAUPPAUGE_HVR1800:
+		i2c_bus = &dev->i2c_bus[0];
+		switch (alt_tuner) {
+		case 1:
+			fe0->dvb.frontend =
+				dvb_attach(s5h1409_attach,
+					   &hauppauge_ezqam_config,
+					   &i2c_bus->i2c_adap);
+			if (fe0->dvb.frontend == NULL)
+				break;
+
+			dvb_attach(tda829x_attach, fe0->dvb.frontend,
+				   &dev->i2c_bus[1].i2c_adap, 0x42,
+				   &tda829x_no_probe);
+			dvb_attach(tda18271_attach, fe0->dvb.frontend,
+				   0x60, &dev->i2c_bus[1].i2c_adap,
+				   &hauppauge_tda18271_config);
+			break;
+		case 0:
+		default:
+			fe0->dvb.frontend =
+				dvb_attach(s5h1409_attach,
+					   &hauppauge_generic_config,
+					   &i2c_bus->i2c_adap);
+			if (fe0->dvb.frontend == NULL)
+				break;
+			dvb_attach(mt2131_attach, fe0->dvb.frontend,
+				   &i2c_bus->i2c_adap,
+				   &hauppauge_generic_tunerconfig, 0);
+		}
+		break;
+	case CX238

@@ -1,29 +1,56 @@
-_hotplug.h \
-    $(wildcard include/config/HAVE_ARCH_NODEDATA_EXTENSION) \
-    $(wildcard include/config/ARCH_HAS_ADD_PAGES) \
-    $(wildcard include/config/MEMORY_HOTREMOVE) \
-  arch/x86/include/asm/mmzone.h \
-  arch/x86/include/asm/mmzone_32.h \
-  include/linux/topology.h \
-    $(wildcard include/config/USE_PERCPU_NUMA_NODE_ID) \
-    $(wildcard include/config/SCHED_SMT) \
-    $(wildcard include/config/SCHED_CLUSTER) \
-  include/linux/arch_topology.h \
-    $(wildcard include/config/ACPI_CPPC_LIB) \
-    $(wildcard include/config/GENERIC_ARCH_TOPOLOGY) \
-  arch/x86/include/asm/topology.h \
-    $(wildcard include/config/SCHED_MC_PRIO) \
-  arch/x86/include/asm/mpspec.h \
-    $(wildcard include/config/EISA) \
-    $(wildcard include/config/X86_MPPARSE) \
-  arch/x86/include/asm/mpspec_def.h \
-  arch/x86/include/asm/x86_init.h \
-  arch/x86/include/asm/apicdef.h \
-  include/asm-generic/topology.h \
-  include/linux/xarray.h \
-    $(wildcard include/config/XARRAY_MULTI) \
-  include/linux/kconfig.h \
-  include/linux/kobject_ns.h \
-  include/linux/stat.h \
-  arch/x86/include/uapi/asm/stat.h \
-  include/uapi/linux/stat
+/* SPDX-License-Identifier: GPL-2.0
+ *
+ * tcan4x5x - Texas Instruments TCAN4x5x Family CAN controller driver
+ *
+ * Copyright (c) 2020 Pengutronix,
+ *                    Marc Kleine-Budde <kernel@pengutronix.de>
+ */
+
+#ifndef _TCAN4X5X_H
+#define _TCAN4X5X_H
+
+#include <linux/gpio/consumer.h>
+#include <linux/regmap.h>
+#include <linux/regulator/consumer.h>
+#include <linux/spi/spi.h>
+
+#include "m_can.h"
+
+#define TCAN4X5X_SANITIZE_SPI 1
+
+struct __packed tcan4x5x_buf_cmd {
+	u8 cmd;
+	__be16 addr;
+	u8 len;
+};
+
+struct tcan4x5x_map_buf {
+	struct tcan4x5x_buf_cmd cmd;
+	u8 data[256 * sizeof(u32)];
+} ____cacheline_aligned;
+
+struct tcan4x5x_priv {
+	struct m_can_classdev cdev;
+
+	struct regmap *regmap;
+	struct spi_device *spi;
+
+	struct gpio_desc *reset_gpio;
+	struct gpio_desc *device_wake_gpio;
+	struct gpio_desc *device_state_gpio;
+	struct regulator *power;
+
+	struct tcan4x5x_map_buf map_buf_rx;
+	struct tcan4x5x_map_buf map_buf_tx;
+};
+
+static inline void
+tcan4x5x_spi_cmd_set_len(struct tcan4x5x_buf_cmd *cmd, u8 len)
+{
+	/* number of u32 */
+	cmd->len = len >> 2;
+}
+
+int tcan4x5x_regmap_init(struct tcan4x5x_priv *priv);
+
+#endif

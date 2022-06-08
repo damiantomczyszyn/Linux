@@ -1,2 +1,2 @@
-IC_IOREMAP) \
-    $(wildcard include/
+         = &mpeg_fops,
+	.ioctl_ops   

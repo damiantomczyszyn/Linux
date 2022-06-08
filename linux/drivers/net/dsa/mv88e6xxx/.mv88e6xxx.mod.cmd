@@ -1,17 +1,1 @@
-IC_IOREMAP) \
-    $(wildcard include/config/VIRT_TO_BUS) \
-    $(wildcard include/config/GENERIC_DEVMEM_IS_ALLOWED) \
-  include/linux/logic_pio.h \
-    $(wildcard include/config/INDIRECT_PIO) \
-  include/linux/vmalloc.h \
-    $(wildcard include/config/HAVE_ARCH_HUGE_VMALLOC) \
-  arch/x86/include/asm/vmalloc.h \
-    $(wildcard include/config/HAVE_ARCH_HUGE_VMAP) \
-  arch/x86/include/asm/acpi.h \
-    $(wildcard include/config/ACPI_APEI) \
-  include/acpi/pdc_intel.h \
-  arch/x86/include/asm/numa.h \
-    $(wildcard include/config/NUMA_EMU) \
-  arch/x86/include/asm/numa_32.h \
-  include/linux/regulator/consumer.h \
-    $(wildcard include/config/REGUL
+cmd_drivers/net/dsa/mv88e6xxx/mv88e6xxx.mod := { echo  drivers/net/dsa/mv88e6xxx/chip.o drivers/net/dsa/mv88e6xxx/devlink.o drivers/net/dsa/mv88e6xxx/global1.o drivers/net/dsa/mv88e6xxx/global1_atu.o drivers/net/dsa/mv88e6xxx/global1_vtu.o drivers/net/dsa/mv88e6xxx/global2.o drivers/net/dsa/mv88e6xxx/global2_avb.o drivers/net/dsa/mv88e6xxx/global2_scratch.o drivers/net/dsa/mv88e6xxx/phy.o drivers/net/dsa/mv88e6xxx/port.o drivers/net/dsa/mv88e6xxx/port_hidden.o drivers/net/dsa/mv88e6xxx/serdes.o drivers/net/dsa/mv88e6xxx/smi.o drivers/net/dsa/mv88e6xxx/hwtstamp.o drivers/net/dsa/mv88e6xxx/ptp.o;  echo; } > drivers/net/dsa/mv88e6xxx/mv88e6xxx.mod

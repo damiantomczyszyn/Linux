@@ -1,1 +1,1 @@
-cmd_drivers/media/i2c/tw2804.o := gcc -Wp,-MMD,drivers/media/i2c/.tw2804.o.d -nostdinc -I./arch/x86/include -I./arch/x86/include/generated  -I./include -I./arch/x86/include/uapi -I./arch/x86/include/ge
+cmd_drivers/net/can/softing/modules.order := {   echo drivers/net/can/softing/softing.ko;   echo drivers/net/can/softing/softing_cs.ko; :; } | awk '!x[$$0]++' - > drivers/net/can/softing/modules.order

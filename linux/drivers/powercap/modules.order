@@ -1,2 +1,5 @@
-ard include/config/ACPI_APEI_GHES) \
-    $(wildcard include/config/INTEL_
+dth_count_to_ns(FIFO_RXTX, *divider);
+}
+
+/*
+ * IR Tx Carrier Duty Cycle r

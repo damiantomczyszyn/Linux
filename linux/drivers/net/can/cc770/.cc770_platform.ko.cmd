@@ -1,7 +1,1 @@
-/DEBUG_SG) \
-    $(wildcard include/config/SGL_ALLOC) \
-    $(wildcard include/config/ARCH_NO_SG_CHAIN) \
-    $(wildcard include/config/SG_POOL) \
-  include/linux/gpio/consumer.h \
-    $(wildcard include/config/OF_GPIO) \
-    $(wildcard
+cmd_drivers/net/can/cc770/cc770_platform.ko := ld -r -m elf_i386 --build-id=sha1  -T scripts/module.lds -o drivers/net/can/cc770/cc770_platform.ko drivers/net/can/cc770/cc770_platform.o drivers/net/can/cc770/cc770_platform.mod.o;  true

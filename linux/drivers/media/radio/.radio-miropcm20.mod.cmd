@@ -1,1 +1,7 @@
-cmd_drivers/media/radio/radio-miropcm20.mod := { echo  drivers/media/radio/radio-miropcm20.o;  echo; } > drivers/media/radio/radio-miropcm20.mod
+/* SPDX-License-Identifier: GPL-2.0-or-later */
+/*
+ * cimax2.h
+ *
+ * CIMax(R) SP2 driver in conjunction with NetUp Dual DVB-S2 CI card
+ *
+ * Copy

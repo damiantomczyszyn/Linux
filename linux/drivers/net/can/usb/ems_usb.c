@@ -1,535 +1,1083 @@
-.h \
-  include/linux/percpu-refcount.h \
-  include/linux/kasan.h \
-    $(wildcard include/config/KASAN_STACK) \
-    $(wildcard include/config/KASAN_VMALLOC) \
-    $(wildcard include/config/KASAN_INLINE) \
-  include/linux/kasan-enabled.h \
-  include/linux/device.h \
-    $(wildcard include/config/GENERIC_MSI_IRQ_DOMAIN) \
-    $(wildcard include/config/GENERIC_MSI_IRQ) \
-    $(wildcard include/config/ENERGY_MODEL) \
-    $(wildcard include/config/PINCTRL) \
-    $(wildcard include/config/DMA_OPS) \
-    $(wildcard include/config/DMA_DECLARE_COHERENT) \
-    $(wildcard include/config/DMA_CMA) \
-    $(wildcard include/config/SWIOTLB) \
-    $(wildcard include/config/ARCH_HAS_SYNC_DMA_FOR_DEVICE) \
-    $(wildcard include/config/ARCH_HAS_SYNC_DMA_FOR_CPU) \
-    $(wildcard include/config/ARCH_HAS_SYNC_DMA_FOR_CPU_ALL) \
-    $(wildcard include/config/DMA_OPS_BYPASS) \
-    $(wildcard include/config/DEVTMPFS) \
-    $(wildcard include/config/SYSFS_DEPRECATED) \
-  include/linux/dev_printk.h \
-  include/linux/ratelimit.h \
-  include/linux/sched.h \
-    $(wildcard include/config/VIRT_CPU_ACCOUNTING_NATIVE) \
-    $(wildcard include/config/SCHED_INFO) \
-    $(wildcard include/config/SCHEDSTATS) \
-    $(wildcard include/config/SCHED_CORE) \
-    $(wildcard include/config/FAIR_GROUP_SCHED) \
-    $(wildcard include/config/RT_GROUP_SCHED) \
-    $(wildcard include/config/RT_MUTEXES) \
-    $(wildcard include/config/UCLAMP_TASK) \
-    $(wildcard include/config/UCLAMP_BUCKETS_COUNT) \
-    $(wildcard include/config/CGROUP_SCHED) \
-    $(wildcard include/config/BLK_DEV_IO_TRACE) \
-    $(wildcard include/config/PSI) \
-    $(wildcard include/config/COMPAT_BRK) \
-    $(wildcard include/config/CGROUPS) \
-    $(wildcard include/config/BLK_CGROUP) \
-    $(wildcard include/config/PAGE_OWNER) \
-    $(wildcard include/config/EVENTFD) \
-    $(wildcard include/config/ARCH_HAS_SCALED_CPUTIME) \
-    $(wildcard include/config/VIRT_CPU_ACCOUNTING_GEN) \
-    $(wildcard include/config/POSIX_CPUTIMERS) \
-    $(wildcard include/config/POSIX_CPU_TIMERS_TASK_WORK) \
-    $(wildcard include/config/KEYS) \
-    $(wildcard include/config/SYSVIPC) \
-    $(wildcard include/config/DETECT_HUNG_TASK) \
-    $(wildcard include/config/IO_URING) \
-    $(wildcard include/config/AUDIT) \
-    $(wildcard include/config/AUDITSYSCALL) \
-    $(wildcard include/config/UBSAN) \
-    $(wildcard include/config/UBSAN_TRAP) \
-    $(wildcard include/config/TASK_XACCT) \
-    $(wildcard include/config/CPUSETS) \
-    $(wildcard include/config/X86_CPU_RESCTRL) \
-    $(wildcard include/config/FUTEX) \
-    $(wildcard include/config/PERF_EVENTS) \
-    $(wildcard include/config/RSEQ) \
-    $(wildcard include/config/TASK_DELAY_ACCT) \
-    $(wildcard include/config/FAULT_INJECTION) \
-    $(wildcard include/config/LATENCYTOP) \
-    $(wildcard include/config/KUNIT) \
-    $(wildcard include/config/FUNCTION_GRAPH_TRACER) \
-    $(wildcard include/config/BCACHE) \
-    $(wildcard include/config/VMAP_STACK) \
-    $(wildcard include/config/SECURITY) \
-    $(wildcard include/config/BPF_SYSCALL) \
-    $(wildcard include/config/GCC_PLUGIN_STACKLEAK) \
-    $(wildcard include/config/X86_MCE) \
-    $(wildcard include/config/KRETPROBES) \
-    $(wildcard include/config/RETHOOK) \
-    $(wildcard include/config/ARCH_HAS_PARANOID_L1D_FLUSH) \
-    $(wildcard include/config/ARCH_TASK_STRUCT_ON_STACK) \
-    $(wildcard include/config/DEBUG_RSEQ) \
-  include/uapi/linux/sched.h \
-  include/linux/pid.h \
-  include/linux/rculist.h \
-    $(wildcard include/config/PROVE_RCU_LIST) \
-  include/linux/sem.h \
-  include/uapi/linux/sem.h \
-  include/linux/ipc.h \
-  include/linux/rhashtable-types.h \
-  include/uapi/linux/ipc.h \
-  arch/x86/include/generated/uapi/asm/ipcbuf.h \
-  include/uapi/asm-generic/ipcbuf.h \
-  arch/x86/include/uapi/asm/sembuf.h \
-  include/linux/shm.h \
-  include/uapi/linux/shm.h \
-  include/uapi/asm-generic/hugetlb_encode.h \
-  arch/x86/include/uapi/asm/shmbuf.h \
-  include/uapi/asm-generic/shmbuf.h \
-  arch/x86/include/asm/shmparam.h \
-  include/linux/plist.h \
-    $(wildcard include/config/DEBUG_PLIST) \
-  include/linux/hrtimer.h \
-    $(wildcard include/config/HIGH_RES_TIMERS) \
-    $(wildcard include/config/TIME_LOW_RES) \
-    $(wildcard include/config/TIMERFD) \
-  include/linux/hrtimer_defs.h \
-  include/linux/timerqueue.h \
-  include/linux/seccomp.h \
-    $(wildcard include/config/SECCOMP) \
-    $(wildcard include/config/HAVE_ARCH_SECCOMP_FILTER) \
-    $(wildcard include/config/SECCOMP_FILTER) \
-    $(wildcard include/config/CHECKPOINT_RESTORE) \
-    $(wildcard include/config/SECCOMP_CACHE_DEBUG) \
-  include/uapi/linux/seccomp.h \
-  arch/x86/include/asm/seccomp.h \
-  arch/x86/include/asm/unistd.h \
-  arch/x86/include/uapi/asm/unistd.h \
-  arch/x86/include/generated/uapi/asm/unistd_32.h \
-  include/asm-generic/seccomp.h \
-  include/uapi/linux/unistd.h \
-  include/linux/resource.h \
-  include/uapi/linux/resource.h \
-  arch/x86/include/generated/uapi/asm/resource.h \
-  include/asm-generic/resource.h \
-  include/uapi/asm-generic/resource.h \
-  include/linux/latencytop.h \
-  include/linux/sched/prio.h \
-  include/linux/sched/types.h \
-  include/linux/signal_types.h \
-    $(wildcard include/config/OLD_SIGACTION) \
-  include/uapi/linux/signal.h \
-  arch/x86/include/asm/signal.h \
-  arch/x86/include/uapi/asm/signal.h \
-  include/uapi/asm-generic/signal-defs.h \
-  arch/x86/include/uapi/asm/siginfo.h \
-  include/uapi/asm-generic/siginfo.h \
-  include/linux/syscall_user_dispatch.h \
-  include/linux/task_io_accounting.h \
-    $(wildcard include/config/TASK_IO_ACCOUNTING) \
-  include/linux/posix-timers.h \
-  include/linux/alarmtimer.h \
-    $(wildcard include/config/RTC_CLASS) \
-  include/uapi/linux/rseq.h \
-  include/linux/kcsan.h \
-  include/linux/energy_model.h \
-  include/linux/sched/cpufreq.h \
-    $(wildcard include/config/CPU_FREQ) \
-  include/linux/sched/topology.h \
-    $(wildcard include/config/SCHED_DEBUG) \
-    $(wildcard include/config/SCHED_MC) \
-    $(wildcard include/config/CPU_FREQ_GOV_SCHEDUTIL) \
-  include/linux/sched/idle.h \
-  include/linux/sched/sd_flags.h \
-  include/linux/klist.h \
-  include/linux/pm.h \
-    $(wildcard include/config/VT_CONSOLE_SLEEP) \
-    $(wildcard include/config/PM_CLK) \
-    $(wildcard include/config/PM_GENERIC_DOMAINS) \
-  include/linux/device/bus.h \
-  include/linux/device/class.h \
-  include/linux/device/driver.h \
-  arch/x86/include/asm/device.h \
-  include/linux/pm_wakeup.h \
-  include/acpi/acpi.h \
-  include/acpi/platform/acenv.h \
-  include/acpi/platform/acgcc.h \
-  include/acpi/platform/aclinux.h \
-    $(wildcard include/config/ACPI_REDUCED_HARDWARE_ONLY) \
-    $(wildcard include/config/ACPI_DEBUG) \
-  include/linux/ctype.h \
-  arch/x86/include/asm/acenv.h \
-  include/acpi/acnames.h \
-  include/acpi/actypes.h \
-  include/acpi/acexcep.h \
-  include/acpi/actbl.h \
-  include/acpi/actbl1.h \
-  include/acpi/actbl2.h \
-  include/acpi/actbl3.h \
-  include/acpi/acrestyp.h \
-  include/acpi/platform/acenvex.h \
-  include/acpi/platform/aclinuxex.h \
-  include/acpi/platform/acgccex.h \
-  include/acpi/acoutput.h \
-  include/acpi/acpiosxf.h \
-  include/acpi/acpixf.h \
-  include/acpi/acconfig.h \
-  include/acpi/acbuffer.h \
-  include/linux/dynamic_debug.h \
-  include/acpi/acpi_bus.h \
-    $(wildcard include/config/X86_ANDROID_TABLETS) \
-    $(wildcard include/config/ACPI_SYSTEM_POWER_STATES_SUPPORT) \
-    $(wildcard include/config/ACPI_SLEEP) \
-  include/acpi/acpi_drivers.h \
-    $(wildcard include/config/ACPI_DOCK) \
-  include/acpi/acpi_numa.h \
-    $(wildcard include/config/ACPI_HMAT) \
-  include/acpi/acpi_io.h \
-  include/linux/io.h \
-    $(wildcard include/config/HAS_IOPORT_MAP) \
-  arch/x86/include/asm/io.h \
-    $(wildcard include/config/MTRR) \
-    $(wildcard include/config/X86_PAT) \
-  arch/x86/include/generated/asm/early_ioremap.h \
-  include/asm-generic/early_ioremap.h \
-    $(wildcard include/config/GENERIC_EARLY_IOREMAP) \
-  include/asm-generic/iomap.h \
-  include/asm-generic/pci_iomap.h \
-    $(wildcard include/config/NO_GENERIC_PCI_IOPORT_MAP) \
-    $(wildcard include/config/GENERIC_PCI_IOMAP) \
-  include/asm-generic/io.h \
-    $(wildcard include/config/GENERIC_IOMAP) \
-    $(wildcard include/config/GENERIC_IOREMAP) \
-    $(wildcard include/config/VIRT_TO_BUS) \
-    $(wildcard include/config/GENERIC_DEVMEM_IS_ALLOWED) \
-  include/linux/logic_pio.h \
-    $(wildcard include/config/INDIRECT_PIO) \
-  include/linux/vmalloc.h \
-    $(wildcard include/config/HAVE_ARCH_HUGE_VMALLOC) \
-  arch/x86/include/asm/vmalloc.h \
-    $(wildcard include/config/HAVE_ARCH_HUGE_VMAP) \
-  arch/x86/include/asm/acpi.h \
-    $(wildcard include/config/ACPI_APEI) \
-  include/acpi/pdc_intel.h \
-  arch/x86/include/asm/numa.h \
-    $(wildcard include/config/NUMA_EMU) \
-  arch/x86/include/asm/numa_32.h \
-  include/linux/regulator/consumer.h \
-    $(wildcard include/config/REGULATOR) \
-  include/linux/suspend.h \
-    $(wildcard include/config/VT) \
-    $(wildcard include/config/SUSPEND) \
-    $(wildcard include/config/HIBERNATION_SNAPSHOT_DEV) \
-    $(wildcard include/config/PM_SLEEP_DEBUG) \
-    $(wildcard include/config/PM_AUTOSLEEP) \
-  include/linux/swap.h \
-    $(wildcard include/config/DEVICE_PRIVATE) \
-    $(wildcard include/config/MIGRATION) \
-    $(wildcard include/config/FRONTSWAP) \
-    $(wildcard include/config/THP_SWAP) \
-    $(wildcard include/config/MEMCG_SWAP) \
-  include/linux/memcontrol.h \
-    $(wildcard include/config/CGROUP_WRITEBACK) \
-  include/linux/cgroup.h \
-    $(wildcard include/config/CGROUP_CPUACCT) \
-    $(wildcard include/config/SOCK_CGROUP_DATA) \
-    $(wildcard include/config/CGROUP_DATA) \
-    $(wildcard include/config/CGROUP_BPF) \
-  include/uapi/linux/cgroupstats.h \
-  include/uapi/linux/taskstats.h \
-  include/linux/fs.h \
-    $(wildcard include/config/READ_ONLY_THP_FOR_FS) \
-    $(wildcard include/config/FS_POSIX_ACL) \
-    $(wildcard include/config/IMA) \
-    $(wildcard include/config/FILE_LOCKING) \
-    $(wildcard include/config/FSNOTIFY) \
-    $(wildcard include/config/FS_ENCRYPTION) \
-    $(wildcard include/config/FS_VERITY) \
-    $(wildcard include/config/EPOLL) \
-    $(wildcard include/config/UNICODE) \
-    $(wildcard include/config/QUOTA) \
-    $(wildcard include/config/FS_DAX) \
-    $(wildcard include/config/BLOCK) \
-  include/linux/wait_bit.h \
-  include/linux/kdev_t.h \
-  include/uapi/linux/kdev_t.h \
-  include/linux/dcache.h \
-  include/linux/rculist_bl.h \
-  include/linux/list_bl.h \
-  include/linux/bit_spinlock.h \
-  include/linux/lockref.h \
-    $(wildcard include/config/ARCH_USE_CMPXCHG_LOCKREF) \
-  include/linux/stringhash.h \
-    $(wildcard include/config/DCACHE_WORD_ACCESS) \
-  include/linux/hash.h \
-    $(wildcard include/config/HAVE_ARCH_HASH) \
-  include/linux/path.h \
-  include/linux/list_lru.h \
-  include/linux/shrinker.h \
-  include/linux/capability.h \
-  include/uapi/linux/capability.h \
-  include/linux/semaphore.h \
-  include/linux/fcntl.h \
-    $(wildcard include/config/ARCH_32BIT_OFF_T) \
-  include/uapi/linux/fcntl.h \
-  arch/x86/include/generated/uapi/asm/fcntl.h \
-  include/uapi/asm-generic/fcntl.h \
-  include/uapi/linux/openat2.h \
-  include/linux/migrate_mode.h \
-  include/linux/percpu-rwsem.h \
-  include/linux/rcuwait.h \
-  include/linux/sched/signal.h \
-    $(wildcard include/config/SCHED_AUTOGROUP) \
-    $(wildcard include/config/BSD_PROCESS_ACCT) \
-    $(wildcard include/config/TASKSTATS) \
-    $(wildcard include/config/STACK_GROWSUP) \
-  include/linux/signal.h \
-    $(wildcard include/config/DYNAMIC_SIGFRAME) \
-  include/linux/sched/jobctl.h \
-  include/linux/sched/task.h \
-    $(wildcard include/config/HAVE_EXIT_THREAD) \
-    $(wildcard include/config/ARCH_WANTS_DYNAMIC_TASK_STRUCT) \
-    $(wildcard include/config/HAVE_ARCH_THREAD_STRUCT_WHITELIST) \
-  include/linux/uaccess.h \
-  include/linux/fault-inject-usercopy.h \
-    $(wildcard include/config/FAULT_INJECTION_USERCOPY) \
-  arch/x86/include/asm/uaccess.h \
-    $(wildcard include/config/CC_HAS_ASM_GOTO_OUTPUT) \
-    $(wildcard include/config/CC_HAS_ASM_GOTO_TIED_OUTPUT) \
-    $(wildcard include/config/ARCH_HAS_COPY_MC) \
-    $(wildcard include/config/X86_INTEL_USERCOPY) \
-  arch/x86/include/asm/smap.h \
-  arch/x86/include/asm/extable.h \
-    $(wildcard include/config/BPF_JIT) \
-  include/asm-generic/access_ok.h \
-    $(wildcard include/config/ALTERNATE_USER_ADDRESS_SPACE) \
-  arch/x86/include/asm/uaccess_32.h \
-  include/linux/cred.h \
-    $(wildcard include/config/DEBUG_CREDENTIALS) \
-  include/linux/key.h \
-    $(wildcard include/config/KEY_NOTIFICATIONS) \
-    $(wildcard include/config/NET) \
-  include/linux/assoc_array.h \
-    $(wildcard include/config/ASSOCIATIVE_ARRAY) \
-  include/linux/sched/user.h \
-    $(wildcard include/config/WATCH_QUEUE) \
-  include/linux/percpu_counter.h \
-  include/linux/rcu_sync.h \
-  include/linux/delayed_call.h \
-  include/linux/errseq.h \
-  include/linux/ioprio.h \
-  include/linux/sched/rt.h \
-  include/linux/iocontext.h \
-    $(wildcard include/config/BLK_ICQ) \
-  include/uapi/linux/ioprio.h \
-  include/linux/fs_types.h \
-  include/linux/mount.h \
-  include/linux/mnt_idmapping.h \
-  include/uapi/linux/fs.h \
-  include/linux/quota.h \
-    $(wildcard include/config/QUOTA_NETLINK_INTERFACE) \
-  include/uapi/linux/dqblk_xfs.h \
-  include/linux/dqblk_v1.h \
-  include/linux/dqblk_v2.h \
-  include/linux/dqblk_qtree.h \
-  include/linux/projid.h \
-  include/uapi/linux/quota.h \
-  include/linux/nfs_fs_i.h \
-  include/linux/seq_file.h \
-  include/linux/string_helpers.h \
-  include/linux/ns_common.h \
-  include/linux/nsproxy.h \
-  include/linux/user_namespace.h \
-    $(wildcard include/config/INOTIFY_USER) \
-    $(wildcard include/config/FANOTIFY) \
-    $(wildcard include/config/PERSISTENT_KEYRINGS) \
-  include/linux/kernel_stat.h \
-  include/linux/interrupt.h \
-    $(wildcard include/config/IRQ_FORCED_THREADING) \
-    $(wildcard include/config/GENERIC_IRQ_PROBE) \
-    $(wildcard include/config/IRQ_TIMINGS) \
-  include/linux/irqreturn.h \
-  include/linux/irqnr.h \
-  include/uapi/linux/irqnr.h \
-  include/linux/hardirq.h \
-  include/linux/context_tracking_state.h \
-    $(wildcard include/config/CONTEXT_TRACKING) \
-  include/linux/ftrace_irq.h \
-    $(wildcard include/config/HWLAT_TRACER) \
-    $(wildcard include/config/OSNOISE_TRACER) \
-  include/linux/vtime.h \
-    $(wildcard include/config/VIRT_CPU_ACCOUNTING) \
-    $(wildcard include/config/IRQ_TIME_ACCOUNTING) \
-  arch/x86/include/asm/hardirq.h \
-    $(wildcard include/config/KVM_INTEL) \
-    $(wildcard include/config/X86_THERMAL_VECTOR) \
-    $(wildcard include/config/X86_MCE_THRESHOLD) \
-    $(wildcard include/config/X86_MCE_AMD) \
-    $(wildcard include/config/X86_HV_CALLBACK_VECTOR) \
-  arch/x86/include/asm/irq.h \
-  arch/x86/include/asm/sections.h \
-  include/asm-generic/sections.h \
-    $(wildcard include/config/HAVE_FUNCTION_DESCRIPTORS) \
-  include/linux/cgroup-defs.h \
-    $(wildcard include/config/CGROUP_NET_CLASSID) \
-    $(wildcard include/config/CGROUP_NET_PRIO) \
-  include/linux/u64_stats_sync.h \
-  include/linux/bpf-cgroup-defs.h \
-  include/linux/psi_types.h \
-  include/linux/kthread.h \
-  include/linux/cgroup_subsys.h \
-    $(wildcard include/config/CGROUP_DEVICE) \
-    $(wildcard include/config/CGROUP_FREEZER) \
-    $(wildcard include/config/CGROUP_PERF) \
-    $(wildcard include/config/CGROUP_HUGETLB) \
-    $(wildcard include/config/CGROUP_PIDS) \
-    $(wildcard include/config/CGROUP_RDMA) \
-    $(wildcard include/config/CGROUP_MISC) \
-    $(wildcard include/config/CGROUP_DEBUG) \
-  include/linux/vm_event_item.h \
-    $(wildcard include/config/HAVE_ARCH_TRANSPARENT_HUGEPAGE_PUD) \
-    $(wildcard include/config/MEMORY_BALLOON) \
-    $(wildcard include/config/BALLOON_COMPACTION) \
-    $(wildcard include/config/DEBUG_TLBFLUSH) \
-    $(wildcard include/config/DEBUG_VM_VMACACHE) \
-  include/linux/page_counter.h \
-  include/linux/vmpressure.h \
-  include/linux/eventfd.h \
-  include/linux/mm.h \
-    $(wildcard include/config/HAVE_ARCH_MMAP_RND_BITS) \
-    $(wildcard include/config/HAVE_ARCH_MMAP_RND_COMPAT_BITS) \
-    $(wildcard include/config/ARCH_USES_HIGH_VMA_FLAGS) \
-    $(wildcard include/config/ARCH_HAS_PKEYS) \
-    $(wildcard include/config/PPC) \
-    $(wildcard include/config/PARISC) \
-    $(wildcard include/config/SPARC64) \
-    $(wildcard include/config/ARM64_MTE) \
-    $(wildcard include/config/HAVE_ARCH_USERFAULTFD_MINOR) \
-    $(wildcard include/config/SHMEM) \
-    $(wildcard include/config/ARCH_HAS_PTE_SPECIAL) \
-    $(wildcard include/config/ARCH_HAS_PTE_DEVMAP) \
-    $(wildcard include/config/DEBUG_VM_RB) \
-    $(wildcard include/config/PAGE_POISONING) \
-    $(wildcard include/config/INIT_ON_ALLOC_DEFAULT_ON) \
-    $(wildcard include/config/INIT_ON_FREE_DEFAULT_ON) \
-    $(wildcard include/config/DEBUG_PAGEALLOC) \
-    $(wildcard include/config/HUGETLBFS) \
-    $(wildcard include/config/MAPPING_DIRTY_HELPERS) \
-    $(wildcard include/config/ANON_VMA_NAME) \
-  include/linux/mmap_lock.h \
-  include/linux/page_ext.h \
-  include/linux/stacktrace.h \
-    $(wildcard include/config/ARCH_STACKWALK) \
-    $(wildcard include/config/STACKTRACE) \
-    $(wildcard include/config/HAVE_RELIABLE_STACKTRACE) \
-  include/linux/stackdepot.h \
-    $(wildcard include/config/STACKDEPOT_ALWAYS_INIT) \
-  include/linux/page_ref.h \
-    $(wildcard include/config/DEBUG_PAGE_REF) \
-  include/linux/sizes.h \
-  include/linux/pgtable.h \
-    $(wildcard include/config/HIGHPTE) \
-    $(wildcard include/config/GUP_GET_PTE_LOW_HIGH) \
-    $(wildcard include/config/HAVE_ARCH_SOFT_DIRTY) \
-    $(wildcard include/config/ARCH_ENABLE_THP_MIGRATION) \
-    $(wildcard include/config/X86_ESPFIX64) \
-  arch/x86/include/asm/pgtable.h \
-    $(wildcard include/config/DEBUG_WX) \
-    $(wildcard include/config/PAGE_TABLE_CHECK) \
-  arch/x86/include/asm/pkru.h \
-  arch/x86/include/asm/fpu/api.h \
-    $(wildcard include/config/X86_DEBUG_FPU) \
-  arch/x86/include/asm/coco.h \
-  include/asm-generic/pgtable_uffd.h \
-  include/linux/page_table_check.h \
-  arch/x86/include/asm/pgtable_32.h \
-  arch/x86/include/asm/pgtable-3level.h \
-  arch/x86/include/asm/pgtable-invert.h \
-  include/linux/huge_mm.h \
-  include/linux/sched/coredump.h \
-    $(wildcard include/config/CORE_DUMP_DEFAULT_ELF_HEADERS) \
-  include/linux/vmstat.h \
-    $(wildcard include/config/VM_EVENT_COUNTERS) \
-  include/linux/writeback.h \
-  include/linux/flex_proportions.h \
-  include/linux/backing-dev-defs.h \
-    $(wildcard include/config/DEBUG_FS) \
-  include/linux/blk_types.h \
-    $(wildcard include/config/FAIL_MAKE_REQUEST) \
-    $(wildcard include/config/BLK_CGROUP_IOCOST) \
-    $(wildcard include/config/BLK_INLINE_ENCRYPTION) \
-    $(wildcard include/config/BLK_DEV_INTEGRITY) \
-  include/linux/bvec.h \
-  include/linux/highmem.h \
-  include/linux/cacheflush.h \
-  arch/x86/include/asm/cacheflush.h \
-  include/asm-generic/cacheflush.h \
-  include/linux/highmem-internal.h \
-  arch/x86/include/asm/highmem.h \
-  arch/x86/include/asm/tlbflush.h \
-  arch/x86/include/asm/invpcid.h \
-  arch/x86/include/asm/pti.h \
-  include/linux/bio.h \
-  include/linux/mempool.h \
-  include/linux/uio.h \
-    $(wildcard include/config/ARCH_HAS_UACCESS_FLUSHCACHE) \
-  include/uapi/linux/uio.h \
-  include/linux/node.h \
-    $(wildcard include/config/HMEM_REPORTING) \
-  include/linux/pagemap.h \
-  include/linux/hugetlb_inline.h \
-  include/uapi/linux/mempolicy.h \
-  include/linux/freezer.h \
-  include/uapi/linux/i2c.h \
-  include/linux/videodev2.h \
-  include/uapi/linux/videodev2.h \
-    $(wildcard include/config/VIDEO_ADV_DEBUG) \
-  include/uapi/linux/v4l2-common.h \
-  include/uapi/linux/v4l2-controls.h \
-  include/media/v4l2-device.h \
-    $(wildcard include/config/VIDEO_V4L2_SUBDEV_API) \
-  include/media/media-device.h \
-    $(wildcard include/config/MEDIA_CONTROLLER) \
-  include/media/media-devnode.h \
-  include/linux/poll.h \
-  include/uapi/linux/poll.h \
-  arch/x86/include/generated/uapi/asm/poll.h \
-  include/uapi/asm-generic/poll.h \
-  include/uapi/linux/eventpoll.h \
-  include/linux/cdev.h \
-  include/media/media-entity.h \
-  include/uapi/linux/media.h \
-  include/media/v4l2-subdev.h \
-  include/uapi/linux/v4l2-subdev.h \
-  include/uapi/linux/v4l2-mediabus.h \
-  include/uapi/linux/media-bus-format.h \
-  include/media/v4l2-async.h \
-  include/media/v4l2-common.h \
-    $(wildcard include/config/VIDEO_V4L2_I2C) \
-    $(wildcard include/config/SPI) \
-  include/media/v4l2-dev.h \
-  include/linux/spi/spi.h \
-    $(wildcard include/config/SPI_SLAVE) \
-  include/linux/scatterlist.h \
-    $(wildcard include/config/NEED_SG_DMA_LENGTH) \
-    $(wildcard include/config/DEBUG_SG) \
-    $(wildcard include/config/SGL_ALLOC) \
-    $(wildcard include/config/ARCH_NO_SG_CHAIN) \
-    $(wildcard include/config/SG_POOL) \
-  include/linux/gpio/consumer.h \
-    $(wildcard include/config/OF_GPIO) \
-    $(wildcard include/config/GPIO_SYSFS) \
-  include/uapi/linux/spi/spi.h \
-  include/media/v4l2-fh.h \
-  include/media/v4l2-mediabus.h \
-  include/media/i2c/uda1342.h \
+// SPDX-License-Identifier: GPL-2.0-only
+/*
+ * CAN driver for EMS Dr. Thomas Wuensche CPC-USB/ARM7
+ *
+ * Copyright (C) 2004-2009 EMS Dr. Thomas Wuensche
+ */
+#include <linux/signal.h>
+#include <linux/slab.h>
+#include <linux/module.h>
+#include <linux/netdevice.h>
+#include <linux/usb.h>
 
-drivers/media/i2c/uda1342.o: $(deps_drivers/media/i2c/uda1342.o)
+#include <linux/can.h>
+#include <linux/can/dev.h>
+#include <linux/can/error.h>
 
-$(deps_drivers/media/i2c/uda1342.o):
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  cmd_drivers/media/i2c/uda1342.o := gcc -Wp,-MMD,drivers/media/i2c/.uda1342.o.d -nostdinc -I./arch/x86/include -I./arch/x86/include/generated  -I./include -I./arch/x86/include/uapi -I./arch/x86/include/generated/uapi -I./include/uapi -I./include/generated/uapi -include ./include/linux/compiler-version.h -include ./include/linux/kconfig.h -include ./include/linux/compiler_types.h -D__KERNEL__ -fmacro-prefix-map=./= -Wall -Wundef -Werror=strict-prototypes -Wno-trigraphs -fno-strict-aliasing -fno-common -fshort-wchar -fno-PIE -Werror=implicit-function-declaration -Werror=implicit-int -Werror=return-type -Wno-format-security -std=gnu11 -mno-sse -mno-mmx -mno-sse2 -mno-3dnow -mno-avx -fcf-protection=none -m32 -msoft-float -mregparm=3 -freg-struct-return -fno-pic -mpreferred-stack-boundary=2 -march=i686 -mtune=pentium3 -mtune=generic -Wa,-mtune=generic32 -ffreestanding -mstack-protector-guard-reg=fs -mstack-protector-guard-symbol=__stack_chk_guard -Wno-sign-compare -fno-asynchronous-unwind-tables -mindirect-branch=thunk-extern -mindirect-branch-register -fno-jump-tables -fno-delete-null-pointer-checks -Wno-frame-address -Wno-format-truncation -Wno-format-overflow -Wno-address-of-packed-member -O2 -fno-allow-store-d
+MODULE_AUTHOR("Sebastian Haas <haas@ems-wuensche.com>");
+MODULE_DESCRIPTION("CAN driver for EMS Dr. Thomas Wuensche CAN/USB interfaces");
+MODULE_LICENSE("GPL v2");
+
+/* Control-Values for CPC_Control() Command Subject Selection */
+#define CONTR_CAN_MESSAGE 0x04
+#define CONTR_CAN_STATE   0x0C
+#define CONTR_BUS_ERROR   0x1C
+
+/* Control Command Actions */
+#define CONTR_CONT_OFF 0
+#define CONTR_CONT_ON  1
+#define CONTR_ONCE     2
+
+/* Messages from CPC to PC */
+#define CPC_MSG_TYPE_CAN_FRAME       1  /* CAN data frame */
+#define CPC_MSG_TYPE_RTR_FRAME       8  /* CAN remote frame */
+#define CPC_MSG_TYPE_CAN_PARAMS      12 /* Actual CAN parameters */
+#define CPC_MSG_TYPE_CAN_STATE       14 /* CAN state message */
+#define CPC_MSG_TYPE_EXT_CAN_FRAME   16 /* Extended CAN data frame */
+#define CPC_MSG_TYPE_EXT_RTR_FRAME   17 /* Extended remote frame */
+#define CPC_MSG_TYPE_CONTROL         19 /* change interface behavior */
+#define CPC_MSG_TYPE_CONFIRM         20 /* command processed confirmation */
+#define CPC_MSG_TYPE_OVERRUN         21 /* overrun events */
+#define CPC_MSG_TYPE_CAN_FRAME_ERROR 23 /* detected bus errors */
+#define CPC_MSG_TYPE_ERR_COUNTER     25 /* RX/TX error counter */
+
+/* Messages from the PC to the CPC interface  */
+#define CPC_CMD_TYPE_CAN_FRAME     1   /* CAN data frame */
+#define CPC_CMD_TYPE_CONTROL       3   /* control of interface behavior */
+#define CPC_CMD_TYPE_CAN_PARAMS    6   /* set CAN parameters */
+#define CPC_CMD_TYPE_RTR_FRAME     13  /* CAN remote frame */
+#define CPC_CMD_TYPE_CAN_STATE     14  /* CAN state message */
+#define CPC_CMD_TYPE_EXT_CAN_FRAME 15  /* Extended CAN data frame */
+#define CPC_CMD_TYPE_EXT_RTR_FRAME 16  /* Extended CAN remote frame */
+#define CPC_CMD_TYPE_CAN_EXIT      200 /* exit the CAN */
+
+#define CPC_CMD_TYPE_INQ_ERR_COUNTER 25 /* request the CAN error counters */
+#define CPC_CMD_TYPE_CLEAR_MSG_QUEUE 8  /* clear CPC_MSG queue */
+#define CPC_CMD_TYPE_CLEAR_CMD_QUEUE 28 /* clear CPC_CMD queue */
+
+#define CPC_CC_TYPE_SJA1000 2 /* Philips basic CAN controller */
+
+#define CPC_CAN_ECODE_ERRFRAME 0x01 /* Ecode type */
+
+/* Overrun types */
+#define CPC_OVR_EVENT_CAN       0x01
+#define CPC_OVR_EVENT_CANSTATE  0x02
+#define CPC_OVR_EVENT_BUSERROR  0x04
+
+/*
+ * If the CAN controller lost a message we indicate it with the highest bit
+ * set in the count field.
+ */
+#define CPC_OVR_HW 0x80
+
+/* Size of the "struct ems_cpc_msg" without the union */
+#define CPC_MSG_HEADER_LEN   11
+#define CPC_CAN_MSG_MIN_SIZE 5
+
+/* Define these values to match your devices */
+#define USB_CPCUSB_VENDOR_ID 0x12D6
+
+#define USB_CPCUSB_ARM7_PRODUCT_ID 0x0444
+
+/* Mode register NXP LPC2119/SJA1000 CAN Controller */
+#define SJA1000_MOD_NORMAL 0x00
+#define SJA1000_MOD_RM     0x01
+
+/* ECC register NXP LPC2119/SJA1000 CAN Controller */
+#define SJA1000_ECC_SEG   0x1F
+#define SJA1000_ECC_DIR   0x20
+#define SJA1000_ECC_ERR   0x06
+#define SJA1000_ECC_BIT   0x00
+#define SJA1000_ECC_FORM  0x40
+#define SJA1000_ECC_STUFF 0x80
+#define SJA1000_ECC_MASK  0xc0
+
+/* Status register content */
+#define SJA1000_SR_BS 0x80
+#define SJA1000_SR_ES 0x40
+
+#define SJA1000_DEFAULT_OUTPUT_CONTROL 0xDA
+
+/*
+ * The device actually uses a 16MHz clock to generate the CAN clock
+ * but it expects SJA1000 bit settings based on 8MHz (is internally
+ * converted).
+ */
+#define EMS_USB_ARM7_CLOCK 8000000
+
+#define CPC_TX_QUEUE_TRIGGER_LOW	25
+#define CPC_TX_QUEUE_TRIGGER_HIGH	35
+
+/*
+ * CAN-Message representation in a CPC_MSG. Message object type is
+ * CPC_MSG_TYPE_CAN_FRAME or CPC_MSG_TYPE_RTR_FRAME or
+ * CPC_MSG_TYPE_EXT_CAN_FRAME or CPC_MSG_TYPE_EXT_RTR_FRAME.
+ */
+struct cpc_can_msg {
+	__le32 id;
+	u8 length;
+	u8 msg[8];
+};
+
+/* Representation of the CAN parameters for the SJA1000 controller */
+struct cpc_sja1000_params {
+	u8 mode;
+	u8 acc_code0;
+	u8 acc_code1;
+	u8 acc_code2;
+	u8 acc_code3;
+	u8 acc_mask0;
+	u8 acc_mask1;
+	u8 acc_mask2;
+	u8 acc_mask3;
+	u8 btr0;
+	u8 btr1;
+	u8 outp_contr;
+};
+
+/* CAN params message representation */
+struct cpc_can_params {
+	u8 cc_type;
+
+	/* Will support M16C CAN controller in the future */
+	union {
+		struct cpc_sja1000_params sja1000;
+	} cc_params;
+};
+
+/* Structure for confirmed message handling */
+struct cpc_confirm {
+	u8 error; /* error code */
+};
+
+/* Structure for overrun conditions */
+struct cpc_overrun {
+	u8 event;
+	u8 count;
+};
+
+/* SJA1000 CAN errors (compatible to NXP LPC2119) */
+struct cpc_sja1000_can_error {
+	u8 ecc;
+	u8 rxerr;
+	u8 txerr;
+};
+
+/* structure for CAN error conditions */
+struct cpc_can_error {
+	u8 ecode;
+
+	struct {
+		u8 cc_type;
+
+		/* Other controllers may also provide error code capture regs */
+		union {
+			struct cpc_sja1000_can_error sja1000;
+		} regs;
+	} cc;
+};
+
+/*
+ * Structure containing RX/TX error counter. This structure is used to request
+ * the values of the CAN controllers TX and RX error counter.
+ */
+struct cpc_can_err_counter {
+	u8 rx;
+	u8 tx;
+};
+
+/* Main message type used between library and application */
+struct __packed ems_cpc_msg {
+	u8 type;	/* type of message */
+	u8 length;	/* length of data within union 'msg' */
+	u8 msgid;	/* confirmation handle */
+	__le32 ts_sec;	/* timestamp in seconds */
+	__le32 ts_nsec;	/* timestamp in nano seconds */
+
+	union {
+		u8 generic[64];
+		struct cpc_can_msg can_msg;
+		struct cpc_can_params can_params;
+		struct cpc_confirm confirmation;
+		struct cpc_overrun overrun;
+		struct cpc_can_error error;
+		struct cpc_can_err_counter err_counter;
+		u8 can_state;
+	} msg;
+};
+
+/*
+ * Table of devices that work with this driver
+ * NOTE: This driver supports only CPC-USB/ARM7 (LPC2119) yet.
+ */
+static struct usb_device_id ems_usb_table[] = {
+	{USB_DEVICE(USB_CPCUSB_VENDOR_ID, USB_CPCUSB_ARM7_PRODUCT_ID)},
+	{} /* Terminating entry */
+};
+
+MODULE_DEVICE_TABLE(usb, ems_usb_table);
+
+#define RX_BUFFER_SIZE      64
+#define CPC_HEADER_SIZE     4
+#define INTR_IN_BUFFER_SIZE 4
+
+#define MAX_RX_URBS 10
+#define MAX_TX_URBS 10
+
+struct ems_usb;
+
+struct ems_tx_urb_context {
+	struct ems_usb *dev;
+
+	u32 echo_index;
+};
+
+struct ems_usb {
+	struct can_priv can; /* must be the first member */
+
+	struct sk_buff *echo_skb[MAX_TX_URBS];
+
+	struct usb_device *udev;
+	struct net_device *netdev;
+
+	atomic_t active_tx_urbs;
+	struct usb_anchor tx_submitted;
+	struct ems_tx_urb_context tx_contexts[MAX_TX_URBS];
+
+	struct usb_anchor rx_submitted;
+
+	struct urb *intr_urb;
+
+	u8 *tx_msg_buffer;
+
+	u8 *intr_in_buffer;
+	unsigned int free_slots; /* remember number of available slots */
+
+	struct ems_cpc_msg active_params; /* active controller parameters */
+	void *rxbuf[MAX_RX_URBS];
+	dma_addr_t rxbuf_dma[MAX_RX_URBS];
+};
+
+static void ems_usb_read_interrupt_callback(struct urb *urb)
+{
+	struct ems_usb *dev = urb->context;
+	struct net_device *netdev = dev->netdev;
+	int err;
+
+	if (!netif_device_present(netdev))
+		return;
+
+	switch (urb->status) {
+	case 0:
+		dev->free_slots = dev->intr_in_buffer[1];
+		if (dev->free_slots > CPC_TX_QUEUE_TRIGGER_HIGH &&
+		    netif_queue_stopped(netdev))
+			netif_wake_queue(netdev);
+		break;
+
+	case -ECONNRESET: /* unlink */
+	case -ENOENT:
+	case -EPIPE:
+	case -EPROTO:
+	case -ESHUTDOWN:
+		return;
+
+	default:
+		netdev_info(netdev, "Rx interrupt aborted %d\n", urb->status);
+		break;
+	}
+
+	err = usb_submit_urb(urb, GFP_ATOMIC);
+
+	if (err == -ENODEV)
+		netif_device_detach(netdev);
+	else if (err)
+		netdev_err(netdev, "failed resubmitting intr urb: %d\n", err);
+}
+
+static void ems_usb_rx_can_msg(struct ems_usb *dev, struct ems_cpc_msg *msg)
+{
+	struct can_frame *cf;
+	struct sk_buff *skb;
+	int i;
+	struct net_device_stats *stats = &dev->netdev->stats;
+
+	skb = alloc_can_skb(dev->netdev, &cf);
+	if (skb == NULL)
+		return;
+
+	cf->can_id = le32_to_cpu(msg->msg.can_msg.id);
+	cf->len = can_cc_dlc2len(msg->msg.can_msg.length & 0xF);
+
+	if (msg->type == CPC_MSG_TYPE_EXT_CAN_FRAME ||
+	    msg->type == CPC_MSG_TYPE_EXT_RTR_FRAME)
+		cf->can_id |= CAN_EFF_FLAG;
+
+	if (msg->type == CPC_MSG_TYPE_RTR_FRAME ||
+	    msg->type == CPC_MSG_TYPE_EXT_RTR_FRAME) {
+		cf->can_id |= CAN_RTR_FLAG;
+	} else {
+		for (i = 0; i < cf->len; i++)
+			cf->data[i] = msg->msg.can_msg.msg[i];
+
+		stats->rx_bytes += cf->len;
+	}
+	stats->rx_packets++;
+
+	netif_rx(skb);
+}
+
+static void ems_usb_rx_err(struct ems_usb *dev, struct ems_cpc_msg *msg)
+{
+	struct can_frame *cf;
+	struct sk_buff *skb;
+	struct net_device_stats *stats = &dev->netdev->stats;
+
+	skb = alloc_can_err_skb(dev->netdev, &cf);
+	if (skb == NULL)
+		return;
+
+	if (msg->type == CPC_MSG_TYPE_CAN_STATE) {
+		u8 state = msg->msg.can_state;
+
+		if (state & SJA1000_SR_BS) {
+			dev->can.state = CAN_STATE_BUS_OFF;
+			cf->can_id |= CAN_ERR_BUSOFF;
+
+			dev->can.can_stats.bus_off++;
+			can_bus_off(dev->netdev);
+		} else if (state & SJA1000_SR_ES) {
+			dev->can.state = CAN_STATE_ERROR_WARNING;
+			dev->can.can_stats.error_warning++;
+		} else {
+			dev->can.state = CAN_STATE_ERROR_ACTIVE;
+			dev->can.can_stats.error_passive++;
+		}
+	} else if (msg->type == CPC_MSG_TYPE_CAN_FRAME_ERROR) {
+		u8 ecc = msg->msg.error.cc.regs.sja1000.ecc;
+		u8 txerr = msg->msg.error.cc.regs.sja1000.txerr;
+		u8 rxerr = msg->msg.error.cc.regs.sja1000.rxerr;
+
+		/* bus error interrupt */
+		dev->can.can_stats.bus_error++;
+		stats->rx_errors++;
+
+		cf->can_id |= CAN_ERR_PROT | CAN_ERR_BUSERROR;
+
+		switch (ecc & SJA1000_ECC_MASK) {
+		case SJA1000_ECC_BIT:
+			cf->data[2] |= CAN_ERR_PROT_BIT;
+			break;
+		case SJA1000_ECC_FORM:
+			cf->data[2] |= CAN_ERR_PROT_FORM;
+			break;
+		case SJA1000_ECC_STUFF:
+			cf->data[2] |= CAN_ERR_PROT_STUFF;
+			break;
+		default:
+			cf->data[3] = ecc & SJA1000_ECC_SEG;
+			break;
+		}
+
+		/* Error occurred during transmission? */
+		if ((ecc & SJA1000_ECC_DIR) == 0)
+			cf->data[2] |= CAN_ERR_PROT_TX;
+
+		if (dev->can.state == CAN_STATE_ERROR_WARNING ||
+		    dev->can.state == CAN_STATE_ERROR_PASSIVE) {
+			cf->can_id |= CAN_ERR_CRTL;
+			cf->data[1] = (txerr > rxerr) ?
+			    CAN_ERR_CRTL_TX_PASSIVE : CAN_ERR_CRTL_RX_PASSIVE;
+		}
+	} else if (msg->type == CPC_MSG_TYPE_OVERRUN) {
+		cf->can_id |= CAN_ERR_CRTL;
+		cf->data[1] = CAN_ERR_CRTL_RX_OVERFLOW;
+
+		stats->rx_over_errors++;
+		stats->rx_errors++;
+	}
+
+	netif_rx(skb);
+}
+
+/*
+ * callback for bulk IN urb
+ */
+static void ems_usb_read_bulk_callback(struct urb *urb)
+{
+	struct ems_usb *dev = urb->context;
+	struct net_device *netdev;
+	int retval;
+
+	netdev = dev->netdev;
+
+	if (!netif_device_present(netdev))
+		return;
+
+	switch (urb->status) {
+	case 0: /* success */
+		break;
+
+	case -ENOENT:
+		return;
+
+	default:
+		netdev_info(netdev, "Rx URB aborted (%d)\n", urb->status);
+		goto resubmit_urb;
+	}
+
+	if (urb->actual_length > CPC_HEADER_SIZE) {
+		struct ems_cpc_msg *msg;
+		u8 *ibuf = urb->transfer_buffer;
+		u8 msg_count, start;
+
+		msg_count = ibuf[0] & ~0x80;
+
+		start = CPC_HEADER_SIZE;
+
+		while (msg_count) {
+			msg = (struct ems_cpc_msg *)&ibuf[start];
+
+			switch (msg->type) {
+			case CPC_MSG_TYPE_CAN_STATE:
+				/* Process CAN state changes */
+				ems_usb_rx_err(dev, msg);
+				break;
+
+			case CPC_MSG_TYPE_CAN_FRAME:
+			case CPC_MSG_TYPE_EXT_CAN_FRAME:
+			case CPC_MSG_TYPE_RTR_FRAME:
+			case CPC_MSG_TYPE_EXT_RTR_FRAME:
+				ems_usb_rx_can_msg(dev, msg);
+				break;
+
+			case CPC_MSG_TYPE_CAN_FRAME_ERROR:
+				/* Process errorframe */
+				ems_usb_rx_err(dev, msg);
+				break;
+
+			case CPC_MSG_TYPE_OVERRUN:
+				/* Message lost while receiving */
+				ems_usb_rx_err(dev, msg);
+				break;
+			}
+
+			start += CPC_MSG_HEADER_LEN + msg->length;
+			msg_count--;
+
+			if (start > urb->transfer_buffer_length) {
+				netdev_err(netdev, "format error\n");
+				break;
+			}
+		}
+	}
+
+resubmit_urb:
+	usb_fill_bulk_urb(urb, dev->udev, usb_rcvbulkpipe(dev->udev, 2),
+			  urb->transfer_buffer, RX_BUFFER_SIZE,
+			  ems_usb_read_bulk_callback, dev);
+
+	retval = usb_submit_urb(urb, GFP_ATOMIC);
+
+	if (retval == -ENODEV)
+		netif_device_detach(netdev);
+	else if (retval)
+		netdev_err(netdev,
+			   "failed resubmitting read bulk urb: %d\n", retval);
+}
+
+/*
+ * callback for bulk IN urb
+ */
+static void ems_usb_write_bulk_callback(struct urb *urb)
+{
+	struct ems_tx_urb_context *context = urb->context;
+	struct ems_usb *dev;
+	struct net_device *netdev;
+
+	BUG_ON(!context);
+
+	dev = context->dev;
+	netdev = dev->netdev;
+
+	/* free up our allocated buffer */
+	usb_free_coherent(urb->dev, urb->transfer_buffer_length,
+			  urb->transfer_buffer, urb->transfer_dma);
+
+	atomic_dec(&dev->active_tx_urbs);
+
+	if (!netif_device_present(netdev))
+		return;
+
+	if (urb->status)
+		netdev_info(netdev, "Tx URB aborted (%d)\n", urb->status);
+
+	netif_trans_update(netdev);
+
+	/* transmission complete interrupt */
+	netdev->stats.tx_packets++;
+	netdev->stats.tx_bytes += can_get_echo_skb(netdev, context->echo_index,
+						   NULL);
+
+	/* Release context */
+	context->echo_index = MAX_TX_URBS;
+
+}
+
+/*
+ * Send the given CPC command synchronously
+ */
+static int ems_usb_command_msg(struct ems_usb *dev, struct ems_cpc_msg *msg)
+{
+	int actual_length;
+
+	/* Copy payload */
+	memcpy(&dev->tx_msg_buffer[CPC_HEADER_SIZE], msg,
+	       msg->length + CPC_MSG_HEADER_LEN);
+
+	/* Clear header */
+	memset(&dev->tx_msg_buffer[0], 0, CPC_HEADER_SIZE);
+
+	return usb_bulk_msg(dev->udev, usb_sndbulkpipe(dev->udev, 2),
+			    &dev->tx_msg_buffer[0],
+			    msg->length + CPC_MSG_HEADER_LEN + CPC_HEADER_SIZE,
+			    &actual_length, 1000);
+}
+
+/*
+ * Change CAN controllers' mode register
+ */
+static int ems_usb_write_mode(struct ems_usb *dev, u8 mode)
+{
+	dev->active_params.msg.can_params.cc_params.sja1000.mode = mode;
+
+	return ems_usb_command_msg(dev, &dev->active_params);
+}
+
+/*
+ * Send a CPC_Control command to change behaviour when interface receives a CAN
+ * message, bus error or CAN state changed notifications.
+ */
+static int ems_usb_control_cmd(struct ems_usb *dev, u8 val)
+{
+	struct ems_cpc_msg cmd;
+
+	cmd.type = CPC_CMD_TYPE_CONTROL;
+	cmd.length = CPC_MSG_HEADER_LEN + 1;
+
+	cmd.msgid = 0;
+
+	cmd.msg.generic[0] = val;
+
+	return ems_usb_command_msg(dev, &cmd);
+}
+
+/*
+ * Start interface
+ */
+static int ems_usb_start(struct ems_usb *dev)
+{
+	struct net_device *netdev = dev->netdev;
+	int err, i;
+
+	dev->intr_in_buffer[0] = 0;
+	dev->free_slots = 50; /* initial size */
+
+	for (i = 0; i < MAX_RX_URBS; i++) {
+		struct urb *urb = NULL;
+		u8 *buf = NULL;
+		dma_addr_t buf_dma;
+
+		/* create a URB, and a buffer for it */
+		urb = usb_alloc_urb(0, GFP_KERNEL);
+		if (!urb) {
+			err = -ENOMEM;
+			break;
+		}
+
+		buf = usb_alloc_coherent(dev->udev, RX_BUFFER_SIZE, GFP_KERNEL,
+					 &buf_dma);
+		if (!buf) {
+			netdev_err(netdev, "No memory left for USB buffer\n");
+			usb_free_urb(urb);
+			err = -ENOMEM;
+			break;
+		}
+
+		urb->transfer_dma = buf_dma;
+
+		usb_fill_bulk_urb(urb, dev->udev, usb_rcvbulkpipe(dev->udev, 2),
+				  buf, RX_BUFFER_SIZE,
+				  ems_usb_read_bulk_callback, dev);
+		urb->transfer_flags |= URB_NO_TRANSFER_DMA_MAP;
+		usb_anchor_urb(urb, &dev->rx_submitted);
+
+		err = usb_submit_urb(urb, GFP_KERNEL);
+		if (err) {
+			usb_unanchor_urb(urb);
+			usb_free_coherent(dev->udev, RX_BUFFER_SIZE, buf,
+					  urb->transfer_dma);
+			usb_free_urb(urb);
+			break;
+		}
+
+		dev->rxbuf[i] = buf;
+		dev->rxbuf_dma[i] = buf_dma;
+
+		/* Drop reference, USB core will take care of freeing it */
+		usb_free_urb(urb);
+	}
+
+	/* Did we submit any URBs */
+	if (i == 0) {
+		netdev_warn(netdev, "couldn't setup read URBs\n");
+		return err;
+	}
+
+	/* Warn if we've couldn't transmit all the URBs */
+	if (i < MAX_RX_URBS)
+		netdev_warn(netdev, "rx performance may be slow\n");
+
+	/* Setup and start interrupt URB */
+	usb_fill_int_urb(dev->intr_urb, dev->udev,
+			 usb_rcvintpipe(dev->udev, 1),
+			 dev->intr_in_buffer,
+			 INTR_IN_BUFFER_SIZE,
+			 ems_usb_read_interrupt_callback, dev, 1);
+
+	err = usb_submit_urb(dev->intr_urb, GFP_KERNEL);
+	if (err) {
+		netdev_warn(netdev, "intr URB submit failed: %d\n", err);
+
+		return err;
+	}
+
+	/* CPC-USB will transfer received message to host */
+	err = ems_usb_control_cmd(dev, CONTR_CAN_MESSAGE | CONTR_CONT_ON);
+	if (err)
+		goto failed;
+
+	/* CPC-USB will transfer CAN state changes to host */
+	err = ems_usb_control_cmd(dev, CONTR_CAN_STATE | CONTR_CONT_ON);
+	if (err)
+		goto failed;
+
+	/* CPC-USB will transfer bus errors to host */
+	err = ems_usb_control_cmd(dev, CONTR_BUS_ERROR | CONTR_CONT_ON);
+	if (err)
+		goto failed;
+
+	err = ems_usb_write_mode(dev, SJA1000_MOD_NORMAL);
+	if (err)
+		goto failed;
+
+	dev->can.state = CAN_STATE_ERROR_ACTIVE;
+
+	return 0;
+
+failed:
+	netdev_warn(netdev, "couldn't submit control: %d\n", err);
+
+	return err;
+}
+
+static void unlink_all_urbs(struct ems_usb *dev)
+{
+	int i;
+
+	usb_unlink_urb(dev->intr_urb);
+
+	usb_kill_anchored_urbs(&dev->rx_submitted);
+
+	for (i = 0; i < MAX_RX_URBS; ++i)
+		usb_free_coherent(dev->udev, RX_BUFFER_SIZE,
+				  dev->rxbuf[i], dev->rxbuf_dma[i]);
+
+	usb_kill_anchored_urbs(&dev->tx_submitted);
+	atomic_set(&dev->active_tx_urbs, 0);
+
+	for (i = 0; i < MAX_TX_URBS; i++)
+		dev->tx_contexts[i].echo_index = MAX_TX_URBS;
+}
+
+static int ems_usb_open(struct net_device *netdev)
+{
+	struct ems_usb *dev = netdev_priv(netdev);
+	int err;
+
+	err = ems_usb_write_mode(dev, SJA1000_MOD_RM);
+	if (err)
+		return err;
+
+	/* common open */
+	err = open_candev(netdev);
+	if (err)
+		return err;
+
+	/* finally start device */
+	err = ems_usb_start(dev);
+	if (err) {
+		if (err == -ENODEV)
+			netif_device_detach(dev->netdev);
+
+		netdev_warn(netdev, "couldn't start device: %d\n", err);
+
+		close_candev(netdev);
+
+		return err;
+	}
+
+
+	netif_start_queue(netdev);
+
+	return 0;
+}
+
+static netdev_tx_t ems_usb_start_xmit(struct sk_buff *skb, struct net_device *netdev)
+{
+	struct ems_usb *dev = netdev_priv(netdev);
+	struct ems_tx_urb_context *context = NULL;
+	struct net_device_stats *stats = &netdev->stats;
+	struct can_frame *cf = (struct can_frame *)skb->data;
+	struct ems_cpc_msg *msg;
+	struct urb *urb;
+	u8 *buf;
+	int i, err;
+	size_t size = CPC_HEADER_SIZE + CPC_MSG_HEADER_LEN
+			+ sizeof(struct cpc_can_msg);
+
+	if (can_dropped_invalid_skb(netdev, skb))
+		return NETDEV_TX_OK;
+
+	/* create a URB, and a buffer for it, and copy the data to the URB */
+	urb = usb_alloc_urb(0, GFP_ATOMIC);
+	if (!urb)
+		goto nomem;
+
+	buf = usb_alloc_coherent(dev->udev, size, GFP_ATOMIC, &urb->transfer_dma);
+	if (!buf) {
+		netdev_err(netdev, "No memory left for USB buffer\n");
+		usb_free_urb(urb);
+		goto nomem;
+	}
+
+	msg = (struct ems_cpc_msg *)&buf[CPC_HEADER_SIZE];
+
+	msg->msg.can_msg.id = cpu_to_le32(cf->can_id & CAN_ERR_MASK);
+	msg->msg.can_msg.length = cf->len;
+
+	if (cf->can_id & CAN_RTR_FLAG) {
+		msg->type = cf->can_id & CAN_EFF_FLAG ?
+			CPC_CMD_TYPE_EXT_RTR_FRAME : CPC_CMD_TYPE_RTR_FRAME;
+
+		msg->length = CPC_CAN_MSG_MIN_SIZE;
+	} else {
+		msg->type = cf->can_id & CAN_EFF_FLAG ?
+			CPC_CMD_TYPE_EXT_CAN_FRAME : CPC_CMD_TYPE_CAN_FRAME;
+
+		for (i = 0; i < cf->len; i++)
+			msg->msg.can_msg.msg[i] = cf->data[i];
+
+		msg->length = CPC_CAN_MSG_MIN_SIZE + cf->len;
+	}
+
+	for (i = 0; i < MAX_TX_URBS; i++) {
+		if (dev->tx_contexts[i].echo_index == MAX_TX_URBS) {
+			context = &dev->tx_contexts[i];
+			break;
+		}
+	}
+
+	/*
+	 * May never happen! When this happens we'd more URBs in flight as
+	 * allowed (MAX_TX_URBS).
+	 */
+	if (!context) {
+		usb_free_coherent(dev->udev, size, buf, urb->transfer_dma);
+		usb_free_urb(urb);
+
+		netdev_warn(netdev, "couldn't find free context\n");
+
+		return NETDEV_TX_BUSY;
+	}
+
+	context->dev = dev;
+	context->echo_index = i;
+
+	usb_fill_bulk_urb(urb, dev->udev, usb_sndbulkpipe(dev->udev, 2), buf,
+			  size, ems_usb_write_bulk_callback, context);
+	urb->transfer_flags |= URB_NO_TRANSFER_DMA_MAP;
+	usb_anchor_urb(urb, &dev->tx_submitted);
+
+	can_put_echo_skb(skb, netdev, context->echo_index, 0);
+
+	atomic_inc(&dev->active_tx_urbs);
+
+	err = usb_submit_urb(urb, GFP_ATOMIC);
+	if (unlikely(err)) {
+		can_free_echo_skb(netdev, context->echo_index, NULL);
+
+		usb_unanchor_urb(urb);
+		usb_free_coherent(dev->udev, size, buf, urb->transfer_dma);
+
+		atomic_dec(&dev->active_tx_urbs);
+
+		if (err == -ENODEV) {
+			netif_device_detach(netdev);
+		} else {
+			netdev_warn(netdev, "failed tx_urb %d\n", err);
+
+			stats->tx_dropped++;
+		}
+	} else {
+		netif_trans_update(netdev);
+
+		/* Slow down tx path */
+		if (atomic_read(&dev->active_tx_urbs) >= MAX_TX_URBS ||
+		    dev->free_slots < CPC_TX_QUEUE_TRIGGER_LOW) {
+			netif_stop_queue(netdev);
+		}
+	}
+
+	/*
+	 * Release our reference to this URB, the USB core will eventually free
+	 * it entirely.
+	 */
+	usb_free_urb(urb);
+
+	return NETDEV_TX_OK;
+
+nomem:
+	dev_kfree_skb(skb);
+	stats->tx_dropped++;
+
+	return NETDEV_TX_OK;
+}
+
+static int ems_usb_close(struct net_device *netdev)
+{
+	struct ems_usb *dev = netdev_priv(netdev);
+
+	/* Stop polling */
+	unlink_all_urbs(dev);
+
+	netif_stop_queue(netdev);
+
+	/* Set CAN controller to reset mode */
+	if (ems_usb_write_mode(dev, SJA1000_MOD_RM))
+		netdev_warn(netdev, "couldn't stop device");
+
+	close_candev(netdev);
+
+	return 0;
+}
+
+static const struct net_device_ops ems_usb_netdev_ops = {
+	.ndo_open = ems_usb_open,
+	.ndo_stop = ems_usb_close,
+	.ndo_start_xmit = ems_usb_start_xmit,
+	.ndo_change_mtu = can_change_mtu,
+};
+
+static const struct can_bittiming_const ems_usb_bittiming_const = {
+	.name = "ems_usb",
+	.tseg1_min = 1,
+	.tseg1_max = 16,
+	.tseg2_min = 1,
+	.tseg2_max = 8,
+	.sjw_max = 4,
+	.brp_min = 1,
+	.brp_max = 64,
+	.brp_inc = 1,
+};
+
+static int ems_usb_set_mode(struct net_device *netdev, enum can_mode mode)
+{
+	struct ems_usb *dev = netdev_priv(netdev);
+
+	switch (mode) {
+	case CAN_MODE_START:
+		if (ems_usb_write_mode(dev, SJA1000_MOD_NORMAL))
+			netdev_warn(netdev, "couldn't start device");
+
+		if (netif_queue_stopped(netdev))
+			netif_wake_queue(netdev);
+		break;
+
+	default:
+		return -EOPNOTSUPP;
+	}
+
+	return 0;
+}
+
+static int ems_usb_set_bittiming(struct net_device *netdev)
+{
+	struct ems_usb *dev = netdev_priv(netdev);
+	struct can_bittiming *bt = &dev->can.bittiming;
+	u8 btr0, btr1;
+
+	btr0 = ((bt->brp - 1) & 0x3f) | (((bt->sjw - 1) & 0x3) << 6);
+	btr1 = ((bt->prop_seg + bt->phase_seg1 - 1) & 0xf) |
+		(((bt->phase_seg2 - 1) & 0x7) << 4);
+	if (dev->can.ctrlmode & CAN_CTRLMODE_3_SAMPLES)
+		btr1 |= 0x80;
+
+	netdev_info(netdev, "setting BTR0=0x%02x BTR1=0x%02x\n", btr0, btr1);
+
+	dev->active_params.msg.can_params.cc_params.sja1000.btr0 = btr0;
+	dev->active_params.msg.can_params.cc_params.sja1000.btr1 = btr1;
+
+	return ems_usb_command_msg(dev, &dev->active_params);
+}
+
+static void init_params_sja1000(struct ems_cpc_msg *msg)
+{
+	struct cpc_sja1000_params *sja1000 =
+		&msg->msg.can_params.cc_params.sja1000;
+
+	msg->type = CPC_CMD_TYPE_CAN_PARAMS;
+	msg->length = sizeof(struct cpc_can_params);
+	msg->msgid = 0;
+
+	msg->msg.can_params.cc_type = CPC_CC_TYPE_SJA1000;
+
+	/* Acceptance filter open */
+	sja1000->acc_code0 = 0x00;
+	sja1000->acc_code1 = 0x00;
+	sja1000->acc_code2 = 0x00;
+	sja1000->acc_code3 = 0x00;
+
+	/* Acceptance filter open */
+	sja1000->acc_mask0 = 0xFF;
+	sja1000->acc_mask1 = 0xFF;
+	sja1000->acc_mask2 = 0xFF;
+	sja1000->acc_mask3 = 0xFF;
+
+	sja1000->btr0 = 0;
+	sja1000->btr1 = 0;
+
+	sja1000->outp_contr = SJA1000_DEFAULT_OUTPUT_CONTROL;
+	sja1000->mode = SJA1000_MOD_RM;
+}
+
+/*
+ * probe function for new CPC-USB devices
+ */
+static int ems_usb_probe(struct usb_interface *intf,
+			 const struct usb_device_id *id)
+{
+	struct net_device *netdev;
+	struct ems_usb *dev;
+	int i, err = -ENOMEM;
+
+	netdev = alloc_candev(sizeof(struct ems_usb), MAX_TX_URBS);
+	if (!netdev) {
+		dev_err(&intf->dev, "ems_usb: Couldn't alloc candev\n");
+		return -ENOMEM;
+	}
+
+	dev = netdev_priv(netdev);
+
+	dev->udev = interface_to_usbdev(intf);
+	dev->netdev = netdev;
+
+	dev->can.state = CAN_STATE_STOPPED;
+	dev->can.clock.freq = EMS_USB_ARM7_CLOCK;
+	dev->can.bittiming_const = &ems_usb_bittiming_const;
+	dev->can.do_set_bittiming = ems_usb_set_bittiming;
+	dev->can.do_set_mode = ems_usb_set_mode;
+	dev->can.ctrlmode_supported = CAN_CTRLMODE_3_SAMPLES;
+
+	netdev->netdev_ops = &ems_usb_netdev_ops;
+
+	netdev->flags |= IFF_ECHO; /* we support local echo */
+
+	init_usb_anchor(&dev->rx_submitted);
+
+	init_usb_anchor(&dev->tx_submitted);
+	atomic_set(&dev->active_tx_urbs, 0);
+
+	for (i = 0; i < MAX_TX_URBS; i++)
+		dev->tx_contexts[i].echo_index = MAX_TX_URBS;
+
+	dev->intr_urb = usb_alloc_urb(0, GFP_KERNEL);
+	if (!dev->intr_urb)
+		goto cleanup_candev;
+
+	dev->intr_in_buffer = kzalloc(INTR_IN_BUFFER_SIZE, GFP_KERNEL);
+	if (!dev->intr_in_buffer)
+		goto cleanup_intr_urb;
+
+	dev->tx_msg_buffer = kzalloc(CPC_HEADER_SIZE +
+				     sizeof(struct ems_cpc_msg), GFP_KERNEL);
+	if (!dev->tx_msg_buffer)
+		goto cleanup_intr_in_buffer;
+
+	usb_set_intfdata(intf, dev);
+
+	SET_NETDEV_DEV(netdev, &intf->dev);
+
+	init_params_sja1000(&dev->active_params);
+
+	err = ems_usb_command_msg(dev, &dev->active_params);
+	if (err) {
+		netdev_err(netdev, "couldn't initialize controller: %d\n", err);
+		goto cleanup_tx_msg_buffer;
+	}
+
+	err = register_candev(netdev);
+	if (err) {
+		netdev_err(netdev, "couldn't register CAN device: %d\n", err);
+		goto cleanup_tx_msg_buffer;
+	}
+
+	return 0;
+
+cleanup_tx_msg_buffer:
+	kfree(dev->tx_msg_buffer);
+
+cleanup_intr_in_buffer:
+	kfree(dev->intr_in_buffer);
+
+cleanup_intr_urb:
+	usb_free_urb(dev->intr_urb);
+
+cleanup_candev:
+	free_candev(netdev);
+
+	return err;
+}
+
+/*
+ * called by the usb core when the device is removed from the system
+ */
+static void ems_usb_disconnect(struct usb_interface *intf)
+{
+	struct ems_usb *dev = usb_get_intfdata(intf);
+
+	usb_set_intfdata(intf, NULL);
+
+	if (dev) {
+		unregister_netdev(dev->netdev);
+
+		unlink_all_urbs(dev);
+
+		usb_free_urb(dev->intr_urb);
+
+		kfree(dev->intr_in_buffer);
+		kfree(dev->tx_msg_buffer);
+
+		free_candev(dev->netdev);
+	}
+}
+
+/* usb specific object needed to register this driver with the usb subsystem */
+static struct usb_driver ems_usb_driver = {
+	.name = "ems_usb",
+	.probe = ems_usb_probe,
+	.disconnect = ems_usb_disconnect,
+	.id_table = ems_usb_table,
+};
+
+module_usb_driver(ems_usb_driver);

@@ -1,4 +1,5 @@
-urrent chain
- */
-static inline int get_first_held_lock(struct task_struct *curr,
-		
+_LEADTEK_WINFAST_PXDVR3200_H,
+	}, {
+		.subvendor = 0x107d,
+		.subdevice = 0x6f21,
+	

@@ -1,1 +1,3 @@
-cmd_drivers/media/i2c/tw9903.o := gcc
+00d00);
+		/* enable irq */
+		cx_write

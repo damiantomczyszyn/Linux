@@ -1,2 +1,2 @@
-.h \
-  include/linux/atomic/ato
+C:
+	case CX23885_BOARD_TT_CT2_4

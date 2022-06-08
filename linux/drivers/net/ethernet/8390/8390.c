@@ -1,51 +1,103 @@
-U_FANOUT_LEAF) \
-  include/linux/page-flags-layout.h \
-    $(wildcard include/config/KASAN_HW_TAGS) \
-  include/linux/numa.h \
-    $(wildcard include/config/NODES_SHIFT) \
-    $(wildcard include/config/NUMA_KEEP_MEMINFO) \
-    $(wildcard include/config/HAVE_ARCH_NODE_DEV_GROUP) \
-  arch/x86/include/asm/sparsemem.h \
-  include/generated/bounds.h \
-  include/linux/seqlock.h \
-  include/linux/ww_mutex.h \
-    $(wildcard include/config/DEBUG_RT_MUTEXES) \
-    $(wildcard include/config/DEBUG_WW_MUTEX_SLOWPATH) \
-  include/linux/rtmutex.h \
-  arch/x86/include/asm/mmu.h \
-    $(wildcard include/config/MODIFY_LDT_SYSCALL) \
-  include/linux/kmod.h \
-  include/linux/umh.h \
-  include/linux/gfp.h \
-    $(wildcard include/config/HIGHMEM) \
-    $(wildcard include/config/ZONE_DMA) \
-    $(wildcard include/config/ZONE_DMA32) \
-    $(wildcard include/config/ZONE_DEVICE) \
-    $(wildcard include/config/PM_SLEEP) \
-    $(wildcard include/config/CONTIG_ALLOC) \
-    $(wildcard include/config/CMA) \
-  include/linux/mmdebug.h \
-    $(wildcard include/config/DEBUG_VM) \
-    $(wildcard include/config/DEBUG_VM_PGFLAGS) \
-  include/linux/mmzone.h \
-    $(wildcard include/config/FORCE_MAX_ZONEORDER) \
-    $(wildcard include/config/MEMORY_ISOLATION) \
-    $(wildcard include/config/ZSMALLOC) \
-    $(wildcard include/config/MEMORY_HOTPLUG) \
-    $(wildcard include/config/COMPACTION) \
-    $(wildcard include/config/PAGE_EXTENSION) \
-    $(wildcard include/config/DEFERRED_STRUCT_PAGE_INIT) \
-    $(wildcard include/config/HAVE_MEMORYLESS_NODES) \
-    $(wildcard include/config/SPARSEMEM_EXTREME) \
-    $(wildcard include/config/HAVE_ARCH_PFN_VALID) \
-  include/linux/nodemask.h \
-  include/linux/pageblock-flags.h \
-    $(wildcard include/config/HUGETLB_PAGE_SIZE_VARIABLE) \
-  include/linux/page-flags.h \
-    $(wildcard include/config/ARCH_USES_PG_UNCACHED) \
-    $(wildcard include/config/MEMORY_FAILURE) \
-    $(wildcard include/config/PAGE_IDLE_FLAG) \
-    $(wildcard include/config/HUGETLB_PAGE_FREE_VMEMMAP) \
-    $(wildcard include/config/HUGETLB_PAGE_FREE_VMEMMAP_DEFAULT_ON) \
-    $(wildcard include/config/KSM) \
-  include/linu
+// SPDX-License-Identifier: GPL-2.0-only
+/* 8390 core for usual drivers */
+
+static const char version[] =
+    "8390.c:v1.10cvs 9/23/94 Donald Becker (becker@cesdis.gsfc.nasa.gov)\n";
+
+#include "lib8390.c"
+
+int ei_open(struct net_device *dev)
+{
+	return __ei_open(dev);
+}
+EXPORT_SYMBOL(ei_open);
+
+int ei_close(struct net_device *dev)
+{
+	return __ei_close(dev);
+}
+EXPORT_SYMBOL(ei_close);
+
+netdev_tx_t ei_start_xmit(struct sk_buff *skb, struct net_device *dev)
+{
+	return __ei_start_xmit(skb, dev);
+}
+EXPORT_SYMBOL(ei_start_xmit);
+
+struct net_device_stats *ei_get_stats(struct net_device *dev)
+{
+	return __ei_get_stats(dev);
+}
+EXPORT_SYMBOL(ei_get_stats);
+
+void ei_set_multicast_list(struct net_device *dev)
+{
+	__ei_set_multicast_list(dev);
+}
+EXPORT_SYMBOL(ei_set_multicast_list);
+
+void ei_tx_timeout(struct net_device *dev, unsigned int txqueue)
+{
+	__ei_tx_timeout(dev, txqueue);
+}
+EXPORT_SYMBOL(ei_tx_timeout);
+
+irqreturn_t ei_interrupt(int irq, void *dev_id)
+{
+	return __ei_interrupt(irq, dev_id);
+}
+EXPORT_SYMBOL(ei_interrupt);
+
+#ifdef CONFIG_NET_POLL_CONTROLLER
+void ei_poll(struct net_device *dev)
+{
+	__ei_poll(dev);
+}
+EXPORT_SYMBOL(ei_poll);
+#endif
+
+const struct net_device_ops ei_netdev_ops = {
+	.ndo_open		= ei_open,
+	.ndo_stop		= ei_close,
+	.ndo_start_xmit		= ei_start_xmit,
+	.ndo_tx_timeout		= ei_tx_timeout,
+	.ndo_get_stats		= ei_get_stats,
+	.ndo_set_rx_mode	= ei_set_multicast_list,
+	.ndo_validate_addr	= eth_validate_addr,
+	.ndo_set_mac_address 	= eth_mac_addr,
+#ifdef CONFIG_NET_POLL_CONTROLLER
+	.ndo_poll_controller	= ei_poll,
+#endif
+};
+EXPORT_SYMBOL(ei_netdev_ops);
+
+struct net_device *__alloc_ei_netdev(int size)
+{
+	struct net_device *dev = ____alloc_ei_netdev(size);
+	if (dev)
+		dev->netdev_ops = &ei_netdev_ops;
+	return dev;
+}
+EXPORT_SYMBOL(__alloc_ei_netdev);
+
+void NS8390_init(struct net_device *dev, int startp)
+{
+	__NS8390_init(dev, startp);
+}
+EXPORT_SYMBOL(NS8390_init);
+
+#if defined(MODULE)
+
+static int __init ns8390_module_init(void)
+{
+	return 0;
+}
+
+static void __exit ns8390_module_exit(void)
+{
+}
+
+module_init(ns8390_module_init);
+module_exit(ns8390_module_exit);
+#endif /* MODULE */
+MODULE_LICENSE("GPL");

@@ -1,6 +1,1 @@
-/BPF_JIT) \
-  include/asm-generic/access_ok.h \
-    $(wildcard include/config/ALTERNATE_USER_ADDRESS_SPACE) \
-  arch/x86/include/asm/uaccess_32.h \
-  include/linux/cred.h \
-    $(wildcard include/
+cmd_drivers/net/appletalk/cops.ko := ld -r -m elf_i386 --build-id=sha1  -T scripts/module.lds -o drivers/net/appletalk/cops.ko drivers/net/appletalk/cops.o drivers/net/appletalk/cops.mod.o;  true

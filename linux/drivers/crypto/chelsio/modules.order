@@ -1,2 +1,2 @@
- include/config/PM) \
-    $(wil
+#include <linux/module.h>
+#defi

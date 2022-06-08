@@ -1,1 +1,1 @@
-config/X86_P6_NOP) \
+/* SPDX-License-Iden

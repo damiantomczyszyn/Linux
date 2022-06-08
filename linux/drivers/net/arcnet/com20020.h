@@ -1,96 +1,132 @@
-$(wildcard include/config/X86_INTEL_USERCOPY) \
-  arch/x86/include/asm/smap.h \
-  arch/x86/include/asm/extable.h \
-    $(wildcard include/config/BPF_JIT) \
-  include/asm-generic/access_ok.h \
-    $(wildcard include/config/ALTERNATE_USER_ADDRESS_SPACE) \
-  arch/x86/include/asm/uaccess_32.h \
-  include/linux/cred.h \
-    $(wildcard include/config/DEBUG_CREDENTIALS) \
-  include/linux/key.h \
-    $(wildcard include/config/KEY_NOTIFICATIONS) \
-    $(wildcard include/config/NET) \
-  include/linux/assoc_array.h \
-    $(wildcard include/config/ASSOCIATIVE_ARRAY) \
-  include/linux/sched/user.h \
-    $(wildcard include/config/WATCH_QUEUE) \
-  include/linux/percpu_counter.h \
-  include/linux/rcu_sync.h \
-  include/linux/delayed_call.h \
-  include/linux/errseq.h \
-  include/linux/ioprio.h \
-  include/linux/sched/rt.h \
-  include/linux/iocontext.h \
-    $(wildcard include/config/BLK_ICQ) \
-  include/uapi/linux/ioprio.h \
-  include/linux/fs_types.h \
-  include/linux/mount.h \
-  include/linux/mnt_idmapping.h \
-  include/uapi/linux/fs.h \
-  include/linux/quota.h \
-    $(wildcard include/config/QUOTA_NETLINK_INTERFACE) \
-  include/uapi/linux/dqblk_xfs.h \
-  include/linux/dqblk_v1.h \
-  include/linux/dqblk_v2.h \
-  include/linux/dqblk_qtree.h \
-  include/linux/projid.h \
-  include/uapi/linux/quota.h \
-  include/linux/nfs_fs_i.h \
-  include/linux/seq_file.h \
-  include/linux/string_helpers.h \
-  include/linux/ns_common.h \
-  include/linux/nsproxy.h \
-  include/linux/user_namespace.h \
-    $(wildcard include/config/INOTIFY_USER) \
-    $(wildcard include/config/FANOTIFY) \
-    $(wildcard include/config/PERSISTENT_KEYRINGS) \
-  include/linux/kernel_stat.h \
-  include/linux/interrupt.h \
-    $(wildcard include/config/IRQ_FORCED_THREADING) \
-    $(wildcard include/config/GENERIC_IRQ_PROBE) \
-    $(wildcard include/config/IRQ_TIMINGS) \
-  include/linux/irqreturn.h \
-  include/linux/irqnr.h \
-  include/uapi/linux/irqnr.h \
-  include/linux/hardirq.h \
-  include/linux/context_tracking_state.h \
-    $(wildcard include/config/CONTEXT_TRACKING) \
-  include/linux/ftrace_irq.h \
-    $(wildcard include/config/HWLAT_TRACER) \
-    $(wildcard include/config/OSNOISE_TRACER) \
-  include/linux/vtime.h \
-    $(wildcard include/config/VIRT_CPU_ACCOUNTING) \
-    $(wildcard include/config/IRQ_TIME_ACCOUNTING) \
-  arch/x86/include/asm/hardirq.h \
-    $(wildcard include/config/KVM_INTEL) \
-    $(wildcard include/config/X86_THERMAL_VECTOR) \
-    $(wildcard include/config/X86_MCE_THRESHOLD) \
-    $(wildcard include/config/X86_MCE_AMD) \
-    $(wildcard include/config/X86_HV_CALLBACK_VECTOR) \
-  arch/x86/include/asm/irq.h \
-  arch/x86/include/asm/sections.h \
-  include/asm-generic/sections.h \
-    $(wildcard include/config/HAVE_FUNCTION_DESCRIPTORS) \
-  include/linux/cgroup-defs.h \
-    $(wildcard include/config/CGROUP_NET_CLASSID) \
-    $(wildcard include/config/CGROUP_NET_PRIO) \
-  include/linux/u64_stats_sync.h \
-  include/linux/bpf-cgroup-defs.h \
-  include/linux/psi_types.h \
-  include/linux/kthread.h \
-  include/linux/cgroup_subsys.h \
-    $(wildcard include/config/CGROUP_DEVICE) \
-    $(wildcard include/config/CGROUP_FREEZER) \
-    $(wildcard include/config/CGROUP_PERF) \
-    $(wildcard include/config/CGROUP_HUGETLB) \
-    $(wildcard include/config/CGROUP_PIDS) \
-    $(wildcard include/config/CGROUP_RDMA) \
-    $(wildcard include/config/CGROUP_MISC) \
-    $(wildcard include/config/CGROUP_DEBUG) \
-  include/linux/vm_event_item.h \
-    $(wildcard include/config/HAVE_ARCH_TRANSPARENT_HUGEPAGE_PUD) \
-    $(wildcard include/config/MEMORY_BALLOON) \
-    $(wildcard include/config/BALLOON_COMPACTION) \
-    $(wildcard include/config/DEBUG_TLBFLUSH) \
-    $(wildcard include/config/DEBUG_VM_VMACACHE) \
-  include/linux/page
+/*
+ * Linux ARCnet driver - COM20020 chipset support - function declarations
+ *
+ * Written 1997 by David Woodhouse.
+ * Written 1994-1999 by Avery Pennarun.
+ * Derived from skeleton.c by Donald Becker.
+ *
+ * Special thanks to Contemporary Controls, Inc. (www.ccontrols.com)
+ *  for sponsoring the further development of this driver.
+ *
+ * **********************
+ *
+ * The original copyright of skeleton.c was as follows:
+ *
+ * skeleton.c Written 1993 by Donald Becker.
+ * Copyright 1993 United States Government as represented by the
+ * Director, National Security Agency.  This software may only be used
+ * and distributed according to the terms of the GNU General Public License as
+ * modified by SRC, incorporated herein by reference.
+ *
+ * **********************
+ *
+ * For more details, see drivers/net/arcnet.c
+ *
+ * **********************
+ */
+#ifndef __COM20020_H
+#define __COM20020_H
+#include <linux/leds.h>
+
+int com20020_check(struct net_device *dev);
+int com20020_found(struct net_device *dev, int shared);
+extern const struct net_device_ops com20020_netdev_ops;
+
+/* The number of low I/O ports used by the card. */
+#define ARCNET_TOTAL_SIZE 8
+
+#define PLX_PCI_MAX_CARDS 2
+
+struct ledoffsets {
+	int green;
+	int red;
+};
+
+struct com20020_pci_channel_map {
+	u32 bar;
+	u32 offset;
+	u32 size;               /* 0x00 - auto, e.g. length of entire bar */
+};
+
+struct com20020_pci_card_info {
+	const char *name;
+	int devcount;
+
+	struct com20020_pci_channel_map chan_map_tbl[PLX_PCI_MAX_CARDS];
+	struct com20020_pci_channel_map misc_map;
+
+	struct ledoffsets leds[PLX_PCI_MAX_CARDS];
+	int rotary;
+
+	unsigned int flags;
+};
+
+struct com20020_priv {
+	struct com20020_pci_card_info *ci;
+	struct list_head list_dev;
+	resource_size_t misc;
+};
+
+struct com20020_dev {
+	struct list_head list;
+	struct net_device *dev;
+
+	struct led_classdev tx_led;
+	struct led_classdev recon_led;
+
+	struct com20020_priv *pci_priv;
+	int index;
+};
+
+#define COM20020_REG_W_INTMASK	0	/* writable */
+#define COM20020_REG_R_STATUS	0	/* readable */
+#define COM20020_REG_W_COMMAND	1	/* standard arcnet commands */
+#define COM20020_REG_R_DIAGSTAT	1	/* diagnostic status */
+#define COM20020_REG_W_ADDR_HI	2	/* control for IO-mapped memory */
+#define COM20020_REG_W_ADDR_LO	3
+#define COM20020_REG_RW_MEMDATA	4	/* data port for IO-mapped memory */
+#define COM20020_REG_W_SUBADR	5	/* the extended port _XREG refers to */
+#define COM20020_REG_W_CONFIG	6	/* configuration */
+#define COM20020_REG_W_XREG	7	/* extra
+					 * (indexed by _CONFIG or _SUBADDR)
+					 */
+
+/* in the ADDR_HI register */
+#define RDDATAflag	0x80	/* next access is a read (not a write) */
+
+/* in the DIAGSTAT register */
+#define NEWNXTIDflag	0x02	/* ID to which token is passed has changed */
+
+/* in the CONFIG register */
+#define RESETcfg	0x80	/* put card in reset state */
+#define TXENcfg		0x20	/* enable TX */
+#define XTOcfg(x)	((x) << 3)	/* extended timeout */
+
+/* in SETUP register */
+#define PROMISCset	0x10	/* enable RCV_ALL */
+#define P1MODE		0x80    /* enable P1-MODE for Backplane */
+#define SLOWARB		0x01    /* enable Slow Arbitration for >=5Mbps */
+
+/* COM2002x */
+#define SUB_TENTATIVE	0	/* tentative node ID */
+#define SUB_NODE	1	/* node ID */
+#define SUB_SETUP1	2	/* various options */
+#define SUB_TEST	3	/* test/diag register */
+
+/* COM20022 only */
+#define SUB_SETUP2	4	/* sundry options */
+#define SUB_BUSCTL	5	/* bus control options */
+#define SUB_DMACOUNT	6	/* DMA count options */
+
+static inline void com20020_set_subaddress(struct arcnet_local *lp,
+					   int ioaddr, int val)
+{
+	if (val < 4) {
+		lp->config = (lp->config & ~0x03) | val;
+		arcnet_outb(lp->config, ioaddr, COM20020_REG_W_CONFIG);
+	} else {
+		arcnet_outb(val, ioaddr, COM20020_REG_W_SUBADR);
+	}
+}
+
+#endif /* __COM20020_H */

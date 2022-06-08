@@ -1,2 +1,3 @@
-CPI_APEI_GHES) \
-    $(wildcard include/
+00d00);
+		/* enable irq */
+		cx_write(GP

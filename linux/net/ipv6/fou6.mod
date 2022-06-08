@@ -1,1 +1,1 @@
-cmd_kernel/irq/cp
+ÂT$¶D$¶L$

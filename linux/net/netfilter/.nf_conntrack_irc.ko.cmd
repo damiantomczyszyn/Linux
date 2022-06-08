@@ -1,11 +1,11 @@
-();
-}
-
+// SPDX-License-Identifier: GPL-2.0-or-later
 /*
- * Print out an error if an invalid bit is set:
+ *  Driver for the Conexant CX23885 PCIe bridge
+ *
+ *  Copyright (c) 2006 Steven Toth <stoth@linuxtv.org>
  */
-static inline int
-valid_state(struct task_struct *curr, struct held_lock *this,
-	    enum lock_usage_bit new_bit, enum lock_usage_bit bad_bit)
-{
-	if (
+
+#include "cx23885.h"
+
+#include <linux/module.h>
+#incl

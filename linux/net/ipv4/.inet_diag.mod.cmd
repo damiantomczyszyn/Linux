@@ -1,1 +1,3 @@
-≈Ö˙P3◊äÊ„Á6t¨ÕÓ$ ^ﬁÕ>k÷E<“ÿi6¢7„lóéO9ûGGÎÌ ^Âø¶~Ù< X†´ËjºÁï™‰lù?ÖˆQ≥˛\?BıﬂI8vJñgTMmSZ
+e leaf
+ * rcu_node structure's ->lock be held.  It consults the cached value
+ * of ->gp_seq_ne

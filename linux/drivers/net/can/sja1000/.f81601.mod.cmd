@@ -1,4 +1,1 @@
-VE) \
-  include/linux/scatterlist.h \
-    $(wildcard include/config/NEED_SG_DMA_LENGTH) \
-    $(wildcard include/config/DEBUG_SG) 
+cmd_drivers/net/can/sja1000/f81601.mod := { echo  drivers/net/can/sja1000/f81601.o;  echo; } > drivers/net/can/sja1000/f81601.mod

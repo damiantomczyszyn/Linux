@@ -1,106 +1,153 @@
-rd include/config/ALTERNATE_USER_ADDRESS_SPACE) \
-  arch/x86/include/asm/uaccess_32.h \
-  include/linux/cred.h \
-    $(wildcard include/config/DEBUG_CREDENTIALS) \
-  include/linux/key.h \
-    $(wildcard include/config/KEY_NOTIFICATIONS) \
-    $(wildcard include/config/NET) \
-  include/linux/assoc_array.h \
-    $(wildcard include/config/ASSOCIATIVE_ARRAY) \
-  include/linux/sched/user.h \
-    $(wildcard include/config/WATCH_QUEUE) \
-  include/linux/percpu_counter.h \
-  include/linux/rcu_sync.h \
-  include/linux/delayed_call.h \
-  include/linux/errseq.h \
-  include/linux/ioprio.h \
-  include/linux/sched/rt.h \
-  include/linux/iocontext.h \
-    $(wildcard include/config/BLK_ICQ) \
-  include/uapi/linux/ioprio.h \
-  include/linux/fs_types.h \
-  include/linux/mount.h \
-  include/linux/mnt_idmapping.h \
-  include/uapi/linux/fs.h \
-  include/linux/quota.h \
-    $(wildcard include/config/QUOTA_NETLINK_INTERFACE) \
-  include/uapi/linux/dqblk_xfs.h \
-  include/linux/dqblk_v1.h \
-  include/linux/dqblk_v2.h \
-  include/linux/dqblk_qtree.h \
-  include/linux/projid.h \
-  include/uapi/linux/quota.h \
-  include/linux/nfs_fs_i.h \
-  include/linux/seq_file.h \
-  include/linux/string_helpers.h \
-  include/linux/ns_common.h \
-  include/linux/nsproxy.h \
-  include/linux/user_namespace.h \
-    $(wildcard include/config/INOTIFY_USER) \
-    $(wildcard include/config/FANOTIFY) \
-    $(wildcard include/config/PERSISTENT_KEYRINGS) \
-  include/linux/kernel_stat.h \
-  include/linux/interrupt.h \
-    $(wildcard include/config/IRQ_FORCED_THREADING) \
-    $(wildcard include/config/GENERIC_IRQ_PROBE) \
-    $(wildcard include/config/IRQ_TIMINGS) \
-  include/linux/irqreturn.h \
-  include/linux/irqnr.h \
-  include/uapi/linux/irqnr.h \
-  include/linux/hardirq.h \
-  include/linux/context_tracking_state.h \
-    $(wildcard include/config/CONTEXT_TRACKING) \
-  include/linux/ftrace_irq.h \
-    $(wildcard include/config/HWLAT_TRACER) \
-    $(wildcard include/config/OSNOISE_TRACER) \
-  include/linux/vtime.h \
-    $(wildcard include/config/VIRT_CPU_ACCOUNTING) \
-    $(wildcard include/config/IRQ_TIME_ACCOUNTING) \
-  arch/x86/include/asm/hardirq.h \
-    $(wildcard include/config/KVM_INTEL) \
-    $(wildcard include/config/X86_THERMAL_VECTOR) \
-    $(wildcard include/config/X86_MCE_THRESHOLD) \
-    $(wildcard include/config/X86_MCE_AMD) \
-    $(wildcard include/config/X86_HV_CALLBACK_VECTOR) \
-  arch/x86/include/asm/irq.h \
-  arch/x86/include/asm/sections.h \
-  include/asm-generic/sections.h \
-    $(wildcard include/config/HAVE_FUNCTION_DESCRIPTORS) \
-  include/linux/cgroup-defs.h \
-    $(wildcard include/config/CGROUP_NET_CLASSID) \
-    $(wildcard include/config/CGROUP_NET_PRIO) \
-  include/linux/u64_stats_sync.h \
-  include/linux/bpf-cgroup-defs.h \
-  include/linux/psi_types.h \
-  include/linux/kthread.h \
-  include/linux/cgroup_subsys.h \
-    $(wildcard include/config/CGROUP_DEVICE) \
-    $(wildcard include/config/CGROUP_FREEZER) \
-    $(wildcard include/config/CGROUP_PERF) \
-    $(wildcard include/config/CGROUP_HUGETLB) \
-    $(wildcard include/config/CGROUP_PIDS) \
-    $(wildcard include/config/CGROUP_RDMA) \
-    $(wildcard include/config/CGROUP_MISC) \
-    $(wildcard include/config/CGROUP_DEBUG) \
-  include/linux/vm_event_item.h \
-    $(wildcard include/config/HAVE_ARCH_TRANSPARENT_HUGEPAGE_PUD) \
-    $(wildcard include/config/MEMORY_BALLOON) \
-    $(wildcard include/config/BALLOON_COMPACTION) \
-    $(wildcard include/config/DEBUG_TLBFLUSH) \
-    $(wildcard include/config/DEBUG_VM_VMACACHE) \
-  include/linux/page_counter.h \
-  include/linux/vmpressure.h \
-  include/linux/eventfd.h \
-  include/linux/mm.h \
-    $(wildcard include/config/HAVE_ARCH_MMAP_RND_BITS) \
-    $(wildcard include/config/HAVE_ARCH_MMAP_RND_COMPAT_BITS) \
-    $(wildcard include/config/ARCH_USES_HIGH_VMA_FLAGS) \
-    $(wildcard include/config/ARCH_HAS_PKEYS) \
-    $(wildcard include/config/PPC) \
-    $(wildcard include/config/PARISC) \
-    $(wildcard include/config/SPARC64) \
-    $(wildcard include/config/ARM64_MTE) \
-    $(wildcard include/config/HAVE_ARCH_USERFAULTFD_MINOR) \
-    $(wildcard include/config/SHMEM) \
-    $(wildcard include/config/ARCH_HAS_PTE_SPECIAL) \
-    $(wildcard include/config/ARCH_HAS_PTE_DEVMAP) \
+// SPDX-License-Identifier: GPL-2.0
+//
+// mcp251xfd - Microchip MCP251xFD Family CAN controller driver
+//
+// Copyright (c) 2021, 2022 Pengutronix,
+//               Marc Kleine-Budde <kernel@pengutronix.de>
+//
+
+#include "mcp251xfd-ram.h"
+
+static inline u8 can_ram_clamp(const struct can_ram_config *config,
+			       const struct can_ram_obj_config *obj,
+			       u8 val)
+{
+	u8 max;
+
+	max = min_t(u8, obj->max, obj->fifo_num * config->fifo_depth);
+	return clamp(val, obj->min, max);
+}
+
+static u8
+can_ram_rounddown_pow_of_two(const struct can_ram_config *config,
+			     const struct can_ram_obj_config *obj,
+			     const u8 coalesce, u8 val)
+{
+	u8 fifo_num = obj->fifo_num;
+	u8 ret = 0, i;
+
+	val = can_ram_clamp(config, obj, val);
+
+	if (coalesce) {
+		/* Use 1st FIFO for coalescing, if requested.
+		 *
+		 * Either use complete FIFO (and FIFO Full IRQ) for
+		 * coalescing or only half of FIFO (FIFO Half Full
+		 * IRQ) and use remaining half for normal objects.
+		 */
+		ret = min_t(u8, coalesce * 2, config->fifo_depth);
+		val -= ret;
+		fifo_num--;
+	}
+
+	for (i = 0; i < fifo_num && val; i++) {
+		u8 n;
+
+		n = min_t(u8, rounddown_pow_of_two(val),
+			  config->fifo_depth);
+
+		/* skip small FIFOs */
+		if (n < obj->fifo_depth_min)
+			return ret;
+
+		ret += n;
+		val -= n;
+	}
+
+	return ret;
+}
+
+void can_ram_get_layout(struct can_ram_layout *layout,
+			const struct can_ram_config *config,
+			const struct ethtool_ringparam *ring,
+			const struct ethtool_coalesce *ec,
+			const bool fd_mode)
+{
+	u8 num_rx, num_tx;
+	u16 ram_free;
+
+	/* default CAN */
+
+	num_tx = config->tx.def[fd_mode];
+	num_tx = can_ram_rounddown_pow_of_two(config, &config->tx, 0, num_tx);
+
+	ram_free = config->size;
+	ram_free -= config->tx.size[fd_mode] * num_tx;
+
+	num_rx = ram_free / config->rx.size[fd_mode];
+
+	layout->default_rx = can_ram_rounddown_pow_of_two(config, &config->rx, 0, num_rx);
+	layout->default_tx = num_tx;
+
+	/* MAX CAN */
+
+	ram_free = config->size;
+	ram_free -= config->tx.size[fd_mode] * config->tx.min;
+	num_rx = ram_free / config->rx.size[fd_mode];
+
+	ram_free = config->size;
+	ram_free -= config->rx.size[fd_mode] * config->rx.min;
+	num_tx = ram_free / config->tx.size[fd_mode];
+
+	layout->max_rx = can_ram_rounddown_pow_of_two(config, &config->rx, 0, num_rx);
+	layout->max_tx = can_ram_rounddown_pow_of_two(config, &config->tx, 0, num_tx);
+
+	/* cur CAN */
+
+	if (ring) {
+		u8 num_rx_coalesce = 0, num_tx_coalesce = 0;
+
+		num_rx = can_ram_rounddown_pow_of_two(config, &config->rx, 0, ring->rx_pending);
+
+		/* The ethtool doc says:
+		 * To disable coalescing, set usecs = 0 and max_frames = 1.
+		 */
+		if (ec && !(ec->rx_coalesce_usecs_irq == 0 &&
+			    ec->rx_max_coalesced_frames_irq == 1)) {
+			u8 max;
+
+			/* use only max half of available objects for coalescing */
+			max = min_t(u8, num_rx / 2, config->fifo_depth);
+			num_rx_coalesce = clamp(ec->rx_max_coalesced_frames_irq,
+						(u32)config->rx.fifo_depth_coalesce_min,
+						(u32)max);
+			num_rx_coalesce = rounddown_pow_of_two(num_rx_coalesce);
+
+			num_rx = can_ram_rounddown_pow_of_two(config, &config->rx,
+							      num_rx_coalesce, num_rx);
+		}
+
+		ram_free = config->size - config->rx.size[fd_mode] * num_rx;
+		num_tx = ram_free / config->tx.size[fd_mode];
+		num_tx = min_t(u8, ring->tx_pending, num_tx);
+		num_tx = can_ram_rounddown_pow_of_two(config, &config->tx, 0, num_tx);
+
+		/* The ethtool doc says:
+		 * To disable coalescing, set usecs = 0 and max_frames = 1.
+		 */
+		if (ec && !(ec->tx_coalesce_usecs_irq == 0 &&
+			    ec->tx_max_coalesced_frames_irq == 1)) {
+			u8 max;
+
+			/* use only max half of available objects for coalescing */
+			max = min_t(u8, num_tx / 2, config->fifo_depth);
+			num_tx_coalesce = clamp(ec->tx_max_coalesced_frames_irq,
+						(u32)config->tx.fifo_depth_coalesce_min,
+						(u32)max);
+			num_tx_coalesce = rounddown_pow_of_two(num_tx_coalesce);
+
+			num_tx = can_ram_rounddown_pow_of_two(config, &config->tx,
+							      num_tx_coalesce, num_tx);
+		}
+
+		layout->cur_rx = num_rx;
+		layout->cur_tx = num_tx;
+		layout->rx_coalesce = num_rx_coalesce;
+		layout->tx_coalesce = num_tx_coalesce;
+	} else {
+		layout->cur_rx = layout->default_rx;
+		layout->cur_tx = layout->default_tx;
+		layout->rx_coalesce = 0;
+		layout->tx_coalesce = 0;
+	}
+}

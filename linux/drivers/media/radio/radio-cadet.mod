@@ -1,2 +1,1 @@
-drivers/media/radio/radio-cadet.o
-
+cmd_drivers/media/pci/cx18/cx18.ko 

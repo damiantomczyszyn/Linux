@@ -1,1 +1,2 @@
-  $(wildcard include/conf
+C:
+	case CX23885_BOARD_TT

@@ -1,2 +1,6 @@
-ldcard include/config/X86_INTEL_USERCOPY) \
-  arch/x86/inc
+t_nr)
+{
+	if (temp_int == NULL)
+		return NULL;
+
+	if ((temp_

@@ -1,1 +1,3 @@
-cmd_drivers/media/i2c/uda1342.o 
+gister(port);
+	if (err != 0)
+		p

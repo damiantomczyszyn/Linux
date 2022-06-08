@@ -1,6 +1,1 @@
-config/ACPI_HOTPLUG_IOAPIC) \
-    $(wildcard include/config/PCI) \
-    $(wildcard include/config/ACPI_WMI) \
-    $(wildcard include/config/ACPI_NUMA) \
-    $(wildcard include/config/HIBERNATION) \
-    $(wildcard incl
+cmd_drivers/net/ethernet/3com/3c59x.ko := ld -r -m elf_i386 --build-id=sha1  -T scripts/module.lds -o drivers/net/ethernet/3com/3c59x.ko drivers/net/ethernet/3com/3c59x.o drivers/net/ethernet/3com/3c59x.mod.o;  true

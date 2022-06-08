@@ -1,257 +1,802 @@
-g/CC_HAS_ASM_GOTO_TIED_OUTPUT) \
-    $(wildcard include/config/ARCH_HAS_COPY_MC) \
-    $(wildcard include/config/X86_INTEL_USERCOPY) \
-  arch/x86/include/asm/smap.h \
-  arch/x86/include/asm/extable.h \
-    $(wildcard include/config/BPF_JIT) \
-  include/asm-generic/access_ok.h \
-    $(wildcard include/config/ALTERNATE_USER_ADDRESS_SPACE) \
-  arch/x86/include/asm/uaccess_32.h \
-  include/linux/cred.h \
-    $(wildcard include/config/DEBUG_CREDENTIALS) \
-  include/linux/key.h \
-    $(wildcard include/config/KEY_NOTIFICATIONS) \
-    $(wildcard include/config/NET) \
-  include/linux/assoc_array.h \
-    $(wildcard include/config/ASSOCIATIVE_ARRAY) \
-  include/linux/sched/user.h \
-    $(wildcard include/config/WATCH_QUEUE) \
-  include/linux/percpu_counter.h \
-  include/linux/rcu_sync.h \
-  include/linux/delayed_call.h \
-  include/linux/errseq.h \
-  include/linux/ioprio.h \
-  include/linux/sched/rt.h \
-  include/linux/iocontext.h \
-    $(wildcard include/config/BLK_ICQ) \
-  include/uapi/linux/ioprio.h \
-  include/linux/fs_types.h \
-  include/linux/mount.h \
-  include/linux/mnt_idmapping.h \
-  include/uapi/linux/fs.h \
-  include/linux/quota.h \
-    $(wildcard include/config/QUOTA_NETLINK_INTERFACE) \
-  include/uapi/linux/dqblk_xfs.h \
-  include/linux/dqblk_v1.h \
-  include/linux/dqblk_v2.h \
-  include/linux/dqblk_qtree.h \
-  include/linux/projid.h \
-  include/uapi/linux/quota.h \
-  include/linux/nfs_fs_i.h \
-  include/linux/seq_file.h \
-  include/linux/string_helpers.h \
-  include/linux/ns_common.h \
-  include/linux/nsproxy.h \
-  include/linux/user_namespace.h \
-    $(wildcard include/config/INOTIFY_USER) \
-    $(wildcard include/config/FANOTIFY) \
-    $(wildcard include/config/PERSISTENT_KEYRINGS) \
-  include/linux/kernel_stat.h \
-  include/linux/interrupt.h \
-    $(wildcard include/config/IRQ_FORCED_THREADING) \
-    $(wildcard include/config/GENERIC_IRQ_PROBE) \
-    $(wildcard include/config/IRQ_TIMINGS) \
-  include/linux/irqreturn.h \
-  include/linux/irqnr.h \
-  include/uapi/linux/irqnr.h \
-  include/linux/hardirq.h \
-  include/linux/context_tracking_state.h \
-    $(wildcard include/config/CONTEXT_TRACKING) \
-  include/linux/ftrace_irq.h \
-    $(wildcard include/config/HWLAT_TRACER) \
-    $(wildcard include/config/OSNOISE_TRACER) \
-  include/linux/vtime.h \
-    $(wildcard include/config/VIRT_CPU_ACCOUNTING) \
-    $(wildcard include/config/IRQ_TIME_ACCOUNTING) \
-  arch/x86/include/asm/hardirq.h \
-    $(wildcard include/config/KVM_INTEL) \
-    $(wildcard include/config/X86_THERMAL_VECTOR) \
-    $(wildcard include/config/X86_MCE_THRESHOLD) \
-    $(wildcard include/config/X86_MCE_AMD) \
-    $(wildcard include/config/X86_HV_CALLBACK_VECTOR) \
-  arch/x86/include/asm/irq.h \
-  arch/x86/include/asm/sections.h \
-  include/asm-generic/sections.h \
-    $(wildcard include/config/HAVE_FUNCTION_DESCRIPTORS) \
-  include/linux/cgroup-defs.h \
-    $(wildcard include/config/CGROUP_NET_CLASSID) \
-    $(wildcard include/config/CGROUP_NET_PRIO) \
-  include/linux/u64_stats_sync.h \
-  include/linux/bpf-cgroup-defs.h \
-  include/linux/psi_types.h \
-  include/linux/kthread.h \
-  include/linux/cgroup_subsys.h \
-    $(wildcard include/config/CGROUP_DEVICE) \
-    $(wildcard include/config/CGROUP_FREEZER) \
-    $(wildcard include/config/CGROUP_PERF) \
-    $(wildcard include/config/CGROUP_HUGETLB) \
-    $(wildcard include/config/CGROUP_PIDS) \
-    $(wildcard include/config/CGROUP_RDMA) \
-    $(wildcard include/config/CGROUP_MISC) \
-    $(wildcard include/config/CGROUP_DEBUG) \
-  include/linux/vm_event_item.h \
-    $(wildcard include/config/HAVE_ARCH_TRANSPARENT_HUGEPAGE_PUD) \
-    $(wildcard include/config/MEMORY_BALLOON) \
-    $(wildcard include/config/BALLOON_COMPACTION) \
-    $(wildcard include/config/DEBUG_TLBFLUSH) \
-    $(wildcard include/config/DEBUG_VM_VMACACHE) \
-  include/linux/page_counter.h \
-  include/linux/vmpressure.h \
-  include/linux/eventfd.h \
-  include/linux/mm.h \
-    $(wildcard include/config/HAVE_ARCH_MMAP_RND_BITS) \
-    $(wildcard include/config/HAVE_ARCH_MMAP_RND_COMPAT_BITS) \
-    $(wildcard include/config/ARCH_USES_HIGH_VMA_FLAGS) \
-    $(wildcard include/config/ARCH_HAS_PKEYS) \
-    $(wildcard include/config/PPC) \
-    $(wildcard include/config/PARISC) \
-    $(wildcard include/config/SPARC64) \
-    $(wildcard include/config/ARM64_MTE) \
-    $(wildcard include/config/HAVE_ARCH_USERFAULTFD_MINOR) \
-    $(wildcard include/config/SHMEM) \
-    $(wildcard include/config/ARCH_HAS_PTE_SPECIAL) \
-    $(wildcard include/config/ARCH_HAS_PTE_DEVMAP) \
-    $(wildcard include/config/DEBUG_VM_RB) \
-    $(wildcard include/config/PAGE_POISONING) \
-    $(wildcard include/config/INIT_ON_ALLOC_DEFAULT_ON) \
-    $(wildcard include/config/INIT_ON_FREE_DEFAULT_ON) \
-    $(wildcard include/config/DEBUG_PAGEALLOC) \
-    $(wildcard include/config/HUGETLBFS) \
-    $(wildcard include/config/MAPPING_DIRTY_HELPERS) \
-    $(wildcard include/config/ANON_VMA_NAME) \
-  include/linux/mmap_lock.h \
-  include/linux/page_ext.h \
-  include/linux/stacktrace.h \
-    $(wildcard include/config/ARCH_STACKWALK) \
-    $(wildcard include/config/STACKTRACE) \
-    $(wildcard include/config/HAVE_RELIABLE_STACKTRACE) \
-  include/linux/stackdepot.h \
-    $(wildcard include/config/STACKDEPOT_ALWAYS_INIT) \
-  include/linux/page_ref.h \
-    $(wildcard include/config/DEBUG_PAGE_REF) \
-  include/linux/sizes.h \
-  include/linux/pgtable.h \
-    $(wildcard include/config/HIGHPTE) \
-    $(wildcard include/config/GUP_GET_PTE_LOW_HIGH) \
-    $(wildcard include/config/HAVE_ARCH_SOFT_DIRTY) \
-    $(wildcard include/config/ARCH_ENABLE_THP_MIGRATION) \
-    $(wildcard include/config/X86_ESPFIX64) \
-  arch/x86/include/asm/pgtable.h \
-    $(wildcard include/config/DEBUG_WX) \
-    $(wildcard include/config/PAGE_TABLE_CHECK) \
-  arch/x86/include/asm/pkru.h \
-  arch/x86/include/asm/fpu/api.h \
-    $(wildcard include/config/X86_DEBUG_FPU) \
-  arch/x86/include/asm/coco.h \
-  include/asm-generic/pgtable_uffd.h \
-  include/linux/page_table_check.h \
-  arch/x86/include/asm/pgtable_32.h \
-  arch/x86/include/asm/pgtable-3level.h \
-  arch/x86/include/asm/pgtable-invert.h \
-  include/linux/huge_mm.h \
-  include/linux/sched/coredump.h \
-    $(wildcard include/config/CORE_DUMP_DEFAULT_ELF_HEADERS) \
-  include/linux/vmstat.h \
-    $(wildcard include/config/VM_EVENT_COUNTERS) \
-  include/linux/writeback.h \
-  include/linux/flex_proportions.h \
-  include/linux/backing-dev-defs.h \
-    $(wildcard include/config/DEBUG_FS) \
-  include/linux/blk_types.h \
-    $(wildcard include/config/FAIL_MAKE_REQUEST) \
-    $(wildcard include/config/BLK_CGROUP_IOCOST) \
-    $(wildcard include/config/BLK_INLINE_ENCRYPTION) \
-    $(wildcard include/config/BLK_DEV_INTEGRITY) \
-  include/linux/bvec.h \
-  include/linux/highmem.h \
-  include/linux/cacheflush.h \
-  arch/x86/include/asm/cacheflush.h \
-  include/asm-generic/cacheflush.h \
-  include/linux/highmem-internal.h \
-  arch/x86/include/asm/highmem.h \
-  arch/x86/include/asm/tlbflush.h \
-  arch/x86/include/asm/invpcid.h \
-  arch/x86/include/asm/pti.h \
-  include/linux/bio.h \
-  include/linux/mempool.h \
-  include/linux/uio.h \
-    $(wildcard include/config/ARCH_HAS_UACCESS_FLUSHCACHE) \
-  include/uapi/linux/uio.h \
-  include/linux/node.h \
-    $(wildcard include/config/HMEM_REPORTING) \
-  include/linux/pagemap.h \
-  include/linux/hugetlb_inline.h \
-  include/uapi/linux/mempolicy.h \
-  include/linux/freezer.h \
-  include/uapi/linux/i2c.h \
-  include/media/i2c/tvaudio.h \
-  include/media/v4l2-device.h \
-    $(wildcard include/config/VIDEO_V4L2_SUBDEV_API) \
-  include/media/media-device.h \
-    $(wildcard include/config/MEDIA_CONTROLLER) \
-  include/media/media-devnode.h \
-  include/linux/poll.h \
-  include/uapi/linux/poll.h \
-  arch/x86/include/generated/uapi/asm/poll.h \
-  include/uapi/asm-generic/poll.h \
-  include/uapi/linux/eventpoll.h \
-  include/linux/cdev.h \
-  include/media/media-entity.h \
-  include/uapi/linux/media.h \
-  include/media/v4l2-subdev.h \
-  include/uapi/linux/v4l2-subdev.h \
-  include/uapi/linux/v4l2-mediabus.h \
-  include/uapi/linux/media-bus-format.h \
-  include/media/v4l2-async.h \
-  include/media/v4l2-common.h \
-    $(wildcard include/config/VIDEO_V4L2_I2C) \
-    $(wildcard include/config/SPI) \
-  include/media/v4l2-dev.h \
-  include/linux/spi/spi.h \
-    $(wildcard include/config/SPI_SLAVE) \
-  include/linux/scatterlist.h \
-    $(wildcard include/config/NEED_SG_DMA_LENGTH) \
-    $(wildcard include/config/DEBUG_SG) \
-    $(wildcard include/config/SGL_ALLOC) \
-    $(wildcard include/config/ARCH_NO_SG_CHAIN) \
-    $(wildcard include/config/SG_POOL) \
-  include/linux/gpio/consumer.h \
-    $(wildcard include/config/OF_GPIO) \
-    $(wildcard include/config/GPIO_SYSFS) \
-  include/uapi/linux/spi/spi.h \
-  include/media/v4l2-fh.h \
-  include/media/v4l2-mediabus.h \
-  include/media/v4l2-ctrls.h \
-  include/media/media-request.h \
-  include/media/hevc-ctrls.h \
+// SPDX-License-Identifier: GPL-2.0
+/* Copyright 2020 NXP
+ */
+#include <net/tc_act/tc_gate.h>
+#include <linux/dsa/8021q.h>
+#include "sja1105_vl.h"
 
-drivers/media/i2c/tvaudio.o: $(deps_drivers/media/i2c/tvaudio.o)
+#define SJA1105_SIZE_VL_STATUS			8
 
-$(deps_drivers/media/i2c/tvaudio.o):
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       ELF                       Œ      4     (            GNU  À       À          èüÿÿÿƒì‹    …Éüÿÿÿú   t2ú @ uÇ€x     1ÀƒÄÃ´&    v ¸êÿÿÿƒÄÃ´&    Ç€x      1ÀƒÄÃèüÿÿÿW‹JV‹2S#°d  #ˆh  ‹˜”   ‰2ƒ=    ‰J[1À^_Ã‹°d  ‹¸h  ƒÃ‹€T  èüÿÿÿWVPh    Sh   èüÿÿÿƒÄëÈ´&    t& èüÿÿÿ‹ˆL  …Éu‹R89  t‰  ‹ˆ”   ‰Èèüÿÿÿ1ÀÃèüÿÿÿUWVS‰Ãƒì8‹³”   d¡    ‰D$41Àƒ»P  ….   ‰ğèüÿÿÿé.   ´&    èüÿÿÿƒz$u=V‰Æƒì‹€L  …Àuƒ¾P  t,‹†”  ‰B4‹†  ƒJ(p‰B8ƒÄ1À^Ã´&    1ÀÃt& ‹†”   ‰$èüÿÿÿ‹$ëÁ´&    ¶    èüÿÿÿ‹€”   ‹@\‹¤  …Òt'¶´  ¹   ¨  ƒâüƒÊˆPº   j èüÿÿÿX1ÀÃ´&    ´&    èüÿÿÿƒì‹    …É  ‹@@‹¤  …Òt'¶´  ¹   ¨  ƒâüƒÊˆPº   j èüÿÿÿX1ÀƒÄÃèüÿÿÿWVS‹°L  ‹˜”   …öu‹°`  ‹¸\  1Î1×	ştJ‰\  ‰ˆ`  Ç€L      ‹C\‹¤  …Òt'¶´  ¹   ¨  ƒâüƒÊˆPº   j èüÿÿÿX[1À^_Ãt& èüÿÿÿS‰Ã¹   ƒì8d¡    ‰D$41À·CÇD$    ƒ=    ÇD$    f‰$f‰D$f‰D$f‰D$$D$2ÇD$(    ÇD$  ÇD$   ÇD$  ÇD$   f‰L$ÇD$     ÇD$&  ‰D$,Ç  ‹C¹   ‰âèüÿÿÿƒø…¯  ‹C¹   T$èüÿÿÿƒø…¯  ‹C¹   T$èüÿÿÿƒø…¯  1À‹T$4d+    uƒÄ8[Ãèüÿÿÿ¶    èüÿÿÿU1íW‰Ï¹   V‰ÖS‰Ãƒì(d¡    ‰D$$1À·CÇD$    T$!ÇD$    f‰D$f‰D$D$‰D$FˆD$!‰øfÁÀÇD$    f‰D$"Cf‰L$‰T$ÇD$  ‰$‹C¹   T$èüÿÿÿƒø…  ·D$fÁÀƒ=    ·Àâ  ‹T$$d+    uƒÄ([^_]Ãèüÿÿÿv èüÿÿÿUW‰ÏV‰ÖS‰Ãƒìd¡    ‰D$1À‰ÈˆT$fÁÀf‰D$·D$$fÁÀƒ=    f‰D$
-—  C1í‰$j ¹   ‰ØT$èüÿÿÿYƒø…R  1À‹T$d+    uƒÄ[^_]Ãèüÿÿÿ´&    èüÿÿÿUWVS‹p‹X|‹@(‹~Ô=	˜ „P  vN=	˜ „“  =
-	˜ …  …Û¸   ¹   º   EØ‰øSèÿÿÿ€~~ Xuut& 1À[^_]Ã´&    f=	˜ ti=	˜ …Æ  …Ûƒÿ   ¹   º   HØ‰øÁûƒÃ€¶ÛÁãSèÅşÿÿ€~~ ]t®S¹0   º   ‰øè¬şÿÿYë™´&    fS¹3   ëà´&    ‹†Ü   ‹–à   ‹-    ‹@|‰Á	Ñ…  ‰Ùº€ €Áá)Ù‰È÷ê
-ÁùÁû)ËÁã…í2  S1Éº   ‰øè<şÿÿX‰İƒÍU¹   º   ‰øè$şÿÿ€¾„    X…Ö   €~~ „üşÿÿS¹   éIÿÿÿ[º€ €Ááé  0 ‰È÷ê‰ø
-Áùº   Áû)Ë¹   ÁãSèËıÿÿ€~~ X„°şÿÿS¹1   éışÿÿt& [º€ €Ááé  0 ‰È÷ê‰ø
-Áùº   Áû)Ë¹   ÁãSè{ıÿÿ€~~ X„`şÿÿS¹2   é­şÿÿt& …í>Sº   1É‰ø½   èHıÿÿZéÿÿÿfU¹@   º   ‰øè.ıÿÿXéÿÿÿ¸êÿÿÿéşÿÿé½  é  t& èüÿÿÿ‹    SXä…Ò]  ‰Øèüÿÿÿ1À[Ã´&    ´&    èüÿÿÿV‰ÆS‹X\‰Øèüÿÿÿ‹ƒ¤  …Àt€‹´  èüÿÿÿ‰ğèüÿÿÿƒÀ   èüÿÿÿ1À[^ÃèüÿÿÿU‰ÅWVSƒì …Òu@¹   º+  èüÿÿÿ‰èèüÿÿÿƒøÿ„t  E¹À  ºø  ‰D$èüÿÿÿ‰Ã…À„f  ¹   ‰êèüÿÿÿÇC   ‹¸  ‰ØÇƒÔ     º   ÇƒĞ     Çƒô     Çƒğ     èüÿÿÿ‰Æ…Àˆª   Çƒ\   °  ƒ¨  ¹   ºF  Çƒ`      Çƒd  ÿÿÿ Çƒh      Çƒ     Çƒ„  ÿÿÿÿÇƒx      èüÿÿÿ¹   º   ‰èÇƒˆ      ÇƒŒ  B   è¥úÿÿ‰D$‰ƒ0  ƒøÿu&¡    …À¦  ´&    f¾íÿÿÿƒÄ ‰ğ[^_]Ã¹   º   ‰èè_úÿÿ‹»0  ‰ƒ4  ‰|$‹=    …ÿ}  ‹|$ƒÿÿt¸‰D$	øt°‹t$‰ğƒæÁøN@ƒà‰$ƒÀ‰D$‹D$¶Ô‰×ºÍÌÌÌ‰ø‰|$÷âÁê‰T$’‰úÀ’)Ç„N   ‹t$iÎ'  È‰ƒ8  ‹D$ƒàûƒø”ƒ<  ƒ<$FŸD$
-ƒÿ¶D$
-Áƒşˆƒ=  ŸÀƒÿD$¶t$ˆ‹>  	Æ	Èƒ<$C‰òˆƒA  ˆ“@  ŸÂ‰Ö!Îƒ|$¹   „  ˆ‹B  1Éƒ<$CˆƒC  NÁ¶T$¶L$
-ˆƒD  ‰ğˆƒF  !Ñƒ<$Gˆ“G  ”Àƒÿˆ‹E  ”Á!Áƒÿˆ‹H  ”Á!Áƒ|$”Âˆ‹I  !Ğƒ|$”Â!ĞˆƒJ  ¡¨   ƒøv ƒ<$F~ÇƒP     ët& 1Àƒ<$CŸÀ‰ƒP  j »À   1Éº   ‰øèüÿÿÿ€»G   ^…Í   j ¹	˜ º0  ‰øh æ  j h  j hÿÿ  j j èüÿÿÿ¹	˜ º0  ƒÄ ‰ƒ˜  ‰øj h €  j h  j hÿÿ  j j èüÿÿÿ¹		˜ º0  ‰øƒÄ j j j jj jj j èüÿÿÿ‹³ü   ‰{l‰ƒœ  ƒÄ …ö„î   ‰øèüÿÿÿ‰ğƒÄ [^_]Ã´&    f‰ò„Ò…–   1Éénşÿÿ´&    j ¹	˜ º0  ‰øh €  j h  j hÿÿ  j j èüÿÿÿ¹	˜ º0  ‰øƒÄ j h €  j h  j hÿÿ  j j èüÿÿÿ¹
-	˜ º0  ‰øƒÄ j j j jj jj j èüÿÿÿƒÄ é°şÿÿt& ÆƒB  ˆƒC  éâıÿÿ¶    ¡    …À›üÿÿéï  ¾ôÿÿÿé‘üÿÿ“˜  ¸   èüÿÿÿ‰øèüÿÿÿ€»=   „u  éW  é}  ´&    ´&    èüÿÿÿ‰Ñº   é¿öÿÿ´&    ´&    èüÿÿÿ‰Ñº   éŸöÿÿ´&    ´&    èüÿÿÿQ‰Ñº   èN÷ÿÿZÃ´&    t& èüÿÿÿQ‰Ñº   è.÷ÿÿZÃ´&    t& èüÿÿÿWVS‰Ã‰Ğ‰Ê‹s\‰†t  ƒøwƒùv?¹`  ‹=    ‰p  …ÿ*  Qº   ¹   ‰ØèÔöÿÿ€¾E   Zu:[^_Ã¶    É|‹<½`  ƒÿÿtã‹`  ÷Ñ#p  	ùë ´&    v ÿ¶x  ‰Ø¹@   º   èyöÿÿX[^_Ãt& èüÿÿÿUW‰×VÁïS‰Ã‰Èƒì‹³”   ‰<$‰×ƒç‰|$‰ÏÁéƒçƒá‰|$‰L$9“ˆ  „  ‰“ˆ  ¹   1ÿ‰ƒŒ  ¸   ‰ÕÓíƒåDÇƒÁƒùuî…Àº	   Çƒ”     EÂ‹T$1É‰ƒX  ‰ğèüÿÿÿ‹T$¹   ‰ğèüÿÿÿ‹T$¹   ‰ğèüÿÿÿ‰ğèüÿÿÿ¸»   º   ƒ»P  »0   EØ‰ğ‰ÙèÀôÿÿ‹$‰Ù%ÿş  Áââ   	Â‰ğRº   ènõÿÿ‹F\Z‹ˆ¤  …Ét'¶´  ¹   ¨  ƒâüƒÊˆPº   j èüÿÿÿXƒÄ1À[^_]Ã´&    9ƒŒ  …òşÿÿëá´&    v èüÿÿÿUWV‰ÖS‰Ã»¨  d‹-    ƒìd¡    ‰D$1À‰â‰øÇ$    ÇD$    ÇD$    ‰l$ÇD$    èüÿÿÿèüÿÿÿ„Àu…öxN‰ğèüÿÿÿèüÿÿÿ‰â‰øèüÿÿÿèüÿÿÿ¡    d‹    …Àu4¶ƒ´  ƒà‹T$d+    u1ƒÄ[^_]Ãt& ¸   ‡Eèüÿÿÿë¯‰Ğèüÿÿÿ„ÀtÁ1Àèüÿÿÿë¸èüÿÿÿ´&    èüÿÿÿS‰Ã‹€˜  ‹@‹@èüÿÿÿ‹ƒ˜  ‹€   ‰P|‹ƒœ  ‹€   ‰P|‹ƒ˜  è~ôÿÿ‹ƒ˜  [‹@‹@éüÿÿÿ´&    t& èüÿÿÿVS‹˜L  ‹°”   …Ûug‹    ‰ÃÇ€L     …ÉT  ‹ƒP  €£´  ı…ÀtFƒèƒøw4‹F\‹¤  …Òt'¶´  ¹   ¨  ƒâüƒÊˆPº   j èüÿÿÿX1À[^Ãt& ‰ğº   èüÿÿÿ‰ğ¹rœ” ºrœ” èüÿÿÿ‰Øèüÿÿÿ1À[^Ãfffffffèüÿÿÿ€=     WV·òS‰Ã‹x\tW¹   º   èüÿÿÿ¹   º	   ‰Øèüÿÿÿ‰ñº
-   ‰Øèüÿÿÿ‰ñº   ‰Øèüÿÿÿ‰ñº   ‰Øèüÿÿÿ€¿C   u$[^_Ã‰ñº   èüÿÿÿ‰ñº	   ‰Øèüÿÿÿë­t& ‰ñ‰ØºA   [^_éüÿÿÿ´&    ´&    èüÿÿÿWVS‰Ã‰Èƒì‹{\‹  ƒùw;‹44  ‹   …Àu7ÁæƒÎ ‰ñ‹5    ·Ò…öo  ƒÄ‰Ø[^_éüÿÿÿv ¹    ¾   …ÀtÉƒø
-~€¿I   tpÁæ	ñë¹f‰ÆÁæ	ñë®´&    èüÿÿÿUº   WVS‹h\‰Ã‹µˆ  ‰÷Áïƒç‰ùèHÿÿÿ‰ùº   ‰Øè:ÿÿÿ‰ñº	   ‰ØÁéƒáè&ÿÿÿ‰ñº
-   ‰ØÁéƒáèÿÿÿ€½C   uÁî‰Øº   [‰ñ^_ƒá]éñşÿÿ‰ñºA   ‰ØÁéƒáèÜşÿÿëÑ´&    v èüÿÿÿSº¸  ‰Ã1É¸¸  ë´&    v ‹B…Àt‹
-ƒÂ9Ëuğ[Ã¶    ¸†  [ÃèüÿÿÿW‰×V‰Î‰ÑÁÿSáÿ  ‰Ãº“   èüÿÿÿ‰ùº›   ‰Øèüÿÿÿ‰ñº£   ‰Øáÿ  Áşèüÿÿÿ‰ñº«   ‰Øèüÿÿÿ‰Ø1É[ºV   ^_éüÿÿÿ´&    fèüÿÿÿUº†  WV‰ÆSƒì‹x\‹Ÿ  ƒûw‹H  ƒ¿P  ‹    ty‹‡X  ƒø	„:  ‹¯”  ƒıtoƒå„  ƒû½   Fİƒøu]…ÉB  ƒû„U  Ï  …Û…—  ‰ğ¹GZ ºGZ èüÿÿÿ¡    …À<  1Òë}t& …É   ƒÄ[^_]Ã1Ûƒøt££   ƒø„:  ƒø…œ   …É  ƒû„   ¢  …Û„¦  ‹    1Ò…Éü  ƒû„Ù   ƒû   …Û…˜   ƒ¿X  „«  ö‡”  ¸0   EĞ¡    …ÀØ  ƒÄ‰ğ[^_]éüÿÿ…Û•Ã¶ÛéUÿÿÿv ƒø„‡   ~…É€  ƒÄ[^_]Ãt& té…É^  ‹¯l  1Ò…í•ÂÁâéWÿÿÿƒûuœƒÊ ëŠ¶    ƒûtğëŠ´&    f‰ğ¹ €a º €f èüÿÿÿ¡    …À¹  1ÒƒÊéLÿÿÿ´&    …É›  1Òéÿşÿÿ…É¿  1Òéïşÿÿƒûu¹ €a º  d ‰ğèüÿÿÿ¡    …À  1ÒéÍşÿÿ¶    ƒûus‰ğ¹ €a º €f èüÿÿÿ¡    …Àã  1Òé×şÿÿ¶    …É•  º   é|şÿÿ¶    Cşƒø‡Zşÿÿ¹ 0  º   ‰ğèüÿÿÿ‹    1ÒéDşÿÿ¶    ƒû„Tÿÿÿé`ÿÿÿ´&    v ‹    …Òz  º   1É‰ğèüÿÿÿº   é>şÿÿ´&    v ¹0  º   ‰ğèüÿÿÿ¡    …À[  1Òé€şÿÿ´&    t& èüÿÿÿU‰ÕWVS‰Ãƒì‹@\‰$‹€ˆ  ‰Á‰D$¡    Áé…ÀÊ  ‹$|í Ááº»   Áçá   ¾   ‰¨X  ˜  Ç€”     ‰Øèüÿÿÿt& ‹Œ·`  º   ‰Øèüÿÿÿƒîsè¹   º   ‰Ø¾   èüÿÿÿ¹@   º   ‰Øèüÿÿÿ1Éº   ‰Øèüÿÿÿv ‹Œ·x  º   ‰ØèüÿÿÿƒîsèDí ºƒ   4Å`  ‰Ø‹N<èüÿÿÿ‹N4‹V0‰Øèüÿÿÿ·V@‰Øè&ùÿÿ¹   º   ‰Øèüÿÿÿ‹NDº   ‰Øèüÿÿÿ‹$€¸<   u
-ƒÄ[^_]ÃfƒÄ‰Ø¹ Z  º   [^_]éüÿÿÿ´&    èüÿÿÿS‹P\‰Ã‹‚P  ƒø~ƒøuƒºT   t,‰Ø[éäùÿÿt& …Ày[Ã´&    v ‰Ø[éûÿÿ´&    ö‚”  t‹‚  ƒèƒàıt¹    º    ‰Øèüÿÿÿëª¶    ¹!   º    ‰Øèüÿÿÿë‘´&    ¶    èüÿÿÿUWV‰ÆSƒì‹x\‹ŸP  ƒû€   ƒûuº   èüÿÿÿ‰Å‰Á‰Â1Àå   ƒá@ƒ¿X  	tK¸   …ÉDØ‹‡”  ‰Ÿ”  …ítƒ¿T   „€  Ç‡”     »   ƒ=     L  9Ø•À¶ÀƒÄ[^_]Ãt& …ÛyƒÄ1À[^_]Ãf‹l  ‹‡X  ‰Ëƒø„Ù   Pû1ÀƒúwVº#   ‰ğèüÿÿÿƒ=    #  ‰Ã‹—”  ½   ƒãuTt& 9ê„ø   ‹    …É  ‰¯”  ‹l  ¸   9Ù„eÿÿÿ¡    …À/  ‰Ÿl  ƒÄ¸   [^_]ÃÑøƒàƒøt6½   …Àt›ƒø½   Eëë¶    ƒø
-½   Eëéxÿÿÿ´&    ½   éfÿÿÿ¶    º   ‰ğèüÿÿÿ=ÿ    ÿÿOÂƒ=    î  ‹—”  1Û=    º= ğÿÿ½   ¸   Mèéÿÿÿv ƒË‰Ÿ”  éşÿÿf‹l  1Àéÿÿÿéx  ´&    ´&    èüÿÿÿU‰ÅWVSƒì‹X\¡    …À.	  Çƒd  ÿÿÿ Çƒh      èüÿÿÿE‰$v ƒ=    	  ºÿÿÿÿ‰Øèüÿÿÿ¡    ƒøš	  €£´  şèüÿÿÿ„À…E  ƒ»X  	„(  Çƒ      ‰Ø¾@   èüÿÿÿ‹»L  …ÿu‹ƒ\  % °  ƒøöƒæáƒÆ €£´  ıºÈ   ‰ØÇƒl      èüÿÿÿ‰Ç¡    …ÿ…¿  ƒ=    í  ƒş„   1Ò1Àë"´&    v ƒÀ@‹Õ¬  …Ét‹Õ   9Öuä‹    …ÒÎ  @‰³T  €=     Å   Çƒ”     ‹P‹@‰“|  ‰ƒ€  „]  ‹ƒL  …À…O  ÷ƒ\    ÿ „?  ƒş	„6  ‹    …É©  ¹	   º    ‰èÇƒT  	   èüÿÿÿt& €‹´  ÇƒX     Çƒl     ¹   º   ‰èèüÿÿÿ¹ 0  º   ‰èèüÿÿÿ€»<   …î  €»E   …É  ‰èèzöÿÿ‰ØÇƒ       èüÿÿÿöƒ´  „üıÿÿ¾   ëCt& ºè  ‰Øèüÿÿÿ…ÀuDƒî‰è‹}\èüÿÿÿ…ÀuO€=     t€§´  ıöƒ´  „²ıÿÿ…öu¾ºˆ  ‰Øèüÿÿÿ‰Æ…Àt¿¡    ƒøµıÿÿéd	  ´&    f‰èèüÿÿÿë¨´&    1Àë t& ƒÇ‹Å¬  …Ò„ë   ‹Å   9Æuà‹Å´  ‹Å°  ‰ƒd  ‰“h  ƒşFƒş	´  ƒş„D  ƒş	„“şÿÿƒîƒş‡¢şÿÿ€‹´  ÇƒX     éŒşÿÿ´&    fƒş „/  ƒş@…qşÿÿÇƒX     ‰èº   Çƒ”     èüÿÿÿ¹rœ” ºrœ” ‰èèüÿÿÿé;şÿÿ´&    ¡    …À	  Çƒ       ‰Øèüÿÿÿémüÿÿt& ¸ÿÿÿ 1Òé%ÿÿÿt& ‹‹x  º@   ‰èèüÿÿÿé şÿÿ¹ Z  º   ‰èèüÿÿÿéüıÿÿ´&    v ¹   º    ‰èèüÿÿÿë%t& º~   ‰èèüÿÿÿ=ş  ~eƒ=    Ê  ºd   ‰Øèüÿÿÿ…ÀtĞé7şÿÿv ¸   €‹´  ‰ƒX  Çƒl     éRıÿÿ´&    ÇƒX     é<ıÿÿ´&    f‰ÆéIüÿÿ´&    f¡    …ÀI	  ƒÄ1À[^_]Ã1Àƒş
-”ÀƒÀë‘¸¸  ët& ƒÀ;1tF‹P‰Á…Òuğéº	  v ‰D$º¸  ¹¸  1Àë¶    ‹J…É„å  ‹ƒÂ9Æuì‹D$éî  é¿	  ´&    ´&    èüÿÿÿUWV‰ÆSƒì‹=    ‹X\…ÿ
-  Çƒd  ÿÿÿ ~Çƒh      èüÿÿÿ¡    ‰<$t& ƒøu
-  ºÿÿÿÿ‰Øèüÿÿÿ¡    ƒøU
-  …À:
-  €£´  şèüÿÿÿ„À…  ƒ»X  	„  ‹n\‰ğÇ…T     ‹½ˆ  Áïèüÿÿÿ€½E   …r  ‹F\‹L  …Ò…!  ‹\  ‹€`  ‰Ñ€õ 	Á„€  ‰Ñ€õ€	Á„  ‰Ññ  @ 	Á„{  ¸p  €æ·…İ  Áçº0   ‰ùá   	Á‰ğèüÿÿÿ‰ğèÍğÿÿ¹   º   ‰ğèüÿÿÿ¹ 0  º   ‰ğèüÿÿÿ€½<   …®  ‹    º"   ‰ğèüÿÿÿ‹ƒL  ¹@   …Àu€»J   ‹    tƒù¸    DÈ‰‹T  º    ‰ğèüÿÿÿ‹‹T  ƒùub¡    …À÷	  ¿
-   t& ºd   ‰Øèüÿÿÿ…À…ä  º~   ‰ğèüÿÿÿ=ş  5  ƒ=    Ü	  ƒïuÃ‹‹T  ƒù„%  ‹-    …í‘  1Ò1ÀëƒÀ@‹<Õ¬  …ÿ„›   ‹Õ   9Ñuà@‹Å´  ‹Å°  ‰ƒd  ‰“h  ƒù	„b  ‰Øèüÿÿÿ‹‹p  º   ‰ğèüÿÿÿ…À…  ƒ»T   „¬   ¡    éšıÿÿf‹    …Éˆ  Çƒ       ‰Øèüÿÿÿ¡    éoıÿÿ´&    ¸ÿÿÿ 1Òéuÿÿÿt& ‹    …Éh  ¸   éşÿÿ´&    ¹ Z  º   ‰ğèüÿÿÿé<şÿÿ´&    v ‹x  º@   ‰ğèüÿÿÿéwıÿÿ´&    f€‹´  ‰ğ‹~\èüÿÿÿ…À…ï   €=     t.€§´  ıë%t& €=     t€§´  ıºˆ  ‰Øèüÿÿÿ…Àu(öƒ´  „÷şÿÿ‰ğ‹~\èüÿÿÿ…ÀtÅ‰ğèüÿÿÿë¼t& ¡    é™üÿÿ¶    ¹ |  º   ‰ğèüÿÿÿéˆşÿÿf¡    …ÀH  ¸   éıÿÿ´&    f¡    …À(  ¸   éìüÿÿ´&    f‰Á‰ƒT  ƒù…Ûıÿÿ¡    …Àúûÿÿéè
-  t& ‰ğèüÿÿÿéÿÿÿt& ‹    …Ò  ¸@  é“üÿÿ¡    …ÀÈ
-  ¸`  é|üÿÿ¡    …À«
-  1ÀƒÄ[^_]ÃƒÄ¸ÿÿÿÿ[^_]Ã¸¸  1ÿº¸  ë´&    ‹P…Ò„
-  ‹8ƒÀ9ùuìé
-  ´&    èüÿÿÿUW‰ÇVSƒì‹p\¡    …À0  Ç†d  ÿÿÿ Ç†h      èüÿÿÿG‰D$fƒ=      ºÿÿÿÿ‰ğèüÿÿÿ¡    ƒøÒ  €¦´  şèüÿÿÿ„À…¥  ‹†L  …Àu[ƒ¾X  	tRÇ†      ‰ğèüÿÿÿ1Ò‰øèüÿÿÿ€¦´  ıºÈ   ‰ğÇ†l      èüÿÿÿ‰$…Àt<¡    ƒø~‘é·  t& ‹-    …íœ  Ç†       ‰ğèüÿÿÿé<ÿÿÿt& €=     „ƒ   ‹†\  ©  ÿ tv‹    …Ûl  ‹  ‰–|  ©  ÿ …  €¾<   „ÿ  ¡À   º   ‰†€  ‰øèüÿÿÿ€´  Ç†l     Ç†d  à 2 Ç†h      éĞ  v ÇD$ÿÿÿÿ1Û1íëD´&    v º   ‰øèüÿÿÿ  ÿÿ=ÿ  OÂ9Å}‰\$‰Å‹    …É.  ƒÃƒût.‹İ   ‰ø‰Ñèüÿÿÿºd   ‰ğèüÿÿÿ…Àt¦¡    é½şÿÿt& ‹D$ƒø…›   ÇD$   ½ğ   €=     …  ÇD$ÿÿÿÿ1ÛëFt& º   ‰øèüÿÿÿ  ÿÿ=ÿ  OÂ;$~‰$‰\$‹    …Ò  ƒÃ;\$Ÿ  ‹Tİ ‰ø‰Ñèüÿÿÿºd   ‰ğèüÿÿÿ…Àt¢¡    éşÿÿ´&    ƒø„  €=     …º  ‹Å   ÇD$ÿÿÿÿ‰–|  ƒ|$~Eƒ|$„  ‹D$ƒèƒø†“  ƒ|$ u?‹†\  éşÿÿ¡    …ÀQ  ƒÄ1À[^_]Ã‹D$…ÀuÇ†d   ·  Ç†h      ‰–€  ‰øº   èüÿÿÿ‹|  ‹–€  ‰øèüÿÿÿ‰øÇ†       è×êÿÿ‰ğèüÿÿÿ¡    …À…  ö†´  „–üÿÿ»   ëI´&    ºè  ‰ğèüÿÿÿ…À…>şÿÿ‰øƒë‹o\èüÿÿÿ…ÀuE€=     t€¥´  ıö†´  „Füÿÿ…Ûuººˆ  ‰ğèüÿÿÿ‰Ã…À…öıÿÿ‰ø‹o\èüÿÿÿ…Àt»‰øèüÿÿÿë²t& ‹D$‹Å   ‰–|  ƒø…¡şÿÿÇ†d    ‹D$Ç†h      …À„Ì  ƒ|$…Şşÿÿ€¾<   „Ñşÿÿ¡ø   º   ‰†€  ‰øèüÿÿÿ€´  Ç†l     é¶şÿÿ‹_\‹‹|  ;‹€  „“   …ÀK  ‹ƒX  Pûƒúveƒø…„   ‹    …É«şÿÿéÉ  ´&    fÇ†d     º   ‰øÇ†h      Ç†€    [ èüÿÿÿ€´  Ç†l     é%şÿÿ‹-    …íOşÿÿé„  t& …ÀmÿÿÿéÜ  v ƒø…,şÿÿ‹‹€  9‹|  „şÿÿ‹    …Òşÿÿé£  ´&    v ‹D$º   ‹ÅÀ   ‰†€  ‰øèüÿÿÿ€´  Ç†d  à 2 Ç†h      éˆıÿÿ‹†\  ©  ÿ „Qüÿÿ‹L$‹Í   ‰–|  ƒù„øşÿÿƒù„+ûÿÿ…É„&ıÿÿƒù…1ıÿÿÇ†d    Ç†h      ¡ğ   º   ‰†€  ‰øèüÿÿÿ€´  éıÿÿ¡À   º   ‰†€  ‰øèüÿÿÿ€´  Ç†d    À Ç†h      éÕüÿÿ‹†\  ©  ÿ …Mÿÿÿ‹D$‹Å   ‰–|  ƒøu4Ç†d    Ç†h      éƒüÿÿ€=     uÇD$   ½À   éTûÿÿÇD$ÿÿÿÿéóûÿÿ‹†\  ©  ÿ tÔéäşÿÿR‰T$h    ‹ˆ”   ƒÁ‰D$
+/* Insert into the global gate list, sorted by gate action time. */
+static int sja1105_insert_gate_entry(struct sja1105_gating_config *gating_cfg,
+				     struct sja1105_rule *rule,
+				     u8 gate_state, s64 entry_time,
+				     struct netlink_ext_ack *extack)
+{
+	struct sja1105_gate_entry *e;
+	int rc;
+
+	e = kzalloc(sizeof(*e), GFP_KERNEL);
+	if (!e)
+		return -ENOMEM;
+
+	e->rule = rule;
+	e->gate_state = gate_state;
+	e->interval = entry_time;
+
+	if (list_empty(&gating_cfg->entries)) {
+		list_add(&e->list, &gating_cfg->entries);
+	} else {
+		struct sja1105_gate_entry *p;
+
+		list_for_each_entry(p, &gating_cfg->entries, list) {
+			if (p->interval == e->interval) {
+				NL_SET_ERR_MSG_MOD(extack,
+						   "Gate conflict");
+				rc = -EBUSY;
+				goto err;
+			}
+
+			if (e->interval < p->interval)
+				break;
+		}
+		list_add(&e->list, p->list.prev);
+	}
+
+	gating_cfg->num_entries++;
+
+	return 0;
+err:
+	kfree(e);
+	return rc;
+}
+
+/* The gate entries contain absolute times in their e->interval field. Convert
+ * that to proper intervals (i.e. "0, 5, 10, 15" to "5, 5, 5, 5").
+ */
+static void
+sja1105_gating_cfg_time_to_interval(struct sja1105_gating_config *gating_cfg,
+				    u64 cycle_time)
+{
+	struct sja1105_gate_entry *last_e;
+	struct sja1105_gate_entry *e;
+	struct list_head *prev;
+
+	list_for_each_entry(e, &gating_cfg->entries, list) {
+		struct sja1105_gate_entry *p;
+
+		prev = e->list.prev;
+
+		if (prev == &gating_cfg->entries)
+			continue;
+
+		p = list_entry(prev, struct sja1105_gate_entry, list);
+		p->interval = e->interval - p->interval;
+	}
+	last_e = list_last_entry(&gating_cfg->entries,
+				 struct sja1105_gate_entry, list);
+	last_e->interval = cycle_time - last_e->interval;
+}
+
+static void sja1105_free_gating_config(struct sja1105_gating_config *gating_cfg)
+{
+	struct sja1105_gate_entry *e, *n;
+
+	list_for_each_entry_safe(e, n, &gating_cfg->entries, list) {
+		list_del(&e->list);
+		kfree(e);
+	}
+}
+
+static int sja1105_compose_gating_subschedule(struct sja1105_private *priv,
+					      struct netlink_ext_ack *extack)
+{
+	struct sja1105_gating_config *gating_cfg = &priv->tas_data.gating_cfg;
+	struct sja1105_rule *rule;
+	s64 max_cycle_time = 0;
+	s64 its_base_time = 0;
+	int i, rc = 0;
+
+	sja1105_free_gating_config(gating_cfg);
+
+	list_for_each_entry(rule, &priv->flow_block.rules, list) {
+		if (rule->type != SJA1105_RULE_VL)
+			continue;
+		if (rule->vl.type != SJA1105_VL_TIME_TRIGGERED)
+			continue;
+
+		if (max_cycle_time < rule->vl.cycle_time) {
+			max_cycle_time = rule->vl.cycle_time;
+			its_base_time = rule->vl.base_time;
+		}
+	}
+
+	if (!max_cycle_time)
+		return 0;
+
+	dev_dbg(priv->ds->dev, "max_cycle_time %lld its_base_time %lld\n",
+		max_cycle_time, its_base_time);
+
+	gating_cfg->base_time = its_base_time;
+	gating_cfg->cycle_time = max_cycle_time;
+	gating_cfg->num_entries = 0;
+
+	list_for_each_entry(rule, &priv->flow_block.rules, list) {
+		s64 time;
+		s64 rbt;
+
+		if (rule->type != SJA1105_RULE_VL)
+			continue;
+		if (rule->vl.type != SJA1105_VL_TIME_TRIGGERED)
+			continue;
+
+		/* Calculate the difference between this gating schedule's
+		 * base time, and the base time of the gating schedule with the
+		 * longest cycle time. We call it the relative base time (rbt).
+		 */
+		rbt = future_base_time(rule->vl.base_time, rule->vl.cycle_time,
+				       its_base_time);
+		rbt -= its_base_time;
+
+		time = rbt;
+
+		for (i = 0; i < rule->vl.num_entries; i++) {
+			u8 gate_state = rule->vl.entries[i].gate_state;
+			s64 entry_time = time;
+
+			while (entry_time < max_cycle_time) {
+				rc = sja1105_insert_gate_entry(gating_cfg, rule,
+							       gate_state,
+							       entry_time,
+							       extack);
+				if (rc)
+					goto err;
+
+				entry_time += rule->vl.cycle_time;
+			}
+			time += rule->vl.entries[i].interval;
+		}
+	}
+
+	sja1105_gating_cfg_time_to_interval(gating_cfg, max_cycle_time);
+
+	return 0;
+err:
+	sja1105_free_gating_config(gating_cfg);
+	return rc;
+}
+
+/* The switch flow classification core implements TTEthernet, which 'thinks' in
+ * terms of Virtual Links (VL), a concept borrowed from ARINC 664 part 7.
+ * However it also has one other operating mode (VLLUPFORMAT=0) where it acts
+ * somewhat closer to a pre-standard implementation of IEEE 802.1Qci
+ * (Per-Stream Filtering and Policing), which is what the driver is going to be
+ * implementing.
+ *
+ *                                 VL Lookup
+ *        Key = {DMAC && VLANID   +---------+  Key = { (DMAC[47:16] & VLMASK ==
+ *               && VLAN PCP      |         |                         VLMARKER)
+ *               && INGRESS PORT} +---------+                      (both fixed)
+ *            (exact match,            |             && DMAC[15:0] == VLID
+ *         all specified in rule)      |                    (specified in rule)
+ *                                     v             && INGRESS PORT }
+ *                               ------------
+ *                    0 (PSFP)  /            \  1 (ARINC664)
+ *                 +-----------/  VLLUPFORMAT \----------+
+ *                 |           \    (fixed)   /          |
+ *                 |            \            /           |
+ *  0 (forwarding) v             ------------            |
+ *           ------------                                |
+ *          /            \  1 (QoS classification)       |
+ *     +---/  ISCRITICAL  \-----------+                  |
+ *     |   \  (per rule)  /           |                  |
+ *     |    \            /   VLID taken from      VLID taken from
+ *     v     ------------     index of rule       contents of rule
+ *  select                     that matched         that matched
+ * DESTPORTS                          |                  |
+ *  |                                 +---------+--------+
+ *  |                                           |
+ *  |                                           v
+ *  |                                     VL Forwarding
+ *  |                                   (indexed by VLID)
+ *  |                                      +---------+
+ *  |                       +--------------|         |
+ *  |                       |  select TYPE +---------+
+ *  |                       v
+ *  |   0 (rate      ------------    1 (time
+ *  |  constrained) /            \   triggered)
+ *  |       +------/     TYPE     \------------+
+ *  |       |      \  (per VLID)  /            |
+ *  |       v       \            /             v
+ *  |  VL Policing   ------------         VL Policing
+ *  | (indexed by VLID)                (indexed by VLID)
+ *  |  +---------+                        +---------+
+ *  |  | TYPE=0  |                        | TYPE=1  |
+ *  |  +---------+                        +---------+
+ *  |  select SHARINDX                 select SHARINDX to
+ *  |  to rate-limit                 re-enter VL Forwarding
+ *  |  groups of VL's               with new VLID for egress
+ *  |  to same quota                           |
+ *  |       |                                  |
+ *  |  select MAXLEN -> exceed => drop    select MAXLEN -> exceed => drop
+ *  |       |                                  |
+ *  |       v                                  v
+ *  |  VL Forwarding                      VL Forwarding
+ *  | (indexed by SHARINDX)             (indexed by SHARINDX)
+ *  |  +---------+                        +---------+
+ *  |  | TYPE=0  |                        | TYPE=1  |
+ *  |  +---------+                        +---------+
+ *  |  select PRIORITY,                 select PRIORITY,
+ *  | PARTITION, DESTPORTS            PARTITION, DESTPORTS
+ *  |       |                                  |
+ *  |       v                                  v
+ *  |  VL Policing                        VL Policing
+ *  | (indexed by SHARINDX)           (indexed by SHARINDX)
+ *  |  +---------+                        +---------+
+ *  |  | TYPE=0  |                        | TYPE=1  |
+ *  |  +---------+                        +---------+
+ *  |       |                                  |
+ *  |       v                                  |
+ *  |  select BAG, -> exceed => drop           |
+ *  |    JITTER                                v
+ *  |       |             ----------------------------------------------
+ *  |       |            /    Reception Window is open for this VL      \
+ *  |       |           /    (the Schedule Table executes an entry i     \
+ *  |       |          /   M <= i < N, for which these conditions hold):  \ no
+ *  |       |    +----/                                                    \-+
+ *  |       |    |yes \       WINST[M] == 1 && WINSTINDEX[M] == VLID       / |
+ *  |       |    |     \     WINEND[N] == 1 && WINSTINDEX[N] == VLID      /  |
+ *  |       |    |      \                                                /   |
+ *  |       |    |       \ (the VL window has opened and not yet closed)/    |
+ *  |       |    |        ----------------------------------------------     |
+ *  |       |    v                                                           v
+ *  |       |  dispatch to DESTPORTS when the Schedule Table               drop
+ *  |       |  executes an entry i with TXEN == 1 && VLINDEX == i
+ *  v       v
+ * dispatch immediately to DESTPORTS
+ *
+ * The per-port classification key is always composed of {DMAC, VID, PCP} and
+ * is non-maskable. This 'looks like' the NULL stream identification function
+ * from IEEE 802.1CB clause 6, except for the extra VLAN PCP. When the switch
+ * ports operate as VLAN-unaware, we do allow the user to not specify the VLAN
+ * ID and PCP, and then the port-based defaults will be used.
+ *
+ * In TTEthernet, routing is something that needs to be done manually for each
+ * Virtual Link. So the flow action must always include one of:
+ * a. 'redirect', 'trap' or 'drop': select the egress port list
+ * Additionally, the following actions may be applied on a Virtual Link,
+ * turning it into 'critical' traffic:
+ * b. 'police': turn it into a rate-constrained VL, with bandwidth limitation
+ *    given by the maximum frame length, bandwidth allocation gap (BAG) and
+ *    maximum jitter.
+ * c. 'gate': turn it into a time-triggered VL, which can be only be received
+ *    and forwarded according to a given schedule.
+ */
+
+static bool sja1105_vl_key_lower(struct sja1105_vl_lookup_entry *a,
+				 struct sja1105_vl_lookup_entry *b)
+{
+	if (a->macaddr < b->macaddr)
+		return true;
+	if (a->macaddr > b->macaddr)
+		return false;
+	if (a->vlanid < b->vlanid)
+		return true;
+	if (a->vlanid > b->vlanid)
+		return false;
+	if (a->port < b->port)
+		return true;
+	if (a->port > b->port)
+		return false;
+	if (a->vlanprior < b->vlanprior)
+		return true;
+	if (a->vlanprior > b->vlanprior)
+		return false;
+	/* Keys are equal */
+	return false;
+}
+
+/* FIXME: this should change when the bridge upper of the port changes. */
+static u16 sja1105_port_get_tag_8021q_vid(struct dsa_port *dp)
+{
+	unsigned long bridge_num;
+
+	if (!dp->bridge)
+		return dsa_tag_8021q_standalone_vid(dp);
+
+	bridge_num = dsa_port_bridge_num_get(dp);
+
+	return dsa_tag_8021q_bridge_vid(bridge_num);
+}
+
+static int sja1105_init_virtual_links(struct sja1105_private *priv,
+				      struct netlink_ext_ack *extack)
+{
+	struct sja1105_vl_policing_entry *vl_policing;
+	struct sja1105_vl_forwarding_entry *vl_fwd;
+	struct sja1105_vl_lookup_entry *vl_lookup;
+	bool have_critical_virtual_links = false;
+	struct sja1105_table *table;
+	struct sja1105_rule *rule;
+	int num_virtual_links = 0;
+	int max_sharindx = 0;
+	int i, j, k;
+
+	/* Figure out the dimensioning of the problem */
+	list_for_each_entry(rule, &priv->flow_block.rules, list) {
+		if (rule->type != SJA1105_RULE_VL)
+			continue;
+		/* Each VL lookup entry matches on a single ingress port */
+		num_virtual_links += hweight_long(rule->port_mask);
+
+		if (rule->vl.type != SJA1105_VL_NONCRITICAL)
+			have_critical_virtual_links = true;
+		if (max_sharindx < rule->vl.sharindx)
+			max_sharindx = rule->vl.sharindx;
+	}
+
+	if (num_virtual_links > SJA1105_MAX_VL_LOOKUP_COUNT) {
+		NL_SET_ERR_MSG_MOD(extack, "Not enough VL entries available");
+		return -ENOSPC;
+	}
+
+	if (max_sharindx + 1 > SJA1105_MAX_VL_LOOKUP_COUNT) {
+		NL_SET_ERR_MSG_MOD(extack, "Policer index out of range");
+		return -ENOSPC;
+	}
+
+	max_sharindx = max_t(int, num_virtual_links, max_sharindx) + 1;
+
+	/* Discard previous VL Lookup Table */
+	table = &priv->static_config.tables[BLK_IDX_VL_LOOKUP];
+	if (table->entry_count) {
+		kfree(table->entries);
+		table->entry_count = 0;
+	}
+
+	/* Discard previous VL Policing Table */
+	table = &priv->static_config.tables[BLK_IDX_VL_POLICING];
+	if (table->entry_count) {
+		kfree(table->entries);
+		table->entry_count = 0;
+	}
+
+	/* Discard previous VL Forwarding Table */
+	table = &priv->static_config.tables[BLK_IDX_VL_FORWARDING];
+	if (table->entry_count) {
+		kfree(table->entries);
+		table->entry_count = 0;
+	}
+
+	/* Discard previous VL Forwarding Parameters Table */
+	table = &priv->static_config.tables[BLK_IDX_VL_FORWARDING_PARAMS];
+	if (table->entry_count) {
+		kfree(table->entries);
+		table->entry_count = 0;
+	}
+
+	/* Nothing to do */
+	if (!num_virtual_links)
+		return 0;
+
+	/* Pre-allocate space in the static config tables */
+
+	/* VL Lookup Table */
+	table = &priv->static_config.tables[BLK_IDX_VL_LOOKUP];
+	table->entries = kcalloc(num_virtual_links,
+				 table->ops->unpacked_entry_size,
+				 GFP_KERNEL);
+	if (!table->entries)
+		return -ENOMEM;
+	table->entry_count = num_virtual_links;
+	vl_lookup = table->entries;
+
+	k = 0;
+
+	list_for_each_entry(rule, &priv->flow_block.rules, list) {
+		unsigned long port;
+
+		if (rule->type != SJA1105_RULE_VL)
+			continue;
+
+		for_each_set_bit(port, &rule->port_mask, SJA1105_MAX_NUM_PORTS) {
+			vl_lookup[k].format = SJA1105_VL_FORMAT_PSFP;
+			vl_lookup[k].port = port;
+			vl_lookup[k].macaddr = rule->key.vl.dmac;
+			if (rule->key.type == SJA1105_KEY_VLAN_AWARE_VL) {
+				vl_lookup[k].vlanid = rule->key.vl.vid;
+				vl_lookup[k].vlanprior = rule->key.vl.pcp;
+			} else {
+				/* FIXME */
+				struct dsa_port *dp = dsa_to_port(priv->ds, port);
+				u16 vid = sja1105_port_get_tag_8021q_vid(dp);
+
+				vl_lookup[k].vlanid = vid;
+				vl_lookup[k].vlanprior = 0;
+			}
+			/* For critical VLs, the DESTPORTS mask is taken from
+			 * the VL Forwarding Table, so no point in putting it
+			 * in the VL Lookup Table
+			 */
+			if (rule->vl.type == SJA1105_VL_NONCRITICAL)
+				vl_lookup[k].destports = rule->vl.destports;
+			else
+				vl_lookup[k].iscritical = true;
+			vl_lookup[k].flow_cookie = rule->cookie;
+			k++;
+		}
+	}
+
+	/* UM10944.pdf chapter 4.2.3 VL Lookup table:
+	 * "the entries in the VL Lookup table must be sorted in ascending
+	 * order (i.e. the smallest value must be loaded first) according to
+	 * the following sort order: MACADDR, VLANID, PORT, VLANPRIOR."
+	 */
+	for (i = 0; i < num_virtual_links; i++) {
+		struct sja1105_vl_lookup_entry *a = &vl_lookup[i];
+
+		for (j = i + 1; j < num_virtual_links; j++) {
+			struct sja1105_vl_lookup_entry *b = &vl_lookup[j];
+
+			if (sja1105_vl_key_lower(b, a)) {
+				struct sja1105_vl_lookup_entry tmp = *a;
+
+				*a = *b;
+				*b = tmp;
+			}
+		}
+	}
+
+	if (!have_critical_virtual_links)
+		return 0;
+
+	/* VL Policing Table */
+	table = &priv->static_config.tables[BLK_IDX_VL_POLICING];
+	table->entries = kcalloc(max_sharindx, table->ops->unpacked_entry_size,
+				 GFP_KERNEL);
+	if (!table->entries)
+		return -ENOMEM;
+	table->entry_count = max_sharindx;
+	vl_policing = table->entries;
+
+	/* VL Forwarding Table */
+	table = &priv->static_config.tables[BLK_IDX_VL_FORWARDING];
+	table->entries = kcalloc(max_sharindx, table->ops->unpacked_entry_size,
+				 GFP_KERNEL);
+	if (!table->entries)
+		return -ENOMEM;
+	table->entry_count = max_sharindx;
+	vl_fwd = table->entries;
+
+	/* VL Forwarding Parameters Table */
+	table = &priv->static_config.tables[BLK_IDX_VL_FORWARDING_PARAMS];
+	table->entries = kcalloc(1, table->ops->unpacked_entry_size,
+				 GFP_KERNEL);
+	if (!table->entries)
+		return -ENOMEM;
+	table->entry_count = 1;
+
+	for (i = 0; i < num_virtual_links; i++) {
+		unsigned long cookie = vl_lookup[i].flow_cookie;
+		struct sja1105_rule *rule = sja1105_rule_find(priv, cookie);
+
+		if (rule->vl.type == SJA1105_VL_NONCRITICAL)
+			continue;
+		if (rule->vl.type == SJA1105_VL_TIME_TRIGGERED) {
+			int sharindx = rule->vl.sharindx;
+
+			vl_policing[i].type = 1;
+			vl_policing[i].sharindx = sharindx;
+			vl_policing[i].maxlen = rule->vl.maxlen;
+			vl_policing[sharindx].type = 1;
+
+			vl_fwd[i].type = 1;
+			vl_fwd[sharindx].type = 1;
+			vl_fwd[sharindx].priority = rule->vl.ipv;
+			vl_fwd[sharindx].partition = 0;
+			vl_fwd[sharindx].destports = rule->vl.destports;
+		}
+	}
+
+	sja1105_frame_memory_partitioning(priv);
+
+	return 0;
+}
+
+int sja1105_vl_redirect(struct sja1105_private *priv, int port,
+			struct netlink_ext_ack *extack, unsigned long cookie,
+			struct sja1105_key *key, unsigned long destports,
+			bool append)
+{
+	struct sja1105_rule *rule = sja1105_rule_find(priv, cookie);
+	struct dsa_port *dp = dsa_to_port(priv->ds, port);
+	bool vlan_aware = dsa_port_is_vlan_filtering(dp);
+	int rc;
+
+	if (!vlan_aware && key->type != SJA1105_KEY_VLAN_UNAWARE_VL) {
+		NL_SET_ERR_MSG_MOD(extack,
+				   "Can only redirect based on DMAC");
+		return -EOPNOTSUPP;
+	} else if (vlan_aware && key->type != SJA1105_KEY_VLAN_AWARE_VL) {
+		NL_SET_ERR_MSG_MOD(extack,
+				   "Can only redirect based on {DMAC, VID, PCP}");
+		return -EOPNOTSUPP;
+	}
+
+	if (!rule) {
+		rule = kzalloc(sizeof(*rule), GFP_KERNEL);
+		if (!rule)
+			return -ENOMEM;
+
+		rule->cookie = cookie;
+		rule->type = SJA1105_RULE_VL;
+		rule->key = *key;
+		list_add(&rule->list, &priv->flow_block.rules);
+	}
+
+	rule->port_mask |= BIT(port);
+	if (append)
+		rule->vl.destports |= destports;
+	else
+		rule->vl.destports = destports;
+
+	rc = sja1105_init_virtual_links(priv, extack);
+	if (rc) {
+		rule->port_mask &= ~BIT(port);
+		if (!rule->port_mask) {
+			list_del(&rule->list);
+			kfree(rule);
+		}
+	}
+
+	return rc;
+}
+
+int sja1105_vl_delete(struct sja1105_private *priv, int port,
+		      struct sja1105_rule *rule, struct netlink_ext_ack *extack)
+{
+	int rc;
+
+	rule->port_mask &= ~BIT(port);
+	if (!rule->port_mask) {
+		list_del(&rule->list);
+		kfree(rule);
+	}
+
+	rc = sja1105_compose_gating_subschedule(priv, extack);
+	if (rc)
+		return rc;
+
+	rc = sja1105_init_virtual_links(priv, extack);
+	if (rc)
+		return rc;
+
+	rc = sja1105_init_scheduling(priv);
+	if (rc < 0)
+		return rc;
+
+	return sja1105_static_config_reload(priv, SJA1105_VIRTUAL_LINKS);
+}
+
+int sja1105_vl_gate(struct sja1105_private *priv, int port,
+		    struct netlink_ext_ack *extack, unsigned long cookie,
+		    struct sja1105_key *key, u32 index, s32 prio,
+		    u64 base_time, u64 cycle_time, u64 cycle_time_ext,
+		    u32 num_entries, struct action_gate_entry *entries)
+{
+	struct sja1105_rule *rule = sja1105_rule_find(priv, cookie);
+	struct dsa_port *dp = dsa_to_port(priv->ds, port);
+	bool vlan_aware = dsa_port_is_vlan_filtering(dp);
+	int ipv = -1;
+	int i, rc;
+	s32 rem;
+
+	if (cycle_time_ext) {
+		NL_SET_ERR_MSG_MOD(extack,
+				   "Cycle time extension not supported");
+		return -EOPNOTSUPP;
+	}
+
+	div_s64_rem(base_time, sja1105_delta_to_ns(1), &rem);
+	if (rem) {
+		NL_SET_ERR_MSG_MOD(extack,
+				   "Base time must be multiple of 200 ns");
+		return -ERANGE;
+	}
+
+	div_s64_rem(cycle_time, sja1105_delta_to_ns(1), &rem);
+	if (rem) {
+		NL_SET_ERR_MSG_MOD(extack,
+				   "Cycle time must be multiple of 200 ns");
+		return -ERANGE;
+	}
+
+	if (!vlan_aware && key->type != SJA1105_KEY_VLAN_UNAWARE_VL) {
+		NL_SET_ERR_MSG_MOD(extack,
+				   "Can only gate based on DMAC");
+		return -EOPNOTSUPP;
+	} else if (vlan_aware && key->type != SJA1105_KEY_VLAN_AWARE_VL) {
+		NL_SET_ERR_MSG_MOD(extack,
+				   "Can only gate based on {DMAC, VID, PCP}");
+		return -EOPNOTSUPP;
+	}
+
+	if (!rule) {
+		rule = kzalloc(sizeof(*rule), GFP_KERNEL);
+		if (!rule)
+			return -ENOMEM;
+
+		list_add(&rule->list, &priv->flow_block.rules);
+		rule->cookie = cookie;
+		rule->type = SJA1105_RULE_VL;
+		rule->key = *key;
+		rule->vl.type = SJA1105_VL_TIME_TRIGGERED;
+		rule->vl.sharindx = index;
+		rule->vl.base_time = base_time;
+		rule->vl.cycle_time = cycle_time;
+		rule->vl.num_entries = num_entries;
+		rule->vl.entries = kcalloc(num_entries,
+					   sizeof(struct action_gate_entry),
+					   GFP_KERNEL);
+		if (!rule->vl.entries) {
+			rc = -ENOMEM;
+			goto out;
+		}
+
+		for (i = 0; i < num_entries; i++) {
+			div_s64_rem(entries[i].interval,
+				    sja1105_delta_to_ns(1), &rem);
+			if (rem) {
+				NL_SET_ERR_MSG_MOD(extack,
+						   "Interval must be multiple of 200 ns");
+				rc = -ERANGE;
+				goto out;
+			}
+
+			if (!entries[i].interval) {
+				NL_SET_ERR_MSG_MOD(extack,
+						   "Interval cannot be zero");
+				rc = -ERANGE;
+				goto out;
+			}
+
+			if (ns_to_sja1105_delta(entries[i].interval) >
+			    SJA1105_TAS_MAX_DELTA) {
+				NL_SET_ERR_MSG_MOD(extack,
+						   "Maximum interval is 52 ms");
+				rc = -ERANGE;
+				goto out;
+			}
+
+			if (entries[i].maxoctets != -1) {
+				NL_SET_ERR_MSG_MOD(extack,
+						   "Cannot offload IntervalOctetMax");
+				rc = -EOPNOTSUPP;
+				goto out;
+			}
+
+			if (ipv == -1) {
+				ipv = entries[i].ipv;
+			} else if (ipv != entries[i].ipv) {
+				NL_SET_ERR_MSG_MOD(extack,
+						   "Only support a single IPV per VL");
+				rc = -EOPNOTSUPP;
+				goto out;
+			}
+
+			rule->vl.entries[i] = entries[i];
+		}
+
+		if (ipv == -1) {
+			if (key->type == SJA1105_KEY_VLAN_AWARE_VL)
+				ipv = key->vl.pcp;
+			else
+				ipv = 0;
+		}
+
+		/* TODO: support per-flow MTU */
+		rule->vl.maxlen = VLAN_ETH_FRAME_LEN + ETH_FCS_LEN;
+		rule->vl.ipv = ipv;
+	}
+
+	rule->port_mask |= BIT(port);
+
+	rc = sja1105_compose_gating_subschedule(priv, extack);
+	if (rc)
+		goto out;
+
+	rc = sja1105_init_virtual_links(priv, extack);
+	if (rc)
+		goto out;
+
+	if (sja1105_gating_check_conflicts(priv, -1, extack)) {
+		NL_SET_ERR_MSG_MOD(extack, "Conflict with tc-taprio schedule");
+		rc = -ERANGE;
+		goto out;
+	}
+
+out:
+	if (rc) {
+		rule->port_mask &= ~BIT(port);
+		if (!rule->port_mask) {
+			list_del(&rule->list);
+			kfree(rule->vl.entries);
+			kfree(rule);
+		}
+	}
+
+	return rc;
+}
+
+static int sja1105_find_vlid(struct sja1105_private *priv, int port,
+			     struct sja1105_key *key)
+{
+	struct sja1105_vl_lookup_entry *vl_lookup;
+	struct sja1105_table *table;
+	int i;
+
+	if (WARN_ON(key->type != SJA1105_KEY_VLAN_AWARE_VL &&
+		    key->type != SJA1105_KEY_VLAN_UNAWARE_VL))
+		return -1;
+
+	table = &priv->static_config.tables[BLK_IDX_VL_LOOKUP];
+	vl_lookup = table->entries;
+
+	for (i = 0; i < table->entry_count; i++) {
+		if (key->type == SJA1105_KEY_VLAN_AWARE_VL) {
+			if (vl_lookup[i].port == port &&
+			    vl_lookup[i].macaddr == key->vl.dmac &&
+			    vl_lookup[i].vlanid == key->vl.vid &&
+			    vl_lookup[i].vlanprior == key->vl.pcp)
+				return i;
+		} else {
+			if (vl_lookup[i].port == port &&
+			    vl_lookup[i].macaddr == key->vl.dmac)
+				return i;
+		}
+	}
+
+	return -1;
+}
+
+int sja1105_vl_stats(struct sja1105_private *priv, int port,
+		     struct sja1105_rule *rule, struct flow_stats *stats,
+		     struct netlink_ext_ack *extack)
+{
+	const struct sja1105_regs *regs = priv->info->regs;
+	u8 buf[SJA1105_SIZE_VL_STATUS] = {0};
+	u64 unreleased;
+	u64 timingerr;
+	u64 lengtherr;
+	int vlid, rc;
+	u64 pkts;
+
+	if (rule->vl.type != SJA1105_VL_TIME_TRIGGERED)
+		return 0;
+
+	vlid = sja1105_find_vlid(priv, port, &rule->key);
+	if (vlid < 0)
+		return 0;
+
+	rc = sja1105_xfer_buf(priv, SPI_READ, regs->vl_status + 2 * vlid, buf,
+			      SJA1105_SIZE_VL_STATUS);
+	if (rc) {
+		NL_SET_ERR_MSG_MOD(extack, "SPI access failed");
+		return rc;
+	}
+
+	sja1105_unpack(buf, &timingerr,  31, 16, SJA1105_SIZE_VL_STATUS);
+	sja1105_unpack(buf, &unreleased, 15,  0, SJA1105_SIZE_VL_STATUS);
+	sja1105_unpack(buf, &lengtherr,  47, 32, SJA1105_SIZE_VL_STATUS);
+
+	pkts = timingerr + unreleased + lengtherr;
+
+	flow_stats_update(stats, 0, pkts - rule->vl.stats.pkts, 0,
+			  jiffies - rule->vl.stats.lastused,
+			  FLOW_ACTION_HW_STATS_IMMEDIATE);
+
+	rule->vl.stats.pkts = pkts;
+	rule->vl.stats.lastused = jiffies;
+
+	return 0;
+}

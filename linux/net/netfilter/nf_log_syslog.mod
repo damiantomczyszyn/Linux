@@ -1,1 +1,2 @@
-    $(wildcard include/config/H
+_LEADTEK_WINFAST_PXDVR3200_H,
+	

@@ -1,2 +1,1 @@
-nfig/GENERIC_IOREMAP) \
-    $(wi
+dev->board == CX23885_BOARD_HAUP

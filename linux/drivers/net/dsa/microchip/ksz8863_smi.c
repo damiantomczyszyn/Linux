@@ -1,125 +1,229 @@
-include/config/HAVE_ALIGNED_STRUCT_PAGE) \
-    $(wildcard include/config/USERFAULTFD) \
-    $(wildcard include/config/HAVE_ARCH_COMPAT_MMAP_BASES) \
-    $(wildcard include/config/MEMBARRIER) \
-    $(wildcard include/config/AIO) \
-    $(wildcard include/config/MMU_NOTIFIER) \
-    $(wildcard include/config/ARCH_WANT_BATCHED_UNMAP_TLB_FLUSH) \
-    $(wildcard include/config/IOMMU_SVA) \
-  include/linux/mm_types_task.h \
-    $(wildcard include/config/SPLIT_PTLOCK_CPUS) \
-    $(wildcard include/config/ARCH_ENABLE_SPLIT_PMD_PTLOCK) \
-  arch/x86/include/asm/tlbbatch.h \
-  include/linux/auxvec.h \
-  include/uapi/linux/auxvec.h \
-  arch/x86/include/uapi/asm/auxvec.h \
-  include/linux/kref.h \
-  include/linux/refcount.h \
-  include/linux/rbtree.h \
-  include/linux/rcupdate.h \
-    $(wildcard include/config/PREEMPT_RCU) \
-    $(wildcard include/config/TINY_RCU) \
-    $(wildcard include/config/RCU_STRICT_GRACE_PERIOD) \
-    $(wildcard include/config/TASKS_RCU_GENERIC) \
-    $(wildcard include/config/RCU_STALL_COMMON) \
-    $(wildcard include/config/NO_HZ_FULL) \
-    $(wildcard include/config/RCU_NOCB_CPU) \
-    $(wildcard include/config/TASKS_RCU) \
-    $(wildcard include/config/TASKS_TRACE_RCU) \
-    $(wildcard include/config/TASKS_RUDE_RCU) \
-    $(wildcard include/config/TREE_RCU) \
-    $(wildcard include/config/DEBUG_OBJECTS_RCU_HEAD) \
-    $(wildcard include/config/PROVE_RCU) \
-    $(wildcard include/config/ARCH_WEAK_RELEASE_ACQUIRE) \
-  include/linux/rcutree.h \
-  include/linux/rwsem.h \
-    $(wildcard include/config/RWSEM_SPIN_ON_OWNER) \
-    $(wildcard include/config/DEBUG_RWSEMS) \
-  include/linux/completion.h \
-  include/linux/swait.h \
-  include/linux/uprobes.h \
-    $(wildcard include/config/UPROBES) \
-  arch/x86/include/asm/uprobes.h \
-  include/linux/notifier.h \
-    $(wildcard include/config/TREE_SRCU) \
-  include/linux/srcu.h \
-    $(wildcard include/config/TINY_SRCU) \
-    $(wildcard include/config/SRCU) \
-  include/linux/workqueue.h \
-    $(wildcard include/config/DEBUG_OBJECTS_WORK) \
-    $(wildcard include/config/FREEZER) \
-    $(wildcard include/config/WQ_WATCHDOG) \
-  include/linux/timer.h \
-    $(wildcard include/config/DEBUG_OBJECTS_TIMERS) \
-    $(wildcard include/config/NO_HZ_COMMON) \
-  include/linux/ktime.h \
-  include/linux/time.h \
-    $(wildcard include/config/POSIX_TIMERS) \
-  include/linux/time32.h \
-  include/linux/timex.h \
-  include/uapi/linux/timex.h \
-  arch/x86/include/asm/timex.h \
-    $(wildcard include/config/X86_TSC) \
-  arch/x86/include/asm/tsc.h \
-  include/vdso/time32.h \
-  include/vdso/time.h \
-  include/linux/jiffies.h \
-  include/vdso/jiffies.h \
-  include/generated/timeconst.h \
-  include/vdso/ktime.h \
-  include/linux/timekeeping.h \
-    $(wildcard include/config/GENERIC_CMOS_UPDATE) \
-  include/linux/clocksource_ids.h \
-  include/linux/debugobjects.h \
-    $(wildcard include/config/DEBUG_OBJECTS) \
-    $(wildcard include/config/DEBUG_OBJECTS_FREE) \
-  include/linux/rcu_segcblist.h \
-  include/linux/srcutree.h \
-  include/linux/rcu_node_tree.h \
-    $(wildcard include/config/RCU_FANOUT) \
-    $(wildcard include/config/RCU_FANOUT_LEAF) \
-  arch/x86/include/asm/mmu.h \
-    $(wildcard include/config/MODIFY_LDT_SYSCALL) \
-  include/linux/page-flags.h \
-    $(wildcard include/config/ARCH_USES_PG_UNCACHED) \
-    $(wildcard include/config/MEMORY_FAILURE) \
-    $(wildcard include/config/PAGE_IDLE_FLAG) \
-    $(wildcard include/config/HUGETLB_PAGE_FREE_VMEMMAP) \
-    $(wildcard include/config/HUGETLB_PAGE_FREE_VMEMMAP_DEFAULT_ON) \
-    $(wildcard include/config/KSM) \
-  include/linux/local_lock.h \
-  include/linux/local_lock_internal.h \
-  include/linux/memory_hotplug.h \
-    $(wildcard include/config/HAVE_ARCH_NODEDATA_EXTENSION) \
-    $(wildcard include/config/ARCH_HAS_ADD_PAGES) \
-  arch/x86/include/asm/mmzone.h \
-  arch/x86/include/asm/mmzone_32.h \
-  include/linux/topology.h \
-    $(wildcard include/config/USE_PERCPU_NUMA_NODE_ID) \
-    $(wildcard include/config/SCHED_SMT) \
-    $(wildcard include/config/SCHED_CLUSTER) \
-  include/linux/arch_topology.h \
-    $(wildcard include/config/ACPI_CPPC_LIB) \
-    $(wildcard include/config/GENERIC_ARCH_TOPOLOGY) \
-  include/linux/percpu.h \
-    $(wildcard include/config/NEED_PER_CPU_EMBED_FIRST_CHUNK) \
-    $(wildcard include/config/NEED_PER_CPU_PAGE_FIRST_CHUNK) \
-  arch/x86/include/asm/topology.h \
-    $(wildcard include/config/SCHED_MC_PRIO) \
-  arch/x86/include/asm/mpspec.h \
-    $(wildcard include/config/EISA) \
-    $(wildcard include/config/X86_MPPARSE) \
-  arch/x86/include/asm/mpspec_def.h \
-  arch/x86/include/asm/x86_init.h \
-  arch/x86/include/asm/apicdef.h \
-  include/asm-generic/topology.h \
-  include/linux/xarray.h \
-    $(wildcard include/config/XARRAY_MULTI) \
-  include/linux/kconfig.h \
-  include/linux/uidgid.h \
-    $(wildcard include/config/MULTIUSER) \
-    $(wildcard include/config/USER_NS) \
-  include/linux/highuid.h \
-  include/linux/kobject_ns.h \
-  include/linux/stat.h \
-  arch/x86/include/uapi/asm/stat.h \
+// SPDX-License-Identifier: GPL-2.0
+/*
+ * Microchip KSZ8863 series register access through SMI
+ *
+ * Copyright (C) 2019 Pengutronix, Michael Grzeschik <kernel@pengutronix.de>
+ */
+
+#include "ksz8.h"
+#include "ksz_common.h"
+
+/* Serial Management Interface (SMI) uses the following frame format:
+ *
+ *       preamble|start|Read/Write|  PHY   |  REG  |TA|   Data bits      | Idle
+ *               |frame| OP code  |address |address|  |                  |
+ * read | 32x1´s | 01  |    00    | 1xRRR  | RRRRR |Z0| 00000000DDDDDDDD |  Z
+ * write| 32x1´s | 01  |    00    | 0xRRR  | RRRRR |10| xxxxxxxxDDDDDDDD |  Z
+ *
+ */
+
+#define SMI_KSZ88XX_READ_PHY	BIT(4)
+
+static int ksz8863_mdio_read(void *ctx, const void *reg_buf, size_t reg_len,
+			     void *val_buf, size_t val_len)
+{
+	struct ksz_device *dev = ctx;
+	struct mdio_device *mdev;
+	u8 reg = *(u8 *)reg_buf;
+	u8 *val = val_buf;
+	struct ksz8 *ksz8;
+	int i, ret = 0;
+
+	ksz8 = dev->priv;
+	mdev = ksz8->priv;
+
+	mutex_lock_nested(&mdev->bus->mdio_lock, MDIO_MUTEX_NESTED);
+	for (i = 0; i < val_len; i++) {
+		int tmp = reg + i;
+
+		ret = __mdiobus_read(mdev->bus, ((tmp & 0xE0) >> 5) |
+				     SMI_KSZ88XX_READ_PHY, tmp);
+		if (ret < 0)
+			goto out;
+
+		val[i] = ret;
+	}
+	ret = 0;
+
+ out:
+	mutex_unlock(&mdev->bus->mdio_lock);
+
+	return ret;
+}
+
+static int ksz8863_mdio_write(void *ctx, const void *data, size_t count)
+{
+	struct ksz_device *dev = ctx;
+	struct mdio_device *mdev;
+	struct ksz8 *ksz8;
+	int i, ret = 0;
+	u32 reg;
+	u8 *val;
+
+	ksz8 = dev->priv;
+	mdev = ksz8->priv;
+
+	val = (u8 *)(data + 4);
+	reg = *(u32 *)data;
+
+	mutex_lock_nested(&mdev->bus->mdio_lock, MDIO_MUTEX_NESTED);
+	for (i = 0; i < (count - 4); i++) {
+		int tmp = reg + i;
+
+		ret = __mdiobus_write(mdev->bus, ((tmp & 0xE0) >> 5),
+				      tmp, val[i]);
+		if (ret < 0)
+			goto out;
+	}
+
+ out:
+	mutex_unlock(&mdev->bus->mdio_lock);
+
+	return ret;
+}
+
+static const struct regmap_bus regmap_smi[] = {
+	{
+		.read = ksz8863_mdio_read,
+		.write = ksz8863_mdio_write,
+		.max_raw_read = 1,
+		.max_raw_write = 1,
+	},
+	{
+		.read = ksz8863_mdio_read,
+		.write = ksz8863_mdio_write,
+		.val_format_endian_default = REGMAP_ENDIAN_BIG,
+		.max_raw_read = 2,
+		.max_raw_write = 2,
+	},
+	{
+		.read = ksz8863_mdio_read,
+		.write = ksz8863_mdio_write,
+		.val_format_endian_default = REGMAP_ENDIAN_BIG,
+		.max_raw_read = 4,
+		.max_raw_write = 4,
+	}
+};
+
+static const struct regmap_config ksz8863_regmap_config[] = {
+	{
+		.name = "#8",
+		.reg_bits = 8,
+		.pad_bits = 24,
+		.val_bits = 8,
+		.cache_type = REGCACHE_NONE,
+		.use_single_read = 1,
+		.lock = ksz_regmap_lock,
+		.unlock = ksz_regmap_unlock,
+	},
+	{
+		.name = "#16",
+		.reg_bits = 8,
+		.pad_bits = 24,
+		.val_bits = 16,
+		.cache_type = REGCACHE_NONE,
+		.use_single_read = 1,
+		.lock = ksz_regmap_lock,
+		.unlock = ksz_regmap_unlock,
+	},
+	{
+		.name = "#32",
+		.reg_bits = 8,
+		.pad_bits = 24,
+		.val_bits = 32,
+		.cache_type = REGCACHE_NONE,
+		.use_single_read = 1,
+		.lock = ksz_regmap_lock,
+		.unlock = ksz_regmap_unlock,
+	}
+};
+
+static int ksz8863_smi_probe(struct mdio_device *mdiodev)
+{
+	struct regmap_config rc;
+	struct ksz_device *dev;
+	struct ksz8 *ksz8;
+	int ret;
+	int i;
+
+	ksz8 = devm_kzalloc(&mdiodev->dev, sizeof(struct ksz8), GFP_KERNEL);
+	if (!ksz8)
+		return -ENOMEM;
+
+	ksz8->priv = mdiodev;
+
+	dev = ksz_switch_alloc(&mdiodev->dev, ksz8);
+	if (!dev)
+		return -ENOMEM;
+
+	for (i = 0; i < ARRAY_SIZE(ksz8863_regmap_config); i++) {
+		rc = ksz8863_regmap_config[i];
+		rc.lock_arg = &dev->regmap_mutex;
+		dev->regmap[i] = devm_regmap_init(&mdiodev->dev,
+						  &regmap_smi[i], dev,
+						  &rc);
+		if (IS_ERR(dev->regmap[i])) {
+			ret = PTR_ERR(dev->regmap[i]);
+			dev_err(&mdiodev->dev,
+				"Failed to initialize regmap%i: %d\n",
+				ksz8863_regmap_config[i].val_bits, ret);
+			return ret;
+		}
+	}
+
+	if (mdiodev->dev.platform_data)
+		dev->pdata = mdiodev->dev.platform_data;
+
+	ret = ksz8_switch_register(dev);
+
+	/* Main DSA driver may not be started yet. */
+	if (ret)
+		return ret;
+
+	dev_set_drvdata(&mdiodev->dev, dev);
+
+	return 0;
+}
+
+static void ksz8863_smi_remove(struct mdio_device *mdiodev)
+{
+	struct ksz_device *dev = dev_get_drvdata(&mdiodev->dev);
+
+	if (dev)
+		ksz_switch_remove(dev);
+
+	dev_set_drvdata(&mdiodev->dev, NULL);
+}
+
+static void ksz8863_smi_shutdown(struct mdio_device *mdiodev)
+{
+	struct ksz_device *dev = dev_get_drvdata(&mdiodev->dev);
+
+	if (dev)
+		dsa_switch_shutdown(dev->ds);
+
+	dev_set_drvdata(&mdiodev->dev, NULL);
+}
+
+static const struct of_device_id ksz8863_dt_ids[] = {
+	{ .compatible = "microchip,ksz8863" },
+	{ .compatible = "microchip,ksz8873" },
+	{ },
+};
+MODULE_DEVICE_TABLE(of, ksz8863_dt_ids);
+
+static struct mdio_driver ksz8863_driver = {
+	.probe	= ksz8863_smi_probe,
+	.remove	= ksz8863_smi_remove,
+	.shutdown = ksz8863_smi_shutdown,
+	.mdiodrv.driver = {
+		.name	= "ksz8863-switch",
+		.of_match_table = ksz8863_dt_ids,
+	},
+};
+
+mdio_module_driver(ksz8863_driver);
+
+MODULE_AUTHOR("Michael Grzeschik <m.grzeschik@pengutronix.de>");
+MODULE_DESCRIPTION("Microchip KSZ8863 SMI Switch driver");
+MODULE_LICENSE("GPL v2");

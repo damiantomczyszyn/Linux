@@ -1,1 +1,3 @@
-    $(wildcard include/config
+ity *cap)
+{
+	struct cx23885_d

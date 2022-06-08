@@ -1,6 +1,1 @@
-ETS) \
-    $(wildcard include/config/X86_CPU_RESCTRL) \
-    $(wildcard include/config/FUTEX) \
-    $(wildcard include/config/PERF_EVENTS) \
-    $(wildcard include/config/RSEQ) \
-    $(wildcard include/config/
+cmd_drivers/net/can/kvaser_pciefd.ko := ld -r -m elf_i386 --build-id=sha1  -T scripts/module.lds -o drivers/net/can/kvaser_pciefd.ko drivers/net/can/kvaser_pciefd.o drivers/net/can/kvaser_pciefd.mod.o;  true

@@ -1,749 +1,625 @@
- */
 
-static inline void check_data_structures(void) { }
-
-#endif /* CONFIG_DEBUG_LOCKDEP */
-
-static void init_chain_block_buckets(void);
-
-/*
- * Initialize the lock_classes[] array elements, the free_lock_classes list
- * and also the delayed_free structure.
- */
-static void init_data_structures_once(void)
-{
-	static bool __read_mostly ds_initialized, rcu_head_initialized;
-	int i;
-
-	if (likely(rcu_head_initialized))
-		return;
-
-	if (system_state >= SYSTEM_SCHEDULING) {
-		init_rcu_head(&delayed_free.rcu_head);
-		rcu_head_initialized = true;
-	}
-
-	if (ds_initialized)
-		return;
-
-	ds_initialized = true;
-
-	INIT_LIST_HEAD(&delayed_free.pf[0].zapped);
-	INIT_LIST_HEAD(&delayed_free.pf[1].zapped);
-
-	for (i = 0; i < ARRAY_SIZE(lock_classes); i++) {
-		list_add_tail(&lock_classes[i].lock_entry, &free_lock_classes);
-		INIT_LIST_HEAD(&lock_classes[i].locks_after);
-		INIT_LIST_HEAD(&lock_classes[i].locks_before);
-	}
-	init_chain_block_buckets();
+	dprintk(1, "%s() status = %d, seq = %d\n", __func__, status, seq);
 }
 
-static inline struct hlist_head *keyhashentry(const struct lock_class_key *key)
+static void cx23885_codec_settings(struct cx23885_dev *dev)
 {
-	unsigned long hash = hash_long((uintptr_t)key, KEYHASH_BITS);
+	dprintk(1, "%s()\n", __func__);
 
-	return lock_keys_hash + hash;
+	/* Dynamically change the height based on video standard */
+	if (dev->encodernorm.id & V4L2_STD_525_60)
+		dev->ts1.height = 480;
+	else
+		dev->ts1.height = 576;
+
+	/* assign frame size */
+	cx23885_api_cmd(dev, CX2341X_ENC_SET_FRAME_SIZE, 2, 0,
+				dev->ts1.height, dev->ts1.width);
+
+	dev->cxhdl.width = dev->ts1.width;
+	dev->cxhdl.height = dev->ts1.height;
+	dev->cxhdl.is_50hz =
+		(dev->encodernorm.id & V4L2_STD_625_50) != 0;
+
+	cx2341x_handler_setup(&dev->cxhdl);
+
+	cx23885_api_cmd(dev, CX2341X_ENC_MISC, 2, 0, 3, 1);
+	cx23885_api_cmd(dev, CX2341X_ENC_MISC, 2, 0, 4, 1);
 }
 
-/* Register a dynamically allocated key. */
-void lockdep_register_key(struct lock_class_key *key)
+static int cx23885_initialize_codec(struct cx23885_dev *dev, int startencoder)
 {
-	struct hlist_head *hash_head;
-	struct lock_class_key *k;
+	int version;
+	int retval;
+	u32 i, data[7];
+
+	dprintk(1, "%s()\n", __func__);
+
+	retval = cx23885_api_cmd(dev, CX2341X_ENC_PING_FW, 0, 0); /* ping */
+	if (retval < 0) {
+		dprintk(2, "%s() PING OK\n", __func__);
+		retval = cx23885_load_firmware(dev);
+		if (retval < 0) {
+			pr_err("%s() f/w load failed\n", __func__);
+			return retval;
+		}
+		retval = cx23885_find_mailbox(dev);
+		if (retval < 0) {
+			pr_err("%s() mailbox < 0, error\n",
+				__func__);
+			return -1;
+		}
+		dev->cx23417_mailbox = retval;
+		retval = cx23885_api_cmd(dev, CX2341X_ENC_PING_FW, 0, 0);
+		if (retval < 0) {
+			pr_err("ERROR: cx23417 firmware ping failed!\n");
+			return -1;
+		}
+		retval = cx23885_api_cmd(dev, CX2341X_ENC_GET_VERSION, 0, 1,
+			&version);
+		if (retval < 0) {
+			pr_err("ERROR: cx23417 firmware get encoder :version failed!\n");
+			return -1;
+		}
+		dprintk(1, "cx23417 firmware version is 0x%08x\n", version);
+		msleep(200);
+	}
+
+	cx23885_codec_settings(dev);
+	msleep(60);
+
+	cx23885_api_cmd(dev, CX2341X_ENC_SET_NUM_VSYNC_LINES, 2, 0,
+		CX23885_FIELD1_SAA7115, CX23885_FIELD2_SAA7115);
+	cx23885_api_cmd(dev, CX2341X_ENC_SET_PLACEHOLDER, 12, 0,
+		CX23885_CUSTOM_EXTENSION_USR_DATA, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+		0, 0);
+
+	/* Setup to capture VBI */
+	data[0] = 0x0001BD00;
+	data[1] = 1;          /* frames per interrupt */
+	data[2] = 4;          /* total bufs */
+	data[3] = 0x91559155; /* start codes */
+	data[4] = 0x206080C0; /* stop codes */
+	data[5] = 6;          /* lines */
+	data[6] = 64;         /* BPL */
+
+	cx23885_api_cmd(dev, CX2341X_ENC_SET_VBI_CONFIG, 7, 0, data[0], data[1],
+		data[2], data[3], data[4], data[5], data[6]);
+
+	for (i = 2; i <= 24; i++) {
+		int valid;
+
+		valid = ((i >= 19) && (i <= 21));
+		cx23885_api_cmd(dev, CX2341X_ENC_SET_VBI_LINE, 5, 0, i,
+				valid, 0 , 0, 0);
+		cx23885_api_cmd(dev, CX2341X_ENC_SET_VBI_LINE, 5, 0,
+				i | 0x80000000, valid, 0, 0, 0);
+	}
+
+	cx23885_api_cmd(dev, CX2341X_ENC_MUTE_AUDIO, 1, 0, CX23885_UNMUTE);
+	msleep(60);
+
+	/* initialize the video input */
+	cx23885_api_cmd(dev, CX2341X_ENC_INITIALIZE_INPUT, 0, 0);
+	msleep(60);
+
+	/* Enable VIP style pixel invalidation so we work with scaled mode */
+	mc417_memory_write(dev, 2120, 0x00000080);
+
+	/* start capturing to the host interface */
+	if (startencoder) {
+		cx23885_api_cmd(dev, CX2341X_ENC_START_CAPTURE, 2, 0,
+			CX23885_MPEG_CAPTURE, CX23885_RAW_BITS_NONE);
+		msleep(10);
+	}
+
+	return 0;
+}
+
+/* ------------------------------------------------------------------ */
+
+static int queue_setup(struct vb2_queue *q,
+			   unsigned int *num_buffers, unsigned int *num_planes,
+			   unsigned int sizes[], struct device *alloc_devs[])
+{
+	struct cx23885_dev *dev = q->drv_priv;
+
+	dev->ts1.ts_packet_size  = mpeglinesize;
+	dev->ts1.ts_packet_count = mpeglines;
+	*num_planes = 1;
+	sizes[0] = mpeglinesize * mpeglines;
+	*num_buffers = mpegbufs;
+	return 0;
+}
+
+static int buffer_prepare(struct vb2_buffer *vb)
+{
+	struct vb2_v4l2_buffer *vbuf = to_vb2_v4l2_buffer(vb);
+	struct cx23885_dev *dev = vb->vb2_queue->drv_priv;
+	struct cx23885_buffer *buf =
+		container_of(vbuf, struct cx23885_buffer, vb);
+
+	return cx23885_buf_prepare(buf, &dev->ts1);
+}
+
+static void buffer_finish(struct vb2_buffer *vb)
+{
+	struct vb2_v4l2_buffer *vbuf = to_vb2_v4l2_buffer(vb);
+	struct cx23885_dev *dev = vb->vb2_queue->drv_priv;
+	struct cx23885_buffer *buf = container_of(vbuf,
+		struct cx23885_buffer, vb);
+
+	cx23885_free_buffer(dev, buf);
+}
+
+static void buffer_queue(struct vb2_buffer *vb)
+{
+	struct vb2_v4l2_buffer *vbuf = to_vb2_v4l2_buffer(vb);
+	struct cx23885_dev *dev = vb->vb2_queue->drv_priv;
+	struct cx23885_buffer   *buf = container_of(vbuf,
+		struct cx23885_buffer, vb);
+
+	cx23885_buf_queue(&dev->ts1, buf);
+}
+
+static int cx23885_start_streaming(struct vb2_queue *q, unsigned int count)
+{
+	struct cx23885_dev *dev = q->drv_priv;
+	struct cx23885_dmaqueue *dmaq = &dev->ts1.mpegq;
 	unsigned long flags;
+	int ret;
 
-	if (WARN_ON_ONCE(static_obj(key)))
-		return;
-	hash_head = keyhashentry(key);
+	ret = cx23885_initialize_codec(dev, 1);
+	if (ret == 0) {
+		struct cx23885_buffer *buf = list_entry(dmaq->active.next,
+			struct cx23885_buffer, queue);
 
-	raw_local_irq_save(flags);
-	if (!graph_lock())
-		goto restore_irqs;
-	hlist_for_each_entry_rcu(k, hash_head, hash_entry) {
-		if (WARN_ON_ONCE(k == key))
-			goto out_unlock;
+		cx23885_start_dma(&dev->ts1, dmaq, buf);
+		return 0;
 	}
-	hlist_add_head_rcu(&key->hash_entry, hash_head);
-out_unlock:
-	graph_unlock();
-restore_irqs:
-	raw_local_irq_restore(flags);
+	spin_lock_irqsave(&dev->slock, flags);
+	while (!list_empty(&dmaq->active)) {
+		struct cx23885_buffer *buf = list_entry(dmaq->active.next,
+			struct cx23885_buffer, queue);
+
+		list_del(&buf->queue);
+		vb2_buffer_done(&buf->vb.vb2_buf, VB2_BUF_STATE_QUEUED);
+	}
+	spin_unlock_irqrestore(&dev->slock, flags);
+	return ret;
 }
-EXPORT_SYMBOL_GPL(lockdep_register_key);
 
-/* Check whether a key has been registered as a dynamic key. */
-static bool is_dynamic_key(const struct lock_class_key *key)
+static void cx23885_stop_streaming(struct vb2_queue *q)
 {
-	struct hlist_head *hash_head;
-	struct lock_class_key *k;
-	bool found = false;
+	struct cx23885_dev *dev = q->drv_priv;
 
-	if (WARN_ON_ONCE(static_obj(key)))
-		return false;
+	/* stop mpeg capture */
+	cx23885_api_cmd(dev, CX2341X_ENC_STOP_CAPTURE, 3, 0,
+			CX23885_END_NOW, CX23885_MPEG_CAPTURE,
+			CX23885_RAW_BITS_NONE);
 
-	/*
-	 * If lock debugging is disabled lock_keys_hash[] may contain
-	 * pointers to memory that has already been freed. Avoid triggering
-	 * a use-after-free in that case by returning early.
-	 */
-	if (!debug_locks)
-		return true;
+	msleep(500);
+	cx23885_417_check_encoder(dev);
+	cx23885_cancel_buffers(&dev->ts1);
+}
 
-	hash_head = keyhashentry(key);
+static const struct vb2_ops cx23885_qops = {
+	.queue_setup    = queue_setup,
+	.buf_prepare  = buffer_prepare,
+	.buf_finish = buffer_finish,
+	.buf_queue    = buffer_queue,
+	.wait_prepare = vb2_ops_wait_prepare,
+	.wait_finish = vb2_ops_wait_finish,
+	.start_streaming = cx23885_start_streaming,
+	.stop_streaming = cx23885_stop_streaming,
+};
 
-	rcu_read_lock();
-	hlist_for_each_entry_rcu(k, hash_head, hash_entry) {
-		if (k == key) {
-			found = true;
+/* ------------------------------------------------------------------ */
+
+static int vidioc_g_std(struct file *file, void *priv, v4l2_std_id *id)
+{
+	struct cx23885_dev *dev = video_drvdata(file);
+
+	*id = dev->tvnorm;
+	return 0;
+}
+
+static int vidioc_s_std(struct file *file, void *priv, v4l2_std_id id)
+{
+	struct cx23885_dev *dev = video_drvdata(file);
+	unsigned int i;
+	int ret;
+
+	for (i = 0; i < ARRAY_SIZE(cx23885_tvnorms); i++)
+		if (id & cx23885_tvnorms[i].id)
 			break;
-		}
-	}
-	rcu_read_unlock();
+	if (i == ARRAY_SIZE(cx23885_tvnorms))
+		return -EINVAL;
 
-	return found;
+	ret = cx23885_set_tvnorm(dev, id);
+	if (!ret)
+		dev->encodernorm = cx23885_tvnorms[i];
+	return ret;
 }
 
-/*
- * Register a lock's class in the hash-table, if the class is not present
- * yet. Otherwise we look it up. We cache the result in the lock object
- * itself, so actual lookup of the hash should be once per lock object.
- */
-static struct lock_class *
-register_lock_class(struct lockdep_map *lock, unsigned int subclass, int force)
+static int vidioc_enum_input(struct file *file, void *priv,
+	struct v4l2_input *i)
 {
-	struct lockdep_subclass_key *key;
-	struct hlist_head *hash_head;
-	struct lock_class *class;
-	int idx;
+	struct cx23885_dev *dev = video_drvdata(file);
+	dprintk(1, "%s()\n", __func__);
+	return cx23885_enum_input(dev, i);
+}
 
-	DEBUG_LOCKS_WARN_ON(!irqs_disabled());
+static int vidioc_g_input(struct file *file, void *priv, unsigned int *i)
+{
+	return cx23885_get_input(file, priv, i);
+}
 
-	class = look_up_lock_class(lock, subclass);
-	if (likely(class))
-		goto out_set_class_cache;
+static int vidioc_s_input(struct file *file, void *priv, unsigned int i)
+{
+	return cx23885_set_input(file, priv, i);
+}
 
-	if (!lock->key) {
-		if (!assign_lock_key(lock))
-			return NULL;
-	} else if (!static_obj(lock->key) && !is_dynamic_key(lock->key)) {
+static int vidioc_g_tuner(struct file *file, void *priv,
+				struct v4l2_tuner *t)
+{
+	struct cx23885_dev *dev = video_drvdata(file);
+
+	if (dev->tuner_type == TUNER_ABSENT)
+		return -EINVAL;
+	if (0 != t->index)
+		return -EINVAL;
+	strscpy(t->name, "Television", sizeof(t->name));
+	call_all(dev, tuner, g_tuner, t);
+
+	dprintk(1, "VIDIOC_G_TUNER: tuner type %d\n", t->type);
+
+	return 0;
+}
+
+static int vidioc_s_tuner(struct file *file, void *priv,
+				const struct v4l2_tuner *t)
+{
+	struct cx23885_dev *dev = video_drvdata(file);
+
+	if (dev->tuner_type == TUNER_ABSENT)
+		return -EINVAL;
+
+	/* Update the A/V core */
+	call_all(dev, tuner, s_tuner, t);
+
+	return 0;
+}
+
+static int vidioc_g_frequency(struct file *file, void *priv,
+				struct v4l2_frequency *f)
+{
+	struct cx23885_dev *dev = video_drvdata(file);
+
+	if (dev->tuner_type == TUNER_ABSENT)
+		return -EINVAL;
+	f->type = V4L2_TUNER_ANALOG_TV;
+	f->frequency = dev->freq;
+
+	call_all(dev, tuner, g_frequency, f);
+
+	return 0;
+}
+
+static int vidioc_s_frequency(struct file *file, void *priv,
+	const struct v4l2_frequency *f)
+{
+	return cx23885_set_frequency(file, priv, f);
+}
+
+static int vidioc_querycap(struct file *file, void  *priv,
+				struct v4l2_capability *cap)
+{
+	struct cx23885_dev *dev = video_drvdata(file);
+	struct cx23885_tsport  *tsport = &dev->ts1;
+
+	strscpy(cap->driver, dev->name, sizeof(cap->driver));
+	strscpy(cap->card, cx23885_boards[tsport->dev->board].name,
+		sizeof(cap->card));
+	sprintf(cap->bus_info, "PCIe:%s", pci_name(dev->pci));
+	cap->capabilities = V4L2_CAP_VIDEO_CAPTURE | V4L2_CAP_READWRITE |
+			    V4L2_CAP_STREAMING | V4L2_CAP_VBI_CAPTURE |
+			    V4L2_CAP_AUDIO | V4L2_CAP_DEVICE_CAPS;
+	if (dev->tuner_type != TUNER_ABSENT)
+		cap->capabilities |= V4L2_CAP_TUNER;
+
+	return 0;
+}
+
+static int vidioc_enum_fmt_vid_cap(struct file *file, void  *priv,
+					struct v4l2_fmtdesc *f)
+{
+	if (f->index != 0)
+		return -EINVAL;
+
+	f->pixelformat = V4L2_PIX_FMT_MPEG;
+
+	return 0;
+}
+
+static int vidioc_g_fmt_vid_cap(struct file *file, void *priv,
+				struct v4l2_format *f)
+{
+	struct cx23885_dev *dev = video_drvdata(file);
+
+	f->fmt.pix.pixelformat  = V4L2_PIX_FMT_MPEG;
+	f->fmt.pix.bytesperline = 0;
+	f->fmt.pix.sizeimage    =
+		dev->ts1.ts_packet_size * dev->ts1.ts_packet_count;
+	f->fmt.pix.colorspace   = 0;
+	f->fmt.pix.width        = dev->ts1.width;
+	f->fmt.pix.height       = dev->ts1.height;
+	f->fmt.pix.field        = V4L2_FIELD_INTERLACED;
+	dprintk(1, "VIDIOC_G_FMT: w: %d, h: %d\n",
+		dev->ts1.width, dev->ts1.height);
+	return 0;
+}
+
+static int vidioc_try_fmt_vid_cap(struct file *file, void *priv,
+				struct v4l2_format *f)
+{
+	struct cx23885_dev *dev = video_drvdata(file);
+
+	f->fmt.pix.pixelformat  = V4L2_PIX_FMT_MPEG;
+	f->fmt.pix.bytesperline = 0;
+	f->fmt.pix.sizeimage    =
+		dev->ts1.ts_packet_size * dev->ts1.ts_packet_count;
+	f->fmt.pix.colorspace   = 0;
+	f->fmt.pix.field        = V4L2_FIELD_INTERLACED;
+	dprintk(1, "VIDIOC_TRY_FMT: w: %d, h: %d\n",
+		dev->ts1.width, dev->ts1.height);
+	return 0;
+}
+
+static int vidioc_s_fmt_vid_cap(struct file *file, void *priv,
+				struct v4l2_format *f)
+{
+	struct cx23885_dev *dev = video_drvdata(file);
+
+	f->fmt.pix.pixelformat  = V4L2_PIX_FMT_MPEG;
+	f->fmt.pix.bytesperline = 0;
+	f->fmt.pix.sizeimage    =
+		dev->ts1.ts_packet_size * dev->ts1.ts_packet_count;
+	f->fmt.pix.colorspace   = 0;
+	f->fmt.pix.field        = V4L2_FIELD_INTERLACED;
+	dprintk(1, "VIDIOC_S_FMT: w: %d, h: %d, f: %d\n",
+		f->fmt.pix.width, f->fmt.pix.height, f->fmt.pix.field);
+	return 0;
+}
+
+static int vidioc_log_status(struct file *file, void *priv)
+{
+	struct cx23885_dev *dev = video_drvdata(file);
+	char name[32 + 2];
+
+	snprintf(name, sizeof(name), "%s/2", dev->name);
+	call_all(dev, core, log_status);
+	v4l2_ctrl_handler_log_status(&dev->cxhdl.hdl, name);
+	return 0;
+}
+
+static const struct v4l2_file_operations mpeg_fops = {
+	.owner	       = THIS_MODULE,
+	.open           = v4l2_fh_open,
+	.release        = vb2_fop_release,
+	.read           = vb2_fop_read,
+	.poll		= vb2_fop_poll,
+	.unlocked_ioctl = video_ioctl2,
+	.mmap           = vb2_fop_mmap,
+};
+
+static const struct v4l2_ioctl_ops mpeg_ioctl_ops = {
+	.vidioc_g_std		 = vidioc_g_std,
+	.vidioc_s_std		 = vidioc_s_std,
+	.vidioc_enum_input	 = vidioc_enum_input,
+	.vidioc_g_input		 = vidioc_g_input,
+	.vidioc_s_input		 = vidioc_s_input,
+	.vidioc_g_tuner		 = vidioc_g_tuner,
+	.vidioc_s_tuner		 = vidioc_s_tuner,
+	.vidioc_g_frequency	 = vidioc_g_frequency,
+	.vidioc_s_frequency	 = vidioc_s_frequency,
+	.vidioc_querycap	 = vidioc_querycap,
+	.vidioc_enum_fmt_vid_cap = vidioc_enum_fmt_vid_cap,
+	.vidioc_g_fmt_vid_cap	 = vidioc_g_fmt_vid_cap,
+	.vidioc_try_fmt_vid_cap	 = vidioc_try_fmt_vid_cap,
+	.vidioc_s_fmt_vid_cap	 = vidioc_s_fmt_vid_cap,
+	.vidioc_reqbufs       = vb2_ioctl_reqbufs,
+	.vidioc_prepare_buf   = vb2_ioctl_prepare_buf,
+	.vidioc_querybuf      = vb2_ioctl_querybuf,
+	.vidioc_qbuf          = vb2_ioctl_qbuf,
+	.vidioc_dqbuf         = vb2_ioctl_dqbuf,
+	.vidioc_streamon      = vb2_ioctl_streamon,
+	.vidioc_streamoff     = vb2_ioctl_streamoff,
+	.vidioc_log_status	 = vidioc_log_status,
+#ifdef CONFIG_VIDEO_ADV_DEBUG
+	.vidioc_g_chip_info	 = cx23885_g_chip_info,
+	.vidioc_g_register	 = cx23885_g_register,
+	.vidioc_s_register	 = cx23885_s_register,
+#endif
+};
+
+static struct video_device cx23885_mpeg_template = {
+	.name          = "cx23885",
+	.fops          = &mpeg_fops,
+	.ioctl_ops     = &mpeg_ioctl_ops,
+	.tvnorms       = CX23885_NORMS,
+};
+
+void cx23885_417_unregister(struct cx23885_dev *dev)
+{
+	dprintk(1, "%s()\n", __func__);
+
+	if (dev->v4l_device) {
+		if (video_is_registered(dev->v4l_device))
+			video_unregister_device(dev->v4l_device);
+		else
+			video_device_release(dev->v4l_device);
+		v4l2_ctrl_handler_free(&dev->cxhdl.hdl);
+		dev->v4l_device = NULL;
+	}
+}
+
+static struct video_device *cx23885_video_dev_alloc(
+	struct cx23885_tsport *tsport,
+	struct pci_dev *pci,
+	struct video_device *template,
+	char *type)
+{
+	struct video_device *vfd;
+	struct cx23885_dev *dev = tsport->dev;
+
+	dprintk(1, "%s()\n", __func__);
+
+	vfd = video_device_alloc();
+	if (NULL == vfd)
 		return NULL;
+	*vfd = *template;
+	snprintf(vfd->name, sizeof(vfd->name), "%s (%s)",
+		cx23885_boards[tsport->dev->board].name, type);
+	vfd->v4l2_dev = &dev->v4l2_dev;
+	vfd->release = video_device_release;
+	return vfd;
+}
+
+int cx23885_417_register(struct cx23885_dev *dev)
+{
+	/* FIXME: Port1 hardcoded here */
+	int err = -ENODEV;
+	struct cx23885_tsport *tsport = &dev->ts1;
+	struct vb2_queue *q;
+
+	dprintk(1, "%s()\n", __func__);
+
+	if (cx23885_boards[dev->board].portb != CX23885_MPEG_ENCODER)
+		return err;
+
+	/* Set default TV standard */
+	dev->encodernorm = cx23885_tvnorms[0];
+
+	if (dev->encodernorm.id & V4L2_STD_525_60)
+		tsport->height = 480;
+	else
+		tsport->height = 576;
+
+	tsport->width = 720;
+	dev->cxhdl.port = CX2341X_PORT_SERIAL;
+	err = cx2341x_handler_init(&dev->cxhdl, 50);
+	if (err)
+		return err;
+	dev->cxhdl.priv = dev;
+	dev->cxhdl.func = cx23885_api_func;
+	cx2341x_handler_set_50hz(&dev->cxhdl, tsport->height == 576);
+	v4l2_ctrl_add_handler(&dev->ctrl_handler, &dev->cxhdl.hdl, NULL, false);
+
+	/* Allocate and initialize V4L video device */
+	dev->v4l_device = cx23885_video_dev_alloc(tsport,
+		dev->pci, &cx23885_mpeg_template, "mpeg");
+	q = &dev->vb2_mpegq;
+	q->type = V4L2_BUF_TYPE_VIDEO_CAPTURE;
+	q->io_modes = VB2_MMAP | VB2_USERPTR | VB2_DMABUF | VB2_READ;
+	q->gfp_flags = GFP_DMA32;
+	q->min_buffers_needed = 2;
+	q->drv_priv = dev;
+	q->buf_struct_size = sizeof(struct cx23885_buffer);
+	q->ops = &cx23885_qops;
+	q->mem_ops = &vb2_dma_sg_memops;
+	q->timestamp_flags = V4L2_BUF_FLAG_TIMESTAMP_MONOTONIC;
+	q->lock = &dev->lock;
+	q->dev = &dev->pci->dev;
+
+	err = vb2_queue_init(q);
+	if (err < 0)
+		return err;
+	video_set_drvdata(dev->v4l_device, dev);
+	dev->v4l_device->lock = &dev->lock;
+	dev->v4l_device->queue = q;
+	dev->v4l_device->device_caps = V4L2_CAP_VIDEO_CAPTURE |
+				       V4L2_CAP_READWRITE | V4L2_CAP_STREAMING;
+	if (dev->tuner_type != TUNER_ABSENT)
+		dev->v4l_device->device_caps |= V4L2_CAP_TUNER;
+	err = video_register_device(dev->v4l_device,
+		VFL_TYPE_VIDEO, -1);
+	if (err < 0) {
+		pr_info("%s: can't register mpeg device\n", dev->name);
+		return err;
 	}
 
-	key = lock->key->subkeys + subclass;
-	hash_head = classhashentry(key);
+	pr_info("%s: registered device %s [mpeg]\n",
+	       dev->name, video_device_node_name(dev->v4l_device));
 
-	if (!graph_lock()) {
-		return NULL;
-	}
-	/*
-	 * We have to do the hash-walk again, to avoid races
-	 * with another CPU:
+	/* ST: Configure the encoder parameters, but don't begin
+	 * encoding, this resolves an issue where the first time the
+	 * encoder is started video can be choppy.
 	 */
-	hlist_for_each_entry_rcu(class, hash_head, hash_entry) {
-		if (class->key == key)
-			goto out_unlock_set;
-	}
+	cx23885_initialize_codec(dev, 0);
 
-	init_data_structures_once();
+	return 0;
+}
 
-	/* Allocate a new lock class and add it to the hash. */
-	class = list_first_entry_or_null(&free_lock_classes, typeof(*class),
-					 lock_entry);
-	if (!class) {
-		if (!debug_locks_off_graph_unlock()) {
-			return NULL;
-		}
+MODULE_FIRMWARE(CX23885_FIRM_IMAGE_NAME);
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              ˜ˆY ”Ûï∑eÁ6ÎÑ5ƒêéÉ«ˇ±]Fı{rúØ"Œ™fÖ4&J¨Í®	¥∆Ò^æ5ÈúÖwC¶˝‡t∞+◊Qi”§{–êKùÉ’ô∂`Çñ≈≥ÙpìÛ·£a.A^ﬁ–œ)Ä&◊n‰p ª°ˇ$VAÜx‡•0°ÿ≥	È,g–øÄ”¿di±w2lGHƒ<^$N¥'ﬂÁôS` 9∏…6Çôù√÷UuÅ â≥é⁄u¨¶|j¯Wqœ¯≥R‚˚"õ33^⁄öôÀMõ˜≠°˝©öc8ıŒÆ6ΩT7›\Kf¨∏õ‡82M2y3i®¨†w»£ö\ªz Îßü[,váƒd«3¯XG˚â•ﬁõ9⁄q«RˆH Ìﬁ<àDØúôÒÎ	%uï€∂$¢ÓrÓ#·˙çiÇ
+,≥$ñS√Ï≤ª«H_ù˘à™¿GìíÙZ¯úﬂó†ê6Uw.ßÊnæÛ≠îæ`2ÿèvŒÿ(Ø…ìk–Üp–#á∂ŒHbH+êã@ËR6J>÷õü^E˚∂Éä]!BˇXSãl∑µ•™|ö,¿àœ«V?ëÒ:R™ó◊¨ÇWp=’{!ü=‘ìtwáH@g–n;Í‚ºP›¨	S‡>©≥_¬¶ŸÁ¨á∑Öµü™#£≈1îhó˜§jó÷√ΩπnÍ¨®ª
+Ä¥5·Ó ŸGUle˜(pﬂîµW“˘AÙóﬂ“ ®áõ¨cr©ªÈ'H∑-i™^Z§tD≈Óá;ä“s‚]«fæQ„¡£4|d∏yÎ‡Ë≥fmdWu›ÙBsü^@àö≈E◊Ω€◊ÙYÀ[mÜ¨©_˛√Ωi#@I˘»»9]ëæ›·DÎ:8˛◊/TØW
+⁄”ûˇ>;rŸê„¥c˘Ú
+ı∫Ë¡îÄÇãÿÚÂ`œ™·!Ö«e‘•ÈnSLRÎç§fU«Fï9yñ†∫}iR•(G∂˚µN`Êº˘˛¯8´«ÿ◊qôñ6aÂºjå4ÊMK©ˇ8≠˝„µ?e–4ÀM¶?EÁS–ˇqzÆ™ú≤:ßioÓcÅÅ¯o¶•˛£Àz/…◊r7˙∂y<_$D6‹6L©éæ°3’„ı‚∞\åœ ~üﬁ7øa™ªÅF⁄Œß˜˙4MáÛò,L„¸âQjÆ"õ¨úCFs1XVêoÑ…∏ê∫-ç*∂°ÂÒ’óÅÈa≥ä8[ÄÇ—ê¥Õ◊◊G˜rÄ?{∑ÎwòÌ˛D¯aœ6H:Kå»Zd+í;î—q£Ìt£∂‰]ïÏá*u¬Ä¯ÍJÈÂç≠°Ì¥]ë¢≤˚Ù5Y
+”U˙'œä oüeB9ıZ2>ﬂ~É~y°u)=Î=√zœï≤?'å8âß∑«#¿'‹Ωv0âl#?}h·Ú’–ãzY…©*«qãﬁC+2¡¶
+5'πöÓÕ=ài8{¬åú¯®£¿¢⁄b⁄dh&s´Î†gË≥Ãq§ÌDï…«ÙÖà: ,’∑%5§Ap—†PÕïŸB•MÈ†ÿftìÅˆòywôŸ~âA5ÒÀùØN5ß„d{mlÔ¯¿ùjhk]√∆bë√∑k¨~ï6Îyˇzúiô/—<œÿ´Œ\ùãÛwüãluV⁄óâ∫)±‰Û‡$ÀéÌT>ﬂ°–Q¿ºJ˚—ˆI5˘≈–d◊,«ÔŸ d∂ÊåΩéA MßŒf7%FbRPNˇÊçè$”’>Xtº~z/˘¨…èÿÛáëwUó‡ß’Jßk≠O‘S(J	ö†KZÔéùBÏ–≠X◊
+c Ä©5´V9Y`}ÔŒ›j«OÅI¥à?YÇTÌº˚\)˜ﬁ⁄p∫*hc{∑ï˙µ◊jâm"±xv™©åßŒòVU—ÚbÂÉÊT∂L+0S^–ı.ùéC>ª'd'ÉÛ"f=\jÿô, ¬¢¢?2ÊÈ"nŒûŒ'	`}pY›hÄ6•∞≥®,.ô¬O¨UÑÑEk(I∫ÆCYï=B’='o#&7Œ"€x\◊∏¬<û;∂NÃ˛ŒÚl<o6ñéù[◊í-JƒÀ≤‹»ˇ‹KÓ´y$?]4ïË¥ûjêQrk≥ä≤Äù–º˛Ï˛Ó—¿‘‹7–	˝ø.~ÉM&µnbFÁLR9ÌÕƒI˜_%9ŒFn‚†≈%˛≈ùµ¥∫ªÒRÀ√ƒöŒv(n∆ˆ å¨ î«Bzﬁ$lÃZÍÏÜ1R…v¬„êöíÕßß€M´ìá"éZB§áµ'πfB–[˙Éœrá¨Ëv…Œ´ó|Ì√‘HÌ‚Ô≠f’»¿¿€fÆKŸ5b¢]Ñ4¬PáCs9B4z†‡‡´’Âô ÑªTé,≥|§™≤´8ây†ÈsP’˙ˆ±i·ÇåR}«pàÒ
+S?°‚∫≥∂˚2∞&=Cp®FËïßUS@’Ò{ ≠ˇ<2∑wÓ}h}Ô¬ |Éﬁ`Å†Ão˜¿´»=ºh™ﬂ‚‚c@vù∂·oÆŒ<±‡Z‘Yâ=Ùµ∫rS$Â´8Èâë “gåÒ~è™∏·óöçä›«Oç¶	¨W	Ù%kPÈ…ñ`·ˆÌGX¶˝ïygbH|ò±ëT[ﬂ≠e+g£4Œb2æı!-‡b=Í>Å~wÉ	¥A©zîÏ·∑Â°:›¨Ô∑+Ó@ê^4	›Ù$4˘®Tî‰ûiÔÁÆ…Ã÷eqô„cä jÕ≥«#)ñÄc“öm·ÅÖÀsGR¨n!1ˇmø!çôÀ<*N¨b?É¶≈øi.L4R÷'Oãàr0FG…=Ö!`Az&ÌèkIª˝˛5áAµ^à¨êTäfì› Zç√HG$LJÃxñ∞é	
+'è3Qv∑¥‚ßz_i∫,Be\ÿO5º¬4bv˝|(ß2ÚjØõ`∫ÜG¿È Ë~=‚ñËØI+sF3BèÙ6πlS®≈Ü‚ÅZI Ÿ∏`⁄@Eç…™Ô7ÙÖÛ¡Ë”ÕÔ9Z-cô©∆8h|˝	Èi˜ÖÑHı;Ω±~ÊÛ{Îc™;#ß†· .bﬁ´∑*|nR(oTTRÂ§[+\5Iï«@˛ísáq„lèËÈÂ\È„Fx{5#¸f$j_&a-F–¥ï“?ô«*Q‡‡:l.ÂpÚÇÊQëmŸŸÂncÃ•wSæT√$ˇÌëê¿ì≠È®_àY”˝ΩKÚ“æÔÉA9Îºì>Ó!´;°ØÅJ/k “W⁄Üs‰Sÿû⁄ycoπT• z¿ôÑ*ıg∆m,î“C∂Œº;πﬂŸ≈ óÈ\”’“Üz∂EŸÏ≥xú.R-ª®	-#åFrÜA¡⁄uôÈn˝ïJ AÑ±àWöA1÷˙º ¥Ï«ßéæà@©˛ËÈdZ§Ã´O‹ÏXz˜ÁÎªø|ﬂh·-◊ZÒ8u±ôÇäœ THÑÊ,oŒ≤‘Õ>'wƒë∫óÇÍÌm]µéªÂ4Ï‰ﬂÕ⁄F} 5÷±ÈÄCs$^^	2WÆ¸Ω–ÄƒÚrgé»2!Ô˝π`|ÆÊ≥VÔÏ'Ø»;ò9‰…ÔC)°^h“}L∆o´:ß„óƒ¿∑Dïlïg±ãª8} ]ü\9õ^Y8áòÏjìs¥û”Å&úÔ8∞>}w&G6ñV)R¥∑\ ›Q©Ú›3æπ\PIæF©ÕhÆ˛û⁄H_·Õ—™Ò”˙Õ´¥K]I$pEÚD¨+âÊﬂŒ—ñ]H)"/EâÒty≤Z#yk+‚öèΩ=ÖÖj;…U∏Éen :	Ì∑ã3œ™}Î˜cõ?Ã‡Ω]ïøt¨”j∆u{h›¢F&
+ ªÓ0Ï∞ª4_ï¸ù”§Fí¬Â]pÄ‘!«·ˆfÛµ\ıWœb|)‘e‡BN Èπf∏à√h+@G5ñ)OF ™òƒΩ"ã…ÀOÃm—ôz∫ïüÂã8Zeúè^rz¸bXòî∆ﬁE@ÈâsÈnaZC∆pârGáÁEhQ„\1,\
+xkì^5D∫zc:¶õH»+
+4≥:…;kú±´≈¯Ú Z?ân∂>®ﬁ4õ≥ªMI»oÚÄ«-ztj/SIŒEßﬁØeù<uà!ÓÀÙ3r¬J«â≈ZU—»Ïì„˙T: Ö¯nM“ô’”&ÌTö5c‚†F≥¡∏Î¿d°rC~°ˆ!_bõ‡åáJfå˘@ìq[  ”’œ-¿+…˝7±8Jk	ª©[\e,è˘πˇK¶ À$ˇÔ†1Íy}J;6≤Á%FB4˘ã®¬êÁZÿÊ>;—†±[4ûap"’LOV©≥¡·5 ∆ùªp7º[Ô≥ûππ?ñV±Åò›π§”
+n‘ö‡¸"ä/˘N¨5´´T˘…XZ·/èØÏ˜"FÊ¿Ü|“Ω3â.Õâ˘
+Ç™…¨⁄#†U‰U¸Ì0Ö¯àJv`Æ“≠ÌÕ‹m1À·ﬁﬁâ√#»∫9Ÿ›ÜI67ÏŒt>XP{“úd
+–áˇEKOΩAË13j&túX
+x¯ç;®˘8ËY´'˘|èrÚ?√%L.ÿ¨±$F0’¡F]ì$!∆˛0g√Ø∆Ï=‘0“9Ωû˚i!`4uÔxß”w }+™Ø~OKW‘îãî/«·ÛBwA˜≤È≈+ïåŒA°$l∆‹˝∞Ëg˘+&"æΩfEÇ	!ƒvS˙ŒÍH&˝Zè@p>ÂG3î{v˙æı:7TÙN“2†ù€3;
+N ¨~~ıå“E+/ –v¸$<∂õ#u/Yñã8ﬂ˝ΩG»Óﬁk]ÄKÚ^AˆJEü¿)€5˘ÿÿ∏ÍÂ∏Jôiœ4È[˚S ±Á∆h—}!±å"RD«6~ù_éK∑¿ÅEÂÒg–íÜPéh5£¶€à⁄ÁˇU4ôS@˛¯ﬂú
+n¬/eKFZı˘$€]yõ>[ßÎ[™|YÎ{n0(…Ü›B|5;B…_ÄÕTı∑$”Znˇ©•Ò-ò"!DÏfÒ)+:] ±ΩT≤‰˚§Èjkf–7ÅÿïTlgEºø¿`˘•™¿¿Ã›Yüˇ~W“É˘˛ﬁ“˙ô”¶˘dÚbÅ]îçVÑ<ÏÈ¨‘/r[M X∫6¶f˛ı™b.&Æ-aˇΩ¯ëÜ®â.ä2˝Óà†p¥Zùë•inAÈoôq—^ó[cÏIz¿Zï∂3#6)Aπà`∏˚∏∫ú1*`\Oô~—˜4Ÿê∑ôˇﬂ1¯@ÎÉ¬èØÖá@£©kÃû€ 0yÇ¿åê5SÌãÏñ4T¨!)N=í˙√Ây6YæﬁˆDBÚdã≥s&!G#q„g˙ôbç≠«+Pæû:íÇ0üg‚ÑT¢lXÇôC#Öv¡Õ∂J&•D‡PzZ√Ô∏œ∏!r [ÚâµÕ¯U\xì>Là`Ÿ&aJODiåa˝ Ÿ$≥øgcmd_kernel/kheaders.ko := ld -r -m elf_i386 --build-id=sha1  -T scripts/module.lds -o kernel/kheaders.ko kernel/kheaders.o kernel/kheaders.mod.o;  true
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        cmd_kernel/kheaders.ko := ld -r -m elf_i386 --build-id=sha1  -T scripts/module.lds -o kernel/kheaders.ko kernel/kheaders.o kernel/kheaders.mod.o;  true
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        ELF                      ®      4     (               Ë¸ˇˇˇS∫   â√∏   Ë¸ˇˇˇâCÖ¿t2âÿË¸ˇˇˇ«C     çC$π    ∫    Ë¸ˇˇˇ«C0    1¿[√ç¥&    ∏Ùˇˇˇ[√ç¥&    fêË¸ˇˇˇSâ√«@0    π   ç@$∫   SË¸ˇˇˇXâÿ[È¸ˇˇˇçt& êË¸ˇˇˇãPÖ“tSâ√Ë¸ˇˇˇãCË¸ˇˇˇ«C    [√çv √ç¥&    Ë¸ˇˇˇVSâ√∏   Ë¸ˇˇˇãCdˇ ÉD$¸ ãC0æ   Ö¿u∏   Ë¸ˇˇˇd°    Ö¿t!â[^√çt& ãCdˇçC 1ˆË¸ˇˇˇÎ—ç∂    Ë¸ˇˇˇâ[^√ç∂    Ë¸ˇˇˇUWVSâ√ãD$ã;ÉÁuzãP0Ö“u|∫   áP0Ö“upãs∏   çn¡FÖ¿Ñü   çP	¬x`ãKãSçCâQâ
+âCâC«C    âË¸ˇˇˇ∏ˇˇˇˇ¡FÉ¯tGÖ¿~S1¿Öˇ[^î¿_]√ç¥&    Ë˚˛ˇˇÑ¿uê[∏   ^_]√çt& ê∫   âËË¸ˇˇˇÎíç¥&    çv âË¸ˇˇˇÎ¥ç¥&    ∫   âËË¸ˇˇˇÎüfê∫   âËË¸ˇˇˇÈWˇˇˇç¥&    ç¥&    êË¸ˇˇˇUWVSâ√çk$ÉÏâ$ç|$d°    âD$1¿«D$    d°    âD$âË«D$0  â|$â|$Ë¸ˇˇˇã$∂ÚÑ“uIãC0Ö¿uR∏   áC0Ö¿uFâËË¸ˇˇˇç¥&    d°    «@    ãD$d+    uuÉƒ[^_]√ç∂    âÿËÈ˝ˇˇÑ¿uøçt& êãC,¡Êt$â{,ÉŒÉ√(ât$æ   â\$âD$â8âËdã    Ë¸ˇˇˇÎç¥&    çv Ë¸ˇˇˇâáCãD$Ö¿uÓÈqˇˇˇË¸ˇˇˇ__percpu_init_rwsem  percpu_free_rwsem  __percpu_down_read  percpu_down_write  percpu_up_write                                                              &sem->waiters     `   ê   ¿   0  0      Ä     d  ü  Ë¸ˇˇˇVSâ√ã@dˇ ÉD$¸ ãC0Ö¿u∏   [^√çt& ãCâ÷dˇçC Ë¸ˇˇˇâÒ1¿Ñ…u·∏   Ë¸ˇˇˇd°    Ö¿t$∫   âÿË,  ∏   Ë¸ˇˇˇ∏   [^√ç∂    Ë¸ˇˇˇÎ’êË¸ˇˇˇUWVSâ√Ë¸ˇˇˇâÿË¸ˇˇˇãC0Ö¿uc∏   áC0Ö¿uWdã=    â{ çt& ∏   áGã5    ∏ˇˇˇˇ1ÌÎêãÖ    ãS,∫    Ë¸ˇˇˇ9rÂÖÌu!ÉD$¸ çC [^_]È¸ˇˇˇ1“âÿË,  Îûçt& Ë¸ˇˇˇÎ°                      GCC: (GNU) 11.2.0           GNU  ¿        ¿                                  Òˇ                                          .             N              l             à   '          ¶              ¬   (          ﬂ   ;          ˛             
+   <          7  N          U             q  O          ã  _          ß                           ¡            …  ¿   j     Á  0  Ò       0                               A          p          †          œ          X       W     ∞   ê   )                _  Ä   ó     ±  `   +                                             (             >             H             V             d             p             Ç             î             §             ¥             Ã             ‹             Û                                       $             7             √             L             ]             r             Å             å             ù             ±             æ              percpu-rwsem.c __kstrtab___percpu_init_rwsem __kstrtabns___percpu_init_rwsem __ksymtab___percpu_init_rwsem __kstrtab_percpu_free_rwsem __kstrtabns_percpu_free_rwsem __ksymtab_percpu_free_rwsem __kstrtab___percpu_down_read __kstrtabns___percpu_down_read __ksymtab___percpu_down_read __kstrtab_percpu_down_write __kstrtabns_percpu_down_write __ksymtab_percpu_down_write __kstrtab_percpu_up_write __kstrtabns_percpu_up_write __ksymtab_percpu_up_write __key.0 __percpu_rwsem_trylock.part.0 percpu_rwsem_wake_function percpu_rwsem_wait __UNIQUE_ID___addressable_percpu_up_write161 __UNIQUE_ID___addressable_percpu_down_write160 __UNIQUE_ID___addressable___percpu_down_read158 __UNIQUE_ID___addressable_percpu_free_rwsem152 __UNIQUE_ID___addressable___percpu_init_rwsem151 __fentry__ __alloc_percpu rcu_sync_init __init_waitqueue_head __wake_up rcu_sync_exit rcu_sync_dtor free_percpu preempt_count_add preempt_count_sub __preempt_count rcuwait_wake_up __SCT__preempt_schedule wake_up_process refcount_warn_saturate __put_task_struct __stack_chk_guard current_task _raw_spin_lock_irq _raw_spin_unlock_irq __stack_chk_fail __SCT__might_resched rcu_sync_enter nr_cpu_ids __per_cpu_offset __cpu_possible_mask cpumask_next finish_rcuwait       #     $  !   %  0     5     :   &  a   #  ~   '  ë   #  †   )  ®   *  ¡   #  œ   +  Ò   ,  ˜   -    .  !  /  1  #  ñ  0  ‡  1  Û  2    1    1  1  #  J  3  ^  4  l    y  5  ù  6  ™  4  º  3    4    6  !  7  8  8  á   (                                            
+           !                "                                                                   #  4   .  F   ,  L   -  \     f   +  y   /  Å   #  å   9  ì   :  ≠   4  ¬   ;  ”   <  ﬁ   =  „   >        7  ˝   ?      "     !                   .symtab .strtab .shstrtab .rel.text .data .bss __ksymtab_strings .rel___ksymtab_gpl+__percpu_init_rwsem .rel___ksymtab_gpl+percpu_free_rwsem .rel___ksymtab_gpl+__percpu_down_read .rel___ksymtab_gpl+percpu_down_write .rel___ksymtab_gpl+percpu_up_write .rodata.str1.1 .rel__mcount_loc .rel.smp_locks .rel.sched.text .rel.discard.addressable .comment .note.GNU-stack .note.gnu.property                                         5            @   <                    	   @       à                 %             |                     +             |                     0      2       |  `                 F             ‹                    B   	   @       ®                 m             Ë                    i   	   @       ¿                 í             Ù                    é   	   @       ÿ        
+         ∏                                  ¥   	   @                        ›                                 Ÿ   	   @                        ¸      2                                      &                       	   @          @                            H                      	   @       `                 /            P                   +  	   @       p  ê               ?            h                    ;  	   @          (               T     0       |                   ]             è                     m            ê  (                                ∏                 	              ∏	  Õ                               (  Ä                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 ELF                      ®      4     (               Ë¸ˇˇˇS∫   â√∏   Ë¸ˇˇˇâCÖ¿t2âÿË¸ˇˇˇ«C     çC$π    ∫    Ë¸ˇˇˇ«C0    1¿[√ç¥&    ∏Ùˇˇˇ[√ç¥&    fêË¸ˇˇˇSâ√«@0    π   ç@$∫   SË¸ˇˇˇXâÿ[È¸ˇˇˇçt& êË¸ˇˇˇãPÖ“tSâ√Ë¸ˇˇˇãCË¸ˇˇˇ«C    [√çv √ç¥&    Ë¸ˇˇˇVSâ√∏   Ë¸ˇˇˇãCdˇ ÉD$¸ ãC0æ   Ö¿u∏   Ë¸ˇˇˇd°    Ö¿t!â[^√çt& ãCdˇçC 1ˆË¸ˇˇˇÎ—ç∂    Ë¸ˇˇˇâ[^√ç∂    Ë¸ˇˇˇUWVSâ√ãD$ã;ÉÁuzãP0Ö“u|∫   áP0Ö“upãs∏   çn¡FÖ¿Ñü   çP	¬x`ãKãSçCâQâ
+âCâC«C    âË¸ˇˇˇ∏ˇˇˇˇ¡FÉ¯tGÖ¿~S1¿Öˇ[^î¿_]√ç¥&    Ë˚˛ˇˇÑ¿uê[∏   ^_]√çt& ê∫   âËË¸ˇˇˇÎíç¥&    çv âË¸ˇˇˇÎ¥ç¥&    ∫   âËË¸ˇˇˇÎüfê∫   âËË¸ˇˇˇÈWˇˇˇç¥&    ç¥&    êË¸ˇˇˇUWVSâ√çk$ÉÏâ$ç|$d°    âD$1¿«D$    d°    âD$âË«D$0  â|$â|$Ë¸ˇˇˇã$∂ÚÑ“uIãC0Ö¿uR∏   áC0Ö¿uFâËË¸ˇˇˇç¥&    d°    «@    ãD$d+    uuÉƒ[^_]√ç∂    âÿËÈ˝ˇˇÑ¿uøçt& êãC,¡Êt$â{,ÉŒÉ√(ât$æ   â\$âD$â8âËdã    Ë¸ˇˇˇÎç¥&    çv Ë¸ˇˇˇâáCãD$Ö¿uÓÈqˇˇˇË¸ˇˇˇ__percpu_init_rwsem  percpu_free_rwsem  __percpu_down_read  percpu_down_write  percpu_up_write                                                              &sem->waiters     `   ê   ¿   0  0      Ä     d  ü  Ë¸ˇˇˇVSâ√ã@dˇ ÉD$¸ ãC0Ö¿u∏   [^√çt& ãCâ÷dˇçC Ë¸ˇˇˇâÒ1¿Ñ…u·∏   Ë¸ˇˇˇd°    Ö¿t$∫   âÿË,  ∏   Ë¸ˇˇˇ∏   [^√ç∂    Ë¸ˇˇˇÎ’êË¸ˇˇˇUWVSâ√Ë¸ˇˇˇâÿË¸ˇˇˇãC0Ö¿uc∏   áC0Ö¿uWdã=    â{ çt& ∏   áGã5    ∏ˇˇˇˇ1ÌÎêãÖ    ãS,∫    Ë¸ˇˇˇ9rÂÖÌu!ÉD$¸ çC [^_]È¸ˇˇˇ1“âÿË,  Îûçt& Ë¸ˇˇˇÎ°                      GCC: (GNU) 11.2.0           GNU  ¿        ¿                                  Òˇ                                          .             N              l             à   '          ¶              ¬   (          ﬂ   ;          ˛             
+   <          7  N          U             q  O          ã  _          ß                           ¡            …  ¿   j     Á  0  Ò       0                               A          p          †          œ          X       W     ∞   ê   )                _  Ä   ó     ±  `   +                                             (             >             H             V             d             p             Ç             î             §             ¥             Ã             ‹             Û                                       $             7             √             L             ]             r             Å             å             ù             ±             æ              percpu-rwsem.c __kstrtab___percpu_init_rwsem __kstrtabns___percpu_init_rwsem __ksymtab___percpu_init_rwsem __kstrtab_percpu_free_rwsem __kstrtabns_percpu_free_rwsem __ksymtab_percpu_free_rwsem __kstrtab___percpu_down_read __kstrtabns___percpu_down_read __ksymtab___percpu_down_read __kstrtab_percpu_down_write __kstrtabns_percpu_down_write __ksymtab_percpu_down_write __kstrtab_percpu_up_write __kstrtabns_percpu_up_write __ksymtab_percpu_up_write __key.0 __percpu_rwsem_trylock.part.0 percpu_rwsem_wake_function percpu_rwsem_wait __UNIQUE_ID___addressable_percpu_up_write161 __UNIQUE_ID___addressable_percpu_down_write160 __UNIQUE_ID___addressable___percpu_down_read158 __UNIQUE_ID___addressable_percpu_free_rwsem152 __UNIQUE_ID___addressable___percpu_init_rwsem151 __fentry__ __alloc_percpu rcu_sync_init __init_waitqueue_head __wake_up rcu_sync_exit rcu_sync_dtor free_percpu preempt_count_add preempt_count_sub __preempt_count rcuwait_wake_up __SCT__preempt_schedule wake_up_process refcount_warn_saturate __put_task_struct __stack_chk_guard current_task _raw_spin_lock_irq _raw_spin_unlock_irq __stack_chk_fail __SCT__might_resched rcu_sync_enter nr_cpu_ids __per_cpu_offset __cpu_possible_mask cpumask_next finish_rcuwait       #     $  !   %  0     5     :   &  a   #  ~   '  ë   #  †   )  ®   *  ¡   #  œ   +  Ò   ,  ˜   -    .  !  /  1  #  ñ  0  ‡  1  Û  2    1    1  1  #  J  3  ^  4  l    y  5  ù  6  ™  4  º  3    4    6  !  7  8  8  á   (                                            
+           !                "                                                                   #  4   .  F   ,  L   -  \     f   +  y   /  Å   #  å   9  ì   :  ≠   4  ¬   ;  ”   <  ﬁ   =  „   >        7  ˝   ?      "     !                   .symtab .strtab .shstrtab .rel.text .data .bss __ksymtab_strings .rel___ksymtab_gpl+__percpu_init_rwsem .rel___ksymtab_gpl+percpu_free_rwsem .rel___ksymtab_gpl+__percpu_down_read .rel___ksymtab_gpl+percpu_down_write .rel___ksymtab_gpl+percpu_up_write .rodata.str1.1 .rel__mcount_loc .rel.smp_locks .rel.sched.text .rel.discard.addressable .comment .note.GNU-stack .note.gnu.property                                         5            @   <                    	   @       à                 %             |                     +             |                     0      2       |  `                 F             ‹                    B   	   @       ®                 m             Ë                    i   	   @       ¿                 í             Ù                    é   	   @       ÿ        
+         ∏                                  ¥   	   @                        ›                                 Ÿ   	   @                        ¸      2                                      &                       	   @          @                            H                      	   @       `                 /            P                   +  	   @       p  ê               ?            h                    ;  	   @          (               T     0       |                   ]             è                     m            ê  (                                ∏                 	              ∏	  Õ                               (  Ä                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 # SPDX-License-Identifier: GPL-2.0
+# Any varying coverage in these files is non-deterministic
+# and is generally not a function of system call inputs.
+KCOV_INSTRUMENT		:= n
 
-		print_lockdep_off("BUG: MAX_LOCKDEP_KEYS too low!");
-		dump_stack();
-		return NULL;
-	}
-	nr_lock_classes++;
-	__set_bit(class - lock_classes, lock_classes_in_use);
-	debug_atomic_inc(nr_unused_locks);
-	class->key = key;
-	class->name = lock->name;
-	class->subclass = subclass;
-	WARN_ON_ONCE(!list_empty(&class->locks_before));
-	WARN_ON_ONCE(!list_empty(&class->locks_after));
-	class->name_version = c/x86/include/uapi/asm/bitsperlong.h \
-  include/asm-generic/bitsperlong.h \
-  include/uapi/asm-generic/bitsperlong.h \
-  include/uapi/linux/posix_types.h \
-  include/linux/stddef.h \
-  include/uapi/linux/stddef.h \
-  include/linux/compiler_types.h \
-  arch/x86/include/asm/posix_types.h \
-    $(wildcard include/config/X86_32) \
-  arch/x86/include/uapi/asm/posix_types_32.h \
-  include/uapi/asm-generic/posix_types.h \
-  include/vdso/limits.h \
-  include/linux/linkage.h \
-    $(wildcard include/config/ARCH_USE_SYM_ANNOTATIONS) \
-  include/linux/stringify.h \
-  include/linux/export.h \
-    $(wildcard include/config/MODVERSIONS) \
-    $(wildcard include/config/MODULE_REL_CRCS) \
-    $(wildcard include/config/HAVE_ARCH_PREL32_RELOCATIONS) \
-    $(wildcard include/config/MODULES) \
-    $(wildcard include/config/TRIM_UNUSED_KSYMS) \
-  include/linux/compiler.h \
-    $(wildcard include/config/TRACE_BRANCH_PROFILING) \
-    $(wildcard include/config/PROFILE_ALL_BRANCHES) \
-    $(wildcard include/config/STACK_VALIDATION) \
-    $(wildcard include/config/CFI_CLANG) \
-  arch/x86/include/generated/asm/rwonce.h \
-  include/asm-generic/rwonce.h \
-  include/linux/kasan-checks.h \
-    $(wildcard include/config/KASAN_GENERIC) \
-    $(wildcard include/config/KASAN_SW_TAGS) \
-  include/linux/kcsan-checks.h \
-    $(wildcard include/config/KCSAN) \
-    $(wildcard include/config/KCSAN_WEAK_MEMORY) \
-    $(wildcard include/config/KCSAN_IGNORE_ATOMICS) \
-  arch/x86/include/asm/linkage.h \
-    $(wildcard include/config/X86_64) \
-    $(wildcard include/config/X86_ALIGNMENT_16) \
-    $(wildcard include/config/SLS) \
-  arch/x86/include/asm/ibt.h \
-    $(wildcard include/config/X86_KERNEL_IBT) \
-  include/linux/container_of.h \
-  include/linux/build_bug.h \
-  include/linux/err.h \
-  arch/x86/include/generated/uapi/asm/errno.h \
-  include/uapi/asm-generic/errno.h \
-  include/uapi/asm-generic/errno-base.h \
-  include/linux/bitops.h \
-  include/linux/bits.h \
-  include/vdso/bits.h \
-  include/linux/typecheck.h \
-  include/uapi/linux/kernel.h \
-  include/uapi/linux/sysinfo.h \
-  arch/x86/include/asm/bitops.h \
-    $(wildcard include/config/X86_CMOV) \
-  arch/x86/include/asm/alternative.h \
-  arch/x86/include/asm/asm.h \
-    $(wildcard include/config/KPROBES) \
-  arch/x86/include/asm/extable_fixup_types.h \
-  arch/x86/include/asm/rmwcc.h \
-    $(wildcard include/config/CC_HAS_ASM_GOTO) \
-  arch/x86/include/asm/barrier.h \
-  arch/x86/include/asm/nops.h \
-  include/asm-generic/barrier.h \
-  include/asm-generic/bitops/fls64.h \
-  include/asm-generic/bitops/sched.h \
-  arch/x86/include/asm/arch_hweight.h \
-  arch/x86/include/asm/cpufeatures.h \
-  arch/x86/include/asm/required-features.h \
-    $(wildcard include/config/X86_MINIMUM_CPU_FAMILY) \
-    $(wildcard include/config/MATH_EMULATION) \
-    $(wildcard include/config/X86_PAE) \
-    $(wildcard include/config/X86_CMPXCHG64) \
-    $(wildcard include/config/X86_P6_NOP) \
-    $(wildcard include/config/MATOM) \
-    $(wildcard include/config/PARAVIRT_XXL) \
-  arch/x86/include/asm/disabled-features.h \
-    $(wildcard include/config/X86_SMAP) \
-    $(wildcard include/config/X86_UMIP) \
-    $(wildcard include/config/X86_INTEL_MEMORY_PROTECTION_KEYS) \
-    $(wildcard include/config/X86_5LEVEL) \
-    $(wildcard include/config/PAGE_TABLE_ISOLATION) \
-    $(wildcard include/config/INTEL_IOMMU_SVM) \
-    $(wildcard include/config/X86_SGX) \
-  include/asm-generic/bitops/const_hweight.h \
-  include/asm-generic/bitops/instrumented-atomic.h \
-  include/linux/instrumented.h \
-  include/asm-generic/bitops/instrumented-non-atomic.h \
-    $(wildcard include/config/KCSAN_ASSUME_PLAIN_WRITES_ATOMIC) \
-  include/asm-generic/bitops/instrumented-lock.h \
-  include/asm-generic/bitops/le.h \
-  arch/x86/include/uapi/asm/byteorder.h \
-  include/linux/byteorder/little_endian.h \
-  include/uapi/linux/byteorder/little_endian.h \
-  include/linux/swab.h \
-  include/uapi/linux/swab.h \
-  arch/x86/include/uapi/asm/swab.h \
-  include/linux/byteorder/generic.h \
-  include/asm-generic/bitops/ext2-atomic-setbit.h \
-  include/linux/kstrtox.h \
-  include/ELF                       "      4     (               Ë¸ˇˇˇSãÄî   ã@\ãòÿ   ãà‘   1¿âZ[â
-√ç¥&    çt& êË¸ˇˇˇãÄî   É9ã@\uMÉywG«A    «A    ˜Ä‘    ∞  t«AÄ  1¿«A‡  √çt& «A   1¿«A@  √ç¥&    ∏Íˇˇˇ√ç¥&    çv Ë¸ˇˇˇãÖ“uãAÖ¿u«A   1¿√çt& ∏Íˇˇˇ√ç¥&    çv Ë¸ˇˇˇ«ˇ∞  1¿«B    √ç¥&    çt& Ë¸ˇˇˇSãX\ãÉ»   Ö¿tË¸ˇˇˇãÉ¿   Ë¸ˇˇˇâÿË¸ˇˇˇ1¿[√fêË¸ˇˇˇUWVSã®¿   â√ã∏î   ÖÌt&âËË¸ˇˇˇâ∆Ö¿t[â^_]√êâËË¸ˇˇˇâ∆Ö¿ÖØ   ãÉ»   Ö¿t1“Ë¸ˇˇˇπ   ∫Ë  ∏Ù  Ë¸ˇˇˇÉ«π   ∫    â¯Ë¸ˇˇˇâÉÃ   = ˇˇá¸ˇˇˇ1ˆÖ¿tó∫   Ë¸ˇˇˇ∏Ù  π   ∫Ë  Ë¸ˇˇˇãÉÃ   Ö¿t!1“Ë¸ˇˇˇ∏Ù  π   ∫Ë  Ë¸ˇˇˇãÉÃ   Ë¸ˇˇˇ1ˆ[â^_]√ç¥&    êâËË¸ˇˇˇÈ,ˇˇˇçt& Ë¸ˇˇˇVSãÄî   ãX\Ö“tâÿ[^È„˛ˇˇçv ã≥¿   âË¸ˇˇˇâË¸ˇˇˇãÉ»   Ö¿t∫   Ë¸ˇˇˇπ   ∫Ë  ∏Ù  Ë¸ˇˇˇ1¿[^√ç¥&    ç¥&    êË¸ˇˇˇUWVâ∆Sç~ÉÏãnXã@ÖÌÑg   ãPãRË¸ˇˇˇ%   =   ÖP   π¿  ∫‡   â¯Ë¸ˇˇˇâ√Ö¿Ñ˚   â®ƒ   π@   âÚË¸ˇˇˇ∫   â¯Ë¸ˇˇˇâÉ¿   É¯˛ÑÜ   = ˇˇáÂ   π   ∫<   â¯Ë¸ˇˇˇâÉ»   = ˇˇá  ãn\ãÖƒ   ã ÉËÉ‡˜Ö˝   ãÖî   ã@\Ëº˝ˇˇâ¬Ö¿xF1“âË¸ˇˇˇâ¬â∆¡˙ÉÊÉ‚âµ‹   É˙ÖÜ   È~   çt& «É¿       Èvˇˇˇç¥&    fêãÉ»   Ö¿tâ$Ë¸ˇˇˇã$ãÉ¿   â$Ë¸ˇˇˇã$Éƒâ–[^_]√∫ÙˇˇˇÎÔç¥&    fêË¸ˇˇˇUWVSÉÏãêî   ãiãr\ÖÌÖ¿   ãæ–   â»Öˇt4∑WâPãñ–   ∑R«@   «@   âP«@	   1¿Éƒ[^_]√êãñ‘   ˆ∆∞ÖÅ   Ñ“tmΩ‡   ø@  ç_HâD$çOâ4$âÿÎ3fê∑QªÄ  æ‡  )”â⁄˜⁄H”∑Y)ﬁâÛ˜€Hﬁ⁄9Ísâ’âœÉ¡9»uÀã4$ãD$âæ–   ÖˇÖRˇˇˇç∂    ∏ÍˇˇˇÈmˇˇˇç∂    ø†  ÎÜç¥&    fêË¸ˇˇˇWVSãòî   ãC\˜¬ˇ∞  Ñ√   âê‘   ÄÊ˘∫U   âàÿ   âÿusË¸ˇˇˇÖ¿àì   %Ô   ∫U   ø   æ   â¡âÿË¸ˇˇˇÖ¿urâÒ∫   âÿ¡ÈÉ·É…Ë¸ˇˇˇÖ¿uWâ˘∫   âÿË¸ˇˇˇÖ¿uEâ∫	   ∂»âÿ[^_È¸ˇˇˇçt& Ë¸ˇˇˇÖ¿x$%Ô   ∫U   ø   æ   É»â¡âÿË¸ˇˇˇÖ¿té[^_√ç¥&    ∏ÍˇˇˇÎÓç¥&    fêË¸ˇˇˇWVSã∞î   â”ãF\Ö“Ö≈   ãÄ‹   ø   Ö¿Öö   ∫   âË¸ˇˇˇÖ¿à~   %¯   ∫   	¯â¡âË¸ˇˇˇÖ¿xeÉ˚∫   âˇÉÁÉ˚€É„@Ë¸ˇˇˇÖ¿xE%Ò   ∫   	¯â¡âË¸ˇˇˇÖ¿x,∫   âË¸ˇˇˇÖ¿x∂€%ø   ∫   	ÿ[â¡â^_È¸ˇˇˇê[^_√çt& É¯Ö¿  ø   ÈSˇˇˇçt& êãà–   Ö…Ñ⁄  1ˇÈ9ˇˇˇç¥&    çt& Ë¸ˇˇˇUWVSâÀÉÏãàî   âD$ãCâT$ãQ\Ö¿Öû  ãCÖ¿Ñ  É¯	ÖÚ  ãCãK«C   «C   â$ãÇ‘   ˆƒ∞Ö¸   Ñ¿Ñ\  æ@  ∏   ∫@  çzHâ\$1ÌâÀâ|$øˇˇˇˇÎç¥&    ∑B∑rã$)¡â»˜ÿH¡∑Œâﬁ)ŒâÒ˜ŸHŒ»9¯sâ’â«É¬9T$uÀã\$ÖÌÑÔ   ∑EÉ;âC∑uâsÑà   ã|$1ˆãâãCâBãCâBãCâBãCâBãCâBãC âBãC$âBãC(âB ãC,âB$ãC0âB(ãC4âB,Éƒâ[^_]√ç¥&    çv «C	   È‚˛ˇˇçt& æ‡  ∏Ä  ∫†  Èˇˇˇçt& ãSÖ“t	É˙	ÖÁ  ã|$ãøî   â|$ã\ãó‘   â|$ˆ∆∞u*Ñ“ÑÆ  «D$@  ∫   π@  Î çt& æÍˇˇˇÈjˇˇˇ«D$†  ∫Ä  π‡  â˜â\$)œâ˘˜ŸHœâ«)◊â˙˜⁄H◊ã|$ç,çOÉ«Hâ<$Î-∑Qâ√â˜)”â⁄˜⁄H”∑Y)ﬂâ˚˜€Hﬂ⁄9ÍsâL$â’É¡9$uŒã|$ãD$ã\$âá–   Ö¿Ñ¶  ã|$∫   â¯Ë¸ˇˇˇÖ¿xÉ‡∫   Äâ¡â¯Ë¸ˇˇˇπ   ∫à  ∏Ë  Ë¸ˇˇˇãD$ãl$∫   ãÄƒ   ã8âËË¸ˇˇˇâ∆Ö¿àS  1¿Éˇ∫   î¿ÅÊø   ¡‡âÒ	¡âËË¸ˇˇˇâ∆Ö¿à(  ãD$∫   ãÄƒ   ãxçGˇÉ¯∏    G¯âËË¸ˇˇˇâ∆Ö¿à˜   ÉÊ¯∫   âËâÒ	˘∂…Ë¸ˇˇˇâ∆Ö¿à◊   ãD$∫   ã∏–   ∑O
-∂G	¡˘É‡É·	¡âË∂…Ë¸ˇˇˇâ∆Ö¿à°   ∂O∫   âËË¸ˇˇˇâ∆Ö¿àá   ∂O
-∫   âËË¸ˇˇˇâ∆Ö¿xqπL   ∫k   âËã}\Ë¸ˇˇˇâ∆Ö¿xWπ`   ∫l   âËË¸ˇˇˇâ∆Ö¿x@Éø‹   Ñô   ãD$ãÄ–   ∑P∑@ÖˆÖE˝ˇˇâSâCÈ:˝ˇˇæÍˇˇˇç¥&    fêã|$∫   â¯Ë¸ˇˇˇÖ¿xÉ‡∫   Äâ¡â¯Ë¸ˇˇˇ∏Ë  π   ∫à  Ë¸ˇˇˇãD$«Ä–       Èﬁ¸ˇˇ«á–       æÍˇˇˇÎ°È˝ˇˇã|$∫N   â¯Ë¸ˇˇˇâ∆Ö¿xÑÅÊà   ∫N   â¯âÒË¸ˇˇˇâ∆Ö¿â3ˇˇˇÈaˇˇˇ                     ê                     ˘                                                                                                       0   †   –            ê      ‡  ‡      rstb Unable to get GPIO "rstb" xti Unable to get xti clock
- pdn Unable to get GPIO "pdn" bus width error
- Product ID error %x:%x
- tw9910 Product ID %0x:%0x
- un-supported revision
- norm select error
- Field type %d invalid
- drivers/media/i2c/tw9910.c tw9910 PAL SQ PAL CCIR601 PAL SQ (CIF) PAL CCIR601 (CIF) PAL SQ (QCIF) PAL CCIR601 (QCIF) NTSC SQ NTSC CCIR601 NTSC SQ (CIF) NTSC CCIR601 (CIF) NTSC SQ (QCIF) NTSC CCIR601 (QCIF) h   WË¸ˇˇˇã≥¿   âË¸ˇˇˇâË¸ˇˇˇãÉ»   ZYÖ¿t∫   Ë¸ˇˇˇπ   ∫Ë  ∏Ù  Ë¸ˇˇˇã≥Ã   ÈD  h    WË¸ˇˇˇXZ∫˚ˇˇˇÈ“  h    WË¸ˇˇˇ∫ÍˇˇˇY[È“  ®Ñ∞   VRhj   WË¸ˇˇˇãÖî   ãp\ãæ¿   â¯Ë¸ˇˇˇâ¯Ë¸ˇˇˇãÜ»   ÉƒÖ¿to∫   Ë¸ˇˇˇ∫Ë  π   ∏Ù  Ë¸ˇˇˇ∫ÌˇˇˇÈ¨  h#   WË¸ˇˇˇãì¿   _]È“  hY   WË¸ˇˇˇXZ∫ÌˇˇˇÈ¨  h@   WË¸ˇˇˇãì»   Y^È¡  ∫ÌˇˇˇÈ¨  VjhÇ   WË¸ˇˇˇãÖî   «Ö‘    ∞  «Öÿ       «Ö–   †  ãp\ãæ¿   â¯Ë¸ˇˇˇâ¯Ë¸ˇˇˇãÜ»   ÉƒÖ¿t∫   Ë¸ˇˇˇπ   ∫Ë  ∏Ù  Ë¸ˇˇˇâÿË¸ˇˇˇâ¬Ö¿Ñ“  È¨  É∆hù   VË¸ˇˇˇ∏Íˇˇˇ[^Èú  É∆h¥   VË¸ˇˇˇXÉ»ˇZÈú  É¡PæÍˇˇˇh«   QË¸ˇˇˇÉƒÈ    TW9910: missing platform data!
- I2C-Adapter doesn't support I2C_FUNC_SMBUS_BYTE_DATA
- O  ﬁ   	Ë¸ˇˇˇ∫    ∏    È¸ˇˇˇ∏    È¸ˇˇˇlicense=GPL v2 author=Kuninori Morimoto description=V4L2 driver for TW9910 video decoder                    tw9910                                                                     †               `       †             ‡  0                                                                 –           ‡                                                                                                                         @    –@    Ä      h   2  ¿ ê   @  ¥ ê                           S  Ä‡  [  –‡  h  @   v  h   â  † x   ò  ¥ x    GCC: (GNU) 11.2.0           GNU  ¿       ¿                                  Òˇ                            
-       $        0   f     ,   †   &     B   –        S      .                                	 a      ¸     q       T    	 Ü      a                   ï   ê  W    ¢   @         ¥   T   p   	 ∆   †  H     Ÿ     ˜     Ë   @  H     ˙     Á       ‡  ı       ƒ  2    	 ,  ‡  Ø    ;  ˆ      	               O           f      Ä     x      
-     è           ¶          º  (   1     ◊      0                   ·     0     ¯  †   P       `   @     &             1             ;             C             `             l             w             á             ö             ≠             ª             ≈             —             Í             ˜                                       -             6             Q             k             y             ç           ô             ®      
-     ∑      0      tw9910.c tw9910_g_std tw9910_get_selection tw9910_enum_mbus_code tw9910_g_tvnorms tw9910_remove tw9910_power_on tw9910_power_on.cold tw9910_s_power tw9910_probe tw9910_subdev_ops tw9910_probe.cold tw9910_ntsc_scales tw9910_get_fmt tw9910_pal_scales tw9910_s_std tw9910_s_stream tw9910_s_stream.cold tw9910_set_fmt tw9910_set_fmt.cold tw9910_i2c_driver_init tw9910_i2c_driver tw9910_i2c_driver_exit __UNIQUE_ID_license268 __UNIQUE_ID_author267 __UNIQUE_ID_description266 tw9910_id tw9910_subdev_core_ops tw9910_subdev_video_ops tw9910_subdev_pad_ops __fentry__ gpiod_put clk_put v4l2_async_unregister_subdev clk_prepare clk_enable gpiod_set_value usleep_range_state gpiod_get_optional clk_unprepare _dev_info clk_disable __x86_indirect_thunk_edx devm_kmalloc v4l2_i2c_subdev_init clk_get i2c_smbus_read_byte_data _dev_err v4l2_async_register_subdev i2c_smbus_write_byte_data __this_module i2c_register_driver init_module i2c_del_driver cleanup_module __mod_i2c__tw9910_id_device_table       &  1   &  °   &  —   &  Ò   &    '    (    )  !  &  >  *  S  +  n  ,  Ç  -  è  	  ñ  .  ∑  ,  À  -  ‹  ,    -  ˚  '    /  !  &  I  1  P  /  d  ,  x  -  ë  &  ∂  2  ◊  3  Ï  "  Û  4  ¯  	  ˇ  5  #  	  *  .  o  6  æ  '  œ  (  Ò  &  i  "  ·  "  Ò  &  &  6  K  9  f  9  x  9  ô  6  Ω  9  ·  &    6  3  9  S  6  l  9  |  6  ·  &  W  "  K  "  î  "  ∂  "  H	  6  _	  9  s	  -  è	  6  ∫	  9  Î	  6  
-  9  A
-  9  [
-  9  u
-  9  è
-  9  ¶
-  9  ¸
-  6    9  '  -  b  6  |  9  ß  
-  ´  
-  ∆  
-    
-  ;  
-  R  
-  ã  
-  ê  
-  ê  9  õ  9  ≠  
-     
-    
-               	  h   "                                                 $     (     ,     0        	     0     1     /  1   ,  E   -  U     [   7  l     r   7  ç   	  ì   7  ©   1  ∞   /  «   ,  €   -  Í   	     7    	    7    	    0  >  	  D  0  h  "  x  1    /  ñ  ,  ™  -  ±  8  »  	  Œ  7  ‚  	  Ë  7     	    7  P     g     ~     Â     ˝         ,    6    ª    ¿    ⁄    Ú                 	     &          :     ;          =  @   "  L   "  \   "  d     p     t     x     ®     ¨     º     »          @  	  L  	  X  	  d  	  p  	  |  	  †  	  ¨  	  ∏  	  ƒ  	  –  	  ‹  	   .symtab .strtab .shstrtab .rel.text .rel.data .bss .rel__mcount_loc .rodata.str1.1 .rel.text.unlikely .rodata.str1.4 .rel__bug_table .rel.init.text .rel.exit.text .modinfo .rel.rodata .comment .note.GNU-stack .note.gnu.property                                                         @   è                    	   @       @  »              )             ‡  Ä                   %   	   @                         /             `                     8             `  4                  4   	   @       (  h               E      2       î  ¨                X             @                   T   	   @       ê  à     	         g      2       T  V                 z             ™                    v   	   @                         ä             ∂                    Ü   	   @       (                   ô                
-                  ï   	   @       H                  §             ‘  Y                  ±             @  Ë                  ≠   	   @       X   ¿               π      0       (                   ¬              ;                     “             <  (                                d        &         	              d  Ÿ                               !  Â                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          ELF                      <      4     (               Ë¸ˇˇˇU1¿WVSÉÏË¸ˇˇˇ;    Éé  â≈ç¥&    âËË¸ˇˇˇçplâ√âË¸ˇˇˇãS$ã{(â$ã
-ÖˇÑB  ãG(Ö¿Ñ7  ˆ≈ÖV  ˜¡  @ âL$ÑF  Ë¸ˇˇˇã$âD$ãJÖ…ãL$Ñ;  çBâ$ãT$ã$âL$Ë¸ˇˇˇã    ãL$9–s'ã$«D$    ã #    tÛº¿âD$;T$Ü   ã$ãT$£É–   âÿâ$Ë¸ˇˇˇ∫   âÿË¸ˇˇˇçìÄ   ã$Ñ¿uãC$çPçCÅ· Ä â$âL$uãOÖ…tâT$Ë¸ˇˇˇãT$ãπ    #    tÛº¿â¡9    wãK$∫    ã©    Öü   ã$1…Ë¸ˇˇˇÖ¿uiãD$Ö¿uãW Ö“t
-ã$Ë¸ˇˇˇfêâË¸ˇˇˇçEË¸ˇˇˇâ≈9    á{˛ˇˇÉƒ[^_]√çv 1“âÿË¸ˇˇˇÎÕçt& êãC$É¿â$ÈΩ˛ˇˇç¥&    çv âD$∫    ∏    Ë¸ˇˇˇãL$Ö¿ÑxˇˇˇÈ¸ˇˇˇçt&   Ä ââÿË¸ˇˇˇÈuˇˇˇçt& êË¸ˇˇˇUâ≈WVSÉÏË¸ˇˇˇ1¿Ë¸ˇˇˇ;    sâ√çt& âÿË¸ˇˇˇçxlâ∆â¯Ë¸ˇˇˇãF$˜     tBãN@Ö…t;ãV(Ö“t4çP£hs+ãF$ã ©  Ä uw©   t`∏   â$Ë¸ˇˇˇÑ¿u/ç¥&    â¯Ë¸ˇˇˇçCË¸ˇˇˇâ√9    wáË¸ˇˇˇ1¿Éƒ[^_]√∏   Ë¸ˇˇˇãV$â¡ã ˜–#Bt¿£)ã$s∏çF1…Ë¸ˇˇˇÎ¨çt& 1…∫   âË¸ˇˇˇÎò    à  
-                   4Eff. affinity %*pbl of IRQ %u contains only offline CPUs after offlining CPU %u
-  4IRQ%u: set affinity failed(%d).
- QˇshT   Ë¸ˇˇˇÉƒÈs  âL$ˇt$ˇsˇt$Rh    Ë¸ˇˇˇãL$ÉƒÈ‰           migrate_one_irq  GCC: (GNU) 11.2.0           GNU  ¿        ¿                                  Òˇ                                                                   
-                    <                  
- A           ^              i              z              Ç              é              ù              ¥              ƒ              œ              ·              ˘                           )             =             V             g             t             ê             ò          ∞             ¿             ”             Ë             ˝                          $             <              cpuhotplug.c __func__.0 _rs.1 irq_migrate_all_off_this_cpu.cold irq_migrate_all_off_this_cpu __fentry__ irq_get_next_irq nr_irqs irq_to_desc _raw_spin_lock debug_smp_processor_id cpumask_any_but nr_cpu_ids __cpu_online_mask irq_force_complete_move irq_fixup_move_pending __x86_indirect_thunk_ecx irq_do_set_affinity __x86_indirect_thunk_edx _raw_spin_unlock ___ratelimit irq_shutdown_and_deactivate _printk irq_affinity_online_cpu irq_lock_sparse _raw_spin_lock_irq housekeeping_enabled _raw_spin_unlock_irq irq_unlock_sparse housekeeping_cpumask irq_set_affinity_locked irq_startup                +     7     s     ü     •     ¿     Ó     ˙     /    @    N    X    o    ä    ì    õ    £    Ω    Â  	  Í    Ô        !    /    6    <    K    W    ô     ´  !  ≥    ª    ¬  "  ÷  #  ˆ  $  
-  %  ‘               
-     '     ,          8                 .symtab .strtab .shstrtab .rel.text .data .bss .rodata.str1.4 .rel.text.unlikely .rel__mcount_loc .rodata .comment .note.GNU-stack .note.gnu.property                                                       @                       	   @       	  H              %             P                    +             l                     0      2       l  w                 C             „  <                  ?   	   @       d
-  0               V                                 R   	   @       î
-                 c             (                    k      0       8                   t              K                     Ñ             L  (                                t  `     
-         	              ‘  H                               §
-  ó                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              cmd_kernel/irq/cpuhotplug.o := gcc -Wp,-MMD,kernel/irq/.cpuhotplug.o.d -nostdinc -I./arch/x86/include -I./arch/x86/include/generated  -I./include -I./arch/x86/include/uapi -I./arch/x86/include/generated/uapi -I./include/uapi -I./include/generated/uapi -include ./include/linux/compiler-version.h -include ./include/linux/kconfig.h -include ./include/linux/compiler_types.h -D__KERNEL__ -fmacro-prefix-map=./= -Wall -Wundef -Werror=strict-prototypes -Wno-trigraphs -fno-strict-aliasing -fno-common -fshort-wchar -fno-PIE -Werror=implicit-function-declaration -Werror=implicit-int -Werror=return-type -Wno-format-security -std=gnu11 -mno-sse -mno-mmx -mno-sse2 -mno-3dnow -mno-avx -fcf-protection=none -m32 -msoft-float -mregparm=3 -freg-struct-return -fno-pic -mpreferred-stack-boundary=2 -march=i686 -mtune=pentium3 -mtune=generic -Wa,-mtune=generic32 -ffreestanding -mstack-protector-guard-reg=fs -mstack-protector-guard-symbol=__stack_chk_guard -Wno-sign-compare -fno-asynchronous-unwind-tables -mindirect-branch=thunk-extern -mindirect-branch-register -fno-jump-tables -fno-delete-null-pointer-checks -Wno-frame-address -Wno-format-truncation -Wno-format-overflow -Wno-address-of-packed-member -O2 -fno-allow-store-data-races -fstack-protector-strong -Wimplicit-fallthrough=5 -Wno-main -Wno-unused-but-set-variable -Wno-unused-const-variable -fno-stack-clash-protection -pg -mrecord-mcount -mfentry -DCC_USING_FENTRY -Wdeclaration-after-statement -Wvla -Wno-pointer-sign -Wcast-function-type -Wno-stringop-truncation -Wno-stringop-overflow -Wno-restrict -Wno-maybe-uninitialized -Wno-alloc-size-larger-than -fno-strict-overflow -fno-stack-check -fconserve-stack -Werror=date-time -Werror=incompatible-pointer-types -Werror=designated-init -Wno-packed-not-aligned    -DKBUILD_MODFILE='"kernel/irq/cpuhotplug"' -DKBUILD_BASENAME='"cpuhotplug"' -DKBUILD_MODNAME='"cpuhotplug"' -D__KBUILD_MODNAME=kmod_cpuhotplug -c -o kernel/irq/cpuhotplug.o kernel/irq/cpuhotplug.c 
+obj-y += mutex.o semaphore.o rwsem.o percpu-rwsem.o
 
-source_kernel/irq/cpuhotplug.o := kernel/irq/cpuhotplug.c
+# Avoid recursion lockdep -> KCSAN -> ... -> lockdep.
+KCSAN_SANITIZE_lockdep.o := n
 
-deps_kernel/irq/cpuhotplug.o := \
-    $(wildcard include/config/GENERIC_IRQ_EFFECTIVE_AFF_MASK) \
-  include/linux/compiler-version.h \
-    $(wildcard include/config/CC_VERSION_TEXT) \
-  include/linux/kconfig.h \
-    $(wildcard include/config/CPU_BIG_ENDIAN) \
-    $(wildcard include/config/BOOGER) \
-    $(wildcard include/config/FOO) \
-  include/linux/compiler_types.h \
-    $(wildcard include/config/DEBUG_INFO_BTF) \
-    $(wildcard include/config/PAHOLE_HAS_BTF_TAG) \
-    $(wildcard include/config/HAVE_ARCH_COMPILER_H) \
-    $(wildcard include/config/CC_HAS_ASM_INLINE) \
-  include/linux/compiler_attributes.h \
-  include/linux/compiler-gcc.h \
-    $(wildcard include/config/RETPOLINE) \
-    $(wildcard include/config/ARCH_USE_BUILTIN_BSWAP) \
-    $(wildcard include/config/SHADOW_CALL_STACK) \
-    $(wildcard include/config/KCOV) \
-  include/linux/interrupt.h \
-    $(wildcard include/config/LOCKDEP) \
-    $(wildcard include/config/SMP) \
-    $(wildcard include/config/IRQ_FORCED_THREADING) \
-    $(wildcard include/config/PREEMPT_RT) \
-    $(wildcard include/config/GENERIC_IRQ_PROBE) \
-    $(wildcard include/config/PROC_FS) \
-    $(wildcard include/config/IRQ_TIMINGS) \
-  include/linux/kernel.h \
-    $(wildcard include/config/PREEMPT_VOLUNTARY_BUILD) \
-    $(wildcard include/config/PREEMPT_DYNAMIC) \
-    $(wildcard include/config/HAVE_PREEMPT_DYNAMIC_CALL) \
-    $(wildcard include/config/HAVE_PREEMPT_DYNAMIC_KEY) \
-    $(wildcard include/config/PREEMPT_) \
-    $(wildcard include/config/DEBUG_ATOMIC_SLEEP) \
-    $(wildcard include/config/MMU) \
-    $(wildcard include/config/PROVE_LOCKING) \
-    $(wildcard include/config/TRACING) \
-    $(wildcard include/config/FTRACE_MCOUNT_RECORD) \
-  include/linux/stdarg.h \
-  include/linux/align.h \
-  include/linux/const.h \
-  include/vdso/const.h \
-  include/uapi/linux/const.h \
-  include/linux/limits.h \
-  include/uapi/linux/limits.h \
-  include/linux/types.h \
-    $(wildcard include/config/HAVE_UID16) \
-    $(wildcard include/config/UID16) \
-    $(wildcard include/config/ARCH_DMA_ADDR_T_64BIT) \
-    $(wlinux/log2.h \
-    $(wildcard include/config/ARCH_HAS_ILOG2_U32) \
-    $(wildcard include/config/ARCH_HAS_ILOG2_U64) \
-  include/linux/math.h \
-  arch/x86/include/asm/div64.h \
-  include/linux/minmax.h \
-  include/linux/panic.h \
-    $(wildcard include/config/PANIC_TIMEOUT) \
-  include/linux/printk.h \
-    $(wildcard include/config/MESSAGE_LOGLEVEL_DEFAULT) \
-    $(wildcard include/config/CONSOLE_LOGLEVEL_DEFAULT) \
-    $(wildcard include/config/CONSOLE_LOGLEVEL_QUIET) \
-    $(wildcard include/config/EARLY_PRINTK) \
-    $(wildcard include/config/PRINTK) \
-    $(wildcard include/config/PRINTK_INDEX) \
-    $(wildcard include/config/DYNAMIC_DEBUG) \
-    $(wildcard include/config/DYNAMIC_DEBUG_CORE) \
-  include/linux/init.h \
-    $(wildcard include/config/STRICT_KERNEL_RWX) \
-    $(wildcard include/config/STRICT_MODULE_RWX) \
-    $(wildcard include/config/LTO_CLANG) \
-  include/linux/kern_levels.h \
-  include/linux/cache.h \
-    $(wildcard include/config/ARCH_HAS_CACHE_LINE_SIZE) \
-  arch/x86/include/asm/cache.h \
-    $(wildcard include/config/X86_L1_CACHE_SHIFT) \
-    $(wildcard include/config/X86_INTERNODE_CACHE_SHIFT) \
-    $(wildcard include/config/X86_VSMP) \
-  include/linux/ratelimit_types.h \
-  include/uapi/linux/param.h \
-  arch/x86/include/generated/uapi/asm/param.h \
-  include/asm-generic/param.h \
-    $(wildcard include/config/HZ) \
-  include/uapi/asm-generic/param.h \
-  include/linux/spinlock_types_raw.h \
-    $(wildcard include/config/DEBUG_SPINLOCK) \
-    $(wildcard include/config/DEBUG_LOCK_ALLOC) \
-  arch/x86/include/asm/spinlock_types.h \
-  include/asm-generic/qspinlock_types.h \
-    $(wildcard include/config/NR_CPUS) \
-  include/asm-generic/qrwlock_types.h \
-  include/linux/lockdep_types.h \
-    $(wildcard include/config/PROVE_RAW_LOCK_NESTING) \
-    $(wildcard include/config/LOCKDEP) \
-    $(wildcard include/config/LOCK_STAT) \
-  include/linux/once_lite.h \
-  include/linux/static_call_types.h \
-    $(wildcard include/config/HAVE_STATIC_CALL) \
-    $(wildcard include/config/HAVE_STATIC_CALL_INLINE) \
-  include/linux/instruction_pointer.h \
-  include/linux/atomic.h \
-  arch/x86/include/asm/atomic.h \
-  arch/x86/include/asm/cmpxchg.h \
-  arch/x86/include/asm/cmpxchg_32.h \
-  arch/x86/include/asm/atomic64_32.h \
-  include/linux/atomic/atomic-arch-fallback.h \
-    $(wildcard include/config/GENERIC_ATOMIC64) \
-  include/linux/atomic/atomic-long.h \
-  include/linux/atomic/atomic-instrumented.h \
-  include/linux/cgroup.h \
-    $(wildcard include/config/CGROUPS) \
-    $(wildcard include/config/PROVE_RCU) \
-    $(wildcard include/config/CGROUP_CPUACCT) \
-    $(wildcard include/config/SOCK_CGROUP_DATA) \
-    $(wildcard include/config/CGROUP_DATA) \
-    $(wildcard include/config/CGROUP_BPF) \
-  include/linux/sched.h \
-    $(wildcard include/config/PREEMPT_RT) \
-    $(wildcard include/config/VIRT_CPU_ACCOUNTING_NATIVE) \
-    $(wildcard include/config/SCHED_INFO) \
-    $(wildcard include/config/SCHEDSTATS) \
-    $(wildcard include/config/SCHED_CORE) \
-    $(wildcard include/config/FAIR_GROUP_SCHED) \
-    $(wildcard include/config/RT_GROUP_SCHED) \
-    $(wildcard include/config/RT_MUTEXES) \
-    $(wildcard include/config/UCLAMP_TASK) \
-    $(wildcard include/config/UCLAMP_BUCKETS_COUNT) \
-    $(wildcard include/config/KMAP_LOCAL) \
-    $(wildcard include/config/THREAD_INFO_IN_TASK) \
-    $(wildcard include/config/CGROUP_SCHED) \
-    $(wildcard include/config/PREEMPT_NOTIFIERS) \
-    $(wildcard include/config/BLK_DEV_IO_TRACE) \
-    $(wildcard include/config/PREEMPT_RCU) \
-    $(wildcard include/config/TASKS_RCU) \
-    $(wildcard include/config/TASKS_TRACE_RCU) \
-    $(wildcard include/config/PSI) \
-    $(wildcard include/config/MEMCG) \
-    $(wildcard include/config/COMPAT_BRK) \
-    $(wildcard include/config/BLK_CGROUP) \
-    $(wildcard include/config/PAGE_OWNER) \
-    $(wildcard include/config/EVENTFD) \
-    $(wildcard include/config/IOMMU_SVA) \
-    $(wildcard include/config/STACKPROTECTOR) \
-    $(wildcard include/config/ARCH_HAS_SCALED_CPUTIME) \
-    $(wildcard include/config/VIRT_CPU_ACCOUNTING_GEN) \
-    $(wildcarcmd_drivers/media/i2c/tw9910.o := gcc -Wp,-MMD,drivers/media/i2c/.tw9910.o.d -nostdinc -I./arch/x86/include -I./arch/x86/include/generated  -I./include -I./arch/x86/include/uapi -I./arch/x86/include/generated/uapi -I./include/uapi -I./include/generated/uapi -include ./include/linux/compiler-version.h -include ./include/linux/kconfig.h -include ./include/linux/compiler_types.h -D__KERNEL__ -fmacro-prefix-map=./= -Wall -Wundef -Werror=strict-prototypes -Wno-trigraphs -fno-strict-aliasing -fno-common -fshort-wchar -fno-PIE -Werror=implicit-function-declaration -Werror=implicit-int -Werror=return-type -Wno-format-security -std=gnu11 -mno-sse -mno-mmx -mno-sse2 -mno-3dnow -mno-avx -fcf-protection=none -m32 -msoft-float -mregparm=3 -freg-struct-return -fno-pic -mpreferred-stack-boundary=2 -march=i686 -mtune=pentium3 -mtune=generic -Wa,-mtune=generic32 -ffreestanding -mstack-protector-guard-reg=fs -mstack-protector-guard-symbol=__stack_chk_guard -Wno-sign-compare -fno-asynchronous-unwind-tables -mindirect-branch=thunk-extern -mindirect-branch-register -fno-jump-tables -fno-delete-null-pointer-checks -Wno-frame-address -Wno-format-truncation -Wno-format-overflow -Wno-address-of-packed-member -O2 -fno-allow-store-data-races -fstack-protector-strong -Wimplicit-fallthrough=5 -Wno-main -Wno-unused-but-set-variable -Wno-unused-const-variable -fno-stack-clash-protection -pg -mrecord-mcount -mfentry -DCC_USING_FENTRY -Wdeclaration-after-statement -Wvla -Wno-pointer-sign -Wcast-function-type -Wno-stringop-truncation -Wno-stringop-overflow -Wno-restrict -Wno-maybe-uninitialized -Wno-alloc-size-larger-than -fno-strict-overflow -fno-stack-check -fconserve-stack -Werror=date-time -Werror=incompatible-pointer-types -Werror=designated-init -Wno-packed-not-aligned  -DMODULE  -DKBUILD_BASENAME='"tw9910"' -DKBUILD_MODNAME='"tw9910"' -D__KBUILD_MODNAME=kmod_tw9910 -c -o drivers/media/i2c/tw9910.o drivers/media/i2c/tw9910.c 
+ifdef CONFIG_FUNCTION_TRACER
+CFLAGS_REMOVE_lockdep.o = $(CC_FLAGS_FTRACE)
+CFLAGS_REMOVE_lockdep_proc.o = $(CC_FLAGS_FTRACE)
+CFLAGS_REMOVE_mutex-debug.o = $(CC_FLAGS_FTRACE)
+endif
 
-source_drivers/media/i2c/tw9910.o := drivers/media/i2c/tw9910.c
-
-deps_drivers/media/i2c/tw9910.o := \
-    $(wildcard include/config/VIDEO_ADV_DEBUG) \
-  include/linux/compiler-version.h \
-    $(wildcard include/config/CC_VERSION_TEXT) \
-  include/linux/kconfig.h \
-    $(wildcard include/config/CPU_BIG_ENDIAN) \
-    $(wildcard include/config/BOOGER) \
-    $(wildcard include/config/FOO) \
-  include/linux/compiler_types.h \
-    $(wildcard include/config/DEBUG_INFO_BTF) \
-    $(wildcard include/config/PAHOLE_HAS_BTF_TAG) \
-    $(wildcard include/config/HAVE_ARCH_COMPILER_H) \
-    $(wildcard include/config/CC_HAS_ASM_INLINE) \
-  include/linux/compiler_attributes.h \
-  include/linux/compiler-gcc.h \
-    $(wildcard include/config/RETPOLINE) \
-    $(wildcard include/config/ARCH_USE_BUILTIN_BSWAP) \
-    $(wildcard include/config/SHADOW_CALL_STACK) \
-    $(wildcard include/config/KCOV) \
-  include/linux/clk.h \
-    $(wildcard include/config/COMMON_CLK) \
-    $(wildcard include/config/HAVE_CLK_PREPARE) \
-    $(wildcard include/config/HAVE_CLK) \
-    $(wildcard include/config/OF) \
-  include/linux/err.h \
-  include/linux/compiler.h \
-    $(wildcard include/config/TRACE_BRANCH_PROFILING) \
-    $(wildcard include/config/PROFILE_ALL_BRANCHES) \
-    $(wildcard include/config/STACK_VALIDATION) \
-    $(wildcard include/config/CFI_CLANG) \
-  include/linux/compiler_types.h \
-  arch/x86/include/generated/asm/rwonce.h \
-  include/asm-generic/rwonce.h \
-  include/linux/kasan-checks.h \
-    $(wildcard include/config/KASAN_GENERIC) \
-    $(wildcard include/config/KASAN_SW_TAGS) \
-  include/linux/types.h \
-    $(wildcard include/config/HAVE_UID16) \
-    $(wildcard include/config/UID16) \
-    $(wildcard include/config/ARCH_DMA_ADDR_T_64BIT) \
-    $(wildcard include/config/PHYS_ADDR_T_64BIT) \
-    $(wildcard include/config/64BIT) \
-    $(wildcard include/config/ARCH_32BIT_USTAT_F_TINODE) \
-  include/uapi/linux/types.h \
-  arch/x86/include/generated/uapi/asm/types.h \
-  include/uapi/asm-generic/types.h \
-  include/asm-generic/int-ll64.h \
-  include/uapi/asm-generic/int-ll64.h \
-  arch/x86/include/uapi/asm/bitsperlong.h \
-  include/asm-generic/bitsperlong.h \
-  include/uapi/asm-generic/bitsperlong.h \
-  include/uapi/linux/posix_types.h \
-  include/linux/stddef.h \
-  include/uapi/linux/stddef.h \
-  arch/x86/include/asm/posix_types.h \
-    $(wildcard include/config/X86_32) \
-  arch/x86/include/uapi/asm/posix_types_32.h \
-  include/uapi/asm-generic/posix_types.h \
-  include/linux/kcsan-checks.h \
-    $(wildcard include/config/KCSAN) \
-    $(wildcard include/config/KCSAN_WEAK_MEMORY) \
-    $(wildcard include/config/KCSAN_IGNORE_ATOMICS) \
-  arch/x86/include/generated/uapi/asm/errno.h \
-  include/uapi/asm-generic/errno.h \
-  include/uapi/asm-generic/errno-base.h \
-  include/linux/kernel.h \
-    $(wildcard include/config/PREEMPT_VOLUNTARY_BUILD) \
-    $(wildcard include/config/PREEMPT_DYNAMIC) \
-    $(wildcard include/config/HAVE_PREEMPT_DYNAMIC_CALL) \
-    $(wildcard include/config/HAVE_PREEMPT_DYNAMIC_KEY) \
-    $(wildcard include/config/PREEMPT_) \
-    $(wildcard include/config/DEBUG_ATOMIC_SLEEP) \
-    $(wildcard include/config/SMP) \
-    $(wildcard include/config/MMU) \
-    $(wildcard include/config/PROVE_LOCKING) \
-    $(wildcard include/config/TRACING) \
-    $(wildcard include/config/FTRACE_MCOUNT_RECORD) \
-  include/linux/stdarg.h \
-  include/linux/align.h \
-  include/linux/const.h \
-  include/vdso/const.h \
-  include/uapi/linux/const.h \
-  include/linux/limits.h \
-  include/uapi/linux/limits.h \
-  include/vdso/limits.h \
-  include/linux/linkage.h \
-    $(wildcard include/config/ARCH_USE_SYM_ANNOTATIONS) \
-  include/linux/stringify.h \
-  include/linux/export.h \
-    $(wildcard include/config/MODVERSIONS) \
-    $(wildcard include/config/MODULE_REL_CRCS) \
-    $(wildcard include/config/HAVE_ARCH_PREL32_RELOCATIONS) \
-    $(wildcard include/config/MODULES) \
-    $(wildcard include/config/TRIM_UNUSED_KSYMS) \
-  arch/x86/include/asm/linkage.h \
-    $(wildcard include/config/X86_64) \
-    $(wildcard include/config/X86_ALIGNMENT_16) \
-    $(wildcard include/config/SLS) \
-  arch/x86/include/asm/ibt.h \
-    $(wildcard include/config/X86_KERNEL_IBT) \
-  include/linux/container_of.h \
-  include/linux/build_bug.h \
-  include/linux/bitops.h \
-  include/linux/bits.h \
-  include/vdso/bits.h \
-  include/linux/typecheck.h \
-  include/uapi/linux/kernel.h \
-  include/uapi/linux/sysinfo.h \
-  arch/x86/include/asm/bitops.h \
-    $(wildcard include/config/X86_CMOV) \
-  arch/x86/include/asm/alternative.h \
-  arch/x86/include/asm/asm.h \
-    $(wildcard include/config/KPROBES) \
-  arch/x86/include/asm/extable_fixup_types.h \
-  arch/x86/include/asm/rmwcc.h \
-    $(wildcard include/config/CC_HAS_ASM_GOTO) \
-  arch/x86/include/asm/barrier.h \
-  arch/x86/include/asm/nops.h \
-  include/asm-generic/barrier.h \
-  include/asm-generic/bitops/fls64.h \
-  include/asm-generic/bitops/sched.h \
-  arch/x86/include/asm/arch_hweight.h \
-  arch/x86/include/asm/cpufeatures.h \
-  arch/x86/include/asm/required-features.h \
-    $(wildcard include/config/X86_MINIMUM_CPU_FAMILY) \
-    $(wildcard include/config/MATH_EMULATION) \
-    $(wildcard include/config/X86_PAE) \
-    $(wildcard include/config/X86_CMPXCHG64) \
-    $(wildcard include/config/X86_P6_NOP) \
-    $(wildcard include/config/MATOM) \
-    $(wildcard include/config/PARAVIRT_XXL) \
-  arch/x86/include/asm/disabled-features.h \
-    $(wildcard include/config/X86_SMAP) \
-    $(wildcard include/config/X86_UMIP) \
-    $(wildcard include/config/X86_INTEL_MEMORY_PROTECTION_KEYS) \
-    $(wildcard include/config/X86_5LEVEL) \
-    $(wildcard include/config/PAGE_TABLE_ISOLATION) \
-    $(wildcard include/config/INTEL_IOMMU_SVM) \
-    $(wildcard include/config/X86_SGX) \
-  include/asm-generic/bitops/const_hweight.h \
-  include/asm-generic/bitops/instrumented-atomic.h \
-  include/linux/instrumented.h \
-  include/asm-generic/bitops/instrumented-non-atomic.h \
-    $(wildcard include/config/KCSAN_ASSUME_PLAIN_WRITES_ATOMIC) \
-  include/asm-generic/bitops/instrumented-lock.h \
-  include/asm-generic/bitops/le.h \
-  arch/x86/include/uapi/asm/byteorder.h \
-  include/linux/byteorder/little_endian.h \
-  include/uapi/linux/byteorder/little_endian.h \
-  include/linux/swab.h \
-  include/uapi/linux/swab.h \
-  arch/x86/include/uapi/asm/swab.h \
-  include/linux/byteorder/generic.h \
-  include/asm-generic/bitops/ext2-atomic-setbit.h \
-  include/linux/kstrtox.h \
-  include/linux/log2.h \
-    $(wildcard include/config/ARCH_HAS_ILOG2_U32) \
-    $(wildcard include/config/ARCH_HAS_ILOG2_U64) \
-  include/linux/math.h \
-  arch/x86/include/asm/div64.h \
-  include/linux/minmax.h \
-  include/linux/panic.h \
-    $(wildcard include/config/PANIC_TIMEOUT) \
-  include/linux/printk.h \
-    $(wildcard include/config/MESSAGE_LOGLEVEL_DEFAULT) \
-    $(wildcard include/config/CONSOLE_LOGLEVEL_DEFAULT) \
-    $(wildcard include/config/CONSOLE_LOGLEVEL_QUIET) \
-    $(wildcard include/config/EARLY_PRINTK) \
-    $(wildcard include/config/PRINTK) \
-    $(wildcard include/config/PRINTK_INDEX) \
-    $(wildcard include/config/DYNAMIC_DEBUG) \
-    $(wildcard include/config/DYNAMIC_DEBUG_CORE) \
-  include/linux/init.h \
-    $(wildcard include/config/STRICT_KERNEL_RWX) \
-    $(wildcard include/config/STRICT_MODULE_RWX) \
-    $(wildcard include/config/LTO_CLANG) \
-  include/linux/kern_levels.h \
-  include/linux/cache.h \
-    $(wildcard include/config/ARCH_HAS_CACHE_LINE_SIZE) \
-  arch/x86/include/asm/cache.h \
-    $(wildcard include/config/X86_L1_CACHE_SHIFT) \
-    $(wildcard include/config/X86_INTERNODE_CACHE_SHIFT) \
-    $(wildcard include/config/X86_VSMP) \
-  include/linux/ratelimit_types.h \
-  include/uapi/linux/param.h \
-  arch/x86/include/generated/uapi/asm/param.h \
-  include/asm-generic/param.h \
-    $(wildcard include/config/HZ) \
-  include/uapi/asm-generic/param.h \
-  include/linux/spinlock_types_raw.h \
-    $(wildcard include/config/DEBUG_SPINLOCK) \
-    $(wildcard include/config/DEBUG_LOCK_ALLOC) \
-  arch/x86/include/asm/spinlock_types.h \
-  include/asm-generic/qspinlock_types.h \
-    $(wildcard include/config/NR_CPUS) \
-  include/asm-generic/qrwlock_types.h \
-  include/linux/lockdep_types.h \
-    $(wildcard include/config/PROVE_RAW_LOCK_NESTING) \
-    $(wildcard include/config/LOCKDEP) \
-    $(wildcard include/config/LOCK_STAT) \
-  include/linux/once_lite.h \
-  include/linux/static_call_types.h \
-    $(wildcard include/config/HAVE_STATIC_CALL) \
-    $(wildcard include/config/HAVE_STATIC_CALL_INLINE) \
-  include/linux/instruction_pointer.h \
-  include/linux/notifier.h \
-    $(wildcard include/config/TREE_SRCU) \
-  include/linux/errno.h \
-  include/uapi/linux/errno.h \
-  include/linux/mutex.h \
-    $(wildcard include/config/PREEMPT_RT) \
-    $(wildcard include/config/MUTEX_SPIN_ON_OWNER) \
-    $(wildcard include/config/DEBUG_MUTEXES) \
-  arch/x86/include/asm/current.h \
-  arch/x86/include/asm/percpu.h \
-    $(wildcard include/config/X86_64_SMP) \
-  include/asm-generic/percpu.h \
-    $(wildcard include/config/DEBUG_PREEMPT) \
-    $(wildcard include/config/HAVE_SETUP_PER_CPU_AREA) \
-  include/linux/threads.h \
-    $(wildcard include/config/BASE_SMALL) \
-  include/linux/percpu-defs.h \
-    $(wildcard include/config/DEBUG_FORCE_WEAK_PER_CPU) \
-    $(wildcard include/config/AMD_MEM_ENCRYPT) \
-  include/linux/list.h \
-    $(wildcard include/config/DEBUG_LIST) \
-  include/linux/poison.h \
-    $(wildcard include/config/ILLEGAL_POINTER_VALUE) \
-  include/linux/spinlock_types.h \
-  include/linux/rwlock_types.h \
-  include/linux/lockdep.h \
-    $(wildcard include/config/DEBUG_LOCKING_API_SELFTESTS) \
-    $(wildcard include/config/PREEMPT_COUNT) \
-  include/linux/smp.h \
-    $(wildcard include/config/UP_LATE_INIT) \
-  include/linux/cpumask.h \
-    $(wildcard include/config/CPUMASK_OFFSTACK) \
-    $(wildcard include/config/HOTPLUG_CPU) \
-    $(wildcard include/config/DEBUG_PER_CPU_MAPS) \
-  include/linux/bitmap.h \
-  include/linux/find.h \
-  include/linux/string.h \
-    $(wildcard include/config/BINARY_PRINTF) \
-    $(wildcard include/config/FORTIFY_SOURCE) \
-  include/uapi/linux/string.h \
-  arch/x86/include/asm/string.h \
-  arch/x86/include/asm/string_32.h \
-  include/linux/fortify-string.h \
-  include/linux/atomic.h \
-  arch/x86/include/asm/atomic.h \
-  arch/x86/include/asm/cmpxchg.h \
-  arch/x86/include/asm/cmpxchg_32.h \
-  arch/x86/include/asm/atomic64_32.h \
-  include/linux/atomic/atomic-arch-fallback.h \
-    $(wildcard include/config/GENERIC_ATOMIC64) \
-  include/linux/atomic/atomic-long.h \
-  include/linux/atomic/atomic-instrumented.h \
-  include/linux/bug.h \
-    $(wildcard include/config/GENERIC_BUG) \
-    $(wildcard include/config/BUG_ON_DATA_CORRUPTION) \
-  arch/x86/include/asm/bug.h \
-    $(wildcard include/config/DEBUG_BUGVERBOSE) \
-  include/linux/instrumentation.h \
-    $(wildcard include/config/DEBUG_ENTRY) \
-  include/linux/objtool.h \
-    $(wildcard include/config/FRAME_POINTER) \
-  include/asm-generic/bug.h \
-    $(wildcard include/config/BUG) \
-    $(wildcard include/config/GENERIC_BUG_RELATIVE_POINTERS) \
-  include/linux/smp_types.h \
-  include/linux/llist.h \
-    $(wildcard include/config/ARCH_HAVE_NMI_SAFE_CMPXCHG) \
-  include/linux/preempt.h \
-    $(wildcard include/config/TRACE_PREEMPT_TOGGLE) \
-    $(wildcard include/config/PREEMPTION) \
-    $(wildcard include/config/PREEMPT_NOTIFIERS) \
-  arch/x86/include/asm/preempt.h \
-  include/linux/thread_info.h \
-    $(wildcard include/config/THREAD_INFO_IN_TASK) \
-    $(wildcard include/config/GENERIC_ENTRY) \
-   
+obj-$(CONFIG_DEBUG_IRQFLAGS) += irqflag-debug.o
+obj-$(CONFIG_DEBUG_MUTEXES) += mutex-debug.o
+obj-$(CONFIG_LOCKDEP) += lockdep.o
+ifeq ($(CONFIG_PROC_FS),y)
+obj-$(CONFIG_LOCKDEP) += lockdep_proc.o
+endif
+obj-$(CONFIG_SMP) += spinlock.o
+obj-$(CONFIG_LOCK_SPIN_ON_OWNER) += osq_lock.o
+obj-$(CONFIG_PROVE_LOCKING) += spinlock.o
+obj-$(CONFIG_QUEUED_SPINLOCKS) += qspinlock.o
+obj-$(CONFIG_RT_MUTEXES) += rtmutex_api.o
+obj-$(CONFIG_PREEMPT_RT) += spinlock_rt.o ww_rt_mutex.o
+obj-$(CONFIG_DEBUG_SPINLOCK) += spinlock.o
+obj-$(CONFIG_DEBUG_SPINLOCK) += spinlock_debug.o
+obj-$(CONFIG_QUEUED_RWLOCKS) += qrwlock.o
+obj-$(CONFIG_LOCK_TORTURE_TEST) += locktorture.o
+obj-$(CONFIG_WW_MUTEX_SEL

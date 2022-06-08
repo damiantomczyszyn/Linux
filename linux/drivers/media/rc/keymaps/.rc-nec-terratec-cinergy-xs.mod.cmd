@@ -1,1 +1,5 @@
-cmd_drivers/media/rc/keymaps/rc-nec-terratec-cinergy-xs.mod := { echo  drivers/media/rc/keymaps/rc-nec-terratec-cinergy-xs.o;  echo; } > drivers/media/rc/keymaps/rc-nec-terratec-cinergy-xs.mod
+d to userspace.
+ *
+ * It also sets the final jump of the previous buffer to the start of the new
+ * buffer, thus chaining the new buffer into the DMA chain. This is a single
+ * atomic u32 write

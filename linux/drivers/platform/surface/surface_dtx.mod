@@ -1,2 +1,3 @@
-dcard include/config/PARAVIRT_XXL) \
-  a
+= 1,
+	.agc = &xc3028_agc_config,
+	.bw  =

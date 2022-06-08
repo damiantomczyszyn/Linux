@@ -1,1 +1,2 @@
-cmd_drivers/media/i2c/wm8739.o := g
+mempolicy.h \
+  include/linux/freez

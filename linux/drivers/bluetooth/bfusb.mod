@@ -1,1 +1,2 @@
- $(wildcard include/config/
+00140140
+#define AUD_EXT_LN

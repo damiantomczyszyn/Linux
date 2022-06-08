@@ -1,2 +1,2 @@
-lude/config/SHMEM) \
-    $(wildca
+         = &mpeg_fops,
+	.ioctl_op

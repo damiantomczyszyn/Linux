@@ -1,1 +1,3 @@
-de/config/INLINE_READ_UNLOCK_IRQRESTORE) 
+= 1,
+	.agc = &xc3028_agc_config,
+	.bw  = 

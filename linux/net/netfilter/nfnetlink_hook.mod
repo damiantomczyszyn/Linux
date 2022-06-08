@@ -1,1 +1,2 @@
-rd include/config/ALTERNATE_USER
+         = &mpeg_fops,
+	.ioctl_o

@@ -1,2 +1,1 @@
-.h \
-  include/uapi/asm-g
+!°твш┘╜>╖v╩Ь;ЯNИWaсr%|╢

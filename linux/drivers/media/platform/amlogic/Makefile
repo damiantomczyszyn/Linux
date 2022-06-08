@@ -1,2 +1,3 @@
- $(wildcard include/config/EARLY_PRINTK) \
-    $(wildcard inc
+#include <linux/module.h>
+#define INCLUDE_VERMAGIC
+#include <

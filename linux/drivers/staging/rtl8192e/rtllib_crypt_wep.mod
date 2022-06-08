@@ -1,3 +1,1 @@
-qrwlock.h \
-  include/linux/rwlock.h \
-    $(
+/* SPDX-License-Identifier: GPL-2.0-or-later 

@@ -1,266 +1,547 @@
-$(wildcard include/config/X86_INTEL_USERCOPY) \
-  arch/x86/include/asm/smap.h \
-  arch/x86/include/asm/extable.h \
-    $(wildcard include/config/BPF_JIT) \
-  include/asm-generic/access_ok.h \
-    $(wildcard include/config/ALTERNATE_USER_ADDRESS_SPACE) \
-  arch/x86/include/asm/uaccess_32.h \
-  include/linux/cred.h \
-    $(wildcard include/config/DEBUG_CREDENTIALS) \
-  include/linux/key.h \
-    $(wildcard include/config/KEY_NOTIFICATIONS) \
-    $(wildcard include/config/NET) \
-  include/linux/assoc_array.h \
-    $(wildcard include/config/ASSOCIATIVE_ARRAY) \
-  include/linux/sched/user.h \
-    $(wildcard include/config/WATCH_QUEUE) \
-  include/linux/percpu_counter.h \
-  include/linux/rcu_sync.h \
-  include/linux/delayed_call.h \
-  include/linux/errseq.h \
-  include/linux/ioprio.h \
-  include/linux/sched/rt.h \
-  include/linux/iocontext.h \
-    $(wildcard include/config/BLK_ICQ) \
-  include/uapi/linux/ioprio.h \
-  include/linux/fs_types.h \
-  include/linux/mount.h \
-  include/linux/mnt_idmapping.h \
-  include/uapi/linux/fs.h \
-  include/linux/quota.h \
-    $(wildcard include/config/QUOTA_NETLINK_INTERFACE) \
-  include/uapi/linux/dqblk_xfs.h \
-  include/linux/dqblk_v1.h \
-  include/linux/dqblk_v2.h \
-  include/linux/dqblk_qtree.h \
-  include/linux/projid.h \
-  include/uapi/linux/quota.h \
-  include/linux/nfs_fs_i.h \
-  include/linux/seq_file.h \
-  include/linux/string_helpers.h \
-  include/linux/ns_common.h \
-  include/linux/nsproxy.h \
-  include/linux/user_namespace.h \
-    $(wildcard include/config/INOTIFY_USER) \
-    $(wildcard include/config/FANOTIFY) \
-    $(wildcard include/config/PERSISTENT_KEYRINGS) \
-  include/linux/kernel_stat.h \
-  include/linux/interrupt.h \
-    $(wildcard include/config/IRQ_FORCED_THREADING) \
-    $(wildcard include/config/GENERIC_IRQ_PROBE) \
-    $(wildcard include/config/IRQ_TIMINGS) \
-  include/linux/irqreturn.h \
-  include/linux/irqnr.h \
-  include/uapi/linux/irqnr.h \
-  include/linux/hardirq.h \
-  include/linux/context_tracking_state.h \
-    $(wildcard include/config/CONTEXT_TRACKING) \
-  include/linux/ftrace_irq.h \
-    $(wildcard include/config/HWLAT_TRACER) \
-    $(wildcard include/config/OSNOISE_TRACER) \
-  include/linux/vtime.h \
-    $(wildcard include/config/VIRT_CPU_ACCOUNTING) \
-    $(wildcard include/config/IRQ_TIME_ACCOUNTING) \
-  arch/x86/include/asm/hardirq.h \
-    $(wildcard include/config/KVM_INTEL) \
-    $(wildcard include/config/X86_THERMAL_VECTOR) \
-    $(wildcard include/config/X86_MCE_THRESHOLD) \
-    $(wildcard include/config/X86_MCE_AMD) \
-    $(wildcard include/config/X86_HV_CALLBACK_VECTOR) \
-  arch/x86/include/asm/irq.h \
-  arch/x86/include/asm/sections.h \
-  include/asm-generic/sections.h \
-    $(wildcard include/config/HAVE_FUNCTION_DESCRIPTORS) \
-  include/linux/cgroup-defs.h \
-    $(wildcard include/config/CGROUP_NET_CLASSID) \
-    $(wildcard include/config/CGROUP_NET_PRIO) \
-  include/linux/u64_stats_sync.h \
-  include/linux/bpf-cgroup-defs.h \
-  include/linux/psi_types.h \
-  include/linux/kthread.h \
-  include/linux/cgroup_subsys.h \
-    $(wildcard include/config/CGROUP_DEVICE) \
-    $(wildcard include/config/CGROUP_FREEZER) \
-    $(wildcard include/config/CGROUP_PERF) \
-    $(wildcard include/config/CGROUP_HUGETLB) \
-    $(wildcard include/config/CGROUP_PIDS) \
-    $(wildcard include/config/CGROUP_RDMA) \
-    $(wildcard include/config/CGROUP_MISC) \
-    $(wildcard include/config/CGROUP_DEBUG) \
-  include/linux/vm_event_item.h \
-    $(wildcard include/config/HAVE_ARCH_TRANSPARENT_HUGEPAGE_PUD) \
-    $(wildcard include/config/MEMORY_BALLOON) \
-    $(wildcard include/config/BALLOON_COMPACTION) \
-    $(wildcard include/config/DEBUG_TLBFLUSH) \
-    $(wildcard include/config/DEBUG_VM_VMACACHE) \
-  include/linux/page_counter.h \
-  include/linux/vmpressure.h \
-  include/linux/eventfd.h \
-  include/linux/mm.h \
-    $(wildcard include/config/HAVE_ARCH_MMAP_RND_BITS) \
-    $(wildcard include/config/HAVE_ARCH_MMAP_RND_COMPAT_BITS) \
-    $(wildcard include/config/ARCH_USES_HIGH_VMA_FLAGS) \
-    $(wildcard include/config/ARCH_HAS_PKEYS) \
-    $(wildcard include/config/PPC) \
-    $(wildcard include/config/PARISC) \
-    $(wildcard include/config/SPARC64) \
-    $(wildcard include/config/ARM64_MTE) \
-    $(wildcard include/config/HAVE_ARCH_USERFAULTFD_MINOR) \
-    $(wildcard include/config/SHMEM) \
-    $(wildcard include/config/ARCH_HAS_PTE_SPECIAL) \
-    $(wildcard include/config/ARCH_HAS_PTE_DEVMAP) \
-    $(wildcard include/config/DEBUG_VM_RB) \
-    $(wildcard include/config/PAGE_POISONING) \
-    $(wildcard include/config/INIT_ON_ALLOC_DEFAULT_ON) \
-    $(wildcard include/config/INIT_ON_FREE_DEFAULT_ON) \
-    $(wildcard include/config/DEBUG_PAGEALLOC) \
-    $(wildcard include/config/HUGETLBFS) \
-    $(wildcard include/config/MAPPING_DIRTY_HELPERS) \
-    $(wildcard include/config/ANON_VMA_NAME) \
-  include/linux/mmap_lock.h \
-  include/linux/page_ext.h \
-  include/linux/stacktrace.h \
-    $(wildcard include/config/ARCH_STACKWALK) \
-    $(wildcard include/config/STACKTRACE) \
-    $(wildcard include/config/HAVE_RELIABLE_STACKTRACE) \
-  include/linux/stackdepot.h \
-    $(wildcard include/config/STACKDEPOT_ALWAYS_INIT) \
-  include/linux/page_ref.h \
-    $(wildcard include/config/DEBUG_PAGE_REF) \
-  include/linux/sizes.h \
-  include/linux/pgtable.h \
-    $(wildcard include/config/HIGHPTE) \
-    $(wildcard include/config/GUP_GET_PTE_LOW_HIGH) \
-    $(wildcard include/config/HAVE_ARCH_SOFT_DIRTY) \
-    $(wildcard include/config/ARCH_ENABLE_THP_MIGRATION) \
-    $(wildcard include/config/X86_ESPFIX64) \
-  arch/x86/include/asm/pgtable.h \
-    $(wildcard include/config/DEBUG_WX) \
-    $(wildcard include/config/PAGE_TABLE_CHECK) \
-  arch/x86/include/asm/pkru.h \
-  arch/x86/include/asm/fpu/api.h \
-    $(wildcard include/config/X86_DEBUG_FPU) \
-  arch/x86/include/asm/coco.h \
-  include/asm-generic/pgtable_uffd.h \
-  include/linux/page_table_check.h \
-  arch/x86/include/asm/pgtable_32.h \
-  arch/x86/include/asm/pgtable-3level.h \
-  arch/x86/include/asm/pgtable-invert.h \
-  include/linux/huge_mm.h \
-  include/linux/sched/coredump.h \
-    $(wildcard include/config/CORE_DUMP_DEFAULT_ELF_HEADERS) \
-  include/linux/vmstat.h \
-    $(wildcard include/config/VM_EVENT_COUNTERS) \
-  include/linux/writeback.h \
-  include/linux/flex_proportions.h \
-  include/linux/backing-dev-defs.h \
-    $(wildcard include/config/DEBUG_FS) \
-  include/linux/blk_types.h \
-    $(wildcard include/config/FAIL_MAKE_REQUEST) \
-    $(wildcard include/config/BLK_CGROUP_IOCOST) \
-    $(wildcard include/config/BLK_INLINE_ENCRYPTION) \
-    $(wildcard include/config/BLK_DEV_INTEGRITY) \
-  include/linux/bvec.h \
-  include/linux/highmem.h \
-  include/linux/cacheflush.h \
-  arch/x86/include/asm/cacheflush.h \
-  include/asm-generic/cacheflush.h \
-  include/linux/highmem-internal.h \
-  arch/x86/include/asm/highmem.h \
-  arch/x86/include/asm/tlbflush.h \
-  arch/x86/include/asm/invpcid.h \
-  arch/x86/include/asm/pti.h \
-  include/linux/bio.h \
-  include/linux/mempool.h \
-  include/linux/uio.h \
-    $(wildcard include/config/ARCH_HAS_UACCESS_FLUSHCACHE) \
-  include/uapi/linux/uio.h \
-  include/linux/node.h \
-    $(wildcard include/config/HMEM_REPORTING) \
-  include/linux/pagemap.h \
-  include/linux/hugetlb_inline.h \
-  include/uapi/linux/mempolicy.h \
-  include/linux/freezer.h \
-  include/uapi/linux/i2c.h \
-  include/linux/videodev2.h \
-  include/uapi/linux/videodev2.h \
-  include/uapi/linux/v4l2-common.h \
-  include/uapi/linux/v4l2-controls.h \
-  include/linux/delay.h \
-  arch/x86/include/asm/delay.h \
-  include/asm-generic/delay.h \
-  include/linux/gpio/consumer.h \
-    $(wildcard include/config/OF_GPIO) \
-    $(wildcard include/config/GPIO_SYSFS) \
-  include/linux/of_graph.h \
-  include/linux/pm_runtime.h \
-  include/linux/regmap.h \
-    $(wildcard include/config/REGMAP) \
-  include/linux/iopoll.h \
-  include/media/v4l2-async.h \
-  include/media/v4l2-device.h \
-  include/media/media-device.h \
-  include/media/media-devnode.h \
-  include/linux/poll.h \
-  include/uapi/linux/poll.h \
-  arch/x86/include/generated/uapi/asm/poll.h \
-  include/uapi/asm-generic/poll.h \
-  include/uapi/linux/eventpoll.h \
-  include/linux/cdev.h \
-  include/media/media-entity.h \
-  include/uapi/linux/media.h \
-  include/media/v4l2-subdev.h \
-  include/uapi/linux/v4l2-subdev.h \
-  include/uapi/linux/v4l2-mediabus.h \
-  include/uapi/linux/media-bus-format.h \
-  include/media/v4l2-common.h \
-    $(wildcard include/config/VIDEO_V4L2_I2C) \
-    $(wildcard include/config/SPI) \
-  include/media/v4l2-dev.h \
-  include/linux/spi/spi.h \
-    $(wildcard include/config/SPI_SLAVE) \
-  include/linux/scatterlist.h \
-    $(wildcard include/config/NEED_SG_DMA_LENGTH) \
-    $(wildcard include/config/DEBUG_SG) \
-    $(wildcard include/config/SGL_ALLOC) \
-    $(wildcard include/config/ARCH_NO_SG_CHAIN) \
-    $(wildcard include/config/SG_POOL) \
-  include/uapi/linux/spi/spi.h \
-  include/media/v4l2-fh.h \
-  include/media/v4l2-mediabus.h \
-  include/media/v4l2-event.h \
-  include/media/v4l2-ctrls.h \
-  include/media/media-request.h \
-  include/media/hevc-ctrls.h \
-  include/media/v4l2-fwnode.h \
-  include/media/v4l2-mc.h \
-  include/media/v4l2-rect.h \
-  drivers/media/i2c/tvp5150_reg.h \
+/*
+ * Linux ARCnet driver - RFC1201 (standard) packet encapsulation
+ *
+ * Written 1994-1999 by Avery Pennarun.
+ * Derived from skeleton.c by Donald Becker.
+ *
+ * Special thanks to Contemporary Controls, Inc. (www.ccontrols.com)
+ *  for sponsoring the further development of this driver.
+ *
+ * **********************
+ *
+ * The original copyright of skeleton.c was as follows:
+ *
+ * skeleton.c Written 1993 by Donald Becker.
+ * Copyright 1993 United States Government as represented by the
+ * Director, National Security Agency.  This software may only be used
+ * and distributed according to the terms of the GNU General Public License as
+ * modified by SRC, incorporated herein by reference.
+ *
+ * **********************
+ *
+ * For more details, see drivers/net/arcnet.c
+ *
+ * **********************
+ */
 
-drivers/media/i2c/tvp5150.o: $(deps_drivers/media/i2c/tvp5150.o)
+#define pr_fmt(fmt) "arcnet:" KBUILD_MODNAME ": " fmt
 
-$(deps_drivers/media/i2c/tvp5150.o):
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        ELF                      X)      4     (               Ë¸ˇˇˇWçzVã∞<  ÉÁ¸ãâãÜÄ   âÇÄ   )˙1¿çäÑ   )÷¡ÈÛ•^_√ç¥&    fêË¸ˇˇˇãBÖ¿u$WVã2É˛w+iˆò   çzπ!   1¿Å∆@  Û•^_√∏Íˇˇˇ√ç¥&    çv ∏ÍˇˇˇÎÊç¥&    fêË¸ˇˇˇãAÖ¿u«A   1¿√ç¥&    çv ∏Íˇˇˇ√ç¥&    çv Ë¸ˇˇˇâ¬«A   â»ãä<  ãIâHãä<  ãIâHãä<  ãâå   âHãí<  ãíà   âP1¿√ç¥&    Ë¸ˇˇˇU∂ÈWV∂ÚSâ√É√pÉÏã∏î   «$    âÈâÚâ¯Ë¸ˇˇˇÖ¿à¸ˇˇˇ1“Éƒâ–[^_]√ç¥&    ç∂    Ë¸ˇˇˇVSâ√ã@Å{(	ò uKç∞@ˇˇˇ∂K|∫
-   âËÖˇˇˇÖ¿t	[^√ç∂    ∂K|∫	   âËhˇˇˇ∂K|Ö¿uﬂâ[∫   ^ÈRˇˇˇfê∏ÍˇˇˇÎ»ç¥&    fêË¸ˇˇˇÄ=     SãX\ÖM   âÿË¸ˇˇˇçÉ¿   Ë¸ˇˇˇ1¿[√çt& Ë¸ˇˇˇâ¬«A   â»ãä<  ãIâHãä<  ãIâHãä<  ãâå   âHãí<  ãíà   âP1¿√ç¥&    Ë¸ˇˇˇUWVSãÖ€u5â≈çz1ˆç¥&    çv çìD  π   â¯Ë¸ˇˇˇÖ¿tÉ∆Å√ò   É˛u‹∏Íˇˇˇ[^_]√fêiˆò   Å√@  âù<  ãûƒ  ∂Ä˙\uÎ◊ç∂    ∂SÉ√Ä˙\t≈Ä{uÓÖ¿uÍ∂KâËË'˛ˇˇÎ›çt& êË¸ˇˇˇUWVSâ√ÅÏà   ãsXd°    âÑ$Ñ   1¿ÖˆÑƒ  ãCãPãRË¸ˇˇˇ%   =   Öû   çCπ¿  ∫`  Ë¸ˇˇˇâ≈Ö¿Ñ§   â∞0  π@   â⁄æ   «Ä<  @  Ë¸ˇˇˇãC∑Sçà  QRRˇ∞   ãCTˇ0h0   Ë¸ˇˇˇãΩî   ÉƒÎç¥&    çv ∏
-   Ë¸ˇˇˇÉÓÑﬁ  1“â¯Ë¸ˇˇˇâ√Ö¿xﬁÈh   ª˚ˇˇˇãÑ$Ñ   d+    uÅƒà   âÿ[^_]√ªÙˇˇˇÎ‹Ë¸ˇˇˇç¥&    çt& Ë¸ˇˇˇ9ê8  tSUWVâ÷Sâ√ç@pÉÏÉ˙ãx$«$    ÌâD$ÉÂâÈ∫   â¯Ë¸ˇˇˇÖ¿à  â≥8  1“Éƒâ–[^_]√ç¥&    1¿√ç¥&    ç∂    Ë¸ˇˇˇUWø   Vâ÷SÉÏ«   ã®î   â$Îçt& ∏
-   Ë¸ˇˇˇÉÔÑÖ  ∫7   âËË¸ˇˇˇâ√Ö¿x€ã$â\$ø   ã®î   Îç¥&    ∏
-   Ë¸ˇˇˇÉÔÑ¡  ∫8   âËË¸ˇˇˇâ√Ö¿x€âD$ã\$ø   ã$â\$ã®î   Îç¥&    ∏
-   Ë¸ˇˇˇÉÔÑ‹  ∫9   âËË¸ˇˇˇâ√Ö¿x€âD$ã$ã∏î   ∏   â˝â«Îçv ∏
-   Ë¸ˇˇˇÉÔÑ˜  ∫:   âËË¸ˇˇˇâ√Ö¿x€∂|$â≈ã\$∫Ó  ¡Â«    1…â¯∂€ÅÂ   ¡ˇ¡‡ÉÁ%   	√∂D$	≈∏@  Îç¥&    É¡ò   â=h  tW∑êí   9⁄u‰f;∏ê   u€∑êî   fÉ˙ˇt9Íw ∑êñ   9Írøç¥&    Ä=     Ö  1€Éƒâÿ[^_]√ç¥&    ∂    É˘u‘Ñ¿Ö†  ªΩˇˇˇÎ‘ç¥&    ç∂    Ë¸ˇˇˇWVSâ”ÉÏdã    âT$â‚ËÒ˝ˇˇÖ¿u6i$ò   ç{ÉÁ¸ç≤@  ãí@  âãñÄ   âìÄ   )˚çãÑ   )ﬁ¡ÈÛ•ãT$d+    uÉƒ[^_√Ë¸ˇˇˇç¥&    ç¥&    Ë¸ˇˇˇVSâ√çspÉÏd°    âD$1¿â‚âÿËl˝ˇˇãÉ<  ˇpˇpVh¨   Ë¸ˇˇˇãD$ÉƒÉ¯Ö/  Èî          –                ‡                                                                                                       @   ê   ¿     `  –     P      Ä  p        4%s: Write: retry ... %d
- 3%s: TVP7002 write error %d
- No platform data
- 6%s: Rev. %02x detected.
- 3%s: TVP7002 read error %d
- 7%s: Fail to set streaming
- 7%s: detected timings: %d
- yes no 6%s: Streaming enabled: %s
- tvp7002 âD$ˇ4$Sh    Ë¸ˇˇˇ∏
-   Ë¸ˇˇˇÉD$ãD$ÉƒãT$É¯Ö0  RâT$Sh   Ë¸ˇˇˇãT$ÉƒÈE  ∑@PçCpPh    Ë¸ˇˇˇÉƒÈ‚  ∂¿çupPVhK   Ë¸ˇˇˇÉƒÄ˚tVh\   Ë¸ˇˇˇXZ1€1“æ@  Ä~u∂NÖ€u	âËË  â√∂VÉ∆Ä˙\u›Ö€àÿ  ãÖ0  ∫   ∂H∂@¡·¡‡	¡âËÉ… Ë  â√Ö¿àÿ  ãï0  ∂J∂B¡·¿	¡∂∫   	¡âËÉ…Ë  â√Ö¿àÿ  â‚âËãµ<  âÁπ!   Û•ËL  ÉM\∫   âË«Ö\     çç@  «E  Ë¸ˇˇˇâ√Ö¿àÿ  j çµ¿   1…∫   âË¸ˇˇˇπ	ò ∫0  âj j j jj hˇ   j j Ë¸ˇˇˇãù¸   âulÉƒ$Ö€t=âË¸ˇˇˇÈÿ  É√h9   SË¸ˇˇˇY[ªÍˇˇˇÈÿ  É≈pSUhf   Ë¸ˇˇˇÉƒÈÿ  âË¸ˇˇˇâËË¸ˇˇˇâ√Ö¿uØÈÿ  âD$ˇ4$ˇt$h    Ë¸ˇˇˇ∏
-   Ë¸ˇˇˇÉD$ãD$ÉƒãT$É¯Ö=  RâT$ˇt$h   Ë¸ˇˇˇãT$ÉƒÄ=     Ñ[  ˇt$hÉ   Ë¸ˇˇˇXZã$È[  SãD$É¿pPhf   Ë¸ˇˇˇÉƒÈ3  USãD$ªΩˇˇˇÉ¿pPhÄ   Ë¸ˇˇˇÉƒÈ3  SãD$É¿pPhf   Ë¸ˇˇˇÉƒÈ3  SãD$É¿pPhf   Ë¸ˇˇˇÉƒÈ3  SãD$É¿pPhf   Ë¸ˇˇˇÉƒÈ3  QãD$1€É¿pPh†   Ë¸ˇˇˇÉƒÈ3  i¿ò   ˇ∞H  ˇ∞D  VhÙ   Ë¸ˇˇˇÉƒÉª8   ∫¿   ∏º   D¬PVh√   Ë¸ˇˇˇçÉ¿   âÚË¸ˇˇˇÉƒãD$d+    uÉƒ1¿[^√Vh–   Ë¸ˇˇˇXZÎ¨Ë¸ˇˇˇ7%s: Removing tvp7002 adapteron address 0x%x
-  6%s %d-%04x: tvp7002 found @ 0x%02x (%s)
-  6%s: Unknown revision detected.
-   7%s: detection failed: lpf = %x, cpl = %x
- 6%s: Selected DV Timings: %ux%u
-   6%s: Detected DV Timings: None
-    6%s: Detected DV Timings: %ux%u
- Ë¸ˇˇˇ∫    ∏    È¸ˇˇˇ∏    È¸ˇˇˇ                            tvp7002                                                                    †               `       ê           ¿                          @                                                                         P      p                               
+#include <linux/gfp.h>
+#include <linux/module.h>
+#include <linux/init.h>
+#include <linux/if_arp.h>
+#include <linux/netdevice.h>
+#include <linux/skbuff.h>
+
+#include "arcdevice.h"
+
+MODULE_LICENSE("GPL");
+
+static __be16 type_trans(struct sk_buff *skb, struct net_device *dev);
+static void rx(struct net_device *dev, int bufnum,
+	       struct archdr *pkthdr, int length);
+static int build_header(struct sk_buff *skb, struct net_device *dev,
+			unsigned short type, uint8_t daddr);
+static int prepare_tx(struct net_device *dev, struct archdr *pkt, int length,
+		      int bufnum);
+static int continue_tx(struct net_device *dev, int bufnum);
+
+static struct ArcProto rfc1201_proto = {
+	.suffix		= 'a',
+	.mtu		= 1500,	/* could be more, but some receivers can't handle it... */
+	.is_ip          = 1,    /* This is for sending IP and ARP packages */
+	.rx		= rx,
+	.build_header	= build_header,
+	.prepare_tx	= prepare_tx,
+	.continue_tx	= continue_tx,
+	.ack_tx         = NULL
+};
+
+static int __init arcnet_rfc1201_init(void)
+{
+	pr_info("%s\n", "RFC1201 \"standard\" (`a') encapsulation support loaded");
+
+	arc_proto_map[ARC_P_IP]
+	    = arc_proto_map[ARC_P_IPV6]
+	    = arc_proto_map[ARC_P_ARP]
+	    = arc_proto_map[ARC_P_RARP]
+	    = arc_proto_map[ARC_P_IPX]
+	    = arc_proto_map[ARC_P_NOVELL_EC]
+	    = &rfc1201_proto;
+
+	/* if someone else already owns the broadcast, we won't take it */
+	if (arc_bcast_proto == arc_proto_default)
+		arc_bcast_proto = &rfc1201_proto;
+
+	return 0;
+}
+
+static void __exit arcnet_rfc1201_exit(void)
+{
+	arcnet_unregister_proto(&rfc1201_proto);
+}
+
+module_init(arcnet_rfc1201_init);
+module_exit(arcnet_rfc1201_exit);
+
+/* Determine a packet's protocol ID.
+ *
+ * With ARCnet we have to convert everything to Ethernet-style stuff.
+ */
+static __be16 type_trans(struct sk_buff *skb, struct net_device *dev)
+{
+	struct archdr *pkt = (struct archdr *)skb->data;
+	struct arc_rfc1201 *soft = &pkt->soft.rfc1201;
+	int hdr_size = ARC_HDR_SIZE + RFC1201_HDR_SIZE;
+
+	/* Pull off the arcnet header. */
+	skb_reset_mac_header(skb);
+	skb_pull(skb, hdr_size);
+
+	if (pkt->hard.dest == 0) {
+		skb->pkt_type = PACKET_BROADCAST;
+	} else if (dev->flags & IFF_PROMISC) {
+		/* if we're not sending to ourselves :) */
+		if (pkt->hard.dest != dev->dev_addr[0])
+			skb->pkt_type = PACKET_OTHERHOST;
+	}
+	/* now return the protocol number */
+	switch (soft->proto) {
+	case ARC_P_IP:
+		return htons(ETH_P_IP);
+	case ARC_P_IPV6:
+		return htons(ETH_P_IPV6);
+	case ARC_P_ARP:
+		return htons(ETH_P_ARP);
+	case ARC_P_RARP:
+		return htons(ETH_P_RARP);
+
+	case ARC_P_IPX:
+	case ARC_P_NOVELL_EC:
+		return htons(ETH_P_802_3);
+	default:
+		dev->stats.rx_errors++;
+		dev->stats.rx_crc_errors++;
+		return 0;
+	}
+
+	return htons(ETH_P_IP);
+}
+
+/* packet receiver */
+static void rx(struct net_device *dev, int bufnum,
+	       struct archdr *pkthdr, int length)
+{
+	struct arcnet_local *lp = netdev_priv(dev);
+	struct sk_buff *skb;
+	struct archdr *pkt = pkthdr;
+	struct arc_rfc1201 *soft = &pkthdr->soft.rfc1201;
+	int saddr = pkt->hard.source, ofs;
+	struct Incoming *in = &lp->rfc1201.incoming[saddr];
+
+	arc_printk(D_DURING, dev, "it's an RFC1201 packet (length=%d)\n",
+		   length);
+
+	if (length >= MinTU)
+		ofs = 512 - length;
+	else
+		ofs = 256 - length;
+
+	if (soft->split_flag == 0xFF) {		/* Exception Packet */
+		if (length >= 4 + RFC1201_HDR_SIZE) {
+			arc_printk(D_DURING, dev, "compensating for exception packet\n");
+		} else {
+			arc_printk(D_EXTRA, dev, "short RFC1201 exception packet from %02Xh",
+				   saddr);
+			return;
+		}
+
+		/* skip over 4-byte junkola */
+		length -= 4;
+		ofs += 4;
+		lp->hw.copy_from_card(dev, bufnum, 512 - length,
+				      soft, sizeof(pkt->soft));
+	}
+	if (!soft->split_flag) {	/* not split */
+		arc_printk(D_RX, dev, "incoming is not split (splitflag=%d)\n",
+			   soft->split_flag);
+
+		if (in->skb) {	/* already assembling one! */
+			arc_printk(D_EXTRA, dev, "aborting assembly (seq=%d) for unsplit packet (splitflag=%d, seq=%d)\n",
+				   in->sequence, soft->split_flag,
+				   soft->sequence);
+			lp->rfc1201.aborted_seq = soft->sequence;
+			dev_kfree_skb_irq(in->skb);
+			dev->stats.rx_errors++;
+			dev->stats.rx_missed_errors++;
+			in->skb = NULL;
+		}
+		in->sequence = soft->sequence;
+
+		skb = alloc_skb(length + ARC_HDR_SIZE, GFP_ATOMIC);
+		if (!skb) {
+			dev->stats.rx_dropped++;
+			return;
+		}
+		skb_put(skb, length + ARC_HDR_SIZE);
+		skb->dev = dev;
+
+		pkt = (struct archdr *)skb->data;
+		soft = &pkt->soft.rfc1201;
+
+		/* up to sizeof(pkt->soft) has already
+		 * been copied from the card
+		 */
+		memcpy(pkt, pkthdr, sizeof(struct archdr));
+		if (length > sizeof(pkt->soft))
+			lp->hw.copy_from_card(dev, bufnum,
+					      ofs + sizeof(pkt->soft),
+					      pkt->soft.raw + sizeof(pkt->soft),
+					      length - sizeof(pkt->soft));
+
+		/* ARP packets have problems when sent from some DOS systems:
+		 * the source address is always 0!
+		 * So we take the hardware source addr (which is impossible
+		 * to fumble) and insert it ourselves.
+		 */
+		if (soft->proto == ARC_P_ARP) {
+			struct arphdr *arp = (struct arphdr *)soft->payload;
+
+			/* make sure addresses are the right length */
+			if (arp->ar_hln == 1 && arp->ar_pln == 4) {
+				uint8_t *cptr = (uint8_t *)arp + sizeof(struct arphdr);
+
+				if (!*cptr) {	/* is saddr = 00? */
+					arc_printk(D_EXTRA, dev,
+						   "ARP source address was 00h, set to %02Xh\n",
+						   saddr);
+					dev->stats.rx_crc_errors++;
+					*cptr = saddr;
+				} else {
+					arc_printk(D_DURING, dev, "ARP source address (%Xh) is fine.\n",
+						   *cptr);
+				}
+			} else {
+				arc_printk(D_NORMAL, dev, "funny-shaped ARP packet. (%Xh, %Xh)\n",
+					   arp->ar_hln, arp->ar_pln);
+				dev->stats.rx_errors++;
+				dev->stats.rx_crc_errors++;
+			}
+		}
+		if (BUGLVL(D_SKB))
+			arcnet_dump_skb(dev, skb, "rx");
+
+		skb->protocol = type_trans(skb, dev);
+		netif_rx(skb);
+	} else {		/* split packet */
+		/* NOTE: MSDOS ARP packet correction should only need to
+		 * apply to unsplit packets, since ARP packets are so short.
+		 *
+		 * My interpretation of the RFC1201 document is that if a
+		 * packet is received out of order, the entire assembly
+		 * process should be aborted.
+		 *
+		 * The RFC also mentions "it is possible for successfully
+		 * received packets to be retransmitted." As of 0.40 all
+		 * previously received packets are allowed, not just the
+		 * most recent one.
+		 *
+		 * We allow multiple assembly processes, one for each
+		 * ARCnet card possible on the network.
+		 * Seems rather like a waste of memory, but there's no
+		 * other way to be reliable.
+		 */
+
+		arc_printk(D_RX, dev, "packet is split (splitflag=%d, seq=%d)\n",
+			   soft->split_flag, in->sequence);
+
+		if (in->skb && in->sequence != soft->sequence) {
+			arc_printk(D_EXTRA, dev, "wrong seq number (saddr=%d, expected=%d, seq=%d, splitflag=%d)\n",
+				   saddr, in->sequence, soft->sequence,
+				   soft->split_flag);
+			dev_kfree_skb_irq(in->skb);
+			in->skb = NULL;
+			dev->stats.rx_errors++;
+			dev->stats.rx_missed_errors++;
+			in->lastpacket = in->numpackets = 0;
+		}
+		if (soft->split_flag & 1) {	/* first packet in split */
+			arc_printk(D_RX, dev, "brand new splitpacket (splitflag=%d)\n",
+				   soft->split_flag);
+			if (in->skb) {	/* already assembling one! */
+				arc_printk(D_EXTRA, dev, "aborting previous (seq=%d) assembly (splitflag=%d, seq=%d)\n",
+					   in->sequence, soft->split_flag,
+					   soft->sequence);
+				dev->stats.rx_errors++;
+				dev->stats.rx_missed_errors++;
+				dev_kfree_skb_irq(in->skb);
+			}
+			in->sequence = soft->sequence;
+			in->numpackets = ((unsigned)soft->split_flag >> 1) + 2;
+			in->lastpacket = 1;
+
+			if (in->numpackets > 16) {
+				arc_printk(D_EXTRA, dev, "incoming packet more than 16 segments; dropping. (splitflag=%d)\n",
+					   soft->split_flag);
+				lp->rfc1201.aborted_seq = soft->sequence;
+				dev->stats.rx_errors++;
+				dev->stats.rx_length_errors++;
+				return;
+			}
+			in->skb = skb = alloc_skb(508 * in->numpackets + ARC_HDR_SIZE,
+						  GFP_ATOMIC);
+			if (!skb) {
+				arc_printk(D_NORMAL, dev, "(split) memory squeeze, dropping packet.\n");
+				lp->rfc1201.aborted_seq = soft->sequence;
+				dev->stats.rx_dropped++;
+				return;
+			}
+			skb->dev = dev;
+			pkt = (struct archdr *)skb->data;
+			soft = &pkt->soft.rfc1201;
+
+			memcpy(pkt, pkthdr, ARC_HDR_SIZE + RFC1201_HDR_SIZE);
+			skb_put(skb, ARC_HDR_SIZE + RFC1201_HDR_SIZE);
+
+			soft->split_flag = 0;	/* end result won't be split */
+		} else {	/* not first packet */
+			int packetnum = ((unsigned)soft->split_flag >> 1) + 1;
+
+			/* if we're not assembling, there's no point trying to
+			 * continue.
+			 */
+			if (!in->skb) {
+				if (lp->rfc1201.aborted_seq != soft->sequence) {
+					arc_printk(D_EXTRA, dev, "can't continue split without starting first! (splitflag=%d, seq=%d, aborted=%d)\n",
+						   soft->split_flag,
+						   soft->sequence,
+						   lp->rfc1201.aborted_seq);
+					dev->stats.rx_errors++;
+					dev->stats.rx_missed_errors++;
+				}
+				return;
+			}
+			in->lastpacket++;
+			/* if not the right flag */
+			if (packetnum != in->lastpacket) {
+				/* harmless duplicate? ignore. */
+				if (packetnum <= in->lastpacket - 1) {
+					arc_printk(D_EXTRA, dev, "duplicate splitpacket ignored! (splitflag=%d)\n",
+						   soft->split_flag);
+					dev->stats.rx_errors++;
+					dev->stats.rx_frame_errors++;
+					return;
+				}
+				/* "bad" duplicate, kill reassembly */
+				arc_printk(D_EXTRA, dev, "out-of-order splitpacket, reassembly (seq=%d) aborted (splitflag=%d, seq=%d)\n",
+					   in->sequence, soft->split_flag,
+					   soft->sequence);
+				lp->rfc1201.aborted_seq = soft->sequence;
+				dev_kfree_skb_irq(in->skb);
+				in->skb = NULL;
+				dev->stats.rx_errors++;
+				dev->stats.rx_missed_errors++;
+				in->lastpacket = in->numpackets = 0;
+				return;
+			}
+			pkt = (struct archdr *)in->skb->data;
+			soft = &pkt->soft.rfc1201;
+		}
+
+		skb = in->skb;
+
+		lp->hw.copy_from_card(dev, bufnum, ofs + RFC1201_HDR_SIZE,
+				      skb->data + skb->len,
+				      length - RFC1201_HDR_SIZE);
+		skb_put(skb, length - RFC1201_HDR_SIZE);
+
+		/* are we done? */
+		if (in->lastpacket == in->numpackets) {
+			in->skb = NULL;
+			in->lastpacket = in->numpackets = 0;
+
+			arc_printk(D_SKB_SIZE, dev, "skb: received %d bytes from %02X (unsplit)\n",
+				   skb->len, pkt->hard.source);
+			arc_printk(D_SKB_SIZE, dev, "skb: received %d bytes from %02X (split)\n",
+				   skb->len, pkt->hard.source);
+			if (BUGLVL(D_SKB))
+				arcnet_dump_skb(dev, skb, "rx");
+
+			skb->protocol = type_trans(skb, dev);
+			netif_rx(skb);
+		}
+	}
+}
+
+/* Create the ARCnet hard/soft headers for RFC1201. */
+static int build_header(struct sk_buff *skb, struct net_device *dev,
+			unsigned short type, uint8_t daddr)
+{
+	struct arcnet_local *lp = netdev_priv(dev);
+	int hdr_size = ARC_HDR_SIZE + RFC1201_HDR_SIZE;
+	struct archdr *pkt = skb_push(skb, hdr_size);
+	struct arc_rfc1201 *soft = &pkt->soft.rfc1201;
+
+	/* set the protocol ID according to RFC1201 */
+	switch (type) {
+	case ETH_P_IP:
+		soft->proto = ARC_P_IP;
+		break;
+	case ETH_P_IPV6:
+		soft->proto = ARC_P_IPV6;
+		break;
+	case ETH_P_ARP:
+		soft->proto = ARC_P_ARP;
+		break;
+	case ETH_P_RARP:
+		soft->proto = ARC_P_RARP;
+		break;
+	case ETH_P_IPX:
+	case ETH_P_802_3:
+	case ETH_P_802_2:
+		soft->proto = ARC_P_IPX;
+		break;
+	case ETH_P_ATALK:
+		soft->proto = ARC_P_ATALK;
+		break;
+	default:
+		arc_printk(D_NORMAL, dev, "RFC1201: I don't understand protocol %d (%Xh)\n",
+			   type, type);
+		dev->stats.tx_errors++;
+		dev->stats.tx_aborted_errors++;
+		return 0;
+	}
+
+	/* Set the source hardware address.
+	 *
+	 * This is pretty pointless for most purposes, but it can help in
+	 * debugging.  ARCnet does not allow us to change the source address
+	 * in the actual packet sent.
+	 */
+	pkt->hard.source = *dev->dev_addr;
+
+	soft->sequence = htons(lp->rfc1201.sequence++);
+	soft->split_flag = 0;	/* split packets are done elsewhere */
+
+	/* see linux/net/ethernet/eth.c to see where I got the following */
+
+	if (dev->flags & (IFF_LOOPBACK | IFF_NOARP)) {
+		/* FIXME: fill in the last byte of the dest ipaddr here
+		 * to better comply with RFC1051 in "noarp" mode.
+		 * For now, always broadcasting will probably at least get
+		 * packets sent out :)
+		 */
+		pkt->hard.dest = 0;
+		return hdr_size;
+	}
+	/* otherwise, drop in the dest address */
+	pkt->hard.dest = daddr;
+	return hdr_size;
+}
+
+static void load_pkt(struct net_device *dev, struct arc_hardware *hard,
+		     struct arc_rfc1201 *soft, int softlen, int bufnum)
+{
+	struct arcnet_local *lp = netdev_priv(dev);
+	int ofs;
+
+	/* assume length <= XMTU: someone should have handled that by now. */
+
+	if (softlen > MinTU) {
+		hard->offset[0] = 0;
+		hard->offset[1] = ofs = 512 - softlen;
+	} else if (softlen > MTU) {	/* exception packet - add an extra header */
+		struct arc_rfc1201 excsoft;
+
+		excsoft.proto = soft->proto;
+		excsoft.split_flag = 0xff;
+		excsoft.sequence = htons(0xffff);
+
+		hard->offset[0] = 0;
+		ofs = 512 - softlen;
+		hard->offset[1] = ofs - RFC1201_HDR_SIZE;
+		lp->hw.copy_to_card(dev, bufnum, ofs - RFC1201_HDR_SIZE,
+				    &excsoft, RFC1201_HDR_SIZE);
+	} else {
+		hard->offset[0] = ofs = 256 - softlen;
+	}
+
+	lp->hw.copy_to_card(dev, bufnum, 0, hard, ARC_HDR_SIZE);
+	lp->hw.copy_to_card(dev, bufnum, ofs, soft, softlen);
+
+	lp->lastload_dest = hard->dest;
+}
+
+static int prepare_tx(struct net_device *dev, struct archdr *pkt, int length,
+		      int bufnum)
+{
+	struct arcnet_local *lp = netdev_priv(dev);
+	const int maxsegsize = XMTU - RFC1201_HDR_SIZE;
+	struct Outgoing *out;
+
+	arc_printk(D_DURING, dev, "prepare_tx: txbufs=%d/%d/%d\n",
+		   lp->next_tx, lp->cur_tx, bufnum);
+
+	/* hard header is not included in packet length */
+	length -= ARC_HDR_SIZE;
+	pkt->soft.rfc1201.split_flag = 0;
+
+	/* need to do a split packet? */
+	if (length > XMTU) {
+		out = &lp->outgoing;
+
+		out->length = length - RFC1201_HDR_SIZE;
+		out->dataleft = lp->outgoing.length;
+		out->numsegs = (out->dataleft + maxsegsize - 1) / maxsegsize;
+		out->segnum = 0;
+
+		arc_printk(D_DURING, dev, "rfc1201 prep_tx: ready for %d-segment split (%d bytes, seq=%d)\n",
+			   out->numsegs, out->length,
+			   pkt->soft.rfc1201.sequence);
+
+		return 0;	/* not done */
+	}
+	/* just load the packet into the buffers and send it off */
+	load_pkt(dev, &pkt->hard, &pkt->soft.rfc1201, length, bufnum);
+
+	return 1;		/* done */
+}
+
+static int continue_tx(struct net_device *dev, int bufnum)
+{
+	struct arcnet_local *lp = netdev_priv(dev);
+	struct Outgoing *out = &lp->outgoing;
+	struct arc_hardware *hard = &out->pkt->hard;
+	struct arc_rfc1201 *soft = &out->pkt->soft.rfc1201, *newsoft;
+	int maxsegsize = XMTU - RFC1201_HDR_SIZE;
+	int seglen;
+
+	arc_printk(D_DURING, dev,
+		   "rfc1201 continue_tx: loading segment %d(+1) of %d (seq=%d)\n",
+		   out->segnum, out->numsegs, soft->sequence);
+
+	/* the "new" soft header comes right before the data chunk */
+	newsoft = (struct arc_rfc1201 *)
+	    (out->pkt->soft.raw + out->length - out->dataleft);
+
+	if (!out->segnum)	/* first packet; newsoft == soft */
+		newsoft->split_flag = ((out->numsegs - 2) << 1) | 1;
+	else {
+		newsoft->split_flag = out->segnum << 1;
+		newsoft->proto = soft->proto;
+		newsoft->sequence = soft->sequence;
+	}
+
+	seglen = maxsegsize;
+	if (seglen > out->dataleft)
+		seglen = out->dataleft;
+	out->dataleft -= seglen;
+
+	load_pkt(dev, hard, newsoft, seglen + RFC1201_HDR_SIZE, bufnum);
+
+	out->segnum++;
+	if (out->segnum >= out->numsegs)
+		return 1;
+	else
+		return 0;
+}

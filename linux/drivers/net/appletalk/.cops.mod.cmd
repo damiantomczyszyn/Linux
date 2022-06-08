@@ -1,4 +1,1 @@
-e/config/ACPI_APEI_GHES) \
-    $(wildcard include/config/INTEL_TXT) \
-  arch/x86/include/generated/asm/kmap_size.h \
- 
+cmd_drivers/net/appletalk/cops.mod := { echo  drivers/net/appletalk/cops.o;  echo; } > drivers/net/appletalk/cops.mod

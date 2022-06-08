@@ -1,2 +1,3 @@
-drivers/media/rc/keymaps/rc-hisi-poplar.o
-
+_LEADTEK_WINFAST_PXDVR3200_H,
+	}, {
+		.subv

@@ -1,1 +1,3 @@
-rd include/config/ALTERNATE_USER_ADDRESS
+IDEO;
+		break;
+	case CX23885_BOARD_DVBSK

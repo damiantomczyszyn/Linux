@@ -1,1 +1,1 @@
-rd include/config/ALTERNATE_USER_A
+// SPDX-License-Identifier: GPL-2.

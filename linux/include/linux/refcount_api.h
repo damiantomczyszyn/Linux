@@ -1,2 +1,1 @@
-e/config/SPI) \
-  include/me
+cmd_drivers/media/pci/cx18/c

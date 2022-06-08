@@ -1,1 +1,2 @@
-ldcard include/config/SHMEM)
+:
+		i2c_bus = &dev->i2c_bus[

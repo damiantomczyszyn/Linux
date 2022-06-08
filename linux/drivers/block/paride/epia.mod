@@ -1,1 +1,1 @@
-config/ARCH_WANTS_DYNAMIC_TAS
+dth_count_to_ns(FIFO_RXTX, *d

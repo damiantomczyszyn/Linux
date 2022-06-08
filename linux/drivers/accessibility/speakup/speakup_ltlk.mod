@@ -1,1 +1,3 @@
-cmd_drivers/media/i2c/vp27smpx.o := gcc -Wp,-M
+K_RCD + 1)
+		count = RXCLK_RCD;
+	else if (coun

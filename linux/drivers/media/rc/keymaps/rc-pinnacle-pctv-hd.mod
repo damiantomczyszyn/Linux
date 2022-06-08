@@ -1,2 +1,3 @@
-drivers/media/rc/keymaps/rc-pinnacle-pctv-hd.o
-
+fault_pm	  = 0,
+				.dvb_amplitude	  = 134,
+				

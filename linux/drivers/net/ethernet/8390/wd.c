@@ -1,441 +1,576 @@
-onfig/TRACE_BRANCH_PROFILING) \
-    $(wildcard include/config/PROFILE_ALL_BRANCHES) \
-    $(wildcard include/config/STACK_VALIDATION) \
-  include/linux/compiler_types.h \
-  arch/x86/include/generated/asm/rwonce.h \
-  include/asm-generic/rwonce.h \
-  include/linux/kasan-checks.h \
-    $(wildcard include/config/KASAN_GENERIC) \
-    $(wildcard include/config/KASAN_SW_TAGS) \
-  include/linux/types.h \
-    $(wildcard include/config/HAVE_UID16) \
-    $(wildcard include/config/UID16) \
-    $(wildcard include/config/ARCH_DMA_ADDR_T_64BIT) \
-    $(wildcard include/config/PHYS_ADDR_T_64BIT) \
-    $(wildcard include/config/64BIT) \
-    $(wildcard include/config/ARCH_32BIT_USTAT_F_TINODE) \
-  include/uapi/linux/types.h \
-  arch/x86/include/generated/uapi/asm/types.h \
-  include/uapi/asm-generic/types.h \
-  include/asm-generic/int-ll64.h \
-  include/uapi/asm-generic/int-ll64.h \
-  arch/x86/include/uapi/asm/bitsperlong.h \
-  include/asm-generic/bitsperlong.h \
-  include/uapi/asm-generic/bitsperlong.h \
-  include/uapi/linux/posix_types.h \
-  include/linux/stddef.h \
-  include/uapi/linux/stddef.h \
-  arch/x86/include/asm/posix_types.h \
-    $(wildcard include/config/X86_32) \
-  arch/x86/include/uapi/asm/posix_types_32.h \
-  include/uapi/asm-generic/posix_types.h \
-  include/linux/kcsan-checks.h \
-    $(wildcard include/config/KCSAN) \
-    $(wildcard include/config/KCSAN_WEAK_MEMORY) \
-    $(wildcard include/config/KCSAN_IGNORE_ATOMICS) \
-  include/linux/err.h \
-  arch/x86/include/generated/uapi/asm/errno.h \
-  include/uapi/asm-generic/errno.h \
-  include/uapi/asm-generic/errno-base.h \
-  include/linux/poison.h \
-    $(wildcard include/config/ILLEGAL_POINTER_VALUE) \
-  include/linux/const.h \
-  include/vdso/const.h \
-  include/uapi/linux/const.h \
-  arch/x86/include/asm/barrier.h \
-  arch/x86/include/asm/alternative.h \
-  include/linux/stringify.h \
-  arch/x86/include/asm/asm.h \
-  arch/x86/include/asm/extable_fixup_types.h \
-  arch/x86/include/asm/nops.h \
-  include/asm-generic/barrier.h \
-  include/linux/stat.h \
-  arch/x86/include/uapi/asm/stat.h \
-  include/uapi/linux/stat.h \
-  include/linux/time.h \
-    $(wildcard include/config/POSIX_TIMERS) \
-  include/linux/cache.h \
-    $(wildcard include/config/ARCH_HAS_CACHE_LINE_SIZE) \
-  include/uapi/linux/kernel.h \
-  include/uapi/linux/sysinfo.h \
-  arch/x86/include/asm/cache.h \
-    $(wildcard include/config/X86_L1_CACHE_SHIFT) \
-    $(wildcard include/config/X86_INTERNODE_CACHE_SHIFT) \
-    $(wildcard include/config/X86_VSMP) \
-  include/linux/linkage.h \
-    $(wildcard include/config/ARCH_USE_SYM_ANNOTATIONS) \
-  include/linux/export.h \
-    $(wildcard include/config/MODVERSIONS) \
-    $(wildcard include/config/MODULE_REL_CRCS) \
-    $(wildcard include/config/HAVE_ARCH_PREL32_RELOCATIONS) \
-    $(wildcard include/config/TRIM_UNUSED_KSYMS) \
-  arch/x86/include/asm/linkage.h \
-    $(wildcard include/config/X86_64) \
-    $(wildcard include/config/X86_ALIGNMENT_16) \
-    $(wildcard include/config/SLS) \
-  arch/x86/include/asm/ibt.h \
-    $(wildcard include/config/X86_KERNEL_IBT) \
-  include/linux/math64.h \
-    $(wildcard include/config/ARCH_SUPPORTS_INT128) \
-  include/linux/math.h \
-  arch/x86/include/asm/div64.h \
-  include/linux/log2.h \
-    $(wildcard include/config/ARCH_HAS_ILOG2_U32) \
-    $(wildcard include/config/ARCH_HAS_ILOG2_U64) \
-  include/linux/bitops.h \
-  include/linux/bits.h \
-  include/vdso/bits.h \
-  include/linux/typecheck.h \
-  arch/x86/include/asm/bitops.h \
-    $(wildcard include/config/X86_CMOV) \
-  arch/x86/include/asm/rmwcc.h \
-    $(wildcard include/config/CC_HAS_ASM_GOTO) \
-  include/asm-generic/bitops/fls64.h \
-  include/asm-generic/bitops/sched.h \
-  arch/x86/include/asm/arch_hweight.h \
-  arch/x86/include/asm/cpufeatures.h \
-  arch/x86/include/asm/required-features.h \
-    $(wildcard include/config/X86_MINIMUM_CPU_FAMILY) \
-    $(wildcard include/config/MATH_EMULATION) \
-    $(wildcard include/config/X86_PAE) \
-    $(wildcard include/config/X86_CMPXCHG64) \
-    $(wildcard include/config/X86_P6_NOP) \
-    $(wildcard include/config/MATOM) \
-    $(wildcard include/config/PARAVIRT_XXL) \
-  arch/x86/include/asm/disabled-features.h \
-    $(wildcard include/config/X86_SMAP) \
-    $(wildcard include/config/X86_UMIP) \
-    $(wildcard include/config/X86_INTEL_MEMORY_PROTECTION_KEYS) \
-    $(wildcard include/config/X86_5LEVEL) \
-    $(wildcard include/config/PAGE_TABLE_ISOLATION) \
-    $(wildcard include/config/INTEL_IOMMU_SVM) \
-    $(wildcard include/config/X86_SGX) \
-  include/asm-generic/bitops/const_hweight.h \
-  include/asm-generic/bitops/instrumented-atomic.h \
-  include/linux/instrumented.h \
-  include/asm-generic/bitops/instrumented-non-atomic.h \
-    $(wildcard include/config/KCSAN_ASSUME_PLAIN_WRITES_ATOMIC) \
-  include/asm-generic/bitops/instrumented-lock.h \
-  include/asm-generic/bitops/le.h \
-  arch/x86/include/uapi/asm/byteorder.h \
-  include/linux/byteorder/little_endian.h \
-  include/uapi/linux/byteorder/little_endian.h \
-  include/linux/swab.h \
-  include/uapi/linux/swab.h \
-  arch/x86/include/uapi/asm/swab.h \
-  include/linux/byteorder/generic.h \
-  include/asm-generic/bitops/ext2-atomic-setbit.h \
-  include/vdso/math64.h \
-  include/linux/time64.h \
-  include/vdso/time64.h \
-  include/uapi/linux/time.h \
-  include/uapi/linux/time_types.h \
-  include/linux/time32.h \
-  include/linux/timex.h \
-  include/uapi/linux/timex.h \
-  include/uapi/linux/param.h \
-  arch/x86/include/generated/uapi/asm/param.h \
-  include/asm-generic/param.h \
-    $(wildcard include/config/HZ) \
-  include/uapi/asm-generic/param.h \
-  arch/x86/include/asm/timex.h \
-    $(wildcard include/config/X86_TSC) \
-  arch/x86/include/asm/processor.h \
-    $(wildcard include/config/X86_VMX_FEATURE_NAMES) \
-    $(wildcard include/config/X86_IOPL_IOPERM) \
-    $(wildcard include/config/STACKPROTECTOR) \
-    $(wildcard include/config/VM86) \
-    $(wildcard include/config/X86_DEBUGCTLMSR) \
-    $(wildcard include/config/CPU_SUP_AMD) \
-    $(wildcard include/config/XEN) \
-  arch/x86/include/asm/processor-flags.h \
-  arch/x86/include/uapi/asm/processor-flags.h \
-  include/linux/mem_encrypt.h \
-    $(wildcard include/config/ARCH_HAS_MEM_ENCRYPT) \
-    $(wildcard include/config/AMD_MEM_ENCRYPT) \
-  arch/x86/include/asm/mem_encrypt.h \
-  include/linux/init.h \
-    $(wildcard include/config/STRICT_KERNEL_RWX) \
-    $(wildcard include/config/STRICT_MODULE_RWX) \
-    $(wildcard include/config/LTO_CLANG) \
-  include/linux/cc_platform.h \
-    $(wildcard include/config/ARCH_HAS_CC_PLATFORM) \
-  arch/x86/include/uapi/asm/bootparam.h \
-  include/linux/screen_info.h \
-  include/uapi/linux/screen_info.h \
-  include/linux/apm_bios.h \
-  include/uapi/linux/apm_bios.h \
-  include/uapi/linux/ioctl.h \
-  arch/x86/include/generated/uapi/asm/ioctl.h \
-  include/asm-generic/ioctl.h \
-  include/uapi/asm-generic/ioctl.h \
-  include/linux/edd.h \
-  include/uapi/linux/edd.h \
-  arch/x86/include/asm/ist.h \
-  arch/x86/include/uapi/asm/ist.h \
-  include/video/edid.h \
-    $(wildcard include/config/X86) \
-  include/uapi/video/edid.h \
-  arch/x86/include/asm/math_emu.h \
-  arch/x86/include/asm/ptrace.h \
-    $(wildcard include/config/PARAVIRT) \
-    $(wildcard include/config/IA32_EMULATION) \
-  arch/x86/include/asm/segment.h \
-    $(wildcard include/config/XEN_PV) \
-  arch/x86/include/asm/page_types.h \
-    $(wildcard include/config/PHYSICAL_START) \
-    $(wildcard include/config/PHYSICAL_ALIGN) \
-    $(wildcard include/config/DYNAMIC_PHYSICAL_MASK) \
-  arch/x86/include/asm/page_32_types.h \
-    $(wildcard include/config/HIGHMEM4G) \
-    $(wildcard include/config/HIGHMEM64G) \
-    $(wildcard include/config/PAGE_OFFSET) \
-  arch/x86/include/uapi/asm/ptrace.h \
-  arch/x86/include/uapi/asm/ptrace-abi.h \
-  arch/x86/include/asm/paravirt_types.h \
-    $(wildcard include/config/PGTABLE_LEVELS) \
-    $(wildcard include/config/PARAVIRT_DEBUG) \
-  arch/x86/include/asm/desc_defs.h \
-  arch/x86/include/asm/pgtable_types.h \
-    $(wildcard include/config/MEM_SOFT_DIRTY) \
-    $(wildcard include/config/HAVE_ARCH_USERFAULTFD_WP) \
-    $(wildcard include/config/PROC_FS) \
-  arch/x86/include/asm/pgtable_32_types.h \
-  arch/x86/include/asm/pgtable-3level_types.h \
-  include/asm-generic/pgtable-nop4d.h \
-  include/asm-generic/pgtable-nopud.h \
-  arch/x86/include/asm/nospec-branch.h \
-  include/linux/static_key.h \
-  include/linux/jump_label.h \
-    $(wildcard include/config/HAVE_ARCH_JUMP_LABEL_RELATIVE) \
-  arch/x86/include/asm/jump_label.h \
-  include/linux/objtool.h \
-    $(wildcard include/config/FRAME_POINTER) \
-  arch/x86/include/asm/msr-index.h \
-  arch/x86/include/asm/unwind_hints.h \
-  arch/x86/include/asm/orc_types.h \
-  arch/x86/include/asm/GEN-for-each-reg.h \
-  arch/x86/include/asm/spinlock_types.h \
-  include/asm-generic/qspinlock_types.h \
-    $(wildcard include/config/NR_CPUS) \
-  include/asm-generic/qrwlock_types.h \
-  arch/x86/include/asm/proto.h \
-  arch/x86/include/uapi/asm/ldt.h \
-  arch/x86/include/uapi/asm/sigcontext.h \
-  arch/x86/include/asm/current.h \
-  arch/x86/include/asm/percpu.h \
-    $(wildcard include/config/X86_64_SMP) \
-  include/linux/kernel.h \
-    $(wildcard include/config/PREEMPT_VOLUNTARY_BUILD) \
-    $(wildcard include/config/PREEMPT_DYNAMIC) \
-    $(wildcard include/config/HAVE_PREEMPT_DYNAMIC_CALL) \
-    $(wildcard include/config/HAVE_PREEMPT_DYNAMIC_KEY) \
-    $(wildcard include/config/PREEMPT_) \
-    $(wildcard include/config/DEBUG_ATOMIC_SLEEP) \
-    $(wildcard include/config/MMU) \
-    $(wildcard include/config/PROVE_LOCKING) \
-  include/linux/stdarg.h \
-  include/linux/align.h \
-  include/linux/limits.h \
-  include/uapi/linux/limits.h \
-  include/vdso/limits.h \
-  include/linux/kstrtox.h \
-  include/linux/minmax.h \
-  include/linux/panic.h \
-    $(wildcard include/config/PANIC_TIMEOUT) \
-  include/linux/printk.h \
-    $(wildcard include/config/MESSAGE_LOGLEVEL_DEFAULT) \
-    $(wildcard include/config/CONSOLE_LOGLEVEL_DEFAULT) \
-    $(wildcard include/config/CONSOLE_LOGLEVEL_QUIET) \
-    $(wildcard include/config/EARLY_PRINTK) \
-    $(wildcard include/config/PRINTK) \
-    $(wildcard include/config/DYNAMIC_DEBUG) \
-    $(wildcard include/config/DYNAMIC_DEBUG_CORE) \
-  include/linux/kern_levels.h \
-  include/linux/ratelimit_types.h \
-  include/linux/spinlock_types_raw.h \
-    $(wildcard include/config/DEBUG_SPINLOCK) \
-    $(wildcard include/config/DEBUG_LOCK_ALLOC) \
-  include/linux/lockdep_types.h \
-    $(wildcard include/config/PROVE_RAW_LOCK_NESTING) \
-    $(wildcard include/config/LOCKDEP) \
-    $(wildcard include/config/LOCK_STAT) \
-  include/linux/once_lite.h \
-  include/linux/static_call_types.h \
-    $(wildcard include/config/HAVE_STATIC_CALL) \
-  include/linux/instruction_pointer.h \
-  include/asm-generic/percpu.h \
-    $(wildcard include/config/DEBUG_PREEMPT) \
-    $(wildcard include/config/HAVE_SETUP_PER_CPU_AREA) \
-  include/linux/threads.h \
-    $(wildcard include/config/BASE_SMALL) \
-  include/linux/percpu-defs.h \
-    $(wildcard include/config/DEBUG_FORCE_WEAK_PER_CPU) \
-  arch/x86/include/asm/page.h \
-  arch/x86/include/asm/page_32.h \
-    $(wildcard include/config/DEBUG_VIRTUAL) \
-    $(wildcard include/config/FLATMEM) \
-  include/linux/string.h \
-    $(wildcard include/config/BINARY_PRINTF) \
-    $(wildcard include/config/FORTIFY_SOURCE) \
-  include/linux/errno.h \
-  include/uapi/linux/errno.h \
-  include/uapi/linux/string.h \
-  arch/x86/include/asm/string.h \
-  arch/x86/include/asm/string_32.h \
-  include/linux/fortify-string.h \
-  include/linux/range.h \
-  include/asm-generic/memory_model.h \
-    $(wildcard include/config/SPARSEMEM_VMEMMAP) \
-    $(wildcard include/config/SPARSEMEM) \
-  include/linux/pfn.h \
-  include/asm-generic/getorder.h \
-  arch/x86/include/asm/msr.h \
-  arch/x86/include/asm/msr-index.h \
-  arch/x86/include/asm/cpumask.h \
-  include/linux/cpumask.h \
-    $(wildcard include/config/CPUMASK_OFFSTACK) \
-    $(wildcard include/config/HOTPLUG_CPU) \
-    $(wildcard include/config/DEBUG_PER_CPU_MAPS) \
-  include/linux/bitmap.h \
-  include/linux/find.h \
-  include/linux/atomic.h \
-  arch/x86/include/asm/atomic.h \
-  arch/x86/include/asm/cmpxchg.h \
-  arch/x86/include/asm/cmpxchg_32.h \
-  arch/x86/include/asm/atomic64_32.h \
-  include/linux/atomic/atomic-arch-fallback.h \
-    $(wildcard include/config/GENERIC_ATOMIC64) \
-  include/linux/atomic/atomic-long.h \
-  include/linux/atomic/atomic-instrumented.h \
-  include/linux/bug.h \
-    $(wildcard include/config/BUG_ON_DATA_CORRUPTION) \
-  arch/x86/include/asm/bug.h \
-    $(wildcard include/config/DEBUG_BUGVERBOSE) \
-  include/linux/instrumentation.h \
-    $(wildcard include/config/DEBUG_ENTRY) \
-  include/asm-generic/bug.h \
-    $(wildcard include/config/BUG) \
-    $(wildcard include/config/GENERIC_BUG_RELATIVE_POINTERS) \
-  arch/x86/include/uapi/asm/msr.h \
-  include/linux/tracepoint-defs.h \
-  arch/x86/include/asm/special_insns.h \
-  include/linux/irqflags.h \
-    $(wildcard include/config/TRACE_IRQFLAGS) \
-    $(wildcard include/config/PREEMPT_RT) \
-    $(wildcard include/config/IRQSOFF_TRACER) \
-    $(wildcard include/config/PREEMPT_TRACER) \
-    $(wildcard include/config/DEBUG_IRQFLAGS) \
-    $(wildcard include/config/TRACE_IRQFLAGS_SUPPORT) \
-  arch/x86/include/asm/irqflags.h \
-  arch/x86/include/asm/fpu/types.h \
-  arch/x86/include/asm/vmxfeatures.h \
-  arch/x86/include/asm/vdso/processor.h \
-  include/linux/personality.h \
-  include/uapi/linux/personality.h \
-  arch/x86/include/asm/tsc.h \
-  arch/x86/include/asm/cpufeature.h \
-    $(wildcard include/config/X86_FEATURE_NAMES) \
-  include/vdso/time32.h \
-  include/vdso/time.h \
-  include/linux/uidgid.h \
-    $(wildcard include/config/MULTIUSER) \
-    $(wildcard include/config/USER_NS) \
-  include/linux/highuid.h \
-  include/linux/buildid.h \
-    $(wildcard include/config/CRASH_CORE) \
-  include/linux/mm_types.h \
-    $(wildcard include/config/HAVE_ALIGNED_STRUCT_PAGE) \
-    $(wildcard include/config/MEMCG) \
-    $(wildcard include/config/USERFAULTFD) \
-    $(wildcard include/config/SWAP) \
-    $(wildcard include/config/NUMA) \
-    $(wildcard include/config/HAVE_ARCH_COMPAT_MMAP_BASES) \
-    $(wildcard include/config/MEMBARRIER) \
-    $(wildcard include/config/AIO) \
-    $(wildcard include/config/MMU_NOTIFIER) \
-    $(wildcard include/config/TRANSPARENT_HUGEPAGE) \
-    $(wildcard include/config/NUMA_BALANCING) \
-    $(wildcard include/config/ARCH_WANT_BATCHED_UNMAP_TLB_FLUSH) \
-    $(wildcard include/config/HUGETLB_PAGE) \
-    $(wildcard include/config/IOMMU_SVA) \
-  include/linux/mm_types_task.h \
-    $(wildcard include/config/SPLIT_PTLOCK_CPUS) \
-    $(wildcard include/config/ARCH_ENABLE_SPLIT_PMD_PTLOCK) \
-  arch/x86/include/asm/tlbbatch.h \
-  include/linux/auxvec.h \
-  include/uapi/linux/auxvec.h \
-  arch/x86/include/uapi/asm/auxvec.h \
-  include/linux/kref.h \
-  include/linux/spinlock.h \
-    $(wildcard include/config/PREEMPTION) \
-  include/linux/preempt.h \
-    $(wildcard include/config/PREEMPT_COUNT) \
-    $(wildcard include/config/TRACE_PREEMPT_TOGGLE) \
-    $(wildcard include/config/PREEMPT_NOTIFIERS) \
-  arch/x86/include/asm/preempt.h \
-  include/linux/thread_info.h \
-    $(wildcard include/config/THREAD_INFO_IN_TASK) \
-    $(wildcard include/config/GENERIC_ENTRY) \
-    $(wildcard include/config/HAVE_ARCH_WITHIN_STACK_FRAMES) \
-    $(wildcard include/config/HARDENED_USERCOPY) \
-  include/linux/restart_block.h \
-  arch/x86/include/asm/thread_info.h \
-    $(wildcard include/config/COMPAT) \
-  include/linux/bottom_half.h \
-  include/linux/lockdep.h \
-    $(wildcard include/config/DEBUG_LOCKING_API_SELFTESTS) \
-  include/linux/smp.h \
-    $(wildcard include/config/UP_LATE_INIT) \
-  include/linux/smp_types.h \
-  include/linux/llist.h \
-    $(wildcard include/config/ARCH_HAVE_NMI_SAFE_CMPXCHG) \
-  arch/x86/include/asm/smp.h \
-    $(wildcard include/config/X86_LOCAL_APIC) \
-    $(wildcard include/config/DEBUG_NMI_SELFTEST) \
-  arch/x86/include/generated/asm/mmiowb.h \
-  include/asm-generic/mmiowb.h \
-    $(wildcard include/config/MMIOWB) \
-  include/linux/spinlock_types.h \
-  include/linux/rwlock_types.h \
-  arch/x86/include/asm/spinlock.h \
-  arch/x86/include/asm/paravirt.h \
-    $(wildcard include/config/PARAVIRT_SPINLOCKS) \
-  arch/x86/include/asm/frame.h \
-  arch/x86/include/asm/qspinlock.h \
-  include/asm-generic/qspinlock.h \
-  arch/x86/include/asm/qrwlock.h \
-  include/asm-generic/qrwlock.h \
-  include/linux/rwlock.h \
-    $(wildcard include/config/PREEMPT) \
-  include/linux/spinlock_api_smp.h \
-    $(wildcard include/config/INLINE_SPIN_LOCK) \
-    $(wildcard include/config/INLINE_SPIN_LOCK_BH) \
-    $(wildcard include/config/INLINE_SPIN_LOCK_IRQ) \
-    $(wildcard include/config/INLINE_SPIN_LOCK_IRQSAVE) \
-    $(wildcard include/config/INLINE_SPIN_TRYLOCK) \
-    $(wildcard include/config/INLINE_SPIN_TRYLOCK_BH) \
-    $(wildcard include/config/UNINLINE_SPIN_UNLOCK) \
-    $(wildcard include/config/INLINE_SPIN_UNLOCK_BH) \
-    $(wildcard include/config/INLINE_SPIN_UNLOCK_IRQ) \
-    $(wildcard include/config/INLINE_SPIN_UNLOCK_IRQRESTORE) \
-    $(wildcard include/config/GENERIC_LOCKBREAK) \
-  include/linux/rwlock_api_smp.h \
-    $(wildcard include/config/INLINE_READ_LOCK) \
-    $(wildcard include/config/INLINE_WRITE_LOCK) \
-    $(wildcard include/config/INLINE_READ_LOCK_BH) \
-    $(wildcard include/config/INLINE_WRITE_LOCK_BH) \
-    $(wildcard include/config/INLINE_READ_LOCK_IRQ) \
-    $(wildcard include/config/INLINE_WRITE_LOCK_IRQ) \
-    $(wildcard include/config/INLINE_READ_LOCK_IRQSAVE) \
-    $(wildcard include/config/INLINE_WRITE_LOCK_IRQSAVE) \
-    $(wildcard include/config/INLINE_READ_TRYLOCK) \
-    $(wildcard include/config/INLINE_WRITE_TRYLOCK) \
-    $(wildcard include/config/INLINE_READ_UNLOCK) \
-    $(wildcard include/config/INLINE_WRITE_UNLOCK) \
-    $(wildcard include/config/INLINE_READ_UNLOCK_BH) \
-    $(wildcard include/config/INLINE_WRITE_UNLOCK_BH) \
-    $(wildcard include/config/INLINE_READ_UNLOCK_IRQ) \
-    $(wildcard include/config/INLINE_WRITE_UNLOCK_IRQ) \
-    $(wildcard include/config/INLINE_READ_UNLOCK_IRQRESTORE) \
-    $(wildcard i
+/* wd.c: A WD80x3 ethernet driver for linux. */
+/*
+	Written 1993-94 by Donald Becker.
+
+	Copyright 1993 United States Government as represented by the
+	Director, National Security Agency.
+
+	This software may be used and distributed according to the terms
+	of the GNU General Public License, incorporated herein by reference.
+
+	The author may be reached as becker@scyld.com, or C/O
+	Scyld Computing Corporation
+	410 Severn Ave., Suite 210
+	Annapolis MD 21403
+
+	This is a driver for WD8003 and WD8013 "compatible" ethercards.
+
+	Thanks to Russ Nelson (nelson@crnwyr.com) for loaning me a WD8013.
+
+	Changelog:
+
+	Paul Gortmaker	: multiple card support for module users, support
+			  for non-standard memory sizes.
+
+
+*/
+
+static const char version[] =
+	"wd.c:v1.10 9/23/94 Donald Becker (becker@cesdis.gsfc.nasa.gov)\n";
+
+#include <linux/module.h>
+#include <linux/kernel.h>
+#include <linux/errno.h>
+#include <linux/string.h>
+#include <linux/init.h>
+#include <linux/interrupt.h>
+#include <linux/delay.h>
+#include <linux/netdevice.h>
+#include <linux/etherdevice.h>
+
+#include <asm/io.h>
+
+#include "8390.h"
+
+#define DRV_NAME "wd"
+
+/* A zero-terminated list of I/O addresses to be probed. */
+static unsigned int wd_portlist[] __initdata =
+{0x300, 0x280, 0x380, 0x240, 0};
+
+static int wd_probe1(struct net_device *dev, int ioaddr);
+
+static int wd_open(struct net_device *dev);
+static void wd_reset_8390(struct net_device *dev);
+static void wd_get_8390_hdr(struct net_device *dev, struct e8390_pkt_hdr *hdr,
+						int ring_page);
+static void wd_block_input(struct net_device *dev, int count,
+						  struct sk_buff *skb, int ring_offset);
+static void wd_block_output(struct net_device *dev, int count,
+							const unsigned char *buf, int start_page);
+static int wd_close(struct net_device *dev);
+
+static u32 wd_msg_enable;
+
+#define WD_START_PG		0x00	/* First page of TX buffer */
+#define WD03_STOP_PG	0x20	/* Last page +1 of RX ring */
+#define WD13_STOP_PG	0x40	/* Last page +1 of RX ring */
+
+#define WD_CMDREG		0		/* Offset to ASIC command register. */
+#define	 WD_RESET		0x80	/* Board reset, in WD_CMDREG. */
+#define	 WD_MEMENB		0x40	/* Enable the shared memory. */
+#define WD_CMDREG5		5		/* Offset to 16-bit-only ASIC register 5. */
+#define	 ISA16			0x80	/* Enable 16 bit access from the ISA bus. */
+#define	 NIC16			0x40	/* Enable 16 bit access from the 8390. */
+#define WD_NIC_OFFSET	16		/* Offset to the 8390 from the base_addr. */
+#define WD_IO_EXTENT	32
+
+
+/*	Probe for the WD8003 and WD8013.  These cards have the station
+	address PROM at I/O ports <base>+8 to <base>+13, with a checksum
+	following. A Soundblaster can have the same checksum as an WDethercard,
+	so we have an extra exclusionary check for it.
+
+	The wd_probe1() routine initializes the card and fills the
+	station address field. */
+
+static int __init do_wd_probe(struct net_device *dev)
+{
+	int i;
+	struct resource *r;
+	int base_addr = dev->base_addr;
+	int irq = dev->irq;
+	int mem_start = dev->mem_start;
+	int mem_end = dev->mem_end;
+
+	if (base_addr > 0x1ff) {	/* Check a user specified location. */
+		r = request_region(base_addr, WD_IO_EXTENT, "wd-probe");
+		if ( r == NULL)
+			return -EBUSY;
+		i = wd_probe1(dev, base_addr);
+		if (i != 0)
+			release_region(base_addr, WD_IO_EXTENT);
+		else
+			r->name = dev->name;
+		return i;
+	}
+	else if (base_addr != 0)	/* Don't probe at all. */
+		return -ENXIO;
+
+	for (i = 0; wd_portlist[i]; i++) {
+		int ioaddr = wd_portlist[i];
+		r = request_region(ioaddr, WD_IO_EXTENT, "wd-probe");
+		if (r == NULL)
+			continue;
+		if (wd_probe1(dev, ioaddr) == 0) {
+			r->name = dev->name;
+			return 0;
+		}
+		release_region(ioaddr, WD_IO_EXTENT);
+		dev->irq = irq;
+		dev->mem_start = mem_start;
+		dev->mem_end = mem_end;
+	}
+
+	return -ENODEV;
+}
+
+#ifndef MODULE
+struct net_device * __init wd_probe(int unit)
+{
+	struct net_device *dev = alloc_ei_netdev();
+	int err;
+
+	if (!dev)
+		return ERR_PTR(-ENOMEM);
+
+	sprintf(dev->name, "eth%d", unit);
+	netdev_boot_setup_check(dev);
+
+	err = do_wd_probe(dev);
+	if (err)
+		goto out;
+	return dev;
+out:
+	free_netdev(dev);
+	return ERR_PTR(err);
+}
+#endif
+
+static const struct net_device_ops wd_netdev_ops = {
+	.ndo_open		= wd_open,
+	.ndo_stop		= wd_close,
+	.ndo_start_xmit		= ei_start_xmit,
+	.ndo_tx_timeout		= ei_tx_timeout,
+	.ndo_get_stats		= ei_get_stats,
+	.ndo_set_rx_mode	= ei_set_multicast_list,
+	.ndo_validate_addr	= eth_validate_addr,
+	.ndo_set_mac_address 	= eth_mac_addr,
+#ifdef CONFIG_NET_POLL_CONTROLLER
+	.ndo_poll_controller 	= ei_poll,
+#endif
+};
+
+static int __init wd_probe1(struct net_device *dev, int ioaddr)
+{
+	int i;
+	int err;
+	int checksum = 0;
+	int ancient = 0;			/* An old card without config registers. */
+	int word16 = 0;				/* 0 = 8 bit, 1 = 16 bit */
+	u8 addr[ETH_ALEN];
+	const char *model_name;
+	static unsigned version_printed;
+	struct ei_device *ei_local = netdev_priv(dev);
+
+	for (i = 0; i < 8; i++)
+		checksum += inb(ioaddr + 8 + i);
+	if (inb(ioaddr + 8) == 0xff 	/* Extra check to avoid soundcard. */
+		|| inb(ioaddr + 9) == 0xff
+		|| (checksum & 0xff) != 0xFF)
+		return -ENODEV;
+
+	/* Check for semi-valid mem_start/end values if supplied. */
+	if ((dev->mem_start % 0x2000) || (dev->mem_end % 0x2000)) {
+		netdev_warn(dev,
+			    "wd.c: user supplied mem_start or mem_end not on 8kB boundary - ignored.\n");
+		dev->mem_start = 0;
+		dev->mem_end = 0;
+	}
+
+	if ((wd_msg_enable & NETIF_MSG_DRV) && (version_printed++ == 0))
+		netdev_info(dev, version);
+
+	for (i = 0; i < 6; i++)
+		addr[i] = inb(ioaddr + 8 + i);
+	eth_hw_addr_set(dev, addr);
+
+	netdev_info(dev, "WD80x3 at %#3x, %pM", ioaddr, dev->dev_addr);
+
+	/* The following PureData probe code was contributed by
+	   Mike Jagdis <jaggy@purplet.demon.co.uk>. Puredata does software
+	   configuration differently from others so we have to check for them.
+	   This detects an 8 bit, 16 bit or dumb (Toshiba, jumpered) card.
+	   */
+	if (inb(ioaddr+0) == 'P' && inb(ioaddr+1) == 'D') {
+		unsigned char reg5 = inb(ioaddr+5);
+
+		switch (inb(ioaddr+2)) {
+		case 0x03: word16 = 0; model_name = "PDI8023-8";	break;
+		case 0x05: word16 = 0; model_name = "PDUC8023";	break;
+		case 0x0a: word16 = 1; model_name = "PDI8023-16"; break;
+			/* Either 0x01 (dumb) or they've released a new version. */
+		default:	 word16 = 0; model_name = "PDI8023";	break;
+		}
+		dev->mem_start = ((reg5 & 0x1c) + 0xc0) << 12;
+		dev->irq = (reg5 & 0xe0) == 0xe0 ? 10 : (reg5 >> 5) + 1;
+	} else {								/* End of PureData probe */
+		/* This method of checking for a 16-bit board is borrowed from the
+		   we.c driver.  A simpler method is just to look in ASIC reg. 0x03.
+		   I'm comparing the two method in alpha test to make certain they
+		   return the same result. */
+		/* Check for the old 8 bit board - it has register 0/8 aliasing.
+		   Do NOT check i>=6 here -- it hangs the old 8003 boards! */
+		for (i = 0; i < 6; i++)
+			if (inb(ioaddr+i) != inb(ioaddr+8+i))
+				break;
+		if (i >= 6) {
+			ancient = 1;
+			model_name = "WD8003-old";
+			word16 = 0;
+		} else {
+			int tmp = inb(ioaddr+1); /* fiddle with 16bit bit */
+			outb( tmp ^ 0x01, ioaddr+1 ); /* attempt to clear 16bit bit */
+			if (((inb( ioaddr+1) & 0x01) == 0x01) /* A 16 bit card */
+				&& (tmp & 0x01) == 0x01	) {				/* In a 16 slot. */
+				int asic_reg5 = inb(ioaddr+WD_CMDREG5);
+				/* Magic to set ASIC to word-wide mode. */
+				outb( NIC16 | (asic_reg5&0x1f), ioaddr+WD_CMDREG5);
+				outb(tmp, ioaddr+1);
+				model_name = "WD8013";
+				word16 = 1;		/* We have a 16bit board here! */
+			} else {
+				model_name = "WD8003";
+				word16 = 0;
+			}
+			outb(tmp, ioaddr+1);			/* Restore original reg1 value. */
+		}
+#ifndef final_version
+		if ( !ancient && (inb(ioaddr+1) & 0x01) != (word16 & 0x01))
+			pr_cont("\nWD80?3: Bus width conflict, %d (probe) != %d (reg report).",
+				word16 ? 16 : 8,
+				(inb(ioaddr+1) & 0x01) ? 16 : 8);
+#endif
+	}
+
+#if defined(WD_SHMEM) && WD_SHMEM > 0x80000
+	/* Allow a compile-time override.	 */
+	dev->mem_start = WD_SHMEM;
+#else
+	if (dev->mem_start == 0) {
+		/* Sanity and old 8003 check */
+		int reg0 = inb(ioaddr);
+		if (reg0 == 0xff || reg0 == 0) {
+			/* Future plan: this could check a few likely locations first. */
+			dev->mem_start = 0xd0000;
+			pr_cont(" assigning address %#lx", dev->mem_start);
+		} else {
+			int high_addr_bits = inb(ioaddr+WD_CMDREG5) & 0x1f;
+			/* Some boards don't have the register 5 -- it returns 0xff. */
+			if (high_addr_bits == 0x1f || word16 == 0)
+				high_addr_bits = 0x01;
+			dev->mem_start = ((reg0&0x3f) << 13) + (high_addr_bits << 19);
+		}
+	}
+#endif
+
+	/* The 8390 isn't at the base address -- the ASIC regs are there! */
+	dev->base_addr = ioaddr+WD_NIC_OFFSET;
+
+	if (dev->irq < 2) {
+		static const int irqmap[] = {9, 3, 5, 7, 10, 11, 15, 4};
+		int reg1 = inb(ioaddr+1);
+		int reg4 = inb(ioaddr+4);
+		if (ancient || reg1 == 0xff) {	/* Ack!! No way to read the IRQ! */
+			short nic_addr = ioaddr+WD_NIC_OFFSET;
+			unsigned long irq_mask;
+
+			/* We have an old-style ethercard that doesn't report its IRQ
+			   line.  Do autoirq to find the IRQ line. Note that this IS NOT
+			   a reliable way to trigger an interrupt. */
+			outb_p(E8390_NODMA + E8390_STOP, nic_addr);
+			outb(0x00, nic_addr+EN0_IMR);	/* Disable all intrs. */
+
+			irq_mask = probe_irq_on();
+			outb_p(0xff, nic_addr + EN0_IMR);	/* Enable all interrupts. */
+			outb_p(0x00, nic_addr + EN0_RCNTLO);
+			outb_p(0x00, nic_addr + EN0_RCNTHI);
+			outb(E8390_RREAD+E8390_START, nic_addr); /* Trigger it... */
+			mdelay(20);
+			dev->irq = probe_irq_off(irq_mask);
+
+			outb_p(0x00, nic_addr+EN0_IMR);	/* Mask all intrs. again. */
+
+			if (wd_msg_enable & NETIF_MSG_PROBE)
+				pr_cont(" autoirq is %d", dev->irq);
+			if (dev->irq < 2)
+				dev->irq = word16 ? 10 : 5;
+		} else
+			dev->irq = irqmap[((reg4 >> 5) & 0x03) + (reg1 & 0x04)];
+	} else if (dev->irq == 2)		/* Fixup bogosity: IRQ2 is really IRQ9 */
+		dev->irq = 9;
+
+	/* Snarf the interrupt now.  There's no point in waiting since we cannot
+	   share and the board will usually be enabled. */
+	i = request_irq(dev->irq, ei_interrupt, 0, DRV_NAME, dev);
+	if (i) {
+		pr_cont(" unable to get IRQ %d.\n", dev->irq);
+		return i;
+	}
+
+	/* OK, were are certain this is going to work.  Setup the device. */
+	ei_status.name = model_name;
+	ei_status.word16 = word16;
+	ei_status.tx_start_page = WD_START_PG;
+	ei_status.rx_start_page = WD_START_PG + TX_PAGES;
+
+	/* Don't map in the shared memory until the board is actually opened. */
+
+	/* Some cards (eg WD8003EBT) can be jumpered for more (32k!) memory. */
+	if (dev->mem_end != 0) {
+		ei_status.stop_page = (dev->mem_end - dev->mem_start)/256;
+		ei_status.priv = dev->mem_end - dev->mem_start;
+	} else {
+		ei_status.stop_page = word16 ? WD13_STOP_PG : WD03_STOP_PG;
+		dev->mem_end = dev->mem_start + (ei_status.stop_page - WD_START_PG)*256;
+		ei_status.priv = (ei_status.stop_page - WD_START_PG)*256;
+	}
+
+	ei_status.mem = ioremap(dev->mem_start, ei_status.priv);
+	if (!ei_status.mem) {
+		free_irq(dev->irq, dev);
+		return -ENOMEM;
+	}
+
+	pr_cont(" %s, IRQ %d, shared memory at %#lx-%#lx.\n",
+		model_name, dev->irq, dev->mem_start, dev->mem_end-1);
+
+	ei_status.reset_8390 = wd_reset_8390;
+	ei_status.block_input = wd_block_input;
+	ei_status.block_output = wd_block_output;
+	ei_status.get_8390_hdr = wd_get_8390_hdr;
+
+	dev->netdev_ops = &wd_netdev_ops;
+	NS8390_init(dev, 0);
+	ei_local->msg_enable = wd_msg_enable;
+
+#if 1
+	/* Enable interrupt generation on softconfig cards -- M.U */
+	/* .. but possibly potentially unsafe - Donald */
+	if (inb(ioaddr+14) & 0x20)
+		outb(inb(ioaddr+4)|0x80, ioaddr+4);
+#endif
+
+	err = register_netdev(dev);
+	if (err) {
+		free_irq(dev->irq, dev);
+		iounmap(ei_status.mem);
+	}
+	return err;
+}
+
+static int
+wd_open(struct net_device *dev)
+{
+  int ioaddr = dev->base_addr - WD_NIC_OFFSET; /* WD_CMDREG */
+
+  /* Map in the shared memory. Always set register 0 last to remain
+	 compatible with very old boards. */
+  ei_status.reg0 = ((dev->mem_start>>13) & 0x3f) | WD_MEMENB;
+  ei_status.reg5 = ((dev->mem_start>>19) & 0x1f) | NIC16;
+
+  if (ei_status.word16)
+	  outb(ei_status.reg5, ioaddr+WD_CMDREG5);
+  outb(ei_status.reg0, ioaddr); /* WD_CMDREG */
+
+  return ei_open(dev);
+}
+
+static void
+wd_reset_8390(struct net_device *dev)
+{
+	int wd_cmd_port = dev->base_addr - WD_NIC_OFFSET; /* WD_CMDREG */
+	struct ei_device *ei_local = netdev_priv(dev);
+
+	outb(WD_RESET, wd_cmd_port);
+	netif_dbg(ei_local, hw, dev, "resetting the WD80x3 t=%lu...\n",
+		  jiffies);
+	ei_status.txing = 0;
+
+	/* Set up the ASIC registers, just in case something changed them. */
+	outb((((dev->mem_start>>13) & 0x3f)|WD_MEMENB), wd_cmd_port);
+	if (ei_status.word16)
+		outb(NIC16 | ((dev->mem_start>>19) & 0x1f), wd_cmd_port+WD_CMDREG5);
+
+	netif_dbg(ei_local, hw, dev, "reset done\n");
+}
+
+/* Grab the 8390 specific header. Similar to the block_input routine, but
+   we don't need to be concerned with ring wrap as the header will be at
+   the start of a page, so we optimize accordingly. */
+
+static void
+wd_get_8390_hdr(struct net_device *dev, struct e8390_pkt_hdr *hdr, int ring_page)
+{
+
+	int wd_cmdreg = dev->base_addr - WD_NIC_OFFSET; /* WD_CMDREG */
+	void __iomem *hdr_start = ei_status.mem + ((ring_page - WD_START_PG)<<8);
+
+	/* We'll always get a 4 byte header read followed by a packet read, so
+	   we enable 16 bit mode before the header, and disable after the body. */
+	if (ei_status.word16)
+		outb(ISA16 | ei_status.reg5, wd_cmdreg+WD_CMDREG5);
+
+#ifdef __BIG_ENDIAN
+	/* Officially this is what we are doing, but the readl() is faster */
+	/* unfortunately it isn't endian aware of the struct               */
+	memcpy_fromio(hdr, hdr_start, sizeof(struct e8390_pkt_hdr));
+	hdr->count = le16_to_cpu(hdr->count);
+#else
+	((unsigned int*)hdr)[0] = readl(hdr_start);
+#endif
+}
+
+/* Block input and output are easy on shared memory ethercards, and trivial
+   on the Western digital card where there is no choice of how to do it.
+   The only complications are that the ring buffer wraps, and need to map
+   switch between 8- and 16-bit modes. */
+
+static void
+wd_block_input(struct net_device *dev, int count, struct sk_buff *skb, int ring_offset)
+{
+	int wd_cmdreg = dev->base_addr - WD_NIC_OFFSET; /* WD_CMDREG */
+	unsigned long offset = ring_offset - (WD_START_PG<<8);
+	void __iomem *xfer_start = ei_status.mem + offset;
+
+	if (offset + count > ei_status.priv) {
+		/* We must wrap the input move. */
+		int semi_count = ei_status.priv - offset;
+		memcpy_fromio(skb->data, xfer_start, semi_count);
+		count -= semi_count;
+		memcpy_fromio(skb->data + semi_count, ei_status.mem + TX_PAGES * 256, count);
+	} else {
+		/* Packet is in one chunk -- we can copy + cksum. */
+		memcpy_fromio(skb->data, xfer_start, count);
+	}
+
+	/* Turn off 16 bit access so that reboot works.	 ISA brain-damage */
+	if (ei_status.word16)
+		outb(ei_status.reg5, wd_cmdreg+WD_CMDREG5);
+}
+
+static void
+wd_block_output(struct net_device *dev, int count, const unsigned char *buf,
+				int start_page)
+{
+	int wd_cmdreg = dev->base_addr - WD_NIC_OFFSET; /* WD_CMDREG */
+	void __iomem *shmem = ei_status.mem + ((start_page - WD_START_PG)<<8);
+
+
+	if (ei_status.word16) {
+		/* Turn on and off 16 bit access so that reboot works. */
+		outb(ISA16 | ei_status.reg5, wd_cmdreg+WD_CMDREG5);
+		memcpy_toio(shmem, buf, count);
+		outb(ei_status.reg5, wd_cmdreg+WD_CMDREG5);
+	} else
+		memcpy_toio(shmem, buf, count);
+}
+
+
+static int
+wd_close(struct net_device *dev)
+{
+	int wd_cmdreg = dev->base_addr - WD_NIC_OFFSET; /* WD_CMDREG */
+	struct ei_device *ei_local = netdev_priv(dev);
+
+	netif_dbg(ei_local, ifdown, dev, "Shutting down ethercard.\n");
+	ei_close(dev);
+
+	/* Change from 16-bit to 8-bit shared memory so reboot works. */
+	if (ei_status.word16)
+		outb(ei_status.reg5, wd_cmdreg + WD_CMDREG5 );
+
+	/* And disable the shared memory. */
+	outb(ei_status.reg0 & ~WD_MEMENB, wd_cmdreg);
+
+	return 0;
+}
+
+
+#ifdef MODULE
+#define MAX_WD_CARDS	4	/* Max number of wd cards per module */
+static struct net_device *dev_wd[MAX_WD_CARDS];
+static int io[MAX_WD_CARDS];
+static int irq[MAX_WD_CARDS];
+static int mem[MAX_WD_CARDS];
+static int mem_end[MAX_WD_CARDS];	/* for non std. mem size */
+
+module_param_hw_array(io, int, ioport, NULL, 0);
+module_param_hw_array(irq, int, irq, NULL, 0);
+module_param_hw_array(mem, int, iomem, NULL, 0);
+module_param_hw_array(mem_end, int, iomem, NULL, 0);
+module_param_named(msg_enable, wd_msg_enable, uint, 0444);
+MODULE_PARM_DESC(io, "I/O base address(es)");
+MODULE_PARM_DESC(irq, "IRQ number(s) (ignored for PureData boards)");
+MODULE_PARM_DESC(mem, "memory base address(es)(ignored for PureData boards)");
+MODULE_PARM_DESC(mem_end, "memory end address(es)");
+MODULE_PARM_DESC(msg_enable, "Debug message level (see linux/netdevice.h for bitmap)");
+MODULE_DESCRIPTION("ISA Western Digital wd8003/wd8013 ; SMC Elite, Elite16 ethernet driver");
+MODULE_LICENSE("GPL");
+
+/* This is set up so that only a single autoprobe takes place per call.
+ISA device autoprobes on a running machine are not recommended. */
+
+static int __init wd_init_module(void)
+{
+	struct net_device *dev;
+	int this_dev, found = 0;
+
+	for (this_dev = 0; this_dev < MAX_WD_CARDS; this_dev++) {
+		if (io[this_dev] == 0)  {
+			if (this_dev != 0) break; /* only autoprobe 1st one */
+			printk(KERN_NOTICE "wd.c: Presently autoprobing (not recommended) for a single card.\n");
+		}
+		dev = alloc_ei_netdev();
+		if (!dev)
+			break;
+		dev->irq = irq[this_dev];
+		dev->base_addr = io[this_dev];
+		dev->mem_start = mem[this_dev];
+		dev->mem_end = mem_end[this_dev];
+		if (do_wd_probe(dev) == 0) {
+			dev_wd[found++] = dev;
+			continue;
+		}
+		free_netdev(dev);
+		printk(KERN_WARNING "wd.c: No wd80x3 card found (i/o = 0x%x).\n", io[this_dev]);
+		break;
+	}
+	if (found)
+		return 0;
+	return -ENXIO;
+}
+module_init(wd_init_module);
+
+static void cleanup_card(struct net_device *dev)
+{
+	free_irq(dev->irq, dev);
+	release_region(dev->base_addr - WD_NIC_OFFSET, WD_IO_EXTENT);
+	iounmap(ei_status.mem);
+}
+
+static void __exit wd_cleanup_module(void)
+{
+	int this_dev;
+
+	for (this_dev = 0; this_dev < MAX_WD_CARDS; this_dev++) {
+		struct net_device *dev = dev_wd[this_dev];
+		if (dev) {
+			unregister_netdev(dev);
+			cleanup_card(dev);
+			free_netdev(dev);
+		}
+	}
+}
+module_exit(wd_cleanup_module);
+#endif /* MODULE */

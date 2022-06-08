@@ -1,15 +1,10 @@
-ip)
+k_struct *curr,
+				 struct task_struct *next)
 {
-	if (unlikely(!debug_locks))
-		return;
+	if (static_branch_unlikely(&preempt_notifier_key))
+		__fire_sched_out_preempt_notifiers(curr, next);
+}
 
-	/*
-	 * NMIs do not (and cannot) track lock dependencies, nothing to do.
-	 */
-	if (unlikely(in_nmi()))
-		return;
+#else /* !CONFIG_PREEMPT_NOTIFIERS */
 
-	if (unlikely(this_cpu_read(lockdep_recursion)))
-		return;
-
-	if (unlikely(lockdep_hardirqs_e
+static inline void fire_sched_in_preempt_notifiers(struct t

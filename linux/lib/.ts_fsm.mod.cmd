@@ -1,3 +1,4 @@
-NGARCH) \
-    $(wildcard include/config/ARM64) \
-    $(wildcard includ
+nable(dev, p->modulation);
+	o->modulation = p->modulation;
+
+	if (p->mo

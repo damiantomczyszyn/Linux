@@ -1,1 +1,6 @@
-cmd_drivers/media/rc/keymaps/rc-terratec-cinergy-xs.mod := { echo  drivers/media/rc/keymaps/rc-terratec-cinergy-xs.o;  echo; } > drivers/media/rc/keymaps/rc-terratec-cinergy-xs.mod
+] IR controller */
+		allowed_protos = RC_PROTO_BIT_ALL_IR_DECODER;
+		/* The grey Hauppauge RC-5 remote */
+		rc_map = RC_MAP_HAUPPAUGE;
+		break;
+	case CX23885_BOARD_TERRATEC_CINERGY_

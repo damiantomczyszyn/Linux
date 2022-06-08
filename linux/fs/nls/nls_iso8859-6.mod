@@ -1,2 +1,2 @@
-.h \
-  include/linux/per
+fault_pm	  = 0,
+				.dvb

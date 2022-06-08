@@ -1,2 +1,3 @@
-drivers/media/rc/keymaps/rc-total-media-in-hand-02.o
-
+/* SPDX-License-Identifier: GPL-2.0-or-later */
+/*
+ * 

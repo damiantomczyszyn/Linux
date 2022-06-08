@@ -1,2 +1,1 @@
-media/v4l2-dev.h \
-  include/linux/poll.h \
+!try_module_get(client_tuner->dev.driver->ow

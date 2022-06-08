@@ -1,232 +1,248 @@
-lude/linux/atomic/atomic-arch-fallback.h \
-    $(wildcard include/config/GENERIC_ATOMIC64) \
-  include/linux/atomic/atomic-long.h \
-  include/linux/atomic/atomic-instrumented.h \
-  include/linux/bug.h \
-    $(wildcard include/config/BUG_ON_DATA_CORRUPTION) \
-  arch/x86/include/asm/bug.h \
-    $(wildcard include/config/DEBUG_BUGVERBOSE) \
-  include/linux/instrumentation.h \
-    $(wildcard include/config/DEBUG_ENTRY) \
-  include/asm-generic/bug.h \
-    $(wildcard include/config/BUG) \
-    $(wildcard include/config/GENERIC_BUG_RELATIVE_POINTERS) \
-  arch/x86/include/uapi/asm/msr.h \
-  include/linux/tracepoint-defs.h \
-  arch/x86/include/asm/special_insns.h \
-  include/linux/irqflags.h \
-    $(wildcard include/config/TRACE_IRQFLAGS) \
-    $(wildcard include/config/PREEMPT_RT) \
-    $(wildcard include/config/IRQSOFF_TRACER) \
-    $(wildcard include/config/PREEMPT_TRACER) \
-    $(wildcard include/config/DEBUG_IRQFLAGS) \
-    $(wildcard include/config/TRACE_IRQFLAGS_SUPPORT) \
-  arch/x86/include/asm/irqflags.h \
-  arch/x86/include/asm/fpu/types.h \
-  arch/x86/include/asm/vmxfeatures.h \
-  arch/x86/include/asm/vdso/processor.h \
-  include/linux/personality.h \
-  include/uapi/linux/personality.h \
-  arch/x86/include/asm/tsc.h \
-  arch/x86/include/asm/cpufeature.h \
-    $(wildcard include/config/X86_FEATURE_NAMES) \
-  include/vdso/time32.h \
-  include/vdso/time.h \
-  include/linux/uidgid.h \
-    $(wildcard include/config/MULTIUSER) \
-    $(wildcard include/config/USER_NS) \
-  include/linux/highuid.h \
-  include/linux/buildid.h \
-    $(wildcard include/config/CRASH_CORE) \
-  include/linux/mm_types.h \
-    $(wildcard include/config/HAVE_ALIGNED_STRUCT_PAGE) \
-    $(wildcard include/config/MEMCG) \
-    $(wildcard include/config/USERFAULTFD) \
-    $(wildcard include/config/SWAP) \
-    $(wildcard include/config/NUMA) \
-    $(wildcard include/config/HAVE_ARCH_COMPAT_MMAP_BASES) \
-    $(wildcard include/config/MEMBARRIER) \
-    $(wildcard include/config/AIO) \
-    $(wildcard include/config/MMU_NOTIFIER) \
-    $(wildcard include/config/TRANSPARENT_HUGEPAGE) \
-    $(wildcard include/config/NUMA_BALANCING) \
-    $(wildcard include/config/ARCH_WANT_BATCHED_UNMAP_TLB_FLUSH) \
-    $(wildcard include/config/HUGETLB_PAGE) \
-    $(wildcard include/config/IOMMU_SVA) \
-  include/linux/mm_types_task.h \
-    $(wildcard include/config/SPLIT_PTLOCK_CPUS) \
-    $(wildcard include/config/ARCH_ENABLE_SPLIT_PMD_PTLOCK) \
-  arch/x86/include/asm/tlbbatch.h \
-  include/linux/auxvec.h \
-  include/uapi/linux/auxvec.h \
-  arch/x86/include/uapi/asm/auxvec.h \
-  include/linux/kref.h \
-  include/linux/spinlock.h \
-    $(wildcard include/config/PREEMPTION) \
-  include/linux/preempt.h \
-    $(wildcard include/config/PREEMPT_COUNT) \
-    $(wildcard include/config/TRACE_PREEMPT_TOGGLE) \
-    $(wildcard include/config/PREEMPT_NOTIFIERS) \
-  arch/x86/include/asm/preempt.h \
-  include/linux/thread_info.h \
-    $(wildcard include/config/THREAD_INFO_IN_TASK) \
-    $(wildcard include/config/GENERIC_ENTRY) \
-    $(wildcard include/config/HAVE_ARCH_WITHIN_STACK_FRAMES) \
-    $(wildcard include/config/HARDENED_USERCOPY) \
-  include/linux/restart_block.h \
-  arch/x86/include/asm/thread_info.h \
-    $(wildcard include/config/COMPAT) \
-  include/linux/bottom_half.h \
-  include/linux/lockdep.h \
-    $(wildcard include/config/DEBUG_LOCKING_API_SELFTESTS) \
-  include/linux/smp.h \
-    $(wildcard include/config/UP_LATE_INIT) \
-  include/linux/smp_types.h \
-  include/linux/llist.h \
-    $(wildcard include/config/ARCH_HAVE_NMI_SAFE_CMPXCHG) \
-  arch/x86/include/asm/smp.h \
-    $(wildcard include/config/X86_LOCAL_APIC) \
-    $(wildcard include/config/DEBUG_NMI_SELFTEST) \
-  arch/x86/include/generated/asm/mmiowb.h \
-  include/asm-generic/mmiowb.h \
-    $(wildcard include/config/MMIOWB) \
-  include/linux/spinlock_types.h \
-  include/linux/rwlock_types.h \
-  arch/x86/include/asm/spinlock.h \
-  arch/x86/include/asm/paravirt.h \
-    $(wildcard include/config/PARAVIRT_SPINLOCKS) \
-  arch/x86/include/asm/frame.h \
-  arch/x86/include/asm/qspinlock.h \
-  include/asm-generic/qspinlock.h \
-  arch/x86/include/asm/qrwlock.h \
-  include/asm-generic/qrwlock.h \
-  include/linux/rwlock.h \
-    $(wildcard include/config/PREEMPT) \
-  include/linux/spinlock_api_smp.h \
-    $(wildcard include/config/INLINE_SPIN_LOCK) \
-    $(wildcard include/config/INLINE_SPIN_LOCK_BH) \
-    $(wildcard include/config/INLINE_SPIN_LOCK_IRQ) \
-    $(wildcard include/config/INLINE_SPIN_LOCK_IRQSAVE) \
-    $(wildcard include/config/INLINE_SPIN_TRYLOCK) \
-    $(wildcard include/config/INLINE_SPIN_TRYLOCK_BH) \
-    $(wildcard include/config/UNINLINE_SPIN_UNLOCK) \
-    $(wildcard include/config/INLINE_SPIN_UNLOCK_BH) \
-    $(wildcard include/config/INLINE_SPIN_UNLOCK_IRQ) \
-    $(wildcard include/config/INLINE_SPIN_UNLOCK_IRQRESTORE) \
-    $(wildcard include/config/GENERIC_LOCKBREAK) \
-  include/linux/rwlock_api_smp.h \
-    $(wildcard include/config/INLINE_READ_LOCK) \
-    $(wildcard include/config/INLINE_WRITE_LOCK) \
-    $(wildcard include/config/INLINE_READ_LOCK_BH) \
-    $(wildcard include/config/INLINE_WRITE_LOCK_BH) \
-    $(wildcard include/config/INLINE_READ_LOCK_IRQ) \
-    $(wildcard include/config/INLINE_WRITE_LOCK_IRQ) \
-    $(wildcard include/config/INLINE_READ_LOCK_IRQSAVE) \
-    $(wildcard include/config/INLINE_WRITE_LOCK_IRQSAVE) \
-    $(wildcard include/config/INLINE_READ_TRYLOCK) \
-    $(wildcard include/config/INLINE_WRITE_TRYLOCK) \
-    $(wildcard include/config/INLINE_READ_UNLOCK) \
-    $(wildcard include/config/INLINE_WRITE_UNLOCK) \
-    $(wildcard include/config/INLINE_READ_UNLOCK_BH) \
-    $(wildcard include/config/INLINE_WRITE_UNLOCK_BH) \
-    $(wildcard include/config/INLINE_READ_UNLOCK_IRQ) \
-    $(wildcard include/config/INLINE_WRITE_UNLOCK_IRQ) \
-    $(wildcard include/config/INLINE_READ_UNLOCK_IRQRESTORE) \
-    $(wildcard include/config/INLINE_WRITE_UNLOCK_IRQRESTORE) \
-  include/linux/refcount.h \
-  include/linux/rbtree.h \
-  include/linux/rbtree_types.h \
-  include/linux/rcupdate.h \
-    $(wildcard include/config/PREEMPT_RCU) \
-    $(wildcard include/config/TINY_RCU) \
-    $(wildcard include/config/RCU_STRICT_GRACE_PERIOD) \
-    $(wildcard include/config/TASKS_RCU_GENERIC) \
-    $(wildcard include/config/RCU_STALL_COMMON) \
-    $(wildcard include/config/NO_HZ_FULL) \
-    $(wildcard include/config/RCU_NOCB_CPU) \
-    $(wildcard include/config/TASKS_RCU) \
-    $(wildcard include/config/TASKS_TRACE_RCU) \
-    $(wildcard include/config/TASKS_RUDE_RCU) \
-    $(wildcard include/config/TREE_RCU) \
-    $(wildcard include/config/DEBUG_OBJECTS_RCU_HEAD) \
-    $(wildcard include/config/PROVE_RCU) \
-    $(wildcard include/config/ARCH_WEAK_RELEASE_ACQUIRE) \
-  include/linux/rcutree.h \
-  include/linux/rwsem.h \
-    $(wildcard include/config/RWSEM_SPIN_ON_OWNER) \
-    $(wildcard include/config/DEBUG_RWSEMS) \
-  include/linux/osq_lock.h \
-  include/linux/completion.h \
-  include/linux/swait.h \
-  include/linux/wait.h \
-  include/uapi/linux/wait.h \
-  include/linux/uprobes.h \
-    $(wildcard include/config/UPROBES) \
-  arch/x86/include/asm/uprobes.h \
-  include/linux/notifier.h \
-  include/linux/mutex.h \
-    $(wildcard include/config/MUTEX_SPIN_ON_OWNER) \
-    $(wildcard include/config/DEBUG_MUTEXES) \
-  include/linux/debug_locks.h \
-  include/linux/srcu.h \
-    $(wildcard include/config/TINY_SRCU) \
-    $(wildcard include/config/SRCU) \
-  include/linux/workqueue.h \
-    $(wildcard include/config/DEBUG_OBJECTS_WORK) \
-    $(wildcard include/config/FREEZER) \
-    $(wildcard include/config/WQ_WATCHDOG) \
-  include/linux/timer.h \
-    $(wildcard include/config/DEBUG_OBJECTS_TIMERS) \
-    $(wildcard include/config/NO_HZ_COMMON) \
-  include/linux/ktime.h \
-  include/linux/jiffies.h \
-  include/vdso/jiffies.h \
-  include/generated/timeconst.h \
-  include/vdso/ktime.h \
-  include/linux/timekeeping.h \
-    $(wildcard include/config/GENERIC_CMOS_UPDATE) \
-  include/linux/clocksource_ids.h \
-  include/linux/debugobjects.h \
-    $(wildcard include/config/DEBUG_OBJECTS) \
-    $(wildcard include/config/DEBUG_OBJECTS_FREE) \
-  include/linux/rcu_segcblist.h \
-  include/linux/srcutree.h \
-  include/linux/rcu_node_tree.h \
-    $(wildcard include/config/RCU_FANOUT) \
-    $(wildcard include/config/RCU_FANOUT_LEAF) \
-  include/linux/page-flags-layout.h \
-    $(wildcard include/config/KASAN_HW_TAGS) \
-  include/linux/numa.h \
-    $(wildcard include/config/NODES_SHIFT) \
-    $(wildcard include/config/NUMA_KEEP_MEMINFO) \
-    $(wildcard include/config/HAVE_ARCH_NODE_DEV_GROUP) \
-  arch/x86/include/asm/sparsemem.h \
-  include/generated/bounds.h \
-  include/linux/seqlock.h \
-  include/linux/ww_mutex.h \
-    $(wildcard include/config/DEBUG_RT_MUTEXES) \
-    $(wildcard include/config/DEBUG_WW_MUTEX_SLOWPATH) \
-  include/linux/rtmutex.h \
-  arch/x86/include/asm/mmu.h \
-    $(wildcard include/config/MODIFY_LDT_SYSCALL) \
-  include/linux/kmod.h \
-  include/linux/umh.h \
-  include/linux/gfp.h \
-    $(wildcard include/config/HIGHMEM) \
-    $(wildcard include/config/ZONE_DMA) \
-    $(wildcard include/config/ZONE_DMA32) \
-    $(wildcard include/config/ZONE_DEVICE) \
-    $(wildcard include/config/PM_SLEEP) \
-    $(wildcard include/config/CONTIG_ALLOC) \
-    $(wildcard include/config/CMA) \
-  include/linux/mmdebug.h \
-    $(wildcard include/config/DEBUG_VM) \
-    $(wildcard include/config/DEBUG_VM_PGFLAGS) \
-  include/linux/mmzone.h \
-    $(wildcard include/config/FORCE_MAX_ZONEORDER) \
-    $(wildcard include/config/MEMORY_ISOLATION) \
-    $(wildcard include/config/ZSMALLOC) \
-    $(wildcard include/config/MEMORY_HOTPLUG) \
-    $(wildcard include/config/COMPACTION) \
-    $(wildcard include/config/PAGE_EXTENSION) \
-    $(wi
+/* SPDX-License-Identifier: GPL-2.0-or-later */
+/*
+ * Marvell 88E6xxx SERDES manipulation, via SMI bus
+ *
+ * Copyright (c) 2008 Marvell Semiconductor
+ *
+ * Copyright (c) 2016 Andrew Lunn <andrew@lunn.ch>
+ */
+
+#ifndef _MV88E6XXX_SERDES_H
+#define _MV88E6XXX_SERDES_H
+
+#include "chip.h"
+
+#define MV88E6352_ADDR_SERDES		0x0f
+#define MV88E6352_SERDES_PAGE_FIBER	0x01
+#define MV88E6352_SERDES_IRQ		0x0b
+#define MV88E6352_SERDES_INT_ENABLE	0x12
+#define MV88E6352_SERDES_INT_SPEED_CHANGE	BIT(14)
+#define MV88E6352_SERDES_INT_DUPLEX_CHANGE	BIT(13)
+#define MV88E6352_SERDES_INT_PAGE_RX		BIT(12)
+#define MV88E6352_SERDES_INT_AN_COMPLETE	BIT(11)
+#define MV88E6352_SERDES_INT_LINK_CHANGE	BIT(10)
+#define MV88E6352_SERDES_INT_SYMBOL_ERROR	BIT(9)
+#define MV88E6352_SERDES_INT_FALSE_CARRIER	BIT(8)
+#define MV88E6352_SERDES_INT_FIFO_OVER_UNDER	BIT(7)
+#define MV88E6352_SERDES_INT_FIBRE_ENERGY	BIT(4)
+#define MV88E6352_SERDES_INT_STATUS	0x13
+
+#define MV88E6352_SERDES_SPEC_CTRL2	0x1a
+#define MV88E6352_SERDES_OUT_AMP_MASK		0x0007
+
+#define MV88E6341_PORT5_LANE		0x15
+
+#define MV88E6390_PORT9_LANE0		0x09
+#define MV88E6390_PORT9_LANE1		0x12
+#define MV88E6390_PORT9_LANE2		0x13
+#define MV88E6390_PORT9_LANE3		0x14
+#define MV88E6390_PORT10_LANE0		0x0a
+#define MV88E6390_PORT10_LANE1		0x15
+#define MV88E6390_PORT10_LANE2		0x16
+#define MV88E6390_PORT10_LANE3		0x17
+
+/* 10GBASE-R and 10GBASE-X4/X2 */
+#define MV88E6390_10G_CTRL1		(0x1000 + MDIO_CTRL1)
+#define MV88E6390_10G_STAT1		(0x1000 + MDIO_STAT1)
+#define MV88E6393X_10G_INT_ENABLE	0x9000
+#define MV88E6393X_10G_INT_LINK_CHANGE	BIT(2)
+#define MV88E6393X_10G_INT_STATUS	0x9001
+
+/* 1000BASE-X and SGMII */
+#define MV88E6390_SGMII_BMCR		(0x2000 + MII_BMCR)
+#define MV88E6390_SGMII_BMSR		(0x2000 + MII_BMSR)
+#define MV88E6390_SGMII_ADVERTISE	(0x2000 + MII_ADVERTISE)
+#define MV88E6390_SGMII_LPA		(0x2000 + MII_LPA)
+#define MV88E6390_SGMII_INT_ENABLE	0xa001
+#define MV88E6390_SGMII_INT_SPEED_CHANGE	BIT(14)
+#define MV88E6390_SGMII_INT_DUPLEX_CHANGE	BIT(13)
+#define MV88E6390_SGMII_INT_PAGE_RX		BIT(12)
+#define MV88E6390_SGMII_INT_AN_COMPLETE		BIT(11)
+#define MV88E6390_SGMII_INT_LINK_DOWN		BIT(10)
+#define MV88E6390_SGMII_INT_LINK_UP		BIT(9)
+#define MV88E6390_SGMII_INT_SYMBOL_ERROR	BIT(8)
+#define MV88E6390_SGMII_INT_FALSE_CARRIER	BIT(7)
+#define MV88E6390_SGMII_INT_STATUS	0xa002
+#define MV88E6390_SGMII_PHY_STATUS	0xa003
+#define MV88E6390_SGMII_PHY_STATUS_SPEED_MASK	GENMASK(15, 14)
+#define MV88E6390_SGMII_PHY_STATUS_SPEED_1000	0x8000
+#define MV88E6390_SGMII_PHY_STATUS_SPEED_100	0x4000
+#define MV88E6390_SGMII_PHY_STATUS_SPEED_10	0x0000
+#define MV88E6390_SGMII_PHY_STATUS_DUPLEX_FULL	BIT(13)
+#define MV88E6390_SGMII_PHY_STATUS_SPD_DPL_VALID BIT(11)
+#define MV88E6390_SGMII_PHY_STATUS_LINK		BIT(10)
+#define MV88E6390_SGMII_PHY_STATUS_TX_PAUSE	BIT(3)
+#define MV88E6390_SGMII_PHY_STATUS_RX_PAUSE	BIT(2)
+
+/* Packet generator pad packet checker */
+#define MV88E6390_PG_CONTROL		0xf010
+#define MV88E6390_PG_CONTROL_ENABLE_PC		BIT(0)
+
+#define MV88E6393X_PORT0_LANE			0x00
+#define MV88E6393X_PORT9_LANE			0x09
+#define MV88E6393X_PORT10_LANE			0x0a
+
+/* Port Operational Configuration */
+#define MV88E6393X_SERDES_POC			0xf002
+#define MV88E6393X_SERDES_POC_PCS_1000BASEX	0x0000
+#define MV88E6393X_SERDES_POC_PCS_2500BASEX	0x0001
+#define MV88E6393X_SERDES_POC_PCS_SGMII_PHY	0x0002
+#define MV88E6393X_SERDES_POC_PCS_SGMII_MAC	0x0003
+#define MV88E6393X_SERDES_POC_PCS_5GBASER	0x0004
+#define MV88E6393X_SERDES_POC_PCS_10GBASER	0x0005
+#define MV88E6393X_SERDES_POC_PCS_USXGMII_PHY	0x0006
+#define MV88E6393X_SERDES_POC_PCS_USXGMII_MAC	0x0007
+#define MV88E6393X_SERDES_POC_PCS_MASK		0x0007
+#define MV88E6393X_SERDES_POC_RESET		BIT(15)
+#define MV88E6393X_SERDES_POC_PDOWN		BIT(5)
+#define MV88E6393X_SERDES_POC_AN		BIT(3)
+#define MV88E6393X_SERDES_CTRL1			0xf003
+#define MV88E6393X_SERDES_CTRL1_TX_PDOWN	BIT(9)
+#define MV88E6393X_SERDES_CTRL1_RX_PDOWN	BIT(8)
+
+#define MV88E6393X_ERRATA_4_8_REG		0xF074
+#define MV88E6393X_ERRATA_4_8_BIT		BIT(14)
+
+int mv88e6185_serdes_get_lane(struct mv88e6xxx_chip *chip, int port);
+int mv88e6341_serdes_get_lane(struct mv88e6xxx_chip *chip, int port);
+int mv88e6352_serdes_get_lane(struct mv88e6xxx_chip *chip, int port);
+int mv88e6390_serdes_get_lane(struct mv88e6xxx_chip *chip, int port);
+int mv88e6390x_serdes_get_lane(struct mv88e6xxx_chip *chip, int port);
+int mv88e6393x_serdes_get_lane(struct mv88e6xxx_chip *chip, int port);
+int mv88e6352_serdes_pcs_config(struct mv88e6xxx_chip *chip, int port,
+				int lane, unsigned int mode,
+				phy_interface_t interface,
+				const unsigned long *advertise);
+int mv88e6390_serdes_pcs_config(struct mv88e6xxx_chip *chip, int port,
+				int lane, unsigned int mode,
+				phy_interface_t interface,
+				const unsigned long *advertise);
+int mv88e6185_serdes_pcs_get_state(struct mv88e6xxx_chip *chip, int port,
+				   int lane, struct phylink_link_state *state);
+int mv88e6352_serdes_pcs_get_state(struct mv88e6xxx_chip *chip, int port,
+				   int lane, struct phylink_link_state *state);
+int mv88e6390_serdes_pcs_get_state(struct mv88e6xxx_chip *chip, int port,
+				   int lane, struct phylink_link_state *state);
+int mv88e6393x_serdes_pcs_get_state(struct mv88e6xxx_chip *chip, int port,
+				    int lane, struct phylink_link_state *state);
+int mv88e6352_serdes_pcs_an_restart(struct mv88e6xxx_chip *chip, int port,
+				    int lane);
+int mv88e6390_serdes_pcs_an_restart(struct mv88e6xxx_chip *chip, int port,
+				    int lane);
+int mv88e6352_serdes_pcs_link_up(struct mv88e6xxx_chip *chip, int port,
+				 int lane, int speed, int duplex);
+int mv88e6390_serdes_pcs_link_up(struct mv88e6xxx_chip *chip, int port,
+				 int lane, int speed, int duplex);
+unsigned int mv88e6352_serdes_irq_mapping(struct mv88e6xxx_chip *chip,
+					  int port);
+unsigned int mv88e6390_serdes_irq_mapping(struct mv88e6xxx_chip *chip,
+					  int port);
+int mv88e6185_serdes_power(struct mv88e6xxx_chip *chip, int port, int lane,
+			   bool up);
+int mv88e6352_serdes_power(struct mv88e6xxx_chip *chip, int port, int lane,
+			   bool on);
+int mv88e6390_serdes_power(struct mv88e6xxx_chip *chip, int port, int lane,
+			   bool on);
+int mv88e6393x_serdes_power(struct mv88e6xxx_chip *chip, int port, int lane,
+			    bool on);
+int mv88e6393x_serdes_setup_errata(struct mv88e6xxx_chip *chip);
+int mv88e6097_serdes_irq_enable(struct mv88e6xxx_chip *chip, int port, int lane,
+				bool enable);
+int mv88e6352_serdes_irq_enable(struct mv88e6xxx_chip *chip, int port, int lane,
+				bool enable);
+int mv88e6390_serdes_irq_enable(struct mv88e6xxx_chip *chip, int port, int lane,
+				bool enable);
+int mv88e6393x_serdes_irq_enable(struct mv88e6xxx_chip *chip, int port,
+				 int lane, bool enable);
+irqreturn_t mv88e6097_serdes_irq_status(struct mv88e6xxx_chip *chip, int port,
+					int lane);
+irqreturn_t mv88e6352_serdes_irq_status(struct mv88e6xxx_chip *chip, int port,
+					int lane);
+irqreturn_t mv88e6390_serdes_irq_status(struct mv88e6xxx_chip *chip, int port,
+					int lane);
+irqreturn_t mv88e6393x_serdes_irq_status(struct mv88e6xxx_chip *chip, int port,
+					 int lane);
+int mv88e6352_serdes_get_sset_count(struct mv88e6xxx_chip *chip, int port);
+int mv88e6352_serdes_get_strings(struct mv88e6xxx_chip *chip,
+				 int port, uint8_t *data);
+int mv88e6352_serdes_get_stats(struct mv88e6xxx_chip *chip, int port,
+			       uint64_t *data);
+int mv88e6390_serdes_get_sset_count(struct mv88e6xxx_chip *chip, int port);
+int mv88e6390_serdes_get_strings(struct mv88e6xxx_chip *chip,
+				 int port, uint8_t *data);
+int mv88e6390_serdes_get_stats(struct mv88e6xxx_chip *chip, int port,
+			       uint64_t *data);
+
+int mv88e6352_serdes_get_regs_len(struct mv88e6xxx_chip *chip, int port);
+void mv88e6352_serdes_get_regs(struct mv88e6xxx_chip *chip, int port, void *_p);
+int mv88e6390_serdes_get_regs_len(struct mv88e6xxx_chip *chip, int port);
+void mv88e6390_serdes_get_regs(struct mv88e6xxx_chip *chip, int port, void *_p);
+
+int mv88e6352_serdes_set_tx_amplitude(struct mv88e6xxx_chip *chip, int port,
+				      int val);
+
+/* Return the (first) SERDES lane address a port is using, -errno otherwise. */
+static inline int mv88e6xxx_serdes_get_lane(struct mv88e6xxx_chip *chip,
+					    int port)
+{
+	if (!chip->info->ops->serdes_get_lane)
+		return -EOPNOTSUPP;
+
+	return chip->info->ops->serdes_get_lane(chip, port);
+}
+
+static inline int mv88e6xxx_serdes_power_up(struct mv88e6xxx_chip *chip,
+					    int port, int lane)
+{
+	if (!chip->info->ops->serdes_power)
+		return -EOPNOTSUPP;
+
+	return chip->info->ops->serdes_power(chip, port, lane, true);
+}
+
+static inline int mv88e6xxx_serdes_power_down(struct mv88e6xxx_chip *chip,
+					      int port, int lane)
+{
+	if (!chip->info->ops->serdes_power)
+		return -EOPNOTSUPP;
+
+	return chip->info->ops->serdes_power(chip, port, lane, false);
+}
+
+static inline unsigned int
+mv88e6xxx_serdes_irq_mapping(struct mv88e6xxx_chip *chip, int port)
+{
+	if (!chip->info->ops->serdes_irq_mapping)
+		return 0;
+
+	return chip->info->ops->serdes_irq_mapping(chip, port);
+}
+
+static inline int mv88e6xxx_serdes_irq_enable(struct mv88e6xxx_chip *chip,
+					      int port, int lane)
+{
+	if (!chip->info->ops->serdes_irq_enable)
+		return -EOPNOTSUPP;
+
+	return chip->info->ops->serdes_irq_enable(chip, port, lane, true);
+}
+
+static inline int mv88e6xxx_serdes_irq_disable(struct mv88e6xxx_chip *chip,
+					       int port, int lane)
+{
+	if (!chip->info->ops->serdes_irq_enable)
+		return -EOPNOTSUPP;
+
+	return chip->info->ops->serdes_irq_enable(chip, port, lane, false);
+}
+
+static inline irqreturn_t
+mv88e6xxx_serdes_irq_status(struct mv88e6xxx_chip *chip, int port, int lane)
+{
+	if (!chip->info->ops->serdes_irq_status)
+		return IRQ_NONE;
+
+	return chip->info->ops->serdes_irq_status(chip, port, lane);
+}
+
+#endif

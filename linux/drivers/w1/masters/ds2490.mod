@@ -1,2 +1,1 @@
-_P6_NOP) \
-    $(wildcard inc
+/* SPDX-License-Identifier: G

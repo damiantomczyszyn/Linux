@@ -1,858 +1,1448 @@
-$(wildcard include/config/RSEQ) \
-    $(wildcard include/config/TASK_DELAY_ACCT) \
-    $(wildcard include/config/FAULT_INJECTION) \
-    $(wildcard include/config/LATENCYTOP) \
-    $(wildcard include/config/KUNIT) \
-    $(wildcard include/config/FUNCTION_GRAPH_TRACER) \
-    $(wildcard include/config/BCACHE) \
-    $(wildcard include/config/VMAP_STACK) \
-    $(wildcard include/config/LIVEPATCH) \
-    $(wildcard include/config/SECURITY) \
-    $(wildcard include/config/BPF_SYSCALL) \
-    $(wildcard include/config/GCC_PLUGIN_STACKLEAK) \
-    $(wildcard include/config/X86_MCE) \
-    $(wildcard include/config/KRETPROBES) \
-    $(wildcard include/config/RETHOOK) \
-    $(wildcard include/config/ARCH_HAS_PARANOID_L1D_FLUSH) \
-    $(wildcard include/config/ARCH_TASK_STRUCT_ON_STACK) \
-    $(wildcard include/config/DEBUG_RSEQ) \
-  include/uapi/linux/sched.h \
-  include/linux/pid.h \
-  include/linux/rculist.h \
-    $(wildcard include/config/PROVE_RCU_LIST) \
-  include/linux/sem.h \
-  include/uapi/linux/sem.h \
-  include/linux/ipc.h \
-  include/linux/rhashtable-types.h \
-  include/uapi/linux/ipc.h \
-  arch/x86/include/generated/uapi/asm/ipcbuf.h \
-  include/uapi/asm-generic/ipcbuf.h \
-  arch/x86/include/uapi/asm/sembuf.h \
-  include/linux/shm.h \
-  include/uapi/linux/shm.h \
-  include/uapi/asm-generic/hugetlb_encode.h \
-  arch/x86/include/uapi/asm/shmbuf.h \
-  include/uapi/asm-generic/shmbuf.h \
-  arch/x86/include/asm/shmparam.h \
-  include/linux/plist.h \
-    $(wildcard include/config/DEBUG_PLIST) \
-  include/linux/hrtimer.h \
-    $(wildcard include/config/HIGH_RES_TIMERS) \
-    $(wildcard include/config/TIME_LOW_RES) \
-    $(wildcard include/config/TIMERFD) \
-  include/linux/hrtimer_defs.h \
-  include/linux/timerqueue.h \
-  include/linux/seccomp.h \
-    $(wildcard include/config/SECCOMP) \
-    $(wildcard include/config/HAVE_ARCH_SECCOMP_FILTER) \
-    $(wildcard include/config/SECCOMP_FILTER) \
-    $(wildcard include/config/CHECKPOINT_RESTORE) \
-    $(wildcard include/config/SECCOMP_CACHE_DEBUG) \
-  include/uapi/linux/seccomp.h \
-  arch/x86/include/asm/seccomp.h \
-  arch/x86/include/asm/unistd.h \
-  arch/x86/include/uapi/asm/unistd.h \
-  arch/x86/include/generated/uapi/asm/unistd_32.h \
-  include/asm-generic/seccomp.h \
-  include/uapi/linux/unistd.h \
-  include/linux/resource.h \
-  include/uapi/linux/resource.h \
-  arch/x86/include/generated/uapi/asm/resource.h \
-  include/asm-generic/resource.h \
-  include/uapi/asm-generic/resource.h \
-  include/linux/latencytop.h \
-  include/linux/sched/prio.h \
-  include/linux/sched/types.h \
-  include/linux/signal_types.h \
-    $(wildcard include/config/OLD_SIGACTION) \
-  include/uapi/linux/signal.h \
-  arch/x86/include/asm/signal.h \
-  arch/x86/include/uapi/asm/signal.h \
-  include/uapi/asm-generic/signal-defs.h \
-  arch/x86/include/uapi/asm/siginfo.h \
-  include/uapi/asm-generic/siginfo.h \
-  include/linux/syscall_user_dispatch.h \
-  include/linux/task_io_accounting.h \
-    $(wildcard include/config/TASK_IO_ACCOUNTING) \
-  include/linux/posix-timers.h \
-  include/linux/alarmtimer.h \
-    $(wildcard include/config/RTC_CLASS) \
-  include/uapi/linux/rseq.h \
-  include/linux/kcsan.h \
-  arch/x86/include/generated/asm/kmap_size.h \
-  include/asm-generic/kmap_size.h \
-    $(wildcard include/config/DEBUG_KMAP_LOCAL) \
-  include/linux/energy_model.h \
-  include/linux/sched/cpufreq.h \
-    $(wildcard include/config/CPU_FREQ) \
-  include/linux/sched/topology.h \
-    $(wildcard include/config/SCHED_DEBUG) \
-    $(wildcard include/config/SCHED_MC) \
-    $(wildcard include/config/CPU_FREQ_GOV_SCHEDUTIL) \
-  include/linux/sched/idle.h \
-  include/linux/sched/sd_flags.h \
-  include/linux/klist.h \
-  include/linux/pm.h \
-    $(wildcard include/config/VT_CONSOLE_SLEEP) \
-    $(wildcard include/config/PM_CLK) \
-    $(wildcard include/config/PM_GENERIC_DOMAINS) \
-  include/linux/device/bus.h \
-  include/linux/device/class.h \
-  include/linux/device/driver.h \
-  include/linux/module.h \
-    $(wildcard include/config/MODULES_TREE_LOOKUP) \
-    $(wildcard include/config/STACKTRACE_BUILD_ID) \
-    $(wildcard include/config/MODULE_SIG) \
-    $(wildcard include/config/KALLSYMS) \
-    $(wildcard include/config/BPF_EVENTS) \
-    $(wildcard include/config/DEBUG_INFO_BTF_MODULES) \
-    $(wildcard include/config/EVENT_TRACING) \
-    $(wildcard include/config/MODULE_UNLOAD) \
-    $(wildcard include/config/CONSTRUCTORS) \
-    $(wildcard include/config/FUNCTION_ERROR_INJECTION) \
-  include/linux/buildid.h \
-    $(wildcard include/config/CRASH_CORE) \
-  include/linux/kmod.h \
-  include/linux/umh.h \
-  include/linux/sysctl.h \
-    $(wildcard include/config/SYSCTL) \
-  include/uapi/linux/sysctl.h \
-  include/linux/elf.h \
-    $(wildcard include/config/ARCH_USE_GNU_PROPERTY) \
-    $(wildcard include/config/ARCH_HAVE_ELF_PROT) \
-  arch/x86/include/asm/elf.h \
-    $(wildcard include/config/X86_X32_ABI) \
-  arch/x86/include/asm/user.h \
-  arch/x86/include/asm/user_32.h \
-  arch/x86/include/asm/fsgsbase.h \
-  arch/x86/include/asm/vdso.h \
-  arch/x86/include/asm/desc.h \
-  arch/x86/include/asm/fixmap.h \
-    $(wildcard include/config/DEBUG_KMAP_LOCAL_FORCE_MAP) \
-    $(wildcard include/config/X86_VSYSCALL_EMULATION) \
-    $(wildcard include/config/PROVIDE_OHCI1394_DMA_INIT) \
-    $(wildcard include/config/PCI_MMCONFIG) \
-    $(wildcard include/config/ACPI_APEI_GHES) \
-    $(wildcard include/config/INTEL_TXT) \
-  include/asm-generic/fixmap.h \
-  arch/x86/include/asm/irq_vectors.h \
-    $(wildcard include/config/HAVE_KVM) \
-    $(wildcard include/config/HYPERV) \
-    $(wildcard include/config/PCI_MSI) \
-  arch/x86/include/asm/cpu_entry_area.h \
-  arch/x86/include/asm/intel_ds.h \
-  arch/x86/include/asm/pgtable_areas.h \
-  arch/x86/include/asm/pgtable_32_areas.h \
-  include/uapi/linux/elf.h \
-  include/uapi/linux/elf-em.h \
-  include/linux/moduleparam.h \
-    $(wildcard include/config/ALPHA) \
-    $(wildcard include/config/PPC64) \
-  include/linux/rbtree_latch.h \
-  include/linux/error-injection.h \
-  include/asm-generic/error-injection.h \
-  include/linux/cfi.h \
-    $(wildcard include/config/CFI_CLANG_SHADOW) \
-  arch/x86/include/asm/module.h \
-    $(wildcard include/config/UNWINDER_ORC) \
-  include/asm-generic/module.h \
-    $(wildcard include/config/HAVE_MOD_ARCH_SPECIFIC) \
-    $(wildcard include/config/MODULES_USE_ELF_REL) \
-    $(wildcard include/config/MODULES_USE_ELF_RELA) \
-  arch/x86/include/asm/orc_types.h \
-  arch/x86/include/asm/device.h \
-  include/linux/pm_wakeup.h \
-  include/acpi/acpi.h \
-  include/acpi/platform/acenv.h \
-  include/acpi/platform/acgcc.h \
-  include/acpi/platform/aclinux.h \
-    $(wildcard include/config/ACPI_REDUCED_HARDWARE_ONLY) \
-    $(wildcard include/config/ACPI_DEBUG) \
-  include/linux/ctype.h \
-  arch/x86/include/asm/acenv.h \
-  include/acpi/acnames.h \
-  include/acpi/actypes.h \
-  include/acpi/acexcep.h \
-  include/acpi/actbl.h \
-  include/acpi/actbl1.h \
-  include/acpi/actbl2.h \
-  include/acpi/actbl3.h \
-  include/acpi/acrestyp.h \
-  include/acpi/platform/acenvex.h \
-  include/acpi/platform/aclinuxex.h \
-  include/acpi/platform/acgccex.h \
-  include/acpi/acoutput.h \
-  include/acpi/acpiosxf.h \
-  include/acpi/acpixf.h \
-  include/acpi/acconfig.h \
-  include/acpi/acbuffer.h \
-  include/linux/dynamic_debug.h \
-  include/acpi/acpi_bus.h \
-    $(wildcard include/config/X86_ANDROID_TABLETS) \
-    $(wildcard include/config/ACPI_SYSTEM_POWER_STATES_SUPPORT) \
-    $(wildcard include/config/ACPI_SLEEP) \
-  include/acpi/acpi_drivers.h \
-    $(wildcard include/config/ACPI_DOCK) \
-  include/acpi/acpi_numa.h \
-    $(wildcard include/config/ACPI_HMAT) \
-  include/acpi/acpi_io.h \
-  include/linux/io.h \
-    $(wildcard include/config/HAS_IOPORT_MAP) \
-  arch/x86/include/asm/io.h \
-    $(wildcard include/config/MTRR) \
-    $(wildcard include/config/X86_PAT) \
-  arch/x86/include/generated/asm/early_ioremap.h \
-  include/asm-generic/early_ioremap.h \
-    $(wildcard include/config/GENERIC_EARLY_IOREMAP) \
-  include/asm-generic/iomap.h \
-  include/asm-generic/pci_iomap.h \
-    $(wildcard include/config/NO_GENERIC_PCI_IOPORT_MAP) \
-    $(wildcard include/config/GENERIC_PCI_IOMAP) \
-  include/asm-generic/io.h \
-    $(wildcard include/config/GENERIC_IOMAP) \
-    $(wildcard include/config/GENERIC_IOREMAP) \
-    $(wildcard include/config/VIRT_TO_BUS) \
-    $(wildcard include/config/GENERIC_DEVMEM_IS_ALLOWED) \
-  include/linux/logic_pio.h \
-    $(wildcard include/config/INDIRECT_PIO) \
-  include/linux/vmalloc.h \
-    $(wildcard include/config/HAVE_ARCH_HUGE_VMALLOC) \
-  arch/x86/include/asm/vmalloc.h \
-    $(wildcard include/config/HAVE_ARCH_HUGE_VMAP) \
-  arch/x86/include/asm/acpi.h \
-    $(wildcard include/config/ACPI_APEI) \
-  include/acpi/pdc_intel.h \
-  arch/x86/include/asm/numa.h \
-    $(wildcard include/config/NUMA_EMU) \
-  arch/x86/include/asm/numa_32.h \
-  include/linux/regulator/consumer.h \
-    $(wildcard include/config/REGULATOR) \
-  include/linux/suspend.h \
-    $(wildcard include/config/VT) \
-    $(wildcard include/config/SUSPEND) \
-    $(wildcard include/config/HIBERNATION_SNAPSHOT_DEV) \
-    $(wildcard include/config/PM_SLEEP_DEBUG) \
-    $(wildcard include/config/PM_AUTOSLEEP) \
-  include/linux/swap.h \
-    $(wildcard include/config/DEVICE_PRIVATE) \
-    $(wildcard include/config/MIGRATION) \
-    $(wildcard include/config/FRONTSWAP) \
-    $(wildcard include/config/THP_SWAP) \
-    $(wildcard include/config/MEMCG_SWAP) \
-  include/linux/memcontrol.h \
-    $(wildcard include/config/CGROUP_WRITEBACK) \
-  include/linux/cgroup.h \
-    $(wildcard include/config/CGROUP_CPUACCT) \
-    $(wildcard include/config/SOCK_CGROUP_DATA) \
-    $(wildcard include/config/CGROUP_DATA) \
-    $(wildcard include/config/CGROUP_BPF) \
-  include/uapi/linux/cgroupstats.h \
-  include/uapi/linux/taskstats.h \
-  include/linux/fs.h \
-    $(wildcard include/config/READ_ONLY_THP_FOR_FS) \
-    $(wildcard include/config/FS_POSIX_ACL) \
-    $(wildcard include/config/IMA) \
-    $(wildcard include/config/FILE_LOCKING) \
-    $(wildcard include/config/FSNOTIFY) \
-    $(wildcard include/config/FS_ENCRYPTION) \
-    $(wildcard include/config/FS_VERITY) \
-    $(wildcard include/config/EPOLL) \
-    $(wildcard include/config/UNICODE) \
-    $(wildcard include/config/QUOTA) \
-    $(wildcard include/config/FS_DAX) \
-    $(wildcard include/config/BLOCK) \
-  include/linux/wait_bit.h \
-  include/linux/kdev_t.h \
-  include/uapi/linux/kdev_t.h \
-  include/linux/dcache.h \
-  include/linux/rculist_bl.h \
-  include/linux/list_bl.h \
-  include/linux/bit_spinlock.h \
-  include/linux/lockref.h \
-    $(wildcard include/config/ARCH_USE_CMPXCHG_LOCKREF) \
-  include/linux/stringhash.h \
-    $(wildcard include/config/DCACHE_WORD_ACCESS) \
-  include/linux/hash.h \
-    $(wildcard include/config/HAVE_ARCH_HASH) \
-  include/linux/path.h \
-  include/linux/list_lru.h \
-  include/linux/shrinker.h \
-  include/linux/capability.h \
-  include/uapi/linux/capability.h \
-  include/linux/semaphore.h \
-  include/linux/fcntl.h \
-    $(wildcard include/config/ARCH_32BIT_OFF_T) \
-  include/uapi/linux/fcntl.h \
-  arch/x86/include/generated/uapi/asm/fcntl.h \
-  include/uapi/asm-generic/fcntl.h \
-  include/uapi/linux/openat2.h \
-  include/linux/migrate_mode.h \
-  include/linux/percpu-rwsem.h \
-  include/linux/rcuwait.h \
-  include/linux/sched/signal.h \
-    $(wildcard include/config/SCHED_AUTOGROUP) \
-    $(wildcard include/config/BSD_PROCESS_ACCT) \
-    $(wildcard include/config/TASKSTATS) \
-    $(wildcard include/config/STACK_GROWSUP) \
-  include/linux/signal.h \
-    $(wildcard include/config/DYNAMIC_SIGFRAME) \
-  include/linux/sched/jobctl.h \
-  include/linux/sched/task.h \
-    $(wildcard include/config/HAVE_EXIT_THREAD) \
-    $(wildcard include/config/ARCH_WANTS_DYNAMIC_TASK_STRUCT) \
-    $(wildcard include/config/HAVE_ARCH_THREAD_STRUCT_WHITELIST) \
-  include/linux/uaccess.h \
-  include/linux/fault-inject-usercopy.h \
-    $(wildcard include/config/FAULT_INJECTION_USERCOPY) \
-  arch/x86/include/asm/uaccess.h \
-    $(wildcard include/config/CC_HAS_ASM_GOTO_OUTPUT) \
-    $(wildcard include/config/CC_HAS_ASM_GOTO_TIED_OUTPUT) \
-    $(wildcard include/config/ARCH_HAS_COPY_MC) \
-    $(wildcard include/config/X86_INTEL_USERCOPY) \
-  arch/x86/include/asm/smap.h \
-  arch/x86/include/asm/extable.h \
-    $(wildcard include/config/BPF_JIT) \
-  include/asm-generic/access_ok.h \
-    $(wildcard include/config/ALTERNATE_USER_ADDRESS_SPACE) \
-  arch/x86/include/asm/uaccess_32.h \
-  include/linux/cred.h \
-    $(wildcard include/config/DEBUG_CREDENTIALS) \
-  include/linux/key.h \
-    $(wildcard include/config/KEY_NOTIFICATIONS) \
-    $(wildcard include/config/NET) \
-  include/linux/assoc_array.h \
-    $(wildcard include/config/ASSOCIATIVE_ARRAY) \
-  include/linux/sched/user.h \
-    $(wildcard include/config/WATCH_QUEUE) \
-  include/linux/percpu_counter.h \
-  include/linux/rcu_sync.h \
-  include/linux/delayed_call.h \
-  include/linux/errseq.h \
-  include/linux/ioprio.h \
-  include/linux/sched/rt.h \
-  include/linux/iocontext.h \
-    $(wildcard include/config/BLK_ICQ) \
-  include/uapi/linux/ioprio.h \
-  include/linux/fs_types.h \
-  include/linux/mount.h \
-  include/linux/mnt_idmapping.h \
-  include/uapi/linux/fs.h \
-  include/linux/quota.h \
-    $(wildcard include/config/QUOTA_NETLINK_INTERFACE) \
-  include/uapi/linux/dqblk_xfs.h \
-  include/linux/dqblk_v1.h \
-  include/linux/dqblk_v2.h \
-  include/linux/dqblk_qtree.h \
-  include/linux/projid.h \
-  include/uapi/linux/quota.h \
-  include/linux/nfs_fs_i.h \
-  include/linux/seq_file.h \
-  include/linux/string_helpers.h \
-  include/linux/ns_common.h \
-  include/linux/nsproxy.h \
-  include/linux/user_namespace.h \
-    $(wildcard include/config/INOTIFY_USER) \
-    $(wildcard include/config/FANOTIFY) \
-    $(wildcard include/config/PERSISTENT_KEYRINGS) \
-  include/linux/kernel_stat.h \
-  include/linux/interrupt.h \
-    $(wildcard include/config/IRQ_FORCED_THREADING) \
-    $(wildcard include/config/GENERIC_IRQ_PROBE) \
-    $(wildcard include/config/IRQ_TIMINGS) \
-  include/linux/irqreturn.h \
-  include/linux/irqnr.h \
-  include/uapi/linux/irqnr.h \
-  include/linux/hardirq.h \
-  include/linux/context_tracking_state.h \
-    $(wildcard include/config/CONTEXT_TRACKING) \
-  include/linux/ftrace_irq.h \
-    $(wildcard include/config/HWLAT_TRACER) \
-    $(wildcard include/config/OSNOISE_TRACER) \
-  include/linux/vtime.h \
-    $(wildcard include/config/VIRT_CPU_ACCOUNTING) \
-    $(wildcard include/config/IRQ_TIME_ACCOUNTING) \
-  arch/x86/include/asm/hardirq.h \
-    $(wildcard include/config/KVM_INTEL) \
-    $(wildcard include/config/X86_THERMAL_VECTOR) \
-    $(wildcard include/config/X86_MCE_THRESHOLD) \
-    $(wildcard include/config/X86_MCE_AMD) \
-    $(wildcard include/config/X86_HV_CALLBACK_VECTOR) \
-  arch/x86/include/asm/irq.h \
-  arch/x86/include/asm/sections.h \
-  include/asm-generic/sections.h \
-    $(wildcard include/config/HAVE_FUNCTION_DESCRIPTORS) \
-  include/linux/cgroup-defs.h \
-    $(wildcard include/config/CGROUP_NET_CLASSID) \
-    $(wildcard include/config/CGROUP_NET_PRIO) \
-  include/linux/u64_stats_sync.h \
-  include/linux/bpf-cgroup-defs.h \
-  include/linux/psi_types.h \
-  include/linux/kthread.h \
-  include/linux/cgroup_subsys.h \
-    $(wildcard include/config/CGROUP_DEVICE) \
-    $(wildcard include/config/CGROUP_FREEZER) \
-    $(wildcard include/config/CGROUP_PERF) \
-    $(wildcard include/config/CGROUP_HUGETLB) \
-    $(wildcard include/config/CGROUP_PIDS) \
-    $(wildcard include/config/CGROUP_RDMA) \
-    $(wildcard include/config/CGROUP_MISC) \
-    $(wildcard include/config/CGROUP_DEBUG) \
-  include/linux/vm_event_item.h \
-    $(wildcard include/config/HAVE_ARCH_TRANSPARENT_HUGEPAGE_PUD) \
-    $(wildcard include/config/MEMORY_BALLOON) \
-    $(wildcard include/config/BALLOON_COMPACTION) \
-    $(wildcard include/config/DEBUG_TLBFLUSH) \
-    $(wildcard include/config/DEBUG_VM_VMACACHE) \
-  include/linux/page_counter.h \
-  include/linux/vmpressure.h \
-  include/linux/eventfd.h \
-  include/linux/mm.h \
-    $(wildcard include/config/HAVE_ARCH_MMAP_RND_BITS) \
-    $(wildcard include/config/HAVE_ARCH_MMAP_RND_COMPAT_BITS) \
-    $(wildcard include/config/ARCH_USES_HIGH_VMA_FLAGS) \
-    $(wildcard include/config/ARCH_HAS_PKEYS) \
-    $(wildcard include/config/PPC) \
-    $(wildcard include/config/PARISC) \
-    $(wildcard include/config/SPARC64) \
-    $(wildcard include/config/ARM64_MTE) \
-    $(wildcard include/config/HAVE_ARCH_USERFAULTFD_MINOR) \
-    $(wildcard include/config/SHMEM) \
-    $(wildcard include/config/ARCH_HAS_PTE_SPECIAL) \
-    $(wildcard include/config/ARCH_HAS_PTE_DEVMAP) \
-    $(wildcard include/config/DEBUG_VM_RB) \
-    $(wildcard include/config/PAGE_POISONING) \
-    $(wildcard include/config/INIT_ON_ALLOC_DEFAULT_ON) \
-    $(wildcard include/config/INIT_ON_FREE_DEFAULT_ON) \
-    $(wildcard include/config/DEBUG_PAGEALLOC) \
-    $(wildcard include/config/HUGETLBFS) \
-    $(wildcard include/config/MAPPING_DIRTY_HELPERS) \
-    $(wildcard include/config/ANON_VMA_NAME) \
-  include/linux/mmap_lock.h \
-  include/linux/page_ext.h \
-  include/linux/stacktrace.h \
-    $(wildcard include/config/ARCH_STACKWALK) \
-    $(wildcard include/config/STACKTRACE) \
-    $(wildcard include/config/HAVE_RELIABLE_STACKTRACE) \
-  include/linux/stackdepot.h \
-    $(wildcard include/config/STACKDEPOT_ALWAYS_INIT) \
-  include/linux/page_ref.h \
-    $(wildcard include/config/DEBUG_PAGE_REF) \
-  include/linux/sizes.h \
-  include/linux/pgtable.h \
-    $(wildcard include/config/HIGHPTE) \
-    $(wildcard include/config/GUP_GET_PTE_LOW_HIGH) \
-    $(wildcard include/config/HAVE_ARCH_SOFT_DIRTY) \
-    $(wildcard include/config/ARCH_ENABLE_THP_MIGRATION) \
-    $(wildcard include/config/X86_ESPFIX64) \
-  arch/x86/include/asm/pgtable.h \
-    $(wildcard include/config/DEBUG_WX) \
-    $(wildcard include/config/PAGE_TABLE_CHECK) \
-  arch/x86/include/asm/pkru.h \
-  arch/x86/include/asm/fpu/api.h \
-    $(wildcard include/config/X86_DEBUG_FPU) \
-  arch/x86/include/asm/coco.h \
-  include/asm-generic/pgtable_uffd.h \
-  include/linux/page_table_check.h \
-  arch/x86/include/asm/pgtable_32.h \
-  arch/x86/include/asm/pgtable-3level.h \
-  arch/x86/include/asm/pgtable-invert.h \
-  include/linux/huge_mm.h \
-  include/linux/sched/coredump.h \
-    $(wildcard include/config/CORE_DUMP_DEFAULT_ELF_HEADERS) \
-  include/linux/vmstat.h \
-    $(wildcard include/config/VM_EVENT_COUNTERS) \
-  include/linux/writeback.h \
-  include/linux/flex_proportions.h \
-  include/linux/backing-dev-defs.h \
-    $(wildcard include/config/DEBUG_FS) \
-  include/linux/blk_types.h \
-    $(wildcard include/config/FAIL_MAKE_REQUEST) \
-    $(wildcard include/config/BLK_CGROUP_IOCOST) \
-    $(wildcard include/config/BLK_INLINE_ENCRYPTION) \
-    $(wildcard include/config/BLK_DEV_INTEGRITY) \
-  include/linux/bvec.h \
-  include/linux/highmem.h \
-  include/linux/cacheflush.h \
-  arch/x86/include/asm/cacheflush.h \
-  include/asm-generic/cacheflush.h \
-  include/linux/highmem-internal.h \
-  arch/x86/include/asm/highmem.h \
-  arch/x86/include/asm/tlbflush.h \
-  arch/x86/include/asm/invpcid.h \
-  arch/x86/include/asm/pti.h \
-  include/linux/bio.h \
-  include/linux/mempool.h \
-  include/linux/uio.h \
-    $(wildcard include/config/ARCH_HAS_UACCESS_FLUSHCACHE) \
-  include/uapi/linux/uio.h \
-  include/linux/node.h \
-    $(wildcard include/config/HMEM_REPORTING) \
-  include/linux/pagemap.h \
-  include/linux/hugetlb_inline.h \
-  include/uapi/linux/mempolicy.h \
-  include/linux/freezer.h \
-  include/uapi/linux/i2c.h \
-  include/linux/delay.h \
-  arch/x86/include/asm/delay.h \
-  include/asm-generic/delay.h \
-  include/linux/videodev2.h \
-  include/uapi/linux/videodev2.h \
-    $(wildcard include/config/VIDEO_ADV_DEBUG) \
-  include/uapi/linux/v4l2-common.h \
-  include/uapi/linux/v4l2-controls.h \
-  include/uapi/linux/v4l2-mediabus.h \
-  include/uapi/linux/media-bus-format.h \
-  include/linux/of_graph.h \
-  include/media/v4l2-async.h \
-  include/media/v4l2-device.h \
-    $(wildcard include/config/VIDEO_V4L2_SUBDEV_API) \
-  include/media/media-device.h \
-  include/media/media-devnode.h \
-  include/linux/poll.h \
-  include/uapi/linux/poll.h \
-  arch/x86/include/generated/uapi/asm/poll.h \
-  include/uapi/asm-generic/poll.h \
-  include/uapi/linux/eventpoll.h \
-  include/linux/cdev.h \
-  include/media/media-entity.h \
-  include/uapi/linux/media.h \
-  include/media/v4l2-subdev.h \
-  include/uapi/linux/v4l2-subdev.h \
-  include/media/v4l2-common.h \
-    $(wildcard include/config/VIDEO_V4L2_I2C) \
-    $(wildcard include/config/SPI) \
-  include/media/v4l2-dev.h \
-  include/linux/spi/spi.h \
-    $(wildcard include/config/SPI_SLAVE) \
-  include/linux/scatterlist.h \
-    $(wildcard include/config/NEED_SG_DMA_LENGTH) \
-    $(wildcard include/config/DEBUG_SG) \
-    $(wildcard include/config/SGL_ALLOC) \
-    $(wildcard include/config/ARCH_NO_SG_CHAIN) \
-    $(wildcard include/config/SG_POOL) \
-  include/linux/gpio/consumer.h \
-    $(wildcard include/config/OF_GPIO) \
-    $(wildcard include/config/GPIO_SYSFS) \
-  include/uapi/linux/spi/spi.h \
-  include/media/v4l2-fh.h \
-  include/media/v4l2-mediabus.h \
-  include/media/v4l2-fwnode.h \
-  include/media/v4l2-ctrls.h \
-  include/media/media-request.h \
-  include/media/hevc-ctrls.h \
-  include/media/i2c/tvp514x.h \
-  drivers/media/i2c/tvp514x_regs.h \
+/* 3c509.c: A 3c509 EtherLink3 ethernet driver for linux. */
+/*
+	Written 1993-2000 by Donald Becker.
 
-drivers/media/i2c/tvp514x.o: $(deps_drivers/media/i2c/tvp514x.o)
+	Copyright 1994-2000 by Donald Becker.
+	Copyright 1993 United States Government as represented by the
+	Director, National Security Agency.	 This software may be used and
+	distributed according to the terms of the GNU General Public License,
+	incorporated herein by reference.
 
-$(deps_drivers/media/i2c/tvp514x.o):
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     cmd_drivers/media/i2c/tvp514x.o := gcc -Wp,-MMD,drivers/media/i2c/.tvp514x.o.d -nostdinc -I./arch/x86/include -I./arch/x86/include/generated  -I./include -I./arch/x86/include/uapi -I./arch/x86/include/generated/uapi -I./include/uapi -I./include/generated/uapi -include ./include/linux/compiler-version.h -include ./include/linux/kconfig.h -include ./include/linux/compiler_types.h -D__KERNEL__ -fmacro-prefix-map=./= -Wall -Wundef -Werror=strict-prototypes -Wno-trigraphs -fno-strict-aliasing -fno-common -fshort-wchar -fno-PIE -Werror=implicit-function-declaration -Werror=implicit-int -Werror=return-type -Wno-format-security -std=gnu11 -mno-sse -mno-mmx -mno-sse2 -mno-3dnow -mno-avx -fcf-protection=none -m32 -msoft-float -mregparm=3 -freg-struct-return -fno-pic -mpreferred-stack-boundary=2 -march=i686 -mtune=pentium3 -mtune=generic -Wa,-mtune=generic32 -ffreestanding -mstack-protector-guard-reg=fs -mstack-protector-guard-symbol=__stack_chk_guard -Wno-sign-compare -fno-asynchronous-unwind-tables -mindirect-branch=thunk-extern -mindirect-branch-register -fno-jump-tables -fno-delete-null-pointer-checks -Wno-frame-address -Wno-format-truncation -Wno-format-overflow -Wno-address-of-packed-member -O2 -fno-allow-store-data-races -fstack-protector-strong -Wimplicit-fallthrough=5 -Wno-main -Wno-unused-but-set-variable -Wno-unused-const-variable -fno-stack-clash-protection -pg -mrecord-mcount -mfentry -DCC_USING_FENTRY -Wdeclaration-after-statement -Wvla -Wno-pointer-sign -Wcast-function-type -Wno-stringop-truncation -Wno-stringop-overflow -Wno-restrict -Wno-maybe-uninitialized -Wno-alloc-size-larger-than -fno-strict-overflow -fno-stack-check -fconserve-stack -Werror=date-time -Werror=incompatible-pointer-types -Werror=designated-init -Wno-packed-not-aligned  -DMODULE  -DKBUILD_BASENAME='"tvp514x"' -DKBUILD_MODNAME='"tvp514x"' -D__KBUILD_MODNAME=kmod_tvp514x -c -o drivers/media/i2c/tvp514x.o drivers/media/i2c/tvp514x.c 
+	This driver is for the 3Com EtherLinkIII series.
 
-source_drivers/media/i2c/tvp514x.o := drivers/media/i2c/tvp514x.c
+	The author may be reached as becker@scyld.com, or C/O
+	Scyld Computing Corporation
+	410 Severn Ave., Suite 210
+	Annapolis MD 21403
 
-deps_drivers/media/i2c/tvp514x.o := \
-    $(wildcard include/config/OF) \
-    $(wildcard include/config/MEDIA_CONTROLLER) \
-  include/linux/compiler-version.h \
-    $(wildcard include/config/CC_VERSION_TEXT) \
-  include/linux/kconfig.h \
-    $(wildcard include/config/CPU_BIG_ENDIAN) \
-    $(wildcard include/config/BOOGER) \
-    $(wildcard include/config/FOO) \
-  include/linux/compiler_types.h \
-    $(wildcard include/config/DEBUG_INFO_BTF) \
-    $(wildcard include/config/PAHOLE_HAS_BTF_TAG) \
-    $(wildcard include/config/HAVE_ARCH_COMPILER_H) \
-    $(wildcard include/config/CC_HAS_ASM_INLINE) \
-  include/linux/compiler_attributes.h \
-  include/linux/compiler-gcc.h \
-    $(wildcard include/config/RETPOLINE) \
-    $(wildcard include/config/ARCH_USE_BUILTIN_BSWAP) \
-    $(wildcard include/config/SHADOW_CALL_STACK) \
-    $(wildcard include/config/KCOV) \
-  include/linux/i2c.h \
-    $(wildcard include/config/I2C) \
-    $(wildcard include/config/I2C_SLAVE) \
-    $(wildcard include/config/I2C_BOARDINFO) \
-    $(wildcard include/config/I2C_MUX) \
-    $(wildcard include/config/ACPI) \
-  include/linux/acpi.h \
-    $(wildcard include/config/ACPI_DEBUGGER) \
-    $(wildcard include/config/ACPI_TABLE_LIB) \
-    $(wildcard include/config/X86) \
-    $(wildcard include/config/IA64) \
-    $(wildcard include/config/LOONGARCH) \
-    $(wildcard include/config/ARM64) \
-    $(wildcard include/config/ACPI_PROCESSOR_CSTATE) \
-    $(wildcard include/config/ACPI_HOTPLUG_CPU) \
-    $(wildcard include/config/ACPI_HOTPLUG_IOAPIC) \
-    $(wildcard include/config/X86_IO_APIC) \
-    $(wildcard include/config/PCI) \
-    $(wildcard include/config/ACPI_WMI) \
-    $(wildcard include/config/ACPI_NUMA) \
-    $(wildcard include/config/HIBERNATION) \
-    $(wildcard include/config/PM_SLEEP) \
-    $(wildcard include/config/ACPI_HOTPLUG_MEMORY) \
-    $(wildcard include/config/ACPI_CONTAINER) \
-    $(wildcard include/config/ACPI_GTDT) \
-    $(wildcard include/config/PM) \
-    $(wildcard include/config/DYNAMIC_DEBUG) \
-    $(wildcard include/config/GPIOLIB) \
-    $(wildcard include/config/ACPI_TABLE_UPGRADE) \
-    $(wildcard include/config/ACPI_WATCHDOG) \
-    $(wildcard include/config/ACPI_SPCR_TABLE) \
-    $(wildcard include/config/ACPI_GENERIC_GSI) \
-    $(wildcard include/config/ACPI_LPIT) \
-    $(wildcard include/config/ACPI_PPTT) \
-    $(wildcard include/config/ACPI_PCC) \
-  include/linux/errno.h \
-  include/uapi/linux/errno.h \
-  arch/x86/include/generated/uapi/asm/errno.h \
-  include/uapi/asm-generic/errno.h \
-  include/uapi/asm-generic/errno-base.h \
-  include/linux/ioport.h \
-    $(wildcard include/config/MEMORY_HOTREMOVE) \
-    $(wildcard include/config/MEMORY_HOTPLUG) \
-  include/linux/bits.h \
-  include/linux/const.h \
-  include/vdso/const.h \
-  include/uapi/linux/const.h \
-  include/vdso/bits.h \
-  arch/x86/include/uapi/asm/bitsperlong.h \
-  include/asm-generic/bitsperlong.h \
-    $(wildcard include/config/64BIT) \
-  include/uapi/asm-generic/bitsperlong.h \
-  include/linux/build_bug.h \
-  include/linux/compiler.h \
-    $(wildcard include/config/TRACE_BRANCH_PROFILING) \
-    $(wildcard include/config/PROFILE_ALL_BRANCHES) \
-    $(wildcard include/config/STACK_VALIDATION) \
-    $(wildcard include/config/CFI_CLANG) \
-  include/linux/compiler_types.h \
-  arch/x86/include/generated/asm/rwonce.h \
-  include/asm-generic/rwonce.h \
-  include/linux/kasan-checks.h \
-    $(wildcard include/config/KASAN_GENERIC) \
-    $(wildcard include/config/KASAN_SW_TAGS) \
-  include/linux/types.h \
-    $(wildcard include/config/HAVE_UID16) \
-    $(wildcard include/config/UID16) \
-    $(wildcard include/config/ARCH_DMA_ADDR_T_64BIT) \
-    $(wildcard include/config/PHYS_ADDR_T_64BIT) \
-    $(wildcard include/config/ARCH_32BIT_USTAT_F_TINODE) \
-  include/uapi/linux/types.h \
-  arch/x86/include/generated/uapi/asm/types.h \
-  include/uapi/asm-generic/types.h \
-  include/asm-generic/int-ll64.h \
-  include/uapi/asm-generic/int-ll64.h \
-  include/uapi/linux/posix_types.h \
-  include/linux/stddef.h \
-  include/uapi/linux/stddef.h \
-  arch/x86/include/asm/posix_types.h \
-    $(wildcard include/config/X86_32) \
-  arch/x86/include/uapi/asm/posix_types_32.h \
-  include/uapi/asm-generic/posix_types.h \
-  include/linux/kcsan-checks.h \
-    $(wildcard include/config/KCSAN) \
-    $(wildcard include/config/KCSAN_WEAK_MEMORY) \
-    $(wildcard include/config/KCSAN_IGNORE_ATOMICS) \
-  include/linux/minmax.h \
-  include/linux/irqdomain.h \
-    $(wildcard include/config/IRQ_DOMAIN_HIERARCHY) \
-    $(wildcard include/config/GENERIC_IRQ_DEBUGFS) \
-    $(wildcard include/config/IRQ_DOMAIN) \
-    $(wildcard include/config/IRQ_DOMAIN_NOMAP) \
-  include/linux/irqhandler.h \
-  include/linux/of.h \
-    $(wildcard include/config/OF_DYNAMIC) \
-    $(wildcard include/config/SPARC) \
-    $(wildcard include/config/OF_PROMTREE) \
-    $(wildcard include/config/OF_KOBJ) \
-    $(wildcard include/config/NUMA) \
-    $(wildcard include/config/OF_NUMA) \
-    $(wildcard include/config/OF_OVERLAY) \
-  include/linux/bitops.h \
-  include/linux/typecheck.h \
-  include/uapi/linux/kernel.h \
-  include/uapi/linux/sysinfo.h \
-  arch/x86/include/asm/bitops.h \
-    $(wildcard include/config/X86_64) \
-    $(wildcard include/config/X86_CMOV) \
-  arch/x86/include/asm/alternative.h \
-    $(wildcard include/config/SMP) \
-  include/linux/stringify.h \
-  arch/x86/include/asm/asm.h \
-    $(wildcard include/config/KPROBES) \
-  arch/x86/include/asm/extable_fixup_types.h \
-  arch/x86/include/asm/rmwcc.h \
-    $(wildcard include/config/CC_HAS_ASM_GOTO) \
-  arch/x86/include/asm/barrier.h \
-  arch/x86/include/asm/nops.h \
-  include/asm-generic/barrier.h \
-  include/asm-generic/bitops/fls64.h \
-  include/asm-generic/bitops/sched.h \
-  arch/x86/include/asm/arch_hweight.h \
-  arch/x86/include/asm/cpufeatures.h \
-  arch/x86/include/asm/required-features.h \
-    $(wildcard include/config/X86_MINIMUM_CPU_FAMILY) \
-    $(wildcard include/config/MATH_EMULATION) \
-    $(wildcard include/config/X86_PAE) \
-    $(wildcard include/config/X86_CMPXCHG64) \
-    $(wildcard include/config/X86_P6_NOP) \
-    $(wildcard include/config/MATOM) \
-    $(wildcard include/config/PARAVIRT_XXL) \
-  arch/x86/include/asm/disabled-features.h \
-    $(wildcard include/config/X86_SMAP) \
-    $(wildcard include/config/X86_UMIP) \
-    $(wildcard include/config/X86_INTEL_MEMORY_PROTECTION_KEYS) \
-    $(wildcard include/config/X86_5LEVEL) \
-    $(wildcard include/config/PAGE_TABLE_ISOLATION) \
-    $(wildcard include/config/INTEL_IOMMU_SVM) \
-    $(wildcard include/config/X86_SGX) \
-  include/asm-generic/bitops/const_hweight.h \
-  include/asm-generic/bitops/instrumented-atomic.h \
-  include/linux/instrumented.h \
-  include/asm-generic/bitops/instrumented-non-atomic.h \
-    $(wildcard include/config/KCSAN_ASSUME_PLAIN_WRITES_ATOMIC) \
-  include/asm-generic/bitops/instrumented-lock.h \
-  include/asm-generic/bitops/le.h \
-  arch/x86/include/uapi/asm/byteorder.h \
-  include/linux/byteorder/little_endian.h \
-  include/uapi/linux/byteorder/little_endian.h \
-  include/linux/swab.h \
-  include/uapi/linux/swab.h \
-  arch/x86/include/uapi/asm/swab.h \
-  include/linux/byteorder/generic.h \
-  include/asm-generic/bitops/ext2-atomic-setbit.h \
-  include/linux/kobject.h \
-    $(wildcard include/config/UEVENT_HELPER) \
-    $(wildcard include/config/DEBUG_KOBJECT_RELEASE) \
-  include/linux/list.h \
-    $(wildcard include/config/DEBUG_LIST) \
-  include/linux/container_of.h \
-  include/linux/err.h \
-  include/linux/poison.h \
-    $(wildcard include/config/ILLEGAL_POINTER_VALUE) \
-  include/linux/sysfs.h \
-    $(wildcard include/config/DEBUG_LOCK_ALLOC) \
-    $(wildcard include/config/SYSFS) \
-  include/linux/kernfs.h \
-    $(wildcard include/config/KERNFS) \
-  include/linux/mutex.h \
-    $(wildcard include/config/PREEMPT_RT) \
-    $(wildcard include/config/MUTEX_SPIN_ON_OWNER) \
-    $(wildcard include/config/DEBUG_MUTEXES) \
-  arch/x86/include/asm/current.h \
-  arch/x86/include/asm/percpu.h \
-    $(wildcard include/config/X86_64_SMP) \
-  include/linux/kernel.h \
-    $(wildcard include/config/PREEMPT_VOLUNTARY_BUILD) \
-    $(wildcard include/config/PREEMPT_DYNAMIC) \
-    $(wildcard include/config/HAVE_PREEMPT_DYNAMIC_CALL) \
-    $(wildcard include/config/HAVE_PREEMPT_DYNAMIC_KEY) \
-    $(wildcard include/config/PREEMPT_) \
-    $(wildcard include/config/DEBUG_ATOMIC_SLEEP) \
-    $(wildcard include/config/MMU) \
-    $(wildcard include/config/PROVE_LOCKING) \
-    $(wildcard include/config/TRACING) \
-    $(wildcard include/config/FTRACE_MCOUNT_RECORD) \
-  include/linux/stdarg.h \
-  include/linux/align.h \
-  include/linux/limits.h \
-  include/uapi/linux/limits.h \
-  include/vdso/limits.h \
-  include/linux/linkage.h \
-    $(wildcard include/config/ARCH_USE_SYM_ANNOTATIONS) \
-  include/linux/export.h \
-    $(wildcard include/config/MODVERSIONS) \
-    $(wildcard include/config/MODULE_REL_CRCS) \
-    $(wildcard include/config/HAVE_ARCH_PREL32_RELOCATIONS) \
-    $(wildcard include/config/MODULES) \
-    $(wildcard include/config/TRIM_UNUSED_KSYMS) \
-  arch/x86/include/asm/linkage.h \
-    $(wildcard include/config/X86_ALIGNMENT_16) \
-    $(wildcard include/config/SLS) \
-  arch/x86/include/asm/ibt.h \
-    $(wildcard include/config/X86_KERNEL_IBT) \
-  include/linux/kstrtox.h \
-  include/linux/log2.h \
-    $(wildcard include/config/ARCH_HAS_ILOG2_U32) \
-    $(wildcard include/config/ARCH_HAS_ILOG2_U64) \
-  include/linux/math.h \
-  arch/x86/include/asm/div64.h \
-  include/linux/panic.h \
-    $(wildcard include/config/PANIC_TIMEOUT) \
-  include/linux/printk.h \
-    $(wildcard include/config/MESSAGE_LOGLEVEL_DEFAULT) \
-    $(wildcard include/config/CONSOLE_LOGLEVEL_DEFAULT) \
-    $(wildcard include/config/CONSOLE_LOGLEVEL_QUIET) \
-    $(wildcard include/config/EARLY_PRINTK) \
-    $(wildcard include/config/PRINTK) \
-    $(wildcard include/config/PRINTK_INDEX) \
-    $(wildcard include/config/DYNAMIC_DEBUG_CORE) \
-  include/linux/init.h \
-    $(wildcard include/config/STRICT_KERNEL_RWX) \
-    $(wildcard include/config/STRICT_MODULE_RWX) \
-    $(wildcard include/config/LTO_CLANG) \
-  include/linux/kern_levels.h \
-  include/linux/cache.h \
-    $(wildcard include/config/ARCH_HAS_CACHE_LINE_SIZE) \
-  arch/x86/include/asm/cache.h \
-    $(wildcard include/config/X86_L1_CACHE_SHIFT) \
-    $(wildcard include/config/X86_INTERNODE_CACHE_SHIFT) \
-    $(wildcard include/config/X86_VSMP) \
-  include/linux/ratelimit_types.h \
-  include/uapi/linux/param.h \
-  arch/x86/include/generated/uapi/asm/param.h \
-  include/asm-generic/param.h \
-    $(wildcard include/config/HZ) \
-  include/uapi/asm-generic/param.h \
-  include/linux/spinlock_types_raw.h \
-    $(wildcard include/config/DEBUG_SPINLOCK) \
-  arch/x86/include/asm/spinlock_types.h \
-  include/asm-generic/qspinlock_types.h \
-    $(wildcard include/config/NR_CPUS) \
-  include/asm-generic/qrwlock_types.h \
-  include/linux/lockdep_types.h \
-    $(wildcard include/config/PROVE_RAW_LOCK_NESTING) \
-    $(wildcard include/config/LOCKDEP) \
-    $(wildcard include/config/LOCK_STAT) \
-  include/linux/once_lite.h \
-  include/linux/static_call_types.h \
-    $(wildcard include/config/HAVE_STATIC_CALL) \
-    $(wildcard include/config/HAVE_STATIC_CALL_INLINE) \
-  include/linux/instruction_pointer.h \
-  include/asm-generic/percpu.h \
-    $(wildcard include/config/DEBUG_PREEMPT) \
-    $(wildcard include/config/HAVE_SETUP_PER_CPU_AREA) \
-  include/linux/threads.h \
-    $(wildcard include/config/BASE_SMALL) \
-  include/linux/percpu-defs.h \
-    $(wildcard include/config/DEBUG_FORCE_WEAK_PER_CPU) \
-    $(wildcard include/config/AMD_MEM_ENCRYPT) \
-  include/linux/spinlock_types.h \
-  include/linux/rwlock_types.h \
-  include/linux/lockdep.h \
-    $(wildcard include/config/DEBUG_LOCKING_API_SELFTESTS) \
-    $(wildcard include/config/PREEMPT_COUNT) \
-  include/linux/smp.h \
-    $(wildcard include/config/UP_LATE_INIT) \
-  include/linux/cpumask.h \
-    $(wildcard include/config/CPUMASK_OFFSTACK) \
-    $(wildcard include/config/HOTPLUG_CPU) \
-    $(wildcard include/config/DEBUG_PER_CPU_MAPS) \
-  include/linux/bitmap.h \
-  include/linux/find.h \
-  include/linux/string.h \
-    $(wildcard include/config/BINARY_PRINTF) \
-    $(wildcard include/config/FORTIFY_SOURCE) \
-  include/uapi/linux/string.h \
-  arch/x86/include/asm/string.h \
-  arch/x86/include/asm/string_32.h \
-  include/linux/fortify-string.h \
-  include/linux/atomic.h \
-  arch/x86/include/asm/atomic.h \
-  arch/x86/include/asm/cmpxchg.h \
-  arch/x86/include/asm/cmpxchg_32.h \
-  arch/x86/include/asm/atomic64_32.h \
-  include/linux/atomic/atom
+	Known limitations:
+	Because of the way 3c509 ISA detection works it's difficult to predict
+	a priori which of several ISA-mode cards will be detected first.
+
+	This driver does not use predictive interrupt mode, resulting in higher
+	packet latency but lower overhead.  If interrupts are disabled for an
+	unusually long time it could also result in missed packets, but in
+	practice this rarely happens.
+
+
+	FIXES:
+		Alan Cox:       Removed the 'Unexpected interrupt' bug.
+		Michael Meskes:	Upgraded to Donald Becker's version 1.07.
+		Alan Cox:	Increased the eeprom delay. Regardless of
+				what the docs say some people definitely
+				get problems with lower (but in card spec)
+				delays
+		v1.10 4/21/97 Fixed module code so that multiple cards may be detected,
+				other cleanups.  -djb
+		Andrea Arcangeli:	Upgraded to Donald Becker's version 1.12.
+		Rick Payne:	Fixed SMP race condition
+		v1.13 9/8/97 Made 'max_interrupt_work' an insmod-settable variable -djb
+		v1.14 10/15/97 Avoided waiting..discard message for fast machines -djb
+		v1.15 1/31/98 Faster recovery for Tx errors. -djb
+		v1.16 2/3/98 Different ID port handling to avoid sound cards. -djb
+		v1.18 12Mar2001 Andrew Morton
+			- Avoid bogus detect of 3c590's (Andrzej Krzysztofowicz)
+			- Reviewed against 1.18 from scyld.com
+		v1.18a 17Nov2001 Jeff Garzik <jgarzik@pobox.com>
+			- ethtool support
+		v1.18b 1Mar2002 Zwane Mwaikambo <zwane@commfireservices.com>
+			- Power Management support
+		v1.18c 1Mar2002 David Ruggiero <jdr@farfalle.com>
+			- Full duplex support
+		v1.19  16Oct2002 Zwane Mwaikambo <zwane@linuxpower.ca>
+			- Additional ethtool features
+		v1.19a 28Oct2002 Davud Ruggiero <jdr@farfalle.com>
+			- Increase *read_eeprom udelay to workaround oops with 2 cards.
+		v1.19b 08Nov2002 Marc Zyngier <maz@wild-wind.fr.eu.org>
+			- Introduce driver model for EISA cards.
+		v1.20  04Feb2008 Ondrej Zary <linux@rainbow-software.org>
+			- convert to isa_driver and pnp_driver and some cleanups
+*/
+
+#define DRV_NAME	"3c509"
+
+/* A few values that may be tweaked. */
+
+/* Time in jiffies before concluding the transmitter is hung. */
+#define TX_TIMEOUT  (400*HZ/1000)
+
+#include <linux/module.h>
+#include <linux/isa.h>
+#include <linux/pnp.h>
+#include <linux/string.h>
+#include <linux/interrupt.h>
+#include <linux/errno.h>
+#include <linux/in.h>
+#include <linux/ioport.h>
+#include <linux/init.h>
+#include <linux/netdevice.h>
+#include <linux/etherdevice.h>
+#include <linux/pm.h>
+#include <linux/skbuff.h>
+#include <linux/delay.h>	/* for udelay() */
+#include <linux/spinlock.h>
+#include <linux/ethtool.h>
+#include <linux/device.h>
+#include <linux/eisa.h>
+#include <linux/bitops.h>
+
+#include <linux/uaccess.h>
+#include <asm/io.h>
+#include <asm/irq.h>
+
+#ifdef EL3_DEBUG
+static int el3_debug = EL3_DEBUG;
+#else
+static int el3_debug = 2;
+#endif
+
+/* Used to do a global count of all the cards in the system.  Must be
+ * a global variable so that the eisa probe routines can increment
+ * it */
+static int el3_cards = 0;
+#define EL3_MAX_CARDS 8
+
+/* To minimize the size of the driver source I only define operating
+   constants if they are used several times.  You'll need the manual
+   anyway if you want to understand driver details. */
+/* Offsets from base I/O address. */
+#define EL3_DATA 0x00
+#define EL3_CMD 0x0e
+#define EL3_STATUS 0x0e
+#define	EEPROM_READ 0x80
+
+#define EL3_IO_EXTENT	16
+
+#define EL3WINDOW(win_num) outw(SelectWindow + (win_num), ioaddr + EL3_CMD)
+
+
+/* The top five bits written to EL3_CMD are a command, the lower
+   11 bits are the parameter, if applicable. */
+enum c509cmd {
+	TotalReset = 0<<11, SelectWindow = 1<<11, StartCoax = 2<<11,
+	RxDisable = 3<<11, RxEnable = 4<<11, RxReset = 5<<11, RxDiscard = 8<<11,
+	TxEnable = 9<<11, TxDisable = 10<<11, TxReset = 11<<11,
+	FakeIntr = 12<<11, AckIntr = 13<<11, SetIntrEnb = 14<<11,
+	SetStatusEnb = 15<<11, SetRxFilter = 16<<11, SetRxThreshold = 17<<11,
+	SetTxThreshold = 18<<11, SetTxStart = 19<<11, StatsEnable = 21<<11,
+	StatsDisable = 22<<11, StopCoax = 23<<11, PowerUp = 27<<11,
+	PowerDown = 28<<11, PowerAuto = 29<<11};
+
+enum c509status {
+	IntLatch = 0x0001, AdapterFailure = 0x0002, TxComplete = 0x0004,
+	TxAvailable = 0x0008, RxComplete = 0x0010, RxEarly = 0x0020,
+	IntReq = 0x0040, StatsFull = 0x0080, CmdBusy = 0x1000, };
+
+/* The SetRxFilter command accepts the following classes: */
+enum RxFilter {
+	RxStation = 1, RxMulticast = 2, RxBroadcast = 4, RxProm = 8 };
+
+/* Register window 1 offsets, the window used in normal operation. */
+#define TX_FIFO		0x00
+#define RX_FIFO		0x00
+#define RX_STATUS 	0x08
+#define TX_STATUS 	0x0B
+#define TX_FREE		0x0C		/* Remaining free bytes in Tx buffer. */
+
+#define WN0_CONF_CTRL	0x04		/* Window 0: Configuration control register */
+#define WN0_ADDR_CONF	0x06		/* Window 0: Address configuration register */
+#define WN0_IRQ		0x08		/* Window 0: Set IRQ line in bits 12-15. */
+#define WN4_MEDIA	0x0A		/* Window 4: Various transcvr/media bits. */
+#define	MEDIA_TP	0x00C0		/* Enable link beat and jabber for 10baseT. */
+#define WN4_NETDIAG	0x06		/* Window 4: Net diagnostic */
+#define FD_ENABLE	0x8000		/* Enable full-duplex ("external loopback") */
+
+/*
+ * Must be a power of two (we use a binary and in the
+ * circular queue)
+ */
+#define SKB_QUEUE_SIZE	64
+
+enum el3_cardtype { EL3_ISA, EL3_PNP, EL3_EISA };
+
+struct el3_private {
+	spinlock_t lock;
+	/* skb send-queue */
+	int head, size;
+	struct sk_buff *queue[SKB_QUEUE_SIZE];
+	enum el3_cardtype type;
+};
+static int id_port;
+static int current_tag;
+static struct net_device *el3_devs[EL3_MAX_CARDS];
+
+/* Parameters that may be passed into the module. */
+static int debug = -1;
+static int irq[] = {-1, -1, -1, -1, -1, -1, -1, -1};
+/* Maximum events (Rx packets, etc.) to handle at each interrupt. */
+static int max_interrupt_work = 10;
+#ifdef CONFIG_PNP
+static int nopnp;
+#endif
+
+static int el3_common_init(struct net_device *dev);
+static void el3_common_remove(struct net_device *dev);
+static ushort id_read_eeprom(int index);
+static ushort read_eeprom(int ioaddr, int index);
+static int el3_open(struct net_device *dev);
+static netdev_tx_t el3_start_xmit(struct sk_buff *skb, struct net_device *dev);
+static irqreturn_t el3_interrupt(int irq, void *dev_id);
+static void update_stats(struct net_device *dev);
+static struct net_device_stats *el3_get_stats(struct net_device *dev);
+static int el3_rx(struct net_device *dev);
+static int el3_close(struct net_device *dev);
+static void set_multicast_list(struct net_device *dev);
+static void el3_tx_timeout (struct net_device *dev, unsigned int txqueue);
+static void el3_down(struct net_device *dev);
+static void el3_up(struct net_device *dev);
+static const struct ethtool_ops ethtool_ops;
+#ifdef CONFIG_PM
+static int el3_suspend(struct device *, pm_message_t);
+static int el3_resume(struct device *);
+#else
+#define el3_suspend NULL
+#define el3_resume NULL
+#endif
+
+
+/* generic device remove for all device types */
+static int el3_device_remove (struct device *device);
+#ifdef CONFIG_NET_POLL_CONTROLLER
+static void el3_poll_controller(struct net_device *dev);
+#endif
+
+/* Return 0 on success, 1 on error, 2 when found already detected PnP card */
+static int el3_isa_id_sequence(__be16 *phys_addr)
+{
+	short lrs_state = 0xff;
+	int i;
+
+	/* ISA boards are detected by sending the ID sequence to the
+	   ID_PORT.  We find cards past the first by setting the 'current_tag'
+	   on cards as they are found.  Cards with their tag set will not
+	   respond to subsequent ID sequences. */
+
+	outb(0x00, id_port);
+	outb(0x00, id_port);
+	for (i = 0; i < 255; i++) {
+		outb(lrs_state, id_port);
+		lrs_state <<= 1;
+		lrs_state = lrs_state & 0x100 ? lrs_state ^ 0xcf : lrs_state;
+	}
+	/* For the first probe, clear all board's tag registers. */
+	if (current_tag == 0)
+		outb(0xd0, id_port);
+	else			/* Otherwise kill off already-found boards. */
+		outb(0xd8, id_port);
+	if (id_read_eeprom(7) != 0x6d50)
+		return 1;
+	/* Read in EEPROM data, which does contention-select.
+	   Only the lowest address board will stay "on-line".
+	   3Com got the byte order backwards. */
+	for (i = 0; i < 3; i++)
+		phys_addr[i] = htons(id_read_eeprom(i));
+#ifdef CONFIG_PNP
+	if (!nopnp) {
+		/* The ISA PnP 3c509 cards respond to the ID sequence too.
+		   This check is needed in order not to register them twice. */
+		for (i = 0; i < el3_cards; i++) {
+			struct el3_private *lp = netdev_priv(el3_devs[i]);
+			if (lp->type == EL3_PNP &&
+			    ether_addr_equal((u8 *)phys_addr, el3_devs[i]->dev_addr)) {
+				if (el3_debug > 3)
+					pr_debug("3c509 with address %02x %02x %02x %02x %02x %02x was found by ISAPnP\n",
+						phys_addr[0] & 0xff, phys_addr[0] >> 8,
+						phys_addr[1] & 0xff, phys_addr[1] >> 8,
+						phys_addr[2] & 0xff, phys_addr[2] >> 8);
+				/* Set the adaptor tag so that the next card can be found. */
+				outb(0xd0 + ++current_tag, id_port);
+				return 2;
+			}
+		}
+	}
+#endif /* CONFIG_PNP */
+	return 0;
+
+}
+
+static void el3_dev_fill(struct net_device *dev, __be16 *phys_addr, int ioaddr,
+			 int irq, int if_port, enum el3_cardtype type)
+{
+	struct el3_private *lp = netdev_priv(dev);
+
+	eth_hw_addr_set(dev, (u8 *)phys_addr);
+	dev->base_addr = ioaddr;
+	dev->irq = irq;
+	dev->if_port = if_port;
+	lp->type = type;
+}
+
+static int el3_isa_match(struct device *pdev, unsigned int ndev)
+{
+	struct net_device *dev;
+	int ioaddr, isa_irq, if_port, err;
+	unsigned int iobase;
+	__be16 phys_addr[3];
+
+	while ((err = el3_isa_id_sequence(phys_addr)) == 2)
+		;	/* Skip to next card when PnP card found */
+	if (err == 1)
+		return 0;
+
+	iobase = id_read_eeprom(8);
+	if_port = iobase >> 14;
+	ioaddr = 0x200 + ((iobase & 0x1f) << 4);
+	if (irq[el3_cards] > 1 && irq[el3_cards] < 16)
+		isa_irq = irq[el3_cards];
+	else
+		isa_irq = id_read_eeprom(9) >> 12;
+
+	dev = alloc_etherdev(sizeof(struct el3_private));
+	if (!dev)
+		return -ENOMEM;
+
+	SET_NETDEV_DEV(dev, pdev);
+
+	if (!request_region(ioaddr, EL3_IO_EXTENT, "3c509-isa")) {
+		free_netdev(dev);
+		return 0;
+	}
+
+	/* Set the adaptor tag so that the next card can be found. */
+	outb(0xd0 + ++current_tag, id_port);
+
+	/* Activate the adaptor at the EEPROM location. */
+	outb((ioaddr >> 4) | 0xe0, id_port);
+
+	EL3WINDOW(0);
+	if (inw(ioaddr) != 0x6d50) {
+		free_netdev(dev);
+		return 0;
+	}
+
+	/* Free the interrupt so that some other card can use it. */
+	outw(0x0f00, ioaddr + WN0_IRQ);
+
+	el3_dev_fill(dev, phys_addr, ioaddr, isa_irq, if_port, EL3_ISA);
+	dev_set_drvdata(pdev, dev);
+	if (el3_common_init(dev)) {
+		free_netdev(dev);
+		return 0;
+	}
+
+	el3_devs[el3_cards++] = dev;
+	return 1;
+}
+
+static void el3_isa_remove(struct device *pdev,
+				    unsigned int ndev)
+{
+	el3_device_remove(pdev);
+	dev_set_drvdata(pdev, NULL);
+}
+
+#ifdef CONFIG_PM
+static int el3_isa_suspend(struct device *dev, unsigned int n,
+			   pm_message_t state)
+{
+	current_tag = 0;
+	return el3_suspend(dev, state);
+}
+
+static int el3_isa_resume(struct device *dev, unsigned int n)
+{
+	struct net_device *ndev = dev_get_drvdata(dev);
+	int ioaddr = ndev->base_addr, err;
+	__be16 phys_addr[3];
+
+	while ((err = el3_isa_id_sequence(phys_addr)) == 2)
+		;	/* Skip to next card when PnP card found */
+	if (err == 1)
+		return 0;
+	/* Set the adaptor tag so that the next card can be found. */
+	outb(0xd0 + ++current_tag, id_port);
+	/* Enable the card */
+	outb((ioaddr >> 4) | 0xe0, id_port);
+	EL3WINDOW(0);
+	if (inw(ioaddr) != 0x6d50)
+		return 1;
+	/* Free the interrupt so that some other card can use it. */
+	outw(0x0f00, ioaddr + WN0_IRQ);
+	return el3_resume(dev);
+}
+#endif
+
+static struct isa_driver el3_isa_driver = {
+	.match		= el3_isa_match,
+	.remove		= el3_isa_remove,
+#ifdef CONFIG_PM
+	.suspend	= el3_isa_suspend,
+	.resume		= el3_isa_resume,
+#endif
+	.driver		= {
+		.name	= "3c509"
+	},
+};
+static int isa_registered;
+
+#ifdef CONFIG_PNP
+static const struct pnp_device_id el3_pnp_ids[] = {
+	{ .id = "TCM5090" }, /* 3Com Etherlink III (TP) */
+	{ .id = "TCM5091" }, /* 3Com Etherlink III */
+	{ .id = "TCM5094" }, /* 3Com Etherlink III (combo) */
+	{ .id = "TCM5095" }, /* 3Com Etherlink III (TPO) */
+	{ .id = "TCM5098" }, /* 3Com Etherlink III (TPC) */
+	{ .id = "PNP80f7" }, /* 3Com Etherlink III compatible */
+	{ .id = "PNP80f8" }, /* 3Com Etherlink III compatible */
+	{ .id = "" }
+};
+MODULE_DEVICE_TABLE(pnp, el3_pnp_ids);
+
+static int el3_pnp_probe(struct pnp_dev *pdev, const struct pnp_device_id *id)
+{
+	short i;
+	int ioaddr, irq, if_port;
+	__be16 phys_addr[3];
+	struct net_device *dev = NULL;
+	int err;
+
+	ioaddr = pnp_port_start(pdev, 0);
+	if (!request_region(ioaddr, EL3_IO_EXTENT, "3c509-pnp"))
+		return -EBUSY;
+	irq = pnp_irq(pdev, 0);
+	EL3WINDOW(0);
+	for (i = 0; i < 3; i++)
+		phys_addr[i] = htons(read_eeprom(ioaddr, i));
+	if_port = read_eeprom(ioaddr, 8) >> 14;
+	dev = alloc_etherdev(sizeof(struct el3_private));
+	if (!dev) {
+		release_region(ioaddr, EL3_IO_EXTENT);
+		return -ENOMEM;
+	}
+	SET_NETDEV_DEV(dev, &pdev->dev);
+
+	el3_dev_fill(dev, phys_addr, ioaddr, irq, if_port, EL3_PNP);
+	pnp_set_drvdata(pdev, dev);
+	err = el3_common_init(dev);
+
+	if (err) {
+		pnp_set_drvdata(pdev, NULL);
+		free_netdev(dev);
+		return err;
+	}
+
+	el3_devs[el3_cards++] = dev;
+	return 0;
+}
+
+static void el3_pnp_remove(struct pnp_dev *pdev)
+{
+	el3_common_remove(pnp_get_drvdata(pdev));
+	pnp_set_drvdata(pdev, NULL);
+}
+
+#ifdef CONFIG_PM
+static int el3_pnp_suspend(struct pnp_dev *pdev, pm_message_t state)
+{
+	return el3_suspend(&pdev->dev, state);
+}
+
+static int el3_pnp_resume(struct pnp_dev *pdev)
+{
+	return el3_resume(&pdev->dev);
+}
+#endif
+
+static struct pnp_driver el3_pnp_driver = {
+	.name		= "3c509",
+	.id_table	= el3_pnp_ids,
+	.probe		= el3_pnp_probe,
+	.remove		= el3_pnp_remove,
+#ifdef CONFIG_PM
+	.suspend	= el3_pnp_suspend,
+	.resume		= el3_pnp_resume,
+#endif
+};
+static int pnp_registered;
+#endif /* CONFIG_PNP */
+
+#ifdef CONFIG_EISA
+static const struct eisa_device_id el3_eisa_ids[] = {
+		{ "TCM5090" },
+		{ "TCM5091" },
+		{ "TCM5092" },
+		{ "TCM5093" },
+		{ "TCM5094" },
+		{ "TCM5095" },
+		{ "TCM5098" },
+		{ "" }
+};
+MODULE_DEVICE_TABLE(eisa, el3_eisa_ids);
+
+static int el3_eisa_probe (struct device *device);
+
+static struct eisa_driver el3_eisa_driver = {
+		.id_table = el3_eisa_ids,
+		.driver   = {
+				.name    = "3c579",
+				.probe   = el3_eisa_probe,
+				.remove  = el3_device_remove,
+				.suspend = el3_suspend,
+				.resume  = el3_resume,
+		}
+};
+static int eisa_registered;
+#endif
+
+static const struct net_device_ops netdev_ops = {
+	.ndo_open 		= el3_open,
+	.ndo_stop	 	= el3_close,
+	.ndo_start_xmit 	= el3_start_xmit,
+	.ndo_get_stats 		= el3_get_stats,
+	.ndo_set_rx_mode	= set_multicast_list,
+	.ndo_tx_timeout 	= el3_tx_timeout,
+	.ndo_set_mac_address 	= eth_mac_addr,
+	.ndo_validate_addr	= eth_validate_addr,
+#ifdef CONFIG_NET_POLL_CONTROLLER
+	.ndo_poll_controller	= el3_poll_controller,
+#endif
+};
+
+static int el3_common_init(struct net_device *dev)
+{
+	struct el3_private *lp = netdev_priv(dev);
+	int err;
+	static const char * const if_names[] = {
+		"10baseT", "AUI", "undefined", "BNC"
+	};
+
+	spin_lock_init(&lp->lock);
+
+	if (dev->mem_start & 0x05) { /* xcvr codes 1/3/4/12 */
+		dev->if_port = (dev->mem_start & 0x0f);
+	} else { /* xcvr codes 0/8 */
+		/* use eeprom value, but save user's full-duplex selection */
+		dev->if_port |= (dev->mem_start & 0x08);
+	}
+
+	/* The EL3-specific entries in the device structure. */
+	dev->netdev_ops = &netdev_ops;
+	dev->watchdog_timeo = TX_TIMEOUT;
+	dev->ethtool_ops = &ethtool_ops;
+
+	err = register_netdev(dev);
+	if (err) {
+		pr_err("Failed to register 3c5x9 at %#3.3lx, IRQ %d.\n",
+			dev->base_addr, dev->irq);
+		release_region(dev->base_addr, EL3_IO_EXTENT);
+		return err;
+	}
+
+	pr_info("%s: 3c5x9 found at %#3.3lx, %s port, address %pM, IRQ %d.\n",
+	       dev->name, dev->base_addr, if_names[(dev->if_port & 0x03)],
+	       dev->dev_addr, dev->irq);
+
+	return 0;
+
+}
+
+static void el3_common_remove (struct net_device *dev)
+{
+	unregister_netdev (dev);
+	release_region(dev->base_addr, EL3_IO_EXTENT);
+	free_netdev (dev);
+}
+
+#ifdef CONFIG_EISA
+static int el3_eisa_probe(struct device *device)
+{
+	short i;
+	int ioaddr, irq, if_port;
+	__be16 phys_addr[3];
+	struct net_device *dev = NULL;
+	struct eisa_device *edev;
+	int err;
+
+	/* Yeepee, The driver framework is calling us ! */
+	edev = to_eisa_device (device);
+	ioaddr = edev->base_addr;
+
+	if (!request_region(ioaddr, EL3_IO_EXTENT, "3c579-eisa"))
+		return -EBUSY;
+
+	/* Change the register set to the configuration window 0. */
+	outw(SelectWindow | 0, ioaddr + 0xC80 + EL3_CMD);
+
+	irq = inw(ioaddr + WN0_IRQ) >> 12;
+	if_port = inw(ioaddr + 6)>>14;
+	for (i = 0; i < 3; i++)
+		phys_addr[i] = htons(read_eeprom(ioaddr, i));
+
+	/* Restore the "Product ID" to the EEPROM read register. */
+	read_eeprom(ioaddr, 3);
+
+	dev = alloc_etherdev(sizeof (struct el3_private));
+	if (dev == NULL) {
+		release_region(ioaddr, EL3_IO_EXTENT);
+		return -ENOMEM;
+	}
+
+	SET_NETDEV_DEV(dev, device);
+
+	el3_dev_fill(dev, phys_addr, ioaddr, irq, if_port, EL3_EISA);
+	eisa_set_drvdata (edev, dev);
+	err = el3_common_init(dev);
+
+	if (err) {
+		eisa_set_drvdata (edev, NULL);
+		free_netdev(dev);
+		return err;
+	}
+
+	el3_devs[el3_cards++] = dev;
+	return 0;
+}
+#endif
+
+/* This remove works for all device types.
+ *
+ * The net dev must be stored in the driver data field */
+static int el3_device_remove(struct device *device)
+{
+	struct net_device *dev;
+
+	dev = dev_get_drvdata(device);
+
+	el3_common_remove (dev);
+	return 0;
+}
+
+/* Read a word from the EEPROM using the regular EEPROM access register.
+   Assume that we are in register window zero.
+ */
+static ushort read_eeprom(int ioaddr, int index)
+{
+	outw(EEPROM_READ + index, ioaddr + 10);
+	/* Pause for at least 162 us. for the read to take place.
+	   Some chips seem to require much longer */
+	mdelay(2);
+	return inw(ioaddr + 12);
+}
+
+/* Read a word from the EEPROM when in the ISA ID probe state. */
+static ushort id_read_eeprom(int index)
+{
+	int bit, word = 0;
+
+	/* Issue read command, and pause for at least 162 us. for it to complete.
+	   Assume extra-fast 16Mhz bus. */
+	outb(EEPROM_READ + index, id_port);
+
+	/* Pause for at least 162 us. for the read to take place. */
+	/* Some chips seem to require much longer */
+	mdelay(4);
+
+	for (bit = 15; bit >= 0; bit--)
+		word = (word << 1) + (inb(id_port) & 0x01);
+
+	if (el3_debug > 3)
+		pr_debug("  3c509 EEPROM word %d %#4.4x.\n", index, word);
+
+	return word;
+}
+
+
+static int
+el3_open(struct net_device *dev)
+{
+	int ioaddr = dev->base_addr;
+	int i;
+
+	outw(TxReset, ioaddr + EL3_CMD);
+	outw(RxReset, ioaddr + EL3_CMD);
+	outw(SetStatusEnb | 0x00, ioaddr + EL3_CMD);
+
+	i = request_irq(dev->irq, el3_interrupt, 0, dev->name, dev);
+	if (i)
+		return i;
+
+	EL3WINDOW(0);
+	if (el3_debug > 3)
+		pr_debug("%s: Opening, IRQ %d	 status@%x %4.4x.\n", dev->name,
+			   dev->irq, ioaddr + EL3_STATUS, inw(ioaddr + EL3_STATUS));
+
+	el3_up(dev);
+
+	if (el3_debug > 3)
+		pr_debug("%s: Opened 3c509  IRQ %d  status %4.4x.\n",
+			   dev->name, dev->irq, inw(ioaddr + EL3_STATUS));
+
+	return 0;
+}
+
+static void
+el3_tx_timeout (struct net_device *dev, unsigned int txqueue)
+{
+	int ioaddr = dev->base_addr;
+
+	/* Transmitter timeout, serious problems. */
+	pr_warn("%s: transmit timed out, Tx_status %2.2x status %4.4x Tx FIFO room %d\n",
+		dev->name, inb(ioaddr + TX_STATUS), inw(ioaddr + EL3_STATUS),
+		inw(ioaddr + TX_FREE));
+	dev->stats.tx_errors++;
+	netif_trans_update(dev); /* prevent tx timeout */
+	/* Issue TX_RESET and TX_START commands. */
+	outw(TxReset, ioaddr + EL3_CMD);
+	outw(TxEnable, ioaddr + EL3_CMD);
+	netif_wake_queue(dev);
+}
+
+
+static netdev_tx_t
+el3_start_xmit(struct sk_buff *skb, struct net_device *dev)
+{
+	struct el3_private *lp = netdev_priv(dev);
+	int ioaddr = dev->base_addr;
+	unsigned long flags;
+
+	netif_stop_queue (dev);
+
+	dev->stats.tx_bytes += skb->len;
+
+	if (el3_debug > 4) {
+		pr_debug("%s: el3_start_xmit(length = %u) called, status %4.4x.\n",
+			   dev->name, skb->len, inw(ioaddr + EL3_STATUS));
+	}
+	/*
+	 *	We lock the driver against other processors. Note
+	 *	we don't need to lock versus the IRQ as we suspended
+	 *	that. This means that we lose the ability to take
+	 *	an RX during a TX upload. That sucks a bit with SMP
+	 *	on an original 3c509 (2K buffer)
+	 *
+	 *	Using disable_irq stops us crapping on other
+	 *	time sensitive devices.
+	 */
+
+	spin_lock_irqsave(&lp->lock, flags);
+
+	/* Put out the doubleword header... */
+	outw(skb->len, ioaddr + TX_FIFO);
+	outw(0x00, ioaddr + TX_FIFO);
+	/* ... and the packet rounded to a doubleword. */
+	outsl(ioaddr + TX_FIFO, skb->data, (skb->len + 3) >> 2);
+
+	if (inw(ioaddr + TX_FREE) > 1536)
+		netif_start_queue(dev);
+	else
+		/* Interrupt us when the FIFO has room for max-sized packet. */
+		outw(SetTxThreshold + 1536, ioaddr + EL3_CMD);
+
+	spin_unlock_irqrestore(&lp->lock, flags);
+
+	dev_consume_skb_any (skb);
+
+	/* Clear the Tx status stack. */
+	{
+		short tx_status;
+		int i = 4;
+
+		while (--i > 0	&&	(tx_status = inb(ioaddr + TX_STATUS)) > 0) {
+			if (tx_status & 0x38) dev->stats.tx_aborted_errors++;
+			if (tx_status & 0x30) outw(TxReset, ioaddr + EL3_CMD);
+			if (tx_status & 0x3C) outw(TxEnable, ioaddr + EL3_CMD);
+			outb(0x00, ioaddr + TX_STATUS); /* Pop the status stack. */
+		}
+	}
+	return NETDEV_TX_OK;
+}
+
+/* The EL3 interrupt handler. */
+static irqreturn_t
+el3_interrupt(int irq, void *dev_id)
+{
+	struct net_device *dev = dev_id;
+	struct el3_private *lp;
+	int ioaddr, status;
+	int i = max_interrupt_work;
+
+	lp = netdev_priv(dev);
+	spin_lock(&lp->lock);
+
+	ioaddr = dev->base_addr;
+
+	if (el3_debug > 4) {
+		status = inw(ioaddr + EL3_STATUS);
+		pr_debug("%s: interrupt, status %4.4x.\n", dev->name, status);
+	}
+
+	while ((status = inw(ioaddr + EL3_STATUS)) &
+		   (IntLatch | RxComplete | StatsFull)) {
+
+		if (status & RxComplete)
+			el3_rx(dev);
+
+		if (status & TxAvailable) {
+			if (el3_debug > 5)
+				pr_debug("	TX room bit was handled.\n");
+			/* There's room in the FIFO for a full-sized packet. */
+			outw(AckIntr | TxAvailable, ioaddr + EL3_CMD);
+			netif_wake_queue (dev);
+		}
+		if (status & (AdapterFailure | RxEarly | StatsFull | TxComplete)) {
+			/* Handle all uncommon interrupts. */
+			if (status & StatsFull)				/* Empty statistics. */
+				update_stats(dev);
+			if (status & RxEarly) {				/* Rx early is unused. */
+				el3_rx(dev);
+				outw(AckIntr | RxEarly, ioaddr + EL3_CMD);
+			}
+			if (status & TxComplete) {			/* Really Tx error. */
+				short tx_status;
+				int i = 4;
+
+				while (--i>0 && (tx_status = inb(ioaddr + TX_STATUS)) > 0) {
+					if (tx_status & 0x38) dev->stats.tx_aborted_errors++;
+					if (tx_status & 0x30) outw(TxReset, ioaddr + EL3_CMD);
+					if (tx_status & 0x3C) outw(TxEnable, ioaddr + EL3_CMD);
+					outb(0x00, ioaddr + TX_STATUS); /* Pop the status stack. */
+				}
+			}
+			if (status & AdapterFailure) {
+				/* Adapter failure requires Rx reset and reinit. */
+				outw(RxReset, ioaddr + EL3_CMD);
+				/* Set the Rx filter to the current state. */
+				outw(SetRxFilter | RxStation | RxBroadcast
+					 | (dev->flags & IFF_ALLMULTI ? RxMulticast : 0)
+					 | (dev->flags & IFF_PROMISC ? RxProm : 0),
+					 ioaddr + EL3_CMD);
+				outw(RxEnable, ioaddr + EL3_CMD); /* Re-enable the receiver. */
+				outw(AckIntr | AdapterFailure, ioaddr + EL3_CMD);
+			}
+		}
+
+		if (--i < 0) {
+			pr_err("%s: Infinite loop in interrupt, status %4.4x.\n",
+				   dev->name, status);
+			/* Clear all interrupts. */
+			outw(AckIntr | 0xFF, ioaddr + EL3_CMD);
+			break;
+		}
+		/* Acknowledge the IRQ. */
+		outw(AckIntr | IntReq | IntLatch, ioaddr + EL3_CMD); /* Ack IRQ */
+	}
+
+	if (el3_debug > 4) {
+		pr_debug("%s: exiting interrupt, status %4.4x.\n", dev->name,
+			   inw(ioaddr + EL3_STATUS));
+	}
+	spin_unlock(&lp->lock);
+	return IRQ_HANDLED;
+}
+
+
+#ifdef CONFIG_NET_POLL_CONTROLLER
+/*
+ * Polling receive - used by netconsole and other diagnostic tools
+ * to allow network i/o with interrupts disabled.
+ */
+static void el3_poll_controller(struct net_device *dev)
+{
+	disable_irq(dev->irq);
+	el3_interrupt(dev->irq, dev);
+	enable_irq(dev->irq);
+}
+#endif
+
+static struct net_device_stats *
+el3_get_stats(struct net_device *dev)
+{
+	struct el3_private *lp = netdev_priv(dev);
+	unsigned long flags;
+
+	/*
+	 *	This is fast enough not to bother with disable IRQ
+	 *	stuff.
+	 */
+
+	spin_lock_irqsave(&lp->lock, flags);
+	update_stats(dev);
+	spin_unlock_irqrestore(&lp->lock, flags);
+	return &dev->stats;
+}
+
+/*  Update statistics.  We change to register window 6, so this should be run
+	single-threaded if the device is active. This is expected to be a rare
+	operation, and it's simpler for the rest of the driver to assume that
+	window 1 is always valid rather than use a special window-state variable.
+	*/
+static void update_stats(struct net_device *dev)
+{
+	int ioaddr = dev->base_addr;
+
+	if (el3_debug > 5)
+		pr_debug("   Updating the statistics.\n");
+	/* Turn off statistics updates while reading. */
+	outw(StatsDisable, ioaddr + EL3_CMD);
+	/* Switch to the stats window, and read everything. */
+	EL3WINDOW(6);
+	dev->stats.tx_carrier_errors 	+= inb(ioaddr + 0);
+	dev->stats.tx_heartbeat_errors	+= inb(ioaddr + 1);
+	/* Multiple collisions. */	   inb(ioaddr + 2);
+	dev->stats.collisions		+= inb(ioaddr + 3);
+	dev->stats.tx_window_errors	+= inb(ioaddr + 4);
+	dev->stats.rx_fifo_errors	+= inb(ioaddr + 5);
+	dev->stats.tx_packets		+= inb(ioaddr + 6);
+	/* Rx packets	*/		   inb(ioaddr + 7);
+	/* Tx deferrals */		   inb(ioaddr + 8);
+	inw(ioaddr + 10);	/* Total Rx and Tx octets. */
+	inw(ioaddr + 12);
+
+	/* Back to window 1, and turn statistics back on. */
+	EL3WINDOW(1);
+	outw(StatsEnable, ioaddr + EL3_CMD);
+}
+
+static int
+el3_rx(struct net_device *dev)
+{
+	int ioaddr = dev->base_addr;
+	short rx_status;
+
+	if (el3_debug > 5)
+		pr_debug("   In rx_packet(), status %4.4x, rx_status %4.4x.\n",
+			   inw(ioaddr+EL3_STATUS), inw(ioaddr+RX_STATUS));
+	while ((rx_status = inw(ioaddr + RX_STATUS)) > 0) {
+		if (rx_status & 0x4000) { /* Error, update stats. */
+			short error = rx_status & 0x3800;
+
+			outw(RxDiscard, ioaddr + EL3_CMD);
+			dev->stats.rx_errors++;
+			switch (error) {
+			case 0x0000:		dev->stats.rx_over_errors++; break;
+			case 0x0800:		dev->stats.rx_length_errors++; break;
+			case 0x1000:		dev->stats.rx_frame_errors++; break;
+			case 0x1800:		dev->stats.rx_length_errors++; break;
+			case 0x2000:		dev->stats.rx_frame_errors++; break;
+			case 0x2800:		dev->stats.rx_crc_errors++; break;
+			}
+		} else {
+			short pkt_len = rx_status & 0x7ff;
+			struct sk_buff *skb;
+
+			skb = netdev_alloc_skb(dev, pkt_len + 5);
+			if (el3_debug > 4)
+				pr_debug("Receiving packet size %d status %4.4x.\n",
+					   pkt_len, rx_status);
+			if (skb != NULL) {
+				skb_reserve(skb, 2);     /* Align IP on 16 byte */
+
+				/* 'skb->data' points to the start of sk_buff data area. */
+				insl(ioaddr + RX_FIFO, skb_put(skb,pkt_len),
+					 (pkt_len + 3) >> 2);
+
+				outw(RxDiscard, ioaddr + EL3_CMD); /* Pop top Rx packet. */
+				skb->protocol = eth_type_trans(skb,dev);
+				netif_rx(skb);
+				dev->stats.rx_bytes += pkt_len;
+				dev->stats.rx_packets++;
+				continue;
+			}
+			outw(RxDiscard, ioaddr + EL3_CMD);
+			dev->stats.rx_dropped++;
+			if (el3_debug)
+				pr_debug("%s: Couldn't allocate a sk_buff of size %d.\n",
+					   dev->name, pkt_len);
+		}
+		inw(ioaddr + EL3_STATUS); 				/* Delay. */
+		while (inw(ioaddr + EL3_STATUS) & 0x1000)
+			pr_debug("	Waiting for 3c509 to discard packet, status %x.\n",
+				   inw(ioaddr + EL3_STATUS) );
+	}
+
+	return 0;
+}
+
+/*
+ *     Set or clear the multicast filter for this adaptor.
+ */
+static void
+set_multicast_list(struct net_device *dev)
+{
+	unsigned long flags;
+	struct el3_private *lp = netdev_priv(dev);
+	int ioaddr = dev->base_addr;
+	int mc_count = netdev_mc_count(dev);
+
+	if (el3_debug > 1) {
+		static int old;
+		if (old != mc_count) {
+			old = mc_count;
+			pr_debug("%s: Setting Rx mode to %d addresses.\n",
+				 dev->name, mc_count);
+		}
+	}
+	spin_lock_irqsave(&lp->lock, flags);
+	if (dev->flags&IFF_PROMISC) {
+		outw(SetRxFilter | RxStation | RxMulticast | RxBroadcast | RxProm,
+			 ioaddr + EL3_CMD);
+	}
+	else if (mc_count || (dev->flags&IFF_ALLMULTI)) {
+		outw(SetRxFilter | RxStation | RxMulticast | RxBroadcast, ioaddr + EL3_CMD);
+	}
+	else
+		outw(SetRxFilter | RxStation | RxBroadcast, ioaddr + EL3_CMD);
+	spin_unlock_irqrestore(&lp->lock, flags);
+}
+
+static int
+el3_close(struct net_device *dev)
+{
+	int ioaddr = dev->base_addr;
+	struct el3_private *lp = netdev_priv(dev);
+
+	if (el3_debug > 2)
+		pr_debug("%s: Shutting down ethercard.\n", dev->name);
+
+	el3_down(dev);
+
+	free_irq(dev->irq, dev);
+	/* Switching back to window 0 disables the IRQ. */
+	EL3WINDOW(0);
+	if (lp->type != EL3_EISA) {
+		/* But we explicitly zero the IRQ line select anyway. Don't do
+		 * it on EISA cards, it prevents the module from getting an
+		 * IRQ after unload+reload... */
+		outw(0x0f00, ioaddr + WN0_IRQ);
+	}
+
+	return 0;
+}
+
+static int
+el3_link_ok(struct net_device *dev)
+{
+	int ioaddr = dev->base_addr;
+	u16 tmp;
+
+	EL3WINDOW(4);
+	tmp = inw(ioaddr + WN4_MEDIA);
+	EL3WINDOW(1);
+	return tmp & (1<<11);
+}
+
+static void
+el3_netdev_get_ecmd(struct net_device *dev, struct ethtool_link_ksettings *cmd)
+{
+	u16 tmp;
+	int ioaddr = dev->base_addr;
+	u32 supported;
+
+	EL3WINDOW(0);
+	/* obtain current transceiver via WN4_MEDIA? */
+	tmp = inw(ioaddr + WN0_ADDR_CONF);
+	switch (tmp >> 14) {
+	case 0:
+		cmd->base.port = PORT_TP;
+		break;
+	case 1:
+		cmd->base.port = PORT_AUI;
+		break;
+	case 3:
+		cmd->base.port = PORT_BNC;
+		break;
+	default:
+		break;
+	}
+
+	cmd->base.duplex = DUPLEX_HALF;
+	supported = 0;
+	tmp = inw(ioaddr + WN0_CONF_CTRL);
+	if (tmp & (1<<13))
+		supported |= SUPPORTED_AUI;
+	if (tmp & (1<<12))
+		supported |= SUPPORTED_BNC;
+	if (tmp & (1<<9)) {
+		supported |= SUPPORTED_TP | SUPPORTED_10baseT_Half |
+				SUPPORTED_10baseT_Full;	/* hmm... */
+		EL3WINDOW(4);
+		tmp = inw(ioaddr + WN4_NETDIAG);
+		if (tmp & FD_ENABLE)
+			cmd->base.duplex = DUPLEX_FULL;
+	}
+
+	ethtool_convert_legacy_u32_to_link_mode(cmd->link_modes.supported,
+						supported);
+	cmd->base.speed = SPEED_10;
+	EL3WINDOW(1);
+}
+
+static int
+el3_netdev_set_ecmd(struct net_device *dev,
+		    const struct ethtool_link_ksettings *cmd)
+{
+	u16 tmp;
+	int ioaddr = dev->base_addr;
+
+	if (cmd->base.speed != SPEED_10)
+		return -EINVAL;
+	if ((cmd->base.duplex != DUPLEX_HALF) &&
+	    (cmd->base.duplex != DUPLEX_FULL))
+		return -EINVAL;
+
+	/* change XCVR type */
+	EL3WINDOW(0);
+	tmp = inw(ioaddr + WN0_ADDR_CONF);
+	switch (cmd->base.port) {
+	case PORT_TP:
+		tmp &= ~(3<<14);
+		dev->if_port = 0;
+		break;
+	case PORT_AUI:
+		tmp |= (1<<14);
+		dev->if_port = 1;
+		break;
+	case PORT_BNC:
+		tmp |= (3<<14);
+		dev->if_port = 3;
+		break;
+	default:
+		return -EINVAL;
+	}
+
+	outw(tmp, ioaddr + WN0_ADDR_CONF);
+	if (dev->if_port == 3) {
+		/* fire up the DC-DC convertor if BNC gets enabled */
+		tmp = inw(ioaddr + WN0_ADDR_CONF);
+		if (tmp & (3 << 14)) {
+			outw(StartCoax, ioaddr + EL3_CMD);
+			udelay(800);
+		} else
+			return -EIO;
+	}
+
+	EL3WINDOW(4);
+	tmp = inw(ioaddr + WN4_NETDIAG);
+	if (cmd->base.duplex == DUPLEX_FULL)
+		tmp |= FD_ENABLE;
+	else
+		tmp &= ~FD_ENABLE;
+	outw(tmp, ioaddr + WN4_NETDIAG);
+	EL3WINDOW(1);
+
+	return 0;
+}
+
+static void el3_get_drvinfo(struct net_device *dev, struct ethtool_drvinfo *info)
+{
+	strlcpy(info->driver, DRV_NAME, sizeof(info->driver));
+}
+
+static int el3_get_link_ksettings(struct net_device *dev,
+				  struct ethtool_link_ksettings *cmd)
+{
+	struct el3_private *lp = netdev_priv(dev);
+
+	spin_lock_irq(&lp->lock);
+	el3_netdev_get_ecmd(dev, cmd);
+	spin_unlock_irq(&lp->lock);
+	return 0;
+}
+
+static int el3_set_link_ksettings(struct net_device *dev,
+				  const struct ethtool_link_ksettings *cmd)
+{
+	struct el3_private *lp = netdev_priv(dev);
+	int ret;
+
+	spin_lock_irq(&lp->lock);
+	ret = el3_netdev_set_ecmd(dev, cmd);
+	spin_unlock_irq(&lp->lock);
+	return ret;
+}
+
+static u32 el3_get_link(struct net_device *dev)
+{
+	struct el3_private *lp = netdev_priv(dev);
+	u32 ret;
+
+	spin_lock_irq(&lp->lock);
+	ret = el3_link_ok(dev);
+	spin_unlock_irq(&lp->lock);
+	return ret;
+}
+
+static u32 el3_get_msglevel(struct net_device *dev)
+{
+	return el3_debug;
+}
+
+static void el3_set_msglevel(struct net_device *dev, u32 v)
+{
+	el3_debug = v;
+}
+
+static const struct ethtool_ops ethtool_ops = {
+	.get_drvinfo = el3_get_drvinfo,
+	.get_link = el3_get_link,
+	.get_msglevel = el3_get_msglevel,
+	.set_msglevel = el3_set_msglevel,
+	.get_link_ksettings = el3_get_link_ksettings,
+	.set_link_ksettings = el3_set_link_ksettings,
+};
+
+static void
+el3_down(struct net_device *dev)
+{
+	int ioaddr = dev->base_addr;
+
+	netif_stop_queue(dev);
+
+	/* Turn off statistics ASAP.  We update lp->stats below. */
+	outw(StatsDisable, ioaddr + EL3_CMD);
+
+	/* Disable the receiver and transmitter. */
+	outw(RxDisable, ioaddr + EL3_CMD);
+	outw(TxDisable, ioaddr + EL3_CMD);
+
+	if (dev->if_port == 3)
+		/* Turn off thinnet power.  Green! */
+		outw(StopCoax, ioaddr + EL3_CMD);
+	else if (dev->if_port == 0) {
+		/* Disable link beat and jabber, if_port may change here next open(). */
+		EL3WINDOW(4);
+		outw(inw(ioaddr + WN4_MEDIA) & ~MEDIA_TP, ioaddr + WN4_MEDIA);
+	}
+
+	outw(SetIntrEnb | 0x0000, ioaddr + EL3_CMD);
+
+	update_stats(dev);
+}
+
+static void
+el3_up(struct net_device *dev)
+{
+	int i, sw_info, net_diag;
+	int ioaddr = dev->base_addr;
+
+	/* Activating the board required and does no harm otherwise */
+	outw(0x0001, ioaddr + 4);
+
+	/* Set the IRQ line. */
+	outw((dev->irq << 12) | 0x0f00, ioaddr + WN0_IRQ);
+
+	/* Set the station address in window 2 each time opened. */
+	EL3WINDOW(2);
+
+	for (i = 0; i < 6; i++)
+		outb(dev->dev_addr[i], ioaddr + i);
+
+	if ((dev->if_port & 0x03) == 3) /* BNC interface */
+		/* Start the thinnet transceiver. We should really wait 50ms...*/
+		outw(StartCoax, ioaddr + EL3_CMD);
+	else if ((dev->if_port & 0x03) == 0) { /* 10baseT interface */
+		/* Combine secondary sw_info word (the adapter level) and primary
+			sw_info word (duplex setting plus other useless bits) */
+		EL3WINDOW(0);
+		sw_info = (read_eeprom(ioaddr, 0x14) & 0x400f) |
+			(read_eeprom(ioaddr, 0x0d) & 0xBff0);
+
+		EL3WINDOW(4);
+		net_diag = inw(ioaddr + WN4_NETDIAG);
+		net_diag = (net_diag | FD_ENABLE); /* temporarily assume full-duplex will be set */
+		pr_info("%s: ", dev->name);
+		switch (dev->if_port & 0x0c) {
+			case 12:
+				/* force full-duplex mode if 3c5x9b */
+				if (sw_info & 0x000f) {
+					pr_cont("Forcing 3c5x9b full-duplex mode");
+					break;
+				}
+				fallthrough;
+			case 8:
+				/* set full-duplex mode based on eeprom config setting */
+				if ((sw_info & 0x000f) && (sw_info & 0x8000)) {
+					pr_cont("Setting 3c5x9b full-duplex mode (from EEPROM configuration bit)");
+					break;
+				}
+				fallthrough;
+			default:
+				/* xcvr=(0 || 4) OR user has an old 3c5x9 non "B" model */
+				pr_cont("Setting 3c5x9/3c5x9B half-duplex mode");
+				net_diag = (net_diag & ~FD_ENABLE); /* disable full duplex */
+		}
+
+		outw(net_diag, ioaddr + WN4_NETDIAG);
+		pr_cont(" if_port: %d, sw_info: %4.4x\n", dev->if_port, sw_info);
+		if (el3_debug > 3)
+			pr_debug("%s: 3c5x9 net diag word is now: %4.4x.\n", dev->name, net_diag);
+		/* Enable link beat and jabber check. */
+		outw(inw(ioaddr + WN4_MEDIA) | MEDIA_TP, ioaddr + WN4_MEDIA);
+	}
+
+	/* Switch to the stats window, and clear all stats by reading. */
+	outw(StatsDisable, ioaddr + EL3_CMD);
+	EL3WINDOW(6);
+	for (i = 0; i < 9; i++)
+		inb(ioaddr + i);
+	inw(ioaddr + 10);
+	inw(ioaddr + 12);
+
+	/* Switch to register set 1 for normal use. */
+	EL3WINDOW(1);
+
+	/* Accept b-case and phys addr only. */
+	outw(SetRxFilter | RxStation | RxBroadcast, ioaddr + EL3_CMD);
+	outw(StatsEnable, ioaddr + EL3_CMD); /* Turn on statistics. */
+
+	outw(RxEnable, ioaddr + EL3_CMD); /* Enable the receiver. */
+	outw(TxEnable, ioaddr + EL3_CMD); /* Enable transmitter. */
+	/* Allow status bits to be seen. */
+	outw(SetStatusEnb | 0xff, ioaddr + EL3_CMD);
+	/* Ack all pending events, and set active indicator mask. */
+	outw(AckIntr | IntLatch | TxAvailable | RxEarly | IntReq,
+		 ioaddr + EL3_CMD);
+	outw(SetIntrEnb | IntLatch|TxAvailable|TxComplete|RxComplete|StatsFull,
+		 ioaddr + EL3_CMD);
+
+	netif_start_queue(dev);
+}
+
+/* Power Management support functions */
+#ifdef CONFIG_PM
+
+static int
+el3_suspend(struct device *pdev, pm_message_t state)
+{
+	unsigned long flags;
+	struct net_device *dev;
+	struct el3_private *lp;
+	int ioaddr;
+
+	dev = dev_get_drvdata(pdev);
+	lp = netdev_priv(dev);
+	ioaddr = dev->base_addr;
+
+	spin_lock_irqsave(&lp->lock, flags);
+
+	if (netif_running(dev))
+		netif_device_detach(dev);
+
+	el3_down(dev);
+	outw(PowerDown, ioaddr + EL3_CMD);
+
+	spin_unlock_irqrestore(&lp->lock, flags);
+	return 0;
+}
+
+static int
+el3_resume(struct device *pdev)
+{
+	unsigned long flags;
+	struct net_device *dev;
+	struct el3_private *lp;
+	int ioaddr;
+
+	dev = dev_get_drvdata(pdev);
+	lp = netdev_priv(dev);
+	ioaddr = dev->base_addr;
+
+	spin_lock_irqsave(&lp->lock, flags);
+
+	outw(PowerUp, ioaddr + EL3_CMD);
+	EL3WINDOW(0);
+	el3_up(dev);
+
+	if (netif_running(dev))
+		netif_device_attach(dev);
+
+	spin_unlock_irqrestore(&lp->lock, flags);
+	return 0;
+}
+
+#endif /* CONFIG_PM */
+
+module_param(debug,int, 0);
+module_param_hw_array(irq, int, irq, NULL, 0);
+module_param(max_interrupt_work, int, 0);
+MODULE_PARM_DESC(debug, "debug level (0-6)");
+MODULE_PARM_DESC(irq, "IRQ number(s) (assigned)");
+MODULE_PARM_DESC(max_interrupt_work, "maximum events handled per interrupt");
+#ifdef CONFIG_PNP
+module_param(nopnp, int, 0);
+MODULE_PARM_DESC(nopnp, "disable ISA PnP support (0-1)");
+#endif	/* CONFIG_PNP */
+MODULE_DESCRIPTION("3Com Etherlink III (3c509, 3c509B, 3c529, 3c579) ethernet driver");
+MODULE_LICENSE("GPL");
+
+static int __init el3_init_module(void)
+{
+	int ret = 0;
+
+	if (debug >= 0)
+		el3_debug = debug;
+
+#ifdef CONFIG_PNP
+	if (!nopnp) {
+		ret = pnp_register_driver(&el3_pnp_driver);
+		if (!ret)
+			pnp_registered = 1;
+	}
+#endif
+	/* Select an open I/O location at 0x1*0 to do ISA contention select. */
+	/* Start with 0x110 to avoid some sound cards.*/
+	for (id_port = 0x110 ; id_port < 0x200; id_port += 0x10) {
+		if (!request_region(id_port, 1, "3c509-control"))
+			continue;
+		outb(0x00, id_port);
+		outb(0xff, id_port);
+		if (inb(id_port) & 0x01)
+			break;
+		else
+			release_region(id_port, 1);
+	}
+	if (id_port >= 0x200) {
+		id_port = 0;
+		pr_err("No I/O port available for 3c509 activation.\n");
+	} else {
+		ret = isa_register_driver(&el3_isa_driver, EL3_MAX_CARDS);
+		if (!ret)
+			isa_registered = 1;
+	}
+#ifdef CONFIG_EISA
+	ret = eisa_driver_register(&el3_eisa_driver);
+	if (!ret)
+		eisa_registered = 1;
+#endif
+
+#ifdef CONFIG_PNP
+	if (pnp_registered)
+		ret = 0;
+#endif
+	if (isa_registered)
+		ret = 0;
+#ifdef CONFIG_EISA
+	if (eisa_registered)
+		ret = 0;
+#endif
+	return ret;
+}
+
+static void __exit el3_cleanup_module(void)
+{
+#ifdef CONFIG_PNP
+	if (pnp_registered)
+		pnp_unregister_driver(&el3_pnp_driver);
+#endif
+	if (isa_registered)
+		isa_unregister_driver(&el3_isa_driver);
+	if (id_port)
+		release_region(id_port, 1);
+#ifdef CONFIG_EISA
+	if (eisa_registered)
+		eisa_driver_unregister(&el3_eisa_driver);
+#endif
+}
+
+module_init (el3_init_module);
+module_exit (el3_cleanup_module);

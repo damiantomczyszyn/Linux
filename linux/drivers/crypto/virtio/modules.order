@@ -1,1 +1,2 @@
-cmd_drivers/media/i2c/tw9903.o := gcc -
+pauge WinTV-HVR1275",
+		.portc		= CX238

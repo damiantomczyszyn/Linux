@@ -1,1 +1,8 @@
-cmd_drivers/media/rc/keymaps/rc-flydvb.mod := { echo  drivers/media/rc/keymaps/rc-flydvb.o;  echo; } > drivers/media/rc/keymaps/rc-flydvb.mod
+.prepare = snd_cx23885_prepare,
+	.trigger = snd_cx23885_card_trigger,
+	.pointer = snd_cx23885_pointer,
+	.page = snd_cx23885_page,
+};
+
+/*
+ * cr

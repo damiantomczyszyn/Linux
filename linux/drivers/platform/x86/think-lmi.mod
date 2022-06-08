@@ -1,2 +1,2 @@
-lude/linux/percpu-refcount.h \
-  i
+] = {
+		.name		= "Hauppauge WinTV-

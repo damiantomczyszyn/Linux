@@ -1,5 +1,1 @@
-.h \
-  include/linux/percpu-refcount.h \
-  include/linux/kasan.h \
-    $(wildcard include/config/KASAN_STACK) \
-    $(
+cmd_drivers/net/arcnet/rfc1201.mod := { echo  drivers/net/arcnet/rfc1201.o;  echo; } > drivers/net/arcnet/rfc1201.mod

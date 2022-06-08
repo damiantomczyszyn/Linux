@@ -1,2 +1,3 @@
-drivers/media/rc/keymaps/rc-imon-pad.o
-
+00d00);
+		/* enable irq */
+		cx_write(GP

@@ -1,3 +1,2 @@
-idate the following rules:
- *
- *  - 
+ask after ensuring that the
+ * stopp

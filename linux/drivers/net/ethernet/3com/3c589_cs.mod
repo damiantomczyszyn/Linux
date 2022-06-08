@@ -1,2 +1,2 @@
-media/v4l2-dev.h \
-  include/linux/pol
+drivers/net/ethernet/3com/3c589_cs.o
+

@@ -1,13 +1,11 @@
-k.hardirqs_off = true;
-			hlock.references = 0;
+// SPDX-License-Identifier: GPL-2.0-or-later
+/*
+ *  Driver for the Conexant CX23885 PCIe bridge
+ *
+ *  Copyright (c) 2007 Steven Toth <stoth@linuxtv.org>
+ */
 
-			verify_lock_unused(lock, &hlock, subclass);
-		}
-		return;
-	}
+#include "cx23885.h"
+#include "cx23885-video.h"
 
-	raw_local_irq_save(flags);
-	check_flags(flags);
-
-	lockdep_recursion_inc();
-	__lock_acquire(lock, 
+#inc

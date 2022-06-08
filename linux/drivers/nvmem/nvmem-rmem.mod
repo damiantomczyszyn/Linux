@@ -1,2 +1,1 @@
-i/linux/edd.h \
-  arch
+filt->nr = hw_filt_nr 

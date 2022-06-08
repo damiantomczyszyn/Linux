@@ -1,2 +1,3 @@
-drivers/media/rc/keymaps/rc-kaiomy.o
-
+,
+			.amux   = CX25840_AUDIO8,
+		} },

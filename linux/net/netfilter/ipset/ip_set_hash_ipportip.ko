@@ -1,516 +1,849 @@
-// SPDX-License-Identifier: GPL-2.0
-/*
- * kernel/lockdep_proc.c
- *
- * Runtime locking correctness validator
- *
- * Started by Ingo Molnar:
- *
- *  Copyright (C) 2006,2007 Red Hat, Inc., Ingo Molnar <mingo@redhat.com>
- *  Copyright (C) 2007 Red Hat, Inc., Peter Zijlstra
- *
- * Code for /proc/lockdep and /proc/lockdep_stats:
- *
- */
-#include <linux/export.h>
-#include <linux/proc_fs.h>
-#include <linux/seq_file.h>
-#include <linux/kallsyms.h>
-#include <linux/debug_locks.h>
-#include <linux/vmalloc.h>
-#include <linux/sort.h>
-#include <linux/uaccess.h>
-#include <asm/div64.h>
+_irqsave(&task_group_lock, flags);
+	list_add_rcu(&tg->list, &task_groups);
 
-#include "lockdep_internals.h"
+	/* Root should already exist: */
+	WARN_ON(!parent);
 
-/*
- * Since iteration of lock_classes is done without holding the lockdep lock,
- * it is not safe to iterate all_lock_classes list directly as the iteration
- * may branch off to free_lock_classes or the zapped list. Iteration is done
- * directly on the lock_classes array by checking the lock_classes_in_use
- * bitmap and max_lock_class_idx.
- */
-#define iterate_lock_classes(idx, class)				\
-	for (idx = 0, class = lock_classes; idx <= max_lock_class_idx;	\
-	     idx++, class++)
+	tg->parent = parent;
+	INIT_LIST_HEAD(&tg->children);
+	list_add_rcu(&tg->siblings, &parent->children);
+	spin_unlock_irqrestore(&task_group_lock, flags);
 
-static void *l_next(struct seq_file *m, void *v, loff_t *pos)
-{
-	struct lock_class *class = v;
-
-	++class;
-	*pos = class - lock_classes;
-	return (*pos > max_lock_class_idx) ? NULL : class;
+	online_fair_sched_group(tg);
 }
 
-static void *l_start(struct seq_file *m, loff_t *pos)
+/* rcu callback to free various structures associated with a task group */
+static void sched_unregister_group_rcu(struct rcu_head *rhp)
 {
-	unsigned long idx = *pos;
-
-	if (idx > max_lock_class_idx)
-		return NULL;
-	return lock_classes + idx;
+	/* Now it should be safe to free those cfs_rqs: */
+	sched_unregister_group(container_of(rhp, struct task_group, rcu));
 }
 
-static void l_stop(struct seq_file *m, void *v)
+void sched_destroy_group(struct task_group *tg)
 {
+	/* Wait for possible concurrent references to cfs_rqs complete: */
+	call_rcu(&tg->rcu, sched_unregister_group_rcu);
 }
 
-static void print_name(struct seq_file *m, struct lock_class *class)
+void sched_release_group(struct task_group *tg)
 {
-	char str[KSYM_NAME_LEN];
-	const char *name = class->name;
+	unsigned long flags;
 
-	if (!name) {
-		name = __get_key_name(class->key, str);
-		seq_printf(m, "%s", name);
-	} else{
-		seq_printf(m, "%s", name);
-		if (class->name_version > 1)
-			seq_printf(m, "#%d", class->name_version);
-		if (class->subclass)
-			seq_printf(m, "/%d", class->subclass);
-	}
+	/*
+	 * Unlink first, to avoid walk_tg_tree_from() from finding us (via
+	 * sched_cfs_period_timer()).
+	 *
+	 * For this to be effective, we have to wait for all pending users of
+	 * this task group to leave their RCU critical section to ensure no new
+	 * user will see our dying task group any more. Specifically ensure
+	 * that tg_unthrottle_up() won't add decayed cfs_rq's to it.
+	 *
+	 * We therefore defer calling unregister_fair_sched_group() to
+	 * sched_unregister_group() which is guarantied to get called only after the
+	 * current RCU grace period has expired.
+	 */
+	spin_lock_irqsave(&task_group_lock, flags);
+	list_del_rcu(&tg->list);
+	list_del_rcu(&tg->siblings);
+	spin_unlock_irqrestore(&task_group_lock, flags);
 }
 
-static int l_show(struct seq_file *m, void *v)
+static void sched_change_group(struct task_struct *tsk, int type)
 {
-	struct lock_class *class = v;
-	struct lock_list *entry;
-	char usage[LOCK_USAGE_CHARS];
-	int idx = class - lock_classes;
+	struct task_group *tg;
 
-	if (v == lock_classes)
-		seq_printf(m, "all lock classes:\n");
+	/*
+	 * All callers are synchronized by task_rq_lock(); we do not use RCU
+	 * which is pointless here. Thus, we pass "true" to task_css_check()
+	 * to prevent lockdep warnings.
+	 */
+	tg = container_of(task_css_check(tsk, cpu_cgrp_id, true),
+			  struct task_group, css);
+	tg = autogroup_task_group(tsk, tg);
+	tsk->sched_task_group = tg;
 
-	if (!test_bit(idx, lock_classes_in_use))
-		return 0;
-
-	seq_printf(m, "%p", class->key);
-#ifdef CONFIG_DEBUG_LOCKDEP
-	seq_printf(m, " OPS:%8ld", debug_class_ops_read(class));
+#ifdef CONFIG_FAIR_GROUP_SCHED
+	if (tsk->sched_class->task_change_group)
+		tsk->sched_class->task_change_group(tsk, type);
+	else
 #endif
-	if (IS_ENABLED(CONFIG_PROVE_LOCKING)) {
-		seq_printf(m, " FD:%5ld", lockdep_count_forward_deps(class));
-		seq_printf(m, " BD:%5ld", lockdep_count_backward_deps(class));
+		set_task_rq(tsk, task_cpu(tsk));
+}
 
-		get_usage_chars(class, usage);
-		seq_printf(m, " %s", usage);
+/*
+ * Change task's runqueue when it moves between groups.
+ *
+ * The caller of this function should have put the task in its new group by
+ * now. This function just updates tsk->se.cfs_rq and tsk->se.parent to reflect
+ * its new group.
+ */
+void sched_move_task(struct task_struct *tsk)
+{
+	int queued, running, queue_flags =
+		DEQUEUE_SAVE | DEQUEUE_MOVE | DEQUEUE_NOCLOCK;
+	struct rq_flags rf;
+	struct rq *rq;
+
+	rq = task_rq_lock(tsk, &rf);
+	update_rq_clock(rq);
+
+	running = task_current(rq, tsk);
+	queued = task_on_rq_queued(tsk);
+
+	if (queued)
+		dequeue_task(rq, tsk, queue_flags);
+	if (running)
+		put_prev_task(rq, tsk);
+
+	sched_change_group(tsk, TASK_MOVE_GROUP);
+
+	if (queued)
+		enqueue_task(rq, tsk, queue_flags);
+	if (running) {
+		set_next_task(rq, tsk);
+		/*
+		 * After changing group, the running task may have joined a
+		 * throttled one but it's still the running task. Trigger a
+		 * resched to make sure that task can still run.
+		 */
+		resched_curr(rq);
 	}
 
-	seq_printf(m, ": ");
-	print_name(m, class);
-	seq_puts(m, "\n");
+	task_rq_unlock(rq, tsk, &rf);
+}
 
-	if (IS_ENABLED(CONFIG_PROVE_LOCKING)) {
-		list_for_each_entry(entry, &class->locks_after, entry) {
-			if (entry->distance == 1) {
-				seq_printf(m, " -> [%p] ", entry->class->key);
-				print_name(m, entry->class);
-				seq_puts(m, "\n");
+static inline struct task_group *css_tg(struct cgroup_subsys_state *css)
+{
+	return css ? container_of(css, struct task_group, css) : NULL;
+}
+
+static struct cgroup_subsys_state *
+cpu_cgroup_css_alloc(struct cgroup_subsys_state *parent_css)
+{
+	struct task_group *parent = css_tg(parent_css);
+	struct task_group *tg;
+
+	if (!parent) {
+		/* This is early initialization for the top cgroup */
+		return &root_task_group.css;
+	}
+
+	tg = sched_create_group(parent);
+	if (IS_ERR(tg))
+		return ERR_PTR(-ENOMEM);
+
+	return &tg->css;
+}
+
+/* Expose task group only after completing cgroup initialization */
+static int cpu_cgroup_css_online(struct cgroup_subsys_state *css)
+{
+	struct task_group *tg = css_tg(css);
+	struct task_group *parent = css_tg(css->parent);
+
+	if (parent)
+		sched_online_group(tg, parent);
+
+#ifdef CONFIG_UCLAMP_TASK_GROUP
+	/* Propagate the effective uclamp value for the new group */
+	mutex_lock(&uclamp_mutex);
+	rcu_read_lock();
+	cpu_util_update_eff(css);
+	rcu_read_unlock();
+	mutex_unlock(&uclamp_mutex);
+#endif
+
+	return 0;
+}
+
+static void cpu_cgroup_css_released(struct cgroup_subsys_state *css)
+{
+	struct task_group *tg = css_tg(css);
+
+	sched_release_group(tg);
+}
+
+static void cpu_cgroup_css_free(struct cgroup_subsys_state *css)
+{
+	struct task_group *tg = css_tg(css);
+
+	/*
+	 * Relies on the RCU grace period between css_released() and this.
+	 */
+	sched_unregister_group(tg);
+}
+
+/*
+ * This is called before wake_up_new_task(), therefore we really only
+ * have to set its group bits, all the other stuff does not apply.
+ */
+static void cpu_cgroup_fork(struct task_struct *task)
+{
+	struct rq_flags rf;
+	struct rq *rq;
+
+	rq = task_rq_lock(task, &rf);
+
+	update_rq_clock(rq);
+	sched_change_group(task, TASK_SET_GROUP);
+
+	task_rq_unlock(rq, task, &rf);
+}
+
+static int cpu_cgroup_can_attach(struct cgroup_taskset *tset)
+{
+	struct task_struct *task;
+	struct cgroup_subsys_state *css;
+	int ret = 0;
+
+	cgroup_taskset_for_each(task, css, tset) {
+#ifdef CONFIG_RT_GROUP_SCHED
+		if (!sched_rt_can_attach(css_tg(css), task))
+			return -EINVAL;
+#endif
+		/*
+		 * Serialize against wake_up_new_task() such that if it's
+		 * running, we're sure to observe its full state.
+		 */
+		raw_spin_lock_irq(&task->pi_lock);
+		/*
+		 * Avoid calling sched_move_task() before wake_up_new_task()
+		 * has happened. This would lead to problems with PELT, due to
+		 * move wanting to detach+attach while we're not attached yet.
+		 */
+		if (READ_ONCE(task->__state) == TASK_NEW)
+			ret = -EINVAL;
+		raw_spin_unlock_irq(&task->pi_lock);
+
+		if (ret)
+			break;
+	}
+	return ret;
+}
+
+static void cpu_cgroup_attach(struct cgroup_taskset *tset)
+{
+	struct task_struct *task;
+	struct cgroup_subsys_state *css;
+
+	cgroup_taskset_for_each(task, css, tset)
+		sched_move_task(task);
+}
+
+#ifdef CONFIG_UCLAMP_TASK_GROUP
+static void cpu_util_update_eff(struct cgroup_subsys_state *css)
+{
+	struct cgroup_subsys_state *top_css = css;
+	struct uclamp_se *uc_parent = NULL;
+	struct uclamp_se *uc_se = NULL;
+	unsigned int eff[UCLAMP_CNT];
+	enum uclamp_id clamp_id;
+	unsigned int clamps;
+
+	lockdep_assert_held(&uclamp_mutex);
+	SCHED_WARN_ON(!rcu_read_lock_held());
+
+	css_for_each_descendant_pre(css, top_css) {
+		uc_parent = css_tg(css)->parent
+			? css_tg(css)->parent->uclamp : NULL;
+
+		for_each_clamp_id(clamp_id) {
+			/* Assume effective clamps matches requested clamps */
+			eff[clamp_id] = css_tg(css)->uclamp_req[clamp_id].value;
+			/* Cap effective clamps with parent's effective clamps */
+			if (uc_parent &&
+			    eff[clamp_id] > uc_parent[clamp_id].value) {
+				eff[clamp_id] = uc_parent[clamp_id].value;
 			}
 		}
-		seq_puts(m, "\n");
-	}
+		/* Ensure protection is always capped by limit */
+		eff[UCLAMP_MIN] = min(eff[UCLAMP_MIN], eff[UCLAMP_MAX]);
 
-	return 0;
+		/* Propagate most restrictive effective clamps */
+		clamps = 0x0;
+		uc_se = css_tg(css)->uclamp;
+		for_each_clamp_id(clamp_id) {
+			if (eff[clamp_id] == uc_se[clamp_id].value)
+				continue;
+			uc_se[clamp_id].value = eff[clamp_id];
+			uc_se[clamp_id].bucket_id = uclamp_bucket_id(eff[clamp_id]);
+			clamps |= (0x1 << clamp_id);
+		}
+		if (!clamps) {
+			css = css_rightmost_descendant(css);
+			continue;
+		}
+
+		/* Immediately update descendants RUNNABLE tasks */
+		uclamp_update_active_tasks(css);
+	}
 }
 
-static const struct seq_operations lockdep_ops = {
-	.start	= l_start,
-	.next	= l_next,
-	.stop	= l_stop,
-	.show	= l_show,
+/*
+ * Integer 10^N with a given N exponent by casting to integer the literal "1eN"
+ * C expression. Since there is no way to convert a macro argument (N) into a
+ * character constant, use two levels of macros.
+ */
+#define _POW10(exp) ((unsigned int)1e##exp)
+#define POW10(exp) _POW10(exp)
+
+struct uclamp_request {
+#define UCLAMP_PERCENT_SHIFT	2
+#define UCLAMP_PERCENT_SCALE	(100 * POW10(UCLAMP_PERCENT_SHIFT))
+	s64 percent;
+	u64 util;
+	int ret;
 };
 
-#ifdef CONFIG_PROVE_LOCKING
-static void *lc_start(struct seq_file *m, loff_t *pos)
+static inline struct uclamp_request
+capacity_from_percent(char *buf)
 {
-	if (*pos < 0)
-		return NULL;
-
-	if (*pos == 0)
-		return SEQ_START_TOKEN;
-
-	return lock_chains + (*pos - 1);
-}
-
-static void *lc_next(struct seq_file *m, void *v, loff_t *pos)
-{
-	*pos = lockdep_next_lockchain(*pos - 1) + 1;
-	return lc_start(m, pos);
-}
-
-static void lc_stop(struct seq_file *m, void *v)
-{
-}
-
-static int lc_show(struct seq_file *m, void *v)
-{
-	struct lock_chain *chain = v;
-	struct lock_class *class;
-	int i;
-	static const char * const irq_strs[] = {
-		[0]			     = "0",
-		[LOCK_CHAIN_HARDIRQ_CONTEXT] = "hardirq",
-		[LOCK_CHAIN_SOFTIRQ_CONTEXT] = "softirq",
-		[LOCK_CHAIN_SOFTIRQ_CONTEXT|
-		 LOCK_CHAIN_HARDIRQ_CONTEXT] = "hardirq|softirq",
+	struct uclamp_request req = {
+		.percent = UCLAMP_PERCENT_SCALE,
+		.util = SCHED_CAPACITY_SCALE,
+		.ret = 0,
 	};
 
-	if (v == SEQ_START_TOKEN) {
-		if (!nr_free_chain_hlocks)
-			seq_printf(m, "(buggered) ");
-		seq_printf(m, "all lock chains:\n");
-		return 0;
+	buf = strim(buf);
+	if (strcmp(buf, "max")) {
+		req.ret = cgroup_parse_float(buf, UCLAMP_PERCENT_SHIFT,
+					     &req.percent);
+		if (req.ret)
+			return req;
+		if ((u64)req.percent > UCLAMP_PERCENT_SCALE) {
+			req.ret = -ERANGE;
+			return req;
+		}
+
+		req.util = req.percent << SCHED_CAPACITY_SHIFT;
+		req.util = DIV_ROUND_CLOSEST_ULL(req.util, UCLAMP_PERCENT_SCALE);
 	}
 
-	seq_printf(m, "irq_context: %s\n", irq_strs[chain->irq_context]);
+	return req;
+}
 
-	for (i = 0; i < chain->depth; i++) {
-		class = lock_chain_get_class(chain, i);
-		if (!class->key)
-			continue;
+static ssize_t cpu_uclamp_write(struct kernfs_open_file *of, char *buf,
+				size_t nbytes, loff_t off,
+				enum uclamp_id clamp_id)
+{
+	struct uclamp_request req;
+	struct task_group *tg;
 
-		seq_printf(m, "[%p] ", class->key);
-		print_name(m, class);
-		seq_puts(m, "\n");
+	req = capacity_from_percent(buf);
+	if (req.ret)
+		return req.ret;
+
+	static_branch_enable(&sched_uclamp_used);
+
+	mutex_lock(&uclamp_mutex);
+	rcu_read_lock();
+
+	tg = css_tg(of_css(of));
+	if (tg->uclamp_req[clamp_id].value != req.util)
+		uclamp_se_set(&tg->uclamp_req[clamp_id], req.util, false);
+
+	/*
+	 * Because of not recoverable conversion rounding we keep track of the
+	 * exact requested value
+	 */
+	tg->uclamp_pct[clamp_id] = req.percent;
+
+	/* Update effective clamps to track the most restrictive value */
+	cpu_util_update_eff(of_css(of));
+
+	rcu_read_unlock();
+	mutex_unlock(&uclamp_mutex);
+
+	return nbytes;
+}
+
+static ssize_t cpu_uclamp_min_write(struct kernfs_open_file *of,
+				    char *buf, size_t nbytes,
+				    loff_t off)
+{
+	return cpu_uclamp_write(of, buf, nbytes, off, UCLAMP_MIN);
+}
+
+static ssize_t cpu_uclamp_max_write(struct kernfs_open_file *of,
+				    char *buf, size_t nbytes,
+				    loff_t off)
+{
+	return cpu_uclamp_write(of, buf, nbytes, off, UCLAMP_MAX);
+}
+
+static inline void cpu_uclamp_print(struct seq_file *sf,
+				    enum uclamp_id clamp_id)
+{
+	struct task_group *tg;
+	u64 util_clamp;
+	u64 percent;
+	u32 rem;
+
+	rcu_read_lock();
+	tg = css_tg(seq_css(sf));
+	util_clamp = tg->uclamp_req[clamp_id].value;
+	rcu_read_unlock();
+
+	if (util_clamp == SCHED_CAPACITY_SCALE) {
+		seq_puts(sf, "max\n");
+		return;
 	}
-	seq_puts(m, "\n");
+
+	percent = tg->uclamp_pct[clamp_id];
+	percent = div_u64_rem(percent, POW10(UCLAMP_PERCENT_SHIFT), &rem);
+	seq_printf(sf, "%llu.%0*u\n", percent, UCLAMP_PERCENT_SHIFT, rem);
+}
+
+static int cpu_uclamp_min_show(struct seq_file *sf, void *v)
+{
+	cpu_uclamp_print(sf, UCLAMP_MIN);
+	return 0;
+}
+
+static int cpu_uclamp_max_show(struct seq_file *sf, void *v)
+{
+	cpu_uclamp_print(sf, UCLAMP_MAX);
+	return 0;
+}
+#endif /* CONFIG_UCLAMP_TASK_GROUP */
+
+#ifdef CONFIG_FAIR_GROUP_SCHED
+static int cpu_shares_write_u64(struct cgroup_subsys_state *css,
+				struct cftype *cftype, u64 shareval)
+{
+	if (shareval > scale_load_down(ULONG_MAX))
+		shareval = MAX_SHARES;
+	return sched_group_set_shares(css_tg(css), scale_load(shareval));
+}
+
+static u64 cpu_shares_read_u64(struct cgroup_subsys_state *css,
+			       struct cftype *cft)
+{
+	struct task_group *tg = css_tg(css);
+
+	return (u64) scale_load_down(tg->shares);
+}
+
+#ifdef CONFIG_CFS_BANDWIDTH
+static DEFINE_MUTEX(cfs_constraints_mutex);
+
+const u64 max_cfs_quota_period = 1 * NSEC_PER_SEC; /* 1s */
+static const u64 min_cfs_quota_period = 1 * NSEC_PER_MSEC; /* 1ms */
+/* More than 203 days if BW_SHIFT equals 20. */
+static const u64 max_cfs_runtime = MAX_BW * NSEC_PER_USEC;
+
+static int __cfs_schedulable(struct task_group *tg, u64 period, u64 runtime);
+
+static int tg_set_cfs_bandwidth(struct task_group *tg, u64 period, u64 quota,
+				u64 burst)
+{
+	int i, ret = 0, runtime_enabled, runtime_was_enabled;
+	struct cfs_bandwidth *cfs_b = &tg->cfs_bandwidth;
+
+	if (tg == &root_task_group)
+		return -EINVAL;
+
+	/*
+	 * Ensure we have at some amount of bandwidth every period.  This is
+	 * to prevent reaching a state of large arrears when throttled via
+	 * entity_tick() resulting in prolonged exit starvation.
+	 */
+	if (quota < min_cfs_quota_period || period < min_cfs_quota_period)
+		return -EINVAL;
+
+	/*
+	 * Likewise, bound things on the other side by preventing insane quota
+	 * periods.  This also allows us to normalize in computing quota
+	 * feasibility.
+	 */
+	if (period > max_cfs_quota_period)
+		return -EINVAL;
+
+	/*
+	 * Bound quota to defend quota against overflow during bandwidth shift.
+	 */
+	if (quota != RUNTIME_INF && quota > max_cfs_runtime)
+		return -EINVAL;
+
+	if (quota != RUNTIME_INF && (burst > quota ||
+				     burst + quota > max_cfs_runtime))
+		return -EINVAL;
+
+	/*
+	 * Prevent race between setting of cfs_rq->runtime_enabled and
+	 * unthrottle_offline_cfs_rqs().
+	 */
+	cpus_read_lock();
+	mutex_lock(&cfs_constraints_mutex);
+	ret = __cfs_schedulable(tg, period, quota);
+	if (ret)
+		goto out_unlock;
+
+	runtime_enabled = quota != RUNTIME_INF;
+	runtime_was_enabled = cfs_b->quota != RUNTIME_INF;
+	/*
+	 * If we need to toggle cfs_bandwidth_used, off->on must occur
+	 * before making related changes, and on->off must occur afterwards
+	 */
+	if (runtime_enabled && !runtime_was_enabled)
+		cfs_bandwidth_usage_inc();
+	raw_spin_lock_irq(&cfs_b->lock);
+	cfs_b->period = ns_to_ktime(period);
+	cfs_b->quota = quota;
+	cfs_b->burst = burst;
+
+	__refill_cfs_bandwidth_runtime(cfs_b);
+
+	/* Restart the period timer (if active) to handle new period expiry: */
+	if (runtime_enabled)
+		start_cfs_bandwidth(cfs_b);
+
+	raw_spin_unlock_irq(&cfs_b->lock);
+
+	for_each_online_cpu(i) {
+		struct cfs_rq *cfs_rq = tg->cfs_rq[i];
+		struct rq *rq = cfs_rq->rq;
+		struct rq_flags rf;
+
+		rq_lock_irq(rq, &rf);
+		cfs_rq->runtime_enabled = runtime_enabled;
+		cfs_rq->runtime_remaining = 0;
+
+		if (cfs_rq->throttled)
+			unthrottle_cfs_rq(cfs_rq);
+		rq_unlock_irq(rq, &rf);
+	}
+	if (runtime_was_enabled && !runtime_enabled)
+		cfs_bandwidth_usage_dec();
+out_unlock:
+	mutex_unlock(&cfs_constraints_mutex);
+	cpus_read_unlock();
+
+	return ret;
+}
+
+static int tg_set_cfs_quota(struct task_group *tg, long cfs_quota_us)
+{
+	u64 quota, period, burst;
+
+	period = ktime_to_ns(tg->cfs_bandwidth.period);
+	burst = tg->cfs_bandwidth.burst;
+	if (cfs_quota_us < 0)
+		quota = RUNTIME_INF;
+	else if ((u64)cfs_quota_us <= U64_MAX / NSEC_PER_USEC)
+		quota = (u64)cfs_quota_us * NSEC_PER_USEC;
+	else
+		return -EINVAL;
+
+	return tg_set_cfs_bandwidth(tg, period, quota, burst);
+}
+
+static long tg_get_cfs_quota(struct task_group *tg)
+{
+	u64 quota_us;
+
+	if (tg->cfs_bandwidth.quota == RUNTIME_INF)
+		return -1;
+
+	quota_us = tg->cfs_bandwidth.quota;
+	do_div(quota_us, NSEC_PER_USEC);
+
+	return quota_us;
+}
+
+static int tg_set_cfs_period(struct task_group *tg, long cfs_period_us)
+{
+	u64 quota, period, burst;
+
+	if ((u64)cfs_period_us > U64_MAX / NSEC_PER_USEC)
+		return -EINVAL;
+
+	period = (u64)cfs_period_us * NSEC_PER_USEC;
+	quota = tg->cfs_bandwidth.quota;
+	burst = tg->cfs_bandwidth.burst;
+
+	return tg_set_cfs_bandwidth(tg, period, quota, burst);
+}
+
+static long tg_get_cfs_period(struct task_group *tg)
+{
+	u64 cfs_period_us;
+
+	cfs_period_us = ktime_to_ns(tg->cfs_bandwidth.period);
+	do_div(cfs_period_us, NSEC_PER_USEC);
+
+	return cfs_period_us;
+}
+
+static int tg_set_cfs_burst(struct task_group *tg, long cfs_burst_us)
+{
+	u64 quota, period, burst;
+
+	if ((u64)cfs_burst_us > U64_MAX / NSEC_PER_USEC)
+		return -EINVAL;
+
+	burst = (u64)cfs_burst_us * NSEC_PER_USEC;
+	period = ktime_to_ns(tg->cfs_bandwidth.period);
+	quota = tg->cfs_bandwidth.quota;
+
+	return tg_set_cfs_bandwidth(tg, period, quota, burst);
+}
+
+static long tg_get_cfs_burst(struct task_group *tg)
+{
+	u64 burst_us;
+
+	burst_us = tg->cfs_bandwidth.burst;
+	do_div(burst_us, NSEC_PER_USEC);
+
+	return burst_us;
+}
+
+static s64 cpu_cfs_quota_read_s64(struct cgroup_subsys_state *css,
+				  struct cftype *cft)
+{
+	return tg_get_cfs_quota(css_tg(css));
+}
+
+static int cpu_cfs_quota_write_s64(struct cgroup_subsys_state *css,
+				   struct cftype *cftype, s64 cfs_quota_us)
+{
+	return tg_set_cfs_quota(css_tg(css), cfs_quota_us);
+}
+
+static u64 cpu_cfs_period_read_u64(struct cgroup_subsys_state *css,
+				   struct cftype *cft)
+{
+	return tg_get_cfs_period(css_tg(css));
+}
+
+static int cpu_cfs_period_write_u64(struct cgroup_subsys_state *css,
+				    struct cftype *cftype, u64 cfs_period_us)
+{
+	return tg_set_cfs_period(css_tg(css), cfs_period_us);
+}
+
+static u64 cpu_cfs_burst_read_u64(struct cgroup_subsys_state *css,
+				  struct cftype *cft)
+{
+	return tg_get_cfs_burst(css_tg(css));
+}
+
+static int cpu_cfs_burst_write_u64(struct cgroup_subsys_state *css,
+				   struct cftype *cftype, u64 cfs_burst_us)
+{
+	return tg_set_cfs_burst(css_tg(css), cfs_burst_us);
+}
+
+struct cfs_schedulable_data {
+	struct task_group *tg;
+	u64 period, quota;
+};
+
+/*
+ * normalize group quota/period to be quota/max_period
+ * note: units are usecs
+ */
+static u64 normalize_cfs_quota(struct task_group *tg,
+			       struct cfs_schedulable_data *d)
+{
+	u64 quota, period;
+
+	if (tg == d->tg) {
+		period = d->period;
+		quota = d->quota;
+	} else {
+		period = tg_get_cfs_period(tg);
+		quota = tg_get_cfs_quota(tg);
+	}
+
+	/* note: these should typically be equivalent */
+	if (quota == RUNTIME_INF || quota == -1)
+		return RUNTIME_INF;
+
+	return to_ratio(period, quota);
+}
+
+static int tg_cfs_schedulable_down(struct task_group *tg, void *data)
+{
+	struct cfs_schedulable_data *d = data;
+	struct cfs_bandwidth *cfs_b = &tg->cfs_bandwidth;
+	s64 quota = 0, parent_quota = -1;
+
+	if (!tg->parent) {
+		quota = RUNTIME_INF;
+	} else {
+		struct cfs_bandwidth *parent_b = &tg->parent->cfs_bandwidth;
+
+		quota = normalize_cfs_quota(tg, d);
+		parent_quota = parent_b->hierarchical_quota;
+
+		/*
+		 * Ensure max(child_quota) <= parent_quota.  On cgroup2,
+		 * always take the min.  On cgroup1, only inherit when no
+		 * limit is set:
+		 */
+		if (cgroup_subsys_on_dfl(cpu_cgrp_subsys)) {
+			quota = min(quota, parent_quota);
+		} else {
+			if (quota == RUNTIME_INF)
+				quota = parent_quota;
+			else if (parent_quota != RUNTIME_INF && quota > parent_quota)
+				return -EINVAL;
+		}
+	}
+	cfs_b->hierarchical_quota = quota;
 
 	return 0;
 }
 
-static const struct seq_operations lockdep_chains_ops = {
-	.start	= lc_start,
-	.next	= lc_next,
-	.stop	= lc_stop,
-	.show	= lc_show,
-};
-#endif /* CONFIG_PROVE_LOCKING */
-
-static void lockdep_stats_debug_show(struct seq_file *m)
+static int __cfs_schedulable(struct task_group *tg, u64 period, u64 quota)
 {
-#ifdef CONFIG_DEBUG_LOCKDEP
-	unsigned long long hi1 = debug_atomic_read(hardirqs_on_events),
-			   hi2 = debug_atomic_read(hardirqs_off_events),
-			   hr1 = debug_atomic_read(redundant_hardirqs_on),
-			   hr2 = debug_atomic_read(redundant_hardirqs_off),
-			   si1 = debug_atomic_read(softirqs_on_events),
-			   si2 = debug_atomic_read(softirqs_off_events),
-			   sr1 = debug_atomic_read(redundant_softirqs_on),
-			   sr2 = debug_atomic_read(redundant_softirqs_off);
+	int ret;
+	struct cfs_schedulable_data data = {
+		.tg = tg,
+		.period = period,
+		.quota = quota,
+	};
 
-	seq_printf(m, " chain lookup misses:           %11llu\n",
-		debug_atomic_read(chain_lookup_misses));
-	seq_printf(m, " chain lookup hits:             %11llu\n",
-		debug_atomic_read(chain_lookup_hits));
-	seq_printf(m, " cyclic checks:                 %11llu\n",
-		debug_atomic_read(nr_cyclic_checks));
-	seq_printf(m, " redundant checks:              %11llu\n",
-		debug_atomic_read(nr_redundant_checks));
-	seq_printf(m, " redundant links:               %11llu\n",
-		debug_atomic_read(nr_redundant));
-	seq_printf(m, " find-mask forwards checks:     %11llu\n",
-		debug_atomic_read(nr_find_usage_forwards_checks));
-	seq_printf(m, " find-mask backwards checks:    %11llu\n",
-		debug_atomic_read(nr_find_usage_backwards_checks));
-
-	seq_printf(m, " hardirq on events:             %11llu\n", hi1);
-	seq_printf(m, " hardirq off events:            %11llu\n", hi2);
-	seq_printf(m, " redundant hardirq ons:         %11llu\n", hr1);
-	seq_printf(m, " redundant hardirq offs:        %11llu\n", hr2);
-	seq_printf(m, " softirq on events:             %11llu\n", si1);
-	seq_printf(m, " softirq off events:            %11llu\n", si2);
-	seq_printf(m, " redundant softirq ons:         %11llu\n", sr1);
-	seq_printf(m, " redundant softirq offs:        %11llu\n", sr2);
-#endif
-}
-
-static int lockdep_stats_show(struct seq_file *m, void *v)
-{
-	unsigned long nr_unused = 0, nr_uncategorized = 0,
-		      nr_irq_safe = 0, nr_irq_unsafe = 0,
-		      nr_softirq_safe = 0, nr_softirq_unsafe = 0,
-		      nr_hardirq_safe = 0, nr_hardirq_unsafe = 0,
-		      nr_irq_read_safe = 0, nr_irq_read_unsafe = 0,
-		      nr_softirq_read_safe = 0, nr_softirq_read_unsafe = 0,
-		      nr_hardirq_read_safe = 0, nr_hardirq_read_unsafe = 0,
-		      sum_forward_deps = 0;
-
-#ifdef CONFIG_PROVE_LOCKING
-	struct lock_class *class;
-	unsigned long idx;
-
-	iterate_lock_classes(idx, class) {
-		if (!test_bit(idx, lock_classes_in_use))
-			continue;
-
-		if (class->usage_mask == 0)
-			nr_unused++;
-		if (class->usage_mask == LOCKF_USED)
-			nr_uncategorized++;
-		if (class->usage_mask & LOCKF_USED_IN_IRQ)
-			nr_irq_safe++;
-		if (class->usage_mask & LOCKF_ENABLED_IRQ)
-			nr_irq_unsafe++;
-		if (class->usage_mask & LOCKF_USED_IN_SOFTIRQ)
-			nr_softirq_safe++;
-		if (class->usage_mask & LOCKF_ENABLED_SOFTIRQ)
-			nr_softirq_unsafe++;
-		if (class->usage_mask & LOCKF_USED_IN_HARDIRQ)
-			nr_hardirq_safe++;
-		if (class->usage_mask & LOCKF_ENABLED_HARDIRQ)
-			nr_hardirq_unsafe++;
-		if (class->usage_mask & LOCKF_USED_IN_IRQ_READ)
-			nr_irq_read_safe++;
-		if (class->usage_mask & LOCKF_ENABLED_IRQ_READ)
-			nr_irq_read_unsafe++;
-		if (class->usage_mask & LOCKF_USED_IN_SOFTIRQ_READ)
-			nr_softirq_read_safe++;
-		if (class->usage_mask & LOCKF_ENABLED_SOFTIRQ_READ)
-			nr_softirq_read_unsafe++;
-		if (class->usage_mask & LOCKF_USED_IN_HARDIRQ_READ)
-			nr_hardirq_read_safe++;
-		if (class->usage_mask & LOCKF_ENABLED_HARDIRQ_READ)
-			nr_hardirq_read_unsafe++;
-
-		sum_forward_deps += lockdep_count_forward_deps(class);
+	if (quota != RUNTIME_INF) {
+		do_div(data.period, NSEC_PER_USEC);
+		do_div(data.quota, NSEC_PER_USEC);
 	}
 
-#ifdef CONFIG_DEBUG_LOCKDEP
-	DEBUG_LOCKS_WARN_ON(debug_atomic_read(nr_unused_locks) != nr_unused);
+	rcu_read_lock();
+	ret = walk_tg_tree(tg_cfs_schedulable_down, tg_nop, &data);
+	rcu_read_unlock();
+
+	return ret;
+}
+
+static int cpu_cfs_stat_show(struct seq_file *sf, void *v)
+{
+	struct task_group *tg = css_tg(seq_css(sf));
+	struct cfs_bandwidth *cfs_b = &tg->cfs_bandwidth;
+
+	seq_printf(sf, "nr_periods %d\n", cfs_b->nr_periods);
+	seq_printf(sf, "nr_throttled %d\n", cfs_b->nr_throttled);
+	seq_printf(sf, "throttled_time %llu\n", cfs_b->throttled_time);
+
+	if (schedstat_enabled() && tg != &root_task_group) {
+		struct sched_statistics *stats;
+		u64 ws = 0;
+		int i;
+
+		for_each_possible_cpu(i) {
+			stats = __schedstats_from_se(tg->se[i]);
+			ws += schedstat_val(stats->wait_sum);
+		}
+
+		seq_printf(sf, "wait_sum %llu\n", ws);
+	}
+
+	seq_printf(sf, "nr_bursts %d\n", cfs_b->nr_burst);
+	seq_printf(sf, "burst_time %llu\n", cfs_b->burst_time);
+
+	return 0;
+}
+#endif /* CONFIG_CFS_BANDWIDTH */
+#endif /* CONFIG_FAIR_GROUP_SCHED */
+
+#ifdef CONFIG_RT_GROUP_SCHED
+static int cpu_rt_runtime_write(struct cgroup_subsys_state *css,
+				struct cftype *cft, s64 val)
+{
+	return sched_group_set_rt_runtime(css_tg(css), val);
+}
+
+static s64 cpu_rt_runtime_read(struct cgroup_subsys_state *css,
+			       struct cftype *cft)
+{
+	return sched_group_rt_runtime(css_tg(css));
+}
+
+static int cpu_rt_period_write_uint(struct cgroup_subsys_state *css,
+				    struct cftype *cftype, u64 rt_period_us)
+{
+	return sched_group_set_rt_period(css_tg(css), rt_period_us);
+}
+
+static u64 cpu_rt_period_read_uint(struct cgroup_subsys_state *css,
+				   struct cftype *cft)
+{
+	return sched_group_rt_period(css_tg(css));
+}
+#endif /* CONFIG_RT_GROUP_SCHED */
+
+#ifdef CONFIG_FAIR_GROUP_SCHED
+static s64 cpu_idle_read_s64(struct cgroup_subsys_state *css,
+			       struct cftype *cft)
+{
+	return css_tg(css)->idle;
+}
+
+static int cpu_idle_write_s64(struct cgroup_subsys_state *css,
+				struct cftype *cft, s64 idle)
+{
+	return sched_group_set_idle(css_tg(css), idle);
+}
 #endif
 
+static struct cftype cpu_legacy_files[] = {
+#ifdef CONFIG_FAIR_GROUP_SCHED
+	{
+		.name = "shares",
+		.read_u64 = cpu_shares_read_u64,
+		.write_u64 = cpu_shares_write_u64,
+	},
+	{
+		.name = "idle",
+		.read_s64 = cpu_idle_read_s64,
+		.write_s64 = cpu_idle_write_s64,
+	},
 #endif
-	seq_printf(m, " lock-classes:                  %11lu [max: %lu]\n",
-			nr_lock_classes, MAX_LOCKDEP_KEYS);
-	seq_printf(m, " direct dependencies:           %11lu [max: %lu]\n",
-			nr_list_entries, MAX_LOCKDEP_E/uapi/asm/sigcontext.h \
-  arch/x86/include/asm/msr.h \
-    $(wildcard include/config/TRACEPOINTS) \
-  arch/x86/include/asm/msr-index.h \
-  arch/x86/include/asm/cpumask.h \
-  include/linux/cpumask.h \
-    $(wildcard include/config/CPUMASK_OFFSTACK) \
-    $(wildcard include/config/DEBUG_PER_CPU_MAPS) \
-  include/linux/bitmap.h \
-  include/linux/find.h \
-  arch/x86/include/uapi/asm/msr.h \
-  include/linux/tracepoint-defs.h \
-  arch/x86/include/asm/special_insns.h \
-  arch/x86/include/asm/fpu/types.h \
-  arch/x86/include/asm/vmxfeatures.h \
-  arch/x86/include/asm/vdso/processor.h \
-  include/linux/personality.h \
-  include/uapi/linux/personality.h \
-  include/linux/bottom_half.h \
-  include/linux/lockdep.h \
-    $(wildcard include/config/DEBUG_LOCKING_API_SELFTESTS) \
-  include/linux/smp.h \
-    $(wildcard include/config/UP_LATE_INIT) \
-  include/linux/smp_types.h \
-  include/linux/llist.h \
-    $(wildcard include/config/ARCH_HAVE_NMI_SAFE_CMPXCHG) \
-  arch/x86/include/asm/smp.h \
-    $(wildcard include/config/X86_LOCAL_APIC) \
-    $(wildcard include/config/DEBUG_NMI_SELFTEST) \
-  include/linux/rcutree.h \
-  include/linux/wait.h \
-  include/linux/spinlock.h \
-  arch/x86/include/generated/asm/mmiowb.h \
-  include/asm-generic/mmiowb.h \
-    $(wildcard include/config/MMIOWB) \
-  include/linux/spinlock_types.h \
-  include/linux/rwlock_types.h \
-  arch/x86/include/asm/spinlock.h \
-  arch/x86/include/asm/paravirt.h \
-    $(wildcard include/config/PARAVIRT_SPINLOCKS) \
-  arch/x86/include/asm/frame.h \
-  arch/x86/include/asm/qspinlock.h \
-  include/asm-generic/qspinlock.h \
-  arch/x86/include/asm/qrwlock.h \
-  include/asm-generic/qrwlock.h \
-  include/linux/rwlock.h \
-    $(wildcard include/config/PREEMPT) \
-  include/linux/spinlock_api_smp.h \
-    $(wildcard include/config/INLINE_SPIN_LOCK) \
-    $(wildcard include/config/INLINE_SPIN_LOCK_BH) \
-    $(wildcard include/config/INLINE_SPIN_LOCK_IRQ) \
-    $(wildcard include/config/INLINE_SPIN_LOCK_IRQSAVE) \
-    $(wildcard include/config/INLINE_SPIN_TRYLOCK) \
-    $(wildcard include/config/INLINE_SPIN_TRYLOCK_BH) \
-    $(wildcard include/config/UNINLINE_SPIN_UNLOCK) \
-    $(wildcard include/config/INLINE_SPIN_UNLOCK_BH) \
-    $(wildcard include/config/INLINE_SPIN_UNLOCK_IRQ) \
-    $(wildcard include/config/INLINE_SPIN_UNLOCK_IRQRESTORE) \
-    $(wildcard include/config/GENERIC_LOCKBREAK) \
-  include/linux/rwlock_api_smp.h \
-    $(wildcard include/config/INLINE_READ_LOCK) \
-    $(wildcard include/config/INLINE_WRITE_LOCK) \
-    $(wildcard include/config/INLINE_READ_LOCK_BH) \
-    $(wildcard include/config/INLINE_WRITE_LOCK_BH) \
-    $(wildcard include/config/INLINE_READ_LOCK_IRQ) \
-    $(wildcard include/config/INLINE_WRITE_LOCK_IRQ) \
-    $(wildcard include/config/INLINE_READ_LOCK_IRQSAVE) \
-    $(wildcard include/config/INLINE_WRITE_LOCK_IRQSAVE) \
-    $(wildcard include/config/INLINE_READ_TRYLOCK) \
-    $(wildcard include/config/INLINE_WRITE_TRYLOCK) \
-    $(wildcard include/config/INLINE_READ_UNLOCK) \
-    $(wildcard include/config/INLINE_WRITE_UNLOCK) \
-    $(wildcard include/config/INLINE_READ_UNLOCK_BH) \
-    $(wildcard include/config/INLINE_WRITE_UNLOCK_BH) \
-    $(wildcard include/config/INLINE_READ_UNLOCK_IRQ) \
-    $(wildcard include/config/INLINE_WRITE_UNLOCK_IRQ) \
-    $(wildcard include/config/INLINE_READ_UNLOCK_IRQRESTORE) \
-    $(wildcard include/config/INLINE_WRITE_UNLOCK_IRQRESTORE) \
-  include/uapi/linux/wait.h \
-  include/linux/refcount.h \
-  include/linux/sem.h \
-  include/uapi/linux/sem.h \
-  include/linux/ipc.h \
-  include/linux/uidgid.h \
-    $(wildcard include/config/MULTIUSER) \
-    $(wildcard include/config/USER_NS) \
-  include/linux/highuid.h \
-  include/linux/rhashtable-types.h \
-  include/linux/mutex.h \
-    $(wildcard include/config/MUTEX_SPIN_ON_OWNER) \
-  include/linux/osq_lock.h \
-  include/linux/debug_locks.h \
-  include/linux/workqueue.h \
-    $(wildcard include/config/DEBUG_OBJECTS_WORK) \
-    $(wildcard include/config/FREEZER) \
-    $(wildcard include/config/SYSFS) \
-    $(wildcard include/config/WQ_WATCHDOG) \
-  include/linux/timer.h \
-    $(wildcaELF                      º2      4     (               Ë¸ˇˇˇâ¡SkÄt  LÅ|  ãX4ãH01¿âJâZ[√ç¥&    çt& Ë¸ˇˇˇâ¡SkÄt  LÅ|  ãX4ãH01¿âJâZ[√ç¥&    çt& Ë¸ˇˇˇÉyÖ¡   VSÅy   â√â»Öû   ÉyÖî   kìt  LãI;ä`  Ö~   ã≤d  9pusâã®  ãPâì¨  ãPâì∞  ãPâì¥  ãPâì∏  ãPâìº  ãP âì¿  ãP$âìƒ  ãP(âì»  ãP,âìÃ  ãP0âì–  ã@4âÉ‘  1¿[^√çt& ê∏ÍˇˇˇÎÒç¥&    fê∏Íˇˇˇ√ç¥&    çv Ë¸ˇˇˇSãX\âÿË¸ˇˇˇçÉ¿   Ë¸ˇˇˇ1¿[√êË¸ˇˇˇâ WÉ¡1¿çzSãY¸ÉÁ¸«B    )˘«B,    É¡(¡ÈÛ´Ö€u«B   [_√çv ∏ÍˇˇˇÎÛç¥&    fêË¸ˇˇˇUWVSâ√ÉÏã@XâT$â$Ö¿Ñ   ãCãPãRË¸ˇˇˇ%   =   Öz  çCπ¿  ∫‹  Ë¸ˇˇˇâ≈Ö¿Ñe  1¿π˜   âÔæÄ   Û´çΩ4  çç0  «Ö<  –  «Ö@  ‡  ÉÁ¸«ÖD  UYVY)˘«ÖH     )ŒÅ¡   «ÖL  †  ¡È«ÖQ  å
- «Öl     «Öp     «Öx     «Ö|  `  °Ä   âÖ0  °|  âÖ,  Û•π†  ãD$ã<$ã@âΩ0  âÖÿ  ∂¿	Ö‘  ∂G∂W«ÖD      ¡‡¡‚	–	Öƒ  â⁄âËË¸ˇˇˇÉM\∫   âË«Ö§     ççà  «E  Ë¸ˇˇˇâ√Ö¿à¸ˇˇˇj çµ¿   1…∫   âË¸ˇˇˇπ 	ò ∫P  âj hÄ   j jj hˇ   j j Ë¸ˇˇˇπ	ò ∫P  âÉƒ$j hÄ   j jj hˇ   j j Ë¸ˇˇˇπ	ò ∫P  âÉƒ j hÄ   j jj hˇ   j j Ë¸ˇˇˇπ	ò ∫P  âÉƒ j j j h¥   j h¥   jˇhLˇˇˇË¸ˇˇˇπ	ò ∫P  âÉƒ j jj jj jj j Ë¸ˇˇˇãù¸   âulÉƒ Ö€tÖ€x,Éƒâÿ[^_]√ç∂    âË¸ˇˇˇâËË¸ˇˇˇâ√Ö¿Ñ-   Ö€y‘âË¸ˇˇˇâÿÉƒ[^_]√çv ª˚ˇˇˇÎπªÙˇˇˇÎ≤ç¥&    çv Ë¸ˇˇˇâ¬â»ã	Éx Öª   É˘t>«@   kät  Lãâ`  âHkít  L«@   «@   ãíd  âP1¿√ç∂    ãä®  âHãä¨  âHãä∞  âHãä¥  âHãä∏  âHãäº  âHãä¿  âH ãäƒ  âH$ãä»  âH(ãäÃ  âH,ãä–  âH0ãí‘  âP41¿√ç¥&    fê∏Íˇˇˇ√ç¥&    çv Ë¸ˇˇˇUâ¡WVSâ”ÉÏâD$∂çQpâT$<Ñ}   ç¥&    çv <t\<t`ãD$∂k«$    ∂{ã∞î   âÈâ˙âË¸ˇˇˇÖ¿t8É<$ÖD   PâD$ˇt$h-   Ë¸ˇˇˇãT$ÉƒÉƒâ–[^_]√fêãCË¸ˇˇˇ∂CÉ√<uçÉƒ1“[â–^_]√êË¸ˇˇˇUçhpWV1ˆSã∏î   ∂⁄â⁄â¯Ë¸ˇˇˇÉ˛uPSUhd   Ë¸ˇˇˇÉƒ[^_]√ç∂    Ö¿àl   Î€ç∂    Ë¸ˇˇˇUWVSÉÏã®x  â$ÖÌé“   ãÄ|  â÷âœ1“âD$É¿Îç∂    É¬É¿L9’Ñö   ããH!Û!˘	ŸtÂÉ˙ÑÑ   k⁄LãD$â÷ÿ∂hã$«D$    ã∏î   É¿pâD$∫   âÈâ¯Ë¸ˇˇˇâ¬Ö¿tÉ|$Öç   Éƒâ–[^_]√çt& ã<$ü|  â∑t  ∂CÄ=     âáD  Ö∂   Éƒâ–[^_]√Éƒ∫Íˇˇˇ[â–^_]√tÔã$1€1ˆãÄ|  Èdˇˇˇç¥&    ç∂    Ë¸ˇˇˇUWVSâ√ÉÏãêÿ  Ë◊˝ˇˇâ∆çCpâD$ÖˆÖ‹   ãªî   1Ì∫Ä   â¯Ë¸ˇˇˇÖ¿y	É˝Ö  âD$ã´î   «$    ∫Å   âËË¸ˇˇˇÉ<$tÖ¿àÁ  â$ã´î   ∫p   âËË¸ˇˇˇÉ˛tÖ¿à√  Ä=     â¬Ñ  Èˆ   çt& Ë¸ˇˇˇÖ“Ñ…  UWVâ÷Sâ√ÉÏãÄ8  Ö¿Ñö  çCpã´î   1ˇâ$∫   âËË¸ˇˇˇÉˇÖÁ   â«ÉÁÑÔ   É‡<Ñ!  <Ö©   ãÉÄ  Ω   É¯á  ∫w  ø   £¬É  çCpããî   «D$    âD$ââ˛â$â«âÀ∫:   âÿË¸ˇˇˇÖ¿yÉ|$Ö¨  â˘â˜ã$âŒ!¯â˘8»u6kÌLãã|  ããF#T)#D)âÄ=     âFÖf  Éƒ1¿[^_]√çt& «    1¿«F    Éƒ[^_]√ç¥&    fêÖ¿àà  â«ÉÁÖˇˇˇçCpã´î   â$∫?   âËË¸ˇˇˇÉˇÑ˛ˇˇÖ¿àB  É‡<ÖË˛ˇˇç¥&    fêãÉÄ  1ÌÉ¯ÜÍ˛ˇˇÉËDÉ¯w
-∫£¬rÉƒ∏Íˇˇˇ[^_]√ø   È‘˛ˇˇç∂    âÿËâ˝ˇˇ∏»   Ë¸ˇˇˇÈP˛ˇˇ∏Íˇˇˇ√çt& Ë¸ˇˇˇ9ê8  Ñè   UWVâ∆Sâ”ÉÏÖ“t8∫ÌˇˇˇÉ˚u Éƒ[^_]È:˝ˇˇç¥&    çv «Ü8      Éƒâ–[^_]√çt& ã∏î   çhp∫   π   â¯Ë¸ˇˇˇâ¬Ö¿t»É˚Ö’  â$UhX  Ë¸ˇˇˇXZã$Î¥ç¥&    çv 1¿√ç¥&    ç∂    Ë¸ˇˇˇUWVSÉÏâ$É˙^á   â√É˘áÂ   çCpã≥î   â’1ˇâD$1“âÈâË¸ˇˇˇâ¬Ö¿tÉˇÖˆ  Éƒâ–[^_]√ç¥&    êãÉî   1ˆç{pâD$ãD$∫3   Ë¸ˇˇˇÉ˛tÖ¿à  â¡çCpâ\$ã≥î   âD$É·$1ˇâÀ∫3   âŸâË¸ˇˇˇâ¬Ö¿tÉˇÖ;  Éƒâ–[^_]√fêâŸã$ã\$Ä=     â´4  âãÃ  â´Ä  âÉÑ  ÑPˇˇˇÈ_  çt& ê∫ÍˇˇˇÈ<ˇˇˇç¥&    ç¥&    Ë¸ˇˇˇUWVSâ√ÉÏãpãx|ã@(=	ò ÑŒ   v\=	ò ÑI  =	ò Ö  ÉˇçF∞«$    ãn‘…âD$É·˝â|$É¡âœ∫   â˘âËË¸ˇˇˇâ¬Ö¿Ñz  É<$t^È•  ê= 	ò Ñ•   =	ò Ö©  â¯«$    ãn‘∂»çF∞â|$âD$âœ∫
-   â˘âËË¸ˇˇˇâ¬Ö¿Ñ  É<$Ö@  çt& Ä=     Ö  Éƒâ–[^_]√êâ¯«$    ãn‘∂»çF∞â|$âD$âœ∫   â˘âËË¸ˇˇˇâ¬Ö¿Ñª   É<$tÆÈ}  êâ¯«$    ãn‘∂»çF∞â|$âD$âœ∫	   â˘âËË¸ˇˇˇâ¬Ö¿Ññ   É<$ÑjˇˇˇÈÕ  çt& êÅˇ¥   Ñú   ÅˇLˇˇˇÑ†   â¯∂»çF∞«$    ãn‘âD$â|$âœ∫   â˘âËË¸ˇˇˇâ¬Ö¿tIÉ<$ÑˇˇˇÈı  êã|$âæƒ   È˘˛ˇˇã|$âæÃ   ÈÍ˛ˇˇã|$â~|Èﬁ˛ˇˇã|$âæº   Èœ˛ˇˇã|$âæ‘   È¿˛ˇˇç¥&    êπ   ø   ÈfˇˇˇêπÄ   øÄ   ÈVˇˇˇ∫ÍˇˇˇÈè˛ˇˇ           ∞  @                  …                                                                                                                                ?                              	  Ä    
-  Ä      Ä                                Ä      Ä      Ä            Ä           U           %                      @                          !      "     #      $     %      &      '      (  Ã   )      *      +      ,      -      .      /      0      1       2       3       4      5  Ó    6  Ø    7  ˇ    8  ˇ    9                                                        0   `   @  `  ∞  Ä  `    `  p      
-  ∞
-  –      No platform data
- 4%s: Write: retry ... %d
- 3%s: Write failed. Err[%d]
- 4%s: Read: retry ... %d
- 6%s: Reg(0x%.2X): 0x%.2X
- 7%s: Standard set to: %s
- 7%s: Current STD: %s
- 7%s: Input set to: %d
- tvp514x    3%s: %s decoder driver failed to register !!
-  6%s: %s decoder driver registered !!
-  3%s: Unable to turn on decoder
-    7%s: chip id detected msb:0x%x lsb:0x%x rom version:0x%x
-  3%s: chip id mismatch msb:0x%x lsb:0x%x
-   3%s: Unable to detect decoder
- 6%s: %s (Version - 0x%.2x) found at 0x%x (%s)
- 3%s: Unable to configure decoder
-  3%s: Unable to turn off decoder
-   7%s: Set Control: ID - %d - %d
- É≈pUUh    Ë¸ˇˇˇÉƒÈ$  É√h    SªÍˇˇˇË¸ˇˇˇXZÈ$  É≈pUUh0   Ë¸ˇˇˇÉƒÈ$  ˇ4$ˇt$h   Ë¸ˇˇˇ∏
-   ÉD$Ë¸ˇˇˇÉƒÈ≠  VÉ∆UhJ   Ë¸ˇˇˇ∏
-   Ë¸ˇˇˇÉƒÈ#  ˇt$ˇt$h   Ë¸ˇˇˇ∏
-   ÉD$Ë¸ˇˇˇÉƒÈﬂ  É√âT$SãD$É¿pPh   Ë¸ˇˇˇãT$ÉƒÈ˛  ˇt$hX   Ë¸ˇˇˇY[Éƒâ[^_]√∂¿âT$P∂D$P∂D$Pˇt$h|   Ë¸ˇˇˇãT$ ÉƒÄ|$Qt/∂$P∂D$Pãt$Vh∏   Ë¸ˇˇˇVæÌˇˇˇh‰   Ë¸ˇˇˇÉƒÎó∂$ÉËF<w∆∂¬É«âÉ4  ãOçë  R∑W˛“RPWˇt$h  Ë¸ˇˇˇçì0  âÿË\  â∆ÉƒÖ¿Öå   Ä=     Öî   «É8     È)ˇˇˇVÉ∆ˇt$hJ   Ë¸ˇˇˇ∏
-   Ë¸ˇˇˇÉƒÈÎ  ˇ4$ˇt$hJ   Ë¸ˇˇˇ∏
-   ÉD$Ë¸ˇˇˇÉƒÈ»  UÉ≈ˇt$hJ   Ë¸ˇˇˇ∏
-   Ë¸ˇˇˇÉƒÈû  ˇt$h4  Ë¸ˇˇˇXZÈ§˛ˇˇ1“âÿË  âÿ∫   Ë  âÿ∫   Ë  âÿ∫   Ë  âÿ∫   Ë  âÿ∫   Ë  âÿ∫   Ë  âÿ∫   Ë  âÿ∫	   Ë  âÿ∫
-   Ë  âÿ∫   Ë  âÿ∫   Ë  âÿ∫   Ë  âÿ∫   Ë  âÿ∫   Ë  âÿ∫   Ë  âÿ∫   Ë  âÿ∫   Ë  âÿ∫   Ë  âÿ∫   Ë  âÿ∫   Ë  âÿ∫   Ë  âÿ∫   Ë  âÿ∫   Ë  âÿ∫   Ë  âÿ∫   Ë  âÿ∫   Ë  âÿ∫   Ë  âÿ∫    Ë  âÿ∫!   Ë  âÿ∫"   Ë  âÿ∫#   Ë  âÿ∫$   Ë  âÿ∫%   Ë  âÿ∫2   Ë  âÿ∫3   Ë  âÿ∫4   Ë  âÿ∫5   Ë  âÿ∫6   Ë  âÿ∫7   Ë  âÿ∫8   Ë  ∫9   âÿË  Èr˝ˇˇWÉ«ˇt$hJ   Ë¸ˇˇˇ∏
-   Ë¸ˇˇˇÉƒÈk	  ´|  É√pçEPShö   Ë¸ˇˇˇ1¿ÉƒÈ;	  WÉ«ˇt$hJ   Ë¸ˇˇˇ∏
-   Ë¸ˇˇˇÉƒÈP  ˇt$ˇt$hJ   Ë¸ˇˇˇ∏
-   ÉD$Ë¸ˇˇˇÉƒÈ   SÉ√Uh   Ë¸ˇˇˇ∏
-   Ë¸ˇˇˇÉƒÈ]
-  WÉ«ˇt$h   Ë¸ˇˇˇ∏
-   Ë¸ˇˇˇÉƒÈ‡
-  VÉ∆WhJ   Ë¸ˇˇˇ∏
-   Ë¸ˇˇˇÉƒÈ  WÉ«ˇt$h   Ë¸ˇˇˇ∏
-   Ë¸ˇˇˇÉƒÈS  É√pâ$USh±   Ë¸ˇˇˇãT$ÉƒÈ˙
-  ˇ4$ˇt$h   Ë¸ˇˇˇ∏
-   ÉD$Ë¸ˇˇˇÉƒÈÿ  ˇ4$ˇt$h   Ë¸ˇˇˇ∏
-   ÉD$Ë¸ˇˇˇÉƒÈ(  ˇ4$ˇt$h   Ë¸ˇˇˇ∏
-   ÉD$Ë¸ˇˇˇÉƒÈ  ˇ4$ˇt$h   Ë¸ˇˇˇ∏
-   ÉD$Ë¸ˇˇˇÉƒÈx  ÉÓPâ$ˇs|ˇs(Vh|  Ë¸ˇˇˇãT$ÉƒÈ±  ˇ4$ˇt$h   Ë¸ˇˇˇ∏
-   ÉD$Ë¸ˇˇˇÉƒÈ~  Ë¸ˇˇˇ∫    ∏    È¸ˇˇˇ∏    È¸ˇˇˇ     tvp5146             @  tvp5146m2           x   tvp5147             †   tvp5147m1           x                                                                Ë      È       Í  Ä    ‡      Ë  `    È       Í  ∞    ‡      Ë      È       Í  †    ‡      Ë  `    È       Í  ∞    ‡                                   Ë      È       Í  Ä    ‡      Ë  `    È       Í  ∞    ‡      ‡                                                     ¿      `          Ä  `                                           ∞
-          `                          
-          0                                   –      –  ‡          ∞      NTSC                    È  0u                    –  @        ˇ       PAL                           q                                     8-bit UYVY 4:2:2 Format         UYVY                debug license=GPL description=TVP514X linux decoder driver author=Texas Instruments parm=debug:Debug level (0-1) parmtype=debug:bool    @          §ˇ      GCC: (GNU) 11.2.0           GNU  ¿        ¿                                  Òˇ                                                 %     $   0   %     =   `   ÷     T   `  ò     e   @       t   `  G                                	              
- ã   ∞  ∆    ô   Ä        ≤      @     √   †        œ   P       ‡       H    
- Û   Ä  ÷     
-  `  Ø       H   (    
- 5    J     >  p   !    
- L  `      ^           Z  ë   O    
- m  p  ¨     Ö  ‡   f   
- ¢     ‹    ≥  F  ì    
- …   
-  £     ⁄  Ÿ  !    
-   ∞
-        ˙  á    
-   –  I    (  Å  Î    
-               <           P      Ä     _      
-     s      x                   ~  @  `     ì  x        ©  †   ò     æ     P     –  ¿  @     ‡           ˜     )       5        (  N        =  k        V           d  @       v             Å             û             µ             Œ             €                                       $             6             N             i             q             z             î             õ             ∞             …             ◊             Î           ˜                   
-           x     8              tvp514x.c tvp514x_g_frame_interval tvp514x_s_frame_interval tvp514x_set_pad_format tvp514x_std_list tvp514x_remove tvp514x_enum_mbus_code tvp514x_probe tvp514x_reg_list_default tvp514x_fmt_list tvp514x_ops tvp514x_ctrl_ops tvp514x_probe.cold tvp514x_get_pad_format tvp514x_write_regs tvp514x_write_regs.cold dump_reg dump_reg.cold tvp514x_s_std tvp514x_s_std.cold tvp514x_s_stream.part.0 tvp514x_s_stream.part.0.cold tvp514x_querystd tvp514x_querystd.cold tvp514x_s_stream tvp514x_s_stream.cold tvp514x_s_routing tvp514x_s_routing.cold tvp514x_s_ctrl tvp514x_s_ctrl.cold tvp514x_driver_init tvp514x_driver tvp514x_driver_exit tvp514x_id tvp5146_init_reg_seq tvp514xm_init_reg_seq tvp5147_init_reg_seq tvp514x_video_ops tvp514x_pad_ops __UNIQUE_ID_license270 __UNIQUE_ID_description269 __UNIQUE_ID_author268 __UNIQUE_ID_debug267 __UNIQUE_ID_debugtype266 __param_debug __param_str_debug __fentry__ v4l2_async_unregister_subdev v4l2_ctrl_handler_free __x86_indirect_thunk_edx devm_kmalloc v4l2_i2c_subdev_init media_entity_pads_init v4l2_ctrl_handler_init_class v4l2_ctrl_new_std v4l2_ctrl_handler_setup v4l2_async_register_subdev _printk _dev_err i2c_smbus_write_byte_data msleep msleep_interruptible i2c_smbus_read_byte_data __this_module i2c_register_driver init_module i2c_del_driver cleanup_module __mod_i2c__tvp514x_id_device_table param_ops_bool     8  1   8  a   8  ò   +  §   +  A  8  L  9  W  :  a  8  ±  8  ⁄  ;  ¸  <      Ç  +  ñ  +  õ    ¶    ≥  +  ˝  =  $  >  D  ?  N  +  k  @  u  +  ï  @  ü  +  ø  @  …  +  Ï  @  ˆ  +    @  ;  A  B  B  W  :  Å  8  ™  +  »  +  a  8  ∏  E  ‘    Ÿ  C  Ù  F    8  ,  H  9    >  C  a  8  Ì  E  %    q  8  ™  H  ‘  H  ˜  H  
-    !  8  \  H  ÷  H  	    w	  H  Ì	  F  
-  8  n
-  E  Ü
-    ã
-  C  ±
-  8  Î
-  E  )  H  a  E  ã    —  8  6  E  å  E  ™    Ê  E  &  E  Ü  E  Ã    .    L    ∆    T    ˛    2    ñ    ∑    ‚                Â    	    T	    à	    }
-    ˙
-    6    p    Ø    K    †    ±    ˚    ?    õ                   h   +                                                 $     (     ,     0     4     8     <   &          C       &   D  7     <   C  P     U   C  d   G  v     {   C  Ö   G  ö     ü   C  Æ   G  À     –   C  Â     Í   C        C  ;    @  C  K    P  C  à    ç  C  ö    ≠    –    ’  C  ﬂ  G  Û    ¯  C    G      !  C  +  G  <    A  C  Q    ]    i    u    Å    ç    ô    •    ±    Ω    …    ’    ·    Ì    ˘                )    5    A    M    Y    e    q    }    â    ï    °    ≠    π    ≈    —    ›    È    ı                %    1    =    O    T  C  ^  G  y    ~  C  ï    ö  C  §  G  π    æ  C  Õ  G  ﬂ    ‰  C  Ó  G        C    G  $    )  C  3  G  H    M  C  W  G  l    q  C  â    é  C  ù  G  ±    ∂  C  ≈  G  Ÿ    ﬁ  C  Ì  G        C    G  /    4  C  L    Q  C  `  G       -     D     l     ç     ∂     ‹     Á        3    f    à    ¨    ’    ˆ        ;    _    }    •    Õ    ı        @    h       8          I     J          L     +  ,   +  D   +  \   +  ¨  +  º  +  ƒ    –    ‘                 (    0    4    X        +     I     O        .symtab .strtab .shstrtab .rel.text .rel.data .bss .rel__mcount_loc .rodata.str1.1 .rodata.str1.4 .rel.text.unlikely .rel.init.text .rel.exit.text .rel.rodata .modinfo .rel__param .comment .note.GNU-stack .note.gnu.property                                                         @                       	   @       Ä(  @              )             `  Ä                  %   	   @       ¿+                  /             ‡                    8             ‡  @                  4   	   @       ‡+  Ä               E      2          —                 T      2       Ù  ù                g             ë  l                 c   	   @       `,  ®     
-         z             ˝                    v   	   @       1                  â               
-                  Ö   	   @       (1                 ò                F                  î   	   @       81  Ä               †             f                    ≠             Ë                    ©   	   @       ∏1                  µ      0       ¸                   æ                                   Œ               (                                8        8         	              8#  G                               ÿ1  ·                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              linux/rbtree_latch.h \
-  include/linux/error-injection.h \
-  include/asm-generic/error-injection.h \
-  include/linux/cfi.h \
-    $(wildcard include/config/CFI_CLANG_SHADOW) \
-  arch/x86/include/asm/module.h \
-    $(wildcard include/config/UNWINDER_ORC) \
-  include/asm-generic/module.h \
-    $(wildcard include/config/HAVE_MOD_ARCH_SPECIFIC) \
-    $(wildcard include/config/MODULES_USE_ELF_REL) \
-    $(wildcard include/config/MODULES_USE_ELF_RELA) \
-  arch/x86/include/asm/orc_types.h \
-  arch/x86/include/asm/device.h \
-  include/linux/pm_wakeup.h \
-  include/linux/dma-direction.h \
-  include/linux/scatterlist.h \
-    $(wildcard include/config/NEED_SG_DMA_LENGTH) \
-    $(wildcard include/config/DEBUG_SG) \
-    $(wildcard include/config/SGL_ALLOC) \
-    $(wildcard include/config/ARCH_NO_SG_CHAIN) \
-    $(wildcard include/config/SG_POOL) \
-  include/linux/mm.h \
-    $(wildcard include/config/HAVE_ARCH_MMAP_RND_BITS) \
-    $(wildcard include/config/HAVE_ARCH_MMAP_RND_COMPAT_BITS) \
-    $(wildcard include/config/ARCH_USES_HIGH_VMA_FLAGS) \
-    $(wildcard include/config/ARCH_HAS_PKEYS) \
-    $(wildcard include/config/PPC) \
-    $(wildcard include/config/PARISC) \
-    $(wildcard include/config/SPARC64) \
-    $(wildcard include/config/ARM64) \
-    $(wildcard include/config/ARM64_MTE) \
-    $(wildcard include/config/HAVE_ARCH_USERFAULTFD_MINOR) \
-    $(wildcard include/config/STACK_GROWSUP) \
-    $(wildcard include/config/SHMEM) \
-    $(wildcard include/config/FS_DAX) \
-    $(wildcard include/config/MIGRATION) \
-    $(wildcard include/config/ARCH_HAS_PTE_SPECIAL) \
-    $(wildcard include/config/ARCH_HAS_PTE_DEVMAP) \
-    $(wildcard include/config/DEBUG_VM_RB) \
-    $(wildcard include/config/PAGE_POISONING) \
-    $(wildcard include/config/INIT_ON_ALLOC_DEFAULT_ON) \
-    $(wildcard include/config/INIT_ON_FREE_DEFAULT_ON) \
-    $(wildcard include/config/DEBUG_PAGEALLOC) \
-    $(wildcard include/config/HUGETLBFS) \
-    $(wildcard include/config/MAPPING_DIRTY_HELPERS) \
-    $(wildcard include/config/ANON_VMA_NAME) \
-  include/linux/mmap_lock.h \
-  include/linux/percpu-refcount.h \
-  include/linux/bit_spinlock.h \
-  include/linux/shrinker.h \
-  include/linux/page_ext.h \
-  include/linux/stacktrace.h \
-    $(wildcard include/config/ARCH_STACKWALK) \
-    $(wildcard include/config/STACKTRACE) \
-    $(wildcard include/config/HAVE_RE
+#ifdef CONFIG_CFS_BANDWIDTH
+	{
+		.name = "cfs_quota_us",
+		.read_s64 = cpu_cfs_quota_read_s64,
+		.write_s64 = cpu_cfs_quota_write_s64,
+	},
+	{
+		.name = "cfs_period_us",
+		.read_u64 = cpu_cfs_period_read_u64,
+		.write_u64 = cpu_cfs_period_write_u64,
+	},
+	{
+		.name = "cfs_burst_us",
+		.read_u64 = cpu_cfs_burst_read_u64,
+		.write_u64 = cpu_cfs_burst_write_u64,
+	},
+	{
+		.namELF                      p'      4     (                Ë¸ˇˇˇÖ¿t?Sâ√ãÄà  Ö¿tãÖ“t
+«Ç$&      Ë¸ˇˇˇ«Éà      «Éå      [√ç¥&    √ç¥&    Ë¸ˇˇˇUWVâ∆Sâ˜ÉÏd°    âD$1¿É«ÑŒ   ãñ  Ö“Ñ˝   ãÜ,&  Ö¿Öç   ãF«$    1…∫ˇˇˇˇTj à   h    Ë¸ˇˇˇÉƒÖ¿Öt   °   π   ∫¿  ã,$Ë¸ˇˇˇâ√Ö¿ÑZ   â8π   ∫
+   âhâÖà  «Öå      ãxã(çGË¸ˇˇˇçG$ˇu¯É«Dh   j PË¸ˇˇˇˇudˇu¯h@  jPWË¸ˇˇˇâÿÉƒ$Ë¸ˇˇˇÖ¿Ö   âû,&  ã$Ë¸ˇˇˇÖ¿Ö®   ˆ    u-ãD$d+    uÉƒ1¿[^_]√çv ˆ    t›È¸ˇˇˇË¸ˇˇˇÈ‰   fêfêfêfêË¸ˇˇˇã@«@    «@    1¿√ç¥&    Ë¸ˇˇˇ1¿√ç¥&    êË¸ˇˇˇVSãpç^âÿË¸ˇˇˇãvâ¬âÿË¸ˇˇˇâ[^√ç¥&    çt& Ë¸ˇˇˇUWVSâ√ÉÏã5   â$â ÖˆÖ2  ãhÖÌÑ¬   ã}|ÖˇÑ∑   ãw`¡ÓÑù   9ÚÇ  ãè4  Ö…Ñ7  â–1“˜ˆãSâD$ãGTâD$â–Ø∆»â—âD$ãD$–â¬ãD$9¬svØt$ã$ãD$âÒË¸ˇˇˇâËË¸ˇˇˇãCãt$âCãOTâ¬) 9»C¬sâsâÒâCãGL9∆Éû   ÉƒâË[^_]È¸ˇˇˇã-   ÖÌÖ  Éƒ[^_]√ç¥&    çv â¬âL$ãD$) â—ã$ØŒâL$Ë¸ˇˇˇãD$ãL$+L$ã$»ãL$Ø∆ â¡ãá4  Ë¸ˇˇˇÈTˇˇˇç¥&    ã   Ö€Ö   Éƒ[^_]√ç¥&    çv )¡âËâKË¸ˇˇˇâËÉƒ[^_]È¸ˇˇˇç∂    ã   Ö…ÑPˇˇˇÈá  ç¥&    ç∂    Ë¸ˇˇˇWVSãpãçÉ   çªT  Ë¸ˇˇˇ1“â¯Ë¸ˇˇˇÄ£®  Ôâ¯Ë¸ˇˇˇ«É(&      ã   Ë¸ˇˇˇ1¿[^_√ç¥&    ç¥&    Ë¸ˇˇˇUâ≈WVSÉÏlãu|d°    âD$hãEãâ$çC¯âD$â«çÉ   Ë¸ˇˇˇãÉ<&  ãìî  â|$dçHâD$\çD$âã<&  âT$`Ë¸ˇˇˇÖ¿Ö"  â¬ãÉ®  Ñ¿xçÉT  âD$∫´®  s6ã$âT$ã    Ë¸ˇˇˇãT$ãD$hd+    ÖÚ   Éƒlâ–[^_]√çt& â–çæ¯   π   ∫   Û´â«Ü¯    «Ü¸      «Ü       «Ü  Ä   «Ü  Äª  «Ü  Äª  «Ü     «Ü     «Ü  ® @«Ü!  1  «Ü(  b   Ë¸ˇˇˇã<$ãL$âoâé   «É(&      Äã®  ãD$Ë¸ˇˇˇâ$ã   Ë¸ˇˇˇã$Èˇˇˇã$ã    Ë¸ˇˇˇ∫ˇˇˇÈ˝˛ˇˇË¸ˇˇˇç¥&    Ë¸ˇˇˇU1…∫   Wâ«VSÉÏã/d°    âD$1¿ãGTjj Ë¸ˇˇˇâ∆ÉƒÖ¿Ö‘  «G    ã$πÄ   ∫   Ë¸ˇˇˇ1…∫   j j ãD$Ë¸ˇˇˇã\$∫P   «C    É√Xâª`  ã}dâ¯Ë¸ˇˇˇâ¡XZÉ˘ˇÑ   É˘PtÉ¡É˘Pá¿  â˙âÿË¸ˇˇˇãD$d+    u
+Éƒâ[^_]√Ë¸ˇˇˇSã@@Ö¿uh    h    Ë¸ˇˇˇXZÎ6ãê$&  Ö“uÉ¿h    Ph0   Ë¸ˇˇˇÉƒÎããBË¸ˇˇˇ«É$&      1¿[√hh  Ë¸ˇˇˇ∫    ∏   Ë¸ˇˇˇ1…1“h    Ë¸ˇˇˇ«        hå  Ë¸ˇˇˇÉƒ√h(   h    h`   Ë¸ˇˇˇÉƒÈb  É∆Ph   Vhl  Ë¸ˇˇˇÉƒã$Ö¿tË¸ˇˇˇâÿË¸ˇˇˇh(   Vh  Ë¸ˇˇˇÉƒÈb  É∆jÙh   Vh  Ë¸ˇˇˇÉƒÎªÉ∆Ph   Vh–   Ë¸ˇˇˇÉƒÎµÉ∆h(   Vhò   Ë¸ˇˇˇÉƒÈb  «Ü,&      É∆Ph   Vh®  Ë¸ˇˇˇÉƒÈaˇˇˇh(   h    Ë¸ˇˇˇY[Èb  h(   h    h‡  Ë¸ˇˇˇÉƒÈb  hd   hd   hp  Ë¸ˇˇˇÉƒÈÍ  hd   hL  Ë¸ˇˇˇ^_ÈÍ  QâL$ˇt$Phd   h¥  Ë¸ˇˇˇãkãT$ÉƒÖÌtDã}|ÖˇÖ3  É=    ÑÍ  hd   h$  Ë¸ˇˇˇXZÈÍ  hd   hú  Ë¸ˇˇˇXZÈÍ  É=    ÑÍ  hd   h¸  Ë¸ˇˇˇY[ÈÍ  ∏H   Ë¸ˇˇˇ∏@   Ë¸ˇˇˇÉ≈PhP   Uh–  Ë¸ˇˇˇÉƒÈp  Ë¸ˇˇˇhH  Ë¸ˇˇˇX1¿«    P   √           cx18_alsa_exit_callback snd_cx18_init   cx18_alsa_load  debug   strnlen strscpy snd_cx18_pcm_create cx18_alsa_announce_pcm_data   ∞              †  ¿      –                              pcm_debug   3cx18-alsa: %s: struct v4l2_device * is NULL
+  4%s-alsa: %s: struct snd_cx18_card * is NULL
+  6%s: %s: PCM stream for card is disabled - skipping
+   3%s-alsa: %s: struct snd_cx18_card * already exists
+   3%s-alsa: %s: snd_card_new() failed with err %d
+   3%s-alsa: %s: snd_cx18_card_create() failed with err %d
+   CX23418 #%d %s TV/FM Radio/Line-In Capture  3%s-alsa: %s: snd_cx18_pcm_create() failed with err %d
+    3%s-alsa: %s: snd_card_register() failed with err %d
+  6%s: %s: created cx18 ALSA interface instance
+ 3%s-alsa: %s: failed to create struct snd_cx18_card
+   6cx18-alsa: module loading...
+ 6cx18-alsa: module unloading...
+   6cx18-alsa: module unload complete
+    6cx18-alsa-pcm %s: cx18 alsa announce ptr=%p data=%p num_bytes=%zu
+    6cx18-alsa-pcm %s: substream was NULL
+ 6cx18-alsa-pcm %s: runtime was NULL
+   6cx18-alsa-pcm %s: stride is zero
+ 6cx18-alsa-pcm %s: %s: length was zero
+    6cx18-alsa-pcm %s: dma area was NULL - ignoring
+   3%s-alsa: %s: snd_cx18_pcm_create() failed with err %d
+     P       †  ¿  –     ∞    ¿  cx18-alsa CX23418 CX18-%d cx18 CX23418 PCM version=1.5.1 license=GPL description=CX23418 ALSA Interface author=Andy Walls parm=debug:Debug level (bitmask). Default: 0
+			  1/0x0001: warning
+			  2/0x0002: info
+ parmtype=debug:int parm=pcm_debug:enable debug messages for pcm parmtype=pcm_debug:int srcversion=0A31E57A452F6B591496F85 depends=snd-pcm,cx18,snd retpoline=Y intree=Y name=cx18_alsa vermagic=5.18.2-smp SMP preempt mod_unload PENTIUMIII    8           §ˇ     ¿           §ˇ    ◊  è  s           GNU  ¿       ¿               GNU p¢7Úú∞J©ˆ=O"çÌ&˘ï        Linux                Linux                                   cx18_alsa                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            GCC: (GNU) 11.2.0  GCC: (GNU) 11.2.0  GCC: (GNU) 11.2.0                                                                                         	                                                                                                                                                                                                                 Òˇ       U     *           	 5       I     P   P   H    _           s   (       	 ~          	 â            ò   U   ?     ß            æ           ’      #        =          O   Y       ®        4           B  8       	 T           Òˇd  †       y  ¿       é  –  %     ä          £    ¿     s   d       	 ƒ  ∞  R     ﬂ    ©    ˘  Ä   @    	   ƒ  0     +  H       	 6  @       	 A  P       	 L  ª   -     e  Ë        Ç          î  ¿   
+    	 ™           Òˇ∫  ˇ   #     ”  "       È  ;         G  	       P       )  _  7     @           H          P             \           j             s                          ë             £             ±  U   ?     ¿             «             Õ             ‰             ˚             	                                      >             F             \             m             u             Ç             ç             ù             Ø             √             ﬂ             ˛                          9             A             U             c             p             á           ó     £    ≥                           ÿ  ¿  –     Ï             ˘              cx18-alsa-main.c cx18_alsa_exit_callback __func__.7 snd_cx18_card_private_free cx18_alsa_load cx18_alsa_load.cold __func__.3 __func__.4 cx18_alsa_init cx18_alsa_exit __UNIQUE_ID_version366 __UNIQUE_ID_license365 __UNIQUE_ID_description364 __UNIQUE_ID_author363 __UNIQUE_ID_debug362 __UNIQUE_ID_debugtype361 __param_debug __param_str_debug cx18-alsa-pcm.c snd_cx18_pcm_prepare snd_cx18_pcm_trigger snd_cx18_pcm_pointer cx18_alsa_announce_pcm_data.cold snd_cx18_pcm_capture_close snd_cx18_pcm_capture_open snd_cx18_pcm_capture_ops snd_cx18_pcm_create.cold __func__.1 __func__.0 __func__.2 __UNIQUE_ID_pcm_debug362 __UNIQUE_ID_pcm_debugtype361 __param_pcm_debug __param_str_pcm_debug cx18-alsa.mod.c __UNIQUE_ID_srcversion99 __UNIQUE_ID_depends98 __UNIQUE_ID_retpoline97 __UNIQUE_ID_intree96 __UNIQUE_ID_name95 __UNIQUE_ID_vermagic94 _note_9 _note_8 driver_find __this_module snprintf snd_pcm_new __stack_chk_guard snd_card_register snd_card_free cleanup_module memcpy kfree _raw_spin_lock_irqsave kmem_cache_alloc_trace fortify_panic __fentry__ init_module cx18_start_v4l2_encode_stream _printk snd_pcm_stream_unlock __stack_chk_fail strnlen snd_card_new mutex_lock snd_pcm_set_ops cx18_claim_stream cx18_release_stream _raw_spin_unlock_irqrestore snd_pcm_set_managed_buffer_all cx18_stop_v4l2_encode_stream snd_pcm_hw_constraint_integer strscpy snd_pcm_stream_lock cx18_ext_init mutex_unlock driver_for_each_device cx18_alsa_debug cx18_alsa_announce_pcm_data snd_pcm_period_elapsed param_ops_int snd_cx18_pcm_create pci_bus_type kmalloc_caches    N  '   J  Q   N  b   E  q     ç     ´   B  ∞   U  ª     ¿   i  “   L  ‹     Ë     ˚       ^        C  )    1  C  ;  g  C    Q  F  Y    _  c  m  E  Ç  c  ä    è  S  î    °  N  ¡  N  —  N  ‡  K  Ï  Z    N          ô  I  †  _  ‹  R  ‚    Í      I  @  I  R    Z    x  R  Ü  e  í    ü    ±  N     V  ”  \  ‚  Y  ¯  a    N  #  E  C  V  m  X  ©  a  ∏  E  U  ]  o  d  Ä  P  è  a  ¶  a  µ  S  ¡  N  …    Ÿ  E  Ï  D  ˘          W  &  [  I  T  V    g    p  ^  {  E  å  S  	             Q  )     /     4   Q  C   G  V     [   Q  `   h  e     j   A  s     x   b  ~   `  á     å   Q                    Q       !     '     ,   Q  ;   G  B   J  G     M     R   Q  Z     d     j     o   Q  }     É     à   Q  ï     õ     †   Q  ®     ª     ¡     ∆   Q  ”     ÿ     ›   Q  ‰     È     Ó     Û     ¯   Q           
+          Q      !    &    +  Q  2    A    F    K  Q  d    j    q    v    {    Ä  Q  á    å    ë    ñ  Q  ù    £    ™    Ø    ¥    π  Q  ¿    ≈       M  œ    ‘  M  ›    „    Ë  Q         N          Q     `       Ä     Ñ     î     ò     †                                                    $              B     f     c          B     f  $                     Ã   O  Ù  H   .symtab .strtab .shstrtab .rel.text .rel.exit.text .rel.text.unlikely .rel.init.text .rel.rodata .rodata.str1.4 .rel__mcount_loc .rodata.str1.1 .modinfo .rel__param .rel.smp_locks .data .note.gnu.property .note.gnu.build-id .note.Linux .rel.gnu.linkonce.this_module .bss .comment .note.GNU-stack                                                         @   ê                    	   @       ‰  à              )             –  î                  %   	   @       l"  à               8             d  Ù                 4   	   @       Ù"  H              K             X	                    G   	   @       <%  (               Z             Ä	                      V   	   @       d%  (      	         b      

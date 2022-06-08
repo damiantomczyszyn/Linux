@@ -1,6 +1,1 @@
-86/include/asm/qrwlock.h \
-  include/asm-generic/qrwlock.h \
-  include/linux/rwlock.h \
-    $(wildcard include/config/PREEMPT) \
-  include/linux/spinlock_api_smp.h \
-    $(wildcard include/config/INLINE_SPIN_LOCK) \
+cmd_drivers/net/ethernet/3com/3c515.ko := ld -r -m elf_i386 --build-id=sha1  -T scripts/module.lds -o drivers/net/ethernet/3com/3c515.ko drivers/net/ethernet/3com/3c515.o drivers/net/ethernet/3com/3c515.mod.o;  true

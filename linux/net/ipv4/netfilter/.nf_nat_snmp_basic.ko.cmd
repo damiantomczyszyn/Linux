@@ -1,14 +1,11 @@
-		seq_printf(m, "[%p] ", class->key);
-		print_name(m, class);
-		seq_puts(m, "\n");
-	}
-	seq_puts(m, "\n");
-
-	return 0;
-}
-
-static const struct seq_operations lockdep_chains_ops = {
-	.start	= lc_start,
-	.next	= lc_next,
-	.stop	= lc_stop,
-	
+// SPDX-License-Identifier: GPL-2.0-only
+/*
+ *  kernel/sched/core.c
+ *
+ *  Core kernel scheduler code and related syscalls
+ *
+ *  Copyright (C) 1991-2002  Linus Torvalds
+ */
+#include <linux/highmem.h>
+#include <linux/hrtimer_api.h>
+#inc

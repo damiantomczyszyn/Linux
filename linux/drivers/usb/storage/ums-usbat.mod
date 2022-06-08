@@ -1,2 +1,2 @@
-ude/config/PARAVIRT_XXL) \
-  arch/x86
+nnel *audio_ch =
+		&dev->sram_channel

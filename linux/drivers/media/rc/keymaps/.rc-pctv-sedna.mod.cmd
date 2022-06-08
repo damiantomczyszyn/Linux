@@ -1,1 +1,7 @@
-cmd_drivers/media/rc/keymaps/rc-pctv-sedna.mod := { echo  drivers/media/rc/keymaps/rc-pctv-sedna.o;  echo; } > drivers/media/rc/keymaps/rc-pctv-sedna.mod
+= 1,
+	.agc = &xc3028_agc_config,
+	.bw  = &xc3028_bw_config,
+
+	.gpio_dir = DIB7000P_GPIO_DEFAULT_DIRECTIONS,
+	.gpio_val = DIB7000P_GPIO_DEFAULT_VALUES,
+	.g

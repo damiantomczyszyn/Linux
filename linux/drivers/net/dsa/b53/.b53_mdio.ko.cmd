@@ -1,1 +1,1 @@
-cmd_drivers/media/i2c/upd64083.o := gcc -Wp,-MMD,drivers/media/i2c/.upd64083.o.d -nostdinc -I./arch/x86/include -I./arch/x86/include/generated  -I./include -I./arch/x86/include/uapi -I./arch/x86/include/g
+cmd_drivers/net/dsa/b53/b53_mdio.ko := ld -r -m elf_i386 --build-id=sha1  -T scripts/module.lds -o drivers/net/dsa/b53/b53_mdio.ko drivers/net/dsa/b53/b53_mdio.o drivers/net/dsa/b53/b53_mdio.mod.o;  true

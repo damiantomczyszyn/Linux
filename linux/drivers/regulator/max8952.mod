@@ -1,2 +1,1 @@
-e/linux/rwlock.h \
-    $(wild
+/* SPDX-License-Identifier: G

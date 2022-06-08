@@ -1,3 +1,4 @@
-_POINTS)
-		stats->contention_point[contention_point]++;
-	if (
+k_struct *p, int flags)
+{
+	if (!(flags & ENQUEUE_NOCLOCK))
+		

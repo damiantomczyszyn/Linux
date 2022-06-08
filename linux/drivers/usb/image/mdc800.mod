@@ -1,2 +1,1 @@
-qrwlock.h \
-  include/linux/
+.duty_cycle = 25,      /* 25

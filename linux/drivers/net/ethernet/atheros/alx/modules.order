@@ -1,2 +1,3 @@
-RCOPY) \
-  arch/x86/include/asm/uaccess.
+onst struct v4l2_frequency *f)
+{
+	struct

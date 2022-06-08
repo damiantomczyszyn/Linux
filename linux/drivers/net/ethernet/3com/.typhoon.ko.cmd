@@ -1,7 +1,1 @@
-qrwlock.h \
-  include/linux/rwlock.h \
-    $(wildcard include/config/PREEMPT) \
-  include/linux/spinlock_api_smp.h \
-    $(wildcard include/config/INLINE_SPIN_LOCK) \
-    $(wildcard include/config/INLINE_SPIN_LOCK_BH) \
-    
+cmd_drivers/net/ethernet/3com/typhoon.ko := ld -r -m elf_i386 --build-id=sha1  -T scripts/module.lds -o drivers/net/ethernet/3com/typhoon.ko drivers/net/ethernet/3com/typhoon.o drivers/net/ethernet/3com/typhoon.mod.o;  true

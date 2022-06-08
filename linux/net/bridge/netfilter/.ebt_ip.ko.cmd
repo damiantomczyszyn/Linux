@@ -1,10 +1,7 @@
-(likely(hlock_class(this)->usage_mask & new_mask))
-		return 1;
+ass change for a non user-defined clamp value. */
+	if (likely(!(attr->sched_flags & SCHED_FLAG_UTIL_CLAMP)) &&
+	    !uc_se->user_defined)
+		return true;
 
-	if (!graph_lock())
-		return 0;
-	/*
-	 * Make sure we didn't race:
-	 */
-	if (unlikely(hlock_class(this)->usage_mask & new_mask))
-		goto u
+	/* Reset on sched_util_{min,max} == -1. */
+	i

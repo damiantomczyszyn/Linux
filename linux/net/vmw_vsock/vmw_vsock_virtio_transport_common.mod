@@ -1,1 +1,6 @@
-atic inline int check_wait_context(struct
+00);
+		break;
+	}
+}
+
+int cx23885_ir_init(s

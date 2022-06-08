@@ -1,4 +1,210 @@
-e/linux/rwlock.h \
+ \
+  arch/x86/include/asm/pgtable-3level_types.h \
+  include/asm-generic/pgtable-nop4d.h \
+  include/asm-generic/pgtable-nopud.h \
+  arch/x86/include/asm/nospec-branch.h \
+  include/linux/static_key.h \
+  include/linux/jump_label.h \
+    $(wildcard include/config/HAVE_ARCH_JUMP_LABEL_RELATIVE) \
+  arch/x86/include/asm/jump_label.h \
+  include/linux/objtool.h \
+    $(wildcard include/config/FRAME_POINTER) \
+  arch/x86/include/asm/msr-index.h \
+  arch/x86/include/asm/unwind_hints.h \
+  arch/x86/include/asm/orc_types.h \
+  arch/x86/include/asm/GEN-for-each-reg.h \
+  arch/x86/include/asm/spinlock_types.h \
+  include/asm-generic/qspinlock_types.h \
+    $(wildcard include/config/NR_CPUS) \
+  include/asm-generic/qrwlock_types.h \
+  arch/x86/include/asm/proto.h \
+  arch/x86/include/uapi/asm/ldt.h \
+  arch/x86/include/uapi/asm/sigcontext.h \
+  arch/x86/include/asm/current.h \
+  arch/x86/include/asm/percpu.h \
+    $(wildcard include/config/X86_64_SMP) \
+  include/linux/kernel.h \
+    $(wildcard include/config/PREEMPT_VOLUNTARY_BUILD) \
+    $(wildcard include/config/PREEMPT_DYNAMIC) \
+    $(wildcard include/config/HAVE_PREEMPT_DYNAMIC_CALL) \
+    $(wildcard include/config/HAVE_PREEMPT_DYNAMIC_KEY) \
+    $(wildcard include/config/PREEMPT_) \
+    $(wildcard include/config/DEBUG_ATOMIC_SLEEP) \
+    $(wildcard include/config/MMU) \
+    $(wildcard include/config/PROVE_LOCKING) \
+  include/linux/stdarg.h \
+  include/linux/align.h \
+  include/linux/limits.h \
+  include/uapi/linux/limits.h \
+  include/vdso/limits.h \
+  include/linux/kstrtox.h \
+  include/linux/minmax.h \
+  include/linux/panic.h \
+    $(wildcard include/config/PANIC_TIMEOUT) \
+  include/linux/printk.h \
+    $(wildcard include/config/MESSAGE_LOGLEVEL_DEFAULT) \
+    $(wildcard include/config/CONSOLE_LOGLEVEL_DEFAULT) \
+    $(wildcard include/config/CONSOLE_LOGLEVEL_QUIET) \
+    $(wildcard include/config/EARLY_PRINTK) \
+    $(wildcard include/config/PRINTK) \
+    $(wildcard include/config/DYNAMIC_DEBUG) \
+    $(wildcard include/config/DYNAMIC_DEBUG_CORE) \
+  include/linux/kern_levels.h \
+  include/linux/ratelimit_types.h \
+  include/linux/spinlock_types_raw.h \
+    $(wildcard include/config/DEBUG_SPINLOCK) \
+    $(wildcard include/config/DEBUG_LOCK_ALLOC) \
+  include/linux/lockdep_types.h \
+    $(wildcard include/config/PROVE_RAW_LOCK_NESTING) \
+    $(wildcard include/config/LOCKDEP) \
+    $(wildcard include/config/LOCK_STAT) \
+  include/linux/once_lite.h \
+  include/linux/static_call_types.h \
+    $(wildcard include/config/HAVE_STATIC_CALL) \
+  include/linux/instruction_pointer.h \
+  include/asm-generic/percpu.h \
+    $(wildcard include/config/DEBUG_PREEMPT) \
+    $(wildcard include/config/HAVE_SETUP_PER_CPU_AREA) \
+  include/linux/threads.h \
+    $(wildcard include/config/BASE_SMALL) \
+  include/linux/percpu-defs.h \
+    $(wildcard include/config/DEBUG_FORCE_WEAK_PER_CPU) \
+  arch/x86/include/asm/page.h \
+  arch/x86/include/asm/page_32.h \
+    $(wildcard include/config/DEBUG_VIRTUAL) \
+    $(wildcard include/config/FLATMEM) \
+  include/linux/string.h \
+    $(wildcard include/config/BINARY_PRINTF) \
+    $(wildcard include/config/FORTIFY_SOURCE) \
+  include/linux/errno.h \
+  include/uapi/linux/errno.h \
+  include/uapi/linux/string.h \
+  arch/x86/include/asm/string.h \
+  arch/x86/include/asm/string_32.h \
+  include/linux/fortify-string.h \
+  include/linux/range.h \
+  include/asm-generic/memory_model.h \
+    $(wildcard include/config/SPARSEMEM_VMEMMAP) \
+    $(wildcard include/config/SPARSEMEM) \
+  include/linux/pfn.h \
+  include/asm-generic/getorder.h \
+  arch/x86/include/asm/msr.h \
+  arch/x86/include/asm/msr-index.h \
+  arch/x86/include/asm/cpumask.h \
+  include/linux/cpumask.h \
+    $(wildcard include/config/CPUMASK_OFFSTACK) \
+    $(wildcard include/config/HOTPLUG_CPU) \
+    $(wildcard include/config/DEBUG_PER_CPU_MAPS) \
+  include/linux/bitmap.h \
+  include/linux/find.h \
+  include/linux/atomic.h \
+  arch/x86/include/asm/atomic.h \
+  arch/x86/include/asm/cmpxchg.h \
+  arch/x86/include/asm/cmpxchg_32.h \
+  arch/x86/include/asm/atomic64_32.h \
+  include/linux/atomic/atomic-arch-fallback.h \
+    $(wildcard include/config/GENERIC_ATOMIC64) \
+  include/linux/atomic/atomic-long.h \
+  include/linux/atomic/atomic-instrumented.h \
+  include/linux/bug.h \
+    $(wildcard include/config/BUG_ON_DATA_CORRUPTION) \
+  arch/x86/include/asm/bug.h \
+    $(wildcard include/config/DEBUG_BUGVERBOSE) \
+  include/linux/instrumentation.h \
+    $(wildcard include/config/DEBUG_ENTRY) \
+  include/asm-generic/bug.h \
+    $(wildcard include/config/BUG) \
+    $(wildcard include/config/GENERIC_BUG_RELATIVE_POINTERS) \
+  arch/x86/include/uapi/asm/msr.h \
+  include/linux/tracepoint-defs.h \
+  arch/x86/include/asm/special_insns.h \
+  include/linux/irqflags.h \
+    $(wildcard include/config/TRACE_IRQFLAGS) \
+    $(wildcard include/config/PREEMPT_RT) \
+    $(wildcard include/config/IRQSOFF_TRACER) \
+    $(wildcard include/config/PREEMPT_TRACER) \
+    $(wildcard include/config/DEBUG_IRQFLAGS) \
+    $(wildcard include/config/TRACE_IRQFLAGS_SUPPORT) \
+  arch/x86/include/asm/irqflags.h \
+  arch/x86/include/asm/fpu/types.h \
+  arch/x86/include/asm/vmxfeatures.h \
+  arch/x86/include/asm/vdso/processor.h \
+  include/linux/personality.h \
+  include/uapi/linux/personality.h \
+  arch/x86/include/asm/tsc.h \
+  arch/x86/include/asm/cpufeature.h \
+    $(wildcard include/config/X86_FEATURE_NAMES) \
+  include/vdso/time32.h \
+  include/vdso/time.h \
+  include/linux/uidgid.h \
+    $(wildcard include/config/MULTIUSER) \
+    $(wildcard include/config/USER_NS) \
+  include/linux/highuid.h \
+  include/linux/buildid.h \
+    $(wildcard include/config/CRASH_CORE) \
+  include/linux/mm_types.h \
+    $(wildcard include/config/HAVE_ALIGNED_STRUCT_PAGE) \
+    $(wildcard include/config/MEMCG) \
+    $(wildcard include/config/USERFAULTFD) \
+    $(wildcard include/config/SWAP) \
+    $(wildcard include/config/NUMA) \
+    $(wildcard include/config/HAVE_ARCH_COMPAT_MMAP_BASES) \
+    $(wildcard include/config/MEMBARRIER) \
+    $(wildcard include/config/AIO) \
+    $(wildcard include/config/MMU_NOTIFIER) \
+    $(wildcard include/config/TRANSPARENT_HUGEPAGE) \
+    $(wildcard include/config/NUMA_BALANCING) \
+    $(wildcard include/config/ARCH_WANT_BATCHED_UNMAP_TLB_FLUSH) \
+    $(wildcard include/config/HUGETLB_PAGE) \
+    $(wildcard include/config/IOMMU_SVA) \
+  include/linux/mm_types_task.h \
+    $(wildcard include/config/SPLIT_PTLOCK_CPUS) \
+    $(wildcard include/config/ARCH_ENABLE_SPLIT_PMD_PTLOCK) \
+  arch/x86/include/asm/tlbbatch.h \
+  include/linux/auxvec.h \
+  include/uapi/linux/auxvec.h \
+  arch/x86/include/uapi/asm/auxvec.h \
+  include/linux/kref.h \
+  include/linux/spinlock.h \
+    $(wildcard include/config/PREEMPTION) \
+  include/linux/preempt.h \
+    $(wildcard include/config/PREEMPT_COUNT) \
+    $(wildcard include/config/TRACE_PREEMPT_TOGGLE) \
+    $(wildcard include/config/PREEMPT_NOTIFIERS) \
+  arch/x86/include/asm/preempt.h \
+  include/linux/thread_info.h \
+    $(wildcard include/config/THREAD_INFO_IN_TASK) \
+    $(wildcard include/config/GENERIC_ENTRY) \
+    $(wildcard include/config/HAVE_ARCH_WITHIN_STACK_FRAMES) \
+    $(wildcard include/config/HARDENED_USERCOPY) \
+  include/linux/restart_block.h \
+  arch/x86/include/asm/thread_info.h \
+    $(wildcard include/config/COMPAT) \
+  include/linux/bottom_half.h \
+  include/linux/lockdep.h \
+    $(wildcard include/config/DEBUG_LOCKING_API_SELFTESTS) \
+  include/linux/smp.h \
+    $(wildcard include/config/UP_LATE_INIT) \
+  include/linux/smp_types.h \
+  include/linux/llist.h \
+    $(wildcard include/config/ARCH_HAVE_NMI_SAFE_CMPXCHG) \
+  arch/x86/include/asm/smp.h \
+    $(wildcard include/config/X86_LOCAL_APIC) \
+    $(wildcard include/config/DEBUG_NMI_SELFTEST) \
+  arch/x86/include/generated/asm/mmiowb.h \
+  include/asm-generic/mmiowb.h \
+    $(wildcard include/config/MMIOWB) \
+  include/linux/spinlock_types.h \
+  include/linux/rwlock_types.h \
+  arch/x86/include/asm/spinlock.h \
+  arch/x86/include/asm/paravirt.h \
+    $(wildcard include/config/PARAVIRT_SPINLOCKS) \
+  arch/x86/include/asm/frame.h \
+  arch/x86/include/asm/qspinlock.h \
+  include/asm-generic/qspinlock.h \
+  arch/x86/include/asm/qrwlock.h \
+  include/asm-generic/qrwlock.h \
+  include/linux/rwlock.h \
     $(wildcard include/config/PREEMPT) \
   include/linux/spinlock_api_smp.h \
     $(wildcard include/config/INLINE_SPIN_LOCK) \
@@ -232,749 +438,1298 @@ e/linux/rwlock.h \
     $(wildcard include/config/MODULES_USE_ELF_REL) \
     $(wildcard include/config/MODULES_USE_ELF_RELA) \
   arch/x86/include/asm/orc_types.h \
-  include/linux/i2c.h \
-    $(wildcard include/config/I2C) \
-    $(wildcard include/config/I2C_SLAVE) \
-    $(wildcard include/config/I2C_BOARDINFO) \
-    $(wildcard include/config/I2C_MUX) \
-    $(wildcard include/config/OF) \
-    $(wildcard include/config/ACPI) \
-  include/linux/acpi.h \
-    $(wildcard include/config/ACPI_DEBUGGER) \
-    $(wildcard include/config/ACPI_TABLE_LIB) \
-    $(wildcard include/config/LOONGARCH) \
-    $(wildcard include/config/ARM64) \
-    $(wildcard include/config/ACPI_PROCESSOR_CSTATE) \
-    $(wildcard include/config/ACPI_HOTPLUG_CPU) \
-    $(wildcard include/config/ACPI_HOTPLUG_IOAPIC) \
-    $(wildcard include/config/PCI) \
-    $(wildcard include/config/ACPI_WMI) \
-    $(wildcard include/config/ACPI_NUMA) \
-    $(wildcard include/config/HIBERNATION) \
-    $(wildcard include/config/ACPI_HOTPLUG_MEMORY) \
-    $(wildcard include/config/ACPI_CONTAINER) \
-    $(wildcard include/config/ACPI_GTDT) \
-    $(wildcard include/config/PM) \
-    $(wildcard include/config/GPIOLIB) \
-    $(wildcard include/config/ACPI_TABLE_UPGRADE) \
-    $(wildcard include/config/ACPI_WATCHDOG) \
-    $(wildcard include/config/ACPI_SPCR_TABLE) \
-    $(wildcard include/config/ACPI_GENERIC_GSI) \
-    $(wildcard include/config/ACPI_LPIT) \
-    $(wildcard include/config/ACPI_PPTT) \
-    $(wildcard include/config/ACPI_PCC) \
-  include/linux/ioport.h \
-  include/linux/irqdomain.h \
-    $(wildcard include/config/IRQ_DOMAIN_HIERARCHY) \
-    $(wildcard include/config/GENERIC_IRQ_DEBUGFS) \
-    $(wildcard include/config/IRQ_DOMAIN) \
-    $(wildcard include/config/IRQ_DOMAIN_NOMAP) \
-  include/linux/irqhandler.h \
-  include/linux/of.h \
-    $(wildcard include/config/OF_DYNAMIC) \
-    $(wildcard include/config/SPARC) \
-    $(wildcard include/config/OF_PROMTREE) \
-    $(wildcard include/config/OF_KOBJ) \
-    $(wildcard include/config/OF_NUMA) \
-    $(wildcard include/config/OF_OVERLAY) \
-  include/linux/mod_devicetable.h \
-  include/linux/uuid.h \
-  include/uapi/linux/uuid.h \
-  include/linux/property.h \
-  include/linux/fwnode.h \
-  include/linux/resource_ext.h \
-  include/linux/slab.h \
-    $(wildcard include/config/DEBUG_SLAB) \
-    $(wildcard include/config/FAILSLAB) \
-    $(wildcard include/config/MEMCG_KMEM) \
-    $(wildcard include/config/KASAN) \
-    $(wildcard include/config/SLAB) \
-    $(wildcard include/config/SLUB) \
-    $(wildcard include/config/SLOB) \
-  include/linux/overflow.h \
-  include/linux/percpu-refcount.h \
-  include/linux/kasan.h \
-    $(wildcard include/config/KASAN_STACK) \
-    $(wildcard include/config/KASAN_VMALLOC) \
-    $(wildcard include/config/KASAN_INLINE) \
-  include/linux/kasan-enabled.h \
-  include/linux/device.h \
-    $(wildcard include/config/GENERIC_MSI_IRQ_DOMAIN) \
-    $(wildcard include/config/GENERIC_MSI_IRQ) \
-    $(wildcard include/config/ENERGY_MODEL) \
-    $(wildcard include/config/PINCTRL) \
-    $(wildcard include/config/DMA_OPS) \
-    $(wildcard include/config/DMA_DECLARE_COHERENT) \
-    $(wildcard include/config/DMA_CMA) \
-    $(wildcard include/config/SWIOTLB) \
-    $(wildcard include/config/ARCH_HAS_SYNC_DMA_FOR_DEVICE) \
-    $(wildcard include/config/ARCH_HAS_SYNC_DMA_FOR_CPU) \
-    $(wildcard include/config/ARCH_HAS_SYNC_DMA_FOR_CPU_ALL) \
-    $(wildcard include/config/DMA_OPS_BYPASS) \
-    $(wildcard include/config/DEVTMPFS) \
-    $(wildcard include/config/SYSFS_DEPRECATED) \
-  include/linux/dev_printk.h \
-  include/linux/ratelimit.h \
-  include/linux/sched.h \
-    $(wildcard include/config/VIRT_CPU_ACCOUNTING_NATIVE) \
-    $(wildcard include/config/SCHED_INFO) \
-    $(wildcard include/config/SCHEDSTATS) \
-    $(wildcard include/config/SCHED_CORE) \
-    $(wildcard include/config/FAIR_GROUP_SCHED) \
-    $(wildcard include/config/RT_GROUP_SCHED) \
-    $(wildcard include/config/RT_MUTEXES) \
-    $(wildcard include/config/UCLAMP_TASK) \
-    $(wildcard include/config/UCLAMP_BUCKETS_COUNT) \
-    $(wildcard include/config/CGROUP_SCHED) \
-    $(wildcard include/config/BLK_DEV_IO_TRACE) \
-    $(wildcard include/config/PSI) \
-    $(wildcard include/config/COMPAT_BRK) \
-    $(wildcard include/config/CGROUPS) \
-    $(wildcard include/config/BLK_CGROUP) \
-    $(wildcard include/config/PAGE_OWNER) \
-    $(wildcard include/config/EVENTFD) \
-    $(wildcard include/config/ARCH_HAS_SCALED_CPUTIME) \
-    $(wildcard include/config/VIRT_CPU_ACCOUNTING_GEN) \
-    $(wildcard include/config/POSIX_CPUTIMERS) \
-    $(wildcard include/config/POSIX_CPU_TIMERS_TASK_WORK) \
-    $(wildcard include/config/KEYS) \
-    $(wildcard include/config/SYSVIPC) \
-    $(wildcard include/config/DETECT_HUNG_TASK) \
-    $(wildcard include/config/IO_URING) \
-    $(wildcard include/config/AUDIT) \
-    $(wildcard include/config/AUDITSYSCALL) \
-    $(wildcard include/config/UBSAN) \
-    $(wildcard include/config/UBSAN_TRAP) \
-    $(wildcard include/config/TASK_XACCT) \
-    $(wildcard include/config/CPUSETS) \
-    $(wildcard include/config/X86_CPU_RESCTRL) \
-    $(wildcard include/config/FUTEX) \
-    $(wildcard include/config/PERF_EVENTS) \
-    $(wildcard include/config/RSEQ) \
-    $(wildcard include/config/TASK_DELAY_ACCT) \
-    $(wildcard include/config/FAULT_INJECTION) \
-    $(wildcard include/config/LATENCYTOP) \
-    $(wildcard include/config/KUNIT) \
-    $(wildcard include/config/FUNCTION_GRAPH_TRACER) \
-    $(wildcard include/config/BCACHE) \
-    $(wildcard include/config/VMAP_STACK) \
-    $(wildcard include/config/SECURITY) \
-    $(wildcard include/config/BPF_SYSCALL) \
-    $(wildcard include/config/GCC_PLUGIN_STACKLEAK) \
-    $(wildcard include/config/X86_MCE) \
-    $(wildcard include/config/KRETPROBES) \
-    $(wildcard include/config/RETHOOK) \
-    $(wildcard include/config/ARCH_HAS_PARANOID_L1D_FLUSH) \
-    $(wildcard include/config/ARCH_TASK_STRUCT_ON_STACK) \
-    $(wildcard include/config/DEBUG_RSEQ) \
-  include/uapi/linux/sched.h \
-  include/linux/pid.h \
-  include/linux/rculist.h \
-    $(wildcard include/config/PROVE_RCU_LIST) \
-  include/linux/sem.h \
-  include/uapi/linux/sem.h \
-  include/linux/ipc.h \
-  include/linux/rhashtable-types.h \
-  include/uapi/linux/ipc.h \
-  arch/x86/include/generated/uapi/asm/ipcbuf.h \
-  include/uapi/asm-generic/ipcbuf.h \
-  arch/x86/include/uapi/asm/sembuf.h \
-  include/linux/shm.h \
-  include/uapi/linux/shm.h \
-  include/uapi/asm-generic/hugetlb_encode.h \
-  arch/x86/include/uapi/asm/shmbuf.h \
-  include/uapi/asm-generic/shmbuf.h \
-  arch/x86/include/asm/shmparam.h \
-  include/linux/plist.h \
-    $(wildcard include/config/DEBUG_PLIST) \
-  include/linux/hrtimer.h \
-    $(wildcard include/config/HIGH_RES_TIMERS) \
-    $(wildcard include/config/TIME_LOW_RES) \
-    $(wildcard include/config/TIMERFD) \
-  include/linux/hrtimer_defs.h \
-  include/linux/timerqueue.h \
-  include/linux/seccomp.h \
-    $(wildcard include/config/SECCOMP) \
-    $(wildcard include/config/HAVE_ARCH_SECCOMP_FILTER) \
-    $(wildcard include/config/SECCOMP_FILTER) \
-    $(wildcard include/config/CHECKPOINT_RESTORE) \
-    $(wildcard include/config/SECCOMP_CACHE_DEBUG) \
-  include/uapi/linux/seccomp.h \
-  arch/x86/include/asm/seccomp.h \
-  arch/x86/include/asm/unistd.h \
-  arch/x86/include/uapi/asm/unistd.h \
-  arch/x86/include/generated/uapi/asm/unistd_32.h \
-  include/asm-generic/seccomp.h \
-  include/uapi/linux/unistd.h \
-  include/linux/resource.h \
-  include/uapi/linux/resource.h \
-  arch/x86/include/generated/uapi/asm/resource.h \
-  include/asm-generic/resource.h \
-  include/uapi/asm-generic/resource.h \
-  include/linux/latencytop.h \
-  include/linux/sched/prio.h \
-  include/linux/sched/types.h \
-  include/linux/signal_types.h \
-    $(wildcard include/config/OLD_SIGACTION) \
-  include/uapi/linux/signal.h \
-  arch/x86/include/asm/signal.h \
-  arch/x86/include/uapi/asm/signal.h \
-  include/uapi/asm-generic/signal-defs.h \
-  arch/x86/include/uapi/asm/siginfo.h \
-  include/uapi/asm-generic/siginfo.h \
-  include/linux/syscall_user_dispatch.h \
-  include/linux/task_io_accounting.h \
-    $(wildcard include/config/TASK_IO_ACCOUNTING) \
-  include/linux/posix-timers.h \
-  include/linux/alarmtimer.h \
-    $(wildcard include/config/RTC_CLASS) \
-  include/uapi/linux/rseq.h \
-  include/linux/kcsan.h \
-  include/linux/energy_model.h \
-  include/linux/sched/cpufreq.h \
-    $(wildcard include/config/CPU_FREQ) \
-  include/linux/sched/topology.h \
-    $(wildcard include/config/SCHED_DEBUG) \
-    $(wildcard include/config/SCHED_MC) \
-    $(wildcard include/config/CPU_FREQ_GOV_SCHEDUTIL) \
-  include/linux/sched/idle.h \
-  include/linux/sched/sd_flags.h \
-  include/linux/klist.h \
-  include/linux/pm.h \
-    $(wildcard include/config/VT_CONSOLE_SLEEP) \
-    $(wildcard include/config/PM_CLK) \
-    $(wildcard include/config/PM_GENERIC_DOMAINS) \
-  include/linux/device/bus.h \
-  include/linux/device/class.h \
-  include/linux/device/driver.h \
-  arch/x86/include/asm/device.h \
-  include/linux/pm_wakeup.h \
-  include/acpi/acpi.h \
-  include/acpi/platform/acenv.h \
-  include/acpi/platform/acgcc.h \
-  include/acpi/platform/aclinux.h \
-    $(wildcard include/config/ACPI_REDUCED_HARDWARE_ONLY) \
-    $(wildcard include/config/ACPI_DEBUG) \
-  include/linux/ctype.h \
-  arch/x86/include/asm/acenv.h \
-  include/acpi/acnames.h \
-  include/acpi/actypes.h \
-  include/acpi/acexcep.h \
-  include/acpi/actbl.h \
-  include/acpi/actbl1.h \
-  include/acpi/actbl2.h \
-  include/acpi/actbl3.h \
-  include/acpi/acrestyp.h \
-  include/acpi/platform/acenvex.h \
-  include/acpi/platform/aclinuxex.h \
-  include/acpi/platform/acgccex.h \
-  include/acpi/acoutput.h \
-  include/acpi/acpiosxf.h \
-  include/acpi/acpixf.h \
-  include/acpi/acconfig.h \
-  include/acpi/acbuffer.h \
-  include/linux/dynamic_debug.h \
-  include/acpi/acpi_bus.h \
-    $(wildcard include/config/X86_ANDROID_TABLETS) \
-    $(wildcard include/config/ACPI_SYSTEM_POWER_STATES_SUPPORT) \
-    $(wildcard include/config/ACPI_SLEEP) \
-  include/acpi/acpi_drivers.h \
-    $(wildcard include/config/ACPI_DOCK) \
-  include/acpi/acpi_numa.h \
-    $(wildcard include/config/ACPI_HMAT) \
-  include/acpi/acpi_io.h \
-  include/linux/io.h \
-    $(wildcard include/config/HAS_IOPORT_MAP) \
-  arch/x86/include/asm/io.h \
-    $(wildcard include/config/MTRR) \
-    $(wildcard include/config/X86_PAT) \
-  arch/x86/include/generated/asm/early_ioremap.h \
-  include/asm-generic/early_ioremap.h \
-    $(wildcard include/config/GENERIC_EARLY_IOREMAP) \
-  include/asm-generic/iomap.h \
-  include/asm-generic/pci_iomap.h \
-    $(wildcard include/config/NO_GENERIC_PCI_IOPORT_MAP) \
-    $(wildcard include/config/GENERIC_PCI_IOMAP) \
-  include/asm-generic/io.h \
-    $(wildcard include/config/GENERIC_IOMAP) \
-    $(wildcard include/config/GENERIC_IOREMAP) \
-    $(wildcard include/config/VIRT_TO_BUS) \
-    $(wildcard include/config/GENERIC_DEVMEM_IS_ALLOWED) \
-  include/linux/logic_pio.h \
-    $(wildcard include/config/INDIRECT_PIO) \
-  include/linux/vmalloc.h \
-    $(wildcard include/config/HAVE_ARCH_HUGE_VMALLOC) \
-  arch/x86/include/asm/vmalloc.h \
-    $(wildcard include/config/HAVE_ARCH_HUGE_VMAP) \
-  arch/x86/include/asm/acpi.h \
-    $(wildcard include/config/ACPI_APEI) \
-  include/acpi/pdc_intel.h \
-  arch/x86/include/asm/numa.h \
-    $(wildcard include/config/NUMA_EMU) \
-  arch/x86/include/asm/numa_32.h \
-  include/linux/regulator/consumer.h \
-    $(wildcard include/config/REGULATOR) \
-  include/linux/suspend.h \
-    $(wildcard include/config/VT) \
-    $(wildcard include/config/SUSPEND) \
-    $(wildcard include/config/HIBERNATION_SNAPSHOT_DEV) \
-    $(wildcard include/config/PM_SLEEP_DEBUG) \
-    $(wildcard include/config/PM_AUTOSLEEP) \
-  include/linux/swap.h \
-    $(wildcard include/config/DEVICE_PRIVATE) \
-    $(wildcard include/config/MIGRATION) \
-    $(wildcard include/config/FRONTSWAP) \
-    $(wildcard include/config/THP_SWAP) \
-    $(wildcard include/config/MEMCG_SWAP) \
-  include/linux/memcontrol.h \
-    $(wildcard include/config/CGROUP_WRITEBACK) \
-  include/linux/cgroup.h \
-    $(wildcard include/config/CGROUP_CPUACCT) \
-    $(wildcard include/config/SOCK_CGROUP_DATA) \
-    $(wildcard include/config/CGROUP_DATA) \
-    $(wildcard include/config/CGROUP_BPF) \
-  include/uapi/linux/cgroupstats.h \
-  include/uapi/linux/taskstats.h \
-  include/linux/fs.h \
-    $(wildcard include/config/READ_ONLY_THP_FOR_FS) \
-    $(wildcard include/config/FS_POSIX_ACL) \
-    $(wildcard include/config/IMA) \
-    $(wildcard include/config/FILE_LOCKING) \
-    $(wildcard include/config/FSNOTIFY) \
-    $(wildcard include/config/FS_ENCRYPTION) \
-    $(wildcard include/config/FS_VERITY) \
-    $(wildcard include/config/EPOLL) \
-    $(wildcard include/config/UNICODE) \
-    $(wildcard include/config/QUOTA) \
-    $(wildcard include/config/FS_DAX) \
-    $(wildcard include/config/BLOCK) \
-  include/linux/wait_bit.h \
-  include/linux/kdev_t.h \
-  include/uapi/linux/kdev_t.h \
-  include/linux/dcache.h \
-  include/linux/rculist_bl.h \
-  include/linux/list_bl.h \
-  include/linux/bit_spinlock.h \
-  include/linux/lockref.h \
-    $(wildcard include/config/ARCH_USE_CMPXCHG_LOCKREF) \
-  include/linux/stringhash.h \
-    $(wildcard include/config/DCACHE_WORD_ACCESS) \
-  include/linux/hash.h \
-    $(wildcard include/config/HAVE_ARCH_HASH) \
-  include/linux/path.h \
-  include/linux/list_lru.h \
-  include/linux/shrinker.h \
-  include/linux/capability.h \
-  include/uapi/linux/capability.h \
-  include/linux/semaphore.h \
-  include/linux/fcntl.h \
-    $(wildcard include/config/ARCH_32BIT_OFF_T) \
-  include/uapi/linux/fcntl.h \
-  arch/x86/include/generated/uapi/asm/fcntl.h \
-  include/uapi/asm-generic/fcntl.h \
-  include/uapi/linux/openat2.h \
-  include/linux/migrate_mode.h \
-  include/linux/percpu-rwsem.h \
-  include/linux/rcuwait.h \
-  include/linux/sched/signal.h \
-    $(wildcard include/config/SCHED_AUTOGROUP) \
-    $(wildcard include/config/BSD_PROCESS_ACCT) \
-    $(wildcard include/config/TASKSTATS) \
-    $(wildcard include/config/STACK_GROWSUP) \
-  include/linux/signal.h \
-    $(wildcard include/config/DYNAMIC_SIGFRAME) \
-  include/linux/sched/jobctl.h \
-  include/linux/sched/task.h \
-    $(wildcard include/config/HAVE_EXIT_THREAD) \
-    $(wildcard include/config/ARCH_WANTS_DYNAMIC_TASK_STRUCT) \
-    $(wildcard include/config/HAVE_ARCH_THREAD_STRUCT_WHITELIST) \
-  include/linux/uaccess.h \
-  include/linux/fault-inject-usercopy.h \
-    $(wildcard include/config/FAULT_INJECTION_USERCOPY) \
-  arch/x86/include/asm/uaccess.h \
-    $(wildcard include/config/CC_HAS_ASM_GOTO_OUTPUT) \
-    $(wildcard include/config/CC_HAS_ASM_GOTO_TIED_OUTPUT) \
-    $(wildcard include/config/ARCH_HAS_COPY_MC) \
-    $(wildcard include/config/X86_INTEL_USERCOPY) \
-  arch/x86/include/asm/smap.h \
-  arch/x86/include/asm/extable.h \
-    $(wildcard include/config/BPF_JIT) \
-  include/asm-generic/access_ok.h \
-    $(wildcard include/config/ALTERNATE_USER_ADDRESS_SPACE) \
-  arch/x86/include/asm/uaccess_32.h \
-  include/linux/cred.h \
-    $(wildcard include/config/DEBUG_CREDENTIALS) \
-  include/linux/key.h \
-    $(wildcard include/config/KEY_NOTIFICATIONS) \
-    $(wildcard include/config/NET) \
-  include/linux/assoc_array.h \
-    $(wildcard include/config/ASSOCIATIVE_ARRAY) \
-  include/linux/sched/user.h \
-    $(wildcard include/config/WATCH_QUEUE) \
-  include/linux/percpu_counter.h \
-  include/linux/rcu_sync.h \
-  include/linux/delayed_call.h \
-  include/linux/errseq.h \
-  include/linux/ioprio.h \
-  include/linux/sched/rt.h \
-  include/linux/iocontext.h \
-    $(wildcard include/config/BLK_ICQ) \
-  include/uapi/linux/ioprio.h \
-  include/linux/fs_types.h \
-  include/linux/mount.h \
-  include/linux/mnt_idmapping.h \
-  include/uapi/linux/fs.h \
-  include/linux/quota.h \
-    $(wildcard include/config/QUOTA_NETLINK_INTERFACE) \
-  include/uapi/linux/dqblk_xfs.h \
-  include/linux/dqblk_v1.h \
-  include/linux/dqblk_v2.h \
-  include/linux/dqblk_qtree.h \
-  include/linux/projid.h \
-  include/uapi/linux/quota.h \
-  include/linux/nfs_fs_i.h \
-  include/linux/seq_file.h \
-  include/linux/string_helpers.h \
-  include/linux/ns_common.h \
-  include/linux/nsproxy.h \
-  include/linux/user_namespace.h \
-    $(wildcard include/config/INOTIFY_USER) \
-    $(wildcard include/config/FANOTIFY) \
-    $(wildcard include/config/PERSISTENT_KEYRINGS) \
-  include/linux/kernel_stat.h \
-  include/linux/interrupt.h \
-    $(wildcard include/config/IRQ_FORCED_THREADING) \
-    $(wildcard include/config/GENERIC_IRQ_PROBE) \
-    $(wildcard include/config/IRQ_TIMINGS) \
-  include/linux/irqreturn.h \
-  include/linux/irqnr.h \
-  include/uapi/linux/irqnr.h \
-  include/linux/hardirq.h \
-  include/linux/context_tracking_state.h \
-    $(wildcard include/config/CONTEXT_TRACKING) \
-  include/linux/ftrace_irq.h \
-    $(wildcard include/config/HWLAT_TRACER) \
-    $(wildcard include/config/OSNOISE_TRACER) \
-  include/linux/vtime.h \
-    $(wildcard include/config/VIRT_CPU_ACCOUNTING) \
-    $(wildcard include/config/IRQ_TIME_ACCOUNTING) \
-  arch/x86/include/asm/hardirq.h \
-    $(wildcard include/config/KVM_INTEL) \
-    $(wildcard include/config/X86_THERMAL_VECTOR) \
-    $(wildcard include/config/X86_MCE_THRESHOLD) \
-    $(wildcard include/config/X86_MCE_AMD) \
-    $(wildcard include/config/X86_HV_CALLBACK_VECTOR) \
-  arch/x86/include/asm/irq.h \
-  arch/x86/include/asm/sections.h \
-  include/asm-generic/sections.h \
-    $(wildcard include/config/HAVE_FUNCTION_DESCRIPTORS) \
-  include/linux/cgroup-defs.h \
-    $(wildcard include/config/CGROUP_NET_CLASSID) \
-    $(wildcard include/config/CGROUP_NET_PRIO) \
-  include/linux/u64_stats_sync.h \
-  include/linux/bpf-cgroup-defs.h \
-  include/linux/psi_types.h \
-  include/linux/kthread.h \
-  include/linux/cgroup_subsys.h \
-    $(wildcard include/config/CGROUP_DEVICE) \
-    $(wildcard include/config/CGROUP_FREEZER) \
-    $(wildcard include/config/CGROUP_PERF) \
-    $(wildcard include/config/CGROUP_HUGETLB) \
-    $(wildcard include/config/CGROUP_PIDS) \
-    $(wildcard include/config/CGROUP_RDMA) \
-    $(wildcard include/config/CGROUP_MISC) \
-    $(wildcard include/config/CGROUP_DEBUG) \
-  include/linux/vm_event_item.h \
-    $(wildcard include/config/HAVE_ARCH_TRANSPARENT_HUGEPAGE_PUD) \
-    $(wildcard include/config/MEMORY_BALLOON) \
-    $(wildcard include/config/BALLOON_COMPACTION) \
-    $(wildcard include/config/DEBUG_TLBFLUSH) \
-    $(wildcard include/config/DEBUG_VM_VMACACHE) \
-  include/linux/page_counter.h \
-  include/linux/vmpressure.h \
-  include/linux/eventfd.h \
-  include/linux/mm.h \
-    $(wildcard include/config/HAVE_ARCH_MMAP_RND_BITS) \
-    $(wildcard include/config/HAVE_ARCH_MMAP_RND_COMPAT_BITS) \
-    $(wildcard include/config/ARCH_USES_HIGH_VMA_FLAGS) \
-    $(wildcard include/config/ARCH_HAS_PKEYS) \
-    $(wildcard include/config/PPC) \
-    $(wildcard include/config/PARISC) \
-    $(wildcard include/config/SPARC64) \
-    $(wildcard include/config/ARM64_MTE) \
-    $(wildcard include/config/HAVE_ARCH_USERFAULTFD_MINOR) \
-    $(wildcard include/config/SHMEM) \
-    $(wildcard include/config/ARCH_HAS_PTE_SPECIAL) \
-    $(wildcard include/config/ARCH_HAS_PTE_DEVMAP) \
-    $(wildcard include/config/DEBUG_VM_RB) \
-    $(wildcard include/config/PAGE_POISONING) \
-    $(wildcard include/config/INIT_ON_ALLOC_DEFAULT_ON) \
-    $(wildcard include/config/INIT_ON_FREE_DEFAULT_ON) \
-    $(wildcard include/config/DEBUG_PAGEALLOC) \
-    $(wildcard include/config/HUGETLBFS) \
-    $(wildcard include/config/MAPPING_DIRTY_HELPERS) \
-    $(wildcard include/config/ANON_VMA_NAME) \
-  include/linux/mmap_lock.h \
-  include/linux/page_ext.h \
-  include/linux/stacktrace.h \
-    $(wildcard include/config/ARCH_STACKWALK) \
-    $(wildcard include/config/STACKTRACE) \
-    $(wildcard include/config/HAVE_RELIABLE_STACKTRACE) \
-  include/linux/stackdepot.h \
-    $(wildcard include/config/STACKDEPOT_ALWAYS_INIT) \
-  include/linux/page_ref.h \
-    $(wildcard include/config/DEBUG_PAGE_REF) \
-  include/linux/sizes.h \
-  include/linux/pgtable.h \
-    $(wildcard include/config/HIGHPTE) \
-    $(wildcard include/config/GUP_GET_PTE_LOW_HIGH) \
-    $(wildcard include/config/HAVE_ARCH_SOFT_DIRTY) \
-    $(wildcard include/config/ARCH_ENABLE_THP_MIGRATION) \
-    $(wildcard include/config/X86_ESPFIX64) \
-  arch/x86/include/asm/pgtable.h \
-    $(wildcard include/config/DEBUG_WX) \
-    $(wildcard include/config/PAGE_TABLE_CHECK) \
-  arch/x86/include/asm/pkru.h \
-  arch/x86/include/asm/fpu/api.h \
-    $(wildcard include/config/X86_DEBUG_FPU) \
-  arch/x86/include/asm/coco.h \
-  include/asm-generic/pgtable_uffd.h \
-  include/linux/page_table_check.h \
-  arch/x86/include/asm/pgtable_32.h \
-  arch/x86/include/asm/pgtable-3level.h \
-  arch/x86/include/asm/pgtable-invert.h \
-  include/linux/huge_mm.h \
-  include/linux/sched/coredump.h \
-    $(wildcard include/config/CORE_DUMP_DEFAULT_ELF_HEADERS) \
-  include/linux/vmstat.h \
-    $(wildcard include/config/VM_EVENT_COUNTERS) \
-  include/linux/writeback.h \
-  include/linux/flex_proportions.h \
-  include/linux/backing-dev-defs.h \
-    $(wildcard include/config/DEBUG_FS) \
-  include/linux/blk_types.h \
-    $(wildcard include/config/FAIL_MAKE_REQUEST) \
-    $(wildcard include/config/BLK_CGROUP_IOCOST) \
-    $(wildcard include/config/BLK_INLINE_ENCRYPTION) \
-    $(wildcard include/config/BLK_DEV_INTEGRITY) \
-  include/linux/bvec.h \
-  include/linux/highmem.h \
-  include/linux/cacheflush.h \
-  arch/x86/include/asm/cacheflush.h \
-  include/asm-generic/cacheflush.h \
-  include/linux/highmem-internal.h \
-  arch/x86/include/asm/highmem.h \
-  arch/x86/include/asm/tlbflush.h \
-  arch/x86/include/asm/invpcid.h \
-  arch/x86/include/asm/pti.h \
-  include/linux/bio.h \
-  include/linux/mempool.h \
-  include/linux/uio.h \
-    $(wildcard include/config/ARCH_HAS_UACCESS_FLUSHCACHE) \
-  include/uapi/linux/uio.h \
-  include/linux/node.h \
-    $(wildcard include/config/HMEM_REPORTING) \
-  include/linux/pagemap.h \
-  include/linux/hugetlb_inline.h \
-  include/uapi/linux/mempolicy.h \
-  include/linux/freezer.h \
-  include/uapi/linux/i2c.h \
-  include/linux/videodev2.h \
-  include/uapi/linux/videodev2.h \
-    $(wildcard include/config/VIDEO_ADV_DEBUG) \
-  include/uapi/linux/v4l2-common.h \
-  include/uapi/linux/v4l2-controls.h \
-  include/media/v4l2-device.h \
-    $(wildcard include/config/VIDEO_V4L2_SUBDEV_API) \
-  include/media/media-device.h \
-    $(wildcard include/config/MEDIA_CONTROLLER) \
-  include/media/media-devnode.h \
-  include/linux/poll.h \
-  include/uapi/linux/poll.h \
-  arch/x86/include/generated/uapi/asm/poll.h \
-  include/uapi/asm-generic/poll.h \
-  include/uapi/linux/eventpoll.h \
-  include/linux/cdev.h \
-  include/media/media-entity.h \
-  include/uapi/linux/media.h \
-  include/media/v4l2-subdev.h \
-  include/uapi/linux/v4l2-subdev.h \
-  include/uapi/linux/v4l2-mediabus.h \
-  include/uapi/linux/media-bus-format.h \
-  include/media/v4l2-async.h \
-  include/media/v4l2-common.h \
-    $(wildcard include/config/VIDEO_V4L2_I2C) \
-    $(wildcard include/config/SPI) \
-  include/media/v4l2-dev.h \
-  include/linux/spi/spi.h \
-    $(wildcard include/config/SPI_SLAVE) \
-  include/linux/scatterlist.h \
-    $(wildcard include/config/NEED_SG_DMA_LENGTH) \
-    $(wildcard include/config/DEBUG_SG) \
-    $(wildcard include/config/SGL_ALLOC) \
-    $(wildcard include/config/ARCH_NO_SG_CHAIN) \
-    $(wildcard include/config/SG_POOL) \
-  include/linux/gpio/consumer.h \
-    $(wildcard include/config/OF_GPIO) \
-    $(wildcard include/config/GPIO_SYSFS) \
-  include/uapi/linux/spi/spi.h \
-  include/media/v4l2-fh.h \
-  include/media/v4l2-mediabus.h \
-  include/media/v4l2-ctrls.h \
-  include/media/media-request.h \
-  include/media/hevc-ctrls.h \
+  include/linux/build-salt.h \
+    $(wildcard include/config/BUILD_SALT) \
+  include/linux/elfnote.h \
+  include/linux/elfnote-lto.h \
+    $(wildcard include/config/LTO) \
+  include/linux/vermagic.h \
+    $(wildcard include/config/PREEMPT_BUILD) \
+  include/generated/utsrelease.h \
+  arch/x86/include/asm/vermagic.h \
+    $(wildcard include/config/M486SX) \
+    $(wildcard include/config/M486) \
+    $(wildcard include/config/M586) \
+    $(wildcard include/config/M586TSC) \
+    $(wildcard include/config/M586MMX) \
+    $(wildcard include/config/MCORE2) \
+    $(wildcard include/config/M686) \
+    $(wildcard include/config/MPENTIUMII) \
+    $(wildcard include/config/MPENTIUMIII) \
+    $(wildcard include/config/MPENTIUMM) \
+    $(wildcard include/config/MPENTIUM4) \
+    $(wildcard include/config/MK6) \
+    $(wildcard include/config/MK7) \
+    $(wildcard include/config/MK8) \
+    $(wildcard include/config/MELAN) \
+    $(wildcard include/config/MCRUSOE) \
+    $(wildcard include/config/MEFFICEON) \
+    $(wildcard include/config/MWINCHIPC6) \
+    $(wildcard include/config/MWINCHIP3D) \
+    $(wildcard include/config/MCYRIXIII) \
+    $(wildcard include/config/MVIAC3_2) \
+    $(wildcard include/config/MVIAC7) \
+    $(wildcard include/config/MGEODEGX1) \
+    $(wildcard include/config/MGEODE_LX) \
 
-drivers/media/i2c/tw9903.o: $(deps_drivers/media/i2c/tw9903.o)
+drivers/media/pci/cx18/cx18.mod.o: $(deps_drivers/media/pci/cx18/cx18.mod.o)
 
-$(deps_drivers/media/i2c/tw9903.o):
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               
-  include/linux/memory_hotplug.h \
-    $(wildcard include/config/HAVE_ARCH_NODEDATA_EXTENSION) \
-    $(wildcard include/config/ARCH_HAS_ADD_PAGES) \
-    $(wildcard include/config/MEMORY_HOTREMOVE) \
-  arch/x86/include/asm/mmzone.h \
-  arch/x86/include/asm/mmzone_32.h \
-  include/linux/topology.h \
-    $(wildcard include/config/USE_PERCPU_NUMA_NODE_ID) \
-    $(wildcard include/config/SCHED_SMT) \
-    $(wildcard include/config/SCHED_CLUSTER) \
-  include/linux/arch_topology.h \
-    $(wildcard include/config/ACPI_CPPC_LIB) \
-    $(wildcard include/config/GENERIC_ARCH_TOPOLOGY) \
-  arch/x86/include/asm/topology.h \
-    $(wildcard include/config/SCHED_MC_PRIO) \
-  arch/x86/include/asm/mpspec.h \
-    $(wildcard include/config/EISA) \
-    $(wildcard include/config/X86_MPPARSE) \
-  arch/x86/include/asm/mpspec_def.h \
-  arch/x86/include/asm/x86_init.h \
-  arch/x86/include/asm/apicdef.h \
-  include/asm-generic/topology.h \
-  include/linux/kconfig.h \
-  include/linux/radix-tree.h \
-  include/linux/capability.h \
-  include/uapi/linux/capability.h \
-  include/linux/semaphore.h \
-  include/linux/fcntl.h \
-    $(wildcard include/config/ARCH_32BIT_OFF_T) \
-  include/uapi/linux/fcntl.h \
-  arch/x86/include/generated/uapi/asm/fcntl.h \
-  include/uapi/asm-generic/fcntl.h \
-  include/uapi/linux/openat2.h \
-  include/linux/migrate_mode.h \
-  include/linux/percpu-rwsem.h \
-  include/linux/rcuwait.h \
-  include/linux/sched/signal.h \
-    $(wildcard include/config/SCHED_AUTOGROUP) \
-    $(wildcard include/config/BSD_PROCESS_ACCT) \
-    $(wildcard include/config/TASKSTATS) \
-    $(wildcard include/config/STACK_GROWSUP) \
-  include/linux/signal.h \
-    $(wildcard include/config/DYNAMIC_SIGFRAME) \
-  include/linux/sched/jobctl.h \
-  include/linux/sched/task.h \
-    $(wildcard include/config/HAVE_EXIT_THREAD) \
-    $(wildcard include/config/ARCH_WANTS_DYNAMIC_TASK_STRUCT) \
-    $(wildcard include/config/HAVE_ARCH_THREAD_STRUCT_WHITELIST) \
-  include/linux/uaccess.h \
-  include/linux/fault-inject-usercopy.h \
-    $(wildcard include/config/FAULT_INJECTION_USERCOPY) \
-  arch/x86/include/asm/uaccess.h \
-    $(wildcard include/config/CC_HAS_ASM_GOTO_OUTPUT) \
-    $(wildcard include/config/CC_HAS_ASM_GOTO_TIED_OUTPUT) \
-    $(wildcard include/config/ARCH_HAS_COPY_MC) \
-    $(wildcard include/config/X86_INTEL_USERCOPY) \
-  arch/x86/include/asm/smap.h \
-  arch/x86/include/asm/extable.h \
-    $(wildcard include/config/BPF_JIT) \
-  include/asm-generic/access_ok.h \
-    $(wildcard include/config/ALTERNATE_USER_ADDRESS_SPACE) \
-  arch/x86/include/asm/uaccess_32.h \
-  include/linux/cred.h \
-    $(wildcard include/config/DEBUG_CREDENTIALS) \
-  include/linux/key.h \
-    $(wildcard include/config/KEY_NOTIFICATIONS) \
-    $(wildcard include/config/SYSCTL) \
-  include/linux/sysctl.h \
-  include/uapi/linux/sysctl.h \
-  include/linux/assoc_array.h \
-    $(wildcard include/config/ASSOCIATIVE_ARRAY) \
-  include/linux/sched/user.h \
-    $(wildcard include/config/WATCH_QUEUE) \
-  include/linux/percpu_counter.h \
-  include/linux/ratelimit.h \
-  include/linux/rcu_sync.h \
-  include/linux/delayed_call.h \
-  include/linux/uuid.h \
-  include/uapi/linux/uuid.h \
-  include/linux/errseq.h \
-  include/linux/ioprio.h \
-  include/linux/sched/rt.h \
-  include/linux/iocontext.h \
-    $(wildcard include/config/BLK_ICQ) \
-  include/uapi/linux/ioprio.h \
-  include/linux/fs_types.h \
-  include/linux/mount.h \
-  include/linux/mnt_idmapping.h \
-  include/linux/slab.h \
-    $(wildcard include/config/DEBUG_SLAB) \
-    $(wildcard include/config/FAILSLAB) \
-    $(wildcard include/config/KASAN) \
-    $(wildcard include/config/SLAB) \
-    $(wildcard include/config/SLUB) \
-    $(wildcard include/config/SLOB) \
-  include/linux/overflow.h \
-  include/linux/percpu-refcount.h \
-  include/linux/kasan.h \
-    $(wildcard include/config/KASAN_STACK) \
-    $(wildcard include/config/KASAN_VMALLOC) \
-    $(wildcard include/config/KASAN_INLINE) \
-  include/linux/kasan-enabled.h \
-  include/uapi/linux/fs.h \
-  include/linux/quota.h \
-    $(wildcard include/config/QUOTA_NETLINK_INTERFACE) \
-  include/uapi/linux◊wıu∏≤0P†ºW€%S∞1‚à@ò†tgó#¥ Êâh€AÓﬁ2vojrŒ6Æ=ÓXÌÖ˝Ë˜êt8˝”MˆÉ&@Ïs)tEO,ª5tro«e·Caˇ]| √°ú›À_∆›NÇDyáDgaåØÛ$8pÃ$D2÷*ÏºûIH’Õ«° :PÂËÄ¶Ø™«ÆÖ{›ì¬Ì›8].¥¢´2‰ùQÊF≠lÙæm3LBô⁄,1=≥»î¶◊D£ß√è›'Äé´ÌuÀùmÑ„é0»Ì¶ÎßS∑ƒÿÔÛ$ˇuúöd<w»é˜as≈ÁÑˇ∆÷•c∏íMıı_'^Æé∂
-Gπ”„ì¿Äõâk/NqﬂOÑlÂPjâ…k§§^˜e–3ÓÂ4îƒ6Æ}&8≤ùhπ°Ç‘Ç¢LÙq{!`±yB"ê¥ÜÔr…≠õú=¡U $–€T¨†)∫˚pKé©JùDQ/(ÎvÇß7Î o≤Ì±‰°QvÊWqÑ]}Òè3Uä◊ˆ4~ê|Í8Øö3‚hºos®íâ–◊Øo»Ú%G¢R`Á‰kı¥√ ó»~M∆d^◊A‹ä6˜Uò∑˚"‘≠œr‚¥7°ì€x˝4O1É˛sQÒPEã\<—ÔaUŒ©√≈ÚIô≥kÆë‹üØÕØUIÆ Á'>¶‰,6ÆØZ{/á˝tì¢”Îukc¢Z≈Àå›ÔÊsÖø9XØb¥ˇ‹∫ãæ£•‹°»Ñ±ËzÛÃ*B\ÜEÎïø¯t`d™ôIzPHÇ¯÷∆¥ÛÎè‡∏>H[;X›ÄS—™ı4å´ı)è¶Î}B¸uõY¯p†ë˘µı≤ïÕ;<^§ÛçÄﬂF3J‡ÃHi≈ûÇÒ(€ïs&◊Ã/ã¶V bò‚åIòa°mJ¿?ı(9”û€+ÇÿvÀæÔÊJÌO¿‰<k7ﬁ…WÓ
-i<À>ÒNB›â…å”’ögsL3z◊¨.ÃÒÕ´jBd-°$w„ÿ|˝â!-	∫•’‹¥A#€† ‚‘c¬¿À6’NÏøá¯|úíæJ∆_j’y;‰˝:ñ^8Œ››úŒ¶¿ÂÿS`	,|2hÁ,‡‹Ù$T¨X∫öù?DàË≠í44ˆÄrê˘Æ(Ù¢≥Ë1?b¯«≥Ì0îU•|ê‹ÀÕ:›∑ﬂ–ˇ◊øÌ◊âøág`g˙%ù>ÀÉÌ√⁄π≈-ÛÏü]û˛‚±ã®Cx…ÓiÚLî˚W∫Á}\&Ã‚Nz∏â6&=–§œRùjp∞]aÜúﬁHTª ª(v4bÛÍ/jRñmÁUπ.˜Ro{tÖ\?V(t*jÍK¯©À^•¶^R†Â÷É$∞2ÍÍGÚ˚s¥sáó=Â
-∞wnÜm/√S√0π‚§ ÍO1?úZ)¨nk#A	<*kı€êoï⁄∫YÊWÓ!êqËˇjj[ÏÅ¸ü4=÷@E—ıªèÄ¢ ÆØ6»÷D0ä˜_î(phs‡ÕÏèC˙ZñmH=vÓj∏çSP ßœ◊cÎb±«´€^fVBQü	Ë˜º/M1&|ƒ±ﬂ¸ÄUú66Öª ∑πrjìº˚kﬂ~ÛÖﬂ‰Îﬂx⁄3œÎ"áKèË˘ër≥ìèI”⁄Ô±fb∫v∫øa˘˘KﬂNC7≤-(t—m<êÿ¶ô±_=¨–ïùπd◊çàLj™ü(íêœ»…ë)¢äHo£ª©Ô+aàjX≥©Ω–’QE¯…iÇ8Ú '&kÄ¨À+¨ùHﬂÒ¥…ÌÉ¸Ê+†™Ài2D^W§ß»aæÁ≤˜˛b ?=U≤OêUÉí∂ÍÅÅìéÜ*˚Øé¥±mæ}y>49 P§∫˚4ˆï¡ ‹Å“Ä–Dh˙MÕ<CÍÓ?¥ãªãÔÈÒÒ€#  èV0~‚ {5˛©pÕyÿ]cÌÈÅÔJA˛£.5Áécªå™†zá-`Â∞∫@/€ÎaÀ‹◊"¥Úå…õ©¯∏ÚåÙ%c¶fösœÉ≤ÿÜ?m!∫A»ö≈ˆ•π
-ªñ3
-O|†ë£ºÌ»…µÏ3◊√wºys‘∫#bp’ìü™=ŸlXüã%°3πˇ«SêÃBÿËñ	ûDl~AbñhKÙ 8Õ8Ëäßê#eT[(MG ?≤CìKRÌΩäÌR	«2¿∑rÂ:∏“8‰VöaTë‹º^ ˛‹ôÔN/ßBI"≤Â±\∏‹4sîÆû˝‹UJ±ü¡ìﬂ˙»Rih£æàX‹ﬂ\ÂJ[l€ïòD˜D{à]¶~ÂT{Àı‘éºBs∞-˙|?7ì;å^KûfkLX˜¬ò”€≥3—áı›	g=Ãe»8∏"Ëvs¶dˆ«_~-ÿs±oAÓX∞'^≈Émî∂Ò°Eà◊^\]BË>öÊVµâp∂>Ìı5è∞N"≈˘ $}`ƒ0ª#%ú›">4,{{æ5À1ÈòBîöèˆ§.á√‡»Ú*´.Aƒ}c·Úkîy¸)¬¸æ∆™∂hU¢áˆ6˙9åtï˜u2+N®…V:Zõ»ÊÏ®÷fïD«@°6Êú	.ækµ»8ùÈﬂØu7Ë„pÕ‡¬MpiÉoNO:_ıÀ™1‰Oœ?#ﬂ#|òçº–tÁ~‚ºªSUæ|7ÜÒî˘§íV'Ã;·$˝çˇÙ∫eÑ5√¶«ú¥ΩÁöƒÓ≥GÏΩì)ÍTB"À‰ö”ÜÏ©ûPÛ&Vå],*BÔ	¬&ód„ÿvàÍıE∆Æä÷ì9π\NúôXT/‹+ƒ=I¡O= Ωµ dñ%»zÆ≤Æ7å</#F0π0‰ÖY†ÛÜXúDÛ+Ÿƒ)‡<œI)±Èiˇ"U˝‹Ñöb÷ù–gQŸ∫h—îwÏ≤ŸKHùU®V√_w%‚r@¥ÃY_—Oç6èœˇñ√.…«ÿH˚¸µùª›^àÃªZnÍ?'†ôoKxÃjµ…Î]TV∆ÅsÚŸxßÙ;ﬂ-%.ÖñˆdÛﬂœ°&y É”j%Ã√ … 2·…˝√M≤π*xS«ÿëJ];é‡‰˝p=ME˚ãïlMÓüåáZ•W«ÉØ…ÜÏ¨€}Eeo£PYêaaL∏áq≈ªWÍL∫IÜ>»RíJéÕá0œíÜπÖ6`9>EË±4JÜx˚◊,Í‰ﬁ>˚,Çs√1dÊO4ŒÂù˘Ö &3WjÑîÌƒQtÉ],≥,m#˝˘–√UóYÜêåAiáÙôdGF™ﬁ¯èÛ•{√k˘õ;+xˇ—ú—ƒŒzŸò¯Iä€ÂùXè∑KóÄ‚ñ‘ÀIœ¢˛ë+§?usM…6≤™ÿ‡bàÀﬁÁã≠ˆ*ñ@Çö´
-MWÏÒ[ÓãóÙ(∆ˆﬂ'–êÎ*,™„uä|âÆ¿Ø$XÙ<”ŒàÚ‘=ˆjéìËîò∂LB¶≈ƒÈÉ≠ÆÃuKÈ‰ ’Êã¬ÕkÙ8ŒM¯≥±ØáÉ˚3'0„°qk-¯áiS≠¡9PtV
-^ÃhJF1∆›#'íØx‰LsGú§pçŸ‘M?2üØ<$2˛TWˆ.ıˆ=ãƒÈwLF†u™0ïú<÷$¢=ÎTd»‘KÂ*pÌˆP&~Òø™g√˚–êÓò-)´ÍZπ
-©üèﬂ€í”»¨Y2€#ëgNÂ/±˜&‰8<(ÙÖ≥|Ùp%&f≠K…?Û>ãÖï·Ä≥Ûmh∫¡º#&ÿl≈A BÏàﬂ,9Æ¿•Ì≠˙Ÿóﬁµp"¯’ˆ±¸Ä∏xKï˘xÜ~.Sõ}aZmb˘XN6(mrØÉ-¢ÿÕù∑D—≠ì’xˆb¶OéVyã?‚™ qÚX%ñ›;'@™∏"‚)I∆±piP*üAΩCÀpÌG˜ØCˆ\ﬂ–	Ò∫i;Míx>Üé¿v0ÄÛoRòñº+ƒN†£≈cBÊˆ Ñœu/>⁄0¨m)∆¡vÃjt‚µ^ê◊8≤ÙbFGÜ˘⁄jCØ±òæÎíÊ™DVÒ‘∆a´2’¶í˜z⁄
-Õ≥ôdr¥RÆzÉÅk kr™◊Qÿ⁄ïˆ^Ìòa,”r¨k.«aî·ß’UfÄ&¨›Wê~æÏz;ˇ¥ß¡tOπñ{”BAü«ãë=´∆“Ó†5ﬂ¢'√%iæQÙ1dÑÕq)oÈƒ≠±éhÈ˝™≤∂¯È«‡x-#“-âŸ’ØÖ‰LI¡0©cÂŒ|ÜıL|°µ”È˚Qƒ¥n•EvˇÒΩ‘‘ıˆodP≈ózÕÎ*ÀI£©"ßkÔì®òìôoHESÄ‰?^PûÅ'≈˘ÇV™ÀŒ Ììg$j+Dz•‹¸T™ˆ≈+B]=ÍˆÛf€îò‰‚}…wNzÛ*⁄®∏ÿá!Ç"vWhª$‚[Ô¡(Ú¡™…N≤-¨ÿ≠YàÜ£'ænÍTt*™Yy4À}f0.9ºá¸l˘±ª;â^Ó]Khl(¶Ê˜ßm›Æ]ÅnJ—∏w‡XÜ‰Ï€îõ@ÇÏØ¸ÖÍÀ˙äP≤À¢´Hl.J?sñ,ºå«Ì3w±wïíös%K%Í◊Üù–µ†îÎß€}˜vGÁh¥Áê¢V?˚!éaiû√se3Œ˚\Q¿°Ac¿,Z ≥§J"FÈJ
-÷"èÙàñ´}övqà¶:Âµp¿(,:‰†«ÈÈëxêÊßjÑfSpäÇ]0@√U∑Ò≥aÉÈ‚û¸_πî˛à–ªÄ%4ÃDtq©⁄ÙÂè;ñW.[;hàÊˆ‰óU%Å4V:.Vçz√ÿ=O¯áxau≥–‹’ˆΩKEd‹?1G˛C5∫œ˙Àoó§"YçÃ!p¡å˛∆qdº–?¢vÅ∆MGÙxß!d“Ùæ¨E$™sÄ⁄ÉV∫”’¥+˘Ê≈ˆz_ÏΩ^S…ÑM¶¯hΩ7”ˇñd ÜÙjÕôQ[ª!BCÕ∞/rç‡§T`55Ω†£œycªà¢>q.r{˝3◊ü~AÜﬂˇô`1’ﬂyh≤•†>1¡µ–Ö>¬_diRñ Ä*ü|QºùhjÄÜ-ræ¶µ ÕÿfkÕô‹ÇÅx£íKˇ ôõ0#Ï“aeGF∂_ΩÎà]|+4w;ÛW≠˛ùÎ¿Î<FzÊ£œ~‚Áuf/”H!í©µò∏ı+Ê¥°§›Q}~íXâ¨y€Ç>õÆ§8os»ÁõÂAΩíFÜï7.&Dö=EÅsª ç„*ôä4ˆ◊yüˆw#9µ,ßπDK˘ÿﬂgàÅûp1á€5ä*Ä)˛ñÛ^ù`FŒ§F&·X˜¯»RﬁëÔ,≥∆¬ÅçŸÊJ5Ã/÷MR%{›`ÿä≈ÑoÙçDp$Á—π∆G) ç≤+ Éî·ÎÚ[nlç¬Vh‹‚Ñ˙jæsKÏ ~ø∑S‰eŸ€:E+D—√s`w3XV7U‘gº¶ı$°ê≥√¨;/?ÕÆ÷ICÊ@‰ºD#Ÿ=Î’ı-mπi‹ΩÄ~Î∑>˚⁄r	Sø¿Ö‚‚Ü\;èoïSdn∏Rg´∞°D sK◊.N"·“KjÉ/ïÕ·S@Lê‹◊(ﬂ‘ZfmKã+ÌTRêt>KMˆã”>o´‘gêç∞ËµâF‘∑!B·~Êv•T"KV±„%†∞O†™.∫gP◊TW§Qxu3ﬂ£îIqƒsì+˚öa0§ﬂ’√b¨¨õÜt‰æºxıAÅ–Ì^`´—±¬,SÅ@gÉ ◊Á=ót~∞=àt§áı‡›ì^âPáç
-Ö±?LêYh±±ÿs˚íí∆µø)FG
-é°é»3ÓŒXu…ﬁJ5Ø:Nï§´»ÌP\•B*^b<·ã%ÚKr¬\ µ-r{ª˚¢?Â¥%a®ònÍ—|^~>@ûpr-˛≥ﬂ_ÑYgÛRÇ ÷ QÒÏM¬ßo;´å%Çîˆ\O*# ‚öÚSi‰ÒqKy◊ú eE°ëU à∂≥∑€Œ√êÌ°3Êõﬁ;Äñpr§ÏvÉÇ5´ûüY•“õ˝w`â6‚N‡¶˜;ãô0Á‹åê/!FæºY¬ˇPˆZc÷DK«LJâ·,ò°Sæ6∏îÉõkaÜØ)D@≤ôPÒp·Ôπ:>Èëˇã8+ΩÄç∆b;È&3o¨§™$à≠}Ïñ’àE;Œ˝“ù¡π$Æ7YÈMNQ<J˜¡ºoí)Ñæk¢“≤Yß¿ê3Aè˘õ%à/;¸Î∑|±Ωë?˝πä‰íEˇö∏]~›ÁØºVèrM<âa$U7ú’¡è∞Óæp9∑B<#Ò™·¡éM£\áΩ`a÷41q€"èπ±CRÂØ≤ƒªıÏıìõIÈ#∂çµ
-4¯òæ$S·“¢U/ˇp56¿PëÛi}ﬂ•Å\1≈‚◊Lıt¨§∞JêÀøh7RØ¨£N≈Ö%ﬂ˚WÓÃ€§ÛÒ/=â›«∫V¡°âìBåà*v+ ¢ªÈ›L€#±__E≈Å$æ,–√()‘≠aê∫ﬁ¿ï∆ß≥È±=2>º∆m\òs l2tçúg0áƒùD¥õG’HœYìÇmﬁ±ﬁ±Ò¡™~«q≥±é€S§‹ΩÇè›[µ˝~Ä“Ré=è$–˜Q<ö¶ß¯µ ¬*¬?Oô/õ#{^‹ßi©œ–;ÚBK æõêç≤]`yÖw%Ÿ£uÃÆ¿"À7¿“A“ Öbƒj÷Ú’É@˙â∏Ω™mLGÉ]—a-˙s¿	¢=794Ï¶h’≠‰®ßåº™«mœ≠DYŒ¬ôoÅì®}n8oÏ=ÌÛ 	Çi»IÜÈÅ3«Áå‰‰«SëgÈåÒj•ÏÖK˜˙8πîM›Ú%>ö%[øG;‰(∂7ﬁŸ–°Ú§√Ñ˝F…Ó~≈¿,zi®«6@◊»›¸¨¨πäêä,¨µ<®⁄O‘€ﬂπÜÉlfJ^ﬂ;wÅG∫|QÎ\ö∏ÖOŒ£X3c√¯¯∂@;¥ªÉŸ:«e5‘©≈-˘°|øˇ`BíÙ˜ﬂ`zîSÀ¡Ãxd
-É¢—Ìs∏Ã(Âè˚§ıÚ®Åô√ø«3`ë§¡¨∏¢Ü°∆¢úÃQCJ¨ 9Î∏9ëêQƒ&°	 @ìéK^mÊ4¥8
-_tBÈöÛ¡Œ9 &¢Ê´CY¥§>ˇ˚(Ω4hQeUÖ™Ã“|ìú&òIxÎ°⁄3$ˆ3’‡.»ÔM≈/yçö`Æ“‹y°]◊m$vvbÒ^:π3¬cÆcŸÌy(Ú`„bS _ëﬂ Í?ÁÑÕQÔ°ÈEÁ_dAÊı1U∫›Œ”äˇıÕf≠/…2"|ªÿáÉ∏ñÒTr@&…%ûÿBèS*†‘ÀÚ+Al∂¥d≈u˙+eÇk{ç=¨zü∫«¡F}∆tΩµ∑-ët‡ﬂúˇ≤Ì^
-‹\Ácª‰ Yã_{âÊÅﬁíÁC _l–ˇÙ@÷ê#4w-™É(';&˝§aã3ùî∑ı≤"Hç>0<∂´ré‹E≠⁄3–^∞ˇ§è}ßÅ˙ƒE≠ëm◊∂„†4ô9∫4≈£™®r#ÇAic:G\¶AÑ0]Œ˛ò´πÁÎØ÷h—i∂ıG%á63qgØøË-àbx˛Ìà2πﬂ(s}7ááÅ∏útÍ˜ukhHßÌ}˝Æ≠^:Vˇ@ı∏ØÃ1∂~m2É¸8Fπ3∫£D%$j”Ò0IŒ u_[£Zl◊ù!Ñp”ö\ÓrÒı~ú^˜j„!Fkƒ´#ïVò¥â≥◊
-ÒK÷1•ªVSÚ-∏÷ÏÎl2jœJ¬âùËÄ®ZinZñæÃ0ùaø≠;/„Â`Vπ5ßÄXPHN†óÎag;ÃKãñÖ€Ç˙Â<ù∆%\∏æo6ö¶˙÷‘ddbÎXØI<˘Ø+”ñè,,+/îÍ^¢∂πˆt·yÙì≈nŸ∑ùà"uµÔÜB´˚^á˘ê2›yµCçç?ZcÙì≥∏˜ÓâäÅV°ÀcAä¬y£UzOaœ‡h"È3ƒåqj Ø}&L1¸I·Îﬁﬂ0œüIu,˜C∏»ﬁ)”•«q'm˙j¥à9\î´¡®¯›ö âıúˇ.éÌM.oºä¬Ìü¨Ñ˝Çje:e	éoı◊≤‚7?Øt¿˜∑ƒÕG⁄ÒcòOÂ4Èi¡;h&Vê
-*o∂,^(Ï].r∑u<ú:3ø#∆ª87êÅt0‘(àá|¸≈Éë”Úâœ´]íóâÇ5^=⁄ ÂÍkA ûÁTü4N“™˙Ñ)À≥ﬁ¯ôgåªÏn.zã ñŸ=Ô>dº°"VfXﬁÅú
-◊_!Ω05ú5L–õ⁄LÌ=o¸\.‰Ÿ,T2≈O7—Øπ35v€∏*¡Ÿ·ÂÉ»héÓ°ˆ  _ñl fR˛Õk_TÊ2èå∫ø«küH◊íj•÷'jnCÙπ÷*ΩthÈ0)<sâ§£°‚˘˝ò~|ÍÕê~#àV¡yh®nK≤2á˙∞=eﬁ&ï˚ﬁôñ´˝¯»Y∞7ôáK⁄µ:ŒÔ±ƒZµ\*ÎÿPøèﬂVS·8?#È*Œ¥:™CÊÜ6çí÷uÙ)î>LLŸº hëm˚9Ω+ÄÓBlúw°	®q¿üFÏÌÛéÍë˜Ä%(<Äàäa∫Lt8¨Å«*7‰‰ÿì,iÕt’ºY§À*ﬂ§-‹6g@°ó»£'èÍ‹6ovwí‰å≈R"˚dn@än† G¨NYâÚ¢‰)™á≥êê3ê∑?-\u+ÊBÀ},¥MèL·Ôè€ØñÈrJñÚ–∑≠û†,≈Ωr∏≠ÔO	ám∆´X\Ïwàn3∑xÿú–('ÙÛRã/ÍQWáÖT-<Ë!AzÅ˚)W¸ ‹ÙÌç≥*Ãzß5Ê‹gf°5…˚@2r∏Gö˜Ò,(ñ Ü•˘ˆMù±@û9$&è6œ©«Të/l/GÊú$°4o!≤†ﬁ{˜OjÃ[35ﬁ‡?C}ù‘|¸∆‚H9≥Ál⁄Emvfi(ÁP)øì{®—ÍE|W9?û∏ÙF3§á“’õ	#M7
-9ƒ°™Í«uZÒ_ÉæsG≈÷˚˘h@É¶õπû›˚§H'∆óF«/,ÈªfW-„“HCâß€ßªFöão≤UÍ°ëÜ≈±—Yì~ ÜzL2 ÑTØã`5‚çñ :àÎ∑,≤y›ç7¶ë)ü∂ü$-iÎ«*1‘JKûÅ˛`À ÂÎ}I1øŒlÏc&9r˜¯
-5U£¸O©áG%±k2Z∆∫ÑöùÚú‚R«rt√¡0`Ì˘á
-»»—@†ÉÅå;v|Vép∏PWVÌ•a-∂5|´Ø?„§›%ó)$N"=5CÎ‹N‘‡õ»qÅÑÌê˜ÿå1âY	∞“â„[†ﬁ?c∏áû%ó—#f˚tÉ€Ú∑PxHOÍUa•PÄ√hT%í`Fws†
-!Uﬁ R≥°£CmÀ¡»ê´ïÀf©∞ÏhØøz˘.“ËÍù,›ƒ'æÊ*Ìå0)ª®Ωp˛*›Y‘≥9[Mô|*òsÃd-å@”pﬂ’˙€b7‘≠Èg€åNZdX+˘–ﬂ¿÷‡mÈ(e√`û∆’_PÉ!€q?1ÀAa[hD§Ÿ±3rÕÊ∆£l¥%Kw\ü?Ô÷i‰°∏ì:—7®àô—c§…t]t0îô⁄2ˇäêHì‹J0gº_Ω.ˇ!·¢; %}Ÿ‚¡ü?/∫âÀ¥ëNàB¸È€RÇ‚—π®Ú∆A”ûÿ°Ôú÷˝ l‹€-‡pû◊æ4ÅÑíS¸Bj˘YÊ˙Å"«˛∏ò≠∫ÃK∂ˆA–†úYü≠≈ŒΩO£SÖ?7´r˝9› R1\`í˝â'f˙ª¸åJúd◊è‡ŒGõ1Ö˝ Ω›‘ƒ†Y{I‚w∏Ds∞]÷ayNáõxÈ(?ƒ∫®X8Ì—ãk¸∑xLC¥ƒ3æ≤PÿüipI◊Œù=≥	#ˇòv  ÖÕé5⁄¥™|óﬂ`úy≈∂g‘çU$¡VzGÖ†E2ß¸◊¥)ÿ˙∫tWÇ.F‘hüÿ˙˛A«ÚGqŒõ˘%œSË¿õÍŸk≈´« O	 jx¢j<[Ø“x5Oò¢#°· R ¡UQÙ¿≠S<á˙Í6_ ıÓ#‰Lz# ß≈g‚ÒD6^#/ve‰íÇ∆Zi'\Ôe¶˘! ˛˛ãY%≤û”z@e°¸ŒÌ\µ*˘¶ƒ¿|ú¥ÛÜ‚‰2ï_›0ì3’1ƒ∫F0F9ú°ﬂÏ¥ì¢%öVíPÇ+eì8ktæŸD∏”©N ÙŸÁÉõ˛>iSôQnF¿øg5<˘ÂÃ1¯ù%pã≥çB±ÕÆçi´8—dÚ¨ìÀ M)Pˆµ:ZÄ˘ÙPÅCÑ´1j.æWrSuõã ‘í?÷~!Ô(8#µ·jπw]A˛Ì¿)¨X∆´¬eQ√FÈƒh≈0;§OS,∂“’ÙV&ÕÊÌDtÛ,T…L∂NIùÅ[Œ{˙›8-“TD”˚:KnM*@,ò¬Í!'ﬁgÆ*¥hÂ¶<mÒπE3¸i1&wÇÖ—	˘Èé $[ñΩ˝É*:1ùÛGbﬁº)Ω√ÿ-)∫&”Z©¡#˝XÏúÆ	[BuªYL>H*¨¿]Ñ∫åÆ°è,Ü‹@˙?S˜ºÆœ∫ﬁ1¿_‡˘u%âΩË¿Fª¢l;Bíõ»[∞¥:Ñsw¢ŸÓ`ÊZ†H¸6yÙGPúµ÷µ¨q£N	xO‹Í¸©‡˚D£ï{¥òòv#/» B˜Â>ío™9ãZ≥tW7éÍ}ë∂N,G´±¸∑π⁄ü«éÑâKLó√Ó *˛?ÌºΩ…GúÎíTˆ(œ˝˘Ú£úùœ‰•"Jµ#7ëx˛ù§ﬁ:/nxıÉÌ£∫ﬁ.!√®ú{BJ¥ë#Dí3"†ﬁXÇÂÙˆ√‹∆ªaã«61W3ï58ñˇˆ!ﬂ@—=`oMæ◊Ñ ÑR˚&ì¯^%|(TPZÈ……*C˘äG5åÑ2L*(1∑ÖAÕD@Ÿ›âkY˚“æuñ–ÆQMã≤\TyÍ∞ÉÃ◊a‡¥dOæÇ‘áˇÄW≥√ÆR›&y»Q∞{£DÉ>Tm¨H’ KﬂÉ˚—ò@? “ãiŸ<,B"ˆ¥	™ùoä∫Ìâîûîû˝CÃ˜9†@◊»j„'h˘ÓóömÖ•tóÏê{i`”≠ñ˜<Ià›bÀy…πMbﬁ´Nâ âä;@€°U~Ù–QÀ)+Ñl[¸»Ì—5ñ“Ç9•$Bÿ… kî˜õ.Pá∫,≤eÕﬁØLT‘FQjëïÒi‘M
-‹
-Ã£°u:¨d ﬂyÕ%¢0v£Æö;åAmd˜ï>s¡NØn€Ú^ÆN∫ÂpY”5zk`
-¸·Œ°j◊‹OoÇ3u›˝≥¯ˇ‰ÿ{‘√À;“·C∫q +}C¿‹°⁄∫zÀa«KV›ØÈŸ‚Ev I_Ørxö√âBI*˘bêPÈ#•`ó
-!6Û⁄æµŒ{]ÛqlÿgÄMe+—'V®3pÌ9‰2ﬂN˝Ë°g}≥—p. }µ
-è†ù+_µ©(/µ?ÿTùﬁŸé˜z0é%5®d ¢æm•èê5æ;õ‡⁄hÍ8øÎ˝ÆPÉ§ﬁ•Äf˝A’ÀÕ0gS∂8≥∏òvw¿¯Å#FÏ‡gC`ŒÃ™FıEDœ'dòœìÍ^©5Œã¸õ/˛Ÿ‚‘®#Æ»_Íl‘xbé\ƒ¸ºÑæU“–áÁ!»k[éíÉçºæéûôt ©∞$)(ˆÄH6˙`˛ÇHiç)≤UÊÖﬁsÍuØdÊ“¥—Mw}LﬁeÁˇs?XÓö˙FÃí™Bœ¨éOîÍÎªR(Í–Ö∑jwìlé∆áó°xŸõ¶gõC∂Ÿ-ˇÙJïá≤˘±£±—ŸXp}÷Æ¯ë4I —g‰;¢Èƒ!≈76øµï8 ø8›ø+Ø:@é'¨oHÆ=óùæ,Oœ⁄$7jåôπÃóã“:ârç£]+N[®~8≠πËWˆd.*2˚É, Öâˇh±h∫
-èvl™G!y¸ìØèÎÙ7·è¶]`jˇ?Ö|–∫[—,™ıËûß10Ã∂›%ò˙ZVQ©˚ß-≠R¢9rC[jl√≈◊|=∆»∫œ6◊öy?¡(˝‘⁄:Î:	hã+Ù.∑Î0∆K¿π}˙˚;›Pƒ0	ˆÛh–ëµÒ1ıû∞Ÿ±@¨≠Ñ8“ãÔ∫(¸Ü“êé’Îe&æ∆≥ÊªlqHı3±°#ª˘æYj∑¡tú¸/À˚¯e˘ú?Ä |R˜ÖM”µÊªwó∆£E©äA≥SKŸP1hÂW9xa’⁄{J%ß.˙√∏~˛9iòùøÙ¥"Uõ\Ù¬≥ˇ≤NÖöÁ$ı8ÔÏ|Ö6ü#™∞‚ü…¥ß\gxyÈó:ß∏/ïÔãì˜<Ñk‘?úL£9b‚‰ŸØ›'˜ƒﬁQüï|Ò1ÌaÙ[jì¿d®È∆’~ZB .Ï“[¿uLØA<d∞®-.£˝6mêà!Ì‘øÛkEßBC-ó:ÛU§≠
-ì‡)g0“¿vâmO{hÉB|˚GPê_∆dhë›‚Ù^∑ËO1Î©lﬁ4J≤™vÑIëÌ˜;®πP%ïæTC∞ª©Ufå%)ı"à}k\Ï|∆ËX.êäåıPCLt
-SÓ®Ù∑Æ«Â7ÙÙ}∏Õöi
-åÙæî´:(∑Ì˜Ì,k™≥¡¥È.i∑–xZì|Î„Ê‘a°d£Ä÷*‚;Ωöç‘O”åqHº2~ì>B¯Kô°:à¨h9öô%MˆüÔ¨ﬁF÷»ä:∆∏êM!`œ't†DEäkRô?Æ UPaôë:)Do÷˛ÉîN@J ,<Z€Ã6bciM˝vZoác◊,IbêVáœ!ô¸8h≠ßù—ÌÉ_]çjÅ°&!Ñ∏u¯ÿR,∏o˜yY¨úY™3ÕFÄS˝ÈÆÂc«$Æì•·ò)[Q4ÙÄ…ÅMÁˇyHö0®íŒÏ2æP®“ö—˚ô2F∂cWR'3qG	&<">ñ}ëcô˙C/ÉKu€<°±Tëƒ≠‚VÅ∆é°”áBè5ÑjÁ√(3›çWÃÁÒ«1Zd€¨Õ[#äÔ˚±∂ÏZT	áP–Ω
-∆_ÚGVkO¥¿öÒ.˚∑etö5Ê<\T^ï©F˘oN¯ºB‘ÔùÌr¥W¯p˛LXY¥ÍSºRóú7ı|ˆ≈1˜rP o®WŒ¬˘ñ+-ÊêÆŸ<àY:jCœ7ô6zG≠4≤-›ÀÏCºc1`œçÍCõf9@Î\H≈ìn˛·v∂èR¡çîî¨—:Ç∂Ø≥Ù
-M˘ﬂKŒëä®ö$M∞%X˝O;Ò¢6ÿD#?+ªí}êÜzƒ¡ñ•ªé{qÛ⁄aà}uïÔÛ.ùíú†„È÷à-ÿh[
-âÚJOYRdòXOÉ~õ‡SªñºO¨X∞›e◊›!
-_“Qºò—«ªf”/:¡ÀP…´Z %…Ù¸„çŒsQÌÉCíqîÔ“íÇ«≈ ”ì˝®i/CE¸ãc':0¯mÖ?é
-vÂù°∆¬.„Í]A©Ì«rïÕ¯w´1T>Ÿ‘√†∂ú[Œ5_¯y≈áá+}?Vˇ≠Ô§4ufúãçõ5éÌ˚[≥5 ’ˇw`bΩ®ÿò∫∫≤}àôô$,·Ö6≤ Ïmó◊3ˆœõ=-ÇSÆ{è–J/´#ö<-Ëq¡K©R *Ï„Û!Îvë∂;YO±ó01õ~”π≥∂5w%(œ…MPRGÖ£Íú∂Ù7œœ–(¶~;Sª¿àı´√•&`ûƒÎmÑVO:ÂAs’b·%fÙ´!-4ácVØNy•"\Ps§&Ù-~Íc≤MëµyÄk˜2X`–∞1E§˛ÜÑ9∂®µæºŒÁ<˜§:˜ŸÏG I‹:K5—ˆ©ˇ*4	·ñùfx¿k™;Zƒ≠§z¯‰≥Ú©µ6ˆµáÖæ∆¥-õ·-ë´ZØ&º>ÿï6 †´¥ƒ§JxHãÎ-®‹utXƒ}P'nSj1ﬁ∆∆†ÉT)~gQÚwHÚ§x	çÁÑ◊u÷’	‹éúkÑ¨CdÑ˝ÍEW6èËËZ’%6ÇjRèc⁄v√lı˚Î[Rœíì…Í}‘á∞%G|/I“BòtPòáq¶P“√‡!Í'5ÓuÉ¡Ä˜ Ìi=;gsõJˆÔ%A¶∂é(4Ω–≥m?I}:≥àà˛[NﬂHXÏ4°`∑lZlLL°ı©ã”ô∏á=q#0÷÷ﬂå–!OGä≥F;œÃ‡é”Á◊aG†g†ΩÜS„‹N–CÃPê∫ßÊçœƒëàsNÿ}≈ó+ÛCÑ(uä
-≥"#Ÿ¢5Y8é?∆€òzEJµwõaD ≤k{	0HDX¿Ÿ∏)˛gûÅº‹CÏ∞®ﬂœ7
-oé r(Y8õááøØ¢›⁄æEßÌœ:¶“˚kæ—j÷ﬁõOIÈiÂ’ÑQ-vYF…b¡>:h‡Ï%Ù≤%vıêCŒoe≠è"k¡Ÿ°ó«8wXRÙà*ä@û√>∏ëEnÈ‘çd¯„‘0bÑz‰;´»ìCZî*Õ$07◊Z¸íU`è[ìjΩítÖçÆ \∑ ™—tÏ†¨lŸ¶«∂i“©lxúÄsù'#œPu-C7‡'≥3ù¡LB∞ÄõhVn∂‘‡ÃîR›—πê‡7©∑	òö≥µ˙
-Ú*t¢¥j·)$ﬁp∑çT†ÃìÚ$•Zã¸Q
-ã∞§NRÍ?ÿ%œH€äHw≈¨√4ò≈≠∫l‰‚>BÏbQ√»Píè»≈ı˝V
-˜ûGÿDj∞ù†gƒ§cëîoJ¨{YzÁ7∞®À Ô-è˙3s∂GÂÍwŒùy˛æﬁBKâïgÆÍSÖ≠?¥>E≤7›çt˛©„ﬁ˚[»»Tb√+·v“¿LZHñt8§ÒØ√“wåÔü'E⁄ ≤mTOqfnj˚Úﬂ˙Aå¬∆?™g¡π6+äËË˜v4óBﬂC
-Ávr]ûVêpÜùâvEò–%ñÕ/ôi´aS1 §Ä¥πÂ†á‰ÚÃm⁄]ñÁe[ÍÛyCªˆéX‡∆≈∑§ßKQ≥Pkîô¢·fΩSP≠DZL`k˝
-hbå®Œ¿rÇx/©˘ç•´üÿxìe^´‡îáD9çÙ]≠*ÿ–õOëkU†ÛP‰Ìï∆–Éj¬xVaíˇkØÔré±Ó?ÆåBú}…®á3¬≤@¬bW9)~È‰Ûõ°∆ﬂªQÂ πá˝4Üπ¸´O˙4Vó*rºÉ%Û) ®ä&&1s∑Ú^fÕ8∫1≥ﬁçs§='‘c¸)6YêLsôMÇ®@P(Ì‚£Œ√'îYx"!˙‚rZæè7 ¢?øb/°U8&A˜•p…£mﬁÂÀpüùÇDÿ≥–,ƒì\Ω≠>o˜© æ÷s÷
+$(deps_drivers/media/pci/cx18/cx18.mod.o):
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 GFP_KERNEL, cpu_to_node(i));
+		per_cpu(select_idle_mask, i) = (cpumask_var_t)kzalloc_node(
+			cpumask_size(), GFP_KERNEL, cpu_to_node(i));
+	}
+#endif /* CONFIG_CPUMASK_OFFSTACK */
+
+	init_rt_bandwidth(&def_rt_bandwidth, global_rt_period(), global_rt_runtime());
+
+#ifdef CONFIG_SMP
+	init_defrootdomain();
+#endif
+
+#ifdef CONFIG_RT_GROUP_SCHED
+	init_rt_bandwidth(&root_task_group.rt_bandwidth,
+			global_rt_period(), global_rt_runtime());
+#endif /* CONFIG_RT_GROUP_SCHED */
+
+#ifdef CONFIG_CGROUP_SCHED
+	task_group_cache = KMEM_CACHE(task_group, 0);
+
+	list_add(&root_task_group.list, &task_groups);
+	INIT_LIST_HEAD(&root_task_group.children);
+	INIT_LIST_HEAD(&root_task_group.siblings);
+	autogroup_init(&init_task);
+#endif /* CONFIG_CGROUP_SCHED */
+
+	for_each_possible_cpu(i) {
+		struct rq *rq;
+
+		rq = cpu_rq(i);
+		raw_spin_lock_init(&rq->__lock);
+		rq->nr_running = 0;
+		rq->calc_load_active = 0;
+		rq->calc_load_update = jiffies + LOAD_FREQ;
+		init_cfs_rq(&rq->cfs);
+		init_rt_rq(&rq->rt);
+		init_dl_rq(&rq->dl);
+#ifdef CONFIG_FAIR_GROUP_SCHED
+		INIT_LIST_HEAD(&rq->leaf_cfs_rq_list);
+		rq->tmp_alone_branch = &rq->leaf_cfs_rq_list;
+		/*
+		 * How much CPU bandwidth does root_task_group get?
+		 *
+		 * In case of task-groups formed thr' the cgroup filesystem, it
+		 * gets 100% of the CPU resources in the system. This overall
+		 * system CPU resource is divided among the tasks of
+		 * root_task_group and its child task-groups in a fair manner,
+		 * based on each entity's (task or task-group's) weight
+		 * (se->load.weight).
+		 *
+		 * In other words, if root_task_group has 10 tasks of weight
+		 * 1024) and two child groups A0 and A1 (of weight 1024 each),
+		 * then A0's share of the CPU resource is:
+		 *
+		 *	A0's bandwidth = 1024 / (10*1024 + 1024 + 1024) = 8.33%
+		 *
+		 * We achieve this by letting root_task_group's tasks sit
+		 * directly in rq->cfs (i.e root_task_group->se[] = NULL).
+		 */
+		init_tg_cfs_entry(&root_task_group, &rq->cfs, NULL, i, NULL);
+#endif /* CONFIG_FAIR_GROUP_SCHED */
+
+		rq->rt.rt_runtime = def_rt_bandwidth.rt_runtime;
+#ifdef CONFIG_RT_GROUP_SCHED
+		init_tg_rt_entry(&root_task_group, &rq->rt, NULL, i, NULL);
+#endif
+#ifdef CONFIG_SMP
+		rq->sd = NULL;
+		rq->rd = NULL;
+		rq->cpu_capacity = rq->cpu_capacity_orig = SCHED_CAPACITY_SCALE;
+		rq->balance_callback = &balance_push_callback;
+		rq->active_balance = 0;
+		rq->next_balance = jiffies;
+		rq->push_cpu = 0;
+		rq->cpu = i;
+		rq->online = 0;
+		rq->idle_stamp = 0;
+		rq->avg_idle = 2*sysctl_sched_migration_cost;
+		rq->wake_stamp = jiffies;
+		rq->wake_avg_idle = rq->avg_idle;
+		rq->max_idle_balance_cost = sysctl_sched_migration_cost;
+
+		INIT_LIST_HEAD(&rq->cfs_tasks);
+
+		rq_attach_root(rq, &def_root_domain);
+#ifdef CONFIG_NO_HZ_COMMON
+		rq->last_blocked_load_update_tick = jiffies;
+		atomic_set(&rq->nohz_flags, 0);
+
+		INIT_CSD(&rq->nohz_csd, nohz_csd_func, rq);
+#endif
+#ifdef CONFIG_HOTPLUG_CPU
+		rcuwait_init(&rq->hotplug_wait);
+#endif
+#endif /* CONFIG_SMP */
+		hrtick_rq_init(rq);
+		atomic_set(&rq->nr_iowait, 0);
+
+#ifdef CONFIG_SCHED_CORE
+		rq->core = rq;
+		rq->core_pick = NULL;
+		rq->core_enabled = 0;
+		rq->core_tree = RB_ROOT;
+		rq->core_forceidle_count = 0;
+		rq->core_forceidle_occupation = 0;
+		rq->core_forceidle_start = 0;
+
+		rq->core_cookie = 0UL;
+#endif
+	}
+
+	set_load_weight(&init_task, false);
+
+	/*
+	 * The boot idle thread does lazy MMU switching as well:
+	 */
+	mmgrab(&init_mm);
+	enter_lazy_tlb(&init_mm, current);
+
+	/*
+	 * The idle task doesn't need the kthread struct to function, but it
+	 * is dressed up as a per-CPU kthread and thus needs to play the part
+	 * if we want to avoid special-casing it in code that deals with per-CPU
+	 * kthreads.
+	 */
+	WARN_ON(!set_kthread_struct(current));
+
+	/*
+	 * Make us the idle thread. Technically, schedule() should not be
+	 * called from this thread, however somewhere below it might be,
+	 * but because we are the idle thread, we just pick up running again
+	 * when this runqueue becomes "idle".
+	 */
+	init_idle(current, smp_processor_id());
+
+	calc_load_update = jiffies + LOAD_FREQ;
+
+#ifdef CONFIG_SMP
+	idle_thread_set_boot_cpu();
+	balance_push_set(smp_processor_id(), false);
+#endif
+	init_sched_fair_class();
+
+	psi_init();
+
+	init_uclamp();
+
+	preempt_dynamic_init();
+
+	scheduler_running = 1;
+}
+
+#ifdef CONFIG_DEBUG_ATOMIC_SLEEP
+
+void __might_sleep(const char *file, int line)
+{
+	unsigned int state = get_current_state();
+	/*
+	 * Blocking primitives will set (and therefore destroy) current->state,
+	 * since we will exit with TASK_RUNNING make sure we enter with it,
+	 * otherwise we will destroy state.
+	 */
+	WARN_ONCE(state != TASK_RUNNING && current->task_state_change,
+			"do not call blocking ops when !TASK_RUNNING; "
+			"state=%x set at [<%p>] %pS\n", state,
+			(void *)current->task_state_change,
+			(void *)current->task_state_change);
+
+	__might_resched(file, line, 0);
+}
+EXPORT_SYMBOL(__might_sleep);
+
+static void print_preempt_disable_ip(int preempt_offset, unsigned long ip)
+{
+	if (!IS_ENABLED(CONFIG_DEBUG_PREEMPT))
+		return;
+
+	if (preempt_count() == preempt_offset)
+		return;
+
+	pr_err("Preemption disabled at:");
+	print_ip_sym(KERN_ERR, ip);
+}
+
+static inline bool resched_offsets_ok(unsigned int offsets)
+{
+	unsigned int nested = preempt_count();
+
+	nested += rcu_preempt_depth() << MIGHT_RESCHED_RCU_SHIFT;
+
+	return nested == offsets;
+}
+
+void __might_resched(const char *file, int line, unsigned int offsets)
+{
+	/* Ratelimiting timestamp: */
+	static unsigned long prev_jiffy;
+
+	unsigned long preempt_disable_ip;
+
+	/* WARN_ON_ONCE() by default, no rate limit required: */
+	rcu_sleep_check();
+
+	if ((resched_offsets_ok(offsets) && !irqs_disabled() &&
+	     !is_idle_task(current) && !current->non_block_count) ||
+	    system_state == SYSTEM_BOOTING || system_state > SYSTEM_RUNNING ||
+	    oops_in_progress)
+		return;
+
+	if (time_before(jiffies, prev_jiffy + HZ) && prev_jiffy)
+		return;
+	prev_jiffy = jiffies;
+
+	/* Save this before calling printk(), since that will clobber it: */
+	preempt_disable_ip = get_preempt_disable_ip(current);
+
+	pr_err("BUG: sleeping function called from invalid context at %s:%d\n",
+	       file, line);
+	pr_err("in_atomic(): %d, irqs_disabled(): %d, non_block: %d, pid: %d, name: %s\n",
+	       in_atomic(), irqs_disabled(), current->non_block_count,
+	       current->pid, current->comm);
+	pr_err("preempt_count: %x, expected: %x\n", preempt_count(),
+	       offsets & MIGHT_RESCHED_PREEMPT_MASK);
+
+	if (IS_ENABLED(CONFIG_PREEMPT_RCU)) {
+		pr_err("RCU nest depth: %d, expected: %u\n",
+		       rcu_preempt_depth(), offsets >> MIGHT_RESCHED_RCU_SHIFT);
+	}
+
+	if (task_stack_end_corrupted(current))
+		pr_emerg("Thread overran stack, or stack corrupted\n");
+
+	debug_show_held_locks(current);
+	if (irqs_disabled())
+		print_irqtrace_events(current);
+
+	print_preempt_disable_ip(offsets & MIGHT_RESCHED_PREEMPT_MASK,
+				 preempt_disable_ip);
+
+	dump_stack();
+	add_taint(TAINT_WARN, LOCKDEP_STILL_OK);
+}
+EXPORT_SYMBOL(__might_resched);
+
+void __cant_sleep(const char *file, int line, int preempt_offset)
+{
+	static unsigned long prev_jiffy;
+
+	if (irqs_disabled())
+		return;
+
+	if (!IS_ENABLED(CONFIG_PREEMPT_COUNT))
+		return;
+
+	if (preempt_count() > preempt_offset)
+		return;
+
+	if (time_before(jiffies, prev_jiffy + HZ) && prev_jiffy)
+		return;
+	prev_jiffy = jiffies;
+
+	printk(KERN_ERR "BUG: assuming atomic context at %s:%d\n", file, line);
+	printk(KERN_ERR "in_atomic(): %d, irqs_disabled(): %d, pid: %d, name: %s\n",
+			in_atomic(), irqs_disabled(),
+			current->pid, current->comm);
+
+	debug_show_held_locks(current);
+	dump_stack();
+	add_taint(TAINT_WARN, LOCKDEP_STILL_OK);
+}
+EXPORT_SYMBOL_GPL(__cant_sleep);
+
+#ifdef CONFIG_SMP
+void __cant_migrate(const char *file, int line)
+{
+	static unsigned long prev_jiffy;
+
+	if (irqs_disabled())
+		return;
+
+	if (is_migration_disabled(current))
+		return;
+
+	if (!IS_ENABLED(CONFIG_PREEMPT_COUNT))
+		return;
+
+	if (preempt_count() > 0)
+		return;
+
+	if (time_before(jiffies, prev_jiffy + HZ) && prev_jiffy)
+		return;
+	prev_jiffy = jiffies;
+
+	pr_err("BUG: assuming non migratable context at %s:%d\n", file, line);
+	pr_err("in_atomic(): %d, irqs_disabled(): %d, migration_disabled() %u pid: %d, name: %s\n",
+	       in_atomic(), irqs_disabled(), is_migration_disabled(current),
+	       current->pid, current->comm);
+
+	debug_show_held_locks(current);
+	dump_stack();
+	add_taint(TAINT_WARN, LOCKDEP_STILL_OK);
+}
+EXPORT_SYMBOL_GPL(__cant_migrate);
+#endif
+#endif
+
+#ifdef CONFIG_MAGIC_SYSRQ
+void normalize_rt_tasks(void)
+{
+	struct task_struct *g, *p;
+	struct sched_attr attr = {
+		.sched_policy = SCHED_NORMAL,
+	};
+
+	read_lock(&tasklist_lock);
+	for_each_process_thread(g, p) {
+		/*
+		 * Only normalize user tasks:
+		 */
+		if (p->flags & PF_KTHREAD)
+			continue;
+
+		p->se.exec_start = 0;
+		schedstat_set(p->stats.wait_start,  0);
+		schedstat_set(p->stats.sleep_start, 0);
+		schedstat_set(p->stats.block_start, 0);
+
+		if (!dl_task(p) && !rt_task(p)) {
+			/*
+			 * Renice negative nice level userspace
+			 * tasks back to 0:
+			 */
+			if (task_nice(p) < 0)
+				set_user_nice(p, 0);
+			continue;
+		}
+
+		__sched_setscheduler(p, &attr, false, false);
+	}
+	read_unlock(&tasklist_lock);
+}
+
+#endif /* CONFIG_MAGIC_SYSRQ */
+
+#if defined(CONFIG_IA64) || defined(CONFIG_KGDB_KDB)
+/*
+ * These functions are only useful for the IA64 MCA handling, or kdb.
+ *
+ * They can only be called when the whole system has been
+ * stopped - every CPU needs to be quiescent, and no scheduling
+ * activity can take place. Using them for anything else would
+ * be a serious bug, and as a result, they aren't even visible
+ * under any other configuration.
+ */
+
+/**
+ * curr_task - return the current task for a given CPU.
+ * @cpu: the processor in question.
+ *
+ * ONLY VALID WHEN THE WHOLE SYSTEM IS STOPPED!
+ *
+ * Return: The current task for @cpu.
+ */
+struct task_struct *curr_task(int cpu)
+{
+	return cpu_curr(cpu);
+}
+
+#endif /* defined(CONFIG_IA64) || defined(CONFIG_KGDB_KDB) */
+
+#ifdef CONFIG_IA64
+/**
+ * ia64_set_curr_task - set the current task for a given CPU.
+ * @cpu: the processor in question.
+ * @p: the task pointer to set.
+ *
+ * Description: This function must only be used when non-maskable interrupts
+ * are serviced on a separate stack. It allows the architecture to switch the
+ * notion of the current task on a CPU in a non-blocking manner. This function
+ * must be called with all CPU's synchronized, and interrupts disabled, the
+ * and caller must save the original value of the current task (see
+ * curr_task() above) and restore that value before reenabling interrupts and
+ * re-starting the system.
+ *
+ * ONLY VALID WHEN THE WHOLE SYSTEM IS STOPPED!
+ */
+void ia64_set_curr_task(int cpu, struct task_struct *p)
+{
+	cpu_curr(cpu) = p;
+}
+
+#endif
+
+#ifdef CONFIG_CGROUP_SCHED
+/* task_group_lock serializes the addition/removal of task groups */
+static DEFINE_SPINLOCK(task_group_lock);
+
+static inline void alloc_uclamp_sched_group(struct task_group *tg,
+					    struct task_group *parent)
+{
+#ifdef CONFIG_UCLAMP_TASK_GROUP
+	enum uclamp_id clamp_id;
+
+	for_each_clamp_id(clamp_id) {
+		uclamp_se_set(&tg->uclamp_req[clamp_id],
+			      uclamp_none(clamp_id), false);
+		tg->uclamp[clamp_id] = parent->uclamp[clamp_id];
+	}
+#endif
+}
+
+static void sched_free_group(struct task_group *tg)
+{
+	free_fair_sched_group(tg);
+	free_rt_sched_group(tg);
+	autogroup_free(tg);
+	kmem_cache_free(task_group_cache, tg);
+}
+
+static void sched_free_group_rcu(struct rcu_head *rcu)
+{
+	sched_free_group(container_of(rcu, struct task_group, rcu));
+}
+
+static void sched_unregister_group(struct task_group *tg)
+{
+	unregister_fair_sched_group(tg);
+	unregister_rt_sched_group(tg);
+	/*
+	 * We have to wait for yet another RCU grace period to expire, as
+	 * print_cfs_stats() might run concurrently.
+	 */
+	call_rcu(&tg->rcu, sched_free_group_rcu);
+}
+
+/* allocate runqueue etc for a new task group */
+struct task_group *sched_create_group(struct task_group *parent)
+{
+	struct task_group *tg;
+
+	tg = kmem_cache_alloc(task_group_cache, GFP_KERNEL | __GFP_ZERO);
+	if (!tg)
+		return ERR_PTR(-ENOMEM);
+
+	if (!alloc_fair_sched_group(tg, parent))
+		goto err;
+
+	if (!alloc_rt_sched_group(tg, parent))
+		goto err;
+
+	alloc_uclamp_sched_group(tg, parent);
+
+	return tg;
+
+err:
+	sched_free_group(tg);
+	return ERR_PTR(-ENOMEM);
+}
+
+void sched_online_group(struct task_group *tg, struct task_group *parent)
+{
+	unsigned long flags;
+
+	spin_lock_irqsave(&task_group_lock, flags);
+	list_add_rcu(&tg->list, &task_groups);
+
+	/* Root should already exist: */
+	WARN_ON(!parent);
+
+	tg->parent = parent;
+	INIT_LIST_HEAD(&tg->children);
+	list_add_rcu(&tg->siblings, &parent->children);
+	spin_unlock_irqrestore(&task_group_lock, flags);
+
+	online_fair_sched_group(tg);
+}
+
+/* rcu callback to free various structures associated with a task group */
+static void sched_unregister_group_rcu(struct rcu_head *rhp)
+{
+	/* Now it should be safe to free those cfs_rqs: */
+	sched_unregister_group(container_of(rhp, struct task_group, rcu));
+}
+
+void sched_destroy_group(struct task_group *tg)
+{
+	/* Wait for possible concurrent references to cfs_rqs complete: */
+	call_rcu(&tg->rcu, sched_unregister_group_rcu);
+}
+
+void sched_release_group(struct task_group *tg)
+{
+	unsigned long flags;
+
+	/*
+	 * Unlink first, to avoid walk_tg_tree_from() from finding us (via
+	 * sched_cfs_period_timer()).
+	 *
+	 * For this to be effective, we have to wait for all pending users of
+	 * this task group to leave their RCU critical section to ensure no new
+	 * user will see our dying task group any more. Specifically ensure
+	 * that tg_unthrottle_up() won't add decayed cfs_rq's to it.
+	 *
+	 * We therefore defer calling unregister_fair_sched_group() to
+	 * sched_unregister_group() which is guarantied to get called only after the
+	 * current RCU grace period has expired.
+	 */
+	spin_lock_irqsave(&task_group_lock, flags);
+	list_del_rcu(&tg->list);
+	list_del_rcu(&tg->siblings);
+	spin_unlock_irqrestore(&task_group_lock, flags);
+}
+
+static void sched_change_group(struct task_struct *tsk, int type)
+{
+	struct task_group *tg;
+
+	/*
+	 * All callers are synchronized by task_rq_lock(); we do not use RCU
+	 * which is pointless here. Thus, we pass "true" to task_css_check()
+	 * to prevent lockdep warnings.
+	 */
+	tg = container_of(task_css_check(tsk, cpu_cgrp_id, true),
+			  struct task_group, css);
+	tg = autogroup_task_group(tsk, tg);
+	tsk->sched_task_group = tg;
+
+#ifdef CONFIG_FAIR_GROUP_SCHED
+	if (tsk->sched_class->task_change_group)
+		tsk->sched_class->task_change_group(tsk, type);
+	else
+#endif
+		set_task_rq(tsk, task_cpu(tsk));
+}
+
+/*
+ * Change task's runqueue when it moves between groups.
+ *
+ * The caller of this function should have put the task in its new group by
+ * now. This function just updates tsk->se.cfs_rq and tsk->se.parent to reflect
+ * its new group.
+ */
+void sched_move_task(struct task_struct *tsk)
+{
+	int queued, running, queue_flags =
+		DEQUEUE_SAVE | DEQUEUE_MOVE | DEQUEUE_NOCLOCK;
+	struct rq_flags rf;
+	struct rq *rq;
+
+	rq = task_rq_lock(tsk, &rf);
+	update_rq_clock(rq);
+
+	running = task_current(rq, tsk);
+	queued = task_on_rq_queued(tsk);
+
+	if (queued)
+		dequeue_task(rq, tsk, queue_flags);
+	if (running)
+		put_prev_task(rq, tsk);
+
+	sched_change_group(tsk, TASK_MOVE_GROUP);
+
+	if (queued)
+		enqueue_task(rq, tsk, queue_flags);
+	if (running) {
+		set_next_task(rq, tsk);
+		/*
+		 * After changing group, the running task may have joined a
+		 * throttled one but it's still the running task. Trigger a
+		 * resched to make sure that task can still run.
+		 */
+		resched_curr(rq);
+	}
+
+	task_rq_unlock(rq, tsk, &rf);
+}
+
+static inline struct task_group *css_tg(struct cgroup_subsys_state *css)
+{
+	return css ? container_of(css, struct task_group, css) : NULL;
+}
+
+static struct cgroup_subsys_state *
+cpu_cgroup_css_alloc(struct cgroup_subsys_state *parent_css)
+{
+	struct task_group *parent = css_tg(parent_css);
+	struct task_group *tg;
+
+	if (!parent) {
+		/* This is early initialization for the top cgroup */
+		return &root_task_group.css;
+	}
+
+	tg = sched_create_group(parent);
+	if (IS_ERR(tg))
+		return ERR_PTR(-ENOMEM);
+
+	return &tg->css;
+}
+
+/* Expose task group only after completing cgroup initialization */
+static int cpu_cgroup_css_online(struct cgroup_subsys_state *css)
+{
+	struct task_group *tg = css_tg(css);
+	struct task_group *parent = css_tg(css->parent);
+
+	if (parent)
+		sched_online_group(tg, parent);
+
+#ifdef CONFIG_UCLAMP_TASK_GROUP
+	/* Propagate the effective uclamp value for the new group */
+	mutex_lock(&uclamp_mutex);
+	rcu_read_lock();
+	cpu_util_update_eff(css);
+	rcu_read_unlock();
+	mutex_unlock(&uclamp_mutex);
+#endif
+
+	return 0;
+}
+
+static void cpu_cgroup_css_released(struct cgroup_subsys_state *css)
+{
+	struct task_group *tg = css_tg(css);
+
+	sched_release_group(tg);
+}
+
+static void cpu_cgroup_css_free(struct cgroup_subsys_state *css)
+{
+	struct task_group *tg = css_tg(css);
+
+	/*
+	 * Relies on the RCU grace period between css_released() and this.
+	 */
+	sched_unregister_group(tg);
+}
+
+/*
+ * This is called before wake_up_new_task(), therefore we really only
+ * have to set its group bits, all the other stuff does not apply.
+ */
+static void cpu_cgroup_fork(struct task_struct *task)
+{
+	struct rq_flags rf;
+	struct rq *rq;
+
+	rq = task_rq_lock(task, &rf);
+
+	update_rq_clock(rq);
+	sched_change_group(task, TASK_SET_GROUP);
+
+	task_rq_unlock(rq, task, &rf);
+}
+
+static int cpu_cgroup_can_attach(struct cgroup_taskset *tset)
+{
+	struct task_struct *task;
+	struct cgroup_subsys_state *css;
+	int ret = 0;
+
+	cgroup_taskset_for_each(task, css, tset) {
+#ifdef CONFIG_RT_GROUP_SCHED
+		if (!sched_rt_can_attach(css_tg(css), task))
+			return -EINVAL;
+#endif
+		/*
+		 * Serialize against wake_up_new_task() such that if it's
+		 * running, we're sure to observe its full state.
+		 */
+		raw_spin_lock_irq(&task->pi_lock);
+		/*
+		 * Avoid calling sched_move_task() before wake_up_new_task()
+		 * has happened. This would lead to problems with PELT, due to
+		 * move wanting to detach+attach while we're not attached yet.
+		 */
+		if (READ_ONCE(task->__state) == TASK_NEW)
+			ret = -EINVAL;
+		raw_spin_unlock_irq(&task->pi_lock);
+
+		if (ret)
+			break;
+	}
+	return ret;
+}
+
+static void cpu_cgroup_attach(struct cgroup_taskset *tset)
+{
+	struct task_struct *task;
+	struct cgroup_subsys_state *css;
+
+	cgroup_taskset_for_each(task, css, tset)
+		sched_move_task(task);
+}
+
+#ifdef CONFIG_UCLAMP_TASK_GROUP
+static void cpu_util_update_eff(struct cgroup_subsys_state *css)
+{
+	struct cgroup_subsys_state *top_css = css;
+	struct uclamp_se *uc_parent = NULL;
+	struct uclamp_se *uc_se = NULL;
+	unsigned int eff[UCLAMP_CNT];
+	enum uclamp_id clamp_id;
+	unsigned int clamps;
+
+	lockdep_assert_held(&uclamp_mutex);
+	SCHED_WARN_ON(!rcu_read_lock_held());
+
+	css_for_each_descendant_pre(css, top_css) {
+		uc_parent = css_tg(css)->parent
+			? css_tg(css)->parent->uclamp : NULL;
+
+		for_each_clamp_id(clamp_id) {
+			/* Assume effective clamps matches requested clamps */
+			eff[clamp_id] = css_tg(css)->uclamp_req[clamp_id].value;
+			/* Cap effective clamps with parent's effective clamps */
+			if (uc_parent &&
+			    eff[clamp_id] > uc_parent[clamp_id].value) {
+				eff[clamp_id] = uc_parent[clamp_id].value;
+			}
+		}
+		/* Ensure protection is always capped by limit */
+		eff[UCLAMP_MIN] = min(eff[UCLAMP_MIN], eff[UCLAMP_MAX]);
+
+		/* Propagate most restrictive effective clamps */
+		clamps = 0x0;
+		uc_se = css_tg(css)->uclamp;
+		for_each_clamp_id(clamp_id) {
+			if (eff[clamp_id] == uc_se[clamp_id].value)
+				continue;
+			uc_se[clamp_id].value = eff[clamp_id];
+			uc_se[clamp_id].bucket_id = uclamp_bucket_id(eff[clamp_id]);
+			clamps |= (0x1 << clamp_id);
+		}
+		if (!clamps) {
+			css = css_rightmost_descendant(css);
+			continue;
+		}
+
+		/* Immediately update descendants RUNNABLE tasks */
+		uclamp_update_active_tasks(css);
+	}
+}
+
+/*
+ * Integer 10^N with a given N exponent by casting to integer the literal "1eN"
+ * C expression. Since there is no way to convert a macro argument (N) into a
+ * character constant, use two levels of macros.
+ */
+#define _POW10(exp) ((unsigned int)1e##exp)
+#define POW10(exp) _POW10(exp)
+
+struct uclamp_request {
+#define UCLAMP_PERCENT_SHIFT	2
+#define UCLAMP_PERCENT_SCALE	(100 * POW10(UCLAMP_PERCENT_SHIFT))
+	s64 percent;
+	u64 util;
+	int ret;
+};
+
+static inline struct uclamp_request
+capacity_from_percent(char *buf)
+{
+	struct uclamp_request req = {
+		.percent = UCLAMP_PERCENT_SCALE,
+		.util = SCHED_CAPACITY_SCALE,
+		.ret = 0,
+	};
+
+	buf = strim(buf);
+	if (strcmp(buf, "max")) {
+		req.ret = cgroup_parse_float(buf, UCLAMP_PERCENT_SHIFT,
+					     &req.percent);
+		if (req.ret)
+			return req;
+		if ((u64)req.percent > UCLAMP_PERCENT_SCALE) {
+			req.ret = -ERANGE;
+			return req;
+		}
+
+		req.util = req.percent << SCHED_CAPACITY_SHIFT;
+		req.util = DIV_ROUND_CLOSEST_ULL(req.util, UCLAMP_PERCENT_SCALE);
+	}
+
+	return req;
+}
+
+static ssize_t cpu_uclamp_write(struct kernfs_open_file *of, char *buf,
+				size_t nbytes, loff_t off,
+				enum uclamp_id clamp_id)
+{
+	struct uclamp_request req;
+	struct task_group *tg;
+
+	req = capacity_from_percent(buf);
+	if (req.ret)
+		return req.ret;
+
+	static_branch_enable(&sched_uclamp_used);
+
+	mutex_lock(&uclamp_mutex);
+	rcu_read_lock();
+
+	tg = css_tg(of_css(of));
+	if (tg->uclamp_req[clamp_id].value != req.util)
+		uclamp_se_set(&tg->uclamp_req[clamp_id], req.util, false);
+
+	/*
+	 * Because of not recoverable conversion rounding we keep track of the
+	 * exact requested value
+	 */
+	tg->uclamp_pct[clamp_id] = req.percent;
+
+	/* Update effective clamps to track the most restrictive value */
+	cpu_util_update_eff(of_css(of));
+
+	rcu_read_unlock();
+	mutex_unlock(&uclamp_mutex);
+
+	return nbytes;
+}
+
+static ssize_t cpu_uclamp_min_write(struct kernfs_open_file *of,
+				    char *buf, size_t nbytes,
+				    loff_t off)
+{
+	return cpu_uclamp_write(of, buf, nbytes, off, UCLAMP_MIN);
+}
+
+static ssize_t cpu_uclamp_max_write(struct kernfs_open_file *of,
+				    char *buf, size_t nbytes,
+				    loff_t off)
+{
+	return cpu_uclamp_write(of, buf, nbytes, off, UCLAMP_MAX);
+}
+
+static inline void cpu_uclamp_print(struct seq_file *sf,
+				    enum uclamp_id clamp_id)
+{
+	struct task_group *tg;
+	u64 util_clamp;
+	u64 percent;
+	u32 rem;
+
+	rcu_read_lock();
+	tg = css_tg(seq_css(sf));
+	util_clamp = tg->uclamp_req[clamp_id].value;
+	rcu_read_unlock();
+
+	if (util_clamp == SCHED_CAPACITY_SCALE) {
+		seq_puts(sf, "max\n");
+		return;
+	}
+
+	percent = tg->uclamp_pct[clamp_id];
+	percent = div_u64_rem(percent, POW10(UCLAMP_PERCENT_SHIFT), &rem);
+	seq_printf(sf, "%llu.%0*u\n", percent, UCLAMP_PERCENT_SHIFT, rem);
+}
+
+static int cpu_uclamp_min_show(struct seq_file *sf, void *v)
+{
+	cpu_uclamp_print(sf, UCLAMP_MIN);
+	return 0;
+}
+
+static int cpu_uclamp_max_show(struct seq_file *sf, void *v)
+{
+	cpu_uclamp_print(sf, UCLAMP_MAX);
+	return 0;
+}
+#endif /* CONFIG_UCLAMP_TASK_GROUP */
+
+#ifdef CONFIG_FAIR_GROUP_SCHED
+static int cpu_shares_write_u64(struct cgroup_subsys_state *css,
+				struct cftype *cftype, u64 shareval)
+{
+	if (shareval > scale_load_down(ULONG_MAX))
+		shareval = MAX_SHARES;
+	return sched_group_set_shares(css_tg(css), scale_load(shareval));
+}
+
+static u64 cpu_shares_read_u64(struct cgroup_subsys_state *css,
+			       struct cftype *cft)
+{
+	struct task_group *tg = css_tg(css);
+
+	return (u64) scale_load_down(tg->shares);
+}
+
+#ifdef CONFIG_CFS_BANDWIDTH
+static DEFINE_MUTEX(cfs_constraints_mutex);
+
+const u64 max_cfs_quota_period = 1 * NSEC_PER_SEC; /* 1s */
+static const u64 min_cfs_quota_period = 1 * NSEC_PER_MSEC; /* 1ms */
+/* More than 203 days if BW_SHIFT equals 20. */
+static const u64 max_cfs_runtime = MAX_BW * NSEC_PER_USEC;
+
+static int __cfs_schedulable(struct task_group *tg, u64 period, u64 runtime);
+
+static int tg_set_cfs_bandwidth(struct task_group *tg, u64 period, u64 quota,
+				u64 burst)
+{
+	int i, ret = 0, runtime_enabled, runtime_was_enabled;
+	struct cfs_bandwidth *cfs_b = &tg->cfs_bandwidth;
+
+	if (tg == &root_task_group)
+		return -EINVAL;
+
+	/*
+	 * Ensure we have at some amount of bandwidth every period.  This is
+	 * to prevent reaching a state of large arrears when throttled via
+	 * entity_tick() resulting in prolonged exit starvation.
+	 */
+	if (quota < min_cfs_quota_period || period < min_cfs_quota_period)
+		return -EINVAL;
+
+	/*
+	 * Likewise, bound things on the other side by preventing insane quota
+	 * periods.  This also allows us to normalize in computing quota
+	 * feasibility.
+	 */
+	if (period > max_cfs_quota_period)
+		return -EINVAL;
+
+	/*
+	 * Bound quota to defend quota against overflow during bandwidth shift.
+	 */
+	if (quota != RUNTIME_INF && quota > max_cfs_runtime)
+		return -EINVAL;
+
+	if (quota != RUNTIME_INF && (burst > quota ||
+				     burst + quota > max_cfs_runtime))
+		return -EINVAL;
+
+	/*
+	 * Prevent race between setting of cfs_rq->runtime_enabled and
+	 * unthrottle_offline_cfs_rqs().
+	 */
+	cpus_read_lock();
+	mutex_lock(&cfs_constraints_mutex);
+	ret = __cfs_schedulable(tg, period, quota);
+	if (ret)
+		goto out_unlock;
+
+	runtime_enabled = quota != RUNTIME_INF;
+	runtime_was_enabled = cfs_b->quota != RUNTIME_INF;
+	/*
+	 * If we need to toggle cfs_bandwidth_used, off->on must occur
+	 * before making related changes, and on->off must occur afterwards
+	 */
+	if (runtime_enabled && !runtime_was_enabled)
+		cfs_bandwidth_usage_inc();
+	raw_spin_lock_irq(&cfs_b->lock);
+	cfs_b->period = ns_to_ktime(period);
+	cfs_b->quota = quota;
+	cfs_b->burst = burst;
+
+	__refill_cfs_bandwidth_runtime(cfs_b);
+
+	/* Restart the period timer (if active) to handle new period expiry: */
+	if (runtime_enabled)
+		start_cfs_bandwidth(cfs_b);
+
+	raw_spin_unlock_irq(&cfs_b->lock);
+
+	for_each_online_cpu(i) {
+		struct cfs_rq *cfs_rq = tg->cfs_rq[i];
+		struct rq *rq = cfs_rq->rq;
+		struct rq_flags rf;
+
+		rq_lock_irq(rq, &rf);
+		cfs_rq->runtime_enabled = runtime_enabled;
+		cfs_rq->runtime_remaining = 0;
+
+		if (cfs_rq->throttled)
+			unthrottle_cfs_rq(cfs_rq);
+		rq_unlock_irq(rq, &rf);
+	}
+	if (runtime_was_enabled && !runtime_enabled)
+		cfs_bandwidth_usage_dec();
+out_unlock:
+	mutex_unlock(&cfs_constraints_mutex);
+	cpus_read_unlock();
+
+	return ret;
+}
+
+static int tg_set_cfs_quota(struct task_group *tg, long cfs_quota_us)
+{
+	u64 quota, period, burst;
+
+	period = ktime_to_ns(tg->cfs_bandwidth.period);
+	burst = tg->cfs_bandwidth.burst;
+	if (cfs_quota_us < 0)
+		quota = RUNTIME_INF;
+	else if ((u64)cfs_quota_us <= U64_MAX / NSEC_PER_USEC)
+		quota = (u64)cfs_quota_us * NSEC_PER_USEC;
+	else
+		return -EINVAL;
+
+	return tg_set_cfs_bandwidth(tg, period, quota, burst);
+}
+
+static long tg_get_cfs_quota(struct task_group *tg)
+{
+	u64 quota_us;
+
+	if (tg->cfs_bandwidth.quota == RUNTIME_INF)
+		return -1;
+
+	quota_us = tg->cfs_bandwidth.quota;
+	do_div(quota_us, NSEC_PER_USEC);
+
+	return quota_us;
+}
+
+static int tg_set_cfs_period(struct task_group *tg, long cfs_period_us)
+{
+	u64 quota, period, burst;
+
+	if ((u64)cfs_period_us > U64_MAX / NSEC_PER_USEC)
+		return -EINVAL;
+
+	period = (u64)cfs_period_us * NSEC_PER_USEC;
+	quota = tg->cfs_bandwidth.quota;
+	burst = tg->cfs_bandwidth.burst;
+
+	return tg_set_cfs_bandwidth(tg, period, quota, burst);
+}
+
+static long tg_get_cfs_period(struct task_group *tg)
+{
+	u64 cfs_period_us;
+
+	cfs_period_us = ktime_to_ns(tg->cfs_bandwidth.period);
+	do_div(cfs_period_us, NSEC_PER_USEC);
+
+	return cfs_period_us;
+}
+
+static int tg_set_cfs_burst(struct task_group *tg, long cfs_burst_us)
+{
+	u64 quota, period, burst;
+
+	if ((u64)cfs_burst_us > U64_MAX / NSEC_PER_USEC)
+		return -EINVAL;
+
+	burst = (u64)cfs_burst_us * NSEC_PER_USEC;
+	period = ktime_to_ns(tg->cfs_bandwidth.period);
+	quota = tg->cfs_bandwidth.quota;
+
+	return tg_set_cfs_bandwidth(tg, period, quota, burst);
+}
+
+static long tg_get_cfs_burst(struct task_group *tg)
+{
+	u64 burst_us;
+
+	burst_us = tg->cfs_bandwidth.burst;
+	do_div(burst_us, NSEC_PER_USEC);
+
+	return burst_us;
+}
+
+static s64 cpu_cfs_quota_read_s64(struct cgroup_subsys_state *css,
+				  struct cftype *cft)
+{
+	return tg_get_cfs_quota(css_tg(css));
+}
+
+static int cpu_cfs_quota_write_s64(struct cgroup_subsys_state *css,
+				   struct cftype *cftype, s64 cfs_quota_us)
+{
+	return tg_set_cfs_quota(css_tg(css), cfs_quota_us);
+}
+
+static u64 cpu_cfs_period_read_u64(struct cgroup_subsys_state *css,
+				   struct cftype *cft)
+{
+	return tg_get_cfs_period(css_tg(css));
+}
+
+static int cpu_cfs_period_write_u64(struct cgroup_subsys_state *css,
+				    struct cftype *cftype, u64 cfs_period_us)
+{
+	return tg_set_cfs_period(css_tg(css), cfs_period_us);
+}
+
+static u64 cpu_cfs_burst_read_u64(struct cgroup_subsys_state *css,
+				  struct cftype *cft)
+{
+	return tg_get_cfs_burst(css_tg(css));
+}
+
+static int cpu_cfs_burst_write_u64(struct cgroup_subsys_state *css,
+				   struct cftype *cftype, u64 cfs_burst_us)
+{
+	return tg_set_cfs_burst(css_tg(css), cfs_burst_us);
+}
+
+struct cfs_schedulable_data {
+	struct task_group *tg;
+	u64 period, quota;
+};
+
+/*
+ * normalize group quota/period to be quota/max_period
+ * note: units are usecs
+ */
+static u64 normalize_cfs_quota(struct task_group *tg,
+			       struct cfs_schedulable_data *d)
+{
+	u64 quota, period;
+
+	if (tg == d->tg) {
+		period = d->period;
+		quota = d->quota;
+	} else {
+		period = tg_get_cfs_period(tg);
+		quota = tg_get_cfs_quota(tg);
+	}
+
+	/* note: these should typically be equivalent */
+	if (quota == RUNTIME_INF || quota == -1)
+		return RUNTIME_INF;
+
+	return to_ratio(period, quota);
+}
+
+static int tg_cfs_schedulable_down(struct task_group *tg, void *data)
+{
+	struct cfs_schedulable_data *d = data;
+	struct cfs_bandwidth *cfs_b = &tg->cfs_bandwidth;
+	s64 quota = 0, parent_quota = -1;
+
+	if (!tg->parent) {
+		quota = RUNTIME_INF;
+	} else {
+		struct cfs_bandwidth *parent_b = &tg->parent->cfs_bandwidth;
+
+		quota = normalize_cfs_quota(tg, d);
+		parent_quota = parent_b->hierarchical_quota;
+
+		/*
+		 * Ensure max(child_quota) <= parent_quota.  On cgroup2,
+		 * always take the min.  On cgroup1, only inherit when no
+		 * limit is set:
+		 */
+		if (cgroup_subsys_on_dfl(cpu_cgrp_subsys)) {
+			quota = min(quota, parent_quota);
+		} else {
+			if (quota == RUNTIME_INF)
+				quota = parent_quota;
+			else if (parent_quota != RUNTIME_INF && quota > parent_quota)
+				return -EINVAL;
+		}
+	}
+	cfs_b->hierarchical_quota = quota;
+
+	return 0;
+}
+
+static int __cfs_schedulable(struct task_group *tg, u64 period, u64 quota)
+{
+	int ret;
+	struct cfs_schedulable_data data = {
+		.tg = tg,
+		.period = period,
+		.quota = quota,
+	};
+
+	if (quota != RUNTIME_INF) {
+		do_div(data.period, NSEC_PER_USEC);
+		do_div(data.quota, NSEC_PER_USEC);
+	}
+
+	rcu_read_lock();
+	ret = walk_tg_tree(tg_cfs_schedulable_down, tg_nop, &data);
+	rcu_read_unlock();
+
+	return ret;
+}
+
+static int cpu_cfs_stat_show(struct seq_file *sf, void *v)
+{
+	struct task_group *tg = css_tg(seq_css(sf));
+	struct cfs_bandwidth *cfs_b = &tg->cfs_bandwidth;
+
+	seq_printf(sf, "nr_periods %d\n", cfs_b->nr_periods);
+	seq_printf(sf, "nr_throttled %d\n", cfs_b->nr_throttled);
+	seq_printf(sf, "throttled_time %llu\n", cfs_b->throttled_time);
+
+	if (schedstat_enabled() && tg != &root_task_group) {
+		struct sched_statistics *stats;
+		u64 ws = 0;
+		int i;
+
+		for_each_possible_cpu(i) {
+			stats = __schedstats_from_se(tg->se[i]);
+			ws += schedstat_val(stats->wait_sum);
+		}
+
+		seq_printf(sf, "wait_sum %llu\n", ws);
+	}
+
+	seq_printf(sf, "nr_bursts %d\n", cfs_b->nr_burst);
+	seq_printf(sf, "burst_time %llu\n", cfs_b->burst_time);
+
+	return 0;
+}
+#endif /* CONFIG_CFS_BANDWIDTH */
+#endif /* CONFIG_FAIR_GROUP_SCHED */
+
+#ifdef CONFIG_RT_GROUP_SCHED
+static int cpu_rt_runtime_write(struct cgroup_subsys_state *css,
+				struct cftype *cft, s64 val)
+{
+	return sched_group_set_rt_runtime(css_tg(css), val);
+}
+
+static s64 cpu_rt_runtime_read(struct cgroup_subsys_state *css,
+			       struct cftype *cft)
+{
+	return sched_group_rt_runtime(css_tg(css));
+}
+
+static int cpu_rt_period_write_uint(struct cgroup_subsys_state *css,
+				    struct cftype *cftype, u64 rt_period_us)
+{
+	return sched_group_set_rt_period(css_tg(css), rt_period_us);
+}
+
+static u64 cpu_rt_period_read_uint(struct cgroup_subsys_state *css,
+				   struct cftype *cft)
+{
+	return sched_group_rt_period(css_tg(css));
+}
+#endif /* CONFIG_RT_GROUP_SCHED */
+
+#ifdef CONFIG_FAIR_GROUP_SCHED
+static s64 cpu_idle_read_s64(struct cgroup_subsys_state *css,
+			       struct cftype *cft)
+{
+	return css_tg(css)->idle;
+}
+
+static int cpu_idle_write_s64(struct cgroup_subsys_state *css,
+				struct cftype *cft, s64 idle)
+{
+	return sched_group_set_idle(css_tg(css), idle);
+}
+#endif
+
+static struct cftype cpu_legacy_files[] = {
+#ifdef CONFIG_FAIR_GROUP_SCHED
+	{
+		.name = "shares",
+		.read_u64 = cpu_shares_

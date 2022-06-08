@@ -1,102 +1,96 @@
-// SPDX-License-Identifier: GPL-2.0-or-later
-/*
- * ImgTec IR Decoder setup for Sharp protocol.
- *
- * Copyright 2012-2014 Imagination Technologies Ltd.
- */
 
-#include "img-ir-hw.h"
-
-/* Convert Sharp data to a scancode */
-static int img_ir_sharp_scancode(int len, u64 raw, u64 enabled_protocols,
-				 struct img_ir_scancode_req *request)
-{
-	unsigned int addr, cmd, exp, chk;
-
-	if (len != 15)
-		return -EINVAL;
-
-	addr = (raw >>   0) & 0x1f;
-	cmd  = (raw >>   5) & 0xff;
-	exp  = (raw >>  13) &  0x1;
-	chk  = (raw >>  14) &  0x1;
-
-	/* validate data */
-	if (!exp)
-		return -EINVAL;
-	if (chk)
-		/* probably the second half of the message */
-		return -EINVAL;
-
-	request->protocol = RC_PROTO_SHARP;
-	request->scancode = addr << 8 | cmd;
-	return IMG_IR_SCANCODE;
-}
-
-/* Convert Sharp scancode to Sharp data filter */
-static int img_ir_sharp_filter(const struct rc_scancode_filter *in,
-			       struct img_ir_filter *out, u64 protocols)
-{
-	unsigned int addr, cmd, exp = 0, chk = 0;
-	unsigned int addr_m, cmd_m, exp_m = 0, chk_m = 0;
-
-	addr   = (in->data >> 8) & 0x1f;
-	addr_m = (in->mask >> 8) & 0x1f;
-	cmd    = (in->data >> 0) & 0xff;
-	cmd_m  = (in->mask >> 0) & 0xff;
-	if (cmd_m) {
-		/* if filtering commands, we can only match the first part */
-		exp   = 1;
-		exp_m = 1;
-		chk   = 0;
-		chk_m = 1;
 	}
 
-	out->data = addr        |
-		    cmd   <<  5 |
-		    exp   << 13 |
-		    chk   << 14;
-	out->mask = addr_m      |
-		    cmd_m <<  5 |
-		    exp_m << 13 |
-		    chk_m << 14;
+	for (cnt = 0; cnt < msg->len; cnt++) {
 
-	return 0;
+		ctrl = bus->i2c_period | (1 << 12) | (1 << 2) | 1;
+
+		if (cnt < msg->len - 1)
+			ctrl |= I2C_NOSTOP | I2C_EXTEND;
+
+		cx_write(bus->reg_addr, msg->addr << 25);
+		cx_write(bus->reg_ctrl, ctrl);
+
+		if (!i2c_wait_done(i2c_adap))
+			goto eio;
+		msg->buf[cnt] = cx_read(bus->reg_rdata) & 0xff;
+		if (i2c_debug) {
+			dprintk(1, " %02x", msg->buf[cnt]);
+			if (!(ctrl & I2C_NOSTOP))
+				dprintk(1, " >\n");
+		}
+	}
+	return msg->len;
+
+ eio:
+	retval = -EIO;
+	if (i2c_debug)
+		pr_err(" ERR: %d\n", retval);
+	return retval;
 }
 
-/*
- * Sharp decoder
- * See also http://www.sbprojects.com/knowledge/ir/sharp.php
- */
-struct img_ir_decoder img_ir_sharp = {
-	.type = RC_PROTO_BIT_SHARP,
-	.control = {
-		.decoden = 0,
-		.decodend2 = 1,
-		.code_type = IMG_IR_CODETYPE_PULSEDIST,
-		.d1validsel = 1,
-	},
-	/* main timings */
-	.tolerance = 20,	/* 20% */
-	.timings = {
-		/* 0 symbol */
-		.s10 = {
-			.pulse = { 320	/* 320 us */ },
-			.space = { 680	/* 1 ms period */ },
-		},
-		/* 1 symbol */
-		.s11 = {
-			.pulse = { 320	/* 320 us */ },
-			.space = { 1680	/* 2 ms period */ },
-		},
-		/* free time */
-		.ft = {
-			.minlen = 15,
-			.maxlen = 15,
-			.ft_min = 5000,	/* 5 ms */
-		},
-	},
-	/* scancode logic */
-	.scancode = img_ir_sharp_scancode,
-	.filter = img_ir_sharp_filter,
+static int i2c_xfer(struct i2c_adapter *i2c_adap,
+		    struct i2c_msg *msgs, int num)
+{
+	int i, retval = 0;
+
+	dprintk(1, "%s(num = %d)\n", __func__, num);
+
+	for (i = 0 ; i < num; i++) {
+		dprintk(1, "%s(num = %d) addr = 0x%02x  len = 0x%x\n",
+			__func__, num, msgs[i].addr, msgs[i].len);
+		if (msgs[i].flags & I2C_M_RD) {
+			/* read */
+			retval = i2c_readbytes(i2c_adap, &msgs[i], 0);
+		} else if (i + 1 < num && (msgs[i + 1].flags & I2C_M_RD) &&
+			   msgs[i].addr == msgs[i + 1].addr) {
+			/* write then read from same address */
+			retval = i2c_sendbytes(i2c_adap, &msgs[i],
+					       msgs[i + 1].len);
+			if (retval < 0)
+				goto err;
+			i++;
+			retval = i2c_readbytes(i2c_adap, &msgs[i], 1);
+		} else {
+			/* write */
+			retval = i2c_sendbytes(i2c_adap, &msgs[i], 0);
+		}
+		if (retval < 0)
+			goto err;
+	}
+	return num;
+
+ err:
+	return retval;
+}
+
+static u32 cx23885_functionality(struct i2c_adapter *adap)
+{
+	return I2C_FUNC_SMBUS_EMUL | I2C_FUNC_I2C;
+}
+
+static const struct i2c_algorithm cx23885_i2c_algo_template = {
+	.master_xfer	= i2c_xfer,
+	.functionality	= cx23885_functionality,
 };
+
+/* ----------------------------------------------------------------------- */
+
+static const struct i2c_adapter cx23885_i2c_adap_template = {
+	.name              = "cx23885",
+	.owner             = THIS_MODULE,
+	.algo              = &cx23885_i2c_algo_template,
+};
+
+static const struct i2c_client cx23885_i2c_client_template = {
+	.name	= "cx23885 internal",
+};
+
+static char *i2c_devs[128] = {
+	[0x10 >> 1] = "tda10048",
+	[0x12 >> 1] = "dib7000pc",
+	[0x1c >> 1] = "lgdt3303",
+	[0x80 >> 1] = "cs3308",
+	[0x82 >> 1] = "cs3308",
+	[0x86 >> 1] = "tda9887",
+	[0x32

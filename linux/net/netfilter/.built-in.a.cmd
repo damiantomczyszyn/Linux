@@ -1,1 +1,1 @@
-cmd_drivers/media/i2c/vpx3220.o := gcc -Wp,-MMD,drivers/media/i2c/.vpx3220.o.d -nostdinc -I./arch/x86/include -I./arch/x86/include/generated  -I./include -I./arch/x86/include/uapi -I./arch/x86/include/generated/uapi -I./include/uapi -I./include/generated/uapi -include
+ÄÄ&ø¨<pM‰	(8	•šÏZilU0Û¥\œˆ·åÛO±Uº¨Im¾kŸwk‹M[ºÞ¡÷UJ–ëµÓho/ÃÁ€³37Y„'Ô!-CÙÄJÖgVÊrYÈZdi £.ÐöÃ$à™p”«lt.aË#(~¢¾-p[==‚ÇÒe0Ì9Ãf;—³-³o­uí3%H¬q„¼ìßY~V¦ß®ZG¹Ê—áŽëU£“ö¶ä*DWY,šÌž&ïŽUq6±íÈ³ýØ”¦xp¦	ÊøÆf¦¬¡"˜‘uGw‚ÀÌE¦$HA%¯ŽÀ†8õpn5?X‚ÄŸPºÌõG\ýòÌ»

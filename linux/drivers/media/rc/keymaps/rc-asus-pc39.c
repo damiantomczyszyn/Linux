@@ -1,87 +1,78 @@
-// SPDX-License-Identifier: GPL-2.0+
-// asus-pc39.h - Keytable for asus_pc39 Remote Controller
-//
-// keymap imported from ir-keymaps.c
-//
-// Copyright (c) 2010 by Mauro Carvalho Chehab
+nable(dev, p->modulation);
+	o->modulation = p->modulation;
 
-#include <media/rc-map.h>
-#include <linux/module.h>
+	if (p->modulation) {
+		p->carrier_freq = rxclk_rx_s_carrier(dev, p->carrier_freq,
+						     &rxclk_divider);
 
-/*
- * Marc Fargas <telenieko@telenieko.com>
- * this is the remote control that comes with the asus p7131
- * which has a label saying is "Model PC-39"
- */
+		o->carrier_freq = p->carrier_freq;
 
-static struct rc_map_table asus_pc39[] = {
-	/* Keys 0 to 9 */
-	{ 0x082a, KEY_NUMERIC_0 },
-	{ 0x0816, KEY_NUMERIC_1 },
-	{ 0x0812, KEY_NUMERIC_2 },
-	{ 0x0814, KEY_NUMERIC_3 },
-	{ 0x0836, KEY_NUMERIC_4 },
-	{ 0x0832, KEY_NUMERIC_5 },
-	{ 0x0834, KEY_NUMERIC_6 },
-	{ 0x080e, KEY_NUMERIC_7 },
-	{ 0x080a, KEY_NUMERIC_8 },
-	{ 0x080c, KEY_NUMERIC_9 },
+		o->duty_cycle = p->duty_cycle = 50;
 
-	{ 0x0801, KEY_RADIO },		/* radio */
-	{ 0x083c, KEY_MENU },		/* dvd/menu */
-	{ 0x0815, KEY_VOLUMEUP },
-	{ 0x0826, KEY_VOLUMEDOWN },
-	{ 0x0808, KEY_UP },
-	{ 0x0804, KEY_DOWN },
-	{ 0x0818, KEY_LEFT },
-	{ 0x0810, KEY_RIGHT },
-	{ 0x081a, KEY_VIDEO },		/* video */
-	{ 0x0806, KEY_AUDIO },		/* music */
+		control_rx_s_carrier_window(dev, p->carrier_freq,
+					    &p->carrier_range_lower,
+					    &p->carrier_range_upper);
+		o->carrier_range_lower = p->carrier_range_lower;
+		o->carrier_range_upper = p->carrier_range_upper;
 
-	{ 0x081e, KEY_TV },		/* tv */
-	{ 0x0822, KEY_EXIT },		/* back */
-	{ 0x0835, KEY_CHANNELUP },	/* channel / program + */
-	{ 0x0824, KEY_CHANNELDOWN },	/* channel / program - */
-	{ 0x0825, KEY_ENTER },		/* enter */
-
-	{ 0x0839, KEY_PAUSE },		/* play/pause */
-	{ 0x0821, KEY_PREVIOUS },		/* rew */
-	{ 0x0819, KEY_NEXT },		/* forward */
-	{ 0x0831, KEY_REWIND },		/* backward << */
-	{ 0x0805, KEY_FASTFORWARD },	/* forward >> */
-	{ 0x0809, KEY_STOP },
-	{ 0x0811, KEY_RECORD },		/* recording */
-	{ 0x0829, KEY_POWER },		/* the button that reads "close" */
-
-	{ 0x082e, KEY_ZOOM },		/* full screen */
-	{ 0x082c, KEY_MACRO },		/* recall */
-	{ 0x081c, KEY_HOME },		/* home */
-	{ 0x083a, KEY_PVR },		/* picture */
-	{ 0x0802, KEY_MUTE },		/* mute */
-	{ 0x083e, KEY_DVD },		/* dvd */
-};
-
-static struct rc_map_list asus_pc39_map = {
-	.map = {
-		.scan     = asus_pc39,
-		.size     = ARRAY_SIZE(asus_pc39),
-		.rc_proto = RC_PROTO_RC5,
-		.name     = RC_MAP_ASUS_PC39,
+		p->max_pulse_width =
+			(u32) pulse_width_count_to_ns(FIFO_RXTX, rxclk_divider);
+	} else {
+		p->max_pulse_width =
+			    rxclk_rx_s_max_pulse_width(dev, p->max_pulse_width,
+						       &rxclk_divider);
 	}
-};
+	o->max_pulse_width = p->max_pulse_width;
+	atomic_set(&state->rxclk_divider, rxclk_divider);
 
-static int __init init_rc_map_asus_pc39(void)
-{
-	return rc_map_register(&asus_pc39_map);
+	p->noise_filter_min_width =
+			  filter_rx_s_min_width(dev, p->noise_filter_min_width);
+	o->noise_filter_min_width = p->noise_filter_min_width;
+
+	p->resolution = clock_divider_to_resolution(rxclk_divider);
+	o->resolution = p->resolution;
+
+	/* FIXME - make this dependent on resolution for better performance */
+	control_rx_irq_watermark(dev, RX_FIFO_HALF_FULL);
+
+	control_rx_s_edge_detection(dev, CNTRL_EDG_BOTH);
+
+	o->invert_level = p->invert_level;
+	atomic_set(&state->rx_invert, p->invert_level);
+
+	o->interrupt_enable = p->interrupt_enable;
+	o->enable = p->enable;
+	if (p->enable) {
+		unsigned long flags;
+
+		spin_lock_irqsave(&state->rx_kfifo_lock, flags);
+		kfifo_reset(&state->rx_kfifo);
+		/* reset tx_fifo too if there is one... */
+		spin_unlock_irqrestore(&state->rx_kfifo_lock, flags);
+		if (p->interrupt_enable)
+			irqenable_rx(dev, IRQEN_RSE | IRQEN_RTE | IRQEN_ROE);
+		control_rx_enable(dev, p->enable);
+	}
+
+	mutex_unlock(&state->rx_params_lock);
+	return 0;
 }
 
-static void __exit exit_rc_map_asus_pc39(void)
+/* Transmitter */
+static int cx23888_ir_tx_write(struct v4l2_subdev *sd, u8 *buf, size_t count,
+			       ssize_t *num)
 {
-	rc_map_unregister(&asus_pc39_map);
+	struct cx23888_ir_state *state = to_state(sd);
+	struct cx23885_dev *dev = state->dev;
+	/* For now enable the Tx FIFO Service interrupt & pretend we did work */
+	irqenable_tx(dev, IRQEN_TSE);
+	*num = count;
+	return 0;
 }
 
-module_init(init_rc_map_asus_pc39)
-module_exit(exit_rc_map_asus_pc39)
-
-MODULE_LICENSE("GPL");
-MODULE_AUTHOR("Mauro Carvalho Chehab");
+static int cx23888_ir_tx_g_parameters(struct v4l2_subdev *sd,
+				      struct v4l2_subdev_ir_parameters *p)
+{
+	struct cx23888_ir_state *state = to_state(sd);
+	mutex_lock(&state->tx_params_lock);
+	memcpy(p, &state

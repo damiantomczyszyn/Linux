@@ -1,929 +1,1212 @@
-nclude/config/GENERIC_ATOMIC64) \
-  include/linux/atomic/atomic-long.h \
-  include/linux/atomic/atomic-instrumented.h \
-  include/linux/bug.h \
-    $(wildcard include/config/BUG_ON_DATA_CORRUPTION) \
-  arch/x86/include/asm/bug.h \
-    $(wildcard include/config/DEBUG_BUGVERBOSE) \
-  include/linux/instrumentation.h \
-    $(wildcard include/config/DEBUG_ENTRY) \
-  include/asm-generic/bug.h \
-    $(wildcard include/config/BUG) \
-    $(wildcard include/config/GENERIC_BUG_RELATIVE_POINTERS) \
-  arch/x86/include/uapi/asm/msr.h \
-  include/linux/tracepoint-defs.h \
-  arch/x86/include/asm/special_insns.h \
-  include/linux/irqflags.h \
-    $(wildcard include/config/TRACE_IRQFLAGS) \
-    $(wildcard include/config/PREEMPT_RT) \
-    $(wildcard include/config/IRQSOFF_TRACER) \
-    $(wildcard include/config/PREEMPT_TRACER) \
-    $(wildcard include/config/DEBUG_IRQFLAGS) \
-    $(wildcard include/config/TRACE_IRQFLAGS_SUPPORT) \
-  arch/x86/include/asm/irqflags.h \
-  arch/x86/include/asm/fpu/types.h \
-  arch/x86/include/asm/vmxfeatures.h \
-  arch/x86/include/asm/vdso/processor.h \
-  include/linux/personality.h \
-  include/uapi/linux/personality.h \
-  arch/x86/include/asm/tsc.h \
-  arch/x86/include/asm/cpufeature.h \
-    $(wildcard include/config/X86_FEATURE_NAMES) \
-  include/vdso/time32.h \
-  include/vdso/time.h \
-  include/linux/uidgid.h \
-    $(wildcard include/config/MULTIUSER) \
-    $(wildcard include/config/USER_NS) \
-  include/linux/highuid.h \
-  include/linux/buildid.h \
-    $(wildcard include/config/CRASH_CORE) \
-  include/linux/mm_types.h \
-    $(wildcard include/config/HAVE_ALIGNED_STRUCT_PAGE) \
-    $(wildcard include/config/MEMCG) \
-    $(wildcard include/config/USERFAULTFD) \
-    $(wildcard include/config/SWAP) \
-    $(wildcard include/config/NUMA) \
-    $(wildcard include/config/HAVE_ARCH_COMPAT_MMAP_BASES) \
-    $(wildcard include/config/MEMBARRIER) \
-    $(wildcard include/config/AIO) \
-    $(wildcard include/config/MMU_NOTIFIER) \
-    $(wildcard include/config/TRANSPARENT_HUGEPAGE) \
-    $(wildcard include/config/NUMA_BALANCING) \
-    $(wildcard include/config/ARCH_WANT_BATCHED_UNMAP_TLB_FLUSH) \
-    $(wildcard include/config/HUGETLB_PAGE) \
-    $(wildcard include/config/IOMMU_SVA) \
-  include/linux/mm_types_task.h \
-    $(wildcard include/config/SPLIT_PTLOCK_CPUS) \
-    $(wildcard include/config/ARCH_ENABLE_SPLIT_PMD_PTLOCK) \
-  arch/x86/include/asm/tlbbatch.h \
-  include/linux/auxvec.h \
-  include/uapi/linux/auxvec.h \
-  arch/x86/include/uapi/asm/auxvec.h \
-  include/linux/kref.h \
-  include/linux/spinlock.h \
-    $(wildcard include/config/PREEMPTION) \
-  include/linux/preempt.h \
-    $(wildcard include/config/PREEMPT_COUNT) \
-    $(wildcard include/config/TRACE_PREEMPT_TOGGLE) \
-    $(wildcard include/config/PREEMPT_NOTIFIERS) \
-  arch/x86/include/asm/preempt.h \
-  include/linux/thread_info.h \
-    $(wildcard include/config/THREAD_INFO_IN_TASK) \
-    $(wildcard include/config/GENERIC_ENTRY) \
-    $(wildcard include/config/HAVE_ARCH_WITHIN_STACK_FRAMES) \
-    $(wildcard include/config/HARDENED_USERCOPY) \
-  include/linux/restart_block.h \
-  arch/x86/include/asm/thread_info.h \
-    $(wildcard include/config/COMPAT) \
-  include/linux/bottom_half.h \
-  include/linux/lockdep.h \
-    $(wildcard include/config/DEBUG_LOCKING_API_SELFTESTS) \
-  include/linux/smp.h \
-    $(wildcard include/config/UP_LATE_INIT) \
-  include/linux/smp_types.h \
-  include/linux/llist.h \
-    $(wildcard include/config/ARCH_HAVE_NMI_SAFE_CMPXCHG) \
-  arch/x86/include/asm/smp.h \
-    $(wildcard include/config/X86_LOCAL_APIC) \
-    $(wildcard include/config/DEBUG_NMI_SELFTEST) \
-  arch/x86/include/generated/asm/mmiowb.h \
-  include/asm-generic/mmiowb.h \
-    $(wildcard include/config/MMIOWB) \
-  include/linux/spinlock_types.h \
-  include/linux/rwlock_types.h \
-  arch/x86/include/asm/spinlock.h \
-  arch/x86/include/asm/paravirt.h \
-    $(wildcard include/config/PARAVIRT_SPINLOCKS) \
-  arch/x86/include/asm/frame.h \
-  arch/x86/include/asm/qspinlock.h \
-  include/asm-generic/qspinlock.h \
-  arch/x86/include/asm/qrwlock.h \
-  include/asm-generic/qrwlock.h \
-  include/linux/rwlock.h \
-    $(wildcard include/config/PREEMPT) \
-  include/linux/spinlock_api_smp.h \
-    $(wildcard include/config/INLINE_SPIN_LOCK) \
-    $(wildcard include/config/INLINE_SPIN_LOCK_BH) \
-    $(wildcard include/config/INLINE_SPIN_LOCK_IRQ) \
-    $(wildcard include/config/INLINE_SPIN_LOCK_IRQSAVE) \
-    $(wildcard include/config/INLINE_SPIN_TRYLOCK) \
-    $(wildcard include/config/INLINE_SPIN_TRYLOCK_BH) \
-    $(wildcard include/config/UNINLINE_SPIN_UNLOCK) \
-    $(wildcard include/config/INLINE_SPIN_UNLOCK_BH) \
-    $(wildcard include/config/INLINE_SPIN_UNLOCK_IRQ) \
-    $(wildcard include/config/INLINE_SPIN_UNLOCK_IRQRESTORE) \
-    $(wildcard include/config/GENERIC_LOCKBREAK) \
-  include/linux/rwlock_api_smp.h \
-    $(wildcard include/config/INLINE_READ_LOCK) \
-    $(wildcard include/config/INLINE_WRITE_LOCK) \
-    $(wildcard include/config/INLINE_READ_LOCK_BH) \
-    $(wildcard include/config/INLINE_WRITE_LOCK_BH) \
-    $(wildcard include/config/INLINE_READ_LOCK_IRQ) \
-    $(wildcard include/config/INLINE_WRITE_LOCK_IRQ) \
-    $(wildcard include/config/INLINE_READ_LOCK_IRQSAVE) \
-    $(wildcard include/config/INLINE_WRITE_LOCK_IRQSAVE) \
-    $(wildcard include/config/INLINE_READ_TRYLOCK) \
-    $(wildcard include/config/INLINE_WRITE_TRYLOCK) \
-    $(wildcard include/config/INLINE_READ_UNLOCK) \
-    $(wildcard include/config/INLINE_WRITE_UNLOCK) \
-    $(wildcard include/config/INLINE_READ_UNLOCK_BH) \
-    $(wildcard include/config/INLINE_WRITE_UNLOCK_BH) \
-    $(wildcard include/config/INLINE_READ_UNLOCK_IRQ) \
-    $(wildcard include/config/INLINE_WRITE_UNLOCK_IRQ) \
-    $(wildcard include/config/INLINE_READ_UNLOCK_IRQRESTORE) \
-    $(wildcard include/config/INLINE_WRITE_UNLOCK_IRQRESTORE) \
-  include/linux/refcount.h \
-  include/linux/rbtree.h \
-  include/linux/rbtree_types.h \
-  include/linux/rcupdate.h \
-    $(wildcard include/config/PREEMPT_RCU) \
-    $(wildcard include/config/TINY_RCU) \
-    $(wildcard include/config/RCU_STRICT_GRACE_PERIOD) \
-    $(wildcard include/config/TASKS_RCU_GENERIC) \
-    $(wildcard include/config/RCU_STALL_COMMON) \
-    $(wildcard include/config/NO_HZ_FULL) \
-    $(wildcard include/config/RCU_NOCB_CPU) \
-    $(wildcard include/config/TASKS_RCU) \
-    $(wildcard include/config/TASKS_TRACE_RCU) \
-    $(wildcard include/config/TASKS_RUDE_RCU) \
-    $(wildcard include/config/TREE_RCU) \
-    $(wildcard include/config/DEBUG_OBJECTS_RCU_HEAD) \
-    $(wildcard include/config/PROVE_RCU) \
-    $(wildcard include/config/ARCH_WEAK_RELEASE_ACQUIRE) \
-  include/linux/rcutree.h \
-  include/linux/rwsem.h \
-    $(wildcard include/config/RWSEM_SPIN_ON_OWNER) \
-    $(wildcard include/config/DEBUG_RWSEMS) \
-  include/linux/osq_lock.h \
-  include/linux/completion.h \
-  include/linux/swait.h \
-  include/linux/wait.h \
-  include/uapi/linux/wait.h \
-  include/linux/uprobes.h \
-    $(wildcard include/config/UPROBES) \
-  arch/x86/include/asm/uprobes.h \
-  include/linux/notifier.h \
-  include/linux/mutex.h \
-    $(wildcard include/config/MUTEX_SPIN_ON_OWNER) \
-    $(wildcard include/config/DEBUG_MUTEXES) \
-  include/linux/debug_locks.h \
-  include/linux/srcu.h \
-    $(wildcard include/config/TINY_SRCU) \
-    $(wildcard include/config/SRCU) \
-  include/linux/workqueue.h \
-    $(wildcard include/config/DEBUG_OBJECTS_WORK) \
-    $(wildcard include/config/FREEZER) \
-    $(wildcard include/config/WQ_WATCHDOG) \
-  include/linux/timer.h \
-    $(wildcard include/config/DEBUG_OBJECTS_TIMERS) \
-    $(wildcard include/config/NO_HZ_COMMON) \
-  include/linux/ktime.h \
-  include/linux/jiffies.h \
-  include/vdso/jiffies.h \
-  include/generated/timeconst.h \
-  include/vdso/ktime.h \
-  include/linux/timekeeping.h \
-    $(wildcard include/config/GENERIC_CMOS_UPDATE) \
-  include/linux/clocksource_ids.h \
-  include/linux/debugobjects.h \
-    $(wildcard include/config/DEBUG_OBJECTS) \
-    $(wildcard include/config/DEBUG_OBJECTS_FREE) \
-  include/linux/rcu_segcblist.h \
-  include/linux/srcutree.h \
-  include/linux/rcu_node_tree.h \
-    $(wildcard include/config/RCU_FANOUT) \
-    $(wildcard include/config/RCU_FANOUT_LEAF) \
-  include/linux/page-flags-layout.h \
-    $(wildcard include/config/KASAN_HW_TAGS) \
-  include/linux/numa.h \
-    $(wildcard include/config/NODES_SHIFT) \
-    $(wildcard include/config/NUMA_KEEP_MEMINFO) \
-    $(wildcard include/config/HAVE_ARCH_NODE_DEV_GROUP) \
-  arch/x86/include/asm/sparsemem.h \
-  include/generated/bounds.h \
-  include/linux/seqlock.h \
-  include/linux/ww_mutex.h \
-    $(wildcard include/config/DEBUG_RT_MUTEXES) \
-    $(wildcard include/config/DEBUG_WW_MUTEX_SLOWPATH) \
-  include/linux/rtmutex.h \
-  arch/x86/include/asm/mmu.h \
-    $(wildcard include/config/MODIFY_LDT_SYSCALL) \
-  include/linux/kmod.h \
-  include/linux/umh.h \
-  include/linux/gfp.h \
-    $(wildcard include/config/HIGHMEM) \
-    $(wildcard include/config/ZONE_DMA) \
-    $(wildcard include/config/ZONE_DMA32) \
-    $(wildcard include/config/ZONE_DEVICE) \
-    $(wildcard include/config/PM_SLEEP) \
-    $(wildcard include/config/CONTIG_ALLOC) \
-    $(wildcard include/config/CMA) \
-  include/linux/mmdebug.h \
-    $(wildcard include/config/DEBUG_VM) \
-    $(wildcard include/config/DEBUG_VM_PGFLAGS) \
-  include/linux/mmzone.h \
-    $(wildcard include/config/FORCE_MAX_ZONEORDER) \
-    $(wildcard include/config/MEMORY_ISOLATION) \
-    $(wildcard include/config/ZSMALLOC) \
-    $(wildcard include/config/MEMORY_HOTPLUG) \
-    $(wildcard include/config/COMPACTION) \
-    $(wildcard include/config/PAGE_EXTENSION) \
-    $(wildcard include/config/DEFERRED_STRUCT_PAGE_INIT) \
-    $(wildcard include/config/HAVE_MEMORYLESS_NODES) \
-    $(wildcard include/config/SPARSEMEM_EXTREME) \
-    $(wildcard include/config/HAVE_ARCH_PFN_VALID) \
-  include/linux/nodemask.h \
-  include/linux/pageblock-flags.h \
-    $(wildcard include/config/HUGETLB_PAGE_SIZE_VARIABLE) \
-  include/linux/page-flags.h \
-    $(wildcard include/config/ARCH_USES_PG_UNCACHED) \
-    $(wildcard include/config/MEMORY_FAILURE) \
-    $(wildcard include/config/PAGE_IDLE_FLAG) \
-    $(wildcard include/config/HUGETLB_PAGE_FREE_VMEMMAP) \
-    $(wildcard include/config/HUGETLB_PAGE_FREE_VMEMMAP_DEFAULT_ON) \
-    $(wildcard include/config/KSM) \
-  include/linux/local_lock.h \
-  include/linux/local_lock_internal.h \
-  include/linux/memory_hotplug.h \
-    $(wildcard include/config/HAVE_ARCH_NODEDATA_EXTENSION) \
-    $(wildcard include/config/ARCH_HAS_ADD_PAGES) \
-    $(wildcard include/config/MEMORY_HOTREMOVE) \
-  arch/x86/include/asm/mmzone.h \
-  arch/x86/include/asm/mmzone_32.h \
-  include/linux/topology.h \
-    $(wildcard include/config/USE_PERCPU_NUMA_NODE_ID) \
-    $(wildcard include/config/SCHED_SMT) \
-    $(wildcard include/config/SCHED_CLUSTER) \
-  include/linux/arch_topology.h \
-    $(wildcard include/config/ACPI_CPPC_LIB) \
-    $(wildcard include/config/GENERIC_ARCH_TOPOLOGY) \
-  include/linux/percpu.h \
-    $(wildcard include/config/NEED_PER_CPU_EMBED_FIRST_CHUNK) \
-    $(wildcard include/config/NEED_PER_CPU_PAGE_FIRST_CHUNK) \
-  arch/x86/include/asm/topology.h \
-    $(wildcard include/config/SCHED_MC_PRIO) \
-  arch/x86/include/asm/mpspec.h \
-    $(wildcard include/config/EISA) \
-    $(wildcard include/config/X86_MPPARSE) \
-  arch/x86/include/asm/mpspec_def.h \
-  arch/x86/include/asm/x86_init.h \
-  arch/x86/include/asm/apicdef.h \
-  include/asm-generic/topology.h \
-  include/linux/sysctl.h \
-    $(wildcard include/config/SYSCTL) \
-  include/uapi/linux/sysctl.h \
-  include/linux/elf.h \
-    $(wildcard include/config/ARCH_USE_GNU_PROPERTY) \
-    $(wildcard include/config/ARCH_HAVE_ELF_PROT) \
-  arch/x86/include/asm/elf.h \
-    $(wildcard include/config/X86_X32_ABI) \
-  arch/x86/include/asm/user.h \
-  arch/x86/include/asm/user_32.h \
-  arch/x86/include/asm/fsgsbase.h \
-  arch/x86/include/asm/vdso.h \
-  arch/x86/include/asm/desc.h \
-  arch/x86/include/asm/fixmap.h \
-    $(wildcard include/config/DEBUG_KMAP_LOCAL_FORCE_MAP) \
-    $(wildcard include/config/X86_VSYSCALL_EMULATION) \
-    $(wildcard include/config/PROVIDE_OHCI1394_DMA_INIT) \
-    $(wildcard include/config/X86_IO_APIC) \
-    $(wildcard include/config/KMAP_LOCAL) \
-    $(wildcard include/config/PCI_MMCONFIG) \
-    $(wildcard include/config/ACPI_APEI_GHES) \
-    $(wildcard include/config/INTEL_TXT) \
-  arch/x86/include/generated/asm/kmap_size.h \
-  include/asm-generic/kmap_size.h \
-    $(wildcard include/config/DEBUG_KMAP_LOCAL) \
-  include/asm-generic/fixmap.h \
-  arch/x86/include/asm/irq_vectors.h \
-    $(wildcard include/config/HAVE_KVM) \
-    $(wildcard include/config/HYPERV) \
-    $(wildcard include/config/PCI_MSI) \
-  arch/x86/include/asm/cpu_entry_area.h \
-  arch/x86/include/asm/intel_ds.h \
-  arch/x86/include/asm/pgtable_areas.h \
-  arch/x86/include/asm/pgtable_32_areas.h \
-  include/uapi/linux/elf.h \
-  include/uapi/linux/elf-em.h \
-  include/linux/kobject.h \
-    $(wildcard include/config/UEVENT_HELPER) \
-    $(wildcard include/config/DEBUG_KOBJECT_RELEASE) \
-  include/linux/sysfs.h \
-  include/linux/kernfs.h \
-    $(wildcard include/config/KERNFS) \
-  include/linux/idr.h \
-  include/linux/radix-tree.h \
-  include/linux/xarray.h \
-    $(wildcard include/config/XARRAY_MULTI) \
-  include/linux/kconfig.h \
-  include/linux/kobject_ns.h \
-  include/linux/moduleparam.h \
-    $(wildcard include/config/ALPHA) \
-    $(wildcard include/config/IA64) \
-    $(wildcard include/config/PPC64) \
-  include/linux/rbtree_latch.h \
-  include/linux/error-injection.h \
-  include/asm-generic/error-injection.h \
-  include/linux/cfi.h \
-    $(wildcard include/config/CFI_CLANG_SHADOW) \
-  arch/x86/include/asm/module.h \
-    $(wildcard include/config/UNWINDER_ORC) \
-  include/asm-generic/module.h \
-    $(wildcard include/config/HAVE_MOD_ARCH_SPECIFIC) \
-    $(wildcard include/config/MODULES_USE_ELF_REL) \
-    $(wildcard include/config/MODULES_USE_ELF_RELA) \
-  arch/x86/include/asm/orc_types.h \
-  include/linux/i2c.h \
-    $(wildcard include/config/I2C) \
-    $(wildcard include/config/I2C_SLAVE) \
-    $(wildcard include/config/I2C_BOARDINFO) \
-    $(wildcard include/config/I2C_MUX) \
-    $(wildcard include/config/OF) \
-    $(wildcard include/config/ACPI) \
-  include/linux/acpi.h \
-    $(wildcard include/config/ACPI_DEBUGGER) \
-    $(wildcard include/config/ACPI_TABLE_LIB) \
-    $(wildcard include/config/LOONGARCH) \
-    $(wildcard include/config/ARM64) \
-    $(wildcard include/config/ACPI_PROCESSOR_CSTATE) \
-    $(wildcard include/config/ACPI_HOTPLUG_CPU) \
-    $(wildcard include/config/ACPI_HOTPLUG_IOAPIC) \
-    $(wildcard include/config/PCI) \
-    $(wildcard include/config/ACPI_WMI) \
-    $(wildcard include/config/ACPI_NUMA) \
-    $(wildcard include/config/HIBERNATION) \
-    $(wildcard include/config/ACPI_HOTPLUG_MEMORY) \
-    $(wildcard include/config/ACPI_CONTAINER) \
-    $(wildcard include/config/ACPI_GTDT) \
-    $(wildcard include/config/PM) \
-    $(wildcard include/config/GPIOLIB) \
-    $(wildcard include/config/ACPI_TABLE_UPGRADE) \
-    $(wildcard include/config/ACPI_WATCHDOG) \
-    $(wildcard include/config/ACPI_SPCR_TABLE) \
-    $(wildcard include/config/ACPI_GENERIC_GSI) \
-    $(wildcard include/config/ACPI_LPIT) \
-    $(wildcard include/config/ACPI_PPTT) \
-    $(wildcard include/config/ACPI_PCC) \
-  include/linux/ioport.h \
-  include/linux/irqdomain.h \
-    $(wildcard include/config/IRQ_DOMAIN_HIERARCHY) \
-    $(wildcard include/config/GENERIC_IRQ_DEBUGFS) \
-    $(wildcard include/config/IRQ_DOMAIN) \
-    $(wildcard include/config/IRQ_DOMAIN_NOMAP) \
-  include/linux/irqhandler.h \
-  include/linux/of.h \
-    $(wildcard include/config/OF_DYNAMIC) \
-    $(wildcard include/config/SPARC) \
-    $(wildcard include/config/OF_PROMTREE) \
-    $(wildcard include/config/OF_KOBJ) \
-    $(wildcard include/config/OF_NUMA) \
-    $(wildcard include/config/OF_OVERLAY) \
-  include/linux/mod_devicetable.h \
-  include/linux/uuid.h \
-  include/uapi/linux/uuid.h \
-  include/linux/property.h \
-  include/linux/fwnode.h \
-  include/linux/resource_ext.h \
-  include/linux/slab.h \
-    $(wildcard include/config/DEBUG_SLAB) \
-    $(wildcard include/config/FAILSLAB) \
-    $(wildcard include/config/MEMCG_KMEM) \
-    $(wildcard include/config/KASAN) \
-    $(wildcard include/config/SLAB) \
-    $(wildcard include/config/SLUB) \
-    $(wildcard include/config/SLOB) \
-  include/linux/overflow.h \
-  include/linux/percpu-refcount.h \
-  include/linux/kasan.h \
-    $(wildcard include/config/KASAN_STACK) \
-    $(wildcard include/config/KASAN_VMALLOC) \
-    $(wildcard include/config/KASAN_INLINE) \
-  include/linux/kasan-enabled.h \
-  include/linux/device.h \
-    $(wildcard include/config/GENERIC_MSI_IRQ_DOMAIN) \
-    $(wildcard include/config/GENERIC_MSI_IRQ) \
-    $(wildcard include/config/ENERGY_MODEL) \
-    $(wildcard include/config/PINCTRL) \
-    $(wildcard include/config/DMA_OPS) \
-    $(wildcard include/config/DMA_DECLARE_COHERENT) \
-    $(wildcard include/config/DMA_CMA) \
-    $(wildcard include/config/SWIOTLB) \
-    $(wildcard include/config/ARCH_HAS_SYNC_DMA_FOR_DEVICE) \
-    $(wildcard include/config/ARCH_HAS_SYNC_DMA_FOR_CPU) \
-    $(wildcard include/config/ARCH_HAS_SYNC_DMA_FOR_CPU_ALL) \
-    $(wildcard include/config/DMA_OPS_BYPASS) \
-    $(wildcard include/config/DEVTMPFS) \
-    $(wildcard include/config/SYSFS_DEPRECATED) \
-  include/linux/dev_printk.h \
-  include/linux/ratelimit.h \
-  include/linux/sched.h \
-    $(wildcard include/config/VIRT_CPU_ACCOUNTING_NATIVE) \
-    $(wildcard include/config/SCHED_INFO) \
-    $(wildcard include/config/SCHEDSTATS) \
-    $(wildcard include/config/SCHED_CORE) \
-    $(wildcard include/config/FAIR_GROUP_SCHED) \
-    $(wildcard include/config/RT_GROUP_SCHED) \
-    $(wildcard include/config/RT_MUTEXES) \
-    $(wildcard include/config/UCLAMP_TASK) \
-    $(wildcard include/config/UCLAMP_BUCKETS_COUNT) \
-    $(wildcard include/config/CGROUP_SCHED) \
-    $(wildcard include/config/BLK_DEV_IO_TRACE) \
-    $(wildcard include/config/PSI) \
-    $(wildcard include/config/COMPAT_BRK) \
-    $(wildcard include/config/CGROUPS) \
-    $(wildcard include/config/BLK_CGROUP) \
-    $(wildcard include/config/PAGE_OWNER) \
-    $(wildcard include/config/EVENTFD) \
-    $(wildcard include/config/ARCH_HAS_SCALED_CPUTIME) \
-    $(wildcard include/config/VIRT_CPU_ACCOUNTING_GEN) \
-    $(wildcard include/config/POSIX_CPUTIMERS) \
-    $(wildcard include/config/POSIX_CPU_TIMERS_TASK_WORK) \
-    $(wildcard include/config/KEYS) \
-    $(wildcard include/config/SYSVIPC) \
-    $(wildcard include/config/DETECT_HUNG_TASK) \
-    $(wildcard include/config/IO_URING) \
-    $(wildcard include/config/AUDIT) \
-    $(wildcard include/config/AUDITSYSCALL) \
-    $(wildcard include/config/UBSAN) \
-    $(wildcard include/config/UBSAN_TRAP) \
-    $(wildcard include/config/TASK_XACCT) \
-    $(wildcard include/config/CPUSETS) \
-    $(wildcard include/config/X86_CPU_RESCTRL) \
-    $(wildcard include/config/FUTEX) \
-    $(wildcard include/config/PERF_EVENTS) \
-    $(wildcard include/config/RSEQ) \
-    $(wildcard include/config/TASK_DELAY_ACCT) \
-    $(wildcard include/config/FAULT_INJECTION) \
-    $(wildcard include/config/LATENCYTOP) \
-    $(wildcard include/config/KUNIT) \
-    $(wildcard include/config/FUNCTION_GRAPH_TRACER) \
-    $(wildcard include/config/BCACHE) \
-    $(wildcard include/config/VMAP_STACK) \
-    $(wildcard include/config/SECURITY) \
-    $(wildcard include/config/BPF_SYSCALL) \
-    $(wildcard include/config/GCC_PLUGIN_STACKLEAK) \
-    $(wildcard include/config/X86_MCE) \
-    $(wildcard include/config/KRETPROBES) \
-    $(wildcard include/config/RETHOOK) \
-    $(wildcard include/config/ARCH_HAS_PARANOID_L1D_FLUSH) \
-    $(wildcard include/config/ARCH_TASK_STRUCT_ON_STACK) \
-    $(wildcard include/config/DEBUG_RSEQ) \
-  include/uapi/linux/sched.h \
-  include/linux/pid.h \
-  include/linux/rculist.h \
-    $(wildcard include/config/PROVE_RCU_LIST) \
-  include/linux/sem.h \
-  include/uapi/linux/sem.h \
-  include/linux/ipc.h \
-  include/linux/rhashtable-types.h \
-  include/uapi/linux/ipc.h \
-  arch/x86/include/generated/uapi/asm/ipcbuf.h \
-  include/uapi/asm-generic/ipcbuf.h \
-  arch/x86/include/uapi/asm/sembuf.h \
-  include/linux/shm.h \
-  include/uapi/linux/shm.h \
-  include/uapi/asm-generic/hugetlb_encode.h \
-  arch/x86/include/uapi/asm/shmbuf.h \
-  include/uapi/asm-generic/shmbuf.h \
-  arch/x86/include/asm/shmparam.h \
-  include/linux/plist.h \
-    $(wildcard include/config/DEBUG_PLIST) \
-  include/linux/hrtimer.h \
-    $(wildcard include/config/HIGH_RES_TIMERS) \
-    $(wildcard include/config/TIME_LOW_RES) \
-    $(wildcard include/config/TIMERFD) \
-  include/linux/hrtimer_defs.h \
-  include/linux/timerqueue.h \
-  include/linux/seccomp.h \
-    $(wildcard include/config/SECCOMP) \
-    $(wildcard include/config/HAVE_ARCH_SECCOMP_FILTER) \
-    $(wildcard include/config/SECCOMP_FILTER) \
-    $(wildcard include/config/CHECKPOINT_RESTORE) \
-    $(wildcard include/config/SECCOMP_CACHE_DEBUG) \
-  include/uapi/linux/seccomp.h \
-  arch/x86/include/asm/seccomp.h \
-  arch/x86/include/asm/unistd.h \
-  arch/x86/include/uapi/asm/unistd.h \
-  arch/x86/include/generated/uapi/asm/unistd_32.h \
-  include/asm-generic/seccomp.h \
-  include/uapi/linux/unistd.h \
-  include/linux/resource.h \
-  include/uapi/linux/resource.h \
-  arch/x86/include/generated/uapi/asm/resource.h \
-  include/asm-generic/resource.h \
-  include/uapi/asm-generic/resource.h \
-  include/linux/latencytop.h \
-  include/linux/sched/prio.h \
-  include/linux/sched/types.h \
-  include/linux/signal_types.h \
-    $(wildcard include/config/OLD_SIGACTION) \
-  include/uapi/linux/signal.h \
-  arch/x86/include/asm/signal.h \
-  arch/x86/include/uapi/asm/signal.h \
-  include/uapi/asm-generic/signal-defs.h \
-  arch/x86/include/uapi/asm/siginfo.h \
-  include/uapi/asm-generic/siginfo.h \
-  include/linux/syscall_user_dispatch.h \
-  include/linux/task_io_accounting.h \
-    $(wildcard include/config/TASK_IO_ACCOUNTING) \
-  include/linux/posix-timers.h \
-  include/linux/alarmtimer.h \
-    $(wildcard include/config/RTC_CLASS) \
-  include/uapi/linux/rseq.h \
-  include/linux/kcsan.h \
-  include/linux/energy_model.h \
-  include/linux/sched/cpufreq.h \
-    $(wildcard include/config/CPU_FREQ) \
-  include/linux/sched/topology.h \
-    $(wildcard include/config/SCHED_DEBUG) \
-    $(wildcard include/config/SCHED_MC) \
-    $(wildcard include/config/CPU_FREQ_GOV_SCHEDUTIL) \
-  include/linux/sched/idle.h \
-  include/linux/sched/sd_flags.h \
-  include/linux/klist.h \
-  include/linux/pm.h \
-    $(wildcard include/config/VT_CONSOLE_SLEEP) \
-    $(wildcard include/config/PM_CLK) \
-    $(wildcard include/config/PM_GENERIC_DOMAINS) \
-  include/linux/device/bus.h \
-  include/linux/device/class.h \
-  include/linux/device/driver.h \
-  arch/x86/include/asm/device.h \
-  include/linux/pm_wakeup.h \
-  include/acpi/acpi.h \
-  include/acpi/platform/acenv.h \
-  include/acpi/platform/acgcc.h \
-  include/acpi/platform/aclinux.h \
-    $(wildcard include/config/ACPI_REDUCED_HARDWARE_ONLY) \
-    $(wildcard include/config/ACPI_DEBUG) \
-  include/linux/ctype.h \
-  arch/x86/include/asm/acenv.h \
-  include/acpi/acnames.h \
-  include/acpi/actypes.h \
-  include/acpi/acexcep.h \
-  include/acpi/actbl.h \
-  include/acpi/actbl1.h \
-  include/acpi/actbl2.h \
-  include/acpi/actbl3.h \
-  include/acpi/acrestyp.h \
-  include/acpi/platform/acenvex.h \
-  include/acpi/platform/aclinuxex.h \
-  include/acpi/platform/acgccex.h \
-  include/acpi/acoutput.h \
-  include/acpi/acpiosxf.h \
-  include/acpi/acpixf.h \
-  include/acpi/acconfig.h \
-  include/acpi/acbuffer.h \
-  include/linux/dynamic_debug.h \
-  include/acpi/acpi_bus.h \
-    $(wildcard include/config/X86_ANDROID_TABLETS) \
-    $(wildcard include/config/ACPI_SYSTEM_POWER_STATES_SUPPORT) \
-    $(wildcard include/config/ACPI_SLEEP) \
-  include/acpi/acpi_drivers.h \
-    $(wildcard include/config/ACPI_DOCK) \
-  include/acpi/acpi_numa.h \
-    $(wildcard include/config/ACPI_HMAT) \
-  include/acpi/acpi_io.h \
-  include/linux/io.h \
-    $(wildcard include/config/HAS_IOPORT_MAP) \
-  arch/x86/include/asm/io.h \
-    $(wildcard include/config/MTRR) \
-    $(wildcard include/config/X86_PAT) \
-  arch/x86/include/generated/asm/early_ioremap.h \
-  include/asm-generic/early_ioremap.h \
-    $(wildcard include/config/GENERIC_EARLY_IOREMAP) \
-  include/asm-generic/iomap.h \
-  include/asm-generic/pci_iomap.h \
-    $(wildcard include/config/NO_GENERIC_PCI_IOPORT_MAP) \
-    $(wildcard include/config/GENERIC_PCI_IOMAP) \
-  include/asm-generic/io.h \
-    $(wildcard include/config/GENERIC_IOMAP) \
-    $(wildcard include/config/GENERIC_IOREMAP) \
-    $(wildcard include/config/VIRT_TO_BUS) \
-    $(wildcard include/config/GENERIC_DEVMEM_IS_ALLOWED) \
-  include/linux/logic_pio.h \
-    $(wildcard include/config/INDIRECT_PIO) \
-  include/linux/vmalloc.h \
-    $(wildcard include/config/HAVE_ARCH_HUGE_VMALLOC) \
-  arch/x86/include/asm/vmalloc.h \
-    $(wildcard include/config/HAVE_ARCH_HUGE_VMAP) \
-  arch/x86/include/asm/acpi.h \
-    $(wildcard include/config/ACPI_APEI) \
-  include/acpi/pdc_intel.h \
-  arch/x86/include/asm/numa.h \
-    $(wildcard include/config/NUMA_EMU) \
-  arch/x86/include/asm/numa_32.h \
-  include/linux/regulator/consumer.h \
-    $(wildcard include/config/REGULATOR) \
-  include/linux/suspend.h \
-    $(wildcard include/config/VT) \
-    $(wildcard include/config/SUSPEND) \
-    $(wildcard include/config/HIBERNATION_SNAPSHOT_DEV) \
-    $(wildcard include/config/PM_SLEEP_DEBUG) \
-    $(wildcard include/config/PM_AUTOSLEEP) \
-  include/linux/swap.h \
-    $(wildcard include/config/DEVICE_PRIVATE) \
-    $(wildcard include/config/MIGRATION) \
-    $(wildcard include/config/FRONTSWAP) \
-    $(wildcard include/config/THP_SWAP) \
-    $(wildcard include/config/MEMCG_SWAP) \
-  include/linux/memcontrol.h \
-    $(wildcard include/config/CGROUP_WRITEBACK) \
-  include/linux/cgroup.h \
-    $(wildcard include/config/CGROUP_CPUACCT) \
-    $(wildcard include/config/SOCK_CGROUP_DATA) \
-    $(wildcard include/config/CGROUP_DATA) \
-    $(wildcard include/config/CGROUP_BPF) \
-  include/uapi/linux/cgroupstats.h \
-  include/uapi/linux/taskstats.h \
-  include/linux/fs.h \
-    $(wildcard include/config/READ_ONLY_THP_FOR_FS) \
-    $(wildcard include/config/FS_POSIX_ACL) \
-    $(wildcard include/config/IMA) \
-    $(wildcard include/config/FILE_LOCKING) \
-    $(wildcard include/config/FSNOTIFY) \
-    $(wildcard include/config/FS_ENCRYPTION) \
-    $(wildcard include/config/FS_VERITY) \
-    $(wildcard include/config/EPOLL) \
-    $(wildcard include/config/UNICODE) \
-    $(wildcard include/config/QUOTA) \
-    $(wildcard include/config/FS_DAX) \
-    $(wildcard include/config/BLOCK) \
-  include/linux/wait_bit.h \
-  include/linux/kdev_t.h \
-  include/uapi/linux/kdev_t.h \
-  include/linux/dcache.h \
-  include/linux/rculist_bl.h \
-  include/linux/list_bl.h \
-  include/linux/bit_spinlock.h \
-  include/linux/lockref.h \
-    $(wildcard include/config/ARCH_USE_CMPXCHG_LOCKREF) \
-  include/linux/stringhash.h \
-    $(wildcard include/config/DCACHE_WORD_ACCESS) \
-  include/linux/hash.h \
-    $(wildcard include/config/HAVE_ARCH_HASH) \
-  include/linux/path.h \
-  include/linux/list_lru.h \
-  include/linux/shrinker.h \
-  include/linux/capability.h \
-  include/uapi/linux/capability.h \
-  include/linux/semaphore.h \
-  include/linux/fcntl.h \
-    $(wildcard include/config/ARCH_32BIT_OFF_T) \
-  include/uapi/linux/fcntl.h \
-  arch/x86/include/generated/uapi/asm/fcntl.h \
-  include/uapi/asm-generic/fcntl.h \
-  include/uapi/linux/openat2.h \
-  include/linux/migrate_mode.h \
-  include/linux/percpu-rwsem.h \
-  include/linux/rcuwait.h \
-  include/linux/sched/signal.h \
-    $(wildcard include/config/SCHED_AUTOGROUP) \
-    $(wildcard include/config/BSD_PROCESS_ACCT) \
-    $(wildcard include/config/TASKSTATS) \
-    $(wildcard include/config/STACK_GROWSUP) \
-  include/linux/signal.h \
-    $(wildcard include/config/DYNAMIC_SIGFRAME) \
-  include/linux/sched/jobctl.h \
-  include/linux/sched/task.h \
-    $(wildcard include/config/HAVE_EXIT_THREAD) \
-    $(wildcard include/config/ARCH_WANTS_DYNAMIC_TASK_STRUCT) \
-    $(wildcard include/config/HAVE_ARCH_THREAD_STRUCT_WHITELIST) \
-  include/linux/uaccess.h \
-  include/linux/fault-inject-usercopy.h \
-    $(wildcard include/config/FAULT_INJECTION_USERCOPY) \
-  arch/x86/include/asm/uaccess.h \
-    $(wildcard include/config/CC_HAS_ASM_GOTO_OUTPUT) \
-    $(wildcard include/config/CC_HAS_ASM_GOTO_TIED_OUTPUT) \
-    $(wildcard include/config/ARCH_HAS_COPY_MC) \
-    $(wildcard include/config/X86_INTEL_USERCOPY) \
-  arch/x86/include/asm/smap.h \
-  arch/x86/include/asm/extable.h \
-    $(wildcard include/config/BPF_JIT) \
-  include/asm-generic/access_ok.h \
-    $(wildcard include/config/ALTERNATE_USER_ADDRESS_SPACE) \
-  arch/x86/include/asm/uaccess_32.h \
-  include/linux/cred.h \
-    $(wildcard include/config/DEBUG_CREDENTIALS) \
-  include/linux/key.h \
-    $(wildcard include/config/KEY_NOTIFICATIONS) \
-    $(wildcard include/config/NET) \
-  include/linux/assoc_array.h \
-    $(wildcard include/config/ASSOCIATIVE_ARRAY) \
-  include/linux/sched/user.h \
-    $(wildcard include/config/WATCH_QUEUE) \
-  include/linux/percpu_counter.h \
-  include/linux/rcu_sync.h \
-  include/linux/delayed_call.h \
-  include/linux/errseq.h \
-  include/linux/ioprio.h \
-  include/linux/sched/rt.h \
-  include/linux/iocontext.h \
-    $(wildcard include/config/BLK_ICQ) \
-  include/uapi/linux/ioprio.h \
-  include/linux/fs_types.h \
-  include/linux/mount.h \
-  include/linux/mnt_idmapping.h \
-  include/uapi/linux/fs.h \
-  include/linux/quota.h \
-    $(wildcard include/config/QUOTA_NETLINK_INTERFACE) \
-  include/uapi/linux/dqblk_xfs.h \
-  include/linux/dqblk_v1.h \
-  include/linux/dqblk_v2.h \
-  include/linux/dqblk_qtree.h \
-  include/linux/projid.h \
-  include/uapi/linux/quota.h \
-  include/linux/nfs_fs_i.h \
-  include/linux/seq_file.h \
-  include/linux/string_helpers.h \
-  include/linux/ns_common.h \
-  include/linux/nsproxy.h \
-  include/linux/user_namespace.h \
-    $(wildcard include/config/INOTIFY_USER) \
-    $(wildcard include/config/FANOTIFY) \
-    $(wildcard include/config/PERSISTENT_KEYRINGS) \
-  include/linux/kernel_stat.h \
-  include/linux/interrupt.h \
-    $(wildcard include/config/IRQ_FORCED_THREADING) \
-    $(wildcard include/config/GENERIC_IRQ_PROBE) \
-    $(wildcard include/config/IRQ_TIMINGS) \
-  include/linux/irqreturn.h \
-  include/linux/irqnr.h \
-  include/uapi/linux/irqnr.h \
-  include/linux/hardirq.h \
-  include/linux/context_tracking_state.h \
-    $(wildcard include/config/CONTEXT_TRACKING) \
-  include/linux/ftrace_irq.h \
-    $(wildcard include/config/HWLAT_TRACER) \
-    $(wildcard include/config/OSNOISE_TRACER) \
-  include/linux/vtime.h \
-    $(wildcard include/config/VIRT_CPU_ACCOUNTING) \
-    $(wildcard include/config/IRQ_TIME_ACCOUNTING) \
-  arch/x86/include/asm/hardirq.h \
-    $(wildcard include/config/KVM_INTEL) \
-    $(wildcard include/config/X86_THERMAL_VECTOR) \
-    $(wildcard include/config/X86_MCE_THRESHOLD) \
-    $(wildcard include/config/X86_MCE_AMD) \
-    $(wildcard include/config/X86_HV_CALLBACK_VECTOR) \
-  arch/x86/include/asm/irq.h \
-  arch/x86/include/asm/sections.h \
-  include/asm-generic/sections.h \
-    $(wildcard include/config/HAVE_FUNCTION_DESCRIPTORS) \
-  include/linux/cgroup-defs.h \
-    $(wildcard include/config/CGROUP_NET_CLASSID) \
-    $(wildcard include/config/CGROUP_NET_PRIO) \
-  include/linux/u64_stats_sync.h \
-  include/linux/bpf-cgroup-defs.h \
-  include/linux/psi_types.h \
-  include/linux/kthread.h \
-  include/linux/cgroup_subsys.h \
-    $(wildcard include/config/CGROUP_DEVICE) \
-    $(wildcard include/config/CGROUP_FREEZER) \
-    $(wildcard include/config/CGROUP_PERF) \
-    $(wildcard include/config/CGROUP_HUGETLB) \
-    $(wildcard include/config/CGROUP_PIDS) \
-    $(wildcard include/config/CGROUP_RDMA) \
-    $(wildcard include/config/CGROUP_MISC) \
-    $(wildcard include/config/CGROUP_DEBUG) \
-  include/linux/vm_event_item.h \
-    $(wildcard include/config/HAVE_ARCH_TRANSPARENT_HUGEPAGE_PUD) \
-    $(wildcard include/config/MEMORY_BALLOON) \
-    $(wildcard include/config/BALLOON_COMPACTION) \
-    $(wildcard include/config/DEBUG_TLBFLUSH) \
-    $(wildcard include/config/DEBUG_VM_VMACACHE) \
-  include/linux/page_counter.h \
-  include/linux/vmpressure.h \
-  include/linux/eventfd.h \
-  include/linux/mm.h \
-    $(wildcard include/config/HAVE_ARCH_MMAP_RND_BITS) \
-    $(wildcard include/config/HAVE_ARCH_MMAP_RND_COMPAT_BITS) \
-    $(wildcard include/config/ARCH_USES_HIGH_VMA_FLAGS) \
-    $(wildcard include/config/ARCH_HAS_PKEYS) \
-    $(wildcard include/config/PPC) \
-    $(wildcard include/config/PARISC) \
-    $(wildcard include/config/SPARC64) \
-    $(wildcard include/config/ARM64_MTE) \
-    $(wildcard include/config/HAVE_ARCH_USERFAULTFD_MINOR) \
-    $(wildcard include/config/SHMEM) \
-    $(wildcard include/config/ARCH_HAS_PTE_SPECIAL) \
-    $(wildcard include/config/ARCH_HAS_PTE_DEVMAP) \
-    $(wildcard include/config/DEBUG_VM_RB) \
-    $(wildcard include/config/PAGE_POISONING) \
-    $(wildcard include/config/INIT_ON_ALLOC_DEFAULT_ON) \
-    $(wildcard include/config/INIT_ON_FREE_DEFAULT_ON) \
-    $(wildcard include/config/DEBUG_PAGEALLOC) \
-    $(wildcard include/config/HUGETLBFS) \
-    $(wildcard include/config/MAPPING_DIRTY_HELPERS) \
-    $(wildcard include/config/ANON_VMA_NAME) \
-  include/linux/mmap_lock.h \
-  include/linux/page_ext.h \
-  include/linux/stacktrace.h \
-    $(wildcard include/config/ARCH_STACKWALK) \
-    $(wildcard include/config/STACKTRACE) \
-    $(wildcard include/config/HAVE_RELIABLE_STACKTRACE) \
-  include/linux/stackdepot.h \
-    $(wildcard include/config/STACKDEPOT_ALWAYS_INIT) \
-  include/linux/page_ref.h \
-    $(wildcard include/config/DEBUG_PAGE_REF) \
-  include/linux/sizes.h \
-  include/linux/pgtable.h \
-    $(wildcard include/config/HIGHPTE) \
-    $(wildcard include/config/GUP_GET_PTE_LOW_HIGH) \
-    $(wildcard include/config/HAVE_ARCH_SOFT_DIRTY) \
-    $(wildcard include/config/ARCH_ENABLE_THP_MIGRATION) \
-    $(wildcard include/config/X86_ESPFIX64) \
-  arch/x86/include/asm/pgtable.h \
-    $(wildcard include/config/DEBUG_WX) \
-    $(wildcard include/config/PAGE_TABLE_CHECK) \
-  arch/x86/include/asm/pkru.h \
-  arch/x86/include/asm/fpu/api.h \
-    $(wildcard include/config/X86_DEBUG_FPU) \
-  arch/x86/include/asm/coco.h \
-  include/asm-generic/pgtable_uffd.h \
-  include/linux/page_table_check.h \
-  arch/x86/include/asm/pgtable_32.h \
-  arch/x86/include/asm/pgtable-3level.h \
-  arch/x86/include/asm/pgtable-invert.h \
-  include/linux/huge_mm.h \
-  include/linux/sched/coredump.h \
-    $(wildcard include/config/CORE_DUMP_DEFAULT_ELF_HEADERS) \
-  include/linux/vmstat.h \
-    $(wildcard include/config/VM_EVENT_COUNTERS) \
-  include/linux/writeback.h \
-  include/linux/flex_proportions.h \
-  include/linux/backing-dev-defs.h \
-    $(wildcard include/config/DEBUG_FS) \
-  include/linux/blk_types.h \
-    $(wildcard include/config/FAIL_MAKE_REQUEST) \
-    $(wildcard include/config/BLK_CGROUP_IOCOST) \
-    $(wildcard include/config/BLK_INLINE_ENCRYPTION) \
-    $(wildcard include/config/BLK_DEV_INTEGRITY) \
-  include/linux/bvec.h \
-  include/linux/highmem.h \
-  include/linux/cacheflush.h \
-  arch/x86/include/asm/cacheflush.h \
-  include/asm-generic/cacheflush.h \
-  include/linux/highmem-internal.h \
-  arch/x86/include/asm/highmem.h \
-  arch/x86/include/asm/tlbflush.h \
-  arch/x86/include/asm/invpcid.h \
-  arch/x86/include/asm/pti.h \
-  include/linux/bio.h \
-  include/linux/mempool.h \
-  include/linux/uio.h \
-    $(wildcard include/config/ARCH_HAS_UACCESS_FLUSHCACHE) \
-  include/uapi/linux/uio.h \
-  include/linux/node.h \
-    $(wildcard include/config/HMEM_REPORTING) \
-  include/linux/pagemap.h \
-  include/linux/hugetlb_inline.h \
-  include/uapi/linux/mempolicy.h \
-  include/linux/freezer.h \
-  include/uapi/linux/i2c.h \
-  include/linux/videodev2.h \
-  include/uapi/linux/videodev2.h \
-    $(wildcard include/config/VIDEO_ADV_DEBUG) \
-  include/uapi/linux/v4l2-common.h \
-  include/uapi/linux/v4l2-controls.h \
-  include/media/v4l2-device.h \
-    $(wildcard include/config/VIDEO_V4L2_SUBDEV_API) \
-  include/media/media-device.h \
-    $(wildcard include/config/MEDIA_CONTROLLER) \
-  include/media/media-devnode.h \
-  include/linux/poll.h \
-  include/uapi/linux/poll.h \
-  arch/x86/include/generated/uapi/asm/poll.h \
-  include/uapi/asm-generic/poll.h \
-  include/uapi/linux/eventpoll.h \
-  include/linux/cdev.h \
-  include/media/media-entity.h \
-  include/uapi/linux/media.h \
-  include/media/v4l2-subdev.h \
-  include/uapi/linux/v4l2-subdev.h \
-  include/uapi/linux/v4l2-mediabus.h \
-  include/uapi/linux/media-bus-format.h \
-  include/media/v4l2-async.h \
-  include/media/v4l2-common.h \
-    $(wildcard include/config/VIDEO_V4L2_I2C) \
-    $(wildcard include/config/SPI) \
-  include/media/v4l2-dev.h \
-  include/linux/spi/spi.h \
-    $(wildcard include/config/SPI_SLAVE) \
-  include/linux/scatterlist.h \
-    $(wildcard include/config/NEED_SG_DMA_LENGTH) \
-    $(wildcard include/config/DEBUG_SG) \
-    $(wildcard include/config/SGL_ALLOC) \
-    $(wildcard include/config/ARCH_NO_SG_CHAIN) \
-    $(wildcard include/config/SG_POOL) \
-  include/linux/gpio/consumer.h \
-    $(wildcard include/config/OF_GPIO) \
-    $(wildcard include/config/GPIO_SYSFS) \
-  include/uapi/linux/spi/spi.h \
-  include/media/v4l2-fh.h \
-  include/media/v4l2-mediabus.h \
-  include/media/i2c/uda1342.h \
+// SPDX-License-Identifier: (GPL-2.0 OR MIT)
+/* Distributed Switch Architecture VSC9953 driver
+ * Copyright (C) 2020, Maxim Kochetkov <fido_max@inbox.ru>
+ */
+#include <linux/types.h>
+#include <soc/mscc/ocelot_vcap.h>
+#include <soc/mscc/ocelot_sys.h>
+#include <soc/mscc/ocelot.h>
+#include <linux/mdio/mdio-mscc-miim.h>
+#include <linux/of_mdio.h>
+#include <linux/of_platform.h>
+#include <linux/pcs-lynx.h>
+#include <linux/dsa/ocelot.h>
+#include <linux/iopoll.h>
+#include "felix.h"
 
-drivers/media/i2c/uda1342.o: $(deps_drivers/media/i2c/uda1342.o)
+#define VSC9953_NUM_PORTS			10
 
-$(deps_drivers/media/i2c/uda1342.o):
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                
+#define VSC9953_VCAP_POLICER_BASE		11
+#define VSC9953_VCAP_POLICER_MAX		31
+#define VSC9953_VCAP_POLICER_BASE2		120
+#define VSC9953_VCAP_POLICER_MAX2		161
+
+#define VSC9953_PORT_MODE_SERDES		(OCELOT_PORT_MODE_SGMII | \
+						 OCELOT_PORT_MODE_QSGMII)
+
+static const u32 vsc9953_port_modes[VSC9953_NUM_PORTS] = {
+	VSC9953_PORT_MODE_SERDES,
+	VSC9953_PORT_MODE_SERDES,
+	VSC9953_PORT_MODE_SERDES,
+	VSC9953_PORT_MODE_SERDES,
+	VSC9953_PORT_MODE_SERDES,
+	VSC9953_PORT_MODE_SERDES,
+	VSC9953_PORT_MODE_SERDES,
+	VSC9953_PORT_MODE_SERDES,
+	OCELOT_PORT_MODE_INTERNAL,
+	OCELOT_PORT_MODE_INTERNAL,
+};
+
+static const u32 vsc9953_ana_regmap[] = {
+	REG(ANA_ADVLEARN,			0x00b500),
+	REG(ANA_VLANMASK,			0x00b504),
+	REG_RESERVED(ANA_PORT_B_DOMAIN),
+	REG(ANA_ANAGEFIL,			0x00b50c),
+	REG(ANA_ANEVENTS,			0x00b510),
+	REG(ANA_STORMLIMIT_BURST,		0x00b514),
+	REG(ANA_STORMLIMIT_CFG,			0x00b518),
+	REG(ANA_ISOLATED_PORTS,			0x00b528),
+	REG(ANA_COMMUNITY_PORTS,		0x00b52c),
+	REG(ANA_AUTOAGE,			0x00b530),
+	REG(ANA_MACTOPTIONS,			0x00b534),
+	REG(ANA_LEARNDISC,			0x00b538),
+	REG(ANA_AGENCTRL,			0x00b53c),
+	REG(ANA_MIRRORPORTS,			0x00b540),
+	REG(ANA_EMIRRORPORTS,			0x00b544),
+	REG(ANA_FLOODING,			0x00b548),
+	REG(ANA_FLOODING_IPMC,			0x00b54c),
+	REG(ANA_SFLOW_CFG,			0x00b550),
+	REG(ANA_PORT_MODE,			0x00b57c),
+	REG_RESERVED(ANA_CUT_THRU_CFG),
+	REG(ANA_PGID_PGID,			0x00b600),
+	REG(ANA_TABLES_ANMOVED,			0x00b4ac),
+	REG(ANA_TABLES_MACHDATA,		0x00b4b0),
+	REG(ANA_TABLES_MACLDATA,		0x00b4b4),
+	REG_RESERVED(ANA_TABLES_STREAMDATA),
+	REG(ANA_TABLES_MACACCESS,		0x00b4b8),
+	REG(ANA_TABLES_MACTINDX,		0x00b4bc),
+	REG(ANA_TABLES_VLANACCESS,		0x00b4c0),
+	REG(ANA_TABLES_VLANTIDX,		0x00b4c4),
+	REG_RESERVED(ANA_TABLES_ISDXACCESS),
+	REG_RESERVED(ANA_TABLES_ISDXTIDX),
+	REG(ANA_TABLES_ENTRYLIM,		0x00b480),
+	REG_RESERVED(ANA_TABLES_PTP_ID_HIGH),
+	REG_RESERVED(ANA_TABLES_PTP_ID_LOW),
+	REG_RESERVED(ANA_TABLES_STREAMACCESS),
+	REG_RESERVED(ANA_TABLES_STREAMTIDX),
+	REG_RESERVED(ANA_TABLES_SEQ_HISTORY),
+	REG_RESERVED(ANA_TABLES_SEQ_MASK),
+	REG_RESERVED(ANA_TABLES_SFID_MASK),
+	REG_RESERVED(ANA_TABLES_SFIDACCESS),
+	REG_RESERVED(ANA_TABLES_SFIDTIDX),
+	REG_RESERVED(ANA_MSTI_STATE),
+	REG_RESERVED(ANA_OAM_UPM_LM_CNT),
+	REG_RESERVED(ANA_SG_ACCESS_CTRL),
+	REG_RESERVED(ANA_SG_CONFIG_REG_1),
+	REG_RESERVED(ANA_SG_CONFIG_REG_2),
+	REG_RESERVED(ANA_SG_CONFIG_REG_3),
+	REG_RESERVED(ANA_SG_CONFIG_REG_4),
+	REG_RESERVED(ANA_SG_CONFIG_REG_5),
+	REG_RESERVED(ANA_SG_GCL_GS_CONFIG),
+	REG_RESERVED(ANA_SG_GCL_TI_CONFIG),
+	REG_RESERVED(ANA_SG_STATUS_REG_1),
+	REG_RESERVED(ANA_SG_STATUS_REG_2),
+	REG_RESERVED(ANA_SG_STATUS_REG_3),
+	REG(ANA_PORT_VLAN_CFG,			0x000000),
+	REG(ANA_PORT_DROP_CFG,			0x000004),
+	REG(ANA_PORT_QOS_CFG,			0x000008),
+	REG(ANA_PORT_VCAP_CFG,			0x00000c),
+	REG(ANA_PORT_VCAP_S1_KEY_CFG,		0x000010),
+	REG(ANA_PORT_VCAP_S2_CFG,		0x00001c),
+	REG(ANA_PORT_PCP_DEI_MAP,		0x000020),
+	REG(ANA_PORT_CPU_FWD_CFG,		0x000060),
+	REG(ANA_PORT_CPU_FWD_BPDU_CFG,		0x000064),
+	REG(ANA_PORT_CPU_FWD_GARP_CFG,		0x000068),
+	REG(ANA_PORT_CPU_FWD_CCM_CFG,		0x00006c),
+	REG(ANA_PORT_PORT_CFG,			0x000070),
+	REG(ANA_PORT_POL_CFG,			0x000074),
+	REG_RESERVED(ANA_PORT_PTP_CFG),
+	REG_RESERVED(ANA_PORT_PTP_DLY1_CFG),
+	REG_RESERVED(ANA_PORT_PTP_DLY2_CFG),
+	REG_RESERVED(ANA_PORT_SFID_CFG),
+	REG(ANA_PFC_PFC_CFG,			0x00c000),
+	REG_RESERVED(ANA_PFC_PFC_TIMER),
+	REG_RESERVED(ANA_IPT_OAM_MEP_CFG),
+	REG_RESERVED(ANA_IPT_IPT),
+	REG_RESERVED(ANA_PPT_PPT),
+	REG_RESERVED(ANA_FID_MAP_FID_MAP),
+	REG(ANA_AGGR_CFG,			0x00c600),
+	REG(ANA_CPUQ_CFG,			0x00c604),
+	REG_RESERVED(ANA_CPUQ_CFG2),
+	REG(ANA_CPUQ_8021_CFG,			0x00c60c),
+	REG(ANA_DSCP_CFG,			0x00c64c),
+	REG(ANA_DSCP_REWR_CFG,			0x00c74c),
+	REG(ANA_VCAP_RNG_TYPE_CFG,		0x00c78c),
+	REG(ANA_VCAP_RNG_VAL_CFG,		0x00c7ac),
+	REG_RESERVED(ANA_VRAP_CFG),
+	REG_RESERVED(ANA_VRAP_HDR_DATA),
+	REG_RESERVED(ANA_VRAP_HDR_MASK),
+	REG(ANA_DISCARD_CFG,			0x00c7d8),
+	REG(ANA_FID_CFG,			0x00c7dc),
+	REG(ANA_POL_PIR_CFG,			0x00a000),
+	REG(ANA_POL_CIR_CFG,			0x00a004),
+	REG(ANA_POL_MODE_CFG,			0x00a008),
+	REG(ANA_POL_PIR_STATE,			0x00a00c),
+	REG(ANA_POL_CIR_STATE,			0x00a010),
+	REG_RESERVED(ANA_POL_STATE),
+	REG(ANA_POL_FLOWC,			0x00c280),
+	REG(ANA_POL_HYST,			0x00c2ec),
+	REG_RESERVED(ANA_POL_MISC_CFG),
+};
+
+static const u32 vsc9953_qs_regmap[] = {
+	REG(QS_XTR_GRP_CFG,			0x000000),
+	REG(QS_XTR_RD,				0x000008),
+	REG(QS_XTR_FRM_PRUNING,			0x000010),
+	REG(QS_XTR_FLUSH,			0x000018),
+	REG(QS_XTR_DATA_PRESENT,		0x00001c),
+	REG(QS_XTR_CFG,				0x000020),
+	REG(QS_INJ_GRP_CFG,			0x000024),
+	REG(QS_INJ_WR,				0x00002c),
+	REG(QS_INJ_CTRL,			0x000034),
+	REG(QS_INJ_STATUS,			0x00003c),
+	REG(QS_INJ_ERR,				0x000040),
+	REG_RESERVED(QS_INH_DBG),
+};
+
+static const u32 vsc9953_vcap_regmap[] = {
+	/* VCAP_CORE_CFG */
+	REG(VCAP_CORE_UPDATE_CTRL,		0x000000),
+	REG(VCAP_CORE_MV_CFG,			0x000004),
+	/* VCAP_CORE_CACHE */
+	REG(VCAP_CACHE_ENTRY_DAT,		0x000008),
+	REG(VCAP_CACHE_MASK_DAT,		0x000108),
+	REG(VCAP_CACHE_ACTION_DAT,		0x000208),
+	REG(VCAP_CACHE_CNT_DAT,			0x000308),
+	REG(VCAP_CACHE_TG_DAT,			0x000388),
+	/* VCAP_CONST */
+	REG(VCAP_CONST_VCAP_VER,		0x000398),
+	REG(VCAP_CONST_ENTRY_WIDTH,		0x00039c),
+	REG(VCAP_CONST_ENTRY_CNT,		0x0003a0),
+	REG(VCAP_CONST_ENTRY_SWCNT,		0x0003a4),
+	REG(VCAP_CONST_ENTRY_TG_WIDTH,		0x0003a8),
+	REG(VCAP_CONST_ACTION_DEF_CNT,		0x0003ac),
+	REG(VCAP_CONST_ACTION_WIDTH,		0x0003b0),
+	REG(VCAP_CONST_CNT_WIDTH,		0x0003b4),
+	REG_RESERVED(VCAP_CONST_CORE_CNT),
+	REG_RESERVED(VCAP_CONST_IF_CNT),
+};
+
+static const u32 vsc9953_qsys_regmap[] = {
+	REG(QSYS_PORT_MODE,			0x003600),
+	REG(QSYS_SWITCH_PORT_MODE,		0x003630),
+	REG(QSYS_STAT_CNT_CFG,			0x00365c),
+	REG(QSYS_EEE_CFG,			0x003660),
+	REG(QSYS_EEE_THRES,			0x003688),
+	REG(QSYS_IGR_NO_SHARING,		0x00368c),
+	REG(QSYS_EGR_NO_SHARING,		0x003690),
+	REG(QSYS_SW_STATUS,			0x003694),
+	REG(QSYS_EXT_CPU_CFG,			0x0036c0),
+	REG_RESERVED(QSYS_PAD_CFG),
+	REG(QSYS_CPU_GROUP_MAP,			0x0036c8),
+	REG_RESERVED(QSYS_QMAP),
+	REG_RESERVED(QSYS_ISDX_SGRP),
+	REG_RESERVED(QSYS_TIMED_FRAME_ENTRY),
+	REG_RESERVED(QSYS_TFRM_MISC),
+	REG_RESERVED(QSYS_TFRM_PORT_DLY),
+	REG_RESERVED(QSYS_TFRM_TIMER_CFG_1),
+	REG_RESERVED(QSYS_TFRM_TIMER_CFG_2),
+	REG_RESERVED(QSYS_TFRM_TIMER_CFG_3),
+	REG_RESERVED(QSYS_TFRM_TIMER_CFG_4),
+	REG_RESERVED(QSYS_TFRM_TIMER_CFG_5),
+	REG_RESERVED(QSYS_TFRM_TIMER_CFG_6),
+	REG_RESERVED(QSYS_TFRM_TIMER_CFG_7),
+	REG_RESERVED(QSYS_TFRM_TIMER_CFG_8),
+	REG(QSYS_RED_PROFILE,			0x003724),
+	REG(QSYS_RES_QOS_MODE,			0x003764),
+	REG(QSYS_RES_CFG,			0x004000),
+	REG(QSYS_RES_STAT,			0x004004),
+	REG(QSYS_EGR_DROP_MODE,			0x003768),
+	REG(QSYS_EQ_CTRL,			0x00376c),
+	REG_RESERVED(QSYS_EVENTS_CORE),
+	REG_RESERVED(QSYS_QMAXSDU_CFG_0),
+	REG_RESERVED(QSYS_QMAXSDU_CFG_1),
+	REG_RESERVED(QSYS_QMAXSDU_CFG_2),
+	REG_RESERVED(QSYS_QMAXSDU_CFG_3),
+	REG_RESERVED(QSYS_QMAXSDU_CFG_4),
+	REG_RESERVED(QSYS_QMAXSDU_CFG_5),
+	REG_RESERVED(QSYS_QMAXSDU_CFG_6),
+	REG_RESERVED(QSYS_QMAXSDU_CFG_7),
+	REG_RESERVED(QSYS_PREEMPTION_CFG),
+	REG(QSYS_CIR_CFG,			0x000000),
+	REG_RESERVED(QSYS_EIR_CFG),
+	REG(QSYS_SE_CFG,			0x000008),
+	REG(QSYS_SE_DWRR_CFG,			0x00000c),
+	REG_RESERVED(QSYS_SE_CONNECT),
+	REG_RESERVED(QSYS_SE_DLB_SENSE),
+	REG(QSYS_CIR_STATE,			0x000044),
+	REG_RESERVED(QSYS_EIR_STATE),
+	REG_RESERVED(QSYS_SE_STATE),
+	REG(QSYS_HSCH_MISC_CFG,			0x003774),
+	REG_RESERVED(QSYS_TAG_CONFIG),
+	REG_RESERVED(QSYS_TAS_PARAM_CFG_CTRL),
+	REG_RESERVED(QSYS_PORT_MAX_SDU),
+	REG_RESERVED(QSYS_PARAM_CFG_REG_1),
+	REG_RESERVED(QSYS_PARAM_CFG_REG_2),
+	REG_RESERVED(QSYS_PARAM_CFG_REG_3),
+	REG_RESERVED(QSYS_PARAM_CFG_REG_4),
+	REG_RESERVED(QSYS_PARAM_CFG_REG_5),
+	REG_RESERVED(QSYS_GCL_CFG_REG_1),
+	REG_RESERVED(QSYS_GCL_CFG_REG_2),
+	REG_RESERVED(QSYS_PARAM_STATUS_REG_1),
+	REG_RESERVED(QSYS_PARAM_STATUS_REG_2),
+	REG_RESERVED(QSYS_PARAM_STATUS_REG_3),
+	REG_RESERVED(QSYS_PARAM_STATUS_REG_4),
+	REG_RESERVED(QSYS_PARAM_STATUS_REG_5),
+	REG_RESERVED(QSYS_PARAM_STATUS_REG_6),
+	REG_RESERVED(QSYS_PARAM_STATUS_REG_7),
+	REG_RESERVED(QSYS_PARAM_STATUS_REG_8),
+	REG_RESERVED(QSYS_PARAM_STATUS_REG_9),
+	REG_RESERVED(QSYS_GCL_STATUS_REG_1),
+	REG_RESERVED(QSYS_GCL_STATUS_REG_2),
+};
+
+static const u32 vsc9953_rew_regmap[] = {
+	REG(REW_PORT_VLAN_CFG,			0x000000),
+	REG(REW_TAG_CFG,			0x000004),
+	REG(REW_PORT_CFG,			0x000008),
+	REG(REW_DSCP_CFG,			0x00000c),
+	REG(REW_PCP_DEI_QOS_MAP_CFG,		0x000010),
+	REG_RESERVED(REW_PTP_CFG),
+	REG_RESERVED(REW_PTP_DLY1_CFG),
+	REG_RESERVED(REW_RED_TAG_CFG),
+	REG(REW_DSCP_REMAP_DP1_CFG,		0x000610),
+	REG(REW_DSCP_REMAP_CFG,			0x000710),
+	REG_RESERVED(REW_STAT_CFG),
+	REG_RESERVED(REW_REW_STICKY),
+	REG_RESERVED(REW_PPT),
+};
+
+static const u32 vsc9953_sys_regmap[] = {
+	REG(SYS_COUNT_RX_OCTETS,		0x000000),
+	REG(SYS_COUNT_RX_MULTICAST,		0x000008),
+	REG(SYS_COUNT_RX_SHORTS,		0x000010),
+	REG(SYS_COUNT_RX_FRAGMENTS,		0x000014),
+	REG(SYS_COUNT_RX_JABBERS,		0x000018),
+	REG(SYS_COUNT_RX_64,			0x000024),
+	REG(SYS_COUNT_RX_65_127,		0x000028),
+	REG(SYS_COUNT_RX_128_255,		0x00002c),
+	REG(SYS_COUNT_RX_256_1023,		0x000030),
+	REG(SYS_COUNT_RX_1024_1526,		0x000034),
+	REG(SYS_COUNT_RX_1527_MAX,		0x000038),
+	REG(SYS_COUNT_RX_LONGS,			0x000048),
+	REG(SYS_COUNT_TX_OCTETS,		0x000100),
+	REG(SYS_COUNT_TX_COLLISION,		0x000110),
+	REG(SYS_COUNT_TX_DROPS,			0x000114),
+	REG(SYS_COUNT_TX_64,			0x00011c),
+	REG(SYS_COUNT_TX_65_127,		0x000120),
+	REG(SYS_COUNT_TX_128_511,		0x000124),
+	REG(SYS_COUNT_TX_512_1023,		0x000128),
+	REG(SYS_COUNT_TX_1024_1526,		0x00012c),
+	REG(SYS_COUNT_TX_1527_MAX,		0x000130),
+	REG(SYS_COUNT_TX_AGING,			0x000178),
+	REG(SYS_RESET_CFG,			0x000318),
+	REG_RESERVED(SYS_SR_ETYPE_CFG),
+	REG(SYS_VLAN_ETYPE_CFG,			0x000320),
+	REG(SYS_PORT_MODE,			0x000324),
+	REG(SYS_FRONT_PORT_MODE,		0x000354),
+	REG(SYS_FRM_AGING,			0x00037c),
+	REG(SYS_STAT_CFG,			0x000380),
+	REG_RESERVED(SYS_SW_STATUS),
+	REG_RESERVED(SYS_MISC_CFG),
+	REG_RESERVED(SYS_REW_MAC_HIGH_CFG),
+	REG_RESERVED(SYS_REW_MAC_LOW_CFG),
+	REG_RESERVED(SYS_TIMESTAMP_OFFSET),
+	REG(SYS_PAUSE_CFG,			0x00044c),
+	REG(SYS_PAUSE_TOT_CFG,			0x000478),
+	REG(SYS_ATOP,				0x00047c),
+	REG(SYS_ATOP_TOT_CFG,			0x0004a8),
+	REG(SYS_MAC_FC_CFG,			0x0004ac),
+	REG(SYS_MMGT,				0x0004d4),
+	REG_RESERVED(SYS_MMGT_FAST),
+	REG_RESERVED(SYS_EVENTS_DIF),
+	REG_RESERVED(SYS_EVENTS_CORE),
+	REG_RESERVED(SYS_CNT),
+	REG_RESERVED(SYS_PTP_STATUS),
+	REG_RESERVED(SYS_PTP_TXSTAMP),
+	REG_RESERVED(SYS_PTP_NXT),
+	REG_RESERVED(SYS_PTP_CFG),
+	REG_RESERVED(SYS_RAM_INIT),
+	REG_RESERVED(SYS_CM_ADDR),
+	REG_RESERVED(SYS_CM_DATA_WR),
+	REG_RESERVED(SYS_CM_DATA_RD),
+	REG_RESERVED(SYS_CM_OP),
+	REG_RESERVED(SYS_CM_DATA),
+};
+
+static const u32 vsc9953_gcb_regmap[] = {
+	REG(GCB_SOFT_RST,			0x000008),
+	REG(GCB_MIIM_MII_STATUS,		0x0000ac),
+	REG(GCB_MIIM_MII_CMD,			0x0000b4),
+	REG(GCB_MIIM_MII_DATA,			0x0000b8),
+};
+
+static const u32 vsc9953_dev_gmii_regmap[] = {
+	REG(DEV_CLOCK_CFG,			0x0),
+	REG(DEV_PORT_MISC,			0x4),
+	REG_RESERVED(DEV_EVENTS),
+	REG(DEV_EEE_CFG,			0xc),
+	REG_RESERVED(DEV_RX_PATH_DELAY),
+	REG_RESERVED(DEV_TX_PATH_DELAY),
+	REG_RESERVED(DEV_PTP_PREDICT_CFG),
+	REG(DEV_MAC_ENA_CFG,			0x10),
+	REG(DEV_MAC_MODE_CFG,			0x14),
+	REG(DEV_MAC_MAXLEN_CFG,			0x18),
+	REG(DEV_MAC_TAGS_CFG,			0x1c),
+	REG(DEV_MAC_ADV_CHK_CFG,		0x20),
+	REG(DEV_MAC_IFG_CFG,			0x24),
+	REG(DEV_MAC_HDX_CFG,			0x28),
+	REG_RESERVED(DEV_MAC_DBG_CFG),
+	REG(DEV_MAC_FC_MAC_LOW_CFG,		0x30),
+	REG(DEV_MAC_FC_MAC_HIGH_CFG,		0x34),
+	REG(DEV_MAC_STICKY,			0x38),
+	REG_RESERVED(PCS1G_CFG),
+	REG_RESERVED(PCS1G_MODE_CFG),
+	REG_RESERVED(PCS1G_SD_CFG),
+	REG_RESERVED(PCS1G_ANEG_CFG),
+	REG_RESERVED(PCS1G_ANEG_NP_CFG),
+	REG_RESERVED(PCS1G_LB_CFG),
+	REG_RESERVED(PCS1G_DBG_CFG),
+	REG_RESERVED(PCS1G_CDET_CFG),
+	REG_RESERVED(PCS1G_ANEG_STATUS),
+	REG_RESERVED(PCS1G_ANEG_NP_STATUS),
+	REG_RESERVED(PCS1G_LINK_STATUS),
+	REG_RESERVED(PCS1G_LINK_DOWN_CNT),
+	REG_RESERVED(PCS1G_STICKY),
+	REG_RESERVED(PCS1G_DEBUG_STATUS),
+	REG_RESERVED(PCS1G_LPI_CFG),
+	REG_RESERVED(PCS1G_LPI_WAKE_ERROR_CNT),
+	REG_RESERVED(PCS1G_LPI_STATUS),
+	REG_RESERVED(PCS1G_TSTPAT_MODE_CFG),
+	REG_RESERVED(PCS1G_TSTPAT_STATUS),
+	REG_RESERVED(DEV_PCS_FX100_CFG),
+	REG_RESERVED(DEV_PCS_FX100_STATUS),
+};
+
+static const u32 *vsc9953_regmap[TARGET_MAX] = {
+	[ANA]		= vsc9953_ana_regmap,
+	[QS]		= vsc9953_qs_regmap,
+	[QSYS]		= vsc9953_qsys_regmap,
+	[REW]		= vsc9953_rew_regmap,
+	[SYS]		= vsc9953_sys_regmap,
+	[S0]		= vsc9953_vcap_regmap,
+	[S1]		= vsc9953_vcap_regmap,
+	[S2]		= vsc9953_vcap_regmap,
+	[GCB]		= vsc9953_gcb_regmap,
+	[DEV_GMII]	= vsc9953_dev_gmii_regmap,
+};
+
+/* Addresses are relative to the device's base address */
+static const struct resource vsc9953_target_io_res[TARGET_MAX] = {
+	[ANA] = {
+		.start	= 0x0280000,
+		.end	= 0x028ffff,
+		.name	= "ana",
+	},
+	[QS] = {
+		.start	= 0x0080000,
+		.end	= 0x00800ff,
+		.name	= "qs",
+	},
+	[QSYS] = {
+		.start	= 0x0200000,
+		.end	= 0x021ffff,
+		.name	= "qsys",
+	},
+	[REW] = {
+		.start	= 0x0030000,
+		.end	= 0x003ffff,
+		.name	= "rew",
+	},
+	[SYS] = {
+		.start	= 0x0010000,
+		.end	= 0x001ffff,
+		.name	= "sys",
+	},
+	[S0] = {
+		.start	= 0x0040000,
+		.end	= 0x00403ff,
+		.name	= "s0",
+	},
+	[S1] = {
+		.start	= 0x0050000,
+		.end	= 0x00503ff,
+		.name	= "s1",
+	},
+	[S2] = {
+		.start	= 0x0060000,
+		.end	= 0x00603ff,
+		.name	= "s2",
+	},
+	[PTP] = {
+		.start	= 0x0090000,
+		.end	= 0x00900cb,
+		.name	= "ptp",
+	},
+	[GCB] = {
+		.start	= 0x0070000,
+		.end	= 0x00701ff,
+		.name	= "devcpu_gcb",
+	},
+};
+
+static const struct resource vsc9953_port_io_res[] = {
+	{
+		.start	= 0x0100000,
+		.end	= 0x010ffff,
+		.name	= "port0",
+	},
+	{
+		.start	= 0x0110000,
+		.end	= 0x011ffff,
+		.name	= "port1",
+	},
+	{
+		.start	= 0x0120000,
+		.end	= 0x012ffff,
+		.name	= "port2",
+	},
+	{
+		.start	= 0x0130000,
+		.end	= 0x013ffff,
+		.name	= "port3",
+	},
+	{
+		.start	= 0x0140000,
+		.end	= 0x014ffff,
+		.name	= "port4",
+	},
+	{
+		.start	= 0x0150000,
+		.end	= 0x015ffff,
+		.name	= "port5",
+	},
+	{
+		.start	= 0x0160000,
+		.end	= 0x016ffff,
+		.name	= "port6",
+	},
+	{
+		.start	= 0x0170000,
+		.end	= 0x017ffff,
+		.name	= "port7",
+	},
+	{
+		.start	= 0x0180000,
+		.end	= 0x018ffff,
+		.name	= "port8",
+	},
+	{
+		.start	= 0x0190000,
+		.end	= 0x019ffff,
+		.name	= "port9",
+	},
+};
+
+static const struct reg_field vsc9953_regfields[REGFIELD_MAX] = {
+	[ANA_ADVLEARN_VLAN_CHK] = REG_FIELD(ANA_ADVLEARN, 10, 10),
+	[ANA_ADVLEARN_LEARN_MIRROR] = REG_FIELD(ANA_ADVLEARN, 0, 9),
+	[ANA_ANEVENTS_AUTOAGE] = REG_FIELD(ANA_ANEVENTS, 24, 24),
+	[ANA_ANEVENTS_STORM_DROP] = REG_FIELD(ANA_ANEVENTS, 22, 22),
+	[ANA_ANEVENTS_LEARN_DROP] = REG_FIELD(ANA_ANEVENTS, 21, 21),
+	[ANA_ANEVENTS_AGED_ENTRY] = REG_FIELD(ANA_ANEVENTS, 20, 20),
+	[ANA_ANEVENTS_CPU_LEARN_FAILED] = REG_FIELD(ANA_ANEVENTS, 19, 19),
+	[ANA_ANEVENTS_AUTO_LEARN_FAILED] = REG_FIELD(ANA_ANEVENTS, 18, 18),
+	[ANA_ANEVENTS_LEARN_REMOVE] = REG_FIELD(ANA_ANEVENTS, 17, 17),
+	[ANA_ANEVENTS_AUTO_LEARNED] = REG_FIELD(ANA_ANEVENTS, 16, 16),
+	[ANA_ANEVENTS_AUTO_MOVED] = REG_FIELD(ANA_ANEVENTS, 15, 15),
+	[ANA_ANEVENTS_CLASSIFIED_DROP] = REG_FIELD(ANA_ANEVENTS, 13, 13),
+	[ANA_ANEVENTS_CLASSIFIED_COPY] = REG_FIELD(ANA_ANEVENTS, 12, 12),
+	[ANA_ANEVENTS_VLAN_DISCARD] = REG_FIELD(ANA_ANEVENTS, 11, 11),
+	[ANA_ANEVENTS_FWD_DISCARD] = REG_FIELD(ANA_ANEVENTS, 10, 10),
+	[ANA_ANEVENTS_MULTICAST_FLOOD] = REG_FIELD(ANA_ANEVENTS, 9, 9),
+	[ANA_ANEVENTS_UNICAST_FLOOD] = REG_FIELD(ANA_ANEVENTS, 8, 8),
+	[ANA_ANEVENTS_DEST_KNOWN] = REG_FIELD(ANA_ANEVENTS, 7, 7),
+	[ANA_ANEVENTS_BUCKET3_MATCH] = REG_FIELD(ANA_ANEVENTS, 6, 6),
+	[ANA_ANEVENTS_BUCKET2_MATCH] = REG_FIELD(ANA_ANEVENTS, 5, 5),
+	[ANA_ANEVENTS_BUCKET1_MATCH] = REG_FIELD(ANA_ANEVENTS, 4, 4),
+	[ANA_ANEVENTS_BUCKET0_MATCH] = REG_FIELD(ANA_ANEVENTS, 3, 3),
+	[ANA_ANEVENTS_CPU_OPERATION] = REG_FIELD(ANA_ANEVENTS, 2, 2),
+	[ANA_ANEVENTS_DMAC_LOOKUP] = REG_FIELD(ANA_ANEVENTS, 1, 1),
+	[ANA_ANEVENTS_SMAC_LOOKUP] = REG_FIELD(ANA_ANEVENTS, 0, 0),
+	[ANA_TABLES_MACACCESS_B_DOM] = REG_FIELD(ANA_TABLES_MACACCESS, 16, 16),
+	[ANA_TABLES_MACTINDX_BUCKET] = REG_FIELD(ANA_TABLES_MACTINDX, 11, 12),
+	[ANA_TABLES_MACTINDX_M_INDEX] = REG_FIELD(ANA_TABLES_MACTINDX, 0, 10),
+	[SYS_RESET_CFG_CORE_ENA] = REG_FIELD(SYS_RESET_CFG, 7, 7),
+	[SYS_RESET_CFG_MEM_ENA] = REG_FIELD(SYS_RESET_CFG, 6, 6),
+	[SYS_RESET_CFG_MEM_INIT] = REG_FIELD(SYS_RESET_CFG, 5, 5),
+	[GCB_SOFT_RST_SWC_RST] = REG_FIELD(GCB_SOFT_RST, 0, 0),
+	[GCB_MIIM_MII_STATUS_PENDING] = REG_FIELD(GCB_MIIM_MII_STATUS, 2, 2),
+	[GCB_MIIM_MII_STATUS_BUSY] = REG_FIELD(GCB_MIIM_MII_STATUS, 3, 3),
+	/* Replicated per number of ports (11), register size 4 per port */
+	[QSYS_SWITCH_PORT_MODE_PORT_ENA] = REG_FIELD_ID(QSYS_SWITCH_PORT_MODE, 13, 13, 11, 4),
+	[QSYS_SWITCH_PORT_MODE_YEL_RSRVD] = REG_FIELD_ID(QSYS_SWITCH_PORT_MODE, 10, 10, 11, 4),
+	[QSYS_SWITCH_PORT_MODE_INGRESS_DROP_MODE] = REG_FIELD_ID(QSYS_SWITCH_PORT_MODE, 9, 9, 11, 4),
+	[QSYS_SWITCH_PORT_MODE_TX_PFC_ENA] = REG_FIELD_ID(QSYS_SWITCH_PORT_MODE, 1, 8, 11, 4),
+	[QSYS_SWITCH_PORT_MODE_TX_PFC_MODE] = REG_FIELD_ID(QSYS_SWITCH_PORT_MODE, 0, 0, 11, 4),
+	[SYS_PORT_MODE_INCL_INJ_HDR] = REG_FIELD_ID(SYS_PORT_MODE, 4, 5, 11, 4),
+	[SYS_PORT_MODE_INCL_XTR_HDR] = REG_FIELD_ID(SYS_PORT_MODE, 2, 3, 11, 4),
+	[SYS_PORT_MODE_INCL_HDR_ERR] = REG_FIELD_ID(SYS_PORT_MODE, 0, 0, 11, 4),
+	[SYS_PAUSE_CFG_PAUSE_START] = REG_FIELD_ID(SYS_PAUSE_CFG, 11, 20, 11, 4),
+	[SYS_PAUSE_CFG_PAUSE_STOP] = REG_FIELD_ID(SYS_PAUSE_CFG, 1, 10, 11, 4),
+	[SYS_PAUSE_CFG_PAUSE_ENA] = REG_FIELD_ID(SYS_PAUSE_CFG, 0, 1, 11, 4),
+};
+
+static const struct ocelot_stat_layout vsc9953_stats_layout[] = {
+	{ .offset = 0x00,	.name = "rx_octets", },
+	{ .offset = 0x01,	.name = "rx_unicast", },
+	{ .offset = 0x02,	.name = "rx_multicast", },
+	{ .offset = 0x03,	.name = "rx_broadcast", },
+	{ .offset = 0x04,	.name = "rx_shorts", },
+	{ .offset = 0x05,	.name = "rx_fragments", },
+	{ .offset = 0x06,	.name = "rx_jabbers", },
+	{ .offset = 0x07,	.name = "rx_crc_align_errs", },
+	{ .offset = 0x08,	.name = "rx_sym_errs", },
+	{ .offset = 0x09,	.name = "rx_frames_below_65_octets", },
+	{ .offset = 0x0A,	.name = "rx_frames_65_to_127_octets", },
+	{ .offset = 0x0B,	.name = "rx_frames_128_to_255_octets", },
+	{ .offset = 0x0C,	.name = "rx_frames_256_to_511_octets", },
+	{ .offset = 0x0D,	.name = "rx_frames_512_to_1023_octets", },
+	{ .offset = 0x0E,	.name = "rx_frames_1024_to_1526_octets", },
+	{ .offset = 0x0F,	.name = "rx_frames_over_1526_octets", },
+	{ .offset = 0x10,	.name = "rx_pause", },
+	{ .offset = 0x11,	.name = "rx_control", },
+	{ .offset = 0x12,	.name = "rx_longs", },
+	{ .offset = 0x13,	.name = "rx_classified_drops", },
+	{ .offset = 0x14,	.name = "rx_red_prio_0", },
+	{ .offset = 0x15,	.name = "rx_red_prio_1", },
+	{ .offset = 0x16,	.name = "rx_red_prio_2", },
+	{ .offset = 0x17,	.name = "rx_red_prio_3", },
+	{ .offset = 0x18,	.name = "rx_red_prio_4", },
+	{ .offset = 0x19,	.name = "rx_red_prio_5", },
+	{ .offset = 0x1A,	.name = "rx_red_prio_6", },
+	{ .offset = 0x1B,	.name = "rx_red_prio_7", },
+	{ .offset = 0x1C,	.name = "rx_yellow_prio_0", },
+	{ .offset = 0x1D,	.name = "rx_yellow_prio_1", },
+	{ .offset = 0x1E,	.name = "rx_yellow_prio_2", },
+	{ .offset = 0x1F,	.name = "rx_yellow_prio_3", },
+	{ .offset = 0x20,	.name = "rx_yellow_prio_4", },
+	{ .offset = 0x21,	.name = "rx_yellow_prio_5", },
+	{ .offset = 0x22,	.name = "rx_yellow_prio_6", },
+	{ .offset = 0x23,	.name = "rx_yellow_prio_7", },
+	{ .offset = 0x24,	.name = "rx_green_prio_0", },
+	{ .offset = 0x25,	.name = "rx_green_prio_1", },
+	{ .offset = 0x26,	.name = "rx_green_prio_2", },
+	{ .offset = 0x27,	.name = "rx_green_prio_3", },
+	{ .offset = 0x28,	.name = "rx_green_prio_4", },
+	{ .offset = 0x29,	.name = "rx_green_prio_5", },
+	{ .offset = 0x2A,	.name = "rx_green_prio_6", },
+	{ .offset = 0x2B,	.name = "rx_green_prio_7", },
+	{ .offset = 0x40,	.name = "tx_octets", },
+	{ .offset = 0x41,	.name = "tx_unicast", },
+	{ .offset = 0x42,	.name = "tx_multicast", },
+	{ .offset = 0x43,	.name = "tx_broadcast", },
+	{ .offset = 0x44,	.name = "tx_collision", },
+	{ .offset = 0x45,	.name = "tx_drops", },
+	{ .offset = 0x46,	.name = "tx_pause", },
+	{ .offset = 0x47,	.name = "tx_frames_below_65_octets", },
+	{ .offset = 0x48,	.name = "tx_frames_65_to_127_octets", },
+	{ .offset = 0x49,	.name = "tx_frames_128_255_octets", },
+	{ .offset = 0x4A,	.name = "tx_frames_256_511_octets", },
+	{ .offset = 0x4B,	.name = "tx_frames_512_1023_octets", },
+	{ .offset = 0x4C,	.name = "tx_frames_1024_1526_octets", },
+	{ .offset = 0x4D,	.name = "tx_frames_over_1526_octets", },
+	{ .offset = 0x4E,	.name = "tx_yellow_prio_0", },
+	{ .offset = 0x4F,	.name = "tx_yellow_prio_1", },
+	{ .offset = 0x50,	.name = "tx_yellow_prio_2", },
+	{ .offset = 0x51,	.name = "tx_yellow_prio_3", },
+	{ .offset = 0x52,	.name = "tx_yellow_prio_4", },
+	{ .offset = 0x53,	.name = "tx_yellow_prio_5", },
+	{ .offset = 0x54,	.name = "tx_yellow_prio_6", },
+	{ .offset = 0x55,	.name = "tx_yellow_prio_7", },
+	{ .offset = 0x56,	.name = "tx_green_prio_0", },
+	{ .offset = 0x57,	.name = "tx_green_prio_1", },
+	{ .offset = 0x58,	.name = "tx_green_prio_2", },
+	{ .offset = 0x59,	.name = "tx_green_prio_3", },
+	{ .offset = 0x5A,	.name = "tx_green_prio_4", },
+	{ .offset = 0x5B,	.name = "tx_green_prio_5", },
+	{ .offset = 0x5C,	.name = "tx_green_prio_6", },
+	{ .offset = 0x5D,	.name = "tx_green_prio_7", },
+	{ .offset = 0x5E,	.name = "tx_aged", },
+	{ .offset = 0x80,	.name = "drop_local", },
+	{ .offset = 0x81,	.name = "drop_tail", },
+	{ .offset = 0x82,	.name = "drop_yellow_prio_0", },
+	{ .offset = 0x83,	.name = "drop_yellow_prio_1", },
+	{ .offset = 0x84,	.name = "drop_yellow_prio_2", },
+	{ .offset = 0x85,	.name = "drop_yellow_prio_3", },
+	{ .offset = 0x86,	.name = "drop_yellow_prio_4", },
+	{ .offset = 0x87,	.name = "drop_yellow_prio_5", },
+	{ .offset = 0x88,	.name = "drop_yellow_prio_6", },
+	{ .offset = 0x89,	.name = "drop_yellow_prio_7", },
+	{ .offset = 0x8A,	.name = "drop_green_prio_0", },
+	{ .offset = 0x8B,	.name = "drop_green_prio_1", },
+	{ .offset = 0x8C,	.name = "drop_green_prio_2", },
+	{ .offset = 0x8D,	.name = "drop_green_prio_3", },
+	{ .offset = 0x8E,	.name = "drop_green_prio_4", },
+	{ .offset = 0x8F,	.name = "drop_green_prio_5", },
+	{ .offset = 0x90,	.name = "drop_green_prio_6", },
+	{ .offset = 0x91,	.name = "drop_green_prio_7", },
+};
+
+static const struct vcap_field vsc9953_vcap_es0_keys[] = {
+	[VCAP_ES0_EGR_PORT]			= {  0,  4},
+	[VCAP_ES0_IGR_PORT]			= {  4,  4},
+	[VCAP_ES0_RSV]				= {  8,  2},
+	[VCAP_ES0_L2_MC]			= { 10,  1},
+	[VCAP_ES0_L2_BC]			= { 11,  1},
+	[VCAP_ES0_VID]				= { 12, 12},
+	[VCAP_ES0_DP]				= { 24,  1},
+	[VCAP_ES0_PCP]				= { 25,  3},
+};
+
+static const struct vcap_field vsc9953_vcap_es0_actions[] = {
+	[VCAP_ES0_ACT_PUSH_OUTER_TAG]		= {  0,  2},
+	[VCAP_ES0_ACT_PUSH_INNER_TAG]		= {  2,  1},
+	[VCAP_ES0_ACT_TAG_A_TPID_SEL]		= {  3,  2},
+	[VCAP_ES0_ACT_TAG_A_VID_SEL]		= {  5,  1},
+	[VCAP_ES0_ACT_TAG_A_PCP_SEL]		= {  6,  2},
+	[VCAP_ES0_ACT_TAG_A_DEI_SEL]		= {  8,  2},
+	[VCAP_ES0_ACT_TAG_B_TPID_SEL]		= { 10,  2},
+	[VCAP_ES0_ACT_TAG_B_VID_SEL]		= { 12,  1},
+	[VCAP_ES0_ACT_TAG_B_PCP_SEL]		= { 13,  2},
+	[VCAP_ES0_ACT_TAG_B_DEI_SEL]		= { 15,  2},
+	[VCAP_ES0_ACT_VID_A_VAL]		= { 17, 12},
+	[VCAP_ES0_ACT_PCP_A_VAL]		= { 29,  3},
+	[VCAP_ES0_ACT_DEI_A_VAL]		= { 32,  1},
+	[VCAP_ES0_ACT_VID_B_VAL]		= { 33, 12},
+	[VCAP_ES0_ACT_PCP_B_VAL]		= { 45,  3},
+	[VCAP_ES0_ACT_DEI_B_VAL]		= { 48,  1},
+	[VCAP_ES0_ACT_RSV]			= { 49, 24},
+	[VCAP_ES0_ACT_HIT_STICKY]		= { 73,  1},
+};
+
+static const struct vcap_field vsc9953_vcap_is1_keys[] = {
+	[VCAP_IS1_HK_TYPE]			= {  0,   1},
+	[VCAP_IS1_HK_LOOKUP]			= {  1,   2},
+	[VCAP_IS1_HK_IGR_PORT_MASK]		= {  3,  11},
+	[VCAP_IS1_HK_RSV]			= { 14,  10},
+	/* VCAP_IS1_HK_OAM_Y1731 not supported */
+	[VCAP_IS1_HK_L2_MC]			= { 24,   1},
+	[VCAP_IS1_HK_L2_BC]			= { 25,   1},
+	[VCAP_IS1_HK_IP_MC]			= { 26,   1},
+	[VCAP_IS1_HK_VLAN_TAGGED]		= { 27,   1},
+	[VCAP_IS1_HK_VLAN_DBL_TAGGED]		= { 28,   1},
+	[VCAP_IS1_HK_TPID]			= { 29,   1},
+	[VCAP_IS1_HK_VID]			= { 30,  12},
+	[VCAP_IS1_HK_DEI]			= { 42,   1},
+	[VCAP_IS1_HK_PCP]			= { 43,   3},
+	/* Specific Fields for IS1 Half Key S1_NORMAL */
+	[VCAP_IS1_HK_L2_SMAC]			= { 46,  48},
+	[VCAP_IS1_HK_ETYPE_LEN]			= { 94,   1},
+	[VCAP_IS1_HK_ETYPE]			= { 95,  16},
+	[VCAP_IS1_HK_IP_SNAP]			= {111,   1},
+	[VCAP_IS1_HK_IP4]			= {112,   1},
+	/* Layer-3 Information */
+	[VCAP_IS1_HK_L3_FRAGMENT]		= {113,   1},
+	[VCAP_IS1_HK_L3_FRAG_OFS_GT0]		= {114,   1},
+	[VCAP_IS1_HK_L3_OPTIONS]		= {115,   1},
+	[VCAP_IS1_HK_L3_DSCP]			= {116,   6},
+	[VCAP_IS1_HK_L3_IP4_SIP]		= {122,  32},
+	/* Layer-4 Information */
+	[VCAP_IS1_HK_TCP_UDP]			= {154,   1},
+	[VCAP_IS1_HK_TCP]			= {155,   1},
+	[VCAP_IS1_HK_L4_SPORT]			= {156,  16},
+	[VCAP_IS1_HK_L4_RNG]			= {172,   8},
+	/* Specific Fields for IS1 Half Key S1_5TUPLE_IP4 */
+	[VCAP_IS1_HK_IP4_INNER_TPID]            = { 46,   1},
+	[VCAP_IS1_HK_IP4_INNER_VID]		= { 47,  12},
+	[VCAP_IS1_HK_IP4_INNER_DEI]		= { 59,   1},
+	[VCAP_IS1_HK_IP4_INNER_PCP]		= { 60,   3},
+	[VCAP_IS1_HK_IP4_IP4]			= { 63,   1},
+	[VCAP_IS1_HK_IP4_L3_FRAGMENT]		= { 64,   1},
+	[VCAP_IS1_HK_IP4_L3_FRAG_OFS_GT0]	= { 65,   1},
+	[VCAP_IS1_HK_IP4_L3_OPTIONS]		= { 66,   1},
+	[VCAP_IS1_HK_IP4_L3_DSCP]		= { 67,   6},
+	[VCAP_IS1_HK_IP4_L3_IP4_DIP]		= { 73,  32},
+	[VCAP_IS1_HK_IP4_L3_IP4_SIP]		= {105,  32},
+	[VCAP_IS1_HK_IP4_L3_PROTO]		= {137,   8},
+	[VCAP_IS1_HK_IP4_TCP_UDP]		= {145,   1},
+	[VCAP_IS1_HK_IP4_TCP]			= {146,   1},
+	[VCAP_IS1_HK_IP4_L4_RNG]		= {147,   8},
+	[VCAP_IS1_HK_IP4_IP_PAYLOAD_S1_5TUPLE]	= {155,  32},
+};
+
+static const struct vcap_field vsc9953_vcap_is1_actions[] = {
+	[VCAP_IS1_ACT_DSCP_ENA]			= {  0,  1},
+	[VCAP_IS1_ACT_DSCP_VAL]			= {  1,  6},
+	[VCAP_IS1_ACT_QOS_ENA]			= {  7,  1},
+	[VCAP_IS1_ACT_QOS_VAL]			= {  8,  3},
+	[VCAP_IS1_ACT_DP_ENA]			= { 11,  1},
+	[VCAP_IS1_ACT_DP_VAL]			= { 12,  1},
+	[VCAP_IS1_ACT_PAG_OVERRIDE_MASK]	= { 13,  8},
+	[VCAP_IS1_ACT_PAG_VAL]			= { 21,  8},
+	[VCAP_IS1_ACT_RSV]			= { 29, 11},
+	[VCAP_IS1_ACT_VID_REPLACE_ENA]		= { 40,  1},
+	[VCAP_IS1_ACT_VID_ADD_VAL]		= { 41, 12},
+	[VCAP_IS1_ACT_FID_SEL]			= { 53,  2},
+	[VCAP_IS1_ACT_FID_VAL]			= { 55, 13},
+	[VCAP_IS1_ACT_PCP_DEI_ENA]		= { 68,  1},
+	[VCAP_IS1_ACT_PCP_VAL]			= { 69,  3},
+	[VCAP_IS1_ACT_DEI_VAL]			= { 72,  1},
+	[VCAP_IS1_ACT_VLAN_POP_CNT_ENA]		= { 73,  1},
+	[VCAP_IS1_ACT_VLAN_POP_CNT]		= { 74,  2},
+	[VCAP_IS1_ACT_CUSTOM_ACE_TYPE_ENA]	= { 76,  4},
+	[VCAP_IS1_ACT_HIT_STICKY]		= { 80,  1},
+};
+
+static struct vcap_field vsc9953_vcap_is2_keys[] = {
+	/* Common: 41 bits */
+	[VCAP_IS2_TYPE]				= {  0,   4},
+	[VCAP_IS2_HK_FIRST]			= {  4,   1},
+	[VCAP_IS2_HK_PAG]			= {  5,   8},
+	[VCAP_IS2_HK_IGR_PORT_MASK]		= { 13,  11},
+	[VCAP_IS2_HK_RSV2]			= { 24,   1},
+	[VCAP_IS2_HK_HOST_MATCH]		= { 25,   1},
+	[VCAP_IS2_HK_L2_MC]			= { 26,   1},
+	[VCAP_IS2_HK_L2_BC]			= { 27,   1},
+	[VCAP_IS2_HK_VLAN_TAGGED]		= { 28,   1},
+	[VCAP_IS2_HK_VID]			= { 29,  12},
+	[VCAP_IS2_HK_DEI]			= { 41,   1},
+	[VCAP_IS2_HK_PCP]			= { 42,   3},
+	/* MAC_ETYPE / MAC_LLC / MAC_SNAP / OAM common */
+	[VCAP_IS2_HK_L2_DMAC]			= { 45,  48},
+	[VCAP_IS2_HK_L2_SMAC]			= { 93,  48},
+	/* MAC_ETYPE (TYPE=000) */
+	[VCAP_IS2_HK_MAC_ETYPE_ETYPE]		= {141,  16},
+	[VCAP_IS2_HK_MAC_ETYPE_L2_PAYLOAD0]	= {157,  16},
+	[VCAP_IS2_HK_MAC_ETYPE_L2_PAYLOAD1]	= {173,   8},
+	[VCAP_IS2_HK_MAC_ETYPE_L2_PAYLOAD2]	= {181,   3},
+	/* MAC_LLC (TYPE=001) */
+	[VCAP_IS2_HK_MAC_LLC_L2_LLC]		= {141,  40},
+	/* MAC_SNAP (TYPE=010) */
+	[VCAP_IS2_HK_MAC_SNAP_L2_SNAP]		= {141,  40},
+	/* MAC_ARP (TYPE=011) */
+	[VCAP_IS2_HK_MAC_ARP_SMAC]		= { 45,  48},
+	[VCAP_IS2_HK_MAC_ARP_ADDR_SPACE_OK]	= { 93,   1},
+	[VCAP_IS2_HK_MAC_ARP_PROTO_SPACE_OK]	= { 94,   1},
+	[VCAP_IS2_HK_MAC_ARP_LEN_OK]		= { 95,   1},
+	[VCAP_IS2_HK_MAC_ARP_TARGET_MATCH]	= { 96,   1},
+	[VCAP_IS2_HK_MAC_ARP_SENDER_MATCH]	= { 97,   1},
+	[VCAP_IS2_HK_MAC_ARP_OPCODE_UNKNOWN]	= { 98,   1},
+	[VCAP_IS2_HK_MAC_ARP_OPCODE]		= { 99,   2},
+	[VCAP_IS2_HK_MAC_ARP_L3_IP4_DIP]	= {101,  32},
+	[VCAP_IS2_HK_MAC_ARP_L3_IP4_SIP]	= {133,  32},
+	[VCAP_IS2_HK_MAC_ARP_DIP_EQ_SIP]	= {165,   1},
+	/* IP4_TCP_UDP / IP4_OTHER common */
+	[VCAP_IS2_HK_IP4]			= { 45,   1},
+	[VCAP_IS2_HK_L3_FRAGMENT]		= { 46,   1},
+	[VCAP_IS2_HK_L3_FRAG_OFS_GT0]		= { 47,   1},
+	[VCAP_IS2_HK_L3_OPTIONS]		= { 48,   1},
+	[VCAP_IS2_HK_IP4_L3_TTL_GT0]		= { 49,   1},
+	[VCAP_IS2_HK_L3_TOS]			= { 50,   8},
+	[VCAP_IS2_HK_L3_IP4_DIP]		= { 58,  32},
+	[VCAP_IS2_HK_L3_IP4_SIP]		= { 90,  32},
+	[VCAP_IS2_HK_DIP_EQ_SIP]		= {122,   1},
+	/* IP4_TCP_UDP (TYPE=100) */
+	[VCAP_IS2_HK_TCP]			= {123,   1},
+	[VCAP_IS2_HK_L4_DPORT]			= {124,  16},
+	[VCAP_IS2_HK_L4_SPORT]			= {140,  16},
+	[VCAP_IS2_HK_L4_RNG]			= {156,   8},
+	[VCAP_IS2_HK_L4_SPORT_EQ_DPORT]		= {164,   1},
+	[VCAP_IS2_HK_L4_SEQUENCE_EQ0]		= {165,   1},
+	[VCAP_IS2_HK_L4_FIN]			= {166,   1},
+	[VCAP_IS2_HK_L4_SYN]			= {167,   1},
+	[VCAP_IS2_HK_L4_RST]			= {168,   1},
+	[VCAP_IS2_HK_L4_PSH]			= {169,   1},
+	[VCAP_IS2_HK_L4_ACK]			= {170,   1},
+	[VCAP_IS2_HK_L4_URG]			= {171,   1},
+	/* IP4_OTHER (TYPE=101) */
+	[VCAP_IS2_HK_IP4_L3_PROTO]		= {123,   8},
+	[VCAP_IS2_HK_L3_PAYLOAD]		= {131,  56},
+	/* IP6_STD (TYPE=110) */
+	[VCAP_IS2_HK_IP6_L3_TTL_GT0]		= { 45,   1},
+	[VCAP_IS2_HK_L3_IP6_SIP]		= { 46, 128},
+	[VCAP_IS2_HK_IP6_L3_PROTO]		= {174,   8},
+};
+
+static struct vcap_field vsc9953_vcap_is2_actions[] = {
+	[VCAP_IS2_ACT_HIT_ME_ONCE]		= {  0,  1},
+	[VCAP_IS2_ACT_CPU_COPY_ENA]		= {  1,  1},
+	[VCAP_IS2_ACT_CPU_QU_NUM]		= {  2,  3},
+	[VCAP_IS2_ACT_MASK_MODE]		= {  5,  2},
+	[VCAP_IS2_ACT_MIRROR_ENA]		= {  7,  1},
+	[VCAP_IS2_ACT_LRN_DIS]			= {  8,  1},
+	[VCAP_IS2_ACT_POLICE_ENA]		= {  9,  1},
+	[VCAP_IS2_ACT_POLICE_IDX]		= { 10,  8},
+	[VCAP_IS2_ACT_POLICE_VCAP_ONLY]		= { 21,  1},
+	[VCAP_IS2_ACT_PORT_MASK]		= { 22, 10},
+	[VCAP_IS2_ACT_ACL_ID]			= { 44,  6},
+	[VCAP_IS2_ACT_HIT_CNT]			= { 50, 32},
+};
+
+static struct vcap_props vsc9953_vcap_props[] = {
+	[VCAP_ES0] = {
+		.action_type_width = 0,
+		.action_table = {
+			[ES0_ACTION_TYPE_NORMAL] = {
+				.width = 73, /* HIT_STICKY not included */
+				.count = 1,
+			},
+		},
+		.target = S0,
+		.keys = vsc9953_vcap_es0_keys,
+		.actions = vsc9953_vcap_es0_actions,
+	},
+	[VCAP_IS1] = {
+		.action_type_width = 0,
+		.action_table = {
+			[IS1_ACTION_TYPE_NORMAL] = {
+				.width = 80, /* HIT_STICKY not included */
+				.count = 4,
+			},
+		},
+		.target = S1,
+		.keys = vsc9953_vcap_is1_keys,
+		.actions = vsc9953_vcap_is1_actions,
+	},
+	[VCAP_IS2] = {
+		.action_type_width = 1,
+		.action_table = {
+			[IS2_ACTION_TYPE_NORMAL] = {
+				.width = 50, /* HIT_CNT not included */
+				.count = 2
+			},
+			[IS2_ACTION_TYPE_SMAC_SIP] = {
+				.width = 6,
+				.count = 4
+			},
+		},
+		.target = S2,
+		.keys = vsc9953_vcap_is2_keys,
+		.actions = vsc9953_vcap_is2_actions,
+	},
+};
+
+#define VSC9953_INIT_TIMEOUT			50000
+#define VSC9953_GCB_RST_SLEEP			100
+#define VSC9953_SYS_RAMINIT_SLEEP		80
+
+static int vsc9953_gcb_soft_rst_status(struct ocelot *ocelot)
+{
+	int val;
+
+	ocelot_field_read(ocelot, GCB_SOFT_RST_SWC_RST, &val);
+
+	return val;
+}
+
+static int vsc9953_sys_ram_init_status(struct ocelot *ocelot)
+{
+	int val;
+
+	ocelot_field_read(ocelot, SYS_RESET_CFG_MEM_INIT, &val);
+
+	return val;
+}
+
+
+/* CORE_ENA is in SYS:SYSTEM:RESET_CFG
+ * MEM_INIT is in SYS:SYSTEM:RESET_CFG
+ * MEM_ENA is in SYS:SYSTEM:RESET_CFG
+ */
+static int vsc9953_reset(struct ocelot *ocelot)
+{
+	int val, err;
+
+	/* soft-reset the switch core */
+	ocelot_field_write(ocelot, GCB_SOFT_RST_SWC_RST, 1);
+
+	err = readx_poll_timeout(vsc9953_gcb_soft_rst_status, ocelot, val, !val,
+				 VSC9953_GCB_RST_SLEEP, VSC9953_INIT_TIMEOUT);
+	if (err) {
+		dev_err(ocelot->dev, "timeout: switch core reset\n");
+		return err;
+	}
+
+	/* initialize switch mem ~40us */
+	ocelot_field_write(ocelot, SYS_RESET_CFG_MEM_ENA, 1);
+	ocelot_field_write(ocelot, SYS_RESET_CFG_MEM_INIT, 1);
+
+	err = readx_poll_timeout(vsc9953_sys_ram_init_status, ocelot, val, !val,
+				 VSC9953_SYS_RAMINIT_SLEEP,
+				 VSC9953_INIT_TIMEOUT);
+	if (err) {
+		dev_err(ocelot->dev, "timeout: switch sram init\n");
+		return err;
+	}
+
+	/* enable switch core */
+	ocelot_field_write(ocelot, SYS_RESET_CFG_CORE_ENA, 1);
+
+	return 0;
+}
+
+static void vsc9953_phylink_validate(struct ocelot *ocelot, int port,
+				     unsigned long *supported,
+				     struct phylink_link_state *state)
+{
+	__ETHTOOL_DECLARE_LINK_MODE_MASK(mask) = { 0, };
+
+	phylink_set_port_modes(mask);
+	phylink_set(mask, Autoneg);
+	phylink_set(mask, Pause);
+	phylink_set(mask, Asym_Pause);
+	phylink_set(mask, 10baseT_Full);
+	phylink_set(mask, 10baseT_Half);
+	phylink_set(mask, 100baseT_Full);
+	phylink_set(mask, 100baseT_Half);
+	phylink_set(mask, 1000baseT_Full);
+
+	if (state->interface == PHY_INTERFACE_MODE_INTERNAL) {
+		phylink_set(mask, 2500baseT_Full);
+		phylink_set(mask, 2500baseX_Full);
+	}
+
+	linkmode_and(supported, supported, mask);
+	linkmode_and(state->advertising, state->advertising, mask);
+}
+
+/* Watermark encode
+ * Bit 9:   Unit; 0:1, 1:16
+ * Bit 8-0: Value to be multiplied with unit
+ */
+static u16 vsc9953_wm_enc(u16 value)
+{
+	WARN_ON(value >= 16 * BIT(9));
+
+	if (value >= BIT(9))
+		return BIT(9) | (value / 16);
+
+	return value;
+}
+
+static u16 vsc9953_wm_dec(u16 wm)
+{
+	WARN_ON(wm & ~GENMASK(9, 0));
+
+	if (wm & BIT(9))
+		return (wm & GENMASK(8, 0)) * 16;
+
+	return wm;
+}
+
+static void vsc9953_wm_stat(u32 val, u32 *inuse, u32 *maxuse)
+{
+	*inuse = (val & GENMASK(25, 13)) >> 13;
+	*maxuse = val & GENMASK(12, 0);
+}
+
+static const struct ocelot_ops vsc9953_ops = {
+	.reset			= vsc9953_reset,
+	.wm_enc			= vsc9953_wm_enc,
+	.wm_dec			= vsc9953_wm_dec,
+	.wm_stat		= vsc9953_wm_stat,
+	.port_to_netdev		= felix_port_to_netdev,
+	.netdev_to_port		= felix_netdev_to_port,
+};
+
+static int vsc9953_mdio_bus_alloc(struct ocelot *ocelot)
+{
+	struct felix *felix = ocelot_to_felix(ocelot);
+	struct device *dev = ocelot->dev;
+	struct mii_bus *bus;
+	int port;
+	int rc;
+
+	felix->pcs = devm_kcalloc(dev, felix->info->num_ports,
+				  sizeof(struct phylink_pcs *),
+				  GFP_KERNEL);
+	if (!felix->pcs) {
+		dev_err(dev, "failed to allocate array for PCS PHYs\n");
+		return -ENOMEM;
+	}
+
+	rc = mscc_miim_setup(dev, &bus, "VSC9953 internal MDIO bus",
+			     ocelot->targets[GCB],
+			     ocelot->map[GCB][GCB_MIIM_MII_STATUS & REG_MASK]);
+
+	if (rc) {
+		dev_err(dev, "failed to setup MDIO bus\n");
+		return rc;
+	}
+
+	/* Needed in order to initialize the bus mutex lock */
+	rc = devm_of_mdiobus_register(dev, bus, NULL);
+	if (rc < 0) {
+		dev_err(dev, "failed to register MDIO bus\n");
+		return rc;
+	}
+
+	felix->imdio = bus;
+
+	for (port = 0; port < felix->info->num_ports; port++) {
+		struct ocelot_port *ocelot_port = ocelot->ports[port];
+		struct phylink_pcs *phylink_pcs;
+		struct mdio_device *mdio_device;
+		int addr = port + 4;
+
+		if (dsa_is_unused_port(felix->ds, port))
+			continue;
+
+		if (ocelot_port->phy_mode == PHY_INTERFACE_MODE_INTERNAL)
+			continue;
+
+		mdio_device = mdio_device_create(felix->imdio, addr);
+		if (IS_ERR(mdio_device))
+			continue;
+
+		phylink_pcs = lynx_pcs_create(mdio_device);
+		if (!phylink_pcs) {
+			mdio_device_free(mdio_device);
+			continue;
+		}
+
+		felix->pcs[port] = phylink_pcs;
+
+		dev_info(dev, "Found PCS at internal MDIO address %d\n", addr);
+	}
+
+	return 0;
+}
+
+static void vsc9953_mdio_bus_free(struct ocelot *ocelot)
+{
+	struct felix *felix = ocelot_to_felix(ocelot);
+	int port;
+
+	for (port = 0; port < ocelot->num_phys_ports; port++) {
+		struct phylink_pcs *phylink_pcs = felix->pcs[port];
+		struct mdio_device *mdio_device;
+
+		if (!phylink_pcs)
+			continue;
+
+		mdio_device = lynx_get_mdio_device(phylink_pcs);
+		mdio_device_free(mdio_device);
+		lynx_pcs_destroy(phylink_pcs);
+	}
+
+	/* mdiobus_unregister and mdiobus_free handled by devres */
+}
+
+static const struct felix_info seville_info_vsc9953 = {
+	.target_io_res		= vsc9953_target_io_res,
+	.port_io_res		= vsc9953_port_io_res,
+	.regfields		= vsc9953_regfields,
+	.map			= vsc9953_regmap,
+	.ops			= &vsc9953_ops,
+	.stats_layout		= vsc9953_stats_layout,
+	.num_stats		= ARRAY_SIZE(vsc9953_stats_layout),
+	.vcap			= vsc9953_vcap_props,
+	.vcap_pol_base		= VSC9953_VCAP_POLICER_BASE,
+	.vcap_pol_max		= VSC9953_VCAP_POLICER_MAX,
+	.vcap_pol_base2		= VSC9953_VCAP_POLICER_BASE2,
+	.vcap_pol_max2		= VSC9953_VCAP_POLICER_MAX2,
+	.num_mact_rows		= 2048,
+	.num_ports		= VSC9953_NUM_PORTS,
+	.num_tx_queues		= OCELOT_NUM_TC,
+	.mdio_bus_alloc		= vsc9953_mdio_bus_alloc,
+	.mdio_bus_free		= vsc9953_mdio_bus_free,
+	.phylink_validate	= vsc9953_phylink_validate,
+	.port_modes		= vsc9953_port_modes,
+	.init_regmap		= ocelot_regmap_init,
+};
+
+static int seville_probe(struct platform_device *pdev)
+{
+	struct dsa_switch *ds;
+	struct ocelot *ocelot;
+	struct resource *res;
+	struct felix *felix;
+	int err;
+
+	felix = kzalloc(sizeof(struct felix), GFP_KERNEL);
+	if (!felix) {
+		err = -ENOMEM;
+		dev_err(&pdev->dev, "Failed to allocate driver memory\n");
+		goto err_alloc_felix;
+	}
+
+	platform_set_drvdata(pdev, felix);
+
+	ocelot = &felix->ocelot;
+	ocelot->dev = &pdev->dev;
+	ocelot->num_flooding_pgids = 1;
+	felix->info = &seville_info_vsc9953;
+
+	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+	if (!res) {
+		err = -EINVAL;
+		dev_err(&pdev->dev, "Invalid resource\n");
+		goto err_alloc_felix;
+	}
+	felix->switch_base = res->start;
+
+	ds = kzalloc(sizeof(struct dsa_switch), GFP_KERNEL);
+	if (!ds) {
+		err = -ENOMEM;
+		dev_err(&pdev->dev, "Failed to allocate DSA switch\n");
+		goto err_alloc_ds;
+	}
+
+	ds->dev = &pdev->dev;
+	ds->num_ports = felix->info->num_ports;
+	ds->ops = &felix_switch_ops;
+	ds->priv = ocelot;
+	felix->ds = ds;
+	felix->tag_proto = DSA_TAG_PROTO_SEVILLE;
+
+	err = dsa_register_switch(ds);
+	if (err) {
+		dev_err(&pdev->dev, "Failed to register DSA switch: %d\n", err);
+		goto err_register_ds;
+	}
+
+	return 0;
+
+err_register_ds:
+	kfree(ds);
+err_alloc_ds:
+err_alloc_felix:
+	kfree(felix);
+	return err;
+}
+
+static int seville_remove(struct platform_device *pdev)
+{
+	struct felix *felix = platform_get_drvdata(pdev);
+
+	if (!felix)
+		return 0;
+
+	dsa_unregister_switch(felix->ds);
+
+	kfree(felix->ds);
+	kfree(felix);
+
+	platform_set_drvdata(pdev, NULL);
+
+	return 0;
+}
+
+static void seville_shutdown(struct platform_device *pdev)
+{
+	struct felix *felix = platform_get_drvdata(pdev);
+
+	if (!felix)
+		return;
+
+	dsa_switch_shutdown(felix->ds);
+
+	platform_set_drvdata(pdev, NULL);
+}
+
+static const struct of_device_id seville_of_match[] = {
+	{ .compatible = "mscc,vsc9953-switch" },
+	{ },
+};
+MODULE_DEVICE_TABLE(of, seville_of_match);
+
+static struct platform_driver seville_vsc9953_driver = {
+	.probe		= seville_probe,
+	.remove		= seville_remove,
+	.shutdown	= seville_shutdown,
+	.driver = {
+		.name		= "mscc_seville",
+		.of_match_table	= of_match_ptr(seville_of_match),
+	},
+};
+module_platform_driver(seville_vsc9953_driver);
+
+MODULE_DESCRIPTION("Seville Switch driver");
+MODULE_LICENSE("GPL v2");

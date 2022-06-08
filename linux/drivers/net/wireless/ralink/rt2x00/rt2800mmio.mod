@@ -1,2 +1,2 @@
-_P6_NOP) \
-    $(wildcard include/config/MATOM) \
+e        *video_dev;
+	struct video_device        

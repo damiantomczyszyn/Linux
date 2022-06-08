@@ -1,11 +1,10 @@
-ires(torture_rwlock)
-{
-	unsigned long flags;
+debugfs_create_file(lockevent_names[LOCKEVENT_reset_cnts], 0200,
+				 d_counts, (void *)(long)LOCKEVENT_reset_cnts,
+				 &fops_lockevent))
+		goto fail_undo;
 
-	write_lock_irqsave(&torture_rwlock, flags);
-	cxt.cur_ops->flags = flags;
 	return 0;
-}
-
-static void torture_rwlock_write_unlock_irq(int tid __maybe_unused)
-__releases(torture_rwl
+fail_undo:
+	debugfs_remove_recursive(d_counts);
+out:
+	p

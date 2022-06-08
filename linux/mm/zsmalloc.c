@@ -1,1296 +1,1654 @@
-de/linux/objtool.h \
-    $(wildcard include/config/FRAME_POINTER) \
-  include/asm-generic/bug.h \
-    $(wildcard include/config/GENERIC_BUG_RELATIVE_POINTERS) \
-  include/linux/restart_block.h \
-  include/linux/time64.h \
-  include/linux/math64.h \
-    $(wildcard include/config/ARCH_SUPPORTS_INT128) \
-  include/vdso/math64.h \
-  include/vdso/time64.h \
-  include/uapi/linux/time.h \
-  include/uapi/linux/time_types.h \
-  include/linux/errno.h \
-  include/uapi/linux/errno.h \
-  arch/x86/include/asm/current.h \
-  arch/x86/include/asm/thread_info.h \
-    $(wildcard include/config/VM86) \
-    $(wildcard include/config/X86_IOPL_IOPERM) \
-    $(wildcard include/config/COMPAT) \
-    $(wildcard include/config/IA32_EMULATION) \
-  arch/x86/include/asm/page.h \
-  arch/x86/include/asm/page_types.h \
-    $(wildcard include/config/PHYSICAL_START) \
-    $(wildcard include/config/PHYSICAL_ALIGN) \
-    $(wildcard include/config/DYNAMIC_PHYSICAL_MASK) \
-  include/linux/mem_encrypt.h \
-    $(wildcard include/config/ARCH_HAS_MEM_ENCRYPT) \
-  arch/x86/include/asm/mem_encrypt.h \
-  include/linux/cc_platform.h \
-    $(wildcard include/config/ARCH_HAS_CC_PLATFORM) \
-  arch/x86/include/uapi/asm/bootparam.h \
-  include/linux/screen_info.h \
-  include/uapi/linux/screen_info.h \
-  include/linux/apm_bios.h \
-  include/uapi/linux/apm_bios.h \
-  include/uapi/linux/ioctl.h \
-  arch/x86/include/generated/uapi/asm/ioctl.h \
-  include/asm-generic/ioctl.h \
-  include/uapi/asm-generic/ioctl.h \
-  include/linux/edd.h \
-  include/uapi/linux/edd.h \
-  arch/x86/include/asm/ist.h \
-  arch/x86/include/uapi/asm/ist.h \
-  include/video/edid.h \
-    $(wildcard include/config/X86) \
-  include/uapi/video/edid.h \
-  arch/x86/include/asm/page_32_types.h \
-    $(wildcard include/config/HIGHMEM4G) \
-    $(wildcard include/config/HIGHMEM64G) \
-    $(wildcard include/config/PAGE_OFFSET) \
-  arch/x86/include/asm/page_32.h \
-    $(wildcard include/config/DEBUG_VIRTUAL) \
-    $(wildcard include/config/FLATMEM) \
-  include/linux/string.h \
-    $(wildcard include/config/BINARY_PRINTF) \
-    $(wildcard include/config/FORTIFY_SOURCE) \
-  include/uapi/linux/string.h \
-  arch/x86/include/asm/string.h \
-  arch/x86/include/asm/string_32.h \
-  include/linux/fortify-string.h \
-  include/linux/range.h \
-  include/asm-generic/memory_model.h \
-    $(wildcard include/config/SPARSEMEM_VMEMMAP) \
-    $(wildcard include/config/SPARSEMEM) \
-  include/linux/pfn.h \
-  include/asm-generic/getorder.h \
-  arch/x86/include/asm/cpufeature.h \
-    $(wildcard include/config/X86_FEATURE_NAMES) \
-  arch/x86/include/asm/processor.h \
-    $(wildcard include/config/X86_VMX_FEATURE_NAMES) \
-    $(wildcard include/config/STACKPROTECTOR) \
-    $(wildcard include/config/X86_DEBUGCTLMSR) \
-    $(wildcard include/config/CPU_SUP_AMD) \
-    $(wildcard include/config/XEN) \
-  arch/x86/include/asm/processor-flags.h \
-  arch/x86/include/uapi/asm/processor-flags.h \
-  arch/x86/include/asm/math_emu.h \
-  arch/x86/include/asm/ptrace.h \
-    $(wildcard include/config/PARAVIRT) \
-  arch/x86/include/asm/segment.h \
-    $(wildcard include/config/XEN_PV) \
-  arch/x86/include/uapi/asm/ptrace.h \
-  arch/x86/include/uapi/asm/ptrace-abi.h \
-  arch/x86/include/asm/paravirt_types.h \
-    $(wildcard include/config/PGTABLE_LEVELS) \
-    $(wildcard include/config/PARAVIRT_DEBUG) \
-  arch/x86/include/asm/desc_defs.h \
-  arch/x86/include/asm/pgtable_types.h \
-    $(wildcard include/config/MEM_SOFT_DIRTY) \
-    $(wildcard include/config/HAVE_ARCH_USERFAULTFD_WP) \
-    $(wildcard include/config/PROC_FS) \
-  arch/x86/include/asm/pgtable_32_types.h \
-  arch/x86/include/asm/pgtable-3level_types.h \
-  include/asm-generic/pgtable-nop4d.h \
-  include/asm-generic/pgtable-nopud.h \
-  arch/x86/include/asm/nospec-branch.h \
-  include/linux/static_key.h \
-  include/linux/jump_label.h \
-    $(wildcard include/config/JUMP_LABEL) \
-    $(wildcard include/config/HAVE_ARCH_JUMP_LABEL_RELATIVE) \
-  arch/x86/include/asm/jump_label.h \
-  arch/x86/include/asm/msr-index.h \
-  arch/x86/include/asm/unwind_hints.h \
-  arch/x86/include/asm/orc_types.h \
-  arch/x86/include/asm/GEN-for-each-reg.h \
-  arch/x86/include/asm/proto.h \
-  arch/x86/include/uapi/asm/ldt.h \
-  arch/x86/include/uapi/asm/sigcontext.h \
-  arch/x86/include/asm/msr.h \
-    $(wildcard include/config/TRACEPOINTS) \
-  arch/x86/include/asm/msr-index.h \
-  arch/x86/include/asm/cpumask.h \
-  include/linux/cpumask.h \
-    $(wildcard include/config/CPUMASK_OFFSTACK) \
-    $(wildcard include/config/HOTPLUG_CPU) \
-    $(wildcard include/config/DEBUG_PER_CPU_MAPS) \
-  include/linux/bitmap.h \
-  include/linux/find.h \
-  include/linux/atomic.h \
-  arch/x86/include/asm/atomic.h \
-  arch/x86/include/asm/cmpxchg.h \
-  arch/x86/include/asm/cmpxchg_32.h \
-  arch/x86/include/asm/atomic64_32.h \
-  include/linux/atomic/atomic-arch-fallback.h \
-    $(wildcard include/config/GENERIC_ATOMIC64) \
-  include/linux/atomic/atomic-long.h \
-  include/linux/atomic/atomic-instrumented.h \
-  arch/x86/include/uapi/asm/msr.h \
-  include/linux/tracepoint-defs.h \
-  arch/x86/include/asm/special_insns.h \
-  include/linux/irqflags.h \
-    $(wildcard include/config/TRACE_IRQFLAGS) \
-    $(wildcard include/config/IRQSOFF_TRACER) \
-    $(wildcard include/config/PREEMPT_TRACER) \
-    $(wildcard include/config/DEBUG_IRQFLAGS) \
-    $(wildcard include/config/TRACE_IRQFLAGS_SUPPORT) \
-  arch/x86/include/asm/irqflags.h \
-  arch/x86/include/asm/fpu/types.h \
-  arch/x86/include/asm/vmxfeatures.h \
-  arch/x86/include/asm/vdso/processor.h \
-  include/linux/personality.h \
-  include/uapi/linux/personality.h \
-  include/linux/bottom_half.h \
-  include/linux/lockdep.h \
-    $(wildcard include/config/DEBUG_LOCKING_API_SELFTESTS) \
-  include/linux/smp.h \
-    $(wildcard include/config/UP_LATE_INIT) \
-  include/linux/smp_types.h \
-  include/linux/llist.h \
-    $(wildcard include/config/ARCH_HAVE_NMI_SAFE_CMPXCHG) \
-  arch/x86/include/asm/smp.h \
-    $(wildcard include/config/X86_LOCAL_APIC) \
-    $(wildcard include/config/DEBUG_NMI_SELFTEST) \
-  arch/x86/include/generated/asm/mmiowb.h \
-  include/asm-generic/mmiowb.h \
-    $(wildcard include/config/MMIOWB) \
-  include/linux/spinlock_types.h \
-  include/linux/rwlock_types.h \
-  arch/x86/include/asm/spinlock.h \
-  arch/x86/include/asm/paravirt.h \
-    $(wildcard include/config/PARAVIRT_SPINLOCKS) \
-  arch/x86/include/asm/frame.h \
-  arch/x86/include/asm/qspinlock.h \
-  include/asm-generic/qspinlock.h \
-  arch/x86/include/asm/qrwlock.h \
-  include/asm-generic/qrwlock.h \
-  include/linux/rwlock.h \
-    $(wildcard include/config/PREEMPT) \
-  include/linux/spinlock_api_smp.h \
-    $(wildcard include/config/INLINE_SPIN_LOCK) \
-    $(wildcard include/config/INLINE_SPIN_LOCK_BH) \
-    $(wildcard include/config/INLINE_SPIN_LOCK_IRQ) \
-    $(wildcard include/config/INLINE_SPIN_LOCK_IRQSAVE) \
-    $(wildcard include/config/INLINE_SPIN_TRYLOCK) \
-    $(wildcard include/config/INLINE_SPIN_TRYLOCK_BH) \
-    $(wildcard include/config/UNINLINE_SPIN_UNLOCK) \
-    $(wildcard include/config/INLINE_SPIN_UNLOCK_BH) \
-    $(wildcard include/config/INLINE_SPIN_UNLOCK_IRQ) \
-    $(wildcard include/config/INLINE_SPIN_UNLOCK_IRQRESTORE) \
-    $(wildcard include/config/GENERIC_LOCKBREAK) \
-  include/linux/rwlock_api_smp.h \
-    $(wildcard include/config/INLINE_READ_LOCK) \
-    $(wildcard include/config/INLINE_WRITE_LOCK) \
-    $(wildcard include/config/INLINE_READ_LOCK_BH) \
-    $(wildcard include/config/INLINE_WRITE_LOCK_BH) \
-    $(wildcard include/config/INLINE_READ_LOCK_IRQ) \
-    $(wildcard include/config/INLINE_WRITE_LOCK_IRQ) \
-    $(wildcard include/config/INLINE_READ_LOCK_IRQSAVE) \
-    $(wildcard include/config/INLINE_WRITE_LOCK_IRQSAVE) \
-    $(wildcard include/config/INLINE_READ_TRYLOCK) \
-    $(wildcard include/config/INLINE_WRITE_TRYLOCK) \
-    $(wildcard include/config/INLINE_READ_UNLOCK) \
-    $(wildcard include/config/INLINE_WRITE_UNLOCK) \
-    $(wildcard include/config/INLINE_READ_UNLOCK_BH) \
-    $(wildcard include/config/INLINE_WRITE_UNLOCK_BH) \
-    $(wildcard include/config/INLINE_READ_UNLOCK_IRQ) \
-    $(wildcard include/config/INLINE_WRITE_UNLOCK_IRQ) \
-    $(wildcard include/config/INLINE_READ_UNLOCK_IRQRESTORE) \
-    $(wil/* SPDX-License-Identifier: GPL-2.0 */
-/*
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * Authors: Waiman Long <waiman.long@hpe.com>
- */
-
-/*
- * Collect locking event counts
- */
-#include <linux/debugfs.h>
-#include <linux/sched.h>
-#include <linux/sched/clock.h>
-#include <linux/fs.h>
-
-#include "lock_events.h"
-
-#undef  LOCK_EVENT
-#define LOCK_EVENT(name)	[LOCKEVENT_ ## name] = #name,
-
-#define LOCK_EVENTS_DIR		"lock_event_counts"
-
-/*
- * When CONFIG_LOCK_EVENT_COUNTS is enabled, event counts of different
- * types of locks will be reported under the <debugfs>/lock_event_counts/
- * directory. See lock_events_list.h for the list of available locking
- * events.
- *
- * Writing to the special ".reset_counts" file will reset all the above
- * locking event counts. This is a very slow operation and so should not
- * be done frequently.
- *
- * These event counts are implemented as per-cpu variables which are
- * summed and computed whenever the corresponding debugfs files are read. This
- * minimizes added overhead making the counts usable even in a production
- * environment.
- */
-static const char * const lockevent_names[lockevent_num + 1] = {
-
-#include "lock_events_list.h"
-
-	[LOCKEVENT_reset_cnts] = ".reset_counts",
-};
-
-/*
- * Per-cpu counts
- */
-DEFINE_PER_CPU(unsigned long, lockevents[lockevent_num]);
-
-/*
- * The lockevent_read() function can be overridden.
- */
-ssize_t __weak lockevent_read(struct file *file, char __user *user_buf,
-			      size_t count, loff_t *ppos)
+onst struct v4l2_frequency *f)
 {
-	char buf[64];
-	int cpu, id, len;
-	u64 sum = 0;
+	struct cx23885_dev *dev = video_drvdata(file);
+	int ret;
 
-	/*
-	 * Get the counter ID stored in file->f_inode->i_private
-	 */
-	id = (long)file_inode(file)->i_private;
-
-	if (id >= lockevent_num)
-		return -EBADF;
-
-	for_each_possible_cpu(cpu)
-		sum += per_cpu(lockevents[id], cpu);
-	len = snprintf(buf, sizeof(buf) - 1, "%llu\n", sum);
-
-	return simple_read_from_buffer(user_buf, count, ppos, buf, len);
-}
-
-/*
- * Function to handle write request
- *
- * When idx = reset_cnts, reset all the counts.
- */
-static ssize_t lockevent_write(struct file *file, const char __user *user_buf,
-			   size_t count, loff_t *ppos)
-{
-	int cpu;
-
-	/*
-	 * Get the counter ID stored in file->f_inode->i_private
-	 */
-	if ((long)file_inode(file)->i_private != LOCKEVENT_reset_cnts)
-		return count;
-
-	for_each_possible_cpu(cpu) {
-		int i;
-		unsigned long *ptr = per_cpu_ptr(lockevents, cpu);
-
-		for (i = 0 ; i < lockevent_num; i++)
-			WRITE_ONCE(ptr[i], 0);
+	switch (dev->board) {
+	case CX23885_BOARD_HAUPPAUGE_HVR1255:
+	case CX23885_BOARD_HAUPPAUGE_HVR1255_22111:
+	case CX23885_BOARD_HAUPPAUGE_HVR1265_K4:
+	case CX23885_BOARD_HAUPPAUGE_HVR1850:
+	case CX23885_BOARD_HAUPPAUGE_HVR5525:
+	case CX23885_BOARD_HAUPPAUGE_QUADHD_DVB:
+	case CX23885_BOARD_HAUPPAUGE_QUADHD_ATSC:
+		ret = cx23885_set_freq_via_ops(dev, f);
+		break;
+	default:
+		ret = cx23885_set_freq(dev, f);
 	}
-	return count;
-}
-
-/*
- * Debugfs data structures
- */
-static const struct file_operations fops_lockevent = {
-	.read = lockevent_read,
-	.write = lockevent_write,
-	.llseek = default_llseek,
-};
-
-#ifdef CONFIG_PARAVIRT_SPINLOCKS
-#include <asm/paravirt.h>
-
-static bool __init skip_lockevent(const char *name)
-{
-	static int pv_on __initdata = -1;
-
-	if (pv_on < 0)
-		pv_on = !pv_is_native_spin_unlock();
-	/*
-	 * Skip PV qspinlock events on bare metal.
-	 */
-	if (!pv_on && !memcmp(name, "pv_", 3))
-		return true;
-	return false;
-}
-#else
-static inline bool skip_lockevent(const char *name)
-{
-	return false;
-}
-#endif
-
-/*
- * Initialize debugfs for the locking event counts.
- */
-static int __init init_lockevent_counts(void)
-{
-	struct dentry *d_counts = debugfs_create_dir(LOCK_EVENTS_DIR, NULL);
-	int i;
-
-	if (!d_counts)
-		goto out;
-
-	/*
-	 * Create the debugfs files
-	 *
-	 * As reading from and writing to the stat files can be slow, only
-	 * root is allowed to do the read/write to limit impact to system
-	 * performance.
-	 */
-	for (i = 0; i < lockevent_num; i++) {
-		if (skip_lockevent(lockevent_names[i]))
-			continue;
-		if (!debugfs_create_file(lockevent_names[i], 0400, d_counts,
-					 (void *)(long)i, &fops_lockevent))
-			goto fail_undo;
-	}
-
-	if (!debugfs_create_file(lockevent_names[LOCKEVENT_reset_cnts], 0200,
-				 d_counts, (void *)(long)LOCKEVENT_reset_cnts,
-				 &fops_lockevent))
-		goto fail_undo;
-
-	return 0;
-fail_undo:
-	debugfs_remove_recursive(d_counts);
-out:
-	pr_warn("Could not create '%s' debugfs entries\n", LOCK_EVENTS_DIR);
-	return -ENOMEM;
-}
-fs_initcall(init_lockevent_counts);
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     /* SPDX-License-Identifier: GPL-2.0 */
-/*
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * Authors: Waiman Long <longman@redhat.com>
- */
-
-#ifndef __LOCKING_LOCK_EVENTS_H
-#define __LOCKING_LOCK_EVENTS_H
-
-enum lock_events {
-
-#include "lock_events_list.h"
-
-	lockevent_num,	/* Total number of lock event counts */
-	LOCKEVENT_reset_cnts = lockevent_num,
-};
-
-#ifdef CONFIG_LOCK_EVENT_COUNTS
-/*
- * Per-cpu counters
- */
-DECLARE_PER_CPU(unsigned long, lockevents[lockevent_num]);
-
-/*
- * Increment the statistical counters. use raw_cpu_inc() because of lower
- * overhead and we don't care if we loose the occasional update.
- */
-static inline void __lockevent_inc(enum lock_events event, bool cond)
-{
-	if (cond)
-		raw_cpu_inc(lockevents[event]);
-}
-
-#define lockevent_inc(ev)	  __lockevent_inc(LOCKEVENT_ ##ev, true)
-#define lockevent_cond_inc(ev, c) __lockevent_inc(LOCKEVENT_ ##ev, c)
-
-static inline void __lockevent_add(enum lock_events event, int inc)
-{
-	raw_cpu_add(lockevents[event], inc);
-}
-
-#define lockevent_add(ev, c)	__lockevent_add(LOCKEVENT_ ##ev, c)
-
-#else  /* CONFIG_LOCK_EVENT_COUNTS */
-
-#define lockevent_inc(ev)
-#define lockevent_add(ev, c)
-#define lockevent_cond_inc(ev, c)
-
-#endif /* CONFIG_LOCK_EVENT_COUNTS */
-#endif /* __LOCKING_LOCK_EVENTS_H */
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             /* SPDX-License-Identifier: GPL-2.0 */
-/*
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * Authors: Waiman Long <longman@redhat.com>
- */
-
-#ifndef __LOCKING_LOCK_EVENTS_H
-#define __LOCKING_LOCK_EVENTS_H
-
-enum lock_events {
-
-#include "lock_events_list.h"
-
-	lockevent_num,	/* Total number of lock event counts */
-	LOCKEVENT_reset_cnts = lockevent_num,
-};
-
-#ifdef CONFIG_LOCK_EVENT_COUNTS
-/*
- * Per-cpu counters
- */
-DECLARE_PER_CPU(unsigned long, lockevents[lockevent_num]);
-
-/*
- * Increment the statistical counters. use raw_cpu_inc() because of lower
- * overhead and we don't care if we loose the occasional update.
- */
-static inline void __lockevent_inc(enum lock_events event, bool cond)
-{
-	if (cond)
-		raw_cpu_inc(lockevents[event]);
-}
-
-#define lockevent_inc(ev)	  __lockevent_inc(LOCKEVENT_ ##ev, true)
-#define lockevent_cond_inc(ev, c) __lockevent_inc(LOCKEVENT_ ##ev, c)
-
-static inline void __lockevent_add(enum lock_events event, int inc)
-{
-	raw_cpu_add(lockevents[event], inc);
-}
-
-#define lockevent_add(ev, c)	__lockevent_add(LOCKEVENT_ ##ev, c)
-
-#else  /* CONFIG_LOCK_EVENT_COUNTS */
-
-#define lockevent_inc(ev)
-#define lockevent_add(ev, c)
-#define lockevent_cond_inc(ev, c)
-
-#endif /* CONFIG_LOCK_EVENT_COUNTS */
-#endif /* __LOCKING_LOCK_EVENTS_H */
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             /* SPDX-License-Identifier: GPL-2.0 */
-/*
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * Authors: Waiman Long <longman@redhat.com>
- */
-
-#ifndef LOCK_EVENT
-#define LOCK_EVENT(name)	LOCKEVENT_ ## name,
-#endif
-
-#ifdef CONFIG_QUEUED_SPINLOCKS
-#ifdef CONFIG_PARAVIRT_SPINLOCKS
-/*
- * Locking events for PV qspinlock.
- */
-LOCK_EVENT(pv_hash_hops)	/* Average # of hops per hashing operation */
-LOCK_EVENT(pv_kick_unlock)	/* # of vCPU kicks issued at unlock time   */
-LOCK_EVENT(pv_kick_wake)	/* # of vCPU kicks for pv_latency_wake	   */
-LOCK_EVENT(pv_latency_kick)	/* Average latency (ns) of vCPU kick	   */
-LOCK_EVENT(pv_latency_wake)	/* Average latency (ns) of kick-to-wakeup  */
-LOCK_EVENT(pv_lock_stealing)	/* # of lock stealing operations	   */
-LOCK_EVENT(pv_spurious_wakeup)	/* # of spurious wakeups in non-head vCPUs */
-LOCK_EVENT(pv_wait_again)	/* # of wait's after queue head vCPU kick  */
-LOCK_EVENT(pv_wait_early)	/* # of early vCPU wait's		   */
-LOCK_EVENT(pv_wait_head)	/* # of vCPU wait's at the queue head	   */
-LOCK_EVENT(pv_wait_node)	/* # of vCPU wait's at non-head queue node */
-#endif /* CONFIG_PARAVIRT_SPINLOCKS */
-
-/*
- * Locking events for qspinlock
- *
- * Subtracting lock_use_node[234] from lock_slowpath will give you
- * lock_use_node1.
- */
-LOCK_EVENT(lock_pending)	/* # of locking ops via pending code	     */
-LOCK_EVENT(lock_slowpath)	/* # of locking ops via MCS lock queue	     */
-LOCK_EVENT(lock_use_node2)	/* # of locking ops that use 2nd percpu node */
-LOCK_EVENT(lock_use_node3)	/* # of locking ops that use 3rd percpu node */
-LOCK_EVENT(lock_use_node4)	/* # of locking ops that use 4th percpu node */
-LOCK_EVENT(lock_no_node)	/* # of locking ops w/o using percpu node    */
-#endif /* CONFIG_QUEUED_SPINLOCKS */
-
-/*
- * Locking events for rwsem
- */
-LOCK_EVENT(rwsem_sleep_reader)	/* # of reader sleeps			*/
-LOCK_EVENT(rwsem_sleep_writer)	/* # of writer sleeps			*/
-LOCK_EVENT(rwsem_wake_reader)	/* # of reader wakeups			*/
-LOCK_EVENT(rwsem_wake_writer)	/* # of writer wakeups			*/
-LOCK_EVENT(rwsem_opt_lock)	/* # of opt-acquired write locks	*/
-LOCK_EVENT(rwsem_opt_fail)	/* # of failed optspins			*/
-LOCK_EVENT(rwsem_opt_nospin)	/* # of disabled optspins		*/
-LOCK_EVENT(rwsem_rlock)		/* # of read locks acquired		*/
-LOCK_EVENT(rwsem_rlock_steal)	/* # of read locks by lock stealing	*/
-LOCK_EVENT(rwsem_rlock_fast)	/* # of fast read locks acquired	*/
-LOCK_EVENT(rwsem_rlock_fail)	/* # of failed read lock acquisitions	*/
-LOCK_EVENT(rwsem_rlock_handoff)	/* # of read lock handoffs		*/
-LOCK_EVENT(rwsem_wlock)		/* # of write locks acquired		*/
-LOCK_EVENT(rwsem_wlock_fail)	/* # of failed write lock acquisitions	*/
-LOCK_EVENT(rwsem_wlock_handoff)	/* # of write lock handoffs		*/
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         /* SPDX-License-Identifier: GPL-2.0 */
-/*
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * Authors: Waiman Long <longman@redhat.com>
- */
-
-#ifndef LOCK_EVENT
-#define LOCK_EVENT(name)	LOCKEVENT_ ## name,
-#endif
-
-#ifdef CONFIG_QUEUED_SPINLOCKS
-#ifdef CONFIG_PARAVIRT_SPINLOCKS
-/*
- * Locking events for PV qspinlock.
- */
-LOCK_EVENT(pv_hash_hops)	/* Average # of hops per hashing operation */
-LOCK_EVENT(pv_kick_unlock)	/* # of vCPU kicks issued at unlock time   */
-LOCK_EVENT(pv_kick_wake)	/* # of vCPU kicks for pv_latency_wake	   */
-LOCK_EVENT(pv_latency_kick)	/* Average latency (ns) of vCPU kick	   */
-LOCK_EVENT(pv_latency_wake)	/* Average latency (ns) of kick-to-wakeup  */
-LOCK_EVENT(pv_lock_stealing)	/* # of lock stealing operations	   */
-LOCK_EVENT(pv_spurious_wakeup)	/* # of spurious wakeups in non-head vCPUs */
-LOCK_EVENT(pv_wait_again)	/* # of wait's after queue head vCPU kick  */
-LOCK_EVENT(pv_wait_early)	/* # of early vCPU wait's		   */
-LOCK_EVENT(pv_wait_head)	/* # of vCPU wait's at the queue head	   */
-LOCK_EVENT(pv_wait_node)	/* # of vCPU wait's at non-head queue node */
-#endif /* CONFIG_PARAVIRT_SPINLOCKS */
-
-/*
- * Locking events for qspinlock
- *
- * Subtracting lock_use_node[234] from lock_slowpath will give you
- * lock_use_node1.
- */
-LOCK_EVENT(lock_pending)	/* # of locking ops via pending code	     */
-LOCK_EVENT(lock_slowpath)	/* # of locking ops via MCS lock queue	     */
-LOCK_EVENT(lock_use_node2)	/* # of locking ops that use 2nd percpu node */
-LOCK_EVENT(lock_use_node3)	/* # of locking ops that use 3rd percpu node */
-LOCK_EVENT(lock_use_node4)	/* # of locking ops that use 4th percpu node */
-LOCK_EVENT(lock_no_node)	/* # of locking ops w/o using percpu node    */
-#endif /* CONFIG_QUEUED_SPINLOCKS */
-
-/*
- * Locking events for rwsem
- */
-LOCK_EVENT(rwsem_sleep_reader)	/* # of reader sleeps			*/
-LOCK_EVENT(rwsem_sleep_writer)	/* # of writer sleeps			*/
-LOCK_EVENT(rwsem_wake_reader)	/* # of reader wakeups			*/
-LOCK_EVENT(rwsem_wake_writer)	/* # of writer wakeups			*/
-LOCK_EVENT(rwsem_opt_lock)	/* # of opt-acquired write locks	*/
-LOCK_EVENT(rwsem_opt_fail)	/* # of failed optspins			*/
-LOCK_EVENT(rwsem_opt_nospin)	/* # of disabled optspins		*/
-LOCK_EVENT(rwsem_rlock)		/* # of read locks acquired		*/
-LOCK_EVENT(rwsem_rlock_steal)	/* # of read locks by lock stealing	*/
-LOCK_EVENT(rwsem_rlock_fast)	/* # of fast read locks acquired	*/
-LOCK_EVENT(rwsem_rlock_fail)	/* # of failed read lock acquisitions	*/
-LOCK_EVENT(rwsem_rlock_handoff)	/* # of read lock handoffs		*/
-LOCK_EVENT(rwsem_wlock)		/* # of write locks acquired		*/
-LOCK_EVENT(rwsem_wlock_fail)	/* # of failed write lock acquisitions	*/
-LOCK_EVENT(rwsem_wlock_handoff)	/* # of write lock handoffs		*/
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         // SPDX-License-Identifier: GPL-2.0-only
-/*
- * kernel/lockdep.c
- *
- * Runtime locking correctness validator
- *
- * Started by Ingo Molnar:
- *
- *  Copyright (C) 2006,2007 Red Hat, Inc., Ingo Molnar <mingo@redhat.com>
- *  Copyright (C) 2007 Red Hat, Inc., Peter Zijlstra
- *
- * this code maps all the lock dependencies as they occur in a live kernel
- * and will warn about the following classes of locking bugs:
- *
- * - lock inversion scenarios
- * - circular lock dependencies
- * - hardirq/softirq safe/unsafe locking bugs
- *
- * Bugs are reported even if the current locking scenario does not cause
- * any deadlock at this point.
- *
- * I.e. if anytime in the past two locks were taken in a different order,
- * even if it happened for another task, even if those were different
- * locks (but of the same class as this lock), this code will detect it.
- *
- * Thanks to Arjan van de Ven for coming up with the initial idea of
- * mapping lock dependencies runtime.
- */
-#define DISABLE_BRANCH_PROFILING
-#include <linux/mutex.h>
-#include <linux/sched.h>
-#include <linux/sched/clock.h>
-#include <linux/sched/task.h>
-#include <linux/sched/mm.h>
-#include <linux/delay.h>
-#include <linux/module.h>
-#include <linux/proc_fs.h>
-#include <linux/seq_file.h>
-#include <linux/spinlock.h>
-#include <linux/kallsyms.h>
-#include <linux/interrupt.h>
-#include <linux/stacktrace.h>
-#include <linux/debug_locks.h>
-#include <linux/irqflags.h>
-#include <linux/utsname.h>
-#include <linux/hash.h>
-#include <linux/ftrace.h>
-#include <linux/stringify.h>
-#include <linux/bitmap.h>
-#include <linux/bitops.h>
-#include <linux/gfp.h>
-#include <linux/random.h>
-#include <linux/jhash.h>
-#include <linux/nmi.h>
-#include <linux/rcupdate.h>
-#include <linux/kprobes.h>
-#include <linux/lockdep.h>
-
-#include <asm/sections.h>
-
-#include "lockdep_internals.h"
-
-#define CREATE_TRACE_POINTS
-#include <trace/events/lock.h>
-
-#ifdef CONFIG_PROVE_LOCKING
-int prove_locking = 1;
-module_param(prove_locking, int, 0644);
-#else
-#define prove_locking 0
-#endif
-
-#ifdef CONFIG_LOCK_STAT
-int lock_stat = 1;
-module_param(lock_stat, int, 0644);
-#else
-#define lock_stat 0
-#endif
-
-DEFINE_PER_CPU(unsigned int, lockdep_recursion);
-EXPORT_PER_CPU_SYMBOL_GPL(lockdep_recursion);
-
-static __always_inline bool lockdep_enabled(void)
-{
-	if (!debug_locks)
-		return false;
-
-	if (this_cpu_read(lockdep_recursion))
-		return false;
-
-	if (current->lockdep_recursion)
-		return false;
-
-	return true;
-}
-
-/*
- * lockdep_lock: protects the lockdep graph, the hashes and the
- *               class/list/hash allocators.
- *
- * This is one of the rare exceptions where it's justified
- * to use a raw spinlock - we really dont want the spinlock
- * code to recurse back into the lockdep code...
- */
-static arch_spinlock_t __lock = (arch_spinlock_t)__ARCH_SPIN_LOCK_UNLOCKED;
-static struct task_struct *__owner;
-
-static inline void lockdep_lock(void)
-{
-	DEBUG_LOCKS_WARN_ON(!irqs_disabled());
-
-	__this_cpu_inc(lockdep_recursion);
-	arch_spin_lock(&__lock);
-	__owner = current;
-}
-
-static inline void lockdep_unlock(void)
-{
-	DEBUG_LOCKS_WARN_ON(!irqs_disabled());
-
-	if (debug_locks && DEBUG_LOCKS_WARN_ON(__owner != current))
-		return;
-
-	__owner = NULL;
-	arch_spin_unlock(&__lock);
-	__this_cpu_dec(lockdep_recursion);
-}
-
-static inline bool lockdep_assert_locked(void)
-{
-	return DEBUG_LOCKS_WARN_ON(__owner != current);
-}
-
-static struct task_struct *lockdep_selftest_task_struct;
-
-
-static int graph_lock(void)
-{
-	lockdep_lock();
-	/*
-	 * Make sure that if another CPU detected a bug while
-	 * walking the graph we dont change it (while the other
-	 * CPU is busy printing out stuff with the graph lock
-	 * dropped already)
-	 */
-	if (!debug_locks) {
-		lockdep_unlock();
-		return 0;
-	}
-	return 1;
-}
-
-static inline void graph_unlock(void)
-{
-	lockdep_unlock();
-}
-
-/*
- * Turn lock debugging off and return with 0 if it was off already,
- * and also release the graph lock:
- */
-static inline int debug_locks_off_graph_unlock(void)
-{
-	int ret = debug_locks_off();
-
-	lockdep_unlock();
 
 	return ret;
 }
 
-unsigned long nr_list_entries;
-static struct lock_list list_entries[MAX_LOCKDEP_ENTRIES];
-static DECLARE_BITMAP(list_entries_in_use, MAX_LOCKDEP_ENTRIES);
+static int vidioc_s_frequency(struct file *file, void *priv,
+	const struct v4l2_frequency *f)
+{
+	return cx23885_set_frequency(file, priv, f);
+}
+
+/* ----------------------------------------------------------- */
+
+int cx23885_video_irq(struct cx23885_dev *dev, u32 status)
+{
+	u32 mask, count;
+	int handled = 0;
+
+	mask   = cx_read(VID_A_INT_MSK);
+	if (0 == (status & mask))
+		return handled;
+
+	cx_write(VID_A_INT_STAT, status);
+
+	/* risc op code error, fifo overflow or line sync detection error */
+	if ((status & VID_BC_MSK_OPC_ERR) ||
+		(status & VID_BC_MSK_SYNC) ||
+		(status & VID_BC_MSK_OF)) {
+
+		if (status & VID_BC_MSK_OPC_ERR) {
+			dprintk(7, " (VID_BC_MSK_OPC_ERR 0x%08x)\n",
+				VID_BC_MSK_OPC_ERR);
+			pr_warn("%s: video risc op code error\n",
+				dev->name);
+			cx23885_sram_channel_dump(dev,
+				&dev->sram_channels[SRAM_CH01]);
+		}
+
+		if (status & VID_BC_MSK_SYNC)
+			dprintk(7, " (VID_BC_MSK_SYNC 0x%08x) video lines miss-match\n",
+				VID_BC_MSK_SYNC);
+
+		if (status & VID_BC_MSK_OF)
+			dprintk(7, " (VID_BC_MSK_OF 0x%08x) fifo overflow\n",
+				VID_BC_MSK_OF);
+
+	}
+
+	/* Video */
+	if (status & VID_BC_MSK_RISCI1) {
+		spin_lock(&dev->slock);
+		count = cx_read(VID_A_GPCNT);
+		cx23885_video_wakeup(dev, &dev->vidq, count);
+		spin_unlock(&dev->slock);
+		handled++;
+	}
+
+	/* Allow the VBI framework to process it's payload */
+	handled += cx23885_vbi_irq(dev, status);
+
+	return handled;
+}
+
+/* ----------------------------------------------------------- */
+/* exported stuff                                              */
+
+static const struct v4l2_file_operations video_fops = {
+	.owner	       = THIS_MODULE,
+	.open           = v4l2_fh_open,
+	.release        = vb2_fop_release,
+	.read           = vb2_fop_read,
+	.poll		= vb2_fop_poll,
+	.unlocked_ioctl = video_ioctl2,
+	.mmap           = vb2_fop_mmap,
+};
+
+static const struct v4l2_ioctl_ops video_ioctl_ops = {
+	.vidioc_querycap      = vidioc_querycap,
+	.vidioc_enum_fmt_vid_cap  = vidioc_enum_fmt_vid_cap,
+	.vidioc_g_fmt_vid_cap     = vidioc_g_fmt_vid_cap,
+	.vidioc_try_fmt_vid_cap   = vidioc_try_fmt_vid_cap,
+	.vidioc_s_fmt_vid_cap     = vidioc_s_fmt_vid_cap,
+	.vidioc_g_fmt_vbi_cap     = cx23885_vbi_fmt,
+	.vidioc_try_fmt_vbi_cap   = cx23885_vbi_fmt,
+	.vidioc_s_fmt_vbi_cap     = cx23885_vbi_fmt,
+	.vidioc_reqbufs       = vb2_ioctl_reqbufs,
+	.vidioc_prepare_buf   = vb2_ioctl_prepare_buf,
+	.vidioc_querybuf      = vb2_ioctl_querybuf,
+	.vidioc_qbuf          = vb2_ioctl_qbuf,
+	.vidioc_dqbuf         = vb2_ioctl_dqbuf,
+	.vidioc_streamon      = vb2_ioctl_streamon,
+	.vidioc_streamoff     = vb2_ioctl_streamoff,
+	.vidioc_g_pixelaspect = vidioc_g_pixelaspect,
+	.vidioc_g_selection   = vidioc_g_selection,
+	.vidioc_s_std         = vidioc_s_std,
+	.vidioc_g_std         = vidioc_g_std,
+	.vidioc_enum_input    = vidioc_enum_input,
+	.vidioc_g_input       = vidioc_g_input,
+	.vidioc_s_input       = vidioc_s_input,
+	.vidioc_log_status    = vidioc_log_status,
+	.vidioc_g_tuner       = vidioc_g_tuner,
+	.vidioc_s_tuner       = vidioc_s_tuner,
+	.vidioc_g_frequency   = vidioc_g_frequency,
+	.vidioc_s_frequency   = vidioc_s_frequency,
+#ifdef CONFIG_VIDEO_ADV_DEBUG
+	.vidioc_g_chip_info   = cx23885_g_chip_info,
+	.vidioc_g_register    = cx23885_g_register,
+	.vidioc_s_register    = cx23885_s_register,
+#endif
+	.vidioc_enumaudio     = vidioc_enum_audinput,
+	.vidioc_g_audio       = vidioc_g_audinput,
+	.vidioc_s_audio       = vidioc_s_audinput,
+	.vidioc_subscribe_event = v4l2_ctrl_subscribe_event,
+	.vidioc_unsubscribe_event = v4l2_event_unsubscribe,
+};
+
+static struct video_device cx23885_vbi_template;
+static struct video_device cx23885_video_template = {
+	.name                 = "cx23885-video",
+	.fops                 = &video_fops,
+	.ioctl_ops	      = &video_ioctl_ops,
+	.tvnorms              = CX23885_NORMS,
+};
+
+void cx23885_video_unregister(struct cx23885_dev *dev)
+{
+	dprintk(1, "%s()\n", __func__);
+	cx23885_irq_remove(dev, 0x01);
+
+	if (dev->vbi_dev) {
+		if (video_is_registered(dev->vbi_dev))
+			video_unregister_device(dev->vbi_dev);
+		else
+			video_device_release(dev->vbi_dev);
+		dev->vbi_dev = NULL;
+	}
+	if (dev->video_dev) {
+		if (video_is_registered(dev->video_dev))
+			video_unregister_device(dev->video_dev);
+		else
+			video_device_release(dev->video_dev);
+		dev->video_dev = NULL;
+	}
+
+	if (dev->audio_dev)
+		cx23885_audio_unregister(dev);
+}
+
+int cx23885_video_register(struct cx23885_dev *dev)
+{
+	struct vb2_queue *q;
+	int err;
+
+	dprintk(1, "%s()\n", __func__);
+
+	/* Initialize VBI template */
+	cx23885_vbi_template = cx23885_video_template;
+	strscpy(cx23885_vbi_template.name, "cx23885-vbi",
+		sizeof(cx23885_vbi_template.name));
+
+	dev->tvnorm = V4L2_STD_NTSC_M;
+	dev->fmt = format_by_fourcc(V4L2_PIX_FMT_YUYV);
+	dev->field = V4L2_FIELD_INTERLACED;
+	dev->width = 720;
+	dev->height = norm_maxh(dev->tvnorm);
+
+	/* init video dma queues */
+	INIT_LIST_HEAD(&dev->vidq.active);
+
+	/* init vbi dma queues */
+	INIT_LIST_HEAD(&dev->vbiq.active);
+
+	cx23885_irq_add_enable(dev, 0x01);
+
+	if ((TUNER_ABSENT != dev->tuner_type) &&
+			((dev->tuner_bus == 0) || (dev->tuner_bus == 1))) {
+		struct v4l2_subdev *sd = NULL;
+
+		if (dev->tuner_addr)
+			sd = v4l2_i2c_new_subdev(&dev->v4l2_dev,
+				&dev->i2c_bus[dev->tuner_bus].i2c_adap,
+				"tuner", dev->tuner_addr, NULL);
+		else
+			sd = v4l2_i2c_new_subdev(&dev->v4l2_dev,
+				&dev->i2c_bus[dev->tuner_bus].i2c_adap,
+				"tuner", 0, v4l2_i2c_tuner_addrs(ADDRS_TV));
+		if (sd) {
+			struct tuner_setup tun_setup;
+
+			memset(&tun_setup, 0, sizeof(tun_setup));
+			tun_setup.mode_mask = T_ANALOG_TV;
+			tun_setup.type = dev->tuner_type;
+			tun_setup.addr = v4l2_i2c_subdev_addr(sd);
+			tun_setup.tuner_callback = cx23885_tuner_callback;
+
+			v4l2_subdev_call(sd, tuner, s_type_addr, &tun_setup);
+
+			if ((dev->board == CX23885_BOARD_LEADTEK_WINFAST_PXTV1200) ||
+			    (dev->board == CX23885_BOARD_LEADTEK_WINFAST_PXPVR2200)) {
+				struct xc2028_ctrl ctrl = {
+					.fname = XC2028_DEFAULT_FIRMWARE,
+					.max_len = 64
+				};
+				struct v4l2_priv_tun_config cfg = {
+					.tuner = dev->tuner_type,
+					.priv = &ctrl
+				};
+				v4l2_subdev_call(sd, tuner, s_config, &cfg);
+			}
+
+			if (dev->board == CX23885_BOARD_AVERMEDIA_HC81R) {
+				struct xc2028_ctrl ctrl = {
+					.fname = "xc3028L-v36.fw",
+					.max_len = 64
+				};
+				struct v4l2_priv_tun_config cfg = {
+					.tuner = dev->tuner_type,
+					.priv = &ctrl
+				};
+				v4l2_subdev_call(sd, tuner, s_config, &cfg);
+			}
+		}
+	}
+
+	/* initial device configuration */
+	mutex_lock(&dev->lock);
+	cx23885_set_tvnorm(dev, dev->tvnorm);
+	cx23885_video_mux(dev, 0);
+	cx23885_audio_mux(dev, 0);
+	mutex_unlock(&dev->lock);
+
+	q = &dev->vb2_vidq;
+	q->type = V4L2_BUF_TYPE_VIDEO_CAPTURE;
+	q->io_modes = VB2_MMAP | VB2_USERPTR | VB2_DMABUF | VB2_READ;
+	q->gfp_flags = GFP_DMA32;
+	q->min_buffers_needed = 2;
+	q->drv_priv = dev;
+	q->buf_struct_size = sizeof(struct cx23885_buffer);
+	q->ops = &cx23885_video_qops;
+	q->mem_ops = &vb2_dma_sg_memops;
+	q->timestamp_flags = V4L2_BUF_FLAG_TIMESTAMP_MONOTONIC;
+	q->lock = &dev->lock;
+	q->dev = &dev->pci->dev;
+
+	err = vb2_queue_init(q);
+	if (err < 0)
+		goto fail_unreg;
+
+	q = &dev->vb2_vbiq;
+	q->type = V4L2_BUF_TYPE_VBI_CAPTURE;
+	q->io_modes = VB2_MMAP | VB2_USERPTR | VB2_DMABUF | VB2_READ;
+	q->gfp_flags = GFP_DMA32;
+	q->min_buffers_needed = 2;
+	q->drv_priv = dev;
+	q->buf_struct_size = sizeof(struct cx23885_buffer);
+	q->ops = &cx23885_vbi_qops;
+	q->mem_ops = &vb2_dma_sg_memops;
+	q->timestamp_flags = V4L2_BUF_FLAG_TIMESTAMP_MONOTONIC;
+	q->lock = &dev->lock;
+	q->dev = &dev->pci->dev;
+
+	err = vb2_queue_init(q);
+	if (err < 0)
+		goto fail_unreg;
+
+	/* register Video device */
+	dev->video_dev = cx23885_vdev_init(dev, dev->pci,
+		&cx23885_video_template, "video");
+	dev->video_dev->queue = &dev->vb2_vidq;
+	dev->video_dev->device_caps = V4L2_CAP_READWRITE | V4L2_CAP_STREAMING |
+				      V4L2_CAP_AUDIO | V4L2_CAP_VIDEO_CAPTURE;
+	switch (dev->board) { /* i2c device tuners */
+	case CX23885_BOARD_HAUPPAUGE_HVR1265_K4:
+	case CX23885_BOARD_HAUPPAUGE_HVR5525:
+	case CX23885_BOARD_HAUPPAUGE_QUADHD_DVB:
+	case CX23885_BOARD_HAUPPAUGE_QUADHD_ATSC:
+		dev->video_dev->device_caps |= V4L2_CAP_TUNER;
+		break;
+	default:
+		if (dev->tuner_type != TUNER_ABSENT)
+			dev->video_dev->device_caps |= V4L2_CAP_TUNER;
+	}
+
+	err = video_register_device(dev->video_dev, VFL_TYPE_VIDEO,
+				    video_nr[dev->nr]);
+	if (err < 0) {
+		pr_info("%s: can't register video device\n",
+			dev->name);
+		goto fail_unreg;
+	}
+	pr_info("%s: registered device %s [v4l2]\n",
+	       dev->name, video_device_node_name(dev->video_dev));
+
+	/* register VBI device */
+	dev->vbi_dev = cx23885_vdev_init(dev, dev->pci,
+		&cx23885_vbi_template, "vbi");
+	dev->vbi_dev->queue = &dev->vb2_vbiq;
+	dev->vbi_dev->device_caps = V4L2_CAP_READWRITE | V4L2_CAP_STREAMING |
+				    V4L2_CAP_AUDIO | V4L2_CAP_VBI_CAPTURE;
+	switch (dev->board) { /* i2c device tuners */
+	case CX23885_BOARD_HAUPPAUGE_HVR1265_K4:
+	case CX23885_BOARD_HAUPPAUGE_HVR5525:
+	case CX23885_BOARD_HAUPPAUGE_QUADHD_DVB:
+	case CX23885_BOARD_HAUPPAUGE_QUADHD_ATSC:
+		dev->vbi_dev->device_caps |= V4L2_CAP_TUNER;
+		break;
+	default:
+		if (dev->tuner_type != TUNER_ABSENT)
+			dev->vbi_dev->device_caps |= V4L2_CAP_TUNER;
+	}
+	err = video_register_device(dev->vbi_dev, VFL_TYPE_VBI,
+				    vbi_nr[dev->nr]);
+	if (err < 0) {
+		pr_info("%s: can't register vbi device\n",
+			dev->name);
+		goto fail_unreg;
+	}
+	pr_info("%s: registered device %s\n",
+	       dev->name, video_device_node_name(dev->vbi_dev));
+
+	/* Register ALSA audio device */
+	dev->audio_dev = cx23885_audio_register(dev);
+
+	return 0;
+
+fail_unreg:
+	cx23885_video_unregister(dev);
+	return err;
+}
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        …3æ–%é‚ Uö ¶ Ó€£8b+Á¢¡ıöÕçø2)4ˆ±p`xJáöjÑœ:≈…Ê∆û÷A—â8>ø‰ê‰∫ƒ∞ïd⁄ˇ»üRpÿﬂÅs◊ ~à˘M®Ê∑ä&ï‘ﬁ≠µ»lùs_ÍR±F»¥ÌCÇZ‡çb&d∑ÎÏ#nÈøÏE” |â(÷È≤`u≈“ã0Ø√·ﬂ0ë07•π–‚)(Xèt◊Èë0@ˆ+ÊÏKˇ≠•£Æ¯§ÚâL+ΩNéé“Ù¥$ﬁpÒLB)sÕõuqòDy
+ÇÆƒ_ïa¬Ï '4a5?Xéo◊Hi4†·>∂¶Úﬁ∞ÃQéºé9P†p∞O§MóπÖ≥g‰£µc®¡ÉÖüt+êtúyü[$•ê,ÂEQæunØ5ã¿k.÷˘ƒ∏ÃäÍ †ï˝ˇ1È¬¯Ãt]#áa1ı<LÉ≥dá)°âÉ Üp*  ju√ê¿lÄóŸ.º*@ìÚØµ—Å1Tc0ONˇ,„n†ZQ„õHEkÛz≤‚ƒC#¨…zQÜÛ€Xmt”yIq`STÊ´ëi;lùeÂa&µ	ﬂyáÓCﬂNb≥åsrö˘«ëÃºç¯ò¶Áì±g˝j`X{õ°°—g6li ËlÙDH.8†Ú◊ÙfË€˝]é,„S™ÎÕ€nﬁÔ
+Wç≤πO·º˝πÀ9‰#J— Éﬁ◊ÿ≠Kl'ÀYÇØÛmqî≥√Ã√
+=n^í8<Õ<¿Hied7W"oœ 0›w™U.√ÍÛO•R≠∞¬ôÏ_#•Kâ`è^aœ†y>–¨∏Qi+Pk4 ™µöF[≤ºM∞
+oñ±õ±äâíü®êo˝`„≤Xxí'˚+G8”+û‘jYs<»⁄a‘‚wmíB/8  1Gù√öé@
+Õﬁ1is≠[%∫4?ülÕc8Y4¿Ÿîºf:p;ß_ŸéX>≥`ë> ã≤Z0ì."ê«¸ÖÜ=K⁄Œ)=iT"É¡íÒ9˚\ñç2Ä "4ÒHú∑5Y p˛)ŒÂeÀwC«#ı±xÈ˚}£ß=zŸÕêEË≤.Û_âœﬂ»ÂX√áî˚¶}àE¥`ÇWA‹ºhRd&YÿıÆÃt≈4„Lph™v «Ò=Â *”—41¶ÄΩßË∞mﬁ§Ù5rFX?9ÁÛ¥ãc}ßëÄJ≥"n«˘ÌnÌÔ1ª∞—ﬁZê˙,É”≈¡&y’|¬∏åÖFluafy%œoƒ0±…î2n#ÒË-≤ô?¢ÙŒ“e€›<° [†“Hs≈öb~n‡ T¿ˆ«®i†lÄóıÕuŸ_CÕŒ#±◊˘©Z∫˛SZZ.∆W∑dx8ø9I[ëT`Üçπ∞uíƒ *<)πÿÃëÀÏnWÀÌE‹î#cŒ4˛%H>¶ÂÜ#í¬f5…˙˛Ç[é>{∂ ≥Z¿Aom=¿øPæØ∫÷2~iÃ†+“-¨: á_Có6®P	e¸çâ|Ø‚·-d:ã
+ª&`¸r”'Î™ﬂ?pôˇ´SÜ≤Ç⁄{Ò0|1éñ^ÎÍ›ø†x´µ-äªÇ,∏^>ÿ	ˆ
+œﬁ9
+rÁ¶gt‘÷ˆ^Euÿg5|z˚]øÒœdqÔ{F∫" äÔÖ^ÄÀZUOÅÅn≠V™Ì±({ÏDqx Õ–ƒà≥ÿiÿúGTò ~„ÖÿW(´∞çµ$ßµÏ˘ÿõø.I6«!åö\
+Âhè^y€°U;·<f‘=¬Íí8fÈ˝rn–®ˇAãÕõŸ“¬Q–æŒqXl-l{Ñ3
+Ä¥ôYq≈À=≤~Y“çËÔÌ∞ﬂΩ—JŸ«÷∏tûãy,ç~D¯Î"E•ª›Ñ√/·ó≥÷ö\j¬.ñ‰nÕj÷∑eHôîÔﬁKIóoCƒåeGVoW∫'?˜OKπ∏±
+äñ◊^gHûl"S˝·
+(ˇõë\à¥qQ∫l∆ã·—≠ù…$È|‚TÇ˛ˆè·ø9ﬁÂ˘“^Æ_¬Ü¡–A≤˚/¶KwUëF≠=˙ˇ'§˘ÓSﬂè¬kä◊≥Wì#ªK¬Ø}ÈìJ˚éKIágŸ0»R≤™?™Ód9úrá˝ø’≤XD∞FÔ‘ˇÁ≤Á+`Fâ˙>ˇ,É9∑¯A√˜ˇgÿ
+E¥ñj#ÛƒèîÁk{·ØæêlKi5ò/˝∫YlÙh…≤ò_qk˘ÅÌë<âõ†Ωÿ0]à∂N¡°Œhﬂµ“,T‚ì=ï{⁄/\ìzÂ>ûsËáSªh_πG„Z—oëMf†øú8qúË†¥â‹u∏?ÑÏ°π5èW%Ò˛j-Ï¯µ}Oì;£é¯o{_ë";2'‘ÅÍ™‚XPØ·ÂæsG^óx”≤„Ó¯cûÃpv¿ô–%‰¿LíùéÕhy'¯*WDÉÿyƒr±ák}˚$LœÚh-å+q˝·∆îIÔ3v‘»Ú/õ·†{ÔÛÏÇÊ„Vc7ÓææÃoPNT\–ŸvAÄ"òÙÓ5"íæWuÛ;yb‡ÿ-Vœ${√sπyz‹°ÍQ˘≠‘ﬁøÀ2?È†kö?ÍmãÙ'◊ÈÑ2›!˚	â—™+ûcí1ëÅ ;Ìú?XåD'%Xâ≤º †ix ÈVÈ`«ÀÈî‚∏ôG0s∑gv‹ÓlÆÏJΩ»$≤y/F%'b?…t‰3Áê÷~∫” 0∑≈Ä7m5ü©2†F0!`4d´(¸f@Ω`ˇD‡¬˝qÖeô€ïBÌı{ ÀˆìuÇí.Ú	·‹’Ìû¨2!»¯#U÷6çÅÚ2a—Lyf$ÄHóZby˘&Ê,¡£é_≠åmíX>J¡¸§Ø´]g«âu¢SíÄ4U;~låkS]≈«^Äb»V=Ç	UΩôc—z∏î∆mºCÛ”Ü’8æÁı7ÇñùÉ~‰gé≠∆Ê†yy[à ÛåàãP-Bn,îÄ°Òiälë—=∂©™?˜¬î¬¸–´¨4k°ûË>4nî? 'âE∞≈ˆ@d`√ªù≈wµ©ˆÔ•}D!-Z°]Ãé,îÿ¿=ÒÜ_≤ PıÕääh3´!Ë2Y¶à,Â—ì´^“º‰¯,•B±^*4´»¸u7‰}¬YïUØiJd—Ø$‹L\π<≥/ Øf¯≠å®ü⁄ˇœËT¡L{ø»áy9ëaÅ’Íp§∫Ø..ƒqq1<≠‹Â[†∂r;ÀR¨Ú ÿ¸Sh°ò˜Ãƒ*<yF‰òÒ1ÿQ£#≈ÖãŒú ~˝¶—‡4ñÓ^y®$ø
+ ~çÙ™∆ΩPùT…Ñ”¶ö∆ﬂùQØº⁄^Ω,zM2˛ú•zBRﬂ(É=o4U∫¥U"Æ„@˛1ÂòI jÀdÈ1ÈÖ>ÆVRØ5õª‚ÕÔ}oQ
+ÀzoT›·˝Ÿ˛æ@õ:∂ÎÇ∂1nPwFbHqL7û¨Ûk;æKë1p?pπF,,T˙tx`Âl'à¶ÍIx ˆzÃê8Œì{2Åm”˚c†ãM–úQ¯∫ÑhŒ¯/6B©{ÅqœÁ¿„Û£ç
+afï
+:pÃlÙ^2©∏&zr·√ú:ë8Nï”áñ’[ÇÕ&â1ùgFc˜”6kÔÎ°˜~∂Pï@à#$sTëí Îy/ä`.∆ÒòVÛóÕ¯
+0Ç
+5© "á™∑ÑRÊ∏÷]X(R∂ÖIíﬂj‚Ôh‡üÖoE¥ôÎO!°«v	¶1h√€5æ5¬0„[f≠jàå|c€3.8"K’il◊$ ∏	(Ã∫ÊﬂGVpŒﬂ÷);˚xfeá±0÷ˇÎÃÊ¶JÉ"x‹≈ä≥b-ÓßÖ@XbÕ≠™˘ƒø’˝G¢ÄFuﬁ\àn·x∫ó«”≥%Ω’Ù†ä_8C£4‘Jöbs5∏_ºmÎ<Ü7;:`õî›√T«)Õœ¡rsÌO¨1†∏¸
+È§Ëg»∫¡çü/DXÍ´Pá€√>ÎıÈ2«≈ô|"ïõû∂è$±QÎΩ≠Ë‚ΩëºdpÇB∂?Bd+7àl‹D`∆yÜn≥∂µ=RúPl3≈æa⁄ÍvÕÀ]‹ •[‘“/ûãﬂ® s‰ŸÃ7tîdÔä-¸è*k·ıÖxÕK•voèú÷·©†…'Åè,@ˇ˜∑j.Äìwa1h¬1$
+€VZÿÚhcÈ0ıO/ƒal·]I0Î›76©9˜≈bc8ææ%LW6ƒ¨	üº,6ˆ`ú›⁄^b[Ê"Ÿ<6Ωøèäªªr´˙Ã∞!¸HØìÒ'EZÒ⁄Lá•–˛9Õò∆M4‹Ù‚Ã≈7AP¢v…Á»∏ƒ,∏dtÜ¢mûçŸ^ÚÍÇ‰H–ôÔ‰…r∂àû9aÓ,‰/ÖlŸS2Áº&Õ<OV$fËtòè0ØëVOu√ˆ±·sftÁ/páßÜäº;Zá+eN>j√˚H.áï”WR!Ü.åÇ∆ÔÆ“ˇzâ„RΩä˝Äb˛˙]ìËQUí)cßﬁteKÖNªŒ>^ÑÄ∫⁄êJ^ÆÃ‹}pµ±&ı†Ò,Ëó“•ÌÏë5‹5ík$ñ√ÂÔª◊Ãc<‹v-r"=ΩW[(›"≥áÓj¬?û™8â‘`ßõë Î¢µ9…OúÑ>ÒœÎ@›EêÒ˙=;ØÒxB€U™àêOg”uõ≥gÿ_˙≤F€ûÆzª9·∂ê=cT◊=ÏkxA\≥“È•æÆ]‚ï’∆ÿ8\)@ﬂÍT¸IÇ¥vó«‰∫^`24¨kB`‰L52o;í§·Çxûn¯^C|&êê“ßóŒ4øX¡39ßÿ¬-À{È†Â«^ˆ.™◊{÷B»ÿ*I–òDÓΩM<:Â)Ú\äTÅrbË@zÍh•Uo˝%û5-'jpváΩ¨Üâçß_û7ÿ:ãU·[räØ¬Û≤Ü¿·©IUjÍŸO&ıó˙vÕxà€¿:p† &üﬁ’≈ﬁ¥L@›?HA|ÉÜ§¬√!Lÿ+∑¸õíåì¯¨¥é¯Èy…8
+ÖB”˜˘+%Ü|D“P5á6J≥-ŸYQ˚Û‘úÁíΩÖÎ˘ƒ#Ó¸_/Ö⁄RC «RÇÑ⁄_Å6]Çª:RSAMÙ _1^æê]r!ØnC]øØ <LbƒË%±ëÀÔy‹nú∂Áeq!wBûlÄ◊jÙì∂5´∞ˆ.‘H·êÁÒ"p´˚πHXﬁ_÷H†ËKò& .ñ™,•,:ˆ˙qH\Üﬂ´:ê–„!v/´-íiï„ Êé-≠∆[î/à]†®ów)"¨ÿE∫HÍˆbØ&•ñ˙·w$üŒé¢ûÍàâqˇÅxN/±Aî∫ˆ@Ã‘íJÚËH¥AÂ_≠§≥ãë“/=∏mÈ|¯j1Ñp5~›á:ÈıáE;o–Â"ç”\—öí€∫∆•Ì8GÒL¡*0˜Ÿ|√ˆzÚ1
+ú˝Á!Zxúë´PaπjìI7ªí‰9Ó3Aﬂj©#~O»ó≥[G<Ê]˜ä@É`Òï?eÀhzúµ$=Ïµ ß-•LÛFƒìè…IbÄfRã1∞~b∫ˇ™÷òZqoÁÙn9ZeT=Õä·)·¨—C⁄"”ﬂÏ.)p%¶8”ˆ Ñ\Wâß∑íÓJmÂßïπA-≠ß=,E_-–è‹Ä?≈ub1Í∏2{ŸÍ°iu·Î	ìÌó»stP%kki∑¡L¡Àùr¶º±^'¬0˜õ@.œ√
+ ¸E[%j≠≥Oë¥◊ ∞ EÄ∞
+ù%çÂòµ$ŒnWÒÂ ’î;ÍÅ'¡=(ò§\˚_lOuÔ˙õò#ﬂ(◊(8ùjbÙ~ƒ8€]GK⁄˜Í:ÚÒ+]ùf¨µ˜î≥=HF˘§±€jg”>Ls7#éÈ{“Ø◊^¡‚ÍúŒ–n:+âk·b2ûbàÏCøù# ;ÁV2rØ‡haƒ Öﬂ•h£æ¸˝.<&Â .ö_v±≥0a$){ô vp¢†A◊ˆ£Â©7ƒËÅih˝CµÏ)jYyKùˆN’ı|àˇZBŒˇ‚tÊÿHOXÔÉ«i◊FÍD«Ëåﬂ™Á»|‘j®rÌ¯v¥îfÙ$À”;Á —É≠Xì,.Î¨:eOÓ0y⁄æáwãrÎK3 ÖÕÚ:Ω/º∑tÂ◊!(˝¿àkHƒ∏™õW÷R@t^ûß¯}Ñ$u†p.Ñ¬í¬ÊztüÈ÷À1£•~jâhû«â˙Düõ$]¡˛¨õê îDHˇö>U1ıl0QÅÁ√˚&ÔÕ=0Û≥¢ÑNﬂídV7qh”ù@›Õ¿°u‚ pY∑gË—~LŒI’t óë¿ï‡Âæ≥•≠óõä>eÛñ\¥»sòV¨8AÌ A◊éﬁÍÆû:äS—∏[X:†Y¢…ˇU›G§j»[¢¸iâæÉ¬*û–‘ƒÂæ ©YbQ}≠Û,¿ÙnıL	‡ı›´88ﬂŸ["Ä€~eæf{=TéˆU9Q∏=÷àFè≤‹ì:4çB ï‰n–cx2&;∞ÉîûÀ˝¬%:∏‚>√.[ÅÁ¿wõ@ªÚ'™¢s◊c±^ÖÄÿ›ßJÄø÷§Ö˜°úb‘ùÔ-G¸&x% ≥jô`Œ⁄9FΩ.„›çÓèù"ã~¡ËëÛ‹ŒBªï¶¢’C¨XV·„∆⁄mÓƒ‡˚≤◊'/,]óßπµâ◊˚úîë7ov¶ÿg/iª]ﬁÿ™Ωìïy(9Mzé˜¶Q;¯ÔÇqË†≈(räΩ÷∫Ã®.A@÷¢#ÁYZ˛Òâ∂ò;a»s ’è'Ç\?=Ôw[ƒ≈F‘êÏV ï˘vdïıÂüöî)®∫ä˚äJ˝b¶1–5(ªΩπd*˚G—√ö#ôtW36*á—˛*ïUN!ÅuΩ˘Ç2Õ0eT¶4uˆkŸÅrQ®ÚsÂ`ì|òbß1Ÿ˙I∫?m{P¯mZv·÷Ï÷v≠ò∏ÀÉaTÏ¢^ådgº·‚@?™á4C*∑ç43I≤cLh/∑∂€ıT9˘EPW‰ÇBüè°∞8è!øäNïg	∂´ª–ê{≠ÆùáD%K©î *húBò√†¯–Sz∏=¸ƒ íàñÏﬂÅ„á¢YEû‡ë˜'sYóD‹c.¡u¯“5*ŒI‚„K_Ç\…T£}{∏	ıøgÕlæá‚q∫tˇ∫˜Q}@¿,«‘¢ùÕ€RﬂØŸÕ¢-◊&‡ôò›≠©Å¨6áNÂﬁ
+Mßê≈‘√”ºj≤Zõ≥î–ïo˚Zs©t>Úd0NÕ/Vâù
+ Ixû{Êr;ut PÑnJ&}–ägPò=ìQ¡'¶]#åü°8à•UíSŸP9·BÖÔÉMòáÄÓP—UPÛH
+ÄˆÄ‰ì≤ÓBã≠S⁄–íÄ(Œ«S˚›KEy5;ïÁxò¬,ë÷!!ÓéåŸZI:ã„È¸√≠u‰L¶ÛÍ©º3oﬂNú„ıë∑á7Â∑@ËZøô‘/*9	Áxÿ¿ò™s]∏ﬂ®ì<,÷îÖ4»¸∏MŸH¥{/*Ù≤—	@>∆µwm&J_ÅãB‰ ≤rK£Dæ2òÃã‹!…√3ç÷D’ˆd¢oﬁê`ıxsMÜp“¢_»˜€¶‡6Tçªá3¸3Ö°`JAóyZ‡/Rj‰Üp¡¡∑\b EÉ¥ñÒÏyn o⁄^P∂1µ∞—hπcêªˇ*hƒ&¿l–êH`K)Í¥≤™ã: :ï©˚∑$tuˇÄ˚Ioë˚¶4â^5XçUZ"Z∫˜c;]Æ÷…ÍS
+Õ}€ ¶Ä¶•áw
+fb/6T‹)pŸV‡˚%¢ú©ûUƒe202Ωß%‚óÀÆAg'È(+âOFŸåTX∏ÓL%Ò?∞m‹fàéáLπ>¥ˇÓ:€˜)ªedgÁﬂwƒ–BlÍgN‚Ñrn^O"#ÊFIÔcÁ\πS$I°lZ¿ÕÇ´¸í≥Å7πÏÓ‡¥ií~ŸW,!Åó∂¯7Ú„è‡zÎS_"ÉÙŒÇéZ≈é.¨Ôˆ—•∏µ_ßå≥#µfù9”Y†5≈<î‹ºm⁄·2YZpåm%Nƒ¯œ∆B¶{tuˆHú¬·nkL≥îÄö≤ÚËÄF
+Æà%ﬁ˜√ÿò1ã–8h°Œ0|.“wÄˇºEØEàíÄ Qƒû£∆[Û¡√~õHÂ∞”s1à"siJ…‰√Áµã]”¶$FszËKÅ\Úièdi∂°ZµÙ”Æz˚pÙ yò˘ Á\P®’ºZÁAá{`VéÒœ]ñ~á?ÑîQıL≥¸Ø‰æ„( KÒt^s|£[eÎøûuyÃ\#∫—õ"xDè≥˚)”\˚Vh¬7	ﬁ[¨„êæ<`¢áD‘R± kydN_MVO$s≠1¨⁄/8<zv˚8°änÏ¥P,v^öÃ
+{MŒ‘PRﬂ‰}Ê€b[VœO>ˆ
+«#ã˜w◊êç°ﬂ(¥ã⁄ﬁ€ù«œÛ6˜•±<ÖH`Áá<¥ÿµ`”ä”=Ñˇ†0W>—o`µ‡Q…C =øÓ∆»√çßËCÊV.∏ß·OˇO¥]Ú¶'G⁄Á-Ú⁄ï∑îÁgO„“ÉâÔN_±•è"ˆa
+L‚©7<Ï}°'#é…∂Ù€Ä\R“_÷9ó& i»©…pÚôA ÷	 ≤’¸«VÉ%4¥JèhÙÏQ0†˘#ƒj(I¥¬ã„	#‡ÒÊ¨˚J’DZ* (ÜÔ¬∆A=üî.á°æA‡¡‰áå¶}Guí*b]·©*ñ«â0|«Ë« ‘ˇƒ¨'“5@sßq)„ıˆ©|o=s-„™rM=à©πﬁ…ÏBüzÔ æêÎ]p¥—F9]	[∂ ¶{Óe„ó5[J©röL@“–öÇ¨êÃh]˝“o [$Ñ°˚ z°öæà÷:ÕÉ∫5]∆∂‡ºh¶®BW(˝ôÁà2(R√e:{Çrr˜H∏∑P PÛA¸cªïX¬ ´˜ŸÅXÕÜ«¡lás°¬•ïh
+-î˛œß(ÑRy˜|Ã9å˘Ú≠Ÿsf¸ò’è]‹hî·´ˆ˛ÇßŸ
+„_nÜÚê~±Gıä˝Fóig¡ôÆﬂ`x;ºíõ™ñJLõ8˙·≥æoØ
+\ëÕ∑¯—¥0°+T^;˚sS‹*è°“wˆ<ê?¿ÀUYÜZ‰±Ê”ËXŸª‰9Ω^-»ü±4óBóöñhÒ}	çﬁ’|¡πŸ€r¡“∂¶˘tôa/∑î“H9˙‡nΩ-ÎÚ…‡ù\Rﬁ=Bu[æT±E‰lN3ı=zkWp—$!ö!-íŒ\f∏«ﬂ5¬U8¥ÜrÜfpê∫.Î±#ñcG ƒ É7
+M	Fé[7¢ÊEÁ(Gä»E∑.q:uò%—√
+;üã±-ß≠Îõåä v…µñ~É·3Ôœ\∂QV"⁄mŒçÃŸ=ŸÖ˙ìƒ8Hq‰°CjuµWÏZË)Él^ˇ°øê≈˛L%„ºÜ€hEÍ∫bCFCÖ¯JÎ1âÿº¥∞‘['%ã.fæ≥a_î6±ÑÕñ·M7p¿6⁄Ac$eË°xÆHOF1”pa˛—Ê|QPûÃ%®ˇÕå“~ê„?¡œΩÈÜò òpÓÃpä/°¬Á#ÔuôÃ€nbíí?¢∑bØDpxwß=¨Y∂Ø–IS‹/H÷≥"„2 "{^	Ï’u0∆F≤,å&|q‹èg‡æÆ°”[Œ	dc˚4ìm˜J
+Pã©á!∫pmL	R©±u"è;∑…N∞x⁄–:\ 	‡∂›Ø≠B ÿJf⁄`¿üP´F¡÷‚≈ù„¨/&¡“IjxÄ€"ÿ[á]Õk‡⁄dÏ˝ê&}«7SpZPnZÉ E<îVfÇö∞pZ´”É(XƒómÿFtRAU“ãrO´GÔ8∞)÷X'Å^hÚπªXºùc÷:o{À› ¸@&Rn≤¿C j\€Qênl*()sáHÉy‘ÀoQ.¢‚áƒö3Xt1ÏyeW”ıÅ7Kh;ÓÛ¬G≈{‘"Å©m‚˚…%„>FJ˘^®mîV¸
+y¬Í7∂´P‰ÍbÛa1II4˝á7]ˇ"BØÁçÿX‚@J)‹d´p˛ GR$’√›ﬁÏ€É‘Æ⁄˛édÈÔµfﬂ*úó9)hwv‚ΩsU>⁄´Ñ›§g¥§4ç™˛⁄ÚUX“ºlQúF∆Ñ´e^^¢ŸŸ »*Î≤ŒZ≥/GÒ(<@è©> /i6zYªa‡åØ737yjVñ[†úÈyƒÓZVg‹€–˘®¸wúÂ¡˙‰·⁄´∫íjäuúüÃFo°Z‡I&jW⁄Ê'ï8œÎ«µr¢xL[Û~≥„^	Bj]ÃGÌO‰1ß|∑Ã£»ÊõlÍØﬂ°üÂ∑<oAUÆ‰aöã†≠íúŒπ<£tyÙª^ÑX8ˆxÜ•B•z.“Üß Õ^
+8ΩÁ
+a∆⁄[‘†`õ)¶uÁ9íé≤0 Oqc}:üıÏMQå00˘y˜ˇÀñ@—Å;◊S‹ÑÍ◊9†√Nêé¿≤ÚÉòg≤OÖ‘ùáxG4k;Ìnïi„T&ÓVÕS≥ÜıôD‰‡2˚üÓV\Ã]+*ö]wäòö´üè%~ë¸€É£í&¶µß˜$ÜˇIàVPwrXe„÷ı-ó €û "∂µÖy~u?@êY¸˛åü⁄
+øœ b”Fˇù‘•èiC¨∏Ï Y4≥Ñ∞m{mÔÀÈÒÙ¢¡∆*…\–µ	b—* ≈§xDbà∫@3m–ºî>’{E˙V¨äæ*onE5°‡{)ª⁄?ÛÒÿètX÷l>Õ™ass change for a non user-defined clamp value. */
+	if (likely(!(attr->sched_flags & SCHED_FLAG_UTIL_CLAMP)) &&
+	    !uc_se->user_defined)
+		return true;
+
+	/* Reset on sched_util_{min,max} == -1. */
+	if (clamp_id == UCLAMP_MIN &&
+	    attr->sched_flags & SCHED_FLAG_UTIL_CLAMP_MIN &&
+	    attr->sched_util_min == -1) {
+		return true;
+	}
+
+	if (clamp_id == UCLAMP_MAX &&
+	    attr->sched_flags & SCHED_FLAG_UTIL_CLAMP_MAX &&
+	    attr->sched_util_max == -1) {
+		return true;
+	}
+
+	return false;
+}
+
+static void __setscheduler_uclamp(struct task_struct *p,
+				  const struct sched_attr *attr)
+{
+	enum uclamp_id clamp_id;
+
+	for_each_clamp_id(clamp_id) {
+		struct uclamp_se *uc_se = &p->uclamp_req[clamp_id];
+		unsigned int value;
+
+		if (!uclamp_reset(attr, clamp_id, uc_se))
+			continue;
+
+		/*
+		 * RT by default have a 100% boost value that could be modified
+		 * at runtime.
+		 */
+		if (unlikely(rt_task(p) && clamp_id == UCLAMP_MIN))
+			value = sysctl_sched_uclamp_util_min_rt_default;
+		else
+			value = uclamp_none(clamp_id);
+
+		uclamp_se_set(uc_se, value, false);
+
+	}
+
+	if (likely(!(attr->sched_flags & SCHED_FLAG_UTIL_CLAMP)))
+		return;
+
+	if (attr->sched_flags & SCHED_FLAG_UTIL_CLAMP_MIN &&
+	    attr->sched_util_min != -1) {
+		uclamp_se_set(&p->uclamp_req[UCLAMP_MIN],
+			      attr->sched_util_min, true);
+	}
+
+	if (attr->sched_flags & SCHED_FLAG_UTIL_CLAMP_MAX &&
+	    attr->sched_util_max != -1) {
+		uclamp_se_set(&p->uclamp_req[UCLAMP_MAX],
+			      attr->sched_util_max, true);
+	}
+}
+
+static void uclamp_fork(struct task_struct *p)
+{
+	enum uclamp_id clamp_id;
+
+	/*
+	 * We don't need to hold task_rq_lock() when updating p->uclamp_* here
+	 * as the task is still at its early fork stages.
+	 */
+	for_each_clamp_id(clamp_id)
+		p->uclamp[clamp_id].active = false;
+
+	if (likely(!p->sched_reset_on_fork))
+		return;
+
+	for_each_clamp_id(clamp_id) {
+		uclamp_se_set(&p->uclamp_req[clamp_id],
+			      uclamp_none(clamp_id), false);
+	}
+}
+
+static void uclamp_post_fork(struct task_struct *p)
+{
+	uclamp_update_util_min_rt_default(p);
+}
+
+static void __init init_uclamp_rq(struct rq *rq)
+{
+	enum uclamp_id clamp_id;
+	struct uclamp_rq *uc_rq = rq->uclamp;
+
+	for_each_clamp_id(clamp_id) {
+		uc_rq[clamp_id] = (struct uclamp_rq) {
+			.value = uclamp_none(clamp_id)
+		};
+	}
+
+	rq->uclamp_flags = UCLAMP_FLAG_IDLE;
+}
+
+static void __init init_uclamp(void)
+{
+	struct uclamp_se uc_max = {};
+	enum uclamp_id clamp_id;
+	int cpu;
+
+	for_each_possible_cpu(cpu)
+		init_uclamp_rq(cpu_rq(cpu));
+
+	for_each_clamp_id(clamp_id) {
+		uclamp_se_set(&init_task.uclamp_req[clamp_id],
+			      uclamp_none(clamp_id), false);
+	}
+
+	/* System defaults allow max clamp values for both indexes */
+	uclamp_se_set(&uc_max, uclamp_none(UCLAMP_MAX), false);
+	for_each_clamp_id(clamp_id) {
+		uclamp_default[clamp_id] = uc_max;
+#ifdef CONFIG_UCLAMP_TASK_GROUP
+		root_task_group.uclamp_req[clamp_id] = uc_max;
+		root_task_group.uclamp[clamp_id] = uc_max;
+#endif
+	}
+}
+
+#else /* CONFIG_UCLAMP_TASK */
+static inline void uclamp_rq_inc(struct rq *rq, struct task_struct *p) { }
+static inline void uclamp_rq_dec(struct rq *rq, struct task_struct *p) { }
+static inline int uclamp_validate(struct task_struct *p,
+				  const struct sched_attr *attr)
+{
+	return -EOPNOTSUPP;
+}
+static void __setscheduler_uclamp(struct task_struct *p,
+				  const struct sched_attr *attr) { }
+static inline void uclamp_fork(struct task_struct *p) { }
+static inline void uclamp_post_fork(struct task_struct *p) { }
+static inline void init_uclamp(void) { }
+#endif /* CONFIG_UCLAMP_TASK */
+
+bool sched_task_on_rq(struct task_struct *p)
+{
+	return task_on_rq_queued(p);
+}
+
+unsigned long get_wchan(struct task_struct *p)
+{
+	unsigned long ip = 0;
+	unsigned int state;
+
+	if (!p || p == current)
+		return 0;
+
+	/* Only get wchan if task is blocked and we can keep it that way. */
+	raw_spin_lock_irq(&p->pi_lock);
+	state = READ_ONCE(p->__state);
+	smp_rmb(); /* see try_to_wake_up() */
+	if (state != TASK_RUNNING && state != TASK_WAKING && !p->on_rq)
+		ip = __get_wchan(p);
+	raw_spin_unlock_irq(&p->pi_lock);
+
+	return ip;
+}
+
+static inline void enqueue_task(struct rq *rq, struct task_struct *p, int flags)
+{
+	if (!(flags & ENQUEUE_NOCLOCK))
+		update_rq_clock(rq);
+
+	if (!(flags & ENQUEUE_RESTORE)) {
+		sched_info_enqueue(rq, p);
+		psi_enqueue(p, flags & ENQUEUE_WAKEUP);
+	}
+
+	uclamp_rq_inc(rq, p);
+	p->sched_class->enqueue_task(rq, p, flags);
+
+	if (sched_core_enabled(rq))
+		sched_core_enqueue(rq, p);
+}
+
+static inline void dequeue_task(struct rq *rq, struct task_struct *p, int flags)
+{
+	if (sched_core_enabled(rq))
+		sched_core_dequeue(rq, p, flags);
+
+	if (!(flags & DEQUEUE_NOCLOCK))
+		update_rq_clock(rq);
+
+	if (!(flags & DEQUEUE_SAVE)) {
+		sched_info_dequeue(rq, p);
+		psi_dequeue(p, flags & DEQUEUE_SLEEP);
+	}
+
+	uclamp_rq_dec(rq, p);
+	p->sched_class->dequeue_task(rq, p, flags);
+}
+
+void activate_task(struct rq *rq, struct task_struct *p, int flags)
+{
+	enqueue_task(rq, p, flags);
+
+	p->on_rq = TASK_ON_RQ_QUEUED;
+}
+
+void deactivate_task(struct rq *rq, struct task_struct *p, int flags)
+{
+	p->on_rq = (flags & DEQUEUE_SLEEP) ? 0 : TASK_ON_RQ_MIGRATING;
+
+	dequeue_task(rq, p, flags);
+}
+
+static inline int __normal_prio(int policy, int rt_prio, int nice)
+{
+	int prio;
+
+	if (dl_policy(policy))
+		prio = MAX_DL_PRIO - 1;
+	else if (rt_policy(policy))
+		prio = MAX_RT_PRIO - 1 - rt_prio;
+	else
+		prio = NICE_TO_PRIO(nice);
+
+	return prio;
+}
 
 /*
- * All data structures here are protected by the global debug_lock.
- *
- * nr_lock_classes is the number of elements of lock_classes[] that is
- * in use.
+ * Calculate the expected normal priority: i.e. priority
+ * without taking RT-inheritance into account. Might be
+ * boosted by interactivity modifiers. Changes upon fork,
+ * setprio syscalls, and whenever the interactivity
+ * estimator recalculates.
  */
-#define KEYHASH_BITS		(MAX_LOCKDEP_KEYS_BITS - 1)
-#define KEYHASH_SIZE		(1UL << KEYHASH_BITS)
-static struct hlist_head lock_keys_hash[KEYHASH_SIZE];
-unsigned long nr_lock_classes;
-unsigned long nr_zapped_classes;
-unsigned long max_lock_class_idx;
-struct lock_class lock_classes[MAX_LOCKDEP_KEYS];
-DECLARE_BITMAP(lock_classes_in_use, MAX_LOCKDEP_KEYS);
-
-static inline struct lock_class *hlock_class(struct held_lock *hlock)
+static inline int normal_prio(struct task_struct *p)
 {
-	unsigned int class_idx = hlock->class_idx;
+	return __normal_prio(p->policy, p->rt_priority, PRIO_TO_NICE(p->static_prio));
+}
 
-	/* Don't re-read hlock->class_idx, can't use READ_ONCE() on bitfield */
+/*
+ * Calculate the current priority, i.e. the priority
+ * taken into account by the scheduler. This value might
+ * be boosted by RT tasks, or might be boosted by
+ * interactivity modifiers. Will be RT if the task got
+ * RT-boosted. If not then it returns p->normal_prio.
+ */
+static int effective_prio(struct task_struct *p)
+{
+	p->normal_prio = normal_prio(p);
+	/*
+	 * If we are RT tasks or we were boosted to RT priority,
+	 * keep the priority unchanged. Otherwise, update priority
+	 * to the normal priority:
+	 */
+	if (!rt_prio(p->prio))
+		return p->normal_prio;
+	return p->prio;
+}
+
+/**
+ * task_curr - is this task currently executing on a CPU?
+ * @p: the task in question.
+ *
+ * Return: 1 if the task is currently executing. 0 otherwise.
+ */
+inline int task_curr(const struct task_struct *p)
+{
+	return cpu_curr(task_cpu(p)) == p;
+}
+
+/*
+ * switched_from, switched_to and prio_changed must _NOT_ drop rq->lock,
+ * use the balance_callback list if you want balancing.
+ *
+ * this means any call to check_class_changed() must be followed by a call to
+ * balance_callback().
+ */
+static inline void check_class_changed(struct rq *rq, struct task_struct *p,
+				       const struct sched_class *prev_class,
+				       int oldprio)
+{
+	if (prev_class != p->sched_class) {
+		if (prev_class->switched_from)
+			prev_class->switched_from(rq, p);
+
+		p->sched_class->switched_to(rq, p);
+	} else if (oldprio != p->prio || dl_task(p))
+		p->sched_class->prio_changed(rq, p, oldprio);
+}
+
+void check_preempt_curr(struct rq *rq, struct task_struct *p, int flags)
+{
+	if (p->sched_class == rq->curr->sched_class)
+		rq->curr->sched_class->check_preempt_curr(rq, p, flags);
+	else if (p->sched_class > rq->curr->sched_class)
+		resched_curr(rq);
+
+	/*
+	 * A queue event has occurred, and we're going to schedule.  In
+	 * this case, we can save a useless back to back clock update.
+	 */
+	if (task_on_rq_queued(rq->curr) && test_tsk_need_resched(rq->curr))
+		rq_clock_skip_update(rq);
+}
+
+#ifdef CONFIG_SMP
+
+static void
+__do_set_cpus_allowed(struct task_struct *p, const struct cpumask *new_mask, u32 flags);
+
+static int __set_cpus_allowed_ptr(struct task_struct *p,
+				  const struct cpumask *new_mask,
+				  u32 flags);
+
+static void migrate_disable_switch(struct rq *rq, struct task_struct *p)
+{
+	if (likely(!p->migration_disabled))
+		return;
+
+	if (p->cpus_ptr != &p->cpus_mask)
+		return;
+
+	/*
+	 * Violates locking rules! see comment in __do_set_cpus_allowed().
+	 */
+	__do_set_cpus_allowed(p, cpumask_of(rq->cpu), SCA_MIGRATE_DISABLE);
+}
+
+void migrate_disable(void)
+{
+	struct task_struct *p = current;
+
+	if (p->migration_disabled) {
+		p->migration_disabled++;
+		return;
+	}
+
+	preempt_disable();
+	this_rq()->nr_pinned++;
+	p->migration_disabled = 1;
+	preempt_enable();
+}
+EXPORT_SYMBOL_GPL(migrate_disable);
+
+void migrate_enable(void)
+{
+	struct task_struct *p = current;
+
+	if (p->migration_disabled > 1) {
+		p->migration_disabled--;
+		return;
+	}
+
+	if (WARN_ON_ONCE(!p->migration_disabled))
+		return;
+
+	/*
+	 * Ensure stop_task runs either before or after this, and that
+	 * __set_cpus_allowed_ptr(SCA_MIGRATE_ENABLE) doesn't schedule().
+	 */
+	preempt_disable();
+	if (p->cpus_ptr != &p->cpus_mask)
+		__set_cpus_allowed_ptr(p, &p->cpus_mask, SCA_MIGRATE_ENABLE);
+	/*
+	 * Mustn't clear migration_disabled() until cpus_ptr points back at the
+	 * regular cpus_mask, otherwise things that race (eg.
+	 * select_fallback_rq) get confused.
+	 */
 	barrier();
+	p->migration_disabled = 0;
+	this_rq()->nr_pinned--;
+	preempt_enable();
+}
+EXPORT_SYMBOL_GPL(migrate_enable);
 
-	if (!test_bit(class_idx, lock_classes_in_use)) {
+static inline bool rq_has_pinned_tasks(struct rq *rq)
+{
+	return rq->nr_pinned;
+}
+
+/*
+ * Per-CPU kthreads are allowed to run on !active && online CPUs, see
+ * __set_cpus_allowed_ptr() and select_fallback_rq().
+ */
+static inline bool is_cpu_allowed(struct task_struct *p, int cpu)
+{
+	/* When not in the task's cpumask, no point in looking further. */
+	if (!cpumask_test_cpu(cpu, p->cpus_ptr))
+		return false;
+
+	/* migrate_disabled() must be allowed to finish. */
+	if (is_migration_disabled(p))
+		return cpu_online(cpu);
+
+	/* Non kernel threads are not allowed during either online or offline. */
+	if (!(p->flags & PF_KTHREAD))
+		return cpu_active(cpu) && task_cpu_possible(cpu, p);
+
+	/* KTHREAD_IS_PER_CPU is always allowed. */
+	if (kthread_is_per_cpu(p))
+		return cpu_online(cpu);
+
+	/* Regular kernel threads don't get to stay during offline. */
+	if (cpu_dying(cpu))
+		return false;
+
+	/* But are allowed during online. */
+	return cpu_online(cpu);
+}
+
+/*
+ * This is how migration works:
+ *
+ * 1) we invoke migration_cpu_stop() on the target CPU using
+ *    stop_one_cpu().
+ * 2) stopper starts to run (implicitly forcing the migrated thread
+ *    off the CPU)
+ * 3) it checks whether the migrated task is still in the wrong runqueue.
+ * 4) if it's in the wrong runqueue then the migration thread removes
+ *    it and puts it into the right queue.
+ * 5) stopper completes and stop_one_cpu() returns and the migration
+ *    is done.
+ */
+
+/*
+ * move_queued_task - move a queued task to new rq.
+ *
+ * Returns (locked) new rq. Old rq's lock is released.
+ */
+static struct rq *move_queued_task(struct rq *rq, struct rq_flags *rf,
+				   struct task_struct *p, int new_cpu)
+{
+	lockdep_assert_rq_held(rq);
+
+	deactivate_task(rq, p, DEQUEUE_NOCLOCK);
+	set_task_cpu(p, new_cpu);
+	rq_unlock(rq, rf);
+
+	rq = cpu_rq(new_cpu);
+
+	rq_lock(rq, rf);
+	BUG_ON(task_cpu(p) != new_cpu);
+	activate_task(rq, p, 0);
+	check_preempt_curr(rq, p, 0);
+
+	return rq;
+}
+
+struct migration_arg {
+	struct task_struct		*task;
+	int				dest_cpu;
+	struct set_affinity_pending	*pending;
+};
+
+/*
+ * @refs: number of wait_for_completion()
+ * @stop_pending: is @stop_work in use
+ */
+struct set_affinity_pending {
+	refcount_t		refs;
+	unsigned int		stop_pending;
+	struct completion	done;
+	struct cpu_stop_work	stop_work;
+	struct migration_arg	arg;
+};
+
+/*
+ * Move (not current) task off this CPU, onto the destination CPU. We're doing
+ * this because either it can't run here any more (set_cpus_allowed()
+ * away from this CPU, or CPU going down), or because we're
+ * attempting to rebalance this task on exec (sched_exec).
+ *
+ * So we race with normal scheduler movements, but that's OK, as long
+ * as the task is no longer on this CPU.
+ */
+static struct rq *__migrate_task(struct rq *rq, struct rq_flags *rf,
+				 struct task_struct *p, int dest_cpu)
+{
+	/* Affinity changed (again). */
+	if (!is_cpu_allowed(p, dest_cpu))
+		return rq;
+
+	update_rq_clock(rq);
+	rq = move_queued_task(rq, rf, p, dest_cpu);
+
+	return rq;
+}
+
+/*
+ * migration_cpu_stop - this will be executed by a highprio stopper thread
+ * and performs thread migration by bumping thread off CPU then
+ * 'pushing' onto another runqueue.
+ */
+static int migration_cpu_stop(void *data)
+{
+	struct migration_arg *arg = data;
+	struct set_affinity_pending *pending = arg->pending;
+	struct task_struct *p = arg->task;
+	struct rq *rq = this_rq();
+	bool complete = false;
+	struct rq_flags rf;
+
+	/*
+	 * The original target CPU might have gone down and we might
+	 * be on another CPU but it doesn't matter.
+	 */
+	local_irq_save(rf.flags);
+	/*
+	 * We need to explicitly wake pending tasks before running
+	 * __migrate_task() such that we will not miss enforcing cpus_ptr
+	 * during wakeups, see set_cpus_allowed_ptr()'s TASK_WAKING test.
+	 */
+	flush_smp_call_function_from_idle();
+
+	raw_spin_lock(&p->pi_lock);
+	rq_lock(rq, &rf);
+
+	/*
+	 * If we were passed a pending, then ->stop_pending was set, thus
+	 * p->migration_pending must have remained stable.
+	 */
+	WARN_ON_ONCE(pending && pending != p->migration_pending);
+
+	/*
+	 * If task_rq(p) != rq, it cannot be migrated here, because we're
+	 * holding rq->lock, if p->on_rq == 0 it cannot get enqueued because
+	 * we're holding p->pi_lock.
+	 */
+	if (task_rq(p) == rq) {
+		if (is_migration_disabled(p))
+			goto out;
+
+		if (pending) {
+			p->migration_pending = NULL;
+			complete = true;
+
+			if (cpumask_test_cpu(task_cpu(p), &p->cpus_mask))
+				goto out;
+		}
+
+		if (task_on_rq_queued(p))
+			rq = __migrate_task(rq, &rf, p, arg->dest_cpu);
+		else
+			p->wake_cpu = arg->dest_cpu;
+
 		/*
-		 * Someone passed in garbage, we give up.
+		 * XXX __migrate_task() can fail, at which point we might end
+		 * up running on a dodgy CPU, AFAICT this can only happen
+		 * during CPU hotplug, at which point we'll get pushed out
+		 * anyway, so it's probably not a big deal.
 		 */
-		DEBUG_LOCKS_WARN_ON(1);
-		return NULL;
+
+	} else if (pending) {
+		/*
+		 * This happens when we get migrated between migrate_enable()'s
+		 * preempt_enable() and scheduling the stopper task. At that
+		 * point we're a regular task again and not current anymore.
+		 *
+		 * A !PREEMPT kernel has a giant hole here, which makes it far
+		 * more likely.
+		 */
+
+		/*
+		 * The task moved before the stopper got to run. We're holding
+		 * ->pi_lock, so the allowed mask is stable - if it got
+		 * somewhere allowed, we're done.
+		 */
+		if (cpumask_test_cpu(task_cpu(p), p->cpus_ptr)) {
+			p->migration_pending = NULL;
+			complete = true;
+			goto out;
+		}
+
+		/*
+		 * When migrate_enable() hits a rq mis-match we can't reliably
+		 * determine is_migration_disabled() and so have to chase after
+		 * it.
+		 */
+		WARN_ON_ONCE(!pending->stop_pending);
+		task_rq_unlock(rq, p, &rf);
+		stop_one_cpu_nowait(task_cpu(p), migration_cpu_stop,
+				    &pending->arg, &pending->stop_work);
+		return 0;
+	}
+out:
+	if (pending)
+		pending->stop_pending = false;
+	task_rq_unlock(rq, p, &rf);
+
+	if (complete)
+		complete_all(&pending->done);
+
+	return 0;
+}
+
+int push_cpu_stop(void *arg)
+{
+	struct rq *lowest_rq = NULL, *rq = this_rq();
+	struct task_struct *p = arg;
+
+	raw_spin_lock_irq(&p->pi_lock);
+	raw_spin_rq_lock(rq);
+
+	if (task_rq(p) != rq)
+		goto out_unlock;
+
+	if (is_migration_disabled(p)) {
+		p->migration_flags |= MDF_PUSH;
+		goto out_unlock;
+	}
+
+	p->migration_flags &= ~MDF_PUSH;
+
+	if (p->sched_class->find_lock_rq)
+		lowest_rq = p->sched_class->find_lock_rq(p, rq);
+
+	if (!lowest_rq)
+		goto out_unlock;
+
+	// XXX validate p is still the highest prio task
+	if (task_rq(p) == rq) {
+		deactivate_task(rq, p, 0);
+		set_task_cpu(p, lowest_rq->cpu);
+		activate_task(lowest_rq, p, 0);
+		resched_curr(lowest_rq);
+	}
+
+	double_unlock_balance(rq, lowest_rq);
+
+out_unlock:
+	rq->push_busy = false;
+	raw_spin_rq_unlock(rq);
+	raw_spin_unlock_irq(&p->pi_lock);
+
+	put_task_struct(p);
+	return 0;
+}
+
+/*
+ * sched_class::set_cpus_allowed must do the below, but is not required to
+ * actually call this function.
+ */
+void set_cpus_allowed_common(struct task_struct *p, const struct cpumask *new_mask, u32 flags)
+{
+	if (flags & (SCA_MIGRATE_ENABLE | SCA_MIGRATE_DISABLE)) {
+		p->cpus_ptr = new_mask;
+		return;
+	}
+
+	cpumask_copy(&p->cpus_mask, new_mask);
+	p->nr_cpus_allowed = cpumask_weight(new_mask);
+}
+
+static void
+__do_set_cpus_allowed(struct task_struct *p, const struct cpumask *new_mask, u32 flags)
+{
+	struct rq *rq = task_rq(p);
+	bool queued, running;
+
+	/*
+	 * This here violates the locking rules for affinity, since we're only
+	 * supposed to change these variables while holding both rq->lock and
+	 * p->pi_lock.
+	 *
+	 * HOWEVER, it magically works, because ttwu() is the only code that
+	 * accesses these variables under p->pi_lock and only does so after
+	 * smp_cond_load_acquire(&p->on_cpu, !VAL), and we're in __schedule()
+	 * before finish_task().
+	 *
+	 * XXX do further audits, this smells like something putrid.
+	 */
+	if (flags & SCA_MIGRATE_DISABLE)
+		SCHED_WARN_ON(!p->on_cpu);
+	else
+		lockdep_assert_held(&p->pi_lock);
+
+	queued = task_on_rq_queued(p);
+	running = task_current(rq, p);
+
+	if (queued) {
+		/*
+		 * Because __kthread_bind() calls this on blocked tasks without
+		 * holding rq->lock.
+		 */
+		lockdep_assert_rq_held(rq);
+		dequeue_task(rq, p, DEQUEUE_SAVE | DEQUEUE_NOCLOCK);
+	}
+	if (running)
+		put_prev_task(rq, p);
+
+	p->sched_class->set_cpus_allowed(p, new_mask, flags);
+
+	if (queued)
+		enqueue_task(rq, p, ENQUEUE_RESTORE | ENQUEUE_NOCLOCK);
+	if (running)
+		set_next_task(rq, p);
+}
+
+void do_set_cpus_allowed(struct task_struct *p, const struct cpumask *new_mask)
+{
+	__do_set_cpus_allowed(p, new_mask, 0);
+}
+
+int dup_user_cpus_ptr(struct task_struct *dst, struct task_struct *src,
+		      int node)
+{
+	if (!src->user_cpus_ptr)
+		return 0;
+
+	dst->user_cpus_ptr = kmalloc_node(cpumask_size(), GFP_KERNEL, node);
+	if (!dst->user_cpus_ptr)
+		return -ENOMEM;
+
+	cpumask_copy(dst->user_cpus_ptr, src->user_cpus_ptr);
+	return 0;
+}
+
+static inline struct cpumask *clear_user_cpus_ptr(struct task_struct *p)
+{
+	struct cpumask *user_mask = NULL;
+
+	swap(p->user_cpus_ptr, user_mask);
+
+	return user_mask;
+}
+
+void release_user_cpus_ptr(struct task_struct *p)
+{
+	kfree(clear_user_cpus_ptr(p));
+}
+
+/*
+ * This function is wildly self concurrent; here be dragons.
+ *
+ *
+ * When given a valid mask, __set_cpus_allowed_ptr() must block until the
+ * designated task is enqueued on an allowed CPU. If that task is currently
+ * running, we have to kick it out using the CPU stopper.
+ *
+ * Migrate-Disable comes along and tramples all over our nice sandcastle.
+ * Consider:
+ *
+ *     Initial conditions: P0->cpus_mask = [0, 1]
+ *
+ *     P0@CPU0                  P1
+ *
+ *     migrate_disable();
+ *     <preempted>
+ *                              set_cpus_allowed_ptr(P0, [1]);
+ *
+ * P1 *cannot* return from this set_cpus_allowed_ptr() call until P0 executes
+ * its outermost migrate_enable() (i.e. it exits its Migrate-Disable region).
+ * This means we need the following scheme:
+ *
+ *     P0@CPU0                  P1
+ *
+ *     migrate_disable();
+ *     <preempted>
+ *                              set_cpus_allowed_ptr(P0, [1]);
+ *                                <blocks>
+ *     <resumes>
+ *     migrate_enable();
+ *       __set_cpus_allowed_ptr();
+ *       <wakes local stopper>
+ *                         `--> <woken on migration completion>
+ *
+ * Now the fun stuff: there may be several P1-like tasks, i.e. multiple
+ * concurrent set_cpus_allowed_ptr(P0, [*]) calls. CPU affinity changes of any
+ * task p are serialized by p->pi_lock, which we can leverage: the one that
+ * should come into effect at the end of the Migrate-Disable region is the last
+ * one. This means we only need to track a single cpumask (i.e. p->cpus_mask),
+ * but we still need to properly signal those waiting tasks at the appropriate
+ * moment.
+ *
+ * This is implemented using struct set_affinity_pending. The first
+ * __set_cpus_allowed_ptr() caller within a given Migrate-Disable region will
+ * setup an instance of that struct and install it on the targeted task_struct.
+ * Any and all further callers will reuse that instance. Those then wait for
+ * a completion signaled at the tail of the CPU stopper callback (1), triggered
+ * on the end of the Migrate-Disable region (i.e. outermost migrate_enable()).
+ *
+ *
+ * (1) In the cases covered above. There is one more where the completion is
+ * signaled within affine_move_task() itself: when a subsequent affinity request
+ * occurs after the stopper bailed out due to the targeted task still being
+ * Migrate-Disable. Consider:
+ *
+ *     Initial conditions: P0->cpus_mask = [0, 1]
+ *
+ *     CPU0		  P1				P2
+ *     <P0>
+ *       migrate_disable();
+ *       <preempted>
+ *                        set_cpus_allowed_ptr(P0, [1]);
+ *                          <blocks>
+ *     <migration/0>
+ *       migration_cpu_stop()
+ *         is_migration_disabled()
+ *           <bails>
+ *                                                       set_cpus_allowed_ptr(P0, [0, 1]);
+ *                                                         <signal completion>
+ *                          <awakes>
+ *
+ * Note that the above is safe vs a concurrent migrate_enable(), as any
+ * pending affinity completion is preceded by an uninstallation of
+ * p->migration_pending done with p->pi_lock held.
+ */
+static int affine_move_task(struct rq *rq, struct task_struct *p, struct rq_flags *rf,
+			    int dest_cpu, unsigned int flags)
+{
+	struct set_affinity_pending my_pending = { }, *pending = NULL;
+	bool stop_pending, complete = false;
+
+	/* Can the task run on the task's current CPU? If so, we're done */
+	if (cpumask_test_cpu(task_cpu(p), &p->cpus_mask)) {
+		struct task_struct *push_task = NULL;
+
+		if ((flags & SCA_MIGRATE_ENABLE) &&
+		    (p->migration_flags & MDF_PUSH) && !rq->push_busy) {
+			rq->push_busy = true;
+			push_task = get_task_struct(p);
+		}
+
+		/*
+		 * If there are pending waiters, but no pending stop_work,
+		 * then complete now.
+		 */
+		pending = p->migration_pending;
+		if (pending && !pending->stop_pending) {
+			p->migration_pending = NULL;
+			complete = true;
+		}
+
+		task_rq_unlock(rq, p, rf);
+
+		if (push_task) {
+			stop_one_cpu_nowait(rq->cpu, push_cpu_stop,
+					    p, &rq->push_work);
+		}
+
+		if (complete)
+			complete_all(&pending->done);
+
+		return 0;
+	}
+
+	if (!(flags & SCA_MIGRATE_ENABLE)) {
+		/* serialized by p->pi_lock */
+		if (!p->migration_pending) {
+			/* Install the request */
+			refcount_set(&my_pending.refs, 1);
+			init_completion(&my_pending.done);
+			my_pending.arg = (struct migration_arg) {
+				.task = p,
+				.dest_cpu = dest_cpu,
+				.pending = &my_pending,
+			};
+
+			p->migration_pending = &my_pending;
+		} else {
+			pending = p->migration_pending;
+			refcount_inc(&pending->refs);
+			/*
+			 * Affinity has changed, but we've already installed a
+			 * pending. migration_cpu_stop() *must* see this, else
+			 * we risk a completion of the pending despite having a
+			 * task on a disallowed CPU.
+			 *
+			 * Serialized by p->pi_lock, so this is safe.
+			 */
+			pending->arg.dest_cpu = dest_cpu;
+		}
+	}
+	pending = p->migration_pending;
+	/*
+	 * - !MIGRATE_ENABLE:
+	 *   we'll have installed a pending if there wasn't one already.
+	 *
+	 * - MIGRATE_ENABLE:
+	 *   we're here because the current CPU isn't matching anymore,
+	 *   the only way that can happen is because of a concurrent
+	 *   set_cpus_allowed_ptr() call, which should then still be
+	 *   pending completion.
+	 *
+	 * Either way, we really should have a @pending here.
+	 */
+	if (WARN_ON_ONCE(!pending)) {
+		task_rq_unlock(rq, p, rf);
+		return -EINVAL;
+	}
+
+	if (task_running(rq, p) || READ_ONCE(p->__state) == TASK_WAKING) {
+		/*
+		 * MIGRATE_ENABLE gets here because 'p == current', but for
+		 * anything else we cannot do is_migration_disabled(), punt
+		 * and have the stopper function handle it all race-free.
+		 */
+		stop_pending = pending->stop_pending;
+		if (!stop_pending)
+			pending->stop_pending = true;
+
+		if (flags & SCA_MIGRATE_ENABLE)
+			p->migration_flags &= ~MDF_PUSH;
+
+		task_rq_unlock(rq, p, rf);
+
+		if (!stop_pending) {
+			stop_one_cpu_nowait(cpu_of(rq), migration_cpu_stop,
+					    &pending->arg, &pending->stop_work);
+		}
+
+		if (flags & SCA_MIGRATE_ENABLE)
+			return 0;
+	} else {
+
+		if (!is_migration_disabled(p)) {
+			if (task_on_rq_queued(p))
+				rq = move_queued_task(rq, rf, p, dest_cpu);
+
+			if (!pending->stop_pending) {
+				p->migration_pending = NULL;
+				complete = true;
+			}
+		}
+		task_rq_unlock(rq, p, rf);
+
+		if (complete)
+			complete_all(&pending->done);
+	}
+
+	wait_for_completion(&pending->done);
+
+	if (refcount_dec_and_test(&pending->refs))
+		wake_up_var(&pending->refs); /* No UaF, just an address */
+
+	/*
+	 * Block the original owner of &pending until all subsequent callers
+	 * have seen the completion and decremented the refcount
+	 */
+	wait_var_event(&my_pending.refs, !refcount_read(&my_pending.refs));
+
+	/* ARGH */
+	WARN_ON_ONCE(my_pending.stop_pending);
+
+	return 0;
+}
+
+/*
+ * Called with both p->pi_lock and rq->lock held; drops both before returning.
+ */
+static int __set_cpus_allowed_ptr_locked(struct task_struct *p,
+					 const struct cpumask *new_mask,
+					 u32 flags,
+					 struct rq *rq,
+					 struct rq_flags *rf)
+	__releases(rq->lock)
+	__releases(p->pi_lock)
+{
+	const struct cpumask *cpu_allowed_mask = task_cpu_possible_mask(p);
+	const struct cpumask *cpu_valid_mask = cpu_active_mask;
+	bool kthread = p->flags & PF_KTHREAD;
+	struct cpumask *user_mask = NULL;
+	unsigned int dest_cpu;
+	int ret = 0;
+
+	update_rq_clock(rq);
+
+	if (kthread || is_migration_disabled(p)) {
+		/*
+		 * Kernel threads are allowed on online && !active CPUs,
+		 * however, during cpu-hot-unplug, even these might get pushed
+		 * away if not KTHREAD_IS_PER_CPU.
+		 *
+		 * Specifically, migration_disabled() tasks must not fail the
+		 * cpumask_any_and_distribute() pick below, esp. so on
+		 * SCA_MIGRATE_ENABLE, otherwise we'll not call
+		 * set_cpus_allowed_common() and actually reset p->cpus_ptr.
+		 */
+		cpu_valid_mask = cpu_online_mask;
+	}
+
+	if (!kthread && !cpumask_subset(new_mask, cpu_allowed_mask)) {
+		ret = -EINVAL;
+		goto out;
 	}
 
 	/*
-	 * At this point, if the passed hlock->class_idx is still garbage,
-	 * we just have to live with it
+	 * Must re-check here, to close a race against __kthread_bind(),
+	 * sched_setaffinity() is not guaranteed to observe the flag.
 	 */
-	return lock_classes + class_idx;
-}
+	if ((flags & SCA_CHECK) && (p->flags & PF_NO_SETAFFINITY)) {
+		ret = -EINVAL;
+		goto out;
+	}
 
-#ifdef CONFIG_LOCK_STAT
-static DEFINE_PER_CPU(struct lock_class_stats[MAX_LOCKDEP_KEYS], cpu_lock_stats);
+	if (!(flags & SCA_MIGRATE_ENABLE)) {
+		if (cpumask_equal(&p->cpus_mask, new_mask))
+			goto out;
 
-static inline u64 lockstat_clock(void)
-{
-	return local_clock();
-}
-
-static int lock_point(unsigned long points[], unsigned long ip)
-{
-	int i;
-
-	for (i = 0; i < LOCKSTAT_POINTS; i++) {
-		if (points[i] == 0) {
-			points[i] = ip;
-			break;
+		if (WARN_ON_ONCE(p == current &&
+				 is_migration_disabled(p) &&
+				 !cpumask_test_cpu(task_cpu(p), new_mask))) {
+			ret = -EBUSY;
+			goto out;
 		}
-		if (points[i] == ip)
-			break;
 	}
 
-	return i;
-}
-
-static void lock_time_inc(struct lock_time *lt, u64 time)
-{
-	if (time > lt->max)
-		lt->max = time;
-
-	if (time < lt->min || !lt->nr)
-		lt->min = time;
-
-	lt->total += time;
-	lt->nr++;
-}
-
-static inline void lock_time_add(struct lock_time *src, struct lock_time *dst)
-{
-	if (!src->nr)
-		return;
-
-	if (src->max > dst->max)
-		dst->max = src->max;
-
-	if (src->min < dst->min || !dst->nr)
-		dst->min = src->min;
-
-	dst->total += src->total;
-	dst->nr += src->nr;
-}
-
-struct lock_class_stats lock_stats(struct lock_class *class)
-{
-	struct lock_class_stats stats;
-	int cpu, i;
-
-	memset(&stats, 0, sizeof(struct lock_class_stats));
-	for_each_possible_cpu(cpu) {
-		struct lock_class_stats *pcs =
-			&per_cpu(cpu_lock_stats, cpu)[class - lock_classes];
-
-		for (i = 0; i < ARRAY_SIZE(stats.contention_point); i++)
-			stats.contention_point[i] += pcs->contention_point[i];
-
-		for (i = 0; i < ARRAY_SIZE(stats.contending_point); i++)
-			stats.contending_point[i] += pcs->contending_point[i];
-
-		lock_time_add(&pcs->read_waittime, &stats.read_waittime);
-		lock_time_add(&pcs->write_waittime, &stats.write_waittime);
-
-		lock_time_add(&pcs->read_holdtime, &stats.read_holdtime);
-		lock_time_add(&pcs->write_holdtime, &stats.write_holdtime);
-
-		for (i = 0; i < ARRAY_SIZE(stats.bounces); i++)
-			stats.bounces[i] += pcs->bounces[i];
+	/*
+	 * Picking a ~random cpu helps in cases where we are changing affinity
+	 * for groups of tasks (ie. cpuset), so that load balancing is not
+	 * immediately required to distribute the tasks within their new mask.
+	 */
+	dest_cpu = cpumask_any_and_distribute(cpu_valid_mask, new_mask);
+	if (dest_cpu >= nr_cpu_ids) {
+		ret = -EINVAL;
+		goto out;
 	}
 
-	return stats;
+	__do_set_cpus_allowed(p, new_mask, flags);
+
+	if (flags & SCA_USER)
+		user_mask = clear_user_cpus_ptr(p);
+
+	ret = affine_move_task(rq, p, rf, dest_cpu, flags);
+
+	kfree(user_mask);
+
+	return ret;
+
+out:
+	task_rq_unlock(rq, p, rf);
+
+	return ret;
 }
-
-void clear_lock_stats(struct lock_class *class)
-{
-	int cpu;
-
-	for_each_possible_cpu(cpu) {
-		struct lock_class_stats *cpu_stats =
-			&per_cpu(cpu_lock_stats, cpu)[class - lock_classes];
-
-		memset(cpu_stats, 0, sizeof(struct lock_class_stats));
-	}
-	memset(class->contention_point, 0, sizeof(class->contention_point));
-	memset(class->contending_point, 0, sizeof(class->contending_point));
-}
-
-static struct lock_class_stats *get_lock_stats(struct lock_class *class)
-{
-	return &this_cpu_ptr(cpu_lock_stats)[class - lock_classes];
-}
-
-static void lock_release_holdtime(struct held_lock *hlock)
-{
-	struct lock_class_stats *stats;
-	u64 holdtime;
-
-	if (!lock_stat)
-		return;
-
-	holdtime = lockstat_clock() - hlock->holdtime_stamp;
-
-	stats = get_lock_stats(hlock_class(hlock));
-	if (hlock->read)
-		lock_time_inc(&stats->read_holdtime, holdtime);
-	else
-		lock_time_inc(&stats->write_holdtime, holdtime);
-}
-#else
-static inline void lock_release_holdtime(struct held_lock *hlock)
-{
-}
-#endif
 
 /*
- * We keep a global list of all lock classes. The list is only accessed with
- * the lockdep spinlock lock held. free_lock_classes is a list with free
- * elements. These elements are linked together by the lock_entry member in
- * struct lock_class.
+ * Change a given task's CPU affinity. Migrate the thread to a
+ * proper CPU and schedule it away if the CPU it's executing on
+ * is removed from the allowed bitmask.
+ *
+ * NOTE: the caller must have a valid reference to the task, the
+ * task must not exit() & deallocate itself prematurely. The
+ * call is not atomic; no spinlocks may be held.
  */
-static LIST_HEAD(all_lock_classes);
-static LIST_HEAD(free_lock_classedcard include/config/INLINE_WRITE_UNLOCK_IRQRESTORE) \
-  include/linux/irqhandler.h \
-  include/linux/irqreturn.h \
-  include/linux/irqnr.h \
-  include/uapi/linux/irqnr.h \
-  include/linux/topology.h \
-    $(wildcard include/config/USE_PERCPU_NUMA_NODE_ID) \
-    $(wildcard include/config/HAVE_MEMORYLESS_NODES) \
-    $(wildcard include/config/SCHED_SMT) \
-    $(wildcard include/config/SCHED_CLUSTER) \
-  include/linux/arch_topology.h \
-    $(wildcard include/config/ACPI_CPPC_LIB) \
-    $(wildcard include/config/GENERIC_ARCH_TOPOLOGY) \
-  include/linux/percpu.h \
-    $(wildcard include/config/NEED_PER_CPU_EMBED_FIRST_CHUNK) \
-    $(wildcard include/config/NEED_PER_CPU_PAGE_FIRST_CHUNK) \
-  include/linux/mmdebug.h \
-    $(wildcard include/config/DEBUG_VM) \
-    $(wildcard include/config/DEBUG_VM_PGFLAGS) \
-  include/linux/mmzone.h \
-    $(wildcard include/config/FORCE_MAX_ZONEORDER) \
-    $(wildcard include/config/CMA) \
-    $(wildcard include/config/MEMORY_ISOLATION) \
-    $(wildcard include/config/ZSMALLOC) \
-    $(wildcard include/config/SWAP) \
-    $(wildcard include/config/NUMA_BALANCING) \
-    $(wildcard include/config/TRANSPARENT_HUGEPAGE) \
-    $(wildcard include/config/MEMCG) \
-    $(wildcard include/config/ZONE_DMA) \
-    $(wildcard include/config/ZONE_DMA32) \
-    $(wildcard include/config/HIGHMEM) \
-    $(wildcard include/config/ZONE_DEVICE) \
-    $(wildcard include/config/MEMORY_HOTPLUG) \
-    $(wildcard include/config/COMPACTION) \
-    $(wildcard include/config/PAGE_EXTENSION) \
-    $(wildcard include/config/DEFERRED_STRUCT_PAGE_INIT) \
-    $(wildcard include/config/SPARSEMEM_EXTREME) \
-    $(wildcard include/config/HAVE_ARCH_PFN_VALID) \
-  include/linux/wait.h \
-  include/uapi/linux/wait.h \
-  include/linux/numa.h \
-    $(wildcard include/config/NODES_SHIFT) \
-    $(wildcard include/config/NUMA_KEEP_MEMINFO) \
-    $(wildcard include/config/HAVE_ARCH_NODE_DEV_GROUP) \
-  arch/x86/include/asm/sparsemem.h \
-  include/linux/seqlock.h \
-  include/linux/mutex.h \
-    $(wildcard include/config/MUTEX_SPIN_ON_OWNER) \
-    $(wildcard include/config/DEBUG_MUTEXES) \
-  include/linux/osq_lock.h \
-  include/linux/debug_locks.h \
-  include/linux/ww_mutex.h \
-    $(wildcard include/config/DEBUG_RT_MUTEXES) \
-    $(wildcard include/config/DEBUG_WW_MUTEX_SLOWPATH) \
-  include/linux/rtmutex.h \
-  include/linux/rbtree_types.h \
-  include/linux/nodemask.h \
-  include/linux/pageblock-flags.h \
-    $(wildcard include/config/HUGETLB_PAGE) \
-    $(wildcard include/config/HUGETLB_PAGE_SIZE_VARIABLE) \
-  include/linux/page-flags-layout.h \
-    $(wildcard include/config/KASAN_HW_TAGS) \
-  include/generated/bounds.h \
-  include/linux/mm_types.h \
-    $(wildcard include/config/HAVE_ALIGNED_STRUCT_PAGE) \
-    $(wildcard include/config/USERFAULTFD) \
-    $(wildcard include/config/HAVE_ARCH_COMPAT_MMAP_BASES) \
-    $(wildcard include/config/MEMBARRIER) \
-    $(wildcard include/config/AIO) \
-    $(wildcard include/config/MMU_NOTIFIER) \
-    $(wildcard include/config/ARCH_WANT_BATCHED_UNMAP_TLB_FLUSH) \
-    $(wildcard include/config/IOMMU_SVA) \
-  include/linux/mm_types_task.h \
-    $(wildcard include/config/SPLIT_PTLOCK_CPUS) \
-    $(wildcard include/config/ARCH_ENABLE_SPLIT_PMD_PTLOCK) \
-  arch/x86/include/asm/tlbbatch.h \
-  include/linux/auxvec.h \
-  include/uapi/linux/auxvec.h \
-  arch/x86/include/uapi/asm/auxvec.h \
-  include/linux/kref.h \
-  include/linux/refcount.h \
-  include/linux/rbtree.h \
-  include/linux/rcupdate.h \
-    $(wildcard include/config/PREEMPT_RCU) \
-    $(wildcard include/config/TINY_RCU) \
-    $(wildcard include/config/RCU_STRICT_GRACE_PERIOD) \
-    $(wildcard include/config/TASKS_RCU_GENERIC) \
-    $(wildcard include/config/RCU_STALL_COMMON) \
-    $(wildcard include/config/NO_HZ_FULL) \
-    $(wildcard include/config/RCU_NOCB_CPU) \
-    $(wildcard include/config/TASKS_RCU) \
-    $(wildcard include/config/TASKS_TRACE_RCU) \
-    $(wildcard include/config/TASKS_RUDE_RCU) \
-    $(wildcard include/config/TREE_RCU) \
-    $(wildcard include/config/DEBUG_OBJECTS_RCU_HEAD) \
-    $(wildcard include/config/PROVE_RCU) \
-    $(wildcard include/config/ARCH_WEAK_RELEASE_ACQUIRE) \
-  include/linux/rcutree.h \
-  include/linux/rwsem.h \
-    $(wildcard include/config/RWSEM_SPIN_ON_OWNER) \
-    $(wildcard include/config/DEBUG_RWSEMS) \
-  include/linux/completion.h \
-  include/linux/swait.h \
-  include/linux/uprobes.h \
-    $(wildcard include/config/UPROBES) \
-  arch/x86/include/asm/uprobes.h \
-  include/linux/notifier.h \
-    $(wildcard include/config/TREE_SRCU) \
-  include/linux/srcu.h \
-    $(wildcard include/config/TINY_SRCU) \
-    $(wildcard include/config/SRCU) \
-  include/linux/workqueue.h \
-    $(wildcard include/config/DEBUG_OBJECTS_WORK) \
-    $(wildcard include/config/FREEZER) \
-    $(wildcard include/config/SYSFS) \
-    $(wildcard include/config/WQ_WATCHDOG) \
-  include/linux/timer.h \
-    $(wildcard include/config/DEBUG_OBJECTS_TIMERS) \
-    $(wildcard include/config/NO_HZ_COMMON) \
-  include/linux/ktime.h \
-  include/linux/time.h \
-    $(wildcard include/config/POSIX_TIMERS) \
-  include/linux/time32.h \
-  include/linux/timex.h \
-  include/uapi/linux/timex.h \
-  arch/x86/include/asm/timex.h \
-    $(wildcard include/config/X86_TSC) \
-  arch/x86/include/asm/tsc.h \
-  include/vdso/time32.h \
-  include/vdso/time.h \
-  include/linux/jiffies.h \
-  include/vdso/jiffies.h \
-  include/generated/timeconst.h \
-  include/vdso/ktime.h \
-  include/linux/timekeeping.h \
-    $(wildcard include/config/GENERIC_CMOS_UPDATE) \
-  include/linux/clocksource_ids.h \
-  include/linux/debugobjects.h \
-    $(wildcard include/config/DEBUG_OBJECTS) \
-    $(wildcard include/config/DEBUG_OBJECTS_FREE) \
-  include/linux/rcu_segcblist.h \
-  include/linux/srcutree.h \
-  include/linux/rcu_node_tree.h \
-    $(wildcard include/config/RCU_FANOUT) \
-    $(wildcard include/config/RCU_FANOUT_LEAF) \
-  arch/x86/include/asm/mmu.h \
-    $(wildcard include/config/MODIFY_LDT_SYSCALL) \
-  include/linux/page-flags.h \
-    $(wildcard include/config/ARCH_USES_PG_UNCACHED) \
-    $(wildcard include/config/MEMORY_FAILURE) \
-    $(wildcard include/config/PAGE_IDLE_FLAG) \
-    $(wildcard include/config/HUGETLB_PAGE_FREE_VMEMMAP) \
-    $(wildcard include/config/HUGETLB_PAGE_FREE_VMEMMAP_DEFAULT_ON) \
-    $(wildcard include/config/KSM) \
-  include/linux/local_lock.h \
-  include/linux/local_lock_internal.h \
-  include/linux/memory_hotplug.h \
-    $(wildcard include/config/HAVE_ARCH_NODEDATA_EXTENSION) \
-    $(wildcard include/config/ARCH_HAS_ADD_PAGES) \
-    $(wildcard include/config/MEMORY_HOTREMOVE) \
-  arch/x86/include/asm/mmzone.h \
-  arch/x86/include/asm/mmzone_32.h \
-  arch/x86/include/asm/topology.h \
-    $(wildcard include/config/SCHED_MC_PRIO) \
-  arch/x86/include/asm/mpspec.h \
-    $(wildcard include/config/EISA) \
-    $(wildcard include/config/X86_MPPARSE) \
-  arch/x86/include/asm/mpspec_def.h \
-  arch/x86/include/asm/x86_init.h \
-  arch/x86/include/asm/apicdef.h \
-  include/asm-generic/topology.h \
-  include/linux/io.h \
-    $(wildcard include/config/HAS_IOPORT_MAP) \
-    $(wildcard include/config/PCI) \
-  arch/x86/include/asm/io.h \
-    $(wildcard include/config/MTRR) \
-    $(wildcard include/config/X86_PAT) \
-  arch/x86/include/generated/asm/early_ioremap.h \
-  include/asm-generic/early_ioremap.h \
-    $(wildcard include/config/GENERIC_EARLY_IOREMAP) \
-  include/asm-generic/iomap.h \
-  include/asm-generic/pci_iomap.h \
-    $(wildcard include/config/NO_GENERIC_PCI_IOPORT_MAP) \
-    $(wildcard include/config/GENERIC_PCI_IOMAP) \
-  include/asm-generic/io.h \
-    $(wildcard include/config/GENERIC_IOMAP) \
-    $(wildcard include/config/GENERIC_IOREMAP) \
-    $(wildcard include/config/VIRT_TO_BUS) \
-    $(wildcard include/config/GENERIC_DEVMEM_IS_ALLOWED) \
-  include/linux/logic_pio.h \
-    $(wildcard include/config/INDIRECT_PIO) \
-  include/linux/fwnode.h \
-  include/linux/vmalloc.h \
-    $(wildcard include/config/KASAN_VMALLOC) \
-    $(wildcard include/config/HAVE_ARCH_HUGE_VMALLOC) \
-  include/linux/overflow.h \
-  arch/x86/include/asm/vmalloc.h \
-    $(wildcard include/config/HAVE_ARCH_HUGE_VMAP) \
-  arch/x86/include/asm/pgtable_areas.h \
-  arch/x86/include/asm/pgtable_32_areas.h \
-  arch/x8
-    $(wildcard include/config/CONTEXT_TRACKING) \
-  include/linux/ftrace_irq.h \
-    $(wildcard include/config/HWLAT_TRACER) \
-    $(wildcard include/config/OSNOISE_TRACER) \
-  include/linux/vtime.h \
-    $(wildcard include/config/VIRT_CPU_ACCOUNTING) \
-    $(wildcard include/config/IRQ_TIME_ACCOUNTING) \
-  arch/x86/include/asm/hardirq.h \
-    $(wildcard include/config/KVM_INTEL) \
-    $(wildcard include/config/X86_THERMAL_VECTOR) \
-    $(wildcard include/config/X86_MCE_THRESHOLD) \
-    $(wildcard include/config/X86_MCE_AMD) \
-    $(wildcard include/config/X86_HV_CALLBACK_VECTOR) \
-  include/linux/highmem-internal.h \
-  arch/x86/include/asm/highmem.h \
-  include/linux/interrupt.h \
-    $(wildcard include/config/IRQ_FORCED_THREADING) \
-    $(wildcard include/config/GENERIC_IRQ_PROBE) \
-    $(wildcard include/config/IRQ_TIMINGS) \
-  include/linux/irqreturn.h \
-  include/linux/irqnr.h \
-  include/uapi/linux/irqnr.h \
-  arch/x86/include/asm/irq.h \
-  arch/x86/include/asm/tlbflush.h \
-  arch/x86/include/asm/invpcid.h \
-  arch/x86/include/asm/pti.h \
-  include/linux/socket.h \
-  arch/x86/include/generated/uapi/asm/socket.h \
-  include/uapi/asm-generic/socket.h \
-  arch/x86/include/generated/uapi/asm/sockios.h \
-  include/uapi/asm-generic/sockios.h \
-  include/uapi/linux/sockios.h \
-  include/linux/uio.h \
-    $(wildcard include/config/ARCH_HAS_UACCESS_FLUSHCACHE) \
-  include/uapi/linux/uio.h \
-  include/uapi/linux/socket.h \
-  include/linux/net.h \
-  include/linux/random.h \
-    $(wildcard include/config/VMGENID) \
-    $(wildcard include/config/ARCH_RANDOM) \
-  include/linux/once.h \
-  include/uapi/linux/random.h \
-  include/linux/prandom.h \
-  include/linux/siphash.h \
-  arch/x86/include/asm/archrandom.h \
-  include/uapi/linux/net.h \
-  include/linux/textsearch.h \
-  include/net/checksum.h \
-  arch/x86/include/asm/checksum.h \
-  arch/x86/include/asm/checksum_32.h \
-  include/linux/in6.h \
-  include/uapi/linux/in6.h \
-  include/uapi/linux/libc-compat.h \
-  include/linux/dma-mapping.h \
-    $(wildcard include/config/DMA_API_DEBUG) \
-    $(wildcard include/config/HAS_DMA) \
-    $(wildcard include/config/NEED_DMA_MAP_STATE) \
-  include/linux/device.h \
-    $(wildcard include/config/GENERIC_MSI_IRQ_DOMAIN) \
-    $(wildcard include/config/GENERIC_MSI_IRQ) \
-    $(wildcard include/config/ENERGY_MODEL) \
-    $(wildcard include/config/PINCTRL) \
-    $(wildcard include/config/DMA_OPS) \
-    $(wildcard include/config/DMA_DECLARE_COHERENT) \
-    $(wildcard include/config/DMA_CMA) \
-    $(wildcard include/config/SWIOTLB) \
-    $(wildcard include/config/ARCH_HAS_SYNC_DMA_FOR_DEVICE) \
-    $(wildcard include/config/ARCH_HAS_SYNC_DMA_FOR_CPU) \
-    $(wildcard include/config/ARCH_HAS_SYNC_DMA_FOR_CPU_ALL) \
-    $(wildcard include/config/DMA_OPS_BYPASS) \
-    $(wildcard include/config/OF) \
-    $(wildcard include/config/DEVTMPFS) \
-    $(wildcard include/config/SYSFS_DEPRECATED) \
-  include/linux/dev_printk.h \
-  include/linux/energy_model.h \
-  include/linux/sched/cpufreq.h \
-    $(wildcard include/config/CPU_FREQ) \
-  include/linux/sched/topology.h \
-    $(wildcard include/config/SCHED_DEBUG) \
-    $(wildcard include/config/SCHED_MC) \
-    $(wildcard include/config/CPU_FREQ_GOV_SCHEDUTIL) \
-  include/linux/sched/idle.h \
-  include/linux/sched/sd_flags.h \
-  include/linux/ioport.h \
-  include/linux/klist.h \
-  include/linux/pm.h \
-    $(wildcard include/config/VT_CONSOLE_SLEEP) \
-    $(wildcard include/config/PM) \
-    $(wildcard include/config/PM_CLK) \
-    $(wildcard include/config/PM_GENERIC_DOMAINS) \
-  include/linux/device/bus.h \
-    $(wildcard include/config/ACPI) \
-  include/linux/device/class.h \
-  include/linux/device/driver.h \
-  arch/x86/include/asm/device.h \
-  include/linux/pm_wakeup.h \
-  include/linux/dma-direction.h \
-  include/linux/scatterlist.h \
-    $(wildcard include/config/NEED_SG_DMA_LENGTH) \
-    $(wildcard include/config/DEBUG_SG) \
-    $(wildcard include/config/SGL_ALLOC) \
-    $(wildcard include/config/ARCH_NO_SG_CHAIN) \
-    $(wildcard include/config/SG_POOL) \
-  arch/x86/include/asm/io.h \
-    $(wildcard includeELF                      L"      4     (               Ë¸ˇˇˇãÖ¿uãAÉ¯wã≈¨  âA1¿√∏Íˇˇˇ√ç¥&    çv Ë¸ˇˇˇâ¬â»ãIÖ…upãä8  âHãä<  âHãä@  âHãäD  âHãäH  âHãäL  âHãäP  âH ãäT  âH$ãäX  âH(ãä\  âH,ãä`  âH0ãíd  âP41¿√ê∏Íˇˇˇ√ç¥&    çv Ë¸ˇˇˇãà4  âJãÄ0  âB1¿√ç∂    Ë¸ˇˇˇSãX\âÿË¸ˇˇˇãClË¸ˇˇˇ1¿[√çt& Ë¸ˇˇˇÉÏãÄî   dã    âL$1…πÄˇˇfâL$Ö“t7∆D$j π   çT$Ë¸ˇˇˇX∏ºç Ë¸ˇˇˇãD$d+    u1¿Éƒ√çt& ∆D$Î«Ë¸ˇˇˇçt& Ë¸ˇˇˇSâ√ÉÏãJd°    âD$1¿Ö…tãBÖ¿Öﬂ   «B   ∏   «B   âÉ0  ãB∫Äˇˇπ   fâT$âÉ4  ãÉî   ∆D$ j çT$Ë¸ˇˇˇãì0  πÅˇˇãÉî   fâL$π   àt$j çT$	Ë¸ˇˇˇãì0  πÇˇˇãÉî   fâL$	π   àT$j çT$Ë¸ˇˇˇãì4  ãÉî   ªÑˇˇfâ\$π   àT$j çT$Ë¸ˇˇˇÉƒãD$d+    uÉƒ1¿[√çv k…9»Ü)ˇˇˇÈˇˇˇË¸ˇˇˇçv Ë¸ˇˇˇUâ≈WVSÉÏd°    âD$ãEãPãRË¸ˇˇˇ®Ñ)  ãEXâ$Ö¿Ñ"  h    çuãπ   âË¸ˇˇˇâ√XÖ€Ö¸ˇˇˇ∏d   Ë¸ˇˇˇπ¿  ∫l  âË¸ˇˇˇâ√Ö¿Ñ„  π@   âÍæ†  Ë¸ˇˇˇπ   ∫ÅˇˇÎê∑Nf¡¬àL$ãÉî   É∆fâT$π   j çT$	Ë¸ˇˇˇ∑XfÖ“uÕ∫¿  ∆D$ãÉî   π   fâT$j çT$	Ë¸ˇˇˇπ¿D  ãÉî   fâL$	π   ∆D$j çT$Ë¸ˇˇˇπ   ∫¯*  ∏'  Ë¸ˇˇˇπ   ^∫oÄˇˇ_æ|  Îçt& ∑Nf¡¬àL$ãÉî   É∆fâT$π   j çT$	Ë¸ˇˇˇ∑XfÖ“uÕ∫Ñ   æ¥  ø@  Îçt& ∑Wf¡∆àT$É«π   fât$ãÉî   j çT$	Ë¸ˇˇˇ∑7XfÖˆuÕ∫%Üˇˇ∆D$ãÉî   π   fâT$ø‡  j çT$	Ë¸ˇˇˇ∫  YÎçv ∑wf¡¬âÒãÉî   É«fâT$àL$π   j çT$	Ë¸ˇˇˇ∑XfÖ“uÀ∫Äˇˇ∆D$ π   ãÉî   fâT$æÇˇˇøÑˇˇ«É0     «É4     j çT$	Ë¸ˇˇˇãì0  πÅˇˇãÉî   fâL$	π   àt$j çT$Ë¸ˇˇˇãì0  ãÉî   π   fât$ç≥¿   àT$j çT$Ë¸ˇˇˇãì4  ãÉî   π   fâ|$çª8  àT$j çT$Ë¸ˇˇˇ1¿π   ∑UÛ´ãD$«É8  Ä  «É<  ‡  «É@     «ÉD     «ÉH     ã âÉh  ãEçà  QçQRˇ∞   ãETˇ0h,   Ë¸ˇˇˇ1…∫   âÉƒ(j Ë¸ˇˇˇπ	ò ∫0  âj há   j jj hˇ   j j Ë¸ˇˇˇπ	ò ∫0  âÉƒ$j jxj jj hˇ   j j Ë¸ˇˇˇπ	ò ∫0  âÉƒ j j j jj jj j Ë¸ˇˇˇπ	ò ∫0  âÉƒ j j j jj jj j Ë¸ˇˇˇâslãõ¸   âÉƒ Ö€u6Ë¸ˇˇˇâ√Ö¿uãD$d+    u:Éƒâÿ[^_]√çt& âË¸ˇˇˇÎ‹ç¥&    Ë¸ˇˇˇÎŒª˚ˇˇˇÎ«ªÍˇˇˇÎ¿ªÙˇˇˇÎπË¸ˇˇˇç¥&    ç¥&    êË¸ˇˇˇSÉÏãHdã    âT$1“ãP(Å˙	ò Ñê   wNÅ˙	ò tnÅ˙	ò u^∫∂ˇˇãY‘ã@|fâT$àD$π   âÿj çT$Ë¸ˇˇˇX1¿ãT$d+    uZÉƒ[√çv Å˙	ò u∫ºˇˇãY‘ã@|fâT$Î∏ç∂    ∏ÍˇˇˇÎƒêãY‘π¥ˇˇã@|fâL$Îòç∂    ãY‘π∫ˇˇã@|fâL$ÎÄË¸ˇˇˇêË¸ˇˇˇUWVâ∆SÉÏd°    âD$1¿ãAÖ¿Öé   ãAâ◊âÀçê˙ﬂˇˇÉ‚˝Ñ%  =  Ñ*  «A   π   ãCãk«C   âKâ¬É‚¸=Å  ∏Ä  C–âËÉ‡¸Å˝·  Ω‡  C≈ã+âSâCÖÌtEãC=   Ñó  =   ÑD  =  tu∏ÍˇˇˇãT$d+    Ö¬  Éƒ[^_]√ç¥&    ãâãSâPãSâPãSâPãSâPãSâPãS âPãS$âPãS(âP ãS,âP$ãS0âP(ãS4âP,1¿Îñç∂    ∫∞ˇˇç|$∆D$ãÜî   fâT$π   â˙j Ë¸ˇˇˇπ%îˇˇãÜî   fâL$∆D$ j π   â˙Ë¸ˇˇˇãCY]ãÆî   =Ä  Ñ∏  =@  ÖÌ  Å{   Ñ⁄  ∏Äˇˇ∆D$π   â˙fâD$âËΩÑˇˇj Ë¸ˇˇˇãSπÉˇˇãÜî   fâL$π   àt$â˙j Ë¸ˇˇˇãSãÜî   π   fâl$	ΩàˇˇàT$â˙j Ë¸ˇˇˇãSπáˇˇãÜî   fâL$π   àt$â˙j Ë¸ˇˇˇãSãÜî   π   fâl$àT$â˙j Ë¸ˇˇˇ∫ûˇˇãÜî   π   fâT$â˙∆D$j Ë¸ˇˇˇÉƒãCâÜ8  ãCâÜ<  ãCâÜ@  ãCâÜD  ãCâÜH  ãCâÜL  ãC âÜP  ãC$âÜT  ãC(âÜX  ãC,âÜ\  ãC0âÜ`  ãC4âÜd  1¿ÈÃ˝ˇˇçt& ø∞ˇˇ∆D$ ãÜî   π   fâ|$ç|$Ω%ñˇˇj â˙Ë¸ˇˇˇãÜî   fâl$∆D$È3˛ˇˇç¥&    ∫∞ˇˇç|$∆D$ ãÜî   fâT$π   â˙j Ë¸ˇˇˇπ%ñˇˇãÜî   fâL$∆D$ÈÎ˝ˇˇç¥&    =†   u!É{xÖ˛ˇˇ∏Äˇˇ∆D$fâD$Î~ç∂    =`  u!Å{   Ö‰˝ˇˇ∏Äˇˇ∆D$fâD$ÎSçv =∞   u!Å{ê   Öº˝ˇˇ∏Äˇˇ∆D$fâD$Î+çv É¯XÖü˝ˇˇÉ{HÖï˝ˇˇπÄˇˇ∆D$fâL$ç∂    j π   â˙âËË¸ˇˇˇXÈC˛ˇˇç¥&    çv Å{‡  ÖS˝ˇˇ∫Äˇˇ∆D$fâT$Î¬fêπ   ÈË˚ˇˇç∂    π   Èÿ˚ˇˇ∏Äˇˇ∆D$fâD$ÎïË¸ˇˇˇ                    ê  ‡                                                                                                                          0   ¿   ‡      p  ê    ‡      VS6624 Chip Enable vs6624   3%s %d-%04x: failed to request GPIO %d
-    6%s %d-%04x: chip found @ 0x%02x (%s)
- ã$ˇ0∑EPãEˇ∞   ãETˇ0h    Ë¸ˇˇˇÉƒÈ±  Ë¸ˇˇˇ∫    ∏    È¸ˇˇˇ∏    È¸ˇˇˇlicense=GPL v2 author=Scott Jiang <Scott.Jiang.Linux@gmail.com> description=VS6624 sensor driver                                vs6624                                                                     †               `                   0   ‡                                                                                         ¿   p                                                                                                        ¥Ñ ∂u ∏ 4Ñ 6u 8 ÇÄ ÑÄ ÜÄ Ä ê˛ Ç  Äd     ( ∫  º  ã  å è  ê ï  ñ ô  ö  Ñ%! Ä  Ñ Ç Ç  ∞  ñ% Ä                            <  f e — f b      &  & &c &— &h &› &: &  Ä$  ä0 ëb íJ ïe ñ °: ¢∏  
-
- :  ; Ö 	; 
-Ö :  0 è      oÄ å                             Å Å  … …G … …Ä …: :ê ;êG <ê …1 	…‹ 
-…Ä …D Dê Eê1 Fê‚ … …‡ …Ä …G Gêê HêÉ IêÅ Jê‡ Kê` Lê Mêê Nê¿ OêC Pêt Qê Rê SêÄ Tê Uê‰ Vêê Wê¿ XêC Yê Zê [ê \êÏ …] …  …Ä …] ]ê£ ^ê _ê `ê£ aê bê cê" …r …í …Ä …d dêt eê fê gêr hêï …G …Ú …Å …i iët jë kë lëÏ më¥ në oë
- pëê qëÄ rë së‡ tëp uë vëê wë” xëƒ yë zë" …
- …æ …Ä …s sê¸ tê£ uê‡ vêı wêÇ xêå yêÉ zê£ {ê£ |ê‡ }ê¸ ~ê£ ê‡ Äê√ Åêü Çêˇ ÉêÏ Ñêû Öê˛ Üê áê
- àêÍ  …G !…8 "…Ä #…â âêÏ äê” ãêî åê  çê@ éê èê êêê ëê” íê‘ ìêÏ îê ïê ñêG óê= $…E %…  &…Ä '…ò òê ôêw öê÷ õê úêE ùêÕ (…  )…’ *…Ä +…û ûêê üêÇ †ê °ê‡ ¢ê¥ £ê §ê •êê ¶êÉ ßêø ®ê‡ ©ê` ™ê ´êê ¨êÅ ≠ê¸ Æê‡ Øêˇ ∞ê√ ±ê ≤ê ≥êê ¥êÅ µê¸ ∂ê‡ ∑êˇ ∏ê πê  ∫ê⁄ ,…p -…º .…Ä /…ª ªêê ºêÇ Ωê æê‡ øê¥ ¿ê ¡ê ¬êê √ê¡ ƒê ≈êt ∆ê «ê »êê …ê”  ê† Àê Ãêp Õêø 0…r 1…! 2…Å 3…; ;ë} <ë =ë >ë{ ?ë @ër Aë% 4…( 5…Æ 6…Ä 7…“ “ê ”êê ‘ê“ ’ê
- ÷ê ◊ê( ÿê¥ 8…( 9…± :…Ä ;…Ÿ Ÿêê ⁄êÉ €ê∫ ‹ê‡ ›êˇ ﬁêê ﬂê“ ‡ê ·ê‡ ‚ê‰ „êÔ ‰ê Âê£ Êê‡ Áêt Ëêˇ Èê Íêê Îê“ Ïê
- Ìê Óê( Ôê¥ <…) =…y >…Ä ?… ê Òêê Úê“ Ûê Ùê ıê) ˆê @…) A…| B…Ä C…˜ ˜êê ¯êÉ ˘ê∫ ˙ê‡ ˚êˇ ¸êê ˝ê“ ˛ê ˇê‡  ë‰ ëÔ ë ë£ ë‡ ët ëˇ ë ëê 	ë“ 
-ë ë ë) ë D…* E…B F…Å G… ë ëê ë“ ë ë ë* ëH H…* I…E J…Å K… ëê ëÉ ë∫ ë‡ ëˇ ëê ë“ ë ë‡ ë‰ ëÔ  ë !ë£ "ë‡ #ët $ëˇ %ë &ëê 'ë“ (ë )ë *ë* +ëH  …                       GCC: (GNU) 11.2.0           GNU  ¿       ¿                                  Òˇ                            
-       &         ¨       /   0   Ü     >   ¿        V   ‡        d      l     t   p                                 	              
- å   ê  q    ô   @         §   †      Æ   |       ∏   @  å     «   ‡  ú     ÿ   0       Ë       *    
- ˙     œ       ‡  ê                             *      Ä     8      
-     K           b     1
+static int __set_cpus_allowed_ptr(struct task_struct *p,
+				  const struct cpumask *new_mask, u32 flags)
+{
+	struct rq_flags rf;
+	struct rq *rq;
+
+	rq = task_rq_lock(p, &rf);
+	return __set_cpus_allowed_ptr_locked(p, new_mask, flags, rq, &rf);
+}
+
+int set_cpus_allowed_ptr(struct task_struct *p, const struct cpumask *new_mask)
+{
+	return __set_cpus_allowed_ptr(p, new_mask, 0);
+}
+EXPORT_SYMBOL_GPL(set_cpus_allowed_ptr);
+
+/*
+ * Change a given task's CPU affinity to the intersection of its current
+ * affinity mask and @subset_mask, writing the resulting mask to @new_mask
+ * and pointing @p->user_cpus_ptr to a copy of the old mask.
+ * If the resulting mask is empty, leave the affinity unchanged and return
+ * -EINVAL.
+ */
+static int restrict_cpus_allowed_ptr(struct task_struct *p,
+				     struct cpumask *new_mask,
+				     const struct cpumask *subset_mask)
+{
+	struct cpumask *user_mask = NULL;
+	struct rq_flags rf;
+	struct rq *rq;
+	int err;
+
+	if (!p->user_cpus_ptr) {
+		user_mask = kmalloc(cpumask_size(), GFP_KERNEL);
+		if (!user_mask)
+			return -ENOMEM;
+	}
+
+	rq = task_rq_lock(p, &rf);
+
+	/*
+	 * Forcefully restricting the affinity of a deadline task is
+	 * likely to cause problems, so fail and noisily override the
+	 * mask entirely.
+	 */
+	if (task_has_dl_policy(p) && dl_bandwidth_enabled()) {
+		err = -EPERM;
+		goto err_unlock;
+	}
+
+	if (!cpumask_and(new_mask, &p->cpus_mask, subset_mask)) {
+		err = -EINVAL;
+		goto err_unlock;
+	}
+
+	/*
+	 * We're about to butcher the task affinity, so keep track of what
+	 * the user asked for in case we're able to restore it later on.
+	 */
+	if (user_mask) {
+		cpumask_copy(user_mask, p->cpus_ptr);
+		p->user_cpus_ptr = user_mask;
+	}
+
+	return __set_cpus_allowed_ptr_locked(p, new_mask, 0, rq, &rf);
+
+err_unlock:
+	task_rq_unlock(rq, p, &rf);
+	kfree(user_mask);
+	return err;
+}
+
+/*
+ * Restrict the CPU affinity of task @p so that it is a subset of
+ * task_cpu_possible_mask() and point @p->user_cpu_ptr to a copy of the
+ * old affinity mask. If the resulting mask is empty, we warn and walk
+ * up the cpuset hierarchy until we find a suitable mask.
+ */
+void force_compatible_cpus_allowed_ptr(struct task_struct *p)
+{
+	cpumask_var_t new_mask;
+	const struct cpumask *override_mask = task_cpu_possible_mask(p);
+
+	alloc_cpumask_var(&new_mask, GFP_KERNEL);
+
+	/*
+	 * __migrate_task() can fail silently in the face of concurrent
+	 * offlining of the chosen destination CPU, so take the hotplug
+	 * lock to ensure that the migration succeeds.
+	 */
+	cpus_read_lock();
+	if (!cpumask_available(new_mask))
+		goto out_set_mask;
+
+	if (!restrict_cpus_allowed_ptr(p, new_mask, override_mask))
+		goto out_free_mask;
+
+	/*
+	 * We failed to find a valid subset of the affinity mask for the
+	 * task, so override it based on its cpuset hierarchy.
+	 */
+	cpuset_cpus_allowed(p, new_mask);
+	override_mask = new_mask;
+
+out_set_mask:
+	if (printk_ratelimit()) {
+		printk_deferred("Overriding affinity for process %d (%s) to CPUs %*pbl\n",
+				task_pid_nr(p), p->comm,
+				cpumask_pr_args(override_mask));
+	}
+
+	WARN_ON(set_cpus_allowed_ptr(p, override_mask));
+out_free_mask:
+	cpus_read_unlock();
+	free_cpumask_var(new_mask);
+}
+
+static int
+__sched_setaffinity(struct task_struct *p, const struct cpumask *mask);
+
+/*
+ * Restore the affinity of a task @p which was previously restricted by a
+ * call to force_compatible_cpus_allowed_ptr(). This will clear (and free)
+ * @p->user_cpus_ptr.
+ *
+ * It is the caller's responsibility to serialise this with any calls to
+ * force_compatible_cpus_allowed_ptr(@p).
+ */
+void relax_compatible_cpus_allowed_ptr(struct task_struct *p)
+{
+	struct cpumask *user_mask = p->user_cpus_ptr;
+	unsigned long flags;
+
+	/*
+	 * Try to restore the old affinity mask. If this fails, then
+	 * we free the mask explicitly to avoid it being inherited across
+	 * a subsequent fork().
+	 */
+	if (!user_mask || !__sched_setaffinity(p, user_mask))
+		return;
+
+	raw_spin_lock_irqsave(&p->pi_lock, flags);
+	user_mask = clear_user_cpus_ptr(p);
+	raw_spin_unlock_irqrestore(&p->pi_lock, flags);
+
+	kfree(user_mask);
+}
+
+void set_task_cpu(struct task_struct *p, unsigned int new_cpu)
+{
+#ifdef CONFIG_SCHED_DEBUG
+	unsigned int state = READ_ONCE(p->__state);
+
+	/*
+	 * We should never call set_task_cpu() on a blocked task,
+	 * ttwu() will sort out the placement.
+	 */
+	WARN_ON_ONCE(state != TASK_RUNNING && state != TASK_WAKING && !p->on_rq);
+
+	/*
+	 * Migrating fair class task must have p->on_rq = TASK_ON_RQ_MIGRATING,
+	 * because schedstat_wait_{start,end} rebase migrating task's wait_start
+	 * time relying on p->on_rq.
+	 */
+	WARN_ON_ONCE(state == TASK_RUNNING &&
+		     p->sched_class == &fair_sched_class &&
+		     (p->on_rq && !task_on_rq_migrating(p)));
+
+#ifdef CONFIG_LOCKDEP
+	/*
+	 * The caller should hold either p->pi_lock or rq->lock, when changing
+	 * a task's CPU. ->pi_lock for waking tasks, rq->lock for runnable tasks.
+	 *
+	 * sched_move_task() holds both and thus holding either pins the cgroup,
+	 * see task_group().
+	 *
+	 * Furthermore, all task_rq users should acquire both locks, see
+	 * task_rq_lock().
+	 */
+	WARN_ON_ONCE(debug_locks && !(lockdep_is_held(&p->pi_lock) ||
+				      lockdep_is_held(__rq_lockp(task_rq(p)))));
+#endif
+	/*
+	 * Clearly, migrati´ËÊ¨‹Ó>å–¥_“à÷4ñœ≈úgl¶T≤ÿúh\
+ûwù˘Â˝%&|≤ÁÌ∞Z—YE›,ÚÌ’QÈmÍ∏'%-Kh–™•zPÍ™Ì7ÛäáL[„lQêÂö^{r–πP^Î˝Èó,‘ÈﬁØ{ ±¥Øÿ´°ëx≥hœ∏gA%Áà=>ºﬂp˚Gﬁﬂhk˘¸lÚ˚îUóOÔ-òä‹S%Ù·JﬂTÆFπ3“n…Õ¸ ÆL›d’ö`l≤B«|jˇç◊ﬂÊõ‘HvÚòÍ/´^7™«“vív≤®∂s±Ä¿ÕAÔÜ∆ÂB;Nåî#v®ﬁ£átˇt÷êÍﬂuê GÙñèQ,YR)ﬂ≥Ωﬁ%è+§ók÷0dA})$·lo¡]ÃSlüI√'+ ùTdwí{ëVHË˝˝i÷¢ÂßÀá∞©dûAıÏ83‹XREùhB¸Ü•;¯°cb÷.^è⁄?|h0uP–¡Â@®ìŒa„≥“1]N45‡¥àFkÔb_<u§ 1¬É1ÇHt›ó.¸£oL÷ÃÊEÕÔ§Ì∞÷ ∆([úπÅËf‹ÄøÉ[éΩè]I4Ù,Jñ8oc ¿MBc¸ˆì/<ˇó;Mo•hw ‘…6‡iﬁªJ/∂Ò	ÌÒ’xÜÛÑ†{ï'}È˘{S≈%µ¢9‹Ø'vñÁtƒ* I¸ì≈*ÀÅ7Â»5ﬁ){ÑùXöÒıØi∂í«,q‡Ωzçê˝4»5Ê´LÖ«ª´Z*≈÷À]Û÷¡é@jXFµ.R¯:˘„ˆå}πg‚£’¢ºhÿ”ÃÏ22€T¯N…¡rLaõÙıq≥%[»œÃ@ÙÂΩ˘àÉ¿çûs…ÔÛ±‰˙ÊO W”2j⁄lÆ‹>Ú˙
+§ÌÜÍÒ|K‰Ãˇø§©È)ÂÜvÊí'EÌ\Ÿ#(ÿ(ˇ9Å•—WPmEu‘"vë,Sı‹5¢\Ê£¡BZ6YØÏî%-lí
+zõ^œY”éD¶Öe¢’,S"ø  uèYœ£a5Ω⁄™]u|∏zé˛	ØL±Õq^(©APÙ$«N˝M±ê‘¶áºXxHÃ*–?ã¶X/-ÄÉîı˛≥≥`å2&¡:h)†l∞Dø@BÓÄºÇkØ≥É2¡†R[,.≤Ó«›pîçÓË—ÌA^õ∆%‘›ªåÙEsﬁÄÉØ·óTóSpﬂæq•\D}°ÒsóSAÿ…50÷ke?“qÎ<ŸÛN0M¢Nåx≠
+ê°,S~©*≠îó”eOäáô¬’¯ní}• ôÒ≈ã~w8˚:¥|À◊õg—Å◊%¶2Ωñ8eŒkÌÎ÷—/µ^â≈ i¢*z¯~LçSÒ4\ûW≈ôçW•UˆP<†cëûw‡ôªæ≠•·NÍäØ;Õ⁄ΩHLA˚°÷â˛"Êù^Võíäsﬂk°KµW~Xµfú‚°T´'>Ë™òVÓáå◊oı'<>`-•≤4X‘T;p`“ˆß#+Ÿaå$¸o ∫Ò+Æ%4¸SçSÓõ‡_q„ﬁÚæz˘$.{ß
+.ãlQa¿S.,Å∆é.Sq]i\ÉÔÆÉ˛µOX=xç∞à‘ó>˝hô˚~xÙ¨»Ïq2b?p{w*Û∂A4ú0J,c}.2©.≠Mƒ\∞A≥≥T2∆ ±9nhûŒÂÓﬂz®ë‰»rÒRl‹—\—Ú„#ˇ≤çΩ¿˙€◊JM9)öCÔJ¯-ﬁ—ÕË# îO2»H;¶OHä,–∞o9Àg!œª™òO_dí24àÁ4-u+±ÊUÀÊCqû:U∫5LdH”!∑√	L……j`è 9ƒÀ¯€e—’'ﬂ§Àn/ucU6√ìRÌoN~‚
+∫S¯jƒÜÿ¯¢tà€µ9ı2õ+^Í•ÑZßAu{È:•bˆ⁄ªaPû˜èƒäˆ⁄Î…e”î–a3≤¢9óbÜTàÚ˙_7:fØHü~È4ÑÃÀ˚+ÌaB‘xhŒΩ´ÉSªÚ–∫§LÒPxªXÎb°√¡ˆÉ˙Á!˛%°˝6SÕñôÄfÆx îx>6RΩ<±Æs~ñ–µî˝∆b<ueÇ0ˆ˘Vi4ß“%Ç=”›3˛1òÊ/¢ß–ÅtFøÿaﬁÂ`›≠+¡ıÜnäg†H2ÄG CÍ+(ìvÆIÛ»5/¿∏•Ó°”Î6ggãY⁄=´w˜WE∑CÏ`êÍÌ4s6•⁄∑’∂£ëÚkrfîï»˙’∑·∂{p/ à	Søno∞h∂˚≤—°Üz≥x&Ó*x»Ê£ƒ˘cg“õ’Gç8ØË9#˘JáHˆÚƒèf`cÃ∞ﬁØ·∂æˆÕ¢ÚG5•%*5¶ÿ˝=x€»∂™‘w/xz≠\#ãÈVñ‘Üﬂ≥QàM§n≠o¬D˚‘˚Õ]x¡∞[%uLê8ãmÊ¢Ï∫˜ºßäô®#¨Dı{È ›Oft≠’´äD˙qyÇg2Ã•TŸ/Ÿ¶1¥H‰Üñ-∆äÖÈ/¡˛B‘Ñ¨”•§ùôøF$∂XAÈÙªdJPƒè)ÂÚ¨¯7Ó˚b'≈œWU!ﬁ.ïg›)}´œ”ΩÏË⁄ë{•µ?•¶[AÆ ˛]oE6’ÿ(ﬁELv
+ì!ﬂnº¿˜Ñ˝√î⁄{è…j†Á÷Á}¬[˙§ÇØ>L3#£Îx¬›aœã÷vt—k™>8Á!¨íah2Ωçs˜ÿ,∞óÅ€púC_ÒÓªùG∆é2>!:áYO_˚2»≈.—ƒ˘∏5wíPO±Zlc5Àê/OmÅÆƒ~æ¡aÀxO˙Ñ„ÂñNå›[%Ac"I,‹@‹≤°ÅÖ∆•W¥¢ŒÎ(å{l◊ H?@ÑB/zX+;N3˙mwÿ@= ≤˜∞$t˝ }-≥íìNûöÔΩÜ‡HlP‚#ÕÜ∞^,!ÎÙîÉï◊VãN/˝çñ’YårÀ<Õu‹⁄˙7G†πÅu)rS#õÜ8ÏS65gRü≈Wc_TÔ2…rî.ÿÑ/¨©^U}Â2d«¶J¬[Ûﬁéó¸∆H	> ¶L}œ:ïñù±Ã8’Üú%ÄÎ
+Eò4jó…¥zA•+–ôÖ&}U>’¥~ü3w◊gˇ’¿oŒ·}„ÓË|Í8‡c
+ﬁú8»NAËØÒ˛&jÀµ√t}@õ‚äMÛ0;˙…Çßô(âπãsß’	™Tà7]Íö&6kIƒˆ¨	[R´(ÚòÅ«√∞á&|sıZÓ±lV»œd,Í∞e§¨ıû∞™vé†åcI@˚*∆·¯CG 9˛˙”H7òmîÖÚ!)åâ‘¸voYÂiŒª_nÖª_NCh˛ﬁ1c-Q"G+ú8—4HgÅpfV Kµ‰åË·≥h‹1ïŸl3‹J~Yÿù∏˚E›çÈ 7u#ÅÆuX„®ÕÌ’∂W©m—∏eç6≈R_§§$≠ë‚Ì“%è∫Nv+ﬁºäøÌ+ë‹/s1&*kô˛≤óW2
+$ÓÔS©Tm—!”∏<vI'2´“ ù[5ñöÅ ∫‰6≤YÉ¬uô§Qy,ó7ùÿ*µDîÈ•¯G·•∑ù:ÓãÊ:5XC◊üS«x≠Zdeø
+•a€ı"73–W
+ˇtÿp
+&m∞ÔÁı≈4RÿÅñ>´e<ßÆãµL˝Dê¯çÎÑﬁîû÷=Ÿ˜É
+√x$ª.jIxRUYT{BÚCz;Ôﬁ}
+&äÀb`⁄¿"gJiÌº≠µ>]?vä≠Í∂√Œ)Ó ~tXR"z´é¥∑Ì†5'Â%”Ì1õ«ÒÇ†{¿îr€ˆuÇ:[R
+·È#√ûÏÜú2w=m√á‹Ä`ygH’x„hf£◊@éïeaò⁄ó)á{]"Ét¬–J“ˆ-‡≈ÊãÂ∞íﬁÚEóø6•ë)
+Mî„káQq*>«Gûåˆk‚NF«õMúãå“bh≥7N{Ó~ñW8Ô”îº8≈–ÀRî_°oõnâ√¿éU—˛“gØB:{æñl*ªÈ‚—M¸„z≈{«nÖêÁ{`—ûKiµù]P+–ê·÷[&˚CnókNcŒD>ã;ˆA^*hã‚Êò®ıM»îMAŸ‡
+fQg¸¨v†hù–ñè•Ü0s;[Iπ;[fÊﬁÑˇ±Æ.$ÖÑ&ARµï§tá-[¬R„y÷¥PÈ˚‹æ∏Æ6(‚d(¥3œíîyH6H,VÙ…⁄ËºÁëM%MWú°)¢™éC˛MX‚ÇÜn7‰÷5“ÔvsÕiaG}˛-WƒôŒﬁÃ[|∞‰§!ÜÓÒ£ d}ı)ﬁˆd⁄ˆo©µg∞‡ÄˆïÉ[[!f/˜g©]Õ:'&Së’˝T%ıÜ9Ì∏∞}r•Yÿ2ØÁΩT1ÉBÛiSﬁå(\Ó◊Œ∑ÓzgÕ˙æM¯[§)8ÛC§Ç MnNˇÛ∞RíWëHÉ	à≤üÒÒﬁ¿˝p¥U-©«´Y^*+îÅ¢Ø	Â{•Ü8“)ëﬁú°p⁄LºÒy6TÊÍ≤≈ó÷É™],m2EóΩFSôk∑
+îmàÿ⁄ÍH¬JáoÖ2h
+Da_fî©ΩÔÂÃÙ\WOd+π;[˝1π7]ò°ÃFëÄ‘˜©√"H∫/P√WwjÎ!ñWäçÜ*0˝Øh‚ﬁ(W±êHªpZº~.ÆÆây>ŸAﬁ∫mOÙ#ô7·=i∏ï¿Ä*=⁄ÅFFÊ(#ƒÊπúDVcsú]Ü®a7	õ
+`k®Lü˚‚a˝“¸ ,œ}ØÛTÅ⁄UÁ⁄ÆrWb7,¶Öp6ˆë.8úê˜N]«ã;(Ç'Ë{J÷˛(gˇ4¨‚B7#Î*(ß^„Xb#2Bå≤ëû„ºØ´ˇ¥+àëgê[U;™úÁc£˙¢©po8üWzæπvÁN]˛ΩqY·d¬•ô6mØ{•aIyµúLçu,fvJ›´(¯\ù∆ö˘Wk;4ªªrˇ⁄$G;ÄKèôêœ|
+k$‡±ú·Hô»e‡±Ÿ≈8àqg™Ù∑9∆µº3éìm±Ñ*E√»A∞†XÈÿ=≈Æµ]ì7™$¨ÃËDœ√Õ8	]üœ„‰7Ö.bØÜŒâì∞l≠÷‘l¨≠Î·J
+
+P r≠Î]∂G¬‘ –1Ã–πû–p∂ôyY=XY@V2:<¯–3Î*Í–ZÓ¥¢ÙK%Èx6CFO&º¥∂\(”xKÉòKÈ√çô≈ÜØ€‹íÇ¿˝¬®éˆˇ∑Ñ |	ﬁ÷–·yõ◊~ÆÂ©∑´öãìQzÌ„kÖÅBYØÑYñÄøÖŸhÔ©≠Ô&%Sh"˜
+h4íìN#¬ë0N9g‚j‰«≠'oÍâÍâGfÙfä‹ÕƒfÃj`Khô5÷**¿¥|hÒŸöﬂj61À˛€sVœÑ˝@ô_k˝Ù!`0.áË™Q«-È@¢)#ÅdÍ-<ú™˘◊ƒú=&Ù‰∏öi–∏è:vùú≤Ä”Á1ø%§(ÿ'Ê˘€xÇ¸Úf∆ﬂaß‰So:≈ƒÆ˜
+Óˇ !º2ØâÜ˙’~Pm1ø’˚’«[E!Cê´∑<3◊?EÆ°c¥$#∏√bfeGg∆˛˜à∞ÕHœ|Å™‚ª„Ò.¿rU9µï≠ÔΩ≥Z¡˛œbÂ¥„4Òq‡+Â7Ë¿Õ≥pQS,òåü∞£°£ä€~°˜∂±◊gøU≠YRíé%–ﬂk#¨¸Íòœ!RI(V?ÿ=rO<XXTZ—
+^Í`c&h(°Õ∞ÂRzZ˘v–A0e⁄›ë‹g‚Ÿ8?» 1¢C3V»o€,! ¶H4çÂØ^ha ±:r¥#ïkÊ˙d¸^Òû U√2L≤•[˙ó·Ç¸w#hÉ?∏(é{ô$9(ªhKœpdB≈ÅÉGí6ò*	Â1Ï˜5´ıŸ´F(;ƒB2¬≤5’≈Æ+c¬ÜÓÊX˝/315∞*yÜ“!Êz≠3Z0⁄«8xR/ºÍ˘y
+h©O≥’Ãk)¢Ωl<ëE«§o@#vW”im%˚éq3KLRü|_vV3j(ü∂˘˙˘èπXFÚ∞{¥LπVÿûækê√∆¡°å‡F—!gheKIx≥<<{ª≥â«ûPüZÕÁYS•/X«ù£A>ÌTÛò∆‡›å†Ò˙˘Í±W”⁄ÿ -‚}…õäqlIÚÍŒﬁNÌ≤-LE•ÛHW_∏Iä›uÊIï∑|»bœWL44ÍàHV
+$πU¶æ˝æQÈ˘Åt›ﬂáXºiÏ¡ß#‡Ÿ2{î˚ˆgc.˛=ôIê¢‚g√¿˜)gü\¢‡
+rˆ„è¶t∑7 S´Mw“4æmRÏ¬˚b˜t3«ÖR‚jî._+6≠åKOM‡yìc@∫õ—s0Vøà:>É É’∏·¢•·ÂQª ŒDåÑ'3<Æ |? œè¡_?ﬁí‚ÔûM∏≥≥Bé∆]L≠r&‰ÎiÌáÊYnq∞<Ue™ßh}≠ÈË£ºµÌ#`Â>˛EuF¨“+Pf,Ñ˝ﬂîKuÚ8±ÅHcó›‘ÆqÉ^@	Y/íüÍq§≈$ÌS∑ä¡x°ƒÃSÌp
+“ŸT¡ æÀÏeª[lÅØG0cÔQpnØWfkùm[ ˝=1¬ûÀÖGm&zñÏÎrï™Ü_ÿcπ è!ƒ˙ˇ¡ì¨À¿<Ô8]≠å=úƒyúàÜ˙d=ní±ØRêûú7øqC˘6ïS·~„b⁄ÁW´tüC¥‰2	∑ÂuÎÉ4Á’∂\2"2™r˛ﬂÔD¯úÓ»=xlÿmu[ëï∫@π›¨8 ¥ü4&c
+YtÂ5¬S»éƒDgÃá¸&@‰n”ÏJˆÏû?nk˙üm¥[˜U»∆VË
+%{ñﬁû∏K{ÍØôèÄxƒUöÌÆãÄ˘TÈX ≈Dmƒ√ù±ﬂkÉ&ß@÷;?ÑëıípEsâ⁄P∆6~M}MΩ F⁄û∂ÈƒC¥BÏ/AH„2´‘dä%¯XS6pUUÔ∂¨≈D‚#>‹m)ïfÓ…˘“fVø…PÇ6Ròp˛‡·ùtó‘
+æÕ? ,EòÂ¯âú‹˘Kﬂç‹m¡1€üØ™7kÍZ≥àSvÙÛxËBë«	yœ*4húµHR]ºy1U∑Uc36”ÄS˜Ó∫IPè:ú{€[°˛Ä_ÈÀ9ÃêŒiq≤ﬂìr9Jp,«DòégΩ#’ëvM”w—8˘d7hﬁ»W∏≠˜ûoß'≥ÂÌ©LÖ‘˙°¶®”⁄ê‹äŸúªó =oÖIˇ£Œ]N‚∂Ó]#`1ÔW∂≈ EÏï|ÏÜ…ím´é}Í
+∂Ÿ,N∑uãä§TÉËeÚ◊¬Òœé‚iÎ`EÛ¬Ö≥Œ_íÙf≈wpª≤p)X¯hß‰êSZ¨®·˝ØÙ÷ü‚?ö AÉ»∞0E◊g0\ﬂ›ï Èî’ü€h§T’Ê<T”Wü¨PZ „u√.'4d¢Q∆{ΩŸÇ"ÃìMlÂÜ°^¥-`≈//‚Ã‚Mπ…¡©ÛmJsàÃ\ãÛÕu·QöW§Ù¨˚Ï>Ä«x%ta{ƒÈD‘PQÕ€ƒ≤è‚‘˙Êí'Û†À&N≈#]§ 2Jz≤TH™Å‰eÆJÈ<∑ÍàtBœS≤aky -SvÈ∑Cs”¥∞b!≠'‰Èn§vîQ–CRã.Ï [òÖ®ÀX/…=ÿ13yøbN‰òöˇƒlêöÒﬂÏî8	∑gìï±µCú
+¯˛HÒm5˙µù*å√À>ıSV¥øÂ»∏6âQóçåVÇL|˘2·~°ñp§»£˜üKD1x§®Ç,68äZf≠72 }2ﬂT◊‚s_¨ªí¨vJÕP‚Ã4º"ñk6ò«,6ŸdropÀ¥∏ØD˛7B4™\¢…Å›∏ bn'¥˛µ!íõ&ùÅ®Ag∞kHﬂ”*xa]51U⁄8¬‹ã› ùÉø∑RÔƒ¨"ı—ÑG¯÷ók@c=fLôü\J¸≥w8Æ˚÷è÷‰n /Nñ˜ŸLÅ’r È?¶™Y%íé’“R"ë ÷â“ØI¸I≠û‘R∂-£ÎÖL#∑äé‘á™ÈO¬@Ñ;]ôõ±(YU‹µ≠‚YÙö…î2Ç∑a¬âÔ˚0¬cÛüﬂ\rD∫U¯ü˜ß⁄æ…»{´Ê3Ä´€%3ˇ›∂$Qém“¨ÚSÂã∫è5ói∞»ôÏ(êâ)ùèùû8•ﬁIbΩg,˜4#πù)‰}h÷1¥Bˇã‚ÎCêÔ√≥

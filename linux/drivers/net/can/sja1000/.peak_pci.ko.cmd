@@ -1,6 +1,1 @@
-e/linux/gfp.h \
-    $(wildcard include/config/KASAN_HW_TAGS) \
-    $(wildcard include/config/HIGHMEM) \
-    $(wildcard include/config/ZONE_DMA) \
-    $(wildcard include/config/ZONE_DMA32) \
-    $(wildcard include/config/
+cmd_drivers/net/can/sja1000/peak_pci.ko := ld -r -m elf_i386 --build-id=sha1  -T scripts/module.lds -o drivers/net/can/sja1000/peak_pci.ko drivers/net/can/sja1000/peak_pci.o drivers/net/can/sja1000/peak_pci.mod.o;  true

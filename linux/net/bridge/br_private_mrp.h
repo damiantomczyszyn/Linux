@@ -1,148 +1,177 @@
-// SPDX-License-Identifier: GPL-2.0+
+/* SPDX-License-Identifier: GPL-2.0 */
 /*
- * Module-based torture test facility for locking
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
  *
- * Copyright (C) IBM Corporation, 2014
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
  *
- * Authors: Paul E. McKenney <paulmck@linux.ibm.com>
- *          Davidlohr Bueso <dave@stgolabs.net>
- *	Based on kernel/rcu/torture.c.
+ * Authors: Waiman Long <waiman.long@hpe.com>
  */
 
-#define pr_fmt(fmt) fmt
-
-#include <linux/kernel.h>
-#include <linux/module.h>
-#include <linux/kthread.h>
-#include <linux/sched/rt.h>
-#include <linux/spinlock.h>
-#include <linux/mutex.h>
-#include <linux/rwsem.h>
-#include <linux/smp.h>
-#include <linux/interrupt.h>
+/*
+ * Collect locking event counts
+ */
+#include <linux/debugfs.h>
 #include <linux/sched.h>
-#include <uapi/linux/sched/types.h>
-#include <linux/rtmutex.h>
-#include <linux/atomic.h>
-#include <linux/moduleparam.h>
-#include <linux/delay.h>
-#include <linux/slab.h>
-#include <linux/torture.h>
-#include <linux/reboot.h>
+#include <linux/sched/clock.h>
+#include <linux/fs.h>
 
-MODULE_LICENSE("GPL");
-MODULE_AUTHOR("Paul E. McKenney <paulmck@linux.ibm.com>");
+#include "lock_events.h"
 
-torture_param(int, nwriters_stress, -1,
-	     "Number of write-locking stress-test threads");
-torture_param(int, nreaders_stress, -1,
-	     "Number of read-locking stress-test threads");
-torture_param(int, onoff_holdoff, 0, "Time after boot before CPU hotplugs (s)");
-torture_param(int, onoff_interval, 0,
-	     "Time between CPU hotplugs (s), 0=disable");
-torture_param(int, shuffle_interval, 3,
-	     "Number of jiffies between shuffles, 0=disable");
-torture_param(int, shutdown_secs, 0, "Shutdown time (j), <= zero to disable.");
-torture_param(int, stat_interval, 60,
-	     "Number of seconds between stats printk()s");
-torture_param(int, stutter, 5, "Number of jiffies to run/halt test, 0=disable");
-torture_param(int, verbose, 1,
-	     "Enable verbose debugging printk()s");
+#undef  LOCK_EVENT
+#define LOCK_EVENT(name)	[LOCKEVENT_ ## name] = #name,
 
-static char *torture_type = "spin_lock";
-module_param(torture_type, charp, 0444);
-MODULE_PARM_DESC(torture_type,
-		 "Type of lock to torture (spin_lock, spin_lock_irq, mutex_lock, ...)");
-
-static struct task_struct *stats_task;
-static struct task_struct **writer_tasks;
-static struct task_struct **reader_tasks;
-
-static bool lock_is_write_held;
-static atomic_t lock_is_read_held;
-static unsigned long last_lock_release;
-
-struct lock_stress_stats {
-	long n_lock_fail;
-	long n_lock_acquired;
-};
-
-/* Forward reference. */
-static void lock_torture_cleanup(void);
+#define LOCK_EVENTS_DIR		"lock_event_counts"
 
 /*
- * Operations vector for selecting different types of tests.
+ * When CONFIG_LOCK_EVENT_COUNTS is enabled, event counts of different
+ * types of locks will be reported under the <debugfs>/lock_event_counts/
+ * directory. See lock_events_list.h for the list of available locking
+ * events.
+ *
+ * Writing to the special ".reset_counts" file will reset all the above
+ * locking event counts. This is a very slow operation and so should not
+ * be done frequently.
+ *
+ * These event counts are implemented as per-cpu variables which are
+ * summed and computed whenever the corresponding debugfs files are read. This
+ * minimizes added overhead making the counts usable even in a production
+ * environment.
  */
-struct lock_torture_ops {
-	void (*init)(void);
-	void (*exit)(void);
-	int (*writelock)(int tid);
-	void (*write_delay)(struct torture_random_state *trsp);
-	void (*task_boost)(struct torture_random_state *trsp);
-	void (*writeunlock)(int tid);
-	int (*readlock)(int tid);
-	void (*read_delay)(struct torture_random_state *trsp);
-	void (*readunlock)(int tid);
+static const char * const lockevent_names[lockevent_num + 1] = {
 
-	unsigned long flags; /* for irq spinlocks */
-	const char *name;
+#include "lock_events_list.h"
+
+	[LOCKEVENT_reset_cnts] = ".reset_counts",
 };
 
-struct lock_torture_cxt {
-	int nrealwriters_stress;
-	int nrealreaders_stress;
-	bool debug_lock;
-	bool init_called;
-	atomic_t n_lock_torture_errors;
-	struct lock_torture_ops *cur_ops;
-	struct lock_stress_stats *lwsa; /* writer statistics */
-	struct lock_stress_stats *lrsa; /* reader statistics */
-};
-static struct lock_torture_cxt cxt = { 0, 0, false, false,
-				       ATOMIC_INIT(0),
-				       NULL, NULL};
 /*
- * Definitions for lock torture testing.
+ * Per-cpu counts
  */
+DEFINE_PER_CPU(unsigned long, lockevents[lockevent_num]);
 
-static int torture_lock_busted_write_lock(int tid __maybe_unused)
+/*
+ * The lockevent_read() function can be overridden.
+ */
+ssize_t __weak lockevent_read(struct file *file, char __user *user_buf,
+			      size_t count, loff_t *ppos)
 {
-	return 0;  /* BUGGY, do not use in real life!!! */
+	char buf[64];
+	int cpu, id, len;
+	u64 sum = 0;
+
+	/*
+	 * Get the counter ID stored in file->f_inode->i_private
+	 */
+	id = (long)file_inode(file)->i_private;
+
+	if (id >= lockevent_num)
+		return -EBADF;
+
+	for_each_possible_cpu(cpu)
+		sum += per_cpu(lockevents[id], cpu);
+	len = snprintf(buf, sizeof(buf) - 1, "%llu\n", sum);
+
+	return simple_read_from_buffer(user_buf, count, ppos, buf, len);
 }
 
-static void torture_lock_busted_write_delay(struct torture_random_state *trsp)
+/*
+ * Function to handle write request
+ *
+ * When idx = reset_cnts, reset all the counts.
+ */
+static ssize_t lockevent_write(struct file *file, const char __user *user_buf,
+			   size_t count, loff_t *ppos)
 {
-	const unsigned long longdelay_ms = 100;
+	int cpu;
 
-	/* We want a long delay occasionally to force massive contention.  */
-	if (!(torture_random(trsp) %
-	      (cxt.nrealwriters_stress * 2000 * longdelay_ms)))
-		mdelay(longdelay_ms);
-	if (!(torture_random(trsp) % (cxt.nrealwriters_stress * 20000)))
-		torture_preempt_schedule();  /* Allow test to be preempted. */
+	/*
+	 * Get the counter ID stored in file->f_inode->i_private
+	 */
+	if ((long)file_inode(file)->i_private != LOCKEVENT_reset_cnts)
+		return count;
+
+	for_each_possible_cpu(cpu) {
+		int i;
+		unsigned long *ptr = per_cpu_ptr(lockevents, cpu);
+
+		for (i = 0 ; i < lockevent_num; i++)
+			WRITE_ONCE(ptr[i], 0);
+	}
+	return count;
 }
 
-static void torture_lock_busted_write_unlock(int tid __maybe_unused)
-{
-	  /* BUGGY, do not use in real life!!! */
-}
-
-static void torture_boost_dummy(struct torture_random_state *trsp)
-{
-	/* Only rtmutexes care about priority */
-}
-
-static struct lock_torture_ops lock_busted_ops = {
-	.writelock	= torture_lock_busted_write_lock,
-	.write_delay	= torture_lock_busted_write_delay,
-	.task_boost     = torture_boost_dummy,
-	.writeunlock	= torture_lock_busted_write_unlock,
-	.readlock       = NULL,
-	.read_delay     = NULL,
-	.readunlock     = NULL,
-	.name		= "lock_busted"
+/*
+ * Debugfs data structures
+ */
+static const struct file_operations fops_lockevent = {
+	.read = lockevent_read,
+	.write = lockevent_write,
+	.llseek = default_llseek,
 };
 
-static DEFINE_SPINLOCK(torture_spinlock);
+#ifdef CONFIG_PARAVIRT_SPINLOCKS
+#include <asm/paravirt.h>
 
-static int torture_spin_lock_write_lock(int tid __maybe_unused
+static bool __init skip_lockevent(const char *name)
+{
+	static int pv_on __initdata = -1;
+
+	if (pv_on < 0)
+		pv_on = !pv_is_native_spin_unlock();
+	/*
+	 * Skip PV qspinlock events on bare metal.
+	 */
+	if (!pv_on && !memcmp(name, "pv_", 3))
+		return true;
+	return false;
+}
+#else
+static inline bool skip_lockevent(const char *name)
+{
+	return false;
+}
+#endif
+
+/*
+ * Initialize debugfs for the locking event counts.
+ */
+static int __init init_lockevent_counts(void)
+{
+	struct dentry *d_counts = debugfs_create_dir(LOCK_EVENTS_DIR, NULL);
+	int i;
+
+	if (!d_counts)
+		goto out;
+
+	/*
+	 * Create the debugfs files
+	 *
+	 * As reading from and writing to the stat files can be slow, only
+	 * root is allowed to do the read/write to limit impact to system
+	 * performance.
+	 */
+	for (i = 0; i < lockevent_num; i++) {
+		if (skip_lockevent(lockevent_names[i]))
+			continue;
+		if (!debugfs_create_file(lockevent_names[i], 0400, d_counts,
+					 (void *)(long)i, &fops_lockevent))
+			goto fail_undo;
+	}
+
+	if (!debugfs_create_file(lockevent_names[LOCKEVENT_reset_cnts], 0200,
+				 d_counts, (void *)(long)LOCKEVENT_reset_cnts,
+				 &fops_lockevent))
+		goto fail_undo;
+
+	return 0;
+fail_undo:
+	debugfs_remove_recursive(d_counts);
+out:
+	pr_warn("Could not create '%s' debugfs entries\n", LOCK_EVENTS_DIR);
+	return 

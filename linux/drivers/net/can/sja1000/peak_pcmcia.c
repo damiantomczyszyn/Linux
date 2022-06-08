@@ -1,437 +1,733 @@
-pes.h \
-  include/asm-generic/pgtable-nop4d.h \
-  include/asm-generic/pgtable-nopud.h \
-  arch/x86/include/asm/nospec-branch.h \
-  include/linux/static_key.h \
-  include/linux/jump_label.h \
-    $(wildcard include/config/HAVE_ARCH_JUMP_LABEL_RELATIVE) \
-  arch/x86/include/asm/jump_label.h \
-  include/linux/objtool.h \
-    $(wildcard include/config/FRAME_POINTER) \
-  arch/x86/include/asm/msr-index.h \
-  arch/x86/include/asm/unwind_hints.h \
-  arch/x86/include/asm/orc_types.h \
-  arch/x86/include/asm/GEN-for-each-reg.h \
-  arch/x86/include/asm/spinlock_types.h \
-  include/asm-generic/qspinlock_types.h \
-    $(wildcard include/config/NR_CPUS) \
-  include/asm-generic/qrwlock_types.h \
-  arch/x86/include/asm/proto.h \
-  arch/x86/include/uapi/asm/ldt.h \
-  arch/x86/include/uapi/asm/sigcontext.h \
-  arch/x86/include/asm/current.h \
-  arch/x86/include/asm/percpu.h \
-    $(wildcard include/config/X86_64_SMP) \
-  include/linux/kernel.h \
-    $(wildcard include/config/PREEMPT_VOLUNTARY_BUILD) \
-    $(wildcard include/config/PREEMPT_DYNAMIC) \
-    $(wildcard include/config/HAVE_PREEMPT_DYNAMIC_CALL) \
-    $(wildcard include/config/HAVE_PREEMPT_DYNAMIC_KEY) \
-    $(wildcard include/config/PREEMPT_) \
-    $(wildcard include/config/DEBUG_ATOMIC_SLEEP) \
-    $(wildcard include/config/MMU) \
-    $(wildcard include/config/PROVE_LOCKING) \
-  include/linux/stdarg.h \
-  include/linux/align.h \
-  include/linux/limits.h \
-  include/uapi/linux/limits.h \
-  include/vdso/limits.h \
-  include/linux/kstrtox.h \
-  include/linux/minmax.h \
-  include/linux/panic.h \
-    $(wildcard include/config/PANIC_TIMEOUT) \
-  include/linux/printk.h \
-    $(wildcard include/config/MESSAGE_LOGLEVEL_DEFAULT) \
-    $(wildcard include/config/CONSOLE_LOGLEVEL_DEFAULT) \
-    $(wildcard include/config/CONSOLE_LOGLEVEL_QUIET) \
-    $(wildcard include/config/EARLY_PRINTK) \
-    $(wildcard include/config/PRINTK) \
-    $(wildcard include/config/DYNAMIC_DEBUG) \
-    $(wildcard include/config/DYNAMIC_DEBUG_CORE) \
-  include/linux/kern_levels.h \
-  include/linux/ratelimit_types.h \
-  include/linux/spinlock_types_raw.h \
-    $(wildcard include/config/DEBUG_SPINLOCK) \
-    $(wildcard include/config/DEBUG_LOCK_ALLOC) \
-  include/linux/lockdep_types.h \
-    $(wildcard include/config/PROVE_RAW_LOCK_NESTING) \
-    $(wildcard include/config/LOCKDEP) \
-    $(wildcard include/config/LOCK_STAT) \
-  include/linux/once_lite.h \
-  include/linux/static_call_types.h \
-    $(wildcard include/config/HAVE_STATIC_CALL) \
-  include/linux/instruction_pointer.h \
-  include/asm-generic/percpu.h \
-    $(wildcard include/config/DEBUG_PREEMPT) \
-    $(wildcard include/config/HAVE_SETUP_PER_CPU_AREA) \
-  include/linux/threads.h \
-    $(wildcard include/config/BASE_SMALL) \
-  include/linux/percpu-defs.h \
-    $(wildcard include/config/DEBUG_FORCE_WEAK_PER_CPU) \
-  arch/x86/include/asm/page.h \
-  arch/x86/include/asm/page_32.h \
-    $(wildcard include/config/DEBUG_VIRTUAL) \
-    $(wildcard include/config/FLATMEM) \
-  include/linux/string.h \
-    $(wildcard include/config/BINARY_PRINTF) \
-    $(wildcard include/config/FORTIFY_SOURCE) \
-  include/linux/errno.h \
-  include/uapi/linux/errno.h \
-  include/uapi/linux/string.h \
-  arch/x86/include/asm/string.h \
-  arch/x86/include/asm/string_32.h \
-  include/linux/fortify-string.h \
-  include/linux/range.h \
-  include/asm-generic/memory_model.h \
-    $(wildcard include/config/SPARSEMEM_VMEMMAP) \
-    $(wildcard include/config/SPARSEMEM) \
-  include/linux/pfn.h \
-  include/asm-generic/getorder.h \
-  arch/x86/include/asm/msr.h \
-  arch/x86/include/asm/msr-index.h \
-  arch/x86/include/asm/cpumask.h \
-  include/linux/cpumask.h \
-    $(wildcard include/config/CPUMASK_OFFSTACK) \
-    $(wildcard include/config/HOTPLUG_CPU) \
-    $(wildcard include/config/DEBUG_PER_CPU_MAPS) \
-  include/linux/bitmap.h \
-  include/linux/find.h \
-  include/linux/atomic.h \
-  arch/x86/include/asm/atomic.h \
-  arch/x86/include/asm/cmpxchg.h \
-  arch/x86/include/asm/cmpxchg_32.h \
-  arch/x86/include/asm/atomic64_32.h \
-  include/linux/atomic/atomic-arch-fallback.h \
-    $(wildcard include/config/GENERIC_ATOMIC64) \
-  include/linux/atomic/atomic-long.h \
-  include/linux/atomic/atomic-instrumented.h \
-  include/linux/bug.h \
-    $(wildcard include/config/BUG_ON_DATA_CORRUPTION) \
-  arch/x86/include/asm/bug.h \
-    $(wildcard include/config/DEBUG_BUGVERBOSE) \
-  include/linux/instrumentation.h \
-    $(wildcard include/config/DEBUG_ENTRY) \
-  include/asm-generic/bug.h \
-    $(wildcard include/config/BUG) \
-    $(wildcard include/config/GENERIC_BUG_RELATIVE_POINTERS) \
-  arch/x86/include/uapi/asm/msr.h \
-  include/linux/tracepoint-defs.h \
-  arch/x86/include/asm/special_insns.h \
-  include/linux/irqflags.h \
-    $(wildcard include/config/TRACE_IRQFLAGS) \
-    $(wildcard include/config/PREEMPT_RT) \
-    $(wildcard include/config/IRQSOFF_TRACER) \
-    $(wildcard include/config/PREEMPT_TRACER) \
-    $(wildcard include/config/DEBUG_IRQFLAGS) \
-    $(wildcard include/config/TRACE_IRQFLAGS_SUPPORT) \
-  arch/x86/include/asm/irqflags.h \
-  arch/x86/include/asm/fpu/types.h \
-  arch/x86/include/asm/vmxfeatures.h \
-  arch/x86/include/asm/vdso/processor.h \
-  include/linux/personality.h \
-  include/uapi/linux/personality.h \
-  arch/x86/include/asm/tsc.h \
-  arch/x86/include/asm/cpufeature.h \
-    $(wildcard include/config/X86_FEATURE_NAMES) \
-  include/vdso/time32.h \
-  include/vdso/time.h \
-  include/linux/uidgid.h \
-    $(wildcard include/config/MULTIUSER) \
-    $(wildcard include/config/USER_NS) \
-  include/linux/highuid.h \
-  include/linux/buildid.h \
-    $(wildcard include/config/CRASH_CORE) \
-  include/linux/mm_types.h \
-    $(wildcard include/config/HAVE_ALIGNED_STRUCT_PAGE) \
-    $(wildcard include/config/MEMCG) \
-    $(wildcard include/config/USERFAULTFD) \
-    $(wildcard include/config/SWAP) \
-    $(wildcard include/config/NUMA) \
-    $(wildcard include/config/HAVE_ARCH_COMPAT_MMAP_BASES) \
-    $(wildcard include/config/MEMBARRIER) \
-    $(wildcard include/config/AIO) \
-    $(wildcard include/config/MMU_NOTIFIER) \
-    $(wildcard include/config/TRANSPARENT_HUGEPAGE) \
-    $(wildcard include/config/NUMA_BALANCING) \
-    $(wildcard include/config/ARCH_WANT_BATCHED_UNMAP_TLB_FLUSH) \
-    $(wildcard include/config/HUGETLB_PAGE) \
-    $(wildcard include/config/IOMMU_SVA) \
-  include/linux/mm_types_task.h \
-    $(wildcard include/config/SPLIT_PTLOCK_CPUS) \
-    $(wildcard include/config/ARCH_ENABLE_SPLIT_PMD_PTLOCK) \
-  arch/x86/include/asm/tlbbatch.h \
-  include/linux/auxvec.h \
-  include/uapi/linux/auxvec.h \
-  arch/x86/include/uapi/asm/auxvec.h \
-  include/linux/kref.h \
-  include/linux/spinlock.h \
-    $(wildcard include/config/PREEMPTION) \
-  include/linux/preempt.h \
-    $(wildcard include/config/PREEMPT_COUNT) \
-    $(wildcard include/config/TRACE_PREEMPT_TOGGLE) \
-    $(wildcard include/config/PREEMPT_NOTIFIERS) \
-  arch/x86/include/asm/preempt.h \
-  include/linux/thread_info.h \
-    $(wildcard include/config/THREAD_INFO_IN_TASK) \
-    $(wildcard include/config/GENERIC_ENTRY) \
-    $(wildcard include/config/HAVE_ARCH_WITHIN_STACK_FRAMES) \
-    $(wildcard include/config/HARDENED_USERCOPY) \
-  include/linux/restart_block.h \
-  arch/x86/include/asm/thread_info.h \
-    $(wildcard include/config/COMPAT) \
-  include/linux/bottom_half.h \
-  include/linux/lockdep.h \
-    $(wildcard include/config/DEBUG_LOCKING_API_SELFTESTS) \
-  include/linux/smp.h \
-    $(wildcard include/config/UP_LATE_INIT) \
-  include/linux/smp_types.h \
-  include/linux/llist.h \
-    $(wildcard include/config/ARCH_HAVE_NMI_SAFE_CMPXCHG) \
-  arch/x86/include/asm/smp.h \
-    $(wildcard include/config/X86_LOCAL_APIC) \
-    $(wildcard include/config/DEBUG_NMI_SELFTEST) \
-  arch/x86/include/generated/asm/mmiowb.h \
-  include/asm-generic/mmiowb.h \
-    $(wildcard include/config/MMIOWB) \
-  include/linux/spinlock_types.h \
-  include/linux/rwlock_types.h \
-  arch/x86/include/asm/spinlock.h \
-  arch/x86/include/asm/paravirt.h \
-    $(wildcard include/config/PARAVIRT_SPINLOCKS) \
-  arch/x86/include/asm/frame.h \
-  arch/x86/include/asm/qspinlock.h \
-  include/asm-generic/qspinlock.h \
-  arch/x86/include/asm/qrwlock.h \
-  include/asm-generic/qrwlock.h \
-  include/linux/rwlock.h \
-    $(wildcard include/config/PREEMPT) \
-  include/linux/spinlock_api_smp.h \
-    $(wildcard include/config/INLINE_SPIN_LOCK) \
-    $(wildcard include/config/INLINE_SPIN_LOCK_BH) \
-    $(wildcard include/config/INLINE_SPIN_LOCK_IRQ) \
-    $(wildcard include/config/INLINE_SPIN_LOCK_IRQSAVE) \
-    $(wildcard include/config/INLINE_SPIN_TRYLOCK) \
-    $(wildcard include/config/INLINE_SPIN_TRYLOCK_BH) \
-    $(wildcard include/config/UNINLINE_SPIN_UNLOCK) \
-    $(wildcard include/config/INLINE_SPIN_UNLOCK_BH) \
-    $(wildcard include/config/INLINE_SPIN_UNLOCK_IRQ) \
-    $(wildcard include/config/INLINE_SPIN_UNLOCK_IRQRESTORE) \
-    $(wildcard include/config/GENERIC_LOCKBREAK) \
-  include/linux/rwlock_api_smp.h \
-    $(wildcard include/config/INLINE_READ_LOCK) \
-    $(wildcard include/config/INLINE_WRITE_LOCK) \
-    $(wildcard include/config/INLINE_READ_LOCK_BH) \
-    $(wildcard include/config/INLINE_WRITE_LOCK_BH) \
-    $(wildcard include/config/INLINE_READ_LOCK_IRQ) \
-    $(wildcard include/config/INLINE_WRITE_LOCK_IRQ) \
-    $(wildcard include/config/INLINE_READ_LOCK_IRQSAVE) \
-    $(wildcard include/config/INLINE_WRITE_LOCK_IRQSAVE) \
-    $(wildcard include/config/INLINE_READ_TRYLOCK) \
-    $(wildcard include/config/INLINE_WRITE_TRYLOCK) \
-    $(wildcard include/config/INLINE_READ_UNLOCK) \
-    $(wildcard include/config/INLINE_WRITE_UNLOCK) \
-    $(wildcard include/config/INLINE_READ_UNLOCK_BH) \
-    $(wildcard include/config/INLINE_WRITE_UNLOCK_BH) \
-    $(wildcard include/config/INLINE_READ_UNLOCK_IRQ) \
-    $(wildcard include/config/INLINE_WRITE_UNLOCK_IRQ) \
-    $(wildcard include/config/INLINE_READ_UNLOCK_IRQRESTORE) \
-    $(wildcard include/config/INLINE_WRITE_UNLOCK_IRQRESTORE) \
-  include/linux/refcount.h \
-  include/linux/rbtree.h \
-  include/linux/rbtree_types.h \
-  include/linux/rcupdate.h \
-    $(wildcard include/config/PREEMPT_RCU) \
-    $(wildcard include/config/TINY_RCU) \
-    $(wildcard include/config/RCU_STRICT_GRACE_PERIOD) \
-    $(wildcard include/config/TASKS_RCU_GENERIC) \
-    $(wildcard include/config/RCU_STALL_COMMON) \
-    $(wildcard include/config/NO_HZ_FULL) \
-    $(wildcard include/config/RCU_NOCB_CPU) \
-    $(wildcard include/config/TASKS_RCU) \
-    $(wildcard include/config/TASKS_TRACE_RCU) \
-    $(wildcard include/config/TASKS_RUDE_RCU) \
-    $(wildcard include/config/TREE_RCU) \
-    $(wildcard include/config/DEBUG_OBJECTS_RCU_HEAD) \
-    $(wildcard include/config/PROVE_RCU) \
-    $(wildcard include/config/ARCH_WEAK_RELEASE_ACQUIRE) \
-  include/linux/rcutree.h \
-  include/linux/rwsem.h \
-    $(wildcard include/config/RWSEM_SPIN_ON_OWNER) \
-    $(wildcard include/config/DEBUG_RWSEMS) \
-  include/linux/osq_lock.h \
-  include/linux/completion.h \
-  include/linux/swait.h \
-  include/linux/wait.h \
-  include/uapi/linux/wait.h \
-  include/linux/uprobes.h \
-    $(wildcard include/config/UPROBES) \
-  arch/x86/include/asm/uprobes.h \
-  include/linux/notifier.h \
-  include/linux/mutex.h \
-    $(wildcard include/config/MUTEX_SPIN_ON_OWNER) \
-    $(wildcard include/config/DEBUG_MUTEXES) \
-  include/linux/debug_locks.h \
-  include/linux/srcu.h \
-    $(wildcard include/config/TINY_SRCU) \
-    $(wildcard include/config/SRCU) \
-  include/linux/workqueue.h \
-    $(wildcard include/config/DEBUG_OBJECTS_WORK) \
-    $(wildcard include/config/FREEZER) \
-    $(wildcard include/config/WQ_WATCHDOG) \
-  include/linux/timer.h \
-    $(wildcard include/config/DEBUG_OBJECTS_TIMERS) \
-    $(wildcard include/config/NO_HZ_COMMON) \
-  include/linux/ktime.h \
-  include/linux/jiffies.h \
-  include/vdso/jiffies.h \
-  include/generated/timeconst.h \
-  include/vdso/ktime.h \
-  include/linux/timekeeping.h \
-    $(wildcard include/config/GENERIC_CMOS_UPDATE) \
-  include/linux/clocksource_ids.h \
-  include/linux/debugobjects.h \
-    $(wildcard include/config/DEBUG_OBJECTS) \
-    $(wildcard include/config/DEBUG_OBJECTS_FREE) \
-  include/linux/rcu_segcblist.h \
-  include/linux/srcutree.h \
-  include/linux/rcu_node_tree.h \
-    $(wildcard include/config/RCU_FANOUT) \
-    $(wildcard include/config/RCU_FANOUT_LEAF) \
-  include/linux/page-flags-layout.h \
-    $(wildcard include/config/KASAN_HW_TAGS) \
-  include/linux/numa.h \
-    $(wildcard include/config/NODES_SHIFT) \
-    $(wildcard include/config/NUMA_KEEP_MEMINFO) \
-    $(wildcard include/config/HAVE_ARCH_NODE_DEV_GROUP) \
-  arch/x86/include/asm/sparsemem.h \
-  include/generated/bounds.h \
-  include/linux/seqlock.h \
-  include/linux/ww_mutex.h \
-    $(wildcard include/config/DEBUG_RT_MUTEXES) \
-    $(wildcard include/config/DEBUG_WW_MUTEX_SLOWPATH) \
-  include/linux/rtmutex.h \
-  arch/x86/include/asm/mmu.h \
-    $(wildcard include/config/MODIFY_LDT_SYSCALL) \
-  include/linux/kmod.h \
-  include/linux/umh.h \
-  include/linux/gfp.h \
-    $(wildcard include/config/HIGHMEM) \
-    $(wildcard include/config/ZONE_DMA) \
-    $(wildcard include/config/ZONE_DMA32) \
-    $(wildcard include/config/ZONE_DEVICE) \
-    $(wildcard include/config/PM_SLEEP) \
-    $(wildcard include/config/CONTIG_ALLOC) \
-    $(wildcard include/config/CMA) \
-  include/linux/mmdebug.h \
-    $(wildcard include/config/DEBUG_VM) \
-    $(wildcard include/config/DEBUG_VM_PGFLAGS) \
-  include/linux/mmzone.h \
-    $(wildcard include/config/FORCE_MAX_ZONEORDER) \
-    $(wildcard include/config/MEMORY_ISOLATION) \
-    $(wildcard include/config/ZSMALLOC) \
-    $(wildcard include/config/MEMORY_HOTPLUG) \
-    $(wildcard include/config/COMPACTION) \
-    $(wildcard include/config/PAGE_EXTENSION) \
-    $(wildcard include/config/DEFERRED_STRUCT_PAGE_INIT) \
-    $(wildcard include/config/HAVE_MEMORYLESS_NODES) \
-    $(wildcard include/config/SPARSEMEM_EXTREME) \
-    $(wildcard include/config/HAVE_ARCH_PFN_VALID) \
-  include/linux/nodemask.h \
-  include/linux/pageblock-flags.h \
-    $(wildcard include/config/HUGETLB_PAGE_SIZE_VARIABLE) \
-  include/linux/page-flags.h \
-    $(wildcard include/config/ARCH_USES_PG_UNCACHED) \
-    $(wildcard include/config/MEMORY_FAILURE) \
-    $(wildcard include/config/PAGE_IDLE_FLAG) \
-    $(wildcard include/config/HUGETLB_PAGE_FREE_VMEMMAP) \
-    $(wildcard include/config/HUGETLB_PAGE_FREE_VMEMMAP_DEFAULT_ON) \
-    $(wildcard include/config/KSM) \
-  include/linux/local_lock.h \
-  include/linux/local_lock_internal.h \
-  include/linux/memory_hotplug.h \
-    $(wildcard include/config/HAVE_ARCH_NODEDATA_EXTENSION) \
-    $(wildcard include/config/ARCH_HAS_ADD_PAGES) \
-    $(wildcard include/config/MEMORY_HOTREMOVE) \
-  arch/x86/include/asm/mmzone.h \
-  arch/x86/include/asm/mmzone_32.h \
-  include/linux/topology.h \
-    $(wildcard include/config/USE_PERCPU_NUMA_NODE_ID) \
-    $(wildcard include/config/SCHED_SMT) \
-    $(wildcard include/config/SCHED_CLUSTER) \
-  include/linux/arch_topology.h \
-    $(wildcard include/config/ACPI_CPPC_LIB) \
-    $(wildcard include/config/GENERIC_ARCH_TOPOLOGY) \
-  include/linux/percpu.h \
-    $(wildcard include/config/NEED_PER_CPU_EMBED_FIRST_CHUNK) \
-    $(wildcard include/config/NEED_PER_CPU_PAGE_FIRST_CHUNK) \
-  arch/x86/include/asm/topology.h \
-    $(wildcard include/config/SCHED_MC_PRIO) \
-  arch/x86/include/asm/mpspec.h \
-    $(wildcard include/config/EISA) \
-    $(wildcard include/config/X86_MPPARSE) \
-  arch/x86/include/asm/mpspec_def.h \
-  arch/x86/include/asm/x86_init.h \
-  arch/x86/include/asm/apicdef.h \
-  include/asm-generic/topology.h \
-  include/linux/sysctl.h \
-    $(wildcard include/config/SYSCTL) \
-  include/uapi/linux/sysctl.h \
-  include/linux/elf.h \
-    $(wildcard include/config/ARCH_USE_GNU_PROPERTY) \
-    $(wildcard include/config/ARCH_HAVE_ELF_PROT) \
-  arch/x86/include/asm/elf.h \
-    $(wildcard include/config/X86_X32_ABI) \
-  arch/x86/include/asm/user.h \
-  arch/x86/include/asm/user_32.h \
-  arch/x86/include/asm/fsgsbase.h \
-  arch/x86/include/asm/vdso.h \
-  arch/x86/include/asm/desc.h \
-  arch/x86/include/asm/fixmap.h \
-    $(wildcard include/config/DEBUG_KMAP_LOCAL_FORCE_MAP) \
-    $(wildcard include/config/X86_VSYSCALL_EMULATION) \
-    $(wildcard include/config/PROVIDE_OHCI1394_DMA_INIT) \
-    $(wildcard include/config/X86_IO_APIC) \
-    $(wildcard include/config/KMAP_LOCAL) \
-    $(wildcard include/config/PCI_MMCONFIG) \
-    $(wildcard include/config/ACPI_APEI_GHES) \
-    $(wildcard include/config/INTEL_TXT) \
-  arch/x86/include/generated/asm/kmap_size.h \
-  include/asm-generic/kmap_size.h \
-    $(wildcard include/config/DEBUG_KMAP_LOCAL) \
-  include/asm-generic/fixmap.h \
-  arch/x86/include/asm/irq_vectors.h \
-    $(wildcard include/config/HAVE_KVM) \
-    $(wildcard include/config/HYPERV) \
-    $(wildcard include/config/PCI_MSI) \
-  arch/x86/include/asm/cpu_entry_area.h \
-  arch/x86/include/asm/intel_ds.h \
-  arch/x86/include/asm/pgtable_areas.h \
-  arch/x86/include/asm/pgtable_32_areas.h \
-  include/uapi/linux/elf.h \
-  include/uapi/linux/elf-em.h \
-  include/linux/kobject.h \
-    $(wildcard include/config/UEVENT_HELPER) \
-    $(wildcard include/config/DEBUG_KOBJECT_RELEASE) \
-  include/linux/sysfs.h \
-  include/linux/kernfs.h \
-    $(wildcard include/config/KERNFS) \
-  include/linux/idr.h \
-  include/linux/radix-tree.h \
-  include/linux/xarray.h \
-    $(wildcard include/config/XARRAY_MULTI) \
-  include/linux/kconfig.h \
-  include/linux/kobject_ns.h \
-  include/linux/moduleparam.h \
-    $(wildcard include/config/ALPHA) \
-    $(wildcard include/config/IA64) \
-    $(wildcard include/config/PPC64) \
-  include/linux/rbtree_latch.h \
-  include/linux/error-injection.h \
-  include/asm-generic/error-injection.h \
-  include/linux/cfi.h \
-    $(wildcard include/config/CFI_CLANG_SHADOW) \
-  arch/x86/include/asm/module.h \
-    $(wildcard include/config/UNWINDER_ORC) \
-  include/asm-generic/module.h \
-    $(wildcard include/config/HAVE_MOD_ARCH_SPECIFIC) \
-    $(wildcard i
+// SPDX-License-Identifier: GPL-2.0-only
+/*
+ * Copyright (C) 2010-2012 Stephane Grosjean <s.grosjean@peak-system.com>
+ *
+ * CAN driver for PEAK-System PCAN-PC Card
+ * Derived from the PCAN project file driver/src/pcan_pccard.c
+ * Copyright (C) 2006-2010 PEAK System-Technik GmbH
+ */
+#include <linux/kernel.h>
+#include <linux/module.h>
+#include <linux/interrupt.h>
+#include <linux/netdevice.h>
+#include <linux/delay.h>
+#include <linux/timer.h>
+#include <linux/io.h>
+#include <pcmcia/cistpl.h>
+#include <pcmcia/ds.h>
+#include <linux/can.h>
+#include <linux/can/dev.h>
+#include "sja1000.h"
+
+MODULE_AUTHOR("Stephane Grosjean <s.grosjean@peak-system.com>");
+MODULE_DESCRIPTION("CAN driver for PEAK-System PCAN-PC Cards");
+MODULE_LICENSE("GPL v2");
+
+/* PEAK-System PCMCIA driver name */
+#define PCC_NAME		"peak_pcmcia"
+
+#define PCC_CHAN_MAX		2
+
+#define PCC_CAN_CLOCK		(16000000 / 2)
+
+#define PCC_MANF_ID		0x0377
+#define PCC_CARD_ID		0x0001
+
+#define PCC_CHAN_SIZE		0x20
+#define PCC_CHAN_OFF(c)		((c) * PCC_CHAN_SIZE)
+#define PCC_COMN_OFF		(PCC_CHAN_OFF(PCC_CHAN_MAX))
+#define PCC_COMN_SIZE		0x40
+
+/* common area registers */
+#define PCC_CCR			0x00
+#define PCC_CSR			0x02
+#define PCC_CPR			0x04
+#define PCC_SPI_DIR		0x06
+#define PCC_SPI_DOR		0x08
+#define PCC_SPI_ADR		0x0a
+#define PCC_SPI_IR		0x0c
+#define PCC_FW_MAJOR		0x10
+#define PCC_FW_MINOR		0x12
+
+/* CCR bits */
+#define PCC_CCR_CLK_16		0x00
+#define PCC_CCR_CLK_10		0x01
+#define PCC_CCR_CLK_21		0x02
+#define PCC_CCR_CLK_8		0x03
+#define PCC_CCR_CLK_MASK	PCC_CCR_CLK_8
+
+#define PCC_CCR_RST_CHAN(c)	(0x01 << ((c) + 2))
+#define PCC_CCR_RST_ALL		(PCC_CCR_RST_CHAN(0) | PCC_CCR_RST_CHAN(1))
+#define PCC_CCR_RST_MASK	PCC_CCR_RST_ALL
+
+/* led selection bits */
+#define PCC_LED(c)		(1 << (c))
+#define PCC_LED_ALL		(PCC_LED(0) | PCC_LED(1))
+
+/* led state value */
+#define PCC_LED_ON		0x00
+#define PCC_LED_FAST		0x01
+#define PCC_LED_SLOW		0x02
+#define PCC_LED_OFF		0x03
+
+#define PCC_CCR_LED_CHAN(s, c)	((s) << (((c) + 2) << 1))
+
+#define PCC_CCR_LED_ON_CHAN(c)		PCC_CCR_LED_CHAN(PCC_LED_ON, c)
+#define PCC_CCR_LED_FAST_CHAN(c)	PCC_CCR_LED_CHAN(PCC_LED_FAST, c)
+#define PCC_CCR_LED_SLOW_CHAN(c)	PCC_CCR_LED_CHAN(PCC_LED_SLOW, c)
+#define PCC_CCR_LED_OFF_CHAN(c)		PCC_CCR_LED_CHAN(PCC_LED_OFF, c)
+#define PCC_CCR_LED_MASK_CHAN(c)	PCC_CCR_LED_OFF_CHAN(c)
+#define PCC_CCR_LED_OFF_ALL		(PCC_CCR_LED_OFF_CHAN(0) | \
+					 PCC_CCR_LED_OFF_CHAN(1))
+#define PCC_CCR_LED_MASK		PCC_CCR_LED_OFF_ALL
+
+#define PCC_CCR_INIT	(PCC_CCR_CLK_16 | PCC_CCR_RST_ALL | PCC_CCR_LED_OFF_ALL)
+
+/* CSR bits */
+#define PCC_CSR_SPI_BUSY		0x04
+
+/* time waiting for SPI busy (prevent from infinite loop) */
+#define PCC_SPI_MAX_BUSY_WAIT_MS	3
+
+/* max count of reading the SPI status register waiting for a change */
+/* (prevent from infinite loop) */
+#define PCC_WRITE_MAX_LOOP		1000
+
+/* max nb of int handled by that isr in one shot (prevent from infinite loop) */
+#define PCC_ISR_MAX_LOOP		10
+
+/* EEPROM chip instruction set */
+/* note: EEPROM Read/Write instructions include A8 bit */
+#define PCC_EEP_WRITE(a)	(0x02 | (((a) & 0x100) >> 5))
+#define PCC_EEP_READ(a)		(0x03 | (((a) & 0x100) >> 5))
+#define PCC_EEP_WRDI		0x04	/* EEPROM Write Disable */
+#define PCC_EEP_RDSR		0x05	/* EEPROM Read Status Register */
+#define PCC_EEP_WREN		0x06	/* EEPROM Write Enable */
+
+/* EEPROM Status Register bits */
+#define PCC_EEP_SR_WEN		0x02	/* EEPROM SR Write Enable bit */
+#define PCC_EEP_SR_WIP		0x01	/* EEPROM SR Write In Progress bit */
+
+/*
+ * The board configuration is probably following:
+ * RX1 is connected to ground.
+ * TX1 is not connected.
+ * CLKO is not connected.
+ * Setting the OCR register to 0xDA is a good idea.
+ * This means normal output mode, push-pull and the correct polarity.
+ */
+#define PCC_OCR			(OCR_TX0_PUSHPULL | OCR_TX1_PUSHPULL)
+
+/*
+ * In the CDR register, you should set CBP to 1.
+ * You will probably also want to set the clock divider value to 7
+ * (meaning direct oscillator output) because the second SJA1000 chip
+ * is driven by the first one CLKOUT output.
+ */
+#define PCC_CDR			(CDR_CBP | CDR_CLKOUT_MASK)
+
+struct pcan_channel {
+	struct net_device *netdev;
+	unsigned long prev_rx_bytes;
+	unsigned long prev_tx_bytes;
+};
+
+/* PCAN-PC Card private structure */
+struct pcan_pccard {
+	struct pcmcia_device *pdev;
+	int chan_count;
+	struct pcan_channel channel[PCC_CHAN_MAX];
+	u8 ccr;
+	u8 fw_major;
+	u8 fw_minor;
+	void __iomem *ioport_addr;
+	struct timer_list led_timer;
+};
+
+static struct pcmcia_device_id pcan_table[] = {
+	PCMCIA_DEVICE_MANF_CARD(PCC_MANF_ID, PCC_CARD_ID),
+	PCMCIA_DEVICE_NULL,
+};
+
+MODULE_DEVICE_TABLE(pcmcia, pcan_table);
+
+static void pcan_set_leds(struct pcan_pccard *card, u8 mask, u8 state);
+
+/*
+ * start timer which controls leds state
+ */
+static void pcan_start_led_timer(struct pcan_pccard *card)
+{
+	if (!timer_pending(&card->led_timer))
+		mod_timer(&card->led_timer, jiffies + HZ);
+}
+
+/*
+ * stop the timer which controls leds state
+ */
+static void pcan_stop_led_timer(struct pcan_pccard *card)
+{
+	del_timer_sync(&card->led_timer);
+}
+
+/*
+ * read a sja1000 register
+ */
+static u8 pcan_read_canreg(const struct sja1000_priv *priv, int port)
+{
+	return ioread8(priv->reg_base + port);
+}
+
+/*
+ * write a sja1000 register
+ */
+static void pcan_write_canreg(const struct sja1000_priv *priv, int port, u8 v)
+{
+	struct pcan_pccard *card = priv->priv;
+	int c = (priv->reg_base - card->ioport_addr) / PCC_CHAN_SIZE;
+
+	/* sja1000 register changes control the leds state */
+	if (port == SJA1000_MOD)
+		switch (v) {
+		case MOD_RM:
+			/* Reset Mode: set led on */
+			pcan_set_leds(card, PCC_LED(c), PCC_LED_ON);
+			break;
+		case 0x00:
+			/* Normal Mode: led slow blinking and start led timer */
+			pcan_set_leds(card, PCC_LED(c), PCC_LED_SLOW);
+			pcan_start_led_timer(card);
+			break;
+		default:
+			break;
+		}
+
+	iowrite8(v, priv->reg_base + port);
+}
+
+/*
+ * read a register from the common area
+ */
+static u8 pcan_read_reg(struct pcan_pccard *card, int port)
+{
+	return ioread8(card->ioport_addr + PCC_COMN_OFF + port);
+}
+
+/*
+ * write a register into the common area
+ */
+static void pcan_write_reg(struct pcan_pccard *card, int port, u8 v)
+{
+	/* cache ccr value */
+	if (port == PCC_CCR) {
+		if (card->ccr == v)
+			return;
+		card->ccr = v;
+	}
+
+	iowrite8(v, card->ioport_addr + PCC_COMN_OFF + port);
+}
+
+/*
+ * check whether the card is present by checking its fw version numbers
+ * against values read at probing time.
+ */
+static inline int pcan_pccard_present(struct pcan_pccard *card)
+{
+	return ((pcan_read_reg(card, PCC_FW_MAJOR) == card->fw_major) &&
+		(pcan_read_reg(card, PCC_FW_MINOR) == card->fw_minor));
+}
+
+/*
+ * wait for SPI engine while it is busy
+ */
+static int pcan_wait_spi_busy(struct pcan_pccard *card)
+{
+	unsigned long timeout = jiffies +
+				msecs_to_jiffies(PCC_SPI_MAX_BUSY_WAIT_MS) + 1;
+
+	/* be sure to read status at least once after sleeping */
+	while (pcan_read_reg(card, PCC_CSR) & PCC_CSR_SPI_BUSY) {
+		if (time_after(jiffies, timeout))
+			return -EBUSY;
+		schedule();
+	}
+
+	return 0;
+}
+
+/*
+ * write data in device eeprom
+ */
+static int pcan_write_eeprom(struct pcan_pccard *card, u16 addr, u8 v)
+{
+	u8 status;
+	int err, i;
+
+	/* write instruction enabling write */
+	pcan_write_reg(card, PCC_SPI_IR, PCC_EEP_WREN);
+	err = pcan_wait_spi_busy(card);
+	if (err)
+		goto we_spi_err;
+
+	/* wait until write enabled */
+	for (i = 0; i < PCC_WRITE_MAX_LOOP; i++) {
+		/* write instruction reading the status register */
+		pcan_write_reg(card, PCC_SPI_IR, PCC_EEP_RDSR);
+		err = pcan_wait_spi_busy(card);
+		if (err)
+			goto we_spi_err;
+
+		/* get status register value and check write enable bit */
+		status = pcan_read_reg(card, PCC_SPI_DIR);
+		if (status & PCC_EEP_SR_WEN)
+			break;
+	}
+
+	if (i >= PCC_WRITE_MAX_LOOP) {
+		dev_err(&card->pdev->dev,
+			"stop waiting to be allowed to write in eeprom\n");
+		return -EIO;
+	}
+
+	/* set address and data */
+	pcan_write_reg(card, PCC_SPI_ADR, addr & 0xff);
+	pcan_write_reg(card, PCC_SPI_DOR, v);
+
+	/*
+	 * write instruction with bit[3] set according to address value:
+	 * if addr refers to upper half of the memory array: bit[3] = 1
+	 */
+	pcan_write_reg(card, PCC_SPI_IR, PCC_EEP_WRITE(addr));
+	err = pcan_wait_spi_busy(card);
+	if (err)
+		goto we_spi_err;
+
+	/* wait while write in progress */
+	for (i = 0; i < PCC_WRITE_MAX_LOOP; i++) {
+		/* write instruction reading the status register */
+		pcan_write_reg(card, PCC_SPI_IR, PCC_EEP_RDSR);
+		err = pcan_wait_spi_busy(card);
+		if (err)
+			goto we_spi_err;
+
+		/* get status register value and check write in progress bit */
+		status = pcan_read_reg(card, PCC_SPI_DIR);
+		if (!(status & PCC_EEP_SR_WIP))
+			break;
+	}
+
+	if (i >= PCC_WRITE_MAX_LOOP) {
+		dev_err(&card->pdev->dev,
+			"stop waiting for write in eeprom to complete\n");
+		return -EIO;
+	}
+
+	/* write instruction disabling write */
+	pcan_write_reg(card, PCC_SPI_IR, PCC_EEP_WRDI);
+	err = pcan_wait_spi_busy(card);
+	if (err)
+		goto we_spi_err;
+
+	return 0;
+
+we_spi_err:
+	dev_err(&card->pdev->dev,
+		"stop waiting (spi engine always busy) err %d\n", err);
+
+	return err;
+}
+
+static void pcan_set_leds(struct pcan_pccard *card, u8 led_mask, u8 state)
+{
+	u8 ccr = card->ccr;
+	int i;
+
+	for (i = 0; i < card->chan_count; i++)
+		if (led_mask & PCC_LED(i)) {
+			/* clear corresponding led bits in ccr */
+			ccr &= ~PCC_CCR_LED_MASK_CHAN(i);
+			/* then set new bits */
+			ccr |= PCC_CCR_LED_CHAN(state, i);
+		}
+
+	/* real write only if something has changed in ccr */
+	pcan_write_reg(card, PCC_CCR, ccr);
+}
+
+/*
+ * enable/disable CAN connectors power
+ */
+static inline void pcan_set_can_power(struct pcan_pccard *card, int onoff)
+{
+	int err;
+
+	err = pcan_write_eeprom(card, 0, !!onoff);
+	if (err)
+		dev_err(&card->pdev->dev,
+			"failed setting power %s to can connectors (err %d)\n",
+			(onoff) ? "on" : "off", err);
+}
+
+/*
+ * set leds state according to channel activity
+ */
+static void pcan_led_timer(struct timer_list *t)
+{
+	struct pcan_pccard *card = from_timer(card, t, led_timer);
+	struct net_device *netdev;
+	int i, up_count = 0;
+	u8 ccr;
+
+	ccr = card->ccr;
+	for (i = 0; i < card->chan_count; i++) {
+		/* default is: not configured */
+		ccr &= ~PCC_CCR_LED_MASK_CHAN(i);
+		ccr |= PCC_CCR_LED_ON_CHAN(i);
+
+		netdev = card->channel[i].netdev;
+		if (!netdev || !(netdev->flags & IFF_UP))
+			continue;
+
+		up_count++;
+
+		/* no activity (but configured) */
+		ccr &= ~PCC_CCR_LED_MASK_CHAN(i);
+		ccr |= PCC_CCR_LED_SLOW_CHAN(i);
+
+		/* if bytes counters changed, set fast blinking led */
+		if (netdev->stats.rx_bytes != card->channel[i].prev_rx_bytes) {
+			card->channel[i].prev_rx_bytes = netdev->stats.rx_bytes;
+			ccr &= ~PCC_CCR_LED_MASK_CHAN(i);
+			ccr |= PCC_CCR_LED_FAST_CHAN(i);
+		}
+		if (netdev->stats.tx_bytes != card->channel[i].prev_tx_bytes) {
+			card->channel[i].prev_tx_bytes = netdev->stats.tx_bytes;
+			ccr &= ~PCC_CCR_LED_MASK_CHAN(i);
+			ccr |= PCC_CCR_LED_FAST_CHAN(i);
+		}
+	}
+
+	/* write the new leds state */
+	pcan_write_reg(card, PCC_CCR, ccr);
+
+	/* restart timer (except if no more configured channels) */
+	if (up_count)
+		mod_timer(&card->led_timer, jiffies + HZ);
+}
+
+/*
+ * interrupt service routine
+ */
+static irqreturn_t pcan_isr(int irq, void *dev_id)
+{
+	struct pcan_pccard *card = dev_id;
+	int irq_handled;
+
+	/* prevent from infinite loop */
+	for (irq_handled = 0; irq_handled < PCC_ISR_MAX_LOOP; irq_handled++) {
+		/* handle shared interrupt and next loop */
+		int nothing_to_handle = 1;
+		int i;
+
+		/* check interrupt for each channel */
+		for (i = 0; i < card->chan_count; i++) {
+			struct net_device *netdev;
+
+			/*
+			 * check whether the card is present before calling
+			 * sja1000_interrupt() to speed up hotplug detection
+			 */
+			if (!pcan_pccard_present(card)) {
+				/* card unplugged during isr */
+				return IRQ_NONE;
+			}
+
+			/*
+			 * should check whether all or SJA1000_MAX_IRQ
+			 * interrupts have been handled: loop again to be sure.
+			 */
+			netdev = card->channel[i].netdev;
+			if (netdev &&
+			    sja1000_interrupt(irq, netdev) == IRQ_HANDLED)
+				nothing_to_handle = 0;
+		}
+
+		if (nothing_to_handle)
+			break;
+	}
+
+	return (irq_handled) ? IRQ_HANDLED : IRQ_NONE;
+}
+
+/*
+ * free all resources used by the channels and switch off leds and can power
+ */
+static void pcan_free_channels(struct pcan_pccard *card)
+{
+	int i;
+	u8 led_mask = 0;
+
+	for (i = 0; i < card->chan_count; i++) {
+		struct net_device *netdev;
+		char name[IFNAMSIZ];
+
+		led_mask |= PCC_LED(i);
+
+		netdev = card->channel[i].netdev;
+		if (!netdev)
+			continue;
+
+		strlcpy(name, netdev->name, IFNAMSIZ);
+
+		unregister_sja1000dev(netdev);
+
+		free_sja1000dev(netdev);
+
+		dev_info(&card->pdev->dev, "%s removed\n", name);
+	}
+
+	/* do it only if device not removed */
+	if (pcan_pccard_present(card)) {
+		pcan_set_leds(card, led_mask, PCC_LED_OFF);
+		pcan_set_can_power(card, 0);
+	}
+}
+
+/*
+ * check if a CAN controller is present at the specified location
+ */
+static inline int pcan_channel_present(struct sja1000_priv *priv)
+{
+	/* make sure SJA1000 is in reset mode */
+	pcan_write_canreg(priv, SJA1000_MOD, 1);
+	pcan_write_canreg(priv, SJA1000_CDR, CDR_PELICAN);
+
+	/* read reset-values */
+	if (pcan_read_canreg(priv, SJA1000_CDR) == CDR_PELICAN)
+		return 1;
+
+	return 0;
+}
+
+static int pcan_add_channels(struct pcan_pccard *card)
+{
+	struct pcmcia_device *pdev = card->pdev;
+	int i, err = 0;
+	u8 ccr = PCC_CCR_INIT;
+
+	/* init common registers (reset channels and leds off) */
+	card->ccr = ~ccr;
+	pcan_write_reg(card, PCC_CCR, ccr);
+
+	/* wait 2ms before unresetting channels */
+	usleep_range(2000, 3000);
+
+	ccr &= ~PCC_CCR_RST_ALL;
+	pcan_write_reg(card, PCC_CCR, ccr);
+
+	/* create one network device per channel detected */
+	for (i = 0; i < ARRAY_SIZE(card->channel); i++) {
+		struct net_device *netdev;
+		struct sja1000_priv *priv;
+
+		netdev = alloc_sja1000dev(0);
+		if (!netdev) {
+			err = -ENOMEM;
+			break;
+		}
+
+		/* update linkages */
+		priv = netdev_priv(netdev);
+		priv->priv = card;
+		SET_NETDEV_DEV(netdev, &pdev->dev);
+		netdev->dev_id = i;
+
+		priv->irq_flags = IRQF_SHARED;
+		netdev->irq = pdev->irq;
+		priv->reg_base = card->ioport_addr + PCC_CHAN_OFF(i);
+
+		/* check if channel is present */
+		if (!pcan_channel_present(priv)) {
+			dev_err(&pdev->dev, "channel %d not present\n", i);
+			free_sja1000dev(netdev);
+			continue;
+		}
+
+		priv->read_reg  = pcan_read_canreg;
+		priv->write_reg = pcan_write_canreg;
+		priv->can.clock.freq = PCC_CAN_CLOCK;
+		priv->ocr = PCC_OCR;
+		priv->cdr = PCC_CDR;
+
+		/* Neither a slave device distributes the clock */
+		if (i > 0)
+			priv->cdr |= CDR_CLK_OFF;
+
+		priv->flags |= SJA1000_CUSTOM_IRQ_HANDLER;
+
+		/* register SJA1000 device */
+		err = register_sja1000dev(netdev);
+		if (err) {
+			free_sja1000dev(netdev);
+			continue;
+		}
+
+		card->channel[i].netdev = netdev;
+		card->chan_count++;
+
+		/* set corresponding led on in the new ccr */
+		ccr &= ~PCC_CCR_LED_OFF_CHAN(i);
+
+		dev_info(&pdev->dev,
+			"%s on channel %d at 0x%p irq %d\n",
+			netdev->name, i, priv->reg_base, pdev->irq);
+	}
+
+	/* write new ccr (change leds state) */
+	pcan_write_reg(card, PCC_CCR, ccr);
+
+	return err;
+}
+
+static int pcan_conf_check(struct pcmcia_device *pdev, void *priv_data)
+{
+	pdev->resource[0]->flags &= ~IO_DATA_PATH_WIDTH;
+	pdev->resource[0]->flags |= IO_DATA_PATH_WIDTH_8; /* only */
+	pdev->io_lines = 10;
+
+	/* This reserves IO space but doesn't actually enable it */
+	return pcmcia_request_io(pdev);
+}
+
+/*
+ * free all resources used by the device
+ */
+static void pcan_free(struct pcmcia_device *pdev)
+{
+	struct pcan_pccard *card = pdev->priv;
+
+	if (!card)
+		return;
+
+	free_irq(pdev->irq, card);
+	pcan_stop_led_timer(card);
+
+	pcan_free_channels(card);
+
+	ioport_unmap(card->ioport_addr);
+
+	kfree(card);
+	pdev->priv = NULL;
+}
+
+/*
+ * setup PCMCIA socket and probe for PEAK-System PC-CARD
+ */
+static int pcan_probe(struct pcmcia_device *pdev)
+{
+	struct pcan_pccard *card;
+	int err;
+
+	pdev->config_flags |= CONF_ENABLE_IRQ | CONF_AUTO_SET_IO;
+
+	err = pcmcia_loop_config(pdev, pcan_conf_check, NULL);
+	if (err) {
+		dev_err(&pdev->dev, "pcmcia_loop_config() error %d\n", err);
+		goto probe_err_1;
+	}
+
+	if (!pdev->irq) {
+		dev_err(&pdev->dev, "no irq assigned\n");
+		err = -ENODEV;
+		goto probe_err_1;
+	}
+
+	err = pcmcia_enable_device(pdev);
+	if (err) {
+		dev_err(&pdev->dev, "pcmcia_enable_device failed err=%d\n",
+			err);
+		goto probe_err_1;
+	}
+
+	card = kzalloc(sizeof(struct pcan_pccard), GFP_KERNEL);
+	if (!card) {
+		err = -ENOMEM;
+		goto probe_err_2;
+	}
+
+	card->pdev = pdev;
+	pdev->priv = card;
+
+	/* sja1000 api uses iomem */
+	card->ioport_addr = ioport_map(pdev->resource[0]->start,
+					resource_size(pdev->resource[0]));
+	if (!card->ioport_addr) {
+		dev_err(&pdev->dev, "couldn't map io port into io memory\n");
+		err = -ENOMEM;
+		goto probe_err_3;
+	}
+	card->fw_major = pcan_read_reg(card, PCC_FW_MAJOR);
+	card->fw_minor = pcan_read_reg(card, PCC_FW_MINOR);
+
+	/* display board name and firmware version */
+	dev_info(&pdev->dev, "PEAK-System pcmcia card %s fw %d.%d\n",
+		pdev->prod_id[1] ? pdev->prod_id[1] : "PCAN-PC Card",
+		card->fw_major, card->fw_minor);
+
+	/* detect available channels */
+	pcan_add_channels(card);
+	if (!card->chan_count) {
+		err = -ENOMEM;
+		goto probe_err_4;
+	}
+
+	/* init the timer which controls the leds */
+	timer_setup(&card->led_timer, pcan_led_timer, 0);
+
+	/* request the given irq */
+	err = request_irq(pdev->irq, &pcan_isr, IRQF_SHARED, PCC_NAME, card);
+	if (err) {
+		dev_err(&pdev->dev, "couldn't request irq%d\n", pdev->irq);
+		goto probe_err_5;
+	}
+
+	/* power on the connectors */
+	pcan_set_can_power(card, 1);
+
+	return 0;
+
+probe_err_5:
+	/* unregister can devices from network */
+	pcan_free_channels(card);
+
+probe_err_4:
+	ioport_unmap(card->ioport_addr);
+
+probe_err_3:
+	kfree(card);
+	pdev->priv = NULL;
+
+probe_err_2:
+	pcmcia_disable_device(pdev);
+
+probe_err_1:
+	return err;
+}
+
+/*
+ * release claimed resources
+ */
+static void pcan_remove(struct pcmcia_device *pdev)
+{
+	pcan_free(pdev);
+	pcmcia_disable_device(pdev);
+}
+
+static struct pcmcia_driver pcan_driver = {
+	.name = PCC_NAME,
+	.probe = pcan_probe,
+	.remove = pcan_remove,
+	.id_table = pcan_table,
+};
+module_pcmcia_driver(pcan_driver);

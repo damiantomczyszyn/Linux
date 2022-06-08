@@ -1,79 +1,72 @@
-# SPDX-License-Identifier: GPL-2.0-only
-config IR_IMG
-	tristate "ImgTec IR Decoder"
-	depends on RC_CORE
-	depends on MIPS || COMPILE_TEST
-	select IR_IMG_HW if !IR_IMG_RAW
-	help
-	   Say Y or M here if you want to use the ImgTec infrared decoder
-	   functionality found in SoCs such as TZ1090.
+}
 
-config IR_IMG_RAW
-	bool "Raw decoder"
-	depends on IR_IMG
-	help
-	   Say Y here to enable the raw mode driver which passes raw IR signal
-	   changes to the IR raw decoders for software decoding. This is much
-	   less reliable (due to lack of timestamps) and consumes more
-	   processing power than using hardware decode, but can be useful for
-	   testing, debug, and to make more protocols available.
+static const struct vb2_ops dvb_qops = {
+	.queue_setup    = queue_setup,
+	.buf_prepare  = buffer_prepare,
+	.buf_finish = buffer_finish,
+	.buf_queue    = buffer_queue,
+	.wait_prepare = vb2_ops_wait_prepare,
+	.wait_finish = vb2_ops_wait_finish,
+	.start_streaming = cx23885_start_streaming,
+	.stop_streaming = cx23885_stop_streaming,
+};
 
-config IR_IMG_HW
-	bool "Hardware decoder"
-	depends on IR_IMG
-	help
-	   Say Y here to enable the hardware decode driver which decodes the IR
-	   signals in hardware. This is more reliable, consumes less processing
-	   power since only a single interrupt is received for each scancode,
-	   and allows an IR scancode to be used as a wake event.
+static struct s5h1409_config hauppauge_generic_config = {
+	.demod_address = 0x32 >> 1,
+	.output_mode   = S5H1409_SERIAL_OUTPUT,
+	.gpio          = S5H1409_GPIO_ON,
+	.qam_if        = 44000,
+	.inversion     = S5H1409_INVERSION_OFF,
+	.status_mode   = S5H1409_DEMODLOCKING,
+	.mpeg_timing   = S5H1409_MPEGTIMING_CONTINUOUS_NONINVERTING_CLOCK,
+};
 
-config IR_IMG_NEC
-	bool "NEC protocol support"
-	depends on IR_IMG_HW
-	select BITREVERSE
-	help
-	   Say Y here to enable support for the NEC, extended NEC, and 32-bit
-	   NEC protocols in the ImgTec infrared decoder block.
+static struct tda10048_config hauppauge_hvr1200_config = {
+	.demod_address    = 0x10 >> 1,
+	.output_mode      = TDA10048_SERIAL_OUTPUT,
+	.fwbulkwritelen   = TDA10048_BULKWRITE_200,
+	.inversion        = TDA10048_INVERSION_ON,
+	.dtv6_if_freq_khz = TDA10048_IF_3300,
+	.dtv7_if_freq_khz = TDA10048_IF_3800,
+	.dtv8_if_freq_khz = TDA10048_IF_4300,
+	.clk_freq_khz     = TDA10048_CLK_16000,
+};
 
-config IR_IMG_JVC
-	bool "JVC protocol support"
-	depends on IR_IMG_HW
-	help
-	   Say Y here to enable support for the JVC protocol in the ImgTec
-	   infrared decoder block.
+static struct tda10048_config hauppauge_hvr1210_config = {
+	.demod_address    = 0x10 >> 1,
+	.output_mode      = TDA10048_SERIAL_OUTPUT,
+	.fwbulkwritelen   = TDA10048_BULKWRITE_200,
+	.inversion        = TDA10048_INVERSION_ON,
+	.dtv6_if_freq_khz = TDA10048_IF_3300,
+	.dtv7_if_freq_khz = TDA10048_IF_3500,
+	.dtv8_if_freq_khz = TDA10048_IF_4000,
+	.clk_freq_khz     = TDA10048_CLK_16000,
+};
 
-config IR_IMG_SONY
-	bool "Sony protocol support"
-	depends on IR_IMG_HW
-	help
-	   Say Y here to enable support for the Sony protocol in the ImgTec
-	   infrared decoder block.
+static struct s5h1409_config hauppauge_ezqam_config = {
+	.demod_address = 0x32 >> 1,
+	.output_mode   = S5H1409_SERIAL_OUTPUT,
+	.gpio          = S5H1409_GPIO_OFF,
+	.qam_if        = 4000,
+	.inversion     = S5H1409_INVERSION_ON,
+	.status_mode   = S5H1409_DEMODLOCKING,
+	.mpeg_timing   = S5H1409_MPEGTIMING_CONTINUOUS_NONINVERTING_CLOCK,
+};
 
-config IR_IMG_SHARP
-	bool "Sharp protocol support"
-	depends on IR_IMG_HW
-	help
-	   Say Y here to enable support for the Sharp protocol in the ImgTec
-	   infrared decoder block.
+static struct s5h1409_config hauppauge_hvr1800lp_config = {
+	.demod_address = 0x32 >> 1,
+	.output_mode   = S5H1409_SERIAL_OUTPUT,
+	.gpio          = S5H1409_GPIO_OFF,
+	.qam_if        = 44000,
+	.inversion     = S5H1409_INVERSION_OFF,
+	.status_mode   = S5H1409_DEMODLOCKING,
+	.mpeg_timing   = S5H1409_MPEGTIMING_CONTINUOUS_NONINVERTING_CLOCK,
+};
 
-config IR_IMG_SANYO
-	bool "Sanyo protocol support"
-	depends on IR_IMG_HW
-	help
-	   Say Y here to enable support for the Sanyo protocol (used by Sanyo,
-	   Aiwa, Chinon remotes) in the ImgTec infrared decoder block.
-
-config IR_IMG_RC5
-	bool "Philips RC5 protocol support"
-	depends on IR_IMG_HW
-	help
-	   Say Y here to enable support for the RC5 protocol in the ImgTec
-	   infrared decoder block.
-
-config IR_IMG_RC6
-	bool "Philips RC6 protocol support"
-	depends on IR_IMG_HW
-	help
-	   Say Y here to enable support for the RC6 protocol in the ImgTec
-	   infrared decoder block.
-	   Note: This version only supports mode 0.
+static struct s5h1409_config hauppauge_hvr1500_config = {
+	.demod_address = 0x32 >> 1,
+	.output_mode   = S5H1409_SERIAL_OUTPUT,
+	.gpio          = S5H1409_GPIO_OFF,
+	.inversion     = S5H1409_INVERSION_OFF,
+	.status_mode   = S5H1409_DEMODLOCKING,
+	.mpeg_timing   = S5H1

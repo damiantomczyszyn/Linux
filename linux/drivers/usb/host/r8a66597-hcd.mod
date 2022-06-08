@@ -1,2 +1,2 @@
-NAMIC_TASK_STRUCT) \
-    $(wildca
+6/include/asm/mpspec.h \
+    $(wi

@@ -1,4 +1,17 @@
-\
+   $(wildcard include/config/ACPI_SLEEP) \
+  include/acpi/acpi_drivers.h \
+    $(wildcard include/config/ACPI_DOCK) \
+  include/acpi/acpi_numa.h \
+    $(wildcard include/config/ACPI_HMAT) \
+  include/acpi/acpi_io.h \
+  include/linux/io.h \
+    $(wildcard include/config/HAS_IOPORT_MAP) \
+  arch/x86/include/asm/io.h \
+    $(wildcard include/config/MTRR) \
+    $(wildcard include/config/X86_PAT) \
+  arch/x86/include/generated/asm/early_ioremap.h \
+  include/asm-generic/early_ioremap.h \
+    $(wildcard include/config/GENERIC_EARLY_IOREMAP) \
   include/asm-generic/iomap.h \
   include/asm-generic/pci_iomap.h \
     $(wildcard include/config/NO_GENERIC_PCI_IOPORT_MAP) \
@@ -30,24 +43,11 @@
     $(wildcard include/config/PM_AUTOSLEEP) \
   include/linux/swap.h \
     $(wildcard include/config/DEVICE_PRIVATE) \
-    $(wildcard include/config/MIGRATION) \
     $(wildcard include/config/FRONTSWAP) \
     $(wildcard include/config/THP_SWAP) \
     $(wildcard include/config/MEMCG_SWAP) \
   include/linux/memcontrol.h \
-    $(wildcard include/config/CGROUP_WRITEBACK) \
   include/linux/cgroup.h \
     $(wildcard include/config/CGROUP_CPUACCT) \
     $(wildcard include/config/SOCK_CGROUP_DATA) \
     $(wildcard include/config/CGROUP_DATA) \
-    $(wildcard include/config/CGROUP_BPF) \
-  include/uapi/linux/cgroupstats.h \
-  include/uapi/linux/taskstats.h \
-  include/linux/fs.h \
-    $(wildcard include/config/READ_ONLY_THP_FOR_FS) \
-    $(wildcard include/config/FS_POSIX_ACL) \
-    $(wildcard include/config/IMA) \
-    $(wildcard include/config/FILE_LOCKING) \
-    $(wildcard include/config/FSNOTIFY) \
-    $(wildcard include/config/FS_ENCRYPTION) \
-    $(wildcard include/config/FS_VERI

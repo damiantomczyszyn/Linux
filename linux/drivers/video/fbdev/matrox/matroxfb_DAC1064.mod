@@ -1,2 +1,2 @@
-e/linux/rwlock.h \
-    $(wildcard include/confi
+// SPDX-License-Identifier: GPL-2.0-or-later
+/*

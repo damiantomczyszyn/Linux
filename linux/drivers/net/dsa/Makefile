@@ -1,27 +1,26 @@
-
-  arch/x86/include/asm/msr-index.h \
-  arch/x86/include/asm/cpumask.h \
-  include/linux/cpumask.h \
-    $(wildcard include/config/CPUMASK_OFFSTACK) \
-    $(wildcard include/config/DEBUG_PER_CPU_MAPS) \
-  include/linux/bitmap.h \
-  include/linux/find.h \
-  arch/x86/include/uapi/asm/msr.h \
-  include/linux/tracepoint-defs.h \
-  arch/x86/include/asm/special_insns.h \
-  arch/x86/include/asm/fpu/types.h \
-  arch/x86/include/asm/vmxfeatures.h \
-  arch/x86/include/asm/vdso/processor.h \
-  include/linux/personality.h \
-  include/uapi/linux/personality.h \
-  include/linux/bottom_half.h \
-  include/linux/lockdep.h \
-    $(wildcard include/config/DEBUG_LOCKING_API_SELFTESTS) \
-  include/linux/smp.h \
-    $(wildcard include/config/UP_LATE_INIT) \
-  include/linux/smp_types.h \
-  include/linux/llist.h \
-    $(wildcard include/config/ARCH_HAVE_NMI_SAFE_CMPXCHG) \
-  arch/x86/include/asm/smp.h \
-    $(wildcard include/config/X86_LOCAL_APIC) \
-    $(wildcard include/config/DEBUG_NMI_
+# SPDX-License-Identifier: GPL-2.0
+obj-$(CONFIG_NET_DSA_BCM_SF2)	+= bcm-sf2.o
+bcm-sf2-objs			:= bcm_sf2.o bcm_sf2_cfp.o
+obj-$(CONFIG_NET_DSA_LOOP)	+= dsa_loop.o
+ifdef CONFIG_NET_DSA_LOOP
+obj-$(CONFIG_FIXED_PHY)		+= dsa_loop_bdinfo.o
+endif
+obj-$(CONFIG_NET_DSA_LANTIQ_GSWIP) += lantiq_gswip.o
+obj-$(CONFIG_NET_DSA_MT7530)	+= mt7530.o
+obj-$(CONFIG_NET_DSA_MV88E6060) += mv88e6060.o
+obj-$(CONFIG_NET_DSA_QCA8K)	+= qca8k.o
+obj-$(CONFIG_NET_DSA_SMSC_LAN9303) += lan9303-core.o
+obj-$(CONFIG_NET_DSA_SMSC_LAN9303_I2C) += lan9303_i2c.o
+obj-$(CONFIG_NET_DSA_SMSC_LAN9303_MDIO) += lan9303_mdio.o
+obj-$(CONFIG_NET_DSA_VITESSE_VSC73XX) += vitesse-vsc73xx-core.o
+obj-$(CONFIG_NET_DSA_VITESSE_VSC73XX_PLATFORM) += vitesse-vsc73xx-platform.o
+obj-$(CONFIG_NET_DSA_VITESSE_VSC73XX_SPI) += vitesse-vsc73xx-spi.o
+obj-y				+= b53/
+obj-y				+= hirschmann/
+obj-y				+= microchip/
+obj-y				+= mv88e6xxx/
+obj-y				+= ocelot/
+obj-y				+= qca/
+obj-y				+= realtek/
+obj-y				+= sja1105/
+obj-y				+= xrs700x/

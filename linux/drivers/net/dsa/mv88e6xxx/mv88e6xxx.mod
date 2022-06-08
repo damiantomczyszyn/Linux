@@ -1,13 +1,2 @@
-    $(wildcard include/config/HIGH_RES_TIMERS) \
-    $(wildcard include/config/TIME_LOW_RES) \
-    $(wildcard include/config/TIMERFD) \
-  include/linux/hrtimer_defs.h \
-  include/linux/timerqueue.h \
-  include/linux/seccomp.h \
-    $(wildcard include/config/SECCOMP) \
-    $(wildcard include/config/HAVE_ARCH_SECCOMP_FILTER) \
-    $(wildcard include/config/SECCOMP_FILTER) \
-    $(wildcard include/config/CHECKPOINT_RESTORE) \
-    $(wildcard include/config/SECCOMP_CACHE_DEBUG) \
-  include/uapi/linux/seccomp.h \
-  arch/x86/include/asm/seccomp.h \
+drivers/net/dsa/mv88e6xxx/chip.o drivers/net/dsa/mv88e6xxx/devlink.o drivers/net/dsa/mv88e6xxx/global1.o drivers/net/dsa/mv88e6xxx/global1_atu.o drivers/net/dsa/mv88e6xxx/global1_vtu.o drivers/net/dsa/mv88e6xxx/global2.o drivers/net/dsa/mv88e6xxx/global2_avb.o drivers/net/dsa/mv88e6xxx/global2_scratch.o drivers/net/dsa/mv88e6xxx/phy.o drivers/net/dsa/mv88e6xxx/port.o drivers/net/dsa/mv88e6xxx/port_hidden.o drivers/net/dsa/mv88e6xxx/serdes.o drivers/net/dsa/mv88e6xxx/smi.o drivers/net/dsa/mv88e6xxx/hwtstamp.o drivers/net/dsa/mv88e6xxx/ptp.o
+

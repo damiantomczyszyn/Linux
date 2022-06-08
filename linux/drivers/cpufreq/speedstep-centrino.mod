@@ -1,1 +1,2 @@
-cmd_drivers/media/i2c/upd64083.o := gc
+nput)->amux == CX25840_AUDIO6)
+		cx238

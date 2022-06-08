@@ -1,3 +1,1 @@
-g/CC_HAS_ASM_GOTO_TIED_OUTPUT) \
-    $(wildcard include/config/ARCH_HAS_COPY_MC) \
-    $(wildc
+cmd_drivers/media/pci/cx18/cx18-alsa.mod := { echo  drivers/media/pci/cx18/cx18-alsa-main.o dr

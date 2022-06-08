@@ -1,2 +1,5 @@
-atic inline int check_wait_context(struct task_struct *curr,
-				     struct held_l
+k_struct *p, int flags)
+{
+	if (!(flags & ENQUEUE_NOCLOCK))
+		update_rq_clock(rq);
+

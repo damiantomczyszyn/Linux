@@ -1,1 +1,3 @@
-Sd)Ñ©˜8P&¢Ë]`=•ÂÛá´´9>¸–Dıùv¬v×M¼Š*•ÛJ3ä×1í¶½üq=ÛÒ¤´M9ê?ıâ/K¡ P¹¼À+¼;R`ó«¹täÌ¶Áåãìa¨‡{° ¯Óî¨ß
+/* SPDX-License-Identifier: GPL-2.0 */
+/*
+ * This program is free software; you can redistribute it and/or

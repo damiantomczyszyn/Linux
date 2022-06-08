@@ -1,2 +1,1 @@
-lude/config/SHMEM) \
-    $(w
+->src_sel_val     = CX23885_

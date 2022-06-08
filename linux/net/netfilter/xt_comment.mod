@@ -1,1 +1,2 @@
- $(wildcard include/config/S
+*
+	 * Forcefully restricting

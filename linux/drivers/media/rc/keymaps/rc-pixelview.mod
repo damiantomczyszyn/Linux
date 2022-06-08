@@ -1,2 +1,1 @@
-drivers/media/rc/keymaps/rc-pixelview.o
-
+!try_module_get(client_tuner->dev.driver-

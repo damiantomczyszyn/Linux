@@ -1,1 +1,1 @@
-rd include/config/ALTERNA
+// SPDX-License-Identifie

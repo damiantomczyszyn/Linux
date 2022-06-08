@@ -1,7 +1,6 @@
-\
-  include/linux/rwlock.h \
-    $(wildcard include/config/PREEMPT) \
-  include/linux/spinlock_api_smp.h \
-    $(wildcard include/config/INLINE_SPIN_LOCK) \
-    $(wildcard include/config/INLINE_SPIN_LOCK_BH) \
-    $(wi
+drivers/net/ethernet/3com/3c509.ko
+drivers/net/ethernet/3com/3c515.ko
+drivers/net/ethernet/3com/3c589_cs.ko
+drivers/net/ethernet/3com/3c574_cs.ko
+drivers/net/ethernet/3com/3c59x.ko
+drivers/net/ethernet/3com/typhoon.ko

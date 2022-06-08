@@ -1,1 +1,2 @@
-cmd_drivers/media/i2c/tw9906
+pauge WinTV-HVR1275",
+		.por

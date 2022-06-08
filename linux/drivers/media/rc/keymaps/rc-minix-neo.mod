@@ -1,2 +1,2 @@
-drivers/media/rc/keymaps/rc-minix-neo.o
-
+IO moving on encoder ports\n",
+				dev->n

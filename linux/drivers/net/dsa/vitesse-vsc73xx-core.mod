@@ -1,2 +1,2 @@
-ude/asm/pgtable_32_types.h \
-  arch/x86/
+drivers/net/dsa/vitesse-vsc73xx-core.o
+

@@ -1,6 +1,1 @@
-onfig/MODULE_SIG) \
-    $(wildcard include/config/KALLSYMS) \
-    $(wildcard include/config/BPF_EVENTS) \
-    $(wildcard include/config/DEBUG_INFO_BTF_MODULES) \
-    $(wildcard include/config/EVENT_TRACING) \
-    $(wildcard include/config/MODULE_UNLOAD) \
+cmd_drivers/net/can/usb/kvaser_usb/kvaser_usb.ko := ld -r -m elf_i386 --build-id=sha1  -T scripts/module.lds -o drivers/net/can/usb/kvaser_usb/kvaser_usb.ko drivers/net/can/usb/kvaser_usb/kvaser_usb.o drivers/net/can/usb/kvaser_usb/kvaser_usb.mod.o;  true

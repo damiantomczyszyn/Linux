@@ -1,2 +1,1 @@
-ated/bounds.h \
-  in
+us & VID_BC_MSK_SYNC

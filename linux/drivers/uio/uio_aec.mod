@@ -1,2 +1,1 @@
-\
-  arch/x86/include/as
+/* SPDX-License-Identif

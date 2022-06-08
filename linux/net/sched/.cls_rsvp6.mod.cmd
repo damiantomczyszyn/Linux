@@ -1,1 +1,5 @@
-rÂ;SØÜ_ã2¯‡ho[¼~$ásX¥†ñ®RèÓïhÛ¿›Ô5nŸÌ[‹‹^aŒ>]¢_³ûáÝô×)™±.?Ö(SÞšY¨)õ4Ù$ˆlÀ8˜WQæ:oyAkˆ/7\
+ (0x9d << 24); /* 100kHz */
+
+	/* External Master 2 Bus */
+	dev->i2c_bus[1].nr = 1;
+	dev->i2c_bus[

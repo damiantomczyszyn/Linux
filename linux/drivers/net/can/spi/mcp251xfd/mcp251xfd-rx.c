@@ -1,165 +1,276 @@
-nclude/asm/atomic64_32.h \
-  include/linux/atomic/atomic-arch-fallback.h \
-    $(wildcard include/config/GENERIC_ATOMIC64) \
-  include/linux/atomic/atomic-long.h \
-  include/linux/atomic/atomic-instrumented.h \
-  include/linux/bug.h \
-    $(wildcard include/config/GENERIC_BUG) \
-    $(wildcard include/config/BUG_ON_DATA_CORRUPTION) \
-  arch/x86/include/asm/bug.h \
-    $(wildcard include/config/DEBUG_BUGVERBOSE) \
-  include/linux/instrumentation.h \
-    $(wildcard include/config/DEBUG_ENTRY) \
-  include/linux/objtool.h \
-    $(wildcard include/config/FRAME_POINTER) \
-  include/asm-generic/bug.h \
-    $(wildcard include/config/BUG) \
-    $(wildcard include/config/GENERIC_BUG_RELATIVE_POINTERS) \
-  include/linux/smp_types.h \
-  include/linux/llist.h \
-    $(wildcard include/config/ARCH_HAVE_NMI_SAFE_CMPXCHG) \
-  include/linux/preempt.h \
-    $(wildcard include/config/TRACE_PREEMPT_TOGGLE) \
-    $(wildcard include/config/PREEMPTION) \
-    $(wildcard include/config/PREEMPT_NOTIFIERS) \
-  arch/x86/include/asm/preempt.h \
-  include/linux/thread_info.h \
-    $(wildcard include/config/THREAD_INFO_IN_TASK) \
-    $(wildcard include/config/GENERIC_ENTRY) \
-    $(wildcard include/config/HAVE_ARCH_WITHIN_STACK_FRAMES) \
-    $(wildcard include/config/HARDENED_USERCOPY) \
-  include/linux/restart_block.h \
-  include/linux/time64.h \
-  include/linux/math64.h \
-    $(wildcard include/config/ARCH_SUPPORTS_INT128) \
-  include/vdso/math64.h \
-  include/vdso/time64.h \
-  include/uapi/linux/time.h \
-  include/uapi/linux/time_types.h \
-  arch/x86/include/asm/thread_info.h \
-    $(wildcard include/config/VM86) \
-    $(wildcard include/config/X86_IOPL_IOPERM) \
-    $(wildcard include/config/COMPAT) \
-    $(wildcard include/config/IA32_EMULATION) \
-  arch/x86/include/asm/page.h \
-  arch/x86/include/asm/page_types.h \
-    $(wildcard include/config/PHYSICAL_START) \
-    $(wildcard include/config/PHYSICAL_ALIGN) \
-    $(wildcard include/config/DYNAMIC_PHYSICAL_MASK) \
-  include/linux/mem_encrypt.h \
-    $(wildcard include/config/ARCH_HAS_MEM_ENCRYPT) \
-  arch/x86/include/asm/mem_encrypt.h \
-  include/linux/cc_platform.h \
-    $(wildcard include/config/ARCH_HAS_CC_PLATFORM) \
-  arch/x86/include/uapi/asm/bootparam.h \
-  include/linux/screen_info.h \
-  include/uapi/linux/screen_info.h \
-  include/linux/apm_bios.h \
-  include/uapi/linux/apm_bios.h \
-  include/uapi/linux/ioctl.h \
-  arch/x86/include/generated/uapi/asm/ioctl.h \
-  include/asm-generic/ioctl.h \
-  include/uapi/asm-generic/ioctl.h \
-  include/linux/edd.h \
-  include/uapi/linux/edd.h \
-  arch/x86/include/asm/ist.h \
-  arch/x86/include/uapi/asm/ist.h \
-  include/video/edid.h \
-    $(wildcard include/config/X86) \
-  include/uapi/video/edid.h \
-  arch/x86/include/asm/page_32_types.h \
-    $(wildcard include/config/HIGHMEM4G) \
-    $(wildcard include/config/HIGHMEM64G) \
-    $(wildcard include/config/PAGE_OFFSET) \
-  arch/x86/include/asm/page_32.h \
-    $(wildcard include/config/DEBUG_VIRTUAL) \
-    $(wildcard include/config/FLATMEM) \
-  include/linux/range.h \
-  include/asm-generic/memory_model.h \
-    $(wildcard include/config/SPARSEMEM_VMEMMAP) \
-    $(wildcard include/config/SPARSEMEM) \
-  include/linux/pfn.h \
-  include/asm-generic/getorder.h \
-  arch/x86/include/asm/cpufeature.h \
-    $(wildcard include/config/X86_FEATURE_NAMES) \
-  arch/x86/include/asm/processor.h \
-    $(wildcard include/config/X86_VMX_FEATURE_NAMES) \
-    $(wildcard include/config/STACKPROTECTOR) \
-    $(wildcard include/config/X86_DEBUGCTLMSR) \
-    $(wildcard include/config/CPU_SUP_AMD) \
-    $(wildcard include/config/XEN) \
-  arch/x86/include/asm/processor-flags.h \
-  arch/x86/include/uapi/asm/processor-flags.h \
-  arch/x86/include/asm/math_emu.h \
-  arch/x86/include/asm/ptrace.h \
-    $(wildcard include/config/PARAVIRT) \
-  arch/x86/include/asm/segment.h \
-    $(wildcard include/config/XEN_PV) \
-  arch/x86/include/uapi/asm/ptrace.h \
-  arch/x86/include/uapi/asm/ptrace-abi.h \
-  arch/x86/include/asm/paravirt_types.h \
-    $(wildcard include/config/PGTABLE_LEVELS) \
-    $(wildcard include/config/PARAVIRT_DEBUG) \
-  arch/x86/include/asm/desc_defs.h \
-  arch/x86/include/asm/pgtable_types.h \
-    $(wildcard include/config/MEM_SOFT_DIRTY) \
-    $(wildcard include/config/HAVE_ARCH_USERFAULTFD_WP) \
-    $(wildcard include/config/PROC_FS) \
-  arch/x86/include/asm/pgtable_32_types.h \
-  arch/x86/include/asm/pgtable-3level_types.h \
-  include/asm-generic/pgtable-nop4d.h \
-  include/asm-generic/pgtable-nopud.h \
-  arch/x86/include/asm/nospec-branch.h \
-  include/linux/static_key.h \
-  include/linux/jump_label.h \
-    $(wildcard include/config/JUMP_LABEL) \
-    $(wildcard include/config/HAVE_ARCH_JUMP_LABEL_RELATIVE) \
-  arch/x86/include/asm/jump_label.h \
-  arch/x86/include/asm/msr-index.h \
-  arch/x86/include/asm/unwind_hints.h \
-  arch/x86/include/asm/orc_types.h \
-  arch/x86/include/asm/GEN-for-each-reg.h \
-  arch/x86/include/asm/proto.h \
-  arch/x86/include/uapi/asm/ldt.h \
-  arch/x86/include/uapi/asm/sigcontext.h \
-  arch/x86/include/asm/msr.h \
-    $(wildcard include/config/TRACEPOINTS) \
-  arch/x86/include/asm/msr-index.h \
-  arch/x86/include/asm/cpumask.h \
-  arch/x86/include/uapi/asm/msr.h \
-  include/linux/tracepoint-defs.h \
-  arch/x86/include/asm/special_insns.h \
-  include/linux/irqflags.h \
-    $(wildcard include/config/TRACE_IRQFLAGS) \
-    $(wildcard include/config/IRQSOFF_TRACER) \
-    $(wildcard include/config/PREEMPT_TRACER) \
-    $(wildcard include/config/DEBUG_IRQFLAGS) \
-    $(wildcard include/config/TRACE_IRQFLAGS_SUPPORT) \
-  arch/x86/include/asm/irqflags.h \
-  arch/x86/include/asm/fpu/types.h \
-  arch/x86/include/asm/vmxfeatures.h \
-  arch/x86/include/asm/vdso/processor.h \
-  include/linux/personality.h \
-  include/uapi/linux/personality.h \
-  arch/x86/include/asm/smp.h \
-    $(wildcard include/config/X86_LOCAL_APIC) \
-    $(wildcard include/config/DEBUG_NMI_SELFTEST) \
-  include/linux/osq_lock.h \
-  include/linux/debug_locks.h \
-  include/linux/rwsem.h \
-    $(wildcard include/config/RWSEM_SPIN_ON_OWNER) \
-    $(wildcard include/config/DEBUG_RWSEMS) \
-  include/linux/spinlock.h \
-  include/linux/bottom_half.h \
-  arch/x86/include/generated/asm/mmiowb.h \
-  include/asm-generic/mmiowb.h \
-    $(wildcard include/config/MMIOWB) \
-  arch/x86/include/asm/spinlock.h \
-  arch/x86/include/asm/paravirt.h \
-    $(wildcard include/config/PARAVIRT_SPINLOCKS) \
-  arch/x86/include/asm/frame.h \
-  arch/x86/include/asm/qspinlock.h \
-  include/asm-generic/qspinlock.h \
-  arch/x86/include/asm/qrwlock.h \
-  include/asm-generic/qrwlock.h \
-  include/linux/rwlock.h \
+// SPDX-License-Identifier: GPL-2.0
+//
+// mcp251xfd - Microchip MCP251xFD Family CAN controller driver
+//
+// Copyright (c) 2019, 2020, 2021 Pengutronix,
+//               Marc Kleine-Budde <kernel@pengutronix.de>
+//
+// Based on:
+//
+// CAN bus driver for Microchip 25XXFD CAN Controller with SPI Interface
+//
+// Copyright (c) 2019 Martin Sperl <kernel@martin.sperl.org>
+//
+
+#include <linux/bitfield.h>
+
+#include "mcp251xfd.h"
+
+static inline int
+mcp251xfd_rx_head_get_from_chip(const struct mcp251xfd_priv *priv,
+				const struct mcp251xfd_rx_ring *ring,
+				u8 *rx_head, bool *fifo_empty)
+{
+	u32 fifo_sta;
+	int err;
+
+	err = regmap_read(priv->map_reg, MCP251XFD_REG_FIFOSTA(ring->fifo_nr),
+			  &fifo_sta);
+	if (err)
+		return err;
+
+	*rx_head = FIELD_GET(MCP251XFD_REG_FIFOSTA_FIFOCI_MASK, fifo_sta);
+	*fifo_empty = !(fifo_sta & MCP251XFD_REG_FIFOSTA_TFNRFNIF);
+
+	return 0;
+}
+
+static inline int
+mcp251xfd_rx_tail_get_from_chip(const struct mcp251xfd_priv *priv,
+				const struct mcp251xfd_rx_ring *ring,
+				u8 *rx_tail)
+{
+	u32 fifo_ua;
+	int err;
+
+	err = regmap_read(priv->map_reg, MCP251XFD_REG_FIFOUA(ring->fifo_nr),
+			  &fifo_ua);
+	if (err)
+		return err;
+
+	fifo_ua -= ring->base - MCP251XFD_RAM_START;
+	*rx_tail = fifo_ua / ring->obj_size;
+
+	return 0;
+}
+
+static int
+mcp251xfd_check_rx_tail(const struct mcp251xfd_priv *priv,
+			const struct mcp251xfd_rx_ring *ring)
+{
+	u8 rx_tail_chip, rx_tail;
+	int err;
+
+	if (!IS_ENABLED(CONFIG_CAN_MCP251XFD_SANITY))
+		return 0;
+
+	err = mcp251xfd_rx_tail_get_from_chip(priv, ring, &rx_tail_chip);
+	if (err)
+		return err;
+
+	rx_tail = mcp251xfd_get_rx_tail(ring);
+	if (rx_tail_chip != rx_tail) {
+		netdev_err(priv->ndev,
+			   "RX tail of chip (%d) and ours (%d) inconsistent.\n",
+			   rx_tail_chip, rx_tail);
+		return -EILSEQ;
+	}
+
+	return 0;
+}
+
+static int
+mcp251xfd_rx_ring_update(const struct mcp251xfd_priv *priv,
+			 struct mcp251xfd_rx_ring *ring)
+{
+	u32 new_head;
+	u8 chip_rx_head;
+	bool fifo_empty;
+	int err;
+
+	err = mcp251xfd_rx_head_get_from_chip(priv, ring, &chip_rx_head,
+					      &fifo_empty);
+	if (err || fifo_empty)
+		return err;
+
+	/* chip_rx_head, is the next RX-Object filled by the HW.
+	 * The new RX head must be >= the old head.
+	 */
+	new_head = round_down(ring->head, ring->obj_num) + chip_rx_head;
+	if (new_head <= ring->head)
+		new_head += ring->obj_num;
+
+	ring->head = new_head;
+
+	return mcp251xfd_check_rx_tail(priv, ring);
+}
+
+static void
+mcp251xfd_hw_rx_obj_to_skb(const struct mcp251xfd_priv *priv,
+			   const struct mcp251xfd_hw_rx_obj_canfd *hw_rx_obj,
+			   struct sk_buff *skb)
+{
+	struct canfd_frame *cfd = (struct canfd_frame *)skb->data;
+	u8 dlc;
+
+	if (hw_rx_obj->flags & MCP251XFD_OBJ_FLAGS_IDE) {
+		u32 sid, eid;
+
+		eid = FIELD_GET(MCP251XFD_OBJ_ID_EID_MASK, hw_rx_obj->id);
+		sid = FIELD_GET(MCP251XFD_OBJ_ID_SID_MASK, hw_rx_obj->id);
+
+		cfd->can_id = CAN_EFF_FLAG |
+			FIELD_PREP(MCP251XFD_REG_FRAME_EFF_EID_MASK, eid) |
+			FIELD_PREP(MCP251XFD_REG_FRAME_EFF_SID_MASK, sid);
+	} else {
+		cfd->can_id = FIELD_GET(MCP251XFD_OBJ_ID_SID_MASK,
+					hw_rx_obj->id);
+	}
+
+	dlc = FIELD_GET(MCP251XFD_OBJ_FLAGS_DLC_MASK, hw_rx_obj->flags);
+
+	/* CANFD */
+	if (hw_rx_obj->flags & MCP251XFD_OBJ_FLAGS_FDF) {
+		if (hw_rx_obj->flags & MCP251XFD_OBJ_FLAGS_ESI)
+			cfd->flags |= CANFD_ESI;
+
+		if (hw_rx_obj->flags & MCP251XFD_OBJ_FLAGS_BRS)
+			cfd->flags |= CANFD_BRS;
+
+		cfd->len = can_fd_dlc2len(dlc);
+	} else {
+		if (hw_rx_obj->flags & MCP251XFD_OBJ_FLAGS_RTR)
+			cfd->can_id |= CAN_RTR_FLAG;
+
+		can_frame_set_cc_len((struct can_frame *)cfd, dlc,
+				     priv->can.ctrlmode);
+	}
+
+	if (!(hw_rx_obj->flags & MCP251XFD_OBJ_FLAGS_RTR))
+		memcpy(cfd->data, hw_rx_obj->data, cfd->len);
+
+	mcp251xfd_skb_set_timestamp(priv, skb, hw_rx_obj->ts);
+}
+
+static int
+mcp251xfd_handle_rxif_one(struct mcp251xfd_priv *priv,
+			  struct mcp251xfd_rx_ring *ring,
+			  const struct mcp251xfd_hw_rx_obj_canfd *hw_rx_obj)
+{
+	struct net_device_stats *stats = &priv->ndev->stats;
+	struct sk_buff *skb;
+	struct canfd_frame *cfd;
+	int err;
+
+	if (hw_rx_obj->flags & MCP251XFD_OBJ_FLAGS_FDF)
+		skb = alloc_canfd_skb(priv->ndev, &cfd);
+	else
+		skb = alloc_can_skb(priv->ndev, (struct can_frame **)&cfd);
+
+	if (!skb) {
+		stats->rx_dropped++;
+		return 0;
+	}
+
+	mcp251xfd_hw_rx_obj_to_skb(priv, hw_rx_obj, skb);
+	err = can_rx_offload_queue_sorted(&priv->offload, skb, hw_rx_obj->ts);
+	if (err)
+		stats->rx_fifo_errors++;
+
+	return 0;
+}
+
+static inline int
+mcp251xfd_rx_obj_read(const struct mcp251xfd_priv *priv,
+		      const struct mcp251xfd_rx_ring *ring,
+		      struct mcp251xfd_hw_rx_obj_canfd *hw_rx_obj,
+		      const u8 offset, const u8 len)
+{
+	const int val_bytes = regmap_get_val_bytes(priv->map_rx);
+	int err;
+
+	err = regmap_bulk_read(priv->map_rx,
+			       mcp251xfd_get_rx_obj_addr(ring, offset),
+			       hw_rx_obj,
+			       len * ring->obj_size / val_bytes);
+
+	return err;
+}
+
+static int
+mcp251xfd_handle_rxif_ring(struct mcp251xfd_priv *priv,
+			   struct mcp251xfd_rx_ring *ring)
+{
+	struct mcp251xfd_hw_rx_obj_canfd *hw_rx_obj = ring->obj;
+	u8 rx_tail, len;
+	int err, i;
+
+	err = mcp251xfd_rx_ring_update(priv, ring);
+	if (err)
+		return err;
+
+	while ((len = mcp251xfd_get_rx_linear_len(ring))) {
+		int offset;
+
+		rx_tail = mcp251xfd_get_rx_tail(ring);
+
+		err = mcp251xfd_rx_obj_read(priv, ring, hw_rx_obj,
+					    rx_tail, len);
+		if (err)
+			return err;
+
+		for (i = 0; i < len; i++) {
+			err = mcp251xfd_handle_rxif_one(priv, ring,
+							(void *)hw_rx_obj +
+							i * ring->obj_size);
+			if (err)
+				return err;
+		}
+
+		/* Increment the RX FIFO tail pointer 'len' times in a
+		 * single SPI message.
+		 *
+		 * Note:
+		 * Calculate offset, so that the SPI transfer ends on
+		 * the last message of the uinc_xfer array, which has
+		 * "cs_change == 0", to properly deactivate the chip
+		 * select.
+		 */
+		offset = ARRAY_SIZE(ring->uinc_xfer) - len;
+		err = spi_sync_transfer(priv->spi,
+					ring->uinc_xfer + offset, len);
+		if (err)
+			return err;
+
+		ring->tail += len;
+	}
+
+	return 0;
+}
+
+int mcp251xfd_handle_rxif(struct mcp251xfd_priv *priv)
+{
+	struct mcp251xfd_rx_ring *ring;
+	int err, n;
+
+	mcp251xfd_for_each_rx_ring(priv, ring, n) {
+		/* - if RX IRQ coalescing is active always handle ring 0
+		 * - only handle rings if RX IRQ is active
+		 */
+		if ((ring->nr > 0 || !priv->rx_obj_num_coalesce_irq) &&
+		    !(priv->regs_status.rxif & BIT(ring->fifo_nr)))
+			continue;
+
+		err = mcp251xfd_handle_rxif_ring(priv, ring);
+		if (err)
+			return err;
+	}
+
+	if (priv->rx_coalesce_usecs_irq)
+		hrtimer_start(&priv->rx_irq_timer,
+			      ns_to_ktime(priv->rx_coalesce_usecs_irq *
+					  NSEC_PER_USEC),
+			      HRTIMER_MODE_REL);
+
+	return 0;
+}

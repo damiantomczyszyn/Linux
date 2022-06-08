@@ -1,2 +1,2 @@
-config/X86_P6_NOP) \
-    
+  = 0x61,
+	.if_khz       

@@ -1,1 +1,1 @@
-rd include/config/ALTERNATE_
+egval = MC417_SPD_CTL(MC417_

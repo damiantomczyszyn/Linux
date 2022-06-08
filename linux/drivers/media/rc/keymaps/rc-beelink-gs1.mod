@@ -1,2 +1,1 @@
-drivers/media/rc/keymaps/rc-beelink-gs1.o
-
+cmd_drivers/media/pci/cx18/cx18.ko := ld -r

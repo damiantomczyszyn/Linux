@@ -1,4 +1,1 @@
-config/ARCH_WANTS_DYNAMIC_TASK_STRUCT) \
-    $(wildcard include/config/HAVE_ARCH_THREAD_STRUCT_WHITELIST) \
-  include/linux/cred.h \
-    $(wil
+cmd_drivers/net/can/sja1000/ems_pcmcia.mod := { echo  drivers/net/can/sja1000/ems_pcmcia.o;  echo; } > drivers/net/can/sja1000/ems_pcmcia.mod

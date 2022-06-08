@@ -1,2 +1,1 @@
-.h \
-  include/uapi/asm-generic/bitspe
+dev->board == CX23885_BOARD_HAUPPAUGE_

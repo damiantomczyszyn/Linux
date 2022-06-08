@@ -1,2 +1,5 @@
-drivers/media/rc/keymaps/rc-pctv-sedna.o
+  = 0x61,
+	.if_khz           = 5380,
+};
 
+s

@@ -1,1 +1,1 @@
-(wildcard include/config/SPLIT_PTLOCK_
+// SPDX-License-Identifier: GPL-2.0-or

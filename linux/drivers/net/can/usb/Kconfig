@@ -1,106 +1,139 @@
-\
-  include/linux/rwlock.h \
-    $(wildcard include/config/PREEMPT) \
-  include/linux/spinlock_api_smp.h \
-    $(wildcard include/config/INLINE_SPIN_LOCK) \
-    $(wildcard include/config/INLINE_SPIN_LOCK_BH) \
-    $(wildcard include/config/INLINE_SPIN_LOCK_IRQ) \
-    $(wildcard include/config/INLINE_SPIN_LOCK_IRQSAVE) \
-    $(wildcard include/config/INLINE_SPIN_TRYLOCK) \
-    $(wildcard include/config/INLINE_SPIN_TRYLOCK_BH) \
-    $(wildcard include/config/UNINLINE_SPIN_UNLOCK) \
-    $(wildcard include/config/INLINE_SPIN_UNLOCK_BH) \
-    $(wildcard include/config/INLINE_SPIN_UNLOCK_IRQ) \
-    $(wildcard include/config/INLINE_SPIN_UNLOCK_IRQRESTORE) \
-    $(wildcard include/config/GENERIC_LOCKBREAK) \
-  include/linux/rwlock_api_smp.h \
-    $(wildcard include/config/INLINE_READ_LOCK) \
-    $(wildcard include/config/INLINE_WRITE_LOCK) \
-    $(wildcard include/config/INLINE_READ_LOCK_BH) \
-    $(wildcard include/config/INLINE_WRITE_LOCK_BH) \
-    $(wildcard include/config/INLINE_READ_LOCK_IRQ) \
-    $(wildcard include/config/INLINE_WRITE_LOCK_IRQ) \
-    $(wildcard include/config/INLINE_READ_LOCK_IRQSAVE) \
-    $(wildcard include/config/INLINE_WRITE_LOCK_IRQSAVE) \
-    $(wildcard include/config/INLINE_READ_TRYLOCK) \
-    $(wildcard include/config/INLINE_WRITE_TRYLOCK) \
-    $(wildcard include/config/INLINE_READ_UNLOCK) \
-    $(wildcard include/config/INLINE_WRITE_UNLOCK) \
-    $(wildcard include/config/INLINE_READ_UNLOCK_BH) \
-    $(wildcard include/config/INLINE_WRITE_UNLOCK_BH) \
-    $(wildcard include/config/INLINE_READ_UNLOCK_IRQ) \
-    $(wildcard include/config/INLINE_WRITE_UNLOCK_IRQ) \
-    $(wildcard include/config/INLINE_READ_UNLOCK_IRQRESTORE) \
-    $(wildcard include/config/INLINE_WRITE_UNLOCK_IRQRESTORE) \
-  include/linux/refcount.h \
-  include/linux/rbtree.h \
-  include/linux/rbtree_types.h \
-  include/linux/rcupdate.h \
-    $(wildcard include/config/PREEMPT_RCU) \
-    $(wildcard include/config/TINY_RCU) \
-    $(wildcard include/config/RCU_STRICT_GRACE_PERIOD) \
-    $(wildcard include/config/TASKS_RCU_GENERIC) \
-    $(wildcard include/config/RCU_STALL_COMMON) \
-    $(wildcard include/config/NO_HZ_FULL) \
-    $(wildcard include/config/RCU_NOCB_CPU) \
-    $(wildcard include/config/TASKS_RCU) \
-    $(wildcard include/config/TASKS_TRACE_RCU) \
-    $(wildcard include/config/TASKS_RUDE_RCU) \
-    $(wildcard include/config/TREE_RCU) \
-    $(wildcard include/config/DEBUG_OBJECTS_RCU_HEAD) \
-    $(wildcard include/config/PROVE_RCU) \
-    $(wildcard include/config/ARCH_WEAK_RELEASE_ACQUIRE) \
-  include/linux/rcutree.h \
-  include/linux/rwsem.h \
-    $(wildcard include/config/RWSEM_SPIN_ON_OWNER) \
-    $(wildcard include/config/DEBUG_RWSEMS) \
-  include/linux/osq_lock.h \
-  include/linux/completion.h \
-  include/linux/swait.h \
-  include/linux/wait.h \
-  include/uapi/linux/wait.h \
-  include/linux/uprobes.h \
-    $(wildcard include/config/UPROBES) \
-  arch/x86/include/asm/uprobes.h \
-  include/linux/notifier.h \
-  include/linux/mutex.h \
-    $(wildcard include/config/MUTEX_SPIN_ON_OWNER) \
-    $(wildcard include/config/DEBUG_MUTEXES) \
-  include/linux/debug_locks.h \
-  include/linux/srcu.h \
-    $(wildcard include/config/TINY_SRCU) \
-    $(wildcard include/config/SRCU) \
-  include/linux/workqueue.h \
-    $(wildcard include/config/DEBUG_OBJECTS_WORK) \
-    $(wildcard include/config/FREEZER) \
-    $(wildcard include/config/WQ_WATCHDOG) \
-  include/linux/timer.h \
-    $(wildcard include/config/DEBUG_OBJECTS_TIMERS) \
-    $(wildcard include/config/NO_HZ_COMMON) \
-  include/linux/ktime.h \
-  include/linux/jiffies.h \
-  include/vdso/jiffies.h \
-  include/generated/timeconst.h \
-  include/vdso/ktime.h \
-  include/linux/timekeeping.h \
-    $(wildcard include/config/GENERIC_CMOS_UPDATE) \
-  include/linux/clocksource_ids.h \
-  include/linux/debugobjects.h \
-    $(wildcard include/config/DEBUG_OBJECTS) \
-    $(wildcard include/config/DEBUG_OBJECTS_FREE) \
-  include/linux/rcu_segcblist.h \
-  include/linux/srcutree.h \
-  include/linux/rcu_node_tree.h \
-    $(wildcard include/config/RCU_FANOUT) \
-    $(wildcard include/config/RCU_FANOUT_LEAF) \
-  include/linux/page-flags-layout.h \
-    $(wildcard include/config/KASAN_HW_TAGS) \
-  include/linux/numa.h \
-    $(wildcard include/config/NODES_SHIFT) \
-    $(wildcard include/config/NUMA_KEEP_MEMINFO) \
-    $(wildcard include/config/HAVE_ARCH_NODE_DEV_GROUP) \
-  arch/x86/include/asm/sparsemem.h \
-  include/generated/bounds.h \
-  include/linux/seqlock.h \
-  include/linux/ww_mutex.h \
-    $(wildcard include/config/DE
+# SPDX-License-Identifier: GPL-2.0-only
+menu "CAN USB interfaces"
+	depends on USB
+
+config CAN_8DEV_USB
+	tristate "8 devices USB2CAN interface"
+	help
+	  This driver supports the USB2CAN interface
+	  from 8 devices (http://www.8devices.com).
+
+config CAN_EMS_USB
+	tristate "EMS CPC-USB/ARM7 CAN/USB interface"
+	help
+	  This driver is for the one channel CPC-USB/ARM7 CAN/USB interface
+	  from EMS Dr. Thomas Wuensche (http://www.ems-wuensche.de).
+
+config CAN_ESD_USB2
+	tristate "ESD USB/2 CAN/USB interface"
+	help
+	  This driver supports the CAN-USB/2 interface
+	  from esd electronic system design gmbh (http://www.esd.eu).
+
+config CAN_ETAS_ES58X
+	tristate "ETAS ES58X CAN/USB interfaces"
+	select CRC16
+	help
+	  This driver supports the ES581.4, ES582.1 and ES584.1 interfaces
+	  from ETAS GmbH (https://www.etas.com/en/products/es58x.php).
+
+	  To compile this driver as a module, choose M here: the module
+	  will be called etas_es58x.
+
+config CAN_GS_USB
+	tristate "Geschwister Schneider UG interfaces"
+	help
+	  This driver supports the Geschwister Schneider and bytewerk.org
+	  candleLight USB CAN interfaces USB/CAN devices
+	  If unsure choose N,
+	  choose Y for built in support,
+	  M to compile as module (module will be named: gs_usb).
+
+config CAN_KVASER_USB
+	tristate "Kvaser CAN/USB interface"
+	help
+	  This driver adds support for Kvaser CAN/USB devices like Kvaser
+	  Leaf Light, Kvaser USBcan II and Kvaser Memorator Pro 5xHS.
+
+	  The driver provides support for the following devices:
+	    - Kvaser Leaf Light
+	    - Kvaser Leaf Professional HS
+	    - Kvaser Leaf SemiPro HS
+	    - Kvaser Leaf Professional LS
+	    - Kvaser Leaf Professional SWC
+	    - Kvaser Leaf Professional LIN
+	    - Kvaser Leaf SemiPro LS
+	    - Kvaser Leaf SemiPro SWC
+	    - Kvaser Memorator II HS/HS
+	    - Kvaser USBcan Professional HS/HS
+	    - Kvaser Leaf Light GI
+	    - Kvaser Leaf Professional HS (OBD-II connector)
+	    - Kvaser Memorator Professional HS/LS
+	    - Kvaser Leaf Light "China"
+	    - Kvaser BlackBird SemiPro
+	    - Kvaser USBcan R
+	    - Kvaser USBcan R v2
+	    - Kvaser Leaf Light v2
+	    - Kvaser Leaf Light R v2
+	    - Kvaser Mini PCI Express HS
+	    - Kvaser Mini PCI Express 2xHS
+	    - Kvaser USBcan Light 2xHS
+	    - Kvaser USBcan II HS/HS
+	    - Kvaser USBcan II HS/LS
+	    - Kvaser USBcan Rugged ("USBcan Rev B")
+	    - Kvaser Memorator HS/HS
+	    - Kvaser Memorator HS/LS
+	    - Scania VCI2 (if you have the Kvaser logo on top)
+	    - Kvaser BlackBird v2
+	    - Kvaser Leaf Pro HS v2
+	    - Kvaser Hybrid CAN/LIN
+	    - Kvaser Hybrid 2xCAN/LIN
+	    - Kvaser Hybrid Pro CAN/LIN
+	    - Kvaser Hybrid Pro 2xCAN/LIN
+	    - Kvaser Memorator 2xHS v2
+	    - Kvaser Memorator Pro 2xHS v2
+	    - Kvaser Memorator Pro 5xHS
+	    - Kvaser USBcan Light 4xHS
+	    - Kvaser USBcan Pro 2xHS v2
+	    - Kvaser USBcan Pro 4xHS
+	    - Kvaser USBcan Pro 5xHS
+	    - Kvaser U100
+	    - Kvaser U100P
+	    - Kvaser U100S
+	    - ATI Memorator Pro 2xHS v2
+	    - ATI USBcan Pro 2xHS v2
+
+	  If unsure, say N.
+
+	  To compile this driver as a module, choose M here: the
+	  module will be called kvaser_usb.
+
+config CAN_MCBA_USB
+	tristate "Microchip CAN BUS Analyzer interface"
+	help
+	  This driver supports the CAN BUS Analyzer interface
+	  from Microchip (http://www.microchip.com/development-tools/).
+
+config CAN_PEAK_USB
+	tristate "PEAK PCAN-USB/USB Pro interfaces for CAN 2.0b/CAN-FD"
+	help
+	  This driver supports the PEAK-System Technik USB adapters that enable
+	  access to the CAN bus, with respect to the CAN 2.0b and/or CAN-FD
+	  standards, that is:
+
+	  PCAN-USB             single CAN 2.0b channel USB adapter
+	  PCAN-USB Pro         dual CAN 2.0b channels USB adapter
+	  PCAN-USB FD          single CAN-FD channel USB adapter
+	  PCAN-USB Pro FD      dual CAN-FD channels USB adapter
+	  PCAN-Chip USB        CAN-FD to USB stamp module
+	  PCAN-USB X6          6 CAN-FD channels USB adapter
+
+	  (see also http://www.peak-system.com).
+
+config CAN_UCAN
+	tristate "Theobroma Systems UCAN interface"
+	help
+	  This driver supports the Theobroma Systems
+	  UCAN USB-CAN interface.
+
+	  The UCAN driver supports the microcontroller-based USB/CAN
+	  adapters from Theobroma Systems. There are two form-factors
+	  that run essentially the same firmware:
+
+	  * Seal: standalone USB stick
+	          https://www.theobroma-systems.com/seal)
+	  * Mule: integrated on the PCB of various System-on-Modules
+	          from Theobroma Systems like the A31-µQ7 and the RK3399-Q7
+	          (https://www.theobroma-systems.com/rk3399-q7)
+
+endmenu

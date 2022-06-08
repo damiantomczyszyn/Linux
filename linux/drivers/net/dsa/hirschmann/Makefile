@@ -1,5 +1,5 @@
-$(wildcard include/config/TRACE_BRANCH_PROFILING) \
-    $(wildcard include/config/PROFILE_ALL_BRANCHES) \
-    $(wildcard include/config/STACK_VALIDATION) \
-  include/linux/compiler_types.h \
-  arch/x86/includ
+# SPDX-License-Identifier: GPL-2.0
+obj-$(CONFIG_NET_DSA_HIRSCHMANN_HELLCREEK)	+= hellcreek_sw.o
+hellcreek_sw-objs := hellcreek.o
+hellcreek_sw-objs += hellcreek_ptp.o
+hellcreek_sw-objs += hellcreek_hwtstamp.o

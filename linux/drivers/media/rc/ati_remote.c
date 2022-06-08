@@ -1,972 +1,1058 @@
-// SPDX-License-Identifier: GPL-2.0-or-later
-/*
- *  USB ATI Remote support
- *
- *                Copyright (c) 2011, 2012 Anssi Hannula <anssi.hannula@iki.fi>
- *  Version 2.2.0 Copyright (c) 2004 Torrey Hoffman <thoffman@arnor.net>
- *  Version 2.1.1 Copyright (c) 2002 Vladimir Dergachev
- *
- *  This 2.2.0 version is a rewrite / cleanup of the 2.1.1 driver, including
- *  porting to the 2.6 kernel interfaces, along with other modification
- *  to better match the style of the existing usb/input drivers.  However, the
- *  protocol and hardware handling is essentially unchanged from 2.1.1.
- *
- *  The 2.1.1 driver was derived from the usbati_remote and usbkbd drivers by
- *  Vojtech Pavlik.
- *
- *  Changes:
- *
- *  Feb 2004: Torrey Hoffman <thoffman@arnor.net>
- *            Version 2.2.0
- *  Jun 2004: Torrey Hoffman <thoffman@arnor.net>
- *            Version 2.2.1
- *            Added key repeat support contributed by:
- *                Vincent Vanackere <vanackere@lif.univ-mrs.fr>
- *            Added support for the "Lola" remote contributed by:
- *                Seth Cohn <sethcohn@yahoo.com>
- *
- * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
- *
- * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
- *
- * Hardware & software notes
- *
- * These remote controls are distributed by ATI as part of their
- * "All-In-Wonder" video card packages.  The receiver self-identifies as a
- * "USB Receiver" with manufacturer "X10 Wireless Technology Inc".
- *
- * The "Lola" remote is available from X10.  See:
- *    http://www.x10.com/products/lola_sg1.htm
- * The Lola is similar to the ATI remote but has no mouse support, and slightly
- * different keys.
- *
- * It is possible to use multiple receivers and remotes on multiple computers
- * simultaneously by configuring them to use specific channels.
- *
- * The RF protocol used by the remote supports 16 distinct channels, 1 to 16.
- * Actually, it may even support more, at least in some revisions of the
- * hardware.
- *
- * Each remote can be configured to transmit on one channel as follows:
- *   - Press and hold the "hand icon" button.
- *   - When the red LED starts to blink, let go of the "hand icon" button.
- *   - When it stops blinking, input the channel code as two digits, from 01
- *     to 16, and press the hand icon again.
- *
- * The timing can be a little tricky.  Try loading the module with debug=1
- * to have the kernel print out messages about the remote control number
- * and mask.  Note: debugging prints remote numbers as zero-based hexadecimal.
- *
- * The driver has a "channel_mask" parameter. This bitmask specifies which
- * channels will be ignored by the module.  To mask out channels, just add
- * all the 2^channel_number values together.
- *
- * For instance, set channel_mask = 2^4 = 16 (binary 10000) to make ati_remote
- * ignore signals coming from remote controls transmitting on channel 4, but
- * accept all other channels.
- *
- * Or, set channel_mask = 65533, (0xFFFD), and all channels except 1 will be
- * ignored.
- *
- * The default is 0 (respond to all channels). Bit 0 and bits 17-32 of this
- * parameter are unused.
- */
-
-#include <linux/kernel.h>
-#include <linux/errno.h>
-#include <linux/init.h>
-#include <linux/slab.h>
-#include <linux/module.h>
-#include <linux/mutex.h>
-#include <linux/usb/input.h>
-#include <linux/wait.h>
-#include <linux/jiffies.h>
-#include <media/rc-core.h>
-
-/*
- * Module and Version Information, Module Parameters
- */
-
-#define ATI_REMOTE_VENDOR_ID		0x0bc7
-#define LOLA_REMOTE_PRODUCT_ID		0x0002
-#define LOLA2_REMOTE_PRODUCT_ID		0x0003
-#define ATI_REMOTE_PRODUCT_ID		0x0004
-#define NVIDIA_REMOTE_PRODUCT_ID	0x0005
-#define MEDION_REMOTE_PRODUCT_ID	0x0006
-#define FIREFLY_REMOTE_PRODUCT_ID	0x0008
-
-#define DRIVER_VERSION		"2.2.1"
-#define DRIVER_AUTHOR           "Torrey Hoffman <thoffman@arnor.net>"
-#define DRIVER_DESC             "ATI/X10 RF USB Remote Control"
-
-#define NAME_BUFSIZE      80    /* size of product name, path buffers */
-#define DATA_BUFSIZE      63    /* size of URB data buffers */
-
-/*
- * Duplicate event filtering time.
- * Sequential, identical KIND_FILTERED inputs with less than
- * FILTER_TIME milliseconds between them are considered as repeat
- * events. The hardware generates 5 events for the first keypress
- * and we have to take this into account for an accurate repeat
- * behaviour.
- */
-#define FILTER_TIME	60 /* msec */
-#define REPEAT_DELAY	500 /* msec */
-
-static unsigned long channel_mask;
-module_param(channel_mask, ulong, 0644);
-MODULE_PARM_DESC(channel_mask, "Bitmask of remote control channels to ignore");
-
-static int debug;
-module_param(debug, int, 0644);
-MODULE_PARM_DESC(debug, "Enable extra debug messages and information");
-
-static int repeat_filter = FILTER_TIME;
-module_param(repeat_filter, int, 0644);
-MODULE_PARM_DESC(repeat_filter, "Repeat filter time, default = 60 msec");
-
-static int repeat_delay = REPEAT_DELAY;
-module_param(repeat_delay, int, 0644);
-MODULE_PARM_DESC(repeat_delay, "Delay before sending repeats, default = 500 msec");
-
-static bool mouse = true;
-module_param(mouse, bool, 0444);
-MODULE_PARM_DESC(mouse, "Enable mouse device, default = yes");
-
-#define dbginfo(dev, format, arg...) \
-	do { if (debug) dev_info(dev , format , ## arg); } while (0)
-#undef err
-#define err(format, arg...) printk(KERN_ERR format , ## arg)
-
-struct ati_receiver_type {
-	/* either default_keymap or get_default_keymap should be set */
-	const char *default_keymap;
-	const char *(*get_default_keymap)(struct usb_interface *interface);
-};
-
-static const char *get_medion_keymap(struct usb_interface *interface)
-{
-	struct usb_device *udev = interface_to_usbdev(interface);
-
-	/*
-	 * There are many different Medion remotes shipped with a receiver
-	 * with the same usb id, but the receivers have subtle differences
-	 * in the USB descriptors allowing us to detect them.
-	 */
-
-	if (udev->manufacturer && udev->product) {
-		if (udev->actconfig->desc.bmAttributes & USB_CONFIG_ATT_WAKEUP) {
-
-			if (!strcmp(udev->manufacturer, "X10 Wireless Technology Inc")
-			    && !strcmp(udev->product, "USB Receiver"))
-				return RC_MAP_MEDION_X10_DIGITAINER;
-
-			if (!strcmp(udev->manufacturer, "X10 WTI")
-			    && !strcmp(udev->product, "RF receiver"))
-				return RC_MAP_MEDION_X10_OR2X;
-		} else {
-
-			 if (!strcmp(udev->manufacturer, "X10 Wireless Technology Inc")
-			    && !strcmp(udev->product, "USB Receiver"))
-				return RC_MAP_MEDION_X10;
-		}
-	}
-
-	dev_info(&interface->dev,
-		 "Unknown Medion X10 receiver, using default ati_remote Medion keymap\n");
-
-	return RC_MAP_MEDION_X10;
-}
-
-static const struct ati_receiver_type type_ati		= {
-	.default_keymap = RC_MAP_ATI_X10
-};
-static const struct ati_receiver_type type_medion	= {
-	.get_default_keymap = get_medion_keymap
-};
-static const struct ati_receiver_type type_firefly	= {
-	.default_keymap = RC_MAP_SNAPSTREAM_FIREFLY
-};
-
-static const struct usb_device_id ati_remote_table[] = {
-	{
-		USB_DEVICE(ATI_REMOTE_VENDOR_ID, LOLA_REMOTE_PRODUCT_ID),
-		.driver_info = (unsigned long)&type_ati
+dio",
+		.cmds_start	= 0x10190,
+		.ctrl_start	= 0x10480,
+		.cdt		= 0x10a00,
+		.fifo_start	= 0x7000,
+		.fifo_size	= 0x1000,
+		.ptr1_reg	= DMA6_PTR1,
+		.ptr2_reg	= DMA6_PTR2,
+		.cnt1_reg	= DMA6_CNT1,
+		.cnt2_reg	= DMA6_CNT2,
 	},
-	{
-		USB_DEVICE(ATI_REMOTE_VENDOR_ID, LOLA2_REMOTE_PRODUCT_ID),
-		.driver_info = (unsigned long)&type_ati
+	[SRAM_CH08] = {
+		.name		= "ch8",
+		.cmds_start	= 0x0,
+		.ctrl_start	= 0x0,
+		.cdt		= 0x0,
+		.fifo_start	= 0x0,
+		.fifo_size	= 0x0,
+		.ptr1_reg	= DMA7_PTR1,
+		.ptr2_reg	= DMA7_PTR2,
+		.cnt1_reg	= DMA7_CNT1,
+		.cnt2_reg	= DMA7_CNT2,
 	},
-	{
-		USB_DEVICE(ATI_REMOTE_VENDOR_ID, ATI_REMOTE_PRODUCT_ID),
-		.driver_info = (unsigned long)&type_ati
+	[SRAM_CH09] = {
+		.name		= "ch9",
+		.cmds_start	= 0x0,
+		.ctrl_start	= 0x0,
+		.cdt		= 0x0,
+		.fifo_start	= 0x0,
+		.fifo_size	= 0x0,
+		.ptr1_reg	= DMA8_PTR1,
+		.ptr2_reg	= DMA8_PTR2,
+		.cnt1_reg	= DMA8_CNT1,
+		.cnt2_reg	= DMA8_CNT2,
 	},
-	{
-		USB_DEVICE(ATI_REMOTE_VENDOR_ID, NVIDIA_REMOTE_PRODUCT_ID),
-		.driver_info = (unsigned long)&type_ati
-	},
-	{
-		USB_DEVICE(ATI_REMOTE_VENDOR_ID, MEDION_REMOTE_PRODUCT_ID),
-		.driver_info = (unsigned long)&type_medion
-	},
-	{
-		USB_DEVICE(ATI_REMOTE_VENDOR_ID, FIREFLY_REMOTE_PRODUCT_ID),
-		.driver_info = (unsigned long)&type_firefly
-	},
-	{}	/* Terminating entry */
 };
 
-MODULE_DEVICE_TABLE(usb, ati_remote_table);
-
-/* Get hi and low bytes of a 16-bits int */
-#define HI(a)	((unsigned char)((a) >> 8))
-#define LO(a)	((unsigned char)((a) & 0xff))
-
-#define SEND_FLAG_IN_PROGRESS	1
-#define SEND_FLAG_COMPLETE	2
-
-/* Device initialization strings */
-static char init1[] = { 0x01, 0x00, 0x20, 0x14 };
-static char init2[] = { 0x01, 0x00, 0x20, 0x14, 0x20, 0x20, 0x20 };
-
-struct ati_remote {
-	struct input_dev *idev;
-	struct rc_dev *rdev;
-	struct usb_device *udev;
-	struct usb_interface *interface;
-
-	struct urb *irq_urb;
-	struct urb *out_urb;
-	struct usb_endpoint_descriptor *endpoint_in;
-	struct usb_endpoint_descriptor *endpoint_out;
-	unsigned char *inbuf;
-	unsigned char *outbuf;
-	dma_addr_t inbuf_dma;
-	dma_addr_t outbuf_dma;
-
-	unsigned char old_data;     /* Detect duplicate events */
-	unsigned long old_jiffies;
-	unsigned long acc_jiffies;  /* handle acceleration */
-	unsigned long first_jiffies;
-
-	unsigned int repeat_count;
-
-	char rc_name[NAME_BUFSIZE];
-	char rc_phys[NAME_BUFSIZE];
-	char mouse_name[NAME_BUFSIZE];
-	char mouse_phys[NAME_BUFSIZE];
-
-	wait_queue_head_t wait;
-	int send_flags;
-
-	int users; /* 0-2, users are rc and input */
-	struct mutex open_mutex;
+static struct sram_channel cx23887_sram_channels[] = {
+	[SRAM_CH01] = {
+		.name		= "VID A",
+		.cmds_start	= 0x10000,
+		.ctrl_start	= 0x105b0,
+		.cdt		= 0x107b0,
+		.fifo_start	= 0x40,
+		.fifo_size	= 0x2800,
+		.ptr1_reg	= DMA1_PTR1,
+		.ptr2_reg	= DMA1_PTR2,
+		.cnt1_reg	= DMA1_CNT1,
+		.cnt2_reg	= DMA1_CNT2,
+	},
+	[SRAM_CH02] = {
+		.name		= "VID A (VBI)",
+		.cmds_start	= 0x10050,
+		.ctrl_start	= 0x105F0,
+		.cdt		= 0x10810,
+		.fifo_start	= 0x3000,
+		.fifo_size	= 0x1000,
+		.ptr1_reg	= DMA2_PTR1,
+		.ptr2_reg	= DMA2_PTR2,
+		.cnt1_reg	= DMA2_CNT1,
+		.cnt2_reg	= DMA2_CNT2,
+	},
+	[SRAM_CH03] = {
+		.name		= "TS1 B",
+		.cmds_start	= 0x100A0,
+		.ctrl_start	= 0x10630,
+		.cdt		= 0x10870,
+		.fifo_start	= 0x5000,
+		.fifo_size	= 0x1000,
+		.ptr1_reg	= DMA3_PTR1,
+		.ptr2_reg	= DMA3_PTR2,
+		.cnt1_reg	= DMA3_CNT1,
+		.cnt2_reg	= DMA3_CNT2,
+	},
+	[SRAM_CH04] = {
+		.name		= "ch4",
+		.cmds_start	= 0x0,
+		.ctrl_start	= 0x0,
+		.cdt		= 0x0,
+		.fifo_start	= 0x0,
+		.fifo_size	= 0x0,
+		.ptr1_reg	= DMA4_PTR1,
+		.ptr2_reg	= DMA4_PTR2,
+		.cnt1_reg	= DMA4_CNT1,
+		.cnt2_reg	= DMA4_CNT2,
+	},
+	[SRAM_CH05] = {
+		.name		= "ch5",
+		.cmds_start	= 0x0,
+		.ctrl_start	= 0x0,
+		.cdt		= 0x0,
+		.fifo_start	= 0x0,
+		.fifo_size	= 0x0,
+		.ptr1_reg	= DMA5_PTR1,
+		.ptr2_reg	= DMA5_PTR2,
+		.cnt1_reg	= DMA5_CNT1,
+		.cnt2_reg	= DMA5_CNT2,
+	},
+	[SRAM_CH06] = {
+		.name		= "TS2 C",
+		.cmds_start	= 0x10140,
+		.ctrl_start	= 0x10670,
+		.cdt		= 0x108d0,
+		.fifo_start	= 0x6000,
+		.fifo_size	= 0x1000,
+		.ptr1_reg	= DMA5_PTR1,
+		.ptr2_reg	= DMA5_PTR2,
+		.cnt1_reg	= DMA5_CNT1,
+		.cnt2_reg	= DMA5_CNT2,
+	},
+	[SRAM_CH07] = {
+		.name		= "TV Audio",
+		.cmds_start	= 0x10190,
+		.ctrl_start	= 0x106B0,
+		.cdt		= 0x10930,
+		.fifo_start	= 0x7000,
+		.fifo_size	= 0x1000,
+		.ptr1_reg	= DMA6_PTR1,
+		.ptr2_reg	= DMA6_PTR2,
+		.cnt1_reg	= DMA6_CNT1,
+		.cnt2_reg	= DMA6_CNT2,
+	},
+	[SRAM_CH08] = {
+		.name		= "ch8",
+		.cmds_start	= 0x0,
+		.ctrl_start	= 0x0,
+		.cdt		= 0x0,
+		.fifo_start	= 0x0,
+		.fifo_size	= 0x0,
+		.ptr1_reg	= DMA7_PTR1,
+		.ptr2_reg	= DMA7_PTR2,
+		.cnt1_reg	= DMA7_CNT1,
+		.cnt2_reg	= DMA7_CNT2,
+	},
+	[SRAM_CH09] = {
+		.name		= "ch9",
+		.cmds_start	= 0x0,
+		.ctrl_start	= 0x0,
+		.cdt		= 0x0,
+		.fifo_start	= 0x0,
+		.fifo_size	= 0x0,
+		.ptr1_reg	= DMA8_PTR1,
+		.ptr2_reg	= DMA8_PTR2,
+		.cnt1_reg	= DMA8_CNT1,
+		.cnt2_reg	= DMA8_CNT2,
+	},
 };
 
-/* "Kinds" of messages sent from the hardware to the driver. */
-#define KIND_END        0
-#define KIND_LITERAL    1   /* Simply pass to input system as EV_KEY */
-#define KIND_FILTERED   2   /* Add artificial key-up events, drop keyrepeats */
-#define KIND_ACCEL      3   /* Translate to EV_REL mouse-move events */
-
-/* Translation table from hardware messages to input events. */
-static const struct {
-	unsigned char kind;
-	unsigned char data;	/* Raw key code from remote */
-	unsigned short code;	/* Input layer translation */
-}  ati_remote_tbl[] = {
-	/* Directional control pad axes.  Code is xxyy */
-	{KIND_ACCEL,    0x70, 0xff00},	/* left */
-	{KIND_ACCEL,    0x71, 0x0100},	/* right */
-	{KIND_ACCEL,    0x72, 0x00ff},	/* up */
-	{KIND_ACCEL,    0x73, 0x0001},	/* down */
-
-	/* Directional control pad diagonals */
-	{KIND_ACCEL,    0x74, 0xffff},	/* left up */
-	{KIND_ACCEL,    0x75, 0x01ff},	/* right up */
-	{KIND_ACCEL,    0x77, 0xff01},	/* left down */
-	{KIND_ACCEL,    0x76, 0x0101},	/* right down */
-
-	/* "Mouse button" buttons.  The code below uses the fact that the
-	 * lsbit of the raw code is a down/up indicator. */
-	{KIND_LITERAL,  0x78, BTN_LEFT}, /* left btn down */
-	{KIND_LITERAL,  0x79, BTN_LEFT}, /* left btn up */
-	{KIND_LITERAL,  0x7c, BTN_RIGHT},/* right btn down */
-	{KIND_LITERAL,  0x7d, BTN_RIGHT},/* right btn up */
-
-	/* Artificial "double-click" events are generated by the hardware.
-	 * They are mapped to the "side" and "extra" mouse buttons here. */
-	{KIND_FILTERED, 0x7a, BTN_SIDE}, /* left dblclick */
-	{KIND_FILTERED, 0x7e, BTN_EXTRA},/* right dblclick */
-
-	/* Non-mouse events are handled by rc-core */
-	{KIND_END, 0x00, 0}
-};
-
-/*
- * ati_remote_dump_input
- */
-static void ati_remote_dump(struct device *dev, unsigned char *data,
-			    unsigned int len)
+static void cx23885_irq_add(struct cx23885_dev *dev, u32 mask)
 {
-	if (len == 1) {
-		if (data[0] != (unsigned char)0xff && data[0] != 0x00)
-			dev_warn(dev, "Weird byte 0x%02x\n", data[0]);
-	} else if (len == 4)
-		dev_warn(dev, "Weird key %*ph\n", 4, data);
-	else
-		dev_warn(dev, "Weird data, len=%d %*ph ...\n", len, 6, data);
+	unsigned long flags;
+	spin_lock_irqsave(&dev->pci_irqmask_lock, flags);
+
+	dev->pci_irqmask |= mask;
+
+	spin_unlock_irqrestore(&dev->pci_irqmask_lock, flags);
 }
 
-/*
- * ati_remote_open
- */
-static int ati_remote_open(struct ati_remote *ati_remote)
+void cx23885_irq_add_enable(struct cx23885_dev *dev, u32 mask)
 {
-	int err = 0;
+	unsigned long flags;
+	spin_lock_irqsave(&dev->pci_irqmask_lock, flags);
 
-	mutex_lock(&ati_remote->open_mutex);
+	dev->pci_irqmask |= mask;
+	cx_set(PCI_INT_MSK, mask);
 
-	if (ati_remote->users++ != 0)
-		goto out; /* one was already active */
-
-	/* On first open, submit the read urb which was set up previously. */
-	ati_remote->irq_urb->dev = ati_remote->udev;
-	if (usb_submit_urb(ati_remote->irq_urb, GFP_KERNEL)) {
-		dev_err(&ati_remote->interface->dev,
-			"%s: usb_submit_urb failed!\n", __func__);
-		err = -EIO;
-	}
-
-out:	mutex_unlock(&ati_remote->open_mutex);
-	return err;
+	spin_unlock_irqrestore(&dev->pci_irqmask_lock, flags);
 }
 
-/*
- * ati_remote_close
- */
-static void ati_remote_close(struct ati_remote *ati_remote)
+void cx23885_irq_enable(struct cx23885_dev *dev, u32 mask)
 {
-	mutex_lock(&ati_remote->open_mutex);
-	if (--ati_remote->users == 0)
-		usb_kill_urb(ati_remote->irq_urb);
-	mutex_unlock(&ati_remote->open_mutex);
+	u32 v;
+	unsigned long flags;
+	spin_lock_irqsave(&dev->pci_irqmask_lock, flags);
+
+	v = mask & dev->pci_irqmask;
+	if (v)
+		cx_set(PCI_INT_MSK, v);
+
+	spin_unlock_irqrestore(&dev->pci_irqmask_lock, flags);
 }
 
-static int ati_remote_input_open(struct input_dev *inputdev)
+static inline void cx23885_irq_enable_all(struct cx23885_dev *dev)
 {
-	struct ati_remote *ati_remote = input_get_drvdata(inputdev);
-	return ati_remote_open(ati_remote);
+	cx23885_irq_enable(dev, 0xffffffff);
 }
 
-static void ati_remote_input_close(struct input_dev *inputdev)
+void cx23885_irq_disable(struct cx23885_dev *dev, u32 mask)
 {
-	struct ati_remote *ati_remote = input_get_drvdata(inputdev);
-	ati_remote_close(ati_remote);
+	unsigned long flags;
+	spin_lock_irqsave(&dev->pci_irqmask_lock, flags);
+
+	cx_clear(PCI_INT_MSK, mask);
+
+	spin_unlock_irqrestore(&dev->pci_irqmask_lock, flags);
 }
 
-static int ati_remote_rc_open(struct rc_dev *rdev)
+static inline void cx23885_irq_disable_all(struct cx23885_dev *dev)
 {
-	struct ati_remote *ati_remote = rdev->priv;
-	return ati_remote_open(ati_remote);
+	cx23885_irq_disable(dev, 0xffffffff);
 }
 
-static void ati_remote_rc_close(struct rc_dev *rdev)
+void cx23885_irq_remove(struct cx23885_dev *dev, u32 mask)
 {
-	struct ati_remote *ati_remote = rdev->priv;
-	ati_remote_close(ati_remote);
+	unsigned long flags;
+	spin_lock_irqsave(&dev->pci_irqmask_lock, flags);
+
+	dev->pci_irqmask &= ~mask;
+	cx_clear(PCI_INT_MSK, mask);
+
+	spin_unlock_irqrestore(&dev->pci_irqmask_lock, flags);
 }
 
-/*
- * ati_remote_irq_out
- */
-static void ati_remote_irq_out(struct urb *urb)
+static u32 cx23885_irq_get_mask(struct cx23885_dev *dev)
 {
-	struct ati_remote *ati_remote = urb->context;
+	u32 v;
+	unsigned long flags;
+	spin_lock_irqsave(&dev->pci_irqmask_lock, flags);
 
-	if (urb->status) {
-		dev_dbg(&ati_remote->interface->dev, "%s: status %d\n",
-			__func__, urb->status);
-		return;
-	}
+	v = cx_read(PCI_INT_MSK);
 
-	ati_remote->send_flags |= SEND_FLAG_COMPLETE;
-	wmb();
-	wake_up(&ati_remote->wait);
+	spin_unlock_irqrestore(&dev->pci_irqmask_lock, flags);
+	return v;
 }
 
-/*
- * ati_remote_sendpacket
- *
- * Used to send device initialization strings
- */
-static int ati_remote_sendpacket(struct ati_remote *ati_remote, u16 cmd,
-	unsigned char *data)
+static int cx23885_risc_decode(u32 risc)
 {
-	int retval = 0;
-
-	/* Set up out_urb */
-	memcpy(ati_remote->out_urb->transfer_buffer + 1, data, LO(cmd));
-	((char *) ati_remote->out_urb->transfer_buffer)[0] = HI(cmd);
-
-	ati_remote->out_urb->transfer_buffer_length = LO(cmd) + 1;
-	ati_remote->out_urb->dev = ati_remote->udev;
-	ati_remote->send_flags = SEND_FLAG_IN_PROGRESS;
-
-	retval = usb_submit_urb(ati_remote->out_urb, GFP_ATOMIC);
-	if (retval) {
-		dev_dbg(&ati_remote->interface->dev,
-			 "sendpacket: usb_submit_urb failed: %d\n", retval);
-		return retval;
-	}
-
-	wait_event_timeout(ati_remote->wait,
-		((ati_remote->out_urb->status != -EINPROGRESS) ||
-			(ati_remote->send_flags & SEND_FLAG_COMPLETE)),
-		HZ);
-	usb_kill_urb(ati_remote->out_urb);
-
-	return retval;
-}
-
-struct accel_times {
-	const char	value;
-	unsigned int	msecs;
-};
-
-static const struct accel_times accel[] = {
-	{  1,  125 },
-	{  2,  250 },
-	{  4,  500 },
-	{  6, 1000 },
-	{  9, 1500 },
-	{ 13, 2000 },
-	{ 20,    0 },
-};
-
-/*
- * ati_remote_compute_accel
- *
- * Implements acceleration curve for directional control pad
- * If elapsed time since last event is > 1/4 second, user "stopped",
- * so reset acceleration. Otherwise, user is probably holding the control
- * pad down, so we increase acceleration, ramping up over two seconds to
- * a maximum speed.
- */
-static int ati_remote_compute_accel(struct ati_remote *ati_remote)
-{
-	unsigned long now = jiffies, reset_time;
+	static char *instr[16] = {
+		[RISC_SYNC    >> 28] = "sync",
+		[RISC_WRITE   >> 28] = "write",
+		[RISC_WRITEC  >> 28] = "writec",
+		[RISC_READ    >> 28] = "read",
+		[RISC_READC   >> 28] = "readc",
+		[RISC_JUMP    >> 28] = "jump",
+		[RISC_SKIP    >> 28] = "skip",
+		[RISC_WRITERM >> 28] = "writerm",
+		[RISC_WRITECM >> 28] = "writecm",
+		[RISC_WRITECR >> 28] = "writecr",
+	};
+	static int incr[16] = {
+		[RISC_WRITE   >> 28] = 3,
+		[RISC_JUMP    >> 28] = 3,
+		[RISC_SKIP    >> 28] = 1,
+		[RISC_SYNC    >> 28] = 1,
+		[RISC_WRITERM >> 28] = 3,
+		[RISC_WRITECM >> 28] = 3,
+		[RISC_WRITECR >> 28] = 4,
+	};
+	static char *bits[] = {
+		"12",   "13",   "14",   "resync",
+		"cnt0", "cnt1", "18",   "19",
+		"20",   "21",   "22",   "23",
+		"irq1", "irq2", "eol",  "sol",
+	};
 	int i;
 
-	reset_time = msecs_to_jiffies(250);
-
-	if (time_after(now, ati_remote->old_jiffies + reset_time)) {
-		ati_remote->acc_jiffies = now;
-		return 1;
-	}
-	for (i = 0; i < ARRAY_SIZE(accel) - 1; i++) {
-		unsigned long timeout = msecs_to_jiffies(accel[i].msecs);
-
-		if (time_before(now, ati_remote->acc_jiffies + timeout))
-			return accel[i].value;
-	}
-	return accel[i].value;
+	printk(KERN_DEBUG "0x%08x [ %s", risc,
+	       instr[risc >> 28] ? instr[risc >> 28] : "INVALID");
+	for (i = ARRAY_SIZE(bits) - 1; i >= 0; i--)
+		if (risc & (1 << (i + 12)))
+			pr_cont(" %s", bits[i]);
+	pr_cont(" count=%d ]\n", risc & 0xfff);
+	return incr[risc >> 28] ? incr[risc >> 28] : 1;
 }
 
-/*
- * ati_remote_report_input
- */
-static void ati_remote_input_report(struct urb *urb)
+static void cx23885_wakeup(struct cx23885_tsport *port,
+			   struct cx23885_dmaqueue *q, u32 count)
 {
-	struct ati_remote *ati_remote = urb->context;
-	unsigned char *data= ati_remote->inbuf;
-	struct input_dev *dev = ati_remote->idev;
-	int index = -1;
-	int remote_num;
-	unsigned char scancode;
-	u32 wheel_keycode = KEY_RESERVED;
-	int i;
+	struct cx23885_buffer *buf;
+	int count_delta;
+	int max_buf_done = 5; /* service maximum five buffers */
 
-	/*
-	 * data[0] = 0x14
-	 * data[1] = data[2] + data[3] + 0xd5 (a checksum byte)
-	 * data[2] = the key code (with toggle bit in MSB with some models)
-	 * data[3] = channel << 4 (the low 4 bits must be zero)
-	 */
-
-	/* Deal with strange looking inputs */
-	if ( urb->actual_length != 4 || data[0] != 0x14 ||
-	     data[1] != (unsigned char)(data[2] + data[3] + 0xD5) ||
-	     (data[3] & 0x0f) != 0x00) {
-		ati_remote_dump(&urb->dev->dev, data, urb->actual_length);
-		return;
-	}
-
-	if (data[1] != ((data[2] + data[3] + 0xd5) & 0xff)) {
-		dbginfo(&ati_remote->interface->dev,
-			"wrong checksum in input: %*ph\n", 4, data);
-		return;
-	}
-
-	/* Mask unwanted remote channels.  */
-	/* note: remote_num is 0-based, channel 1 on remote == 0 here */
-	remote_num = (data[3] >> 4) & 0x0f;
-	if (channel_mask & (1 << (remote_num + 1))) {
-		dbginfo(&ati_remote->interface->dev,
-			"Masked input from channel 0x%02x: data %02x, mask= 0x%02lx\n",
-			remote_num, data[2], channel_mask);
-		return;
-	}
-
-	/*
-	 * MSB is a toggle code, though only used by some devices
-	 * (e.g. SnapStream Firefly)
-	 */
-	scancode = data[2] & 0x7f;
-
-	dbginfo(&ati_remote->interface->dev,
-		"channel 0x%02x; key data %02x, scancode %02x\n",
-		remote_num, data[2], scancode);
-
-	if (scancode >= 0x70) {
-		/*
-		 * This is either a mouse or scrollwheel event, depending on
-		 * the remote/keymap.
-		 * Get the keycode assigned to scancode 0x78/0x70. If it is
-		 * set, assume this is a scrollwheel up/down event.
-		 */
-		wheel_keycode = rc_g_keycode_from_table(ati_remote->rdev,
-							scancode & 0x78);
-
-		if (wheel_keycode == KEY_RESERVED) {
-			/* scrollwheel was not mapped, assume mouse */
-
-			/* Look up event code index in the mouse translation
-			 * table.
-			 */
-			for (i = 0; ati_remote_tbl[i].kind != KIND_END; i++) {
-				if (scancode == ati_remote_tbl[i].data) {
-					index = i;
-					break;
-				}
-			}
-		}
-	}
-
-	if (index >= 0 && ati_remote_tbl[index].kind == KIND_LITERAL) {
-		/*
-		 * The lsbit of the raw key code is a down/up flag.
-		 * Invert it to match the input layer's conventions.
-		 */
-		input_event(dev, EV_KEY, ati_remote_tbl[index].code,
-			!(data[2] & 1));
-
-		ati_remote->old_jiffies = jiffies;
-
-	} else if (index < 0 || ati_remote_tbl[index].kind == KIND_FILTERED) {
-		unsigned long now = jiffies;
-
-		/* Filter duplicate events which happen "too close" together. */
-		if (ati_remote->old_data == data[2] &&
-		    time_before(now, ati_remote->old_jiffies +
-				     msecs_to_jiffies(repeat_filter))) {
-			ati_remote->repeat_count++;
-		} else {
-			ati_remote->repeat_count = 0;
-			ati_remote->first_jiffies = now;
-		}
-
-		ati_remote->old_jiffies = now;
-
-		/* Ensure we skip at least the 4 first duplicate events
-		 * (generated by a single keypress), and continue skipping
-		 * until repeat_delay msecs have passed.
-		 */
-		if (ati_remote->repeat_count > 0 &&
-		    (ati_remote->repeat_count < 5 ||
-		     time_before(now, ati_remote->first_jiffies +
-				      msecs_to_jiffies(repeat_delay))))
+	do {
+		if (list_empty(&q->active))
 			return;
+		buf = list_entry(q->active.next,
+				 struct cx23885_buffer, queue);
 
-		if (index >= 0) {
-			input_event(dev, EV_KEY, ati_remote_tbl[index].code, 1);
-			input_event(dev, EV_KEY, ati_remote_tbl[index].code, 0);
+		buf->vb.vb2_buf.timestamp = ktime_get_ns();
+		buf->vb.sequence = q->count++;
+		if (count != (q->count % 65536)) {
+			dprintk(1, "[%p/%d] wakeup reg=%d buf=%d\n", buf,
+				buf->vb.vb2_buf.index, count, q->count);
 		} else {
-			/* Not a mouse event, hand it to rc-core. */
-			int count = 1;
-
-			if (wheel_keycode != KEY_RESERVED) {
-				/*
-				 * This is a scrollwheel event, send the
-				 * scroll up (0x78) / down (0x70) scancode
-				 * repeatedly as many times as indicated by
-				 * rest of the scancode.
-				 */
-				count = (scancode & 0x07) + 1;
-				scancode &= 0x78;
-			}
-
-			while (count--) {
-				/*
-				* We don't use the rc-core repeat handling yet as
-				* it would cause ghost repeats which would be a
-				* regression for this driver.
-				*/
-				rc_keydown_notimeout(ati_remote->rdev,
-						     RC_PROTO_OTHER,
-						     scancode, data[2]);
-				rc_keyup(ati_remote->rdev);
-			}
-			goto nosync;
+			dprintk(7, "[%p/%d] wakeup reg=%d buf=%d\n", buf,
+				buf->vb.vb2_buf.index, count, q->count);
 		}
+		list_del(&buf->queue);
+		vb2_buffer_done(&buf->vb.vb2_buf, VB2_BUF_STATE_DONE);
+		max_buf_done--;
+		/* count register is 16 bits so apply modulo appropriately */
+		count_delta = ((int)count - (int)(q->count % 65536));
+	} while ((count_delta > 0) && (max_buf_done > 0));
+}
 
-	} else if (ati_remote_tbl[index].kind == KIND_ACCEL) {
-		signed char dx = ati_remote_tbl[index].code >> 8;
-		signed char dy = ati_remote_tbl[index].code & 255;
+int cx23885_sram_channel_setup(struct cx23885_dev *dev,
+				      struct sram_channel *ch,
+				      unsigned int bpl, u32 risc)
+{
+	unsigned int i, lines;
+	u32 cdt;
 
-		/*
-		 * Other event kinds are from the directional control pad, and
-		 * have an acceleration factor applied to them.  Without this
-		 * acceleration, the control pad is mostly unusable.
-		 */
-		int acc = ati_remote_compute_accel(ati_remote);
-		if (dx)
-			input_report_rel(dev, REL_X, dx * acc);
-		if (dy)
-			input_report_rel(dev, REL_Y, dy * acc);
-		ati_remote->old_jiffies = jiffies;
-
+	if (ch->cmds_start == 0) {
+		dprintk(1, "%s() Erasing channel [%s]\n", __func__,
+			ch->name);
+		cx_write(ch->ptr1_reg, 0);
+		cx_write(ch->ptr2_reg, 0);
+		cx_write(ch->cnt2_reg, 0);
+		cx_write(ch->cnt1_reg, 0);
+		return 0;
 	} else {
-		dev_dbg(&ati_remote->interface->dev, "ati_remote kind=%d\n",
-			ati_remote_tbl[index].kind);
-		return;
-	}
-	input_sync(dev);
-nosync:
-	ati_remote->old_data = data[2];
-}
-
-/*
- * ati_remote_irq_in
- */
-static void ati_remote_irq_in(struct urb *urb)
-{
-	struct ati_remote *ati_remote = urb->context;
-	int retval;
-
-	switch (urb->status) {
-	case 0:			/* success */
-		ati_remote_input_report(urb);
-		break;
-	case -ECONNRESET:	/* unlink */
-	case -ENOENT:
-	case -ESHUTDOWN:
-		dev_dbg(&ati_remote->interface->dev,
-			"%s: urb error status, unlink?\n",
-			__func__);
-		return;
-	default:		/* error */
-		dev_dbg(&ati_remote->interface->dev,
-			"%s: Nonzero urb status %d\n",
-			__func__, urb->status);
+		dprintk(1, "%s() Configuring channel [%s]\n", __func__,
+			ch->name);
 	}
 
-	retval = usb_submit_urb(urb, GFP_ATOMIC);
-	if (retval)
-		dev_err(&ati_remote->interface->dev,
-			"%s: usb_submit_urb()=%d\n",
-			__func__, retval);
-}
+	bpl   = (bpl + 7) & ~7; /* alignment */
+	cdt   = ch->cdt;
+	lines = ch->fifo_size / bpl;
+	if (lines > 6)
+		lines = 6;
+	BUG_ON(lines < 2);
 
-/*
- * ati_remote_alloc_buffers
- */
-static int ati_remote_alloc_buffers(struct usb_device *udev,
-				    struct ati_remote *ati_remote)
-{
-	ati_remote->inbuf = usb_alloc_coherent(udev, DATA_BUFSIZE, GFP_ATOMIC,
-					       &ati_remote->inbuf_dma);
-	if (!ati_remote->inbuf)
-		return -1;
+	cx_write(8 + 0, RISC_JUMP | RISC_CNT_RESET);
+	cx_write(8 + 4, 12);
+	cx_write(8 + 8, 0);
 
-	ati_remote->outbuf = usb_alloc_coherent(udev, DATA_BUFSIZE, GFP_ATOMIC,
-						&ati_remote->outbuf_dma);
-	if (!ati_remote->outbuf)
-		return -1;
+	/* write CDT */
+	for (i = 0; i < lines; i++) {
+		dprintk(2, "%s() 0x%08x <- 0x%08x\n", __func__, cdt + 16*i,
+			ch->fifo_start + bpl*i);
+		cx_write(cdt + 16*i, ch->fifo_start + bpl*i);
+		cx_write(cdt + 16*i +  4, 0);
+		cx_write(cdt + 16*i +  8, 0);
+		cx_write(cdt + 16*i + 12, 0);
+	}
 
-	ati_remote->irq_urb = usb_alloc_urb(0, GFP_KERNEL);
-	if (!ati_remote->irq_urb)
-		return -1;
+	/* write CMDS */
+	if (ch->jumponly)
+		cx_write(ch->cmds_start + 0, 8);
+	else
+		cx_write(ch->cmds_start + 0, risc);
+	cx_write(ch->cmds_start +  4, 0); /* 64 bits 63-32 */
+	cx_write(ch->cmds_start +  8, cdt);
+	cx_write(ch->cmds_start + 12, (lines*16) >> 3);
+	cx_write(ch->cmds_start + 16, ch->ctrl_start);
+	if (ch->jumponly)
+		cx_write(ch->cmds_start + 20, 0x80000000 | (64 >> 2));
+	else
+		cx_write(ch->cmds_start + 20, 64 >> 2);
+	for (i = 24; i < 80; i += 4)
+		cx_write(ch->cmds_start + i, 0);
 
-	ati_remote->out_urb = usb_alloc_urb(0, GFP_KERNEL);
-	if (!ati_remote->out_urb)
-		return -1;
+	/* fill registers */
+	cx_write(ch->ptr1_reg, ch->fifo_start);
+	cx_write(ch->ptr2_reg, cdt);
+	cx_write(ch->cnt2_reg, (lines*16) >> 3);
+	cx_write(ch->cnt1_reg, (bpl >> 3) - 1);
+
+	dprintk(2, "[bridge %d] sram setup %s: bpl=%d lines=%d\n",
+		dev->bridge,
+		ch->name,
+		bpl,
+		lines);
 
 	return 0;
 }
 
-/*
- * ati_remote_free_buffers
- */
-static void ati_remote_free_buffers(struct ati_remote *ati_remote)
+void cx23885_sram_channel_dump(struct cx23885_dev *dev,
+				      struct sram_channel *ch)
 {
-	usb_free_urb(ati_remote->irq_urb);
-	usb_free_urb(ati_remote->out_urb);
+	static char *name[] = {
+		"init risc lo",
+		"init risc hi",
+		"cdt base",
+		"cdt size",
+		"iq base",
+		"iq size",
+		"risc pc lo",
+		"risc pc hi",
+		"iq wr ptr",
+		"iq rd ptr",
+		"cdt current",
+		"pci target lo",
+		"pci target hi",
+		"line / byte",
+	};
+	u32 risc;
+	unsigned int i, j, n;
 
-	usb_free_coherent(ati_remote->udev, DATA_BUFSIZE,
-		ati_remote->inbuf, ati_remote->inbuf_dma);
+	pr_warn("%s: %s - dma channel status dump\n",
+		dev->name, ch->name);
+	for (i = 0; i < ARRAY_SIZE(name); i++)
+		pr_warn("%s:   cmds: %-15s: 0x%08x\n",
+			dev->name, name[i],
+			cx_read(ch->cmds_start + 4*i));
 
-	usb_free_coherent(ati_remote->udev, DATA_BUFSIZE,
-		ati_remote->outbuf, ati_remote->outbuf_dma);
+	for (i = 0; i < 4; i++) {
+		risc = cx_read(ch->cmds_start + 4 * (i + 14));
+		pr_warn("%s:   risc%d: ", dev->name, i);
+		cx23885_risc_decode(risc);
+	}
+	for (i = 0; i < (64 >> 2); i += n) {
+		risc = cx_read(ch->ctrl_start + 4 * i);
+		/* No consideration for bits 63-32 */
+
+		pr_warn("%s:   (0x%08x) iq %x: ", dev->name,
+			ch->ctrl_start + 4 * i, i);
+		n = cx23885_risc_decode(risc);
+		for (j = 1; j < n; j++) {
+			risc = cx_read(ch->ctrl_start + 4 * (i + j));
+			pr_warn("%s:   iq %x: 0x%08x [ arg #%d ]\n",
+				dev->name, i+j, risc, j);
+		}
+	}
+
+	pr_warn("%s: fifo: 0x%08x -> 0x%x\n",
+		dev->name, ch->fifo_start, ch->fifo_start+ch->fifo_size);
+	pr_warn("%s: ctrl: 0x%08x -> 0x%x\n",
+		dev->name, ch->ctrl_start, ch->ctrl_start + 6*16);
+	pr_warn("%s:   ptr1_reg: 0x%08x\n",
+		dev->name, cx_read(ch->ptr1_reg));
+	pr_warn("%s:   ptr2_reg: 0x%08x\n",
+		dev->name, cx_read(ch->ptr2_reg));
+	pr_warn("%s:   cnt1_reg: 0x%08x\n",
+		dev->name, cx_read(ch->cnt1_reg));
+	pr_warn("%s:   cnt2_reg: 0x%08x\n",
+		dev->name, cx_read(ch->cnt2_reg));
 }
 
-static void ati_remote_input_init(struct ati_remote *ati_remote)
+static void cx23885_risc_disasm(struct cx23885_tsport *port,
+				struct cx23885_riscmem *risc)
 {
-	struct input_dev *idev = ati_remote->idev;
+	struct cx23885_dev *dev = port->dev;
+	unsigned int i, j, n;
+
+	pr_info("%s: risc disasm: %p [dma=0x%08lx]\n",
+	       dev->name, risc->cpu, (unsigned long)risc->dma);
+	for (i = 0; i < (risc->size >> 2); i += n) {
+		pr_info("%s:   %04d: ", dev->name, i);
+		n = cx23885_risc_decode(le32_to_cpu(risc->cpu[i]));
+		for (j = 1; j < n; j++)
+			pr_info("%s:   %04d: 0x%08x [ arg #%d ]\n",
+				dev->name, i + j, risc->cpu[i + j], j);
+		if (risc->cpu[i] == cpu_to_le32(RISC_JUMP))
+			break;
+	}
+}
+
+static void cx23885_clear_bridge_error(struct cx23885_dev *dev)
+{
+	uint32_t reg1_val, reg2_val;
+
+	if (!dev->need_dma_reset)
+		return;
+
+	reg1_val = cx_read(TC_REQ); /* read-only */
+	reg2_val = cx_read(TC_REQ_SET);
+
+	if (reg1_val && reg2_val) {
+		cx_write(TC_REQ, reg1_val);
+		cx_write(TC_REQ_SET, reg2_val);
+		cx_read(VID_B_DMA);
+		cx_read(VBI_B_DMA);
+		cx_read(VID_C_DMA);
+		cx_read(VBI_C_DMA);
+
+		dev_info(&dev->pci->dev,
+			"dma in progress detected 0x%08x 0x%08x, clearing\n",
+			reg1_val, reg2_val);
+	}
+}
+
+static void cx23885_shutdown(struct cx23885_dev *dev)
+{
+	/* disable RISC controller */
+	cx_write(DEV_CNTRL2, 0);
+
+	/* Disable all IR activity */
+	cx_write(IR_CNTRL_REG, 0);
+
+	/* Disable Video A/B activity */
+	cx_write(VID_A_DMA_CTL, 0);
+	cx_write(VID_B_DMA_CTL, 0);
+	cx_write(VID_C_DMA_CTL, 0);
+
+	/* Disable Audio activity */
+	cx_write(AUD_INT_DMA_CTL, 0);
+	cx_write(AUD_EXT_DMA_CTL, 0);
+
+	/* Disable Serial port */
+	cx_write(UART_CTL, 0);
+
+	/* Disable Interrupts */
+	cx23885_irq_disable_all(dev);
+	cx_write(VID_A_INT_MSK, 0);
+	cx_write(VID_B_INT_MSK, 0);
+	cx_write(VID_C_INT_MSK, 0);
+	cx_write(AUDIO_INT_INT_MSK, 0);
+	cx_write(AUDIO_EXT_INT_MSK, 0);
+
+}
+
+static void cx23885_reset(struct cx23885_dev *dev)
+{
+	dprintk(1, "%s()\n", __func__);
+
+	cx23885_shutdown(dev);
+
+	cx_write(PCI_INT_STAT, 0xffffffff);
+	cx_write(VID_A_INT_STAT, 0xffffffff);
+	cx_write(VID_B_INT_STAT, 0xffffffff);
+	cx_write(VID_C_INT_STAT, 0xffffffff);
+	cx_write(AUDIO_INT_INT_STAT, 0xffffffff);
+	cx_write(AUDIO_EXT_INT_STAT, 0xffffffff);
+	cx_write(CLK_DELAY, cx_read(CLK_DELAY) & 0x80000000);
+	cx_write(PAD_CTRL, 0x00500300);
+
+	/* clear dma in progress */
+	cx23885_clear_bridge_error(dev);
+	msleep(100);
+
+	cx23885_sram_channel_setup(dev, &dev->sram_channels[SRAM_CH01],
+		720*4, 0);
+	cx23885_sram_channel_setup(dev, &dev->sram_channels[SRAM_CH02], 128, 0);
+	cx23885_sram_channel_setup(dev, &dev->sram_channels[SRAM_CH03],
+		188*4, 0);
+	cx23885_sram_channel_setup(dev, &dev->sram_channels[SRAM_CH04], 128, 0);
+	cx23885_sram_channel_setup(dev, &dev->sram_channels[SRAM_CH05], 128, 0);
+	cx23885_sram_channel_setup(dev, &dev->sram_channels[SRAM_CH06],
+		188*4, 0);
+	cx23885_sram_channel_setup(dev, &dev->sram_channels[SRAM_CH07], 128, 0);
+	cx23885_sram_channel_setup(dev, &dev->sram_channels[SRAM_CH08], 128, 0);
+	cx23885_sram_channel_setup(dev, &dev->sram_channels[SRAM_CH09], 128, 0);
+
+	cx23885_gpio_setup(dev);
+
+	cx23885_irq_get_mask(dev);
+
+	/* clear dma in progress */
+	cx23885_clear_bridge_error(dev);
+}
+
+
+static int cx23885_pci_quirks(struct cx23885_dev *dev)
+{
+	dprintk(1, "%s()\n", __func__);
+
+	/* The cx23885 bridge has a weird bug which causes NMI to be asserted
+	 * when DMA begins if RDR_TLCTL0 bit4 is not cleared. It does not
+	 * occur on the cx23887 bridge.
+	 */
+	if (dev->bridge == CX23885_BRIDGE_885)
+		cx_clear(RDR_TLCTL0, 1 << 4);
+
+	/* clear dma in progress */
+	cx23885_clear_bridge_error(dev);
+	return 0;
+}
+
+static int get_resources(struct cx23885_dev *dev)
+{
+	if (request_mem_region(pci_resource_start(dev->pci, 0),
+			       pci_resource_len(dev->pci, 0),
+			       dev->name))
+		return 0;
+
+	pr_err("%s: can't get MMIO memory @ 0x%llx\n",
+	       dev->name, (unsigned long long)pci_resource_start(dev->pci, 0));
+
+	return -EBUSY;
+}
+
+static int cx23885_init_tsport(struct cx23885_dev *dev,
+	struct cx23885_tsport *port, int portno)
+{
+	dprintk(1, "%s(portno=%d)\n", __func__, portno);
+
+	/* Transport bus init dma queue  - Common settings */
+	port->dma_ctl_val        = 0x11; /* Enable RISC controller and Fifo */
+	port->ts_int_msk_val     = 0x1111; /* TS port bits for RISC */
+	port->vld_misc_val       = 0x0;
+	port->hw_sop_ctrl_val    = (0x47 << 16 | 188 << 4);
+
+	spin_lock_init(&port->slock);
+	port->dev = dev;
+	port->nr = portno;
+
+	INIT_LIST_HEAD(&port->mpegq.active);
+	mutex_init(&port->frontends.lock);
+	INIT_LIST_HEAD(&port->frontends.felist);
+	port->frontends.active_fe_id = 0;
+
+	/* This should be hardcoded allow a single frontend
+	 * attachment to this tsport, keeping the -dvb.c
+	 * code clean and safe.
+	 */
+	if (!port->num_frontends)
+		port->num_frontends = 1;
+
+	switch (portno) {
+	case 1:
+		port->reg_gpcnt          = VID_B_GPCNT;
+		port->reg_gpcnt_ctl      = VID_B_GPCNT_CTL;
+		port->reg_dma_ctl        = VID_B_DMA_CTL;
+		port->reg_lngth          = VID_B_LNGTH;
+		port->reg_hw_sop_ctrl    = VID_B_HW_SOP_CTL;
+		port->reg_gen_ctrl       = VID_B_GEN_CTL;
+		port->reg_bd_pkt_status  = VID_B_BD_PKT_STATUS;
+		port->reg_sop_status     = VID_B_SOP_STATUS;
+		port->reg_fifo_ovfl_stat = VID_B_FIFO_OVFL_STAT;
+		port->reg_vld_misc       = VID_B_VLD_MISC;
+		port->reg_ts_clk_en      = VID_B_TS_CLK_EN;
+		port->reg_src_sel        = VID_B_SRC_SEL;
+		port->reg_ts_int_msk     = VID_B_INT_MSK;
+		port->reg_ts_int_stat    = VID_B_INT_STAT;
+		port->sram_chno          = SRAM_CH03; /* VID_B */
+		port->pci_irqmask        = 0x02; /* VID_B bit1 */
+		break;
+	case 2:
+		port->reg_gpcnt          = VID_C_GPCNT;
+		port->reg_gpcnt_ctl      = VID_C_GPCNT_CTL;
+		port->reg_dma_ctl        = VID_C_DMA_CTL;
+		port->reg_lngth          = VID_C_LNGTH;
+		port->reg_hw_sop_ctrl    = VID_C_HW_SOP_CTL;
+		port->reg_gen_ctrl       = VID_C_GEN_CTL;
+		port->reg_bd_pkt_status  = VID_C_BD_PKT_STATUS;
+		port->reg_sop_status     = VID_C_SOP_STATUS;
+		port->reg_fifo_ovfl_stat = VID_C_FIFO_OVFL_STAT;
+		port->reg_vld_misc       = VID_C_VLD_MISC;
+		port->reg_ts_clk_en      = VID_C_TS_CLK_EN;
+		port->reg_src_sel        = 0;
+		port->reg_ts_int_msk     = VID_C_INT_MSK;
+		port->reg_ts_int_stat    = VID_C_INT_STAT;
+		port->sram_chno          = SRAM_CH06; /* VID_C */
+		port->pci_irqmask        = 0x04; /* VID_C bit2 */
+		break;
+	default:
+		BUG();
+	}
+
+	return 0;
+}
+
+static void cx23885_dev_checkrevision(struct cx23885_dev *dev)
+{
+	switch (cx_read(RDR_CFG2) & 0xff) {
+	case 0x00:
+		/* cx23885 */
+		dev->hwrevision = 0xa0;
+		break;
+	case 0x01:
+		/* CX23885-12Z */
+		dev->hwrevision = 0xa1;
+		break;
+	case 0x02:
+		/* CX23885-13Z/14Z */
+		dev->hwrevision = 0xb0;
+		break;
+	case 0x03:
+		if (dev->pci->device == 0x8880) {
+			/* CX23888-21Z/22Z */
+			dev->hwrevision = 0xc0;
+		} else {
+			/* CX23885-14Z */
+			dev->hwrevision = 0xa4;
+		}
+		break;
+	case 0x04:
+		if (dev->pci->device == 0x8880) {
+			/* CX23888-31Z */
+			dev->hwrevision = 0xd0;
+		} else {
+			/* CX23885-15Z, CX23888-31Z */
+			dev->hwrevision = 0xa5;
+		}
+		break;
+	case 0x0e:
+		/* CX23887-15Z */
+		dev->hwrevision = 0xc0;
+		break;
+	case 0x0f:
+		/* CX23887-14Z */
+		dev->hwrevision = 0xb1;
+		break;
+	default:
+		pr_err("%s() New hardware revision found 0x%x\n",
+		       __func__, dev->hwrevision);
+	}
+	if (dev->hwrevision)
+		pr_info("%s() Hardware revision = 0x%02x\n",
+			__func__, dev->hwrevision);
+	else
+		pr_err("%s() Hardware revision unknown 0x%x\n",
+		       __func__, dev->hwrevision);
+}
+
+/* Find the first v4l2_subdev member of the group id in hw */
+struct v4l2_subdev *cx23885_find_hw(struct cx23885_dev *dev, u32 hw)
+{
+	struct v4l2_subdev *result = NULL;
+	struct v4l2_subdev *sd;
+
+	spin_lock(&dev->v4l2_dev.lock);
+	v4l2_device_for_each_subdev(sd, &dev->v4l2_dev) {
+		if (sd->grp_id == hw) {
+			result = sd;
+			break;
+		}
+	}
+	spin_unlock(&dev->v4l2_dev.lock);
+	return result;
+}
+
+static int cx23885_dev_setup(struct cx23885_dev *dev)
+{
 	int i;
 
-	idev->evbit[0] = BIT_MASK(EV_KEY) | BIT_MASK(EV_REL);
-	idev->keybit[BIT_WORD(BTN_MOUSE)] = BIT_MASK(BTN_LEFT) |
-		BIT_MASK(BTN_RIGHT) | BIT_MASK(BTN_SIDE) | BIT_MASK(BTN_EXTRA);
-	idev->relbit[0] = BIT_MASK(REL_X) | BIT_MASK(REL_Y);
-	for (i = 0; ati_remote_tbl[i].kind != KIND_END; i++)
-		if (ati_remote_tbl[i].kind == KIND_LITERAL ||
-		    ati_remote_tbl[i].kind == KIND_FILTERED)
-			__set_bit(ati_remote_tbl[i].code, idev->keybit);
+	spin_lock_init(&dev->pci_irqmask_lock);
+	spin_lock_init(&dev->slock);
 
-	input_set_drvdata(idev, ati_remote);
+	mutex_init(&dev->lock);
+	mutex_init(&dev->gpio_lock);
 
-	idev->open = ati_remote_input_open;
-	idev->close = ati_remote_input_close;
+	atomic_inc(&dev->refcount);
 
-	idev->name = ati_remote->mouse_name;
-	idev->phys = ati_remote->mouse_phys;
+	dev->nr = cx23885_devcount++;
+	sprintf(dev->name, "cx23885[%d]", dev->nr);
 
-	usb_to_input_id(ati_remote->udev, &idev->id);
-	idev->dev.parent = &ati_remote->interface->dev;
-}
+	/* Configure the internal memory */
+	if (dev->pci->device == 0x8880) {
+		/* Could be 887 or 888, assume an 888 default */
+		dev->bridge = CX23885_BRIDGE_888;
+		/* Apply a sensible clock frequency for the PCIe bridge */
+		dev->clk_freq = 50000000;
+		dev->sram_channels = cx23887_sram_channels;
+	} else
+	if (dev->pci->device == 0x8852) {
+		dev->bridge = CX23885_BRIDGE_885;
+		/* Apply a sensible clock frequency for the PCIe bridge */
+		dev->clk_freq = 28000000;
+		dev->sram_channels = cx23885_sram_channels;
+	} else
+		BUG();
 
-static void ati_remote_rc_init(struct ati_remote *ati_remote)
-{
-	struct rc_dev *rdev = ati_remote->rdev;
+	dprintk(1, "%s() Memory configured for PCIe bridge type %d\n",
+		__func__, dev->bridge);
 
-	rdev->priv = ati_remote;
-	rdev->allowed_protocols = RC_PROTO_BIT_OTHER;
-	rdev->driver_name = "ati_remote";
+	/* board config */
+	dev->board = UNSET;
+	if (card[dev->nr] < cx23885_bcount)
+		dev->board = card[dev->nr];
+	for (i = 0; UNSET == dev->board  &&  i < cx23885_idcount; i++)
+		if (dev->pci->subsystem_vendor == cx23885_subids[i].subvendor &&
+		    dev->pci->subsystem_device == cx23885_subids[i].subdevice)
+			dev->board = cx23885_subids[i].card;
+	if (UNSET == dev->board) {
+		dev->board = CX23885_BOARD_UNKNOWN;
+		cx23885_card_list(dev);
+	}
 
-	rdev->open = ati_remote_rc_open;
-	rdev->close = ati_remote_rc_close;
+	if (dev->pci->device == 0x8852) {
+		/* no DIF on cx23885, so no analog tuner support possible */
+		if (dev->board == CX23885_BOARD_HAUPPAUGE_QUADHD_ATSC)
+			dev->board = CX23885_BOARD_HAUPPAUGE_QUADHD_ATSC_885;
+		else if (dev->board == CX23885_BOARD_HAUPPAUGE_QUADHD_DVB)
+			dev->board = CX23885_BOARD_HAUPPAUGE_QUADHD_DVB_885;
+	}
 
-	rdev->device_name = ati_remote->rc_name;
-	rdev->input_phys = ati_remote->rc_phys;
+	/* If the user specific a clk freq override, apply it */
+	if (cx23885_boards[dev->board].clk_freq > 0)
+		dev->clk_freq = cx23885_boards[dev->board].clk_freq;
 
-	usb_to_input_id(ati_remote->udev, &rdev->input_id);
-	rdev->dev.parent = &ati_remote->interface->dev;
-}
+	if (dev->board == CX23885_BOARD_HAUPPAUGE_IMPACTVCBE &&
+		dev->pci->subsystem_device == 0x7137) {
+		/* Hauppauge ImpactVCBe device ID 0x7137 is populated
+		 * with an 888, and a 25Mhz crystal, instead of the
+		 * usual third overtone 50Mhz. The default clock rate must
+		 * be overridden so the cx25840 is properly configured
+		 */
+		dev->clk_freq = 25000000;
+	}
 
-static int ati_remote_initialize(struct ati_remote *ati_remote)
-{
-	struct usb_device *udev = ati_remote->udev;
-	int pipe, maxp;
+	dev->pci_bus  = dev->pci->bus->number;
+	dev->pci_slot = PCI_SLOT(dev->pci->devfn);
+	cx23885_irq_add(dev, 0x001f00);
 
-	init_waitqueue_head(&ati_remote->wait);
+	/* External Master 1 Bus */
+	dev->i2c_bus[0].nr = 0;
+	dev->i2c_bus[0].dev = dev;
+	dev->i2c_bus[0].reg_stat  = I2C1_STAT;
+	dev->i2c_bus[0].reg_ctrl  = I2C1_CTRL;
+	dev->i2c_bus[0].reg_addr  = I2C1_ADDR;
+	dev->i2c_bus[0].reg_rdata = I2C1_RDATA;
+	dev->i2c_bus[0].reg_wdata = I2C1_WDATA;
+	dev->i2c_bus[0].i2c_period = (0x9d << 24); /* 100kHz */
 
-	/* Set up irq_urb */
-	pipe = usb_rcvintpipe(udev, ati_remote->endpoint_in->bEndpointAddress);
-	maxp = usb_maxpacket(udev, pipe, usb_pipeout(pipe));
-	maxp = (maxp > DATA_BUFSIZE) ? DATA_BUFSIZE : maxp;
+	/* External Master 2 Bus */
+	dev->i2c_bus[1].nr = 1;
+	dev->i2c_bus[1].dev = dev;
+	dev->i2c_bus[1].reg_stat  = I2C2_STAT;
+	dev->i2c_bus[1].reg_ctrl  = I2C2_CTRL;
+	dev->i2c_bus[1].reg_addr  = I2C2_ADDR;
+	dev->i2c_bus[1].reg_rdata = I2C2_RDATA;
+	dev->i2c_bus[1].reg_wdata = I2C2_WDATA;
+	dev->i2c_bus[1].i2c_period = (0x9d << 24); /* 100kHz */
 
-	usb_fill_int_urb(ati_remote->irq_urb, udev, pipe, ati_remote->inbuf,
-			 maxp, ati_remote_irq_in, ati_remote,
-			 ati_remote->endpoint_in->bInterval);
-	ati_remote->irq_urb->transfer_dma = ati_remote->inbuf_dma;
-	ati_remote->irq_urb->transfer_flags |= URB_NO_TRANSFER_DMA_MAP;
+	/* Internal Master 3 Bus */
+	dev->i2c_bus[2].nr = 2;
+	dev->i2c_bus[2].dev = dev;
+	dev->i2c_bus[2].reg_stat  = I2C3_STAT;
+	dev->i2c_bus[2].reg_ctrl  = I2C3_CTRL;
+	dev->i2c_bus[2].reg_addr  = I2C3_ADDR;
+	dev->i2c_bus[2].reg_rdata = I2C3_RDATA;
+	dev->i2c_bus[2].reg_wdata = I2C3_WDATA;
+	dev->i2c_bus[2].i2c_period = (0x07 << 24); /* 1.95MHz */
 
-	/* Set up out_urb */
-	pipe = usb_sndintpipe(udev, ati_remote->endpoint_out->bEndpointAddress);
-	maxp = usb_maxpacket(udev, pipe, usb_pipeout(pipe));
-	maxp = (maxp > DATA_BUFSIZE) ? DATA_BUFSIZE : maxp;
+	if ((cx23885_boards[dev->board].portb == CX23885_MPEG_DVB) ||
+		(cx23885_boards[dev->board].portb == CX23885_MPEG_ENCODER))
+		cx23885_init_tsport(dev, &dev->ts1, 1);
 
-	usb_fill_int_urb(ati_remote->out_urb, udev, pipe, ati_remote->outbuf,
-			 maxp, ati_remote_irq_out, ati_remote,
-			 ati_remote->endpoint_out->bInterval);
-	ati_remote->out_urb->transfer_dma = ati_remote->outbuf_dma;
-	ati_remote->out_urb->transfer_flags |= URB_NO_TRANSFER_DMA_MAP;
+	if ((cx23885_boards[dev->board].portc == CX23885_MPEG_DVB) ||
+		(cx23885_boards[dev->board].portc == CX23885_MPEG_ENCODER))
+		cx23885_init_tsport(dev, &dev->ts2, 2);
 
-	/* send initialization strings */
-	if ((ati_remote_sendpacket(ati_remote, 0x8004, init1)) ||
-	    (ati_remote_sendpacket(ati_remote, 0x8007, init2))) {
-		dev_err(&ati_remote->interface->dev,
-			 "Initializing ati_remote hardware failed.\n");
-		return -EIO;
+	if (get_resources(dev) < 0) {
+		pr_err("CORE %s No more PCIe resources for subsystem: %04x:%04x\n",
+		       dev->name, dev->pci->subsystem_vendor,
+		       dev->pci->subsystem_device);
+
+		cx23885_devcount--;
+		return -ENODEV;
+	}
+
+	/* PCIe stuff */
+	dev->lmmio = ioremap(pci_resource_start(dev->pci, 0),
+			     pci_resource_len(dev->pci, 0));
+
+	dev->bmmio = (u8 __iomem *)dev->lmmio;
+
+	pr_info("CORE %s: subsystem: %04x:%04x, board: %s [card=%d,%s]\n",
+		dev->name, dev->pci->subsystem_vendor,
+		dev->pci->subsystem_device, cx23885_boards[dev->board].name,
+		dev->board, card[dev->nr] == dev->board ?
+		"insmod option" : "autodetected");
+
+	cx23885_pci_quirks(dev);
+
+	/* Assume some sensible defaults */
+	dev->tuner_type = cx23885_boards[dev->board].tuner_type;
+	dev->tuner_addr = cx23885_boards[dev->board].tuner_addr;
+	dev->tuner_bus = cx23885_boards[dev->board].tuner_bus;
+	dev->radio_type = cx23885_boards[dev->board].radio_type;
+	dev->radio_addr = cx23885_boards[dev->board].radio_addr;
+
+	dprintk(1, "%s() tuner_type = 0x%x tuner_addr = 0x%x tuner_bus = %d\n",
+		__func__, dev->tuner_type, dev->tuner_addr, dev->tuner_bus);
+	dprintk(1, "%s() radio_type = 0x%x radio_addr = 0x%x\n",
+		__func__, dev->radio_type, dev->radio_addr);
+
+	/* The cx23417 encoder has GPIO's that need to be initialised
+	 * before DVB, so that demodulators and tuners are out of
+	 * reset before DVB uses them.
+	 */
+	if ((cx23885_boards[dev->board].portb == CX23885_MPEG_ENCODER) ||
+		(cx23885_boards[dev->board].portc == CX23885_MPEG_ENCODER))
+			cx23885_mc417_init(dev);
+
+	/* init hardware */
+	cx23885_reset(dev);
+
+	cx23885_i2c_register(&dev->i2c_bus[0]);
+	cx23885_i2c_register(&dev->i2c_bus[1]);
+	cx23885_i2c_register(&dev->i2c_bus[2]);
+	cx23885_card_setup(dev);
+	call_all(dev, tuner, standby);
+	cx23885_ir_init(dev);
+
+	if (dev->board == CX23885_BOARD_VIEWCAST_460E) {
+		/*
+		 * GPIOs 9/8 are input detection bits for the breakout video
+		 * (gpio 8) and audio (gpio 9) cables. When they're attached,
+		 * this gpios are pulled high. Make sure these GPIOs are marked
+		 * as inputs.
+		 */
+		cx23885_gpio_enable(dev, 0x300, 0);
+	}
+
+	if (cx23885_boards[dev->board].porta == CX23885_ANALOG_VIDEO) {
+		if (cx23885_video_register(dev) < 0) {
+			pr_err("%s() Failed to register analog video adapters on VID_A\n",
+			       __func__);
+		}
+	}
+
+	if (cx23885_boards[dev->board].portb == CX23885_MPEG_DVB) {
+		if (cx23885_boards[dev->board].num_fds_portb)
+			dev->ts1.num_frontends =
+				cx23885_boards[dev->board].num_fds_portb;
+		if (cx23885_dvb_register(&dev->ts1) < 0) {
+			pr_err("%s() Failed to register dvb adapters on VID_B\n",
+			       __func__);
+		}
+	} else
+	if (cx23885_boards[dev->board].portb == CX23885_MPEG_ENCODER) {
+		if (cx23885_417_register(dev) < 0) {
+			pr_err("%s() Failed to register 417 on VID_B\n",
+			       __func__);
+		}
+	}
+
+	if (cx23885_boards[dev->board].portc == CX23885_MPEG_DVB) {
+		if (cx23885_boards[dev->board].num_fds_portc)
+			dev->ts2.num_frontends =
+				cx23885_boards[dev->board].num_fds_portc;
+		if (cx23885_dvb_register(&dev->ts2) < 0) {
+			pr_err("%s() Failed to register dvb on VID_C\n",
+			       __func__);
+		}
+	} else
+	if (cx23885_boards[dev->board].portc == CX23885_MPEG_ENCODER) {
+		if (cx23885_417_register(dev) < 0) {
+			pr_err("%s() Failed to register 417 on VID_C\n",
+			       __func__);
+		}
+	}
+
+	cx23885_dev_checkrevision(dev);
+
+	/* disable MSI for NetUP cards, otherwise CI is not working */
+	if (cx23885_boards[dev->board].ci_type > 0)
+		cx_clear(RDR_RDRCTL1, 1 << 8);
+
+	switch (dev->board) {
+	case CX23885_BOARD_TEVII_S470:
+	case CX23885_BOARD_TEVII_S471:
+		cx_clear(RDR_RDRCTL1, 1 << 8);
+		break;
 	}
 
 	return 0;
 }
 
-/*
- * ati_remote_probe
- */
-static int ati_remote_probe(struct usb_interface *interface,
-	const struct usb_device_id *id)
+static void cx23885_dev_unregister(struct cx23885_dev *dev)
 {
-	struct usb_device *udev = interface_to_usbdev(interface);
-	struct usb_host_interface *iface_host = interface->cur_altsetting;
-	struct usb_endpoint_descriptor *endpoint_in, *endpoint_out;
-	struct ati_receiver_type *type = (struct ati_receiver_type *)id->driver_info;
-	struct ati_remote *ati_remote;
-	struct input_dev *input_dev;
-	struct rc_dev *rc_dev;
-	int err = -ENOMEM;
+	release_mem_region(pci_resource_start(dev->pci, 0),
+			   pci_resource_len(dev->pci, 0));
 
-	if (iface_host->desc.bNumEndpoints != 2) {
-		err("%s: Unexpected desc.bNumEndpoints\n", __func__);
-		return -ENODEV;
+	if (!atomic_dec_and_test(&dev->refcount))
+		return;
+
+	if (cx23885_boards[dev->board].porta == CX23885_ANALOG_VIDEO)
+		cx23885_video_unregister(dev);
+
+	if (cx23885_boards[dev->board].portb == CX23885_MPEG_DVB)
+		cx23885_dvb_unregister(&dev->ts1);
+
+	if (cx23885_boards[dev->board].portb == CX23885_MPEG_ENCODER)
+		cx23885_417_unregister(dev);
+
+	if (cx23885_boards[dev->board].portc == CX23885_MPEG_DVB)
+		cx23885_dvb_unregister(&dev->ts2);
+
+	if (cx23885_boards[dev->board].portc == CX23885_MPEG_ENCODER)
+		cx23885_417_unregister(dev);
+
+	cx23885_i2c_unregister(&dev->i2c_bus[2]);
+	cx23885_i2c_unregister(&dev->i2c_bus[1]);
+	cx23885_i2c_unregister(&dev->i2c_bus[0]);
+
+	iounmap(dev->lmmio);
+}
+
+static __le32 *cx23885_risc_field(__le32 *rp, struct scatterlist *sglist,
+			       unsigned int offset, u32 sync_line,
+			       unsigned int bpl, unsigned int padding,
+			       unsigned int lines,  unsigned int lpi, bool jump)
+{
+	struct scatterlist *sg;
+	unsigned int line, todo, sol;
+
+
+	if (jump) {
+		*(rp++) = cpu_to_le32(RISC_JUMP);
+		*(rp++) = cpu_to_le32(0);
+		*(rp++) = cpu_to_le32(0); /* bits 63-32 */
 	}
 
-	endpoint_in = &iface_host->endpoint[0].desc;
-	endpoint_out = &iface_host->endpoint[1].desc;
+	/* sync instruction */
+	if (sync_line != NO_SYNC_LINE)
+		*(rp++) = cpu_to_le32(RISC_RESYNC | sync_line);
 
-	if (!usb_endpoint_is_int_in(endpoint_in)) {
-		err("%s: Unexpected endpoint_in\n", __func__);
-		return -ENODEV;
-	}
-	if (le16_to_cpu(endpoint_in->wMaxPacketSize) == 0) {
-		err("%s: endpoint_in message size==0? \n", __func__);
-		return -ENODEV;
-	}
-	if (!usb_endpoint_is_int_out(endpoint_out)) {
-		err("%s: Unexpected endpoint_out\n", __func__);
-		return -ENODEV;
-	}
-
-	ati_remote = kzalloc(sizeof (struct ati_remote), GFP_KERNEL);
-	rc_dev = rc_allocate_device(RC_DRIVER_SCANCODE);
-	if (!ati_remote || !rc_dev)
-		goto exit_free_dev_rdev;
-
-	/* Allocate URB buffers, URBs */
-	if (ati_remote_alloc_buffers(udev, ati_remote))
-		goto exit_free_buffers;
-
-	ati_remote->endpoint_in = endpoint_in;
-	ati_remote->endpoint_out = endpoint_out;
-	ati_remote->udev = udev;
-	ati_remote->rdev = rc_dev;
-	ati_remote->interface = interface;
-
-	usb_make_path(udev, ati_remote->rc_phys, sizeof(ati_remote->rc_phys));
-	strscpy(ati_remote->mouse_phys, ati_remote->rc_phys,
-		sizeof(ati_remote->mouse_phys));
-
-	strlcat(ati_remote->rc_phys, "/input0", sizeof(ati_remote->rc_phys));
-	strlcat(ati_remote->mouse_phys, "/input1", sizeof(ati_remote->mouse_phys));
-
-	snprintf(ati_remote->rc_name, sizeof(ati_remote->rc_name), "%s%s%s",
-		udev->manufacturer ?: "",
-		udev->manufacturer && udev->product ? " " : "",
-		udev->product ?: "");
-
-	if (!strlen(ati_remote->rc_name))
-		snprintf(ati_remote->rc_name, sizeof(ati_remote->rc_name),
-			DRIVER_DESC "(%04x,%04x)",
-			le16_to_cpu(ati_remote->udev->descriptor.idVendor),
-			le16_to_cpu(ati_remote->udev->descriptor.idProduct));
-
-	snprintf(ati_remote->mouse_name, sizeof(ati_remote->mouse_name),
-		 "%s mouse", ati_remote->rc_name);
-
-	rc_dev->map_name = RC_MAP_ATI_X10; /* default map */
-
-	/* set default keymap according to receiver model */
-	if (type) {
-		if (type->default_keymap)
-			rc_dev->map_name = type->default_keymap;
-		else if (type->get_default_keymap)
-			rc_dev->map_name = type->get_default_keymap(interface);
-	}
-
-	ati_remote_rc_init(ati_remote);
-	mutex_init(&ati_remote->open_mutex);
-
-	/* Device Hardware Initialization - fills in ati_remote->idev from udev. */
-	err = ati_remote_initialize(ati_remote);
-	if (err)
-		goto exit_kill_urbs;
-
-	/* Set up and register rc device */
-	err = rc_register_device(ati_remote->rdev);
-	if (err)
-		goto exit_kill_urbs;
-
-	/* Set up and register mouse input device */
-	if (mouse) {
-		input_dev = input_allocate_device();
-		if (!input_dev) {
-			err = -ENOMEM;
-			goto exit_unregister_device;
+	/* scan lines */
+	sg = sglist;
+	for (line = 0; line < lines; line++) {
+		while (offset && offset >= sg_dma_len(sg)) {
+			offset -= sg_dma_len(sg);
+			sg = sg_next(sg);
 		}
 
-		ati_remote->idev = input_dev;
-		ati_remote_input_init(ati_remote);
-		err = input_register_device(input_dev);
+		if (lpi && line > 0 && !(line % lpi))
+			sol = RISC_SOL | RISC_IRQ1 | RISC_CNT_INC;
+		else
+			sol = RISC_SOL;
 
-		if (err)
-			goto exit_free_input_device;
+		if (bpl <= sg_dma_len(sg)-offset) {
+			/* fits into current chunk */
+			*(rp++) = cpu_to_le32(RISC_WRITE|sol|RISC_EOL|bpl);
+			*(rp++) = cpu_to_le32(sg_dma_address(sg)+offset);
+			*(rp++) = cpu_to_le32(0); /* bits 63-32 */
+			offset += bpl;
+		} else {
+			/* scanline needs to be split */
+			todo = bpl;
+			*(rp++) = cpu_to_le32(RISC_WRITE|sol|
+					    (sg_dma_len(sg)-offset));
+			*(rp++) = cpu_to_le32(sg_dma_address(sg)+offset);
+			*(rp++) = cpu_to_le32(0); /* bits 63-32 */
+			todo -= (sg_dma_len(sg)-offset);
+			offset = 0;
+			sg = sg_next(sg);
+			while (todo > sg_dma_len(sg)) {
+				*(rp++) = cpu_to_le32(RISC_WRITE|
+						    sg_dma_len(sg));
+				*(rp++) = cpu_to_le32(sg_dma_address(sg));
+				*(rp++) = cpu_to_le32(0); /* bits 63-32 */
+				todo -= sg_dma_len(sg);
+				sg = sg_next(sg);
+			}
+			*(rp++) = cpu_to_le32(RISC_WRITE|RISC_EOL|todo);
+			*(rp++) = cpu_to_le32(sg_dma_address(sg));
+			*(rp++) = cpu_to_le32(0); /* bits 63-32 */
+			offset += todo;
+		}
+		offset += padding;
 	}
 
-	usb_set_intfdata(interface, ati_remote);
-	return 0;
-
- exit_free_input_device:
-	input_free_device(input_dev);
- exit_unregister_device:
-	rc_unregister_device(rc_dev);
-	rc_dev = NULL;
- exit_kill_urbs:
-	usb_kill_urb(ati_remote->irq_urb);
-	usb_kill_urb(ati_remote->out_urb);
- exit_free_buffers:
-	ati_remote_free_buffers(ati_remote);
- exit_free_dev_rdev:
-	 rc_free_device(rc_dev);
-	kfree(ati_remote);
-	return err;
+	return rp;
 }
 
-/*
- * ati_remote_disconnect
- */
-static void ati_remote_disconnect(struct usb_interface *interface)
+int cx23885_risc_buffer(struct pci_dev *pci, struct cx23885_riscmem *risc,
+			struct scatterlist *sglist, unsigned int top_offset,
+			unsigned int bottom_offset, unsigned int bpl,
+			unsigned int padding, unsigned int lines)
 {
-	struct ati_remote *ati_remote;
+	u32 instructions, fields;
+	__le32 *rp;
 
-	ati_remote = usb_get_intfdata(interface);
-	usb_set_intfdata(interface, NULL);
-	if (!ati_remote) {
-		dev_warn(&interface->dev, "%s - null device?\n", __func__);
-		return;
-	}
+	fields = 0;
+	if (UNSET != top_offset)
+		fields++;
+	if (UNSET != bottom_offset)
+		fields++;
 
-	usb_kill_urb(ati_remote->irq_urb);
-	usb_kill_urb(ati_remote->out_urb);
-	if (ati_remote->idev)
-		input_unregister_device(ati_remote->idev);
-	rc_unregister_device(ati_remote->rdev);
-	ati_remote_free_buffers(ati_remote);
-	kfree(ati_remote);
-}
-
-/* usb specific object to register with the usb subsystem */
-static struct usb_driver ati_remote_driver = {
-	.name         = "ati_remote",
-	.probe        = ati_remote_probe,
-	.disconnect   = ati_remote_disconnect,
-	.id_table     = ati_remote_table,
-};
-
-module_usb_driver(ati_remote_driver);
-
-MODULE_AUTHOR(DRIVER_AUTHOR);
-MODULE_DESCRIPTION(DRIVER_DESC);
-MODULE_LICENSE("GPL");
+	/* estimate risc mem: worst case is one write per page border +
+	   one write per scan line + syncs + jump (all 2 dwords).  Padding
+	   can cause next bpl to start close to a page border.  First DMA
+	   region may be smaller than PAGE_SIZE */
+	/* write and jump need and

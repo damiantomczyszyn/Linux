@@ -1,2 +1,1 @@
-h/x86/include/asm/pgtable_32_types.h \
-  
+// SPDX-License-Identifier: GPL-2.0-or-la

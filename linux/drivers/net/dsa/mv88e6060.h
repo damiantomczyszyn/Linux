@@ -1,103 +1,119 @@
-nclude/linux/page-flags-layout.h \
-    $(wildcard include/config/KASAN_HW_TAGS) \
-  include/linux/numa.h \
-    $(wildcard include/config/NODES_SHIFT) \
-    $(wildcard include/config/NUMA_KEEP_MEMINFO) \
-    $(wildcard include/config/HAVE_ARCH_NODE_DEV_GROUP) \
-  arch/x86/include/asm/sparsemem.h \
-  include/generated/bounds.h \
-  include/linux/seqlock.h \
-  include/linux/ww_mutex.h \
-    $(wildcard include/config/DEBUG_RT_MUTEXES) \
-    $(wildcard include/config/DEBUG_WW_MUTEX_SLOWPATH) \
-  include/linux/rtmutex.h \
-  arch/x86/include/asm/mmu.h \
-    $(wildcard include/config/MODIFY_LDT_SYSCALL) \
-  include/linux/kmod.h \
-  include/linux/umh.h \
-  include/linux/gfp.h \
-    $(wildcard include/config/HIGHMEM) \
-    $(wildcard include/config/ZONE_DMA) \
-    $(wildcard include/config/ZONE_DMA32) \
-    $(wildcard include/config/ZONE_DEVICE) \
-    $(wildcard include/config/PM_SLEEP) \
-    $(wildcard include/config/CONTIG_ALLOC) \
-    $(wildcard include/config/CMA) \
-  include/linux/mmdebug.h \
-    $(wildcard include/config/DEBUG_VM) \
-    $(wildcard include/config/DEBUG_VM_PGFLAGS) \
-  include/linux/mmzone.h \
-    $(wildcard include/config/FORCE_MAX_ZONEORDER) \
-    $(wildcard include/config/MEMORY_ISOLATION) \
-    $(wildcard include/config/ZSMALLOC) \
-    $(wildcard include/config/MEMORY_HOTPLUG) \
-    $(wildcard include/config/COMPACTION) \
-    $(wildcard include/config/PAGE_EXTENSION) \
-    $(wildcard include/config/DEFERRED_STRUCT_PAGE_INIT) \
-    $(wildcard include/config/HAVE_MEMORYLESS_NODES) \
-    $(wildcard include/config/SPARSEMEM_EXTREME) \
-    $(wildcard include/config/HAVE_ARCH_PFN_VALID) \
-  include/linux/nodemask.h \
-  include/linux/pageblock-flags.h \
-    $(wildcard include/config/HUGETLB_PAGE_SIZE_VARIABLE) \
-  include/linux/page-flags.h \
-    $(wildcard include/config/ARCH_USES_PG_UNCACHED) \
-    $(wildcard include/config/MEMORY_FAILURE) \
-    $(wildcard include/config/PAGE_IDLE_FLAG) \
-    $(wildcard include/config/HUGETLB_PAGE_FREE_VMEMMAP) \
-    $(wildcard include/config/HUGETLB_PAGE_FREE_VMEMMAP_DEFAULT_ON) \
-    $(wildcard include/config/KSM) \
-  include/linux/local_lock.h \
-  include/linux/local_lock_internal.h \
-  include/linux/memory_hotplug.h \
-    $(wildcard include/config/HAVE_ARCH_NODEDATA_EXTENSION) \
-    $(wildcard include/config/ARCH_HAS_ADD_PAGES) \
-    $(wildcard include/config/MEMORY_HOTREMOVE) \
-  arch/x86/include/asm/mmzone.h \
-  arch/x86/include/asm/mmzone_32.h \
-  include/linux/topology.h \
-    $(wildcard include/config/USE_PERCPU_NUMA_NODE_ID) \
-    $(wildcard include/config/SCHED_SMT) \
-    $(wildcard include/config/SCHED_CLUSTER) \
-  include/linux/arch_topology.h \
-    $(wildcard include/config/ACPI_CPPC_LIB) \
-    $(wildcard include/config/GENERIC_ARCH_TOPOLOGY) \
-  include/linux/percpu.h \
-    $(wildcard include/config/NEED_PER_CPU_EMBED_FIRST_CHUNK) \
-    $(wildcard include/config/NEED_PER_CPU_PAGE_FIRST_CHUNK) \
-  arch/x86/include/asm/topology.h \
-    $(wildcard include/config/SCHED_MC_PRIO) \
-  arch/x86/include/asm/mpspec.h \
-    $(wildcard include/config/EISA) \
-    $(wildcard include/config/X86_MPPARSE) \
-  arch/x86/include/asm/mpspec_def.h \
-  arch/x86/include/asm/x86_init.h \
-  arch/x86/include/asm/apicdef.h \
-  include/asm-generic/topology.h \
-  include/linux/sysctl.h \
-    $(wildcard include/config/SYSCTL) \
-  include/uapi/linux/sysctl.h \
-  include/linux/elf.h \
-    $(wildcard include/config/ARCH_USE_GNU_PROPERTY) \
-    $(wildcard include/config/ARCH_HAVE_ELF_PROT) \
-  arch/x86/include/asm/elf.h \
-    $(wildcard include/config/X86_X32_ABI) \
-  arch/x86/include/asm/user.h \
-  arch/x86/include/asm/user_32.h \
-  arch/x86/include/asm/fsgsbase.h \
-  arch/x86/include/asm/vdso.h \
-  arch/x86/include/asm/desc.h \
-  arch/x86/include/asm/fixmap.h \
-    $(wildcard include/config/DEBUG_KMAP_LOCAL_FORCE_MAP) \
-    $(wildcard include/config/X86_VSYSCALL_EMULATION) \
-    $(wildcard include/config/PROVIDE_OHCI1394_DMA_INIT) \
-    $(wildcard include/config/X86_IO_APIC) \
-    $(wildcard include/config/KMAP_LOCAL) \
-    $(wildcard include/config/PCI_MMCONFIG) \
-    $(wildcard include/config/ACPI_APEI_GHES) \
-    $(wildcard include/config/INTEL_TXT) \
-  arch/x86/include/generated/asm/kmap_size.h \
-  include/asm-generic/kmap_size.h \
-    $(wildcard include/config/DEBUG_KMAP_LOCAL) \
-  include/asm-generic/fixmap.h \
-  arch/x86/include/asm/ir
+/* SPDX-License-Identifier: GPL-2.0-or-later */
+/*
+ * drivers/net/dsa/mv88e6060.h - Marvell 88e6060 switch chip support
+ * Copyright (c) 2015 Neil Armstrong
+ *
+ * Based on mv88e6xxx.h
+ * Copyright (c) 2008 Marvell Semiconductor
+ */
+
+#ifndef __MV88E6060_H
+#define __MV88E6060_H
+
+#define MV88E6060_PORTS	6
+
+#define REG_PORT(p)		(0x8 + (p))
+#define PORT_STATUS		0x00
+#define PORT_STATUS_PAUSE_EN	BIT(15)
+#define PORT_STATUS_MY_PAUSE	BIT(14)
+#define PORT_STATUS_FC		(PORT_STATUS_MY_PAUSE | PORT_STATUS_PAUSE_EN)
+#define PORT_STATUS_RESOLVED	BIT(13)
+#define PORT_STATUS_LINK	BIT(12)
+#define PORT_STATUS_PORTMODE	BIT(11)
+#define PORT_STATUS_PHYMODE	BIT(10)
+#define PORT_STATUS_DUPLEX	BIT(9)
+#define PORT_STATUS_SPEED	BIT(8)
+#define PORT_SWITCH_ID		0x03
+#define PORT_SWITCH_ID_6060	0x0600
+#define PORT_SWITCH_ID_6060_MASK	0xfff0
+#define PORT_SWITCH_ID_6060_R1	0x0601
+#define PORT_SWITCH_ID_6060_R2	0x0602
+#define PORT_CONTROL		0x04
+#define PORT_CONTROL_FORCE_FLOW_CTRL	BIT(15)
+#define PORT_CONTROL_TRAILER	BIT(14)
+#define PORT_CONTROL_HEADER	BIT(11)
+#define PORT_CONTROL_INGRESS_MODE	BIT(8)
+#define PORT_CONTROL_VLAN_TUNNEL	BIT(7)
+#define PORT_CONTROL_STATE_MASK	0x03
+#define PORT_CONTROL_STATE_DISABLED	0x00
+#define PORT_CONTROL_STATE_BLOCKING	0x01
+#define PORT_CONTROL_STATE_LEARNING	0x02
+#define PORT_CONTROL_STATE_FORWARDING	0x03
+#define PORT_VLAN_MAP		0x06
+#define PORT_VLAN_MAP_DBNUM_SHIFT	12
+#define PORT_VLAN_MAP_TABLE_MASK	0x1f
+#define PORT_ASSOC_VECTOR	0x0b
+#define PORT_ASSOC_VECTOR_MONITOR	BIT(15)
+#define PORT_ASSOC_VECTOR_PAV_MASK	0x1f
+#define PORT_RX_CNTR		0x10
+#define PORT_TX_CNTR		0x11
+
+#define REG_GLOBAL		0x0f
+#define GLOBAL_STATUS		0x00
+#define GLOBAL_STATUS_SW_MODE_MASK	(0x3 << 12)
+#define GLOBAL_STATUS_SW_MODE_0	(0x0 << 12)
+#define GLOBAL_STATUS_SW_MODE_1	(0x1 << 12)
+#define GLOBAL_STATUS_SW_MODE_2	(0x2 << 12)
+#define GLOBAL_STATUS_SW_MODE_3	(0x3 << 12)
+#define GLOBAL_STATUS_INIT_READY	BIT(11)
+#define GLOBAL_STATUS_ATU_FULL		BIT(3)
+#define GLOBAL_STATUS_ATU_DONE		BIT(2)
+#define GLOBAL_STATUS_PHY_INT	BIT(1)
+#define GLOBAL_STATUS_EEINT	BIT(0)
+#define GLOBAL_MAC_01		0x01
+#define GLOBAL_MAC_01_DIFF_ADDR	BIT(8)
+#define GLOBAL_MAC_23		0x02
+#define GLOBAL_MAC_45		0x03
+#define GLOBAL_CONTROL		0x04
+#define GLOBAL_CONTROL_DISCARD_EXCESS	BIT(13)
+#define GLOBAL_CONTROL_MAX_FRAME_1536	BIT(10)
+#define GLOBAL_CONTROL_RELOAD_EEPROM	BIT(9)
+#define GLOBAL_CONTROL_CTRMODE		BIT(8)
+#define GLOBAL_CONTROL_ATU_FULL_EN	BIT(3)
+#define GLOBAL_CONTROL_ATU_DONE_EN	BIT(2)
+#define GLOBAL_CONTROL_PHYINT_EN	BIT(1)
+#define GLOBAL_CONTROL_EEPROM_DONE_EN	BIT(0)
+#define GLOBAL_ATU_CONTROL	0x0a
+#define GLOBAL_ATU_CONTROL_SWRESET	BIT(15)
+#define GLOBAL_ATU_CONTROL_LEARNDIS	BIT(14)
+#define GLOBAL_ATU_CONTROL_ATUSIZE_256	(0x0 << 12)
+#define GLOBAL_ATU_CONTROL_ATUSIZE_512	(0x1 << 12)
+#define GLOBAL_ATU_CONTROL_ATUSIZE_1024	(0x2 << 12)
+#define GLOBAL_ATU_CONTROL_ATE_AGE_SHIFT	4
+#define GLOBAL_ATU_CONTROL_ATE_AGE_MASK	(0xff << 4)
+#define GLOBAL_ATU_CONTROL_ATE_AGE_5MIN	(0x13 << 4)
+#define GLOBAL_ATU_OP		0x0b
+#define GLOBAL_ATU_OP_BUSY	BIT(15)
+#define GLOBAL_ATU_OP_NOP		(0 << 12)
+#define GLOBAL_ATU_OP_FLUSH_ALL	((1 << 12) | GLOBAL_ATU_OP_BUSY)
+#define GLOBAL_ATU_OP_FLUSH_UNLOCKED	((2 << 12) | GLOBAL_ATU_OP_BUSY)
+#define GLOBAL_ATU_OP_LOAD_DB		((3 << 12) | GLOBAL_ATU_OP_BUSY)
+#define GLOBAL_ATU_OP_GET_NEXT_DB	((4 << 12) | GLOBAL_ATU_OP_BUSY)
+#define GLOBAL_ATU_OP_FLUSH_DB		((5 << 12) | GLOBAL_ATU_OP_BUSY)
+#define GLOBAL_ATU_OP_FLUSH_UNLOCKED_DB ((6 << 12) | GLOBAL_ATU_OP_BUSY)
+#define GLOBAL_ATU_DATA		0x0c
+#define GLOBAL_ATU_DATA_PORT_VECTOR_MASK	0x3f0
+#define GLOBAL_ATU_DATA_PORT_VECTOR_SHIFT	4
+#define GLOBAL_ATU_DATA_STATE_MASK		0x0f
+#define GLOBAL_ATU_DATA_STATE_UNUSED		0x00
+#define GLOBAL_ATU_DATA_STATE_UC_STATIC		0x0e
+#define GLOBAL_ATU_DATA_STATE_UC_LOCKED		0x0f
+#define GLOBAL_ATU_DATA_STATE_MC_STATIC		0x07
+#define GLOBAL_ATU_DATA_STATE_MC_LOCKED		0x0e
+#define GLOBAL_ATU_MAC_01	0x0d
+#define GLOBAL_ATU_MAC_23	0x0e
+#define GLOBAL_ATU_MAC_45	0x0f
+
+struct mv88e6060_priv {
+	/* MDIO bus and address on bus to use. When in single chip
+	 * mode, address is 0, and the switch uses multiple addresses
+	 * on the bus.  When in multi-chip mode, the switch uses a
+	 * single address which contains two registers used for
+	 * indirect access to more registers.
+	 */
+	struct mii_bus *bus;
+	int sw_addr;
+	struct dsa_switch *ds;
+};
+
+#endif

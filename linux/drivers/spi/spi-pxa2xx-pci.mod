@@ -1,2 +1,1 @@
-ig/SPI_SLAVE) \
-  include/linu
+/* SPDX-License-Identifier: GP

@@ -1,183 +1,335 @@
-fig/GENERIC_ATOMIC64) \
-  include/linux/atomic/atomic-long.h \
-  include/linux/atomic/atomic-instrumented.h \
-  include/linux/bug.h \
-    $(wildcard include/config/BUG_ON_DATA_CORRUPTION) \
-  arch/x86/include/asm/bug.h \
-    $(wildcard include/config/DEBUG_BUGVERBOSE) \
-  include/linux/instrumentation.h \
-    $(wildcard include/config/DEBUG_ENTRY) \
-  include/asm-generic/bug.h \
-    $(wildcard include/config/BUG) \
-    $(wildcard include/config/GENERIC_BUG_RELATIVE_POINTERS) \
-  arch/x86/include/uapi/asm/msr.h \
-  include/linux/tracepoint-defs.h \
-  arch/x86/include/asm/special_insns.h \
-  include/linux/irqflags.h \
-    $(wildcard include/config/TRACE_IRQFLAGS) \
-    $(wildcard include/config/PREEMPT_RT) \
-    $(wildcard include/config/IRQSOFF_TRACER) \
-    $(wildcard include/config/PREEMPT_TRACER) \
-    $(wildcard include/config/DEBUG_IRQFLAGS) \
-    $(wildcard include/config/TRACE_IRQFLAGS_SUPPORT) \
-  arch/x86/include/asm/irqflags.h \
-  arch/x86/include/asm/fpu/types.h \
-  arch/x86/include/asm/vmxfeatures.h \
-  arch/x86/include/asm/vdso/processor.h \
-  include/linux/personality.h \
-  include/uapi/linux/personality.h \
-  arch/x86/include/asm/tsc.h \
-  arch/x86/include/asm/cpufeature.h \
-    $(wildcard include/config/X86_FEATURE_NAMES) \
-  include/vdso/time32.h \
-  include/vdso/time.h \
-  include/linux/uidgid.h \
-    $(wildcard include/config/MULTIUSER) \
-    $(wildcard include/config/USER_NS) \
-  include/linux/highuid.h \
-  include/linux/buildid.h \
-    $(wildcard include/config/CRASH_CORE) \
-  include/linux/mm_types.h \
-    $(wildcard include/config/HAVE_ALIGNED_STRUCT_PAGE) \
-    $(wildcard include/config/MEMCG) \
-    $(wildcard include/config/USERFAULTFD) \
-    $(wildcard include/config/SWAP) \
-    $(wildcard include/config/NUMA) \
-    $(wildcard include/config/HAVE_ARCH_COMPAT_MMAP_BASES) \
-    $(wildcard include/config/MEMBARRIER) \
-    $(wildcard include/config/AIO) \
-    $(wildcard include/config/MMU_NOTIFIER) \
-    $(wildcard include/config/TRANSPARENT_HUGEPAGE) \
-    $(wildcard include/config/NUMA_BALANCING) \
-    $(wildcard include/config/ARCH_WANT_BATCHED_UNMAP_TLB_FLUSH) \
-    $(wildcard include/config/HUGETLB_PAGE) \
-    $(wildcard include/config/IOMMU_SVA) \
-  include/linux/mm_types_task.h \
-    $(wildcard include/config/SPLIT_PTLOCK_CPUS) \
-    $(wildcard include/config/ARCH_ENABLE_SPLIT_PMD_PTLOCK) \
-  arch/x86/include/asm/tlbbatch.h \
-  include/linux/auxvec.h \
-  include/uapi/linux/auxvec.h \
-  arch/x86/include/uapi/asm/auxvec.h \
-  include/linux/kref.h \
-  include/linux/spinlock.h \
-    $(wildcard include/config/PREEMPTION) \
-  include/linux/preempt.h \
-    $(wildcard include/config/PREEMPT_COUNT) \
-    $(wildcard include/config/TRACE_PREEMPT_TOGGLE) \
-    $(wildcard include/config/PREEMPT_NOTIFIERS) \
-  arch/x86/include/asm/preempt.h \
-  include/linux/thread_info.h \
-    $(wildcard include/config/THREAD_INFO_IN_TASK) \
-    $(wildcard include/config/GENERIC_ENTRY) \
-    $(wildcard include/config/HAVE_ARCH_WITHIN_STACK_FRAMES) \
-    $(wildcard include/config/HARDENED_USERCOPY) \
-  include/linux/restart_block.h \
-  arch/x86/include/asm/thread_info.h \
-    $(wildcard include/config/COMPAT) \
-  include/linux/bottom_half.h \
-  include/linux/lockdep.h \
-    $(wildcard include/config/DEBUG_LOCKING_API_SELFTESTS) \
-  include/linux/smp.h \
-    $(wildcard include/config/UP_LATE_INIT) \
-  include/linux/smp_types.h \
-  include/linux/llist.h \
-    $(wildcard include/config/ARCH_HAVE_NMI_SAFE_CMPXCHG) \
-  arch/x86/include/asm/smp.h \
-    $(wildcard include/config/X86_LOCAL_APIC) \
-    $(wildcard include/config/DEBUG_NMI_SELFTEST) \
-  arch/x86/include/generated/asm/mmiowb.h \
-  include/asm-generic/mmiowb.h \
-    $(wildcard include/config/MMIOWB) \
-  include/linux/spinlock_types.h \
-  include/linux/rwlock_types.h \
-  arch/x86/include/asm/spinlock.h \
-  arch/x86/include/asm/paravirt.h \
-    $(wildcard include/config/PARAVIRT_SPINLOCKS) \
-  arch/x86/include/asm/frame.h \
-  arch/x86/include/asm/qspinlock.h \
-  include/asm-generic/qspinlock.h \
-  arch/x86/include/asm/qrwlock.h \
-  include/asm-generic/qrwlock.h \
-  include/linux/rwlock.h \
-    $(wildcard include/config/PREEMPT) \
-  include/linux/spinlock_api_smp.h \
-    $(wildcard include/config/INLINE_SPIN_LOCK) \
-    $(wildcard include/config/INLINE_SPIN_LOCK_BH) \
-    $(wildcard include/config/INLINE_SPIN_LOCK_IRQ) \
-    $(wildcard include/config/INLINE_SPIN_LOCK_IRQSAVE) \
-    $(wildcard include/config/INLINE_SPIN_TRYLOCK) \
-    $(wildcard include/config/INLINE_SPIN_TRYLOCK_BH) \
-    $(wildcard include/config/UNINLINE_SPIN_UNLOCK) \
-    $(wildcard include/config/INLINE_SPIN_UNLOCK_BH) \
-    $(wildcard include/config/INLINE_SPIN_UNLOCK_IRQ) \
-    $(wildcard include/config/INLINE_SPIN_UNLOCK_IRQRESTORE) \
-    $(wildcard include/config/GENERIC_LOCKBREAK) \
-  include/linux/rwlock_api_smp.h \
-    $(wildcard include/config/INLINE_READ_LOCK) \
-    $(wildcard include/config/INLINE_WRITE_LOCK) \
-    $(wildcard include/config/INLINE_READ_LOCK_BH) \
-    $(wildcard include/config/INLINE_WRITE_LOCK_BH) \
-    $(wildcard include/config/INLINE_READ_LOCK_IRQ) \
-    $(wildcard include/config/INLINE_WRITE_LOCK_IRQ) \
-    $(wildcard include/config/INLINE_READ_LOCK_IRQSAVE) \
-    $(wildcard include/config/INLINE_WRITE_LOCK_IRQSAVE) \
-    $(wildcard include/config/INLINE_READ_TRYLOCK) \
-    $(wildcard include/config/INLINE_WRITE_TRYLOCK) \
-    $(wildcard include/config/INLINE_READ_UNLOCK) \
-    $(wildcard include/config/INLINE_WRITE_UNLOCK) \
-    $(wildcard include/config/INLINE_READ_UNLOCK_BH) \
-    $(wildcard include/config/INLINE_WRITE_UNLOCK_BH) \
-    $(wildcard include/config/INLINE_READ_UNLOCK_IRQ) \
-    $(wildcard include/config/INLINE_WRITE_UNLOCK_IRQ) \
-    $(wildcard include/config/INLINE_READ_UNLOCK_IRQRESTORE) \
-    $(wildcard include/config/INLINE_WRITE_UNLOCK_IRQRESTORE) \
-  include/linux/refcount.h \
-  include/linux/rbtree.h \
-  include/linux/rbtree_types.h \
-  include/linux/rcupdate.h \
-    $(wildcard include/config/PREEMPT_RCU) \
-    $(wildcard include/config/TINY_RCU) \
-    $(wildcard include/config/RCU_STRICT_GRACE_PERIOD) \
-    $(wildcard include/config/TASKS_RCU_GENERIC) \
-    $(wildcard include/config/RCU_STALL_COMMON) \
-    $(wildcard include/config/NO_HZ_FULL) \
-    $(wildcard include/config/RCU_NOCB_CPU) \
-    $(wildcard include/config/TASKS_RCU) \
-    $(wildcard include/config/TASKS_TRACE_RCU) \
-    $(wildcard include/config/TASKS_RUDE_RCU) \
-    $(wildcard include/config/TREE_RCU) \
-    $(wildcard include/config/DEBUG_OBJECTS_RCU_HEAD) \
-    $(wildcard include/config/PROVE_RCU) \
-    $(wildcard include/config/ARCH_WEAK_RELEASE_ACQUIRE) \
-  include/linux/rcutree.h \
-  include/linux/rwsem.h \
-    $(wildcard include/config/RWSEM_SPIN_ON_OWNER) \
-    $(wildcard include/config/DEBUG_RWSEMS) \
-  include/linux/osq_lock.h \
-  include/linux/completion.h \
-  include/linux/swait.h \
-  include/linux/wait.h \
-  include/uapi/linux/wait.h \
-  include/linux/uprobes.h \
-    $(wildcard include/config/UPROBES) \
-  arch/x86/include/asm/uprobes.h \
-  include/linux/notifier.h \
-  include/linux/mutex.h \
-    $(wildcard include/config/MUTEX_SPIN_ON_OWNER) \
-    $(wildcard include/config/DEBUG_MUTEXES) \
-  include/linux/debug_locks.h \
-  include/linux/srcu.h \
-    $(wildcard include/config/TINY_SRCU) \
-    $(wildcard include/config/SRCU) \
-  include/linux/workqueue.h \
-    $(wildcard include/config/DEBUG_OBJECTS_WORK) \
-    $(wildcard include/config/FREEZER) \
-    $(wildcard include/config/WQ_WATCHDOG) \
-  include/linux/timer.h \
-    $(wildcard include/config/DEBUG_OBJECTS_TIMERS) \
-    $(wildcard include/config/NO_HZ_COMMON) \
-  include/linux/ktime.h \
-  include/linux/jiffies.h \
-  include/vdso/jiffies.h \
-  in
+// SPDX-License-Identifier: GPL-2.0+
+/*
+ * net/dsa/mv88e6060.c - Driver for Marvell 88e6060 switch chips
+ * Copyright (c) 2008-2009 Marvell Semiconductor
+ */
+
+#include <linux/delay.h>
+#include <linux/etherdevice.h>
+#include <linux/jiffies.h>
+#include <linux/list.h>
+#include <linux/module.h>
+#include <linux/netdevice.h>
+#include <linux/phy.h>
+#include <net/dsa.h>
+#include "mv88e6060.h"
+
+static int reg_read(struct mv88e6060_priv *priv, int addr, int reg)
+{
+	return mdiobus_read_nested(priv->bus, priv->sw_addr + addr, reg);
+}
+
+static int reg_write(struct mv88e6060_priv *priv, int addr, int reg, u16 val)
+{
+	return mdiobus_write_nested(priv->bus, priv->sw_addr + addr, reg, val);
+}
+
+static const char *mv88e6060_get_name(struct mii_bus *bus, int sw_addr)
+{
+	int ret;
+
+	ret = mdiobus_read(bus, sw_addr + REG_PORT(0), PORT_SWITCH_ID);
+	if (ret >= 0) {
+		if (ret == PORT_SWITCH_ID_6060)
+			return "Marvell 88E6060 (A0)";
+		if (ret == PORT_SWITCH_ID_6060_R1 ||
+		    ret == PORT_SWITCH_ID_6060_R2)
+			return "Marvell 88E6060 (B0)";
+		if ((ret & PORT_SWITCH_ID_6060_MASK) == PORT_SWITCH_ID_6060)
+			return "Marvell 88E6060";
+	}
+
+	return NULL;
+}
+
+static enum dsa_tag_protocol mv88e6060_get_tag_protocol(struct dsa_switch *ds,
+							int port,
+							enum dsa_tag_protocol m)
+{
+	return DSA_TAG_PROTO_TRAILER;
+}
+
+static int mv88e6060_switch_reset(struct mv88e6060_priv *priv)
+{
+	int i;
+	int ret;
+	unsigned long timeout;
+
+	/* Set all ports to the disabled state. */
+	for (i = 0; i < MV88E6060_PORTS; i++) {
+		ret = reg_read(priv, REG_PORT(i), PORT_CONTROL);
+		if (ret < 0)
+			return ret;
+		ret = reg_write(priv, REG_PORT(i), PORT_CONTROL,
+				ret & ~PORT_CONTROL_STATE_MASK);
+		if (ret)
+			return ret;
+	}
+
+	/* Wait for transmit queues to drain. */
+	usleep_range(2000, 4000);
+
+	/* Reset the switch. */
+	ret = reg_write(priv, REG_GLOBAL, GLOBAL_ATU_CONTROL,
+			GLOBAL_ATU_CONTROL_SWRESET |
+			GLOBAL_ATU_CONTROL_LEARNDIS);
+	if (ret)
+		return ret;
+
+	/* Wait up to one second for reset to complete. */
+	timeout = jiffies + 1 * HZ;
+	while (time_before(jiffies, timeout)) {
+		ret = reg_read(priv, REG_GLOBAL, GLOBAL_STATUS);
+		if (ret < 0)
+			return ret;
+
+		if (ret & GLOBAL_STATUS_INIT_READY)
+			break;
+
+		usleep_range(1000, 2000);
+	}
+	if (time_after(jiffies, timeout))
+		return -ETIMEDOUT;
+
+	return 0;
+}
+
+static int mv88e6060_setup_global(struct mv88e6060_priv *priv)
+{
+	int ret;
+
+	/* Disable discarding of frames with excessive collisions,
+	 * set the maximum frame size to 1536 bytes, and mask all
+	 * interrupt sources.
+	 */
+	ret = reg_write(priv, REG_GLOBAL, GLOBAL_CONTROL,
+			GLOBAL_CONTROL_MAX_FRAME_1536);
+	if (ret)
+		return ret;
+
+	/* Disable automatic address learning.
+	 */
+	return reg_write(priv, REG_GLOBAL, GLOBAL_ATU_CONTROL,
+			 GLOBAL_ATU_CONTROL_LEARNDIS);
+}
+
+static int mv88e6060_setup_port(struct mv88e6060_priv *priv, int p)
+{
+	int addr = REG_PORT(p);
+	int ret;
+
+	/* Do not force flow control, disable Ingress and Egress
+	 * Header tagging, disable VLAN tunneling, and set the port
+	 * state to Forwarding.  Additionally, if this is the CPU
+	 * port, enable Ingress and Egress Trailer tagging mode.
+	 */
+	ret = reg_write(priv, addr, PORT_CONTROL,
+			dsa_is_cpu_port(priv->ds, p) ?
+			PORT_CONTROL_TRAILER |
+			PORT_CONTROL_INGRESS_MODE |
+			PORT_CONTROL_STATE_FORWARDING :
+			PORT_CONTROL_STATE_FORWARDING);
+	if (ret)
+		return ret;
+
+	/* Port based VLAN map: give each port its own address
+	 * database, allow the CPU port to talk to each of the 'real'
+	 * ports, and allow each of the 'real' ports to only talk to
+	 * the CPU port.
+	 */
+	ret = reg_write(priv, addr, PORT_VLAN_MAP,
+			((p & 0xf) << PORT_VLAN_MAP_DBNUM_SHIFT) |
+			(dsa_is_cpu_port(priv->ds, p) ?
+			 dsa_user_ports(priv->ds) :
+			 BIT(dsa_to_port(priv->ds, p)->cpu_dp->index)));
+	if (ret)
+		return ret;
+
+	/* Port Association Vector: when learning source addresses
+	 * of packets, add the address to the address database using
+	 * a port bitmap that has only the bit for this port set and
+	 * the other bits clear.
+	 */
+	return reg_write(priv, addr, PORT_ASSOC_VECTOR, BIT(p));
+}
+
+static int mv88e6060_setup_addr(struct mv88e6060_priv *priv)
+{
+	u8 addr[ETH_ALEN];
+	int ret;
+	u16 val;
+
+	eth_random_addr(addr);
+
+	val = addr[0] << 8 | addr[1];
+
+	/* The multicast bit is always transmitted as a zero, so the switch uses
+	 * bit 8 for "DiffAddr", where 0 means all ports transmit the same SA.
+	 */
+	val &= 0xfeff;
+
+	ret = reg_write(priv, REG_GLOBAL, GLOBAL_MAC_01, val);
+	if (ret)
+		return ret;
+
+	ret = reg_write(priv, REG_GLOBAL, GLOBAL_MAC_23,
+			(addr[2] << 8) | addr[3]);
+	if (ret)
+		return ret;
+
+	return reg_write(priv, REG_GLOBAL, GLOBAL_MAC_45,
+			 (addr[4] << 8) | addr[5]);
+}
+
+static int mv88e6060_setup(struct dsa_switch *ds)
+{
+	struct mv88e6060_priv *priv = ds->priv;
+	int ret;
+	int i;
+
+	priv->ds = ds;
+
+	ret = mv88e6060_switch_reset(priv);
+	if (ret < 0)
+		return ret;
+
+	/* @@@ initialise atu */
+
+	ret = mv88e6060_setup_global(priv);
+	if (ret < 0)
+		return ret;
+
+	ret = mv88e6060_setup_addr(priv);
+	if (ret < 0)
+		return ret;
+
+	for (i = 0; i < MV88E6060_PORTS; i++) {
+		ret = mv88e6060_setup_port(priv, i);
+		if (ret < 0)
+			return ret;
+	}
+
+	return 0;
+}
+
+static int mv88e6060_port_to_phy_addr(int port)
+{
+	if (port >= 0 && port < MV88E6060_PORTS)
+		return port;
+	return -1;
+}
+
+static int mv88e6060_phy_read(struct dsa_switch *ds, int port, int regnum)
+{
+	struct mv88e6060_priv *priv = ds->priv;
+	int addr;
+
+	addr = mv88e6060_port_to_phy_addr(port);
+	if (addr == -1)
+		return 0xffff;
+
+	return reg_read(priv, addr, regnum);
+}
+
+static int
+mv88e6060_phy_write(struct dsa_switch *ds, int port, int regnum, u16 val)
+{
+	struct mv88e6060_priv *priv = ds->priv;
+	int addr;
+
+	addr = mv88e6060_port_to_phy_addr(port);
+	if (addr == -1)
+		return 0xffff;
+
+	return reg_write(priv, addr, regnum, val);
+}
+
+static const struct dsa_switch_ops mv88e6060_switch_ops = {
+	.get_tag_protocol = mv88e6060_get_tag_protocol,
+	.setup		= mv88e6060_setup,
+	.phy_read	= mv88e6060_phy_read,
+	.phy_write	= mv88e6060_phy_write,
+};
+
+static int mv88e6060_probe(struct mdio_device *mdiodev)
+{
+	struct device *dev = &mdiodev->dev;
+	struct mv88e6060_priv *priv;
+	struct dsa_switch *ds;
+	const char *name;
+
+	priv = devm_kzalloc(dev, sizeof(*priv), GFP_KERNEL);
+	if (!priv)
+		return -ENOMEM;
+
+	priv->bus = mdiodev->bus;
+	priv->sw_addr = mdiodev->addr;
+
+	name = mv88e6060_get_name(priv->bus, priv->sw_addr);
+	if (!name)
+		return -ENODEV;
+
+	dev_info(dev, "switch %s detected\n", name);
+
+	ds = devm_kzalloc(dev, sizeof(*ds), GFP_KERNEL);
+	if (!ds)
+		return -ENOMEM;
+
+	ds->dev = dev;
+	ds->num_ports = MV88E6060_PORTS;
+	ds->priv = priv;
+	ds->dev = dev;
+	ds->ops = &mv88e6060_switch_ops;
+
+	dev_set_drvdata(dev, ds);
+
+	return dsa_register_switch(ds);
+}
+
+static void mv88e6060_remove(struct mdio_device *mdiodev)
+{
+	struct dsa_switch *ds = dev_get_drvdata(&mdiodev->dev);
+
+	if (!ds)
+		return;
+
+	dsa_unregister_switch(ds);
+
+	dev_set_drvdata(&mdiodev->dev, NULL);
+}
+
+static void mv88e6060_shutdown(struct mdio_device *mdiodev)
+{
+	struct dsa_switch *ds = dev_get_drvdata(&mdiodev->dev);
+
+	if (!ds)
+		return;
+
+	dsa_switch_shutdown(ds);
+
+	dev_set_drvdata(&mdiodev->dev, NULL);
+}
+
+static const struct of_device_id mv88e6060_of_match[] = {
+	{
+		.compatible = "marvell,mv88e6060",
+	},
+	{ /* sentinel */ },
+};
+
+static struct mdio_driver mv88e6060_driver = {
+	.probe	= mv88e6060_probe,
+	.remove = mv88e6060_remove,
+	.shutdown = mv88e6060_shutdown,
+	.mdiodrv.driver = {
+		.name = "mv88e6060",
+		.of_match_table = mv88e6060_of_match,
+	},
+};
+
+mdio_module_driver(mv88e6060_driver);
+
+MODULE_AUTHOR("Lennert Buytenhek <buytenh@wantstofly.org>");
+MODULE_DESCRIPTION("Driver for Marvell 88E6060 ethernet switch chip");
+MODULE_LICENSE("GPL");
+MODULE_ALIAS("platform:mv88e6060");

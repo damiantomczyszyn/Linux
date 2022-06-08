@@ -1,2 +1,2 @@
-ude/config/PARAVIRT_XXL) \
-  arch/x86/include
+   $(wildcard include/config/ACPI_SLEEP) \
+  

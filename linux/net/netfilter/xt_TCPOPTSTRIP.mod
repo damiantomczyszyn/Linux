@@ -1,1 +1,2 @@
-RT_SYMBOL_GPL(debug_check_no_loc
+"Television",
+		[CX23885_VMUX_CA

@@ -1,1 +1,1 @@
-  $(wildcard include/config/ALTERNATE_U
+ct tda10071_platform_data tda10071_pdat

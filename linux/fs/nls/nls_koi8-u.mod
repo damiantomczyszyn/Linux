@@ -1,1 +1,2 @@
-clude/config/RCU_FANO
+		mem &= ~ALT_DATA;
+	

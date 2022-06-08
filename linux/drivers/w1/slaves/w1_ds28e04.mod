@@ -1,2 +1,2 @@
-pes.h \
-  include/asm-generic/pg
+nnel *audio_ch =
+		&dev->sram_ch

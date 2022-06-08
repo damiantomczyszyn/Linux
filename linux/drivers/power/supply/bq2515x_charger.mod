@@ -1,2 +1,2 @@
-lude/config/SHMEM) \
-    $(wildcard incl
+] = {
+		.name		= "Hauppauge WinTV-HVR150

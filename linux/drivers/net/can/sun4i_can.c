@@ -1,635 +1,913 @@
-UMA) \
-    $(wildcard include/config/NUMA_BALANCING) \
-    $(wildcard include/config/RSEQ) \
-    $(wildcard include/config/TASK_DELAY_ACCT) \
-    $(wildcard include/config/FAULT_INJECTION) \
-    $(wildcard include/config/LATENCYTOP) \
-    $(wildcard include/config/KUNIT) \
-    $(wildcard include/config/FUNCTION_GRAPH_TRACER) \
-    $(wildcard include/config/UPROBES) \
-    $(wildcard include/config/BCACHE) \
-    $(wildcard include/config/VMAP_STACK) \
-    $(wildcard include/config/LIVEPATCH) \
-    $(wildcard include/config/SECURITY) \
-    $(wildcard include/config/BPF_SYSCALL) \
-    $(wildcard include/config/GCC_PLUGIN_STACKLEAK) \
-    $(wildcard include/config/X86_MCE) \
-    $(wildcard include/config/KRETPROBES) \
-    $(wildcard include/config/RETHOOK) \
-    $(wildcard include/config/ARCH_HAS_PARANOID_L1D_FLUSH) \
-    $(wildcard include/config/ARCH_TASK_STRUCT_ON_STACK) \
-    $(wildcard include/config/DEBUG_RSEQ) \
-  include/uapi/linux/sched.h \
-  include/linux/pid.h \
-  include/linux/rculist.h \
-    $(wildcard include/config/PROVE_RCU_LIST) \
-  include/linux/refcount.h \
-  include/linux/sem.h \
-  include/uapi/linux/sem.h \
-  include/linux/ipc.h \
-  include/linux/uidgid.h \
-    $(wildcard include/config/MULTIUSER) \
-    $(wildcard include/config/USER_NS) \
-  include/linux/highuid.h \
-  include/linux/rhashtable-types.h \
-  include/uapi/linux/ipc.h \
-  arch/x86/include/generated/uapi/asm/ipcbuf.h \
-  include/uapi/asm-generic/ipcbuf.h \
-  arch/x86/include/uapi/asm/sembuf.h \
-  include/linux/shm.h \
-  include/uapi/linux/shm.h \
-  include/uapi/asm-generic/hugetlb_encode.h \
-  arch/x86/include/uapi/asm/shmbuf.h \
-  include/uapi/asm-generic/shmbuf.h \
-  arch/x86/include/asm/shmparam.h \
-  include/linux/plist.h \
-    $(wildcard include/config/DEBUG_PLIST) \
-  include/linux/hrtimer.h \
-    $(wildcard include/config/HIGH_RES_TIMERS) \
-    $(wildcard include/config/TIME_LOW_RES) \
-    $(wildcard include/config/TIMERFD) \
-  include/linux/hrtimer_defs.h \
-  include/linux/rbtree.h \
-  include/linux/rbtree_types.h \
-  include/linux/percpu.h \
-    $(wildcard include/config/NEED_PER_CPU_EMBED_FIRST_CHUNK) \
-    $(wildcard include/config/NEED_PER_CPU_PAGE_FIRST_CHUNK) \
-  include/linux/mmdebug.h \
-    $(wildcard include/config/DEBUG_VM) \
-    $(wildcard include/config/DEBUG_VM_PGFLAGS) \
-  include/linux/seqlock.h \
-  include/linux/ww_mutex.h \
-    $(wildcard include/config/DEBUG_RT_MUTEXES) \
-    $(wildcard include/config/DEBUG_WW_MUTEX_SLOWPATH) \
-  include/linux/rtmutex.h \
-  include/linux/timerqueue.h \
-  include/linux/seccomp.h \
-    $(wildcard include/config/SECCOMP) \
-    $(wildcard include/config/HAVE_ARCH_SECCOMP_FILTER) \
-    $(wildcard include/config/SECCOMP_FILTER) \
-    $(wildcard include/config/CHECKPOINT_RESTORE) \
-    $(wildcard include/config/SECCOMP_CACHE_DEBUG) \
-  include/uapi/linux/seccomp.h \
-  arch/x86/include/asm/seccomp.h \
-  arch/x86/include/asm/unistd.h \
-  arch/x86/include/uapi/asm/unistd.h \
-  arch/x86/include/generated/uapi/asm/unistd_32.h \
-  include/asm-generic/seccomp.h \
-  include/uapi/linux/unistd.h \
-  include/linux/nodemask.h \
-    $(wildcard include/config/HIGHMEM) \
-  include/linux/numa.h \
-    $(wildcard include/config/NODES_SHIFT) \
-    $(wildcard include/config/NUMA_KEEP_MEMINFO) \
-    $(wildcard include/config/HAVE_ARCH_NODE_DEV_GROUP) \
-  arch/x86/include/asm/sparsemem.h \
-  include/linux/resource.h \
-  include/uapi/linux/resource.h \
-  arch/x86/include/generated/uapi/asm/resource.h \
-  include/asm-generic/resource.h \
-  include/uapi/asm-generic/resource.h \
-  include/linux/latencytop.h \
-  include/linux/sched/prio.h \
-  include/linux/sched/types.h \
-  include/linux/signal_types.h \
-    $(wildcard include/config/OLD_SIGACTION) \
-  include/uapi/linux/signal.h \
-  arch/x86/include/asm/signal.h \
-  arch/x86/include/uapi/asm/signal.h \
-  include/uapi/asm-generic/signal-defs.h \
-  arch/x86/include/uapi/asm/siginfo.h \
-  include/uapi/asm-generic/siginfo.h \
-  include/linux/syscall_user_dispatch.h \
-  include/linux/mm_types_task.h \
-    $(wildcard include/config/ARCH_WANT_BATCHED_UNMAP_TLB_FLUSH) \
-    $(wildcard include/config/SPLIT_PTLOCK_CPUS) \
-    $(wildcard include/config/ARCH_ENABLE_SPLIT_PMD_PTLOCK) \
-  arch/x86/include/asm/tlbbatch.h \
-  include/linux/task_io_accounting.h \
-    $(wildcard include/config/TASK_IO_ACCOUNTING) \
-  include/linux/posix-timers.h \
-  include/linux/alarmtimer.h \
-    $(wildcard include/config/RTC_CLASS) \
-  include/uapi/linux/rseq.h \
-  include/linux/kcsan.h \
-  arch/x86/include/generated/asm/kmap_size.h \
-  include/asm-generic/kmap_size.h \
-    $(wildcard include/config/DEBUG_KMAP_LOCAL) \
-  arch/x86/include/asm/delay.h \
-  include/asm-generic/delay.h \
-  include/linux/gpio/consumer.h \
-    $(wildcard include/config/GPIOLIB) \
-    $(wildcard include/config/OF_GPIO) \
-    $(wildcard include/config/ACPI) \
-    $(wildcard include/config/GPIO_SYSFS) \
-  include/linux/i2c.h \
-    $(wildcard include/config/I2C) \
-    $(wildcard include/config/I2C_SLAVE) \
-    $(wildcard include/config/I2C_BOARDINFO) \
-    $(wildcard include/config/I2C_MUX) \
-  include/linux/acpi.h \
-    $(wildcard include/config/ACPI_DEBUGGER) \
-    $(wildcard include/config/ACPI_TABLE_LIB) \
-    $(wildcard include/config/IA64) \
-    $(wildcard include/config/LOONGARCH) \
-    $(wildcard include/config/ARM64) \
-    $(wildcard include/config/ACPI_PROCESSOR_CSTATE) \
-    $(wildcard include/config/ACPI_HOTPLUG_CPU) \
-    $(wildcard include/config/ACPI_HOTPLUG_IOAPIC) \
-    $(wildcard include/config/X86_IO_APIC) \
-    $(wildcard include/config/PCI) \
-    $(wildcard include/config/ACPI_WMI) \
-    $(wildcard include/config/ACPI_NUMA) \
-    $(wildcard include/config/HIBERNATION) \
-    $(wildcard include/config/PM_SLEEP) \
-    $(wildcard include/config/ACPI_HOTPLUG_MEMORY) \
-    $(wildcard include/config/ACPI_CONTAINER) \
-    $(wildcard include/config/ACPI_GTDT) \
-    $(wildcard include/config/PM) \
-    $(wildcard include/config/ACPI_TABLE_UPGRADE) \
-    $(wildcard include/config/ACPI_WATCHDOG) \
-    $(wildcard include/config/ACPI_SPCR_TABLE) \
-    $(wildcard include/config/ACPI_GENERIC_GSI) \
-    $(wildcard include/config/ACPI_LPIT) \
-    $(wildcard include/config/ACPI_PPTT) \
-    $(wildcard include/config/ACPI_PCC) \
-  include/linux/ioport.h \
-    $(wildcard include/config/MEMORY_HOTREMOVE) \
-    $(wildcard include/config/MEMORY_HOTPLUG) \
-  include/linux/irqdomain.h \
-    $(wildcard include/config/IRQ_DOMAIN_HIERARCHY) \
-    $(wildcard include/config/GENERIC_IRQ_DEBUGFS) \
-    $(wildcard include/config/IRQ_DOMAIN) \
-    $(wildcard include/config/IRQ_DOMAIN_NOMAP) \
-  include/linux/irqhandler.h \
-  include/linux/of.h \
-    $(wildcard include/config/OF_DYNAMIC) \
-    $(wildcard include/config/SPARC) \
-    $(wildcard include/config/OF_PROMTREE) \
-    $(wildcard include/config/OF_KOBJ) \
-    $(wildcard include/config/OF_NUMA) \
-    $(wildcard include/config/OF_OVERLAY) \
-  include/linux/kobject.h \
-    $(wildcard include/config/UEVENT_HELPER) \
-    $(wildcard include/config/DEBUG_KOBJECT_RELEASE) \
-  include/linux/sysfs.h \
-  include/linux/kernfs.h \
-    $(wildcard include/config/KERNFS) \
-  include/linux/idr.h \
-  include/linux/radix-tree.h \
-  include/linux/gfp.h \
-    $(wildcard include/config/KASAN_HW_TAGS) \
-    $(wildcard include/config/ZONE_DMA) \
-    $(wildcard include/config/ZONE_DMA32) \
-    $(wildcard include/config/ZONE_DEVICE) \
-    $(wildcard include/config/CONTIG_ALLOC) \
-    $(wildcard include/config/CMA) \
-  include/linux/mmzone.h \
-    $(wildcard include/config/FORCE_MAX_ZONEORDER) \
-    $(wildcard include/config/MEMORY_ISOLATION) \
-    $(wildcard include/config/ZSMALLOC) \
-    $(wildcard include/config/SWAP) \
-    $(wildcard include/config/TRANSPARENT_HUGEPAGE) \
-    $(wildcard include/config/PAGE_EXTENSION) \
-    $(wildcard include/config/DEFERRED_STRUCT_PAGE_INIT) \
-    $(wildcard include/config/HAVE_MEMORYLESS_NODES) \
-    $(wildcard include/config/SPARSEMEM_EXTREME) \
-    $(wildcard include/config/HAVE_ARCH_PFN_VALID) \
-  include/linux/pageblock-flags.h \
-    $(wildcard include/config/HUGETLB_PAGE) \
-    $(wildcard include/config/HUGETLB_PAGE_SIZE_VARIABLE) \
-  include/linux/page-flags-layout.h \
-  include/generated/bounds.h \
-  include/linux/mm_types.h \
-    $(wildcard include/config/HAVE_ALIGNED_STRUCT_PAGE) \
-    $(wildcard include/config/USERFAULTFD) \
-    $(wildcard include/config/HAVE_ARCH_COMPAT_MMAP_BASES) \
-    $(wildcard include/config/MEMBARRIER) \
-    $(wildcard include/config/AIO) \
-    $(wildcard include/config/MMU_NOTIFIER) \
-  include/linux/auxvec.h \
-  include/uapi/linux/auxvec.h \
-  arch/x86/include/uapi/asm/auxvec.h \
-  include/linux/kref.h \
-  include/linux/uprobes.h \
-  arch/x86/include/asm/uprobes.h \
-  arch/x86/include/asm/mmu.h \
-    $(wildcard include/config/MODIFY_LDT_SYSCALL) \
-  include/linux/page-flags.h \
-    $(wildcard include/config/ARCH_USES_PG_UNCACHED) \
-    $(wildcard include/config/MEMORY_FAILURE) \
-    $(wildcard include/config/PAGE_IDLE_FLAG) \
-    $(wildcard include/config/HUGETLB_PAGE_FREE_VMEMMAP) \
-    $(wildcard include/config/HUGETLB_PAGE_FREE_VMEMMAP_DEFAULT_ON) \
-    $(wildcard include/config/KSM) \
-  include/linux/local_lock.h \
-  include/linux/local_lock_internal.h \
-  include/linux/memory_hotplug.h \
-    $(wildcard include/config/HAVE_ARCH_NODEDATA_EXTENSION) \
-    $(wildcard include/config/ARCH_HAS_ADD_PAGES) \
-  arch/x86/include/asm/mmzone.h \
-  arch/x86/include/asm/mmzone_32.h \
-  include/linux/topology.h \
-    $(wildcard include/config/USE_PERCPU_NUMA_NODE_ID) \
-    $(wildcard include/config/SCHED_SMT) \
-    $(wildcard include/config/SCHED_CLUSTER) \
-  include/linux/arch_topology.h \
-    $(wildcard include/config/ACPI_CPPC_LIB) \
-    $(wildcard include/config/GENERIC_ARCH_TOPOLOGY) \
-  arch/x86/include/asm/topology.h \
-    $(wildcard include/config/SCHED_MC_PRIO) \
-  arch/x86/include/asm/mpspec.h \
-    $(wildcard include/config/EISA) \
-    $(wildcard include/config/X86_MPPARSE) \
-  arch/x86/include/asm/mpspec_def.h \
-  arch/x86/include/asm/x86_init.h \
-  arch/x86/include/asm/apicdef.h \
-  include/asm-generic/topology.h \
-  include/linux/xarray.h \
-    $(wildcard include/config/XARRAY_MULTI) \
-  include/linux/kconfig.h \
-  include/linux/kobject_ns.h \
-  include/linux/stat.h \
-  arch/x86/include/uapi/asm/stat.h \
-  include/uapi/linux/stat.h \
-  include/linux/mod_devicetable.h \
-  include/linux/uuid.h \
-  include/uapi/linux/uuid.h \
-  include/linux/property.h \
-  include/linux/fwnode.h \
-  include/linux/resource_ext.h \
-  include/linux/slab.h \
-    $(wildcard include/config/DEBUG_SLAB) \
-    $(wildcard include/config/FAILSLAB) \
-    $(wildcard include/config/MEMCG_KMEM) \
-    $(wildcard include/config/KASAN) \
-    $(wildcard include/config/SLAB) \
-    $(wildcard include/config/SLUB) \
-    $(wildcard include/config/SLOB) \
-  include/linux/overflow.h \
-  include/linux/percpu-refcount.h \
-  include/linux/kasan.h \
-    $(wildcard include/config/KASAN_STACK) \
-    $(wildcard include/config/KASAN_VMALLOC) \
-    $(wildcard include/config/KASAN_INLINE) \
-  include/linux/kasan-enabled.h \
-  include/linux/device.h \
-    $(wildcard include/config/GENERIC_MSI_IRQ_DOMAIN) \
-    $(wildcard include/config/GENERIC_MSI_IRQ) \
-    $(wildcard include/config/ENERGY_MODEL) \
-    $(wildcard include/config/PINCTRL) \
-    $(wildcard include/config/DMA_OPS) \
-    $(wildcard include/config/DMA_DECLARE_COHERENT) \
-    $(wildcard include/config/DMA_CMA) \
-    $(wildcard include/config/SWIOTLB) \
-    $(wildcard include/config/ARCH_HAS_SYNC_DMA_FOR_DEVICE) \
-    $(wildcard include/config/ARCH_HAS_SYNC_DMA_FOR_CPU) \
-    $(wildcard include/config/ARCH_HAS_SYNC_DMA_FOR_CPU_ALL) \
-    $(wildcard include/config/DMA_OPS_BYPASS) \
-    $(wildcard include/config/DEVTMPFS) \
-    $(wildcard include/config/SYSFS_DEPRECATED) \
-  include/linux/dev_printk.h \
-  include/linux/ratelimit.h \
-  include/linux/energy_model.h \
-  include/linux/sched/cpufreq.h \
-    $(wildcard include/config/CPU_FREQ) \
-  include/linux/sched/topology.h \
-    $(wildcard include/config/SCHED_DEBUG) \
-    $(wildcard include/config/SCHED_MC) \
-    $(wildcard include/config/CPU_FREQ_GOV_SCHEDUTIL) \
-  include/linux/sched/idle.h \
-  include/linux/sched/sd_flags.h \
-  include/linux/klist.h \
-  include/linux/pm.h \
-    $(wildcard include/config/VT_CONSOLE_SLEEP) \
-    $(wildcard include/config/PM_CLK) \
-    $(wildcard include/config/PM_GENERIC_DOMAINS) \
-  include/linux/device/bus.h \
-  include/linux/device/class.h \
-  include/linux/device/driver.h \
-  include/linux/module.h \
-    $(wildcard include/config/MODULES_TREE_LOOKUP) \
-    $(wildcard include/config/STACKTRACE_BUILD_ID) \
-    $(wildcard include/config/MODULE_SIG) \
-    $(wildcard include/config/KALLSYMS) \
-    $(wildcard include/config/BPF_EVENTS) \
-    $(wildcard include/config/DEBUG_INFO_BTF_MODULES) \
-    $(wildcard include/config/EVENT_TRACING) \
-    $(wildcard include/config/MODULE_UNLOAD) \
-    $(wildcard include/config/CONSTRUCTORS) \
-    $(wildcard include/config/FUNCTION_ERROR_INJECTION) \
-  include/linux/buildid.h \
-    $(wildcard include/config/CRASH_CORE) \
-  include/linux/kmod.h \
-  include/linux/umh.h \
-  include/linux/sysctl.h \
-    $(wildcard include/config/SYSCTL) \
-  include/uapi/linux/sysctl.h \
-  include/linux/elf.h \
-    $(wildcard include/config/ARCH_USE_GNU_PROPERTY) \
-    $(wildcard include/config/ARCH_HAVE_ELF_PROT) \
-  arch/x86/include/asm/elf.h \
-    $(wildcard include/config/X86_X32_ABI) \
-  arch/x86/include/asm/user.h \
-  arch/x86/include/asm/user_32.h \
-  arch/x86/include/asm/fsgsbase.h \
-  arch/x86/include/asm/vdso.h \
-  arch/x86/include/asm/desc.h \
-  arch/x86/include/asm/fixmap.h \
-    $(wildcard include/config/DEBUG_KMAP_LOCAL_FORCE_MAP) \
-    $(wildcard include/config/X86_VSYSCALL_EMULATION) \
-    $(wildcard include/config/PROVIDE_OHCI1394_DMA_INIT) \
-    $(wildcard include/config/PCI_MMCONFIG) \
-    $(wildcard include/config/ACPI_APEI_GHES) \
-    $(wildcard include/config/INTEL_TXT) \
-  include/asm-generic/fixmap.h \
-  arch/x86/include/asm/irq_vectors.h \
-    $(wildcard include/config/HAVE_KVM) \
-    $(wildcard include/config/HYPERV) \
-    $(wildcard include/config/PCI_MSI) \
-  arch/x86/include/asm/cpu_entry_area.h \
-  arch/x86/include/asm/intel_ds.h \
-  arch/x86/include/asm/pgtable_areas.h \
-  arch/x86/include/asm/pgtable_32_areas.h \
-  include/uapi/linux/elf.h \
-  include/uapi/linux/elf-em.h \
-  include/linux/moduleparam.h \
-    $(wildcard include/config/ALPHA) \
-    $(wildcard include/config/PPC64) \
-  include/linux/rbtree_latch.h \
-  include/linux/error-injection.h \
-  include/asm-generic/error-injection.h \
-  include/linux/cfi.h \
-    $(wildcard include/config/CFI_CLANG_SHADOW) \
-  arch/x86/include/asm/module.h \
-    $(wildcard include/config/UNWINDER_ORC) \
-  include/asm-generic/module.h \
-    $(wildcard include/config/HAVE_MOD_ARCH_SPECIFIC) \
-    $(wildcard include/config/MODULES_USE_ELF_REL) \
-    $(wildcard include/config/MODULES_USE_ELF_RELA) \
-  arch/x86/include/asm/orc_types.h \
-  arch/x86/include/asm/device.h \
-  include/linux/pm_wakeup.h \
-  include/acpi/acpi.h \
-  include/acpi/platform/acenv.h \
-  include/acpi/platform/acgcc.h \
-  include/acpi/platform/aclinux.h \
-    $(wildcard include/config/ACPI_REDUCED_HARDWARE_ONLY) \
-    $(wildcard include/config/ACPI_DEBUG) \
-  include/linux/ctype.h \
-  arch/x86/include/asm/acenv.h \
-  include/acpi/acnames.h \
-  include/acpi/actypes.h \
-  include/acpi/acexcep.h \
-  include/acpi/actbl.h \
-  include/acpi/actbl1.h \
-  include/acpi/actbl2.h \
-  include/acpi/actbl3.h \
-  include/acpi/acrestyp.h \
-  include/acpi/platform/acenvex.h \
-  include/acpi/platform/aclinuxex.h \
-  include/acpi/platform/acgccex.h \
-  include/acpi/acoutput.h \
-  include/acpi/acpiosxf.h \
-  include/acpi/acpixf.h \
-  include/acpi/acconfig.h \
-  include/acpi/acbuffer.h \
-  include/linux/dynamic_debug.h \
-  include/acpi/acpi_bus.h \
-    $(wildcard include/config/X86_ANDROID_TABLETS) \
-    $(wildcard include/config/ACPI_SYSTEM_POWER_STATES_SUPPORT) \
-    $(wildcard include/config/ACPI_SLEEP) \
-  include/acpi/acpi_drivers.h \
-    $(wildcard include/config/ACPI_DOCK) \
-  include/acpi/acpi_numa.h \
-    $(wildcard include/config/ACPI_HMAT) \
-  include/acpi/acpi_io.h \
-  include/linux/io.h \
-    $(wildcard include/config/HAS_IOPORT_MAP) \
-  arch/x86/include/asm/io.h \
-    $(wildcard include/config/MTRR) \
-    $(wildcard include/config/X86_PAT) \
-  arch/x86/include/generated/asm/early_ioremap.h \
-  include/asm-generic/early_ioremap.h \
-    $(wildcard include/config/GENERIC_EARLY_IOREMAP) \
-  include/asm-generic/iomap.h \
-  include/asm-generic/pci_iomap.h \
-    $(wildcard include/config/NO_GENERIC_PCI_IOPORT_MAP) \
-    $(wildcard include/config/GENERIC_PCI_IOMAP) \
-  include/asm-generic/io.h \
-    $(wildcard include/config/GENERIC_IOMAP) \
-    $(wildcard include/config/GENERIC_IOREMAP) \
-    $(wildcard include/config/VIRT_TO_BUS) \
-    $(wildcard include/config/GENERIC_DEVMEM_IS_ALLOWED) \
-  include/linux/logic_pio.h \
-    $(wildcard include/config/INDIRECT_PIO) \
-  include/linux/vmalloc.h \
-    $(wildcard include/config/HAVE_ARCH_HUGE_VMALLOC) \
-  arch/x86/include/asm/vmalloc.h \
-    $(wildcard include/config/HAVE_ARCH_HUGE_VMAP) \
-  arch/x86/include/asm/acpi.h \
-    $(wildcard include/config/ACPI_APEI) \
-  include/acpi/pdc_intel.h \
-  arch/x86/include/asm/numa.h \
-    $(wildcard include/config/NUMA_EMU) \
-  arch/x86/include/asm/numa_32.h \
-  include/linux/regulator/consumer.h \
-    $(wildcard include/config/REGULATOR) \
-  include/linux/suspend.h \
-    $(wildcard include/config/VT) \
-    $(wildcard include/config/SUSPEND) \
-    $(wildcard include/config/HIBERNATION_SNAPSHOT_DEV) \
-    $(wildcard include/config/PM_SLEEP_DEBUG) \
-    $(wildcard include/config/PM_AUTOSLEEP) \
-  include/linux/swap.h \
-    $(wildcard include/config/DEVICE_PRIVATE) \
-    $(wildcard include/config/MIGRATION) \
-    $(wildcard include/config/FRONTSWAP) \
-    $(wildcard include/config/THP_SWAP) \
-    $(wildcard include/config/MEMCG_SWAP) \
-  include/linux/memcontrol.h \
-    $(wildcard include/config/CGROUP_WRITEBACK) \
-  include/linux/cgroup.h \
-    $(wildcard include/config/CGROUP_CPUACCT) \
-    $(wildcard include/config/SOCK_CGROUP_DATA) \
-    $(wildcard include/config/CGROUP_DATA) \
-    $(wildcard include/config/CGROUP_BPF) \
-  include/uapi/linux/cgroupstats.h \
-  include/uapi/linux/taskstats.h \
-  include/linux/fs.h \
-    $(wildcard include/config/READ_ONLY_THP_FOR_FS) \
-    $(wildcard include/config/FS_POSIX_ACL) \
-    $(wildcard include/config/IMA) \
-    $(wildcard include/config/FILE_LOCKING) \
-    $(wildcard include/config/FSNOTIFY) \
-    $(wildcard include/config/FS_ENCRYPTION) \
-    $(wildcard include/config/FS_VERITY) \
-    $(wildcard include/config/EPOLL) \
-    $(wildcard include/config/UNICODE) \
-    $(wildcard include/config/QUOTA) \
-    $(wildcard include/config/FS_DAX) \
-    $(wildcard include/config/BLOCK) \
-  include/linux/wait_bit.h \
-  include/linux/kdev_t.h \
-  include/uapi/linux/kdev_t.h \
-  include/linux/dcache.h \
-  include/linux/rculist_bl.h \
-  include/linux/list_bl.h \
-  include/linux/bit_spinlock.h \
-  include/linux/lockref.h \
-    $(wildcard include/config/ARCH_USE_CMPXCHG_LOCKREF) \
-  include/linux/stringhash.h \
-    $(wildcard include/config/DCACHE_WORD_ACCESS) \
-  include/linux/hash.h \
-    $(wildcard include/config/HAVE_ARCH_HASH) \
-  include/linux/path.h \
-  include/linux/list_lru.h \
-  include/linux/shrinker.h \
-  include/linux/capability.h \
-  include/uapi/linux/capability.h \
-  include/linux/semaphore.h \
-  include/linux/fcntl.h \
-    $(wildcard include/config/ARCH_32BIT_OFF_T) \
-  include/uapi/linux/fcntl.h \
-  arch/x86/include/generated/uapi/asm/fcntl.h \
-  include/uapi/asm-generic/fcntl.h \
-  include/uapi/linux/openat2.h \
-  include/linux/migrate_mode.h \
-  include/linux/percpu-rwsem.h \
-  include/linux/rcuwait.h \
-  include/linux/sched/signal.h \
-    $(wildcard include/config/SCHED_AUTOGROUP) \
-    $(wildcard include/config/BSD_PROCESS_ACCT) \
-    $(wildcard include/config/TASKSTATS) \
-    $(wildcard include/config/STACK_GROWSUP) \
-  include/linux/signal.h \
-    $(wildcard include/config/DYNAMIC_SIGFRAME) \
-  include/linux/sched/jobctl.h \
-  include/linux/sched/task.h \
-    $(wildcard include/config/HAVE_EXIT_THREAD) \
-    $(wildcard include/config/ARCH_WANTS_DYNAMIC_TASK_STRUCT) \
-    $(wildcard include/config/HAVE_ARCH_THREAD_STRUCT_WHITELIST) \
-  include/linux/uaccess.h \
-  include/linux/fault-inject-usercopy.h \
-    $(wildcard include/config/FAULT_INJECTION_USERCOPY) \
-  arch/x86/include/asm/uaccess.h \
-    $(wildcard include/config/CC_HAS_ASM_GOTO_OUTPUT) \
-    $(wildcard include/config/CC_HAS_ASM_GOTO_TIED_OUTPUT) \
-    $(wildcard include/config/ARCH_HAS_COPY_MC) \
-    $(wildcard include/config/X86_INTEL_USERCOPY) \
-  arch/x86/include/asm/smap.h \
-  arch/x86/include/asm/extable.h \
-    $(wildcard include/config/BPF_JIT) \
-  include/asm-generic/access_ok.h \
-    $(wildcard include/config/ALTERNATE_USER_ADDRESS_SPACE) \
-  arch/x86/include/asm/uaccess_32.h \
-  include/linux/cred.h \
-    $(wildcard include/config/DEBUG_CREDENTIALS) \
-  include/linux/key.h \
-    $(wildcard include/config/KEY_NOTIFICATIONS) \
-    $(wildcard include/config/NET) \
-  include/linux/assoc_array.h \
-    $(wildcard include/config/ASSOCIATIVE_ARRAY) \
-  include/linux/sched/user.h \
-    $(wildcard include/config/WATCH_QUEUE) \
-  include/linux/percpu_counter.h \
-  include/linux/rcu_sync.h \
-  include/linux/delayed_call.h \
-  include/linux/errseq.h \
-  include/linux/ioprio.h \
-  include/linux/sched/rt.h \
-  include/linux/iocontext.h \
-    $(wildcard include/config/BLK_ICQ) \
-  include/uapi/linux/ioprio.h \
-  include/linux/fs_types.h \
-  include/linux/mount.h \
-  include/linux/mnt_idmapping.h \
-  include/uapi/linux/fs.h \
-  include/linux/quota.h \
-    $(wildcard include/config/QUOTA_NETLINK_INTERFACE) \
-  include/uapi/linux/dqblk_xfs.h \
-  include/linux/dqblk_v1.h \
-  include/linux/dqblk_v2.h \
-  include/linux/dqblk_qtree.h \
-  include/linux/projid.h \
-  include/uapi/linux/quota.h \
-  include/linux/nfs_fs_i.h \
-  include/linux/seq_file.h \
-  include/linux/string_helpers.h \
-  include/linux/ns_common.h \
-  include/linux/nsproxy.h \
-  include/linux/user_namespace.h \
-    $(wildcard include/config/INOTIFY_USER) \
-    $(wildcard include/config/FANOTIFY) \
-    $(wildcard include/config/PERSISTENT_KEYRINGS) \
-  include/linux/kernel_stat.h \
-  include/linux/interrupt.h \
-    $(wildcard include/config/IRQ_FORCED_THREADING) \
-    $(wildcard include/config/GENERIC_IRQ_PROBE) \
-    $(wildcard include/config/IRQ_TIMINGS) \
-  include/linux/irqreturn.h \
-  include/linux/irqnr.h \
-  include/uapi/linux/irqnr.h \
-  include/linux/hardirq.h \
-  include/linux/context_tracking_state.h \
-    $(wildcard include/config/CONTEXT_TRACKING) \
-  include/linux/ftrace_irq.h \
-    $(wildcard include/config/HWLAT_TRACER) \
-    $(wildcard include/config/OSNOISE_TRACER) \
-  include/linux/vtime.h \
-    $(wildcard include/config/VIRT_CPU_ACCOUNTING) \
-    $(wildcard include/config/IRQ_TIME_ACCOUNTING) \
-  arch/x86/include/asm/hardirq.h \
-    $(wildcard include/config/KVM_INTEL) \
-    $(wildcard include/config/X86_THERMAL_VECTOR) \
-    $(wildcard include/config/X86_MCE_THRESHOLD) \
-    $(wildcard include/config/X86_MCE_AMD) \
-    $(wildcard include/config/X86_HV_CALLBACK_VECTOR) \
-  arch/x86/include/asm/irq.h \
-  arch/x86/include/asm/sections.h \
-  include/asm-generic/sections.h \
-    $(wildcard include/config/HAVE_FUNCTION_DESCRIPTORS) \
-  include/linux/cgroup-defs.h \
-    $(wildcard include/config/CGROUP_NET_CLASSID) \
-    $(wildcard include/config/CGROUP_NET_PRIO) \
-  include/linux/u64_stats_sync.h \
-  include/linux/bpf-cgroup-defs.h \
-  include/linux/psi_types.h \
-  include/linux/kthread.h \
-  include/linux/cgroup_subsys.h \
-    $(wildcard include/config/CGROUP_DEVICE) \
-    $(wildcard include/config/CGROUP_FREEZER) \
-    $(wildcard include/config/CGROUP_PERF) \
-    $(wildcard include/config/CGROUP_HUGETLB) \
-    $(wildcard include/config/CGROUP_PIDS) \
-    $(wildcard include/config/CGROUP_RDMA) \
-    $(wildcard include/config/CGROUP_MISC) \
-    $(wildcard include/config/CGROUP_DEBUG) \
-  include/linux/vm_event_item.h \
-    $(wildcard include/config/HAVE_ARCH_TRANSPARENT_HUGEPAGE_PUD) \
-    $(wildcard include/config/MEMORY_BALLOON) \
-    $(wildcard include/config/BALLOON_COMPACTION) \
-    $(wildcard include/config/DEBUG_TLBFLUSH) \
-    $(wildcard include/config/DEBUG_VM_VMACACHE) \
-  include/linux/page_counter.h \
-  include/linux/vmpressure.h \
-  include/linux/eventfd.h \
-  include/linux/mm.h \
-    $(wildcard include/config/HAVE_ARCH_MMAP_RND_BITS) \
-    $(wildcard include/config/HAVE_ARCH_MMAP_RND_COMPAT_BITS) \
-    $(wildcard include/config/ARCH_USES_HIGH_VMA_FLAGS) \
-    $(wildcard include/config/ARCH_HAS_PKEYS) \
-    $(wildcard include/config/PPC) \
-    $(wildcard include/config/PARISC) \
-    $(wildcard include/config/SPARC64) \
-    $(wildcard include/config/ARM64_MTE) \
-    $(wildcard include/config/HAVE_ARCH_USERFAULTFD_MINOR) \
-    $(wildcard include/config/SHMEM) \
-    $(wildcard include/config/ARCH_HAS_PTE_SPECIAL) \
-    $(wildcard include/config/ARCH_HAS_PTE_DEVMAP) \
-    $(wildcard include/config/DEBUG_VM_RB) \
-    $(wildcard include/config/PAGE_POISONING) \
-    $(wildcard include/config/INIT_ON_ALLOC_DEFAULT_ON) \
-    $(wildcard include/config/INIT_ON_FREE_DEFAULT_ON) \
-    $(wildcard include/config/DEBUG_PAGEALLOC) \
-    $(w
+/*
+ * sun4i_can.c - CAN bus controller driver for Allwinner SUN4I&SUN7I based SoCs
+ *
+ * Copyright (C) 2013 Peter Chen
+ * Copyright (C) 2015 Gerhard Bertelsmann
+ * All rights reserved.
+ *
+ * Parts of this software are based on (derived from) the SJA1000 code by:
+ *   Copyright (C) 2014 Oliver Hartkopp <oliver.hartkopp@volkswagen.de>
+ *   Copyright (C) 2007 Wolfgang Grandegger <wg@grandegger.com>
+ *   Copyright (C) 2002-2007 Volkswagen Group Electronic Research
+ *   Copyright (C) 2003 Matthias Brukner, Trajet Gmbh, Rebenring 33,
+ *   38106 Braunschweig, GERMANY
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions
+ * are met:
+ * 1. Redistributions of source code must retain the above copyright
+ *    notice, this list of conditions and the following disclaimer.
+ * 2. Redistributions in binary form must reproduce the above copyright
+ *    notice, this list of conditions and the following disclaimer in the
+ *    documentation and/or other materials provided with the distribution.
+ * 3. Neither the name of Volkswagen nor the names of its contributors
+ *    may be used to endorse or promote products derived from this software
+ *    without specific prior written permission.
+ *
+ * Alternatively, provided that this notice is retained in full, this
+ * software may be distributed under the terms of the GNU General
+ * Public License ("GPL") version 2, in which case the provisions of the
+ * GPL apply INSTEAD OF those given above.
+ *
+ * The provided data structures and external interfaces from this code
+ * are not restricted to be used by modules with a GPL compatible license.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+ * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+ * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+ * A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+ * OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+ * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+ * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+ * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+ * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+ * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH
+ * DAMAGE.
+ *
+ */
+
+#include <linux/netdevice.h>
+#include <linux/can.h>
+#include <linux/can/dev.h>
+#include <linux/can/error.h>
+#include <linux/can/led.h>
+#include <linux/clk.h>
+#include <linux/delay.h>
+#include <linux/interrupt.h>
+#include <linux/init.h>
+#include <linux/io.h>
+#include <linux/module.h>
+#include <linux/of.h>
+#include <linux/of_device.h>
+#include <linux/platform_device.h>
+#include <linux/reset.h>
+
+#define DRV_NAME "sun4i_can"
+
+/* Registers address (physical base address 0x01C2BC00) */
+#define SUN4I_REG_MSEL_ADDR	0x0000	/* CAN Mode Select */
+#define SUN4I_REG_CMD_ADDR	0x0004	/* CAN Command */
+#define SUN4I_REG_STA_ADDR	0x0008	/* CAN Status */
+#define SUN4I_REG_INT_ADDR	0x000c	/* CAN Interrupt Flag */
+#define SUN4I_REG_INTEN_ADDR	0x0010	/* CAN Interrupt Enable */
+#define SUN4I_REG_BTIME_ADDR	0x0014	/* CAN Bus Timing 0 */
+#define SUN4I_REG_TEWL_ADDR	0x0018	/* CAN Tx Error Warning Limit */
+#define SUN4I_REG_ERRC_ADDR	0x001c	/* CAN Error Counter */
+#define SUN4I_REG_RMCNT_ADDR	0x0020	/* CAN Receive Message Counter */
+#define SUN4I_REG_RBUFSA_ADDR	0x0024	/* CAN Receive Buffer Start Address */
+#define SUN4I_REG_BUF0_ADDR	0x0040	/* CAN Tx/Rx Buffer 0 */
+#define SUN4I_REG_BUF1_ADDR	0x0044	/* CAN Tx/Rx Buffer 1 */
+#define SUN4I_REG_BUF2_ADDR	0x0048	/* CAN Tx/Rx Buffer 2 */
+#define SUN4I_REG_BUF3_ADDR	0x004c	/* CAN Tx/Rx Buffer 3 */
+#define SUN4I_REG_BUF4_ADDR	0x0050	/* CAN Tx/Rx Buffer 4 */
+#define SUN4I_REG_BUF5_ADDR	0x0054	/* CAN Tx/Rx Buffer 5 */
+#define SUN4I_REG_BUF6_ADDR	0x0058	/* CAN Tx/Rx Buffer 6 */
+#define SUN4I_REG_BUF7_ADDR	0x005c	/* CAN Tx/Rx Buffer 7 */
+#define SUN4I_REG_BUF8_ADDR	0x0060	/* CAN Tx/Rx Buffer 8 */
+#define SUN4I_REG_BUF9_ADDR	0x0064	/* CAN Tx/Rx Buffer 9 */
+#define SUN4I_REG_BUF10_ADDR	0x0068	/* CAN Tx/Rx Buffer 10 */
+#define SUN4I_REG_BUF11_ADDR	0x006c	/* CAN Tx/Rx Buffer 11 */
+#define SUN4I_REG_BUF12_ADDR	0x0070	/* CAN Tx/Rx Buffer 12 */
+#define SUN4I_REG_ACPC_ADDR	0x0040	/* CAN Acceptance Code 0 */
+#define SUN4I_REG_ACPM_ADDR	0x0044	/* CAN Acceptance Mask 0 */
+#define SUN4I_REG_RBUF_RBACK_START_ADDR	0x0180	/* CAN transmit buffer start */
+#define SUN4I_REG_RBUF_RBACK_END_ADDR	0x01b0	/* CAN transmit buffer end */
+
+/* Controller Register Description */
+
+/* mode select register (r/w)
+ * offset:0x0000 default:0x0000_0001
+ */
+#define SUN4I_MSEL_SLEEP_MODE		(0x01 << 4) /* write in reset mode */
+#define SUN4I_MSEL_WAKE_UP		(0x00 << 4)
+#define SUN4I_MSEL_SINGLE_FILTER	(0x01 << 3) /* write in reset mode */
+#define SUN4I_MSEL_DUAL_FILTERS		(0x00 << 3)
+#define SUN4I_MSEL_LOOPBACK_MODE	BIT(2)
+#define SUN4I_MSEL_LISTEN_ONLY_MODE	BIT(1)
+#define SUN4I_MSEL_RESET_MODE		BIT(0)
+
+/* command register (w)
+ * offset:0x0004 default:0x0000_0000
+ */
+#define SUN4I_CMD_BUS_OFF_REQ	BIT(5)
+#define SUN4I_CMD_SELF_RCV_REQ	BIT(4)
+#define SUN4I_CMD_CLEAR_OR_FLAG	BIT(3)
+#define SUN4I_CMD_RELEASE_RBUF	BIT(2)
+#define SUN4I_CMD_ABORT_REQ	BIT(1)
+#define SUN4I_CMD_TRANS_REQ	BIT(0)
+
+/* status register (r)
+ * offset:0x0008 default:0x0000_003c
+ */
+#define SUN4I_STA_BIT_ERR	(0x00 << 22)
+#define SUN4I_STA_FORM_ERR	(0x01 << 22)
+#define SUN4I_STA_STUFF_ERR	(0x02 << 22)
+#define SUN4I_STA_OTHER_ERR	(0x03 << 22)
+#define SUN4I_STA_MASK_ERR	(0x03 << 22)
+#define SUN4I_STA_ERR_DIR	BIT(21)
+#define SUN4I_STA_ERR_SEG_CODE	(0x1f << 16)
+#define SUN4I_STA_START		(0x03 << 16)
+#define SUN4I_STA_ID28_21	(0x02 << 16)
+#define SUN4I_STA_ID20_18	(0x06 << 16)
+#define SUN4I_STA_SRTR		(0x04 << 16)
+#define SUN4I_STA_IDE		(0x05 << 16)
+#define SUN4I_STA_ID17_13	(0x07 << 16)
+#define SUN4I_STA_ID12_5	(0x0f << 16)
+#define SUN4I_STA_ID4_0		(0x0e << 16)
+#define SUN4I_STA_RTR		(0x0c << 16)
+#define SUN4I_STA_RB1		(0x0d << 16)
+#define SUN4I_STA_RB0		(0x09 << 16)
+#define SUN4I_STA_DLEN		(0x0b << 16)
+#define SUN4I_STA_DATA_FIELD	(0x0a << 16)
+#define SUN4I_STA_CRC_SEQUENCE	(0x08 << 16)
+#define SUN4I_STA_CRC_DELIMITER	(0x18 << 16)
+#define SUN4I_STA_ACK		(0x19 << 16)
+#define SUN4I_STA_ACK_DELIMITER	(0x1b << 16)
+#define SUN4I_STA_END		(0x1a << 16)
+#define SUN4I_STA_INTERMISSION	(0x12 << 16)
+#define SUN4I_STA_ACTIVE_ERROR	(0x11 << 16)
+#define SUN4I_STA_PASSIVE_ERROR	(0x16 << 16)
+#define SUN4I_STA_TOLERATE_DOMINANT_BITS	(0x13 << 16)
+#define SUN4I_STA_ERROR_DELIMITER	(0x17 << 16)
+#define SUN4I_STA_OVERLOAD	(0x1c << 16)
+#define SUN4I_STA_BUS_OFF	BIT(7)
+#define SUN4I_STA_ERR_STA	BIT(6)
+#define SUN4I_STA_TRANS_BUSY	BIT(5)
+#define SUN4I_STA_RCV_BUSY	BIT(4)
+#define SUN4I_STA_TRANS_OVER	BIT(3)
+#define SUN4I_STA_TBUF_RDY	BIT(2)
+#define SUN4I_STA_DATA_ORUN	BIT(1)
+#define SUN4I_STA_RBUF_RDY	BIT(0)
+
+/* interrupt register (r)
+ * offset:0x000c default:0x0000_0000
+ */
+#define SUN4I_INT_BUS_ERR	BIT(7)
+#define SUN4I_INT_ARB_LOST	BIT(6)
+#define SUN4I_INT_ERR_PASSIVE	BIT(5)
+#define SUN4I_INT_WAKEUP	BIT(4)
+#define SUN4I_INT_DATA_OR	BIT(3)
+#define SUN4I_INT_ERR_WRN	BIT(2)
+#define SUN4I_INT_TBUF_VLD	BIT(1)
+#define SUN4I_INT_RBUF_VLD	BIT(0)
+
+/* interrupt enable register (r/w)
+ * offset:0x0010 default:0x0000_0000
+ */
+#define SUN4I_INTEN_BERR	BIT(7)
+#define SUN4I_INTEN_ARB_LOST	BIT(6)
+#define SUN4I_INTEN_ERR_PASSIVE	BIT(5)
+#define SUN4I_INTEN_WAKEUP	BIT(4)
+#define SUN4I_INTEN_OR		BIT(3)
+#define SUN4I_INTEN_ERR_WRN	BIT(2)
+#define SUN4I_INTEN_TX		BIT(1)
+#define SUN4I_INTEN_RX		BIT(0)
+
+/* error code */
+#define SUN4I_ERR_INRCV		(0x1 << 5)
+#define SUN4I_ERR_INTRANS	(0x0 << 5)
+
+/* filter mode */
+#define SUN4I_FILTER_CLOSE	0
+#define SUN4I_SINGLE_FLTER_MODE	1
+#define SUN4I_DUAL_FILTER_MODE	2
+
+/* message buffer flags */
+#define SUN4I_MSG_EFF_FLAG	BIT(7)
+#define SUN4I_MSG_RTR_FLAG	BIT(6)
+
+/* max. number of interrupts handled in ISR */
+#define SUN4I_CAN_MAX_IRQ	20
+#define SUN4I_MODE_MAX_RETRIES	100
+
+/**
+ * struct sun4ican_quirks - Differences between SoC variants.
+ *
+ * @has_reset: SoC needs reset deasserted.
+ */
+struct sun4ican_quirks {
+	bool has_reset;
+};
+
+struct sun4ican_priv {
+	struct can_priv can;
+	void __iomem *base;
+	struct clk *clk;
+	struct reset_control *reset;
+	spinlock_t cmdreg_lock;	/* lock for concurrent cmd register writes */
+};
+
+static const struct can_bittiming_const sun4ican_bittiming_const = {
+	.name = DRV_NAME,
+	.tseg1_min = 1,
+	.tseg1_max = 16,
+	.tseg2_min = 1,
+	.tseg2_max = 8,
+	.sjw_max = 4,
+	.brp_min = 1,
+	.brp_max = 64,
+	.brp_inc = 1,
+};
+
+static void sun4i_can_write_cmdreg(struct sun4ican_priv *priv, u8 val)
+{
+	unsigned long flags;
+
+	spin_lock_irqsave(&priv->cmdreg_lock, flags);
+	writel(val, priv->base + SUN4I_REG_CMD_ADDR);
+	spin_unlock_irqrestore(&priv->cmdreg_lock, flags);
+}
+
+static int set_normal_mode(struct net_device *dev)
+{
+	struct sun4ican_priv *priv = netdev_priv(dev);
+	int retry = SUN4I_MODE_MAX_RETRIES;
+	u32 mod_reg_val = 0;
+
+	do {
+		mod_reg_val = readl(priv->base + SUN4I_REG_MSEL_ADDR);
+		mod_reg_val &= ~SUN4I_MSEL_RESET_MODE;
+		writel(mod_reg_val, priv->base + SUN4I_REG_MSEL_ADDR);
+	} while (retry-- && (mod_reg_val & SUN4I_MSEL_RESET_MODE));
+
+	if (readl(priv->base + SUN4I_REG_MSEL_ADDR) & SUN4I_MSEL_RESET_MODE) {
+		netdev_err(dev,
+			   "setting controller into normal mode failed!\n");
+		return -ETIMEDOUT;
+	}
+
+	return 0;
+}
+
+static int set_reset_mode(struct net_device *dev)
+{
+	struct sun4ican_priv *priv = netdev_priv(dev);
+	int retry = SUN4I_MODE_MAX_RETRIES;
+	u32 mod_reg_val = 0;
+
+	do {
+		mod_reg_val = readl(priv->base + SUN4I_REG_MSEL_ADDR);
+		mod_reg_val |= SUN4I_MSEL_RESET_MODE;
+		writel(mod_reg_val, priv->base + SUN4I_REG_MSEL_ADDR);
+	} while (retry-- && !(mod_reg_val & SUN4I_MSEL_RESET_MODE));
+
+	if (!(readl(priv->base + SUN4I_REG_MSEL_ADDR) &
+	      SUN4I_MSEL_RESET_MODE)) {
+		netdev_err(dev, "setting controller into reset mode failed!\n");
+		return -ETIMEDOUT;
+	}
+
+	return 0;
+}
+
+/* bittiming is called in reset_mode only */
+static int sun4ican_set_bittiming(struct net_device *dev)
+{
+	struct sun4ican_priv *priv = netdev_priv(dev);
+	struct can_bittiming *bt = &priv->can.bittiming;
+	u32 cfg;
+
+	cfg = ((bt->brp - 1) & 0x3FF) |
+	     (((bt->sjw - 1) & 0x3) << 14) |
+	     (((bt->prop_seg + bt->phase_seg1 - 1) & 0xf) << 16) |
+	     (((bt->phase_seg2 - 1) & 0x7) << 20);
+	if (priv->can.ctrlmode & CAN_CTRLMODE_3_SAMPLES)
+		cfg |= 0x800000;
+
+	netdev_dbg(dev, "setting BITTIMING=0x%08x\n", cfg);
+	writel(cfg, priv->base + SUN4I_REG_BTIME_ADDR);
+
+	return 0;
+}
+
+static int sun4ican_get_berr_counter(const struct net_device *dev,
+				     struct can_berr_counter *bec)
+{
+	struct sun4ican_priv *priv = netdev_priv(dev);
+	u32 errors;
+	int err;
+
+	err = clk_prepare_enable(priv->clk);
+	if (err) {
+		netdev_err(dev, "could not enable clock\n");
+		return err;
+	}
+
+	errors = readl(priv->base + SUN4I_REG_ERRC_ADDR);
+
+	bec->txerr = errors & 0xFF;
+	bec->rxerr = (errors >> 16) & 0xFF;
+
+	clk_disable_unprepare(priv->clk);
+
+	return 0;
+}
+
+static int sun4i_can_start(struct net_device *dev)
+{
+	struct sun4ican_priv *priv = netdev_priv(dev);
+	int err;
+	u32 mod_reg_val;
+
+	/* we need to enter the reset mode */
+	err = set_reset_mode(dev);
+	if (err) {
+		netdev_err(dev, "could not enter reset mode\n");
+		return err;
+	}
+
+	/* set filters - we accept all */
+	writel(0x00000000, priv->base + SUN4I_REG_ACPC_ADDR);
+	writel(0xFFFFFFFF, priv->base + SUN4I_REG_ACPM_ADDR);
+
+	/* clear error counters and error code capture */
+	writel(0, priv->base + SUN4I_REG_ERRC_ADDR);
+
+	/* enable interrupts */
+	if (priv->can.ctrlmode & CAN_CTRLMODE_BERR_REPORTING)
+		writel(0xFF, priv->base + SUN4I_REG_INTEN_ADDR);
+	else
+		writel(0xFF & ~SUN4I_INTEN_BERR,
+		       priv->base + SUN4I_REG_INTEN_ADDR);
+
+	/* enter the selected mode */
+	mod_reg_val = readl(priv->base + SUN4I_REG_MSEL_ADDR);
+	if (priv->can.ctrlmode & CAN_CTRLMODE_LOOPBACK)
+		mod_reg_val |= SUN4I_MSEL_LOOPBACK_MODE;
+	else if (priv->can.ctrlmode & CAN_CTRLMODE_LISTENONLY)
+		mod_reg_val |= SUN4I_MSEL_LISTEN_ONLY_MODE;
+	writel(mod_reg_val, priv->base + SUN4I_REG_MSEL_ADDR);
+
+	err = sun4ican_set_bittiming(dev);
+	if (err)
+		return err;
+
+	/* we are ready to enter the normal mode */
+	err = set_normal_mode(dev);
+	if (err) {
+		netdev_err(dev, "could not enter normal mode\n");
+		return err;
+	}
+
+	priv->can.state = CAN_STATE_ERROR_ACTIVE;
+
+	return 0;
+}
+
+static int sun4i_can_stop(struct net_device *dev)
+{
+	struct sun4ican_priv *priv = netdev_priv(dev);
+	int err;
+
+	priv->can.state = CAN_STATE_STOPPED;
+	/* we need to enter reset mode */
+	err = set_reset_mode(dev);
+	if (err) {
+		netdev_err(dev, "could not enter reset mode\n");
+		return err;
+	}
+
+	/* disable all interrupts */
+	writel(0, priv->base + SUN4I_REG_INTEN_ADDR);
+
+	return 0;
+}
+
+static int sun4ican_set_mode(struct net_device *dev, enum can_mode mode)
+{
+	int err;
+
+	switch (mode) {
+	case CAN_MODE_START:
+		err = sun4i_can_start(dev);
+		if (err) {
+			netdev_err(dev, "starting CAN controller failed!\n");
+			return err;
+		}
+		if (netif_queue_stopped(dev))
+			netif_wake_queue(dev);
+		break;
+
+	default:
+		return -EOPNOTSUPP;
+	}
+	return 0;
+}
+
+/* transmit a CAN message
+ * message layout in the sk_buff should be like this:
+ * xx xx xx xx         ff         ll 00 11 22 33 44 55 66 77
+ * [ can_id ] [flags] [len] [can data (up to 8 bytes]
+ */
+static netdev_tx_t sun4ican_start_xmit(struct sk_buff *skb, struct net_device *dev)
+{
+	struct sun4ican_priv *priv = netdev_priv(dev);
+	struct can_frame *cf = (struct can_frame *)skb->data;
+	u8 dlc;
+	u32 dreg, msg_flag_n;
+	canid_t id;
+	int i;
+
+	if (can_dropped_invalid_skb(dev, skb))
+		return NETDEV_TX_OK;
+
+	netif_stop_queue(dev);
+
+	id = cf->can_id;
+	dlc = cf->len;
+	msg_flag_n = dlc;
+
+	if (id & CAN_RTR_FLAG)
+		msg_flag_n |= SUN4I_MSG_RTR_FLAG;
+
+	if (id & CAN_EFF_FLAG) {
+		msg_flag_n |= SUN4I_MSG_EFF_FLAG;
+		dreg = SUN4I_REG_BUF5_ADDR;
+		writel((id >> 21) & 0xFF, priv->base + SUN4I_REG_BUF1_ADDR);
+		writel((id >> 13) & 0xFF, priv->base + SUN4I_REG_BUF2_ADDR);
+		writel((id >> 5)  & 0xFF, priv->base + SUN4I_REG_BUF3_ADDR);
+		writel((id << 3)  & 0xF8, priv->base + SUN4I_REG_BUF4_ADDR);
+	} else {
+		dreg = SUN4I_REG_BUF3_ADDR;
+		writel((id >> 3) & 0xFF, priv->base + SUN4I_REG_BUF1_ADDR);
+		writel((id << 5) & 0xE0, priv->base + SUN4I_REG_BUF2_ADDR);
+	}
+
+	for (i = 0; i < dlc; i++)
+		writel(cf->data[i], priv->base + (dreg + i * 4));
+
+	writel(msg_flag_n, priv->base + SUN4I_REG_BUF0_ADDR);
+
+	can_put_echo_skb(skb, dev, 0, 0);
+
+	if (priv->can.ctrlmode & CAN_CTRLMODE_LOOPBACK)
+		sun4i_can_write_cmdreg(priv, SUN4I_CMD_SELF_RCV_REQ);
+	else
+		sun4i_can_write_cmdreg(priv, SUN4I_CMD_TRANS_REQ);
+
+	return NETDEV_TX_OK;
+}
+
+static void sun4i_can_rx(struct net_device *dev)
+{
+	struct sun4ican_priv *priv = netdev_priv(dev);
+	struct net_device_stats *stats = &dev->stats;
+	struct can_frame *cf;
+	struct sk_buff *skb;
+	u8 fi;
+	u32 dreg;
+	canid_t id;
+	int i;
+
+	/* create zero'ed CAN frame buffer */
+	skb = alloc_can_skb(dev, &cf);
+	if (!skb)
+		return;
+
+	fi = readl(priv->base + SUN4I_REG_BUF0_ADDR);
+	cf->len = can_cc_dlc2len(fi & 0x0F);
+	if (fi & SUN4I_MSG_EFF_FLAG) {
+		dreg = SUN4I_REG_BUF5_ADDR;
+		id = (readl(priv->base + SUN4I_REG_BUF1_ADDR) << 21) |
+		     (readl(priv->base + SUN4I_REG_BUF2_ADDR) << 13) |
+		     (readl(priv->base + SUN4I_REG_BUF3_ADDR) << 5)  |
+		    ((readl(priv->base + SUN4I_REG_BUF4_ADDR) >> 3)  & 0x1f);
+		id |= CAN_EFF_FLAG;
+	} else {
+		dreg = SUN4I_REG_BUF3_ADDR;
+		id = (readl(priv->base + SUN4I_REG_BUF1_ADDR) << 3) |
+		    ((readl(priv->base + SUN4I_REG_BUF2_ADDR) >> 5) & 0x7);
+	}
+
+	/* remote frame ? */
+	if (fi & SUN4I_MSG_RTR_FLAG) {
+		id |= CAN_RTR_FLAG;
+	} else {
+		for (i = 0; i < cf->len; i++)
+			cf->data[i] = readl(priv->base + dreg + i * 4);
+
+		stats->rx_bytes += cf->len;
+	}
+	stats->rx_packets++;
+
+	cf->can_id = id;
+
+	sun4i_can_write_cmdreg(priv, SUN4I_CMD_RELEASE_RBUF);
+
+	netif_rx(skb);
+
+	can_led_event(dev, CAN_LED_EVENT_RX);
+}
+
+static int sun4i_can_err(struct net_device *dev, u8 isrc, u8 status)
+{
+	struct sun4ican_priv *priv = netdev_priv(dev);
+	struct net_device_stats *stats = &dev->stats;
+	struct can_frame *cf;
+	struct sk_buff *skb;
+	enum can_state state = priv->can.state;
+	enum can_state rx_state, tx_state;
+	unsigned int rxerr, txerr, errc;
+	u32 ecc, alc;
+
+	/* we don't skip if alloc fails because we want the stats anyhow */
+	skb = alloc_can_err_skb(dev, &cf);
+
+	errc = readl(priv->base + SUN4I_REG_ERRC_ADDR);
+	rxerr = (errc >> 16) & 0xFF;
+	txerr = errc & 0xFF;
+
+	if (skb) {
+		cf->data[6] = txerr;
+		cf->data[7] = rxerr;
+	}
+
+	if (isrc & SUN4I_INT_DATA_OR) {
+		/* data overrun interrupt */
+		netdev_dbg(dev, "data overrun interrupt\n");
+		if (likely(skb)) {
+			cf->can_id |= CAN_ERR_CRTL;
+			cf->data[1] = CAN_ERR_CRTL_RX_OVERFLOW;
+		}
+		stats->rx_over_errors++;
+		stats->rx_errors++;
+
+		/* reset the CAN IP by entering reset mode
+		 * ignoring timeout error
+		 */
+		set_reset_mode(dev);
+		set_normal_mode(dev);
+
+		/* clear bit */
+		sun4i_can_write_cmdreg(priv, SUN4I_CMD_CLEAR_OR_FLAG);
+	}
+	if (isrc & SUN4I_INT_ERR_WRN) {
+		/* error warning interrupt */
+		netdev_dbg(dev, "error warning interrupt\n");
+
+		if (status & SUN4I_STA_BUS_OFF)
+			state = CAN_STATE_BUS_OFF;
+		else if (status & SUN4I_STA_ERR_STA)
+			state = CAN_STATE_ERROR_WARNING;
+		else
+			state = CAN_STATE_ERROR_ACTIVE;
+	}
+	if (isrc & SUN4I_INT_BUS_ERR) {
+		/* bus error interrupt */
+		netdev_dbg(dev, "bus error interrupt\n");
+		priv->can.can_stats.bus_error++;
+		stats->rx_errors++;
+
+		if (likely(skb)) {
+			ecc = readl(priv->base + SUN4I_REG_STA_ADDR);
+
+			cf->can_id |= CAN_ERR_PROT | CAN_ERR_BUSERROR;
+
+			switch (ecc & SUN4I_STA_MASK_ERR) {
+			case SUN4I_STA_BIT_ERR:
+				cf->data[2] |= CAN_ERR_PROT_BIT;
+				break;
+			case SUN4I_STA_FORM_ERR:
+				cf->data[2] |= CAN_ERR_PROT_FORM;
+				break;
+			case SUN4I_STA_STUFF_ERR:
+				cf->data[2] |= CAN_ERR_PROT_STUFF;
+				break;
+			default:
+				cf->data[3] = (ecc & SUN4I_STA_ERR_SEG_CODE)
+					       >> 16;
+				break;
+			}
+			/* error occurred during transmission? */
+			if ((ecc & SUN4I_STA_ERR_DIR) == 0)
+				cf->data[2] |= CAN_ERR_PROT_TX;
+		}
+	}
+	if (isrc & SUN4I_INT_ERR_PASSIVE) {
+		/* error passive interrupt */
+		netdev_dbg(dev, "error passive interrupt\n");
+		if (state == CAN_STATE_ERROR_PASSIVE)
+			state = CAN_STATE_ERROR_WARNING;
+		else
+			state = CAN_STATE_ERROR_PASSIVE;
+	}
+	if (isrc & SUN4I_INT_ARB_LOST) {
+		/* arbitration lost interrupt */
+		netdev_dbg(dev, "arbitration lost interrupt\n");
+		alc = readl(priv->base + SUN4I_REG_STA_ADDR);
+		priv->can.can_stats.arbitration_lost++;
+		if (likely(skb)) {
+			cf->can_id |= CAN_ERR_LOSTARB;
+			cf->data[0] = (alc >> 8) & 0x1f;
+		}
+	}
+
+	if (state != priv->can.state) {
+		tx_state = txerr >= rxerr ? state : 0;
+		rx_state = txerr <= rxerr ? state : 0;
+
+		if (likely(skb))
+			can_change_state(dev, cf, tx_state, rx_state);
+		else
+			priv->can.state = state;
+		if (state == CAN_STATE_BUS_OFF)
+			can_bus_off(dev);
+	}
+
+	if (likely(skb))
+		netif_rx(skb);
+	else
+		return -ENOMEM;
+
+	return 0;
+}
+
+static irqreturn_t sun4i_can_interrupt(int irq, void *dev_id)
+{
+	struct net_device *dev = (struct net_device *)dev_id;
+	struct sun4ican_priv *priv = netdev_priv(dev);
+	struct net_device_stats *stats = &dev->stats;
+	u8 isrc, status;
+	int n = 0;
+
+	while ((isrc = readl(priv->base + SUN4I_REG_INT_ADDR)) &&
+	       (n < SUN4I_CAN_MAX_IRQ)) {
+		n++;
+		status = readl(priv->base + SUN4I_REG_STA_ADDR);
+
+		if (isrc & SUN4I_INT_WAKEUP)
+			netdev_warn(dev, "wakeup interrupt\n");
+
+		if (isrc & SUN4I_INT_TBUF_VLD) {
+			/* transmission complete interrupt */
+			stats->tx_bytes += can_get_echo_skb(dev, 0, NULL);
+			stats->tx_packets++;
+			netif_wake_queue(dev);
+			can_led_event(dev, CAN_LED_EVENT_TX);
+		}
+		if ((isrc & SUN4I_INT_RBUF_VLD) &&
+		    !(isrc & SUN4I_INT_DATA_OR)) {
+			/* receive interrupt - don't read if overrun occurred */
+			while (status & SUN4I_STA_RBUF_RDY) {
+				/* RX buffer is not empty */
+				sun4i_can_rx(dev);
+				status = readl(priv->base + SUN4I_REG_STA_ADDR);
+			}
+		}
+		if (isrc &
+		    (SUN4I_INT_DATA_OR | SUN4I_INT_ERR_WRN | SUN4I_INT_BUS_ERR |
+		     SUN4I_INT_ERR_PASSIVE | SUN4I_INT_ARB_LOST)) {
+			/* error interrupt */
+			if (sun4i_can_err(dev, isrc, status))
+				netdev_err(dev, "can't allocate buffer - clearing pending interrupts\n");
+		}
+		/* clear interrupts */
+		writel(isrc, priv->base + SUN4I_REG_INT_ADDR);
+		readl(priv->base + SUN4I_REG_INT_ADDR);
+	}
+	if (n >= SUN4I_CAN_MAX_IRQ)
+		netdev_dbg(dev, "%d messages handled in ISR", n);
+
+	return (n) ? IRQ_HANDLED : IRQ_NONE;
+}
+
+static int sun4ican_open(struct net_device *dev)
+{
+	struct sun4ican_priv *priv = netdev_priv(dev);
+	int err;
+
+	/* common open */
+	err = open_candev(dev);
+	if (err)
+		return err;
+
+	/* register interrupt handler */
+	err = request_irq(dev->irq, sun4i_can_interrupt, 0, dev->name, dev);
+	if (err) {
+		netdev_err(dev, "request_irq err: %d\n", err);
+		goto exit_irq;
+	}
+
+	/* software reset deassert */
+	err = reset_control_deassert(priv->reset);
+	if (err) {
+		netdev_err(dev, "could not deassert CAN reset\n");
+		goto exit_soft_reset;
+	}
+
+	/* turn on clocking for CAN peripheral block */
+	err = clk_prepare_enable(priv->clk);
+	if (err) {
+		netdev_err(dev, "could not enable CAN peripheral clock\n");
+		goto exit_clock;
+	}
+
+	err = sun4i_can_start(dev);
+	if (err) {
+		netdev_err(dev, "could not start CAN peripheral\n");
+		goto exit_can_start;
+	}
+
+	can_led_event(dev, CAN_LED_EVENT_OPEN);
+	netif_start_queue(dev);
+
+	return 0;
+
+exit_can_start:
+	clk_disable_unprepare(priv->clk);
+exit_clock:
+	reset_control_assert(priv->reset);
+exit_soft_reset:
+	free_irq(dev->irq, dev);
+exit_irq:
+	close_candev(dev);
+	return err;
+}
+
+static int sun4ican_close(struct net_device *dev)
+{
+	struct sun4ican_priv *priv = netdev_priv(dev);
+
+	netif_stop_queue(dev);
+	sun4i_can_stop(dev);
+	clk_disable_unprepare(priv->clk);
+	reset_control_assert(priv->reset);
+
+	free_irq(dev->irq, dev);
+	close_candev(dev);
+	can_led_event(dev, CAN_LED_EVENT_STOP);
+
+	return 0;
+}
+
+static const struct net_device_ops sun4ican_netdev_ops = {
+	.ndo_open = sun4ican_open,
+	.ndo_stop = sun4ican_close,
+	.ndo_start_xmit = sun4ican_start_xmit,
+};
+
+static const struct sun4ican_quirks sun4ican_quirks_a10 = {
+	.has_reset = false,
+};
+
+static const struct sun4ican_quirks sun4ican_quirks_r40 = {
+	.has_reset = true,
+};
+
+static const struct of_device_id sun4ican_of_match[] = {
+	{
+		.compatible = "allwinner,sun4i-a10-can",
+		.data = &sun4ican_quirks_a10
+	}, {
+		.compatible = "allwinner,sun7i-a20-can",
+		.data = &sun4ican_quirks_a10
+	}, {
+		.compatible = "allwinner,sun8i-r40-can",
+		.data = &sun4ican_quirks_r40
+	}, {
+		/* sentinel */
+	},
+};
+
+MODULE_DEVICE_TABLE(of, sun4ican_of_match);
+
+static int sun4ican_remove(struct platform_device *pdev)
+{
+	struct net_device *dev = platform_get_drvdata(pdev);
+
+	unregister_netdev(dev);
+	free_candev(dev);
+
+	return 0;
+}
+
+static int sun4ican_probe(struct platform_device *pdev)
+{
+	struct device_node *np = pdev->dev.of_node;
+	struct clk *clk;
+	struct reset_control *reset = NULL;
+	void __iomem *addr;
+	int err, irq;
+	struct net_device *dev;
+	struct sun4ican_priv *priv;
+	const struct sun4ican_quirks *quirks;
+
+	quirks = of_device_get_match_data(&pdev->dev);
+	if (!quirks) {
+		dev_err(&pdev->dev, "failed to determine the quirks to use\n");
+		err = -ENODEV;
+		goto exit;
+	}
+
+	if (quirks->has_reset) {
+		reset = devm_reset_control_get_exclusive(&pdev->dev, NULL);
+		if (IS_ERR(reset)) {
+			dev_err(&pdev->dev, "unable to request reset\n");
+			err = PTR_ERR(reset);
+			goto exit;
+		}
+	}
+
+	clk = of_clk_get(np, 0);
+	if (IS_ERR(clk)) {
+		dev_err(&pdev->dev, "unable to request clock\n");
+		err = -ENODEV;
+		goto exit;
+	}
+
+	irq = platform_get_irq(pdev, 0);
+	if (irq < 0) {
+		err = -ENODEV;
+		goto exit;
+	}
+
+	addr = devm_platform_ioremap_resource(pdev, 0);
+	if (IS_ERR(addr)) {
+		err = PTR_ERR(addr);
+		goto exit;
+	}
+
+	dev = alloc_candev(sizeof(struct sun4ican_priv), 1);
+	if (!dev) {
+		dev_err(&pdev->dev,
+			"could not allocate memory for CAN device\n");
+		err = -ENOMEM;
+		goto exit;
+	}
+
+	dev->netdev_ops = &sun4ican_netdev_ops;
+	dev->irq = irq;
+	dev->flags |= IFF_ECHO;
+
+	priv = netdev_priv(dev);
+	priv->can.clock.freq = clk_get_rate(clk);
+	priv->can.bittiming_const = &sun4ican_bittiming_const;
+	priv->can.do_set_mode = sun4ican_set_mode;
+	priv->can.do_get_berr_counter = sun4ican_get_berr_counter;
+	priv->can.ctrlmode_supported = CAN_CTRLMODE_BERR_REPORTING |
+				       CAN_CTRLMODE_LISTENONLY |
+				       CAN_CTRLMODE_LOOPBACK |
+				       CAN_CTRLMODE_3_SAMPLES;
+	priv->base = addr;
+	priv->clk = clk;
+	priv->reset = reset;
+	spin_lock_init(&priv->cmdreg_lock);
+
+	platform_set_drvdata(pdev, dev);
+	SET_NETDEV_DEV(dev, &pdev->dev);
+
+	err = register_candev(dev);
+	if (err) {
+		dev_err(&pdev->dev, "registering %s failed (err=%d)\n",
+			DRV_NAME, err);
+		goto exit_free;
+	}
+	devm_can_led_init(dev);
+
+	dev_info(&pdev->dev, "device registered (base=%p, irq=%d)\n",
+		 priv->base, dev->irq);
+
+	return 0;
+
+exit_free:
+	free_candev(dev);
+exit:
+	return err;
+}
+
+static struct platform_driver sun4i_can_driver = {
+	.driver = {
+		.name = DRV_NAME,
+		.of_match_table = sun4ican_of_match,
+	},
+	.probe = sun4ican_probe,
+	.remove = sun4ican_remove,
+};
+
+module_platform_driver(sun4i_can_driver);
+
+MODULE_AUTHOR("Peter Chen <xingkongcp@gmail.com>");
+MODULE_AUTHOR("Gerhard Bertelsmann <info@gerhard-bertelsmann.de>");
+MODULE_LICENSE("Dual BSD/GPL");
+MODULE_DESCRIPTION("CAN driver for Allwinner SoCs (A10/A20)");

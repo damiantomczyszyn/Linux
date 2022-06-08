@@ -1,2 +1,2 @@
-drivers/media/rc/keymaps/rc-kworld-315u.o
-
+00000036);
+		cx_write(MC417_OEN, 0x00001000

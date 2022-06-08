@@ -1,26 +1,27 @@
-(void *)&count, noop_count, NULL, &target_entry);
-
-	return count;
-}
-unsigned long lockdep_count_forward_deps(struct lock_class *class)
+ int cpu, int wake_flags)
 {
-	unsigned long ret, flags;
-	struct lock_list this;
+	struct rq *rq = cpu_rq(cpu);
 
-	__bfs_init_root(&this, class);
+	p->sched_remote_wakeup = !!(wake_flags & WF_MIGRATED);
 
-	raw_local_irq_save(flags);
-	lockdep_lock();
-	ret = __lockdep_count_forward_deps(&this);
-	lockdep_unlock();
-	raw_local_irq_restore(flags);
-
-	return ret;
+	WRITE_ONCE(rq->ttwu_pending, 1);
+	__smp_call_single_queue(cpu, &p->wake_entry.llist);
 }
 
-static unsigned long __lockdep_count_backward_deps(struct lock_list *this)
+void wake_up_if_idle(int cpu)
 {
-	unsigned long  count = 0;
-	struct lock_list *target_entry;
+	struct rq *rq = cpu_rq(cpu);
+	struct rq_flags rf;
 
-	__bfs_bac
+	rcu_read_lock();
+
+	if (!is_idle_task(rcu_dereference(rq->curr)))
+		goto out;
+
+	rq_lock_irqsave(rq, &rf);
+	if (is_idle_task(rq->curr))
+		resched_curr(rq);
+	/* Else CPU is not idle, do nothing here: */
+	rq_unlock_irqrestore(rq, &rf);
+
+ou

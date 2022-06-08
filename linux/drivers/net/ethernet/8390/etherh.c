@@ -1,498 +1,858 @@
-\
-  include/linux/rwlock.h \
-    $(wildcard include/config/PREEMPT) \
-  include/linux/spinlock_api_smp.h \
-    $(wildcard include/config/INLINE_SPIN_LOCK) \
-    $(wildcard include/config/INLINE_SPIN_LOCK_BH) \
-    $(wildcard include/config/INLINE_SPIN_LOCK_IRQ) \
-    $(wildcard include/config/INLINE_SPIN_LOCK_IRQSAVE) \
-    $(wildcard include/config/INLINE_SPIN_TRYLOCK) \
-    $(wildcard include/config/INLINE_SPIN_TRYLOCK_BH) \
-    $(wildcard include/config/UNINLINE_SPIN_UNLOCK) \
-    $(wildcard include/config/INLINE_SPIN_UNLOCK_BH) \
-    $(wildcard include/config/INLINE_SPIN_UNLOCK_IRQ) \
-    $(wildcard include/config/INLINE_SPIN_UNLOCK_IRQRESTORE) \
-    $(wildcard include/config/GENERIC_LOCKBREAK) \
-  include/linux/rwlock_api_smp.h \
-    $(wildcard include/config/INLINE_READ_LOCK) \
-    $(wildcard include/config/INLINE_WRITE_LOCK) \
-    $(wildcard include/config/INLINE_READ_LOCK_BH) \
-    $(wildcard include/config/INLINE_WRITE_LOCK_BH) \
-    $(wildcard include/config/INLINE_READ_LOCK_IRQ) \
-    $(wildcard include/config/INLINE_WRITE_LOCK_IRQ) \
-    $(wildcard include/config/INLINE_READ_LOCK_IRQSAVE) \
-    $(wildcard include/config/INLINE_WRITE_LOCK_IRQSAVE) \
-    $(wildcard include/config/INLINE_READ_TRYLOCK) \
-    $(wildcard include/config/INLINE_WRITE_TRYLOCK) \
-    $(wildcard include/config/INLINE_READ_UNLOCK) \
-    $(wildcard include/config/INLINE_WRITE_UNLOCK) \
-    $(wildcard include/config/INLINE_READ_UNLOCK_BH) \
-    $(wildcard include/config/INLINE_WRITE_UNLOCK_BH) \
-    $(wildcard include/config/INLINE_READ_UNLOCK_IRQ) \
-    $(wildcard include/config/INLINE_WRITE_UNLOCK_IRQ) \
-    $(wildcard include/config/INLINE_READ_UNLOCK_IRQRESTORE) \
-    $(wildcard include/config/INLINE_WRITE_UNLOCK_IRQRESTORE) \
-  include/linux/refcount.h \
-  include/linux/rbtree.h \
-  include/linux/rbtree_types.h \
-  include/linux/rcupdate.h \
-    $(wildcard include/config/PREEMPT_RCU) \
-    $(wildcard include/config/TINY_RCU) \
-    $(wildcard include/config/RCU_STRICT_GRACE_PERIOD) \
-    $(wildcard include/config/TASKS_RCU_GENERIC) \
-    $(wildcard include/config/RCU_STALL_COMMON) \
-    $(wildcard include/config/NO_HZ_FULL) \
-    $(wildcard include/config/RCU_NOCB_CPU) \
-    $(wildcard include/config/TASKS_RCU) \
-    $(wildcard include/config/TASKS_TRACE_RCU) \
-    $(wildcard include/config/TASKS_RUDE_RCU) \
-    $(wildcard include/config/TREE_RCU) \
-    $(wildcard include/config/DEBUG_OBJECTS_RCU_HEAD) \
-    $(wildcard include/config/PROVE_RCU) \
-    $(wildcard include/config/ARCH_WEAK_RELEASE_ACQUIRE) \
-  include/linux/rcutree.h \
-  include/linux/rwsem.h \
-    $(wildcard include/config/RWSEM_SPIN_ON_OWNER) \
-    $(wildcard include/config/DEBUG_RWSEMS) \
-  include/linux/osq_lock.h \
-  include/linux/completion.h \
-  include/linux/swait.h \
-  include/linux/wait.h \
-  include/uapi/linux/wait.h \
-  include/linux/uprobes.h \
-    $(wildcard include/config/UPROBES) \
-  arch/x86/include/asm/uprobes.h \
-  include/linux/notifier.h \
-  include/linux/mutex.h \
-    $(wildcard include/config/MUTEX_SPIN_ON_OWNER) \
-    $(wildcard include/config/DEBUG_MUTEXES) \
-  include/linux/debug_locks.h \
-  include/linux/srcu.h \
-    $(wildcard include/config/TINY_SRCU) \
-    $(wildcard include/config/SRCU) \
-  include/linux/workqueue.h \
-    $(wildcard include/config/DEBUG_OBJECTS_WORK) \
-    $(wildcard include/config/FREEZER) \
-    $(wildcard include/config/WQ_WATCHDOG) \
-  include/linux/timer.h \
-    $(wildcard include/config/DEBUG_OBJECTS_TIMERS) \
-    $(wildcard include/config/NO_HZ_COMMON) \
-  include/linux/ktime.h \
-  include/linux/jiffies.h \
-  include/vdso/jiffies.h \
-  include/generated/timeconst.h \
-  include/vdso/ktime.h \
-  include/linux/timekeeping.h \
-    $(wildcard include/config/GENERIC_CMOS_UPDATE) \
-  include/linux/clocksource_ids.h \
-  include/linux/debugobjects.h \
-    $(wildcard include/config/DEBUG_OBJECTS) \
-    $(wildcard include/config/DEBUG_OBJECTS_FREE) \
-  include/linux/rcu_segcblist.h \
-  include/linux/srcutree.h \
-  include/linux/rcu_node_tree.h \
-    $(wildcard include/config/RCU_FANOUT) \
-    $(wildcard include/config/RCU_FANOUT_LEAF) \
-  include/linux/page-flags-layout.h \
-    $(wildcard include/config/KASAN_HW_TAGS) \
-  include/linux/numa.h \
-    $(wildcard include/config/NODES_SHIFT) \
-    $(wildcard include/config/NUMA_KEEP_MEMINFO) \
-    $(wildcard include/config/HAVE_ARCH_NODE_DEV_GROUP) \
-  arch/x86/include/asm/sparsemem.h \
-  include/generated/bounds.h \
-  include/linux/seqlock.h \
-  include/linux/ww_mutex.h \
-    $(wildcard include/config/DEBUG_RT_MUTEXES) \
-    $(wildcard include/config/DEBUG_WW_MUTEX_SLOWPATH) \
-  include/linux/rtmutex.h \
-  arch/x86/include/asm/mmu.h \
-    $(wildcard include/config/MODIFY_LDT_SYSCALL) \
-  include/linux/kmod.h \
-  include/linux/umh.h \
-  include/linux/gfp.h \
-    $(wildcard include/config/HIGHMEM) \
-    $(wildcard include/config/ZONE_DMA) \
-    $(wildcard include/config/ZONE_DMA32) \
-    $(wildcard include/config/ZONE_DEVICE) \
-    $(wildcard include/config/PM_SLEEP) \
-    $(wildcard include/config/CONTIG_ALLOC) \
-    $(wildcard include/config/CMA) \
-  include/linux/mmdebug.h \
-    $(wildcard include/config/DEBUG_VM) \
-    $(wildcard include/config/DEBUG_VM_PGFLAGS) \
-  include/linux/mmzone.h \
-    $(wildcard include/config/FORCE_MAX_ZONEORDER) \
-    $(wildcard include/config/MEMORY_ISOLATION) \
-    $(wildcard include/config/ZSMALLOC) \
-    $(wildcard include/config/MEMORY_HOTPLUG) \
-    $(wildcard include/config/COMPACTION) \
-    $(wildcard include/config/PAGE_EXTENSION) \
-    $(wildcard include/config/DEFERRED_STRUCT_PAGE_INIT) \
-    $(wildcard include/config/HAVE_MEMORYLESS_NODES) \
-    $(wildcard include/config/SPARSEMEM_EXTREME) \
-    $(wildcard include/config/HAVE_ARCH_PFN_VALID) \
-  include/linux/nodemask.h \
-  include/linux/pageblock-flags.h \
-    $(wildcard include/config/HUGETLB_PAGE_SIZE_VARIABLE) \
-  include/linux/page-flags.h \
-    $(wildcard include/config/ARCH_USES_PG_UNCACHED) \
-    $(wildcard include/config/MEMORY_FAILURE) \
-    $(wildcard include/config/PAGE_IDLE_FLAG) \
-    $(wildcard include/config/HUGETLB_PAGE_FREE_VMEMMAP) \
-    $(wildcard include/config/HUGETLB_PAGE_FREE_VMEMMAP_DEFAULT_ON) \
-    $(wildcard include/config/KSM) \
-  include/linux/local_lock.h \
-  include/linux/local_lock_internal.h \
-  include/linux/memory_hotplug.h \
-    $(wildcard include/config/HAVE_ARCH_NODEDATA_EXTENSION) \
-    $(wildcard include/config/ARCH_HAS_ADD_PAGES) \
-    $(wildcard include/config/MEMORY_HOTREMOVE) \
-  arch/x86/include/asm/mmzone.h \
-  arch/x86/include/asm/mmzone_32.h \
-  include/linux/topology.h \
-    $(wildcard include/config/USE_PERCPU_NUMA_NODE_ID) \
-    $(wildcard include/config/SCHED_SMT) \
-    $(wildcard include/config/SCHED_CLUSTER) \
-  include/linux/arch_topology.h \
-    $(wildcard include/config/ACPI_CPPC_LIB) \
-    $(wildcard include/config/GENERIC_ARCH_TOPOLOGY) \
-  include/linux/percpu.h \
-    $(wildcard include/config/NEED_PER_CPU_EMBED_FIRST_CHUNK) \
-    $(wildcard include/config/NEED_PER_CPU_PAGE_FIRST_CHUNK) \
-  arch/x86/include/asm/topology.h \
-    $(wildcard include/config/SCHED_MC_PRIO) \
-  arch/x86/include/asm/mpspec.h \
-    $(wildcard include/config/EISA) \
-    $(wildcard include/config/X86_MPPARSE) \
-  arch/x86/include/asm/mpspec_def.h \
-  arch/x86/include/asm/x86_init.h \
-  arch/x86/include/asm/apicdef.h \
-  include/asm-generic/topology.h \
-  include/linux/sysctl.h \
-    $(wildcard include/config/SYSCTL) \
-  include/uapi/linux/sysctl.h \
-  include/linux/elf.h \
-    $(wildcard include/config/ARCH_USE_GNU_PROPERTY) \
-    $(wildcard include/config/ARCH_HAVE_ELF_PROT) \
-  arch/x86/include/asm/elf.h \
-    $(wildcard include/config/X86_X32_ABI) \
-  arch/x86/include/asm/user.h \
-  arch/x86/include/asm/user_32.h \
-  arch/x86/include/asm/fsgsbase.h \
-  arch/x86/include/asm/vdso.h \
-  arch/x86/include/asm/desc.h \
-  arch/x86/include/asm/fixmap.h \
-    $(wildcard include/config/DEBUG_KMAP_LOCAL_FORCE_MAP) \
-    $(wildcard include/config/X86_VSYSCALL_EMULATION) \
-    $(wildcard include/config/PROVIDE_OHCI1394_DMA_INIT) \
-    $(wildcard include/config/X86_IO_APIC) \
-    $(wildcard include/config/KMAP_LOCAL) \
-    $(wildcard include/config/PCI_MMCONFIG) \
-    $(wildcard include/config/ACPI_APEI_GHES) \
-    $(wildcard include/config/INTEL_TXT) \
-  arch/x86/include/generated/asm/kmap_size.h \
-  include/asm-generic/kmap_size.h \
-    $(wildcard include/config/DEBUG_KMAP_LOCAL) \
-  include/asm-generic/fixmap.h \
-  arch/x86/include/asm/irq_vectors.h \
-    $(wildcard include/config/HAVE_KVM) \
-    $(wildcard include/config/HYPERV) \
-    $(wildcard include/config/PCI_MSI) \
-  arch/x86/include/asm/cpu_entry_area.h \
-  arch/x86/include/asm/intel_ds.h \
-  arch/x86/include/asm/pgtable_areas.h \
-  arch/x86/include/asm/pgtable_32_areas.h \
-  include/uapi/linux/elf.h \
-  include/uapi/linux/elf-em.h \
-  include/linux/kobject.h \
-    $(wildcard include/config/UEVENT_HELPER) \
-    $(wildcard include/config/DEBUG_KOBJECT_RELEASE) \
-  include/linux/sysfs.h \
-  include/linux/kernfs.h \
-    $(wildcard include/config/KERNFS) \
-  include/linux/idr.h \
-  include/linux/radix-tree.h \
-  include/linux/xarray.h \
-    $(wildcard include/config/XARRAY_MULTI) \
-  include/linux/kconfig.h \
-  include/linux/kobject_ns.h \
-  include/linux/moduleparam.h \
-    $(wildcard include/config/ALPHA) \
-    $(wildcard include/config/IA64) \
-    $(wildcard include/config/PPC64) \
-  include/linux/rbtree_latch.h \
-  include/linux/error-injection.h \
-  include/asm-generic/error-injection.h \
-  include/linux/cfi.h \
-    $(wildcard include/config/CFI_CLANG_SHADOW) \
-  arch/x86/include/asm/module.h \
-    $(wildcard include/config/UNWINDER_ORC) \
-  include/asm-generic/module.h \
-    $(wildcard include/config/HAVE_MOD_ARCH_SPECIFIC) \
-    $(wildcard include/config/MODULES_USE_ELF_REL) \
-    $(wildcard include/config/MODULES_USE_ELF_RELA) \
-  arch/x86/include/asm/orc_types.h \
-  include/linux/delay.h \
-  include/linux/sched.h \
-    $(wildcard include/config/VIRT_CPU_ACCOUNTING_NATIVE) \
-    $(wildcard include/config/SCHED_INFO) \
-    $(wildcard include/config/SCHEDSTATS) \
-    $(wildcard include/config/SCHED_CORE) \
-    $(wildcard include/config/FAIR_GROUP_SCHED) \
-    $(wildcard include/config/RT_GROUP_SCHED) \
-    $(wildcard include/config/RT_MUTEXES) \
-    $(wildcard include/config/UCLAMP_TASK) \
-    $(wildcard include/config/UCLAMP_BUCKETS_COUNT) \
-    $(wildcard include/config/CGROUP_SCHED) \
-    $(wildcard include/config/BLK_DEV_IO_TRACE) \
-    $(wildcard include/config/PSI) \
-    $(wildcard include/config/COMPAT_BRK) \
-    $(wildcard include/config/CGROUPS) \
-    $(wildcard include/config/BLK_CGROUP) \
-    $(wildcard include/config/PAGE_OWNER) \
-    $(wildcard include/config/EVENTFD) \
-    $(wildcard include/config/ARCH_HAS_SCALED_CPUTIME) \
-    $(wildcard include/config/VIRT_CPU_ACCOUNTING_GEN) \
-    $(wildcard include/config/POSIX_CPUTIMERS) \
-    $(wildcard include/config/POSIX_CPU_TIMERS_TASK_WORK) \
-    $(wildcard include/config/KEYS) \
-    $(wildcard include/config/SYSVIPC) \
-    $(wildcard include/config/DETECT_HUNG_TASK) \
-    $(wildcard include/config/IO_URING) \
-    $(wildcard include/config/AUDIT) \
-    $(wildcard include/config/AUDITSYSCALL) \
-    $(wildcard include/config/UBSAN) \
-    $(wildcard include/config/UBSAN_TRAP) \
-    $(wildcard include/config/TASK_XACCT) \
-    $(wildcard include/config/CPUSETS) \
-    $(wildcard include/config/X86_CPU_RESCTRL) \
-    $(wildcard include/config/FUTEX) \
-    $(wildcard include/config/PERF_EVENTS) \
-    $(wildcard include/config/RSEQ) \
-    $(wildcard include/config/TASK_DELAY_ACCT) \
-    $(wildcard include/config/FAULT_INJECTION) \
-    $(wildcard include/config/LATENCYTOP) \
-    $(wildcard include/config/KUNIT) \
-    $(wildcard include/config/FUNCTION_GRAPH_TRACER) \
-    $(wildcard include/config/BCACHE) \
-    $(wildcard include/config/VMAP_STACK) \
-    $(wildcard include/config/SECURITY) \
-    $(wildcard include/config/BPF_SYSCALL) \
-    $(wildcard include/config/GCC_PLUGIN_STACKLEAK) \
-    $(wildcard include/config/X86_MCE) \
-    $(wildcard include/config/KRETPROBES) \
-    $(wildcard include/config/RETHOOK) \
-    $(wildcard include/config/ARCH_HAS_PARANOID_L1D_FLUSH) \
-    $(wildcard include/config/ARCH_TASK_STRUCT_ON_STACK) \
-    $(wildcard include/config/DEBUG_RSEQ) \
-  include/uapi/linux/sched.h \
-  include/linux/pid.h \
-  include/linux/rculist.h \
-    $(wildcard include/config/PROVE_RCU_LIST) \
-  include/linux/sem.h \
-  include/uapi/linux/sem.h \
-  include/linux/ipc.h \
-  include/linux/rhashtable-types.h \
-  include/uapi/linux/ipc.h \
-  arch/x86/include/generated/uapi/asm/ipcbuf.h \
-  include/uapi/asm-generic/ipcbuf.h \
-  arch/x86/include/uapi/asm/sembuf.h \
-  include/linux/shm.h \
-  include/uapi/linux/shm.h \
-  include/uapi/asm-generic/hugetlb_encode.h \
-  arch/x86/include/uapi/asm/shmbuf.h \
-  include/uapi/asm-generic/shmbuf.h \
-  arch/x86/include/asm/shmparam.h \
-  include/linux/plist.h \
-    $(wildcard include/config/DEBUG_PLIST) \
-  include/linux/hrtimer.h \
-    $(wildcard include/config/HIGH_RES_TIMERS) \
-    $(wildcard include/config/TIME_LOW_RES) \
-    $(wildcard include/config/TIMERFD) \
-  include/linux/hrtimer_defs.h \
-  include/linux/timerqueue.h \
-  include/linux/seccomp.h \
-    $(wildcard include/config/SECCOMP) \
-    $(wildcard include/config/HAVE_ARCH_SECCOMP_FILTER) \
-    $(wildcard include/config/SECCOMP_FILTER) \
-    $(wildcard include/config/CHECKPOINT_RESTORE) \
-    $(wildcard include/config/SECCOMP_CACHE_DEBUG) \
-  include/uapi/linux/seccomp.h \
-  arch/x86/include/asm/seccomp.h \
-  arch/x86/include/asm/unistd.h \
-  arch/x86/include/uapi/asm/unistd.h \
-  arch/x86/include/generated/uapi/asm/unistd_32.h \
-  include/asm-generic/seccomp.h \
-  include/uapi/linux/unistd.h \
-  include/linux/resource.h \
-  include/uapi/linux/resource.h \
-  arch/x86/include/generated/uapi/asm/resource.h \
-  include/asm-generic/resource.h \
-  include/uapi/asm-generic/resource.h \
-  include/linux/latencytop.h \
-  include/linux/sched/prio.h \
-  include/linux/sched/types.h \
-  include/linux/signal_types.h \
-    $(wildcard include/config/OLD_SIGACTION) \
-  include/uapi/linux/signal.h \
-  arch/x86/include/asm/signal.h \
-  arch/x86/include/uapi/asm/signal.h \
-  include/uapi/asm-generic/signal-defs.h \
-  arch/x86/include/uapi/asm/siginfo.h \
-  include/uapi/asm-generic/siginfo.h \
-  include/linux/syscall_user_dispatch.h \
-  include/linux/task_io_accounting.h \
-    $(wildcard include/config/TASK_IO_ACCOUNTING) \
-  include/linux/posix-timers.h \
-  include/linux/alarmtimer.h \
-    $(wildcard include/config/RTC_CLASS) \
-  include/uapi/linux/rseq.h \
-  include/linux/kcsan.h \
-  arch/x86/include/asm/delay.h \
-  include/asm-generic/delay.h \
-  include/linux/slab.h \
-    $(wildcard include/config/DEBUG_SLAB) \
-    $(wildcard include/config/FAILSLAB) \
-    $(wildcard include/config/MEMCG_KMEM) \
-    $(wildcard include/config/KASAN) \
-    $(wildcard include/config/SLAB) \
-    $(wildcard include/config/SLUB) \
-    $(wildcard include/config/SLOB) \
-  include/linux/overflow.h \
-  include/linux/percpu-refcount.h \
-  include/linux/kasan.h \
-    $(wildcard include/config/KASAN_STACK) \
-    $(wildcard include/config/KASAN_VMALLOC) \
-    $(wildcard include/config/KASAN_INLINE) \
-  include/linux/kasan-enabled.h \
-  include/linux/uaccess.h \
-  include/linux/fault-inject-usercopy.h \
-    $(wildcard include/config/FAULT_INJECTION_USERCOPY) \
-  arch/x86/include/asm/uaccess.h \
-    $(wildcard include/config/CC_HAS_ASM_GOTO_OUTPUT) \
-    $(wildcard include/config/CC_HAS_ASM_GOTO_TIED_OUTPUT) \
-    $(wildcard include/config/ARCH_HAS_COPY_MC) \
-    $(wildcard include/config/X86_INTEL_USERCOPY) \
-  arch/x86/include/asm/smap.h \
-  arch/x86/include/asm/extable.h \
-    $(wildcard include/config/BPF_JIT) \
-  include/asm-generic/access_ok.h \
-    $(wildcard include/config/ALTERNATE_USER_ADDRESS_SPACE) \
-  arch/x86/include/asm/uaccess_32.h \
-  include/linux/i2c.h \
-    $(wildcard include/config/I2C) \
-    $(wildcard include/config/I2C_SLAVE) \
-    $(wildcard include/config/I2C_BOARDINFO) \
-    $(wildcard include/config/I2C_MUX) \
-    $(wildcard include/config/OF) \
-    $(wildcard include/config/ACPI) \
-  include/linux/acpi.h \
-    $(wildcard include/config/ACPI_DEBUGGER) \
-    $(wildcard include/config/ACPI_TABLE_LIB) \
-    $(wildcard include/config/LOONGARCH) \
-    $(wildcard include/config/ARM64) \
-    $(wildcard include/config/ACPI_PROCESSOR_CSTATE) \
-    $(wildcard include/config/ACPI_HOTPLUG_CPU) \
-    $(wildcard include/config/ACPI_HOTPLUG_IOAPIC) \
-    $(wildcard include/config/PCI) \
-    $(wildcard include/config/ACPI_WMI) \
-    $(wildcard include/config/ACPI_NUMA) \
-    $(wildcard include/config/HIBERNATION) \
-    $(wildcard include/config/ACPI_HOTPLUG_MEMORY) \
-    $(wildcard include/config/ACPI_CONTAINER) \
-    $(wildcard include/config/ACPI_GTDT) \
-    $(wildcard include/config/PM) \
-    $(wildcard include/config/GPIOLIB) \
-    $(wildcard include/config/ACPI_TABLE_UPGRADE) \
-    $(wildcard include/config/ACPI_WATCHDOG) \
-    $(wildcard include/config/ACPI_SPCR_TABLE) \
-    $(wildcard include/config/ACPI_GENERIC_GSI) \
-    $(wildcard include/config/ACPI_LPIT) \
-    $(wildcard include/config/ACPI_PPTT) \
-    $(wildcard include/config/ACPI_PCC) \
-  include/linux/ioport.h \
-  include/linux/irqdomain.h \
-    $(wildcard include/config/IRQ_DOMAIN_HIERARCHY) \
-    $(wildcard include/config/GENERIC_IRQ_DEBUGFS) \
-    $(wildcard include/config/IRQ_DOMAIN) \
-    $(wildcard include/config/IRQ_DOMAIN_NOMAP) \
-  include/linux/irqhandler.h \
-  include/linux/of.h \
-    $(wildcard include/config/OF_DYNAMIC) \
-    $(wildcard include/config/SPARC) \
-    $(wildcard include/config/OF_PROMTREE) \
-    $(wildcard include/config/OF_KOBJ) \
-    $(wildcard include/config/OF_NUMA) \
-    $(wildcard include/config/OF_OVERLAY) \
-  include/linux/mod_devicetable.h \
-  include/linux/uuid.h \
-  include/uapi/linux/uuid.h \
-  include/linux/property.h \
-  include/linux/fwnode.h \
-  include/linux/resource_ext.h \
-  include/linux/device.h \
-    $(wildcard include/config/GENERIC_MSI_IRQ_DOMAIN) \
-    $(wildcard include/config/GENERIC_MSI_IRQ) \
-    $(wildcard include/config/ENERGY_MODEL) \
-    $(wildcard include/config/PINCTRL) \
-    $(wildcard include/config/DMA_OPS) \
-    $(wildcard include/config/DMA_DECLARE_COHERENT) \
-    $(wildcard include/config/DMA_CMA) \
-    $(wildcard include/config/SWIOTLB) \
-    $(wildcard include/config/ARCH_HAS_SYNC_DMA_FOR_DEVICE) \
-    $(wildcard include/config/ARCH_HAS_SYNC_DMA_FOR_CPU) \
-    $(wildcard include/config/ARCH_HAS_SYNC_DMA_FOR_CPU_ALL) \
-    $(wildcard include/config/DMA_OPS_BYPASS) \
-    $(wildcard include/config/DEVTMPFS) \
-    $(wildcard include/config/SYSFS_DEPRECATED) \
-  include/linux/dev_printk.h \
-  include/linux/ratelimit.h \
-  include/linux/energy_model.h \
-  include/linux/sched/cpufreq.h \
-    $(wildcard include/config/CPU_FREQ) \
-  include/linux/sched/topology.h \
-    $(wildcard include/config/SCHED_DEBUG) \
-    $(wildcard include/config/SCHED_MC) \
-    $(wildcard include/config/CPU_FREQ_GOV_SCHEDUTIL) \
-  include/linux/sched/idle.h \
-  include/linux/sched/sd_flags.h \
-  include/linux/klist.h \
-  include/linux/pm.h \
-    $(wildcard include/config/VT_CONSOLE_SLEEP) \
-    $(wildcard include/config/PM_CLK) \
-    $(wildcard include/config/PM_GENERIC_DOMAINS) \
-  include/linux/device/bus.h \
-  include/linux/device/class.h \
-  include/linux/device/driver.h \
-  arch/x86/include/asm/device.h \
-  include/linux/pm_wakeup.h \
-  include/acpi/acpi.h \
-  include/acpi/platform/acenv.h \
-  include/acpi/platform/acgcc.h \
-  include/acpi/platform/aclinux.h \
-    $(wildcard include/config/ACPI_REDUCED_HARDWARE_ONLY) \
-    $(wildcard include/config/ACPI_DEBUG) \
-  include/linux/ctype.h \
-  arch/x86/include/asm/acenv.h \
-  include/acpi/acnames.h \
-  include/acpi/actypes.h \
-  include/acpi/acexcep.h \
-  include/acpi/actbl.h \
-  include/acpi/actbl1.h \
-  include/acpi/actbl2.h \
-  include/acpi/actbl3.h \
-  include/acpi/acrestyp.h \
-  include/acpi/platform/acenvex.h \
-  include/acpi/platform/aclinuxex.h \
-  include/acpi/platform/acgccex.h \
-  include/acpi/acoutput.h \
-  include/acpi/acpiosxf.h \
-  include/acpi/acpixf.h \
-  include/acpi/acconfig.h \
-  include/acpi/acbuffer.h \
-  include/linux/dynamic_debug.h \
-  include/acpi/acpi_bus.h \
-    $(wildcard include/config/X86_ANDROID_TABLETS) \
-    $(wildcard include/config/ACPI_SYSTEM_POWER_STATES_SUPPORT) \
-    $(wildcard include/config/ACPI
+// SPDX-License-Identifier: GPL-2.0-only
+/*
+ *  linux/drivers/acorn/net/etherh.c
+ *
+ *  Copyright (C) 2000-2002 Russell King
+ *
+ * NS8390 I-cubed EtherH and ANT EtherM specific driver
+ * Thanks to I-Cubed for information on their cards.
+ * EtherM conversion (C) 1999 Chris Kemp and Tim Watterton
+ * EtherM integration (C) 2000 Aleph One Ltd (Tak-Shing Chan)
+ * EtherM integration re-engineered by Russell King.
+ *
+ * Changelog:
+ *  08-12-1996	RMK	1.00	Created
+ *		RMK	1.03	Added support for EtherLan500 cards
+ *  23-11-1997	RMK	1.04	Added media autodetection
+ *  16-04-1998	RMK	1.05	Improved media autodetection
+ *  10-02-2000	RMK	1.06	Updated for 2.3.43
+ *  13-05-2000	RMK	1.07	Updated for 2.3.99-pre8
+ *  12-10-1999  CK/TEW		EtherM driver first release
+ *  21-12-2000	TTC		EtherH/EtherM integration
+ *  25-12-2000	RMK	1.08	Clean integration of EtherM into this driver.
+ *  03-01-2002	RMK	1.09	Always enable IRQs if we're in the nic slot.
+ */
+
+#include <linux/module.h>
+#include <linux/kernel.h>
+#include <linux/types.h>
+#include <linux/fcntl.h>
+#include <linux/interrupt.h>
+#include <linux/ioport.h>
+#include <linux/in.h>
+#include <linux/string.h>
+#include <linux/errno.h>
+#include <linux/netdevice.h>
+#include <linux/etherdevice.h>
+#include <linux/ethtool.h>
+#include <linux/skbuff.h>
+#include <linux/delay.h>
+#include <linux/device.h>
+#include <linux/init.h>
+#include <linux/bitops.h>
+#include <linux/jiffies.h>
+
+#include <asm/ecard.h>
+#include <asm/io.h>
+#include <asm/system_info.h>
+
+#define EI_SHIFT(x)	(ei_local->reg_offset[x])
+
+#define ei_inb(_p)	 readb((void __iomem *)_p)
+#define ei_outb(_v,_p)	 writeb(_v,(void __iomem *)_p)
+#define ei_inb_p(_p)	 readb((void __iomem *)_p)
+#define ei_outb_p(_v,_p) writeb(_v,(void __iomem *)_p)
+
+#define DRV_NAME	"etherh"
+#define DRV_VERSION	"1.11"
+
+static char version[] =
+	"EtherH/EtherM Driver (c) 2002-2004 Russell King " DRV_VERSION "\n";
+
+#include "lib8390.c"
+
+struct etherh_priv {
+	void __iomem	*ioc_fast;
+	void __iomem	*memc;
+	void __iomem	*dma_base;
+	unsigned int	id;
+	void __iomem	*ctrl_port;
+	unsigned char	ctrl;
+	u32		supported;
+};
+
+struct etherh_data {
+	unsigned long	ns8390_offset;
+	unsigned long	dataport_offset;
+	unsigned long	ctrlport_offset;
+	int		ctrl_ioc;
+	const char	name[16];
+	u32		supported;
+	unsigned char	tx_start_page;
+	unsigned char	stop_page;
+};
+
+MODULE_AUTHOR("Russell King");
+MODULE_DESCRIPTION("EtherH/EtherM driver");
+MODULE_LICENSE("GPL");
+
+#define ETHERH500_DATAPORT	0x800	/* MEMC */
+#define ETHERH500_NS8390	0x000	/* MEMC */
+#define ETHERH500_CTRLPORT	0x800	/* IOC  */
+
+#define ETHERH600_DATAPORT	0x040	/* MEMC */
+#define ETHERH600_NS8390	0x800	/* MEMC */
+#define ETHERH600_CTRLPORT	0x200	/* MEMC */
+
+#define ETHERH_CP_IE		1
+#define ETHERH_CP_IF		2
+#define ETHERH_CP_HEARTBEAT	2
+
+#define ETHERH_TX_START_PAGE	1
+#define ETHERH_STOP_PAGE	127
+
+/*
+ * These came from CK/TEW
+ */
+#define ETHERM_DATAPORT		0x200	/* MEMC */
+#define ETHERM_NS8390		0x800	/* MEMC */
+#define ETHERM_CTRLPORT		0x23c	/* MEMC */
+
+#define ETHERM_TX_START_PAGE	64
+#define ETHERM_STOP_PAGE	127
+
+/* ------------------------------------------------------------------------ */
+
+#define etherh_priv(dev) \
+ ((struct etherh_priv *)(((char *)netdev_priv(dev)) + sizeof(struct ei_device)))
+
+static inline void etherh_set_ctrl(struct etherh_priv *eh, unsigned char mask)
+{
+	unsigned char ctrl = eh->ctrl | mask;
+	eh->ctrl = ctrl;
+	writeb(ctrl, eh->ctrl_port);
+}
+
+static inline void etherh_clr_ctrl(struct etherh_priv *eh, unsigned char mask)
+{
+	unsigned char ctrl = eh->ctrl & ~mask;
+	eh->ctrl = ctrl;
+	writeb(ctrl, eh->ctrl_port);
+}
+
+static inline unsigned int etherh_get_stat(struct etherh_priv *eh)
+{
+	return readb(eh->ctrl_port);
+}
+
+
+
+
+static void etherh_irq_enable(ecard_t *ec, int irqnr)
+{
+	struct etherh_priv *eh = ec->irq_data;
+
+	etherh_set_ctrl(eh, ETHERH_CP_IE);
+}
+
+static void etherh_irq_disable(ecard_t *ec, int irqnr)
+{
+	struct etherh_priv *eh = ec->irq_data;
+
+	etherh_clr_ctrl(eh, ETHERH_CP_IE);
+}
+
+static expansioncard_ops_t etherh_ops = {
+	.irqenable	= etherh_irq_enable,
+	.irqdisable	= etherh_irq_disable,
+};
+
+
+
+
+static void
+etherh_setif(struct net_device *dev)
+{
+	struct ei_device *ei_local = netdev_priv(dev);
+	unsigned long flags;
+	void __iomem *addr;
+
+	local_irq_save(flags);
+
+	/* set the interface type */
+	switch (etherh_priv(dev)->id) {
+	case PROD_I3_ETHERLAN600:
+	case PROD_I3_ETHERLAN600A:
+		addr = (void __iomem *)dev->base_addr + EN0_RCNTHI;
+
+		switch (dev->if_port) {
+		case IF_PORT_10BASE2:
+			writeb((readb(addr) & 0xf8) | 1, addr);
+			break;
+		case IF_PORT_10BASET:
+			writeb((readb(addr) & 0xf8), addr);
+			break;
+		}
+		break;
+
+	case PROD_I3_ETHERLAN500:
+		switch (dev->if_port) {
+		case IF_PORT_10BASE2:
+			etherh_clr_ctrl(etherh_priv(dev), ETHERH_CP_IF);
+			break;
+
+		case IF_PORT_10BASET:
+			etherh_set_ctrl(etherh_priv(dev), ETHERH_CP_IF);
+			break;
+		}
+		break;
+
+	default:
+		break;
+	}
+
+	local_irq_restore(flags);
+}
+
+static int
+etherh_getifstat(struct net_device *dev)
+{
+	struct ei_device *ei_local = netdev_priv(dev);
+	void __iomem *addr;
+	int stat = 0;
+
+	switch (etherh_priv(dev)->id) {
+	case PROD_I3_ETHERLAN600:
+	case PROD_I3_ETHERLAN600A:
+		addr = (void __iomem *)dev->base_addr + EN0_RCNTHI;
+		switch (dev->if_port) {
+		case IF_PORT_10BASE2:
+			stat = 1;
+			break;
+		case IF_PORT_10BASET:
+			stat = readb(addr) & 4;
+			break;
+		}
+		break;
+
+	case PROD_I3_ETHERLAN500:
+		switch (dev->if_port) {
+		case IF_PORT_10BASE2:
+			stat = 1;
+			break;
+		case IF_PORT_10BASET:
+			stat = etherh_get_stat(etherh_priv(dev)) & ETHERH_CP_HEARTBEAT;
+			break;
+		}
+		break;
+
+	default:
+		stat = 0;
+		break;
+	}
+
+	return stat != 0;
+}
+
+/*
+ * Configure the interface.  Note that we ignore the other
+ * parts of ifmap, since its mostly meaningless for this driver.
+ */
+static int etherh_set_config(struct net_device *dev, struct ifmap *map)
+{
+	switch (map->port) {
+	case IF_PORT_10BASE2:
+	case IF_PORT_10BASET:
+		/*
+		 * If the user explicitly sets the interface
+		 * media type, turn off automedia detection.
+		 */
+		dev->flags &= ~IFF_AUTOMEDIA;
+		dev->if_port = map->port;
+		break;
+
+	default:
+		return -EINVAL;
+	}
+
+	etherh_setif(dev);
+
+	return 0;
+}
+
+/*
+ * Reset the 8390 (hard reset).  Note that we can't actually do this.
+ */
+static void
+etherh_reset(struct net_device *dev)
+{
+	struct ei_device *ei_local = netdev_priv(dev);
+	void __iomem *addr = (void __iomem *)dev->base_addr;
+
+	writeb(E8390_NODMA+E8390_PAGE0+E8390_STOP, addr);
+
+	/*
+	 * See if we need to change the interface type.
+	 * Note that we use 'interface_num' as a flag
+	 * to indicate that we need to change the media.
+	 */
+	if (dev->flags & IFF_AUTOMEDIA && ei_local->interface_num) {
+		ei_local->interface_num = 0;
+
+		if (dev->if_port == IF_PORT_10BASET)
+			dev->if_port = IF_PORT_10BASE2;
+		else
+			dev->if_port = IF_PORT_10BASET;
+
+		etherh_setif(dev);
+	}
+}
+
+/*
+ * Write a block of data out to the 8390
+ */
+static void
+etherh_block_output (struct net_device *dev, int count, const unsigned char *buf, int start_page)
+{
+	struct ei_device *ei_local = netdev_priv(dev);
+	unsigned long dma_start;
+	void __iomem *dma_base, *addr;
+
+	if (ei_local->dmaing) {
+		netdev_err(dev, "DMAing conflict in etherh_block_input: "
+			   " DMAstat %d irqlock %d\n",
+			   ei_local->dmaing, ei_local->irqlock);
+		return;
+	}
+
+	/*
+	 * Make sure we have a round number of bytes if we're in word mode.
+	 */
+	if (count & 1 && ei_local->word16)
+		count++;
+
+	ei_local->dmaing = 1;
+
+	addr = (void __iomem *)dev->base_addr;
+	dma_base = etherh_priv(dev)->dma_base;
+
+	count = (count + 1) & ~1;
+	writeb (E8390_NODMA | E8390_PAGE0 | E8390_START, addr + E8390_CMD);
+
+	writeb (0x42, addr + EN0_RCNTLO);
+	writeb (0x00, addr + EN0_RCNTHI);
+	writeb (0x42, addr + EN0_RSARLO);
+	writeb (0x00, addr + EN0_RSARHI);
+	writeb (E8390_RREAD | E8390_START, addr + E8390_CMD);
+
+	udelay (1);
+
+	writeb (ENISR_RDC, addr + EN0_ISR);
+	writeb (count, addr + EN0_RCNTLO);
+	writeb (count >> 8, addr + EN0_RCNTHI);
+	writeb (0, addr + EN0_RSARLO);
+	writeb (start_page, addr + EN0_RSARHI);
+	writeb (E8390_RWRITE | E8390_START, addr + E8390_CMD);
+
+	if (ei_local->word16)
+		writesw (dma_base, buf, count >> 1);
+	else
+		writesb (dma_base, buf, count);
+
+	dma_start = jiffies;
+
+	while ((readb (addr + EN0_ISR) & ENISR_RDC) == 0)
+		if (time_after(jiffies, dma_start + 2*HZ/100)) { /* 20ms */
+			netdev_warn(dev, "timeout waiting for TX RDC\n");
+			etherh_reset (dev);
+			__NS8390_init (dev, 1);
+			break;
+		}
+
+	writeb (ENISR_RDC, addr + EN0_ISR);
+	ei_local->dmaing = 0;
+}
+
+/*
+ * Read a block of data from the 8390
+ */
+static void
+etherh_block_input (struct net_device *dev, int count, struct sk_buff *skb, int ring_offset)
+{
+	struct ei_device *ei_local = netdev_priv(dev);
+	unsigned char *buf;
+	void __iomem *dma_base, *addr;
+
+	if (ei_local->dmaing) {
+		netdev_err(dev, "DMAing conflict in etherh_block_input: "
+			   " DMAstat %d irqlock %d\n",
+			   ei_local->dmaing, ei_local->irqlock);
+		return;
+	}
+
+	ei_local->dmaing = 1;
+
+	addr = (void __iomem *)dev->base_addr;
+	dma_base = etherh_priv(dev)->dma_base;
+
+	buf = skb->data;
+	writeb (E8390_NODMA | E8390_PAGE0 | E8390_START, addr + E8390_CMD);
+	writeb (count, addr + EN0_RCNTLO);
+	writeb (count >> 8, addr + EN0_RCNTHI);
+	writeb (ring_offset, addr + EN0_RSARLO);
+	writeb (ring_offset >> 8, addr + EN0_RSARHI);
+	writeb (E8390_RREAD | E8390_START, addr + E8390_CMD);
+
+	if (ei_local->word16) {
+		readsw (dma_base, buf, count >> 1);
+		if (count & 1)
+			buf[count - 1] = readb (dma_base);
+	} else
+		readsb (dma_base, buf, count);
+
+	writeb (ENISR_RDC, addr + EN0_ISR);
+	ei_local->dmaing = 0;
+}
+
+/*
+ * Read a header from the 8390
+ */
+static void
+etherh_get_header (struct net_device *dev, struct e8390_pkt_hdr *hdr, int ring_page)
+{
+	struct ei_device *ei_local = netdev_priv(dev);
+	void __iomem *dma_base, *addr;
+
+	if (ei_local->dmaing) {
+		netdev_err(dev, "DMAing conflict in etherh_get_header: "
+			   " DMAstat %d irqlock %d\n",
+			   ei_local->dmaing, ei_local->irqlock);
+		return;
+	}
+
+	ei_local->dmaing = 1;
+
+	addr = (void __iomem *)dev->base_addr;
+	dma_base = etherh_priv(dev)->dma_base;
+
+	writeb (E8390_NODMA | E8390_PAGE0 | E8390_START, addr + E8390_CMD);
+	writeb (sizeof (*hdr), addr + EN0_RCNTLO);
+	writeb (0, addr + EN0_RCNTHI);
+	writeb (0, addr + EN0_RSARLO);
+	writeb (ring_page, addr + EN0_RSARHI);
+	writeb (E8390_RREAD | E8390_START, addr + E8390_CMD);
+
+	if (ei_local->word16)
+		readsw (dma_base, hdr, sizeof (*hdr) >> 1);
+	else
+		readsb (dma_base, hdr, sizeof (*hdr));
+
+	writeb (ENISR_RDC, addr + EN0_ISR);
+	ei_local->dmaing = 0;
+}
+
+/*
+ * Open/initialize the board.  This is called (in the current kernel)
+ * sometime after booting when the 'ifconfig' program is run.
+ *
+ * This routine should set everything up anew at each open, even
+ * registers that "should" only need to be set once at boot, so that
+ * there is non-reboot way to recover if something goes wrong.
+ */
+static int
+etherh_open(struct net_device *dev)
+{
+	struct ei_device *ei_local = netdev_priv(dev);
+
+	if (request_irq(dev->irq, __ei_interrupt, 0, dev->name, dev))
+		return -EAGAIN;
+
+	/*
+	 * Make sure that we aren't going to change the
+	 * media type on the next reset - we are about to
+	 * do automedia manually now.
+	 */
+	ei_local->interface_num = 0;
+
+	/*
+	 * If we are doing automedia detection, do it now.
+	 * This is more reliable than the 8390's detection.
+	 */
+	if (dev->flags & IFF_AUTOMEDIA) {
+		dev->if_port = IF_PORT_10BASET;
+		etherh_setif(dev);
+		mdelay(1);
+		if (!etherh_getifstat(dev)) {
+			dev->if_port = IF_PORT_10BASE2;
+			etherh_setif(dev);
+		}
+	} else
+		etherh_setif(dev);
+
+	etherh_reset(dev);
+	__ei_open(dev);
+
+	return 0;
+}
+
+/*
+ * The inverse routine to etherh_open().
+ */
+static int
+etherh_close(struct net_device *dev)
+{
+	__ei_close (dev);
+	free_irq (dev->irq, dev);
+	return 0;
+}
+
+/*
+ * Read the ethernet address string from the on board rom.
+ * This is an ascii string...
+ */
+static int etherh_addr(char *addr, struct expansion_card *ec)
+{
+	struct in_chunk_dir cd;
+	char *s;
+	
+	if (!ecard_readchunk(&cd, ec, 0xf5, 0)) {
+		printk(KERN_ERR "%s: unable to read module description string\n",
+		       dev_name(&ec->dev));
+		goto no_addr;
+	}
+
+	s = strchr(cd.d.string, '(');
+	if (s) {
+		int i;
+
+		for (i = 0; i < 6; i++) {
+			addr[i] = simple_strtoul(s + 1, &s, 0x10);
+			if (*s != (i == 5? ')' : ':'))
+				break;
+		}
+
+		if (i == 6)
+			return 0;
+	}
+
+	printk(KERN_ERR "%s: unable to parse MAC address: %s\n",
+	       dev_name(&ec->dev), cd.d.string);
+
+ no_addr:
+	return -ENODEV;
+}
+
+/*
+ * Create an ethernet address from the system serial number.
+ */
+static int __init etherm_addr(char *addr)
+{
+	unsigned int serial;
+
+	if (system_serial_low == 0 && system_serial_high == 0)
+		return -ENODEV;
+
+	serial = system_serial_low | system_serial_high;
+
+	addr[0] = 0;
+	addr[1] = 0;
+	addr[2] = 0xa4;
+	addr[3] = 0x10 + (serial >> 24);
+	addr[4] = serial >> 16;
+	addr[5] = serial >> 8;
+	return 0;
+}
+
+static void etherh_get_drvinfo(struct net_device *dev, struct ethtool_drvinfo *info)
+{
+	strlcpy(info->driver, DRV_NAME, sizeof(info->driver));
+	strlcpy(info->version, DRV_VERSION, sizeof(info->version));
+	strlcpy(info->bus_info, dev_name(dev->dev.parent),
+		sizeof(info->bus_info));
+}
+
+static int etherh_get_link_ksettings(struct net_device *dev,
+				     struct ethtool_link_ksettings *cmd)
+{
+	ethtool_convert_legacy_u32_to_link_mode(cmd->link_modes.supported,
+						etherh_priv(dev)->supported);
+	cmd->base.speed = SPEED_10;
+	cmd->base.duplex = DUPLEX_HALF;
+	cmd->base.port = dev->if_port == IF_PORT_10BASET ? PORT_TP : PORT_BNC;
+	cmd->base.autoneg = (dev->flags & IFF_AUTOMEDIA ? AUTONEG_ENABLE :
+							  AUTONEG_DISABLE);
+	return 0;
+}
+
+static int etherh_set_link_ksettings(struct net_device *dev,
+				     const struct ethtool_link_ksettings *cmd)
+{
+	switch (cmd->base.autoneg) {
+	case AUTONEG_ENABLE:
+		dev->flags |= IFF_AUTOMEDIA;
+		break;
+
+	case AUTONEG_DISABLE:
+		switch (cmd->base.port) {
+		case PORT_TP:
+			dev->if_port = IF_PORT_10BASET;
+			break;
+
+		case PORT_BNC:
+			dev->if_port = IF_PORT_10BASE2;
+			break;
+
+		default:
+			return -EINVAL;
+		}
+		dev->flags &= ~IFF_AUTOMEDIA;
+		break;
+
+	default:
+		return -EINVAL;
+	}
+
+	etherh_setif(dev);
+
+	return 0;
+}
+
+static u32 etherh_get_msglevel(struct net_device *dev)
+{
+	struct ei_device *ei_local = netdev_priv(dev);
+
+	return ei_local->msg_enable;
+}
+
+static void etherh_set_msglevel(struct net_device *dev, u32 v)
+{
+	struct ei_device *ei_local = netdev_priv(dev);
+
+	ei_local->msg_enable = v;
+}
+
+static const struct ethtool_ops etherh_ethtool_ops = {
+	.get_drvinfo		= etherh_get_drvinfo,
+	.get_ts_info		= ethtool_op_get_ts_info,
+	.get_msglevel		= etherh_get_msglevel,
+	.set_msglevel		= etherh_set_msglevel,
+	.get_link_ksettings	= etherh_get_link_ksettings,
+	.set_link_ksettings	= etherh_set_link_ksettings,
+};
+
+static const struct net_device_ops etherh_netdev_ops = {
+	.ndo_open		= etherh_open,
+	.ndo_stop		= etherh_close,
+	.ndo_set_config		= etherh_set_config,
+	.ndo_start_xmit		= __ei_start_xmit,
+	.ndo_tx_timeout		= __ei_tx_timeout,
+	.ndo_get_stats		= __ei_get_stats,
+	.ndo_set_rx_mode	= __ei_set_multicast_list,
+	.ndo_validate_addr	= eth_validate_addr,
+	.ndo_set_mac_address	= eth_mac_addr,
+#ifdef CONFIG_NET_POLL_CONTROLLER
+	.ndo_poll_controller	= __ei_poll,
+#endif
+};
+
+static u32 etherh_regoffsets[16];
+static u32 etherm_regoffsets[16];
+
+static int
+etherh_probe(struct expansion_card *ec, const struct ecard_id *id)
+{
+	const struct etherh_data *data = id->data;
+	struct ei_device *ei_local;
+	struct net_device *dev;
+	struct etherh_priv *eh;
+	u8 addr[ETH_ALEN];
+	int ret;
+
+	ret = ecard_request_resources(ec);
+	if (ret)
+		goto out;
+
+	dev = ____alloc_ei_netdev(sizeof(struct etherh_priv));
+	if (!dev) {
+		ret = -ENOMEM;
+		goto release;
+	}
+
+	SET_NETDEV_DEV(dev, &ec->dev);
+
+	dev->netdev_ops		= &etherh_netdev_ops;
+	dev->irq		= ec->irq;
+	dev->ethtool_ops	= &etherh_ethtool_ops;
+
+	if (data->supported & SUPPORTED_Autoneg)
+		dev->flags |= IFF_AUTOMEDIA;
+	if (data->supported & SUPPORTED_TP) {
+		dev->flags |= IFF_PORTSEL;
+		dev->if_port = IF_PORT_10BASET;
+	} else if (data->supported & SUPPORTED_BNC) {
+		dev->flags |= IFF_PORTSEL;
+		dev->if_port = IF_PORT_10BASE2;
+	} else
+		dev->if_port = IF_PORT_UNKNOWN;
+
+	eh = etherh_priv(dev);
+	eh->supported		= data->supported;
+	eh->ctrl		= 0;
+	eh->id			= ec->cid.product;
+	eh->memc		= ecardm_iomap(ec, ECARD_RES_MEMC, 0, PAGE_SIZE);
+	if (!eh->memc) {
+		ret = -ENOMEM;
+		goto free;
+	}
+
+	eh->ctrl_port = eh->memc;
+	if (data->ctrl_ioc) {
+		eh->ioc_fast = ecardm_iomap(ec, ECARD_RES_IOCFAST, 0, PAGE_SIZE);
+		if (!eh->ioc_fast) {
+			ret = -ENOMEM;
+			goto free;
+		}
+		eh->ctrl_port = eh->ioc_fast;
+	}
+
+	dev->base_addr = (unsigned long)eh->memc + data->ns8390_offset;
+	eh->dma_base = eh->memc + data->dataport_offset;
+	eh->ctrl_port += data->ctrlport_offset;
+
+	/*
+	 * IRQ and control port handling - only for non-NIC slot cards.
+	 */
+	if (ec->slot_no != 8) {
+		ecard_setirq(ec, &etherh_ops, eh);
+	} else {
+		/*
+		 * If we're in the NIC slot, make sure the IRQ is enabled
+		 */
+		etherh_set_ctrl(eh, ETHERH_CP_IE);
+	}
+
+	ei_local = netdev_priv(dev);
+	spin_lock_init(&ei_local->page_lock);
+
+	if (ec->cid.product == PROD_ANT_ETHERM) {
+		etherm_addr(addr);
+		ei_local->reg_offset = etherm_regoffsets;
+	} else {
+		etherh_addr(addr, ec);
+		ei_local->reg_offset = etherh_regoffsets;
+	}
+	eth_hw_addr_set(dev, addr);
+
+	ei_local->name          = dev->name;
+	ei_local->word16        = 1;
+	ei_local->tx_start_page = data->tx_start_page;
+	ei_local->rx_start_page = ei_local->tx_start_page + TX_PAGES;
+	ei_local->stop_page     = data->stop_page;
+	ei_local->reset_8390    = etherh_reset;
+	ei_local->block_input   = etherh_block_input;
+	ei_local->block_output  = etherh_block_output;
+	ei_local->get_8390_hdr  = etherh_get_header;
+	ei_local->interface_num = 0;
+
+	etherh_reset(dev);
+	__NS8390_init(dev, 0);
+
+	ret = register_netdev(dev);
+	if (ret)
+		goto free;
+
+	netdev_info(dev, "%s in slot %d, %pM\n",
+		    data->name, ec->slot_no, dev->dev_addr);
+
+	ecard_set_drvdata(ec, dev);
+
+	return 0;
+
+ free:
+	free_netdev(dev);
+ release:
+	ecard_release_resources(ec);
+ out:
+	return ret;
+}
+
+static void etherh_remove(struct expansion_card *ec)
+{
+	struct net_device *dev = ecard_get_drvdata(ec);
+
+	ecard_set_drvdata(ec, NULL);
+
+	unregister_netdev(dev);
+
+	free_netdev(dev);
+
+	ecard_release_resources(ec);
+}
+
+static struct etherh_data etherm_data = {
+	.ns8390_offset		= ETHERM_NS8390,
+	.dataport_offset	= ETHERM_NS8390 + ETHERM_DATAPORT,
+	.ctrlport_offset	= ETHERM_NS8390 + ETHERM_CTRLPORT,
+	.name			= "ANT EtherM",
+	.supported		= SUPPORTED_10baseT_Half,
+	.tx_start_page		= ETHERM_TX_START_PAGE,
+	.stop_page		= ETHERM_STOP_PAGE,
+};
+
+static struct etherh_data etherlan500_data = {
+	.ns8390_offset		= ETHERH500_NS8390,
+	.dataport_offset	= ETHERH500_NS8390 + ETHERH500_DATAPORT,
+	.ctrlport_offset	= ETHERH500_CTRLPORT,
+	.ctrl_ioc		= 1,
+	.name			= "i3 EtherH 500",
+	.supported		= SUPPORTED_10baseT_Half,
+	.tx_start_page		= ETHERH_TX_START_PAGE,
+	.stop_page		= ETHERH_STOP_PAGE,
+};
+
+static struct etherh_data etherlan600_data = {
+	.ns8390_offset		= ETHERH600_NS8390,
+	.dataport_offset	= ETHERH600_NS8390 + ETHERH600_DATAPORT,
+	.ctrlport_offset	= ETHERH600_NS8390 + ETHERH600_CTRLPORT,
+	.name			= "i3 EtherH 600",
+	.supported		= SUPPORTED_10baseT_Half | SUPPORTED_TP | SUPPORTED_BNC | SUPPORTED_Autoneg,
+	.tx_start_page		= ETHERH_TX_START_PAGE,
+	.stop_page		= ETHERH_STOP_PAGE,
+};
+
+static struct etherh_data etherlan600a_data = {
+	.ns8390_offset		= ETHERH600_NS8390,
+	.dataport_offset	= ETHERH600_NS8390 + ETHERH600_DATAPORT,
+	.ctrlport_offset	= ETHERH600_NS8390 + ETHERH600_CTRLPORT,
+	.name			= "i3 EtherH 600A",
+	.supported		= SUPPORTED_10baseT_Half | SUPPORTED_TP | SUPPORTED_BNC | SUPPORTED_Autoneg,
+	.tx_start_page		= ETHERH_TX_START_PAGE,
+	.stop_page		= ETHERH_STOP_PAGE,
+};
+
+static const struct ecard_id etherh_ids[] = {
+	{ MANU_ANT, PROD_ANT_ETHERM,      &etherm_data       },
+	{ MANU_I3,  PROD_I3_ETHERLAN500,  &etherlan500_data  },
+	{ MANU_I3,  PROD_I3_ETHERLAN600,  &etherlan600_data  },
+	{ MANU_I3,  PROD_I3_ETHERLAN600A, &etherlan600a_data },
+	{ 0xffff,   0xffff }
+};
+
+static struct ecard_driver etherh_driver = {
+	.probe		= etherh_probe,
+	.remove		= etherh_remove,
+	.id_table	= etherh_ids,
+	.drv = {
+		.name	= DRV_NAME,
+	},
+};
+
+static int __init etherh_init(void)
+{
+	int i;
+
+	for (i = 0; i < 16; i++) {
+		etherh_regoffsets[i] = i << 2;
+		etherm_regoffsets[i] = i << 5;
+	}
+
+	return ecard_register_driver(&etherh_driver);
+}
+
+static void __exit etherh_exit(void)
+{
+	ecard_remove_driver(&etherh_driver);
+}
+
+module_init(etherh_init);
+module_exit(etherh_exit);

@@ -1,4 +1,1 @@
-config/X86_P6_NOP) \
-    $(wildcard include/config/MATOM) \
-    $(wildcard include/config/PARAVIRT_XXL) \
-  arch/x86/include/asm/disabled-featu
+cmd_drivers/net/can/dev/modules.order := {   echo drivers/net/can/dev/can-dev.ko; :; } | awk '!x[$$0]++' - > drivers/net/can/dev/modules.order

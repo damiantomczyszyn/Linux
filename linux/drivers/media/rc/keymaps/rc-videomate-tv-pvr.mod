@@ -1,2 +1,4 @@
-drivers/media/rc/keymaps/rc-videomate-tv-pvr.o
-
+2_FIELD_SEQ_BT:
+		break;
+	default:
+		field = V4L

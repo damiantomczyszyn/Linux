@@ -1,1 +1,1 @@
-cmd_drivers/media/i2c/tvp514x.o := gcc -Wp,-MMD,drivers/media/i2c/.tvp514x.o.d -nostdinc -I./arch/x86/include -I./arch/x86/include/generated  -I./include -I./arch/x86/include/uapi -I./arch/x86/include/generated/uapi -I./include/uapi
+cmd_drivers/net/can/sja1000/peak_pcmcia.ko := ld -r -m elf_i386 --build-id=sha1  -T scripts/module.lds -o drivers/net/can/sja1000/peak_pcmcia.ko drivers/net/can/sja1000/peak_pcmcia.o drivers/net/can/sja1000/peak_pcmcia.mod.o;  true

@@ -1,655 +1,1154 @@
- include/config/TRACE_BRANCH_PROFILING) \
-    $(wildcard include/config/PROFILE_ALL_BRANCHES) \
-    $(wildcard include/config/STACK_VALIDATION) \
-  include/linux/compiler_types.h \
-  arch/x86/include/generated/asm/rwonce.h \
-  include/asm-generic/rwonce.h \
-  include/linux/kasan-checks.h \
-    $(wildcard include/config/KASAN_GENERIC) \
-    $(wildcard include/config/KASAN_SW_TAGS) \
-  include/linux/types.h \
-    $(wildcard include/config/HAVE_UID16) \
-    $(wildcard include/config/UID16) \
-    $(wildcard include/config/ARCH_DMA_ADDR_T_64BIT) \
-    $(wildcard include/config/PHYS_ADDR_T_64BIT) \
-    $(wildcard include/config/64BIT) \
-    $(wildcard include/config/ARCH_32BIT_USTAT_F_TINODE) \
-  include/uapi/linux/types.h \
-  arch/x86/include/generated/uapi/asm/types.h \
-  include/uapi/asm-generic/types.h \
-  include/asm-generic/int-ll64.h \
-  include/uapi/asm-generic/int-ll64.h \
-  arch/x86/include/uapi/asm/bitsperlong.h \
-  include/asm-generic/bitsperlong.h \
-  include/uapi/asm-generic/bitsperlong.h \
-  include/uapi/linux/posix_types.h \
-  include/linux/stddef.h \
-  include/uapi/linux/stddef.h \
-  arch/x86/include/asm/posix_types.h \
-    $(wildcard include/config/X86_32) \
-  arch/x86/include/uapi/asm/posix_types_32.h \
-  include/uapi/asm-generic/posix_types.h \
-  include/linux/kcsan-checks.h \
-    $(wildcard include/config/KCSAN) \
-    $(wildcard include/config/KCSAN_WEAK_MEMORY) \
-    $(wildcard include/config/KCSAN_IGNORE_ATOMICS) \
-  include/linux/err.h \
-  arch/x86/include/generated/uapi/asm/errno.h \
-  include/uapi/asm-generic/errno.h \
-  include/uapi/asm-generic/errno-base.h \
-  include/linux/poison.h \
-    $(wildcard include/config/ILLEGAL_POINTER_VALUE) \
-  include/linux/const.h \
-  include/vdso/const.h \
-  include/uapi/linux/const.h \
-  arch/x86/include/asm/barrier.h \
-  arch/x86/include/asm/alternative.h \
-  include/linux/stringify.h \
-  arch/x86/include/asm/asm.h \
-  arch/x86/include/asm/extable_fixup_types.h \
-  arch/x86/include/asm/nops.h \
-  include/asm-generic/barrier.h \
-  include/linux/stat.h \
-  arch/x86/include/uapi/asm/stat.h \
-  include/uapi/linux/stat.h \
-  include/linux/time.h \
-    $(wildcard include/config/POSIX_TIMERS) \
-  include/linux/cache.h \
-    $(wildcard include/config/ARCH_HAS_CACHE_LINE_SIZE) \
-  include/uapi/linux/kernel.h \
-  include/uapi/linux/sysinfo.h \
-  arch/x86/include/asm/cache.h \
-    $(wildcard include/config/X86_L1_CACHE_SHIFT) \
-    $(wildcard include/config/X86_INTERNODE_CACHE_SHIFT) \
-    $(wildcard include/config/X86_VSMP) \
-  include/linux/linkage.h \
-    $(wildcard include/config/ARCH_USE_SYM_ANNOTATIONS) \
-  include/linux/export.h \
-    $(wildcard include/config/MODVERSIONS) \
-    $(wildcard include/config/MODULE_REL_CRCS) \
-    $(wildcard include/config/HAVE_ARCH_PREL32_RELOCATIONS) \
-    $(wildcard include/config/TRIM_UNUSED_KSYMS) \
-  arch/x86/include/asm/linkage.h \
-    $(wildcard include/config/X86_64) \
-    $(wildcard include/config/X86_ALIGNMENT_16) \
-    $(wildcard include/config/SLS) \
-  arch/x86/include/asm/ibt.h \
-    $(wildcard include/config/X86_KERNEL_IBT) \
-  include/linux/math64.h \
-    $(wildcard include/config/ARCH_SUPPORTS_INT128) \
-  include/linux/math.h \
-  arch/x86/include/asm/div64.h \
-  include/linux/log2.h \
-    $(wildcard include/config/ARCH_HAS_ILOG2_U32) \
-    $(wildcard include/config/ARCH_HAS_ILOG2_U64) \
-  include/linux/bitops.h \
-  include/linux/bits.h \
-  include/vdso/bits.h \
-  include/linux/typecheck.h \
-  arch/x86/include/asm/bitops.h \
-    $(wildcard include/config/X86_CMOV) \
-  arch/x86/include/asm/rmwcc.h \
-    $(wildcard include/config/CC_HAS_ASM_GOTO) \
-  include/asm-generic/bitops/fls64.h \
-  include/asm-generic/bitops/sched.h \
-  arch/x86/include/asm/arch_hweight.h \
-  arch/x86/include/asm/cpufeatures.h \
-  arch/x86/include/asm/required-features.h \
-    $(wildcard include/config/X86_MINIMUM_CPU_FAMILY) \
-    $(wildcard include/config/MATH_EMULATION) \
-    $(wildcard include/config/X86_PAE) \
-    $(wildcard include/config/X86_CMPXCHG64) \
-    $(wildcard include/config/X86_P6_NOP) \
-    $(wildcard include/config/MATOM) \
-    $(wildcard include/config/PARAVIRT_XXL) \
-  arch/x86/include/asm/disabled-features.h \
-    $(wildcard include/config/X86_SMAP) \
-    $(wildcard include/config/X86_UMIP) \
-    $(wildcard include/config/X86_INTEL_MEMORY_PROTECTION_KEYS) \
-    $(wildcard include/config/X86_5LEVEL) \
-    $(wildcard include/config/PAGE_TABLE_ISOLATION) \
-    $(wildcard include/config/INTEL_IOMMU_SVM) \
-    $(wildcard include/config/X86_SGX) \
-  include/asm-generic/bitops/const_hweight.h \
-  include/asm-generic/bitops/instrumented-atomic.h \
-  include/linux/instrumented.h \
-  include/asm-generic/bitops/instrumented-non-atomic.h \
-    $(wildcard include/config/KCSAN_ASSUME_PLAIN_WRITES_ATOMIC) \
-  include/asm-generic/bitops/instrumented-lock.h \
-  include/asm-generic/bitops/le.h \
-  arch/x86/include/uapi/asm/byteorder.h \
-  include/linux/byteorder/little_endian.h \
-  include/uapi/linux/byteorder/little_endian.h \
-  include/linux/swab.h \
-  include/uapi/linux/swab.h \
-  arch/x86/include/uapi/asm/swab.h \
-  include/linux/byteorder/generic.h \
-  include/asm-generic/bitops/ext2-atomic-setbit.h \
-  include/vdso/math64.h \
-  include/linux/time64.h \
-  include/vdso/time64.h \
-  include/uapi/linux/time.h \
-  include/uapi/linux/time_types.h \
-  include/linux/time32.h \
-  include/linux/timex.h \
-  include/uapi/linux/timex.h \
-  include/uapi/linux/param.h \
-  arch/x86/include/generated/uapi/asm/param.h \
-  include/asm-generic/param.h \
-    $(wildcard include/config/HZ) \
-  include/uapi/asm-generic/param.h \
-  arch/x86/include/asm/timex.h \
-    $(wildcard include/config/X86_TSC) \
-  arch/x86/include/asm/processor.h \
-    $(wildcard include/config/X86_VMX_FEATURE_NAMES) \
-    $(wildcard include/config/X86_IOPL_IOPERM) \
-    $(wildcard include/config/STACKPROTECTOR) \
-    $(wildcard include/config/VM86) \
-    $(wildcard include/config/X86_DEBUGCTLMSR) \
-    $(wildcard include/config/CPU_SUP_AMD) \
-    $(wildcard include/config/XEN) \
-  arch/x86/include/asm/processor-flags.h \
-  arch/x86/include/uapi/asm/processor-flags.h \
-  include/linux/mem_encrypt.h \
-    $(wildcard include/config/ARCH_HAS_MEM_ENCRYPT) \
-    $(wildcard include/config/AMD_MEM_ENCRYPT) \
-  arch/x86/include/asm/mem_encrypt.h \
-  include/linux/init.h \
-    $(wildcard include/config/STRICT_KERNEL_RWX) \
-    $(wildcard include/config/STRICT_MODULE_RWX) \
-    $(wildcard include/config/LTO_CLANG) \
-  include/linux/cc_platform.h \
-    $(wildcard include/config/ARCH_HAS_CC_PLATFORM) \
-  arch/x86/include/uapi/asm/bootparam.h \
-  include/linux/screen_info.h \
-  include/uapi/linux/screen_info.h \
-  include/linux/apm_bios.h \
-  include/uapi/linux/apm_bios.h \
-  include/uapi/linux/ioctl.h \
-  arch/x86/include/generated/uapi/asm/ioctl.h \
-  include/asm-generic/ioctl.h \
-  include/uapi/asm-generic/ioctl.h \
-  include/linux/edd.h \
-  include/uapi/linux/edd.h \
-  arch/x86/include/asm/ist.h \
-  arch/x86/include/uapi/asm/ist.h \
-  include/video/edid.h \
-    $(wildcard include/config/X86) \
-  include/uapi/video/edid.h \
-  arch/x86/include/asm/math_emu.h \
-  arch/x86/include/asm/ptrace.h \
-    $(wildcard include/config/PARAVIRT) \
-    $(wildcard include/config/IA32_EMULATION) \
-  arch/x86/include/asm/segment.h \
-    $(wildcard include/config/XEN_PV) \
-  arch/x86/include/asm/page_types.h \
-    $(wildcard include/config/PHYSICAL_START) \
-    $(wildcard include/config/PHYSICAL_ALIGN) \
-    $(wildcard include/config/DYNAMIC_PHYSICAL_MASK) \
-  arch/x86/include/asm/page_32_types.h \
-    $(wildcard include/config/HIGHMEM4G) \
-    $(wildcard include/config/HIGHMEM64G) \
-    $(wildcard include/config/PAGE_OFFSET) \
-  arch/x86/include/uapi/asm/ptrace.h \
-  arch/x86/include/uapi/asm/ptrace-abi.h \
-  arch/x86/include/asm/paravirt_types.h \
-    $(wildcard include/config/PGTABLE_LEVELS) \
-    $(wildcard include/config/PARAVIRT_DEBUG) \
-  arch/x86/include/asm/desc_defs.h \
-  arch/x86/include/asm/pgtable_types.h \
-    $(wildcard include/config/MEM_SOFT_DIRTY) \
-    $(wildcard include/config/HAVE_ARCH_USERFAULTFD_WP) \
-    $(wildcard include/config/PROC_FS) \
-  arch/x86/include/asm/pgtable_32_types.h \
-  arch/x86/include/asm/pgtable-3level_types.h \
-  include/asm-generic/pgtable-nop4d.h \
-  include/asm-generic/pgtable-nopud.h \
-  arch/x86/include/asm/nospec-branch.h \
-  include/linux/static_key.h \
-  include/linux/jump_label.h \
-    $(wildcard include/config/HAVE_ARCH_JUMP_LABEL_RELATIVE) \
-  arch/x86/include/asm/jump_label.h \
-  include/linux/objtool.h \
-    $(wildcard include/config/FRAME_POINTER) \
-  arch/x86/include/asm/msr-index.h \
-  arch/x86/include/asm/unwind_hints.h \
-  arch/x86/include/asm/orc_types.h \
-  arch/x86/include/asm/GEN-for-each-reg.h \
-  arch/x86/include/asm/spinlock_types.h \
-  include/asm-generic/qspinlock_types.h \
-    $(wildcard include/config/NR_CPUS) \
-  include/asm-generic/qrwlock_types.h \
-  arch/x86/include/asm/proto.h \
-  arch/x86/include/uapi/asm/ldt.h \
-  arch/x86/include/uapi/asm/sigcontext.h \
-  arch/x86/include/asm/current.h \
-  arch/x86/include/asm/percpu.h \
-    $(wildcard include/config/X86_64_SMP) \
-  include/linux/kernel.h \
-    $(wildcard include/config/PREEMPT_VOLUNTARY_BUILD) \
-    $(wildcard include/config/PREEMPT_DYNAMIC) \
-    $(wildcard include/config/HAVE_PREEMPT_DYNAMIC_CALL) \
-    $(wildcard include/config/HAVE_PREEMPT_DYNAMIC_KEY) \
-    $(wildcard include/config/PREEMPT_) \
-    $(wildcard include/config/DEBUG_ATOMIC_SLEEP) \
-    $(wildcard include/config/MMU) \
-    $(wildcard include/config/PROVE_LOCKING) \
-  include/linux/stdarg.h \
-  include/linux/align.h \
-  include/linux/limits.h \
-  include/uapi/linux/limits.h \
-  include/vdso/limits.h \
-  include/linux/kstrtox.h \
-  include/linux/minmax.h \
-  include/linux/panic.h \
-    $(wildcard include/config/PANIC_TIMEOUT) \
-  include/linux/printk.h \
-    $(wildcard include/config/MESSAGE_LOGLEVEL_DEFAULT) \
-    $(wildcard include/config/CONSOLE_LOGLEVEL_DEFAULT) \
-    $(wildcard include/config/CONSOLE_LOGLEVEL_QUIET) \
-    $(wildcard include/config/EARLY_PRINTK) \
-    $(wildcard include/config/PRINTK) \
-    $(wildcard include/config/DYNAMIC_DEBUG) \
-    $(wildcard include/config/DYNAMIC_DEBUG_CORE) \
-  include/linux/kern_levels.h \
-  include/linux/ratelimit_types.h \
-  include/linux/spinlock_types_raw.h \
-    $(wildcard include/config/DEBUG_SPINLOCK) \
-    $(wildcard include/config/DEBUG_LOCK_ALLOC) \
-  include/linux/lockdep_types.h \
-    $(wildcard include/config/PROVE_RAW_LOCK_NESTING) \
-    $(wildcard include/config/LOCKDEP) \
-    $(wildcard include/config/LOCK_STAT) \
-  include/linux/once_lite.h \
-  include/linux/static_call_types.h \
-    $(wildcard include/config/HAVE_STATIC_CALL) \
-  include/linux/instruction_pointer.h \
-  include/asm-generic/percpu.h \
-    $(wildcard include/config/DEBUG_PREEMPT) \
-    $(wildcard include/config/HAVE_SETUP_PER_CPU_AREA) \
-  include/linux/threads.h \
-    $(wildcard include/config/BASE_SMALL) \
-  include/linux/percpu-defs.h \
-    $(wildcard include/config/DEBUG_FORCE_WEAK_PER_CPU) \
-  arch/x86/include/asm/page.h \
-  arch/x86/include/asm/page_32.h \
-    $(wildcard include/config/DEBUG_VIRTUAL) \
-    $(wildcard include/config/FLATMEM) \
-  include/linux/string.h \
-    $(wildcard include/config/BINARY_PRINTF) \
-    $(wildcard include/config/FORTIFY_SOURCE) \
-  include/linux/errno.h \
-  include/uapi/linux/errno.h \
-  include/uapi/linux/string.h \
-  arch/x86/include/asm/string.h \
-  arch/x86/include/asm/string_32.h \
-  include/linux/fortify-string.h \
-  include/linux/range.h \
-  include/asm-generic/memory_model.h \
-    $(wildcard include/config/SPARSEMEM_VMEMMAP) \
-    $(wildcard include/config/SPARSEMEM) \
-  include/linux/pfn.h \
-  include/asm-generic/getorder.h \
-  arch/x86/include/asm/msr.h \
-  arch/x86/include/asm/msr-index.h \
-  arch/x86/include/asm/cpumask.h \
-  include/linux/cpumask.h \
-    $(wildcard include/config/CPUMASK_OFFSTACK) \
-    $(wildcard include/config/HOTPLUG_CPU) \
-    $(wildcard include/config/DEBUG_PER_CPU_MAPS) \
-  include/linux/bitmap.h \
-  include/linux/find.h \
-  include/linux/atomic.h \
-  arch/x86/include/asm/atomic.h \
-  arch/x86/include/asm/cmpxchg.h \
-  arch/x86/include/asm/cmpxchg_32.h \
-  arch/x86/include/asm/atomic64_32.h \
-  include/linux/atomic/atomic-arch-fallback.h \
-    $(wildcard include/config/GENERIC_ATOMIC64) \
-  include/linux/atomic/atomic-long.h \
-  include/linux/atomic/atomic-instrumented.h \
-  include/linux/bug.h \
-    $(wildcard include/config/BUG_ON_DATA_CORRUPTION) \
-  arch/x86/include/asm/bug.h \
-    $(wildcard include/config/DEBUG_BUGVERBOSE) \
-  include/linux/instrumentation.h \
-    $(wildcard include/config/DEBUG_ENTRY) \
-  include/asm-generic/bug.h \
-    $(wildcard include/config/BUG) \
-    $(wildcard include/config/GENERIC_BUG_RELATIVE_POINTERS) \
-  arch/x86/include/uapi/asm/msr.h \
-  include/linux/tracepoint-defs.h \
-  arch/x86/include/asm/special_insns.h \
-  include/linux/irqflags.h \
-    $(wildcard include/config/TRACE_IRQFLAGS) \
-    $(wildcard include/config/PREEMPT_RT) \
-    $(wildcard include/config/IRQSOFF_TRACER) \
-    $(wildcard include/config/PREEMPT_TRACER) \
-    $(wildcard include/config/DEBUG_IRQFLAGS) \
-    $(wildcard include/config/TRACE_IRQFLAGS_SUPPORT) \
-  arch/x86/include/asm/irqflags.h \
-  arch/x86/include/asm/fpu/types.h \
-  arch/x86/include/asm/vmxfeatures.h \
-  arch/x86/include/asm/vdso/processor.h \
-  include/linux/personality.h \
-  include/uapi/linux/personality.h \
-  arch/x86/include/asm/tsc.h \
-  arch/x86/include/asm/cpufeature.h \
-    $(wildcard include/config/X86_FEATURE_NAMES) \
-  include/vdso/time32.h \
-  include/vdso/time.h \
-  include/linux/uidgid.h \
-    $(wildcard include/config/MULTIUSER) \
-    $(wildcard include/config/USER_NS) \
-  include/linux/highuid.h \
-  include/linux/buildid.h \
-    $(wildcard include/config/CRASH_CORE) \
-  include/linux/mm_types.h \
-    $(wildcard include/config/HAVE_ALIGNED_STRUCT_PAGE) \
-    $(wildcard include/config/MEMCG) \
-    $(wildcard include/config/USERFAULTFD) \
-    $(wildcard include/config/SWAP) \
-    $(wildcard include/config/NUMA) \
-    $(wildcard include/config/HAVE_ARCH_COMPAT_MMAP_BASES) \
-    $(wildcard include/config/MEMBARRIER) \
-    $(wildcard include/config/AIO) \
-    $(wildcard include/config/MMU_NOTIFIER) \
-    $(wildcard include/config/TRANSPARENT_HUGEPAGE) \
-    $(wildcard include/config/NUMA_BALANCING) \
-    $(wildcard include/config/ARCH_WANT_BATCHED_UNMAP_TLB_FLUSH) \
-    $(wildcard include/config/HUGETLB_PAGE) \
-    $(wildcard include/config/IOMMU_SVA) \
-  include/linux/mm_types_task.h \
-    $(wildcard include/config/SPLIT_PTLOCK_CPUS) \
-    $(wildcard include/config/ARCH_ENABLE_SPLIT_PMD_PTLOCK) \
-  arch/x86/include/asm/tlbbatch.h \
-  include/linux/auxvec.h \
-  include/uapi/linux/auxvec.h \
-  arch/x86/include/uapi/asm/auxvec.h \
-  include/linux/kref.h \
-  include/linux/spinlock.h \
-    $(wildcard include/config/PREEMPTION) \
-  include/linux/preempt.h \
-    $(wildcard include/config/PREEMPT_COUNT) \
-    $(wildcard include/config/TRACE_PREEMPT_TOGGLE) \
-    $(wildcard include/config/PREEMPT_NOTIFIERS) \
-  arch/x86/include/asm/preempt.h \
-  include/linux/thread_info.h \
-    $(wildcard include/config/THREAD_INFO_IN_TASK) \
-    $(wildcard include/config/GENERIC_ENTRY) \
-    $(wildcard include/config/HAVE_ARCH_WITHIN_STACK_FRAMES) \
-    $(wildcard include/config/HARDENED_USERCOPY) \
-  include/linux/restart_block.h \
-  arch/x86/include/asm/thread_info.h \
-    $(wildcard include/config/COMPAT) \
-  include/linux/bottom_half.h \
-  include/linux/lockdep.h \
-    $(wildcard include/config/DEBUG_LOCKING_API_SELFTESTS) \
-  include/linux/smp.h \
-    $(wildcard include/config/UP_LATE_INIT) \
-  include/linux/smp_types.h \
-  include/linux/llist.h \
-    $(wildcard include/config/ARCH_HAVE_NMI_SAFE_CMPXCHG) \
-  arch/x86/include/asm/smp.h \
-    $(wildcard include/config/X86_LOCAL_APIC) \
-    $(wildcard include/config/DEBUG_NMI_SELFTEST) \
-  arch/x86/include/generated/asm/mmiowb.h \
-  include/asm-generic/mmiowb.h \
-    $(wildcard include/config/MMIOWB) \
-  include/linux/spinlock_types.h \
-  include/linux/rwlock_types.h \
-  arch/x86/include/asm/spinlock.h \
-  arch/x86/include/asm/paravirt.h \
-    $(wildcard include/config/PARAVIRT_SPINLOCKS) \
-  arch/x86/include/asm/frame.h \
-  arch/x86/include/asm/qspinlock.h \
-  include/asm-generic/qspinlock.h \
-  arch/x86/include/asm/qrwlock.h \
-  include/asm-generic/qrwlock.h \
-  include/linux/rwlock.h \
-    $(wildcard include/config/PREEMPT) \
-  include/linux/spinlock_api_smp.h \
-    $(wildcard include/config/INLINE_SPIN_LOCK) \
-    $(wildcard include/config/INLINE_SPIN_LOCK_BH) \
-    $(wildcard include/config/INLINE_SPIN_LOCK_IRQ) \
-    $(wildcard include/config/INLINE_SPIN_LOCK_IRQSAVE) \
-    $(wildcard include/config/INLINE_SPIN_TRYLOCK) \
-    $(wildcard include/config/INLINE_SPIN_TRYLOCK_BH) \
-    $(wildcard include/config/UNINLINE_SPIN_UNLOCK) \
-    $(wildcard include/config/INLINE_SPIN_UNLOCK_BH) \
-    $(wildcard include/config/INLINE_SPIN_UNLOCK_IRQ) \
-    $(wildcard include/config/INLINE_SPIN_UNLOCK_IRQRESTORE) \
-    $(wildcard include/config/GENERIC_LOCKBREAK) \
-  include/linux/rwlock_api_smp.h \
-    $(wildcard include/config/INLINE_READ_LOCK) \
-    $(wildcard include/config/INLINE_WRITE_LOCK) \
-    $(wildcard include/config/INLINE_READ_LOCK_BH) \
-    $(wildcard include/config/INLINE_WRITE_LOCK_BH) \
-    $(wildcard include/config/INLINE_READ_LOCK_IRQ) \
-    $(wildcard include/config/INLINE_WRITE_LOCK_IRQ) \
-    $(wildcard include/config/INLINE_READ_LOCK_IRQSAVE) \
-    $(wildcard include/config/INLINE_WRITE_LOCK_IRQSAVE) \
-    $(wildcard include/config/INLINE_READ_TRYLOCK) \
-    $(wildcard include/config/INLINE_WRITE_TRYLOCK) \
-    $(wildcard include/config/INLINE_READ_UNLOCK) \
-    $(wildcard include/config/INLINE_WRITE_UNLOCK) \
-    $(wildcard include/config/INLINE_READ_UNLOCK_BH) \
-    $(wildcard include/config/INLINE_WRITE_UNLOCK_BH) \
-    $(wildcard include/config/INLINE_READ_UNLOCK_IRQ) \
-    $(wildcard include/config/INLINE_WRITE_UNLOCK_IRQ) \
-    $(wildcard include/config/INLINE_READ_UNLOCK_IRQRESTORE) \
-    $(wildcard include/config/INLINE_WRITE_UNLOCK_IRQRESTORE) \
-  include/linux/refcount.h \
-  include/linux/rbtree.h \
-  include/linux/rbtree_types.h \
-  include/linux/rcupdate.h \
-    $(wildcard include/config/PREEMPT_RCU) \
-    $(wildcard include/config/TINY_RCU) \
-    $(wildcard include/config/RCU_STRICT_GRACE_PERIOD) \
-    $(wildcard include/config/TASKS_RCU_GENERIC) \
-    $(wildcard include/config/RCU_STALL_COMMON) \
-    $(wildcard include/config/NO_HZ_FULL) \
-    $(wildcard include/config/RCU_NOCB_CPU) \
-    $(wildcard include/config/TASKS_RCU) \
-    $(wildcard include/config/TASKS_TRACE_RCU) \
-    $(wildcard include/config/TASKS_RUDE_RCU) \
-    $(wildcard include/config/TREE_RCU) \
-    $(wildcard include/config/DEBUG_OBJECTS_RCU_HEAD) \
-    $(wildcard include/config/PROVE_RCU) \
-    $(wildcard include/config/ARCH_WEAK_RELEASE_ACQUIRE) \
-  include/linux/rcutree.h \
-  include/linux/rwsem.h \
-    $(wildcard include/config/RWSEM_SPIN_ON_OWNER) \
-    $(wildcard include/config/DEBUG_RWSEMS) \
-  include/linux/osq_lock.h \
-  include/linux/completion.h \
-  include/linux/swait.h \
-  include/linux/wait.h \
-  include/uapi/linux/wait.h \
-  include/linux/uprobes.h \
-    $(wildcard include/config/UPROBES) \
-  arch/x86/include/asm/uprobes.h \
-  include/linux/notifier.h \
-  include/linux/mutex.h \
-    $(wildcard include/config/MUTEX_SPIN_ON_OWNER) \
-    $(wildcard include/config/DEBUG_MUTEXES) \
-  include/linux/debug_locks.h \
-  include/linux/srcu.h \
-    $(wildcard include/config/TINY_SRCU) \
-    $(wildcard include/config/SRCU) \
-  include/linux/workqueue.h \
-    $(wildcard include/config/DEBUG_OBJECTS_WORK) \
-    $(wildcard include/config/FREEZER) \
-    $(wildcard include/config/WQ_WATCHDOG) \
-  include/linux/timer.h \
-    $(wildcard include/config/DEBUG_OBJECTS_TIMERS) \
-    $(wildcard include/config/NO_HZ_COMMON) \
-  include/linux/ktime.h \
-  include/linux/jiffies.h \
-  include/vdso/jiffies.h \
-  include/generated/timeconst.h \
-  include/vdso/ktime.h \
-  include/linux/timekeeping.h \
-    $(wildcard include/config/GENERIC_CMOS_UPDATE) \
-  include/linux/clocksource_ids.h \
-  include/linux/debugobjects.h \
-    $(wildcard include/config/DEBUG_OBJECTS) \
-    $(wildcard include/config/DEBUG_OBJECTS_FREE) \
-  include/linux/rcu_segcblist.h \
-  include/linux/srcutree.h \
-  include/linux/rcu_node_tree.h \
-    $(wildcard include/config/RCU_FANOUT) \
-    $(wildcard include/config/RCU_FANOUT_LEAF) \
-  include/linux/page-flags-layout.h \
-    $(wildcard include/config/KASAN_HW_TAGS) \
-  include/linux/numa.h \
-    $(wildcard include/config/NODES_SHIFT) \
-    $(wildcard include/config/NUMA_KEEP_MEMINFO) \
-    $(wildcard include/config/HAVE_ARCH_NODE_DEV_GROUP) \
-  arch/x86/include/asm/sparsemem.h \
-  include/generated/bounds.h \
-  include/linux/seqlock.h \
-  include/linux/ww_mutex.h \
-    $(wildcard include/config/DEBUG_RT_MUTEXES) \
-    $(wildcard include/config/DEBUG_WW_MUTEX_SLOWPATH) \
-  include/linux/rtmutex.h \
-  arch/x86/include/asm/mmu.h \
-    $(wildcard include/config/MODIFY_LDT_SYSCALL) \
-  include/linux/kmod.h \
-  include/linux/umh.h \
-  include/linux/gfp.h \
-    $(wildcard include/config/HIGHMEM) \
-    $(wildcard include/config/ZONE_DMA) \
-    $(wildcard include/config/ZONE_DMA32) \
-    $(wildcard include/config/ZONE_DEVICE) \
-    $(wildcard include/config/PM_SLEEP) \
-    $(wildcard include/config/CONTIG_ALLOC) \
-    $(wildcard include/config/CMA) \
-  include/linux/mmdebug.h \
-    $(wildcard include/config/DEBUG_VM) \
-    $(wildcard include/config/DEBUG_VM_PGFLAGS) \
-  include/linux/mmzone.h \
-    $(wildcard include/config/FORCE_MAX_ZONEORDER) \
-    $(wildcard include/config/MEMORY_ISOLATION) \
-    $(wildcard include/config/ZSMALLOC) \
-    $(wildcard include/config/MEMORY_HOTPLUG) \
-    $(wildcard include/config/COMPACTION) \
-    $(wildcard include/config/PAGE_EXTENSION) \
-    $(wildcard include/config/DEFERRED_STRUCT_PAGE_INIT) \
-    $(wildcard include/config/HAVE_MEMORYLESS_NODES) \
-    $(wildcard include/config/SPARSEMEM_EXTREME) \
-    $(wildcard include/config/HAVE_ARCH_PFN_VALID) \
-  include/linux/nodemask.h \
-  include/linux/pageblock-flags.h \
-    $(wildcard include/config/HUGETLB_PAGE_SIZE_VARIABLE) \
-  include/linux/page-flags.h \
-    $(wildcard include/config/ARCH_USES_PG_UNCACHED) \
-    $(wildcard include/config/MEMORY_FAILURE) \
-    $(wildcard include/config/PAGE_IDLE_FLAG) \
-    $(wildcard include/config/HUGETLB_PAGE_FREE_VMEMMAP) \
-    $(wildcard include/config/HUGETLB_PAGE_FREE_VMEMMAP_DEFAULT_ON) \
-    $(wildcard include/config/KSM) \
-  include/linux/local_lock.h \
-  include/linux/local_lock_internal.h \
-  include/linux/memory_hotplug.h \
-    $(wildcard include/config/HAVE_ARCH_NODEDATA_EXTENSION) \
-    $(wildcard include/config/ARCH_HAS_ADD_PAGES) \
-    $(wildcard include/config/MEMORY_HOTREMOVE) \
-  arch/x86/include/asm/mmzone.h \
-  arch/x86/include/asm/mmzone_32.h \
-  include/linux/topology.h \
-    $(wildcard include/config/USE_PERCPU_NUMA_NODE_ID) \
-    $(wildcard include/config/SCHED_SMT) \
-    $(wildcard include/config/SCHED_CLUSTER) \
-  include/linux/arch_topology.h \
-    $(wildcard include/config/ACPI_CPPC_LIB) \
-    $(wildcard include/config/GENERIC_ARCH_TOPOLOGY) \
-  include/linux/percpu.h \
-    $(wildcard include/config/NEED_PER_CPU_EMBED_FIRST_CHUNK) \
-    $(wildcard include/config/NEED_PER_CPU_PAGE_FIRST_CHUNK) \
-  arch/x86/include/asm/topology.h \
-    $(wildcard include/config/SCHED_MC_PRIO) \
-  arch/x86/include/asm/mpspec.h \
-    $(wildcard include/config/EISA) \
-    $(wildcard include/config/X86_MPPARSE) \
-  arch/x86/include/asm/mpspec_def.h \
-  arch/x86/include/asm/x86_init.h \
-  arch/x86/include/asm/apicdef.h \
-  include/asm-generic/topology.h \
-  include/linux/sysctl.h \
-    $(wildcard include/config/SYSCTL) \
-  include/uapi/linux/sysctl.h \
-  include/linux/elf.h \
-    $(wildcard include/config/ARCH_USE_GNU_PROPERTY) \
-    $(wildcard include/config/ARCH_HAVE_ELF_PROT) \
-  arch/x86/include/asm/elf.h \
-    $(wildcard include/config/X86_X32_ABI) \
-  arch/x86/include/asm/user.h \
-  arch/x86/include/asm/user_32.h \
-  arch/x86/include/asm/fsgsbase.h \
-  arch/x86/include/asm/vdso.h \
-  arch/x86/include/asm/desc.h \
-  arch/x86/include/asm/fixmap.h \
-    $(wildcard include/config/DEBUG_KMAP_LOCAL_FORCE_MAP) \
-    $(wildcard include/config/X86_VSYSCALL_EMULATION) \
-    $(wildcard include/config/PROVIDE_OHCI1394_DMA_INIT) \
-    $(wildcard include/config/X86_IO_APIC) \
-    $(wildcard include/config/KMAP_LOCAL) \
-    $(wildcard include/config/PCI_MMCONFIG) \
-    $(wildcard include/config/ACPI_APEI_GHES) \
-    $(wildcard include/config/INTEL_TXT) \
-  arch/x86/include/generated/asm/kmap_size.h \
-  include/asm-generic/kmap_size.h \
-    $(wildcard include/config/DEBUG_KMAP_LOCAL) \
-  include/asm-generic/fixmap.h \
-  arch/x86/include/asm/irq_vectors.h \
-    $(wildcard include/config/HAVE_KVM) \
-    $(wildcard include/config/HYPERV) \
-    $(wildcard include/config/PCI_MSI) \
-  arch/x86/include/asm/cpu_entry_area.h \
-  arch/x86/include/asm/intel_ds.h \
-  arch/x86/include/asm/pgtable_areas.h \
-  arch/x86/include/asm/pgtable_32_areas.h \
-  include/uapi/linux/elf.h \
-  include/uapi/linux/elf-em.h \
-  include/linux/kobject.h \
-    $(wildcard include/config/UEVENT_HELPER) \
-    $(wildcard include/config/DEBUG_KOBJECT_RELEASE) \
-  include/linux/sysfs.h \
-  include/linux/kernfs.h \
-    $(wildcard include/config/KERNFS) \
-  include/linux/idr.h \
-  include/linux/radix-tree.h \
-  include/linux/xarray.h \
-    $(wildcard include/config/XARRAY_MULTI) \
-  include/linux/kconfig.h \
-  include/linux/kobject_ns.h \
-  include/linux/moduleparam.h \
-    $(wildcard include/config/ALPHA) \
-    $(wildcard include/config/IA64) \
-    $(wildcard include/config/PPC64) \
-  include/linux/rbtree_latch.h \
-  include/linux/error-injection.h \
-  include/asm-generic/error-injection.h \
-  include/linux/cfi.h \
-    $(wildcard include/config/CFI_CLANG_SHADOW) \
-  arch/x86/include/asm/module.h \
-    $(wildcard include/config/UNWINDER_ORC) \
-  include/asm-generic/module.h \
-    $(wildcard include/config/HAVE_MOD_ARCH_SPECIFIC) \
-    $(wildcard include/config/MODULES_USE_ELF_REL) \
-    $(wildcard include/config/MODULES_USE_ELF_RELA) \
-  arch/x86/include/asm/orc_types.h \
-  include/linux/i2c.h \
-    $(wildcard include/config/I2C) \
-    $(wildcard include/config/I2C_SLAVE) \
-    $(wildcard include/config/I2C_BOARDINFO) \
-    $(wildcard include/config/I2C_MUX) \
-    $(wildcard include/config/OF) \
-    $(wildcard include/config/ACPI) \
-  include/linux/acpi.h \
-    $(wildcard include/config/ACPI_DEBUGGER) \
-    $(wildcard include/config/ACPI_TABLE_LIB) \
-    $(wildcard include/config/LOONGARCH) \
-    $(wildcard include/config/ARM64) \
-    $(wildcard include/config/
+// SPDX-License-Identifier: GPL-2.0-only
+/*
+ * CAN driver for esd CAN-USB/2 and CAN-USB/Micro
+ *
+ * Copyright (C) 2010-2012 Matthias Fuchs <matthias.fuchs@esd.eu>, esd gmbh
+ */
+#include <linux/signal.h>
+#include <linux/slab.h>
+#include <linux/module.h>
+#include <linux/netdevice.h>
+#include <linux/usb.h>
+
+#include <linux/can.h>
+#include <linux/can/dev.h>
+#include <linux/can/error.h>
+
+MODULE_AUTHOR("Matthias Fuchs <matthias.fuchs@esd.eu>");
+MODULE_DESCRIPTION("CAN driver for esd CAN-USB/2 and CAN-USB/Micro interfaces");
+MODULE_LICENSE("GPL v2");
+
+/* Define these values to match your devices */
+#define USB_ESDGMBH_VENDOR_ID	0x0ab4
+#define USB_CANUSB2_PRODUCT_ID	0x0010
+#define USB_CANUSBM_PRODUCT_ID	0x0011
+
+#define ESD_USB2_CAN_CLOCK	60000000
+#define ESD_USBM_CAN_CLOCK	36000000
+#define ESD_USB2_MAX_NETS	2
+
+/* USB2 commands */
+#define CMD_VERSION		1 /* also used for VERSION_REPLY */
+#define CMD_CAN_RX		2 /* device to host only */
+#define CMD_CAN_TX		3 /* also used for TX_DONE */
+#define CMD_SETBAUD		4 /* also used for SETBAUD_REPLY */
+#define CMD_TS			5 /* also used for TS_REPLY */
+#define CMD_IDADD		6 /* also used for IDADD_REPLY */
+
+/* esd CAN message flags - dlc field */
+#define ESD_RTR			0x10
+
+/* esd CAN message flags - id field */
+#define ESD_EXTID		0x20000000
+#define ESD_EVENT		0x40000000
+#define ESD_IDMASK		0x1fffffff
+
+/* esd CAN event ids used by this driver */
+#define ESD_EV_CAN_ERROR_EXT	2
+
+/* baudrate message flags */
+#define ESD_USB2_UBR		0x80000000
+#define ESD_USB2_LOM		0x40000000
+#define ESD_USB2_NO_BAUDRATE	0x7fffffff
+#define ESD_USB2_TSEG1_MIN	1
+#define ESD_USB2_TSEG1_MAX	16
+#define ESD_USB2_TSEG1_SHIFT	16
+#define ESD_USB2_TSEG2_MIN	1
+#define ESD_USB2_TSEG2_MAX	8
+#define ESD_USB2_TSEG2_SHIFT	20
+#define ESD_USB2_SJW_MAX	4
+#define ESD_USB2_SJW_SHIFT	14
+#define ESD_USBM_SJW_SHIFT	24
+#define ESD_USB2_BRP_MIN	1
+#define ESD_USB2_BRP_MAX	1024
+#define ESD_USB2_BRP_INC	1
+#define ESD_USB2_3_SAMPLES	0x00800000
+
+/* esd IDADD message */
+#define ESD_ID_ENABLE		0x80
+#define ESD_MAX_ID_SEGMENT	64
+
+/* SJA1000 ECC register (emulated by usb2 firmware) */
+#define SJA1000_ECC_SEG		0x1F
+#define SJA1000_ECC_DIR		0x20
+#define SJA1000_ECC_ERR		0x06
+#define SJA1000_ECC_BIT		0x00
+#define SJA1000_ECC_FORM	0x40
+#define SJA1000_ECC_STUFF	0x80
+#define SJA1000_ECC_MASK	0xc0
+
+/* esd bus state event codes */
+#define ESD_BUSSTATE_MASK	0xc0
+#define ESD_BUSSTATE_WARN	0x40
+#define ESD_BUSSTATE_ERRPASSIVE	0x80
+#define ESD_BUSSTATE_BUSOFF	0xc0
+
+#define RX_BUFFER_SIZE		1024
+#define MAX_RX_URBS		4
+#define MAX_TX_URBS		16 /* must be power of 2 */
+
+struct header_msg {
+	u8 len; /* len is always the total message length in 32bit words */
+	u8 cmd;
+	u8 rsvd[2];
+};
+
+struct version_msg {
+	u8 len;
+	u8 cmd;
+	u8 rsvd;
+	u8 flags;
+	__le32 drv_version;
+};
+
+struct version_reply_msg {
+	u8 len;
+	u8 cmd;
+	u8 nets;
+	u8 features;
+	__le32 version;
+	u8 name[16];
+	__le32 rsvd;
+	__le32 ts;
+};
+
+struct rx_msg {
+	u8 len;
+	u8 cmd;
+	u8 net;
+	u8 dlc;
+	__le32 ts;
+	__le32 id; /* upper 3 bits contain flags */
+	u8 data[8];
+};
+
+struct tx_msg {
+	u8 len;
+	u8 cmd;
+	u8 net;
+	u8 dlc;
+	u32 hnd;	/* opaque handle, not used by device */
+	__le32 id; /* upper 3 bits contain flags */
+	u8 data[8];
+};
+
+struct tx_done_msg {
+	u8 len;
+	u8 cmd;
+	u8 net;
+	u8 status;
+	u32 hnd;	/* opaque handle, not used by device */
+	__le32 ts;
+};
+
+struct id_filter_msg {
+	u8 len;
+	u8 cmd;
+	u8 net;
+	u8 option;
+	__le32 mask[ESD_MAX_ID_SEGMENT + 1];
+};
+
+struct set_baudrate_msg {
+	u8 len;
+	u8 cmd;
+	u8 net;
+	u8 rsvd;
+	__le32 baud;
+};
+
+/* Main message type used between library and application */
+struct __attribute__ ((packed)) esd_usb2_msg {
+	union {
+		struct header_msg hdr;
+		struct version_msg version;
+		struct version_reply_msg version_reply;
+		struct rx_msg rx;
+		struct tx_msg tx;
+		struct tx_done_msg txdone;
+		struct set_baudrate_msg setbaud;
+		struct id_filter_msg filter;
+	} msg;
+};
+
+static struct usb_device_id esd_usb2_table[] = {
+	{USB_DEVICE(USB_ESDGMBH_VENDOR_ID, USB_CANUSB2_PRODUCT_ID)},
+	{USB_DEVICE(USB_ESDGMBH_VENDOR_ID, USB_CANUSBM_PRODUCT_ID)},
+	{}
+};
+MODULE_DEVICE_TABLE(usb, esd_usb2_table);
+
+struct esd_usb2_net_priv;
+
+struct esd_tx_urb_context {
+	struct esd_usb2_net_priv *priv;
+	u32 echo_index;
+};
+
+struct esd_usb2 {
+	struct usb_device *udev;
+	struct esd_usb2_net_priv *nets[ESD_USB2_MAX_NETS];
+
+	struct usb_anchor rx_submitted;
+
+	int net_count;
+	u32 version;
+	int rxinitdone;
+	void *rxbuf[MAX_RX_URBS];
+	dma_addr_t rxbuf_dma[MAX_RX_URBS];
+};
+
+struct esd_usb2_net_priv {
+	struct can_priv can; /* must be the first member */
+
+	atomic_t active_tx_jobs;
+	struct usb_anchor tx_submitted;
+	struct esd_tx_urb_context tx_contexts[MAX_TX_URBS];
+
+	struct esd_usb2 *usb2;
+	struct net_device *netdev;
+	int index;
+	u8 old_state;
+	struct can_berr_counter bec;
+};
+
+static void esd_usb2_rx_event(struct esd_usb2_net_priv *priv,
+			      struct esd_usb2_msg *msg)
+{
+	struct net_device_stats *stats = &priv->netdev->stats;
+	struct can_frame *cf;
+	struct sk_buff *skb;
+	u32 id = le32_to_cpu(msg->msg.rx.id) & ESD_IDMASK;
+
+	if (id == ESD_EV_CAN_ERROR_EXT) {
+		u8 state = msg->msg.rx.data[0];
+		u8 ecc = msg->msg.rx.data[1];
+		u8 rxerr = msg->msg.rx.data[2];
+		u8 txerr = msg->msg.rx.data[3];
+
+		skb = alloc_can_err_skb(priv->netdev, &cf);
+		if (skb == NULL) {
+			stats->rx_dropped++;
+			return;
+		}
+
+		if (state != priv->old_state) {
+			priv->old_state = state;
+
+			switch (state & ESD_BUSSTATE_MASK) {
+			case ESD_BUSSTATE_BUSOFF:
+				priv->can.state = CAN_STATE_BUS_OFF;
+				cf->can_id |= CAN_ERR_BUSOFF;
+				priv->can.can_stats.bus_off++;
+				can_bus_off(priv->netdev);
+				break;
+			case ESD_BUSSTATE_WARN:
+				priv->can.state = CAN_STATE_ERROR_WARNING;
+				priv->can.can_stats.error_warning++;
+				break;
+			case ESD_BUSSTATE_ERRPASSIVE:
+				priv->can.state = CAN_STATE_ERROR_PASSIVE;
+				priv->can.can_stats.error_passive++;
+				break;
+			default:
+				priv->can.state = CAN_STATE_ERROR_ACTIVE;
+				break;
+			}
+		} else {
+			priv->can.can_stats.bus_error++;
+			stats->rx_errors++;
+
+			cf->can_id |= CAN_ERR_PROT | CAN_ERR_BUSERROR;
+
+			switch (ecc & SJA1000_ECC_MASK) {
+			case SJA1000_ECC_BIT:
+				cf->data[2] |= CAN_ERR_PROT_BIT;
+				break;
+			case SJA1000_ECC_FORM:
+				cf->data[2] |= CAN_ERR_PROT_FORM;
+				break;
+			case SJA1000_ECC_STUFF:
+				cf->data[2] |= CAN_ERR_PROT_STUFF;
+				break;
+			default:
+				cf->data[3] = ecc & SJA1000_ECC_SEG;
+				break;
+			}
+
+			/* Error occurred during transmission? */
+			if (!(ecc & SJA1000_ECC_DIR))
+				cf->data[2] |= CAN_ERR_PROT_TX;
+
+			if (priv->can.state == CAN_STATE_ERROR_WARNING ||
+			    priv->can.state == CAN_STATE_ERROR_PASSIVE) {
+				cf->data[1] = (txerr > rxerr) ?
+					CAN_ERR_CRTL_TX_PASSIVE :
+					CAN_ERR_CRTL_RX_PASSIVE;
+			}
+			cf->data[6] = txerr;
+			cf->data[7] = rxerr;
+		}
+
+		priv->bec.txerr = txerr;
+		priv->bec.rxerr = rxerr;
+
+		netif_rx(skb);
+	}
+}
+
+static void esd_usb2_rx_can_msg(struct esd_usb2_net_priv *priv,
+				struct esd_usb2_msg *msg)
+{
+	struct net_device_stats *stats = &priv->netdev->stats;
+	struct can_frame *cf;
+	struct sk_buff *skb;
+	int i;
+	u32 id;
+
+	if (!netif_device_present(priv->netdev))
+		return;
+
+	id = le32_to_cpu(msg->msg.rx.id);
+
+	if (id & ESD_EVENT) {
+		esd_usb2_rx_event(priv, msg);
+	} else {
+		skb = alloc_can_skb(priv->netdev, &cf);
+		if (skb == NULL) {
+			stats->rx_dropped++;
+			return;
+		}
+
+		cf->can_id = id & ESD_IDMASK;
+		can_frame_set_cc_len(cf, msg->msg.rx.dlc & ~ESD_RTR,
+				     priv->can.ctrlmode);
+
+		if (id & ESD_EXTID)
+			cf->can_id |= CAN_EFF_FLAG;
+
+		if (msg->msg.rx.dlc & ESD_RTR) {
+			cf->can_id |= CAN_RTR_FLAG;
+		} else {
+			for (i = 0; i < cf->len; i++)
+				cf->data[i] = msg->msg.rx.data[i];
+
+			stats->rx_bytes += cf->len;
+		}
+		stats->rx_packets++;
+
+		netif_rx(skb);
+	}
+
+	return;
+}
+
+static void esd_usb2_tx_done_msg(struct esd_usb2_net_priv *priv,
+				 struct esd_usb2_msg *msg)
+{
+	struct net_device_stats *stats = &priv->netdev->stats;
+	struct net_device *netdev = priv->netdev;
+	struct esd_tx_urb_context *context;
+
+	if (!netif_device_present(netdev))
+		return;
+
+	context = &priv->tx_contexts[msg->msg.txdone.hnd & (MAX_TX_URBS - 1)];
+
+	if (!msg->msg.txdone.status) {
+		stats->tx_packets++;
+		stats->tx_bytes += can_get_echo_skb(netdev, context->echo_index,
+						    NULL);
+	} else {
+		stats->tx_errors++;
+		can_free_echo_skb(netdev, context->echo_index, NULL);
+	}
+
+	/* Release context */
+	context->echo_index = MAX_TX_URBS;
+	atomic_dec(&priv->active_tx_jobs);
+
+	netif_wake_queue(netdev);
+}
+
+static void esd_usb2_read_bulk_callback(struct urb *urb)
+{
+	struct esd_usb2 *dev = urb->context;
+	int retval;
+	int pos = 0;
+	int i;
+
+	switch (urb->status) {
+	case 0: /* success */
+		break;
+
+	case -ENOENT:
+	case -EPIPE:
+	case -EPROTO:
+	case -ESHUTDOWN:
+		return;
+
+	default:
+		dev_info(dev->udev->dev.parent,
+			 "Rx URB aborted (%d)\n", urb->status);
+		goto resubmit_urb;
+	}
+
+	while (pos < urb->actual_length) {
+		struct esd_usb2_msg *msg;
+
+		msg = (struct esd_usb2_msg *)(urb->transfer_buffer + pos);
+
+		switch (msg->msg.hdr.cmd) {
+		case CMD_CAN_RX:
+			if (msg->msg.rx.net >= dev->net_count) {
+				dev_err(dev->udev->dev.parent, "format error\n");
+				break;
+			}
+
+			esd_usb2_rx_can_msg(dev->nets[msg->msg.rx.net], msg);
+			break;
+
+		case CMD_CAN_TX:
+			if (msg->msg.txdone.net >= dev->net_count) {
+				dev_err(dev->udev->dev.parent, "format error\n");
+				break;
+			}
+
+			esd_usb2_tx_done_msg(dev->nets[msg->msg.txdone.net],
+					     msg);
+			break;
+		}
+
+		pos += msg->msg.hdr.len << 2;
+
+		if (pos > urb->actual_length) {
+			dev_err(dev->udev->dev.parent, "format error\n");
+			break;
+		}
+	}
+
+resubmit_urb:
+	usb_fill_bulk_urb(urb, dev->udev, usb_rcvbulkpipe(dev->udev, 1),
+			  urb->transfer_buffer, RX_BUFFER_SIZE,
+			  esd_usb2_read_bulk_callback, dev);
+
+	retval = usb_submit_urb(urb, GFP_ATOMIC);
+	if (retval == -ENODEV) {
+		for (i = 0; i < dev->net_count; i++) {
+			if (dev->nets[i])
+				netif_device_detach(dev->nets[i]->netdev);
+		}
+	} else if (retval) {
+		dev_err(dev->udev->dev.parent,
+			"failed resubmitting read bulk urb: %d\n", retval);
+	}
+
+	return;
+}
+
+/*
+ * callback for bulk IN urb
+ */
+static void esd_usb2_write_bulk_callback(struct urb *urb)
+{
+	struct esd_tx_urb_context *context = urb->context;
+	struct esd_usb2_net_priv *priv;
+	struct net_device *netdev;
+	size_t size = sizeof(struct esd_usb2_msg);
+
+	WARN_ON(!context);
+
+	priv = context->priv;
+	netdev = priv->netdev;
+
+	/* free up our allocated buffer */
+	usb_free_coherent(urb->dev, size,
+			  urb->transfer_buffer, urb->transfer_dma);
+
+	if (!netif_device_present(netdev))
+		return;
+
+	if (urb->status)
+		netdev_info(netdev, "Tx URB aborted (%d)\n", urb->status);
+
+	netif_trans_update(netdev);
+}
+
+static ssize_t firmware_show(struct device *d,
+			     struct device_attribute *attr, char *buf)
+{
+	struct usb_interface *intf = to_usb_interface(d);
+	struct esd_usb2 *dev = usb_get_intfdata(intf);
+
+	return sprintf(buf, "%d.%d.%d\n",
+		       (dev->version >> 12) & 0xf,
+		       (dev->version >> 8) & 0xf,
+		       dev->version & 0xff);
+}
+static DEVICE_ATTR_RO(firmware);
+
+static ssize_t hardware_show(struct device *d,
+			     struct device_attribute *attr, char *buf)
+{
+	struct usb_interface *intf = to_usb_interface(d);
+	struct esd_usb2 *dev = usb_get_intfdata(intf);
+
+	return sprintf(buf, "%d.%d.%d\n",
+		       (dev->version >> 28) & 0xf,
+		       (dev->version >> 24) & 0xf,
+		       (dev->version >> 16) & 0xff);
+}
+static DEVICE_ATTR_RO(hardware);
+
+static ssize_t nets_show(struct device *d,
+			 struct device_attribute *attr, char *buf)
+{
+	struct usb_interface *intf = to_usb_interface(d);
+	struct esd_usb2 *dev = usb_get_intfdata(intf);
+
+	return sprintf(buf, "%d", dev->net_count);
+}
+static DEVICE_ATTR_RO(nets);
+
+static int esd_usb2_send_msg(struct esd_usb2 *dev, struct esd_usb2_msg *msg)
+{
+	int actual_length;
+
+	return usb_bulk_msg(dev->udev,
+			    usb_sndbulkpipe(dev->udev, 2),
+			    msg,
+			    msg->msg.hdr.len << 2,
+			    &actual_length,
+			    1000);
+}
+
+static int esd_usb2_wait_msg(struct esd_usb2 *dev,
+			     struct esd_usb2_msg *msg)
+{
+	int actual_length;
+
+	return usb_bulk_msg(dev->udev,
+			    usb_rcvbulkpipe(dev->udev, 1),
+			    msg,
+			    sizeof(*msg),
+			    &actual_length,
+			    1000);
+}
+
+static int esd_usb2_setup_rx_urbs(struct esd_usb2 *dev)
+{
+	int i, err = 0;
+
+	if (dev->rxinitdone)
+		return 0;
+
+	for (i = 0; i < MAX_RX_URBS; i++) {
+		struct urb *urb = NULL;
+		u8 *buf = NULL;
+		dma_addr_t buf_dma;
+
+		/* create a URB, and a buffer for it */
+		urb = usb_alloc_urb(0, GFP_KERNEL);
+		if (!urb) {
+			err = -ENOMEM;
+			break;
+		}
+
+		buf = usb_alloc_coherent(dev->udev, RX_BUFFER_SIZE, GFP_KERNEL,
+					 &buf_dma);
+		if (!buf) {
+			dev_warn(dev->udev->dev.parent,
+				 "No memory left for USB buffer\n");
+			err = -ENOMEM;
+			goto freeurb;
+		}
+
+		urb->transfer_dma = buf_dma;
+
+		usb_fill_bulk_urb(urb, dev->udev,
+				  usb_rcvbulkpipe(dev->udev, 1),
+				  buf, RX_BUFFER_SIZE,
+				  esd_usb2_read_bulk_callback, dev);
+		urb->transfer_flags |= URB_NO_TRANSFER_DMA_MAP;
+		usb_anchor_urb(urb, &dev->rx_submitted);
+
+		err = usb_submit_urb(urb, GFP_KERNEL);
+		if (err) {
+			usb_unanchor_urb(urb);
+			usb_free_coherent(dev->udev, RX_BUFFER_SIZE, buf,
+					  urb->transfer_dma);
+			goto freeurb;
+		}
+
+		dev->rxbuf[i] = buf;
+		dev->rxbuf_dma[i] = buf_dma;
+
+freeurb:
+		/* Drop reference, USB core will take care of freeing it */
+		usb_free_urb(urb);
+		if (err)
+			break;
+	}
+
+	/* Did we submit any URBs */
+	if (i == 0) {
+		dev_err(dev->udev->dev.parent, "couldn't setup read URBs\n");
+		return err;
+	}
+
+	/* Warn if we've couldn't transmit all the URBs */
+	if (i < MAX_RX_URBS) {
+		dev_warn(dev->udev->dev.parent,
+			 "rx performance may be slow\n");
+	}
+
+	dev->rxinitdone = 1;
+	return 0;
+}
+
+/*
+ * Start interface
+ */
+static int esd_usb2_start(struct esd_usb2_net_priv *priv)
+{
+	struct esd_usb2 *dev = priv->usb2;
+	struct net_device *netdev = priv->netdev;
+	struct esd_usb2_msg *msg;
+	int err, i;
+
+	msg = kmalloc(sizeof(*msg), GFP_KERNEL);
+	if (!msg) {
+		err = -ENOMEM;
+		goto out;
+	}
+
+	/*
+	 * Enable all IDs
+	 * The IDADD message takes up to 64 32 bit bitmasks (2048 bits).
+	 * Each bit represents one 11 bit CAN identifier. A set bit
+	 * enables reception of the corresponding CAN identifier. A cleared
+	 * bit disabled this identifier. An additional bitmask value
+	 * following the CAN 2.0A bits is used to enable reception of
+	 * extended CAN frames. Only the LSB of this final mask is checked
+	 * for the complete 29 bit ID range. The IDADD message also allows
+	 * filter configuration for an ID subset. In this case you can add
+	 * the number of the starting bitmask (0..64) to the filter.option
+	 * field followed by only some bitmasks.
+	 */
+	msg->msg.hdr.cmd = CMD_IDADD;
+	msg->msg.hdr.len = 2 + ESD_MAX_ID_SEGMENT;
+	msg->msg.filter.net = priv->index;
+	msg->msg.filter.option = ESD_ID_ENABLE; /* start with segment 0 */
+	for (i = 0; i < ESD_MAX_ID_SEGMENT; i++)
+		msg->msg.filter.mask[i] = cpu_to_le32(0xffffffff);
+	/* enable 29bit extended IDs */
+	msg->msg.filter.mask[ESD_MAX_ID_SEGMENT] = cpu_to_le32(0x00000001);
+
+	err = esd_usb2_send_msg(dev, msg);
+	if (err)
+		goto out;
+
+	err = esd_usb2_setup_rx_urbs(dev);
+	if (err)
+		goto out;
+
+	priv->can.state = CAN_STATE_ERROR_ACTIVE;
+
+out:
+	if (err == -ENODEV)
+		netif_device_detach(netdev);
+	if (err)
+		netdev_err(netdev, "couldn't start device: %d\n", err);
+
+	kfree(msg);
+	return err;
+}
+
+static void unlink_all_urbs(struct esd_usb2 *dev)
+{
+	struct esd_usb2_net_priv *priv;
+	int i, j;
+
+	usb_kill_anchored_urbs(&dev->rx_submitted);
+
+	for (i = 0; i < MAX_RX_URBS; ++i)
+		usb_free_coherent(dev->udev, RX_BUFFER_SIZE,
+				  dev->rxbuf[i], dev->rxbuf_dma[i]);
+
+	for (i = 0; i < dev->net_count; i++) {
+		priv = dev->nets[i];
+		if (priv) {
+			usb_kill_anchored_urbs(&priv->tx_submitted);
+			atomic_set(&priv->active_tx_jobs, 0);
+
+			for (j = 0; j < MAX_TX_URBS; j++)
+				priv->tx_contexts[j].echo_index = MAX_TX_URBS;
+		}
+	}
+}
+
+static int esd_usb2_open(struct net_device *netdev)
+{
+	struct esd_usb2_net_priv *priv = netdev_priv(netdev);
+	int err;
+
+	/* common open */
+	err = open_candev(netdev);
+	if (err)
+		return err;
+
+	/* finally start device */
+	err = esd_usb2_start(priv);
+	if (err) {
+		netdev_warn(netdev, "couldn't start device: %d\n", err);
+		close_candev(netdev);
+		return err;
+	}
+
+	netif_start_queue(netdev);
+
+	return 0;
+}
+
+static netdev_tx_t esd_usb2_start_xmit(struct sk_buff *skb,
+				      struct net_device *netdev)
+{
+	struct esd_usb2_net_priv *priv = netdev_priv(netdev);
+	struct esd_usb2 *dev = priv->usb2;
+	struct esd_tx_urb_context *context = NULL;
+	struct net_device_stats *stats = &netdev->stats;
+	struct can_frame *cf = (struct can_frame *)skb->data;
+	struct esd_usb2_msg *msg;
+	struct urb *urb;
+	u8 *buf;
+	int i, err;
+	int ret = NETDEV_TX_OK;
+	size_t size = sizeof(struct esd_usb2_msg);
+
+	if (can_dropped_invalid_skb(netdev, skb))
+		return NETDEV_TX_OK;
+
+	/* create a URB, and a buffer for it, and copy the data to the URB */
+	urb = usb_alloc_urb(0, GFP_ATOMIC);
+	if (!urb) {
+		stats->tx_dropped++;
+		dev_kfree_skb(skb);
+		goto nourbmem;
+	}
+
+	buf = usb_alloc_coherent(dev->udev, size, GFP_ATOMIC,
+				 &urb->transfer_dma);
+	if (!buf) {
+		netdev_err(netdev, "No memory left for USB buffer\n");
+		stats->tx_dropped++;
+		dev_kfree_skb(skb);
+		goto nobufmem;
+	}
+
+	msg = (struct esd_usb2_msg *)buf;
+
+	msg->msg.hdr.len = 3; /* minimal length */
+	msg->msg.hdr.cmd = CMD_CAN_TX;
+	msg->msg.tx.net = priv->index;
+	msg->msg.tx.dlc = can_get_cc_dlc(cf, priv->can.ctrlmode);
+	msg->msg.tx.id = cpu_to_le32(cf->can_id & CAN_ERR_MASK);
+
+	if (cf->can_id & CAN_RTR_FLAG)
+		msg->msg.tx.dlc |= ESD_RTR;
+
+	if (cf->can_id & CAN_EFF_FLAG)
+		msg->msg.tx.id |= cpu_to_le32(ESD_EXTID);
+
+	for (i = 0; i < cf->len; i++)
+		msg->msg.tx.data[i] = cf->data[i];
+
+	msg->msg.hdr.len += (cf->len + 3) >> 2;
+
+	for (i = 0; i < MAX_TX_URBS; i++) {
+		if (priv->tx_contexts[i].echo_index == MAX_TX_URBS) {
+			context = &priv->tx_contexts[i];
+			break;
+		}
+	}
+
+	/*
+	 * This may never happen.
+	 */
+	if (!context) {
+		netdev_warn(netdev, "couldn't find free context\n");
+		ret = NETDEV_TX_BUSY;
+		goto releasebuf;
+	}
+
+	context->priv = priv;
+	context->echo_index = i;
+
+	/* hnd must not be 0 - MSB is stripped in txdone handling */
+	msg->msg.tx.hnd = 0x80000000 | i; /* returned in TX done message */
+
+	usb_fill_bulk_urb(urb, dev->udev, usb_sndbulkpipe(dev->udev, 2), buf,
+			  msg->msg.hdr.len << 2,
+			  esd_usb2_write_bulk_callback, context);
+
+	urb->transfer_flags |= URB_NO_TRANSFER_DMA_MAP;
+
+	usb_anchor_urb(urb, &priv->tx_submitted);
+
+	can_put_echo_skb(skb, netdev, context->echo_index, 0);
+
+	atomic_inc(&priv->active_tx_jobs);
+
+	/* Slow down tx path */
+	if (atomic_read(&priv->active_tx_jobs) >= MAX_TX_URBS)
+		netif_stop_queue(netdev);
+
+	err = usb_submit_urb(urb, GFP_ATOMIC);
+	if (err) {
+		can_free_echo_skb(netdev, context->echo_index, NULL);
+
+		atomic_dec(&priv->active_tx_jobs);
+		usb_unanchor_urb(urb);
+
+		stats->tx_dropped++;
+
+		if (err == -ENODEV)
+			netif_device_detach(netdev);
+		else
+			netdev_warn(netdev, "failed tx_urb %d\n", err);
+
+		goto releasebuf;
+	}
+
+	netif_trans_update(netdev);
+
+	/*
+	 * Release our reference to this URB, the USB core will eventually free
+	 * it entirely.
+	 */
+	usb_free_urb(urb);
+
+	return NETDEV_TX_OK;
+
+releasebuf:
+	usb_free_coherent(dev->udev, size, buf, urb->transfer_dma);
+
+nobufmem:
+	usb_free_urb(urb);
+
+nourbmem:
+	return ret;
+}
+
+static int esd_usb2_close(struct net_device *netdev)
+{
+	struct esd_usb2_net_priv *priv = netdev_priv(netdev);
+	struct esd_usb2_msg *msg;
+	int i;
+
+	msg = kmalloc(sizeof(*msg), GFP_KERNEL);
+	if (!msg)
+		return -ENOMEM;
+
+	/* Disable all IDs (see esd_usb2_start()) */
+	msg->msg.hdr.cmd = CMD_IDADD;
+	msg->msg.hdr.len = 2 + ESD_MAX_ID_SEGMENT;
+	msg->msg.filter.net = priv->index;
+	msg->msg.filter.option = ESD_ID_ENABLE; /* start with segment 0 */
+	for (i = 0; i <= ESD_MAX_ID_SEGMENT; i++)
+		msg->msg.filter.mask[i] = 0;
+	if (esd_usb2_send_msg(priv->usb2, msg) < 0)
+		netdev_err(netdev, "sending idadd message failed\n");
+
+	/* set CAN controller to reset mode */
+	msg->msg.hdr.len = 2;
+	msg->msg.hdr.cmd = CMD_SETBAUD;
+	msg->msg.setbaud.net = priv->index;
+	msg->msg.setbaud.rsvd = 0;
+	msg->msg.setbaud.baud = cpu_to_le32(ESD_USB2_NO_BAUDRATE);
+	if (esd_usb2_send_msg(priv->usb2, msg) < 0)
+		netdev_err(netdev, "sending setbaud message failed\n");
+
+	priv->can.state = CAN_STATE_STOPPED;
+
+	netif_stop_queue(netdev);
+
+	close_candev(netdev);
+
+	kfree(msg);
+
+	return 0;
+}
+
+static const struct net_device_ops esd_usb2_netdev_ops = {
+	.ndo_open = esd_usb2_open,
+	.ndo_stop = esd_usb2_close,
+	.ndo_start_xmit = esd_usb2_start_xmit,
+	.ndo_change_mtu = can_change_mtu,
+};
+
+static const struct can_bittiming_const esd_usb2_bittiming_const = {
+	.name = "esd_usb2",
+	.tseg1_min = ESD_USB2_TSEG1_MIN,
+	.tseg1_max = ESD_USB2_TSEG1_MAX,
+	.tseg2_min = ESD_USB2_TSEG2_MIN,
+	.tseg2_max = ESD_USB2_TSEG2_MAX,
+	.sjw_max = ESD_USB2_SJW_MAX,
+	.brp_min = ESD_USB2_BRP_MIN,
+	.brp_max = ESD_USB2_BRP_MAX,
+	.brp_inc = ESD_USB2_BRP_INC,
+};
+
+static int esd_usb2_set_bittiming(struct net_device *netdev)
+{
+	struct esd_usb2_net_priv *priv = netdev_priv(netdev);
+	struct can_bittiming *bt = &priv->can.bittiming;
+	struct esd_usb2_msg *msg;
+	int err;
+	u32 canbtr;
+	int sjw_shift;
+
+	canbtr = ESD_USB2_UBR;
+	if (priv->can.ctrlmode & CAN_CTRLMODE_LISTENONLY)
+		canbtr |= ESD_USB2_LOM;
+
+	canbtr |= (bt->brp - 1) & (ESD_USB2_BRP_MAX - 1);
+
+	if (le16_to_cpu(priv->usb2->udev->descriptor.idProduct) ==
+	    USB_CANUSBM_PRODUCT_ID)
+		sjw_shift = ESD_USBM_SJW_SHIFT;
+	else
+		sjw_shift = ESD_USB2_SJW_SHIFT;
+
+	canbtr |= ((bt->sjw - 1) & (ESD_USB2_SJW_MAX - 1))
+		<< sjw_shift;
+	canbtr |= ((bt->prop_seg + bt->phase_seg1 - 1)
+		   & (ESD_USB2_TSEG1_MAX - 1))
+		<< ESD_USB2_TSEG1_SHIFT;
+	canbtr |= ((bt->phase_seg2 - 1) & (ESD_USB2_TSEG2_MAX - 1))
+		<< ESD_USB2_TSEG2_SHIFT;
+	if (priv->can.ctrlmode & CAN_CTRLMODE_3_SAMPLES)
+		canbtr |= ESD_USB2_3_SAMPLES;
+
+	msg = kmalloc(sizeof(*msg), GFP_KERNEL);
+	if (!msg)
+		return -ENOMEM;
+
+	msg->msg.hdr.len = 2;
+	msg->msg.hdr.cmd = CMD_SETBAUD;
+	msg->msg.setbaud.net = priv->index;
+	msg->msg.setbaud.rsvd = 0;
+	msg->msg.setbaud.baud = cpu_to_le32(canbtr);
+
+	netdev_info(netdev, "setting BTR=%#x\n", canbtr);
+
+	err = esd_usb2_send_msg(priv->usb2, msg);
+
+	kfree(msg);
+	return err;
+}
+
+static int esd_usb2_get_berr_counter(const struct net_device *netdev,
+				     struct can_berr_counter *bec)
+{
+	struct esd_usb2_net_priv *priv = netdev_priv(netdev);
+
+	bec->txerr = priv->bec.txerr;
+	bec->rxerr = priv->bec.rxerr;
+
+	return 0;
+}
+
+static int esd_usb2_set_mode(struct net_device *netdev, enum can_mode mode)
+{
+	switch (mode) {
+	case CAN_MODE_START:
+		netif_wake_queue(netdev);
+		break;
+
+	default:
+		return -EOPNOTSUPP;
+	}
+
+	return 0;
+}
+
+static int esd_usb2_probe_one_net(struct usb_interface *intf, int index)
+{
+	struct esd_usb2 *dev = usb_get_intfdata(intf);
+	struct net_device *netdev;
+	struct esd_usb2_net_priv *priv;
+	int err = 0;
+	int i;
+
+	netdev = alloc_candev(sizeof(*priv), MAX_TX_URBS);
+	if (!netdev) {
+		dev_err(&intf->dev, "couldn't alloc candev\n");
+		err = -ENOMEM;
+		goto done;
+	}
+
+	priv = netdev_priv(netdev);
+
+	init_usb_anchor(&priv->tx_submitted);
+	atomic_set(&priv->active_tx_jobs, 0);
+
+	for (i = 0; i < MAX_TX_URBS; i++)
+		priv->tx_contexts[i].echo_index = MAX_TX_URBS;
+
+	priv->usb2 = dev;
+	priv->netdev = netdev;
+	priv->index = index;
+
+	priv->can.state = CAN_STATE_STOPPED;
+	priv->can.ctrlmode_supported = CAN_CTRLMODE_LISTENONLY |
+		CAN_CTRLMODE_CC_LEN8_DLC;
+
+	if (le16_to_cpu(dev->udev->descriptor.idProduct) ==
+	    USB_CANUSBM_PRODUCT_ID)
+		priv->can.clock.freq = ESD_USBM_CAN_CLOCK;
+	else {
+		priv->can.clock.freq = ESD_USB2_CAN_CLOCK;
+		priv->can.ctrlmode_supported |= CAN_CTRLMODE_3_SAMPLES;
+	}
+
+	priv->can.bittiming_const = &esd_usb2_bittiming_const;
+	priv->can.do_set_bittiming = esd_usb2_set_bittiming;
+	priv->can.do_set_mode = esd_usb2_set_mode;
+	priv->can.do_get_berr_counter = esd_usb2_get_berr_counter;
+
+	netdev->flags |= IFF_ECHO; /* we support local echo */
+
+	netdev->netdev_ops = &esd_usb2_netdev_ops;
+
+	SET_NETDEV_DEV(netdev, &intf->dev);
+	netdev->dev_id = index;
+
+	err = register_candev(netdev);
+	if (err) {
+		dev_err(&intf->dev, "couldn't register CAN device: %d\n", err);
+		free_candev(netdev);
+		err = -ENOMEM;
+		goto done;
+	}
+
+	dev->nets[index] = priv;
+	netdev_info(netdev, "device %s registered\n", netdev->name);
+
+done:
+	return err;
+}
+
+/*
+ * probe function for new USB2 devices
+ *
+ * check version information and number of available
+ * CAN interfaces
+ */
+static int esd_usb2_probe(struct usb_interface *intf,
+			 const struct usb_device_id *id)
+{
+	struct esd_usb2 *dev;
+	struct esd_usb2_msg *msg;
+	int i, err;
+
+	dev = kzalloc(sizeof(*dev), GFP_KERNEL);
+	if (!dev) {
+		err = -ENOMEM;
+		goto done;
+	}
+
+	dev->udev = interface_to_usbdev(intf);
+
+	init_usb_anchor(&dev->rx_submitted);
+
+	usb_set_intfdata(intf, dev);
+
+	msg = kmalloc(sizeof(*msg), GFP_KERNEL);
+	if (!msg) {
+		err = -ENOMEM;
+		goto free_msg;
+	}
+
+	/* query number of CAN interfaces (nets) */
+	msg->msg.hdr.cmd = CMD_VERSION;
+	msg->msg.hdr.len = 2;
+	msg->msg.version.rsvd = 0;
+	msg->msg.version.flags = 0;
+	msg->msg.version.drv_version = 0;
+
+	err = esd_usb2_send_msg(dev, msg);
+	if (err < 0) {
+		dev_err(&intf->dev, "sending version message failed\n");
+		goto free_msg;
+	}
+
+	err = esd_usb2_wait_msg(dev, msg);
+	if (err < 0) {
+		dev_err(&intf->dev, "no version message answer\n");
+		goto free_msg;
+	}
+
+	dev->net_count = (int)msg->msg.version_reply.nets;
+	dev->version = le32_to_cpu(msg->msg.version_reply.version);
+
+	if (device_create_file(&intf->dev, &dev_attr_firmware))
+		dev_err(&intf->dev,
+			"Couldn't create device file for firmware\n");
+
+	if (device_create_file(&intf->dev, &dev_attr_hardware))
+		dev_err(&intf->dev,
+			"Couldn't create device file for hardware\n");
+
+	if (device_create_file(&intf->dev, &dev_attr_nets))
+		dev_err(&intf->dev,
+			"Couldn't create device file for nets\n");
+
+	/* do per device probing */
+	for (i = 0; i < dev->net_count; i++)
+		esd_usb2_probe_one_net(intf, i);
+
+free_msg:
+	kfree(msg);
+	if (err)
+		kfree(dev);
+done:
+	return err;
+}
+
+/*
+ * called by the usb core when the device is removed from the system
+ */
+static void esd_usb2_disconnect(struct usb_interface *intf)
+{
+	struct esd_usb2 *dev = usb_get_intfdata(intf);
+	struct net_device *netdev;
+	int i;
+
+	device_remove_file(&intf->dev, &dev_attr_firmware);
+	device_remove_file(&intf->dev, &dev_attr_hardware);
+	device_remove_file(&intf->dev, &dev_attr_nets);
+
+	usb_set_intfdata(intf, NULL);
+
+	if (dev) {
+		for (i = 0; i < dev->net_count; i++) {
+			if (dev->nets[i]) {
+				netdev = dev->nets[i]->netdev;
+				unregister_netdev(netdev);
+				free_candev(netdev);
+			}
+		}
+		unlink_all_urbs(dev);
+		kfree(dev);
+	}
+}
+
+/* usb specific object needed to register this driver with the usb subsystem */
+static struct usb_driver esd_usb2_driver = {
+	.name = "esd_usb2",
+	.probe = esd_usb2_probe,
+	.disconnect = esd_usb2_disconnect,
+	.id_table = esd_usb2_table,
+};
+
+module_usb_driver(esd_usb2_driver);

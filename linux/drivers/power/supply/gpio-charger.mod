@@ -1,2 +1,3 @@
-lude/config/SHMEM) \
-    $(wildcard i
+,
+			.amux   = CX25840_AUDIO8,
+		} },

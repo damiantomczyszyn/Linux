@@ -1,6 +1,1 @@
-e/config/SPI) \
-  include/media/v4l2-dev.h \
-  include/linux/spi/spi.h \
-    $(wildcard include/config/SPI_SLAVE) \
-  include/linux/scatterlist.h \
-    $(wildcard include/config/NEED_SG_DMA_LENGTH) \
+cmd_drivers/net/can/m_can/m_can.ko := ld -r -m elf_i386 --build-id=sha1  -T scripts/module.lds -o drivers/net/can/m_can/m_can.ko drivers/net/can/m_can/m_can.o drivers/net/can/m_can/m_can.mod.o;  true

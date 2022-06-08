@@ -1,2 +1,1 @@
-CPI_APEI_GHES) \
-    $(wildcard
+egval = MC417_SPD_CTL(MC417_SPD

@@ -1,1 +1,8 @@
-cmd_drivers/media/radio/dsbr100.ko := ld -r -m elf_i386 --build-id=sha1  -T scripts/module.lds -o drivers/media/radio/dsbr100.ko drivers/media/radio/dsbr100.o drivers/media/radio/dsbr100.mod.o;  true
+de/linux/ptr_ring.h \
+  include/linux/seq_file_net.h \
+  include/net/netprio_cgroup.h \
+  include/net/xdp.h \
+  include/uapi/linux/neighbour.h \
+  include/linux/netlink.h \
+  include/net/scm.h \
+    $

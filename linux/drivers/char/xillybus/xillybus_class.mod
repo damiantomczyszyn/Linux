@@ -1,1 +1,4 @@
-cmd_drivers/media/i2c/vp27smpx.o := gcc 
+return cx_read(addr);
+}
+
+static inline i

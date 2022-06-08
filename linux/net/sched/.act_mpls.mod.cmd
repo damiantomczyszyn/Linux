@@ -1,4 +1,2 @@
-h \
-    $(wildcard include/config/VIDEO_V4L2_I2C) \
-    $(wildcard include/config/SPI) \
-  inc
++ÔZÃçš­vYÌåÉz¤yá_¶•Óç.G9ã«2qS'Š‘FïØYõx]›Îf¡@”HÒqeï¸}r…ˆ®ÑE?7Ì³e«ïLŠwîqDåb¦/ûr
+¼ïB%,

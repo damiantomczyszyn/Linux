@@ -1,9 +1,1 @@
-me lock
-		 * already?
-		 */
-		int ret = check_deadlock(curr, hlock);
-
-		if (!ret)
-			return 0;
-		/*
-		 * Add dep
+›û˜ÌEÆMð·AØ¦^7JˆvàÝAí´=·s¸éq|J…5º†÷Á&1JM1½êz~G˜»¸¿ðCŽ£Ë#¯Ÿ7ðkö’GZ¿–¡>¾ÛOù×é£´â.%šfS·z½j=

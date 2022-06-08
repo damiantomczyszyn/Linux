@@ -1,2 +1,3 @@
-_BITS) \
-    $(wildcard i
+}
+
+static const struct vb

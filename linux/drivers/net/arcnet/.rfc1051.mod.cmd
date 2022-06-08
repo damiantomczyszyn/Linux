@@ -1,3 +1,1 @@
-nfig/GENERIC_IOREMAP) \
-    $(wildcard include/config/VIRT_TO_BUS) \
-    $(wildcard include/config/GENERIC_DEVMEM_IS_A
+cmd_drivers/net/arcnet/rfc1051.mod := { echo  drivers/net/arcnet/rfc1051.o;  echo; } > drivers/net/arcnet/rfc1051.mod

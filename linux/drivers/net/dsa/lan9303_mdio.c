@@ -1,113 +1,178 @@
-\
-  include/linux/rwlock.h \
-    $(wildcard include/config/PREEMPT) \
-  include/linux/spinlock_api_smp.h \
-    $(wildcard include/config/INLINE_SPIN_LOCK) \
-    $(wildcard include/config/INLINE_SPIN_LOCK_BH) \
-    $(wildcard include/config/INLINE_SPIN_LOCK_IRQ) \
-    $(wildcard include/config/INLINE_SPIN_LOCK_IRQSAVE) \
-    $(wildcard include/config/INLINE_SPIN_TRYLOCK) \
-    $(wildcard include/config/INLINE_SPIN_TRYLOCK_BH) \
-    $(wildcard include/config/UNINLINE_SPIN_UNLOCK) \
-    $(wildcard include/config/INLINE_SPIN_UNLOCK_BH) \
-    $(wildcard include/config/INLINE_SPIN_UNLOCK_IRQ) \
-    $(wildcard include/config/INLINE_SPIN_UNLOCK_IRQRESTORE) \
-    $(wildcard include/config/GENERIC_LOCKBREAK) \
-  include/linux/rwlock_api_smp.h \
-    $(wildcard include/config/INLINE_READ_LOCK) \
-    $(wildcard include/config/INLINE_WRITE_LOCK) \
-    $(wildcard include/config/INLINE_READ_LOCK_BH) \
-    $(wildcard include/config/INLINE_WRITE_LOCK_BH) \
-    $(wildcard include/config/INLINE_READ_LOCK_IRQ) \
-    $(wildcard include/config/INLINE_WRITE_LOCK_IRQ) \
-    $(wildcard include/config/INLINE_READ_LOCK_IRQSAVE) \
-    $(wildcard include/config/INLINE_WRITE_LOCK_IRQSAVE) \
-    $(wildcard include/config/INLINE_READ_TRYLOCK) \
-    $(wildcard include/config/INLINE_WRITE_TRYLOCK) \
-    $(wildcard include/config/INLINE_READ_UNLOCK) \
-    $(wildcard include/config/INLINE_WRITE_UNLOCK) \
-    $(wildcard include/config/INLINE_READ_UNLOCK_BH) \
-    $(wildcard include/config/INLINE_WRITE_UNLOCK_BH) \
-    $(wildcard include/config/INLINE_READ_UNLOCK_IRQ) \
-    $(wildcard include/config/INLINE_WRITE_UNLOCK_IRQ) \
-    $(wildcard include/config/INLINE_READ_UNLOCK_IRQRESTORE) \
-    $(wildcard include/config/INLINE_WRITE_UNLOCK_IRQRESTORE) \
-  include/linux/refcount.h \
-  include/linux/rbtree.h \
-  include/linux/rbtree_types.h \
-  include/linux/rcupdate.h \
-    $(wildcard include/config/PREEMPT_RCU) \
-    $(wildcard include/config/TINY_RCU) \
-    $(wildcard include/config/RCU_STRICT_GRACE_PERIOD) \
-    $(wildcard include/config/TASKS_RCU_GENERIC) \
-    $(wildcard include/config/RCU_STALL_COMMON) \
-    $(wildcard include/config/NO_HZ_FULL) \
-    $(wildcard include/config/RCU_NOCB_CPU) \
-    $(wildcard include/config/TASKS_RCU) \
-    $(wildcard include/config/TASKS_TRACE_RCU) \
-    $(wildcard include/config/TASKS_RUDE_RCU) \
-    $(wildcard include/config/TREE_RCU) \
-    $(wildcard include/config/DEBUG_OBJECTS_RCU_HEAD) \
-    $(wildcard include/config/PROVE_RCU) \
-    $(wildcard include/config/ARCH_WEAK_RELEASE_ACQUIRE) \
-  include/linux/rcutree.h \
-  include/linux/rwsem.h \
-    $(wildcard include/config/RWSEM_SPIN_ON_OWNER) \
-    $(wildcard include/config/DEBUG_RWSEMS) \
-  include/linux/osq_lock.h \
-  include/linux/completion.h \
-  include/linux/swait.h \
-  include/linux/wait.h \
-  include/uapi/linux/wait.h \
-  include/linux/uprobes.h \
-    $(wildcard include/config/UPROBES) \
-  arch/x86/include/asm/uprobes.h \
-  include/linux/notifier.h \
-  include/linux/mutex.h \
-    $(wildcard include/config/MUTEX_SPIN_ON_OWNER) \
-    $(wildcard include/config/DEBUG_MUTEXES) \
-  include/linux/debug_locks.h \
-  include/linux/srcu.h \
-    $(wildcard include/config/TINY_SRCU) \
-    $(wildcard include/config/SRCU) \
-  include/linux/workqueue.h \
-    $(wildcard include/config/DEBUG_OBJECTS_WORK) \
-    $(wildcard include/config/FREEZER) \
-    $(wildcard include/config/WQ_WATCHDOG) \
-  include/linux/timer.h \
-    $(wildcard include/config/DEBUG_OBJECTS_TIMERS) \
-    $(wildcard include/config/NO_HZ_COMMON) \
-  include/linux/ktime.h \
-  include/linux/jiffies.h \
-  include/vdso/jiffies.h \
-  include/generated/timeconst.h \
-  include/vdso/ktime.h \
-  include/linux/timekeeping.h \
-    $(wildcard include/config/GENERIC_CMOS_UPDATE) \
-  include/linux/clocksource_ids.h \
-  include/linux/debugobjects.h \
-    $(wildcard include/config/DEBUG_OBJECTS) \
-    $(wildcard include/config/DEBUG_OBJECTS_FREE) \
-  include/linux/rcu_segcblist.h \
-  include/linux/srcutree.h \
-  include/linux/rcu_node_tree.h \
-    $(wildcard include/config/RCU_FANOUT) \
-    $(wildcard include/config/RCU_FANOUT_LEAF) \
-  include/linux/page-flags-layout.h \
-    $(wildcard include/config/KASAN_HW_TAGS) \
-  include/linux/numa.h \
-    $(wildcard include/config/NODES_SHIFT) \
-    $(wildcard include/config/NUMA_KEEP_MEMINFO) \
-    $(wildcard include/config/HAVE_ARCH_NODE_DEV_GROUP) \
-  arch/x86/include/asm/sparsemem.h \
-  include/generated/bounds.h \
-  include/linux/seqlock.h \
-  include/linux/ww_mutex.h \
-    $(wildcard include/config/DEBUG_RT_MUTEXES) \
-    $(wildcard include/config/DEBUG_WW_MUTEX_SLOWPATH) \
-  include/linux/rtmutex.h \
-  arch/x86/include/asm/mmu.h \
-    $(wildcard include/config/MODIFY_LDT_SYSCALL) \
-  include/linux/kmod.h \
-  include/linux/umh.h \
-  
+// SPDX-License-Identifier: GPL-2.0-only
+/*
+ * Copyright (C) 2017 Pengutronix, Juergen Borleis <kernel@pengutronix.de>
+ *
+ * Partially based on a patch from
+ * Copyright (c) 2014 Stefan Roese <sr@denx.de>
+ */
+#include <linux/kernel.h>
+#include <linux/module.h>
+#include <linux/mdio.h>
+#include <linux/phy.h>
+#include <linux/of.h>
+
+#include "lan9303.h"
+
+/* Generate phy-addr and -reg from the input address */
+#define PHY_ADDR(x) ((((x) >> 6) + 0x10) & 0x1f)
+#define PHY_REG(x) (((x) >> 1) & 0x1f)
+
+struct lan9303_mdio {
+	struct mdio_device *device;
+	struct lan9303 chip;
+};
+
+static void lan9303_mdio_real_write(struct mdio_device *mdio, int reg, u16 val)
+{
+	mdio->bus->write(mdio->bus, PHY_ADDR(reg), PHY_REG(reg), val);
+}
+
+static int lan9303_mdio_write(void *ctx, uint32_t reg, uint32_t val)
+{
+	struct lan9303_mdio *sw_dev = (struct lan9303_mdio *)ctx;
+
+	reg <<= 2; /* reg num to offset */
+	mutex_lock(&sw_dev->device->bus->mdio_lock);
+	lan9303_mdio_real_write(sw_dev->device, reg, val & 0xffff);
+	lan9303_mdio_real_write(sw_dev->device, reg + 2, (val >> 16) & 0xffff);
+	mutex_unlock(&sw_dev->device->bus->mdio_lock);
+
+	return 0;
+}
+
+static u16 lan9303_mdio_real_read(struct mdio_device *mdio, int reg)
+{
+	return mdio->bus->read(mdio->bus, PHY_ADDR(reg), PHY_REG(reg));
+}
+
+static int lan9303_mdio_read(void *ctx, uint32_t reg, uint32_t *val)
+{
+	struct lan9303_mdio *sw_dev = (struct lan9303_mdio *)ctx;
+
+	reg <<= 2; /* reg num to offset */
+	mutex_lock(&sw_dev->device->bus->mdio_lock);
+	*val = lan9303_mdio_real_read(sw_dev->device, reg);
+	*val |= (lan9303_mdio_real_read(sw_dev->device, reg + 2) << 16);
+	mutex_unlock(&sw_dev->device->bus->mdio_lock);
+
+	return 0;
+}
+
+static int lan9303_mdio_phy_write(struct lan9303 *chip, int phy, int reg,
+				  u16 val)
+{
+	struct lan9303_mdio *sw_dev = dev_get_drvdata(chip->dev);
+
+	return mdiobus_write_nested(sw_dev->device->bus, phy, reg, val);
+}
+
+static int lan9303_mdio_phy_read(struct lan9303 *chip, int phy,  int reg)
+{
+	struct lan9303_mdio *sw_dev = dev_get_drvdata(chip->dev);
+
+	return mdiobus_read_nested(sw_dev->device->bus, phy, reg);
+}
+
+static const struct lan9303_phy_ops lan9303_mdio_phy_ops = {
+	.phy_read = lan9303_mdio_phy_read,
+	.phy_write = lan9303_mdio_phy_write,
+};
+
+static const struct regmap_config lan9303_mdio_regmap_config = {
+	.reg_bits = 8,
+	.val_bits = 32,
+	.reg_stride = 1,
+	.can_multi_write = true,
+	.max_register = 0x0ff, /* address bits 0..1 are not used */
+	.reg_format_endian = REGMAP_ENDIAN_LITTLE,
+
+	.volatile_table = &lan9303_register_set,
+	.wr_table = &lan9303_register_set,
+	.rd_table = &lan9303_register_set,
+
+	.reg_read = lan9303_mdio_read,
+	.reg_write = lan9303_mdio_write,
+
+	.cache_type = REGCACHE_NONE,
+};
+
+static int lan9303_mdio_probe(struct mdio_device *mdiodev)
+{
+	struct lan9303_mdio *sw_dev;
+	int ret;
+
+	sw_dev = devm_kzalloc(&mdiodev->dev, sizeof(struct lan9303_mdio),
+			      GFP_KERNEL);
+	if (!sw_dev)
+		return -ENOMEM;
+
+	sw_dev->chip.regmap = devm_regmap_init(&mdiodev->dev, NULL, sw_dev,
+					       &lan9303_mdio_regmap_config);
+	if (IS_ERR(sw_dev->chip.regmap)) {
+		ret = PTR_ERR(sw_dev->chip.regmap);
+		dev_err(&mdiodev->dev, "regmap init failed: %d\n", ret);
+		return ret;
+	}
+
+	/* link forward and backward */
+	sw_dev->device = mdiodev;
+	dev_set_drvdata(&mdiodev->dev, sw_dev);
+	sw_dev->chip.dev = &mdiodev->dev;
+
+	sw_dev->chip.ops = &lan9303_mdio_phy_ops;
+
+	ret = lan9303_probe(&sw_dev->chip, mdiodev->dev.of_node);
+	if (ret != 0)
+		return ret;
+
+	dev_info(&mdiodev->dev, "LAN9303 MDIO driver loaded successfully\n");
+
+	return 0;
+}
+
+static void lan9303_mdio_remove(struct mdio_device *mdiodev)
+{
+	struct lan9303_mdio *sw_dev = dev_get_drvdata(&mdiodev->dev);
+
+	if (!sw_dev)
+		return;
+
+	lan9303_remove(&sw_dev->chip);
+
+	dev_set_drvdata(&mdiodev->dev, NULL);
+}
+
+static void lan9303_mdio_shutdown(struct mdio_device *mdiodev)
+{
+	struct lan9303_mdio *sw_dev = dev_get_drvdata(&mdiodev->dev);
+
+	if (!sw_dev)
+		return;
+
+	lan9303_shutdown(&sw_dev->chip);
+
+	dev_set_drvdata(&mdiodev->dev, NULL);
+}
+
+/*-------------------------------------------------------------------------*/
+
+static const struct of_device_id lan9303_mdio_of_match[] = {
+	{ .compatible = "smsc,lan9303-mdio" },
+	{ /* sentinel */ },
+};
+MODULE_DEVICE_TABLE(of, lan9303_mdio_of_match);
+
+static struct mdio_driver lan9303_mdio_driver = {
+	.mdiodrv.driver = {
+		.name = "LAN9303_MDIO",
+		.of_match_table = of_match_ptr(lan9303_mdio_of_match),
+	},
+	.probe  = lan9303_mdio_probe,
+	.remove = lan9303_mdio_remove,
+	.shutdown = lan9303_mdio_shutdown,
+};
+mdio_module_driver(lan9303_mdio_driver);
+
+MODULE_AUTHOR("Stefan Roese <sr@denx.de>, Juergen Borleis <kernel@pengutronix.de>");
+MODULE_DESCRIPTION("Driver for SMSC/Microchip LAN9303 three port ethernet switch in MDIO managed mode");
+MODULE_LICENSE("GPL v2");

@@ -1,2 +1,1 @@
-drivers/media/rc/keymaps/rc-digittrade.o
-
+x], Reg=[0x%02x], data=%02x, TS config = %

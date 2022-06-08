@@ -1,1 +1,18 @@
-cmd_drivers/media/i2c/tvp5150.o := gcc -Wp,-MMD,drivers/media/i2c/.tvp5150.o.d -nostdinc -I./arch/x86/include -I./arch/x86/include/generated  -I./include -I./arch/x86/include/uapi -I./arch/x86/include/generated/uapi -I./include/uapi -I./include/generated/uapi -include ./include/linux/compiler-version.h -include ./include/linux/kconfig.h -include ./include/linux/compiler_types.h -D__KERNEL__ -fmacro-prefix-map=./= -Wall -Wundef -Werror=strict-prototypes -Wno-trigraphs -fno-strict-aliasing -fno-common -fshort-wchar -fno-PIE -Werror=implicit-function-declaration -Werror=implicit-int -Werror=return-type -Wno-format-security -std=gnu11 -mno-sse -mno-mmx -mno-sse
+/* SPDX-License-Identifier: GPL-2.0 */
+#ifndef __COM9026_H
+#define __COM9026_H
+
+/* COM 9026 controller chip --> ARCnet register addresses */
+
+#define COM9026_REG_W_INTMASK	0	/* writable */
+#define COM9026_REG_R_STATUS	0	/* readable */
+#define COM9026_REG_W_COMMAND	1	/* writable, returns random vals on read (?) */
+#define COM9026_REG_RW_CONFIG	2	/* Configuration register */
+#define COM9026_REG_R_RESET	8	/* software reset (on read) */
+#define COM9026_REG_RW_MEMDATA	12	/* Data port for IO-mapped memory */
+#define COM9026_REG_W_ADDR_LO	14	/* Control registers for said */
+#define COM9026_REG_W_ADDR_HI	15
+
+#define COM9026_REG_R_STATION	1	/* Station ID */
+
+#endif

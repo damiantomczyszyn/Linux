@@ -1,1 +1,2 @@
-inline bool usage_accumulate
+		mem &= ~ALT_DATA;
+		mem |=

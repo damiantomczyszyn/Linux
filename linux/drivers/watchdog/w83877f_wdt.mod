@@ -1,1 +1,1 @@
- $(wildcard include/config/GENER
+/* SPDX-License-Identifier: GPL-

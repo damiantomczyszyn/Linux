@@ -1,2 +1,3 @@
-odule.h \
-    $(wildcard inc
+t_nr)
+{
+	if (temp_int == NUL

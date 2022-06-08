@@ -1,181 +1,319 @@
-\
-  arch/x86/include/asm/qrwlock.h \
-  include/asm-generic/qrwlock.h \
-  include/linux/rwlock.h \
-    $(wildcard include/config/PREEMPT) \
-  include/linux/spinlock_api_smp.h \
-    $(wildcard include/config/INLINE_SPIN_LOCK) \
-    $(wildcard include/config/INLINE_SPIN_LOCK_BH) \
-    $(wildcard include/config/INLINE_SPIN_LOCK_IRQ) \
-    $(wildcard include/config/INLINE_SPIN_LOCK_IRQSAVE) \
-    $(wildcard include/config/INLINE_SPIN_TRYLOCK) \
-    $(wildcard include/config/INLINE_SPIN_TRYLOCK_BH) \
-    $(wildcard include/config/UNINLINE_SPIN_UNLOCK) \
-    $(wildcard include/config/INLINE_SPIN_UNLOCK_BH) \
-    $(wildcard include/config/INLINE_SPIN_UNLOCK_IRQ) \
-    $(wildcard include/config/INLINE_SPIN_UNLOCK_IRQRESTORE) \
-    $(wildcard include/config/GENERIC_LOCKBREAK) \
-  include/linux/rwlock_api_smp.h \
-    $(wildcard include/config/INLINE_READ_LOCK) \
-    $(wildcard include/config/INLINE_WRITE_LOCK) \
-    $(wildcard include/config/INLINE_READ_LOCK_BH) \
-    $(wildcard include/config/INLINE_WRITE_LOCK_BH) \
-    $(wildcard include/config/INLINE_READ_LOCK_IRQ) \
-    $(wildcard include/config/INLINE_WRITE_LOCK_IRQ) \
-    $(wildcard include/config/INLINE_READ_LOCK_IRQSAVE) \
-    $(wildcard include/config/INLINE_WRITE_LOCK_IRQSAVE) \
-    $(wildcard include/config/INLINE_READ_TRYLOCK) \
-    $(wildcard include/config/INLINE_WRITE_TRYLOCK) \
-    $(wildcard include/config/INLINE_READ_UNLOCK) \
-    $(wildcard include/config/INLINE_WRITE_UNLOCK) \
-    $(wildcard include/config/INLINE_READ_UNLOCK_BH) \
-    $(wildcard include/config/INLINE_WRITE_UNLOCK_BH) \
-    $(wildcard include/config/INLINE_READ_UNLOCK_IRQ) \
-    $(wildcard include/config/INLINE_WRITE_UNLOCK_IRQ) \
-    $(wildcard include/config/INLINE_READ_UNLOCK_IRQRESTORE) \
-    $(wildcard include/config/INLINE_WRITE_UNLOCK_IRQRESTORE) \
-  include/linux/refcount.h \
-  include/linux/rbtree.h \
-  include/linux/rbtree_types.h \
-  include/linux/rcupdate.h \
-    $(wildcard include/config/PREEMPT_RCU) \
-    $(wildcard include/config/TINY_RCU) \
-    $(wildcard include/config/RCU_STRICT_GRACE_PERIOD) \
-    $(wildcard include/config/TASKS_RCU_GENERIC) \
-    $(wildcard include/config/RCU_STALL_COMMON) \
-    $(wildcard include/config/NO_HZ_FULL) \
-    $(wildcard include/config/RCU_NOCB_CPU) \
-    $(wildcard include/config/TASKS_RCU) \
-    $(wildcard include/config/TASKS_TRACE_RCU) \
-    $(wildcard include/config/TASKS_RUDE_RCU) \
-    $(wildcard include/config/TREE_RCU) \
-    $(wildcard include/config/DEBUG_OBJECTS_RCU_HEAD) \
-    $(wildcard include/config/PROVE_RCU) \
-    $(wildcard include/config/ARCH_WEAK_RELEASE_ACQUIRE) \
-  include/linux/rcutree.h \
-  include/linux/rwsem.h \
-    $(wildcard include/config/RWSEM_SPIN_ON_OWNER) \
-    $(wildcard include/config/DEBUG_RWSEMS) \
-  include/linux/osq_lock.h \
-  include/linux/completion.h \
-  include/linux/swait.h \
-  include/linux/wait.h \
-  include/uapi/linux/wait.h \
-  include/linux/uprobes.h \
-    $(wildcard include/config/UPROBES) \
-  arch/x86/include/asm/uprobes.h \
-  include/linux/notifier.h \
-  include/linux/mutex.h \
-    $(wildcard include/config/MUTEX_SPIN_ON_OWNER) \
-    $(wildcard include/config/DEBUG_MUTEXES) \
-  include/linux/debug_locks.h \
-  include/linux/srcu.h \
-    $(wildcard include/config/TINY_SRCU) \
-    $(wildcard include/config/SRCU) \
-  include/linux/workqueue.h \
-    $(wildcard include/config/DEBUG_OBJECTS_WORK) \
-    $(wildcard include/config/FREEZER) \
-    $(wildcard include/config/WQ_WATCHDOG) \
-  include/linux/timer.h \
-    $(wildcard include/config/DEBUG_OBJECTS_TIMERS) \
-    $(wildcard include/config/NO_HZ_COMMON) \
-  include/linux/ktime.h \
-  include/linux/jiffies.h \
-  include/vdso/jiffies.h \
-  include/generated/timeconst.h \
-  include/vdso/ktime.h \
-  include/linux/timekeeping.h \
-    $(wildcard include/config/GENERIC_CMOS_UPDATE) \
-  include/linux/clocksource_ids.h \
-  include/linux/debugobjects.h \
-    $(wildcard include/config/DEBUG_OBJECTS) \
-    $(wildcard include/config/DEBUG_OBJECTS_FREE) \
-  include/linux/rcu_segcblist.h \
-  include/linux/srcutree.h \
-  include/linux/rcu_node_tree.h \
-    $(wildcard include/config/RCU_FANOUT) \
-    $(wildcard include/config/RCU_FANOUT_LEAF) \
-  include/linux/page-flags-layout.h \
-    $(wildcard include/config/KASAN_HW_TAGS) \
-  include/linux/numa.h \
-    $(wildcard include/config/NODES_SHIFT) \
-    $(wildcard include/config/NUMA_KEEP_MEMINFO) \
-    $(wildcard include/config/HAVE_ARCH_NODE_DEV_GROUP) \
-  arch/x86/include/asm/sparsemem.h \
-  include/generated/bounds.h \
-  include/linux/seqlock.h \
-  include/linux/ww_mutex.h \
-    $(wildcard include/config/DEBUG_RT_MUTEXES) \
-    $(wildcard include/config/DEBUG_WW_MUTEX_SLOWPATH) \
-  include/linux/rtmutex.h \
-  arch/x86/include/asm/mmu.h \
-    $(wildcard include/config/MODIFY_LDT_SYSCALL) \
-  include/linux/kmod.h \
-  include/linux/umh.h \
-  include/linux/gfp.h \
-    $(wildcard include/config/HIGHMEM) \
-    $(wildcard include/config/ZONE_DMA) \
-    $(wildcard include/config/ZONE_DMA32) \
-    $(wildcard include/config/ZONE_DEVICE) \
-    $(wildcard include/config/PM_SLEEP) \
-    $(wildcard include/config/CONTIG_ALLOC) \
-    $(wildcard include/config/CMA) \
-  include/linux/mmdebug.h \
-    $(wildcard include/config/DEBUG_VM) \
-    $(wildcard include/config/DEBUG_VM_PGFLAGS) \
-  include/linux/mmzone.h \
-    $(wildcard include/config/FORCE_MAX_ZONEORDER) \
-    $(wildcard include/config/MEMORY_ISOLATION) \
-    $(wildcard include/config/ZSMALLOC) \
-    $(wildcard include/config/MEMORY_HOTPLUG) \
-    $(wildcard include/config/COMPACTION) \
-    $(wildcard include/config/PAGE_EXTENSION) \
-    $(wildcard include/config/DEFERRED_STRUCT_PAGE_INIT) \
-    $(wildcard include/config/HAVE_MEMORYLESS_NODES) \
-    $(wildcard include/config/SPARSEMEM_EXTREME) \
-    $(wildcard include/config/HAVE_ARCH_PFN_VALID) \
-  include/linux/nodemask.h \
-  include/linux/pageblock-flags.h \
-    $(wildcard include/config/HUGETLB_PAGE_SIZE_VARIABLE) \
-  include/linux/page-flags.h \
-    $(wildcard include/config/ARCH_USES_PG_UNCACHED) \
-    $(wildcard include/config/MEMORY_FAILURE) \
-    $(wildcard include/config/PAGE_IDLE_FLAG) \
-    $(wildcard include/config/HUGETLB_PAGE_FREE_VMEMMAP) \
-    $(wildcard include/config/HUGETLB_PAGE_FREE_VMEMMAP_DEFAULT_ON) \
-    $(wildcard include/config/KSM) \
-  include/linux/local_lock.h \
-  include/linux/local_lock_internal.h \
-  include/linux/memory_hotplug.h \
-    $(wildcard include/config/HAVE_ARCH_NODEDATA_EXTENSION) \
-    $(wildcard include/config/ARCH_HAS_ADD_PAGES) \
-    $(wildcard include/config/MEMORY_HOTREMOVE) \
-  arch/x86/include/asm/mmzone.h \
-  arch/x86/include/asm/mmzone_32.h \
-  include/linux/topology.h \
-    $(wildcard include/config/USE_PERCPU_NUMA_NODE_ID) \
-    $(wildcard include/config/SCHED_SMT) \
-    $(wildcard include/config/SCHED_CLUSTER) \
-  include/linux/arch_topology.h \
-    $(wildcard include/config/ACPI_CPPC_LIB) \
-    $(wildcard include/config/GENERIC_ARCH_TOPOLOGY) \
-  include/linux/percpu.h \
-    $(wildcard include/config/NEED_PER_CPU_EMBED_FIRST_CHUNK) \
-    $(wildcard include/config/NEED_PER_CPU_PAGE_FIRST_CHUNK) \
-  arch/x86/include/asm/topology.h \
-    $(wildcard include/config/SCHED_MC_PRIO) \
-  arch/x86/include/asm/mpspec.h \
-    $(wildcard include/config/EISA) \
-    $(wildcard include/config/X86_MPPARSE) \
-  arch/x86/include/asm/mpspec_def.h \
-  arch/x86/include/asm/x86_init.h \
-  arch/x86/include/asm/apicdef.h \
-  include/asm-generic/topology.h \
-  include/linux/sysctl.h \
-    $(wildcard include/config/SYSCTL) \
-  include/uapi/linux/sysctl.h \
-  include/linux/elf.h \
-    $(wildcard include/config/ARCH_USE_GNU_PROPERTY) \
-    $(wildcard include/config/ARCH_HAVE_ELF_PROT) \
-  arch/x86/include/asm/elf.h \
-    $(wildcar
+// SPDX-License-Identifier: GPL-2.0-or-later
+/*
+ * Marvell 88E6xxx Switch Global 2 Scratch & Misc Registers support
+ *
+ * Copyright (c) 2008 Marvell Semiconductor
+ *
+ * Copyright (c) 2017 National Instruments
+ *      Brandon Streiff <brandon.streiff@ni.com>
+ */
+
+#include "chip.h"
+#include "global2.h"
+
+/* Offset 0x1A: Scratch and Misc. Register */
+static int mv88e6xxx_g2_scratch_read(struct mv88e6xxx_chip *chip, int reg,
+				     u8 *data)
+{
+	u16 value;
+	int err;
+
+	err = mv88e6xxx_g2_write(chip, MV88E6XXX_G2_SCRATCH_MISC_MISC,
+				 reg << 8);
+	if (err)
+		return err;
+
+	err = mv88e6xxx_g2_read(chip, MV88E6XXX_G2_SCRATCH_MISC_MISC, &value);
+	if (err)
+		return err;
+
+	*data = (value & MV88E6XXX_G2_SCRATCH_MISC_DATA_MASK);
+
+	return 0;
+}
+
+static int mv88e6xxx_g2_scratch_write(struct mv88e6xxx_chip *chip, int reg,
+				      u8 data)
+{
+	u16 value = (reg << 8) | data;
+
+	return mv88e6xxx_g2_write(chip, MV88E6XXX_G2_SCRATCH_MISC_MISC,
+				  MV88E6XXX_G2_SCRATCH_MISC_UPDATE | value);
+}
+
+/**
+ * mv88e6xxx_g2_scratch_get_bit - get a bit
+ * @chip: chip private data
+ * @base_reg: base of scratch bits
+ * @offset: index of bit within the register
+ * @set: is bit set?
+ */
+static int mv88e6xxx_g2_scratch_get_bit(struct mv88e6xxx_chip *chip,
+					int base_reg, unsigned int offset,
+					int *set)
+{
+	int reg = base_reg + (offset / 8);
+	u8 mask = (1 << (offset & 0x7));
+	u8 val;
+	int err;
+
+	err = mv88e6xxx_g2_scratch_read(chip, reg, &val);
+	if (err)
+		return err;
+
+	*set = !!(mask & val);
+
+	return 0;
+}
+
+/**
+ * mv88e6xxx_g2_scratch_set_bit - set (or clear) a bit
+ * @chip: chip private data
+ * @base_reg: base of scratch bits
+ * @offset: index of bit within the register
+ * @set: should this bit be set?
+ *
+ * Helper function for dealing with the direction and data registers.
+ */
+static int mv88e6xxx_g2_scratch_set_bit(struct mv88e6xxx_chip *chip,
+					int base_reg, unsigned int offset,
+					int set)
+{
+	int reg = base_reg + (offset / 8);
+	u8 mask = (1 << (offset & 0x7));
+	u8 val;
+	int err;
+
+	err = mv88e6xxx_g2_scratch_read(chip, reg, &val);
+	if (err)
+		return err;
+
+	if (set)
+		val |= mask;
+	else
+		val &= ~mask;
+
+	return mv88e6xxx_g2_scratch_write(chip, reg, val);
+}
+
+/**
+ * mv88e6352_g2_scratch_gpio_get_data - get data on gpio pin
+ * @chip: chip private data
+ * @pin: gpio index
+ *
+ * Return: 0 for low, 1 for high, negative error
+ */
+static int mv88e6352_g2_scratch_gpio_get_data(struct mv88e6xxx_chip *chip,
+					      unsigned int pin)
+{
+	int val = 0;
+	int err;
+
+	err = mv88e6xxx_g2_scratch_get_bit(chip,
+					   MV88E6352_G2_SCRATCH_GPIO_DATA0,
+					   pin, &val);
+	if (err)
+		return err;
+
+	return val;
+}
+
+/**
+ * mv88e6352_g2_scratch_gpio_set_data - set data on gpio pin
+ * @chip: chip private data
+ * @pin: gpio index
+ * @value: value to set
+ */
+static int mv88e6352_g2_scratch_gpio_set_data(struct mv88e6xxx_chip *chip,
+					      unsigned int pin, int value)
+{
+	u8 mask = (1 << (pin & 0x7));
+	int offset = (pin / 8);
+	int reg;
+
+	reg = MV88E6352_G2_SCRATCH_GPIO_DATA0 + offset;
+
+	if (value)
+		chip->gpio_data[offset] |= mask;
+	else
+		chip->gpio_data[offset] &= ~mask;
+
+	return mv88e6xxx_g2_scratch_write(chip, reg, chip->gpio_data[offset]);
+}
+
+/**
+ * mv88e6352_g2_scratch_gpio_get_dir - get direction of gpio pin
+ * @chip: chip private data
+ * @pin: gpio index
+ *
+ * Return: 0 for output, 1 for input (same as GPIOF_DIR_XXX).
+ */
+static int mv88e6352_g2_scratch_gpio_get_dir(struct mv88e6xxx_chip *chip,
+					     unsigned int pin)
+{
+	int val = 0;
+	int err;
+
+	err = mv88e6xxx_g2_scratch_get_bit(chip,
+					   MV88E6352_G2_SCRATCH_GPIO_DIR0,
+					   pin, &val);
+	if (err)
+		return err;
+
+	return val;
+}
+
+/**
+ * mv88e6352_g2_scratch_gpio_set_dir - set direction of gpio pin
+ * @chip: chip private data
+ * @pin: gpio index
+ * @input: should the gpio be an input, or an output?
+ */
+static int mv88e6352_g2_scratch_gpio_set_dir(struct mv88e6xxx_chip *chip,
+					     unsigned int pin, bool input)
+{
+	int value = (input ? MV88E6352_G2_SCRATCH_GPIO_DIR_IN :
+			     MV88E6352_G2_SCRATCH_GPIO_DIR_OUT);
+
+	return mv88e6xxx_g2_scratch_set_bit(chip,
+					    MV88E6352_G2_SCRATCH_GPIO_DIR0,
+					    pin, value);
+}
+
+/**
+ * mv88e6352_g2_scratch_gpio_get_pctl - get pin control setting
+ * @chip: chip private data
+ * @pin: gpio index
+ * @func: function number
+ *
+ * Note that the function numbers themselves may vary by chipset.
+ */
+static int mv88e6352_g2_scratch_gpio_get_pctl(struct mv88e6xxx_chip *chip,
+					      unsigned int pin, int *func)
+{
+	int reg = MV88E6352_G2_SCRATCH_GPIO_PCTL0 + (pin / 2);
+	int offset = (pin & 0x1) ? 4 : 0;
+	u8 mask = (0x7 << offset);
+	int err;
+	u8 val;
+
+	err = mv88e6xxx_g2_scratch_read(chip, reg, &val);
+	if (err)
+		return err;
+
+	*func = (val & mask) >> offset;
+
+	return 0;
+}
+
+/**
+ * mv88e6352_g2_scratch_gpio_set_pctl - set pin control setting
+ * @chip: chip private data
+ * @pin: gpio index
+ * @func: function number
+ */
+static int mv88e6352_g2_scratch_gpio_set_pctl(struct mv88e6xxx_chip *chip,
+					      unsigned int pin, int func)
+{
+	int reg = MV88E6352_G2_SCRATCH_GPIO_PCTL0 + (pin / 2);
+	int offset = (pin & 0x1) ? 4 : 0;
+	u8 mask = (0x7 << offset);
+	int err;
+	u8 val;
+
+	err = mv88e6xxx_g2_scratch_read(chip, reg, &val);
+	if (err)
+		return err;
+
+	val = (val & ~mask) | ((func & mask) << offset);
+
+	return mv88e6xxx_g2_scratch_write(chip, reg, val);
+}
+
+const struct mv88e6xxx_gpio_ops mv88e6352_gpio_ops = {
+	.get_data = mv88e6352_g2_scratch_gpio_get_data,
+	.set_data = mv88e6352_g2_scratch_gpio_set_data,
+	.get_dir = mv88e6352_g2_scratch_gpio_get_dir,
+	.set_dir = mv88e6352_g2_scratch_gpio_set_dir,
+	.get_pctl = mv88e6352_g2_scratch_gpio_get_pctl,
+	.set_pctl = mv88e6352_g2_scratch_gpio_set_pctl,
+};
+
+/**
+ * mv88e6xxx_g2_scratch_gpio_set_smi - set gpio muxing for external smi
+ * @chip: chip private data
+ * @external: set mux for external smi, or free for gpio usage
+ *
+ * Some mv88e6xxx models have GPIO pins that may be configured as
+ * an external SMI interface, or they may be made free for other
+ * GPIO uses.
+ */
+int mv88e6xxx_g2_scratch_gpio_set_smi(struct mv88e6xxx_chip *chip,
+				      bool external)
+{
+	int misc_cfg = MV88E6352_G2_SCRATCH_MISC_CFG;
+	int config_data1 = MV88E6352_G2_SCRATCH_CONFIG_DATA1;
+	int config_data2 = MV88E6352_G2_SCRATCH_CONFIG_DATA2;
+	bool no_cpu;
+	u8 p0_mode;
+	int err;
+	u8 val;
+
+	err = mv88e6xxx_g2_scratch_read(chip, config_data2, &val);
+	if (err)
+		return err;
+
+	p0_mode = val & MV88E6352_G2_SCRATCH_CONFIG_DATA2_P0_MODE_MASK;
+
+	if (p0_mode == 0x01 || p0_mode == 0x02)
+		return -EBUSY;
+
+	err = mv88e6xxx_g2_scratch_read(chip, config_data1, &val);
+	if (err)
+		return err;
+
+	no_cpu = !!(val & MV88E6352_G2_SCRATCH_CONFIG_DATA1_NO_CPU);
+
+	err = mv88e6xxx_g2_scratch_read(chip, misc_cfg, &val);
+	if (err)
+		return err;
+
+	/* NO_CPU being 0 inverts the meaning of the bit */
+	if (!no_cpu)
+		external = !external;
+
+	if (external)
+		val |= MV88E6352_G2_SCRATCH_MISC_CFG_NORMALSMI;
+	else
+		val &= ~MV88E6352_G2_SCRATCH_MISC_CFG_NORMALSMI;
+
+	return mv88e6xxx_g2_scratch_write(chip, misc_cfg, val);
+}
+
+/**
+ * mv88e6352_g2_scratch_port_has_serdes - indicate if a port can have a serdes
+ * @chip: chip private data
+ * @port: port number to check for serdes
+ *
+ * Indicates whether the port may have a serdes attached according to the
+ * pin strapping. Returns negative error number, 0 if the port is not
+ * configured to have a serdes, and 1 if the port is configured to have a
+ * serdes attached.
+ */
+int mv88e6352_g2_scratch_port_has_serdes(struct mv88e6xxx_chip *chip, int port)
+{
+	u8 config3, p;
+	int err;
+
+	err = mv88e6xxx_g2_scratch_read(chip, MV88E6352_G2_SCRATCH_CONFIG_DATA3,
+					&config3);
+	if (err)
+		return err;
+
+	if (config3 & MV88E6352_G2_SCRATCH_CONFIG_DATA3_S_SEL)
+		p = 5;
+	else
+		p = 4;
+
+	return port == p;
+}

@@ -1,1 +1,2 @@
-config/ACPI_HOTPLUG_IOAPIC)
+reg_dma_ctl;
+	u32          

@@ -1,4 +1,4 @@
-_percpu_address(addr))
-		return 1;
+q;
 
-	/
+	for (;;) {
+		raw_spin_lock_irqsav

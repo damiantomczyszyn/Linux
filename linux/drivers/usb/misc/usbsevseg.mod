@@ -1,2 +1,1 @@
-CPI_APEI_GHES) \
-    $(wildcar
+taval = tempval & 0x000000FF;

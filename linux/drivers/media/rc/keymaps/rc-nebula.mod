@@ -1,2 +1,2 @@
-drivers/media/rc/keymaps/rc-nebula.o
-
+ze, &risc->dma,
+				       GFP_KERNEL)

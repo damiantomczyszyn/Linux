@@ -1,5 +1,9 @@
-ude/config/PARAVIRT_XXL) \
-  arch/x86/include/asm/disabled-features.h \
-    $(wildcard include/config/X86_SMAP) \
-    $(wildcard include/config/X86_UMIP) \
-    $(wildcard include/config/X86_INTEL_MEMORY_PROTE
+# SPDX-License-Identifier: GPL-2.0-only
+#
+#  Makefile for the Linux Controller Area Network SPI drivers.
+#
+
+
+obj-$(CONFIG_CAN_HI311X)	+= hi311x.o
+obj-$(CONFIG_CAN_MCP251X)	+= mcp251x.o
+obj-y				+= mcp251xfd/

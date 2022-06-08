@@ -1,5 +1,1 @@
-86/include/asm/qrwlock.h \
-  include/asm-generic/qrwlock.h \
-  include/linux/rwlock.h \
-    $(wildcard include/config/PREEMPT) \
-  in
+cmd_drivers/net/dsa/dsa_loop_bdinfo.mod := { echo  drivers/net/dsa/dsa_loop_bdinfo.o;  echo; } > drivers/net/dsa/dsa_loop_bdinfo.mod

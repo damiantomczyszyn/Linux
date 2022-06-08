@@ -1,2 +1,3 @@
-drivers/media/rc/keymaps/rc-dtt200u.o
+C417_RWD, regval);
 
+	/* Wait for the tr

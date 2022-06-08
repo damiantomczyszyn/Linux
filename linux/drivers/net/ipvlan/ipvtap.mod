@@ -1,1 +1,1 @@
-nclude/config/GENERIC_ATOMIC6
+// SPDX-License-Identifier: G

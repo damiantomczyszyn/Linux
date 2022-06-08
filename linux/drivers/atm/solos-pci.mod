@@ -1,1 +1,2 @@
-nclude/config/GENERIC_ATO
+er->owner);
+				i2c_unreg

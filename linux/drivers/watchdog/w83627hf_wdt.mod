@@ -1,2 +1,1 @@
-LUB) \
-    $(wildcard include/con
+// SPDX-License-Identifier: GPL-2

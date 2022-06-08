@@ -1,2 +1,2 @@
-drivers/media/radio/radio-typhoon.o
-
+nnel *audio_ch =
+		&dev->sram_channel

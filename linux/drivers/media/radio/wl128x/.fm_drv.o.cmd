@@ -1,1 +1,12 @@
-cmd_drivers/media/radio/wl128x/fm_drv.o := ld -m elf_i386   -r -o drivers/media/radio/wl128x/fm_drv.o drivers/media/radio/wl128x/fmdrv_common.o drivers/media/radio/wl128x/fmdrv_rx.o drivers/media/radio/wl128x/fmdrv_tx.o drivers/media/radio/wl128x/fmdrv_v4l2.o
+ of reset */
+		break;
+	case CX23885_BOARD_HAUPPAUGE_HVR1500:
+		/* GPIO-0 cx24227 demodulator */
+		/* GPIO-2 xc3028 tuner */
+
+		/* Put the parts into reset */
+		cx_set(GP0_IO, 0x00050000);
+		cx_clear(GP0_IO, 0x00000005);
+		msleep(5);
+
+		/* Bring the parts out o

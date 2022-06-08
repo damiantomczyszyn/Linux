@@ -1,6 +1,6 @@
-npinned lock\n"))
-				return;
+_do_set_cpus_allowed(p, cpumask_of(rq->cpu), SCA_MIGRATE_DISABLE);
+}
 
-			hlock->pin_count -= cookie.val;
-
-			if (WARN((int)hlock->pin_count < 
+void migrate_disable(void)
+{
+	str

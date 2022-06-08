@@ -1,2 +1,2 @@
-de/linux/bits.h \
-  include/linux/const.h 
+ $(wildcard include/config/RCU_FANOUT) \
+ 

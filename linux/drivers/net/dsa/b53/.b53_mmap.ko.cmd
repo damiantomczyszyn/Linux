@@ -1,6 +1,1 @@
-lude/linux/atomic/atomic-arch-fallback.h \
-    $(wildcard include/config/GENERIC_ATOMIC64) \
-  include/linux/atomic/atomic-long.h \
-  include/linux/atomic/atomic-instrumented.h \
-  include/linux/bug.h \
- 
+cmd_drivers/net/dsa/b53/b53_mmap.ko := ld -r -m elf_i386 --build-id=sha1  -T scripts/module.lds -o drivers/net/dsa/b53/b53_mmap.ko drivers/net/dsa/b53/b53_mmap.o drivers/net/dsa/b53/b53_mmap.mod.o;  true

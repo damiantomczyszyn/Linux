@@ -1,1 +1,1 @@
-cmd_drivers/media/i2c/uda1342.o := gcc -Wp,-MMD,drivers/media/i2c/.uda1342.o.d -nostdinc -I./arch/x86/include -I./arch/x86/include/generated  
+cmd_drivers/net/ethernet/3com/3c574_cs.mod := { echo  drivers/net/ethernet/3com/3c574_cs.o;  echo; } > drivers/net/ethernet/3com/3c574_cs.mod

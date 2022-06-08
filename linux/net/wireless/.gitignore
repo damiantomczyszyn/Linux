@@ -1,4 +1,2 @@
-k.hardirqs_off = true;
-			hlock.references = 0;
-
-			verify_lock_unused
+ in both TC_REQ and TC_REQ_SET
+ * indicate a stall in the RISC engine 

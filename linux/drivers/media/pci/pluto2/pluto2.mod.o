@@ -1,3 +1,105 @@
-cmd_drivers/media/i2c/tvaudio.o := gcc -Wp,-MMD,drivers/media/i2c/.tvaudio.o.d -nostdinc -I./arch/x86/include -I./arch/x86/include/generated  -I./include -I./arch/x86/include/uapi -I./arch/x86/include/generated/uapi -I./include/uapi -I./include/generated/uapi -include ./include/linux/compiler-version.h -include ./include/linux/kconfig.h -include ./include/linux/compiler_types.h -D__KERNEL__ -fmacro-prefix-map=./= -Wall -Wundef -Werror=strict-prototypes -Wno-trigraphs -fno-strict-aliasing -fno-common -fshort-wchar -fno-PIE -Werror=implicit-function-declaration -Werror=implicit-int -Werror=return-type -Wno-format-security -std=gnu11 -mno-sse -mno-mmx -mno-sse2 -mno-3dnow -mno-avx -fcf-protection=none -m32 -msoft-float -mregparm=3 -freg-struct-return -fno-pic -mpreferred-stack-boundary=2 -march=i686 -mtune=pentium3 -mtune=generic -Wa,-mtune=generic32 -ffreestanding -mstack-protector-guard-reg=fs -mstack-protector-guard-symbol=__stack_chk_guard -Wno-sign-compare -fno-asynchronous-unwind-tables -mindirect-branch=thunk-extern -mindirect-branch-register -fno-jump-tables -fno-delete-null-pointer-checks -Wno-frame-address -Wno-format-truncation -Wno-format-overflow -Wno-address-of-packed-member -O2 -fno-allow-store-data-races -fstack-protector-strong -Wimplicit-fallthrough=5 -Wno-main -Wno-unused-but-set-variable -Wno-unused-const-variable -fno-stack-clash-protection -pg -mrecord-mcount -mfentry -DCC_USING_FENTRY -Wdeclaration-after-statement -Wvla -Wno-pointer-sign -Wcast-function-type -Wno-stringop-truncation -Wno-stringop-overflow -Wno-restrict -Wno-maybe-uninitialized -Wno-alloc-size-larger-than -fno-strict-overflow -fno-stack-check -fconserve-stack -Werror=date-time -Werror=incompatible-pointer-types -Werror=designated-init -Wno-packed-not-aligned  -DMODULE  -DKBUILD_BASENAME='"tvaudio"' -DKBUILD_MODNAME='"tvaudio"' -D__KBUILD_MODNAME=kmod_tvaudio -c -o drivers/media/i2c/tvaudio.o drivers/media/i2c/tvaudio.c 
+// SPDX-License-Identifier: GPL-2.0-or-later
+/*
+ * netup-init.c
+ *
+ * NetUP Dual DVB-S2 CI driver
+ *
+ * Copyright (C) 2009 NetUP Inc.
+ * Copyright (C) 2009 Igor M. Liplianin <liplianin@netup.ru>
+ * Copyright (C) 2009 Abylay Ospan <aospan@netup.ru>
+ */
 
-source_drivers/media/i2c/tvaudio.o := drivers/media/i2c/tvau
+#include "cx23885.h"
+#include "netup-init.h"
+
+static void i2c_av_write(struct i2c_adapter *i2c, u16 reg, u8 val)
+{
+	int ret;
+	u8 buf[3];
+	struct i2c_msg msg = {
+		.addr	= 0x88 >> 1,
+		.flags	= 0,
+		.buf	= buf,
+		.len	= 3
+	};
+
+	buf[0] = reg >> 8;
+	buf[1] = reg & 0xff;
+	buf[2] = val;
+
+	ret = i2c_transfer(i2c, &msg, 1);
+
+	if (ret != 1)
+		pr_err("%s: i2c write error!\n", __func__);
+}
+
+static void i2c_av_write4(struct i2c_adapter *i2c, u16 reg, u32 val)
+{
+	int ret;
+	u8 buf[6];
+	struct i2c_msg msg = {
+		.addr	= 0x88 >> 1,
+		.flags	= 0,
+		.buf	= buf,
+		.len	= 6
+	};
+
+	buf[0] = reg >> 8;
+	buf[1] = reg & 0xff;
+	buf[2] = val & 0xff;
+	buf[3] = (val >> 8) & 0xff;
+	buf[4] = (val >> 16) & 0xff;
+	buf[5] = val >> 24;
+
+	ret = i2c_transfer(i2c, &msg, 1);
+
+	if (ret != 1)
+		pr_err("%s: i2c write error!\n", __func__);
+}
+
+static u8 i2c_av_read(struct i2c_adapter *i2c, u16 reg)
+{
+	int ret;
+	u8 buf[2];
+	struct i2c_msg msg = {
+		.addr	= 0x88 >> 1,
+		.flags	= 0,
+		.buf	= buf,
+		.len	= 2
+	};
+
+	buf[0] = reg >> 8;
+	buf[1] = reg & 0xff;
+
+	ret = i2c_transfer(i2c, &msg, 1);
+
+	if (ret != 1)
+		pr_err("%s: i2c write error!\n", __func__);
+
+	msg.flags = I2C_M_RD;
+	msg.len = 1;
+
+	ret = i2c_transfer(i2c, &msg, 1);
+
+	if (ret != 1)
+		pr_err("%s: i2c read error!\n", __func__);
+
+	return buf[0];
+}
+
+static void i2c_av_and_or(struct i2c_adapter *i2c, u16 reg, unsigned and_mask,
+								u8 or_value)
+{
+	i2c_av_write(i2c, reg, (i2c_av_read(i2c, reg) & and_mask) | or_value);
+}
+/* set 27MHz on AUX_CLK */
+void netup_initialize(struct cx23885_dev *dev)
+{
+	struct cx23885_i2c *i2c_bus = &dev->i2c_bus[2];
+	struct i2c_adapter *i2c = &i2c_bus->i2c_adap;
+
+	/* Stop microcontroller */
+	i2c_av_and_or(i2c, 0x803, ~0x10, 0x00);
+
+	/* Aux PLL frac for 27 MHz */
+	i2c_av_write4(i2c, 0x

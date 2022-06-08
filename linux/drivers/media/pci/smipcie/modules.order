@@ -1,2 +1,2 @@
-nfig/GENERIC_IOREMAP) \
-    $(wildcar
+.prepare = snd_cx23885_prepare,
+	.tri

@@ -1,2 +1,3 @@
-de/uapi/linux/swab.h \
-  arch/x86/inclu
+d to userspace.
+ *
+ * It also sets the 

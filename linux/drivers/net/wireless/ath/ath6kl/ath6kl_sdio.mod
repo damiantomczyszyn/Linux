@@ -1,2 +1,1 @@
-e/config/NO_GENERIC_PCI_IOPORT_MAP) \
-  
+/* SPDX-License-Identifier: GPL-2.0-or-l

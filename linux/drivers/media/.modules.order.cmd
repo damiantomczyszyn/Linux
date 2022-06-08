@@ -1,1 +1,22 @@
-cmd_drivers/media/modules.order := {   cat drivers/media/i2c/modules.order;   cat drivers/media/tuners/modules.order;   cat drivers/media/rc/modules.order;   cat drivers/media/common/modules.order;   cat drivers/media/platform/modules.order;   cat drivers/media/pci/modules.order;   cat drivers/media/usb/modules.order;   cat drivers/media/mmc/modules.order;   cat drivers/media/firewire/modules.order;   cat drivers/media/spi/modules.order;   cat drivers/media/test-drivers/modules.order;   cat drivers/media/dvb-frontends/modules.order;   cat drivers/media/mc/modules.order;   cat drivers/media/v4l2-core/modules.order;   cat drivers/media/dvb-core/modules.order;   cat drivers/media/cec/modules.order;   cat drivers/media/radio/modules.order; :; } | awk '!x[$$0]++' - > drivers/media/modules.order
+d to userspace.
+ *
+ * It also sets the final jump of the previous buffer to the start of the new
+ * buffer, thus chaining the new buffer into the DMA chain. This is a single
+ * atomic u32 write, so there is no race condition.
+ *
+ * The end-result of all this that you only get an interrupt when a buffer
+ * is ready, so the control flow is very easy.
+ */
+void cx23885_buf_queue(struct cx23885_tsport *port, struct cx23885_buffer *buf)
+{
+	struct cx23885_buffer    *prev;
+	struct cx23885_dev *dev = port->dev;
+	struct cx23885_dmaqueue  *cx88q = &port->mpegq;
+	unsigned long flags;
+
+	buf->risc.cpu[1] = cpu_to_le32(buf->risc.dma + 12);
+	buf->risc.jmp[0] = cpu_to_le32(RISC_JUMP | RISC_CNT_INC);
+	buf->risc.jmp[1] = cpu_to_le32(buf->risc.dma + 12);
+	buf->risc.jmp[2] = cpu_to_le32(0); /* bits 63-32 */
+
+	s

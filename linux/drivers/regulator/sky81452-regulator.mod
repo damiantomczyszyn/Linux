@@ -1,2 +1,3 @@
-x/scatterlist.h \
-    $(wildcard include
+amux   = CX25840_AUDIO8,
+		}, {
+			.type

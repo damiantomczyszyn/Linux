@@ -1,2 +1,2 @@
-drivers/media/rc/keymaps/rc-wetek-hub.o
-
+q;
+	dev->video_dev->device_caps = V4L2_CA

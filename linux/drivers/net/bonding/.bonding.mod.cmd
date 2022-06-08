@@ -1,10 +1,1 @@
-x/build_bug.h \
-  include/linux/compiler.h \
-    $(wildcard include/config/TRACE_BRANCH_PROFILING) \
-    $(wildcard include/config/PROFILE_ALL_BRANCHES) \
-    $(wildcard include/config/STACK_VALIDATION) \
-  include/linux/compiler_types.h \
-  arch/x86/include/generated/asm/rwonce.h \
-  include/asm-generic/rwonce.h \
-  include/linux/kasan-checks.h \
-    $(wildcard include/config/KASAN_GENERIC) \
+cmd_drivers/net/bonding/bonding.mod := { echo  drivers/net/bonding/bond_main.o drivers/net/bonding/bond_3ad.o drivers/net/bonding/bond_alb.o drivers/net/bonding/bond_sysfs.o drivers/net/bonding/bond_sysfs_slave.o drivers/net/bonding/bond_debugfs.o drivers/net/bonding/bond_netlink.o drivers/net/bonding/bond_options.o drivers/net/bonding/bond_procfs.o;  echo; } > drivers/net/bonding/bonding.mod

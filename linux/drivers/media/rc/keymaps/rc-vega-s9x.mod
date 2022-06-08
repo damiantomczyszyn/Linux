@@ -1,2 +1,1 @@
-drivers/media/rc/keymaps/rc-vega-s9x.o
-
+// SPDX-License-Identifier: GPL-2.0-or-l

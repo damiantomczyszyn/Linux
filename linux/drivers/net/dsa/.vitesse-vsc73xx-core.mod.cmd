@@ -1,4 +1,1 @@
-lude/linux/atomic/atomic-arch-fallback.h \
-    $(wildcard include/config/GENERIC_ATOMIC64) \
-  include/linux/atomic/atomic-long.h \
-  include/linux/
+cmd_drivers/net/dsa/vitesse-vsc73xx-core.mod := { echo  drivers/net/dsa/vitesse-vsc73xx-core.o;  echo; } > drivers/net/dsa/vitesse-vsc73xx-core.mod

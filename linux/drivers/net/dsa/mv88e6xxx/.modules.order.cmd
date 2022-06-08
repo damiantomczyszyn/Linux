@@ -1,4 +1,1 @@
-lude/config/SHMEM) \
-    $(wildcard include/config/ARCH_HAS_PTE_SPECIAL) \
-    $(wildcard include/config/ARCH_HAS_PTE_DEVMAP) \
-    $(wildcard include/config/DEBUG
+cmd_drivers/net/dsa/mv88e6xxx/modules.order := {   echo drivers/net/dsa/mv88e6xxx/mv88e6xxx.ko; :; } | awk '!x[$$0]++' - > drivers/net/dsa/mv88e6xxx/modules.order

@@ -1,229 +1,188 @@
-// SPDX-License-Identifier: GPL-2.0-only
-/* ir-jvc-decoder.c - handle JVC IR Pulse/Space protocol
+// SPDX-License-Identifier: GPL-2.0-or-later
+/*
+ *  Driver for the Conexant CX23885 PCIe bridge
  *
- * Copyright (C) 2010 by David Härdeman <david@hardeman.nu>
+ *  Copyright (c) 2007 Steven Toth <stoth@linuxtv.org>
  */
 
-#include <linux/bitrev.h>
+#include "cx23885.h"
+
+#include <linux/kernel.h>
 #include <linux/module.h>
-#include "rc-core-priv.h"
+#include <linux/moduleparam.h>
+#include <linux/init.h>
 
-#define JVC_NBITS		16		/* dev(8) + func(8) */
-#define JVC_UNIT		525		/* us */
-#define JVC_HEADER_PULSE	(16 * JVC_UNIT) /* lack of header -> repeat */
-#define JVC_HEADER_SPACE	(8  * JVC_UNIT)
-#define JVC_BIT_PULSE		(1  * JVC_UNIT)
-#define JVC_BIT_0_SPACE		(1  * JVC_UNIT)
-#define JVC_BIT_1_SPACE		(3  * JVC_UNIT)
-#define JVC_TRAILER_PULSE	(1  * JVC_UNIT)
-#define	JVC_TRAILER_SPACE	(35 * JVC_UNIT)
+static unsigned int vbibufs = 4;
+module_param(vbibufs, int, 0644);
+MODULE_PARM_DESC(vbibufs, "number of vbi buffers, range 2-32");
 
-enum jvc_state {
-	STATE_INACTIVE,
-	STATE_HEADER_SPACE,
-	STATE_BIT_PULSE,
-	STATE_BIT_SPACE,
-	STATE_TRAILER_PULSE,
-	STATE_TRAILER_SPACE,
-	STATE_CHECK_REPEAT,
-};
+static unsigned int vbi_debug;
+module_param(vbi_debug, int, 0644);
+MODULE_PARM_DESC(vbi_debug, "enable debug messages [vbi]");
 
-/**
- * ir_jvc_decode() - Decode one JVC pulse or space
- * @dev:	the struct rc_dev descriptor of the device
- * @ev:   the struct ir_raw_event descriptor of the pulse/space
- *
- * This function returns -EINVAL if the pulse violates the state machine
- */
-static int ir_jvc_decode(struct rc_dev *dev, struct ir_raw_event ev)
+#define dprintk(level, fmt, arg...)\
+	do { if (vbi_debug >= level)\
+		printk(KERN_DEBUG pr_fmt("%s: vbi:" fmt), \
+			__func__, ##arg); \
+	} while (0)
+
+/* ------------------------------------------------------------------ */
+
+#define VBI_LINE_LENGTH 1440
+#define VBI_NTSC_LINE_COUNT 12
+#define VBI_PAL_LINE_COUNT 18
+
+
+int cx23885_vbi_fmt(struct file *file, void *priv,
+	struct v4l2_format *f)
 {
-	struct jvc_dec *data = &dev->raw->jvc;
+	struct cx23885_dev *dev = video_drvdata(file);
 
-	if (!is_timing_event(ev)) {
-		if (ev.overflow)
-			data->state = STATE_INACTIVE;
-		return 0;
+	f->fmt.vbi.sampling_rate = 27000000;
+	f->fmt.vbi.samples_per_line = VBI_LINE_LENGTH;
+	f->fmt.vbi.sample_format = V4L2_PIX_FMT_GREY;
+	f->fmt.vbi.offset = 0;
+	f->fmt.vbi.flags = 0;
+	if (dev->tvnorm & V4L2_STD_525_60) {
+		/* ntsc */
+		f->fmt.vbi.start[0] = V4L2_VBI_ITU_525_F1_START + 9;
+		f->fmt.vbi.start[1] = V4L2_VBI_ITU_525_F2_START + 9;
+		f->fmt.vbi.count[0] = VBI_NTSC_LINE_COUNT;
+		f->fmt.vbi.count[1] = VBI_NTSC_LINE_COUNT;
+	} else if (dev->tvnorm & V4L2_STD_625_50) {
+		/* pal */
+		f->fmt.vbi.start[0] = V4L2_VBI_ITU_625_F1_START + 5;
+		f->fmt.vbi.start[1] = V4L2_VBI_ITU_625_F2_START + 5;
+		f->fmt.vbi.count[0] = VBI_PAL_LINE_COUNT;
+		f->fmt.vbi.count[1] = VBI_PAL_LINE_COUNT;
 	}
 
-	if (!geq_margin(ev.duration, JVC_UNIT, JVC_UNIT / 2))
-		goto out;
-
-	dev_dbg(&dev->dev, "JVC decode started at state %d (%uus %s)\n",
-		data->state, ev.duration, TO_STR(ev.pulse));
-
-again:
-	switch (data->state) {
-
-	case STATE_INACTIVE:
-		if (!ev.pulse)
-			break;
-
-		if (!eq_margin(ev.duration, JVC_HEADER_PULSE, JVC_UNIT / 2))
-			break;
-
-		data->count = 0;
-		data->first = true;
-		data->toggle = !data->toggle;
-		data->state = STATE_HEADER_SPACE;
-		return 0;
-
-	case STATE_HEADER_SPACE:
-		if (ev.pulse)
-			break;
-
-		if (!eq_margin(ev.duration, JVC_HEADER_SPACE, JVC_UNIT / 2))
-			break;
-
-		data->state = STATE_BIT_PULSE;
-		return 0;
-
-	case STATE_BIT_PULSE:
-		if (!ev.pulse)
-			break;
-
-		if (!eq_margin(ev.duration, JVC_BIT_PULSE, JVC_UNIT / 2))
-			break;
-
-		data->state = STATE_BIT_SPACE;
-		return 0;
-
-	case STATE_BIT_SPACE:
-		if (ev.pulse)
-			break;
-
-		data->bits <<= 1;
-		if (eq_margin(ev.duration, JVC_BIT_1_SPACE, JVC_UNIT / 2)) {
-			data->bits |= 1;
-			decrease_duration(&ev, JVC_BIT_1_SPACE);
-		} else if (eq_margin(ev.duration, JVC_BIT_0_SPACE, JVC_UNIT / 2))
-			decrease_duration(&ev, JVC_BIT_0_SPACE);
-		else
-			break;
-		data->count++;
-
-		if (data->count == JVC_NBITS)
-			data->state = STATE_TRAILER_PULSE;
-		else
-			data->state = STATE_BIT_PULSE;
-		return 0;
-
-	case STATE_TRAILER_PULSE:
-		if (!ev.pulse)
-			break;
-
-		if (!eq_margin(ev.duration, JVC_TRAILER_PULSE, JVC_UNIT / 2))
-			break;
-
-		data->state = STATE_TRAILER_SPACE;
-		return 0;
-
-	case STATE_TRAILER_SPACE:
-		if (ev.pulse)
-			break;
-
-		if (!geq_margin(ev.duration, JVC_TRAILER_SPACE, JVC_UNIT / 2))
-			break;
-
-		if (data->first) {
-			u32 scancode;
-			scancode = (bitrev8((data->bits >> 8) & 0xff) << 8) |
-				   (bitrev8((data->bits >> 0) & 0xff) << 0);
-			dev_dbg(&dev->dev, "JVC scancode 0x%04x\n", scancode);
-			rc_keydown(dev, RC_PROTO_JVC, scancode, data->toggle);
-			data->first = false;
-			data->old_bits = data->bits;
-		} else if (data->bits == data->old_bits) {
-			dev_dbg(&dev->dev, "JVC repeat\n");
-			rc_repeat(dev);
-		} else {
-			dev_dbg(&dev->dev, "JVC invalid repeat msg\n");
-			break;
-		}
-
-		data->count = 0;
-		data->state = STATE_CHECK_REPEAT;
-		return 0;
-
-	case STATE_CHECK_REPEAT:
-		if (!ev.pulse)
-			break;
-
-		if (eq_margin(ev.duration, JVC_HEADER_PULSE, JVC_UNIT / 2))
-			data->state = STATE_INACTIVE;
-  else
-			data->state = STATE_BIT_PULSE;
-		goto again;
-	}
-
-out:
-	dev_dbg(&dev->dev, "JVC decode failed at state %d (%uus %s)\n",
-		data->state, ev.duration, TO_STR(ev.pulse));
-	data->state = STATE_INACTIVE;
-	return -EINVAL;
-}
-
-static const struct ir_raw_timings_pd ir_jvc_timings = {
-	.header_pulse  = JVC_HEADER_PULSE,
-	.header_space  = JVC_HEADER_SPACE,
-	.bit_pulse     = JVC_BIT_PULSE,
-	.bit_space[0]  = JVC_BIT_0_SPACE,
-	.bit_space[1]  = JVC_BIT_1_SPACE,
-	.trailer_pulse = JVC_TRAILER_PULSE,
-	.trailer_space = JVC_TRAILER_SPACE,
-	.msb_first     = 1,
-};
-
-/**
- * ir_jvc_encode() - Encode a scancode as a stream of raw events
- *
- * @protocol:	protocol to encode
- * @scancode:	scancode to encode
- * @events:	array of raw ir events to write into
- * @max:	maximum size of @events
- *
- * Returns:	The number of events written.
- *		-ENOBUFS if there isn't enough space in the array to fit the
- *		encoding. In this case all @max events will have been written.
- */
-static int ir_jvc_encode(enum rc_proto protocol, u32 scancode,
-			 struct ir_raw_event *events, unsigned int max)
-{
-	struct ir_raw_event *e = events;
-	int ret;
-	u32 raw = (bitrev8((scancode >> 8) & 0xff) << 8) |
-		  (bitrev8((scancode >> 0) & 0xff) << 0);
-
-	ret = ir_raw_gen_pd(&e, max, &ir_jvc_timings, JVC_NBITS, raw);
-	if (ret < 0)
-		return ret;
-
-	return e - events;
-}
-
-static struct ir_raw_handler jvc_handler = {
-	.protocols	= RC_PROTO_BIT_JVC,
-	.decode		= ir_jvc_decode,
-	.encode		= ir_jvc_encode,
-	.carrier	= 38000,
-	.min_timeout	= JVC_TRAILER_SPACE,
-};
-
-static int __init ir_jvc_decode_init(void)
-{
-	ir_raw_handler_register(&jvc_handler);
-
-	printk(KERN_INFO "IR JVC protocol handler initialized\n");
 	return 0;
 }
 
-static void __exit ir_jvc_decode_exit(void)
+/* We're given the Video Interrupt status register.
+ * The cx23885_video_irq() func has already validated
+ * the potential error bits, we just need to
+ * deal with vbi payload and return indication if
+ * we actually processed any payload.
+ */
+int cx23885_vbi_irq(struct cx23885_dev *dev, u32 status)
 {
-	ir_raw_handler_unregister(&jvc_handler);
+	u32 count;
+	int handled = 0;
+
+	if (status & VID_BC_MSK_VBI_RISCI1) {
+		dprintk(1, "%s() VID_BC_MSK_VBI_RISCI1\n", __func__);
+		spin_lock(&dev->slock);
+		count = cx_read(VBI_A_GPCNT);
+		cx23885_video_wakeup(dev, &dev->vbiq, count);
+		spin_unlock(&dev->slock);
+		handled++;
+	}
+
+	return handled;
 }
 
-module_init(ir_jvc_decode_init);
-module_exit(ir_jvc_decode_exit);
+static int cx23885_start_vbi_dma(struct cx23885_dev    *dev,
+			 struct cx23885_dmaqueue *q,
+			 struct cx23885_buffer   *buf)
+{
+	dprintk(1, "%s()\n", __func__);
 
-MODULE_LICENSE("GPL");
-MODULE_AUTHOR("David Härdeman <david@hardeman.nu>");
-MODULE_DESCRIPTION("JVC IR protocol decoder");
+	/* setup fifo + format */
+	cx23885_sram_channel_setup(dev, &dev->sram_channels[SRAM_CH02],
+				VBI_LINE_LENGTH, buf->risc.dma);
+
+	/* reset counter */
+	cx_write(VID_A_VBI_CTRL, 3);
+	cx_write(VBI_A_GPCNT_CTL, 3);
+	q->count = 0;
+
+	/* enable irq */
+	cx23885_irq_add_enable(dev, 0x01);
+	cx_set(VID_A_INT_MSK, 0x000022);
+
+	/* start dma */
+	cx_set(DEV_CNTRL2, (1<<5));
+	cx_set(VID_A_DMA_CTL, 0x22); /* FIFO and RISC enable */
+
+	return 0;
+}
+
+/* ------------------------------------------------------------------ */
+
+static int queue_setup(struct vb2_queue *q,
+			   unsigned int *num_buffers, unsigned int *num_planes,
+			   unsigned int sizes[], struct device *alloc_devs[])
+{
+	struct cx23885_dev *dev = q->drv_priv;
+	unsigned lines = VBI_PAL_LINE_COUNT;
+
+	if (dev->tvnorm & V4L2_STD_525_60)
+		lines = VBI_NTSC_LINE_COUNT;
+	*num_planes = 1;
+	sizes[0] = lines * VBI_LINE_LENGTH * 2;
+	return 0;
+}
+
+static int buffer_prepare(struct vb2_buffer *vb)
+{
+	struct vb2_v4l2_buffer *vbuf = to_vb2_v4l2_buffer(vb);
+	struct cx23885_dev *dev = vb->vb2_queue->drv_priv;
+	struct cx23885_buffer *buf = container_of(vbuf,
+		struct cx23885_buffer, vb);
+	struct sg_table *sgt = vb2_dma_sg_plane_desc(vb, 0);
+	unsigned lines = VBI_PAL_LINE_COUNT;
+
+	if (dev->tvnorm & V4L2_STD_525_60)
+		lines = VBI_NTSC_LINE_COUNT;
+
+	if (vb2_plane_size(vb, 0) < lines * VBI_LINE_LENGTH * 2)
+		return -EINVAL;
+	vb2_set_plane_payload(vb, 0, lines * VBI_LINE_LENGTH * 2);
+
+	cx23885_risc_vbibuffer(dev->pci, &buf->risc,
+			 sgt->sgl,
+			 0, VBI_LINE_LENGTH * lines,
+			 VBI_LINE_LENGTH, 0,
+			 lines);
+	return 0;
+}
+
+static void buffer_finish(struct vb2_buffer *vb)
+{
+	struct vb2_v4l2_buffer *vbuf = to_vb2_v4l2_buffer(vb);
+	struct cx23885_buffer *buf = container_of(vbuf,
+		struct cx23885_buffer, vb);
+
+	cx23885_free_buffer(vb->vb2_queue->drv_priv, buf);
+}
+
+/*
+ * The risc program for each buffer works as follows: it starts with a simple
+ * 'JUMP to addr + 12', which is effectively a NOP. Then the code to DMA the
+ * buffer follows and at the end we have a JUMP back to the start + 12 (skipping
+ * the initial JUMP).
+ *
+ * This is the risc program of the first buffer to be queued if the active list
+ * is empty and it just keeps DMAing this buffer without generating any
+ * interrupts.
+ *
+ * If a new buffer is added then the initial JUMP in the code for that buffer
+ * will generate an interrupt which signals that the previous buffer has been
+ * DMAed successfully and that it can be returned to userspace.
+ *
+ * It also sets the final jump of the previous buffer to the start of the new
+ * buffer, thus chaining the new buffer into the DMA chain. This is a single
+ * atomic u32 write, so there is no race condition.
+ *
+ * The end-result of all this that you only get an interrupt when a buffer
+ * is ready, so the control flow is very easy.
+ */
+static void buffer_queue(struct vb2_buffer *vb)
+{
+	struct vb2_v4l2_buffer *vbuf = to_vb2_v4l2_buffer(vb);
+	struct cx23885_dev *dev = vb->vb2_queue->drv_priv;
+	struct cx23885_buffer *buf = container_of(vbuf,
+			struct cx23885_buffer, vb);
+	struct cx23885_buf

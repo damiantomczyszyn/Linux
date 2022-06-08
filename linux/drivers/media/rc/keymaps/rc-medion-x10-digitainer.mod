@@ -1,2 +1,3 @@
-drivers/media/rc/keymaps/rc-medion-x10-digitainer.o
-
+ze, &risc->dma,
+				       GFP_KERNEL);
+	if (risc->cp

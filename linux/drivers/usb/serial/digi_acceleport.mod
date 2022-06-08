@@ -1,1 +1,3 @@
-cmd_drivers/media/i2c/tvp514x.o := gcc
+
+  include/asm-generic/qrwlock.h \
+  i

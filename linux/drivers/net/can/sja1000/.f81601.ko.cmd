@@ -1,5 +1,1 @@
-I_CPPC_LIB) \
-    $(wildcard include/config/GENERIC_ARCH_TOPOLOGY) \
-  include/linux/percpu.h \
-    $(wildcard include/config/NEED_PER_CPU_EMBED_FIRST_CHUNK) \
-    $(wildcard include/config/NEED_PER_CPU_PAGE_FIRS
+cmd_drivers/net/can/sja1000/f81601.ko := ld -r -m elf_i386 --build-id=sha1  -T scripts/module.lds -o drivers/net/can/sja1000/f81601.ko drivers/net/can/sja1000/f81601.o drivers/net/can/sja1000/f81601.mod.o;  true

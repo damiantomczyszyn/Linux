@@ -1,2 +1,1 @@
-e/linux/rwlock.h \
-    $
+a·ТAмѕахЦsАђfK+™ј]н+ЅЧ

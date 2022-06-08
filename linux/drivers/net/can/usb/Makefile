@@ -1,12 +1,14 @@
-e/config/ACPI_APEI_GHES) \
-    $(wildcard include/config/INTEL_TXT) \
-  arch/x86/include/generated/asm/kmap_size.h \
-  include/asm-generic/kmap_size.h \
-    $(wildcard include/config/DEBUG_KMAP_LOCAL) \
-  include/asm-generic/fixmap.h \
-  arch/x86/include/asm/irq_vectors.h \
-    $(wildcard include/config/HAVE_KVM) \
-    $(wildcard include/config/HYPERV) \
-    $(wildcard include/config/PCI_MSI) \
-  arch/x86/include/asm/cpu_entry_area.h \
-  arch/x86/include/asm/
+# SPDX-License-Identifier: GPL-2.0
+#
+#  Makefile for the Linux Controller Area Network USB drivers.
+#
+
+obj-$(CONFIG_CAN_8DEV_USB) += usb_8dev.o
+obj-$(CONFIG_CAN_EMS_USB) += ems_usb.o
+obj-$(CONFIG_CAN_ESD_USB2) += esd_usb2.o
+obj-$(CONFIG_CAN_ETAS_ES58X) += etas_es58x/
+obj-$(CONFIG_CAN_GS_USB) += gs_usb.o
+obj-$(CONFIG_CAN_KVASER_USB) += kvaser_usb/
+obj-$(CONFIG_CAN_MCBA_USB) += mcba_usb.o
+obj-$(CONFIG_CAN_PEAK_USB) += peak_usb/
+obj-$(CONFIG_CAN_UCAN) += ucan.o

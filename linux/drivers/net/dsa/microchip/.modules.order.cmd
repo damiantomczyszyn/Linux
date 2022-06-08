@@ -1,8 +1,1 @@
-h \
-    $(wildcard include/config/VIDEO_V4L2_I2C) \
-    $(wildcard include/config/SPI) \
-  include/media/v4l2-dev.h \
-  include/linux/spi/spi.h \
-    $(wildcard include/config/SPI_SLAVE) \
-  include/linux/scatterlist.h \
-    $(wildcard include/config/NEED_SG
+cmd_drivers/net/dsa/microchip/modules.order := {   echo drivers/net/dsa/microchip/ksz_common.ko;   echo drivers/net/dsa/microchip/ksz9477.ko;   echo drivers/net/dsa/microchip/ksz9477_i2c.ko; :; } | awk '!x[$$0]++' - > drivers/net/dsa/microchip/modules.order

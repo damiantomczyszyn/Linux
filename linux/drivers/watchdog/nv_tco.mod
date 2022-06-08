@@ -1,2 +1,1 @@
-.h \
-  include/linux/percpu
+// SPDX-License-Identifier:

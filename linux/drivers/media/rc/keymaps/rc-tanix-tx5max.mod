@@ -1,2 +1,2 @@
-drivers/media/rc/keymaps/rc-tanix-tx5max.o
-
+/* SPDX-License-Identifier: GPL-2.0 */
+exter

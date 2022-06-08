@@ -1,197 +1,275 @@
-ACPI_DOCK) \
-  include/acpi/acpi_numa.h \
-    $(wildcard include/config/ACPI_HMAT) \
-  include/acpi/acpi_io.h \
-  include/linux/io.h \
-    $(wildcard include/config/HAS_IOPORT_MAP) \
-  arch/x86/include/asm/io.h \
-    $(wildcard include/config/MTRR) \
-    $(wildcard include/config/X86_PAT) \
-  arch/x86/include/generated/asm/early_ioremap.h \
-  include/asm-generic/early_ioremap.h \
-    $(wildcard include/config/GENERIC_EARLY_IOREMAP) \
-  include/asm-generic/iomap.h \
-  include/asm-generic/pci_iomap.h \
-    $(wildcard include/config/NO_GENERIC_PCI_IOPORT_MAP) \
-    $(wildcard include/config/GENERIC_PCI_IOMAP) \
-  include/asm-generic/io.h \
-    $(wildcard include/config/GENERIC_IOMAP) \
-    $(wildcard include/config/GENERIC_IOREMAP) \
-    $(wildcard include/config/VIRT_TO_BUS) \
-    $(wildcard include/config/GENERIC_DEVMEM_IS_ALLOWED) \
-  include/linux/logic_pio.h \
-    $(wildcard include/config/INDIRECT_PIO) \
-  include/linux/vmalloc.h \
-    $(wildcard include/config/HAVE_ARCH_HUGE_VMALLOC) \
-  arch/x86/include/asm/vmalloc.h \
-    $(wildcard include/config/HAVE_ARCH_HUGE_VMAP) \
-  arch/x86/include/asm/acpi.h \
-    $(wildcard include/config/ACPI_APEI) \
-  include/acpi/pdc_intel.h \
-  arch/x86/include/asm/numa.h \
-    $(wildcard include/config/NUMA_EMU) \
-  arch/x86/include/asm/numa_32.h \
-  include/linux/regulator/consumer.h \
-    $(wildcard include/config/REGULATOR) \
-  include/linux/suspend.h \
-    $(wildcard include/config/VT) \
-    $(wildcard include/config/SUSPEND) \
-    $(wildcard include/config/HIBERNATION_SNAPSHOT_DEV) \
-    $(wildcard include/config/PM_SLEEP_DEBUG) \
-    $(wildcard include/config/PM_AUTOSLEEP) \
-  include/linux/swap.h \
-    $(wildcard include/config/DEVICE_PRIVATE) \
-    $(wildcard include/config/MIGRATION) \
-    $(wildcard include/config/FRONTSWAP) \
-    $(wildcard include/config/THP_SWAP) \
-    $(wildcard include/config/MEMCG_SWAP) \
-  include/linux/memcontrol.h \
-    $(wildcard include/config/CGROUP_WRITEBACK) \
-  include/linux/cgroup.h \
-    $(wildcard include/config/CGROUP_CPUACCT) \
-    $(wildcard include/config/SOCK_CGROUP_DATA) \
-    $(wildcard include/config/CGROUP_DATA) \
-    $(wildcard include/config/CGROUP_BPF) \
-  include/uapi/linux/cgroupstats.h \
-  include/uapi/linux/taskstats.h \
-  include/linux/fs.h \
-    $(wildcard include/config/READ_ONLY_THP_FOR_FS) \
-    $(wildcard include/config/FS_POSIX_ACL) \
-    $(wildcard include/config/IMA) \
-    $(wildcard include/config/FILE_LOCKING) \
-    $(wildcard include/config/FSNOTIFY) \
-    $(wildcard include/config/FS_ENCRYPTION) \
-    $(wildcard include/config/FS_VERITY) \
-    $(wildcard include/config/EPOLL) \
-    $(wildcard include/config/UNICODE) \
-    $(wildcard include/config/QUOTA) \
-    $(wildcard include/config/FS_DAX) \
-    $(wildcard include/config/BLOCK) \
-  include/linux/wait_bit.h \
-  include/linux/kdev_t.h \
-  include/uapi/linux/kdev_t.h \
-  include/linux/dcache.h \
-  include/linux/rculist_bl.h \
-  include/linux/list_bl.h \
-  include/linux/bit_spinlock.h \
-  include/linux/lockref.h \
-    $(wildcard include/config/ARCH_USE_CMPXCHG_LOCKREF) \
-  include/linux/stringhash.h \
-    $(wildcard include/config/DCACHE_WORD_ACCESS) \
-  include/linux/hash.h \
-    $(wildcard include/config/HAVE_ARCH_HASH) \
-  include/linux/path.h \
-  include/linux/list_lru.h \
-  include/linux/shrinker.h \
-  include/linux/capability.h \
-  include/uapi/linux/capability.h \
-  include/linux/semaphore.h \
-  include/linux/fcntl.h \
-    $(wildcard include/config/ARCH_32BIT_OFF_T) \
-  include/uapi/linux/fcntl.h \
-  arch/x86/include/generated/uapi/asm/fcntl.h \
-  include/uapi/asm-generic/fcntl.h \
-  include/uapi/linux/openat2.h \
-  include/linux/migrate_mode.h \
-  include/linux/percpu-rwsem.h \
-  include/linux/rcuwait.h \
-  include/linux/sched/signal.h \
-    $(wildcard include/config/SCHED_AUTOGROUP) \
-    $(wildcard include/config/BSD_PROCESS_ACCT) \
-    $(wildcard include/config/TASKSTATS) \
-    $(wildcard include/config/STACK_GROWSUP) \
-  include/linux/signal.h \
-    $(wildcard include/config/DYNAMIC_SIGFRAME) \
-  include/linux/sched/jobctl.h \
-  include/linux/sched/task.h \
-    $(wildcard include/config/HAVE_EXIT_THREAD) \
-    $(wildcard include/config/ARCH_WANTS_DYNAMIC_TASK_STRUCT) \
-    $(wildcard include/config/HAVE_ARCH_THREAD_STRUCT_WHITELIST) \
-  include/linux/cred.h \
-    $(wildcard include/config/DEBUG_CREDENTIALS) \
-  include/linux/key.h \
-    $(wildcard include/config/KEY_NOTIFICATIONS) \
-    $(wildcard include/config/NET) \
-  include/linux/assoc_array.h \
-    $(wildcard include/config/ASSOCIATIVE_ARRAY) \
-  include/linux/sched/user.h \
-    $(wildcard include/config/WATCH_QUEUE) \
-  include/linux/percpu_counter.h \
-  include/linux/rcu_sync.h \
-  include/linux/delayed_call.h \
-  include/linux/errseq.h \
-  include/linux/ioprio.h \
-  include/linux/sched/rt.h \
-  include/linux/iocontext.h \
-    $(wildcard include/config/BLK_ICQ) \
-  include/uapi/linux/ioprio.h \
-  include/linux/fs_types.h \
-  include/linux/mount.h \
-  include/linux/mnt_idmapping.h \
-  include/uapi/linux/fs.h \
-  include/linux/quota.h \
-    $(wildcard include/config/QUOTA_NETLINK_INTERFACE) \
-  include/uapi/linux/dqblk_xfs.h \
-  include/linux/dqblk_v1.h \
-  include/linux/dqblk_v2.h \
-  include/linux/dqblk_qtree.h \
-  include/linux/projid.h \
-  include/uapi/linux/quota.h \
-  include/linux/nfs_fs_i.h \
-  include/linux/seq_file.h \
-  include/linux/string_helpers.h \
-  include/linux/ns_common.h \
-  include/linux/nsproxy.h \
-  include/linux/user_namespace.h \
-    $(wildcard include/config/INOTIFY_USER) \
-    $(wildcard include/config/FANOTIFY) \
-    $(wildcard include/config/PERSISTENT_KEYRINGS) \
-  include/linux/kernel_stat.h \
-  include/linux/interrupt.h \
-    $(wildcard include/config/IRQ_FORCED_THREADING) \
-    $(wildcard include/config/GENERIC_IRQ_PROBE) \
-    $(wildcard include/config/IRQ_TIMINGS) \
-  include/linux/irqreturn.h \
-  include/linux/irqnr.h \
-  include/uapi/linux/irqnr.h \
-  include/linux/hardirq.h \
-  include/linux/context_tracking_state.h \
-    $(wildcard include/config/CONTEXT_TRACKING) \
-  include/linux/ftrace_irq.h \
-    $(wildcard include/config/HWLAT_TRACER) \
-    $(wildcard include/config/OSNOISE_TRACER) \
-  include/linux/vtime.h \
-    $(wildcard include/config/VIRT_CPU_ACCOUNTING) \
-    $(wildcard include/config/IRQ_TIME_ACCOUNTING) \
-  arch/x86/include/asm/hardirq.h \
-    $(wildcard include/config/KVM_INTEL) \
-    $(wildcard include/config/X86_THERMAL_VECTOR) \
-    $(wildcard include/config/X86_MCE_THRESHOLD) \
-    $(wildcard include/config/X86_MCE_AMD) \
-    $(wildcard include/config/X86_HV_CALLBACK_VECTOR) \
-  arch/x86/include/asm/irq.h \
-  arch/x86/include/asm/sections.h \
-  include/asm-generic/sections.h \
-    $(wildcard include/config/HAVE_FUNCTION_DESCRIPTORS) \
-  include/linux/cgroup-defs.h \
-    $(wildcard include/config/CGROUP_NET_CLASSID) \
-    $(wildcard include/config/CGROUP_NET_PRIO) \
-  include/linux/u64_stats_sync.h \
-  include/linux/bpf-cgroup-defs.h \
-  include/linux/psi_types.h \
-  include/linux/kthread.h \
-  include/linux/cgroup_subsys.h \
-    $(wildcard include/config/CGROUP_DEVICE) \
-    $(wildcard include/config/CGROUP_FREEZER) \
-    $(wildcard include/config/CGROUP_PERF) \
-    $(wildcard include/config/CGROUP_HUGETLB) \
-    $(wildcard include/config/CGROUP_PIDS) \
-    $(wildcard include/config/CGROUP_RDMA) \
-    $(wildcard include/config/CGROUP_MISC) \
-    $(wildcard include/config/CGROUP_DEBUG) \
-  include/linux/vm_event_item.h \
-    $(wildcard include/config/HAVE_ARCH_TRANSPARENT_HUGEPAGE_PUD) \
-    $(wildcard include/config/MEMORY_BALLOON) \
-    $(wildcard include/config/BALLOON_COMPACTION) \
-    $(wildcard include/config/DEBUG_TLBFLUSH) \
-    $(wildcard includ
+/* New Hydra driver using generic 8390 core */
+/* Based on old hydra driver by Topi Kanerva (topi@susanna.oulu.fi) */
+
+/* This file is subject to the terms and conditions of the GNU General      */
+/* Public License.  See the file COPYING in the main directory of the       */
+/* Linux distribution for more details.                                     */
+
+/* Peter De Schrijver (p2@mind.be) */
+/* Oldenburg 2000 */
+
+/* The Amiganet is a Zorro-II board made by Hydra Systems. It contains a    */
+/* NS8390 NIC (network interface controller) clone, 16 or 64K on-board RAM  */
+/* and 10BASE-2 (thin coax) and AUI connectors.                             */
+
+#include <linux/module.h>
+#include <linux/kernel.h>
+#include <linux/string.h>
+#include <linux/errno.h>
+#include <linux/ioport.h>
+#include <linux/interrupt.h>
+#include <linux/netdevice.h>
+#include <linux/etherdevice.h>
+#include <linux/skbuff.h>
+#include <linux/init.h>
+#include <linux/bitops.h>
+
+#include <asm/io.h>
+#include <asm/irq.h>
+#include <asm/amigaints.h>
+#include <asm/amigahw.h>
+#include <linux/zorro.h>
+
+#define EI_SHIFT(x)	(ei_local->reg_offset[x])
+#define ei_inb(port)   in_8(port)
+#define ei_outb(val,port)  out_8(port,val)
+#define ei_inb_p(port)   in_8(port)
+#define ei_outb_p(val,port)  out_8(port,val)
+
+static const char version[] =
+    "8390.c:v1.10cvs 9/23/94 Donald Becker (becker@cesdis.gsfc.nasa.gov)\n";
+
+#include "lib8390.c"
+
+#define NE_EN0_DCFG     (0x0e*2)
+
+#define NESM_START_PG   0x0    /* First page of TX buffer */
+#define NESM_STOP_PG    0x40    /* Last page +1 of RX ring */
+
+#define HYDRA_NIC_BASE 0xffe1
+#define HYDRA_ADDRPROM 0xffc0
+#define HYDRA_VERSION "v3.0alpha"
+
+#define WORDSWAP(a)     ((((a)>>8)&0xff) | ((a)<<8))
+
+
+static int hydra_init_one(struct zorro_dev *z,
+				    const struct zorro_device_id *ent);
+static int hydra_init(struct zorro_dev *z);
+static int hydra_open(struct net_device *dev);
+static int hydra_close(struct net_device *dev);
+static void hydra_reset_8390(struct net_device *dev);
+static void hydra_get_8390_hdr(struct net_device *dev,
+			       struct e8390_pkt_hdr *hdr, int ring_page);
+static void hydra_block_input(struct net_device *dev, int count,
+			      struct sk_buff *skb, int ring_offset);
+static void hydra_block_output(struct net_device *dev, int count,
+			       const unsigned char *buf, int start_page);
+static void hydra_remove_one(struct zorro_dev *z);
+
+static struct zorro_device_id hydra_zorro_tbl[] = {
+    { ZORRO_PROD_HYDRA_SYSTEMS_AMIGANET },
+    { 0 }
+};
+MODULE_DEVICE_TABLE(zorro, hydra_zorro_tbl);
+
+static struct zorro_driver hydra_driver = {
+    .name	= "hydra",
+    .id_table	= hydra_zorro_tbl,
+    .probe	= hydra_init_one,
+    .remove	= hydra_remove_one,
+};
+
+static int hydra_init_one(struct zorro_dev *z,
+			  const struct zorro_device_id *ent)
+{
+    int err;
+
+    if (!request_mem_region(z->resource.start, 0x10000, "Hydra"))
+	return -EBUSY;
+    if ((err = hydra_init(z))) {
+	release_mem_region(z->resource.start, 0x10000);
+	return -EBUSY;
+    }
+    return 0;
+}
+
+static const struct net_device_ops hydra_netdev_ops = {
+	.ndo_open		= hydra_open,
+	.ndo_stop		= hydra_close,
+
+	.ndo_start_xmit		= __ei_start_xmit,
+	.ndo_tx_timeout		= __ei_tx_timeout,
+	.ndo_get_stats		= __ei_get_stats,
+	.ndo_set_rx_mode	= __ei_set_multicast_list,
+	.ndo_validate_addr	= eth_validate_addr,
+	.ndo_set_mac_address	= eth_mac_addr,
+#ifdef CONFIG_NET_POLL_CONTROLLER
+	.ndo_poll_controller	= __ei_poll,
+#endif
+};
+
+static int hydra_init(struct zorro_dev *z)
+{
+    struct net_device *dev;
+    unsigned long board = (unsigned long)ZTWO_VADDR(z->resource.start);
+    unsigned long ioaddr = board+HYDRA_NIC_BASE;
+    const char name[] = "NE2000";
+    int start_page, stop_page;
+    u8 macaddr[ETH_ALEN];
+    int j;
+    int err;
+
+    static u32 hydra_offsets[16] = {
+	0x00, 0x02, 0x04, 0x06, 0x08, 0x0a, 0x0c, 0x0e,
+	0x10, 0x12, 0x14, 0x16, 0x18, 0x1a, 0x1c, 0x1e,
+    };
+
+    dev = ____alloc_ei_netdev(0);
+    if (!dev)
+	return -ENOMEM;
+
+    for (j = 0; j < ETH_ALEN; j++)
+	macaddr[j] = *((u8 *)(board + HYDRA_ADDRPROM + 2*j));
+    eth_hw_addr_set(dev, macaddr);
+
+    /* We must set the 8390 for word mode. */
+    z_writeb(0x4b, ioaddr + NE_EN0_DCFG);
+    start_page = NESM_START_PG;
+    stop_page = NESM_STOP_PG;
+
+    dev->base_addr = ioaddr;
+    dev->irq = IRQ_AMIGA_PORTS;
+
+    /* Install the Interrupt handler */
+    if (request_irq(IRQ_AMIGA_PORTS, __ei_interrupt, IRQF_SHARED, "Hydra Ethernet",
+		    dev)) {
+	free_netdev(dev);
+	return -EAGAIN;
+    }
+
+    ei_status.name = name;
+    ei_status.tx_start_page = start_page;
+    ei_status.stop_page = stop_page;
+    ei_status.word16 = 1;
+    ei_status.bigendian = 1;
+
+    ei_status.rx_start_page = start_page + TX_PAGES;
+
+    ei_status.reset_8390 = hydra_reset_8390;
+    ei_status.block_input = hydra_block_input;
+    ei_status.block_output = hydra_block_output;
+    ei_status.get_8390_hdr = hydra_get_8390_hdr;
+    ei_status.reg_offset = hydra_offsets;
+
+    dev->netdev_ops = &hydra_netdev_ops;
+    __NS8390_init(dev, 0);
+
+    err = register_netdev(dev);
+    if (err) {
+	free_irq(IRQ_AMIGA_PORTS, dev);
+	free_netdev(dev);
+	return err;
+    }
+
+    zorro_set_drvdata(z, dev);
+
+    pr_info("%s: Hydra at %pR, address %pM (hydra.c " HYDRA_VERSION ")\n",
+	    dev->name, &z->resource, dev->dev_addr);
+
+    return 0;
+}
+
+static int hydra_open(struct net_device *dev)
+{
+    __ei_open(dev);
+    return 0;
+}
+
+static int hydra_close(struct net_device *dev)
+{
+    struct ei_device *ei_local = netdev_priv(dev);
+
+    netif_dbg(ei_local, ifdown, dev, "Shutting down ethercard.\n");
+    __ei_close(dev);
+    return 0;
+}
+
+static void hydra_reset_8390(struct net_device *dev)
+{
+    netdev_info(dev, "Hydra hw reset not there\n");
+}
+
+static void hydra_get_8390_hdr(struct net_device *dev,
+			       struct e8390_pkt_hdr *hdr, int ring_page)
+{
+    int nic_base = dev->base_addr;
+    short *ptrs;
+    unsigned long hdr_start= (nic_base-HYDRA_NIC_BASE) +
+			     ((ring_page - NESM_START_PG)<<8);
+    ptrs = (short *)hdr;
+
+    *(ptrs++) = z_readw(hdr_start);
+    *((short *)hdr) = WORDSWAP(*((short *)hdr));
+    hdr_start += 2;
+    *(ptrs++) = z_readw(hdr_start);
+    *((short *)hdr+1) = WORDSWAP(*((short *)hdr+1));
+}
+
+static void hydra_block_input(struct net_device *dev, int count,
+			      struct sk_buff *skb, int ring_offset)
+{
+    unsigned long nic_base = dev->base_addr;
+    unsigned long mem_base = nic_base - HYDRA_NIC_BASE;
+    unsigned long xfer_start = mem_base + ring_offset - (NESM_START_PG<<8);
+
+    if (count&1)
+	count++;
+
+    if (xfer_start+count >  mem_base + (NESM_STOP_PG<<8)) {
+	int semi_count = (mem_base + (NESM_STOP_PG<<8)) - xfer_start;
+
+	z_memcpy_fromio(skb->data,xfer_start,semi_count);
+	count -= semi_count;
+	z_memcpy_fromio(skb->data+semi_count, mem_base, count);
+    } else
+	z_memcpy_fromio(skb->data, xfer_start,count);
+
+}
+
+static void hydra_block_output(struct net_device *dev, int count,
+			       const unsigned char *buf, int start_page)
+{
+    unsigned long nic_base = dev->base_addr;
+    unsigned long mem_base = nic_base - HYDRA_NIC_BASE;
+
+    if (count&1)
+	count++;
+
+    z_memcpy_toio(mem_base+((start_page - NESM_START_PG)<<8), buf, count);
+}
+
+static void hydra_remove_one(struct zorro_dev *z)
+{
+    struct net_device *dev = zorro_get_drvdata(z);
+
+    unregister_netdev(dev);
+    free_irq(IRQ_AMIGA_PORTS, dev);
+    release_mem_region(ZTWO_PADDR(dev->base_addr)-HYDRA_NIC_BASE, 0x10000);
+    free_netdev(dev);
+}
+
+static int __init hydra_init_module(void)
+{
+    return zorro_register_driver(&hydra_driver);
+}
+
+static void __exit hydra_cleanup_module(void)
+{
+    zorro_unregister_driver(&hydra_driver);
+}
+
+module_init(hydra_init_module);
+module_exit(hydra_cleanup_module);
+
+MODULE_LICENSE("GPL");

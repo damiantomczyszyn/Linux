@@ -1,5 +1,5 @@
- */
 
-static inline void check_data_structures(void) { }
+	dprintk(1, "%s() status = %d, seq = %d\n", __func__, status, seq);
+}
 
-#endif /* CONFIG_
+st

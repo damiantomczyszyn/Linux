@@ -1,2 +1,2 @@
-t.h \
-    $(wildcard include/config
+drivers/net/arcnet/com20020-pci.o
+

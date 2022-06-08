@@ -1,1 +1,1 @@
-cmd_drivers/media/radio/radio-gemtek.ko := ld -r -m elf_i386 --build-id=sha1  -T scripts/module.lds -o drivers/media/radio/radio-gemtek.ko drivers/media/radio/radio-gemtek.o drivers/media/radio/radio-gemtek.mod.o;  true
+drivers/media/pci/cx18/cx18-driver.o drivers/media/pci/cx18/cx18-cards.o drivers/media/pci/cx18/cx18-i2c.o drivers/media/pci/cx18/cx18-firmware.o drivers/media/pci/cx18/cx18-gpio.o drivers/media/pci/cx18/cx18-queue.o dri

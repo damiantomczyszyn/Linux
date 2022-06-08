@@ -1,1 +1,2 @@
- $(wildcard include/confi
+drivers/net/dsa/qca8k.o
+

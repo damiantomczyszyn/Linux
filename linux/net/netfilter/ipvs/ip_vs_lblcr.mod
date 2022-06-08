@@ -1,1 +1,1 @@
-cmd_drivers/media/i2c/vp27smpx.o :
+r allowed, online CPU in same node

@@ -1,2 +1,2 @@
-onfig/TRACE_BRANCH_PROFILING) \
-    $(wildc
+         = &mpeg_fops,
+	.ioctl_ops     = &m

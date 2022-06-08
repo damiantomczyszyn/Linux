@@ -1,1 +1,2 @@
-wildcard include/config/GE
+q;
+	dev->video_dev->device

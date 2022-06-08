@@ -1,1 +1,1 @@
-cmd_drivers/media/i2c/tw2804.o := gcc -Wp,-MMD,drivers/media/i2c/.tw2804.o.d -nostdinc -I./arch/x86/include -I./arch/x86/include/gene
+cmd_drivers/net/ethernet/8390/8390p.mod := { echo  drivers/net/ethernet/8390/8390p.o;  echo; } > drivers/net/ethernet/8390/8390p.mod

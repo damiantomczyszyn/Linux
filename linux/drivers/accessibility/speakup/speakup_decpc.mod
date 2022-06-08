@@ -1,1 +1,2 @@
-card include/config/HAVE_ARCH_USERFAULTFD_MINOR
+reg_dma_ctl;
+	u32                        reg_ln

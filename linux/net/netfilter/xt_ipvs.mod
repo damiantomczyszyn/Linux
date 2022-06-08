@@ -1,2 +1,1 @@
-INJECTION) \
-    $(wildca
+nd_load_acquire(&p->on_cp

@@ -1,2 +1,5 @@
-drivers/media/rc/keymaps/rc-proteus-2309.o
+  = 0x61,
+	.if_khz           = 5380,
+};
 
+sta

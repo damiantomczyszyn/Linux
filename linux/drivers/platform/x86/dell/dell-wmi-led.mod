@@ -1,2 +1,2 @@
-e/linux/rwlock.h \
-    $(wildcard include/
+rch/x86/include/asm/atomic64_32.h \
+  incl

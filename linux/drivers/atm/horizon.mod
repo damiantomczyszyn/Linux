@@ -1,2 +1,2 @@
-.h \
-  include/linux/pe
+		mem &= ~ALT_DATA;
+		m

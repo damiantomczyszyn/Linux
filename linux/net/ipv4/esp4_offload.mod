@@ -1,1 +1,1 @@
-e/config/ACPI_APEI_GHES) 
+³$¸¶í‹ÈÌæôqý¶dñS¿ô

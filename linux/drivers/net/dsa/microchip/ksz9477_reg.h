@@ -1,815 +1,1668 @@
-include/config/HAVE_ALIGNED_STRUCT_PAGE) \
-    $(wildcard include/config/USERFAULTFD) \
-    $(wildcard include/config/HAVE_ARCH_COMPAT_MMAP_BASES) \
-    $(wildcard include/config/MEMBARRIER) \
-    $(wildcard include/config/AIO) \
-    $(wildcard include/config/MMU_NOTIFIER) \
-    $(wildcard include/config/ARCH_WANT_BATCHED_UNMAP_TLB_FLUSH) \
-    $(wildcard include/config/IOMMU_SVA) \
-  include/linux/mm_types_task.h \
-    $(wildcard include/config/SPLIT_PTLOCK_CPUS) \
-    $(wildcard include/config/ARCH_ENABLE_SPLIT_PMD_PTLOCK) \
-  arch/x86/include/asm/tlbbatch.h \
-  include/linux/auxvec.h \
-  include/uapi/linux/auxvec.h \
-  arch/x86/include/uapi/asm/auxvec.h \
-  include/linux/kref.h \
-  include/linux/refcount.h \
-  include/linux/rbtree.h \
-  include/linux/rcupdate.h \
-    $(wildcard include/config/PREEMPT_RCU) \
-    $(wildcard include/config/TINY_RCU) \
-    $(wildcard include/config/RCU_STRICT_GRACE_PERIOD) \
-    $(wildcard include/config/TASKS_RCU_GENERIC) \
-    $(wildcard include/config/RCU_STALL_COMMON) \
-    $(wildcard include/config/NO_HZ_FULL) \
-    $(wildcard include/config/RCU_NOCB_CPU) \
-    $(wildcard include/config/TASKS_RCU) \
-    $(wildcard include/config/TASKS_TRACE_RCU) \
-    $(wildcard include/config/TASKS_RUDE_RCU) \
-    $(wildcard include/config/TREE_RCU) \
-    $(wildcard include/config/DEBUG_OBJECTS_RCU_HEAD) \
-    $(wildcard include/config/PROVE_RCU) \
-    $(wildcard include/config/ARCH_WEAK_RELEASE_ACQUIRE) \
-  include/linux/rcutree.h \
-  include/linux/rwsem.h \
-    $(wildcard include/config/RWSEM_SPIN_ON_OWNER) \
-    $(wildcard include/config/DEBUG_RWSEMS) \
-  include/linux/completion.h \
-  include/linux/swait.h \
-  include/linux/uprobes.h \
-    $(wildcard include/config/UPROBES) \
-  arch/x86/include/asm/uprobes.h \
-  include/linux/notifier.h \
-    $(wildcard include/config/TREE_SRCU) \
-  include/linux/srcu.h \
-    $(wildcard include/config/TINY_SRCU) \
-    $(wildcard include/config/SRCU) \
-  include/linux/workqueue.h \
-    $(wildcard include/config/DEBUG_OBJECTS_WORK) \
-    $(wildcard include/config/FREEZER) \
-    $(wildcard include/config/WQ_WATCHDOG) \
-  include/linux/timer.h \
-    $(wildcard include/config/DEBUG_OBJECTS_TIMERS) \
-    $(wildcard include/config/NO_HZ_COMMON) \
-  include/linux/ktime.h \
-  include/linux/time.h \
-    $(wildcard include/config/POSIX_TIMERS) \
-  include/linux/time32.h \
-  include/linux/timex.h \
-  include/uapi/linux/timex.h \
-  arch/x86/include/asm/timex.h \
-    $(wildcard include/config/X86_TSC) \
-  arch/x86/include/asm/tsc.h \
-  include/vdso/time32.h \
-  include/vdso/time.h \
-  include/linux/jiffies.h \
-  include/vdso/jiffies.h \
-  include/generated/timeconst.h \
-  include/vdso/ktime.h \
-  include/linux/timekeeping.h \
-    $(wildcard include/config/GENERIC_CMOS_UPDATE) \
-  include/linux/clocksource_ids.h \
-  include/linux/debugobjects.h \
-    $(wildcard include/config/DEBUG_OBJECTS) \
-    $(wildcard include/config/DEBUG_OBJECTS_FREE) \
-  include/linux/rcu_segcblist.h \
-  include/linux/srcutree.h \
-  include/linux/rcu_node_tree.h \
-    $(wildcard include/config/RCU_FANOUT) \
-    $(wildcard include/config/RCU_FANOUT_LEAF) \
-  arch/x86/include/asm/mmu.h \
-    $(wildcard include/config/MODIFY_LDT_SYSCALL) \
-  include/linux/page-flags.h \
-    $(wildcard include/config/ARCH_USES_PG_UNCACHED) \
-    $(wildcard include/config/MEMORY_FAILURE) \
-    $(wildcard include/config/PAGE_IDLE_FLAG) \
-    $(wildcard include/config/HUGETLB_PAGE_FREE_VMEMMAP) \
-    $(wildcard include/config/HUGETLB_PAGE_FREE_VMEMMAP_DEFAULT_ON) \
-    $(wildcard include/config/KSM) \
-  include/linux/local_lock.h \
-  include/linux/local_lock_internal.h \
-  include/linux/memory_hotplug.h \
-    $(wildcard include/config/HAVE_ARCH_NODEDATA_EXTENSION) \
-    $(wildcard include/config/ARCH_HAS_ADD_PAGES) \
-  arch/x86/include/asm/mmzone.h \
-  arch/x86/include/asm/mmzone_32.h \
-  include/linux/topology.h \
-    $(wildcard include/config/USE_PERCPU_NUMA_NODE_ID) \
-    $(wildcard include/config/SCHED_SMT) \
-    $(wildcard include/config/SCHED_CLUSTER) \
-  include/linux/arch_topology.h \
-    $(wildcard include/config/ACPI_CPPC_LIB) \
-    $(wildcard include/config/GENERIC_ARCH_TOPOLOGY) \
-  include/linux/percpu.h \
-    $(wildcard include/config/NEED_PER_CPU_EMBED_FIRST_CHUNK) \
-    $(wildcard include/config/NEED_PER_CPU_PAGE_FIRST_CHUNK) \
-  arch/x86/include/asm/topology.h \
-    $(wildcard include/config/SCHED_MC_PRIO) \
-  arch/x86/include/asm/mpspec.h \
-    $(wildcard include/config/EISA) \
-    $(wildcard include/config/X86_MPPARSE) \
-  arch/x86/include/asm/mpspec_def.h \
-  arch/x86/include/asm/x86_init.h \
-  arch/x86/include/asm/apicdef.h \
-  include/asm-generic/topology.h \
-  include/linux/xarray.h \
-    $(wildcard include/config/XARRAY_MULTI) \
-  include/linux/kconfig.h \
-  include/linux/uidgid.h \
-    $(wildcard include/config/MULTIUSER) \
-    $(wildcard include/config/USER_NS) \
-  include/linux/highuid.h \
-  include/linux/kobject_ns.h \
-  include/linux/stat.h \
-  arch/x86/include/uapi/asm/stat.h \
-  include/uapi/linux/stat.h \
-  include/linux/mod_devicetable.h \
-  include/linux/uuid.h \
-  include/uapi/linux/uuid.h \
-  include/linux/property.h \
-  include/linux/fwnode.h \
-  include/linux/resource_ext.h \
-  include/linux/slab.h \
-    $(wildcard include/config/DEBUG_SLAB) \
-    $(wildcard include/config/FAILSLAB) \
-    $(wildcard include/config/MEMCG_KMEM) \
-    $(wildcard include/config/KASAN) \
-    $(wildcard include/config/SLAB) \
-    $(wildcard include/config/SLUB) \
-    $(wildcard include/config/SLOB) \
-  include/linux/overflow.h \
-  include/linux/percpu-refcount.h \
-  include/linux/kasan.h \
-    $(wildcard include/config/KASAN_STACK) \
-    $(wildcard include/config/KASAN_VMALLOC) \
-    $(wildcard include/config/KASAN_INLINE) \
-  include/linux/kasan-enabled.h \
-  include/linux/device.h \
-    $(wildcard include/config/GENERIC_MSI_IRQ_DOMAIN) \
-    $(wildcard include/config/GENERIC_MSI_IRQ) \
-    $(wildcard include/config/ENERGY_MODEL) \
-    $(wildcard include/config/PINCTRL) \
-    $(wildcard include/config/DMA_OPS) \
-    $(wildcard include/config/DMA_DECLARE_COHERENT) \
-    $(wildcard include/config/DMA_CMA) \
-    $(wildcard include/config/SWIOTLB) \
-    $(wildcard include/config/ARCH_HAS_SYNC_DMA_FOR_DEVICE) \
-    $(wildcard include/config/ARCH_HAS_SYNC_DMA_FOR_CPU) \
-    $(wildcard include/config/ARCH_HAS_SYNC_DMA_FOR_CPU_ALL) \
-    $(wildcard include/config/DMA_OPS_BYPASS) \
-    $(wildcard include/config/DEVTMPFS) \
-    $(wildcard include/config/SYSFS_DEPRECATED) \
-  include/linux/dev_printk.h \
-  include/linux/ratelimit.h \
-  include/linux/sched.h \
-    $(wildcard include/config/VIRT_CPU_ACCOUNTING_NATIVE) \
-    $(wildcard include/config/SCHED_INFO) \
-    $(wildcard include/config/SCHEDSTATS) \
-    $(wildcard include/config/SCHED_CORE) \
-    $(wildcard include/config/FAIR_GROUP_SCHED) \
-    $(wildcard include/config/RT_GROUP_SCHED) \
-    $(wildcard include/config/RT_MUTEXES) \
-    $(wildcard include/config/UCLAMP_TASK) \
-    $(wildcard include/config/UCLAMP_BUCKETS_COUNT) \
-    $(wildcard include/config/KMAP_LOCAL) \
-    $(wildcard include/config/CGROUP_SCHED) \
-    $(wildcard include/config/BLK_DEV_IO_TRACE) \
-    $(wildcard include/config/PSI) \
-    $(wildcard include/config/COMPAT_BRK) \
-    $(wildcard include/config/CGROUPS) \
-    $(wildcard include/config/BLK_CGROUP) \
-    $(wildcard include/config/PAGE_OWNER) \
-    $(wildcard include/config/EVENTFD) \
-    $(wildcard include/config/ARCH_HAS_SCALED_CPUTIME) \
-    $(wildcard include/config/VIRT_CPU_ACCOUNTING_GEN) \
-    $(wildcard include/config/POSIX_CPUTIMERS) \
-    $(wildcard include/config/POSIX_CPU_TIMERS_TASK_WORK) \
-    $(wildcard include/config/KEYS) \
-    $(wildcard include/config/SYSVIPC) \
-    $(wildcard include/config/DETECT_HUNG_TASK) \
-    $(wildcard include/config/IO_URING) \
-    $(wildcard include/config/AUDIT) \
-    $(wildcard include/config/AUDITSYSCALL) \
-    $(wildcard include/config/UBSAN) \
-    $(wildcard include/config/UBSAN_TRAP) \
-    $(wildcard include/config/TASK_XACCT) \
-    $(wildcard include/config/CPUSETS) \
-    $(wildcard include/config/X86_CPU_RESCTRL) \
-    $(wildcard include/config/FUTEX) \
-    $(wildcard include/config/PERF_EVENTS) \
-    $(wildcard include/config/RSEQ) \
-    $(wildcard include/config/TASK_DELAY_ACCT) \
-    $(wildcard include/config/FAULT_INJECTION) \
-    $(wildcard include/config/LATENCYTOP) \
-    $(wildcard include/config/KUNIT) \
-    $(wildcard include/config/FUNCTION_GRAPH_TRACER) \
-    $(wildcard include/config/BCACHE) \
-    $(wildcard include/config/VMAP_STACK) \
-    $(wildcard include/config/LIVEPATCH) \
-    $(wildcard include/config/SECURITY) \
-    $(wildcard include/config/BPF_SYSCALL) \
-    $(wildcard include/config/GCC_PLUGIN_STACKLEAK) \
-    $(wildcard include/config/X86_MCE) \
-    $(wildcard include/config/KRETPROBES) \
-    $(wildcard include/config/RETHOOK) \
-    $(wildcard include/config/ARCH_HAS_PARANOID_L1D_FLUSH) \
-    $(wildcard include/config/ARCH_TASK_STRUCT_ON_STACK) \
-    $(wildcard include/config/DEBUG_RSEQ) \
-  include/uapi/linux/sched.h \
-  include/linux/pid.h \
-  include/linux/rculist.h \
-    $(wildcard include/config/PROVE_RCU_LIST) \
-  include/linux/sem.h \
-  include/uapi/linux/sem.h \
-  include/linux/ipc.h \
-  include/linux/rhashtable-types.h \
-  include/uapi/linux/ipc.h \
-  arch/x86/include/generated/uapi/asm/ipcbuf.h \
-  include/uapi/asm-generic/ipcbuf.h \
-  arch/x86/include/uapi/asm/sembuf.h \
-  include/linux/shm.h \
-  include/uapi/linux/shm.h \
-  include/uapi/asm-generic/hugetlb_encode.h \
-  arch/x86/include/uapi/asm/shmbuf.h \
-  include/uapi/asm-generic/shmbuf.h \
-  arch/x86/include/asm/shmparam.h \
-  include/linux/plist.h \
-    $(wildcard include/config/DEBUG_PLIST) \
-  include/linux/hrtimer.h \
-    $(wildcard include/config/HIGH_RES_TIMERS) \
-    $(wildcard include/config/TIME_LOW_RES) \
-    $(wildcard include/config/TIMERFD) \
-  include/linux/hrtimer_defs.h \
-  include/linux/timerqueue.h \
-  include/linux/seccomp.h \
-    $(wildcard include/config/SECCOMP) \
-    $(wildcard include/config/HAVE_ARCH_SECCOMP_FILTER) \
-    $(wildcard include/config/SECCOMP_FILTER) \
-    $(wildcard include/config/CHECKPOINT_RESTORE) \
-    $(wildcard include/config/SECCOMP_CACHE_DEBUG) \
-  include/uapi/linux/seccomp.h \
-  arch/x86/include/asm/seccomp.h \
-  arch/x86/include/asm/unistd.h \
-  arch/x86/include/uapi/asm/unistd.h \
-  arch/x86/include/generated/uapi/asm/unistd_32.h \
-  include/asm-generic/seccomp.h \
-  include/uapi/linux/unistd.h \
-  include/linux/resource.h \
-  include/uapi/linux/resource.h \
-  arch/x86/include/generated/uapi/asm/resource.h \
-  include/asm-generic/resource.h \
-  include/uapi/asm-generic/resource.h \
-  include/linux/latencytop.h \
-  include/linux/sched/prio.h \
-  include/linux/sched/types.h \
-  include/linux/signal_types.h \
-    $(wildcard include/config/OLD_SIGACTION) \
-  include/uapi/linux/signal.h \
-  arch/x86/include/asm/signal.h \
-  arch/x86/include/uapi/asm/signal.h \
-  include/uapi/asm-generic/signal-defs.h \
-  arch/x86/include/uapi/asm/siginfo.h \
-  include/uapi/asm-generic/siginfo.h \
-  include/linux/syscall_user_dispatch.h \
-  include/linux/task_io_accounting.h \
-    $(wildcard include/config/TASK_IO_ACCOUNTING) \
-  include/linux/posix-timers.h \
-  include/linux/alarmtimer.h \
-    $(wildcard include/config/RTC_CLASS) \
-  include/uapi/linux/rseq.h \
-  include/linux/kcsan.h \
-  arch/x86/include/generated/asm/kmap_size.h \
-  include/asm-generic/kmap_size.h \
-    $(wildcard include/config/DEBUG_KMAP_LOCAL) \
-  include/linux/energy_model.h \
-  include/linux/sched/cpufreq.h \
-    $(wildcard include/config/CPU_FREQ) \
-  include/linux/sched/topology.h \
-    $(wildcard include/config/SCHED_DEBUG) \
-    $(wildcard include/config/SCHED_MC) \
-    $(wildcard include/config/CPU_FREQ_GOV_SCHEDUTIL) \
-  include/linux/sched/idle.h \
-  include/linux/sched/sd_flags.h \
-  include/linux/klist.h \
-  include/linux/pm.h \
-    $(wildcard include/config/VT_CONSOLE_SLEEP) \
-    $(wildcard include/config/PM_CLK) \
-    $(wildcard include/config/PM_GENERIC_DOMAINS) \
-  include/linux/device/bus.h \
-  include/linux/device/class.h \
-  include/linux/device/driver.h \
-  include/linux/module.h \
-    $(wildcard include/config/MODULES_TREE_LOOKUP) \
-    $(wildcard include/config/STACKTRACE_BUILD_ID) \
-    $(wildcard include/config/MODULE_SIG) \
-    $(wildcard include/config/KALLSYMS) \
-    $(wildcard include/config/BPF_EVENTS) \
-    $(wildcard include/config/DEBUG_INFO_BTF_MODULES) \
-    $(wildcard include/config/EVENT_TRACING) \
-    $(wildcard include/config/MODULE_UNLOAD) \
-    $(wildcard include/config/CONSTRUCTORS) \
-    $(wildcard include/config/FUNCTION_ERROR_INJECTION) \
-  include/linux/buildid.h \
-    $(wildcard include/config/CRASH_CORE) \
-  include/linux/kmod.h \
-  include/linux/umh.h \
-  include/linux/sysctl.h \
-    $(wildcard include/config/SYSCTL) \
-  include/uapi/linux/sysctl.h \
-  include/linux/elf.h \
-    $(wildcard include/config/ARCH_USE_GNU_PROPERTY) \
-    $(wildcard include/config/ARCH_HAVE_ELF_PROT) \
-  arch/x86/include/asm/elf.h \
-    $(wildcard include/config/X86_X32_ABI) \
-  arch/x86/include/asm/user.h \
-  arch/x86/include/asm/user_32.h \
-  arch/x86/include/asm/fsgsbase.h \
-  arch/x86/include/asm/vdso.h \
-  arch/x86/include/asm/desc.h \
-  arch/x86/include/asm/fixmap.h \
-    $(wildcard include/config/DEBUG_KMAP_LOCAL_FORCE_MAP) \
-    $(wildcard include/config/X86_VSYSCALL_EMULATION) \
-    $(wildcard include/config/PROVIDE_OHCI1394_DMA_INIT) \
-    $(wildcard include/config/PCI_MMCONFIG) \
-    $(wildcard include/config/ACPI_APEI_GHES) \
-    $(wildcard include/config/INTEL_TXT) \
-  include/asm-generic/fixmap.h \
-  arch/x86/include/asm/irq_vectors.h \
-    $(wildcard include/config/HAVE_KVM) \
-    $(wildcard include/config/HYPERV) \
-    $(wildcard include/config/PCI_MSI) \
-  arch/x86/include/asm/cpu_entry_area.h \
-  arch/x86/include/asm/intel_ds.h \
-  arch/x86/include/asm/pgtable_areas.h \
-  arch/x86/include/asm/pgtable_32_areas.h \
-  include/uapi/linux/elf.h \
-  include/uapi/linux/elf-em.h \
-  include/linux/moduleparam.h \
-    $(wildcard include/config/ALPHA) \
-    $(wildcard include/config/PPC64) \
-  include/linux/rbtree_latch.h \
-  include/linux/error-injection.h \
-  include/asm-generic/error-injection.h \
-  include/linux/cfi.h \
-    $(wildcard include/config/CFI_CLANG_SHADOW) \
-  arch/x86/include/asm/module.h \
-    $(wildcard include/config/UNWINDER_ORC) \
-  include/asm-generic/module.h \
-    $(wildcard include/config/HAVE_MOD_ARCH_SPECIFIC) \
-    $(wildcard include/config/MODULES_USE_ELF_REL) \
-    $(wildcard include/config/MODULES_USE_ELF_RELA) \
-  arch/x86/include/asm/orc_types.h \
-  arch/x86/include/asm/device.h \
-  include/linux/pm_wakeup.h \
-  include/acpi/acpi.h \
-  include/acpi/platform/acenv.h \
-  include/acpi/platform/acgcc.h \
-  include/acpi/platform/aclinux.h \
-    $(wildcard include/config/ACPI_REDUCED_HARDWARE_ONLY) \
-    $(wildcard include/config/ACPI_DEBUG) \
-  include/linux/ctype.h \
-  arch/x86/include/asm/acenv.h \
-  include/acpi/acnames.h \
-  include/acpi/actypes.h \
-  include/acpi/acexcep.h \
-  include/acpi/actbl.h \
-  include/acpi/actbl1.h \
-  include/acpi/actbl2.h \
-  include/acpi/actbl3.h \
-  include/acpi/acrestyp.h \
-  include/acpi/platform/acenvex.h \
-  include/acpi/platform/aclinuxex.h \
-  include/acpi/platform/acgccex.h \
-  include/acpi/acoutput.h \
-  include/acpi/acpiosxf.h \
-  include/acpi/acpixf.h \
-  include/acpi/acconfig.h \
-  include/acpi/acbuffer.h \
-  include/linux/dynamic_debug.h \
-  include/acpi/acpi_bus.h \
-    $(wildcard include/config/X86_ANDROID_TABLETS) \
-    $(wildcard include/config/ACPI_SYSTEM_POWER_STATES_SUPPORT) \
-    $(wildcard include/config/ACPI_SLEEP) \
-  include/acpi/acpi_drivers.h \
-    $(wildcard include/config/ACPI_DOCK) \
-  include/acpi/acpi_numa.h \
-    $(wildcard include/config/ACPI_HMAT) \
-  include/acpi/acpi_io.h \
-  include/linux/io.h \
-    $(wildcard include/config/HAS_IOPORT_MAP) \
-  arch/x86/include/asm/io.h \
-    $(wildcard include/config/MTRR) \
-    $(wildcard include/config/X86_PAT) \
-  arch/x86/include/generated/asm/early_ioremap.h \
-  include/asm-generic/early_ioremap.h \
-    $(wildcard include/config/GENERIC_EARLY_IOREMAP) \
-  include/asm-generic/iomap.h \
-  include/asm-generic/pci_iomap.h \
-    $(wildcard include/config/NO_GENERIC_PCI_IOPORT_MAP) \
-    $(wildcard include/config/GENERIC_PCI_IOMAP) \
-  include/asm-generic/io.h \
-    $(wildcard include/config/GENERIC_IOMAP) \
-    $(wildcard include/config/GENERIC_IOREMAP) \
-    $(wildcard include/config/VIRT_TO_BUS) \
-    $(wildcard include/config/GENERIC_DEVMEM_IS_ALLOWED) \
-  include/linux/logic_pio.h \
-    $(wildcard include/config/INDIRECT_PIO) \
-  include/linux/vmalloc.h \
-    $(wildcard include/config/HAVE_ARCH_HUGE_VMALLOC) \
-  arch/x86/include/asm/vmalloc.h \
-    $(wildcard include/config/HAVE_ARCH_HUGE_VMAP) \
-  arch/x86/include/asm/acpi.h \
-    $(wildcard include/config/ACPI_APEI) \
-  include/acpi/pdc_intel.h \
-  arch/x86/include/asm/numa.h \
-    $(wildcard include/config/NUMA_EMU) \
-  arch/x86/include/asm/numa_32.h \
-  include/linux/regulator/consumer.h \
-    $(wildcard include/config/REGULATOR) \
-  include/linux/suspend.h \
-    $(wildcard include/config/VT) \
-    $(wildcard include/config/SUSPEND) \
-    $(wildcard include/config/HIBERNATION_SNAPSHOT_DEV) \
-    $(wildcard include/config/PM_SLEEP_DEBUG) \
-    $(wildcard include/config/PM_AUTOSLEEP) \
-  include/linux/swap.h \
-    $(wildcard include/config/DEVICE_PRIVATE) \
-    $(wildcard include/config/MIGRATION) \
-    $(wildcard include/config/FRONTSWAP) \
-    $(wildcard include/config/THP_SWAP) \
-    $(wildcard include/config/MEMCG_SWAP) \
-  include/linux/memcontrol.h \
-    $(wildcard include/config/CGROUP_WRITEBACK) \
-  include/linux/cgroup.h \
-    $(wildcard include/config/CGROUP_CPUACCT) \
-    $(wildcard include/config/SOCK_CGROUP_DATA) \
-    $(wildcard include/config/CGROUP_DATA) \
-    $(wildcard include/config/CGROUP_BPF) \
-  include/uapi/linux/cgroupstats.h \
-  include/uapi/linux/taskstats.h \
-  include/linux/fs.h \
-    $(wildcard include/config/READ_ONLY_THP_FOR_FS) \
-    $(wildcard include/config/FS_POSIX_ACL) \
-    $(wildcard include/config/IMA) \
-    $(wildcard include/config/FILE_LOCKING) \
-    $(wildcard include/config/FSNOTIFY) \
-    $(wildcard include/config/FS_ENCRYPTION) \
-    $(wildcard include/config/FS_VERITY) \
-    $(wildcard include/config/EPOLL) \
-    $(wildcard include/config/UNICODE) \
-    $(wildcard include/config/QUOTA) \
-    $(wildcard include/config/FS_DAX) \
-    $(wildcard include/config/BLOCK) \
-  include/linux/wait_bit.h \
-  include/linux/kdev_t.h \
-  include/uapi/linux/kdev_t.h \
-  include/linux/dcache.h \
-  include/linux/rculist_bl.h \
-  include/linux/list_bl.h \
-  include/linux/bit_spinlock.h \
-  include/linux/lockref.h \
-    $(wildcard include/config/ARCH_USE_CMPXCHG_LOCKREF) \
-  include/linux/stringhash.h \
-    $(wildcard include/config/DCACHE_WORD_ACCESS) \
-  include/linux/hash.h \
-    $(wildcard include/config/HAVE_ARCH_HASH) \
-  include/linux/path.h \
-  include/linux/list_lru.h \
-  include/linux/shrinker.h \
-  include/linux/capability.h \
-  include/uapi/linux/capability.h \
-  include/linux/semaphore.h \
-  include/linux/fcntl.h \
-    $(wildcard include/config/ARCH_32BIT_OFF_T) \
-  include/uapi/linux/fcntl.h \
-  arch/x86/include/generated/uapi/asm/fcntl.h \
-  include/uapi/asm-generic/fcntl.h \
-  include/uapi/linux/openat2.h \
-  include/linux/migrate_mode.h \
-  include/linux/percpu-rwsem.h \
-  include/linux/rcuwait.h \
-  include/linux/sched/signal.h \
-    $(wildcard include/config/SCHED_AUTOGROUP) \
-    $(wildcard include/config/BSD_PROCESS_ACCT) \
-    $(wildcard include/config/TASKSTATS) \
-    $(wildcard include/config/STACK_GROWSUP) \
-  include/linux/signal.h \
-    $(wildcard include/config/DYNAMIC_SIGFRAME) \
-  include/linux/sched/jobctl.h \
-  include/linux/sched/task.h \
-    $(wildcard include/config/HAVE_EXIT_THREAD) \
-    $(wildcard include/config/ARCH_WANTS_DYNAMIC_TASK_STRUCT) \
-    $(wildcard include/config/HAVE_ARCH_THREAD_STRUCT_WHITELIST) \
-  include/linux/uaccess.h \
-  include/linux/fault-inject-usercopy.h \
-    $(wildcard include/config/FAULT_INJECTION_USERCOPY) \
-  arch/x86/include/asm/uaccess.h \
-    $(wildcard include/config/CC_HAS_ASM_GOTO_OUTPUT) \
-    $(wildcard include/config/CC_HAS_ASM_GOTO_TIED_OUTPUT) \
-    $(wildcard include/config/ARCH_HAS_COPY_MC) \
-    $(wildcard include/config/X86_INTEL_USERCOPY) \
-  arch/x86/include/asm/smap.h \
-  arch/x86/include/asm/extable.h \
-    $(wildcard include/config/BPF_JIT) \
-  include/asm-generic/access_ok.h \
-    $(wildcard include/config/ALTERNATE_USER_ADDRESS_SPACE) \
-  arch/x86/include/asm/uaccess_32.h \
-  include/linux/cred.h \
-    $(wildcard include/config/DEBUG_CREDENTIALS) \
-  include/linux/key.h \
-    $(wildcard include/config/KEY_NOTIFICATIONS) \
-    $(wildcard include/config/NET) \
-  include/linux/assoc_array.h \
-    $(wildcard include/config/ASSOCIATIVE_ARRAY) \
-  include/linux/sched/user.h \
-    $(wildcard include/config/WATCH_QUEUE) \
-  include/linux/percpu_counter.h \
-  include/linux/rcu_sync.h \
-  include/linux/delayed_call.h \
-  include/linux/errseq.h \
-  include/linux/ioprio.h \
-  include/linux/sched/rt.h \
-  include/linux/iocontext.h \
-    $(wildcard include/config/BLK_ICQ) \
-  include/uapi/linux/ioprio.h \
-  include/linux/fs_types.h \
-  include/linux/mount.h \
-  include/linux/mnt_idmapping.h \
-  include/uapi/linux/fs.h \
-  include/linux/quota.h \
-    $(wildcard include/config/QUOTA_NETLINK_INTERFACE) \
-  include/uapi/linux/dqblk_xfs.h \
-  include/linux/dqblk_v1.h \
-  include/linux/dqblk_v2.h \
-  include/linux/dqblk_qtree.h \
-  include/linux/projid.h \
-  include/uapi/linux/quota.h \
-  include/linux/nfs_fs_i.h \
-  include/linux/seq_file.h \
-  include/linux/string_helpers.h \
-  include/linux/ns_common.h \
-  include/linux/nsproxy.h \
-  include/linux/user_namespace.h \
-    $(wildcard include/config/INOTIFY_USER) \
-    $(wildcard include/config/FANOTIFY) \
-    $(wildcard include/config/PERSISTENT_KEYRINGS) \
-  include/linux/kernel_stat.h \
-  include/linux/interrupt.h \
-    $(wildcard include/config/IRQ_FORCED_THREADING) \
-    $(wildcard include/config/GENERIC_IRQ_PROBE) \
-    $(wildcard include/config/IRQ_TIMINGS) \
-  include/linux/irqreturn.h \
-  include/linux/irqnr.h \
-  include/uapi/linux/irqnr.h \
-  include/linux/hardirq.h \
-  include/linux/context_tracking_state.h \
-    $(wildcard include/config/CONTEXT_TRACKING) \
-  include/linux/ftrace_irq.h \
-    $(wildcard include/config/HWLAT_TRACER) \
-    $(wildcard include/config/OSNOISE_TRACER) \
-  include/linux/vtime.h \
-    $(wildcard include/config/VIRT_CPU_ACCOUNTING) \
-    $(wildcard include/config/IRQ_TIME_ACCOUNTING) \
-  arch/x86/include/asm/hardirq.h \
-    $(wildcard include/config/KVM_INTEL) \
-    $(wildcard include/config/X86_THERMAL_VECTOR) \
-    $(wildcard include/config/X86_MCE_THRESHOLD) \
-    $(wildcard include/config/X86_MCE_AMD) \
-    $(wildcard include/config/X86_HV_CALLBACK_VECTOR) \
-  arch/x86/include/asm/irq.h \
-  arch/x86/include/asm/sections.h \
-  include/asm-generic/sections.h \
-    $(wildcard include/config/HAVE_FUNCTION_DESCRIPTORS) \
-  include/linux/cgroup-defs.h \
-    $(wildcard include/config/CGROUP_NET_CLASSID) \
-    $(wildcard include/config/CGROUP_NET_PRIO) \
-  include/linux/u64_stats_sync.h \
-  include/linux/bpf-cgroup-defs.h \
-  include/linux/psi_types.h \
-  include/linux/kthread.h \
-  include/linux/cgroup_subsys.h \
-    $(wildcard include/config/CGROUP_DEVICE) \
-    $(wildcard include/config/CGROUP_FREEZER) \
-    $(wildcard include/config/CGROUP_PERF) \
-    $(wildcard include/config/CGROUP_HUGETLB) \
-    $(wildcard include/config/CGROUP_PIDS) \
-    $(wildcard include/config/CGROUP_RDMA) \
-    $(wildcard include/config/CGROUP_MISC) \
-    $(wildcard include/config/CGROUP_DEBUG) \
-  include/linux/vm_event_item.h \
-    $(wildcard include/config/HAVE_ARCH_TRANSPARENT_HUGEPAGE_PUD) \
-    $(wildcard include/config/MEMORY_BALLOON) \
-    $(wildcard include/config/BALLOON_COMPACTION) \
-    $(wildcard include/config/DEBUG_TLBFLUSH) \
-    $(wildcard include/config/DEBUG_VM_VMACACHE) \
-  include/linux/page_counter.h \
-  include/linux/vmpressure.h \
-  include/linux/eventfd.h \
-  include/linux/mm.h \
-    $(wildcard include/config/HAVE_ARCH_MMAP_RND_BITS) \
-    $(wildcard include/config/HAVE_ARCH_MMAP_RND_COMPAT_BITS) \
-    $(wildcard include/config/ARCH_USES_HIGH_VMA_FLAGS) \
-    $(wildcard include/config/ARCH_HAS_PKEYS) \
-    $(wildcard include/config/PPC) \
-    $(wildcard include/config/PARISC) \
-    $(wildcard include/config/SPARC64) \
-    $(wildcard include/config/ARM64_MTE) \
-    $(wildcard include/config/HAVE_ARCH_USERFAULTFD_MINOR) \
-    $(wildcard include/config/SHMEM) \
-    $(wildcard include/config/ARCH_HAS_PTE_SPECIAL) \
-    $(wildcard include/config/ARCH_HAS_PTE_DEVMAP) \
-    $(wildcard include/config/DEBUG_VM_RB) \
-    $(wildcard include/config/PAGE_POISONING) \
-    $(wildcard include/config/INIT_ON_ALLOC_DEFAULT_ON) \
-    $(wildcard include/config/INIT_ON_FREE_DEFAULT_ON) \
-    $(wildcard include/config/DEBUG_PAGEALLOC) \
-    $(wildcard include/config/HUGETLBFS) \
-    $(wildcard include/config/MAPPING_DIRTY_HELPERS) \
-    $(wildcard include/config/ANON_VMA_NAME) \
-  include/linux/mmap_lock.h \
-  include/linux/page_ext.h \
-  include/linux/stacktrace.h \
-    $(wildcard include/config/ARCH_STACKWALK) \
-    $(wildcard include/config/STACKTRACE) \
-    $(wildcard include/config/HAVE_RELIABLE_STACKTRACE) \
-  include/linux/stackdepot.h \
-    $(wildcard include/config/STACKDEPOT_ALWAYS_INIT) \
-  include/linux/page_ref.h \
-    $(wildcard include/config/DEBUG_PAGE_REF) \
-  include/linux/sizes.h \
-  include/linux/pgtable.h \
-    $(wildcard include/config/HIGHPTE) \
-    $(wildcard include/config/GUP_GET_PTE_LOW_HIGH) \
-    $(wildcard include/config/HAVE_ARCH_SOFT_DIRTY) \
-    $(wildcard include/config/ARCH_ENABLE_THP_MIGRATION) \
-    $(wildcard include/config/X86_ESPFIX64) \
-  arch/x86/include/asm/pgtable.h \
-    $(wildcard include/config/DEBUG_WX) \
-    $(wildcard include/config/PAGE_TABLE_CHECK) \
-  arch/x86/include/asm/pkru.h \
-  arch/x86/include/asm/fpu/api.h \
-    $(wildcard include/config/X86_DEBUG_FPU) \
-  arch/x86/include/asm/coco.h \
-  include/asm-generic/pgtable_uffd.h \
-  include/linux/page_table_check.h \
-  arch/x86/include/asm/pgtable_32.h \
-  arch/x86/include/asm/pgtable-3level.h \
-  arch/x86/include/asm/pgtable-invert.h \
-  include/linux/huge_mm.h \
-  include/linux/sched/coredump.h \
-    $(wildcard include/config/CORE_DUMP_DEFAULT_ELF_HEADERS) \
-  include/linux/vmstat.h \
-    $(wildcard include/config/VM_EVENT_COUNTERS) \
-  include/linux/writeback.h \
-  include/linux/flex_proportions.h \
-  include/linux/backing-dev-defs.h \
-    $(wildcard include/config/DEBUG_FS) \
-  include/linux/blk_types.h \
-    $(wildcard include/config/FAIL_MAKE_REQUEST) \
-    $(wildcard include/config/BLK_CGROUP_IOCOST) \
-    $(wildcard include/config/BLK_INLINE_ENCRYPTION) \
-    $(wildcard include/config/BLK_DEV_INTEGRITY) \
-  include/linux/bvec.h \
-  include/linux/highmem.h \
-  include/linux/cacheflush.h \
-  arch/x86/include/asm/cacheflush.h \
-  include/asm-generic/cacheflush.h \
-  include/linux/highmem-internal.h \
-  arch/x86/include/asm/highmem.h \
-  arch/x86/include/asm/tlbflush.h \
-  arch/x86/include/asm/invpcid.h \
-  arch/x86/include/asm/pti.h \
-  include/linux/bio.h \
-  include/linux/mempool.h \
-  include/linux/uio.h \
-    $(wildcard include/config/ARCH_HAS_UACCESS_FLUSHCACHE) \
-  include/uapi/linux/uio.h \
-  include/linux/node.h \
-    $(wildcard include/config/HMEM_REPORTING) \
-  include/linux/pagemap.h \
-  include/linux/hugetlb_inline.h \
-  include/uapi/linux/mempolicy.h \
-  include/linux/freezer.h \
-  include/uapi/linux/i2c.h \
-  include/linux/delay.h \
-  arch/x86/include/asm/delay.h \
-  include/asm-generic/delay.h \
-  include/linux/videodev2.h \
-  include/uapi/linux/videodev2.h \
-    $(wildcard include/config/VIDEO_ADV_DEBUG) \
-  include/uapi/linux/v4l2-common.h \
-  include/uapi/linux/v4l2-controls.h \
-  include/uapi/linux/v4l2-mediabus.h \
-  include/uapi/linux/media-bus-format.h \
-  include/linux/of_graph.h \
-  include/media/v4l2-async.h \
-  include/media/v4l2-device.h \
-    $(wildcard include/config/VIDEO_V4L2_SUBDEV_API) \
-  include/media/media-device.h \
-  include/media/media-devnode.h \
-  include/linux/poll.h \
-  include/uapi/linux/poll.h \
-  arch/x86/include/generated/uapi/asm/poll.h \
-  include/uapi/asm-generic/poll.h \
-  include/uapi/linux/eventpoll.h \
-  include/linux/cdev.h \
-  include/media/media-entity.h \
-  include/uapi/linux/media.h \
-  include/media/v4l2-subdev.h \
-  include/uapi/linux/v4l2-subdev.h \
-  include/media/v4l2-common.h \
-    $(wildcard include/config/VIDEO_V4L2_I2C) \
-    $(wildcard include/config/SPI) \
-  include/media/v4l2-dev.h \
-  include/linux/spi/spi.h \
-    $(wildcard include/config/SPI_SLAVE) \
-  include/linux/scatterlist.h \
-    $(wildcard include/config/NEED_SG_DMA_LENGTH) \
-    $(wildcard include/config/DEBUG_SG) \
-    $(wildcard include/config/SGL_ALLOC) \
-    $(wildcard include/config/ARCH_NO_SG_CHAIN) \
-    $(wildcard include/config/SG_POOL) \
-  include/linux/gpio/consumer.h \
-    $(wildcard include/config/OF_GPIO) \
-    $(wildcard include/config/GPIO_SYSFS) \
-  include/uapi/linux/spi/spi.h \
-  include/media/v4l2-fh.h \
-  include/media/v4l2-mediabus.h \
-  include/media/v4l2-fwnode.h \
-  include/media/v4l2-ctrls.h \
-  include/media/media-request.h \
-  include/media/hevc-ctrls.h \
-  include/media/i2c/tvp514x.h \
-  drivers/media/i2c/tvp514x_regs.h \
+/* SPDX-License-Identifier: GPL-2.0 */
+/*
+ * Microchip KSZ9477 register definitions
+ *
+ * Copyright (C) 2017-2018 Microchip Technology Inc.
+ */
 
-drivers/media/i2c/tvp514x.o: $(deps_drivers/media/i2c/tvp514x.o)
+#ifndef __KSZ9477_REGS_H
+#define __KSZ9477_REGS_H
 
-$(deps_drivers/media/i2c/tvp514x.o):
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     ELF                       j      4     (               Ë¸ˇˇˇSãòX  ãàT  1¿âZ[â
-√çt& êË¸ˇˇˇãÄ|  «AA	  â1¿√ç¥&    fêË¸ˇˇˇãÖ“uãAÖ¿u«A   1¿√çt& ∏Íˇˇˇ√ç¥&    çv Ë¸ˇˇˇÉ9w6Åy   u-ãêD  âQâQãêH  —ÍâQãÄH  —ËâA1¿√ç¥&    ê∏Íˇˇˇ√ç¥&    çv Ë¸ˇˇˇÅ˙å   vçäPˇˇˇÉ˘w ∏ ¡ ”ËÉ‡√çt& êÅ˙É   ó¿√ç∂    1¿√çt& êË¸ˇˇˇãP@ãÇP  Ö¿u√çt& êãÇL  j π@   ∫¡   j j j@Ë¸ˇˇˇÉƒ√ç¥&    Ë¸ˇˇˇãP@ãÇP  Ö¿u√çt& êãÇL  j π@   ∫¡   j j j Ë¸ˇˇˇÉƒ√ç¥&    Ë¸ˇˇˇÉÏãÄL  ∂“dã    âL$1…â·Ë¸ˇˇˇÖ¿I$ãT$d+    uÉƒ√Ë¸ˇˇˇç¥&    ç¥&    êË¸ˇˇˇUWVSâ√â–â â¡Äı@ÉÏ	—t}â¡Äı	—t<â∆â◊Å∆ ˛ˇˇÉ◊ˇÅÊˇ˝ˇˇâ˘	Òtkâ¡Å· ∞  uqÑ¿u}%  ˇ â«˜ﬂ…É·â»Îçv π   ∏   ã    Ö“è¸ˇˇˇãÉL  ∫(   Ë¸ˇˇˇ1¿Éƒ[^_]√ç∂    π
-   ∏
-   Î∆çt& π   ∏   Î∂çt& π   ∏   Î¶çt& π   ∏   Îñç¥&    çt& êË¸ˇˇˇWVSãòX  ã∞T  1À1÷	Ûtdã∞»  ãòƒ  ÖˆtDã{ãs!Œ!◊âÛ	˚tJâ”â∏T  Å„ ˘  â∞X  É˚€É„`Å√‡  âòH  [^_È¥˛ˇˇçt& øˇˇˇ 1ˆÎπç¥&    1¿[^_√∏ÍˇˇˇÎıçv Ë¸ˇˇˇÖ…tGÉyuASãòD  âYãêH  «A   —Í«A   âQ«A   ã    Ö…è!   1¿[√çt& ê∏Íˇˇˇ√ç¥&    çv Ë¸ˇˇˇãÄ†   ∫   Ë¸ˇˇˇ1¿√ç¥&    êË¸ˇˇˇWVSâ”ã    Ö“è›   ç{âŸ1¿«    ÉÁ¸«Cp    ∫»  )˘É¡t¡ÈÛ´fêÉ¬$Å˙ú  t/ãz¸ÖˇtÓããJâ˛9»wçv f	tCÉ¿9»vÙÉ¬$f	;Å˙ú  u—[1¿^_√Ë¸ˇˇˇSãÉ˚tÉ˚u[È¸ˇˇˇç¥&    ê[È¸ˇˇˇç¥&    çv ∏Íˇˇˇ[√ç¥&    fêË¸ˇˇˇã    Uâ≈WVSãx\Ö“è˙   ãá»  ç∑   1€Ö¿tJfêâÉ√Å∆å   Ë¸ˇˇˇãá»  9ÿwÊÖ¿t*ç∑@  1€ç¥&    çv âÉ√Å∆å   Ë¸ˇˇˇ9ü»  wËâ¯É≈Ë¸ˇˇˇçáÃ  Ë¸ˇˇˇâË∫   Ë¸ˇˇˇâË∫   Ë¸ˇˇˇ1¿[^_]√çt& Ë¸ˇˇˇVâ∆SÅzGREYâ”t<É{t1¿[^√êÉ{uÙãÜL  1…∫   Ë¸ˇˇˇãÜL  π   ∫   Ë¸ˇˇˇÎÀêãÄL  πp   ∫   Ë¸ˇˇˇÎ≠ç¥&    fêË¸ˇˇˇUâ≈WVSÉÏfÉ: â$ÑÊ   1€çv ã$1…fâLX2∑|XãÖT  â¬ÅÚˇˇˇ ïX  Ñ  ©ˇˇ çsDÛ1…çF˙âD$É¯wl∏»  1…É¿$∫ú  9¬t#ãP¸Ö“tÌÖ◊t	;0r;pvÉ¿$∫ú  É¡9¬u›ã|$âŒãÖL  ÅŒ   ˇâÒçW–∂“Ë¸ˇˇˇãÖL  çW—âÒ∂“Ë¸ˇˇˇâÒã$fâLXÉ√É˚Ö>ˇˇˇãÖL  π   ∫Õ   Ë¸ˇˇˇ1¿Éƒ[^_]√ãÄL  1…∫Õ   ª–   Ë¸ˇˇˇãÖL  1…∫œ   Ë¸ˇˇˇç∂    ãÖL  â⁄πˇ   É√Ë¸ˇˇˇÅ˚¸   u„Éƒ1¿[^_]√ç¥&    fêË¸ˇˇˇVSâ”ÉÏã≤L  ∫¿   d°    âD$1¿çL$«$    â«D$    Ë¸ˇˇˇãL$Ö…ukâ·∫á   âË¸ˇˇˇã$Ö¿u&ãD$d+    Ö∞   Éƒ∏   [^√ç¥&    çv çL$∫Ü   â«D$    Ë¸ˇˇˇãL$Ö…t∫∫   âË¸ˇˇˇÎ¨fê∫¿   âË¸ˇˇˇãD$®@tñã    %Ä   ïÉt  Ö“è7  âÿ∫@  Ë¸ˇˇˇ1¿Äªt   tãÉl  j π   ∫   j j PâË¸ˇˇˇÉƒÈ?ˇˇˇË¸ˇˇˇË¸ˇˇˇSãò†   ∫   âÿË¸ˇˇˇ1“Ö¿x
-â–[√ç∂    â¬ãÉÙ   Ö¿tÍçHˇ±ãÙ   uÔâ–[√ç¥&    çt& Ë¸ˇˇˇVSâ√∑Äv  f=PQÑ∂   1ˆf=QQÑÇ   ãÉd  Ö¿tâÚÉŒÉ É¯DÚã    Ö“èd  ãÉL  1…∫   Ë¸ˇˇˇãÉL  âÒ1“Ë¸ˇˇˇ∫@   ∏   Éªd  E¬ãõL  j πP   j ∫   j PâÿË¸ˇˇˇÉƒ[^√çv fÅªx   Öoˇˇˇããp  1¿Ö…î¿ç4≈    ÈVˇˇˇ1ˆfÅªx   ÖEˇˇˇÎ‘ç¥&    ç∂    Ë¸ˇˇˇãP(ãHÅ˙	ò tmv;Å˙	ò Ñ   Å˙	ü Ö´   ã@|Ö¿î¿∂¿âÅ§   çÅ4˝ˇˇË«˛ˇˇ1¿√çt& Å˙ 	ò thÅ˙	ò uxãP|ãÅÄ   â—∫   Ë¸ˇˇˇ1¿√ç¥&    êãP|ãÅÄ   â—∫
-   Ë¸ˇˇˇ1¿√ç¥&    êãP|ãÅÄ   â—∫   Ë¸ˇˇˇ1¿√ç¥&    êãP|ãÅÄ   â—∫	   Ë¸ˇˇˇ1¿√∏Íˇˇˇ√fêË¸ˇˇˇâêd  1“É˘ï¬âàh  âêp  Ë˛ˇˇ1¿√ç¥&    fêË¸ˇˇˇUâ≈W1ˇVç∞,     SÉÏãù»  âD$Ö€uÈZ  fêÉ«Å∆å   9Ω»  ÜC  i«å   1“ç^çN`ËãÄ,  9D¬ãV¸ã@«F|   â$∫   âD$1¿Öˇî¿âD$âÿË¸ˇˇˇÖ¿à≠   ãE`â⁄ã@Ë¸ˇˇˇÖ¿àò   ˇt$∑D$âÈ1“PâÿË¸ˇˇˇZYÖ¿x}É<$tOÖˇÖ_ˇˇˇãT$1¿Ö“ï¿â$ã$âÖd  âËË˝ˇˇãD$ãï8  ãç<  âÖƒ  âËË4˜ˇˇÈˇˇˇç¥&    ˇt$ãFâÈ1“∑@PâÿË¸ˇˇˇY[Ö¿xÖˇt¶ÈÚ˛ˇˇfêâ¬ãÖ»  Ö¿t.çµ@  1€â◊ç¥&    çv âÉ√Å∆å   Ë¸ˇˇˇ9ù»  wËâ˙Éƒâ–[^_]√çt& Éƒ1“[â–^_]√ç¥&    çt& êË¸ˇˇˇUWVSâ√ÉÏ∑Bfâ$ãBÉ‡Öã  â÷∑$âœÉÚ∑ âL$ãã»  Ö…Ñ~  ãoçì@  Îçv É¿Å¬å   9»Ñ_  9’uÎi¿å   ã    ãÑ(  Ö…èë  É¯Ö@  Ω   çì¿   â–â$Ë¸ˇˇˇÖ¿t!ã$Ë¸ˇˇˇÖ¿ÑX  «@$    ã@ «@$    çì‡   â–â$Ë¸ˇˇˇÖ¿t!ã$Ë¸ˇˇˇÖ¿Ñ#  «@$    ã@ «@$    ãD$$âÈÉ‡â¬ÉÚÑ…u~∑Nâìh  âãd  Ö¿t~«Ép     âÿË1˚ˇˇãì»  Ö“ttçGîãìT  âÉƒ  ãO¨ãÉT  ão∞1ˇ! 1–ÉX  â÷tIÖ“uâŒâÔâÚâ˘âÿË)ıˇˇ1¿Éƒ[^_]√ç¥&    «Éd     âìh  Ö¿u4«Ép      âÿË≥˙ˇˇ1¿Éƒ[^_]√ç¥&    fê°    Ö¿M1ÌÈæ˛ˇˇ«Ép     âÿË˙ˇˇãT$â¯É¬¡‚⁄Ë¸ˇˇˇÖ¿tãt$$âp$ã@ âp$È%ˇˇˇ∏ÍˇˇˇÎûÈµ  ÈW  çt& êË¸ˇˇˇUâ≈1…WVSª¿  ÉÏã∞L  1¿∂–â˜Îçt& ∂KãΩL  â¯É√Ë¸ˇˇˇ∂Ä˙ˇu‰ãïP  Ö“Ñ  1…∫   âË¸ˇˇˇπ   ∫¬   âË¸ˇˇˇπ   ∫   âË¸ˇˇˇãµL  1…∫œ   ª–   âË¸ˇˇˇçt& êâ⁄πˇ   âÉ√Ë¸ˇˇˇÅ˚¸   uÁª–  â,$ç{$Å˚Ä  tçt& ãGÙÖ¿u1â˚ç{$Å˚Ä  uÏã,$âËËR˘ˇˇçÖÃ  Ë¸ˇˇˇ1¿Éƒ[^_]√çt& ê∑o∫≈   âÉ√âÈf¡È∑…Ë¸ˇˇˇ∑Õ∫ƒ   âË¸ˇˇˇçt& ê∂K∫√   âÉ√Ë¸ˇˇˇ9˚uÈâ˚ÎÜπ   ∫   âË¸ˇˇˇπ   ∫¬   âË¸ˇˇˇ1…∫   âË¸ˇˇˇÈ˙˛ˇˇç¥&    êË¸ˇˇˇUâ≈WVS1€ÉÏâT$d°    âD$â–çxçH«@    ÉÁ¸«@^    1¿)˘É¡`¡ÈÛ´«D$    ÎCçv ãD$Ö¿àì  É‡É¯
-ç¿4Öƒ  É«;<$uXâ∑ˆ	t$ãL$fâDYÉ√É˚t`ãÖT  â¬ÅÚˇˇˇ ïX  Ñ≥  ©ˇˇ çSD”1¿ÉÍÉ˙w¿çT–1ˆ∂˙çGâ$ãÖL  çL$â˙Ë¸ˇˇˇÖ¿âiˇˇˇÈì  çt& â»∑L$fâãD$d+    u
-Éƒ1¿[^_]√Ë¸ˇˇˇç¥&    çv Ë¸ˇˇˇSâ”ÉÏãÄL  dã    âT$1“â·∫à   Ë¸ˇˇˇ∫    Ö¿I$É‡É¯∏ˇˇ  E¬âC<ãD$d+    uÉƒ1¿[√Ë¸ˇˇˇêË¸ˇˇˇVSâ√ÉÏã≥†   d°    âD$1¿Ö“Ñ¢   ∫   âË¸ˇˇˇâ¬Ö¿à$  π   ∫   æî  Îçv ∂NãÉL  É∆Ë¸ˇˇˇ∂Ä˙ˇuÊãìT  ããX  â–5ˇˇˇ 	»Ñ˚   âÿËˇˇãÉ|  É¯Ñï   É¯Ñ|   ãÉP  Ö¿ubã≥l  ∫@  âÿË¸ˇˇˇÎç∂    â∫   1ˆË¸ˇˇˇj ãÉL  ∫   π   j j VË¸ˇˇˇ1“ÉƒãD$d+    Öª   Éƒâ–[^√1ˆÄªt   tôÎëçv «Él  	   Èuˇˇˇêj ãÉL  π   ∫   j j j Ë¸ˇˇˇ«Él     ÉƒÈEˇˇˇêãÜÙ   Ö¿tççHˇ±éÙ   Ñ|ˇˇˇÎÈçv ãÉL  â·∫å   Ë¸ˇˇˇÖ¿I$É‡ÉËÉ¯
-v1“1…ÈŸ˛ˇˇçt& ã≈    ã≈   È¬˛ˇˇË¸ˇˇˇç¥&    êË¸ˇˇˇVâ÷Sâ√ÉÏd°    âD$1¿ãÉP  Ö¿t,∂Ét  Ö¿uF1¿1“ââVãD$d+    ucÉƒ1¿[^√çv ãÉL  â·∫à   Ë¸ˇˇˇã$É‡É¯î¿∂¿Ö¿t∫ãÉL  â·∫å   Ë¸ˇˇˇÖ¿I$É‡ÉËÉ¯
-wóã≈   ã≈    ÎãË¸ˇˇˇçv Ë¸ˇˇˇVSâ√ÉÏd°    âD$ãÉT  5ˇˇˇ ÉX  tãD$d+    Ö·   Éƒ1¿[^√ç∂    ãÉL  â·∫å   Ë¸ˇˇˇãã\  ãì`  Ö¿I$É‡ÉËÉ¯
-vI	 tÆ«É\      «É`      «É@      «É<      «ÉD  –  «ÉH  @  Èmˇˇˇçt& ã4≈    ã≈   1Ò1¬	 ÑOˇˇˇâ≥\  ÅÊ ˘  âÉ`  «É@      «É<      «ÉD  –  t°«ÉH  ‡  ÈˇˇˇË¸ˇˇˇË¸ˇˇˇU1“WVSâ√ÉÏd°    âD$ãÉL  çL$Ë¸ˇˇˇÖ¿à–  ÈÃ  ç¥&    çv Ë¸ˇˇˇUWâ«VSÉÏd°    âD$ãGãPãRË¸ˇˇˇ%   =   Öö  çoπ   ∫  âËË¸ˇˇˇâ√= ˇˇáY  Ö¿t1“Ë¸ˇˇˇ∏   Ë¸ˇˇˇπ   ∫  âËË¸ˇˇˇâ√= ˇˇá&  Ö¿t'∏ƒ	  Ë¸ˇˇˇ1“âÿË¸ˇˇˇπ   ∫˙   ∏»   Ë¸ˇˇˇπ¿  ∫Ä  âËË¸ˇˇˇâ∆Ö¿Ñ  j 1…∫Ä   â¯Ë¸ˇˇˇ[â√= ˇˇá    âÜL  π¿  â˙âË¸ˇˇˇ∫   âÉN\çé¿   «Fhê  «Ü|     «F8  «F  «Ü‹      «Üÿ      «Ü¸      «Ü¯      «Ü     «Ü     Ë¸ˇˇˇâ√Ö¿u?ãÜî   ∫Ä   â$ãÜL  jçL$Ë¸ˇˇˇYâ√Ö¿â$  È˝  ç¥&    êÖ€Ñ˝˛ˇˇãD$d+    uÉƒâÿ[^_]√êª˚ˇˇˇÎ·Ë¸ˇˇˇªÙˇˇˇÎ’ç¥&    ç∂    Ë¸ˇˇˇUWVâ∆SÉÏãYd°    âD$1¿Ö€Ö´  °    â◊âÀÖ¿èÈ  ãk1¿ãSÖÌHË∏ˇ  9≈OË1¿Ö“H–∏   âk9¬O–âSãÜT  â¡ÅÒˇˇˇ éX  Ñö  % ˘  É¯¿É‡`‡  )–j π–  ∫—   j )Í)ÈçkPÉËPçCPâËjË¸ˇˇˇããCÉƒÖ“Ñ  ∏ÍˇˇˇÉ˙tãT$d+    Ö  Éƒ[^_]√çt& çæ<  Åˇ ˇˇáı  ãÜD  9CÑO  ãéT  ãÜL  â ÅÚˇˇˇ ñX  Ñg  ÄÂ˘ÑÅ  Ω‡  ãK∫   Ë¸ˇˇˇãKãÜL  ∫   K)ÈË¸ˇˇˇãKãÜL  ∫   ¡˘Ë¸ˇˇˇãKãÜL  ∫   É…Ë¸ˇˇˇãSãCçå˛ˇˇãÜL  ∫   ¡ÈË¸ˇˇˇãSãCçå˛ˇˇãÜL  ∫   Ë¸ˇˇˇÎ$ê∑N 9»ÉÏ   çÄ¡‚çz0Åˇ ˇˇá  ãCâãCâGãCâGãCâG1¿È¬˛ˇˇç¥&    ãÜL  â·∫å   Ë¸ˇˇˇãSãkÖ¿I$É‡çHˇ∏@  É˘
-áF˛ˇˇãÕ    È(˛ˇˇç¥&    çv ãÜH  9CÖ¢˛ˇˇãÜ@  9CÖì˛ˇˇãÜ<  9CÖÑ˛ˇˇÈaˇˇˇç∂    â·∫å   Ë¸ˇˇˇÖ¿I$É‡ÉËÉ¯
-v+ãÜL  Ω@  Èz˛ˇˇçv Èˇˇˇê∏ÍˇˇˇÈ˘˝ˇˇç∂    ã≈    ãÜL  È?˛ˇˇË¸ˇˇˇâ¯È’˝ˇˇfêË¸ˇˇˇVâ∆SâÀÉÏãId°    âD$1¿Ö…to∏ÍˇˇˇÉ˘uE«C    «C    «C–  ãñT  â–5ˇˇˇ ÜX  Ñá   ÄÊ˘Ñ°   «C‡  1¿çt& êãT$d+    Ö√   Éƒ[^√ç¥&    fêããKÖ¿tÉ¯u2çÜ<  = ˇˇw≈ãâSãPâSãPâSã@âC1¿Î™ç¥&    çv ∏ÍˇˇˇÎôç¥&    fêãÜL  â·∫å   Ë¸ˇˇˇÖ¿I$É‡ÉËÉ¯
-v-«C@  1¿È_ˇˇˇç¥&    ∑v 9Òs çâ¡‡É¿0Ètˇˇˇã≈    Èˇˇˇçt& Î‚Ë¸ˇˇˇ               Ä                 [                                                              ¿           Ä                                                         ¿                                               ˇ       $                                                                                             @   p   ¿      @  Ä  –  ∞  @  F   †  ¿  @  Ä  0  †        p  `	  @
-  p
-    0  ¿  ‡  @    ¿  ‡             Set video std register to %d.
-  tvp5150.c: removing tvp5150 adapter on address 0x%x
-    VBI can't be configured without knowing number of lines
-    Selecting video route: route input=%s, output=%s => tvp5150 input=0x%02x, opmode=0x%02x
-    link setup '%s':%d->'%s':%d[%d] tvp5150: Video input source selection #1 = 0x%02x
-  tvp5150: Analog channel controls = 0x%02x
-  tvp5150: Operation mode controls = 0x%02x
-  tvp5150: Miscellaneous controls = 0x%02x
-   tvp5150: Autoswitch mask= 0x%02x
-   tvp5150: Color killer threshold control = 0x%02x
-   tvp5150: Luminance processing controls #1 #2 and #3 = %02x %02x %02x
-   tvp5150: Brightness control = 0x%02x
-   tvp5150: Color saturation control = 0x%02x
- tvp5150: Hue control = 0x%02x
-  tvp5150: Contrast control = 0x%02x
- tvp5150: Outputs and data rates select = 0x%02x
-    tvp5150: Configuration shared pins = 0x%02x
-    tvp5150: Active video cropping start = 0x%02x%02x
-  tvp5150: Active video cropping stop  = 0x%02x%02x
-  tvp5150: Genlock/RTC = 0x%02x
-  tvp5150: Horizontal sync start = 0x%02x
-    tvp5150: Vertical blanking start = 0x%02x
-  tvp5150: Vertical blanking stop = 0x%02x
-   tvp5150: Chrominance processing control #1 and #2 = %02x %02x
-  tvp5150: Interrupt reset register B = 0x%02x
-   tvp5150: Interrupt enable register B = 0x%02x
-  tvp5150: Interrupt configuration register B = 0x%02x
-   tvp5150: Video standard = 0x%02x
-   tvp5150: Chroma gain factor: Cb=0x%02x Cr=0x%02x
-   tvp5150: Macrovision on counter = 0x%02x
-   tvp5150: Macrovision off counter = 0x%02x
-  tvp5150: ITU-R BT.656.%d timing(TVP5150AM1 only)
-   tvp5150: Device ID = %02x%02x
-  tvp5150: ROM version = (hex) %02x.%02x
- tvp5150: Vertical line count = 0x%02x%02x
-  tvp5150: Interrupt status register B = 0x%02x
-  tvp5150: Interrupt active register B = 0x%02x
-  tvp5150: Status regs #1 to #5 = %02x %02x %02x %02x %02x
-   tvp5150: Teletext filter enable = 0x%02x
-   tvp5150: Interrupt status register A = 0x%02x
-  tvp5150: Interrupt enable register A = 0x%02x
-  tvp5150: Interrupt configuration = 0x%02x
-  tvp5150: VDP status register = 0x%02x
-  tvp5150: FIFO word count = 0x%02x
-  tvp5150: FIFO interrupt threshold = 0x%02x
- tvp5150: Line number interrupt = 0x%02x
-    tvp5150: Pixel alignment register = 0x%02x%02x
- tvp5150: FIFO output control = 0x%02x
-  tvp5150: Full field enable = 0x%02x
-    tvp5150: Full field mode register = 0x%02x
- reading ID registers failed: %d
-    tvp%04x (%u.%u) chip found @ 0x%02x (
+#define KS_PRIO_M			0x7
+#define KS_PRIO_S			4
+
+/* 0 - Operation */
+#define REG_CHIP_ID0__1			0x0000
+
+#define REG_CHIP_ID1__1			0x0001
+
+#define FAMILY_ID			0x95
+#define FAMILY_ID_94			0x94
+#define FAMILY_ID_95			0x95
+#define FAMILY_ID_85			0x85
+#define FAMILY_ID_98			0x98
+#define FAMILY_ID_88			0x88
+
+#define REG_CHIP_ID2__1			0x0002
+
+#define CHIP_ID_63			0x63
+#define CHIP_ID_66			0x66
+#define CHIP_ID_67			0x67
+#define CHIP_ID_77			0x77
+#define CHIP_ID_93			0x93
+#define CHIP_ID_96			0x96
+#define CHIP_ID_97			0x97
+
+#define REG_CHIP_ID3__1			0x0003
+
+#define SWITCH_REVISION_M		0x0F
+#define SWITCH_REVISION_S		4
+#define SWITCH_RESET			0x01
+
+#define REG_SW_PME_CTRL			0x0006
+
+#define PME_ENABLE			BIT(1)
+#define PME_POLARITY			BIT(0)
+
+#define REG_GLOBAL_OPTIONS		0x000F
+
+#define SW_GIGABIT_ABLE			BIT(6)
+#define SW_REDUNDANCY_ABLE		BIT(5)
+#define SW_AVB_ABLE			BIT(4)
+#define SW_9567_RL_5_2			0xC
+#define SW_9477_SL_5_2			0xD
+
+#define SW_9896_GL_5_1			0xB
+#define SW_9896_RL_5_1			0x8
+#define SW_9896_SL_5_1			0x9
+
+#define SW_9895_GL_4_1			0x7
+#define SW_9895_RL_4_1			0x4
+#define SW_9895_SL_4_1			0x5
+
+#define SW_9896_RL_4_2			0x6
+
+#define SW_9893_RL_2_1			0x0
+#define SW_9893_SL_2_1			0x1
+#define SW_9893_GL_2_1			0x3
+
+#define SW_QW_ABLE			BIT(5)
+#define SW_9893_RN_2_1			0xC
+
+#define REG_SW_INT_STATUS__4		0x0010
+#define REG_SW_INT_MASK__4		0x0014
+
+#define LUE_INT				BIT(31)
+#define TRIG_TS_INT			BIT(30)
+#define APB_TIMEOUT_INT			BIT(29)
+
+#define SWITCH_INT_MASK			(TRIG_TS_INT | APB_TIMEOUT_INT)
+
+#define REG_SW_PORT_INT_STATUS__4	0x0018
+#define REG_SW_PORT_INT_MASK__4		0x001C
+#define REG_SW_PHY_INT_STATUS		0x0020
+#define REG_SW_PHY_INT_ENABLE		0x0024
+
+/* 1 - Global */
+#define REG_SW_GLOBAL_SERIAL_CTRL_0	0x0100
+#define SW_SPARE_REG_2			BIT(7)
+#define SW_SPARE_REG_1			BIT(6)
+#define SW_SPARE_REG_0			BIT(5)
+#define SW_BIG_ENDIAN			BIT(4)
+#define SPI_AUTO_EDGE_DETECTION		BIT(1)
+#define SPI_CLOCK_OUT_RISING_EDGE	BIT(0)
+
+#define REG_SW_GLOBAL_OUTPUT_CTRL__1	0x0103
+#define SW_ENABLE_REFCLKO		BIT(1)
+#define SW_REFCLKO_IS_125MHZ		BIT(0)
+
+#define REG_SW_IBA__4			0x0104
+
+#define SW_IBA_ENABLE			BIT(31)
+#define SW_IBA_DA_MATCH			BIT(30)
+#define SW_IBA_INIT			BIT(29)
+#define SW_IBA_QID_M			0xF
+#define SW_IBA_QID_S			22
+#define SW_IBA_PORT_M			0x2F
+#define SW_IBA_PORT_S			16
+#define SW_IBA_FRAME_TPID_M		0xFFFF
+
+#define REG_SW_APB_TIMEOUT_ADDR__4	0x0108
+
+#define APB_TIMEOUT_ACKNOWLEDGE		BIT(31)
+
+#define REG_SW_IBA_SYNC__1		0x010C
+
+#define REG_SW_IO_STRENGTH__1		0x010D
+#define SW_DRIVE_STRENGTH_M		0x7
+#define SW_DRIVE_STRENGTH_2MA		0
+#define SW_DRIVE_STRENGTH_4MA		1
+#define SW_DRIVE_STRENGTH_8MA		2
+#define SW_DRIVE_STRENGTH_12MA		3
+#define SW_DRIVE_STRENGTH_16MA		4
+#define SW_DRIVE_STRENGTH_20MA		5
+#define SW_DRIVE_STRENGTH_24MA		6
+#define SW_DRIVE_STRENGTH_28MA		7
+#define SW_HI_SPEED_DRIVE_STRENGTH_S	4
+#define SW_LO_SPEED_DRIVE_STRENGTH_S	0
+
+#define REG_SW_IBA_STATUS__4		0x0110
+
+#define SW_IBA_REQ			BIT(31)
+#define SW_IBA_RESP			BIT(30)
+#define SW_IBA_DA_MISMATCH		BIT(14)
+#define SW_IBA_FMT_MISMATCH		BIT(13)
+#define SW_IBA_CODE_ERROR		BIT(12)
+#define SW_IBA_CMD_ERROR		BIT(11)
+#define SW_IBA_CMD_LOC_M		(BIT(6) - 1)
+
+#define REG_SW_IBA_STATES__4		0x0114
+
+#define SW_IBA_BUF_STATE_S		30
+#define SW_IBA_CMD_STATE_S		28
+#define SW_IBA_RESP_STATE_S		26
+#define SW_IBA_STATE_M			0x3
+#define SW_IBA_PACKET_SIZE_M		0x7F
+#define SW_IBA_PACKET_SIZE_S		16
+#define SW_IBA_FMT_ID_M			0xFFFF
+
+#define REG_SW_IBA_RESULT__4		0x0118
+
+#define SW_IBA_SIZE_S			24
+
+#define SW_IBA_RETRY_CNT_M		(BIT(5) - 1)
+
+/* 2 - PHY */
+#define REG_SW_POWER_MANAGEMENT_CTRL	0x0201
+
+#define SW_PLL_POWER_DOWN		BIT(5)
+#define SW_POWER_DOWN_MODE		0x3
+#define SW_ENERGY_DETECTION		1
+#define SW_SOFT_POWER_DOWN		2
+#define SW_POWER_SAVING			3
+
+/* 3 - Operation Control */
+#define REG_SW_OPERATION		0x0300
+
+#define SW_DOUBLE_TAG			BIT(7)
+#define SW_RESET			BIT(1)
+#define SW_START			BIT(0)
+
+#define REG_SW_MAC_ADDR_0		0x0302
+#define REG_SW_MAC_ADDR_1		0x0303
+#define REG_SW_MAC_ADDR_2		0x0304
+#define REG_SW_MAC_ADDR_3		0x0305
+#define REG_SW_MAC_ADDR_4		0x0306
+#define REG_SW_MAC_ADDR_5		0x0307
+
+#define REG_SW_MTU__2			0x0308
+#define REG_SW_MTU_MASK			GENMASK(13, 0)
+
+#define REG_SW_ISP_TPID__2		0x030A
+
+#define REG_SW_HSR_TPID__2		0x030C
+
+#define REG_AVB_STRATEGY__2		0x030E
+
+#define SW_SHAPING_CREDIT_ACCT		BIT(1)
+#define SW_POLICING_CREDIT_ACCT		BIT(0)
+
+#define REG_SW_LUE_CTRL_0		0x0310
+
+#define SW_VLAN_ENABLE			BIT(7)
+#define SW_DROP_INVALID_VID		BIT(6)
+#define SW_AGE_CNT_M			0x7
+#define SW_AGE_CNT_S			3
+#define SW_RESV_MCAST_ENABLE		BIT(2)
+#define SW_HASH_OPTION_M		0x03
+#define SW_HASH_OPTION_CRC		1
+#define SW_HASH_OPTION_XOR		2
+#define SW_HASH_OPTION_DIRECT		3
+
+#define REG_SW_LUE_CTRL_1		0x0311
+
+#define UNICAST_LEARN_DISABLE		BIT(7)
+#define SW_SRC_ADDR_FILTER		BIT(6)
+#define SW_FLUSH_STP_TABLE		BIT(5)
+#define SW_FLUSH_MSTP_TABLE		BIT(4)
+#define SW_FWD_MCAST_SRC_ADDR		BIT(3)
+#define SW_AGING_ENABLE			BIT(2)
+#define SW_FAST_AGING			BIT(1)
+#define SW_LINK_AUTO_AGING		BIT(0)
+
+#define REG_SW_LUE_CTRL_2		0x0312
+
+#define SW_TRAP_DOUBLE_TAG		BIT(6)
+#define SW_EGRESS_VLAN_FILTER_DYN	BIT(5)
+#define SW_EGRESS_VLAN_FILTER_STA	BIT(4)
+#define SW_FLUSH_OPTION_M		0x3
+#define SW_FLUSH_OPTION_S		2
+#define SW_FLUSH_OPTION_DYN_MAC		1
+#define SW_FLUSH_OPTION_STA_MAC		2
+#define SW_FLUSH_OPTION_BOTH		3
+#define SW_PRIO_M			0x3
+#define SW_PRIO_DA			0
+#define SW_PRIO_SA			1
+#define SW_PRIO_HIGHEST_DA_SA		2
+#define SW_PRIO_LOWEST_DA_SA		3
+
+#define REG_SW_LUE_CTRL_3		0x0313
+
+#define REG_SW_LUE_INT_STATUS		0x0314
+#define REG_SW_LUE_INT_ENABLE		0x0315
+
+#define LEARN_FAIL_INT			BIT(2)
+#define ALMOST_FULL_INT			BIT(1)
+#define WRITE_FAIL_INT			BIT(0)
+
+#define REG_SW_LUE_INDEX_0__2		0x0316
+
+#define ENTRY_INDEX_M			0x0FFF
+
+#define REG_SW_LUE_INDEX_1__2		0x0318
+
+#define FAIL_INDEX_M			0x03FF
+
+#define REG_SW_LUE_INDEX_2__2		0x031A
+
+#define REG_SW_LUE_UNK_UCAST_CTRL__4	0x0320
+
+#define SW_UNK_UCAST_ENABLE		BIT(31)
+
+#define REG_SW_LUE_UNK_MCAST_CTRL__4	0x0324
+
+#define SW_UNK_MCAST_ENABLE		BIT(31)
+
+#define REG_SW_LUE_UNK_VID_CTRL__4	0x0328
+
+#define SW_UNK_VID_ENABLE		BIT(31)
+
+#define REG_SW_MAC_CTRL_0		0x0330
+
+#define SW_NEW_BACKOFF			BIT(7)
+#define SW_CHECK_LENGTH			BIT(3)
+#define SW_PAUSE_UNH_MODE		BIT(1)
+#define SW_AGGR_BACKOFF			BIT(0)
+
+#define REG_SW_MAC_CTRL_1		0x0331
+
+#define MULTICAST_STORM_DISABLE		BIT(6)
+#define SW_BACK_PRESSURE		BIT(5)
+#define FAIR_FLOW_CTRL			BIT(4)
+#define NO_EXC_COLLISION_DROP		BIT(3)
+#define SW_JUMBO_PACKET			BIT(2)
+#define SW_LEGAL_PACKET_DISABLE		BIT(1)
+#define SW_PASS_SHORT_FRAME		BIT(0)
+
+#define REG_SW_MAC_CTRL_2		0x0332
+
+#define SW_REPLACE_VID			BIT(3)
+#define BROADCAST_STORM_RATE_HI		0x07
+
+#define REG_SW_MAC_CTRL_3		0x0333
+
+#define BROADCAST_STORM_RATE_LO		0xFF
+#define BROADCAST_STORM_RATE		0x07FF
+
+#define REG_SW_MAC_CTRL_4		0x0334
+
+#define SW_PASS_PAUSE			BIT(3)
+
+#define REG_SW_MAC_CTRL_5		0x0335
+
+#define SW_OUT_RATE_LIMIT_QUEUE_BASED	BIT(3)
+
+#define REG_SW_MAC_CTRL_6		0x0336
+
+#define SW_MIB_COUNTER_FLUSH		BIT(7)
+#define SW_MIB_COUNTER_FREEZE		BIT(6)
+
+#define REG_SW_MAC_802_1P_MAP_0		0x0338
+#define REG_SW_MAC_802_1P_MAP_1		0x0339
+#define REG_SW_MAC_802_1P_MAP_2		0x033A
+#define REG_SW_MAC_802_1P_MAP_3		0x033B
+
+#define SW_802_1P_MAP_M			KS_PRIO_M
+#define SW_802_1P_MAP_S			KS_PRIO_S
+
+#define REG_SW_MAC_ISP_CTRL		0x033C
+
+#define REG_SW_MAC_TOS_CTRL		0x033E
+
+#define SW_TOS_DSCP_REMARK		BIT(1)
+#define SW_TOS_DSCP_REMAP		BIT(0)
+
+#define REG_SW_MAC_TOS_PRIO_0		0x0340
+#define REG_SW_MAC_TOS_PRIO_1		0x0341
+#define REG_SW_MAC_TOS_PRIO_2		0x0342
+#define REG_SW_MAC_TOS_PRIO_3		0x0343
+#define REG_SW_MAC_TOS_PRIO_4		0x0344
+#define REG_SW_MAC_TOS_PRIO_5		0x0345
+#define REG_SW_MAC_TOS_PRIO_6		0x0346
+#define REG_SW_MAC_TOS_PRIO_7		0x0347
+#define REG_SW_MAC_TOS_PRIO_8		0x0348
+#define REG_SW_MAC_TOS_PRIO_9		0x0349
+#define REG_SW_MAC_TOS_PRIO_10		0x034A
+#define REG_SW_MAC_TOS_PRIO_11		0x034B
+#define REG_SW_MAC_TOS_PRIO_12		0x034C
+#define REG_SW_MAC_TOS_PRIO_13		0x034D
+#define REG_SW_MAC_TOS_PRIO_14		0x034E
+#define REG_SW_MAC_TOS_PRIO_15		0x034F
+#define REG_SW_MAC_TOS_PRIO_16		0x0350
+#define REG_SW_MAC_TOS_PRIO_17		0x0351
+#define REG_SW_MAC_TOS_PRIO_18		0x0352
+#define REG_SW_MAC_TOS_PRIO_19		0x0353
+#define REG_SW_MAC_TOS_PRIO_20		0x0354
+#define REG_SW_MAC_TOS_PRIO_21		0x0355
+#define REG_SW_MAC_TOS_PRIO_22		0x0356
+#define REG_SW_MAC_TOS_PRIO_23		0x0357
+#define REG_SW_MAC_TOS_PRIO_24		0x0358
+#define REG_SW_MAC_TOS_PRIO_25		0x0359
+#define REG_SW_MAC_TOS_PRIO_26		0x035A
+#define REG_SW_MAC_TOS_PRIO_27		0x035B
+#define REG_SW_MAC_TOS_PRIO_28		0x035C
+#define REG_SW_MAC_TOS_PRIO_29		0x035D
+#define REG_SW_MAC_TOS_PRIO_30		0x035E
+#define REG_SW_MAC_TOS_PRIO_31		0x035F
+
+#define REG_SW_MRI_CTRL_0		0x0370
+
+#define SW_IGMP_SNOOP			BIT(6)
+#define SW_IPV6_MLD_OPTION		BIT(3)
+#define SW_IPV6_MLD_SNOOP		BIT(2)
+#define SW_MIRROR_RX_TX			BIT(0)
+
+#define REG_SW_CLASS_D_IP_CTRL__4	0x0374
+
+#define SW_CLASS_D_IP_ENABLE		BIT(31)
+
+#define REG_SW_MRI_CTRL_8		0x0378
+
+#define SW_NO_COLOR_S			6
+#define SW_RED_COLOR_S			4
+#define SW_YELLOW_COLOR_S		2
+#define SW_GREEN_COLOR_S		0
+#define SW_COLOR_M			0x3
+
+#define REG_SW_QM_CTRL__4		0x0390
+
+#define PRIO_SCHEME_SELECT_M		KS_PRIO_M
+#define PRIO_SCHEME_SELECT_S		6
+#define PRIO_MAP_3_HI			0
+#define PRIO_MAP_2_HI			2
+#define PRIO_MAP_0_LO			3
+#define UNICAST_VLAN_BOUNDARY		BIT(1)
+
+#define REG_SW_EEE_QM_CTRL__2		0x03C0
+
+#define REG_SW_EEE_TXQ_WAIT_TIME__2	0x03C2
+
+/* 4 - */
+#define REG_SW_VLAN_ENTRY__4		0x0400
+
+#define VLAN_VALID			BIT(31)
+#define VLAN_FORWARD_OPTION		BIT(27)
+#define VLAN_PRIO_M			KS_PRIO_M
+#define VLAN_PRIO_S			24
+#define VLAN_MSTP_M			0x7
+#define VLAN_MSTP_S			12
+#define VLAN_FID_M			0x7F
+
+#define REG_SW_VLAN_ENTRY_UNTAG__4	0x0404
+#define REG_SW_VLAN_ENTRY_PORTS__4	0x0408
+
+#define REG_SW_VLAN_ENTRY_INDEX__2	0x040C
+
+#define VLAN_INDEX_M			0x0FFF
+
+#define REG_SW_VLAN_CTRL		0x040E
+
+#define VLAN_START			BIT(7)
+#define VLAN_ACTION			0x3
+#define VLAN_WRITE			1
+#define VLAN_READ			2
+#define VLAN_CLEAR			3
+
+#define REG_SW_ALU_INDEX_0		0x0410
+
+#define ALU_FID_INDEX_S			16
+#define ALU_MAC_ADDR_HI			0xFFFF
+
+#define REG_SW_ALU_INDEX_1		0x0414
+
+#define ALU_DIRECT_INDEX_M		(BIT(12) - 1)
+
+#define REG_SW_ALU_CTRL__4		0x0418
+
+#define ALU_VALID_CNT_M			(BIT(14) - 1)
+#define ALU_VALID_CNT_S			16
+#define ALU_START			BIT(7)
+#define ALU_VALID			BIT(6)
+#define ALU_DIRECT			BIT(2)
+#define ALU_ACTION			0x3
+#define ALU_WRITE			1
+#define ALU_READ			2
+#define ALU_SEARCH			3
+
+#define REG_SW_ALU_STAT_CTRL__4		0x041C
+
+#define ALU_STAT_INDEX_M		(BIT(4) - 1)
+#define ALU_STAT_INDEX_S		16
+#define ALU_RESV_MCAST_INDEX_M		(BIT(6) - 1)
+#define ALU_STAT_START			BIT(7)
+#define ALU_RESV_MCAST_ADDR		BIT(1)
+#define ALU_STAT_READ			BIT(0)
+
+#define REG_SW_ALU_VAL_A		0x0420
+
+#define ALU_V_STATIC_VALID		BIT(31)
+#define ALU_V_SRC_FILTER		BIT(30)
+#define ALU_V_DST_FILTER		BIT(29)
+#define ALU_V_PRIO_AGE_CNT_M		(BIT(3) - 1)
+#define ALU_V_PRIO_AGE_CNT_S		26
+#define ALU_V_MSTP_M			0x7
+
+#define REG_SW_ALU_VAL_B		0x0424
+
+#define ALU_V_OVERRIDE			BIT(31)
+#define ALU_V_USE_FID			BIT(30)
+#define ALU_V_PORT_MAP			(BIT(24) - 1)
+
+#define REG_SW_ALU_VAL_C		0x0428
+
+#define ALU_V_FID_M			(BIT(16) - 1)
+#define ALU_V_FID_S			16
+#define ALU_V_MAC_ADDR_HI		0xFFFF
+
+#define REG_SW_ALU_VAL_D		0x042C
+
+#define REG_HSR_ALU_INDEX_0		0x0440
+
+#define REG_HSR_ALU_INDEX_1		0x0444
+
+#define HSR_DST_MAC_INDEX_LO_S		16
+#define HSR_SRC_MAC_INDEX_HI		0xFFFF
+
+#define REG_HSR_ALU_INDEX_2		0x0448
+
+#define HSR_INDEX_MAX			BIT(9)
+#define HSR_DIRECT_INDEX_M		(HSR_INDEX_MAX - 1)
+
+#define REG_HSR_ALU_INDEX_3		0x044C
+
+#define HSR_PATH_INDEX_M		(BIT(4) - 1)
+
+#define REG_HSR_ALU_CTRL__4		0x0450
+
+#define HSR_VALID_CNT_M			(BIT(14) - 1)
+#define HSR_VALID_CNT_S			16
+#define HSR_START			BIT(7)
+#define HSR_VALID			BIT(6)
+#define HSR_SEARCH_END			BIT(5)
+#define HSR_DIRECT			BIT(2)
+#define HSR_ACTION			0x3
+#define HSR_WRITE			1
+#define HSR_READ			2
+#define HSR_SEARCH			3
+
+#define REG_HSR_ALU_VAL_A		0x0454
+
+#define HSR_V_STATIC_VALID		BIT(31)
+#define HSR_V_AGE_CNT_M			(BIT(3) - 1)
+#define HSR_V_AGE_CNT_S			26
+#define HSR_V_PATH_ID_M			(BIT(4) - 1)
+
+#define REG_HSR_ALU_VAL_B		0x0458
+
+#define REG_HSR_ALU_VAL_C		0x045C
+
+#define HSR_V_DST_MAC_ADDR_LO_S		16
+#define HSR_V_SRC_MAC_ADDR_HI		0xFFFF
+
+#define REG_HSR_ALU_VAL_D		0x0460
+
+#define REG_HSR_ALU_VAL_E		0x0464
+
+#define HSR_V_START_SEQ_1_S		16
+#define HSR_V_START_SEQ_2_S		0
+
+#define REG_HSR_ALU_VAL_F		0x0468
+
+#define HSR_V_EXP_SEQ_1_S		16
+#define HSR_V_EXP_SEQ_2_S		0
+
+#define REG_HSR_ALU_VAL_G		0x046C
+
+#define HSR_V_SEQ_CNT_1_S		16
+#define HSR_V_SEQ_CNT_2_S		0
+
+#define HSR_V_SEQ_M			(BIT(16) - 1)
+
+/* 5 - PTP Clock */
+#define REG_PTP_CLK_CTRL		0x0500
+
+#define PTP_STEP_ADJ			BIT(6)
+#define PTP_STEP_DIR			BIT(5)
+#define PTP_READ_TIME			BIT(4)
+#define PTP_LOAD_TIME			BIT(3)
+#define PTP_CLK_ADJ_ENABLE		BIT(2)
+#define PTP_CLK_ENABLE			BIT(1)
+#define PTP_CLK_RESET			BIT(0)
+
+#define REG_PTP_RTC_SUB_NANOSEC__2	0x0502
+
+#define PTP_RTC_SUB_NANOSEC_M		0x0007
+
+#define REG_PTP_RTC_NANOSEC		0x0504
+#define REG_PTP_RTC_NANOSEC_H		0x0504
+#define REG_PTP_RTC_NANOSEC_L		0x0506
+
+#define REG_PTP_RTC_SEC			0x0508
+#define REG_PTP_RTC_SEC_H		0x0508
+#define REG_PTP_RTC_SEC_L		0x050A
+
+#define REG_PTP_SUBNANOSEC_RATE		0x050C
+#define REG_PTP_SUBNANOSEC_RATE_H	0x050C
+
+#define PTP_RATE_DIR			BIT(31)
+#define PTP_TMP_RATE_ENABLE		BIT(30)
+
+#define REG_PTP_SUBNANOSEC_RATE_L	0x050E
+
+#define REG_PTP_RATE_DURATION		0x0510
+#define REG_PTP_RATE_DURATION_H		0x0510
+#define REG_PTP_RATE_DURATION_L		0x0512
+
+#define REG_PTP_MSG_CONF1		0x0514
+
+#define PTP_802_1AS			BIT(7)
+#define PTP_ENABLE			BIT(6)
+#define PTP_ETH_ENABLE			BIT(5)
+#define PTP_IPV4_UDP_ENABLE		BIT(4)
+#define PTP_IPV6_UDP_ENABLE		BIT(3)
+#define PTP_TC_P2P			BIT(2)
+#define PTP_MASTER			BIT(1)
+#define PTP_1STEP			BIT(0)
+
+#define REG_PTP_MSG_CONF2		0x0516
+
+#define PTP_UNICAST_ENABLE		BIT(12)
+#define PTP_ALTERNATE_MASTER		BIT(11)
+#define PTP_ALL_HIGH_PRIO		BIT(10)
+#define PTP_SYNC_CHECK			BIT(9)
+#define PTP_DELAY_CHECK			BIT(8)
+#define PTP_PDELAY_CHECK		BIT(7)
+#define PTP_DROP_SYNC_DELAY_REQ		BIT(5)
+#define PTP_DOMAIN_CHECK		BIT(4)
+#define PTP_UDP_CHECKSUM		BIT(2)
+
+#define REG_PTP_DOMAIN_VERSION		0x0518
+#define PTP_VERSION_M			0xFF00
+#define PTP_DOMAIN_M			0x00FF
+
+#define REG_PTP_UNIT_INDEX__4		0x0520
+
+#define PTP_UNIT_M			0xF
+
+#define PTP_GPIO_INDEX_S		16
+#define PTP_TSI_INDEX_S			8
+#define PTP_TOU_INDEX_S			0
+
+#define REG_PTP_TRIG_STATUS__4		0x0524
+
+#define TRIG_ERROR_S			16
+#define TRIG_DONE_S			0
+
+#define REG_PTP_INT_STATUS__4		0x0528
+
+#define TRIG_INT_S			16
+#define TS_INT_S			0
+
+#define TRIG_UNIT_M			0x7
+#define TS_UNIT_M			0x3
+
+#define REG_PTP_CTRL_STAT__4		0x052C
+
+#define GPIO_IN				BIT(7)
+#define GPIO_OUT			BIT(6)
+#define TS_INT_ENABLE			BIT(5)
+#define TRIG_ACTIVE			BIT(4)
+#define TRIG_ENABLE			BIT(3)
+#define TRIG_RESET			BIT(2)
+#define TS_ENABLE			BIT(1)
+#define TS_RESET			BIT(0)
+
+#define GPIO_CTRL_M			(GPIO_IN | GPIO_OUT)
+
+#define TRIG_CTRL_M			\
+	(TRIG_ACTIVE | TRIG_ENABLE | TRIG_RESET)
+
+#define TS_CTRL_M			\
+	(TS_INT_ENABLE | TS_ENABLE | TS_RESET)
+
+#define REG_TRIG_TARGET_NANOSEC		0x0530
+#define REG_TRIG_TARGET_SEC		0x0534
+
+#define REG_TRIG_CTRL__4		0x0538
+
+#define TRIG_CASCADE_ENABLE		BIT(31)
+#define TRIG_CASCADE_TAIL		BIT(30)
+#define TRIG_CASCADE_UPS_M		0xF
+#define TRIG_CASCADE_UPS_S		26
+#define TRIG_NOW			BIT(25)
+#define TRIG_NOTIFY			BIT(24)
+#define TRIG_EDGE			BIT(23)
+#define TRIG_PATTERN_S			20
+#define TRIG_PATTERN_M			0x7
+#define TRIG_NEG_EDGE			0
+#define TRIG_POS_EDGE			1
+#define TRIG_NEG_PULSE			2
+#define TRIG_POS_PULSE			3
+#define TRIG_NEG_PERIOD			4
+#define TRIG_POS_PERIOD			5
+#define TRIG_REG_OUTPUT			6
+#define TRIG_GPO_S			16
+#define TRIG_GPO_M			0xF
+#define TRIG_CASCADE_ITERATE_CNT_M	0xFFFF
+
+#define REG_TRIG_CYCLE_WIDTH		0x053C
+
+#define REG_TRIG_CYCLE_CNT		0x0540
+
+#define TRIG_CYCLE_CNT_M		0xFFFF
+#define TRIG_CYCLE_CNT_S		16
+#define TRIG_BIT_PATTERN_M		0xFFFF
+
+#define REG_TRIG_ITERATE_TIME		0x0544
+
+#define REG_TRIG_PULSE_WIDTH__4		0x0548
+
+#define TRIG_PULSE_WIDTH_M		0x00FFFFFF
+
+#define REG_TS_CTRL_STAT__4		0x0550
+
+#define TS_EVENT_DETECT_M		0xF
+#define TS_EVENT_DETECT_S		17
+#define TS_EVENT_OVERFLOW		BIT(16)
+#define TS_GPI_M			0xF
+#define TS_GPI_S			8
+#define TS_DETECT_RISE			BIT(7)
+#define TS_DETECT_FALL			BIT(6)
+#define TS_DETECT_S			6
+#define TS_CASCADE_TAIL			BIT(5)
+#define TS_CASCADE_UPS_M		0xF
+#define TS_CASCADE_UPS_S		1
+#define TS_CASCADE_ENABLE		BIT(0)
+
+#define DETECT_RISE			(TS_DETECT_RISE >> TS_DETECT_S)
+#define DETECT_FALL			(TS_DETECT_FALL >> TS_DETECT_S)
+
+#define REG_TS_EVENT_0_NANOSEC		0x0554
+#define REG_TS_EVENT_0_SEC		0x0558
+#define REG_TS_EVENT_0_SUB_NANOSEC	0x055C
+
+#define REG_TS_EVENT_1_NANOSEC		0x0560
+#define REG_TS_EVENT_1_SEC		0x0564
+#define REG_TS_EVENT_1_SUB_NANOSEC	0x0568
+
+#define REG_TS_EVENT_2_NANOSEC		0x056C
+#define REG_TS_EVENT_2_SEC		0x0570
+#define REG_TS_EVENT_2_SUB_NANOSEC	0x0574
+
+#define REG_TS_EVENT_3_NANOSEC		0x0578
+#define REG_TS_EVENT_3_SEC		0x057C
+#define REG_TS_EVENT_3_SUB_NANOSEC	0x0580
+
+#define REG_TS_EVENT_4_NANOSEC		0x0584
+#define REG_TS_EVENT_4_SEC		0x0588
+#define REG_TS_EVENT_4_SUB_NANOSEC	0x058C
+
+#define REG_TS_EVENT_5_NANOSEC		0x0590
+#define REG_TS_EVENT_5_SEC		0x0594
+#define REG_TS_EVENT_5_SUB_NANOSEC	0x0598
+
+#define REG_TS_EVENT_6_NANOSEC		0x059C
+#define REG_TS_EVENT_6_SEC		0x05A0
+#define REG_TS_EVENT_6_SUB_NANOSEC	0x05A4
+
+#define REG_TS_EVENT_7_NANOSEC		0x05A8
+#define REG_TS_EVENT_7_SEC		0x05AC
+#define REG_TS_EVENT_7_SUB_NANOSEC	0x05B0
+
+#define TS_EVENT_EDGE_M			0x1
+#define TS_EVENT_EDGE_S			30
+#define TS_EVENT_NANOSEC_M		(BIT(30) - 1)
+
+#define TS_EVENT_SUB_NANOSEC_M		0x7
+
+#define TS_EVENT_SAMPLE			\
+	(REG_TS_EVENT_1_NANOSEC - REG_TS_EVENT_0_NANOSEC)
+
+#define PORT_CTRL_ADDR(port, addr)	((addr) | (((port) + 1) << 12))
+
+#define REG_GLOBAL_RR_INDEX__1		0x0600
+
+/* DLR */
+#define REG_DLR_SRC_PORT__4		0x0604
+
+#define DLR_SRC_PORT_UNICAST		BIT(31)
+#define DLR_SRC_PORT_M			0x3
+#define DLR_SRC_PORT_BOTH		0
+#define DLR_SRC_PORT_EACH		1
+
+#define REG_DLR_IP_ADDR__4		0x0608
+
+#define REG_DLR_CTRL__1			0x0610
+
+#define DLR_RESET_SEQ_ID		BIT(3)
+#define DLR_BACKUP_AUTO_ON		BIT(2)
+#define DLR_BEACON_TX_ENABLE		BIT(1)
+#define DLR_ASSIST_ENABLE		BIT(0)
+
+#define REG_DLR_STATE__1		0x0611
+
+#define DLR_NODE_STATE_M		0x3
+#define DLR_NODE_STATE_S		1
+#define DLR_NODE_STATE_IDLE		0
+#define DLR_NODE_STATE_FAULT		1
+#define DLR_NODE_STATE_NORMAL		2
+#define DLR_RING_STATE_FAULT		0
+#define DLR_RING_STATE_NORMAL		1
+
+#define REG_DLR_PRECEDENCE__1		0x0612
+
+#define REG_DLR_BEACON_INTERVAL__4	0x0614
+
+#define REG_DLR_BEACON_TIMEOUT__4	0x0618
+
+#define REG_DLR_TIMEOUT_WINDOW__4	0x061C
+
+#define DLR_TIMEOUT_WINDOW_M		(BIT(22) - 1)
+
+#define REG_DLR_VLAN_ID__2		0x0620
+
+#define DLR_VLAN_ID_M			(BIT(12) - 1)
+
+#define REG_DLR_DEST_ADDR_0		0x0622
+#define REG_DLR_DEST_ADDR_1		0x0623
+#define REG_DLR_DEST_ADDR_2		0x0624
+#define REG_DLR_DEST_ADDR_3		0x0625
+#define REG_DLR_DEST_ADDR_4		0x0626
+#define REG_DLR_DEST_ADDR_5		0x0627
+
+#define REG_DLR_PORT_MAP__4		0x0628
+
+#define REG_DLR_CLASS__1		0x062C
+
+#define DLR_FRAME_QID_M			0x3
+
+/* HSR */
+#define REG_HSR_PORT_MAP__4		0x0640
+
+#define REG_HSR_ALU_CTRL_0__1		0x0644
+
+#define HSR_DUPLICATE_DISCARD		BIT(7)
+#define HSR_NODE_UNICAST		BIT(6)
+#define HSR_AGE_CNT_DEFAULT_M		0x7
+#define HSR_AGE_CNT_DEFAULT_S		3
+#define HSR_LEARN_MCAST_DISABLE		BIT(2)
+#define HSR_HASH_OPTION_M		0x3
+#define HSR_HASH_DISABLE		0
+#define HSR_HASH_UPPER_BITS		1
+#define HSR_HASH_LOWER_BITS		2
+#define HSR_HASH_XOR_BOTH_BITS		3
+
+#define REG_HSR_ALU_CTRL_1__1		0x0645
+
+#define HSR_LEARN_UCAST_DISABLE		BIT(7)
+#define HSR_FLUSH_TABLE			BIT(5)
+#define HSR_PROC_MCAST_SRC		BIT(3)
+#define HSR_AGING_ENABLE		BIT(2)
+
+#define REG_HSR_ALU_CTRL_2__2		0x0646
+
+#define REG_HSR_ALU_AGE_PERIOD__4	0x0648
+
+#define REG_HSR_ALU_INT_STATUS__1	0x064C
+#define REG_HSR_ALU_INT_MASK__1		0x064D
+
+#define HSR_WINDOW_OVERFLOW_INT		BIT(3)
+#define HSR_LEARN_FAIL_INT		BIT(2)
+#define HSR_ALMOST_FULL_INT		BIT(1)
+#define HSR_WRITE_FAIL_INT		BIT(0)
+
+#define REG_HSR_ALU_ENTRY_0__2		0x0650
+
+#define HSR_ENTRY_INDEX_M		(BIT(10) - 1)
+#define HSR_FAIL_INDEX_M		(BIT(8) - 1)
+
+#define REG_HSR_ALU_ENTRY_1__2		0x0652
+
+#define HSR_FAIL_LEARN_INDEX_M		(BIT(8) - 1)
+
+#define REG_HSR_ALU_ENTRY_3__2		0x0654
+
+#define HSR_CPU_ACCESS_ENTRY_INDEX_M	(BIT(8) - 1)
+
+/* 0 - Operation */
+#define REG_PORT_DEFAULT_VID		0x0000
+
+#define REG_PORT_CUSTOM_VID		0x0002
+#define REG_PORT_AVB_SR_1_VID		0x0004
+#define REG_PORT_AVB_SR_2_VID		0x0006
+
+#define REG_PORT_AVB_SR_1_TYPE		0x0008
+#define REG_PORT_AVB_SR_2_TYPE		0x000A
+
+#define REG_PORT_PME_STATUS		0x0013
+#define REG_PORT_PME_CTRL		0x0017
+
+#define PME_WOL_MAGICPKT		BIT(2)
+#define PME_WOL_LINKUP			BIT(1)
+#define PME_WOL_ENERGY			BIT(0)
+
+#define REG_PORT_INT_STATUS		0x001B
+#define REG_PORT_INT_MASK		0x001F
+
+#define PORT_SGMII_INT			BIT(3)
+#define PORT_PTP_INT			BIT(2)
+#define PORT_PHY_INT			BIT(1)
+#define PORT_ACL_INT			BIT(0)
+
+#define PORT_INT_MASK			\
+	(PORT_SGMII_INT | PORT_PTP_INT | PORT_PHY_INT | PORT_ACL_INT)
+
+#define REG_PORT_CTRL_0			0x0020
+
+#define PORT_MAC_LOOPBACK		BIT(7)
+#define PORT_FORCE_TX_FLOW_CTRL		BIT(4)
+#define PORT_FORCE_RX_FLOW_CTRL		BIT(3)
+#define PORT_TAIL_TAG_ENABLE		BIT(2)
+#define PORT_QUEUE_SPLIT_ENABLE		0x3
+
+#define REG_PORT_CTRL_1			0x0021
+
+#define PORT_SRP_ENABLE			0x3
+
+#define REG_PORT_STATUS_0		0x0030
+
+#define PORT_INTF_SPEED_M		0x3
+#define PORT_INTF_SPEED_S		3
+#define PORT_INTF_FULL_DUPLEX		BIT(2)
+#define PORT_TX_FLOW_CTRL		BIT(1)
+#define PORT_RX_FLOW_CTRL		BIT(0)
+
+#define REG_PORT_STATUS_1		0x0034
+
+/* 1 - PHY */
+#define REG_PORT_PHY_CTRL		0x0100
+
+#define PORT_PHY_RESET			BIT(15)
+#define PORT_PHY_LOOPBACK		BIT(14)
+#define PORT_SPEED_100MBIT		BIT(13)
+#define PORT_AUTO_NEG_ENABLE		BIT(12)
+#define PORT_POWER_DOWN			BIT(11)
+#define PORT_ISOLATE			BIT(10)
+#define PORT_AUTO_NEG_RESTART		BIT(9)
+#define PORT_FULL_DUPLEX		BIT(8)
+#define PORT_COLLISION_TEST		BIT(7)
+#define PORT_SPEED_1000MBIT		BIT(6)
+
+#define REG_PORT_PHY_STATUS		0x0102
+
+#define PORT_100BT4_CAPABLE		BIT(15)
+#define PORT_100BTX_FD_CAPABLE		BIT(14)
+#define PORT_100BTX_CAPABLE		BIT(13)
+#define PORT_10BT_FD_CAPABLE		BIT(12)
+#define PORT_10BT_CAPABLE		BIT(11)
+#define PORT_EXTENDED_STATUS		BIT(8)
+#define PORT_MII_SUPPRESS_CAPABLE	BIT(6)
+#define PORT_AUTO_NEG_ACKNOWLEDGE	BIT(5)
+#define PORT_REMOTE_FAULT		BIT(4)
+#define PORT_AUTO_NEG_CAPABLE		BIT(3)
+#define PORT_LINK_STATUS		BIT(2)
+#define PORT_JABBER_DETECT		BIT(1)
+#define PORT_EXTENDED_CAPABILITY	BIT(0)
+
+#define REG_PORT_PHY_ID_HI		0x0104
+#define REG_PORT_PHY_ID_LO		0x0106
+
+#define KSZ9477_ID_HI			0x0022
+#define KSZ9477_ID_LO			0x1622
+
+#define REG_PORT_PHY_AUTO_NEGOTIATION	0x0108
+
+#define PORT_AUTO_NEG_NEXT_PAGE		BIT(15)
+#define PORT_AUTO_NEG_REMOTE_FAULT	BIT(13)
+#define PORT_AUTO_NEG_ASYM_PAUSE	BIT(11)
+#define PORT_AUTO_NEG_SYM_PAUSE		BIT(10)
+#define PORT_AUTO_NEG_100BT4		BIT(9)
+#define PORT_AUTO_NEG_100BTX_FD		BIT(8)
+#define PORT_AUTO_NEG_100BTX		BIT(7)
+#define PORT_AUTO_NEG_10BT_FD		BIT(6)
+#define PORT_AUTO_NEG_10BT		BIT(5)
+#define PORT_AUTO_NEG_SELECTOR		0x001F
+#define PORT_AUTO_NEG_802_3		0x0001
+
+#define PORT_AUTO_NEG_PAUSE		\
+	(PORT_AUTO_NEG_ASYM_PAUSE | PORT_AUTO_NEG_SYM_PAUSE)
+
+#define REG_PORT_PHY_REMOTE_CAPABILITY	0x010A
+
+#define PORT_REMOTE_NEXT_PAGE		BIT(15)
+#define PORT_REMOTE_ACKNOWLEDGE		BIT(14)
+#define PORT_REMOTE_REMOTE_FAULT	BIT(13)
+#define PORT_REMOTE_ASYM_PAUSE		BIT(11)
+#define PORT_REMOTE_SYM_PAUSE		BIT(10)
+#define PORT_REMOTE_100BTX_FD		BIT(8)
+#define PORT_REMOTE_100BTX		BIT(7)
+#define PORT_REMOTE_10BT_FD		BIT(6)
+#define PORT_REMOTE_10BT		BIT(5)
+
+#define REG_PORT_PHY_1000_CTRL		0x0112
+
+#define PORT_AUTO_NEG_MANUAL		BIT(12)
+#define PORT_AUTO_NEG_MASTER		BIT(11)
+#define PORT_AUTO_NEG_MASTER_PREFERRED	BIT(10)
+#define PORT_AUTO_NEG_1000BT_FD		BIT(9)
+#define PORT_AUTO_NEG_1000BT		BIT(8)
+
+#define REG_PORT_PHY_1000_STATUS	0x0114
+
+#define PORT_MASTER_FAULT		BIT(15)
+#define PORT_LOCAL_MASTER		BIT(14)
+#define PORT_LOCAL_RX_OK		BIT(13)
+#define PORT_REMOTE_RX_OK		BIT(12)
+#define PORT_REMOTE_1000BT_FD		BIT(11)
+#define PORT_REMOTE_1000BT		BIT(10)
+#define PORT_REMOTE_IDLE_CNT_M		0x0F
+
+#define PORT_PHY_1000_STATIC_STATUS	\
+	(PORT_LOCAL_RX_OK |		\
+	PORT_REMOTE_RX_OK |		\
+	PORT_REMOTE_1000BT_FD |		\
+	PORT_REMOTE_1000BT)
+
+#define REG_PORT_PHY_MMD_SETUP		0x011A
+
+#define PORT_MMD_OP_MODE_M		0x3
+#define PORT_MMD_OP_MODE_S		14
+#define PORT_MMD_OP_INDEX		0
+#define PORT_MMD_OP_DATA_NO_INCR	1
+#define PORT_MMD_OP_DATA_INCR_RW	2
+#define PORT_MMD_OP_DATA_INCR_W		3
+#define PORT_MMD_DEVICE_ID_M		0x1F
+
+#define MMD_SETUP(mode, dev)		\
+	(((u16)(mode) << PORT_MMD_OP_MODE_S) | (dev))
+
+#define REG_PORT_PHY_MMD_INDEX_DATA	0x011C
+
+#define MMD_DEVICE_ID_DSP		1
+
+#define MMD_DSP_SQI_CHAN_A		0xAC
+#define MMD_DSP_SQI_CHAN_B		0xAD
+#define MMD_DSP_SQI_CHAN_C		0xAE
+#define MMD_DSP_SQI_CHAN_D		0xAF
+
+#define DSP_SQI_ERR_DETECTED		BIT(15)
+#define DSP_SQI_AVG_ERR			0x7FFF
+
+#define MMD_DEVICE_ID_COMMON		2
+
+#define MMD_DEVICE_ID_EEE_ADV		7
+
+#define MMD_EEE_ADV			0x3C
+#define EEE_ADV_100MBIT			BIT(1)
+#define EEE_ADV_1GBIT			BIT(2)
+
+#define MMD_EEE_LP_ADV			0x3D
+#define MMD_EEE_MSG_CODE		0x3F
+
+#define MMD_DEVICE_ID_AFED		0x1C
+
+#define REG_PORT_PHY_EXTENDED_STATUS	0x011E
+
+#define PORT_100BTX_FD_ABLE		BIT(15)
+#define PORT_100BTX_ABLE		BIT(14)
+#define PORT_10BT_FD_ABLE		BIT(13)
+#define PORT_10BT_ABLE			BIT(12)
+
+#define REG_PORT_SGMII_ADDR__4		0x0200
+#define PORT_SGMII_AUTO_INCR		BIT(23)
+#define PORT_SGMII_DEVICE_ID_M		0x1F
+#define PORT_SGMII_DEVICE_ID_S		16
+#define PORT_SGMII_ADDR_M		(BIT(21) - 1)
+
+#define REG_PORT_SGMII_DATA__4		0x0204
+#define PORT_SGMII_DATA_M		(BIT(16) - 1)
+
+#define MMD_DEVICE_ID_PMA		0x01
+#define MMD_DEVICE_ID_PCS		0x03
+#define MMD_DEVICE_ID_PHY_XS		0x04
+#define MMD_DEVICE_ID_DTE_XS		0x05
+#define MMD_DEVICE_ID_AN		0x07
+#define MMD_DEVICE_ID_VENDOR_CTRL	0x1E
+#define MMD_DEVICE_ID_VENDOR_MII	0x1F
+
+#define SR_MII				MMD_DEVICE_ID_VENDOR_MII
+
+#define MMD_SR_MII_CTRL			0x0000
+
+#define SR_MII_RESET			BIT(15)
+#define SR_MII_LOOPBACK			BIT(14)
+#define SR_MII_SPEED_100MBIT		BIT(13)
+#define SR_MII_AUTO_NEG_ENABLE		BIT(12)
+#define SR_MII_POWER_DOWN		BIT(11)
+#define SR_MII_AUTO_NEG_RESTART		BIT(9)
+#define SR_MII_FULL_DUPLEX		BIT(8)
+#define SR_MII_SPEED_1000MBIT		BIT(6)
+
+#define MMD_SR_MII_STATUS		0x0001
+#define MMD_SR_MII_ID_1			0x0002
+#define MMD_SR_MII_ID_2			0x0003
+#define MMD_SR_MII_AUTO_NEGOTIATION	0x0004
+
+#define SR_MII_AUTO_NEG_NEXT_PAGE	BIT(15)
+#define SR_MII_AUTO_NEG_REMOTE_FAULT_M	0x3
+#define SR_MII_AUTO_NEG_REMOTE_FAULT_S	12
+#define SR_MII_AUTO_NEG_NO_ERROR	0
+#define SR_MII_AUTO_NEG_OFFLINE		1
+#define SR_MII_AUTO_NEG_LINK_FAILURE	2
+#define SR_MII_AUTO_NEG_ERROR		3
+#define SR_MII_AUTO_NEG_PAUSE_M		0x3
+#define SR_MII_AUTO_NEG_PAUSE_S		7
+#define SR_MII_AUTO_NEG_NO_PAUSE	0
+#define SR_MII_AUTO_NEG_ASYM_PAUSE_TX	1
+#define SR_MII_AUTO_NEG_SYM_PAUSE	2
+#define SR_MII_AUTO_NEG_ASYM_PAUSE_RX	3
+#define SR_MII_AUTO_NEG_HALF_DUPLEX	BIT(6)
+#define SR_MII_AUTO_NEG_FULL_DUPLEX	BIT(5)
+
+#define MMD_SR_MII_REMOTE_CAPABILITY	0x0005
+#define MMD_SR_MII_AUTO_NEG_EXP		0x0006
+#define MMD_SR_MII_AUTO_NEG_EXT		0x000F
+
+#define MMD_SR_MII_DIGITAL_CTRL_1	0x8000
+
+#define MMD_SR_MII_AUTO_NEG_CTRL	0x8001
+
+#define SR_MII_8_BIT			BIT(8)
+#define SR_MII_SGMII_LINK_UP		BIT(4)
+#define SR_MII_TX_CFG_PHY_MASTER	BIT(3)
+#define SR_MII_PCS_MODE_M		0x3
+#define SR_MII_PCS_MODE_S		1
+#define SR_MII_PCS_SGMII		2
+#define SR_MII_AUTO_NEG_COMPLETE_INTR	BIT(0)
+
+#define MMD_SR_MII_AUTO_NEG_STATUS	0x8002
+
+#define SR_MII_STAT_LINK_UP		BIT(4)
+#define SR_MII_STAT_M			0x3
+#define SR_MII_STAT_S			2
+#define SR_MII_STAT_10_MBPS		0
+#define SR_MII_STAT_100_MBPS		1
+#define SR_MII_STAT_1000_MBPS		2
+#define SR_MII_STAT_FULL_DUPLEX		BIT(1)
+
+#define MMD_SR_MII_PHY_CTRL		0x80A0
+
+#define SR_MII_PHY_LANE_SEL_M		0xF
+#define SR_MII_PHY_LANE_SEL_S		8
+#define SR_MII_PHY_WRITE		BIT(1)
+#define SR_MII_PHY_START_BUSY		BIT(0)
+
+#define MMD_SR_MII_PHY_ADDR		0x80A1
+
+#define SR_MII_PHY_ADDR_M		(BIT(16) - 1)
+
+#define MMD_SR_MII_PHY_DATA		0x80A2
+
+#define SR_MII_PHY_DATA_M		(BIT(16) - 1)
+
+#define SR_MII_PHY_JTAG_CHIP_ID_HI	0x000C
+#define SR_MII_PHY_JTAG_CHIP_ID_LO	0x000D
+
+#define REG_PORT_PHY_REMOTE_LB_LED	0x0122
+
+#define PORT_REMOTE_LOOPBACK		BIT(8)
+#define PORT_LED_SELECT			(3 << 6)
+#define PORT_LED_CTRL			(3 << 4)
+#define PORT_LED_CTRL_TEST		BIT(3)
+#define PORT_10BT_PREAMBLE		BIT(2)
+#define PORT_LINK_MD_10BT_ENABLE	BIT(1)
+#define PORT_LINK_MD_PASS		BIT(0)
+
+#define REG_PORT_PHY_LINK_MD		0x0124
+
+#define PORT_START_CABLE_DIAG		BIT(15)
+#define PORT_TX_DISABLE			BIT(14)
+#define PORT_CABLE_DIAG_PAIR_M		0x3
+#define PORT_CABLE_DIAG_PAIR_S		12
+#define PORT_CABLE_DIAG_SELECT_M	0x3
+#define PORT_CABLE_DIAG_SELECT_S	10
+#define PORT_CABLE_DIAG_RESULT_M	0x3
+#define PORT_CABLE_DIAG_RESULT_S	8
+#define PORT_CABLE_STAT_NORMAL		0
+#define PORT_CABLE_STAT_OPEN		1
+#define PORT_CABLE_STAT_SHORT		2
+#define PORT_CABLE_STAT_FAILED		3
+#define PORT_CABLE_FAULT_COUNTER	0x00FF
+
+#define REG_PORT_PHY_PMA_STATUS		0x0126
+
+#define PORT_1000_LINK_GOOD		BIT(1)
+#define PORT_100_LINK_GOOD		BIT(0)
+
+#define REG_PORT_PHY_DIGITAL_STATUS	0x0128
+
+#define PORT_LINK_DETECT		BIT(14)
+#define PORT_SIGNAL_DETECT		BIT(13)
+#define PORT_PHY_STAT_MDI		BIT(12)
+#define PORT_PHY_STAT_MASTER		BIT(11)
+
+#define REG_PORT_PHY_RXER_COUNTER	0x012A
+
+#define REG_PORT_PHY_INT_ENABLE		0x0136
+#define REG_PORT_PHY_INT_STATUS		0x0137
+
+#define JABBER_INT			BIT(7)
+#define RX_ERR_INT			BIT(6)
+#define PAGE_RX_INT			BIT(5)
+#define PARALLEL_DETECT_FAULT_INT	BIT(4)
+#define LINK_PARTNER_ACK_INT		BIT(3)
+#define LINK_DOWN_INT			BIT(2)
+#define REMOTE_FAULT_INT		BIT(1)
+#define LINK_UP_INT			BIT(0)
+
+#define REG_PORT_PHY_DIGITAL_DEBUG_1	0x0138
+
+#define PORT_REG_CLK_SPEED_25_MHZ	BIT(14)
+#define PORT_PHY_FORCE_MDI		BIT(7)
+#define PORT_PHY_AUTO_MDIX_DISABLE	BIT(6)
+
+/* Same as PORT_PHY_LOOPBACK */
+#define PORT_PHY_PCS_LOOPBACK		BIT(0)
+
+#define REG_PORT_PHY_DIGITAL_DEBUG_2	0x013A
+
+#define REG_PORT_PHY_DIGITAL_DEBUG_3	0x013C
+
+#define PORT_100BT_FIXED_LATENCY	BIT(15)
+
+#define REG_PORT_PHY_PHY_CTRL		0x013E
+
+#define PORT_INT_PIN_HIGH		BIT(14)
+#define PORT_ENABLE_JABBER		BIT(9)
+#define PORT_STAT_SPEED_1000MBIT	BIT(6)
+#define PORT_STAT_SPEED_100MBIT		BIT(5)
+#define PORT_STAT_SPEED_10MBIT		BIT(4)
+#define PORT_STAT_FULL_DUPLEX		BIT(3)
+
+/* Same as PORT_PHY_STAT_MASTER */
+#define PORT_STAT_MASTER		BIT(2)
+#define PORT_RESET			BIT(1)
+#define PORT_LINK_STATUS_FAIL		BIT(0)
+
+/* 3 - xMII */
+#define REG_PORT_XMII_CTRL_0		0x0300
+
+#define PORT_SGMII_SEL			BIT(7)
+#define PORT_MII_FULL_DUPLEX		BIT(6)
+#define PORT_MII_100MBIT		BIT(4)
+#define PORT_GRXC_ENABLE		BIT(0)
+
+#define REG_PORT_XMII_CTRL_1		0x0301
+
+#define PORT_RMII_CLK_SEL		BIT(7)
+/* S1 */
+#define PORT_MII_1000MBIT_S1		BIT(6)
+/* S2 */
+#define PORT_MII_NOT_1GBIT		BIT(6)
+#define PORT_MII_SEL_EDGE		BIT(5)
+#define PORT_RGMII_ID_IG_ENABLE		BIT(4)
+#define PORT_RGMII_ID_EG_ENABLE		BIT(3)
+#define PORT_MII_MAC_MODE		BIT(2)
+#define PORT_MII_SEL_M			0x3
+/* S1 */
+#define PORT_MII_SEL_S1			0x0
+#define PORT_RMII_SEL_S1		0x1
+#define PORT_GMII_SEL_S1		0x2
+#define PORT_RGMII_SEL_S1		0x3
+/* S2 */
+#define PORT_RGMII_SEL			0x0
+#define PORT_RMII_SEL			0x1
+#define PORT_GMII_SEL			0x2
+#define PORT_MII_SEL			0x3
+
+/* 4 - MAC */
+#define REG_PORT_MAC_CTRL_0		0x0400
+
+#define PORT_BROADCAST_STORM		BIT(1)
+#define PORT_JUMBO_FRAME		BIT(0)
+
+#define REG_PORT_MAC_CTRL_1		0x0401
+
+#define PORT_BACK_PRESSURE		BIT(3)
+#define PORT_PASS_ALL			BIT(0)
+
+#define REG_PORT_MAC_CTRL_2		0x0402
+
+#define PORT_100BT_EEE_DISABLE		BIT(7)
+#define PORT_1000BT_EEE_DISABLE		BIT(6)
+
+#define REG_PORT_MAC_IN_RATE_LIMIT	0x0403
+
+#define PORT_IN_PORT_BASED_S		6
+#define PORT_RATE_PACKET_BASED_S	5
+#define PORT_IN_FLOW_CTRL_S		4
+#define PORT_COUNT_IFG_S		1
+#define PORT_COUNT_PREAMBLE_S		0
+#define PORT_IN_PORT_BASED		BIT(6)
+#define PORT_IN_PACKET_BASED		BIT(5)
+#define PORT_IN_FLOW_CTRL		BIT(4)
+#define PORT_IN_LIMIT_MODE_M		0x3
+#define PORT_IN_LIMIT_MODE_S		2
+#define PORT_IN_ALL			0
+#define PORT_IN_UNICAST			1
+#define PORT_IN_MULTICAST		2
+#define PORT_IN_BROADCAST		3
+#define PORT_COUNT_IFG			BIT(1)
+#define PORT_COUNT_PREAMBLE		BIT(0)
+
+#define REG_PORT_IN_RATE_0		0x0410
+#define REG_PORT_IN_RATE_1		0x0411
+#define REG_PORT_IN_RATE_2		0x0412
+#define REG_PORT_IN_RATE_3		0x0413
+#define REG_PORT_IN_RATE_4		0x0414
+#define REG_PORT_IN_RATE_5		0x0415
+#define REG_PORT_IN_RATE_6		0x0416
+#define REG_PORT_IN_RATE_7		0x0417
+
+#define REG_PORT_OUT_RATE_0		0x0420
+#define REG_PORT_OUT_RATE_1		0x0421
+#define REG_PORT_OUT_RATE_2		0x0422
+#define REG_PORT_OUT_RATE_3		0x0423
+
+#define PORT_RATE_LIMIT_M		(BIT(7) - 1)
+
+/* 5 - MIB Counters */
+#define REG_PORT_MIB_CTRL_STAT__4	0x0500
+
+#define MIB_COUNTER_OVERFLOW		BIT(31)
+#define MIB_COUNTER_VALID		BIT(30)
+#define MIB_COUNTER_READ		BIT(25)
+#define MIB_COUNTER_FLUSH_FREEZE	BIT(24)
+#define MIB_COUNTER_INDEX_M		(BIT(8) - 1)
+#define MIB_COUNTER_INDEX_S		16
+#define MIB_COUNTER_DATA_HI_M		0xF
+
+#define REG_PORT_MIB_DATA		0x0504
+
+/* 6 - ACL */
+#define REG_PORT_ACL_0			0x0600
+
+#define ACL_FIRST_RULE_M		0xF
+
+#define REG_PORT_ACL_1			0x0601
+
+#define ACL_MODE_M			0x3
+#define ACL_MODE_S			4
+#define ACL_MODE_DISABLE		0
+#define ACL_MODE_LAYER_2		1
+#define ACL_MODE_LAYER_3		2
+#define ACL_MODE_LAYER_4		3
+#define ACL_ENABLE_M			0x3
+#define ACL_ENABLE_S			2
+#define ACL_ENABLE_2_COUNT		0
+#define ACL_ENABLE_2_TYPE		1
+#define ACL_ENABLE_2_MAC		2
+#define ACL_ENABLE_2_BOTH		3
+#define ACL_ENABLE_3_IP			1
+#define ACL_ENABLE_3_SRC_DST_COMP	2
+#define ACL_ENABLE_4_PROTOCOL		0
+#define ACL_ENABLE_4_TCP_PORT_COMP	1
+#define ACL_ENABLE_4_UDP_PORT_COMP	2
+#define ACL_ENABLE_4_TCP_SEQN_COMP	3
+#define ACL_SRC				BIT(1)
+#define ACL_EQUAL			BIT(0)
+
+#define REG_PORT_ACL_2			0x0602
+#define REG_PORT_ACL_3			0x0603
+
+#define ACL_MAX_PORT			0xFFFF
+
+#define REG_PORT_ACL_4			0x0604
+#define REG_PORT_ACL_5			0x0605
+
+#define ACL_MIN_PORT			0xFFFF
+#define ACL_IP_ADDR			0xFFFFFFFF
+#define ACL_TCP_SEQNUM			0xFFFFFFFF
+
+#define REG_PORT_ACL_6			0x0606
+
+#define ACL_RESERVED			0xF8
+#define ACL_PORT_MODE_M			0x3
+#define ACL_PORT_MODE_S			1
+#define ACL_PORT_MODE_DISABLE		0
+#define ACL_PORT_MODE_EITHER		1
+#define ACL_PORT_MODE_IN_RANGE		2
+#define ACL_PORT_MODE_OUT_OF_RANGE	3
+
+#define REG_PORT_ACL_7			0x0607
+
+#define ACL_TCP_FLAG_ENABLE		BIT(0)
+
+#define REG_PORT_ACL_8			0x0608
+
+#define ACL_TCP_FLAG_M			0xFF
+
+#define REG_PORT_ACL_9			0x0609
+
+#define ACL_TCP_FLAG			0xFF
+#define ACL_ETH_TYPE			0xFFFF
+#define ACL_IP_M			0xFFFFFFFF
+
+#define REG_PORT_ACL_A			0x060A
+
+#define ACL_PRIO_MODE_M			0x3
+#define ACL_PRIO_MODE_S			6
+#define ACL_PRIO_MODE_DISABLE		0
+#define ACL_PRIO_MODE_HIGHER		1
+#define ACL_PRIO_MODE_LOWER		2
+#define ACL_PRIO_MODE_REPLACE		3
+#define ACL_PRIO_M			KS_PRIO_M
+#define ACL_PRIO_S			3
+#define ACL_VLAN_PRIO_REPLACE		BIT(2)
+#define ACL_VLAN_PRIO_M			KS_PRIO_M
+#define ACL_VLAN_PRIO_HI_M		0x3
+
+#define REG_PORT_ACL_B			0x060B
+
+#define ACL_VLAN_PRIO_LO_M		0x8
+#define ACL_VLAN_PRIO_S			7
+#define ACL_MAP_MODE_M			0x3
+#define ACL_MAP_MODE_S			5
+#define ACL_MAP_MODE_DISABLE		0
+#define ACL_MAP_MODE_OR			1
+#define ACL_MAP_MODE_AND		2
+#define ACL_MAP_MODE_REPLACE		3
+
+#define ACL_CNT_M			(BIT(11) - 1)
+#define ACL_CNT_S			5
+
+#define REG_PORT_ACL_C			0x060C
+
+#define REG_PORT_ACL_D			0x060D
+#define ACL_MSEC_UNIT			BIT(6)
+#define ACL_INTR_MODE			BIT(5)
+#define ACL_PORT_MAP			0x7F
+
+#define REG_PORT_ACL_E			0x060E
+#define REG_PORT_ACL_F			0x060F
+
+#define REG_PORT_ACL_BYTE_EN_MSB	0x0610
+#define REG_PORT_ACL_BYTE_EN_LSB	0x0611
+
+#define ACL_ACTION_START		0xA
+#define ACL_ACTION_LEN			4
+#define ACL_INTR_CNT_START		0xD
+#define ACL_RULESET_START		0xE
+#define ACL_RULESET_LEN			2
+#define ACL_TABLE_LEN			16
+
+#define ACL_ACTION_ENABLE		0x003C
+#define ACL_MATCH_ENABLE		0x7FC3
+#define ACL_RULESET_ENABLE		0x8003
+#define ACL_BYTE_ENABLE			0xFFFF
+
+#define REG_PORT_ACL_CTRL_0		0x0612
+
+#define PORT_ACL_WRITE_DONE		BIT(6)
+#define PORT_ACL_READ_DONE		BIT(5)
+#define PORT_ACL_WRITE			BIT(4)
+#define PORT_ACL_INDEX_M		0xF
+
+#define REG_PORT_ACL_CTRL_1		0x0613
+
+/* 8 - Classification and Policing */
+#define REG_PORT_MRI_MIRROR_CTRL	0x0800
+
+#define PORT_MIRROR_RX			BIT(6)
+#define PORT_MIRROR_TX			BIT(5)
+#define PORT_MIRROR_SNIFFER		BIT(1)
+
+#define REG_PORT_MRI_PRIO_CTRL		0x0801
+
+#define PORT_HIGHEST_PRIO		BIT(7)
+#define PORT_OR_PRIO			BIT(6)
+#define PORT_MAC_PRIO_ENABLE		BIT(4)
+#define PORT_VLAN_PRIO_ENABLE		BIT(3)
+#define PORT_802_1P_PRIO_ENABLE		BIT(2)
+#define PORT_DIFFSERV_PRIO_ENABLE	BIT(1)
+#define PORT_ACL_PRIO_ENABLE		BIT(0)
+
+#define REG_PORT_MRI_MAC_CTRL		0x0802
+
+#define PORT_USER_PRIO_CEILING		BIT(7)
+#define PORT_DROP_NON_VLAN		BIT(4)
+#define PORT_DROP_TAG			BIT(3)
+#define PORT_BASED_PRIO_M		KS_PRIO_M
+#define PORT_BASED_PRIO_S		0
+
+#define REG_PORT_MRI_AUTHEN_CTRL	0x0803
+
+#define PORT_ACL_ENABLE			BIT(2)
+#define PORT_AUTHEN_MODE		0x3
+#define PORT_AUTHEN_PASS		0
+#define PORT_AUTHEN_BLOCK		1
+#define PORT_AUTHEN_TRAP		2
+
+#define REG_PORT_MRI_INDEX__4		0x0804
+
+#define MRI_INDEX_P_M			0x7
+#define MRI_INDEX_P_S			16
+#define MRI_INDEX_Q_M			0x3
+#define MRI_INDEX_Q_S			0
+
+#define REG_PORT_MRI_TC_MAP__4		0x0808
+
+#define PORT_TC_MAP_M			0xf
+#define PORT_TC_MAP_S			4
+
+#define REG_PORT_MRI_POLICE_CTRL__4	0x080C
+
+#define POLICE_DROP_ALL			BIT(10)
+#define POLICE_PACKET_TYPE_M		0x3
+#define POLICE_PACKET_TYPE_S		8
+#define POLICE_PACKET_DROPPED		0
+#define POLICE_PACKET_GREEN		1
+#define POLICE_PACKET_YELLOW		2
+#define POLICE_PACKET_RED		3
+#define PORT_BASED_POLICING		BIT(7)
+#define NON_DSCP_COLOR_M		0x3
+#define NON_DSCP_COLOR_S		5
+#define COLOR_MARK_ENABLE		BIT(4)
+#define COLOR_REMAP_ENABLE		BIT(3)
+#define POLICE_DROP_SRP			BIT(2)
+#define POLICE_COLOR_NOT_AWARE		BIT(1)
+#define POLICE_ENABLE			BIT(0)
+
+#define REG_PORT_POLICE_COLOR_0__4	0x0810
+#define REG_PORT_POLICE_COLOR_1__4	0x0814
+#define REG_PORT_POLICE_COLOR_2__4	0x0818
+#define REG_PORT_POLICE_COLOR_3__4	0x081C
+
+#define POLICE_COLOR_MAP_S		2
+#define POLICE_COLOR_MAP_M		(BIT(POLICE_COLOR_MAP_S) - 1)
+
+#define REG_PORT_POLICE_RATE__4		0x0820
+
+#define POLICE_CIR_S			16
+#define POLICE_PIR_S			0
+
+#define REG_PORT_POLICE_BURST_SIZE__4	0x0824
+
+#define POLICE_BURST_SIZE_M		0x3FFF
+#define POLICE_CBS_S			16
+#define POLICE_PBS_S			0
+
+#define REG_PORT_WRED_PM_CTRL_0__4	0x0830
+
+#define WRED_PM_CTRL_M			(BIT(11) - 1)
+
+#define WRED_PM_MAX_THRESHOLD_S		16
+#define WRED_PM_MIN_THRESHOLD_S		0
+
+#define REG_PORT_WRED_PM_CTRL_1__4	0x0834
+
+#define WRED_PM_MULTIPLIER_S		16
+#define WRED_PM_AVG_QUEUE_SIZE_S	0
+
+#define REG_PORT_WRED_QUEUE_CTRL_0__4	0x0840
+#define REG_PORT_WRED_QUEUE_CTRL_1__4	0x0844
+
+#define REG_PORT_WRED_QUEUE_PMON__4	0x0848
+
+#define WRED_RANDOM_DROP_ENABLE		BIT(31)
+#define WRED_PMON_FLUSH			BIT(30)
+#define WRED_DROP_GYR_DISABLE		BIT(29)
+#define WRED_DROP_YR_DISABLE		BIT(28)
+#define WRED_DROP_R_DISABLE		BIT(27)
+#define WRED_DROP_ALL			BIT(26)
+#define WRED_PMON_M			(BIT(24) - 1)
+
+/* 9 - Shaping */
+
+#define REG_PORT_MTI_QUEUE_INDEX__4	0x0900
+
+#define REG_PORT_MTI_QUEUE_CTRL_0__4	0x0904
+
+#define MTI_PVID_REPLACE		BIT(0)
+
+#define REG_PORT_MTI_QUEUE_CTRL_0	0x0914
+
+#define MTI_SCHEDULE_MODE_M		0x3
+#define MTI_SCHEDULE_MODE_S		6
+#define MTI_SCHEDULE_STRICT_PRIO	0
+#define MTI_SCHEDULE_WRR		2
+#define MTI_SHAPING_M			0x3
+#define MTI_SHAPING_S			4
+#define MTI_SHAPING_OFF			0
+#define MTI_SHAPING_SRP			1
+#define MTI_SHAPING_TIME_AWARE		2
+
+#define REG_PORT_MTI_QUEUE_CTRL_1	0x0915
+
+#define MTI_TX_RATIO_M			(BIT(7) - 1)
+
+#define REG_PORT_MTI_QUEUE_CTRL_2__2	0x0916
+#define REG_PORT_MTI_HI_WATER_MARK	0x0916
+#define REG_PORT_MTI_QUEUE_CTRL_3__2	0x0918
+#define REG_PORT_MTI_LO_WATER_MARK	0x0918
+#define REG_PORT_MTI_QUEUE_CTRL_4__2	0x091A
+#define REG_PORT_MTI_CREDIT_INCREMENT	0x091A
+
+/* A - QM */
+
+#define REG_PORT_QM_CTRL__4		0x0A00
+
+#define PORT_QM_DROP_PRIO_M		0x3
+
+#define REG_PORT_VLAN_MEMBERSHIP__4	0x0A04
+
+#define REG_PORT_QM_QUEUE_INDEX__4	0x0A08
+
+#define PORT_QM_QUEUE_INDEX_S		24
+#define PORT_QM_BURST_SIZE_S		16
+#define PORT_QM_MIN_RESV_SPACE_M	(BIT(11) - 1)
+
+#define REG_PORT_QM_WATER_MARK__4	0x0A0C
+
+#define PORT_QM_HI_WATER_MARK_S		16
+#define PORT_QM_LO_WATER_MARK_S		0
+#define PORT_QM_WATER_MARK_M		(BIT(11) - 1)
+
+#define REG_PORT_QM_TX_CNT_0__4		0x0A10
+
+#define PORT_QM_TX_CNT_USED_S		0
+#define PORT_QM_TX_CNT_M		(BIT(11) - 1)
+
+#define REG_PORT_QM_TX_CNT_1__4		0x0A14
+
+#define PORT_QM_TX_CNT_CALCULATED_S	16
+#define PORT_QM_TX_CNT_AVAIL_S		0
+
+/* B - LUE */
+#define REG_PORT_LUE_CTRL		0x0B00
+
+#define PORT_VLAN_LOOKUP_VID_0		BIT(7)
+#define PORT_INGRESS_FILTER		BIT(6)
+#define PORT_DISCARD_NON_VID		BIT(5)
+#define PORT_MAC_BASED_802_1X		BIT(4)
+#define PORT_SRC_ADDR_FILTER		BIT(3)
+
+#define REG_PORT_LUE_MSTP_INDEX		0x0B01
+
+#define REG_PORT_LUE_MSTP_STATE		0x0B04
+
+#define PORT_TX_ENABLE			BIT(2)
+#define PORT_RX_ENABLE			BIT(1)
+#define PORT_LEARN_DISABLE		BIT(0)
+
+/* C - PTP */
+
+#define REG_PTP_PORT_RX_DELAY__2	0x0C00
+#define REG_PTP_PORT_TX_DELAY__2	0x0C02
+#define REG_PTP_PORT_ASYM_DELAY__2	0x0C04
+
+#define REG_PTP_PORT_XDELAY_TS		0x0C08
+#define REG_PTP_PORT_XDELAY_TS_H	0x0C08
+#define REG_PTP_PORT_XDELAY_TS_L	0x0C0A
+
+#define REG_PTP_PORT_SYNC_TS		0x0C0C
+#define REG_PTP_PORT_SYNC_TS_H		0x0C0C
+#define REG_PTP_PORT_SYNC_TS_L		0x0C0E
+
+#define REG_PTP_PORT_PDRESP_TS		0x0C10
+#define REG_PTP_PORT_PDRESP_TS_H	0x0C10
+#define REG_PTP_PORT_PDRESP_TS_L	0x0C12
+
+#define REG_PTP_PORT_TX_INT_STATUS__2	0x0C14
+#define REG_PTP_PORT_TX_INT_ENABLE__2	0x0C16
+
+#define PTP_PORT_SYNC_INT		BIT(15)
+#define PTP_PORT_XDELAY_REQ_INT		BIT(14)
+#define PTP_PORT_PDELAY_RESP_INT	BIT(13)
+
+#define REG_PTP_PORT_LINK_DELAY__4	0x0C18
+
+#define PRIO_QUEUES			4
+#define RX_PRIO_QUEUES			8
+
+#define KS_PRIO_IN_REG			2
+
+#define TOTAL_PORT_NUM			7
+
+#define KSZ9477_COUNTER_NUM		0x20
+#define TOTAL_KSZ9477_COUNTER_NUM	(KSZ9477_COUNTER_NUM + 2 + 2)
+
+#define SWITCH_COUNTER_NUM		KSZ9477_COUNTER_NUM
+#define TOTAL_SWITCH_COUNTER_NUM	TOTAL_KSZ9477_COUNTER_NUM
+
+#define P_BCAST_STORM_CTRL		REG_PORT_MAC_CTRL_0
+#define P_PRIO_CTRL			REG_PORT_MRI_PRIO_CTRL
+#define P_MIRROR_CTRL			REG_PORT_MRI_MIRROR_CTRL
+#define P_STP_CTRL			REG_PORT_LUE_MSTP_STATE
+#define P_PHY_CTRL			REG_PORT_PHY_CTRL
+#define P_NEG_RESTART_CTRL		REG_PORT_PHY_CTRL
+#define P_LINK_STATUS			REG_PORT_PHY_STATUS
+#define P_SPEED_STATUS			REG_PORT_PHY_PHY_CTRL
+#define P_RATE_LIMIT_CTRL		REG_PORT_MAC_IN_RATE_LIMIT
+
+#define S_LINK_AGING_CTRL		REG_SW_LUE_CTRL_1
+#define S_MIRROR_CTRL			REG_SW_MRI_CTRL_0
+#define S_REPLACE_VID_CTRL		REG_SW_MAC_CTRL_2
+#define S_802_1P_PRIO_CTRL		REG_SW_MAC_802_1P_MAP_0
+#define S_TOS_PRIO_CTRL			REG_SW_MAC_TOS_PRIO_0
+#define S_FLUSH_TABLE_CTRL		REG_SW_LUE_CTRL_1
+
+#define SW_FLUSH_DYN_MAC_TABLE		SW_FLUSH_MSTP_TABLE
+
+#define MAX_TIMESTAMP_UNIT		2
+#define MAX_TRIG_UNIT			3
+#define MAX_TIMESTAMP_EVENT_UNIT	8
+#define MAX_GPIO			4
+
+#define PTP_TRIG_UNIT_M			(BIT(MAX_TRIG_UNIT) - 1)
+#define PTP_TS_UNIT_M			(BIT(MAX_TIMESTAMP_UNIT) - 1)
+
+/* Driver set switch broadcast storm protection at 10% rate. */
+#define BROADCAST_STORM_PROT_RATE	10
+
+/* 148,800 frames * 67 ms / 100 */
+#define BROADCAST_STORM_VALUE		9969
+
+#define KSZ9477_MAX_FRAME_SIZE		9000
+
+#endif /* KSZ9477_REGS_H */

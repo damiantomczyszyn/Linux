@@ -1,3 +1,2 @@
-k_fail))
-			fail = true;
-		cur = data_race(statp[i].n_
+dcard include/config/X86_P6_NOP) \
+    $(wildcard incl

@@ -1,3 +1,2 @@
-*pf;
-	unsigned long flags;
-	bool
+nt));
+	WRITE_ONCE(rdp->dynticks_

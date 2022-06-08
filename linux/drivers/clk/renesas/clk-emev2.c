@@ -1,21 +1,88 @@
-cmd_drivers/media/i2c/upd64031a.o := gcc -Wp,-MMD,drivers/media/i2c/.upd64031a.o.d -nostdinc -I./arch/x86/include -I./arch/x86/include/generated  -I./include -I./arch/x86/include/uapi -I./arch/x86/include/generated/uapi -I./include/uapi -I./include/generated/uapi -include ./include/linux/compiler-version.h -include ./include/linux/kconfig.h -include ./include/linux/compiler_types.h -D__KERNEL__ -fmacro-prefix-map=./= -Wall -Wundef -Werror=strict-prototypes -Wno-trigraphs -fno-strict-aliasing -fno-common -fshort-wchar -fno-PIE -Werror=implicit-function-declaration -Werror=implicit-int -Werror=return-type -Wno-format-security -std=gnu11 -mno-sse -mno-mmx -mno-sse2 -mno-3dnow -mno-avx -fcf-protection=none -m32 -msoft-float -mregparm=3 -freg-struct-return -fno-pic -mpreferred-stack-boundary=2 -march=i686 -mtune=pentium3 -mtune=generic -Wa,-mtune=generic32 -ffreestanding -mstack-protector-guard-reg=fs -mstack-protector-guard-symbol=__stack_chk_guard -Wno-sign-compare -fno-asynchronous-unwind-tables -mindirect-branch=thunk-extern -mindirect-branch-register -fno-jump-tables -fno-delete-null-pointer-checks -Wno-frame-address -Wno-format-truncation -Wno-format-overflow -Wno-address-of-packed-member -O2 -fno-allow-store-data-races -fstack-protector-strong -Wimplicit-fallthrough=5 -Wno-main -Wno-unused-but-set-variable -Wno-unused-const-variable -fno-stack-clash-protection -pg -mrecord-mcount -mfentry -DCC_USING_FENTRY -Wdeclaration-after-statement -Wvla -Wno-pointer-sign -Wcast-function-type -Wno-stringop-truncation -Wno-stringop-overflow -Wno-restrict -Wno-maybe-uninitialized -Wno-alloc-size-larger-than -fno-strict-overflow -fno-stack-check -fconserve-stack -Werror=date-time -Werror=incompatible-pointer-types -Werror=designated-init -Wno-packed-not-aligned  -DMODULE  -DKBUILD_BASENAME='"upd64031a"' -DKBUILD_MODNAME='"upd64031a"' -D__KBUILD_MODNAME=kmod_upd64031a -c -o drivers/media/i2c/upd64031a.o drivers/media/i2c/upd64031a.c 
+// SPDX-License-Identifier: GPL-2.0-or-later
+/*
+ *  Driver for the Conexant CX23885/7/8 PCIe bridge
+ *
+ *  Infrared device support routines - non-input, non-vl42_subdev routines
+ *
+ *  Copyright (C) 2009  Andy Walls <awalls@md.metrocast.net>
+ */
 
-source_drivers/media/i2c/upd64031a.o := drivers/media/i2c/upd64031a.c
+#include "cx23885.h"
+#include "cx23885-ir.h"
+#include "cx23885-input.h"
 
-deps_drivers/media/i2c/upd64031a.o := \
-    $(wildcard include/config/VIDEO_ADV_DEBUG) \
-  include/linux/compiler-version.h \
-    $(wildcard include/config/CC_VERSION_TEXT) \
-  include/linux/kconfig.h \
-    $(wildcard include/config/CPU_BIG_ENDIAN) \
-    $(wildcard include/config/BOOGER) \
-    $(wildcard include/config/FOO) \
-  include/linux/compiler_types.h \
-    $(wildcard include/config/DEBUG_INFO_BTF) \
-    $(wildcard include/config/PAHOLE_HAS_BTF_TAG) \
-    $(wildcard include/config/HAVE_ARCH_COMPILER_H) \
-    $(wildcard include/config/CC_HAS_ASM_INLINE) \
-  include/linux/compiler_attributes.h \
-  include/linux/compiler-gcc.h \
-    $(wildcard include/config/RETPOLINE) \
-    $(wildcard include/config/ARCH_USE_BUILTIN_BSWA
+#include <media/v4l2-device.h>
+
+#define CX23885_IR_RX_FIFO_SERVICE_REQ		0
+#define CX23885_IR_RX_END_OF_RX_DETECTED	1
+#define CX23885_IR_RX_HW_FIFO_OVERRUN		2
+#define CX23885_IR_RX_SW_FIFO_OVERRUN		3
+
+#define CX23885_IR_TX_FIFO_SERVICE_REQ		0
+
+
+void cx23885_ir_rx_work_handler(struct work_struct *work)
+{
+	struct cx23885_dev *dev =
+			     container_of(work, struct cx23885_dev, ir_rx_work);
+	u32 events = 0;
+	unsigned long *notifications = &dev->ir_rx_notifications;
+
+	if (test_and_clear_bit(CX23885_IR_RX_SW_FIFO_OVERRUN, notifications))
+		events |= V4L2_SUBDEV_IR_RX_SW_FIFO_OVERRUN;
+	if (test_and_clear_bit(CX23885_IR_RX_HW_FIFO_OVERRUN, notifications))
+		events |= V4L2_SUBDEV_IR_RX_HW_FIFO_OVERRUN;
+	if (test_and_clear_bit(CX23885_IR_RX_END_OF_RX_DETECTED, notifications))
+		events |= V4L2_SUBDEV_IR_RX_END_OF_RX_DETECTED;
+	if (test_and_clear_bit(CX23885_IR_RX_FIFO_SERVICE_REQ, notifications))
+		events |= V4L2_SUBDEV_IR_RX_FIFO_SERVICE_REQ;
+
+	if (events == 0)
+		return;
+
+	if (dev->kernel_ir)
+		cx23885_input_rx_work_handler(dev, events);
+}
+
+void cx23885_ir_tx_work_handler(struct work_struct *work)
+{
+	struct cx23885_dev *dev =
+			     container_of(work, struct cx23885_dev, ir_tx_work);
+	u32 events = 0;
+	unsigned long *notifications = &dev->ir_tx_notifications;
+
+	if (test_and_clear_bit(CX23885_IR_TX_FIFO_SERVICE_REQ, notifications))
+		events |= V4L2_SUBDEV_IR_TX_FIFO_SERVICE_REQ;
+
+	if (events == 0)
+		return;
+
+}
+
+/* Possibly called in an IRQ context */
+void cx23885_ir_rx_v4l2_dev_notify(struct v4l2_subdev *sd, u32 events)
+{
+	struct cx23885_dev *dev = to_cx23885(sd->v4l2_dev);
+	unsigned long *notifications = &dev->ir_rx_notifications;
+
+	if (events & V4L2_SUBDEV_IR_RX_FIFO_SERVICE_REQ)
+		set_bit(CX23885_IR_RX_FIFO_SERVICE_REQ, notifications);
+	if (events & V4L2_SUBDEV_IR_RX_END_OF_RX_DETECTED)
+		set_bit(CX23885_IR_RX_END_OF_RX_DETECTED, notifications);
+	if (events & V4L2_SUBDEV_IR_RX_HW_FIFO_OVERRUN)
+		set_bit(CX23885_IR_RX_HW_FIFO_OVERRUN, notifications);
+	if (events & V4L2_SUBDEV_IR_RX_SW_FIFO_OVERRUN)
+		set_bit(CX23885_IR_RX_SW_FIFO_OVERRUN, notifications);
+
+	/*
+	 * For the integrated AV core, we are already in a workqueue context.
+	 * For the CX23888 integrated IR, we are in an interrupt context.
+	 */
+	if (sd == dev->sd_cx25840)
+		cx23885_ir_rx_work_handler(&dev->ir_rx_work);
+	else
+		schedule_work(&dev->ir_rx_work);
+}
+
+/* Possibly called in an IRQ context */
+void cx23885_ir_tx_v4l2_dev_notify(struct v4l2_su

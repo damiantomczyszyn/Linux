@@ -1,2 +1,2 @@
-x86/include/asm/desc_defs.h \
-  arc
+		mem &= ~ALT_DATA;
+		mem |= (data 
